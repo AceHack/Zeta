@@ -80,7 +80,6 @@ import {
   userKeyringPublicPath,
   realEffects as realMachineEffects,
 } from "../../../tools/setup/persona-keys/machine.ts";
-import { realEffects as realPublishEffects } from "../../../tools/setup/persona-keys/publish.ts";
 import { realEffects as realTrustEffects } from "../../../tools/setup/persona-keys/github-trust.ts";
 import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
 
@@ -1152,17 +1151,17 @@ async function main() {
         process.stdout.write(`\nzflash: detected missing user keyring or machine key for user '${user}'.\n`);
         process.stdout.write(`Starting inline onboarding flow (reuse-only orchestrator)...\n\n`);
         try {
-          // Delegate to the reuse-only orchestrator: it ensures THIS host's device key,
-          // PRINTS the keyring.sh instruction if the user keyring is missing (it does NOT
-          // run seed-gen — seed custody is the operator's), and goes THROUGH publish.ts's
-          // biometric gate for the GitHub publish. No secret/seed handling lives here.
+          // Delegate to the reuse-only orchestrator: it ensures THIS host's PURE machine key
+          // (registered at the user-independent machines/<host>.pub) and PRINTS the keyring.sh
+          // instruction if the user keyring is missing (it does NOT run seed-gen — seed custody
+          // is the operator's). PURE-KEY MODEL: there is NO GitHub publish — a machine key is
+          // not a user's GitHub auth key. No secret/seed handling lives here.
           const res = await onboard(
             {
               machine: realMachineEffects(),
-              publish: realPublishEffects(),
               trust: realTrustEffects(),
             },
-            { user, repoRoot, home, keyType: "authentication" },
+            { user, repoRoot, home },
           );
           process.stdout.write(formatOnboard(res) + "\n\n");
         } catch (err: unknown) {

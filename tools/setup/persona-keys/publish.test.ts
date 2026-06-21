@@ -4,6 +4,9 @@
 // contract: biometric gate FIRST + fail-closed (ghAddKey NOT called when biometric returns
 // false; IS called with the PUBLIC key when true), PUBLIC-key-only refusal, --dry-run does
 // NO prompt + NO write, and the readout shape.
+//
+// PURE-KEY MODEL (Aaron 2026-06-21): a MACHINE key is NOT a user's GitHub auth key, so
+// `keyPath` is REQUIRED (the USER's pubkey to upload) — there is no machine-key default.
 // Run: bun test publish.test.ts   (from tools/setup/persona-keys)
 import { test, expect } from "bun:test";
 import {
@@ -18,6 +21,9 @@ import {
 } from "./publish.ts";
 
 const PUB = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwJVbQNiFzUCiOhc aaron@mymac (zeta-device)";
+// PURE-KEY MODEL: `keyPath` is REQUIRED — the explicit USER pubkey to upload (a person's
+// GitHub auth key). There is NO machine-key default; a machine key never reaches GitHub.
+const USER_KEY = "/repo/maintainers/aaron/keyring-ssh.pub";
 // NON-KEYS. These fixtures only exercise looksPrivate's header match — there is no real
 // key material. The "PRIVATE KEY" token is split (`PK`) so the source never contains the
 // contiguous header literal that GitHub secret-scanning false-positives on; the runtime
@@ -56,7 +62,7 @@ function fixtureEffects(opts: {
 
 test("gated-success: biometric ok:true → ghAddKey IS called with the PUBLIC key + title", async () => {
   const { fx, calls } = fixtureEffects({ biometric: { ok: true, platform: "macos-touchid" } });
-  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac" });
+  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac", keyPath: USER_KEY });
   expect(res.action).toBe("published");
   expect(calls.biometricPrompts).toHaveLength(1); // gate WAS invoked
   expect(calls.ghAdds).toHaveLength(1); // write happened
@@ -69,7 +75,7 @@ test("FAIL-CLOSED: biometric ok:false → ghAddKey is NEVER called, publish abor
   const { fx, calls } = fixtureEffects({
     biometric: { ok: false, platform: "macos-touchid", reason: "declined" },
   });
-  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac" });
+  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac", keyPath: USER_KEY });
   expect(res.action).toBe("aborted-biometric");
   expect(calls.biometricPrompts).toHaveLength(1); // gate WAS invoked first
   expect(calls.ghAdds).toHaveLength(0); // NO GitHub write on biometric failure
@@ -80,7 +86,7 @@ test("FAIL-CLOSED: unsupported platform (biometric ok:false) → no write", asyn
   const { fx, calls } = fixtureEffects({
     biometric: { ok: false, platform: "unsupported", reason: "no biometric on this host" },
   });
-  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo" });
+  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", keyPath: USER_KEY });
   expect(res.action).toBe("aborted-biometric");
   expect(calls.ghAdds).toHaveLength(0);
 });
@@ -90,7 +96,7 @@ test("PUBLIC-ONLY: a private-key payload aborts BEFORE the biometric prompt + NO
     keyText: PRIVATE_PEM,
     biometric: { ok: true, platform: "macos-touchid" }, // even with a passing gate…
   });
-  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac" });
+  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac", keyPath: USER_KEY });
   expect(res.action).toBe("aborted-private-material");
   expect(calls.biometricPrompts).toHaveLength(0); // never even prompted
   expect(calls.ghAdds).toHaveLength(0); // never uploaded
@@ -98,7 +104,7 @@ test("PUBLIC-ONLY: a private-key payload aborts BEFORE the biometric prompt + NO
 
 test("the uploaded payload NEVER matches /PRIVATE KEY/ (public-only invariant)", async () => {
   const { fx, calls } = fixtureEffects({ biometric: { ok: true, platform: "macos-touchid" } });
-  await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac" });
+  await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac", keyPath: USER_KEY });
   expect(calls.ghAdds).toHaveLength(1);
   expect(calls.ghAdds[0]?.publicKey).not.toMatch(/PRIVATE KEY/);
 });
@@ -108,7 +114,7 @@ test("aborted-no-key: missing pubkey → abort, no prompt, no write", async () =
     keyExists: false,
     biometric: { ok: true, platform: "macos-touchid" },
   });
-  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac" });
+  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac", keyPath: USER_KEY });
   expect(res.action).toBe("aborted-no-key");
   expect(calls.biometricPrompts).toHaveLength(0);
   expect(calls.ghAdds).toHaveLength(0);
@@ -116,7 +122,7 @@ test("aborted-no-key: missing pubkey → abort, no prompt, no write", async () =
 
 test("--dry-run: NO biometric prompt, NO GitHub write, reports would-publish", async () => {
   const { fx, calls } = fixtureEffects({ biometric: { ok: true, platform: "macos-touchid" } });
-  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac", dryRun: true });
+  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "mymac", dryRun: true, keyPath: USER_KEY });
   expect(res.action).toBe("would-publish");
   expect(calls.biometricPrompts).toHaveLength(0); // dry-run NEVER prompts
   expect(calls.ghAdds).toHaveLength(0); // dry-run NEVER writes
@@ -132,28 +138,25 @@ test("signing key type flows through to ghAddKey", async () => {
     repoRoot: "/repo",
     hostname: "mymac",
     keyType: "signing",
+    keyPath: USER_KEY,
   });
   expect(res.action).toBe("published");
   expect(calls.ghAdds[0]?.keyType).toBe("signing");
 });
 
-test("explicit --key path is read instead of the conventional machine path", async () => {
+test("REQUIRED keyPath: the explicit USER pubkey is read (no machine-key default, pure-key model)", async () => {
   const { fx, calls } = fixtureEffects({ biometric: { ok: true, platform: "macos-touchid" } });
   const res = await publishKey(fx, {
     user: "aaron",
     repoRoot: "/repo",
     hostname: "mymac",
-    keyPath: "/some/explicit/key.pub",
+    keyPath: "/some/explicit/user.pub",
   });
-  expect(res.keyPath).toBe("/some/explicit/key.pub");
+  // The supplied keyPath is honored verbatim — never overridden by a machine-key convention.
+  expect(res.keyPath).toBe("/some/explicit/user.pub");
+  expect(res.keyPath).not.toContain("machines/"); // a machine key is not the publish target
   expect(res.action).toBe("published");
   expect(calls.ghAdds).toHaveLength(1);
-});
-
-test("the conventional path is maintainers/<user>/machines/<host>.pub when --key omitted", async () => {
-  const { fx } = fixtureEffects({ biometric: { ok: true, platform: "macos-touchid" } });
-  const res = await publishKey(fx, { user: "aaron", repoRoot: "/repo", hostname: "MyMac.local" });
-  expect(res.keyPath).toBe("/repo/maintainers/aaron/machines/mymac.local.pub");
 });
 
 test("looksPrivate: catches OpenSSH/PEM/PGP private headers, passes a public line", () => {

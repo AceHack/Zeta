@@ -3,27 +3,36 @@
 // §"First-run auto-provisioning" + §"Trust distribution"). Aaron (2026-06-21):
 // *"clean and smooth and automatic."*
 //
-// This module CHAINS three already-shipped, already-verified sub-modules end-to-end and
-// produces a clean per-step readout. It is a COORDINATOR, not an implementor:
+// This module CHAINS already-shipped, already-verified sub-modules end-to-end and produces
+// a clean per-step readout. It is a COORDINATOR, not an implementor:
 //
 //   1. STATUS        — machine.ts  `checkPresence`     (the two-part user × machine probe)
 //   2. USER KEYRING  — keyring.sh INSTRUCTION ONLY     (seed custody is human-held; the
 //                       orchestrator PRINTS the exact `keyring.sh generate|rotate` step,
 //                       it NEVER runs seed-gen — the seed never crosses this boundary)
-//   3. MACHINE KEY   — machine.ts  `ensureMachineKey`  (this host's device key)
-//   4. PUBLISH       — publish.ts  `publishKey`        (biometric-gated, fail-closed,
-//                       PUBLIC-only — the orchestrator goes THROUGH the gate, never around)
-//   5. TRUST RESOLVE — github-trust.ts `resolveTrustSet` (produce/print the trust set)
+//   3. MACHINE KEY   — machine.ts  `ensureMachineKey`  (this host's PURE machine key —
+//                       registered in the user-independent `machines/<host>.pub`)
+//   4. TRUST RESOLVE — github-trust.ts `resolveTrustSet` (produce/print the trust set)
+//   5. CERT-SIGN     — ca.ts `signMachineCert` (OPTIONAL; the (user × machine) binding)
 //   6. READOUT       — a clean numbered summary of present / created / operator-still-to-do.
+//
+// PURE-KEY MODEL — NO machine-key GitHub publish (Aaron 2026-06-21): a MACHINE key is a host
+// identity, NOT a user's GitHub auth key, so the orchestrator does NOT `gh ssh-key add` the
+// machine key to `github:<user>`. The (user × machine) binding is the CA cert (step 5), not a
+// GitHub upload. Publishing the USER's identity (keyring) SSH key to GitHub is NOT cleanly
+// reachable from here — the user keyring is `keyring-public.json` (a fingerprint, NOT a
+// usable `.pub` line), and the real user pubkey is seed-derived (seed custody is the
+// operator's; the orchestrator never touches the seed). So the GitHub-publish is OMITTED from
+// this flow by design; a user publishes their own keyring SSH key via `publish-cli.ts --key`.
 //
 // SECURITY INVARIANTS (security-sensitive slice — honesty over green):
 //  1. NO secret handling, NO biometric logic, NO `gh` logic, NO seed-gen lives here. ALL
 //     of it is DELEGATED to the sub-modules through their injected-effects doors. The
 //     orchestrator contains nothing that could emit, derive, or print private material —
 //     it never imports the seed/keyring derivation (derive.ts / bip39) at all.
-//  2. The PUBLISH step MUST go through publish.ts `publishKey` — the biometric gate is
-//     never bypassed and there is NO direct `gh` call here. (publish.ts is fail-closed;
-//     the orchestrator only calls it and narrates the typed result.)
+//  2. NO GitHub write happens in this flow at all — the machine key never crosses a `gh`
+//     door (a machine key is not a user auth key). The only GitHub-touching step is the
+//     read-only trust resolve (github-trust.ts `.keys` fetch).
 //  3. A MISSING user keyring yields an INSTRUCTION, never a silent seed-gen. Seed custody
 //     is the operator's; the orchestrator instructs (`keyring.sh generate|rotate`), it
 //     does not run `keyring.sh` and never touches a mnemonic.
@@ -31,20 +40,18 @@
 //     is printed and NOTHING is done. Each delegated call receives `dryRun: true`.
 //
 // Noninterference (manifesto §13): every ambient influence (hostname, filesystem,
-// biometric prompt, `gh` write, GitHub fetch) enters ONLY through the three injected
-// sub-module effects bundles — so the whole flow is deterministic + testable against
-// fakes, and `--dry-run` is provably side-effect-free.
+// biometric prompt, GitHub fetch) enters ONLY through the injected sub-module effects
+// bundles — so the whole flow is deterministic + testable against fakes, and `--dry-run`
+// is provably side-effect-free.
 //
 // Anchors (Beacon): the chained modules' own anchors hold — ed25519 device keys
 // (Bernstein et al. 2011), Touch ID PAM (`pam_tid.so`) / Windows Hello UserConsentVerifier,
-// `gh ssh-key add` (GitHub CLI), GitHub `.keys`/`.gpg` public endpoints + `ssh-import-id`
-// (Canonical), SSH authorized_keys (`sshd(8)`). Orchestration as a thin coordinator over
-// idempotent steps — the workitem's "one command … idempotent (re-running … is a no-op)".
+// OpenSSH user-CA certs (`ssh-keygen -s`, `TrustedUserCAKeys`), GitHub `.keys`/`.gpg` public
+// endpoints + `ssh-import-id` (Canonical), SSH authorized_keys (`sshd(8)`). Orchestration as
+// a thin coordinator over idempotent steps — the workitem's "one command … idempotent".
 
 import type { MachineEffects, MachineResult, PresenceStatus } from "./machine.ts";
-import { checkPresence, ensureMachineKey, publishPubPath, sanitizeHostname } from "./machine.ts";
-import type { PublishEffects, PublishResult } from "./publish.ts";
-import { publishKey } from "./publish.ts";
+import { checkPresence, ensureMachineKey, machinePubPath, sanitizeHostname } from "./machine.ts";
 import type { GithubTrustEffects, TrustResolution } from "./github-trust.ts";
 import { resolveIdentities, resolveTrustSet } from "./github-trust.ts";
 import type { CaEffects, CertResult } from "./ca.ts";
@@ -58,14 +65,12 @@ import type { BiometricAuth } from "./biometric.ts";
  *  the cert step skips cleanly (no CA configured → not an error, not a step). */
 export interface OnboardEffects {
   readonly machine: MachineEffects;
-  readonly publish: PublishEffects;
   readonly trust: GithubTrustEffects;
   /** OPTIONAL CA door — enables the gated, flash-time cert-sign tie-in (delegates to ca.ts). */
   readonly ca?: CaEffects;
   /** The SHARED biometric approval door — the ONE gate every sensitive op runs through
-   *  (machine-key generation, cert sign). The PUBLISH step uses its own `publish.biometricAuth`
-   *  (publish.ts owns that gate). When absent, the gated keygen/sign ops fail-closed (no key /
-   *  no cert). Tests inject a fake; the CLI injects `realBiometric()`. */
+   *  (machine-key generation, cert sign). When absent, the gated keygen/sign ops fail-closed
+   *  (no key / no cert). Tests inject a fake; the CLI injects `realBiometric()`. */
   readonly biometricAuth?: BiometricAuth;
 }
 
@@ -86,14 +91,12 @@ export interface OnboardOptions {
   readonly trustIdentities?: readonly string[];
   /** Include GPG/signing trust in the resolve step. */
   readonly includeGpg?: boolean;
-  /** Publish key type (default authentication). */
-  readonly keyType?: "authentication" | "signing";
   /**
    * OPTIONAL flash-time CA tie-in: when true AND `fx.ca` is provided, sign THIS machine's
-   * published device key into a cert with the CA (delegates to ca.ts `signMachineCert`), so a
-   * freshly-flashed box can present a CERT, not a bare key. Skips cleanly if no CA is
-   * configured (`fx.ca` absent → the step is omitted) or the CA private key is absent
-   * (ca.ts returns `no-ca` → recorded as a skip, never an error). Reuse-only.
+   * registered PURE machine key into a cert with the CA (delegates to ca.ts `signMachineCert`),
+   * `principal=<user>` — the (user × machine) binding. Skips cleanly if no CA is configured
+   * (`fx.ca` absent → the step is omitted) or the CA private key is absent (ca.ts returns
+   * `no-ca` → recorded as a skip, never an error). Reuse-only.
    */
   readonly signWithCa?: boolean;
   /** Validity window for the CA-signed device cert (OpenSSH `-V` form). Defaults in ca.ts. */
@@ -101,8 +104,9 @@ export interface OnboardOptions {
 }
 
 /** The kind of a single orchestrated step (for the numbered readout). The OPTIONAL `cert-sign`
- *  step appears only when the operator opts into the CA tie-in (`signWithCa` + `fx.ca`). */
-export type StepKind = "status" | "user-keyring" | "machine-key" | "publish" | "trust-resolve" | "cert-sign";
+ *  step appears only when the operator opts into the CA tie-in (`signWithCa` + `fx.ca`).
+ *  PURE-KEY MODEL: there is NO `publish` step — a machine key is not a GitHub auth key. */
+export type StepKind = "status" | "user-keyring" | "machine-key" | "trust-resolve" | "cert-sign";
 
 /** A single step's outcome — what it found / did / would do, plus an operator-facing note.
  *  `pending` flags work the OPERATOR must still do (seed-gen, the gated biometric confirm). */
@@ -126,8 +130,6 @@ export interface OnboardResult {
   readonly presence: PresenceStatus;
   /** The machine-key step's typed result (machine.ts). */
   readonly machine: MachineResult;
-  /** The publish step's typed result (delegated to publish.ts — gate enforced there). */
-  readonly publish: PublishResult;
   /** The trust-resolve step's typed result (delegated to github-trust.ts). */
   readonly trust: TrustResolution;
   /** The OPTIONAL cert-sign step's typed result (delegated to ca.ts). Undefined when the
@@ -150,11 +152,14 @@ export function keyringInstruction(user: string): string {
 }
 
 /**
- * Run the end-to-end first-run onboarding flow as a CHAIN over the three sub-modules.
+ * Run the end-to-end first-run onboarding flow as a CHAIN over the sub-modules.
  *
  * Order is the security contract: STATUS → (user-keyring instruction if missing) →
- * MACHINE-KEY → PUBLISH (biometric-gated, only after the prior steps) → TRUST-RESOLVE.
- * Every effect is delegated; the orchestrator adds no secret/biometric/gh/seed logic.
+ * MACHINE-KEY → TRUST-RESOLVE → (OPTIONAL cert-sign). Every effect is delegated; the
+ * orchestrator adds no secret/biometric/gh/seed logic.
+ *
+ * PURE-KEY MODEL: there is NO GitHub-publish of the machine key (a machine key is not a
+ * user's GitHub auth key). The (user × machine) binding is the OPTIONAL CA cert step.
  *
  * On `dryRun`: every delegated call receives `dryRun: true`, so NOTHING is prompted,
  * written, generated, or fetched — the readout reports intent only.
@@ -164,7 +169,6 @@ export function keyringInstruction(user: string): string {
 export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise<OnboardResult> {
   const dryRun = opts.dryRun === true;
   const home = opts.home;
-  const keyType = opts.keyType ?? "authentication";
   const steps: OnboardStep[] = [];
 
   // ── Step 1: STATUS — the two-part (user × machine) presence check (machine.ts) ──────
@@ -202,15 +206,16 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
     });
   }
 
-  // ── Step 3: MACHINE KEY — generate this host's device key if missing (machine.ts) ───
+  // ── Step 3: MACHINE KEY — generate this host's PURE machine key if missing (machine.ts) ─
   // Delegated: machine.ts owns ssh-keygen + umask + the public-only read-back. publish:true
-  // writes the PUBLIC device key to maintainers/<user>/machines/<host>.pub — the registry path
-  // step 4's publish reads from. (With publish:false the GitHub-publish step finds no pubkey at
-  // the conventional path and blocks; public-only write, the keygen is the gated act.) Idempotent:
-  // an existing key is a no-op. Gated: the agent runs the keygen, the operator's biometric approves.
+  // registers the PUBLIC machine key in the USER-INDEPENDENT `machines/<host>.pub` (shared
+  // across users — NOT under maintainers/<user>/). The key label is the MACHINE only (no
+  // `user@`); `owner` is attribution metadata only. Idempotent: an existing key is a no-op.
+  // Gated: the agent runs the keygen, the operator's biometric approves. NO GitHub publish
+  // follows — a machine key is not a user's GitHub auth key (the binding is the CA cert).
   const machine = await ensureMachineKey(fx.machine, {
-    user: opts.user,
     repoRoot: opts.repoRoot,
+    owner: opts.user, // attribution METADATA only — NEVER in the key label
     publish: true,
     ...(home !== undefined ? { home } : {}),
     ...(fx.biometricAuth !== undefined ? { biometricAuth: fx.biometricAuth } : {}),
@@ -228,50 +233,16 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
             : "present",
     detail:
       machine.action === "exists"
-        ? `device key already present (local, private) at ${machine.devicePrivatePath} — no action.`
+        ? `machine key already present (local, private) at ${machine.devicePrivatePath}; registered at ${machine.devicePublicPath} — no action.`
         : machine.action === "would-generate"
-          ? `[dry-run] would generate this host's device key at ${machine.devicePrivatePath} (NOTHING generated).`
+          ? `[dry-run] would generate this host's PURE machine key (label="${machine.keyLabel}") at ${machine.devicePrivatePath}, register at ${machine.devicePublicPath} (NOTHING generated).`
           : machine.action === "aborted-biometric"
-            ? `blocked: biometric ${machine.biometric?.reason ? `failed: ${machine.biometric.reason}` : "not approved"} — NO device key generated (fail-closed).`
-            : `generated this host's device key at ${machine.devicePrivatePath} (private, local, umask 077).`,
+            ? `blocked: biometric ${machine.biometric?.reason ? `failed: ${machine.biometric.reason}` : "not approved"} — NO machine key generated (fail-closed).`
+            : `generated this host's PURE machine key (label="${machine.keyLabel}") at ${machine.devicePrivatePath} (private, local, umask 077); registered PUBLIC half at ${machine.devicePublicPath}.`,
     pending: false,
   });
 
-  // ── Step 4: PUBLISH — biometric-gated, PUBLIC-only (publish.ts owns the gate) ────────
-  // The orchestrator goes THROUGH publish.ts `publishKey`; it never invokes `gh` or a
-  // biometric prompt itself. The conventional pubkey path is machine.ts's publishPubPath.
-  const pubPath = publishPubPath(opts.repoRoot, opts.user, hostname);
-  const publish = await publishKey(fx.publish, {
-    user: opts.user,
-    repoRoot: opts.repoRoot,
-    hostname,
-    keyType,
-    keyPath: pubPath,
-    dryRun,
-  });
-  // Dry-run sequencing: publish.ts checks the pubkey EXISTS before its dry-run branch, so on a
-  // fresh box (no key yet) a standalone publish dry-run returns aborted-no-key. But in THIS
-  // sequence step 3 (machine-key, publish:true) would create + publish the pubkey first, so the
-  // honest dry-run label is "would-publish (after keygen)", not "blocked".
-  const publishWouldFollowKeygen =
-    dryRun && publish.action === "aborted-no-key" && machine.action === "would-generate";
-  steps.push({
-    kind: "publish",
-    headline:
-      publish.action === "published"
-        ? "published"
-        : publish.action === "would-publish" || publishWouldFollowKeygen
-          ? "would-publish"
-          : "blocked",
-    detail: publishWouldFollowKeygen
-      ? "[dry-run] would publish this host's device key to GitHub (biometric-gated) after step 3 creates it."
-      : publishStepDetail(publish),
-    // Pending iff the operator must still confirm the biometric (would-publish), or a recoverable
-    // abort needs operator action (no-key in a NON-sequenced context → run machine step first).
-    pending: publish.action === "would-publish" || (publish.action === "aborted-no-key" && !publishWouldFollowKeygen),
-  });
-
-  // ── Step 5: TRUST RESOLVE — produce/print the trust set (github-trust.ts) ────────────
+  // ── Step 4: TRUST RESOLVE — produce/print the trust set (github-trust.ts) ────────────
   // Delegated read-only resolve. Identities are sourced by github-trust (explicit arg /
   // allowlist / maintainers dirs). On dry-run NO network is touched (the module enforces it).
   const idRes = resolveIdentities(fx.trust, {
@@ -296,13 +267,14 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
     pending: false,
   });
 
-  // ── Step 6 (OPTIONAL): CERT-SIGN — flash-time CA tie-in (delegated to ca.ts) ──────────
+  // ── Step 5 (OPTIONAL): CERT-SIGN — the (user × machine) binding (delegated to ca.ts) ───
   // Reuse-only + gated: runs ONLY when the operator opted in (`signWithCa`) AND a CA door
-  // was provided (`fx.ca`). Skips CLEANLY when no CA is configured or the CA private key is
-  // absent (ca.ts returns `no-ca`) — a freshly-flashed box with no CA is the normal case,
-  // not an error. The orchestrator adds NO signing logic; ca.ts owns ssh-keygen -s. The cert
-  // (public) is the only artifact; no secret crosses this boundary. NOT run on dry-run-sign
-  // beyond ca.ts's own `would-sign` (dryRun is threaded through).
+  // was provided (`fx.ca`). PURE-KEY MODEL: THIS cert is the ONLY place the (user × machine)
+  // pair is named — a PURE machine key (host-only) from `machines/<host>.pub` signed with
+  // `principal=<user>`. Skips CLEANLY when no CA is configured or the CA private key is absent
+  // (ca.ts returns `no-ca`) — a freshly-flashed box with no CA is the normal case, not an
+  // error. The orchestrator adds NO signing logic; ca.ts owns ssh-keygen -s. The cert (public)
+  // is the only artifact; no secret crosses this boundary. dryRun is threaded through.
   let cert: CertResult | undefined;
   if (opts.signWithCa === true && fx.ca !== undefined) {
     // Gated: the agent runs ssh-keygen -s, the operator's biometric is the approval. Signing
@@ -310,7 +282,7 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
     const certRes = await signMachineCert(fx.ca, {
       user: opts.user,
       machineId: hostname,
-      devicePubPath: publishPubPath(opts.repoRoot, opts.user, hostname),
+      devicePubPath: machinePubPath(opts.repoRoot, hostname),
       ...(home !== undefined ? { home } : {}),
       ...(opts.certValidity !== undefined ? { validity: opts.certValidity } : {}),
       ...(fx.biometricAuth !== undefined ? { biometricAuth: fx.biometricAuth } : {}),
@@ -333,7 +305,7 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
     });
   }
 
-  return { dryRun, user: opts.user, hostname, steps, presence, machine, publish, trust, ...(cert !== undefined ? { cert } : {}) };
+  return { dryRun, user: opts.user, hostname, steps, presence, machine, trust, ...(cert !== undefined ? { cert } : {}) };
 }
 
 /** The operator-facing detail line for the OPTIONAL cert-sign step (narrates ca.ts's typed
@@ -350,33 +322,13 @@ function certStepDetail(res: CertResult): string {
     case "no-ca":
       return `skipped: no CA configured (no CA private key at ${res.caPrivatePath}) — present a bare key, sign later.`;
     case "no-device-key":
-      return `skipped: no device pubkey at ${res.devicePubPath} — run the machine step (with --publish) first.`;
+      return `skipped: no machine pubkey at ${res.devicePubPath} — run the machine step (with --publish) first.`;
     case "aborted-biometric":
       return `blocked: biometric ${res.biometric?.reason ? `failed: ${res.biometric.reason}` : "not approved"} — NO cert signed (fail-closed).`;
   }
 }
 
-/** The operator-facing detail line for the publish step (mirrors publish.ts's outcomes
- *  without re-implementing any of its logic — it only narrates the typed result). */
-function publishStepDetail(res: PublishResult): string {
-  switch (res.action) {
-    case "would-publish":
-      return (
-        `[dry-run] would publish ${res.fingerprint ?? "(key)"} to github:${res.user} (${res.keyType}) ` +
-        "AFTER a biometric confirm — NO prompt + NO GitHub write performed."
-      );
-    case "published":
-      return `biometric -> ok -> published ${res.fingerprint ?? "(key)"} to github:${res.user} (${res.keyType}).`;
-    case "aborted-biometric":
-      return `blocked: ${res.error ?? "biometric not granted"} (GitHub NOT written — fail-closed).`;
-    case "aborted-no-key":
-      return `blocked: no public key to publish — run the machine step (with --publish) first.`;
-    case "aborted-private-material":
-      return `blocked: refused PRIVATE-key material (PUBLIC-only invariant; GitHub NOT written).`;
-  }
-}
-
-/** Render the clean numbered readout (step 6). A per-step summary + a trailing
+/** Render the clean numbered readout (final step). A per-step summary + a trailing
  *  "operator must still do" list of the pending items (seed-gen, gated biometric confirm).
  *  Safe to print: public only, no secrets ever appear. */
 export function formatOnboard(res: OnboardResult): string {

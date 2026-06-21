@@ -18,7 +18,6 @@ import { homedir } from "node:os";
 import { dirname, resolve as resolvePath } from "node:path";
 import { fileURLToPath } from "node:url";
 import { realEffects as realMachineEffects } from "./machine.ts";
-import { realEffects as realPublishEffects } from "./publish.ts";
 import { realEffects as realTrustEffects } from "./github-trust.ts";
 import { realEffects as realCaEffects } from "./ca.ts";
 import { realBiometric } from "./biometric.ts";
@@ -48,7 +47,6 @@ const repoRoot = opt("--repo-root") ?? resolvePath(here, "..", "..", "..");
 const user = opt("--user");
 const hostname = opt("--host");
 const home = opt("--home") ?? homedir();
-const keyTypeArg = opt("--type");
 const dryRun = flag("--dry-run");
 const includeGpg = flag("--gpg");
 const trustIdentities = allOpts("--trust");
@@ -58,10 +56,11 @@ const certValidity = opt("--cert-validity");
 function usage(): void {
   process.stderr.write(
     "usage: bun onboard-cli.ts --user <name> [--host <name>] [--home <path>] " +
-      "[--type authentication|signing] [--trust <gh-user> ...] [--gpg] [--sign-with-ca [--cert-validity +52w]] " +
+      "[--trust <gh-user> ...] [--gpg] [--sign-with-ca [--cert-validity +52w]] " +
       "[--dry-run] [--repo-root <path>]\n" +
-      "  Chains: status -> user-keyring(instruction) -> machine-key -> publish(biometric-gated) -> trust-resolve" +
-      " [-> cert-sign (optional, --sign-with-ca; skips cleanly with no CA)].\n" +
+      "  Chains: status -> user-keyring(instruction) -> machine-key(PURE, machines/<host>.pub) -> trust-resolve" +
+      " [-> cert-sign (optional, --sign-with-ca; the user×machine binding; skips cleanly with no CA)].\n" +
+      "  PURE-KEY MODEL: NO machine-key GitHub publish (a machine key is not a user auth key).\n" +
       "  Reuse-only: no secret/biometric/gh/seed/CA-sign logic here — all delegated. --dry-run does NOTHING.\n",
   );
 }
@@ -72,20 +71,12 @@ async function main(): Promise<number> {
     process.stderr.write("error: --user <name> is required\n");
     return 2;
   }
-  if (keyTypeArg !== undefined && keyTypeArg !== "authentication" && keyTypeArg !== "signing") {
-    usage();
-    process.stderr.write(`error: --type must be 'authentication' or 'signing' (got '${keyTypeArg}')\n`);
-    return 2;
-  }
-  const keyType: "authentication" | "signing" = keyTypeArg === "signing" ? "signing" : "authentication";
 
   const fx: OnboardEffects = {
     machine: realMachineEffects(),
-    publish: realPublishEffects(),
     trust: realTrustEffects(),
     // The SHARED biometric gate — the operator's authorization for the agent-run keygen +
-    // cert-sign steps (fail-closed). The publish step uses publish's own gate. Dry-run never
-    // invokes any of them.
+    // cert-sign steps (fail-closed). Dry-run never invokes it.
     biometricAuth: realBiometric(),
     // The CA door is wired ONLY when the operator opts into the cert tie-in. Absent the flag
     // the cert step never runs (and a missing CA private key skips cleanly inside ca.ts).
@@ -96,7 +87,6 @@ async function main(): Promise<number> {
     user,
     repoRoot,
     home,
-    keyType,
     dryRun,
     includeGpg,
     ...(hostname !== undefined ? { hostname } : {}),
@@ -108,10 +98,9 @@ async function main(): Promise<number> {
   const res = await onboard(fx, opts);
   process.stdout.write(formatOnboard(res) + "\n");
 
-  // Exit code: 0 unless the publish step was a hard, non-recoverable block (biometric
-  // declined / private material). A would-publish (dry-run) or no-key is informational.
-  const hardBlock =
-    res.publish.action === "aborted-biometric" || res.publish.action === "aborted-private-material";
+  // Exit code: 0 unless the OPTIONAL cert-sign step was a hard, non-recoverable block
+  // (biometric declined). No GitHub-publish step exists in this flow (pure-key model).
+  const hardBlock = res.cert?.action === "aborted-biometric";
   return hardBlock ? 1 : 0;
 }
 

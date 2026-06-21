@@ -3,6 +3,11 @@
 // round-trip) — NEVER a real CA, NEVER real signing of real keys, NEVER a network call,
 // NEVER committing anything. The CA private key + seed NEVER appear in output.
 //
+// PURE-KEY MODEL (Aaron 2026-06-21): the device PUBLIC key signed here is a PURE machine key
+// (host-only label, read from the USER-INDEPENDENT registry `machines/<host>.pub`). THIS cert
+// is the ONLY place the (user × machine) pair is named: `principal=<user>` (`-n`) + a
+// `<user>@<host>` cert IDENTITY (`-I`). The machine key itself carries NO `user@`.
+//
 // SECURITY (matched to ca.ts invariants):
 //  * a test asserts NO module output ever matches /PRIVATE KEY/ (the private-leak guard);
 //  * NO key-shaped literal appears in THIS test file — the guard string is SPLIT
@@ -201,9 +206,9 @@ test("cert --dry-run: signs NOTHING when CA + device key present, reports would-
     const caPriv = caPrivateKeyPath(tmp);
     mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
     writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
-    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    const devicePub = join(tmp, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
-    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
 
     const r = await signMachineCert(fx, {
       user: USER,
@@ -232,9 +237,9 @@ test("cert: fail-closed when CA absent -> no-ca (signs nothing, never prompts)",
     const signCount = { n: 0 };
     const prompts: string[] = [];
     const fx = fakeEffects({ signCount });
-    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    const devicePub = join(tmp, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
-    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
     // No CA private key written.
     const r = await signMachineCert(fx, {
       user: USER,
@@ -261,7 +266,7 @@ test("cert: fail-closed when device key absent -> no-device-key (signs nothing)"
     mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
     writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
     // No device pubkey written.
-    const devicePub = join(tmp, "maintainers", USER, "machines", "absent.pub");
+    const devicePub = join(tmp, "machines", "absent.pub");
     const r = await signMachineCert(fx, { user: USER, machineId: "absent", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
     expect(r.action).toBe("no-device-key");
     expect(signCount.n).toBe(0);
@@ -279,9 +284,9 @@ test("FAIL-CLOSED (cert-sign): biometric declined -> signCert NEVER called, NO c
     const caPriv = caPrivateKeyPath(tmp);
     mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
     writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
-    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    const devicePub = join(tmp, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
-    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
 
     const r = await signMachineCert(fx, {
       user: USER,
@@ -308,9 +313,9 @@ test("FAIL-CLOSED (cert-sign): NO biometric door -> signCert NEVER runs (default
     const caPriv = caPrivateKeyPath(tmp);
     mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
     writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
-    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    const devicePub = join(tmp, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
-    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
     // No biometricAuth wired — fail-closed.
     const r = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp });
     expect(r.action).toBe("aborted-biometric");
@@ -327,9 +332,9 @@ test("cert: signs (fake) into a -cert.pub; cert text is public, has no private m
     const caPriv = caPrivateKeyPath(tmp);
     mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
     writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
-    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    const devicePub = join(tmp, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
-    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
 
     const r = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
     expect(r.action).toBe("signed");
@@ -353,9 +358,9 @@ test("PRIVATE-LEAK GUARD: no module output (paths/keys/cert) ever contains a pri
   try {
     const fx = fakeEffects();
     const ca = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true, biometricAuth: APPROVE });
-    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    const devicePub = join(tmp, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
-    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
     const cert = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
     // Stringify EVERY field the module returns — none may carry a private marker.
     const blob = JSON.stringify(ca) + JSON.stringify(cert);
@@ -396,24 +401,28 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
     expect(caPub).toContain("ssh-ed25519");
     expect(caPub).not.toMatch(new RegExp(PRIV_MARKER));
 
-    // 2. Generate a THROWAWAY device key in temp (a bare ssh-keygen, never committed).
+    // 2. Generate a THROWAWAY device key in temp (a bare ssh-keygen, never committed). PURE
+    // label — the MACHINE only, NO `user@` in the device key comment (pure-key model).
     const deviceKey = join(tmp, "device_ed25519");
-    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", "tester@mymac"], {
+    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", "mymac (zeta-machine)"], {
       encoding: "utf8",
     });
     expect(kg.status).toBe(0);
     const devicePub = deviceKey + ".pub";
     expect(existsSync(devicePub)).toBe(true);
+    // The signed device key itself carries NO user@ — the pairing is the cert, not the key.
+    expect(readFileSync(devicePub, "utf8")).not.toContain("tester@");
 
     // 3. Sign the device PUBLIC key into a cert with the throwaway CA (biometric-approved).
     const certRes = await sign(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: approve });
     expect(certRes.action).toBe("signed");
     expect(existsSync(certRes.certPath)).toBe(true);
 
-    // 4. Verify the cert with `ssh-keygen -L` — principal + identity bound correctly.
+    // 4. Verify the cert with `ssh-keygen -L` — the (user × machine) binding lives HERE:
+    //    principal=<user> (-n) + a <user>@<host> identity (-I), signed over the PURE machine key.
     const show = spawnSync("ssh-keygen", ["-L", "-f", certRes.certPath], { encoding: "utf8" });
     expect(show.status).toBe(0);
-    expect(show.stdout).toContain("tester@mymac"); // the cert identity (-I)
+    expect(show.stdout).toContain("tester@mymac"); // the cert identity (-I) — the pairing
     expect(show.stdout).toContain("tester"); // the principal (-n) — trust anchored at the user
     // The cert file is PUBLIC — never carries a private marker.
     expect(readFileSync(certRes.certPath, "utf8")).not.toMatch(new RegExp(PRIV_MARKER));

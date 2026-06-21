@@ -1,7 +1,13 @@
-// machine.ts conformance — the two-part (user × machine) presence check + the gated
-// device-key generation. ALL tests run against a THROWAWAY temp dir via injected
-// effects (or mktemp -d for the real-ssh-keygen path) — NEVER real ~/.ssh, NEVER real
-// maintainer paths, NEVER committing a generated key. Conformance/structure only.
+// machine.ts conformance — the two-part (user × machine) presence check + the gated PURE
+// machine-key generation. ALL tests run against a THROWAWAY temp dir via injected effects
+// (or mktemp -d for the real-ssh-keygen path) — NEVER real ~/.ssh, NEVER real maintainer
+// paths, NEVER committing a generated key. Conformance/structure only.
+//
+// PURE-KEY MODEL (Aaron 2026-06-21): a machine key is a HOST identity, USER-INDEPENDENT. These
+// tests assert the key LABEL has NO `user@` (machine-only), the public key registers in the
+// user-independent `machines/<host>.pub` (NOT under maintainers/<user>/), and the (user ×
+// machine) pairing is NOT present in this module (it lives ONLY in the CA cert — see ca.test.ts
+// / onboard.test.ts). Fail-closed biometric tests preserved.
 // Run: bun test machine.test.ts   (from tools/setup/persona-keys)
 import { test, expect } from "bun:test";
 import { spawnSync } from "node:child_process";
@@ -12,7 +18,8 @@ import {
   checkPresence,
   ensureMachineKey,
   formatStatus,
-  publishPubPath,
+  machineKeyLabel,
+  machinePubPath,
   sanitizeHostname,
   userKeyringPublicPath,
   type MachineEffects,
@@ -92,7 +99,6 @@ test("--dry-run generates NOTHING and reports would-generate (and never prompts)
     const prompts: string[] = [];
     const fx = fakeEffects("dev-box-3", { genCount });
     const r = await ensureMachineKey(fx, {
-      user: "tester",
       repoRoot: tmp,
       home: tmp,
       dryRun: true,
@@ -102,6 +108,7 @@ test("--dry-run generates NOTHING and reports would-generate (and never prompts)
     expect(r.dryRun).toBe(true);
     expect(r.action).toBe("would-generate");
     expect(r.published).toBe(false);
+    expect(r.keyLabel).toBe("dev-box-3 (zeta-machine)"); // PURE label — no user@
     expect(genCount.n).toBe(0); // nothing generated
     expect(prompts).toHaveLength(0); // dry-run NEVER prompts
     expect(existsSync(r.devicePrivatePath)).toBe(false); // nothing written
@@ -111,23 +118,49 @@ test("--dry-run generates NOTHING and reports would-generate (and never prompts)
   }
 });
 
-test("machine: generates a device key (fake) and publishes ONLY the public half; private never published", async () => {
+test("PURE LABEL: machine key comment is the MACHINE only — NO user@ anywhere", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-machine-"));
+  try {
+    const fx = fakeEffects("studio-7");
+    // An `owner` is supplied — it must be attribution metadata ONLY, never in the key label.
+    const r = await ensureMachineKey(fx, { repoRoot: tmp, home: tmp, owner: "tester", publish: true, biometricAuth: APPROVE });
+    expect(r.action).toBe("generated");
+    expect(r.keyLabel).toBe("studio-7 (zeta-machine)");
+    expect(r.keyLabel).not.toContain("@"); // NO user@ in the label
+    expect(r.keyLabel).not.toContain("tester"); // the owner NEVER leaks into the label
+    // The published pubkey comment carries the same pure label (the fake echoes the comment).
+    const published = readFileSync(r.devicePublicPath, "utf8");
+    expect(published).toContain("(zeta-machine)");
+    expect(published).not.toContain("tester@"); // no user@host hybrid in the registered key
+    // machineKeyLabel is the single source of the label shape.
+    expect(machineKeyLabel("studio-7")).toBe("studio-7 (zeta-machine)");
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("USER-INDEPENDENT REGISTRY: public key registers under machines/<host>.pub, NOT maintainers/<user>/", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-machine-"));
   try {
     const fx = fakeEffects("dev-box-4");
-    const r = await ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp, publish: true, biometricAuth: APPROVE });
+    const r = await ensureMachineKey(fx, { repoRoot: tmp, home: tmp, owner: "tester", publish: true, biometricAuth: APPROVE });
     expect(r.action).toBe("generated");
     expect(r.published).toBe(true);
-    // the PUBLISH path holds ONLY the public key — no private bytes anywhere in it
-    const publishedPath = publishPubPath(tmp, "tester", "dev-box-4");
-    expect(existsSync(publishedPath)).toBe(true);
-    const published = readFileSync(publishedPath, "utf8");
+    // the registry path is user-independent: machines/<host>.pub (NOT under maintainers/)
+    const registryPath = machinePubPath(tmp, "dev-box-4");
+    expect(registryPath).toBe(join(tmp, "machines", "dev-box-4.pub"));
+    expect(r.devicePublicPath).toBe(registryPath);
+    expect(r.devicePublicPath.includes("maintainers")).toBe(false); // SHARED, not per-user
+    expect(existsSync(registryPath)).toBe(true);
+    // the registry holds ONLY the public key — no private bytes anywhere in it
+    const published = readFileSync(registryPath, "utf8");
     expect(published).toContain("ssh-ed25519");
     expect(published).not.toContain("PRIVATE");
     // The marker is assembled at runtime so NO key-shaped header literal appears in this file.
     expect(published).not.toMatch(new RegExp("BEGIN .*" + "PRIVATE" + " " + "KEY"));
-    // the private key file stays at the LOCAL path, NOT under maintainers/
+    // the private key file stays at the LOCAL path, NOT under maintainers/ or machines/
     expect(r.devicePrivatePath.includes("maintainers")).toBe(false);
+    expect(r.devicePrivatePath.includes("/machines/")).toBe(false);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -139,11 +172,10 @@ test("machine: idempotent — a second run is a no-op ('exists'), does not regen
     const genCount = { n: 0 };
     const secondPrompts: string[] = [];
     const fx = fakeEffects("dev-box-5", { genCount });
-    const first = await ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp, biometricAuth: APPROVE });
+    const first = await ensureMachineKey(fx, { repoRoot: tmp, home: tmp, biometricAuth: APPROVE });
     expect(first.action).toBe("generated");
     expect(genCount.n).toBe(1);
     const second = await ensureMachineKey(fx, {
-      user: "tester",
       repoRoot: tmp,
       home: tmp,
       biometricAuth: fakeBiometric(true, secondPrompts),
@@ -164,7 +196,6 @@ test("FAIL-CLOSED: biometric declined -> genEd25519 NEVER called, NO key, aborte
     const prompts: string[] = [];
     const fx = fakeEffects("dev-box-deny", { genCount });
     const r = await ensureMachineKey(fx, {
-      user: "tester",
       repoRoot: tmp,
       home: tmp,
       publish: true,
@@ -187,7 +218,7 @@ test("FAIL-CLOSED: NO biometric door provided -> keygen NEVER runs (default fail
     const genCount = { n: 0 };
     const fx = fakeEffects("dev-box-nodoor", { genCount });
     // No biometricAuth wired at all — requireBiometric returns ok:false (fail-closed).
-    const r = await ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp });
+    const r = await ensureMachineKey(fx, { repoRoot: tmp, home: tmp });
     expect(r.action).toBe("aborted-biometric");
     expect(genCount.n).toBe(0); // never generated without an approval door
   } finally {
@@ -217,7 +248,7 @@ test("real ssh-keygen into a temp dir produces a valid ed25519 pubkey, private s
     // pin HOME to the temp dir so the REAL device path resolves inside temp, never ~/.ssh.
     // A FAKE biometric (approve) so this test never needs a real Touch ID prompt — the gate
     // is exercised against the fake; the keygen itself is the real ssh-keygen.
-    const r = await ensure(fx, { user: "tester", repoRoot: tmp, home: tmp, publish: true, biometricAuth: APPROVE });
+    const r = await ensure(fx, { repoRoot: tmp, home: tmp, publish: true, biometricAuth: APPROVE });
     expect(r.action).toBe("generated");
     const priv = deviceKeyPath(tmp);
     expect(priv.startsWith(tmp)).toBe(true); // private key is inside the temp dir
@@ -226,10 +257,13 @@ test("real ssh-keygen into a temp dir produces a valid ed25519 pubkey, private s
     // private key is not group/other readable (umask 077 honored by ssh-keygen)
     const mode = statSync(priv).mode & 0o077;
     expect(mode).toBe(0);
-    // published artifact is the PUBLIC key only
-    const published = readFileSync(publishPubPath(tmp, "tester", fx.hostname()), "utf8");
+    // registered artifact is the PUBLIC key only, at the user-independent machines/<host>.pub
+    const published = readFileSync(machinePubPath(tmp, fx.hostname()), "utf8");
     expect(published).toContain("ssh-ed25519");
     expect(published).not.toMatch(/PRIVATE/);
+    // the REAL ssh-keygen comment is the PURE machine label — no user@ in the registered key
+    expect(published).toContain("(zeta-machine)");
+    expect(published).not.toMatch(/\S+@\S+\s+\(zeta-/); // no `user@host (zeta-...)` hybrid
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

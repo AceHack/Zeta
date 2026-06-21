@@ -1,16 +1,18 @@
 #!/usr/bin/env bun
 // Zeta biometric-gated GitHub PUBLIC-key publish CLI — a thin shell around the pure
-// publisher (publish.ts). It reads THIS machine's PUBLIC device key, requires a biometric
-// confirmation (macOS Touch ID via pam_tid; Windows Hello = seam/TODO), and ONLY then
-// uploads the PUBLIC key to GitHub via `gh ssh-key add`. PUBLIC key only — never a secret.
-// `--dry-run` prompts NOTHING and writes NOTHING. See publish.ts for the security invariants.
+// publisher (publish.ts). It reads the EXPLICIT PUBLIC key at `--key` (the USER's identity
+// SSH key), requires a biometric confirmation (macOS Touch ID via pam_tid; Windows Hello =
+// seam/TODO), and ONLY then uploads it to GitHub via `gh ssh-key add`. PUBLIC key only —
+// never a secret. `--dry-run` prompts NOTHING and writes NOTHING.
+//
+// PURE-KEY MODEL (Aaron 2026-06-21): a MACHINE key is NOT a user's GitHub auth key, so
+// `--key` is REQUIRED and there is no machine-key default — publish a USER's pubkey here.
+// See publish.ts for the security invariants.
 //
 // Usage:
-//   bun publish-cli.ts --user aaron                       # Touch ID, then publish this host's pubkey
-//   bun publish-cli.ts --user aaron --host mymac          # explicit hostname for the conventional path
-//   bun publish-cli.ts --user aaron --key path/to/x.pub   # explicit pubkey path
-//   bun publish-cli.ts --user aaron --type signing        # add as a signing key (default: authentication)
-//   bun publish-cli.ts --user aaron --dry-run             # NO biometric prompt, NO GitHub write
+//   bun publish-cli.ts --user aaron --key path/to/user.pub   # Touch ID, then publish the USER's pubkey
+//   bun publish-cli.ts --user aaron --key ... --type signing # add as a signing key (default: authentication)
+//   bun publish-cli.ts --user aaron --key ... --dry-run      # NO biometric prompt, NO GitHub write
 import { dirname, resolve as resolvePath } from "node:path";
 import { fileURLToPath } from "node:url";
 import { formatResult, hostHostname, publishKey, realEffects, type PublishOptions } from "./publish.ts";
@@ -33,8 +35,9 @@ const dryRun = flag("--dry-run");
 
 function usage(): void {
   process.stderr.write(
-    "usage: bun publish-cli.ts --user <gh-user> [--host <name>] [--key <pubfile>] " +
+    "usage: bun publish-cli.ts --user <gh-user> --key <pubfile> [--host <name>] " +
       "[--type authentication|signing] [--dry-run] [--repo-root <path>]\n" +
+      "  Publishes the USER's PUBLIC key (--key REQUIRED — a machine key is NOT a GitHub auth key).\n" +
       "  Biometric-gated (Touch ID / Windows Hello), fail-closed, PUBLIC key ONLY.\n",
   );
 }
@@ -43,6 +46,11 @@ async function main(): Promise<number> {
   if (user === undefined || user.trim().length === 0) {
     usage();
     process.stderr.write("error: --user <gh-user> is required\n");
+    return 2;
+  }
+  if (keyPath === undefined || keyPath.trim().length === 0) {
+    usage();
+    process.stderr.write("error: --key <pubfile> is required (the USER's PUBLIC key to publish)\n");
     return 2;
   }
   if (keyTypeArg !== undefined && keyTypeArg !== "authentication" && keyTypeArg !== "signing") {
@@ -58,7 +66,7 @@ async function main(): Promise<number> {
     hostname,
     keyType,
     dryRun,
-    ...(keyPath !== undefined ? { keyPath } : {}),
+    keyPath,
   };
 
   const fx = realEffects();

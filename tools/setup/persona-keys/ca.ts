@@ -249,10 +249,12 @@ export interface CertResult {
  * AUTHORIZATION (signing CONSUMES the CA private key, so it must be approved). The CA private
  * key is consumed by the runner; it is never read into this process.
  *
- * Reads the machine's PUBLIC key from `devicePubPath` (the machine.ts publish seam —
- * maintainers/<user>/machines/<host>.pub). Fail-closed: a missing CA or device key returns a
- * typed `no-ca` / `no-device-key` (no partial work) and NEVER prompts. `--dry-run` signs
- * NOTHING and never prompts.
+ * Reads the machine's PUBLIC key from `devicePubPath` (the machine.ts registry seam —
+ * `machines/<host>.pub`, the USER-INDEPENDENT machine registry). This cert is the ONLY place
+ * the (user × machine) pair is named: a PURE machine key (host-only) signed with
+ * `principal=<user>` (pure-key model, Aaron 2026-06-21). Fail-closed: a missing CA or device
+ * key returns a typed `no-ca` / `no-device-key` (no partial work) and NEVER prompts.
+ * `--dry-run` signs NOTHING and never prompts.
  *
  * BIOMETRIC GATE + FAIL-CLOSED: when a real sign is about to happen (CA + device key present,
  * not dry-run), `biometricAuth()` MUST return ok:true first. On ok:false the run aborts
@@ -267,7 +269,7 @@ export async function signMachineCert(
     readonly user: string;
     /** A machine id for the cert identity (`-I`), e.g. the sanitized hostname. */
     readonly machineId: string;
-    /** Path to the per-machine device PUBLIC key to sign (maintainers/<user>/machines/*.pub). */
+    /** Path to the per-machine device PUBLIC key to sign (the registry `machines/<host>.pub`). */
     readonly devicePubPath: string;
     readonly home?: string;
     /** Validity window (OpenSSH `-V` form). Defaults to DEFAULT_CERT_VALIDITY. */

@@ -1,7 +1,15 @@
-// Zeta per-MACHINE device key + two-part (user × machine) presence check — the
-// SAFE, read-mostly slice of the unified key-onboarding flow (workitem
-// 081KVM1TK3Z08QG0R0002959G6 §"Two-part presence check"). PURE oracle + a single
-// gated side-effect (generate ONE per-host ed25519 device key via ssh-keygen).
+// Zeta per-MACHINE device key (PURE machine identity) + two-part (user × machine)
+// presence check — the SAFE, read-mostly slice of the unified key-onboarding flow
+// (workitem 081KVM1TK3Z08QG0R0002959G6 §"Two-part presence check"). PURE oracle + a
+// single gated side-effect (generate ONE per-host ed25519 device key via ssh-keygen).
+//
+// PURE-KEY MODEL (Aaron 2026-06-21): a machine key is a HOST's identity, USER-INDEPENDENT
+// — ONE key per machine, SHARED across users. It does NOT bake a user into the key label
+// (the old `user@host` hybrid conflated user+machine and scaled O(users × machines)). The
+// pure model scales O(users + machines): user keys (the persona keyring) + machine keys,
+// with the (user × machine) pairing named ONLY in a CA cert (ca.ts `signMachineCert`,
+// `principal=<user>` signed over the machine key). Certs are cheap/ephemeral/revocable —
+// NOT counted as keys.
 //
 // SECURITY INVARIANTS (matched to the persona-keys README §"Security invariants"):
 //  1. NO seed / NO CA key / NO persona key is generated here — ONLY a per-host
@@ -9,10 +17,13 @@
 //  2. The private key NEVER touches argv / stdout / git. ssh-keygen writes it to a
 //     local file under umask 077; only the PUBLIC key (`<path>.pub`) is read back
 //     for publishing. We never print or return private bytes.
-//  3. Public artifacts only are published — the device PUBLIC key goes to
-//     `maintainers/<user>/machines/<hostname>.pub`. This module SUPPORTS writing it;
-//     it does NOT commit. Upload-to-GitHub / SSH-CA signing / cluster trust are
-//     LATER slices (explicitly out of scope here).
+//  3. Public artifacts only are published — the machine PUBLIC key goes to a
+//     USER-INDEPENDENT machine registry `machines/<hostname>.pub` at repo ROOT (machines
+//     are SHARED across users — NOT filed under `maintainers/<user>/`). This module
+//     SUPPORTS writing it; it does NOT commit. The (user × machine) binding is a CA cert
+//     (ca.ts), NOT a per-user copy of the machine key.
+//  4. NO `user@` in the key label — the label is the MACHINE only (`<host> (zeta-machine)`).
+//     An optional `owner` may be recorded as attribution METADATA, NEVER in the key label.
 //
 // Noninterference (manifesto §13): the host environment (hostname, filesystem,
 // ssh-keygen runner) enters ONLY through the injected `MachineEffects` — so the
@@ -20,8 +31,10 @@
 // never the real ~/.ssh or real maintainer paths.
 //
 // Anchors (Beacon): ed25519 device keys — Bernstein et al. (Ed25519, 2011);
-// OpenSSH `ssh-keygen(1)`. Two-axis identity (user × machine) — the workitem's
-// per-PERSONA vs per-MACHINE model. Type-separated keys — persona-keys README.
+// OpenSSH `ssh-keygen(1)`. Two-axis identity (user × machine) where the machine key is
+// PURE (host-only) and the pair is a CERT — SSH user-CA prior art (Facebook/Netflix
+// BLESS-style certs: a host key is SIGNED into a principal-bearing cert, never re-keyed
+// per user). Type-separated keys — persona-keys README.
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir, hostname as osHostname } from "node:os";
@@ -54,9 +67,19 @@ export function deviceKeyPath(home: string = homedir()): string {
   return join(home, ".config", "zeta", "machine", "id_ed25519");
 }
 
-/** Where this machine's PUBLIC device key is published under the operator's maintainer dir. */
-export function publishPubPath(repoRoot: string, user: string, hostname: string): string {
-  return join(repoRoot, "maintainers", user, "machines", `${sanitizeHostname(hostname)}.pub`);
+/**
+ * Where this machine's PUBLIC device key is registered: the USER-INDEPENDENT machine
+ * registry `machines/<hostname>.pub` at repo ROOT. PURE-KEY MODEL — a machine key is a
+ * host identity SHARED across users, so it is NOT filed under `maintainers/<user>/`. The
+ * (user × machine) pairing lives ONLY in a CA cert (ca.ts), never in this path. */
+export function machinePubPath(repoRoot: string, hostname: string): string {
+  return join(repoRoot, "machines", `${sanitizeHostname(hostname)}.pub`);
+}
+
+/** The machine key COMMENT/LABEL — the MACHINE only, NEVER `user@`. Pure-key model: the
+ *  key identifies the HOST; the (user × machine) pair is named in the cert, not the label. */
+export function machineKeyLabel(hostname: string): string {
+  return `${sanitizeHostname(hostname)} (zeta-machine)`;
 }
 
 /** The operator's persona keyring public registry (the "user key present?" probe). */
@@ -74,14 +97,16 @@ export function sanitizeHostname(hostname: string): string {
 export interface PresenceStatus {
   readonly user: string;
   readonly hostname: string;
-  /** Is this operator's persona keyring registered (user identity present)? */
+  /** Is this operator's persona keyring registered (user identity present)? PER-USER. */
   readonly userKeyPresent: boolean;
   /** Is THIS dev machine's device private key present locally? */
   readonly machineKeyPresentLocal: boolean;
-  /** Is THIS dev machine's device PUBLIC key published under maintainers/<user>/machines/? */
+  /** Is THIS machine's PUBLIC key registered in the USER-INDEPENDENT registry
+   *  `machines/<host>.pub`? (Shared across users — NOT under maintainers/<user>/.) */
   readonly machineKeyPublished: boolean;
   readonly userKeyringPath: string;
   readonly devicePrivatePath: string;
+  /** The user-independent machine-registry path `machines/<host>.pub`. */
   readonly devicePublicPath: string;
 }
 
@@ -94,7 +119,7 @@ export function checkPresence(
   const hostname = sanitizeHostname(fx.hostname());
   const userKeyringPath = userKeyringPublicPath(opts.repoRoot, opts.user);
   const devicePrivatePath = opts.home === undefined ? deviceKeyPath() : deviceKeyPath(opts.home);
-  const devicePublicPath = publishPubPath(opts.repoRoot, opts.user, hostname);
+  const devicePublicPath = machinePubPath(opts.repoRoot, hostname);
   return {
     user: opts.user,
     hostname,
@@ -121,7 +146,10 @@ export function formatStatus(s: PresenceStatus): string {
 export interface MachineResult {
   readonly dryRun: boolean;
   readonly hostname: string;
+  /** The machine key COMMENT/LABEL — the MACHINE only, NEVER `user@` (pure-key model). */
+  readonly keyLabel: string;
   readonly devicePrivatePath: string;
+  /** The user-independent machine-registry path `machines/<host>.pub`. */
   readonly devicePublicPath: string;
   /** "generated" | "exists" (idempotent: an existing key is a no-op) | "would-generate" (dry-run)
    *  | "aborted-biometric" (operator did NOT approve → fail-closed, NO key generated). */
@@ -142,6 +170,12 @@ export interface MachineResult {
  * no CA, no persona key. The private key is written locally by ssh-keygen under umask 077 (the
  * runner's job); ONLY the public key is read back and (optionally) written to the publish path.
  *
+ * PURE-KEY MODEL: the generated key's COMMENT/LABEL is the MACHINE only
+ * (`<host> (zeta-machine)`) — there is NO `user@` in it. The PUBLIC key is registered in the
+ * USER-INDEPENDENT registry `machines/<host>.pub` (shared across users). The optional `owner`
+ * is for attribution METADATA only and NEVER enters the key label. The (user × machine)
+ * binding is a CA cert (ca.ts), not this key.
+ *
  * BIOMETRIC GATE + FAIL-CLOSED: when a real keygen is about to happen (the device key does NOT
  * already exist and it is not a dry-run), `biometricAuth()` MUST return ok:true first. On
  * ok:false the run aborts ("aborted-biometric") and `genEd25519` is NEVER invoked — NO key is
@@ -149,15 +183,18 @@ export interface MachineResult {
  * created) and `--dry-run` (creates nothing) do NOT prompt.
  *
  * @param biometricAuth the SHARED approval gate (biometric.ts). Required for the real-keygen path.
- * @param publish  when true, copy the PUBLIC key into maintainers/<user>/machines/.
+ * @param owner    OPTIONAL provisioner identity, recorded as attribution METADATA only — it
+ *                 NEVER enters the key label (no `user@` in a machine key, pure-key model).
+ * @param publish  when true, register the PUBLIC key in `machines/<host>.pub` at repo root.
  *                 (This PR does NOT commit; the caller/operator decides whether to commit.)
  * @param dryRun   when true, NOTHING is generated, written, or prompted — "would-generate".
  */
 export async function ensureMachineKey(
   fx: MachineEffects,
   opts: {
-    readonly user: string;
     readonly repoRoot: string;
+    /** OPTIONAL provisioner identity — attribution METADATA only, NEVER in the key label. */
+    readonly owner?: string;
     readonly home?: string;
     readonly publish?: boolean;
     readonly dryRun?: boolean;
@@ -166,8 +203,9 @@ export async function ensureMachineKey(
   },
 ): Promise<MachineResult> {
   const hostname = sanitizeHostname(fx.hostname());
+  const keyLabel = machineKeyLabel(hostname);
   const devicePrivatePath = opts.home === undefined ? deviceKeyPath() : deviceKeyPath(opts.home);
-  const devicePublicPath = publishPubPath(opts.repoRoot, opts.user, hostname);
+  const devicePublicPath = machinePubPath(opts.repoRoot, hostname);
   const dryRun = opts.dryRun === true;
   const wantPublish = opts.publish === true;
   const alreadyExists = fx.exists(devicePrivatePath);
@@ -176,6 +214,7 @@ export async function ensureMachineKey(
     return {
       dryRun: true,
       hostname,
+      keyLabel,
       devicePrivatePath,
       devicePublicPath,
       action: alreadyExists ? "exists" : "would-generate",
@@ -195,12 +234,13 @@ export async function ensureMachineKey(
     // BIOMETRIC GATE — fail-closed. A real keygen creates private material; require approval.
     biometric = await requireBiometric(
       opts.biometricAuth,
-      `Approve: generate device key for ${hostname}`,
+      `Approve: generate machine key for ${hostname}`,
     );
     if (!biometric.ok) {
       return {
         dryRun: false,
         hostname,
+        keyLabel,
         devicePrivatePath,
         devicePublicPath,
         action: "aborted-biometric",
@@ -208,7 +248,8 @@ export async function ensureMachineKey(
         biometric,
       };
     }
-    publicKey = fx.genEd25519(devicePrivatePath, `${opts.user}@${hostname} (zeta-device)`).trim();
+    // PURE label — the MACHINE only. The `owner` (if any) is attribution metadata, never here.
+    publicKey = fx.genEd25519(devicePrivatePath, keyLabel).trim();
     action = "generated";
   }
 
@@ -216,10 +257,10 @@ export async function ensureMachineKey(
   if (wantPublish) {
     fx.mkdirp(dirOf(devicePublicPath));
     fx.writeText(devicePublicPath, publicKey.endsWith("\n") ? publicKey : publicKey + "\n");
-    return { dryRun: false, hostname, devicePrivatePath, devicePublicPath, action, publicKey, published: true, ...bio };
+    return { dryRun: false, hostname, keyLabel, devicePrivatePath, devicePublicPath, action, publicKey, published: true, ...bio };
   }
 
-  return { dryRun: false, hostname, devicePrivatePath, devicePublicPath, action, publicKey, published: false, ...bio };
+  return { dryRun: false, hostname, keyLabel, devicePrivatePath, devicePublicPath, action, publicKey, published: false, ...bio };
 }
 
 function dirOf(p: string): string {

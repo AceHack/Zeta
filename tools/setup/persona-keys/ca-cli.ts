@@ -17,7 +17,7 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureCa, signMachineCert, realEffects, DEFAULT_CERT_VALIDITY } from "./ca.ts";
-import { publishPubPath, sanitizeHostname } from "./machine.ts";
+import { machinePubPath, sanitizeHostname } from "./machine.ts";
 import { realBiometric } from "./biometric.ts";
 
 const args = process.argv.slice(2);
@@ -68,8 +68,9 @@ async function main(): Promise<number> {
     const machineId = sanitizeHostname(machineRaw ?? "");
     const validity = opt("--validity") ?? DEFAULT_CERT_VALIDITY;
     const dryRun = flag("--dry-run");
-    // The device PUBLIC key is the machine.ts publish seam: maintainers/<user>/machines/<host>.pub.
-    const devicePubPath = opt("--device-pub") ?? publishPubPath(repoRoot, user, machineId);
+    // The device PUBLIC key is the machine.ts registry seam: the USER-INDEPENDENT
+    // `machines/<host>.pub`. This cert (principal=<user>) is the (user × machine) binding.
+    const devicePubPath = opt("--device-pub") ?? machinePubPath(repoRoot, machineId);
     const r = await signMachineCert(fx, { user, machineId, devicePubPath, validity, dryRun, biometricAuth });
     if (r.action === "no-ca") {
       console.error(`blocked: no CA private key at ${r.caPrivatePath} — run 'ca-cli.ts ca' first.`);

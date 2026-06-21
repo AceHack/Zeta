@@ -3,9 +3,15 @@
 // Aaron (2026-06-21): *"we need to code this [publish to GitHub] and make sure it uses
 // mac fingerprint / windows hello auth … clean and smooth and automatic."*
 //
-// This slice UPLOADS the per-machine PUBLIC device key (produced by machine.ts and
-// written to maintainers/<user>/machines/<host>.pub) to the operator's GitHub account
-// via `gh ssh-key add` — but ONLY after a biometric confirmation succeeds (fail-closed).
+// This slice UPLOADS a caller-supplied PUBLIC key (the USER's identity / keyring SSH key —
+// a person's GitHub AUTH key) to the operator's GitHub account via `gh ssh-key add` — but
+// ONLY after a biometric confirmation succeeds (fail-closed).
+//
+// PURE-KEY MODEL (Aaron 2026-06-21): a MACHINE key is a host identity, NOT a user's GitHub
+// auth key, so it does NOT belong on `github:<user>`. This publisher therefore requires an
+// EXPLICIT `keyPath` (the USER's pubkey) — there is no machine-key default. The machine
+// key's tie to a user is a CA cert (ca.ts), never a GitHub upload. The onboard orchestrator
+// consequently OMITS a machine-key GitHub publish (see onboard.ts).
 //
 // SECURITY INVARIANTS (security-sensitive slice — honesty over green):
 //  1. BIOMETRIC GATE FIRST + FAIL-CLOSED — before ANY GitHub write, biometricAuth()
@@ -32,7 +38,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { homedir, hostname as osHostname } from "node:os";
 import { join } from "node:path";
-import { publishPubPath, sanitizeHostname } from "./machine.ts";
+import { sanitizeHostname } from "./machine.ts";
 // The biometric gate is the SHARED primitive in biometric.ts (lifted out of this module so
 // ca.ts / machine.ts / publish.ts all share ONE gate, not three copies of the Touch-ID
 // logic). publish.ts re-exports the types + detector for back-compat with its existing
@@ -72,13 +78,15 @@ export interface PublishEffects {
   }) => Promise<void>;
 }
 
-/** Options for a publish run. `keyPath` overrides the conventional machine-pub path. */
+/** Options for a publish run. `keyPath` is REQUIRED — the explicit PUBLIC key to upload
+ *  (the USER's pubkey). PURE-KEY MODEL: there is no machine-key default, because a machine
+ *  key is not a user's GitHub auth key. */
 export interface PublishOptions {
   readonly user: string;
   readonly repoRoot: string;
-  /** Explicit pubkey path; else maintainers/<user>/machines/<host>.pub is used. */
-  readonly keyPath?: string;
-  /** Hostname override (else the injected hostname). Sanitized for the conventional path. */
+  /** REQUIRED: the explicit PUBLIC key path to upload (the USER's identity SSH key). */
+  readonly keyPath: string;
+  /** Hostname override (else the injected hostname). Sanitized for the key title. */
   readonly hostname?: string;
   /** Add as an authentication key (default) and/or a signing key. */
   readonly keyType?: "authentication" | "signing";
@@ -145,9 +153,10 @@ export function publicKeyFingerprint(pubLine: string): string {
   return `key-${h.toString(16).padStart(16, "0")}`;
 }
 
-/** Resolve the pubkey path: explicit `keyPath` wins; else the conventional machine path. */
-export function resolveKeyPath(opts: PublishOptions, hostname: string): string {
-  return opts.keyPath ?? publishPubPath(opts.repoRoot, opts.user, hostname);
+/** Resolve the pubkey path. PURE-KEY MODEL: `keyPath` is REQUIRED (the USER's pubkey) —
+ *  there is no machine-key default (a machine key is not a user's GitHub auth key). */
+export function resolveKeyPath(opts: PublishOptions): string {
+  return opts.keyPath;
 }
 
 /**
@@ -167,7 +176,7 @@ export function resolveKeyPath(opts: PublishOptions, hostname: string): string {
 export async function publishKey(fx: PublishEffects, opts: PublishOptions): Promise<PublishResult> {
   const hostname = sanitizeHostname(opts.hostname ?? "this-host");
   const keyType = opts.keyType ?? "authentication";
-  const keyPath = resolveKeyPath(opts, hostname);
+  const keyPath = resolveKeyPath(opts);
   const title = publishTitle(opts.user, hostname);
   const dryRun = opts.dryRun === true;
 
