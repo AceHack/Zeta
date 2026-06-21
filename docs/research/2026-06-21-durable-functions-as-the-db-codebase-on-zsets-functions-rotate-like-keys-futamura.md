@@ -146,6 +146,35 @@ so a partial view is *constructively* useful and composes cleanly with others wh
 uncertainty reduction is banked in the `db/uncertainty/` ledger; relative + commutative + monotone
 means every observer can make honest forward progress without the whole.
 
+## No central executor, no global tick — execution is traveler-frame-relative (Aaron 2026-06-21)
+
+> *"There is no privileged central executor — it's only executed by the humans and agents who
+> decide to execute it, on the hardware and repos they have access to. So everything is always
+> traveler-frame-relative on every tick. There is no such thing as a global tick — unless you
+> happen to be a traveler who has access to all repos in existence and can afford to pull them all
+> local, or at least the parts you need for your query to execute."*
+
+The relativity isn't just the *state* (views) — it's the **execution** too:
+
+- **No privileged central executor.** The DB has no central process that "runs" it. Execution
+  happens only when a **human or agent chooses to execute**, on the **hardware + repos they can
+  access.** Compute is pulled to the frame, not dispatched from a center.
+- **No global tick.** There is no shared clock. **Every tick is frame-relative** — your tick
+  advances *your* accessible view; mine advances mine. (Lamport: no global "now," only causal/
+  relative order; merges commute, so frames reconcile without a global clock.)
+- **The global tick is a degenerate limit.** It exists only for a hypothetical traveler with
+  access to **all repos in existence** who can **afford to pull them all local** — or, realistically,
+  just the **parts needed for a given query** (demand-pull). For everyone else, "the tick" is local.
+- **Demand-pull execution (the RX query).** To run a query you **pull the repos/parts it needs**
+  to execute (lazy, demand-driven — the DBSP incremental pull); your computation is over what you
+  pulled, your forecast over what you can see (the access-bounds-determinism above).
+
+This is **§1 scale-free at the execution layer** (no central executor = no central point of control)
+and the traveler-framed model extended from *state* to *running*: identity, views, prediction, AND
+execution are all frame-relative; the only "global" anything is the unreachable all-repos limit.
+It's why there's no single point to capture, coordinate, or take down — every traveler computes
+their own tick over their own pulled view, and the commuting merges stitch them where they meet.
+
 ## Build (already largely in flight / backlogged)
 
 This is the integrating vision over existing components: `src/Core.TypeScript/workflow-engine/`
