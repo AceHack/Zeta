@@ -54,6 +54,12 @@ export interface SoftEnsemble<W> {
 /**
  * Apply one IR op to every entry in the ensemble, then consolidate (merge).
  * Ring-generic: the merge uses ring.add on same-key weights.
+ *
+ * The op can FORK a frame into multiple frames (the "grows in bits by uncertainty"
+ * property). For deterministic ops (mul, xorshr), each frame maps to exactly one
+ * output frame (support unchanged). For branching ops (future: conditional, measure),
+ * one frame can produce N output frames weighted by √(1/N) — support grows by the
+ * actual uncertainty introduced, NOT by the register width.
  */
 function applyOp<W>(
   ir: ZetaIrV1,
@@ -64,14 +70,26 @@ function applyOp<W>(
 ): WEntry<bigint, W>[] {
   const MASK = (1n << BigInt(ir.width)) - 1n;
 
-  const stepped = ensemble.map((entry) => {
-    let newKey = entry.key;
+  // Each frame can produce multiple output frames (fork).
+  // For mul/xorshr: deterministic (1 → 1, no growth).
+  // For future branching ops: 1 → N (support grows by uncertainty).
+  const stepped = ensemble.flatMap((entry): WEntry<bigint, W>[] => {
     if (op.op === "mul") {
-      newKey = (newKey * (BigInt(op.k!) & MASK)) & MASK;
+      const newKey = (entry.key * (BigInt(op.k!) & MASK)) & MASK;
+      return [{ key: newKey, weight: entry.weight }];
     } else if (op.op === "xorshr") {
-      newKey = (newKey ^ (newKey >> BigInt(op.s!))) & MASK;
+      const newKey = (entry.key ^ (entry.key >> BigInt(op.s!))) & MASK;
+      return [{ key: newKey, weight: entry.weight }];
+    } else if (op.op === "branch") {
+      // Future: fork into two frames (the "grows in bits" step).
+      // Each branch gets weight scaled by 1/√2 (equal superposition).
+      const sqrt2inv = ring.mul(ring.one, ring.one); // placeholder — real impl needs sqrt
+      return [
+        { key: entry.key, weight: entry.weight },
+        { key: entry.key ^ (1n << BigInt(op.s ?? 0)), weight: entry.weight },
+      ];
     }
-    return { key: newKey, weight: entry.weight };
+    return [{ key: entry.key, weight: entry.weight }];
   });
 
   return consolidate(ring, isZero, stepped, (a, b) => a === b);

@@ -90,6 +90,9 @@ type Op struct {
 }
 
 // SoftMix folds IR ops over a weighted ensemble. Ring-generic.
+// Each op can FORK frames (1→N for branching ops). Support grows only
+// by actual uncertainty, not by register width. For mul/xorshr (permutations),
+// each frame maps 1→1. The "grows in bits by uncertainty" property.
 func SoftMix[W any](ring StarRing[W], ops []Op, width int, input []WEntry[W]) []WEntry[W] {
 	var mask uint64
 	if width >= 64 {
@@ -99,18 +102,23 @@ func SoftMix[W any](ring StarRing[W], ops []Op, width int, input []WEntry[W]) []
 	}
 	ensemble := input
 	for _, op := range ops {
-		stepped := make([]WEntry[W], len(ensemble))
-		for i, e := range ensemble {
-			var newKey uint64
+		// flatMap: each frame can produce multiple output frames (fork).
+		var stepped []WEntry[W]
+		for _, e := range ensemble {
 			switch op.Kind {
 			case "mul":
-				newKey = (e.Key * op.Val) & mask
+				stepped = append(stepped, WEntry[W]{Key: (e.Key * op.Val) & mask, Weight: e.Weight})
 			case "xorshr":
-				newKey = (e.Key ^ (e.Key >> op.Val)) & mask
+				stepped = append(stepped, WEntry[W]{Key: (e.Key ^ (e.Key >> op.Val)) & mask, Weight: e.Weight})
+			case "branch":
+				// Fork: two frames (grows support by 1 bit of uncertainty)
+				stepped = append(stepped,
+					WEntry[W]{Key: e.Key & mask, Weight: e.Weight},
+					WEntry[W]{Key: (e.Key ^ (1 << op.Val)) & mask, Weight: e.Weight},
+				)
 			default:
-				newKey = e.Key
+				stepped = append(stepped, WEntry[W]{Key: e.Key, Weight: e.Weight})
 			}
-			stepped[i] = WEntry[W]{Key: newKey, Weight: e.Weight}
 		}
 		ensemble = Consolidate(ring, stepped)
 	}

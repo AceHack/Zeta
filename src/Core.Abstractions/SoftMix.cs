@@ -61,15 +61,21 @@ public static class SoftMix
 
         foreach (var op in ops)
         {
-            ensemble = ensemble.Select(e =>
+            // flatMap: each frame can produce multiple output frames (fork).
+            // mul/xorshr: deterministic (1→1). branch: 1→2 (grows by 1 bit of uncertainty).
+            ensemble = ensemble.SelectMany(e =>
             {
-                ulong newKey = op.Kind switch
+                return op.Kind switch
                 {
-                    "mul" => (e.Key * op.Val) & mask,
-                    "xorshr" => (e.Key ^ (e.Key >> (int)op.Val)) & mask,
-                    _ => e.Key,
+                    "mul" => new[] { new WEntry<TWeight>((e.Key * op.Val) & mask, e.Weight) },
+                    "xorshr" => new[] { new WEntry<TWeight>((e.Key ^ (e.Key >> (int)op.Val)) & mask, e.Weight) },
+                    "branch" => new[]
+                    {
+                        new WEntry<TWeight>(e.Key & mask, e.Weight),
+                        new WEntry<TWeight>((e.Key ^ (1UL << (int)op.Val)) & mask, e.Weight),
+                    },
+                    _ => new[] { new WEntry<TWeight>(e.Key, e.Weight) },
                 };
-                return new WEntry<TWeight>(newKey, e.Weight);
             }).ToList();
 
             ensemble = Consolidate(ring, ensemble, isZero).ToList();

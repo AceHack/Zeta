@@ -70,17 +70,28 @@ pub fn consolidate<W: StarRing>(entries: Vec<WEntry<W>>) -> Vec<WEntry<W>> {
 }
 
 /// Soft mix: fold IR ops over a weighted ensemble. Ring-generic.
+/// Each op can FORK frames (1→N for branching ops). Support grows only
+/// by actual uncertainty, not by register width. For mul/xorshr (permutations),
+/// each frame maps 1→1 (no growth). The "grows in bits by uncertainty" property.
 pub fn soft_mix<W: StarRing>(ops: &[(& str, u64)], width: u32, input: Vec<WEntry<W>>) -> Vec<WEntry<W>> {
     let mask: u64 = if width >= 64 { u64::MAX } else { (1u64 << width) - 1 };
     let mut ensemble = input;
     for &(op, val) in ops {
-        ensemble = ensemble.into_iter().map(|e| {
-            let new_key = match op {
-                "mul" => e.key.wrapping_mul(val) & mask,
-                "xorshr" => (e.key ^ (e.key >> val)) & mask,
-                _ => e.key,
-            };
-            WEntry { key: new_key, weight: e.weight }
+        // flatMap: each frame can produce multiple output frames (fork).
+        // mul/xorshr: deterministic (1→1). branch: 1→2 (grows by 1 bit of uncertainty).
+        ensemble = ensemble.into_iter().flat_map(|e| {
+            match op {
+                "mul" => vec![WEntry { key: e.key.wrapping_mul(val) & mask, weight: e.weight }],
+                "xorshr" => vec![WEntry { key: (e.key ^ (e.key >> val)) & mask, weight: e.weight }],
+                "branch" => {
+                    // Fork: two frames, each with the original weight (to be scaled by 1/√2 later)
+                    vec![
+                        WEntry { key: e.key & mask, weight: e.weight.clone() },
+                        WEntry { key: (e.key ^ (1u64 << val)) & mask, weight: e.weight },
+                    ]
+                },
+                _ => vec![WEntry { key: e.key, weight: e.weight }],
+            }
         }).collect();
         ensemble = consolidate(ensemble);
     }
