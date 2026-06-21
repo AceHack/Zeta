@@ -34,14 +34,14 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../../.." && pwd)"
 
 mode="${1:-}"; name="${2:-}"; shift 2 2>/dev/null || true
-public_only=""; vault_path=""; out_dir=""; gh_secret=""; gh_repo="Lucent-Financial-Group/Zeta"; publish=""; dry_run=""
+public_only=""; vault_path=""; out_dir=""; gh_secret=""; gh_repo="Lucent-Financial-Group/Zeta"; dry_run=""
 while [ $# -gt 0 ]; do case "$1" in
   --public-only) public_only="--public-only";;
   --vault) vault_path="${2:?}"; shift;;
   --gh-secret) gh_secret="${2:?}"; shift;;
   --gh-repo) gh_repo="${2:?}"; shift;;
   --out) out_dir="${2:?}"; shift;;
-  --publish) publish="--publish";;
+  --publish) echo "note: --publish moved to the biometric-gated publish.ts; ignoring here" >&2 ;;
   --dry-run) dry_run="--dry-run";;
   *) echo "unknown arg: $1" >&2; exit 2;;
 esac; shift; done

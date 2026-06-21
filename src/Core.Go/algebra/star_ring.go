@@ -26,19 +26,19 @@ type Complex struct {
 // RealRing implements StarRing[float64]. Conj = identity.
 type RealRing struct{}
 
-func (RealRing) Zero() float64          { return 0 }
-func (RealRing) One() float64           { return 1 }
-func (RealRing) Add(a, b float64) float64    { return a + b }
-func (RealRing) Mul(a, b float64) float64    { return a * b }
-func (RealRing) Negate(a float64) float64    { return -a }
-func (RealRing) Conj(a float64) float64      { return a }
-func (RealRing) IsZero(a float64) bool       { return math.Abs(a) < 1e-12 }
+func (RealRing) Zero() float64            { return 0 }
+func (RealRing) One() float64             { return 1 }
+func (RealRing) Add(a, b float64) float64 { return a + b }
+func (RealRing) Mul(a, b float64) float64 { return a * b }
+func (RealRing) Negate(a float64) float64 { return -a }
+func (RealRing) Conj(a float64) float64   { return a }
+func (RealRing) IsZero(a float64) bool    { return math.Abs(a) < 1e-12 }
 
 // ComplexRing implements StarRing[Complex]. Conj = complex conjugate.
 type ComplexRing struct{}
 
-func (ComplexRing) Zero() Complex          { return Complex{0, 0} }
-func (ComplexRing) One() Complex           { return Complex{1, 0} }
+func (ComplexRing) Zero() Complex { return Complex{0, 0} }
+func (ComplexRing) One() Complex  { return Complex{1, 0} }
 func (ComplexRing) Add(a, b Complex) Complex {
 	return Complex{a.Re + b.Re, a.Im + b.Im}
 }

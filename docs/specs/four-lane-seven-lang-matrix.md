@@ -38,6 +38,7 @@ Q#'s `Complex` type with `Im = 0.0` is a real number. The sparse simulator with 
 ## Why Quantum in C#/Rust/Go is ✅
 
 `softMixGeneric(complexRing, ir, isZero, [(x, Complex{1,0})])` IS `measure(U_mix|z⟩)`:
+
 - One entry in the ensemble = one basis state
 - Complex ring = quantum arithmetic
 - Consolidate after each op = the sparse statevector update

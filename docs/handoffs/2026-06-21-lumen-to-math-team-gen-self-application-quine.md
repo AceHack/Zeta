@@ -77,6 +77,7 @@ Two sub-questions the math team should settle, in order:
 ## Connection to the live grammar work (why this is timely)
 
 Since the original `sorry` was filed, the IR grammar grew and then shrank:
+
 - `zeta-ir-v4` now includes `add` (affine), and the minimal generating set is proved to be `{mul, add, xshrxor, xrotxor}` (PR #8826, `docs/research/2026-06-20-lumen-zeta-ir-minimal-generating-set.md`).
 - A second `add`-anchor (`murmur3_32_tail`, PR #8855) shows `mul`+`rotl`+`add` composing in one generator.
 
