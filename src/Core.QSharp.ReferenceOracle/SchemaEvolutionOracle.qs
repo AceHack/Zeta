@@ -76,7 +76,7 @@ namespace Zeta.SchemaEvolution.Quantum {
         // OR gate via: X all ancillas, multi-controlled X on target (all |0⟩ = no violation),
         // then X target to invert (any |1⟩ = violation)
         within {
-            ApplyToEach(X, ancillas);
+            ApplyToEachA(X, ancillas);
         } apply {
             Controlled X(ancillas, target);
         }
@@ -112,9 +112,9 @@ namespace Zeta.SchemaEvolution.Quantum {
         }
 
         // Put all qubits in superposition (search all states)
-        ApplyToEach(H, fieldWeights);
+        ApplyToEachA(H, fieldWeights);
         H(overlapOpen);
-        ApplyToEach(H, consumerRefsFlat);
+        ApplyToEachA(H, consumerRefsFlat);
 
         // Grover iterations
         for _ in 0..iterations - 1 {
@@ -122,22 +122,22 @@ namespace Zeta.SchemaEvolution.Quantum {
             SafetyViolationOracle(fieldWeights, consumerRefs, overlapOpen, target);
 
             // Diffusion operator (amplitude amplification)
-            ApplyToEach(H, fieldWeights);
-            ApplyToEach(H, consumerRefsFlat);
+            ApplyToEachA(H, fieldWeights);
+            ApplyToEachA(H, consumerRefsFlat);
             H(overlapOpen);
 
-            ApplyToEach(X, fieldWeights);
-            ApplyToEach(X, consumerRefsFlat);
+            ApplyToEachA(X, fieldWeights);
+            ApplyToEachA(X, consumerRefsFlat);
             X(overlapOpen);
 
             Controlled Z(fieldWeights + consumerRefsFlat + [overlapOpen], target);
 
-            ApplyToEach(X, fieldWeights);
-            ApplyToEach(X, consumerRefsFlat);
+            ApplyToEachA(X, fieldWeights);
+            ApplyToEachA(X, consumerRefsFlat);
             X(overlapOpen);
 
-            ApplyToEach(H, fieldWeights);
-            ApplyToEach(H, consumerRefsFlat);
+            ApplyToEachA(H, fieldWeights);
+            ApplyToEachA(H, consumerRefsFlat);
             H(overlapOpen);
         }
 
