@@ -44,6 +44,32 @@ type DbspRuntime<'K when 'K : comparison>
 
     let cts = new CancellationTokenSource()
 
+    let config =
+        { MaxDegreeOfParallelism = shardCount
+          MaxBatchSize = 1
+          MaxBatchBytes = None
+          MaxQueueSize = None }
+
+    let processBatch (boat: ReadOnlyMemory<int>) (ct: CancellationToken) : Task<unit array> =
+        let span = boat.Span
+        let results = Array.zeroCreate<unit> span.Length
+        for idx in 0 .. span.Length - 1 do
+            let i = span.[idx]
+            let mutable acc = ZSet<'K>.Empty
+            let mutable item = Unchecked.defaultof<ZSet<'K>>
+            while channels.[i].Reader.TryRead &item do
+                acc <- if acc.IsEmpty then item else ZSet.add acc item
+            inputs.[i].Send acc
+            circuits.[i].Step()
+            results.[idx] <- ()
+        Task.FromResult results
+
+    let throttler =
+        new FerryThrottler<int, unit>(
+            config,
+            processBatch,
+            ?syncContext = Option.ofObj SynchronizationContext.Current)
+
     /// Shard a batch by hashing each entry's key and split into N per-shard
     /// batches. Applied once by the producer before pushing to workers.
     member _.Shard(batch: ZSet<'K>) : ZSet<'K> array =
@@ -74,13 +100,7 @@ type DbspRuntime<'K when 'K : comparison>
     member _.StepAsync() : Task =
         let tasks =
             Array.init shardCount (fun i ->
-                Task.Run(fun () ->
-                    let mutable acc = ZSet<'K>.Empty
-                    let mutable item = Unchecked.defaultof<ZSet<'K>>
-                    while channels.[i].Reader.TryRead &item do
-                        acc <- if acc.IsEmpty then item else ZSet.add acc item
-                    inputs.[i].Send acc
-                    circuits.[i].Step()))
+                throttler.ProcessAsync(i) :> Task)
         Task.WhenAll tasks
 
     /// Gather per-shard outputs into a single Z-set.
@@ -96,4 +116,5 @@ type DbspRuntime<'K when 'K : comparison>
         member _.Dispose() =
             cts.Cancel()
             for ch in channels do ch.Writer.TryComplete() |> ignore
+            (throttler :> IDisposable).Dispose()
             cts.Dispose()

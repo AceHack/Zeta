@@ -24,26 +24,25 @@ type SpineAsync<'K when 'K : comparison>() =
     let spineLock = obj ()
     let mutable sent = 0L
     let mutable processed = 0L
-    let inbox =
-        Channel.CreateUnbounded<ZSet<'K>>(
-            UnboundedChannelOptions(SingleReader = true, SingleWriter = false))
-    let cts = new CancellationTokenSource()
+    let config =
+        { MaxDegreeOfParallelism = 1
+          MaxBatchSize = 256
+          MaxBatchBytes = None
+          MaxQueueSize = None }
 
-    let worker : Task =
-        Task.Run(Func<Task>(fun () ->
-            task {
-                let reader = inbox.Reader
-                try
-                    let mutable item = Unchecked.defaultof<ZSet<'K>>
-                    while not cts.IsCancellationRequested do
-                        let! ready = reader.WaitToReadAsync(cts.Token).AsTask()
-                        if ready then
-                            while reader.TryRead &item do
-                                lock spineLock (fun () -> spine.Insert item)
-                                Interlocked.Increment &processed |> ignore
-                with :? OperationCanceledException ->
-                    ()
-            }))
+    let processBatch (boat: ReadOnlyMemory<ZSet<'K>>) (ct: CancellationToken) : Task =
+        let span = boat.Span
+        for i in 0 .. span.Length - 1 do
+            let item = span.[i]
+            lock spineLock (fun () -> spine.Insert item)
+            Interlocked.Increment &processed |> ignore
+        Task.CompletedTask
+
+    let throttler =
+        new FerryThrottler<ZSet<'K>>(
+            config,
+            processBatch,
+            ?syncContext = Option.ofObj SynchronizationContext.Current)
 
     /// Enqueue a batch for background merging. TryWrite MUST precede the
     /// `sent` increment — otherwise `Flush()` can observe `sent = N+1`
@@ -51,7 +50,7 @@ type SpineAsync<'K when 'K : comparison>() =
     /// already processed N, `processed ≥ sent` falsely returns.
     member _.Insert(batch: ZSet<'K>) =
         if not batch.IsEmpty then
-            if inbox.Writer.TryWrite batch then
+            if throttler.TryEnqueue batch then
                 Interlocked.Increment &sent |> ignore
 
     /// Wait until the worker has absorbed every batch enqueued BEFORE this
@@ -77,29 +76,8 @@ type SpineAsync<'K when 'K : comparison>() =
 
     interface IDisposable with
         member _.Dispose() =
-            // Non-blocking shutdown (mirrors FerryThrottler). A wall-clock
-            // `worker.Wait 500` is DST-hostile (a timeout DST cannot replay)
-            // AND deadlocks the DoP=1 deterministic path: the worker's awaited
-            // continuations route to the pump, which cannot run while this
-            // thread is blocked, so the worker never completes and 500ms
-            // abandons it. Cancel + complete; dispose the CTS only after the
-            // worker actually finishes, via an inline continuation. Callers
-            // wanting a guaranteed drain use DisposeAsync.
-            inbox.Writer.TryComplete() |> ignore
-            cts.Cancel()
-            worker.ContinueWith(
-                (fun (_: Task) -> cts.Dispose()),
-                TaskContinuationOptions.ExecuteSynchronously) |> ignore
+            (throttler :> IDisposable).Dispose()
 
     interface IAsyncDisposable with
         member _.DisposeAsync() =
-            // Deterministic drain: cancel, then AWAIT the worker — no thread
-            // blocked, no wall-clock timeout, replayable on the DoP=1 pump.
-            inbox.Writer.TryComplete() |> ignore
-            cts.Cancel()
-            ValueTask(
-                task {
-                    try do! worker
-                    with _ -> ()
-                    cts.Dispose()
-                })
+            (throttler :> IAsyncDisposable).DisposeAsync()
