@@ -16,7 +16,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync, watch } from "node:fs";
 import { dirname, join, normalize, relative, basename } from "node:path";
 import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
-import { format, isCanonical } from "../zeta-id/encoding";
+import { format } from "../zeta-id/encoding";
 import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
 
 const REPO_ROOT = normalize(join(__dirname, "..", "..", ".."));
@@ -293,7 +293,7 @@ export function resolvePointer(cleanTarget: string, fromFile: string): ResolvedT
 }
 
 // Generate stub content based on type
-function getStubContent(resolved: ResolvedTarget, cleanTarget: string): string {
+function getStubContent(resolved: ResolvedTarget, _cleanTarget: string): string {
   const name = basename(resolved.resolvedPath, ".md").replace(/^_-|-_$/g, "");
   const createdIso = new Date().toISOString();
 
@@ -484,7 +484,7 @@ function main(): number {
       const dirPath = join(REPO_ROOT, surface);
       if (!isDir(dirPath)) continue;
 
-      watch(dirPath, { recursive: true }, (event, filename) => {
+      watch(dirPath, { recursive: true }, (_event, filename) => {
         if (filename && filename.endsWith(".md")) {
           console.log(`Change detected in ${surface}/${filename}. Running auto-vivifier...`);
           try {

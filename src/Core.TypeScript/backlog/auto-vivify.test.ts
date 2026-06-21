@@ -1,7 +1,5 @@
 import { test, expect } from "bun:test";
-import { join } from "node:path";
-import { writeFileSync, unlinkSync, existsSync } from "node:fs";
-import { extractPointers, extractZetaId, resolvePointer, processAll } from "./auto-vivify";
+import { extractPointers, extractZetaId, resolvePointer } from "./auto-vivify";
 
 test("extractPointers finds wikilinks, markdown links, and backticks correctly", () => {
   const text = `

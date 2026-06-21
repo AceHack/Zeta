@@ -43,6 +43,7 @@
     "full-ai-cluster/portal/web",
     "full-ai-cluster/portal/web/**",
     "src/Core.TypeScript/qsharp-oracle/**",
-    "src/Core.TypeScript/cursor/**"
+    "src/Core.TypeScript/cursor/**",
+    "db/tools/backlog/new-workitem.ts"
   ]
 }
