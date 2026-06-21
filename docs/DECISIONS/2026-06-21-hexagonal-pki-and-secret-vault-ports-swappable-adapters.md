@@ -65,6 +65,17 @@ external custody (now, bootstrap) → our DB as first-class PKI (eventually) —
 best-practices contract, our own implementation. Anchors the credential substrate to the
 self-modeling-database end-goal (`docs/research/2026-06-10-the-end-goal-dual-use-hard-soft-self-modeling-database-…`).
 
+**Crypto is BAKED INTO the DB code, not layered on (Aaron 2026-06-21):** *"we are tying this all
+deeply into our DB too, so our database code has crypto baked in."* The DB doesn't just *become*
+the PKI/SecretStore adapter — crypto is **integral to the substrate**: `DynamicValue`
+encrypt/decrypt is a **transform** (a memory-fence over canonical CBOR — "privacy is a transform,
+not a 5th codec", PRIMITIVE-REGISTRY), events are **signed**, values can be **encrypted at the
+cell**, and the PQ `.zc` envelope (`better-git-crypt`: ML-KEM-768/ML-DSA-65/X-Wing) is the
+storage codec. So the crypto-agile keychain, the PKI, and the secret store aren't bolted onto the
+DB — they ARE the DB: a **crypto-native** Z-set/DBSP substrate where encryption, signing, and key
+custody are first-class storage operations. That is what makes the DB-as-PKI endgame adapter real
+rather than aspirational — the ports terminate in a substrate that already speaks crypto.
+
 ## Build status (today)
 
 Shipped adapters: SecretStore→macOS Keychain (`secret-clip.sh`) + 1Password (`op`);
