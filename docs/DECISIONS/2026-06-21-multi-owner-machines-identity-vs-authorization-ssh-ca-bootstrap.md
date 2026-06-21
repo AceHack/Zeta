@@ -14,6 +14,7 @@ The N×M trap (a cert / key per user×machine pair) is avoided by putting the tw
 concerns in two different layers:
 
 ### 1. Identity = user certs (N, one per person)
+
 The CA signs each **user's** key into a cert with `principal=<username>`
 (`aaron`, `addison`, `max`). Machine-independent — it asserts *"I am aaron."*
 One cert per person. This is the layer that means "who you are."
@@ -23,6 +24,7 @@ One cert per person. This is the layer that means "who you are."
 > carry the human's name; that name is what authorization matches on.
 
 ### 2. Authorization = per-machine authorized-principals list (M, one per machine)
+
 Each machine trusts the CA (`TrustedUserCAKeys`, already in `ssh-ca.nix`) **and**
 declares which principals may use it, via OpenSSH `AuthorizedPrincipalsFile`
 (`sshd_config`). Ownership is a **list of usernames per machine** — plain data:
@@ -41,12 +43,14 @@ declares which principals may use it, via OpenSSH `AuthorizedPrincipalsFile`
 (a per-machine principals list), never a cryptographic re-binding.
 
 ### 3. Host identity = host cert (separate, optional)
+
 A machine's *host* key may also be signed (host cert) so clients can verify the host.
 This is orthogonal to user access control — don't conflate it with §1/§2.
 
 ## Adding a person later (the payoff)
 
 Add "Dana", give her D + G:
+
 1. Issue Dana **one** user cert (`principal=dana`) — one signing, one fingerprint.
 2. Add `dana` to the AuthorizedPrincipals list of **only D and G**.
 
