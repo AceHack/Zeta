@@ -91,11 +91,21 @@ applied as a runtime strategy, not just a build-time tool.
 
 ## Next concrete steps
 
-1. Define `ISemiring<T>` / `IGroup<T>` / `IMonoid<T>` in TS (port from C# Abstractions)
-2. Add variance annotations (co/contra) to the IR interface-description schema
-3. Emit interface definitions in all 7 languages from one IR description
-4. Implement the WeakRef-wrapped specialization cache (TS first, then port)
-5. Wire into the soft-mix: first call specializes, subsequent calls use cache, GC can collect
+1. ~~Define `ISemiring<T>` / `IGroup<T>` / `IMonoid<T>` in TS (port from C# Abstractions)~~ ✅ #8890
+2. ~~Add variance annotations (co/contra) to the IR interface-description schema~~ ✅ #8880
+3. ~~Emit interface definitions in all 7 languages from one IR description~~ ✅ #8880
+4. ~~Implement the WeakRef-wrapped specialization cache (TS first, then port)~~ ✅ #8892
+5. ~~Wire into the soft-mix: first call specializes, subsequent calls use cache, GC can collect~~ ✅ #8895
+
+## Status: CLOSED (2026-06-21)
+
+All 5 steps complete. The interface stack exists in 4 compiled languages (TS/C#/Rust/Go),
+the WeakRef cache is operational with no-error-caching safety, and it's wired into soft-mix.
+
+### What's next (new trajectory: algebraic-codegen-capstone)
+1. Self-hosting codegen — IR description of the codegen itself
+2. Clifford lens emission — Cl3/multivectors from IR
+3. Cross-lane cost-parity golden — DumpMachine entry-count = AmplitudeEmu.support
 
 ## Depends on
 
