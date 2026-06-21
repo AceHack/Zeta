@@ -10,6 +10,7 @@ import Lean4.FinMutualInfoNonneg
 import Lean4.FinDataProcessing
 import Lean4.DecorrelationDpi
 import Lean4.GenGenFixpoint
+import Lean4.CostRecurrence
 import Lean4.CayleyDicksonDoublyEven
 import Lean4.BridgeFunctor
 import Lean4.NormalizerCorrect

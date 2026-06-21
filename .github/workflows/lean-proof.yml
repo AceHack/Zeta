@@ -209,6 +209,14 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake env lean Lean4/CanonicalizerCorrect.lean
 
+      - name: Type-check Lean4/CostRecurrence.lean
+        # Consolidate cost spike step 5 (Soraya routing): the universal recurrence
+        # T(n)=n(n-1)/2 (the induction Z3 cannot do, companion to the #8952 ground
+        # envelope) + the lax-monoidal cost coherence cell over the (min,+) tropical
+        # semiring. sorry-free.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/CostRecurrence.lean
+
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
@@ -237,6 +245,8 @@ jobs:
             | cat Lean4/BridgeFunctor.lean - > /tmp/bridge_functor_axiom_audit.lean
           printf '#print axioms Zeta.CanonicalizerCorrect.eval_mul_mul\n#print axioms Zeta.CanonicalizerCorrect.eval_add_add\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_add_mul\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_add_add\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_one\n#print axioms Zeta.CanonicalizerCorrect.eval_add_zero\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_zero\n#print axioms Zeta.CanonicalizerCorrect.eval_xrotxor_concrete\n' \
             | cat Lean4/CanonicalizerCorrect.lean - > /tmp/canonicalizer_axiom_audit.lean
+          printf '#print axioms Zeta.CostRecurrence.eqCount_eq_sum\n#print axioms Zeta.CostRecurrence.eqCount_closed_form\n#print axioms Zeta.CostRecurrence.eqCount_two_mul\n#print axioms Zeta.CostRecurrence.eqCount_le_sq\n#print axioms Zeta.CostRecurrence.cost_lax_of_subadd\n#print axioms Zeta.CostRecurrence.seqCost_lax_monoidal\n#print axioms Zeta.CostRecurrence.sharedCost_lax_monoidal\n#print axioms Zeta.CostRecurrence.sharedCost_strictly_lax\n' \
+            | cat Lean4/CostRecurrence.lean - > /tmp/costrec_axiom_audit.lean
 
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
@@ -280,6 +290,10 @@ jobs:
           fi
           if lake env lean /tmp/canonicalizer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::CanonicalizerCorrect depends on sorryAx — a fusion-correctness proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/costrec_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::CostRecurrence depends on sorryAx — the cost recurrence / lax-monoidal proof regressed to sorry/admit"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."
