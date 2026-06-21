@@ -59,8 +59,54 @@ Parent: `gen-gen-self-hosting-bytelock` (shares the IR substrate)
 2. ~~Clifford lens emission~~ ✅ #8896
 3. ~~WeakRef cache integration~~ ✅ #8892/#8895/#8905
 4. ~~Interface stack completion~~ ✅ #8890/#8891/#8902
-5. **Cross-language byte-lock oracle** — compare.ts/cross-verify.ts for zeta-ir-v2 interfaces
-   (the assert-don't-skip gap: emit code in all 7 langs, COMPILE each, RUN each,
-   assert outputs match. This is what makes "7/7" real instead of substring checks.)
-6. **Cross-lane cost-parity golden** — DumpMachine entry-count = AmplitudeEmu.support
-7. **QDK integration** — install via tools/setup/common/qdk.sh, compile .qs files in CI
+5. ~~Cross-language byte-lock oracle~~ ✅ #8922 (7/7 ALL AGREE, CI-wired)
+6. ~~QDK integration~~ ✅ #8918/#8922 (qdk 1.29.1, Q# compiles + participates in oracle)
+
+## Active next items (priority order)
+
+### P1: Laws in the IR (proof-gated, per Otto's design)
+Add structured law schemas to interface IR descriptions. Each law:
+- Named schema (associative, commutative, identity, inverse, idempotent, distributive, involutive, roundTrip)
+- Status field: `open` → `proven` (with proof artifact reference)
+- Generates: property test per language (fast-check/FsCheck/proptest/hypothesis/testing/quick)
+- Generates: Z3/Lean proof obligation
+- Generates: doc comment in emitted interface code
+- Gate: `status: proven` is CI-verified (referenced proof exists + is sorry-free)
+
+The concrete proof-of-loop: `add-associativity` on ISemiring, end-to-end:
+  IR law entry → Z3 discharge → proven → TS property test + doc string
+
+### P1: Guarded laws (the other 10%)
+Guard/predicate field for tower-level laws:
+- "Mul associative for level ≤ ℍ" (provable)
+- "Mul commutative for level ≤ ℂ" (provable)
+- 𝕆 counterexample recorded (not provable — correctly fails)
+Needed because Cayley-Dickson tower IS defined by which law it sheds per rung.
+
+### P2: Interface equivalence in cross-verify oracle
+Teach the oracle to verify algebraic laws across languages (not just arithmetic output).
+E.g., "ISemiring.add is associative" checked by property test in all 7 langs.
+This closes the interface matrix with execution, not just unit tests.
+
+### P2: Complexity annotations (cost-as-semiring)
+- `{time: phase-ticks, space: peak-cells}` vector on instances
+- Verified by counting op invocations in DST simulation (not wall-clock)
+- Interface = upper-bound contract; impl = counted witness; witness ≤ contract
+- The (min,+) tropical semiring IS the cost algebra (Cuninghame-Green)
+
+### P2: Cross-lane cost-parity golden
+DumpMachine entry-count = AmplitudeEmu.support step-by-step (Soraya's suggestion).
+Proves the two quantum sims (Q# sparse + F# AmplitudeEmu) agree on COST, not just VALUE.
+
+## Known residuals (from review/Otto, not yet resolved)
+
+### build-and-test: Z3LawsTests E-prover FOL failures
+The E prover binary isn't available in CI runners (from #8907 "Jammy formal solvers" adoption).
+Owner: formal-solver domain (Soraya / CVC5-E-prover work).
+Fix: ensure E prover is installed in the runner image, or gate the test on binary presence.
+
+### cross-verify: zeta-ir-v2/zset-isa-v2 per-directory oracle
+The per-directory `cross-verify.ts` that lives beside the golden vectors (not the _harness one)
+is on `origin/codex/room-run-horizon-heat`, not merged to main.
+The _harness oracle (#8922) covers the arithmetic IRs end-to-end.
+Remaining gap: the interface IRs (semiring.ir.json etc.) don't have a cross-verify beside them.
