@@ -138,6 +138,11 @@ let ``room run exports boundary denial and soft prune heat through one sink`` ()
                 [ "room-boundary.door-denied" ],
                 run.BoundaryHeatRows |> List.collect _.HeatKinds
             )
+            Assert.Equal(1, run.HeatTranscript.Rows)
+            Assert.Equal(1, run.HeatTranscript.HeatRejected)
+            Assert.Equal(1, run.HeatTranscript.Backpressured)
+            Assert.Equal<string list>([ "room-boundary.door-denied" ], run.HeatTranscript.HeatKinds)
+            Assert.True(Scheduler.transcriptHasHeat run.HeatTranscript)
 
             let kinds = sink.Signatures |> Seq.map _.Kind |> Seq.toList
 
@@ -264,6 +269,9 @@ let ``room run appends finite horizon heat to the host visible transcript`` () =
             Assert.Equal(1, run.Room.CompletedTicks)
             Assert.Equal<string list>([ "old-b"; "zz-new" ], run.HorizonReport.HorizonAfter |> BoundedGSet.toList)
             Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatRows |> List.collect _.HeatKinds)
+            Assert.Equal(2, run.HeatTranscript.Rows)
+            Assert.Equal(1, run.HeatTranscript.HeatRejected)
+            Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatTranscript.HeatKinds)
             Assert.Equal<string list>([ "room-horizon.forgotten" ], sink.Signatures |> Seq.map _.Kind |> Seq.toList)
 
             let frame = Scheduler.heatBoardFrame 99UL run.HeatRows

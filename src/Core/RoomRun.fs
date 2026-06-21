@@ -42,13 +42,15 @@ module RoomRun =
     type UnifiedHeatRun<'K when 'K : comparison> =
         { Room: Scheduler.BoundaryScheduledRoomState<'K>
           SoftFrame: Chip8Cow.Frame
-          BoundaryHeatRows: Scheduler.HeatBoundaryRow list }
+          BoundaryHeatRows: Scheduler.HeatBoundaryRow list
+          HeatTranscript: Scheduler.HeatTranscriptSummary }
 
     type UnifiedHorizonRun<'K, 'S when 'K : comparison> =
         { Room: Scheduler.BoundaryScheduledRoomState<'K>
           SoftFrame: Chip8Cow.Frame
           HorizonReport: RoomHorizon.Report<'K, 'S>
-          HeatRows: Scheduler.HeatBoundaryRow list }
+          HeatRows: Scheduler.HeatBoundaryRow list
+          HeatTranscript: Scheduler.HeatTranscriptSummary }
 
     [<RequireQualifiedAccess>]
     type UnifiedHeatFeedback<'K when 'K : comparison> =
@@ -105,11 +107,14 @@ module RoomRun =
                         softPlan.Start
                 with
                 | Ok frame ->
+                    let rows = Scheduler.boundaryHeatRows room
+
                     return
                         Ok
                             { Room = room
                               SoftFrame = frame
-                              BoundaryHeatRows = Scheduler.boundaryHeatRows room }
+                              BoundaryHeatRows = rows
+                              HeatTranscript = Scheduler.summarizeHeatRows rows }
 
                 | Error feedback -> return Error(UnifiedHeatFeedback.SoftDriveFeedback(room, feedback))
         }
@@ -141,11 +146,14 @@ module RoomRun =
                             horizonPlan.SourceName
                             report
 
+                    let rows = run.BoundaryHeatRows @ [ horizonRow ]
+
                     let horizonRun =
                         { Room = run.Room
                           SoftFrame = run.SoftFrame
                           HorizonReport = report
-                          HeatRows = run.BoundaryHeatRows @ [ horizonRow ] }
+                          HeatRows = rows
+                          HeatTranscript = Scheduler.summarizeHeatRows rows }
 
                     match RoomHorizon.emitHeat sink horizonPlan.SourceName report with
                     | Ok() -> return Ok horizonRun

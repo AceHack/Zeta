@@ -121,6 +121,40 @@ let ``heat boundary rows render as a host visible CHIP-9 board`` () =
     Assert.Equal("0", firstDisplayRow.Substring(50, 1))
 
 [<Fact>]
+let ``heat transcript summary folds rows without losing distinct heat kinds`` () =
+    let rows: Scheduler.HeatBoundaryRow list =
+        [ { Tick = 1
+            RoomName = "darkhall"
+            HeatRejected = 1
+            Backpressured = 1
+            StorageErrors = 0
+            HeatKinds = [ "room-boundary.door-denied" ]
+            Reasons = [ "permission denied" ] }
+          { Tick = 2
+            RoomName = "darkhall"
+            HeatRejected = 2
+            Backpressured = 1
+            StorageErrors = 1
+            HeatKinds = [ "room-boundary.door-denied"; "soft-emu.prune" ]
+            Reasons = [ "capacity=1"; "pruned branch" ] } ]
+
+    let summary = Scheduler.summarizeHeatRows rows
+
+    Assert.Equal(2, summary.Rows)
+    Assert.Equal(3, summary.HeatRejected)
+    Assert.Equal(2, summary.Backpressured)
+    Assert.Equal(1, summary.StorageErrors)
+    Assert.Equal<string list>(
+        [ "room-boundary.door-denied"; "soft-emu.prune" ],
+        summary.HeatKinds
+    )
+    Assert.Equal<string list>(
+        [ "permission denied"; "capacity=1"; "pruned branch" ],
+        summary.Reasons
+    )
+    Assert.True(Scheduler.transcriptHasHeat summary)
+
+[<Fact>]
 let ``room horizon forgetting renders on the DarkHall heat board`` () =
     let current =
         BoundedGSet.ofSeq<int> (horizonConfig 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]

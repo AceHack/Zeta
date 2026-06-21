@@ -1,5 +1,7 @@
 namespace Zeta.Core
 
+open System.Collections.Generic
+
 /// Scheduler-facing boundary for Dark Hall rooms.
 ///
 /// `DarkHallRoomLoop` owns observe -> choose -> execute -> append. This module
@@ -15,6 +17,14 @@ module DarkHallScheduler =
     type HeatBoundaryRow =
         { Tick: int
           RoomName: string
+          HeatRejected: int
+          Backpressured: int
+          StorageErrors: int
+          HeatKinds: string list
+          Reasons: string list }
+
+    type HeatTranscriptSummary =
+        { Rows: int
           HeatRejected: int
           Backpressured: int
           StorageErrors: int
@@ -116,6 +126,29 @@ module DarkHallScheduler =
 
     let boundaryBackpressured (state: BoundaryScheduledRoomState<'K>) : bool =
         state.HeatRowsRev |> List.exists (fun row -> row.Backpressured > 0)
+
+    let private distinctOrdinal (values: string list) : string list =
+        let seen = HashSet<string>(System.StringComparer.Ordinal)
+
+        values
+        |> List.filter (fun value -> seen.Add value)
+
+    let summarizeHeatRows (rows: HeatBoundaryRow list) : HeatTranscriptSummary =
+        { Rows = rows.Length
+          HeatRejected = rows |> List.sumBy _.HeatRejected
+          Backpressured = rows |> List.sumBy _.Backpressured
+          StorageErrors = rows |> List.sumBy _.StorageErrors
+          HeatKinds = rows |> List.collect _.HeatKinds |> distinctOrdinal
+          Reasons = rows |> List.collect _.Reasons }
+
+    let heatTranscript (state: ScheduledRoomState) : HeatTranscriptSummary =
+        state |> heatRows |> summarizeHeatRows
+
+    let boundaryHeatTranscript (state: BoundaryScheduledRoomState<'K>) : HeatTranscriptSummary =
+        state |> boundaryHeatRows |> summarizeHeatRows
+
+    let transcriptHasHeat (summary: HeatTranscriptSummary) : bool =
+        summary.HeatRejected > 0 || summary.Backpressured > 0 || summary.StorageErrors > 0
 
     let private setColor (x: int) (y: int) (mask: byte) (frame: Chip8Cow.Frame) : Chip8Cow.Frame =
         let idx = y * Chip8.DisplayW + x
