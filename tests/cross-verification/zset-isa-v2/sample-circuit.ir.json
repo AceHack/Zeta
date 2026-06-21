@@ -1,0 +1,1 @@
+{"schema":"zeta-ir-v2","generator":"test.branch-join-mul","version":1,"width":4,"ops":[{"op":"branch","bit":0},{"op":"join","control":0,"target":1},{"op":"mul","k":3}]}
