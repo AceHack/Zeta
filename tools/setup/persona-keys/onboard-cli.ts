@@ -20,6 +20,7 @@ import { fileURLToPath } from "node:url";
 import { realEffects as realMachineEffects } from "./machine.ts";
 import { realEffects as realPublishEffects } from "./publish.ts";
 import { realEffects as realTrustEffects } from "./github-trust.ts";
+import { realEffects as realCaEffects } from "./ca.ts";
 import { formatOnboard, onboard, type OnboardEffects, type OnboardOptions } from "./onboard.ts";
 
 const args = process.argv.slice(2);
@@ -50,13 +51,17 @@ const keyTypeArg = opt("--type");
 const dryRun = flag("--dry-run");
 const includeGpg = flag("--gpg");
 const trustIdentities = allOpts("--trust");
+const signWithCa = flag("--sign-with-ca");
+const certValidity = opt("--cert-validity");
 
 function usage(): void {
   process.stderr.write(
     "usage: bun onboard-cli.ts --user <name> [--host <name>] [--home <path>] " +
-      "[--type authentication|signing] [--trust <gh-user> ...] [--gpg] [--dry-run] [--repo-root <path>]\n" +
-      "  Chains: status -> user-keyring(instruction) -> machine-key -> publish(biometric-gated) -> trust-resolve.\n" +
-      "  Reuse-only: no secret/biometric/gh/seed logic here — all delegated. --dry-run does NOTHING.\n",
+      "[--type authentication|signing] [--trust <gh-user> ...] [--gpg] [--sign-with-ca [--cert-validity +52w]] " +
+      "[--dry-run] [--repo-root <path>]\n" +
+      "  Chains: status -> user-keyring(instruction) -> machine-key -> publish(biometric-gated) -> trust-resolve" +
+      " [-> cert-sign (optional, --sign-with-ca; skips cleanly with no CA)].\n" +
+      "  Reuse-only: no secret/biometric/gh/seed/CA-sign logic here — all delegated. --dry-run does NOTHING.\n",
   );
 }
 
@@ -77,6 +82,9 @@ async function main(): Promise<number> {
     machine: realMachineEffects(),
     publish: realPublishEffects(),
     trust: realTrustEffects(),
+    // The CA door is wired ONLY when the operator opts into the cert tie-in. Absent the flag
+    // the cert step never runs (and a missing CA private key skips cleanly inside ca.ts).
+    ...(signWithCa ? { ca: realCaEffects() } : {}),
   };
 
   const opts: OnboardOptions = {
@@ -88,6 +96,8 @@ async function main(): Promise<number> {
     includeGpg,
     ...(hostname !== undefined ? { hostname } : {}),
     ...(trustIdentities.length > 0 ? { trustIdentities } : {}),
+    ...(signWithCa ? { signWithCa: true } : {}),
+    ...(certValidity !== undefined ? { certValidity } : {}),
   };
 
   const res = await onboard(fx, opts);

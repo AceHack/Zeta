@@ -47,14 +47,20 @@ import type { PublishEffects, PublishResult } from "./publish.ts";
 import { publishKey } from "./publish.ts";
 import type { GithubTrustEffects, TrustResolution } from "./github-trust.ts";
 import { resolveIdentities, resolveTrustSet } from "./github-trust.ts";
+import type { CaEffects, CertResult } from "./ca.ts";
+import { signMachineCert } from "./ca.ts";
 
-/** The three sub-module effects bundles — the ONLY doors for ambient influence. Tests
- *  inject fakes for all three; the CLI injects each module's `realEffects()`. The
- *  orchestrator never touches the OS / network / a secret except through these. */
+/** The sub-module effects bundles — the ONLY doors for ambient influence. Tests inject
+ *  fakes; the CLI injects each module's `realEffects()`. The orchestrator never touches the
+ *  OS / network / a secret except through these. `ca` is OPTIONAL: present only when the
+ *  operator opts into the flash-time "sign this machine's key with the CA" step; absent it,
+ *  the cert step skips cleanly (no CA configured → not an error, not a step). */
 export interface OnboardEffects {
   readonly machine: MachineEffects;
   readonly publish: PublishEffects;
   readonly trust: GithubTrustEffects;
+  /** OPTIONAL CA door — enables the gated, flash-time cert-sign tie-in (delegates to ca.ts). */
+  readonly ca?: CaEffects;
 }
 
 /** Options for an onboard run — the operator identity + repo root, plus the knobs each
@@ -76,10 +82,21 @@ export interface OnboardOptions {
   readonly includeGpg?: boolean;
   /** Publish key type (default authentication). */
   readonly keyType?: "authentication" | "signing";
+  /**
+   * OPTIONAL flash-time CA tie-in: when true AND `fx.ca` is provided, sign THIS machine's
+   * published device key into a cert with the CA (delegates to ca.ts `signMachineCert`), so a
+   * freshly-flashed box can present a CERT, not a bare key. Skips cleanly if no CA is
+   * configured (`fx.ca` absent → the step is omitted) or the CA private key is absent
+   * (ca.ts returns `no-ca` → recorded as a skip, never an error). Reuse-only.
+   */
+  readonly signWithCa?: boolean;
+  /** Validity window for the CA-signed device cert (OpenSSH `-V` form). Defaults in ca.ts. */
+  readonly certValidity?: string;
 }
 
-/** The kind of a single orchestrated step (for the numbered readout). */
-export type StepKind = "status" | "user-keyring" | "machine-key" | "publish" | "trust-resolve";
+/** The kind of a single orchestrated step (for the numbered readout). The OPTIONAL `cert-sign`
+ *  step appears only when the operator opts into the CA tie-in (`signWithCa` + `fx.ca`). */
+export type StepKind = "status" | "user-keyring" | "machine-key" | "publish" | "trust-resolve" | "cert-sign";
 
 /** A single step's outcome — what it found / did / would do, plus an operator-facing note.
  *  `pending` flags work the OPERATOR must still do (seed-gen, the gated biometric confirm). */
@@ -107,6 +124,9 @@ export interface OnboardResult {
   readonly publish: PublishResult;
   /** The trust-resolve step's typed result (delegated to github-trust.ts). */
   readonly trust: TrustResolution;
+  /** The OPTIONAL cert-sign step's typed result (delegated to ca.ts). Undefined when the
+   *  CA tie-in was not requested or no CA door was provided (the step did not run). */
+  readonly cert?: CertResult;
 }
 
 /** The exact `keyring.sh` instruction the operator must run when the user keyring is
@@ -254,7 +274,57 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
     pending: false,
   });
 
-  return { dryRun, user: opts.user, hostname, steps, presence, machine, publish, trust };
+  // ── Step 6 (OPTIONAL): CERT-SIGN — flash-time CA tie-in (delegated to ca.ts) ──────────
+  // Reuse-only + gated: runs ONLY when the operator opted in (`signWithCa`) AND a CA door
+  // was provided (`fx.ca`). Skips CLEANLY when no CA is configured or the CA private key is
+  // absent (ca.ts returns `no-ca`) — a freshly-flashed box with no CA is the normal case,
+  // not an error. The orchestrator adds NO signing logic; ca.ts owns ssh-keygen -s. The cert
+  // (public) is the only artifact; no secret crosses this boundary. NOT run on dry-run-sign
+  // beyond ca.ts's own `would-sign` (dryRun is threaded through).
+  let cert: CertResult | undefined;
+  if (opts.signWithCa === true && fx.ca !== undefined) {
+    const certRes = signMachineCert(fx.ca, {
+      user: opts.user,
+      machineId: hostname,
+      devicePubPath: publishPubPath(opts.repoRoot, opts.user, hostname),
+      ...(home !== undefined ? { home } : {}),
+      ...(opts.certValidity !== undefined ? { validity: opts.certValidity } : {}),
+      dryRun,
+    });
+    cert = certRes;
+    steps.push({
+      kind: "cert-sign",
+      headline:
+        certRes.action === "signed"
+          ? "signed"
+          : certRes.action === "would-sign"
+            ? "would-sign"
+            : "skipped",
+      detail: certStepDetail(certRes),
+      // No-CA / no-device-key are clean skips (operator may add a CA later); never block.
+      pending: false,
+    });
+  }
+
+  return { dryRun, user: opts.user, hostname, steps, presence, machine, publish, trust, ...(cert !== undefined ? { cert } : {}) };
+}
+
+/** The operator-facing detail line for the OPTIONAL cert-sign step (narrates ca.ts's typed
+ *  result without re-implementing any signing logic). Public only — no secrets ever appear. */
+function certStepDetail(res: CertResult): string {
+  switch (res.action) {
+    case "would-sign":
+      return (
+        `[dry-run] would sign ${res.devicePubPath} into ${res.certPath} ` +
+        `(id=${res.certId} principal=${res.principal} validity=${res.validity}) — NOTHING signed.`
+      );
+    case "signed":
+      return `signed device key into cert ${res.certPath} (principal=${res.principal}, validity=${res.validity}).`;
+    case "no-ca":
+      return `skipped: no CA configured (no CA private key at ${res.caPrivatePath}) — present a bare key, sign later.`;
+    case "no-device-key":
+      return `skipped: no device pubkey at ${res.devicePubPath} — run the machine step (with --publish) first.`;
+  }
 }
 
 /** The operator-facing detail line for the publish step (mirrors publish.ts's outcomes

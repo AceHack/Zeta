@@ -13,6 +13,7 @@ import { test, expect } from "bun:test";
 import type { MachineEffects } from "./machine.ts";
 import type { BiometricResult, PublishEffects } from "./publish.ts";
 import type { GithubTrustEffects } from "./github-trust.ts";
+import type { CaEffects } from "./ca.ts";
 import { keyringInstruction, onboard, formatOnboard, type OnboardEffects } from "./onboard.ts";
 
 const PUB = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwJVbQNiFzUCiOhc aaron@mymac (zeta-device)";
@@ -270,4 +271,82 @@ test("formatOnboard: numbered readout + an operator-action list when pending exi
   expect(out).toContain("2. [user-keyring]");
   expect(out).toContain("5. [trust-resolve]");
   expect(out).toContain("Operator action still required");
+});
+
+// ── OPTIONAL CA tie-in (part 5): reuse-only, gated, skips cleanly with no CA ──────────────
+// The CA private path ca.ts builds from home=/home/aaron.
+const caPrivatePath = `${HOME}/.config/zeta/ca/ssh_ca_ed25519`;
+
+/** A spying fake CA door — records sign calls; signs only PUBLIC output (no secret). */
+function fakeCa(existing: ReadonlySet<string>, opts?: { signCount?: { n: number } }): CaEffects {
+  return {
+    exists: (p) => existing.has(p),
+    readText: () => PUB + "\n",
+    writeText: () => {},
+    mkdirp: () => {},
+    genCa: () => "ssh-ed25519 AAAAFAKECAPUB ca\n",
+    signCert: (req) => {
+      if (opts?.signCount) opts.signCount.n += 1;
+      const out = req.devicePubPath.endsWith(".pub")
+        ? req.devicePubPath.slice(0, -4) + "-cert.pub"
+        : req.devicePubPath + "-cert.pub";
+      return { certPath: out, certText: `ssh-ed25519-cert-v01@openssh.com AAAAFAKECERT principal=${req.principal}\n` };
+    },
+  };
+}
+
+test("CA tie-in OFF by default: no cert-sign step, no cert result", async () => {
+  const { fx } = fixture({ existing: new Set([userKeyringPath, devicePrivatePath, machinePubPath]) });
+  const res = await onboard(fx, { user: USER, repoRoot: REPO, home: HOME });
+  expect(res.steps.map((s) => s.kind)).not.toContain("cert-sign");
+  expect(res.cert).toBeUndefined();
+});
+
+test("CA tie-in: --sign-with-ca but NO CA door provided -> step omitted (clean skip)", async () => {
+  const { fx } = fixture({ existing: new Set([userKeyringPath, devicePrivatePath, machinePubPath]) });
+  // signWithCa requested but fx.ca absent -> the step must not run.
+  const res = await onboard(fx, { user: USER, repoRoot: REPO, home: HOME, signWithCa: true });
+  expect(res.steps.map((s) => s.kind)).not.toContain("cert-sign");
+  expect(res.cert).toBeUndefined();
+});
+
+test("CA tie-in: CA door present but no CA private key -> cert-sign SKIPPED (no-ca), never signs", async () => {
+  const signCount = { n: 0 };
+  const { fx } = fixture({ existing: new Set([userKeyringPath, devicePrivatePath, machinePubPath]) });
+  // CA private key absent → ca.ts returns no-ca; freshly-flashed box presents a bare key.
+  const fxWithCa: OnboardEffects = { ...fx, ca: fakeCa(new Set([machinePubPath]), { signCount }) };
+  const res = await onboard(fxWithCa, { user: USER, repoRoot: REPO, home: HOME, signWithCa: true });
+  const certStep = res.steps.find((s) => s.kind === "cert-sign");
+  expect(certStep?.headline).toBe("skipped");
+  expect(res.cert?.action).toBe("no-ca");
+  expect(signCount.n).toBe(0); // never signed
+});
+
+test("CA tie-in: CA + device key present -> cert-sign signs the device key (principal=user)", async () => {
+  const signCount = { n: 0 };
+  const { fx } = fixture({ existing: new Set([userKeyringPath, devicePrivatePath, machinePubPath]) });
+  const fxWithCa: OnboardEffects = {
+    ...fx,
+    ca: fakeCa(new Set([caPrivatePath, machinePubPath]), { signCount }),
+  };
+  const res = await onboard(fxWithCa, { user: USER, repoRoot: REPO, home: HOME, signWithCa: true });
+  const certStep = res.steps.find((s) => s.kind === "cert-sign");
+  expect(certStep?.headline).toBe("signed");
+  expect(res.cert?.action).toBe("signed");
+  expect(res.cert?.principal).toBe(USER); // cert binds the USER
+  expect(signCount.n).toBe(1);
+  // the cert text is public (a cert) — no private marker.
+  expect(res.cert?.certText).not.toContain("PRIVATE" + " " + "KEY");
+});
+
+test("CA tie-in: --dry-run does NOT sign (would-sign), even with CA + device present", async () => {
+  const signCount = { n: 0 };
+  const { fx } = fixture({ existing: new Set([machinePubPath]) });
+  const fxWithCa: OnboardEffects = {
+    ...fx,
+    ca: fakeCa(new Set([caPrivatePath, machinePubPath]), { signCount }),
+  };
+  const res = await onboard(fxWithCa, { user: USER, repoRoot: REPO, home: HOME, dryRun: true, signWithCa: true });
+  expect(res.cert?.action).toBe("would-sign");
+  expect(signCount.n).toBe(0); // dry-run signs NOTHING
 });
