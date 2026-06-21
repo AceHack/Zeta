@@ -85,15 +85,24 @@ module AmplitudeEmu =
     /// Number of distinct-after-merge branches (the ensemble width; un-merged growth = the entanglement cost).
     let support (a: Amp) : int = a |> merge |> List.length
 
-    /// **Soft amplitude step:** advance every branch (reusing `SoftChip8.forkOnInput`, real fork weights folded
-    /// in as amplitudes via `√`), then `merge` (interference on any reconverged frames). NB: CHIP-8 opcodes add
-    /// no phase, so phase must come from a quantum-gate layer / `QubitIso`; this carries amplitudes faithfully.
-    let softStep (a: Amp) : Amp =
+    /// **Generic amplitude step:** advance every branch using an arbitrary fork function, then merge.
+    /// The fork function takes a frame and returns a list of (newFrame, probability) pairs.
+    /// This is the decoupled version — any domain (CHIP-8, arithmetic IR, custom ops) can plug in.
+    /// Support grows only when the fork produces multiple outputs for one input.
+    let step (fork: 'F -> ('F * float) list) (a: ('F * Complex) list) : ('F * Complex) list =
         a
         |> List.collect (fun (f, z) ->
-            SoftChip8.forkOnInput f
+            fork f
             |> List.map (fun (f', p) -> f', c.Mul(z, real (sqrt p))))
-        |> merge
+        |> List.groupBy fst
+        |> List.choose (fun (f, group) ->
+            let summed = group |> List.fold (fun acc (_, z) -> c.Add(acc, z)) c.Zero
+            if magSq summed <= EPS then None else Some(f, summed))
+
+    /// **Soft amplitude step (CHIP-8 specific):** advance every branch using `SoftChip8.forkOnInput`,
+    /// then merge. This is the backward-compatible wrapper — new code should use `step` with a custom fork.
+    let softStep (a: Amp) : Amp =
+        step SoftChip8.forkOnInput a
 
     /// Collapse to the most-probable frame under the Born rule (the one legitimate definite choice). `None` if empty.
     let measure (a: Amp) : Chip8Cow.Frame option =
