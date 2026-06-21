@@ -102,6 +102,13 @@ mkdir -p "$ZETA_ENV_DIR"
     echo "  eval \"\$(mise activate bash)\""
     echo "fi"
   fi
+
+  # Managed agent SECRETS env — a separate file (mode 600) holding Keychain-FETCH lines
+  # (e.g. `export OP_SERVICE_ACCOUNT_TOKEN="$(security find-generic-password ...)"`), written
+  # by tools/setup/op-token-setup.sh. Kept OUT of this regenerated file (which is wiped each
+  # run) so the secret-fetch survives. Sourced here so every shell that gets shellenv also
+  # gets the agent's scoped secrets. Absent ⇒ inert (the -f guard).
+  echo "[ -f \"\$HOME/.config/zeta/secrets-env.sh\" ] && . \"\$HOME/.config/zeta/secrets-env.sh\""
 } > "$ZETA_ENV_FILE"
 
 echo "✓ shellenv at $ZETA_ENV_FILE"
