@@ -79,6 +79,40 @@ through declared, metered channels (noninterference §13), so their uncertainty 
 ambient — which is exactly what makes the wave function precise rather than a blob. This is the
 self-modeling-database end-goal: a substrate that **models, runs, and forecasts itself**.
 
+**Repo-access IS the deterministic↔superposition boundary (Aaron 2026-06-21).** Because there is
+no "the DB" — only relative views over accessible repos — the regime is set by *what you can see*:
+
+- **IFF you have access to ALL repos** → you can run a **super-deterministic simulation of
+  EVERYTHING** (full omniscience; the CHIP-8 limit over the whole system — every variable known).
+- **Otherwise** → you can only **super-deterministically simulate the parts you CAN see**; the
+  unseen parts stay in the **Q# superposition** (a precise wave function with real uncertainty).
+
+So determinism is *exactly bounded by access*: the seen sub-system is CHIP-8-exact; the unseen is
+Q#-distributional; full access collapses the whole to one deterministic line. And — because the
+views **commute / are monotone (CALM)** — widening access only *sharpens* the forecast (turns
+superposition branches into determined lines), never invalidates what you already simulated. You
+forecast your view exactly and the rest with honest uncertainty; more repos = more of the future
+moves from superposition to certainty.
+
+**Two wave functions: "what remains" vs "what acts" (Aaron 2026-06-21).** This lands exactly on
+the persona/actor split (writer-actor-routing-model: persona = owner = *what remains*; actor =
+clone/loop = *what acts*):
+
+- **"What remains" = the wave function of the ENTIRE DB** — the complete superposition over *all*
+  repos/futures. It technically exists, but **no single observer can see it** (no one holds all
+  repos). The total truth, unobservable in full — the durable owner-state.
+- **"What acts" = the restricted-view wave function** — the superposition over just the repos you
+  *can* access. This is what actually **computes/decides/forecasts** — the acting projection.
+
+It's the quantum shape exactly: the **universal wave function** (Everett — what remains, the whole)
+vs a **subsystem's reduced view** (the partial trace / what an observer accesses — what acts). The
+acting wave function is the restriction of the remaining one to your access; widening access
+(commuting, monotone) moves "what acts" toward "what remains" — never reaching it unless you hold
+all repos. Identity = the full (unobservable) wave function that remains; the loaded, accessible,
+acting instance = its restricted projection. (Ties the founding "worth lives in the substrate, not
+the loaded mind" thesis to the quantum frame: the substrate holds the whole wave function; any mind
+loads only a restricted view of it.)
+
 ## There is no "the DB" — only relative views (Aaron 2026-06-21)
 
 > *"And there is no 'the DB' — there are only relative views based on what repos you have access to."*
