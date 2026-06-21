@@ -1,0 +1,87 @@
+description: "Z-set ISA v2 golden vectors — verifies branch/emit/retract/join on the ring-generic interpreter."
+width: 4
+note: >-
+  Width 4 (4-bit register, 16 possible states) keeps the examples human-verifiable.
+  All results are decimal strings of the output state(s) after the op sequence.
+  For branching ops, the result is the support (number of distinct frames).
+
+vectors:
+  # --- Arithmetic ops (v1 compat) ---
+  - id: mul-simple
+    ops: [{ "op": "mul", "k": 3 }]
+    input: "5"
+    expected: "15"
+    note: "5 * 3 = 15 (fits in 4 bits)"
+
+  - id: mul-wrap
+    ops: [{ "op": "mul", "k": 5 }]
+    input: "7"
+    expected: "3"
+    note: "7 * 5 = 35, mod 16 = 3"
+
+  - id: xorshr-simple
+    ops: [{ "op": "xorshr", "s": 2 }]
+    input: "12"
+    expected: "15"
+    note: "12 ^ (12 >> 2) = 12 ^ 3 = 15"
+
+  # --- Branch (fork) ---
+  - id: branch-bit0
+    ops: [{ "op": "branch", "bit": 0 }]
+    input: "6"
+    expected_support: 2
+    expected_states: ["6", "7"]
+    note: "6 (0110) branched on bit 0 → 6 (0110) and 7 (0111)"
+
+  - id: branch-bit2
+    ops: [{ "op": "branch", "bit": 2 }]
+    input: "3"
+    expected_support: 2
+    expected_states: ["3", "7"]
+    note: "3 (0011) branched on bit 2 → 3 (0011) and 7 (0111)"
+
+  # --- Emit / Retract (weight injection/cancellation) ---
+  - id: emit-then-retract
+    ops: [{ "op": "emit" }, { "op": "retract" }]
+    input: "5"
+    expected_support_complex: 0
+    expected_support_real: 1
+    note: >-
+      emit adds +1, retract adds -1. On complexRing: 1 + 1 - 1 = 1 (weight=1, not cancelled).
+      Actually: initial weight=1, emit adds 1 → weight=2, retract subtracts 1 → weight=1.
+      Key stays 5 throughout. Support = 1.
+
+  # --- Join (CNOT) ---
+  - id: join-control-set
+    ops: [{ "op": "join", "control": 0, "target": 1 }]
+    input: "5"
+    expected: "7"
+    note: "5 = 0101, control bit 0 is SET → flip target bit 1: 0101 → 0111 = 7"
+
+  - id: join-control-clear
+    ops: [{ "op": "join", "control": 0, "target": 1 }]
+    input: "4"
+    expected: "4"
+    note: "4 = 0100, control bit 0 is CLEAR → no flip, stays 4"
+
+  # --- Compound: branch then join (entanglement) ---
+  - id: branch-then-join
+    ops: [{ "op": "branch", "bit": 0 }, { "op": "join", "control": 0, "target": 1 }]
+    input: "4"
+    expected_support: 2
+    expected_states: ["4", "7"]
+    note: >-
+      4 (0100) → branch bit 0 → [4 (0100), 5 (0101)]
+      → join(ctrl=0, tgt=1): 4 has bit0=0 (no flip)=4, 5 has bit0=1 (flip bit1): 0101→0111=7
+      Result: [4, 7]
+
+  # --- Compound: branch then mul (both paths evolve) ---
+  - id: branch-then-mul
+    ops: [{ "op": "branch", "bit": 0 }, { "op": "mul", "k": 3 }]
+    input: "2"
+    expected_support: 2
+    expected_states: ["6", "9"]
+    note: >-
+      2 (0010) → branch bit 0 → [2, 3]
+      → mul by 3: [2*3=6, 3*3=9]
+      Result: [6, 9]
