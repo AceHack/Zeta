@@ -138,7 +138,11 @@
     // accidentally land with date-prefix shape) is outweighed by
     // the cost of either breaking CI or bulk-reformatting 82+ files
     // of verbatim third-party content.
-    "docs/research/2026-*-*.md"
+    "docs/research/2026-*-*.md",
+    // Inventory and backlog directories contain static reports and
+    // machine/human-generated backlog templates that may trip formatting.
+    "inventory/**",
+    "docs/backlog/**"
   ],
   "noBanner": true,
   "noProgress": true,

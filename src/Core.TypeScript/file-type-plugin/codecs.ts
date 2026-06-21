@@ -223,13 +223,146 @@ export const markdownCodec: Codec = {
   }
 };
 
+export const npmCodec: Codec = {
+  parse(content: string): ZSet<Tagged> {
+    if (!content.trim()) return [];
+    const js = JSON.parse(content);
+    const entries: { e: Tagged; w: number }[] = [];
+    if (js.name) {
+      entries.push({ e: { t: "obj", v: [["k", { t: "str", v: "name" }], ["v", { t: "str", v: js.name }]] }, w: 1 });
+    }
+    if (js.version) {
+      entries.push({ e: { t: "obj", v: [["k", { t: "str", v: "version" }], ["v", { t: "str", v: js.version }]] }, w: 1 });
+    }
+    if (js.dependencies) {
+      for (const [name, ver] of Object.entries(js.dependencies)) {
+        entries.push({
+          e: { t: "obj", v: [["k", { t: "str", v: "npm:" + name }], ["v", { t: "str", v: String(ver) }]] },
+          w: 1
+        });
+      }
+    }
+    if (js.devDependencies) {
+      for (const [name, ver] of Object.entries(js.devDependencies)) {
+        entries.push({
+          e: { t: "obj", v: [["k", { t: "str", v: "npm-dev:" + name }], ["v", { t: "str", v: String(ver) }]] },
+          w: 1
+        });
+      }
+    }
+    return ofEntries(compareTagged, entries);
+  },
+  serialize(zset: ZSet<Tagged>): string {
+    const js: any = {};
+    const deps: any = {};
+    const devDeps: any = {};
+    for (const entry of zset) {
+      if (entry.e.t === "obj") {
+        const kVal = entry.e.v.find(([k]) => k === "k")?.[1];
+        const vVal = entry.e.v.find(([k]) => k === "v")?.[1];
+        if (kVal && kVal.t === "str" && vVal && vVal.t === "str") {
+          if (kVal.v === "name") {
+            js.name = vVal.v;
+          } else if (kVal.v === "version") {
+            js.version = vVal.v;
+          } else if (kVal.v.startsWith("npm:")) {
+            deps[kVal.v.substring(4)] = vVal.v;
+          } else if (kVal.v.startsWith("npm-dev:")) {
+            devDeps[kVal.v.substring(8)] = vVal.v;
+          }
+        }
+      }
+    }
+    if (Object.keys(deps).length > 0) {
+      const sortedDeps: any = {};
+      for (const k of Object.keys(deps).sort()) sortedDeps[k] = deps[k];
+      js.dependencies = sortedDeps;
+    }
+    if (Object.keys(devDeps).length > 0) {
+      const sortedDevDeps: any = {};
+      for (const k of Object.keys(devDeps).sort()) sortedDevDeps[k] = devDeps[k];
+      js.devDependencies = sortedDevDeps;
+    }
+    return JSON.stringify(js, null, 2);
+  }
+};
+
+export const cargoCodec: Codec = {
+  parse(content: string): ZSet<Tagged> {
+    const lines = content.split(/\r?\n/);
+    const entries: { e: Tagged; w: number }[] = [];
+    let section = "";
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+        section = trimmed.substring(1, trimmed.length - 1).trim();
+        continue;
+      }
+      const eqIdx = trimmed.indexOf("=");
+      if (eqIdx !== -1) {
+        const key = trimmed.substring(0, eqIdx).trim().replace(/^"|"$|^'|'$/g, "");
+        const val = trimmed.substring(eqIdx + 1).trim().replace(/^"|"$|^'|'$/g, "");
+        if (section === "package") {
+          if (key === "name" || key === "version") {
+            entries.push({ e: { t: "obj", v: [["k", { t: "str", v: key }], ["v", { t: "str", v: val }]] }, w: 1 });
+          }
+        } else if (section === "dependencies") {
+          entries.push({
+            e: { t: "obj", v: [["k", { t: "str", v: "cargo:" + key }], ["v", { t: "str", v: val }]] },
+            w: 1
+          });
+        }
+      }
+    }
+    return ofEntries(compareTagged, entries);
+  },
+  serialize(zset: ZSet<Tagged>): string {
+    let name = "";
+    let version = "";
+    const deps: [string, string][] = [];
+    for (const entry of zset) {
+      if (entry.e.t === "obj") {
+        const kVal = entry.e.v.find(([k]) => k === "k")?.[1];
+        const vVal = entry.e.v.find(([k]) => k === "v")?.[1];
+        if (kVal && kVal.t === "str" && vVal && vVal.t === "str") {
+          if (kVal.v === "name") {
+            name = vVal.v;
+          } else if (kVal.v === "version") {
+            version = vVal.v;
+          } else if (kVal.v.startsWith("cargo:")) {
+            deps.push([kVal.v.substring(6), vVal.v]);
+          }
+        }
+      }
+    }
+    let out = "";
+    if (name || version) {
+      out += "[package]\n";
+      if (name) out += `name = "${name}"\n`;
+      if (version) out += `version = "${version}"\n`;
+      out += "\n";
+    }
+    if (deps.length > 0) {
+      out += "[dependencies]\n";
+      deps.sort((a, b) => a[0].localeCompare(b[0]));
+      for (const [k, v] of deps) {
+        out += `${k} = "${v}"\n`;
+      }
+    }
+    return out;
+  }
+};
+
 // ─── Codec Registry ──────────────────────────────────────────────────────────
 
 export class CodecRegistry {
   private static codecs = new Map<string, Codec>([
     ["json", jsonCodec],
     ["yaml", yamlCodec],
-    ["markdown-frontmatter", markdownCodec]
+    ["markdown-frontmatter", markdownCodec],
+    ["npm", npmCodec],
+    ["cargo", cargoCodec]
   ]);
 
   static register(name: string, codec: Codec): void {
@@ -240,3 +373,4 @@ export class CodecRegistry {
     return this.codecs.get(name);
   }
 }
+
