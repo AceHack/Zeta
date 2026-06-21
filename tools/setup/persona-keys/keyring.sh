@@ -53,11 +53,14 @@ command -v bun >/dev/null || { echo "bun required (closed over in install.sh)"; 
 [ -d "$HERE/node_modules" ] || (cd "$HERE" && bun install >/dev/null)
 
 if [ "$mode" = "onboard" ]; then
+  # Reuse-only orchestrator: chains status -> user-keyring(instruction) -> machine-key ->
+  # publish(biometric-gated, via publish.ts) -> trust-resolve. It NEVER runs seed-gen (a
+  # missing user keyring prints the keyring.sh generate|rotate instruction); the GitHub
+  # publish always goes THROUGH publish.ts's biometric gate (no --publish toggle, no bypass).
   extra_args=()
-  [ -n "$publish" ] && extra_args+=("--publish")
   [ -n "$dry_run" ] && extra_args+=("--dry-run")
   [ -n "$out_dir" ] && extra_args+=("--repo-root" "$out_dir")
-  bun "$HERE/onboard.ts" --user "$name" "${extra_args[@]}"
+  bun "$HERE/onboard-cli.ts" --user "$name" "${extra_args[@]}"
   exit 0
 fi
 

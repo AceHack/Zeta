@@ -75,8 +75,14 @@ import {
   parseUuidFromDiskutilInfo,
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
-import { deviceKeyPath } from "../../../tools/setup/persona-keys/machine.ts";
-import { onboardUserAndMachine, realEffects as realOnboardEffects, localKeyringPath } from "../../../tools/setup/persona-keys/onboard.ts";
+import {
+  deviceKeyPath,
+  userKeyringPublicPath,
+  realEffects as realMachineEffects,
+} from "../../../tools/setup/persona-keys/machine.ts";
+import { realEffects as realPublishEffects } from "../../../tools/setup/persona-keys/publish.ts";
+import { realEffects as realTrustEffects } from "../../../tools/setup/persona-keys/github-trust.ts";
+import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
@@ -1136,44 +1142,50 @@ async function main() {
       const repoRoot = findRepoRoot() || ".";
       const home = homedir();
       
-      const localKeyring = localKeyringPath(user, home);
+      const userKeyringPublic = userKeyringPublicPath(repoRoot, user);
       const localMachineKey = deviceKeyPath(home);
-      
-      const userKeyringExists = existsSync(localKeyring);
+
+      const userKeyringExists = existsSync(userKeyringPublic);
       const machineKeyExists = existsSync(localMachineKey);
-      
+
       if (!userKeyringExists || !machineKeyExists) {
         process.stdout.write(`\nzflash: detected missing user keyring or machine key for user '${user}'.\n`);
-        process.stdout.write(`Starting inline onboarding flow...\n\n`);
+        process.stdout.write(`Starting inline onboarding flow (reuse-only orchestrator)...\n\n`);
         try {
-          await onboardUserAndMachine(realOnboardEffects(), {
-            user,
-            repoRoot,
-            home,
-            publish: true,
-          });
-        } catch (err: any) {
-          bail(1, `Onboarding failed: ${err.message}`);
+          // Delegate to the reuse-only orchestrator: it ensures THIS host's device key,
+          // PRINTS the keyring.sh instruction if the user keyring is missing (it does NOT
+          // run seed-gen — seed custody is the operator's), and goes THROUGH publish.ts's
+          // biometric gate for the GitHub publish. No secret/seed handling lives here.
+          const res = await onboard(
+            {
+              machine: realMachineEffects(),
+              publish: realPublishEffects(),
+              trust: realTrustEffects(),
+            },
+            { user, repoRoot, home, keyType: "authentication" },
+          );
+          process.stdout.write(formatOnboard(res) + "\n\n");
+        } catch (err: unknown) {
+          bail(1, `Onboarding failed: ${err instanceof Error ? err.message : String(err)}`);
         }
       }
 
-      // Generate the union of the machine's public key and the user's public key
+      // Generate the union of the machine's public key and the user's PUBLISHED public key.
+      // We read ONLY public trust roots — the machine pubkey file and the operator's
+      // maintainers/<user>/ssh-pubkeys.txt (the public trust registry) — never a private
+      // keyring JSON (the orchestrator no longer materializes secrets locally).
       const machinePubPath = deviceKeyPath(home) + ".pub";
-      const localKeyringAfter = localKeyringPath(user, home);
-      
+      const userSshPubPath = join(repoRoot, "maintainers", user, "ssh-pubkeys.txt");
+
       let combinedContent = "";
       if (existsSync(machinePubPath)) {
         combinedContent += readFileSync(machinePubPath, "utf8").trim() + "\n";
       }
-      if (existsSync(localKeyringAfter)) {
-        try {
-          const keyring = JSON.parse(readFileSync(localKeyringAfter, "utf8"));
-          if (keyring.ssh?.public) {
-            combinedContent += keyring.ssh.public.trim() + "\n";
-          }
-        } catch { /* ignore */ }
+      if (existsSync(userSshPubPath)) {
+        const userPub = readFileSync(userSshPubPath, "utf8").trim();
+        if (userPub) combinedContent += userPub + "\n";
       }
-      
+
       if (combinedContent.trim()) {
         tempPubkeyPath = join(tmpdir(), `zeta-combined-${user}.pub`);
         writeFileSync(tempPubkeyPath, combinedContent, { mode: 0o644 });
