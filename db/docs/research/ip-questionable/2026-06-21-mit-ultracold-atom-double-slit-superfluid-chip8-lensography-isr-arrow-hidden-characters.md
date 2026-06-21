@@ -45,7 +45,13 @@ which-path vs interference); Heisenberg uncertainty principle; complementarity.
 
 ## The Zeta mapping (Mirror — IP-questionable, anchor-pending)
 
-The analogy Aaron is reaching for, decoded against in-repo substrate:
+The analogy decoded against in-repo substrate. **Provenance (Aaron, 2026-06-21):**
+*"all this ticked in my head though — these are my own extensions of that superfluid
+connection; you made the same ones i would."* So the rows below are **Aaron's own
+extensions** (Otto transcribed; Aaron confirmed the reconstruction matched his), not a
+third-party decode — which matters for the IP register: the mapping is the maintainer's
+coinage. The independent convergence (Otto reconstructing the same extensions) is itself
+the shared-seed alignment the project bets on.
 
 | MIT experiment | Zeta CHIP-8 / lensography |
 |---|---|
