@@ -55,8 +55,12 @@ Parent: `gen-gen-self-hosting-bytelock` (shares the IR substrate)
 
 ## What's next (future trajectory)
 
-1. **Self-hosting codegen** — IR description of the codegen itself → gen(gen) operational
-2. **Clifford lens emission** — geometric algebra (Cl3, multivectors) from IR
-3. **WeakRef cache integration** — lazy compile + collect + regenerate at runtime
-4. **Cross-lane cost-parity golden** — DumpMachine entry-count = AmplitudeEmu.support
-5. **Interface stack completion** — IGroup, IMonoid, ILattice, IFunctor, ICodec, IPort
+1. ~~Self-hosting codegen~~ ✅ #8901
+2. ~~Clifford lens emission~~ ✅ #8896
+3. ~~WeakRef cache integration~~ ✅ #8892/#8895/#8905
+4. ~~Interface stack completion~~ ✅ #8890/#8891/#8902
+5. **Cross-language byte-lock oracle** — compare.ts/cross-verify.ts for zeta-ir-v2 interfaces
+   (the assert-don't-skip gap: emit code in all 7 langs, COMPILE each, RUN each,
+   assert outputs match. This is what makes "7/7" real instead of substring checks.)
+6. **Cross-lane cost-parity golden** — DumpMachine entry-count = AmplitudeEmu.support
+7. **QDK integration** — install via tools/setup/common/qdk.sh, compile .qs files in CI
