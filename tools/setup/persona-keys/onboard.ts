@@ -203,13 +203,15 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
   }
 
   // ── Step 3: MACHINE KEY — generate this host's device key if missing (machine.ts) ───
-  // Delegated: machine.ts owns ssh-keygen + umask + the public-only read-back. We pass
-  // publish:false here (this slice's "publish to GitHub" is the separate biometric-gated
-  // step 4, not the maintainers/ pubkey-file write). Idempotent: an existing key is a no-op.
-  // Gated: the agent runs the keygen, the operator's biometric is the approval (shared door).
+  // Delegated: machine.ts owns ssh-keygen + umask + the public-only read-back. publish:true
+  // writes the PUBLIC device key to maintainers/<user>/machines/<host>.pub — the registry path
+  // step 4's publish reads from. (With publish:false the GitHub-publish step finds no pubkey at
+  // the conventional path and blocks; public-only write, the keygen is the gated act.) Idempotent:
+  // an existing key is a no-op. Gated: the agent runs the keygen, the operator's biometric approves.
   const machine = await ensureMachineKey(fx.machine, {
     user: opts.user,
     repoRoot: opts.repoRoot,
+    publish: true,
     ...(home !== undefined ? { home } : {}),
     ...(fx.biometricAuth !== undefined ? { biometricAuth: fx.biometricAuth } : {}),
     dryRun,
@@ -247,18 +249,26 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
     keyPath: pubPath,
     dryRun,
   });
+  // Dry-run sequencing: publish.ts checks the pubkey EXISTS before its dry-run branch, so on a
+  // fresh box (no key yet) a standalone publish dry-run returns aborted-no-key. But in THIS
+  // sequence step 3 (machine-key, publish:true) would create + publish the pubkey first, so the
+  // honest dry-run label is "would-publish (after keygen)", not "blocked".
+  const publishWouldFollowKeygen =
+    dryRun && publish.action === "aborted-no-key" && machine.action === "would-generate";
   steps.push({
     kind: "publish",
     headline:
       publish.action === "published"
         ? "published"
-        : publish.action === "would-publish"
+        : publish.action === "would-publish" || publishWouldFollowKeygen
           ? "would-publish"
           : "blocked",
-    detail: publishStepDetail(publish),
-    // Pending iff the operator must still confirm the biometric (would-publish), or a
-    // recoverable abort needs operator action (no-key → run machine step first).
-    pending: publish.action === "would-publish" || publish.action === "aborted-no-key",
+    detail: publishWouldFollowKeygen
+      ? "[dry-run] would publish this host's device key to GitHub (biometric-gated) after step 3 creates it."
+      : publishStepDetail(publish),
+    // Pending iff the operator must still confirm the biometric (would-publish), or a recoverable
+    // abort needs operator action (no-key in a NON-sequenced context → run machine step first).
+    pending: publish.action === "would-publish" || (publish.action === "aborted-no-key" && !publishWouldFollowKeygen),
   });
 
   // ── Step 5: TRUST RESOLVE — produce/print the trust set (github-trust.ts) ────────────
