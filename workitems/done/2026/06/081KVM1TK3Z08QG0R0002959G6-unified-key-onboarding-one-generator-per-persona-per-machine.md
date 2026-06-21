@@ -1,11 +1,12 @@
 ---
 id: 081KVM1TK3Z08QG0R0002959G6
 type: task
-state: backlog
+state: done
 priority: P1
 slug: unified-key-onboarding-one-generator-per-persona-per-machine
 title: "Unified key onboarding — one generator, per-persona + per-machine keys, for new contributors and agents"
 created: 2026-06-21T02:58:14.783Z
+completed: 2026-06-21T04:49:42.888Z
 depends_on: []
 composes_with: ["081KSGS9H0008QG0R002T3BJ2R"]
 ---
