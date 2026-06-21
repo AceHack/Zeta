@@ -12,8 +12,9 @@
 //   bun ca-cli.ts ca   --ca aaron --dry-run                       # generates NOTHING
 //   bun ca-cli.ts ca   --ca aaron                                 # generate local CA key
 //   bun ca-cli.ts ca   --ca aaron --commit-pub                    # + write CA pubkey to repo (no commit)
-//   bun ca-cli.ts cert --user aaron --machine mymac --dry-run     # signs NOTHING
+//   bun ca-cli.ts cert --user aaron --machine mymac --dry-run     # signs NOTHING (single owner)
 //   bun ca-cli.ts cert --user aaron --machine mymac               # sign that machine's pubkey -> cert
+//   bun ca-cli.ts cert --users aaron,addison --machine d --dry-run # multi-owner plan (NOTHING signed)
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureCa, signMachineCert, realEffects, DEFAULT_CERT_VALIDITY } from "./ca.ts";
@@ -63,15 +64,22 @@ async function main(): Promise<number> {
   }
 
   if (mode === "cert") {
-    const user = opt("--user") ?? "zeta";
     const machineRaw = opt("--machine");
     const machineId = sanitizeHostname(machineRaw ?? "");
     const validity = opt("--validity") ?? DEFAULT_CERT_VALIDITY;
     const dryRun = flag("--dry-run");
     // The device PUBLIC key is the machine.ts registry seam: the USER-INDEPENDENT
-    // `machines/<host>.pub`. This cert (principal=<user>) is the (user × machine) binding.
+    // `machines/<host>.pub`. The cert's principals are the (user × machine) binding.
     const devicePubPath = opt("--device-pub") ?? machinePubPath(repoRoot, machineId);
-    const r = await signMachineCert(fx, { user, machineId, devicePubPath, validity, dryRun, biometricAuth });
+    // AUTHORIZED USER LIST: `--users aaron,addison` for a co-owned machine; `--user aaron` is the
+    // single-owner shorthand. The comma-joined value becomes the cert's `-n` principals; the Key
+    // ID stays machine-only. The (user × machine) pairing lives in the LIST, never a composite id.
+    const usersFlag = opt("--users");
+    const users =
+      usersFlag !== undefined
+        ? usersFlag.split(",").map((u) => u.trim()).filter((u) => u.length > 0)
+        : [opt("--user") ?? "zeta"];
+    const r = await signMachineCert(fx, { users, machineId, devicePubPath, validity, dryRun, biometricAuth });
     if (r.action === "no-ca") {
       console.error(`blocked: no CA private key at ${r.caPrivatePath} — run 'ca-cli.ts ca' first.`);
       return 3;
@@ -83,7 +91,7 @@ async function main(): Promise<number> {
     if (r.dryRun) {
       console.log(`[dry-run] action=${r.action} (NOTHING signed)`);
       console.log(`[dry-run] would sign ${r.devicePubPath}`);
-      console.log(`[dry-run]   -> cert ${r.certPath} (id=${r.certId} principal=${r.principal} validity=${r.validity})`);
+      console.log(`[dry-run]   -> cert ${r.certPath} (id=${r.certId} principals=${r.principal} validity=${r.validity})`);
       return 0;
     }
     if (r.action === "aborted-biometric") {
@@ -93,7 +101,7 @@ async function main(): Promise<number> {
       return 1;
     }
     console.log(`action=${r.action} cert=${r.certPath}`);
-    console.log(`  id=${r.certId} principal=${r.principal} validity=${r.validity}`);
+    console.log(`  id=${r.certId} principals=${r.principal} validity=${r.validity}`);
     // The cert is public — safe to print.
     if (r.certText !== undefined) console.log(r.certText);
     return 0;
@@ -102,7 +110,7 @@ async function main(): Promise<number> {
   console.error(
     "usage:\n" +
       "  bun ca-cli.ts ca   --ca <name> [--dry-run] [--commit-pub]\n" +
-      "  bun ca-cli.ts cert --user <name> --machine <host> [--validity +52w] [--dry-run]",
+      "  bun ca-cli.ts cert (--user <name> | --users a,b) --machine <host> [--validity +52w] [--dry-run]",
   );
   return 2;
 }

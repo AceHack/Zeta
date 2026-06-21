@@ -79,12 +79,22 @@ export interface SignCertRequest {
   readonly caKeyPath: string;
   /** Path to the per-machine device PUBLIC key to be signed. */
   readonly devicePubPath: string;
-  /** Certificate identity (`-I`) — a human-readable label (e.g. "<user>@<host>"). */
+  /** Certificate identity (`-I`) — a MACHINE-ONLY label (the host id; #8969 made the Key ID
+   *  machine-only — NEVER a `user@machine` composite, the #8926 N×M lesson). */
   readonly certId: string;
-  /** Principal(s) the cert authorizes (`-n`) — the USER the cert binds to (e.g. "aaron"). */
-  readonly principal: string;
+  /** The principals (`-n`) the cert authorizes — the USER LIST it binds to (e.g.
+   *  `["aaron", "addison"]` for a co-owned machine). A single-owner cert is a one-element list.
+   *  The (user × machine) pairing lives HERE, in the list — never in a composite key/id. */
+  readonly principals: readonly string[];
   /** Validity window (`-V`), OpenSSH form (e.g. "+52w"); the rolling-keys discipline. */
   readonly validity: string;
+}
+
+/** Join a user list into the OpenSSH `-n` principals value: comma-separated, no spaces
+ *  (`aaron,addison`). The list IS the authorization-binding; the pairing never becomes a
+ *  composite identifier (the #8926 / Key-ID N×M lesson). */
+export function joinPrincipals(users: readonly string[]): string {
+  return users.join(",");
 }
 
 /** The result of a sign — the written cert path + its (public) text. No private material. */
@@ -233,6 +243,10 @@ export interface CertResult {
   readonly devicePubPath: string;
   readonly certPath: string;
   readonly certId: string;
+  /** The authorized user LIST (the `-n` principals) — `["aaron"]` for a single owner,
+   *  `["aaron","addison"]` for a co-owned machine. The structured form of the binding. */
+  readonly principals: readonly string[];
+  /** The comma-joined principals (`aaron,addison`) — the exact `-n` value, for readouts. */
   readonly principal: string;
   readonly validity: string;
   /** The certificate text, when signed (public — safe to print). Undefined otherwise. */
@@ -265,8 +279,15 @@ export interface CertResult {
 export async function signMachineCert(
   fx: CaEffects,
   opts: {
-    /** The USER the cert binds to (the `-n` principal — trust anchored at the user). */
-    readonly user: string;
+    /** The USER the cert binds to (the `-n` principal — trust anchored at the user). A single
+     *  owner; for a co-owned machine pass `users` instead (this is the one-element shorthand). */
+    readonly user?: string;
+    /** The authorized USER LIST for a (possibly multi-owner) machine — `["aaron","addison"]`.
+     *  Takes precedence over `user`; the comma-joined value becomes the `-n` principals. A
+     *  one-element list is the single-owner path. EXACTLY ONE of `user` / `users` is required;
+     *  `users` must be non-empty. The (user × machine) pairing lives in this LIST — never a
+     *  composite identifier (the #8926 / Key-ID N×M lesson). */
+    readonly users?: readonly string[];
     /** A machine id for the cert identity (`-I`), e.g. the sanitized hostname. */
     readonly machineId: string;
     /** Path to the per-machine device PUBLIC key to sign (the registry `machines/<host>.pub`). */
@@ -281,6 +302,19 @@ export async function signMachineCert(
 ): Promise<CertResult> {
   const caPrivatePath = opts.home === undefined ? caPrivateKeyPath() : caPrivateKeyPath(opts.home);
   const validity = opts.validity ?? DEFAULT_CERT_VALIDITY;
+  // Resolve the authorized user LIST: `users` (multi-owner) wins; else the single `user`. The
+  // (user × machine) binding is this LIST, never a composite id. Fail-closed on a degenerate
+  // request (neither given, or an empty `users`) — we never sign a cert with NO principal.
+  const users: readonly string[] =
+    opts.users !== undefined && opts.users.length > 0
+      ? opts.users
+      : opts.user !== undefined
+        ? [opts.user]
+        : [];
+  if (users.length === 0) {
+    throw new Error("signMachineCert: provide a non-empty `users` list or a single `user`.");
+  }
+  const principal = joinPrincipals(users); // the exact `-n` value (`aaron,addison`)
   // Key ID names the certified SUBJECT = the machine key, so it is the machine id ALONE — NOT
   // `user@machine`. A composite user×machine Key ID is the N×M smell (Aaron, 2026-06-21; same
   // shape as the #8926 hybrid-key error): it would mint a distinct cert per (user, machine) pair
@@ -296,7 +330,8 @@ export async function signMachineCert(
     devicePubPath: opts.devicePubPath,
     certPath: outPath,
     certId,
-    principal: opts.user,
+    principals: users,
+    principal,
     validity,
   };
 
@@ -316,7 +351,7 @@ export async function signMachineCert(
   // BIOMETRIC GATE — fail-closed. A real sign consumes the CA private key; require approval.
   const biometric = await requireBiometric(
     opts.biometricAuth,
-    `Approve: sign cert for machine ${opts.machineId} (principal=${opts.user})`,
+    `Approve: sign cert for machine ${opts.machineId} (principals=${principal})`,
   );
   if (!biometric.ok) {
     return { ...base, dryRun: false, action: "aborted-biometric", biometric };
@@ -326,7 +361,7 @@ export async function signMachineCert(
     caKeyPath: caPrivatePath,
     devicePubPath: opts.devicePubPath,
     certId,
-    principal: opts.user,
+    principals: users,
     validity,
   });
   return { ...base, dryRun: false, action: "signed", certText: out.certText, biometric };
@@ -366,9 +401,10 @@ export function realEffects(): CaEffects {
       return readFileSync(caKeyPath + ".pub", "utf8");
     },
     signCert: (req) => {
-      // ssh-keygen -s <ca> -I <id> -n <principal> -V <validity> <devicePub>
-      // Writes "<devicePub base>-cert.pub" (public). The CA private key is read by ssh-keygen,
-      // never by us; the cert is public output.
+      // ssh-keygen -s <ca> -I <id> -n aaron,addison -V <validity> <devicePub>
+      // The `-n` value is the comma-joined principals LIST (one OpenSSH cert authorizing all
+      // listed users); Key ID (`-I`) is machine-only. Writes "<devicePub base>-cert.pub" (public).
+      // The CA private key is read by ssh-keygen, never by us; the cert is public output.
       const r = spawnSync(
         "ssh-keygen",
         [
@@ -377,7 +413,7 @@ export function realEffects(): CaEffects {
           "-I",
           req.certId,
           "-n",
-          req.principal,
+          joinPrincipals(req.principals),
           "-V",
           req.validity,
           req.devicePubPath,

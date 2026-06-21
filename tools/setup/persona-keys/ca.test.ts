@@ -71,7 +71,7 @@ function fakeEffects(opts?: { genCount?: { n: number }; signCount?: { n: number 
       if (opts?.signCount) opts.signCount.n += 1;
       const out = certPath(req.devicePubPath);
       // Simulate a signed cert — public output only (the CA private is "consumed" by the runner).
-      const cert = `ssh-ed25519-cert-v01@openssh.com AAAAFAKECERT id=${req.certId} principal=${req.principal}\n`;
+      const cert = `ssh-ed25519-cert-v01@openssh.com AAAAFAKECERT id=${req.certId} principal=${req.principals.join(",")}\n`;
       writeFileSync(out, cert);
       return { certPath: out, certText: cert };
     },
@@ -429,6 +429,104 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
     expect(show.stdout).toContain("tester"); // the principal (-n) — the user×machine pairing lives HERE, not in the Key ID
     expect(show.stdout).not.toContain("tester@mymac"); // guard: the N×M composite Key ID must NOT reappear
     // The cert file is PUBLIC — never carries a private marker.
+    expect(readFileSync(certRes.certPath, "utf8")).not.toMatch(new RegExp(PRIV_MARKER));
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+// ── MULTI-PRINCIPAL (multi-owner machine) — the identity↔authorization split, §1 ──────────────
+
+test("multi-principal (fake): users:[aaron,addison] -> joined -n principals; Key ID machine-only", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
+  try {
+    const fx = fakeEffects();
+    const caPriv = caPrivateKeyPath(tmp);
+    mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
+    writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
+    const devicePub = join(tmp, "machines", "shared.pub");
+    mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE shared (zeta-machine)\n");
+
+    const r = await signMachineCert(fx, {
+      users: ["aaron", "addison"],
+      machineId: "shared",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: APPROVE,
+    });
+    expect(r.action).toBe("signed");
+    expect(r.principals).toEqual(["aaron", "addison"]); // the structured user LIST
+    expect(r.principal).toBe("aaron,addison"); // the comma-joined -n value
+    expect(r.certId).toBe("shared"); // Key ID is MACHINE-only — no user, no composite
+    // The (user × machine) pairing lives in the principals LIST — never a composite id.
+    expect(r.certId).not.toContain("@");
+    expect(r.certId).not.toContain("aaron");
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("single-user list still works: users:[aaron] == the single-owner path", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
+  try {
+    const fx = fakeEffects();
+    const caPriv = caPrivateKeyPath(tmp);
+    mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
+    writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
+    const devicePub = join(tmp, "machines", "solo.pub");
+    mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE solo (zeta-machine)\n");
+
+    const viaList = await signMachineCert(fx, { users: ["aaron"], machineId: "solo", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
+    expect(viaList.action).toBe("signed");
+    expect(viaList.principals).toEqual(["aaron"]);
+    expect(viaList.principal).toBe("aaron"); // a one-element list joins to a bare username (no comma)
+
+    // The legacy `user` shorthand resolves to the same one-element list.
+    const devicePub2 = join(tmp, "machines", "solo2.pub");
+    writeFileSync(devicePub2, "ssh-ed25519 AAAADEVICE solo2 (zeta-machine)\n");
+    const viaUser = await signMachineCert(fx, { user: "aaron", machineId: "solo2", devicePubPath: devicePub2, home: tmp, biometricAuth: APPROVE });
+    expect(viaUser.principals).toEqual(["aaron"]);
+    expect(viaUser.principal).toBe("aaron");
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("REAL ssh-keygen: a multi-principal cert shows BOTH users + a machine-only Key ID (temp only)", async () => {
+  const probe = spawnSync("ssh-keygen", ["-A", "-?"], { encoding: "utf8" });
+  if (probe.error !== undefined) {
+    return; // no ssh-keygen — conformance covered by the fake-effects tests above
+  }
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-real-multi-"));
+  try {
+    const { realEffects, ensureCa: real, signMachineCert: sign } = await import("./ca.ts");
+    const fx = realEffects();
+    const approve = APPROVE;
+
+    const caRes = await real(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true, biometricAuth: approve });
+    expect(caRes.action).toBe("generated");
+
+    const deviceKey = join(tmp, "device_ed25519");
+    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", "shared (zeta-machine)"], { encoding: "utf8" });
+    expect(kg.status).toBe(0);
+    const devicePub = deviceKey + ".pub";
+
+    // Sign with TWO principals (a co-owned machine): aaron + addison.
+    const certRes = await sign(fx, { users: ["aaron", "addison"], machineId: "shared", devicePubPath: devicePub, home: tmp, biometricAuth: approve });
+    expect(certRes.action).toBe("signed");
+
+    const show = spawnSync("ssh-keygen", ["-L", "-f", certRes.certPath], { encoding: "utf8" });
+    expect(show.status).toBe(0);
+    // BOTH principals appear (OpenSSH lists them under "Principals:").
+    expect(show.stdout).toContain("aaron");
+    expect(show.stdout).toContain("addison");
+    // Key ID is the MACHINE alone — never a user@machine composite (the N×M lesson).
+    expect(show.stdout).toContain('Key ID: "shared"');
+    expect(show.stdout).not.toContain("aaron@shared");
+    expect(show.stdout).not.toContain("addison@shared");
+    expect(show.stdout).not.toContain('Key ID: "aaron');
     expect(readFileSync(certRes.certPath, "utf8")).not.toMatch(new RegExp(PRIV_MARKER));
   } finally {
     rmSync(tmp, { recursive: true, force: true });

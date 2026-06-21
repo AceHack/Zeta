@@ -305,7 +305,7 @@ function fakeCa(existing: ReadonlySet<string>, opts?: { signCount?: { n: number 
       const out = req.devicePubPath.endsWith(".pub")
         ? req.devicePubPath.slice(0, -4) + "-cert.pub"
         : req.devicePubPath + "-cert.pub";
-      return { certPath: out, certText: `ssh-ed25519-cert-v01@openssh.com AAAAFAKECERT principal=${req.principal}\n` };
+      return { certPath: out, certText: `ssh-ed25519-cert-v01@openssh.com AAAAFAKECERT principal=${req.principals.join(",")}\n` };
     },
   };
 }
