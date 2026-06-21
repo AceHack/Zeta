@@ -985,7 +985,7 @@ are closed (status: closed/done in frontmatter)._
 
 ## P3 — convenience / deferred
 
-- [ ] **[081KLL7PPSUMF84HN7WN96ZEQ1P77U](backlog/P3/081KLL7PPSUMF84HN7WN96ZEQ1P77U-ace-setup-manifest-realizers-defer-until-mechanism-consolidation-and-ci-clean.md)** Ace setup-manifest realizers — defer Bun/Ace realizer swap until non-mechanism install scripts are consolidated and CI is clean (Aaron 2026-06-21)
+- [ ] **[081KLL7PPSUMF84HN7WN96ZEQ1P77U](backlog/P3/081KLL7PPSUMF84HN7WN96ZEQ1P77U-ace-setup-manifest-realizers-defer-until-mechanism-consolidation-and-ci-clean.md)** Ace setup-manifest realizers — Bun realizers post-mechanism consolidation (Aaron 2026-06-21)
 - [ ] **[081KQ0YZ80008QG0R0000HSTWD](backlog/P3/081KQ0YZ80008QG0R0000HSTWD-substrate-ip-rotation-control-bypass-non-account-bound-rate-.md)** Substrate-controlled visible IP — bypass non-account-bound rate limits responsibly across deployment surfaces (own up to it, don't hide the framing)
 - [ ] **[081KQ0YZ80008QG0R0006VRT18](backlog/P3/081KQ0YZ80008QG0R0006VRT18-trading-account-offer-aaron-self-funding-path-prerequisite-p.md)** Trading-account offer (Aaron, self-funding path for the agent) — accepted in principle pending paper-trading + conviction-grounding prerequisite work
 - [x] **[081KQ0YZ80008QG0R0009EQNHP](backlog/P3/081KQ0YZ80008QG0R0009EQNHP-rename-backlog-schema-field-directive-to-ask-otto-293-violat.md)** Rename backlog schema field `directive:` → `ask:` per Otto-293 (one-way language at YAML schema layer); ~18 existing rows + tooling that reads the field

@@ -5,7 +5,7 @@ status: open
 priority: P1
 created: 2026-05-31
 attribution: aaron-otto-2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-21
 decomposition: umbrella
 depends_on:
   - 081KSXN940008QG0R00171YAZW
@@ -31,6 +31,12 @@ tags:
 ---
 
 # 081KSXN940008QG0R002FWR9B2 — Work-items → ZetaId WorkItem keys (conflict-free, no consensus)
+
+> **Progress 2026-06-21 (#8948 merged):** the **backlog shard** slice is complete —
+> all `docs/backlog/*` rows use zetaid-only `id:` frontmatter; repo-wide prose refs
+> migrated; `lint-no-b-refs` + `lint-no-new-bnnnn` gate the surface; migration scripts
+> retired; ~1,251 frozen aliases in `b-to-zetaid-map.json`. **This umbrella stays open**
+> for the work-item **event G-Set**, lifecycle state machine, and DORA Bag-folds (below).
 
 > **Product-team design review (2026-06-06):** the design memo this umbrella asks for is
 > [`docs/research/2026-06-06-product-team-review-b0956-backlog-to-zetaid-workitem-migration-pm2-ilyana-rodney-otto.md`](../../research/2026-06-06-product-team-review-b0956-backlog-to-zetaid-workitem-migration-pm2-ilyana-rodney-otto.md).
@@ -145,12 +151,13 @@ one git-native ZetaId-keyed event substrate** — G-Set base, Z-set/Bag views.
 
 ## Acceptance
 
+- [x] Existing `B-NNNN` backlog rows migrated to zetaid keys (#8948; frozen alias map for history).
 - [ ] New work-items get a `Category.WorkItem` ZetaId minted **locally, no consensus**.
 - [ ] `type ∈ {task, bug}` and `state ∈ {backlog, in-progress, done, closed, …}` are
       first-class; **"backlog" is a state value**, derivable as a Z-set view.
 - [ ] Disjoint-id files never collide across concurrent agents (G-Set property).
 - [ ] Metrics/DORA are Bag-folds over the work-item event G-Set (no separate store; reuses #6289).
-- [ ] Existing `B-NNNN` rows keep working (alias-and-keep) — no lost rows.
+- [x] Cross-references in backlog shard use zetaids (#8948).
 - [ ] The `otto-channels` ID-allocation consensus discipline is retired for work-items.
 
 ## Substrate-honest framing

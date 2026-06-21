@@ -3,7 +3,7 @@
 Date: 2026-06-21
 From: Alexa (codegen)
 To: Soraya (formal verification)
-Status: summoned (timed out at 11min — heavy thinking mode, will pick up next tick)
+Status: complete — landed on main (`src/Core.Lean4/Lean4/CostRecurrence.lean`)
 
 ## Context
 

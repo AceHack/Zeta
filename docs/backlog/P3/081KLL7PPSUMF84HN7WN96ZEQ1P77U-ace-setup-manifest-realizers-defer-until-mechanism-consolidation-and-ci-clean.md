@@ -1,13 +1,13 @@
 ---
 id: 081KLL7PPSUMF84HN7WN96ZEQ1P77U
-priority: P3
-status: open
-unblocked: 2026-06-21
-title: Ace setup-manifest realizers — defer Bun/Ace realizer swap until non-mechanism install scripts are consolidated and CI is clean (Aaron 2026-06-21)
+priority: P2
+status: in-progress
+title: Ace setup-manifest realizers — Bun realizers post-mechanism consolidation (Aaron 2026-06-21)
 effort: L
 ask: Aaron 2026-06-21
 created: 2026-06-21
 last_updated: 2026-06-21
+unblocked: 2026-06-21
 decomposition: leaf
 depends_on:
   - 081KDU93J0OAZMF14J8R4K66ZR06XL
@@ -20,7 +20,14 @@ tags: [ace-package-manager, setup, defer, mechanism-by-source, install-graph, ba
 type: chore
 ---
 
-# 081KLL7PPSUMF84HN7WN96ZEQ1P77U — Ace setup-manifest realizers (deferred)
+# 081KLL7PPSUMF84HN7WN96ZEQ1P77U — Ace setup-manifest realizers
+
+## Status 2026-06-21
+
+Prerequisites satisfied: **081KDU93…** (#8920) + **#8948** gate green. Row **re-opened
+P2 / in-progress** — Bun realizer slice 1 landed in branch:
+`src/Core.TypeScript/ace/setup-realize.ts` + `from-uv-tool` + `from-bun-global` realizers.
+Shell realizers remain until `linux.sh` → `ace-realize --all` cutover.
 
 ## Operator framing (Aaron 2026-06-21)
 
