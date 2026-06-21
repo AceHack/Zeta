@@ -55,9 +55,12 @@ export function generateLawTests(ir: InterfaceIr, instanceExpr: string): string 
       : law.status === "conjectured"
         ? `// CONJECTURED (property test = falsification only)`
         : `// OPEN (not yet proven — property test may find counterexample)`;
+    const guardComment = law.guard
+      ? `\n    // GUARDED: only holds when ${law.guard}`
+      : "";
 
     return `  test("${law.id}: ${law.doc ?? law.schema}", () => {
-    ${statusComment}
+    ${statusComment}${guardComment}
     for (let i = 0; i < N; i++) {
       const a = gen(), b = gen(), c = gen();
 ${testBody}
@@ -103,6 +106,18 @@ function generateTestBody(law: LawSchema, inst: string): string {
 
     case "involutive":
       return `      expect(eq(r.${lcFirst(law.op!)}(r.${lcFirst(law.op!)}(a)), a)).toBe(true);`;
+
+    case "homomorphism":
+      return `      expect(eq(r.${lcFirst(law.op!)}(r.${lcFirst(law.over!)}(a, b)), r.${lcFirst(law.over!)}(r.${lcFirst(law.op!)}(a), r.${lcFirst(law.op!)}(b)))).toBe(true);`;
+
+    case "antihomomorphism":
+      return `      expect(eq(r.${lcFirst(law.op!)}(r.${lcFirst(law.over!)}(a, b)), r.${lcFirst(law.over!)}(r.${lcFirst(law.op!)}(b), r.${lcFirst(law.op!)}(a)))).toBe(true);`;
+
+    case "multiplicative":
+      return `      // |f(a)*f(b)| approx= |f(a*b)| (norm-multiplicativity)\n      // Skipped for scalar gen — needs vector/complex input`;
+
+    case "fixpoint":
+      return `      expect(eq(r.${lcFirst(law.op!)}(r.${lcFirst(law.element!)}), r.${lcFirst(law.element!)})).toBe(true);`;
 
     case "roundTrip":
       return `      expect(r.decode(r.encode(a))).toEqual(a);`;
