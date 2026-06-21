@@ -135,7 +135,6 @@ function generateAndRunCSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: 
     if (op.op === "xorshr") return `        z = z ^ (z >> ${op.s});\n${maskLine}`.trimEnd();
     return "";
   }).join("\n");
-  const inputLines = inputs.map(([id, val]) => `    out["${id}"] = Mix(${val}UL).ToString();`).join("\n");
 
   // Use dotnet run with a minimal project — no external tool dependency
   const projDir = join(tmpDir, "csharp");
