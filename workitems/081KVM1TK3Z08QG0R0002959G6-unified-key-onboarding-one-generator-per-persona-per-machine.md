@@ -62,18 +62,55 @@ per-machine made explicit** and known — no more floating ad-hoc keys.
 - **Optional:** standardize git author identity (`git config user.email`) → `aaron@lucent.financial`
   so commit attribution matches the keyring identity. (Operator's call — identity change.)
 
+## First-run auto-provisioning AT FLASH TIME (Aaron, 2026-06-20)
+
+The load-bearing UX: a **first-time** zflash user who has **no saved keys yet** must be provisioned
+**automatically**, in-flow — they shouldn't have to know the keyring exists. When zflash runs and the
+operator is not already set up:
+
+1. **Generate the full keyset for them** (seed → persona 4×4 rolling keyset + per-machine key) via the
+   persona-keys generator.
+2. **Save it to their local PC** (seed/private keys land in their local secret store, e.g.
+   `~/.config/zeta/...`; never committed).
+3. **Set up their GitHub account** — `gh auth login` + upload/register their SSH (and signing) pubkey
+   to their GH account, so git/SSH-to-GitHub works immediately. (Prior art: gh-auth-at-install,
+   PR-5210 "homelab gh-auth-login operator-pubkey-copy at install time"; `081KSGS9H0008QG0R00120EEHM`.)
+4. **Register the user with Zeta** — publish their public trust roots to `maintainers/<user>/`
+   (`keyring-public.json` + `ssh-pubkeys.txt`) so every node trusts them.
+5. **Inject into the flash** — the freshly-generated per-machine key goes into the USB ESP +
+   `operator-ssh-keys`, so the booted node trusts the *canonical generated* key (not an ad-hoc one).
+
+**Two timings, same generator:**
+
+- **Pre-flash** (preferred): set keys up *before* flashing (run `zeta keys onboard` first), so the
+  flash just consumes already-registered keys.
+- **During-flash** (fallback): if keys aren't present when zflash runs, it provisions them inline
+  (steps 1–5) as part of the flash — no separate step required, first-timer just runs zflash.
+
+> **CURRENT STATE — honest (Aaron, 2026-06-20): this is NOT built yet.** Keys have been set up
+> **manually / ad-hoc** so far ("just messing around"). The few published pubkeys (e.g. Aaron PR-7249,
+> Addison PR-7250 — operator pubkey baked into node trust) were done **by hand, not via this
+> auto-flow** — neither Max nor Addison has gone through an automated first-run provision. This item is
+> the TARGET we are **working toward**: generalized + automated for any new contributor/agent,
+> idempotent (re-running a provisioned user is a no-op / detects existing keys).
+
 ## Scope (design-first; KEYS ARE SECRET — operator-run)
 
 1. **Design the unified flow**: one command (extend `keyring.sh` / a `zeta keys onboard`) that, from a
    seed, (a) derives the persona keyset (4×4 rolling), (b) writes the public trust roots to
    `maintainers/<persona>/`, (c) derives/registers the per-machine key, (d) feeds zflash + node trust —
    with a clear `whoami`-style readout of "this key = persona X on machine Y."
-2. **Reconcile the existing 3-key state** for aaron onto `aaron@lucent.financial` (cleanup).
-3. **One flow for humans + agents** (personas otto/amara/ani/alexa already have keyrings — same path).
+2. **First-run auto-provisioning at flash time** (above): zflash detects no-keys → generate + save
+   local + GH-auth + register-with-Zeta + inject; pre-flash or during-flash; idempotent.
+3. **Reconcile the existing 3-key state** for aaron onto `aaron@lucent.financial` (cleanup).
+4. **One flow for humans + agents** (personas otto/amara/ani/alexa already have keyrings — same path).
 
-*Honest scope:* this touches **seeds/secrets** — Otto/agents do NOT run the key generation or hold
-seeds; the deliverable is the unified-flow design + the reconciliation plan. Generation + the git/email
-change are operator-run.
+*Honest scope:* this touches **seeds/secrets**. **Today** generation is operator-run (humans hold the
+seeds), and this is **not built yet** (manual/ad-hoc). **Trajectory (Aaron, 2026-06-20): agents WILL
+hold their own seeds** — durable-agent identity is the direction (m/acc; each persona — otto/amara/ani/
+alexa — already has its own keyring), so design the flow for **agent-held seeds as a first-class case**,
+not just operator-run. The immediate deliverable here is the unified-flow design + the reconciliation
+plan; the generation + git/email change are operator-run *for now*.
 
 ## Composition
 
