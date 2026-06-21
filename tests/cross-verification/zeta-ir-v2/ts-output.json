@@ -1,0 +1,90 @@
+{
+  "ICodec": {
+    "typeParams": [
+      "contravariant:A",
+      "covariant:B"
+    ],
+    "members": [
+      "method:Encode",
+      "method:Decode"
+    ],
+    "laws": 3,
+    "extends": []
+  },
+  "IGroup": {
+    "typeParams": [
+      "invariant:T"
+    ],
+    "members": [
+      "property:Identity",
+      "method:Combine",
+      "method:Inverse"
+    ],
+    "laws": 3,
+    "extends": []
+  },
+  "ILattice": {
+    "typeParams": [
+      "invariant:T"
+    ],
+    "members": [
+      "method:Join",
+      "method:Meet"
+    ],
+    "laws": 7,
+    "extends": []
+  },
+  "IMonoid": {
+    "typeParams": [
+      "invariant:T"
+    ],
+    "members": [
+      "property:Identity",
+      "method:Combine"
+    ],
+    "laws": 2,
+    "extends": []
+  },
+  "IPort": {
+    "typeParams": [
+      "invariant:T"
+    ],
+    "members": [
+      "method:Read",
+      "method:Write"
+    ],
+    "laws": 3,
+    "extends": []
+  },
+  "ISemiring": {
+    "typeParams": [
+      "invariant:TWeight"
+    ],
+    "members": [
+      "property:Zero",
+      "property:One",
+      "method:Add",
+      "method:Mul",
+      "method:Negate"
+    ],
+    "laws": 6,
+    "extends": []
+  },
+  "IStarRing": {
+    "typeParams": [
+      "invariant:TWeight"
+    ],
+    "members": [
+      "property:Zero",
+      "property:One",
+      "method:Add",
+      "method:Mul",
+      "method:Negate",
+      "method:Conj"
+    ],
+    "laws": 5,
+    "extends": [
+      "ISemiring"
+    ]
+  }
+}

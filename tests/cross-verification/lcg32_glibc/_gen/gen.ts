@@ -1,7 +1,7 @@
 import { writeFileSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { parse } from "yaml";
 import { fromCanonicalJson, type Tagged } from "../../../../src/Core.TypeScript/dynamic-value/json.ts";
+import { parse, type YamlValue } from "../../../../src/Core.TypeScript/yaml/dom.ts";
 import * as generatorIr from "../../_harness/generator-ir-registry.ts";
 
 const MASK = (1n << 32n) - 1n;
@@ -85,10 +85,51 @@ function mix(x: bigint): bigint {
 const dir = dirname(import.meta.dir);
 const vectorsPath = join(dir, "vectors.yaml");
 const vectorsYaml = readFileSync(vectorsPath, "utf8");
-const vectors = parse(vectorsYaml).vectors;
+
+interface Vector {
+  readonly id: string;
+  readonly state: bigint;
+}
+
+function asYamlMap(v: YamlValue, ctx: string): Array<[string, YamlValue]> {
+  if (v.t !== "Map") throw new Error(`expected YAML map at ${ctx}, got ${v.t}`);
+  return v.entries;
+}
+
+function yamlField(entries: Array<[string, YamlValue]>, key: string): YamlValue | undefined {
+  for (const [k, val] of entries) if (k === key) return val;
+  return undefined;
+}
+
+function yamlStr(v: YamlValue | undefined, ctx: string): string {
+  if (v?.t !== "Str") throw new Error(`expected YAML string at ${ctx}`);
+  return v.value;
+}
+
+function yamlInt(v: YamlValue | undefined, ctx: string): bigint {
+  if (v?.t !== "Int") throw new Error(`expected YAML int at ${ctx}`);
+  return v.value;
+}
+
+function loadVectors(text: string): readonly Vector[] {
+  const parsed = parse(text);
+  if (!parsed.ok) throw new Error(`YAML parse failed: ${JSON.stringify(parsed.feedback)}`);
+  const root = asYamlMap(parsed.value, "root");
+  const vectorsNode = yamlField(root, "vectors");
+  if (vectorsNode?.t !== "Seq") throw new Error("fixture: missing YAML vectors sequence");
+  return vectorsNode.items.map((item, i) => {
+    const entries = asYamlMap(item, `vectors[${i}]`);
+    return {
+      id: yamlStr(yamlField(entries, "id"), `vectors[${i}].id`),
+      state: yamlInt(yamlField(entries, "state"), `vectors[${i}].state`),
+    };
+  });
+}
+
+const vectors = loadVectors(vectorsYaml);
 
 const out: Record<string, string> = { _source: "generated-from-ir" };
 for (const v of vectors) {
-  out[v.id] = mix(BigInt(v.state)).toString();
+  out[v.id] = mix(v.state).toString();
 }
 writeFileSync(join(dir, 'ts-output.json'), JSON.stringify(out, null, 2));

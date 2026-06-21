@@ -1,0 +1,110 @@
+{
+  "mul-simple": {
+    "complexStates": [
+      "15"
+    ],
+    "realStates": [
+      "15"
+    ],
+    "complexSupport": 1,
+    "realSupport": 1
+  },
+  "mul-wrap": {
+    "complexStates": [
+      "3"
+    ],
+    "realStates": [
+      "3"
+    ],
+    "complexSupport": 1,
+    "realSupport": 1
+  },
+  "xorshr-simple": {
+    "complexStates": [
+      "15"
+    ],
+    "realStates": [
+      "15"
+    ],
+    "complexSupport": 1,
+    "realSupport": 1
+  },
+  "branch-bit0": {
+    "complexStates": [
+      "6",
+      "7"
+    ],
+    "realStates": [
+      "6",
+      "7"
+    ],
+    "complexSupport": 2,
+    "realSupport": 2
+  },
+  "branch-bit2": {
+    "complexStates": [
+      "3",
+      "7"
+    ],
+    "realStates": [
+      "3",
+      "7"
+    ],
+    "complexSupport": 2,
+    "realSupport": 2
+  },
+  "emit-then-retract": {
+    "complexStates": [
+      "5"
+    ],
+    "realStates": [
+      "5"
+    ],
+    "complexSupport": 1,
+    "realSupport": 1
+  },
+  "join-control-set": {
+    "complexStates": [
+      "7"
+    ],
+    "realStates": [
+      "7"
+    ],
+    "complexSupport": 1,
+    "realSupport": 1
+  },
+  "join-control-clear": {
+    "complexStates": [
+      "4"
+    ],
+    "realStates": [
+      "4"
+    ],
+    "complexSupport": 1,
+    "realSupport": 1
+  },
+  "branch-then-join": {
+    "complexStates": [
+      "4",
+      "7"
+    ],
+    "realStates": [
+      "4",
+      "7"
+    ],
+    "complexSupport": 2,
+    "realSupport": 2
+  },
+  "branch-then-mul": {
+    "complexStates": [
+      "6",
+      "9"
+    ],
+    "realStates": [
+      "6",
+      "9"
+    ],
+    "complexSupport": 2,
+    "realSupport": 2
+  }
+}

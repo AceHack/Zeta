@@ -44,7 +44,7 @@ vectors:
   - id: emit-then-retract
     ops: [{ "op": "emit" }, { "op": "retract" }]
     input: "5"
-    expected_support_complex: 0
+    expected_support_complex: 1
     expected_support_real: 1
     note: >-
       emit adds +1, retract adds -1. On complexRing: 1 + 1 - 1 = 1 (weight=1, not cancelled).

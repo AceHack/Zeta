@@ -27,9 +27,6 @@ function repoRoot(): string {
   return r.status === 0 ? r.stdout.trim() : process.cwd();
 }
 
-const ROOT = resolve(repoRoot());
-const SHARD_DIR = join(ROOT, "docs/hygiene-history/ticks");
-
 const BARE_RE = /^(\d{4})Z(-[0-9a-f]+)?$/;
 const HASH_RE = /^(\d{4})(\d{2})Z-[0-9a-f]+$/;
 const COL1_RE = /^\|\s(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z)\s\|\s/;
@@ -45,12 +42,17 @@ function normalizeToPosix(p: string): string {
   return p.replaceAll("\\", "/");
 }
 
-function repoRelative(p: string): string {
-  return normalizeToPosix(relative(ROOT, p));
+function currentRoot(): string {
+  return resolve(repoRoot());
+}
+
+function repoRelative(root: string, p: string): string {
+  return normalizeToPosix(relative(root, p));
 }
 
 export function scanOne(shardPath: string): ScanResult {
-  const pathRel = repoRelative(resolve(ROOT, shardPath));
+  const root = currentRoot();
+  const pathRel = repoRelative(root, resolve(root, shardPath));
   const base = basename(shardPath, ".md");
 
   const parts = pathRel.replace(SHARD_PREFIX, "").split("/");
@@ -165,22 +167,24 @@ function isFile(p: string): boolean {
 }
 
 export function main(argv: string[]): number {
+  const root = currentRoot();
+  const shardDir = join(root, "docs/hygiene-history/ticks");
   let shards: string[];
 
   if (argv[0] === "--files") {
     shards = argv
       .slice(1)
-      .map((p) => resolve(ROOT, p))
-      .filter((p) => repoRelative(p).startsWith(SHARD_PREFIX))
-      .filter((p) => repoRelative(p).endsWith(".md"))
+      .map((p) => resolve(root, p))
+      .filter((p) => repoRelative(root, p).startsWith(SHARD_PREFIX))
+      .filter((p) => repoRelative(root, p).endsWith(".md"))
       .filter((p) => basename(p) !== "README.md")
       .filter(isFile);
   } else {
-    if (!isDir(SHARD_DIR)) {
-      process.stderr.write(`error: ${SHARD_DIR} does not exist\n`);
+    if (!isDir(shardDir)) {
+      process.stderr.write(`error: ${shardDir} does not exist\n`);
       return 2;
     }
-    shards = findShards(SHARD_DIR);
+    shards = findShards(shardDir);
   }
 
   let violations = 0;

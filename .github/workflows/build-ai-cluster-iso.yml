@@ -174,7 +174,7 @@ jobs:
       # expose /dev/kvm; the nixosTest driver falls back to TCG if absent.
       - name: NixOS test — k3s control-plane reaches active (token-deadlock regression)
         working-directory: full-ai-cluster
-        run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs
+        run: nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L --print-build-logs --fallback
 
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
@@ -187,11 +187,11 @@ jobs:
       - name: NixOS test — cluster comes ALL the way up (online; node Ready + CoreDNS)
         timeout-minutes: 35
         working-directory: full-ai-cluster
-        run: nix build .#checks.x86_64-linux.k3s-cluster-online -L --print-build-logs --option sandbox false
+        run: nix build .#checks.x86_64-linux.k3s-cluster-online -L --print-build-logs --fallback --option sandbox false
 
       - name: Build installer ISO
         working-directory: full-ai-cluster
-        run: nix build .#installer-iso --print-build-logs
+        run: nix build .#installer-iso --print-build-logs --fallback
 
       - name: Audit installer ISO content (cascade #4 — post-build floor)
         # Inspects the BUILT ISO via 7z list + asserts expected top-
@@ -454,7 +454,7 @@ jobs:
       # of THIS workflow (no github.event.* interpolation). Same discipline
       # as the QEMU boot-test step above.
       - name: Install cosign
-        if: ${{ !cancelled() }}   # run even if the flaky QEMU full-install gate failed — a built ISO must still upload
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}   # run only after a built ISO was located
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         # Pin verified via gh API 2026-05-27:
         #   gh api repos/sigstore/cosign-installer/releases/latest
@@ -462,7 +462,7 @@ jobs:
         # Per .claude/rules/dep-pin-search-first-authority.md
 
       - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
-        if: ${{ !cancelled() }}   # run even if the flaky QEMU full-install gate failed — a built ISO must still upload
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}   # run only after a built ISO was located
         id: sign
         env:
           # Pass ISO path via env (not direct ${{ }} interpolation in run:)
@@ -501,7 +501,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload ISO as workflow artifact
-        if: ${{ !cancelled() }}   # run even if the flaky QEMU full-install gate failed — a built ISO must still upload
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}   # run only after a built ISO was located
         # Available for download from the workflow run page for ~90 days.
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -512,7 +512,7 @@ jobs:
           compression-level: 0 # ISO is already compressed; re-zipping wastes time
 
       - name: Upload cosign bundle as workflow artifact
-        if: ${{ !cancelled() }}   # run even if the flaky QEMU full-install gate failed — a built ISO must still upload
+        if: ${{ !cancelled() && steps.sign.outcome == 'success' }}   # run only after signing produced a bundle
         # B-0853.1 sibling upload — bundle alongside the ISO for consumers.
         # Separate artifact (not bundled with ISO) so consumers downloading
         # just the ISO do not pay the small extra cost; verifiers can grab it.
@@ -562,7 +562,7 @@ jobs:
 
       - name: Build aarch64 installer ISO
         working-directory: full-ai-cluster
-        run: nix build .#installer-iso --print-build-logs
+        run: nix build .#installer-iso --print-build-logs --fallback
 
       - name: Install QEMU (aarch64 system emulator + EDK2 UEFI firmware)
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-arm qemu-efi-aarch64

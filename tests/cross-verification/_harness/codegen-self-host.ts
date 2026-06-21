@@ -14,7 +14,6 @@
  * arithmetic IR, produces the SAME output as the committed codegen.
  */
 
-
 // ─── The IR of the codegen itself ────────────────────────────────────────
 
 /**

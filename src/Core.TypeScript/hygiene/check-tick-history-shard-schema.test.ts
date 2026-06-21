@@ -12,11 +12,11 @@ let scanOne: ScanOne;
 let priorRepoRoot: string | undefined;
 
 beforeAll(async () => {
+  const mod = await import("./check-tick-history-shard-schema");
+  scanOne = mod.scanOne;
   TMPDIR = mkdtempSync(join(tmpdir(), "shard-schema-test-"));
   priorRepoRoot = process.env["REPO_ROOT"];
   process.env["REPO_ROOT"] = TMPDIR;
-  const mod = await import("./check-tick-history-shard-schema");
-  scanOne = mod.scanOne;
 });
 
 afterAll(() => {
