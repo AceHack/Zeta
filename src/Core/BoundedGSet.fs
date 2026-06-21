@@ -5,11 +5,13 @@ open System.Collections.Immutable
 /// How a bounded GSet decides what to forget when the finite room is full.
 ///
 /// Forgetting is heat: every policy that evicts a materialized value reports it
-/// on the result. `RejectNew` is the cold policy: it preserves the existing
-/// view and backpressures instead of silently losing history.
+/// on the result. `NoForgetBackpressure` is the cold policy: it preserves the
+/// existing view and backpressures instead of silently losing history.
 [<RequireQualifiedAccess>]
 type BoundedGSetForgetPolicy =
     /// Never evict a materialized value; reject new/out-of-window values.
+    | NoForgetBackpressure
+    /// Short legacy alias for `NoForgetBackpressure`.
     | RejectNew
     /// Forget the lowest-ranked values under canonical comparison.
     /// Use this for rolling logs when the key contains a monotone tick/sequence.
@@ -109,15 +111,18 @@ module BoundedGSet =
                   Heat = emptyHeat }
         else
             match config.ForgetPolicy with
+            | BoundedGSetForgetPolicy.NoForgetBackpressure
             | BoundedGSetForgetPolicy.RejectNew ->
                 Error(BoundedGSetError.CapacityExceeded(config.Capacity, items.Length))
-            | BoundedGSetForgetPolicy.ForgetHighest
+            | BoundedGSetForgetPolicy.ForgetHighest ->
+                let kept = GSet<'T>(ImmutableArray.Create(items, 0, keepCount))
+
+                Ok
+                    { State = { config = config; view = kept }
+                      Heat = heatOf (difference g kept) }
             | BoundedGSetForgetPolicy.ForgetLowest ->
                 let offset =
-                    match config.ForgetPolicy with
-                    | BoundedGSetForgetPolicy.ForgetHighest -> 0
-                    | BoundedGSetForgetPolicy.ForgetLowest -> items.Length - keepCount
-                    | BoundedGSetForgetPolicy.RejectNew -> 0
+                    items.Length - keepCount
 
                 let kept = GSet<'T>(ImmutableArray.Create(items, offset, keepCount))
 

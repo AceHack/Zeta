@@ -98,9 +98,9 @@ type RecordingHeatSink() =
             Ok()
 
 
-/// Bounded in-room heat storage. Use `RejectNew` for the no-forget mode; use a
-/// forgetting policy only for experiments that explicitly measure heat-channel
-/// self-shedding via `StorageHeat`.
+/// Bounded in-room heat storage. Use `NoForgetBackpressure` for the no-forget
+/// mode; use a forgetting policy only for experiments that explicitly measure
+/// heat-channel self-shedding via `StorageHeat`.
 [<Sealed>]
 type BoundedHeatSink(config: BoundedGSetConfig) =
     let lockObj = obj ()

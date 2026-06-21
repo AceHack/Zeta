@@ -13,6 +13,10 @@ let private rejectNew3 =
     { Capacity = 3
       ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
 
+let private noForgetBackpressure3 =
+    { Capacity = 3
+      ForgetPolicy = BoundedGSetForgetPolicy.NoForgetBackpressure }
+
 let private forgetHighest3 =
     { Capacity = 3
       ForgetPolicy = BoundedGSetForgetPolicy.ForgetHighest }
@@ -72,6 +76,21 @@ let ``reject-new policy backpressures instead of forgetting`` () =
         capacity |> should equal 3
         count |> should equal 4
     | other -> failwithf "expected CapacityExceeded feedback, got %A" other
+
+[<Fact>]
+let ``no-forget backpressure policy is the canonical cold option`` () =
+    match BoundedGSet.ofSeq<int> noForgetBackpressure3 [ 1; 2; 3; 4 ] with
+    | Error(BoundedGSetError.CapacityExceeded(capacity, count)) ->
+        capacity |> should equal 3
+        count |> should equal 4
+    | other -> failwithf "expected CapacityExceeded feedback, got %A" other
+
+    let full = ofInts noForgetBackpressure3 [ 1; 2; 3 ]
+    let rejected = BoundedGSet.add 4 full |> unwrap
+    rejected.Admission |> should equal BoundedGSetAdmission.RejectedByBound
+    rejected.State |> BoundedGSet.toList |> should equal [ 1; 2; 3 ]
+    Assert.Empty(rejected.Heat.Forgotten |> GSet.toList)
+    rejected.Heat.Units |> should equal 0
 
 [<Fact>]
 let ``forget policies keep the configured side and report heat`` () =
@@ -190,6 +209,53 @@ let ``bounded heat adapter keeps empty heat cold`` () =
     match BoundedHeat.emit (sink :> IHeatSink) "bounded-gset-room" "bounded-gset.forgotten" "nothing forgotten" BoundedGSet.emptyHeat<int> with
     | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
     | Ok () -> Assert.Empty(sink.Signatures)
+
+[<Fact>]
+let ``bounded heat sink no-forget policy backpressures without losing stored heat`` () =
+    let sink =
+        BoundedHeatSink
+            { Capacity = 1
+              ForgetPolicy = BoundedGSetForgetPolicy.NoForgetBackpressure }
+
+    let port = sink :> IHeatSink
+    let first = HeatSignature.ofMass "chip8-room" "meta-cart.missing" 1 1.0 "first missing child cart"
+    let second = HeatSignature.ofMass "chip8-room" "meta-cart.denied" 1 1.0 "second denied child cart"
+
+    match port.Emit first with
+    | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
+    | Ok () -> ()
+
+    match port.Emit second with
+    | Error(HeatSinkFeedback.Backpressure(heat, capacity, count)) ->
+        heat |> should equal second
+        capacity |> should equal 1
+        count |> should equal 2
+        sink.Stored |> should equal [ first ]
+        Assert.Empty(sink.StorageHeat.Forgotten |> GSet.toList)
+        sink.StorageHeat.Units |> should equal 0
+    | other -> failwithf "expected heat-channel backpressure, got %A" other
+
+[<Fact>]
+let ``bounded heat sink rolling policy reports recursive heat explicitly`` () =
+    let sink =
+        BoundedHeatSink
+            { Capacity = 1
+              ForgetPolicy = BoundedGSetForgetPolicy.ForgetLowest }
+
+    let port = sink :> IHeatSink
+    let oldHeat = HeatSignature.ofMass "a-room" "bounded-gset.forgotten" 1 1.0 "old heat"
+    let newHeat = HeatSignature.ofMass "z-room" "bounded-gset.forgotten" 1 1.0 "new heat"
+
+    match port.Emit oldHeat with
+    | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
+    | Ok () -> ()
+
+    match port.Emit newHeat with
+    | Error feedback -> Assert.Fail(sprintf "unexpected heat sink feedback: %A" feedback)
+    | Ok () ->
+        sink.Stored |> should equal [ newHeat ]
+        sink.StorageHeat.Forgotten |> GSet.toList |> should equal [ oldHeat ]
+        sink.StorageHeat.Units |> should equal 1
 
 [<Fact>]
 let ``modulo GSet rejects collisions without forgetting`` () =
