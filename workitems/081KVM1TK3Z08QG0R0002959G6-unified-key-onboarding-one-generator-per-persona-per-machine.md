@@ -50,6 +50,58 @@ per-machine made explicit** and known — no more floating ad-hoc keys.
   So **machine identity ≠ cluster membership**: a registered machine can be a flasher-only dev box.
   The `(user × machine)` pair is the unit — same user, different dev machine ⇒ a new machine key.
 
+## Trust distribution — don't list every dev machine on every node (Aaron, 2026-06-20)
+
+**The problem (Aaron spotted it):** when you `ssh A→B`, B authenticates the **pubkey A presents**
+against B's `authorizedKeys.keys`. Today every node carries a **list** of trusted pubkeys (confirmed:
+`full-ai-cluster/nixos/modules/operator-ssh-keys.nix` → `users.users.zeta.openssh.authorizedKeys.keys`;
+**no SSH CA**). With many dev machines that's the **N×M trap**: every node must list every dev machine
+independently. Two cooperating fixes, both **centralized (no per-node lists)**:
+
+- **SSH Certificate Authority (auth plane).** Nodes trust **one CA pubkey** (`TrustedUserCAKeys`); each
+  dev machine's key is **signed into a cert** carrying `principal=aaron` (+ machine id + a validity
+  window = the rolling-keys discipline). Result: trust anchored at the **user** (one CA per node) AND
+  per-**machine** identity + per-machine revocation. The persona PKI/keyring is the CA. → `N`-trust-`1`,
+  not `N×M`. Answers "user vs user×machine": **the cert binds the user (principal), the key stays
+  per-machine.**
+- **Headscale (network plane — already deployed: `k8s/applications/headscale/`).** Each dev machine
+  **enrolls once**, tagged by owner (`tag:aaron-dev`) — that node registry **is** the per-dev-machine
+  registry. One tag-based **ACL** (`tag:aaron-dev → cluster:22`) grants reachability for all your dev
+  machines without editing any node. **Tailscale/Headscale SSH** can even terminate the session on the
+  tailnet identity + ACL (no SSH keys for that path), or compose with the SSH-CA for user-auth.
+
+Net: **Headscale = reachability + per-machine enrollment tagged by user; SSH-CA (or Tailscale-SSH) =
+user auth.** Retire the per-node `authorizedKeys.keys` lists — that's the only model that forces
+"every machine trusts every dev machine independently."
+
+### Pre-cluster bootstrap with just git/GitHub — "can we fake a CA?" (Aaron, 2026-06-20)
+
+In-cluster the real PKI is **Vault** (CA custody) + **cert-manager** (issuance/rotation) + Headscale
+(ACL). **Before** the cluster exists, you don't *fake* a CA — you run a **real but minimal** one whose
+trust is distributed through git/GitHub, and it's **forward-compatible** (same trust *model*, only
+custody/automation upgrade later):
+
+- **Option A — GitHub as IdP + key directory (zero CA, simplest).** GitHub already publishes every
+  user's keys at `https://github.com/<user>.keys` (SSH) and `.gpg`. Trust = **org membership** + the
+  published `.keys`; `install.sh`/nix pulls authorized keys from GitHub (`ssh-import-id gh:<user>` or
+  curl). Good enough to bootstrap; no CA to run.
+- **Option B — real SSH CA, git-distributed (the forward-compatible one).** A genuine SSH-CA keypair
+  (operator-held / **seed-derived** via the persona HD path); the CA **public** key is **committed to
+  git** → fed to `TrustedUserCAKeys`; sign per-machine certs locally with `ssh-keygen -s`. Nodes (even
+  pre-cluster, via the nix config pulled from git) trust the one CA. **git is the distribution channel,
+  not the secret store** — the CA *private* key never lands in git.
+- **Git-native attestation** underpins both: **SSH-signed commits** (`gpg.format=ssh`) +
+  a committed **`allowed_signers`** / the `maintainers/<persona>/keyring-public.json` registry = the
+  git-native "is this key a trusted maintainer's" check (the repo's signed history is the attestation
+  chain — the "GitHub border as trust bootstrap" mode).
+- **Migration (no model change):** git-distributed CA pubkey + GitHub `.keys` **now** → **Vault** takes
+  custody of the CA private key + **cert-manager** automates issuance/rotation + **Headscale** ACLs
+  **in-cluster**. The trust *shape* (trust-the-CA, per-machine certs, tag-by-user) is identical; only
+  custody + automation upgrade. So **Option B built now is not throwaway** — Vault/cert-manager assume
+  the CA role the git-distributed CA already established. Anchor:
+  `docs/research/2026-06-09-identity-trust-and-network-plane-two-modes-equipment-vault-headscale-vs-github-free-secrets-tailscale-github-trust-bootstrap-pluggable-idp.md`
+  (the two trust modes: equipment-Vault-Headscale vs GitHub-free-secrets).
+
 ## What to combine (the scattered pieces today)
 
 - **Generator:** `tools/setup/persona-keys/` — `gen.ts` / `derive.ts` / `keyset.ts` / `keyring.sh` /
