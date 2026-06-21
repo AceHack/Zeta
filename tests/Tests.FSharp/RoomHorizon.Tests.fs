@@ -124,16 +124,30 @@ let ``rolling horizon exports forgetting as host heat`` () =
     Assert.Equal("room-horizon.forgotten", sink.Signatures.[0].Kind)
 
 [<Fact>]
-let ``rolling horizon preserves heat sink backpressure as typed feedback`` () =
+let ``updateWithHeat exports rolling horizon forgetting through injected host port`` () =
     let current =
         BoundedGSet.ofSeq<int> (config 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]
         |> mustOk
         |> fun projection -> projection.State
 
+    let sink = RecordingHeatSink()
+
     let report =
         [ candidate 3 "newer" "C" 1L 1L 1L ]
-        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> RH.updateWithHeat (sink :> IHeatSink) "vision-test" current (SoftThrottle.tank 1.0 0.0)
         |> mustOk
+
+    Assert.Equal<int list>([ 2; 3 ], report.HorizonAfter |> BoundedGSet.toList)
+    Assert.Equal<int list>([ 1 ], report.HorizonHeat.Forgotten |> GSet.toList)
+    Assert.Single(sink.Signatures) |> ignore
+    Assert.Equal("room-horizon.forgotten", sink.Signatures.[0].Kind)
+
+[<Fact>]
+let ``rolling horizon preserves heat sink backpressure as typed feedback`` () =
+    let current =
+        BoundedGSet.ofSeq<int> (config 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]
+        |> mustOk
+        |> fun projection -> projection.State
 
     let sink =
         BoundedHeatSink
@@ -143,9 +157,12 @@ let ``rolling horizon preserves heat sink backpressure as typed feedback`` () =
     let filler = HeatSignature.ofMass "occupied" "heat.fill" 1 1.0 "pre-fill bounded heat sink"
     (sink :> IHeatSink).Emit filler |> mustOk
 
-    match RH.emitHeat (sink :> IHeatSink) "vision-test" report with
-    | Ok () -> Assert.Fail("expected bounded heat sink backpressure")
-    | Error(HeatSinkFeedback.Backpressure(heat, capacity, count)) ->
+    match
+        [ candidate 3 "newer" "C" 1L 1L 1L ]
+        |> RH.updateWithHeat (sink :> IHeatSink) "vision-test" current (SoftThrottle.tank 1.0 0.0)
+    with
+    | Ok _ -> Assert.Fail("expected bounded heat sink backpressure")
+    | Error(RH.HeatFeedback(HeatSinkFeedback.Backpressure(heat, capacity, count))) ->
         Assert.Equal("room-horizon.forgotten", heat.Kind)
         Assert.Equal(1, capacity)
         Assert.Equal(2, count)
@@ -158,9 +175,11 @@ let ``no-forget horizon exports paid finite-view rejection as backpressure heat`
         |> mustOk
         |> fun projection -> projection.State
 
+    let sink = RecordingHeatSink()
+
     let report =
         [ candidate 2 "second" "B" 1L 1L 1L ]
-        |> RH.update current (SoftThrottle.tank 1.0 0.0)
+        |> RH.updateWithHeat (sink :> IHeatSink) "vision-test" current (SoftThrottle.tank 1.0 0.0)
         |> mustOk
 
     Assert.Equal<int list>([ 2 ], report.RejectedByHorizon |> GSet.toList)
@@ -171,6 +190,8 @@ let ``no-forget horizon exports paid finite-view rejection as backpressure heat`
     Assert.Single(signatures) |> ignore
     Assert.Equal("room-horizon.backpressure", signatures.[0].Kind)
     Assert.Equal(1, signatures.[0].Units)
+    Assert.Single(sink.Signatures) |> ignore
+    Assert.Equal("room-horizon.backpressure", sink.Signatures.[0].Kind)
 
 [<Fact>]
 let ``byte-deferred futures stay cold until they enter the room`` () =
@@ -248,3 +269,31 @@ let ``inference projection reports finite horizon rejection after byte admission
     Assert.Equal<int list>([ 2; 3 ], report.Horizon.HorizonAfter |> BoundedGSet.toList)
     Assert.Empty(report.Horizon.RetainedKeys |> GSet.toList)
     Assert.Equal<int list>([ 1 ], report.Horizon.RejectedByHorizon |> GSet.toList)
+
+[<Fact>]
+let ``admitInferenceWithHeat exports finite horizon pressure after exact inference`` () =
+    let inference =
+        [ inferredCandidate "first" "A" 1L 1L 1L
+          inferredCandidate "second" "B" 1L 1L 1L ]
+        |> PI.infer
+        |> mustOk
+
+    let keyOf (scored: PI.Scored<string>) =
+        if scored.Candidate.Label = "first" then 1 else 2
+
+    let sink = RecordingHeatSink()
+
+    let report =
+        RH.admitInferenceWithHeat
+            (sink :> IHeatSink)
+            "vision-test"
+            (config 1 BoundedGSetForgetPolicy.RejectNew)
+            (SoftThrottle.tank 2.0 0.0)
+            keyOf
+            (fun _ -> PI.neutralPriority)
+            inference
+        |> mustOk
+
+    Assert.Equal<int list>([ 2 ], report.Horizon.RejectedByHorizon |> GSet.toList)
+    Assert.Single(sink.Signatures) |> ignore
+    Assert.Equal("room-horizon.backpressure", sink.Signatures.[0].Kind)

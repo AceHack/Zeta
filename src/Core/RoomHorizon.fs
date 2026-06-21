@@ -25,6 +25,7 @@ module RoomHorizon =
         | InferenceFeedback of PredictionInference.Feedback
         | VisionFeedback of Vision.GrowthFeedback
         | HorizonFeedback of BoundedGSetError
+        | HeatFeedback of HeatSinkFeedback
 
     type Report<'K, 'S when 'K : comparison> =
         { HorizonBefore: BoundedGSet<'K>
@@ -68,13 +69,16 @@ module RoomHorizon =
         |> List.choose id
 
     /// Emit finite horizon heat through an injected host/room boundary.
-    let emitHeat (sink: IHeatSink) (source: string) (report: Report<'K, 'S>) : Result<unit, HeatSinkFeedback> =
+    let emitHeat (sink: IHeatSink) (source: string) (report: Report<'K, 'S>) : Result<unit, Feedback> =
         let rec loop signatures =
             result {
                 match signatures with
                 | [] -> return ()
                 | signature :: tail ->
-                    do! sink.Emit signature
+                    do!
+                        sink.Emit signature
+                        |> Result.mapError HeatFeedback
+
                     return! loop tail
             }
 
@@ -193,6 +197,20 @@ module RoomHorizon =
             return! reportFromOrdered current tank orderedCandidates
         }
 
+    /// Update and immediately export any finite-horizon heat/backpressure.
+    let updateWithHeat
+        (sink: IHeatSink)
+        (source: string)
+        (current: BoundedGSet<'K>)
+        (tank: SoftThrottle.Tank)
+        (candidates: Candidate<'K, 'S> list)
+        : Result<Report<'K, 'S>, Feedback> =
+        result {
+            let! report = update current tank candidates
+            do! emitHeat sink source report
+            return report
+        }
+
     /// Start from an empty bounded horizon and admit the affordable visible
     /// prefix of candidates.
     let admit
@@ -206,6 +224,20 @@ module RoomHorizon =
                 |> Result.mapError HorizonFeedback
 
             return! update empty tank candidates
+        }
+
+    /// Admit from an empty horizon and immediately export heat/backpressure.
+    let admitWithHeat
+        (sink: IHeatSink)
+        (source: string)
+        (config: BoundedGSetConfig)
+        (tank: SoftThrottle.Tank)
+        (candidates: Candidate<'K, 'S> list)
+        : Result<Report<'K, 'S>, Feedback> =
+        result {
+            let! report = admit config tank candidates
+            do! emitHeat sink source report
+            return report
         }
 
     /// Project exact inference into a finite room view. Posterior truth stays
@@ -238,6 +270,22 @@ module RoomHorizon =
                   Horizon = horizon }
         }
 
+    /// Project inference into the horizon and immediately export horizon heat.
+    let updateInferenceWithHeat
+        (sink: IHeatSink)
+        (source: string)
+        (current: BoundedGSet<'K>)
+        (tank: SoftThrottle.Tank)
+        (keyOf: PredictionInference.Scored<'S> -> 'K)
+        (priorityOf: PredictionInference.Scored<'S> -> PredictionInference.BranchPriority)
+        (inference: PredictionInference.Inference<'S>)
+        : Result<InferenceReport<'K, 'S>, Feedback> =
+        result {
+            let! report = updateInference current tank keyOf priorityOf inference
+            do! emitHeat sink source report.Horizon
+            return report
+        }
+
     /// Start from an empty bounded room view and project exact inference into
     /// the affordable visible prefix.
     let admitInference
@@ -253,4 +301,20 @@ module RoomHorizon =
                 |> Result.mapError HorizonFeedback
 
             return! updateInference empty tank keyOf priorityOf inference
+        }
+
+    /// Project inference from an empty horizon and immediately export heat.
+    let admitInferenceWithHeat
+        (sink: IHeatSink)
+        (source: string)
+        (config: BoundedGSetConfig)
+        (tank: SoftThrottle.Tank)
+        (keyOf: PredictionInference.Scored<'S> -> 'K)
+        (priorityOf: PredictionInference.Scored<'S> -> PredictionInference.BranchPriority)
+        (inference: PredictionInference.Inference<'S>)
+        : Result<InferenceReport<'K, 'S>, Feedback> =
+        result {
+            let! report = admitInference config tank keyOf priorityOf inference
+            do! emitHeat sink source report.Horizon
+            return report
         }
