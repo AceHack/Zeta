@@ -1,0 +1,19 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "ILattice",
+  "typeParams": [{ "name": "T", "variance": "invariant" }],
+  "doc": "Lattice: join (LUB) + meet (GLB). The CRDT merge structure.",
+  "members": [
+    { "name": "Join", "kind": "method", "params": [{"name": "a", "type": "T"}, {"name": "b", "type": "T"}], "returns": "T", "doc": "Least upper bound (⊔). Idempotent, commutative, associative." },
+    { "name": "Meet", "kind": "method", "params": [{"name": "a", "type": "T"}, {"name": "b", "type": "T"}], "returns": "T", "doc": "Greatest lower bound (⊓). Idempotent, commutative, associative." }
+  ],
+  "laws": [
+    "Join is idempotent: Join(a, a) = a",
+    "Join is commutative: Join(a, b) = Join(b, a)",
+    "Join is associative: Join(Join(a,b),c) = Join(a,Join(b,c))",
+    "Meet is idempotent: Meet(a, a) = a",
+    "Meet is commutative: Meet(a, b) = Meet(b, a)",
+    "Meet is associative: Meet(Meet(a,b),c) = Meet(a,Meet(b,c))",
+    "Absorption: Join(a, Meet(a,b)) = a; Meet(a, Join(a,b)) = a"
+  ]
+}

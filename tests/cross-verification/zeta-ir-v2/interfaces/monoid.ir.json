@@ -1,0 +1,14 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IMonoid",
+  "typeParams": [{ "name": "T", "variance": "invariant" }],
+  "doc": "Monoid: identity + combine. No inverse. The CRDT merge floor.",
+  "members": [
+    { "name": "Identity", "kind": "property", "type": "T", "doc": "The neutral element." },
+    { "name": "Combine", "kind": "method", "params": [{"name": "a", "type": "T"}, {"name": "b", "type": "T"}], "returns": "T", "doc": "Associative, not necessarily invertible." }
+  ],
+  "laws": [
+    "Combine is associative: Combine(Combine(a,b),c) = Combine(a,Combine(b,c))",
+    "Identity is neutral: Combine(a, Identity) = a = Combine(Identity, a)"
+  ]
+}

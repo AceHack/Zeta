@@ -1,0 +1,18 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "ICodec",
+  "typeParams": [
+    { "name": "A", "variance": "contravariant" },
+    { "name": "B", "variance": "covariant" }
+  ],
+  "doc": "Codec: encode/decode pair. A is contravariant (domain), B is covariant (serialized).",
+  "members": [
+    { "name": "Encode", "kind": "method", "params": [{"name": "a", "type": "A"}], "returns": "B", "doc": "Serialize domain value to wire format." },
+    { "name": "Decode", "kind": "method", "params": [{"name": "b", "type": "B"}], "returns": "A", "doc": "Deserialize wire format to domain value." }
+  ],
+  "laws": [
+    "Round-trip: Decode(Encode(a)) = a (for all valid a)",
+    "Encode is total: never throws on valid domain values",
+    "Decode may fail: invalid wire format → error (not silent corruption)"
+  ]
+}

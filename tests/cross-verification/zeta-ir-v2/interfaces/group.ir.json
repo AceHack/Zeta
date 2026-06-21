@@ -1,0 +1,16 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IGroup",
+  "typeParams": [{ "name": "T", "variance": "invariant" }],
+  "doc": "Group: identity + combine + inverse. Minimal structure for undo/retract.",
+  "members": [
+    { "name": "Identity", "kind": "property", "type": "T", "doc": "The neutral element." },
+    { "name": "Combine", "kind": "method", "params": [{"name": "a", "type": "T"}, {"name": "b", "type": "T"}], "returns": "T", "doc": "Associative binary operation." },
+    { "name": "Inverse", "kind": "method", "params": [{"name": "a", "type": "T"}], "returns": "T", "doc": "Group inverse: Combine(a, Inverse(a)) = Identity." }
+  ],
+  "laws": [
+    "Combine is associative: Combine(Combine(a,b),c) = Combine(a,Combine(b,c))",
+    "Identity is neutral: Combine(a, Identity) = a = Combine(Identity, a)",
+    "Inverse undoes Combine: Combine(a, Inverse(a)) = Identity"
+  ]
+}
