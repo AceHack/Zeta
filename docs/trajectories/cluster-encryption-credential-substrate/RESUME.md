@@ -5,7 +5,7 @@ Last refreshed: 2026-06-21
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
-Next concrete action: build the teardown/unregister primitive (TS now; core primitive → all langs via gen/ eventually), dry-run it, then do a live wipe + clean re-onboard to prove the one-fingerprint UX end-to-end.
+Next concrete action: teardown/unregister primitive is BUILT (PR open, Otto verify-gate) — `tools/setup/persona-keys/teardown.ts` + `teardown-cli.ts` + `teardown.test.ts`. Remaining: live wipe (`--confirm` + biometric) + clean re-onboard to prove the one-fingerprint UX end-to-end; then back out 1Password to see which steps go manual.
 
 ## 2026-06-21 — Identity+Crypto onboarding consolidated; one-fingerprint vision
 
@@ -30,7 +30,14 @@ strongly-encouraged).
 - **Dual rotation from the start** (overlap-window dual-key, the 2026-06-15 decision) on every key.
 - **Teardown/unregister primitive:** delete everything (CA, machine, cert, keyring) + unregister
   from main — a CORE PRIMITIVE (TS now; all langs via gen/ eventually). Needed to prove clean
-  re-onboarding. (Writing it now.)
+  re-onboarding. **BUILT** (PR open, Otto verify-gate): two halves behind injected effects
+  (noninterference §13) — (1) LOCAL WIPE of `~/.config/zeta/{ca,machine,keyring,keyset}`
+  (shred-then-unlink, biometric-gated fail-closed); (2) REPO UNREGISTER staging `git rm` of
+  `maintainers/<ca>/ssh-ca.pub` + `machines/<host>.pub` + `machines/<host>-cert.pub` for a PR
+  (never pushes, respects shared-checkout-is-view-only). `--dry-run` is DEFAULT-safe (reports
+  the plan, touches nothing, never prompts); `--confirm` + ONE biometric does the real wipe;
+  idempotent re-run = "already clean"; optional `--note-1password` PRINTS (never deletes) the
+  backup items. Files: `tools/setup/persona-keys/teardown{.ts,-cli.ts,.test.ts}`.
 - **Then back out 1Password:** run the same flow WITHOUT 1Password, see which steps go manual vs
   stay automatic — the **hexagonal ports** make the secret/key/CA backends swap with no call-site
   change. *"The interfaces are the valuable thing"* (Aaron, repeated) — the ports ARE the value.
