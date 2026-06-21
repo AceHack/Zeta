@@ -626,3 +626,39 @@ Anchors for the **universal action grammar (the 4×4 / 16-cell grid — `grammar
   is the policy choosing among cases (the soft-scheduler / world-model loop §9), not the DU itself — the DU makes
   the workflow **legible and exhaustively-checkable**, it doesn't supply the smarts. Ties: the DU = the yin/yang
   type-discriminator (`DynamicValue`); the conversation-workflow = `observe.ts` over the action grammar.
+
+## Open-source ESP32 bitcoin-miner firmwares — the MCU flashing/toolchain reference (Aaron 2026-06-20)
+
+Reference set for the **microcontroller + RTOS** workitem (`081KVM04R4T08QG0R003AZ0E6K`): Aaron has
+**hundreds of reflashable ESP32s** salvaged from these miners. We study the firmwares as the
+**ESP32 toolchain + SHA-datapath reference** (and the device **config/registration JSON** format — the
+per-board descriptor these use), then reflash the fleet with .NET nanoFramework / a Zeta payload.
+**Selection target (Aaron): ≥ 1 MH/s (1000 kH/s)** of SHA throughput — i.e. firmwares/configs that
+push the ESP32 (notably its **hardware SHA accelerator**) well past the ~50–80 kH/s of naive software
+SHA. Note the split to verify per repo: **ASIC-offload** designs (BM1366/BM1368/BM1370 — GH/s+, the
+ESP32 is just the controller) vs **pure-ESP32 CPU/HW-SHA** "lottery" miners (kH/s–MH/s on the ESP32
+itself). For our compute/CAS-node reuse, the ESP32's *own* hash path is what matters.
+
+- **bitaxeorg/ESP-Miner** — `https://github.com/bitaxeorg/ESP-Miner` — the canonical **Bitaxe** firmware
+  (open-source ASIC miner; ESP32-S3 controller + BM13xx ASIC). The upstream most others fork; best
+  reference for the ESP32 controller code, stratum client, and the board/config descriptor.
+- **shufps/ESP-Miner-NerdQAxePlus** — `https://github.com/shufps/ESP-Miner-NerdQAxePlus` — **NerdQAxe+**
+  (multi-ASIC, higher-hashrate Bitaxe-lineage). Reference for the higher-throughput config.
+- **BitMaker-hub/ESP-Miner-NerdAxe** — `https://github.com/BitMaker-hub/ESP-Miner-NerdAxe` — **NerdAxe**
+  ESP-Miner fork.
+- **BitMaker-hub/NerdAxe** — `https://github.com/BitMaker-hub/NerdAxe` — NerdAxe hardware/firmware.
+- **nerdaxe (org)** — `https://github.com/nerdaxe` — the NerdAxe org (related repos).
+- **bitmaker-hub/nerdminer_v2** — `https://github.com/bitmaker-hub/nerdminer_v2` — **NerdMiner v2**,
+  the **pure-ESP32 CPU "lottery" miner** (no ASIC). The key reference for ESP32-native SHA-256 +
+  the HW-SHA-accelerator path — directly relevant to our content-addressing / Merkle / anti-Sybil
+  reuse of the fleet.
+- **SneezeGUI/SparkMiner** — `https://github.com/SneezeGUI/SparkMiner` — SparkMiner (ESP32 miner).
+- **NMminer1024/NMMiner** — `https://github.com/NMminer1024/NMMiner` — **NMMiner**, ESP32 lottery
+  miner (BTC/other); another pure-ESP32 SHA reference + its device JSON config.
+
+*Use:* extract (a) the ESP32 + HW-SHA-accelerator datapath (the ≥1 MH/s question), (b) the device
+config/registration JSON schema, (c) the OTA/flashing toolchain — feeding the MCU workitem's
+survey→boundary→first-slice. *Peel:* these are **mining** firmwares; we reuse the **SHA datapath +
+flashing toolchain + board descriptor**, not the mining logic — the payload becomes Zeta CAS/Merkle/
+CHIP-8 compute, not pool hashing. Ties: content-addressing (CAS), 4-lang Merkle proofs, anti-Sybil
+entropy-cost (G3b), the soft mutual-empowerment / best-effort node fleet (orientation-flow note).

@@ -41,11 +41,20 @@ were doing SHA hashing). That changes the priority and the first slice:
   cache), **Merkle proofs** (the 4-lang byte-locked inclusion proofs), **anti-Sybil entropy-cost / G3b**
   (proof-of-work-style metering), and **CHIP-8-frame content-addressing** for distributed compute. An
   ESP32 fleet is essentially a distributed hash/CAS/Merkle co-processor pool.
-- **Reflashable — we control the firmware.** The boards can be **overwritten** (not vendor-locked);
-  Aaron is sourcing the **current open-source miner firmware** as the flashing reference / starting
-  point. So deploying .NET nanoFramework (or a Zeta-shaped payload) onto the fleet is viable, and the
-  existing OSS SHA-miner code is a concrete reference for the ESP32 toolchain + the SHA datapath we'd
-  reuse.
+- **Reflashable — we control the firmware.** The boards can be **overwritten** (not vendor-locked).
+  So deploying .NET nanoFramework (or a Zeta-shaped payload) onto the fleet is viable, and the existing
+  OSS SHA-miner firmwares are the concrete **ESP32 toolchain + SHA-datapath + board-config-JSON**
+  reference. **Selection target (Aaron): ≥ 1 MH/s (1000 kH/s)** on the ESP32 itself — i.e. configs that
+  drive the **hardware SHA accelerator** past naive software SHA (~50–80 kH/s). OSS reference set (added
+  to `docs/PRIOR-ART-LIST.md` "Open-source ESP32 bitcoin-miner firmwares"):
+  - `bitaxeorg/ESP-Miner` (canonical Bitaxe — ESP32-S3 controller, the upstream),
+    `shufps/ESP-Miner-NerdQAxePlus` (NerdQAxe+, higher throughput),
+    `BitMaker-hub/ESP-Miner-NerdAxe` · `BitMaker-hub/NerdAxe` · `github.com/nerdaxe` (NerdAxe lineage),
+  - **`bitmaker-hub/nerdminer_v2`** + **`NMminer1024/NMMiner`** — pure-ESP32 "lottery" miners (no ASIC):
+    the key references for **ESP32-native + HW-SHA-accelerator** hashing (our CAS/Merkle reuse path),
+  - `SneezeGUI/SparkMiner`.
+  *Peel:* we reuse the **SHA datapath + flashing toolchain + device JSON descriptor**, not the mining
+  logic — the payload becomes Zeta CAS/Merkle/CHIP-8 compute, not pool hashing.
 - **Implication for the first slice:** target this fleet directly. Smallest viable: an ESP32 node that
   (a) content-addresses + verifies CAS blocks (its native SHA strength), or (b) runs the deterministic
   CHIP-8 compute unit and agrees-by-hash with peers (redundancy-with-agreement = free, since
