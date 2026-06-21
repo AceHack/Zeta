@@ -65,3 +65,35 @@ module NormalizerProperties =
             ],
             norm.Ops
         )
+
+    [<Fact>]
+    let ``normalize is incomplete: equivalent programs can have distinct normal forms (mul composition)`` () =
+        let progA = { ZetaIrV4.Generator = "A"; ZetaIrV4.Version = 1; ZetaIrV4.Width = 64; ZetaIrV4.Ops = [ZetaIrV4.Mul 2L; ZetaIrV4.Mul 3L] }
+        let progB = { ZetaIrV4.Generator = "B"; ZetaIrV4.Version = 1; ZetaIrV4.Width = 64; ZetaIrV4.Ops = [ZetaIrV4.Mul 6L] }
+        
+        // They are functionally equivalent over uint64
+        let evalA x = (x * 2UL) * 3UL
+        let evalB x = x * 6UL
+        for i in 0UL .. 100UL do
+            Assert.Equal(evalA i, evalB i)
+            
+        // But their normal forms are distinct
+        let normA = normalize progA
+        let normB = normalize progB
+        Assert.NotEqual<ZetaIrV4.Op list>(normA.Ops, normB.Ops)
+
+    [<Fact>]
+    let ``normalize is incomplete: equivalent programs can have distinct normal forms (rotation algebra)`` () =
+        let progA = { ZetaIrV4.Generator = "A"; ZetaIrV4.Version = 1; ZetaIrV4.Width = 64; ZetaIrV4.Ops = [ZetaIrV4.Rotl 1L; ZetaIrV4.Rotl 2L] }
+        let progB = { ZetaIrV4.Generator = "B"; ZetaIrV4.Version = 1; ZetaIrV4.Width = 64; ZetaIrV4.Ops = [ZetaIrV4.Rotl 3L] }
+        
+        // They are functionally equivalent over uint64
+        let evalA x = evalOp64 (ZetaIrV4.Rotl 2L) (evalOp64 (ZetaIrV4.Rotl 1L) x)
+        let evalB x = evalOp64 (ZetaIrV4.Rotl 3L) x
+        for i in [0UL; 1UL; 2UL; 42UL; 100UL; 0xFFFFFFFFFFFFFFFFUL] do
+            Assert.Equal(evalA i, evalB i)
+            
+        // But their normal forms are distinct
+        let normA = normalize progA
+        let normB = normalize progB
+        Assert.NotEqual<ZetaIrV4.Op list>(normA.Ops, normB.Ops)
