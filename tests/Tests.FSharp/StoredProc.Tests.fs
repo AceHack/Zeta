@@ -118,6 +118,16 @@ let ``DIFFERENTIAL db: native Db.apply == interpreted stored-proc across all eve
             Assert.Equal<Db.DbState>(native, interpreted)
 
 [<Fact>]
+let ``DIFFERENTIAL db: native Db.fold == interpreted stored-proc fold across all events`` () =
+    let native = Db.fold Db.defaultBackend dbEvents
+    let encodedEvents = dbEvents |> List.map encodeDbEvent
+    let interpreted =
+        match interpretDbFold (Db.empty Db.defaultBackend) encodedEvents with
+        | Ok r -> r
+        | Error e -> failwithf "interpretDbFold failed: %s" e
+    Assert.Equal<Db.DbState>(native, interpreted)
+
+[<Fact>]
 let ``db: capacity bounds and heat emission work correctly`` () =
     let events =
         [ Db.GSetCreate("/g1", Some 1, Some "/hs1")

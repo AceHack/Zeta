@@ -352,3 +352,15 @@ module StoredProc =
             | Some(DynamicValue.String op), _ -> Error(sprintf "unknown db op '%s'" op)
             | _ -> Error "db stored-proc missing 'op'/'key'"
         | _ -> Error "db stored-proc must be a DynamicValue.Object"
+
+    /// **Interpret** a batch (list) of db stored-procs against a `Db.DbState` (interpreting events sequentially).
+    /// Returns the final accumulated `Db.DbState`, or the first error encountered.
+    let interpretDbFold (st: Db.DbState) (sps: DynamicValue list) : Result<Db.DbState, string> =
+        let rec loop state items =
+            match items with
+            | [] -> Ok state
+            | sp :: rest ->
+                match interpretDbApply state sp with
+                | Ok nextState -> loop nextState rest
+                | Error e -> Error e
+        loop st sps
