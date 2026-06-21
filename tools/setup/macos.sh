@@ -117,6 +117,35 @@ if [ -f "$BREW_MANIFEST" ]; then
 fi
 echo "✓ brew packages up to date"
 
+# ── 3b. Brew CASKS (from manifests/brew-cask) ───────────────────────
+# Casks are a separate brew namespace (`--cask` / `brew list --cask`), so they get
+# their own declarative manifest + loop (mirrors the formula loop above, tier-aware).
+CASK_MANIFEST="$SETUP_DIR/manifests/brew-cask"
+if [ -f "$CASK_MANIFEST" ]; then
+  CASKS="$(awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$CASK_MANIFEST")"
+  if [ -n "$CASKS" ]; then
+    echo "↓ installing brew casks from $(basename "$CASK_MANIFEST")..."
+    printf '%s\n' "$CASKS" | while IFS= read -r cask_line; do
+      required_tier="$(zeta_tier_of_line "$cask_line")"
+      cask="$(zeta_strip_tier "$cask_line" | awk '{print $1}')"
+      [ -z "$cask" ] && continue
+      if ! zeta_tier_allows "$required_tier"; then
+        echo "→ $cask skipped: requires tier=$required_tier, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
+        continue
+      fi
+      if brew list --cask "$cask" >/dev/null 2>&1; then
+        brew upgrade --cask "$cask" >/dev/null 2>&1 || true
+      else
+        brew install --cask "$cask"
+      fi
+    done
+  fi
+fi
+echo "✓ brew casks up to date"
+
 # Tap, trust, and install the official cvc5 cask (custom tap for macOS)
 if ! command -v cvc5 >/dev/null 2>&1; then
   echo "↓ tapping and installing cvc5..."
