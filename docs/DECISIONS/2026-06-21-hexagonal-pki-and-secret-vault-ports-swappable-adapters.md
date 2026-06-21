@@ -49,6 +49,22 @@ local-file → 1Password agent → Vault/Secure-Enclave (KeyCustody); local `ssh
 Vault SSH / cert-manager (PKI); Keychain → 1Password/Vaultwarden (SecretStore). The
 event-sourced authorization layer (grant/revoke fold) sits ABOVE these ports unchanged.
 
+## The endgame adapter: Zeta's own DB as first-class PKI (Aaron 2026-06-21)
+
+> *"our db is going to be a first class PKI infrastructure too, so all this will be swappable
+> with our own eventually."*
+
+The reason the hexagon exists: the **final adapter behind every port is Zeta's own DB/substrate**
+— a first-class, self-hosted PKI + secret/key store. Every external adapter (1Password, Vault,
+cert-manager, Keychain) is a *bridge* we swap out once the DB-native adapter lands, with **zero
+call-site change** (that is the whole point of binding to ports). The DBSP/Z-set substrate is
+already the natural home: the **event-sourced authorization fold** (grant/revoke as Z-set deltas)
+IS the DB acting as the authorization store; extending it to **issue/hold certs + secrets + keys**
+makes the DB the `CertAuthority` + `SecretStore` + `KeyCustody` adapter natively. So the path is:
+external custody (now, bootstrap) → our DB as first-class PKI (eventually) — same ports, same
+best-practices contract, our own implementation. Anchors the credential substrate to the
+self-modeling-database end-goal (`docs/research/2026-06-10-the-end-goal-dual-use-hard-soft-self-modeling-database-…`).
+
 ## Build status (today)
 
 Shipped adapters: SecretStore→macOS Keychain (`secret-clip.sh`) + 1Password (`op`);
