@@ -184,6 +184,24 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake env lean Safety/NonRegisterCollapse.lean
 
+      - name: Type-check Lean4/GenGenFixpoint.lean
+        # Homoiconic code generator fixpoint: gen(gen) = gen. Stated and proved
+        # sorry-free except for the self-application quine.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/GenGenFixpoint.lean
+
+      - name: Type-check Lean4/CayleyDicksonDoublyEven.lean
+        # Cayley-Dickson doubling preserves the doubly-even self-dual invariant.
+        # sorry-free.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/CayleyDicksonDoublyEven.lean
+
+      - name: Type-check Lean4/BridgeFunctor.lean
+        # Functorial relationship between CD doubling and geometric reflection.
+        # sorry-free.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/BridgeFunctor.lean
+
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
@@ -204,6 +222,13 @@ jobs:
             | cat Safety/Bifurcation.lean - > /tmp/bifurcation_axiom_audit.lean
           printf '#print axioms Zeta.NonRegisterCollapse.non_collapse\n#print axioms Zeta.NonRegisterCollapse.distinctness_forces_standing\n#print axioms Zeta.NonRegisterCollapse.no_register_collapses\n' \
             | cat Safety/NonRegisterCollapse.lean - > /tmp/nrc_axiom_audit.lean
+          printf '#print axioms Zeta.GenGenFixpoint.gen_preserves_eval\n#print axioms Zeta.GenGenFixpoint.gen_idempotent\n#print axioms Zeta.GenGenFixpoint.gen_gen_eq_gen\n#print axioms Zeta.GenGenFixpoint.gen_has_fixpoint\n#print axioms Zeta.GenGenFixpoint.gen_fixpoint_iff_image\n#print axioms Zeta.GenGenFixpoint.lawvere_fixpoint\n' \
+            | cat Lean4/GenGenFixpoint.lean - > /tmp/gengen_axiom_audit.lean
+          printf '#print axioms Zeta.CayleyDickson.doubled_isDoublyEven\n#print axioms Zeta.CayleyDickson.doubled_isSelfOrthogonal\n#print axioms Zeta.CayleyDickson.doubled_isRateHalf\n#print axioms Zeta.CayleyDickson.doubled_preserves_doubly_even_self_dual\n' \
+            | cat Lean4/CayleyDicksonDoublyEven.lean - > /tmp/cd_doubly_even_axiom_audit.lean
+          printf '#print axioms Zeta.BridgeFunctor.bridge_left_inv\n#print axioms Zeta.BridgeFunctor.bridge_right_inv\n#print axioms Zeta.BridgeFunctor.bridge_preserves_involution\n' \
+            | cat Lean4/BridgeFunctor.lean - > /tmp/bridge_functor_axiom_audit.lean
+
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
@@ -230,6 +255,18 @@ jobs:
           fi
           if lake env lean /tmp/nrc_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::NonRegisterCollapse depends on sorryAx — the non-register-collapse proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/gengen_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::GenGenFixpoint core proofs depend on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/cd_doubly_even_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::CayleyDicksonDoublyEven depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/bridge_functor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::BridgeFunctor depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."
