@@ -80,10 +80,6 @@ type Amp = AmpFrame[];
 
 const EPS = 1e-12;
 const magSq = (z: Complex): number => z.re * z.re + z.im * z.im;
-const cMul = (a: Complex, b: Complex): Complex => ({
-  re: a.re * b.re - a.im * b.im,
-  im: a.re * b.im + a.im * b.re,
-});
 
 /** Merge: sum amplitudes of identical frames, drop near-zero (interference). */
 function merge(a: Amp): Amp {
