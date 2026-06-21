@@ -195,7 +195,21 @@ export function formatSetupMachine(res: SetupMachineResult): string {
       ? "Zeta setup-machine — DRY RUN (one command; nothing prompted, generated, written, or fetched)"
       : `Zeta setup-machine — user=${res.onboard.user}, machine=${res.onboard.hostname} (one fingerprint)`,
   );
+  // Dry-run coherence: on a fresh box the dry-run evaluates the cert step BEFORE the
+  // realize-CA decision, so onboard reports cert-sign "skipped: no CA". But a CA WOULD be
+  // realized this run (caRealized=would-generate), and the real flow is realize-CA → sign.
+  // Relabel the cert step so the readout isn't self-contradictory ("skipped" vs "would realize").
+  const certWouldFollowRealize =
+    res.onboard.dryRun && res.caRealized?.action === "would-generate";
   res.onboard.steps.forEach((s, i) => {
+    if (certWouldFollowRealize && s.kind === "cert-sign") {
+      lines.push(`  ${i + 1}. [cert-sign] would-sign`);
+      lines.push(
+        `       [dry-run] would sign this machine's cert AFTER realizing the CA below` +
+          ` (principal=${res.onboard.user}) — not skipped; the CA is realized first.`,
+      );
+      return;
+    }
     lines.push(`  ${i + 1}. [${s.kind}] ${s.headline}`);
     for (const dl of s.detail.split("\n")) lines.push(`       ${dl}`);
   });
