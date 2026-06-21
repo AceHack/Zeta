@@ -72,7 +72,7 @@ function applyOp<W>(
 
   // Each frame can produce multiple output frames (fork).
   // For mul/xorshr: deterministic (1 → 1, no growth).
-  // For future branching ops: 1 → N (support grows by uncertainty).
+  // ISA ops: branch=fork, join=conditional-flip, emit/retract=weight injection.
   const stepped = ensemble.flatMap((entry): WEntry<bigint, W>[] => {
     if (op.op === "mul") {
       const newKey = (entry.key * (BigInt(op.k!) & MASK)) & MASK;
@@ -81,13 +81,29 @@ function applyOp<W>(
       const newKey = (entry.key ^ (entry.key >> BigInt(op.s!))) & MASK;
       return [{ key: newKey, weight: entry.weight }];
     } else if (op.op === "branch") {
-      // Future: fork into two frames (the "grows in bits" step).
-      // Each branch gets weight scaled by 1/√2 (equal superposition).
-      const sqrt2inv = ring.mul(ring.one, ring.one); // placeholder — real impl needs sqrt
+      // Fork: two frames — bit flipped vs not (the H gate / Hadamard).
+      // Support grows by 1 bit of uncertainty.
+      const bit = BigInt(op.s ?? (op as any).bit ?? 0);
       return [
         { key: entry.key, weight: entry.weight },
-        { key: entry.key ^ (1n << BigInt(op.s ?? 0)), weight: entry.weight },
+        { key: (entry.key ^ (1n << bit)) & MASK, weight: entry.weight },
       ];
+    } else if (op.op === "emit") {
+      // Weight injection: add ring.one to current weight (amplitude +1).
+      return [{ key: entry.key, weight: ring.add(entry.weight, ring.one) }];
+    } else if (op.op === "retract") {
+      // Retraction: subtract ring.one from weight (amplitude -1, cancels with emit).
+      return [{ key: entry.key, weight: ring.add(entry.weight, ring.negate(ring.one)) }];
+    } else if (op.op === "join") {
+      // Entangle: flip target bit conditioned on control bit (CNOT).
+      const control = BigInt((op as any).control ?? 0);
+      const target = BigInt((op as any).target ?? 1);
+      const controlSet = (entry.key >> control) & 1n;
+      const newKey = controlSet ? (entry.key ^ (1n << target)) & MASK : entry.key;
+      return [{ key: newKey, weight: entry.weight }];
+    } else if (op.op === "merge") {
+      // Merge is implicit — consolidate after each step handles it.
+      return [{ key: entry.key, weight: entry.weight }];
     }
     return [{ key: entry.key, weight: entry.weight }];
   });
