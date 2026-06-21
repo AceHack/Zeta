@@ -6,6 +6,7 @@ for compile-time checking and ABC for runtime enforcement. TypeVar for generics.
 
 Same interfaces as TS/C#/Rust/Go — one algebra, seven syntaxes.
 """
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Protocol
@@ -16,6 +17,7 @@ B = TypeVar("B", covariant=True)
 
 
 # ─── ISemiring ───────────────────────────────────────────────────────────
+
 
 class Semiring(ABC, Generic[T]):
     """Semiring: Zero/One/Add/Mul/Negate. The ring floor for DBSP weights."""
@@ -40,6 +42,7 @@ class Semiring(ABC, Generic[T]):
 
 # ─── IStarRing ───────────────────────────────────────────────────────────
 
+
 class StarRing(Semiring[T]):
     """Star-ring: Semiring + Conj (involution). Cayley-Dickson tower floor."""
 
@@ -48,6 +51,7 @@ class StarRing(Semiring[T]):
 
 
 # ─── IGroup ──────────────────────────────────────────────────────────────
+
 
 class Group(ABC, Generic[T]):
     """Group: identity + combine + inverse. Minimal structure for undo/retract."""
@@ -65,6 +69,7 @@ class Group(ABC, Generic[T]):
 
 # ─── IMonoid ─────────────────────────────────────────────────────────────
 
+
 class Monoid(ABC, Generic[T]):
     """Monoid: identity + combine. No inverse. The CRDT merge floor."""
 
@@ -77,6 +82,7 @@ class Monoid(ABC, Generic[T]):
 
 
 # ─── ILattice ────────────────────────────────────────────────────────────
+
 
 class JoinSemilattice(ABC, Generic[T]):
     """Join-semilattice: idempotent, commutative, associative. Monotone growth."""
@@ -94,8 +100,10 @@ class Lattice(JoinSemilattice[T]):
 
 # ─── ICodec ──────────────────────────────────────────────────────────────
 
+
 class Codec(ABC, Generic[T]):
     """Codec: encode/decode pair. The serialization contract."""
+
     # Note: Python can't express co/contravariance on class methods directly,
     # but the Protocol version below can.
 
@@ -108,13 +116,16 @@ class Codec(ABC, Generic[T]):
 
 # ─── IPort ───────────────────────────────────────────────────────────────
 
+
 class ReadPort(Protocol[T]):
     """Read-only port (covariant — can widen output)."""
+
     def read(self) -> T: ...
 
 
 class WritePort(Protocol[T]):
     """Write-only port (contravariant — can narrow input)."""
+
     def write(self, value: T) -> None: ...
 
 
@@ -130,49 +141,71 @@ class Port(ABC, Generic[T]):
 
 # ─── Instances ───────────────────────────────────────────────────────────
 
+
 class RealSemiring(Semiring[float]):
     """Float semiring (standard arithmetic)."""
 
     @property
-    def zero(self) -> float: return 0.0
+    def zero(self) -> float:
+        return 0.0
 
     @property
-    def one(self) -> float: return 1.0
+    def one(self) -> float:
+        return 1.0
 
-    def add(self, a: float, b: float) -> float: return a + b
-    def mul(self, a: float, b: float) -> float: return a * b
-    def negate(self, a: float) -> float: return -a
+    def add(self, a: float, b: float) -> float:
+        return a + b
+
+    def mul(self, a: float, b: float) -> float:
+        return a * b
+
+    def negate(self, a: float) -> float:
+        return -a
 
 
 class RealStarRing(StarRing[float]):
     """Float star-ring (conj = identity on reals)."""
 
     @property
-    def zero(self) -> float: return 0.0
+    def zero(self) -> float:
+        return 0.0
 
     @property
-    def one(self) -> float: return 1.0
+    def one(self) -> float:
+        return 1.0
 
-    def add(self, a: float, b: float) -> float: return a + b
-    def mul(self, a: float, b: float) -> float: return a * b
-    def negate(self, a: float) -> float: return -a
-    def conj(self, a: float) -> float: return a  # identity on reals
+    def add(self, a: float, b: float) -> float:
+        return a + b
+
+    def mul(self, a: float, b: float) -> float:
+        return a * b
+
+    def negate(self, a: float) -> float:
+        return -a
+
+    def conj(self, a: float) -> float:
+        return a  # identity on reals
 
 
 class AdditiveGroup(Group[float]):
     """Additive group over floats."""
 
     @property
-    def identity(self) -> float: return 0.0
+    def identity(self) -> float:
+        return 0.0
 
-    def combine(self, a: float, b: float) -> float: return a + b
-    def inverse(self, a: float) -> float: return -a
+    def combine(self, a: float, b: float) -> float:
+        return a + b
+
+    def inverse(self, a: float) -> float:
+        return -a
 
 
 class MaxSemilattice(JoinSemilattice[float]):
     """Max join-semilattice."""
 
-    def join(self, a: float, b: float) -> float: return max(a, b)
+    def join(self, a: float, b: float) -> float:
+        return max(a, b)
 
 
 # Singletons
