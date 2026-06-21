@@ -26,6 +26,7 @@ export interface CacheStats {
   hits: number;
   misses: number;
   regenerations: number;
+  errors: number;
   totalCalls: number;
 }
 
@@ -98,7 +99,7 @@ export function createSpecializationCache(
     stats.regenerations++; // Count GC collections
   });
 
-  const stats: CacheStats = { hits: 0, misses: 0, regenerations: 0, totalCalls: 0 };
+  const stats: CacheStats = { hits: 0, misses: 0, regenerations: 0, errors: 0, totalCalls: 0 };
 
   function getOrRegenerate(): SpecializedMix {
     if (cachedRef) {
@@ -110,11 +111,18 @@ export function createSpecializationCache(
     }
     // Cache miss (either first call, or GC collected it)
     stats.misses++;
-    const specialized = specializeFn(irRef);
-    const holder = { fn: specialized };
-    cachedRef = new WeakRef(holder);
-    registry.register(holder, irRef.generator);
-    return specialized;
+    try {
+      const specialized = specializeFn(irRef);
+      const holder = { fn: specialized };
+      cachedRef = new WeakRef(holder);
+      registry.register(holder, irRef.generator);
+      return specialized;
+    } catch (err) {
+      // NEVER cache errors — always retry on next call
+      stats.errors++;
+      cachedRef = null;
+      throw err;
+    }
   }
 
   const run: SpecializedMix = (x: bigint): bigint => {

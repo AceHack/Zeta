@@ -136,3 +136,68 @@ describe("createSpecializationRegistry — multi-IR cache", () => {
     expect(stats.get("rng.splitmix64")!.misses).toBe(2); // initial + after invalidate
   });
 });
+
+describe("error handling — NEVER cache errors", () => {
+  test("specialization error is NOT cached — retries on next call", () => {
+    let callCount = 0;
+    const failingThenSucceeding = (ir: CacheableIr) => {
+      callCount++;
+      if (callCount === 1) throw new Error("transient failure");
+      return specialize(ir); // succeeds on retry
+    };
+
+    const cache = createSpecializationCache(sm64, failingThenSucceeding);
+
+    // First call: specializer throws → error propagates, NOT cached
+    expect(() => cache.run(1n)).toThrow("transient failure");
+    expect(cache.stats.errors).toBe(1);
+    expect(cache.stats.hits).toBe(0);
+
+    // Second call: specializer succeeds → result IS cached
+    expect(cache.run(1n)).toBe(16294208416658607535n);
+    expect(cache.stats.errors).toBe(1); // no new error
+    expect(cache.stats.misses).toBe(2); // two attempts
+
+    // Third call: hits the cache (the successful specialization)
+    expect(cache.run(2n)).toBe(7960286522194355700n);
+    expect(cache.stats.hits).toBe(1);
+  });
+
+  test("repeated errors never stick in the cache", () => {
+    let callCount = 0;
+    const alwaysFails = (_ir: CacheableIr): SpecializedMix => {
+      callCount++;
+      throw new Error(`fail #${callCount}`);
+    };
+
+    const cache = createSpecializationCache(sm64, alwaysFails);
+
+    expect(() => cache.run(1n)).toThrow("fail #1");
+    expect(() => cache.run(1n)).toThrow("fail #2");
+    expect(() => cache.run(1n)).toThrow("fail #3");
+
+    // Each call attempted specialization (no cached error blocking retries)
+    expect(callCount).toBe(3);
+    expect(cache.stats.errors).toBe(3);
+    expect(cache.stats.hits).toBe(0);
+  });
+
+  test("error stats are tracked separately from misses", () => {
+    let shouldFail = true;
+    const sometimes = (ir: CacheableIr): SpecializedMix => {
+      if (shouldFail) throw new Error("nope");
+      return specialize(ir);
+    };
+
+    const cache = createSpecializationCache(sm64, sometimes);
+
+    expect(() => cache.run(1n)).toThrow();
+    expect(cache.stats.errors).toBe(1);
+    expect(cache.stats.misses).toBe(1); // the miss that led to the error
+
+    shouldFail = false;
+    expect(cache.run(1n)).toBe(16294208416658607535n);
+    expect(cache.stats.errors).toBe(1); // unchanged
+    expect(cache.stats.misses).toBe(2); // second attempt succeeded
+  });
+});

@@ -152,3 +152,51 @@ export function softQuantumMix(ir: ZetaIrV1, x: bigint): bigint {
 }
 
 export { parseIrJson, type ZetaIrV1 };
+
+// ─── Cached soft-mix (WeakRef specialization cache integration) ──────────────
+
+import { createSpecializationCache, specialize, type CacheableIr } from "./specialization-cache";
+
+/**
+ * Determine if an IR is fully deterministic (all ops are 1→1).
+ * Deterministic IRs can use the specialized fast path (cached, no ring overhead).
+ */
+function isDeterministic(ir: ZetaIrV1): boolean {
+  return ir.ops.every(op => op.op === "mul" || op.op === "xorshr");
+}
+
+/**
+ * Cached soft-Bayesian mix: uses the specialization cache for deterministic IRs.
+ * For branching IRs, falls through to the ring-generic path (no fast path possible).
+ *
+ * This IS the cogen=mix(mix,mix) integration:
+ * - Deterministic: WeakRef-cached specialized function (fast, no ring dispatch)
+ * - Branching: ring-generic interpreter (correct, handles uncertainty)
+ * - Error in specialization: falls through to interpreter (never caches errors)
+ */
+export function createCachedMix(ir: ZetaIrV1): (x: bigint) => bigint {
+  if (isDeterministic(ir)) {
+    // Fast path: specialize + cache (WeakRef, regenerate on collection)
+    const cacheableIr: CacheableIr = {
+      generator: ir.generator,
+      width: ir.width,
+      ops: ir.ops.map(op => ({
+        op: op.op,
+        k_bigint: op.k !== undefined ? String(op.k) : undefined,
+        s: op.s,
+      })),
+    };
+    const cache = createSpecializationCache(cacheableIr, specialize);
+    return (x: bigint) => {
+      try {
+        return cache.run(x);
+      } catch {
+        // Specialization failed — fall through to interpreter (never cache errors)
+        return softBayesianMix(ir, x);
+      }
+    };
+  }
+  // Branching IR: use ring-generic interpreter (no fast path)
+  return (x: bigint) => softBayesianMix(ir, x);
+}
+
