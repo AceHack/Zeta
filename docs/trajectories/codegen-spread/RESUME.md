@@ -69,3 +69,42 @@ geometric product / reflection / grade projection.
 | `soft-mix.ts` | Ring-generic v2 interpreter | ✅ on main |
 | `star-ring.ts` | StarRing + Cayley-Dickson tower | ✅ on main |
 | **codegen-v2-ring.ts** | IR v2 → ring-generic scripts (all langs) | 🔜 next |
+
+## Update 2026-06-21 (session end)
+
+### Done this session
+- ✅ codegen-v2-ring: all 7 languages emit ring-generic + benchmark
+- ✅ codegen-specialize: 1st Futamura projection (unrolled = hand-written speed)
+- ✅ v2 ISA golden vectors: 12 tests, 69 assertions
+- ✅ Face 3 FULLY CLOSED (quine discharged by Lumen, independently verified)
+
+### Performance answer
+For deterministic IRs: specialized (unrolled) codegen = hand-written speed (no loop, no switch).
+For branching IRs: interpreter loop required (~1.05x overhead).
+Keep both paths: specialized for hot path, interpreter for generality.
+
+### Remaining push items (next session)
+1. **Interface/type emission** — describe IStarRing as an IR node → emit language-specific interfaces
+2. **Rx pipeline emission** — IR as observable (map/filter/merge operators)
+3. **Auto-harness generation** — codegen emits test + benchmark + golden-vector check per language
+4. **Specialize remaining 5 languages** — extend codegen-specialize to F#/C#/Rust/Go/Q#
+
+
+## Update 2026-06-21 (session end)
+
+### Done this session
+- ✅ codegen-v2-ring: all 7 languages emit ring-generic + benchmark
+- ✅ codegen-specialize: 1st Futamura projection (unrolled = hand-written speed)
+- ✅ v2 ISA golden vectors: 12 tests, 69 assertions
+- ✅ Face 3 FULLY CLOSED (quine discharged by Lumen, independently verified)
+
+### Performance answer
+For deterministic IRs: specialized (unrolled) codegen = hand-written speed (no loop, no switch).
+For branching IRs: interpreter loop required (~1.05x overhead).
+Keep both paths: specialized for hot path, interpreter for generality.
+
+### Remaining push items (next session)
+1. **Interface/type emission** — describe IStarRing as an IR node → emit language-specific interfaces
+2. **Rx pipeline emission** — IR as observable (map/filter/merge operators)
+3. **Auto-harness generation** — codegen emits test + benchmark + golden-vector check per language
+4. **Specialize remaining 5 languages** — extend codegen-specialize to F#/C#/Rust/Go/Q#
