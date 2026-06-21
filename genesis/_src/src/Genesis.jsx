@@ -139,9 +139,11 @@ const CSS = `
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 .lift-fab{position:fixed;right:22px;bottom:24px;z-index:30}
 
-/* ---- homepage zoom: level-of-detail on the vault interior ---- */
-.zoom-stage{position:relative;width:100%;transition:height .2s ease}
-.vault-zoom{transform-origin:50% 0;transition:transform .2s cubic-bezier(.2,.7,.2,1);will-change:transform}
+/* ---- homepage pan + zoom: drag to move, wheel/pinch to zoom, LOD on interior ---- */
+.panzoom-vp{position:relative;width:100%;overflow:hidden;touch-action:none;cursor:grab;z-index:1;
+  user-select:none;-webkit-user-select:none;border-radius:10px}
+.panzoom-vp.grabbing{cursor:grabbing}
+.panzoom-content{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
 .vault .light,.vault .dwellers,.vault .equip,.vault .statuslight,.vault .car{transition:opacity .25s ease}
 /* zoomed out far enough: the sectors read as sealed doors — you cannot see inside */
 .vault.exterior .room{background:repeating-linear-gradient(45deg,#1a130d 0 14px,#15100b 14px 28px)}
@@ -779,30 +781,108 @@ function Dweller({i}){
 }
 
 function Home({openVault,setOverlay}){
-  const MINZ=0.5, MAXZ=2.2, SHOW_INSIDE=0.85;
-  const [zoom,setZoom]=useState(1);
+  const MINZ=0.6, MAXZ=4, SHOW_INSIDE=0.85;
+  const vpRef=useRef(null);
   const vaultRef=useRef(null);
-  const [stageH,setStageH]=useState(null);
-  const inside=zoom>=SHOW_INSIDE;
-  const clampZ=z=>Math.min(MAXZ,Math.max(MINZ,Math.round(z*100)/100));
+  const sizeRef=useRef({cw:880,ch:600,W:880,H:600});
+  const [size,setSize]=useState({cw:880,ch:600,W:880,H:600});
+  const [measured,setMeasured]=useState(false);
+  const [view,setView]=useState({x:0,y:0,z:1});
+  const viewRef=useRef(view); viewRef.current=view;
+  const [inside,setInside]=useState(true);
 
-  // keep the scroll area tall enough to reach the lowest floor as we zoom in
+  // gesture bookkeeping (refs so handlers never read stale state)
+  const ptrs=useRef(new Map());
+  const pinch=useRef(null);
+  const drag=useRef(null);
+  const moved=useRef(false);
+  const [grabbing,setGrabbing]=useState(false);
+
+  const clampZ=z=>Math.min(MAXZ,Math.max(MINZ,z));
+  const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+  const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+
+  // keep the content within the viewport: pan only where it overflows, else center
+  const clampView=(v)=>{
+    const {cw,ch,W,H}=sizeRef.current;
+    const cW=cw*v.z, cH=ch*v.z; let {x,y,z}=v;
+    x = cW<=W ? (W-cW)/2 : Math.min(0,Math.max(W-cW,x));
+    y = cH<=H ? (H-cH)/2 : Math.min(0,Math.max(H-cH,y));
+    return {x,y,z};
+  };
+  const applyView=(v)=>{ const nv=clampView(v); viewRef.current=nv; setView(nv); setInside(nv.z>=SHOW_INSIDE); };
+  // zoom to z2 keeping focal point f (viewport coords) fixed under the cursor/fingers
+  const zoomAbout=(z2,f,extraPanX=0,extraPanY=0)=>{
+    const v=viewRef.current, z=clampZ(z2), k=z/v.z;
+    applyView({ x:f.x-(f.x-v.x)*k+extraPanX, y:f.y-(f.y-v.y)*k+extraPanY, z });
+  };
+
+  // measure the vault's natural size + the viewport width, then center
   useLayoutEffect(()=>{
-    const measure=()=>{ if(vaultRef.current) setStageH(vaultRef.current.offsetHeight*zoom); };
+    const measure=()=>{
+      if(!vaultRef.current||!vpRef.current) return;
+      const cw=vaultRef.current.offsetWidth, ch=vaultRef.current.offsetHeight;
+      const W=vpRef.current.clientWidth, H=ch;
+      sizeRef.current={cw,ch,W,H}; setSize({cw,ch,W,H}); setMeasured(true);
+      applyView(viewRef.current);
+    };
     measure();
     window.addEventListener("resize",measure);
     return ()=>window.removeEventListener("resize",measure);
-  },[zoom]);
+  },[]);
 
-  // ctrl / cmd + wheel (or trackpad pinch) zooms; a plain scroll still scrolls
-  const onWheel=(e)=>{
-    if(!(e.ctrlKey||e.metaKey)) return;
-    e.preventDefault();
-    setZoom(z=>clampZ(z - e.deltaY*0.0016));
+  // wheel zoom about the cursor (native listener so we can preventDefault — page won't scroll)
+  useEffect(()=>{
+    const el=vpRef.current; if(!el) return;
+    const onWheel=(e)=>{
+      e.preventDefault();
+      const r=el.getBoundingClientRect();
+      const f={x:e.clientX-r.left,y:e.clientY-r.top};
+      zoomAbout(viewRef.current.z*Math.exp(-e.deltaY*0.0015),f);
+    };
+    el.addEventListener("wheel",onWheel,{passive:false});
+    return ()=>el.removeEventListener("wheel",onWheel);
+  },[]);
+
+  const onPointerDown=(e)=>{
+    try{ vpRef.current.setPointerCapture(e.pointerId); }catch{}
+    ptrs.current.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    moved.current=false;
+    if(ptrs.current.size===1){ drag.current={x:e.clientX,y:e.clientY}; setGrabbing(true); }
+    else if(ptrs.current.size===2){ const [a,b]=[...ptrs.current.values()]; pinch.current={d:dist(a,b),m:mid(a,b)}; drag.current=null; }
   };
+  const onPointerMove=(e)=>{
+    if(!ptrs.current.has(e.pointerId)) return;
+    ptrs.current.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    const r=vpRef.current.getBoundingClientRect();
+    if(ptrs.current.size>=2 && pinch.current){
+      const [a,b]=[...ptrs.current.values()];
+      const nd=dist(a,b), nm=mid(a,b);
+      const f={x:nm.x-r.left,y:nm.y-r.top};
+      const z2=clampZ(viewRef.current.z*(nd/pinch.current.d));
+      zoomAbout(z2,f, nm.x-pinch.current.m.x, nm.y-pinch.current.m.y);
+      pinch.current={d:nd,m:nm}; moved.current=true;
+    } else if(drag.current){
+      const dx=e.clientX-drag.current.x, dy=e.clientY-drag.current.y;
+      if(Math.abs(dx)+Math.abs(dy)>3) moved.current=true;
+      drag.current={x:e.clientX,y:e.clientY};
+      const v=viewRef.current; applyView({x:v.x+dx,y:v.y+dy,z:v.z});
+    }
+  };
+  const onPointerUp=(e)=>{
+    ptrs.current.delete(e.pointerId);
+    if(ptrs.current.size<2) pinch.current=null;
+    if(ptrs.current.size===1){ const p=[...ptrs.current.values()][0]; drag.current={x:p.x,y:p.y}; }
+    if(ptrs.current.size===0){ drag.current=null; setGrabbing(false); }
+  };
+  // a drag must not also fire a sector's onClick (tap-to-enter)
+  const onClickCapture=(e)=>{ if(moved.current){ e.stopPropagation(); e.preventDefault(); moved.current=false; } };
+
+  const zoomStep=(dz)=>{ const {W,H}=sizeRef.current; zoomAbout(viewRef.current.z+dz,{x:W/2,y:H/2}); };
+  const resetView=()=>applyView({x:0,y:0,z:1});
 
   return(
-    <div className="earth gx-scroll" style={{height:"100%",overflowY:"auto",overflowX:"hidden"}} onWheel={onWheel}>
+    <div className="earth gx-scroll" style={{height:"100%",overflowY:"auto",overflowX:"hidden"}}>
       <div className="rock" style={{width:170,height:130,background:"#2c2016",top:50,left:-30}}/>
       <div className="rock" style={{width:210,height:150,background:"#241810",bottom:110,right:-50}}/>
       <div className="rock" style={{width:120,height:90,background:"#2a1d12",top:"40%",right:24}}/>
@@ -817,9 +897,14 @@ function Home({openVault,setOverlay}){
         </div>
       </div>
 
-      {/* the vault, carved into the earth — zoom in to look inside, out to seal it */}
-      <div className="zoom-stage" style={stageH?{height:stageH}:undefined}>
-        <div className="vault-zoom" style={{transform:`scale(${zoom})`}}>
+      {/* the vault, carved into the earth — drag to move, wheel/pinch to zoom */}
+      <div ref={vpRef} className={"panzoom-vp"+(grabbing?" grabbing":"")} style={{height:size.H}}
+        onPointerDown={onPointerDown} onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onClickCapture={onClickCapture}>
+        <div className="panzoom-content"
+          style={measured
+            ? {width:size.cw, transform:`translate(${view.x}px,${view.y}px) scale(${view.z})`}
+            : {width:"100%"}}>
           <div ref={vaultRef} className={"vault fade-in"+(inside?"":" exterior")}>
             <div className="levels">
               <div className="shaft">
@@ -858,16 +943,16 @@ function Home({openVault,setOverlay}){
 
       <div className="lbl" style={{textAlign:"center",marginTop:18,position:"relative",zIndex:2}}>
         {inside
-          ? "Tap a sector to enter · zoom out to seal the doors"
-          : "Zoom in to look inside the vault · the doors are sealed from afar"}
+          ? "Drag to move · scroll or pinch to zoom · tap a sector to enter"
+          : "Zoom in to look inside · drag to move · the doors are sealed from afar"}
       </div>
 
       {/* zoom controls */}
       <div className="zoom-ctl">
-        <button onClick={()=>setZoom(z=>clampZ(z-0.2))} disabled={zoom<=MINZ} title="Zoom out" aria-label="Zoom out">−</button>
-        <span className="zval">{Math.round(zoom*100)}%</span>
-        <button onClick={()=>setZoom(z=>clampZ(z+0.2))} disabled={zoom>=MAXZ} title="Zoom in" aria-label="Zoom in">+</button>
-        <button onClick={()=>setZoom(1)} title="Reset zoom" aria-label="Reset zoom" style={{fontSize:13}}>⟳</button>
+        <button onClick={()=>zoomStep(-0.3)} disabled={view.z<=MINZ} title="Zoom out" aria-label="Zoom out">−</button>
+        <span className="zval">{Math.round(view.z*100)}%</span>
+        <button onClick={()=>zoomStep(0.3)} disabled={view.z>=MAXZ} title="Zoom in" aria-label="Zoom in">+</button>
+        <button onClick={resetView} title="Reset view" aria-label="Reset view" style={{fontSize:13}}>⟳</button>
       </div>
 
       <button className="btn lift-fab" onClick={()=>setOverlay("agent0")}
