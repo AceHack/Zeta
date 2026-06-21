@@ -1,0 +1,8 @@
+<Project>
+  <!-- Intentionally empty. This file stops MSBuild from walking UP into the
+       Zeta monorepo's root Directory.Build.props (which sets
+       TreatWarningsAsErrors + the full C# analyzer pack). This auth backend
+       is a standalone, self-hosted service — NOT part of Zeta.sln and NOT
+       built by Zeta CI — so it should not inherit the monorepo's strict
+       build profile. Build it on its own:  dotnet build / dotnet run. -->
+</Project>
