@@ -1,0 +1,21 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "ISemiring",
+  "typeParams": [{ "name": "TWeight", "variance": "invariant" }],
+  "doc": "Semiring (ring) interface for first-class uncertainty in DBSP weights.",
+  "members": [
+    { "name": "Zero", "kind": "property", "type": "TWeight", "doc": "Additive identity." },
+    { "name": "One", "kind": "property", "type": "TWeight", "doc": "Multiplicative identity." },
+    { "name": "Add", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive combination (⊕)." },
+    { "name": "Mul", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Multiplicative product (⊗)." },
+    { "name": "Negate", "kind": "method", "params": [{"name": "a", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive inverse." }
+  ],
+  "laws": [
+    "Add is commutative: Add(a,b) = Add(b,a)",
+    "Add is associative: Add(Add(a,b),c) = Add(a,Add(b,c))",
+    "Zero is additive identity: Add(a, Zero) = a",
+    "Negate is additive inverse: Add(a, Negate(a)) = Zero",
+    "One is multiplicative identity: Mul(a, One) = a = Mul(One, a)",
+    "Mul distributes over Add: Mul(a, Add(b,c)) = Add(Mul(a,b), Mul(a,c))"
+  ]
+}

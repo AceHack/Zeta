@@ -1,0 +1,22 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IStarRing",
+  "typeParams": [{ "name": "TWeight", "variance": "invariant" }],
+  "extends": ["ISemiring"],
+  "doc": "A *-ring: ISemiring + Conj involution. The unified floor for Cayley-Dickson hypercomplex towers.",
+  "members": [
+    { "name": "Zero", "kind": "property", "type": "TWeight", "doc": "Additive identity." },
+    { "name": "One", "kind": "property", "type": "TWeight", "doc": "Multiplicative identity." },
+    { "name": "Add", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive combination (⊕)." },
+    { "name": "Mul", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Multiplicative product (⊗). Loses commutativity above ℂ, associativity above ℍ." },
+    { "name": "Negate", "kind": "method", "params": [{"name": "a", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive inverse." },
+    { "name": "Conj", "kind": "method", "params": [{"name": "a", "type": "TWeight"}], "returns": "TWeight", "doc": "Involution (conjugation): identity on ℝ, complex conjugate on ℂ, recursive beyond." }
+  ],
+  "laws": [
+    "All ISemiring laws apply",
+    "Conj is involutive: Conj(Conj(a)) = a",
+    "Conj(One) = One",
+    "Conj(Add(a,b)) = Add(Conj(a), Conj(b))",
+    "Conj(Mul(a,b)) = Mul(Conj(b), Conj(a)) [anti-homomorphism]"
+  ]
+}
