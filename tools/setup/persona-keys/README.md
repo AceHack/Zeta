@@ -50,6 +50,41 @@ the markov/homeostat chains. So:
 3. **Public artifacts are safe to publish** — pubkeys / addresses / npub go to
    `maintainers/<name>/` and are committed to `main`.
 
+## Per-MACHINE device key + (user × machine) status — `machine.ts` / `machine-cli.ts`
+
+The keyring above is the **per-PERSONA** identity (one seed → all key types, same on
+every machine). A **per-MACHINE** key is different: a per-host ed25519 device keypair
+(NOT seed-derived) that identifies *this dev machine*, traceable to its persona. This
+is the first SAFE slice of the unified onboarding item
+(`081KVM1TK3Z08QG0R0002959G6`) — read-mostly, secret-conservative.
+
+- **`status` / `whoami` (READ-ONLY, generates nothing):** the workitem's two-part
+  presence check — is the **user keyring** present and is **this dev machine's**
+  device key present, checked **independently** (you flash from many dev machines, so
+  the user key is often set up while a new flasher box's key is not):
+
+  ```bash
+  bun machine-cli.ts status --user aaron
+  # user=aaron present=y, machine=<host> key present=n, machine key published=n
+  ```
+
+- **`machine` (generate the per-MACHINE device key ONLY):** generates a standard
+  `ssh-keygen -t ed25519` device keypair if absent (idempotent — a second run is a
+  no-op). The **private** key stays local under `~/.config/zeta/machine/` (`umask
+  077`); `--publish` writes **only the PUBLIC** key to
+  `maintainers/<user>/machines/<host>.pub`. `--dry-run` generates nothing.
+
+  ```bash
+  bun machine-cli.ts machine --user aaron --dry-run   # prints plan, generates NOTHING
+  bun machine-cli.ts machine --user aaron --publish   # local device key + public to repo (NOT committed)
+  ```
+
+**Security invariants (same as the seed keyring):** no seed / CA / persona key is
+generated here — only a per-host device keypair; the private key never touches
+argv / stdout / git; only public keys/fingerprints are published. **Out of scope
+(LATER slices):** the SSH-CA (sign per-machine certs), the GitHub pubkey upload, and
+cluster node-trust injection — this slice does NOT build key-upload or CA-signing.
+
 ## Two storage modes (Aaron 2026-06-09)
 
 - **Equipment mode (cluster):** private bits → **Vault** (`--vault zeta/personas/otto`).
