@@ -3,19 +3,20 @@
 // session-scoped temp file so the pre-edit-recent-read.ts PreToolUse hook can
 // verify files were read before being edited (Otto-343 discipline).
 //
+// The log file is keyed on the stable per-session id (see
+// harness.ts:sessionReadLogPath / OTTO343_READLOG_TAG) — NOT on process.ppid,
+// which differs for every hook process in remote / web sessions and used to
+// break the writer↔reader handshake entirely.
+//
 // Wired via .claude/settings.json PostToolUse matcher:"Read".
 // Sibling to .claude/hooks/pre-edit-recent-read.ts.
 // Per 081KR50HA0008QG0R0005ABWPH (PR #2395+).
 
-import { readHookInput } from "./harness.ts";
+import { readHookInput, sessionReadLogPath } from "./harness.ts";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 type ReadLog = Record<string, number>;
-
-function sessionReadsPath(): string {
-  return `/tmp/zeta-reads-${process.ppid ?? 0}.json`;
-}
 
 function readLog(path: string): ReadLog {
   try {
@@ -34,7 +35,7 @@ function main(): number {
   if (!filePath) {
     return 0;
   }
-  const path = sessionReadsPath();
+  const path = sessionReadLogPath(input);
   const log = readLog(path);
   log[resolve(filePath)] = Date.now();
   try {

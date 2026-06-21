@@ -14,10 +14,19 @@
 
 export type HookEventName = "PreToolUse" | "PostToolUse";
 
-/** Raw Claude Code hook input payload (stdin JSON). */
+/** Raw Claude Code hook input payload (stdin JSON).
+ *
+ *  NOTE: every Claude Code hook invocation carries MORE than tool_name /
+ *  tool_input — the API also sends a stable per-session `session_id` and the
+ *  session `cwd`. These were previously undeclared, which is the root cause of
+ *  the OTTO343_READLOG_TAG bug (read-log keyed on the per-process ppid instead
+ *  of the stable session id). Declare them so hooks can key durable state on
+ *  the session, never on a process that lives for a single hook call. */
 export interface HookInput {
   readonly tool_name?: string;
   readonly tool_input?: Record<string, unknown>;
+  readonly session_id?: string;
+  readonly cwd?: string;
 }
 
 /** JSON output for a deny decision (the only case that requires stdout). */
@@ -27,6 +36,43 @@ export interface HookDecision {
     readonly permissionDecision: "allow" | "deny";
     readonly permissionDecisionReason?: string;
   };
+}
+
+/**
+ * Traceability sentinel for the 2026-06-21 read-tracking re-key fix (Otto-343).
+ *
+ * THE BUG: post-read-track.ts (writer) and pre-edit-recent-read.ts (reader)
+ * keyed their shared read-log on `/tmp/zeta-reads-${process.ppid}.json`. In
+ * remote / Claude-Code-on-the-web sessions EVERY hook runs as a fresh process
+ * with a distinct ppid, so the writer and the reader never agreed on a
+ * filename: the reader always found an absent log and wrongly DENIED every Edit
+ * with "Otto-343 Edit-without-Read" — even immediately after a Read.
+ *
+ * THE FIX: key the log on the stable per-session `session_id` (falling back to
+ * `cwd`, then a constant) via sessionReadLogPath() below.
+ *
+ * THE FLAG: this tag is emitted in every deny reason and stamped into the log
+ * file name. If read-tracking ever misbehaves again, grep this tag — it lands
+ * you exactly here, at the root cause and the fix. Do not change the string
+ * without updating the regression test in harness.test.ts.
+ */
+export const OTTO343_READLOG_TAG = "OTTO-343-session-key-2026-06-21";
+
+/**
+ * Path to the session-scoped read-tracking log shared by post-read-track.ts
+ * (writer) and pre-edit-recent-read.ts (reader).
+ *
+ * Keyed on the stable per-session id so the two hooks — which each run in their
+ * own short-lived process — agree on the same file. Falls back to `cwd`, then a
+ * constant, when no session id is supplied. The key is sanitised to a single
+ * safe filename component so it can never escape /tmp. See OTTO343_READLOG_TAG.
+ */
+export function sessionReadLogPath(input: HookInput): string {
+  const key = (input.session_id && input.session_id.trim()) || (input.cwd && input.cwd.trim()) || "shared";
+  // Collapse anything that is not a safe filename char (drops `/` and `.`),
+  // so the key is one component and `..` can never appear.
+  const safe = key.replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 128);
+  return `/tmp/zeta-reads-${OTTO343_READLOG_TAG}-${safe}.json`;
 }
 
 /** Read and parse the hook input from stdin. Returns {} on parse failure. */

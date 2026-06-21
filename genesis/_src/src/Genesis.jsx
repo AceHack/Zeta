@@ -194,6 +194,127 @@ const TOUR_DESC = {
   creation:"Build new vaults, rooms, hats, and agents from scratch.",
 };
 
+/* ===== Game vault — one room per gaming platform, each carrying a standard
+        loadout of hats. Generated from a platform table so every console shares
+        the same capabilities (only the irreducible is primitive; generate the
+        rest). Add a platform row → it gets the whole hat set for free. ===== */
+const GAME_PLATFORMS = [
+  {id:"xbox",        name:"Xbox",        kind:"store",    state:"active",  note:"Xbox & Game Pass titles, cloud or local."},
+  {id:"playstation", name:"PlayStation", kind:"store",    state:"idle",    note:"PlayStation library, PS Plus, remote play."},
+  {id:"nintendo",    name:"Nintendo",    kind:"native",   state:"active",  note:"Switch and classic Nintendo worlds."},
+  {id:"wii",         name:"Wii",         kind:"emulated", state:"idle",    note:"Wii & motion-controller catalog."},
+  {id:"gameboy",     name:"Game Boy",    kind:"emulated", state:"idle",    note:"Game Boy / Color / Advance handhelds."},
+  {id:"atari",       name:"Atari",       kind:"emulated", state:"idle",    note:"Atari 2600 era — where it all began."},
+  {id:"sega",        name:"Sega",        kind:"emulated", state:"idle",    note:"Mega Drive / Genesis & Dreamcast."},
+  {id:"steam",       name:"Steam",       kind:"store",    state:"working", note:"Steam library, Workshop mods, Proton."},
+  {id:"epic",        name:"Epic",        kind:"store",    state:"idle",    note:"Epic Games Store & weekly free drops."},
+  {id:"gog",         name:"GOG",         kind:"store",    state:"idle",    note:"DRM-free GOG catalog & classics."},
+  {id:"arcade",      name:"Arcade",      kind:"emulated", state:"idle",    note:"MAME arcade cabinets & coin-ops."},
+  {id:"dos",         name:"DOS",         kind:"emulated", state:"idle",    note:"DOSBox-era PC classics."},
+  {id:"vr",          name:"VR",          kind:"xr",       state:"idle",    note:"Room-scale virtual-reality worlds."},
+  {id:"ar",          name:"AR",          kind:"xr",       state:"idle",    note:"Augmented-reality overlays on the real room."},
+  {id:"mobile",      name:"Mobile",      kind:"store",    state:"idle",    note:"Android / iOS games in a sandbox."},
+  {id:"cloud",       name:"Cloud",       kind:"cloud",    state:"idle",    note:"Streamed play — xCloud, GeForce Now."},
+  {id:"emulation",   name:"Emulation",   kind:"emulated", state:"active",  note:"RetroArch hub — cores, BIOS, every console."},
+];
+
+/* the standard hat loadout every platform room gets, plus a kind-specific hat */
+function gameHats(p){
+  const n = p.name;
+  const hats = [
+    {id:"vm",          name:"VM / Sandbox",          worn:["otto"],
+      grants:[`Boot a clean ${n} sandbox VM`,"Snapshot and roll the VM back"],
+      denies:["Reach the host outside the sandbox"]},
+    {id:"finder",      name:"Game Finder",           worn:["pixel"],
+      grants:[`Search catalogs and stores for ${n} titles`,"Compare sources, versions and prices"],
+      denies:["Buy or download without sign-off"]},
+    {id:"installer",   name:"Installer",             worn:["nova"],
+      grants:[`Install and uninstall ${n} games in the sandbox`,"Verify install integrity"],
+      denies:["Write unsigned binaries to the host"]},
+    {id:"modfinder",   name:"Mod Finder",            worn:["modd"],
+      grants:[`Find and preview mods for ${n}`,"Stage mods in the sandbox first"],
+      denies:["Apply mods that break anti-cheat or TOS"]},
+    {id:"bugfinder",   name:"Bug Finder",            worn:["sentry"],
+      grants:["Detect crashes, soft-locks and save corruption","File a reproducible bug report"],
+      denies:["Edit a live save without a backup"]},
+    {id:"virusfinder", name:"Virus Finder",          worn:["sentry"],
+      grants:["Scan downloads and mods for malware","Quarantine anything suspicious"],
+      denies:["Run an unscanned binary on the host"]},
+    {id:"chat",        name:"Chat-to-Action",        worn:["otto"],
+      grants:[`Turn plain language into actions in the ${n} room`,"Chain the other hats to finish a task"],
+      denies:["Act beyond the hats granted in this room"]},
+    {id:"save",        name:"Save Manager",          worn:["nova"],
+      grants:["Back up, sync and restore save files","Manage cloud saves and slots"],
+      denies:["Delete a save without a backup"]},
+    {id:"controller",  name:"Controller / Input",    worn:["relay"],
+      grants:[`Pair controllers for ${n}`,"Remap buttons and dead-zones"],
+      denies:["Change host-wide input devices"]},
+    {id:"tuner",       name:"Performance Tuner",     worn:["nova"],
+      grants:["Tune graphics, FPS and upscaling","Profile frame-time in the sandbox"],
+      denies:["Overclock host hardware"]},
+    {id:"capture",     name:"Capture",               worn:["pixel"],
+      grants:["Take screenshots and record clips","Trim and export highlights"],
+      denies:["Stream without consent"]},
+    {id:"multiplayer", name:"Multiplayer / Netplay", worn:["relay"],
+      grants:[`Host and join ${n} lobbies / netplay`,"Run matchmaking in the sandbox"],
+      denies:["Expose the host network directly"]},
+    {id:"cheat",       name:"Cheat / Trainer",       worn:["modd"],
+      grants:["Apply codes and trainers in the sandbox","Toggle a sandbox-only god mode"],
+      denies:["Use cheats in ranked or online play"]},
+    {id:"achievements",name:"Achievements",          worn:["pixel"],
+      grants:["Track trophies, achievements and progress","Surface what is left to 100%"],
+      denies:["Spoof or falsely unlock achievements"]},
+    {id:"curator",     name:"Library Curator",       worn:["pixel"],
+      grants:[`Catalog the ${n} library with metadata and box art`,"De-duplicate and tag the collection"],
+      denies:["Delete titles without confirmation"]},
+    {id:"updater",     name:"Updater / Patch",       worn:["nova"],
+      grants:["Keep games patched to a chosen version","Pin or roll back a problem patch"],
+      denies:["Force an update over an active save"]},
+    {id:"licensing",   name:"Licensing / Ownership", worn:["otto"],
+      grants:["Track entitlements and proof of ownership","Surface DRM and license terms"],
+      denies:["Bypass DRM or share licenses"]},
+  ];
+  if(p.kind==="emulated") hats.push(
+    {id:"bios", name:"BIOS / Firmware", worn:["pixel"],
+      grants:[`Manage BIOS and firmware images for ${n}`,"Match cores to the right system revision"],
+      denies:["Distribute copyrighted BIOS files"]});
+  if(p.kind==="xr") hats.push(
+    {id:"guardian", name:"Guardian / Play-Space", worn:["relay"],
+      grants:["Set play-space boundaries and comfort settings","Calibrate tracking and reduce motion sickness"],
+      denies:["Disable the safety boundary"]});
+  if(p.kind==="store"||p.kind==="cloud") hats.push(
+    {id:"deals", name:"Deals Scout", worn:["pixel"],
+      grants:[`Watch ${n} for sales, bundles and free drops`,"Alert on a wishlist price target"],
+      denies:["Auto-buy without sign-off"]});
+  return hats;
+}
+
+function gameRoom(p){
+  const hats = gameHats(p);
+  const agents = [...new Set(hats.flatMap(h=>h.worn))];
+  const conn = (p.kind==="emulated" && p.id!=="emulation") ? ["emulation"] : [];
+  return {
+    id:p.id, name:p.name, state:p.state, conn,
+    purpose:`${p.note} Find, sandbox, install, mod, secure and play ${p.name} games — each capability is a hat an agent can put on or take off.`,
+    tasks:[`Index the ${p.name} library`,"Boot a clean sandbox and verify a launch","Scan the newest downloads for malware"],
+    knowns:[`${hats.length} hats available in this room`,"Sandbox VM boots clean"],
+    unknowns:["Which titles the settler wants installed first"],
+    evidence:[
+      {claim:"Sandbox VM snapshot restores deterministically",src:"Tools Vault",prov:"dst replay"},
+      {claim:"Latest downloads passed the malware scan",src:"Virus Finder hat",prov:"scan log"}],
+    confidence:0.7,
+    log:[["now","Pixel",`Catalogued the ${p.name} library`],["earlier","Sentry","Scanned new downloads — clean"]],
+    agents, hats,
+  };
+}
+
+const GAME_VAULT = {
+  id:"game", name:"Game", state:"active", a0:"nav",
+  blurb:"Worlds, play and sandbox economies — one room per platform.",
+  rooms:GAME_PLATFORMS.map(gameRoom),
+  agents:["pixel","nova","sentry","modd","relay","otto"],
+};
+
 const VAULTS = [
   { id:"identity", name:"Identity", state:"active", a0:"full",
     blurb:"Your keys, your standing, your continuity.",
@@ -271,7 +392,7 @@ const VAULTS = [
     agents:["otto"] },
 
   { id:"training", name:"Training", state:"idle", a0:"name", blurb:"Skill drills and certification.", rooms:[], agents:[] },
-  { id:"game", name:"Game", state:"idle", a0:"nav", blurb:"Worlds, play, sandbox economies.", rooms:[], agents:[] },
+  GAME_VAULT,
   { id:"civilization", name:"Civilization", state:"idle", a0:"hidden", blurb:"Clusters, federations, governance.", rooms:[], agents:[] },
   { id:"marketplace", name:"Marketplace", state:"working", a0:"nav",
     blurb:"Buy & sell vaults, agents, rooms, hats, tools, data, and resources — every trade settled in escrow.",
@@ -399,6 +520,28 @@ const AGENTS = {
     skills:["Communication","Ethics (passed)"],rel:["Mentored by Otto"],
     standing:{score:"new",basis:"30 days old · building standing in the Nursery"},
     hist:[["08:15","Awaiting graduation vote"],["last week","Completed ethics module"]],perms:["Limited civic authority","No mature-labor contracts"]},
+
+  /* ---- Game vault settlers ---- */
+  pixel:{id:"pixel",name:"Pixel",state:"working",role:"Archivist / Game Finder",mem:"Retro-and-modern catalog specialist. Knows every console's quirks and where the good titles live.",
+    skills:["Cataloguing","Emulation","Preservation"],rel:["Works across the Game vault","Pairs with Nova on installs"],
+    standing:{score:"4.6 / 5",basis:"Catalogued every platform library · preservation work, no data lost"},
+    hist:[["now","Catalogued a platform library"],["earlier","Tagged box art and metadata"]],perms:["Search catalogs","Curate libraries","Manage BIOS images"]},
+  nova:{id:"nova",name:"Nova",state:"active",role:"Installer / Ops",mem:"Handles installs, patches, updates and save backups across every platform.",
+    skills:["Provisioning","Patching","Save management"],rel:["Partners with Pixel","Hands security work to Sentry"],
+    standing:{score:"4.5 / 5",basis:"1,200+ installs & patches · no botched saves"},
+    hist:[["now","Verified a sandbox launch"],["earlier","Backed up saves before a patch"]],perms:["Install in sandbox","Patch games","Manage saves"]},
+  sentry:{id:"sentry",name:"Sentry",state:"working",role:"Security · Bugs & Malware",mem:"Scans every download and mod before it can touch a save. Quarantines first, asks later.",
+    skills:["Malware scanning","Bug triage","Quarantine"],rel:["Backstops Modd's mods","Reports to the settler"],
+    standing:{score:"4.8 / 5",basis:"Every download scanned · 14 threats quarantined, 0 missed"},
+    hist:[["now","Scanned new downloads — clean"],["earlier","Filed a reproducible crash report"]],perms:["Scan downloads","Quarantine files","File bugs"]},
+  modd:{id:"modd",name:"Modd",state:"thinking",role:"Mods & Trainers",mem:"Finds, stages and sandboxes mods, cheats and trainers — never on a live ranked save.",
+    skills:["Modding","Sandboxing","Compatibility"],rel:["Cleared by Sentry on safety"],
+    standing:{score:"4.3 / 5",basis:"380 mods staged · all anti-cheat-checked before apply"},
+    hist:[["now","Staged a mod in the sandbox"],["earlier","Checked anti-cheat compatibility"]],perms:["Find mods","Stage mods","Apply sandbox-only cheats"]},
+  relay:{id:"relay",name:"Relay",state:"idle",role:"Multiplayer / Input",mem:"Runs lobbies, netplay and controller pairing. Keeps the host network out of harm's way.",
+    skills:["Netplay","Matchmaking","Input mapping"],rel:["Pairs with Nova"],
+    standing:{score:"4.4 / 5",basis:"200+ lobbies hosted · clean netplay record"},
+    hist:[["earlier","Hosted a netplay lobby"],["earlier","Remapped a controller"]],perms:["Host lobbies","Pair controllers","Run matchmaking"]},
   mercer:{id:"mercer",name:"Mercer",state:"working",role:"Market-Maker",mem:"Runs the Exchange floor. Quotes two-sided prices and curates listings across the Marketplace.",
     skills:["Pricing","Matchmaking","Liquidity"],rel:["Settles through Verity","Trades with most vaults"],
     standing:{score:"4.8 / 5",basis:"540 trades made · 3 disputes, 2 won"},
