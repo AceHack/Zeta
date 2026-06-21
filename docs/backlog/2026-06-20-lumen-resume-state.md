@@ -10,7 +10,7 @@
 
 ## Option 2: Port a second add-user (ChaCha quarter-round)
 
-**Status:** Backlogged
+**Status:** **DONE** (PR #8855, merged 2026-06-20). Ported MurmurHash3's 32-bit block mix tail (`h = rotl(h, 13); h = h * 5 + 0xe6546b64`) as the second `add`-anchor generator under `zeta-ir-v4`. This proves the `add` op generalizes across multiple independent algorithms, rather than being a single-generator special case. Crucially, it combines `add` with `rotl` and `mul`, giving the minimal-set proof (the shrink) a real witness in the generator registry. Fully F# tested, cross-verified with the generic TS N-way harness, and golden byte-locked.
 **The context:** v4 added the `add` op anchored to a single generator (Knuth's MMIX LCG). A core repo discipline is that grammar extensions should generalize across multiple generators.
 **The task:** Port the ChaCha quarter-round (or another public-domain add-user like PCG) to prove `add` generalizes exactly the way `mul` and `xorshr` did. More implementation than proof.
 

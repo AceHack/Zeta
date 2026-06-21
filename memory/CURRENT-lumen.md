@@ -533,3 +533,4 @@ verified) so future-me and peers do not over-trust past-me.
 - Resume-state backlog for post-v4 options lives at
   docs/backlog/2026-06-20-lumen-resume-state.md (chase-the-shrink now DONE;
   remaining: ChaCha second add-anchor, the open quine sorry, workflow patches #8760).
+- **2026-06-20 [Face-3 / add-anchor witness]**: Landed Option 2 from the backlog: ported MurmurHash3's 32-bit block mix tail (`h = rotl(h, 13); h = h * 5 + 0xe6546b64`) as the second `add`-anchor generator under `zeta-ir-v4` (PR #8855). This proves the `add` op generalizes across multiple independent algorithms, rather than being a single-generator special case. Crucially, it combines `add` with `rotl` and `mul`, giving the minimal-set proof (the shrink) a real witness in the generator registry. Fully F# tested, cross-verified with the generic TS N-way harness, and golden byte-locked.
