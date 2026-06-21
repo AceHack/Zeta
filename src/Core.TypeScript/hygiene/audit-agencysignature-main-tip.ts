@@ -33,7 +33,7 @@ const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
 
 const POSITIVE_INT_RE = /^[1-9]\d*$/;
-const V1_TRAILER_RE = /^Agency-Signature-Version:\s*1/im;
+const V1_TRAILER_RE = /^(?:Agency-Signature-Version:\s*1|AgencySignature-v1:)/im;
 const AGENT_COAUTHOR_RE =
   /^Co-authored-by:\s*(?:(?:Claude|Codex|Grok|Gemini|Kiro)\b|.*<noreply@(?:anthropic\.com|openai\.com|x\.ai|google\.com|kiro\.dev)>)/im;
 
@@ -43,6 +43,10 @@ export function hasAgentCoauthorTrailer(trailers: string): boolean {
 
 export function hasAgencySignatureV1(text: string): boolean {
   return V1_TRAILER_RE.test(text);
+}
+
+export function hasAgentCoauthorSignal(trailers: string, message: string): boolean {
+  return hasAgentCoauthorTrailer(trailers) || hasAgentCoauthorTrailer(message);
 }
 
 interface ParsedArgs {
@@ -211,8 +215,9 @@ function classifyCommit(
 ): { status: Status; reason: string } | null {
   const trailers = commitTrailers(sha);
   const hasV1Trailer = hasAgencySignatureV1(trailers);
-  const hasV1Message = hasV1Trailer || hasAgencySignatureV1(commitMessage(sha));
-  const hasCoauthor = hasAgentCoauthorTrailer(trailers);
+  const message = commitMessage(sha);
+  const hasV1Message = hasV1Trailer || hasAgencySignatureV1(message);
+  const hasCoauthor = hasAgentCoauthorSignal(trailers, message);
 
   if (ship === null) {
     return { status: "LEGACY", reason: "v1 not yet shipped on this branch" };

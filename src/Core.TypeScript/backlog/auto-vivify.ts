@@ -141,10 +141,11 @@ function mintWorkItemZetaId(): string {
   return format(id);
 }
 
-// Search for workitem file matching zetaid recursively under workitems/
-function findWorkitemFile(zetaid: string): string | null {
-  const workitemsDir = join(REPO_ROOT, "workitems");
-  if (!existsSync(workitemsDir)) return null;
+// Search for a ZetaId-keyed markdown file under the surfaces that can still
+// own backlog/work references. New work lives in workitems/; docs/backlog/
+// remains a legacy substrate with many ZetaId-keyed rows.
+function findZetaIdFile(zetaid: string): string | null {
+  const roots = [join(REPO_ROOT, "workitems"), join(REPO_ROOT, "docs", "backlog")];
 
   function walk(d: string): string | null {
     let entries: string[];
@@ -166,7 +167,12 @@ function findWorkitemFile(zetaid: string): string | null {
     return null;
   }
 
-  return walk(workitemsDir);
+  for (const root of roots) {
+    if (!existsSync(root)) continue;
+    const found = walk(root);
+    if (found) return found;
+  }
+  return null;
 }
 
 // Resolve clean pointer target into an actual path and action
@@ -184,7 +190,7 @@ export function resolvePointer(cleanTarget: string, fromFile: string): ResolvedT
 
   // 1. Work Items: Target has a ZetaId
   if (zetaid) {
-    const existingFile = findWorkitemFile(zetaid);
+    const existingFile = findZetaIdFile(zetaid);
     if (existingFile) {
       return {
         pointer: { raw: "", clean: cleanTarget, kind: "mdlink", line: 0 },

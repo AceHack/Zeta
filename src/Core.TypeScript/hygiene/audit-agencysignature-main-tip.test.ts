@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   hasAgencySignatureV1,
+  hasAgentCoauthorSignal,
   hasAgentCoauthorTrailer,
 } from "./audit-agencysignature-main-tip";
 
@@ -34,5 +35,33 @@ Co-authored-by: Codex <noreply@openai.com>
 `;
 
     expect(hasAgencySignatureV1(message)).toBe(true);
+  });
+
+  test("detects the compact AgencySignature-v1 block used by current squash commits", () => {
+    const message = `feat(core): name no-forget bounded gset policy (#8986)
+
+Co-Authored-By: Codex <noreply@openai.com>
+
+AgencySignature-v1:
+  persona: vera
+  actor: zeta-vera
+`;
+
+    expect(hasAgencySignatureV1(message)).toBe(true);
+  });
+});
+
+describe("hasAgentCoauthorSignal", () => {
+  test("falls back to the full commit message when parsed terminal trailers drop Co-Authored-By", () => {
+    const parsedTrailers = `AgencySignature-v1: persona: vera actor: zeta-vera`;
+    const message = `feat(core): name no-forget bounded gset policy (#8986)
+
+Co-Authored-By: Codex <noreply@openai.com>
+
+AgencySignature-v1:
+  persona: vera
+`;
+
+    expect(hasAgentCoauthorSignal(parsedTrailers, message)).toBe(true);
   });
 });

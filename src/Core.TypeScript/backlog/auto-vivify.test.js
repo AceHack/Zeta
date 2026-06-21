@@ -39,3 +39,9 @@ test("resolvePointer correctly identifies type and candidate paths", () => {
     expect(nonExistsRes.exists).toBe(false);
     expect(nonExistsRes.type).toBe("db-dir"); // Defaults to directory/README structure since no extension
 });
+test("resolvePointer accepts legacy docs/backlog ZetaId rows as existing references", () => {
+    const res = resolvePointer("081KSGS9H0008QG0R003A37Z65", "workitems/example.md");
+    expect(res).not.toBeNull();
+    expect(res.exists).toBe(true);
+    expect(res.resolvedPath).toContain("docs/backlog/P1/081KSGS9H0008QG0R003A37Z65-");
+});
