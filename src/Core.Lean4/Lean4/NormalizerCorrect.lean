@@ -79,4 +79,35 @@ theorem normalizeOp_preserves_eval (op : Op) (state : UInt64) :
   case xrotxor rs => rfl
   case xshrxor ss => rfl
 
+/-- The normalizer is strictly idempotent: `normalize ∘ normalize = normalize`. -/
+theorem normalizeOp_idempotent (op : Op) :
+    normalizeOp (normalizeOp op) = normalizeOp op := by
+  cases op
+  case mul k => rfl
+  case add k => rfl
+  case xorshr s => rfl
+  case rotl r => rfl
+  case xrotxor rs => rfl
+  case xshrxor ss => rfl
+
+/-- A predicate defining the 4-op minimal generating set. -/
+def isCoreFour (op : Op) : Prop :=
+  match op with
+  | .mul _ => True
+  | .add _ => True
+  | .xshrxor _ => True
+  | .xrotxor _ => True
+  | _ => False
+
+/-- The normalizer strictly closes over the 4-op minimal generating set. -/
+theorem normalizeOp_closes_over_core_four (op : Op) :
+    isCoreFour (normalizeOp op) := by
+  cases op
+  case mul k => exact trivial
+  case add k => exact trivial
+  case xorshr s => exact trivial
+  case rotl r => exact trivial
+  case xrotxor rs => exact trivial
+  case xshrxor ss => exact trivial
+
 end Zeta.NormalizerCorrect
