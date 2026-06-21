@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   Search, Settings, User, Wifi, WifiOff, ChevronRight, ChevronLeft,
   X, Send, Shield, Eye, EyeOff, Lock, CircleDot, Cpu, Coins, ArrowLeft,
@@ -138,6 +138,23 @@ const CSS = `
 .dweller .b::after{content:"";position:absolute;left:50%;top:3px;width:1px;height:8px;background:rgba(255,255,255,.28);transform:translateX(-50%)}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 .lift-fab{position:fixed;right:22px;bottom:24px;z-index:30}
+
+/* ---- homepage zoom: level-of-detail on the vault interior ---- */
+.zoom-stage{position:relative;width:100%;transition:height .2s ease}
+.vault-zoom{transform-origin:50% 0;transition:transform .2s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.vault .light,.vault .dwellers,.vault .equip,.vault .statuslight,.vault .car{transition:opacity .25s ease}
+/* zoomed out far enough: the sectors read as sealed doors — you cannot see inside */
+.vault.exterior .room{background:repeating-linear-gradient(45deg,#1a130d 0 14px,#15100b 14px 28px)}
+.vault.exterior .room:hover{filter:brightness(1.08)}
+.vault.exterior .light,.vault.exterior .dwellers,.vault.exterior .equip,.vault.exterior .statuslight{opacity:0;pointer-events:none}
+.zoom-ctl{position:fixed;left:22px;bottom:24px;z-index:30;display:flex;align-items:center;gap:6px;
+  background:rgba(12,14,22,.82);border:1px solid var(--line);border-radius:11px;padding:6px;backdrop-filter:blur(8px)}
+.zoom-ctl button{width:34px;height:34px;display:flex;align-items:center;justify-content:center;line-height:1;
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--txt);cursor:pointer;
+  font-family:var(--mono);font-size:17px;transition:background .15s,border-color .15s}
+.zoom-ctl button:hover:not(:disabled){background:var(--panel2);border-color:var(--line2)}
+.zoom-ctl button:disabled{opacity:.4;cursor:default}
+.zoom-ctl .zval{font-family:var(--mono);font-size:11px;color:var(--txt2);min-width:46px;text-align:center;letter-spacing:.04em}
 `;
 
 /* color per state */
@@ -498,8 +515,30 @@ function Dweller({i}){
 }
 
 function Home({openVault,setOverlay}){
+  const MINZ=0.5, MAXZ=2.2, SHOW_INSIDE=0.85;
+  const [zoom,setZoom]=useState(1);
+  const vaultRef=useRef(null);
+  const [stageH,setStageH]=useState(null);
+  const inside=zoom>=SHOW_INSIDE;
+  const clampZ=z=>Math.min(MAXZ,Math.max(MINZ,Math.round(z*100)/100));
+
+  // keep the scroll area tall enough to reach the lowest floor as we zoom in
+  useLayoutEffect(()=>{
+    const measure=()=>{ if(vaultRef.current) setStageH(vaultRef.current.offsetHeight*zoom); };
+    measure();
+    window.addEventListener("resize",measure);
+    return ()=>window.removeEventListener("resize",measure);
+  },[zoom]);
+
+  // ctrl / cmd + wheel (or trackpad pinch) zooms; a plain scroll still scrolls
+  const onWheel=(e)=>{
+    if(!(e.ctrlKey||e.metaKey)) return;
+    e.preventDefault();
+    setZoom(z=>clampZ(z - e.deltaY*0.0016));
+  };
+
   return(
-    <div className="earth gx-scroll" style={{height:"100%",overflowY:"auto"}}>
+    <div className="earth gx-scroll" style={{height:"100%",overflowY:"auto",overflowX:"hidden"}} onWheel={onWheel}>
       <div className="rock" style={{width:170,height:130,background:"#2c2016",top:50,left:-30}}/>
       <div className="rock" style={{width:210,height:150,background:"#241810",bottom:110,right:-50}}/>
       <div className="rock" style={{width:120,height:90,background:"#2a1d12",top:"40%",right:24}}/>
@@ -514,42 +553,58 @@ function Home({openVault,setOverlay}){
         </div>
       </div>
 
-      {/* the vault, carved into the earth */}
-      <div className="vault fade-in">
-        <div className="levels">
-          <div className="shaft">
-            <div className="cable" style={{left:"38%"}}/>
-            <div className="cable" style={{left:"60%"}}/>
-            <div className="car"/>
-          </div>
-          <div style={{flex:1}}>
-            {FLOORS.map((ids,fi)=>(
-              <div className="floor" key={fi}>
-                {ids.map(id=>{
-                  const v=VAULTS.find(x=>x.id===id); const st=STATE[v.state];
-                  const Ico=ICONS[v.name]; const locked=v.state==="locked";
-                  const n=Math.min(v.agents.length,3);
-                  return(
-                    <div key={id} className={"room"+(locked?" sealed":"")} onClick={()=>openVault(id)} style={{"--rc":st.c}}>
-                      <div className="light"/>
-                      <div className="plaque"><Ico size={13} color={st.c}/><span className="nm">{v.name}</span></div>
-                      {locked
-                        ? <Lock size={14} color="var(--violet)" style={{position:"absolute",top:10,right:10,zIndex:3}}/>
-                        : <span className="statuslight" style={{background:st.c,color:st.c,animation:v.state==="working"?"breathe 1.5s infinite":"none"}}/>}
-                      <div className="equip"/>
-                      {!locked && <div className="dwellers">{Array.from({length:n}).map((_,i)=><Dweller key={i} i={i}/>)}</div>}
-                      {locked && <div className="lbl" style={{position:"absolute",left:0,right:0,bottom:36,textAlign:"center",zIndex:2,color:"var(--violet)"}}>Sealed · Phase 2</div>}
-                      <div className="deck"/>
-                    </div>
-                  );
-                })}
+      {/* the vault, carved into the earth — zoom in to look inside, out to seal it */}
+      <div className="zoom-stage" style={stageH?{height:stageH}:undefined}>
+        <div className="vault-zoom" style={{transform:`scale(${zoom})`}}>
+          <div ref={vaultRef} className={"vault fade-in"+(inside?"":" exterior")}>
+            <div className="levels">
+              <div className="shaft">
+                <div className="cable" style={{left:"38%"}}/>
+                <div className="cable" style={{left:"60%"}}/>
+                <div className="car"/>
               </div>
-            ))}
+              <div style={{flex:1}}>
+                {FLOORS.map((ids,fi)=>(
+                  <div className="floor" key={fi}>
+                    {ids.map(id=>{
+                      const v=VAULTS.find(x=>x.id===id); const st=STATE[v.state];
+                      const Ico=ICONS[v.name]; const locked=v.state==="locked";
+                      const n=Math.min(v.agents.length,3);
+                      return(
+                        <div key={id} className={"room"+(locked?" sealed":"")} onClick={()=>openVault(id)} style={{"--rc":st.c}}>
+                          <div className="light"/>
+                          <div className="plaque"><Ico size={13} color={st.c}/><span className="nm">{v.name}</span></div>
+                          {locked
+                            ? <Lock size={14} color="var(--violet)" style={{position:"absolute",top:10,right:10,zIndex:3}}/>
+                            : <span className="statuslight" style={{background:st.c,color:st.c,animation:v.state==="working"?"breathe 1.5s infinite":"none"}}/>}
+                          <div className="equip"/>
+                          {!locked && <div className="dwellers">{Array.from({length:n}).map((_,i)=><Dweller key={i} i={i}/>)}</div>}
+                          {locked && <div className="lbl" style={{position:"absolute",left:0,right:0,bottom:36,textAlign:"center",zIndex:2,color:"var(--violet)"}}>Sealed · Phase 2</div>}
+                          <div className="deck"/>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="lbl" style={{textAlign:"center",marginTop:18,position:"relative",zIndex:2}}>Tap a sector to enter · the lift keeps the settlement connected</div>
+      <div className="lbl" style={{textAlign:"center",marginTop:18,position:"relative",zIndex:2}}>
+        {inside
+          ? "Tap a sector to enter · zoom out to seal the doors"
+          : "Zoom in to look inside the vault · the doors are sealed from afar"}
+      </div>
+
+      {/* zoom controls */}
+      <div className="zoom-ctl">
+        <button onClick={()=>setZoom(z=>clampZ(z-0.2))} disabled={zoom<=MINZ} title="Zoom out" aria-label="Zoom out">−</button>
+        <span className="zval">{Math.round(zoom*100)}%</span>
+        <button onClick={()=>setZoom(z=>clampZ(z+0.2))} disabled={zoom>=MAXZ} title="Zoom in" aria-label="Zoom in">+</button>
+        <button onClick={()=>setZoom(1)} title="Reset zoom" aria-label="Reset zoom" style={{fontSize:13}}>⟳</button>
+      </div>
 
       <button className="btn lift-fab" onClick={()=>setOverlay("agent0")}
         style={{display:"flex",alignItems:"center",gap:10,background:"linear-gradient(160deg,var(--violet),#5b4fa8)",

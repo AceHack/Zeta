@@ -1,0 +1,4 @@
+# Build intermediates — the served site lives in ../ (genesis/index.html + genesis/assets/*).
+node_modules/
+dist/
+package-lock.json
