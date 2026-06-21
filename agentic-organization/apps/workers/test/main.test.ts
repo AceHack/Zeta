@@ -133,6 +133,46 @@ describe("worker main composition entrypoint", () => {
     equal(exitCode, WorkerMainTestExitCode.Success);
     equal(natsAdapters.telemetryWasProvided, true);
   });
+
+  test("gates the always-on loops behind durable schema readiness (no cold-start tick before migration)", async () => {
+    // If the migration bootstrap fails, the keep-alive / org-cadence loops must
+    // never have started — proving they tick only AFTER the schema is ready and
+    // can no longer race the migration on a cold start.
+    const logger = createRecordingLogger();
+    const failingBootstrap: RecordingBootstrap = {
+      bootstrapCount: 0,
+      bootstrap: async () => {
+        throw new Error("migration not ready");
+      },
+    };
+
+    const exitCode = await runMain(
+      createTestDependencies({
+        logger,
+        signalRegistrar: createRecordingSignalRegistrar(),
+        clock: createDeterministicClock(),
+        shutdownPool: createRecordingShutdownPool(),
+        natsAdapters: createRecordingNatsAdapters(),
+        bootstrap: failingBootstrap,
+      }),
+    );
+
+    equal(exitCode, WorkerMainTestExitCode.Degraded);
+    ok(
+      logger.records.some(
+        (record) =>
+          record.stream === WorkerMainLogStream.Stderr && record.message.includes("worker run failed"),
+      ),
+    );
+    ok(
+      !logger.records.some((record) => record.message.includes("keep_alive.tick")),
+      "keep-alive loop must not tick before the schema is ready",
+    );
+    ok(
+      !logger.records.some((record) => record.message.includes("org_cadence.tick")),
+      "org-cadence loops must not tick before the schema is ready",
+    );
+  });
 });
 
 type CreateTestDependenciesInput = {

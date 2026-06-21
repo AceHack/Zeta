@@ -1,6 +1,7 @@
 import type {
   CommandStateStoreFactory,
   HatAssignmentAuthorityReaderPort,
+  HatAssignmentAuthorityWriterPort,
   QualityGateEvaluationStateReaderPort,
   WorkScheduleBlockAuthorityReaderPort,
 } from "../../application/src/ports.ts";
@@ -22,6 +23,7 @@ import {
   createCockroachHatAssignmentAuthorityReader,
   type CockroachHatAssignmentAuthoritySqlExecutor,
 } from "./cockroach-hat-assignment-authority-reader.ts";
+import { createCockroachHatAssignmentAuthorityWriter } from "./cockroach-hat-assignment-authority-writer.ts";
 import { createCockroachOutboxEventSource, type CockroachOutboxSqlExecutor } from "./cockroach-outbox-event-source.ts";
 import {
   createCockroachPolicyDecisionObservationStore,
@@ -66,6 +68,7 @@ export type CockroachDurableStateAdapters<Result> = {
   qualityGateEvaluationStateReader: QualityGateEvaluationStateReaderPort;
   discussionAnchorStateReader: DiscussionAnchorStateReaderPort;
   hatAssignmentAuthorityReader: HatAssignmentAuthorityReaderPort;
+  hatAssignmentAuthorityWriter: HatAssignmentAuthorityWriterPort;
   reactionPlanWorkQueue: ReactionPlanWorkQueue;
   workScheduleBlockAuthorityReader: WorkScheduleBlockAuthorityReaderPort;
   workAnchorStateStore: WorkAnchorStateStore;
@@ -98,6 +101,9 @@ export function createCockroachDurableStateAdapters<Result>(
       executor: input.executor,
     }),
     hatAssignmentAuthorityReader: createCockroachHatAssignmentAuthorityReader({
+      executor: input.executor,
+    }),
+    hatAssignmentAuthorityWriter: createCockroachHatAssignmentAuthorityWriter({
       executor: input.executor,
     }),
     reactionPlanWorkQueue: createCockroachReactionPlanWorkQueue({

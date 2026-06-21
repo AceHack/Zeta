@@ -11,17 +11,29 @@ import {
   type ReactionPlanAction,
 } from "../../../packages/domain/src/index.ts";
 import {
+  ActionClass,
+  buildHatDefinitions,
+  preflightHatAction,
+} from "../../../packages/application/src/index.ts";
+import {
   ReactionPlanExecutionStatus,
   type ReactionPlanActionExecutionContext,
   type ReactionPlanActionExecutionResult,
   type ReactionPlanActionExecutorPort,
 } from "../../../packages/runtime/src/index.ts";
 import type { CockroachOrganizationSqlExecutor } from "../../../packages/state-cockroach/src/index.ts";
-import { composeOrganizationReactionPlanActionExecutor } from "../src/organization-executor-composition.ts";
+import {
+  ReactionActorHatId,
+  composeOrganizationReactionPlanActionExecutor,
+} from "../src/organization-executor-composition.ts";
 
 describe("organization executor composition", () => {
-  test("authorizes reaction commands through durable hat assignment authority", async () => {
-    const cockroachExecutor = createRecordingCockroachExecutor();
+  test("self-grants the synthesized reaction actor's hat authority, then authorizes the org command", async () => {
+    // No authority is pre-seeded — the substrate is empty. The reaction must
+    // grant its own scoped authority before the command pipeline authorizes the
+    // discussion-anchor command. (Previously this test stubbed an Active row,
+    // masking the real-path denial discovered in KIND.)
+    const cockroachExecutor = createAuthorityStoreCockroachExecutor();
     const executor = composeOrganizationReactionPlanActionExecutor({
       cockroachExecutor,
       agentExecutor: createSucceededAgentExecutor(),
@@ -32,38 +44,96 @@ describe("organization executor composition", () => {
     const result = await executor.executeReactionPlanAction(createSupervisorTriageAction(), createExecutionContext());
 
     equal(result.status, ReactionPlanExecutionStatus.Succeeded);
-    ok(cockroachExecutor.statementNames.includes("find_hat_assignment_authority"));
+
+    const grantIndex = cockroachExecutor.statementNames.indexOf("grant_hat_assignment_authority");
+    const findIndex = cockroachExecutor.statementNames.indexOf("find_hat_assignment_authority");
+    ok(grantIndex >= 0, "authority is granted");
+    ok(findIndex >= 0, "authority is read during authorization");
+    ok(grantIndex < findIndex, "authority is granted before it is read");
+
+    const granted = cockroachExecutor.grantedAuthorities.get("hat-assignment-reaction-engineering_manager");
+    ok(granted !== undefined, "synthesized actor has a persisted authority row");
+    equal(granted.hat_id, "engineering_manager");
+    equal(granted.assigned_agent_id, "agent-reaction-engineering_manager");
+    equal(granted.organization_id, "org-lfg");
+    equal(granted.project_id, "project-agentic-org");
+    equal(granted.team_id, "team-runtime");
+    equal(granted.state, "active");
+  });
+
+  test("every reaction-actor hat exists and carries the tool bundle its reaction command needs", () => {
+    // Guards the ReactionActorHatId mapping against drift: a grant under a hat
+    // that does not exist (or cannot perform the action class) would be vacuous.
+    const hatById = new Map(buildHatDefinitions().map((hat) => [hat.id, hat]));
+    const requiredActionClass: Readonly<Record<RequiredHat, ActionClass>> = {
+      [RequiredHat.EngineeringManager]: ActionClass.Prioritize,
+      [RequiredHat.Reviewer]: ActionClass.WriteDoc,
+      [RequiredHat.CSuite]: ActionClass.AssignHat,
+      [RequiredHat.Director]: ActionClass.AssignHat,
+      [RequiredHat.ExecutiveBoard]: ActionClass.AssignHat,
+    };
+
+    for (const requiredHat of Object.values(RequiredHat)) {
+      const hat = hatById.get(ReactionActorHatId[requiredHat]);
+      ok(hat !== undefined, `${requiredHat} maps to a real hat (${ReactionActorHatId[requiredHat]})`);
+      const guardrail = preflightHatAction(hat, requiredActionClass[requiredHat]);
+      ok(guardrail.allowed, `${hat.id} can perform ${requiredActionClass[requiredHat]} for ${requiredHat}`);
+    }
   });
 });
 
-function createRecordingCockroachExecutor(): CockroachOrganizationSqlExecutor & { statementNames: string[] } {
+type AuthorityRow = {
+  hat_assignment_id: string;
+  hat_id: string;
+  organization_id: string;
+  project_id: string;
+  team_id: string | null;
+  assigned_agent_id: string;
+  state: string;
+};
+
+function createAuthorityStoreCockroachExecutor(): CockroachOrganizationSqlExecutor & {
+  statementNames: string[];
+  grantedAuthorities: Map<string, AuthorityRow>;
+} {
   const statementNames: string[] = [];
+  const grantedAuthorities = new Map<string, AuthorityRow>();
 
-  const executeStatement = async <Row = Record<string, unknown>>(statement: { name: string }) => {
+  const executeStatement = async <Row = Record<string, unknown>>(statement: {
+    name: string;
+    parameters?: readonly unknown[];
+  }) => {
     statementNames.push(statement.name);
+    const parameters = statement.parameters ?? [];
 
-    if (statement.name === "find_hat_assignment_authority") {
-      return {
-        rows: [
-          {
-            hat_assignment_id: "hat-assignment-reaction-engineering_manager",
-            hat_id: "engineering_manager",
-            organization_id: "org-lfg",
-            project_id: "project-agentic-org",
-            team_id: "team-runtime",
-            assigned_agent_id: "agent-reaction-engineering_manager",
-            state: "active",
-          },
-        ] as Row[],
+    if (statement.name === "grant_hat_assignment_authority") {
+      const row: AuthorityRow = {
+        hat_assignment_id: String(parameters[0]),
+        hat_id: String(parameters[1]),
+        organization_id: String(parameters[2]),
+        project_id: String(parameters[3]),
+        team_id: parameters[4] === null ? null : String(parameters[4]),
+        assigned_agent_id: String(parameters[5]),
+        state: String(parameters[6]),
       };
+      grantedAuthorities.set(row.hat_assignment_id, row);
+      return { rows: [] as Row[] };
     }
 
-    if (statement.name === "find_work_item") {
-      return { rows: [workItemRow()] as Row[] };
+    if (statement.name === "find_hat_assignment_authority") {
+      const row = grantedAuthorities.get(String(parameters[0]));
+      return { rows: (row === undefined ? [] : [row]) as Row[] };
     }
 
     if (statement.name === "claim_idempotency_record") {
       return { rows: [{ persistence_status: "committed" }] as Row[] };
+    }
+
+    if (statement.name === "find_work_item") {
+      // The triage discussion anchor anchors to an existing work item; the grant
+      // still runs unconditionally (before this existence check) so the
+      // self-grant path is exercised regardless.
+      return { rows: [workItemRow()] as Row[] };
     }
 
     return { rows: [] as Row[] };
@@ -71,6 +141,7 @@ function createRecordingCockroachExecutor(): CockroachOrganizationSqlExecutor & 
 
   return {
     statementNames,
+    grantedAuthorities,
     execute: executeStatement,
     executeTransaction: async (operation) => await operation({ execute: executeStatement }),
   };

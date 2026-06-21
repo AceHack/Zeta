@@ -7,7 +7,9 @@
  */
 
 import {
+  HatAssignmentAuthorityState,
   ProjectStatus,
+  RequiredHat,
   WorkItemState,
   WorkItemType,
   type AgenticActor,
@@ -24,6 +26,7 @@ import {
   createOrganizationReactionPlanActionExecutor,
   type CommandResult,
   type EnsureWorkItemPort,
+  type HatAssignmentAuthorityWriterPort,
 } from "../../../packages/application/src/index.ts";
 import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
 import {
@@ -69,8 +72,9 @@ export function composeOrganizationReactionPlanActionExecutor(
     createId: input.createId,
   });
 
-  const ensureWorkItem = createCockroachWorkItemSeeder({
+  const ensureWorkItem = createReactionSubstrateSeeder({
     store: stateAdapters.workAnchorStateStore,
+    authorityWriter: stateAdapters.hatAssignmentAuthorityWriter,
     now: input.now,
     createId: input.createId,
   });
@@ -90,21 +94,62 @@ function synthesizeActor(action: ReactionPlanAction): AgenticActor {
   };
 }
 
+/**
+ * The real org hat the synthetic reaction actor wears. The reaction plan's
+ * `requiredHat` is an abstract supervisor LEVEL (RequiredHat.*); the command
+ * pipeline authorizes against a concrete hat definition whose tool bundles must
+ * cover the action class the reaction command needs (see `toolTypeForReactionAction`):
+ *   EngineeringManager -> Prioritize     -> BacklogAndDefect
+ *   Reviewer           -> WriteDoc        -> DocumentationContext
+ *   CSuite/Director/ExecutiveBoard -> AssignHat -> HatAuthorization
+ * Each mapped hat is asserted (in tests) to exist in `buildHatDefinitions()` and
+ * to carry the required bundle, so the authority grant is never vacuous.
+ */
+export const ReactionActorHatId: Readonly<Record<RequiredHat, string>> = {
+  [RequiredHat.EngineeringManager]: "engineering_manager",
+  [RequiredHat.Reviewer]: "readiness_reviewer",
+  [RequiredHat.CSuite]: "cto",
+  [RequiredHat.Director]: "engineering_director",
+  [RequiredHat.ExecutiveBoard]: "executive_board_member",
+};
+
 type WorkAnchorSeederStore = ReturnType<typeof createCockroachDurableStateAdapters<CommandResult>>["workAnchorStateStore"];
 
-function createCockroachWorkItemSeeder(input: {
+function createReactionSubstrateSeeder(input: {
   store: WorkAnchorSeederStore;
+  authorityWriter: HatAssignmentAuthorityWriterPort;
   now: () => string;
   createId: (prefix: string) => string;
 }): EnsureWorkItemPort {
   return {
     ensureWorkItem: async (action: ReactionPlanAction) => {
+      const actor = synthesizeActor(action);
+
+      // Grant the synthetic reaction actor its scoped, auditable hat authority
+      // FIRST and unconditionally (idempotent UPSERT) — the org command that
+      // follows is gated by the hat-authority policy, and nothing else populates
+      // the authority projection for a synthesized actor. Done outside the
+      // work-item existence check so a pre-seeded work item still gets authority.
+      await input.authorityWriter.grantHatAssignmentAuthority({
+        hatAssignmentId: actor.hatAssignmentId,
+        hatId: ReactionActorHatId[action.requiredHat],
+        organizationId: action.organizationId,
+        projectId: action.projectId,
+        ...(action.teamId === undefined ? {} : { teamId: action.teamId }),
+        assignedAgentId: actor.agentId,
+        state: HatAssignmentAuthorityState.Active,
+        updatedAt: input.now(),
+        version: 1,
+        correlationId: action.triggerEventId,
+        causationId: action.triggerEventId,
+        traceId: action.triggerEventId,
+      });
+
       const existing = await input.store.findWorkItem(action.workItemId);
       if (existing !== undefined) {
         return;
       }
 
-      const actor = synthesizeActor(action);
       const ts = input.now();
       const metadata = {
         updatedAt: ts,

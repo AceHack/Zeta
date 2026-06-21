@@ -110,6 +110,18 @@ export type HatAssignmentAuthorityReaderPort = {
   ) => Promise<HatAssignmentAuthoritySnapshot | undefined>;
 };
 
+export type HatAssignmentAuthorityGrant = HatAssignmentAuthoritySnapshot & {
+  updatedAt: string;
+  version: number;
+  correlationId: string;
+  causationId: string;
+  traceId: string;
+};
+
+export type HatAssignmentAuthorityWriterPort = {
+  grantHatAssignmentAuthority: (grant: HatAssignmentAuthorityGrant) => Promise<void>;
+};
+
 export type SupervisorSignalStateReaderPort = {
   findSupervisorSignal: (supervisorSignalId: string) => Promise<SupervisorSignal | undefined>;
 };

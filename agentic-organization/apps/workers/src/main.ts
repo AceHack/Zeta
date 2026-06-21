@@ -306,12 +306,18 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
         telemetrySink: runtimePorts.telemetrySink,
       },
     });
+    // The durable schema bootstrapper. Run EXPLICITLY below (before any loop)
+    // rather than via the worker process's bootstrap phase, because the always-on
+    // keep-alive / org-cadence loops are started here in main — outside the
+    // process — and must observe a ready schema before their first tick. The
+    // process therefore takes no bootstrappers; the explicit run gates both the
+    // always-on loops and the work loop (entrypoint.run, below).
+    const cockroachMigrationBootstrapper = deps.constructors.createMigrationBootstrapper({
+      executor: cockroachExecutor,
+    });
+
     const process = createWorkerProcess({
-      bootstrappers: [
-        deps.constructors.createMigrationBootstrapper({
-          executor: cockroachExecutor,
-        }),
-      ],
+      bootstrappers: [],
       readinessProbes: [
         deps.constructors.createReadinessProbe({
           client: sqlClient,
@@ -334,6 +340,14 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       iterationDelayMs: deps.iterationDelayMs,
       maxCycles: deps.maxCycles,
     });
+
+    // Apply the durable schema BEFORE starting any always-on loop. The keep-alive
+    // and org-cadence loops below tick immediately and concurrently with the work
+    // loop (entrypoint.run, further down). Their first tick reads/writes durable
+    // state, so without this gate tick 1 races the migration and throws,
+    // degrading the cold-start cadence until tick 2. Awaiting it here removes that
+    // cold-start throw.
+    await cockroachMigrationBootstrapper.bootstrap();
 
     // Run the deterministic keep-alive on its own cadence, concurrently with the
     // work loop. The org heartbeat ticks every LoopIntervalMs regardless of what

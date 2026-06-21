@@ -96,6 +96,11 @@ export {
   type CreateCockroachHatAssignmentAuthorityReaderInput,
 } from "./cockroach-hat-assignment-authority-reader.ts";
 export {
+  CockroachHatAssignmentAuthorityWriterStatement,
+  createCockroachHatAssignmentAuthorityWriter,
+  type CreateCockroachHatAssignmentAuthorityWriterInput,
+} from "./cockroach-hat-assignment-authority-writer.ts";
+export {
   CockroachPolicyDecisionObservationStoreStatement,
   createCockroachPolicyDecisionObservationStore,
   type CockroachPolicyDecisionObservationSqlExecutor,

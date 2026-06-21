@@ -13,7 +13,10 @@ export type CockroachHatAssignmentAuthorityReaderStatement =
   (typeof CockroachHatAssignmentAuthorityReaderStatement)[keyof typeof CockroachHatAssignmentAuthorityReaderStatement];
 
 export type CockroachHatAssignmentAuthoritySqlStatement = {
-  name: CockroachHatAssignmentAuthorityReaderStatement;
+  // `string` (not the reader-only statement enum) so the same executor type is
+  // shared by the reader and the sibling authority WRITER without a circular
+  // import; this mirrors the underlying generic Cockroach executor (name: string).
+  name: string;
   sql: string;
   parameters: readonly unknown[];
 };
