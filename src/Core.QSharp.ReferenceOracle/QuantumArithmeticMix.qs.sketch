@@ -1,0 +1,183 @@
+// =============================================================================
+//  QuantumArithmeticMix.qs  —  SKETCH ONLY
+//
+//  NOT compiled. NOT gated. NOT a golden vector. NOT byte-lock-verified.
+//  Soraya (formal-verification-expert) design artifact, 2026-06-20.
+//  Companion to: docs/research/2026-06-20-soraya-quantum-arithmetic-ir-
+//                one-unitary-generates-and-verifies-both-lanes-self-sufficient.md
+//
+//  Purpose: show how the classical arithmetic IR (mul / xorshr) — the
+//  MurmurHash3 fmix64 finalizer emitted classically in gen.qs (#8811) —
+//  lifts to a reversible circuit U_mix on an n-qubit register, and that
+//  ONE unitary serves BOTH lanes' jobs from two input regimes:
+//      - basis state  |z>          -> GENERATOR  (deterministic mix(z))
+//      - superposition sum_z |z>   -> VERIFIER   (Simon / Deutsch-Jozsa)
+//  The quantum lane is thus self-sufficient: it generates AND verifies
+//  with no classical dependency. Speed is NOT the goal (the classical
+//  Int-masking emitter is faster); LANE INDEPENDENCE is. See the Holevo
+//  note at the bottom for what Holevo does and (crucially) does NOT bound.
+//
+//  REVISION 2026-06-20 (same day): an earlier cut framed this as "verifier,
+//  NOT a faster oracle" and had a single worst-of-both sampler. Aaron
+//  corrected the either/or. Now: a deterministic GenerateMixOf(z) for the
+//  generator path, and a separate superposition op reserved for the
+//  verifier path. The two are the SAME Mix circuit under different inputs.
+//
+//  Two seams are marked UNVERIFIED. They are the routing output, not a
+//  claim of correctness. Do not promote any of this into the proof
+//  lineage without the cross-checks named in the design note.
+// =============================================================================
+
+namespace Zeta.QSharp.QuantumArithmeticMix {
+
+    open Microsoft.Quantum.Intrinsic;
+    open Microsoft.Quantum.Canon;
+    open Microsoft.Quantum.Arithmetic;   // modular-arithmetic primitives live here
+    open Microsoft.Quantum.Measurement;
+    open Microsoft.Quantum.Convert;      // IntAsBoolArray for basis-state prep
+
+    // -------------------------------------------------------------------------
+    //  xorshr:  z |-> z XOR (z >> s)        (the classical `z ^^^ (z >>> s)`)
+    //
+    //  This is GF(2)-LINEAR.  Bit i of (z >> s) is bit (i+s) of z, so
+    //      new z_i = z_i  XOR  z_{i+s}.
+    //  The map is M = I + S^s where S is the down-shift; S is nilpotent
+    //  (S^n = 0) so M is invertible over GF(2). Hence xorshr is a bijection
+    //  realisable IN PLACE with CNOTs, NO ancilla, EXACT — no tier drop.
+    //
+    //  In-place ordering: process target i LOW-to-HIGH. Each target i reads
+    //  source (i+s) > i, which is never yet-modified, so the cascade is
+    //  faithful. (Going high-to-low would read an already-clobbered source.)
+    //
+    //  reg is little-endian: reg[0] = LSB = bit 0.
+    //  ROUTING: Z3 QF_BV, byte-exact tier (free). See design note §6.
+    // -------------------------------------------------------------------------
+    operation XorShr(reg : Qubit[], s : Int) : Unit is Adj + Ctl {
+        let n = Length(reg);
+        for i in 0 .. n - 1 - s {
+            CNOT(reg[i + s], reg[i]);   // target reg[i] ^= source reg[i+s]
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    //  mul:  z |-> (C * z) mod 2^n          (the classical `(z * C) &&& MASK`)
+    //
+    //  C is a COMPILE-TIME ODD constant (fmix64: 0xff51afd7ed558ccd,
+    //  0xc4ceb9fe1a85ec53). Odd => unit in (Z/2^n)^x => bijection => a
+    //  permutation => realisable as a unitary on n qubits.
+    //
+    //  This is NOT GF(2)-linear (carries). The honest construction:
+    //    (a) out-of-place into an n-qubit ancilla via controlled modular
+    //        adders in the Fourier basis (Draper / Beauregard):
+    //            |z>|0>  ->  |z>|C*z mod 2^n>
+    //    (b) controlled-SWAP register <-> ancilla
+    //    (c) uncompute original via out-of-place multiply by C^{-1} mod 2^n
+    //        (exists *because* C is odd), returning the ancilla to |0>.
+    //  Net: in-place |z> -> |C*z mod 2^n>, one n-qubit ancilla, clean.
+    //
+    //  UNVERIFIED SEAM #1 — QDK API NAME.  The QDK modular-multiply
+    //  primitive has drifted across versions (ModularMultiplyByConstantLE
+    //  in older Canon; MultiplyByModularInteger / ApplyXorInPlace-family in
+    //  the .NET-era Std lib). DO NOT assert the name from memory — this is a
+    //  textbook Name-class verification-drift trap (NOTEBOOK round 35).
+    //  Bind it against the *pinned* QDK version and record the exact symbol
+    //  + its own correctness lemma in the verification registry.
+    //
+    //  ROUTING: bounded exhaustive simulation at small n + QDK lemma cite,
+    //  behavioral-equivalence tier (matches #8811). See design note §6.
+    // -------------------------------------------------------------------------
+    operation MulByOddConstantMod2n(reg : Qubit[], c : Int) : Unit is Adj + Ctl {
+        // Precondition (caller-enforced): c is odd, 0 < c < 2^Length(reg).
+        // Placeholder for the QDK in-place modular multiplier; see SEAM #1.
+        //   ModularMultiplyByConstant(reg, c, 2^Length(reg));  // <- VERIFY name
+        fail "SKETCH: bind to pinned-QDK modular multiplier (see SEAM #1).";
+    }
+
+    // -------------------------------------------------------------------------
+    //  mix = fmix64 finalizer, lifted.  SAME IR ops. This ONE unitary is the
+    //  whole arithmetic lane: feed it a basis state to GENERATE, feed it a
+    //  superposition to VERIFY (the two ops below). By linearity,
+    //      U_mix ( 1/sqrt(N) * sum_z |z> )  =  1/sqrt(N) * sum_z |mix(z)>,
+    //  but on a basis state |z> it is simply  U_mix |z> = |mix(z)>  EXACTLY.
+    // -------------------------------------------------------------------------
+    operation Mix(reg : Qubit[]) : Unit is Adj + Ctl {
+        XorShr(reg, 33);
+        MulByOddConstantMod2n(reg, 0xff51afd7ed558ccd);
+        XorShr(reg, 33);
+        MulByOddConstantMod2n(reg, 0xc4ceb9fe1a85ec53);
+        XorShr(reg, 33);
+    }
+
+    // -------------------------------------------------------------------------
+    //  GENERATOR PATH (the lane-independence answer).
+    //
+    //  Input is a CHOSEN classical z, encoded as a basis state. U_mix is a
+    //  permutation, so |z> -> |mix(z)> with NO superposition and measurement
+    //  returns mix(z) with probability 1 — deterministic, exact, and it
+    //  NEVER touches the classical lane. This is the honest "quantum
+    //  generates on its own": slower than the Int-masking emitter, and that
+    //  is fine — speed is not the goal, independence is.
+    //
+    //  Holevo is SATURATED here (n classical bits out of an n-qubit basis
+    //  state), not violated. See the note at the bottom.
+    //
+    //  ROUTING: correctness = measure(U_mix|z>) = mix(z) w.p.1, which is the
+    //  composition of the per-op equivalence proofs (XorShr via Z3, Mul via
+    //  bounded-sim) + Born rule on a basis state. No new tools. Design §6.
+    // -------------------------------------------------------------------------
+    operation GenerateMixOf(z : Int, n : Int) : Int {
+        use reg = Qubit[n];
+        let bits = IntAsBoolArray(z, n);   // little-endian basis-state prep
+        for i in 0 .. n - 1 {
+            if bits[i] { X(reg[i]); }
+        }
+        Mix(reg);                          // |z> -> |mix(z)>, deterministic
+        let result = MeasureInteger(reg);  // reads mix(z) w.p. 1; resets reg
+        return result;                     // a generated golden-vector image
+    }
+
+    // -------------------------------------------------------------------------
+    //  VERIFIER PATH (the bonus). Input is the uniform superposition. The
+    //  same Mix runs on all branches at once; the read-out is NOT a table
+    //  dump (Holevo forbids that) but a single GLOBAL structural certificate:
+    //    - balancedness of an output bit   (Deutsch-Jozsa, 1 query)
+    //    - a hidden XOR-period mix(z)=mix(z+a)  (Simon, O(n) vs Omega(2^{n/2}))
+    //      -> a quantum DISTINGUISHER that certifies the odd-multiply layers
+    //         actually destroy the GF(2)-linear structure of the xorshr
+    //         layers. This is the arithmetic-lane -> verification bridge.
+    //
+    //  This stub only prepares the superposition and applies Mix; the Simon
+    //  post-processing (oracle phase kickback + Hadamard + linear-algebra on
+    //  the measured y's) is the verifier proper and is left to the design
+    //  note's routing (classical FsCheck probe now; quantum Simon aspirational).
+    //
+    //  NOTE: this is NOT a generator. Measuring here yields a RANDOM z, not a
+    //  chosen one. For generation use GenerateMixOf above.
+    // -------------------------------------------------------------------------
+    operation PrepareMixSuperpositionForVerify(n : Int) : Unit {
+        use reg = Qubit[n];
+        ApplyToEach(H, reg);   // Branch: uniform superposition over keys
+        Mix(reg);              // all branches computed coherently; none collapsed
+        // <- Simon / Deutsch-Jozsa post-processing goes here (verifier proper).
+        ResetAll(reg);
+    }
+
+    // -------------------------------------------------------------------------
+    //  HOLEVO NOTE — scope, not veto.
+    //
+    //  Holevo (1973): an n-qubit measurement releases <= n classical bits.
+    //  This bounds EXACTLY ONE THING: the throughput of reading the golden-
+    //  vector TABLE out of a superposition. Measuring 1/sqrt(N) sum_z
+    //  |z>|mix(z)> yields ONE random pair, so you cannot harvest the whole
+    //  table faster than N classical evals.
+    //
+    //  What Holevo does NOT bound (the earlier cut wrongly inferred it did):
+    //    - It does NOT say quantum cannot generate. GenerateMixOf feeds a
+    //      basis state and returns mix(z) deterministically (Holevo SATURATED).
+    //    - It does NOT make the lift "not a generator". It makes it a
+    //      non-faster BULK generator. Speed != capability; speed isn't the goal.
+    //
+    //  So: generation (per-shot, exact) and verification (global, O(n)) both
+    //  live entirely outside Holevo's reach. Ship BOTH. See the design note.
+    // -------------------------------------------------------------------------
+}
