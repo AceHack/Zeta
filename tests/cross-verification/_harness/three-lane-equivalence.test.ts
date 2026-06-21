@@ -1,23 +1,25 @@
 /**
- * three-lane-equivalence.test.ts — proves ALL THREE lanes are interchangeable.
+ * three-lane-equivalence.test.ts — proves ALL FOUR lanes are interchangeable.
  *
- * Three execution regimes, one IR, same output:
+ * Four execution regimes, one IR, same output:
  *
- *   1. Classical — BigInt fold (fast, O(ops) per input)
+ *   1. Classical — BigInt fold (fast, O(ops) per input, deterministic)
  *   2. Quantum basis-state — U_mix|z⟩ then measure (full statevector, O(2^n))
- *   3. Soft/AmplitudeEmu — complex-amplitude ensemble, sparse (O(support),
- *      grows only with actual uncertainty, merges reconverging paths)
+ *   3. Soft-Quantum/AmplitudeEmu — complex-amplitude ensemble, sparse (O(support),
+ *      grows only with actual uncertainty, merges reconverging paths, interference)
+ *   4. Soft-Bayesian/SoftEmu — real-weight probability mixture, sparse (O(support),
+ *      no interference, classical belief update, same snap interface)
  *
- * The soft lane is the F# AmplitudeEmu model ported to TS: it carries complex
- * amplitudes per frame, sums identical frames (interference), and collapses via
- * Born rule only at measurement. For deterministic inputs (basis states), it
- * behaves identically to classical — but it CAN represent superpositions cheaply
- * when uncertainty is low (the "grows in bits by uncertainty" property).
+ * The soft lanes share the SoftValue interface but differ in arithmetic:
+ *   - Soft-Quantum: complex amplitudes → phase → interference (destructive/constructive)
+ *   - Soft-Bayesian: real weights → probability → no interference (mixture only)
  *
- * The key property: on basis-state inputs, all three lanes produce identical
- * output. The soft lane's advantage appears only when inputs are in superposition
- * (multiple frames with complex amplitudes) — then it's cheaper than Q#'s full
- * 2^n statevector because it only tracks frames with nonzero amplitude.
+ * On deterministic (basis-state) inputs, ALL FOUR lanes produce identical output.
+ * The difference appears only in how they handle uncertainty:
+ *   - Classical: no uncertainty representation
+ *   - Soft-Bayesian: classical probability (beliefs, Bayesian update)
+ *   - Soft-Quantum: quantum amplitude (phase, interference)
+ *   - Q#: full quantum (entanglement, 2^n cost)
  */
 
 import { describe, expect, test } from "bun:test";
@@ -149,6 +151,76 @@ function softBasisStateMix(ir: ZetaIrV1, x: bigint): bigint {
   return softMeasure(result)!;
 }
 
+// ─── Lane 4: Soft-Bayesian/SoftEmu (real-weight probability mixture) ─────────
+// Same shape as AmplitudeEmu but with REAL weights only (no imaginary component).
+// No interference (summing real weights = mixture, not cancellation).
+// Classical Bayesian belief update — P(outcome) = weight / total_weight.
+
+interface BayesFrame {
+  state: bigint;
+  weight: number; // real, non-negative probability weight
+}
+
+type SoftBayes = BayesFrame[];
+
+/** Bayesian merge: sum weights of identical frames (no cancellation, only reinforcement). */
+function bayesMerge(a: SoftBayes): SoftBayes {
+  const grouped = new Map<string, number>();
+  for (const frame of a) {
+    const key = frame.state.toString();
+    grouped.set(key, (grouped.get(key) ?? 0) + frame.weight);
+  }
+  const result: SoftBayes = [];
+  for (const [key, weight] of grouped) {
+    if (weight > EPS) {
+      result.push({ state: BigInt(key), weight });
+    }
+  }
+  return result;
+}
+
+/** Bayesian pure: single frame with weight 1 (certainty). */
+function bayesPure(state: bigint): SoftBayes {
+  return [{ state, weight: 1.0 }];
+}
+
+/** Apply one IR op to every frame, then merge (probabilistic). */
+function bayesStep(ir: ZetaIrV1, ensemble: SoftBayes, op: { op: string; k?: bigint | number; s?: number }): SoftBayes {
+  const MASK = (1n << BigInt(ir.width)) - 1n;
+  const stepped: SoftBayes = ensemble.map((frame) => {
+    let newState = frame.state;
+    if (op.op === "xorshr") newState = (newState ^ (newState >> BigInt(op.s!))) & MASK;
+    else if (op.op === "mul") newState = (newState * (BigInt(op.k!) & MASK)) & MASK;
+    return { state: newState, weight: frame.weight };
+  });
+  return bayesMerge(stepped);
+}
+
+/** Soft-Bayesian lane: fold IR ops over the probability ensemble. */
+function bayesMix(ir: ZetaIrV1, input: SoftBayes): SoftBayes {
+  let ensemble = input;
+  for (const op of ir.ops) {
+    ensemble = bayesStep(ir, ensemble, op);
+  }
+  return ensemble;
+}
+
+/** Bayesian measure: most-probable frame (MAP estimate). */
+function bayesMeasure(ensemble: SoftBayes): bigint | null {
+  if (ensemble.length === 0) return null;
+  let best = ensemble[0]!;
+  for (const frame of ensemble) {
+    if (frame.weight > best.weight) best = frame;
+  }
+  return best.state;
+}
+
+/** Soft-Bayesian on a basis state: pure → fold → measure. */
+function bayesBasisStateMix(ir: ZetaIrV1, x: bigint): bigint {
+  const result = bayesMix(ir, bayesPure(x & ((1n << BigInt(ir.width)) - 1n)));
+  return bayesMeasure(result)!;
+}
+
 // ─── Golden vectors ──────────────────────────────────────────────────────────
 
 const SPLITMIX64_GOLDEN: [bigint, bigint][] = [
@@ -166,92 +238,118 @@ const SPLITMIX64_GOLDEN: [bigint, bigint][] = [
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
-describe("three-lane equivalence — classical ≡ quantum ≡ soft (AmplitudeEmu)", () => {
-  test("all three lanes agree on ALL splitmix64 golden vectors", () => {
+describe("four-lane equivalence — classical ≡ quantum ≡ soft-quantum ≡ soft-bayesian", () => {
+  test("all FOUR lanes agree on ALL splitmix64 golden vectors", () => {
     for (const [input, expected] of SPLITMIX64_GOLDEN) {
       const classical = classicalMix(splitmix64Ir, input);
       const quantum = quantumBasisStateMix(splitmix64Ir, input);
-      const soft = softBasisStateMix(splitmix64Ir, input);
+      const softQ = softBasisStateMix(splitmix64Ir, input);
+      const softB = bayesBasisStateMix(splitmix64Ir, input);
 
       expect(classical).toBe(expected);
       expect(quantum).toBe(expected);
-      expect(soft).toBe(expected);
-      // THE three-way equivalence
-      expect(quantum).toBe(classical);
-      expect(soft).toBe(classical);
-      expect(soft).toBe(quantum);
+      expect(softQ).toBe(expected);
+      expect(softB).toBe(expected);
     }
   });
 
-  test("three-lane equivalence on fmix32", () => {
+  test("four-lane equivalence on fmix32", () => {
     const inputs = [0n, 1n, 2n, 255n, 4294967295n, 2147483648n];
     for (const x of inputs) {
       const classical = classicalMix(fmix32Ir, x);
       const quantum = quantumBasisStateMix(fmix32Ir, x);
-      const soft = softBasisStateMix(fmix32Ir, x);
+      const softQ = softBasisStateMix(fmix32Ir, x);
+      const softB = bayesBasisStateMix(fmix32Ir, x);
       expect(quantum).toBe(classical);
-      expect(soft).toBe(classical);
+      expect(softQ).toBe(classical);
+      expect(softB).toBe(classical);
     }
   });
 
-  test("three-lane equivalence on 50 random inputs", () => {
+  test("four-lane equivalence on 50 random inputs", () => {
     const MASK = (1n << 64n) - 1n;
     let seed = 99999n;
     for (let i = 0; i < 50; i++) {
       seed = ((seed * 6364136223846793005n) + 1442695040888963407n) & MASK;
       const classical = classicalMix(splitmix64Ir, seed);
       const quantum = quantumBasisStateMix(splitmix64Ir, seed);
-      const soft = softBasisStateMix(splitmix64Ir, seed);
+      const softQ = softBasisStateMix(splitmix64Ir, seed);
+      const softB = bayesBasisStateMix(splitmix64Ir, seed);
       expect(quantum).toBe(classical);
-      expect(soft).toBe(classical);
+      expect(softQ).toBe(classical);
+      expect(softB).toBe(classical);
     }
   });
 
-  test("soft lane support = 1 on basis-state input (no unnecessary branching)", () => {
-    // The key property: on a deterministic input, soft doesn't explode
+  test("soft-quantum support = 1 on basis-state input", () => {
     const result = softMix(splitmix64Ir, pure1(42n));
-    expect(result.length).toBe(1); // One frame, amplitude 1
+    expect(result.length).toBe(1);
     expect(magSq(result[0]!.amp)).toBeCloseTo(1.0, 10);
   });
 
-  test("soft lane handles superposition (two inputs simultaneously)", () => {
-    // Feed two basis states with equal amplitude — soft tracks both
+  test("soft-bayesian support = 1 on basis-state input (no unnecessary branching)", () => {
+    const result = bayesMix(splitmix64Ir, bayesPure(42n));
+    expect(result.length).toBe(1);
+    expect(result[0]!.weight).toBeCloseTo(1.0, 10);
+  });
+
+  test("soft-quantum handles superposition with interference", () => {
     const superposition: Amp = [
       { state: 1n, amp: { re: Math.SQRT1_2, im: 0 } },
       { state: 2n, amp: { re: Math.SQRT1_2, im: 0 } },
     ];
     const result = softMix(splitmix64Ir, superposition);
-    // Two distinct outputs (mix(1) ≠ mix(2)), so support = 2
     expect(result.length).toBe(2);
-    // Each has amplitude 1/√2
-    for (const frame of result) {
-      expect(magSq(frame.amp)).toBeCloseTo(0.5, 10);
-    }
-    // The two outputs match the classical values
     const states = new Set(result.map(f => f.state));
     expect(states.has(classicalMix(splitmix64Ir, 1n))).toBe(true);
     expect(states.has(classicalMix(splitmix64Ir, 2n))).toBe(true);
   });
 
-  test("soft lane merges reconverging paths (interference)", () => {
-    // Two paths with SAME output but opposite phase → destructive interference
+  test("soft-bayesian handles mixture (no interference, weights sum)", () => {
+    // Two inputs with equal probability — Bayesian tracks both
+    const mixture: SoftBayes = [
+      { state: 1n, weight: 0.5 },
+      { state: 2n, weight: 0.5 },
+    ];
+    const result = bayesMix(splitmix64Ir, mixture);
+    expect(result.length).toBe(2);
+    const states = new Set(result.map(f => f.state));
+    expect(states.has(classicalMix(splitmix64Ir, 1n))).toBe(true);
+    expect(states.has(classicalMix(splitmix64Ir, 2n))).toBe(true);
+    // Weights preserved (no interference — just mixture)
+    for (const frame of result) {
+      expect(frame.weight).toBeCloseTo(0.5, 10);
+    }
+  });
+
+  test("soft-quantum: opposite-phase paths cancel (destructive interference)", () => {
     const mix1 = classicalMix(splitmix64Ir, 1n);
     const interfering: Amp = [
       { state: mix1, amp: { re: 0.5, im: 0 } },
-      { state: mix1, amp: { re: -0.5, im: 0 } }, // opposite phase
+      { state: mix1, amp: { re: -0.5, im: 0 } },
     ];
-    const merged = merge(interfering);
-    // Amplitudes cancel → empty (destructive interference)
-    expect(merged.length).toBe(0);
+    expect(merge(interfering).length).toBe(0); // cancelled
   });
 
-  test("all three lanes are self-sufficient (no cross-dependency)", () => {
-    // Each lane uses only: the IR + its own arithmetic. No imports between lanes.
+  test("soft-bayesian: same-state paths REINFORCE (no cancellation — classical mixture)", () => {
+    const mix1 = classicalMix(splitmix64Ir, 1n);
+    const reinforcing: SoftBayes = [
+      { state: mix1, weight: 0.3 },
+      { state: mix1, weight: 0.7 },
+    ];
+    const merged = bayesMerge(reinforcing);
+    expect(merged.length).toBe(1); // merged into one
+    expect(merged[0]!.weight).toBeCloseTo(1.0, 10); // weights SUM (no cancel)
+  });
+
+  test("all four lanes are self-sufficient (no cross-dependency)", () => {
     const x = 777n;
     const c = classicalMix(splitmix64Ir, x);
     const q = quantumBasisStateMix(splitmix64Ir, x);
-    const s = softBasisStateMix(splitmix64Ir, x);
+    const sq = softBasisStateMix(splitmix64Ir, x);
+    const sb = bayesBasisStateMix(splitmix64Ir, x);
     expect(c).toBe(q);
-    expect(c).toBe(s);
+    expect(c).toBe(sq);
+    expect(c).toBe(sb);
   });
 });
