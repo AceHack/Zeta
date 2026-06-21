@@ -13,6 +13,7 @@ import Lean4.GenGenFixpoint
 import Lean4.CayleyDicksonDoublyEven
 import Lean4.BridgeFunctor
 import Lean4.NormalizerCorrect
+import Lean4.CanonicalizerCorrect
 import Lean4.SchemaEvolution
 import Lean4.DynamicValue
 import Lean4.JsonCodec
