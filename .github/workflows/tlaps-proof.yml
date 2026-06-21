@@ -22,7 +22,7 @@ name: tlaps-proof
 # Composes with:
 #   - src/Core.TLA/specs/NciSafetyProofs.tla (the artifact) + NciSafety.tla
 #   - src/Core.TypeScript/formal-verification/run-tlaps.ts (the runner / catalogue)
-#   - tools/setup/common/tlaps.sh (the cross-OS opam source-build)
+#   - tools/setup/mechanisms/from-opam-git.sh (the cross-OS opam source-build)
 #   - docs/research/verification-registry.md (rung-3 registry row)
 #   - .claude/skills/verification-drift-auditor/SKILL.md (every fire is
 #     implicit drift-check input)
@@ -39,7 +39,7 @@ on:
     paths:
       - "src/Core.TLA/specs/**"
       - "src/Core.TypeScript/formal-verification/run-tlaps.ts"
-      - "tools/setup/common/tlaps.sh"
+      - "tools/setup/mechanisms/from-opam-git.sh"
       - "tools/setup/manifests/**"
       - ".github/workflows/tlaps-proof.yml"
   push:
@@ -47,7 +47,7 @@ on:
     paths:
       - "src/Core.TLA/specs/**"
       - "src/Core.TypeScript/formal-verification/run-tlaps.ts"
-      - "tools/setup/common/tlaps.sh"
+      - "tools/setup/mechanisms/from-opam-git.sh"
       - "tools/setup/manifests/**"
       - ".github/workflows/tlaps-proof.yml"
   workflow_dispatch: {}
@@ -61,7 +61,7 @@ permissions:
 # contents: read — no write escalation.
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  # Opt into the heavy installers (tlaps.sh is gated behind this in
+  # Opt into the heavy installers (from-opam-git.sh is gated behind this in
   # macos.sh/linux.sh per GOVERNANCE §24).
   ZETA_INSTALL_FULL: "1"
 
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-24.04
     # Cold opam source-build of tlapm (+ ~30 OCaml deps) is 20-40 min;
     # warm cache (~/.opam hit) drops to a few minutes (idempotency guard
-    # in tlaps.sh no-ops the rebuild) + the proof run itself (~1 min).
+    # in from-opam-git.sh no-ops the rebuild) + the proof run itself (~1 min).
     timeout-minutes: 60
 
     steps:
@@ -88,7 +88,7 @@ jobs:
           bun-version: latest
 
       # The opam switch (tlaps-build) holding the built tlapm + its
-      # ~30 OCaml deps. Keyed on tlaps.sh (which carries the exact
+      # ~30 OCaml deps. Keyed on from-opam-git.sh (which carries the exact
       # TLAPM_COMMIT pin) + the manifests (opam/z3 versions) so the
       # cache busts cleanly on a tlapm bump or a toolchain change.
       # Without this, every run rebuilds tlapm from source (heavy).
@@ -100,14 +100,14 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.opam
-          key: opam-tlaps-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/common/tlaps.sh', 'tools/setup/manifests/apt') }}
+          key: opam-tlaps-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/mechanisms/from-opam-git.sh', 'tools/setup/manifests/from-opam-git', 'tools/setup/manifests/apt') }}
           restore-keys: |
             opam-tlaps-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Single source of truth. With ZETA_INSTALL_FULL=1 this invokes
-        # common/tlaps.sh (opam source-build of tlapm) + installs z3 (the
-        # SMT backend, declared in manifests) + opam. tlaps.sh is
+        # mechanisms/from-opam-git.sh (opam source-build of tlapm) + installs z3 (the
+        # SMT backend, declared in manifests) + opam. from-opam-git.sh is
         # idempotent — a warm ~/.opam cache makes it a fast no-op.
         env:
           # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)

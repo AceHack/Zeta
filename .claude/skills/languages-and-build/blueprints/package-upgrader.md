@@ -30,9 +30,9 @@ wearing `package-upgrader` for a one-off.
 - `Directory.Packages.props` — the only place versions
   live. Every bump edits exactly this file's
   `<PackageVersion>` entries.
-- `tools/setup/manifests/dotnet-tools` — pinned dotnet
+- `tools/setup/manifests/from-dotnet-global` — pinned dotnet
   global tools. Separate pin file; same upgrade pattern.
-- `tools/setup/manifests/uv-tools` — pinned uv-managed
+- `tools/setup/manifests/from-uv-tool` — pinned uv-managed
   Python CLIs. Same upgrade pattern (run `uv tool
   upgrade <tool>` after a pin edit).
 - `.mise.toml` — language runtime pins (dotnet / python /
@@ -179,9 +179,9 @@ For each row in work-queue order:
 
 - `Directory.Packages.props` — central pin file
 - `tools/audit-packages.ts` — Malik's audit output
-- `tools/setup/manifests/dotnet-tools` — dotnet global
+- `tools/setup/manifests/from-dotnet-global` — dotnet global
   tool pins
-- `tools/setup/manifests/uv-tools` — uv CLI pins
+- `tools/setup/manifests/from-uv-tool` — uv CLI pins
 - `.claude/skills/languages-and-build/blueprints/package-auditor.md` — upstream
   audit lane
 - `.claude/skills/workflows/blueprints/commit-message-shape.md` —

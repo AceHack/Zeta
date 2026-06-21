@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/python-tools.sh — install Python CLI tools via
+# tools/setup/mechanisms/from-uv-tool.sh — install Python CLI tools via
 # `uv tool install`. Shape borrowed (not copied) from
 # `../scratch/scripts/setup/unix/python-tools.sh`. See BACKLOG P1
 # "Python tool management via `uv tool` (from ../scratch)".
@@ -8,7 +8,7 @@
 # Prereq: `.mise.toml` pins uv; `common/mise.sh` ran first so `uv`
 # is on PATH (via mise shims).
 #
-# Tool list lives in `tools/setup/manifests/uv-tools` (no-extension
+# Tool list lives in `tools/setup/manifests/from-uv-tool` (no-extension
 # declarative manifest; one tool per non-comment non-empty line). Zeta
 # uses a single flat manifest today; when `@include` hierarchy lands
 # (BACKLOG item) this file will support `@min` directives too.
@@ -16,7 +16,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/uv-tools"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/from-uv-tool"
 
 # Early exit if no manifest or manifest is all comments — uv tool
 # management is opt-in.

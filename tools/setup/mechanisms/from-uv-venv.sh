@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/quantum.sh — optional quantum-reference-oracle Python deps.
-#
-# The dependencies in tools/setup/manifests/quantum are imported libraries,
-# not standalone CLI tools, so this script realizes them into the project
-# Python environment via `uv pip install` instead of `uv tool install`.
-# Default-skip keeps ordinary install.sh / CI paths light; opt in with
-# ZETA_INSTALL_QUANTUM=1 or the existing heavy-path switch ZETA_INSTALL_FULL=1.
+# Mechanism: from-uv-venv — importable PyPI libraries into repo .venv (uv pip install).
+# Manifest: tools/setup/manifests/from-uv-venv
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/quantum"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/from-uv-venv"
 VENV="$REPO_ROOT/.venv"
 PY_BIN="$VENV/bin/python"
 
@@ -21,7 +16,7 @@ if [ ! -f "$MANIFEST" ]; then
 fi
 
 if [ "${ZETA_INSTALL_QUANTUM:-0}" != "1" ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]; then
-  echo "✓ skipping quantum oracle deps (set ZETA_INSTALL_QUANTUM=1 or ZETA_INSTALL_FULL=1)"
+  echo "✓ from-uv-venv: skipping (set ZETA_INSTALL_QUANTUM=1 or ZETA_INSTALL_FULL=1)"
   exit 0
 fi
 

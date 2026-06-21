@@ -63,7 +63,7 @@ name: stryker-mutation
 #
 # Composes with:
 #   - stryker-config.json (retargeted iteration-2 to Core.CSharp.csproj)
-#   - tools/setup/manifests/dotnet-tools (dotnet-stryker installed
+#   - tools/setup/manifests/from-dotnet-global (dotnet-stryker installed
 #     globally by tools/setup/install.sh)
 #   - docs/research/2026-05-03-math-proofs-honest-assessment.md
 #     (this workflow closes the B3 -> A upgrade with-CI line)

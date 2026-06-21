@@ -1,0 +1,8 @@
+# Mechanism: from-opam-git — opam source-build from a pinned git commit.
+# Realizer: tools/setup/mechanisms/from-opam-git.sh
+# Gated: ZETA_INSTALL_FULL=1 (heavy OCaml build; skipped on minimal/CI install).
+#
+# Format:
+#   <name>  <git-repo-url>  commit=<sha>  switch=<opam-switch>  ocaml=<version>
+
+tlapm  https://github.com/tlaplus/tlapm.git  commit=1eabe97dbb9b91fb4f8081fe104c6b3fad826940  switch=tlaps-build  ocaml=5.1.0

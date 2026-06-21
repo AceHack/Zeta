@@ -52,16 +52,16 @@ azure-quantum==3.10.0  role=reference-oracle lang=q#
       text: "qsharp==1.29.1 role=reference-oracle lang=q#\n",
       ecosystem: "pypi",
       purpose: "Q# oracle",
-      realizer: "tools/setup/common/quantum.sh",
-      manifest: "tools/setup/manifests/quantum",
+      realizer: "tools/setup/mechanisms/from-uv-venv.sh",
+      manifest: "tools/setup/manifests/from-uv-venv",
       optIn: ["ZETA_INSTALL_QUANTUM=1"],
     });
 
     expect(pointer).toEqual({
       schema: "zeta.ace.package-manager-pointers.v1",
       purpose: "Q# oracle",
-      realizer: "tools/setup/common/quantum.sh",
-      manifest: "tools/setup/manifests/quantum",
+      realizer: "tools/setup/mechanisms/from-uv-venv.sh",
+      manifest: "tools/setup/manifests/from-uv-venv",
       opt_in: ["ZETA_INSTALL_QUANTUM=1"],
       dependencies: [
         {

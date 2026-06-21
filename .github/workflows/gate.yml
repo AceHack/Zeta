@@ -360,7 +360,7 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.elan
-          key: elan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/common/elan.sh') }}
+          key: elan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/mechanisms/from-elan.sh') }}
 
       - name: Cache NuGet packages
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5

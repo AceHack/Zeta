@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/local-llm.sh — installs the CORE local-LLM primitive:
+# tools/setup/mechanisms/from-ollama.sh — installs the CORE local-LLM primitive:
 # a small CPU-only model served by Ollama, account-free. Pins are DECLARATIVE in
-# tools/setup/manifests/local-llm. Idempotent (detect-first), and GRACEFUL: a
+# tools/setup/manifests/from-ollama. Idempotent (detect-first), and GRACEFUL: a
 # registry/network failure WARNS and continues (it must never brick install.sh).
 # The primitive's tests skip-if-absent, so a missing model degrades to mock-only
 # tests rather than a hard failure (exceptions-as-signals: the model is
@@ -23,12 +23,12 @@
 
 set -euo pipefail
 
-# shellcheck source=curl-fetch.sh
+# shellcheck source=../common/curl-fetch.sh
 # shellcheck disable=SC1091
-source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
+source "$(cd "$(dirname "$0")/.." && pwd)/common/curl-fetch.sh"
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/local-llm"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/from-ollama"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "✓ no local-llm manifest; skipping"

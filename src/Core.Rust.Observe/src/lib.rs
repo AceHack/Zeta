@@ -16,11 +16,14 @@
 //! ("not flying blind") and letting serde drop-in-replace ours.
 
 pub mod algebra;
+/// Soft-lane algebraic interfaces (Group, Monoid, Lattice, Port, Codec).
 pub mod algebra_interfaces;
 pub mod json;
 pub mod json_reader;
 pub mod observe_json;
+/// Sparse statevector quantum simulator for soft-mix oracle parity.
 pub mod sparse_quantum_sim;
+/// Weak-ref specialization cache (cogen mix(mix,mix) memory model).
 pub mod specialization_cache;
 pub mod star_ring;
 pub mod types;

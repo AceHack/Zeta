@@ -100,6 +100,19 @@ module SolverHarness =
 
     // --- Process Spawning with Timeout ---
 
+    let private which (tool: string) : string option =
+        try
+            let psi =
+                ProcessStartInfo("/usr/bin/env", $"which %s{tool}",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false)
+            use p = Process.Start psi
+            let output = p.StandardOutput.ReadToEnd().Trim()
+            p.WaitForExit()
+            if p.ExitCode = 0 && File.Exists output then Some output
+            else None
+        with _ -> None
+
     let private runProcess (cmd: string) (args: string) (stdinInput: string) (timeoutMs: int) : string * string * int option =
         try
             let psi = ProcessStartInfo(
@@ -262,6 +275,19 @@ module SolverHarness =
                     | SolverTimeout -> "timeout"
                 recordVerdict solverName query verdictStr
             verdict
+
+    /// Smoke-test whether live E prover is installed and functional (Noble apt package
+    /// 3.0.03+ds-1 aborts in Docker/CI — skip FOL tests rather than false-fail).
+    let eproverLiveAvailable () =
+        let mode = getSolverMode()
+        if mode = "replay" then true
+        else
+            match which "eprover" with
+            | None -> false
+            | Some _ ->
+                match runEProver "fof(smoke, conjecture, (![X]: X = X))." with
+                | Unsat -> true
+                | _ -> false
 
     /// Run Z3 and CVC5, assert agreement, and surface disagreement/crashes
     let crossCheck (query: string) : SolverVerdict * SolverVerdict =

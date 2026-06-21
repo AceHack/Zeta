@@ -1,0 +1,7 @@
+# Mechanism: from-autotools-tarball — fetch upstream tarball, verify sha256, configure + make install.
+# Format: <binary-name>  <tarball-url>  sha256=<hex>  [prefix=~/.local]  [when=linux]
+#
+# Linux-only formal solvers when distro packages are broken or absent (Noble apt eprover 3.0.03
+# aborts in CI; Jammy has no eprover apt). macOS uses manifests/brew.
+
+eprover  https://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_3.2/E.tgz  sha256=074c8e5fc3062476341ce790fd15ad8004d322d6b6627844bd2768a8830bd4ae  when=linux

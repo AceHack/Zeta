@@ -89,8 +89,13 @@ jobs:
           # mise.sh promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN (authenticated GitHub API,
           # no 403 rate-limit); ZETA_INSTALL_FULL exercises the one-liner installers.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # WSL does not inherit the Windows host env unless listed in WSLENV.
+          # Without GITHUB_ACTIONS, common/mise.sh skips install_with_retry and the
+          # python minor-alias idempotency guard — a single GitHub 500 on any aqua
+          # release (observed: golangci-lint@2.12.2, 2026-06-21) fails the job.
+          GITHUB_ACTIONS: "true"
           ZETA_INSTALL_FULL: "1"
-          WSLENV: HOST_WORKSPACE/p:GITHUB_TOKEN:ZETA_INSTALL_FULL
+          WSLENV: HOST_WORKSPACE/p:GITHUB_TOKEN:ZETA_INSTALL_FULL:GITHUB_ACTIONS
         run: |
           set -euo pipefail
           echo "=== WSL install.sh test ==="
@@ -109,5 +114,20 @@ jobs:
           # linux.sh's +x is validated transitively once install.sh runs it.
           test -x tools/setup/install.sh || { echo "install.sh not executable after clone (+x not preserved)"; exit 1; }
           echo "=== running ./tools/setup/install.sh (direct, via shebang) ==="
-          ./tools/setup/install.sh
-          echo "=== install.sh completed (exit 0) ==="
+          # CI-level retry (same budget as gate.yml): mise's internal 3-attempt HTTP
+          # retry can exhaust on a GitHub releases 502/500; outer loop covers outages.
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then
+              echo "=== install.sh completed (exit 0) ==="
+              exit 0
+            fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done

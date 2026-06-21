@@ -23,11 +23,15 @@ import { join } from "node:path";
 
 const ROOT = "tests/cross-verification";
 
+// IR schema fixtures and ISA test vectors — not byte-lock primitives (oracles live under
+// `_harness/` and per-generator dirs like `xoshiro256ss/`).
+const INFRA_DIRS = new Set(["zeta-ir-v2", "zset-isa-v2"]);
+
 const dirs = readdirSync(ROOT)
   // `_`-prefixed dirs are shared infrastructure (e.g. `_harness/`), NOT primitives —
   // they carry the differ + its self-test, not an oracle. Skipping them keeps the
   // assert-don't-skip rule honest (no false "unchecked primitive" on the harness).
-  .filter((name) => !name.startsWith("_"))
+  .filter((name) => !name.startsWith("_") && !INFRA_DIRS.has(name))
   .map((name) => join(ROOT, name))
   .filter((p) => statSync(p).isDirectory())
   .sort();

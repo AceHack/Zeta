@@ -3,7 +3,7 @@
 #
 # Slice 2c — Server-Core Docker test for tools/setup/install.ps1 (B-0857 Windows parity).
 # Validates install.ps1's TOOL-INSTALL GRAPH (scoop -> git/mise -> .mise.toml runtimes ->
-# manifests/agent-clis) on a clean Windows Server Core userspace, then asserts via
+# manifests/from-bun-global) on a clean Windows Server Core userspace, then asserts via
 # src/Core.TypeScript/ci/windows-install-ps1-smoke.ts --mode container. The user-mode scheduled task is NOT
 # covered here — a Windows container has no interactive session; the desktop loop-smoke covers it.
 # The smoke PRINTS that skip (not silent)

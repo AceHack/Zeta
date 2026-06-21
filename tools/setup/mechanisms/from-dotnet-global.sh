@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/dotnet-tools.sh — installs/updates dotnet global
+# tools/setup/mechanisms/from-dotnet-global.sh — installs/updates dotnet global
 # tools from the manifest. Idempotent: `dotnet tool install --global`
 # on an already-installed tool errors, so we branch on `dotnet tool
 # list -g`.
@@ -8,7 +8,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/dotnet-tools"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/from-dotnet-global"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "✓ no dotnet-tools manifest; skipping"
@@ -29,8 +29,8 @@ fi
 INSTALLED="$(dotnet tool list -g 2>/dev/null | awk 'NR>2 {print tolower($1)}' || echo '')"
 
 # HOST TIERS — shared helper (workitem 081KTWQZY7F08QG0R0034KN17T).
-# shellcheck source=tools/setup/common/host-tier.sh disable=SC1091
-. "$(cd "$(dirname "$0")" && pwd)/host-tier.sh"
+# shellcheck source=../common/host-tier.sh disable=SC1091
+. "$(cd "$(dirname "$0")/.." && pwd)/common/host-tier.sh"
 
 MANIFEST_LINES="$(mktemp)"
 trap 'rm -f "$MANIFEST_LINES"' EXIT

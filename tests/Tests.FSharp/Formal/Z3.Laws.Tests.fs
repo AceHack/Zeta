@@ -43,7 +43,7 @@ let private eProverAvailable () =
     if not (String.IsNullOrEmpty(mode)) && mode.ToLowerInvariant() = "replay" then
         true
     else
-        which "eprover" |> Option.isSome
+        SolverHarness.eproverLiveAvailable ()
 
 let private smtHolds (name: string) (script: string) =
     if solversAvailable() then

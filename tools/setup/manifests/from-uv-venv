@@ -1,17 +1,7 @@
-# tools/setup/manifests/quantum — quantum-language oracle deps (desired-state).
-# Q# is the reference oracle for the finite-resolution qubits framework: Zeta
-# computes measurable observables with finite BigFloat precision; QDK/Q# supplies
-# the textbook continuous-amplitude reference values for convergence checks.
+# Mechanism: from-uv-venv — PyPI libraries into repo .venv via uv pip install.
+# Realizer: tools/setup/mechanisms/from-uv-venv.sh
 #
-# DECLARATIVE DESIRED-STATE ONLY: install.sh realizes this through
-# common/quantum.sh; no one-off bare pip command. Best-effort + graceful
-# (network/registry failure warns and continues; must never brick install.sh).
-# Default-skip in generic CI / scripted runs; opt in with ZETA_INSTALL_QUANTUM=1
-# or ZETA_INSTALL_FULL=1.
-#
-# These are LIBRARIES (imported), not `uv tool install` CLIs — so they install into the
-# project's Python env via uv (`uv pip install`), NOT `uv tool install`. The `common/quantum.sh`
-# consumer handles that distinction (see the script header).
+# Importable libraries (not uv tool CLIs). Opt in: ZETA_INSTALL_QUANTUM=1 or ZETA_INSTALL_FULL=1.
 #
 # Format per line (the installer consumes the first field as the pip spec):
 #   <pip-package-id>[==X.Y.Z]   [role=<toy-validator|oracle>]  [lang=<q#|qiskit|cirq|...>]

@@ -17,8 +17,8 @@ on:
   push:
     branches: [accelerator/pr-less-git-monster]
     paths:
-      - "tools/setup/manifests/local-llm"
-      - "tools/setup/common/local-llm.sh"
+      - "tools/setup/manifests/from-ollama"
+      - "tools/setup/mechanisms/from-ollama.sh"
       - "tools/setup/linux.sh"
       - "tools/setup/macos.sh"
       - "tools/setup/manifests/brew"
@@ -68,7 +68,7 @@ jobs:
       - name: Assert the pinned model landed (declarative manifest)
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          MODEL=$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')
+          MODEL=$(grep -E '^model' tools/setup/manifests/from-ollama | awk '{print $2}')
           echo "expected model: $MODEL"
           ollama list
           ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"

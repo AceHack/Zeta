@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/repo-bins.sh — expose the repo's package bins (ace, zeta-shadow)
+# tools/setup/mechanisms/from-bun-link.sh — expose the repo's package bins (ace, zeta-shadow)
 # on PATH via `bun link`. The package.json `bin` map declares them; `bun link` in the
 # repo root registers the package globally so its bins resolve on PATH (same mechanism
 # tools/shadow/README.md documents for zeta-shadow). Best-effort: a failure WARNS and
 # continues — these are convenience commands, NOT hard deps; never brick install
-# (mirrors common/agent-clis.sh + common/local-llm.sh exceptions-as-signals discipline).
+# (mirrors mechanisms/from-bun-global.sh + mechanisms/from-ollama.sh exceptions-as-signals discipline).
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"

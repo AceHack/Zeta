@@ -3,7 +3,7 @@
 #
 # Parity with tools/setup/install.sh -> macos.sh (B-0857 Windows parity). System CLI tools
 # resolve scoop -> winget -> chocolatey (operator 2026-05-30; scoop primary = user-mode, no
-# admin, AI-native). Runtimes via mise/.mise.toml; agent CLIs via manifests/agent-clis +
+# admin, AI-native). Runtimes via mise/.mise.toml; agent CLIs via manifests/from-bun-global +
 # bun --global -- the IDENTICAL files Unix uses, so the tool set stays in sync + symmetric across
 # OSes. Background loop registered via src/Core.TypeScript/persistence/windows/install-scheduled-task.ts
 # (schtasks ~= launchd). No admin required.
@@ -53,7 +53,7 @@ function Invoke-Tool {
 }
 # Best-effort native call: surface merged output, return the exit code, NEVER throw -- for GRACEFUL
 # steps that must not brick install (e.g. the local-LLM pull + `optional` manifest tools). Mirrors
-# common/local-llm.sh's warn-and-continue discipline (exceptions-as-signals: best-effort substrate).
+# mechanisms/from-ollama.sh's warn-and-continue discipline (exceptions-as-signals: best-effort substrate).
 function Invoke-ToolSoft {
   param([Parameter(Mandatory)][scriptblock]$Cmd)
   $prev = $ErrorActionPreference
@@ -162,7 +162,7 @@ if (Have choco) { Write-Host "choco: $(Get-ToolVersion { choco --version })" }
 #    re-run only fetches what's missing/stale -- the idempotent-update property.
 #
 #    A line may carry the `optional` token => BEST-EFFORT install (warn + continue on failure,
-#    NEVER throw). This mirrors Linux's common/local-llm.sh, which installs the ollama BINARY
+#    NEVER throw). This mirrors Linux's mechanisms/from-ollama.sh, which installs the ollama BINARY
 #    gracefully (a download/extract/disk failure warns + continues -- the local-LLM model is
 #    best-effort substrate, not a hard dep). ollama is `optional` so a disk-constrained CI
 #    container (e.g. the Server Core docker-windows shield, where the ~1GB ollama download can
@@ -251,7 +251,7 @@ try {
 } finally { Pop-Location }
 
 # 5. agent + peer-AI CLIs via bun --global (bun provided by mise) -- identical manifest to Unix.
-$agentCliManifest = Join-Path $RepoRoot 'tools\setup\manifests\agent-clis'
+$agentCliManifest = Join-Path $RepoRoot 'tools\setup\manifests\from-bun-global'
 if (Test-Path $agentCliManifest) {
   foreach ($raw in Get-Content $agentCliManifest) {
     $line = ($raw -replace '#.*$', '').Trim(); if (-not $line) { continue }
@@ -267,7 +267,7 @@ Repair-CodexConfigServiceTier
 # 5b. Expose the repo's package bins (ace, zeta-shadow) on PATH via `bun link` (the package.json
 # `bin` map declares them). Best-effort + GRACEFUL (Invoke-ToolSoft): a failure WARNS and
 # continues -- convenience commands, not hard deps; never brick install. Parity with
-# common/repo-bins.sh on Unix.
+# mechanisms/from-bun-link.sh on Unix.
 Push-Location $RepoRoot
 try {
   $rbCode = Invoke-ToolSoft { mise exec -- bun link }
@@ -278,10 +278,10 @@ try {
 # 6. local-LLM core primitive -- pull the pinned model (the ollama BINARY is installed by the
 #    manifest loop in step 2; ollama is `optional` there, so on a disk-constrained container it may
 #    be ABSENT -- this step already handles that gracefully via the `-not (Have ollama)` branch).
-#    Mirrors common/local-llm.sh: idempotent (skip when the model is already present) + GRACEFUL (a
+#    Mirrors mechanisms/from-ollama.sh: idempotent (skip when the model is already present) + GRACEFUL (a
 #    registry/network/daemon failure WARNS and continues -- it must NEVER brick install; the
 #    primitive's tests skip-if-absent -> mock-only, per exceptions-as-signals). Reads model/host
-#    from manifests/local-llm (the OS-agnostic shared contract Unix reads too).
+#    from manifests/from-ollama (the OS-agnostic shared contract Unix reads too).
 $llmManifest = Join-Path $RepoRoot 'tools\setup\manifests\local-llm'
 if (Test-Path $llmManifest) {
   $llm = @{}

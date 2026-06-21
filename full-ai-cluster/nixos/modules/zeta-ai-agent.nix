@@ -245,7 +245,7 @@ in
       # B-0850.3c/3d (Vera/Codex + Lior/Antigravity) shipped: the
       # assertions are removed. zeta-install.sh Step 6.95 delegates
       # package installation to tools/setup/install.sh, whose
-      # common/agent-clis.sh consumes tools/setup/manifests/agent-clis
+      # mechanisms/from-bun-global.sh consumes tools/setup/manifests/from-bun-global
       # for codex/claude, and one-liner-tools.sh consumes manifests/one-liner-tools
       # for agy. The persona-specific Step 6.95b login flows remain
       # in zeta-install.sh for codex/claude because auth is operator-interactive.

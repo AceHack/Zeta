@@ -1,0 +1,9 @@
+# Mechanism: from-elan — pinned elan-init.sh (Lean 4 toolchain manager).
+# Realizer: tools/setup/mechanisms/from-elan.sh
+#
+# Format:
+#   elan  <elan-init-url>  sha256=<hex>  [commit=<git-sha>]
+#
+# Bump procedure: update URL commit segment + sha256 together (content-pin pair).
+
+elan  https://raw.githubusercontent.com/leanprover/elan/58e8d545e33641f66dbcbd22c4283109e71757be/elan-init.sh  sha256=4bacca9502cb89736fe63d2685abc2947cfbf34dc87673504f1bb4c43eda9264  commit=58e8d545e33641f66dbcbd22c4283109e71757be

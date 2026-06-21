@@ -94,7 +94,7 @@ echo
 
 # ── 3b. TLAPS (tlapm) proof manager — optional, opam source-build ────
 # Formal-verification rung 3. tlapm is built from source via opam
-# (common/tlaps.sh) only on a full install (ZETA_INSTALL_FULL=1) — it
+# (mechanisms/from-opam-git.sh) only on a full install (ZETA_INSTALL_FULL=1) — it
 # is heavy and not part of the minimal toolchain. So its ABSENCE is a
 # WARN, never a FAIL: a minimal install legitimately lacks it. We probe
 # both PATH and the dedicated opam build switch.
@@ -109,7 +109,7 @@ fi
 if [ -n "$TLAPM_VER" ]; then
   pass "tlapm: $TLAPM_VER"
 else
-  warn "tlapm not found — optional; build with ZETA_INSTALL_FULL=1 tools/setup/common/tlaps.sh"
+  warn "tlapm not found — optional; build with ZETA_INSTALL_FULL=1 tools/setup/mechanisms/from-opam-git.sh"
 fi
 echo
 

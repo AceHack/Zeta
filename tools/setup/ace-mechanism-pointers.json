@@ -24,20 +24,7 @@
     "purpose": "Direct .deb installs when distro apt lacks the package",
     "realizer": "tools/setup/mechanisms/from-deb.sh",
     "manifest": "tools/setup/manifests/from-deb",
-    "dependencies": [
-      {
-        "ecosystem": "from-deb",
-        "spec": "eprover http://archive.ubuntu.com/ubuntu/pool/universe/e/eprover/eprover_3.0.03+ds-1_amd64.deb",
-        "update": "when-drift-bump-pin",
-        "when": "ubuntu-22.04,amd64"
-      },
-      {
-        "ecosystem": "from-deb",
-        "spec": "eprover http://ports.ubuntu.com/ubuntu-ports/pool/universe/e/eprover/eprover_3.0.03+ds-1_arm64.deb",
-        "update": "when-drift-bump-pin",
-        "when": "ubuntu-22.04,arm64"
-      }
-    ]
+    "dependencies": []
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
@@ -50,6 +37,183 @@
         "spec": "cvc5 cvc4",
         "update": "when-drift-bump-pin",
         "when": "ubuntu-22.04"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Pinned upstream autotools tarball → configure/make install (Linux formal solvers)",
+    "realizer": "tools/setup/mechanisms/from-autotools-tarball.sh",
+    "manifest": "tools/setup/manifests/from-autotools-tarball",
+    "dependencies": [
+      {
+        "ecosystem": "from-autotools-tarball",
+        "spec": "eprover https://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_3.2/E.tgz",
+        "update": "pinned-url",
+        "when": "linux"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Python CLI tools via uv tool install",
+    "realizer": "tools/setup/mechanisms/from-uv-tool.sh",
+    "manifest": "tools/setup/manifests/from-uv-tool",
+    "dependencies": [
+      {
+        "ecosystem": "uv-tool",
+        "spec": "ruff",
+        "update": "pinned"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Importable Python libraries into repo .venv (uv pip install)",
+    "realizer": "tools/setup/mechanisms/from-uv-venv.sh",
+    "manifest": "tools/setup/manifests/from-uv-venv",
+    "dependencies": [
+      {
+        "ecosystem": "pypi",
+        "spec": "qdk[azure]==1.29.1",
+        "update": "pinned",
+        "role": "reference-oracle",
+        "lang": "q#"
+      },
+      {
+        "ecosystem": "pypi",
+        "spec": "qsharp==1.29.1",
+        "update": "pinned",
+        "role": "reference-oracle",
+        "lang": "q#"
+      },
+      {
+        "ecosystem": "pypi",
+        "spec": "azure-quantum==3.10.0",
+        "update": "pinned",
+        "role": "reference-oracle",
+        "lang": "q#"
+      },
+      {
+        "ecosystem": "npm",
+        "spec": "quantum-circuit==0.9.247",
+        "update": "pinned",
+        "role": "second-oracle",
+        "lang": "typescript"
+      }
+    ],
+    "opt_in": [
+      "ZETA_INSTALL_QUANTUM=1",
+      "ZETA_INSTALL_FULL=1"
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Lean 4 toolchain manager (pinned elan-init.sh)",
+    "realizer": "tools/setup/mechanisms/from-elan.sh",
+    "manifest": "tools/setup/manifests/from-elan",
+    "dependencies": [
+      {
+        "ecosystem": "from-elan",
+        "spec": "elan https://raw.githubusercontent.com/leanprover/elan/58e8d545e33641f66dbcbd22c4283109e71757be/elan-init.sh",
+        "update": "pinned-url"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "dotnet tool install --global",
+    "realizer": "tools/setup/mechanisms/from-dotnet-global.sh",
+    "manifest": "tools/setup/manifests/from-dotnet-global",
+    "dependencies": [
+      {
+        "ecosystem": "dotnet-global",
+        "spec": "dotnet-stryker",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "dotnet-global",
+        "spec": "fsharp-analyzers",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "dotnet-global",
+        "spec": "dotnet-trace",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "dotnet-global",
+        "spec": "dotnet-counters",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "dotnet-global",
+        "spec": "dotnet-gcdump",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "dotnet-global",
+        "spec": "dotnet-dump",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "dotnet-global",
+        "spec": "dotnet-stack",
+        "update": "pinned"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "dotnet workload install",
+    "realizer": "tools/setup/mechanisms/from-dotnet-workload.sh",
+    "manifest": "tools/setup/manifests/from-dotnet-workload",
+    "dependencies": []
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "opam source-build from pinned git commit",
+    "realizer": "tools/setup/mechanisms/from-opam-git.sh",
+    "manifest": "tools/setup/manifests/from-opam-git",
+    "dependencies": [
+      {
+        "ecosystem": "from-opam-git",
+        "spec": "tlapm https://github.com/tlaplus/tlapm.git",
+        "update": "pinned"
+      }
+    ],
+    "opt_in": [
+      "ZETA_INSTALL_FULL=1"
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Agent + peer-AI CLIs via bun install --global",
+    "realizer": "tools/setup/mechanisms/from-bun-global.sh",
+    "manifest": "tools/setup/manifests/from-bun-global",
+    "dependencies": [
+      {
+        "ecosystem": "bun-global",
+        "spec": "@anthropic-ai/claude-code",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "bun-global",
+        "spec": "@openai/codex",
+        "update": "pinned"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Expose repo package bins (ace, zeta-shadow) on PATH via bun link",
+    "realizer": "tools/setup/mechanisms/from-bun-link.sh",
+    "manifest": "(repo-root package.json bin map — no separate manifest)",
+    "dependencies": [
+      {
+        "ecosystem": "bun-link",
+        "spec": "package.json#bin",
+        "update": "pinned"
       }
     ]
   },
@@ -88,6 +252,32 @@
         "ecosystem": "from-installer",
         "spec": "agy https://antigravity.google/cli/install.sh",
         "update": "self-updating"
+      }
+    ],
+    "opt_in": [
+      "ZETA_INSTALL_FULL=1"
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Local-LLM primitive — ollama runtime + pinned model",
+    "realizer": "tools/setup/mechanisms/from-ollama.sh",
+    "manifest": "tools/setup/manifests/from-ollama",
+    "dependencies": [
+      {
+        "ecosystem": "from-ollama",
+        "spec": "model qwen2.5:0.5b",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "from-ollama",
+        "spec": "seed 0",
+        "update": "pinned"
+      },
+      {
+        "ecosystem": "from-ollama",
+        "spec": "host http://127.0.0.1:11434",
+        "update": "pinned"
       }
     ],
     "opt_in": [

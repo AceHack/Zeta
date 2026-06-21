@@ -100,8 +100,8 @@ the same uv-first discipline and was the reference that
 seeded Zeta's adoption round 34.
 
 **Zeta's manifest convention.** Declarative CLI-tool
-entries live in [tools/setup/manifests/uv-tools](/tools/setup/manifests/uv-tools);
-[common/python-tools.sh](/tools/setup/common/python-tools.sh)
+entries live in [tools/setup/manifests/from-uv-tool](/tools/setup/manifests/from-uv-tool);
+[mechanisms/from-uv-tool.sh](/tools/setup/mechanisms/from-uv-tool.sh)
 runs `uv tool install` over every non-comment non-empty
 line. A one-off script that uses `requests` doesn't need a
 manifest entry; a permanent lint gate like Semgrep does.

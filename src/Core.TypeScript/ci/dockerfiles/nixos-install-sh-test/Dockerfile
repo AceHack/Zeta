@@ -149,7 +149,7 @@ RUN --mount=type=secret,id=github_token \
 # composes with .claude/rules/dep-pin-search-first-authority.md.
 RUN bash -lc 'eval "$(mise activate bash)" && bun --version | grep -q "^1\.3\." || (echo "ERROR: bun version mismatch (expected 1.3.x per .mise.toml)" && bun --version && exit 1)'
 
-# Validation step 2: every manifests/agent-clis package is installable
+# Validation step 2: every manifests/from-bun-global package is installable
 # via bun (validates the iter-5.5.0 substrate's bun install --global
 # pattern works on NixOS userspace). Doesn't actually run the CLIs
 # (would need auth); just verifies install succeeds + declared binaries
@@ -166,7 +166,7 @@ RUN bash -lc 'set -eo pipefail && eval "$(mise activate bash)" && \
       for tok in "$@"; do case "$tok" in bin=*) bin="${tok#bin=}" ;; esac; done; \
       BUN_INSTALL=/root/.bun bun install --global "$pkg" 2>&1 | tail -5; \
       if [ -n "$bin" ]; then test -x "/root/.bun/bin/$bin" || (echo "ERROR: $bin not at expected path" && exit 1); fi; \
-    done < tools/setup/manifests/agent-clis'
+    done < tools/setup/manifests/from-bun-global'
 
 # Validation step 3: gh installed via mise / nix (the iter-5.5.0 Bug 5
 # fix added gh to common.nix systemPackages; in Docker we don't have
@@ -191,7 +191,7 @@ RUN bash -lc 'set -eu; eval "$(mise activate bash)"; \
       sleep 1; \
     done; \
     curl -fsS http://127.0.0.1:11434/api/version || { echo "=== ollama serve log (/tmp/ollama.log) — daemon not reachable ==="; cat /tmp/ollama.log 2>/dev/null || echo "(no /tmp/ollama.log)"; echo "=== end serve log ==="; exit 7; }; \
-    MODEL="$(grep -E "^model" tools/setup/manifests/local-llm | awk "{print \$2}")"; \
+    MODEL="$(grep -E "^model" tools/setup/manifests/from-ollama | awk "{print \$2}")"; \
     echo "asserting model: $MODEL"; \
     ollama list; \
     ollama list | awk "NR>1 {print \$1}" | grep -qx "$MODEL"; \

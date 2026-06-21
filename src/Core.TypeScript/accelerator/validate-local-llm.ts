@@ -3,7 +3,7 @@
 // Validates the CORE local-LLM substrate on THIS machine — the "entropy lever"
 // end-to-end check (operator 2026-05-30): after install.sh has run, a bare
 // machine should have a reachable local Ollama daemon and the pinned model. Reads
-// the declarative pins (manifests/local-llm), probes locally-installed Ollama,
+// the declarative pins (manifests/from-ollama), probes locally-installed Ollama,
 // and runs a REAL chooseIndex.
 //
 // The model-quality layer is intentionally softer by default: tiny local models
@@ -26,7 +26,7 @@ function hasFlag(flag: string): boolean {
 }
 
 const root = arg("--root", process.cwd());
-const manifestPath = join(root, "tools/setup/manifests/local-llm");
+const manifestPath = join(root, "tools/setup/manifests/from-ollama");
 const requireSelection = hasFlag("--require-selection") || process.env.ZETA_LOCAL_LLM_REQUIRE_SELECTION === "1";
 
 const txt = readFileSync(manifestPath, "utf8");

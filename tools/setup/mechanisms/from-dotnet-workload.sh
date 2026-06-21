@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/dotnet-workloads.sh — installs dotnet WORKLOADS from
-# manifests/dotnet-workloads and brings installed ones to latest. Sibling of
+# tools/setup/mechanisms/from-dotnet-workload.sh — installs dotnet WORKLOADS from
+# manifests/from-dotnet-workload and brings installed ones to latest. Sibling of
 # dotnet-tools.sh; same idempotent shape. SDK selection itself stays declarative
 # in global.json (rollForward: latestFeature).
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/dotnet-workloads"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/from-dotnet-workload"
 
 if ! command -v dotnet >/dev/null 2>&1; then
   echo "error: dotnet not on PATH (mise should have put it there)"

@@ -1,5 +1,5 @@
-# Python CLI tools managed via `uv tool install`. Installed by
-# `tools/setup/common/python-tools.sh`. One tool per non-comment
+# Mechanism: from-uv-tool — Python CLI tools via uv tool install.
+# Realizer: tools/setup/mechanisms/from-uv-tool.sh
 # non-empty line; optional `==X.Y.Z` version qualifier per line.
 #
 # Zeta scope (today): ruff for Python linting of any Python helper

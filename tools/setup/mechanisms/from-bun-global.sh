@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/agent-clis.sh — installs/updates agent + peer-AI CLIs from
-# tools/setup/manifests/agent-clis, bun-global (bun provided by mise). Sibling to
-# common/dotnet-tools.sh + common/python-tools.sh (manifest-driven global-tool steps).
+# tools/setup/mechanisms/from-bun-global.sh — installs/updates agent + peer-AI CLIs from
+# tools/setup/manifests/from-bun-global, bun-global (bun provided by mise). Sibling to
+# mechanisms/from-dotnet-global.sh + mechanisms/from-uv-tool.sh (manifest-driven global-tool steps).
 #
-# BEST-EFFORT (mirrors common/local-llm.sh's exceptions-as-signals discipline): each CLI is
+# BEST-EFFORT (mirrors mechanisms/from-ollama.sh's exceptions-as-signals discipline): each CLI is
 # an auth-gated dev/peer tool, NOT a hard dep — an install failure WARNS and continues, never
 # bricks install. LOGIN/auth is the operator's to do after install. `bun install --global` is
 # idempotent (install if absent, update if present), so re-running only refreshes what changed
@@ -21,7 +21,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-MANIFEST="$REPO_ROOT/tools/setup/manifests/agent-clis"
+MANIFEST="$REPO_ROOT/tools/setup/manifests/from-bun-global"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "✓ no agent-clis manifest; skipping"

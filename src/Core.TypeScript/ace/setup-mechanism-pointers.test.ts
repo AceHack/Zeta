@@ -28,18 +28,20 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
     );
   });
 
-  test("buildSetupMechanismPointers covers all four mechanism manifests", () => {
+  test("buildSetupMechanismPointers covers all install mechanism manifests", () => {
     const pointers = buildSetupMechanismPointers();
-    expect(pointers.map((p) => p.manifest)).toEqual([
-      "tools/setup/manifests/from-url",
-      "tools/setup/manifests/from-deb",
-      "tools/setup/manifests/from-shim",
-      "tools/setup/manifests/from-installer",
-    ]);
+    expect(pointers.length).toBeGreaterThanOrEqual(13);
+    expect(pointers.every((p) => p.realizer.startsWith("tools/setup/mechanisms/"))).toBe(true);
     for (const p of pointers) {
       expect(p.schema).toBe("zeta.ace.package-manager-pointers.v1");
-      expect(p.realizer).toMatch(/^tools\/setup\/mechanisms\//);
-      expect(p.dependencies.length).toBeGreaterThan(0);
+      if (
+        p.manifest === "tools/setup/manifests/from-dotnet-workload"
+        || p.manifest === "tools/setup/manifests/from-deb"
+      ) {
+        expect(p.dependencies.length).toBe(0);
+      } else {
+        expect(p.dependencies.length).toBeGreaterThan(0);
+      }
       for (const dep of p.dependencies) {
         expect(dep.update).toBeDefined();
       }

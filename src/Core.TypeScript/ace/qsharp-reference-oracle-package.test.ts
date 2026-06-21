@@ -9,7 +9,7 @@ import { pointerFromSetupManifest } from "./setup-manifest.ts";
 const here = dirname(fileURLToPath(import.meta.url));
 const packagePath = join(here, "packages", "qsharp-reference-oracle-0.1.0.json");
 const registryPath = join(here, "registry.json");
-const quantumManifestPath = join(here, "..", "..", "..", "tools", "setup", "manifests", "quantum");
+const quantumManifestPath = join(here, "..", "..", "..", "tools", "setup", "manifests", "from-uv-venv");
 
 function readPackage(): AcePackage {
   return JSON.parse(readFileSync(packagePath, "utf8")) as AcePackage;
@@ -42,8 +42,8 @@ describe("qsharp-reference-oracle Ace package", () => {
       text: readFileSync(quantumManifestPath, "utf8"),
       ecosystem: "pypi",
       purpose: "QDK/Q# reference oracle for finite-resolution qubits observable golden vectors",
-      realizer: "tools/setup/common/quantum.sh",
-      manifest: "tools/setup/manifests/quantum",
+      realizer: "tools/setup/mechanisms/from-uv-venv.sh",
+      manifest: "tools/setup/manifests/from-uv-venv",
       optIn: ["ZETA_INSTALL_QUANTUM=1", "ZETA_INSTALL_FULL=1"],
     });
 

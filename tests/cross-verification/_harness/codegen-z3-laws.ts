@@ -126,7 +126,6 @@ function generateDistributivityCheck(mul: string, add: string): string {
 
 function generateInvolutiveCheck(op: string): string {
   // For real/int: conj = identity, so conj(conj(a)) = a is trivially true
-  // We prove it structurally by asserting it and checking unsat
   if (op === "Conj") {
     // For real numbers, conj = identity, so conj(conj(a)) = a
     return `; On reals, Conj = identity → trivially involutive\n(assert (not (= a a)))\n`;

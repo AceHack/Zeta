@@ -85,8 +85,8 @@ r-base
 # Dejan/devops call (mirrors the kiro-cli Linux gap precedent in manifests/one-liner-tools).
 gnupg           # GPG — commit/artifact signing (close-over GPG, Aaron 2026-06-09)
 
-# CVC5 and E prover — SMT/ATP solvers for the formal-verification portfolio (rung-3).
-# Noble (24.04): both in universe apt. Jammy: linux.sh aliases cvc5→cvc4;
-# eprover via manifests/from-deb + from-shim (mechanisms/).
+# CVC5 — SMT solver for the formal-verification portfolio (rung-3).
+# Noble (24.04): cvc5 in universe apt. Jammy: linux.sh aliases cvc5→cvc4 + from-shim.
+# E prover: manifests/from-autotools-tarball on Linux (Noble apt 3.0.03 aborts in CI);
+# manifests/brew on macOS.
 cvc5
-eprover

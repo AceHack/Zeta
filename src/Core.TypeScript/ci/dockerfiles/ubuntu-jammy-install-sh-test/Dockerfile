@@ -41,7 +41,7 @@ RUN set -eu; \
       sleep 1; \
     done; \
     curl -fsS http://127.0.0.1:11434/api/version; \
-    MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"; \
+    MODEL="$(grep -E '^model' tools/setup/manifests/from-ollama | awk '{print $2}')"; \
     echo "asserting model: $MODEL"; \
     ollama list; \
     ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"; \
@@ -50,7 +50,7 @@ RUN set -eu; \
 
 RUN set -eu; \
     export PATH="/root/.local/bin:$PATH"; \
-    MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"; \
+    MODEL="$(grep -E '^model' tools/setup/manifests/from-ollama | awk '{print $2}')"; \
     echo "=== 2nd install.sh run (idempotency) ==="; \
     if ! ZETA_INSTALL_FULL=1 ./tools/setup/install.sh > /tmp/install-2nd.log 2>&1; then \
       cat /tmp/install-2nd.log; \

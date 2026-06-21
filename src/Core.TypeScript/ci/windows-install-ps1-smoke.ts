@@ -44,7 +44,7 @@ export interface AgentCliManifestEntry {
   readonly binary?: string;
 }
 
-/** Pure: parse tools/setup/manifests/agent-clis. */
+/** Pure: parse tools/setup/manifests/from-bun-global. */
 export function parseAgentCliManifest(text: string): AgentCliManifestEntry[] {
   return text
     .split(/\r?\n/)
@@ -130,7 +130,7 @@ function main(): void {
     const entries = parseAgentCliManifest(readFileSync(manifestPath, "utf8"));
     for (const entry of entries) {
       if (bunGlobalOutputContainsPackage(g, entry.packageId)) {
-        pass(`${entry.packageId} installed (bun --global via manifests/agent-clis)`);
+        pass(`${entry.packageId} installed (bun --global via manifests/from-bun-global)`);
       } else {
         fail(`${entry.packageId} not in bun global packages`);
       }

@@ -2,7 +2,7 @@
   "qsharp-reference-oracle": {
     "0.1.0": {
       "url": "https://raw.githubusercontent.com/Lucent-Financial-Group/Zeta/main/src/Core.TypeScript/ace/packages/qsharp-reference-oracle-0.1.0.json",
-      "package_hash": "blake3:a05f77e7857d006ef319964c0a732d545042602459b19499db61cf121d7a9479"
+      "package_hash": "blake3:4a6bec22bfee3a96ebdcb239da9406c5f3f4eb14315c798f70513e6e245186b1"
     }
   }
 }

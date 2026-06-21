@@ -277,7 +277,7 @@
     # /etc/NIXOS marker file and routes directly to common/mise.sh).
     # Mise then installs bun + all other .mise.toml runtimes for the
     # zeta user. Agent/peer CLIs are then installed by
-    # common/agent-clis.sh from tools/setup/manifests/agent-clis,
+    # mechanisms/from-bun-global.sh from tools/setup/manifests/from-bun-global,
     # using the mise-managed bun. NixOS stays declarative for system
     # packages; install.sh stays canonical for repo/toolchain runtime
     # and agent CLI drift.

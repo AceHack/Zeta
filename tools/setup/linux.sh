@@ -4,24 +4,21 @@
 #
 # Order matters:
 #   1. apt packages from manifests/apt (build-essential, curl, etc.)
-#   1b. mechanisms/from-deb.sh + from-shim.sh — platform fallbacks after apt
+#   1b. mechanisms/from-deb.sh + from-shim.sh + from-autotools-tarball.sh — platform fallbacks after apt
 #   2. mise (via official installer; no apt package yet)
 #   3. common/mise.sh     — installs dotnet/python/java/bun/uv
 #                           per .mise.toml
-#   4. common/python-tools.sh — uv-managed Python CLI tools
-#                              (ruff, etc.) from manifests/uv-tools
-#   5. common/quantum.sh  — optional Q# reference-oracle deps from
-#                           manifests/quantum (opt-in)
-#   6. common/elan.sh     — Lean toolchain
-#   7. common/dotnet-tools.sh — dotnet global tools from
-#                              manifests/dotnet-tools
-#   8. mechanisms/from-url.sh   — HTTPS assets → repo paths (manifests/from-url)
-#   8b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
-#                              ZETA_INSTALL_FULL (heavy OCaml build)
-#   9. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#  10. mechanisms/from-installer.sh — vendor install scripts (manifests/from-installer)
-#  11. common/local-llm.sh   — local-LLM core primitive (ollama + pinned tiny model) from
-#                              manifests/local-llm
+#   4. mechanisms/from-uv-tool.sh — uv tool install (manifests/from-uv-tool)
+#   5. mechanisms/from-uv-venv.sh — project .venv pip deps (manifests/from-uv-venv; opt-in)
+#   6. mechanisms/from-elan.sh     — Lean toolchain manager
+#   7. mechanisms/from-dotnet-global.sh — dotnet global tools
+#   8. mechanisms/from-dotnet-workload.sh — dotnet workloads
+#   9. mechanisms/from-url.sh   — HTTPS assets → repo paths
+#  10. mechanisms/from-opam-git.sh — opam git source-build (ZETA_INSTALL_FULL)
+#  11. mechanisms/from-bun-global.sh — bun-global CLIs
+#  12. mechanisms/from-bun-link.sh — repo package bins on PATH
+#  13. mechanisms/from-installer.sh — vendor install scripts
+#  14. mechanisms/from-ollama.sh — local-LLM primitive
 #  12. common/shellenv.sh    — managed PATH file
 #  13. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 #
@@ -102,15 +99,6 @@ elif [ -f "$APT_MANIFEST" ]; then
             ;;
         esac
       done
-      # eprover absent from jammy apt; mechanisms/from-deb.sh installs Noble pool .deb.
-      case " $PKGS " in
-        *" eprover "*)
-          echo "↻ apt: eprover deferred on Ubuntu 22.04 jammy (mechanisms/from-deb.sh)"
-          PKGS="${PKGS// eprover / }"
-          PKGS="${PKGS//eprover /}"
-          PKGS="${PKGS// eprover/}"
-          ;;
-      esac
     fi
   fi
   if [ -n "$PKGS" ]; then
@@ -161,10 +149,11 @@ elif [ -f "$APT_MANIFEST" ]; then
 fi
 echo "✓ apt packages up to date"
 
-# Jammy mechanism fallbacks (from-deb, from-shim) after apt; Noble uses apt directly.
+# Jammy mechanism fallbacks (from-deb, from-shim, from-autotools-tarball) after apt.
 if [ "$IS_NIXOS" != 1 ]; then
   "$SETUP_DIR/mechanisms/from-deb.sh"
   "$SETUP_DIR/mechanisms/from-shim.sh"
+  "$SETUP_DIR/mechanisms/from-autotools-tarball.sh"
 fi
 
 # ── 2. mise ─────────────────────────────────────────────────────────
@@ -297,36 +286,22 @@ for shim_dir in \
   fi
 done
 
-"$SETUP_DIR/common/python-tools.sh"
-"$SETUP_DIR/common/quantum.sh"
+"$SETUP_DIR/mechanisms/from-uv-tool.sh"
+"$SETUP_DIR/mechanisms/from-uv-venv.sh"
 
 # Make ~/.dotnet/tools available for the remainder of this install.sh
-# process so dotnet-tools.sh can install globals (semgrep / stryker)
-# into $HOME/.dotnet/tools and find them on PATH in the same run.
+# process so from-dotnet-global can install globals into $HOME/.dotnet/tools
+# and find them on PATH in the same run.
 export PATH="$HOME/.dotnet/tools:$PATH"
 
-"$SETUP_DIR/common/elan.sh"
-"$SETUP_DIR/common/dotnet-tools.sh"
-"$SETUP_DIR/common/dotnet-workloads.sh"
+"$SETUP_DIR/mechanisms/from-elan.sh"
+"$SETUP_DIR/mechanisms/from-dotnet-global.sh"
+"$SETUP_DIR/mechanisms/from-dotnet-workload.sh"
 "$SETUP_DIR/mechanisms/from-url.sh"
-# TLAPS (tlapm, TLA+ proof manager) — opam source-build (no arm64 upstream
-# binary; Aaron path-A). Heavy OCaml build → gated behind ZETA_INSTALL_FULL
-# so minimal/CI/devcontainer installs stay fast. opam + z3 come from
-# manifests/apt above. Best-effort: warns + continues (never bricks install).
-if [ "${ZETA_INSTALL_FULL:-0}" = "1" ]; then
-  "$SETUP_DIR/common/tlaps.sh" || echo "⚠ tlaps.sh failed — see output above; continuing"
-else
-  echo "✓ skipping TLAPS opam source-build (set ZETA_INSTALL_FULL=1 to build tlapm)"
-fi
-# Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
-# Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
-"$SETUP_DIR/common/agent-clis.sh"
-# Expose repo package bins (ace, zeta-shadow) on PATH via `bun link`. Best-effort.
-"$SETUP_DIR/common/repo-bins.sh"
-# Non-package-manager CLIs via mechanisms/from-installer.sh (manifests/from-installer).
+"$SETUP_DIR/mechanisms/from-opam-git.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
+"$SETUP_DIR/mechanisms/from-bun-global.sh"
+"$SETUP_DIR/mechanisms/from-bun-link.sh"
 "$SETUP_DIR/mechanisms/from-installer.sh"
-# Local-LLM core primitive — installs pinned ollama binary + pulls the pinned
-# tiny model (manifests/local-llm). Graceful: warns + continues on failure.
-"$SETUP_DIR/common/local-llm.sh"
+"$SETUP_DIR/mechanisms/from-ollama.sh"
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"

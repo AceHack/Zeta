@@ -39,6 +39,12 @@ when_matches () {
       amd64|arm64)
         [ "$arch" = "$clause" ] || return 1
         ;;
+      linux)
+        [ "$(uname -s)" = "Linux" ] || return 1
+        ;;
+      darwin)
+        [ "$(uname -s)" = "Darwin" ] || return 1
+        ;;
       *)
         echo "warn: unknown when= clause '$clause'; treating as non-match" >&2
         return 1

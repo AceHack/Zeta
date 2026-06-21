@@ -3,7 +3,7 @@
 # macOS install.sh shield (B-0857 cross-OS install parity — the macOS lane).
 # Runs tools/setup/install.sh on a real macOS runner, which dispatches to
 # macos.sh (Homebrew + brew ollama + mise toolchain + lean + jars + the
-# local-LLM model pull via common/local-llm.sh). Completes the install-shield
+# local-LLM model pull via mechanisms/from-ollama.sh). Completes the install-shield
 # matrix — we already cover ubuntu/nixos/windows/wsl; this closes the mac gap:
 #   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu 24.04, Docker)
 #   - docker-ubuntu-jammy-install-sh-test (install.sh on bare Ubuntu 22.04, Docker)
@@ -124,7 +124,7 @@ jobs:
             sleep 1
           done
           curl -fsS http://127.0.0.1:11434/api/version
-          MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"
+          MODEL="$(grep -E '^model' tools/setup/manifests/from-ollama | awk '{print $2}')"
           echo "asserting model: $MODEL"
           ollama list
           ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"
@@ -141,7 +141,7 @@ jobs:
         # ubuntu shield's Copilot-#6240 fix).
         run: |
           set -euo pipefail
-          MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"
+          MODEL="$(grep -E '^model' tools/setup/manifests/from-ollama | awk '{print $2}')"
           echo "=== 2nd install.sh run (idempotency) ==="
           if ! ./tools/setup/install.sh > /tmp/install-2nd.log 2>&1; then
             cat /tmp/install-2nd.log

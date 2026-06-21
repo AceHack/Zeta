@@ -1466,7 +1466,7 @@ if [ -d "$ZETA_HOME" ]; then
   # truth; operator 2026-05-27 ALIGNMENT catch) AND install peer/agent
   # CLIs via the canonical setup manifests:
   #
-  #   tools/setup/manifests/agent-clis       (claude/codex)
+  #   tools/setup/manifests/from-bun-global       (claude/codex)
   #   tools/setup/manifests/from-installer  (grok/cursor/kiro/hermes/forge/agy)
   #
   # We pre-clone the Zeta repo at Step 6.95d-equivalent BEFORE this
