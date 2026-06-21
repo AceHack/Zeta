@@ -2,7 +2,7 @@ import { describe, test, expect } from "bun:test";
 import {
   numberSemiring, additiveGroup, maxLattice, boolOrLattice,
   setUnionMonoid, jsonCodec,
-  type ISemiring, type IGroup, type IMonoid, type ILattice, type ICodec,
+  type ISemiring,
 } from "./interfaces";
 
 describe("ISemiring<number> — ring laws", () => {
