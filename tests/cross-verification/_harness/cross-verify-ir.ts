@@ -129,11 +129,6 @@ ${inputLines}
 // ─── The Oracle: compare all languages ──────────────────────────────────
 
 function generateAndRunCSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
-  const body = ir.ops.map(op => {
-    if (op.op === "mul") return `        z = unchecked(z * ${getK(op, ir.width)}UL);`;
-    if (op.op === "xorshr") return `        z = z ^ (z >> ${op.s});`;
-    return "";
-  }).join("\n");
   const maskLine = ir.width < 64 ? `        z = z & ${(1n << BigInt(ir.width)) - 1n}UL;\n` : "";
   const bodyWithMask = ir.ops.map(op => {
     if (op.op === "mul") return `        z = unchecked(z * ${getK(op, ir.width)}UL);\n${maskLine}`.trimEnd();
@@ -141,20 +136,27 @@ function generateAndRunCSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: 
     return "";
   }).join("\n");
   const inputLines = inputs.map(([id, val]) => `    out["${id}"] = Mix(${val}UL).ToString();`).join("\n");
-  const script = `using System; using System.Collections.Generic; using System.Text.Json;
-static ulong Mix(ulong x) { unchecked { ulong z = x;
+
+  // Use dotnet run with a minimal project — no external tool dependency
+  const projDir = join(tmpDir, "csharp");
+  mkdirSync(projDir, { recursive: true });
+  writeFileSync(join(projDir, "oracle.csproj"),
+    `<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup></Project>`);
+  writeFileSync(join(projDir, "Program.cs"),
+    `static ulong Mix(ulong x) { unchecked { ulong z = x;
 ${bodyWithMask}
 return z; } }
-var out = new Dictionary<string, string>();
-${inputLines}
-Console.Write(JsonSerializer.Serialize(out));`;
-  const file = join(tmpDir, "oracle.csx");
-  writeFileSync(file, script);
+var sb = new System.Text.StringBuilder();
+sb.Append("{");
+string[] pairs = {${inputs.map(([id, val]) => `$"\\\"${id}\\\":\\\"{Mix(${val}UL)}\\\""`).join(",")}};
+sb.Append(string.Join(",", pairs));
+sb.Append("}");
+Console.Write(sb.ToString());`);
   try {
-    const stdout = execSync(`dotnet-script ${file}`, { encoding: "utf-8", timeout: 30000 });
+    const stdout = execSync(`dotnet run --project ${projDir}`, { encoding: "utf-8", timeout: 60000 });
     return { language: "csharp", outputs: JSON.parse(stdout) };
   } catch (e: any) {
-    return { language: "csharp", outputs: {}, error: `dotnet-script not available or failed: ${(e.message || "").slice(0, 100)}` };
+    return { language: "csharp", outputs: {}, error: `dotnet run failed: ${(e.message || "").slice(0, 100)}` };
   }
 }
 
