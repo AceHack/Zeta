@@ -255,13 +255,26 @@ module GeneratorIrRegistry =
                    [ mul 6364136223846793005L
                      add 1442695040888963407L ]) ]
 
+    /// Numerical Recipes 32-bit Linear Congruential Generator IR (width 32) under v4.
+    let lcg32NumericalRecipesIr : DynamicValue =
+        DynamicValue.Object
+            [ ("schema", DynamicValue.String "zeta-ir-v4")
+              ("generator", DynamicValue.String "rng.lcg32_numerical_recipes")
+              ("version", DynamicValue.Int 1L)
+              ("width", DynamicValue.Int 32L)
+              ("ops",
+               DynamicValue.Array
+                   [ mul 1664525L
+                     add 1013904223L ]) ]
+
     let known: IrRow list =
         [ row "rng.splitmix64" 1 splitmix64Ir
           row "hash.fmix32" 1 fmix32Ir
           row "hash.fmix64" 1 fmix64Ir
           row "rng.xoshiro256ss" 1 xoshiro256ssIr
           row "hash.nasam" 1 nasamIr
-          row "rng.lcg64_mmix" 1 lcg64MmixIr ]
+          row "rng.lcg64_mmix" 1 lcg64MmixIr
+          row "rng.lcg32_numerical_recipes" 1 lcg32NumericalRecipesIr ]
         |> List.choose (function
             | Ok r -> Some r
             | Error _ -> None)

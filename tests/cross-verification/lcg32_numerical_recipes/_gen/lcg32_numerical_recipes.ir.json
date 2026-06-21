@@ -1,0 +1,1 @@
+{"schema":"zeta-ir-v4","generator":"rng.lcg32_numerical_recipes","version":1,"width":32,"ops":[{"op":"mul","k":1664525},{"op":"add","k":1013904223}]}

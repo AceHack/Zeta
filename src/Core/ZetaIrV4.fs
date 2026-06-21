@@ -246,5 +246,16 @@ module ZetaIrV4 =
             [ Mul 6364136223846793005L
               Add 1442695040888963407L ] }
 
+    /// Numerical Recipes 32-bit Linear Congruential Generator under v4.
+    /// This is the SEVENTH generator, and the second to require the affine `add` op.
+    /// The algorithm is `x = x * 1664525 + 1013904223`.
+    let lcg32_numerical_recipes: Ir =
+        { Generator = "rng.lcg32_numerical_recipes"
+          Version = 1
+          Width = 32
+          Ops =
+            [ Mul 1664525L
+              Add 1013904223L ] }
+
     /// All known v4 IRs (the rows the frozen v4 golden file pins).
-    let known: Ir list = [ lcg64_mmix ]
+    let known: Ir list = [ lcg64_mmix; lcg32_numerical_recipes ]

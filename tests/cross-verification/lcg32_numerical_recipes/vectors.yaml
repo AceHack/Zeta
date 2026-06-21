@@ -1,0 +1,37 @@
+version: 1
+description: >-
+  Numerical Recipes 32-bit Linear Congruential Generator (LCG) finaliser golden vectors
+  — a second "add-user" primitive to prove that the `add` op (zeta-ir-v4) generalizes
+  to a 32-bit word width and different constants. The algorithm is
+  `x = x * 1664525 + 1013904223`.
+vectors:
+  - id: x-0
+    x: "0"
+    result: "1013904223"
+  - id: x-1
+    x: "1"
+    result: "1015568748"
+  - id: x-2
+    x: "2"
+    result: "1017233273"
+  - id: x-10
+    x: "10"
+    result: "1030549473"
+  - id: x-255
+    x: "255"
+    result: "1438358098"
+  - id: x-u32max
+    x: "4294967295"
+    result: "1012239698"
+  - id: x-golden
+    x: "2654435769"
+    result: "1120982980"
+  - id: x-2pow31
+    x: "2147483648"
+    result: "3161387871"
+  - id: x-1234567890
+    x: "1234567890"
+    result: "78562313"
+  - id: x-1e9
+    x: "1000000000"
+    result: "2848404831"
