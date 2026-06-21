@@ -42,6 +42,22 @@ namespace Zeta.Algebra {
     /// Group inverse.
     function GroupInverse(a : Int) : Int { return -a; }
 
+    // ─── IMonoid ────────────────────────────────────────────────────────
+
+    /// Monoid identity (additive: 0).
+    function MonoidIdentity() : Int { return 0; }
+
+    /// Monoid combine (associative, not necessarily invertible).
+    function MonoidCombine(a : Int, b : Int) : Int { return a + b; }
+
+    // ─── ICodec ─────────────────────────────────────────────────────────
+
+    /// Encode: Int → Int[] (trivial codec: wrap in single-element array).
+    function CodecEncode(a : Int) : Int[] { return [a]; }
+
+    /// Decode: Int[] → Int (extract single element).
+    function CodecDecode(b : Int[]) : Int { return b[0]; }
+
     // ─── ILattice ───────────────────────────────────────────────────────
 
     /// Join (max for integer lattice).

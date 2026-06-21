@@ -22,6 +22,8 @@
     <Compile Include="PolicyKind.fs" />
     <Compile Include="RetryPolicy.fs" />
     <Compile Include="CayleyDickson.fs" />
+    <Compile Include="AlgebraInterfaces.fs" />
+    <Compile Include="SpecializationCache.fs" />
     <Compile Include="Cl3.fs" />
     <Compile Include="Viewport.fs" />
     <Compile Include="ForceLayout.fs" />

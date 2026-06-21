@@ -16,9 +16,13 @@
 //! ("not flying blind") and letting serde drop-in-replace ours.
 
 pub mod algebra;
+pub mod algebra_interfaces;
 pub mod json;
 pub mod json_reader;
 pub mod observe_json;
+pub mod sparse_quantum_sim;
+pub mod specialization_cache;
+pub mod star_ring;
 pub mod types;
 
 pub use algebra::{fold, replay, simulate};

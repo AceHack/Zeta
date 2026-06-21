@@ -161,9 +161,13 @@ mod tests {
     fn measure_returns_correct_value_for_deterministic_input() {
         let mut sim = SparseQuantumSim::new(64);
         sim.initialize(1);
-        // Apply splitmix64-like ops
+        // Apply full splitmix64 pipeline (all 6 ops)
         sim.apply_mul(0x9E3779B97F4A7C15);
         sim.apply_xorshr(30);
+        sim.apply_mul(0xBF58476D1CE4E5B9);
+        sim.apply_xorshr(27);
+        sim.apply_mul(0x94D049BB133111EB);
+        sim.apply_xorshr(31);
         // Support should still be 1 (all permutations)
         assert_eq!(sim.support(), 1);
         // The result should be the splitmix64 golden for input=1

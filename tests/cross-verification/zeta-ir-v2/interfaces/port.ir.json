@@ -1,0 +1,15 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IPort",
+  "typeParams": [{ "name": "T", "variance": "invariant" }],
+  "doc": "Hexagonal port: the boundary between domain and infrastructure. Read + Write.",
+  "members": [
+    { "name": "Read", "kind": "method", "params": [], "returns": "T", "doc": "Read the current value from the port." },
+    { "name": "Write", "kind": "method", "params": [{"name": "value", "type": "T"}], "returns": "void", "doc": "Write a value to the port." }
+  ],
+  "laws": [
+    "Read after Write: Write(v); Read() = v",
+    "Write is total: never throws on valid T",
+    "Read may block: implementation-specific (sync or async)"
+  ]
+}
