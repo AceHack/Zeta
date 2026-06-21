@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { specialize, createSpecializationCache, createSpecializationRegistry, type CacheableIr } from "./specialization-cache";
+import { specialize, createSpecializationCache, createSpecializationRegistry, type CacheableIr, type SpecializedMix } from "./specialization-cache";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 

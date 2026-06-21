@@ -12,7 +12,7 @@ type ComplexAmp struct {
 	Re, Im float64
 }
 
-func (c ComplexAmp) MagnitudeSq() float64 { return c.Re*c.Re + c.Im*c.Im }
+func (c ComplexAmp) MagnitudeSq() float64       { return c.Re*c.Re + c.Im*c.Im }
 func (c ComplexAmp) Scale(s float64) ComplexAmp { return ComplexAmp{c.Re * s, c.Im * s} }
 func (c ComplexAmp) Add(other ComplexAmp) ComplexAmp {
 	return ComplexAmp{c.Re + other.Re, c.Im + other.Im}

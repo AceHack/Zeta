@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { interpretClifford, emitCliffordTS, type Multivector } from "./codegen-clifford";
+import { interpretClifford, emitCliffordTS } from "./codegen-clifford";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 

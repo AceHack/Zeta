@@ -36,8 +36,6 @@ function getK(op: IrOp, width: number): bigint {
  */
 export type Multivector = [number, number, number, number, number, number, number, number];
 
-const ZERO_MV: Multivector = [0, 0, 0, 0, 0, 0, 0, 0];
-
 /** Geometric product in Cl(3,0). Euclidean signature (all squares +1). */
 function geoProduct(a: Multivector, b: Multivector): Multivector {
   const result: Multivector = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -49,7 +47,7 @@ function geoProduct(a: Multivector, b: Multivector): Multivector {
       if (b[j] === 0) continue;
       const mask = i ^ j;
       const sign = reorderSign(i, j);
-      result[mask] += sign * a[i] * b[j];
+      result[mask] = (result[mask] ?? 0) + sign * (a[i] ?? 0) * (b[j] ?? 0);
     }
   }
   return result;
@@ -77,7 +75,7 @@ function popcount(n: number): number {
 function grade(mv: Multivector, k: number): Multivector {
   const result: Multivector = [0, 0, 0, 0, 0, 0, 0, 0];
   for (let i = 0; i < 8; i++) {
-    if (popcount(i) === k) result[i] = mv[i];
+    if (popcount(i) === k) result[i] = mv[i] ?? 0;
   }
   return result;
 }
@@ -118,8 +116,7 @@ export function interpretClifford(ir: ZetaIrV2, input: number): Multivector {
       state = geoProduct(geoProduct(reflector, state), reflector);
     } else if (op.op === "branch") {
       // Branch in Clifford: decompose into even + odd subalgebra
-      const even = grade(state, 0).map((v, i) => v + grade(state, 2)[i]) as Multivector;
-      const odd = grade(state, 1).map((v, i) => v + grade(state, 3)[i]) as Multivector;
+      const even = grade(state, 0).map((v, i) => v + (grade(state, 2)[i] ?? 0)) as Multivector;
       // Keep the even part (quaternionic component)
       state = even;
     }

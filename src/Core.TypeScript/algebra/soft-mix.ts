@@ -182,8 +182,8 @@ export function createCachedMix(ir: ZetaIrV1): (x: bigint) => bigint {
       width: ir.width,
       ops: ir.ops.map(op => ({
         op: op.op,
-        k_bigint: op.k !== undefined ? String(op.k) : undefined,
-        s: op.s,
+        ...(op.k !== undefined ? { k_bigint: String(op.k) } : {}),
+        ...(op.s !== undefined ? { s: op.s } : {}),
       })),
     };
     const cache = createSpecializationCache(cacheableIr, specialize);

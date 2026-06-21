@@ -14,8 +14,6 @@
  * arithmetic IR, produces the SAME output as the committed codegen.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 
 // ─── The IR of the codegen itself ────────────────────────────────────────
 

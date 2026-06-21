@@ -39,10 +39,12 @@ for what's unique (C# variance, Rust lifetimes, Go embedding, Q# functors).
 ## WeakReference as cogen = mix(mix,mix) collection enabler
 
 The weak compiler reference pattern:
+
 - **Strong ref** = "I own this, keep it alive" → classical lane (deterministic, always available)
 - **Weak ref** = "I can reach this, but allow collection" → soft lane (derived, regenerable)
 
 Connection to the gen(gen)=gen architecture:
+
 - The **generator IS the ECC** — if derived code is collected, regenerate it on demand
 - **generate the derivable, keep the irreducible** — WeakRef on generated code, StrongRef on IR
 - `cogen = mix(mix,mix)` — the compiler-generator can reproduce any compiled artifact
@@ -50,6 +52,7 @@ Connection to the gen(gen)=gen architecture:
 - Regeneration = the generator re-specializing the IR when the artifact is needed again
 
 This is `only-the-irreducible-is-primitive` applied to MEMORY MANAGEMENT:
+
 - The IR (irreducible) stays alive (strong ref)
 - The generated code (derivable) is weakly held (can be collected + regenerated)
 - The generator (= ECC = cogen) is the mechanism that makes this safe
@@ -69,6 +72,7 @@ This is `only-the-irreducible-is-primitive` applied to MEMORY MANAGEMENT:
 ## How this connects to the codegen
 
 The interface codegen should emit:
+
 1. **The interface definition** (GCF shape + variance annotations)
 2. **Default implementations** (where the language supports it)
 3. **A WeakRef-wrapped cache** for specialized/generated artifacts
@@ -103,6 +107,7 @@ All 5 steps complete. The interface stack exists in 4 compiled languages (TS/C#/
 the WeakRef cache is operational with no-error-caching safety, and it's wired into soft-mix.
 
 ### What's next (new trajectory: algebraic-codegen-capstone)
+
 1. Self-hosting codegen — IR description of the codegen itself
 2. Clifford lens emission — Cl3/multivectors from IR
 3. Cross-lane cost-parity golden — DumpMachine entry-count = AmplitudeEmu.support

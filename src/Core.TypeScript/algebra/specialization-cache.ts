@@ -14,7 +14,6 @@
  *   const result3 = cache.run(input3); // cache miss → regenerates (still correct)
  */
 
-import type { StarRing } from "./star-ring";
 
 // ─── Types ───────────────────────────────────────────────────────────────
 
@@ -95,7 +94,7 @@ export function createSpecializationCache(
   // Weak ref to the specialized function (derivable — can be collected)
   let cachedRef: WeakRef<{ fn: SpecializedMix }> | null = null;
   // FinalizationRegistry to track when GC collects our specialized fn
-  const registry = new FinalizationRegistry<string>((name) => {
+  const registry = new FinalizationRegistry<string>((_name) => {
     stats.regenerations++; // Count GC collections
   });
 
