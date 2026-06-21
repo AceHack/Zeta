@@ -1,0 +1,98 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IDatabase",
+  "typeParams": [],
+  "doc": "The core pluggable database interface supporting files, GSets, and ZSets with capacity bounds and heat configuration.",
+  "members": [
+    {
+      "name": "CreateFile",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" },
+        { "name": "value", "type": "string" }
+      ],
+      "returns": "bool",
+      "doc": "Create a file at path with string value. Returns true if newly created."
+    },
+    {
+      "name": "ReadFile",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" }
+      ],
+      "returns": "string",
+      "doc": "Read the string value of a file at path."
+    },
+    {
+      "name": "DeleteFile",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" }
+      ],
+      "returns": "bool",
+      "doc": "Delete a file at path. Returns true if the file was deleted."
+    },
+    {
+      "name": "CreateGSet",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" },
+        { "name": "capacity", "type": "int" },
+        { "name": "heatSink", "type": "string" }
+      ],
+      "returns": "bool",
+      "doc": "Create a bounded grow-only set (G-Set) under path with a capacity limit and heat sink. Returns true if newly created."
+    },
+    {
+      "name": "AddToGSet",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" },
+        { "name": "item", "type": "string" }
+      ],
+      "returns": "bool",
+      "doc": "Add an item to the G-Set at path. Returns true if newly added, emits heat if saturated."
+    },
+    {
+      "name": "ReadGSet",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" }
+      ],
+      "returns": "IGSet<string>",
+      "doc": "Read the G-Set at path."
+    },
+    {
+      "name": "CreateZSet",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" },
+        { "name": "capacity", "type": "int" },
+        { "name": "heatSink", "type": "string" }
+      ],
+      "returns": "bool",
+      "doc": "Create a bounded Z-set under path with a capacity limit and heat sink. Returns true if newly created."
+    },
+    {
+      "name": "AddToZSet",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" },
+        { "name": "item", "type": "string" },
+        { "name": "weight", "type": "int64" }
+      ],
+      "returns": "void",
+      "doc": "Add an item with weight to the Z-set at path. Emits heat if capacity is exceeded."
+    },
+    {
+      "name": "ReadZSet",
+      "kind": "method",
+      "params": [
+        { "name": "path", "type": "string" }
+      ],
+      "returns": "IZSet<string, int64>",
+      "doc": "Read the Z-set at path."
+    }
+  ],
+  "laws": []
+}

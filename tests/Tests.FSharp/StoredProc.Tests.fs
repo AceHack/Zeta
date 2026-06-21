@@ -87,7 +87,15 @@ let private dbEvents : Db.DbEvent list =
       Db.JitResolve("npm.left-pad", "1.3.0")
       Db.Create("/a", dv "1")
       Db.Update("/a", DynamicValue.Int 7L)
-      Db.Delete "/a" ]
+      Db.Delete "/a"
+      Db.GSetCreate("/gset1", Some 2, Some "/heatsink1")
+      Db.GSetAdd("/gset1", "item1")
+      Db.GSetAdd("/gset1", "item2")
+      Db.GSetAdd("/gset1", "item3")
+      Db.ZSetCreate("/zset1", Some 1, Some "/heatsink2")
+      Db.ZSetAdd("/zset1", "zitem1", 1L)
+      Db.ZSetAdd("/zset1", "zitem2", 2L)
+      Db.ZSetAdd("/zset1", "zitem1", -1L) ]
 
 [<Fact>]
 let ``db: encode/decode round-trips every DbEvent`` () =
@@ -108,6 +116,37 @@ let ``DIFFERENTIAL db: native Db.apply == interpreted stored-proc across all eve
                 | Ok r -> r
                 | Error e -> failwithf "interpret failed: %s" e
             Assert.Equal<Db.DbState>(native, interpreted)
+
+[<Fact>]
+let ``db: capacity bounds and heat emission work correctly`` () =
+    let events =
+        [ Db.GSetCreate("/g1", Some 1, Some "/hs1")
+          Db.GSetAdd("/g1", "a")
+          Db.GSetAdd("/g1", "b") // count = 2 > cap = 1 -> heat
+          Db.ZSetCreate("/z1", Some 1, Some "/hs2")
+          Db.ZSetAdd("/z1", "x", 1L)
+          Db.ZSetAdd("/z1", "y", 2L) // support count = 2 > cap = 1 -> heat
+        ]
+    let state = Db.fold Db.defaultBackend events
+
+    Assert.True(GSet.contains "a" state.GSets.["/g1"])
+    Assert.True(GSet.contains "b" state.GSets.["/g1"])
+    Assert.Equal(1L, ZSet.lookup "x" state.ZSets.["/z1"])
+    Assert.Equal(2L, ZSet.lookup "y" state.ZSets.["/z1"])
+
+    Assert.Equal(2, state.HeatLog.Length)
+    
+    let (zSource, zKind, zUnits, zExcess, zDetail) = state.HeatLog.[0]
+    Assert.Equal("/z1", zSource)
+    Assert.Equal("zset-saturation", zKind)
+    Assert.Equal(1, zUnits)
+    Assert.Equal(1L, zExcess)
+    
+    let (gSource, gKind, gUnits, gExcess, gDetail) = state.HeatLog.[1]
+    Assert.Equal("/g1", gSource)
+    Assert.Equal("gset-saturation", gKind)
+    Assert.Equal(1, gUnits)
+    Assert.Equal(1L, gExcess)
 
 [<Fact>]
 let ``db: interpret/decode reject a malformed proc`` () =

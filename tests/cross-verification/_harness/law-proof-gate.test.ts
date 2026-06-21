@@ -21,7 +21,9 @@ const IR_DIR = join(import.meta.dir, "../zeta-ir-v2/interfaces");
 function loadAllIrs(): { name: string; laws: any[] }[] {
   const files = ["semiring.ir.json", "star-ring.ir.json", "group.ir.json",
                  "monoid.ir.json", "lattice.ir.json", "codec.ir.json", "port.ir.json",
-                 "zset-isa.ir.json"];
+                 "zset-isa.ir.json", "gset.ir.json", "zset.ir.json",
+                 "bounded-gset.ir.json", "bounded-zset.ir.json", "heat-sink.ir.json",
+                 "database.ir.json"];
   const results: { name: string; laws: any[] }[] = [];
   for (const f of files) {
     try {

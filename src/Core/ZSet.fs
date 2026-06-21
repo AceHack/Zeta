@@ -594,3 +594,9 @@ module ZSet =
     /// `(key, weight)` literals from C# work without `Tuple.Create` ceremony.
     let ofPairs (pairs: struct ('K * Weight) seq) : ZSet<'K> =
         pairs |> Seq.map (fun struct (k, w) -> k, w) |> ofSeq
+
+    /// Extract the non-zero weighted keys from the Z-set as a grow-only G-set.
+    let support (z: ZSet<'K>) : GSet<'K> =
+        let keys = z |> Seq.map (fun entry -> entry.Key)
+        GSet.ofSeq keys
+

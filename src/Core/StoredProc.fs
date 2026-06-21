@@ -130,6 +130,20 @@ module StoredProc =
         | Db.Create(p, v) -> DynamicValue.Object [ OpKey, s "create"; KeyKey, s p; ValKey, v ]
         | Db.Update(p, v) -> DynamicValue.Object [ OpKey, s "update"; KeyKey, s p; ValKey, v ]
         | Db.Delete p -> DynamicValue.Object [ OpKey, s "delete"; KeyKey, s p ]
+        | Db.GSetCreate(p, capOpt, hsOpt) ->
+            let fields = [ OpKey, s "gsetcreate"; KeyKey, s p ]
+            let fields' = match capOpt with Some cap -> fields @ [ "capacity", DynamicValue.Int (int64 cap) ] | None -> fields
+            let fields'' = match hsOpt with Some hs -> fields' @ [ "heatsink", s hs ] | None -> fields'
+            DynamicValue.Object fields''
+        | Db.ZSetCreate(p, capOpt, hsOpt) ->
+            let fields = [ OpKey, s "zsetcreate"; KeyKey, s p ]
+            let fields' = match capOpt with Some cap -> fields @ [ "capacity", DynamicValue.Int (int64 cap) ] | None -> fields
+            let fields'' = match hsOpt with Some hs -> fields' @ [ "heatsink", s hs ] | None -> fields'
+            DynamicValue.Object fields''
+        | Db.GSetAdd(p, item) ->
+            DynamicValue.Object [ OpKey, s "gsetadd"; KeyKey, s p; "item", s item ]
+        | Db.ZSetAdd(p, item, w) ->
+            DynamicValue.Object [ OpKey, s "zsetadd"; KeyKey, s p; "item", s item; "weight", DynamicValue.Int w ]
 
     let private getField k (fields: (string * DynamicValue) list) =
         fields |> List.tryPick (fun (fk, fv) -> if fk = k then Some fv else None)
@@ -142,6 +156,16 @@ module StoredProc =
                 match getField KeyKey fields with
                 | Some(DynamicValue.String k) -> Ok k
                 | _ -> Error "stored-proc missing string 'key'"
+
+            let optInt name =
+                match getField name fields with
+                | Some(DynamicValue.Int i) -> Some (int i)
+                | _ -> None
+
+            let optString name =
+                match getField name fields with
+                | Some(DynamicValue.String s) -> Some s
+                | _ -> None
 
             match getField OpKey fields with
             | Some(DynamicValue.String "depsetup") ->
@@ -164,6 +188,18 @@ module StoredProc =
                 | Ok p, Some v -> Ok(Db.Update(p, v))
                 | _ -> Error "update requires key:String and value"
             | Some(DynamicValue.String "delete") -> key () |> Result.map Db.Delete
+            | Some(DynamicValue.String "gsetcreate") ->
+                key () |> Result.map (fun p -> Db.GSetCreate(p, optInt "capacity", optString "heatsink"))
+            | Some(DynamicValue.String "zsetcreate") ->
+                key () |> Result.map (fun p -> Db.ZSetCreate(p, optInt "capacity", optString "heatsink"))
+            | Some(DynamicValue.String "gsetadd") ->
+                match key (), getField "item" fields with
+                | Ok p, Some(DynamicValue.String item) -> Ok(Db.GSetAdd(p, item))
+                | _ -> Error "gsetadd requires key:String and item:String"
+            | Some(DynamicValue.String "zsetadd") ->
+                match key (), getField "item" fields, getField "weight" fields with
+                | Ok p, Some(DynamicValue.String item), Some(DynamicValue.Int w) -> Ok(Db.ZSetAdd(p, item, w))
+                | _ -> Error "zsetadd requires key:String, item:String, and weight:Int"
             | Some(DynamicValue.String op) -> Error(sprintf "unknown db op '%s'" op)
             | _ -> Error "db stored-proc missing 'op'"
         | _ -> Error "db stored-proc must be a DynamicValue.Object"
@@ -177,6 +213,16 @@ module StoredProc =
             let strKey () =
                 match getField KeyKey fields with
                 | Some(DynamicValue.String k) -> Some k
+                | _ -> None
+
+            let optInt name =
+                match getField name fields with
+                | Some(DynamicValue.Int i) -> Some (int i)
+                | _ -> None
+
+            let optString name =
+                match getField name fields with
+                | Some(DynamicValue.String s) -> Some s
                 | _ -> None
 
             match getField OpKey fields, strKey () with
@@ -194,9 +240,115 @@ module StoredProc =
             | Some(DynamicValue.String "create"), Some p
             | Some(DynamicValue.String "update"), Some p ->
                 match getField ValKey fields with
-                | Some v -> Ok { st with Files = Map.add p v st.Files }
+                | Some v ->
+                    let oldFileOpt =
+                        st.Database
+                        |> Seq.tryPick (fun entry ->
+                            match entry.Key with
+                            | Db.ZSetEntry(path, valStr) when path = p -> Some(entry.Key, entry.Weight)
+                            | _ -> None)
+                    let json =
+                        match DynamicValue.toCanonicalJson v with
+                        | Ok s -> s
+                        | Error e -> failwithf "toCanonicalJson failed: %A" e
+                    let delta =
+                        match oldFileOpt with
+                        | Some(oldKey, oldW) -> ZSet.ofSeq [ oldKey, -oldW; Db.ZSetEntry(p, json), 1L ]
+                        | None -> ZSet.singleton (Db.ZSetEntry(p, json)) 1L
+                    let nextDb = st.Database + delta
+                    Ok { st with Database = nextDb; Files = Db.projectFiles nextDb }
                 | None -> Error "create/update requires value"
-            | Some(DynamicValue.String "delete"), Some p -> Ok { st with Files = Map.remove p st.Files }
+            | Some(DynamicValue.String "delete"), Some p ->
+                let oldFileOpt =
+                    st.Database
+                    |> Seq.tryPick (fun entry ->
+                        match entry.Key with
+                        | Db.ZSetEntry(path, valStr) when path = p -> Some(entry.Key, entry.Weight)
+                        | _ -> None)
+                let delta =
+                    match oldFileOpt with
+                    | Some(oldKey, oldW) -> ZSet.singleton oldKey -oldW
+                    | None -> ZSet.Empty
+                let nextDb = st.Database + delta
+                Ok { st with Database = nextDb; Files = Db.projectFiles nextDb }
+            | Some(DynamicValue.String "gsetcreate"), Some p ->
+                let oldMeta =
+                    st.Database
+                    |> Seq.tryPick (fun entry ->
+                        match entry.Key with
+                        | Db.ZSetMeta(path, _, _) when path = p -> Some(entry.Key, entry.Weight)
+                        | _ -> None)
+                let capOpt = optInt "capacity"
+                let hsOpt = optString "heatsink"
+                let newKey = Db.ZSetMeta(p, capOpt, hsOpt)
+                let delta =
+                    match oldMeta with
+                    | Some(oldK, oldW) -> ZSet.ofSeq [ oldK, -oldW; newKey, 1L ]
+                    | None -> ZSet.singleton newKey 1L
+                let nextDb = st.Database + delta
+                Ok { st with Database = nextDb; GSetBounds = Db.projectGSetBounds nextDb; GSetHeatSinks = Db.projectGSetHeatSinks nextDb }
+            | Some(DynamicValue.String "zsetcreate"), Some p ->
+                let oldMeta =
+                    st.Database
+                    |> Seq.tryPick (fun entry ->
+                        match entry.Key with
+                        | Db.ZSetMeta(path, _, _) when path = p -> Some(entry.Key, entry.Weight)
+                        | _ -> None)
+                let capOpt = optInt "capacity"
+                let hsOpt = optString "heatsink"
+                let newKey = Db.ZSetMeta(p, capOpt, hsOpt)
+                let delta =
+                    match oldMeta with
+                    | Some(oldK, oldW) -> ZSet.ofSeq [ oldK, -oldW; newKey, 1L ]
+                    | None -> ZSet.singleton newKey 1L
+                let nextDb = st.Database + delta
+                Ok { st with Database = nextDb; ZSetBounds = Db.projectZSetBounds nextDb; ZSetHeatSinks = Db.projectZSetHeatSinks nextDb }
+            | Some(DynamicValue.String "gsetadd"), Some p ->
+                match getField "item" fields with
+                | Some(DynamicValue.String item) ->
+                    let delta = ZSet.singleton (Db.ZSetEntry(p, item)) 1L
+                    let nextDb = st.Database + delta
+                    let count =
+                        nextDb
+                        |> Seq.filter (fun entry ->
+                            match entry.Key with
+                            | Db.ZSetEntry(path, _) when path = p && entry.Weight > 0L -> true
+                            | _ -> false)
+                        |> Seq.length
+                    let capOpt = Db.projectGSetBounds nextDb |> Map.tryFind p
+                    let heatLog' =
+                        match capOpt with
+                        | Some cap when count > cap ->
+                            let hsOpt = Db.projectGSetHeatSinks nextDb |> Map.tryFind p
+                            let hs = defaultArg hsOpt "default"
+                            let detail = sprintf "GSet capacity exceeded at path '%s': count = %d, cap = %d" p count cap
+                            (p, "gset-saturation", 1, int64 (count - cap), detail) :: st.HeatLog
+                        | _ -> st.HeatLog
+                    Ok { st with Database = nextDb; GSets = Db.projectGSets nextDb; HeatLog = heatLog' }
+                | _ -> Error "gsetadd requires item:String"
+            | Some(DynamicValue.String "zsetadd"), Some p ->
+                match getField "item" fields, getField "weight" fields with
+                | Some(DynamicValue.String item), Some(DynamicValue.Int w) ->
+                    let delta = ZSet.singleton (Db.ZSetEntry(p, item)) w
+                    let nextDb = st.Database + delta
+                    let supportCount =
+                        nextDb
+                        |> Seq.filter (fun entry ->
+                            match entry.Key with
+                            | Db.ZSetEntry(path, _) when path = p && entry.Weight <> 0L -> true
+                            | _ -> false)
+                        |> Seq.length
+                    let capOpt = Db.projectZSetBounds nextDb |> Map.tryFind p
+                    let heatLog' =
+                        match capOpt with
+                        | Some cap when supportCount > cap ->
+                            let hsOpt = Db.projectZSetHeatSinks nextDb |> Map.tryFind p
+                            let hs = defaultArg hsOpt "default"
+                            let detail = sprintf "ZSet capacity exceeded at path '%s': support count = %d, cap = %d" p supportCount cap
+                            (p, "zset-saturation", 1, int64 (supportCount - cap), detail) :: st.HeatLog
+                        | _ -> st.HeatLog
+                    Ok { st with Database = nextDb; ZSets = Db.projectZSets nextDb; HeatLog = heatLog' }
+                | _ -> Error "zsetadd requires item:String and weight:Int"
             | Some(DynamicValue.String op), _ -> Error(sprintf "unknown db op '%s'" op)
             | _ -> Error "db stored-proc missing 'op'/'key'"
         | _ -> Error "db stored-proc must be a DynamicValue.Object"
