@@ -147,6 +147,7 @@
     <Compile Include="DarkHallCabinetRuntime.Tests.fs" />
     <Compile Include="DarkHallRoomLoop.Tests.fs" />
     <Compile Include="DarkHallScheduler.Tests.fs" />
+    <Compile Include="RoomRun.Tests.fs" />
     <Compile Include="BowlingAlley.Tests.fs" />
     <Compile Include="Skadium.Tests.fs" />
     <Compile Include="DevRoom.Tests.fs" />
