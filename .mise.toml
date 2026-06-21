@@ -16,6 +16,10 @@
 # Consumed by `tools/setup/common/mise.sh` which runs
 # `mise install` from this directory. See
 # `docs/research/build-machine-setup.md` for the full rationale.
+#
+# Keep in sync with tools/setup/linux.sh MISE_VERSION and
+# full-ai-cluster/nixos/overlays/mise-pin.nix (three-way parity).
+min_version = "2026.6.11"
 
 [tools]
 # .NET 10 SDK (latest). Kept in sync with `global.json` — Zeta's
@@ -113,6 +117,10 @@ node = "24"
 "pipx:mypy" = "2.1.0"
 
 [settings]
+# Explicit: use astral-sh/python-build-standalone precompiled binaries (fast
+# install on dev laptops + CI). Compile-from-source is opt-in via
+# `python.compile = true` when a platform build is required.
+python.compile = false
 # `python-build-standalone` (upstream for mise's python plugin)
 # gates downloads on GitHub artifact attestations. On CI the
 # unauthenticated GitHub API rate-limits the shared runner IP;

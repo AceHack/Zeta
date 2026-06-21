@@ -193,22 +193,31 @@ linux_sh_nixos_tarball_mise_allowed() {
     || [ -e /lib/ld-linux-aarch64.so.1 ]
 }
 
-if ! command -v mise >/dev/null 2>&1; then
+MISE_PIN_VERSION="2026.6.11"
+MISE_VERSION="v${MISE_PIN_VERSION}"
+MISE_SHA256_X64="89c88e407c6e3a19f5f86af2cbbf88c6ef6147d55a7098c84da12b36f44f1ff3"
+MISE_SHA256_ARM64="0318f90fccf8bad6547ad6b2191764233309ceb3b6cece94c48454f385f091f5"
+MISE_SHA256_ARMV7="f9ea7f661e24371769899d85130ddf3978d32c966daf2f25bbbc3be5a7b531e6"
+
+installed_mise_version=""
+if command -v mise >/dev/null 2>&1; then
+  installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+fi
+
+if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
   if [ "$IS_NIXOS" = 1 ] && ! linux_sh_nixos_tarball_mise_allowed; then
     echo "error: mise not found on PATH on NixOS" >&2
     echo "  declare mise in environment.systemPackages (installer ISO + common.nix)" >&2
     echo "  and ensure /run/current-system/sw/bin is on PATH during target bootstrap" >&2
     exit 1
   fi
-  if [ "$IS_NIXOS" = 1 ]; then
+  if [ -n "$installed_mise_version" ]; then
+    echo "↓ upgrading mise ${installed_mise_version} → ${MISE_PIN_VERSION} (pinned release tarball)..."
+  elif [ "$IS_NIXOS" = 1 ]; then
     echo "↓ NixOS (docker/FHS): installing mise from pinned tarball..."
   else
     echo "↓ installing mise from pinned release tarball..."
   fi
-  MISE_VERSION="v2026.4.24"
-  MISE_SHA256_X64="de2f924940c29b8983035833e2fb3a50092c5794562ca0dcd0cf87b40cae2c58"
-  MISE_SHA256_ARM64="cf5f4899c3f1b56239d2eedf173c68c47b7db95400c4fa1b61e943dee4965727"
-  MISE_SHA256_ARMV7="2e122fd8bec64f86449872c633e47023b56416f887e4646307ad176baae3bfa9"
   # The previous `curl mise.run | sh` shape supported armv7 implicitly
   # (the installer auto-detects). Preserve that here — no Zeta CI leg
   # uses armv7 today, but dev laptops on a Raspberry Pi 4 in 32-bit
@@ -242,13 +251,12 @@ if ! command -v mise >/dev/null 2>&1; then
   mkdir -p "${HOME}/.local/bin"
   mv "${MISE_TMP}/mise/bin/mise" "${HOME}/.local/bin/mise"
   # Tmp dir cleanup happens via the EXIT trap above.
-  # Pinned tarball: bump via install.sh / flake overlay, not mise self-update.
-  mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
-  touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
-  # The installer puts mise at $HOME/.local/bin/mise; ensure we can
-  # invoke it for the remainder of this script run.
   export PATH="${HOME}/.local/bin:${PATH}"
 fi
+# Pinned tarball installs above; pre-existing mise on PATH is kept as-is.
+# Always mark self-update disabled — Zeta bumps mise via linux.sh / flake / brew.
+mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
 echo "✓ mise: $(mise --version)"
 
 # ── 3-10. Common steps ──────────────────────────────────────────────

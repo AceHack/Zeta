@@ -258,17 +258,19 @@ echo
 
 # --- Provision agent loop cells (B-0248.2) ---
 # After deps are installed, provision the 4 system cells from the
-# cluster-cells manifest. Runs on every install/update — idempotent
-# (cells that already exist get updated, new cells get created).
-# Skip on CI (no launchd) and skip if ZETA_SKIP_CELLS=1.
+# cluster-cells manifest. macOS + launchd only (host-loop-bootstrap.sh).
+# Skip on CI, non-macOS Linux/Windows dev VMs, and ZETA_SKIP_CELLS=1.
 if [ "${CI:-}" != "true" ] && [ "${ZETA_SKIP_CELLS:-0}" != "1" ]; then
-  if [ -f "$SETUP_DIR/host-loop-bootstrap.sh" ]; then
+  if [ "$os" = "Darwin" ] && [ -f "$SETUP_DIR/host-loop-bootstrap.sh" ]; then
     echo ""
     echo "=== Provisioning agent loop cells (B-0248.2) ==="
     bash "$SETUP_DIR/host-loop-bootstrap.sh" --skip-health-check || {
       echo "Warning: cell provisioning failed (non-fatal). Cells can be"
       echo "provisioned manually: bash tools/setup/host-loop-bootstrap.sh"
     }
+  elif [ "$os" != "Darwin" ]; then
+    echo ""
+    echo "→ agent loop cells skipped (launchd provisioning is macOS-only on this install path)"
   fi
 fi
 

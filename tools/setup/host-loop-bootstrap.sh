@@ -10,7 +10,7 @@
 #
 # What it does:
 #   1. Reads the cluster-cells manifest (4 cells by default)
-#   2. Creates an isolated clone per cell at /private/tmp/zeta-clones/<agent>/
+#   2. Creates an isolated clone per cell at ~/.zeta/clones/<agent>/
 #   3. Generates a launchd plist per cell
 #   4. Installs and starts all cell services
 #   5. Verifies health probe output
@@ -32,6 +32,16 @@
 #   bash tools/setup/host-loop-bootstrap.sh --agent-name max-24x7  # single cell
 #   bash tools/setup/host-loop-bootstrap.sh --manifest path/to/cells  # custom manifest
 set -euo pipefail
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  echo "host-loop-bootstrap: skipped (launchd cell provisioning is macOS-only; Linux systemd: future)"
+  exit 0
+fi
+
+if ! command -v launchctl >/dev/null 2>&1; then
+  echo "host-loop-bootstrap: skipped (launchctl not found)"
+  exit 0
+fi
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
@@ -96,7 +106,7 @@ provision_cell() {
   local INTERVAL="$4"
   local FORWARD="$5"
 
-  local CLONE_DIR="/private/tmp/zeta-clones/${AGENT}"
+  local CLONE_DIR="${HOME}/.zeta/clones/${AGENT}"
   local LABEL="com.lucent.zeta.${AGENT}"
   local PLIST_DST="$HOME/Library/LaunchAgents/${LABEL}.plist"
   local LOG_DIR="$HOME/Library/Logs/zeta-${AGENT}"

@@ -1,11 +1,11 @@
-# Pin system mise to the same release as tools/setup/linux.sh (v2026.4.24).
+# Pin system mise to the same release as tools/setup/linux.sh (v2026.6.11).
 # nixos-25.11 ships mise 2025.11.7, which cannot parse newer .mise.toml keys.
 final: prev:
 let
-  version = "2026.4.24";
+  version = "2026.6.11";
   sha256 = {
-    x86_64-linux = "sha256-3i+SSUDCm4mDA1gz4vs6UAksV5RWLKDc0M+HtAyuLFg=";
-    aarch64-linux = "sha256-z19ImcPxtWI50u7fFzxoxHt9uVQAxPobYelD3uSWVyc=";
+    x86_64-linux = "sha256-iciOQHxuOhn1+Gryy7+Ixu9hR9VacJjITaErNvRPH/M=";
+    aarch64-linux = "sha256-Axj5D8z4utZUetayGRdkIzMJzrO2zs6UxIRU84XwkfU=";
   };
   arch = {
     x86_64-linux = "x64";

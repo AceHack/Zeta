@@ -124,10 +124,33 @@ fi
 echo "✓ brew packages up to date"
 
 # ── 4. mise ─────────────────────────────────────────────────────────
+# Keep in sync with .mise.toml min_version and tools/setup/linux.sh MISE_PIN_VERSION.
+MISE_PIN_VERSION="2026.6.11"
+
+installed_mise_version=""
+if command -v mise >/dev/null 2>&1; then
+  installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+fi
+
 if ! command -v mise >/dev/null 2>&1; then
   echo "↓ installing mise via Homebrew..."
   brew install mise
 fi
+
+installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
+  echo "↓ upgrading mise ${installed_mise_version:-unknown} → ${MISE_PIN_VERSION} via Homebrew..."
+  brew update
+  brew upgrade mise || brew install mise
+  installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
+  if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
+    echo "error: mise is ${installed_mise_version}, but .mise.toml requires ${MISE_PIN_VERSION}" >&2
+    echo "  run: brew update && brew upgrade mise" >&2
+    exit 1
+  fi
+fi
+mkdir -p "${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
 echo "✓ mise: $(mise --version)"
 
 # ── 5-12. Common steps ──────────────────────────────────────────────

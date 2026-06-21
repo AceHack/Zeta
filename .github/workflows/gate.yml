@@ -488,7 +488,7 @@ jobs:
     # ADVISORY first (continue-on-error) — reports without blocking the gate; flip
     # to required once it has run clean for a few rounds (same easing-in pattern as
     # prior gate additions). Toolchain via three-way-parity install.sh (GOVERNANCE
-    # §24): yamllint (pipx→uv) + kubeconform (ubi:) pinned in .mise.toml, so dev
+    # §24): yamllint (pipx→uv) + kubeconform (github:) pinned in .mise.full.toml, so dev
     # laptops + CI + devcontainers + install.ps1 all get the same versions.
     name: lint (yaml/k8s)
     # kubeconform's pin lives in .mise.full.toml — BOTH install and the run steps need the
