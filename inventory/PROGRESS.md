@@ -1101,7 +1101,9 @@ Phase 7 (and with it Phases 3 & 6's deferred live items) is CLOSED. Combined evi
 who observed it:
 
 ### Auditor (independent fresh session) — unauthenticated + structural + static, observed fresh
+
 Full report: `inventory/AUDIT-PHASE7.md` (committed). No P0/P1 defect. Re-proven this session:
+
 - **Secrets:** none in any commit on any ref (JWT/`sb_secret_` scans clean; only the public
   publishable anon key ships). `service_role` only in never-use comments/guards. No seed/.env committed.
 - **RLS unauthenticated:** live anon REST on items/profiles/field_definitions/change_log → all `[]`
@@ -1119,7 +1121,9 @@ Full report: `inventory/AUDIT-PHASE7.md` (committed). No P0/P1 defect. Re-proven
   workflow removed.
 
 ### Owner — live, authenticated human-experience verification (observed, reported 2026-06-21)
+
 Run on the live no-proxy site with temporary audit users (audit-viewer@ / audit-editor@ / audit-admin@):
+
 - **QR scan post-login (Phase 6a):** scan resolves to the correct item record after login. CLEAN.
 - **Export round-trip (Phase 6b):** export → re-import round-trips VALUE-IDENTICAL. CLEAN.
 - **XSS inert (Phase 5 / probe 6):** `<script>` injected as BOTH a custom field NAME and a field VALUE
@@ -1129,6 +1133,7 @@ Run on the live no-proxy site with temporary audit users (audit-viewer@ / audit-
   sort, Phase 6c viewer export) completed clean under this same live verification pass.
 
 ### Credential & residue close-out (owner to complete in dashboard / SQL editor immediately post-merge)
+
 - **Temporary audit users** `audit-viewer@` / `audit-editor@` / `audit-admin@` — QUEUED FOR DELETION
   immediately after merge (owner handles in the Supabase dashboard).
 - **Original chat-burned build creds** `editor@gmail.com` / `viewer@gmail.com` + the admin password/secret
@@ -1138,9 +1143,10 @@ Run on the live no-proxy site with temporary audit users (audit-viewer@ / audit-
   (EXPORT first) to remove items 216/225/226/227/228 + inactive `p5_*` defs.
 
 ### Build status
+
 **INVENTORY BUILD COMPLETE — all 7 phases gated and verified** (Phase 0a→7). Ongoing maintenance items
 live on the Residual Risk Register for future consideration, not blocking v1: live multi-user sync, deep
-accessibility, automated *authenticated* data backup (deferred — needs a CI secret; anon can't read under
+accessibility, automated _authenticated_ data backup (deferred — needs a CI secret; anon can't read under
 default-deny; manual CSV/JSON export is the v1 backup; heartbeat handles only the free-tier pause),
 required-at-DB for custom fields, and post-v1 features. CSP is `<meta>`-only (GitHub Pages can't set
 headers → no `frame-ancestors`/clickjacking defense; low risk given login+RLS gating) — noted for the

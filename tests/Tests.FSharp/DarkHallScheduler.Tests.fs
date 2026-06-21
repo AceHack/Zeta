@@ -38,6 +38,28 @@ let private budget maxLaps : SimLoop.Budget =
       MaxTicks = 64
       MaxMillis = 1_000L }
 
+let private mustOk =
+    function
+    | Ok value -> value
+    | Error feedback -> failwithf "expected Ok, got %A" feedback
+
+let private rejectSlots slots : ModuloGSetConfig =
+    { Slots = slots
+      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+
+let private emptyBoundary source room budget config =
+    ModuloGSet.empty<string> config
+    |> mustOk
+    |> RoomBoundary.create source room budget
+
+let private sampleVault () =
+    let v =
+        DoorGraph.empty
+        |> DoorGraph.addRoom "darkhall"
+        |> DoorGraph.addRoom "glass"
+
+    DoorGraph.addDoor (DoorGraph.door "darkhall" "glass" "door-key") v |> mustOk
+
 [<Fact>]
 let ``heat boundary rows render as a host visible CHIP-9 board`` () =
     let row: Scheduler.HeatBoundaryRow =
@@ -147,6 +169,71 @@ let ``soft scheduler banks darkhall heat backpressure as a room boundary row`` (
             match Scheduler.heatRows final with
             | [ row ] -> Assert.Equal(1, row.Backpressured)
             | rows -> Assert.Fail(sprintf "expected one scheduler heat row, got %A" rows)
+    }
+
+[<Fact>]
+let ``boundary room handler records door denial heat as a host visible row`` () =
+    task {
+        let sink = RecordingHeatSink()
+        let boundary = emptyBoundary "darkhall-boundary-scheduler" "darkhall" 5 (rejectSlots 2)
+        let vault = sampleVault ()
+
+        let boundaryFor (action: Runtime.CabinetAction) =
+            if action.Id = "darkhall.edit-grammar" then
+                Some(RoomLoop.BoundaryCommand.Traverse(Set.empty, "glass", vault))
+            else
+                None
+
+        let handler =
+            Scheduler.boundaryRoomTickHandler
+                "darkhall-boundary-room"
+                timer
+                "darkhall-boundary-scheduler"
+                (sink :> IHeatSink)
+                (fun _ -> None)
+                boundaryFor
+                (chooseById "darkhall.edit-grammar")
+
+        let source _ = [ TimerElapsed 17 ]
+
+        let initial =
+            Scheduler.initialWithBoundary Arcade.room Chip9Capabilities.chip8Default boundary
+
+        let! result = (SoftScheduler.driveK [ handler ] source).Run(ctx ()) 42L initial 1
+
+        match result with
+        | Error feedback -> Assert.Fail(sprintf "boundary handler should report through room state, got %A" feedback)
+        | Ok final ->
+            Assert.Equal(1, final.CompletedTicks)
+            Assert.True(Scheduler.boundaryBackpressured final)
+            Assert.Equal("darkhall", final.Boundary.CurrentRoom)
+            Assert.Equal(1, sink.Signatures.Count)
+            Assert.Equal("room-boundary.door-denied", sink.Signatures.[0].Kind)
+
+            match final.LastTick with
+            | None -> Assert.Fail "scheduler should bank the boundary tick"
+            | Some tick ->
+                match tick.Result with
+                | Error(RoomLoop.TickFeedback.BoundaryFeedback(RoomBoundary.Feedback.DoorDenied(fromRoom, toRoom, reason))) ->
+                    Assert.Equal("darkhall", fromRoom)
+                    Assert.Equal("glass", toRoom)
+                    Assert.Contains("permission denied", reason)
+                | other -> Assert.Fail(sprintf "expected door-denial boundary feedback, got %A" other)
+
+            match Scheduler.lastBoundaryHeatRow final with
+            | None -> Assert.Fail "scheduler should expose the latest boundary heat row"
+            | Some row ->
+                Assert.Equal(1, row.Tick)
+                Assert.Equal("darkhall", row.RoomName)
+                Assert.Equal(1, row.HeatRejected)
+                Assert.Equal(1, row.Backpressured)
+                Assert.Equal(0, row.StorageErrors)
+                Assert.Equal<string list>([ "room-boundary.door-denied" ], row.HeatKinds)
+                Assert.Contains("permission denied", System.String.Join(";", row.Reasons))
+
+            match Scheduler.boundaryHeatRows final with
+            | [ row ] -> Assert.Equal(1, row.Backpressured)
+            | rows -> Assert.Fail(sprintf "expected one boundary heat row, got %A" rows)
     }
 
 [<Fact>]

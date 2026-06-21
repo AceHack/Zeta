@@ -27,6 +27,20 @@ let private chooseById id (readout: Runtime.ControllerReadout) : RoomLoop.Contro
 let private wait (task: System.Threading.Tasks.Task<'T>) : 'T =
     task.GetAwaiter().GetResult()
 
+let private mustOk =
+    function
+    | Ok value -> value
+    | Error feedback -> failwithf "expected Ok, got %A" feedback
+
+let private rejectSlots slots : ModuloGSetConfig =
+    { Slots = slots
+      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+
+let private emptyBoundary source room budget config =
+    ModuloGSet.empty<string> config
+    |> mustOk
+    |> RoomBoundary.create source room budget
+
 [<Fact>]
 let ``ControllerReadout names the controller projection while GridBinding stays the 4x4 placement`` () =
     let readout = Runtime.observe Arcade.room
@@ -95,6 +109,76 @@ let ``tick records controller-only grammar action as a typed refusal without hea
             Assert.Equal("darkhall.edit-grammar", refused.Id)
         | other -> Assert.Fail(sprintf "expected controller refusal event, got %A" other)
     | other -> Assert.Fail(sprintf "expected controller action refusal, got %A" other)
+
+[<Fact>]
+let ``boundary tick lets a controller choice frost the room boundary`` () =
+    let sink = RecordingHeatSink()
+    let boundary = emptyBoundary "darkhall-boundary-loop" "darkhall" 5 (rejectSlots 2)
+
+    let boundaryFor (action: Runtime.CabinetAction) =
+        if action.Id = "darkhall.edit-grammar" then
+            Some(RoomLoop.BoundaryCommand.Frost 3)
+        else
+            None
+
+    let outcome =
+        RoomLoop.tickWithBoundary
+            "darkhall-boundary-loop"
+            (sink :> IHeatSink)
+            (fun _ -> None)
+            boundaryFor
+            (chooseById "darkhall.edit-grammar")
+            boundary
+            (RoomLoop.initial Arcade.room Chip9Capabilities.chip8Default)
+        |> wait
+
+    match outcome.Result with
+    | Ok(RoomLoop.BoundaryTickResult.BoundaryResult RoomLoop.BoundaryEffect.Frosted) ->
+        Assert.Equal(2, outcome.Boundary.PrivacyBudget)
+        Assert.False(GlassHalo.isVisible outcome.Boundary.Visibility)
+        Assert.Empty(sink.Signatures)
+
+        match RoomLoop.events outcome.State |> List.rev |> List.tryHead with
+        | Some(RoomLoop.LoopEvent.BoundaryApplied(_, action, effect)) ->
+            Assert.Equal("darkhall.edit-grammar", action.Id)
+            Assert.Equal("frost", effect)
+        | other -> Assert.Fail(sprintf "expected boundary-applied event, got %A" other)
+    | other -> Assert.Fail(sprintf "expected boundary frost, got %A" other)
+
+[<Fact>]
+let ``boundary tick admission backpressure leaves occupant outside and exports heat`` () =
+    let sink = RecordingHeatSink()
+    let boundary = emptyBoundary "darkhall-boundary-loop" "darkhall" 5 (rejectSlots 1)
+
+    let admit key (current: RoomBoundary.Boundary<string>) =
+        RoomLoop.tickWithBoundary
+            "darkhall-boundary-loop"
+            (sink :> IHeatSink)
+            (fun _ -> None)
+            (fun action ->
+                if action.Id = "darkhall.escape-hatch" then
+                    Some(RoomLoop.BoundaryCommand.AdmitWithSlot(0L, key))
+                else
+                    None)
+            (chooseById "darkhall.escape-hatch")
+            current
+            (RoomLoop.initial Arcade.room Chip9Capabilities.chip8Default)
+        |> wait
+
+    let first = admit "alpha" boundary
+    let second = admit "beta" first.Boundary
+
+    match first.Result, second.Result with
+    | Ok(RoomLoop.BoundaryTickResult.BoundaryResult(RoomLoop.BoundaryEffect.Admitted firstReport)),
+      Ok(RoomLoop.BoundaryTickResult.BoundaryResult(RoomLoop.BoundaryEffect.Admitted secondReport)) ->
+        Assert.Equal(RoomAdmission.SlotOutcome.Admitted, firstReport.Outcome)
+        Assert.Equal(RoomAdmission.SlotOutcome.Backpressured, secondReport.Outcome)
+        Assert.Equal<string list>([ "alpha" ], second.Boundary.Occupants |> ModuloGSet.toList)
+        Assert.Equal<string list>([ "room-admission.backpressure" ], second.Heat.HeatKinds)
+        Assert.Equal(1, second.Heat.Backpressured)
+        Assert.Equal(1, sink.Signatures.Count)
+        Assert.Equal("room-admission.backpressure", sink.Signatures.[0].Kind)
+    | other -> Assert.Fail(sprintf "expected admission reports, got %A" other)
 
 [<Fact>]
 let ``tick appends runtime refusal and emits heat for denied cabinet capability`` () =

@@ -1,12 +1,42 @@
 module ZetaIrV4.Tests
 
+open System
 open Xunit
 open Zeta.Core
 open System.IO
 open System.Text.Json
 
-let goldenPath () =
-    Path.Combine(__SOURCE_DIRECTORY__, "..", "cross-verification", "_golden", "zeta-ir-v4.golden.json")
+let private goldenRelativePath =
+    Path.Combine("tests", "cross-verification", "_golden", "zeta-ir-v4.golden.json")
+
+let private tryFindRepoRoot (startPath: string) =
+    if String.IsNullOrWhiteSpace startPath then
+        None
+    else
+        try
+            let mutable dir = DirectoryInfo(startPath)
+            while not (isNull dir) && not (File.Exists(Path.Combine(dir.FullName, "Zeta.sln"))) do
+                dir <- dir.Parent
+
+            if isNull dir then
+                None
+            else
+                Some dir.FullName
+        with
+        | :? ArgumentException
+        | :? NotSupportedException
+        | :? PathTooLongException -> None
+
+let private repoRoot () =
+    [ Environment.GetEnvironmentVariable("ZETA_REPO_ROOT")
+      Environment.GetEnvironmentVariable("GITHUB_WORKSPACE")
+      AppContext.BaseDirectory
+      Directory.GetCurrentDirectory() ]
+    |> List.tryPick tryFindRepoRoot
+    |> Option.defaultWith (fun () -> failwith "Could not locate repo root (Zeta.sln).")
+
+let private goldenPath () =
+    Path.Combine(repoRoot (), goldenRelativePath)
 
 // ── the firewall: v1, v2, and v3 reject v4 (and vice versa) ───────────────────────────
 

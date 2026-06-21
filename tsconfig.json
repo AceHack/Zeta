@@ -35,6 +35,8 @@
     "**/bin/**",
     "**/obj/**",
     "**/.lake/**",
+    "db",
+    "db/**",
     "tools/lean4/.lake/**",
     "tools/alloy/**",
     "tools/tla/**",

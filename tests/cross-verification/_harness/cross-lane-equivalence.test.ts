@@ -97,7 +97,7 @@ const SPLITMIX64_GOLDEN: Record<string, [bigint, bigint]> = {
 
 describe("cross-lane equivalence — quantum basis-state generator ≡ classical interpreter", () => {
   test("splitmix64: quantum lane agrees with classical lane on ALL golden vectors", () => {
-    for (const [id, [input, expected]] of Object.entries(SPLITMIX64_GOLDEN)) {
+    for (const [, [input, expected]] of Object.entries(SPLITMIX64_GOLDEN)) {
       const classical = classicalMix(splitmix64Ir, input);
       const quantum = quantumBasisStateMix(splitmix64Ir, input);
       expect(classical).toBe(expected);

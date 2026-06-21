@@ -19,6 +19,11 @@
     "**/node_modules/**",
     "bin/**",
     "obj/**",
+    // `db/**` is territory/mirror substrate, not authored prose. It can contain
+    // generated Markdown-like files, intentionally extension-shaped pointers,
+    // and archived title fragments that should not be normalized by the prose
+    // lint profile.
+    "db/**",
     // Upstream reference repos under `../` are not part of Zeta.
     "references/prior-art/**",
     // Memory directory is mostly agent-written append-logs (623+

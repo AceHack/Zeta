@@ -186,8 +186,11 @@ describe("buildInventoryReport", () => {
     try {
       runGit(["init"], repo);
 
+      mkdirSync(join(repo, "db", "tools"), { recursive: true });
       mkdirSync(join(repo, "scripts"), { recursive: true });
       mkdirSync(join(repo, "tools", "lean4"), { recursive: true });
+      writeFileSync(join(repo, "db", "tools", "generated.sh"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "db", "tools", "generated-extensionless"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "a.sh"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "a-uppercase.SH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "b.bash"), "#!/usr/bin/env bash\n");

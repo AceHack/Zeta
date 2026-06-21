@@ -28,6 +28,14 @@ module DarkHallScheduler =
           LastTick: RoomLoop.TickOutcome option
           HeatRowsRev: HeatBoundaryRow list }
 
+    type BoundaryScheduledRoomState<'K when 'K : comparison> =
+        { Loop: RoomLoop.LoopState
+          Boundary: RoomBoundary.Boundary<'K>
+          CompletedTicks: int
+          CompletedLaps: int
+          LastTick: RoomLoop.BoundaryTickOutcome<'K> option
+          HeatRowsRev: HeatBoundaryRow list }
+
     [<RequireQualifiedAccess>]
     type HeatBoardContinuationFeedback =
         | MalformedContinuation of token: string
@@ -79,13 +87,34 @@ module DarkHallScheduler =
           LastTick = None
           HeatRowsRev = [] }
 
+    let initialWithBoundary
+        (room: DarkHall.Room)
+        (manifest: Chip9Capabilities.Manifest)
+        (boundary: RoomBoundary.Boundary<'K>)
+        : BoundaryScheduledRoomState<'K> =
+        { Loop = RoomLoop.initial room manifest
+          Boundary = boundary
+          CompletedTicks = 0
+          CompletedLaps = 0
+          LastTick = None
+          HeatRowsRev = [] }
+
     let heatRows (state: ScheduledRoomState) : HeatBoundaryRow list =
+        List.rev state.HeatRowsRev
+
+    let boundaryHeatRows (state: BoundaryScheduledRoomState<'K>) : HeatBoundaryRow list =
         List.rev state.HeatRowsRev
 
     let lastHeatRow (state: ScheduledRoomState) : HeatBoundaryRow option =
         state.HeatRowsRev |> List.tryHead
 
+    let lastBoundaryHeatRow (state: BoundaryScheduledRoomState<'K>) : HeatBoundaryRow option =
+        state.HeatRowsRev |> List.tryHead
+
     let backpressured (state: ScheduledRoomState) : bool =
+        state.HeatRowsRev |> List.exists (fun row -> row.Backpressured > 0)
+
+    let boundaryBackpressured (state: BoundaryScheduledRoomState<'K>) : bool =
         state.HeatRowsRev |> List.exists (fun row -> row.Backpressured > 0)
 
     let private setColor (x: int) (y: int) (mask: byte) (frame: Chip8Cow.Frame) : Chip8Cow.Frame =
@@ -149,6 +178,15 @@ module DarkHallScheduler =
           HeatKinds = outcome.Heat.HeatKinds
           Reasons = outcome.Heat.Reasons }
 
+    let private rowOfBoundaryOutcome (tick: int) (outcome: RoomLoop.BoundaryTickOutcome<'K>) : HeatBoundaryRow =
+        { Tick = tick
+          RoomName = outcome.Readout.RoomName
+          HeatRejected = outcome.Heat.HeatRejected
+          Backpressured = outcome.Heat.Backpressured
+          StorageErrors = outcome.Heat.StorageErrors
+          HeatKinds = outcome.Heat.HeatKinds
+          Reasons = outcome.Heat.Reasons }
+
     let record (outcome: RoomLoop.TickOutcome) (state: ScheduledRoomState) : ScheduledRoomState =
         let tick = state.CompletedTicks + 1
         { Loop = outcome.State
@@ -156,6 +194,19 @@ module DarkHallScheduler =
           CompletedLaps = state.CompletedLaps
           LastTick = Some outcome
           HeatRowsRev = rowOfOutcome tick outcome :: state.HeatRowsRev }
+
+    let recordBoundary
+        (outcome: RoomLoop.BoundaryTickOutcome<'K>)
+        (state: BoundaryScheduledRoomState<'K>)
+        : BoundaryScheduledRoomState<'K> =
+        let tick = state.CompletedTicks + 1
+
+        { Loop = outcome.State
+          Boundary = outcome.Boundary
+          CompletedTicks = tick
+          CompletedLaps = state.CompletedLaps
+          LastTick = Some outcome
+          HeatRowsRev = rowOfBoundaryOutcome tick outcome :: state.HeatRowsRev }
 
     let private stampCumulativeLaps
         (startLaps: int)
@@ -182,6 +233,21 @@ module DarkHallScheduler =
             return record outcome state
         }
 
+    let tickWithBoundary
+        (source: string)
+        (sink: IHeatSink)
+        (requestFor: RoomLoop.RequestResolver)
+        (boundaryFor: RoomLoop.BoundaryRequestResolver<'K>)
+        (choose: Runtime.ControllerReadout -> RoomLoop.ControllerChoice)
+        (state: BoundaryScheduledRoomState<'K>)
+        =
+        task {
+            let! outcome =
+                RoomLoop.tickWithBoundary source sink requestFor boundaryFor choose state.Boundary state.Loop
+
+            return recordBoundary outcome state
+        }
+
     let roomTickHandler
         (name: string)
         (matches: InterruptKind -> bool)
@@ -195,6 +261,22 @@ module DarkHallScheduler =
                 let! next = tick source sink requestFor choose state
                 return Ok next
             })
+
+    let boundaryRoomTickHandler
+        (name: string)
+        (matches: InterruptKind -> bool)
+        (source: string)
+        (sink: IHeatSink)
+        (requestFor: RoomLoop.RequestResolver)
+        (boundaryFor: RoomLoop.BoundaryRequestResolver<'K>)
+        (choose: Runtime.ControllerReadout -> RoomLoop.ControllerChoice)
+        : SoftScheduler.HandlerK<BoundaryScheduledRoomState<'K>> =
+        SoftScheduler.handlerK name matches (fun _intr _ctx state ->
+            task {
+                let! next = tickWithBoundary source sink requestFor boundaryFor choose state
+                return Ok next
+            })
+
 
     let heatBoardSimLoopFromState
         (name: string)

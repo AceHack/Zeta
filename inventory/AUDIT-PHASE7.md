@@ -1,10 +1,11 @@
 # Phase 7 — Independent Security Audit
 
 **Auditor:** fresh session, did NOT build any of this. **Date:** 2026-06-21.
-**Subject:** merged live system — `https://lucent-financial-group.github.io/Zeta/inventory/`
-+ Supabase backend `mdtbgreryqddloluhdmm.supabase.co`, re-proven against the
-contract in `inventory/spec.md` + `inventory/CLAUDE.md`. PROGRESS.md `[x]` marks
-were treated as **claims**, re-verified from scratch with fresh observed output.
+**Subject:** merged live system —
+`https://lucent-financial-group.github.io/Zeta/inventory/` plus Supabase backend
+`mdtbgreryqddloluhdmm.supabase.co`, re-proven against the contract in
+`inventory/spec.md` + `inventory/CLAUDE.md`. PROGRESS.md `[x]` marks were
+treated as **claims**, re-verified from scratch with fresh observed output.
 
 ## Verdict
 
@@ -44,8 +45,9 @@ before the box is checked. I did not mark any gate passed that I could not obser
 ## The 8 targeted probes
 
 ### 1. Any secret committed anywhere, any branch, any history? — **NO**
+
 - Scanned every commit on every ref (`git rev-list --all`) for proper JWTs
-  (`eyJ…​.eyJ…​.…`) and `sb_secret_` — **zero** real tokens (the `eyJ` noise is
+  (`eyJ….eyJ….…`) and `sb_secret_` — **zero** real tokens (the `eyJ` noise is
   base64 *image* data in `docs/research`, not credentials).
 - Only embedded credential, in `lib/inventory-app.js` and the heartbeat workflow,
   is the **publishable** anon key `sb_publishable_UjTK7ZQ0…` + project URL — public
@@ -57,11 +59,13 @@ before the box is checked. I did not mark any gate passed that I could not obser
   narrative background notes; the k8s `*secret.example.yaml` is `REPLACE_WITH_…`.
 
 ### 2. `service_role` referenced? — **only in "never use this" contexts**
+
 Every occurrence is a cautionary comment ("NEVER place the service_role/secret key
 here"), documentation, or a *guard that rejects such keys*
 (`seed-import.ts:133`: aborts if the key looks like service_role/secret). No usage.
 
 ### 3. RLS bypassable from an unauthenticated client? — **NO**
+
 Live unauthenticated anon REST (public key as `apikey` + `Bearer`, no user session):
 ```
 items             -> HTTP 200  []
@@ -76,8 +80,10 @@ probe users/auth/secrets/api_keys/settings -> HTTP 404 (no stray exposed tables)
 Every sensitive table returns **zero rows** to an unauthenticated client.
 
 ### 4. RLS least-privilege? — **YES, no `USING(true)`**
+
 Read `phase1.sql` policies explicitly. Each is scoped to a specific role AND
 operation via `current_user_role()`:
+
 - `items`: SELECT viewer/editor/admin · INSERT/UPDATE editor/admin · **no DELETE**.
 - `field_definitions`: SELECT all-roles · INSERT/UPDATE/DELETE admin-only.
 - `change_log`: SELECT editor/admin only (viewer excluded) · **no INSERT/UPDATE/DELETE**.
@@ -89,6 +95,7 @@ text in proof files checking for *zero* permissive policies. phase4/phase5 add *
 policy, no GRANT/REVOKE.
 
 ### 5. change_log immutable? — **structurally guaranteed; anon path observed**
+
 Two independent layers in `phase1.sql`: (1) RLS exposes **no** UPDATE/DELETE policy →
 0 rows mutable by any client; (2) `change_log_immutable` BEFORE UPDATE/DELETE trigger
 `raise exception 'change_log is immutable'` — fires even for the privileged owner.
@@ -98,6 +105,7 @@ Observed: anon PATCH/DELETE on `change_log` → HTTP 204 with **0 rows affected*
 refused) require live creds — see §Owner-gated. The structural guarantee is airtight.
 
 ### 6. Custom-field XSS-safe? — **safe by construction; live injection owner-gated**
+
 - Shipped JS has **zero** raw-HTML sinks: `grep` for
   `innerHTML|outerHTML|insertAdjacentHTML|document.write|eval|new Function` across
   `lib/*.js` + `index.html` = **none**. 76 `textContent` writes; custom field values
@@ -112,6 +120,7 @@ refused) require live creds — see §Owner-gated. The structural guarantee is a
   structurally it cannot execute given the above.)
 
 ### 7. UI role checks == RLS enforcement? — **single source; live per-role owner-gated**
+
 Role lives in exactly one place — `profiles.role`, read through the SECURITY DEFINER
 `current_user_role()` function — and **both** the UI (via RPC) and the RLS policies
 read that same function. There is no second divergent role store. The UI's hidden
@@ -119,6 +128,7 @@ buttons are cosmetic; the DB is the gate. *Owner-gated:* exercising every write 
 viewer/editor/admin via both UI and REST with each role's JWT requires live creds.
 
 ### 8. Deployed CSP == repo claim? — **YES**
+
 Live `https://…/Zeta/inventory/` is **byte-identical** to `origin/main`
 (sha256 `de83190e…`, 9563 bytes). Served CSP:
 ```

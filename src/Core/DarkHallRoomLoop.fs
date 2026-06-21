@@ -29,6 +29,28 @@ module DarkHallRoomLoop =
 
     type RequestResolver = Runtime.CabinetAction -> Runtime.RunRequest option
 
+    [<RequireQualifiedAccess>]
+    type BoundaryCommand<'K when 'K : comparison> =
+        | AdmitWithSlot of rawSlot: int64 * key: 'K
+        | Frost of cost: int
+        | Clear
+        | Traverse of heldKeys: Set<string> * toRoom: string * vault: DoorGraph.Vault
+
+    type BoundaryRequestResolver<'K when 'K : comparison> =
+        Runtime.CabinetAction -> BoundaryCommand<'K> option
+
+    [<RequireQualifiedAccess>]
+    type BoundaryEffect<'K when 'K : comparison> =
+        | Admitted of RoomAdmission.SlotReport<'K>
+        | Frosted
+        | Cleared
+        | Traversed of fromRoom: string * toRoom: string
+
+    [<RequireQualifiedAccess>]
+    type BoundaryTickResult<'K when 'K : comparison> =
+        | RuntimeResult of Runtime.RunResult
+        | BoundaryResult of BoundaryEffect<'K>
+
     type HeatReadout =
         { HeatRejected: int
           Backpressured: int
@@ -42,12 +64,14 @@ module DarkHallRoomLoop =
         | ControllerActionSelected of cell: int * action: Runtime.CabinetAction
         | RequestMissing of cell: int * action: Runtime.CabinetAction
         | RuntimeFeedback of Runtime.Feedback
+        | BoundaryFeedback of RoomBoundary.Feedback
 
     [<RequireQualifiedAccess>]
     type LoopEvent =
         | Observed of roomName: string * actionCount: int
         | Chosen of choice: ControllerChoice * action: Runtime.CabinetAction
         | Executed of choice: ControllerChoice * action: Runtime.CabinetAction * result: Runtime.RunResult
+        | BoundaryApplied of choice: ControllerChoice * action: Runtime.CabinetAction * effect: string
         | Refused of choice: ControllerChoice option * action: Runtime.CabinetAction option * feedback: TickFeedback
 
     type LoopState =
@@ -63,6 +87,16 @@ module DarkHallRoomLoop =
           Action: Runtime.CabinetAction option
           Result: Result<Runtime.RunResult, TickFeedback>
           Heat: HeatReadout
+          State: LoopState }
+
+    type BoundaryTickOutcome<'K when 'K : comparison> =
+        { Readout: Runtime.ControllerReadout
+          Choice: ControllerChoice
+          Action: Runtime.CabinetAction option
+          BoundaryCommand: BoundaryCommand<'K> option
+          Result: Result<BoundaryTickResult<'K>, TickFeedback>
+          Heat: HeatReadout
+          Boundary: RoomBoundary.Boundary<'K>
           State: LoopState }
 
     type RunOutcome =
@@ -120,8 +154,55 @@ module DarkHallRoomLoop =
         | Runtime.Feedback.MetaCartFeedback(MetaCart.Feedback.HeatRejected(_, feedback)) -> heatSinkFeedbackReadout feedback
         | _ -> emptyHeatReadout
 
+    let private heatReadoutOfSignatures (signatures: HeatSignature list) : HeatReadout =
+        let heatKinds = signatures |> List.map _.Kind
+        let reasons = signatures |> List.map _.Detail
+
+        { emptyHeatReadout with
+            HeatRejected = signatures.Length
+            Backpressured =
+                signatures
+                |> List.filter (fun signature ->
+                    signature.Kind.Contains("backpressure", System.StringComparison.Ordinal)
+                    || signature.Kind.Contains("denied", System.StringComparison.Ordinal))
+                |> List.length
+            HeatKinds = heatKinds
+            Reasons = reasons }
+
+    let private heatReadoutOfBoundaryEffect (source: string) =
+        function
+        | BoundaryEffect.Admitted report -> RoomAdmission.heatSignatures source report |> heatReadoutOfSignatures
+        | BoundaryEffect.Frosted
+        | BoundaryEffect.Cleared
+        | BoundaryEffect.Traversed _ -> emptyHeatReadout
+
+    let private heatReadoutOfBoundaryFeedback (source: string) =
+        function
+        | RoomBoundary.Feedback.HeatFeedback feedback -> heatSinkFeedbackReadout feedback
+        | RoomBoundary.Feedback.AdmissionFeedback(RoomAdmission.Feedback.HeatFeedback feedback) ->
+            heatSinkFeedbackReadout feedback
+        | RoomBoundary.Feedback.AdmissionFeedback _ -> emptyHeatReadout
+        | RoomBoundary.Feedback.PrivacyDenied reason ->
+            HeatSignature.ofMass source "room-boundary.privacy-backpressure" 1 1.0 reason
+            |> List.singleton
+            |> heatReadoutOfSignatures
+        | RoomBoundary.Feedback.DoorDenied(fromRoom, toRoom, reason) ->
+            let detail = sprintf "%s -> %s refused: %s" fromRoom toRoom reason
+
+            HeatSignature.ofMass source "room-boundary.door-denied" 1 1.0 detail
+            |> List.singleton
+            |> heatReadoutOfSignatures
+
     let private heatReadoutOfResult =
         function
+        | Error(TickFeedback.RuntimeFeedback feedback) -> heatReadoutOfRuntimeFeedback feedback
+        | Error(TickFeedback.BoundaryFeedback feedback) -> heatReadoutOfBoundaryFeedback "" feedback
+        | _ -> emptyHeatReadout
+
+    let private heatReadoutOfBoundaryResult (source: string) =
+        function
+        | Ok(BoundaryTickResult.BoundaryResult effect) -> heatReadoutOfBoundaryEffect source effect
+        | Error(TickFeedback.BoundaryFeedback feedback) -> heatReadoutOfBoundaryFeedback source feedback
         | Error(TickFeedback.RuntimeFeedback feedback) -> heatReadoutOfRuntimeFeedback feedback
         | _ -> emptyHeatReadout
 
@@ -138,6 +219,55 @@ module DarkHallRoomLoop =
           Result = result
           Heat = heatReadoutOfResult result
           State = state }
+
+    let private completeBoundary
+        (source: string)
+        (readout: Runtime.ControllerReadout)
+        (choice: ControllerChoice)
+        (action: Runtime.CabinetAction option)
+        (command: BoundaryCommand<'K> option)
+        (result: Result<BoundaryTickResult<'K>, TickFeedback>)
+        (boundary: RoomBoundary.Boundary<'K>)
+        (state: LoopState)
+        : BoundaryTickOutcome<'K> =
+        { Readout = readout
+          Choice = choice
+          Action = action
+          BoundaryCommand = command
+          Result = result
+          Heat = heatReadoutOfBoundaryResult source result
+          Boundary = boundary
+          State = state }
+
+    let private boundaryEffectName =
+        function
+        | BoundaryEffect.Admitted report -> sprintf "admit:%A:%d" report.Outcome report.Slot
+        | BoundaryEffect.Frosted -> "frost"
+        | BoundaryEffect.Cleared -> "clear"
+        | BoundaryEffect.Traversed(fromRoom, toRoom) -> sprintf "traverse:%s->%s" fromRoom toRoom
+
+    let private applyBoundaryCommand
+        (sink: IHeatSink)
+        (command: BoundaryCommand<'K>)
+        (boundary: RoomBoundary.Boundary<'K>)
+        : Result<RoomBoundary.Boundary<'K> * BoundaryEffect<'K>, RoomBoundary.Feedback> =
+        result {
+            match command with
+            | BoundaryCommand.AdmitWithSlot(rawSlot, key) ->
+                let! next, report = RoomBoundary.admitWithSlot sink rawSlot key boundary
+                return next, BoundaryEffect.Admitted report
+
+            | BoundaryCommand.Frost cost ->
+                let! next = RoomBoundary.frost sink cost boundary
+                return next, BoundaryEffect.Frosted
+
+            | BoundaryCommand.Clear -> return RoomBoundary.clear boundary, BoundaryEffect.Cleared
+
+            | BoundaryCommand.Traverse(heldKeys, toRoom, vault) ->
+                let fromRoom = boundary.CurrentRoom
+                let! next = RoomBoundary.traverse sink heldKeys toRoom vault boundary
+                return next, BoundaryEffect.Traversed(fromRoom, next.CurrentRoom)
+        }
 
     let private cellForAction (action: Runtime.CabinetAction) (readout: Runtime.ControllerReadout) : int option =
         GridBinding.bound readout.Grid
@@ -216,6 +346,132 @@ module DarkHallRoomLoop =
                             let next = chosen |> append (LoopEvent.Refused(Some choice, Some action, feedback))
                             return complete readout choice (Some action) (Error feedback) next
                     }
+
+    /// Boundary-aware room tick. The same controller readout may choose a
+    /// cabinet runtime action or a room-boundary operation. Boundary failures
+    /// stay typed and export heat through the injected sink.
+    let tickWithBoundary
+        (source: string)
+        (sink: IHeatSink)
+        (requestFor: RequestResolver)
+        (boundaryFor: BoundaryRequestResolver<'K>)
+        (choose: Runtime.ControllerReadout -> ControllerChoice)
+        (boundary: RoomBoundary.Boundary<'K>)
+        (state: LoopState)
+        : Task<BoundaryTickOutcome<'K>> =
+        let readout = Runtime.observe state.Room
+
+        let observed =
+            { state with LastReadout = Some readout }
+            |> append (LoopEvent.Observed(readout.RoomName, readout.Actions.Length))
+
+        let choice = choose readout
+
+        match Runtime.actionAt choice.Cell readout with
+        | None ->
+            let feedback = TickFeedback.CellUnbound choice.Cell
+            let next = observed |> append (LoopEvent.Refused(Some choice, None, feedback))
+
+            Task.FromResult(
+                completeBoundary source readout choice None None (Error feedback) boundary next
+            )
+
+        | Some action ->
+            let chosen = observed |> append (LoopEvent.Chosen(choice, action))
+
+            match boundaryFor action with
+            | Some command ->
+                match applyBoundaryCommand sink command boundary with
+                | Ok(nextBoundary, effect) ->
+                    let next =
+                        chosen
+                        |> append (LoopEvent.BoundaryApplied(choice, action, boundaryEffectName effect))
+
+                    Task.FromResult(
+                        completeBoundary
+                            source
+                            readout
+                            choice
+                            (Some action)
+                            (Some command)
+                            (Ok(BoundaryTickResult.BoundaryResult effect))
+                            nextBoundary
+                            next
+                    )
+
+                | Error boundaryFeedback ->
+                    let feedback = TickFeedback.BoundaryFeedback boundaryFeedback
+                    let next = chosen |> append (LoopEvent.Refused(Some choice, Some action, feedback))
+
+                    Task.FromResult(
+                        completeBoundary
+                            source
+                            readout
+                            choice
+                            (Some action)
+                            (Some command)
+                            (Error feedback)
+                            boundary
+                            next
+                    )
+
+            | None ->
+                match action.Address with
+                | None ->
+                    let feedback = TickFeedback.ControllerActionSelected(choice.Cell, action)
+                    let next = chosen |> append (LoopEvent.Refused(Some choice, Some action, feedback))
+
+                    Task.FromResult(
+                        completeBoundary source readout choice (Some action) None (Error feedback) boundary next
+                    )
+
+                | Some _ ->
+                    match requestFor action with
+                    | None ->
+                        let feedback = TickFeedback.RequestMissing(choice.Cell, action)
+                        let next = chosen |> append (LoopEvent.Refused(Some choice, Some action, feedback))
+
+                        Task.FromResult(
+                            completeBoundary source readout choice (Some action) None (Error feedback) boundary next
+                        )
+
+                    | Some request ->
+                        task {
+                            let! result =
+                                Runtime.executeCell source sink state.Manifest state.Room choice.Cell request
+
+                            match result with
+                            | Ok runResult ->
+                                let next =
+                                    { chosen with LastResult = Some runResult }
+                                    |> append (LoopEvent.Executed(choice, action, runResult))
+
+                                return
+                                    completeBoundary
+                                        source
+                                        readout
+                                        choice
+                                        (Some action)
+                                        None
+                                        (Ok(BoundaryTickResult.RuntimeResult runResult))
+                                        boundary
+                                        next
+
+                            | Error runtimeFeedback ->
+                                let feedback = TickFeedback.RuntimeFeedback runtimeFeedback
+                                let next = chosen |> append (LoopEvent.Refused(Some choice, Some action, feedback))
+
+                                return
+                                    completeBoundary
+                                        source
+                                        readout
+                                        choice
+                                        (Some action)
+                                        None
+                                        (Error feedback)
+                                        boundary
+                                        next
+                        }
 
     /// Bounded foreground room loop. Infinity happens by explicit continuation
     /// scheduling outside this function; one call always runs a finite number of ticks.
