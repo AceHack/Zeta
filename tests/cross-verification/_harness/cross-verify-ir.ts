@@ -88,7 +88,6 @@ sys.stdout.write(json.dumps(out))`;
 }
 
 function generateAndRunGo(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
-  const mask = ir.width >= 64 ? "" : `\tz = z & ${(1n << BigInt(ir.width)) - 1n}`;
   const body = ir.ops.map(op => {
     if (op.op === "mul") {
       const line = `\tz = z * ${getK(op, ir.width)}`;

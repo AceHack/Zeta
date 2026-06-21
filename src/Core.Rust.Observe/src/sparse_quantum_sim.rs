@@ -22,14 +22,20 @@ impl Complex {
     }
 
     pub fn scale(self, s: f64) -> Self {
-        Self { re: self.re * s, im: self.im * s }
+        Self {
+            re: self.re * s,
+            im: self.im * s,
+        }
     }
 }
 
 impl std::ops::Add for Complex {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
-        Self { re: self.re + rhs.re, im: self.im + rhs.im }
+        Self {
+            re: self.re + rhs.re,
+            im: self.im + rhs.im,
+        }
     }
 }
 
@@ -45,8 +51,16 @@ pub struct SparseQuantumSim {
 
 impl SparseQuantumSim {
     pub fn new(width: u32) -> Self {
-        let mask = if width >= 64 { u64::MAX } else { (1u64 << width) - 1 };
-        Self { state: HashMap::new(), width, mask }
+        let mask = if width >= 64 {
+            u64::MAX
+        } else {
+            (1u64 << width) - 1
+        };
+        Self {
+            state: HashMap::new(),
+            width,
+            mask,
+        }
     }
 
     /// Number of basis states with nonzero amplitude.
@@ -107,7 +121,11 @@ impl SparseQuantumSim {
         let mut next = HashMap::with_capacity(self.state.len());
         for (&key, &amp) in &self.state {
             let control_set = (key >> control) & 1 == 1;
-            let new_key = if control_set { (key ^ (1u64 << target)) & self.mask } else { key };
+            let new_key = if control_set {
+                (key ^ (1u64 << target)) & self.mask
+            } else {
+                key
+            };
             let entry = next.entry(new_key).or_insert(Complex::ZERO);
             *entry = *entry + amp;
         }
@@ -117,15 +135,22 @@ impl SparseQuantumSim {
 
     /// Measure: collapse to one basis state (Born rule).
     pub fn measure(&self) -> u64 {
-        if self.state.is_empty() { return 0; }
-        if self.state.len() == 1 { return *self.state.keys().next().unwrap(); }
+        if self.state.is_empty() {
+            return 0;
+        }
+        if self.state.len() == 1 {
+            return *self.state.keys().next().unwrap();
+        }
         // For deterministic paths this always returns the single state
         *self.state.keys().next().unwrap()
     }
 
     /// Get amplitude for a specific basis state.
     pub fn get_amplitude(&self, basis_state: u64) -> Complex {
-        self.state.get(&(basis_state & self.mask)).copied().unwrap_or(Complex::ZERO)
+        self.state
+            .get(&(basis_state & self.mask))
+            .copied()
+            .unwrap_or(Complex::ZERO)
     }
 
     fn prune(state: &mut HashMap<u64, Complex>) {

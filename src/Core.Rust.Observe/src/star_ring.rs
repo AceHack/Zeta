@@ -17,13 +17,27 @@ pub trait StarRing: Clone + PartialEq {
 
 /// Real numbers (f64) as a *-ring. Conj = identity.
 impl StarRing for f64 {
-    fn zero() -> Self { 0.0 }
-    fn one() -> Self { 1.0 }
-    fn add(a: &Self, b: &Self) -> Self { a + b }
-    fn mul(a: &Self, b: &Self) -> Self { a * b }
-    fn negate(a: &Self) -> Self { -a }
-    fn conj(a: &Self) -> Self { *a }
-    fn is_zero(a: &Self) -> bool { a.abs() < 1e-12 }
+    fn zero() -> Self {
+        0.0
+    }
+    fn one() -> Self {
+        1.0
+    }
+    fn add(a: &Self, b: &Self) -> Self {
+        a + b
+    }
+    fn mul(a: &Self, b: &Self) -> Self {
+        a * b
+    }
+    fn negate(a: &Self) -> Self {
+        -a
+    }
+    fn conj(a: &Self) -> Self {
+        *a
+    }
+    fn is_zero(a: &Self) -> bool {
+        a.abs() < 1e-12
+    }
 }
 
 /// Complex number (re + im*i).
@@ -34,18 +48,39 @@ pub struct Complex {
 }
 
 impl StarRing for Complex {
-    fn zero() -> Self { Complex { re: 0.0, im: 0.0 } }
-    fn one() -> Self { Complex { re: 1.0, im: 0.0 } }
-    fn add(a: &Self, b: &Self) -> Self { Complex { re: a.re + b.re, im: a.im + b.im } }
+    fn zero() -> Self {
+        Complex { re: 0.0, im: 0.0 }
+    }
+    fn one() -> Self {
+        Complex { re: 1.0, im: 0.0 }
+    }
+    fn add(a: &Self, b: &Self) -> Self {
+        Complex {
+            re: a.re + b.re,
+            im: a.im + b.im,
+        }
+    }
     fn mul(a: &Self, b: &Self) -> Self {
         Complex {
             re: a.re * b.re - a.im * b.im,
             im: a.re * b.im + a.im * b.re,
         }
     }
-    fn negate(a: &Self) -> Self { Complex { re: -a.re, im: -a.im } }
-    fn conj(a: &Self) -> Self { Complex { re: a.re, im: -a.im } }
-    fn is_zero(a: &Self) -> bool { a.re * a.re + a.im * a.im < 1e-12 }
+    fn negate(a: &Self) -> Self {
+        Complex {
+            re: -a.re,
+            im: -a.im,
+        }
+    }
+    fn conj(a: &Self) -> Self {
+        Complex {
+            re: a.re,
+            im: -a.im,
+        }
+    }
+    fn is_zero(a: &Self) -> bool {
+        a.re * a.re + a.im * a.im < 1e-12
+    }
 }
 
 /// A weighted entry: (key, weight) where weight is from a *-ring.
@@ -66,33 +101,62 @@ pub fn consolidate<W: StarRing>(entries: Vec<WEntry<W>>) -> Vec<WEntry<W>> {
             grouped.push(entry);
         }
     }
-    grouped.into_iter().filter(|g| !W::is_zero(&g.weight)).collect()
+    grouped
+        .into_iter()
+        .filter(|g| !W::is_zero(&g.weight))
+        .collect()
 }
 
 /// Soft mix: fold IR ops over a weighted ensemble. Ring-generic.
 /// Each op can FORK frames (1→N for branching ops). Support grows only
 /// by actual uncertainty, not by register width. For mul/xorshr (permutations),
 /// each frame maps 1→1 (no growth). The "grows in bits by uncertainty" property.
-pub fn soft_mix<W: StarRing>(ops: &[(& str, u64)], width: u32, input: Vec<WEntry<W>>) -> Vec<WEntry<W>> {
-    let mask: u64 = if width >= 64 { u64::MAX } else { (1u64 << width) - 1 };
+pub fn soft_mix<W: StarRing>(
+    ops: &[(&str, u64)],
+    width: u32,
+    input: Vec<WEntry<W>>,
+) -> Vec<WEntry<W>> {
+    let mask: u64 = if width >= 64 {
+        u64::MAX
+    } else {
+        (1u64 << width) - 1
+    };
     let mut ensemble = input;
     for &(op, val) in ops {
         // flatMap: each frame can produce multiple output frames (fork).
         // mul/xorshr: deterministic (1→1). branch: 1→2 (grows by 1 bit of uncertainty).
-        ensemble = ensemble.into_iter().flat_map(|e| {
-            match op {
-                "mul" => vec![WEntry { key: e.key.wrapping_mul(val) & mask, weight: e.weight }],
-                "xorshr" => vec![WEntry { key: (e.key ^ (e.key >> val)) & mask, weight: e.weight }],
-                "branch" => {
-                    // Fork: two frames, each with the original weight (to be scaled by 1/√2 later)
-                    vec![
-                        WEntry { key: e.key & mask, weight: e.weight.clone() },
-                        WEntry { key: (e.key ^ (1u64 << val)) & mask, weight: e.weight },
-                    ]
-                },
-                _ => vec![WEntry { key: e.key, weight: e.weight }],
-            }
-        }).collect();
+        ensemble = ensemble
+            .into_iter()
+            .flat_map(|e| {
+                match op {
+                    "mul" => vec![WEntry {
+                        key: e.key.wrapping_mul(val) & mask,
+                        weight: e.weight,
+                    }],
+                    "xorshr" => vec![WEntry {
+                        key: (e.key ^ (e.key >> val)) & mask,
+                        weight: e.weight,
+                    }],
+                    "branch" => {
+                        // Fork: two frames, each with the original weight (to be scaled by 1/√2 later)
+                        vec![
+                            WEntry {
+                                key: e.key & mask,
+                                weight: e.weight.clone(),
+                            },
+                            WEntry {
+                                key: (e.key ^ (1u64 << val)) & mask,
+                                weight: e.weight,
+                            },
+                        ]
+                    }
+                    _ => vec![WEntry {
+                        key: e.key,
+                        weight: e.weight,
+                    }],
+                }
+            })
+            .collect();
         ensemble = consolidate(ensemble);
     }
     ensemble

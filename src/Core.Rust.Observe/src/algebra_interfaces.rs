@@ -67,9 +67,15 @@ pub struct AdditiveGroupI64;
 impl Group for AdditiveGroupI64 {
     type Element = i64;
 
-    fn identity(&self) -> i64 { 0 }
-    fn combine(&self, a: i64, b: i64) -> i64 { a.wrapping_add(b) }
-    fn inverse(&self, a: i64) -> i64 { a.wrapping_neg() }
+    fn identity(&self) -> i64 {
+        0
+    }
+    fn combine(&self, a: i64, b: i64) -> i64 {
+        a.wrapping_add(b)
+    }
+    fn inverse(&self, a: i64) -> i64 {
+        a.wrapping_neg()
+    }
 }
 
 /// Max join-semilattice over i64.
@@ -78,7 +84,9 @@ pub struct MaxLatticeI64;
 impl JoinSemilattice for MaxLatticeI64 {
     type Element = i64;
 
-    fn join(&self, a: i64, b: i64) -> i64 { a.max(b) }
+    fn join(&self, a: i64, b: i64) -> i64 {
+        a.max(b)
+    }
 }
 
 /// JSON codec (String ↔ serde_json::Value — conceptual, no serde dep here).
@@ -88,8 +96,12 @@ impl Codec for JsonStringCodec {
     type Domain = String;
     type Wire = Vec<u8>;
 
-    fn encode(&self, a: &String) -> Vec<u8> { a.as_bytes().to_vec() }
-    fn decode(&self, b: &Vec<u8>) -> String { String::from_utf8_lossy(b).into_owned() }
+    fn encode(&self, a: &String) -> Vec<u8> {
+        a.as_bytes().to_vec()
+    }
+    fn decode(&self, b: &Vec<u8>) -> String {
+        String::from_utf8_lossy(b).into_owned()
+    }
 }
 
 #[cfg(test)]

@@ -13,10 +13,11 @@ Usage:
     # ... GC may collect the specialized function ...
     result3 = cache.run(input3)  # miss → regenerates (still correct)
 """
+
 from __future__ import annotations
 import weakref
 from typing import TypeVar, Generic, Callable, Optional
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -25,6 +26,7 @@ U = TypeVar("U")
 @dataclass
 class CacheStats:
     """Observable statistics for the specialization cache."""
+
     hits: int = 0
     misses: int = 0
     errors: int = 0
@@ -83,6 +85,7 @@ class SpecializationCache(Generic[T, U]):
 
 # ─── Convenience: specialized mix cache from IR ───────────────────────────
 
+
 def create_mix_cache(
     ir_ops: list,
     width: int,
@@ -102,12 +105,14 @@ def create_mix_cache(
             elif op["op"] == "xorshr":
                 s = op["s"]
                 steps.append(lambda z, s=s: (z ^ (z >> s)) & mask)
+
         # Return the pipeline as a single function
         def mix(x: int) -> int:
             z = x & mask
             for step in steps:
                 z = step(z)
             return z
+
         return mix
 
     return SpecializationCache(specialize)

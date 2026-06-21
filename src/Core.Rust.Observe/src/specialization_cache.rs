@@ -5,7 +5,10 @@
 // When all strong refs are dropped, the specialized function is deallocated.
 // Next call regenerates it from the IR.
 
-use std::sync::{Arc, Weak, atomic::{AtomicU64, Ordering}};
+use std::sync::{
+    Arc, Weak,
+    atomic::{AtomicU64, Ordering},
+};
 
 /// Stats for the specialization cache.
 #[derive(Debug, Default)]
@@ -108,8 +111,11 @@ mod tests {
         let cc = call_count.clone();
         let mut cache = SpecializationCache::new(move || {
             let n = cc.fetch_add(1, Ordering::Relaxed);
-            if n == 0 { Err("transient".into()) }
-            else { Ok(|x: u64| x * 2) }
+            if n == 0 {
+                Err("transient".into())
+            } else {
+                Ok(|x: u64| x * 2)
+            }
         });
 
         // First call: error
