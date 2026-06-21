@@ -95,6 +95,7 @@ module ComplexityRegistry =
               ("shape.crossing", "draw"), c "O(1)" "O(1)" Derived
               ("rng.splitmix64", "mix"), c "O(1)" "O(1)" Derived
               ("rng.lcg64_mmix", "mix"), c "O(1)" "O(1)" Derived
+              ("hash.murmur3_32_tail", "mix"), c "O(1)" "O(1)" Derived
               ("engine.zeta-bayesian", "run"), c "O(rounds·factors)" "O(vars+factors)" Derived
               ("engine.infer-net", "run"), c "O(rounds·factors)" "O(model)" Derived
               ("engine.mock-flat", "run"), c "O(vars)" "O(vars)" Derived

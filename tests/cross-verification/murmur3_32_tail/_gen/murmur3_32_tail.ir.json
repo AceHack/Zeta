@@ -1,0 +1,1 @@
+{"schema":"zeta-ir-v4","generator":"hash.murmur3_32_tail","version":1,"width":32,"ops":[{"op":"rotl","r":13},{"op":"mul","k":5},{"op":"add","k":3864292196}]}

@@ -1,0 +1,26 @@
+# Test vectors for hash.murmur3_32_tail
+# This is the 32-bit block mix tail: `h = rotl(h, 13); h = h * 5 + 0xe6546b64`
+# Serves as the SECOND add-anchor for zeta-ir-v4, combining `add` with `rotl` and `mul`.
+# Inputs and outputs are 32-bit unsigned integers.
+
+vectors:
+  - id: "x-0"
+    expected: 3864292196
+  - id: "x-1"
+    expected: 3864333156
+  - id: "x-2"
+    expected: 3864374116
+  - id: "x-4294967295"
+    expected: 3864292191
+  - id: "x-305419896"
+    expected: 2623502018
+  - id: "x-2271560481"
+    expected: 810115072
+  - id: "x-2863311530"
+    expected: 2432636429
+  - id: "x-1431655765"
+    expected: 1000980662
+  - id: "x-42"
+    expected: 3866012516
+  - id: "x-1337"
+    expected: 3919055716

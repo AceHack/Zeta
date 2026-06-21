@@ -267,6 +267,23 @@ module GeneratorIrRegistry =
                    [ mul 1664525L
                      add 1013904223L ]) ]
 
+    /// MurmurHash3 32-bit block mix tail IR (width 32) — the EIGHTH generator, and the
+    /// THIRD add-anchor. Proves `add` generalizes to a second independent generator, and
+    /// gives the minimal-set result a real witness by combining `add` with `rotl` and `mul`.
+    /// The algorithm is `h = rotl(h, 13); h = h * 5 + 0xe6546b64`.
+    /// Mirrors `tests/cross-verification/murmur3_32_tail/_gen/murmur3_32_tail.ir.json`.
+    let murmur3_32_tailIr : DynamicValue =
+        DynamicValue.Object
+            [ ("schema", DynamicValue.String "zeta-ir-v4")
+              ("generator", DynamicValue.String "hash.murmur3_32_tail")
+              ("version", DynamicValue.Int 1L)
+              ("width", DynamicValue.Int 32L)
+              ("ops",
+               DynamicValue.Array
+                   [ rotl 13L
+                     mul 5L
+                     add 3864292196L ]) ] // 0xe6546b64
+
     let known: IrRow list =
         [ row "rng.splitmix64" 1 splitmix64Ir
           row "hash.fmix32" 1 fmix32Ir
@@ -274,7 +291,8 @@ module GeneratorIrRegistry =
           row "rng.xoshiro256ss" 1 xoshiro256ssIr
           row "hash.nasam" 1 nasamIr
           row "rng.lcg64_mmix" 1 lcg64MmixIr
-          row "rng.lcg32_numerical_recipes" 1 lcg32NumericalRecipesIr ]
+          row "rng.lcg32_numerical_recipes" 1 lcg32NumericalRecipesIr
+          row "hash.murmur3_32_tail" 1 murmur3_32_tailIr ]
         |> List.choose (function
             | Ok r -> Some r
             | Error _ -> None)

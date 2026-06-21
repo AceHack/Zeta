@@ -257,5 +257,18 @@ module ZetaIrV4 =
             [ Mul 1664525L
               Add 1013904223L ] }
 
+    /// MurmurHash3's 32-bit block mix tail (the `h` accumulator update).
+    /// This is the EIGHTH generator, and the THIRD add-anchor. It exercises `add`
+    /// in combination with `rotl` and `mul` (the algorithm is `h = rotl(h, 13); h = h * 5 + 0xe6546b64`).
+    /// The constants are stored as signed-int64 bit-patterns.
+    let murmur3_32_tail: Ir =
+        { Generator = "hash.murmur3_32_tail"
+          Version = 1
+          Width = 32
+          Ops =
+            [ Rotl 13L
+              Mul 5L
+              Add 3864292196L ] } // 0xe6546b64 as uint32 -> int64
+
     /// All known v4 IRs (the rows the frozen v4 golden file pins).
-    let known: Ir list = [ lcg64_mmix; lcg32_numerical_recipes ]
+    let known: Ir list = [ lcg64_mmix; lcg32_numerical_recipes; murmur3_32_tail ]
