@@ -35,6 +35,9 @@ RUN apt-get update \
 # nixos Dockerfile). install.sh installs mise to ~/.local/bin, shims to
 # ~/.local/share/mise/shims, bun to ~/.bun/bin, ollama to ~/.local/bin.
 ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/usr/local/bin:/usr/bin:/bin
+# Post-install RUN layers (bun test, 2nd install.sh) invoke mise/uv outside install.sh's
+# process — Docker does not persist install.sh's MISE_TRUSTED_CONFIG_PATHS export across layers.
+ENV MISE_TRUSTED_CONFIG_PATHS=/zeta
 
 WORKDIR /zeta
 COPY . /zeta

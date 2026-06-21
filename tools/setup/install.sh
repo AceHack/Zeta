@@ -60,6 +60,18 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 
+# Mise trust/tier env MUST be exported here (install.sh parent) — common/mise.sh is
+# invoked as a child script so exports there never reach python-tools/agent-clis in
+# linux.sh/macos.sh. Without this, `uv tool install` triggers mise hook-env and fails
+# "config not trusted" even after mise.sh succeeds (2026-06-21 docker + VM regression).
+if [ -z "${ZETA_HOST_TIER:-}" ] && [ "${GITHUB_ACTIONS:-}" != "true" ]; then
+  export ZETA_HOST_TIER=full
+fi
+case ":${MISE_TRUSTED_CONFIG_PATHS:-}:" in
+  *:"$REPO_ROOT":*) ;;
+  *) export MISE_TRUSTED_CONFIG_PATHS="${MISE_TRUSTED_CONFIG_PATHS:+$MISE_TRUSTED_CONFIG_PATHS:}$REPO_ROOT" ;;
+esac
+
 echo "=== Zeta install — universal Unix-like-OS entry (GOVERNANCE.md §24 + B-0857.2) ==="
 echo "Repo root: $REPO_ROOT"
 

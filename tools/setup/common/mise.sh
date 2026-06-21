@@ -21,12 +21,13 @@ if [ ! -f "$REPO_ROOT/.mise.toml" ]; then
   exit 1
 fi
 
-# `mise trust --all` is idempotent and required before `install` will read
-# project-local config. Per-file `mise trust path/.mise.toml` is insufficient on
-# mise v2026.x — the tool prompts for directory trust ("config files in …/Zeta")
-# when multiple configs exist (.mise.toml + env merges). Windows install.ps1
-# already trusts from RepoRoot; Unix/NixOS parity here.
-(cd "$REPO_ROOT" && mise trust --all) >/dev/null
+# Trust before any config read. MISE_TRUSTED_CONFIG_PATHS is exported by install.sh
+# (parent shell) so post-mise steps (python-tools, agent-clis) inherit it — exports
+# in this child script alone do not propagate upward or sideways.
+if ! (cd "$REPO_ROOT" && mise trust --all --yes); then
+  echo "error: mise trust --all --yes failed for $REPO_ROOT" >&2
+  exit 1
+fi
 
 # HOST TIERS (workitem 081KTWQZY7F08QG0R0034KN17T): full-tier hosts also merge
 # .mise.full.toml (the k8s set: k3d/kind/kubectl/helm/kubeconform) via MISE_ENV=full.
@@ -40,7 +41,6 @@ if zeta_tier_allows full; then
   echo "↓ mise install (reading .mise.toml + .mise.full.toml — host is full/$ZETA_HOST_TIER_SOURCE)..."
 else
   echo "→ .mise.full.toml (k8s set) skipped: requires tier=full, host is $ZETA_HOST_TIER ($ZETA_HOST_TIER_SOURCE)"
-  echo "  hint: export ZETA_HOST_TIER=full before install.sh on dev machines that need k3d/kubectl/helm"
   echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
 fi
 
@@ -136,9 +136,9 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
   # mise plugin / aqua path can read it directly cross-repo — the 404 surface),
   # while MISE_GITHUB_TOKEN (shell-expanded before env runs) carries the value
   # via mise's own auth path. Authenticated AND no bare-token leak.
-  (cd "$REPO_ROOT" && install_with_retry env -u GITHUB_TOKEN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install)
+  (cd "$REPO_ROOT" && install_with_retry env -u GITHUB_TOKEN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install --yes)
 else
-  (cd "$REPO_ROOT" && install_with_retry mise install)
+  (cd "$REPO_ROOT" && install_with_retry mise install --yes)
 fi
 echo "✓ mise runtimes installed"
 

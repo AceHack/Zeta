@@ -232,16 +232,22 @@ Write-Host "mise: $(Get-ToolVersion { mise --version })"
 # 4. runtimes from .mise.toml (dotnet/python/java/bun/uv) -- IDENTICAL file to Unix (symmetric).
 Push-Location $RepoRoot
 try {
-  Invoke-Tool { mise trust --all } 'mise trust --all'
+  Invoke-Tool { mise trust --all --yes } 'mise trust --all --yes'
   # HOST TIERS (workitem 081KTWQZY7F): Windows boxes are dev machines -- full tier unless
   # explicitly declared otherwise; full merges .mise.full.toml (the k8s set) via MISE_ENV.
+  if (-not $env:ZETA_HOST_TIER) { $env:ZETA_HOST_TIER = 'full' }
   if (-not $env:ZETA_HOST_TIER -or $env:ZETA_HOST_TIER -eq 'full') {
     $env:MISE_ENV = 'full'
+  }
+  if (-not $env:MISE_TRUSTED_CONFIG_PATHS) {
+    $env:MISE_TRUSTED_CONFIG_PATHS = $RepoRoot
+  } elseif ($env:MISE_TRUSTED_CONFIG_PATHS -notlike "*$RepoRoot*") {
+    $env:MISE_TRUSTED_CONFIG_PATHS = "$($env:MISE_TRUSTED_CONFIG_PATHS);$RepoRoot"
   }
   # Parity with tools/setup/common/mise.sh: old NixOS mise cannot parse
   # python.github_attestations in .mise.toml (v2026.3.18+ only); env works everywhere.
   if (-not $env:MISE_PYTHON_GITHUB_ATTESTATIONS) { $env:MISE_PYTHON_GITHUB_ATTESTATIONS = '0' }
-  Invoke-Tool { mise install } 'mise install'
+  Invoke-Tool { mise install --yes } 'mise install --yes'
 } finally { Pop-Location }
 
 # 5. agent + peer-AI CLIs via bun --global (bun provided by mise) -- identical manifest to Unix.

@@ -47,7 +47,7 @@ before the box is checked. I did not mark any gate passed that I could not obser
 ### 1. Any secret committed anywhere, any branch, any history? — **NO**
 
 - Scanned every commit on every ref (`git rev-list --all`) for proper JWTs
-  (`eyJ….eyJ….…`) and `sb_secret_` — **zero** real tokens (the `eyJ` noise is
+  (`eyJ...eyJ...`) and `sb_secret_` — **zero** real tokens (the `eyJ` noise is
   base64 *image* data in `docs/research`, not credentials).
 - Only embedded credential, in `lib/inventory-app.js` and the heartbeat workflow,
   is the **publishable** anon key `sb_publishable_UjTK7ZQ0…` + project URL — public

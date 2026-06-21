@@ -49,6 +49,7 @@ RUN touch /etc/NIXOS
 # installs mise to ~/.local/bin/mise and shims to ~/.local/share/mise/
 # shims/; bun --global lands at ~/.bun/bin/.
 ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin
+ENV MISE_TRUSTED_CONFIG_PATHS=/workspace
 
 # Install the NixOS userspace commands install.sh invokes plus the runtime
 # libraries expected by the dynamically linked .mise.toml toolchain downloads

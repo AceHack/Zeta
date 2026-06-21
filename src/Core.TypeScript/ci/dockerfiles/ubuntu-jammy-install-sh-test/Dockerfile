@@ -22,6 +22,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/usr/local/bin:/usr/bin:/bin
+ENV MISE_TRUSTED_CONFIG_PATHS=/zeta
 
 WORKDIR /zeta
 COPY . /zeta

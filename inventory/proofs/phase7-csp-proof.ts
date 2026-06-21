@@ -49,7 +49,8 @@ const csp = (cspMeta?.[1] ?? "").replace(/\s+/g, " ").trim();
 const directives = new Map<string, string[]>();
 for (const part of csp.split(";")) {
   const toks = part.trim().split(/\s+/).filter(Boolean);
-  if (toks.length) directives.set(toks[0]!.toLowerCase(), toks.slice(1));
+  const name = toks[0];
+  if (name) directives.set(name.toLowerCase(), toks.slice(1));
 }
 const scriptSrc = directives.get("script-src") ?? [];
 const styleSrc = directives.get("style-src") ?? [];
@@ -69,7 +70,11 @@ check("CSP allows no cdn.jsdelivr.net origin", !/cdn\.jsdelivr\.net/i.test(csp))
 const code = html.replace(/<!--[\s\S]*?-->/g, "");
 // Every script tag must carry a src=; none may have an inline body.
 const scriptTags = [...code.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
-const inlineScripts = scriptTags.filter((m) => !/\bsrc=/.test(m[1]!) || m[2]!.trim() !== "");
+const inlineScripts = scriptTags.filter((m) => {
+  const attrs = m[1] ?? "";
+  const body = m[2] ?? "";
+  return !/\bsrc=/.test(attrs) || body.trim() !== "";
+});
 check("no inline script body (all script tags are src=)", inlineScripts.length === 0,
   `${inlineScripts.length} inline script block(s)`);
 
@@ -90,9 +95,10 @@ if (sbTag) {
   const fullTag = sbTag[0];
   const integrity = fullTag.match(/integrity=["'](sha\d+-[^"']+)["']/i)?.[1];
   check("supabase-js script tag has an integrity= (SRI) attribute", integrity !== undefined);
-  check("supabase-js is NOT loaded from an off-origin CDN", !/https?:\/\//.test(sbTag[1]!));
+  const sbSrc = sbTag[1] ?? "";
+  check("supabase-js is NOT loaded from an off-origin CDN", !/https?:\/\//.test(sbSrc));
   if (integrity) {
-    const sbFile = process.argv[3] ?? resolve(import.meta.dir, "..", sbTag[1]!);
+    const sbFile = process.argv[3] ?? resolve(import.meta.dir, "..", sbSrc);
     const bytes = readFileSync(sbFile);
     const want = "sha384-" + createHash("sha384").update(bytes).digest("base64");
     check("SRI integrity matches the vendored file on disk", integrity === want,

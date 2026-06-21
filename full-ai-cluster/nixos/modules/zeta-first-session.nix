@@ -86,7 +86,7 @@ in
                   fi
                   if [ -n "$_zeta_repo" ]; then
                     echo "zeta-first-session: installing runtimes before adventure (mise recovery)..."
-                    (cd "$_zeta_repo" && mise trust --all >/dev/null 2>&1; MISE_ENV=full mise install) >/dev/null 2>&1 || true
+                    (cd "$_zeta_repo" && mise trust --all --yes >/dev/null 2>&1; MISE_ENV=full mise install --yes) >/dev/null 2>&1 || true
                   fi
                 fi
                 _bun=""
