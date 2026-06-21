@@ -54,6 +54,12 @@ on:
       - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
       - "src/Core.TypeScript/installer/zeta-creds-restore.ts"
+      # Added 2026-06-20: the promoted phase-3 gate (QEMU_FIRST_SESSION_PHASE3)
+      # exercises mise bootstrap + the first-session conductor + observe runtime
+      # via zeta-install; without these the gate is skipped on bootstrap-only changes.
+      - ".mise.toml"
+      - "tools/setup/**"
+      - "src/Core.TypeScript/observe/**"
       - ".github/workflows/build-ai-cluster-iso.yml"
   push:
     branches: [main]
@@ -70,6 +76,9 @@ on:
       - "src/Core.TypeScript/ci/test-iter-54-install-flow.test.ts"
       - "src/Core.TypeScript/zflash/test-harness/**"
       - "src/Core.TypeScript/installer/zeta-creds-restore.ts"
+      - ".mise.toml"
+      - "tools/setup/**"
+      - "src/Core.TypeScript/observe/**"
       - ".github/workflows/build-ai-cluster-iso.yml"
   workflow_dispatch:
 
