@@ -11,8 +11,6 @@
  * Keep both. Benchmark proves the gap. Test proves equivalence.
  */
 
-import { writeFileSync } from "node:fs";
-import { join } from "node:path";
 
 interface IrOp { op: string; k?: bigint | number; s?: number; bit?: number; control?: number; target?: number; }
 interface ZetaIrV2 { schema: string; generator: string; version: number; width: number; ops: IrOp[]; }

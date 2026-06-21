@@ -21,7 +21,7 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join } from "node:path";
 
 interface IrOp { op: string; k?: bigint | number; s?: number; bit?: number; control?: number; target?: number; }
 interface ZetaIrV2 { schema: string; generator: string; version: number; width: number; ops: IrOp[]; }

@@ -7,7 +7,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { softMixGeneric } from "../../../src/Core.TypeScript/algebra/soft-mix";
-import { complexRing, realRing, type Complex, type StarRing, type WEntry } from "../../../src/Core.TypeScript/algebra/star-ring";
+import { complexRing, realRing, type Complex, type WEntry } from "../../../src/Core.TypeScript/algebra/star-ring";
 
 const WIDTH = 4;
 const EPS = 1e-12;
