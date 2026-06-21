@@ -254,6 +254,7 @@ function goType(t: string): string {
 
 export function emitQSharp(ir: InterfaceIr): string {
   // Q# doesn't have interfaces — emit as a newtype + function signatures
+
   const functions = ir.members.map(m => {
     const doc = m.doc ? `    /// ${m.doc}\n` : "";
     if (m.kind === "property") {
