@@ -136,9 +136,11 @@ export function looksPrivate(text: string): boolean {
   return PRIVATE_KEY_MARKERS.some((m) => up.includes(m));
 }
 
-/** The conventional GitHub key title: "<user>@<host> (zeta)" — recognizable + stable. */
-export function publishTitle(user: string, hostname: string): string {
-  return `${user}@${sanitizeHostname(hostname)} (zeta)`;
+/** The GitHub key title for the USER's machine-independent key: "<user> (zeta)" — NO @host
+ *  (Aaron 2026-06-21 "drop the @host"): the user key has no host coupling, and this avoids even
+ *  the textual user@host N×M shape. GitHub dedupes by key ⇒ one title per user key. */
+export function publishTitle(user: string): string {
+  return `${user} (zeta)`;
 }
 
 /** A stable, public-derived fingerprint token of the public-key line (for the readout,
@@ -177,7 +179,7 @@ export async function publishKey(fx: PublishEffects, opts: PublishOptions): Prom
   const hostname = sanitizeHostname(opts.hostname ?? "this-host");
   const keyType = opts.keyType ?? "authentication";
   const keyPath = resolveKeyPath(opts);
-  const title = publishTitle(opts.user, hostname);
+  const title = publishTitle(opts.user);
   const dryRun = opts.dryRun === true;
 
   const base = { dryRun, user: opts.user, hostname, keyPath, keyType, title } as const;

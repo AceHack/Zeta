@@ -67,7 +67,7 @@ test("gated-success: biometric ok:true → ghAddKey IS called with the PUBLIC ke
   expect(calls.biometricPrompts).toHaveLength(1); // gate WAS invoked
   expect(calls.ghAdds).toHaveLength(1); // write happened
   expect(calls.ghAdds[0]?.publicKey).toContain("ssh-ed25519");
-  expect(calls.ghAdds[0]?.title).toBe("aaron@mymac (zeta)");
+  expect(calls.ghAdds[0]?.title).toBe("aaron (zeta)"); // NO @host — purified (Aaron 2026-06-21)
   expect(calls.ghAdds[0]?.keyType).toBe("authentication");
 });
 
@@ -167,7 +167,7 @@ test("looksPrivate: catches OpenSSH/PEM/PGP private headers, passes a public lin
 });
 
 test("publishTitle + fingerprint: stable, public-derived, recognizable", () => {
-  expect(publishTitle("aaron", "MyMac.local")).toBe("aaron@mymac.local (zeta)");
+  expect(publishTitle("aaron")).toBe("aaron (zeta)"); // NO @host — user key is machine-independent
   // fingerprint is deterministic over the public line + never leaks the key bytes verbatim
   const fp = publicKeyFingerprint(PUB);
   expect(fp).toMatch(/^key-[0-9a-f]{16}$/);
@@ -188,7 +188,7 @@ test("formatResult published readout: shows biometric → ✅ → published <fp>
     hostname: "mymac",
     keyPath: "/repo/maintainers/aaron/machines/mymac.pub",
     keyType: "authentication",
-    title: "aaron@mymac (zeta)",
+    title: "aaron (zeta)",
     action: "published",
     fingerprint: "key-0123456789abcdef",
     biometric: { ok: true, platform: "macos-touchid" },
