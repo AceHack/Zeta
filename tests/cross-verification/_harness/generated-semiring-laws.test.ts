@@ -12,7 +12,9 @@ describe("ISemiring — algebraic law property tests (generated)", () => {
   test("add-assoc: Add(Add(a,b),c) = Add(a,Add(b,c))", () => {
     // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:add-is-associative
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen();
+      const b = gen();
+      const c = gen();
       expect(eq(r.add(r.add(a, b), c), r.add(a, r.add(b, c)))).toBe(true);
     }
   });
@@ -20,7 +22,8 @@ describe("ISemiring — algebraic law property tests (generated)", () => {
   test("add-comm: Add(a,b) = Add(b,a)", () => {
     // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:add-is-commutative
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen();
+      const b = gen();
       expect(eq(r.add(a, b), r.add(b, a))).toBe(true);
     }
   });
@@ -28,7 +31,7 @@ describe("ISemiring — algebraic law property tests (generated)", () => {
   test("add-identity: Add(a, Zero) = a", () => {
     // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:zero-is-additive-identity
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen();
       expect(eq(r.add(a, r.zero), a)).toBe(true);
       expect(eq(r.add(r.zero, a), a)).toBe(true);
     }
@@ -37,7 +40,7 @@ describe("ISemiring — algebraic law property tests (generated)", () => {
   test("add-inverse: Add(a, Negate(a)) = Zero", () => {
     // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:negate-is-additive-inverse
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen();
       expect(eq(r.add(a, r.negate(a)), r.zero)).toBe(true);
     }
   });
@@ -45,7 +48,7 @@ describe("ISemiring — algebraic law property tests (generated)", () => {
   test("mul-identity: Mul(a, One) = a = Mul(One, a)", () => {
     // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:one-is-multiplicative-identity
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen();
       expect(eq(r.mul(a, r.one), a)).toBe(true);
       expect(eq(r.mul(r.one, a), a)).toBe(true);
     }
@@ -54,7 +57,9 @@ describe("ISemiring — algebraic law property tests (generated)", () => {
   test("mul-distributes-add: Mul(a, Add(b,c)) = Add(Mul(a,b), Mul(a,c))", () => {
     // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:mul-distributes-over-add
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+      const a = gen();
+      const b = gen();
+      const c = gen();
       expect(eq(r.mul(a, r.add(b, c)), r.add(r.mul(a, b), r.mul(a, c)))).toBe(true);
     }
   });

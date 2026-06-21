@@ -19,7 +19,7 @@
  * Proof lives in Z3/Lean and is referenced by the `proof` field.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 interface LawSchema {
@@ -49,7 +49,8 @@ interface InterfaceIr {
 
 export function generateLawTests(ir: InterfaceIr, instanceExpr: string): string {
   const tests = ir.laws.map(law => {
-    const testBody = generateTestBody(law, instanceExpr);
+    const inputBindings = generateInputBindings(law);
+    const testBody = generateTestBody(law);
     const statusComment = law.status === "proven"
       ? `// PROVEN: ${law.proof}`
       : law.status === "conjectured"
@@ -62,7 +63,7 @@ export function generateLawTests(ir: InterfaceIr, instanceExpr: string): string 
     return `  test("${law.id}: ${law.doc ?? law.schema}", () => {
     ${statusComment}${guardComment}
     for (let i = 0; i < N; i++) {
-      const a = gen(), b = gen(), c = gen();
+${inputBindings}
 ${testBody}
     }
   });`;
@@ -84,7 +85,37 @@ ${tests}
 `;
 }
 
-function generateTestBody(law: LawSchema, inst: string): string {
+function generateInputBindings(law: LawSchema): string {
+  const inputs = requiredInputs(law);
+  if (inputs.length === 0) {
+    return "      // No random inputs required for this schema.";
+  }
+
+  return inputs.map(input => `      const ${input} = gen();`).join("\n");
+}
+
+function requiredInputs(law: LawSchema): readonly string[] {
+  switch (law.schema) {
+    case "associative":
+    case "distributive":
+      return ["a", "b", "c"];
+
+    case "commutative":
+      return ["a", "b"];
+
+    case "identity":
+    case "inverse":
+    case "idempotent":
+    case "involutive":
+    case "roundTrip":
+      return ["a"];
+
+    default:
+      return [];
+  }
+}
+
+function generateTestBody(law: LawSchema): string {
   switch (law.schema) {
     case "associative":
       return `      expect(eq(r.${lcFirst(law.op!)}(r.${lcFirst(law.op!)}(a, b), c), r.${lcFirst(law.op!)}(a, r.${lcFirst(law.op!)}(b, c)))).toBe(true);`;
@@ -128,7 +159,7 @@ function generateTestBody(law: LawSchema, inst: string): string {
 }
 
 function lcFirst(s: string): string {
-  return s[0].toLowerCase() + s.slice(1);
+  return s.length === 0 ? s : s.charAt(0).toLowerCase() + s.slice(1);
 }
 
 // ─── Verify law statuses (the CI gate) ──────────────────────────────────
@@ -146,7 +177,7 @@ export function verifyLawStatuses(ir: InterfaceIr, repoRoot: string): LawVerific
       return { id: law.id, status: law.status, proofExists: false };
     }
     // Check if the referenced proof file exists
-    const proofPath = law.proof.split(":")[0]; // "file:test-name" format
+    const proofPath = law.proof.split(":")[0] ?? law.proof; // "file:test-name" format
     try {
       readFileSync(join(repoRoot, proofPath));
       return { id: law.id, status: law.status, proofExists: true, proofPath };
