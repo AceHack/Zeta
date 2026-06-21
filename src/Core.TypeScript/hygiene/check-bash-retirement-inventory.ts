@@ -108,7 +108,9 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/mechanisms/from-url.sh",
   "tools/setup/mechanisms/from-uv-tool.sh",
   "tools/setup/mechanisms/from-uv-venv.sh",
+  "tools/setup/op-token-setup.sh",
   "tools/setup/persona-keys/keyring.sh",
+  "tools/setup/secret-clip.sh",
 ];
 
 export const RETAINED_BASH_SCOPE = RETAINED_SHELL_SCOPE;
@@ -155,6 +157,11 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/install.sh": "setup/bootstrap",
   "tools/setup/linux.sh": "setup/bootstrap",
   "tools/setup/macos.sh": "setup/bootstrap",
+  // Secret-edge scripts (Aaron 2026-06-21): capture a secret via masked TTY / secure dialog /
+  // clipboard and write it to the OS keystore (Keychain). Retained shell at the security edge
+  // (same rationale as keyring.sh) — secure input + `security`/`osascript` are OS-edge ops.
+  "tools/setup/op-token-setup.sh": "setup/bootstrap",
+  "tools/setup/secret-clip.sh": "setup/bootstrap",
   // keyring.sh is the intentionally-retained thin security EDGE: in-process seed
   // handling (`read -s`, umask-077, shred-on-exit) that must stay in shell; the
   // typed operational logic lives in keyset.ts ("bash only calls the edge").

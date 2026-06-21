@@ -114,7 +114,13 @@ case "$ACTION" in
     ;;
   del)
     case "$OS" in
-      Darwin) security delete-generic-password -s "$NAME" >/dev/null 2>&1 && echo "✓ '$NAME' removed" >&2 || { echo "✗ '$NAME' not found" >&2; exit 1; } ;;
+      Darwin)
+        if security delete-generic-password -s "$NAME" >/dev/null 2>&1; then
+          echo "✓ '$NAME' removed" >&2
+        else
+          echo "✗ '$NAME' not found" >&2; exit 1
+        fi
+        ;;
       *) echo "✗ del backend PLANNED for $OS" >&2; exit 3 ;;
     esac
     ;;
