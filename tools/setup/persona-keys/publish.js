@@ -1,0 +1,198 @@
+// Zeta biometric-gated GitHub PUBLIC-key publish — the OUTWARD-WRITE slice of the
+// unified key-onboarding flow (workitem 081KVM1TK3Z08QG0R0002959G6 §"publish to GitHub").
+// Aaron (2026-06-21): *"we need to code this [publish to GitHub] and make sure it uses
+// mac fingerprint / windows hello auth … clean and smooth and automatic."*
+//
+// This slice UPLOADS the per-machine PUBLIC device key (produced by machine.ts and
+// written to maintainers/<user>/machines/<host>.pub) to the operator's GitHub account
+// via `gh ssh-key add` — but ONLY after a biometric confirmation succeeds (fail-closed).
+//
+// SECURITY INVARIANTS (security-sensitive slice — honesty over green):
+//  1. BIOMETRIC GATE FIRST + FAIL-CLOSED — before ANY GitHub write, biometricAuth()
+//     MUST return ok:true. If it returns false / throws / the platform is unsupported,
+//     the publish ABORTS and `gh` is NEVER invoked. There is no `gh` write path that
+//     bypasses the gate. (macOS = Touch ID via pam_tid/sudo, reusing the zflash /
+//     biometric-sudo-handler pattern; Windows Hello = seam-wired, see realEffects.)
+//  2. PUBLIC KEY ONLY — we read, upload, and print ONLY the `.pub` artifact. No seed,
+//     no private key, no CA. The payload is asserted to NOT match /PRIVATE KEY/ before
+//     it crosses the GitHub door — a defense-in-depth refusal, not just a convention.
+//  3. NONINTERFERENCE (manifesto §13) — the biometric prompt, the filesystem read of
+//     the pubkey, and the `gh` invocation enter ONLY through the injected
+//     `PublishEffects` doors. Tests inject fakes (no real prompt, no real network/gh
+//     write); `--dry-run` performs NEITHER a prompt NOR a write. The REAL doors live
+//     only in `realEffects()`.
+//
+// Anchors (Beacon): Touch ID PAM (`pam_tid.so`) biometric sudo — Apple PAM / the
+// repo's biometric-sudo ADR (2026-05-29) + zflash's Touch-ID-gated dd. Windows Hello
+// programmatic consent — `Windows.Security.Credentials.UI.UserConsentVerifier`
+// (Microsoft WinRT). GitHub public-key upload — `gh ssh-key add` (GitHub CLI manual);
+// SSH ed25519 — Bernstein et al. (2011). Physical-presence consent as a write floor —
+// FIDO/WebAuthn user-verification framing.
+import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { homedir, hostname as osHostname } from "node:os";
+import { join } from "node:path";
+import { publishPubPath, sanitizeHostname } from "./machine.js";
+// The biometric gate is the SHARED primitive in biometric.ts (lifted out of this module so
+// ca.ts / machine.ts / publish.ts all share ONE gate, not three copies of the Touch-ID
+// logic). publish.ts re-exports the types + detector for back-compat with its existing
+// importers (CLI + tests); the implementation now lives in biometric.ts.
+import { detectBiometricPlatform as detectBiometricPlatformShared, realBiometric, } from "./biometric.js";
+/** Re-exported for back-compat with publish.ts's existing importers (CLI + tests). The
+ *  implementation lives in the shared biometric.ts. */
+export function detectBiometricPlatform(plat) {
+    return plat === undefined ? detectBiometricPlatformShared() : detectBiometricPlatformShared(plat);
+}
+/** Marker substrings that mean "this is private material" — refuse to upload if present.
+ *  Covers OpenSSH + PEM/PKCS#8 private-key headers across formats. */
+const PRIVATE_KEY_MARKERS = [
+    "PRIVATE KEY",
+    "BEGIN OPENSSH PRIVATE KEY",
+    "BEGIN RSA PRIVATE KEY",
+    "BEGIN EC PRIVATE KEY",
+    "BEGIN DSA PRIVATE KEY",
+    "BEGIN PGP PRIVATE KEY",
+];
+/** True iff the text contains ANY private-key marker (case-insensitive defense-in-depth).
+ *  A PUBLIC key line (`ssh-ed25519 AAAA… comment`) never matches. */
+export function looksPrivate(text) {
+    const up = text.toUpperCase();
+    return PRIVATE_KEY_MARKERS.some((m) => up.includes(m));
+}
+/** The conventional GitHub key title: "<user>@<host> (zeta)" — recognizable + stable. */
+export function publishTitle(user, hostname) {
+    return `${user}@${sanitizeHostname(hostname)} (zeta)`;
+}
+/** A stable, public-derived fingerprint token of the public-key line (for the readout,
+ *  not for trust). Derived from PUBLIC bytes only; never the key. Computed without
+ *  importing crypto into the pure core, so it stays DST-deterministic + dependency-free. */
+export function publicKeyFingerprint(pubLine) {
+    let h = 0n;
+    const MOD = (1n << 64n) - 59n; // a large 64-bit-ish prime modulus for a stable digest
+    for (let i = 0; i < pubLine.length; i++) {
+        h = (h * 1000003n + BigInt(pubLine.charCodeAt(i))) % MOD;
+    }
+    return `key-${h.toString(16).padStart(16, "0")}`;
+}
+/** Resolve the pubkey path: explicit `keyPath` wins; else the conventional machine path. */
+export function resolveKeyPath(opts, hostname) {
+    return opts.keyPath ?? publishPubPath(opts.repoRoot, opts.user, hostname);
+}
+/**
+ * Publish THIS machine's PUBLIC key to GitHub — biometric-gated + fail-closed.
+ *
+ * Order of operations (the security contract):
+ *   1. Resolve + READ the public key. If absent → abort ("aborted-no-key"); no prompt.
+ *   2. Assert it is NOT private material. If it looks private → abort
+ *      ("aborted-private-material"); `gh` is NEVER invoked.
+ *   3. On dry-run: report "would-publish" — NO biometric prompt, NO `gh` write.
+ *   4. BIOMETRIC GATE: call biometricAuth(). If ok !== true → abort
+ *      ("aborted-biometric"); `ghAddKey` is NEVER called.
+ *   5. Only on biometric success: `ghAddKey({ publicKey, title, keyType })`.
+ *
+ * PURE over the injected effects — deterministic + testable, never a real prompt/network.
+ */
+export async function publishKey(fx, opts) {
+    const hostname = sanitizeHostname(opts.hostname ?? "this-host");
+    const keyType = opts.keyType ?? "authentication";
+    const keyPath = resolveKeyPath(opts, hostname);
+    const title = publishTitle(opts.user, hostname);
+    const dryRun = opts.dryRun === true;
+    const base = { dryRun, user: opts.user, hostname, keyPath, keyType, title };
+    // 1. The public key must exist.
+    if (!fx.exists(keyPath)) {
+        return {
+            ...base,
+            action: "aborted-no-key",
+            error: `no public key at ${keyPath} — run the \`machine\` slice (with --publish) first`,
+        };
+    }
+    const publicKey = fx.readText(keyPath).trim();
+    // 2. PUBLIC-ONLY invariant — refuse to upload anything that smells private.
+    if (looksPrivate(publicKey)) {
+        return {
+            ...base,
+            action: "aborted-private-material",
+            error: `${keyPath} contains PRIVATE-key material — refusing to upload (public-only)`,
+        };
+    }
+    const fingerprint = publicKeyFingerprint(publicKey);
+    // 3. Dry-run: report intent. NO biometric prompt, NO GitHub write.
+    if (dryRun) {
+        return { ...base, action: "would-publish", fingerprint };
+    }
+    // 4. BIOMETRIC GATE — fail-closed. No `gh` path past this point without ok:true.
+    const biometric = await fx.biometricAuth(`Publish ${title} to GitHub`);
+    if (!biometric.ok) {
+        return {
+            ...base,
+            action: "aborted-biometric",
+            biometric,
+            fingerprint,
+            error: `biometric confirmation ${biometric.reason ? `failed: ${biometric.reason}` : "was not granted"} — publish aborted (fail-closed)`,
+        };
+    }
+    // 5. Gate passed → upload the PUBLIC key. The ONLY GitHub-write door.
+    await fx.ghAddKey({ publicKey, title, keyType });
+    return { ...base, action: "published", biometric, fingerprint };
+}
+/** Clean, "smooth" readout (the operator-facing line). Public-only, safe to print. */
+export function formatResult(res) {
+    const fp = res.fingerprint ?? "(unknown)";
+    switch (res.action) {
+        case "would-publish":
+            return [
+                `[dry-run] would publish ${fp} to github:${res.user} (${res.keyType})`,
+                `[dry-run] would prompt biometric: "Publish ${res.title} to GitHub"`,
+                "[dry-run] NO biometric prompt performed, NO GitHub write performed.",
+            ].join("\n");
+        case "published":
+            return `🔐 biometric → ✅ → published ${fp} to github:${res.user} (${res.keyType}, "${res.title}")`;
+        case "aborted-biometric":
+            return `🔐 biometric → ❌ → ${res.error ?? "aborted"} (GitHub NOT written)`;
+        case "aborted-no-key":
+            return `aborted: ${res.error ?? "no key"} (no biometric prompt, no GitHub write)`;
+        case "aborted-private-material":
+            return `aborted: ${res.error ?? "private material"} (PUBLIC-only invariant; GitHub NOT written)`;
+    }
+}
+// ── REAL effects (CLI-only): the doors that touch the OS / GitHub ───────────────────
+/** The REAL effects (used by the CLI): the SHARED biometric gate (biometric.ts) + a
+ *  filesystem read of the PUBLIC key + the real `gh ssh-key add` write. NO secrets,
+ *  public-only. The biometric door is `realBiometric()` — the one gate every op shares. */
+export function realEffects() {
+    return {
+        biometricAuth: realBiometric(),
+        exists: (p) => existsSync(p),
+        readText: (p) => readFileSync(p, "utf8"),
+        ghAddKey: async ({ publicKey, title, keyType }) => {
+            // Defense-in-depth: NEVER let private material reach the GitHub door, even if a
+            // caller bypassed the core. (The core already asserts this; this is belt + braces.)
+            if (looksPrivate(publicKey)) {
+                throw new Error("refusing to upload PRIVATE-key material to GitHub (public-only invariant)");
+            }
+            // Pass the PUBLIC key on stdin (no key file path, no secret on argv). `gh ssh-key
+            // add -` reads the key from stdin.
+            const r = spawnSync("gh", ["ssh-key", "add", "-", "--title", title, "--type", keyType], {
+                input: publicKey.endsWith("\n") ? publicKey : publicKey + "\n",
+                encoding: "utf8",
+                stdio: ["pipe", "inherit", "inherit"],
+            });
+            if (r.status !== 0) {
+                throw new Error(`gh ssh-key add failed (status ${r.status ?? "signal"})`);
+            }
+        },
+    };
+}
+/** The host's hostname (the conventional per-machine pub path component). */
+export function hostHostname() {
+    return osHostname();
+}
+/** The conventional local home (for path resolution parity with machine.ts). */
+export function defaultHome() {
+    return homedir();
+}
+/** Join helper re-exported so the CLI can build paths without re-importing node:path. */
+export function joinPath(...parts) {
+    return join(...parts);
+}

@@ -1,0 +1,1 @@
+{"schema":"zeta-ir-v4","generator":"rng.lcg32_glibc","version":1,"width":32,"ops":[{"op":"mul","k":1103515245},{"op":"add","k":12345}]}

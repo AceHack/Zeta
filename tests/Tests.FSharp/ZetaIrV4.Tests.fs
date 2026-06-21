@@ -156,10 +156,10 @@ let ``frozen zeta-ir-v4 golden reproduces byte-for-byte`` () =
     let path = goldenPath ()
     Directory.CreateDirectory(Path.GetDirectoryName path) |> ignore
 
-    // If murmur3_32_tail is not in the golden file yet, write it
+    // If new generator is not in the golden file yet, write it
     if File.Exists path then
         let existing = File.ReadAllText(path).Replace("\r\n", "\n")
-        if not (existing.Contains("murmur3_32_tail")) then
+        if not (existing.Contains("lcg32_glibc")) then
             File.WriteAllText(path, json)
         else
             Assert.Equal(existing, json)

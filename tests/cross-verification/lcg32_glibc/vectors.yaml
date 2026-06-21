@@ -1,0 +1,32 @@
+# lcg32_glibc vectors
+vectors:
+  - id: "x-0"
+    state: 0
+    expected: 12345
+  - id: "x-1"
+    state: 1
+    expected: 1103527590
+  - id: "x-2"
+    state: 2
+    expected: 2207042835
+  - id: "x-3"
+    state: 3
+    expected: 3310558080
+  - id: "x-4"
+    state: 4
+    expected: 119106029
+  - id: "x-5"
+    state: 5
+    expected: 1222621274
+  - id: "x-6"
+    state: 6
+    expected: 2326136519
+  - id: "x-7"
+    state: 7
+    expected: 3429651764
+  - id: "x-8"
+    state: 8
+    expected: 238199713
+  - id: "x-9"
+    state: 9
+    expected: 1341714958

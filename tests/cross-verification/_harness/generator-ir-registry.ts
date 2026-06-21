@@ -63,6 +63,7 @@ const KNOWN: ReadonlyArray<{ name: string; version: number; primitive: string; f
   { name: "rng.lcg64_mmix", version: 1, primitive: "lcg64_mmix", file: "lcg64_mmix.ir.json" },
   { name: "rng.lcg32_numerical_recipes", version: 1, primitive: "lcg32_numerical_recipes", file: "lcg32_numerical_recipes.ir.json" },
   { name: "hash.murmur3_32_tail", version: 1, primitive: "murmur3_32_tail", file: "murmur3_32_tail.ir.json" },
+  { name: "rng.lcg32_glibc", version: 1, primitive: "lcg32_glibc", file: "lcg32_glibc.ir.json" },
 ];
 
 function loadRow(entry: (typeof KNOWN)[number]): IrRow {

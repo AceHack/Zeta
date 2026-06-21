@@ -270,5 +270,16 @@ module ZetaIrV4 =
               Mul 5L
               Add 3864292196L ] } // 0xe6546b64 as uint32 -> int64
 
+    /// glibc's 32-bit Linear Congruential Generator under v4.
+    /// This is the NINTH generator, and the FOURTH add-anchor.
+    /// The algorithm is `x = x * 1103515245 + 12345`.
+    let lcg32_glibc: Ir =
+        { Generator = "rng.lcg32_glibc"
+          Version = 1
+          Width = 32
+          Ops =
+            [ Mul 1103515245L
+              Add 12345L ] }
+
     /// All known v4 IRs (the rows the frozen v4 golden file pins).
-    let known: Ir list = [ lcg64_mmix; lcg32_numerical_recipes; murmur3_32_tail ]
+    let known: Ir list = [ lcg64_mmix; lcg32_numerical_recipes; murmur3_32_tail; lcg32_glibc ]

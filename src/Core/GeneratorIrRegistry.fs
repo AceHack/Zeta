@@ -284,6 +284,18 @@ module GeneratorIrRegistry =
                      mul 5L
                      add 3864292196L ]) ] // 0xe6546b64
 
+    /// glibc's 32-bit Linear Congruential Generator IR (width 32) under v4.
+    let lcg32GlibcIr : DynamicValue =
+        DynamicValue.Object
+            [ ("schema", DynamicValue.String "zeta-ir-v4")
+              ("generator", DynamicValue.String "rng.lcg32_glibc")
+              ("version", DynamicValue.Int 1L)
+              ("width", DynamicValue.Int 32L)
+              ("ops",
+               DynamicValue.Array
+                   [ mul 1103515245L
+                     add 12345L ]) ]
+
     let known: IrRow list =
         [ row "rng.splitmix64" 1 splitmix64Ir
           row "hash.fmix32" 1 fmix32Ir
@@ -292,7 +304,8 @@ module GeneratorIrRegistry =
           row "hash.nasam" 1 nasamIr
           row "rng.lcg64_mmix" 1 lcg64MmixIr
           row "rng.lcg32_numerical_recipes" 1 lcg32NumericalRecipesIr
-          row "hash.murmur3_32_tail" 1 murmur3_32_tailIr ]
+          row "hash.murmur3_32_tail" 1 murmur3_32_tailIr
+          row "rng.lcg32_glibc" 1 lcg32GlibcIr ]
         |> List.choose (function
             | Ok r -> Some r
             | Error _ -> None)

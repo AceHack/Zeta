@@ -1,0 +1,120 @@
+#!/usr/bin/env bun
+// preflight.ts — run every code-correctness gate dimension LOCALLY before merge,
+// and report EVERY failure at once.
+//
+// WHY THIS EXISTS: the CI gate runs language lints sequentially in one job that
+// SHORT-CIRCUITS at the first failing language — so a multi-language change that
+// breaks Go, C#, Python and Rust surfaces ONE red per CI cycle, and "fixing" main
+// becomes whack-a-mole across many round-trips (see the 2026-06-13 rollout: 7 PRs
+// to clear breakage the gate revealed one language at a time). Preflight runs the
+// SAME checks but never bails early: it executes all of them, collects every
+// failure, and prints a single summary — so one local run finds everything.
+//
+// Usage:
+//   bun src/Core.TypeScript/hygiene/preflight.ts            # everything (incl. build + full test)
+//   bun src/Core.TypeScript/hygiene/preflight.ts --quick    # skip the slow dotnet build + test
+//   bun src/Core.TypeScript/hygiene/preflight.ts --help
+//
+// Exit codes:
+//   0   every executed check passed (skipped-because-tool-missing does NOT fail)
+//   1   one or more checks failed
+//
+// Mirrors the gate's code-correctness jobs (.github/workflows/gate.yml): the
+// per-language lints, tsc, markdownlint, the file-presence lints, and
+// build-and-test. The doc/hygiene lints (tick-shard, backlog, archive-header, …)
+// are intentionally out of scope here — this is the code preflight; add them if a
+// future round shows they recur.
+import { spawnSync } from "node:child_process";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+const here = dirname(fileURLToPath(import.meta.url));
+// 3 levels up from src/Core.TypeScript/hygiene/ to repo root.
+const REPO_ROOT = resolve(here, "..", "..", "..");
+const CHECKS = [
+    // Cheap file-presence + markdown first (fast feedback).
+    { label: "no-conflict-markers", cmd: ["bun", "src/Core.TypeScript/hygiene/check-no-conflict-markers.ts"] },
+    { label: "no-empty-dirs", cmd: ["bun", "src/Core.TypeScript/lint/no-empty-dirs.ts"] },
+    { label: "auto-vivify check", cmd: ["bun", "src/Core.TypeScript/backlog/auto-vivify.ts", "--check"] },
+    // The glob is REQUIRED: the config has no `globs` key, so a bare invocation
+    // lints zero files (a false pass). Matches the gate: markdownlint-cli2 "**/*.md".
+    { label: "markdownlint", cmd: ["npx", "--yes", "markdownlint-cli2", "**/*.md"] },
+    // Per-language code lints — the set the gate short-circuits over.
+    { label: "lint: TypeScript (tsc)", cmd: ["bun", "src/Core.TypeScript/lint/lint-typescript.ts"] },
+    { label: "lint: F#", cmd: ["bun", "src/Core.TypeScript/lint/lint-fsharp.ts"] },
+    { label: "lint: C#", cmd: ["bun", "src/Core.TypeScript/lint/lint-csharp.ts"] },
+    { label: "lint: Python", cmd: ["bun", "src/Core.TypeScript/lint/lint-python.ts"] },
+    { label: "lint: Rust", cmd: ["bun", "src/Core.TypeScript/lint/lint-rust.ts"] },
+    // CAVEAT: lint-go.ts runs `go fmt ./...`, which REWRITES files in place rather
+    // than verifying (`gofmt -l`). So this check may modify your Go sources (and
+    // always passes even on drift). Review `git status` after a run. Tracked as a
+    // follow-up: switch lint-go.ts to `gofmt -l` so Go format drift FAILS the gate.
+    { label: "lint: Go", cmd: ["bun", "src/Core.TypeScript/lint/lint-go.ts"] },
+    // The long poles last (skipped under --quick).
+    { label: "dotnet build -c Release", cmd: ["dotnet", "build", "Zeta.sln", "-c", "Release"], slow: true },
+    { label: "dotnet test -c Release", cmd: ["dotnet", "test", "Zeta.sln", "-c", "Release"], slow: true },
+];
+function runCheck(check) {
+    process.stdout.write(`▶ ${check.label} … `);
+    const [bin, ...args] = check.cmd;
+    const r = spawnSync(bin, args, { cwd: REPO_ROOT, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+    // Tool genuinely absent (e.g. golangci-lint / dotnet not installed locally) →
+    // SKIP, not FAIL: the dimension was not verified, but that is not breakage.
+    if (r.error && r.error.code === "ENOENT") {
+        console.log("SKIP (tool not found)");
+        return { label: check.label, status: "skip", output: "", note: `${bin} not on PATH` };
+    }
+    const output = `${r.stdout ?? ""}${r.stderr ?? ""}`;
+    // A lint script that aborts because its own toolchain is missing → SKIP.
+    if (r.status !== 0 && /not found|Executable not found|command not found/i.test(output)) {
+        console.log("SKIP (toolchain missing)");
+        return { label: check.label, status: "skip", output, note: "underlying tool unavailable" };
+    }
+    if (r.status === 0) {
+        console.log("PASS");
+        return { label: check.label, status: "pass", output };
+    }
+    console.log("FAIL");
+    return { label: check.label, status: "fail", output };
+}
+function main() {
+    const args = new Set(Bun.argv.slice(2));
+    if (args.has("--help") || args.has("-h")) {
+        console.log("preflight — run every code-correctness gate dimension locally, report all failures.\n" +
+            "  --quick   skip the slow dotnet build + test\n" +
+            "  --help    this message");
+        return 0;
+    }
+    const quick = args.has("--quick") || args.has("--no-tests");
+    console.log(`Preflight (${quick ? "quick: lints + tsc" : "full: lints + tsc + build + test"})\n`);
+    const results = [];
+    for (const check of CHECKS) {
+        if (quick && check.slow)
+            continue;
+        results.push(runCheck(check));
+    }
+    const failed = results.filter((r) => r.status === "fail");
+    const skipped = results.filter((r) => r.status === "skip");
+    // Dump every failure's output together, so one run shows the whole picture.
+    if (failed.length > 0) {
+        console.log(`\n${"═".repeat(60)}\nFAILURES (${failed.length})\n${"═".repeat(60)}`);
+        for (const f of failed) {
+            console.log(`\n──── ${f.label} ────`);
+            console.log(f.output.trimEnd() || "(no output captured)");
+        }
+    }
+    console.log(`\n${"─".repeat(60)}\nSummary`);
+    for (const r of results) {
+        const mark = r.status === "pass" ? "✓" : r.status === "skip" ? "•" : "✗";
+        console.log(`  ${mark} ${r.label}${r.note ? ` — ${r.note}` : ""}`);
+    }
+    if (skipped.length > 0) {
+        console.log(`\n${skipped.length} check(s) SKIPPED (tool unavailable locally) — they will still run in CI.`);
+    }
+    if (failed.length > 0) {
+        console.log(`\n✗ preflight: ${failed.length} check(s) failed.`);
+        return 1;
+    }
+    console.log(`\n✓ preflight: all ${results.length - skipped.length} executed check(s) passed.`);
+    return 0;
+}
+process.exit(main());

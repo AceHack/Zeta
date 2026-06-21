@@ -90,6 +90,7 @@ module GeneratorRegistry =
           register "rng.splitmix64" 1
           register "rng.lcg64_mmix" 1
           register "hash.murmur3_32_tail" 1
+          register "rng.lcg32_glibc" 1
           register "engine.zeta-bayesian" 1
           register "engine.infer-net" 1
           register "engine.mock-flat" 1
