@@ -254,8 +254,6 @@ function goType(t: string): string {
 
 export function emitQSharp(ir: InterfaceIr): string {
   // Q# doesn't have interfaces — emit as a newtype + function signatures
-  const typeParams = ir.typeParams.map(tp => `'${tp.name}`).join(", ");
-
   const functions = ir.members.map(m => {
     const doc = m.doc ? `    /// ${m.doc}\n` : "";
     if (m.kind === "property") {
@@ -301,12 +299,12 @@ export function emitAll(ir: InterfaceIr, outDir: string): void {
     ["qs", `${ir.name}.qs`, emitQSharp(ir)],
   ];
 
-  for (const [ext, filename, content] of files) {
+  for (const [, filename, content] of files) {
     writeFileSync(join(outDir, filename), content);
   }
 
   console.log(`[codegen-interface] emitted ${files.length} interface files from ${ir.name} → ${outDir}`);
-  for (const [ext, filename] of files) {
+  for (const [, filename] of files) {
     console.log(`  ${filename}`);
   }
 }
