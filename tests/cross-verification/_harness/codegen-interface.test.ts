@@ -78,8 +78,8 @@ describe("codegen-interface — IStarRing (with inheritance + laws)", () => {
 
   test("C# includes laws as XML remarks", () => {
     const cs = emitCSharp(starRing);
-    expect(cs).toContain("Conj is involutive");
-    expect(cs).toContain("anti-homomorphism");
+    expect(cs).toContain("Conj(Conj(a)) = a");
+    expect(cs).toContain("reverses order");
   });
 
   test("TypeScript includes extends clause", () => {
