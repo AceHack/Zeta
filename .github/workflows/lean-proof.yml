@@ -202,6 +202,13 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake env lean Lean4/BridgeFunctor.lean
 
+      - name: Type-check Lean4/CanonicalizerCorrect.lean
+        # ZetaIrCanonicalizer algebraic fusions (Mul-Mul, Add-Add, Mul-Add-Mul,
+        # Mul-Add-Add, identity/zero elimination, XRotXor) preserve denotation
+        # over UInt64. sorry-free.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/CanonicalizerCorrect.lean
+
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
@@ -228,6 +235,8 @@ jobs:
             | cat Lean4/CayleyDicksonDoublyEven.lean - > /tmp/cd_doubly_even_axiom_audit.lean
           printf '#print axioms Zeta.BridgeFunctor.bridge_left_inv\n#print axioms Zeta.BridgeFunctor.bridge_right_inv\n#print axioms Zeta.BridgeFunctor.bridge_preserves_involution\n' \
             | cat Lean4/BridgeFunctor.lean - > /tmp/bridge_functor_axiom_audit.lean
+          printf '#print axioms Zeta.CanonicalizerCorrect.eval_mul_mul\n#print axioms Zeta.CanonicalizerCorrect.eval_add_add\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_add_mul\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_add_add\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_one\n#print axioms Zeta.CanonicalizerCorrect.eval_add_zero\n#print axioms Zeta.CanonicalizerCorrect.eval_mul_zero\n#print axioms Zeta.CanonicalizerCorrect.eval_xrotxor_concrete\n' \
+            | cat Lean4/CanonicalizerCorrect.lean - > /tmp/canonicalizer_axiom_audit.lean
 
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
@@ -267,6 +276,10 @@ jobs:
           fi
           if lake env lean /tmp/bridge_functor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::BridgeFunctor depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/canonicalizer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::CanonicalizerCorrect depends on sorryAx — a fusion-correctness proof regressed to sorry/admit"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."
