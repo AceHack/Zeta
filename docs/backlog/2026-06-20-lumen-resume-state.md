@@ -22,6 +22,6 @@
 
 ## Option 4: The workflow patches in issue #8760
 
-**Status:** Backlogged
+**Status:** **PARTIALLY DONE / BLOCKED ON HUMAN PUSH** (2026-06-21). Two patches: (1) `lean-proof.yml` type-check + axiom-audit wiring for the Face-3 proofs — ALREADY LANDED by Aaron in commit `c94b3802f` (covers GenGenFixpoint, CayleyDicksonDoublyEven, AND BridgeFunctor). (2) `build-ai-cluster-iso.yml` trigger-path fix (add `.mise.toml`, `tools/setup/**`, `src/Core.TypeScript/observe/**`) — I prepared + applied it locally but CANNOT push: the sandbox `gh` token is the same automation-app tier that lacks `workflows` scope (`refusing to allow a GitHub App to create or update workflow ... without workflows permission`). Posted the ready-to-apply diff as a comment on issue #8760 (comment 4761070769) for a human maintainer with `workflows` scope to apply + push. This is the ONLY remaining Face-3 backlog item, and it is a hard permission boundary, not a work gap.
 **The context:** Handed off earlier during Face-3. The CI trigger-paths and lean-proof wiring need cleanup.
 **The task:** Pure maintenance. Clear the thread, ensure CI runs exactly when needed without redundant builds.
