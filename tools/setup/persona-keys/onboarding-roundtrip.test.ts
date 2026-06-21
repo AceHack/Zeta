@@ -44,27 +44,38 @@
 // (idempotent provisioning, the Terraform/NixOS "destroy then apply ⇒ same state" discipline).
 // Run: bun test onboarding-roundtrip.test.ts   (from tools/setup/persona-keys)
 import { test, expect } from "bun:test";
+import { spawnSync } from "node:child_process";
 import {
   existsSync,
   mkdtempSync,
+  mkdirSync,
   readFileSync,
   readdirSync,
+  renameSync,
   rmSync,
   statSync,
+  writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 import { setupMachine, type SetupMachineResult } from "./setup-machine.ts";
 import { teardown, type TeardownResult, ZETA_LOCAL_DIRS, zetaLocalDirPath } from "./teardown.ts";
 import { realEffects as machineRealFx } from "./machine.ts";
 import { caPrivateKeyPath, caPublicKeyPath, certPath, realEffects as caRealFx } from "./ca.ts";
 import { machinePubPath, deviceKeyPath } from "./machine.ts";
+import { trustedUserCaKeysPath } from "./setup-cluster.ts";
 import { sessionBiometric, type BiometricAuth } from "./biometric.ts";
 import type { OnboardEffects } from "./onboard.ts";
 import type { GithubTrustEffects } from "./github-trust.ts";
 import type { TeardownEffects } from "./teardown.ts";
 import { freshKeyringSet, rotate, assertWellFormed, publicSet } from "./keyset.ts";
+import {
+  rotate as rotatePorts,
+  ROTATE_PORTS,
+  type RotateEffects,
+  type RotateResult,
+} from "./rotate.ts";
 
 // The private-key marker, assembled at runtime so NO key-shaped literal is in this file.
 const PRIV_MARKER = "PRIVATE" + " " + "KEY";
@@ -206,6 +217,102 @@ async function runTeardown(
     biometricAuth: fakeBiometric(prompts),
   });
   return { res, prompts, staged };
+}
+
+/** FAKE rotate effects: genuine ssh-keygen (machine.ts / ca.ts realEffects) for genKey/sign + real
+ *  temp-fs reads/writes/moves; `stageRepoWrite` records the staged path + touches NOTHING beyond the
+ *  temp repoRoot (NO real git, honors shared-checkout-is-view-only). Keygen is real, aimed at temp. */
+function rotateEffects(staged: { repoRoot: string; relPath: string }[]): RotateEffects {
+  const machine = machineRealFx();
+  const ca = caRealFx();
+  return {
+    exists: (p) => existsSync(p),
+    readText: (p) => readFileSync(p, "utf8"),
+    writeText: (p, c) => {
+      mkdirSync(dirname(p), { recursive: true });
+      writeFileSync(p, c);
+    },
+    mkdirp: (p) => mkdirSync(p, { recursive: true }),
+    genEd25519: (keyPath, comment) => machine.genEd25519(keyPath, comment),
+    movePrivate: (from, to) => {
+      for (const suffix of ["", ".pub"]) {
+        const src = from + suffix;
+        const dst = to + suffix;
+        if (existsSync(src)) {
+          mkdirSync(dirname(dst), { recursive: true });
+          renameSync(src, dst);
+        }
+      }
+    },
+    ca,
+    stageRepoWrite: (repoRoot, relPath) => {
+      staged.push({ repoRoot, relPath });
+      return true; // staged (fake) — NEVER shells real git, NEVER pushes
+    },
+  };
+}
+
+// ── One ROTATE (all ports) on a provisioned sandbox ───────────────────────────────────────────
+async function runRotate(
+  sb: Sandbox,
+): Promise<{ res: RotateResult; prompts: string[]; staged: { repoRoot: string; relPath: string }[] }> {
+  const prompts: string[] = [];
+  const staged: { repoRoot: string; relPath: string }[] = [];
+  const fx = rotateEffects(staged);
+  const res = await rotatePorts(fx, {
+    user: USER,
+    ca: USER,
+    repoRoot: sb.repoRoot,
+    home: sb.home,
+    hostname: HOST,
+    ports: ROTATE_PORTS,
+    dryRun: false,
+    confirm: true,
+    biometricAuth: fakeBiometric(prompts),
+  });
+  return { res, prompts, staged };
+}
+
+/** A public key's SHA256 fingerprint via real ssh-keygen (contained — temp files only). */
+function pubFingerprint(pubPath: string): string {
+  const r = spawnSync("ssh-keygen", ["-l", "-f", pubPath], { encoding: "utf8" });
+  expect(r.status).toBe(0);
+  const m = /SHA256:\S+/.exec(r.stdout);
+  return m![0];
+}
+
+/** A cert's "Signing CA" SHA256 fingerprint via real ssh-keygen -L (contained). */
+function certSigningCaFingerprint(certFilePath: string): string {
+  const r = spawnSync("ssh-keygen", ["-L", "-f", certFilePath], { encoding: "utf8" });
+  expect(r.status).toBe(0);
+  const m = /Signing CA:\s+\S+\s+(SHA256:\S+)/.exec(r.stdout);
+  return m![1]!;
+}
+
+/** A cert's Key ID + Principals via real ssh-keygen -L (for the N+M invariant check). */
+function certIdentity(certFilePath: string): { keyId: string; principals: string[] } {
+  const r = spawnSync("ssh-keygen", ["-L", "-f", certFilePath], { encoding: "utf8" });
+  expect(r.status).toBe(0);
+  const idM = /Key ID:\s+"([^"]*)"/.exec(r.stdout);
+  const principals: string[] = [];
+  const pIdx = r.stdout.indexOf("Principals:");
+  if (pIdx >= 0) {
+    for (const line of r.stdout.slice(pIdx).split("\n").slice(1)) {
+      const t = line.trim();
+      if (t.length === 0 || t.includes(":")) break; // a new section carries a colon → stop
+      principals.push(t);
+    }
+  }
+  return { keyId: idM ? idM[1]! : "", principals };
+}
+
+/** Fingerprint of one SSH pubkey LINE (write to a contained temp file, run ssh-keygen -l). */
+function fingerprintOfPubLine(line: string, sb: Sandbox): string {
+  const tmp = join(sb.home, ".rt-fp-probe.pub");
+  writeFileSync(tmp, line.trim() + "\n");
+  const fp = pubFingerprint(tmp);
+  rmSync(tmp, { force: true });
+  return fp;
 }
 
 /** The artifact paths a complete N+M setup produces, all under the sandbox. */
@@ -400,24 +507,118 @@ test("ROTATE (keyset): generate → rotate → verify — old retired, new activ
   expect(pub).not.toContain(after.active.mnemonic);
 });
 
-test("ROTATE GAP (named, not faked): no unified per-PORT rotate command for machine/CA/cert/cluster", () => {
-  // HONEST GAP REPORT (asserted as a test so it stays true / Otto can backlog it). The ONLY rotate
-  // primitives that exist are: keyset.rotate (dual-key SET, exercised above) + keyring.sh rotate
-  // (USER seed, bash). There is NO `rotate` for: the MACHINE device key, the CA key, a device CERT
-  // (re-sign), or a CLUSTER trust root. setup-machine / ca / setup-cluster expose NO rotate verb.
-  // We assert the ABSENCE rather than fake a rotate — building those commands is OUT of scope here.
-  const setupMachineSrc = readFileSync(join(import.meta.dir, "setup-machine.ts"), "utf8");
-  const caSrc = readFileSync(join(import.meta.dir, "ca.ts"), "utf8");
-  const setupClusterSrc = readFileSync(join(import.meta.dir, "setup-cluster.ts"), "utf8");
+test("ROTATE GAP CLOSED: a per-PORT rotate command now exists (rotate.ts) for machine/CA/cert", () => {
+  // The gap the #9016 harness named is now CLOSED (workitem 081KVP2M1QS008QG0R000JSXE1E): rotate.ts
+  // exports a per-PORT `rotate` over the overlap-window lifecycle for the machine key, device cert,
+  // and CA key (exercised end-to-end in the leg below + in rotate.test.ts). The keyset.rotate
+  // dual-key SET primitive (above) and keyring.sh remain the SET / USER-seed primitives. NOT in
+  // scope (named, deferred): threshold/Shamir k-of-n (081KVP3GYW1), org-vs-user-CA conflict
+  // (081KVP3GYWS0), KRL revocation, and a unified cluster-trust-root rotate.
+  const rotateSrc = readFileSync(join(import.meta.dir, "rotate.ts"), "utf8");
+  expect(/export\s+(async\s+)?function\s+rotate/.test(rotateSrc)).toBe(true);
+  for (const port of ROTATE_PORTS) expect(rotateSrc).toContain(port);
 
-  // None of the per-port modules export a rotate function (the gap).
-  expect(/export\s+(async\s+)?function\s+rotate/.test(setupMachineSrc)).toBe(false);
-  expect(/export\s+(async\s+)?function\s+rotate/.test(caSrc)).toBe(false);
-  expect(/export\s+(async\s+)?function\s+rotate/.test(setupClusterSrc)).toBe(false);
-
-  // The one place a real rotate primitive lives is keyset.ts (confirmed by the exercise above).
+  // The dual-key SET primitive still lives in keyset.ts (the sibling, confirmed above).
   const keysetSrc = readFileSync(join(import.meta.dir, "keyset.ts"), "utf8");
   expect(/export\s+function\s+rotate/.test(keysetSrc)).toBe(true);
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════════
+// 6b. PER-PORT ROTATE leg: setup → ROTATE → teardown → re-setup, with ∅-blast-radius proof.
+// ══════════════════════════════════════════════════════════════════════════════════════════════
+test("ROTATE LEG: setup → rotate (machine+cert+CA, overlap) → teardown → re-setup converges", async () => {
+  const sb = makeSandbox();
+  try {
+    // SETUP — a complete N+M state (CA + machine key + cert).
+    const first = await runSetup(sb);
+    const firstShape = assertCompleteSetup(sb, first.res);
+    const p = expectedPaths(sb);
+
+    // Capture the pre-rotate "things protected": the device key + the cert (signed by the current
+    // CA). ∅-blast-radius means these survive the swap (still valid / still trusted afterward).
+    const oldDevFp = pubFingerprint(p.devPriv + ".pub");
+    const oldCaFp = pubFingerprint(p.caPub);
+    const protectedCertSigningCa = certSigningCaFingerprint(p.cert);
+    expect(protectedCertSigningCa).toBe(oldCaFp); // sanity: the cert was signed by the current CA
+
+    // ROTATE — all ports, one fingerprint, confirmed.
+    const rot = await runRotate(sb);
+    expect(rot.prompts.length).toBe(1); // one-fingerprint covers all ports (session gate)
+    expect(rot.res.biometric?.ok).toBe(true);
+    for (const port of ROTATE_PORTS) {
+      expect(rot.res.rotations.find((x) => x.port === port)?.action).toBe("rotated");
+    }
+    // Every staged path stayed under the sandbox repoRoot (view-only honored).
+    expect(rot.staged.every((s) => s.repoRoot === sb.repoRoot)).toBe(true);
+    assertContained(sb, ...rot.staged.map((s) => join(s.repoRoot, s.relPath)));
+
+    // MACHINE KEY rotated: new Active differs from old; old parked retired (overlap).
+    const newDevFp = pubFingerprint(p.devPriv + ".pub");
+    expect(newDevFp).not.toBe(oldDevFp);
+
+    // CERT re-signed, N+M preserved: Key ID = machine-only, principal = user.
+    const id = certIdentity(p.cert);
+    expect(id.keyId).toBe(HOST);
+    expect(id.keyId).not.toContain("@");
+    expect(id.principals).toEqual([USER]);
+
+    // CA rotated + ∅-BLAST-RADIUS: the pre-rotate cert's signing CA is STILL in the trusted set
+    // (both old + new CA pubkeys overlap) — a thing protected before rotate is still accessible after.
+    const newCaFp = pubFingerprint(p.caPriv + ".pub");
+    expect(newCaFp).not.toBe(oldCaFp);
+    const trustFile = readFileSync(trustedUserCaKeysPath(sb.repoRoot, USER), "utf8");
+    const trustedFps = trustFile
+      .split("\n")
+      .filter((l) => l.trim().length > 0 && !l.trimStart().startsWith("#"))
+      .map((line) => fingerprintOfPubLine(line, sb));
+    expect(trustedFps).toContain(oldCaFp); // OLD CA still trusted (the overlap)
+    expect(trustedFps).toContain(newCaFp); // NEW CA trusted (signs going forward)
+    expect(trustedFps).toContain(protectedCertSigningCa); // ∅-blast-radius: protected cert still verifies
+
+    // TEARDOWN — back to fully clean (wipes the rotated material + retired keys too).
+    const td = await runTeardown(sb);
+    expect(td.res.biometric?.ok).toBe(true);
+    assertFullyClean(sb);
+    expect(caConfiguredInSandbox(sb)).toBe(false);
+
+    // RE-SETUP — full clean regeneration after a rotate+teardown; converges to the same N+M shape.
+    const second = await runSetup(sb);
+    const secondShape = assertCompleteSetup(sb, second.res);
+    expect(secondShape).toEqual(firstShape); // same Key ID + principal (keys differ — fresh material)
+  } finally {
+    sb.cleanup();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════════════════════
+// 6c. ROTATE in the N-cycle: setup→rotate→teardown→re-setup loops converge identically (tight).
+// ══════════════════════════════════════════════════════════════════════════════════════════════
+test("ROTATE N-CYCLE: setup→rotate→teardown→re-setup converges across N cycles (no drift)", async () => {
+  const N = 3;
+  const sb = makeSandbox();
+  try {
+    const shapes: { keyId: string; principals: string }[] = [];
+    for (let i = 0; i < N; i++) {
+      expect(caConfiguredInSandbox(sb)).toBe(false);
+      const { res } = await runSetup(sb);
+      shapes.push(assertCompleteSetup(sb, res));
+
+      // ROTATE all ports mid-cycle — must not break the subsequent teardown/re-setup convergence.
+      const rot = await runRotate(sb);
+      expect(rot.prompts.length).toBe(1);
+      for (const port of ROTATE_PORTS) {
+        expect(rot.res.rotations.find((x) => x.port === port)?.action).toBe("rotated");
+      }
+
+      const td = await runTeardown(sb);
+      expect(td.res.biometric?.ok).toBe(true);
+      assertFullyClean(sb);
+    }
+    for (const s of shapes) expect(s).toEqual(shapes[0]!);
+    expect(shapes.length).toBe(N);
+  } finally {
+    sb.cleanup();
+  }
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════════
