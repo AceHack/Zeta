@@ -1,19 +1,24 @@
-# macOS Homebrew CASKS — GUI apps + cask-distributed CLIs, installed by
-# tools/setup/macos.sh (`brew install --cask`). Formulae live in manifests/brew.
-# Add a cask by appending a line. Comments start with `#`. Tier tags (tier=slim|
-# standard|full) are honored exactly as in manifests/brew.
+# macOS Homebrew CASKS — GUI apps + cask-only tools, installed by tools/setup/macos.sh
+# (`brew install --cask`). Formulae live in manifests/brew; cross-platform CLIs live in
+# .mise.toml. Add a cask by appending a line. Comments start with `#`. Tier tags
+# (tier=slim|standard|full) are honored exactly as in manifests/brew.
 #
-# Why a separate manifest: casks are `brew install --cask` + `brew list --cask`
-# (a different namespace than formulae). The formula loop in macos.sh uses
-# `brew list --formula`, so casks need their own declarative list + loop.
+# Why this manifest exists (Aaron 2026-06-21 — "general casks support for mac is good …
+# keep it"): casks are a separate brew namespace (`brew install --cask` / `brew list
+# --cask`) than formulae, so they need their own declarative list + loop (macos.sh §3b).
+# Standing infra for any future mac-only GUI app / cask-only tool.
+#
+# NOTE on 1Password: the CLI (`op`) is CROSS-OS and lives in .mise.toml (one pinned `op`
+# for mac+linux+windows — Aaron: "just the cli … all our oses"), NOT here. The 1Password
+# DESKTOP APP is intentionally NOT a dep (CLI + scoped service accounts suffice for agent
+# secret access; the app/SSH-agent can be added later if the custody lane needs it).
+#
+# Format: <cask> [tap=<owner/tap>] [tier=slim|standard|full]
+#   tap=<owner/tap> — a custom tap (tapped + trusted before install). Append real casks
+#   below as needed; the §3b loop installs them idempotently, tier-gated.
 
-# Secret / private-key custody (Aaron 2026-06-21 — "add 1password to our deps
-# desired state"). The private-key-custody lane: 1Password holds CA + machine
-# keys; its SSH agent SIGNS without exposing private bytes (same non-extractable
-# property as Vault/Secure Enclave), and `op` + service accounts give scoped,
-# least-privilege agent access. The bootstrap of the Vault + cert-manager model
-# (decision doc 2026-06-21-multi-owner-machines-…; backlog 081KVNMFYS8…).
-# Verified (dep-pin-search-first, brew 2026-06-21): cask `1password` 8.12.24 ✓,
-# cask `1password-cli` 2.34.1 ✓. brew default version; idempotent (skips if present).
-1password      # the desktop app — operator sign-in + the 1Password SSH agent
-1password-cli  # `op` — scoped service-account / CLI access for agent secret retrieval
+# cvc5 — SMT solver (formal-verification portfolio), distributed via a custom cask tap.
+# Migrated 2026-06-21 from a one-off block in macos.sh into this general framework (Aaron:
+# "update our special one off cask to use our new general framework too"). The tap= token
+# taps + trusts cvc5/cvc5 before the cask install.
+cvc5  tap=cvc5/cvc5

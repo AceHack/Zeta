@@ -66,6 +66,14 @@ actionlint = "1.7.12"
 # slim + ubuntu-24.04-arm runners don't ship shellcheck pre-
 # installed, so declarative pin here ensures dev/CI parity.
 shellcheck = "0.11.0"
+# 1Password CLI (`op`) — cross-OS secret/cert access for the private-key-custody lane
+# (Aaron 2026-06-21: "1password-cli ... we need to support on all operating systems ...
+# just the cli not the whole app ... make sure all our oses have it"). Via mise (the
+# cross-platform path — NOT per-OS brew/apt/scoop) so mac+linux+windows get the SAME
+# pinned `op` in one line. Scoped service accounts + `op` give least-privilege agent
+# secret retrieval; the desktop app (mac cask) is deliberately NOT a dep (CLI suffices).
+# Pin per dep-pin-search-first (mise ls-remote 2026-06-21): 1password-cli 2.34.1.
+"1password-cli" = "2.34.1"
 # Cluster integration + GitOps tooling (k3d/kind/kubectl/helm/kubeconform) moved to
 # .mise.full.toml (host-tier split, workitem 081KTWQZY7F08QG0R0034KN17T): full-tier hosts
 # (dev laptops, cluster nodes, CI k8s lanes) still converge on the one pinned tool graph
