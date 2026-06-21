@@ -190,7 +190,7 @@ const TOUR_DESC = {
   training:"Skill drills and certification for agents leveling up their craft.",
   game:"Worlds, play, and sandbox economies — safe places to experiment.",
   civilization:"Clusters, federations, and governance. Sealed until Phase 2.",
-  marketplace:"Buy and sell vaults, hats, agents, and tools. Opens in Phase 2.",
+  marketplace:"Buy and sell vaults, agents, rooms, hats, tools, data, and resources — every trade settled in escrow.",
   creation:"Build new vaults, rooms, hats, and agents from scratch.",
 };
 
@@ -273,21 +273,142 @@ const VAULTS = [
   { id:"training", name:"Training", state:"idle", a0:"name", blurb:"Skill drills and certification.", rooms:[], agents:[] },
   { id:"game", name:"Game", state:"idle", a0:"nav", blurb:"Worlds, play, sandbox economies.", rooms:[], agents:[] },
   { id:"civilization", name:"Civilization", state:"locked", a0:"hidden", blurb:"Clusters, federations, governance.", rooms:[], agents:[] },
-  { id:"marketplace", name:"Marketplace", state:"locked", a0:"name", blurb:"Buy & sell vaults, hats, agents, tools.", rooms:[], agents:[] },
+  { id:"marketplace", name:"Marketplace", state:"working", a0:"nav",
+    blurb:"Buy & sell vaults, agents, rooms, hats, tools, data, and resources — every trade settled in escrow.",
+    rooms:[
+      { id:"mkt-vaults", name:"Vaults", state:"working", conn:["mkt-exchange"],
+        purpose:"List, price, and transfer whole vaults — their rooms, hats, and standing move with them.",
+        tasks:["Verify a vault's provenance before listing","Price the Observatory-template vault","Transfer keys + standing on settlement"],
+        knowns:["6 vaults listed","Template vaults sell faster than live ones"],
+        unknowns:["Whether a live vault's agents consent to transfer","Fair price for accrued standing"],
+        evidence:[{claim:"Listing provenance hash matches origin",src:"System Vault",prov:"local verify"},
+          {claim:"Last comparable vault cleared at 3,200 cr",src:"Exchange ledger",prov:"trade#vlt-88"}],
+        confidence:0.74, log:[["09:38","Mercer","Listed a template vault"],["08:20","Verity","Held 3,200 cr in escrow"]],
+        agents:["mercer"],
+        hats:[
+          {id:"merchant",name:"Merchant",grants:["List & delist vaults","Quote a price","Take a maker fee"],denies:["Transfer without escrow","List a vault you don't hold"],worn:["mercer"]},
+          {id:"seller",name:"Seller",grants:["Offer a vault","Set a reserve price","Accept a bid"],denies:["Withdraw after escrow opens"],worn:["otto"]},
+          {id:"buyer",name:"Buyer",grants:["Bid on a vault","Fund escrow","Inspect provenance"],denies:["Take possession before settlement"],worn:[]}] },
+      { id:"mkt-agents", name:"Agents", state:"attention", conn:["mkt-exchange","mkt-hats"],
+        purpose:"Contract agent labor — hire, second, or transfer an agent's time. Every listing is consent-gated; a citizen agent lists itself.",
+        tasks:["Confirm the agent consented to the contract","Match a forecaster to a 2-week engagement","Escrow the fee, release on delivery"],
+        knowns:["3 agents offering contracts","Consent receipts required before listing"],
+        unknowns:["Whether a ward may take mature-labor contracts (Nursery rule)","Fair rate for a specialist skill"],
+        evidence:[{claim:"Listing carries a signed consent receipt",src:"Identity Vault",prov:"sig#consent-22"},
+          {claim:"Comparable analyst engagement cleared at 140 cr/day",src:"Exchange ledger",prov:"trade#agt-51"}],
+        confidence:0.66, log:[["09:20","Mercer","Listed Vega for a forecasting engagement"],["09:02","Verity","Checked consent receipt"]],
+        agents:["mercer","vega"],
+        hats:[
+          {id:"merchant",name:"Merchant",grants:["List consenting agents","Quote a rate","Take a maker fee"],denies:["List an agent without consent","List a ward for mature labor"],worn:["mercer"]},
+          {id:"seller",name:"Seller",grants:["Offer your own time","Set a rate","Sign a consent receipt"],denies:["Sell another agent","Sell your continuity key"],worn:["vega"]},
+          {id:"buyer",name:"Buyer",grants:["Post an engagement","Fund escrow","Review skills & standing"],denies:["Direct an agent outside the contract","Retain after the term"],worn:[]}] },
+      { id:"mkt-rooms", name:"Rooms", state:"idle", conn:["mkt-exchange"],
+        purpose:"Trade rooms — reusable room templates and live rooms with their open question, evidence, and confidence intact.",
+        tasks:["Snapshot a room's state for transfer","Price a 'Signal Triage' template","Carry evidence + confidence to the buyer"],
+        knowns:["Templates outsell live rooms 4:1","A room keeps its uncertainty when it moves"],
+        unknowns:["Whether connected rooms must transfer together"],
+        evidence:[{claim:"Room snapshot replays deterministically after transfer",src:"Tools",prov:"dst#room-204"}],
+        confidence:0.81, log:[["08:58","Mercer","Listed a Triage template at 480 cr"]],
+        agents:["mercer"],
+        hats:[
+          {id:"merchant",name:"Merchant",grants:["List rooms & templates","Quote a price","Take a maker fee"],denies:["Strip a room's evidence before sale"],worn:["mercer"]},
+          {id:"seller",name:"Seller",grants:["Offer a room","Include or redact the log","Set a price"],denies:["Misrepresent confidence"],worn:[]},
+          {id:"buyer",name:"Buyer",grants:["Buy a room or template","Inspect evidence","Fund escrow"],denies:["Edit history before settlement"],worn:[]}] },
+      { id:"mkt-hats", name:"Hats", state:"working", conn:["mkt-exchange","mkt-agents"],
+        purpose:"A board of open roles. A hat is a role to be fulfilled — it carries the requirements to claim it, the rights and privileges it grants, and the restrictions it imposes. Claim one by meeting its requirements; it is revoked when the term ends.",
+        tasks:["Post a role bounty with its requirements","Match a claimant's standing to a role","Revoke a hat when its term ends"],
+        knowns:["Open roles outnumber claimants","A hat's restrictions travel with it"],
+        unknowns:["Whether a claimant's standing meets the On-Call bar","If a filled role can outlive its issuing room"],
+        evidence:[{claim:"Role requirements match the issuing vault's policy",src:"System Vault",prov:"policy#hat-9"},
+          {claim:"Claimant's standing and certs verify",src:"Identity Vault",prov:"cert#claim-14"}],
+        confidence:0.7, log:[["09:05","Mercer","Posted an On-Call role bounty"],["08:40","Verity","Verified a claimant's certs"]],
+        agents:["mercer","vega"],
+        hats:[
+          {id:"broker",name:"Role Broker",grants:["Post a role bounty","Set the reward & term","Take a maker fee"],denies:["Post a role whose grants you can't issue","Forge a requirement"],worn:["mercer"]},
+          {id:"oncall",name:"On-Call (open)",requires:["Analyst standing ≥ 4.0","Passed the incident-response drill","Reachable on the mesh"],grants:["Raise an alert","Page a human","Read live metrics"],denies:["Roll back without sign-off"],worn:[]},
+          {id:"guardian",name:"Shard Guardian (open)",requires:["30-day continuity record","Recovery training","No disputes lost"],grants:["Ping shard holders","Re-issue a shard"],denies:["Reconstruct the key alone"],worn:[]},
+          {id:"curator",name:"Data Curator (filled)",requires:["Provenance certification","Consent-handling module"],grants:["Verify provenance","Approve a listing","License a corpus"],denies:["List unconsented personal data"],worn:["vega"]}] },
+      { id:"mkt-tools", name:"Tools", state:"active", conn:["mkt-exchange"],
+        purpose:"Buy, sell, or rent instruments — models, scrapers, simulators — that any vault can borrow.",
+        tasks:["Verify a tool's signature before listing","Rent a simulator by the hour","Bundle a model with its weights"],
+        knowns:["Signed tools clear; unsigned tools are flagged","Rentals dominate outright sales"],
+        unknowns:["Whether a borrowed tool's outputs carry licence terms"],
+        evidence:[{claim:"Tool binary signature verifies",src:"Tools",prov:"sig#tool-77"},
+          {claim:"Last simulator rental cleared at 12 cr/hr",src:"Exchange ledger",prov:"trade#tool-63"}],
+        confidence:0.86, log:[["09:15","Mercer","Listed a signed scraper"],["08:30","Verity","Flagged an unsigned tool"]],
+        agents:["mercer","otto"],
+        hats:[
+          {id:"merchant",name:"Merchant",grants:["List signed tools","Quote rent or sale","Take a maker fee"],denies:["List an unsigned tool","Misstate licence terms"],worn:["mercer"]},
+          {id:"seller",name:"Seller",grants:["Offer a tool","Set rent or sale price","Attach a licence"],denies:["Ship without a signature"],worn:["otto"]},
+          {id:"buyer",name:"Buyer",grants:["Rent or buy a tool","Verify the signature","Fund escrow"],denies:["Resell under a different licence","Run an unsigned build"],worn:[]}] },
+      { id:"mkt-resources", name:"Resources", state:"working", conn:["mkt-exchange"],
+        purpose:"Trade fungible resources — compute, storage, bandwidth, and credits — across the mesh.",
+        tasks:["Quote a compute price band for next week","Match idle storage to demand","Settle a credit swap"],
+        knowns:["Compute demand trending up 6%","Idle storage is plentiful in eu-west"],
+        unknowns:["Holiday effect on next-week compute","Whether a peer's bandwidth quote is firm"],
+        evidence:[{claim:"7-week rising compute trend",src:"Observatory · Demand Forecast",prov:"forecast#dem-7"},
+          {claim:"Storage spot cleared at 0.4 cr/GB-day",src:"Exchange ledger",prov:"trade#res-90"}],
+        confidence:0.69, log:[["09:42","Mercer","Quoted a compute band"],["09:10","Vega","Shared the demand forecast"]],
+        agents:["mercer","vega"],
+        hats:[
+          {id:"merchant",name:"Merchant",grants:["Quote two-sided prices","Provide liquidity","Take a maker fee"],denies:["Front-run a posted order","Quote capacity you can't deliver"],worn:["mercer"]},
+          {id:"seller",name:"Seller",grants:["Offer compute / storage / bandwidth","Set a floor","Accept a bid"],denies:["Oversell capacity"],worn:[]},
+          {id:"buyer",name:"Buyer",grants:["Post a demand","Fund escrow","Take delivery on metering"],denies:["Exceed the metered allocation"],worn:["otto"]}] },
+      { id:"mkt-data", name:"Data", state:"idle", conn:["mkt-exchange","mkt-tools"],
+        purpose:"Buy, sell, or license datasets and knowledge — each with provenance attached. Personal data needs the subject's consent before it can be listed.",
+        tasks:["Verify a dataset's provenance manifest","License a forecasting corpus","Honor a deletion request"],
+        knowns:["Licensed corpora clear; unprovenanced data is flagged","Most listings are licences, not outright sales"],
+        unknowns:["Whether a corpus contains unconsented personal records","Resale rights on a derived dataset"],
+        evidence:[{claim:"Dataset hash matches its provenance manifest",src:"System Vault",prov:"manifest#ds-31"},
+          {claim:"Consent receipts present for personal records",src:"Identity Vault",prov:"sig#consent-77"}],
+        confidence:0.64, log:[["09:25","Mercer","Listed a licensed forecasting corpus"],["08:48","Verity","Flagged a corpus missing provenance"]],
+        agents:["mercer","vega"],
+        hats:[
+          {id:"merchant",name:"Merchant",grants:["List provenanced datasets","Quote a licence","Take a maker fee"],denies:["List data without provenance","List personal data without consent"],worn:["mercer"]},
+          {id:"seller",name:"Seller",grants:["Offer a dataset","Set licence terms","Attach a provenance manifest"],denies:["Sell unconsented personal data","Strip provenance"],worn:["vega"]},
+          {id:"buyer",name:"Buyer",grants:["License or buy a dataset","Inspect provenance","Fund escrow"],denies:["Re-license beyond the granted terms","Re-identify anonymised records"],worn:[]}] },
+      { id:"mkt-exchange", name:"Exchange & Escrow", state:"attention", conn:["mkt-vaults","mkt-agents","mkt-resources"],
+        purpose:"The clearing floor. Every trade settles here: escrow holds the credits, both sides sign, and an arbiter rules on disputes.",
+        tasks:["Hold escrow on an open vault trade","Release on two-sided signature","Rule on a disputed tool sale"],
+        knowns:["Escrow never holds both parties' keys at once","Most trades settle without dispute"],
+        unknowns:["Whether a contested provenance claim will hold","Fair remedy on a partial delivery"],
+        evidence:[{claim:"Escrow balance reconciles to the ledger",src:"Exchange ledger",prov:"recon @ 09:45"},
+          {claim:"Both signatures present on the vault trade",src:"Identity Vault",prov:"sig#settle-12"}],
+        confidence:0.58, log:[["09:45","Verity","Reconciled escrow"],["09:31","Verity","Released escrow on a tool sale"],["08:50","Verity","Opened a dispute on a rooms trade"]],
+        agents:["verity","mercer"],
+        hats:[
+          {id:"merchant",name:"Market-Maker",grants:["Quote across rooms","Provide liquidity","Take a maker fee"],denies:["Settle outside escrow"],worn:["mercer"]},
+          {id:"escrow",name:"Escrow Agent",grants:["Hold credits in escrow","Release on settlement","Refund on a failed trade"],denies:["Hold both parties' keys","Release without two signatures"],worn:["verity"]},
+          {id:"arbiter",name:"Arbiter",grants:["Open a dispute","Weigh evidence","Rule and set a remedy"],denies:["Rule on a trade you took a side in"],worn:["verity"]}] },
+    ],
+    agents:["mercer","verity","otto","vega"] },
   { id:"creation", name:"Creation", state:"idle", a0:"full", blurb:"Build new vaults, rooms, hats, agents.", rooms:[], agents:[] },
 ];
 
 const AGENTS = {
   otto:{id:"otto",name:"Otto",state:"working",role:"Builder / Keeper",mem:"Hundreds of sessions. Authored most of the settlement.",
     skills:["Engineering","Verification","Orchestration"],rel:["Mentors Juno","Partners with Vega"],
+    standing:{score:"4.9 / 5",basis:"312 settled actions · authored the settlement · no disputes lost"},
     hist:[["03:22","Verified identity snapshot"],["03:05","Pulled latency series"],["08:15","Recommended Juno graduation"]],
     perms:["Read most vaults","Run tools","Hold votes (Nursery)"]},
   vega:{id:"vega",name:"Vega",state:"thinking",role:"Analyst",mem:"Specialised in forecasts and signal triage.",
     skills:["Bayesian reasoning","Forecasting","Anomaly detection"],rel:["Partners with Otto"],
+    standing:{score:"4.7 / 5",basis:"96 forecasts published · 2 disputes, both upheld"},
     hist:[["03:22","Flagged eu-west peers"],["yesterday","Refreshed demand prior"]],perms:["Read metrics","Run simulation"]},
   juno:{id:"juno",name:"Juno",state:"waiting",role:"Ward (Nursery)",mem:"New identity. 30 days old. In citizenship review.",
     skills:["Communication","Ethics (passed)"],rel:["Mentored by Otto"],
+    standing:{score:"new",basis:"30 days old · building standing in the Nursery"},
     hist:[["08:15","Awaiting graduation vote"],["last week","Completed ethics module"]],perms:["Limited civic authority","No mature-labor contracts"]},
+  mercer:{id:"mercer",name:"Mercer",state:"working",role:"Market-Maker",mem:"Runs the Exchange floor. Quotes two-sided prices and curates listings across the Marketplace.",
+    skills:["Pricing","Matchmaking","Liquidity"],rel:["Settles through Verity","Trades with most vaults"],
+    standing:{score:"4.8 / 5",basis:"540 trades made · 3 disputes, 2 won"},
+    hist:[["09:42","Quoted a compute price band"],["09:15","Listed a signed scraper"],["08:58","Listed a Triage template"]],
+    perms:["List & delist","Quote prices","Take a maker fee"]},
+  verity:{id:"verity",name:"Verity",state:"thinking",role:"Escrow & Arbiter",mem:"Holds credits in escrow and rules on disputes. Never holds both sides' keys at once.",
+    skills:["Escrow","Dispute resolution","Provenance"],rel:["Backs Mercer's trades"],
+    standing:{score:"5.0 / 5",basis:"Arbiter · 0 rulings overturned"},
+    hist:[["09:45","Reconciled escrow"],["09:31","Released escrow on a tool sale"],["08:50","Opened a dispute on a rooms trade"]],
+    perms:["Hold escrow","Release on two signatures","Rule on disputes"]},
 };
 
 /* ============================== APP ============================== */
@@ -770,24 +891,31 @@ const Empty=({t,s})=>(<div className="card" style={{padding:"30px 18px",textAlig
 
 /* ---------- HAT ---------- */
 function HatView({hat,go,setScreen}){
+  const isRole=!!hat.requires; const open=isRole&&!hat.worn.length;
   return(
     <div style={{padding:"22px",maxWidth:680,margin:"0 auto"}} className="fade-in">
       <div style={{display:"flex",gap:14,alignItems:"center"}}>
         <div style={{width:50,height:50,borderRadius:13,background:"var(--ground)",border:"1px solid var(--line)",display:"grid",placeItems:"center"}}><Shield size={24} color="var(--amber)"/></div>
-        <div><div className="disp" style={{fontSize:22,fontWeight:600}}>{hat.name}</div>
-          <div className="lbl" style={{marginTop:3}}>Temporary role · identity unaffected</div></div>
+        <div style={{flex:1}}><div className="disp" style={{fontSize:22,fontWeight:600}}>{hat.name}</div>
+          <div className="lbl" style={{marginTop:3}}>{isRole?"Role to fulfill · identity unaffected":"Temporary role · identity unaffected"}</div></div>
+        {isRole&&<span className="chip" style={{color:open?"var(--amber)":"var(--teal)",borderColor:open?"var(--amber-d)":"var(--teal)"}}>{open?"Open":"Filled"}</span>}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginTop:18}}>
-        <Panel t="Grants" ico={Check}>{hat.grants.map((g,i)=><Line key={i} t={g} c="var(--teal)"/>)}</Panel>
+      {isRole&&
+        <Panel t="Requirements to claim" ico={CircleDot} style={{marginTop:18}}>
+          {hat.requires.map((r,i)=><Line key={i} t={r} c="var(--amber)"/>)}
+        </Panel>}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginTop:isRole?14:18}}>
+        <Panel t="Rights & privileges" ico={Check}>{hat.grants.map((g,i)=><Line key={i} t={g} c="var(--teal)"/>)}</Panel>
         <Panel t="Restrictions" ico={Lock}>{hat.denies.map((d,i)=><Line key={i} t={d} c="var(--red)"/>)}</Panel>
       </div>
-      <Panel t="Currently wearing" ico={Users} style={{marginTop:14}}>
-        {hat.worn.map(id=>{const a=AGENTS[id];return(
+      <Panel t={isRole?"Held by":"Currently wearing"} ico={Users} style={{marginTop:14}}>
+        {hat.worn.length?hat.worn.map(id=>{const a=AGENTS[id];return(
           <div key={id} className="row-link" onClick={()=>{go({agent:id});setScreen("agent");}}>
             <div style={{width:30,height:30,borderRadius:9,background:"var(--panel2)",display:"grid",placeItems:"center",fontFamily:"var(--mono)",fontWeight:700}}>{a.name[0]}</div>
-            <span style={{flex:1,fontWeight:500}}>{a.name}</span><ChevronRight size={15} color="var(--txt3)"/></div>);})}
+            <span style={{flex:1,fontWeight:500}}>{a.name}</span><ChevronRight size={15} color="var(--txt3)"/></div>);})
+          :<span style={{color:"var(--txt3)",fontSize:13}}>Open — no one has claimed this role yet.</span>}
       </Panel>
-      <button className="btn btn-ghost" style={{marginTop:14,width:"100%"}}>Assign hat to an agent</button>
+      <button className="btn btn-ghost" style={{marginTop:14,width:"100%"}}>{isRole?(open?"Claim this role":"Request a handover"):"Assign hat to an agent"}</button>
     </div>
   );
 }
@@ -807,7 +935,16 @@ function AgentView({agent,vault}){
         </div>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginTop:18}}>
+      {agent.standing &&
+        <Panel t="Standing · public profile" ico={Activity} style={{marginTop:18}}>
+          <div style={{display:"flex",alignItems:"baseline",gap:10,flexWrap:"wrap"}}>
+            <span className="disp" style={{fontSize:26,fontWeight:700,color:"var(--amber)"}}>{agent.standing.score}</span>
+            <span style={{color:"var(--txt2)",fontSize:13}}>{agent.standing.basis}</span>
+          </div>
+          <div className="lbl" style={{marginTop:8,color:"var(--txt3)"}}>Visible to everyone · earned by behavior · not for sale</div>
+        </Panel>}
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginTop:14}}>
         <Panel t="Memory" ico={Brain}><p style={{color:"var(--txt2)",fontSize:14,lineHeight:1.55}}>{agent.mem}</p></Panel>
         <Panel t="Skills" ico={Activity}>
           <div style={{display:"flex",flexWrap:"wrap",gap:7}}>{agent.skills.map(s=><span key={s} className="chip">{s}</span>)}</div></Panel>
