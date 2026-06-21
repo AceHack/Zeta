@@ -52,6 +52,27 @@ graph, AND this identity/OU directory graph, AND others. "Tracked" means:
   tracked-Merkle-over-Z-set-DAG substrate; "all our graphs" get versioning/proof/incremental-IVM
   for free. (This is the value of one substrate: a new graph = a new use, not new machinery.)
 
+## The precise structure (Aaron 2026-06-21): a DAG of chains, multi-parented, neighborhood-aware
+
+Not a static tree — more precisely:
+
+- **A DAG of chains.** Each entity (OU/Org/User/key) is a **chain** — a lineage/history (git-branch-
+  shaped: a Merkle chain of versioned states, "a branch is a Merkle root"). The directory is the
+  **DAG those chains form** as they branch and merge. So it's evolving lineages, not fixed nodes —
+  which is exactly why it lives over **retractable Z-sets** (each chain advances/retracts as deltas).
+- **Multi-parented leaves (from content-addressing).** Because nodes are **content-addressed**,
+  identical content is **one** node referenced by **many** parents (Merkle-DAG dedup) — so a leaf
+  legitimately has **multiple parents**. That's why it's a **DAG, not a tree**: shared/deduped
+  content is the norm (a key/policy/identity referenced from several OUs is one node, many edges).
+- **Neighborhood-aware via 2nd-distance content addressing.** The address isn't only `H(self)` —
+  it's **distance/locality-aware to the 2nd degree**, so a node carries awareness of its
+  **neighborhood** (its 2nd-degree neighbors), not just its own content. (Ties to the intrinsic-
+  distance-metric / orientation-tile / radar-ranging addressing line.) This makes proximity +
+  neighborhood queries first-class on the directory DAG, beyond pure ancestor/descendant closure.
+
+So: a **content-addressed, retractable, neighborhood-aware DAG-of-chains** — multi-parent dedup +
+locality + lineage — tracked like every other graph.
+
 ## How it ties to the rest
 
 - **ZetaId** = node addressing (each OU/Org/User is a ZetaId pointer; in-bit indexing types it).
