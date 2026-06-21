@@ -10,9 +10,7 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { softBayesianMix, softQuantumMix, softMixGeneric, type ZetaIrV1 } from "./soft-mix";
-import { realRing, complexRing, quaternionRing, type Complex, type Quaternion, type StarRing, type WEntry } from "./star-ring";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { quaternionRing, type Quaternion, type WEntry } from "./star-ring";
 
 // BigInt-safe IR parser (same logic as codegen-from-ir.ts)
 function parseIrJson(text: string): ZetaIrV1 {
@@ -88,7 +86,6 @@ describe("ring-generic softMix — same function, different rings", () => {
                 w.imag.re * w.imag.re + w.imag.im * w.imag.im;
       return m < EPS;
     };
-    const MASK = (1n << 64n) - 1n;
     const input: WEntry<bigint, Quaternion>[] = [{
       key: 1n,
       weight: quaternionRing.one,
