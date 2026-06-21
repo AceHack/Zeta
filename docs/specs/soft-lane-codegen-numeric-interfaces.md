@@ -12,12 +12,14 @@ IStarRing<'A> = ISemiring (Zero, One, Add, Mul, Negate) + Conj
 ```
 
 Pre-computed instances via Cayley-Dickson doubling:
+
 - `Real.algebra : IStarRing<float>`
 - `ImaginaryStack.complex : IStarRing<Complex>` (= `Doubled.algebra Real.algebra`)
 - `ImaginaryStack.quaternion : IStarRing<Quaternion>` (= `Doubled.algebra complex`)
 - `ImaginaryStack.octonion : IStarRing<Octonion>` (= `Doubled.algebra quaternion`)
 
 The soft lanes use these via:
+
 - `WSet.consolidate ring isZero` — merge with interference (ring.Add on same-key weights)
 - `WSet.apply ring op` — linear operator (ring.Mul for weight propagation)
 
@@ -46,6 +48,7 @@ The soft-lane codegen should emit code shaped like:
 ```
 
 This is `WSet.apply` + `WSet.consolidate` — the SAME code regardless of whether the ring is:
+
 - `Real.algebra` → Bayesian (real weights, no cancel on positive)
 - `ImaginaryStack.complex` → Quantum (complex amplitudes, interference/cancel)
 - `ImaginaryStack.quaternion` → Future (quaternion weights, non-commutative)
