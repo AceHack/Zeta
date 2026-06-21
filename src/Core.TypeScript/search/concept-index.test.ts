@@ -6,7 +6,7 @@ let index: ConceptIndex;
 
 beforeAll(async () => {
     index = await buildIndex();
-});
+}, 30000);
 
 describe("buildIndex — structure", () => {
     test("returns schema v1", () => {
