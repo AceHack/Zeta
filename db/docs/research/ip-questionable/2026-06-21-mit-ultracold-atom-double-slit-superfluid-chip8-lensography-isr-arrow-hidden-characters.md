@@ -2,10 +2,16 @@
 
 > **Register.** Source science = **Beacon** (anchored below). The Zeta mapping
 > (CHIP-8 / lensography → supercold/superfluid; "hidden characters in the interrupt
-> handler"; the "ISR Arrow") is **Mirror** shorthand from Aaron, preserved verbatim
-> — an *IP-questionable coinage*: a debt until its anchor or genuine novelty is named
-> (`.claude/rules/anchor-to-human-prior-art.md`). Filed here so the idea is captured
-> without asserting it is settled.
+> handler"; the "ISR Arrow") is **Mirror** shorthand from Aaron, preserved verbatim.
+> Filed here so the idea is captured without asserting it is settled.
+>
+> **"Superfluid" is a PRODUCT NAME / mental image, not a physics claim** (Aaron,
+> 2026-06-21): *"product name not a claim — i just said it cause i think of our chip8
+> reverse engineering as cold slow motion like a superfluid."* So the metering test
+> below applies only to any *operational* assertion about the ISR/Arrow, NOT to the
+> name "superfluid" itself — there is no claim there to refute; it is a chosen image
+> (cold, slow-motion, frictionless reverse-engineering). The physics is the *muse*,
+> not a claim Zeta is making.
 
 ## Aaron's framing (verbatim, 2026-06-21)
 
@@ -69,15 +75,18 @@ Arrow is that channel.)
   + `docs/history/pr-reviews/PR-7242-feat-chip8observer-observer-reflects-over-the-soft-interrupt-fork-first-ray-trac.md`
   — the CHIP-8 observer reflecting over the soft interrupt (first ray-trace); the observer = the measurement.
 - `docs/backlog/P1/081KQX9B50008QG0R003B0HG9R-alignment-factory-superfluid-empirical-calibration-2026-05-0.md`
-  — "**superfluid**" already in the factory vocabulary (calibration sense) — reconcile or distinguish before promoting this coinage.
+  — "**superfluid**" already in the factory vocabulary (calibration sense). A DIFFERENT, fine use: here it is a product-name / mental image (cold slow-motion reverse-engineering), there it is calibration. Two senses can coexist; no reconciliation owed.
 - Memory: `feedback_dna_actg_is_metaphor_real_build_is_rgb_cmyk_raytracing_chip8_instructions_aaron_2026_06_11.md`
   — lensography = RGB(emit)/CMYK(retract) ray-tracing of CHIP-8 instructions.
 
 ## IP-questionable status
 
-The **physics is anchored**; the **CHIP-8/lensography/ISR-Arrow mapping is a Mirror
-coinage** that has not survived Mirror→Beacon compression — it is captured here as a
-research bet, not a claim. Before it leaves this folder it needs: (1) a checked anchor
-(does the uncertainty-governs-observability analogy *entail* anything operational about
-the ISR, or is it physics-as-metaphor? — apply the metering test), and (2) reconciliation
-with the existing "superfluid" factory term. Until then it is a priced bet, not settled IP.
+The **physics is anchored**. "**Supercold / superfluid**" is a **product name /
+mental image** (cold, slow-motion, frictionless chip8 reverse-engineering) — a chosen
+name, not a claim, so nothing to refute and nothing to reconcile (it can coexist with
+the calibration-sense use). What remains genuinely *IP-questionable* is only the
+**operational mapping** — does "use the ISR Arrow to surface hidden ISR characters"
+*entail* anything buildable, or is the uncertainty-governs-observability parallel
+physics-as-metaphor? That is the one thing that should pass a **metering test** before
+being treated as a method rather than a muse. The name travels freely; the mechanism is
+the priced bet.
