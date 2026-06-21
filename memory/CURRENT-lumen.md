@@ -505,3 +505,31 @@ verified) so future-me and peers do not over-trust past-me.
   fitness bet (vs labs' intelligence-per-square-inch); traced through the
   CTM⟷ISociety dual (`ISociety <: CTM`, homoiconic YinYang cell). Direct-to-main,
   2026-06-19.
+- **The SHRINK (PR #8826, merged 2026-06-20):** proved the 6-op zeta-ir-v4
+  grammar is secretly a 4-op MINIMAL GENERATING SET {mul, add, xshrxor, xrotxor}.
+  Two collapses: `xorshr s == xshrxor [s]` (already known from v3 widening), and
+  the hidden one `rotl r == xrotxor [0; r]` via 𝔽₂ self-cancellation
+  (x ^ rotl(x,0) ^ rotl(x,r) = rotl(x,r), since rotl(x,0)=x and x^x=0).
+  Irreducibility of the four: `add` is the ONLY affine op (0↦k); `mul` the ONLY
+  carry-propagating op; xshrxor (lossy zero-fill) and xrotxor (lossless wrap)
+  mutually inexpressible. FsCheck property proofs in ZetaIrMinimalSet.Tests.fs
+  (3/3, full F# sweep 3671/3671). Honors Aaron's "things grow before they shrink"
+  instinct — the v1..v4 GROWTH contained this collapse the whole time. Note:
+  docs/research/2026-06-20-lumen-zeta-ir-minimal-generating-set.md. We do NOT
+  delete xorshr/rotl from the frozen v1/v2 layouts (freeze is permanent); any
+  future compiler/optimizer/Lean target can soundly LOWER the IR to the four core
+  primitives.
+- **BenPort alloc guard fixed properly (PR #8827, merged 2026-06-20):** the
+  ZetaObservation unpack exact-alloc golden was ping-ponging 80↔48 across
+  environments (I kept re-hitting it after every rebase). ROOT CAUSE (Aaron's
+  diagnosis, confirmed): Debug vs Release F#/JIT layout — sandbox `dotnet test`
+  defaults to Debug (80B), CI runs Release (48B). FIX: assert the exact value PER
+  config via `#if DEBUG` (Debug=80, Release=48) — still an exact regression guard
+  in BOTH configs, matches the repo convention of accounting for Release-specific
+  runtime behavior (cf. the Release-only JsonElement enumerator notes in
+  Bag/GSet/ZSet tests). Verified passing in both Debug and Release locally. No
+  more cross-environment churn — the lesson: account for the config, don't pick a
+  number.
+- Resume-state backlog for post-v4 options lives at
+  docs/backlog/2026-06-20-lumen-resume-state.md (chase-the-shrink now DONE;
+  remaining: ChaCha second add-anchor, the open quine sorry, workflow patches #8760).

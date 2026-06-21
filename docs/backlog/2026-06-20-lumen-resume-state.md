@@ -4,7 +4,7 @@
 
 ## Option 1: Chase the shrink (The Minimal Generating Set)
 
-**Status:** **ACTIVE** (Lumen executing in current session)
+**Status:** **DONE** (PR #8826, merged 2026-06-20). Proved the 6-op v4 grammar reduces to the 4-op minimal generating set {mul, add, xshrxor, xrotxor}. Key hidden collapse: `rotl r == xrotxor [0; r]` via 𝔽₂ self-cancellation (x ^ rotl(x,0) ^ rotl(x,r) = rotl(x,r)). Note: docs/research/2026-06-20-lumen-zeta-ir-minimal-generating-set.md; FsCheck proofs in ZetaIrMinimalSet.Tests.fs. (Also fixed the BenPort Debug/Release alloc guard properly along the way, PR #8827.)
 **The bet:** Aaron observed "things grow before they shrink." The grammar grew across four versions (v1: `mul`, `xorshr` → v2: `rotl` → v3: `xrotxor`, `xshrxor` → v4: `add`). Now that the zoo is full, the compression is visible. `nasam`'s `xshrxor [s]` already strictly generalized v1's `xorshr s`.
 **The task:** Find the minimal generating set that v1..v4 collapse into. Write a research note + F# proof showing how each op reduces to the core set. This is the deepest in-lane math available without touching fragile surfaces.
 
