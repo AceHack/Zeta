@@ -28,6 +28,30 @@ now **MCU** — keeping the same managed-.NET shape all the way to the silicon. 
 scheduler + the deterministic CHIP-8 compute unit are all small enough to be meaningful targets on
 constrained devices.
 
+## Concrete hardware: a real ESP32 fleet already on hand (Aaron, 2026-06-20)
+
+**This is not hypothetical — Aaron has *hundreds* of ESP32s** (salvaged from bitcoin-mining rigs that
+were doing SHA hashing). That changes the priority and the first slice:
+
+- **Ready-made best-effort node fleet.** 100s of ESP32s = a concrete instance of the *soft
+  mutual-empowerment / volunteer-compute* network (BOINC/SETI/Folding lineage from the orientation-flow
+  note) — dependable-vs-best-effort tiering with real best-effort nodes to test against, today.
+- **SHA-hashing is the load-bearing capability.** These boards are purpose-built/proven for SHA work,
+  which lands exactly on Zeta's hash-shaped substrate: **content-addressing** (CAS self-verifying
+  cache), **Merkle proofs** (the 4-lang byte-locked inclusion proofs), **anti-Sybil entropy-cost / G3b**
+  (proof-of-work-style metering), and **CHIP-8-frame content-addressing** for distributed compute. An
+  ESP32 fleet is essentially a distributed hash/CAS/Merkle co-processor pool.
+- **Reflashable — we control the firmware.** The boards can be **overwritten** (not vendor-locked);
+  Aaron is sourcing the **current open-source miner firmware** as the flashing reference / starting
+  point. So deploying .NET nanoFramework (or a Zeta-shaped payload) onto the fleet is viable, and the
+  existing OSS SHA-miner code is a concrete reference for the ESP32 toolchain + the SHA datapath we'd
+  reuse.
+- **Implication for the first slice:** target this fleet directly. Smallest viable: an ESP32 node that
+  (a) content-addresses + verifies CAS blocks (its native SHA strength), or (b) runs the deterministic
+  CHIP-8 compute unit and agrees-by-hash with peers (redundancy-with-agreement = free, since
+  deterministic). Reticulum mesh ties them in. (Drop the OSS miner-firmware repo link here once Aaron
+  surfaces it — the flashing/toolchain reference.)
+
 ## Anchors (Beacon — learn from these)
 
 - **.NET nanoFramework** — <https://github.com/nanoframework> — runs C#/.NET on microcontrollers
