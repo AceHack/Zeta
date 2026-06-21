@@ -20,7 +20,8 @@ const IR_DIR = join(import.meta.dir, "../zeta-ir-v2/interfaces");
 // Load all interface IRs
 function loadAllIrs(): { name: string; laws: any[] }[] {
   const files = ["semiring.ir.json", "star-ring.ir.json", "group.ir.json",
-                 "monoid.ir.json", "lattice.ir.json", "codec.ir.json", "port.ir.json"];
+                 "monoid.ir.json", "lattice.ir.json", "codec.ir.json", "port.ir.json",
+                 "zset-isa.ir.json"];
   const results: { name: string; laws: any[] }[] = [];
   for (const f of files) {
     try {
@@ -44,6 +45,10 @@ describe("law-proof-gate — verify proven laws have real proof references", () 
         const [filePath, _testName] = law.proof.split(":");
         const fullPath = join(REPO_ROOT, filePath);
         expect(existsSync(fullPath), `Proof file missing: ${filePath}`).toBe(true);
+        if (_testName) {
+          const content = readFileSync(fullPath, "utf8");
+          expect(content, `Proof identifier "${_testName}" missing in file: ${filePath}`).toContain(_testName);
+        }
       });
     }
   }

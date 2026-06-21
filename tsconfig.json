@@ -6,6 +6,7 @@
     "lib": ["esnext"],
     "rootDir": ".",
     "strict": true,
+    "noEmit": true,
     "noEmitOnError": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,

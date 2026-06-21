@@ -143,7 +143,7 @@ module WorkflowEngineTests =
         | "RevisionRequested" -> RevisionRequested (row, getInt el "prNumber", getInt el "revisionCount", getArray el "threadIds" |> List.map (fun x -> x.GetString()))
         | "RevisionPushed" -> RevisionPushed (row, getInt el "prNumber", getInt el "revisionCount", getString el "lastPushSha")
         | "Approved" -> Approved (row, getInt el "prNumber", getString el "approvedAt")
-        | "Merged" -> Merged (row, getInt el "prNumber", getString el "mergeCommit", getString el "mergedAt")
+        | "Merged" -> WorkLifecycleState.Merged (row, getInt el "prNumber", getString el "mergeCommit", getString el "mergedAt")
         | "Closed" -> Closed (row, getInt el "prNumber", getString el "closedAt", getString el "reason")
         | "Abandoned" -> Abandoned (row, getString el "reason")
         | _ -> failwithf "Unknown WorkLifecycleState tag: %s" tag
@@ -159,7 +159,7 @@ module WorkflowEngineTests =
         | "PushRevision" -> PushRevision (getString el "sha")
         | "ResolveAllThreads" -> ResolveAllThreads
         | "Approve" -> Approve (getString el "approvedAt")
-        | "Merge" -> Merge (getString el "mergeCommit", getString el "mergedAt")
+        | "Merge" -> WorkLifecycleTransition.Merge (getString el "mergeCommit", getString el "mergedAt")
         | "Close" -> Close (getString el "closedAt", getString el "reason")
         | "Abandon" -> Abandon (getString el "reason")
         | _ -> failwithf "Unknown WorkLifecycleTransition tag: %s" tag

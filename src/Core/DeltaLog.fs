@@ -18,35 +18,134 @@ type DeltaLogEntry<'K when 'K : comparison> = DeltaLogEntry<'K, ZSet<'K>>
 type IDeltaLog<'K when 'K : comparison> = IDeltaLog<'K, ZSet<'K>>
 
 
+/// Feedback channel for database and ref operations.
+type DbFeedback =
+    | ReferenceNotFound of refName: string
+    | RemoteNotFound of remoteName: string
+    | ConnectionFailed of message: string
+    | MergeConflict of message: string
+    | InvalidOperation of message: string
+
+
+/// **Ref-aware Delta Log interface — provides first-class DB verbs for ref operations (B-0956 / 081KTGPC2XP).**
+/// Extends IDeltaLog to support git-ref branching, checking out, resetting, remote syncing, and status queries.
+type IRefDeltaLog<'K when 'K : comparison> =
+    inherit IDeltaLog<'K>
+    /// The currently active branch/ref name.
+    abstract member CurrentRef: string
+    /// Create a branch at the current tip.
+    abstract member Branch: name: string -> Result<unit, DbFeedback>
+    /// Switch the working branch/ref.
+    abstract member Checkout: refName: string -> Result<unit, DbFeedback>
+    /// Reset the active ref to match another ref.
+    abstract member Reset: refName: string -> Result<unit, DbFeedback>
+    /// Pull remote changes and fast-forward the active ref.
+    abstract member Sync: remote: string -> Result<unit, DbFeedback>
+    /// Push the active ref to a remote and return the refspec.
+    abstract member Push: remote: string -> Result<string, DbFeedback>
+    /// Merge/reconcile another branch's deltas into the active ref.
+    abstract member Merge: sourceRef: string -> Result<int64, DbFeedback>
+    /// Working-tree status: isClean * pending paths.
+    abstract member Status: unit -> bool * string[]
+    /// List entries/files at the specified ref (or current HEAD if None).
+    abstract member Ls: refName: string option -> Result<string[], DbFeedback>
+
+
 /// In-memory delta log — the reference implementation + the DST/test substrate.
-/// Genuinely synchronous (a list under a lock), so returns completed ValueTasks;
-/// that is truthful, not Task.Run fakery (there is no I/O to yield on).
+/// Supports ref-level branching, checkout, status, and listing in-memory.
+/// Genuinely synchronous (a list under a lock), so returns completed ValueTasks.
 [<Sealed>]
 type InMemoryDeltaLog<'K when 'K : comparison>() =
-    let entries = List<DeltaLogEntry<'K>>()
+    let branches = Dictionary<string, List<DeltaLogEntry<'K>>>()
+    let mutable currentRef = "refs/heads/main"
     let gate = obj ()
     let mutable nextSeq = 0L
+
+    let activeList () =
+        match branches.TryGetValue currentRef with
+        | true, list -> list
+        | false, _ ->
+            let list = List<DeltaLogEntry<'K>>()
+            branches.[currentRef] <- list
+            list
 
     interface IDeltaLog<'K> with
         member _.AppendAsync(delta, captured, _ct) =
             let seq =
                 lock gate (fun () ->
                     nextSeq <- nextSeq + 1L
-                    entries.Add(DeltaLogEntry<'K>(nextSeq, delta, captured))
+                    let list = activeList ()
+                    list.Add(DeltaLogEntry<'K>(nextSeq, delta, captured))
                     nextSeq)
             ValueTask<int64>(seq)
 
         member _.ReplayAsync(fromSeqExclusive, _ct) =
             let tail =
                 lock gate (fun () ->
-                    // entries are appended in seq order, so a linear scan from the
-                    // first entry past the bound preserves order; copy under lock.
-                    [| for e in entries do if e.Seq > fromSeqExclusive then yield e |])
+                    let list = activeList ()
+                    [| for e in list do if e.Seq > fromSeqExclusive then yield e |])
             ValueTask<DeltaLogEntry<'K>[]>(tail)
 
-        member _.HighWater = lock gate (fun () -> nextSeq)
+        member _.HighWater =
+            lock gate (fun () ->
+                let list = activeList ()
+                if list.Count = 0 then 0L
+                else list.[list.Count - 1].Seq)
 
         member _.TruncateAsync(throughSeqInclusive, _ct) =
             lock gate (fun () ->
-                entries.RemoveAll(fun e -> e.Seq <= throughSeqInclusive) |> ignore)
+                let list = activeList ()
+                list.RemoveAll(fun e -> e.Seq <= throughSeqInclusive) |> ignore)
             ValueTask.CompletedTask
+
+    interface IRefDeltaLog<'K> with
+        member _.CurrentRef = lock gate (fun () -> currentRef)
+        member _.Branch(name) =
+            lock gate (fun () ->
+                let src = activeList ()
+                let dest = List<DeltaLogEntry<'K>>(src)
+                branches.[name] <- dest
+                Ok())
+        member _.Checkout(refName) =
+            lock gate (fun () ->
+                currentRef <- refName
+                Ok())
+        member _.Reset(refName) =
+            lock gate (fun () ->
+                match branches.TryGetValue refName with
+                | true, src ->
+                    let list = activeList ()
+                    list.Clear()
+                    list.AddRange(src)
+                    Ok()
+                | false, _ -> Error(ReferenceNotFound refName))
+        member _.Sync(_remote) =
+            Ok()
+        member _.Push(_remote) =
+            lock gate (fun () ->
+                Ok(sprintf "refs/heads/%s" currentRef))
+        member _.Merge(sourceRef) =
+            lock gate (fun () ->
+                match branches.TryGetValue sourceRef with
+                | true, src ->
+                    let list = activeList ()
+                    let existingSeqs = list |> Seq.map (fun e -> e.Seq) |> Set.ofSeq
+                    let toAdd = src |> Seq.filter (fun e -> not (existingSeqs.Contains e.Seq))
+                    let mutable lastSeq = nextSeq
+                    for e in toAdd do
+                        nextSeq <- nextSeq + 1L
+                        list.Add(DeltaLogEntry<'K>(nextSeq, e.Delta, e.Captured))
+                        lastSeq <- nextSeq
+                    Ok lastSeq
+                | false, _ -> Error(ReferenceNotFound sourceRef))
+        member _.Status() =
+            // In-memory working ref status: always clean
+            true, [||]
+        member _.Ls(refName) =
+            lock gate (fun () ->
+                let target = defaultArg refName currentRef
+                match branches.TryGetValue target with
+                | true, list ->
+                    Ok [| for e in list do yield sprintf "%d" e.Seq |]
+                | false, _ -> Error(ReferenceNotFound target))
+

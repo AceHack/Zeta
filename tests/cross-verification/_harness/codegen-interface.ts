@@ -144,6 +144,16 @@ function toSnake(s: string): string {
 // ─── Emit F# ────────────────────────────────────────────────────────────
 
 export function emitFSharp(ir: InterfaceIr): string {
+  const fsharpType = (t: string): string => {
+    let res = t;
+    for (const tp of ir.typeParams) {
+      const regex = new RegExp(`\\b${tp.name}\\b`, "g");
+      res = res.replace(regex, `'${tp.name}`);
+    }
+    res = res.replace(/\bvoid\b/g, "unit");
+    return res;
+  };
+
   const typeParams = ir.typeParams.map(tp => `'${tp.name}`).join(", ");
   const inherits = ir.extends?.length
     ? ir.extends.map(e => `    inherit ${e}<${ir.typeParams.map(t => `'${t.name}`).join(", ")}>`).join("\n") + "\n"
@@ -168,11 +178,6 @@ ${doc}[<Interface>]
 type ${ir.name}<${typeParams}> =
 ${inherits}${members}
 `;
-}
-
-function fsharpType(t: string): string {
-  // F# type params are prefixed with '
-  return t.replace(/\bTWeight\b/g, "'TWeight");
 }
 
 // ─── Emit Python ─────────────────────────────────────────────────────────

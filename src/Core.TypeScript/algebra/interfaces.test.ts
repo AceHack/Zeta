@@ -8,29 +8,29 @@ import {
 describe("ISemiring<number> — ring laws", () => {
   const r = numberSemiring;
 
-  test("zero is additive identity", () => {
+  test("zero is additive identity", () => { // PROOF: zero-is-additive-identity
     expect(r.add(5, r.zero)).toBe(5);
     expect(r.add(r.zero, 5)).toBe(5);
   });
 
-  test("one is multiplicative identity", () => {
+  test("one is multiplicative identity", () => { // PROOF: one-is-multiplicative-identity
     expect(r.mul(7, r.one)).toBe(7);
     expect(r.mul(r.one, 7)).toBe(7);
   });
 
-  test("add is commutative", () => {
+  test("add is commutative", () => { // PROOF: add-is-commutative
     expect(r.add(3, 7)).toBe(r.add(7, 3));
   });
 
-  test("add is associative", () => {
+  test("add is associative", () => { // PROOF: add-is-associative
     expect(r.add(r.add(1, 2), 3)).toBe(r.add(1, r.add(2, 3)));
   });
 
-  test("negate is additive inverse", () => {
+  test("negate is additive inverse", () => { // PROOF: negate-is-additive-inverse
     expect(r.add(5, r.negate(5))).toBe(r.zero);
   });
 
-  test("mul distributes over add", () => {
+  test("mul distributes over add", () => { // PROOF: mul-distributes-over-add
     expect(r.mul(3, r.add(4, 5))).toBe(r.add(r.mul(3, 4), r.mul(3, 5)));
   });
 });

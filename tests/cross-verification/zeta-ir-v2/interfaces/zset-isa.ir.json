@@ -1,0 +1,86 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IZSetIsa",
+  "typeParams": [
+    { "name": "TState", "variance": "invariant" },
+    { "name": "TEvent", "variance": "invariant" },
+    { "name": "TWeight", "variance": "invariant" }
+  ],
+  "doc": "The core Z-set/Quantum ISA interface representing the 6 primary operations: Fold, Emit, Retract, Branch, Join, and Merge.",
+  "members": [
+    {
+      "name": "Emit",
+      "kind": "method",
+      "params": [
+        { "name": "event", "type": "TEvent" },
+        { "name": "weight", "type": "TWeight" }
+      ],
+      "returns": "void",
+      "doc": "Ry rotation raising k's amplitude. Weight +1. Unitary."
+    },
+    {
+      "name": "Retract",
+      "kind": "method",
+      "params": [
+        { "name": "event", "type": "TEvent" },
+        { "name": "weight", "type": "TWeight" }
+      ],
+      "returns": "void",
+      "doc": "Adjoint EMIT. Weight -1. EMIT then RETRACT = I. Unitary."
+    },
+    {
+      "name": "Branch",
+      "kind": "method",
+      "params": [
+        { "name": "name", "type": "string" }
+      ],
+      "returns": "void",
+      "doc": "H gate. Superposition (both states coexist while tick open). Unitary."
+    },
+    {
+      "name": "Join",
+      "kind": "method",
+      "params": [
+        { "name": "remote", "type": "string" }
+      ],
+      "returns": "void",
+      "doc": "CNOT. Entanglement / Z-set product. Unitary."
+    },
+    {
+      "name": "Merge",
+      "kind": "method",
+      "params": [
+        { "name": "sourceRef", "type": "string" }
+      ],
+      "returns": "void",
+      "doc": "Superposition-merge. Amplitudes interfere. Stays in soft space."
+    },
+    {
+      "name": "Fold",
+      "kind": "method",
+      "params": [
+        { "name": "initial", "type": "TState" }
+      ],
+      "returns": "TState",
+      "doc": "Repeated MERGE. Executes the replay loop that reconstructs Yin/Yang cell states."
+    }
+  ],
+  "laws": [
+    {
+      "id": "emit-retract-identity",
+      "schema": "involutive",
+      "op": "Retract",
+      "status": "proven",
+      "proof": "src/Core.QSharp.ReferenceOracle/ZSetISA.qs:VerifyIdentity",
+      "doc": "Emit then Retract on same qubit restores state to identity."
+    },
+    {
+      "id": "branch-self-adjoint",
+      "schema": "involutive",
+      "op": "Branch",
+      "status": "proven",
+      "proof": "src/Core.QSharp.ReferenceOracle/ZSetISA.qs:VerifyIdentity",
+      "doc": "Branch (Hadamard) is self-adjoint: Branch then Branch = Identity."
+    }
+  ]
+}

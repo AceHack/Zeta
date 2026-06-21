@@ -9,6 +9,7 @@ import { join } from "node:path";
 const irDir = join(import.meta.dir, "../zeta-ir-v2/interfaces");
 const semiring: InterfaceIr = JSON.parse(readFileSync(join(irDir, "semiring.ir.json"), "utf-8"));
 const starRing: InterfaceIr = JSON.parse(readFileSync(join(irDir, "star-ring.ir.json"), "utf-8"));
+const zsetIsa: InterfaceIr = JSON.parse(readFileSync(join(irDir, "zset-isa.ir.json"), "utf-8"));
 
 describe("codegen-interface — ISemiring", () => {
   test("C# emits correct interface with inheritance", () => {
@@ -160,3 +161,31 @@ describe("codegen-interface — contravariant interface", () => {
     expect(py).toContain('T = TypeVar("T", contravariant=True)');
   });
 });
+
+describe("codegen-interface — IZSetIsa (the 6 Z-set/Quantum ISA operators)", () => {
+  test("generates expected methods in TypeScript", () => {
+    const ts = emitTypeScript(zsetIsa);
+    expect(ts).toContain("export interface IZSetIsa<TState, TEvent, TWeight>");
+    expect(ts).toContain("Emit(event: TEvent, weight: TWeight): void;");
+    expect(ts).toContain("Retract(event: TEvent, weight: TWeight): void;");
+    expect(ts).toContain("Branch(name: string): void;");
+    expect(ts).toContain("Join(remote: string): void;");
+    expect(ts).toContain("Merge(sourceRef: string): void;");
+    expect(ts).toContain("Fold(initial: TState): TState;");
+  });
+
+  test("generates expected methods in C#", () => {
+    const cs = emitCSharp(zsetIsa);
+    expect(cs).toContain("public interface IZSetIsa<TState, TEvent, TWeight>");
+    expect(cs).toContain("public void Emit(TEvent event, TWeight weight);");
+    expect(cs).toContain("public void Retract(TEvent event, TWeight weight);");
+    expect(cs).toContain("public void Branch(string name);");
+  });
+
+  test("generates expected methods in F#", () => {
+    const fsx = emitFSharp(zsetIsa);
+    expect(fsx).toContain("type IZSetIsa<'TState, 'TEvent, 'TWeight> =");
+    expect(fsx).toContain("abstract member Emit: 'TEvent * 'TWeight -> unit");
+  });
+});
+

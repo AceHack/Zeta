@@ -80,9 +80,9 @@ module internal GitBackend =
 /// is the caller's contract (one clone writes its shard).
 [<Sealed>]
 type GitDeltaLog<'K when 'K : comparison>
-    (repo: Repository, entryCodec: IEntryCodec<'K>, ?refName: string, ?now: unit -> DateTimeOffset) =
+    (repo: Repository, entryCodec: IEntryCodec<'K>, ?refName: string, ?now: unit -> DateTimeOffset, ?credSource: CredentialSource) =
 
-    let refName = defaultArg refName "refs/zeta/deltalog"
+    let mutable currentRef = defaultArg refName "refs/zeta/deltalog"
     let now = defaultArg now (fun () -> DateTimeOffset.UtcNow)
     let gate = obj ()
 
@@ -125,9 +125,8 @@ type GitDeltaLog<'K when 'K : comparison>
             | true, v -> v
             | _ -> 0L
 
-    // Highest assigned seq ever (monotone, never rewinds) — recovered on open.
-    let mutable nextSeq =
-        match GitBackend.tryTip repo refName with
+    let getCurrentNextSeq () =
+        match GitBackend.tryTip repo currentRef with
         | None -> 0L
         | Some c -> max (maxSeqInTree c) (seqOfMessage c)
 
@@ -141,8 +140,12 @@ type GitDeltaLog<'K when 'K : comparison>
             ct.ThrowIfCancellationRequested()
             let seq =
                 lock gate (fun () ->
-                    let s = nextSeq + 1L
-                    let tip = GitBackend.tryTip repo refName
+                    let tip = GitBackend.tryTip repo currentRef
+                    let lastSeq =
+                        match tip with
+                        | None -> 0L
+                        | Some c -> max (maxSeqInTree c) (seqOfMessage c)
+                    let s = lastSeq + 1L
                     let td =
                         match tip with
                         | Some c -> TreeDefinition.From c.Tree
@@ -151,8 +154,7 @@ type GitDeltaLog<'K when 'K : comparison>
                     td.Add(entryPath s, blob, Mode.NonExecutableFile) |> ignore
                     let tree = repo.ObjectDatabase.CreateTree td
                     let commit = commitTree tree (sprintf "delta seq=%d" s) (Option.toList tip)
-                    GitBackend.updateRef repo refName commit
-                    nextSeq <- s
+                    GitBackend.updateRef repo currentRef commit
                     s)
             ValueTask<int64> seq
 
@@ -160,7 +162,7 @@ type GitDeltaLog<'K when 'K : comparison>
             ct.ThrowIfCancellationRequested()
             let entries =
                 lock gate (fun () ->
-                    match GitBackend.tryTip repo refName |> Option.bind deltasSubtree with
+                    match GitBackend.tryTip repo currentRef |> Option.bind deltasSubtree with
                     | None -> [||]
                     | Some sub ->
                         [| for e in sub do
@@ -170,12 +172,12 @@ type GitDeltaLog<'K when 'K : comparison>
                         |> Array.sortBy (fun e -> e.Seq))
             ValueTask<DeltaLogEntry<'K>[]> entries
 
-        member _.HighWater = lock gate (fun () -> nextSeq)
+        member _.HighWater = lock gate (fun () -> getCurrentNextSeq ())
 
         member _.TruncateAsync(throughSeqInclusive, ct) =
             ct.ThrowIfCancellationRequested()
             lock gate (fun () ->
-                match GitBackend.tryTip repo refName with
+                match GitBackend.tryTip repo currentRef with
                 | None -> ()
                 | Some c ->
                     let td = TreeDefinition.From c.Tree
@@ -187,8 +189,156 @@ type GitDeltaLog<'K when 'K : comparison>
                             | Some s when s <= throughSeqInclusive -> td.Remove(entryPath s) |> ignore
                             | _ -> ()
                     let tree = repo.ObjectDatabase.CreateTree td
+                    let currentSeq = max (maxSeqInTree c) (seqOfMessage c)
                     // Keep highwater in the message so it survives restart after GC.
                     let commit =
-                        commitTree tree (sprintf "truncate through=%d seq=%d" throughSeqInclusive nextSeq) [ c ]
-                    GitBackend.updateRef repo refName commit)
+                        commitTree tree (sprintf "truncate through=%d seq=%d" throughSeqInclusive currentSeq) [ c ]
+                    GitBackend.updateRef repo currentRef commit)
             ValueTask.CompletedTask
+
+    interface IRefDeltaLog<'K> with
+        member _.CurrentRef = lock gate (fun () -> currentRef)
+        member _.Branch(name) =
+            lock gate (fun () ->
+                try
+                    let branchName = if name.StartsWith "refs/heads/" then name.Substring(11) else name
+                    let tip = GitBackend.tryTip repo currentRef
+                    match tip with
+                    | Some c -> repo.CreateBranch(branchName, c) |> ignore
+                    | None -> repo.CreateBranch(branchName) |> ignore
+                    Ok ()
+                with ex ->
+                    Error (InvalidOperation ex.Message))
+        member _.Checkout(refName') =
+            lock gate (fun () ->
+                try
+                    let b = Commands.Checkout(repo, refName')
+                    currentRef <- b.CanonicalName
+                    Ok ()
+                with ex ->
+                    Error (InvalidOperation ex.Message))
+        member _.Reset(refName') =
+            lock gate (fun () ->
+                let targetCommit =
+                    match GitBackend.tryTip repo refName' with
+                    | Some c -> Some c
+                    | None ->
+                        match repo.Branches.[refName'] with
+                        | null -> None
+                        | b -> Some b.Tip
+                match targetCommit with
+                | None -> Error (ReferenceNotFound refName')
+                | Some tc ->
+                    try
+                        repo.Reset(ResetMode.Hard, tc)
+                        Ok ()
+                    with ex ->
+                        Error (InvalidOperation ex.Message))
+        member _.Sync(remoteName) =
+            lock gate (fun () ->
+                let handlerResult =
+                    match credSource with
+                    | Some cs ->
+                        match cs.TryHandler() with
+                        | Ok h -> Ok h
+                        | Error e -> Error (ConnectionFailed (sprintf "Failed to resolve credentials: %s" e))
+                    | None -> Ok null
+                
+                match handlerResult with
+                | Error fb -> Error fb
+                | Ok handler ->
+                    match repo.Network.Remotes.[remoteName] with
+                    | null -> Error (RemoteNotFound remoteName)
+                    | r ->
+                        try
+                            let refspecs = r.FetchRefSpecs |> Seq.map (fun s -> s.Specification)
+                            let fetchOpts = FetchOptions()
+                            if handler <> null then fetchOpts.CredentialsProvider <- handler
+                            Commands.Fetch(repo, remoteName, refspecs, fetchOpts, null)
+                            
+                            let activeBranch = repo.Head
+                            let rb =
+                                if activeBranch <> null && activeBranch.TrackedBranch <> null then
+                                    activeBranch.TrackedBranch
+                                else
+                                    repo.Branches.[sprintf "%s/%s" remoteName activeBranch.FriendlyName]
+                            if rb <> null && rb.Tip <> null then
+                                let sig_ = GitBackend.signature now
+                                let mergeResult = repo.Merge(rb, sig_, MergeOptions())
+                                if mergeResult.Status = MergeStatus.Conflicts then
+                                    Error (MergeConflict "Merge conflicts encountered during sync")
+                                else
+                                    Ok ()
+                            else
+                                Ok ()
+                        with ex ->
+                            Error (InvalidOperation ex.Message))
+        member _.Push(remoteName) =
+            lock gate (fun () ->
+                let handlerResult =
+                    match credSource with
+                    | Some cs ->
+                        match cs.TryHandler() with
+                        | Ok h -> Ok h
+                        | Error e -> Error (ConnectionFailed (sprintf "Failed to resolve credentials: %s" e))
+                    | None -> Ok null
+                
+                match handlerResult with
+                | Error fb -> Error fb
+                | Ok handler ->
+                    match repo.Network.Remotes.[remoteName] with
+                    | null -> Error (RemoteNotFound remoteName)
+                    | r ->
+                        try
+                            let activeBranchName = repo.Head.FriendlyName
+                            let refspec = sprintf "refs/heads/%s:refs/heads/%s" activeBranchName activeBranchName
+                            let pushOpts = PushOptions()
+                            if handler <> null then pushOpts.CredentialsProvider <- handler
+                            repo.Network.Push(r, refspec, pushOpts)
+                            Ok refspec
+                        with ex ->
+                            Error (InvalidOperation ex.Message))
+        member _.Merge(sourceRef') =
+            lock gate (fun () ->
+                let sourceCommit =
+                    match GitBackend.tryTip repo sourceRef' with
+                    | Some c -> Some c
+                    | None ->
+                        match repo.Branches.[sourceRef'] with
+                        | null -> None
+                        | b -> Some b.Tip
+                match sourceCommit with
+                | None -> Error (ReferenceNotFound sourceRef')
+                | Some sc ->
+                    try
+                        let sig_ = GitBackend.signature now
+                        let mergeResult = repo.Merge(sc, sig_, MergeOptions())
+                        if mergeResult.Status = MergeStatus.Conflicts then
+                            Error (MergeConflict "Merge conflicts encountered during merge")
+                        else
+                            let newTip = repo.Head.Tip
+                            Ok (max (maxSeqInTree newTip) (seqOfMessage newTip))
+                    with ex ->
+                        Error (InvalidOperation ex.Message))
+        member _.Status() =
+            lock gate (fun () ->
+                let st = repo.RetrieveStatus(StatusOptions())
+                let pending = st |> Seq.map (fun e -> e.FilePath) |> Seq.toArray
+                not st.IsDirty, pending)
+        member _.Ls(refName') =
+            lock gate (fun () ->
+                let target = defaultArg refName' currentRef
+                match GitBackend.tryTip repo target |> Option.bind deltasSubtree with
+                | None ->
+                    if repo.Refs.[target] = null && repo.Branches.[target] = null then
+                        Error (ReferenceNotFound target)
+                    else
+                        Ok [||]
+                | Some sub ->
+                    let entries =
+                        [| for e in sub do
+                             match seqOfName e.Name with
+                             | Some s -> yield sprintf "%d" s
+                             | _ -> () |]
+                        |> Array.sortBy Int64.Parse
+                    Ok entries)

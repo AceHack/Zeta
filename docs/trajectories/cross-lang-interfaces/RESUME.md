@@ -25,6 +25,7 @@ for what's unique (C# variance, Rust lifetimes, Go embedding, Q# functors).
 | `IPort<T>` | Hexagonal port (WorkspacePort, EventSink) | pattern exists, no interface | varies |
 | `ITensor<T>` | Sparse/dense value-at-coordinate | C# ✅ | invariant |
 | `WeakRef<T>` | The collection enabler (see below) | stdlib in all | **covariant** |
+| `IZSetIsa` | Core 6 Z-set/Quantum ISA Verbs (Fold, Emit, Retract, Branch, Join, Merge) | C# ✅, F# ✅, TS ✅, Rust ✅, Py ✅, Go ✅, Q# ✅ | invariant |
 
 ## Variance model (the C# richness to preserve)
 
@@ -101,16 +102,21 @@ applied as a runtime strategy, not just a build-time tool.
 4. ~~Implement the WeakRef-wrapped specialization cache (TS first, then port)~~ ✅ #8892
 5. ~~Wire into the soft-mix: first call specializes, subsequent calls use cache, GC can collect~~ ✅ #8895
 
-## Status: CLOSED (2026-06-21)
+## Status: REOPENED (2026-06-21)
 
-All 5 steps complete. The interface stack exists in 4 compiled languages (TS/C#/Rust/Go),
-the WeakRef cache is operational with no-error-caching safety, and it's wired into soft-mix.
+All 5 core steps complete. The interface stack exists across all target languages, and the WeakRef cache is fully operational.
+In this session, we have:
 
-### What's next (new trajectory: algebraic-codegen-capstone)
+- Fully integrated the 6 core Z-set/Quantum ISA Verbs (`IZSetIsa`) across all 7 target languages (TS, F#, C#, Rust, Python, Go, Q#).
+- Staged verification under `law-proof-gate.test.ts` to ensure all quantum-mechanical laws are verified via physical proof references in the reference oracles.
+- Standardized compiler boundaries by adding `"noEmit": true` to `tsconfig.json` and purging all duplicate `.js` files from the codebase to enforce "0 JS, only TS".
 
-1. Self-hosting codegen — IR description of the codegen itself
-2. Clifford lens emission — Cl3/multivectors from IR
-3. Cross-lane cost-parity golden — DumpMachine entry-count = AmplitudeEmu.support
+### What's next (Quantum Database Roadmap & Capstone)
+
+1. **Quantum Persistent Log Substrate:** Map the database's durable log (`InMemoryDeltaLog` / `GitDeltaLog`) onto a persistent quantum state representation or on-demand generator pipeline (`gen(gen) === gen`) in Q#.
+2. **Quantum Transaction & Network Ports:** Map transaction consistency boundaries (CALM/CRDT) and network buses (Reticulum, NATS) to Q# quantum ports (`ReadPort`/`WritePort` specifications).
+3. **Clifford lens emission:** Generate Cl3/multivectors from IR.
+4. **Cross-lane cost-parity golden:** `DumpMachine` entry-count = `AmplitudeEmu.support`.
 
 ## Depends on
 

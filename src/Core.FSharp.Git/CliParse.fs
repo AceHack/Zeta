@@ -3,23 +3,14 @@ namespace Zeta.Core.FSharp.Git
 open System
 open Zeta.Core
 
-/// Unified command type wrapping either a git-ref or a database-stream command.
-[<RequireQualifiedAccess>]
-type ZetaCliCommand =
-    | Git of GitCommand
-    | Db of Zeta.Core.DbCommand<Zeta.Core.DvKey>
+type ZetaCliCommand = Zeta.Core.DbCommand<Zeta.Core.DvKey>
 
-/// CLI argument parser for the git-ref command verbs (roadmap #1, no-git-CLI; core-library-first). PURE:
-/// `argv -> ZetaCliCommand` (or a usage error). Kept a library function so it's CI-tested; the runnable
-/// `zeta` exe stays a trivial shell (open repo → parse argv → GitCommand/DbCommand run → print). The MCP
-/// wrapper maps tool-calls → ZetaCliCommand the same way. Mirrors a developer's git muscle-memory so the
-/// done-test (a full work-cycle with zero `git` CLI) reads naturally: `zeta commit "msg"`, `zeta log`, …
 module CliParse =
 
     let usage =
-        "usage: zeta <commit <msg> | log [n] | branch <name> | checkout <ref> | status | "
-        + "push [remote] [branch] | fetch [remote] | "
-        + "db append <zset-json> [captured-json] | db history [fromSeq] | db get <seq> | db status>"
+        "usage: zeta <commit <zset-json> [captured-json] | write <zset-json> [captured-json] | delete <zset-json> [captured-json] | "
+        + "branch <name> | checkout <ref> | status | ls [refName] | push [remote] | fetch [remote] | merge <sourceRef> | "
+        + "log | history [fromSeq] | get <seq>>"
 
     let private parseCaptured (capturedJson: string) : Result<Map<string, string>, string> =
         if String.IsNullOrEmpty capturedJson then
@@ -42,58 +33,86 @@ module CliParse =
             | Ok _ -> Error "captured-json must be a JSON object"
             | Error e -> Error (sprintf "failed to parse captured JSON: %A" e)
 
+    let private isAllNegative (z: ZSet<DvKey>) =
+        let span = z.AsSpan()
+        if span.IsEmpty then false
+        else
+            let mutable allNeg = true
+            for i in 0 .. span.Length - 1 do
+                if span.[i].Weight > 0L then allNeg <- false
+            allNeg
+
     let parse (argv: string[]) : Result<ZetaCliCommand, string> =
         match List.ofArray argv with
-        | [ "commit"; msg ] -> Ok(ZetaCliCommand.Git(GitCommand.Commit msg))
-        | [ "log" ] -> Ok(ZetaCliCommand.Git(GitCommand.Log 20))
-        | [ "log"; n ] ->
-            match System.Int32.TryParse n with
-            | true, v when v > 0 -> Ok(ZetaCliCommand.Git(GitCommand.Log v))
-            | _ -> Error(sprintf "log: expected a positive count, got '%s'" n)
-        | [ "branch"; name ] -> Ok(ZetaCliCommand.Git(GitCommand.Branch name))
-        | [ "checkout"; refName ] -> Ok(ZetaCliCommand.Git(GitCommand.Checkout refName))
-        | [ "status" ] -> Ok(ZetaCliCommand.Git GitCommand.Status)
-        // push: remote defaults to origin, branch to current HEAD (None).
-        | [ "push" ] -> Ok(ZetaCliCommand.Git(GitCommand.Push("origin", None)))
-        | [ "push"; remote ] -> Ok(ZetaCliCommand.Git(GitCommand.Push(remote, None)))
-        | [ "push"; remote; branch ] -> Ok(ZetaCliCommand.Git(GitCommand.Push(remote, Some branch)))
-        // fetch: remote defaults to origin.
-        | [ "fetch" ] -> Ok(ZetaCliCommand.Git(GitCommand.Fetch "origin"))
-        | [ "fetch"; remote ] -> Ok(ZetaCliCommand.Git(GitCommand.Fetch remote))
+        | [ "branch"; name ] -> Ok(DbCommand.Branch name)
+        | [ "checkout"; refName ] -> Ok(DbCommand.Join(refName, false))
+        | [ "status" ] -> Ok(DbCommand.Status)
+        | [ "ls" ] -> Ok(DbCommand.Ls None)
+        | [ "ls"; refName ] -> Ok(DbCommand.Ls(Some refName))
+        | [ "push" ] -> Ok(DbCommand.Join("origin", true))
+        | [ "push"; remote ] -> Ok(DbCommand.Join(remote, true))
+        | [ "push"; remote; _branch ] -> Ok(DbCommand.Join(remote, true))
+        | [ "fetch" ] -> Ok(DbCommand.Join("origin", true))
+        | [ "fetch"; remote ] -> Ok(DbCommand.Join(remote, true))
+        | [ "merge"; sourceRef ] -> Ok(DbCommand.Merge sourceRef)
 
-        // db commands
-        | [ "db"; "status" ] -> Ok(ZetaCliCommand.Db Zeta.Core.DbCommand.Status)
-        | [ "db"; "history" ] -> Ok(ZetaCliCommand.Db(Zeta.Core.DbCommand.History -1L))
+        | [ "log" ] -> Ok(DbCommand.Fold -1L)
+        | [ "log"; fromSeqStr ] ->
+            match System.Int64.TryParse fromSeqStr with
+            | true, v -> Ok(DbCommand.Fold v)
+            | false, _ -> Error(sprintf "log: expected an integer sequence, got '%s'" fromSeqStr)
+        | [ "history" ] -> Ok(DbCommand.Fold -1L)
+        | [ "history"; fromSeqStr ] ->
+            match System.Int64.TryParse fromSeqStr with
+            | true, v -> Ok(DbCommand.Fold v)
+            | false, _ -> Error(sprintf "history: expected an integer sequence, got '%s'" fromSeqStr)
+        | [ "get"; seqStr ] ->
+            match System.Int64.TryParse seqStr with
+            | true, v -> Ok(DbCommand.Fold(v - 1L))
+            | false, _ -> Error(sprintf "get: expected an integer sequence, got '%s'" seqStr)
+
+        // db commands prefix support
+        | [ "db"; "status" ] -> Ok(DbCommand.Status)
+        | [ "db"; "history" ] -> Ok(DbCommand.Fold -1L)
         | [ "db"; "history"; fromSeqStr ] ->
             match System.Int64.TryParse fromSeqStr with
-            | true, v -> Ok(ZetaCliCommand.Db(Zeta.Core.DbCommand.History v))
+            | true, v -> Ok(DbCommand.Fold v)
             | false, _ -> Error(sprintf "db history: expected an integer sequence, got '%s'" fromSeqStr)
         | [ "db"; "get"; seqStr ] ->
             match System.Int64.TryParse seqStr with
-            | true, v -> Ok(ZetaCliCommand.Db(Zeta.Core.DbCommand.Get v))
+            | true, v -> Ok(DbCommand.Fold(v - 1L))
             | false, _ -> Error(sprintf "db get: expected an integer sequence, got '%s'" seqStr)
-        | "db" :: "append" :: zsetJson :: rest ->
+
+        | cmd :: zsetJson :: rest when cmd = "commit" || cmd = "write" || cmd = "delete" || cmd = "append" || (cmd = "db" && rest <> [] && List.head rest = "append") ->
+            let realRest = if cmd = "db" then List.tail rest else rest
+            let realZsetJson = if cmd = "db" then List.head rest else zsetJson
             let capturedJson =
-                match rest with
+                match realRest with
                 | [ cap ] -> cap
                 | [] -> ""
                 | _ -> null
             if isNull capturedJson then
-                Error "db append: too many arguments. usage: db append <zset-json> [captured-json]"
+                Error(sprintf "%s: too many arguments. usage: %s <zset-json> [captured-json]" cmd cmd)
             else
-                match DynamicValue.fromCanonicalJson zsetJson with
+                match DynamicValue.fromCanonicalJson realZsetJson with
                 | Ok dv ->
                     try
                         let zset = ZSetDynamic.ofDynamicValue DvKey.ofValue dv
                         match parseCaptured capturedJson with
                         | Ok captured ->
-                            Ok(ZetaCliCommand.Db(Zeta.Core.DbCommand.Append(zset, captured)))
+                            if cmd = "delete" then
+                                Ok(DbCommand.Retract(zset, captured))
+                            else
+                                if isAllNegative zset then
+                                    Ok(DbCommand.Retract(ZSet.scale -1L zset, captured))
+                                else
+                                    Ok(DbCommand.Emit(zset, captured))
                         | Error msg ->
-                            Error (sprintf "db append: invalid captured JSON: %s" msg)
+                            Error (sprintf "%s: invalid captured JSON: %s" cmd msg)
                     with ex ->
-                        Error (sprintf "db append: invalid zset dynamic value representation: %s" ex.Message)
+                        Error (sprintf "%s: invalid zset dynamic value representation: %s" cmd ex.Message)
                 | Error e ->
-                    Error (sprintf "db append: failed to parse zset JSON: %A" e)
+                    Error (sprintf "%s: failed to parse zset JSON: %A" cmd e)
+
         | [] -> Error usage
         | other -> Error(sprintf "unknown command: '%s'\n%s" (String.concat " " other) usage)
-

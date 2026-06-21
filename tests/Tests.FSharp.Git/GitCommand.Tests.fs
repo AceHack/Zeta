@@ -3,12 +3,11 @@ module Zeta.Tests.Git.GitCommandTests
 open System
 open System.IO
 open System.Threading
+open System.Threading.Tasks
 open LibGit2Sharp
 open global.Xunit
+open Zeta.Core
 open Zeta.Core.FSharp.Git
-
-// Git-ref command verbs (roadmap #1, no-git-CLI) — branch/checkout/commit/log/status over a real working
-// repo via LibGit2Sharp. The CLI + MCP thin-wrap GitCommand.run; these tests drive it directly.
 
 let private fixedClock () = DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)
 let mutable private counter = 0
@@ -25,90 +24,89 @@ let private withRepo (f: Repository -> string -> unit) =
         repo.Dispose()
         try Directory.Delete(dir, true) with _ -> ()
 
+let runSync (t: Task<'T>) = t.GetAwaiter().GetResult()
+
+let run log cmd =
+    match runSync (DbCommand.run log CancellationToken.None cmd) with
+    | Ok res -> res
+    | Error fb -> failwithf "DbCommand failed with feedback: %A" fb
+
 [<Fact>]
-let ``Commit stages+commits; Log returns it; Status is clean after`` () =
+let ``Emit and Retract appends to GitDeltaLog; Fold/replay retrieves it; Status is clean after`` () =
     withRepo (fun repo dir ->
-        File.WriteAllText(Path.Combine(dir, "a.txt"), "hello")
-        match GitCommand.run repo fixedClock None (GitCommand.Commit "first") with
-        | Committed sha -> Assert.False(String.IsNullOrEmpty sha)
-        | o -> Assert.Fail(sprintf "expected Committed, got %A" o)
-
-        match GitCommand.run repo fixedClock None (GitCommand.Log 10) with
-        | Logged entries ->
+        let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
+        let log = GitDeltaLog<DvKey>(repo, codec, now = fixedClock)
+        
+        let zset = ZSet.singleton (DvKey.ofValue (DynamicValue.String "key1")) 1L
+        let captured = Map.empty
+        
+        let cmdEmit = DbCommand.Emit(zset, captured)
+        match run log cmdEmit with
+        | DbCommandResult.Emitted seq -> Assert.Equal(1L, seq)
+        | o -> Assert.Fail(sprintf "expected Emitted, got %A" o)
+ 
+        let cmdFold = DbCommand.Fold -1L
+        match run log cmdFold with
+        | DbCommandResult.Folded entries ->
             Assert.Single(entries) |> ignore
-            Assert.Equal("first", snd entries.[0])
-        | o -> Assert.Fail(sprintf "expected Logged, got %A" o)
-
-        match GitCommand.run repo fixedClock None GitCommand.Status with
-        | Statused(isClean, pending) ->
+            Assert.Equal(1L, entries.[0].Seq)
+            Assert.Equal<ZSet<DvKey>>(zset, entries.[0].Delta)
+        | o -> Assert.Fail(sprintf "expected Folded, got %A" o)
+ 
+        let cmdStatus = DbCommand.Status
+        match run log cmdStatus with
+        | DbCommandResult.Statused(isClean, pending) ->
             Assert.True(isClean)
             Assert.Empty(pending)
         | o -> Assert.Fail(sprintf "expected Statused, got %A" o))
-
+ 
 [<Fact>]
-let ``Status reports pending changes; Branch + Checkout switch the working tree`` () =
+let ``Status reports dirty working tree; Branch + Checkout switch currentRef`` () =
     withRepo (fun repo dir ->
-        File.WriteAllText(Path.Combine(dir, "a.txt"), "hello")
-        GitCommand.run repo fixedClock None (GitCommand.Commit "first") |> ignore
-
-        // an untracked file makes the tree dirty
+        let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
+        let log = GitDeltaLog<DvKey>(repo, codec, now = fixedClock)
+        
+        // dirty the repository with an untracked file
         File.WriteAllText(Path.Combine(dir, "b.txt"), "world")
-        match GitCommand.run repo fixedClock None GitCommand.Status with
-        | Statused(isClean, pending) ->
+        match run log DbCommand.Status with
+        | DbCommandResult.Statused(isClean, pending) ->
             Assert.False(isClean)
             Assert.Contains("b.txt", pending)
         | o -> Assert.Fail(sprintf "expected dirty Statused, got %A" o)
-
-        match GitCommand.run repo fixedClock None (GitCommand.Branch "feature") with
-        | Branched name -> Assert.Equal("feature", name)
+ 
+        // commit the file to clean the repository
+        Commands.Stage(repo, "*")
+        let sig_ = Signature("zeta", "zeta@localhost", fixedClock())
+        repo.Commit("clean commit", sig_, sig_) |> ignore
+ 
+        match run log DbCommand.Status with
+        | DbCommandResult.Statused(isClean, _) -> Assert.True(isClean)
+        | o -> Assert.Fail(sprintf "expected clean Statused, got %A" o)
+ 
+        // Branch features
+        match run log (DbCommand.Branch "feature") with
+        | DbCommandResult.Branched name -> Assert.Equal("feature", name)
         | o -> Assert.Fail(sprintf "expected Branched, got %A" o)
-
-        match GitCommand.run repo fixedClock None (GitCommand.Checkout "feature") with
-        | CheckedOut name -> Assert.Equal("feature", name)
-        | o -> Assert.Fail(sprintf "expected CheckedOut, got %A" o))
-
-// Network verbs (push / fetch) — credential + remote error paths only. No LIVE push/fetch (side-effecting,
-// needs a real remote + token); we assert the verb fails cleanly BEFORE touching the network when the
-// credential source or remote is missing. Uses a custom env-var name so the host runner's GH_TOKEN can't
-// leak in and make the "no credential" path non-deterministic.
+ 
+        match run log (DbCommand.Join("feature", false)) with
+        | DbCommandResult.Joined name -> Assert.Equal("feature", name)
+        | o -> Assert.Fail(sprintf "expected Joined, got %A" o)
+        
+        Assert.Equal("refs/heads/feature", (log :> IRefDeltaLog<DvKey>).CurrentRef)
+    )
 
 [<Fact>]
-let ``Push with no credential source fails cleanly before any network`` () =
+let ``Push to a missing remote fails with a clear remote error`` () =
     withRepo (fun repo dir ->
-        File.WriteAllText(Path.Combine(dir, "a.txt"), "hi")
-        GitCommand.run repo fixedClock None (GitCommand.Commit "first") |> ignore
+        let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
+        let log = GitDeltaLog<DvKey>(repo, codec, now = fixedClock)
+        
+        // write one delta to have a commit history
+        let zset = ZSet.singleton (DvKey.ofValue (DynamicValue.String "key1")) 1L
+        runSync (DbCommand.run log CancellationToken.None (DbCommand.Emit(zset, Map.empty))) |> ignore
 
-        let ex =
-            Assert.Throws<InvalidOperationException>(fun () ->
-                GitCommand.run repo fixedClock None (GitCommand.Push("origin", None)) |> ignore)
-        Assert.Contains("credential source", ex.Message))
-
-[<Fact>]
-let ``Push with a credential source whose env var is unset fails with a credential error`` () =
-    withRepo (fun repo dir ->
-        File.WriteAllText(Path.Combine(dir, "a.txt"), "hi")
-        GitCommand.run repo fixedClock None (GitCommand.Commit "first") |> ignore
-
-        let src = Some(EnvTokenCredentialSource([ "ZETA_TEST_UNSET_TOKEN_VAR" ]) :> CredentialSource)
-        let ex =
-            Assert.Throws<InvalidOperationException>(fun () ->
-                GitCommand.run repo fixedClock src (GitCommand.Push("origin", None)) |> ignore)
-        Assert.Contains("no credential", ex.Message))
-
-[<Fact>]
-let ``Push to a missing remote fails with a clear remote error (no network)`` () =
-    withRepo (fun repo dir ->
-        File.WriteAllText(Path.Combine(dir, "a.txt"), "hi")
-        GitCommand.run repo fixedClock None (GitCommand.Commit "first") |> ignore
-
-        let varName = "ZETA_TEST_TOKEN_PRESENT"
-        Environment.SetEnvironmentVariable(varName, "dummy-token")
-        try
-            let src = Some(EnvTokenCredentialSource([ varName ]) :> CredentialSource)
-            // credential resolves; the repo has no 'origin' remote, so it fails at remote lookup, pre-network.
-            let ex =
-                Assert.Throws<InvalidOperationException>(fun () ->
-                    GitCommand.run repo fixedClock src (GitCommand.Push("origin", None)) |> ignore)
-            Assert.Contains("no remote", ex.Message)
-        finally
-            Environment.SetEnvironmentVariable(varName, null))
+        let cmdPush = DbCommand.Join("origin", true)
+        match runSync (DbCommand.run log CancellationToken.None cmdPush) with
+        | Error (RemoteNotFound remoteName) ->
+            Assert.Equal("origin", remoteName)
+        | o -> Assert.Fail(sprintf "expected Error (RemoteNotFound), got %A" o) )
