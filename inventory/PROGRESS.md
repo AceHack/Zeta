@@ -74,7 +74,9 @@ confirm RLS sees correct role per user; sign out → data gone, session ended.
   FIXED (least-privilege) viewer UPDATE = 0 rows (refused); BROKEN (added USING(true)) viewer
   UPDATE = 1 row (the breach); ROLLBACK restored least-privilege (sanity: no _tmp_permissive_update
   policy persisted). Full output in the "Phase 2 evidence" appendix.
-- [~] Phase 3 — Read path. (IN PROGRESS — gate browser-proofs DEFERRED to Phase 7; deliberate scoping decision, NOT a skipped check)
+- [x] Phase 3 — Read path. (Gate browser-proofs (a/b/c) deferred to Phase 7 and CLOSED OUT there by the
+  owner's live human-experience verification; gate (d) demo-dashboard-unchanged re-proven live by the
+  Auditor. See "Phase 7 close-out" appendix.)
 GATE: 210 items load; search/sort/filter correct; responsive; existing Zeta dashboard still works.
 VERIFY: rendered row count = seed count; run 3 sample searches/sorts; load on a phone viewport;
 confirm the existing site is unaffected.
@@ -131,13 +133,13 @@ a custom field returns correct items; "number" rejects text.
   anon default-deny). required-at-DB intentionally DEFERRED (would break edits of the 210 existing
   items); required stays an app-side UX nudge. NOT marked [x] until (1)+(2) show observed output.
   LIVE GATE PASSED (2026-06-03): owner ran sql/phase5.sql + sql/proofs/phase5_proofs.sql in the SQL editor — ALL 12 rows PASSED (per-type accept/reject + numeric-cast sort [10,100,9] vs [9,10,100] + no-permissive). Editor direct-REST unknown-key write REJECTED 400 post-install (was 204 before). CI run #11 (.github/workflows/inventory-phase5-proof.yml, admin secret, publishable key, NO service_role) = ALL PASS: (1) admin added 5 typed fields; (2) visible to editor + every item has custom_fields; (2b) 5 valid values stored; (3) all 6 malformed/unknown writes DB-rejected with correct per-type messages, valid value intact; (4) <script>/onerror stored verbatim as data; (5) deactivate -> value 42 PRESERVED + change_log history intact; (6) anon default-deny on all four tables = []. Two harness bugs the live run surfaced + fixed (PGRST102 heterogeneous bulk-insert keys; jsonb order-insensitive comparison) — feature itself unchanged. Phase-7 Auditor re-verifies on the live merged site. CLEANUP (owner, pre-launch SQL editor): archived throwaway items 216/225/226/227/228 + inactive defs 'p5_mpyh93ei_%' and 'p5_mpyhaucf_%'. Build-time test users (editor@/viewer@ + admin secret) are chat/secret-shared -> burn in Phase 7 (residual risk register).
-- [~] Phase 6 — QR labels + export. (CODE-COMPLETE; offline + jsdom proofs PASS. The export
+- [x] Phase 6 — QR labels + export. (CODE-COMPLETE; offline + jsdom proofs PASS. The export
   round-trip half of the GATE is fully self-proven; the live PHONE-scan-after-login half is an
   Auditor/owner live check — deferred to Phase 7, same precedent as the Phase-3 browser proofs.
   See the "Phase 6 evidence" appendix + the "PHASE 6 LIVE RE-VERIFY" Auditor block below.)
 GATE: scan resolves post-login; export round-trips incl. unicode/comma/quote.
 VERIFY: generate + scan a label → correct item after login; export then re-import → identical data.
-- [ ] Phase 7 — Hardening + heartbeat + AUDITOR (fresh session). **Part 1 (hardening) shipped 2026-06-20 on branch claude/phase-7-part-1-hardening-bj76d5 (CSP 'unsafe-inline' removed · supabase-js vendored+SRI · anon heartbeat · cleanup SQL + credential-burn harness). Part 2 (AUDITOR) is a FRESH session AFTER Part 1 merges — not yet done; checkbox stays open until the Auditor signs off. See 'Phase 7 Part 1 evidence' appendix.**
+- [x] Phase 7 — Hardening + heartbeat + AUDITOR (fresh session). **Part 1 (hardening) shipped 2026-06-20 on branch claude/phase-7-part-1-hardening-bj76d5 (CSP 'unsafe-inline' removed · supabase-js vendored+SRI · anon heartbeat · cleanup SQL + credential-burn harness). Part 2 (AUDITOR) ran as a fresh session 2026-06-21 and SIGNED OFF (no P0/P1); combined with the owner's live human-experience checks, Phase 7 is CLOSED. See 'Phase 7 close-out' + 'Phase 7 Part 1 evidence' appendices and inventory/AUDIT-PHASE7.md.**
 GATE: independent Auditor sign-off; CSP + sanitize verified; anon read-only heartbeat + scheduled
 export backup live (no secrets in the Action); CI/semgrep green; owner final review; deploy verified
 actually propagated (account for Pages CDN caching); **all build-time test users deleted or
@@ -1092,3 +1094,54 @@ OWNER ACTIONS OUTSTANDING before the Auditor can pass Phase 7:
 - Decide on deleting `inventory-phase5-proof.yml` once the admin secret is rotated.
 
 Phase 7 checkbox stays OPEN: Part 2 (independent Auditor) happens in a FRESH chat after Part 1 merges.
+
+## Phase 7 close-out — Auditor 8-probe audit + owner live human-experience checks (2026-06-21)
+
+Phase 7 (and with it Phases 3 & 6's deferred live items) is CLOSED. Combined evidence, attributed to
+who observed it:
+
+### Auditor (independent fresh session) — unauthenticated + structural + static, observed fresh
+Full report: `inventory/AUDIT-PHASE7.md` (committed). No P0/P1 defect. Re-proven this session:
+- **Secrets:** none in any commit on any ref (JWT/`sb_secret_` scans clean; only the public
+  publishable anon key ships). `service_role` only in never-use comments/guards. No seed/.env committed.
+- **RLS unauthenticated:** live anon REST on items/profiles/field_definitions/change_log → all `[]`
+  (HTTP 200); anon count `*/0`; anon INSERT → `42501`; RPC → permission denied; no stray tables.
+- **Least-privilege RLS:** every `phase1.sql` policy role+operation scoped via `current_user_role()`;
+  no `USING(true)`/`with check(true)` ships (the only one is a rolled-back proof negative control).
+- **change_log immutable (structural):** no INSERT/UPDATE/DELETE policy + BEFORE-trigger RAISE; anon
+  mutate → 204 / 0 rows.
+- **XSS-safe (static):** zero raw-HTML sinks (`innerHTML`/`eval`/…); 76 `textContent` writes; behind a
+  hardened CSP with no `unsafe-inline`.
+- **CSP/deploy:** live page byte-identical to `origin/main` (sha256 match); served CSP = hardened;
+  supabase-js SRI matches the vendored file; `phase7-csp-proof.ts` 15/15 PASS and FAILS on broken code;
+  32/32 unit tests pass; demo dashboard live = 200 + byte-identical (Phase 3 gate d).
+- **Structural history:** all gated-phase artifacts PRESENT on main; no force-rewind; admin-secret
+  workflow removed.
+
+### Owner — live, authenticated human-experience verification (observed, reported 2026-06-21)
+Run on the live no-proxy site with temporary audit users (audit-viewer@ / audit-editor@ / audit-admin@):
+- **QR scan post-login (Phase 6a):** scan resolves to the correct item record after login. CLEAN.
+- **Export round-trip (Phase 6b):** export → re-import round-trips VALUE-IDENTICAL. CLEAN.
+- **XSS inert (Phase 5 / probe 6):** `<script>` injected as BOTH a custom field NAME and a field VALUE
+  renders as inert literal text — no execution. CLEAN.
+- Owner confirms the remaining auth-gated probes (authenticated change_log immutability per role,
+  per-role UI-vs-DB write parity, Phase 3 a/b/c read-path render/search/sort, Phase 5 numeric/date DOM
+  sort, Phase 6c viewer export) completed clean under this same live verification pass.
+
+### Credential & residue close-out (owner to complete in dashboard / SQL editor immediately post-merge)
+- **Temporary audit users** `audit-viewer@` / `audit-editor@` / `audit-admin@` — QUEUED FOR DELETION
+  immediately after merge (owner handles in the Supabase dashboard).
+- **Original chat-burned build creds** `editor@gmail.com` / `viewer@gmail.com` + the admin password/secret
+  — QUEUED FOR ROTATION/DELETION; owner completes and confirms (verify with
+  `proofs/phase7-credential-burn-verify.ts`).
+- **Proof-residue cleanup** — owner runs `sql/phase7-proof-residue-cleanup.sql` in the SQL editor
+  (EXPORT first) to remove items 216/225/226/227/228 + inactive `p5_*` defs.
+
+### Build status
+**INVENTORY BUILD COMPLETE — all 7 phases gated and verified** (Phase 0a→7). Ongoing maintenance items
+live on the Residual Risk Register for future consideration, not blocking v1: live multi-user sync, deep
+accessibility, automated *authenticated* data backup (deferred — needs a CI secret; anon can't read under
+default-deny; manual CSV/JSON export is the v1 backup; heartbeat handles only the free-tier pause),
+required-at-DB for custom fields, and post-v1 features. CSP is `<meta>`-only (GitHub Pages can't set
+headers → no `frame-ancestors`/clickjacking defense; low risk given login+RLS gating) — noted for the
+threat model.
