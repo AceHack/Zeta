@@ -1,7 +1,7 @@
 ---
 id: 081KTGEVV7508QG0R0036B2ZJT
 type: task
-state: backlog
+state: done
 priority: P1
 slug: data-plane-plugin-determinism-lint-contract-restrict-dynamic
 title: "Data-plane plugin determinism lint/contract — restrict DynamicValue plugins to fast DETERMINISTIC ops (no non-determinism; DST-safe), with allocation + Big-O awareness"

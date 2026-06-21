@@ -1,7 +1,7 @@
 ---
 id: 081KTGES04808QG0R0010AK90E
 type: task
-state: backlog
+state: done
 priority: P2
 slug: file-type-plugin-model-plugin-file-type-zset-handler-optiona
 title: "File-type plugin model — plugin = file-type<->ZSet handler + OPTIONAL Rx-defined incremental indexed views (=git main); plugin persisted as DynamicValue to run in all 4 langs; open/closed"

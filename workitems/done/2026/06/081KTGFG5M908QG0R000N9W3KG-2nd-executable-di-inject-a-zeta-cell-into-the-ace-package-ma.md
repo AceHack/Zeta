@@ -1,7 +1,7 @@
 ---
 id: 081KTGFG5M908QG0R000N9W3KG
 type: task
-state: backlog
+state: done
 priority: P2
 slug: 2nd-executable-di-inject-a-zeta-cell-into-the-ace-package-ma
 title: "2nd executable: DI-inject a Zeta cell into the Ace package manager; a file-type plugin per supported package manager + its declarative dep files"
