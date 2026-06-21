@@ -363,3 +363,66 @@ export function decideHatSupply(
   };
   return { decision, event };
 }
+
+// ─── Per-task room planning ─────────────────────────────────────────────────
+// RMO determines, for a TASK, how many ephemeral rooms and how many hats per
+// room. (Rooms created during MEETINGS are automation, not a task — RMO does not
+// plan those; it plans rooms for tasks only.) A room is a deterministic-
+// simulation container hosting the seated hats; see
+// ../../docs/ROOMS_AS_DETERMINISTIC_SIMULATIONS.md and ./room.ts.
+
+/** One planned room: the seated hat ids (a hat may be seated more than once). */
+export type PlannedRoom = {
+  roomId: string;
+  hatIds: readonly string[];
+  hatCount: number;
+};
+
+export type TaskRoomPlan = {
+  workItemId: string;
+  roomCount: number;
+  hatsPerRoomCap: number;
+  totalHatSeats: number;
+  rooms: readonly PlannedRoom[];
+};
+
+export type PlanTaskRoomsInput = {
+  workItemId: string;
+  /** Required wearer count per hat, e.g. from `computeRequiredHatSupply`. */
+  requiredHatSupply: ReadonlyMap<string, number>;
+  /** Capacity knob: at most this many hat seats share a room. */
+  maxHatsPerRoom: number;
+};
+
+export type PlanTaskRoomsContext = {
+  /** Deterministic room-id source (injected; e.g. an `IdGenerator`-backed seq). */
+  createRoomId: (seq: number) => string;
+};
+
+/**
+ * Pack the task's required hat *seats* into ephemeral rooms of at most
+ * `maxHatsPerRoom` seats. Deterministic: hats are seated in sorted hatId order,
+ * then packed by capacity; room ids come from the injected source in sequence.
+ * Same inputs -> same plan (DST).
+ */
+export function planTaskRooms(input: PlanTaskRoomsInput, ctx: PlanTaskRoomsContext): TaskRoomPlan {
+  const cap = Math.max(1, Math.floor(input.maxHatsPerRoom));
+  const seats: string[] = [];
+  const sortedHatIds = [...input.requiredHatSupply.keys()].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  for (const hatId of sortedHatIds) {
+    const count = Math.max(0, Math.floor(input.requiredHatSupply.get(hatId) ?? 0));
+    for (let i = 0; i < count; i++) seats.push(hatId);
+  }
+  const rooms: PlannedRoom[] = [];
+  for (let offset = 0; offset < seats.length; offset += cap) {
+    const slice = seats.slice(offset, offset + cap);
+    rooms.push({ roomId: ctx.createRoomId(rooms.length), hatIds: slice, hatCount: slice.length });
+  }
+  return {
+    workItemId: input.workItemId,
+    roomCount: rooms.length,
+    hatsPerRoomCap: cap,
+    totalHatSeats: seats.length,
+    rooms,
+  };
+}
