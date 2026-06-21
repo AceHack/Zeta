@@ -23,12 +23,14 @@ composes_with: ["081KVNXBR4S08QG0R0015DHBBN", "081KVNTNTDQ08QG0R0017NBBWB"]
 
 ## Gaps the harness named (the build list)
 
-- **No unified per-port `rotate` command.** Only `keyset.rotate` (dual-key set; exercised) +
-  `keyring.sh rotate` (user seed) exist. **Missing:** `rotate` for the **machine key**, the **CA
-  key**, the **device cert** (re-sign), and the **cluster trust root** (CA rotation is manual
-  runbook prose only). Build them on the Itron `KeyState` overlap-window lifecycle (Active+Standby
-  → promote/retire; ∅ blast radius by the never-single-key proof). The Active+Standby service
-  accounts per vault are already provisioned (Lucent/Personal/CA).
+- **✅ DONE (#9022): unified per-port `rotate` command.** `tools/setup/persona-keys/rotate.{ts,
+  -cli.ts,.test.ts}` — rotate for the **machine key**, **device cert** (re-sign, N+M preserved),
+  and **CA key** (overlap: BOTH CA pubkeys in `TrustedUserCAKeys` during the window so existing
+  certs still verify) on the Itron `KeyState` overlap-window lifecycle. ∅-blast-radius **proven**
+  (a pre-rotation cert's signing-CA fingerprint stays in the trusted set after rotation, real
+  `ssh-keygen -L`); one-fingerprint (1 biometric covers all ports); round-trip harness extended
+  (setup→rotate→teardown→re-setup converges, N=3). Sandbox-only verified (real keys untouched).
+  **The lifecycle triad is now complete: generate ✅ · rotate ✅ · teardown ✅.** Remaining below.
 - **No revocation primitive** — OpenSSH **KRL** / `RevokedKeys` (revoke a compromised key/cert,
   distributed via the directory; the `−1` retraction + cascade-with-warnings).
 - **No cluster-scoped teardown** — the inverse of `setup-cluster` (teardown #9000 covers machine/
