@@ -1,0 +1,59 @@
+# Inventory — Supabase free-tier heartbeat (anon, read-only, NO secrets)
+# ---------------------------------------------------------------------------------------
+# WHY THIS EXISTS (Phase 7 Part 1, spec.md "$0 hosting" + Residual Risk Register):
+#   The Supabase free tier pauses a project after ~7 days of no activity. This job
+#   makes a scheduled anon read-only request so the project stays awake. It generates
+#   genuine PostgREST+Postgres activity: under RLS default-deny the request returns
+#   `[]` (HTTP 200) — zero rows, no data leak — but the query still executes.
+#
+# SAFETY (repo is PUBLIC):
+#   * NO secrets. The Supabase URL + the PUBLISHABLE (anon) key are public by design
+#     and already ship in inventory/index.html — they are inlined here as plain
+#     literals, NOT GitHub secrets. The service_role / sb_secret_* key is never used.
+#   * Read-only: a single GET. No writes, no auth, no checkout of the repo.
+#   * No third-party actions (no `uses:`) — only the runner's curl — so there is no
+#     action-pin / supply-chain surface to maintain.
+#
+# DATA BACKUP IS A SEPARATE, CONSCIOUSLY-DEFERRED CONCERN (owner decision Q3=A):
+#   A real automated *data* backup needs an authenticated read (RLS default-deny
+#   blocks anon), i.e. a CI secret — which would break the "no secrets in Actions"
+#   rule. So automated data backup is deferred; the Phase-6 manual CSV/JSON export
+#   is the backup path. See inventory/PROGRESS.md Residual Risk Register for the
+#   explicit revisit trigger.
+name: inventory-heartbeat
+
+on:
+  schedule:
+    # Daily ~06:17 UTC — wide margin under the 7-day pause even if GitHub delays/skips
+    # a scheduled run under load. (Off the top of the hour per GitHub's own guidance.)
+    - cron: "17 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: inventory-heartbeat
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Anon read-only ping (keeps the Supabase free tier awake)
+        env:
+          # PUBLIC values (already in inventory/index.html) — not secrets.
+          SUPABASE_URL: https://mdtbgreryqddloluhdmm.supabase.co
+          SUPABASE_ANON_KEY: sb_publishable_UjTK7ZQ0uGX_mEm9HJOT6Q_MJjPvKE3
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/hb.json -w "%{http_code}" --max-time 30 \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            "${SUPABASE_URL}/rest/v1/items?select=id&limit=1")
+          echo "heartbeat HTTP ${code}; body: $(cat /tmp/hb.json)"
+          if [ "${code}" != "200" ]; then
+            echo "::error::Supabase heartbeat got HTTP ${code} (expected 200). Project may be paused or unreachable."
+            exit 1
+          fi
+          echo "Supabase reachable (200 + [] under RLS default-deny); free-tier pause timer reset."
