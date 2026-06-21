@@ -38,7 +38,7 @@ interface LawSchema {
   doc?: string;
 }
 
-interface InterfaceIr {
+export interface InterfaceIr {
   schema: string;
   name: string;
   typeParams: { name: string; variance: string }[];

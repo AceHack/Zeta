@@ -81,7 +81,6 @@ func eq(x,y float64) bool { return math.Abs(x-y) < 1e-9 }
 }
 
 function generateCheck(law: LawSchema, lang: "ts" | "py" | "go"): string | null {
-
   switch (law.schema) {
     case "associative":
       if (law.op === "Add") {
