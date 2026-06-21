@@ -92,7 +92,6 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/common/mise.sh",
   "tools/setup/common/profile-edit.sh",
   "tools/setup/common/python-tools.sh",
-  "tools/setup/common/qdk.sh",
   "tools/setup/common/quantum.sh",
   "tools/setup/common/repo-bins.sh",
   "tools/setup/common/shellenv.sh",
@@ -144,10 +143,6 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/mechanisms/from-url.sh": "setup/bootstrap",
   "tools/setup/mechanisms/_when.sh": "setup/bootstrap",
   "tools/setup/common/python-tools.sh": "setup/bootstrap",
-  // qdk.sh installs the modern Q# Development Kit (qsharp 1.x pip package) — a
-  // quantum-toolchain installer alongside quantum.sh, retained shell at the
-  // pre-Bun setup edge (added with #8909, inventory entry missed at merge).
-  "tools/setup/common/qdk.sh": "setup/bootstrap",
   "tools/setup/common/quantum.sh": "setup/bootstrap",
   "tools/setup/common/repo-bins.sh": "setup/bootstrap",
   "tools/setup/common/shellenv.sh": "setup/bootstrap",
