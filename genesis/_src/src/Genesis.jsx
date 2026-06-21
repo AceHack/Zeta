@@ -189,7 +189,7 @@ const TOUR_DESC = {
   tools:"Shared instruments — models, simulators, scrapers — any vault can borrow them.",
   training:"Skill drills and certification for agents leveling up their craft.",
   game:"Worlds, play, and sandbox economies — safe places to experiment.",
-  civilization:"Clusters, federations, and governance. Sealed until Phase 2.",
+  civilization:"Clusters, federations, and governance.",
   marketplace:"Buy and sell vaults, agents, rooms, hats, tools, data, and resources — every trade settled in escrow.",
   creation:"Build new vaults, rooms, hats, and agents from scratch.",
 };
@@ -272,7 +272,7 @@ const VAULTS = [
 
   { id:"training", name:"Training", state:"idle", a0:"name", blurb:"Skill drills and certification.", rooms:[], agents:[] },
   { id:"game", name:"Game", state:"idle", a0:"nav", blurb:"Worlds, play, sandbox economies.", rooms:[], agents:[] },
-  { id:"civilization", name:"Civilization", state:"locked", a0:"hidden", blurb:"Clusters, federations, governance.", rooms:[], agents:[] },
+  { id:"civilization", name:"Civilization", state:"idle", a0:"hidden", blurb:"Clusters, federations, governance.", rooms:[], agents:[] },
   { id:"marketplace", name:"Marketplace", state:"working", a0:"nav",
     blurb:"Buy & sell vaults, agents, rooms, hats, tools, data, and resources — every trade settled in escrow.",
     rooms:[
