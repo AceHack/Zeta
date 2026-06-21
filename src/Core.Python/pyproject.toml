@@ -5,6 +5,7 @@ description = "Zeta Core logic in Python"
 requires-python = ">=3.14"
 dependencies = [
     "pyyaml>=6.0.2",
+    "qsharp>=1.9.0",
     "xxhash>=3.7.0",
 ]
 

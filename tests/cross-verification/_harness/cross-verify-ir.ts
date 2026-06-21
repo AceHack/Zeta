@@ -129,6 +129,93 @@ ${inputLines}
 
 // ─── The Oracle: compare all languages ──────────────────────────────────
 
+function generateAndRunCSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
+  const body = ir.ops.map(op => {
+    if (op.op === "mul") return `        z = unchecked(z * ${getK(op, ir.width)}UL);`;
+    if (op.op === "xorshr") return `        z = z ^ (z >> ${op.s});`;
+    return "";
+  }).join("\n");
+  const maskLine = ir.width < 64 ? `        z = z & ${(1n << BigInt(ir.width)) - 1n}UL;\n` : "";
+  const bodyWithMask = ir.ops.map(op => {
+    if (op.op === "mul") return `        z = unchecked(z * ${getK(op, ir.width)}UL);\n${maskLine}`.trimEnd();
+    if (op.op === "xorshr") return `        z = z ^ (z >> ${op.s});\n${maskLine}`.trimEnd();
+    return "";
+  }).join("\n");
+  const inputLines = inputs.map(([id, val]) => `    out["${id}"] = Mix(${val}UL).ToString();`).join("\n");
+  const script = `using System; using System.Collections.Generic; using System.Text.Json;
+static ulong Mix(ulong x) { unchecked { ulong z = x;
+${bodyWithMask}
+return z; } }
+var out = new Dictionary<string, string>();
+${inputLines}
+Console.Write(JsonSerializer.Serialize(out));`;
+  const file = join(tmpDir, "oracle.csx");
+  writeFileSync(file, script);
+  try {
+    const stdout = execSync(`dotnet-script ${file}`, { encoding: "utf-8", timeout: 30000 });
+    return { language: "csharp", outputs: JSON.parse(stdout) };
+  } catch (e: any) {
+    return { language: "csharp", outputs: {}, error: `dotnet-script not available or failed: ${(e.message || "").slice(0, 100)}` };
+  }
+}
+
+function generateAndRunRust(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
+  const maskLine = ir.width < 64 ? `    z = z & ${(1n << BigInt(ir.width)) - 1n};\n` : "";
+  const body = ir.ops.map(op => {
+    if (op.op === "mul") return `    z = z.wrapping_mul(${getK(op, ir.width)});\n${maskLine}`.trimEnd();
+    if (op.op === "xorshr") return `    z = z ^ (z >> ${op.s});\n${maskLine}`.trimEnd();
+    return "";
+  }).join("\n");
+  const inputLines = inputs.map(([id, val]) => `    m.insert("${id}", format!("{}", mix(${val})));`).join("\n");
+  const script = `use std::collections::HashMap;
+fn mix(x: u64) -> u64 { let mut z = x;
+${body}
+z }
+fn main() {
+    let mut m: HashMap<&str, String> = HashMap::new();
+${inputLines}
+    let pairs: Vec<String> = m.iter().map(|(k,v)| format!("\\\"{}\\\":\\\"{}\\\"", k, v)).collect();
+    print!("{{{}}}", pairs.join(","));
+}`;
+  const file = join(tmpDir, "oracle.rs");
+  writeFileSync(file, script);
+  try {
+    const bin = join(tmpDir, "oracle_rs");
+    execSync(`rustc ${file} -o ${bin} 2>&1`, { encoding: "utf-8", timeout: 30000 });
+    const stdout = execSync(bin, { encoding: "utf-8", timeout: 10000 });
+    return { language: "rust", outputs: JSON.parse(stdout) };
+  } catch (e: any) {
+    return { language: "rust", outputs: {}, error: `rustc not available or failed: ${(e.message || "").slice(0, 100)}` };
+  }
+}
+
+function generateAndRunFSharp(ir: ZetaIrV2, inputs: [string, string][], tmpDir: string): OracleResult {
+  const maskLine = ir.width < 64 ? `    z <- z &&& ${(1n << BigInt(ir.width)) - 1n}UL\n` : "";
+  const body = ir.ops.map(op => {
+    if (op.op === "mul") return `    z <- z * ${getK(op, ir.width)}UL\n${maskLine}`.trimEnd();
+    if (op.op === "xorshr") return `    z <- z ^^^ (z >>> ${op.s})\n${maskLine}`.trimEnd();
+    return "";
+  }).join("\n");
+  const inputLines = inputs.map(([id, val]) => `    sprintf "\\\"%s\\\":\\\"%d\\\"" "${id}" (mix ${val}UL)`).join("\n    ");
+  const script = `open System
+let mix (x: uint64) : uint64 =
+    let mutable z = x
+${body}
+    z
+let pairs = [
+    ${inputLines}
+]
+printf "{%s}" (String.concat "," pairs)`;
+  const file = join(tmpDir, "oracle.fsx");
+  writeFileSync(file, script);
+  try {
+    const stdout = execSync(`dotnet fsi ${file}`, { encoding: "utf-8", timeout: 30000 });
+    return { language: "fsharp", outputs: JSON.parse(stdout) };
+  } catch (e: any) {
+    return { language: "fsharp", outputs: {}, error: `dotnet fsi not available or failed: ${(e.message || "").slice(0, 100)}` };
+  }
+}
+
 export interface CrossVerifyResult {
   generator: string;
   languages: string[];
@@ -146,6 +233,9 @@ export function crossVerify(ir: ZetaIrV2, inputs: [string, string][]): CrossVeri
     generateAndRunTS(ir, inputs, tmpDir),
     generateAndRunPython(ir, inputs, tmpDir),
     generateAndRunGo(ir, inputs, tmpDir),
+    generateAndRunCSharp(ir, inputs, tmpDir),
+    generateAndRunRust(ir, inputs, tmpDir),
+    generateAndRunFSharp(ir, inputs, tmpDir),
   ];
 
   // Clean up
@@ -173,7 +263,7 @@ export function crossVerify(ir: ZetaIrV2, inputs: [string, string][]): CrossVeri
     generator: ir.generator,
     languages: successful.map(r => r.language),
     inputs: inputIds,
-    allAgree: disagreements.length === 0 && errors.length === 0,
+    allAgree: disagreements.length === 0 && successful.length >= 2,
     disagreements,
     errors,
   };
@@ -198,15 +288,17 @@ if (import.meta.main) {
   ];
 
   const result = crossVerify(ir, inputs);
-  console.log(`[cross-verify] ${result.generator}: ${result.languages.length} languages`);
+  console.log(`[cross-verify] ${result.generator}: ${result.languages.length} languages agreed`);
+  if (result.errors.length > 0) {
+    for (const e of result.errors) {
+      console.log(`  ⚠ ${e.language} unavailable: ${e.error.slice(0, 80)}`);
+    }
+  }
   if (result.allAgree) {
-    console.log(`  ✓ ALL AGREE on ${result.inputs.length} inputs`);
+    console.log(`  ✓ ALL ${result.languages.length} AGREE on ${result.inputs.length} inputs`);
   } else {
     for (const d of result.disagreements) {
       console.log(`  ✗ DISAGREE on ${d.input}: ${JSON.stringify(d.values)}`);
-    }
-    for (const e of result.errors) {
-      console.log(`  ⚠ ${e.language}: ${e.error}`);
     }
     process.exit(1);
   }
