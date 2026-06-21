@@ -68,6 +68,55 @@ export async function requireBiometric(
   return auth(prompt);
 }
 
+/** The outcome of a session-approval factory: the wrapped one-prompt door + a probe that
+ *  reports whether the underlying door has been called (the session already decided) and
+ *  what it decided. Lets a top-level command prove "the human gate fired exactly once". */
+export interface SessionGate {
+  /** The wrapped door — prompts the underlying door AT MOST ONCE, then replays its outcome.
+   *  Pass this as the `biometricAuth` to every sub-op so they share the ONE approval. */
+  readonly door: BiometricAuth;
+  /** How many times the UNDERLYING (human-facing) door has been invoked. One-fingerprint
+   *  ⇒ this is 0 (nothing gated ran) or 1 (the single up-front approval). NEVER > 1. */
+  readonly underlyingCalls: () => number;
+  /** The cached session decision, or undefined if the underlying door was never called. */
+  readonly decision: () => BiometricResult | undefined;
+}
+
+/**
+ * SESSION APPROVAL — the one-fingerprint primitive. Wrap an underlying door so the human is
+ * prompted AT MOST ONCE: the first `door(prompt)` call delegates to the underlying door and
+ * caches its outcome; every subsequent call REPLAYS that cached outcome WITHOUT re-prompting.
+ * A top-level command does ONE `requireBiometric(session.door, …)` up front, then passes
+ * `session.door` to every sub-op — so the whole sequence rides on ONE physical approval.
+ *
+ * FAIL-CLOSED + NO BYPASS (security-class):
+ *  - The session is NOT zero-approval: if NOTHING ever calls the door, no gated op runs (each
+ *    sub-op still calls `requireBiometric` and aborts on the absent/declined result).
+ *  - A DECLINED first approval POISONS the session: the cached `ok:false` is replayed to every
+ *    later call, so a sub-op can NEVER "retry past" a refusal. One refusal ⇒ nothing runs.
+ *  - The cache keys ONLY on having-been-called, never on the prompt text — a later sub-op
+ *    cannot smuggle a different prompt to force a fresh approval (that would be re-prompting).
+ *  - It NEVER carries a secret (a BiometricResult is approval-only).
+ *
+ * This is the strange-loop close: the gate completes its approval once, then every later
+ * completion is caught by (folded back into) that one fixed-point decision.
+ */
+export function sessionBiometric(underlying: BiometricAuth | undefined): SessionGate {
+  let calls = 0;
+  let cached: BiometricResult | undefined;
+  const door: BiometricAuth = async (prompt: string): Promise<BiometricResult> => {
+    if (cached !== undefined) return cached; // replay the ONE decision — no re-prompt
+    calls += 1;
+    cached = await requireBiometric(underlying, prompt); // fail-closed if underlying is undefined
+    return cached;
+  };
+  return {
+    door,
+    underlyingCalls: () => calls,
+    decision: () => cached,
+  };
+}
+
 /** Detect the biometric platform for the current host. macOS = Touch ID; Windows =
  *  Windows Hello (seam); everything else = unsupported (fail-closed). */
 export function detectBiometricPlatform(plat: string = osPlatform()): BiometricPlatform {
