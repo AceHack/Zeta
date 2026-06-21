@@ -67,6 +67,15 @@ Not a static tree — more precisely:
     cannot be undone in the world — a published fact, a spent token, an external commit). So:
     **mostly reversible Z-set chains; grow-only only where a view or external reality forces it.**
     (Z-set = abelian group with negation; G-set = idempotent grow-only monoid — `dv2` ladder.)
+  - **"Banana split": even external G-sets bifurcate into Z-sets via saga compensation (Aaron
+    2026-06-21).** An external/irreversible effect is paired with a **compensating action** (the
+    saga pattern, the durable **yin-yang**: forward action ⊕ its compensating inverse) — so the
+    irreversible `+1` gains a `−1` (the compensation) and the G-set **"banana splits" into a
+    Z-set** (a reversible pair). The saga's compensating action IS the Z-set retraction projected
+    across the external boundary. So **G-set is the rare residual** — only a *truly
+    uncompensatable* effect (no possible compensating action — e.g. a secret already disclosed)
+    stays grow-only; everything with a compensation is reversible. The substrate is Z-set
+    (reversible) end-to-end, even across external side-effects.
 - **Multi-parented leaves (from content-addressing).** Because nodes are **content-addressed**,
   identical content is **one** node referenced by **many** parents (Merkle-DAG dedup) — so a leaf
   legitimately has **multiple parents**. That's why it's a **DAG, not a tree**: shared/deduped
