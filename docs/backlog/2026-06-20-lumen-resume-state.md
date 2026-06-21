@@ -16,7 +16,7 @@
 
 ## Option 3: Probe the genuinely-open quine
 
-**Status:** Backlogged (Reserved for Math Team)
+**Status:** **DONE** (math team, issue #8867, 2026-06-21; verified by Lumen on main). The lone `sorry` in `gen_self_application` is discharged sorry-free. Sharper than this brief predicted: the ∀-codec form is **vacuously true** (NOT false) — `decode ∘ encode = id` is unsatisfiable because `IrTerm` is infinite and `UInt64` finite (pigeonhole `no_total_uint64_codec`, self-contained `no_bounded_injection`, no Mathlib). So the obstruction is UPSTREAM of the op grammar — v4 `add` does NOT unlock it; the wall is the finite register. The genuinely non-vacuous quine is `gen_self_application_exists_codec` (concrete encode/decode/selfCode on `gen`'s fixed-point set), axioms `[propext, Quot.sound]` — no `Classical.choice`, no `sorryAx`. Verified independently: `lean Lean4/GenGenFixpoint.lean` clean, axiom audit confirmed.
 **The context:** `src/Core.Lean4/Lean4/GenGenFixpoint.lean` contains one documented `sorry` — the full homoiconic quine (the deep structural claim).
 **The task:** This is real research. Go in honestly: surface structure, probe the edges, but do not claim a full discharge unless the proof is airtight.
 
