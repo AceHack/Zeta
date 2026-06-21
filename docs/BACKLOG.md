@@ -42,6 +42,7 @@ are closed (status: closed/done in frontmatter)._
 
 ## P1 — within 2-3 rounds
 
+- [ ] **[B-0950](backlog/P1/081KDU93J0OAZMF14J8R4K66ZR06XL-non-mechanism-setup-realizers-consolidate-to-mechanism-by-source-before-ace.md)** Non-mechanism setup realizers — consolidate quantum/elan/python-tools/dotnet-tools/agent-clis/local-llm/tlaps into mechanism-by-source before Ace migration (Aaron 2026-06-21)
 - [x] **[B-0058.3](backlog/P1/081KDVGZGE008QG0R001Z656SG-3-candidate-failure-honesty-log.md)** Candidate-failure honesty log
 - [ ] **[B-0003](backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md)** ALIGNMENT.md rewrite — incorporate Otto-281..287 + bidirectional alignment + factory-as-superfluid + Noether direction; spread via rigor not manipulation (matrix-pill not poison-pill)
 - [x] **[B-0006](backlog/P1/081KQ0YZ80008QG0R001V0XCYZ-memory-md-compression-pass-prune-distill-entries-to-one-line.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
@@ -984,6 +985,7 @@ are closed (status: closed/done in frontmatter)._
 
 ## P3 — convenience / deferred
 
+- [ ] **[B-0951](backlog/P3/081KLL7PPSUMF84HN7WN96ZEQ1P77U-ace-setup-manifest-realizers-defer-until-mechanism-consolidation-and-ci-clean.md)** Ace setup-manifest realizers — defer Bun/Ace realizer swap until non-mechanism install scripts are consolidated and CI is clean (Aaron 2026-06-21)
 - [ ] **[B-0009](backlog/P3/081KQ0YZ80008QG0R0000HSTWD-substrate-ip-rotation-control-bypass-non-account-bound-rate-.md)** Substrate-controlled visible IP — bypass non-account-bound rate limits responsibly across deployment surfaces (own up to it, don't hide the framing)
 - [ ] **[B-0024](backlog/P3/081KQ0YZ80008QG0R0006VRT18-trading-account-offer-aaron-self-funding-path-prerequisite-p.md)** Trading-account offer (Aaron, self-funding path for the agent) — accepted in principle pending paper-trading + conviction-grounding prerequisite work
 - [x] **[B-0025](backlog/P3/081KQ0YZ80008QG0R0009EQNHP-rename-backlog-schema-field-directive-to-ask-otto-293-violat.md)** Rename backlog schema field `directive:` → `ask:` per Otto-293 (one-way language at YAML schema layer); ~18 existing rows + tooling that reads the field
