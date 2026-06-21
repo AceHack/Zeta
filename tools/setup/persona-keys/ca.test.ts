@@ -24,9 +24,23 @@ import {
   DEFAULT_CERT_VALIDITY,
   type CaEffects,
 } from "./ca.ts";
+import type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
 // The private-key marker, assembled at runtime so NO key-shaped literal is in this file.
 const PRIV_MARKER = "PRIVATE" + " " + "KEY";
+
+// A FAKE biometric door (no real Touch ID / Hello). `ok` controls approval; a `calls` array
+// records every prompt so a test can assert the gate WAS invoked + fail-closed semantics.
+function fakeBiometric(ok: boolean, calls?: string[]): BiometricAuth {
+  return async (prompt: string): Promise<BiometricResult> => {
+    if (calls) calls.push(prompt);
+    return ok
+      ? { ok: true, platform: "macos-touchid" }
+      : { ok: false, platform: "macos-touchid", reason: "declined" };
+  };
+}
+// A passing approval, the default for the happy-path tests below.
+const APPROVE = fakeBiometric(true);
 
 // A deterministic fake: never shells out, never touches a secret. genCa/signCert write
 // FAKE public artifacts to a real temp filesystem and return public text only.
@@ -59,16 +73,25 @@ function fakeEffects(opts?: { genCount?: { n: number }; signCount?: { n: number 
 const CA = "tester";
 const USER = "tester";
 
-test("ca --dry-run: generates NOTHING, writes NOTHING, reports would-generate", () => {
+test("ca --dry-run: generates NOTHING, writes NOTHING, reports would-generate (never prompts)", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const genCount = { n: 0 };
+    const prompts: string[] = [];
     const fx = fakeEffects({ genCount });
-    const r = ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, dryRun: true, commitPub: true });
+    const r = await ensureCa(fx, {
+      ca: CA,
+      repoRoot: tmp,
+      home: tmp,
+      dryRun: true,
+      commitPub: true,
+      biometricAuth: fakeBiometric(true, prompts),
+    });
     expect(r.dryRun).toBe(true);
     expect(r.action).toBe("would-generate");
     expect(r.committedPub).toBe(false);
     expect(genCount.n).toBe(0); // nothing generated
+    expect(prompts).toHaveLength(0); // dry-run NEVER prompts
     expect(existsSync(r.caPrivatePath)).toBe(false); // nothing written
     expect(existsSync(r.caPublicPath)).toBe(false); // no ssh-ca.pub written
   } finally {
@@ -76,11 +99,11 @@ test("ca --dry-run: generates NOTHING, writes NOTHING, reports would-generate", 
   }
 });
 
-test("ca: generates the CA (fake) and commits ONLY the PUBLIC key; private never published", () => {
+test("ca: generates the CA (fake) and commits ONLY the PUBLIC key; private never published", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const fx = fakeEffects();
-    const r = ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true });
+    const r = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true, biometricAuth: APPROVE });
     expect(r.action).toBe("generated");
     expect(r.committedPub).toBe(true);
     // the committed path holds ONLY the public key — no private bytes anywhere in it
@@ -98,28 +121,30 @@ test("ca: generates the CA (fake) and commits ONLY the PUBLIC key; private never
   }
 });
 
-test("ca: idempotent — a second run is a no-op ('exists'), does not regenerate", () => {
+test("ca: idempotent — a second run is a no-op ('exists'), does not regenerate", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const genCount = { n: 0 };
+    const secondPrompts: string[] = [];
     const fx = fakeEffects({ genCount });
-    const first = ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp });
+    const first = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, biometricAuth: APPROVE });
     expect(first.action).toBe("generated");
     expect(genCount.n).toBe(1);
-    const second = ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp });
+    const second = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, biometricAuth: fakeBiometric(true, secondPrompts) });
     expect(second.action).toBe("exists"); // idempotent: apply-N == apply-once effect
     expect(genCount.n).toBe(1); // NOT regenerated
+    expect(secondPrompts).toHaveLength(0); // the idempotent no-op does NOT prompt (no keygen)
     expect(second.caPublicKey).toBe(first.caPublicKey); // same public key returned
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
 });
 
-test("ca: without --commit-pub, writes NO ssh-ca.pub to the repo", () => {
+test("ca: without --commit-pub, writes NO ssh-ca.pub to the repo", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const fx = fakeEffects();
-    const r = ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp });
+    const r = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, biometricAuth: APPROVE });
     expect(r.action).toBe("generated");
     expect(r.committedPub).toBe(false);
     expect(existsSync(caPublicKeyPath(tmp, CA))).toBe(false); // nothing landed in the repo
@@ -128,10 +153,49 @@ test("ca: without --commit-pub, writes NO ssh-ca.pub to the repo", () => {
   }
 });
 
-test("cert --dry-run: signs NOTHING when CA + device key present, reports would-sign", () => {
+test("FAIL-CLOSED (ca-gen): biometric declined -> genCa NEVER called, NO CA, aborted-biometric", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
+  try {
+    const genCount = { n: 0 };
+    const prompts: string[] = [];
+    const fx = fakeEffects({ genCount });
+    const r = await ensureCa(fx, {
+      ca: CA,
+      repoRoot: tmp,
+      home: tmp,
+      commitPub: true,
+      biometricAuth: fakeBiometric(false, prompts),
+    });
+    expect(r.action).toBe("aborted-biometric");
+    expect(prompts).toHaveLength(1); // the gate WAS invoked
+    expect(genCount.n).toBe(0); // the CA keygen door was NEVER called
+    expect(r.committedPub).toBe(false);
+    expect(existsSync(r.caPrivatePath)).toBe(false); // nothing written
+    expect(existsSync(r.caPublicPath)).toBe(false); // no ssh-ca.pub committed
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("FAIL-CLOSED (ca-gen): NO biometric door provided -> genCa NEVER runs (default fail-closed)", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
+  try {
+    const genCount = { n: 0 };
+    const fx = fakeEffects({ genCount });
+    // No biometricAuth wired — requireBiometric returns ok:false (fail-closed).
+    const r = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp });
+    expect(r.action).toBe("aborted-biometric");
+    expect(genCount.n).toBe(0); // never generated without an approval door
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("cert --dry-run: signs NOTHING when CA + device key present, reports would-sign (never prompts)", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const signCount = { n: 0 };
+    const prompts: string[] = [];
     const fx = fakeEffects({ signCount });
     // Pretend the CA + a device pubkey both exist.
     const caPriv = caPrivateKeyPath(tmp);
@@ -141,38 +205,54 @@ test("cert --dry-run: signs NOTHING when CA + device key present, reports would-
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
     writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
 
-    const r = signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, dryRun: true });
+    const r = await signMachineCert(fx, {
+      user: USER,
+      machineId: "mymac",
+      devicePubPath: devicePub,
+      home: tmp,
+      dryRun: true,
+      biometricAuth: fakeBiometric(true, prompts),
+    });
     expect(r.dryRun).toBe(true);
     expect(r.action).toBe("would-sign");
     expect(r.certId).toBe("tester@mymac");
     expect(r.principal).toBe("tester");
     expect(r.validity).toBe(DEFAULT_CERT_VALIDITY);
     expect(signCount.n).toBe(0); // nothing signed
+    expect(prompts).toHaveLength(0); // dry-run NEVER prompts
     expect(existsSync(r.certPath)).toBe(false); // no cert written
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
 });
 
-test("cert: fail-closed when CA absent -> no-ca (signs nothing)", () => {
+test("cert: fail-closed when CA absent -> no-ca (signs nothing, never prompts)", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const signCount = { n: 0 };
+    const prompts: string[] = [];
     const fx = fakeEffects({ signCount });
     const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
     writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
     // No CA private key written.
-    const r = signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp });
+    const r = await signMachineCert(fx, {
+      user: USER,
+      machineId: "mymac",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: fakeBiometric(true, prompts),
+    });
     expect(r.action).toBe("no-ca");
     expect(signCount.n).toBe(0);
+    expect(prompts).toHaveLength(0); // a clean skip never prompts (no sensitive action)
     expect(r.certText).toBeUndefined();
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
 });
 
-test("cert: fail-closed when device key absent -> no-device-key (signs nothing)", () => {
+test("cert: fail-closed when device key absent -> no-device-key (signs nothing)", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const signCount = { n: 0 };
@@ -182,7 +262,7 @@ test("cert: fail-closed when device key absent -> no-device-key (signs nothing)"
     writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
     // No device pubkey written.
     const devicePub = join(tmp, "maintainers", USER, "machines", "absent.pub");
-    const r = signMachineCert(fx, { user: USER, machineId: "absent", devicePubPath: devicePub, home: tmp });
+    const r = await signMachineCert(fx, { user: USER, machineId: "absent", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
     expect(r.action).toBe("no-device-key");
     expect(signCount.n).toBe(0);
   } finally {
@@ -190,7 +270,57 @@ test("cert: fail-closed when device key absent -> no-device-key (signs nothing)"
   }
 });
 
-test("cert: signs (fake) into a -cert.pub; cert text is public, has no private marker", () => {
+test("FAIL-CLOSED (cert-sign): biometric declined -> signCert NEVER called, NO cert, aborted-biometric", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
+  try {
+    const signCount = { n: 0 };
+    const prompts: string[] = [];
+    const fx = fakeEffects({ signCount });
+    const caPriv = caPrivateKeyPath(tmp);
+    mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
+    writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
+    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+
+    const r = await signMachineCert(fx, {
+      user: USER,
+      machineId: "mymac",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: fakeBiometric(false, prompts),
+    });
+    expect(r.action).toBe("aborted-biometric");
+    expect(prompts).toHaveLength(1); // the gate WAS invoked (CA + device present)
+    expect(signCount.n).toBe(0); // the sign door was NEVER called
+    expect(r.certText).toBeUndefined();
+    expect(existsSync(certPath(devicePub))).toBe(false); // no cert written
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("FAIL-CLOSED (cert-sign): NO biometric door -> signCert NEVER runs (default fail-closed)", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
+  try {
+    const signCount = { n: 0 };
+    const fx = fakeEffects({ signCount });
+    const caPriv = caPrivateKeyPath(tmp);
+    mkdirSync(caPriv.slice(0, caPriv.lastIndexOf("/")), { recursive: true });
+    writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
+    const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
+    mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
+    writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
+    // No biometricAuth wired — fail-closed.
+    const r = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp });
+    expect(r.action).toBe("aborted-biometric");
+    expect(signCount.n).toBe(0);
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("cert: signs (fake) into a -cert.pub; cert text is public, has no private marker", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const fx = fakeEffects();
@@ -201,7 +331,7 @@ test("cert: signs (fake) into a -cert.pub; cert text is public, has no private m
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
     writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
 
-    const r = signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp });
+    const r = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
     expect(r.action).toBe("signed");
     expect(r.certPath).toBe(certPath(devicePub));
     expect(existsSync(r.certPath)).toBe(true);
@@ -218,15 +348,15 @@ test("certPath: derives <base>-cert.pub from a device pubkey path", () => {
   expect(certPath("/x/mymac")).toBe("/x/mymac-cert.pub"); // tolerant if no .pub suffix
 });
 
-test("PRIVATE-LEAK GUARD: no module output (paths/keys/cert) ever contains a private marker", () => {
+test("PRIVATE-LEAK GUARD: no module output (paths/keys/cert) ever contains a private marker", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-ca-"));
   try {
     const fx = fakeEffects();
-    const ca = ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true });
+    const ca = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true, biometricAuth: APPROVE });
     const devicePub = join(tmp, "maintainers", USER, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
     writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE tester@mymac\n");
-    const cert = signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp });
+    const cert = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
     // Stringify EVERY field the module returns — none may carry a private marker.
     const blob = JSON.stringify(ca) + JSON.stringify(cert);
     expect(blob).not.toMatch(new RegExp(PRIV_MARKER));
@@ -249,9 +379,12 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
   try {
     const { realEffects, ensureCa: real, signMachineCert: sign, caPrivateKeyPath: caPath } = await import("./ca.ts");
     const fx = realEffects();
+    // A FAKE biometric (approve) so the round-trip never needs a real Touch ID prompt — the
+    // gate is exercised against the fake; the keygen/sign are the real ssh-keygen.
+    const approve = APPROVE;
 
     // 1. Generate a THROWAWAY CA (home pinned to temp → CA private stays inside temp).
-    const caRes = real(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true });
+    const caRes = await real(fx, { ca: CA, repoRoot: tmp, home: tmp, commitPub: true, biometricAuth: approve });
     expect(caRes.action).toBe("generated");
     const caPriv = caPath(tmp);
     expect(caPriv.startsWith(tmp)).toBe(true); // CA private key is inside the temp dir
@@ -272,8 +405,8 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
     const devicePub = deviceKey + ".pub";
     expect(existsSync(devicePub)).toBe(true);
 
-    // 3. Sign the device PUBLIC key into a cert with the throwaway CA.
-    const certRes = sign(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp });
+    // 3. Sign the device PUBLIC key into a cert with the throwaway CA (biometric-approved).
+    const certRes = await sign(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: approve });
     expect(certRes.action).toBe("signed");
     expect(existsSync(certRes.certPath)).toBe(true);
 

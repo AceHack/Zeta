@@ -30,21 +30,26 @@
 // FIDO/WebAuthn user-verification framing.
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
-import { homedir, hostname as osHostname, platform as osPlatform } from "node:os";
+import { homedir, hostname as osHostname } from "node:os";
 import { join } from "node:path";
 import { publishPubPath, sanitizeHostname } from "./machine.ts";
+// The biometric gate is the SHARED primitive in biometric.ts (lifted out of this module so
+// ca.ts / machine.ts / publish.ts all share ONE gate, not three copies of the Touch-ID
+// logic). publish.ts re-exports the types + detector for back-compat with its existing
+// importers (CLI + tests); the implementation now lives in biometric.ts.
+import {
+  detectBiometricPlatform as detectBiometricPlatformShared,
+  realBiometric,
+  type BiometricPlatform,
+  type BiometricResult,
+} from "./biometric.ts";
 
-/** The biometric platforms we know how to gate on. `unsupported` ⇒ fail-closed. */
-export type BiometricPlatform = "macos-touchid" | "windows-hello" | "unsupported";
+export type { BiometricPlatform, BiometricResult } from "./biometric.ts";
 
-/** The outcome of a biometric confirmation attempt — never carries a secret. */
-export interface BiometricResult {
-  /** True ONLY if the operator physically confirmed (Touch ID / Windows Hello). */
-  readonly ok: boolean;
-  /** Which mechanism was attempted (for the readout + honest "unsupported" reporting). */
-  readonly platform: BiometricPlatform;
-  /** Present when ok === false — why (unsupported platform, declined, timeout, error). */
-  readonly reason?: string;
+/** Re-exported for back-compat with publish.ts's existing importers (CLI + tests). The
+ *  implementation lives in the shared biometric.ts. */
+export function detectBiometricPlatform(plat?: string): BiometricPlatform {
+  return plat === undefined ? detectBiometricPlatformShared() : detectBiometricPlatformShared(plat);
 }
 
 /** The doors for ambient influence — the ONLY channel for biometric + filesystem + the
@@ -233,89 +238,12 @@ export function formatResult(res: PublishResult): string {
 
 // ── REAL effects (CLI-only): the doors that touch the OS / GitHub ───────────────────
 
-/** Detect the biometric platform for the current host. macOS = Touch ID; Windows =
- *  Windows Hello (seam); everything else = unsupported (fail-closed). */
-export function detectBiometricPlatform(plat: string = osPlatform()): BiometricPlatform {
-  if (plat === "darwin") return "macos-touchid";
-  if (plat === "win32") return "windows-hello";
-  return "unsupported";
-}
-
-/** macOS Touch ID gate — reuse the zflash / biometric-sudo pattern: a no-op `sudo`
- *  command goes through PAM, and (when `pam_tid.so` is configured per the 2026-05-29
- *  ADR) prompts Touch ID. We `sudo -k` first to invalidate any cached timestamp so a
- *  FRESH biometric confirmation is required every publish (no silent timestamp reuse),
- *  then run `sudo -p '' true`. Success ⇒ the operator physically confirmed.
- *
- *  Fail-closed: if `pam_tid.so` is NOT present in /etc/pam.d/sudo we DO NOT fall back to
- *  a password prompt (that would not be a biometric proof) — we report unsupported so
- *  the publish aborts. The operator enables Touch-ID-for-sudo per the ADR first. */
-function macTouchIdAuth(prompt: string): BiometricResult {
-  // Require pam_tid to be configured — otherwise `sudo` would gate on a password, which
-  // is NOT the biometric proof this slice promises. Honest fail-closed.
-  let pamHasTouchId = false;
-  try {
-    const pam = readFileSync("/etc/pam.d/sudo", "utf8");
-    pamHasTouchId = /^\s*auth\s+sufficient\s+pam_tid\.so/m.test(pam);
-  } catch {
-    pamHasTouchId = false;
-  }
-  if (!pamHasTouchId) {
-    return {
-      ok: false,
-      platform: "macos-touchid",
-      reason:
-        "Touch ID for sudo is not configured (pam_tid.so absent from /etc/pam.d/sudo). " +
-        "Enable it per docs/DECISIONS/2026-05-29-biometric-sudo-elevation-via-touch-id-pam.md, then retry.",
-    };
-  }
-  // Invalidate cached sudo timestamp so a fresh Touch ID press is required.
-  spawnSync("sudo", ["-k"], { stdio: "ignore" });
-  // `sudo -p ''` suppresses the password-prompt text; pam_tid pops the Touch ID dialog.
-  // stdin is "ignore" so a non-biometric machine fails-closed (no password can be typed)
-  // rather than hanging on a password prompt.
-  process.stderr.write(`🔐 Touch ID: ${prompt}\n`);
-  const r = spawnSync("sudo", ["-p", "", "true"], { stdio: ["ignore", "ignore", "inherit"] });
-  if (r.status === 0) return { ok: true, platform: "macos-touchid" };
-  return {
-    ok: false,
-    platform: "macos-touchid",
-    reason: `Touch ID was declined or failed (sudo status ${r.status ?? "signal"})`,
-  };
-}
-
-/** Windows Hello gate — SEAM (honest-stop, TODO). A clean programmatic Windows Hello
- *  consent is `Windows.Security.Credentials.UI.UserConsentVerifier.RequestVerificationAsync`,
- *  reachable from PowerShell via WinRT projection — but that bridge is NOT cleanly
- *  invokable from this TS CLI today (no WinRT binding shipped here). Rather than fake a
- *  biometric or weaken the fail-closed gate, this returns unsupported with the wiring
- *  point named. Wire `RequestVerificationAsync` (or the elevated-UAC/Hello path that
- *  flash-usb-windows.ts uses for admin elevation) here when the WinRT bridge lands. */
-function windowsHelloAuth(_prompt: string): BiometricResult {
-  return {
-    ok: false,
-    platform: "windows-hello",
-    reason:
-      "Windows Hello programmatic consent is not yet wired from this TS CLI " +
-      "(seam: Windows.Security.Credentials.UI.UserConsentVerifier.RequestVerificationAsync via WinRT/PowerShell). " +
-      "Wire it in publish.ts windowsHelloAuth() before publishing on Windows — fail-closed until then.",
-  };
-}
-
-/** The REAL effects (used by the CLI): the biometric gate per-platform + a filesystem
- *  read of the PUBLIC key + the real `gh ssh-key add` write. NO secrets, public-only. */
+/** The REAL effects (used by the CLI): the SHARED biometric gate (biometric.ts) + a
+ *  filesystem read of the PUBLIC key + the real `gh ssh-key add` write. NO secrets,
+ *  public-only. The biometric door is `realBiometric()` — the one gate every op shares. */
 export function realEffects(): PublishEffects {
   return {
-    biometricAuth: async (prompt) => {
-      const plat = detectBiometricPlatform();
-      if (plat === "macos-touchid") return macTouchIdAuth(prompt);
-      if (plat === "windows-hello") return windowsHelloAuth(prompt);
-      return {
-        ok: false,
-        platform: "unsupported",
-        reason: `no biometric mechanism on platform '${osPlatform()}' — publish is fail-closed`,
-      };
-    },
+    biometricAuth: realBiometric(),
     exists: (p) => existsSync(p),
     readText: (p) => readFileSync(p, "utf8"),
     ghAddKey: async ({ publicKey, title, keyType }) => {

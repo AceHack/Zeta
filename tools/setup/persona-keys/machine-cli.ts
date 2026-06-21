@@ -14,6 +14,7 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkPresence, ensureMachineKey, formatStatus, realEffects } from "./machine.ts";
+import { realBiometric } from "./biometric.ts";
 
 const args = process.argv.slice(2);
 const mode = args[0];
@@ -29,32 +30,49 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = opt("--repo-root") ?? resolve(here, "..", "..", "..");
 const fx = realEffects();
 
-if (mode === "status" || mode === "whoami") {
-  const s = checkPresence(fx, { user, repoRoot });
-  console.log(formatStatus(s));
-  console.log(`  user keyring: ${s.userKeyringPath}`);
-  console.log(`  device key (local, private): ${s.devicePrivatePath}`);
-  console.log(`  device pubkey (publish path): ${s.devicePublicPath}`);
-  process.exit(0);
-}
-
-if (mode === "machine") {
-  const dryRun = flag("--dry-run");
-  const publish = flag("--publish");
-  const r = ensureMachineKey(fx, { user, repoRoot, publish, dryRun });
-  if (r.dryRun) {
-    console.log(`[dry-run] action=${r.action} (NOTHING generated or written)`);
-    console.log(`[dry-run] would write private key to: ${r.devicePrivatePath}`);
-    if (publish) console.log(`[dry-run] would write PUBLIC key to: ${r.devicePublicPath}`);
-    process.exit(0);
+async function main(): Promise<number> {
+  if (mode === "status" || mode === "whoami") {
+    const s = checkPresence(fx, { user, repoRoot });
+    console.log(formatStatus(s));
+    console.log(`  user keyring: ${s.userKeyringPath}`);
+    console.log(`  device key (local, private): ${s.devicePrivatePath}`);
+    console.log(`  device pubkey (publish path): ${s.devicePublicPath}`);
+    return 0;
   }
-  console.log(`action=${r.action} hostname=${r.hostname}`);
-  console.log(`private key (local only): ${r.devicePrivatePath}`);
-  if (r.published) console.log(`published PUBLIC key -> ${r.devicePublicPath} (NOT committed)`);
-  // Printing the PUBLIC key is safe (it is the publishable trust artifact).
-  if (r.publicKey !== undefined) console.log(r.publicKey);
-  process.exit(0);
+
+  if (mode === "machine") {
+    const dryRun = flag("--dry-run");
+    const publish = flag("--publish");
+    // AGENT-RUN, OPERATOR-APPROVED: the shared biometric gate authorizes the real keygen
+    // (fail-closed). Dry-run never invokes it.
+    const r = await ensureMachineKey(fx, { user, repoRoot, publish, dryRun, biometricAuth: realBiometric() });
+    if (r.dryRun) {
+      console.log(`[dry-run] action=${r.action} (NOTHING generated or written)`);
+      console.log(`[dry-run] would write private key to: ${r.devicePrivatePath}`);
+      if (publish) console.log(`[dry-run] would write PUBLIC key to: ${r.devicePublicPath}`);
+      return 0;
+    }
+    if (r.action === "aborted-biometric") {
+      console.error(
+        `blocked: biometric ${r.biometric?.reason ?? "not approved"} — NO device key generated (fail-closed).`,
+      );
+      return 1;
+    }
+    console.log(`action=${r.action} hostname=${r.hostname}`);
+    console.log(`private key (local only): ${r.devicePrivatePath}`);
+    if (r.published) console.log(`published PUBLIC key -> ${r.devicePublicPath} (NOT committed)`);
+    // Printing the PUBLIC key is safe (it is the publishable trust artifact).
+    if (r.publicKey !== undefined) console.log(r.publicKey);
+    return 0;
+  }
+
+  console.error("usage: bun machine-cli.ts <status|whoami|machine> --user <name> [--dry-run] [--publish]");
+  return 2;
 }
 
-console.error("usage: bun machine-cli.ts <status|whoami|machine> --user <name> [--dry-run] [--publish]");
-process.exit(2);
+main()
+  .then((code) => process.exit(code))
+  .catch((e: unknown) => {
+    process.stderr.write((e instanceof Error ? e.message : String(e)) + "\n");
+    process.exit(1);
+  });

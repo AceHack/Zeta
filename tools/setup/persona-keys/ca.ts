@@ -39,6 +39,11 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
+// SHARED biometric-approval gate — the agent EXECUTES keygen/sign; the operator's Touch ID /
+// Windows Hello is the AUTHORIZATION (Aaron 2026-06-21). Both sensitive ops (generate CA key,
+// sign a cert with the CA private key) are gated FAIL-CLOSED behind a biometric confirm.
+import { requireBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
+export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
 /** The host-environment doors — the ONLY channel for ambient influence (noninterference).
  *  Every door is PUBLIC-safe by construction: `genCa`/`signCert` return only public text,
@@ -115,8 +120,9 @@ export function certPath(devicePubPath: string): string {
 /** What a `ca` (generate-CA) run did (or, with dryRun, WOULD do). No private material here. */
 export interface CaResult {
   readonly dryRun: boolean;
-  /** "generated" | "exists" (idempotent: an existing CA is a no-op) | "would-generate". */
-  readonly action: "generated" | "exists" | "would-generate";
+  /** "generated" | "exists" (idempotent: an existing CA is a no-op) | "would-generate"
+   *  | "aborted-biometric" (the operator did NOT approve → fail-closed, NOTHING generated). */
+  readonly action: "generated" | "exists" | "would-generate" | "aborted-biometric";
   /** Local path the CA PRIVATE key lives at (never its contents). */
   readonly caPrivatePath: string;
   /** Repo path the CA PUBLIC key would/did get written to (when `commitPub`). */
@@ -125,19 +131,32 @@ export interface CaResult {
   readonly caPublicKey?: string;
   /** True iff we wrote the CA public key to the repo path (never true on dry-run). */
   readonly committedPub: boolean;
+  /** The biometric approval outcome (present only when the gate was invoked — i.e. a real
+   *  keygen was attempted; absent on dry-run, on the idempotent `exists` no-op, and never
+   *  carries a secret). */
+  readonly biometric?: BiometricResult;
 }
 
 /**
- * Generate (or, idempotently, recognise) the SSH CA keypair — OPERATOR-RUN.
- * Generates ONLY a CA keypair via the injected `genCa` door (private written locally under
- * umask 077 by the runner; only the PUBLIC key returned). With `commitPub`, writes ONLY the
- * CA PUBLIC key to maintainers/<ca>/ssh-ca.pub (this module does NOT commit to git).
+ * Generate (or, idempotently, recognise) the SSH CA keypair — AGENT-RUN, OPERATOR-APPROVED.
+ * The agent EXECUTES the keygen; a biometric confirm (Touch ID / Windows Hello) is the
+ * operator's AUTHORIZATION. Generates ONLY a CA keypair via the injected `genCa` door (private
+ * written locally under umask 077 by the runner; only the PUBLIC key returned). With
+ * `commitPub`, writes ONLY the CA PUBLIC key to maintainers/<ca>/ssh-ca.pub (no git commit).
  *
+ * BIOMETRIC GATE + FAIL-CLOSED: when a real keygen is about to happen (the CA does NOT already
+ * exist and it is not a dry-run), `biometricAuth()` MUST return ok:true first. On ok:false the
+ * run aborts ("aborted-biometric") and `genCa` is NEVER invoked — NO CA key is created. The
+ * idempotent `exists` no-op (no private material created) and `--dry-run` (creates nothing) do
+ * NOT prompt.
+ *
+ * @param biometricAuth the SHARED approval gate (biometric.ts). Tests inject a fake; the CLI
+ *                      injects `realBiometric()`. Required only for the real-keygen path.
  * @param commitPub when true, write the CA PUBLIC key to the repo path (the operator then
  *                  commits it; the CA public key is the git-distributed trust root).
- * @param dryRun    when true, NOTHING is generated or written — returns "would-generate".
+ * @param dryRun    when true, NOTHING is generated, written, or prompted — "would-generate".
  */
-export function ensureCa(
+export async function ensureCa(
   fx: CaEffects,
   opts: {
     /** The CA identity (the maintainers/<ca>/ subdir; e.g. the operator persona). */
@@ -146,8 +165,10 @@ export function ensureCa(
     readonly home?: string;
     readonly commitPub?: boolean;
     readonly dryRun?: boolean;
+    /** SHARED biometric approval door — required for the real keygen path (fail-closed). */
+    readonly biometricAuth?: BiometricAuth;
   },
-): CaResult {
+): Promise<CaResult> {
   const caPrivatePath = opts.home === undefined ? caPrivateKeyPath() : caPrivateKeyPath(opts.home);
   const caPublicPath = caPublicKeyPath(opts.repoRoot, opts.ca);
   const dryRun = opts.dryRun === true;
@@ -166,29 +187,48 @@ export function ensureCa(
 
   let caPublicKey: string;
   let action: CaResult["action"];
+  let biometric: BiometricResult | undefined;
   if (alreadyExists) {
-    // Idempotent: an existing CA is a no-op. Read back its PUBLIC half only.
+    // Idempotent: an existing CA is a no-op (no private material created → no gate). Read
+    // back its PUBLIC half only.
     caPublicKey = fx.readText(caPrivatePath + ".pub").trim();
     action = "exists";
   } else {
+    // BIOMETRIC GATE — fail-closed. A real keygen creates private material; require approval.
+    biometric = await requireBiometric(
+      opts.biometricAuth,
+      `Approve: generate SSH CA keypair for ${opts.ca}`,
+    );
+    if (!biometric.ok) {
+      return {
+        dryRun: false,
+        action: "aborted-biometric",
+        caPrivatePath,
+        caPublicPath,
+        committedPub: false,
+        biometric,
+      };
+    }
     caPublicKey = fx.genCa(caPrivatePath, `${opts.ca} (zeta-ssh-ca)`).trim();
     action = "generated";
   }
 
+  const bio = biometric !== undefined ? { biometric } : {};
   if (wantCommit) {
     fx.mkdirp(dirOf(caPublicPath));
     fx.writeText(caPublicPath, caPublicKey.endsWith("\n") ? caPublicKey : caPublicKey + "\n");
-    return { dryRun: false, action, caPrivatePath, caPublicPath, caPublicKey, committedPub: true };
+    return { dryRun: false, action, caPrivatePath, caPublicPath, caPublicKey, committedPub: true, ...bio };
   }
 
-  return { dryRun: false, action, caPrivatePath, caPublicPath, caPublicKey, committedPub: false };
+  return { dryRun: false, action, caPrivatePath, caPublicPath, caPublicKey, committedPub: false, ...bio };
 }
 
 /** What a `cert` (sign-device-key) run did (or, with dryRun, WOULD do). Public only. */
 export interface CertResult {
   readonly dryRun: boolean;
-  /** "signed" | "would-sign" | "no-ca" (CA private absent) | "no-device-key" (pubkey absent). */
-  readonly action: "signed" | "would-sign" | "no-ca" | "no-device-key";
+  /** "signed" | "would-sign" | "no-ca" (CA private absent) | "no-device-key" (pubkey absent)
+   *  | "aborted-biometric" (operator did NOT approve → fail-closed, NOTHING signed). */
+  readonly action: "signed" | "would-sign" | "no-ca" | "no-device-key" | "aborted-biometric";
   readonly caPrivatePath: string;
   readonly devicePubPath: string;
   readonly certPath: string;
@@ -197,18 +237,30 @@ export interface CertResult {
   readonly validity: string;
   /** The certificate text, when signed (public — safe to print). Undefined otherwise. */
   readonly certText?: string;
+  /** The biometric approval outcome (present only when the gate was invoked — i.e. a real
+   *  sign was attempted; absent on dry-run + clean skips; never carries a secret). */
+  readonly biometric?: BiometricResult;
 }
 
 /**
  * Sign a per-machine device PUBLIC key into a certificate (`principal=<user>` + machine id +
- * a validity window) via the injected `signCert` door (ssh-keygen -s under the hood). The CA
- * private key is consumed by the runner; it is never read into this process.
+ * a validity window) via the injected `signCert` door (ssh-keygen -s under the hood) — AGENT-RUN,
+ * OPERATOR-APPROVED. The agent EXECUTES the sign; a biometric confirm is the operator's
+ * AUTHORIZATION (signing CONSUMES the CA private key, so it must be approved). The CA private
+ * key is consumed by the runner; it is never read into this process.
  *
  * Reads the machine's PUBLIC key from `devicePubPath` (the machine.ts publish seam —
  * maintainers/<user>/machines/<host>.pub). Fail-closed: a missing CA or device key returns a
- * typed `no-ca` / `no-device-key` (no partial work). `--dry-run` signs NOTHING.
+ * typed `no-ca` / `no-device-key` (no partial work) and NEVER prompts. `--dry-run` signs
+ * NOTHING and never prompts.
+ *
+ * BIOMETRIC GATE + FAIL-CLOSED: when a real sign is about to happen (CA + device key present,
+ * not dry-run), `biometricAuth()` MUST return ok:true first. On ok:false the run aborts
+ * ("aborted-biometric") and `signCert` is NEVER invoked — NO cert is produced.
+ *
+ * @param biometricAuth the SHARED approval gate (biometric.ts). Required for the real-sign path.
  */
-export function signMachineCert(
+export async function signMachineCert(
   fx: CaEffects,
   opts: {
     /** The USER the cert binds to (the `-n` principal — trust anchored at the user). */
@@ -221,8 +273,10 @@ export function signMachineCert(
     /** Validity window (OpenSSH `-V` form). Defaults to DEFAULT_CERT_VALIDITY. */
     readonly validity?: string;
     readonly dryRun?: boolean;
+    /** SHARED biometric approval door — required for the real sign path (fail-closed). */
+    readonly biometricAuth?: BiometricAuth;
   },
-): CertResult {
+): Promise<CertResult> {
   const caPrivatePath = opts.home === undefined ? caPrivateKeyPath() : caPrivateKeyPath(opts.home);
   const validity = opts.validity ?? DEFAULT_CERT_VALIDITY;
   const certId = `${opts.user}@${opts.machineId}`;
@@ -238,8 +292,8 @@ export function signMachineCert(
     validity,
   };
 
-  // Fail-closed presence checks (BEFORE any work) — a missing CA or device key is a typed
-  // no-op, never a partial sign. (Checked even on dry-run so the plan is honest.)
+  // Fail-closed presence checks (BEFORE any work, BEFORE any prompt) — a missing CA or device
+  // key is a typed no-op, never a partial sign. (Checked even on dry-run so the plan is honest.)
   if (!fx.exists(caPrivatePath)) {
     return { ...base, dryRun, action: "no-ca" };
   }
@@ -251,6 +305,15 @@ export function signMachineCert(
     return { ...base, dryRun: true, action: "would-sign" };
   }
 
+  // BIOMETRIC GATE — fail-closed. A real sign consumes the CA private key; require approval.
+  const biometric = await requireBiometric(
+    opts.biometricAuth,
+    `Approve: sign cert for ${opts.user}@${opts.machineId} (principal=${opts.user})`,
+  );
+  if (!biometric.ok) {
+    return { ...base, dryRun: false, action: "aborted-biometric", biometric };
+  }
+
   const out = fx.signCert({
     caKeyPath: caPrivatePath,
     devicePubPath: opts.devicePubPath,
@@ -258,7 +321,7 @@ export function signMachineCert(
     principal: opts.user,
     validity,
   });
-  return { ...base, dryRun: false, action: "signed", certText: out.certText };
+  return { ...base, dryRun: false, action: "signed", certText: out.certText, biometric };
 }
 
 function dirOf(p: string): string {

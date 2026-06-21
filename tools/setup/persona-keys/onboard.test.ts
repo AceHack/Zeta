@@ -28,6 +28,9 @@ function fixture(opts: {
   pubText?: string;
   /** The biometric outcome publish.ts will see (fake — no real Touch ID / Hello). */
   biometric?: BiometricResult;
+  /** The biometric outcome the SHARED gate (machine-keygen + cert-sign) will see. Defaults
+   *  to approve. Set ok:false to exercise the keygen/sign fail-closed paths via the chain. */
+  sharedBiometric?: BiometricResult;
   /** GitHub `.keys` bodies per identity (public lines), for the trust resolve step. */
   ghKeys?: Record<string, string>;
   /** maintainers/ subdir names the trust resolver may source identities from. */
@@ -37,12 +40,14 @@ function fixture(opts: {
   order: string[];
   ghAdds: { publicKey: string; title: string; keyType: string }[];
   biometricPrompts: string[];
+  sharedPrompts: string[];
   genCalls: string[];
   fetchedUsers: string[];
 } {
   const order: string[] = [];
   const ghAdds: { publicKey: string; title: string; keyType: string }[] = [];
   const biometricPrompts: string[] = [];
+  const sharedPrompts: string[] = [];
   const genCalls: string[] = [];
   const fetchedUsers: string[] = [];
   const existing = opts.existing ?? new Set<string>();
@@ -101,7 +106,24 @@ function fixture(opts: {
     },
   };
 
-  return { fx: { machine, publish, trust }, order, ghAdds, biometricPrompts, genCalls, fetchedUsers };
+  // The SHARED biometric door — the ONE gate the agent-run keygen + cert-sign steps go
+  // through (the operator's approval). Defaults to approve; tests can set ok:false to
+  // exercise the chain's keygen/sign fail-closed paths. Records its own prompts.
+  const biometricAuth = async (prompt: string): Promise<BiometricResult> => {
+    sharedPrompts.push(prompt);
+    order.push("shared.biometricAuth");
+    return opts.sharedBiometric ?? { ok: true, platform: "macos-touchid" };
+  };
+
+  return {
+    fx: { machine, publish, trust, biometricAuth },
+    order,
+    ghAdds,
+    biometricPrompts,
+    sharedPrompts,
+    genCalls,
+    fetchedUsers,
+  };
 }
 
 /** The conventional paths machine.ts builds (so fixtures can mark them present/absent). */
@@ -164,6 +186,31 @@ test("MISSING user keyring -> INSTRUCTION (keyring.sh), NEVER a silent seed-gen"
   // (genEd25519) is for the per-MACHINE device key — and here the machine key already
   // existed, so even that was a no-op. No seed-gen path exists in the orchestrator at all.
   expect(genCalls).toHaveLength(0);
+});
+
+test("CHAIN keygen gated: device key ABSENT + shared approve -> keygen runs after a shared prompt", async () => {
+  // device key absent (→ keygen), machine pub present so publish reaches the gate too.
+  const { fx, genCalls, sharedPrompts } = fixture({
+    existing: new Set([userKeyringPath, machinePubPath]),
+  });
+  const res = await onboard(fx, { user: USER, repoRoot: REPO, home: HOME });
+  expect(res.machine.action).toBe("generated");
+  expect(genCalls).toHaveLength(1); // keygen ran
+  expect(sharedPrompts).toHaveLength(1); // ONLY after a shared biometric approval
+  expect(sharedPrompts[0]).toContain("generate device key");
+});
+
+test("CHAIN FAIL-CLOSED (keygen): device ABSENT + shared DECLINE -> genEd25519 NEVER runs, blocked", async () => {
+  const { fx, genCalls, sharedPrompts } = fixture({
+    existing: new Set([userKeyringPath, machinePubPath]),
+    sharedBiometric: { ok: false, platform: "macos-touchid", reason: "declined" },
+  });
+  const res = await onboard(fx, { user: USER, repoRoot: REPO, home: HOME });
+  expect(res.machine.action).toBe("aborted-biometric");
+  expect(sharedPrompts).toHaveLength(1); // gate invoked
+  expect(genCalls).toHaveLength(0); // but NO keygen — fail-closed
+  const mStep = res.steps.find((s) => s.kind === "machine-key");
+  expect(mStep?.headline).toBe("blocked");
 });
 
 test("--dry-run: NO biometric prompt, NO gh write, NO keygen, NO network", async () => {
@@ -337,6 +384,23 @@ test("CA tie-in: CA + device key present -> cert-sign signs the device key (prin
   expect(signCount.n).toBe(1);
   // the cert text is public (a cert) — no private marker.
   expect(res.cert?.certText).not.toContain("PRIVATE" + " " + "KEY");
+});
+
+test("CA tie-in FAIL-CLOSED: CA + device present but shared DECLINE -> signCert NEVER runs, blocked", async () => {
+  const signCount = { n: 0 };
+  const { fx } = fixture({
+    existing: new Set([userKeyringPath, devicePrivatePath, machinePubPath]),
+    sharedBiometric: { ok: false, platform: "macos-touchid", reason: "declined" },
+  });
+  const fxWithCa: OnboardEffects = {
+    ...fx,
+    ca: fakeCa(new Set([caPrivatePath, machinePubPath]), { signCount }),
+  };
+  const res = await onboard(fxWithCa, { user: USER, repoRoot: REPO, home: HOME, signWithCa: true });
+  const certStep = res.steps.find((s) => s.kind === "cert-sign");
+  expect(certStep?.headline).toBe("blocked");
+  expect(res.cert?.action).toBe("aborted-biometric");
+  expect(signCount.n).toBe(0); // NO sign — fail-closed
 });
 
 test("CA tie-in: --dry-run does NOT sign (would-sign), even with CA + device present", async () => {

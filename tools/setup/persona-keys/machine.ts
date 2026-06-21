@@ -26,6 +26,11 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir, hostname as osHostname } from "node:os";
 import { join } from "node:path";
+// SHARED biometric-approval gate — the agent EXECUTES the device-key generation; the
+// operator's Touch ID / Windows Hello is the AUTHORIZATION (Aaron 2026-06-21). Key generation
+// creates private material, so it is gated FAIL-CLOSED behind a biometric confirm.
+import { requireBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
+export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
 /** The host-environment doors — the ONLY channel for ambient influence (noninterference). */
 export interface MachineEffects {
@@ -118,25 +123,37 @@ export interface MachineResult {
   readonly hostname: string;
   readonly devicePrivatePath: string;
   readonly devicePublicPath: string;
-  /** "generated" | "exists" (idempotent: an existing key is a no-op) | "would-generate" (dry-run). */
-  readonly action: "generated" | "exists" | "would-generate";
+  /** "generated" | "exists" (idempotent: an existing key is a no-op) | "would-generate" (dry-run)
+   *  | "aborted-biometric" (operator did NOT approve → fail-closed, NO key generated). */
+  readonly action: "generated" | "exists" | "would-generate" | "aborted-biometric";
   /** The PUBLIC key text, when present/generated (safe to print/publish). Undefined on pure dry-run. */
   readonly publicKey?: string;
   /** True iff we wrote the public key to the publish path (never true on dry-run). */
   readonly published: boolean;
+  /** The biometric approval outcome (present only when the gate was invoked — i.e. a real
+   *  keygen was attempted; absent on dry-run + the idempotent `exists` no-op; no secret). */
+  readonly biometric?: BiometricResult;
 }
 
 /**
- * Generate (or, idempotently, recognise) THIS machine's per-host ed25519 device key.
- * Generates ONLY a device keypair — no seed, no CA, no persona key. The private key
- * is written locally by ssh-keygen under umask 077 (the runner's job); ONLY the
- * public key is read back and (optionally) written to the publish path.
+ * Generate (or, idempotently, recognise) THIS machine's per-host ed25519 device key —
+ * AGENT-RUN, OPERATOR-APPROVED. The agent EXECUTES the keygen; a biometric confirm (Touch ID /
+ * Windows Hello) is the operator's AUTHORIZATION. Generates ONLY a device keypair — no seed,
+ * no CA, no persona key. The private key is written locally by ssh-keygen under umask 077 (the
+ * runner's job); ONLY the public key is read back and (optionally) written to the publish path.
  *
+ * BIOMETRIC GATE + FAIL-CLOSED: when a real keygen is about to happen (the device key does NOT
+ * already exist and it is not a dry-run), `biometricAuth()` MUST return ok:true first. On
+ * ok:false the run aborts ("aborted-biometric") and `genEd25519` is NEVER invoked — NO key is
+ * created and NO public artifact is written. The idempotent `exists` no-op (no private material
+ * created) and `--dry-run` (creates nothing) do NOT prompt.
+ *
+ * @param biometricAuth the SHARED approval gate (biometric.ts). Required for the real-keygen path.
  * @param publish  when true, copy the PUBLIC key into maintainers/<user>/machines/.
  *                 (This PR does NOT commit; the caller/operator decides whether to commit.)
- * @param dryRun   when true, NOTHING is generated or written — returns "would-generate".
+ * @param dryRun   when true, NOTHING is generated, written, or prompted — "would-generate".
  */
-export function ensureMachineKey(
+export async function ensureMachineKey(
   fx: MachineEffects,
   opts: {
     readonly user: string;
@@ -144,8 +161,10 @@ export function ensureMachineKey(
     readonly home?: string;
     readonly publish?: boolean;
     readonly dryRun?: boolean;
+    /** SHARED biometric approval door — required for the real keygen path (fail-closed). */
+    readonly biometricAuth?: BiometricAuth;
   },
-): MachineResult {
+): Promise<MachineResult> {
   const hostname = sanitizeHostname(fx.hostname());
   const devicePrivatePath = opts.home === undefined ? deviceKeyPath() : deviceKeyPath(opts.home);
   const devicePublicPath = publishPubPath(opts.repoRoot, opts.user, hostname);
@@ -166,22 +185,41 @@ export function ensureMachineKey(
 
   let publicKey: string;
   let action: MachineResult["action"];
+  let biometric: BiometricResult | undefined;
   if (alreadyExists) {
-    // Idempotent: an existing device key is a no-op. Read back its PUBLIC half only.
+    // Idempotent: an existing device key is a no-op (no private material created → no gate).
+    // Read back its PUBLIC half only.
     publicKey = fx.readText(devicePrivatePath + ".pub").trim();
     action = "exists";
   } else {
+    // BIOMETRIC GATE — fail-closed. A real keygen creates private material; require approval.
+    biometric = await requireBiometric(
+      opts.biometricAuth,
+      `Approve: generate device key for ${hostname}`,
+    );
+    if (!biometric.ok) {
+      return {
+        dryRun: false,
+        hostname,
+        devicePrivatePath,
+        devicePublicPath,
+        action: "aborted-biometric",
+        published: false,
+        biometric,
+      };
+    }
     publicKey = fx.genEd25519(devicePrivatePath, `${opts.user}@${hostname} (zeta-device)`).trim();
     action = "generated";
   }
 
+  const bio = biometric !== undefined ? { biometric } : {};
   if (wantPublish) {
     fx.mkdirp(dirOf(devicePublicPath));
     fx.writeText(devicePublicPath, publicKey.endsWith("\n") ? publicKey : publicKey + "\n");
-    return { dryRun: false, hostname, devicePrivatePath, devicePublicPath, action, publicKey, published: true };
+    return { dryRun: false, hostname, devicePrivatePath, devicePublicPath, action, publicKey, published: true, ...bio };
   }
 
-  return { dryRun: false, hostname, devicePrivatePath, devicePublicPath, action, publicKey, published: false };
+  return { dryRun: false, hostname, devicePrivatePath, devicePublicPath, action, publicKey, published: false, ...bio };
 }
 
 function dirOf(p: string): string {

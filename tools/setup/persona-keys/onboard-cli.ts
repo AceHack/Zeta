@@ -21,6 +21,7 @@ import { realEffects as realMachineEffects } from "./machine.ts";
 import { realEffects as realPublishEffects } from "./publish.ts";
 import { realEffects as realTrustEffects } from "./github-trust.ts";
 import { realEffects as realCaEffects } from "./ca.ts";
+import { realBiometric } from "./biometric.ts";
 import { formatOnboard, onboard, type OnboardEffects, type OnboardOptions } from "./onboard.ts";
 
 const args = process.argv.slice(2);
@@ -82,6 +83,10 @@ async function main(): Promise<number> {
     machine: realMachineEffects(),
     publish: realPublishEffects(),
     trust: realTrustEffects(),
+    // The SHARED biometric gate — the operator's authorization for the agent-run keygen +
+    // cert-sign steps (fail-closed). The publish step uses publish's own gate. Dry-run never
+    // invokes any of them.
+    biometricAuth: realBiometric(),
     // The CA door is wired ONLY when the operator opts into the cert tie-in. Absent the flag
     // the cert step never runs (and a missing CA private key skips cleanly inside ca.ts).
     ...(signWithCa ? { ca: realCaEffects() } : {}),

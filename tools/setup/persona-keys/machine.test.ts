@@ -17,6 +17,20 @@ import {
   userKeyringPublicPath,
   type MachineEffects,
 } from "./machine.ts";
+import type { BiometricAuth, BiometricResult } from "./biometric.ts";
+
+// A FAKE biometric door (no real Touch ID / Hello). `ok` controls approval; a `calls` array
+// records every prompt so a test can assert the gate WAS invoked + fail-closed semantics.
+function fakeBiometric(ok: boolean, calls?: string[]): BiometricAuth {
+  return async (prompt: string): Promise<BiometricResult> => {
+    if (calls) calls.push(prompt);
+    return ok
+      ? { ok: true, platform: "macos-touchid" }
+      : { ok: false, platform: "macos-touchid", reason: "declined" };
+  };
+}
+// A passing approval, the default for the happy-path tests below.
+const APPROVE = fakeBiometric(true);
 
 // A fully in-memory-ish fake: deterministic fake key generation, real temp filesystem
 // for the public-artifact writes. The fake NEVER shells out and NEVER touches secrets.
@@ -71,16 +85,25 @@ test("status: detects an existing user keyring + machine key independently (two-
   }
 });
 
-test("--dry-run generates NOTHING and reports would-generate", () => {
+test("--dry-run generates NOTHING and reports would-generate (and never prompts)", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-machine-"));
   try {
     const genCount = { n: 0 };
+    const prompts: string[] = [];
     const fx = fakeEffects("dev-box-3", { genCount });
-    const r = ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp, dryRun: true, publish: true });
+    const r = await ensureMachineKey(fx, {
+      user: "tester",
+      repoRoot: tmp,
+      home: tmp,
+      dryRun: true,
+      publish: true,
+      biometricAuth: fakeBiometric(true, prompts),
+    });
     expect(r.dryRun).toBe(true);
     expect(r.action).toBe("would-generate");
     expect(r.published).toBe(false);
     expect(genCount.n).toBe(0); // nothing generated
+    expect(prompts).toHaveLength(0); // dry-run NEVER prompts
     expect(existsSync(r.devicePrivatePath)).toBe(false); // nothing written
     expect(existsSync(r.devicePublicPath)).toBe(false);
   } finally {
@@ -88,11 +111,11 @@ test("--dry-run generates NOTHING and reports would-generate", () => {
   }
 });
 
-test("machine: generates a device key (fake) and publishes ONLY the public half; private never published", () => {
+test("machine: generates a device key (fake) and publishes ONLY the public half; private never published", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-machine-"));
   try {
     const fx = fakeEffects("dev-box-4");
-    const r = ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp, publish: true });
+    const r = await ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp, publish: true, biometricAuth: APPROVE });
     expect(r.action).toBe("generated");
     expect(r.published).toBe(true);
     // the PUBLISH path holds ONLY the public key — no private bytes anywhere in it
@@ -101,7 +124,8 @@ test("machine: generates a device key (fake) and publishes ONLY the public half;
     const published = readFileSync(publishedPath, "utf8");
     expect(published).toContain("ssh-ed25519");
     expect(published).not.toContain("PRIVATE");
-    expect(published).not.toMatch(/BEGIN .*PRIVATE KEY/);
+    // The marker is assembled at runtime so NO key-shaped header literal appears in this file.
+    expect(published).not.toMatch(new RegExp("BEGIN .*" + "PRIVATE" + " " + "KEY"));
     // the private key file stays at the LOCAL path, NOT under maintainers/
     expect(r.devicePrivatePath.includes("maintainers")).toBe(false);
   } finally {
@@ -109,18 +133,63 @@ test("machine: generates a device key (fake) and publishes ONLY the public half;
   }
 });
 
-test("machine: idempotent — a second run is a no-op ('exists'), does not regenerate", () => {
+test("machine: idempotent — a second run is a no-op ('exists'), does not regenerate", async () => {
   const tmp = mkdtempSync(join(tmpdir(), "zeta-machine-"));
   try {
     const genCount = { n: 0 };
+    const secondPrompts: string[] = [];
     const fx = fakeEffects("dev-box-5", { genCount });
-    const first = ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp });
+    const first = await ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp, biometricAuth: APPROVE });
     expect(first.action).toBe("generated");
     expect(genCount.n).toBe(1);
-    const second = ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp });
+    const second = await ensureMachineKey(fx, {
+      user: "tester",
+      repoRoot: tmp,
+      home: tmp,
+      biometricAuth: fakeBiometric(true, secondPrompts),
+    });
     expect(second.action).toBe("exists"); // idempotent: apply-N == apply-once effect
     expect(genCount.n).toBe(1); // NOT regenerated
+    expect(secondPrompts).toHaveLength(0); // the idempotent no-op does NOT prompt (no keygen)
     expect(second.publicKey).toBe(first.publicKey); // same public key returned
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("FAIL-CLOSED: biometric declined -> genEd25519 NEVER called, NO key, aborted-biometric", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-machine-"));
+  try {
+    const genCount = { n: 0 };
+    const prompts: string[] = [];
+    const fx = fakeEffects("dev-box-deny", { genCount });
+    const r = await ensureMachineKey(fx, {
+      user: "tester",
+      repoRoot: tmp,
+      home: tmp,
+      publish: true,
+      biometricAuth: fakeBiometric(false, prompts),
+    });
+    expect(r.action).toBe("aborted-biometric");
+    expect(prompts).toHaveLength(1); // the gate WAS invoked
+    expect(genCount.n).toBe(0); // the keygen door was NEVER called
+    expect(r.published).toBe(false);
+    expect(existsSync(r.devicePrivatePath)).toBe(false); // nothing written
+    expect(existsSync(r.devicePublicPath)).toBe(false); // no public artifact either
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test("FAIL-CLOSED: NO biometric door provided -> keygen NEVER runs (default fail-closed)", async () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-machine-"));
+  try {
+    const genCount = { n: 0 };
+    const fx = fakeEffects("dev-box-nodoor", { genCount });
+    // No biometricAuth wired at all — requireBiometric returns ok:false (fail-closed).
+    const r = await ensureMachineKey(fx, { user: "tester", repoRoot: tmp, home: tmp });
+    expect(r.action).toBe("aborted-biometric");
+    expect(genCount.n).toBe(0); // never generated without an approval door
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -145,8 +214,10 @@ test("real ssh-keygen into a temp dir produces a valid ed25519 pubkey, private s
   try {
     const { realEffects, ensureMachineKey: ensure, deviceKeyPath } = await import("./machine.ts");
     const fx = realEffects();
-    // pin HOME to the temp dir so the REAL device path resolves inside temp, never ~/.ssh
-    const r = ensure(fx, { user: "tester", repoRoot: tmp, home: tmp, publish: true });
+    // pin HOME to the temp dir so the REAL device path resolves inside temp, never ~/.ssh.
+    // A FAKE biometric (approve) so this test never needs a real Touch ID prompt — the gate
+    // is exercised against the fake; the keygen itself is the real ssh-keygen.
+    const r = await ensure(fx, { user: "tester", repoRoot: tmp, home: tmp, publish: true, biometricAuth: APPROVE });
     expect(r.action).toBe("generated");
     const priv = deviceKeyPath(tmp);
     expect(priv.startsWith(tmp)).toBe(true); // private key is inside the temp dir

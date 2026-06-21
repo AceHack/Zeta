@@ -49,6 +49,7 @@ import type { GithubTrustEffects, TrustResolution } from "./github-trust.ts";
 import { resolveIdentities, resolveTrustSet } from "./github-trust.ts";
 import type { CaEffects, CertResult } from "./ca.ts";
 import { signMachineCert } from "./ca.ts";
+import type { BiometricAuth } from "./biometric.ts";
 
 /** The sub-module effects bundles — the ONLY doors for ambient influence. Tests inject
  *  fakes; the CLI injects each module's `realEffects()`. The orchestrator never touches the
@@ -61,6 +62,11 @@ export interface OnboardEffects {
   readonly trust: GithubTrustEffects;
   /** OPTIONAL CA door — enables the gated, flash-time cert-sign tie-in (delegates to ca.ts). */
   readonly ca?: CaEffects;
+  /** The SHARED biometric approval door — the ONE gate every sensitive op runs through
+   *  (machine-key generation, cert sign). The PUBLISH step uses its own `publish.biometricAuth`
+   *  (publish.ts owns that gate). When absent, the gated keygen/sign ops fail-closed (no key /
+   *  no cert). Tests inject a fake; the CLI injects `realBiometric()`. */
+  readonly biometricAuth?: BiometricAuth;
 }
 
 /** Options for an onboard run — the operator identity + repo root, plus the knobs each
@@ -200,10 +206,12 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
   // Delegated: machine.ts owns ssh-keygen + umask + the public-only read-back. We pass
   // publish:false here (this slice's "publish to GitHub" is the separate biometric-gated
   // step 4, not the maintainers/ pubkey-file write). Idempotent: an existing key is a no-op.
-  const machine = ensureMachineKey(fx.machine, {
+  // Gated: the agent runs the keygen, the operator's biometric is the approval (shared door).
+  const machine = await ensureMachineKey(fx.machine, {
     user: opts.user,
     repoRoot: opts.repoRoot,
     ...(home !== undefined ? { home } : {}),
+    ...(fx.biometricAuth !== undefined ? { biometricAuth: fx.biometricAuth } : {}),
     dryRun,
   });
   steps.push({
@@ -213,13 +221,17 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
         ? "created"
         : machine.action === "would-generate"
           ? "would-create"
-          : "present",
+          : machine.action === "aborted-biometric"
+            ? "blocked"
+            : "present",
     detail:
       machine.action === "exists"
         ? `device key already present (local, private) at ${machine.devicePrivatePath} — no action.`
         : machine.action === "would-generate"
           ? `[dry-run] would generate this host's device key at ${machine.devicePrivatePath} (NOTHING generated).`
-          : `generated this host's device key at ${machine.devicePrivatePath} (private, local, umask 077).`,
+          : machine.action === "aborted-biometric"
+            ? `blocked: biometric ${machine.biometric?.reason ? `failed: ${machine.biometric.reason}` : "not approved"} — NO device key generated (fail-closed).`
+            : `generated this host's device key at ${machine.devicePrivatePath} (private, local, umask 077).`,
     pending: false,
   });
 
@@ -283,12 +295,15 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
   // beyond ca.ts's own `would-sign` (dryRun is threaded through).
   let cert: CertResult | undefined;
   if (opts.signWithCa === true && fx.ca !== undefined) {
-    const certRes = signMachineCert(fx.ca, {
+    // Gated: the agent runs ssh-keygen -s, the operator's biometric is the approval. Signing
+    // consumes the CA private key, so it is fail-closed behind the shared gate.
+    const certRes = await signMachineCert(fx.ca, {
       user: opts.user,
       machineId: hostname,
       devicePubPath: publishPubPath(opts.repoRoot, opts.user, hostname),
       ...(home !== undefined ? { home } : {}),
       ...(opts.certValidity !== undefined ? { validity: opts.certValidity } : {}),
+      ...(fx.biometricAuth !== undefined ? { biometricAuth: fx.biometricAuth } : {}),
       dryRun,
     });
     cert = certRes;
@@ -299,7 +314,9 @@ export async function onboard(fx: OnboardEffects, opts: OnboardOptions): Promise
           ? "signed"
           : certRes.action === "would-sign"
             ? "would-sign"
-            : "skipped",
+            : certRes.action === "aborted-biometric"
+              ? "blocked"
+              : "skipped",
       detail: certStepDetail(certRes),
       // No-CA / no-device-key are clean skips (operator may add a CA later); never block.
       pending: false,
@@ -324,6 +341,8 @@ function certStepDetail(res: CertResult): string {
       return `skipped: no CA configured (no CA private key at ${res.caPrivatePath}) — present a bare key, sign later.`;
     case "no-device-key":
       return `skipped: no device pubkey at ${res.devicePubPath} — run the machine step (with --publish) first.`;
+    case "aborted-biometric":
+      return `blocked: biometric ${res.biometric?.reason ? `failed: ${res.biometric.reason}` : "not approved"} — NO cert signed (fail-closed).`;
   }
 }
 
