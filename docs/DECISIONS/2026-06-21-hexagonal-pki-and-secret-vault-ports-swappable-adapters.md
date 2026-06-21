@@ -75,6 +75,31 @@ them as explicit interfaces (so adapters are truly drop-in) is the build-out —
 
 + 081KVNMFYS808QG0R002D0VM64 (Vaultwarden via ArgoCD). KeyCustody (SSH-agent) port = new follow-up.
 
+## The second axis the ports abstract: TRUST TOPOLOGY (Aaron 2026-06-21)
+
+The ports abstract not just the vendor but the **trust topology** — where trust originates and
+who holds the authority. Each adapter sits somewhere on top-down ↔ bottom-up ↔ traveler-framed:
+
+| Topology | Trust origin / authority | Adapters |
+|---|---|---|
+| **Top-down PKI** | a root authority issues trust downward (X.509 hierarchy) | our **SSH-CA** (`ca.ts`) — the cluster bootstrap |
+| **Bottom-up, centralized** | individual is the root; infra is a 3rd party | **1Password**, Bitwarden cloud |
+| **Bottom-up, decentralized** | individual is root AND self-hosts the infra | **Vaultwarden** / self-hosted Bitwarden (the OSS lane) |
+| **Traveler-framed** | frame-relative + relational — NO single mandatory root; parties establish trust in a shared frame | **Zeta DB-as-PKI** (the endgame) |
+
+1Password's shape: **bottom-up at the edge** (you are the root of your own vault) but
+**centralized at the infrastructure** (1Password Inc. operates the substrate). The OSS
+self-hosted version (Vaultwarden) moves it down to **bottom-up + decentralized** — trust both
+originates and *resides* with you.
+
+**Why this matters (manifesto §1):** top-down PKI is a **central point of control** — it violates
+scale-free. So Zeta's *endgame* PKI is **bottom-up + traveler-framed** (frame-relative trust, no
+mandatory root — the same shape as the beach/traveler meeting protocol and the multi-oracle "no
+single mandatory morality"). The SSH-CA is the top-down **bootstrap**; the hexagonal ports are
+exactly what let us **slide top-down-bootstrap → bottom-up-decentralized → traveler-framed-DB-PKI
+with NO call-site change.** The ports abstract the trust topology itself, not just the vendor —
+which is the whole value ("the interfaces are the valuable thing").
+
 ## Anchors
 
 Cockburn, *Hexagonal Architecture* (ports & adapters). In-repo:
