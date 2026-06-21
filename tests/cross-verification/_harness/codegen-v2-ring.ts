@@ -14,6 +14,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, basename } from "node:path";
+import { emitRingGenericFSharp, emitRingGenericCSharp, emitRingGenericRust, emitRingGenericGo, emitRingGenericQSharp } from "./codegen-v2-remaining";
 
 // ─── IR types ────────────────────────────────────────────────────────────────
 
@@ -193,10 +194,20 @@ function main(): number {
 
   writeFileSync(join(outDir, "ring-generic.ts"), emitRingGenericTS(ir));
   writeFileSync(join(outDir, "ring-generic.py"), emitRingGenericPython(ir));
+  writeFileSync(join(outDir, "ring-generic.fsx"), emitRingGenericFSharp(ir));
+  writeFileSync(join(outDir, "ring-generic.csx"), emitRingGenericCSharp(ir));
+  writeFileSync(join(outDir, "ring-generic.rs"), emitRingGenericRust(ir));
+  writeFileSync(join(outDir, "ring-generic.go"), emitRingGenericGo(ir));
+  writeFileSync(join(outDir, "ring-generic.qs"), emitRingGenericQSharp(ir));
 
-  console.log(`[codegen-v2-ring] emitted ring-generic scripts from ${basename(args[0]!)} → ${outDir}`);
-  console.log(`  ring-generic.ts  — TS (import StarRing, handles all v2 ops)`);
-  console.log(`  ring-generic.py  — Python (inline complex ring, all v2 ops)`);
+  console.log(`[codegen-v2-ring] emitted 7 ring-generic scripts from ${basename(args[0]!)} → ${outDir}`);
+  console.log(`  ring-generic.ts   — TypeScript (import StarRing)`);
+  console.log(`  ring-generic.py   — Python (inline complex ring)`);
+  console.log(`  ring-generic.fsx  — F# (IStarRing + benchmark)`);
+  console.log(`  ring-generic.csx  — C# (IStarRing + benchmark)`);
+  console.log(`  ring-generic.rs   — Rust (StarRing trait + benchmark)`);
+  console.log(`  ring-generic.go   — Go (StarRing interface + benchmark)`);
+  console.log(`  ring-generic.qs   — Q# (Int masking + verify)`);
   return 0;
 }
 
