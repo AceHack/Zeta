@@ -60,6 +60,13 @@ Not a static tree — more precisely:
   shaped: a Merkle chain of versioned states, "a branch is a Merkle root"). The directory is the
   **DAG those chains form** as they branch and merge. So it's evolving lineages, not fixed nodes —
   which is exactly why it lives over **retractable Z-sets** (each chain advances/retracts as deltas).
+  - **The chains are Z-sets (reversible/retractable), NOT G-sets (Aaron 2026-06-21)** — the default
+    is **retractable** (a state can be reversed; revoke/move/rotate = a `−1` retraction). A chain is
+    **G-set / grow-only ONLY** when it is (a) a **VIEW** (a materialized/derived projection that
+    only accumulates) or (b) rooted in **external irreversibility** (something that genuinely
+    cannot be undone in the world — a published fact, a spent token, an external commit). So:
+    **mostly reversible Z-set chains; grow-only only where a view or external reality forces it.**
+    (Z-set = abelian group with negation; G-set = idempotent grow-only monoid — `dv2` ladder.)
 - **Multi-parented leaves (from content-addressing).** Because nodes are **content-addressed**,
   identical content is **one** node referenced by **many** parents (Merkle-DAG dedup) — so a leaf
   legitimately has **multiple parents**. That's why it's a **DAG, not a tree**: shared/deduped
