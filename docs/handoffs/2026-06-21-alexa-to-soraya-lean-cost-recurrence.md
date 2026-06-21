@@ -8,6 +8,7 @@ Status: summoned (timed out at 11min — heavy thinking mode, will pick up next 
 ## Context
 
 Complexity spike steps 1-4 complete on main:
+
 - #8949: DST cost-counter + consolidate O(n²) flag
 - #8952: Z3 envelope proof (n(n-1)/2 ≤ n², UNSAT)
 - #8953: Growth-shape property (ratio ≈ 4 empirically confirmed)

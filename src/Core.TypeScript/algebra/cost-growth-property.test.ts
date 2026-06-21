@@ -33,7 +33,7 @@ function growthRatio(sizes: number[]): number[] {
   const costs = sizes.map(measureConsolidateEqCalls);
   const ratios: number[] = [];
   for (let i = 1; i < costs.length; i++) {
-    ratios.push(costs[i] / costs[i - 1]);
+    ratios.push(costs[i]! / costs[i - 1]!);
   }
   return ratios;
 }
