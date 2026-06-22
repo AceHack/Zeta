@@ -60,6 +60,52 @@ declare module "node:os" {
 
 declare module "node:crypto" {
   export function randomUUID(): string;
+
+  export type ScryptOptions = { N?: number; r?: number; p?: number; maxmem?: number };
+  export type CipherGcm = {
+    setAAD(aad: Uint8Array): CipherGcm;
+    update(data: Uint8Array): Uint8Array;
+    final(): Uint8Array;
+    getAuthTag(): Uint8Array;
+  };
+  export type DecipherGcm = {
+    setAAD(aad: Uint8Array): DecipherGcm;
+    setAuthTag(tag: Uint8Array): DecipherGcm;
+    update(data: Uint8Array): Uint8Array;
+    final(): Uint8Array;
+  };
+
+  export function randomBytes(size: number): Uint8Array;
+  export function scryptSync(
+    password: Uint8Array | string,
+    salt: Uint8Array | string,
+    keylen: number,
+    options?: ScryptOptions,
+  ): Uint8Array;
+  export function hkdfSync(
+    digest: "sha256",
+    ikm: Uint8Array,
+    salt: Uint8Array,
+    info: Uint8Array,
+    keylen: number,
+  ): ArrayBuffer;
+  export function createCipheriv(algorithm: "aes-256-gcm", key: Uint8Array, iv: Uint8Array): CipherGcm;
+  export function createDecipheriv(algorithm: "aes-256-gcm", key: Uint8Array, iv: Uint8Array): DecipherGcm;
+}
+
+declare module "node:child_process" {
+  export type ChildProcessStream = { on(event: "data", cb: (chunk: Uint8Array) => void): void } | null;
+  export type SpawnOptions = { stdio?: readonly ("ignore" | "pipe")[] };
+  export type SpawnedProcess = {
+    pid?: number;
+    stdout: ChildProcessStream;
+    stderr: ChildProcessStream;
+    on(event: "error", cb: (err: { code?: string; message: string }) => void): void;
+    on(event: "spawn", cb: () => void): void;
+    on(event: "close", cb: (code: number | null) => void): void;
+    kill(signal?: string): boolean;
+  };
+  export function spawn(command: string, args: readonly string[], options?: SpawnOptions): SpawnedProcess;
 }
 
 declare module "node:fs/promises" {

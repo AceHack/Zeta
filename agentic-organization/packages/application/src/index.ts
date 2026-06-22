@@ -1156,3 +1156,51 @@ export {
   type ConformanceViolation,
   type ReplayLedgerOptions,
 } from "./conformance.ts";
+export {
+  agentIdentityFromSpiffe,
+  createMockSpiffeIdentityProvider,
+  trustDomainOf,
+  validateSpiffeIdentity,
+  type SpiffeIdentity,
+  type SpiffeSvid,
+  type SpiffeError,
+  type SpiffeResult,
+  type SpiffeIdentityProvider,
+  type MockSpiffeOptions,
+} from "./spiffe-identity.ts";
+export {
+  isAllowedEgress,
+  isAllowedHttpEgress,
+  isAllowedServiceAccount,
+  type EgressPolicy,
+  type EgressHttpRule,
+} from "./egress-policy.ts";
+export {
+  createVaultCredentialProxy,
+  type AsyncCredentialProxyPort,
+  type VaultCredentialProxyDeps,
+  type VaultSecret,
+  type VaultError,
+  type VaultResult,
+} from "./vault-credential-proxy.ts";
+export {
+  buildBwrapArgs,
+  createBwrapSandbox,
+  createMockSandbox,
+  type BwrapSandbox,
+  type BwrapSpawnOptions,
+  type SandboxProcess,
+  type SandboxError,
+  type SandboxSpawnResult,
+  type MockSandboxOptions,
+} from "./bwrap-sandbox.ts";
+export {
+  createCredentialBootstrap,
+  encryptCredentials,
+  DEFAULT_SCRYPT_PARAMS,
+  type CredentialBootstrap,
+  type RestoredCredential,
+  type BootstrapError,
+  type BootstrapResult,
+  type ScryptParams,
+} from "./credential-bootstrap.ts";
