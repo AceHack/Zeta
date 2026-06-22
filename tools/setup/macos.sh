@@ -156,7 +156,7 @@ echo "✓ brew casks up to date"
 
 # ── 4. mise ─────────────────────────────────────────────────────────
 # Keep in sync with .mise.toml min_version and tools/setup/linux.sh MISE_PIN_VERSION.
-MISE_PIN_VERSION="2026.6.11"
+MISE_PIN_VERSION="2026.6.12"
 
 installed_mise_version=""
 if command -v mise >/dev/null 2>&1; then

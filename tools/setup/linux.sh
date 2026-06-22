@@ -197,7 +197,7 @@ linux_sh_nixos_tarball_mise_allowed() {
     || [ -e /lib/ld-linux-aarch64.so.1 ]
 }
 
-MISE_PIN_VERSION="2026.6.11"
+MISE_PIN_VERSION="2026.6.12"
 MISE_VERSION="v${MISE_PIN_VERSION}"
 MISE_SHA256_X64="89c88e407c6e3a19f5f86af2cbbf88c6ef6147d55a7098c84da12b36f44f1ff3"
 MISE_SHA256_ARM64="0318f90fccf8bad6547ad6b2191764233309ceb3b6cece94c48454f385f091f5"
