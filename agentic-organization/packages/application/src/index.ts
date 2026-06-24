@@ -1204,3 +1204,36 @@ export {
   type BootstrapResult,
   type ScryptParams,
 } from "./credential-bootstrap.ts";
+export {
+  PERSONA_REGISTRY,
+  getPersona,
+  listPersonas,
+  distinctVendors,
+  type AgentPersonaConfig,
+} from "./agent-persona-registry.ts";
+export {
+  DEFAULT_ROOM_LIFECYCLE,
+  buildRoomLifecycle,
+  renderAgentUnit,
+  type RoomLifecycleConfig,
+  type RenderedAgentUnit,
+} from "./systemd-runtime-adapter.ts";
+export {
+  MIN_PEERS_FOR_BFT,
+  canAttemptRepair,
+  countHealthy,
+  createMockMutualRepair,
+  type MutualRepairPort,
+  type HealthStatus,
+  type RepairResult,
+  type MockMutualRepairOptions,
+} from "./mutual-repair.ts";
+export {
+  classifyProvisioningValues,
+  validateRoomInitializationConfig,
+  type RoomInitializationConfig,
+  type ProvisioningValueClass,
+  type ClassifiedProvisioningValue,
+  type InitializationError,
+  type ValidateInitializationResult,
+} from "./room-initialization.ts";
