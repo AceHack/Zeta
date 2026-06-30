@@ -1,0 +1,18 @@
+commit 282ffc8369bc752a401e754d256c450575311f3b
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 16:02:54 2026 -0400
+
+    fix(pr-preservation): add archived files to git
+
+diff --git a/tools/pr-preservation/archive-pr.ts b/tools/pr-preservation/archive-pr.ts
+index 4fdbbcf48..52f1ef248 100644
+--- a/tools/pr-preservation/archive-pr.ts
++++ b/tools/pr-preservation/archive-pr.ts
+@@ -795,6 +795,7 @@ export function main(argv: readonly string[]): number {
+     join(outDir, `PR-${String(args.pr).padStart(4, "0")}-${makeSlug(fetched.pr.title ?? "untitled")}.md`);
+ 
+   writeFileSync(path, content);
++  spawnSync("git", ["add", path]);
+   process.stdout.write(
+     `wrote ${path} (${String(content.length)} bytes, ${String(fetched.threads.length)} threads, ${String(fetched.reviews.length)} reviews, ${String(fetched.comments.length)} comments)\n`,
+   );

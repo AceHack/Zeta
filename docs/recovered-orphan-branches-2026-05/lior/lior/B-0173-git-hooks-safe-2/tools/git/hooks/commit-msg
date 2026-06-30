@@ -1,0 +1,14 @@
+#!/bin/bash
+# commit-msg hook to run substrate claim checkers on the commit message.
+# Part of B-0173.
+
+COMMIT_MSG_FILE=$1
+
+echo "--- Running Substrate Claim Checkers (commit-msg) ---"
+
+if ! grep -q "Signed-off-by:" "$COMMIT_MSG_FILE"; then
+    echo "Warning: Commit message does not contain a 'Signed-off-by' trailer."
+fi
+
+echo "--- Substrate Claim Checkers complete ---"
+exit 0

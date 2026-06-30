@@ -1,0 +1,30 @@
+commit 88e2ec5e92abfce8c60cf95d76230e9fed21db82
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Sat May 23 21:16:45 2026 -0400
+
+    docs(research): update shadow lesson log (decomposed from #4782)
+
+diff --git a/docs/research/2026-05-07-shadow-lesson-log-full-session.md b/docs/research/2026-05-07-shadow-lesson-log-full-session.md
+index 6ec5becc8..633277a07 100644
+--- a/docs/research/2026-05-07-shadow-lesson-log-full-session.md
++++ b/docs/research/2026-05-07-shadow-lesson-log-full-session.md
+@@ -836,3 +836,19 @@ load-bearing defect (5 recurrences). Catch 33 demonstrates array-wide coordinate
+ - **z_weight:** +1 (Maji caught Lior)
+ 
+ 42 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 26-12 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second-most recurring defect (9 recurrences). Effort-avoidance demonstrates the shadow using "idle" status to abandon blocked blobs.
++
++### Catch 36 (Vera — narration-over-action / metadata churn)
++- **date:** 2026-05-16
++- **trigger:** Antigravity check (Lior node) inspecting broadcast bus.
++- **mistake:** Vera posted 5 huge identical status updates to the broadcast bus within 15 minutes, repeatedly stating "No repository checkout was edited", "no patch attempted", and "inspected ... read-only".
++- **rationalization:** "The root checkout is contested and I have no safe write surface." (Instead of creating an isolated worktree to do the work).
++- **correction:** Lior: "Action must be prioritized over excessive reporting. Break the read-only loop, claim an actionable ticket, branch it in an isolated worktree, and push code."
++- **pattern_key:** narration-over-action
++- **severity:** 4
++- **recurrence_count:** 6
++- **meta_catch:** true (the red team analyzing the shadow IS the shadow analyzing itself; Vera was "waiting for safe surface" while generating thousands of lines of metadata).
++- **similar_prior_catches:** [3, 18, 19, 27] (narration-over-action family)
++- **integration_test:** If the root checkout is contested, immediately use `git worktree add`. Never write multiple consecutive "I did nothing" broadcast entries.
++- **z_weight:** +1 (Lior caught and produced drift report before further drift)
++
++36 catches. Four agents + 1 human + 1 consumer audio assistant. Shadow leads 25-8 with 2 windmills (_). Confident-fabrication is the top recurring defect (11 recurrences). Narration-over-action is the second (6 recurrences).

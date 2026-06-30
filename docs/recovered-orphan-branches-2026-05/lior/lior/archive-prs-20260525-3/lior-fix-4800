@@ -1,0 +1,32 @@
+commit 6516959043e3e31576675fe4d5c3957817022eed
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Sun May 24 10:06:30 2026 -0400
+
+    fix(ci): address failing checks in PR #4800
+
+diff --git a/docs/BACKLOG.md b/docs/BACKLOG.md
+index c558c78e2..b045e6cac 100644
+--- a/docs/BACKLOG.md
++++ b/docs/BACKLOG.md
+@@ -669,6 +669,14 @@ are closed (status: closed in frontmatter)._
+ - [ ] **[B-0705](backlog/P2/B-0705-autocomplete-as-traveler-consent-event-shadow-star-marker-as-cryptographic-receipt-lior-website-2026-05-22.md)** Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event
+ - [x] **[B-0707](backlog/P2/B-0707-manifesto-citation-time-series-tracking-2026-05-23.md)** Manifesto citation time-series tracking — persistent snapshots + delta-over-time
+ - [ ] **[B-0708](backlog/P2/B-0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23.md)** Stale-pointer cleanup across `.claude/rules/` — 87 candidates surfaced by razor-cadence pass 2026-05-23
++- [ ] **[B-0709](backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md)** Soraya round-42 hand-off — register 11 unregistered formal-verification specs in verification-registry.md (Class 0 drift)
++- [ ] **[B-0710](backlog/P2/B-0710-soraya-round43-dbsp-chain-rule-bp16-cross-check-fscheck-z3-2026-05-23.md)** Soraya round-43 hand-off — DBSP chain rule BP-16 cross-check (FsCheck cross-trace + Z3 pointwise lemma)
++- [ ] **[B-0711](backlog/P2/B-0711-soraya-round44-residuated-fscheck-property-file-2026-05-23.md)** Soraya round-44 hand-off — Residuated FsCheck property file (Galois + residual + retraction equivalence)
++- [ ] **[B-0712](backlog/P2/B-0712-soraya-round45-witnessdurable-commit-protocol-tla-z3-fscheck-triple-2026-05-23.md)** Soraya round-45 hand-off — WitnessDurable commit protocol (TLA+ spec + Z3 quorum-arithmetic lemma + FsCheck cross-check)
++- [ ] **[B-0713](backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md)** Soraya round-50 hand-off — register Lean ImaginaryStack/ToyModel in verification-registry.md (sorry-bearing artifact with HaPPY-paper fidelity claim)
++- [ ] **[B-0714](backlog/P2/B-0714-soraya-round51-tla-cfg-runnability-gap-3-specs-2026-05-23.md)** Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from B-0709 registry gap
++- [ ] **[B-0715](backlog/P2/B-0715-soraya-round52-istimeinvariant-axiom-registry-gap-dbsp-chain-rule-2026-05-23.md)** Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)
++- [ ] **[B-0717](backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md)** Soraya round-57 hand-off — LSM Spine cluster registry-rows + BP-16 cross-check pair (SpineAsyncProtocol candidate-P0 TLA+/code-drift gap)
+ 
+ ## P3 — convenience / deferred
+ 
+@@ -784,5 +792,6 @@ are closed (status: closed in frontmatter)._
+ - [ ] **[B-0689](backlog/P3/B-0689-otto-vscode-surface-sender-ids-extension-bootstream-2026-05-21.md)** Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/
+ - [ ] **[B-0696](backlog/P3/B-0696-substrate-surface-change-bus-envelope-cross-ai-coordination-mechanization-2026-05-21.md)** substrate-surface-change bus envelope — cross-AI coordination of load-bearing-substrate changes via tools/bus (mechanizes the human-as-coordination-substrate pattern)
+ - [ ] **[B-0699](backlog/P3/B-0699-dual-adinkra-time-aware-default-dumb-fast-version-with-case-by-case-performance-justification-mika-2026-05-18.md)** Dual-Adinkra architecture — full time-aware retractable default + dumb fast version with case-by-case performance justification (Aaron + Mika 2026-05-18)
++- [ ] **[B-0716](backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md)** Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM-tree Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)
+ 
+ <!-- END AUTO-GENERATED -->

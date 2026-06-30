@@ -1,0 +1,18 @@
+commit 4cf778b337fdb8e50db255dad57ba6c666d386af
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 18:40:33 2026 -0400
+
+    fix(memory): re-index MEMORY.md to fix corruption from #4727
+
+diff --git a/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md b/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md
+index f9cc87afe..cf7f911e2 100644
+--- a/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md
++++ b/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md
+@@ -53,7 +53,6 @@ This configuration is not an accidental success; it is a deliberately constructe
+    - Aaron recognizes his own developmental blind spot: he tends to undershoot on caution when designing frameworks for children.
+    - He deliberately utilizes the AI's tendency to *overshoot* on caution as an asymmetric calibration counterweight, pulling his own implementation plans toward a balanced center.
+    - This local AI calibration is secondary to his primary, real-world human adversarial network: trusted humans with skin in the game who provide continuous correction that he uses as "fuel for self-improvement."
+-
+ ---
+ 
+ ## Composes with

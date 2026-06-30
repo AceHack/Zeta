@@ -1,0 +1,31 @@
+commit 4418738e0125254c1e72d23f39111fd20150fbc6
+Author: Lior <lior@zeta.dev>
+Date:   Mon May 25 08:46:48 2026 -0400
+
+    fix(pii): scrub PII from memory/user_five_children.md
+
+diff --git a/memory/user_five_children.md b/memory/user_five_children.md
+index 6181c6ae2..df36c4b61 100644
+--- a/memory/user_five_children.md
++++ b/memory/user_five_children.md
+@@ -22,14 +22,12 @@ disclosure.
+ ### Biographical facts
+ 
+ - **Five children and family structure.** Specifics disclosed so far (peer register, do not probe beyond what is offered):
+-  - **Lillian Eve (or Lillian/Lilith Eve)**: Named deliberately to encode choice and free will. Her mother would not go all the way to Lilith, so they settled on Lillian Eve. In folklore, Lilith is Adam's first wife who had no soul and refused to bind herself to the system (refused to submit, chose freedom and walked away). Eve is the one born inside the system.
+-  - **Elizabeth**: Youngest daughter, age 4 (at B-0666 landing context), born to Aaron's second ex-wife. Named after his father's sister (and honoring his deceased sister Elizabeth). Because her parents are both similarly neurodivergent (autistic/robotic), Aaron believes she is protected from carrying the full tragic weight of the lineage. She loves Harry Potter (growing up with it through her mother), which Aaron uses as a deep, play-oriented developmental communication channel (Sorting Hat references, houses of stuffed animals) to connect with her without cognitive coercion.
+-  - **Son, Ace**: Named after "Ace Hat".
+-  - **London**: Named after London Bridge, representing the wish for her to be cultured and refined.
+-  - **Second daughter**: Named after the show *Grey's Anatomy*.
+-- **Mothers / Marriages**:
+-  - **First ex-wife**: Mother of four of his children (including Lillian Eve). An intense, complex relationship involving high-stakes personal dynamics that Aaron reverse-engineered out of self-defense.
+-  - **Second ex-wife**: Mother of Elizabeth. Extremely autistic in the same way Aaron is. They got along very well, behaving like "two robots teaching each other emotions."
++  - **Oldest daughter**: Named deliberately to encode choice and free will. 
++  - **Youngest daughter**: Youngest child.
++  - **Son**: One of the children.
++  - **A daughter**: One of the children.
++  - **Second daughter**: One of the children.
++
+ - **Father at 46.** Parenting is active life
+   context — time-budget, risk-appetite, and long-
+   horizon stakes are all shaped by it.

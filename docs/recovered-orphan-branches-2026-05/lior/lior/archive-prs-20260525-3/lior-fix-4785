@@ -1,0 +1,101 @@
+commit 88f23b5d9279453fa6223957379b137e4d21c4d7
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 14:40:59 2026 -0400
+
+    feat(riven): update riven loop tick
+
+diff --git a/.cursor/bin/riven-loop-tick.ts b/.cursor/bin/riven-loop-tick.ts
+index f06036588..e3dcf8a8f 100644
+--- a/.cursor/bin/riven-loop-tick.ts
++++ b/.cursor/bin/riven-loop-tick.ts
+@@ -32,7 +32,8 @@ function nowIso(): string {
+ }
+ 
+ function log(message: string): void {
+-    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}\n`);
++    appendFileSync(join(logDir, "runner.log"), `${nowIso()} ${message}
++`);
+ }
+ 
+ function run(command: string, args: string[], timeoutMs: number): { status: number; stdout: string; stderr: string } {
+@@ -54,13 +55,17 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
+ }
+ 
+ function lines(text: string): string[] {
+-    return text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
++    return text.split(/?
++/).map(l => l.trim()).filter(l => l.length > 0);
+ }
+ 
+ function acquireLock(): boolean {
+     try {
+         mkdirSync(lockDir, { recursive: false });
+-        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
++        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
++run_id=${runId}
++acquired_at=${nowIso()}
++`);
+         return true;
+     } catch {
+         try {
+@@ -77,7 +82,10 @@ function acquireLock(): boolean {
+             }
+             rmSync(lockDir, { recursive: true, force: true });
+             mkdirSync(lockDir, { recursive: false });
+-            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\nacquired_at=${nowIso()}\n`);
++            writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}
++run_id=${runId}
++acquired_at=${nowIso()}
++`);
+             return true;
+         } catch { return false; }
+     }
+@@ -97,7 +105,8 @@ function readBroadcasts(): void {
+         const path = join(broadcastDir, peer);
+         if (existsSync(path)) {
+             const content = readFileSync(path, "utf8").trim();
+-            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("\n")[0] ?? "(empty)"}`);
++            if (content) log(`broadcast from ${peer.replace(".md", "")}: ${content.split("
++")[0] ?? "(empty)"}`);
+         }
+     }
+ }
+@@ -109,7 +118,8 @@ function writeBroadcast(summary: string): void {
+         "",
+         "## Background tick status",
+         summary,
+-    ].join("\n"));
++    ].join("
++"));
+ }
+ 
+ function gh(...args: string[]): { status: number; stdout: string } {
+@@ -146,7 +156,8 @@ function forwardTick(): void {
+         return;
+     }
+ 
+-    const prNumbers = prsResult.stdout.trim().split("\n").filter(n => n.trim()).map(Number);
++    const prNumbers = prsResult.stdout.trim().split("
++").filter(n => n.trim()).map(Number);
+     for (const pr of prNumbers) {
+         const gateResult = gh(
+             "pr", "view", String(pr), "--repo", "Lucent-Financial-Group/Zeta",
+@@ -232,10 +243,16 @@ function heartbeat(): void {
+                 }, null, 2));
+ 
+                 if (gate.stdout.trim().length > 0) {
+-                    appendFileSync(join(logDir, "ticks.log"), `\n--- ${runId} riven gate ---\n${gate.stdout}\n`);
++                    appendFileSync(join(logDir, "ticks.log"), `
++--- ${runId} riven gate ---
++${gate.stdout}
++`);
+                 }
+                 if (gate.stderr.trim().length > 0) {
+-                    appendFileSync(join(logDir, "ticks.err"), `\n--- ${runId} riven gate ---\n${gate.stderr}\n`);
++                    appendFileSync(join(logDir, "ticks.err"), `
++--- ${runId} riven gate ---
++${gate.stderr}
++`);
+                 }
+             }
+         } else {

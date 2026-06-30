@@ -1,0 +1,59 @@
+commit a1a4600199b391e3eb746e671e47605db0eff9e3
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 17:26:33 2026 -0400
+
+    feat(backlog): decompose B-0160 part 1
+
+diff --git a/docs/backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md b/docs/backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md
+index 7309cb079..f5b0b811e 100644
+--- a/docs/backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md
++++ b/docs/backlog/P1/B-0160-claude-code-permissions-feature-tight-integration-aaron-2026-05-02.md
+@@ -6,13 +6,18 @@ title: Claude Code `/permissions` feature — research current API + integrate t
+ created: 2026-05-02
+ last_updated: 2026-05-02
+ depends_on: []
+-decomposition: atomic
++decomposition: decomposed
+ classification: buildable-now
+ type: friction-reducer
+ ---
+ 
+ # B-0160 — Claude Code `/permissions` feature tight integration (Aaron 2026-05-02)
+ 
++This item has been decomposed into the following sub-tasks:
++
++-   [B-0160.1](./B-0160.1-research-permissions-api.md): Research and document the `/permissions` API.
++
++
+ ## Origin
+ 
+ Aaron 2026-05-02 (during the substrate-burst session that produced PR #1202):
+diff --git a/docs/backlog/P1/B-0160.1-research-permissions-api.md b/docs/backlog/P1/B-0160.1-research-permissions-api.md
+new file mode 100644
+index 000000000..0983d9307
+--- /dev/null
++++ b/docs/backlog/P1/B-0160.1-research-permissions-api.md
+@@ -0,0 +1,23 @@
++---
++id: B-0160.1
++priority: P1
++status: open
++title: "Decomposition of B-0160: Research and document the /permissions API"
++created: 2026-05-24
++last_updated: 2026-05-24
++depends_on: []
++parent: B-0160
++decomposition: atomic
++---
++
++# B-0160.1 — Research and document the /permissions API
++
++This is the first sub-task of B-0160.
++
++## Acceptance criteria
++
++1.  **Research current `/permissions` API.** WebSearch the Claude Code docs (per Otto-364 search-first authority). Document:
++    *   What the slash command does (list / add / remove / scope?)
++    *   How it interacts with `.claude/settings.json` allow-list
++    *   Whether changes are session-only or durable
++    *   Permission scopes (Bash patterns, MCP servers, file paths, etc.)

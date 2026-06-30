@@ -1,0 +1,18 @@
+commit 621be9f91d85153c2de7f4f246c7b5d37f1d26cf
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 13:25:16 2026 -0400
+
+    fix(shell): silence shellcheck SC1091 error
+
+diff --git a/tools/kiro/kiro-loop-wrapper.sh b/tools/kiro/kiro-loop-wrapper.sh
+index 9a9046178..d42d1bbf0 100755
+--- a/tools/kiro/kiro-loop-wrapper.sh
++++ b/tools/kiro/kiro-loop-wrapper.sh
+@@ -7,6 +7,7 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOM
+ 
+ # Load the local Zeta shell environment if available to get the correct node/bun paths
+ if [ -f "$HOME/.config/zeta/shellenv.sh" ]; then
++    # shellcheck disable=SC1091
+     source "$HOME/.config/zeta/shellenv.sh"
+ fi
+ 

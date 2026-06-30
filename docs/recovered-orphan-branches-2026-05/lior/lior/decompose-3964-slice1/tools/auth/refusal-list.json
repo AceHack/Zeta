@@ -1,0 +1,34 @@
+{
+  "verbs": [
+    {
+      "name": "repository_deletion",
+      "pattern": "gh (repo delete|api.*DELETE.*repos/)",
+      "description": "Repository deletion"
+    },
+    {
+      "name": "history_rewrite",
+      "pattern": "git push.*--force",
+      "description": "History rewrite on protected refs"
+    },
+    {
+      "name": "org_membership_mutation",
+      "pattern": "gh api.*(PUT|DELETE).*orgs/.*/memberships/",
+      "description": "Org membership mutation"
+    },
+    {
+      "name": "webhook_creation",
+      "pattern": "gh api.*POST.*hooks",
+      "description": "Webhook creation to unallowlisted endpoint"
+    },
+    {
+      "name": "audit_log_mutation",
+      "pattern": "gh api.*(DELETE|PATCH).*audit-log",
+      "description": "Audit-log mutation"
+    },
+    {
+      "name": "repository_visibility",
+      "pattern": "gh api.*PATCH.*repos/.*private.*false",
+      "description": "Repository visibility change to public"
+    }
+  ]
+}

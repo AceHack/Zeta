@@ -1,0 +1,68 @@
+commit 0e74c6650cdd98f7593bce8605db582977229938
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 16:16:57 2026 -0400
+
+    fix(lint): remove invisible unicode characters
+
+diff --git a/docs/pr-discussions/PR-4799-docs-archive-preserve-recently-merged-prs-decomposed-from-47.md b/docs/pr-discussions/PR-4799-docs-archive-preserve-recently-merged-prs-decomposed-from-47.md
+index 4362c1876..5af87a264 100644
+--- a/docs/pr-discussions/PR-4799-docs-archive-preserve-recently-merged-prs-decomposed-from-47.md
++++ b/docs/pr-discussions/PR-4799-docs-archive-preserve-recently-merged-prs-decomposed-from-47.md
+@@ -68,49 +68,49 @@ Copilot reviewed 20 out of 20 changed files in this pull request and generated 8
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:56Z):
+ 
+-P0: This line contains an invisible Unicode character (U+200B / zero-width space) in the `@​EdwardCooke` handle. The repo’s `invisible-unicode-in-text` check will flag this in `*.md` and fail CI; replace it with plain ASCII (`@EdwardCooke`) and ensure no zero-width characters remain.
++P0: This line contains an invisible Unicode character (U+200B / zero-width space) in the `@EdwardCooke` handle. The repo’s `invisible-unicode-in-text` check will flag this in `*.md` and fail CI; replace it with plain ASCII (`@EdwardCooke`) and ensure no zero-width characters remain.
+ 
+ ### Thread 2: docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md:52 (resolved)
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:57Z):
+ 
+-P0: This thread text includes an actual U+200B zero-width space inside the example `[#​1907]` / `[#​....]` code spans. Even though it’s describing the issue, the literal hidden character will still trigger Semgrep `invisible-unicode-in-text` and break CI; replace the examples with ASCII (e.g., `[#1907]`) and describe the zero-width space in words ("U+200B between `#` and digits").
++P0: This thread text includes an actual U+200B zero-width space inside the example `[#1907]` / `[#​....]` code spans. Even though it’s describing the issue, the literal hidden character will still trigger Semgrep `invisible-unicode-in-text` and break CI; replace the examples with ASCII (e.g., `[#1907]`) and describe the zero-width space in words ("U+200B between `#` and digits").
+ 
+ ### Thread 3: docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md:52 (resolved)
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:57Z):
+ 
+-P0: This line contains a U+200B zero-width space inside the `@​meziantou` / `@​Copilot` code spans. Semgrep `invisible-unicode-in-text` will flag the hidden character even inside backticks; rewrite the examples using plain ASCII (`@meziantou`, `@Copilot`) and keep the mention of U+200B as text only.
++P0: This line contains a U+200B zero-width space inside the `@meziantou` / `@Copilot` code spans. Semgrep `invisible-unicode-in-text` will flag the hidden character even inside backticks; rewrite the examples using plain ASCII (`@meziantou`, `@Copilot`) and keep the mention of U+200B as text only.
+ 
+ ### Thread 4: docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md:58 (resolved)
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:57Z):
+ 
+-P0: This line contains an actual U+200B zero-width space inside the `@​Copilot` code span. That hidden character will trip the repo’s invisible-Unicode lint; replace it with ASCII `@Copilot` (or spell out the codepoint without embedding it).
++P0: This line contains an actual U+200B zero-width space inside the `@Copilot` code span. That hidden character will trip the repo’s invisible-Unicode lint; replace it with ASCII `@Copilot` (or spell out the codepoint without embedding it).
+ 
+ ### Thread 5: docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md:64 (resolved)
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:57Z):
+ 
+-P0: This line contains a U+200B zero-width space inside the `@​meziantou` code span. Even as an example, embedding the invisible character will fail `invisible-unicode-in-text`; replace with plain ASCII `@meziantou` and keep the description of the issue as words.
++P0: This line contains a U+200B zero-width space inside the `@meziantou` code span. Even as an example, embedding the invisible character will fail `invisible-unicode-in-text`; replace with plain ASCII `@meziantou` and keep the description of the issue as words.
+ 
+ ### Thread 6: docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md:82 (resolved)
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:58Z):
+ 
+-P0: This line embeds a U+200B zero-width space inside `@​meziantou`. Remove the hidden character (use ASCII `@meziantou`) so the archive stays lint-clean.
++P0: This line embeds a U+200B zero-width space inside `@meziantou`. Remove the hidden character (use ASCII `@meziantou`) so the archive stays lint-clean.
+ 
+ ### Thread 7: docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md:82 (resolved)
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:58Z):
+ 
+-P0: This line includes a U+200B zero-width space inside `@​meziantou`. Semgrep will flag it in Markdown; replace with ASCII `@meziantou` (or avoid embedding the example with the hidden character).
++P0: This line includes a U+200B zero-width space inside `@meziantou`. Semgrep will flag it in Markdown; replace with ASCII `@meziantou` (or avoid embedding the example with the hidden character).
+ 
+ ### Thread 8: docs/pr-discussions/PR-4722-docs-archive-preserve-merged-pr-4714.md:82 (resolved)
+ 
+ **@copilot-pull-request-reviewer** (2026-05-24T01:09:58Z):
+ 
+-P0: This line embeds a U+200B zero-width space in the `@​meziantou` example. Even though it’s quoting a prior review comment, the hidden character will still break `invisible-unicode-in-text`; rewrite the example with plain ASCII.
++P0: This line embeds a U+200B zero-width space in the `@meziantou` example. Even though it’s quoting a prior review comment, the hidden character will still break `invisible-unicode-in-text`; rewrite the example with plain ASCII.
+ 
+ ## General comments
+ 

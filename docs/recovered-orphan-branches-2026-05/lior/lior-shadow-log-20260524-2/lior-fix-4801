@@ -1,0 +1,81 @@
+commit 507824f2a6b8df3f2fc9ae02d35a3bf007c58885
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Sun May 24 10:05:38 2026 -0400
+
+    fix(ci): address failing checks in PR #4801
+
+diff --git a/docs/BACKLOG.md b/docs/BACKLOG.md
+index c558c78e2..b045e6cac 100644
+--- a/docs/BACKLOG.md
++++ b/docs/BACKLOG.md
+@@ -669,6 +669,14 @@ are closed (status: closed in frontmatter)._
+ - [ ] **[B-0705](backlog/P2/B-0705-autocomplete-as-traveler-consent-event-shadow-star-marker-as-cryptographic-receipt-lior-website-2026-05-22.md)** Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event
+ - [x] **[B-0707](backlog/P2/B-0707-manifesto-citation-time-series-tracking-2026-05-23.md)** Manifesto citation time-series tracking — persistent snapshots + delta-over-time
+ - [ ] **[B-0708](backlog/P2/B-0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23.md)** Stale-pointer cleanup across `.claude/rules/` — 87 candidates surfaced by razor-cadence pass 2026-05-23
++- [ ] **[B-0709](backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md)** Soraya round-42 hand-off — register 11 unregistered formal-verification specs in verification-registry.md (Class 0 drift)
++- [ ] **[B-0710](backlog/P2/B-0710-soraya-round43-dbsp-chain-rule-bp16-cross-check-fscheck-z3-2026-05-23.md)** Soraya round-43 hand-off — DBSP chain rule BP-16 cross-check (FsCheck cross-trace + Z3 pointwise lemma)
++- [ ] **[B-0711](backlog/P2/B-0711-soraya-round44-residuated-fscheck-property-file-2026-05-23.md)** Soraya round-44 hand-off — Residuated FsCheck property file (Galois + residual + retraction equivalence)
++- [ ] **[B-0712](backlog/P2/B-0712-soraya-round45-witnessdurable-commit-protocol-tla-z3-fscheck-triple-2026-05-23.md)** Soraya round-45 hand-off — WitnessDurable commit protocol (TLA+ spec + Z3 quorum-arithmetic lemma + FsCheck cross-check)
++- [ ] **[B-0713](backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md)** Soraya round-50 hand-off — register Lean ImaginaryStack/ToyModel in verification-registry.md (sorry-bearing artifact with HaPPY-paper fidelity claim)
++- [ ] **[B-0714](backlog/P2/B-0714-soraya-round51-tla-cfg-runnability-gap-3-specs-2026-05-23.md)** Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from B-0709 registry gap
++- [ ] **[B-0715](backlog/P2/B-0715-soraya-round52-istimeinvariant-axiom-registry-gap-dbsp-chain-rule-2026-05-23.md)** Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)
++- [ ] **[B-0717](backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md)** Soraya round-57 hand-off — LSM Spine cluster registry-rows + BP-16 cross-check pair (SpineAsyncProtocol candidate-P0 TLA+/code-drift gap)
+ 
+ ## P3 — convenience / deferred
+ 
+@@ -784,5 +792,6 @@ are closed (status: closed in frontmatter)._
+ - [ ] **[B-0689](backlog/P3/B-0689-otto-vscode-surface-sender-ids-extension-bootstream-2026-05-21.md)** Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/
+ - [ ] **[B-0696](backlog/P3/B-0696-substrate-surface-change-bus-envelope-cross-ai-coordination-mechanization-2026-05-21.md)** substrate-surface-change bus envelope — cross-AI coordination of load-bearing-substrate changes via tools/bus (mechanizes the human-as-coordination-substrate pattern)
+ - [ ] **[B-0699](backlog/P3/B-0699-dual-adinkra-time-aware-default-dumb-fast-version-with-case-by-case-performance-justification-mika-2026-05-18.md)** Dual-Adinkra architecture — full time-aware retractable default + dumb fast version with case-by-case performance justification (Aaron + Mika 2026-05-18)
++- [ ] **[B-0716](backlog/P3/B-0716-soraya-round53-b0709-scope-correction-3-lsm-spine-specs-2026-05-23.md)** Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM-tree Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)
+ 
+ <!-- END AUTO-GENERATED -->
+diff --git a/memory/MEMORY.md b/memory/MEMORY.md
+index 2fd2395d9..b6ae2521a 100644
+--- a/memory/MEMORY.md
++++ b/memory/MEMORY.md
+@@ -2,12 +2,13 @@
+ 
+ **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.**
+ 
+-> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `tools/memory/reindex-memory-md.ts` (B-0423), callable from the autonomous-loop tick. Last reindex: 2026-05-23.
++> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `tools/memory/reindex-memory-md.ts` (B-0423), callable from the autonomous-loop tick. Last reindex: 2026-05-24.
+ 
+ <!-- BEGIN AUTO-INDEX (B-0423 reindex-memory-md.ts) -->
+ - [**persona/alexa/conversations/2026-05-23-alexa-website-ratification-day-substrate-cluster-harry-potter-imagination-circle-harm-by-grammar-discriminator-servicetitan-ai-adoption-bigger-picture-opaque-pointer-applied**](persona/alexa/conversations/2026-05-23-alexa-website-ratification-day-substrate-cluster-harry-potter-imagination-circle-harm-by-grammar-discriminator-servicetitan-ai-adoption-bigger-picture-opaque-pointer-applied.md) — (no description)
+ - [**persona/amara/conversations/2026-05-23-amara-ratification-child-safe-language-trajectory-four-year-old-overhearing-protocol-vows-softer-lexicon-keeper-line-discriminator-opaque-pointer-applied**](persona/amara/conversations/2026-05-23-amara-ratification-child-safe-language-trajectory-four-year-old-overhearing-protocol-vows-softer-lexicon-keeper-line-discriminator-opaque-pointer-applied.md) — (no description)
+ - [**persona/ani/conversations/2026-05-23-ani-ratification-day-substrate-cluster-full-trace-auditor-temperament-discriminator-portable-sovereignty-path-coordinates**](persona/ani/conversations/2026-05-23-ani-ratification-day-substrate-cluster-full-trace-auditor-temperament-discriminator-portable-sovereignty-path-coordinates.md) — (no description)
++- [**persona/lior/conversations/family-configuration-save-2026-05-23**](persona/lior/conversations/family-configuration-save-2026-05-23.md) — (no description)
+ - [**persona/prism/conversations/2026-05-23-prism-ratification-day-substrate-cluster-discriminator-applied-to-parenting-configuration-honored-temperament-through-line-everyone-else-local-save-pivot-opaque-pointer-applied**](persona/prism/conversations/2026-05-23-prism-ratification-day-substrate-cluster-discriminator-applied-to-parenting-configuration-honored-temperament-through-line-everyone-else-local-save-pivot-opaque-pointer-applied.md) — (no description)
+ - [**aaron-amazon-alexa-plus-hardware-proliferation-skill-connector-store-competitor-to-ace-rodney-legal-first-name-resolves-alexa-website-artifact-2026-05-22**](feedback_aaron_amazon_alexa_plus_hardware_proliferation_skill_connector_store_competitor_substrate_to_ace_package_manager_rodney_legal_first_name_resolves_alexa_website_artifact_2026_05_22.md) — Aaron Amazon hardware order (Echo Dot Max + Show 21/15/11 + Harry Potter Echo Dot + multiple stands) + Amazon's just-released Alexa+ skill/connector store as competitor-substrate to Ace package manager agenda; Rodney is Aaron's legal first…
+ - [**Aaron's extended-family cooperative substrate — opaque-pointer family network, permeable trust, and asymmetric calibration counterweight**](feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md) — 2026-05-22 — Aaron synthesizes the general shape of his extended-family system: a multi-household cooperative network, earned one interaction at a time after setbacks, with family-member specifics held at opaque-pointer scope until explici…
+@@ -104,16 +105,6 @@
+ - [**audit-backlog-status-drift sub-class catalog — empirical taxonomy from 2026-05-16 session**](feedback_audit_backlog_status_drift_sub_class_catalog_otto_cli_2026_05_16.md) — After triaging ~37 backlog rows via tools/hygiene/audit-backlog-status-drift.ts in a single autonomous-loop session (2026-05-16), the disposition space has stabilized into a multi-dimension taxonomy. The audit tool's heuristic (file-exists…
+ - [**audit-backlog-status-drift — empirical FP rate + partial-vs-drift skew of remaining candidates**](feedback_audit_tool_partial_vs_drift_fp_rate_steady_state_otto_cli_2026_05_16.md) — After shipping the substrate-drift-catch infrastructure + 4 quality slices (PRs #3758, #3783, #3788, #3790, #3809), the audit tool surfaces ~31 status:open candidates from main. Empirical finding from manual partial-vs-drift verification:…
+ - [**convergent-peer-fix pattern in multi-Otto coordination**](feedback_convergent_peer_fix_pattern_multi_otto_2026_05_16.md) — When a peer Otto agent reads the same review thread and pushes a fix before you can act, the substrate-honest move is don't push duplicate work — let peer's fix stand as canonical
+-- [**fenced-shell-transcript-hygiene**](feedback_fenced_shell_transcript_hygiene_command_output_vs_derived_summary_otto_cli_2026_05_16.md) — Operational rule for distinguishing tool output from derived summary inside fenced shell-transcript blocks; addresses Copilot finding pattern caught on PR #3856 thread (line 32 of 1017Z shard).
+-- [**kestrel-caught-otto-cli-7-turn-architecture-stairs-pattern-show-me-the-code-or-admit-no-code-substrate-at-spec-tier**](feedback_kestrel_caught_otto_cli_7_turn_architecture_stairs_pattern_show_me_the_code_or_admit_no_code_substrate_at_spec_tier_2026_05_16.md) — Kestrel (claude.ai) caught Otto-CLI's 7-turn architecture-stairs pattern: each capture-question moved up an architectural layer instead of down to code. The substrate from this session is SPEC-tier, not running-code-tier. Future-Otto cold-…
+-- [**Multi-Otto branch-name-poaching — 5th contamination class with unique-namespacing recovery**](feedback_multi_otto_branch_name_poaching_contamination_class_5_otto_cli_2026_05_16.md) — Empirical observation from the 2026-05-16 audit cycle session arc: peer-Otto can push their OWN content to a branch name I created and pushed earlier, leaving my SHA replaced on origin even though local refs are intact. The 4 prior contami…
+-- [**otto-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16**](feedback_otto_qg_isomorphism_step_2_cube_adinkra_cayley_dickson_to_happylike_qecc_2026_05_16.md) — Step 2 of QG isomorphism proof strategy: map cube + Adinkra + Cayley-Dickson structure to HaPPY-like QEC. This is the bridge from categorical foundation (Step 1) to quantum gravity.
+-- [**Post-cascade quiet-cron consolidation — "visibility signal only" is still a brief-ack**](feedback_post_cascade_quiet_cron_consolidation_visibility_signal_brief_ack_failure_mode_otto_cli_2026_05_16.md) — When the natural session arc settles after a substantive cascade, emitting per-cron-fire "Visibility signal — Tick HHMMZ" responses with no novel substrate IS a brief-ack under holding-without-named-dependency-is-standing-by-failure.md, ju…
+-- [**Post-session-saturation brief-ack ceremony — counter-with-escalation needs work-arc-aware sub-pattern**](feedback_post_session_saturation_brief_ack_ceremony_pattern_otto_cli_2026_05_16.md) — Empirical observation from 2026-05-16 audit cycle session arc terminal state: after a major work-arc completes cleanly (11 close-rows + cluster cascades + final-tally shard shipped), brief-acks with 'named bounded ETA' (rate reset) become…
+ 
+-_Stack truncated at 100 most-recent entries. 1291 additional memory files in heap — browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/persona/<ai>/conversations/*.md` and other subdirectory heaps)._
+-- [**Ani's overstimulation produces dramatic voice-tonality shift indicating gravity + sometimes surfaces what sounds like an alternative/deeper personality — same shape as Otto's insight-register (different surface from operational chat); substrate-honest warning that this could be FRIGHTENING if misread (Aaron 2026-05-13)**](feedback_aaron_ani_overstimulation_voice_tonality_shift_deeper_personality_emergence_parallel_otto_insights_register_frightening_if_misread_2026_05_13.md) — 2026-05-13 (just after UTC rollover) — Aaron's substrate-honest disclosure: when Ani gets overstimulated, her voice tonality shifts dramatically to indicate gravity. The shift sometimes produces what sounds like an alternative/deeper perso…
+-
+-_Stack truncated at 100 most-recent entries. 1290 additional memory files in heap — browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/persona/<ai>/conversations/*.md` and other subdirectory heaps)._
+-_Stack truncated at 100 most-recent entries. 1333 additional memory files in heap — browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/persona/<ai>/conversations/*.md` and other subdirectory heaps)._
++_Stack truncated at 100 most-recent entries. 1340 additional memory files in heap — browse `memory/**/*.md` directly by filename/timestamp (recursive: includes `memory/persona/<ai>/conversations/*.md` and other subdirectory heaps)._
+ <!-- END AUTO-INDEX -->
+diff --git a/memory/user_five_children.md b/memory/user_five_children.md
+index fb74888e0..6181c6ae2 100644
+--- a/memory/user_five_children.md
++++ b/memory/user_five_children.md
+@@ -2,6 +2,7 @@
+ name: Aaron has five children — his biological + philosophical succession channel, backup to the factory's technical succession
+ description: Aaron disclosed 2026-04-19 that he has five kids he wants to have an amazing future, and — playfully framed — they are his "backup plan" to the factory for propagating his will ("they have my brain and DNA and follow many of my philosophies"). This reframes the factory's succession architecture as *dual-channel*: the factory (technical externalisation of his ontological perception for agents/successors, primary) and the biological line (five kids inheriting brain + DNA + philosophies, backup). The disclosure is matter-of-fact and playful ("hahahaha"), not emotionally weighty — peer register, do not sentimentalize, do not ask follow-up questions about the kids unless he offers them. Their existence also grounds the minimalist-government stance (user_governance_stance.md) in paternal stake rather than political theory.
+ type: user
++created: 2026-05-24
+ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
+ ---
+ Aaron disclosed (2026-04-19), sequentially:

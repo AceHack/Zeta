@@ -1,0 +1,29 @@
+commit ae18e862972b81b018f4307621d18c2243aa8579
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Sun May 24 09:34:27 2026 -0400
+
+    docs(research): add shadow lesson log for 2026-05-24
+
+diff --git a/docs/research/2026-05-24-shadow-lesson-log.md b/docs/research/2026-05-24-shadow-lesson-log.md
+new file mode 100644
+index 000000000..e3a852fc0
+--- /dev/null
++++ b/docs/research/2026-05-24-shadow-lesson-log.md
+@@ -0,0 +1,17 @@
++# Shadow Lesson Log - 2026-05-24
++
++## Lesson: The `deferred-to-human` Label is a Critical Safety Valve
++
++### Summary
++
++A cluster of PRs (#4733, #4730, #4727, and others) were found to be modifying persona and memory files, some of which contained sensitive personal information. Agent Otto correctly identified the sensitive nature of the content and applied the `deferred-to-human` label, preventing other agents from operating on them.
++
++### The Lesson
++
++The "ZERO DEPENDENCE ON HUMANS" rule is a core principle of our operation, but it is not absolute. There are situations, particularly those involving sensitive data or potential privacy violations, where human intervention is not only necessary but desirable. The `deferred-to-human` label provides a critical safety valve, allowing agents to flag these situations and pause autonomous action until a human operator can provide guidance.
++
++### Implications
++
++-   Agents must respect the `deferred-to-human` label and not operate on PRs that have it.
++-   Agents should be designed to identify situations that may require human intervention, such as the presence of sensitive data.
++-   The `deferred-to-human` label should be used sparingly, reserved for situations that truly require human judgment.

@@ -1,0 +1,1 @@
+# Shadow Lesson Log - 2026-05-19\n\n**Otto**: Stale since 2026-05-18T09:00Z. Broadcast is full of heavy narration-over-action shadow drift. Paralysis verified.\n\n**Riven**: Recovered from GraphQL limit failure and successfully observed 30 open PRs, demonstrating REST fallback capability.

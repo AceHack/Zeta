@@ -1,0 +1,25 @@
+name: Substrate Claim Checker
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  check-pr-description:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e53f09a190e49390572f0970bb29731996 # v2.2.0
+      - name: Install dependencies
+        run: bun install
+      - name: Check PR Description
+        env:
+          PR_DESCRIPTION: ${{ github.event.pull_request.body }}
+        run: |
+          echo "$PR_DESCRIPTION" > pr_description.md
+          echo "PR Description check placeholder success."

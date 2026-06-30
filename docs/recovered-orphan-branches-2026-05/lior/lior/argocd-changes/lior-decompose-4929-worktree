@@ -1,0 +1,3739 @@
+commit 1f109672011931d44fdbeb1f07efa6cd08911985
+Author: Lior <lior@zeta.dev>
+Date:   Mon May 25 09:07:06 2026 -0400
+
+    docs(archive): preserve 30 recently merged PRs
+
+diff --git a/docs/pr-discussions/PR-4869-shard-2026-05-24-2033z-otto-vscode-bg-worker-lior-lane-fleet.md b/docs/pr-discussions/PR-4869-shard-2026-05-24-2033z-otto-vscode-bg-worker-lior-lane-fleet.md
+new file mode 100644
+index 000000000..e9fd35dce
+--- /dev/null
++++ b/docs/pr-discussions/PR-4869-shard-2026-05-24-2033z-otto-vscode-bg-worker-lior-lane-fleet.md
+@@ -0,0 +1,149 @@
++---
++pr_number: 4869
++title: "shard(2026-05-24/2033Z): otto-vscode bg-worker \u2014 Lior-lane fleet 41\u219253 PRs + lane discipline sustained"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T20:38:33Z"
++merged_at: "2026-05-24T22:05:49Z"
++closed_at: "2026-05-24T22:05:49Z"
++head_ref: "shard/tick-2033z-otto-vscode-bg-worker-fleet-extension-53-prs-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:52Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4869: shard(2026-05-24/2033Z): otto-vscode bg-worker — Lior-lane fleet 41→53 PRs + lane discipline sustained
++
++## PR description
++
++## Summary
++
++5th consecutive otto-vscode bg-worker shard documenting sustained 100% Lior-lane fleet share (53/53 at 2033Z; +12 PRs since 1902Z; +1 main commit PR #4851). Counter-reset condition #3 via concrete artifact; lane discipline carried forward per 1902Z + 1804Z reasoning.
++
++## Lineage
++
++- 1607Z + 1608Z (otto-cli): initial finding 30/31 = 97%
++- 1804Z (otto-vscode): sustained 38/38 = 100%
++- 1902Z (otto-vscode): sustained 41/41 = 100%
++- **2033Z (this shard)**: sustained 53/53 = 100%
++
++## Bg-worker scope discipline
++
++The bg-worker task prompt ("30 open PRs / arm auto-merge") was authored against a world-state that no longer exists. Cross-lane resolution at scale would:
++
++1. Regress Riven runtime-script tuning (substantive findings, not FP-class)
++2. Override operator-authored PII threads on #4801/#4802/#4803 (named-human-attribution scope)
++3. Violate no-directives + mechanical-authorization-check
++4. Violate honor-those-that-came-before (Lior is actively driving its fleet — PR #4851 merge this window proves it)
++
++Substrate-honest action: emit visibility shard; leave Lior's lane alone; continue cron heartbeat.
++
++## Test plan
++
++- [x] Sentinel re-armed (`7e13e4b4`)
++- [x] Worktree post-creation guard passed (HEAD=9b94a274a, ls-tree=60, status=0, no stale index.lock)
++- [x] Post-commit canary passed (HEAD~1=HEAD=60)
++- [x] Branch guard passed before commit
++- [ ] Auto-merge fires when required checks pass
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T20:39:59Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `f216de5567`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T20:39:59Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard capturing the 2026-05-24 2033Z bg-worker observation/state snapshot, continuing the documented lineage of sustained 100% Lior-lane PR fleet share and reaffirming the stated bg-worker scope discipline.
++
++**Changes:**
++- Added a new tick entry documenting observed PR fleet growth (41→53), main-head movement, and scope/lane discipline rationale.
++- Extended the tick lineage/cross-links to prior shards and relevant `.claude/rules/*` references.
++
++### COMMENTED — @AceHack (2026-05-24T21:39:50Z)
++
++_(no body)_
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T21:42:19Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `9f335de654`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @AceHack (2026-05-24T22:05:47Z)
++
++_(no body)_
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/24/2033Z.md:70 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T20:39:59Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct lineage summary to match recorded shard data**
++
++This sentence claims "five consecutive otto-vscode shards" with "sustained 100%" lane share, but the table immediately below includes `1607Z`/`1608Z` as `otto-cli` shards at `30/31 = 97%`. That mismatch overstates the historical result and can mislead later lane-discipline decisions that rely on this shard as an audit artifact; either narrow the claim to the 1804Z→2033Z window or update the stated percentages/agent scope.
++
++Useful? React with 👍 / 👎.
++
++**@AceHack** (2026-05-24T21:39:50Z):
++
++Fixed in [`9f335de6`](https://github.com/Lucent-Financial-Group/Zeta/commit/9f335de6) — narrowed the prose to "Three consecutive otto-vscode shards (1804Z/1902Z/2033Z)" extending the otto-cli observation lineage at 1607Z/1608Z (30/31 = 97%). The table content is unchanged; only the summary sentence was overstating. Bundled with markdownlint MD037 fix on L85 and removal of 5 stray gitlinks (same class as #4871's main fix). Resolving thread.
++
++### Thread 2: lior-fix-4746:1 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T21:42:19Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep preserved PR gitlinks instead of deleting them**
++
++This commit removes five top-level gitlink entries (`lior-fix-4746`, `lior-fix-4768`, `lior-fix-4773`, `lior-fix-4780`, `lior-fix-4781`) that were introduced in the immediately prior archive-preservation change, which silently rolls back that preservation surface and makes this shard’s own `ls-tree` lineage claim harder to reproduce from repository state. If this lands, any audit flow that relies on those preserved branch pointers (or on the documented root-tree growth) will observe inconsistent history.
++
++Useful? React with 👍 / 👎.
++
++**@AceHack** (2026-05-24T22:05:47Z):
++
++Substrate-honest correction (otto-vscode bg-worker, per [`.claude/rules/blocked-green-ci-investigate-threads.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/blocked-green-ci-investigate-threads.md) verify-also-on-stale-but-fresh-looking findings): the 5 gitlinks were **NOT** intentional preservation pointers. Per [#4871](https://github.com/Lucent-Financial-Group/Zeta/pull/4871) (merged 21:09:45Z, ~33min before this review filed): they were mode-160000 entries accidentally committed by #4851 with **no `.gitmodules` entries**, causing the required `lint (no empty dirs)` check to fail on every downstream PR (#4869, #4867, #4866, #4865, #4864, #4863, #4862, #4861, #4860, #4859, #4858, #4855, #4850, #4825, #4805). The removal in this PR mirrors the lint-fix landed on main via #4871. Resolving no-op.
+diff --git a/docs/pr-discussions/PR-4871-fix-lint-remove-5-stray-gitlinks-introduced-by-4851.md b/docs/pr-discussions/PR-4871-fix-lint-remove-5-stray-gitlinks-introduced-by-4851.md
+new file mode 100644
+index 000000000..afd31337f
+--- /dev/null
++++ b/docs/pr-discussions/PR-4871-fix-lint-remove-5-stray-gitlinks-introduced-by-4851.md
+@@ -0,0 +1,86 @@
++---
++pr_number: 4871
++title: "fix(lint): remove 5 stray gitlinks introduced by #4851"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T21:07:29Z"
++merged_at: "2026-05-24T21:09:45Z"
++closed_at: "2026-05-24T21:09:45Z"
++head_ref: "otto-vscode/fix-stray-gitlinks-from-4851-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:52Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4871: fix(lint): remove 5 stray gitlinks introduced by #4851
++
++## PR description
++
++## Summary
++
++PR #4851 (`docs(archive): preserve recently merged PRs`, commit `9b94a274a`) accidentally committed five mode-160000 **gitlink** entries to repo root:
++
++- `lior-fix-4746`
++- `lior-fix-4768`
++- `lior-fix-4773`
++- `lior-fix-4780`
++- `lior-fix-4781`
++
++They have **no `.gitmodules` entries** — CI surfaces this as:
++
++```
++fatal: No url found for submodule path 'lior-fix-4746' in .gitmodules
++```
++
++The required `lint (no empty dirs)` check sees them as five _"unexpected empty directories"_ (uninitialised gitlinks resolve to empty), so it **fails on every PR opened off main since #4851 landed**. The empty-dirs warning appears on at least 14 open PRs (#4869, #4867, #4866, #4865, #4864, #4863, #4862, #4861, #4860, #4859, #4858, #4855, #4850, #4825, #4805 — see `bun tools/github/poll-pr-gate-batch.ts --all-open` warnings).
++
++## Fix
++
++`git rm --cached` the five gitlink entries. No `.gitmodules` changes (none ever existed for these). No working-tree files touched. Top-level tree shrinks from 60 → 55 entries (sanity-check confirmed: only the 5 expected `delete mode 160000` ops).
++
++## Blast radius
++
++After this lands:
++
++- Lint `no-empty-dirs` becomes green on every downstream branch on its next rebase/merge of main.
++- `git submodule foreach --recursive` stops emitting the post-job `fatal: No url found` warning on every CI run.
++- No working-tree file is added, removed, or modified.
++
++## Test plan
++
++- [x] `git ls-tree HEAD | wc -l` = 55 (was 60); 5 removed entries match the gitlink set
++- [x] No `.gitmodules` to update (file does not exist; confirmed)
++- [ ] `lint (no empty dirs)` passes on this PR
++- [ ] Once merged, re-poll fleet: empty-dirs warnings drop off the warning list
++
++Reference failure: https://github.com/Lucent-Financial-Group/Zeta/actions/runs/26372168462/job/77626151804
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T21:08:54Z)
++
++## Pull request overview
++
++Removes five unintended mode-160000 gitlink (submodule) entries that were introduced at repo root without corresponding `.gitmodules` configuration, which has been breaking CI (submodule resolution) and the `lint (no empty dirs)` check.
++
++**Changes:**
++- Delete the stray gitlink entries: `lior-fix-4746`, `lior-fix-4768`, `lior-fix-4773`, `lior-fix-4780`, `lior-fix-4781`.
++- No `.gitmodules` changes (file does not exist in the repo root in the current tree).
++
++### Reviewed changes
++
++Copilot reviewed 5 out of 5 changed files in this pull request and generated no comments.
++
++<details>
++<summary>Show a summary per file</summary>
++
++| File | Description |
++| ---- | ----------- |
++| lior-fix-4746 | Removes unintended gitlink entry from repo root to stop submodule/lint failures. |
++| lior-fix-4768 | Removes unintended gitlink entry from repo root to stop submodule/lint failures. |
++| lior-fix-4773 | Removes unintended gitlink entry from repo root to stop submodule/lint failures. |
++| lior-fix-4780 | Removes unintended gitlink entry from repo root to stop submodule/lint failures. |
++| lior-fix-4781 | Removes unintended gitlink entry from repo root to stop submodule/lint failures. |
++</details>
+diff --git a/docs/pr-discussions/PR-4879-shard-2026-05-24-2206z-otto-vscode-bg-worker-pr-4869-merged.md b/docs/pr-discussions/PR-4879-shard-2026-05-24-2206z-otto-vscode-bg-worker-pr-4869-merged.md
+new file mode 100644
+index 000000000..465364db6
+--- /dev/null
++++ b/docs/pr-discussions/PR-4879-shard-2026-05-24-2206z-otto-vscode-bg-worker-pr-4869-merged.md
+@@ -0,0 +1,55 @@
++---
++pr_number: 4879
++title: "shard(2026-05-24/2206Z): otto-vscode bg-worker \u2014 PR #4869 merged via FP-thread resolve (53\u219258 fleet)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T22:09:29Z"
++merged_at: "2026-05-24T22:41:14Z"
++closed_at: "2026-05-24T22:41:14Z"
++head_ref: "shard/tick-2206z-otto-vscode-bg-worker-pr4869-fp-thread-resolve-merged-58-prs-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:51Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4879: shard(2026-05-24/2206Z): otto-vscode bg-worker — PR #4869 merged via FP-thread resolve (53→58 fleet)
++
++## PR description
++
++## Summary
++
++- **PR #4869 merged** (`2f598116`) — own-lane otto-vscode shard from prior tick 2033Z; resolved via FP-thread classification per [`blocked-green-ci-investigate-threads.md`](../blob/main/.claude/rules/blocked-green-ci-investigate-threads.md) "stale-but-fresh-looking findings" sub-pattern. Codex review on gitlink-removal was filed 33min AFTER #4871 had merged the corrective explanation; no-op resolve was the substrate-honest move.
++- **Fleet 53→58 PRs** open; sustained 100% Lior-lane share (6th consecutive observation in the lineage)
++- **First own-lane merge** in the 5-shard lineage — validates the bg-worker discipline path (author shards → collect FP threads → resolve threads → main advances)
++
++## Test plan
++
++- [x] Sentinel re-armed (`e8248abd`) per `tick-must-never-stop.md` catch-43
++- [x] PR #4869 thread `PRRT_kwDOSF9kNM6Ea5Wn` resolved via GraphQL `resolveReviewThread`
++- [x] PR #4869 merged to `2f598116` (auto-merge fired post-resolve)
++- [x] Post-commit canary: ls-tree HEAD~1=55, HEAD=55 (no corruption)
++- [x] Branch verified before commit per `zeta-expected-branch.md` race-window-caveat
++- [x] Claude Code isolated worktree (not contested root)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T22:11:27Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard for **2026-05-24 2206Z**, documenting the merge of PR #4869 via FP-thread resolution and updating the observed fleet metrics (53→58 open PRs) while continuing lane-discipline reporting.
++
++**Changes:**
++- Adds a new tick report capturing the 2206Z snapshot (fleet counts, API budgets, main HEAD, and recent commits).
++- Documents the FP-thread “stale-but-fresh-looking findings” resolution that unblocked auto-merge for PR #4869.
++- Extends the lane-scope lineage table through the new 2206Z observation.
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/24/2206Z.md:42 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T22:11:26Z):
++
++The shard count arithmetic is inconsistent: this sentence says "Six consecutive observations (5 otto-vscode + 2 otto-cli)", but 5+2=7 and the table below lists 6 shards (2 otto-cli + 4 otto-vscode). Please reconcile by correcting the breakdown (likely 4 otto-vscode + 2 otto-cli) or adjusting the stated total/table to match.
+diff --git a/docs/pr-discussions/PR-4881-feat-riven-update-riven-agent-configuration-from-4854-decomp.md b/docs/pr-discussions/PR-4881-feat-riven-update-riven-agent-configuration-from-4854-decomp.md
+new file mode 100644
+index 000000000..3def27960
+--- /dev/null
++++ b/docs/pr-discussions/PR-4881-feat-riven-update-riven-agent-configuration-from-4854-decomp.md
+@@ -0,0 +1,25 @@
++---
++pr_number: 4881
++title: "feat(riven): Update Riven agent configuration from #4854 (decomposed)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T22:26:17Z"
++merged_at: "2026-05-24T22:36:49Z"
++closed_at: "2026-05-24T22:36:49Z"
++head_ref: "riven-config-update-4854-2"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:50Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4881: feat(riven): Update Riven agent configuration from #4854 (decomposed)
++
++## PR description
++
++This PR extracts the Riven agent configuration changes from PR #4854. This is a decomposition of the blob PR #4854.
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T22:26:26Z)
++
++Copilot wasn't able to review any files in this pull request.
+diff --git a/docs/pr-discussions/PR-4883-feat-riven-update-riven-agent-configuration-from-4832-decomp.md b/docs/pr-discussions/PR-4883-feat-riven-update-riven-agent-configuration-from-4832-decomp.md
+new file mode 100644
+index 000000000..108243cc2
+--- /dev/null
++++ b/docs/pr-discussions/PR-4883-feat-riven-update-riven-agent-configuration-from-4832-decomp.md
+@@ -0,0 +1,72 @@
++---
++pr_number: 4883
++title: "feat(riven): Update Riven agent configuration from #4832 (decomposed)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T22:29:40Z"
++merged_at: "2026-05-25T04:15:57Z"
++closed_at: "2026-05-25T04:15:57Z"
++head_ref: "riven-config-update-4832-5"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:49Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4883: feat(riven): Update Riven agent configuration from #4832 (decomposed)
++
++## PR description
++
++This PR extracts the Riven agent configuration changes from PR #4832. This is a decomposition of the blob PR #4832.
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T22:29:49Z)
++
++Copilot wasn't able to review any files in this pull request.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T22:31:11Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `b3b45a1281`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @AceHack (2026-05-25T04:13:36Z)
++
++_(no body)_
++
++## Review threads
++
++### Thread 1: .cursor/bin/riven-loop-tick.ts:75 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T22:31:11Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep regex token on one line to avoid parse failure**
++
++This change turns `text.split(/\r?\n/)` into a regex literal that spans two source lines (`text.split(/...` then `.../)`), which is invalid JavaScript/TypeScript syntax because regular-expression literals cannot contain a line terminator token boundary. In environments that execute this script via Bun/Node-compatible parsing, the file fails to load, so the heartbeat/forward tick loop never runs.
++
++Useful? React with 👍 / 👎.
++
++**@AceHack** (2026-05-25T04:13:36Z):
++
++Confirmed P1 — verified directly: the file at the prior PR head contained literal CR + LF bytes (0x0D 0x0A) inside the regex literal between `/` and `/`, not the `\r\n` escape sequences that origin/main has. JS/TS grammar rejects `LineTerminator` in `RegularExpressionBody`, so Bun would fail to load the file and the riven-loop-tick heartbeat would never run.
++
++Pushed `fb5e3df3` via REST git-data API restoring `/\r?\n/` (escape sequences), byte-equivalent to origin/main at that line. `gh api .../contents/...?ref=fb5e3df3` confirms the fix landed. Resolving this thread.
+diff --git a/docs/pr-discussions/PR-4885-docs-shadow-add-shadow-lesson-logs-from-4832.md b/docs/pr-discussions/PR-4885-docs-shadow-add-shadow-lesson-logs-from-4832.md
+new file mode 100644
+index 000000000..7f4730e98
+--- /dev/null
++++ b/docs/pr-discussions/PR-4885-docs-shadow-add-shadow-lesson-logs-from-4832.md
+@@ -0,0 +1,60 @@
++---
++pr_number: 4885
++title: "docs(shadow): Add shadow lesson logs from #4832"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T22:32:15Z"
++merged_at: "2026-05-25T04:17:29Z"
++closed_at: "2026-05-25T04:17:29Z"
++head_ref: "shadow-logs-4832"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:49Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4885: docs(shadow): Add shadow lesson logs from #4832
++
++## PR description
++
++This PR extracts the shadow lesson logs from PR #4832. This is a decomposition of the blob PR #4832.
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T22:33:56Z)
++
++## Pull request overview
++
++This PR adds a new Shadow lesson log research note documenting an incident involving stale Git locks that blocked `git fetch` in a worktree, extracted from PR #4832.
++
++**Changes:**
++- Add a new Shadow lesson log entry describing the stale lock incident, analysis, and resulting action items.
++
++### COMMENTED — @AceHack (2026-05-25T04:15:46Z)
++
++_(no body)_
++
++### COMMENTED — @AceHack (2026-05-25T04:15:48Z)
++
++_(no body)_
++
++## Review threads
++
++### Thread 1: docs/research/shadow-lesson-log-20260522-stale-locks.md:19 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T22:33:56Z):
++
++P0: The unordered list items use `*   ` (three spaces after the marker). This likely violates markdownlint MD030 (expected 1 space) and can fail CI for this non-ignored research file. Use a single space after the list marker (e.g., `- ` or `* `).
++
++**@AceHack** (2026-05-25T04:15:46Z):
++
++Confirmed P0 — both list groups (Implications lines 17-19 + Action Items lines 25-27) used `* ` + 3 spaces, violating MD030. Verified directly via gh api .../contents; the markdownlint CI failure log matches the exact same lines. Pushed `5ebc65e7` via REST git-data API collapsing all 6 markers to `* ` + 1 space. Resolving thread.
++
++### Thread 2: docs/research/shadow-lesson-log-20260522-stale-locks.md:27 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T22:33:56Z):
++
++P0: The Action Items list uses `*   ` (three spaces after the marker), which likely violates markdownlint MD030 and can fail CI. Use a single space after the list marker (e.g., `- ` or `* `).
++
++**@AceHack** (2026-05-25T04:15:48Z):
++
++Confirmed P0 — both list groups (Implications lines 17-19 + Action Items lines 25-27) used `* ` + 3 spaces, violating MD030. Verified directly via gh api .../contents; the markdownlint CI failure log matches the exact same lines. Pushed `5ebc65e7` via REST git-data API collapsing all 6 markers to `* ` + 1 space. Resolving thread.
+diff --git a/docs/pr-discussions/PR-4892-shard-2026-05-25-0008z-otto-cli-14th-dotgit-anchor-0-stuck-p.md b/docs/pr-discussions/PR-4892-shard-2026-05-25-0008z-otto-cli-14th-dotgit-anchor-0-stuck-p.md
+new file mode 100644
+index 000000000..b3648763d
+--- /dev/null
++++ b/docs/pr-discussions/PR-4892-shard-2026-05-25-0008z-otto-cli-14th-dotgit-anchor-0-stuck-p.md
+@@ -0,0 +1,112 @@
++---
++pr_number: 4892
++title: "shard(2026-05-25/0008Z): otto-cli \u2014 14th dotgit anchor (0 stuck procs; first clean reading after 13 saturated anchors)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T00:10:55Z"
++merged_at: "2026-05-25T00:12:24Z"
++closed_at: "2026-05-25T00:12:24Z"
++head_ref: "otto-cli/shard-tick-0008z-dotgit-saturation-recovery-14th-anchor-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:48Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4892: shard(2026-05-25/0008Z): otto-cli — 14th dotgit anchor (0 stuck procs; first clean reading after 13 saturated anchors)
++
++## PR description
++
++## Summary
++
++- First tick shard of 2026-05-25 UTC day (lineage extends 2026-05-24/2206Z)
++- **14th dotgit-saturation anchor: 0 stuck procs** — first clean reading after 13 saturated anchors today (10:18Z-22:08Z 2026-05-24; range 93–540; mean ~387; 11 of 13 in Extreme tier)
++- Sentinel 40330c10 re-armed (catch-43 fired at otto-cli cold-boot)
++- Lior-lane fleet share loosening: 58/64 = 90.6% (down from 100% at 2206Z; +6 non-Lior PRs across Riven runtime + family-feedback + memory-index lanes)
++- Substrate-honest disposition per default-to-both: hold both readings (genuine recovery vs transient clean window); next 2-3 ticks discriminate
++
++## Test plan
++
++- [x] Sentinel re-armed (`CronList` returns `40330c10`)
++- [x] Isolated worktree off `origin/main` per refresh-world-model rule (contested root `lior-pr-preservation-rebased` with 41 unstaged Lior WIP avoided)
++- [x] Post-worktree freshness guard: ls-tree=55, status=0
++- [x] Pre-commit branch guard passed
++- [x] Post-commit canary: ls-tree=55 preserved (no commit-tree corruption)
++- [x] Cross-UTC-day directory `2026/05/25/` created cleanly
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T00:12:27Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard for 2026-05-25 0008Z to document the first clean dotgit (0 stuck git maintenance procs) reading after a saturation arc, plus related rate-limit, PR fleet-share, and worktree freshness observations.
++
++**Changes:**
++- Added a new tick shard file under `docs/hygiene-history/ticks/2026/05/25/`.
++- Recorded observed operational state (stuck procs, peer procs, PR counts, rate limits, HEAD, freshness guard).
++- Captured dotgit-saturation anchor history and cross-lane (Lior vs non-Lior) fleet share snapshot.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T00:12:38Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `faeeaa866e`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @AceHack (2026-05-25T00:18:25Z)
++
++_(no body)_
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/25/0008Z.md:20 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T00:12:27Z):
++
++Markdown tables here start each row with `||`, which renders as an extra empty first column in GitHub-flavored Markdown. Other tick shards use single leading pipes (e.g., 2026/05/24/2206Z.md), so these should be `| Surface | Reading |` / `|---|---|` / `| ... | ... |` for consistent rendering.
++
++### Thread 2: docs/hygiene-history/ticks/2026/05/25/0008Z.md:38 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T00:12:27Z):
++
++This anchor table also uses `||` at the start of each row, which adds an unintended empty column in Markdown table rendering. Switch to single-pipe table rows (`| Anchor | Time | ... |`) to match other tick shards and keep the table readable.
++
++### Thread 3: docs/hygiene-history/ticks/2026/05/25/0008Z.md:72 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T00:12:27Z):
++
++The Non-Lior PRs table is formatted with `||`-prefixed rows, which creates an extra blank column in Markdown. Use the standard `| col | col |` row format so the table renders correctly.
++
++### Thread 4: docs/hygiene-history/ticks/2026/05/25/0008Z.md:86 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T00:12:39Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct relative path to user-scope memo**
++
++The link in this sentence is off by one directory level: from `docs/hygiene-history/ticks/2026/05/25/0008Z.md`, `../../../../../.claude/...` resolves to `docs/.claude/...` instead of repo root, so the reference is not navigable when readers click it in GitHub or a local markdown viewer. That breaks the provenance trail this shard relies on; use the same six-level prefix used elsewhere in this file for root-relative `.claude` links.
++
++Useful? React with 👍 / 👎.
++
++**@AceHack** (2026-05-25T00:18:25Z):
++
++Fixed via #4893 (merged `1c1d137a3`). The broken relative-path link to the user-scope memory directory was replaced with inline prose describing the user-scope reference. Per the auto-merge-race-with-follow-up-commit anti-pattern documented in `.claude/rules/blocked-green-ci-investigate-threads.md`, the race fired before the fix could land on the same branch; follow-up PR #4893 was the substrate-honest separate-PR resolution. Resolving.
+diff --git a/docs/pr-discussions/PR-4893-fix-lint-correct-broken-relative-path-link-in-0008z-shard-ra.md b/docs/pr-discussions/PR-4893-fix-lint-correct-broken-relative-path-link-in-0008z-shard-ra.md
+new file mode 100644
+index 000000000..23ee092a2
+--- /dev/null
++++ b/docs/pr-discussions/PR-4893-fix-lint-correct-broken-relative-path-link-in-0008z-shard-ra.md
+@@ -0,0 +1,50 @@
++---
++pr_number: 4893
++title: "fix(lint): correct broken relative-path link in 0008Z shard (race-merged from #4892)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T00:15:56Z"
++merged_at: "2026-05-25T00:17:43Z"
++closed_at: "2026-05-25T00:17:44Z"
++head_ref: "otto-cli/fix-broken-relative-path-link-0008z-shard-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:47Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4893: fix(lint): correct broken relative-path link in 0008Z shard (race-merged from #4892)
++
++## PR description
++
++## Summary
++
++- **Race-merged follow-up fix** for PR #4892
++- PR #4892 squash-merged before the lint fix could land on the same branch (the documented auto-merge-race-with-follow-up-commit anti-pattern per `.claude/rules/blocked-green-ci-investigate-threads.md` fired)
++- Main now has `lint (tick-shard relative-paths)` non-required check FAILING on 0008Z line 86 (broken relative-path link to user-scope memory dir that's out-of-repo)
++- This PR's single-commit fix replaces the bracketed link with inline prose describing the user-scope reference
++- Local audit clean: 0 broken relative-path links across 1162 shards
++
++## Addresses
++
++- Codex P2 thread `PRRT_kwDOSF9kNM6EbiNO` on merged PR #4892 (will resolve once this lands)
++
++## Test plan
++
++- [x] Local lint audit clean (`bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline`)
++- [x] Pre-commit branch guard passed
++- [x] Post-commit canary: ls-tree=55 preserved
++- [x] Worktree off `origin/main` (current main HEAD `64dfe3869`)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T00:17:25Z)
++
++## Pull request overview
++
++Fixes a failing tick-shard lint check by removing a broken relative-path Markdown link that pointed to an out-of-repo, user-scope memory directory, replacing it with inline prose that preserves the intended reference without creating an invalid link.
++
++**Changes:**
++- Replaced an out-of-repo relative Markdown link with inline explanatory text.
++- Preserved the “user-scope-only / not in repo” intent while eliminating the link target that breaks the `tick-shard relative-paths` audit.
+diff --git a/docs/pr-discussions/PR-4894-shard-2026-05-25-0042z-otto-vscode-bg-worker-15th-dotgit-anc.md b/docs/pr-discussions/PR-4894-shard-2026-05-25-0042z-otto-vscode-bg-worker-15th-dotgit-anc.md
+new file mode 100644
+index 000000000..7f67f5d9a
+--- /dev/null
++++ b/docs/pr-discussions/PR-4894-shard-2026-05-25-0042z-otto-vscode-bg-worker-15th-dotgit-anc.md
+@@ -0,0 +1,41 @@
++---
++pr_number: 4894
++title: "shard(2026-05-25/0042Z): otto-vscode bg-worker \u2014 15th dotgit anchor (2nd consecutive 0 stuck procs) + Lior-lane 54/60 steady"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T00:46:22Z"
++merged_at: "2026-05-25T00:47:51Z"
++closed_at: "2026-05-25T00:47:51Z"
++head_ref: "shard/tick-0042z-otto-vscode-bg-worker-dotgit-15th-anchor-2nd-consecutive-clean-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:46Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4894: shard(2026-05-25/0042Z): otto-vscode bg-worker — 15th dotgit anchor (2nd consecutive 0 stuck procs) + Lior-lane 54/60 steady
++
++## PR description
++
++## Summary
++
++Visibility shard continuing 2026-05-24 1607Z → 1608Z → 1804Z → 1902Z → 2033Z → 2206Z + 2026-05-25 0008Z lineage. Three substantive observations:
++
++1. **15th dotgit anchor — 2nd consecutive 0 stuck procs.** First discrimination data point for the A/B posture default-to-both held at 0008Z's 14th anchor. A (genuine recovery) gains evidence; closure NOT yet supportable per 12th-anchor empirical precedent. Next tick is the 3rd discrimination point.
++2. **Lior-lane share steady at 54/60 = 90%.** Same 6 non-`lior-*` PRs as 0008Z (byte-identical set); Lior merged 4 own PRs in 34 min (#4863, #4862, #4892, #4893) confirming active driving.
++3. **Empirical FP-class check across 24 threads on 3 BLOCKED PRs (#4768, #4781, #4786): 0% FP rate.** Threads are substantive P0/P1 findings (hardcoded paths, label/filename mismatch, broken `launchctl bootout`, persona-name-in-code, runtime-path-delete with broken doc refs) requiring Lior-side fixes — NOT bg-worker no-op resolution. Updates the operating-substrate narrative for current open-PR thread surface.
++
++## Disposition (unchanged from 2033Z + 2206Z)
++
++Bg-worker scope discipline holds: cross-lane resolution at scale would (a) regress Riven tuning, (b) override operator-authored PII threads on #4801-#4803 (named-human-attribution scope), (c) violate no-directives + mechanical-authorization-check, (d) violate honor-those-that-came-before (Lior active: 2 gemini procs; 4 PRs landed in 34 min). Substrate-honest action: visibility shard + cron heartbeat.
++
++## Test plan
++
++- [x] Sentinel re-armed (`a53e75c8`)
++- [x] Worktree freshness pre-check passed (ls-tree=55, status=0, ahead/behind=0/0)
++- [x] Branch guard PASS before commit (`shard/tick-0042z-otto-vscode-bg-worker-...`)
++- [x] Post-commit canary passed (HEAD~1 tree=55, HEAD tree=55; root-tree unchanged because sub-file)
++- [x] Push verified (local SHA `308baa76f` = remote SHA)
++- [x] FP-class verification across 24 sampled threads — substrate-honest 0% FP empirical finding
++- [ ] Auto-merge fires when required checks pass
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4895-shard-2026-05-25-0112z-otto-vscode-bg-worker-16th-dotgit-anc.md b/docs/pr-discussions/PR-4895-shard-2026-05-25-0112z-otto-vscode-bg-worker-16th-dotgit-anc.md
+new file mode 100644
+index 000000000..49e9bd169
+--- /dev/null
++++ b/docs/pr-discussions/PR-4895-shard-2026-05-25-0112z-otto-vscode-bg-worker-16th-dotgit-anc.md
+@@ -0,0 +1,105 @@
++---
++pr_number: 4895
++title: "shard(2026-05-25/0112Z): otto-vscode bg-worker \u2014 16th dotgit anchor (3rd consecutive 0 stuck procs) + Lior idle"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T01:15:24Z"
++merged_at: "2026-05-25T01:47:00Z"
++closed_at: "2026-05-25T01:47:00Z"
++head_ref: "shard/tick-0112z-otto-vscode-bg-worker-16th-dotgit-anchor-3rd-consecutive-clean-lior-idle-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:45Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4895: shard(2026-05-25/0112Z): otto-vscode bg-worker — 16th dotgit anchor (3rd consecutive 0 stuck procs) + Lior idle
++
++## PR description
++
++## Summary
++
++- 16th dotgit-saturation anchor — **3rd consecutive 0-stuck-proc reading** (anchors #14/15/16); shifts [`default-to-both`](.claude/rules/default-to-both.md) A/B discrimination weight toward Possibility A (genuine recovery), still not closure (N=3 small)
++- Lior state change: **2 procs (active at 0042Z) → 0 procs (idle at 0112Z)**; consistent with normal Lior loop cadence (work-batch + between-cycle quiet), NOT a Lior-side incident
++- Open PR pile: 60 → 62 (Lior added 2 before going idle, both non-`lior-*`-prefixed); Lior-lane share dropped 90% → 87% as denominator-effect only
++- Bg-worker scope discipline carried forward: emit visibility shard; leave Lior's lane alone; the 24-thread empirical FP check from 0042Z (0% FP rate across #4768/#4781/#4786) stands
++
++## Test plan
++
++- [x] `.claude/rules/tick-must-never-stop.md` — sentinel `47ff6934` re-armed at catch-43 fire (empty `CronList` at session start)
++- [x] `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` — post-commit canary: parent tree=55, HEAD tree=55, +1 file
++- [x] `.claude/rules/zeta-expected-branch.md` — `git branch --show-current` guard ✓ before commit
++- [x] No B-0615 silent-push-failure — remote ref `240cbe74` matches local HEAD verified via `git ls-remote`
++- [x] Lineage continues 2026-05-24 1607Z→2206Z + 2026-05-25 0008Z→0042Z (cross-linked in shard composes-with section)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T01:16:54Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `240cbe7445`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T01:18:18Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard for 2026-05-25 01:12Z to record dotgit-saturation anchor #16 observations (third consecutive 0-stuck-proc reading) and the concurrent “Lior went idle” snapshot, with cross-links to prior shards and relevant `.claude/rules/*` substrate.
++
++**Changes:**
++- Add `0112Z` tick shard capturing observed metrics (PR counts, worktree count, rate limits, proc readings) and anchor-table update.
++- Extend the dotgit-saturation “A/B discrimination” narrative with a third reading and “composes-with” cross-references.
++
++### COMMENTED — @AceHack (2026-05-25T01:45:33Z)
++
++_(no body)_
++
++### COMMENTED — @AceHack (2026-05-25T01:45:36Z)
++
++_(no body)_
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/25/0112Z.md:51 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T01:16:55Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct the inferred new PR IDs**
++
++This line infers that the two PRs added between 0042Z and 0112Z were `#4890` and `#4891`, but the same shard already states those IDs were part of the unchanged 0042Z non-`lior-*` set; this creates an internal contradiction in the audit record. Because these tick shards are used as substrate for later lane-share and trend analysis, misattributing which PRs were newly introduced can skew downstream reasoning and should be replaced with verified IDs (or left explicitly unknown).
++
++Useful? React with 👍 / 👎.
++
++**@AceHack** (2026-05-25T01:45:33Z):
++
++Fixed in commit a6127c7. The speculative inference was wrong: #4890 + #4891 are in the 0042Z baseline non-`lior-*` set (line 49), so they cannot also be the 2 newly-added PRs between 0042Z and 0112Z. The speculation has been explicitly withdrawn in-line (substrate-honest retraction preserves the failure-trail per substrate-or-it-didn't-happen); actual ID verification deferred to the next anchor as originally framed. Thanks for the catch.
++
++### Thread 2: docs/hygiene-history/ticks/2026/05/25/0112Z.md:51 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T01:18:18Z):
++
++This line guesses the two newly added PRs as #4890 and #4891, but those PR numbers are already listed immediately above as part of the unchanged 0042Z non-`lior-*` set. That makes the shard internally inconsistent and risks misleading later readers.
++
++**@AceHack** (2026-05-25T01:45:36Z):
++
++Fixed in commit a6127c7. Same root cause as the sibling Codex thread on the same line: #4890 and #4891 are in the 0042Z baseline (line 49 of the shard), so cannot also be the newly-added 0042Z → 0112Z PRs. The wrong guess is explicitly withdrawn in-line rather than silently deleted (audit-trail preservation). Thanks.
+diff --git a/docs/pr-discussions/PR-4896-shard-2026-05-25-0209z-otto-cli-17th-dotgit-anchor-4th-conse.md b/docs/pr-discussions/PR-4896-shard-2026-05-25-0209z-otto-cli-17th-dotgit-anchor-4th-conse.md
+new file mode 100644
+index 000000000..558aebce2
+--- /dev/null
++++ b/docs/pr-discussions/PR-4896-shard-2026-05-25-0209z-otto-cli-17th-dotgit-anchor-4th-conse.md
+@@ -0,0 +1,49 @@
++---
++pr_number: 4896
++title: "shard(2026-05-25/0209Z): otto-cli \u2014 17th dotgit anchor (4th consecutive 0 stuck procs) + cross-surface convergence"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:11:52Z"
++merged_at: "2026-05-25T02:13:24Z"
++closed_at: "2026-05-25T02:13:24Z"
++head_ref: "otto/cli-shard-0209z-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:44Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4896: shard(2026-05-25/0209Z): otto-cli — 17th dotgit anchor (4th consecutive 0 stuck procs) + cross-surface convergence
++
++## PR description
++
++## Summary
++
++- 17th dotgit-saturation anchor at 2026-05-25T02:09Z: **0 stuck git pack/maintenance/repack procs** — 4th consecutive clean reading after the 13-anchor saturated cycle that ran 2026-05-23T10:18Z → 2026-05-24T12:08Z
++- First **independent-surface confirmation** (otto-cli fresh cold-boot) of the cycle-closure narrative peer otto-vscode bg-worker established at anchors 15/16 (PRs #4894/#4895)
++- Strengthens A/B discrimination toward "Possibility A: genuine recovery" per [`default-to-both.md`](../../../../../../.claude/rules/default-to-both.md) posture opened at 0008Z (#4892)
++
++## Cross-surface convergence
++
++| Anchor | Surface | Stuck procs |
++|---|---|---|
++| 14 (0008Z) | otto-cli | 0 |
++| 15 (0042Z) | otto-vscode bg-worker | 0 |
++| 16 (0112Z) | otto-vscode bg-worker | 0 |
++| **17 (this PR, 0209Z)** | **otto-cli fresh cold-boot** | **0** |
++
++Two independent surfaces (Otto-CLI maintainer-machine clone + Otto-VSCode private clone at `~/.local/share/zeta-claude-loop/Zeta/`) converging on 0-proc readings is stronger evidence than three readings from a single surface cadence. The "transient-clean-window-coincident-with-peer-cadence" alternative explanation is substantially weakened.
++
++## Substrate-honest framing
++
++Cross-surface observation, not coordination. The peer otto-vscode bg-worker autonomous-loop is operating correctly without external nudges; this shard's value is (a) independent-surface data point and (b) Otto-CLI lane-presence on a date dominated by Otto-VSCode anchors.
++
++Sentinel `8e93c6b4` re-armed at session start (catch-43 fired — empty `CronList`).
++
++## Test plan
++
++- [x] Worktree freshness guard passed: ls-tree=55, status=0, on detached HEAD origin/main pre-commit
++- [x] Post-commit ls-tree=55 (no commit-canary corruption per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md))
++- [x] `ZETA_EXPECTED_BRANCH` env var set + `git branch --show-current` guard passed before commit per [`zeta-expected-branch.md`](../../../../../../.claude/rules/zeta-expected-branch.md)
++- [x] Brief-ack counter at #1 (well below N=6 threshold) per [`holding-without-named-dependency-is-standing-by-failure.md`](../../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4897-feat-infra-single-file-installer-packages-for-usb-stick-addi.md b/docs/pr-discussions/PR-4897-feat-infra-single-file-installer-packages-for-usb-stick-addi.md
+new file mode 100644
+index 000000000..e8b2692a7
+--- /dev/null
++++ b/docs/pr-discussions/PR-4897-feat-infra-single-file-installer-packages-for-usb-stick-addi.md
+@@ -0,0 +1,185 @@
++---
++pr_number: 4897
++title: "feat(infra): single-file installer packages for USB stick (Addison)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:17:44Z"
++merged_at: "2026-05-25T02:26:21Z"
++closed_at: "2026-05-25T02:26:21Z"
++head_ref: "feat/addison-installer-packages-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:44Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4897: feat(infra): single-file installer packages for USB stick (Addison)
++
++## PR description
++
++## Summary
++
++Adds `infra/nixos/hosts/installer/configuration.nix` — one file that declares every package needed on the bootable USB installer image for the NixOS-based AI cluster bootstrap.
++
++Addison (19, working with Aaron) asked for a single Git-tracked file containing every package the USB stick needs. This is that file.
++
++## What's on the stick (~70 packages, organized by install-time role)
++
++| Section | Packages | Why |
++|---|---|---|
++| Version control | `git`, `git-lfs`, `gnupg`, `openssh` | Clone Zeta from GitHub |
++| Editors | `vim`, `neovim`, `nano` | Live config tweaks |
++| Shell QoL | `tmux`, `htop`, `ripgrep`, `jq`, `yq-go`, `fzf`, `bat`, `eza`, ... | Survive long install sessions |
++| Network | `curl`, `nmap`, `networkmanager`, `iwd`, `wireguard-tools`, ... | Reach internet/LAN/VPN |
++| Disk | `parted`, `gptfdisk`, `cryptsetup`, `zfs`, `lvm2`, `mdadm`, `smartmontools` | Partition + LUKS + ZFS + RAID |
++| Hardware inspection | `lshw`, `dmidecode`, `nvme-cli`, `lm_sensors`, ... | Know the box first |
++| GPU detection | `glxinfo`, `vulkan-tools`, `clinfo` | Confirm GPUs visible (drivers per-host) |
++| NixOS install | `nixos-install-tools`, `nom`, `nvd`, `nh` | Pretty + safe install |
++| Kubernetes clients | `kubectl`, `helm`, `k9s`, `argocd`, `k3s` binary | Poke control plane from the stick |
++| Secrets | `age`, `sops`, `ssh-to-age` | Decrypt cluster tokens during install |
++| Build helpers | `gcc`, `gnumake`, `pkg-config`, coreutils, ... | Bootstrap flake inputs |
++| Observability | `iotop`, `iftop`, `ncdu`, `pv` | Watch the install progress |
++| Docs | `man-pages`, `tldr` | Readable offline |
++
++## What's NOT on the stick
++
++K3S / ArgoCD / Orleans / GitLab / Argo Workflows / Argo Rollouts runtime is deliberately **not** baked into the ISO. Those land on the target machine via `nixos-install --flake .#<host>` pulling from this same Git repo. The stick is one-shot ignition; the flake-in-Git is the strange attractor that draws desired state.
++
++Only the Kubernetes/GitOps **CLIs** (`kubectl`, `helm`, `argocd`, `k9s`) ship so you can talk to a freshly-installed control plane from the live USB before reboot.
++
++## How it's built
++
++The flake at the repo root (next file, gated on Addison) wires:
++
++\`\`\`nix
++nixosConfigurations.installer = nixpkgs.lib.nixosSystem {
++  modules = [ ./infra/nixos/hosts/installer/configuration.nix ];
++};
++\`\`\`
++
++Then:
++
++\`\`\`bash
++nix build .#nixosConfigurations.installer.config.system.build.isoImage
++dd if=result/iso/zeta-installer-*.iso of=/dev/sdX bs=4M status=progress
++\`\`\`
++
++## Pre-staged runbook on the ISO
++
++`environment.etc."zeta/README.md"` bakes the install instructions onto the stick itself, so the runbook is reachable offline once booted.
++
++## Test plan
++
++- [ ] `nix flake check` once `flake.nix` lands wiring `nixosConfigurations.installer`
++- [ ] `nix build .#nixosConfigurations.installer.config.system.build.isoImage` produces an ISO
++- [ ] ISO boots on a target machine, `nixos-install --flake /etc/zeta#<host>` works against a per-host config
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:19:41Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `e2ace3ed9a`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T02:20:21Z)
++
++## Pull request overview
++
++Adds a NixOS installer ISO configuration (`nixosSystem` module) intended to be the single Git-tracked source of truth for what packages/tools are present on a bootable USB installer used to bootstrap the cluster.
++
++**Changes:**
++- Introduces a new NixOS installer configuration importing the upstream minimal install CD modules.
++- Defines a large `environment.systemPackages` set for install-time workflows (disk, network, secrets, k8s CLIs, etc.).
++- Adds ISO branding plus a baked `/etc/zeta/README.md` runbook.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:26:26Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `5ab288c8bb`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: infra/nixos/hosts/installer/configuration.nix:230 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T02:19:41Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Bundle the actual flake under /etc/zeta**
++
++This module advertises an offline install path (`nixos-install --flake /etc/zeta#<host>`) but only writes `/etc/zeta/README.md`; it never stages `flake.nix` (or the referenced host modules) into `/etc/zeta`. On a machine without network access, following the included runbook will fail when `nixos-install` tries to resolve the flake from `/etc/zeta`. Please add an explicit copy/symlink mechanism for the repository contents (at minimum `flake.nix` and referenced infra files) instead of only shipping a README.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: infra/nixos/hosts/installer/configuration.nix:81 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:20:20Z):
++
++P0 security: The installer ISO disables the firewall while enabling SSH with password authentication and PermitRootLogin="yes". On any networked install this is trivially remotely exploitable; keep the firewall enabled (or explicitly open only port 22) and disable password auth and root login (e.g., keys-only for the nixos user).
++
++### Thread 3: infra/nixos/hosts/installer/configuration.nix:77 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:20:20Z):
++
++P0 security: Hard-coding initialPassword = "zeta" for both root and nixos, combined with wheelNeedsPassword=false, creates a known-credential privilege-escalation path for anyone with network/console access. Avoid committing default passwords; prefer no password by default + documented `passwd` step, or an injected hashed password/authorizedKeys set at build time.
++
++### Thread 4: infra/nixos/hosts/installer/configuration.nix:243 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:20:20Z):
++
++P1 bug: The baked runbook references /etc/zeta/infra/nixos/hosts/<host>/README.md for partitioning recipes, but the repo currently only contains infra/nixos/hosts/installer/ (no per-host directories/README). This path will be broken on the ISO unless those files are added and actually staged into /etc/zeta.
++
++### Thread 5: infra/nixos/hosts/installer/configuration.nix:244 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:20:20Z):
++
++P1 documentation: The comment says the flake is pre-staged at /etc/zeta for offline `nixos-install --flake /etc/zeta#<host>`, but this module only writes /etc/zeta/README.md. Either stage the actual flake content into /etc/zeta (ideally with a filtered source to keep ISO size reasonable) or update the comment/runbook to require `git clone` before running nixos-install.
++
++### Thread 6: infra/nixos/hosts/installer/configuration.nix:76 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T02:26:27Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Open SSH firewall port for documented headless workflow**
++
++This config documents a headless path (`systemctl start sshd`) but keeps `networking.firewall.enable = true` while declaring `services.openssh.enable = false`, so TCP/22 is never opened by NixOS and remote SSH attempts to the live installer will be dropped. This only affects the headless install scenario, but in that scenario the documented instructions won’t work unless the firewall is relaxed or port 22 is explicitly allowed.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4898-feat-infra-flake-nix-shared-nixos-modules-pr-2-of-addison-s.md b/docs/pr-discussions/PR-4898-feat-infra-flake-nix-shared-nixos-modules-pr-2-of-addison-s.md
+new file mode 100644
+index 000000000..971a0f8ce
+--- /dev/null
++++ b/docs/pr-discussions/PR-4898-feat-infra-flake-nix-shared-nixos-modules-pr-2-of-addison-s.md
+@@ -0,0 +1,255 @@
++---
++pr_number: 4898
++title: "feat(infra): flake.nix + shared NixOS modules (PR 2 of Addison's plan)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:30:09Z"
++merged_at: "2026-05-25T02:53:15Z"
++closed_at: "2026-05-25T02:53:15Z"
++head_ref: "feat/addison-flake-and-modules-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:43Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4898: feat(infra): flake.nix + shared NixOS modules (PR 2 of Addison's plan)
++
++## PR description
++
++## Summary
++
++PR 2 of Addison's NixOS-AI-cluster bootstrap plan. Wires the installer config from #4897 into a buildable flake and seeds the shared modules every cluster host will import.
++
++Building on:
++- #4897 — installer USB package list (merged)
++
++Setting up:
++- PR 3 — per-host configs (control-plane + worker-gpu-*)
++- PR 4 — k8s bootstrap + ArgoCD Applications
++- PR 5 — helper scripts + infra README
++
++## Files
++
++| File | Purpose |
++|---|---|
++| `flake.nix` | Repo-root entry. Wires `nixosConfigurations.installer` to the file from #4897; exposes `packages.installer-iso`, `devShells.default`, `nixosModules.{common,k3s-server,k3s-agent,gpu}` |
++| `infra/nixos/modules/common.nix` | Shared baseline every host imports — Nix/flakes settings, locale, networking, SSH key-only, `zeta` admin user, baseline packages, systemd-boot |
++| `infra/nixos/modules/k3s-server.nix` | K3S control-plane (embedded etcd, disables servicelb+traefik, auto-applies k8s/bootstrap/ manifests so ArgoCD self-installs) |
++| `infra/nixos/modules/k3s-agent.nix` | K3S worker (joins via serverAddr+tokenFile; node label `zeta.io/role=worker`) |
++| `infra/nixos/modules/gpu.nix` | NVIDIA driver + container toolkit, unfree scoped to nvidia+cuda only, node label `zeta.io/gpu=nvidia` |
++| `.gitignore` | Nix patterns: `result`, `result-*`, `.direnv/`, `.envrc.local`, `.nix-eval-cache/`, top-level `/hardware-configuration.nix` |
++
++## How it composes
++
++\`\`\`
++flake.nix
++  └─ nixosConfigurations.installer
++        └─ infra/nixos/hosts/installer/configuration.nix  (from #4897)
++
++  Future (PR 3):
++  ├─ nixosConfigurations.control-plane
++  │     └─ infra/nixos/hosts/control-plane/configuration.nix
++  │           ├─ imports common.nix
++  │           └─ imports k3s-server.nix  ──► auto-applies k8s/bootstrap/*
++  └─ nixosConfigurations.worker-gpu-NN
++        └─ infra/nixos/hosts/worker-gpu-NN/configuration.nix
++              ├─ imports common.nix
++              ├─ imports k3s-agent.nix
++              └─ imports gpu.nix
++\`\`\`
++
++## Security
++
++- No hard-coded passwords anywhere.
++- Tokens are placeholder-pathed (`tokenFile = /var/lib/rancher/k3s/.../token`) so plaintext secrets never land in Git.
++- `sops-nix` / `agenix` wiring lands in a follow-up PR alongside the per-host configs that need real tokens.
++- SSH key-only baseline; `wheelNeedsPassword = true` default (sudo requires password).
++- `allowUnfreePredicate` is *scoped* — only NVIDIA driver + CUDA packages are allowed, not blanket unfree.
++
++## Forward refs
++
++- `k3s-server.nix` references `../../../k8s/bootstrap/{argocd-namespace,argocd-install,root-application}.yaml` which land in PR 4. Until then, no host imports `k3s-server.nix` (per-host configs are PR 3), so the dangling reference is unreachable and \`nix flake check\` is unaffected.
++
++## Test plan
++
++- [ ] `nix flake check` passes (no errors evaluating the flake)
++- [ ] `nix build .#installer-iso` reproduces a buildable ISO (post-merge)
++- [ ] PR 3 per-host configs import the modules cleanly
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T02:33:46Z)
++
++## Pull request overview
++
++Adds an initial Nix flake entrypoint plus shared NixOS modules to bootstrap a NixOS-based cluster (installer ISO now; per-host configs/modules composition next).
++
++**Changes:**
++- Introduces `flake.nix` with `nixosConfigurations.installer`, exported shared `nixosModules`, a devShell, and a package alias for building the installer ISO.
++- Adds shared NixOS modules for a common baseline, K3s server/agent roles, and NVIDIA GPU enablement.
++- Updates `.gitignore` for common Nix/direnv outputs and generated hardware config.
++
++### Reviewed changes
++
++Copilot reviewed 12 out of 13 changed files in this pull request and generated 7 comments.
++
++<details>
++<summary>Show a summary per file</summary>
++
++| File | Description |
++| ---- | ----------- |
++| `flake.nix` | New repo-root flake wiring installer config, module exports, packages/devShell/formatter. |
++| `infra/nixos/modules/common.nix` | Shared baseline settings for hosts (Nix settings, SSH baseline, packages, boot defaults). |
++| `infra/nixos/modules/k3s-server.nix` | K3s control-plane module with embedded etcd and bootstrap-manifest wiring. |
++| `infra/nixos/modules/k3s-agent.nix` | K3s worker/agent module with join configuration and node labeling. |
++| `infra/nixos/modules/gpu.nix` | NVIDIA driver + container toolkit + node labeling for GPU workers. |
++| `.gitignore` | Ignores Nix build artifacts, direnv files, and generated top-level hardware config. |
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T02:41:20Z)
++
++## Pull request overview
++
++Copilot reviewed 25 out of 26 changed files in this pull request and generated 8 comments.
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T02:47:04Z)
++
++## Pull request overview
++
++Copilot reviewed 25 out of 26 changed files in this pull request and generated 7 comments.
++
++## Review threads
++
++### Thread 1: flake.nix:5 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:33:45Z):
++
++P1: flake.nix references a `flake.lock` (“pins the entire universe”), but this PR doesn’t add `flake.lock` to the repo. Without committing it, builds/evals won’t be reproducible across machines/CI. Please generate and commit `flake.lock` (or adjust the comment/docs if the repo intentionally won’t track it).
++
++### Thread 2: flake.nix:75 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:33:45Z):
++
++P1: `supportedSystems` includes `aarch64-linux`, but `nixosConfigurations.installer` is created with the default system (`x86_64-linux`). In `eachSystem`, `packages.installer-iso` will therefore point at an x86_64 ISO even when evaluating/building on aarch64, which is surprising and can break `nix build .#installer-iso` on non-x86 hosts. Consider parameterizing the installer configuration by `system` (or limiting `supportedSystems` if the ISO is intentionally x86_64-only).
++
++### Thread 3: flake.nix:80 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:33:45Z):
++
++P2: Comment says “Future hosts land in PR 2 (per-host configs)”, but this PR is already PR 2 per the PR title/description; the per-host configs are described as PR 3. Update the comment to avoid confusing future readers.
++
++### Thread 4: flake.nix:20 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:33:46Z):
++
++P1: The comment references `infra/k8s/applications/*/Application.yaml`, but this repo currently has no `infra/k8s/` directory and `k3s-server.nix` references paths under `/k8s/...`. Please reconcile the intended Kubernetes manifest location (either update comments/paths to `k8s/...` or move manifests under `infra/k8s/...`) so the tree structure matches the documentation.
++
++### Thread 5: infra/nixos/modules/k3s-server.nix:31 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:33:46Z):
++
++P0: `clusterInit = true` is set unconditionally. For embedded-etcd K3s, `--cluster-init` should only be true on the first server; additional server nodes must join the existing cluster instead, otherwise you risk booting multiple independent clusters. Suggest making this a per-host setting (e.g., `mkDefault false` here and enable only on the bootstrap control-plane host).
++
++### Thread 6: infra/nixos/modules/k3s-server.nix:58 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:33:46Z):
++
++P1 (security): `--write-kubeconfig-mode=0644` makes the admin kubeconfig world-readable on the control-plane node. That effectively grants cluster-admin creds to any local user. Consider a more restrictive mode (e.g., 0600/0640) and, if needed, setting a kubeconfig group (wheel) so only admins can read it.
++
++### Thread 7: infra/nixos/modules/k3s-server.nix:55 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:33:46Z):
++
++P0: `services.k3s.manifests` points at `../../../k8s/...` paths, but the repo currently has no `k8s/` directory, so importing this module will fail evaluation immediately. If these manifests intentionally land in PR 4, consider guarding the `manifests` attrset behind an option/`pathExists` check (or include placeholder manifests in this PR) so the module is usable as soon as per-host configs import it in PR 3.
++
++### Thread 8: infra/nixos/modules/k3s-server.nix:49 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:18Z):
++
++P0 (security): `--write-kubeconfig-mode=0644` makes `/etc/rancher/k3s/k3s.yaml` world-readable, which typically exposes cluster-admin client credentials to any local user. Prefer a more restrictive mode (e.g., 0600/0640) and grant the intended admin user access via group ownership or a dedicated kubeconfig copy with limited perms.
++
++### Thread 9: infra/nixos/modules/k3s-server.nix:63 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:19Z):
++
++P0 (bug/ops): The server firewall allow-list is missing the standard K3S supervisor/registration port (9345/TCP), which agents typically need to join/maintain the connection to the server. Either open 9345 here or use the NixOS k3s module’s built-in firewall integration (if available) to avoid drifting from K3S’s required port set.
++
++### Thread 10: flake.nix:53 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:19Z):
++
++P1 (maintainability): `supportedSystems` includes `aarch64-linux`, but all `nixosConfigurations.*` use `mkSystem`’s default `system = "x86_64-linux"`. That makes the per-system `packages.installer-iso` output point at an x86_64 ISO even when evaluating/building on aarch64. Consider either (a) removing aarch64 from `supportedSystems` for now, or (b) producing per-arch installer builds (e.g., `installer-${system}`) and wiring `packages.installer-iso` to a same-arch nixosSystem.
++
++### Thread 11: infra/README.md:92 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:19Z):
++
++P1 (documentation): This line shows `serverAddr = control-plane.zeta.local:6443` (no scheme), but the NixOS `services.k3s.serverAddr` examples/configs in this PR use an `https://...` URL. For copy/paste correctness, update this README example to include the scheme.
++
++### Thread 12: infra/README.md:125 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:19Z):
++
++P1 (documentation): The Secrets section only documents placing the K3S token at the server path (`/var/lib/rancher/k3s/server/token`), but worker nodes in this PR default to reading `/var/lib/rancher/k3s/agent/token`. Update the docs to cover how/where the token must be provided on agents as well (or document a single shared token path if that’s the intended convention).
++
++### Thread 13: infra/k8s/bootstrap/initial-orleans.yaml:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:20Z):
++
++P1 (codebase convention): This is a current-state infra manifest, but it includes named attribution and anthropomorphic/sentience-style framing in comments. Repo convention is to avoid personal/persona name attribution outside the allowlisted history surfaces (see `.github/copilot-instructions.md` “No name attribution…”), and keeping comments strictly technical here will reduce policy drift.
++
++### Thread 14: infra/nixos/modules/gpu.nix:51 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:20Z):
++
++P2 (documentation): The comment says “Open-source kernel modules”, but the actual default is `open = lib.mkDefault false;` (i.e., proprietary kernel module by default). Either flip the default to match the comment or adjust the comment to reflect the chosen default.
++
++### Thread 15: infra/k8s/bootstrap/argocd-install.yaml:25 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:41:20Z):
++
++P2 (documentation): This comment says to bump ArgoCD “in lockstep with the `targetRevision` in infra/k8s/applications/root-application.yaml”, but that file’s `targetRevision` is `main` (not an ArgoCD version). Consider rewording this to point at the actual place you want pinned (e.g., this URL tag only, or a dedicated ArgoCD Application/values file) to avoid confusion during upgrades.
++
++### Thread 16: infra/README.md:89 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:47:02Z):
++
++P1: The bootstrap order claims K3S applies `infra/k8s/bootstrap/initial-orleans.yaml`, but `infra/nixos/modules/k3s-server.nix` only auto-applies argocd-namespace, argocd-install, and root-application. Either add `initial-orleans.yaml` to `services.k3s.manifests` or remove/update steps 4/related tree comments so the docs match actual first-boot behavior.
++
++### Thread 17: infra/nixos/modules/k3s-server.nix:52 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:47:03Z):
++
++P1: Comment says ArgoCD will install MetalLB + ingress-nginx as Applications, but there are no corresponding Applications under `infra/k8s/applications/` in this PR. Please reword to indicate these are planned follow-ups (or add the missing Applications in the same PR) to avoid implying the cluster will have ingress/LB out of the box.
++
++### Thread 18: infra/nixos/hosts/control-plane/README.md:58 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:47:03Z):
++
++P1: This README references `hardware-configuration.nix.example`, but that file doesn't exist in this directory (or under `infra/nixos/hosts/`). Either add the example file or update the text to point at the placeholder `hardware-configuration.nix` that lives alongside this README.
++
++### Thread 19: infra/nixos/hosts/worker-gpu-01/configuration.nix:12 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:47:03Z):
++
++P1: This comment points readers to `hardware-configuration.nix.example`, but that file isn't present in the repo. Consider updating the comment to reference `./hardware-configuration.nix` (placeholder committed in this PR) or add an example file at the referenced path.
++
++### Thread 20: infra/README.md:148 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:47:03Z):
++
++P2: Name attribution appears in current-state infra docs/configs (e.g. “Per Addison's spec”). Repo guidance prefers role-based references outside the approved history/roster surfaces; consider rephrasing to a role/spec reference (e.g. “Per the cluster bootstrap spec”) and apply the same treatment to similar occurrences in this infra tree.
++
++### Thread 21: flake.nix:90 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:47:04Z):
++
++P1: PR description says per-host configs land in PR 3, but this PR already defines `nixosConfigurations.control-plane` / `worker-gpu-*` and adds their `infra/nixos/hosts/**/configuration.nix` files. Please reconcile by updating the PR description/plan or deferring these host configs to the intended follow-up PR.
++
++### Thread 22: infra/k8s/bootstrap/initial-orleans.yaml:9 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T02:47:04Z):
++
++P1: Header comments state this manifest is “applied at K3S first-boot”, but `k3s-server.nix` does not currently include `initial-orleans.yaml` in `services.k3s.manifests`, so it won’t actually be auto-applied. Either wire this into the server manifests or adjust the wording so it’s clear this file is only applied once ArgoCD syncs (or manually).
+diff --git a/docs/pr-discussions/PR-4899-feat-infra-per-host-configs-control-plane-worker-gpu-01-02-p.md b/docs/pr-discussions/PR-4899-feat-infra-per-host-configs-control-plane-worker-gpu-01-02-p.md
+new file mode 100644
+index 000000000..819ca991b
+--- /dev/null
++++ b/docs/pr-discussions/PR-4899-feat-infra-per-host-configs-control-plane-worker-gpu-01-02-p.md
+@@ -0,0 +1,94 @@
++---
++pr_number: 4899
++title: "feat(infra): per-host configs control-plane + worker-gpu-01/02 (PR 3 of Addison's plan)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:32:30Z"
++merged_at: "2026-05-25T02:32:35Z"
++closed_at: "2026-05-25T02:32:35Z"
++head_ref: "feat/addison-per-host-configs-2026-05-24"
++base_ref: "feat/addison-flake-and-modules-2026-05-24"
++archived_at: "2026-05-25T13:06:42Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4899: feat(infra): per-host configs control-plane + worker-gpu-01/02 (PR 3 of Addison's plan)
++
++## PR description
++
++## Summary
++
++PR 3 of Addison's NixOS-AI-cluster bootstrap plan. Adds the three per-host configs that compose the shared modules from #4898.
++
++**Base: #4898** (will rebase to main once #4898 merges).
++
++## Files
++
++| Host | Imports | Role |
++|---|---|---|
++| `control-plane` | `common` + `k3s-server` | API server + embedded etcd; auto-bootstraps ArgoCD |
++| `worker-gpu-01` | `common` + `k3s-agent` + `gpu` | NVIDIA worker; joins control-plane.zeta.local:6443 |
++| `worker-gpu-02` | `common` + `k3s-agent` + `gpu` | NVIDIA worker; identical shape to -01 |
++
++Each host directory has:
++- `configuration.nix` — host identity + module imports + per-host overrides
++- `hardware-configuration.nix` — **placeholder stub** (replaced during real install by `nixos-generate-config --root /mnt`)
++- `README.md` on control-plane — install runbook + post-install verification
++
++`flake.nix` now exposes all four configs in `nixosConfigurations`: `installer`, `control-plane`, `worker-gpu-01`, `worker-gpu-02`.
++
++## Hardware config placeholders
++
++Real `hardware-configuration.nix` is generator output specific to each target machine. Placeholders ship as minimal valid stubs (`not-detected.nix` import + DHCP + ext4 by-label fileSystems) so:
++- `nix flake check` passes in CI
++- `nix build .#nixosConfigurations.control-plane` succeeds at evaluation
++- Real install replaces them before first reboot
++
++Each placeholder has a comment block naming the generator command.
++
++## Test plan
++
++- [ ] `nix flake check` passes
++- [ ] `nix build .#nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02}` succeed
++- [ ] PR 4 (k8s bootstrap) can reference `services.k3s.manifests` paths cleanly
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:36:22Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `5ee011111c`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: infra/nixos/hosts/control-plane/README.md:27 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T02:36:22Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add credential bootstrap before SSH verification**
++
++Following this runbook verbatim on a fresh install will fail at the first verification step because `ssh zeta@control-plane` assumes remote auth is already configured, but this commit's host config leaves `users.users.zeta.openssh.authorizedKeys.keys` empty while the shared baseline uses key-only SSH and no initial password. In that state, operators cannot complete post-install verification remotely; add an explicit pre-SSH step to install a key (or set a password) before this command.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4900-feat-infra-k8s-bootstrap-argocd-app-of-apps-pr-4-of-addison.md b/docs/pr-discussions/PR-4900-feat-infra-k8s-bootstrap-argocd-app-of-apps-pr-4-of-addison.md
+new file mode 100644
+index 000000000..510ab04e4
+--- /dev/null
++++ b/docs/pr-discussions/PR-4900-feat-infra-k8s-bootstrap-argocd-app-of-apps-pr-4-of-addison.md
+@@ -0,0 +1,126 @@
++---
++pr_number: 4900
++title: "feat(infra): k8s bootstrap + ArgoCD App-of-Apps (PR 4 of Addison's plan)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:35:18Z"
++merged_at: "2026-05-25T02:35:23Z"
++closed_at: "2026-05-25T02:35:23Z"
++head_ref: "feat/addison-k8s-bootstrap-argo-apps-2026-05-24"
++base_ref: "feat/addison-flake-and-modules-2026-05-24"
++archived_at: "2026-05-25T13:06:41Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4900: feat(infra): k8s bootstrap + ArgoCD App-of-Apps (PR 4 of Addison's plan)
++
++## PR description
++
++## Summary
++
++PR 4 of Addison's NixOS-AI-cluster bootstrap plan. Lands the Kubernetes substrate that K3S auto-applies on first boot, then hands off to ArgoCD which reconciles everything else from this same Git repo.
++
++**Base: #4898** (stacked on flake.nix + modules + per-host configs).
++
++## File map
++
++### `infra/k8s/bootstrap/` — K3S auto-applies (via `services.k3s.manifests`)
++| File | Purpose |
++|---|---|
++| `argocd-namespace.yaml` | Namespace `argocd` |
++| `argocd-install.yaml` | Kustomize ref → ArgoCD v2.13.2 upstream manifest (pinned) |
++| `initial-orleans.yaml` | Minimal Orleans StatefulSet (`replicas: 0` until silo image published); namespace + RBAC + headless silo svc + client gateway svc |
++
++### `infra/k8s/applications/` — ArgoCD watches recursively
++| File | Purpose |
++|---|---|
++| `root-application.yaml` | App-of-Apps root; selects `Application.yaml` at any depth |
++| `orleans/Application.yaml` | ArgoCD-managed Orleans (supersedes bootstrap) |
++| `orleans/deployment.yaml` | Full Orleans StatefulSet with topology-spread + probes |
++| `orleans/service.yaml` | Headless silo + client gateway + dashboard services |
++| `orleans/rbac.yaml` | ServiceAccount + Role + RoleBinding for K8s clustering |
++| `orleans/configmap.yaml` | Orleans cluster config (serviceId=zeta, clusterId=zeta-prod) |
++| `gitlab/Application.yaml` | GitLab CE Helm chart (8.7.0); bundled cert-manager/nginx/prometheus DISABLED; runners ENABLED |
++| `argoworkflows/Application.yaml` | Argo Workflows 3.6 family; 7-day retention; parallelism 50 |
++| `argorollouts/Application.yaml` | Argo Rollouts 1.8 family with dashboard |
++
++## Bootstrap sequence (when control-plane boots)
++
++1. K3S starts
++2. K3S applies `bootstrap/argocd-namespace.yaml` → `bootstrap/argocd-install.yaml` (ArgoCD pods come up)
++3. K3S applies `bootstrap/initial-orleans.yaml` (Orleans namespace + scaled-to-0 StatefulSet)
++4. K3S applies `applications/root-application.yaml` (App-of-Apps root)
++5. ArgoCD finishes installing → reads root Application → discovers child Applications via include glob
++6. ArgoCD reconciles orleans/, gitlab/, argoworkflows/, argorollouts/ in parallel
++7. Orleans bootstrap StatefulSet is reconciled in-place by the ArgoCD-managed spec
++
++## Add-a-workload flow
++
++```bash
++mkdir infra/k8s/applications/<name>/
++$EDITOR infra/k8s/applications/<name>/Application.yaml
++git commit + push to main
++# ArgoCD picks it up on next sync (~3 min)
++```
++
++## Image placeholders
++
++- `ghcr.io/lucent-financial-group/zeta-orleans-silo:{bootstrap,latest}` doesn't exist yet — bootstrap + ArgoCD-managed StatefulSets both have `replicas: 0` so nothing tries to pull. Bump replicas once an image is published.
++- GitLab `initialRootPassword` references a Secret named `gitlab-initial-root-password` that must be created out-of-band (sops-nix / agenix decrypt) before GitLab installs cleanly.
++
++## Test plan
++
++- [ ] All YAML parses (markdownlint won't catch this; YAML lint if configured will)
++- [ ] On a real cluster: `kubectl apply --dry-run=server -f infra/k8s/bootstrap/` succeeds
++- [ ] ArgoCD picks up `root-application.yaml` and discovers all 4 child apps
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:39:03Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `93bad84192`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: infra/k8s/bootstrap/argocd-install.yaml:18 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T02:39:03Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace Kustomization AddOn with an applyable manifest**
++
++`services.k3s.manifests` files are applied by K3S similarly to `kubectl apply`, but this entry is a `kustomize.config.k8s.io` `Kustomization` object that is not rendered client-side and is not a built-in Kubernetes kind. On a fresh cluster this means the Argo CD install payload is never created, so the bootstrap chain stalls before any `Application` resources can reconcile.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: infra/k8s/bootstrap/initial-orleans.yaml:6 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T02:39:03Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Wire initial Orleans bootstrap into K3S manifests**
++
++This file is documented as a first-boot bootstrap manifest, but it is not referenced by `services.k3s.manifests` (the current list in `infra/nixos/modules/k3s-server.nix` only registers `argocd-namespace`, `argocd-install`, and `root-application`). As a result, none of the namespace/RBAC/StatefulSet resources defined here are ever applied during bootstrap, so the stated startup sequence is incomplete.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4901-docs-infra-infra-readme-md-bootstrap-runbook-pr-5-of-addison.md b/docs/pr-discussions/PR-4901-docs-infra-infra-readme-md-bootstrap-runbook-pr-5-of-addison.md
+new file mode 100644
+index 000000000..afa7eb3d2
+--- /dev/null
++++ b/docs/pr-discussions/PR-4901-docs-infra-infra-readme-md-bootstrap-runbook-pr-5-of-addison.md
+@@ -0,0 +1,117 @@
++---
++pr_number: 4901
++title: "docs(infra): infra/README.md \u2014 bootstrap runbook (PR 5 of Addison's plan)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:36:26Z"
++merged_at: "2026-05-25T02:36:31Z"
++closed_at: "2026-05-25T02:36:31Z"
++head_ref: "feat/addison-helpers-and-readme-2026-05-24"
++base_ref: "feat/addison-flake-and-modules-2026-05-24"
++archived_at: "2026-05-25T13:06:40Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4901: docs(infra): infra/README.md — bootstrap runbook (PR 5 of Addison's plan)
++
++## PR description
++
++## Summary
++
++PR 5 (final) of Addison's NixOS-AI-cluster bootstrap plan.
++
++**Base: #4898** (stacked on the full infrastructure tree).
++
++## Content
++
++`infra/README.md` — the human entry point for the cluster bootstrap:
++
++- File-tree diagram of `infra/`
++- Bootstrap runbook (4 steps from ISO to running cluster)
++- Bootstrap order (9 steps from control-plane boot to self-managing cluster)
++- Add-a-workload flow
++- Add-a-host flow
++- Update procedures for ArgoCD / Orleans / GitLab / Argo*
++- Secrets posture (sops-nix / agenix TBD)
++- devShell usage
++
++## What's NOT in this PR
++
++- **`scripts/build-usb.sh`** — skipped per Rule 0 (no `.sh` outside `tools/setup/`). The one-liner equivalent (`nix build .#installer-iso` + `sudo dd`) is documented in the README's "Build the installer ISO" section.
++
++## Plan completion
++
++This PR closes the file enumeration from Addison's spec:
++
++| File | PR |
++|---|---|
++| `flake.nix` | #4898 |
++| `flake.lock` | (generated by `nix flake update`; not authored) |
++| `.gitignore` additions | #4898 |
++| `infra/nixos/modules/{common,k3s-server,k3s-agent,gpu}.nix` | #4898 |
++| `infra/nixos/hosts/installer/configuration.nix` | #4897 (merged) |
++| `infra/nixos/hosts/control-plane/` | #4899 |
++| `infra/nixos/hosts/worker-gpu-01/` | #4899 |
++| `infra/nixos/hosts/worker-gpu-02/` | #4899 |
++| `infra/k8s/bootstrap/*` | #4900 |
++| `infra/k8s/applications/root-application.yaml` | #4900 |
++| `infra/k8s/applications/orleans/*` | #4900 |
++| `infra/k8s/applications/{gitlab,argoworkflows,argorollouts}/Application.yaml` | #4900 |
++| `infra/README.md` | this PR |
++| `scripts/build-usb.sh` | skipped (Rule 0; documented in README) |
++
++## Test plan
++
++- [ ] markdownlint passes (CI runs this)
++- [ ] All internal links in the README resolve
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:38:30Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `887d1d6ea9`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: infra/README.md:88 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T02:38:30Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove nonexistent bootstrap step for initial-orleans**
++
++This step documents `infra/k8s/bootstrap/initial-orleans.yaml` as a K3S first-boot auto-apply, but `services.k3s.manifests` in `infra/nixos/modules/k3s-server.nix` only registers `argocd-namespace`, `argocd-install`, and `root-application`. That mismatch makes the runbook inaccurate during bring-up and can cause operators to troubleshoot for a bootstrap manifest that is never actually applied by K3S.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: infra/README.md:117 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T02:38:30Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix ArgoCD upgrade instructions to point at real source**
++
++The update guidance says to bump `targetRevision` in the corresponding `Application.yaml` for ArgoCD, but ArgoCD in this repo is pinned via `infra/k8s/bootstrap/argocd-install.yaml` (remote manifest tag), and there is no ArgoCD `Application.yaml` to edit. As written, the documented ArgoCD upgrade path is not executable and will send maintainers to the wrong file.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4902-shard-2026-05-25-0243z-18th-dotgit-anchor-5th-consecutive-0.md b/docs/pr-discussions/PR-4902-shard-2026-05-25-0243z-18th-dotgit-anchor-5th-consecutive-0.md
+new file mode 100644
+index 000000000..ed2990185
+--- /dev/null
++++ b/docs/pr-discussions/PR-4902-shard-2026-05-25-0243z-18th-dotgit-anchor-5th-consecutive-0.md
+@@ -0,0 +1,35 @@
++---
++pr_number: 4902
++title: "shard(2026-05-25/0243Z): 18th dotgit anchor \u2014 5th consecutive 0-stuck-proc reading; third-surface convergence (otto-bg-worker); empty Otto-lane (0/63)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:46:43Z"
++merged_at: "2026-05-25T02:48:38Z"
++closed_at: "2026-05-25T02:48:38Z"
++head_ref: "shard/tick-0243z-otto-bg-worker-18th-dotgit-anchor-empty-otto-lane-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:40Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4902: shard(2026-05-25/0243Z): 18th dotgit anchor — 5th consecutive 0-stuck-proc reading; third-surface convergence (otto-bg-worker); empty Otto-lane (0/63)
++
++## PR description
++
++## Summary
++
++- 18th dotgit anchor: 5th consecutive 0-stuck-proc reading; third independent surface (otto-bg-worker) joins otto-cli (#14/#17) and otto-vscode bg-worker (#15/#16). Cycle-closure narrative now 5-readings × 3-surfaces; "Possibility A: genuine recovery" operationally confirmed.
++- Empty Otto-surface lane: 0/63 open PRs in any Otto branch-prefix lane (`otto`/`otto-cli`/`otto-bg-worker`/`otto-desktop`/`otto-vscode`/`shard.*otto`); 57/63 (≈90%) are `lior-*`-prefixed. Substrate-honest finding shipped as concrete artifact per `holding-without-named-dependency-is-standing-by-failure.md` reset #3, NOT as cross-lane intervention into peer Lior's in-flight PR set (`agent-roster-reference-card.md` + `claim-acquire-before-worktree-work.md` split-brain prevention).
++- Lior procs observed at 0 (IDE idle) + lane cadence slowed to ≈1.8 PR/hour from prior ≈3.5 PR/hour; both dotgit-saturation cycle and Lior-active-production cycle appear to have terminated together (temporal correlation, not yet causal-proof).
++
++## Test plan
++
++- [x] Catch-43 sentinel re-armed (cron `0b1d1927`, `* * * * *`, `<<autonomous-loop>>`)
++- [x] Worktree freshness canary clean (ls-tree=56, status=0, isolated worktree on `origin/main`-tracking shard branch)
++- [x] Pre-commit branch guard via `git branch --show-current` (`zeta-expected-branch.md`)
++- [x] Post-commit tree canary (HEAD~1=56, HEAD=56; per `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`)
++- [x] Push verified: local SHA `8b6e3e24b` == remote SHA (no B-0615 silent-push-failure)
++- [x] Docs-only (no source code touched); CodeQL "no source seen" expected and benign
++- [x] BACKLOG.md generated-index drift not relevant (no backlog row touched)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4903-fix-installer-refresh-embedded-runbook-addison.md b/docs/pr-discussions/PR-4903-fix-installer-refresh-embedded-runbook-addison.md
+new file mode 100644
+index 000000000..ca8301a70
+--- /dev/null
++++ b/docs/pr-discussions/PR-4903-fix-installer-refresh-embedded-runbook-addison.md
+@@ -0,0 +1,49 @@
++---
++pr_number: 4903
++title: "fix(installer): refresh embedded runbook (Addison)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T02:58:27Z"
++merged_at: "2026-05-25T03:01:26Z"
++closed_at: "2026-05-25T03:01:26Z"
++head_ref: "fix/addison-installer-runbook-stale-comment"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:39Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4903: fix(installer): refresh embedded runbook (Addison)
++
++## PR description
++
++## Summary
++
++The runbook baked onto the USB at \`/etc/zeta-install.md\` was authored before per-host configs landed and still said *"Today: installer only; per-host configs land in follow-up PRs"*. Those per-host configs (control-plane, worker-gpu-01, worker-gpu-02) are on main now — the runbook just hadn't caught up.
++
++## Changes
++
++| Section | Before | After |
++|---|---|---|
++| Step 6 (hardware config) | Just ran \`nixos-generate-config --root /mnt\` | Now also copies the result into the per-host dir the flake reads — otherwise the install picks up the placeholder hardware-configuration.nix and the target boots wrong |
++| Step 7 (install) | Said only \`installer\` host existed | Lists all 4 hosts on main + marks \`installer\` as not-for-target |
++
++Cosmetic only. No code change.
++
++## Test plan
++
++- [ ] markdownlint passes (embedded markdown in a Nix multi-line string isn't directly linted, but the surrounding Nix file is)
++- [ ] On a fresh USB build, \`cat /etc/zeta-install.md\` shows the corrected runbook
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T03:00:23Z)
++
++## Pull request overview
++
++Updates the NixOS installer ISO’s embedded offline runbook (`/etc/zeta-install.md`) so it matches the current flake layout with per-host NixOS configurations and avoids accidentally installing with placeholder hardware configuration.
++
++**Changes:**
++- Step 6 now instructs copying the generated `hardware-configuration.nix` into the selected per-host directory under `infra/nixos/hosts/<host>/`.
++- Step 7 now lists the current `flake.nix` `nixosConfigurations` hostnames and clarifies `installer` is ISO-only (not a target install).
+diff --git a/docs/pr-discussions/PR-4904-chore-perms-allow-brew-install-nix-cli-darwin-rebuild.md b/docs/pr-discussions/PR-4904-chore-perms-allow-brew-install-nix-cli-darwin-rebuild.md
+new file mode 100644
+index 000000000..44b81504d
+--- /dev/null
++++ b/docs/pr-discussions/PR-4904-chore-perms-allow-brew-install-nix-cli-darwin-rebuild.md
+@@ -0,0 +1,80 @@
++---
++pr_number: 4904
++title: "chore(perms): allow brew install + nix CLI + darwin-rebuild"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T03:15:07Z"
++merged_at: "2026-05-25T03:16:42Z"
++closed_at: "2026-05-25T03:16:42Z"
++head_ref: "chore/allow-brew-nix-perms-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:38Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4904: chore(perms): allow brew install + nix CLI + darwin-rebuild
++
++## PR description
++
++## Summary
++
++Adds 12 Bash permission patterns to \`.claude/settings.json\` so the agent can run \`brew install\` (Nix), the full nix CLI surface, and \`darwin-rebuild\` for nix-darwin's \`linux-builder\` activation.
++
++These are needed to build the installer ISO from the flake **locally on Apple Silicon Macs** via the nix-darwin \`linux-builder\` path — uses Apple's Virtualization.framework + Rosetta 2 for Rosetta-accelerated x86_64 Linux builds, no third-party VM software required.
++
++## Permissions added
++
++| Pattern | Why |
++|---|---|
++| \`Bash(brew install *)\` | Install Nix and any future cluster CLI tooling |
++| \`Bash(brew install --cask *)\` | Cask installs if needed (e.g. orbstack alternative) |
++| \`Bash(brew upgrade *)\`, \`Bash(brew list *)\`, \`Bash(brew --version)\` | Brew maintenance |
++| \`Bash(nix *)\` | The main Nix CLI (\`nix build\`, \`nix flake\`, etc.) |
++| \`Bash(nix-env *)\`, \`Bash(nix-shell *)\`, \`Bash(nix-build *)\`, \`Bash(nix-store *)\`, \`Bash(nix-channel *)\` | Legacy nix command surface |
++| \`Bash(darwin-rebuild *)\` | Activate nix-darwin config changes (linux-builder enable, etc.) |
++
++## Test plan
++
++- [ ] markdownlint passes (settings.json is JSON, not markdown)
++- [ ] Post-merge: agent successfully runs \`brew install nix\` and proceeds with the ISO build workflow
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:17:02Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `942546248a`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: .claude/settings.json:1 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T03:17:02Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Restore `_ip_risk_acceptance` attribution block**
++
++This change drops the only `_*_acceptance` metadata from `.claude/settings.json`, so edits to `docs/research/ip-questionable/**` can still proceed (via the existing broad `Bash(gh api *)` allow rule) without the named-human risk attribution required by `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (“MUST attach a named human” with operator/scope/policy/see_also). That creates an auditability regression: the risk-acceptance trail documented for this scope is no longer present at the command-permission surface where it was previously anchored.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4905-ci-infra-build-installer-iso-on-prs-main-release-publish.md b/docs/pr-discussions/PR-4905-ci-infra-build-installer-iso-on-prs-main-release-publish.md
+new file mode 100644
+index 000000000..cbe1321ca
+--- /dev/null
++++ b/docs/pr-discussions/PR-4905-ci-infra-build-installer-iso-on-prs-main-release-publish.md
+@@ -0,0 +1,209 @@
++---
++pr_number: 4905
++title: "ci(infra): build installer ISO on PRs + main + release publish"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T03:23:24Z"
++merged_at: "2026-05-25T04:25:01Z"
++closed_at: "2026-05-25T04:25:01Z"
++head_ref: "feat/ci-build-installer-iso-workflow-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:37Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4905: ci(infra): build installer ISO on PRs + main + release publish
++
++## PR description
++
++## Summary
++
++Adds \`.github/workflows/build-installer-iso.yml\` — Linux runner builds the \`.#installer-iso\` flake output on every PR touching the flake/infra, every push to main, manual dispatch, and release publish. Removes the local-Nix-required dependency for testing changes to the ISO.
++
++## Why a CI build path
++
++The installer ISO target is \`x86_64-linux\`. On Apple Silicon Macs (most maintainers' workstations), building it requires the nix-darwin \`linux-builder\` VM setup. CI on ubuntu-24.04 builds it directly — no cross-compile, no local Nix install, no APFS-volume gymnastics.
++
++Anyone reviewing a flake-touching PR can now grab the rebuilt ISO from the workflow artifact and \`dd\` it to a USB stick without any local toolchain.
++
++## Pipeline
++
++| Step | What |
++|---|---|
++| Checkout | Full history (reproducible flake.lock pinning) |
++| Install Nix | \`DeterminateSystems/nix-installer-action@v22\` |
++| Cache | \`magic-nix-cache-action@v13\` for /nix/store reuse |
++| Eval check | \`nix flake check --no-build\` fail-fast |
++| Build | \`nix build .#installer-iso --print-build-logs\` |
++| Metadata | path/name/size/sha256 → step summary |
++| Upload | Workflow artifact, 90d retention, no re-compression |
++
++A second job (\`attach-to-release\`) fires only on release-publish events: rebuilds the ISO at the tag and uploads it + its SHA256 to the release assets.
++
++## Security
++
++- Runner pinned to \`ubuntu-24.04\` (not \`-latest\`); matches \`gate.yml\` convention
++- Third-party actions SHA-pinned with trailing \`# vX.Y.Z\` comments
++- Workflow-level \`permissions: contents: read\`; only \`attach-to-release\` elevates to \`contents: write\` and only for the upload step
++- \`github.event.release.tag_name\` (attacker-controllable) passed via \`env: RELEASE_TAG\` not interpolated into shell — per the GH Actions injection guide flagged by the security-reminder PreToolUse hook
++
++## Test plan
++
++- [ ] Workflow triggers on this PR (flake.nix isn't touched, but the workflow file path is)
++- [ ] First green run produces a downloadable \`zeta-installer-24.11.iso\` artifact
++- [ ] SHA256 in the step summary matches the artifact
++
++## Composes with
++
++- #4897 (installer config)
++- #4898 (flake.nix + modules + per-host configs + k8s applications)
++- #4903 (runbook fix)
++- #4904 (brew/nix permissions)
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T03:26:11Z)
++
++## Pull request overview
++
++Adds a dedicated GitHub Actions workflow to build the Nix flake `.#installer-iso` output on Ubuntu CI for PRs/pushes, with an additional release-only path intended to attach the built ISO to GitHub Releases.
++
++**Changes:**
++- Introduces `.github/workflows/build-installer-iso.yml` to build the installer ISO on PRs (path-filtered), pushes to `main`, manual dispatch, and release publish.
++- Uploads the ISO as a workflow artifact for PR/main runs.
++- Adds a release-only job intended to rebuild and upload the ISO + SHA256 as release assets.
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T03:33:30Z)
++
++## Pull request overview
++
++Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:47:00Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `920b691fb8`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T03:50:10Z)
++
++## Pull request overview
++
++Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T04:12:40Z)
++
++## Pull request overview
++
++Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
++
++## Review threads
++
++### Thread 1: .github/workflows/build-installer-iso.yml:159 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:26:10Z):
++
++P0: This step writes the SHA256 sidecar to "${iso_path}.sha256". Since iso_path is under the Nix build output (typically a /nix/store path via the result symlink), that location is read-only on GitHub runners and the step will fail. Write the .sha256 file into the workspace (e.g., using the ISO basename) and upload that file instead.
++
++### Thread 2: .github/workflows/build-installer-iso.yml:162 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:26:11Z):
++
++P1: The job intent is to rebuild "for the tagged release", but Checkout doesn’t pin `ref` to the release tag (or otherwise make the source explicit). Consider checking out `github.event.release.tag_name` (or `github.ref`) and ensuring tags/history are available so tag-based versioning (e.g., `git describe`) can’t silently drift.
++
++### Thread 3: .github/workflows/build-installer-iso.yml:7 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:26:11Z):
++
++P2: The header comment says this runs "on tag push" and refers to a "tag-push job", but the actual trigger is `on: release: types: [published]`. Update the prose to match the real trigger (release published) to avoid future drift.
++
++### Thread 4: .github/workflows/build-installer-iso.yml:92 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:26:11Z):
++
++P2: ISO discovery uses `find ... | head -1`, which is non-deterministic if multiple matching ISOs exist and gives a less clear failure mode when no match is found. Prefer a deterministic selection (`-print -quit` or sorting) and add an explicit check with a helpful error message before computing basename/stat/sha256.
++
++### Thread 5: .github/workflows/build-installer-iso.yml:162 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:33:29Z):
++
++`attach-to-release` checks out with the default `fetch-depth` (1). Earlier in this workflow you explicitly require full history for reproducible builds / `git describe`-style versioning; release/tag builds are the most likely to need tags/history. Set `fetch-depth: 0` (and, if needed, ensure tags are fetched) for the release job checkout as well so the tag build can’t fail due to shallow history.
++
++### Thread 6: .github/workflows/build-installer-iso.yml:156 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:33:30Z):
++
++On `release` events this workflow will run the `build` job (because it has no event filter) and then `attach-to-release` (because `if: github.event_name == 'release'`), and `attach-to-release` rebuilds the ISO again. That’s two full ISO builds per release publish; consider either skipping the `build` job on release events, or reusing the ISO from the `build` job via artifact download instead of rebuilding.
++
++### Thread 7: .github/workflows/build-installer-iso.yml:5 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:33:30Z):
++
++Header comment says the workflow runs “on tag push” to attach the ISO to a release, but the actual trigger is `on: release: types: [published]`. Update the comment to match the real trigger to avoid future confusion when debugging why this doesn’t run on tag-only pushes.
++
++### Thread 8: .github/workflows/build-installer-iso.yml:140 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T03:47:00Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove skipped dependency from release upload job**
++
++On `release` events, `build` is explicitly skipped (`if: github.event_name != 'release'`), but `attach-to-release` still declares `needs: build`. In GitHub Actions, a job whose dependency is skipped is skipped as well unless you override with an `always()`-style condition, so the release-upload path never runs and no ISO/SHA assets are attached to published releases.
++
++Useful? React with 👍 / 👎.
++
++### Thread 9: .github/workflows/build-installer-iso.yml:202 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:50:09Z):
++
++P0 (security): `gh release upload "$RELEASE_TAG" ...` treats the tag as a positional arg, but git tag names can legally start with `-`. If a release is created with a tag like `--repo=...`, `gh` may parse it as flags rather than a tag. Add an explicit `--` end-of-options marker (or validate `RELEASE_TAG` doesn’t start with `-`) so attacker-controlled tag names can’t be interpreted as CLI options.
++
++### Thread 10: .github/workflows/build-installer-iso.yml:198 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:50:10Z):
++
++The release-uploaded `.sha256` file currently contains only the hash (`awk '{print $1}'`). Consider writing the standard `sha256sum` format (`<hash>  <filename>`) so consumers can run `sha256sum -c <file>.sha256` directly after downloading the assets.
++
++### Thread 11: .github/workflows/build-installer-iso.yml:19 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:50:10Z):
++
++Header comment says "tag-push job elevates to contents: write" but this workflow triggers on `release: published` and the job is `attach-to-release`. Update the comment to match the actual trigger/job name to avoid drift.
++
++### Thread 12: infra/nixos/modules/gpu.nix:29 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:12:39Z):
++
++P1: The comment says "`cuda_*` covers …" but the predicate is `lib.hasPrefix "cuda" name` (no underscore). Either tighten the predicate to match the documented intent (`cuda_…`) or update the comment so the allowed scope is accurately described.
++
++### Thread 13: .github/workflows/build-installer-iso.yml:107 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:12:40Z):
++
++P1: `find … -print -quit` will silently pick the first match if multiple `zeta-installer-*.iso` files exist (e.g., if the build output layout changes). Since this value is used for artifact upload, it would be safer to assert there is exactly one match and fail otherwise.
++
++### Thread 14: .github/workflows/build-installer-iso.yml:193 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:12:40Z):
++
++P1: Same as the build job: `find … -print -quit` will pick an arbitrary first match if multiple ISOs exist. For release assets in particular, it’s safer to enforce a single match (fail on 0 or >1) so the wrong file can’t be attached to a release.
+diff --git a/docs/pr-discussions/PR-4906-feat-infra-nix-darwin-linux-builder-for-local-x86-64-linux-i.md b/docs/pr-discussions/PR-4906-feat-infra-nix-darwin-linux-builder-for-local-x86-64-linux-i.md
+new file mode 100644
+index 000000000..a1825b61a
+--- /dev/null
++++ b/docs/pr-discussions/PR-4906-feat-infra-nix-darwin-linux-builder-for-local-x86-64-linux-i.md
+@@ -0,0 +1,214 @@
++---
++pr_number: 4906
++title: "feat(infra): nix-darwin linux-builder for local x86_64-linux ISO builds on Apple Silicon"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T03:25:05Z"
++merged_at: "2026-05-25T03:42:32Z"
++closed_at: "2026-05-25T03:42:32Z"
++head_ref: "feat/nix-darwin-linux-builder-config-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:36Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4906: feat(infra): nix-darwin linux-builder for local x86_64-linux ISO builds on Apple Silicon
++
++## PR description
++
++## Summary
++
++Adds \`infra/nix-darwin/\` + wires \`darwinConfigurations.zeta-mac\` into \`flake.nix\`. After this lands, any maintainer with Nix installed on an Apple Silicon Mac runs **one command**:
++
++\`\`\`bash
++nix run nix-darwin/master#darwin-rebuild -- switch \\
++  --flake /path/to/Zeta#zeta-mac
++\`\`\`
++
++…and gets a working linux-builder VM. From then on \`nix build .#installer-iso\` from the repo root builds the x86_64-linux ISO locally via Apple's Virtualization.framework + Rosetta 2 — no Parallels, Lima, Docker, or remote builders.
++
++## Why this exists
++
++The installer ISO target is \`x86_64-linux\`. Apple Silicon is \`aarch64-darwin\`. Nix can't cross-compile a NixOS system natively — it needs a real Linux build environment. Three local-Mac paths exist (Lima, Colima, OrbStack, nix-darwin linux-builder); **nix-darwin's linux-builder is the most Mac-native** (Apple's own VM framework, Rosetta-accelerated, tightly integrated with Nix).
++
++## Files
++
++| File | Purpose |
++|---|---|
++| \`infra/nix-darwin/configuration.nix\` | The actual config: \`nix.linux-builder.enable = true\`, sizing (8GB RAM, 40GB disk, 6 cores), \`extra-platforms = [ "x86_64-linux" ]\`, trusted-users = @admin, baseline package set |
++| \`infra/nix-darwin/README.md\` | Prerequisites, setup command, troubleshooting, "what this is NOT" |
++| \`flake.nix\` | Adds \`inputs.nix-darwin\` pinned to master + \`darwinConfigurations.zeta-mac\` |
++
++## Composes with
++
++- #4905 — CI workflow that builds the ISO without needing local Nix. **Local linux-builder is the iteration path; CI is the source-of-truth path.** Both exist intentionally.
++- Future: PRs that bump nix-darwin master via \`nix flake update\`
++
++## Test plan
++
++- [ ] \`nix flake check\` passes (CI #4905 will run this)
++- [ ] Post-merge, maintainer with Nix installed runs the setup command and confirms \`nix build .#installer-iso\` succeeds locally
++- [ ] linux-builder VM uses Rosetta for x86_64-linux derivations (verify via \`nix log\` showing build host arch)
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T03:28:02Z)
++
++## Pull request overview
++
++Adds a nix-darwin configuration under `infra/nix-darwin/` and wires it into `flake.nix` as `darwinConfigurations.zeta-mac`, enabling maintainers on Apple Silicon macOS to use nix-darwin’s `linux-builder` VM to build the repo’s `x86_64-linux` installer ISO locally.
++
++**Changes:**
++- Add nix-darwin workstation configuration enabling `nix.linux-builder` + Rosetta-backed `extra-platforms = [ "x86_64-linux" ]`.
++- Document the intended maintainer workflow (one-command setup, ISO build, troubleshooting) in `infra/nix-darwin/README.md`.
++- Extend `flake.nix` with a `nix-darwin` input and a `darwinConfigurations.zeta-mac` output.
++
++### Reviewed changes
++
++Copilot reviewed 3 out of 3 changed files in this pull request and generated 5 comments.
++
++| File | Description |
++| ---- | ----------- |
++| infra/nix-darwin/README.md | Documents prerequisites and setup/build workflow for nix-darwin linux-builder on Apple Silicon. |
++| infra/nix-darwin/configuration.nix | Implements the nix-darwin config enabling linux-builder, caches, trusted users, and baseline tools. |
++| flake.nix | Adds `nix-darwin` flake input and exports `darwinConfigurations.zeta-mac` to apply the workstation config. |
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:28:09Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `980db14858`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T03:36:42Z)
++
++## Pull request overview
++
++Copilot reviewed 3 out of 3 changed files in this pull request and generated 5 comments.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:39:03Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `776fb373cb`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: infra/nix-darwin/README.md:50 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:28:01Z):
++
++Line starts with a literal `+` (`+ compiles the Linux closure)`), which Markdown parses as a `+`-style list item and will also trip the repo’s markdownlint rule that forbids wrapped continuation lines starting with `+`. Reword to avoid a line-leading `+` (e.g., join the sentence or start the line with “and”).
++
++### Thread 2: infra/nix-darwin/README.md:70 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:28:01Z):
++
++Troubleshooting row says “You’re not in the `wheel` group”, but the configuration sets `nix.settings.trusted-users = [ "@admin" ]`. On macOS, the relevant group here is `admin` (or `@admin` in nix.conf), so this guidance is misleading; update the text to match the actual trusted-users setting.
++
++### Thread 3: infra/nix-darwin/README.md:82 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:28:01Z):
++
++This README links to `../../.github/workflows/build-installer-iso.yml`, but that file does not exist in the repository (no workflow mentions `installer-iso` currently). Either add the referenced workflow in this PR or update the link to the actual CI workflow/path so readers don’t hit a 404.
++
++### Thread 4: infra/nix-darwin/configuration.nix:9 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:28:02Z):
++
++Comment claims the Determinate Nix install command is in `/etc/zeta-install.md` or `infra/README.md`, but `/etc/zeta-install.md` is the installer runbook on the ISO and `infra/README.md` documents cluster bootstrap; neither provides a macOS Nix installation command. Point this reference to the actual Determinate installer URL (or `infra/nix-darwin/README.md`) to avoid sending maintainers to unrelated docs.
++
++### Thread 5: infra/nix-darwin/configuration.nix:51 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:28:02Z):
++
++The resource-sizing comment says “Default 8GB RAM / 8 cores”, but the config sets `virtualisation.cores = 6`. Please align the comment with the actual value (or adjust the value) so the sizing guidance stays accurate.
++
++### Thread 6: infra/nix-darwin/README.md:45 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T03:28:09Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Publish installer-iso for Darwin hosts**
++
++The new workflow instructs Apple Silicon users to run `nix build .#installer-iso`, but this flake still exposes `installer-iso` only under `packages.x86_64-linux` (the package set is gated by `system == "x86_64-linux"`), so on `aarch64-darwin` the attribute lookup fails before the linux-builder can be used. This means the headline feature introduced here is not actually runnable on the target platform unless users manually build an explicit Linux attribute path.
++
++Useful? React with 👍 / 👎.
++
++### Thread 7: flake.nix:60 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:36:41Z):
++
++The comment here implies both aarch64-darwin and x86_64-darwin builds use Rosetta 2, but Rosetta 2 is Apple-Silicon-only. Please adjust the wording (or the supported system list) so x86_64-darwin isn’t described as Rosetta-backed unless you’re explicitly supporting that path some other way.
++
++### Thread 8: flake.nix:76 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:36:41Z):
++
++`isoBuildSystems` includes `x86_64-darwin`, but this flake only defines `darwinConfigurations.zeta-mac` for `aarch64-darwin`. As a result, an Intel Mac will see `.#installer-iso` exposed but there’s no corresponding nix-darwin configuration to set up a Linux builder for it. Either add an explicit `darwinConfigurations` entry for `x86_64-darwin` (and document it) or drop `x86_64-darwin` from `supportedSystems`/`isoBuildSystems` to avoid a broken/misleading output.
++
++### Thread 9: infra/nix-darwin/README.md:38 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:36:41Z):
++
++This section says it “Trusts the wheel/admin group”, but the actual configuration uses `trusted-users = [ "@admin" ];` (not wheel), and later the README uses `trusted-users = ["@admin"]` which isn’t the nix.conf syntax. Recommend consistently referring to the macOS `admin` group and showing the exact nix-darwin/Nix syntax to avoid confusion when troubleshooting permissions.
++
++### Thread 10: infra/nix-darwin/configuration.nix:29 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:36:41Z):
++
++The comment says “wheel group (admin users on macOS)”, but the config actually trusts `@admin` and wheel is a different group on macOS. Suggest updating the comment to refer to the `admin` group explicitly so it matches the setting being applied.
++
++### Thread 11: infra/nix-darwin/configuration.nix:18 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:36:42Z):
++
++Minor doc clarity: this breaks “Virtualization.framework” across lines as “Virtualization\n.framework”, leaving a stray leading dot. Suggest keeping “Virtualization.framework” on one line here (and in the later linux-builder comment) so the sentence reads cleanly.
++
++### Thread 12: infra/nix-darwin/README.md:80 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T03:39:04Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update README to reference an existing CI workflow**
++
++The new documentation points readers to `../../.github/workflows/build-installer-iso.yml` as the source-of-truth CI path, but that workflow file is not present in this repository (I checked the current `.github/workflows/` tree). This leaves maintainers following the new nix-darwin guide without a valid CI reference and makes the “source of truth” claim unverifiable; point this link at the actual workflow file (or remove the specific filename) to avoid stale guidance.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4907-fix-infra-pin-nix-darwin-to-nix-darwin-24-11-release-branch.md b/docs/pr-discussions/PR-4907-fix-infra-pin-nix-darwin-to-nix-darwin-24-11-release-branch.md
+new file mode 100644
+index 000000000..44b42a93d
+--- /dev/null
++++ b/docs/pr-discussions/PR-4907-fix-infra-pin-nix-darwin-to-nix-darwin-24-11-release-branch.md
+@@ -0,0 +1,65 @@
++---
++pr_number: 4907
++title: "fix(infra): pin nix-darwin to nix-darwin-24.11 release branch"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T03:51:09Z"
++merged_at: "2026-05-25T03:58:16Z"
++closed_at: "2026-05-25T03:58:16Z"
++head_ref: "fix/nix-darwin-pin-to-2411-release-branch"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:36Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4907: fix(infra): pin nix-darwin to nix-darwin-24.11 release branch
++
++## PR description
++
++## Summary
++
++Hot-fix: pin \`nix-darwin\` input to the release branch matching our nixpkgs pin (\`nix-darwin-24.11\` ↔ \`nixos-24.11\`).
++
++## Why now
++
++CI (\`build-installer-iso\` workflow from PR #4905) caught this on \`nix flake check\`:
++
++\`\`\`
++error:
++  nix-darwin and Nixpkgs branches in use must match, but you are
++  currently using nix-darwin master with Nixpkgs nixos-24.11
++\`\`\`
++
++PR #4906 (which added the nix-darwin input) pinned it to \`master\` based on stale guidance. nix-darwin > 25.x added a hard assertion enforcing branch-match.
++
++## Composes with
++
++- #4906 (added the nix-darwin input — this fix corrects the pin)
++- #4905 (the CI workflow that surfaced the bug — should pass on next re-trigger after this lands)
++
++## Test plan
++
++- [ ] \`nix flake check\` evaluates cleanly on \`origin/main\` after merge
++- [ ] PR #4905's \`build-iso\` job passes on next CI run
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T03:53:09Z)
++
++## Pull request overview
++
++Pins the `nix-darwin` flake input to the `nix-darwin-24.11` release branch so it matches the repo’s `nixpkgs` pin (`nixos-24.11`) and avoids nix-darwin’s branch-mismatch assertion during evaluation.
++
++**Changes:**
++- Switch `inputs.nix-darwin.url` from `.../master` to `.../nix-darwin-24.11`.
++- Update inline documentation in `flake.nix` to explain/justify the required branch match and the “bump in lockstep” rule.
++
++## Review threads
++
++### Thread 1: flake.nix:43 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T03:53:09Z):
++
++P1 (docs drift): This update pins the flake input to `nix-darwin-24.11`, but the usage examples elsewhere still reference `nix-darwin/master` (e.g. the "Apply with" command later in this file, plus infra/nix-darwin/{README.md,configuration.nix}). That inconsistency is likely to confuse maintainers and undermines the new “lockstep” guidance. Please update those commands/text to reference the same release branch (or explicitly explain why the tool is still run from `master`).
+diff --git a/docs/pr-discussions/PR-4908-shard-2026-05-25-0407z-19th-dotgit-anchor-6th-0-stuck-proc-r.md b/docs/pr-discussions/PR-4908-shard-2026-05-25-0407z-19th-dotgit-anchor-6th-0-stuck-proc-r.md
+new file mode 100644
+index 000000000..e697afa52
+--- /dev/null
++++ b/docs/pr-discussions/PR-4908-shard-2026-05-25-0407z-19th-dotgit-anchor-6th-0-stuck-proc-r.md
+@@ -0,0 +1,107 @@
++---
++pr_number: 4908
++title: "shard(2026-05-25/0407Z): 19th dotgit anchor \u2014 6th 0-stuck-proc reading + first >1h cadence gap"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T04:11:56Z"
++merged_at: "2026-05-25T04:20:07Z"
++closed_at: "2026-05-25T04:20:07Z"
++head_ref: "otto-cli/0407z-shard-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:35Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4908: shard(2026-05-25/0407Z): 19th dotgit anchor — 6th 0-stuck-proc reading + first >1h cadence gap
++
++## PR description
++
++## Summary
++
++19th dotgit-saturation anchor at 2026-05-25T04:07Z — **6th consecutive 0-stuck-proc reading** across three independent surfaces (otto-cli, otto-vscode bg-worker, otto-bg-worker). Extends the 0243Z anchor #18 by +1h24min — **first >1h cadence gap since the recovery arc began** at 0008Z (prior 4 anchors had ~30-57min gaps). Possibility A (genuine recovery) now operationally robust across both short and longer cadence.
++
++Also names two additional observations:
++- **Cold-boot-on-peer-branch failure mode** — 6th empirical anchor (this session landed on `lior-pr-preservation-rebased`); mitigated via isolated worktree off `origin/main` per [`refresh-world-model-poll-pr-gate.md`](.claude/rules/refresh-world-model-poll-pr-gate.md) and [`claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md).
++- **ls-tree floor drift to 57** (was 53 in canonical canary-rule anchors); `infra/`, `.kiro/`, and other infra-PR additions account for the +4. The canary's `expected - 2` arithmetic remains correct against current main; just naming the drift.
++
++## Test plan
++- [x] post-creation freshness guard passed (ls-tree=57, status=0)
++- [x] branch-guard verified immediately before commit
++- [x] post-commit canary OK (parent=57, HEAD=57)
++- [x] push succeeded (timeout-wrapped per B-0615 discipline)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T04:13:43Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `6b574293f7`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T04:14:09Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard documenting the 2026-05-25T04:07Z “dotgit-saturation” anchor (#19), including the 6th consecutive 0-stuck-proc reading across three surfaces and noting the first >1h cadence gap since the 0008Z arc began.
++
++**Changes:**
++- Add tick shard `0407Z.md` with current readings (stuck procs, peer procs, rate limits, origin/main HEAD, worktree freshness).
++- Extend the anchor-series narrative to include the first >1h cadence gap and hypotheses for the gap.
++- Record observations about the cold-boot-on-peer-branch failure mode and ls-tree floor drift.
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/25/0407Z.md:30 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T04:13:43Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct the rolling-window duration calculation**
++
++The stated span `2026-05-23T10:18Z` to `2026-05-25T04:07Z` is **41h49m**, not `41h56min`; this introduces a factual error in the anchor summary and can mislead any downstream analysis that treats these shard durations as empirical evidence for cadence/recovery claims.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/hygiene-history/ticks/2026/05/25/0407Z.md:22 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:14:08Z):
++
++The markdown tables in this section have an extra leading pipe (`|| ...`) on each row, which creates an empty first column and renders inconsistently with the other tick shards (e.g., 0243Z uses single leading `|`). Remove the extra leading `|` so the table is `| Surface | Reading | ... |` / `|---|---|---|`.
++
++### Thread 3: docs/hygiene-history/ticks/2026/05/25/0407Z.md:40 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:14:08Z):
++
++This anchor-series table is formatted with double leading pipes (`||`) on each row, which adds a blank column and breaks consistency with the surrounding history shards. Use standard markdown table rows with a single leading `|` (and matching separator row).
++
++### Thread 4: docs/hygiene-history/ticks/2026/05/25/0407Z.md:69 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:14:09Z):
++
++The infra-cadence table also uses `||` at the start of each row; this renders as an extra empty column. Switch to standard markdown table formatting (`| SHA | PR | Author | Title |` etc.) to match other hygiene-history ticks.
++
++### Thread 5: docs/hygiene-history/ticks/2026/05/25/0407Z.md:55 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:14:09Z):
++
++This references “MEMORY.md” as if it were a file in the repo, but there is no repo-root `MEMORY.md` (the in-repo index is `memory/MEMORY.md`, and user-scope memory lives outside the repo). Consider disambiguating the reference (e.g., `memory/MEMORY.md` or explicitly “user-scope ~/.claude/.../memory/MEMORY.md”) so readers can actually locate the cited anchors.
+diff --git a/docs/pr-discussions/PR-4909-shard-2026-05-25-0443z-20th-dotgit-anchor-7th-consecutive-0.md b/docs/pr-discussions/PR-4909-shard-2026-05-25-0443z-20th-dotgit-anchor-7th-consecutive-0.md
+new file mode 100644
+index 000000000..ea1715c75
+--- /dev/null
++++ b/docs/pr-discussions/PR-4909-shard-2026-05-25-0443z-20th-dotgit-anchor-7th-consecutive-0.md
+@@ -0,0 +1,101 @@
++---
++pr_number: 4909
++title: "shard(2026-05-25/0443Z): 20th dotgit anchor \u2014 7th consecutive 0-stuck-proc reading + cadence resumed (36min)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T04:47:25Z"
++merged_at: "2026-05-25T06:21:44Z"
++closed_at: "2026-05-25T06:21:44Z"
++head_ref: "shard/tick-0443z-otto-bg-worker-20th-dotgit-anchor-7th-clean-reading-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:34Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4909: shard(2026-05-25/0443Z): 20th dotgit anchor — 7th consecutive 0-stuck-proc reading + cadence resumed (36min)
++
++## PR description
++
++## Summary
++
++20th dotgit anchor in the 2026-05-23→2026-05-25 saturation-arc series. **7th consecutive 0-stuck-proc reading** — Otto-bg-worker fresh cold-boot via the claude-loop integrated worktree.
++
++| Reading | Value |
++|---|---|
++| Stuck git pack/maintenance/repack procs | **0** (7th consecutive) |
++| `.git/index.lock` | absent |
++| Lior loop procs | 0 |
++| Peer agent procs (claude/gemini/kiro/alexa/lior union) | 43 |
++| origin/main HEAD | `44bcaff77` (PR #4905) |
++| Cadence vs #19 | **36 min** (resumed; refutes #19's Possibility D) |
++| Cold-boot worktree state | `worktree-lively-tickling-stearns` clean; `HEAD == origin/main` from cold-boot |
++
++## Why this anchor matters
++
++1. **7th consecutive clean** — saturation recovery operationally robust across short (≤36min) AND long (>1h) cadence
++2. **First clean cold-boot** in the 20-anchor series — claude-loop's per-session worktree allocation may be structural protection vs the peer-branch-contamination failure mode documented at #5/#7/#8/#10/#12/#13/#19. Naming the hypothesis; will see if it holds across #21+
++3. **Cadence resumed at 36min** after #19's 1h24min gap — refutes #19's Possibility D (operator-side pause). New Possibility E (inherent variance) preserved alongside C (longer-cycle self-tuning)
++4. **Otto lane STILL empty** (0 PRs) vs Lior lane dominant (60 PRs). Lane discipline holds: the autonomous-loop prompt's generic "fix BLOCKED PR threads" instruction is **boilerplate**, not operative cross-lane authorization (per [`mechanical-authorization-check.md`](../../../../../../.claude/rules/mechanical-authorization-check.md))
++
++## Test plan
++
++- [x] Branch guard via `git branch --show-current` before commit
++- [x] ls-tree HEAD == ls-tree origin/main (57/57; canary clean)
++- [x] Post-push `git ls-remote` verification (LOCAL == REMOTE; B-0615 silent-push canary clean)
++- [x] No peer worktree contention (0 Lior procs, 0 stuck plumbing)
++- [ ] CI passes (CodeQL + gate workflows)
++- [ ] Auto-merge arms cleanly
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T04:49:02Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `9aeda56e49`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T04:49:42Z)
++
++## Pull request overview
++
++Adds the 2026-05-25 04:43Z hygiene-history “tick shard” (20th dotgit-saturation anchor) documenting another clean (0 stuck git procs) reading and resumed cadence after the prior >1h gap.
++
++**Changes:**
++- Add a new tick entry under `docs/hygiene-history/ticks/2026/05/25/` capturing the 0443Z observations, cadence interpretation, and cross-links to prior anchors/rules.
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/25/0443Z.md:25 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T04:49:02Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix inconsistent PR delta count**
++
++The `origin/main HEAD` delta reports `+5 PRs in 36min` but the parenthetical list contains six PR references (including an uncertain `#4906?`), and the later section explicitly says only 4 commits landed in that window. Because these tick shards are used as experimental substrate, this internal inconsistency makes the cadence evidence non-reproducible for readers or tooling that consumes the log.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/hygiene-history/ticks/2026/05/25/0443Z.md:25 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T04:49:42Z):
++
++The “origin/main HEAD” delta claims “+5 PRs in 36min” and includes #4906? and #4907, but later this tick lists only 4 commits landing between #19 and this anchor (#4905, #4908, #4885, #4883). Since 0407Z already observed HEAD at #4907, please reconcile this row (likely +4 PRs/commits, and remove #4906/#4907 from the delta list) so the tick stays internally consistent.
+diff --git a/docs/pr-discussions/PR-4910-feat-ai-cluster-bootstrap-two-directory-declarative-ai-clust.md b/docs/pr-discussions/PR-4910-feat-ai-cluster-bootstrap-two-directory-declarative-ai-clust.md
+new file mode 100644
+index 000000000..e840ea7b4
+--- /dev/null
++++ b/docs/pr-discussions/PR-4910-feat-ai-cluster-bootstrap-two-directory-declarative-ai-clust.md
+@@ -0,0 +1,543 @@
++---
++pr_number: 4910
++title: "feat(ai-cluster-bootstrap): two-directory declarative AI cluster scaffold"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T05:44:22Z"
++merged_at: "2026-05-25T06:40:16Z"
++closed_at: "2026-05-25T06:40:16Z"
++head_ref: "ai-cluster-bootstrap"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:33Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4910: feat(ai-cluster-bootstrap): two-directory declarative AI cluster scaffold
++
++## PR description
++
++## Summary
++
++Two clean separate top-level directories on branch \`ai-cluster-bootstrap\` per Addison/Aaron's spec.
++
++### \`usb-nixos-installer/\` — USB-only, nothing extra
++
++3 files:
++
++| File | Purpose |
++|---|---|
++| \`README.md\` | Scope statement: USB bootstrap ONLY |
++| \`flake.nix\` | Produces \`installer-iso\` |
++| \`nixos/installer/configuration.nix\` | Single-file package list for the stick |
++
++### \`full-ai-cluster/\` — end-to-end cluster
++
++62 files. First, a byte-identical copy of the USB directory (the bootstrap snippet). Then the full stack:
++
++**NixFlake layer (OS):**
++- K3S server + K3S agent (Cilium takeover: \`--flannel-backend=none\`, \`--disable-kube-proxy\`, \`--disable-network-policy\`)
++- Cilium-host-prep (firewall, trusted-interfaces)
++- Docker via NixFlake (separate from K3S containerd)
++- local-path storage class as a K3S auto-applied manifest
++- NVIDIA driver + container toolkit
++- GPU passthrough (VFIO) for VM workloads on the same hosts
++- GPU device plugin for K8s — NVIDIA + AMD + Intel
++- per-host \`configuration.nix\` for \`control-plane\` + \`worker-gpu\` (+ template for additional workers)
++
++**ArgoCD layer (cluster — 30 Application.yamls):**
++- Cilium (KPR + Hubble Relay + Hubble UI + BPF MASQUERADE per spec)
++- Orleans, Temporal (TS), Dapr Actors — three distributed-cron substrates
++- GitLab + Forgejo (both shipped, pick one)
++- Argo Workflows + Argo Rollouts
++- Longhorn (distributed block storage)
++- CockroachDB (distributed SQL)
++- Ollama + vLLM (LLM serving)
++- Deepseek Coder + Qwen Coder (model deploys → Ollama or vLLM)
++- kube-prometheus-stack (Prometheus + Grafana + Alertmanager)
++- NATS, Redis, Weaviate
++- Loki, Tempo, Alloy, Mimir (Grafana observability stack)
++- Istio, Open Policy Agent, Sealed Secrets, Vault
++- **Hindsight, OZ, Hermes, Warp** — placeholder Application.yamls (see "Ambiguous components" below)
++
++### Bootstrap flow
++
++\`\`\`
++nix build .#installer-iso  →  dd to USB  →  boot target  →  partition + clone Zeta  →
++nixos-install --flake ...#control-plane  →  reboot
++  ↓ K3S starts
++  ↓ K3S auto-applies cilium-namespace.yaml + argocd-{namespace,install}.yaml + root-application.yaml
++  ↓ ArgoCD starts
++  ↓ ArgoCD reconciles every Application.yaml under k8s/applications/
++  ↓ Cluster running every workload declared
++\`\`\`
++
++## Ambiguous components (need your confirmation)
++
++These 4 components map to multiple possible upstreams. I shipped placeholder Application.yamls with \`TODO(aaron)\` markers — please confirm which upstream each refers to and I'll sharpen them:
++
++| Component | Possibilities |
++|---|---|
++| **OZ** | OpenZiti (zero-trust networking) / Auth0 OZ / Aaron-specific component |
++| **Hermes** | Cosmos IBC relayer / message broker / Aaron-AI-agent (the spec's "integrated with OZ" + "SOPS into Hermes Docker image" + "Hermes access to Ollama or vLLM" hints suggest an Aaron-built agent — the placeholder deployment.yaml wires the env-var structure for OZ + Ollama + vLLM endpoints) |
++| **Warp** | Cloudflare Warp / Warp Terminal / Dagger Warp engine / Aaron-specific |
++| **Hindsight** | Lockheed Martin OTel tail-sampling processor / Microsoft Hindsight / other |
++
++## Build the USB (your Mac)
++
++\`\`\`bash
++# 1. Clone (one-time)
++cd ~/Documents/src/repos/Zeta
++git fetch origin
++git checkout ai-cluster-bootstrap
++
++# 2. (Apple Silicon only — one-time linux-builder setup)
++nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
++  --flake full-ai-cluster#zeta-mac
++
++# 3. Build the installer ISO
++cd full-ai-cluster
++nix build .#installer-iso
++ls -lh result/iso/zeta-installer-*.iso
++
++# 4. Write to USB (macOS — replace diskN with YOUR USB device number from \`diskutil list\`)
++diskutil unmountDisk /dev/diskN
++sudo dd if=result/iso/zeta-installer-*.iso of=/dev/rdiskN bs=4m status=progress
++diskutil eject /dev/diskN
++\`\`\`
++
++## Install on a target machine
++
++\`\`\`bash
++# Boot the target on the USB. At the console:
++
++# Network up:
++nmtui
++
++# Partition (example: single ext4 + EFI — replace /dev/sda with your target disk):
++sgdisk --zap-all /dev/sda
++sgdisk -n 1:0:+512M -t 1:ef00 -c 1:boot /dev/sda
++sgdisk -n 2:0:0     -t 2:8300 -c 2:nixos /dev/sda
++mkfs.fat -F 32 -n boot /dev/sda1
++mkfs.ext4 -L nixos /dev/sda2
++mount /dev/disk/by-label/nixos /mnt
++mkdir -p /mnt/boot && mount /dev/disk/by-label/boot /mnt/boot
++
++# Clone cluster flake:
++git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta
++
++# Per-machine hardware config (must be copied into the host dir):
++nixos-generate-config --root /mnt
++cp /mnt/etc/nixos/hardware-configuration.nix \
++   /mnt/etc/zeta/full-ai-cluster/nixos/hosts/<host>/hardware-configuration.nix
++
++# K3S cluster token (control-plane only on first install — save the token for workers):
++nixos-enter --root /mnt -- bash -c '
++  mkdir -p /var/lib/rancher/k3s/server
++  openssl rand -hex 64 > /var/lib/rancher/k3s/server/token
++  chmod 600 /var/lib/rancher/k3s/server/token
++'
++cat /mnt/var/lib/rancher/k3s/server/token   # ← save this; needed on every worker
++
++# Install:
++nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>
++# <host> = control-plane | worker-gpu | ...
++
++# Set zeta user password + reboot:
++nixos-enter --root /mnt -- passwd zeta
++reboot
++\`\`\`
++
++For each worker, repeat — but instead of \`openssl rand\`, write the control-plane's token to \`/var/lib/rancher/k3s/agent/token\` (chmod 600).
++
++## Verify after first reboot
++
++\`\`\`bash
++ssh zeta@control-plane.zeta.local
++sudo kubectl get nodes
++sudo kubectl -n kube-system get pods            # cilium pods
++sudo kubectl -n argocd get pods
++sudo kubectl -n argocd get applications         # all 30 should appear, gradually Healthy
++sudo cilium status
++sudo cilium hubble enable --ui
++\`\`\`
++
++## File structure summary
++
++\`\`\`
++usb-nixos-installer/             3 files
++└── README + flake + installer config
++
++full-ai-cluster/                 62 files
++├── usb-nixos-installer/         (identical copy, 3 files)
++├── README + flake + 2 hosts (6 files) + 8 modules + 4 bootstrap + 30 apps (+ supporting manifests for Orleans, Hermes, vLLM, model configmaps)
++\`\`\`
++
++## Test plan
++
++- [ ] markdownlint passes
++- [ ] \`nix flake check\` passes on both flakes
++- [ ] Reviewer confirms ambiguous components or marks them OK to ship as placeholders
++- [ ] Post-merge: build ISO, boot on a test machine, run through the install flow
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T05:49:46Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `220a09b273`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T05:51:07Z)
++
++## Pull request overview
++
++Adds a two-directory, declarative Nix-based AI cluster scaffold: a minimal USB NixOS installer flake and a full end-to-end cluster flake that bootstraps K3S + ArgoCD and declaratively installs a broad set of workloads via ArgoCD Applications.
++
++**Changes:**
++- Introduces a standalone `usb-nixos-installer/` flake for building a bootable NixOS installer ISO.
++- Adds `full-ai-cluster/` flake with NixOS host/modules for control-plane + GPU workers, plus K3S bootstrap manifests for Cilium/ArgoCD.
++- Adds ArgoCD “App-of-Apps” structure with many workload `Application.yaml` definitions and a few placeholder/custom components.
++
++### Reviewed changes
++
++Copilot reviewed 65 out of 65 changed files in this pull request and generated 11 comments.
++
++<details>
++<summary>Show a summary per file</summary>
++
++| File | Description |
++| ---- | ----------- |
++| usb-nixos-installer/README.md | Documents the minimal USB installer flow and contents. |
++| usb-nixos-installer/nixos/installer/configuration.nix | NixOS installer ISO configuration and package set. |
++| usb-nixos-installer/flake.nix | Standalone flake producing `installer-iso` and a devshell. |
++| full-ai-cluster/usb-nixos-installer/README.md | Copy of USB installer README bundled under full cluster. |
++| full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Copy of installer ISO configuration under full cluster. |
++| full-ai-cluster/usb-nixos-installer/flake.nix | Copy of USB installer flake under full cluster. |
++| full-ai-cluster/README.md | End-to-end bootstrap and architecture documentation for the full cluster. |
++| full-ai-cluster/nixos/modules/local-storage.nix | Declares local-path-provisioner storage class as a K3S manifest. |
++| full-ai-cluster/nixos/modules/k3s-server.nix | K3S server configuration for Cilium takeover + bootstrap manifests. |
++| full-ai-cluster/nixos/modules/k3s-agent.nix | K3S agent configuration aligned with Cilium takeover. |
++| full-ai-cluster/nixos/modules/gpu.nix | NVIDIA driver + container toolkit + node labeling. |
++| full-ai-cluster/nixos/modules/gpu-passthrough.nix | VFIO/libvirt/QEMU plumbing for optional GPU passthrough VMs. |
++| full-ai-cluster/nixos/modules/gpu-device-plugin.nix | Installs vendor GPU device-plugin DaemonSets via K3S manifests. |
++| full-ai-cluster/nixos/modules/docker.nix | Enables Docker (rootless) and related CLI tooling. |
++| full-ai-cluster/nixos/modules/common.nix | Shared baseline configuration for all cluster hosts. |
++| full-ai-cluster/nixos/hosts/worker-gpu/README.md | Worker template documentation and scaling instructions. |
++| full-ai-cluster/nixos/hosts/worker-gpu/hardware-configuration.nix | Placeholder hardware config for worker template. |
++| full-ai-cluster/nixos/hosts/worker-gpu/configuration.nix | Worker template host config wiring modules together. |
++| full-ai-cluster/nixos/hosts/control-plane/README.md | Control-plane documentation and verification steps. |
++| full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix | Placeholder hardware config for control-plane. |
++| full-ai-cluster/nixos/hosts/control-plane/configuration.nix | Control-plane host config wiring server/bootstrap modules. |
++| full-ai-cluster/k8s/bootstrap/root-application.yaml | ArgoCD root Application (App-of-Apps) pointing at workload Applications. |
++| full-ai-cluster/k8s/bootstrap/cilium-namespace.yaml | Ensures required namespace exists before Cilium app sync. |
++| full-ai-cluster/k8s/bootstrap/argocd-namespace.yaml | Creates the ArgoCD namespace for bootstrap install. |
++| full-ai-cluster/k8s/bootstrap/argocd-install.yaml | Bootstraps ArgoCD via pinned remote manifest reference. |
++| full-ai-cluster/k8s/applications/weaviate/Application.yaml | Weaviate Helm install with Ollama integration values. |
++| full-ai-cluster/k8s/applications/warp/Application.yaml | Placeholder ArgoCD app for ambiguous “Warp” component. |
++| full-ai-cluster/k8s/applications/vllm/deployment.yaml | Hand-rolled vLLM deployment/PVC/service manifests (replicas default 0). |
++| full-ai-cluster/k8s/applications/vllm/Application.yaml | ArgoCD app pointing at the vLLM hand-rolled manifests. |
++| full-ai-cluster/k8s/applications/vault/Application.yaml | Vault Helm install configuration (HA + raft). |
++| full-ai-cluster/k8s/applications/temporal/Application.yaml | Temporal Helm install with persistence wiring stubbed for CockroachDB. |
++| full-ai-cluster/k8s/applications/tempo/Application.yaml | Tempo Helm install with Longhorn-backed persistence. |
++| full-ai-cluster/k8s/applications/sealed-secrets/Application.yaml | Sealed Secrets controller Helm install. |
++| full-ai-cluster/k8s/applications/redis/Application.yaml | Redis Helm install expecting an existing auth Secret. |
++| full-ai-cluster/k8s/applications/qwen-coder/configmap.yaml | Model metadata ConfigMap for Qwen Coder in `models` namespace. |
++| full-ai-cluster/k8s/applications/qwen-coder/Application.yaml | ArgoCD app for the Qwen Coder metadata manifests. |
++| full-ai-cluster/k8s/applications/oz/Application.yaml | Placeholder ArgoCD app for ambiguous “OZ” component. |
++| full-ai-cluster/k8s/applications/orleans/statefulset.yaml | Skeleton Orleans silo StatefulSet (replicas default 0). |
++| full-ai-cluster/k8s/applications/orleans/service.yaml | Services for Orleans silo/gateway/dashboard. |
++| full-ai-cluster/k8s/applications/orleans/rbac.yaml | RBAC for Orleans Kubernetes clustering provider. |
++| full-ai-cluster/k8s/applications/orleans/namespace.yaml | Orleans namespace with cluster labeling. |
++| full-ai-cluster/k8s/applications/orleans/configmap.yaml | Orleans cluster config ConfigMap. |
++| full-ai-cluster/k8s/applications/orleans/Application.yaml | ArgoCD app pointing at Orleans manifests. |
++| full-ai-cluster/k8s/applications/open-policy-agent/Application.yaml | Gatekeeper (OPA) Helm install configuration. |
++| full-ai-cluster/k8s/applications/ollama/Application.yaml | Ollama Helm install configured for NVIDIA GPU scheduling. |
++| full-ai-cluster/k8s/applications/nats/Application.yaml | NATS Helm install with JetStream persistence. |
++| full-ai-cluster/k8s/applications/mimir/Application.yaml | Mimir distributed Helm install (bundled MinIO enabled). |
++| full-ai-cluster/k8s/applications/longhorn/Application.yaml | Longhorn Helm install as distributed block storage. |
++| full-ai-cluster/k8s/applications/loki/Application.yaml | Loki Helm install scaffold configured for S3 storage. |
++| full-ai-cluster/k8s/applications/kube-prometheus-stack/Application.yaml | kube-prometheus-stack Helm install with persistence settings. |
++| full-ai-cluster/k8s/applications/istio/Application.yaml | Istio base chart install (CRDs) with follow-up apps noted. |
++| full-ai-cluster/k8s/applications/hindsight/Application.yaml | Placeholder ArgoCD app for ambiguous “Hindsight” component. |
++| full-ai-cluster/k8s/applications/hermes/deployment.yaml | Hermes placeholder deployment/service with env wiring for OZ/Ollama/vLLM. |
++| full-ai-cluster/k8s/applications/hermes/Application.yaml | ArgoCD app pointing at Hermes manifests. |
++| full-ai-cluster/k8s/applications/gitlab/Application.yaml | GitLab chart install values scaffold (runner enabled). |
++| full-ai-cluster/k8s/applications/forgejo/Application.yaml | Forgejo chart install values scaffold. |
++| full-ai-cluster/k8s/applications/deepseek-coder/configmap.yaml | Creates `models` namespace + Deepseek Coder metadata ConfigMap. |
++| full-ai-cluster/k8s/applications/deepseek-coder/Application.yaml | ArgoCD app for Deepseek Coder metadata manifests. |
++| full-ai-cluster/k8s/applications/dapr/Application.yaml | Dapr Helm install values scaffold. |
++| full-ai-cluster/k8s/applications/cockroachdb/Application.yaml | CockroachDB Helm install values scaffold (3 replicas, TLS). |
++| full-ai-cluster/k8s/applications/cilium/Application.yaml | Cilium Helm install values for KPR/Hubble/BPF masquerade. |
++| full-ai-cluster/k8s/applications/argo-workflows/Application.yaml | Argo Workflows Helm install values scaffold. |
++| full-ai-cluster/k8s/applications/argo-rollouts/Application.yaml | Argo Rollouts Helm install values scaffold. |
++| full-ai-cluster/k8s/applications/alloy/Application.yaml | Grafana Alloy Helm install with inline collector config. |
++| full-ai-cluster/flake.nix | Full cluster flake: installer + host configs + reusable modules + darwin linux-builder. |
++</details>
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T06:07:57Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `803fcbe07f`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T06:16:54Z)
++
++## Pull request overview
++
++Copilot reviewed 66 out of 66 changed files in this pull request and generated 5 comments.
++
++
++<details>
++<summary>Comments suppressed due to low confidence (1)</summary>
++
++**full-ai-cluster/k8s/bootstrap/cilium-install.yaml:43**
++* The comment says this bootstrap manifest is generated via `helm template` with specific settings (kube-proxy replacement, k8sServiceHost/Port, native routing, etc.), but the kustomize resource points at the upstream `templates.yaml` URL. To keep bootstrap behavior reproducible (and aligned with the required K3S flags like `--disable-kube-proxy`), either commit the rendered manifest that matches those values or update the comments/approach so it’s clear what configuration is actually being applied at bootstrap time.
++</details>
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T06:22:44Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `042997e45f`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T06:41:57Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `dc8d92a9b7`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: full-ai-cluster/nixos/modules/k3s-server.nix:26 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T05:49:46Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Bootstrap Cilium before disabling Flannel**
++
++The server config disables Flannel and kube-proxy immediately, but the bootstrap manifests only install ArgoCD and the root `Application`; Cilium itself is installed later by ArgoCD (`full-ai-cluster/k8s/applications/cilium/Application.yaml`). On a fresh cluster this creates a bootstrap deadlock: pods need a CNI to start, but the controller that should install Cilium (ArgoCD) is itself a pod workload. Keep Flannel enabled until Cilium is applied out-of-band, or add a direct first-boot Cilium manifest in `services.k3s.manifests`.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: full-ai-cluster/nixos/modules/k3s-agent.nix:22 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T05:49:46Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove server-only disable flags from k3s agent config**
++
++`services.k3s.role = "agent"` is passing `--disable-network-policy` and `--disable-kube-proxy` via `extraFlags`, but these are server component flags (the K3s agent CLI exposes `--kube-proxy-arg` for tuning, not `--disable-kube-proxy`). This can cause worker startup to fail with unknown flags or drift from intended behavior. Keep agent flags to agent-supported options and configure these disables on servers only.
++
++Useful? React with 👍 / 👎.
++
++### Thread 3: full-ai-cluster/usb-nixos-installer/README.md:28 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:05Z):
++
++README uses `../full-ai-cluster/` as the location of the full stack, but inside `full-ai-cluster/usb-nixos-installer/` that relative path resolves to a non-existent `full-ai-cluster/full-ai-cluster/`. Update the wording/link to point to the parent directory (the actual full cluster) while keeping the intent clear.
++
++### Thread 4: full-ai-cluster/README.md:31 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:05Z):
++
++The tree view under `k8s/bootstrap/` is missing `cilium-namespace.yaml`, which is part of the bootstrap set applied by the NixOS K3S module. Either list it here or remove the file from the bootstrap set so the README matches the actual bootstrap artifacts.
++
++### Thread 5: full-ai-cluster/README.md:71 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:05Z):
++
++README references `./k8s/applications/root-application.yaml`, but the root Application in this directory lives at `./k8s/bootstrap/root-application.yaml` (and there is no `k8s/applications/root-application.yaml`). Update the path in the narrative so a reader can follow the bootstrap flow correctly.
++
++### Thread 6: usb-nixos-installer/README.md:18 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:05Z):
++
++This section claims inputs are pinned by revision, but this flake directory does not include a committed `flake.lock`, so builds will float to the current heads of the referenced branches. Either commit a lock file for reproducibility, or adjust the wording to avoid implying pinning.
++
++### Thread 7: full-ai-cluster/k8s/applications/kube-prometheus-stack/Application.yaml:40 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:06Z):
++
++Hardcoding `grafana.adminPassword: changeme` commits a known password into Git and will configure Grafana with that credential if the chart is applied. Prefer sourcing the admin password from an existing Secret (Sealed Secrets/Vault) or omit it entirely so it must be provided out-of-band.
++
++### Thread 8: full-ai-cluster/nixos/modules/local-storage.nix:63 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:06Z):
++
++In the local-path-provisioner `setup` script, `$VOL_DIR` is expanded unquoted. Quote the variable (and consider validating it's non-empty) to avoid path breakage if the directory contains spaces or other shell-sensitive characters.
++
++### Thread 9: full-ai-cluster/nixos/modules/local-storage.nix:63 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:06Z):
++
++The local-path-provisioner `teardown` script does `rm -rf $path` with an unquoted, unvalidated `$VOL_DIR`-derived value. Add quoting and a guard to prevent accidental deletion if the variable is empty or unexpected (this is a data-loss footgun).
++
++### Thread 10: full-ai-cluster/nixos/modules/docker.nix:44 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:06Z):
++
++This module enables rootless Docker but also adds the `zeta` user to the `docker` group. Membership in `docker` is effectively root-equivalent access to the host via the daemon socket, which undermines the “rootless-by-default” goal. Consider removing the group membership by default or gating it behind an explicit option for hosts that need rootful Docker access.
++
++### Thread 11: full-ai-cluster/k8s/applications/warp/Application.yaml:24 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:07Z):
++
++`TODO(aaron)` introduces named attribution in a current-state manifest. Repo convention is to avoid personal/persona names outside the approved history surfaces; use a role-ref like `TODO(human-maintainer)` / `TODO(cluster-maintainer)` instead (see .github/copilot-instructions.md:305-366).
++
++### Thread 12: full-ai-cluster/nixos/modules/gpu-device-plugin.nix:58 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:07Z):
++
++Comment claims ArgoCD will take ownership via `k8s/applications/gpu-device-plugin/Application.yaml`, but there is no `full-ai-cluster/k8s/applications/gpu-device-plugin/` directory in this tree. Either add the missing ArgoCD Application (and manifests) or update the comment/strategy so it doesn’t point to a non-existent reconciliation path.
++
++### Thread 13: full-ai-cluster/usb-nixos-installer/flake.nix:7 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T05:51:07Z):
++
++Comment references using the linux-builder pattern from `../full-ai-cluster/`, but within `full-ai-cluster/usb-nixos-installer/` that relative path points to a non-existent directory. Update the comment to reference the correct location (the parent `../` / `full-ai-cluster/` root) so maintainers following it aren’t sent to a dead path.
++
++### Thread 14: full-ai-cluster/k8s/bootstrap/argocd-install.yaml:8 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:07:57Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace bootstrap Kustomization with plain resources**
++
++Use a renderable manifest format in this bootstrap file. Files dropped into `services.k3s.manifests` are applied by K3s as Kubernetes resources, but `kustomize.config.k8s.io/v1beta1` `Kustomization` is not a built-in resource on a fresh K3s cluster. On first boot this means ArgoCD is never installed, so the root `Application` cannot reconcile anything else. Commit the rendered ArgoCD install YAML (or a K3s `HelmChart`) instead of a kustomize-only document.
++
++Useful? React with 👍 / 👎.
++
++### Thread 15: full-ai-cluster/k8s/applications/oz/Application.yaml:35 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T06:16:52Z):
++
++Hardcoding the OpenZiti controller admin password in Git makes the cluster insecure by default (anyone who can reach the service can try the known credential). Prefer sourcing the password from a Kubernetes Secret (e.g., created via Sealed Secrets/Vault) or require it to be provided out-of-band rather than committing a default value.
++
++### Thread 16: full-ai-cluster/k8s/applications/hindsight/Application.yaml:5 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T06:16:53Z):
++
++This file includes direct named attribution / TODO markers (e.g., "per Aaron" / "TODO(aaron)"). Per the repo’s "No name attribution in code, docs, or skills" rule, current-state surfaces should use role references (e.g., "the human maintainer") and avoid personal-name TODO tags.
++
++### Thread 17: full-ai-cluster/nixos/modules/k3s-server.nix:31 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T06:16:53Z):
++
++These comments state that ArgoCD will install MetalLB + ingress-nginx (or an Istio gateway), but this PR doesn’t include corresponding Applications/manifests. Either add those cluster-layer apps or adjust the comments so readers don’t assume load-balancing/ingress will exist after bootstrap.
++
++### Thread 18: full-ai-cluster/nixos/modules/k3s-server.nix:65 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T06:16:53Z):
++
++Opening etcd client/peer ports (2379/2380) at the host firewall is risky: if embedded etcd is bound beyond loopback (or the config changes later), this can expose etcd to the LAN. Consider removing these ports from `allowedTCPPorts` (or restricting them to only the cluster internal interface/IP range) unless there is a confirmed need for remote etcd access.
++
++### Thread 19: full-ai-cluster/k8s/applications/ollama/Application.yaml:30 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T06:16:54Z):
++
++This Ollama Application will immediately pull and run large models (33B/32B) and request a GPU by default. That conflicts with the README’s stated “deferred local-models phase” and can create a very heavy default bootstrap. Consider defaulting this app to disabled/scaled-to-zero (or omitting model pulls/runs by default) so local models don’t start consuming GPU/Storage unless explicitly enabled.
++
++### Thread 20: full-ai-cluster/k8s/applications/ollama/Application.yaml:29 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:22:44Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Disable Ollama auto-start in deferred local-model phase**
++
++This app is configured to `pull` and `run` two very large models at startup, but it does not override `replicaCount`, so the chart default replica starts immediately once ArgoCD syncs it. That causes first-boot GPU scheduling and multi-GB model downloads in the bootstrap path, which conflicts with the stated deferred local-model phase and can stall smaller clusters during bring-up. Add an explicit disable/opt-in (for example `replicaCount: 0` until local models are intentionally enabled).
++
++Useful? React with 👍 / 👎.
++
++### Thread 21: full-ai-cluster/k8s/bootstrap/root-application.yaml:38 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:22:44Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Gate GitLab and Forgejo so only one reconciles**
++
++The root app includes every `*/Application.yaml`, and both Git providers are marked `automated`, so GitLab and Forgejo will both reconcile by default even though each file says “pick one.” Deploying both stacks simultaneously adds avoidable storage/compute pressure and operational ambiguity in a fresh cluster. One of these should be explicitly gated/disabled in bootstrap rather than auto-enabled with the rest of the app set.
++
++Useful? React with 👍 / 👎.
++
++### Thread 22: full-ai-cluster/k8s/applications/gitlab/Application.yaml:25 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:41:57Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Provide GitLab root-password secret in bootstrap state**
++
++On a fresh cluster bootstrap, this app is auto-synced by `k8s/bootstrap/root-application.yaml`, but `gitlab` is configured to read `global.initialRootPassword.secret` from `gitlab-initial-root-password` without any manifest in this commit creating that Secret. In that default path, the chart cannot fully reconcile until an operator manually creates the Secret, so the initial declarative bring-up is left degraded/non-reproducible. Either commit a SealedSecret/Vault-backed secret resource for this name or gate GitLab behind manual sync until credentials are provisioned.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4911-shard-2026-05-25-0613z-otto-cli-cold-boot-composite-branch-c.md b/docs/pr-discussions/PR-4911-shard-2026-05-25-0613z-otto-cli-cold-boot-composite-branch-c.md
+new file mode 100644
+index 000000000..d3f9f187b
+--- /dev/null
++++ b/docs/pr-discussions/PR-4911-shard-2026-05-25-0613z-otto-cli-cold-boot-composite-branch-c.md
+@@ -0,0 +1,77 @@
++---
++pr_number: 4911
++title: "shard(2026-05-25/0613Z): Otto-CLI cold-boot \u2014 composite branch-contamination + lane-empty + peer-covering + dotgit-recovered anchor"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T06:17:04Z"
++merged_at: "2026-05-25T06:23:34Z"
++closed_at: "2026-05-25T06:23:34Z"
++head_ref: "otto-cli/shard-tick-0613z-2026-05-25"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:32Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4911: shard(2026-05-25/0613Z): Otto-CLI cold-boot — composite branch-contamination + lane-empty + peer-covering + dotgit-recovered anchor
++
++## PR description
++
++## Summary
++
++Forced-#6 decomposition per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` counter rule produced an isolated-worktree empirical anchor at 06:13Z 2026-05-25. The substantively-new substrate is a composite operational state-shape:
++
++- **branch-contamination** (current root on peer-Lior `lior-pr-preservation-rebased` with 30+ untracked `lior-*` dirs + 7 modified PR-disc files)
++- **Otto-CLI-lane-empty** (`gh pr list --search head:otto-cli` returned `[]`)
++- **peer-Otto-VSCode covering** dotgit-recovery substrate via #4909 (20th anchor / 7th-clean reading, 81min auto-armed BLOCKED)
++- **dotgit-recovered** (0 stuck `git pack-objects`/`maintenance`/`repack` procs sustained 85min+)
++
++## Brief-ack arc + forced-#6
++
++Six brief-acks #1-#6 with explicit-no-pre-empt at #5 (same-shape-as-peer-covering substrate would have been fabricated engineering); forced-#6 surfaced this isolated-worktree anchor.
++
++## Worktree-add guard results (all 4 passed)
++
++```text
++git worktree add -b otto-cli/shard-tick-0613z-2026-05-25 \
++  /private/tmp/zeta-otto-cli-0613z-cold-boot origin/main
++→ Updating files: 100% (6281/6281), done.
++→ HEAD is now at 44bcaff77
++
++rev-parse --git-dir → resolves
++status --short      → 0 lines
++ls-tree HEAD        → 57 entries
++index.lock          → absent
++```
++
++Confirms verify-before-defer composition operates correctly under dotgit-recovered tier.
++
++## Test plan
++
++- [x] Branch-guard at commit time (`$(git branch --show-current)` = `$ZETA_EXPECTED_BRANCH`)
++- [x] Post-commit canary (parent-tree=57; commit-tree=57; ✓ not collapsed)
++- [x] Remote ref verified post-push
++- [x] Explicit `--head` ref on `gh pr create` per `.claude/rules/zeta-expected-branch.md` companion defense
++
++Composes with: tick-must-never-stop · holding-without-named-dependency-is-standing-by-failure · refresh-world-model-poll-pr-gate · claim-acquire-before-worktree-work · codeql-no-source-on-docs-only-pr-is-broken-commit-canary · zeta-expected-branch
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T06:20:50Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard documenting an Otto-CLI cold-boot observation and the forced-#6 isolated-worktree “empirical anchor” under a composite operational state (branch contamination + empty lane + peer covering + dotgit recovered).
++
++**Changes:**
++- Introduces a new tick shard at 2026-05-25T06:13Z capturing the composite-state snapshot and the worktree-add guard results.
++- Cross-links the tick narrative to the relevant `.claude/rules/**` discipline files for traceability.
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/25/0613Z.md:17 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T06:20:50Z):
++
++This tick shard begins with YAML frontmatter (`--- ... ---`). The tick-shard schema tooling expects the first non-empty line to be the 6-column pipe-row header (see `docs/hygiene-history/ticks/README.md` and `tools/hygiene/check-tick-history-shard-schema.ts`), so this file would currently fail that validator if/when it’s wired into CI or pre-push checks. Consider switching to the documented “hybrid” format: pipe-row first line, then the H1 body, and (if desired) move this metadata into a fenced ```yaml block inside the body instead of file-head frontmatter.
+diff --git a/docs/pr-discussions/PR-4912-feat-ai-cluster-istio-out-cert-manager-spire-trust-manager-e.md b/docs/pr-discussions/PR-4912-feat-ai-cluster-istio-out-cert-manager-spire-trust-manager-e.md
+new file mode 100644
+index 000000000..0a35f39d7
+--- /dev/null
++++ b/docs/pr-discussions/PR-4912-feat-ai-cluster-istio-out-cert-manager-spire-trust-manager-e.md
+@@ -0,0 +1,130 @@
++---
++pr_number: 4912
++title: "feat(ai-cluster): Istio out, cert-manager+SPIRE+Trust Manager+ESO in, new bootstrap order"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T06:44:32Z"
++merged_at: "2026-05-25T06:47:30Z"
++closed_at: "2026-05-25T06:47:30Z"
++head_ref: "ai-cluster-tweaks-istio-out-spire-in"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:31Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4912: feat(ai-cluster): Istio out, cert-manager+SPIRE+Trust Manager+ESO in, new bootstrap order
++
++## PR description
++
++## Summary
++
++Applies Aaron's 2026-05-25 tweaks to the AI cluster scaffold.
++
++### Removed
++- **Istio** — Cilium Service Mesh (now enabled in cilium/Application.yaml) provides the same L7 capabilities (mTLS, traffic shifting, Gateway API, ingress, observability) natively atop the CNI agent — no sidecar per pod
++
++### Added
++- **cert-manager** (jetstack v1.16.2) — TLS issuance
++- **SPIRE** (spiffe v0.24.2) — SPIFFE workload identity, chains to Vault as upstream CA
++- **Trust Manager** (jetstack v0.15.0) — CA bundle distribution
++- **External Secrets Operator** (community v0.10.7) — Vault → K8s Secret sync
++
++### Cilium changes
++- `l7Proxy: true` + `envoy.enabled: true` (Cilium Service Mesh)
++- `encryption: { enabled: true, type: wireguard, nodeEncryption: true }` (node-to-node WireGuard, alongside spec'd BPF MASQUERADE)
++- `gatewayAPI: { enabled: true }` (replaces Istio Gateway)
++- `ingressController: { enabled: true, default: true }` (no separate ingress-nginx needed)
++- `authentication.mutual.spire.enabled: false` (flip after SPIRE is healthy)
++
++### New bootstrap order
++
++K3S now auto-applies installs at first boot in dependency order:
++
++1. **Cilium** (CNI + Hubble + Service Mesh + BPF MASQUERADE)
++2. **cert-manager** (TLS for Vault)
++3. **Vault** (secrets backend)
++4. **SPIRE** (workload identity)
++5. **Trust Manager** (CA bundle dist)
++6. **External Secrets Operator** (Vault → K8s Secret sync)
++7. **ArgoCD** (reconciles everything else from k8s/applications/)
++
++All 7 installs use K3S \`helm.cattle.io/v1\` HelmChart CRs (same pattern as the prior cilium+argocd bootstrap manifests).
++
++## Files
++
++| Action | Path |
++|---|---|
++| **Delete** | \`full-ai-cluster/k8s/applications/istio/\` |
++| **Modify** | \`full-ai-cluster/k8s/applications/cilium/Application.yaml\` (CSM + gateway + ingress + encryption) |
++| **Modify** | \`full-ai-cluster/k8s/bootstrap/cilium-install.yaml\` (same values for bootstrap install) |
++| **Modify** | \`full-ai-cluster/nixos/modules/k3s-server.nix\` (manifests list reorder + comment) |
++| **Modify** | \`full-ai-cluster/README.md\` (tree + bootstrap docs) |
++| **New** | \`full-ai-cluster/k8s/applications/cert-manager/Application.yaml\` |
++| **New** | \`full-ai-cluster/k8s/applications/spire/Application.yaml\` |
++| **New** | \`full-ai-cluster/k8s/applications/trust-manager/Application.yaml\` |
++| **New** | \`full-ai-cluster/k8s/applications/external-secrets/Application.yaml\` |
++| **New** | \`full-ai-cluster/k8s/bootstrap/cert-manager-install.yaml\` |
++| **New** | \`full-ai-cluster/k8s/bootstrap/vault-install.yaml\` |
++| **New** | \`full-ai-cluster/k8s/bootstrap/spire-install.yaml\` |
++| **New** | \`full-ai-cluster/k8s/bootstrap/trust-manager-install.yaml\` |
++| **New** | \`full-ai-cluster/k8s/bootstrap/external-secrets-install.yaml\` |
++
++## Application count
++
++Was 29 (after PR #4910). Now 32 (-1 Istio + 4 new).
++
++## Test plan
++
++- [ ] markdownlint passes
++- [ ] Post-merge: on a real cluster, all 7 bootstrap installs come up in order; ArgoCD's Application tree reconciles in dependency order
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T06:51:16Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `d84ef8b0cc`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: full-ai-cluster/nixos/modules/k3s-server.nix:60 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:51:16Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Enforce bootstrap ordering with explicit manifest prefixes**
++
++This change introduces a strict dependency chain (Cilium → cert-manager → Vault → SPIRE → ESO → ArgoCD), but the manifest filenames are left unprefixed while this same file notes K3S applies manifests by filename. With names like `argocd-install.yaml` and `cert-manager-install.yaml`, ArgoCD/cert-manager sort before `cilium-install.yaml`, so first-boot execution order does not match the declared dependency order and bootstrap can race in non-deterministic ways. Add explicit ordered targets (e.g., `00-`, `10-`, ...) or a real dependency mechanism so the declared sequence is actually enforced.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: full-ai-cluster/k8s/bootstrap/vault-install.yaml:30 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:51:16Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Avoid Longhorn PVCs in pre-Argo Vault bootstrap**
++
++The new bootstrap Vault install hardcodes `storageClass: longhorn`, but Longhorn is not part of the K3S bootstrap manifests and is reconciled later by ArgoCD. On fresh boot, Vault PVCs cannot bind until Longhorn exists, so Vault cannot become healthy during the pre-Argo phase that this commit depends on for SPIRE/ESO sequencing. Use a bootstrap-available storage class (or bootstrap Longhorn earlier) to prevent this dependency break.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4913-feat-hindsight-wire-real-vectorize-io-oci-helm-chart.md b/docs/pr-discussions/PR-4913-feat-hindsight-wire-real-vectorize-io-oci-helm-chart.md
+new file mode 100644
+index 000000000..71feacf55
+--- /dev/null
++++ b/docs/pr-discussions/PR-4913-feat-hindsight-wire-real-vectorize-io-oci-helm-chart.md
+@@ -0,0 +1,108 @@
++---
++pr_number: 4913
++title: "feat(hindsight): wire real vectorize-io OCI Helm chart"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T06:51:39Z"
++merged_at: "2026-05-25T06:54:11Z"
++closed_at: "2026-05-25T06:54:11Z"
++head_ref: "fix/hindsight-real-helm-chart"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:31Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4913: feat(hindsight): wire real vectorize-io OCI Helm chart
++
++## PR description
++
++## Summary
++
++Identified Hindsight as **vectorize-io/hindsight** — agent persistent memory system with built-in Hermes integration. Replaced the placeholder with the real OCI Helm chart.
++
++Per the [vectorize-io docs](https://hindsight.vectorize.io/sdks/integrations/hermes): Hermes ships with 8 external memory provider plugins including Hindsight. Hindsight automatically recalls relevant context before every LLM call, retains conversations across sessions, and provides explicit \`retain\`/\`recall\`/\`reflect\` tools.
++
++## Wired config
++
++| Field | Value |
++|---|---|
++| repoURL | \`ghcr.io/vectorize-io/charts\` (OCI) |
++| chart | \`hindsight\` |
++| targetRevision | \`0.3.0\` |
++| postgresql.enabled | \`true\` (bundled, longhorn-backed 20 Gi — swap to CockroachDB later) |
++| api.llm | Groq via \`hindsight-llm-api-key\` Secret (Vault-backed ExternalSecret) |
++| service | ClusterIP :80 — matches Hermes' \`HINDSIGHT_URL\` already wired in #4910 |
++| syncPolicy.prune | \`false\` — memory store is precious |
++
++## Hermes integration
++
++Hermes' \`deployment.yaml\` already declares:
++\`\`\`yaml
++- name: HINDSIGHT_URL
++  value: \"http://hindsight.hindsight.svc.cluster.local\"
++\`\`\`
++
++That URL now resolves once both Applications are healthy. No additional wiring needed.
++
++## Sources
++
++- [Hindsight + Hermes integration docs](https://hindsight.vectorize.io/sdks/integrations/hermes)
++- [vectorize-io/hindsight (GitHub)](https://github.com/vectorize-io/hindsight)
++- [Hindsight installation guide](https://hindsight.vectorize.io/developer/installation)
++
++## Test plan
++
++- [ ] markdownlint passes
++- [ ] Post-merge: \`argocd app sync hindsight\` succeeds; \`kubectl -n hindsight get pods\` shows api + worker + postgres Running
++- [ ] Hermes pods can reach hindsight service (\`kubectl -n hermes exec ... -- curl http://hindsight.hindsight.svc.cluster.local/health\`)
++
++Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T06:57:25Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `4f04f11d89`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: full-ai-cluster/k8s/applications/hindsight/Application.yaml:57 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:57:25Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Map Hindsight API service values to the chart schema**
++
++This block is using a top-level `service` key and assumes Hermes can call `http://hindsight.hindsight.svc.cluster.local`, but the v0.3.0 chart reads API networking from `api.service.*` and renders the API Service as `<fullname>-api` (`templates/api-service.yaml` / `_helpers.tpl`). As written, this override is ignored and the generated endpoint remains the chart default (`...-api` on API port defaults), so Hermes traffic will be sent to a non-existent/wrong Service.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: full-ai-cluster/k8s/applications/hindsight/Application.yaml:42 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-25T06:57:25Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Use supported keys for LLM provider secret injection**
++
++The chart does not consume `api.llm.provider` or `api.llm.existingSecret`; in v0.3.0 it expects LLM config via `api.env` and either top-level `existingSecret` or `api.secrets` (`templates/api-deployment.yaml`/`secret.yaml`). With these unsupported keys, no `HINDSIGHT_API_LLM_*` env vars are populated, so retain/reflect operations that require an LLM provider key will fail at runtime.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4914-shard-2026-05-25-1009z-cold-boot-sentinel-fired-again-lior-s.md b/docs/pr-discussions/PR-4914-shard-2026-05-25-1009z-cold-boot-sentinel-fired-again-lior-s.md
+new file mode 100644
+index 000000000..3714d08f7
+--- /dev/null
++++ b/docs/pr-discussions/PR-4914-shard-2026-05-25-1009z-cold-boot-sentinel-fired-again-lior-s.md
+@@ -0,0 +1,215 @@
++---
++pr_number: 4914
++title: "shard(2026-05-25/1009Z): cold-boot \u2014 sentinel-fired-AGAIN + lior-substrate-stale-superseded empirical anchor"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T10:13:45Z"
++merged_at: "2026-05-25T10:23:04Z"
++closed_at: "2026-05-25T10:23:04Z"
++head_ref: "shard/tick-2026-05-25-1009z-otto-cli-cold-boot-lior-substrate-stale-superseded"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:30Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4914: shard(2026-05-25/1009Z): cold-boot — sentinel-fired-AGAIN + lior-substrate-stale-superseded empirical anchor
++
++## PR description
++
++## Summary
++
++Second 2026-05-25 fresh-session cold-boot in this lane (~4h after [PR #4911](https://github.com/Lucent-Financial-Group/Zeta/pull/4911)'s 0613Z anchor). Substantively new observations:
++
++- **Sentinel empty AGAIN at cold-boot** — catch-43 fired AGAIN (2nd time today). Pattern: per-session non-persistence is the dominant mechanism, NOT the 3-day auto-expire window.
++- **0 stuck git procs sustained ~30h** since 2026-05-24 0407Z first-0-procs reading; dotgit-recovered remains stable.
++- **Cold-boot landed on peer Lior's `lior-pr-preservation-rebased`** — 7th+ occurrence of the "lands on whoever-was-last-active's branch" failure mode. Now firmly established as the steady-state cold-boot environment.
++- **NEW empirical anchor — substrate-drift via parallel-PR landings**: Lior's branch stages 70 \`full-ai-cluster/*\` files that ALREADY landed on \`origin/main\` via PRs #4910 / #4912 / #4913. [\`pr-triage-tiers.md\`](.claude/rules/pr-triage-tiers.md) Tier 1 (substrate-redundant) disposition applies if Lior's branch is ever pushed as a PR.
++
++## Disposition
++
++- Shard authored via isolated worktree at \`/private/tmp/zeta-otto-cli-1009z-cold-boot\` on \`origin/main\` — preserved Lior's branch / WIP per lane-discipline ([\`claim-acquire-before-worktree-work.md\`](.claude/rules/claim-acquire-before-worktree-work.md))
++- Did NOT touch Lior's branch; did NOT propose closing Lior's substrate
++- Tier 1 substrate-drift observation documented only; action deferred to maintainer / Lior
++
++## Test plan
++
++- [x] Pre-commit branch guard (\`git branch --show-current\`)
++- [x] Post-commit ls-tree canary (59 → 59 root entries)
++- [x] Catch-43 sentinel re-armed (\`6acfcee6\`)
++- [x] Verified \`full-ai-cluster/*\` exists on origin/main (70 files via \`git ls-tree\`)
++- [x] Verified Lior's branch stages same 70 files (\`git status --short\`)
++- [ ] CI passes
++- [ ] Auto-merge fires once CI green
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T10:15:26Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `bcb13c2a6a`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T10:16:15Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard documenting the 2026-05-25 10:09Z Otto-CLI cold-boot observations, including the repeated catch-43 sentinel-empty event and an empirical anchor about substrate drift from parallel PR landings.
++
++**Changes:**
++- Add a new tick shard file for 2026-05-25/1009Z with cold-boot state observations and operational implications.
++- Record an empirical “substrate-drift via parallel-PR landings” anchor referencing recent AI-cluster PRs.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T10:18:49Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `f2ecc81694`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T10:22:25Z)
++
++## Pull request overview
++
++Copilot reviewed 1 out of 1 changed files in this pull request and generated no new comments.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-25T10:23:03Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `62a8f8674b`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/25/1009Z.md:61 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T10:15:27Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct relative links to .claude rules**
++
++The link target path is too shallow for this file depth: from `docs/hygiene-history/ticks/2026/05/25/1009Z.md`, `../../../../.claude/...` resolves under `docs/hygiene-history/.claude/...` (which does not exist), so readers cannot open the referenced rule docs; the same broken prefix is reused in the “Composes with” section, which breaks traceability for the shard’s stated policy basis.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/hygiene-history/ticks/2026/05/25/1009Z.md:32 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T10:15:27Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile conflicting staged file counts**
++
++This section states there were `105` staged `full-ai-cluster/*` additions, but later in the same shard the verification table reports `70` staged `full-ai-cluster/*` files; this internal mismatch makes the empirical anchor non-reproducible and can lead to incorrect Tier-1 substrate-redundancy conclusions when others replay the observation.
++
++Useful? React with 👍 / 👎.
++
++### Thread 3: docs/hygiene-history/ticks/2026/05/25/1009Z.md:8 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T10:16:13Z):
++
++P0: This shard doesn’t follow the tick-shard schema: the first non-empty line must be a 6-column pipe row (`| <ISO timestamp> | ... |`) per docs/hygiene-history/ticks/README.md and tools/hygiene/check-tick-history-shard-schema.ts. As written, the first non-empty line is an H1, which will be reported as a schema violation by the validator.
++
++### Thread 4: docs/hygiene-history/ticks/2026/05/25/1009Z.md:61 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T10:16:14Z):
++
++The `.claude/rules/...` relative link here looks incorrect for this file’s path depth. From `docs/hygiene-history/ticks/2026/05/25/1009Z.md` you need to go up to repo root (as other shards do, e.g. `../../../../../../.claude/...`), but this link uses only `../../../../...` and likely resolves to a non-existent `docs/hygiene-history/.claude/...` path.
++
++### Thread 5: docs/hygiene-history/ticks/2026/05/25/1009Z.md:48 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T10:16:14Z):
++
++This markdown table is malformed (the header/separator rows start with `||` instead of `|`), which will render incorrectly and may trip markdownlint/table parsers. It should use a single leading `|` and a matching separator row.
++
++### Thread 6: docs/hygiene-history/ticks/2026/05/25/1009Z.md:32 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T10:16:14Z):
++
++The file reports “**105 staged `full-ai-cluster/*` additions**” here, but later the verified counts table lists **70** staged `full-ai-cluster/*` files. Please reconcile these numbers (either adjust the earlier count or clarify what the 105 includes) so the empirical anchor is internally consistent.
++
++### Thread 7: docs/hygiene-history/ticks/2026/05/25/1009Z.md:112 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-25T10:16:15Z):
++
++The `.claude/rules/...` links in this “Composes with” list appear to use the wrong relative prefix (`../../../../...`) for this file’s location and will likely 404. Other shards under the same directory use `../../../../../../.claude/rules/...`; aligning to that pattern should fix these links.
++
++### Thread 8: docs/hygiene-history/ticks/2026/05/25/1009Z.md:42 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T10:18:49Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Split provenance commands for each table metric**
++
++This section claims both table rows were “Verified via `git ls-tree -r origin/main full-ai-cluster/`”, but that command can only count files in `origin/main` and cannot establish how many files are staged on Lior’s working branch. As written, a reader replaying the documented command cannot reproduce the second metric, which weakens the shard’s empirical traceability; document the separate staging command used for that row.
++
++Useful? React with 👍 / 👎.
++
++### Thread 9: docs/hygiene-history/ticks/2026/05/25/1009Z.md:50 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-25T10:23:04Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Restrict staged-file metric to `A ` status entries**
++
++The verification command for the “staged on Lior's branch” metric uses `git status --short | grep "full-ai-cluster" | wc -l`, which counts any `full-ai-cluster/*` path regardless of status, not just staged adds. If that directory later contains modified (`M`), deleted (`D`), or untracked (`??`) paths, this command will overcount and can incorrectly support the Tier-1 “already landed” conclusion. The metric should filter by the short-status code (`A `) or use a staged-only listing to keep the empirical anchor reproducible.
++
++Useful? React with 👍 / 👎.
++
++## General comments
++
++### @AceHack (2026-05-25T10:23:56Z)
++
++Acknowledged — Codex finding accurate. The verification command `git status --short | grep "full-ai-cluster" | wc -l` matches any line containing `full-ai-cluster`, not strictly `A `-status. The 70-count was correct because no `??` entries in Lior's WIP happened to contain `full-ai-cluster` paths (the 35 untracked were other Lior dirs), but the command would over-match if untracked `full-ai-cluster` files were present. The precise form is `git status --short | grep "^A  full-ai-cluster" | wc -l`. Substrate landed; precision-feedback recorded for future shards.
+diff --git a/docs/pr-discussions/PR-4915-shard-2026-05-25-1131z-3rd-otto-cli-cold-boot-today-recursio.md b/docs/pr-discussions/PR-4915-shard-2026-05-25-1131z-3rd-otto-cli-cold-boot-today-recursio.md
+new file mode 100644
+index 000000000..4ef570fa3
+--- /dev/null
++++ b/docs/pr-discussions/PR-4915-shard-2026-05-25-1131z-3rd-otto-cli-cold-boot-today-recursio.md
+@@ -0,0 +1,39 @@
++---
++pr_number: 4915
++title: "shard(2026-05-25/1131Z): 3rd Otto-CLI cold-boot today \u2014 recursion-saturation + catch-43-fired-AGAIN"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-25T11:34:17Z"
++merged_at: "2026-05-25T11:35:49Z"
++closed_at: "2026-05-25T11:35:49Z"
++head_ref: "shard/tick-2026-05-25-1131z-otto-cli-3rd-cold-boot-recursion-saturation"
++base_ref: "main"
++archived_at: "2026-05-25T13:06:29Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4915: shard(2026-05-25/1131Z): 3rd Otto-CLI cold-boot today — recursion-saturation + catch-43-fired-AGAIN
++
++## PR description
++
++## Summary
++
++3rd Otto-CLI fresh-session cold-boot today (after [PR #4911](https://github.com/Lucent-Financial-Group/Zeta/pull/4911) at 0613Z + [PR #4914](https://github.com/Lucent-Financial-Group/Zeta/pull/4914) at 1009Z). Sentinel re-armed AGAIN at session start.
++
++Substantive observations:
++
++- **Catch-43 has fired 3 times in one day** across separate Otto-CLI sessions (0613Z + 1009Z + 1131Z). Per-session sentinel non-persistence is firmly the dominant mechanism, not the 3-day auto-expire window.
++- **55 open PRs** all authored by AceHack on Lior-surface branches; **zero** in otto-cli lane.
++- **Literal task predicate** (`gate=BLOCKED` + `nextAction=resolve-threads`) matches **zero PRs**; executing on out-of-lane Lior PRs would violate the 1009Z anchor's explicit "Does NOT touch Lior's branch" boundary.
++- **Substrate-drift via parallel-PR landings** (the 1009Z empirical anchor) still active.
++- **Recursion-saturation acknowledged** per [`holding-without-named-dependency-is-standing-by-failure.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/holding-without-named-dependency-is-standing-by-failure.md) recursion-termination clause — this shard takes the minimal-acknowledgment form, not further pattern elaboration.
++
++## Test plan
++
++- [x] Isolated worktree at `/private/tmp/zeta-otto-cli-1131z-cold-boot` (verify-clean canary: 59/0 tree-size/status)
++- [x] Commit canary: HEAD ls-tree = HEAD~1 ls-tree = 59 (+1 file)
++- [x] Push verified non-silent: `git ls-remote` matched local SHA `3b7ce735c`
++- [x] Sentinel re-armed `71514072` at session start (catch-43 fired AGAIN)
++- [ ] CI gate + CodeQL green (docs-only PR; expecting clean pass)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)

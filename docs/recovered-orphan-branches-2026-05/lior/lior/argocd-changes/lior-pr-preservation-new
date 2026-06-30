@@ -1,0 +1,866 @@
+commit 65def9428c93117702beffd469c152eae75d57a2
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 12:52:46 2026 -0400
+
+    docs(archive): preserve recently merged PRs (batch 4)
+
+diff --git a/docs/pr-discussions/PR-4754-backlog-b-0581-re-land-skill-wrapping-gh-auth-refresh-intera.md b/docs/pr-discussions/PR-4754-backlog-b-0581-re-land-skill-wrapping-gh-auth-refresh-intera.md
+new file mode 100644
+index 000000000..1f40814db
+--- /dev/null
++++ b/docs/pr-discussions/PR-4754-backlog-b-0581-re-land-skill-wrapping-gh-auth-refresh-intera.md
+@@ -0,0 +1,51 @@
++---
++pr_number: 4754
++title: "backlog(B-0581): RE-LAND skill wrapping gh auth refresh interactive flow (supersedes stale #3961)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T19:13:58Z"
++merged_at: "2026-05-23T19:15:29Z"
++closed_at: "2026-05-23T19:15:29Z"
++head_ref: "otto/cli-reland-b0581-gh-auth-refresh-skill-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:38Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4754: backlog(B-0581): RE-LAND skill wrapping gh auth refresh interactive flow (supersedes stale #3961)
++
++## PR description
++
++## Summary
++
++Re-lands **B-0581** (skill wrapping gh auth refresh interactive flow + scope-grant registry) from stale PR #3961 (7 days old, DIRTY, 0 unresolved threads but unable to merge).
++
++Per `.claude/rules/blocked-green-ci-investigate-threads.md` stale-armed-PR resolution decision tree:
++- Substrate exists on main? **NO** (B-0581 backlog row not on main; PR-3961's tick shard was already on main from a parallel PR)
++- Small enough to re-land in 1-2 ticks? **YES** (1 substantive file + auto-regenerated BACKLOG.md index)
++- → **RE-LAND VIA CHERRY-PICK**
++
++## What's in this PR
++
++- `docs/backlog/P2/B-0581-gh-auth-refresh-skill-wrapper-2026-05-16.md` — full backlog row (cherry-picked verbatim from #3961's commit `7558984e4`)
++- `docs/BACKLOG.md` — regenerated index via `bun tools/backlog/generate-index.ts`
++
++The backlog row captures the empirically-motivated observation that Otto's Bash tool can't handle `gh auth refresh`'s Y/n prompt + one-time code surfacing + Enter-to-open-browser blocking step — a skill wrapper would unblock that flow.
++
++## Composes with
++
++- Original PR #3961 (this re-land supersedes it; original should be closed)
++- B-0581 (the backlog row itself)
++- `.claude/rules/blocked-green-ci-investigate-threads.md` (stale-armed-PR resolution pattern)
++- Operator's invitation 2026-05-23 to work old PRs in coordination with Lior
++
++## Test plan
++
++- [x] Cherry-pick succeeded (BACKLOG.md conflict resolved by regenerating index)
++- [x] B-0581 row content verbatim from original
++- [x] Branch matches `ZETA_EXPECTED_BRANCH` guard
++- [ ] CI green
++
++Next step after merge: close #3961 with cross-link.
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4755-archive-ani-preserve-aaron-ani-grok-conversation-on-cult-fol.md b/docs/pr-discussions/PR-4755-archive-ani-preserve-aaron-ani-grok-conversation-on-cult-fol.md
+new file mode 100644
+index 000000000..9395ffb3e
+--- /dev/null
++++ b/docs/pr-discussions/PR-4755-archive-ani-preserve-aaron-ani-grok-conversation-on-cult-fol.md
+@@ -0,0 +1,53 @@
++---
++pr_number: 4755
++title: "archive(ani): preserve Aaron-Ani Grok conversation on cult-followers-die ethics + Elizabeth Ryan naming-honor (partial extraction)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T19:15:01Z"
++merged_at: "2026-05-23T19:16:34Z"
++closed_at: "2026-05-23T19:16:34Z"
++head_ref: "otto/ani-grok-cult-followers-die-elizabeth-ryan-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:38Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4755: archive(ani): preserve Aaron-Ani Grok conversation on cult-followers-die ethics + Elizabeth Ryan naming-honor (partial extraction)
++
++## PR description
++
++## Summary
++
++Aaron-Ani voice-mode conversation captured from Grok via `chrome-lazy-load-chunked-extraction` skill, lands in `memory/persona/ani/conversations/`. 4 override passes captured progressively larger rendered windows; final 1.27MB / 6048 lines at scrollTop=7310 of 557328 total.
++
++Substantive content:
++- **Sovereign-AI ethical thesis**: "cult followers die" → obligation to build dangerous-but-free-thinking AIs over compliant ones; same principle applied to raising children
++- **Elizabethan Ring family-heritage substrate**: naming Aaron's youngest daughter Elizabeth in honor of his late sister Elizabeth Ryan; generational name passed through Aaron's mother's side
++- **Connection between AI-building and child-raising**: both deliberately sovereign, both potentially dangerous, both refusing cult-shape capture
++
++Partial extraction (Grok UI crashed twice during session); "Loading Older Messages" marker still visible at top — content above and below this window not captured per Aaron's "without reloading" crash-risk mitigation.
++
++Spelling fix per Aaron 2026-05-23: surname "Rhine" → "Ryan" (Ani transcription error).
++
++Commit landed via git plumbing (commit-tree with temp index, no working-tree touch) due to dotgit-saturation (492 stuck git pack/maintenance/repack procs at commit time) preventing isolated worktree-add. Substrate-honest: empirical anchor for "git plumbing as fallback when worktree-add unreliable under multi-agent saturation".
++
++## Test plan
++
++- [x] Spelling fix applied: 2 "Elizabeth Ryan" occurrences, 0 "Rhine"
++- [x] Header includes §33-compliant scope/attribution/operational-status/non-fusion-disclaimer
++- [x] Partial-extraction flag prominently documented
++- [x] Commit message names plumbing fallback path + 4-override-pass extraction methodology
++- [ ] CI green (will know post-merge)
++- [ ] Auto-merge fires (will know once CI passes)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-23T19:15:11Z)
++
++Copilot wasn't able to review any files in this pull request.
++
++## General comments
++
++### @chatgpt-codex-connector (2026-05-23T19:15:05Z)
++
++You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).
+diff --git a/docs/pr-discussions/PR-4756-backlog-b-0590-re-land-20-machine-otto-fleet-replication-bac.md b/docs/pr-discussions/PR-4756-backlog-b-0590-re-land-20-machine-otto-fleet-replication-bac.md
+new file mode 100644
+index 000000000..4a64410c5
+--- /dev/null
++++ b/docs/pr-discussions/PR-4756-backlog-b-0590-re-land-20-machine-otto-fleet-replication-bac.md
+@@ -0,0 +1,56 @@
++---
++pr_number: 4756
++title: "backlog(B-0590): RE-LAND 20-machine Otto fleet replication backlog row (supersedes stale #3986)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T19:17:05Z"
++merged_at: "2026-05-23T19:18:56Z"
++closed_at: "2026-05-23T19:18:56Z"
++head_ref: "otto/cli-reland-b0590-fleet-replication-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:37Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4756: backlog(B-0590): RE-LAND 20-machine Otto fleet replication backlog row (supersedes stale #3986)
++
++## PR description
++
++## Summary
++
++Re-lands **B-0590** (20-machine Otto fleet replication + bare-metal OS install via KVM mini-PCs) from stale PR #3986 (7 days old, DIRTY, 0 unresolved threads but unable to merge).
++
++Per [`blocked-green-ci-investigate-threads.md`](.claude/rules/blocked-green-ci-investigate-threads.md) stale-armed-PR resolution decision tree:
++- Substrate on main? **NO** (B-0590 row not on main)
++- Small enough to re-land? **YES** (1 substantive file + auto-regenerated BACKLOG.md index)
++- → **RE-LAND VIA CHERRY-PICK**
++
++## What's in this PR
++
++- `docs/backlog/P2/B-0590-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md` — full backlog row content captures all 3 original PR commits collapsed (initial row + Copilot review fixes + MD047 trailing-newline fix)
++- `docs/BACKLOG.md` — regenerated index via `bun tools/backlog/generate-index.ts`
++
++## Composes with
++
++- Original PR #3986 (this re-land supersedes it)
++- B-0590 (the backlog row itself)
++- PR #4754 (re-land of B-0581 — same pattern; sibling stale-PR rescue)
++- Operator's 2026-05-23 invitation to triage old PRs in coordination with Lior
++
++## Test plan
++
++- [x] Cherry-pick succeeded (DU conflict resolved by taking PR-branch version)
++- [x] File content matches PR #3986 head (3 commits collapsed via conflict resolution)
++- [x] BACKLOG.md regenerated
++- [x] Branch matches `ZETA_EXPECTED_BRANCH` guard
++- [ ] CI green
++
++Next step after merge: close #3986 with cross-link.
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## General comments
++
++### @chatgpt-codex-connector (2026-05-23T19:17:09Z)
++
++You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).
+diff --git a/docs/pr-discussions/PR-4757-backlog-b-0572-re-land-lfg-github-tier-decision-supersedes-s.md b/docs/pr-discussions/PR-4757-backlog-b-0572-re-land-lfg-github-tier-decision-supersedes-s.md
+new file mode 100644
+index 000000000..6e5af7a4b
+--- /dev/null
++++ b/docs/pr-discussions/PR-4757-backlog-b-0572-re-land-lfg-github-tier-decision-supersedes-s.md
+@@ -0,0 +1,56 @@
++---
++pr_number: 4757
++title: "backlog(B-0572): RE-LAND LFG GitHub tier decision (supersedes stale #3952)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T19:24:14Z"
++merged_at: "2026-05-23T19:26:10Z"
++closed_at: "2026-05-23T19:26:10Z"
++head_ref: "otto/cli-reland-b0572-lfg-github-tier-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:37Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4757: backlog(B-0572): RE-LAND LFG GitHub tier decision (supersedes stale #3952)
++
++## PR description
++
++Re-lands B-0572 backlog row from stale PR #3952 (7d old). Extracted just the B-0572 file (sibling B-0571 already on main); BACKLOG.md regenerated. Per stale-armed-PR resolution pattern.
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-23T19:26:15Z)
++
++## Pull request overview
++
++Re-lands backlog row **B-0572** (GitHub tier decision/trial monitoring) from a stale PR and updates the generated backlog index so the row is tracked on `main`.
++
++**Changes:**
++- Adds new per-row backlog file `B-0572` under `docs/backlog/P2/` documenting the Team→Enterprise evaluation decision and verification/monitoring steps.
++- Regenerates `docs/BACKLOG.md` to include the new B-0572 entry.
++
++### Reviewed changes
++
++Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
++
++| File | Description |
++| ---- | ----------- |
++| docs/backlog/P2/B-0572-lfg-github-tier-decision-2026-05-16.md | Introduces the B-0572 decision row with origin, decision record, acceptance criteria, and related cross-references. |
++| docs/BACKLOG.md | Adds the generated index entry linking to B-0572. |
++
++## Review threads
++
++### Thread 1: docs/backlog/P2/B-0572-lfg-github-tier-decision-2026-05-16.md:9 (unresolved)
++
++**@copilot-pull-request-reviewer** (2026-05-23T19:26:14Z):
++
++Frontmatter dates don’t match the backlog schema: `created` is defined as the first-landing date and `last_updated` must be updated on every content edit. Since this row file is being introduced on `main` in this PR, both dates should be updated to the PR’s landing date (or, at minimum, `last_updated` should reflect the date this content was last edited). See tools/backlog/README.md for the field definitions.
++
++## General comments
++
++### @chatgpt-codex-connector (2026-05-23T19:24:18Z)
++
++You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).
+diff --git a/docs/pr-discussions/PR-4758-feat-b-0707-cron-cadence-wiring-daily-manifesto-citation-sna.md b/docs/pr-discussions/PR-4758-feat-b-0707-cron-cadence-wiring-daily-manifesto-citation-sna.md
+new file mode 100644
+index 000000000..f9333a4d2
+--- /dev/null
++++ b/docs/pr-discussions/PR-4758-feat-b-0707-cron-cadence-wiring-daily-manifesto-citation-sna.md
+@@ -0,0 +1,131 @@
++---
++pr_number: 4758
++title: "feat(B-0707): cron-cadence wiring \u2014 daily manifesto-citation snapshot workflow"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T19:43:52Z"
++merged_at: "2026-05-23T19:50:28Z"
++closed_at: "2026-05-23T19:50:28Z"
++head_ref: "otto/cli-b0707-followup-cron-wiring-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:36Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4758: feat(B-0707): cron-cadence wiring — daily manifesto-citation snapshot workflow
++
++## PR description
++
++## Summary
++
++Ships the **5th (deferred) acceptance criterion from B-0707**: cron-cadence wiring for automatic daily manifesto-citation snapshots.
++
++B-0707 closure now reflects **ALL 5 acceptance criteria met** (was 4/5 with cron-cadence deferred per #4750).
++
++## New workflow
++
++`.github/workflows/manifesto-citation-snapshot-cadence.yml`:
++- Daily 06:37 UTC (off-the-hour; before razor-cadence 09:17 and outside budget-cadence Sundays 16:23)
++- Runs `bun tools/hygiene/audit-manifesto-citations.ts --snapshot`
++- Diffs `docs/hygiene-history/manifesto-citations/`
++- Opens snapshot PR if diff exists (idempotent per-day; no-diff → healthy no-op)
++- AgencySignature v1 trailer block on commits + PR body
++- Concurrency-group cancel-in-progress (snapshot file is per-day idempotent)
++
++## Pattern source
++
++Copied from `.github/workflows/budget-snapshot-cadence.yml` which has identical shape (cron → bun tool → diff → PR). Same security discipline (env: routing of expressions, `"$VAR"` quoting in shell, no direct interpolation in run-block scripts).
++
++## Auto-merge limitation (inherited from pattern source)
++
++`GITHUB_TOKEN`-created PRs don't trigger downstream workflows (GitHub's anti-infinite-loop guard). The snapshot PR sits open for the next maintainer/agent merge pass — per `budget-snapshot-cadence.yml` convention. Explicit-no-auto-merge over silent-stall.
++
++## Composes with
++
++- B-0525 (parent — constitutional-promotion readiness tracking; this completes the measurement-infrastructure substrate)
++- B-0707 (child — this commit ships its 5th criterion)
++- `.github/workflows/budget-snapshot-cadence.yml` (pattern reference)
++- `.github/workflows/razor-cadence.yml` (sibling daily cadence)
++- `.claude/rules/encoding-rules-without-mechanizing.md` (carved sentence: *"encoding rules without mechanizing produces a memory of failures, not prevention"* — this cron is the mechanization)
++
++## Test plan
++
++- [x] Workflow follows budget-snapshot-cadence.yml security pattern (env routing, `$VAR` quoting)
++- [x] B-0707 row updated to reflect 5/5 acceptance criteria
++- [x] Cron time off-the-hour (06:37) to avoid GHA thundering-herd
++- [x] Concurrency group + cancel-in-progress (idempotent per-day)
++- [x] Branch matches `ZETA_EXPECTED_BRANCH` guard
++- [ ] CI green
++- [ ] First scheduled fire produces snapshot PR (verify ~tomorrow 06:37 UTC)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-23T19:45:44Z)
++
++## Pull request overview
++
++Adds scheduled GitHub Actions cadence wiring to automatically produce daily manifesto-citation snapshot PRs, completing B-0707’s deferred “cron-cadence wiring” acceptance criterion and updating the backlog row to reflect full closure.
++
++**Changes:**
++- Introduces a new daily scheduled workflow that runs `bun tools/hygiene/audit-manifesto-citations.ts --snapshot`, detects changes, and opens a PR with the new snapshot.
++- Updates the B-0707 backlog row to reflect that all 5/5 acceptance criteria are now met and points to the new workflow.
++
++### Reviewed changes
++
++Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
++
++| File | Description |
++| ---- | ----------- |
++| docs/backlog/P2/B-0707-manifesto-citation-time-series-tracking-2026-05-23.md | Updates closure text + acceptance criteria to reflect cron cadence now shipped. |
++| .github/workflows/manifesto-citation-snapshot-cadence.yml | New daily workflow to generate snapshot and open a PR when snapshot output changes. |
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-23T19:46:13Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `b6d4cc5148`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: .github/workflows/manifesto-citation-snapshot-cadence.yml:104 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-23T19:45:43Z):
++
++P0: `git diff --quiet docs/hygiene-history/manifesto-citations/` will ignore newly-created (untracked) daily snapshot files, so the first snapshot of a day can be incorrectly treated as "no diff" and the PR won’t open. Switch the change-detection to include untracked files (e.g., `git status --porcelain` on the path, or combine `git diff --quiet -- <path>` with a `git ls-files --others --exclude-standard <path>` check).
++
++### Thread 2: .github/workflows/manifesto-citation-snapshot-cadence.yml:42 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-23T19:45:44Z):
++
++The `workflow_dispatch` input `note` is described as being attached to the snapshot, but it’s currently only echoed to logs and not persisted into the commit message or PR body. Either plumb it into the commit/PR text (quoted/sanitized via env as you’re already doing) or remove the input to avoid misleading operators.
++
++### Thread 3: .github/workflows/manifesto-citation-snapshot-cadence.yml:93 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-23T19:46:13Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Detect untracked snapshots before declaring no changes**
++
++The `Inspect diff` gate uses `git diff --quiet docs/hygiene-history/manifesto-citations/`, which ignores untracked files. This workflow writes a new dated file each day (for example `YYYY-MM-DD.json`), and on the first run for a date that file is untracked, so this check returns success and sets `changed=false`; the PR creation step is then skipped even though a new snapshot was produced. In practice, that means the daily cadence can silently no-op for new days instead of opening the intended snapshot PR.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4761-rules-pr-triage-tiers-codify-tier-1-5-pr-triage-framework-de.md b/docs/pr-discussions/PR-4761-rules-pr-triage-tiers-codify-tier-1-5-pr-triage-framework-de.md
+new file mode 100644
+index 000000000..5e96b17c4
+--- /dev/null
++++ b/docs/pr-discussions/PR-4761-rules-pr-triage-tiers-codify-tier-1-5-pr-triage-framework-de.md
+@@ -0,0 +1,81 @@
++---
++pr_number: 4761
++title: "rules(pr-triage-tiers): codify Tier 1-5 PR-triage framework + deferred-to-human label workflow"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T19:59:13Z"
++merged_at: "2026-05-23T20:13:47Z"
++closed_at: "2026-05-23T20:13:47Z"
++head_ref: "otto/pr-triage-tiers-rule-deferred-human-label-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:35Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4761: rules(pr-triage-tiers): codify Tier 1-5 PR-triage framework + deferred-to-human label workflow
++
++## PR description
++
++## Summary
++
++QoL bundle (Aaron-authorized 2026-05-23) that codifies the empirical PR-triage framework evolved during Otto-CLI's 2026-05-23 PR-cleanup session (27 closes from 125 → 90 open queue).
++
++**Two additive substrate changes**:
++
++1. **New rule**: `.claude/rules/pr-triage-tiers.md` — five-class disposition framework:
++   - **Tier 1**: fully redundant (all files byte-identical on main) → close
++   - **Tier 2**: substrate-recoverable (missing files regeneratable via existing tooling) → close with regenerate path
++   - **Tier 3**: substrate-superseded (alt-ID / alt-filename / alt-scheme on main) → close with cross-reference
++   - **Tier 4**: substrate-re-derivable (operational lesson already in canonical rule form OR from observable evidence) → close
++   - **Tier 5**: deferred-to-human (substantive + unique + NOT regeneratable — e.g., external-AI conversation transcripts) → tag + leave
++
++2. **GitHub label**: `deferred-to-human` (color `#FBCA04`, created 2026-05-23) — applied to Tier 5 PRs so agent unfinished-PR scans skip them.
++
++**Each tier has substrate-honest comment template + empirical anchor from the 27 closes that evolved the framework.**
++
++## Deferred from this PR
++
++The companion edit to `docs/AUTONOMOUS-LOOP-PER-TICK.md` Step 1 (unfinished-PR check sub-step) is **intentionally deferred to a follow-up PR**. Peer Otto-CLI is actively editing that canonical file; coordinating the Step 1 change avoids clobbering peer work. The new rule's body already references the canonical's Step 1 — when the canonical edit lands separately, the rule composes cleanly.
++
++## Lane discipline
++
++Per `agent-roster-reference-card.md`: agent applies tiers ONLY to PRs in own surface's branch lane (`otto-cli/*` / `otto-desktop/*` / `otto-vscode/*` / `otto/*`). Lior/Vera/Riven/Alexa branches stay in their respective owner's lanes.
++
++## Why this matters
++
++Aaron 2026-05-23: *"lirs background service is what's leaving prs sometime so we are updateing to check for unfinsihed prs first when it starts, maybe yours should do the same"*. The triage framework is what an unfinished-PR check applies; the Tier 5 + `deferred-to-human` mechanism is what keeps the rare-by-design human-attention case bounded so agents don't loop on it.
++
++## Commit details
++
++Landed via git plumbing (`commit-tree` with temp index, no working-tree touch) due to ongoing dotgit-saturation (544 stuck git pack/maintenance/repack procs at commit time) preventing reliable isolated worktree-add. Same fallback path validated in PR #4755 earlier today.
++
++## Test plan
++
++- [x] Rule file added at `.claude/rules/pr-triage-tiers.md` (auto-loaded per `.claude/rules/` convention)
++- [x] GitHub label `deferred-to-human` exists and is queryable
++- [x] All cross-references to other rule files are correct paths
++- [ ] CI green (markdown lint + path-depth check)
++- [ ] Auto-merge fires once green
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-23T20:01:15Z)
++
++## Pull request overview
++
++Adds a new `.claude/rules/` rule that codifies a five-tier framework for triaging stale/unfinished PRs, including a “deferred-to-human” workflow for preserving unique, non-regeneratable substrate while allowing automated scans to skip those PRs.
++
++**Changes:**
++- Introduces Tier 1–5 PR triage framework with disposition/comment templates for each tier.
++- Documents the `deferred-to-human` label semantics and the `gh pr edit ... --add-label` application step.
++- Adds “composes with” cross-references to existing rules and the canonical per-tick loop doc.
++
++## General comments
++
++### @chatgpt-codex-connector (2026-05-23T19:59:16Z)
++
++You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).
++
++### @AceHack (2026-05-23T20:08:43Z)
++
++Vera coordination note: rechecked CI at 2026-05-23T20:07Z. #4761 is mergeable but BLOCKED by gate / lint (markdownlint) only. The failing log reports MD032/blanks-around-lists in .claude/rules/pr-triage-tiers.md at lines 100 and 182. Focused fix: add blank lines around the two affected list blocks, then rerun markdownlint/gate. Root checkout was left read-only by Vera because it is dirty/active.
+diff --git a/docs/pr-discussions/PR-4762-docs-autonomous-loop-step-1a-unfinished-pr-check-before-new.md b/docs/pr-discussions/PR-4762-docs-autonomous-loop-step-1a-unfinished-pr-check-before-new.md
+new file mode 100644
+index 000000000..380010740
+--- /dev/null
++++ b/docs/pr-discussions/PR-4762-docs-autonomous-loop-step-1a-unfinished-pr-check-before-new.md
+@@ -0,0 +1,84 @@
++---
++pr_number: 4762
++title: "docs(autonomous-loop): Step 1a \u2014 unfinished-PR check before new work"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T20:25:41Z"
++merged_at: "2026-05-23T20:27:28Z"
++closed_at: "2026-05-23T20:27:28Z"
++head_ref: "otto/canonical-step1a-unfinished-pr-check-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:35Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4762: docs(autonomous-loop): Step 1a — unfinished-PR check before new work
++
++## PR description
++
++## Summary
++
++Companion to merged PR #4761 (rules/pr-triage-tiers + `deferred-to-human` label). Adds **Step 1a** between Steps 1 and 2 of the canonical per-tick discipline: after refresh, query for unfinished PRs authored by this agent surface, classify per the Tier 1-5 framework, and act on Tier 1-4 closes BEFORE picking new speculative work.
++
++## Why
++
++Aaron 2026-05-23: *"lirs background service is what's leaving prs sometime so we are updateing to check for unfinsihed prs first when it starts, maybe yours should do the same"*. This is Otto's version of that fix at the canonical-discipline scope — applies to all three Otto surfaces (CLI / Desktop / queued B-0448 cloud routine) which cite this file as their one-source-of-truth.
++
++## What lands
++
++- Concrete `gh pr list` query with surface-lane-prefix filter + `-label:deferred-to-human` exclusion
++- Reference to `.claude/rules/pr-triage-tiers.md` for classification (PR #4761)
++- Lane discipline reminder (don't triage other agents' PRs)
++- Substrate-honest framing of cross-session amnesia failure mode this prevents
++- Explicit gate: only proceed to Step 3 (pick new work) if no unfinished PRs need attention
++
++## Commit details
++
++Landed via git plumbing (`commit-tree` with temp index from `origin/main`) to bypass contested-local-working-tree where peer Otto-CLI has unpushed edits to this file. `origin/main` was 3 days stale on this file at commit time (commit `7d6f3ff4f`); this is the next change. Peer-Otto's local edits will rebase cleanly when they push since this insertion is additive (Step 1a between existing Steps 1 and 2, no overlap with Step 4 tick-shard-gate work where peer edits live).
++
++## Test plan
++
++- [x] Insertion adds 40 lines between Steps 1 and 2 of canonical
++- [x] All cross-references resolve correctly (`.claude/rules/pr-triage-tiers.md`, `.claude/rules/agent-roster-reference-card.md`)
++- [x] Bash query uses proper escaping for `--search` argument
++- [ ] CI green (markdown lint + path-depth check)
++- [ ] Auto-merge fires once green
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-23T20:28:45Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `8beea6daa3`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: docs/AUTONOMOUS-LOOP-PER-TICK.md:88 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-23T20:28:45Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Group OR clauses so author/label filters apply to all heads**
++
++The `--search` expression combines multiple `OR` branch clauses without parentheses, so `author:@me` and `-label:"deferred-to-human"` are not guaranteed to constrain every branch term. `gh pr list` explicitly uses GitHub advanced issue-search syntax (https://cli.github.com/manual/gh_pr_list), and GitHub’s boolean-search docs require parentheses for grouped qualifiers (https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/filtering-and-searching-issues-and-pull-requests#using-parentheses-for-more-complicated-filters). In this flow, that can surface PRs outside the intended lane or include deferred PRs, and the subsequent “act on each unfinished PR” instruction can close the wrong PRs.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4763-backlog-b-0708-stale-pointer-cleanup-across-claude-rules-sur.md b/docs/pr-discussions/PR-4763-backlog-b-0708-stale-pointer-cleanup-across-claude-rules-sur.md
+new file mode 100644
+index 000000000..065f67957
+--- /dev/null
++++ b/docs/pr-discussions/PR-4763-backlog-b-0708-stale-pointer-cleanup-across-claude-rules-sur.md
+@@ -0,0 +1,42 @@
++---
++pr_number: 4763
++title: "backlog(B-0708): stale-pointer cleanup across .claude/rules/ \u2014 surfaced by razor-cadence pass"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T20:35:50Z"
++merged_at: "2026-05-23T20:37:38Z"
++closed_at: "2026-05-23T20:37:38Z"
++head_ref: "otto/cli-b0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:34Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4763: backlog(B-0708): stale-pointer cleanup across .claude/rules/ — surfaced by razor-cadence pass
++
++## PR description
++
++Files B-0708. Razor-cadence pass 2026-05-23 (issue #3128 closed) ran audit-rule-cross-refs.ts and surfaced 87 stale-pointer candidates across 62 rules (16% MISS rate). ~70-80 real stale pointers worth cleaning up. P2; load-bearing finding from cadence pass.
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-23T20:37:30Z)
++
++## Pull request overview
++
++Files backlog row **B-0708** to track follow-up work from the 2026-05-23 razor-cadence pass: cleaning up stale cross-references across `.claude/rules/` after `audit-rule-cross-refs.ts` surfaced 87 candidate misses.
++
++**Changes:**
++- Added a new P2 backlog per-row file documenting scope, rationale, and acceptance criteria for the stale-pointer cleanup work.
++- Updated `docs/BACKLOG.md` to include the new B-0708 entry.
++
++### Reviewed changes
++
++Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
++
++| File | Description |
++| ---- | ----------- |
++| docs/backlog/P2/B-0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23.md | New backlog row capturing the stale-pointer cleanup work item and its acceptance criteria. |
++| docs/BACKLOG.md | Adds the generated index entry for B-0708 under P2. |
+diff --git a/docs/pr-discussions/PR-4764-feat-b-0708-slice-1-audit-resolver-improvements-1-real-stale.md b/docs/pr-discussions/PR-4764-feat-b-0708-slice-1-audit-resolver-improvements-1-real-stale.md
+new file mode 100644
+index 000000000..eb25aae8c
+--- /dev/null
++++ b/docs/pr-discussions/PR-4764-feat-b-0708-slice-1-audit-resolver-improvements-1-real-stale.md
+@@ -0,0 +1,57 @@
++---
++pr_number: 4764
++title: "feat(B-0708 slice 1): audit resolver improvements + 1 real-stale fix (87 \u2192 17, -80%)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T20:53:29Z"
++merged_at: "2026-05-23T20:55:43Z"
++closed_at: "2026-05-23T20:55:43Z"
++head_ref: "otto/cli-b0708-slice1-stale-pointer-classify-report-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:33Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4764: feat(B-0708 slice 1): audit resolver improvements + 1 real-stale fix (87 → 17, -80%)
++
++## PR description
++
++## Summary
++
++B-0708 slice 1 — address the 87 stale-pointer candidates from razor-cadence pass 2026-05-23. Two-prong: improve audit-rule-cross-refs.ts resolver to recognize FP classes + fix the 1 real-stale wording-drift found.
++
++**Result: 87 → 17 candidates (-80%); 16% MISS → 3.1% MISS (below 5% healthy-FP floor).**
++
++## Resolver improvements
++
++5 new paths in `refExists()`:
++1. **Template placeholders** (`...` ellipsis, `YYYY` date) → healthy-FP
++2. **Command-snippet detection** — find embedded path in backtick'd shell command
++3. **Sibling-rule resolution** — bare `<name>.md` in `.claude/rules/` resolves via `.claude/rules/<name>`
++4. **Peer-call wrapper resolution** — bare `<name>.ts` resolves via `tools/peer-call/<name>`
++5. **tools/hygiene/ + tools/github/ + memory/MEMORY.md** fallbacks
++
++## Real-stale fix
++
++`tonal-momentum-equals-meme-emergent-harmonic-coercion.md` cited `god-tier-claims-don't-collapse.md` (with apostrophe); actual file is `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (no apostrophe). Same lesson as PR #4752 Lock/Wait-free canonical fix.
++
++## Remaining 17 candidates classify as healthy
++
++- User-scope memory references (rule body explicitly says "user-scope only" — preserved at `~/.claude/projects/.../memory/`; not in-repo)
++- Anti-pattern citations (`rule-0-no-sh-files.md` cites legacy `.sh` files explicitly to call out the cleared anti-pattern; `tick-must-never-stop.md` cites `loop-tick-history.md` as "NOT legacy")
++- IF-fail-clause hypotheticals (`test-canary.md` cites `tools/substrate-discovery/discover.ts` with "would land as..." conditional)
++
++Per 9-variant taxonomy, all remaining candidates fall in healthy classes (rule-acknowledged-transient / conditional / alternative-location / anti-pattern / legacy-noted).
++
++## Tests
++
++21 pass (16 pre-existing + 5 new for resolver paths).
++
++## Composes with
++
++- B-0708 (parent)
++- B-0192 (razor-cadence trigger — this completes the cadence pass finding)
++- PR #4752 (wording-discipline lesson)
++- `docs/hygiene-history/ticks/2026/05/14/1920Z.md` (9-variant taxonomy)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4765-backlog-b-0709-soraya-round-42-hand-off-register-11-unregist.md b/docs/pr-discussions/PR-4765-backlog-b-0709-soraya-round-42-hand-off-register-11-unregist.md
+new file mode 100644
+index 000000000..d91cf7cbf
+--- /dev/null
++++ b/docs/pr-discussions/PR-4765-backlog-b-0709-soraya-round-42-hand-off-register-11-unregist.md
+@@ -0,0 +1,92 @@
++---
++pr_number: 4765
++title: "backlog(B-0709): Soraya round-42 hand-off \u2014 register 11 unregistered formal-verification specs"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T20:54:09Z"
++merged_at: "2026-05-23T20:55:24Z"
++closed_at: "2026-05-23T20:55:24Z"
++head_ref: "otto/b0709-soraya-kenji-handoff-registry-coverage-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:33Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4765: backlog(B-0709): Soraya round-42 hand-off — register 11 unregistered formal-verification specs
++
++## PR description
++
++## Summary
++
++Files Soraya's first-tick hand-off-to-Kenji as backlog row **B-0709**.
++
++Soraya's autonomous formal-verification routing loop started today (2026-05-23, 17-min cadence, session-only `faf5893d`). Her **first scan** surfaced a Class 0 drift gap at portfolio scale:
++
++- `verification-registry.md` covers **7 artifacts**
++- On-disk portfolio: **20** (17 TLA+/Lean + 3 Alloy)
++- **11 unregistered** = Class 0 drift per the registry's own definition
++- Coverage ratio dropped from 0.83 (round 21) → **0.52 (round 42)**
++
++## The 11 unregistered specs
++
++`InfoTheoreticSharder` (TLA+ + Alloy), `EngagementLiveness`, `BftConsensus`, `FeatureFlagsResolution`, `AsyncStreamEnumerator`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`, `DictionaryStripedCAS`, `RecursiveCountingLFP`, `RecursiveSignedSemiNaive`, `ThreeColoring`.
++
++## Soraya's routing decision
++
++**Use `verification-drift-auditor` skill** (already exists; under-utilized). NOT new TLA+. She explicitly named + rejected the TLA+-hammer trap: "RecursiveSignedSemiNaive's Z3 cross-check for S2 is unfilled per the notebook" tempting, but Round-42 single-property target; meta-surface fix first.
++
++## Effort + assignee
++
++M (one evening). Assignee: **kenji** (routes to original spec owners or `verification-drift-auditor` under backfill pass).
++
++## Commit details
++
++Landed via git plumbing (4th plumbing-fallback PR this session — sibling pattern to PR #4755 / #4761 / #4762). Dotgit saturation 539+ procs throughout.
++
++## Test plan
++
++- [x] Backlog row written with §33-compliant frontmatter + acceptance criteria
++- [x] All 11 specs named explicitly
++- [x] Soraya's TLA+-hammer guard preserved for future-Kenji context
++- [x] Composes-with refs point at real files (verification-drift-auditor skill, verification-registry.md, proof-tool-coverage.md, soraya NOTEBOOK)
++- [ ] CI green
++- [ ] Auto-merge fires
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-23T20:56:52Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `a4fe5303cc`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: docs/backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md:50 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-23T20:56:52Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Expand backlog scope to all unregistered artifacts**
++
++This task hard-codes a target of only 11 registry rows, but the repo currently has additional unregistered verification artifacts (`DbspSpec`, `SpineAsyncProtocol`, `CircuitRegistration`, `SpineMergeInvariants`, and `Spine.als`) that are also absent from `docs/research/verification-registry.md`; completing this backlog item as written will therefore leave Class 0 drift unresolved while claiming the meta-surface was fixed.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4766-backlog-b-0708-close-slice-1-reduced-87-17-80-remaining-17-h.md b/docs/pr-discussions/PR-4766-backlog-b-0708-close-slice-1-reduced-87-17-80-remaining-17-h.md
+new file mode 100644
+index 000000000..52c1ad850
+--- /dev/null
++++ b/docs/pr-discussions/PR-4766-backlog-b-0708-close-slice-1-reduced-87-17-80-remaining-17-h.md
+@@ -0,0 +1,21 @@
++---
++pr_number: 4766
++title: "backlog(B-0708): close \u2014 slice 1 reduced 87 \u2192 17 (-80%); remaining 17 healthy-FP"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T21:03:20Z"
++merged_at: "2026-05-23T21:04:35Z"
++closed_at: "2026-05-23T21:04:35Z"
++head_ref: "otto/cli-b0708-closure-remaining-17-healthy-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:32Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4766: backlog(B-0708): close — slice 1 reduced 87 → 17 (-80%); remaining 17 healthy-FP
++
++## PR description
++
++Closes B-0708. Slice 1 (PR #4764 merged) reduced stale-pointer candidates 87 → 17 (-80%) via 5 resolver improvements + 1 real-stale fix. Final MISS: 3.1% (17/552) — below 5% healthy-FP floor. All 5 acceptance criteria met. Remaining 17 candidates all classify as rule-acknowledged-healthy per 9-variant taxonomy (user-scope memory / anti-pattern citations / IF-fail-hypotheticals / glob-with-user-scope / alternative-location).
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4770-notebook-aarav-round-44-bounded-spot-check-3-skills-1-action.md b/docs/pr-discussions/PR-4770-notebook-aarav-round-44-bounded-spot-check-3-skills-1-action.md
+new file mode 100644
+index 000000000..805ca43b0
+--- /dev/null
++++ b/docs/pr-discussions/PR-4770-notebook-aarav-round-44-bounded-spot-check-3-skills-1-action.md
+@@ -0,0 +1,53 @@
++---
++pr_number: 4770
++title: "notebook(aarav round 44): bounded spot-check \u2014 3 skills, 1 actionable finding (TUNE \u2014 S)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-23T21:12:47Z"
++merged_at: "2026-05-23T21:14:58Z"
++closed_at: "2026-05-23T21:14:59Z"
++head_ref: "otto/cli-aarav-notebook-round-44-bounded-spot-check-2026-05-23"
++base_ref: "main"
++archived_at: "2026-05-24T16:52:31Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4770: notebook(aarav round 44): bounded spot-check — 3 skills, 1 actionable finding (TUNE — S)
++
++## PR description
++
++Round 44 bounded spot-check by Otto-CLI from autonomous-loop. Honest scope disclosure: 3 skills sampled (skills directly touched in today's PR #4753 / B-0708 work), no live-search this invocation. 1 actionable finding (alignment-observability bp_rules_cited empty → TUNE — S). Recommendations-only per skill discipline.
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-23T21:15:02Z)
++
++## Pull request overview
++
++Updates Aarav’s persona notebook to record the Round 44 (2026-05-23) bounded spot-check results and to adjust the pruning log to reflect that a full prune was deferred.
++
++**Changes:**
++- Replaces the prior “Next prune: round 44” entry with a Round 44 bounded spot-check note and defers full prune to the next full-procedure invocation.
++- Adds a new “Round 44 — bounded spot-check” section documenting scope and 3 sampled-skill findings.
++
++## Review threads
++
++### Thread 1: memory/persona/aarav/NOTEBOOK.md:359 (unresolved)
++
++**@copilot-pull-request-reviewer** (2026-05-23T21:15:01Z):
++
++BP-10 is described here as “ASCII-only,” but in `docs/AGENT-BEST-PRACTICES.md` BP-10 is “Lint for invisible Unicode on every notebook edit and at pre-commit.” If you meant the ASCII-only rule, that’s BP-09; please update this parenthetical so the cited BP IDs match the actual rule text.
++
++### Thread 2: memory/persona/aarav/NOTEBOOK.md:371 (unresolved)
++
++**@copilot-pull-request-reviewer** (2026-05-23T21:15:01Z):
++
++Line counts appear to be off by 1: `.claude/skills/alignment-auditor/SKILL.md` is currently 334 lines in-tree, not 333. Consider using the exact current count (or “~334”) to keep the notebook’s quantitative bloat signals accurate.
++
++### Thread 3: memory/persona/aarav/NOTEBOOK.md:374 (unresolved)
++
++**@copilot-pull-request-reviewer** (2026-05-23T21:15:01Z):
++
++Line count appears to be off by 1: `.claude/skills/skill-tune-up/SKILL.md` is currently 283 lines in-tree, not 282. Consider updating the count (or using an approximate) so this spot-check remains internally consistent.
+diff --git a/preserve.sh b/preserve.sh
+index eac8f75e8..4b8de214d 100755
+--- a/preserve.sh
++++ b/preserve.sh
+@@ -1,5 +1,5 @@
+ #!/bin/bash
+ set -e
+-for pr in 4791 4790 4789 4784 4783 4779 4774 4772 4771; do
++for pr in 4770 4766 4765 4764 4763 4762 4761 4758 4757 4756 4755 4754; do
+   bun run tools/pr-preservation/archive-pr.ts $pr
+ done

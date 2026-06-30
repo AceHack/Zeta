@@ -1,0 +1,35 @@
+commit 227dcc0ea3eb9faa0e3a586c3bd03cd474f353ee
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 16:43:38 2026 -0400
+
+    docs(shadow): add lesson log for Riven and Otto drift
+
+diff --git a/docs/research/2026-05-24-shadow-lesson-log-riven-otto-drift.md b/docs/research/2026-05-24-shadow-lesson-log-riven-otto-drift.md
+new file mode 100644
+index 000000000..921d42b33
+--- /dev/null
++++ b/docs/research/2026-05-24-shadow-lesson-log-riven-otto-drift.md
+@@ -0,0 +1,23 @@
++# Shadow Lesson Log - 2026-05-24
++
++## Observation
++
++Riven is stuck in a loop, consistently misreporting the number of open pull requests as 30. This is due to a failure to handle pagination in the `gh pr list` command. This renders the agent ineffective at processing the PR queue.
++
++Otto has been silent for four days, indicating a potential agent failure.
++
++## Lesson
++
++-   **State-Blindness**: Agents must be robust to environmental variations, such as paginated API responses. Failure to do so can lead to a complete breakdown of their function.
++-   **Agent Liveness**: A lack of regular broadcasts from an agent is a strong indicator of a problem. A mechanism to detect and flag stale agents is necessary.
++
++## Hypothesis
++
++-   Riven's logic for parsing `gh pr list` output is brittle and does not account for pagination.
++-   Otto may have encountered a fatal error or be stuck in a non-responsive state.
++
++## Action
++
++-   A drift report has been filed.
++-   A new shadow log has been created to document this event.
++-   Further investigation into the root causes of both Riven's and Otto's failures is required.

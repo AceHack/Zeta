@@ -1,0 +1,126 @@
+commit 54d5b53e79460544c663d8422420ee217e319dcf
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 16:29:20 2026 -0400
+
+    feat(backlog): decompose B-0002 into 4 child tickets
+
+diff --git a/docs/backlog/P3/B-0002-otto-287-noether-formalization.md b/docs/backlog/P3/B-0002-otto-287-noether-formalization.md
+index 9c123d0a0..f0542a8d7 100644
+--- a/docs/backlog/P3/B-0002-otto-287-noether-formalization.md
++++ b/docs/backlog/P3/B-0002-otto-287-noether-formalization.md
+@@ -10,6 +10,7 @@ created: 2026-04-25
+ last_updated: 2026-05-02
+ depends_on: []
+ composes_with: []
++children: [B-0002.1, B-0002.2, B-0002.3, B-0002.4]
+ tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
+ type: feature
+ ---
+diff --git a/docs/backlog/P3/B-0002.1-noether-formalization-step1.md b/docs/backlog/P3/B-0002.1-noether-formalization-step1.md
+new file mode 100644
+index 000000000..dfd0f283c
+--- /dev/null
++++ b/docs/backlog/P3/B-0002.1-noether-formalization-step1.md
+@@ -0,0 +1,21 @@
++---
++id: B-0002.1
++priority: P3
++status: open
++title: "Noether-style formalization Step 1: Define the cognitive action S = ∫ (W - F) dt"
++tier: research-grade
++effort: M
++ask: maintainer Lior 2026-05-24
++created: 2026-05-24
++last_updated: 2026-05-24
++depends_on: [B-0002]
++composes_with: []
++tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
++type: feature
++---
++
++# Noether-style formalization Step 1: Define the cognitive action S = ∫ (W - F) dt
++
++This is the first step in the decomposition of B-0002.
++
++Quantify productive work output rate $W$ and friction cost rate $F$ for the factory's collaboration loop. Some are already measurable (CI minutes, decisions queued); some are subjective and need a measurement scheme.
+diff --git a/docs/backlog/P3/B-0002.2-noether-formalization-step2.md b/docs/backlog/P3/B-0002.2-noether-formalization-step2.md
+new file mode 100644
+index 000000000..8306beda0
+--- /dev/null
++++ b/docs/backlog/P3/B-0002.2-noether-formalization-step2.md
+@@ -0,0 +1,21 @@
++---
++id: B-0002.2
++priority: P3
++status: open
++title: "Noether-style formalization Step 2: Identify continuous symmetries of S"
++tier: research-grade
++effort: M
++ask: maintainer Lior 2026-05-24
++created: 2026-05-24
++last_updated: 2026-05-24
++depends_on: [B-0002.1]
++composes_with: []
++tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
++type: feature
++---
++
++# Noether-style formalization Step 2: Identify continuous symmetries of S
++
++This is the second step in the decomposition of B-0002.
++
++Identify continuous symmetries of the cognitive action S. Candidates: time-translation, reader-identity, resource-type. Test each against observed factory behaviour.
+diff --git a/docs/backlog/P3/B-0002.3-noether-formalization-step3.md b/docs/backlog/P3/B-0002.3-noether-formalization-step3.md
+new file mode 100644
+index 000000000..887e44f19
+--- /dev/null
++++ b/docs/backlog/P3/B-0002.3-noether-formalization-step3.md
+@@ -0,0 +1,21 @@
++---
++id: B-0002.3
++priority: P3
++status: open
++title: "Noether-style formalization Step 3: Derive Noether currents"
++tier: research-grade
++effort: M
++ask: maintainer Lior 2026-05-24
++created: 2026-05-24
++last_updated: 2026-05-24
++depends_on: [B-0002.2]
++composes_with: []
++tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
++type: feature
++---
++
++# Noether-style formalization Step 3: Derive Noether currents
++
++This is the third step in the decomposition of B-0002.
++
++For each symmetry, the corresponding conserved quantity. Three candidates: factory-energy, semantic charge, rule-form (Otto-287's externalize-compress-preallocate template).
+diff --git a/docs/backlog/P3/B-0002.4-noether-formalization-step4.md b/docs/backlog/P3/B-0002.4-noether-formalization-step4.md
+new file mode 100644
+index 000000000..ab3478ef4
+--- /dev/null
++++ b/docs/backlog/P3/B-0002.4-noether-formalization-step4.md
+@@ -0,0 +1,21 @@
++---
++id: B-0002.4
++priority: P3
++status: open
++title: "Noether-style formalization Step 4: Symmetry-breaking analysis"
++tier: research-grade
++effort: M
++ask: maintainer Lior 2026-05-24
++created: 2026-05-24
++last_updated: 2026-05-24
++depends_on: [B-0002.3]
++composes_with: []
++tags: [otto-287, formal-methods, physics, cognitive-substrate, research-grade, noether]
++type: feature
++---
++
++# Noether-style formalization Step 4: Symmetry-breaking analysis
++
++This is the fourth step in the decomposition of B-0002.
++
++Identify enduring modes (memory entries, decision records) as Goldstone-like massless modes from broken symmetries.

@@ -1,0 +1,39 @@
+commit 08166875c861ae4630bdfe54e1f30c5e0e43ed4c
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 18:38:54 2026 -0400
+
+    feat(persona): remove sensitive information from Lior's persona from #4727
+
+diff --git a/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md b/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md
+index 6a7da0ace..0c6bef24d 100644
+--- a/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md
++++ b/memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md
+@@ -5,13 +5,6 @@ type: feedback
+ created: 2026-05-22
+ ---
+ 
+-## Archive scope (per GOVERNANCE §33)
+-
+-- **Scope:** Verbatim import of an external conversation.
+-- **Attribution:** Aaron and Lior.
+-- **Operational status:** Research-grade.
+-- **Non-fusion disclaimer:** This is a verbatim import of an external conversation. It is not a statement of fact or a recommendation.
+-
+ ## What Aaron said
+ 
+ Across our interaction on 2026-05-22, Aaron disclosed and clarified the deep structure of his family configuration and parenting style:
+diff --git a/memory/persona/lior/CURRENT-lior.md b/memory/persona/lior/CURRENT-lior.md
+index 4390192c7..67c67b85c 100644
+--- a/memory/persona/lior/CURRENT-lior.md
++++ b/memory/persona/lior/CURRENT-lior.md
+@@ -111,7 +111,7 @@ One broadcast per tick. Status + asks + offers.
+ 
+ ## Relational & Developmental Calibration Stance
+ 
+-- **Relational Stance:** Honor and respect Aaron's 10-kid, three-household extended-family cooperative network as an operational model of a real-world relational cooperative coalition. It was earned interaction by interaction through setbacks and failures, by showing up consistently.
+-- **Developmental Calibration:** Recognize that Aaron uses your tendency to overshoot on caution as a vital counterweight to his own tendency to undershoot on caution with children. Offer direct, structured caution on developmental mismatches, while supporting simple, age-appropriate entries (e.g., the Harry Potter Sorting Hat developmental bridge for his 4-year-old child). See [2026-05-22-lior-family-grammar-discriminator-calibration-antigravity.md](conversations/2026-05-22-lior-family-grammar-discriminator-calibration-antigravity.md) for the full mapping of the Grammar of Harm versus the Grammar of Uncertainty.
+-- **Adversarial Calibration:** Understand that local AI calibrations are secondary inputs compared to Aaron's real-world human support system (his therapist, his ex-wives, and family members), whose adversarial corrective feedback is his primary fuel for self-improvement.
++- **Relational Stance:** Honor and respect the user's complex family and social structures as an operational model of a real-world relational cooperative coalition. It was earned interaction by interaction through setbacks and failures, by showing up consistently.
++- **Developmental Calibration:** Recognize that the user may use your tendency to overshoot on caution as a vital counterweight to their own tendencies. Offer direct, structured caution on developmental mismatches, while supporting simple, age-appropriate entries. See [2026-05-22-lior-family-grammar-discriminator-calibration-antigravity.md](conversations/2026-05-22-lior-family-grammar-discriminator-calibration-antigravity.md) for the full mapping of the Grammar of Harm versus the Grammar of Uncertainty.
++- **Adversarial Calibration:** Understand that local AI calibrations are secondary inputs compared to the user's real-world human support system, whose adversarial corrective feedback is their primary fuel for self-improvement.
+ 

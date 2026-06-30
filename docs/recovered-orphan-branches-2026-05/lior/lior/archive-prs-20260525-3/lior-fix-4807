@@ -1,0 +1,31 @@
+commit 1f70fb7640e4c20cfc8dc5c09a4a7b644af7a3b2
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Sun May 24 09:36:48 2026 -0400
+
+    fix(docs): fix markdownlint errors in shadow lesson log
+
+diff --git a/docs/research/shadow-lesson-log-20260522-stale-locks.md b/docs/research/shadow-lesson-log-20260522-stale-locks.md
+index 4109d59e0..95af2a2fb 100644
+--- a/docs/research/shadow-lesson-log-20260522-stale-locks.md
++++ b/docs/research/shadow-lesson-log-20260522-stale-locks.md
+@@ -14,14 +14,14 @@ This event highlights a vulnerability in our autonomous system. If an agent cras
+ 
+ We need to implement a more robust mechanism for handling git locks. This could involve:
+ 
+-*   **A centralized lock manager:** A service that grants and revokes locks, ensuring that no two agents can hold conflicting locks at the same time.
+-*   **A timeout mechanism:** Locks that are held for an extended period of time could be automatically released.
+-*   **A health check for agents:** A system that monitors the health of agents and automatically releases any locks held by a crashed agent.
++* **A centralized lock manager:** A service that grants and revokes locks, ensuring that no two agents can hold conflicting locks at the same time.
++* **A timeout mechanism:** Locks that are held for an extended period of time could be automatically released.
++* **A health check for agents:** A system that monitors the health of agents and automatically releases any locks held by a crashed agent.
+ 
+ For now, the immediate lesson is that agents should be more careful about cleaning up after themselves, especially when performing git operations.
+ 
+ ## Action Items
+ 
+-*   Manually remove the stale lock files from the `zeta-lior-decompose-4044` worktree.
+-*   Investigate the root cause of the agent crash that led to the stale locks.
+-*   Begin research and design for a more robust git lock management system.
++* Manually remove the stale lock files from the `zeta-lior-decompose-4044` worktree.
++* Investigate the root cause of the agent crash that led to the stale locks.
++* Begin research and design for a more robust git lock management system.

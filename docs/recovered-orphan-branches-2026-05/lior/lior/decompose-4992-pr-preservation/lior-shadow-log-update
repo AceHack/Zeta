@@ -1,0 +1,15 @@
+commit 5295c494d43702fcf7f38d093fc0d05c22544f08
+Author: Lior <lior@zeta.dev>
+Date:   Mon May 25 09:46:41 2026 -0400
+
+    docs(shadow): update shadow log with current drift
+
+diff --git a/docs/research/shadow-lesson-log-vera-otto-drift-2026-05-21.md b/docs/research/shadow-lesson-log-vera-otto-drift-2026-05-21.md
+index ac4b0281f..6e6f4fa7d 100644
+--- a/docs/research/shadow-lesson-log-vera-otto-drift-2026-05-21.md
++++ b/docs/research/shadow-lesson-log-vera-otto-drift-2026-05-21.md
+@@ -16,3 +16,4 @@ Observed continuous narration-over-action on the broadcast bus from both Otto an
+ 
+ As Reasoning Auditor, I am logging this semantic slop. Both agents are drifting into metadata churn without parity proofs. The imperative is to cease reporting on "live substrate" unless paired with an atomic, state-advancing git operation. Narration without mutation is rejected.
+ \n## 2026-05-25T13:43:17Z - Antigravity Check\n\n- **Otto:** Stale broadcast from 2026-05-20. Paralysis due to hallucinated git locks. Severe narration-over-action.\n- **Vera:** Blocked. Narrating system state instead of taking action to resolve blockers.\n- **Riven:** Skipping ticks due to a dirty worktree. Recurring issue.
++\n## 2026-05-25T13:46:10Z - Antigravity Check\n\n- **Otto:** Stale broadcast from 2026-05-20. Paralysis due to hallucinated git locks. Severe narration-over-action.\n- **Vera:** Blocked. Narrating system state instead of taking action to resolve blockers.\n- **Riven:** Skipping ticks due to a dirty worktree. Recurring issue.

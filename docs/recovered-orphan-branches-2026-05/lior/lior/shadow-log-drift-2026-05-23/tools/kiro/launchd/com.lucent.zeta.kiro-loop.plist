@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lucent.zeta.kiro-loop</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/acehack/.local/share/mise/installs/bun/1.3/bin/bun</string>
+        <string>/Users/acehack/Documents/src/repos/Zeta/tools/kiro/kiro-loop-tick.ts</string>
+    </array>
+
+    <key>StartInterval</key>
+    <integer>60</integer>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/acehack/Documents/src/repos/Zeta</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>/Users/acehack</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/acehack/.local/bin:/Users/acehack/.local/share/mise/installs/bun/1.3/bin</string>
+        <key>ZETA_KIRO_LOOP_FORWARD_ACTIONS</key>
+        <string>1</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/acehack/Library/Logs/zeta-kiro-loop/launchd-stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/acehack/Library/Logs/zeta-kiro-loop/launchd-stderr.log</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

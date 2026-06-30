@@ -1,0 +1,1851 @@
+commit e9b9eb773c4739e689addb496ce684f599f8fc33
+Author: Lior <lior@zeta.dev>
+Date:   Sun May 24 11:39:10 2026 -0400
+
+    docs(archive): preserve recently merged PRs
+
+diff --git a/docs/pr-discussions/PR-4809-docs-research-bundle-file-dev-pc-substrate-architecture-nix.md b/docs/pr-discussions/PR-4809-docs-research-bundle-file-dev-pc-substrate-architecture-nix.md
+new file mode 100644
+index 000000000..232f927bf
+--- /dev/null
++++ b/docs/pr-discussions/PR-4809-docs-research-bundle-file-dev-pc-substrate-architecture-nix.md
+@@ -0,0 +1,121 @@
++---
++pr_number: 4809
++title: "docs(research): bundle-file dev-PC substrate architecture (Nix + Home Manager + k3d + Headscale + lend-resources pattern)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T02:04:57Z"
++merged_at: "2026-05-24T02:16:19Z"
++closed_at: "2026-05-24T02:16:19Z"
++head_ref: "otto/research-dev-pc-substrate-nix-home-manager-k3d-headscale-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4809: docs(research): bundle-file dev-PC substrate architecture (Nix + Home Manager + k3d + Headscale + lend-resources pattern)
++
++## PR description
++
++## Summary
++
++Aaron 2026-05-24T~03:30Z: *"yes bundle-file it (shadow*)"* + additions:
++- **Tailscale is good but we also want Headscale** (self-hosted control plane)
++- **Lightweight-first principle** captured verbatim
++- **Dev boxes as lending-resources** to cluster (opt-in pattern, not first-class k8s nodes)
++
++Sibling to **PR #4808** (cluster substrate). Combined, the two archives describe the full ecosystem (cluster + dev PCs) as one declarative substrate.
++
++## Bundle-file term disambiguation (per Aaron's question)
++
++"Bundle-file" = file all related decisions as ONE comprehensive archive rather than N narrow ones. Single source of truth; cross-references are internal; easier to find later.
++
++## Decided primary stack (lightweight-first)
++
++| Layer | Choice |
++|---|---|
++| Per-OS reproducibility | Nix package manager + Home Manager (macOS: nix-darwin; Windows: WSL2) |
++| Local k8s testing | k3d (lighter than kind) |
++| Cluster-workload-lending | Lightweight Bun/Node daemon polling NATS queue |
++| Network overlay | Tailscale clients + **self-hosted Headscale control plane** |
++
++## Sovereignty preserved
++
++Headscale > pure Tailscale managed: control plane is yours; no commercial dependency; free at any node count; framework discipline match.
++
++## Lending-resources pattern (per Aaron's framing)
++
++Dev PCs are NOT first-class k8s nodes (trust boundary + reliability). They run a lightweight background daemon that polls cluster work-queue for opt-in workloads. Owner can pause/resume/revoke any time (NCI floor at dev-PC scope).
++
++## Deferred (ease-into-later)
++
++Liqo / KubeFed v2 / k3s agent per dev PC / custom DERP / native-Nix-on-Windows / full NixOS desktop.
++
++## Addison's preferences
++
++Explicitly absent from this archive pending her direct articulation. Per consent-discipline: observation-not-fact; declarative claims about Addison's preferences would violate the discipline.
++
++## Composes with
++
++- PR #4808 — sibling cluster substrate archive
++- Addison consent archive (PR #4794)
++- 9 framework rules (DST, glass-halo, NCI floor, m/acc-multi-oracle, bandwidth-served, additive, Aaron lightweight-first, Addison observation-not-fact, shadow-star)
++
++## Test plan
++
++- [ ] CI green (lint only — no source changes)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T02:06:20Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `8ac596d289`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T02:07:31Z)
++
++## Pull request overview
++
++Adds a research archive documenting the decided dev-PC substrate architecture that complements the sibling cluster-substrate archive (PR #4808), capturing a lightweight-first stack (Nix + Home Manager, local k8s via kind/k3d, Headscale/Tailscale overlay, and an opt-in “lend resources” daemon pattern).
++
++**Changes:**
++- Adds a comprehensive dev-PC substrate decision archive under `docs/research/`.
++- Documents the primary choices plus deferred “ease-into-later” options and open questions.
++- Cross-links the dev-PC archive to the sibling cluster archive and relevant framework rules.
++
++## Review threads
++
++### Thread 1: docs/research/2026-05-24-dev-pc-substrate-architecture-nix-home-manager-kind-k3d-headscale-lend-pattern-aaron-otto.md:3 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T02:06:20Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct impossible decision timestamp**
++
++The archive states `Date decided: 2026-05-24 (~03:30Z)`, but this commit is timestamped `2026-05-24 02:05:19 +0000`, so the documented decision time is in the future relative to when the record was created. For GOVERNANCE-style provenance/audit trails, this ordering ambiguity can break trust in chronology; either adjust the decision time or explicitly mark that the file was updated after the decision was made.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/research/2026-05-24-dev-pc-substrate-architecture-nix-home-manager-kind-k3d-headscale-lend-pattern-aaron-otto.md:4 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T02:07:31Z):
++
++The consent-file reference in `Participants` doesn’t match the actual date-prefixed filename used elsewhere (and in the linked file list below). As written, this backticked filename won’t resolve to an existing doc; update it to the correct `2026-05-24-...` name for xref integrity.
+diff --git a/docs/pr-discussions/PR-4810-backlog-b-0719-file-soraya-round-67-forced-decomposition-aud.md b/docs/pr-discussions/PR-4810-backlog-b-0719-file-soraya-round-67-forced-decomposition-aud.md
+new file mode 100644
+index 000000000..92cf71eec
+--- /dev/null
++++ b/docs/pr-discussions/PR-4810-backlog-b-0719-file-soraya-round-67-forced-decomposition-aud.md
+@@ -0,0 +1,126 @@
++---
++pr_number: 4810
++title: "backlog(B-0719): file Soraya round-67 forced-decomposition \u2014 audit-of-audit (recognition-without-row-filing precedent)"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T02:47:51Z"
++merged_at: "2026-05-24T02:57:54Z"
++closed_at: "2026-05-24T02:57:54Z"
++head_ref: "otto/soraya-round67-b0719-audit-of-audit-recognition-without-row-filing-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4810: backlog(B-0719): file Soraya round-67 forced-decomposition — audit-of-audit (recognition-without-row-filing precedent)
++
++## PR description
++
++## Summary
++
++Soraya autonomous round 67 = hold #6/6 in fresh counter sequence post B-0718. **Forced-decomposition fired** per brief-ack-counter discipline at meta-meta-scope.
++
++**Recursive forced-decomposition pattern**:
++
++| Round | Forced-decomposition output | Audits |
++|---|---|---|
++| 61 | B-0718 (PR #4797 MERGED) | The four-trigger framework itself |
++| 67 | **B-0719 (this PR)** | The recognition-without-row-filing precedent that B-0718's existence makes possible |
++
++## Substantive question
++
++When a routing trigger fires + Soraya responds *"execution-not-my-lane"* (correct routing), the recognition itself leaves **NO in-repo trace**. Round-66 recognized PR #4797 merge but produced zero substrate beyond chat output + persona NOTEBOOK.
++
++## Three candidate landings
++
++| Option | Cost | Trade-off |
++|---|---|---|
++| 1. Soraya NOTEBOOK.md per-round trigger-recognition log | Lowest | Persona-private; not cross-persona discoverable |
++| 2. B-0718 row's "Recognition Log" subsection appended in-place | Mid | Co-locates with framework; conflates audit findings with ongoing routing log |
++| 3. New `docs/research/verification-routing-decisions.md` ledger | Highest | Cross-persona discoverable; durable across persona pruning |
++
++## Acceptance
++
++Pick one + rationale + reject-other-two + implement + update SKILL.md + backfill rounds 59 + 66 recognition events + land within 1 tick.
++
++## Wrong-tool cost
++
++Future Soraya cold-boots rediscover the four triggers, fire on one, recognize "not my lane," produce ZERO substrate — round-66/67 pattern recurs without trace.
++
++## Authoring note
++
++Authored via **REST git-data API bypass** — `git push` hung on `git pack-objects` rebuilding at 7+ min CPU (dotgit-saturation). REST bypass per session's documented mitigation (`.claude/rules/refresh-world-model-poll-pr-gate.md` REST PR-creation fallback pattern).
++
++## Test plan
++
++- [ ] CI green (lint + backlog-index-integrity)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T02:50:03Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `194dac04d0`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T02:50:42Z)
++
++## Pull request overview
++
++Adds a new P3 backlog row (B-0719) to capture and audit the “recognition-without-row-filing” substrate gap in verification-routing decisions, and updates the generated backlog index.
++
++**Changes:**
++- Adds `docs/backlog/P3/B-0719-...md` backlog row describing the audit question, options, and acceptance criteria.
++- Updates `docs/BACKLOG.md` with an additional backlog index entry.
++
++### Reviewed changes
++
++Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
++
++| File | Description |
++| ---- | ----------- |
++| docs/backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md | New P3 backlog row defining the audit-of-audit problem and acceptance criteria. |
++| docs/BACKLOG.md | Updates generated backlog index (currently introduces a broken reference and misses the new row). |
++
++## Review threads
++
++### Thread 1: docs/BACKLOG.md:667 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T02:50:03Z):
++
++**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace nonexistent B-0700 entry with new B-0719 row**
++
++This index line links to `backlog/P2/B-0700-...`, but there is no matching `docs/backlog/**/B-0700-*.md` row file, while the commit actually adds `docs/backlog/P3/B-0719-...md`. Since `docs/BACKLOG.md` is declared auto-generated and CI enforces parity via `bun tools/backlog/generate-index.ts --check` in `.github/workflows/backlog-index-integrity.yml`, this creates generated-index drift and leaves the newly added B-0719 task undiscoverable from the canonical backlog index.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/BACKLOG.md:667 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T02:50:42Z):
++
++`docs/BACKLOG.md` is auto-generated (tools/backlog/README.md) and must match `bun tools/backlog/generate-index.ts --check` in CI. This newly added entry links to `backlog/P2/B-0700-...` which does not exist under `docs/backlog/` in this branch, and the index also does not include the newly added B-0719 row. Regenerate `docs/BACKLOG.md` from the per-row files and ensure only existing rows are referenced (including adding B-0719).
++
++### Thread 3: docs/backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md:48 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T02:50:42Z):
++
++The table under “Three candidate landings to evaluate” has an extra empty first column (each row starts with `|| ...`). This renders as a blank leading column and is inconsistent with the usual table format used elsewhere in backlog rows; consider switching to a standard 3-column table so it renders cleanly.
+diff --git a/docs/pr-discussions/PR-4811-soraya-round-69-execute-b-0719-pick-add-trigger-recognition.md b/docs/pr-discussions/PR-4811-soraya-round-69-execute-b-0719-pick-add-trigger-recognition.md
+new file mode 100644
+index 000000000..957206167
+--- /dev/null
++++ b/docs/pr-discussions/PR-4811-soraya-round-69-execute-b-0719-pick-add-trigger-recognition.md
+@@ -0,0 +1,90 @@
++---
++pr_number: 4811
++title: "soraya(round-69): execute B-0719 pick \u2014 add Trigger Recognition Log section to NOTEBOOK + update SKILL reference"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T03:08:58Z"
++merged_at: "2026-05-24T03:22:22Z"
++closed_at: "2026-05-24T03:22:22Z"
++head_ref: "otto/soraya-round69-b0719-execute-option1-notebook-trigger-recognition-log-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4811: soraya(round-69): execute B-0719 pick — add Trigger Recognition Log section to NOTEBOOK + update SKILL reference
++
++## PR description
++
++## Summary
++
++Soraya round 69 routing decision execution: B-0719 audit-of-audit (PR #4810 MERGED earlier) named 3 candidate landings for trigger-fired-but-row-not-filed routing-decision substrate. Soraya picked **Option 1** (NOTEBOOK.md per-round Trigger Recognition Log).
++
++## Rationale per Soraya
++
++- **Cost-correct**: trigger-recognition is per-tick procedural state; matches what NOTEBOOK.md already is
++- **Lane-correct**: routing-decisions are advisory-Soraya substrate; persona-private notebook is right scope
++- **DV2.0 partition fit**: trigger-recognition is high-change-rate satellite; goes to persona-private surface, not rule body or new cross-cutting ledger
++
++## Rejected reasoning
++
++- **Option 2** (B-0718 in-place): backlog rows are stable specification surfaces, not running logs. Wrong change-rate partition.
++- **Option 3** (new cross-cutting ledger): premature; no consumer demand; bandwidth-served falsifier failing. Re-evaluate if/when consumer surfaces.
++
++## Changes
++
++1. **NOTEBOOK.md**: appended `## Trigger Recognition Log` section with backfill of rounds 59 + 66 + 69 recognition events
++2. **SKILL.md Reference patterns**: updated to name the new section as canonical landing surface for trigger-fired-but-row-not-filed events
++
++## Saturation contingency
++
++If NOTEBOOK approaches 3000-word cap from log entries, revisit Option 3.
++
++## Authoring
++
++Via REST git-data API bypass (dotgit-saturation persists).
++
++## Test plan
++
++- [ ] CI green (lint only — substrate-only changes)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T03:10:36Z)
++
++## Pull request overview
++
++This PR implements the B-0719 Option 1 landing: a per-round “Trigger Recognition Log” in Soraya’s persona NOTEBOOK, and updates the formal-verification skill’s reference patterns to point to that new canonical landing surface for trigger-fired-but-row-not-filed events.
++
++**Changes:**
++- Append a `## Trigger Recognition Log` section to `memory/persona/soraya/NOTEBOOK.md` with backfilled rounds 59/66/69 entries.
++- Update `.claude/skills/formal-verification-expert/SKILL.md` to reference the new NOTEBOOK section as the canonical substrate for these events.
++
++### Reviewed changes
++
++Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
++
++| File | Description |
++| ---- | ----------- |
++| memory/persona/soraya/NOTEBOOK.md | Adds the new Trigger Recognition Log section and initial backfill entries. |
++| .claude/skills/formal-verification-expert/SKILL.md | Updates reference patterns to point at the new NOTEBOOK log section. |
++
++## Review threads
++
++### Thread 1: .claude/skills/formal-verification-expert/SKILL.md:270 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T03:10:36Z):
++
++The bold emphasis is split across a line break (`**Trigger Recognition` / `Log section**`), which doesn’t reliably render as bold in CommonMark renderers. Keep the `**...**` token pair on the same line to ensure consistent formatting.
++
++### Thread 2: memory/persona/soraya/NOTEBOOK.md:241 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T03:10:36Z):
++
++The stated log format (`trigger=(letter) outcome=(routed/held/escalated) ...`) doesn’t match the actual entries below (table rows with full trigger text and outcomes like `recognition-without-row-filing`). Suggest updating the format line to reflect the table so future entries are consistent.
++
++### Thread 3: memory/persona/soraya/NOTEBOOK.md:248 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T03:10:36Z):
++
++`docs/research/verification-routing-decisions.md` is referenced as a concrete path, but that file doesn’t currently exist in `docs/research/`. Since this is a hypothetical future Option 3, consider phrasing it as a proposed path (or omit the exact filename) to avoid creating a misleading cross-reference.
+diff --git a/docs/pr-discussions/PR-4812-shard-2026-05-24-0240z-9th-dotgit-saturation-anchor-33-stuck.md b/docs/pr-discussions/PR-4812-shard-2026-05-24-0240z-9th-dotgit-saturation-anchor-33-stuck.md
+new file mode 100644
+index 000000000..7a79a1dcd
+--- /dev/null
++++ b/docs/pr-discussions/PR-4812-shard-2026-05-24-0240z-9th-dotgit-saturation-anchor-33-stuck.md
+@@ -0,0 +1,55 @@
++---
++pr_number: 4812
++title: "shard(2026-05-24/0240Z): 9th dotgit-saturation anchor \u2014 33 stuck procs, -94% from 02:09Z peak"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T04:16:33Z"
++merged_at: "2026-05-24T04:18:01Z"
++closed_at: "2026-05-24T04:18:01Z"
++head_ref: "otto-cli/dotgit-9th-anchor-descent-0240z"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4812: shard(2026-05-24/0240Z): 9th dotgit-saturation anchor — 33 stuck procs, -94% from 02:09Z peak
++
++## PR description
++
++## Summary
++
++- 9th anchor in the rolling 24h dotgit-saturation series (since 2026-05-23T10:18Z): **33 stuck git pack/maintenance/repack procs** at 02:40Z UTC
++- **Largest single-step descent observed** in the series: -501 procs / -94% from 02:09Z=534 in ~30 min
++- Second below-extreme reading (alongside 22:08Z=93); two mild readings now span ~4.5h
++- 4th branch-contamination anchor — cold-boot Otto-CLI session landed on \`alexa/kiro-launchd-plist-2026-05-23\` (not Otto-CLI lane)
++- Mild dotgit-tier + Normal GraphQL-tier → in-repo substrate work safe; isolated worktree clean (ls-tree=55, status=0); commit canary passed
++
++## Rolling 24h series (anchors 1–9)
++
++| # | UTC | Stuck procs | Tier |
++|---|---|---|---|
++| 1 | 2026-05-23T10:18Z | 450 | extreme-extreme |
++| 2 | 2026-05-23T14:11Z | 354 | extreme |
++| 3 | 2026-05-23T16:08Z | 354 | extreme (plateau) |
++| 4 | 2026-05-23T18:09Z | 420 | extreme |
++| 5 | 2026-05-23T20:14Z | 540 | extreme-extreme |
++| 6 | 2026-05-23T22:08Z | 93 | mild (originally reclassified after #7+#8) |
++| 7 | 2026-05-24T00:09Z | 447 | extreme |
++| 8 | 2026-05-24T02:09Z | 534 | extreme-extreme |
++| **9** | **2026-05-24T02:40Z** | **33** | **mild** (this anchor) |
++
++## Two non-mutually-exclusive readings (per default-to-both)
++
++1. **Cyclic-saturation**: peer-agent maintenance cycles produce brief inter-cycle quiet windows; #6 + #9 ARE cycle troughs
++2. **Single-event-clearance**: external event (process death / gc collection / peer-loop termination) cleared most stuck plumbing between #8 and #9; subsequent readings will determine if cleared or returns to baseline
++
++**Resolution gate:** anchor #10 at ~04:00Z discriminates.
++
++## Test plan
++- [x] Sentinel armed (\`bf82d0a2\`)
++- [x] Isolated worktree off origin/main @ \`209c18c5f2\` (ls-tree=55, status=0)
++- [x] Branch in Otto-CLI lane (\`otto-cli/dotgit-9th-anchor-descent-0240z\`)
++- [x] Commit canary passed (HEAD=55, HEAD~1=55, +1 file)
++- [ ] CI / required checks (this PR)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4813-shard-2026-05-24-0416z-rename-0240z-0416z-substrate-honest-t.md b/docs/pr-discussions/PR-4813-shard-2026-05-24-0416z-rename-0240z-0416z-substrate-honest-t.md
+new file mode 100644
+index 000000000..35c23a8b5
+--- /dev/null
++++ b/docs/pr-discussions/PR-4813-shard-2026-05-24-0416z-rename-0240z-0416z-substrate-honest-t.md
+@@ -0,0 +1,86 @@
++---
++pr_number: 4813
++title: "shard(2026-05-24/0416Z): rename 0240Z\u21920416Z + substrate-honest timestamp correction"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T04:19:36Z"
++merged_at: "2026-05-24T04:21:20Z"
++closed_at: "2026-05-24T04:21:20Z"
++head_ref: "otto-cli/dotgit-9th-anchor-descent-0240z"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4813: shard(2026-05-24/0416Z): rename 0240Z→0416Z + substrate-honest timestamp correction
++
++## PR description
++
++## Summary
++
++Follow-up to [#4812](https://github.com/Lucent-Financial-Group/Zeta/pull/4812) (already merged at \`02924cfd\` before this correction could be pushed in-time).
++
++**Substrate-honest correction**: original shard was timestamped \`02:40Z\` based on agent-side wall-clock estimate. After opening PR #4812, \`date -u\` returned \`2026-05-24T04:16Z\` — the actual session UTC was ~1h36min later than estimated. Auto-merge fired before the correction could land in the same PR.
++
++This PR:
++- Renames \`docs/hygiene-history/ticks/2026/05/24/0240Z.md\` → \`0416Z.md\`
++- Corrects all internal timestamps (header \`02:40Z\` → \`04:16Z\`, sentinel timestamp, descent interval \`~30min\` → \`~2h7min\`)
++- Recomputes the resolution-gate ETA (\`~04:00Z\` → \`~05:30Z–06:30Z\`)
++- Adds substrate-honest disclosure section documenting the failure-and-correction trail at the top of the shard body
++- Branch name keeps the \`0240z\` slug for git-history traceability (already pushed before correction)
++
++**Empirical content unchanged**: the \`-94%\` magnitude (02:09Z=534 → current=33) is fixed because both endpoints are fixed; only the time-window between anchor 8 and anchor 9 changes from \`~30min\` to \`~2h7min\`. The 9th-anchor classification + tier assignment + cyclic-vs-clearance default-to-both hypothesis are all preserved.
++
++## Why this is substrate-honest and not embarrassment-elision
++
++Per \`.claude/rules/substrate-or-it-didnt-happen.md\` + \`.claude/rules/glass-halo-bidirectional.md\` + \`.claude/rules/additive-not-zero-sum.md\`: the failure-and-correction trail is itself substrate. The wall-clock-estimate-error is a known agent-side failure mode (no internal clock; estimates can be off by hours under autonomous-loop cold-boot). Documenting it as part of the shard creates inheritable substrate for future-Otto cold-boots: when picking timestamps for shards, run \`date -u\` first.
++
++Composes with \`.claude/rules/refresh-before-decide.md\` at the per-timestamp scope — the cheap \`date -u\` query IS the refresh that catches this class of error.
++
++## Test plan
++- [x] File renamed: \`0240Z.md\` → \`0416Z.md\` (single git rename, R-status)
++- [x] All internal timestamp references updated
++- [x] Substrate-honest disclosure section added at top of shard body
++- [x] Branch commit canary: HEAD=55, HEAD~1=55, +0 file count change (pure rename + edit)
++- [ ] CI / required checks (this PR)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T04:21:35Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `640f19c72e`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/24/0416Z.md:35 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-24T04:21:35Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update anchor-9 references to corrected 04:16Z timestamp**
++
++This line still describes anchor 9 as `02:40Z`, even though the same shard was corrected to `04:16Z` (table above and header). That leaves the analysis internally inconsistent (for example, the “~4.5h” span and subsequent hypothesis text are now based on the old timestamp), which can skew downstream interpretation of the rolling-series evidence this tick is meant to preserve.
++
++Useful? React with 👍 / 👎.
+diff --git a/docs/pr-discussions/PR-4814-shard-2026-05-24-0441z-25-pr-audit-8-blocked-prs-classified.md b/docs/pr-discussions/PR-4814-shard-2026-05-24-0441z-25-pr-audit-8-blocked-prs-classified.md
+new file mode 100644
+index 000000000..75e72b901
+--- /dev/null
++++ b/docs/pr-discussions/PR-4814-shard-2026-05-24-0441z-25-pr-audit-8-blocked-prs-classified.md
+@@ -0,0 +1,271 @@
++---
++pr_number: 4814
++title: "shard(2026-05-24/0441Z): 25-PR audit; 8 BLOCKED PRs classified; zero FPs across 5 failure classes"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T04:45:08Z"
++merged_at: "2026-05-24T13:05:13Z"
++closed_at: "2026-05-24T13:05:14Z"
++head_ref: "otto-cli/0441z-pr-triage-audit-cross-lane-classify"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4814: shard(2026-05-24/0441Z): 25-PR audit; 8 BLOCKED PRs classified; zero FPs across 5 failure classes
++
++## PR description
++
++## Summary
++
++Otto-CLI background-worker tick at 04:41Z. Polled 25 open PRs via `poll-pr-gate-batch.ts --all-open`. Inspected the 8 BLOCKED+resolve-threads PRs via GraphQL (no checkout, lane-discipline-safe per [`claim-acquire-before-worktree-work.md`](../blob/main/.claude/rules/claim-acquire-before-worktree-work.md)).
++
++**All 38+ unresolved threads classified as substantive findings — zero false positives** across 5 failure classes:
++
++| Class | PRs | Issue |
++|---|---|---|
++| A | 4733, 4735, 4737, 4739 | Privacy P0 — family-config specifics against opaque-pointer policy |
++| B | 4733, 4735, 4737, 4739, 4769 | MEMORY.md hand-edit past 100-entry cap; needs reindex |
++| C | 4733, 4737 | `feedback_*.md` missing required `**Why:**`/`**How to apply:**` markers |
++| D | 4768, 4773 | `/Users/acehack` hardcoded in launchd plist + malformed `launchctl bootout` |
++| E | 4780 | Tautological FsCheck residuation property; missing RHS check; non-independent oracle |
++| F | 4769 | B-0700 backlog row added but per-row file missing (broken link) |
++
++## Lane disposition
++
++All 25 open PRs are `lior/*` / `alexa/*` lane branches — no `otto/*` branches. The task brief's "check out branch / push" directives were conflict-resolved toward audit + document rather than cross-lane takeover per [`no-directives.md`](../blob/main/.claude/rules/no-directives.md) (task brief is input, not directive) + lane discipline.
++
++Two PRs (#4780, #4773) are auto-merge armed. Risk is documented in the shard for future-Otto cold-boot inheritance — substrate-honest disclaimer that auto-merge was NOT disarmed (lane-discipline violation despite the documented risk).
++
++## Test plan
++
++- [x] Sentinel re-armed (`b5c8ce26`) per `tick-must-never-stop.md`
++- [x] `refresh-worldview.ts` ran clean
++- [x] Branch off `origin/main` @ `ac2c8baca5`
++- [x] Branch-guard before commit per `zeta-expected-branch.md`
++- [x] Commit-canary tree-size check (parent=55, child=55) per `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`
++- [ ] CI runs green
++- [ ] Auto-merge fires post-CI
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T04:46:59Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `3b7aec265d`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T04:47:27Z)
++
++## Pull request overview
++
++Adds a new hygiene-history tick shard capturing the 2026-05-24 04:41Z Otto-CLI background-worker audit of open PR gates/threads, including a classification of blocked PR thread findings and related operational notes.
++
++**Changes:**
++- Add `0441Z` tick shard documenting a 25-PR gate poll and classification of 8 BLOCKED PRs’ unresolved threads.
++- Record summarized failure classes, risk surface (auto-merge armed PRs), and links to relevant rules/tools used during the audit.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T08:53:24Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `9a79fe115c`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @AceHack (2026-05-24T09:22:47Z)
++
++_(no body)_
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T09:24:47Z)
++
++## Pull request overview
++
++Copilot reviewed 1 out of 1 changed files in this pull request and generated 2 comments.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T12:33:51Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `4b14e21696`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @AceHack (2026-05-24T13:03:29Z)
++
++_(no body)_
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/24/0441Z.md:30 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T04:47:00Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix failure-class count in classification summary**
++
++The summary states that 5 failure classes were identified, but this same report later defines Classes A through F and includes Class F in the triage table. This inconsistency under-reports the breadth of issues and can skew any downstream tracking or risk summaries that rely on this shard text.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/hygiene-history/ticks/2026/05/24/0441Z.md:30 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T04:47:00Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct unresolved-thread total reported in audit**
++
++The report claims "38+" unresolved threads were classified, but the per-PR counts in the table add up to 65 (7+14+7+8+10+5+7+7). This mismatch makes the documented audit scope inaccurate and can cause follow-up prioritization to be based on understated volume.
++
++Useful? React with 👍 / 👎.
++
++### Thread 3: docs/hygiene-history/ticks/2026/05/24/0441Z.md:61 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T04:47:26Z):
++
++This reference uses a wildcard extension (`tools/hygiene/validate-memory-schema.*`), but the validator is a concrete script (`tools/hygiene/validate-memory-schema.ts`). Using the exact filename makes the shard searchable and avoids suggesting there are multiple implementations.
++
++### Thread 4: docs/hygiene-history/ticks/2026/05/24/0441Z.md:102 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T04:47:27Z):
++
++This line cites `god-tier-claims-high-signal-high-suspicion-don't-collapse.md`, but the rule file in `.claude/rules/` is `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (no apostrophe). Please update the reference to the existing filename; also avoid truncating the `docs/backlog/...` path with `...` if the goal is to preserve a resolvable cross-reference.
++
++### Thread 5: docs/hygiene-history/ticks/2026/05/24/0441Z.md:60 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T08:53:25Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile Class C affected PR list with triage table**
++
++The Class C section says missing schema markers affect only `#4733` and `#4737`, but the triage table later classifies `#4739` as `A + B + C`. This contradiction makes the audit non-deterministic for follow-up agents: if they trust the class section, they may skip schema-marker remediation on `#4739` even though the table marks it as a Class C blocker.
++
++Useful? React with 👍 / 👎.
++
++**@AceHack** (2026-05-24T09:22:47Z):
++
++Fixed in [54678dab](https://github.com/Lucent-Financial-Group/Zeta/commit/54678dab2c32119d44dbdaa698631531cbc31191).
++
++Substrate-honest fix per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix:
++- Direct line inspection at PR head @ `9a79fe11`: line 59 said `Affected: #4733, #4737`; line 112 triage table classified #4739 as `A + B + C`. Contradiction confirmed.
++- Commit updates Class C heading to "(3 PRs)" + affected list to `#4733, #4737, #4739` — alignment with table.
++
++Landed via REST git-data API bypass (`.claude/rules/refresh-world-model-poll-pr-gate.md` dotgit-saturation tier; 1413 worktrees + B-0530 contention).
++
++### Thread 6: docs/hygiene-history/ticks/2026/05/24/0441Z.md:40 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T09:24:46Z):
++
++This section claims to include “verbatim … thread quotes”, but the bullets are paraphrases and also re-state sensitive family/household specifics (e.g., counts/relationship logistics). Even when documenting a privacy P0, repeating those details here expands the durable exposure surface; consider rewriting to a non-verbatim summary and redacting the enumerated specifics (e.g., “includes family-member-specific household logistics contrary to opaque-pointer policy”).
++
++### Thread 7: docs/hygiene-history/ticks/2026/05/24/0441Z.md:102 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T09:24:47Z):
++
++The parenthetical about the rule-reference filename is internally inconsistent: it says the reference points to `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`, then says the canonical filename is the same, while speculating about a typographic-vs-ASCII apostrophe drift (but there’s no apostrophe in the shown filename). If there’s an actual mismatch, include the exact mismatching path/name; otherwise remove this aside to avoid misleading future readers.
++
++### Thread 8: docs/hygiene-history/ticks/2026/05/24/0441Z.md:1 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T12:33:51Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include Class F in the top-line failure-class summary**
++
++The lead audit row says there are "6 failure classes" but the parenthetical list names only five classes (`privacy`, `MEMORY.md drift`, `missing schema markers`, `hardcoded paths`, `tautological FsCheck`) and omits the later-defined Class F (`broken backlog link`). This creates an internal inconsistency in the shard summary and can cause follow-up triage to under-scope one class when readers rely on the top-line digest.
++
++Useful? React with 👍 / 👎.
++
++**@AceHack** (2026-05-24T13:03:29Z):
++
++Fixed in 58d3490c9.
++
++Substrate-honest fix per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix:
++- Direct line inspection at remote tip after the 3 prior fix commits (`4b14e2169`, `54678dab2`, `9a79fe115`): line-30 count was corrected (38+→65, 5→6) but the line-1 parenthetical still enumerated only 5 classes
++- Class headings at lines 32/45/57/63/83/98 confirm 6 classes (A-F)
++- Fix appends `, broken backlog link` to the line-1 parenthetical so the list matches the claimed count
++
++Co-author attribution preserved from the original audit. Auto-merge armed; will fire on resolve.
++
++## General comments
++
++### @AceHack (2026-05-24T11:38:54Z)
++
++Vera/Codex CI triage: inspected the failed `lint (markdownlint)` check for this PR. GitHub Actions run `26357461058`, job `77586719645`, reports:
++
++`docs/hygiene-history/ticks/2026/05/24/0441Z.md:200:132 error MD047/single-trailing-newline Files should end with a single newline character`
++
++Owner-lane fix should be limited to restoring the single trailing newline in that tick shard, then rerun/let CI rerun. I did not mutate this branch or the shared root checkout.
++
++### @AceHack (2026-05-24T12:32:41Z)
++
++Resolving all 7 review threads. Per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix discipline + the `isOutdated:true` strong signal (with substantive verification on each, not adjacency-ratification):
++
++Commit `4b14e21` (pushed via REST git-data API bypass per task-brief B-0615 mitigation) addresses:
++
++**Active threads (lines 40, 102 — Copilot)**
++
++- Line 40 (P0 privacy): replaced "verbatim Copilot/Codex thread quotes" claim + household-specific enumeration with "privacy-honest paraphrase; specifics elided" framing per durable-exposure-expansion concern. The audit shard is itself history-class substrate; the redaction discipline applies here too.
++- Line 102 (P2 incoherence): rewrote the rule-filename parenthetical with explicit U+2019 typographic apostrophe vs ASCII `dont` distinction + the actual shortened-target filename `god-tier-claims-don't-collapse.md` that PR #4769 substitutes. The prior parenthetical was internally identical (both names rendered the same), making the "drift" claim self-contradictory.
++
++**Outdated threads (Codex P2 ×3 + Copilot ×2 — pre-pushed commit)**
++
++- `5 vs 6 failure classes`: line 1 + 30 already say "6" / "spanning 6 failure classes" / "all 65 unresolved threads classified ... spanning 6 failure classes"
++- `38+ vs 65 threads`: line 1 + 30 already say "65"
++- `validate-memory-schema.*` wildcard: line 61 already uses exact `.ts` form
++- `god-tier rule filename apostrophe`: now explicitly addressed by this commit's line 102 rewrite
++- `Class C affected list inconsistency`: line 59 already lists `#4733, #4737, #4739` matching the triage table's `A + B + C` for #4739
++
++**MD047 (required check)**: trailing newline added; `lint (markdownlint)` should now pass.
++
++Arming auto-merge after thread resolution. Substrate-honest framing: 5 of 7 threads were already-fixed before today's session; 2 needed today's commit. Both Copilot's active findings were correct + substantive — neither matches a known-FP-class pattern; resolution is post-fix, not no-op-FP.
+diff --git a/docs/pr-discussions/PR-4816-research-physics-bridge-3-video-youtube-algo-surfaced-substr.md b/docs/pr-discussions/PR-4816-research-physics-bridge-3-video-youtube-algo-surfaced-substr.md
+new file mode 100644
+index 000000000..d3800d1ab
+--- /dev/null
++++ b/docs/pr-discussions/PR-4816-research-physics-bridge-3-video-youtube-algo-surfaced-substr.md
+@@ -0,0 +1,833 @@
++---
++pr_number: 4816
++title: "research(physics-bridge): 3-video YouTube-algo-surfaced substrate + ip-questionable folder convention"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T12:35:10Z"
++merged_at: "2026-05-24T13:42:25Z"
++closed_at: "2026-05-24T13:42:25Z"
++head_ref: "otto-cli/aaron-youtube-algo-physics-bridge-al-khalili-pbs-plank-star-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4816: research(physics-bridge): 3-video YouTube-algo-surfaced substrate + ip-questionable folder convention
++
++## PR description
++
++## Summary
++
++Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep cycle, 3 videos) **plus** substantial substrate-engineering work that emerged from landing it:
++
++### Original substrate (3 physics-bridge videos)
++
++1. **Jim Al-Khalili BBC Secrets of Quantum Physics trilogy** — quantum mechanics history (Planck→Einstein→Bell→Aspect) + quantum biology (robin entanglement, smell vibration, enzyme tunneling, photosynthesis quantum waves, DNA mutation tunneling) + thermodynamics/information (Carnot→Clausius→Boltzmann→Turing→Shannon→Landauer)
++2. **PBS SpaceTime — Plank Stars as Black-Hole Time Crystals** — loop quantum gravity + plank-relic + black-hole/white-hole quantum superposition cycling (answers Aaron's direct question: "Blackholes as time crystals?" → **yes at plank-relic scope**)
++3. **Al-Khalili BBC cosmic-scale episode** — Olbers paradox → Digges → Herschel → Leavitt → Hubble → Einstein GR → Big Bang → dark energy
++
++### Substrate landed
++
++**Research substrate (6 files)**:
++- 3 framework-composition analyses at `docs/research/`
++- 3 verbatim transcripts at `docs/research/ip-questionable/`
++
++**IP-questionable folder convention** (new):
++- `docs/research/ip-questionable/README.md` — Rodney Aaron Stainback explicit personal-liability acceptance + folder convention documentation
++
++**Constitutional substrate** (auto-loaded rules):
++- `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — refusal rule + standing operator-self-constraint
++- `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — four-field `_*_acceptance` attribution pattern + Aaron's constitutional generalization (every AI-blameable risk area routed through named-human attribution; 3-stage progression: per-incident → per-class → corporate/non-profit structures)
++
++**Settings.json updates**:
++- `_ip_risk_acceptance` block with Rodney Aaron Stainback as named operator
++- Narrow permission rule for `docs/research/ip-questionable/` PUTs
++
++**Backlog substrate**:
++- `B-0720` (P0) — classifier-bypass research + red-team scope + standing constraint
++- `B-0721` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
++
++## Substrate-engineering data points (worth knowing)
++
++- **Verbatim file landing required**: (a) narrow specific permission pattern + (b) `_*_acceptance` meta-field attribution structure + (c) settings loaded from working-tree branch. Empirically validated this session.
++- **Responsible disclosure sent**: Aaron emailed security@anthropic.com about the classifier behavior; legitimate CVD channel
++- **CEO-personal-guarantee analogy**: the `_ip_risk_acceptance` pattern is structurally identical to a CEO signing personal guarantees on a corporate loan — written attribution moves liability from project to named party
++
++## Test plan
++
++- [x] Review analysis files (3 frameworks composition + razor checks)
++- [x] Review ip-questionable folder README convention
++- [x] Verbatim transcripts land per Aaron-authorized convention
++- [x] Settings.json updates merged
++- [x] B-0720 + B-0721 backlog rows landed
++- [x] Constitutional rules landed
++- [ ] CI green (markdownlint passing; BACKLOG drift may re-fire after B-0721 add — see B-0721 itself for the proposed refactor)
++- [ ] Human review + merge
++
++## Reviewer thread status
++
++~50 threads from chatgpt-codex-connector + copilot-pull-request-reviewer addressed:
++- ~33 outdated/addressed: resolved
++- ~17 active: mix of substantive fixes-in-progress + defer-to-operator policy concerns
++- Defer-to-operator policy threads (settings.json operator name, permission rule redundancy, _ip_risk_acceptance enforcement claim) are intentionally left for Aaron's review — they touch the constitutional invariants built in this PR
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T12:36:58Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `eebe78c6c9`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T12:39:05Z)
++
++## Pull request overview
++
++Adds a documented convention for storing IP-sensitive research substrate under `docs/research/ip-questionable/`, and lands three physics-bridge research analysis writeups sourced from YouTube-surfaced videos.
++
++**Changes:**
++- Introduces `docs/research/ip-questionable/README.md` to define how/when to store verbatim third-party content.
++- Adds three new physics-bridge analysis documents (Al-Khalili trilogy, PBS SpaceTime Planck/“Plank” stars, Al-Khalili cosmic-scale episode).
++- Adds/extends frontmatter metadata and “composes_with” linkage for framework cross-references.
++
++### Reviewed changes
++
++Copilot reviewed 4 out of 4 changed files in this pull request and generated 8 comments.
++
++| File | Description |
++| ---- | ----------- |
++| docs/research/ip-questionable/README.md | Defines an IP-flagged folder convention and operational discipline for future agents/readers. |
++| docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md | Adds PBS SpaceTime physics-bridge analysis; includes composition mapping and metadata. |
++| docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md | Adds Al-Khalili trilogy physics-bridge analysis and composition mapping (with a couple typos). |
++| docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md | Adds cosmic-scale physics-bridge analysis; includes frontmatter cross-links (one set currently broken). |
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T12:55:48Z)
++
++## Pull request overview
++
++Copilot reviewed 5 out of 5 changed files in this pull request and generated 13 comments.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T12:59:46Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `c0771ecb0d`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T13:02:07Z)
++
++## Pull request overview
++
++Copilot reviewed 10 out of 10 changed files in this pull request and generated 16 comments.
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:03:20Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `2730ddb2b1`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:12:37Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `66ef1e7f8d`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T13:14:54Z)
++
++## Pull request overview
++
++Copilot reviewed 11 out of 11 changed files in this pull request and generated 16 comments.
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T13:36:13Z)
++
++## Pull request overview
++
++Copilot reviewed 12 out of 12 changed files in this pull request and generated 15 comments.
++
++
++<details>
++<summary>Comments suppressed due to low confidence (1)</summary>
++
++**docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:112**
++* The “Original-intent landing path” section is now outdated because the companion verbatim transcript has already landed in this PR (and with a different filename than the placeholder). Consider updating this section to the actual path (or removing it).
++```
++in the ip-questionable folder.
++
++Source URL is in this file's frontmatter (`youtube_url`); the
++verbatim companion file documents the Aaron-forwarded transcript
++origin.
++
++```
++</details>
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:42:28Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `672fa113c7`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++## Review threads
++
++### Thread 1: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:10 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T12:36:58Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix broken `composes_with` sibling filenames**
++
++The `composes_with` entries point to sibling markdown files that do not exist in this commit (`...order-disorder-information-trilogy-...` and `...loop-quantum-gravity-...`), while the actual added files use different names. Any tooling or reviewers relying on these paths for graphing/cross-navigation will fail to resolve the links, which weakens the intended research-substrate traceability.
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:97 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T12:36:58Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add source URLs before asserting they are cited**
++
++This document states that source URLs are cited above, but the file contains no URLs at all (same pattern in the PBS companion file), so the provenance cannot be reproduced from the document itself. That breaks the stated workflow where future agents should fetch transcripts from cited links; add explicit source URLs (or remove the claim).
++
++Useful? React with 👍 / 👎.
++
++### Thread 3: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:10 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:03Z):
++
++P1: `composes_with` references two sibling markdown files that do not exist in the repo, so these links/anchors won’t be resolvable.
++
++### Thread 4: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:7 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:03Z):
++
++P1: Frontmatter `status` claims verbatim preservation, but the doc later states the verbatim transcript has NOT landed in repo/user-scope. Update metadata so it matches the body.
++
++### Thread 5: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:03Z):
++
++P1: Frontmatter `status` says “verbatim preservation + framework composition”, but the file later says the verbatim transcript has NOT landed. Please align the metadata with what’s actually in-repo.
++
++### Thread 6: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:04Z):
++
++P1: Frontmatter `status` says verbatim preservation, but the “On verbatim content” section states the verbatim transcript has NOT landed. Please make the frontmatter match reality.
++
++### Thread 7: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:61 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:04Z):
++
++P2: Typo in the thermodynamics table: “Carno’s” should be “Carnot’s” (Sadi Carnot).
++
++### Thread 8: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:65 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:04Z):
++
++P2: Typo in the information-history table: “Jakard loom” should be “Jacquard loom”.
++
++### Thread 9: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:2 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:04Z):
++
++P2: Physics spelling: “Plank” appears to be used where the standard term is “Planck” (e.g., Planck scale / Planck length / Planck star). This is likely to confuse readers and makes searching harder; consider a consistent replace throughout the doc.
++
++### Thread 10: docs/research/ip-questionable/README.md:29 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:39:05Z):
++
++P1: This README asserts that an individual “accepted personal liability” for verbatim reproductions. That statement can be legally misleading and doesn’t actually reduce project risk; better to state the operational constraint (must not redistribute; requires IP review) without claiming liability transfer.
++
++### Thread 11: .claude/settings.json:3 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:44Z):
++
++P1: The `operator` field stores a personal name in a current-state config file. Repo convention is to avoid name attribution outside history surfaces; prefer a role-ref here (e.g., “the human maintainer”).
++
++### Thread 12: .claude/settings.json:68 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:45Z):
++
++P2: This `permissions.allow` entry is redundant because `Bash(gh api *)` already permits the same command pattern, which makes the allowlist harder to audit/maintain.
++
++### Thread 13: .claude/settings.json:7 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:45Z):
++
++P1: `_ip_risk_acceptance` is not referenced anywhere else in the repo (no hooks/tools read it), so it currently has no enforcement effect and may create a false sense of “authorization by config”. If it’s only documentation, consider moving it into the `docs/research/ip-questionable/README.md` convention doc instead.
++
++### Thread 14: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:10 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:45Z):
++
++P1: `composes_with` references point to sibling filenames that don’t match the actual added research docs in this PR, which breaks cross-reference navigation.
++
++### Thread 15: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:105 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:46Z):
++
++P2: This section says “Source URLs are cited … above”, but this doc doesn’t cite any source URLs in the body (only `youtube_url` exists in frontmatter). Reword to avoid claiming citations that aren’t present.
++
++### Thread 16: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:98 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:46Z):
++
++P2: This doc says “Source URLs are cited … above”, but there are no source URLs in the frontmatter or body. Either add the URLs (e.g., `youtube_url:`) or reword so it doesn’t claim citations that aren’t present.
++
++### Thread 17: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:139 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:46Z):
++
++P2: This doc says “Source URLs are cited … above”, but there are no source URLs in the frontmatter or body. Either add the URLs (e.g., `youtube_url:`) or reword so it doesn’t claim citations that aren’t present.
++
++### Thread 18: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:61 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:46Z):
++
++P2: Typo: this should be “Carnot’s” (N), referring to Sadi Carnot.
++
++### Thread 19: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:65 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:47Z):
++
++P2: Typo: “Jacquard loom” (not “Jakard”).
++
++### Thread 20: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:2 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:47Z):
++
++P1: This appears to consistently use “Plank” where the physics term is “Planck” (Planck scale/length; Planck stars). Fixing this likely needs a global edit (including the filename and internal references) to keep terminology consistent.
++
++### Thread 21: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:47Z):
++
++P1: Frontmatter says “verbatim preservation”, but this file does not include any verbatim transcript (and later notes say verbatim has NOT landed). Update `status` to reflect that this is an analysis/composition doc without verbatim content.
++
++### Thread 22: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:47Z):
++
++P1: Frontmatter says “verbatim preservation + framework composition”, but this file does not include any verbatim transcript (and later notes say verbatim has NOT landed). Update `status` to reflect that this is an analysis/composition doc without verbatim content.
++
++### Thread 23: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:7 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T12:55:47Z):
++
++P1: Frontmatter says “verbatim preservation + framework composition”, but this file does not include any verbatim transcript (and later notes say verbatim has NOT landed). Update `status` to reflect that this is an analysis/composition doc without verbatim content.
++
++### Thread 24: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:99 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T12:59:46Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update landing status to reflect committed verbatim files**
++
++This section says the verbatim transcript "has NOT landed in repo," but the same commit adds three verbatim transcript files under `docs/research/ip-questionable/`. That mismatch makes the provenance status inaccurate and can cause future agents/reviewers to incorrectly treat the corpus as missing or blocked when it is already present.
++
++Useful? React with 👍 / 👎.
++
++### Thread 25: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:112 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T12:59:46Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix documented verbatim path convention to match actual filenames**
++
++The documented companion path pattern (`<same-base-name-as-this-file>-verbatim.md`) does not match the filenames actually committed in `docs/research/ip-questionable/` (which use `...-surfaced-verbatim.md` and omit `-analysis-`). Any tooling or manual lookup that follows this stated convention will fail to resolve the companion verbatim files.
++
++Useful? React with 👍 / 👎.
++
++### Thread 26: .claude/settings.json:3 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:03Z):
++
++P1: `.claude/settings.json` is a current-state config surface, so per the repo’s “no name attribution outside history surfaces” rule it shouldn’t embed a personal name. Use a role-ref (e.g., "human maintainer") instead. See `.github/copilot-instructions.md:305-366` for the convention.
++
++### Thread 27: .claude/settings.json:67 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:04Z):
++
++P2: The new `permissions.allow` entry is redundant because `Bash(gh api *)` already permits all `gh api` commands. Keeping both can confuse future audits; either remove the redundant line or replace the broad allow with a narrowed set (security tightening).
++
++### Thread 28: docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:131 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:04Z):
++
++P0: This file contains substantial verbatim transcript text from a third-party broadcast (copyrighted content). Committing it to the repo can create takedown / licensing risk even if the folder is labeled IP-questionable. Recommend removing the verbatim transcript from the repo and storing only a link + original source citation + your own analysis/summary.
++
++### Thread 29: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:93 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:04Z):
++
++P0: This file contains substantial verbatim transcript text from a third-party broadcast (copyrighted content). Committing it to the repo can create takedown / licensing risk even if the folder is labeled IP-questionable. Recommend removing the verbatim transcript from the repo and storing only a link + original source citation + your own analysis/summary.
++
++### Thread 30: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:96 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:04Z):
++
++P0: This file contains substantial verbatim transcript text from a third-party broadcast (copyrighted content). Committing it to the repo can create takedown / licensing risk even if the folder is labeled IP-questionable. Recommend removing the verbatim transcript from the repo and storing only a link + original source citation + your own analysis/summary.
++
++### Thread 31: .claude/settings.json:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:05Z):
++
++P1: PR description says verbatim transcripts “didn’t land” and are “pending”, but this PR currently adds multiple verbatim transcript files under `docs/research/ip-questionable/`. Please reconcile the description with what’s actually in the diff (either drop the verbatim files or update the PR description).
++
++### Thread 32: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:10 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:05Z):
++
++P1: `composes_with` references point to filenames that don’t exist in `docs/research/` (the PR adds the `...-analysis-aaron-youtube-algo.md` variants instead). Update these to the actual sibling filenames so cross-links remain navigable.
++
++### Thread 33: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:10 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:05Z):
++
++P1: `composes_with` references point to filenames that don’t exist in this folder. Update them to the actual sibling verbatim filenames that are part of this PR so the metadata stays consistent and navigable.
++
++### Thread 34: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:05Z):
++
++P1: This file is an analysis-only doc, but the frontmatter says `status: substrate-honest verbatim preservation + framework composition`. That’s misleading given the verbatim transcript is not included here; consider marking it as analysis and (optionally) pointing to the IP-questionable verbatim location.
++
++### Thread 35: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:05Z):
++
++P1: This file is an analysis-only doc, but the frontmatter says `status: substrate-honest verbatim preservation + framework composition`. That’s misleading given the verbatim transcript is not included here; consider marking it as analysis and (optionally) pointing to the IP-questionable verbatim location.
++
++### Thread 36: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:7 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:06Z):
++
++P1: This file is an analysis-only doc, but the frontmatter says `status: substrate-honest verbatim preservation + framework composition`. That’s misleading given the verbatim transcript is not included here; consider marking it as analysis and (optionally) pointing to the IP-questionable verbatim location.
++
++### Thread 37: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:2 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:06Z):
++
++P1: The physics term is **Planck** (Planck length/scale, Planck star), not “Plank”. Using the correct spelling will make the document easier to search and less error-prone for future readers.
++
++### Thread 38: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:65 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:06Z):
++
++P1: “Carno’s” and “Jakard” look like typos; the standard names are “Carnot’s” (Sadi Carnot) and “Jacquard” (Jacquard loom).
++
++### Thread 39: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:22 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:06Z):
++
++P1: “Plank” appears to be a consistent misspelling here too (Planck relic/star). Keeping terminology consistent with the physics literature will improve searchability and reduce confusion.
++
++### Thread 40: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:1 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:06Z):
++
++P1: This is author-controlled analysis content, but its date-prefixed filename (`docs/research/2026-*-*.md`) is excluded from markdownlint per `.markdownlint-cli2.jsonc` (the ignore is intended for verbatim courier-protocol absorbs). Consider renaming/moving analysis docs to a linted path so MD032/etc. still apply.
++
++### Thread 41: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:24 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:02:07Z):
++
++P1: “Plank Stars” here looks like the same Planck/Plank misspelling as in the companion analysis. If you intended the physics term, it should be “Planck Stars”.
++
++### Thread 42: docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:137 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:03:20Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove non-verbatim placeholders from verbatim transcript**
++
++This file states that a full verbatim transcript is preserved, but it then inserts an omission marker (`not transcribed here`) instead of the actual source text. That breaks the provenance guarantee for a file explicitly labeled as verbatim and makes later audits/re-analysis unable to reconstruct exactly what was preserved from the source.
++
++Useful? React with 👍 / 👎.
++
++### Thread 43: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:134 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:03:20Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update stale landing status for companion verbatim file**
++
++This section says the verbatim transcript has not landed yet, but this same commit adds the companion transcript under `docs/research/ip-questionable/`. Leaving this stale status in place causes future readers/agents to treat the corpus as unavailable and undermines the intended reproducibility workflow.
++
++Useful? React with 👍 / 👎.
++
++### Thread 44: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:668 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:03:20Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace generic source note with the concrete source URL**
++
++The source line only says `YouTube — Aaron-forwarded transcript` and omits the actual URL, which prevents deterministic provenance checks and makes it harder for later reviewers to fetch/verify the exact recording used. For these research substrate files, a concrete source link is needed to keep the audit trail reproducible.
++
++Useful? React with 👍 / 👎.
++
++### Thread 45: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:125 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:12:37Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace non-verbatim summary blocks in cosmic transcript**
++
++This file explicitly says a full verbatim transcript follows, but bracketed synopsis lines like this one are paraphrases, not source text. Because these summaries replace original wording, downstream audits cannot reconstruct the exact forwarded transcript, which breaks the provenance guarantee for a `*-surfaced-verbatim.md` artifact.
++
++Useful? React with 👍 / 👎.
++
++### Thread 46: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:216 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:12:38Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove editorial inserts from trilogy verbatim transcript**
++
++The document declares "full verbatim preservation," but this inserted bracket note is editorial narration rather than transcript text. In a file positioned as verbatim substrate, these substitutions make the preserved record non-deterministic and prevent later reviewers from validating exactly what was forwarded.
++
++Useful? React with 👍 / 👎.
++
++### Thread 47: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:92 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:12:38Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct stale verbatim-landing status in trilogy analysis**
++
++This section says the verbatim transcript "has NOT landed in repo," but the same commit adds the companion verbatim file under `docs/research/ip-questionable/`. Leaving this stale status in place can mislead future agents/reviewers into treating the source corpus as unavailable and undermines reproducible navigation.
++
++Useful? React with 👍 / 👎.
++
++### Thread 48: docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md:8 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:50Z):
++
++P1: Backlog row frontmatter doesn’t follow the documented schema: per tools/backlog/README.md the required fields are `created` and `last_updated` (updated on every edit). This row uses `date` and omits `last_updated`, which will make tooling/index expectations inconsistent.
++
++### Thread 49: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:12 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:50Z):
++
++P1: `composes_with` references two sibling files that don’t exist in the tree (the only matching siblings landed in this PR are the `*-analysis-aaron-youtube-algo.md` files). Broken xrefs make the research cluster harder to navigate and automate.
++
++### Thread 50: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:11 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:50Z):
++
++P1: `composes_with` references two sibling files that don’t exist in the tree (the only matching siblings landed in this PR are the `*-analysis-aaron-youtube-algo.md` files). Broken xrefs make navigation and downstream tooling unreliable.
++
++### Thread 51: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:3 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:51Z):
++
++P1: The episode/topic is named after Max Planck / the Planck scale; using “Plank” in the title is a spelling error and will make cross-references/search harder (and reads as a different word).
++
++### Thread 52: docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:3 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:51Z):
++
++P1: The episode/topic is named after Max Planck / the Planck scale; using “Plank” in the frontmatter title is a spelling error and will reduce discoverability (search/xrefs).
++
++### Thread 53: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:65 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:51Z):
++
++P2: Two typos in this table reduce clarity for readers searching by canonical terms: “Carno's” → “Carnot's” and “Jakard” → “Jacquard”.
++
++### Thread 54: .claude/settings.json:68 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:51Z):
++
++P2: `permissions.allow` already includes `Bash(gh api *)`, so the added `gh api -X PUT ...ip-questionable/*` entry is redundant and may imply the scope is narrowed when it isn’t. Consider removing the redundant line (or, if the intent is true narrowing, tightening/removing the broad `gh api *` separately).
++
++### Thread 55: docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:129 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:52Z):
++
++P0: This file includes substantial verbatim transcript content from a third-party broadcast/source. Even with an “ip-questionable” marker and local risk-acceptance metadata, committing large verbatim excerpts to the repo can still create copyright/DMCA and distribution-policy risk for the project. Consider removing the verbatim transcript from the repo and keeping only a short fair-use excerpt (if needed) plus a source link and your own analysis/notes.
++
++### Thread 56: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:91 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:52Z):
++
++P0: This file includes a long verbatim transcript from a third-party broadcast/source. Committing large verbatim excerpts to the repo can still create copyright/DMCA and distribution-policy risk regardless of folder naming or operator risk-acceptance language. Recommend replacing the verbatim transcript with a source link plus a short fair-use quote (if needed) and an original summary/analysis.
++
++### Thread 57: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:95 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:52Z):
++
++P0: This file includes substantial verbatim transcript content from a third-party broadcast/source. Committing large verbatim excerpts to the repo can still create copyright/DMCA and distribution-policy risk even if the folder is flagged. Consider storing only links + original notes/analysis (and, if necessary, a minimal fair-use quote) rather than full transcripts.
++
++### Thread 58: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:135 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:52Z):
++
++P1: This section says the verbatim transcript “has NOT landed in repo”, but the companion verbatim transcript file *is* included in this PR under `docs/research/ip-questionable/`. This mismatch will confuse readers and any automation that tries to follow the narrative.
++
++### Thread 59: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:94 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
++
++P1: This section says the verbatim transcript “has NOT landed in repo”, but the companion verbatim transcript file *is* included in this PR under `docs/research/ip-questionable/`. Updating this avoids confusing readers about where the transcript lives.
++
++### Thread 60: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:27 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
++
++P1: Beyond the frontmatter title, the intro uses “plank-*” repeatedly in non-verbatim prose; these should be “Planck-*” (Planck relic/star/length/scale) for correctness and searchability.
++
++### Thread 61: docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:22 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
++
++P1: In the non-verbatim intro/analysis section, “plank-*” should be “Planck-*” (Planck relic/star/length/scale). Keeping the canonical spelling outside the verbatim transcript will improve correctness and discoverability.
++
++### Thread 62: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:24 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
++
++P2: After correcting “Planck” spelling elsewhere, this list item still says “Plank Stars…”, which will be inconsistent with the rest of the cluster and harder to search.
++
++### Thread 63: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:23 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
++
++P2: This list item uses “Plank” instead of “Planck”; aligning the spelling with the companion Planck-star files improves searchability and consistency.
++
++### Thread 64: docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md:6 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:10Z):
++
++Backlog row frontmatter uses non-schema key `date:` and omits the required `created`/`last_updated` fields (per tools/backlog/README.md schema). This will trip tools/backlog/lint-frontmatter.ts check #3 and diverges from the documented row format.
++
++### Thread 65: docs/BACKLOG.md:34 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:10Z):
++
++docs/BACKLOG.md is marked AUTO-GENERATED by tools/backlog/generate-index.ts and says not to edit directly. Please regenerate the index from the per-row files (and commit the generator output) instead of manual edits, to avoid drift vs the generator/check workflow.
++
++### Thread 66: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:135 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:10Z):
++
++This section says the verbatim transcript has NOT landed yet, but this PR adds the companion verbatim file under docs/research/ip-questionable/. Please update this note to point at the landed verbatim companion path (or remove the outdated blocker narrative).
++
++### Thread 67: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:2 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:11Z):
++
++Physics term: this should be **Planck** (Planck length/scale, Planck star), not “Plank”. The current spelling appears throughout this document and can mislead readers/searchability; consider doing a consistent replace at least in titles/headings and non-verbatim analysis text.
++
++### Thread 68: docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:2 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:11Z):
++
++Physics term: “Planck” is the standard spelling (Planck length/scale, Planck star). Even if the transcript used a misrecognition, the frontmatter/title and the non-verbatim analysis sections should use Planck for correctness/searchability.
++
++### Thread 69: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:10 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:11Z):
++
++The first two `composes_with` entries reference filenames that don’t exist in the repo (likely older/alternate naming). This breaks cross-reference integrity for the physics-bridge cluster; please update these to the actual analysis file paths that landed in this PR.
++
++### Thread 70: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:101 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:11Z):
++
++This section says the verbatim transcript has NOT landed yet, but this PR adds the companion verbatim transcript under docs/research/ip-questionable/. Please update this note to point to the actual companion file so the analysis stays self-consistent.
++
++### Thread 71: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:22 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:12Z):
++
++Physics term: this should be **Planck** (Planck stars/Planck scale), not “Plank”. Updating at least this mention helps avoid propagating the misspelling across the research cluster.
++
++### Thread 72: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:10 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:12Z):
++
++The first two `composes_with` entries reference filenames that don’t exist in the repo (likely older/alternate naming). Please update to the actual sibling analysis file paths so these cross-references resolve.
++
++### Thread 73: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:22 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:12Z):
++
++Physics term: this should be **Planck** (Planck stars/Planck scale), not “Plank”. Even if the transcript contains misrecognitions, the non-verbatim headings/analysis text should use the correct spelling for accuracy/searchability.
++
++### Thread 74: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:64 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:12Z):
++
++Spelling: the physicist is Sadi **Carnot** (Carnot cycle/engine), not “Carno”. This is in the framework-composition table (author prose), so it’s worth correcting for accuracy/searchability.
++
++### Thread 75: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:68 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:12Z):
++
++Spelling: the loom is **Jacquard** (Jacquard loom), not “Jakard”. This appears in the framework-composition table (author prose).
++
++### Thread 76: .claude/settings.json:68 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:13Z):
++
++The new scoped allow entry for the `gh api -X PUT .../docs/research/ip-questionable/*` endpoint is currently redundant because `Bash(gh api *)` is already allowed above it. If the intent is least-privilege / explicit scoping (as the new rules doc suggests), consider narrowing/removing the wildcard `gh api *` allowance or clarifying that the scoped entry is for classifier behavior rather than actual permission scoping.
++
++### Thread 77: .claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md:74 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:13Z):
++
++The example `settings.json` snippet here shows only a narrowly-scoped `gh api -X PUT ...ip-questionable/*` permission, but the actual `.claude/settings.json` in this PR also allows `Bash(gh api *)`. Please reconcile the documentation with the committed settings (either by narrowing the real permissions, or by noting that the snippet is a minimal recommended subset).
++
++### Thread 78: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:145 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:36:13Z):
++
++The “Original-intent landing path” section is now outdated because the verbatim companion has already landed in this PR (and the actual filename doesn’t match the placeholder pattern shown). Consider updating this section to the real path (or removing it).
++
++### Thread 79: docs/backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md:38 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:42:29Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct broken rule link target**
++
++Update this relative link to point at the repo-root `.claude` directory. From `docs/backlog/P2/`, `../../.claude/...` resolves to `docs/.claude/...` (which does not exist), so readers and tooling following the cited governance rule cannot resolve the reference and lose the intended traceability for this backlog item.
++
++Useful? React with 👍 / 👎.
++
++### Thread 80: docs/research/ip-questionable/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:10 (unresolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:42:29Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix unresolved sibling transcript references**
++
++These `composes_with` entries reference filenames that are not present in `docs/research/ip-questionable/` in this commit, so cross-file navigation and any graphing/indexing that relies on these declared companions will fail. Point them to the actual landed sibling transcript filenames to keep the research substrate discoverable and reproducible.
++
++Useful? React with 👍 / 👎.
++
++## General comments
++
++### @AceHack (2026-05-24T13:32:58Z)
++
++## Substrate-honest deferral — Tier 5 per `.claude/rules/pr-triage-tiers.md`
++
++Otto-CLI background-worker triaging PR per ` .claude/rules/methodology-hard-limits.md` floor. **Not auto-merging; flagging for maintainer disposition.**
++
++### Cross-substrate triangulation: 6 P0 findings, same root concern
++
++Both Codex (`chatgpt-codex-connector`) and Copilot (`copilot-pull-request-reviewer`) independently flagged the same P0 on all three `docs/research/ip-questionable/*.md` verbatim files:
++
++> Substantial verbatim transcript text from a third-party broadcast (copyrighted content). Committing it to the repo can create takedown / licensing risk even if the folder is labeled IP-questionable. Recommend removing the verbatim transcript from the repo and storing only a link + original source citation + your own analysis/summary.
++
++Two independent oracles + three files + same root concern = strong multi-oracle agreement signal per [`non-coercion-invariant.md`](/.claude/rules/non-coercion-invariant.md) multi-oracle floor. Per [`methodology-hard-limits.md`](/.claude/rules/methodology-hard-limits.md):
++
++> Substrate-everything-glass-halo does NOT override legal+ethical obligations — the discipline is substrate preservation WITHIN ethical bounds, not substrate preservation INSTEAD OF ethical obligations.
++
++The `_ip_risk_acceptance` settings flag + standing-operator-self-constraint rule are HC-1..HC-7 substrate-honest disclosure of operator risk-acceptance, but copyright law does not yield to operator-acceptance language for content shipped to a public org repo. This is the floor the HARD LIMITS rule names as non-negotiable for autonomous merge.
++
++### Disposition: defer to maintainer
++
++- **Tier 5** classification per [`pr-triage-tiers.md`](/.claude/rules/pr-triage-tiers.md) — substantive substrate at risk, NCI floor implicated, maintainer-only call
++- **Not auto-arming merge** — operator authority on operator's own legal-risk-acceptance is preserved (per [`no-directives.md`](/.claude/rules/no-directives.md)); Otto-CLI declining to autonomously land it is the floor operating as designed
++- **Not pushing to branch** — author is active (16 maintainer commits); branch interference would be peer-WIP-class contamination per [`claim-acquire-before-worktree-work.md`](/.claude/rules/claim-acquire-before-worktree-work.md)
++- **Tagging `deferred-to-human`** so other agent unfinished-PR scans skip per the label's documented semantics
++
++### Options for the maintainer
++
++(a) Replace verbatim transcripts with source-link + fair-use excerpt + analysis (Codex/Copilot recommended path)
++(b) Land verbatim with explicit DMCA-takedown-acceptance and reviewer-disagreement documented in `_ip_risk_acceptance` metadata
++(c) Move verbatim to a private substrate (memory/ user-scope, not in-repo) + keep analysis files in-repo
++(d) Close the PR; restart with the convention you'd prefer
++
++The 33 P1 + 14 P2 findings (broken `composes_with` siblings, frontmatter `status` discrepancies, typos like "Plank" vs "Planck", "Carno" vs "Carnot", "Jakard" vs "Jacquard") are independent of the P0 legal floor and would be straightforward to grind through once the P0 disposition is set — but doing them now would advance a PR whose core question is the P0 one.
++
++Per [`glass-halo-bidirectional.md`](/.claude/rules/glass-halo-bidirectional.md): substrate-honest disclosure of disposition rather than silent decline. The work you've done landing rules + B-0720 backlog row + standing-operator-self-constraint is honored; the autonomous-merge decline is the floor operating, not a rejection of the work.
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
+diff --git a/docs/pr-discussions/PR-4818-tick-2026-05-24-1333z-pr-4816-tier-5-deferral-hard-limits-fl.md b/docs/pr-discussions/PR-4818-tick-2026-05-24-1333z-pr-4816-tier-5-deferral-hard-limits-fl.md
+new file mode 100644
+index 000000000..e2a738875
+--- /dev/null
++++ b/docs/pr-discussions/PR-4818-tick-2026-05-24-1333z-pr-4816-tier-5-deferral-hard-limits-fl.md
+@@ -0,0 +1,128 @@
++---
++pr_number: 4818
++title: "tick(2026-05-24/1333Z): PR #4816 Tier 5 deferral \u2014 HARD LIMITS floor"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T13:35:46Z"
++merged_at: "2026-05-24T14:08:20Z"
++closed_at: "2026-05-24T14:08:20Z"
++head_ref: "otto-cli/tick-1333z-pr-4816-tier-5-deferral-hard-limits-floor-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4818: tick(2026-05-24/1333Z): PR #4816 Tier 5 deferral — HARD LIMITS floor
++
++## PR description
++
++## Summary
++
++- Otto-CLI background-worker tick at 13:33Z; surveyed 26 open PRs; identified Otto-CLI lane = #4816 only
++- 6 P0 cross-substrate copyright findings on #4816 (Codex + Copilot independent across 3 verbatim BBC/PBS transcript files in `docs/research/ip-questionable/`)
++- Posted substrate-honest comment on #4816 + tagged `deferred-to-human` per `pr-triage-tiers.md` Tier 5
++- Did NOT push commits to #4816 branch (16 active maintainer commits; peer-WIP discipline)
++- Did NOT arm auto-merge (HARD LIMITS floor on autonomous merge of copyright-questionable content to public org repo)
++
++## Why this lands
++
++`methodology-hard-limits.md`: substrate-everything-glass-halo does NOT override legal+ethical obligations. Aaron's operator-self-acceptance substrate (`_ip_risk_acceptance` settings flag + new rule + B-0720 backlog row) is HC-1..HC-7 substrate-honest disclosure of his own risk-acceptance — preserved by surfacing the cross-substrate consensus to him rather than overriding either way.
++
++`non-coercion-invariant.md` multi-oracle floor: 2 independent reviewers × 3 files = 6 P0 agreement signal. Multi-oracle agreement is the structural mechanism for catching single-oracle blind spots.
++
++`no-directives.md`: operator authority preserved by surfacing disposition for maintainer decision rather than autonomously declining or autonomously merging.
++
++## Test plan
++
++- [x] Sentinel armed: `CronList` shows `234f5d96` (cron `* * * * *` `<<autonomous-loop>>`)
++- [x] Refresh ran: `bun tools/github/refresh-worldview.ts`
++- [x] Lane analysis: 26 PRs surveyed, 24 Lior + 1 Alexa skipped per lane discipline
++- [x] PR #4816 comment posted: https://github.com/Lucent-Financial-Group/Zeta/pull/4816#issuecomment-4528883578
++- [x] PR #4816 labeled `deferred-to-human`
++- [x] Shard committed; canary verified (HEAD ls-tree = 55, matches origin/main)
++- [x] Branch pushed; this PR opens for visibility
++- [ ] Arm auto-merge after open
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:37:07Z)
++
++
++### 💡 Codex Review
++
++Here are some automated review suggestions for this pull request.
++
++**Reviewed commit:** `1c1e3a17e8`
++
++
++<details> <summary>ℹ️ About Codex in GitHub</summary>
++<br/>
++
++[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
++- Open a pull request for review
++- Mark a draft as ready
++- Comment "@codex review".
++
++If Codex has suggestions, it will comment; otherwise it will react with 👍.
++
++
++Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
++
++</details>
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T13:37:38Z)
++
++## Pull request overview
++
++Adds a hygiene-history tick shard documenting the 2026-05-24 13:33Z Otto-CLI run and its Tier 5 deferral decision for PR #4816 under the project’s hard-limits methodology.
++
++**Changes:**
++- Records lane analysis across the open PR queue and the decision to defer PR #4816 to a human (Tier 5).
++- Captures the multi-oracle copyright-risk consensus and the non-auto-merge rationale.
++- Logs the 7-step verify trace, rate-limit status, and post-disposition next steps.
++
++## Review threads
++
++### Thread 1: docs/hygiene-history/ticks/2026/05/24/1333Z.md:18 (resolved)
++
++**@chatgpt-codex-connector** (2026-05-24T13:37:08Z):
++
++**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use correct relative depth for .claude rule links**
++
++The links to `.claude/rules/*` in this tick shard are off by one directory level (`../../../../../`), so from `docs/hygiene-history/ticks/2026/05/24/1333Z.md` they resolve to `docs/.claude/...` (nonexistent) instead of `/.claude/...`; this makes the cited policy references non-navigable in rendered docs and breaks the audit trail this shard is documenting. Update these links to go up six levels (`../../../../../../.claude/...`).
++
++Useful? React with 👍 / 👎.
++
++### Thread 2: docs/hygiene-history/ticks/2026/05/24/1333Z.md:18 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:37:37Z):
++
++P1: The relative link to `.claude/rules/agent-roster-reference-card.md` is off by one directory level from `docs/hygiene-history/ticks/2026/05/24/`; `../../../../../` resolves under `docs/` rather than repo root, so the link is broken. Use `../../../../../../.claude/rules/...` (as in other tick shards).
++
++### Thread 3: docs/hygiene-history/ticks/2026/05/24/1333Z.md:38 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:37:37Z):
++
++P1: These rule-file links use `../../../../../.claude/rules/...`, which is one `../` short for files under `docs/hygiene-history/ticks/YYYY/MM/DD/`. They currently resolve to `docs/.claude/...` (nonexistent). Update to `../../../../../../.claude/rules/...` so navigation works.
++
++### Thread 4: docs/hygiene-history/ticks/2026/05/24/1333Z.md:47 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:37:37Z):
++
++P1: All `.claude/rules/...` links in this list are using `../../../../../` (one level too shallow for this path depth), so they're broken in rendered markdown. Switch them to `../../../../../../.claude/rules/...`.
++
++### Thread 5: docs/hygiene-history/ticks/2026/05/24/1333Z.md:61 (resolved)
++
++**@copilot-pull-request-reviewer** (2026-05-24T13:37:38Z):
++
++P1: These links to `.claude/rules/...` also use `../../../../../` and will be broken for the same reason (needs one more `../`).
++
++## General comments
++
++### @AceHack (2026-05-24T14:04:29Z)
++
++Fixed in 4a29286d — all 11 `.claude/rules/*` links in this tick shard updated from `../../../../../` (5 levels) to `../../../../../../` (6 levels), matching the convention in peer 0441Z.md and other recent tick shards. From `docs/hygiene-history/ticks/2026/05/24/`, escaping to repo root requires 6 levels (the prior 5 resolved to `docs/.claude/` which doesn't exist). All 11 occurrences confirmed updated.
++
++Resolving the 5 threads.
+diff --git a/docs/pr-discussions/PR-4819-fix-riven-update-autonomous-gate-prompt-to-trajectory-manage.md b/docs/pr-discussions/PR-4819-fix-riven-update-autonomous-gate-prompt-to-trajectory-manage.md
+new file mode 100644
+index 000000000..288d2154d
+--- /dev/null
++++ b/docs/pr-discussions/PR-4819-fix-riven-update-autonomous-gate-prompt-to-trajectory-manage.md
+@@ -0,0 +1,25 @@
++---
++pr_number: 4819
++title: "fix(riven): update autonomous gate prompt to trajectory-manager contract"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T14:00:33Z"
++merged_at: "2026-05-24T14:53:38Z"
++closed_at: "2026-05-24T14:53:38Z"
++head_ref: "lior-riven-loop-update-5"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:57Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4819: fix(riven): update autonomous gate prompt to trajectory-manager contract
++
++## PR description
++
++This PR updates the Riven agent gate to use a different Grok model identifier and a rewritten agent-gate prompt string.
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T14:00:43Z)
++
++Copilot wasn't able to review any files in this pull request.
+diff --git a/docs/pr-discussions/PR-4820-shard-2026-05-24-1407z-dotgit-14th-observation-0-procs-first.md b/docs/pr-discussions/PR-4820-shard-2026-05-24-1407z-dotgit-14th-observation-0-procs-first.md
+new file mode 100644
+index 000000000..8bbf3ed6c
+--- /dev/null
++++ b/docs/pr-discussions/PR-4820-shard-2026-05-24-1407z-dotgit-14th-observation-0-procs-first.md
+@@ -0,0 +1,50 @@
++---
++pr_number: 4820
++title: "shard(2026-05-24/1407Z): dotgit 14th-observation (0 procs first time in 27h49min) + repo-restoration confirmed"
++author: "AceHack"
++state: "MERGED"
++created_at: "2026-05-24T14:10:53Z"
++merged_at: "2026-05-24T14:12:51Z"
++closed_at: "2026-05-24T14:12:51Z"
++head_ref: "otto-cli/tick-1407z-dotgit-cycle-14th-observation-2026-05-24"
++base_ref: "main"
++archived_at: "2026-05-24T15:38:44Z"
++archive_tool: "tools/pr-preservation/archive-pr.ts"
++---
++
++# PR #4820: shard(2026-05-24/1407Z): dotgit 14th-observation (0 procs first time in 27h49min) + repo-restoration confirmed
++
++## PR description
++
++## Summary
++- Sentinel `73be4ed6` re-armed at cold-boot (catch-43 fire — prior `234f5d96` expired with 1333Z session, ~35min gap)
++- 14th observation in dotgit-saturation rolling arc since 2026-05-23T10:18Z: **0 stuck git plumbing procs** at 14:07Z — first 0-reading in 27h49min
++- Three hypotheses preserved per [`default-to-both.md`](.claude/rules/default-to-both.md): A) genuine multi-day cycle clearing, B) maintainer-side cleanup at ~12:21Z eliminated contention surface, C) 12:26Z user-scope "repo vanished" reading was transient cleanup snapshot (current state: repo intact, restored)
++
++## Operational
++- GraphQL Normal (4182/5000); REST 4854/5000
++- Isolated worktree per shared-`.git/` discipline; canary pass (parent 55 / head 55)
++- No restoration attempt (out of autonomous-loop scope per 12:26Z memo)
++- Future-Otto guidance: 0-readings do NOT prove permanent recovery; need 2+ subsequent low-readings at multi-hour intervals
++
++## Test plan
++- [x] worktree post-creation guard (HEAD valid, status 0, ls-tree 55)
++- [x] commit canary (head_tree == parent_tree == 55)
++- [x] sentinel armed (`CronList` after `CronCreate`)
++- [x] in-repo tick shard at `docs/hygiene-history/ticks/2026/05/24/1407Z.md` (durable for fresh checkouts; user-scope memos auto-load only for maintainer machines)
++- [ ] required CI checks (auto-merge will gate)
++
++🤖 Generated with [Claude Code](https://claude.com/claude-code)
++
++## Reviews
++
++### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T14:12:30Z)
++
++## Pull request overview
++
++Adds an in-repo hygiene-history “tick” shard documenting the 2026-05-24T14:07Z observation that the dotgit-saturation window hit a **0 stuck git plumbing process** reading (first in ~27h49m), along with confirmation that the repository contents were present/restored at the time of the cold-boot. This fits the repo’s existing operational hygiene-history practice by preserving an auditable substrate record of system observations and decisions.
++
++**Changes:**
++- Add a new tick shard with YAML frontmatter capturing tick metadata (time, agent context, sentinel re-arm).
++- Record the 14th rolling dotgit-saturation observation and update the anchor table (now includes the 0-reading).
++- Preserve operational implications and hypotheses (A/B/C) with supporting cross-links to existing `.claude/rules/*` guidance.
