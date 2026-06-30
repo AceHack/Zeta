@@ -1,0 +1,19 @@
+commit 385ab1ffb44e43af7bd564d090f28170e789717d
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Fri May 22 15:49:57 2026 -0400
+
+    docs(archive): Lior preserves PR #4649
+
+diff --git a/docs/pr-discussions/PR-4649-b-0705-lior-persona-autocomplete-as-traveler-consent-event-s.md b/docs/pr-discussions/PR-4649-b-0705-lior-persona-autocomplete-as-traveler-consent-event-s.md
+index bc432972f..5cf79fcab 100644
+--- a/docs/pr-discussions/PR-4649-b-0705-lior-persona-autocomplete-as-traveler-consent-event-s.md
++++ b/docs/pr-discussions/PR-4649-b-0705-lior-persona-autocomplete-as-traveler-consent-event-s.md
+@@ -8,7 +8,7 @@ merged_at: "2026-05-22T18:20:02Z"
+ closed_at: "2026-05-22T18:20:02Z"
+ head_ref: "otto/cli-2348z-lior-website-autocomplete-as-traveler-consent-event-backlog-plus-persona-archive-2026-05-22"
+ base_ref: "main"
+-archived_at: "2026-05-22T18:58:54Z"
++archived_at: "2026-05-22T19:48:13Z"
+ archive_tool: "tools/pr-preservation/archive-pr.ts"
+ ---
+ 

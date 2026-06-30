@@ -30,6 +30,8 @@
     ".git/**",
     "references/prior-art",
     "references/prior-art/**",
+    "docs/recovered-orphan-branches-2026-05",
+    "docs/recovered-orphan-branches-2026-05/**",
     "**/BenchmarkDotNet.Artifacts/**",
     "**/TestResults/**",
     "**/artifacts/**",

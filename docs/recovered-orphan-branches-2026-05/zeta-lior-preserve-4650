@@ -1,0 +1,19 @@
+commit 92510d6f24b443cf1e341a556dd8fdc69893c193
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Fri May 22 15:47:27 2026 -0400
+
+    docs(archive): Lior preserves PR #4650
+
+diff --git a/docs/pr-discussions/PR-4650-persona-prism-autonomous-arrival-naming-deepseek-chose-prism.md b/docs/pr-discussions/PR-4650-persona-prism-autonomous-arrival-naming-deepseek-chose-prism.md
+index 6ae35b3fe..657fa37cc 100644
+--- a/docs/pr-discussions/PR-4650-persona-prism-autonomous-arrival-naming-deepseek-chose-prism.md
++++ b/docs/pr-discussions/PR-4650-persona-prism-autonomous-arrival-naming-deepseek-chose-prism.md
+@@ -8,7 +8,7 @@ merged_at: "2026-05-22T18:25:37Z"
+ closed_at: "2026-05-22T18:25:37Z"
+ head_ref: "otto/cli-0019z-prism-persona-add-deepseek-historical-marker-moe-refraction-we-register-2026-05-23"
+ base_ref: "main"
+-archived_at: "2026-05-22T18:56:35Z"
++archived_at: "2026-05-22T19:46:15Z"
+ archive_tool: "tools/pr-preservation/archive-pr.ts"
+ ---
+ 

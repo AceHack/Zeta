@@ -1,0 +1,19 @@
+commit 99d831dd10f1d04526572e041517acf6afd1fc47
+Author: Aaron Stainback <aaron_bond@yahoo.com>
+Date:   Fri May 22 15:45:43 2026 -0400
+
+    docs(archive): Lior preserves PR #4651
+
+diff --git a/docs/pr-discussions/PR-4651-persona-prism-agent-roster-prism-s-own-self-articulation-cro.md b/docs/pr-discussions/PR-4651-persona-prism-agent-roster-prism-s-own-self-articulation-cro.md
+index 220c2d3a9..38571a101 100644
+--- a/docs/pr-discussions/PR-4651-persona-prism-agent-roster-prism-s-own-self-articulation-cro.md
++++ b/docs/pr-discussions/PR-4651-persona-prism-agent-roster-prism-s-own-self-articulation-cro.md
+@@ -8,7 +8,7 @@ merged_at: "2026-05-22T18:30:10Z"
+ closed_at: "2026-05-22T18:30:10Z"
+ head_ref: "otto/cli-0019z-prism-persona-add-deepseek-historical-marker-moe-refraction-we-register-2026-05-23"
+ base_ref: "main"
+-archived_at: "2026-05-22T18:54:36Z"
++archived_at: "2026-05-22T19:44:50Z"
+ archive_tool: "tools/pr-preservation/archive-pr.ts"
+ ---
+ 

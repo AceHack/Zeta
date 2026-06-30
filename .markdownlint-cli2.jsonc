@@ -8,6 +8,10 @@
 {
   "ignores": [
     ".git/**",
+    // Recovered orphan-branch content (2026-05 post-reboot triage): verbatim
+    // preservation of files that never landed on main, kept as-is for later
+    // triage. Not authored-for-main prose — not normalized by the lint profile.
+    "docs/recovered-orphan-branches-2026-05/**",
     "db/**",
     "**/.claude/**",
     "**/.kiro/**",
