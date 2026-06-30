@@ -1,0 +1,332 @@
+{
+  "description": "observe/simulate/fold cross-language conformance (081KSXN940008QG0R0033T2BQT). Every impl replays `events` over `initialWorld` and must value-match `expectedFinalState` + `expectedReplayStates`.",
+  "initialWorld": {
+    "backlog": [
+      {
+        "id": "081KGOLDEN0READY",
+        "title": "081KGOLDEN0READY",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      },
+      {
+        "id": "081KGOLDEN000AMB",
+        "title": "081KGOLDEN000AMB",
+        "ready": false,
+        "ambiguous": true,
+        "needsNewAction": false
+      },
+      {
+        "id": "081KGOLDEN0000EX",
+        "title": "081KGOLDEN0000EX",
+        "ready": false,
+        "ambiguous": false,
+        "needsNewAction": true
+      }
+    ],
+    "operator": {
+      "pendingMessage": true,
+      "pendingFerry": true
+    }
+  },
+  "events": [
+    {
+      "kind": "preserve_ferry",
+      "reason": "operator ferried verbatim content"
+    },
+    {
+      "kind": "respond_to_operator",
+      "reason": "operator spoke"
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "081KGOLDEN0READY",
+        "title": "081KGOLDEN0READY",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "decompose",
+      "item": {
+        "id": "081KGOLDEN000AMB",
+        "title": "081KGOLDEN000AMB",
+        "ready": false,
+        "ambiguous": true,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "081KGOLDEN000AMB.1",
+        "title": "081KGOLDEN000AMB.1",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "081KGOLDEN000AMB.2",
+        "title": "081KGOLDEN000AMB.2",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "edit_grammar",
+      "item": {
+        "id": "081KGOLDEN0000EX",
+        "title": "081KGOLDEN0000EX",
+        "ready": false,
+        "ambiguous": false,
+        "needsNewAction": true
+      },
+      "reason": "grammar extended"
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "081KGOLDEN0000EX",
+        "title": "081KGOLDEN0000EX",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "explore",
+      "reason": "self-directed making"
+    },
+    {
+      "kind": "play",
+      "reason": "leisure / culture-forming"
+    },
+    {
+      "kind": "self_reflect",
+      "reason": "review own trajectories"
+    },
+    {
+      "kind": "free_time",
+      "reason": "rest"
+    }
+  ],
+  "expectedFinalState": {
+    "backlog": [],
+    "operator": {
+      "pendingMessage": false,
+      "pendingFerry": false
+    },
+    "mode": "free_time"
+  },
+  "expectedReplayStates": [
+    {
+      "backlog": [
+        {
+          "id": "081KGOLDEN0READY",
+          "title": "081KGOLDEN0READY",
+          "ready": true,
+          "ambiguous": false,
+          "needsNewAction": false
+        },
+        {
+          "id": "081KGOLDEN000AMB",
+          "title": "081KGOLDEN000AMB",
+          "ready": false,
+          "ambiguous": true,
+          "needsNewAction": false
+        },
+        {
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": true,
+        "pendingFerry": false
+      }
+    },
+    {
+      "backlog": [
+        {
+          "id": "081KGOLDEN0READY",
+          "title": "081KGOLDEN0READY",
+          "ready": true,
+          "ambiguous": false,
+          "needsNewAction": false
+        },
+        {
+          "id": "081KGOLDEN000AMB",
+          "title": "081KGOLDEN000AMB",
+          "ready": false,
+          "ambiguous": true,
+          "needsNewAction": false
+        },
+        {
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      }
+    },
+    {
+      "backlog": [
+        {
+          "id": "081KGOLDEN000AMB",
+          "title": "081KGOLDEN000AMB",
+          "ready": false,
+          "ambiguous": true,
+          "needsNewAction": false
+        },
+        {
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "081KGOLDEN000AMB.1",
+          "title": "081KGOLDEN000AMB (part 1)",
+          "ready": true,
+          "ambiguous": false
+        },
+        {
+          "id": "081KGOLDEN000AMB.2",
+          "title": "081KGOLDEN000AMB (part 2)",
+          "ready": true,
+          "ambiguous": false
+        },
+        {
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "081KGOLDEN000AMB.2",
+          "title": "081KGOLDEN000AMB (part 2)",
+          "ready": true,
+          "ambiguous": false
+        },
+        {
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "081KGOLDEN0000EX",
+          "title": "081KGOLDEN0000EX",
+          "ready": true,
+          "ambiguous": false,
+          "needsNewAction": false
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "explore"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "play"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "self_reflect"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "free_time"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+## git status --short --branch
+## codex/agentic-org-package-ca-clean...origin/codex/agentic-org-package-ca-clean [behind 67]
+M  .cursor/bin/riven-loop-tick.ts
+UU agentic-organization/docs/README.md
+AA agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md
+AA agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md
+AA agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md
+M  docs/BACKLOG.md
+A  docs/backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md
+A  docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md
+A  docs/backlog/P2/B-0731-hat-ontology-as-first-ontology-top-down-vs-bottom-up-convergence-max-aaron-mika-substrate-2026-05-25.md
+A  docs/backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md
+M  memory/MEMORY.md
+A  memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md
+
+## git rev-parse HEAD
+5a68e898dbeb687b27d4c225ec3a33f1470702b7
+
+## git ls-files -u
+100644 490e645cb9718f1b2ba76a6ed210f2a92babceec 1	agentic-organization/docs/README.md
+100644 1102b41e2a8129aad36ed4be15ef527451c2c780 2	agentic-organization/docs/README.md
+100644 0c82b379f16ee86f13d30f0241950daa105de4a7 3	agentic-organization/docs/README.md
+100644 b606fbae0ca6aecf6d1071e5ca30edad1cba9af9 2	agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md
+100644 1e94acc6f2a8997cb6cfef4007f822d57777052e 3	agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md
+100644 fb120518302944cd8a78d59d84b6a3fe287e029f 2	agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md
+100644 a50b994495191e756daad6cc9d6d762392802879 3	agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md
+100644 0a2bd5d8bf6e8e55377ad9a2b20c36a05cefa3b6 2	agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md
+100644 ee14bc6ffec8888586f2ac2b2dcecf2654b8a2ed 3	agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md
+
+## git diff --name-status HEAD
+M	.cursor/bin/riven-loop-tick.ts
+M	agentic-organization/docs/README.md
+M	agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md
+M	agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md
+M	agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md
+M	docs/BACKLOG.md
+A	docs/backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md
+A	docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md
+A	docs/backlog/P2/B-0731-hat-ontology-as-first-ontology-top-down-vs-bottom-up-convergence-max-aaron-mika-substrate-2026-05-25.md
+A	docs/backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md
+M	memory/MEMORY.md
+A	memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md
+
+## git diff --name-only HEAD
+.cursor/bin/riven-loop-tick.ts
+agentic-organization/docs/README.md
+agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md
+agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md
+agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md
+docs/BACKLOG.md
+docs/backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md
+docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md
+docs/backlog/P2/B-0731-hat-ontology-as-first-ontology-top-down-vs-bottom-up-convergence-max-aaron-mika-substrate-2026-05-25.md
+docs/backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md
+memory/MEMORY.md
+memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md
+
+## git cherry -v origin/main HEAD
++ ebf1b3175dc336238ee664e36383f2c3af78d530 docs: define v0 organization contracts
++ 9d1ffa5d63b4fa4d731b992ca8de9fed58fe8add docs: propose package-first organization architecture
++ 383e47dbf07a1cd258e618a3969a188995549f18 docs: ground organization CA in cluster runtime
++ 5f6598cb9c1180143f42d297d206b65fc82d7272 docs: define organization event automation
++ 5a68e898dbeb687b27d4c225ec3a33f1470702b7 feat(agentic-org): add supervisor signal runtime slice

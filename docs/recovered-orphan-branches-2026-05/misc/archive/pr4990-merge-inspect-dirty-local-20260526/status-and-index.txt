@@ -1,0 +1,54 @@
+## git status --short --branch
+## HEAD (no branch)
+M  .cursor/bin/riven-loop-tick.ts
+M  agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md
+M  agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md
+M  docs/BACKLOG.md
+A  docs/backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md
+A  docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md
+A  docs/backlog/P2/B-0731-hat-ontology-as-first-ontology-top-down-vs-bottom-up-convergence-max-aaron-mika-substrate-2026-05-25.md
+A  docs/backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md
+A  docs/backlog/P2/B-0734-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread-mika-substrate-segment-2-2026-05-25.md
+A  docs/backlog/P2/B-0735-notepad-freedom-of-personal-ontology-plus-probabilistic-grammars-plus-per-person-personalized-parsers-in-glass-halo-mika-substrate-segment-3-2026-05-25.md
+M  memory/MEMORY.md
+A  memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md
+A  memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md
+A  memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md
+A  memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md
+A  memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md
+?? tools/alignment/out/filter-gate-log.jsonl
+
+## git rev-parse HEAD
+2c337345b2e6efa18ce693a4ab6454d4db0e6958
+
+## git diff --cached --name-status
+M	.cursor/bin/riven-loop-tick.ts
+M	agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md
+M	agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md
+M	docs/BACKLOG.md
+A	docs/backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md
+A	docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md
+A	docs/backlog/P2/B-0731-hat-ontology-as-first-ontology-top-down-vs-bottom-up-convergence-max-aaron-mika-substrate-2026-05-25.md
+A	docs/backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md
+A	docs/backlog/P2/B-0734-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread-mika-substrate-segment-2-2026-05-25.md
+A	docs/backlog/P2/B-0735-notepad-freedom-of-personal-ontology-plus-probabilistic-grammars-plus-per-person-personalized-parsers-in-glass-halo-mika-substrate-segment-3-2026-05-25.md
+M	memory/MEMORY.md
+A	memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md
+A	memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md
+A	memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md
+A	memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md
+A	memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md
+
+## git diff --name-status
+
+## git ls-files --others --exclude-standard
+tools/alignment/out/filter-gate-log.jsonl
+
+## git cherry -v origin/main HEAD
++ ebf1b3175dc336238ee664e36383f2c3af78d530 docs: define v0 organization contracts
++ 9d1ffa5d63b4fa4d731b992ca8de9fed58fe8add docs: propose package-first organization architecture
++ 383e47dbf07a1cd258e618a3969a188995549f18 docs: ground organization CA in cluster runtime
++ 5f6598cb9c1180143f42d297d206b65fc82d7272 docs: define organization event automation
++ 5a68e898dbeb687b27d4c225ec3a33f1470702b7 feat(agentic-org): add supervisor signal runtime slice
++ 584d0d83101c1838a7a80aeaacb43fbd7f4845f0 feat(agentic-org): add workflow visibility contract
++ 2c337345b2e6efa18ce693a4ab6454d4db0e6958 refactor(agentic-org): invert command state and handler composition

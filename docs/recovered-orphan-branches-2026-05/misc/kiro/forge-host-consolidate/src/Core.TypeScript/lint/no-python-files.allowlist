@@ -1,0 +1,34 @@
+# src/Core.TypeScript/lint/no-python-files.allowlist
+#
+# Repo-relative paths to .py files that are legitimately allowed
+# in this repository despite the B-0156 (Aaron 2026-05-01) policy
+# of "any .py" should be ported to TS or excluded.
+#
+# Format: one repo-relative path per line. Lines starting with `#`
+# and blank lines are ignored. Trailing whitespace (incl. CR for
+# Windows checkouts) is trimmed.
+#
+# Per B-0156 Phase 6: this file starts empty. references/prior-art,
+# .venv, node_modules, __pycache__, site-packages, .lake are hard-
+# excluded by the script itself (HARD_EXCLUDE_PREFIXES /
+# HARD_EXCLUDE_SEGMENTS) and do NOT need to be listed here.
+#
+# Add an entry only when a .py file is genuinely required AND has a
+# documented reason. Example:
+#
+#   # tools/setup/common/foo.py — vendored upstream installer; cannot
+#   # be ported without forking upstream. Tracked in B-XXXX.
+#   tools/setup/common/foo.py
+#
+# src/Core.QSharp.ReferenceOracle/generate-qsharp-golden.py — Microsoft QDK exposes
+# the Q# interpreter/dump_operation oracle through the qdk.qsharp Python
+# API; this file is an opt-in generator for committed observable vectors.
+src/Core.QSharp.ReferenceOracle/generate-qsharp-golden.py
+
+# Go & Python 6-Language Cross-Verification Integration
+src/Core.Python/src/zeta/__init__.py
+src/Core.Python/src/zeta/sha256.py
+src/Core.Python/src/zeta/tri_boolean.py
+src/Core.Python/src/zeta/zeta_id.py
+src/Core.Python/tests/test_cross_verify.py
+

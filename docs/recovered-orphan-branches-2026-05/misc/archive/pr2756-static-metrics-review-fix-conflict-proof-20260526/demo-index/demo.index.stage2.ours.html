@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeta Factory Dashboard</title>
+    <meta name="description" content="Zeta Factory Dashboard — Autonomous software factory operations, BFT agent array metrics, and alignment substrate tracking.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lucent-financial-group.github.io/Zeta/demo/index.html">
+    <meta property="og:title" content="Zeta Factory Dashboard">
+    <meta property="og:description" content="Autonomous software factory operations, BFT agent array metrics, and alignment substrate tracking.">
+    <meta property="og:image" content="https://opengraph.githubassets.com/zeta-factory-dashboard/Lucent-Financial-Group/Zeta">
+    <meta property="og:image:alt" content="Zeta Factory Dashboard repository preview">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://lucent-financial-group.github.io/Zeta/demo/index.html">
+    <meta name="twitter:title" content="Zeta Factory Dashboard">
+    <meta name="twitter:description" content="Autonomous software factory operations, BFT agent array metrics, and alignment substrate tracking.">
+    <meta name="twitter:image" content="https://opengraph.githubassets.com/zeta-factory-dashboard/Lucent-Financial-Group/Zeta">
+    <meta name="twitter:image:alt" content="Zeta Factory Dashboard repository preview">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Zeta Factory Dashboard",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "description": "Dashboard for tracking the Zeta autonomous software factory, including agent DORA metrics and PR queues.",
+      "url": "https://lucent-financial-group.github.io/Zeta/demo/index.html",
+      "author": {
+        "@type": "Organization",
+        "name": "Lucent Financial Group"
+      }
+    }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: rgba(20, 20, 25, 0.4);
+            --panel-border: rgba(255, 255, 255, 0.06);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Orbs */
+        .bg-orbs {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        
+        .orb-1 {
+            width: 40vw; height: 40vw;
+            background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, rgba(0,0,0,0) 70%);
+            top: -10%; left: -10%;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 35vw; height: 35vw;
+            background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, rgba(0,0,0,0) 70%);
+            bottom: -5%; right: -5%;
+            animation-delay: -5s;
+        }
+        
+        .orb-3 {
+            width: 30vw; height: 30vw;
+            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 40%; left: 40%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* Layout */
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 3rem 2rem; 
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 1.5rem;
+        }
+
+        .logo-area h1 { 
+            font-size: 3rem; 
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            margin-bottom: 0.25rem; 
+        }
+        
+        .subtitle { 
+            color: var(--text-muted); 
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .status-badge .pulse {
+            width: 8px; height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .refresh-info { 
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+            margin-top: 0.5rem;
+            display: block;
+            text-align: right;
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--panel-border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .nav-tab.active {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: var(--text-main);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Panels (Glassmorphism) */
+        .panel { 
+            background: var(--panel-bg); 
+            border-radius: 20px; 
+            padding: 2rem; 
+            border: 1px solid var(--panel-border); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 { 
+            font-size: 1.4rem; 
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .icon {
+            width: 24px; height: 24px;
+            color: var(--accent-primary);
+        }
+
+        /* Grid Layouts */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .grid-layout { grid-template-columns: 3fr 2fr; }
+            .grid-half { grid-template-columns: 1fr 1fr; }
+        }
+
+        .stat-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 1.5rem; 
+        }
+
+        /* Stats */
+        .stat { 
+            background: rgba(0, 0, 0, 0.2); 
+            padding: 1.5rem; 
+            border-radius: 16px; 
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        
+        .stat:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-value { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        
+        .stat-value.good { background: linear-gradient(to right, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-value.warn { background: linear-gradient(to right, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-value.bad { background: linear-gradient(to right, #f87171, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .stat-label { 
+            font-size: 0.9rem; 
+            color: var(--text-muted); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        /* Lists */
+        ul { list-style: none; }
+        
+        /* Agent/Anchor List */
+        .agent-item, .anchor-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 1rem; 
+            margin-bottom: 0.75rem; 
+            background: rgba(0, 0, 0, 0.2); 
+            border-radius: 12px; 
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .agent-item:hover, .anchor-item:hover {
+            border-color: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateX(4px);
+        }
+
+        .agent-dot { 
+            width: 12px; height: 12px; 
+            border-radius: 50%; 
+            margin-right: 1rem; 
+            flex-shrink: 0; 
+            box-shadow: 0 0 10px currentColor;
+        }
+        .agent-dot.active { color: var(--success); background: var(--success); animation: pulse-dot 2s infinite; }
+        .agent-dot.recent { color: var(--warning); background: var(--warning); }
+        .agent-dot.stale { color: var(--danger); background: var(--danger); opacity: 0.5; box-shadow: none; }
+        .agent-dot.anchor { color: #3b82f6; background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
+        .agent-dot.external { color: #f43f5e; background: #f43f5e; box-shadow: 0 0 8px #f43f5e; }
+        
+        .agent-name, .anchor-name { 
+            font-weight: 600; 
+            font-size: 1.1rem;
+            width: auto;
+            min-width: 100px;
+        }
+        
+        .agent-detail, .anchor-detail { 
+            display: flex;
+            flex-direction: column;
+            margin-left: auto; 
+            text-align: right; 
+        }
+        
+        .agent-harness, .anchor-contribution {
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+        
+        .agent-meta, .anchor-meta {
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+        }
+
+        /* PR & Timeline Lists */
+        .list-item { 
+            padding: 1rem; 
+            margin-bottom: 0.75rem; 
+            background: rgba(0, 0, 0, 0.2); 
+            border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.02);
+            transition: all 0.2s;
+        }
+        
+        .list-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* PR specifics */
+        .pr-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pr-number { 
+            color: var(--accent-secondary); 
+            font-family: monospace; 
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+        
+        .pr-title { 
+            flex: 1; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            font-weight: 500;
+        }
+        
+        .pr-status { 
+            font-size: 0.75rem; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 12px; 
+            flex-shrink: 0; 
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .pr-status.open { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+        .pr-status.merged { background: rgba(139, 92, 246, 0.1); color: var(--accent-primary); border: 1px solid rgba(139,92,246,0.2); }
+
+        /* Timeline specifics */
+        .timeline { 
+            position: relative; 
+            padding-left: 2rem; 
+            max-height: 500px; 
+            overflow-y: auto; 
+            padding-right: 0.5rem;
+        }
+        
+        /* Custom Scrollbar */
+        .timeline::-webkit-scrollbar, .panel-scroll::-webkit-scrollbar { width: 6px; }
+        .timeline::-webkit-scrollbar-track, .panel-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+        .timeline::-webkit-scrollbar-thumb, .panel-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .timeline::-webkit-scrollbar-thumb:hover, .panel-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        .timeline::before { 
+            content: ''; 
+            position: absolute; 
+            left: 7px; 
+            top: 0; 
+            bottom: 0; 
+            width: 2px; 
+            background: linear-gradient(to bottom, var(--accent-primary), rgba(255,255,255,0.05)); 
+        }
+        
+        .timeline-item { position: relative; }
+        
+        .timeline-node {
+            position: absolute; 
+            left: -2rem; 
+            top: 1.5rem; 
+            width: 16px; 
+            height: 16px; 
+            background: var(--bg-color); 
+            border-radius: 50%; 
+            border: 3px solid var(--accent-primary);
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(139,92,246,0.5);
+        }
+
+        .commit-header {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .commit-hash { 
+            font-family: monospace; 
+            color: var(--text-muted); 
+            font-size: 0.85rem; 
+            background: rgba(255,255,255,0.05);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        .commit-author {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .commit-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .commit-message { 
+            font-size: 0.95rem; 
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+
+        .loading-state, .error-state { 
+            text-align: center; 
+            padding: 3rem; 
+            color: var(--text-muted); 
+            font-size: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+        
+        .error-state {
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) { 
+            .container { padding: 1.5rem 1rem; }
+            header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .refresh-info { text-align: left; margin-top: 0; }
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+
+        /* Print Layout */
+        @media print {
+            body { 
+                background: white; 
+                color: black; 
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .bg-orbs, .nav-tabs { display: none; }
+            .tab-content { display: block !important; margin-bottom: 2rem; }
+            .panel { 
+                background: white; 
+                border: 1px solid #ddd; 
+                backdrop-filter: none; 
+                -webkit-backdrop-filter: none;
+                box-shadow: none;
+                break-inside: avoid;
+            }
+            .logo-area h1 { 
+                background: none; 
+                -webkit-text-fill-color: black; 
+                color: black; 
+            }
+            h2, .commit-author, .anchor-name { color: black; }
+            .stat-value { 
+                background: none; 
+                -webkit-text-fill-color: black; 
+                color: black; 
+            }
+            .stat-value.good, .stat-value.warn, .stat-value.bad { 
+                background: none; 
+                -webkit-text-fill-color: black; 
+            }
+            .stat-label, .subtitle, .refresh-info, .agent-meta, .commit-time, .commit-hash, .anchor-meta { color: #555; }
+            .stat, .agent-item, .list-item, .anchor-item { 
+                background: white; 
+                border: 1px solid #ddd; 
+            }
+            .timeline::before { background: #ddd; }
+            .timeline-node { background: white; border-color: #555; box-shadow: none; }
+            .pr-number { background: #f0f0f0; color: black; }
+            .pr-status.open { border-color: #555; color: black; background: transparent; }
+            .pr-status.merged { border-color: #555; color: black; background: transparent; }
+            .commit-message { color: #333; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <h1>Zeta Factory</h1>
+                <p class="subtitle">Autonomous software factory — BFT Array</p>
+            </div>
+            <div class="status-area">
+                <div class="status-badge">
+                    <div class="pulse"></div>
+                    Array Online
+                </div>
+                <span class="refresh-info" id="refresh-info">Connecting to GitHub API...</span>
+            </div>
+        </header>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('factory', this)">Agent Array</div>
+            <div class="nav-tab" onclick="switchTab('anchors', this)">Human Anchors</div>
+            <div class="nav-tab" onclick="switchTab('external', this)">External Reviewers</div>
+        </div>
+
+        <!-- TAB 1: FACTORY -->
+        <div id="tab-factory" class="tab-content active">
+            <div class="panel" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <h2>DORA Metrics (24h)</h2>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat">
+                        <div class="stat-label">PRs Merged</div>
+                        <div class="stat-value" id="merge-velocity">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Avg Lead Time</div>
+                        <div class="stat-value" id="lead-time">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Open PRs</div>
+                        <div class="stat-value" id="open-prs">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Commits (24h)</div>
+                        <div class="stat-value" id="commits-24h">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Active Agents</div>
+                        <div class="stat-value" id="active-agents">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Last Merge</div>
+                        <div class="stat-value" id="last-merge" style="font-size: 1.5rem; margin-top: 1rem;">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-layout">
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h2>Recent Operations</h2>
+                    </div>
+                    <div class="timeline" id="timeline">
+                        <div class="loading-state">Syncing factory operations...</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <h2>Agent Array</h2>
+                        </div>
+                        <ul id="agent-list">
+                            <div class="loading-state">Polling nodes...</div>
+                        </ul>
+                    </div>
+
+                    <div class="panel" style="flex-grow: 1;">
+                        <div class="panel-header">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                            <h2>PR Queue</h2>
+                        </div>
+                        <ul id="pr-list">
+                            <div class="loading-state">Reading backlog...</div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ANCHORS -->
+        <div id="tab-anchors" class="tab-content">
+            <div class="grid-layout grid-half">
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <h2>Computer Science & Systems</h2>
+                    </div>
+                    <ul id="cs-anchors-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <h2>Math, Physics & Philosophy</h2>
+                    </div>
+                    <ul id="math-anchors-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: EXTERNAL REVIEW -->
+        <div id="tab-external" class="tab-content">
+            <div class="grid-layout grid-half">
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                        <h2>Host-Connected (PRs)</h2>
+                    </div>
+                    <p style="color:var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Automated reviews via GitHub API, captured in docs/pr-discussions/</p>
+                    <ul id="host-reviewers-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        <h2>Ferry-Relayed (Research)</h2>
+                    </div>
+                    <p style="color:var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Disconnected models ferried via Aaron into docs/research/</p>
+                    <ul id="ferry-reviewers-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const OWNER = 'Lucent-Financial-Group';
+        const REPO = 'Zeta';
+        const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        const AGENT_MAP = {
+            'Otto': { harness: 'Claude Code', patterns: ['Co-Authored-By: Claude', 'otto'] },
+            'Alexa': { harness: 'Kiro/Qwen', patterns: ['kiro', 'alexa', 'qwen'] },
+            'Lior': { harness: 'Gemini', patterns: ['lior', 'gemini'] },
+            'Vera': { harness: 'GPT', patterns: ['gpt', 'vera'] },
+            'Riven': { harness: 'Grok', patterns: ['riven', 'grok'] },
+            'Shadow': { harness: 'Observer', patterns: ['shadow'] },
+            'Aaron': { harness: 'Human Maintainer', patterns: ['Aaron Stainback', 'AceHack'] }
+        };
+
+        const CS_ANCHORS = [
+            { name: 'Frank McSherry', role: 'DBSP, Z-set algebra', anchor: 'src/Zeta.Core/' },
+            { name: 'Andrey Karpathy', role: 'Software 3.0 / agentic engineering', anchor: 'docs/research/2026-05-02-karpathy-*' },
+            { name: 'Fred Brooks', role: '"No Silver Bullet" (essential complexity)', anchor: '.claude/rules/...greenfield.md' },
+            { name: 'Casey Muratori', role: 'Performance-first systems programming', anchor: 'memory/project_amara_6th_ferry_muratori_*' },
+            { name: 'Satoshi Nakamoto', role: 'Trustless computation / BFT', anchor: 'memory/project_hub_agent_bft_satoshi_*' },
+            { name: 'Leslie Lamport', role: 'TLA+ / formal verification', anchor: 'tools/tlaplus/' },
+            { name: "Aaron's Itron Mentors", role: 'Types, physics, critical infrastructure', anchor: 'memory/user_itron_mentors_*' },
+            { name: 'Dave King & Ron Whitfield', role: 'F# discipline, physics-first eng', anchor: 'memory/user_itron_mentors_*' },
+            { name: 'Aaron Stainback', role: 'Founder, Glass Halo', anchor: 'Everywhere' }
+        ];
+
+        const MATH_ANCHORS = [
+            { name: 'Pierre-Philippe Dechant', role: 'Clifford algebra / E8 root system', anchor: 'docs/research/...clifford-e8-*' },
+            { name: 'William Rowan Hamilton', role: 'Quaternion algebra', anchor: 'docs/research/...clifford-e8-*' },
+            { name: 'William Kingdon Clifford', role: 'Geometric algebra / Rotors', anchor: 'docs/research/...clifford-e8-*' },
+            { name: 'Yoshua Kuramoto', role: 'Firefly synchronization model', anchor: 'docs/research/...clifford-e8-*' },
+            { name: 'Judea Pearl', role: 'Causal inference / do-calculus', anchor: 'memory/reference_formal_methods_*' },
+            { name: 'Rumi', role: 'Retraction-native healing', anchor: 'docs/research/*' },
+            { name: 'Kim Scott', role: 'Radical Candor (harbor+blade voice)', anchor: 'memory/feedback_harbor_blade_*' },
+            { name: 'Diana Pasulka', role: 'Chameleons-as-familiar', anchor: 'memory/feedback_pasulka_*' }
+        ];
+
+        const HOST_REVIEWERS = [
+            { name: 'GitHub Copilot', type: 'Code Completion / PR Review', meta: 'Automated PR influence' },
+            { name: 'Dependabot', type: 'Dependency Tracking', meta: 'Automated upgrades' },
+            { name: 'CodeQL', type: 'Security Scanning', meta: 'Automated vulnerability detection' }
+        ];
+
+        const FERRY_REVIEWERS = [
+            { name: 'Claude.ai (Web)', type: 'Anthropic Frontier Model', meta: 'Relayed via docs/research/' },
+            { name: 'DeepSeek', type: 'Reasoning Model', meta: 'Relayed via docs/research/' },
+            { name: 'Gemini Web', type: 'Google Frontier Model', meta: 'Relayed via docs/research/' },
+            { name: 'ChatGPT Web', type: 'OpenAI Frontier Model', meta: 'Relayed via docs/research/' }
+        ];
+
+        async function apiFetch(url) {
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}`);
+            return resp.json();
+        }
+
+        // XSS-safe HTML escape — PR titles and commit messages are
+        // attacker-controlled via GitHub and may contain `<`, `"`, `&`, etc.
+        function esc(s) {
+            return String(s ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function timeAgo(date) {
+            const mins = Math.floor((Date.now() - new Date(date)) / 60000);
+            if (mins < 1) return 'just now';
+            if (mins < 60) return `${mins}m ago`;
+            const hrs = Math.floor(mins / 60);
+            if (hrs < 24) return `${hrs}h ago`;
+            return `${Math.floor(hrs / 24)}d ago`;
+        }
+
+        function detectAgent(commit) {
+            const msg = commit.commit.message.toLowerCase();
+            const author = commit.commit.author.name.toLowerCase();
+            for (const [name, info] of Object.entries(AGENT_MAP)) {
+                if (info.patterns.some(p => msg.includes(p.toLowerCase()) || author.includes(p.toLowerCase()))) {
+                    return name;
+                }
+            }
+            return commit.commit.author.name.split(' ')[0];
+        }
+
+        function animateValue(id, value) {
+            const el = document.getElementById(id);
+            if (el.textContent !== value.toString()) {
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.textContent = value;
+                    el.style.opacity = '1';
+                }, 200);
+            }
+        }
+
+        function renderStaticLists() {
+            // CS Anchors
+            const csList = document.getElementById('cs-anchors-list');
+            csList.innerHTML = CS_ANCHORS.map((a, i) => `
+                <li class="anchor-item fade-in" style="animation-delay: ${i * 0.05}s">
+                    <div class="agent-dot anchor"></div>
+                    <div class="anchor-name">${a.name}</div>
+                    <div class="anchor-detail">
+                        <span class="anchor-contribution">${a.role}</span>
+                        <span class="anchor-meta">${a.anchor}</span>
+                    </div>
+                </li>
+            `).join('');
+
+            // Math Anchors
+            const mathList = document.getElementById('math-anchors-list');
+            mathList.innerHTML = MATH_ANCHORS.map((a, i) => `
+                <li class="anchor-item fade-in" style="animation-delay: ${i * 0.05}s">
+                    <div class="agent-dot anchor"></div>
+                    <div class="anchor-name">${a.name}</div>
+                    <div class="anchor-detail">
+                        <span class="anchor-contribution">${a.role}</span>
+                        <span class="anchor-meta">${a.anchor}</span>
+                    </div>
+                </li>
+            `).join('');
+
+            // Host Reviewers
+            const hostList = document.getElementById('host-reviewers-list');
+            hostList.innerHTML = HOST_REVIEWERS.map((r, i) => `
+                <li class="anchor-item fade-in" style="animation-delay: ${i * 0.05}s">
+                    <div class="agent-dot external"></div>
+                    <div class="anchor-name">${r.name}</div>
+                    <div class="anchor-detail">
+                        <span class="anchor-contribution">${r.type}</span>
+                        <span class="anchor-meta">${r.meta}</span>
+                    </div>
+                </li>
+            `).join('');
+
+            // Ferry Reviewers
+            const ferryList = document.getElementById('ferry-reviewers-list');
+            ferryList.innerHTML = FERRY_REVIEWERS.map((r, i) => `
+                <li class="anchor-item fade-in" style="animation-delay: ${i * 0.05}s">
+                    <div class="agent-dot external"></div>
+                    <div class="anchor-name">${r.name}</div>
+                    <div class="anchor-detail">
+                        <span class="anchor-contribution">${r.type}</span>
+                        <span class="anchor-meta">${r.meta}</span>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        async function loadFromStaticMetrics() {
+            // Try the static metrics.json first (no rate limit, fast).
+            // Regenerated by `tools/dashboard/generate-metrics.ts`.
+            const resp = await fetch('./metrics.json', { cache: 'no-cache' });
+            if (!resp.ok) throw new Error('metrics.json not available');
+            const data = await resp.json();
+
+            animateValue('merge-velocity', data.metrics.prs_merged_24h);
+            const mergeEl = document.getElementById('merge-velocity');
+            mergeEl.className = `stat-value fade-in ${data.metrics.prs_merged_24h >= 10 ? 'good' : data.metrics.prs_merged_24h >= 3 ? '' : 'warn'}`;
+
+            const avg = data.metrics.avg_lead_time_minutes;
+            animateValue('lead-time', avg === null ? '-' : (avg < 60 ? `${avg}m` : `${(avg / 60).toFixed(1)}h`));
+            animateValue('open-prs', data.metrics.open_prs);
+            animateValue('commits-24h', data.metrics.commits_24h);
+            animateValue('active-agents', data.metrics.active_agents);
+            animateValue('last-merge', data.metrics.last_merge_ago || 'None recently');
+
+            // Agent list — all interpolations escaped (XSS safety)
+            const agentList = document.getElementById('agent-list');
+            agentList.innerHTML = data.agents.map((a, i) => `
+                <li class="agent-item fade-in" style="animation-delay: ${i * 0.05}s">
+                    <div class="agent-dot ${esc(a.status)}"></div>
+                    <div class="agent-name">${esc(a.name)}</div>
+                    <div class="agent-detail">
+                        <span class="agent-harness">${esc(a.harness)}</span>
+                        <span class="agent-meta">${Number(a.commits) || 0} ops · ${esc(a.lastCommitAgo)}</span>
+                    </div>
+                </li>`).join('');
+
+            // PR queue (open + recently merged)
+            const prList = document.getElementById('pr-list');
+            const queue = data.pr_queue || [];
+            if (queue.length === 0) {
+                prList.innerHTML = '<li class="list-item fade-in"><span class="pr-title" style="color:var(--text-muted)">Queue is clear. Plant is resting.</span></li>';
+            } else {
+                prList.innerHTML = queue.slice(0, 11).map((pr, i) => {
+                    const merged = pr.state === 'merged';
+                    const title = esc(pr.title);
+                    return `<li class="list-item pr-item fade-in" style="${merged ? 'opacity:0.6;' : ''}animation-delay: ${i * 0.05}s">
+                        <span class="pr-number">#${Number(pr.number) || 0}</span>
+                        <span class="pr-title" title="${title}"${merged ? ' style="text-decoration:line-through"' : ''}>${title}</span>
+                        <span class="pr-status ${merged ? 'merged' : 'open'}">${merged ? 'Merged' : esc(pr.createdAgo || '')}</span>
+                    </li>`;
+                }).join('');
+            }
+
+            // Timeline (recent commits) — commit messages and agent names
+            // are untrusted; escape everything before interpolating into HTML.
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = (data.recent_commits || []).slice(0, 20).map((c, i) => {
+                const msg = esc(c.message);
+                return `<div class="timeline-item list-item fade-in" style="animation-delay: ${i * 0.05}s">
+                    <div class="timeline-node"></div>
+                    <div class="commit-header">
+                        <span class="commit-author">${esc(c.agent)}</span>
+                        <span class="commit-hash">${esc(c.sha)}</span>
+                        <span class="commit-time">${esc(c.dateAgo)}</span>
+                    </div>
+                    <div class="commit-message" title="${msg}">${msg}</div>
+                </div>`;
+            }).join('');
+
+            const generatedAgo = (() => {
+                const mins = Math.floor((Date.now() - new Date(data.generated)) / 60000);
+                if (mins < 1) return 'just now';
+                if (mins < 60) return `${mins}m ago`;
+                return `${Math.floor(mins / 60)}h ago`;
+            })();
+            const refreshEl = document.getElementById('refresh-info');
+            refreshEl.textContent =
+                `Static metrics · generated ${generatedAgo} · ${new Date().toLocaleTimeString()}`;
+            refreshEl.style.color = ''; // reset danger color from any prior API error
+        }
+
+        async function loadDashboard() {
+            // Prefer static metrics.json (single fetch, no auth, no rate limit).
+            // Uses cache: 'no-cache' to revalidate freshness on each refresh
+            // interval — the file is updated frequently and we want the
+            // newest version each cycle.
+            // Fall back to live GitHub API only if metrics.json is unavailable.
+            try {
+                await loadFromStaticMetrics();
+                return;
+            } catch (staticErr) {
+                console.warn('metrics.json unavailable, falling back to GitHub API:', staticErr.message);
+            }
+
+            try {
+                const [commits, openPRs, closedPRs] = await Promise.all([
+                    apiFetch(`${API}/commits?per_page=100`),
+                    apiFetch(`${API}/pulls?state=open&per_page=50`),
+                    apiFetch(`${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`)
+                ]);
+
+                const now = Date.now();
+                const h24 = 24 * 60 * 60 * 1000;
+                const commits24h = commits.filter(c => (now - new Date(c.commit.author.date)) < h24);
+                const mergedToday = closedPRs.filter(pr => pr.merged_at && (now - new Date(pr.merged_at)) < h24);
+
+                // DORA: lead time
+                let avgLeadTime = '-';
+                if (mergedToday.length > 0) {
+                    const totalMins = mergedToday.reduce((sum, pr) => {
+                        return sum + (new Date(pr.merged_at) - new Date(pr.created_at)) / 60000;
+                    }, 0);
+                    const avg = totalMins / mergedToday.length;
+                    avgLeadTime = avg < 60 ? `${Math.round(avg)}m` : `${(avg / 60).toFixed(1)}h`;
+                }
+
+                // Agent activity
+                const agentActivity = {};
+                for (const c of commits) {
+                    const agent = detectAgent(c);
+                    if (!agentActivity[agent]) {
+                        agentActivity[agent] = { lastCommit: c.commit.author.date, count: 0, harness: AGENT_MAP[agent]?.harness || 'Sub-routine' };
+                    }
+                    agentActivity[agent].count++;
+                }
+
+                // Stats Update
+                const mergeEl = document.getElementById('merge-velocity');
+                animateValue('merge-velocity', mergedToday.length);
+                mergeEl.className = `stat-value fade-in ${mergedToday.length >= 10 ? 'good' : mergedToday.length >= 3 ? '' : 'warn'}`;
+
+                animateValue('lead-time', avgLeadTime);
+                animateValue('open-prs', openPRs.length);
+                animateValue('commits-24h', commits24h.length);
+
+                const activeCount = Object.values(agentActivity).filter(a => (now - new Date(a.lastCommit)) < h24).length;
+                animateValue('active-agents', activeCount);
+
+                const lastMergeText = mergedToday.length > 0 ? timeAgo(mergedToday[0].merged_at) : 'None recently';
+                animateValue('last-merge', lastMergeText);
+
+                // Agent list rendering
+                const agentList = document.getElementById('agent-list');
+                const sortedAgents = Object.entries(agentActivity).sort((a, b) => new Date(b[1].lastCommit) - new Date(a[1].lastCommit));
+                
+                let agentHtml = '';
+                sortedAgents.forEach(([name, info], index) => {
+                    const minsAgo = (now - new Date(info.lastCommit)) / 60000;
+                    const status = minsAgo < 30 ? 'active' : minsAgo < 360 ? 'recent' : 'stale';
+                    agentHtml += `
+                        <li class="agent-item fade-in" style="animation-delay: ${index * 0.05}s">
+                            <div class="agent-dot ${status}"></div>
+                            <div class="agent-name">${name}</div>
+                            <div class="agent-detail">
+                                <span class="agent-harness">${info.harness}</span>
+                                <span class="agent-meta">${info.count} ops · ${timeAgo(info.lastCommit)}</span>
+                            </div>
+                        </li>`;
+                });
+                agentList.innerHTML = agentHtml;
+
+                // PR queue rendering
+                const prList = document.getElementById('pr-list');
+                let prHtml = '';
+                
+                if (openPRs.length === 0) {
+                    prHtml = '<li class="list-item fade-in"><span class="pr-title" style="color:var(--text-muted)">Queue is clear. Array is resting.</span></li>';
+                } else {
+                    openPRs.slice(0, 8).forEach((pr, index) => {
+                        prHtml += `
+                            <li class="list-item pr-item fade-in" style="animation-delay: ${index * 0.05}s">
+                                <span class="pr-number">#${pr.number}</span>
+                                <span class="pr-title" title="${pr.title}">${pr.title}</span>
+                                <span class="pr-status open">${timeAgo(pr.created_at)}</span>
+                            </li>`;
+                    });
+                    if (openPRs.length > 8) {
+                        prHtml += `<li class="list-item"><span class="pr-title" style="color:var(--text-muted); font-size: 0.9rem">+${openPRs.length - 8} more in queue</span></li>`;
+                    }
+                }
+                
+                if (mergedToday.length > 0) {
+                    mergedToday.slice(0, 3).forEach((pr, index) => {
+                        prHtml += `
+                            <li class="list-item pr-item fade-in" style="opacity: 0.6; animation-delay: ${(openPRs.length + index) * 0.05}s">
+                                <span class="pr-number">#${pr.number}</span>
+                                <span class="pr-title" title="${pr.title}" style="text-decoration: line-through">${pr.title}</span>
+                                <span class="pr-status merged">Merged</span>
+                            </li>`;
+                    });
+                }
+                prList.innerHTML = prHtml;
+
+                // Timeline rendering
+                const timeline = document.getElementById('timeline');
+                let timelineHtml = '';
+                commits.slice(0, 20).forEach((c, index) => {
+                    const agent = detectAgent(c);
+                    const msg = c.commit.message.split('\n')[0];
+                    timelineHtml += `
+                        <div class="timeline-item list-item fade-in" style="animation-delay: ${index * 0.05}s">
+                            <div class="timeline-node"></div>
+                            <div class="commit-header">
+                                <span class="commit-author">${agent}</span>
+                                <span class="commit-hash">${c.sha.substring(0, 7)}</span>
+                                <span class="commit-time">${timeAgo(c.commit.author.date)}</span>
+                            </div>
+                            <div class="commit-message" title="${msg}">${msg}</div>
+                        </div>`;
+                });
+                timeline.innerHTML = timelineHtml;
+
+                document.getElementById('refresh-info').textContent = `Sync: ${new Date().toLocaleTimeString()} · Connected`;
+
+            } catch (e) {
+                document.getElementById('refresh-info').textContent = 'Sync Failed';
+                document.getElementById('refresh-info').style.color = 'var(--danger)';
+                document.getElementById('timeline').innerHTML = `<div class="error-state fade-in">
+                    <svg style="width:32px;height:32px;margin:0 auto 1rem;display:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    API Error: ${e.message}<br><br>
+                    <span style="font-size:0.85rem;color:var(--text-muted)">GitHub rate limit is 60 req/hr unauthenticated. The factory will automatically retry.</span>
+                </div>`;
+            }
+        }
+
+        // Render static UI
+        renderStaticLists();
+        
+        // Initial load
+        loadDashboard();
+        
+        // Auto refresh
+        setInterval(loadDashboard, 120000); // 2min refresh
+    </script>
+</body>
+</html>

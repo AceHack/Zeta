@@ -1,0 +1,33 @@
+{
+  "kind": "transition",
+  "id": "01KSVK4B6TDTRV10E2QEF2VWP3",
+  "schema": "move-next-event@1",
+  "ts": "2026-05-30T04:43:57.530Z",
+  "agent": "otto",
+  "cycle": 0,
+  "prev": null,
+  "weight": 1,
+  "from": {
+    "tag": "Idle",
+    "context": {
+      "agent": "otto",
+      "cycle": 0,
+      "sessionStartIso": "2026-05-30T04:43:57.529Z"
+    }
+  },
+  "option": {
+    "tag": "EmitHeartbeat",
+    "lane": "heartbeat",
+    "note": "move-next harness tick"
+  },
+  "to": {
+    "tag": "RecordingHeartbeat",
+    "context": {
+      "agent": "otto",
+      "cycle": 0,
+      "sessionStartIso": "2026-05-30T04:43:57.529Z"
+    },
+    "lane": "heartbeat",
+    "note": "move-next harness tick"
+  }
+}
