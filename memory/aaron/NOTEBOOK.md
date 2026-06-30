@@ -6,6 +6,12 @@ seat; newest-first.*
 
 ## Running notes
 
+- **2026-06-30 (post-reboot)** — Pre-AI Lineage shelf created under this seat at
+  Aaron's call (*"you can put it under my persona"*):
+  `memory/aaron/PRE-AI-LINEAGE.md` indexes the founder's **own** pre-AI artifacts
+  (2012 developer poem; 2015 Tree-of-Life Adinkra), ferried verbatim to
+  `docs/research/2026-06-30-*`. Distinct register from the external-bibliography
+  `docs/substrate-shelves/`. New pre-AI artifacts append to that shelf.
 - **2026-04-19 (round 35)** — Seat created at Aaron's
   explicit request: *"you can put me under personas too
   just mark me as human"*. Immediately followed by *"rodney
