@@ -351,9 +351,16 @@ function classDeferred(): void {
 
 async function classMemoryRefs(bunAvailable: boolean): Promise<void> {
   console.log("## 15. Memory-file deletions (cross-tree drift; broken refs)");
-  const sub = resolve(REPO_ROOT, "tools/hygiene/audit-memory-references.ts");
+  // Migrated from tools/hygiene/ to src/Core.TypeScript/hygiene/ (TS-port);
+  // the old path silently SKIP'd this whole class.
+  const sub = resolve(
+    REPO_ROOT,
+    "src/Core.TypeScript/hygiene/audit-memory-references.ts",
+  );
   if (!existsSync(sub)) {
-    console.log("SKIP: tools/hygiene/audit-memory-references.ts not found");
+    console.log(
+      "SKIP: src/Core.TypeScript/hygiene/audit-memory-references.ts not found",
+    );
     console.log("");
     return;
   }
@@ -362,7 +369,9 @@ async function classMemoryRefs(bunAvailable: boolean): Promise<void> {
     console.log("");
     return;
   }
-  console.log("Delegating to: bun tools/hygiene/audit-memory-references.ts");
+  console.log(
+    "Delegating to: bun src/Core.TypeScript/hygiene/audit-memory-references.ts",
+  );
   const r = await runCmd(["bun", sub]);
   const merged = `${r.stdout}${r.stderr}`;
   const lines = merged.split("\n");

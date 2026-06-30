@@ -317,12 +317,15 @@ async function axisHooks(): Promise<void> {
 
 async function axisHygieneTooling(): Promise<void> {
   console.log(
-    "## 4. Hygiene tooling cadence (tools/hygiene/audit-*.sh + audit-*.ts)",
+    "## 4. Hygiene tooling cadence (src/Core.TypeScript/hygiene/audit-*.ts)",
   );
-  const dir = join(REPO_ROOT, "tools", "hygiene");
+  // The hygiene tools migrated from tools/hygiene/ to src/Core.TypeScript/hygiene/
+  // (the "no more .sh files, TS IS cross-platform DST" port); the old dir is now
+  // empty, so scanning it silently reported Count: 0. Scan the live location.
+  const dir = join(REPO_ROOT, "src", "Core.TypeScript", "hygiene");
   const files = listFiles(
     dir,
-    (n) => /^audit-.*\.(sh|ts)$/.test(n),
+    (n) => /^audit-.*\.ts$/.test(n) && !n.endsWith(".test.ts"),
   );
   console.log(`Count: ${files.length}`);
   for (const tf of files) {
