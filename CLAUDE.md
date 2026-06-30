@@ -14,7 +14,7 @@ Vision: [`docs/VISION.md`](docs/VISION.md).
 ## 2. Refresh
 
 ```bash
-bun tools/github/refresh-worldview.ts
+bun src/Core.TypeScript/forge-host/github/refresh-worldview.ts
 ```
 
 Read active trajectories: `docs/trajectories/*/RESUME.md`.
@@ -57,6 +57,6 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   prior tick window AND no named dependency IS the standing-by failure (the narrative self-counter is
   unreliable; externalize it via `git log --since="2min ago" origin/main`). Every commit carries the
   AgencySignature v1 trailer (10 fields + `Co-authored-by:`); audit via
-  `bun tools/hygiene/audit-agencysignature-main-tip.ts`.
+  `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`.
   Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;
   spec `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.
