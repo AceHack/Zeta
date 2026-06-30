@@ -43,11 +43,14 @@ module RoomRun =
         { Room: Scheduler.BoundaryScheduledRoomState<'K>
           SoftFrame: Chip8Cow.Frame
           BoundaryHeatRows: Scheduler.HeatBoundaryRow list
+          SoftHeatReport: SoftDrive.HeatReport
+          HeatRows: Scheduler.HeatBoundaryRow list
           HeatTranscript: Scheduler.HeatTranscriptSummary }
 
     type UnifiedHorizonRun<'K, 'S when 'K : comparison> =
         { Room: Scheduler.BoundaryScheduledRoomState<'K>
           SoftFrame: Chip8Cow.Frame
+          SoftHeatReport: SoftDrive.HeatReport
           HorizonReport: RoomHorizon.Report<'K, 'S>
           HeatRows: Scheduler.HeatBoundaryRow list
           HeatTranscript: Scheduler.HeatTranscriptSummary }
@@ -96,7 +99,7 @@ module RoomRun =
             | Error feedback -> return Error(UnifiedHeatFeedback.SchedulerFeedback feedback)
             | Ok room ->
                 match
-                    SoftDrive.driveFramesWithHeatSink
+                    SoftDrive.driveFramesWithHeatReport
                         softPlan.SourceName
                         sink
                         softPlan.Value
@@ -106,14 +109,27 @@ module RoomRun =
                         softPlan.Frames
                         softPlan.Start
                 with
-                | Ok frame ->
-                    let rows = Scheduler.boundaryHeatRows room
+                | Ok softRun ->
+                    let boundaryRows = Scheduler.boundaryHeatRows room
+
+                    let softRows =
+                        if List.isEmpty softRun.Heat.HeatSignatures then
+                            []
+                        else
+                            [ Scheduler.heatRowOfSignatures
+                                  room.CompletedTicks
+                                  room.Loop.Room.Name
+                                  softRun.Heat.HeatSignatures ]
+
+                    let rows = boundaryRows @ softRows
 
                     return
                         Ok
                             { Room = room
-                              SoftFrame = frame
-                              BoundaryHeatRows = rows
+                              SoftFrame = softRun.Frame
+                              BoundaryHeatRows = boundaryRows
+                              SoftHeatReport = softRun.Heat
+                              HeatRows = rows
                               HeatTranscript = Scheduler.summarizeHeatRows rows }
 
                 | Error feedback -> return Error(UnifiedHeatFeedback.SoftDriveFeedback(room, feedback))
@@ -146,11 +162,12 @@ module RoomRun =
                             horizonPlan.SourceName
                             report
 
-                    let rows = run.BoundaryHeatRows @ [ horizonRow ]
+                    let rows = run.HeatRows @ [ horizonRow ]
 
                     let horizonRun =
                         { Room = run.Room
                           SoftFrame = run.SoftFrame
+                          SoftHeatReport = run.SoftHeatReport
                           HorizonReport = report
                           HeatRows = rows
                           HeatTranscript = Scheduler.summarizeHeatRows rows }

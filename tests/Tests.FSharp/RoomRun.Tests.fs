@@ -85,6 +85,35 @@ let private softPlan sourceName rom width : RoomRun.SoftDrivePlan =
       Frames = 1
       Start = Chip8Cow.create 1UL |> Chip8Cow.loadRom rom }
 
+let private assertBoundaryAndSoftHeat (sink: RecordingHeatSink) (run: RoomRun.UnifiedHeatRun<string>) =
+    Assert.Equal(1, run.Room.CompletedTicks)
+    Assert.True(Scheduler.boundaryBackpressured run.Room)
+    Assert.Equal<string list>(
+        [ "room-boundary.door-denied" ],
+        run.BoundaryHeatRows |> List.collect _.HeatKinds
+    )
+    Assert.NotEmpty(run.SoftHeatReport.HeatSignatures)
+    Assert.Equal(run.SoftHeatReport.PruneEvents, run.SoftHeatReport.HeatSignatures.Length)
+    Assert.Equal(2, run.HeatTranscript.Rows)
+    Assert.True(run.HeatTranscript.HeatRejected > 1)
+    Assert.Equal(1, run.HeatTranscript.Backpressured)
+    Assert.Equal<string list>(
+        [ "room-boundary.door-denied"; "soft-emu.prune" ],
+        run.HeatTranscript.HeatKinds
+    )
+    Assert.True(Scheduler.transcriptHasHeat run.HeatTranscript)
+    Assert.Equal<string list>(
+        [ "room-boundary.door-denied"; "soft-emu.prune" ],
+        run.HeatRows |> List.collect _.HeatKinds |> List.distinct
+    )
+
+    let kinds = sink.Signatures |> Seq.map _.Kind |> Seq.toList
+
+    Assert.Contains("room-boundary.door-denied", kinds)
+    Assert.Contains("soft-emu.prune", kinds)
+    Assert.True(kinds |> List.exists ((=) "room-boundary.door-denied"))
+    Assert.True(kinds |> List.exists ((=) "soft-emu.prune"))
+
 let private horizonConfig capacity policy : BoundedGSetConfig =
     { Capacity = capacity
       ForgetPolicy = policy }
@@ -131,25 +160,7 @@ let ``room run exports boundary denial and soft prune heat through one sink`` ()
 
         match result with
         | Error feedback -> Assert.Fail(sprintf "expected unified room run to complete, got %A" feedback)
-        | Ok run ->
-            Assert.Equal(1, run.Room.CompletedTicks)
-            Assert.True(Scheduler.boundaryBackpressured run.Room)
-            Assert.Equal<string list>(
-                [ "room-boundary.door-denied" ],
-                run.BoundaryHeatRows |> List.collect _.HeatKinds
-            )
-            Assert.Equal(1, run.HeatTranscript.Rows)
-            Assert.Equal(1, run.HeatTranscript.HeatRejected)
-            Assert.Equal(1, run.HeatTranscript.Backpressured)
-            Assert.Equal<string list>([ "room-boundary.door-denied" ], run.HeatTranscript.HeatKinds)
-            Assert.True(Scheduler.transcriptHasHeat run.HeatTranscript)
-
-            let kinds = sink.Signatures |> Seq.map _.Kind |> Seq.toList
-
-            Assert.Contains("room-boundary.door-denied", kinds)
-            Assert.Contains("soft-emu.prune", kinds)
-            Assert.True(kinds |> List.exists ((=) "room-boundary.door-denied"))
-            Assert.True(kinds |> List.exists ((=) "soft-emu.prune"))
+        | Ok run -> assertBoundaryAndSoftHeat sink run
     }
 
 [<Fact>]
@@ -225,6 +236,8 @@ let ``room run with null heat sink keeps the cold happy path cheap`` () =
         | Ok run ->
             Assert.Equal(1, run.Room.CompletedTicks)
             Assert.Empty(run.BoundaryHeatRows |> List.collect _.HeatKinds)
+            Assert.Empty(run.SoftHeatReport.HeatSignatures)
+            Assert.Equal<Scheduler.HeatBoundaryRow list>(run.BoundaryHeatRows, run.HeatRows)
             Assert.Equal(0us, run.SoftFrame.PC % 2us)
     }
 
@@ -269,6 +282,7 @@ let ``room run appends finite horizon heat to the host visible transcript`` () =
             Assert.Equal(1, run.Room.CompletedTicks)
             Assert.Equal<string list>([ "old-b"; "zz-new" ], run.HorizonReport.HorizonAfter |> BoundedGSet.toList)
             Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatRows |> List.collect _.HeatKinds)
+            Assert.Empty(run.SoftHeatReport.HeatSignatures)
             Assert.Equal(2, run.HeatTranscript.Rows)
             Assert.Equal(1, run.HeatTranscript.HeatRejected)
             Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatTranscript.HeatKinds)

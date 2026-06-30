@@ -214,6 +214,17 @@ module DarkHallScheduler =
           HeatKinds = signatures |> List.map _.Kind
           Reasons = signatures |> List.map _.Detail }
 
+    let heatRowOfSignatures (tick: int) (roomName: string) (signatures: HeatSignature list) : HeatBoundaryRow =
+        let heat = heatReadoutOfSignatures signatures
+
+        { Tick = tick
+          RoomName = roomName
+          HeatRejected = heat.HeatRejected
+          Backpressured = heat.Backpressured
+          StorageErrors = heat.StorageErrors
+          HeatKinds = heat.HeatKinds
+          Reasons = heat.Reasons }
+
     /// Project a finite prediction horizon into the same host-visible heat row
     /// used by Dark Hall/CHIP room execution. The horizon is not a runtime:
     /// attention may order futures, but this row only reports materialized
@@ -224,18 +235,7 @@ module DarkHallScheduler =
         (source: string)
         (report: RoomHorizon.Report<'K, 'S>)
         : HeatBoundaryRow =
-        let heat =
-            report
-            |> RoomHorizon.heatSignatures source
-            |> heatReadoutOfSignatures
-
-        { Tick = tick
-          RoomName = roomName
-          HeatRejected = heat.HeatRejected
-          Backpressured = heat.Backpressured
-          StorageErrors = heat.StorageErrors
-          HeatKinds = heat.HeatKinds
-          Reasons = heat.Reasons }
+        report |> RoomHorizon.heatSignatures source |> heatRowOfSignatures tick roomName
 
     let private rowOfOutcome (tick: int) (outcome: RoomLoop.TickOutcome) : HeatBoundaryRow =
         { Tick = tick

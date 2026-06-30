@@ -187,10 +187,19 @@ describe("buildInventoryReport", () => {
       runGit(["init"], repo);
 
       mkdirSync(join(repo, "db", "tools"), { recursive: true });
+      mkdirSync(join(repo, "docs", "recovered-orphan-branches-2026-05", "tools"), { recursive: true });
       mkdirSync(join(repo, "scripts"), { recursive: true });
       mkdirSync(join(repo, "tools", "lean4"), { recursive: true });
       writeFileSync(join(repo, "db", "tools", "generated.sh"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "db", "tools", "generated-extensionless"), "#!/usr/bin/env bash\n");
+      writeFileSync(
+        join(repo, "docs", "recovered-orphan-branches-2026-05", "tools", "historical.sh"),
+        "#!/usr/bin/env bash\n",
+      );
+      writeFileSync(
+        join(repo, "docs", "recovered-orphan-branches-2026-05", "tools", "historical-extensionless"),
+        "#!/usr/bin/env bash\n",
+      );
       writeFileSync(join(repo, "scripts", "a.sh"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "a-uppercase.SH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "b.bash"), "#!/usr/bin/env bash\n");

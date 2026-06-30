@@ -76,6 +76,26 @@ let ``frame-aware driveFramesWithHeatSink exports prune heat to host`` () =
                 Assert.Equal(1, heat.Units))
 
 [<Fact>]
+let ``frame-aware driveFramesWithHeatReport returns the heat it exported`` () =
+    let setup = Chip8Cow.create 1UL |> Chip8Cow.loadRom inputAfterOne
+    let recorder = RecordingHeatSink()
+
+    match SoftDrive.driveFramesWithHeatReport "chip8-room" (recorder :> IHeatSink) SoftDashboard.sumMemory 1 1 1 1 setup with
+    | Error e -> Assert.True(false, sprintf "unexpected heat sink feedback: %A" e)
+    | Ok run ->
+        Assert.Equal(1, run.Heat.Frames)
+        Assert.NotEmpty run.Heat.HeatSignatures
+        Assert.Equal(run.Heat.HeatSignatures.Length, run.Heat.PruneEvents)
+        Assert.Equal(run.Heat.HeatSignatures |> List.sumBy _.Units, run.Heat.DroppedSupport)
+        Assert.Equal(run.Heat.HeatSignatures |> List.sumBy _.MassPpm, run.Heat.DroppedMassPpm)
+        Assert.Equal<HeatSignature list>(run.Heat.HeatSignatures, recorder.Signatures |> Seq.toList)
+        Assert.All(
+            run.Heat.HeatSignatures,
+            fun heat ->
+                Assert.Equal("chip8-room", heat.Source)
+                Assert.Equal("soft-emu.prune", heat.Kind))
+
+[<Fact>]
 let ``frame-aware driveFramesWithHeatSink stops when prune heat backpressures`` () =
     let setup = Chip8Cow.create 1UL |> Chip8Cow.loadRom inputAfterOne
 

@@ -130,6 +130,11 @@ let private runTlc (specName: string) : int * string =
     let psi = ProcessStartInfo()
     psi.FileName <- "java"
     psi.WorkingDirectory <- specsPath
+    // TLC recommends ParallelGC for model-checker throughput. On local
+    // macOS/aarch64 with OpenJDK 26, the default G1 collector has also
+    // crashed in G1 remset rebuild during tiny specs; pin the collector so a
+    // JVM GC crash does not masquerade as a failed formal model.
+    psi.ArgumentList.Add "-XX:+UseParallelGC"
     psi.ArgumentList.Add "-cp"
     psi.ArgumentList.Add tlaJarPath
     psi.ArgumentList.Add "tlc2.TLC"

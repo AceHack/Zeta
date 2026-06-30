@@ -74,7 +74,10 @@ export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS
 const SHELL_INTERPRETERS = new Set(["bash", "dash", "sh", "zsh", "ksh"]);
 const ENV_OPTIONS_WITH_SEPARATE_OPERAND = new Set(["-a", "-P", "-u", "--argv0", "--chdir", "--path", "--unset"]);
 const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = ["--argv0=", "--chdir=", "--path=", "--unset="];
-const TERRITORY_MIRROR_PREFIXES: readonly string[] = ["db/"];
+const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = [
+  "db/",
+  "docs/recovered-orphan-branches-",
+];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -211,7 +214,7 @@ export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[]
   const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
   return trackedGitFiles(repoRoot)
     .filter(({ path }) => existsSync(join(repoRoot, path)))
-    .filter(({ path }) => !isTerritoryMirrorPath(path))
+    .filter(({ path }) => !isInactiveShellInventoryPath(path))
     .filter(({ path }) => !path.startsWith("tools/lean4/"))
     .filter(({ path, executable }) => isTrackedShellFamilyFile(repoRoot, path, executable))
     .map(({ path }) => path)
@@ -229,8 +232,8 @@ function trackedGitFiles(repoRoot: string): readonly TrackedGitFile[] {
     .filter((entry): entry is TrackedGitFile => entry !== undefined);
 }
 
-function isTerritoryMirrorPath(path: string): boolean {
-  return TERRITORY_MIRROR_PREFIXES.some((prefix) => path.startsWith(prefix));
+function isInactiveShellInventoryPath(path: string): boolean {
+  return INACTIVE_SHELL_INVENTORY_PREFIXES.some((prefix) => path.startsWith(prefix));
 }
 
 function parseTrackedGitFile(entry: string): TrackedGitFile | undefined {
