@@ -2,13 +2,9 @@ name: budget-snapshot-cadence
 
 # Weekly cadence for evidence-based LFG burn tracking. Runs
 # src/Core.TypeScript/budget/snapshot-burn.ts, captures the resulting JSONL row,
-# and opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm)
-# with the snapshot included. The PR is left for the next
-# human-or-agent pass through the queue to merge — auto-merge is
-# NOT armed here, see "Auto-merge limitation" section below for
-# why. Closes task #297 (cadence half of the evidence-based-
-# budgeting work; tooling was task #285, baseline snapshot was
-# task #287).
+# and commits it DIRECTLY TO MAIN (fast-forward-safe, no branch, no PR).
+# Closes task #297 (cadence half of the evidence-based-budgeting work;
+# tooling was task #285, baseline snapshot was task #287).
 #
 # Why weekly: docs/budget-history/README.md says "On a cadenced
 # schedule (weekly) — catches drift when no PRs are merging." Weekly
@@ -52,15 +48,15 @@ name: budget-snapshot-cadence
 # fields — per-run trailers describe the per-run state, not the
 # deployment-time authorization.
 #
-# Auto-merge limitation: events triggered by
-# secrets.GITHUB_TOKEN do not fire downstream workflow runs
-# (GitHub's anti-infinite-loop guard). That means a PR opened by
-# this workflow would never accumulate the required-status-check
-# runs that auto-merge needs to fire on, and `gh pr merge --auto`
-# would sit in a dead-end. Until a PAT secret is configured, this
-# workflow opens the snapshot PR and leaves it for the next
-# human-or-agent pass through the queue to merge — explicit-no-
-# auto-merge over silent-stall is the operational call.
+# Commit-to-main, no PR: GitHub Actions is not permitted to create
+# pull requests in this repository (enterprise security control), and
+# GITHUB_TOKEN-created PRs don't fire downstream required-status-check
+# runs, so an auto-merge would dead-end. The prior design opened a PR
+# and left it for a later pass — which instead orphaned unlanded
+# ops/budget-cadence-* branches. This workflow now commits the
+# append-only snapshot row straight to main via `git pull --rebase` +
+# `git push origin HEAD:main` — the deterministic-append, no-review-
+# gate pattern proven by context-cost-trend-cadence.yml.
 
 on:
   schedule:
@@ -94,17 +90,16 @@ jobs:
     timeout-minutes: 5
 
     permissions:
-      # Need contents:write to push the snapshot branch; pull-requests:write
-      # to open the snapshot PR; actions:read so snapshot-burn.ts can call
-      # the Actions REST endpoints (/repos/.../actions/runs and
-      # /actions/runs/{id}/timing) to populate burn metrics. Without
-      # actions:read, those API calls 403 silently and snapshot-burn.ts
-      # falls back to empty/zeroed timing data while still writing a
-      # snapshot — producing misleading evidence rather than a hard
-      # failure. With explicit job permissions, omitted scopes are
-      # `none`, so actions:read MUST be listed explicitly here.
+      # Need contents:write to commit the snapshot row to main; actions:read
+      # so snapshot-burn.ts can call the Actions REST endpoints
+      # (/repos/.../actions/runs and /actions/runs/{id}/timing) to populate
+      # burn metrics. Without actions:read, those API calls 403 silently and
+      # snapshot-burn.ts falls back to empty/zeroed timing data while still
+      # writing a snapshot — producing misleading evidence rather than a hard
+      # failure. With explicit job permissions, omitted scopes are `none`, so
+      # actions:read MUST be listed explicitly here. No pull-requests:write —
+      # this workflow commits to main directly and opens no PR.
       contents: write
-      pull-requests: write
       actions: read
 
     steps:
@@ -156,22 +151,19 @@ jobs:
           fi
           echo "changed=true" >>"$GITHUB_OUTPUT"
 
-      - name: Open snapshot PR
+      - name: Commit snapshot to main
         if: steps.diff.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
           ts="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
-          branch="ops/budget-cadence-${ts}-run-${RUN_ID}"
           # Configure committer identity for the workflow commit.
           # github-actions[bot] is the canonical workflow identity;
           # using it makes the AgencySignature Credential-Identity
           # honest about the workflow being the actor.
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$branch"
           git add docs/budget-history/snapshots.jsonl
 
           # Commit message uses the AgencySignature v1 canonical shape.
@@ -227,66 +219,11 @@ jobs:
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
           } | git commit --file=-
 
-          git push -u origin "$branch"
-
-          # Open PR with trailer block in body (Squash-Merge Invariant
-          # per the canonical 10-trailer convention — no non-trailer
-          # text after the trailer block).
-          {
-            echo "## Summary"
-            echo
-            echo "Weekly budget snapshot cadence run via"
-            echo ".github/workflows/budget-snapshot-cadence.yml"
-            echo "(run $RUN_ID, $ts)."
-            echo
-            echo "## What this PR adds"
-            echo
-            echo "- One JSONL row appended to"
-            echo "  docs/budget-history/snapshots.jsonl."
-            echo
-            echo "## Cadence policy"
-            echo
-            echo "Per docs/budget-history/README.md: weekly cadence"
-            echo "catches drift when no PRs are merging. Authorized by"
-            echo "the human maintainer's 2026-04-22 evidence-based"
-            echo "budgeting direction; per-run trailer fields use"
-            echo "Human-Review-Evidence=none per the validator consistency"
-            echo "rule, since per-run review is not explicit."
-            echo
-            echo "Agency-Signature-Version: 1"
-            echo "Agent: budget-cadence-workflow"
-            echo "Agent-Runtime: GitHub Actions"
-            echo "Agent-Model: bash + jq + gh CLI"
-            echo "Credential-Identity: github-actions[bot]"
-            echo "Credential-Mode: dedicated-agent"
-            echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: none"
-            echo "Action-Mode: autonomous-fail-open"
-            echo "Task: Otto-297"
-            echo "Co-authored-by: Otto <noreply@anthropic.com>"
-          } > /tmp/pr-body.md
-
-          # NOTE: --label "agent-otto" was previously added here for
-          # host-native attribution but the labels API is part of the
-          # Issues API. Adding it would require widening permissions to
-          # `issues: write`, which this workflow doesn't currently grant
-          # (and shouldn't widen casually for a single host-native nice-
-          # to-have when the AgencySignature commit-trailer-block already
-          # covers the attribution at the git-native layer). Labeling is
-          # deferred to a maintainer / human pass through the queue, or
-          # to a future workflow with an explicit `issues: write` scope.
-          gh pr create \
-            --base main \
-            --head "$branch" \
-            --title "ops(budget): cadence snapshot $ts (task #297)" \
-            --body-file /tmp/pr-body.md
-
-          # Intentional: no `gh pr merge --auto` here. See header
-          # comment §"Auto-merge limitation" — GITHUB_TOKEN-created
-          # PRs don't trigger downstream workflows, so auto-merge
-          # would dead-end waiting for required-status-checks that
-          # never fire. Leave the PR open; the next maintainer or
-          # agent pass merges it.
+          # Fast-forward-safe push to main (Branch Safety floor: no force / linear).
+          # Rebase onto any rows landed since checkout, then push. snapshots.jsonl
+          # is append-only, so the rebase is clean.
+          git pull --rebase origin main
+          git push origin HEAD:main
 
       - name: No-change report
         if: steps.diff.outputs.changed == 'false'
@@ -294,4 +231,4 @@ jobs:
           echo "snapshot-burn.ts ran but produced no diff."
           echo "This typically means the underlying GitHub state"
           echo "didn't change in a way the snapshot captures."
-          echo "No PR opened; no commit made."
+          echo "No commit made."
