@@ -75,6 +75,35 @@ avoids. The unification MUST preserve the int64 hot-path perf — via one of:
 Requires a benchmark gate (Naledi): the unified int64 path must match current
 `ZSet` throughput/alloc on the DBSP hot loop, or the unification does not land.
 
+## Dispatch strategy — DECIDED (Aaron, 2026-07-01)
+
+Of the three ways to ride the semiring on the open generic `ZSetW<'K,'W>`:
+
+1. **Instance-passing** (`ISemiring<'W>` runtime object, virtual per op) — **NOT the
+   primary**. Retained only as the **cold-path / dynamic-ring escape hatch**: rings
+   chosen at runtime, research rings not worth monomorphising, non-hot surfaces.
+2. **Struct-ring generic param + JIT monomorphization**
+   (`ZSetW<'K,'W,'R when 'R : struct and 'R :> ISemiring<'W>>`) — **PRIMARY, both
+   languages.** Works natively in F# *and* C# (`where TRing : struct, ISemiring<W>`);
+   the JIT emits one specialised body per struct ring and devirtualises `Add`/`Zero`
+   to inlined primitives. `ZSet<'K> = ZSetW<'K,int64,IntegerRing>` → zero overhead.
+3. **SRTP / `inline` + member constraints** — **WANTED on the F# side.** Zero-cost
+   static resolution, typeclass-flavored; the natural F#-host form.
+
+**C# has no SRTP.** To give C# consumers the same *guaranteed* specialisation (not
+merely JIT-hopeful devirt), use **Roslyn source generators to emit the monomorphised
+per-ring code** — the C#-side SRTP-equivalent (Aaron). This is the same discipline as
+[[only-the-irreducible-is-primitive-generate-the-rest]] and `gen/` applied to
+dispatch: the **generator reads the free `ISemiring` interface and emits the earned
+special cases** (int64, tropical, interval, …). The open generic `ZSetW<,>` is the
+free object; `gen(int64)` is the zero-overhead specialised `ZSet`; `gen(gen)==gen`.
+Generators also give a byte-lockable/DST-replayable specialisation (vs. JIT devirt,
+which is tiered-comp/inlining-budget dependent — not guaranteed).
+
+Net target: **paths 2 + 3 are the hot-path primary** (struct-ring monomorphization
+everywhere; SRTP on F#; Roslyn-generated specialisations for C#); **path 1 stays as
+the dynamic/cold escape hatch**, not the default.
+
 ## Definition of done
 
 1. Design note: chosen devirtualisation strategy + why it keeps int64 zero-overhead.
