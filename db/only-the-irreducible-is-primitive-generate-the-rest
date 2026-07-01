@@ -3,3 +3,8 @@
 **Carved sentence:** Only the irreducible is primitive — anything decomposable or generalizable is GENERATED from the free object (the irreducible generator), never hardcoded; structured special cases are earned quotients, and the generator doubles as the error-correcting code (regenerating from the irreducible IS the drift correction, `gen(gen) == gen`).
 
 Rule: `.claude/rules/only-the-irreducible-is-primitive-generate-the-rest.md` · generators: `gen/` · sibling: `interfaces-free-classes-earned-under-rules`.
+
+ZSet consequence: the semiring-weighted sorted-array core is the candidate
+primitive. The int64 hot path, schema-as-events, migrations, and optimized views
+should appear as specializations or folds over that same root, with benchmark
+evidence before any performance-critical specialization is collapsed.
