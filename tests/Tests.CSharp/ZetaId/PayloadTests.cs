@@ -64,4 +64,13 @@ public class PayloadTests
         var genericPayload = new ZetaIdPayload.Generic(IdVersion.V1, Category.Heartbeat, 100);
         Assert.Throws<ArgumentException>(() => ZetaIdCodec.PackPayload(genericPayload, DeterministicEnv.Instance));
     }
+
+    [Fact]
+    public void IsCanonicalRejectsFirstCharGreaterOrEqualToEight()
+    {
+        Assert.True(ZetaIdCodec.IsCanonical("081JVQXNCD370ZG2R010000000"));
+        Assert.False(ZetaIdCodec.IsCanonical("081JVQXNCD370ZG2R010000000".ToLowerInvariant()));
+        Assert.False(ZetaIdCodec.IsCanonical("081JVQXNCD370ZG2R01000000o"));
+        Assert.False(ZetaIdCodec.IsCanonical("Z0000000000000000000000000")); // first char >= 8
+    }
 }

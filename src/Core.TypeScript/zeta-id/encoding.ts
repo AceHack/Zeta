@@ -116,6 +116,9 @@ export function isCanonical(s: string): boolean {
   for (const ch of s) {
     if (!CROCKFORD_ALPHABET.includes(ch)) return false;
   }
+  const firstChar = s[0]!;
+  const firstVal = DECODE.get(firstChar);
+  if (firstVal === undefined || firstVal >= 8) return false;
   try {
     return format(parse(s)) === s;
   } catch {

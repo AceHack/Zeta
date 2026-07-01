@@ -377,6 +377,21 @@ func TestCrossVerifyZetaId(t *testing.T) {
 	}
 }
 
+func TestZetaIdCanonicality(t *testing.T) {
+	if !zeta_id.IsCanonical("081JVQXNCD370ZG2R010000000") {
+		t.Error("expected 081JVQXNCD370ZG2R010000000 to be canonical")
+	}
+	if zeta_id.IsCanonical("081JVQXNCD370ZG2R010000000" + "z") {
+		t.Error("expected lowercase/lenient not to be canonical")
+	}
+	if zeta_id.IsCanonical("081JVQXNCD370ZG2R01000000o") {
+		t.Error("expected lenient o alias not to be canonical")
+	}
+	if zeta_id.IsCanonical("Z0000000000000000000000000") {
+		t.Error("expected first char >= 8 to be non-canonical")
+	}
+}
+
 type CanonicalJsonVector struct {
 	Id    string      `json:"id"`
 	Value interface{} `json:"value"`

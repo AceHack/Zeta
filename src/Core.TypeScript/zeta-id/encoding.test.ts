@@ -116,6 +116,7 @@ test("isCanonical: format output is canonical; lenient/lowercase forms are not",
   expect(isCanonical("0000000000000000000000000z")).toBe(false); // lowercase
   expect(isCanonical("OOOOOOOOOOOOOOOOOOOOOOOOOO")).toBe(false); // O alias, not strict 0
   expect(isCanonical("short")).toBe(false);
+  expect(isCanonical("Z0000000000000000000000000")).toBe(false); // first char value >= 8 (overflows 128-bit)
 });
 
 // Canonical cross-language fixture vectors (081KS3X9Y0008QG0R000W00V73 §4): real ZetaIds packed via

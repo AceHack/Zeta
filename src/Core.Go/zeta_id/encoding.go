@@ -103,6 +103,11 @@ func IsCanonical(s string) bool {
 			return false
 		}
 	}
+	firstChar := s[0]
+	firstVal, ok := crockfordDecode[firstChar]
+	if !ok || firstVal >= 8 {
+		return false
+	}
 	parsed, err := Parse(s)
 	if err != nil {
 		return false

@@ -295,6 +295,10 @@ def is_canonical(s: str) -> bool:
     for ch in s:
         if ch not in CROCKFORD_ALPHABET:
             return False
+    first_char = s[0]
+    first_val = DECODE.get(first_char)
+    if first_val is None or first_val >= 8:
+        return False
     try:
         return format_b32(parse_b32(s)) == s
     except ValueError:
