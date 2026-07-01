@@ -1,11 +1,8 @@
 name: backlog-index-integrity
 
-# Enforces that `docs/BACKLOG.md` (the generated index) stays in
-# sync with the per-row files under `docs/backlog/P[0-3]/B-<NNNN>-*.md`.
-# When a row file is added/modified/removed, the index must be
-# regenerated via `src/Core.TypeScript/backlog/generate-index.ts` (relocated by #7893) in the same
-# commit (or PR) so a fresh reader sees the same row set in both
-# places.
+# Transition guard for the frozen legacy backlog substrate. Current work-items
+# are ZetaId files under `workitems/`; this workflow only prevents accidental
+# resurrection or drift in `docs/backlog/**` and `docs/BACKLOG.md`.
 #
 # Phase 1c per the BACKLOG-per-row-file ADR
 # (docs/DECISIONS/2026-04-22-backlog-per-row-file-restructure.md
@@ -54,7 +51,7 @@ concurrency:
 
 jobs:
   check:
-    name: check docs/BACKLOG.md generated-index drift
+    name: check frozen legacy backlog drift
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0

@@ -28,8 +28,8 @@ locally report SKIP (they still run in CI). Source:
 | 6 | **shellcheck** | `shellcheck` (project scripts) | shell-script lint |
 | 7 | **actionlint** | `actionlint -color -ignore 'unknown permission scope "administration"'` | workflow YAML lint |
 | 8 | **markdownlint** | `mise exec -- markdownlint-cli2 "**/*.md"` | markdown lint |
-| 9 | **hygiene** | `bun tools/hygiene/check-no-conflict-markers.ts`; `…/check-tick-history-order.ts`; `…/check-archive-header-section33.ts`; `…/audit-section-33-migration-xrefs.ts --enforce`; `…/audit-backlog-items.ts --enforce-duplicate-ids`; `…/audit-backlog-items.ts --enforce-parent-child-status` | repo-structure invariants |
-| 10 | **lint (files)** | `bun tools/lint/no-empty-dirs.ts`; `bun run hygiene:check-bash-retirement-inventory` | file-presence invariants |
+| 9 | **hygiene** | `bun src/Core.TypeScript/hygiene/check-no-conflict-markers.ts`; `…/check-tick-history-order.ts`; `…/check-archive-header-section33.ts`; `…/audit-section-33-migration-xrefs.ts --enforce`; `…/audit-dangling-symlinks.ts`; `…/audit-sealed-rooms.ts` | repo-structure invariants |
+| 10 | **lint (files)** | `bun src/Core.TypeScript/lint/no-empty-dirs.ts`; `bun run hygiene:check-bash-retirement-inventory` | file-presence invariants |
 
 Setup once: `bun install --frozen-lockfile`.
 
@@ -40,7 +40,7 @@ this — 081KQGDBJ0008QG0R001MK4YPC). Minimum honest gate by change type:
 
 - **F#/C# code** → gates 1, 2, and 3 if you touched a cross-verified primitive.
 - **TS tooling** → gate 4 (+ 3 if oracle-related).
-- **docs/backlog/memory** → gates 8, 9 (markdown + hygiene).
+- **docs / workitems / memory** → gates 8, 9 (markdown + hygiene).
 - **workflows** → gate 7.
 
 Be honest about what you skipped — a skipped gate is stated, not silent

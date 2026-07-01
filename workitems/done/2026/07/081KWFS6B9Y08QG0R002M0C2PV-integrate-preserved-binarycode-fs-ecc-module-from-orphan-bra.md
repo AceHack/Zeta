@@ -39,7 +39,7 @@ primitive. Ties to the generator-is-the-ECC discipline
 
 1. Read the preserved `BinaryCode.fs`; confirm it isn't already subsumed by
    `AdinkraCode.fs` (content check, not just basename).
-2. If it adds value: move to `src/Core/BinaryCode.fs`, register in `src/Core/Core.fsproj`
+2. If it adds value: move it to the Core source tree as BinaryCode.fs, register in `src/Core/Core.fsproj`
    in correct compile order, resolve any API drift against current Core.
 3. Port/author tests; `dotnet build -c Release` (0 warnings) + `dotnet test` green.
 4. On land, its quarantine copy can be dropped (it's then no longer the only copy).
