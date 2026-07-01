@@ -16,6 +16,25 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTQX7W6Q08QG0R000XA3220-*.md` glob. -->
 
+## Status — start-gate audit 2026-07-01 (Otto, cowork; row is IN-PROGRESS, not drift)
+
+**Shipped** (`src/Core.TypeScript/backlog/auto-vivify.ts`, in preflight as `auto-vivify check`):
+detector (wikilinks + mdlinks + backtick paths), stub instantiation preserving the carved-sentence/README
+convention, `same/x-y` canonicalization, governed ZetaId minting via the codec, idempotent
+(existsSync guard), bounded single-sweep (no stub fork-bomb), `--check` (CI) + `--watch` (almost-instant)
+modes. Empirically exercised 2026-07-01: three dangling-ref reds on main detected and cleared
+(#9064, #9068, and the #9057 pair) — the detector half is load-bearing today.
+
+**Pending (why this row stays open):**
+
+1. **The MUMPS-global leg** — the vivifier writes gitfs files only; nothing lands in the `Globals.fs`
+   (`src/Core/Globals.fs`, MUMPS verbs over `DynamicValue`) tree, so "MD link ⇄ MUMPS global ⇄ gitfs =
+   one auto-vivifying namespace" is only two-thirds real.
+2. **Scan surface** — `SCAN_SURFACES = ["workitems"]` only; the idea covers *every* MD pointer
+   (memory/ `[[name]]` convention, docs/). Widening the surface needs the write-scope/security peel
+   resolved first (auto-creating files from any MD reference is a big write surface).
+3. **On-save hook wiring** — `--watch` exists but nothing wires it into a harness/save path.
+
 > **Aaron, 2026-06-10:** "you can create pointers that don't exist yet in our MD and the system will make it
 > exist in our MUMPS and gitfs instantly — almost. Let's backlog this and do it soon."
 
