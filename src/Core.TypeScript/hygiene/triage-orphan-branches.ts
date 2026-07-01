@@ -54,6 +54,18 @@ function git(args: readonly string[], allowFail = false): string {
   return (r.stdout ?? "").trim();
 }
 
+/** Like git() but returns exit status + combined stdout/stderr. Needed for
+ *  `git push --delete`, which writes its "[deleted]" progress markers to STDERR,
+ *  not stdout — so counting deletions off git()'s stdout-only return always saw 0
+ *  even when every ref was deleted. Count off `combined` instead. */
+function gitRun(args: readonly string[]): { ok: boolean; combined: string } {
+  const r = spawnSync("git", [...args], {
+    encoding: "utf8",
+    maxBuffer: 256 * 1024 * 1024,
+  });
+  return { ok: r.status === 0, combined: `${r.stdout ?? ""}${r.stderr ?? ""}` };
+}
+
 function basenamesOnMain(remote: string): Set<string> {
   const out = git(["ls-tree", "-r", "--name-only", `${remote}/main`]);
   const set = new Set<string>();
@@ -169,8 +181,14 @@ function main(): number {
       let deleted = 0;
       for (let i = 0; i < safe.length; i += CHUNK) {
         const batch = safe.slice(i, i + CHUNK).map((r) => r.branch);
-        const out = git(["push", remote, "--delete", ...batch], true);
-        deleted += (out.match(/\[deleted\]/g) ?? []).length;
+        const res = gitRun(["push", remote, "--delete", ...batch]);
+        // "[deleted]" markers land on stderr → count off combined output, not stdout.
+        deleted += (res.combined.match(/\[deleted\]/g) ?? []).length;
+        if (!res.ok) {
+          process.stderr.write(
+            `  warning: batch delete returned non-zero (some refs may already be gone):\n${res.combined}\n`,
+          );
+        }
       }
       console.log(`  deleted: ${deleted}/${safe.length}`);
     }
