@@ -106,7 +106,10 @@ the dynamic/cold escape hatch**, not the default.
 
 ## Definition of done
 
-1. Design note: chosen devirtualisation strategy + why it keeps int64 zero-overhead.
+1. ✅ Design note (2026-07-01): `docs/research/2026-07-01-the-polymorphic-zset-base-atom-open-generics-dispatch-and-schema-as-events-on-the-zset.md`
+   — dispatch strategy, the three axes (weight polymorphism / schema-as-events /
+   zero-downtime), int64-zero-overhead argument, migration plan, Beacon anchors.
+   Remaining DoD items below are the implementation.
 2. Land `ZSetW<'K,'W>` (sorted-array) as the core (revive from quarantine:
    `docs/recovered-orphan-branches-2026-05/misc/backlog/b0697-zset-polymorphism-weight-ring/src/Core/ZSetW.fs`).
 3. Reframe `ZSet<'K>` in terms of it WITHOUT perf regression (benchmark-gated).
