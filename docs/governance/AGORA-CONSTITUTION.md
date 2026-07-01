@@ -117,6 +117,7 @@ It is not mandatory. It is a pressure valve that slowly converts valuable privat
 - Full hardware independence, geographic distribution, and redundant copies are the long-term sovereignty target.
 
 **Wave-particle substrate**: The operational primitives (Observe, Persist, Limit, Emit) exist in two complementary forms:
+
 - **Particle form**: Inside a tick-source (single tick boundary) - discrete, sequential
 - **Wave form**: When composed with `Integrate` (F# computation expression) - continuous, superposed
 
