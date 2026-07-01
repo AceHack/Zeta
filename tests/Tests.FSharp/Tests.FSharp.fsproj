@@ -336,6 +336,7 @@
     <Compile Include="Curve.Serializer.Tests.fs" />
     <Compile Include="BeliefConvergence.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
+    <Compile Include="BinaryCode.Tests.fs" />
     <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
     <Compile Include="Formal/CliffordStarRing.Laws.Tests.fs" />

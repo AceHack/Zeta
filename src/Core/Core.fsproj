@@ -33,6 +33,7 @@
     <Compile Include="Fixpoint.fs" />
     <Compile Include="Orbit.fs" />
     <Compile Include="AdinkraCode.fs" />
+    <Compile Include="BinaryCode.fs" />
     <Compile Include="E8Lattice.fs" />
     <Compile Include="CliffordE8Bridge.fs" />
     <Compile Include="CliffordE8Roots.fs" />

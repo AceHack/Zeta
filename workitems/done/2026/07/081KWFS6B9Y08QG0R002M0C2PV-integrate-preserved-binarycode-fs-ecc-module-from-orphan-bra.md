@@ -1,11 +1,12 @@
 ---
 id: 081KWFS6B9Y08QG0R002M0C2PV
 type: task
-state: backlog
+state: done
 priority: P2
 slug: integrate-preserved-binarycode-fs-ecc-module-from-orphan-bra
 title: "Integrate preserved BinaryCode.fs (ECC module) from orphan-branch quarantine into Core build"
 created: 2026-07-01T21:26:06.910Z
+completed: 2026-07-01T22:13:05Z
 depends_on: []
 composes_with: []
 ---
