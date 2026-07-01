@@ -48,6 +48,7 @@
     <Compile Include="BoundedGSet.fs" />
     <Compile Include="Bag.fs" />
     <Compile Include="ZSet.fs" />
+    <Compile Include="ZSetW.fs" />
     <Compile Include="FusionReconstruction.fs" />
     <Compile Include="IoBoundary.fs" />
     <Compile Include="WeightedSet.fs" />

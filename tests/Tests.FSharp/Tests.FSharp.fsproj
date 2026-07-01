@@ -25,6 +25,7 @@
     <Compile Include="Algebra/BoundedGSet.Tests.fs" />
     <Compile Include="Algebra/Bag.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
+    <Compile Include="Algebra/ZSetW.Tests.fs" />
     <Compile Include="Algebra/FusionReconstruction.Tests.fs" />
     <Compile Include="Formal/GSetFusionLaws.Tests.fs" />
     <Compile Include="Algebra/IoBoundary.Tests.fs" />

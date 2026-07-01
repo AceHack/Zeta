@@ -110,9 +110,19 @@ the dynamic/cold escape hatch**, not the default.
    — dispatch strategy, the three axes (weight polymorphism / schema-as-events /
    zero-downtime), int64-zero-overhead argument, migration plan, Beacon anchors.
    Remaining DoD items below are the implementation.
-2. Land `ZSetW<'K,'W>` (sorted-array) as the core (revive from quarantine:
-   `docs/recovered-orphan-branches-2026-05/misc/backlog/b0697-zset-polymorphism-weight-ring/src/Core/ZSetW.fs`).
-3. Reframe `ZSet<'K>` in terms of it WITHOUT perf regression (benchmark-gated).
+2. ✅ Land `ZSetW<'K,'W>` (sorted-array) as the core (2026-07-01). Revived from
+   quarantine, adapted for API drift (curried→tupled `ISemiring` calls to match the
+   C#-abstractions interface), landed at `src/Core/ZSetW.fs` + `IntegerRing`/
+   `IntervalRing` bridges, 12 tests (`tests/Tests.FSharp/Algebra/ZSetW.Tests.fs`)
+   green — int64 matches `ZSet`, interval arithmetic proves the polymorphism bites,
+   retraction cancels, ZSet bridge round-trips. **This increment is the
+   instance-passing baseline** (path 1 storage-compatible core); the zero-overhead
+   struct-ring/SRTP int64 specialisation is step 2b below, NOT yet done.
+2b. Add the zero-overhead int64 dispatch (paths 2+3 from §Dispatch): SRTP/`inline`
+   on the F# host and/or struct-ring generic param; the C# Roslyn generator (step 4).
+   This is what makes the reframe (step 3) non-regressing.
+3. Reframe `ZSet<'K>` in terms of it WITHOUT perf regression (benchmark-gated) —
+   needs 2b first.
 4. Honor ordinal-collation parity (`culture-invariant-by-default` — the
    `GCounter.Merge` vs `ZSet.ofSeq` associativity bug lives in this area).
 5. Full `dotnet build -c Release` 0-warnings + tests green + Naledi perf sign-off.
