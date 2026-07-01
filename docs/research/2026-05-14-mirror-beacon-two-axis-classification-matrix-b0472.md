@@ -1,8 +1,8 @@
-# Mirror/Beacon Two-Axis Classification Matrix (B-0472)
+# Mirror/Beacon Two-Axis Classification Matrix (081KRHWGX0008QG0R002DP6AZN)
 
 **Date:** 2026-05-18
 **Author:** Lior
-**Related row:** B-0472
+**Related row:** 081KRHWGX0008QG0R002DP6AZN
 
 ## Purpose
 Populate the two-axis classification matrix for all existing and proposed LFG repositories, assigning each to either the Mirror (fast, speculative, internal) or Beacon (governed, citation-gated, canonical) tier.
@@ -12,7 +12,7 @@ Populate the two-axis classification matrix for all existing and proposed LFG re
 | Repository | Axis 1 (Domain) | Axis 2 (Maturity) | Rationale |
 |------------|-----------------|-------------------|-----------|
 | **LFG/Zeta** | Factory | **Beacon** | Holds the core engine and citation-gated F# computation expressions. Stable, governed, alignment-floor enforced. |
-| **LFG/civsim** | Product | **Beacon** | *[Revision from initial B-0426 matrix]*: civsim was created (PR #3127) and has already undergone PR #2909 language/governance escalation. Due to its mutual-privacy crypto design and "aliens-and-future" rigorous register, it operates as a governed, externally-citable Beacon product. |
+| **LFG/civsim** | Product | **Beacon** | *[Revision from initial 081KRFA460008QG0R0007RWSN1 matrix]*: civsim was created (PR #3127) and has already undergone PR #2909 language/governance escalation. Due to its mutual-privacy crypto design and "aliens-and-future" rigorous register, it operates as a governed, externally-citable Beacon product. |
 | **Forge** | Factory | **Mirror** | Factory infrastructure and bots. Requires fast iteration, speculative forks, and low governance load. |
 | **ace** | Factory | **Beacon** | Package manager. Requires cryptographic infrastructure and strict governance. |
 | **lf-ksk** | Product | **Mirror** | Experimental robotics/actuators. Needs fast iteration before any Homeland Security clearance governance locks it. |
@@ -25,7 +25,7 @@ Populate the two-axis classification matrix for all existing and proposed LFG re
 | **Aaron-private governance** | Owner-only | **Beacon** | Private, citation-gated governance substrate. |
 
 ## Ambiguous Cases
-- **LFG/civsim:** The original B-0426 assumption was `Mirror`. However, given the PR #2909 governance escalation and the fact that it is the flagship external implementation of the mutual-privacy engine, it has functionally bypassed the Mirror tier and established itself as a Beacon. This will be flagged for explicit resolution in the B-0474 ADR.
+- **LFG/civsim:** The original 081KRFA460008QG0R0007RWSN1 assumption was `Mirror`. However, given the PR #2909 governance escalation and the fact that it is the flagship external implementation of the mutual-privacy engine, it has functionally bypassed the Mirror tier and established itself as a Beacon. This will be flagged for explicit resolution in the 081KRHWGX0008QG0R0023FDYVE ADR.
 
 ## Conclusion
-The Axis-2 structure holds cleanly. Repositories whose primary value is stability, security, and external citation (Zeta, ace, Aurora, civsim) fall cleanly into Beacon. Repositories whose primary value is velocity, experimentation, and speculative game design (Forge, KSK, DIO, american-dream) fall cleanly into Mirror. This matrix is ready to be formalized in the B-0474 ADR.
+The Axis-2 structure holds cleanly. Repositories whose primary value is stability, security, and external citation (Zeta, ace, Aurora, civsim) fall cleanly into Beacon. Repositories whose primary value is velocity, experimentation, and speculative game design (Forge, KSK, DIO, american-dream) fall cleanly into Mirror. This matrix is ready to be formalized in the 081KRHWGX0008QG0R0023FDYVE ADR.

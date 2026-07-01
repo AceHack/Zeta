@@ -28,6 +28,14 @@ const ALLOWED_FILES = new Set([
 
 const ALLOWED_DIRS = new Set(["node_modules", ".git"]);
 
+/** Quarantined / archival surfaces — historical B-NNNN prose, not live substrate. */
+const SKIP_DIR_PREFIXES = [
+  "docs/recovered-orphan-branches-2026-05/",
+  "docs/history/",
+  "memory/",
+  ".claude/rules.bak/",
+];
+
 function repoRoot(): string {
   const r = spawnSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" });
   return r.status === 0 ? r.stdout.trim() : process.cwd();
@@ -38,7 +46,17 @@ function main(): number {
   const offenders: { file: string; ids: string[] }[] = [];
   const extensions = new Set([".md", ".ts", ".tsx", ".js", ".json", ".yaml", ".yml", ".jsonc", ".sh", ".fs", ".fsx"]);
 
+  function shouldSkipDir(relDir: string): boolean {
+    if (relDir.length === 0) return false;
+    return SKIP_DIR_PREFIXES.some(
+      (prefix) => relDir === prefix.slice(0, -1) || relDir.startsWith(prefix),
+    );
+  }
+
   function walk(dir: string) {
+    const rel = dir.slice(root.length + 1);
+    if (shouldSkipDir(rel)) return;
+
     for (const entry of readdirSync(dir)) {
       if (ALLOWED_DIRS.has(entry)) continue;
       const full = join(dir, entry);

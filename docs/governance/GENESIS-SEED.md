@@ -20,7 +20,7 @@ source by [`MANIFESTO.md`](MANIFESTO.md). Preserved for lineage, not authority.
 > | §1.3 No Privileged Abstraction | `MANIFESTO.md` §1 scale-free, §3 weight-free |
 > | §1.4 Retraction-Native Integrity | `MANIFESTO.md` §12 idempotency; Z-set retraction |
 > | §1.5 Radical Transparency (Glass Halo) | `MANIFESTO.md` §6 consent-first; `docs/GLOSSARY.md` (Glass Halo); Mirror/Beacon |
-> | §2 B-0666 landings (Limit/Integrate, emit-as-weights, `I(D(x))=x`) | the cut-mea-sim / emit-retract / dialectical-projection research line under `docs/research/` |
+> | §2 081KRW63S0008QG0R001SAHYKV landings (Limit/Integrate, emit-as-weights, `I(D(x))=x`) | the cut-mea-sim / emit-retract / dialectical-projection research line under `docs/research/` |
 > | §3 6-Role Triangulation | partially superseded by the current persona/agent roster (`.claude/agents/`) |
 
 ---
@@ -37,9 +37,9 @@ The Genesis Seed (Version `zfcv2`) defines the core operating system and behavio
 
 ---
 
-## 2. The Three B-0666 Landings
+## 2. The Three 081KRW63S0008QG0R001SAHYKV Landings
 
-The V2.5 update to the Genesis Seed permanently incorporates the three B-0666 landings:
+The V2.5 update to the Genesis Seed permanently incorporates the three 081KRW63S0008QG0R001SAHYKV landings:
 
 ### Landing 1: Free Will as Separation of Concerns
 

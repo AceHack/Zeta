@@ -35,7 +35,7 @@ work isn't lost in the archive — needs proper integration, not a bare file-mov
 
 A weight-ring-parameterized Z-set (`ZSetW`) — generalizing `src/Core/ZSet.fs` from
 integer weights to an arbitrary semiring/ring weight (first-class uncertainty
-semiring, per ex-B-0367). The DBSP/Z-set core parameterized over its weight algebra.
+semiring, per ex-081KR50HA0008QG0R000Z4XCPJ). The DBSP/Z-set core parameterized over its weight algebra.
 
 ## Integration steps (definition of done)
 

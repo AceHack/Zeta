@@ -15,7 +15,7 @@
  *
  * NOTE (donor↔doc reconciliation): the §09 doc sketch lists lior as
  * `binary: "gemini"`. The donor nix (the source of truth) ships lior as
- * `binary: "agy"` (Antigravity CLI, `-p` flag) per B-0850.3d. We port the
+ * `binary: "agy"` (Antigravity CLI, `-p` flag) per 081KSKBP80008QG0R003Z4C0D0. We port the
  * donor's actual values.
  */
 
