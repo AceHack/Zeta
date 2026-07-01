@@ -1,11 +1,12 @@
 #!/usr/bin/env bun
-// setup-realize.ts — Bun realizers for setup mechanism manifests (081KLL7… slice 1).
+// setup-realize.ts — Bun realizers for setup mechanism manifests (081KLL7…).
 //
-// Post-mise only: callers must run common/mise.sh first. Shell realizers in
-// tools/setup/mechanisms/*.sh remain authoritative until linux.sh cutover.
+// Post-mise only: callers must run common/mise.sh first. Shell realizers remain
+// fallback for mechanisms not yet ported.
 //
 // Usage:
 //   bun src/Core.TypeScript/ace/setup-realize.ts --list
+//   bun src/Core.TypeScript/ace/setup-realize.ts --available from-uv-tool
 //   bun src/Core.TypeScript/ace/setup-realize.ts from-uv-tool from-bun-global
 //   bun src/Core.TypeScript/ace/setup-realize.ts --all
 //   bun src/Core.TypeScript/ace/setup-realize.ts --dry-run from-uv-tool
@@ -13,11 +14,14 @@
 import {
   createContext,
   getSetupRealizer,
+  hasSetupRealizer,
   listSetupRealizerIds,
 } from "./setup-realizers/index.ts";
 
 function usage(): void {
-  process.stderr.write(`Usage: bun src/Core.TypeScript/ace/setup-realize.ts [--list|--all|--dry-run] [mechanism-id...]\n`);
+  process.stderr.write(
+    "Usage: bun src/Core.TypeScript/ace/setup-realize.ts [--list|--available ID|--all|--dry-run] [mechanism-id...]\n",
+  );
   process.stderr.write(`Known Bun realizers: ${listSetupRealizerIds().join(", ")}\n`);
 }
 
@@ -26,12 +30,20 @@ async function main(argv: string[]): Promise<number> {
   let all = false;
   const ids: string[] = [];
 
-  for (const arg of argv) {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i]!;
     if (arg === "--dry-run") dryRun = true;
     else if (arg === "--all") all = true;
     else if (arg === "--list") {
       for (const id of listSetupRealizerIds()) process.stdout.write(`${id}\n`);
       return 0;
+    } else if (arg === "--available") {
+      const id = argv[i + 1];
+      if (!id) {
+        process.stderr.write("error: --available requires a mechanism id\n");
+        return 64;
+      }
+      return hasSetupRealizer(id) ? 0 : 1;
     } else if (arg === "--help" || arg === "-h") {
       usage();
       return 0;

@@ -9,7 +9,13 @@ import { getSetupRealizer, listSetupRealizerIds } from "./setup-realizers/index.
 
 describe("setup-realizers registry", () => {
   test("lists Bun realizer ids in stable order", () => {
-    expect(listSetupRealizerIds()).toEqual(["from-bun-global", "from-uv-tool"]);
+    expect(listSetupRealizerIds()).toEqual([
+      "from-bun-global",
+      "from-bun-link",
+      "from-dotnet-global",
+      "from-dotnet-workload",
+      "from-uv-tool",
+    ]);
   });
 
   test("every registered id resolves", () => {

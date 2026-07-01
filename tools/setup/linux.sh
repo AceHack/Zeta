@@ -29,6 +29,17 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
+SETUP_REALIZE="$REPO_ROOT/src/Core.TypeScript/ace/setup-realize.ts"
+
+# Prefer Bun realizers when ported (081KLL7…); shell .sh remains fallback.
+realize_mechanism() {
+  local id="$1"
+  if command -v bun >/dev/null 2>&1 && bun "$SETUP_REALIZE" --available "$id" >/dev/null 2>&1; then
+    bun "$SETUP_REALIZE" "$id"
+  else
+    "$SETUP_DIR/mechanisms/${id}.sh"
+  fi
+}
 
 # Retry-equipped curl helper — DST exception for external dep
 # downloads, durable retry inside the script instead of ephemeral
@@ -286,7 +297,7 @@ for shim_dir in \
   fi
 done
 
-"$SETUP_DIR/mechanisms/from-uv-tool.sh"
+realize_mechanism from-uv-tool
 "$SETUP_DIR/mechanisms/from-uv-venv.sh"
 
 # Make ~/.dotnet/tools available for the remainder of this install.sh
@@ -295,12 +306,12 @@ done
 export PATH="$HOME/.dotnet/tools:$PATH"
 
 "$SETUP_DIR/mechanisms/from-elan.sh"
-"$SETUP_DIR/mechanisms/from-dotnet-global.sh"
-"$SETUP_DIR/mechanisms/from-dotnet-workload.sh"
+realize_mechanism from-dotnet-global
+realize_mechanism from-dotnet-workload
 "$SETUP_DIR/mechanisms/from-url.sh"
 "$SETUP_DIR/mechanisms/from-opam-git.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
-"$SETUP_DIR/mechanisms/from-bun-global.sh"
-"$SETUP_DIR/mechanisms/from-bun-link.sh"
+realize_mechanism from-bun-global
+realize_mechanism from-bun-link
 "$SETUP_DIR/mechanisms/from-installer.sh"
 "$SETUP_DIR/mechanisms/from-ollama.sh"
 "$SETUP_DIR/common/shellenv.sh"

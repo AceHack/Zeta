@@ -43,13 +43,17 @@ export async function runCommand(
   ctx: RealizeContext,
   label: string,
   argv: readonly string[],
-  opts?: { readonly bestEffort?: boolean },
+  opts?: { readonly bestEffort?: boolean; readonly cwd?: string },
 ): Promise<boolean> {
   ctx.log(label);
   ctx.actions.push(ctx.dryRun ? `dry-run: ${argv.join(" ")}` : argv.join(" "));
   if (ctx.dryRun) return true;
 
-  const proc = Bun.spawn([...argv], { stdout: "inherit", stderr: "inherit" });
+  const proc = Bun.spawn([...argv], {
+    ...(opts?.cwd ? { cwd: opts.cwd } : {}),
+    stdout: "inherit",
+    stderr: "inherit",
+  });
   const code = await proc.exited;
   if (code !== 0) {
     const message = `${argv.join(" ")} exited ${String(code)}`;

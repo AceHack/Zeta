@@ -8,6 +8,11 @@
 # apply alongside this file (verified: 0 repo-wide findings, no node_modules/references flood).
 docs/history/
 
+# Preserved orphan-branch snapshots (#9035/#9042) — quarantined archives, not live
+# code. Same rationale as tsconfig + markdownlint excludes; invisible-unicode and
+# generic rules false-positive on recovered historical files.
+docs/recovered-orphan-branches-2026-05/
+
 # Project Genesis prototype: genesis/assets/* are minified Vite production
 # bundles (not authored source); genesis/_src/ is a self-contained UI
 # prototype. Neither is a Zeta production surface — scanning them only adds

@@ -1,10 +1,16 @@
 import { realizeFromBunGlobal } from "./from-bun-global.ts";
+import { realizeFromBunLink } from "./from-bun-link.ts";
+import { realizeFromDotnetGlobal } from "./from-dotnet-global.ts";
+import { realizeFromDotnetWorkload } from "./from-dotnet-workload.ts";
 import { realizeFromUvTool } from "./from-uv-tool.ts";
 import type { SetupRealizer } from "./shared.ts";
 
 export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
-  "from-uv-tool": realizeFromUvTool,
   "from-bun-global": realizeFromBunGlobal,
+  "from-bun-link": realizeFromBunLink,
+  "from-dotnet-global": realizeFromDotnetGlobal,
+  "from-dotnet-workload": realizeFromDotnetWorkload,
+  "from-uv-tool": realizeFromUvTool,
 };
 
 export function listSetupRealizerIds(): readonly string[] {
@@ -13,6 +19,10 @@ export function listSetupRealizerIds(): readonly string[] {
 
 export function getSetupRealizer(id: string): SetupRealizer | undefined {
   return SETUP_REALIZERS[id];
+}
+
+export function hasSetupRealizer(id: string): boolean {
+  return id in SETUP_REALIZERS;
 }
 
 export { createContext, defaultRepoRoot, type RealizeContext, type RealizeResult } from "./shared.ts";
