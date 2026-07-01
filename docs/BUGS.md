@@ -291,6 +291,15 @@ can no longer pass with Go silent.
 
 ## P2 — nice to have
 
+### `Metric/Bloom × Arrow` FsCheck property test is non-deterministic (flake) (Otto verification sweep, 2026-07-01)
+
+- **Site:** `tests/Tests.FSharp/Metric.Serializer.Tests.fs:154` (`Metric/Bloom × Arrow: state round-trips through Arrow IPC and rehydrates`)
+- **Found:** 2026-07-01 by Otto (verifying Lior's direct-to-main Bucket-C push, commit `91d6b7661`)
+- **Severity:** P2
+- **Symptom:** the Bloom×Arrow round-trip property failed once in a full `dotnet test` run (1 failed / 3709 passed) then passed 72/72 on isolated re-run — non-deterministic. Either the FsCheck generator isn't seed-pinned (violates DST spec §7 — a property test must replay the same case from the same seed) or there is a genuine rare Bloom→Arrow IPC→rehydrate round-trip defect that only some `int64 list` inputs trigger. A flaky test in the proof lineage erodes the byte-lock guarantee.
+- **Fix:** pin the FsCheck `Replay`/seed for this property (or the whole module) so failures reproduce; if a failing case is captured, verify whether `arrowRT ∘ bloomToDynamic` actually loses state for it (real bug) vs a generator edge (test bug). Anchor to DST determinism.
+- **Who:** architect (Kenji) → metric-serializer owner (Naledi) or DST/formal (Soraya)
+
 ### Cluster/loop spawn helpers discard signal + stderr on failure (Otto sweep, 2026-06-13)
 
 - **Site:** `src/Core.TypeScript/cluster/adapters/spawn-process-runner.ts:34-63` (`assertCommandSucceeded`, `captureOrNull`); `service/loop-tick.ts:80-84` (exec); `loop-tick.ts:98-114` (`acquireLock`)
