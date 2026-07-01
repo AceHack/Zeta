@@ -1,11 +1,11 @@
-# Mirror/Beacon Axis Prior-Art Audit (B-0471)
+# Mirror/Beacon Axis Prior-Art Audit (081KRHWGX0008QG0R002VV6DTS)
 
 **Date:** 2026-05-18
 **Author:** Lior
-**Related row:** B-0471
+**Related row:** 081KRHWGX0008QG0R002VV6DTS
 
 ## Purpose
-Collect and verify existing Axis-2 (Mirror/Beacon) substrate to ensure B-0472 (classification matrix) and B-0473 (promotion gate protocol) are grounded in stable, consistent prior art. 
+Collect and verify existing Axis-2 (Mirror/Beacon) substrate to ensure 081KRHWGX0008QG0R002DP6AZN (classification matrix) and 081KRHWGX0008QG0R0031EGYA7 (promotion gate protocol) are grounded in stable, consistent prior art. 
 
 ## Surfaces Audited
 
@@ -17,7 +17,7 @@ Collect and verify existing Axis-2 (Mirror/Beacon) substrate to ensure B-0472 (c
 | `feedback_doc_class_mirror_beacon_distinction...` | **Stable** | The concept translates cleanly from document classes (e.g. CLAUDE.md vs memory) to repo classes. |
 | `feedback_mirror_beacon_assessment_overnight_session...` | **Stable** | No conflicting repo-level decisions have been made. |
 | `docs/security/THREAT-MODEL.md` | **Consistent** | Mirror/Beacon posture maps perfectly to the threat model (Mirror = assume noisy/unverified; Beacon = trust boundaries enforced). |
-| `B-0426-repo-split-orthogonal-mirror-beacon-axis...` | **Consistent** | The illustrative matrix matches the audited substrate. |
+| `081KRFA460008QG0R0007RWSN1-repo-split-orthogonal-mirror-beacon-axis...` | **Consistent** | The illustrative matrix matches the audited substrate. |
 | `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md` | **Consistent** | Sets Axis-1 positions; Axis-2 remains unset, awaiting this sequence. |
 | civsim PR #2909 | **Consistent** | Language → governance escalation mechanics map perfectly to repo promotion mechanics. |
 
@@ -26,4 +26,4 @@ Collect and verify existing Axis-2 (Mirror/Beacon) substrate to ensure B-0472 (c
 - **Reciprocal Pointers:** Verified and added where missing.
 - **Blockers:** None.
 
-**Substrate-Ready Signal:** Ready for B-0472 (Classification Matrix) and B-0473 (Promotion Gate Protocol).
+**Substrate-Ready Signal:** Ready for 081KRHWGX0008QG0R002DP6AZN (Classification Matrix) and 081KRHWGX0008QG0R0031EGYA7 (Promotion Gate Protocol).

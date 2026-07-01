@@ -1,5 +1,8 @@
 # Otto session resume — 2026-06-21
 
+> **Superseded by** [`2026-07-01-otto-session-resume-state.md`](./2026-07-01-otto-session-resume-state.md)
+> (post-#8992 slice 2 merge).
+
 Resume snapshot after **#8948 merged** (post-8920 steward arc). Saved at Aaron's
 request before continuing **081KLL7…** (Ace Bun realizers). Main at save:
 `09242ce51` (#8969 keys fix on tip).

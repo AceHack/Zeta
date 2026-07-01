@@ -2,8 +2,8 @@
 
 > The concrete shape of a **move-next transition as an append-only Git event**.
 > Composes with `tools/agent-loop/state-machine.ts` (the `AgentState` +
-> `MenuOption` DUs + pure `transition`), B-0867 (128-bit-unique-IDs, append-only),
-> B-0874 (no-PR swarm via GH-Actions-recursion), and the 2026-05-29 razor-flow
+> `MenuOption` DUs + pure `transition`), 081KSKBP80008QG0R000B3Y19A (128-bit-unique-IDs, append-only),
+> 081KSNY2Z0008QG0R003X1QWYG (no-PR swarm via GH-Actions-recursion), and the 2026-05-29 razor-flow
 > substrate (forgiveness-budget + schema-in-the-stream). Concrete types:
 > [`tools/accelerator/event-store-schema.ts`](../../tools/accelerator/event-store-schema.ts).
 
@@ -39,7 +39,7 @@ events/
 `events/<agent>/`, and every event is a unique [ULID](https://github.com/ulid/spec)-named
 file. Two agents never target the same path, so a `git merge` across agent streams
 is **always a clean union** — no merge conflict, ever. This is the property that
-lets the swarm run PR-less (per B-0867's 128-bit-unique-ID design; ULID chosen
+lets the swarm run PR-less (per 081KSKBP80008QG0R000B3Y19A's 128-bit-unique-ID design; ULID chosen
 over UUIDv4 because it is **lexicographically time-sortable** — a directory sort IS
 chronological replay order). UUIDv7 is an acceptable alternative (also time-sortable).
 
@@ -76,7 +76,7 @@ reader doesn't need the transition function to inspect history.
 | `kind` | Purpose | Extra fields |
 |---|---|---|
 | `transition` | A move-next state transition | `from`, `option`, `to` |
-| `heartbeat` | A `RecordingHeartbeat` (per B-0858) | `lane`, `note?` |
+| `heartbeat` | A `RecordingHeartbeat` (per 081KSKBP80008QG0R001KK9WV6) | `lane`, `note?` |
 | `schema-def` | Declares a schema version (schema-in-the-stream) | `schemaName`, `schemaVersion`, `jsonSchema` |
 | `retraction` | Negates a prior event (forgiveness) | `weight: -1`, `retracts: "<ulid>"` |
 
@@ -160,7 +160,7 @@ free + effectively unlimited — so the git-monster's forgiveness is effectively
 **unbounded within GitHub's generosity**. The binding constraint right now is not
 a hard space wall; it is **relational: be a good guest of the host.**
 
-GitHub's free-OSS generosity (Microsoft subsidizing open-source, per B-0874) is
+GitHub's free-OSS generosity (Microsoft subsidizing open-source, per 081KSNY2Z0008QG0R003X1QWYG) is
 precisely what makes git-as-free-event-store + GH-Actions-recursion possible. So:
 
 - **We apply the compaction / past-as-generator discipline VOLUNTARILY** — as
@@ -194,11 +194,11 @@ Reconstruct agent `A`'s state at time `T`:
 Deterministic (no wall-clock dependence beyond the recorded `ts`/ULID) →
 DST-replayable.
 
-## The PR-less write path (composes with B-0874)
+## The PR-less write path (composes with 081KSNY2Z0008QG0R003X1QWYG)
 
 One move-next cycle = append one event-file + commit with the AgencySignature
 trailer + **direct push** (no PR) to the agent's stream branch (or the long-lived
-accelerator branch; or via GH-Actions-recursion per B-0874). The git commit IS the
+accelerator branch; or via GH-Actions-recursion per 081KSNY2Z0008QG0R003X1QWYG). The git commit IS the
 durable event-store write; `git log` / reflog IS the event log. Per **Otto
 Modification 4** (the dual-market discriminator): state-machine-internal
 transitions are append-only/PR-less (Agora market); only cross-cutting substrate
@@ -210,7 +210,7 @@ GraphQL PR-mutation rate-limit bottleneck that is the "git monster."
 - **"Perfect" expansion-ordering** (razor-flow Insight 2): is there a preferred
   order to introduce new event-`kind`s / DU `tag`s that minimizes accidental
   coupling? Open; air-quotes deliberate.
-- **Per-host adapter shape** (B-0867.15): the event files are host-agnostic, but
+- **Per-host adapter shape** (081KSNY2Z0008QG0R002A785QR): the event files are host-agnostic, but
   the push/recursion runtime differs per host (GitHub Actions vs GitLab CI vs
   Gitea Actions). Action Item 3 prototypes the GitHub instantiation.
 - **Cross-agent causal ordering**: `prev` links within an agent's stream; cross-agent
@@ -221,7 +221,7 @@ GraphQL PR-mutation rate-limit bottleneck that is the "git monster."
 
 - `tools/agent-loop/state-machine.ts` (the move-next DUs this schema persists)
 - `tools/accelerator/event-store-schema.ts` (the concrete `@1` types)
-- B-0867 (128-bit-unique-IDs, append-only) + B-0874 (no-PR swarm) + B-0858 (heartbeat)
+- 081KSKBP80008QG0R000B3Y19A (128-bit-unique-IDs, append-only) + 081KSNY2Z0008QG0R003X1QWYG (no-PR swarm) + 081KSKBP80008QG0R001KK9WV6 (heartbeat)
 - `docs/research/2026-05-29-rodneys-razor-is-a-compression-engine-...md` (Insights 3+4)
 - `docs/accelerator/SUBSTRATE-GROUNDING.md` (Action Item 1) + `docs/accelerator/README.md` (charter)
 - AgencySignature v1 trailer (CLAUDE.md) — each event-commit composes with it

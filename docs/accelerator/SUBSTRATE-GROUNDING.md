@@ -10,11 +10,11 @@
 |---|---|
 | **move-next as universal action grammar** (canonical) | `memory/persona/ani/conversations/2026-05-28-aaron-ani-grok-move-next-as-universal-action-grammar-git-as-free-event-store-github-actions-recursion-...md` |
 | **GitHub swarm + free-event-store + move-next** (precursor) | `memory/persona/kiro/conversations/2026-05-23-aaron-ani-grok-github-swarm-free-event-store-move-next-architecture.md` |
-| **Workflow-engine v1 spec** (canonical backlog row) | `docs/backlog/P1/B-0867-workflow-engine-v1-fsharp-du-state-machine-git-append-only-...md` (+ sub-rows B-0867.1..15) |
-| **move-next state machine** (TS implementation, landed) | `tools/agent-loop/state-machine.ts` (B-0867.5) + `work-lifecycle-state-machine.ts` + tests |
-| **GH-Actions-recursion = infinite no-PR swarm runtime** | `docs/backlog/P1/B-0874-github-actions-recursion-as-infinite-runtime-platform-no-pr-swarm-mode-...md` |
-| **Heartbeat folder** (append-only, no-PR write surface) | B-0858 (dependency of B-0867) |
-| **Per-host adapters** (GitHub/GitLab/Gitea/Bitbucket isomorphic) | B-0867.15 |
+| **Workflow-engine v1 spec** (canonical backlog row) | `docs/backlog/P1/081KSKBP80008QG0R000B3Y19A-workflow-engine-v1-fsharp-du-state-machine-git-append-only-...md` (+ sub-rows 081KDWZ8TS008QG0R000A4GT2F..15) |
+| **move-next state machine** (TS implementation, landed) | `tools/agent-loop/state-machine.ts` (081KDWZ8TS008QG0R0020NJ9D0) + `work-lifecycle-state-machine.ts` + tests |
+| **GH-Actions-recursion = infinite no-PR swarm runtime** | `docs/backlog/P1/081KSNY2Z0008QG0R003X1QWYG-github-actions-recursion-as-infinite-runtime-platform-no-pr-swarm-mode-...md` |
+| **Heartbeat folder** (append-only, no-PR write surface) | 081KSKBP80008QG0R001KK9WV6 (dependency of 081KSKBP80008QG0R000B3Y19A) |
+| **Per-host adapters** (GitHub/GitLab/Gitea/Bitbucket isomorphic) | 081KSNY2Z0008QG0R002A785QR |
 | **agentic-org live substrate proof harnesses** | `agentic-organization/apps/workers/test/` (cockroach + nats integration; commit cc6904685) |
 
 ## The shape (what the accelerator inherits, not re-invents)
@@ -32,7 +32,7 @@
    indefinitely → going closed-source is financially suicidal; staying OSS is the
    free, persistent, distributed event-store + runtime.
 
-3. **GitHub Actions recursion = the swarm runtime** (B-0874). Workflows trigger
+3. **GitHub Actions recursion = the swarm runtime** (081KSNY2Z0008QG0R003X1QWYG). Workflows trigger
    workflows recursively → infinite compute over the git-event-store, no servers.
    **Direct pushes bypass PR rate limits** (Git + REST barely throttled; GraphQL
    is the PR-mutation bottleneck). This is the "no-PR swarm mode."
@@ -63,6 +63,6 @@
 ## Composes with
 
 - `tools/agent-loop/state-machine.ts` (the move-next DUs the event-store persists)
-- B-0867 (workflow-engine v1) + B-0874 (no-PR swarm) + B-0858 (heartbeat folder)
+- 081KSKBP80008QG0R000B3Y19A (workflow-engine v1) + 081KSNY2Z0008QG0R003X1QWYG (no-PR swarm) + 081KSKBP80008QG0R001KK9WV6 (heartbeat folder)
 - `docs/research/2026-05-29-rodneys-razor-is-a-compression-engine-...md` (Insights 3+4 feed the schema)
 - The AgencySignature v1 trailer (per CLAUDE.md) — each event-commit composes with it
