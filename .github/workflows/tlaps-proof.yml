@@ -97,7 +97,7 @@ jobs:
       # deps Makefile pulls even though we use only SMT/Zenon) — a
       # future optimization could prune the build tree before caching.
       - name: Cache opam switch (tlaps-build / tlapm)
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.opam
           key: opam-tlaps-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/mechanisms/from-opam-git.sh', 'tools/setup/manifests/from-opam-git', 'tools/setup/manifests/apt') }}

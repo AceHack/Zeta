@@ -82,7 +82,7 @@ jobs:
       # cache, every PR fetches + builds Mathlib from scratch which
       # is hours of CI time.
       - name: Cache lake (Mathlib oleans)
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: src/Core.Lean4/.lake
           key: lake-${{ runner.os }}-${{ hashFiles('src/Core.Lean4/lean-toolchain', 'src/Core.Lean4/lakefile.toml', 'src/Core.Lean4/lake-manifest.json') }}
@@ -95,7 +95,7 @@ jobs:
       # elan toolchain. Same key shape as gate.yml's elan cache so
       # the two workflows share cache space efficiently.
       - name: Cache elan (Lean 4 toolchain)
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/mechanisms/from-elan.sh') }}
