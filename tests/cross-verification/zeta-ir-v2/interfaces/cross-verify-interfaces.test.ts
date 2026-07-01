@@ -17,7 +17,7 @@ const irFiles = readdirSync(IR_DIR).filter(f => f.endsWith(".ir.json"));
 describe("interface IRs — cross-language law verification", () => {
   for (const file of irFiles) {
     test(`${file}: laws hold across all tested languages`, () => {
-      const { results, summary } = crossVerifyAllLaws(join(IR_DIR, file));
+      const { summary } = crossVerifyAllLaws(join(IR_DIR, file));
       // Laws that have encodings should pass (not fail)
       expect(summary.failed).toBe(0);
       // At least some laws were checked (not all skipped)
