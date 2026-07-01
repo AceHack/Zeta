@@ -95,6 +95,16 @@ the structural heart of the diagram.**
 
 ## Open threads (the recreate-and-check work)
 
+> **RESOLVED 2026-07-01** by computation — see companion analysis
+> [`2026-07-01-the-2015-tree-of-life-adinkra-analyzed-rhyme-proven-not-isomorphism.md`](2026-07-01-the-2015-tree-of-life-adinkra-analyzed-rhyme-proven-not-isomorphism.md).
+> Summary: **(1) NOT a strict adinkra** — proven from topology alone (not
+> 4-regular; colors repeat at every vertex; single-bit-flip contradicts at Hod),
+> label-independent. **(2) Fill ≠ weight-parity** (proven: `1111` ○ and `0000` ●
+> are both even-weight); the dark set `{Gevurah, Chesed, Tiferet, Malkuth}` encodes
+> a second axis Aaron doesn't recall — the one genuinely open question. **(3)**
+> weight histogram `1,2,6,0,1` (all six weight-2, no weight-3) — suggestive but
+> transcription-limited. The original threads, verbatim, follow.
+
 1. **Is it a single-bit-flip adinkra?** Under the read labels, several drawn
    edges connect nodes differing in **more than one bit** (e.g. `1111`–`1100`
    flips two bits; `1111`–`0100` flips three). A strict adinkra edge flips
