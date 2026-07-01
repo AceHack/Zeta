@@ -153,6 +153,80 @@ let ``heat transcript summary folds rows without losing distinct heat kinds`` ()
     Assert.True(Scheduler.transcriptHasHeat summary)
 
 [<Fact>]
+let ``heat boundary signals classify scheduler rows without caller string parsing`` () =
+    let forgotten: Scheduler.HeatBoundaryRow =
+        { Tick = 1
+          RoomName = "darkhall"
+          HeatRejected = 1
+          Backpressured = 0
+          StorageErrors = 0
+          HeatKinds = [ "room-horizon.forgotten"; "soft-emu.prune" ]
+          Reasons = [ "forgot materialized keys" ] }
+
+    let noForgetBackpressure: Scheduler.HeatBoundaryRow =
+        { Tick = 2
+          RoomName = "darkhall"
+          HeatRejected = 1
+          Backpressured = 1
+          StorageErrors = 0
+          HeatKinds = [ "room-admission.backpressure" ]
+          Reasons = [ "paid candidate could not enter" ] }
+
+    let denied: Scheduler.HeatBoundaryRow =
+        { Tick = 3
+          RoomName = "darkhall"
+          HeatRejected = 1
+          Backpressured = 1
+          StorageErrors = 0
+          HeatKinds = [ "room-boundary.door-denied" ]
+          Reasons = [ "permission denied" ] }
+
+    let countOnly: Scheduler.HeatBoundaryRow =
+        { Tick = 4
+          RoomName = "darkhall"
+          HeatRejected = 1
+          Backpressured = 1
+          StorageErrors = 1
+          HeatKinds = [ "custom.heat" ]
+          Reasons = [ "bounded sink saturated" ] }
+
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Forgotten ],
+        Scheduler.heatBoundarySignals forgotten
+    )
+
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Backpressure ],
+        Scheduler.heatBoundarySignals noForgetBackpressure
+    )
+
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Denied ],
+        Scheduler.heatBoundarySignals denied
+    )
+
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Other "custom.heat"
+          Scheduler.HeatBoundarySignal.Backpressure
+          Scheduler.HeatBoundarySignal.StorageError ],
+        Scheduler.heatBoundarySignals countOnly
+    )
+
+    Assert.True(Scheduler.rowHasForgettingSignal forgotten)
+    Assert.True(Scheduler.rowHasBackpressureSignal noForgetBackpressure)
+    Assert.True(Scheduler.rowHasBackpressureSignal denied)
+    Assert.True(Scheduler.rowHasStorageErrorSignal countOnly)
+
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Forgotten
+          Scheduler.HeatBoundarySignal.Backpressure
+          Scheduler.HeatBoundarySignal.Denied
+          Scheduler.HeatBoundarySignal.Other "custom.heat"
+          Scheduler.HeatBoundarySignal.StorageError ],
+        Scheduler.heatTranscriptSignals [ forgotten; noForgetBackpressure; denied; countOnly ]
+    )
+
+[<Fact>]
 let ``room horizon forgetting renders on the DarkHall heat board`` () =
     let current =
         BoundedGSet.ofSeq<int> (horizonConfig 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]

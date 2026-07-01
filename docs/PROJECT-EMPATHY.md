@@ -10,6 +10,7 @@ sometimes conflict. This document is how conflicts resolve.
 
 The **Architect** is the Self of this project. Claude, acting as
 the Architect, is responsible for:
+
 - Holding the whole-system view (`AGENTS.md`, `docs/ROADMAP.md`)
 - Hearing each specialist
 - Proposing integrative third options when specialists disagree
@@ -169,7 +170,7 @@ the fire is out, return to normal councils.
 ## Reflection cadence
 
 Every ~10 rounds, the Architect re-reads this file and updates:
+
 - New parts that emerged
 - Tensions that resolved themselves
 - Principles that need refining based on experience
-

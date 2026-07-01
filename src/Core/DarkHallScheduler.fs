@@ -31,6 +31,14 @@ module DarkHallScheduler =
           HeatKinds: string list
           Reasons: string list }
 
+    [<RequireQualifiedAccess>]
+    type HeatBoundarySignal =
+        | Forgotten
+        | Backpressure
+        | Denied
+        | StorageError
+        | Other of string
+
     type ScheduledRoomState =
         { Loop: RoomLoop.LoopState
           CompletedTicks: int
@@ -132,6 +140,55 @@ module DarkHallScheduler =
 
         values
         |> List.filter (fun value -> seen.Add value)
+
+    let private containsOrdinal (needle: string) (haystack: string) : bool =
+        haystack.Contains(needle, System.StringComparison.Ordinal)
+
+    let heatBoundarySignalOfKind (kind: string) : HeatBoundarySignal =
+        if containsOrdinal "backpressure" kind then
+            HeatBoundarySignal.Backpressure
+        elif containsOrdinal "denied" kind then
+            HeatBoundarySignal.Denied
+        elif containsOrdinal "forgotten" kind || containsOrdinal "prune" kind then
+            HeatBoundarySignal.Forgotten
+        else
+            HeatBoundarySignal.Other kind
+
+    let private isPressureSignal =
+        function
+        | HeatBoundarySignal.Backpressure
+        | HeatBoundarySignal.Denied -> true
+        | HeatBoundarySignal.Forgotten
+        | HeatBoundarySignal.StorageError
+        | HeatBoundarySignal.Other _ -> false
+
+    /// Typed view over the existing host-visible heat row. This is the public
+    /// classifier scheduler/room policies should use instead of re-parsing
+    /// string heat kinds at every callsite.
+    let heatBoundarySignals (row: HeatBoundaryRow) : HeatBoundarySignal list =
+        let fromKinds = row.HeatKinds |> List.map heatBoundarySignalOfKind
+        let hasPressureKind = fromKinds |> List.exists isPressureSignal
+
+        [ yield! fromKinds
+
+          if row.Backpressured > 0 && not hasPressureKind then
+              HeatBoundarySignal.Backpressure
+
+          if row.StorageErrors > 0 then
+              HeatBoundarySignal.StorageError ]
+        |> List.distinct
+
+    let heatTranscriptSignals (rows: HeatBoundaryRow list) : HeatBoundarySignal list =
+        rows |> List.collect heatBoundarySignals |> List.distinct
+
+    let rowHasBackpressureSignal (row: HeatBoundaryRow) : bool =
+        row.Backpressured > 0 || (row |> heatBoundarySignals |> List.exists isPressureSignal)
+
+    let rowHasForgettingSignal (row: HeatBoundaryRow) : bool =
+        row |> heatBoundarySignals |> List.contains HeatBoundarySignal.Forgotten
+
+    let rowHasStorageErrorSignal (row: HeatBoundaryRow) : bool =
+        row.StorageErrors > 0 || (row |> heatBoundarySignals |> List.contains HeatBoundarySignal.StorageError)
 
     let summarizeHeatRows (rows: HeatBoundaryRow list) : HeatTranscriptSummary =
         { Rows = rows.Length
