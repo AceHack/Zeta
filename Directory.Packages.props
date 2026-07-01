@@ -27,7 +27,7 @@
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.19.0.132793" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
     <PackageVersion Include="FsCheck" Version="3.3.3" />
     <PackageVersion Include="FsCheck.Xunit.v3" Version="3.3.3" />
     <PackageVersion Include="FsUnit.Xunit" Version="7.1.1" />
@@ -58,6 +58,6 @@
     <!-- Microsoft first-party DI: the IServiceCollection seam the mediator registers into.
          Abstractions for the port library; the full container for the proving test. -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
   </ItemGroup>
 </Project>
