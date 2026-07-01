@@ -299,6 +299,7 @@ can no longer pass with Go silent.
 - **Symptom:** the Bloom×Arrow round-trip property failed once in a full `dotnet test` run (1 failed / 3709 passed) then passed 72/72 on isolated re-run — non-deterministic. Either the FsCheck generator isn't seed-pinned (violates DST spec §7 — a property test must replay the same case from the same seed) or there is a genuine rare Bloom→Arrow IPC→rehydrate round-trip defect that only some `int64 list` inputs trigger. A flaky test in the proof lineage erodes the byte-lock guarantee.
 - **Fix:** pin the FsCheck `Replay`/seed for this property (or the whole module) so failures reproduce; if a failing case is captured, verify whether `arrowRT ∘ bloomToDynamic` actually loses state for it (real bug) vs a generator edge (test bug). Anchor to DST determinism.
 - **Who:** architect (Kenji) → metric-serializer owner (Naledi) or DST/formal (Soraya)
+- **Work-item:** `081KWFT03NW08QG0R002C6JRDF` (`workitems/081KWFT03NW08QG0R002C6JRDF-*.md`)
 
 ### Cluster/loop spawn helpers discard signal + stderr on failure (Otto sweep, 2026-06-13)
 
