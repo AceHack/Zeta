@@ -39,7 +39,7 @@ semiring, per ex-B-0367). The DBSP/Z-set core parameterized over its weight alge
 
 1. Read `ZSetW.fs` + tests; check API drift against current `src/Core/ZSet.fs`
    (the shipped Z-set has evolved since May — this may need reconciliation).
-2. If it still adds value: move to `src/Core/ZSetW.fs` + tests to
+2. If it still adds value: move to a new `ZSetW.fs` under `src/Core/` + tests to
    `tests/Tests.FSharp/Algebra/`, register in `Core.fsproj` / `Tests.FSharp.fsproj`.
 3. Honor the ordinal-collation parity requirement (see `culture-invariant-by-default`
    — the `GCounter.Merge` vs `ZSet.ofSeq` associativity bug lives in this area).
