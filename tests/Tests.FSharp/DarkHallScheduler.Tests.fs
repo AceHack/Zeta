@@ -227,6 +227,44 @@ let ``heat boundary signals classify scheduler rows without caller string parsin
     )
 
 [<Fact>]
+let ``heat signature classifier is the shared pressure and forgetting rule`` () =
+    let nullKind: string = null
+
+    Assert.False(HeatSignature.isBackpressureKind nullKind)
+    Assert.False(HeatSignature.isDeniedKind nullKind)
+    Assert.False(HeatSignature.isPressureKind nullKind)
+    Assert.False(HeatSignature.isForgettingKind nullKind)
+    Assert.True(HeatSignature.isBackpressureKind "room-admission.backpressure")
+    Assert.False(HeatSignature.isBackpressureKind "room-boundary.door-denied")
+    Assert.True(HeatSignature.isDeniedKind "room-boundary.door-denied")
+    Assert.True(HeatSignature.isPressureKind "room-boundary.door-denied")
+    Assert.True(HeatSignature.isPressureKind "meta-cart.policy-backpressure")
+    Assert.True(HeatSignature.isForgettingKind "room-horizon.forgotten")
+    Assert.True(HeatSignature.isForgettingKind "soft-emu.prune")
+    Assert.False(HeatSignature.isPressureKind "soft-emu.prune")
+
+    Assert.Equal(
+        Scheduler.HeatBoundarySignal.Backpressure,
+        Scheduler.heatBoundarySignalOfKind "meta-cart.policy-backpressure"
+    )
+
+    Assert.Equal(
+        Scheduler.HeatBoundarySignal.Denied,
+        Scheduler.heatBoundarySignalOfKind "room-boundary.door-denied"
+    )
+
+    Assert.Equal(
+        Scheduler.HeatBoundarySignal.Forgotten,
+        Scheduler.heatBoundarySignalOfKind "soft-emu.prune"
+    )
+
+    Assert.True(
+        match Scheduler.heatBoundarySignalOfKind nullKind with
+        | Scheduler.HeatBoundarySignal.Other value -> isNull value
+        | _ -> false
+    )
+
+[<Fact>]
 let ``room horizon forgetting renders on the DarkHall heat board`` () =
     let current =
         BoundedGSet.ofSeq<int> (horizonConfig 2 BoundedGSetForgetPolicy.ForgetLowest) [ 1; 2 ]

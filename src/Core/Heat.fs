@@ -20,6 +20,21 @@ type HeatSignature =
 [<RequireQualifiedAccess>]
 module HeatSignature =
 
+    let private kindContains (needle: string) (kind: string) : bool =
+        not (String.IsNullOrEmpty kind) && kind.Contains(needle, StringComparison.Ordinal)
+
+    let isBackpressureKind (kind: string) : bool =
+        kindContains "backpressure" kind
+
+    let isDeniedKind (kind: string) : bool =
+        kindContains "denied" kind
+
+    let isPressureKind (kind: string) : bool =
+        isBackpressureKind kind || isDeniedKind kind
+
+    let isForgettingKind (kind: string) : bool =
+        kindContains "forgotten" kind || kindContains "prune" kind
+
     let ofMass (source: string) (kind: string) (units: int) (mass: double) (detail: string) : HeatSignature =
         let ppm =
             if Double.IsNaN mass || Double.IsInfinity mass then

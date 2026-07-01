@@ -141,15 +141,12 @@ module DarkHallScheduler =
         values
         |> List.filter (fun value -> seen.Add value)
 
-    let private containsOrdinal (needle: string) (haystack: string) : bool =
-        haystack.Contains(needle, System.StringComparison.Ordinal)
-
     let heatBoundarySignalOfKind (kind: string) : HeatBoundarySignal =
-        if containsOrdinal "backpressure" kind then
+        if HeatSignature.isBackpressureKind kind then
             HeatBoundarySignal.Backpressure
-        elif containsOrdinal "denied" kind then
+        elif HeatSignature.isDeniedKind kind then
             HeatBoundarySignal.Denied
-        elif containsOrdinal "forgotten" kind || containsOrdinal "prune" kind then
+        elif HeatSignature.isForgettingKind kind then
             HeatBoundarySignal.Forgotten
         else
             HeatBoundarySignal.Other kind
@@ -263,9 +260,7 @@ module DarkHallScheduler =
         { HeatRejected = signatures.Length
           Backpressured =
             signatures
-            |> List.filter (fun signature ->
-                signature.Kind.Contains("backpressure", System.StringComparison.Ordinal)
-                || signature.Kind.Contains("denied", System.StringComparison.Ordinal))
+            |> List.filter (fun signature -> HeatSignature.isPressureKind signature.Kind)
             |> List.length
           StorageErrors = 0
           HeatKinds = signatures |> List.map _.Kind

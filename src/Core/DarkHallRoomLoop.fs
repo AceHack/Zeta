@@ -162,9 +162,7 @@ module DarkHallRoomLoop =
             HeatRejected = signatures.Length
             Backpressured =
                 signatures
-                |> List.filter (fun signature ->
-                    signature.Kind.Contains("backpressure", System.StringComparison.Ordinal)
-                    || signature.Kind.Contains("denied", System.StringComparison.Ordinal))
+                |> List.filter (fun signature -> HeatSignature.isPressureKind signature.Kind)
                 |> List.length
             HeatKinds = heatKinds
             Reasons = reasons }
