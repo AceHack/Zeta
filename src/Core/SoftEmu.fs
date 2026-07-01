@@ -43,7 +43,7 @@ module SoftEmu =
     [<RequireQualifiedAccess>]
     type SoftPrunePolicy =
         /// Keep every current branch and report backpressure instead of erasing futures.
-        | RejectNew
+        | NoForgetBackpressure
         /// Keep the highest-weight branches and report the dropped tail as heat.
         | KeepHighestWeight
 
@@ -137,7 +137,7 @@ module SoftEmu =
 
     /// **The throttle / breadth knob with an explicit policy.**
     ///
-    /// `RejectNew` is the cold/no-forget option: if the ensemble is too wide,
+    /// `NoForgetBackpressure` is the cold option: if the ensemble is too wide,
     /// it returns typed backpressure and keeps the caller's state untouched.
     /// `KeepHighestWeight` is lossy by design, but emits the dropped tail as
     /// heat before renormalizing the retained branches.
@@ -146,7 +146,7 @@ module SoftEmu =
             Ok { State = s; Heat = emptyHeat }
         else
             match policy with
-            | SoftPrunePolicy.RejectNew -> Error(SoftPruneFeedback.SupportExceeded(k, List.length s))
+            | SoftPrunePolicy.NoForgetBackpressure -> Error(SoftPruneFeedback.SupportExceeded(k, List.length s))
             | SoftPrunePolicy.KeepHighestWeight ->
                 let sorted = s |> List.sortByDescending snd
                 let kept = sorted |> List.truncate k
@@ -185,7 +185,7 @@ module SoftEmu =
 
     /// Cold/no-forget pruning: returns backpressure instead of erasing futures.
     let pruneOrBackpressure (k: int) (s: Soft) : Result<SoftPruneReport, SoftPruneFeedback> =
-        pruneWithPolicy SoftPrunePolicy.RejectNew k s
+        pruneWithPolicy SoftPrunePolicy.NoForgetBackpressure k s
 
     /// Compatibility state projection. Prefer `pruneWithHeat` when a caller can
     /// carry debugging heat forward.

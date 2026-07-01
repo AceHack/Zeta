@@ -13,8 +13,7 @@ let private mustOk =
     | Error feedback -> failwithf "expected Ok, got %A" feedback
 
 let private config capacity retention =
-    { Capacity = capacity
-      ForgetPolicy = retention }
+    BoundedGSetConfig.withPolicy capacity retention
 
 let private cost bytes : Vision.BranchCost =
     { SpaceBytes = bytes
@@ -150,9 +149,7 @@ let ``rolling horizon preserves heat sink backpressure as typed feedback`` () =
         |> fun projection -> projection.State
 
     let sink =
-        BoundedHeatSink
-            { Capacity = 1
-              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+        BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
     let filler = HeatSignature.ofMass "occupied" "heat.fill" 1 1.0 "pre-fill bounded heat sink"
     (sink :> IHeatSink).Emit filler |> mustOk
@@ -171,7 +168,7 @@ let ``rolling horizon preserves heat sink backpressure as typed feedback`` () =
 [<Fact>]
 let ``no-forget horizon exports paid finite-view rejection as backpressure heat`` () =
     let current =
-        BoundedGSet.ofSeq<int> (config 1 BoundedGSetForgetPolicy.RejectNew) [ 1 ]
+        BoundedGSet.ofSeq<int> (BoundedGSetConfig.noForgetBackpressure 1) [ 1 ]
         |> mustOk
         |> fun projection -> projection.State
 
@@ -197,7 +194,7 @@ let ``no-forget horizon exports paid finite-view rejection as backpressure heat`
 let ``byte-deferred futures stay cold until they enter the room`` () =
     let report =
         [ candidate 1 "too-expensive" "A" 1L 1L 2L ]
-        |> RH.admit (config 1 BoundedGSetForgetPolicy.RejectNew) (SoftThrottle.tank 1.0 0.0)
+        |> RH.admit (BoundedGSetConfig.noForgetBackpressure 1) (SoftThrottle.tank 1.0 0.0)
         |> mustOk
 
     Assert.Equal(Vision.RejectedWithBackpressure, report.Prediction.Outcome)
@@ -287,7 +284,7 @@ let ``admitInferenceWithHeat exports finite horizon pressure after exact inferen
         RH.admitInferenceWithHeat
             (sink :> IHeatSink)
             "vision-test"
-            (config 1 BoundedGSetForgetPolicy.RejectNew)
+            (BoundedGSetConfig.noForgetBackpressure 1)
             (SoftThrottle.tank 2.0 0.0)
             keyOf
             (fun _ -> PI.neutralPriority)

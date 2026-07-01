@@ -46,8 +46,7 @@ let private mustOk =
     | Error feedback -> failwithf "expected Ok, got %A" feedback
 
 let private rejectSlots slots : ModuloGSetConfig =
-    { Slots = slots
-      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+    ModuloGSetConfig.rejectCollision slots
 
 let private emptyBoundary source room budget =
     ModuloGSet.empty<string> (rejectSlots 4)
@@ -167,9 +166,7 @@ let ``room run exports boundary denial and soft prune heat through one sink`` ()
 let ``room run stops on soft heat backpressure with typed feedback and keeps room state`` () =
     task {
         let sink =
-            BoundedHeatSink
-                { Capacity = 1
-                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+            BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
         let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
 
@@ -299,9 +296,7 @@ let ``room run appends finite horizon heat to the host visible transcript`` () =
 let ``room run keeps horizon row when external heat sink backpressures`` () =
     task {
         let sink =
-            BoundedHeatSink
-                { Capacity = 1
-                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+            BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
         let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
 

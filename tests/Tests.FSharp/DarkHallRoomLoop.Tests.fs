@@ -33,8 +33,7 @@ let private mustOk =
     | Error feedback -> failwithf "expected Ok, got %A" feedback
 
 let private rejectSlots slots : ModuloGSetConfig =
-    { Slots = slots
-      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+    ModuloGSetConfig.rejectCollision slots
 
 let private emptyBoundary source room budget config =
     ModuloGSet.empty<string> config
@@ -225,9 +224,7 @@ let ``tick appends runtime refusal and emits heat for denied cabinet capability`
 [<Fact>]
 let ``tick readout exposes heat backpressure when denied cabinet heat cannot cross boundary`` () =
     let sink =
-        BoundedHeatSink
-            { Capacity = 1
-              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+        BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
     let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
 

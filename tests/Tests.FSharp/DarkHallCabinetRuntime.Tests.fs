@@ -257,10 +257,7 @@ let ``attention ledger does not label rejected denial heat as policy backpressur
               Policy = MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = chip9Cart.Meta.Title then 100.0 else 0.0) }
 
         let sink =
-            BoundedHeatSink(
-                { Capacity = 1
-                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
-            )
+            BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
         let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
 
@@ -317,10 +314,7 @@ let ``attention ledger does not infer policy backpressure after heat storage err
               Policy = MetaCart.attentionSelectionPolicy (fun slot -> if slot.Name = chip9Cart.Meta.Title then 100.0 else 0.0) }
 
         let sink =
-            BoundedHeatSink(
-                { Capacity = 0
-                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
-            )
+            BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 0)
 
         let! report =
             Runtime.executeAddressWithAttentionLedger

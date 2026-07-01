@@ -11,12 +11,10 @@ let private mustOk =
     | Error feedback -> failwithf "expected Ok, got %A" feedback
 
 let private rejectSlots slots : ModuloGSetConfig =
-    { Slots = slots
-      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+    ModuloGSetConfig.rejectCollision slots
 
 let private replaceSlots slots : ModuloGSetConfig =
-    { Slots = slots
-      CollisionPolicy = ModuloGSetCollisionPolicy.ReplaceExisting }
+    ModuloGSetConfig.replaceExisting slots
 
 let private emptyModulo config =
     ModuloGSet.empty<string> config |> mustOk
@@ -74,9 +72,7 @@ let ``admitWithHeat exports room backpressure through the injected sink`` () =
 [<Fact>]
 let ``admitWithHeat preserves heat sink backpressure as typed feedback`` () =
     let sink =
-        BoundedHeatSink
-            { Capacity = 1
-              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+        BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
     let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
     (sink :> IHeatSink).Emit filler |> mustOk

@@ -86,9 +86,7 @@ let ``pruneWithHeatSink exports CHIP8 heat to an injected host port`` () =
 [<Fact>]
 let ``bounded in-room heat sink backpressures instead of forgetting heat`` () =
     let sink =
-        BoundedHeatSink
-            { Capacity = 1
-              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+        BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
     let port = sink :> IHeatSink
     let first = HeatSignature.ofMass "chip8-a" "soft-emu.prune" 1 0.5 "a"

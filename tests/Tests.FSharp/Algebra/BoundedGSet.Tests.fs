@@ -9,29 +9,20 @@ open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
 
-let private rejectNew3 =
-    { Capacity = 3
-      ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
-
 let private noForgetBackpressure3 =
-    { Capacity = 3
-      ForgetPolicy = BoundedGSetForgetPolicy.NoForgetBackpressure }
+    BoundedGSetConfig.noForgetBackpressure 3
 
 let private forgetHighest3 =
-    { Capacity = 3
-      ForgetPolicy = BoundedGSetForgetPolicy.ForgetHighest }
+    BoundedGSetConfig.forgetHighest 3
 
 let private forgetLowest3 =
-    { Capacity = 3
-      ForgetPolicy = BoundedGSetForgetPolicy.ForgetLowest }
+    BoundedGSetConfig.forgetLowest 3
 
 let private moduloReject4 =
-    { Slots = 4
-      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+    ModuloGSetConfig.rejectCollision 4
 
 let private moduloReplace4 =
-    { Slots = 4
-      CollisionPolicy = ModuloGSetCollisionPolicy.ReplaceExisting }
+    ModuloGSetConfig.replaceExisting 4
 
 let private unwrap =
     function
@@ -51,9 +42,7 @@ let private ofInts config values =
 
 [<Fact>]
 let ``invalid capacity returns feedback instead of throwing`` () =
-    let config =
-        { Capacity = 0
-          ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+    let config = BoundedGSetConfig.noForgetBackpressure 0
 
     match BoundedGSet.empty<int> config with
     | Error(BoundedGSetError.NonPositiveCapacity 0) -> ()
@@ -61,17 +50,32 @@ let ``invalid capacity returns feedback instead of throwing`` () =
 
 [<Fact>]
 let ``invalid modulo slots return feedback instead of throwing`` () =
-    let config =
-        { Slots = 0
-          CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+    let config = ModuloGSetConfig.rejectCollision 0
 
     match ModuloGSet.empty<int> config with
     | Error(ModuloGSetError.NonPositiveSlots 0) -> ()
     | other -> failwithf "expected NonPositiveSlots feedback, got %A" other
 
 [<Fact>]
-let ``reject-new policy backpressures instead of forgetting`` () =
-    match BoundedGSet.ofSeq<int> rejectNew3 [ 1; 2; 3; 4 ] with
+let ``policy constructors name finite room behavior`` () =
+    noForgetBackpressure3
+    |> should equal { Capacity = 3; ForgetPolicy = BoundedGSetForgetPolicy.NoForgetBackpressure }
+
+    forgetLowest3
+    |> should equal { Capacity = 3; ForgetPolicy = BoundedGSetForgetPolicy.ForgetLowest }
+
+    forgetHighest3
+    |> should equal { Capacity = 3; ForgetPolicy = BoundedGSetForgetPolicy.ForgetHighest }
+
+    moduloReject4
+    |> should equal { Slots = 4; CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+
+    moduloReplace4
+    |> should equal { Slots = 4; CollisionPolicy = ModuloGSetCollisionPolicy.ReplaceExisting }
+
+[<Fact>]
+let ``no-forget policy backpressures instead of forgetting`` () =
+    match BoundedGSet.ofSeq<int> noForgetBackpressure3 [ 1; 2; 3; 4 ] with
     | Error(BoundedGSetError.CapacityExceeded(capacity, count)) ->
         capacity |> should equal 3
         count |> should equal 4
@@ -108,7 +112,7 @@ let ``forget policies keep the configured side and report heat`` () =
 
 [<Fact>]
 let ``cold add reports backpressure with no heat`` () =
-    let full = ofInts rejectNew3 [ 3; 4; 5 ]
+    let full = ofInts noForgetBackpressure3 [ 3; 4; 5 ]
 
     let result = BoundedGSet.add 6 full |> unwrap
     result.Admission |> should equal BoundedGSetAdmission.RejectedByBound
@@ -213,9 +217,7 @@ let ``bounded heat adapter keeps empty heat cold`` () =
 [<Fact>]
 let ``bounded heat sink no-forget policy backpressures without losing stored heat`` () =
     let sink =
-        BoundedHeatSink
-            { Capacity = 1
-              ForgetPolicy = BoundedGSetForgetPolicy.NoForgetBackpressure }
+        BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
     let port = sink :> IHeatSink
     let first = HeatSignature.ofMass "chip8-room" "meta-cart.missing" 1 1.0 "first missing child cart"
@@ -238,9 +240,7 @@ let ``bounded heat sink no-forget policy backpressures without losing stored hea
 [<Fact>]
 let ``bounded heat sink rolling policy reports recursive heat explicitly`` () =
     let sink =
-        BoundedHeatSink
-            { Capacity = 1
-              ForgetPolicy = BoundedGSetForgetPolicy.ForgetLowest }
+        BoundedHeatSink(BoundedGSetConfig.forgetLowest 1)
 
     let port = sink :> IHeatSink
     let oldHeat = HeatSignature.ofMass "a-room" "bounded-gset.forgotten" 1 1.0 "old heat"

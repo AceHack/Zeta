@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { repairCodexServiceTierConfig } from "./setup-realizers/from-bun-global.ts";
 import { realizeFromUvTool } from "./setup-realizers/from-uv-tool.ts";
-import { createContext } from "./setup-realizers/shared.ts";
+import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
 import { getSetupRealizer, listSetupRealizerIds } from "./setup-realizers/index.ts";
 
 describe("setup-realizers registry", () => {
@@ -22,6 +22,12 @@ describe("setup-realizers registry", () => {
     for (const id of listSetupRealizerIds()) {
       expect(getSetupRealizer(id)).toBeDefined();
     }
+  });
+
+  test("default repo root reaches setup manifests", () => {
+    const root = defaultRepoRoot();
+    expect(existsSync(join(root, "Zeta.sln"))).toBe(true);
+    expect(readFileSync(join(root, "tools/setup/manifests/from-dotnet-global"), "utf8")).toContain("dotnet-stryker");
   });
 });
 

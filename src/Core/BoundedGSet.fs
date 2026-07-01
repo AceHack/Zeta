@@ -11,8 +11,6 @@ open System.Collections.Immutable
 type BoundedGSetForgetPolicy =
     /// Never evict a materialized value; reject new/out-of-window values.
     | NoForgetBackpressure
-    /// Short legacy alias for `NoForgetBackpressure`.
-    | RejectNew
     /// Forget the lowest-ranked values under canonical comparison.
     /// Use this for rolling logs when the key contains a monotone tick/sequence.
     | ForgetLowest
@@ -30,6 +28,22 @@ type BoundedGSetError =
 and BoundedGSetConfig =
     { Capacity: int
       ForgetPolicy: BoundedGSetForgetPolicy }
+
+[<RequireQualifiedAccess>]
+module BoundedGSetConfig =
+
+    let withPolicy capacity forgetPolicy : BoundedGSetConfig =
+        { Capacity = capacity
+          ForgetPolicy = forgetPolicy }
+
+    let noForgetBackpressure capacity : BoundedGSetConfig =
+        withPolicy capacity BoundedGSetForgetPolicy.NoForgetBackpressure
+
+    let forgetLowest capacity : BoundedGSetConfig =
+        withPolicy capacity BoundedGSetForgetPolicy.ForgetLowest
+
+    let forgetHighest capacity : BoundedGSetConfig =
+        withPolicy capacity BoundedGSetForgetPolicy.ForgetHighest
 
 /// Admission result for adding one value to a bounded GSet view.
 [<RequireQualifiedAccess>]
@@ -111,8 +125,7 @@ module BoundedGSet =
                   Heat = emptyHeat }
         else
             match config.ForgetPolicy with
-            | BoundedGSetForgetPolicy.NoForgetBackpressure
-            | BoundedGSetForgetPolicy.RejectNew ->
+            | BoundedGSetForgetPolicy.NoForgetBackpressure ->
                 Error(BoundedGSetError.CapacityExceeded(config.Capacity, items.Length))
             | BoundedGSetForgetPolicy.ForgetHighest ->
                 let kept = GSet<'T>(ImmutableArray.Create(items, 0, keepCount))
@@ -235,6 +248,19 @@ type ModuloGSetError =
 type ModuloGSetConfig =
     { Slots: int
       CollisionPolicy: ModuloGSetCollisionPolicy }
+
+[<RequireQualifiedAccess>]
+module ModuloGSetConfig =
+
+    let withCollisionPolicy slots collisionPolicy : ModuloGSetConfig =
+        { Slots = slots
+          CollisionPolicy = collisionPolicy }
+
+    let rejectCollision slots : ModuloGSetConfig =
+        withCollisionPolicy slots ModuloGSetCollisionPolicy.RejectCollision
+
+    let replaceExisting slots : ModuloGSetConfig =
+        withCollisionPolicy slots ModuloGSetCollisionPolicy.ReplaceExisting
 
 /// Admission result for adding one value to a modulo GSet view.
 [<RequireQualifiedAccess>]

@@ -19,7 +19,7 @@ export interface RealizeResult {
 export type SetupRealizer = (ctx: RealizeContext) => Promise<RealizeResult>;
 
 export function defaultRepoRoot(): string {
-  return join(import.meta.dir, "..", "..", "..");
+  return join(import.meta.dir, "..", "..", "..", "..");
 }
 
 export function readManifestFile(repoRoot: string, manifestRel: string): string | null {

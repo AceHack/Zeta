@@ -46,8 +46,7 @@ let private mustOk =
     | Error feedback -> failwithf "expected Ok, got %A" feedback
 
 let private rejectSlots slots : ModuloGSetConfig =
-    { Slots = slots
-      CollisionPolicy = ModuloGSetCollisionPolicy.RejectCollision }
+    ModuloGSetConfig.rejectCollision slots
 
 let private emptyBoundary source room budget config =
     ModuloGSet.empty<string> config
@@ -55,8 +54,7 @@ let private emptyBoundary source room budget config =
     |> RoomBoundary.create source room budget
 
 let private horizonConfig capacity policy : BoundedGSetConfig =
-    { Capacity = capacity
-      ForgetPolicy = policy }
+    BoundedGSetConfig.withPolicy capacity policy
 
 let private horizonCost bytes : Vision.BranchCost =
     { SpaceBytes = bytes
@@ -184,7 +182,7 @@ let ``room horizon forgetting renders on the DarkHall heat board`` () =
 [<Fact>]
 let ``room horizon no-forget backpressure renders on the DarkHall heat board`` () =
     let current =
-        BoundedGSet.ofSeq<int> (horizonConfig 1 BoundedGSetForgetPolicy.RejectNew) [ 1 ]
+        BoundedGSet.ofSeq<int> (BoundedGSetConfig.noForgetBackpressure 1) [ 1 ]
         |> mustOk
         |> fun projection -> projection.State
 
@@ -210,9 +208,7 @@ let ``room horizon no-forget backpressure renders on the DarkHall heat board`` (
 let ``soft scheduler banks darkhall heat backpressure as a room boundary row`` () =
     task {
         let sink =
-            BoundedHeatSink
-                { Capacity = 1
-                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+            BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
         let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
 
@@ -348,9 +344,7 @@ let ``boundary room handler records door denial heat as a host visible row`` () 
 let ``heat board sim loop measures backpressure before the cut closes`` () =
     task {
         let sink =
-            BoundedHeatSink
-                { Capacity = 1
-                  ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+            BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
         let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
 

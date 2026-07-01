@@ -126,6 +126,11 @@ jobs:
         env:
           # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
           MISE_GITHUB_TOKEN: ${{ github.token }}
+          # dotnet-stryker is a standard-tier global tool; hosted Linux
+          # runner memory can autodetect as slim, which correctly skips
+          # standard tools for ordinary gates but breaks this workflow's
+          # explicit Stryker contract.
+          ZETA_HOST_TIER: standard
         run: ./tools/setup/install.sh
 
       - name: Restore + build (Release)
@@ -136,7 +141,8 @@ jobs:
         # Root solution discovery currently walks unrelated F# test projects and
         # crashes while reading generated AssemblyInfo paths.
         working-directory: tests/Core.CSharp.Tests
-        run: dotnet stryker --config-file ../../stryker-config.json --configuration Release --output ../../StrykerOutput
+        run: |
+          "$HOME/.dotnet/tools/dotnet-stryker" --config-file ../../stryker-config.json --configuration Release --output ../../StrykerOutput
 
       - name: Upload Stryker reports
         if: always()

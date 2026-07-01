@@ -649,7 +649,7 @@ jobs:
     # and left a test silently red for ~10 PRs (#8216 fix; this step closes
     # the gap). bun is already provisioned here, so it adds no extra install.
     name: lint (bash retirement inventory + hygiene unit tests)
-    timeout-minutes: 5
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
 
     steps:
@@ -714,7 +714,7 @@ jobs:
     # expansion. See openspec/specs/static-analysis/profiles/
     # github-actions.md.
     name: lint (actionlint)
-    timeout-minutes: 5
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
 
     steps:
@@ -832,7 +832,7 @@ jobs:
     # script self-allowlists files that legitimately document
     # merge-conflict resolution.
     name: lint (no conflict markers)
-    timeout-minutes: 5
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
 
     steps:

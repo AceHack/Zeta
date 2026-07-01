@@ -100,9 +100,7 @@ let ``frame-aware driveFramesWithHeatSink stops when prune heat backpressures`` 
     let setup = Chip8Cow.create 1UL |> Chip8Cow.loadRom inputAfterOne
 
     let sink =
-        BoundedHeatSink
-            { Capacity = 1
-              ForgetPolicy = BoundedGSetForgetPolicy.RejectNew }
+        BoundedHeatSink(BoundedGSetConfig.noForgetBackpressure 1)
 
     let filler = HeatSignature.ofMass "test" "heat.fill" 1 1.0 "occupy bounded heat sink"
 
