@@ -388,6 +388,7 @@
     <Compile Include="Formal/DemoPipeline.Tests.fs" />
     <Compile Include="Formal/EntityFederations.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
+    <Compile Include="Simulation/AgentIntegrate.Tests.fs" />
 
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
@@ -530,6 +531,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Bayesian\Bayesian.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
     <ProjectReference Include="..\..\src/Core.FSharp.Blake3/Zeta.Core.FSharp.Blake3.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Merkle\Zeta.Core.CSharp.Merkle.csproj" />

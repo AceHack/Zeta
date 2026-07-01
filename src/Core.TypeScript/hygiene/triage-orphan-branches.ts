@@ -182,6 +182,6 @@ function main(): number {
   return 0;
 }
 
-if (import.meta.main) {
+if (import.meta.main || (typeof process !== "undefined" && process.argv[1] && (process.argv[1].includes("triage-orphan-branches") || process.argv[1].endsWith("tsx")))) {
   process.exit(main());
 }
