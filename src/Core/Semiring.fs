@@ -23,8 +23,14 @@ open System.Runtime.CompilerServices
 /// The integer ring (ℤ, +, ×). Additive inverse exists (full ring),
 /// so negative weights encode retractions — this is exactly the
 /// multiplicity ring used by the current `ZSet<'K>`.
-[<Sealed>]
-type IntegerRing() =
+///
+/// **Struct** (stateless): serves both registers of the dispatch design
+/// (081KWFXTHJY). Boxed once via `Instance` for the instance-passing cold path;
+/// passed *by value* as a generic type argument for the zero-overhead hot path,
+/// where the JIT monomorphises + devirtualises `Add`/`Mul`/`Negate` to inlined
+/// primitives (no vtable call).
+[<Struct>]
+type IntegerRing =
     interface ISemiring<int64> with
         member _.Zero       = 0L
         member _.One        = 1L
@@ -34,7 +40,7 @@ type IntegerRing() =
 
 [<RequireQualifiedAccess>]
 module IntegerRing =
-    /// Singleton instance — reuse rather than allocate.
+    /// Boxed singleton for the instance-passing (cold / dynamic-ring) path.
     let Instance : ISemiring<int64> = IntegerRing()
 
 
@@ -80,8 +86,9 @@ type IntervalWeight =
         h.Add this.Lo; h.Add this.Hi; h.ToHashCode()
     override this.ToString() = sprintf "[%g, %g]" this.Lo this.Hi
 
-[<Sealed>]
-type IntervalRing() =
+/// **Struct** (stateless) — same dual-register rationale as `IntegerRing`.
+[<Struct>]
+type IntervalRing =
     interface ISemiring<IntervalWeight> with
         member _.Zero = IntervalWeight.Zero
         member _.One  = IntervalWeight.One

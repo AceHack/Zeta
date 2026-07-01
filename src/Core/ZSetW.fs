@@ -288,3 +288,105 @@ module ZSetW =
         for i in 0 .. span.Length - 1 do
             builder.Add(ZEntryW(span.[i].Key, span.[i].Weight))
         ZSetW(builder.MoveToImmutable())
+
+    // ═══════════════════════════════════════════════════════════════
+    //  Zero-overhead hot path (081KWFXTHJY step 2b) — `*By` variants.
+    //
+    //  The ring is passed BY VALUE as a struct generic `'R` and the op is
+    //  `inline`. At each closed instantiation `'R` is a concrete struct
+    //  (e.g. `IntegerRing`), so the interface calls `ring.Add/Mul/Negate`
+    //  are candidates for JIT devirtualisation + inlining to bare
+    //  primitives — no vtable dispatch, unlike the instance-passing ops
+    //  above (which box the ring behind `ISemiring<'W>` and pay a virtual
+    //  call per weight op). Same results as the instance ops (proven in
+    //  ZSetW.Tests); the win is dispatch cost, verified by the benchmark
+    //  (ZSetWBench) — that measurement is the step-3 reframe gate.
+    //
+    //  NOTE: `inline` requires callers to instantiate `'R` at a known
+    //  struct type; a boxed `ISemiring<'W>` value cannot flow here (use
+    //  the instance-passing ops for the dynamic-ring cold path).
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Zero-overhead singleton (struct ring by value).
+    let inline singletonBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+                           (key: 'K) (weight: 'W) : ZSetW<'K, 'W> =
+        if EqualityComparer<'W>.Default.Equals(weight, ring.Zero) then
+            ZSetW<'K, 'W>.Empty
+        else
+            ZSetW(ImmutableArray.Create(ZEntryW(key, weight)))
+
+    /// Zero-overhead build-from-sequence (struct ring by value).
+    let inline ofSeqBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+                       (xs: seq<'K * 'W>) : ZSetW<'K, 'W> =
+        let agg = SortedDictionary<'K, 'W>()
+        for (k, w) in xs do
+            match agg.TryGetValue(k) with
+            | true, existing -> agg.[k] <- ring.Add(existing, w)
+            | false, _ -> agg.[k] <- w
+        let zero = ring.Zero
+        let eq = EqualityComparer<'W>.Default
+        let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>()
+        for kv in agg do
+            if not (eq.Equals(kv.Value, zero)) then
+                builder.Add(ZEntryW(kv.Key, kv.Value))
+        ZSetW(builder.ToImmutable())
+
+    /// Zero-overhead Z-set sum — the DBSP incremental-merge hot op.
+    let inline sumBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+                     (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
+        let aSpan = a.AsSpan()
+        let bSpan = b.AsSpan()
+        if aSpan.IsEmpty then b
+        elif bSpan.IsEmpty then a
+        else
+            let zero = ring.Zero
+            let eq = EqualityComparer<'W>.Default
+            let cmp = Comparer<'K>.Default
+            let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(aSpan.Length + bSpan.Length)
+            let mutable i = 0
+            let mutable j = 0
+            while i < aSpan.Length && j < bSpan.Length do
+                let kA = aSpan.[i].Key
+                let kB = bSpan.[j].Key
+                let c = cmp.Compare(kA, kB)
+                if c < 0 then
+                    builder.Add(aSpan.[i]); i <- i + 1
+                elif c > 0 then
+                    builder.Add(bSpan.[j]); j <- j + 1
+                else
+                    let combined = ring.Add(aSpan.[i].Weight, bSpan.[j].Weight)
+                    if not (eq.Equals(combined, zero)) then
+                        builder.Add(ZEntryW(kA, combined))
+                    i <- i + 1
+                    j <- j + 1
+            while i < aSpan.Length do builder.Add(aSpan.[i]); i <- i + 1
+            while j < bSpan.Length do builder.Add(bSpan.[j]); j <- j + 1
+            ZSetW(builder.ToImmutable())
+
+    /// Zero-overhead negate (struct ring by value; requires a full ring).
+    let inline negateBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+                        (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
+        let span = a.AsSpan()
+        let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(span.Length)
+        for i in 0 .. span.Length - 1 do
+            builder.Add(ZEntryW(span.[i].Key, ring.Negate(span.[i].Weight)))
+        ZSetW(if span.Length = 0 then ImmutableArray.Empty else builder.MoveToImmutable())
+
+    /// Zero-overhead difference `a - b` (struct ring by value).
+    let inline differenceBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+                            (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
+        sumBy ring a (negateBy ring b)
+
+    /// Zero-overhead scale (struct ring by value).
+    let inline scaleBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+                       (scalar: 'W) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
+        if EqualityComparer<'W>.Default.Equals(scalar, ring.Zero) then
+            ZSetW<'K, 'W>.Empty
+        else
+            let span = a.AsSpan()
+            let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(span.Length)
+            for i in 0 .. span.Length - 1 do
+                let w = ring.Mul(scalar, span.[i].Weight)
+                if not (EqualityComparer<'W>.Default.Equals(w, ring.Zero)) then
+                    builder.Add(ZEntryW(span.[i].Key, w))
+            ZSetW(builder.ToImmutable())

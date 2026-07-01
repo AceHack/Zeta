@@ -111,3 +111,34 @@ let ``IntervalRing: width carries epistemic uncertainty through sum`` () =
     Assert.Equal(1.0, w.Lo)    // 0 + 1
     Assert.Equal(5.0, w.Hi)    // 4 + 1
     Assert.Equal(4.0, w.Width) // uncertainty preserved
+
+// ── Step 2b: the zero-overhead `*By` ops must EQUAL the instance ops ─
+// (struct IntegerRing passed by value; same results, different dispatch)
+
+[<Fact>]
+let ``sumBy (struct ring) equals instance sum`` () =
+    let a = ZSetW.ofSeq iring [ "x", 2L; "y", 1L; "w", 9L ]
+    let b = ZSetW.ofSeq iring [ "y", -1L; "z", 5L; "w", -9L ]
+    let viaInstance = ZSetW.sum iring a b
+    let viaStruct = ZSetW.sumBy (IntegerRing()) a b
+    Assert.True((viaInstance = viaStruct), "sumBy must equal instance sum")
+
+[<Fact>]
+let ``ofSeqBy / scaleBy / negateBy / differenceBy (struct ring) equal instance ops`` () =
+    let pairs = [ "a", 3L; "b", 2L; "a", 4L; "c", -2L ]
+    Assert.True((ZSetW.ofSeqBy (IntegerRing()) pairs = ZSetW.ofSeq iring pairs))
+    let z = ZSetW.ofSeq iring pairs
+    Assert.True((ZSetW.scaleBy (IntegerRing()) 3L z = ZSetW.scale iring 3L z))
+    Assert.True((ZSetW.negateBy (IntegerRing()) z = ZSetW.negate iring z))
+    Assert.True((ZSetW.differenceBy (IntegerRing()) z z |> ZSetW.isEmpty),
+                "differenceBy z z must retract to empty")
+
+[<Fact>]
+let ``sumBy on int64 agrees with the ZSet hot path`` () =
+    let a = ZSet.ofSeq [ "x", 2L; "y", 1L ]
+    let b = ZSet.ofSeq [ "y", -1L; "z", 5L ]
+    let viaZSet = a + b
+    let viaStruct =
+        ZSetW.sumBy (IntegerRing()) (ZSetW.ofZSetIntegerRing a) (ZSetW.ofZSetIntegerRing b)
+        |> ZSetW.toZSetIntegerRing
+    Assert.True((viaZSet = viaStruct), "struct-ring sumBy must match ZSet +")

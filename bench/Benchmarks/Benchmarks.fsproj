@@ -18,6 +18,7 @@
     <Compile Include="Nexmark.fs" />
     <Compile Include="NexmarkFull.fs" />
     <Compile Include="CheckedVsUncheckedBench.fs" />
+    <Compile Include="ZSetWBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

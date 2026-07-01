@@ -118,11 +118,22 @@ the dynamic/cold escape hatch**, not the default.
    retraction cancels, ZSet bridge round-trips. **This increment is the
    instance-passing baseline** (path 1 storage-compatible core); the zero-overhead
    struct-ring/SRTP int64 specialisation is step 2b below, NOT yet done.
-2b. Add the zero-overhead int64 dispatch (paths 2+3 from §Dispatch): SRTP/`inline`
-   on the F# host and/or struct-ring generic param; the C# Roslyn generator (step 4).
-   This is what makes the reframe (step 3) non-regressing.
+2b. ◑ Mechanism landed (2026-07-01), NOT yet perf-proven. `IntegerRing`/`IntervalRing`
+   made `[<Struct>]` (stateless — dual register: boxed `.Instance` for cold path,
+   by-value for hot). Added `inline` `*By` ops to ZSetW (`sumBy`/`ofSeqBy`/`scaleBy`/
+   `negateBy`/`differenceBy`/`singletonBy`) taking the ring as a struct generic by
+   value → JIT-devirtualisable interface calls. Correctness proven (3 new tests:
+   `*By` == instance ops; `sumBy` int64 == `ZSet +`). 186 algebra tests still green
+   (struct conversion behaviourally safe). Benchmark harness landed:
+   `bench/Benchmarks/ZSetWBench.fs` (ZSetAdd baseline vs boxed-instance vs struct-ring).
+   **Preliminary short-run (noisy, 3 iters):** at Size=16 — ZSetAdd ≈60ns,
+   struct-ring ≈81ns, boxed-instance ≈103ns. So struct-ring **beats** boxed-instance
+   (devirt helps) but does **NOT yet match** the specialised `ZSet.add` — a gap
+   remains. Reframe (step 3) stays GATED: needs a proper long BDN run (Naledi) and
+   likely gap-closing (verify full devirt+inline; `ZSet.add` may carry other
+   specialisations — `EntryKeyComparer`, no builder-capacity slack — to match).
 3. Reframe `ZSet<'K>` in terms of it WITHOUT perf regression (benchmark-gated) —
-   needs 2b first.
+   needs 2b's gap closed first (struct-ring ≈ ZSetAdd on time AND alloc).
 4. Honor ordinal-collation parity (`culture-invariant-by-default` — the
    `GCounter.Merge` vs `ZSet.ofSeq` associativity bug lives in this area).
 5. Full `dotnet build -c Release` 0-warnings + tests green + Naledi perf sign-off.
