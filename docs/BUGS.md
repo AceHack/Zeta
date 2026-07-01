@@ -301,14 +301,6 @@ can no longer pass with Go silent.
 - **Fix:** include `result.signal` + stderr tail in failure messages; distinguish spawn-failure (127) from child exit; distinguish "lock held" from "lock-op failed" with a logged error.
 - **Who:** architect (Kenji) → cluster/loop owner
 
-### ZetaId isCanonical first-char guard inconsistent across oracles (Otto sweep, 2026-06-13)
-
-- **Site:** `isCanonical` in C#/F#/Rust (explicit `firstVal>=8→false`) vs TS/Python (rely on `format(parse(s))===s`)
-- **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
-- **Severity:** P2
-- **Symptom:** same result today, but a divergence-in-waiting: relaxing the bigint parse pre-guard would make TS/Py `isCanonical` silently accept 130-bit-encoding strings the u128 trio rejects. Lenient-alias decode is also untested for round-trip.
-- **Fix:** collapse to one canonicality rule; add a lenient-input round-trip vector.
-- **Who:** architect (Kenji)
 
 ### Round-3 filed (Kira r3 + test-gap audit, 2026-06-13) — deferred with reasons
 
