@@ -61,7 +61,7 @@ type ArrowInt64Serializer() =
                 weightBuilder.Append(span.[i].Weight : int64) |> ignore
             let keyArray = keyBuilder.Build() :> IArrowArray
             let weightArray = weightBuilder.Build() :> IArrowArray
-            let batch = new RecordBatch(schema, [| keyArray ; weightArray |], n)
+            use batch = new RecordBatch(schema, [| keyArray ; weightArray |], n)
             use ms = new MemoryStream()
             use arrowWriter = new ArrowStreamWriter(ms, schema)
             arrowWriter.WriteRecordBatch batch
@@ -128,7 +128,7 @@ type ArrowStringSerializer() =
                 weightBuilder.Append(span.[i].Weight : int64) |> ignore
             let keyArray = keyBuilder.Build() :> IArrowArray
             let weightArray = weightBuilder.Build() :> IArrowArray
-            let batch = new RecordBatch(schema, [| keyArray; weightArray |], n)
+            use batch = new RecordBatch(schema, [| keyArray; weightArray |], n)
             use ms = new MemoryStream()
             use arrowWriter = new ArrowStreamWriter(ms, schema)
             arrowWriter.WriteRecordBatch batch

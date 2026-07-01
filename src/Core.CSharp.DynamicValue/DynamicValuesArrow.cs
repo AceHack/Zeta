@@ -76,7 +76,7 @@ public static class DynamicValuesArrow
         {
             return new Result<byte[], EncodeError>.Err(e);
         }
-        RecordBatch batch = enc.BuildBatch();
+        using RecordBatch batch = enc.BuildBatch();
 
         using var ms = new MemoryStream();
         using (var writer = new ArrowStreamWriter(ms, NodeSchema))

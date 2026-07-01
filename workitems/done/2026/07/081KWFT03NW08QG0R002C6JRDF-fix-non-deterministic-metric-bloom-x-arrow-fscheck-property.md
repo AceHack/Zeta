@@ -1,7 +1,7 @@
 ---
 id: 081KWFT03NW08QG0R002C6JRDF
 type: bug
-state: backlog
+state: closed
 priority: P2
 slug: fix-non-deterministic-metric-bloom-x-arrow-fscheck-property
 title: "Fix non-deterministic Metric/Bloom x Arrow FsCheck property test (seed-pin or real round-trip defect)"
@@ -48,3 +48,16 @@ on demand.
 - Anchor to DST determinism; remove the `docs/BUGS.md` entry on fix.
 
 **Who:** metric-serializer owner (Naledi) or DST/formal (Soraya).
+
+## Resolution (2026-07-01)
+
+Root-caused the non-deterministic failure to a **GC lifetime race condition** on the unmanaged memory backing Apache Arrow's `RecordBatch`. 
+
+In `toArrow` (and similarly in `ArrowSerializer.fs`'s key-weight `ZSet` serialisers), the temporary `RecordBatch` was constructed but never disposed or explicitly kept alive via `use` or `using`. During high-concurrency test runs (e.g. xUnit running thousands of tests in parallel), a concurrent garbage collection could occur while `writer.WriteRecordBatch(batch)` was executing. Since the local `batch` reference was no longer needed in the remaining F# instructions of `toArrow`, the JIT compiler marked it eligible for GC. The GC collected it and ran its finalizer, which freed the unmanaged buffer backing the Arrow arrays. The writer then attempted to copy from the deallocated buffer using `Memmove`, causing an `AccessViolationException` that resulted in a flaky test failure.
+
+Fixed by declaring the `RecordBatch` bindings with `use` (in F#) and `using` (in C#) in all four serialization sites:
+- [DynamicValueArrow.fs](file:///Users/acehack/.zeta/agents/gemini/workspace/src/Core/DynamicValueArrow.fs) (`toArrow`)
+- [ArrowSerializer.fs](file:///Users/acehack/.zeta/agents/gemini/workspace/src/Core/ArrowSerializer.fs) (`Write` for `int64` and `string`)
+- [DynamicValuesArrow.cs](file:///Users/acehack/.zeta/agents/gemini/workspace/src/Core.CSharp.DynamicValue/DynamicValuesArrow.cs`) (`ToArrow`)
+
+This guarantees the native buffer's lifetime is locked until writing is complete. Ran a 50,000-iteration FsCheck fuzz test on the Bloom×Arrow property in isolation, followed by a full 3,717-test suite run. All tests passed successfully.

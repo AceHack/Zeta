@@ -202,7 +202,7 @@ open Zeta.Core
                    sB.Build()
                    byB.Build() |]
 
-            let batch = new RecordBatch(schema, columns, count)
+            use batch = new RecordBatch(schema, columns, count)
             use ms = new MemoryStream()
             use writer = new ArrowStreamWriter(ms, schema)
             writer.WriteRecordBatch batch
