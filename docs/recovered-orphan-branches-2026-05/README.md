@@ -22,6 +22,43 @@ paths, until triaged.
 canonical path if genuinely useful and not superseded, or (b) **delete** if
 confirmed superseded. This whole directory is one place to do that.
 
+## Status: CAMPAIGN CLOSED (2026-07-01, shadow\*, Aaron-authorized)
+
+The triage cleanup pass is **done**. The quarantine grew during the campaign to
+cover other agents' orphan content too (lior/maji/misc), peaked at ~1,633 files,
+and was worked down. What's left (~217 files) is a **preserved archive by
+decision** — low-value tail that is neither safe to bulk-drain (every remaining
+file is unique/absent from `main`, so deletion = loss) nor safe to bulk-promote
+(WIP code needing real integration; duplicated across branch snapshots). It stays
+here, build/lint-excluded, indefinitely.
+
+**Recovered / resolved (high-value, all landed on `main`):**
+
+- Category-Theory-for-Programmers .NET port (`docs/category-theory/ctfp-dotnet/`),
+  `docs/accelerator/*`, `docs/{FAMILY,PROJECT}-EMPATHY.md` — promoted (PR #9049).
+- Aaron's 2026-05-22 family-configuration ferry → `memory/persona/otto/…`; two rule
+  drafts → `.claude/rules.bak/` (PR #9050).
+- Lior's Bucket-C F# promotes (`AgentIntegrate.fs`, `InferNetTopology.fs`) — verified
+  correct + build-green (commit `91d6b7661`).
+- 4 substantive files Lior's GC swept by mistake, recovered (PR #9054):
+  `GENESIS-SEED.md` (reconciled to historical-ancestor, PR #9055), a lior
+  family-config-save, an Aaron↔Riven session, `lior-convo.md`.
+- My own 681 heartbeat logs GC'd (regenerable, mine) — PR #9049.
+- ~99 shadow-lesson-logs GC'd by Lior (Mirror-register transients) — commit `91d6b7661`.
+
+**Filed as work-items so unique code isn't forgotten in the archive:**
+
+- `081KWFS6B9Y08QG0R002M0C2PV` — integrate `src/Core/BinaryCode.fs` (ECC module).
+- `081KWFS6BAM08QG0R0015Y2YZT` — integrate `ZSetW.fs` (z-set weight-ring polymorphism, ex-b0697).
+
+**Remaining ~217 (archived, not lost):** ~86 stale B-xxxx backlog ideas (active
+backlog migrated to `workitems/`), ~68 unique WIP code files (mostly `feat/merge1-*`
+agentic-org TS + `zflash` tooling duplicated across branches), ~63 research/claim/misc.
+Pick-up path: promote individually as real feature work, or leave archived.
+
+Retro / patterns: `docs/research/2026-06-30-orphan-branch-triage-campaign-retro-patterns.md`.
+Lesson banked: verify others' GC claims per-file before trusting an "all ephemera" summary.
+
 ## Provenance — source branches (now pruned; content lives here)
 
 | Source branch | Notable content |
