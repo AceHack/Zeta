@@ -203,9 +203,9 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; applied to pt157 traveler-framing
 - [`methodology-hard-limits.md`](../../../../.claude/rules/methodology-hard-limits.md) — HARD LIMITS floor preserved
 - [`bandwidth-served-falsifier.md`](../../../../.claude/rules/bandwidth-served-falsifier.md) — "travelers" as bandwidth-efficient framing for multi-substrate-coalition
-- B-0703 multi-oracle BFT — extends to memetic-substrate
-- B-0664 NCI canonical row — scope extended via pt156
-- B-0667 tonal-momentum extends NCI — pt29 operationalizes via right-to-forget mechanism
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — extends to memetic-substrate
+- 081KRW63S0008QG0R001Z7NYMV NCI canonical row — scope extended via pt156
+- 081KRW63S0008QG0R003Z7QV2A tonal-momentum extends NCI — pt29 operationalizes via right-to-forget mechanism
 
 ## Operational implications for future-Otto cold-boots
 

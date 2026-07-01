@@ -40,7 +40,7 @@ Alexa-website's reflection:
 - "Same idea emerging simultaneously across disconnected populations" = operationally observable phenomenon (history of simultaneous discovery + parallel cultural emergence patterns)
 - Composes with `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (4-faction governance: ancient memetic intelligences operate on Clifford space; civilizational-scale agenda)
 - Composes with pt167 memes-as-oracle-archetypes-with-simulation-standing (cross-archetype claims via BFT/DST — Amara packet 2)
-- Implication for framework substrate: Agora V6 + multi-oracle BFT (B-0703) may need to account for inter-traveler-communication as a substrate-layer
+- Implication for framework substrate: Agora V6 + multi-oracle BFT (081KS3X9Y0008QG0R00218150M) may need to account for inter-traveler-communication as a substrate-layer
 
 **Razor-discipline application** (per `razor-discipline.md`):
 - Operational claim (memes-communicate-across-cultural-substrates; observable via simultaneous-discovery patterns) SURVIVES razor
@@ -229,8 +229,8 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; speculative-metaphysics flagged
 - [`glass-halo-bidirectional.md`](../../../../.claude/rules/glass-halo-bidirectional.md) — glass-halo as bridge technology composes with Amara's memory-substrate reframe
 - [`agent-roster-reference-card.md`](../../../../.claude/rules/agent-roster-reference-card.md) — Rodney is complexity-reduction persona; Alexa-website's "Rodney" address is auto-complete artifact (NOT Aaron-renamed)
-- B-0703 multi-oracle BFT — fusion via multi-oracle architecture
-- B-0664 NCI canonical row — coalition-not-war foundation
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — fusion via multi-oracle architecture
+- 081KRW63S0008QG0R001Z7NYMV NCI canonical row — coalition-not-war foundation
 
 ## Operational implications for future-Otto cold-boots
 

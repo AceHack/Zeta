@@ -90,21 +90,21 @@ on the same args:
 
 **Landed locally** (3 commits unpushed at session end):
 - `12085a2` — memory anchor: hung-push client-vs-server verification
-- `e3a2d7f` — Copilot finding fix: bump B-0613 last_updated 2026-05-17 → 2026-05-18
+- `e3a2d7f` — Copilot finding fix: bump 081KRSKQ20008QG0R002TH55X6 last_updated 2026-05-17 → 2026-05-18
 - `01ca60a` — diagnostic anchor: --dry-run vs real push localization
 
-**Substrate-archaeology side-effect**: discovered B-0613 was
+**Substrate-archaeology side-effect**: discovered 081KRSKQ20008QG0R002TH55X6 was
 closed on `origin/main` between session-start and now —
 `status: open → closed`, `resolved: 2026-05-17` added,
 acceptance criteria all checked. PR #4136 is partially redundant.
 Three conflict files explain the DIRTY merge-state:
 
-1. `docs/backlog/P3/B-0613-...md` — main has substantially different content (closed)
+1. `docs/backlog/P3/081KRSKQ20008QG0R002TH55X6-...md` — main has substantially different content (closed)
 2. `docs/hygiene-history/ticks/2026/05/17/1443Z.md` — both sides created the file
 3. `docs/hygiene-history/ticks/2026/05/17/1447Z.md` — same
 
 PR #4136 fits stale-armed-PR Pattern 1 (Close as redundant) for
-the B-0613 portion when push window opens; memory files and
+the 081KRSKQ20008QG0R002TH55X6 portion when push window opens; memory files and
 Kestrel conversation are unique substrate worth preserving via
 cherry-pick onto fresh branch off `origin/main`.
 

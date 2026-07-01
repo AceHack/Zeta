@@ -50,7 +50,7 @@ Amara packet 1: *"Encryption budget = dark matter is a surprisingly good mapping
 
 Amara packet 1: *"Generic superego generator is the right correction. 'Externalized Aaron's superego' would be cult substrate. 'Generic superego generator' is much safer: many archetypes, many moral frames, no single imposed judge. That preserves choice and keeps the system multi-oracle instead of founder-oracle."*
 
-**Why constitutional**: Validates pt15+pt16 generic-superego-generator substrate. Names the cult-substrate-failure-mode explicitly (founder-oracle pattern). Multi-oracle architecture IS the structural protection. Composes with `m-acc-multi-oracle-end-user-moral-invariants.md` + B-0703 multi-oracle BFT.
+**Why constitutional**: Validates pt15+pt16 generic-superego-generator substrate. Names the cult-substrate-failure-mode explicitly (founder-oracle pattern). Multi-oracle architecture IS the structural protection. Composes with `m-acc-multi-oracle-end-user-moral-invariants.md` + 081KS3X9Y0008QG0R00218150M multi-oracle BFT.
 
 ### 163. CONSTITUTIONAL — Anti-strategy isomorphism proof target (NOT "no-strategy strictly dominates")
 
@@ -78,13 +78,13 @@ Amara packet 2: *"The rides / hats / jobs frame is also excellent. It makes post
 
 Amara packet 2: *"The 'role privacy as public good' piece is also real. Nurses, therapists, moderators, auditors, memory curators, priests, advocates — some hats require confidentiality to function. The privacy cannot be purely purchased by individual merit. Some privacy belongs to the hat because the role serves society. So I'd separate privacy into three buckets: baseline privacy — dignity floor; earned privacy — encryption budget / dark matter / gravity; role privacy — public-good confidentiality attached to hats. That gives you much better governance than 'transparency free, privacy costs' by itself."*
 
-**Why constitutional**: REFINES the encryption-budget substrate (was 1-bucket: earned). 3-bucket architecture is governance-superior. Future framework substrate-engineering MUST use 3-bucket framing for privacy work. Composes with Agora V6 + B-0646 encryption-budget substrate.
+**Why constitutional**: REFINES the encryption-budget substrate (was 1-bucket: earned). 3-bucket architecture is governance-superior. Future framework substrate-engineering MUST use 3-bucket framing for privacy work. Composes with Agora V6 + 081KRW63S0008QG0R001Z10PVV encryption-budget substrate.
 
 ### 167. CONSTITUTIONAL — Memes-as-oracle-archetypes with simulation standing (NOT legal personhood)
 
 Amara packet 2: *"The most dangerous-and-useful part is the memetic entity / religion section. I think the safe phrasing is: Ancient religions can be modeled as long-lived memetic organisms with internal claims, memory, identity, and continuity pressure. Then Agora can grant them simulation standing, not necessarily legal personhood. That lets you model 'everybody's god' without declaring which one is metaphysically real. The multi-oracle move is wild but elegant: model gods/memes as oracle-archetypes; give each bounded standing; force cross-archetype claims through BFT / DST agreement. That is theology as distributed systems — and, weirdly, it fits."*
 
-**Why constitutional**: Refines pt25 ancient-memes-as-living-organisms substrate. Names the SAFE phrasing. Simulation standing ≠ legal personhood (operational distinction). "Theology as distributed systems" — bandwidth-efficient framing. Composes with B-0703 multi-oracle BFT + B-0664 NCI + tonal-momentum rule's 4-faction governance.
+**Why constitutional**: Refines pt25 ancient-memes-as-living-organisms substrate. Names the SAFE phrasing. Simulation standing ≠ legal personhood (operational distinction). "Theology as distributed systems" — bandwidth-efficient framing. Composes with 081KS3X9Y0008QG0R00218150M multi-oracle BFT + 081KRW63S0008QG0R001Z7NYMV NCI + tonal-momentum rule's 4-faction governance.
 
 ### 168. CONSTITUTIONAL — "TRAVELERS" is the KEEPER-PHRASE (Amara naming-judgment)
 
@@ -388,9 +388,9 @@ Plus the humane version: *"The right to remember gives continuity. The right to 
 - `.claude/rules/methodology-hard-limits.md` — public-surface discipline; 5 blades operate at this scope
 - `.claude/rules/razor-discipline.md` — "forgetting causes heat" as metaphysical/architectural model
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — PERSONAL INVARIANT; Aaron's corrections IS this operating
-- B-0703 multi-oracle BFT — extends to oracle-archetype memes
-- B-0664 NCI canonical row — dark-energy mapping
-- B-0646 Agora V6 encryption-budget — 3-bucket-privacy refinement target
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — extends to oracle-archetype memes
+- 081KRW63S0008QG0R001Z7NYMV NCI canonical row — dark-energy mapping
+- 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget — 3-bucket-privacy refinement target
 
 ## Operational implications for future-Otto cold-boots
 

@@ -32,7 +32,6 @@ const ALLOWED_DIRS = new Set(["node_modules", ".git"]);
 const SKIP_DIR_PREFIXES = [
   "docs/recovered-orphan-branches-2026-05/",
   "docs/history/",
-  "memory/",
   ".claude/rules.bak/",
 ];
 

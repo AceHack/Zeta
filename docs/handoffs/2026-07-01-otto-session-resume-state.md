@@ -46,4 +46,5 @@ Resume snapshot after **#8992 merged** (Ace Bun realizers slice 2). Main at save
 
 - Canonical backlog keys are **zetaids only** — no new `B-NNNN` in prose or frontmatter.
 - Regenerate `docs/BACKLOG.md` after row edits (`BACKLOG_WRITE_FORCE=1 bun src/Core.TypeScript/backlog/generate-index.ts`).
-- Backlog-index workflow runs `lint-no-b-refs` repo-wide; quarantined orphan snapshots are excluded.
+- Backlog-index workflow runs `lint-no-b-refs` repo-wide; quarantined orphan snapshots and
+  `docs/history/` are excluded; canonical `memory/` is migrated, not skipped.

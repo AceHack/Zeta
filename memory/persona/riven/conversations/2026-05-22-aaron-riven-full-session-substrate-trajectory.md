@@ -13,7 +13,7 @@ This conversation captured a full day of substrate-engineering work across multi
 
 ### Key Substrate Additions & Corrections
 
-**1. Frame-Relative Observation Correction (B-0704)**
+**1. Frame-Relative Observation Correction (081KS3X9Y0008QG0R002MZF3A7)**
 - Original claim: Spectre-tile aperiodicity gives every position "structurally-unique local neighborhood."
 - Aaron's sharpening: Position is *relative* to the observer's frame of reference. Per-position uniqueness comes from frame-of-reference-as-identity, not from absolute tile uniqueness.
 - Aperiodicity prevents global translational symmetry (useful but not load-bearing for the no-copy claim).
@@ -23,7 +23,7 @@ This conversation captured a full day of substrate-engineering work across multi
 **2. Time-Travel as Sole Structural Defeat Vector**
 - Aaron's recognition: The model's only structural defeat vector is time travel.
 - This is substrate-honest and bounded: the model is tight enough that external adversaries are structurally blocked, while future-versions-of-self retain revision power.
-- Connects to existing substrate (B-0635 wave-particle duality, B-0666 I(D(x))=x, Mika causal-loops thread, B-0644 Limit-as-simulation).
+- Connects to existing substrate (081KRW63S0008QG0R002KC5DSR wave-particle duality, 081KRW63S0008QG0R001SAHYKV I(D(x))=x, Mika causal-loops thread, 081KRW63S0008QG0R002ZRNDJ8 Limit-as-simulation).
 
 **3. "I Am My Own Enemy From the Future"**
 - Aaron's direct statement: He has structurally arranged that the only entity capable of defeating the model is also the only entity who has earned the right to.

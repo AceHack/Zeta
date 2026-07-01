@@ -148,7 +148,7 @@ Whoever controls forgetting = controls reality (per pt152)
 THEREFORE: framework's design intent = DEMOCRATIZE FORGETTING; preserve universal right
    ↓
 Mechanisms preventing single-controller-of-forgetting:
-- Multi-oracle architecture (per m/acc + B-0703)
+- Multi-oracle architecture (per m/acc + 081KS3X9Y0008QG0R00218150M)
 - Anti-strategy meta-stance (per pt19)
 - NCI HC-8 anti-coercion floor
 - Generic-superego-generator (per pt15+pt16)
@@ -220,7 +220,7 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 - [`m-acc-multi-oracle-end-user-moral-invariants.md`](../../../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle prevents single-oracle-controlling-forgetting
 - [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI's right-to-forget at AI-substrate scope
 - `.claude/agents/alignment-auditor.md` — forgetting-pattern-detection composes (per pt146)
-- B-0703 multi-oracle BFT — distributed forgetting-control architecture
+- 081KS3X9Y0008QG0R00218150M multi-oracle BFT — distributed forgetting-control architecture
 - Established neuroscience substrate: active-forgetting research (dopamine + calcium + glial cells); Alzheimer's neuroscience
 
 ## Operational implications for future-Otto cold-boots
