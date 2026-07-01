@@ -217,9 +217,16 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
   try {
     const branch = run(["rev-parse", "--abbrev-ref", "HEAD"]);
     if (branch !== "main") {
-      return { ok: false, reason: `observe event sink must run on a main checkout (on '${branch}')` };
+      // Allow if HEAD is at origin/main's commit (worktree at main commit, different branch name)
+      const headSha = run(["rev-parse", "HEAD"]);
+      run(["fetch", "origin", "main"]);
+      const mainSha = run(["rev-parse", "origin/main"]);
+      if (headSha !== mainSha) {
+        return { ok: false, reason: `observe event sink must run on a main checkout (on '${branch}')` };
+      }
+    } else {
+      run(["fetch", "origin", "main"]);
     }
-    run(["fetch", "origin", "main"]);
     const ahead = run(["rev-list", "--count", "origin/main..HEAD"]);
     if (ahead !== "0") {
       return {

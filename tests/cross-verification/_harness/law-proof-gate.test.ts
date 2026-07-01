@@ -60,4 +60,36 @@ describe("law-proof-gate — verify proven laws have real proof references", () 
     }
     expect(totalProven).toBeGreaterThanOrEqual(10);
   });
+
+  test("proof test files actually PASS when executed (assert-don't-skip)", () => {
+    // Collect unique proof files referenced by proven laws
+    const proofFiles = new Set<string>();
+    for (const iface of interfaces) {
+      for (const law of iface.laws) {
+        if (law.status === "proven" && law.proof) {
+          const [filePath] = law.proof.split(":");
+          if (filePath.endsWith(".test.ts")) proofFiles.add(filePath);
+        }
+      }
+    }
+
+    // Run each proof file and assert it passes
+    const { execSync } = require("node:child_process");
+    for (const file of proofFiles) {
+      const fullPath = join(REPO_ROOT, file);
+      if (!existsSync(fullPath)) continue;
+      try {
+        execSync(`bun test ${fullPath}`, {
+          encoding: "utf-8",
+          timeout: 30000,
+          cwd: REPO_ROOT,
+          stdio: "pipe",
+        });
+      } catch (e: any) {
+        // If test fails, this gate fails — the proof doesn't hold
+        throw new Error(`Proof test file FAILS: ${file}\n${(e.stdout || e.stderr || "").slice(0, 200)}`);
+      }
+    }
+    expect(proofFiles.size).toBeGreaterThan(0);
+  }, 60000);
 });
