@@ -27,6 +27,24 @@ scan, Profiler = find-what-writes/antecedent, ICorDebug = triggers, EventPipe = 
 **This hook is the common ground** — we build Zeta outward from it (the finalizer/runtime, the uncertainty
 meter, the DORA feed all ride it).
 
+## The root anchor: Microsoft Detours — and the max-generic F# shape (Aaron 2026-07-02)
+
+> Aaron: "this is just **Microsoft Detours** — make F# **generic to the max**."
+
+- **Beacon anchor:** Hunt & Brubacher, *Detours: Binary Interception of Win32 Functions* (MSR,
+  3rd USENIX Windows NT Symposium, 1999) — the canonical intercept: rewrite a function's prologue
+  to trampoline through instrumentation, preserving the original as a callable. Harmony/MonoMod
+  (above) are its managed descendants; the Cheat-Engine method is its interactive cousin; AOP
+  advice (Kiczales et al., ECOOP 1997) is the same idea at the language layer.
+- **The max-generic F# shape:** a detour is an **endomorphism on the hooked function** —
+  `type Detour<'F> = 'F -> 'F` — pure shape, no instance state (weight-free; interfaces-free-
+  classes-earned). Before/after/around advice, find-what-writes tracing, metering, and triggers
+  are all just compositions `d1 >> d2 >> d3` applied at a boundary; the runtime (CLR profiler,
+  chip9 opcode dispatch, a CSS-host render loop) only chooses WHERE the endomorphism attaches.
+  One generic shape, every hook a special case — only-the-irreducible-is-primitive applied to
+  interception. On chip9 carts this is what makes capture-space searchable: detour the VM's
+  write/draw ops generically and find-what-writes falls out for ANY cart, superdeterministically.
+
 ## Other hooks here
 
 - **git hooks** (commit/merge — the heartbeat-via-commit; AgencySignature) · **trigger hooks** (`triggers/`
