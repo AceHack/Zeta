@@ -85,3 +85,30 @@ let ``predict is DoP-invariant-friendly: a deterministic cell-round map's period
     let mutable t = onCycle
     for _ in 1 .. r.Period do t <- round t
     Assert.Equal<int list>(Array.toList onCycle, Array.toList t)   // period is exact
+
+// ── LOAD-BEARING: fast-forward through recurrence (the capstone made USED) ──
+
+[<Fact>]
+let ``runToHorizon equals the naive step^n for every horizon (the correctness guarantee)`` () =
+    let step (x: int) = (x + 1) % 7
+    let key (x: int) = x
+    let naive (h: int) = let mutable s = 3 in (for _ in 1 .. h do s <- step s); s
+    for h in [ 0; 1; 5; 7; 20; 100; 1000 ] do
+        Assert.Equal(naive h, SchedulerZeta.runToHorizon key step 3 h)
+
+[<Fact>]
+let ``LOAD-BEARING: a BILLION CHIP-8 frames in bounded work — the scheduler skips re-simulating a periodic config`` () =
+    let start =
+        let c = Chip8.create 0UL
+        Chip8.loadRom loopRom c
+        c
+    // small, naive-verifiable horizon (test-1 logic applies): fast-forward = real run.
+    let naive4 = let mutable s = start in (for _ in 1 .. 4 do s <- chip8Step s); s
+    Assert.Equal(chip8Key naive4, chip8Key (SchedulerZeta.runToHorizon chip8Key chip8Step start 4))
+    // ONE BILLION frames. Naive would be 4e9 Chip8.step calls; runToHorizon does
+    // O(reachable ≈ 5) work by fast-forwarding through the period-4 orbit. 1e9 ≡ 4 in
+    // the (transient 1, period 4) orbit, so the far state = the near state — computed
+    // in microseconds, not a billion steps.
+    let far = SchedulerZeta.runToHorizon chip8Key chip8Step start 1_000_000_000
+    let near = SchedulerZeta.runToHorizon chip8Key chip8Step start 4
+    Assert.Equal(chip8Key near, chip8Key far)     // the character loop, fast-forwarded a billion frames

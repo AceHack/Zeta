@@ -49,6 +49,37 @@ module SchedulerZeta =
                 i <- i + 1
         result
 
+    /// **The recurrence prediction made LOAD-BEARING.** Return the state after
+    /// `horizon` ticks — but FAST-FORWARD through detected recurrence: record the
+    /// trajectory only until it enters a cycle (transient `t`, period `p`), then the
+    /// state at tick `horizon` is index arithmetic `states.[t + (horizon − t) mod p]`,
+    /// NOT `horizon` invocations of `step`. Work is O(reachable), independent of how
+    /// large `horizon` is — the scheduler stops re-simulating a config it has proven
+    /// periodic. Equal to the naive `stepⁿ start` for every `horizon` (the guarantee).
+    let runToHorizon (key: 'S -> 'K) (step: 'S -> 'S) (start: 'S) (horizon: int) : 'S =
+        let states = System.Collections.Generic.List<'S>()
+        let index = System.Collections.Generic.Dictionary<'K, int>()
+        let mutable s = start
+        let mutable cyc = -1
+        let mutable go = true
+        while go do
+            let i = states.Count
+            if i > horizon then
+                go <- false                         // states.[horizon] recorded — no cycle needed
+            else
+                let k = key s
+                match index.TryGetValue k with
+                | true, j -> cyc <- j; go <- false  // cycle detected at trajectory index j
+                | _ ->
+                    index.[k] <- i
+                    states.Add s
+                    s <- step s
+        if cyc < 0 || horizon < states.Count then
+            states.[horizon]                        // horizon lies within the recorded prefix
+        else
+            let p = states.Count - cyc              // period of the detected cycle
+            states.[cyc + (horizon - cyc) % p]      // fast-forward by index arithmetic
+
     /// The Artin–Mazur zeta of one run's orbit: ζ = 1/(1 − u^Period) as an integer
     /// series (1 exactly at multiples of the period).
     let zetaOfRun (r: Recurrence) (maxDeg: int) : int64[] =

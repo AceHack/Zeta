@@ -99,6 +99,14 @@ objects to **our own machine**.
    the REAL CHIP-8 recurrence (period 4) and a deterministic cell-round period exactly.
    `tests/…/SchedulerZeta.Tests.fs`. The loop models its own recurrence before it runs —
    the formal basis for the ad-hoc CHIP-8/IScheduler self-prediction.
+   **LOAD-BEARING (2026-07-02):** `runToHorizon key step start horizon` makes the
+   prediction USED, not just proven — it returns the state after `horizon` ticks by
+   FAST-FORWARDING through detected recurrence (record until a cycle, then index
+   arithmetic `states[t + (horizon−t) mod p]`), O(reachable) work regardless of
+   horizon. Proven == the naive `stepⁿ` for every horizon, and demonstrated
+   fast-forwarding the REAL CHIP-8 config through 10⁹ frames in ~microseconds (78ms
+   test) instead of 4×10⁹ steps: the scheduler skips re-simulating a config it has
+   proven periodic. Deeper async PredictionScheduler auto-invocation is a follow-up.
 5. Further math rungs (routed, not rushed): Bartholdi / Ihara–Selberg (2-variable),
    Ruelle dynamical zeta with weights, Milnor (Alexander = Lefschetz zeta), Kurokawa
    zeta-of-categories (the braided-monoidal-category seat).
