@@ -102,3 +102,44 @@ let ``DER BYTE-LOCK (text hex, no-binary-in-proof-lineage): canonical bytes matc
     Assert.Equal("02020080", enc (DynamicValue.Int 128L)) // INTEGER 128 needs a leading 0x00 (sign)
     Assert.Equal("020180", enc (DynamicValue.Int -128L)) // INTEGER -128 (one octet)
     Assert.Equal("0403414243", enc (bytesOf [ 0x41uy; 0x42uy; 0x43uy ])) // OCTET STRING "ABC"
+
+[<Fact>]
+let ``HOSTILE INPUT: decode is TOTAL — malformed DER yields Error, never an exception (nation-state hardening)`` () =
+    // A parser on untrusted bytes must never crash. Each crafted stream exploits a
+    // different decoder weakness; all must return Error, and — critically — NONE may throw.
+    let hostile: (string * byte[]) list =
+        [ "empty input", [||]
+          "indefinite length (not DER)", [| 0x30uy; 0x80uy |]
+          "long-form length overflow (84 FF FF FF FF → negative)", [| 0x04uy; 0x84uy; 0xFFuy; 0xFFuy; 0xFFuy; 0xFFuy |]
+          "length octets > 4", [| 0x04uy; 0x85uy; 0x01uy; 0x00uy; 0x00uy; 0x00uy; 0x00uy |]
+          "content length exceeds input", [| 0x0Cuy; 0x0Auy; 0x41uy |] // UTF8String claims 10, has 1
+          "huge positive length claim, truncated", [| 0x0Cuy; 0x84uy; 0x7Fuy; 0xFFuy; 0xFFuy; 0xFFuy |]
+          "INTEGER exceeds 8 octets", [| 0x02uy; 0x09uy; 1uy; 2uy; 3uy; 4uy; 5uy; 6uy; 7uy; 8uy; 9uy |]
+          "NULL with nonzero length", [| 0x05uy; 0x01uy; 0x00uy |]
+          "BOOLEAN wrong length", [| 0x01uy; 0x02uy; 0x00uy; 0xFFuy |]
+          "unsupported tag", [| 0x99uy; 0x00uy |]
+          "trailing bytes", [| 0x05uy; 0x00uy; 0x05uy; 0x00uy |]
+          "truncated length octet", [| 0x04uy; 0x82uy; 0x01uy |]
+          "malformed object entry (obj holding a bare NULL)", [| 0xA0uy; 0x02uy; 0x05uy; 0x00uy |] ]
+    for (name, bytes) in hostile do
+        let result =
+            try
+                Asn1Der.decode bytes
+            with ex ->
+                Assert.Fail(sprintf "decode THREW on '%s': %s" name ex.Message)
+                Error "unreachable"
+        Assert.True((match result with Error _ -> true | Ok _ -> false), sprintf "'%s' must be rejected (Error)" name)
+
+[<Fact>]
+let ``HOSTILE INPUT: deeply-nested DER is refused at the depth ceiling, not a stack overflow`` () =
+    // A hostile stream of thousands of nested SEQUENCEs would blow the stack without a
+    // depth guard. Encode a nest past the ceiling and confirm decode returns Error (no SO);
+    // a nest well under the ceiling still round-trips.
+    let rec nest n =
+        if n = 0 then DynamicValue.Null else DynamicValue.Array [ nest (n - 1) ]
+    // under the ceiling → faithful
+    Assert.True(VTC.isFaithful VTC.asn1 (nest 100))
+    // past the ceiling → clean Error, never a crash
+    match VTC.asn1.Encode(nest 600) |> Result.bind (fun b -> Asn1Der.decode b) with
+    | Error _ -> ()
+    | Ok _ -> Assert.Fail "600-deep nesting should be refused at the depth ceiling"

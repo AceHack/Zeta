@@ -143,13 +143,18 @@ module Asn1Der =
                 Error "asn1: indefinite length not allowed in DER"
             else
                 let n = int (b0 &&& 0x7Fuy)
-                if pos + 1 + n > bytes.Length then
+                if n > 4 then
+                    // > 4 length octets ⇒ > ~2 GiB claim: unsupported / hostile, refuse.
+                    Error "asn1: long-form length exceeds 4 octets"
+                elif pos + 1 + n > bytes.Length then
                     Error "asn1: truncated long-form length"
                 else
                     let mutable v = 0
                     for i in 1..n do
                         v <- (v <<< 8) ||| int bytes.[pos + i]
-                    Ok(v, pos + 1 + n)
+                    // n≤4 can still overflow int32's sign bit (e.g. 84 FF FF FF FF) → negative;
+                    // reject rather than let a negative length slip past the bounds check.
+                    if v < 0 then Error "asn1: length overflow" else Ok(v, pos + 1 + n)
 
     let private decodeInt (bytes: byte[]) (start: int) (len: int) : int64 =
         if len = 0 then
@@ -164,56 +169,70 @@ module Asn1Der =
             else
                 v
 
-    let rec private dec (bytes: byte[]) (pos: int) : Result<DynamicValue * int, string> =
-        if pos >= bytes.Length then
+    /// Recursion-depth ceiling: a hostile deeply-nested DER stream must not overflow the
+    /// stack (a decode-side DoS). Far above any real value tree; a stream past it is refused.
+    [<Literal>]
+    let private maxDepth = 512
+
+    let rec private dec (bytes: byte[]) (pos: int) (depth: int) : Result<DynamicValue * int, string> =
+        if depth > maxDepth then
+            Error "asn1: nesting exceeds maximum depth"
+        elif pos >= bytes.Length then
             Error "asn1: unexpected end (tag octet)"
         else
             let tag = bytes.[pos]
             readLen bytes (pos + 1)
             |> Result.bind (fun (len, contentStart) ->
-                let contentEnd = contentStart + len
-                if contentEnd > bytes.Length then
+                // Overflow-safe bound: len ≥ 0 (readLen guarantees) and both sides non-negative,
+                // so this never wraps the way `contentStart + len > bytes.Length` could.
+                if len > bytes.Length - contentStart then
                     Error "asn1: content length exceeds input"
-                elif tag = tagNull then
-                    if len <> 0 then Error "asn1: NULL must have zero length" else Ok(DynamicValue.Null, contentEnd)
-                elif tag = tagBool then
-                    if len <> 1 then
-                        Error "asn1: BOOLEAN must have length 1"
-                    else
-                        Ok(DynamicValue.Bool(bytes.[contentStart] <> 0x00uy), contentEnd)
-                elif tag = tagInt then
-                    Ok(DynamicValue.Int(decodeInt bytes contentStart len), contentEnd)
-                elif tag = tagUtf8 then
-                    Ok(DynamicValue.String(System.Text.Encoding.UTF8.GetString(bytes, contentStart, len)), contentEnd)
-                elif tag = tagOctet then
-                    Ok(DynamicValue.Bytes(ImmutableArray.CreateRange(bytes.[contentStart .. contentEnd - 1])), contentEnd)
-                elif tag = tagSeq then
-                    decodeSeq bytes contentStart contentEnd
-                    |> Result.map (fun xs -> DynamicValue.Array xs, contentEnd)
-                elif tag = tagObj then
-                    decodeSeq bytes contentStart contentEnd
-                    |> Result.bind (fun elems ->
-                        let rec conv acc =
-                            function
-                            | [] -> Ok(DynamicValue.Object(List.rev acc), contentEnd)
-                            | DynamicValue.Array [ DynamicValue.String k; v ] :: rest -> conv ((k, v) :: acc) rest
-                            | other :: _ -> Error(sprintf "asn1: malformed object entry: %A" other)
-                        conv [] elems)
                 else
-                    Error(sprintf "asn1: unsupported tag 0x%02X" tag))
+                    let contentEnd = contentStart + len
+                    if tag = tagNull then
+                        if len <> 0 then Error "asn1: NULL must have zero length" else Ok(DynamicValue.Null, contentEnd)
+                    elif tag = tagBool then
+                        if len <> 1 then
+                            Error "asn1: BOOLEAN must have length 1"
+                        else
+                            Ok(DynamicValue.Bool(bytes.[contentStart] <> 0x00uy), contentEnd)
+                    elif tag = tagInt then
+                        if len > 8 then
+                            Error "asn1: INTEGER exceeds 8 octets (does not fit int64)"
+                        else
+                            Ok(DynamicValue.Int(decodeInt bytes contentStart len), contentEnd)
+                    elif tag = tagUtf8 then
+                        Ok(DynamicValue.String(System.Text.Encoding.UTF8.GetString(bytes, contentStart, len)), contentEnd)
+                    elif tag = tagOctet then
+                        Ok(DynamicValue.Bytes(ImmutableArray.CreateRange(bytes.[contentStart .. contentEnd - 1])), contentEnd)
+                    elif tag = tagSeq then
+                        decodeSeq bytes contentStart contentEnd (depth + 1)
+                        |> Result.map (fun xs -> DynamicValue.Array xs, contentEnd)
+                    elif tag = tagObj then
+                        decodeSeq bytes contentStart contentEnd (depth + 1)
+                        |> Result.bind (fun elems ->
+                            let rec conv acc =
+                                function
+                                | [] -> Ok(DynamicValue.Object(List.rev acc), contentEnd)
+                                | DynamicValue.Array [ DynamicValue.String k; v ] :: rest -> conv ((k, v) :: acc) rest
+                                | other :: _ -> Error(sprintf "asn1: malformed object entry: %A" other)
+                            conv [] elems)
+                    else
+                        Error(sprintf "asn1: unsupported tag 0x%02X" tag))
 
-    and private decodeSeq (bytes: byte[]) (start: int) (endPos: int) : Result<DynamicValue list, string> =
+    and private decodeSeq (bytes: byte[]) (start: int) (endPos: int) (depth: int) : Result<DynamicValue list, string> =
         let rec loop pos acc =
             if pos = endPos then Ok(List.rev acc)
             elif pos > endPos then Error "asn1: element overran its container"
             else
-                match dec bytes pos with
+                match dec bytes pos depth with
                 | Ok(dv, next) -> loop next (dv :: acc)
                 | Error e -> Error e
         loop start []
 
-    /// Decode canonical DER bytes back to a value tree. Rejects trailing bytes.
+    /// Decode canonical DER bytes back to a value tree. Rejects trailing bytes. Total on
+    /// ALL inputs — a malformed or hostile stream yields an `Error`, never an exception.
     let decode (bytes: byte[]) : Result<DynamicValue, string> =
-        dec bytes 0
+        dec bytes 0 0
         |> Result.bind (fun (dv, pos) ->
             if pos = bytes.Length then Ok dv else Error(sprintf "asn1: %d trailing bytes" (bytes.Length - pos)))
