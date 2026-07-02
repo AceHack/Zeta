@@ -40,6 +40,35 @@ module ShapeRender =
         | 0uy -> "#000000" | 1uy -> "#d62828" | 2uy -> "#2a9d2a" | 3uy -> "#d6c828"
         | 4uy -> "#2828d6" | 5uy -> "#d628d6" | 6uy -> "#28c8d6" | _ -> "#f0f0f0"
 
+    /// shape-sybil-verdict — the probe streams, threshold, and verdict that BOTH the render draws
+    /// and the gate checks (one source, two readers; drawn = gated by the same computation).
+    /// Claims 0 and 1 are CONDUCTED from one cause: claim 1's outcomes read claim 0's settings —
+    /// the PR-box rule, phased to the CHSH minus term, S = 4 exactly. Claim 2 is independent:
+    /// its settings AND outcomes come from its own seed only. Deterministic LCG — DST §7.
+    let sybilProbesOf (d: MediaLines.Doc) =
+        let constInt name dflt = MediaLines.constIntOr name dflt d
+        let rounds = constInt "rounds" 256
+        let seedA = constInt "seed-conductor-a" 149
+        let seedB = constInt "seed-conductor-b" 151
+        let seedC = constInt "seed-independent" 157
+        let threshold = float (constInt "threshold-milli" 2000) / 1000.0
+        let bits (seed: int) =
+            let mutable s = uint64 seed * 2862933555777941757UL + 3037000493UL
+            [ for _ in 1 .. rounds ->
+                  s <- s * 6364136223846793005UL + 1442695040888963407UL
+                  int ((s >>> 33) &&& 1UL) ]
+        let sa = bits seedA
+        let sb = bits seedB
+        let round s o : AntiSybil.ChshRound = { Setting = s; Outcome = o }
+        let a = sa |> List.map (fun s -> round s 1)
+        let b =
+            List.zip sa sb
+            |> List.map (fun (xa, xb) -> round xb (if xa = 0 && xb = 1 then -1 else 1))
+        let c =
+            List.zip (bits seedC) (bits (seedC * 7 + 1))
+            |> List.map (fun (s, o) -> round s (if o = 1 then 1 else -1))
+        a, b, c, threshold, AntiSybil.chshSybil threshold [ a; b; c ]
+
     /// The strokes a cartridge generates — the SAME constants ShapeAcceptance gates on (sync by
     /// construction: one source, two readers).
     let strokesOf (d: MediaLines.Doc) : Stroke list =
@@ -426,6 +455,81 @@ module ShapeRender =
                     Name = sprintf "edge-%d-%d" (min v1 v2) bit
                     Mask = byte (AdinkraViz.colorOfBit bit)
                     Points = [ pt x1 y1; pt x2 y2 ] } ]
+        | "shape-sybil-verdict" ->
+            // THE VERDICT AS INK (Addendum 4 → glyph): three claimed identities descend as
+            // strands; the CHSH oracle (AntiSybil.chshSybil — the gate's own computation) decides
+            // which pair collapses, and the render draws EXACTLY that verdict: a convicted pair
+            // PLAITS into one braid (left-over-right at every crossing; the under strand carries
+            // the braid family's occlusion gap), an unconvicted claim descends straight and
+            // separate. Strokes derive FROM the verdict, never hardcoded — drawn = gated.
+            let _, _, _, _, verdict = sybilProbesOf d
+            let crossings = constInt "crossings" 5
+            let cols = [| 20; 32; 44 |]
+            let rowTop, rowBot = 2, 29
+            let comps =
+                verdict.SourceOf
+                |> Map.toList
+                |> List.groupBy snd
+                |> List.map (fun (_, xs) -> xs |> List.map fst |> List.sort)
+            [ for comp in comps do
+                  match comp with
+                  | [ i ] ->
+                      // unconvicted: straight and separate. NOT an acquittal — see the cartridge.
+                      yield
+                          { Dash = false
+                            Name = sprintf "claim-%d" i
+                            Mask = 2uy
+                            Points = [ pt cols.[i % 3] rowTop; pt cols.[i % 3] rowBot ] }
+                  | [ i; j ] ->
+                      // convicted pair: a plait of `crossings` positive crossings (σ^n — the
+                      // braid remembers). Gaps split the under strand into runs.
+                      let cA, cB = cols.[i % 3], cols.[j % 3]
+                      let cM = (cA + cB) / 2
+                      let runs = System.Collections.Generic.Dictionary<int, ResizeArray<ResizeArray<int * int>>>()
+                      for s in [ i; j ] do
+                          let outer = ResizeArray<ResizeArray<int * int>>()
+                          outer.Add(ResizeArray())
+                          runs.[s] <- outer
+                      let addPt s p = runs.[s].[runs.[s].Count - 1].Add p
+                      let breakRun s = runs.[s].Add(ResizeArray())
+                      let mutable atA = i
+                      let mutable atB = j
+                      addPt atA (pt cA rowTop)
+                      addPt atB (pt cB rowTop)
+                      for k in 0 .. crossings - 1 do
+                          let r0 = rowTop + 1 + k * 5
+                          addPt atA (pt cA r0)
+                          addPt atB (pt cB r0)
+                          // left crosses OVER right: the A-side strand runs the full diagonal;
+                          // the B-side strand breaks around the midpoint (the occlusion gap).
+                          addPt atA (pt cM (r0 + 1))
+                          addPt atA (pt cB (r0 + 2))
+                          breakRun atB
+                          addPt atB (pt cA (r0 + 2))
+                          let t = atA
+                          atA <- atB
+                          atB <- t
+                      addPt atA (pt cA rowBot)
+                      addPt atB (pt cB rowBot)
+                      for s in [ i; j ] do
+                          let mask = if s = i then 1uy else 4uy
+                          for ri in 0 .. runs.[s].Count - 1 do
+                              let ptsList = runs.[s].[ri] |> List.ofSeq
+                              if ptsList.Length >= 2 then
+                                  yield
+                                      { Dash = false
+                                        Name = sprintf "claim-%d-r%d" s ri
+                                        Mask = mask
+                                        Points = ptsList }
+                  | many ->
+                      // 3+ collapsed into one source: out of this glyph's plait vocabulary; state
+                      // it honestly as dashed same-mask strands (one cause wearing many faces).
+                      for s in many do
+                          yield
+                              { Dash = true
+                                Name = sprintf "claim-%d" s
+                                Mask = 1uy
+                                Points = [ pt cols.[s % 3] rowTop; pt cols.[s % 3] rowBot ] } ]
         | _ -> []
 
     let private pointsAttr (pts: (int * int) list) =

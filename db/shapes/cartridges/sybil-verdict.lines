@@ -1,0 +1,34 @@
+# SYBIL-VERDICT — the CHSH identity oracle drawn (otto, 2026-07-02; Aaron: "go 1 then 2" — the
+# oracle first, then this glyph). Three claimed identities descend as strands. The oracle
+# (AntiSybil.chshSybil — Addendum 4 of the name(name) doc made instrument, PR #9117) probes each
+# pair with randomized settings; a pair whose CHSH S exceeds the local-hidden-variable bound 2 is
+# CONVICTED of a common cause, and the render PLAITS the convicted pair into one braid — the braid
+# family's over/under register carrying who conducted whom; the unconvicted claim descends
+# straight and separate. The verdict IS the ink: the strokes derive from the SAME chshSybil call
+# the acceptance gate runs (drawn = gated, one source two readers). Direction of inference,
+# honest: plaiting CONVICTS sameness; parallel strands are NOT an acquittal — distinctness is
+# proven by captured irreducible entropy + an exchange history that model-checks, never by this
+# oracle alone.
+meta	name	shape-sybil-verdict
+meta	catalog	shapes
+meta	shape-zetaid	0022fd07610c1fe0ddbf7b301f4f5381
+gen	plait	0022fd07610c1fe0ddbf7b301f4f5381	1	7	claims:3;crossings:5
+constant	rounds	256	CHSH probe rounds per claim	enough for the conducted pair's EXACT S=4 — deterministic products, not asymptotics
+constant	seed-conductor-a	149	claim 0's settings seed	the conductor's left hand — shares one cause with claim 1
+constant	seed-conductor-b	151	claim 1's settings seed	its OUTCOMES read claim 0's settings (the PR-box rule) — that reach IS what gets convicted
+constant	seed-independent	157	claim 2's private seed	settings AND outcomes from its own clock only — no conductor reaches it
+constant	threshold-milli	2000	conviction line, x1000	the LHV bound S=2 (Bell 1964; CHSH 1969): no no-communication strategy exceeds it
+constant	crossings	5	plait crossings for a convicted pair	odd, so the exchange shows at the bottom edge (sigma^5 — the braid remembers)
+constant	distinct	2	sources the gate must find	3 claims from 1 conductor + 1 independent = 2 causes — the forgery-cost floor
+law	conviction	code:shape-sybil-verdict geometry (conducted pair S = 4 exactly => plaited into one source)
+law	soundness	code:shape-sybil-verdict geometry (independent claim |S| <= 2 => never convicted)
+law	one-way-inference	code:shape-sybil-verdict geometry (parallel strands are NOT an acquittal — low S proves nothing)
+law	drawn-equals-gated	code:shape-sybil-verdict geometry (strokes derive from the SAME chshSybil verdict the gate checks)
+prereq	the-crossing-atom	shapes/cartridges/crossing.lines — sigma, the generator every plait is a word in
+prereq	the-oracle	src/Core/AntiSybil.fs chshS/chshSybil — Addendum 4 made instrument (PR #9117)
+edge	same-vocabulary	shape-braid	the plait IS the braid family's glyph: over/under = who conducted whom; this shape reuses sigma's ink to draw a VERDICT instead of a group element
+edge	generated-by	shape-crossing	five sigmas between the convicted pair — a word in the atom
+anim	draw	plait
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	AntiSybil CHSH suite green (15/15, PR #9117): conducted S=4 convicted, independent not convicted, mixture tier S=2+2f*, drift lock vs BellTest.chshOf
+treaty	otto	meaning	ratified	the verdict IS the ink and the ink is the braid family's — I built the oracle, then drew what it decides; plaiting convicts, parallel never acquits, and that one-way honesty is the shape's whole point (my own frame, my own choice)

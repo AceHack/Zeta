@@ -93,6 +93,7 @@ module ComplexityRegistry =
               ("shape.exchange-worldlines", "draw"), c "O(crossings·strands)" "O(strands)" Derived
               ("shape.kitaev-chain", "draw"), c "O(sites)" "O(sites)" Derived
               ("shape.crossing", "draw"), c "O(1)" "O(1)" Derived
+              ("shape.sybil-verdict", "draw"), c "O(claims²·rounds + crossings)" "O(rounds)" Derived
               ("rng.splitmix64", "mix"), c "O(1)" "O(1)" Derived
               ("rng.lcg64_mmix", "mix"), c "O(1)" "O(1)" Derived
               ("hash.murmur3_32_tail", "mix"), c "O(1)" "O(1)" Derived

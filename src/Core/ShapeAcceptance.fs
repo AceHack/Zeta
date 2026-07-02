@@ -292,6 +292,28 @@ module ShapeAcceptance =
             let b = { WeaveFold.Stream = "right"; WeaveFold.Seq = 1; WeaveFold.Key = "row4"; WeaveFold.Value = "under" }
             let ok = WeaveFold.fold [ a; b ] = WeaveFold.fold [ b; a ]
             ok, "WeaveFold commutes across streams — the join holds from BOTH sides"
+        | "shape-sybil-verdict" ->
+            // the CHSH oracle's laws, run LIVE (Addendum 4 made instrument, PR #9117):
+            // AntiSybil.chshSybil is both this gate's check and the renderer's stroke source —
+            // drawn = gated by the SAME computation (ShapeRender.sybilProbesOf, one source).
+            let a, b, c, threshold, verdict = ShapeRender.sybilProbesOf d
+            let sPair = AntiSybil.chshS a b
+            let sIndep = AntiSybil.chshS a c
+            let wantDistinct = MediaLines.constIntOr "distinct" 2 d
+            let ok =
+                verdict.DistinctCount = wantDistinct
+                && sPair = 4.0
+                && abs sIndep <= threshold
+                && AntiSybil.coordinationBandwidth sPair = 1.0
+            ok,
+            sprintf
+                "CHSH oracle live: conducted pair S = %d/1000 (convicted, bandwidth %d/1000); independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
+                (int (sPair * 1000.0))
+                (int (AntiSybil.coordinationBandwidth sPair * 1000.0))
+                (int (abs sIndep * 1000.0))
+                (int (threshold * 1000.0))
+                verdict.DistinctCount
+                verdict.ClaimedCount
         | _ -> false, "no known-answer law for this shape — geometry cannot be accepted on looks"
 
     /// All four verdicts for one cartridge (name = its meta name).
