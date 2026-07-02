@@ -58,15 +58,6 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
 
 ## NEXT PICKUP (subsumed by the ladder — scope rung 3 with Aaron; LARGE)
 
-<<<<<<< Updated upstream
-1. **Zeta Grammar IR as a `DynamicValue` schema** — the grammar is data ⇒ rides rung-2 codecs
-   (byte-lockable, DST-replayable). The natural first, bounded piece.
-2. **`.g4` → Grammar IR ingester** (compatible subset; log drops — no silent truncation), from
-   one grammars-v4 asset. **KDL and lenient-YAML are subsumed here** — both are just grammars
-   ingested (KDL/YAML `.g4` exist), not bespoke hand-parsers.
-3. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung).
-4. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
-=======
 1. ✅ **Zeta Grammar IR as a `DynamicValue` schema** — LANDED (`src/Core/GrammarIr.fs`):
    `Grammar` (terminals/nonterminals/productions/start) ⇄ `DynamicValue` bijection; grammar rides
    the codec stack (byte-lockable, DST-replayable); total parse. STRUCTURAL core only — v2 adds
@@ -81,7 +72,6 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    meta-grammar. **← resume: the homoiconic-meta-grammar vision + math-team proof obligations.**
 4. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung).
 5. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
->>>>>>> Stashed changes
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
 ## HOMOICONIC META-GRAMMAR (2026-07-02, Aaron): the telos

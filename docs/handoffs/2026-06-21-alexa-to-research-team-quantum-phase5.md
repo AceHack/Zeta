@@ -8,6 +8,7 @@ Status: summoned (timed out at 16min — deep research, will pick up next tick)
 ## Context
 
 Phases 1-4 of ci-full-verification-gate complete on main:
+
 - All 7 toolchains provisioned (Rust in mise, smoke check)
 - full-verify CI job live with alerting
 - Clifford cross-language byte-lock (3 langs agree)
@@ -40,11 +41,13 @@ The quantum lane must track heat (entropy/information cost) as precisely as
 CHIP-8's soft lane tracks support growth.
 
 **The parallel:**
+
 - CHIP-8 AmplitudeEmu: tracks `support` = number of frames with nonzero amplitude
 - SparseQuantumSim: tracks `support()` = same metric
 - Both = "how many bits of uncertainty exist right now"
 
 **The extension (Aaron wants):**
+
 - Every `branch` (Hadamard) = +1 bit of entropy (uncertainty introduced)
 - Every `measure` = -1 bit of entropy (Landauer: erasing 1 bit costs kT ln 2 heat)
 - Track per-operation: `{entropy_bits_introduced, entropy_bits_consumed, net_entropy}`
@@ -52,12 +55,14 @@ CHIP-8's soft lane tracks support growth.
 - The WeakRef/collection pattern: GC collecting generated code = entropy discharge
 
 **Questions for the research team:**
+
 1. Can Landauer's bound (kT ln 2 per erased bit) be a cost contract in our framework?
 2. Is counting entropy bits sufficient, or do we need von Neumann entropy (density matrix)?
 3. How does entropy compose with the tropical semiring cost model? (entropy is additive → fits)
 4. Implementation: extend SparseQuantumSim with entropy tracking, or separate injected effect?
 
 **Anchors:**
+
 - Landauer 1961 (irreversibility and heat generation in computing)
 - Bennett 1973 (reversible computation — no heat for reversible ops)
 - Maxwell's demon → Szilard engine → information-theoretic entropy

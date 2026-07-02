@@ -136,6 +136,12 @@ shared. See the genesis reconciliation doc's RESOLVED note.
   default policy is no-forget/backpressure. The explicit `drop-oldest` mode is allowed
   only with a heat record, so information loss is visible to debugging and room
   accounting.
+- **Live replay bridge — LANDED.**
+  `src/Core.TypeScript/discovery/llmtv-live-replay-bridge.ts` composes the live node
+  and replay recorder without owning sockets or UI animation. Otto's UDP/Reticulum
+  runner can keep the physical mesh; the bridge wraps the injected broadcast port,
+  records self/peer frames into deterministic replay artifacts, and exposes a drain
+  operation for website/desktop readout ticks.
 - **Replay artifact renderer — LANDED.**
   `src/Core.TypeScript/discovery/llmtv-replay-render.ts` is the source-owned file
   bridge: given a captured `zeta.llmtv.replay.v1` JSON artifact, it emits the same
