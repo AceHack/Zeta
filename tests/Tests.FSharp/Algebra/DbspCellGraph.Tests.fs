@@ -70,3 +70,45 @@ let ``fan-out then merge: partition by parity reunites at the sink`` () =
     match CellScheduler.runToQuiescence 1000 DbspCellGraph.step s with
     | Ok final -> Assert.Equal<ZSet<int64>>(input, DbspCellGraph.accOf "snk" final)   // evens ⊎ odds = input
     | Error e -> failwith e
+
+// ── Non-linear operator: incremental distinct through the scheduler ──
+
+[<Fact>]
+let ``non-linear distinct: incremental equals recompute across the scheduler`` () =
+    // a1 has a multiset (key 1 twice); a2 retracts key 2 to zero and adds key 4.
+    let a1 = ZSet.ofSeq [ 1L, 2L; 2L, 1L; 3L, 1L ]
+    let a2 = ZSet.ofSeq [ 2L, -1L; 4L, 1L ]
+    let g = [ "d", DbspOp.Distinct, [] ]
+    let s = DbspCellGraph.seed g [ "d", a1; "d", a2 ]
+    match CellScheduler.runToQuiescence 1000 DbspCellGraph.step s with
+    | Ok final ->
+        let got = DbspCellGraph.accOf "d" final
+        // incremental distinct == batch distinct of the integrated input
+        Assert.Equal<ZSet<int64>>(ZSet.distinct (a1 + a2), got)
+        // set semantics, key 2 gone (its count crossed back to 0)
+        Assert.Equal<ZSet<int64>>(ZSet.ofSeq [ 1L, 1L; 3L, 1L; 4L, 1L ], got)
+    | Error e -> failwith e
+
+[<Fact>]
+let ``distinct inside a graph is DoP-invariant`` () : Task =
+    task {
+        // relay -> distinct -> integrate(sink); the sink integrates distinct's output.
+        let g =
+            [ "src", DbspOp.Relay, [ "d" ]
+              "d", DbspOp.Distinct, [ "snk" ]
+              "snk", DbspOp.Integrate, [] ]
+        let a1 = ZSet.ofSeq [ 1L, 2L; 2L, 1L; 3L, 1L ]
+        let a2 = ZSet.ofSeq [ 2L, -1L; 4L, 1L ]
+        let runAt dop =
+            CellScheduler.runFerryToQuiescence
+                (FerryThrottlerConfig.withFerries dop) DbspCellGraph.step 100_000
+                (DbspCellGraph.seed g [ "src", a1; "src", a2 ])
+        let! r1 = runAt 1
+        let! r4 = runAt 4
+        match r1, r4 with
+        | Ok x, Ok y ->
+            let sinkX = DbspCellGraph.accOf "snk" x
+            Assert.Equal<ZSet<int64>>(sinkX, DbspCellGraph.accOf "snk" y)
+            Assert.Equal<ZSet<int64>>(ZSet.distinct (a1 + a2), sinkX)
+        | _ -> failwith "a DoP variant failed to quiesce"
+    }

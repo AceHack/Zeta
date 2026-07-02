@@ -37,19 +37,27 @@ type DbspOp =
     | Relay
     /// A sink: emit nothing; the running integral lives in the cell's `Acc`.
     | Integrate
+    /// NON-LINEAR: set-semantics `distinct` maintained incrementally (the DBSP
+    /// `H` operator). Needs per-cell integrated-INPUT state; emits only the
+    /// boundary-crossing (0↔positive) delta. Its presence is what makes this a
+    /// real DBSP proof — a stateful, non-linear operator through the scheduler.
+    | Distinct
 
 [<RequireQualifiedAccess>]
 module DbspCellGraph =
 
-    /// A cell in the dataflow: its operator, its downstream targets, and its
-    /// integrated output so far (`Acc` — the DBSP `I` of everything it emitted).
+    /// A cell in the dataflow: its operator, downstream targets, integrated
+    /// output (`Acc` — the DBSP `I` of everything it emitted), and integrated
+    /// INPUT (`InInt` — only used by the stateful `Distinct`; empty otherwise).
     type Cell =
         { Op: DbspOp
           Down: CellId list
-          Acc: ZSet<int64> }
+          Acc: ZSet<int64>
+          InInt: ZSet<int64> }
 
-    /// The operator's action on an incoming delta. Linear ops distribute over
+    /// The LINEAR operator's action on an incoming delta — distributes over
     /// Z-set addition, so applying to the delta IS the incremental form.
+    /// (`Distinct` is non-linear and handled in `step`, not here.)
     let applyOp (op: DbspOp) (delta: ZSet<int64>) : ZSet<int64> =
         match op with
         | DbspOp.Filter parity ->
@@ -59,22 +67,32 @@ module DbspCellGraph =
         | DbspOp.Rekey factor -> ZSet.ofSeq [ for e in delta -> e.Key * factor, e.Weight ]
         | DbspOp.Relay -> delta
         | DbspOp.Integrate -> delta
+        | DbspOp.Distinct -> delta   // unused; step handles Distinct with state
 
     /// The cell step: transform the incoming delta, integrate it into `Acc`,
-    /// and emit the output delta to every downstream cell. A sink (`Down = []`)
-    /// emits nothing and simply integrates. Pure — the noninterference the
-    /// scheduler's DoP-invariance depends on (§13): reads only (this cell, one
-    /// delta), returns (new cell, emitted deltas); no ambient state.
+    /// and emit the output delta to every downstream cell. Pure — the
+    /// noninterference the scheduler's DoP-invariance depends on (§13): reads
+    /// only (this cell, one delta), returns (new cell, emitted deltas).
+    /// `Distinct` is non-linear: it reads its integrated input `InInt`, emits
+    /// only boundary-crossings via `ZSet.distinctIncremental`, and advances
+    /// `InInt += delta` — all still a pure function of (cell, delta).
     let step (cell: Cell) (delta: ZSet<int64>) : Cell * (CellId * ZSet<int64>) list =
-        let outDelta = applyOp cell.Op delta
-        { cell with Acc = cell.Acc + outDelta },
-        [ for t in cell.Down -> t, outDelta ]
+        match cell.Op with
+        | DbspOp.Distinct ->
+            let outDelta = ZSet.distinctIncremental cell.InInt delta
+            { cell with Acc = cell.Acc + outDelta; InInt = cell.InInt + delta },
+            [ for t in cell.Down -> t, outDelta ]
+        | op ->
+            let outDelta = applyOp op delta
+            { cell with Acc = cell.Acc + outDelta },
+            [ for t in cell.Down -> t, outDelta ]
 
     /// Build the initial scheduler state from a node list (id → op × downstream),
-    /// every cell starting with an empty integral.
+    /// every cell starting with empty integrals.
     let init (nodes: (CellId * DbspOp * CellId list) list) : CellScheduler.State<Cell, ZSet<int64>> =
         CellScheduler.init
-            [ for (id, op, down) in nodes -> id, { Op = op; Down = down; Acc = ZSet<int64>.Empty } ]
+            [ for (id, op, down) in nodes ->
+                id, { Op = op; Down = down; Acc = ZSet<int64>.Empty; InInt = ZSet<int64>.Empty } ]
             []
 
     /// Build the graph and inject a batch of input deltas (`target × delta`) as
@@ -84,7 +102,8 @@ module DbspCellGraph =
         (inputs: (CellId * ZSet<int64>) list)
         : CellScheduler.State<Cell, ZSet<int64>> =
         CellScheduler.init
-            [ for (id, op, down) in nodes -> id, { Op = op; Down = down; Acc = ZSet<int64>.Empty } ]
+            [ for (id, op, down) in nodes ->
+                id, { Op = op; Down = down; Acc = ZSet<int64>.Empty; InInt = ZSet<int64>.Empty } ]
             inputs
 
     /// The integrated output of a named cell after a run (the DBSP `I` view).
