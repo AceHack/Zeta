@@ -1366,7 +1366,7 @@ jobs:
         run: bun test src/Core.TypeScript/ace/
 
       - name: Q# source-owned reference oracles
-        run: bun test src/Core.QSharp.ReferenceOracle/qsharp-golden.test.ts src/Core.QSharp.ReferenceOracle/quantum-circuit.test.ts
+        run: bun test src/Core.QSharp.ReferenceOracle/qsharp-golden.test.ts src/Core.QSharp.ReferenceOracle/quantum-circuit.test.ts src/Core.QSharp.ReferenceOracle/dbsp-operators.test.ts
 
       - name: Cross-language byte-lock + golden-vector oracles
         run: bun src/Core.TypeScript/ci/cross-verify-all.ts
