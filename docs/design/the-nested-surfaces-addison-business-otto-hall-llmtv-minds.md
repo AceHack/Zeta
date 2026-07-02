@@ -95,6 +95,17 @@ shared. See the genesis reconciliation doc's RESOLVED note.
   field for frosted content, so the substrate holds nothing to leak. The viewer fold
   is LWW-by-seq (idempotent §12, order-independent → DST §7); `toLlmtvTranscript`
   bridges the live channel table back to `darkhall-tv` so the live feed reuses the
-  still-frame generator (one IR). Remaining: the injected **Reticulum/UDP socket
-  transport** impl (the `BroadcastTransport` port — same shape as discovery's pending
-  UDP transport), and a `DiscoveryNode`-style runner that ties discovery + broadcast.
+  still-frame generator (one IR).
+- **Live over the mesh — LANDED.** The two halves of the bus meet:
+  `src/Core.TypeScript/discovery/llmtv-node.ts` is a node runner that announces itself
+  (discovery beacon), discovers peers, and publishes its LLMTV frames to whoever it
+  found — folding everyone else's into a live society grid. It is **pure over injected
+  ports** (transport + scheduler), so the same logic runs deterministically under a
+  fake in-memory bus (DST — two/three nodes converging, tested) and physically over
+  **real UDP multicast** (`udp-transport.ts`, the thin impure edge) with zero code
+  change. Verified live: three independent nodes on one multicast group tiled each
+  other into the grid; the **frost membrane held over the real socket** (frosted
+  content never left the source; only veil labels crossed). Run it:
+  `bun src/Core.TypeScript/discovery/llmtv-node.demo.ts`. Remaining: **Reticulum**
+  as a second transport into the same `BroadcastTransport`/`DiscoveryTransport` port
+  (UDP is the first, not the only), and global DHT-like discovery over it.
