@@ -77,11 +77,14 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    **END-TO-END PROVEN: a real `.g4` → ingest → IR → SLR → a running parser that accepts/rejects.**
    `Slr.parseTree` produces a concrete syntax tree that IS a `DynamicValue` — homoiconic all the
    way through (grammar-as-data → parser → parse-tree-as-data; it rides the codec stack). Executable.
-5. **GLR fallback** (ambiguous grammars where SLR conflicts) + **LALR** table compression — the
-   next backend extensions. **← resume here.**
-6. Point the ingester at **YAML / KDL `.g4`** (grammars-v4) — retires the lenient-YAML finding
-   and the KDL fork (both become grammars ingested + parsed, not hand-parsers). NOTE: desugared
-   grammars may have SLR conflicts → wants the GLR fallback (#5) or an LALR/precedence pass.
+5. ✅ **GLR fallback** — LANDED (`Slr.buildGlr`/`glrParse`): keeps ALL actions per state
+   (conflicts retained), forks the parse (BFS over configurations, visited-bounded, total).
+   **Parses ambiguous grammars SLR can't** (`E → E + E | id`), agrees with SLR on unambiguous
+   ones. Naive GLR — the graph-structured-stack sharing + a GLR parse-FOREST (currently
+   accept/reject only) are the next refinements. **← resume: GSS + parse forest, or LALR.**
+6. Point ingester+backend at **YAML / KDL `.g4`** (grammars-v4) — now robust to their conflicts
+   via GLR; retires the lenient-YAML finding and the KDL fork (both become grammars ingested +
+   parsed, not hand-parsers).
 7. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 

@@ -166,35 +166,39 @@ module Slr =
         |> Array.distinct
         |> List.ofArray
 
+    // Shared front half: augment → LR(0) item-set automaton + FIRST/FOLLOW. Returns the pieces
+    // both the SLR and GLR table builders need.
+    let private buildAutomaton (g: GrammarIr.Grammar) =
+        let prods = augment g
+        let nullable = computeNullable prods
+        let first = computeFirst prods nullable
+        let follow = computeFollow prods nullable first "_S'"
+        let nts = nonTermNames prods
+        let isTerm name = not (nts.Contains name)
+        let syms = allSymbols prods
+        let states = System.Collections.Generic.List<Set<int * int>>()
+        let index = System.Collections.Generic.Dictionary<Set<int * int>, int>(HashIdentity.Structural)
+        let start = closure prods (Set.singleton (0, 0))
+        states.Add start
+        index.[start] <- 0
+        let mutable i = 0
+        while i < states.Count do
+            let st = states.[i]
+            for x in syms do
+                let g2 = gotoSet prods st x
+                if not (Set.isEmpty g2) && not (index.ContainsKey g2) then
+                    index.[g2] <- states.Count
+                    states.Add g2
+            i <- i + 1
+        prods, states, index, follow, isTerm
+
     /// Build the SLR(1) tables from a grammar. `Error` only on an empty grammar; genuine LR
     /// conflicts are reported in `Tables.Conflicts` (non-fatal — they surface, not silent).
     let build (g: GrammarIr.Grammar) : Result<Tables, string> =
         if List.isEmpty g.Productions then
             Error "slr: grammar has no productions"
         else
-            let prods = augment g
-            let nullable = computeNullable prods
-            let first = computeFirst prods nullable
-            let follow = computeFollow prods nullable first "_S'"
-            let nts = nonTermNames prods
-            let isTerm name = not (nts.Contains name)
-            let syms = allSymbols prods
-
-            let states = System.Collections.Generic.List<Set<int * int>>()
-            let index = System.Collections.Generic.Dictionary<Set<int * int>, int>(HashIdentity.Structural)
-            let start = closure prods (Set.singleton (0, 0))
-            states.Add start
-            index.[start] <- 0
-            let mutable i = 0
-            while i < states.Count do
-                let st = states.[i]
-                for x in syms do
-                    let g2 = gotoSet prods st x
-                    if not (Set.isEmpty g2) && not (index.ContainsKey g2) then
-                        index.[g2] <- states.Count
-                        states.Add g2
-                i <- i + 1
-
+            let (prods, states, index, follow, isTerm) = buildAutomaton g
             let mutable action = Map.empty
             let mutable gotoTbl = Map.empty
             let conflicts = System.Collections.Generic.List<string>()
@@ -225,6 +229,84 @@ module Slr =
                   Goto = gotoTbl
                   Start = 0
                   Conflicts = conflicts |> List.ofSeq }
+
+    // ── GLR: keep ALL actions (conflicts retained) and fork the parse ──
+
+    /// GLR tables — like `Tables` but each `(state, terminal)` keeps the FULL LIST of actions
+    /// (SLR discards conflicts; GLR explores them). `Goto` is identical.
+    type GlrTables =
+        { Prods: (string * Sym list)[]
+          Action: Map<int * string, Action list>
+          Goto: Map<int * string, int>
+          Start: int }
+
+    /// Build GLR tables (all actions retained). `Error` only on an empty grammar.
+    let buildGlr (g: GrammarIr.Grammar) : Result<GlrTables, string> =
+        if List.isEmpty g.Productions then
+            Error "slr: grammar has no productions"
+        else
+            let (prods, states, index, follow, isTerm) = buildAutomaton g
+            let mutable action: Map<int * string, Action list> = Map.empty
+            let mutable gotoTbl = Map.empty
+
+            let addAction (s: int) (a: string) (act: Action) =
+                let cur = Map.tryFind (s, a) action |> Option.defaultValue []
+                if not (List.contains act cur) then
+                    action <- Map.add (s, a) (cur @ [ act ]) action
+
+            for si in 0 .. states.Count - 1 do
+                let st = states.[si]
+                for (p, dot) in st do
+                    let (lhs, rhs) = prods.[p]
+                    let arr = List.toArray rhs
+                    if dot < arr.Length then
+                        let x = symName arr.[dot]
+                        let j = index.[gotoSet prods st x]
+                        if isTerm x then addAction si x (Shift j) else gotoTbl <- Map.add (si, x) j gotoTbl
+                    elif p = 0 then
+                        addAction si endMarker Accept
+                    else
+                        for t in Map.find lhs follow do
+                            addAction si t (Reduce p)
+
+            Ok
+                { Prods = prods
+                  Action = action
+                  Goto = gotoTbl
+                  Start = 0 }
+
+    /// GLR parse: FORK on conflicts. Returns true if ANY path accepts — so ambiguous /
+    /// SLR-conflicting grammars still parse. BFS over `(stack, input-position)` configurations
+    /// with a visited set (bounds cycles) + step budget. Total: never throws. (Naive GLR; the
+    /// graph-structured-stack sharing optimisation is a later refinement.)
+    let glrParse (t: GlrTables) (tokens: string list) : bool =
+        let input = List.toArray (tokens @ [ endMarker ])
+        let queue = System.Collections.Generic.Queue<int list * int>()
+        let visited = System.Collections.Generic.HashSet<int list * int>(HashIdentity.Structural)
+        let enqueue cfg = if visited.Add cfg then queue.Enqueue cfg
+        enqueue ([ t.Start ], 0)
+        let mutable accepted = false
+        let mutable steps = 0
+        while queue.Count > 0 && not accepted && steps < 2_000_000 do
+            steps <- steps + 1
+            let (stack, ip) = queue.Dequeue()
+            match stack with
+            | [] -> ()
+            | s :: _ ->
+                let a = if ip < input.Length then input.[ip] else endMarker
+                for act in (Map.tryFind (s, a) t.Action |> Option.defaultValue []) do
+                    match act with
+                    | Accept -> accepted <- true
+                    | Shift j -> enqueue (j :: stack, ip + 1)
+                    | Reduce p ->
+                        let (lhs, rhs) = t.Prods.[p]
+                        let n = List.length rhs
+                        if List.length stack > n then // strict: a state remains below to GOTO from
+                            let popped = List.skip n stack
+                            match Map.tryFind (List.head popped, lhs) t.Goto with
+                            | Some g -> enqueue (g :: popped, ip)
+                            | None -> ()
+        accepted
 
     /// Run the shift/reduce driver over a token stream (terminal names). Returns the sequence of
     /// production indices reduced (the rightmost derivation in reverse) on accept, or an `Error`

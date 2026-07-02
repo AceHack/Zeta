@@ -123,3 +123,45 @@ let ``PARSE TREE: the parser produces a concrete syntax tree that IS a DynamicVa
              | Ok _ -> false)
         )
     | Error e -> Assert.Fail(sprintf "build failed: %s" e)
+
+/// An AMBIGUOUS grammar: E → E + E | id (associativity ambiguous ⇒ SLR shift/reduce conflict).
+let private ambiguousExpr: G.Grammar =
+    { Id = "amb"
+      Terminals = [ { Name = "+"; Pattern = "+" }; { Name = "id"; Pattern = "id" } ]
+      NonTerminals = [ { Name = "E" } ]
+      Productions =
+        [ { Lhs = "E"; Rhs = [ G.NonTerm "E"; G.Term "+"; G.NonTerm "E" ] }
+          { Lhs = "E"; Rhs = [ G.Term "id" ] } ]
+      Start = "E" }
+
+[<Fact>]
+let ``GLR parses an ambiguous grammar that SLR cannot: SLR conflicts, GLR accepts/rejects correctly`` () =
+    // SLR can't handle it — reports conflicts.
+    match Slr.build ambiguousExpr with
+    | Ok slr -> Assert.NotEmpty(slr.Conflicts)
+    | Error e -> Assert.Fail(sprintf "slr build failed: %s" e)
+    // GLR forks on the conflict and still parses.
+    match Slr.buildGlr ambiguousExpr with
+    | Ok t ->
+        Assert.True(Slr.glrParse t [ "id" ])
+        Assert.True(Slr.glrParse t [ "id"; "+"; "id" ])
+        Assert.True(Slr.glrParse t [ "id"; "+"; "id"; "+"; "id" ])
+        Assert.False(Slr.glrParse t [ "id"; "+" ])
+        Assert.False(Slr.glrParse t [ "+"; "id" ])
+        Assert.False(Slr.glrParse t [ "id"; "id" ])
+        Assert.False(Slr.glrParse t [])
+    | Error e -> Assert.Fail(sprintf "glr build failed: %s" e)
+
+[<Fact>]
+let ``GLR agrees with SLR on the unambiguous expression grammar`` () =
+    match Slr.build exprGrammar, Slr.buildGlr exprGrammar with
+    | Ok slr, Ok glr ->
+        for toks in
+            [ [ "id" ]
+              [ "id"; "+"; "id"; "*"; "id" ]
+              [ "("; "id"; ")" ]
+              [ "id"; "+" ]
+              [ ")"; "id" ]
+              [] ] do
+            Assert.Equal(Slr.accepts slr toks, Slr.glrParse glr toks)
+    | _ -> Assert.Fail "both builds should succeed"
