@@ -11,6 +11,22 @@
     "laws": 3,
     "extends": []
   },
+  "IDbspOperators": {
+    "typeParams": [
+      "invariant:TKey",
+      "invariant:TWeight"
+    ],
+    "members": [
+      "method:Filter",
+      "method:Rekey",
+      "method:Relay",
+      "method:Distinct",
+      "method:Join",
+      "method:Integrate"
+    ],
+    "laws": 9,
+    "extends": []
+  },
   "IGroup": {
     "typeParams": [
       "invariant:T"
@@ -21,6 +37,20 @@
       "method:Inverse"
     ],
     "laws": 3,
+    "extends": []
+  },
+  "IKleeneAlgebra": {
+    "typeParams": [
+      "invariant:TWeight"
+    ],
+    "members": [
+      "property:Zero",
+      "property:One",
+      "method:Add",
+      "method:Mul",
+      "method:Star"
+    ],
+    "laws": 9,
     "extends": []
   },
   "ILattice": {
@@ -56,6 +86,18 @@
     "laws": 3,
     "extends": []
   },
+  "IRing": {
+    "typeParams": [
+      "invariant:TWeight"
+    ],
+    "members": [
+      "method:Negate"
+    ],
+    "laws": 1,
+    "extends": [
+      "ISemiring"
+    ]
+  },
   "ISemiring": {
     "typeParams": [
       "invariant:TWeight"
@@ -64,10 +106,9 @@
       "property:Zero",
       "property:One",
       "method:Add",
-      "method:Mul",
-      "method:Negate"
+      "method:Mul"
     ],
-    "laws": 6,
+    "laws": 5,
     "extends": []
   },
   "IStarRing": {
@@ -84,7 +125,7 @@
     ],
     "laws": 7,
     "extends": [
-      "ISemiring"
+      "IRing"
     ]
   },
   "IZSetIsa": {

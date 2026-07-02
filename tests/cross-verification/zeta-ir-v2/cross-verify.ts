@@ -33,7 +33,7 @@ interface InterfaceIr {
   readonly laws: readonly string[];
 }
 
-const expectedNames = new Set(["ICodec", "IGroup", "ILattice", "IMonoid", "IPort", "ISemiring", "IStarRing", "IZSetIsa"]);
+const expectedNames = new Set(["ICodec", "IDbspOperators", "IGroup", "IKleeneAlgebra", "ILattice", "IMonoid", "IPort", "IRing", "ISemiring", "IStarRing", "IZSetIsa"]);
 const allowedVariance = new Set<Variance>(["contravariant", "covariant", "invariant"]);
 const dir = join(import.meta.dir, "interfaces");
 const files = readdirSync(dir).filter((name) => name.endsWith(".ir.json")).sort();
@@ -79,9 +79,20 @@ for (const name of expectedNames) {
   if (!observed.has(name)) fail(`missing interface ${name}`);
 }
 
+// IStarRing must BE a semiring — directly, or transitively via IRing → ISemiring
+// (the 081KWG9JQ9H split rebased IStarRing onto IRing, so its `extends` is
+// ["IRing"] and IRing's is ["ISemiring"]; a direct-only check would wrongly reject
+// that legitimate chain).
+const extendsSemiring = (name: string, seen = new Set<string>()): boolean => {
+  if (seen.has(name)) return false;
+  seen.add(name);
+  const ir = observed.get(name);
+  const ext = ir?.extends ?? [];
+  return ext.includes("ISemiring") || ext.some((parent) => extendsSemiring(parent, seen));
+};
 const starRing = observed.get("IStarRing");
-if (starRing && !(starRing.extends ?? []).includes("ISemiring")) {
-  fail("IStarRing must extend ISemiring");
+if (starRing && !extendsSemiring("IStarRing")) {
+  fail("IStarRing must extend ISemiring (directly or via IRing)");
 }
 
 const output = Object.fromEntries(
