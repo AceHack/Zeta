@@ -118,6 +118,7 @@
     <Compile Include="Crdt.fs" />
     <Compile Include="NovelMath.fs" />
     <Compile Include="TropicalPaths.fs" />
+    <Compile Include="KleeneClosure.fs" />
     <Compile Include="NovelMathExt.fs" />
     <Compile Include="FastCdc.fs" />
     <Compile Include="Merkle.fs" />

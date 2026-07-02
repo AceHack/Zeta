@@ -30,6 +30,7 @@
     <Compile Include="Algebra/TropicalPaths.Tests.fs" />
     <Compile Include="Algebra/RationalRing.Tests.fs" />
     <Compile Include="Algebra/Provenance.Tests.fs" />
+    <Compile Include="Algebra/KleeneClosure.Tests.fs" />
     <Compile Include="Algebra/FusionReconstruction.Tests.fs" />
     <Compile Include="Formal/GSetFusionLaws.Tests.fs" />
     <Compile Include="Algebra/IoBoundary.Tests.fs" />
