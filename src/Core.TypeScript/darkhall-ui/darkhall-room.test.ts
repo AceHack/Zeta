@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   classifyHeatKind,
+  coordinationBandwidth,
+  sLaneVerdict,
   heatSignals,
   normalizeControllerCells,
   renderDarkHallRoomDocument,
@@ -150,5 +152,58 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain("&lt;img src=x onerror=alert(1)&gt;");
     expect(html).not.toContain("<img");
     expect(html).not.toContain("<b>row</b>");
+  });
+});
+
+// ── S-lanes: the coordination board (CHSH between claimed identities) ──────────
+describe("s-lanes", () => {
+  const withLanes: RoomRunTranscript = {
+    schema: "zeta.darkhall.room-ui.v1",
+    roomName: "darkhall",
+    seed: "S4",
+    controller: [],
+    ticks: [],
+    heatRows: [],
+    sLanes: [
+      { a: "claim-0", b: "claim-1", sMilli: 4000 },
+      { a: "claim-0", b: "claim-2", sMilli: 39 },
+      { a: "claim-1", b: "claim-2", sMilli: 2000 },
+    ],
+  };
+
+  it("verdict is one-way: above 2000 convicts, at or below stays open (never 'distinct')", () => {
+    expect(sLaneVerdict({ a: "x", b: "y", sMilli: 4000 })).toBe("convicted");
+    expect(sLaneVerdict({ a: "x", b: "y", sMilli: -4000 })).toBe("convicted");
+    expect(sLaneVerdict({ a: "x", b: "y", sMilli: 2000 })).toBe("open");
+    expect(sLaneVerdict({ a: "x", b: "y", sMilli: 0 })).toBe("open");
+  });
+
+  it("bandwidth is the estimator f̂ = (|S|−2)/2, clamped: 4→1, 2√2→√2−1, 2→0, 0→0", () => {
+    expect(coordinationBandwidth(4000)).toBe(1);
+    expect(coordinationBandwidth(2828)).toBeCloseTo(Math.SQRT2 - 1, 2);
+    expect(coordinationBandwidth(2000)).toBe(0);
+    expect(coordinationBandwidth(0)).toBe(0);
+  });
+
+  it("renders one lane per pair with the verdict as a data attribute and the bandwidth as a custom property", () => {
+    const html = renderDarkHallRoomHtml(withLanes);
+    expect(html).toContain('data-a="claim-0"');
+    expect(html).toContain('data-verdict="convicted"');
+    expect(html).toContain('data-verdict="open"');
+    expect(html).toContain("--s-bandwidth:1.0000");
+    expect(html).toContain("S 4.000");
+  });
+
+  it("is schema-additive: a transcript without sLanes renders no coordination board", () => {
+    const bare: RoomRunTranscript = { ...withLanes, sLanes: undefined };
+    expect(renderDarkHallRoomHtml(bare)).not.toContain("zeta-room-coordination");
+    const empty: RoomRunTranscript = { ...withLanes, sLanes: [] };
+    expect(renderDarkHallRoomHtml(empty)).not.toContain("zeta-room-coordination");
+  });
+
+  it("the css styles the board (panel border, verdict colors, bandwidth fill)", () => {
+    expect(css).toContain(".zeta-room-coordination");
+    expect(css).toContain('.zeta-s-lane[data-verdict="convicted"]');
+    expect(css).toContain("var(--s-bandwidth, 0)");
   });
 });

@@ -4,6 +4,27 @@ export type TickOutcome = "ok" | "refused" | "backpressure" | "continued";
 
 export type HeatSignal = "forgotten" | "backpressure" | "denied" | "storage-error" | "other";
 
+/// One CHSH S-lane between two claimed identities (the coordination meter —
+/// AntiSybil.chshS on the F# side). S travels as INTEGER MILLI (no floats in
+/// the transcript bytes); |S| > 2000 convicts a common cause (Bell/CHSH bound).
+export interface SLane {
+  readonly a: string;
+  readonly b: string;
+  readonly sMilli: number;
+}
+
+/// The one-way verdict: |S| above the classical bound convicts sameness;
+/// below it never acquits — "open", not "distinct".
+export function sLaneVerdict(lane: SLane): "convicted" | "open" {
+  return Math.abs(lane.sMilli) > 2000 ? "convicted" : "open";
+}
+
+/// Coordination bandwidth f̂ = (|S| − 2) / 2, clamped to [0, 1] — the fraction
+/// of rounds a conductor's cross-setting instruction was effectively delivered.
+export function coordinationBandwidth(sMilli: number): number {
+  return Math.min(1, Math.max(0, (Math.abs(sMilli) - 2000) / 2000));
+}
+
 export interface ControllerCell {
   readonly cell: number;
   readonly label: string;
@@ -41,6 +62,7 @@ export interface RoomRunTranscript {
   readonly controller: readonly ControllerCell[];
   readonly ticks: readonly RoomTranscriptTick[];
   readonly heatRows: readonly HeatRow[];
+  readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
 
@@ -199,6 +221,26 @@ function renderHeatRow(row: HeatRow): string {
   ].join("");
 }
 
+function renderSLane(lane: SLane): string {
+  const verdict = sLaneVerdict(lane);
+  const bandwidth = coordinationBandwidth(lane.sMilli).toFixed(4);
+  const s = (lane.sMilli / 1000).toFixed(3);
+
+  return [
+    `<li class="zeta-s-lane"`,
+    attr("data-a", lane.a),
+    attr("data-b", lane.b),
+    attr("data-verdict", verdict),
+    attr("style", `--s-bandwidth:${bandwidth}`),
+    ">",
+    `<span class="zeta-s-lane-pair">${escapeHtml(lane.a)} · ${escapeHtml(lane.b)}</span>`,
+    `<span class="zeta-s-lane-bar"></span>`,
+    `<span class="zeta-s-lane-value">S ${escapeHtml(s)}</span>`,
+    `<span class="zeta-s-lane-verdict">${verdict}</span>`,
+    "</li>",
+  ].join("");
+}
+
 function renderTick(tick: RoomTranscriptTick): string {
   const heatSignalsText = tick.heat ? heatSignals(tick.heat).join(" ") : "cold";
   const continuation = tick.continuation ? `<code>${escapeHtml(tick.continuation)}</code>` : "";
@@ -249,6 +291,15 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     ...transcript.heatRows.map(renderHeatRow),
     "</ol>",
     "</section>",
+    ...(transcript.sLanes && transcript.sLanes.length > 0
+      ? [
+          '<section class="zeta-room-coordination" aria-label="Coordination board (CHSH S-lanes; above 2 convicts a common cause)">',
+          '<ol class="zeta-s-board">',
+          ...transcript.sLanes.map(renderSLane),
+          "</ol>",
+          "</section>",
+        ]
+      : []),
     '<section class="zeta-room-transcript" aria-label="Room transcript">',
     "<ol>",
     ...transcript.ticks.map(renderTick),
