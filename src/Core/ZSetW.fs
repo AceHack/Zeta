@@ -64,6 +64,18 @@ type ZEntryW<'K, 'W> =
 /// gone). Always use the same ring for all operations on a given value;
 /// to move data between rings, project explicitly (e.g., reconstruct
 /// via `ofSeq` under the target ring).
+///
+/// **Collation (DB model — 081KT07NV0008QG0R001YDB73K):** every ordering
+/// site in this module (`ofSeq` sort, `lookup` binary search, the `sum`
+/// merges) resolves through `KeyComparerCache` = `Collation.forKey` =
+/// the shipped **`binary`** default (codepoint / UTF-8 byte order; SQL
+/// `_BIN2` / Postgres `C` shaped) — the DB "server default" level. Fast
+/// (no linguistic pass) and byte-locked across oracles. Never the
+/// culture-sensitive `Comparer<string>.Default`; linguistic collations
+/// (`ordinal-ci`, `invariant`, …) are opt-in `Collation.catalog` entries
+/// selected at the edge, never the silent default. Like the ring above,
+/// the collation is part of a value's identity: all ops on one value
+/// must use one collation, and today this module is uniformly `binary`.
 [<Struct; IsReadOnly; CustomEquality; NoComparison>]
 type ZSetW<'K, 'W when 'K : comparison> =
     val internal entries: ImmutableArray<ZEntryW<'K, 'W>>
@@ -156,7 +168,7 @@ module ZSetW =
     /// Build from an arbitrary sequence; duplicate keys are combined
     /// via `ring.Add`; entries equal to `ring.Zero` are dropped.
     let ofSeq (ring: ISemiring<'W>) (xs: seq<'K * 'W>) : ZSetW<'K, 'W> =
-        let agg = SortedDictionary<'K, 'W>()
+        let agg = SortedDictionary<'K, 'W>(KeyComparerCache<'K>.Instance)
         for (k, w) in xs do
             match agg.TryGetValue(k) with
             | true, existing -> agg.[k] <- ring.Add(existing, w)
@@ -174,7 +186,7 @@ module ZSetW =
         let span = z.AsSpan()
         if span.IsEmpty then ring.Zero
         else
-            let cmp = Comparer<'K>.Default
+            let cmp = KeyComparerCache<'K>.Instance
             let mutable lo = 0
             let mutable hi = span.Length - 1
             let mutable result = ring.Zero
@@ -201,7 +213,7 @@ module ZSetW =
         else
             let zero = ring.Zero
             let eq = EqualityComparer<'W>.Default
-            let cmp = Comparer<'K>.Default
+            let cmp = KeyComparerCache<'K>.Instance
             // Upper bound on output length is |a| + |b|; zero entries dropped
             // shrinks it. Use a builder sized to the upper bound; trim via
             // ToImmutable rather than MoveToImmutable since the final count
@@ -318,7 +330,7 @@ module ZSetW =
     /// Zero-overhead build-from-sequence (struct ring by value).
     let ofSeqBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                        (xs: seq<'K * 'W>) : ZSetW<'K, 'W> =
-        let agg = SortedDictionary<'K, 'W>()
+        let agg = SortedDictionary<'K, 'W>(KeyComparerCache<'K>.Instance)
         for (k, w) in xs do
             match agg.TryGetValue(k) with
             | true, existing -> agg.[k] <- ring.Add(existing, w)

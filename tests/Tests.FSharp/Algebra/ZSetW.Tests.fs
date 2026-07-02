@@ -142,3 +142,32 @@ let ``sumBy on int64 agrees with the ZSet hot path`` () =
         ZSetW.sumBy (IntegerRing()) (ZSetW.ofZSetIntegerRing a) (ZSetW.ofZSetIntegerRing b)
         |> ZSetW.toZSetIntegerRing
     Assert.True((viaZSet = viaStruct), "struct-ring sumBy must match ZSet +")
+
+// ── Ordinal-collation parity (the 081KT07NV bug class) ──────────────
+// Keys "a"/"B": ordinal 'B'(66) < 'a'(97), but culture order is a < B.
+// Pre-fix, ofSeq/ofSeqBy sorted with the culture-sensitive default while
+// sumBy merged ordinally — cross-construction merges produced unsorted,
+// duplicated output. Every ZSetW op must use ONE collation: ordinal.
+
+[<Fact>]
+let ``ordinal parity: ofSeq-built set equals bridge-built set on culture-vs-ordinal keys`` () =
+    let viaOfSeq = ZSetW.ofSeq iring [ "a", 1L; "B", 2L ]
+    let viaBridge = ZSetW.ofZSetIntegerRing (ZSet.ofSeq [ "a", 1L; "B", 2L ])
+    Assert.True((viaOfSeq = viaBridge),
+                "ofSeq must sort ordinally (like the ZSet bridge), not by culture order")
+
+[<Fact>]
+let ``ordinal parity: cross-construction sum merges correctly on culture-vs-ordinal keys`` () =
+    let z1 = ZSetW.ofSeq iring [ "a", 1L; "B", 2L ]          // ofSeq-built
+    let z2 = ZSetW.ofZSetIntegerRing (ZSet.ofSeq [ "B", 3L ]) // bridge-built (ordinal by ZSet invariant)
+    let s = ZSetW.sumBy (IntegerRing()) z1 z2
+    Assert.Equal(2, ZSetW.count s)                            // pre-fix: 3 entries, duplicate "B"
+    Assert.Equal(5L, ZSetW.lookup iring "B" s)                // 2 + 3 consolidated
+    Assert.Equal(1L, ZSetW.lookup iring "a" s)
+
+[<Fact>]
+let ``ordinal parity: lookup finds every key in an ofSeq-built set with mixed-case keys`` () =
+    let keys = [ "a"; "B"; "c"; "D"; "aa"; "AB" ]
+    let z = ZSetW.ofSeq iring [ for k in keys -> k, 7L ]
+    for k in keys do
+        Assert.Equal(7L, ZSetW.lookup iring k z)
