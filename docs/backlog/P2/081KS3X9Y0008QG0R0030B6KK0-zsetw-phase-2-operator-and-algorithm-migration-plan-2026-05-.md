@@ -1,7 +1,7 @@
 ---
 id: 081KS3X9Y0008QG0R0030B6KK0
 priority: P2
-status: open
+status: superseded
 title: "ZSetW Phase 2 plan — operator + algorithm migration onto polymorphic Z-set substrate; tier-A operator parity (map/filter/cartesian/join/distinct/weightedCount); two worked-example algorithms (TropicalSemiring shortest-path; IntervalRing propagation); migration documentation for callers"
 tier: research-grade
 effort: L
@@ -13,6 +13,34 @@ composes_with: [081KRW63S0008QG0R001SAHYKV, 081KRYRGG0008QG0R0018CMFQY, 081KRYRG
 tags: [zsetw-phase-2, operator-migration, polymorphic-z-set, tropical-shortest-path, interval-propagation, worked-examples, migration-documentation]
 type: research
 ---
+
+
+## RECONCILED — SUPERSEDED (Otto, 2026-07-02)
+
+This May plan is overtaken by the base-atom unification (081KWFXTHJY) + the
+IRing/ISemiring split (081KWG9JQ9H) shipped 2026-07-01/02. What actually happened
+differs from — and improves on — the plan:
+
+- **The substrate shipped via a shared KERNEL, not a "parallel substrate + operator
+  migration."** `ZSetW<'K,'W>` landed (#9072); the DBSP hot op is now ONE
+  `MergeKernel` that both `ZSet` and `ZSetW` delegate to (#9078), int64 proven
+  zero-overhead. So the plan's core premise — migrate each operator onto a parallel
+  ZSetW — is moot: `ZSet<'K>` stays the int64 façade over the shared kernel; there
+  is no second substrate to migrate onto.
+- **Worked example 1 (TropicalSemiring shortest-path): DONE** — `TropicalPaths`
+  (#9107), with the incremental-insert ≡ recompute law + refold-for-delete.
+- **Worked example 2 (IntervalRing propagation): SUPERSEDED** — IntervalRing was
+  found to violate ring AND semiring laws (Moore 1966 sub-distributivity) and was
+  DEMOTED to ISemiring-only with an on-file exception (081KWGA0C7). An
+  interval-propagation example over a *lawful* interval structure (Kaucher directed
+  intervals) would be new work, not this row.
+- The dependency 081KS3X9Y0008QG0R001N7NFAB (Phase 1) never landed as a file
+  (dangling ref).
+
+**Genuinely-remaining idea, if wanted (re-file fresh):** a polymorphic operator
+surface (`map`/`filter`/`join`/`cartesian`/`distinct`) over `ZSetW` for non-int64
+rings. Not urgent — no consumer needs it yet; the tropical/rational algorithms
+that DO exist call the primitives directly. Left superseded rather than carried.
 
 # ZSetW Phase 2 plan — operator + algorithm migration
 
