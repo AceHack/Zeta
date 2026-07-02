@@ -118,22 +118,40 @@ the dynamic/cold escape hatch**, not the default.
    retraction cancels, ZSet bridge round-trips. **This increment is the
    instance-passing baseline** (path 1 storage-compatible core); the zero-overhead
    struct-ring/SRTP int64 specialisation is step 2b below, NOT yet done.
-2b. ◑ Mechanism landed (2026-07-01), NOT yet perf-proven. `IntegerRing`/`IntervalRing`
-   made `[<Struct>]` (stateless — dual register: boxed `.Instance` for cold path,
-   by-value for hot). Added `inline` `*By` ops to ZSetW (`sumBy`/`ofSeqBy`/`scaleBy`/
-   `negateBy`/`differenceBy`/`singletonBy`) taking the ring as a struct generic by
-   value → JIT-devirtualisable interface calls. Correctness proven (3 new tests:
-   `*By` == instance ops; `sumBy` int64 == `ZSet +`). 186 algebra tests still green
-   (struct conversion behaviourally safe). Benchmark harness landed:
-   `bench/Benchmarks/ZSetWBench.fs` (ZSetAdd baseline vs boxed-instance vs struct-ring).
-   **Preliminary short-run (noisy, 3 iters):** at Size=16 — ZSetAdd ≈60ns,
-   struct-ring ≈81ns, boxed-instance ≈103ns. So struct-ring **beats** boxed-instance
-   (devirt helps) but does **NOT yet match** the specialised `ZSet.add` — a gap
-   remains. Reframe (step 3) stays GATED: needs a proper long BDN run (Naledi) and
-   likely gap-closing (verify full devirt+inline; `ZSet.add` may carry other
-   specialisations — `EntryKeyComparer`, no builder-capacity slack — to match).
-3. Reframe `ZSet<'K>` in terms of it WITHOUT perf regression (benchmark-gated) —
-   needs 2b's gap closed first (struct-ring ≈ ZSetAdd on time AND alloc).
+2b. ✅ DONE + PERF-PROVEN (2026-07-01). `IntegerRing`/`IntervalRing` → `[<Struct>]`
+   (stateless; dual register — boxed `.Instance` cold path, by-value hot path).
+   `*By` ops on ZSetW (`sumBy`/`ofSeqBy`/`scaleBy`/`negateBy`/`differenceBy`/
+   `singletonBy`) take the ring as a struct generic by value → JIT devirtualises the
+   `ISemiring` calls per value-type instantiation (NOT `inline` — that collides with
+   the `internal` `KeyComparerCache`; struct-monomorphization does the devirt on its
+   own). `sumBy` rewritten to the `ZSet.add` allocation shape: `Pool.Rent` workspace
+   + single `Pool.FreezeSlice` (one heap alloc) + ordinal `KeyComparerCache`
+   (culture-invariant parity — NOT `Comparer.Default`). Correctness: 15 ZSetW tests
+   (`*By` == instance; `sumBy` int64 == `ZSet +`); 186 algebra tests green.
+
+   **BDN medium run (bench/Benchmarks/ZSetWBench.fs) — the gate PASSES:**
+
+   | Method            | Size | Mean      | Ratio | Allocated | Alloc Ratio |
+   |-------------------|------|-----------|-------|-----------|-------------|
+   | ZSetAdd (base)    | 16   |  65.1 ns  | 1.01  |   408 B   | 1.00        |
+   | ZSetWInstance     | 16   |  99.6 ns  | 1.55  |   976 B   | 2.39        |
+   | **ZSetWStructRing** | 16 | **60.9 ns** | **0.95** | **408 B** | **1.00** |
+   | ZSetAdd (base)    | 256  | 724.6 ns  | 1.00  |  6168 B   | 1.00        |
+   | ZSetWInstance     | 256  | 1310.6 ns | 1.81  | 14416 B   | 2.34        |
+   | **ZSetWStructRing** | 256| **736.4 ns** | **1.02** | **6168 B** | **1.00** |
+   | ZSetAdd (base)    | 4096 | 18.01 µs  | 1.00  | 98359 B   | 1.00        |
+   | ZSetWInstance     | 4096 | 35.91 µs  | 1.99  | 229528 B  | 2.33        |
+   | **ZSetWStructRing** | 4096| **17.91 µs** | **0.99** | **98370 B** | **1.00** |
+
+   Struct-ring MATCHES `ZSet.add` on time (ratio 0.95–1.02) AND allocation (Alloc
+   Ratio 1.00) at every size. Boxed instance-passing pays 1.5–2.0× time + 2.3× alloc
+   — confirming it is correctly the cold path. **Zero-overhead is proven.**
+3. Reframe `ZSet<'K>` in terms of it — now JUSTIFIED by the gate above, but PENDING
+   an explicit go: it touches the hottest path in the whole DBSP substrate (every
+   consumer of `ZSet.(+)`/`ZSet.add`), so it wants review, not an autonomous land.
+   Plan: reframe `ZSet.(+)` etc. to delegate to `ZSetW.sumBy (IntegerRing())` (or
+   `type ZSet<'K> = ...` façade), re-run this bench as the regression gate, ripple
+   through consumers. Big blast radius — do as its own reviewed change.
 4. Honor ordinal-collation parity (`culture-invariant-by-default` — the
    `GCounter.Merge` vs `ZSet.ofSeq` associativity bug lives in this area).
 5. Full `dotnet build -c Release` 0-warnings + tests green + Naledi perf sign-off.

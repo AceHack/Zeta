@@ -308,7 +308,7 @@ module ZSetW =
     // ═══════════════════════════════════════════════════════════════
 
     /// Zero-overhead singleton (struct ring by value).
-    let inline singletonBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    let singletonBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                            (key: 'K) (weight: 'W) : ZSetW<'K, 'W> =
         if EqualityComparer<'W>.Default.Equals(weight, ring.Zero) then
             ZSetW<'K, 'W>.Empty
@@ -316,7 +316,7 @@ module ZSetW =
             ZSetW(ImmutableArray.Create(ZEntryW(key, weight)))
 
     /// Zero-overhead build-from-sequence (struct ring by value).
-    let inline ofSeqBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    let ofSeqBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                        (xs: seq<'K * 'W>) : ZSetW<'K, 'W> =
         let agg = SortedDictionary<'K, 'W>()
         for (k, w) in xs do
@@ -332,7 +332,14 @@ module ZSetW =
         ZSetW(builder.ToImmutable())
 
     /// Zero-overhead Z-set sum — the DBSP incremental-merge hot op.
-    let inline sumBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    ///
+    /// Step-3 perf parity with `ZSet.(+)`: same `ArrayPool` workspace
+    /// (`Pool.Rent` → fill → `Pool.FreezeSlice` = one heap alloc, the output) and
+    /// the same cached `KeyComparerCache` (vs the earlier builder + `Comparer.Default`,
+    /// which cost a second allocation and an uncached comparer). Combined with the
+    /// devirtualised struct-ring `Add`, this is the int64 path meant to MATCH the
+    /// specialised `ZSet.add` — verified by `ZSetWBench`.
+    let sumBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                      (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         let aSpan = a.AsSpan()
         let bSpan = b.AsSpan()
@@ -341,30 +348,30 @@ module ZSetW =
         else
             let zero = ring.Zero
             let eq = EqualityComparer<'W>.Default
-            let cmp = Comparer<'K>.Default
-            let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(aSpan.Length + bSpan.Length)
-            let mutable i = 0
-            let mutable j = 0
-            while i < aSpan.Length && j < bSpan.Length do
-                let kA = aSpan.[i].Key
-                let kB = bSpan.[j].Key
-                let c = cmp.Compare(kA, kB)
-                if c < 0 then
-                    builder.Add(aSpan.[i]); i <- i + 1
-                elif c > 0 then
-                    builder.Add(bSpan.[j]); j <- j + 1
-                else
-                    let combined = ring.Add(aSpan.[i].Weight, bSpan.[j].Weight)
-                    if not (eq.Equals(combined, zero)) then
-                        builder.Add(ZEntryW(kA, combined))
-                    i <- i + 1
-                    j <- j + 1
-            while i < aSpan.Length do builder.Add(aSpan.[i]); i <- i + 1
-            while j < bSpan.Length do builder.Add(bSpan.[j]); j <- j + 1
-            ZSetW(builder.ToImmutable())
+            let cmp = KeyComparerCache<'K>.Instance
+            let cap = aSpan.Length + bSpan.Length
+            let rented = Pool.Rent<ZEntryW<'K, 'W>> cap
+            try
+                let mutable i = 0
+                let mutable j = 0
+                let mutable k = 0
+                while i < aSpan.Length && j < bSpan.Length do
+                    let c = cmp.Compare(aSpan.[i].Key, bSpan.[j].Key)
+                    if c < 0 then rented.[k] <- aSpan.[i]; i <- i + 1; k <- k + 1
+                    elif c > 0 then rented.[k] <- bSpan.[j]; j <- j + 1; k <- k + 1
+                    else
+                        let combined = ring.Add(aSpan.[i].Weight, bSpan.[j].Weight)
+                        if not (eq.Equals(combined, zero)) then
+                            rented.[k] <- ZEntryW(aSpan.[i].Key, combined); k <- k + 1
+                        i <- i + 1; j <- j + 1
+                while i < aSpan.Length do rented.[k] <- aSpan.[i]; i <- i + 1; k <- k + 1
+                while j < bSpan.Length do rented.[k] <- bSpan.[j]; j <- j + 1; k <- k + 1
+                if k = 0 then ZSetW<'K, 'W>.Empty else ZSetW(Pool.FreezeSlice(rented, k))
+            finally
+                Pool.Return rented
 
     /// Zero-overhead negate (struct ring by value; requires a full ring).
-    let inline negateBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    let negateBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                         (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         let span = a.AsSpan()
         let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(span.Length)
@@ -373,12 +380,12 @@ module ZSetW =
         ZSetW(if span.Length = 0 then ImmutableArray.Empty else builder.MoveToImmutable())
 
     /// Zero-overhead difference `a - b` (struct ring by value).
-    let inline differenceBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    let differenceBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                             (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         sumBy ring a (negateBy ring b)
 
     /// Zero-overhead scale (struct ring by value).
-    let inline scaleBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    let scaleBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                        (scalar: 'W) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         if EqualityComparer<'W>.Default.Equals(scalar, ring.Zero) then
             ZSetW<'K, 'W>.Empty
