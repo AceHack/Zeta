@@ -259,6 +259,51 @@ module Slr =
                 | None -> result <- Some(Error(sprintf "slr: unexpected token '%s' in state %d" a s))
         result |> Option.defaultValue (Error "slr: unreachable")
 
+    /// Parse into a concrete syntax TREE — itself a `DynamicValue`, so the parser's output rides
+    /// the whole codec stack (homoiconic all the way through: grammar-as-data → parser →
+    /// parse-tree-as-data). A leaf is `{ "term": <token> }`; an internal node is
+    /// `{ "rule": <lhs>, "kids": [ … ] }` (children in source order). Total: never throws.
+    let parseTree (t: Tables) (tokens: string list) : Result<DynamicValue, string> =
+        let leaf (tok: string) = DynamicValue.Object [ "term", DynamicValue.String tok ]
+        let node (lhs: string) (kids: DynamicValue list) =
+            DynamicValue.Object [ "rule", DynamicValue.String lhs; "kids", DynamicValue.Array kids ]
+        let input = List.toArray (tokens @ [ endMarker ])
+        let mutable ip = 0
+        let mutable stack = [ t.Start ]
+        let mutable trees: DynamicValue list = [] // head = top; parallel to `stack` (minus start)
+        let mutable result: Result<DynamicValue, string> option = None
+        let mutable guard = 0
+        while result.IsNone do
+            guard <- guard + 1
+            if guard > 1_000_000 then
+                result <- Some(Error "slr: parse exceeded step budget (grammar loop?)")
+            else
+                let s = List.head stack
+                let a = if ip < input.Length then input.[ip] else endMarker
+                match Map.tryFind (s, a) t.Action with
+                | Some(Shift j) ->
+                    stack <- j :: stack
+                    trees <- leaf a :: trees
+                    ip <- ip + 1
+                | Some(Reduce p) ->
+                    let (lhs, rhs) = t.Prods.[p]
+                    let n = List.length rhs
+                    let popped = List.skip n stack
+                    let top = List.head popped
+                    let kids = trees |> List.truncate n |> List.rev
+                    let restTrees = trees |> List.skip n
+                    match Map.tryFind (top, lhs) t.Goto with
+                    | Some g ->
+                        stack <- g :: popped
+                        trees <- node lhs kids :: restTrees
+                    | None -> result <- Some(Error(sprintf "slr: no GOTO for '%s' in state %d" lhs top))
+                | Some Accept ->
+                    match trees with
+                    | [ root ] -> result <- Some(Ok root)
+                    | _ -> result <- Some(Ok(node "_S'" (List.rev trees))) // defensive: wrap
+                | None -> result <- Some(Error(sprintf "slr: unexpected token '%s' in state %d" a s))
+        result |> Option.defaultValue (Error "slr: unreachable")
+
     /// Convenience: does the grammar accept the token stream?
     let accepts (t: Tables) (tokens: string list) : bool =
         match parse t tokens with

@@ -75,7 +75,8 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    LR(0) item-set automaton + nullable-aware FIRST/FOLLOW + ACTION/GOTO tables + shift/reduce
    driver. Conflicts SURFACE (`Tables.Conflicts`), not silently resolved. Deterministic.
    **END-TO-END PROVEN: a real `.g4` → ingest → IR → SLR → a running parser that accepts/rejects.**
-   The whole ladder is executable.
+   `Slr.parseTree` produces a concrete syntax tree that IS a `DynamicValue` — homoiconic all the
+   way through (grammar-as-data → parser → parse-tree-as-data; it rides the codec stack). Executable.
 5. **GLR fallback** (ambiguous grammars where SLR conflicts) + **LALR** table compression — the
    next backend extensions. **← resume here.**
 6. Point the ingester at **YAML / KDL `.g4`** (grammars-v4) — retires the lenient-YAML finding

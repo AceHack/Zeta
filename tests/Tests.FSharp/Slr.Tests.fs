@@ -98,3 +98,28 @@ let ``DETERMINISM: the same grammar builds identical tables (byte-lock/DST)`` ()
         Assert.Equal<Map<int * string, Slr.Action>>(a.Action, b.Action)
         Assert.Equal<Map<int * string, int>>(a.Goto, b.Goto)
     | _ -> Assert.Fail "build should succeed twice"
+
+[<Fact>]
+let ``PARSE TREE: the parser produces a concrete syntax tree that IS a DynamicValue (homoiconic)`` () =
+    match Slr.build exprGrammar with
+    | Ok t ->
+        match Slr.parseTree t [ "id"; "+"; "id" ] with
+        | Ok tree ->
+            // root is the start nonterminal E
+            Assert.Equal(Some(DynamicValue.String "E"), DynamicValue.get "rule" tree)
+            // the tree is a DynamicValue ⇒ it rides the whole codec stack (grammar-as-data →
+            // parser → parse-tree-as-data: homoiconic all the way through)
+            let codecs = [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ]
+            Assert.Empty(ValueTreeCodec.crossVerify codecs tree)
+            // a '+' leaf appears somewhere in the tree's serialisation
+            match DynamicValue.toYaml tree with
+            | Ok y -> Assert.Contains("term", y)
+            | Error e -> Assert.Fail(sprintf "toYaml: %A" e)
+        | Error e -> Assert.Fail(sprintf "parseTree failed on valid input: %s" e)
+        // invalid input → Error, not a bogus tree
+        Assert.True(
+            (match Slr.parseTree t [ "id"; "+" ] with
+             | Error _ -> true
+             | Ok _ -> false)
+        )
+    | Error e -> Assert.Fail(sprintf "build failed: %s" e)
