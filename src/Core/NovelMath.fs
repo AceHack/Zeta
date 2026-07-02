@@ -65,8 +65,11 @@ type TropicalWeight =
 /// IRing/ISemiring split (081KWG9JQ9H) it implements `ISemiring` ONLY — asking
 /// it to retract is now a COMPILE error, not a runtime throw. Retraction needs
 /// an `IRing` (e.g. `IntegerRing`).
-[<Sealed>]
-type TropicalSemiring() =
+/// **Struct** (stateless) — dual register like `IntegerRing`: boxed once via
+/// `Instance` for instance-passing; by value as a struct generic for the
+/// zero-overhead `ZSetW.*By` hot path (081KWFXTHJY).
+[<Struct>]
+type TropicalSemiring =
     interface ISemiring<TropicalWeight> with
         member _.Zero = TropicalWeight.Zero
         member _.One  = TropicalWeight.One
