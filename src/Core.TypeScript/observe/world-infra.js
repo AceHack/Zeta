@@ -50,7 +50,7 @@ export function readCellState(repoRoot) {
  * Read open PR state. Delegates to ForgeHost when provided (host-agnostic path);
  * falls back to direct `gh` CLI invocation for backward compatibility.
  */
-export function readPRState(_forge) {
+export function readPRState() {
     // Synchronous path (legacy): direct gh CLI call
     // The ForgeHost interface is async, but readPRState is consumed synchronously
     // by the observe loop today. When the loop goes async, the forge path will
@@ -68,7 +68,7 @@ export function readPRState(_forge) {
         prs = JSON.parse(result.stdout).map((p) => ({
             number: p.number,
             title: p.title,
-            mergeState: p.mergeStateStatus,
+            mergeState: (p.mergeStateStatus ?? "").toLowerCase(),
         }));
     }
     catch (err) {
@@ -76,7 +76,7 @@ export function readPRState(_forge) {
     }
     return {
         open: prs,
-        clean: prs.filter((p) => p.mergeState === "CLEAN"),
+        clean: prs.filter((p) => p.mergeState === "clean"),
     };
 }
 /**
@@ -96,7 +96,7 @@ export async function readPRStateAsync(forge) {
     const prs = result.value.map((pr) => ({
         number: pr.number,
         title: pr.title,
-        mergeState: pr.mergeStateStatus,
+        mergeState: (pr.mergeStateStatus ?? "").toLowerCase(),
     }));
     return {
         ok: true,

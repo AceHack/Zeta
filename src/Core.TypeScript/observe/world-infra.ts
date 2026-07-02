@@ -79,7 +79,7 @@ export interface PRInfo {
  * Read open PR state. Delegates to ForgeHost when provided (host-agnostic path);
  * falls back to direct `gh` CLI invocation for backward compatibility.
  */
-export function readPRState(_forge?: { listOpenPullRequests: (opts?: { limit?: number }) => Promise<{ ok: true; value: readonly { number: number; title: string; mergeStateStatus: string }[] } | { ok: false; error: unknown }> }): { open: readonly PRInfo[]; clean: readonly PRInfo[] } {
+export function readPRState(): { open: readonly PRInfo[]; clean: readonly PRInfo[] } {
   // Synchronous path (legacy): direct gh CLI call
   // The ForgeHost interface is async, but readPRState is consumed synchronously
   // by the observe loop today. When the loop goes async, the forge path will
@@ -103,7 +103,7 @@ export function readPRState(_forge?: { listOpenPullRequests: (opts?: { limit?: n
     prs = (JSON.parse(result.stdout) as { number: number; title: string; mergeStateStatus: string }[]).map((p) => ({
       number: p.number,
       title: p.title,
-      mergeState: p.mergeStateStatus,
+      mergeState: (p.mergeStateStatus ?? "").toLowerCase(),
     }));
   } catch (err) {
     console.error(`[forge] gh pr list JSON parse failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -111,7 +111,7 @@ export function readPRState(_forge?: { listOpenPullRequests: (opts?: { limit?: n
 
   return {
     open: prs,
-    clean: prs.filter((p) => p.mergeState === "CLEAN"),
+    clean: prs.filter((p) => p.mergeState === "clean"),
   };
 }
 
@@ -134,7 +134,7 @@ export async function readPRStateAsync(
   const prs: PRInfo[] = result.value.map((pr) => ({
     number: pr.number,
     title: pr.title,
-    mergeState: pr.mergeStateStatus,
+    mergeState: (pr.mergeStateStatus ?? "").toLowerCase(),
   }));
 
   return {
