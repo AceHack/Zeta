@@ -22,20 +22,30 @@ tree; parity is mandatory (wrapped when not native); every serialization decisio
 | #9187 | `ValueTreeEnvelope` + `parity` — versioned, collision-safe parity wrapper; 0-downtime parser-roll proofs |
 | #9189 | `Asn1Der` — first **2-ary** codec (tag⊕value), our-own DER, DLMS/COSEM |
 | #9193 | Asn1Der hardening — `decode` total on hostile input (length overflow, uncaught-exception, int truncation, depth ceiling) |
-| (this) | `EventEnvelope` — CloudEvents + Debezium categories; Debezium `op` ≈ Z-set ±1; envelopes ride the whole codec stack |
+| #9194 | `EventEnvelope` — CloudEvents + Debezium categories; Debezium `op` ≈ Z-set ±1; envelopes ride the whole codec stack |
+| (this) | `Frontmatter` — lossless head/body split (verbatim head), rides the codec stack; `tryMeta` best-effort structured (canonical YAML only) |
 
 ## Rollout status (the ledger, short form)
 
 - **1-ary `Ours`:** JSON ✅ · CBOR ✅ (total) · YAML ✅ — parity envelope closes Bytes/Float ✅
 - **2-ary:** ASN.1/DER ✅ `Ours` · XML (RomDat, `Bcl System.Xml.Linq` seam) → our tokenizer TODO
-- **Event envelopes:** CloudEvents ✅ · Debezium ✅ (op≈±1)
+- **Event envelopes:** CloudEvents ✅ · Debezium ✅ (op≈±1) · Frontmatter split ✅ (structured meta partial)
+
+## FINDING (2026-07-02): our YAML codec is canonical-only
+
+`DynamicValue.fromYaml` is a strict *canonical* parser — it rejects human-written YAML
+(`title: Foo`) as `NonCanonical`. So structured frontmatter meta (and any human-YAML
+interop) is blocked on a **lenient YAML parser** — the same backlogged parser-combinator
+layer (FParsec / GLR / ANTLR-shaped) noted in `RomDat`'s tokenizer seam. Frontmatter ships
+as a lossless verbatim split now; `tryMeta` is best-effort until the lenient parser lands.
 
 ## NEXT PICKUP (delayed slices — Aaron 2026-07-02 "either both … whichever we delay")
 
-1. **KDL** — the clean text 2-ary codec (node children ⊕ properties). Our-own reader/writer;
-   the delayed half of the event-envelopes-vs-KDL fork. **← resume here.**
-2. **Frontmatter ⇄ value-tree bijection** — `---\n<yaml>\n---\n<body>` ↔ `{meta, body}`
-   (metadata⊕payload, the repo-serving case; scope to what our canonical YAML parses).
+1. **KDL** — the clean text 2-ary codec (node children ⊕ properties). Our-own reader/writer.
+   **← resume here.** NOTE: its value-tree MAPPING is a convention decision (rigid
+   KDL-shaped encoding vs. general-KDL parser) — pick deliberately, likely with Aaron's input.
+2. **Lenient YAML parser** — unblocks structured frontmatter meta + human-YAML interop
+   (the canonical-only finding above). Part of the parser-combinator backlog.
 3. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene
    tri-boolean) — each needs a DU decision, do NOT add unilaterally.
 4. HDF5 (starts `ThirdParty` — the case the port exists for); GraphViz DOT (graph, lossy).
