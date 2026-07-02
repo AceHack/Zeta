@@ -87,9 +87,13 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    parses KDL documents incl. the genuinely-ambiguous `node ID` case (GLR fork). KDL is a
    grammar we ingest + parse, not a hand-written codec.
    **YAML finding (honest):** YAML is **indentation-sensitive ⇒ NOT context-free**, so an LR/GLR
-   grammar cannot consume it without an **INDENT/DEDENT lexer** preprocessing pass (the Python
-   approach). The lenient-YAML need is therefore a *lexer* task, not a grammar one — recorded, not
-   forced through the CFG path. **← resume: an INDENT/DEDENT lexer, or the GLR parse forest.**
+   grammar cannot consume it without an INDENT/DEDENT lexer preprocessing pass. ✅ **LANDED:
+   `Indentation.layout`** (`src/Core/Indentation.fs`) — the off-side-rule pass (Landin / Python
+   tokenizer): source → INDENT/DEDENT/NEWLINE token stream; inconsistent-dedent + leading-tab are
+   clean Errors. Bridge PROVEN end-to-end (`Indentation.Tests`): indented source → layout →
+   GLR-parse a block grammar. Indentation-sensitive languages are now reachable by the CFG backend.
+   **← resume: the GLR parse forest (real trees for ambiguous parses), or a full regex lexer
+   (word → terminal classification, so raw text — not pre-named tokens — feeds the parser).**
 7. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
