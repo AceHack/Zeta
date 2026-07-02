@@ -167,13 +167,17 @@ unmeasured hot path on a consumer-less module is exactly the speculative work th
 no-speculative-surface / only-the-irreducible razors forbid (the shape of the load
 should be revealed by a workload, not guessed):
 
-- **O(n²) queues at the "thousands of cells" scale (P1).** Inbox is a `'Msg list`
-  (`q @ [msg]` is O(inbox); a cell receiving k messages pays O(k²)); `Ready` is a
-  `CellId list` (`List.contains` + `@ [id]` is O(|Ready|) per delivery). `readyOf`
-  recomputes O(C log C) each round. The determinism-preserving fix when earned:
+- **O(n²) queues at the "thousands of cells" scale (P1) — MEASURED 2026-07-02,
+  still deferred with data.** Inbox is a `'Msg list` (`q @ [msg]` is O(inbox); a cell
+  receiving k messages pays O(k²)); `Ready` is a `CellId list` (`List.contains` +
+  `@ [id]` is O(|Ready|) per delivery). `readyOf` recomputes O(C log C) each round.
+  A scale probe (`CellSchedulerScale.Tests.fs`, the DBSP consumer's load) measured
+  the adversarial cases at **N=2000: wide fan-out ≈59ms, deep chain ≈35ms** — well
+  within the stated "thousands" target. The quadratic is real (fan-out ≈ O(N²), so
+  ≈1.5s at N=10k) but does NOT bite at the design's target scale. So the fix —
   `ImmutableQueue` inboxes (O(1), Okasaki) + `Ready` as `ImmutableQueue` + a
-  membership `Set`. Deferred: correct today, and the real access pattern (fan-out
-  width, inbox depth, round count) is unknown without a consumer.
+  membership `Set` — stays deferred: **the measurement says it is not yet earned**
+  (earn it when a consumer targets ≳5–10k cells). Guess replaced by a number.
 - **Ferry path maintains `Ready` it never reads (P1).** `runFerryToQuiescence`
   selects via `readyOf` (recomputed from `Inbox`); the `deliver` Ready bookkeeping
   is dead work there. Fix when the perf pass lands: a `deliverInbox` variant. Bundled
