@@ -291,9 +291,6 @@ can no longer pass with Go silent.
 
 ## P2 — nice to have
 
-
-
-
 ### Round-3 filed (Kira r3 + test-gap audit, 2026-06-13) — deferred with reasons
 
 - **CorrespondencePong serve direction/seed:** docstring promises parameters the signature lacks

@@ -247,7 +247,9 @@ def test_zeta_id_canonicality():
     assert zeta_id.is_canonical("081JVQXNCD370ZG2R010000000") is True
     assert zeta_id.is_canonical("081JVQXNCD370ZG2R010000000".lower()) is False
     assert zeta_id.is_canonical("081JVQXNCD370ZG2R01000000o") is False  # 'o' alias
-    assert zeta_id.is_canonical("Z0000000000000000000000000") is False  # first char >= 8 (overflows 128-bit)
+    assert (
+        zeta_id.is_canonical("Z0000000000000000000000000") is False
+    )  # first char >= 8 (overflows 128-bit)
 
 
 def test_cross_verify_canonical_json():

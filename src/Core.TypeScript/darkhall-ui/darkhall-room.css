@@ -1,0 +1,262 @@
+.zeta-room {
+  --room-bg: #11110f;
+  --room-panel: #1c1c18;
+  --room-line: #3a3830;
+  --room-text: #f0ede2;
+  --room-muted: #bcb6a4;
+  --room-ready: #5dbf9a;
+  --room-selected: #f1c84b;
+  --room-denied: #ff6b6b;
+  --room-pressure: #ffb14a;
+  --room-storage: #c57cff;
+  --room-info: #65aee8;
+
+  color-scheme: dark;
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(22rem, 1.1fr);
+  gap: 1rem;
+  max-width: 72rem;
+  min-height: 100vh;
+  padding: 1rem;
+  background: var(--room-bg);
+  color: var(--room-text);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.zeta-room *,
+.zeta-room *::before,
+.zeta-room *::after {
+  box-sizing: border-box;
+}
+
+.zeta-room-header,
+.zeta-room-controller,
+.zeta-room-heat,
+.zeta-room-transcript {
+  border: 1px solid var(--room-line);
+  border-radius: 8px;
+  background: var(--room-panel);
+}
+
+.zeta-room-header {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(16rem, 1fr) minmax(20rem, 1fr);
+  gap: 1rem;
+  align-items: end;
+  padding: 1rem;
+}
+
+.zeta-room-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: 1;
+}
+
+.zeta-room-header p {
+  margin: 0.5rem 0 0;
+  color: var(--room-muted);
+}
+
+.zeta-room-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.zeta-room-summary div {
+  min-width: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--room-line);
+  border-radius: 6px;
+}
+
+.zeta-room-summary dt {
+  color: var(--room-muted);
+  font-size: 0.75rem;
+}
+
+.zeta-room-summary dd {
+  margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+}
+
+.zeta-room-controller,
+.zeta-room-heat,
+.zeta-room-transcript {
+  padding: 0.75rem;
+}
+
+.zeta-room-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zeta-room-cell {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 5rem;
+  padding: 0.55rem;
+  border: 1px solid var(--room-line);
+  border-radius: 6px;
+  background: #25241f;
+}
+
+.zeta-room-cell[data-state="ready"] {
+  border-color: color-mix(in srgb, var(--room-ready), var(--room-line) 50%);
+}
+
+.zeta-room-cell[data-selected="true"] {
+  outline: 2px solid var(--room-selected);
+  outline-offset: 2px;
+}
+
+.zeta-room-cell-index,
+.zeta-room-cell-action {
+  overflow: hidden;
+  color: var(--room-muted);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zeta-room-cell-label {
+  min-width: 0;
+  align-self: center;
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+  line-height: 1.15;
+}
+
+.zeta-heat-board,
+.zeta-room-transcript ol {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zeta-heat-row {
+  display: grid;
+  grid-template-columns: 2.5rem repeat(3, minmax(3rem, 1fr)) minmax(8rem, 1.4fr) minmax(10rem, 2fr);
+  gap: 0.4rem;
+  align-items: center;
+  min-height: 2.25rem;
+}
+
+.zeta-heat-row-tick,
+.zeta-heat-row-kind,
+.zeta-heat-row-reason {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zeta-heat-row-tick {
+  color: var(--room-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.zeta-heat-row-lane {
+  position: relative;
+  height: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--room-line);
+  border-radius: 999px;
+  background: #151512;
+}
+
+.zeta-heat-row-lane::before {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  content: "";
+}
+
+.zeta-heat-row-lane-rejected::before {
+  transform: scaleX(var(--heat-rejected));
+  background: var(--room-denied);
+}
+
+.zeta-heat-row-lane-backpressure::before {
+  transform: scaleX(var(--heat-backpressure));
+  background: var(--room-pressure);
+}
+
+.zeta-heat-row-lane-storage::before {
+  transform: scaleX(var(--heat-storage));
+  background: var(--room-storage);
+}
+
+.zeta-heat-row-kind,
+.zeta-heat-row-reason {
+  color: var(--room-muted);
+  font-size: 0.8rem;
+}
+
+.zeta-room-tick {
+  display: grid;
+  grid-template-columns: 2.5rem 5.5rem minmax(10rem, 1fr) minmax(6rem, auto);
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--room-line);
+  border-radius: 6px;
+}
+
+.zeta-room-tick[data-outcome="backpressure"],
+.zeta-room-tick[data-heat-signals*="denied"] {
+  border-color: color-mix(in srgb, var(--room-pressure), var(--room-line) 45%);
+}
+
+.zeta-room-tick-index {
+  color: var(--room-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.zeta-room-tick-phase {
+  color: var(--room-info);
+}
+
+.zeta-room-tick-event {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.zeta-room-tick code {
+  overflow: hidden;
+  color: var(--room-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (width <= 760px) {
+  .zeta-room,
+  .zeta-room-header {
+    grid-template-columns: 1fr;
+  }
+
+  .zeta-room-summary,
+  .zeta-room-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .zeta-heat-row,
+  .zeta-room-tick {
+    grid-template-columns: 1fr;
+  }
+}
