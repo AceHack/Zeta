@@ -44,5 +44,10 @@ export default {
     { pattern: /^(cursor-pointer|cursor-default|cursor-not-allowed|select-none|pointer-events-none|sr-only|transition|transition-colors|transition-all|duration-150|duration-200|duration-300)$/ },
     // The DS's own keyframe animations + generic ones
     { pattern: /^animate-(fade-in|slide-in-right|scale-in|pulse|spin|none)$/ },
+    // Frost channel (GlassHalo/RoomBoundary semantics): frost density = privacy-budget
+    // spend rendered as backdrop blur; clear is the default, frosting is earned.
+    { pattern: /^backdrop-blur(-(none|sm|md|lg|xl|2xl|3xl))?$/ },
+    { pattern: /^blur(-(none|sm|md|lg|xl|2xl))?$/ },
+    { pattern: /^backdrop-brightness-(50|75|90|100|110)$/ },
   ],
 };

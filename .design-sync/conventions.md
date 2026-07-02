@@ -14,6 +14,9 @@ Style with Tailwind utility classes, always through the semantic color names bel
 | Borders | `border border-border` (hairline default), `border-border-strong`, inputs use `border-input`; focus rings `ring-ring` |
 | Radius | `rounded-lg` / `rounded-md` / `rounded-sm` (driven by `--radius`, 0.45rem); cards use `rounded-lg`, controls `rounded-md` |
 | Motion | `animate-fade-in`, `animate-scale-in` (dialogs), `animate-slide-in-right` (sheets) |
+| Frost | `backdrop-blur-sm/md/lg/xl` over a translucent fill (e.g. `bg-background/60 backdrop-blur-md`) |
+
+**Frost is a semantic channel, not decoration.** In this system a blurred surface means the content behind it is *deliberately private*: frost density encodes how much privacy was spent to hide it (clear is the default state; frosted is the earned exception). Use frost ONLY to mean "something is here, its content withheld" — activity indicators over private work, redacted regions, consent-gated panels. Never use blur as a styling flourish. Dialog/Sheet backdrops (`bg-black/60 backdrop-blur-sm`) are chrome, already built into those components.
 
 Typography is Inter Variable (already loaded via `styles.css`; no font setup needed). Body text is `text-sm`; titles `font-semibold tracking-tight`; secondary text `text-sm text-muted-foreground`; code/logs `font-mono text-xs`.
 
