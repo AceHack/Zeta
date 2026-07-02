@@ -1,7 +1,7 @@
-# Otto session resume — 2026-07-01
+# Otto session resume — 2026-07-02
 
-Resume snapshot after **#8992 merged** (Ace Bun realizers slice 2). Main at save:
-`fffaf5955` (post-#9058 Bloom×Arrow bug workitem).
+Resume snapshot after **#9075 merged** (Ace Bun realizers slice 3). Main at save:
+`ce7425b70`.
 
 ## Landed since 2026-06-21 resume
 
@@ -19,28 +19,36 @@ Resume snapshot after **#8992 merged** (Ace Bun realizers slice 2). Main at save
 
 **Coverage after slice 2:** 5 / 14 mechanism realizers Bun-ported.
 
+### #9075 — Ace Bun realizers slice 3 (MERGED 2026-07-02)
+
+- Bun realizers: `from-elan`, `from-url` + shared `curl-fetch` (retry + sha256 verify).
+- `linux.sh` / `macos.sh`: route `from-elan` and `from-url` via `realize_mechanism`.
+- Tests: `curl-fetch.test.ts`, dry-run coverage in `setup-realizers.test.ts`.
+
+**Coverage after slice 3:** 7 / 14 mechanism realizers Bun-ported.
+
 ### Parallel main movement (not 081KLL7)
 
 - Persona-keys lifecycle triad: rotate (#9022), onboarding round-trip (#9016).
 - Merge1 agentic-org TS ports (#8974, #8977, …).
 - Orphan-branch preservation/quarantine (#9035, #9042, #9036).
+- ZetaId canonicality guard alignment (#9076 area), process-runner diagnostics (#9076).
 
 ## Open / next — resume targets
 
-1. **081KLL7… slice 3** — port next shell-only mechanisms: `from-elan`, `from-url` (then
-   `from-deb`, `from-shim`, `from-autotools-tarball`, `from-uv-venv`, `from-opam-git`,
-   `from-installer`, `from-ollama`). Extend `realize_mechanism` call sites in install scripts.
+1. **081KLL7… slice 4** — port remaining shell-only mechanisms: `from-deb`, `from-shim`,
+   `from-autotools-tarball`, `from-uv-venv`, `from-opam-git`, `from-installer`, `from-ollama`.
+   Extend `realize_mechanism` call sites in install scripts.
 2. **081KLL7… eventual cutover** — `linux.sh` → `ace-realize --all` once all mechanisms ported.
 3. **081KSXN940008QG0R002FWR9B2** — umbrella still open for work-item event G-Set / DORA (backlog
    zetaid shard done in #8948).
 4. **Lifecycle triad gaps** (`081KVP2M1…`) — KRL revocation, cluster-scoped teardown.
 
-## Git archaeology notes (2026-07-01)
+## Git archaeology notes (2026-07-02)
 
-- `chore/post-8948-resume-ace-realizers` tip `6371d0b00` never merged directly; equivalent
-  hygiene landed via **#8985** (`secret-clip` / `op-token-setup` allowlist).
-- Dangling commit `eb0028148` was superseded by main's `INACTIVE_SHELL_INVENTORY_PREFIXES`.
-- No unmerged slice-3 realizer work found on deleted branches.
+- Slice 3 branch `feat/081KLL7-bun-realizers-slice-3` merged via **#9075** (squash).
+- PR included incidental CI hygiene: BUGS.md MD012 spacing, `test_cross_verify.py` ruff format
+  (main drift while gate was red).
 
 ## Discipline
 

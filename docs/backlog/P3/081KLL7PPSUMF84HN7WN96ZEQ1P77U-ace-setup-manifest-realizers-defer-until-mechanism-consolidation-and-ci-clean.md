@@ -6,7 +6,7 @@ title: Ace setup-manifest realizers — Bun realizers post-mechanism consolidati
 effort: L
 ask: Aaron 2026-06-21
 created: 2026-06-21
-last_updated: 2026-07-01
+last_updated: 2026-07-02
 unblocked: 2026-06-21
 decomposition: leaf
 depends_on:
@@ -22,7 +22,7 @@ type: chore
 
 # 081KLL7PPSUMF84HN7WN96ZEQ1P77U — Ace setup-manifest realizers
 
-## Status 2026-07-01
+## Status 2026-07-02
 
 Prerequisites satisfied: **081KDU93…** (#8920) + **#8948** gate green. Row **P2 /
 in-progress** — Bun realizer port in flight.
@@ -32,9 +32,14 @@ in-progress** — Bun realizer port in flight.
 - **Slice 2 (#8992, merged 2026-07-01):** `from-dotnet-global`, `from-dotnet-workload`,
   `from-bun-link`, `host-tier`; `linux.sh`/`macos.sh` `realize_mechanism()` router (Bun when
   ported, shell fallback); `--available` on `setup-realize.ts`.
-- **Coverage:** 5 / 14 mechanism realizers Bun-ported.
-- **Slice 3 (next):** `from-elan`, `from-url`, then remaining shell-only mechanisms until
-  `ace-realize --all` cutover.
+- **Slice 3 (#9075, merged 2026-07-02):** `from-elan`, `from-url` + shared `curl-fetch`
+  helper (retry + sha256 verify); install scripts route both via `realize_mechanism`.
+- **Coverage:** 7 / 14 mechanism realizers Bun-ported.
+- **Slice 4 (next):** remaining shell-only mechanisms (`from-deb`, `from-shim`,
+  `from-autotools-tarball`, `from-uv-venv`, `from-opam-git`, `from-installer`,
+  `from-ollama`) until `ace-realize --all` cutover.
+
+## Status 2026-07-01
 
 ## Status 2026-06-21 (historical)
 
