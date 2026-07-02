@@ -70,10 +70,14 @@ objects to **our own machine**.
 ## Routed next steps (priority order)
 
 1. **Ihara over the braided catalog** (move-forward #2, committed).
-2. **Formalize the ad-hoc CHIP-8/IScheduler self-prediction**: Artin–Mazur zeta over
-   the actual CHIP-8 VM step-map / a scheduler configuration, making memory-space
-   character-loop orbits formally enumerable — the math-grounded cheat-engine.
-   Connect to `Chip8PredictionRoom` / `PredictionScheduler`.
+2. **Formalize the ad-hoc CHIP-8/IScheduler self-prediction** — LANDED (#1 of Aaron's
+   2→3→1). The REAL `Chip8.step` (deterministic, no RND) on a tiny period-4 counter ROM
+   `V0 ← (V0+1) AND 3`: the reachable step-map's Artin–Mazur zeta = `1/(1−u⁴)`,
+   self-verified (Fix of the iterated real-VM map = the single orbit), and the orbit
+   length IS the character-loop period — the memory character-loop the cheat-engine /
+   `Chip8PredictionRoom` finds ad-hoc, now formally enumerated.
+   `tests/…/Chip8DynamicalZeta.Tests.fs`. Remaining: richer multi-orbit ROMs; wiring
+   the zeta into the live soft `IScheduler` (step 4) for run-ahead self-prediction.
 3. **Adinkra codewords as member identity** — LANDED (built on the EXISTING
    `Zeta.Core.AdinkraCode` [8,4,4] module, not reinvented). Added: WHY N=8 (minimal
    doubly-even self-dual length — none below 8, the E8/Clifford floor); member
