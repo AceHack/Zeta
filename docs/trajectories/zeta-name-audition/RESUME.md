@@ -80,8 +80,12 @@ objects to **our own machine**.
    identity SELF-CORRECTS a 1-bit corruption (nearest-codeword); the weight
    enumerator `1 + 14y⁴ + y⁸` as a partition function over member identities (ζ
    shape); identities live on the same `GF(2)^8` as the scheduler round-map (#9151).
-   `tests/…/AdinkraIdentity.Tests.fs`. Remaining: the dynamical zeta's orbits
-   classifying member behaviour (needs the code-preserving round-map).
+   `tests/…/AdinkraIdentity.Tests.fs`. AND (next-rung #3, LANDED): the dynamical
+   zeta's orbits classify members — a code-preserving round-map (a code automorphism
+   π, π(C)=C) keeps every identity valid; its Artin–Mazur zeta self-verifies
+   (Fix(π^k) = orbit-product) and its orbits PARTITION the 16 members into purpose
+   classes (quiescent identity = its own fixed class). `tests/…/AdinkraOrbits.Tests.fs`.
+   Ties adinkra identity (#9157) to the scheduler dynamical zeta (#9151).
 4. **Wire the zeta into the soft `IScheduler`** so the loop can predict its own
    recurrence spectrum (transient vs. recurrent, orbit periods) before running.
 5. Further math rungs (routed, not rushed): Bartholdi / Ihara–Selberg (2-variable),
