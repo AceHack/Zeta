@@ -292,14 +292,6 @@ can no longer pass with Go silent.
 ## P2 — nice to have
 
 
-### Cluster/loop spawn helpers discard signal + stderr on failure (Otto sweep, 2026-06-13)
-
-- **Site:** `src/Core.TypeScript/cluster/adapters/spawn-process-runner.ts:34-63` (`assertCommandSucceeded`, `captureOrNull`); `service/loop-tick.ts:80-84` (exec); `loop-tick.ts:98-114` (`acquireLock`)
-- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
-- **Severity:** P2
-- **Symptom:** (a) signal-killed child (`status:null`) printed as generic "command failed", child stderr dropped → cluster-provision failures undiagnosable; (b) `captureOrNull` returns `null` on failure with stderr discarded, so `list()` accessors equate "command failed" with "zero results"; (c) exec folds timeout→124 and spawn-ENOENT→1 into the child's own exit-code space (a missing harness binary looks like a normal agent failure); (d) `acquireLock` inner catch swallows readFile/rm/mkdir errors → a corrupt lock never self-heals, persona tick wedged forever.
-- **Fix:** include `result.signal` + stderr tail in failure messages; distinguish spawn-failure (127) from child exit; distinguish "lock held" from "lock-op failed" with a logged error.
-- **Who:** architect (Kenji) → cluster/loop owner
 
 
 ### Round-3 filed (Kira r3 + test-gap audit, 2026-06-13) — deferred with reasons
