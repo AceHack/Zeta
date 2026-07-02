@@ -145,14 +145,24 @@ module AntiSybil =
         min 1.0 (max 0.0 ((abs s - 2.0) / 2.0))
 
     /// Run the CHSH identity oracle over a set of claimed identities: collapse
-    /// every pair whose `|chshS|` exceeds `threshold` (canonical: 2.0 — the
-    /// local-hidden-variable bound, `BellTest.ClassicalBound`) into a shared
-    /// source, union-find, and report.
+    /// every pair whose `|chshS|` exceeds `threshold` into a shared source,
+    /// union-find, and report.
     ///
-    /// **The guarantee (one-way):** `|S| > 2` is impossible for two systems
-    /// sharing only past classical randomness with no in-tick channel, so every
-    /// collapse is a CONVICTION of common cause. `AllDistinct = true` means
-    /// "no pair convicted", NEVER "all proven distinct". Deterministic (DST §7).
+    /// **The guarantee (one-way, IN EXPECTATION):** E[S] > 2 is impossible for
+    /// two systems sharing only past classical randomness with no in-tick
+    /// channel (Bell 1964; CHSH 1969). `AllDistinct = true` means "no pair
+    /// convicted", NEVER "all proven distinct". Deterministic (DST §7).
+    ///
+    /// **Finite-sample honesty (Soraya's finding, 2026-07-02):** the EMPIRICAL
+    /// Ŝ of an honestly-local pair fluctuates around its expectation — a
+    /// λ-mixing pair (shared past randomness alternating two deterministic S=2
+    /// strategies) sits AT the bound with nonzero variance, so at
+    /// `threshold = 2.0` exactly it is falsely convicted with probability ≈ 1/2
+    /// at every run length. A sound conviction threshold is `2 + ε(n)` with
+    /// ε(n) concentration-calibrated (Hoeffding-shaped, `c·sqrt(ln(1/δ)/n)`) —
+    /// the calibrated gate is routed work (Soraya batch 2; BUGS.md). Until it
+    /// lands, callers own the margin: pass `threshold = 2 + ε`, never bare 2.0,
+    /// when false collapse has consequences.
     let chshSybil (threshold: float) (streams: ChshRound list list) : SybilVerdict =
         let k = List.length streams
         let arr = List.toArray streams

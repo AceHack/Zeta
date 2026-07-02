@@ -346,3 +346,21 @@ shipped.
 No stale "fixed" entries linger; no "originally found in
 round X" provenance bloat — `ROUND-HISTORY.md` holds the
 narrative, this file holds the debt.
+
+### chshSybil conviction threshold unsound at finite samples (bare 2.0)
+
+- **Site:** `src/Core/AntiSybil.fs:156` (chshSybil threshold semantics)
+- **Found:** 2026-07-02 by Soraya (formalization routing of the CHSH-Sybil batch)
+- **Severity:** P1 (P0-adjacent if any irreversible verdict ever consumes it)
+- **Symptom:** a λ-mixing honestly-local pair (shared past randomness, no in-tick
+  channel) has E[S] = 2 but empirical Ŝ fluctuating above 2 with probability ≈ 1/2
+  at every run length, so bare `threshold = 2.0` falsely convicts innocents; the
+  docstring previously overstated ("every collapse is a conviction") and the
+  LHV-edge test masked the gap with a zero-variance strategy. Docstring corrected
+  and the finding locked as a seeded test (`SORAYA'S FINDING LOCKED`, AntiSybil.Tests)
+  same day; the CALIBRATION remains open.
+- **Fix:** ship the concentration-calibrated gate — `ε(n)` Hoeffding-shaped
+  (`c·sqrt(ln(1/δ)/n)`), conviction at `2 + ε(n)`; pairs with Soraya's routed batch-2
+  deliverables (Z3 lemma for the LHV bound + FsCheck-with-statistics tolerance gate).
+- **Who:** otto (author) with Soraya's batch-2 routing; Kenji synthesis on the
+  default-threshold API choice.

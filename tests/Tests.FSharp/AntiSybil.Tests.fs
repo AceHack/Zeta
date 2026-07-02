@@ -191,3 +191,32 @@ let ``DRIFT LOCK: AntiSybil's inlined CHSH combination agrees with BellTest.chsh
         // chshS is exercised end-to-end elsewhere; this locks the FORMULA by
         // recomputing it the AntiSybil way against the canonical BellTest way.
         Assert.Equal(BellTest.chshOf e0 e1 e2 e3, e0 - e1 + e2 + e3, 12)
+
+[<Fact>]
+let ``SORAYA'S FINDING LOCKED: a λ-mixing honestly-local pair is falsely convicted at bare threshold 2.0 — a margin is required`` () =
+    // Shared PAST randomness only (the λ stream is common; no in-tick channel):
+    // λ=0 rounds play the constant strategy (E = 1,1,1,1); λ=1 rounds play the
+    // sign strategy a=1−2x, b=1−2y (E = 1,−1,−1,1). Both are S=2 exactly, and so
+    // is every mixture IN EXPECTATION — but empirical Ŝ = 2 + (ê10 − ê01)
+    // fluctuates, and this seeded instance lands above 2. The oracle at bare
+    // threshold 2.0 convicts an innocent pair; a small margin acquits it.
+    let n = 4096
+    let sa = bits 211 n
+    let sb = bits 223 n
+    let lam = bits 227 n // the shared classical randomness
+    let a =
+        List.zip sa lam
+        |> List.map (fun (x, l) ->
+            { AntiSybil.ChshRound.Setting = x
+              Outcome = if l = 0 then 1 else 1 - 2 * x })
+    let b =
+        List.zip sb lam
+        |> List.map (fun (y, l) ->
+            { AntiSybil.ChshRound.Setting = y
+              Outcome = if l = 0 then 1 else 1 - 2 * y })
+    let s = chshS a b
+    // the finding: empirically above the bound despite honest locality
+    Assert.True(s > 2.0, sprintf "this seeded λ-mixing instance must land above 2 to lock the finding (got %f)" s)
+    Assert.False((chshSybil BellTest.ClassicalBound [ a; b ]).AllDistinct) // the FALSE conviction, locked as evidence
+    // the fix direction: a concentration-shaped margin acquits the innocent pair
+    Assert.True((chshSybil (BellTest.ClassicalBound + 0.15) [ a; b ]).AllDistinct)
