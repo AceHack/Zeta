@@ -72,8 +72,14 @@ module CellScheduler =
                         Ready = restReady }
                 // route emitted messages (deterministic: emission order)
                 let s2 = emitted |> List.fold (fun acc (t, m) -> deliver t m acc) s1
-                // if this cell still has queued input, re-ready it at the TAIL (fairness)
-                let s3 = if List.isEmpty (inboxOf id s2) then s2 else deliver id (List.head (inboxOf id s2)) { s2 with Inbox = Map.add id (List.tail (inboxOf id s2)) s2.Inbox }
+                // If this cell still has queued input, re-ready it at the Ready TAIL
+                // (fairness). Re-ready via `Ready` ONLY — must NOT disturb the inbox,
+                // or the cell's own FIFO order is broken (an earlier bug round-tripped
+                // the head through `deliver`, rotating head→tail). `deliver` during
+                // emission may already have re-added `id` (a self-send), so guard.
+                let s3 =
+                    if List.isEmpty (inboxOf id s2) || List.contains id s2.Ready then s2
+                    else { s2 with Ready = s2.Ready @ [ id ] }
                 Some s3
 
     /// Run to quiescence (no ready cells) or until `maxSteps` (a runaway /

@@ -356,3 +356,65 @@ let ``recovery: independent cells recover independently`` () : Task =
         Assert.Equal(3, rA.State)                     // 1 + 2
         Assert.Equal(107, rB.State)                   // 100 + 7 — independent
     }
+
+// ── Non-commutative workloads: the REAL FIFO + DoP-invariance proofs ──
+// (Every earlier test used commutative int accumulation, which cannot catch a
+//  FIFO violation or a merge-order bug — the critic's Q4 gap. These use an
+//  ORDER-SENSITIVE state: a list that records the exact processing sequence.)
+
+// State = the reversed sequence of deltas this cell has processed (newest first).
+// Order-sensitive: [1;2;3] processed in FIFO gives [3;2;1]; any reordering shows.
+type OrderMsg = { D: int; Send: (CellId * OrderMsg) list }
+let private oleaf d : OrderMsg = { D = d; Send = [] }
+let private recordStep (acc: int list) (m: OrderMsg) : int list * (CellId * OrderMsg) list =
+    m.D :: acc, m.Send
+
+[<Fact>]
+let ``sequential runner preserves a cell's own FIFO order`` () =
+    // One cell, three messages [1;2;3]. FIFO ⇒ processed 1,2,3 ⇒ state [3;2;1].
+    // The pre-fix re-ready bug rotated head→tail and produced [2;3;1].
+    let cells = [ "a", [] ]
+    let msgs = [ "a", oleaf 1; "a", oleaf 2; "a", oleaf 3 ]
+    match CellScheduler.runToQuiescence 1000 recordStep (CellScheduler.init cells msgs) with
+    | Ok final -> Assert.Equal<int list>([ 3; 2; 1 ], Map.find "a" final)
+    | Error e -> failwith e
+
+[<Fact>]
+let ``DoP-invariance holds on a NON-commutative workload (the real proof)`` () : Task =
+    task {
+        // "src" forwards an ordered stream to "sink"; sink's list state is
+        // order-sensitive, so if any DoP reordered per-cell delivery it would show.
+        let cells = [ "src", []; "sink", [] ]
+        let msgs =
+            [ for i in 1 .. 8 -> "src", { D = i; Send = [ "sink", oleaf (i * 10) ] } ]
+        let runAt dop =
+            CellScheduler.runFerryToQuiescence (FerryThrottlerConfig.withFerries dop) recordStep 100_000 (CellScheduler.init cells msgs)
+        let! r1 = runAt 1
+        let! r4 = runAt 4
+        let! r16 = runAt 16
+        match r1, r4, r16 with
+        | Ok a, Ok b, Ok c ->
+            Assert.Equal<int list>(Map.find "sink" a, Map.find "sink" b)
+            Assert.Equal<int list>(Map.find "sink" a, Map.find "sink" c)
+            // and the order is the real FIFO one: sink saw 10,20,...,80 ⇒ [80;...;10]
+            Assert.Equal<int list>([ for i in 8 .. -1 .. 1 -> i * 10 ], Map.find "sink" a)
+        | _ -> failwith "a DoP variant failed to quiesce"
+    }
+
+[<Fact>]
+let ``sequential and ferry runners agree on a non-commutative multi-message cell`` () : Task =
+    task {
+        // A cell processing multiple of its OWN messages: both runners must give
+        // the same FIFO-ordered result (this is where the pre-fix bug diverged).
+        let cells = [ "a", [] ]
+        let msgs = [ "a", oleaf 1; "a", oleaf 2; "a", oleaf 3; "a", oleaf 4 ]
+        let seq =
+            match CellScheduler.runToQuiescence 1000 recordStep (CellScheduler.init cells msgs) with
+            | Ok f -> f | Error e -> failwith e
+        let! parR = CellScheduler.runFerryToQuiescence (FerryThrottlerConfig.withFerries 4) recordStep 1000 (CellScheduler.init cells msgs)
+        match parR with
+        | Ok par ->
+            Assert.Equal<int list>([ 4; 3; 2; 1 ], Map.find "a" seq)
+            Assert.Equal<int list>(Map.find "a" seq, Map.find "a" par)
+        | Error e -> failwith e
+    }
