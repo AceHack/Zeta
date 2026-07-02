@@ -122,9 +122,9 @@ describe("Clifford cross-language verification (Cl(3,0) byte-lock)", () => {
 
     // All three must agree on every operation (compare parsed arrays, not string formatting)
     for (const key of Object.keys(ts!)) {
-      const tsVal = JSON.parse(ts![key]);
-      const pyVal = JSON.parse(py![key]);
-      const goVal = JSON.parse(go![key]);
+      const tsVal = JSON.parse(ts![key]!);
+      const pyVal = JSON.parse(py![key]!);
+      const goVal = JSON.parse(go![key]!);
       expect(tsVal).toEqual(pyVal);
       expect(tsVal).toEqual(goVal);
     }
