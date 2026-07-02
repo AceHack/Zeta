@@ -71,10 +71,17 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
 3. ✅ **Grammar closure check** — `GrammarIr.isClosed`/`undefinedSymbols`: "every word defined by
    other words" (Aaron's dictionary). Also the desugar-correctness signal (a dangling helper ⇒
    not closed). First machine-checkable step toward the homoiconic meta-grammar.
-4. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung). **← resume here.**
-5. Point the ingester at **YAML / KDL `.g4`** (grammars-v4) — retires the lenient-YAML finding
-   and the KDL fork (both become grammars ingested, not hand-parsers).
-6. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+4. ✅ **SLR(1) parser backend** — LANDED (`src/Core/Slr.fs`): `Grammar IR → executable parser`.
+   LR(0) item-set automaton + nullable-aware FIRST/FOLLOW + ACTION/GOTO tables + shift/reduce
+   driver. Conflicts SURFACE (`Tables.Conflicts`), not silently resolved. Deterministic.
+   **END-TO-END PROVEN: a real `.g4` → ingest → IR → SLR → a running parser that accepts/rejects.**
+   The whole ladder is executable.
+5. **GLR fallback** (ambiguous grammars where SLR conflicts) + **LALR** table compression — the
+   next backend extensions. **← resume here.**
+6. Point the ingester at **YAML / KDL `.g4`** (grammars-v4) — retires the lenient-YAML finding
+   and the KDL fork (both become grammars ingested + parsed, not hand-parsers). NOTE: desugared
+   grammars may have SLR conflicts → wants the GLR fallback (#5) or an LALR/precedence pass.
+7. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
 ## HOMOICONIC META-GRAMMAR (2026-07-02, Aaron): the telos

@@ -94,6 +94,7 @@
     <Compile Include="Frontmatter.Tests.fs" />
     <Compile Include="GrammarIr.Tests.fs" />
     <Compile Include="Antlr4Import.Tests.fs" />
+    <Compile Include="Slr.Tests.fs" />
     <Compile Include="DynamicValue.Arrow.Tests.fs" />
     <Compile Include="Predicate.Tests.fs" />
     <Compile Include="Policy.Tests.fs" />
