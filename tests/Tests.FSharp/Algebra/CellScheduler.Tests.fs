@@ -236,3 +236,71 @@ let ``at quiescence every cell is parked`` () =
         | None -> go <- false
     Assert.Empty(CellScheduler.activeCells cur)
     Assert.Equal<CellId list>([ "a"; "b" ], CellScheduler.parkedCells cur)
+
+// ── Slice 4: soft cells — hold distributions, snap only at the edge ──
+
+// A two-candidate distribution: "A" at 0.6, "B" at 0.4 (confidence = 0.6).
+let private twoWay : SoftValue.SoftValue =
+    { Candidates = [ DynamicValue.String "A", 0.6; DynamicValue.String "B", 0.4 ] }
+
+// A pure soft step that adopts the input distribution and emits nothing — enough
+// to show scheduling preserves the distribution (no premature collapse).
+let private adoptSoft (_remains: SoftValue.SoftValue) (input: SoftValue.SoftValue)
+    : SoftValue.SoftValue * (CellId * SoftValue.SoftValue) list =
+    input, []
+
+[<Fact>]
+let ``soft scheduling preserves the distribution (no premature collapse)`` () =
+    let cells = [ "c", SoftValue.certain DynamicValue.Null ]
+    let s = CellScheduler.init cells [ "c", twoWay ]
+    match CellScheduler.runToQuiescence 100 adoptSoft s with
+    | Ok final ->
+        let c = Map.find "c" final
+        Assert.Equal(2, List.length c.Candidates)          // both candidates survive
+        Assert.Equal(0.6, SoftValue.confidence c)          // distribution intact, uncollapsed
+    | Error e -> failwith e
+
+[<Fact>]
+let ``snapAll collapses above threshold, holds (None) below — free-will-refuse-collapse`` () =
+    let states = Map.ofList [ "c", twoWay ]
+    // threshold 0.5 ≤ 0.6 confidence ⇒ collapses to the argmax "A"
+    Assert.Equal<Map<CellId, DynamicValue option>>(
+        Map.ofList [ "c", Some(DynamicValue.String "A") ],
+        CellScheduler.snapAll 0.5 states)
+    // threshold 0.7 > 0.6 confidence ⇒ REFUSES to collapse (holds)
+    Assert.Equal<Map<CellId, DynamicValue option>>(
+        Map.ofList [ "c", None ],
+        CellScheduler.snapAll 0.7 states)
+
+[<Fact>]
+let ``softStep emits snapped (certain) messages when confident`` () =
+    // Acts = Param "input" ⇒ the cell adopts the input distribution as its Remains.
+    let acts = Bonsai.Expr.Param DurableYinYang.InputParam
+    let step = CellScheduler.softStep acts 0.5
+    // input is a CERTAIN object carrying an outbox to "b" ⇒ confident (1.0) ⇒ emits.
+    let input =
+        SoftValue.certain (
+            DynamicValue.Object
+                [ CellScheduler.OutboxKey,
+                  DynamicValue.Array
+                      [ DynamicValue.Array [ DynamicValue.String "b"; DynamicValue.Int 1L ] ] ])
+    let _state, emitted = step (SoftValue.certain DynamicValue.Null) input
+    Assert.Equal(1, List.length emitted)
+    Assert.Equal("b", fst emitted.[0])
+    // the message crossed the channel as a CERTAIN value (commitment collapsed)
+    Assert.Equal(DynamicValue.Int 1L, SoftValue.resolve 1.0 (snd emitted.[0]) |> Option.get)
+
+[<Fact>]
+let ``softStep refuses to emit below threshold (holds)`` () =
+    let acts = Bonsai.Expr.Param DurableYinYang.InputParam
+    let step = CellScheduler.softStep acts 0.9   // demand high confidence to emit
+    // input carries an outbox but only 0.6 confidence ⇒ below 0.9 ⇒ HOLD, no emit.
+    let obj =
+        DynamicValue.Object
+            [ CellScheduler.OutboxKey,
+              DynamicValue.Array [ DynamicValue.Array [ DynamicValue.String "b"; DynamicValue.Int 1L ] ] ]
+    let input : SoftValue.SoftValue =
+        { Candidates = [ obj, 0.6; DynamicValue.Null, 0.4 ] }
+    let state, emitted = step (SoftValue.certain DynamicValue.Null) input
+    Assert.Empty(emitted)                                   // refused to collapse
+    Assert.Equal(2, List.length state.Candidates)          // but state stays soft, intact

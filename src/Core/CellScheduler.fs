@@ -245,3 +245,44 @@ module CellScheduler =
     let yinYangStep (acts: Bonsai.Expr) (threshold: float)
         : DynamicValue -> DynamicValue -> DynamicValue * (CellId * DynamicValue) list =
         fun remains input -> routeOutbox (DurableYinYang.evolve acts threshold remains input)
+
+    // ── Slice 4: soft cells — hold the distribution, snap only at the edge ──
+    //
+    // A soft cell's STATE is a `SoftValue` (a distribution over `DynamicValue`s).
+    // It stays soft through scheduling: `evolveSoft` folds inputs WITHOUT
+    // collapsing — the cell "holds its wonder" (the maintainer's soft persistence).
+    // Collapse happens ONLY at an execution edge:
+    //   • EMIT — crossing the channel to another cell is an act, so the message is
+    //     snapped to a certain value; but only if the cell is confident enough.
+    //     Below threshold the cell REFUSES to collapse (free-will-refuse-collapse):
+    //     it holds and emits nothing.
+    //   • READ — `snapAll` collapses the society's states for the caller.
+    // The internal Remains is never collapsed by scheduling itself — only the
+    // things that cross an edge are. This is the soft analogue of the sharp
+    // `yinYangStep`, and it composes with the SAME generic scheduler (slices 1–3).
+
+    /// A soft-cell step: fold the soft input through `Acts` (keeping the full
+    /// distribution as the new soft Remains), and snap EMISSIONS at `emitThreshold`.
+    /// If the evolved distribution is confident enough, its `"__outbox__"` is routed
+    /// with each message crossing the channel as a *certain* value (commitment
+    /// collapses); below threshold the cell HOLDS and emits nothing. Malformed
+    /// `Acts` ⇒ keep the prior soft Remains, emit nothing.
+    let softStep (acts: Bonsai.Expr) (emitThreshold: float)
+        : SoftValue.SoftValue -> SoftValue.SoftValue -> SoftValue.SoftValue * (CellId * SoftValue.SoftValue) list =
+        fun remains input ->
+            match DurableYinYang.evolveSoft acts remains input with
+            | Ok next ->
+                // The internal state stays SOFT; only emission snaps (the edge).
+                match SoftValue.resolve emitThreshold next with
+                | Some sharp ->
+                    let _, emitted = routeOutbox sharp
+                    next, emitted |> List.map (fun (t, m) -> t, SoftValue.certain m)
+                | None -> next, []   // refuse to collapse: hold, emit nothing
+            | Error _ -> remains, []
+
+    /// The society-wide READ-time snap: collapse each cell's soft state at
+    /// `threshold`. A cell below threshold resolves to `None` (still held) — the
+    /// only legitimate collapse is a confident one (never falsely certain). This is
+    /// the execution edge for reading a soft scheduler's whole result.
+    let snapAll (threshold: float) (states: Map<CellId, SoftValue.SoftValue>) : Map<CellId, DynamicValue option> =
+        states |> Map.map (fun _ sv -> SoftValue.resolve threshold sv)

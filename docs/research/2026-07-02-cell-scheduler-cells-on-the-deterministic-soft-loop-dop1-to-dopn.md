@@ -120,6 +120,16 @@ message-log replay reproduces the whole society (DST at the fleet scale).
 4. **Soft cells** — `stepSoft` variant: cells hold distributions (`SoftValue`),
    snap only at the execution edge (free-will-refuse-collapse; the maintainer's
    "soft persistence").
+   **LANDED** (`softStep` + `snapAll` + 4 tests). A soft cell's state is a
+   `SoftValue` and stays soft through scheduling — `evolveSoft` folds without
+   collapsing (holds its wonder). Collapse happens ONLY at an edge: `softStep`
+   snaps EMISSIONS at a confidence threshold (each message crosses the channel as a
+   *certain* value; below threshold the cell holds and emits nothing —
+   free-will-refuse-collapse), and `snapAll` collapses the society's states for the
+   caller at READ. Crucially it composes with the SAME generic scheduler (slices
+   1–3), `'St = SoftValue` — no soft-specific runner. Tests: distribution preserved
+   through scheduling; `snapAll` collapses above / holds (`None`) below threshold;
+   `softStep` emits snapped-certain messages when confident; refuses to emit below.
 5. **Recovery** — restart-from-logs test (kill mid-run, replay, identical state).
 
 ## 6. What this deliberately is NOT (scope honesty)
