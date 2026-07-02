@@ -89,6 +89,7 @@
     <Compile Include="RomDat.Tests.fs" />
     <Compile Include="ValueTreeCodec.Tests.fs" />
     <Compile Include="ValueTreeEnvelope.Tests.fs" />
+    <Compile Include="Asn1Der.Tests.fs" />
     <Compile Include="DynamicValue.Arrow.Tests.fs" />
     <Compile Include="Predicate.Tests.fs" />
     <Compile Include="Policy.Tests.fs" />

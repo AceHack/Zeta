@@ -195,6 +195,22 @@ common frame now. And the frame is a **graph**: envelope metadata *references* o
 in frontmatter links and in the literal package dependencies the **ace package manager**
 tracks. One graph discipline (deps / frontmatter / event-causation), many surfaces.
 
+**The pointer type on those graph edges is the `ZetaId`.**
+
+> Aaron 2026-07-02: *"zetaid is our universal pointer that can point at anything outside the
+> superdeterministic markov boundary and inside too."*
+
+The envelope metadata head references other nodes (source, subject, causation/correlation),
+and the reference is a **`ZetaId`** — the *universal* pointer. It resolves both **inside** the
+superdeterministic Markov boundary (our own content-addressed, DST-replayable substrate — the
+deterministic interior where a pointer is a Merkle/DAG address) **and outside** it (an external
+referent the boundary does not determine — a real-world resource, a foreign system). One
+pointer type spans both sides of the boundary, so an envelope graph can link the deterministic
+interior and the non-deterministic exterior uniformly — and crossings of that boundary are
+exactly where the noninterference/entropy-quarantine discipline meters influence in. (The
+`ZetaId` is the 128-bit identity that precedes the persona⊕surface routing address; a routing
+address is not identity.)
+
 > Routed as categories to add on the landed port (not built this pass): `cloudevents` and
 > `debezium` envelope categories, plus the frontmatter ⇄ value-tree bijection.
 
@@ -210,16 +226,18 @@ ANTLR-shaped — already backlogged) to reach `Ours`.
 | CBOR (RFC 8949) | 1 | — | **`Ours`** ✅ | shipped, total codec |
 | YAML | 1 | — | **`Ours`** ✅ | shipped, hand-rolled |
 | XML | 2 | `Bcl System.Xml.Linq` (`RomDat`) | `Ours` | attribute-promotion codec + our tokenizer |
-| **ASN.1 (BER/DER)** | 2 | our own TLV (no lib needed for the subset) | `Ours` | **DLMS/COSEM meters, constrained devices — Aaron-flagged load-bearing** |
+| **ASN.1 (BER/DER)** | 2 | — | **`Ours`** ✅ | **LANDED — DLMS/COSEM meters, constrained devices; our-own TLV, no lib; 7/8 native + Float via `parity`** |
 | KDL | 2 | our own reader | `Ours` | cleanest text 2-ary; node children ⊕ properties |
 | HDF5 / netCDF | 2 | `ThirdParty` (native lib) | `Ours` (long) | scientific data; datasets ⊕ first-class attributes; heaviest |
 | GraphViz DOT | 2* | our own reader | `Ours` | *graph not tree — lossy; structure ⊕ attribute lists |
 
-ASN.1 is the first 2-ary to build our-own from the start: DER is a simple tag-length-value
-grammar for our value subset (SEQUENCE / INTEGER / UTF8String / BOOLEAN / NULL / OCTET
-STRING), needs no external library, and pays off directly in the metering domain. HDF5 is
-the one likely to start as a `ThirdParty` adapter (native library) — exactly the case the
-hexagonal port exists for: ship behind our interface now, replace later.
+ASN.1 was the first 2-ary built our-own from the start (**landed 2026-07-02**,
+`src/Core/Asn1Der.fs`): DER is a simple tag-length-value grammar for our value subset
+(SEQUENCE / INTEGER / UTF8String / BOOLEAN / NULL / OCTET STRING + a `[0]` constructed tag
+for Object), needs no external library (`Ours` immediately), and pays off directly in the
+metering domain. The **tag** is the 2-ary second channel (type/attribute) beside the value.
+HDF5 is the one likely to start as a `ThirdParty` adapter (native library) — exactly the
+case the hexagonal port exists for: ship behind our interface now, replace later.
 
 **Cross-cutting parity slice — ✅ LANDED (2026-07-02):** `ValueTreeEnvelope` +
 `ValueTreeCodec.parity` close JSON/YAML's `Bytes`/`Float` parity debt with a versioned,
@@ -259,3 +277,8 @@ each, no break to existing payloads): `decimal` · `soft` (SoftValue) · `kleene
 - `tests/Tests.FSharp/ValueTreeEnvelope.Tests.fs` — full-tree parity closed; collision
   escape; zero-downtime roll (newer version/unknown category → clean Error); the
   0-downtime parser-replacement proof (new-reads-old, old-reads-new) (5/5 green).
+- `src/Core/Asn1Der.fs` + `ValueTreeCodec.asn1` — the first **2-ary** codec (tag ⊕ value),
+  our-own DER, `Provenance = Ours`; 7/8 shapes native, Float via `parity`.
+- `tests/Tests.FSharp/Asn1Der.Tests.fs` — native round-trip (minimal/negative INTEGER,
+  empty collections, long-form length); the 2-ary column joins the cross-verify agreement;
+  Float parity debt; DER byte-lock spot checks as text hex (5/5 green).

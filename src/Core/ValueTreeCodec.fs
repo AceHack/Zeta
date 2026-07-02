@@ -87,6 +87,17 @@ module ValueTreeCodec =
           Encode = fun dv -> DynamicValue.toYaml dv |> es |> Result.map utf8
           Decode = fun b -> ofUtf8 b |> DynamicValue.fromYaml |> es }
 
+    /// ASN.1 DER (X.690) — the first **2-ary** codec (tag ⊕ value), built our-own from the
+    /// start (DER is simple TLV → no library → `Ours` immediately). Natively carries 7 of 8
+    /// shapes; `Float` is its parity debt, closed by `parity`. Load-bearing for DLMS/COSEM
+    /// meters and constrained devices (Aaron 2026-07-02).
+    let asn1: Codec =
+        { Name = "asn1"
+          Arity = 2
+          Provenance = Ours
+          Encode = Asn1Der.encode
+          Decode = Asn1Der.decode }
+
     /// The codecs we own end-to-end today — zero third-party supply chain, every one
     /// `Ours`. This is the sovereign core the 2-ary formats (XML/KDL/ASN.1) are being
     /// brought up to: adapter first (BCL / NuGet, honestly marked), our own impl later.

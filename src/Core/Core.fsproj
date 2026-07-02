@@ -59,6 +59,7 @@
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="DynamicValue.fs" />
     <Compile Include="ValueTreeEnvelope.fs" />
+    <Compile Include="Asn1Der.fs" />
     <Compile Include="ValueTreeCodec.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
