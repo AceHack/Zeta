@@ -1,0 +1,143 @@
+import { describe, it, expect } from "bun:test";
+import {
+  frostStrip,
+  publishFrame,
+  encode,
+  decode,
+  observeBroadcast,
+  expireChannels,
+  toLlmtvTranscript,
+  type BroadcastMessage,
+  type SourceMind,
+  type ChannelTable,
+  type BroadcastSource,
+} from "./llmtv-broadcast";
+import { renderLlmtvGrid } from "../darkhall-ui/darkhall-tv";
+
+const alexa: BroadcastSource = { zid: "zid-alexa-0001", name: "alexa" };
+const soraya: BroadcastSource = { zid: "zid-soraya-0002", name: "soraya" };
+
+const alexaMind: SourceMind = {
+  role: "coding · qwen3-coder",
+  hat: "coder hat",
+  required: [{ label: "next tick lands green", temp: "hot", valueMilli: 820, epsilonMilli: 120 }],
+  personal: {
+    frosted: true,
+    veilLabel: "what it is really hoping for",
+    predictions: [{ label: "SECRET private hope", temp: "warm", valueMilli: 500, epsilonMilli: 300 }],
+  },
+};
+
+describe("frostStrip — the membrane; frosted personal predictions never cross", () => {
+  it("drops frosted personal predictions, keeps only the public veil label", () => {
+    const mind = frostStrip(alexaMind);
+    expect(mind.predictions).toHaveLength(1); // required only
+    expect(mind.predictions[0]!.label).toBe("next tick lands green");
+    expect(mind.frostMarker?.veilLabel).toBe("what it is really hoping for");
+    // the frosted content is nowhere in the projection
+    expect(JSON.stringify(mind)).not.toContain("SECRET private hope");
+  });
+
+  it("unfrosted personal predictions DO broadcast — open by default (glass halo)", () => {
+    const open: SourceMind = { ...alexaMind, personal: { frosted: false, veilLabel: "n/a", predictions: [{ label: "shared hope", temp: "cool", valueMilli: 700, epsilonMilli: 100 }] } };
+    const mind = frostStrip(open);
+    expect(mind.predictions).toHaveLength(2);
+    expect(mind.frostMarker).toBeUndefined();
+    expect(mind.predictions.map((p) => p.label)).toContain("shared hope");
+  });
+
+  it("a source with no personal region broadcasts just its required predictions", () => {
+    const { personal: _drop, ...bare } = alexaMind;
+    const mind = frostStrip(bare);
+    expect(mind.predictions).toHaveLength(1);
+    expect(mind.frostMarker).toBeUndefined();
+  });
+});
+
+describe("publishFrame — the only way to a frame message is through the membrane", () => {
+  it("wraps the frost-stripped projection; frosted content is absent from the wire bytes", () => {
+    const msg = publishFrame(alexa, 1, 3341, alexaMind);
+    const wire = encode(msg);
+    expect(wire).not.toContain("SECRET private hope");
+    expect(wire).toContain("what it is really hoping for");
+    expect(decode(wire)).toEqual(msg);
+  });
+});
+
+describe("noninterference (§13) — the wire is one-way; no viewer→source message exists", () => {
+  it("decode rejects any message that is not a source→mesh frame/dark", () => {
+    expect(decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "steer", source: alexa } }))).toBeNull();
+    expect(decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "request", from: "viewer" } }))).toBeNull();
+    expect(decode("not json")).toBeNull();
+    expect(decode(JSON.stringify({ schema: "other", msg: { t: "frame" } }))).toBeNull();
+  });
+
+  it("the only accepted message tags are frame and dark (both source→mesh)", () => {
+    const frame = decode(encode(publishFrame(alexa, 1, 1, alexaMind)));
+    const dark = decode(encode({ t: "dark", source: alexa, seq: 2 }));
+    expect(frame?.t).toBe("frame");
+    expect(dark?.t).toBe("dark");
+  });
+});
+
+describe("observeBroadcast — LWW-by-seq: idempotent, order-independent (DST §7, §12)", () => {
+  const f1 = publishFrame(alexa, 1, 100, alexaMind);
+  const f2 = publishFrame(alexa, 2, 101, alexaMind);
+
+  it("a newer seq supersedes; stale and duplicate are no-ops", () => {
+    let t: ChannelTable = new Map();
+    t = observeBroadcast(t, f1, 1000);
+    t = observeBroadcast(t, f2, 1001);
+    t = observeBroadcast(t, f1, 1002); // stale — ignored
+    t = observeBroadcast(t, f2, 1003); // duplicate — ignored
+    expect(t.size).toBe(1);
+    expect(t.get(alexa.zid)!.seq).toBe(2);
+    expect(t.get(alexa.zid)!.frameNo).toBe(101);
+  });
+
+  it("out-of-order + duplicated delivery converges to the same final table", () => {
+    const deliver = (order: BroadcastMessage[]): ChannelTable =>
+      order.reduce<ChannelTable>((t, m, i) => observeBroadcast(t, m, 2000 + i), new Map());
+    const inOrder = deliver([f1, f2]);
+    const shuffled = deliver([f2, f1, f2, f1]);
+    expect(shuffled.get(alexa.zid)!.seq).toBe(inOrder.get(alexa.zid)!.seq);
+    expect(shuffled.get(alexa.zid)!.frameNo).toBe(inOrder.get(alexa.zid)!.frameNo);
+  });
+
+  it("dark retires a source; a stale going-dark keeps the newer frame", () => {
+    let t: ChannelTable = observeBroadcast(new Map(), f2, 3000);
+    t = observeBroadcast(t, { t: "dark", source: alexa, seq: 1 }, 3001); // stale — newer frame stays
+    expect(t.size).toBe(1);
+    t = observeBroadcast(t, { t: "dark", source: alexa, seq: 2 }, 3002); // current — retires
+    expect(t.size).toBe(0);
+  });
+});
+
+describe("expireChannels — a source that stops broadcasting goes dark on its own", () => {
+  it("drops channels unheard past the TTL", () => {
+    const t = observeBroadcast(new Map(), publishFrame(alexa, 1, 1, alexaMind), 1000);
+    expect(expireChannels(t, 1500, 1000).size).toBe(1); // within TTL
+    expect(expireChannels(t, 3000, 1000).size).toBe(0); // expired
+  });
+});
+
+describe("toLlmtvTranscript — the live feed reuses the still-frame generator", () => {
+  it("bridges channels to dwellers; frosted → frost region, deterministic order", () => {
+    let t: ChannelTable = new Map();
+    t = observeBroadcast(t, publishFrame(soraya, 1, 10, { role: "formal-verification", hat: "verifier hat", required: [{ label: "Z3 lemma discharges", temp: "cool", valueMilli: 970, epsilonMilli: 30 }] }), 1000);
+    t = observeBroadcast(t, publishFrame(alexa, 1, 11, alexaMind), 1001);
+    const transcript = toLlmtvTranscript(t, "S4");
+    // sorted by zid: alexa (0001) before soraya (0002)
+    expect(transcript.dwellers.map((d) => d.name)).toEqual(["alexa", "soraya"]);
+    expect(transcript.dwellers[0]!.frost?.veilLabel).toBe("what it is really hoping for");
+    expect(transcript.dwellers[1]!.frost).toBeUndefined();
+  });
+
+  it("rendering the live grid never leaks frosted content", () => {
+    const t = observeBroadcast(new Map(), publishFrame(alexa, 1, 1, alexaMind), 1000);
+    const html = renderLlmtvGrid(toLlmtvTranscript(t, "S4"));
+    expect(html).toContain('data-dweller="alexa"');
+    expect(html).toContain("what it is really hoping for"); // the public veil label
+    expect(html).not.toContain("SECRET private hope"); // the frosted content
+  });
+});

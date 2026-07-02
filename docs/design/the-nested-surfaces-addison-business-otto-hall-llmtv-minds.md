@@ -83,5 +83,18 @@ shared. See the genesis reconciliation doc's RESOLVED note.
   hand-authored gap. DU temperature → `data-temp`; soft `(value, ε)` travels as
   integer milli (no floats in the bytes); the grid is `dwellers.map` (scale-free,
   1 dweller and N on the same path); frost renders only its public veil label, never
-  its contents (`privacy-budget-is-hard-money`). Remaining: the **Reticulum broadcast
-  wiring** — the live multi-source feed behind the still frame.
+  its contents (`privacy-budget-is-hard-money`).
+- **Reticulum broadcast wiring — protocol core LANDED.**
+  `src/Core.TypeScript/discovery/llmtv-broadcast.ts` is the transport-agnostic feed
+  behind the still frame, riding the same substrate as `discovery-beacon.ts`. Two
+  load-bearing properties: (1) **noninterference (§13)** — the wire vocabulary has
+  ONLY source→mesh messages (`frame`, `dark`); there is no viewer→source variant, so
+  watching a mind cannot steer it, structurally. (2) **frost at the membrane** —
+  `frostStrip` projects a `SourceMind` before it can be published; frosted personal
+  predictions are dropped (only the veil label crosses), and `BroadcastMind` has no
+  field for frosted content, so the substrate holds nothing to leak. The viewer fold
+  is LWW-by-seq (idempotent §12, order-independent → DST §7); `toLlmtvTranscript`
+  bridges the live channel table back to `darkhall-tv` so the live feed reuses the
+  still-frame generator (one IR). Remaining: the injected **Reticulum/UDP socket
+  transport** impl (the `BroadcastTransport` port — same shape as discovery's pending
+  UDP transport), and a `DiscoveryNode`-style runner that ties discovery + broadcast.
