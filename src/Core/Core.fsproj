@@ -61,6 +61,7 @@
     <Compile Include="ValueTreeEnvelope.fs" />
     <Compile Include="Asn1Der.fs" />
     <Compile Include="ValueTreeCodec.fs" />
+    <Compile Include="EventEnvelope.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
     <Compile Include="Resume.fs" />

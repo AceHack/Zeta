@@ -211,8 +211,12 @@ exactly where the noninterference/entropy-quarantine discipline meters influence
 `ZetaId` is the 128-bit identity that precedes the persona⊕surface routing address; a routing
 address is not identity.)
 
-> Routed as categories to add on the landed port (not built this pass): `cloudevents` and
-> `debezium` envelope categories, plus the frontmatter ⇄ value-tree bijection.
+> **LANDED (2026-07-02):** `src/Core/EventEnvelope.fs` — `cloudevents` (CNCF 1.0 constructor
+> + required-attribute validator) and `debezium` (before/after/op/source) categories. An event
+> is a value tree, so it rides the whole codec stack (json/cbor/yaml/asn1 + parity) with no new
+> codec. Distinctive Zeta content: **a Debezium `op` is a Z-set weight** — create/read assert
+> (+1), delete retracts (−1), update is retract-then-assert (−1 then +1) → folds straight into a
+> DBSP Z-set delta. Still routed: the **frontmatter ⇄ value-tree bijection**.
 
 ## Rollout ledger — "all of those", as an honest checklist
 
@@ -227,7 +231,7 @@ ANTLR-shaped — already backlogged) to reach `Ours`.
 | YAML | 1 | — | **`Ours`** ✅ | shipped, hand-rolled |
 | XML | 2 | `Bcl System.Xml.Linq` (`RomDat`) | `Ours` | attribute-promotion codec + our tokenizer |
 | **ASN.1 (BER/DER)** | 2 | — | **`Ours`** ✅ | **LANDED — DLMS/COSEM meters, constrained devices; our-own TLV, no lib; 7/8 native + Float via `parity`** |
-| KDL | 2 | our own reader | `Ours` | cleanest text 2-ary; node children ⊕ properties |
+| KDL | 2 | our own reader | `Ours` | **NEXT PICKUP** (delayed 2026-07-02) — cleanest text 2-ary; node children ⊕ properties; see `docs/trajectories/value-tree-codecs/RESUME.md` |
 | HDF5 / netCDF | 2 | `ThirdParty` (native lib) | `Ours` (long) | scientific data; datasets ⊕ first-class attributes; heaviest |
 | GraphViz DOT | 2* | our own reader | `Ours` | *graph not tree — lossy; structure ⊕ attribute lists |
 
@@ -281,4 +285,12 @@ each, no break to existing payloads): `decimal` · `soft` (SoftValue) · `kleene
   our-own DER, `Provenance = Ours`; 7/8 shapes native, Float via `parity`.
 - `tests/Tests.FSharp/Asn1Der.Tests.fs` — native round-trip (minimal/negative INTEGER,
   empty collections, long-form length); the 2-ary column joins the cross-verify agreement;
-  Float parity debt; DER byte-lock spot checks as text hex (5/5 green).
+  Float parity debt; DER byte-lock spot checks as text hex; + hostile-input hardening —
+  `decode` total, 13 crafted streams rejected, depth ceiling (7/7 green, #9193).
+- `src/Core/EventEnvelope.fs` — CloudEvents (CNCF 1.0) + Debezium categories; Debezium
+  `op` ≈ Z-set ±1; envelopes ride the whole codec stack.
+- `tests/Tests.FSharp/EventEnvelope.Tests.fs` — CloudEvents build/validate; Debezium
+  op→Z-set weights (create/read +1, delete −1, update −1+1); envelope cross-verify through
+  parity-json/cbor/parity-asn1 (6/6 green).
+- `docs/trajectories/value-tree-codecs/RESUME.md` — the crash-safe resume; **KDL** is the
+  next pickup (delayed half of the event-envelopes-vs-KDL fork).
