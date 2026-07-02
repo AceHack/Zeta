@@ -112,3 +112,33 @@ let ``LOAD-BEARING: a BILLION CHIP-8 frames in bounded work — the scheduler sk
     let far = SchedulerZeta.runToHorizon chip8Key chip8Step start 1_000_000_000
     let near = SchedulerZeta.runToHorizon chip8Key chip8Step start 4
     Assert.Equal(chip8Key near, chip8Key far)     // the character loop, fast-forwarded a billion frames
+
+// ── weak-referenced fixed-point table: dynamically load / unload (Shiva/GC) ──
+
+[<Fact>]
+let ``FixedPointCache: fixed points load, cache-hit, UNLOAD (Shiva), and regenerate exactly`` () =
+    let start =
+        let c = Chip8.create 0UL
+        Chip8.loadRom loopRom c
+        c
+    let cache = SchedulerZeta.FixedPointCache(chip8Key, chip8Step, start)
+    let orbit1 = cache.Orbit()                     // first load (miss)
+    let orbit2 = cache.Orbit()                     // still loaded (hit)
+    Assert.Equal(1, cache.Misses)
+    Assert.Equal(1, cache.Hits)
+    Assert.Same(orbit1, orbit2)                    // same instance while loaded
+    Assert.Equal(4, orbit1.Length)                 // the period-4 character loop = 4 fixed points
+    // Shiva sweeps: unload the derived fixed points; next access regenerates them.
+    cache.Unload()
+    let orbit3 = cache.Orbit()                     // reload (miss)
+    Assert.Equal(2, cache.Misses)
+    // regeneration is LOSSLESS — the derived fixed points are exactly the same.
+    Assert.Equal<string[]>(Array.map chip8Key orbit1, Array.map chip8Key orbit3)
+
+[<Fact>]
+let ``orbitStates returns exactly the recurrent set (the fixed points), transient excluded`` () =
+    // a rho: 3 transient states into a 4-cycle. orbitStates returns only the 4-cycle.
+    let step (x: int) = if x < 3 then x + 1 else 3 + ((x - 3 + 1) % 4)  // 0→1→2→3→[3..6 cycle]
+    let key (x: int) = x
+    let orbit = SchedulerZeta.orbitStates key step 0 |> List.sort
+    Assert.Equal<int list>([ 3; 4; 5; 6 ], orbit)   // the 4-cycle, no transient (0,1,2)

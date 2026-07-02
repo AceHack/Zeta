@@ -142,3 +142,58 @@ module SchedulerZeta =
             for _ in 1 .. k do y <- (match next.TryGetValue y with | true, z -> z | _ -> y)
             y
         next.Keys |> Seq.filter (fun k0 -> iterate k0 = k0) |> Seq.length |> int64
+
+    /// The **fixed points** of a run: the states ON the orbit it settles into (the
+    /// recurrent set), in cycle order. These are what a scheduler would cache to
+    /// recognise "I'm here again"; they are DERIVED (recomputable via the run-ahead),
+    /// so safe to drop and regenerate.
+    let orbitStates (key: 'S -> 'K) (step: 'S -> 'S) (start: 'S) : 'S list =
+        let states = System.Collections.Generic.List<'S>()
+        let index = System.Collections.Generic.Dictionary<'K, int>()
+        let mutable s = start
+        let mutable j = -1
+        let mutable go = true
+        while go do
+            let k = key s
+            match index.TryGetValue k with
+            | true, jj -> j <- jj; go <- false
+            | _ ->
+                index.[k] <- states.Count
+                states.Add s
+                s <- step s
+        [ for i in j .. states.Count - 1 -> states.[i] ]
+
+    /// **Weak-referenced fixed-point table** — Aaron's "weak reference tables so the
+    /// fixed points can be dynamically LOADED and UNLOADED" (Shiva/GC). The orbit is
+    /// held WEAKLY: when the GC reclaims it, the next access regenerates it via the
+    /// (cheap, O(reachable)) run-ahead. Because the fixed points are derived, drop-and-
+    /// recompute is lossless — cogen-as-memory-management, the `SpecializationCache`
+    /// philosophy applied to the scheduler's recurrence. `Unload` is the explicit
+    /// Shiva sweep; the derived orbit is never *pinned*.
+    [<Sealed>]
+    type FixedPointCache<'S, 'K when 'K: equality and 'K: not null>
+        (key: 'S -> 'K, step: 'S -> 'S, start: 'S) =
+        let mutable cached: System.WeakReference<'S[]> option = None
+        let mutable hits = 0
+        let mutable misses = 0
+        let regenerate () =
+            let arr = orbitStates key step start |> List.toArray
+            cached <- Some(System.WeakReference<'S[]>(arr))
+            misses <- misses + 1
+            arr
+        /// Cache hits (the fixed points were still loaded).
+        member _.Hits = hits
+        /// Cache misses (first load, or a reload after the GC unloaded them).
+        member _.Misses = misses
+        /// Explicitly UNLOAD the fixed points (the Shiva sweep). They regenerate on
+        /// next access — the derived orbit is safe to reclaim.
+        member _.Unload() = cached <- None
+        /// The run's fixed points — loaded from the weak table, or regenerated (O(reachable))
+        /// if the GC reclaimed them. Dynamically loadable/unloadable, always exact.
+        member _.Orbit() : 'S[] =
+            match cached with
+            | Some wr ->
+                match wr.TryGetTarget() with
+                | true, arr -> hits <- hits + 1; arr
+                | _ -> regenerate ()
+            | None -> regenerate ()
