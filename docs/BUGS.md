@@ -105,14 +105,6 @@ can no longer pass with Go silent.
 
 ## P1 — serious
 
-### observe-inline catch-all swallows + gate timer never advances (infinite re-fail)
-
-- **Site:** `src/Core.TypeScript/service/loop-tick.ts:262-309`
-- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
-- **Severity:** P1
-- **Symptom:** a broad `try` wraps 5 dynamic imports + load/choose/execute; on throw `last-agent-run.json` is never written, so the gate-interval timer never advances → every tick re-attempts and re-fails forever, no backoff/escalation; only `.message` logged (not `.stack`).
-- **Fix:** narrow the try, or write `last-agent-run.json` with status:1 in the catch so the timer advances; log `err.stack`.
-- **Who:** architect (Kenji)
 
 ### PR mergeState casing mismatch — one reader silently always "0 clean"
 
