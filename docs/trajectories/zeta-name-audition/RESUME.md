@@ -41,8 +41,11 @@ objects to **our own machine**.
   as the 3 parallel edges of a 2-vertex multigraph; non-backtracking geodesics = braided
   words. Self-verified geodesic = Bass = closed form `1/((1−u²)²(1−4u²))` to degree 24.
   `tests/…/BraidCatalogIhara.Tests.fs` + doc `…ihara-zeta-over-the-braided-catalog…md`.
-  Weighted (crossing=1/plait=3/braid=6 edge-lengths, per #9146) = the Bartholdi upgrade,
-  routed below.
+  Weighted (crossing=1/plait=3/braid=6 edge-LENGTHS, per #9146) — LANDED: the
+  weighted-edge determinant `1/det(I−M(u))` = the subdivided-graph Ihara, degree 24;
+  shortest geodesic = crossing+plait = length 4 (the weights surface as the first
+  geodesic length). `tests/…/BraidCatalogWeightedZeta.Tests.fs`. Unifies #9146's
+  commutative weights with #9153's noncommutative geodesics.
 
 ## Ferries from Aaron (2026-07-02 — PRESERVE; these are the vision, not built yet)
 
