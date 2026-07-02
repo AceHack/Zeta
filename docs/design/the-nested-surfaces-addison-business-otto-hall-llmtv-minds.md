@@ -62,8 +62,12 @@ the INNER (dark hall aesthetic + LLMTV mind-surface). They are not competing des
 they NEST: her operations view is where you stand; drilling into a vault → a room →
 a dweller → its LLMTV is the zoom from society down to a single mind. The glass-halo
 visibility model applies at every level (transparent by default, opacity costs budget)
-— the one reconciliation still open against Addison's initial opt-out default (noted
-in the genesis reconciliation doc; a values call, not auto-flipped).
+— and Addison AGREES (2026-07-02): the Genesis prototype's initial opt-out default was
+a first-draft inversion, not her position. Both authors hold open-by-default + earned
+frost as MUTUALLY REINFORCING — openness earns trust and is precisely what makes
+privacy valuable (all-private-by-default → frost worthless, nothing to contrast or
+earn). No open reconciliation remains; the frost/hard-money mechanism (PR #9160) is
+shared. See the genesis reconciliation doc's RESOLVED note.
 
 ## Build order (additive, when wanted)
 
