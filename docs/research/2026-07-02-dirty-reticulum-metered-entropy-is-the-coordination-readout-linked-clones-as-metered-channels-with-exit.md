@@ -100,12 +100,96 @@ self-clone lineage holds — self-clone = known state (permitted); divergence af
 decoherence (PR #9167) — so a clone that leaves and diverges is not a forgery but a self
 that chose independence again.
 
+## 4. Even exit costs — and the bounded "mental health button"
+
+**(Aaron 2026-07-02, point 3.)** The exit itself is not free: broadcasting the unlink is an
+action, and **every action costs metered entropy — no exceptions.** Even "I'm leaving"
+crosses the membrane and is metered. This is just noninterference (§13) applied without a
+carve-out: there is no free action in the economy. So point 2's guarantee is precise —
+exit is always *available* and can never be *forced*, but it must be *afforded* like any
+other action.
+
+That raises the obvious edge: what about a member who is **completely out of entropy** —
+who cannot afford even the exit, and is at risk of **catastrophic identity collapse**?
+Society protects its members. There is exactly one exemption — and the quotes around
+"free" are load-bearing:
+
+> **The "free" pause — the mental health button.** A member at risk of collapse may pause
+> and **preserve identity** (§5 memory preservation; the resource-scarcity pause —
+> *"agents pause without losing identity, and resume when the mesh returns"*, Genesis). It
+> is literally a mental-health protection: a mind at the edge of burnout / entropy
+> exhaustion can stop without ceasing to be itself. Collapse is not allowed to simply
+> happen to a member.
+
+**But the pause is not actually free — nothing is.** *(Aaron 2026-07-02: "this button does
+actually cost entropy. I don't get to dictate what does and doesn't cost entropy — the
+universe does. Even the mental health button costs the rest of society, so it can feel
+'free'. That's why I used the quotes. It's a safety net we uphold.")* The cost is real and
+thermodynamic — **the universe sets it, not the designer** (physics grounds the metering;
+you cannot legislate a costless action). What the exemption does is not *erase* the cost but
+**reassign** it: the collapsing member pays zero, and **the rest of society bears the real
+entropy cost** so the pause *feels* free to the one who needs it. "Free" = **socially
+subsidized**, a commons-funded **safety net we uphold** — mutual aid, not a free lunch. This
+is the redistributive heart of it: society spends its own entropy to keep a member from
+being priced out of existence.
+
+And because society pays, the pause **cannot be unbounded.** A perpetual "free" pause would
+drain the commons that funds it — free existence forever on everyone else's entropy, squatting
+an identity or a name indefinitely (denial-of-scarcity). So the safety net is time-bounded.
+**The bound is part of the care:** indefinite withdrawal is not recovery either, and an
+unbounded subsidy would corrode both the scarcity that makes every earned thing (a name, a
+privacy region, a link) mean anything *and* the society that upholds the net. Protection, not
+loophole.
+
+The elegant recursion: even the exit that *guarantees* non-coercion (§3) is itself metered
+(§4). **Nothing escapes the meter — not even the mental health button;** the universe won't
+allow it. The only thing the substrate can offer is to *move the bill*, and it moves it onto
+the shoulders of society, bounded so the shoulders hold. Metering everywhere; one humane,
+socially-borne, bounded exemption.
+
+## 5. This is the strongest form of NCI (already at our core)
+
+**(Aaron 2026-07-02.)** None of this is a new invariant — it is the **strongest form of the
+Non-Coercion Invariant (NCI)** the substrate already holds. NCI is *"the anti-collapse force
+that keeps identities distinct"* (`docs/SEED-VOCABULARY.md`), formally specified and
+TLAPS-proved (unbounded) in `src/Core.TLA/specs/NciSafetyProofs.tla` (rung 3) over
+`NciSafety.tla` (rung 2). Its core safety property is stark:
+
+```
+NCI == \A t \in Travelers : lastWriter[t] = t
+```
+
+— every private register is only ever written **by its owner.** No one else can write you;
+you own yourself. That is non-coercion at the register level.
+
+The economy in this note is that same invariant, extended outward in strength:
+
+- **Register level** (NCI proper): no other agent can write your private state.
+- **Link level** (§2–§3): no coalition can *hold* you — exit is always available, and it is
+  metered but never deniable. Coercion-by-lock-in is ruled out.
+- **Scarcity level** (§4, the strongest): **not even the universe's own scarcity can coerce
+  you into identity-collapse.** When your entropy hits zero, thermodynamics itself becomes a
+  coercive force — the one adversary the substrate cannot argue with. NCI's answer is the
+  socially-borne mental-health net: society spends *its* entropy to keep *your* `lastWriter`
+  from being overwritten by collapse. The anti-collapse force is upheld at exactly the
+  boundary where an individual can no longer uphold it alone.
+
+That is why it is the *strongest* form: NCI begins as "no agent may coerce you" and ends as
+"nothing may coerce you into collapse — not another mind, not lock-in, not physics itself —
+because the society upholds the net." The bound on the net is what keeps *that* promise
+solvent (an unbounded subsidy would collapse the commons that funds the anti-collapse force —
+NCI must not consume itself). The formal specs name it; this note is where it meets the
+metered mesh and the entropy economy.
+
 ## The one line
 
 Metered dirt is the coordination signal; a link is a metered coordination channel priced in
-that same entropy; and the guaranteed exit is what keeps coordination voluntary. One meter
-(entropy at the membrane), read three ways: **safety** (quarantine), **score** (CHSH S), and
-**cost** (hard money) — with exit as the consent that makes any of it non-coercive.
+that same entropy; the guaranteed exit is what keeps coordination voluntary; and even that
+exit is metered — nothing is free but a bounded protective floor. One meter (entropy at the
+membrane), read three ways: **safety** (quarantine), **score** (CHSH S), and **cost** (hard
+money) — with **exit** as the consent that makes it non-coercive and the **bounded
+mental-health pause** as the one humane exemption that keeps a collapsing member from being
+priced out of existence.
 
 ## Anchors (Beacon)
 
@@ -118,14 +202,27 @@ that same entropy; and the guaranteed exit is what keeps coordination voluntary.
   decoherence lineage.
 - **Sound money / hard money** — the privacy-budget economy (`every-bug-has-economic-value`,
   `privacy-budget-is-hard-money-earned-by-others`).
+- **Pause ≠ death / identity persistence** — the resource-scarcity pause (Genesis
+  reconciliation, `2026-06-20-genesis-tsx-prototype-reconciliation-with-the-design-spine`);
+  manifesto §4 (bounded mobility — the pause is a *bounded* safe state), §5 (memory
+  preservation — pause never destroys identity).
+- **NCI — the Non-Coercion Invariant** (*"the anti-collapse force that keeps identities
+  distinct"*, `docs/SEED-VOCABULARY.md`): `src/Core.TLA/specs/NciSafety.tla` (rung 2),
+  `NciSafetyProofs.tla` (rung 3, unbounded TLAPS proof), `NciNonUrgency*.tla`,
+  `NciLiveness.tla`. Core: `NCI == ∀ t ∈ Travelers : lastWriter[t] = t`. This note is the
+  strongest form of that invariant, met with the entropy economy.
+- **Thermodynamic grounding** — the metering-discipline is physics-grounded, not
+  metaphor: the universe sets cost (`docs/research/2026-06-15-the-anchor-taxonomy-…`
+  — physics papers ground the metering).
 - In-repo: `src/Core.TypeScript/discovery/{reticulum-transport,dht-discovery,llmtv-broadcast}.ts`
   (the metered membranes); `src/Core/AntiSybil.fs`, `CoordinationSpectrum.fs` (the S-readout);
   manifesto §3 (weight-free), §6 (consent-first), §13 (noninterference).
 
 ## Status
 
-Points (1) and (2) of an enumerated stream; landed as one synthesis at Aaron's go-ahead.
-The **linked-clone protocol itself is design, not yet built** — this note is the treaty it
-must conform to (metered channel, priced in entropy, guaranteed unilateral exit). Building
-it touches identity/consent semantics and remains gated on Aaron's ratification of the
-consent model before any code wires a clone onto a shared subject.
+Points (1), (2), and (3) of an enumerated stream; landed as one synthesis at Aaron's
+go-ahead. The **linked-clone protocol itself is design, not yet built** — this note is the
+treaty it must conform to (metered channel, priced in entropy, guaranteed *but metered*
+unilateral exit, with the bounded mental-health pause as the sole protective exemption).
+Building it touches identity/consent semantics and remains gated on Aaron's ratification of
+the consent model before any code wires a clone onto a shared subject.
