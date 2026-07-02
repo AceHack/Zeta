@@ -41,6 +41,7 @@
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
     <Compile Include="ProbabilitySemiring.fs" />
+    <Compile Include="Provenance.fs" />
     <Compile Include="ReflectionEngine.fs" />
     <Compile Include="Reconcile.fs" />
     <Compile Include="Pool.fs" />

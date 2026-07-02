@@ -27,3 +27,23 @@ contribution) — is unsolved. Restrict to safe plans expressed as incremental o
 
 **Anchors:** Dalvi–Suciu #P dichotomy; Olteanu PDB tutorial (safe plans, lineage); MayBMS
 U-relations; Trio lineage; Budiu et al. DBSP (VLDB 2023). Owner: TBD (DBSP + PDB).
+
+## SAFE-FRAGMENT SLICE DONE (2026-07-02, Otto) — general problem still deferred
+
+Aaron authorized the bounded slice 2026-07-02 ("build the safe-fragment slice").
+The general #P problem stays DEFERRED behind the persistence subsystem (unchanged);
+what landed is the safe-plan piece the atom made buildable:
+
+- `src/Core/Provenance.fs`: how-provenance as the FREE COMMUTATIVE RING ℤ[X]
+  (`ProvenancePoly` = monomials→int64 coeff), `ProvenanceRing : IRing`. The ℤ[X]
+  choice (not GKT's absorptive ℕ[X] semiring) is what makes retraction work —
+  `Negate` exists, so `p ⊕ (−p) = 0` cancels a derivation exactly.
+- Lineage now rides `ZSetW<'K, ProvenancePoly>`; DBSP incrementality propagates it
+  and RETRACTS it by construction (a −1 delta carries −provenance; a join's a⊗b
+  retracts to ∅ when base a is retracted — both pinned as tests).
+- 6 tests incl. the ring-law property and the two retraction payoffs. NOT a claim
+  to solve probabilistic eval in general (Dalvi–Suciu #P); this is the safe
+  fragment only, and unsafe-plan probability is out of scope by design.
+
+Anchors: Green–Karvounarakis–Tannen 2007 (provenance semirings — extended to a
+ring here for retraction); Budiu et al. DBSP; 081KWG9JQ9H (IRing = retraction tier).
