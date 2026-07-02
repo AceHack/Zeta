@@ -1,0 +1,144 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IDbspOperators",
+  "typeParams": [
+    { "name": "TKey", "variance": "invariant" },
+    { "name": "TWeight", "variance": "invariant" }
+  ],
+  "doc": "The DBSP incremental-dataflow operator set, mirrored from src/Core/DbspCellGraph.fs (the first CellScheduler consumer, 081KTG5S0M9). Operators exchange Z-set deltas as messages; each spans a DBSP tier — LINEAR (Filter/Rekey/Relay commute with the delta), NON-LINEAR (Distinct = the H operator, needs the integrated input), BILINEAR (Join = equi-join, weights multiply on key match), and the sink Integrate (running I). The load-bearing property is incremental ≡ recompute across the scheduler, and DoP-invariance. Anchor: Budiu et al. DBSP (VLDB 2023).",
+  "members": [
+    {
+      "name": "Filter",
+      "kind": "method",
+      "params": [
+        { "name": "parity", "type": "int" },
+        { "name": "delta", "type": "ZSet<TKey,TWeight>" }
+      ],
+      "returns": "ZSet<TKey,TWeight>",
+      "doc": "LINEAR selection: keep entries whose key satisfies the predicate; weight-independent, so Filter(a+b)=Filter(a)+Filter(b)."
+    },
+    {
+      "name": "Rekey",
+      "kind": "method",
+      "params": [
+        { "name": "factor", "type": "TKey" },
+        { "name": "delta", "type": "ZSet<TKey,TWeight>" }
+      ],
+      "returns": "ZSet<TKey,TWeight>",
+      "doc": "LINEAR key-rewrite (projection): rewrite keys, preserve weights; distributes over Z-set addition."
+    },
+    {
+      "name": "Relay",
+      "kind": "method",
+      "params": [
+        { "name": "delta", "type": "ZSet<TKey,TWeight>" }
+      ],
+      "returns": "ZSet<TKey,TWeight>",
+      "doc": "LINEAR identity relay (a source/fan-out node): Relay(a)=a."
+    },
+    {
+      "name": "Distinct",
+      "kind": "method",
+      "params": [
+        { "name": "integratedInput", "type": "ZSet<TKey,TWeight>" },
+        { "name": "delta", "type": "ZSet<TKey,TWeight>" }
+      ],
+      "returns": "ZSet<TKey,TWeight>",
+      "doc": "NON-LINEAR set-semantics distinct (the DBSP H operator). Given the integrated input and a delta, emits only boundary-crossing (0<->positive) entries; work bounded by |delta|."
+    },
+    {
+      "name": "Join",
+      "kind": "method",
+      "params": [
+        { "name": "leftIntegral", "type": "ZSet<TKey,TWeight>" },
+        { "name": "rightDelta", "type": "ZSet<TKey,TWeight>" }
+      ],
+      "returns": "ZSet<TKey,TWeight>",
+      "doc": "BILINEAR equi-join on the key: matched keys, weights multiplied. Incrementally, each side's delta joins the OTHER side's current integral, so I(out)=I(a) join I(b)."
+    },
+    {
+      "name": "Integrate",
+      "kind": "method",
+      "params": [
+        { "name": "acc", "type": "ZSet<TKey,TWeight>" },
+        { "name": "delta", "type": "ZSet<TKey,TWeight>" }
+      ],
+      "returns": "ZSet<TKey,TWeight>",
+      "doc": "The sink's running integral I: acc' = acc + delta (Z-set addition)."
+    }
+  ],
+  "laws": [
+    {
+      "id": "join-distributes-over-add",
+      "schema": "distributive",
+      "mul": "Join",
+      "add": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:bilinear join: incremental equals recompute (I(a) join I(b))",
+      "doc": "Join is bilinear: (a+b) join c = (a join c) + (b join c). Cross-verified over weight arithmetic (weights multiply on key match, and multiplication distributes over addition)."
+    },
+    {
+      "id": "integrate-add-associative",
+      "schema": "associative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "src/Core/ZSet.fs:(+)",
+      "doc": "The sink integral folds deltas with Z-set addition, which is associative: (a+b)+c = a+(b+c)."
+    },
+    {
+      "id": "integrate-add-commutative",
+      "schema": "commutative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:DoP-invariance on the DBSP workload (run(1) == run(N))",
+      "doc": "Z-set addition is commutative, so delta arrival order does not change the integral — the algebraic root of the scheduler's DoP-invariance for these operators."
+    },
+    {
+      "id": "retraction-inverse",
+      "schema": "inverse",
+      "op": "Add",
+      "inverse": "negate",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:retraction cancels at every stage of the graph",
+      "doc": "A retraction is the additive inverse: a + (-a) = 0. This is why an insert followed by its retraction cancels cleanly as it propagates through the graph."
+    },
+    {
+      "id": "filter-linear",
+      "schema": "linear-additive",
+      "op": "Filter",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:incremental streaming through the cell graph equals batch recompute",
+      "doc": "Filter(a+b) = Filter(a) + Filter(b). Documented (no scalar encoding — a Z-set-level law); proven in F#."
+    },
+    {
+      "id": "rekey-linear",
+      "schema": "linear-additive",
+      "op": "Rekey",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:incremental streaming through the cell graph equals batch recompute",
+      "doc": "Rekey(a+b) = Rekey(a) + Rekey(b). Documented (Z-set-level law); proven in F#."
+    },
+    {
+      "id": "distinct-idempotent",
+      "schema": "idempotent",
+      "op": "Distinct",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:non-linear distinct: incremental equals recompute across the scheduler",
+      "doc": "distinct(distinct(x)) = distinct(x) (set semantics). Documented (Z-set-level law); proven in F# via the integrated incremental form."
+    },
+    {
+      "id": "incremental-equals-recompute",
+      "schema": "incremental-equivalence",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:incremental streaming through the cell graph equals batch recompute",
+      "doc": "For every operator: I(operator streamed over deltas) = operator(I(inputs)). The DBSP incremental-view-maintenance guarantee, holding ACROSS the cell scheduler. Documented (a whole-pipeline law, not a scalar identity); proven in F#."
+    },
+    {
+      "id": "dop-invariance",
+      "schema": "dop-invariance",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/DbspCellGraph.Tests.fs:DoP-invariance on the DBSP workload (run(1) == run(N))",
+      "doc": "run(DoP=1) = run(DoP=N) for the operator graph — the scale-free law, holding for linear, non-linear, and bilinear operators alike. Documented (a scheduler-level law); proven in F#."
+    }
+  ]
+}
