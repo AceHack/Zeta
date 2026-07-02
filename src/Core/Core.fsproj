@@ -353,6 +353,7 @@
     <Compile Include="GamePortfolio.fs" />
     <Compile Include="GameFingerprint.fs" />
     <Compile Include="FingerprintPrism.fs" />
+    <Compile Include="CoordinationSpectrum.fs" />
     <Compile Include="SoftLens.fs" />
     <Compile Include="WeaveFold.fs" />
     <Compile Include="AdinkraViz.fs" />
