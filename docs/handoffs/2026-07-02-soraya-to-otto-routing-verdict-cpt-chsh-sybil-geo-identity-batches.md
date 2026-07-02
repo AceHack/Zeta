@@ -11,7 +11,7 @@ honesty + the λ-mixing false-conviction test + BUGS.md P1).
 
 Reviewed: the handoff, `src/Core/AntiSybil.fs`, `src/Core/BellTest.fs`, all three test files, Addenda 3/3.1/4 of the name-of-name doc, the geo-superdeterminism doc, TECH-RADAR rings, and my notebook. Anchor check (step 0) passes on all four batches — none is factory-native: CPT theorem (Schwinger 1951 / Lüders 1954 / Pauli 1955 / Bell 1955), CHSH 1969 + Hoeffding 1963 (finite-statistics DI lineage: Pironio et al. 2010), PR-box mixture linearity (Popescu–Rohrlich 1994), Lamport 1978. Specs must conform to the cited definitions, not free-standing encodings.
 
-## Batch 1 — CPT composite law: **Lean 4** (small), plus **Stryker** for the braid plane. Not Z3, not TLA+.
+## Batch 1 — CPT composite law: **Lean 4** (small), plus **Stryker** for the braid plane. Not Z3, not TLA+
 
 - **Class:** algebraic-law identity — but *inductive over transcripts*, which disqualifies the table's default. Z3 on a quantified list statement returns `unknown` and eats days on the wrong axis; the pointwise instances Z3 *can* check are already better covered by the live FsCheck properties executing real `ZSet` code.
 - **Primary:** one Lean 4 lemma in `src/Core.Lean4/` house style (operational, no `sorry`): over an abelian group, `fold (map neg (reverse t)) = neg (fold t)` and the annihilation corollary `fold (t ++ cpt t) = 0`. It is a monoid-homomorphism + commutativity argument — yes, it is worth the lemma, precisely because it is 3 lines: cheapest signed artifact on the board, and the law ships in a research doc (the table's Lean escalation condition). Cross-check is the *existing* green FsCheck suite — two independent tools already, at P1 that is more than enough.
@@ -27,10 +27,10 @@ Reviewed: the handoff, `src/Core/AntiSybil.fs`, `src/Core/BellTest.fs`, all thre
 - **UNSOUNDNESS FINDING (the reason this batch is priority 1, more than the handoff knew):** `chshSybil`'s conviction threshold is *exactly* `ClassicalBound = 2.0`, strict `>`. Against a **λ-mixing local pair** — two systems sharing only past classical randomness, no in-tick channel, mixing the two deterministic S=2 strategies `E=(1,1,1,1)` and `E=(1,−1,−1,1)` — the expectation is S=2 but the empirical Ŝ = 2 + (ê₁₀ − ê₀₁) fluctuates **above 2 with probability ≈ 1/2 at every run length**. The docstring's "every collapse is a CONVICTION of common cause" is therefore unsound at finite samples: it holds in expectation, not for Ŝ. The green LHV-edge test doesn't see this because it uses the zero-variance constant-+1 strategy. Fix clause: conviction threshold must be `2 + ε(n)`, and ε(n) is exactly what the concentration deliverable computes. Code change routes to the author/Kenji; this file's entry goes into my denominator.
 - **Effort:** S (Z3 lemma) + S-M (statistics gate + threshold parameterization) + L (Lean, deferred).
 
-## Batch 3 — geo mixture law + estimator: **Z3 (QF_LRA). F* declined.**
+## Batch 3 — geo mixture law + estimator: **Z3 (QF_LRA). F\* declined.**
 
 - **Class:** pointwise algebraic identity, pure linear arithmetic. `S = 2 + 2·f*` given `e₀₁ = 1 − 2f*`, others = 1; estimator round-trip `(S−2)/2`; `coordinationBandwidth` clamp correctness on [2,4]; radius `d* = τ·200`. All of it is a Z3 lemma that runs in seconds — first artifact: entries in `Z3.Laws.Tests.fs` (or an `.smt2` in `tools/Z3Verify/`). Effort: **S**. Celebrate the cheap tool: this batch collapses to one lemma.
-- **F* verdict: no.** F* sits on Assess (TECH-RADAR line 83); onboarding a toolchain (opam/nix, pinned Z3, CI job) is M–L for an obligation Z3 discharges today and Lean could carry if it ever goes paper-grade. The `f*`-naming rhyme is Mirror-register poetry, not a routing argument — the same class of argument as "we already know TLA+," and I weigh it at zero. LiquidF# already died on Hold for the adjacent slot. F*'s genuine entry ticket into this portfolio is the **cryptographic row** (its comparative advantage); when such a property lands, F* gets re-heard. Filing that as a TECH-RADAR note for Jun, not a prereq here.
+- **F\* verdict: no.** F\* sits on Assess (TECH-RADAR line 83); onboarding a toolchain (opam/nix, pinned Z3, CI job) is M–L for an obligation Z3 discharges today and Lean could carry if it ever goes paper-grade. The `f*`-naming rhyme is Mirror-register poetry, not a routing argument — the same class of argument as "we already know TLA+," and I weigh it at zero. LiquidF# already died on Hold for the adjacent slot. F\*'s genuine entry ticket into this portfolio is the **cryptographic row** (its comparative advantage); when such a property lands, F\* gets re-heard. Filing that as a TECH-RADAR note for Jun, not a prereq here.
 
 ## Batch 4 — identity histories: **TLA+ accepted — but only for the deterministic-forger liveness, scoped to code that exists.**
 
@@ -47,7 +47,7 @@ Accept 2 first — strengthened by the threshold-2.0 finding above: batch 2 is n
 
 1. **`chshSybil` threshold unsoundness at finite n** (batch 2 above) — the guarantee comment overstates; needs `2 + ε(n)`. The finding is the routing's chief output.
 2. **Handoff's "3 lines of ring algebra" undersells the tool question:** the CPT statement is inductive over transcripts, so the table's Z3 default is wrong-tool here; Lean is primary. Minor, but it is why batch 1 is not a Z3 job.
-3. **F* invitation declined; the naming rhyme carries no routing weight.** Re-heard when a cryptographic property lands.
+3. **F\* invitation declined; the naming rhyme carries no routing weight.** Re-heard when a cryptographic property lands.
 4. **Batch 4 must not claim the statistical forger.** TLA+ covers the deterministic abstraction only; anything else is a vacuous fairness proof wearing a liveness costume.
 
 Portfolio delta: denominator +4 (these batches) +1 (the threshold-fix path in `AntiSybil.fs`); numerator +4 when the Z3 lemmas (batches 2a, 3), the Lean CPT lemma, and the TLA+ spec gate. Notebook update (round targets + this log) is owed on my next invocation with a writer clone — this session is view-only by instruction.
