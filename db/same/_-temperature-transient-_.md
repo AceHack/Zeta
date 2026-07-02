@@ -29,4 +29,4 @@ Interface.
 
 - `workitems/081KTQXKXDX08QG0R001YFGZKV-*` — the core UX/DX/AX room (UTI = one of the four universal interfaces).
 - `docs/research/2026-06-10-temperature-is-the-eigenvalue-*` — temperature = eigenvalue (the value side of UTI).
-- `same/README.md` (the sameness convention) · `same/grey-gray.md` (sibling same-referent pair).
+- `same/README.md` (the sameness convention) · `same/gray-grey.md` (sibling same-referent pair).

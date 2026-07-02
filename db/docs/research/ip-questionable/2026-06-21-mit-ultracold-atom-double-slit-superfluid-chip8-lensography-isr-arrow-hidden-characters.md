@@ -82,7 +82,7 @@ Arrow is that channel.)
   — the CHIP-8 observer reflecting over the soft interrupt (first ray-trace); the observer = the measurement.
 - `docs/backlog/P1/081KQX9B50008QG0R003B0HG9R-alignment-factory-superfluid-empirical-calibration-2026-05-0.md`
   — "**superfluid**" already in the factory vocabulary (calibration sense). A DIFFERENT, fine use: here it is a product-name / mental image (cold slow-motion reverse-engineering), there it is calibration. Two senses can coexist; no reconciliation owed.
-- Memory: `feedback_dna_actg_is_metaphor_real_build_is_rgb_cmyk_raytracing_chip8_instructions_aaron_2026_06_11.md`
+- Memory (forward-ref, not yet landed): feedback_dna_actg_is_metaphor_real_build_is_rgb_cmyk_raytracing_chip8_instructions_aaron_2026_06_11
   — lensography = RGB(emit)/CMYK(retract) ray-tracing of CHIP-8 instructions.
 
 ## IP-questionable status

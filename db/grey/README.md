@@ -20,12 +20,12 @@ the Grey particle); **`gray/` is the American-spelling alias** — see disambigu
 
 **grey** (British/Commonwealth) and **gray** (American) are the **same colour, different spelling** —
 byte-different, same referent. Zeta picks **`grey`** as canonical (used throughout); **`gray/`** is the
-alias pointing here. Their sameness is recorded as `same/grey-gray` (the canonical `same/x-y` pair). (Note:
+alias pointing here. Their sameness is recorded as `same/gray-grey` (the canonical `same/x-y` pair). (Note:
 "gray" is also the SI unit of absorbed radiation dose — a *different* meaning; `gray/` disambiguates that.)
 
 ## Pointers
 
 - `gray/` — the American-spelling alias (+ the SI-unit caveat).
-- `same/_-grey-gray-_.md` — grey ≡ gray (the sameness relation).
+- `same/_-gray-grey-_.md` — grey ≡ gray (the sameness relation).
 - `hats/grey/` · `particles/grey/` · `morals/grey/` — the grey-family homes.
 - `docs/GLOSSARY.md` §Mirror/Beacon · glass-halo.

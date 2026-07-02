@@ -2,7 +2,7 @@
 
 `hygiene/` is the conceptual home of **substrate hygiene**: the standing discipline that keeps Zeta
 clean — no drift, no rot, no silent debt. It is the **content/why** home; the **how** (the executable
-audits and guards) lives in [`tools/hygiene/`](../tools/hygiene/), which the `gate` workflow enforces
+audits and guards) lives in [`src/Core.TypeScript/hygiene/`](../../src/Core.TypeScript/hygiene/), which the `gate` workflow enforces
 on every push.
 
 ## Hygiene = the always-running guards
@@ -29,6 +29,6 @@ folders fall out of one word — the substrate's habit of finding real structure
 
 ## Pointers
 
-- [`tools/hygiene/`](../tools/hygiene/) — the executable audits/guards (the *how*).
+- [`src/Core.TypeScript/hygiene/`](../../src/Core.TypeScript/hygiene/) — the executable audits/guards (the *how*).
 - `.github/workflows/gate.yml` — where hygiene is enforced (the *when*).
 - [`gene/`](../gene/) · [`hi/`](../hi/) · `hy/` (→ `hygiene/`) — the wordplay siblings.

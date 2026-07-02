@@ -21,7 +21,7 @@ Examples:
 
 ```text
 same/_-x-y-_.md                       — the bare template (two slots, bounded)
-same/_-grey-gray-_.md                 — grey ≡ gray (same colour, two spellings)
+same/_-gray-grey-_.md                 — grey ≡ gray (same colour, two spellings)
 same/_-temperature-transient-_.md     — temperature ≡ transient (one UTI)
 same/_-nodeA-nodeB-_.md               — two Reticulum observers (share the encrypted null)
 ```

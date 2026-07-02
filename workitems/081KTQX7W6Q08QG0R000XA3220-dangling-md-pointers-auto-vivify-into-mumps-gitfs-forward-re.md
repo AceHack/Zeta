@@ -30,9 +30,14 @@ modes. Empirically exercised 2026-07-01: three dangling-ref reds on main detecte
 1. **The MUMPS-global leg** — the vivifier writes gitfs files only; nothing lands in the `Globals.fs`
    (`src/Core/Globals.fs`, MUMPS verbs over `DynamicValue`) tree, so "MD link ⇄ MUMPS global ⇄ gitfs =
    one auto-vivifying namespace" is only two-thirds real.
-2. **Scan surface** — `SCAN_SURFACES = ["workitems"]` only; the idea covers *every* MD pointer
-   (memory/ `[[name]]` convention, docs/). Widening the surface needs the write-scope/security peel
-   resolved first (auto-creating files from any MD reference is a big write surface).
+2. **Scan surface** — WIDENED to `["workitems", "db"]` 2026-07-02 (Otto/cowork): db/ is the
+   coincidence-anchor namespace where broken pointers matter; measured 5 danglings, all resolved in the
+   same change (gray/grey sameness file renamed to the README's own ordinal-canonical order + refs;
+   tools/hygiene -> src/Core.TypeScript/hygiene stale pointer; one assert-exists memory ref reworded to
+   forward-ref prose). **memory/ stays OUT by measurement**: 3,638 danglings across 1,932 files — the
+   `[[name]]` liberal-linking convention treats dangling as write-this-later markers (a feature); gating
+   them would criminalize the convention. docs/ unmeasured, still open. Bonus: sameness stub template had
+   escaped `\${x}` interpolations emitting literal text — fixed.
 3. **On-save hook wiring** — `--watch` exists but nothing wires it into a harness/save path.
 
 > **Aaron, 2026-06-10:** "you can create pointers that don't exist yet in our MD and the system will make it

@@ -20,7 +20,7 @@ import { format } from "../zeta-id/encoding";
 import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
 
 const REPO_ROOT = normalize(join(__dirname, "..", "..", ".."));
-const SCAN_SURFACES = ["workitems"];
+const SCAN_SURFACES = ["workitems", "db"];
 
 interface DanglingPointer {
   raw: string; // link target as written
@@ -330,15 +330,15 @@ composes_with: []
     const y = parts[1] || "y";
     return `# same/${x} — ${y}
 
-**Asserts:** **\${x}** and **\${y}** are the **same** — auto-vivified sameness relation.
+**Asserts:** **${x}** and **${y}** are the **same** — auto-vivified sameness relation.
 
-- **x:** \`\${x}\`
-- **y:** \`\${y}\`
+- **x:** \`${x}\`
+- **y:** \`${y}\`
 - **kind of same:** same-referent
 - **why same:** Auto-vivified due to dangling reference.
-- **established:** \${createdIso.slice(0, 10)}
+- **established:** ${createdIso.slice(0, 10)}
 
-**Carved sentence:** \${x} and \${y} are the same.
+**Carved sentence:** ${x} and ${y} are the same.
 `;
   }
 
