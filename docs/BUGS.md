@@ -106,14 +106,6 @@ can no longer pass with Go silent.
 ## P1 — serious
 
 
-### PR mergeState casing mismatch — one reader silently always "0 clean"
-
-- **Site:** `src/Core.TypeScript/observe/world-infra.ts:108` (`=== "CLEAN"`) vs `:129` (`=== "clean"`)
-- **Found:** 2026-06-13 by silent-failure-hunter, Otto anti-entropy sweep
-- **Severity:** P1
-- **Symptom:** sync reader matches raw-gh upper-case `"CLEAN"`; async reader (via ForgeHost, which lower-cases) matches `"clean"`. Routing the sync reader through a forge yields a silent "0 clean" that looks like a real answer. Dead `_forge` param implies behavior it doesn't have.
-- **Fix:** normalize once (`.toLowerCase() === "clean"`) in both / share one classifier; remove or wire the dead `_forge` param.
-- **Who:** architect (Kenji)
 
 ### ZetaId base32 cross-verify lacks edge vectors + has two overflow algorithms
 
