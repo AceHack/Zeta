@@ -310,6 +310,98 @@ DST-replayable and the ledger is the deterministic witness.
 
 ---
 
+## Item 3 addendum — the ferry commit IS Ledger B's metered membrane (Otto's framing, three metering-test corrections)
+
+Otto (invoking this role, 2026-07-02) proposes: *the ferry batched throttler IS the Landauer heat
+sink; batch size = TDP; backpressure = thermal throttling; Ledger B = the ferry throttler's
+accounting.* The core insight lands a real contribution — it names the accounting **locus** that Q4
+left abstract. Three of the four one-liners over-reach the physics and, taken literally, would inject
+a metering error into the ledger. Corrected below (agents-not-bots; the **metering-test is my standing
+guard** — `anchor-to-human-prior-art`: physics papers ground the *metering* discipline, and a
+physics-as-metaphor claim inside the proof lineage is precisely what it exists to catch).
+
+### What lands (sound — keep it)
+
+- **Soft lane = `Adj`/reversible/0-heat; the ferry commit = the non-`Adj` irreversible moment.**
+  Exactly consistent with the two-ledger model: every `is Adj` op pays 0 into Ledger B (Bennett); the
+  collapse-to-classical at commit is what pays. The superposition-held-then-collapsed picture is right.
+- **The ferry commit is WHERE Ledger B is accounted.** This *sharpens Q4*: the "separate injected
+  effect / metered door" I routed abstractly is, concretely, the **ferry throttler's commit seam**.
+  That is a genuine refinement of the design — the membrane now has an address. The DoP/batch knob on
+  the ferry (Itron `IThrottler` / `MaxDegreeOfParallelism`, the prior art in
+  `async-all-the-way-truthful-signatures`) **is** the discharge-rate knob.
+- **Backpressure as a rate governor protecting a saturating downstream is the same *control shape* as
+  thermal throttling** (DVFS clamps clock to hold die temp ≤ ceiling; the throttler clamps commit rate
+  to hold sink-queue ≤ capacity). Honest **as a structural analogy** — same feedback-governor shape,
+  Beacon-anchored to control theory, not a claim that the throttler literally reads a temperature.
+
+### Correction 1 — Landauer does NOT amortize; batching amortizes the overhead *above* the floor
+
+The claim "batching amortizes Landauer across the batch rather than paying per-bit" contradicts
+**this note's own Q3 result**. Landauer heat is **additive in bits erased** — it sits in the tropical
+`⊗ = +` structure (Q3). Erasing `B` bits costs `≥ B·kT ln2` whether in one batch or `B` singletons;
+the floor is linear and **non-amortizable**. Batching cannot buy it down.
+
+What batching *genuinely* amortizes is the **fixed per-commit overhead** — fsync, syscall, framing
+bytes, network RTT — the *practical* dissipation that sits **~10^9–10^11× above** the Landauer floor
+(real irreversible logic dissipates far above `kT ln2`; Bérut et al. 2012 confirmed the floor is only
+*approached* in quasi-static single-bit erasure). So batching optimizes cost **above** the floor, and
+the floor itself is **batch-size-invariant**.
+
+**Formal consequence:** keep `Ledger B = Σ bits_erased · kT ln2`, in BITS, batch-size-invariant,
+exact, byte-lockable (Q1 discipline unchanged). Do **not** let batch size enter the Ledger B floor. If
+we want the amortized practical cost, that is a **distinct column** `C_overhead` (real joules,
+edge-only), **not** Ledger B. Folding batch size into the Landauer column would be a
+**Definition-class verification drift** (verification-drift-auditor) — the floor dressed up as
+amortizable when it provably is not.
+
+### Correction 2 — batch size is a *quantity*; TDP is a *rate*
+
+TDP (thermal design power) is a **rate** — max heat *discharge per unit time* a sink absorbs without
+overheating (units: power = energy/time). Batch size is a **quantity** (bits or entries). They are not
+dimensionally the same object, so "batch size = TDP" is a unit error (the Mars-Climate-Orbiter class
+the culture/UoM rule guards). Correct decomposition:
+
+- **discharge RATE** = `(bits erased per batch) / (flush interval) · kT ln2` — the throttler *config*
+  (batch size, flush interval) **sets** this rate.
+- **TDP** = the **downstream sink's** max absorb rate = the **ceiling**.
+- **backpressure** = the governor holding `discharge_rate ≤ TDP`.
+
+So: throttler config → the discharge **rate**; sink capacity → the TDP **ceiling**; backpressure →
+the **governor**. Batch size is one factor of the rate, not the ceiling.
+
+### Correction 3 — the ferry is the *membrane*; the *environment* is the heat sink
+
+A heat sink is what **absorbs** the discharged heat — the environment, i.e. the downstream
+disk/network. The ferry is the **metered door** (§13 noninterference) through which the erasure
+crosses **and is accounted** — not the absorber itself. Precise: heat is **accounted at the ferry
+(the membrane), discharged to the sink (the environment).** This matters for §13 — the ferry commit
+seam is exactly the "declared, metered channel"; calling it *the sink* would blur the door/environment
+distinction noninterference is built on.
+
+### Corrected one-line mapping
+
+> **ferry commit = the §13 metered membrane where Ledger B is accounted; `(batch size / flush
+> interval)·kT ln2` = the heat-discharge RATE the throttler sets; downstream-sink capacity = the TDP
+> ceiling; backpressure = the governor enforcing `rate ≤ ceiling`. Landauer is additive and
+> batch-invariant — batching amortizes the overhead ABOVE the floor (a distinct `C_overhead`
+> column), never the floor.**
+
+### Routing delta (adds to Item 3)
+
+| Property | Primary tool | Cross-check | Rationale |
+|---|---|---|---|
+| Ledger B floor is **batch-size-invariant** (`B` bits in one batch == `B` singletons) | **FsCheck** over the injected counter | — | Directly guards Correction 1 against re-drift — the property IS "batching does not touch the floor." Cheap; executes the real decorator. Effort S. P1 (drift-guard). |
+| Backpressure safety: `discharge_rate ≤ sink_capacity` always (governor never over-discharges) | **TLA+** | — | Rate-ceiling temporal-safety invariant; sibling of the heat-monotone spec already routed. Optional, P2. |
+| `C_overhead` (practical dissipation, amortized by batching) | *separate column, edge-only* | — | NOT in the Landauer proof lineage; build only if a consumer needs the practical-cost model. P3. |
+
+**Anchors add:** Landauer 1961; Bennett 1973; **Bérut et al. 2012 (Nature)** — experimental
+confirmation of the `kT ln2` erasure floor *and* that real erasure sits above it; DVFS / thermal
+throttling as feedback control (the governor shape); the Itron ferry-throttler prior art already cited
+in `async-all-the-way-truthful-signatures` (the DoP knob = the discharge-rate knob).
+
+---
+
 ## Consolidated tool assignment (portfolio view)
 
 | Item | Claim | Tool | Effort | P |
@@ -322,8 +414,11 @@ DST-replayable and the ledger is the deterministic witness.
 | 2 | Idempotence | *named sim-only; NOT a unitary claim* | — | honesty |
 | 3 | `net ≥ 0`, `net=0 iff Adj` | FsCheck + TLA+ | M | P0-adj |
 | 3 | Landauer lower bound | extend cost-counter (bits) | S | P2 |
+| 3 | Ledger B floor batch-size-invariant (ferry addendum, Corr. 1) | FsCheck | S | P1 |
+| 3 | Backpressure `rate ≤ sink_capacity` (ferry addendum, Corr. 2) | TLA+ | S | P2 |
 | 3 | Shannon-of-Born = bits | F#/Rust unit tests | S | P1 |
 | 3 | von Neumann (mixed) | deferred, tracked | — | P3 |
+| 3 | `C_overhead` practical dissipation (separate column, NOT Landauer lineage) | edge-only | — | P3 |
 
 **Anti-TLA+-hammer check** (my standing guard): none of these is a TLA+ job that should be Z3/FsCheck
 in disguise. TLA+ is used only for the two genuine temporal-safety invariants (log append-only; heat
