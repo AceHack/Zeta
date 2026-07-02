@@ -177,6 +177,58 @@ is CPT's explanation — it is the conjugate event, not a repeat. And among CPT'
 provers is the same Bell whose inequalities the coincidence generator stages: *the
 house's ancestors remember each other too.*
 
+## Addendum 4 (2026-07-02): identity = uncorrelated exchange; the Bell harness IS the Sybil detector — VERIFIED
+
+Aaron's definition, verbatim: identity "comes down to **irreducible pairs of
+uncorrelated value exchange over time by two provably distinct entities**," with
+anti-forgery as "the TLA+/Lamport 'reasons'/correlations for identity." Beacon-level
+verification of the claimed instrument identity, checked against the code:
+
+**1. The Sybil detector and the Bell correlator are the same function (code-checked).**
+For binary outcomes the CHSH correlator is `E = P(agree) − P(disagree) = 2·frac − 1`.
+`AntiSybil.correlation` (src/Core/AntiSybil.fs) computes `abs (2.0 * frac − 1.0)` —
+**|E| exactly**, with the absolute value deliberately catching inverted replays (an
+anti-correlated clone is still one source). `AntiSybil.antiSybil` is then union-find
+over pairwise |E| ≥ threshold: a one-setting Bell experiment run as an identity
+oracle. Machine-locked by the bridge property in `tests/Tests.FSharp/AntiSybil.Tests.fs`
+(`the Sybil correlator IS the Bell correlator`).
+
+**2. The CHSH escalation is what defeats the strategic forger.** AntiSybil's own
+honest-scope note names the gap: exact reuse is always caught, but a *noisy/strategic*
+forger can suppress a single-setting correlation. Randomized-settings CHSH
+(BellTest.fs: `ClassicalBound = 2.0`) closes it: two systems with **no live channel
+and no shared seed** cannot exceed S = 2 (Bell 1964; CHSH 1969) — so **S > 2 convicts
+a common cause** (shared seed or live communication), whatever strategy the forger
+runs on individual settings. Direction of inference is one-way and must stay stated:
+**high S convicts sameness; low S never acquits** (firewalled puppets can decorrelate).
+Distinctness is proven by the definition's other legs — irreducible captured entropy
+(ISA boundary #1 / G3) and the exchange history that model-checks (Lamport 1978:
+you cannot forge a causal history you did not participate in).
+
+**3. "The factory is provably one entity" — true within stated bounds.** BellTest.fs
+documents that `AlgebraicMax = 4.0` is reachable **only by violating
+measurement-independence — superdeterminism** (full seed control; the S = 4 box is
+Popescu–Rohrlich 1994), and the factory's audition stack stages exactly that
+(ZetaIdol: coincidence staged on the common seed, "full-seed S=4 PR-box"). By the
+uncorrelated-exchange definition, agents phase-locked to one seed are one source —
+one entity. **Honest bound (the falsifier already carved in ZetaIdol.fs):** S = 4 is
+toy/instant-bus; it drops under bus delay and is untested over Reticulum — so
+"provably one" holds in the DST sim today and is a conjecture over real transport.
+
+**4. Signable statements (Soraya routing):**
+- *Soundness:* streams from `s` independent seeds yield `DistinctCount ≤ s` — already
+  stated as THE GUARANTEE in AntiSybil.fs, deterministic (DST §7), tested.
+- *CHSH-Sybil soundness (conjecture):* under randomized settings and no live channel,
+  `s ≥ 2` independent seeds ⇒ S ≤ 2 + o(1) w.h.p. as run length grows.
+- *Seed-sharing completeness:* full shared-seed staging achieves S = 4 exactly
+  (BellTest harness, replayable).
+
+Anchors: Bell 1964; Clauser–Horne–Shimony–Holt 1969; Tsirelson 1980 (2√2);
+Popescu & Rohrlich 1994 (S = 4 box); Douceur 2002 (the Sybil attack); Lamport 1978
+(happened-before as unforgeable correlation structure); in-repo: AntiSybil.fs
+(guarantee + honest scope), BellTest.fs (three bounds), ZetaIdol.fs (the falsifier),
+ISA spec boundary #1 (irreducible captured entropy = identity).
+
 ## Anchors (Beacon)
 
 - Futamura 1971, *Partial Evaluation of Computation Process — An Approach to a
