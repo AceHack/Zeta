@@ -86,6 +86,7 @@
     <Compile Include="DynamicValue.JsonDecode.Tests.fs" />
     <Compile Include="DynamicValue.Canonical.Tests.fs" />
     <Compile Include="DynamicValue.Xml.Tests.fs" />
+    <Compile Include="RomDat.Tests.fs" />
     <Compile Include="DynamicValue.Arrow.Tests.fs" />
     <Compile Include="Predicate.Tests.fs" />
     <Compile Include="Policy.Tests.fs" />

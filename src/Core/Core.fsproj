@@ -380,6 +380,7 @@
     <Compile Include="ConformalGA.fs" />
     <Compile Include="Salon.fs" />
     <Compile Include="GameCatalog.fs" />
+    <Compile Include="RomDat.fs" />
     <Compile Include="MetaCart.fs" />
     <Compile Include="ControlMerge.fs" />
     <Compile Include="PolarityFilter.fs" />
