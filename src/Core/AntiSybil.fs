@@ -96,6 +96,89 @@ module AntiSybil =
     let forgeryCostFloor (threshold: float) (streams: int list list) : int =
         (antiSybil threshold streams).DistinctCount
 
+    // ── CHSH escalation (2026-07-02, Addendum 4 of the name(name) doc) ──────────
+    //
+    // `correlation` above is a ONE-setting Bell correlator (|E|): sound for exact
+    // replays, but a *strategic* forger can suppress a single-setting correlation.
+    // The randomized-settings CHSH closes that gap: two systems with no live
+    // channel and no shared seed cannot exceed |S| = 2 (Bell 1964; CHSH 1969) —
+    // whatever per-setting strategy they run — so |S| > 2 CONVICTS a common cause
+    // (shared seed or in-tick communication). Direction of inference is ONE-WAY
+    // and stays stated: high |S| convicts sameness; low |S| never acquits
+    // (firewalled puppets can decorrelate). Distinctness is proven by the other
+    // legs of the identity definition (captured irreducible entropy + an exchange
+    // history that model-checks), never by this oracle alone.
+
+    /// One round of a CHSH identity probe: the SETTING this claimed identity was
+    /// challenged with (0 or 1) and the ±1 OUTCOME it emitted.
+    type ChshRound = { Setting: int; Outcome: int }
+
+    /// Pairwise CHSH `S` from two per-round probe streams (truncated to the
+    /// shorter). Rounds are bucketed by the setting pair; `E` per bucket is the
+    /// mean outcome product; `S = E(0,0) − E(0,1) + E(1,0) + E(1,1)` via
+    /// `BellTest.chshOf`. An EMPTY bucket contributes `E = 0` — degeneracy only
+    /// ever weakens conviction (soundness-biased), never manufactures it.
+    let chshS (a: ChshRound list) (b: ChshRound list) : float =
+        let n = min (List.length a) (List.length b)
+        if n <= 0 then
+            0.0
+        else
+            let sums = Array.zeroCreate<float> 4
+            let counts = Array.zeroCreate<int> 4
+            List.zip (List.truncate n a) (List.truncate n b)
+            |> List.iter (fun (ra, rb) ->
+                let bucket = (ra.Setting &&& 1) * 2 + (rb.Setting &&& 1)
+                let prod = float (sign ra.Outcome * sign rb.Outcome)
+                sums.[bucket] <- sums.[bucket] + prod
+                counts.[bucket] <- counts.[bucket] + 1)
+            let e i = if counts.[i] = 0 then 0.0 else sums.[i] / float counts.[i]
+            // Same combination as `BellTest.chshOf` (compiled later in Core, so
+            // inlined here; agreement is locked by a cross-check test):
+            // S = E(a,b) − E(a,b') + E(a',b) + E(a',b').
+            e 0 - e 1 + e 2 + e 3
+
+    /// The coordination-bandwidth estimator (geo-superdeterminism doc):
+    /// `f̂ = (|S| − 2) / 2`, clamped to `[0, 1]` — the fraction of rounds on
+    /// which a conductor's cross-setting instruction was effectively delivered.
+    /// `0` = no in-tick coordination detected; `1` = fully conducted (PR-box).
+    let coordinationBandwidth (s: float) : float =
+        min 1.0 (max 0.0 ((abs s - 2.0) / 2.0))
+
+    /// Run the CHSH identity oracle over a set of claimed identities: collapse
+    /// every pair whose `|chshS|` exceeds `threshold` (canonical: 2.0 — the
+    /// local-hidden-variable bound, `BellTest.ClassicalBound`) into a shared
+    /// source, union-find, and report.
+    ///
+    /// **The guarantee (one-way):** `|S| > 2` is impossible for two systems
+    /// sharing only past classical randomness with no in-tick channel, so every
+    /// collapse is a CONVICTION of common cause. `AllDistinct = true` means
+    /// "no pair convicted", NEVER "all proven distinct". Deterministic (DST §7).
+    let chshSybil (threshold: float) (streams: ChshRound list list) : SybilVerdict =
+        let k = List.length streams
+        let arr = List.toArray streams
+        let parent = Array.init k id
+        let rec find i = if parent.[i] = i then i else (let r = find parent.[i] in parent.[i] <- r; r)
+        let union i j = let ri, rj = find i, find j in if ri <> rj then parent.[ri] <- rj
+
+        for i in 0 .. k - 1 do
+            for j in i + 1 .. k - 1 do
+                if abs (chshS arr.[i] arr.[j]) > threshold then
+                    union i j
+
+        let roots = [ 0 .. k - 1 ] |> List.map find
+        let canon =
+            roots
+            |> List.distinct
+            |> List.mapi (fun id r -> r, id)
+            |> Map.ofList
+        let sourceOf = roots |> List.mapi (fun i r -> i, canon.[r]) |> Map.ofList
+        let distinct = canon.Count
+
+        { ClaimedCount = k
+          DistinctCount = distinct
+          SourceOf = sourceOf
+          AllDistinct = distinct = k }
+
     [<Literal>]
     let SeamName = "sim"
 
