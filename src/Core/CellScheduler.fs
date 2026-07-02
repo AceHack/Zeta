@@ -286,3 +286,26 @@ module CellScheduler =
     /// the execution edge for reading a soft scheduler's whole result.
     let snapAll (threshold: float) (states: Map<CellId, SoftValue.SoftValue>) : Map<CellId, DynamicValue option> =
         states |> Map.map (fun _ sv -> SoftValue.resolve threshold sv)
+
+    // ── Slice 5: recovery — a cell's evolution is durable & git-recoverable ──
+    //
+    // Recovery is FREE from `DurableSaga` (design note §4): a cell is
+    // `DurableSaga.start log (sagaStep stepFn) initial` over any `IDeltaLog<'Msg>`
+    // — every processed message is appended to the log and folded into state. A
+    // crash discards only the in-memory saga; `DurableSaga.ResumeAsync(log, …)`
+    // replays the log in seq order and rebuilds the identical state. No new
+    // persistence code.
+    //
+    // Whole-society recovery = per-cell saga recovery (below) + deterministic
+    // replay of the message log (the determinism proven in slices 1–3): the seed +
+    // message-log reproduces the whole society (DST at fleet scale). Cell evolution
+    // is append-only in v1 — a step is information-gaining, not group-invertible,
+    // so there is no retraction compensation (matching the DurableYinYang doctrine);
+    // `sagaStep` therefore applies the transition on append and ignores the sign.
+
+    /// Adapt a cell `stepFn` to a `DurableSaga` signed reducer that tracks the
+    /// cell's STATE only (emission/routing is the scheduler's concern, replayed
+    /// deterministically — not part of a cell's durable state). Append-only: the
+    /// message weight is ignored (v1 has no per-cell retraction compensation).
+    let sagaStep (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list) : 'St -> 'Msg -> int64 -> 'St =
+        fun st msg _weight -> fst (stepFn st msg)

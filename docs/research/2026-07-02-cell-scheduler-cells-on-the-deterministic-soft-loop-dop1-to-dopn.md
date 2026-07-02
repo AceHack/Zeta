@@ -131,6 +131,20 @@ message-log replay reproduces the whole society (DST at the fleet scale).
    through scheduling; `snapAll` collapses above / holds (`None`) below threshold;
    `softStep` emits snapped-certain messages when confident; refuses to emit below.
 5. **Recovery** — restart-from-logs test (kill mid-run, replay, identical state).
+   **LANDED** (`sagaStep` adapter + 3 tests). Recovery is FREE from `DurableSaga`
+   (§4): a cell is `DurableSaga.start log (sagaStep stepFn) initial` over any
+   `IDeltaLog<'Msg>`; a crash discards only the in-memory saga, and
+   `DurableSaga.ResumeAsync` replays the log in seq order to rebuild identical
+   state — no new persistence code. Whole-society recovery = per-cell saga recovery
+   + deterministic message replay (slices 1–3). Append-only in v1 (a step is
+   information-gaining, not group-invertible — no retraction compensation, matching
+   the DurableYinYang doctrine). Tests: restart→identical state; resume-then-continue;
+   independent cells recover independently.
+
+> **ALL FIVE SLICES LANDED** (2026-07-02, #9118 · #9120 · #9121 · #9122 · this PR).
+> The cell scheduler is complete as designed: a generic DoP=1→DoP=N deterministic
+> multiplexer (`run(1)==run(N)` proven), structural fairness + observable parking,
+> soft cells that snap only at the edge, and free DurableSaga recovery. 22 tests.
 
 ## 6. What this deliberately is NOT (scope honesty)
 

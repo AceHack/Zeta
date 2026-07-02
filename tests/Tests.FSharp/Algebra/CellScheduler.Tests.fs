@@ -304,3 +304,55 @@ let ``softStep refuses to emit below threshold (holds)`` () =
     let state, emitted = step (SoftValue.certain DynamicValue.Null) input
     Assert.Empty(emitted)                                   // refused to collapse
     Assert.Equal(2, List.length state.Candidates)          // but state stays soft, intact
+
+// ── Slice 5: recovery — a cell's evolution is durable & replay-recoverable ──
+
+[<Fact>]
+let ``recovery: restart from log rebuilds identical cell state`` () : Task =
+    task {
+        let log = InMemoryDeltaLog<Msg>()
+        let saga = DurableSaga.start log (CellScheduler.sagaStep trivialStep) 0
+        let! _ = saga.AppendAsync(leaf 1)
+        let! _ = saga.AppendAsync(leaf 2)
+        let! _ = saga.AppendAsync(leaf 3)
+        let before = saga.State                       // 1 + 2 + 3 = 6
+        Assert.Equal(6, before)
+        // "kill" mid-run: drop the in-memory saga, keep ONLY the durable log.
+        let! resumed = DurableSaga<int, Msg>.ResumeAsync(log, CellScheduler.sagaStep trivialStep, 0)
+        Assert.Equal(before, resumed.State)           // identical after replay
+        Assert.Equal(6, resumed.State)
+    }
+
+[<Fact>]
+let ``recovery: resume then continue advances correctly`` () : Task =
+    task {
+        let log = InMemoryDeltaLog<Msg>()
+        let saga = DurableSaga.start log (CellScheduler.sagaStep trivialStep) 0
+        let! _ = saga.AppendAsync(leaf 10)
+        // kill, resume, then keep going on the resumed saga
+        let! resumed = DurableSaga<int, Msg>.ResumeAsync(log, CellScheduler.sagaStep trivialStep, 0)
+        Assert.Equal(10, resumed.State)
+        let! _ = resumed.AppendAsync(leaf 5)
+        Assert.Equal(15, resumed.State)               // continued from the recovered state
+        // a fresh resume sees the full history (10 + 5)
+        let! resumed2 = DurableSaga<int, Msg>.ResumeAsync(log, CellScheduler.sagaStep trivialStep, 0)
+        Assert.Equal(15, resumed2.State)
+    }
+
+[<Fact>]
+let ``recovery: independent cells recover independently`` () : Task =
+    task {
+        // Two cells, two logs — the fleet is per-cell durable (design note §4).
+        let logA = InMemoryDeltaLog<Msg>()
+        let logB = InMemoryDeltaLog<Msg>()
+        let sagaA = DurableSaga.start logA (CellScheduler.sagaStep trivialStep) 0
+        let sagaB = DurableSaga.start logB (CellScheduler.sagaStep trivialStep) 100
+        let! _ = sagaA.AppendAsync(leaf 1)
+        let! _ = sagaA.AppendAsync(leaf 2)
+        let! _ = sagaB.AppendAsync(leaf 7)
+        // kill both, resume both from their own logs
+        let! rA = DurableSaga<int, Msg>.ResumeAsync(logA, CellScheduler.sagaStep trivialStep, 0)
+        let! rB = DurableSaga<int, Msg>.ResumeAsync(logB, CellScheduler.sagaStep trivialStep, 100)
+        Assert.Equal(3, rA.State)                     // 1 + 2
+        Assert.Equal(107, rB.State)                   // 100 + 7 — independent
+    }
