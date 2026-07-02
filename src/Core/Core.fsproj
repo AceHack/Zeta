@@ -58,6 +58,7 @@
     <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="DynamicValue.fs" />
+    <Compile Include="ValueTreeCodec.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
     <Compile Include="Resume.fs" />
