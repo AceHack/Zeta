@@ -22,6 +22,12 @@ const generatedLawCases = [
     generatedFile: "generated-star-ring-laws.test.ts",
     instanceExpr: "require('../../../src/Core.TypeScript/algebra/star-ring').realRing",
   },
+  {
+    name: "IKleeneAlgebra",
+    irFile: "../zeta-ir-v2/interfaces/kleene-algebra.ir.json",
+    generatedFile: "generated-kleene-laws.test.ts",
+    instanceExpr: "require('../../../src/Core.TypeScript/algebra/kleene').tropicalKleene",
+  },
 ] as const;
 
 function readText(path: string): string {

@@ -1370,3 +1370,18 @@ jobs:
 
       - name: Cross-language byte-lock + golden-vector oracles
         run: bun src/Core.TypeScript/ci/cross-verify-all.ts
+
+      # Algebra-tower drift-check: the generated law-property tests must be
+      # regenerable-identical from their IRs (codegen-law-drift), and the
+      # generated laws must hold against the TS oracle instances. Covers the
+      # semiring → ring → kleene tower (+ the orthogonal star-ring branch).
+      # Pure bun/arithmetic — no go/python spawns (the cross-language law
+      # cross-verify is a separate, local/toolchain-heavy lane).
+      - name: Algebra-tower drift-check (semiring→ring→kleene + star-ring)
+        run: |
+          bun test \
+            tests/cross-verification/_harness/codegen-law-drift.test.ts \
+            tests/cross-verification/_harness/generated-semiring-laws.test.ts \
+            tests/cross-verification/_harness/generated-ring-laws.test.ts \
+            tests/cross-verification/_harness/generated-star-ring-laws.test.ts \
+            tests/cross-verification/_harness/generated-kleene-laws.test.ts
