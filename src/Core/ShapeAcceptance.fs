@@ -292,6 +292,22 @@ module ShapeAcceptance =
             let b = { WeaveFold.Stream = "right"; WeaveFold.Seq = 1; WeaveFold.Key = "row4"; WeaveFold.Value = "under" }
             let ok = WeaveFold.fold [ a; b ] = WeaveFold.fold [ b; a ]
             ok, "WeaveFold commutes across streams — the join holds from BOTH sides"
+        | "shape-refraction" ->
+            // integer Snell, tangent dialect: the bend ratio equals the declared index
+            // EXACTLY (dx-out * 1000 = dy-out * index-milli), incidence is the unit slope,
+            // and every endpoint stays on the court. Same constants the renderer draws.
+            let c name dflt = MediaLines.constIntOr name dflt d
+            let membraneRow, impactCol = c "membrane-row" 16, c "impact-col" 22
+            let dxIn, dyIn, dxOut, dyOut, indexMilli = c "dx-in" 14, c "dy-in" 14, c "dx-out" 24, c "dy-out" 12, c "index-milli" 2000
+            let onCourt x y = x >= 0 && x < 64 && y >= 0 && y < 32
+            let ok =
+                dxOut * 1000 = dyOut * indexMilli
+                && dxIn = dyIn
+                && indexMilli >= 1000
+                && onCourt (impactCol - dxIn) (membraneRow - dyIn)
+                && onCourt (impactCol + dxOut) (membraneRow + dyOut)
+                && onCourt (impactCol + dxIn) (membraneRow + dyIn)
+            ok, sprintf "tangent-Snell exact: %d*1000 = %d*%d; unit incidence; ray, bend, and ghost all on the court" dxOut dyOut indexMilli
         | "shape-sybil-verdict" ->
             // the CHSH oracle's laws, run LIVE (Addendum 4 made instrument, PR #9117):
             // AntiSybil.chshSybil is both this gate's check and the renderer's stroke source —

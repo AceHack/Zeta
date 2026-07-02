@@ -455,6 +455,25 @@ module ShapeRender =
                     Name = sprintf "edge-%d-%d" (min v1 v2) bit
                     Mask = byte (AdinkraViz.colorOfBit bit)
                     Points = [ pt x1 y1; pt x2 y2 ] } ]
+        | "shape-refraction" ->
+            // THE MEMBRANE CROSSING DRAWN (the ferry's "C refracts", given its Beacon body):
+            // a value's worldline meets a membrane (ring projection / soft->hard snap /
+            // clear->frost) and BENDS; the bend ratio IS the declared index. Integer Snell in
+            // the TANGENT dialect (tan = run/rise; exact in tan, approximates sin-Snell at
+            // small angles — the honest bound lives in the cartridge). The dashed GHOST
+            // continues the unbent line: the gap between ghost and ray is the refraction,
+            // visible. Membrane dashed = the frost register (a boundary, deliberately
+            // translucent). Strokes derive from the SAME constants the gate checks.
+            let membraneRow = constInt "membrane-row" 16
+            let impactCol = constInt "impact-col" 22
+            let dxIn = constInt "dx-in" 14
+            let dyIn = constInt "dy-in" 14
+            let dxOut = constInt "dx-out" 24
+            let dyOut = constInt "dy-out" 12
+            [ { Dash = true; Name = "membrane"; Mask = 6uy; Points = [ pt 2 membraneRow; pt 60 membraneRow ] }
+              { Dash = false; Name = "ray-in"; Mask = 3uy; Points = [ pt (impactCol - dxIn) (membraneRow - dyIn); pt impactCol membraneRow ] }
+              { Dash = false; Name = "ray-out"; Mask = 3uy; Points = [ pt impactCol membraneRow; pt (impactCol + dxOut) (membraneRow + dyOut) ] }
+              { Dash = true; Name = "ghost-unbent"; Mask = 3uy; Points = [ pt impactCol membraneRow; pt (impactCol + dxIn) (membraneRow + dyIn) ] } ]
         | "shape-sybil-verdict" ->
             // THE VERDICT AS INK (Addendum 4 → glyph): three claimed identities descend as
             // strands; the CHSH oracle (AntiSybil.chshSybil — the gate's own computation) decides

@@ -57,7 +57,7 @@ let private catalog () =
 [<Fact>]
 let ``THE CATALOG LAW: every cartridge parses, lints clean, resolves its gen on the shelf, and carries its own treaty block`` () =
     let all = catalog ()
-    Assert.Equal(18, Array.length all) // + exchange-worldlines + kitaev-chain + crossing (THE ATOM) + gc (ray-traced reachability) + sybil-verdict (the CHSH oracle drawn)
+    Assert.Equal(19, Array.length all) // + exchange-worldlines + kitaev-chain + crossing (THE ATOM) + gc (ray-traced reachability) + sybil-verdict (the CHSH oracle drawn) + refraction (the membrane crossing drawn)
     for name, d in all do
         Assert.True(List.isEmpty (MediaLines.lint d), name + " must lint clean")
         // every gen line's ZetaId resolves to a REGISTERED generator (DI by ZetaId, working)

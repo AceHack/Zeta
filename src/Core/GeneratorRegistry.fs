@@ -88,6 +88,7 @@ module GeneratorRegistry =
           register "shape.kitaev-chain" 1
           register "shape.crossing" 1
           register "shape.sybil-verdict" 1
+          register "shape.refraction" 1
           register "rng.splitmix64" 1
           register "rng.lcg64_mmix" 1
           register "hash.murmur3_32_tail" 1

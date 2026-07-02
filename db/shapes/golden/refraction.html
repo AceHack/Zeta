@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>shape-refraction</title>
+  <style>
+    :root {
+      --c0: #000000;
+      --c1: #d62828;
+      --c2: #2a9d2a;
+      --c3: #d6c828;
+      --c4: #2828d6;
+      --c5: #d628d6;
+      --c6: #28c8d6;
+      --c7: #f0f0f0;
+    }
+    body { background: #101418; margin: 0; display: grid; place-items: center; min-height: 100vh; }
+    svg { width: min(96vw, 960px); image-rendering: pixelated; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes appear { to { opacity: 1; } }
+    polyline:hover { stroke-width: 7; filter: brightness(1.6); }
+    @media (prefers-reduced-motion: reduce) { polyline { animation: none !important; stroke-dashoffset: 0 !important; opacity: 1 !important; } }
+    #membrane { opacity: 0; animation: appear 400ms linear 0ms forwards; }
+    #ray-in { stroke-dasharray: 280; stroke-dashoffset: 280; animation: draw 600ms linear 180ms forwards; }
+    #ray-out { stroke-dasharray: 360; stroke-dashoffset: 360; animation: draw 600ms linear 360ms forwards; }
+    #ghost-unbent { opacity: 0; animation: appear 400ms linear 540ms forwards; }
+  </style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" data-cartridge="shape-refraction">
+  <polyline id="membrane" fill="none" stroke="#28c8d6" stroke-width="4" stroke-dasharray="8 6" points="25,165 605,165" />
+  <polyline id="ray-in" fill="none" stroke="#d6c828" stroke-width="4" points="85,25 225,165" />
+  <polyline id="ray-out" fill="none" stroke="#d6c828" stroke-width="4" points="225,165 465,285" />
+  <polyline id="ghost-unbent" fill="none" stroke="#d6c828" stroke-width="4" stroke-dasharray="8 6" points="225,165 365,305" />
+</svg>
+</body>
+</html>

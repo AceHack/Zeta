@@ -1,0 +1,35 @@
+# REFRACTION — the membrane crossing drawn (otto, 2026-07-02; from the Alexa website-colab ferry's
+# "this is why C refracts", peeled to its Beacon body: a value changing MEDIUM — ring projection
+# IntegerRing->IntervalRing, soft->hard snap, clear->frost — must show the bend, because
+# noninterference declares and meters every crossing; an unmarked crossing is an ambient leak).
+# One worldline meets a membrane and bends; the bend ratio IS the declared index. The dashed
+# ghost continues the unbent line — the visible gap between ghost and ray is the refraction
+# itself (the counterfactual drawn, Tufte-honest). The membrane is dashed: the frost register,
+# a boundary deliberately translucent.
+# HONEST BOUND: this is integer Snell in the TANGENT dialect — tan(theta) = run/rise, and the law
+# dx-out*1000 = dy-out*index-milli is EXACT in tan. Physical Snell is a SINE law (n1 sin = n2 sin,
+# Snellius 1621; Descartes 1637); tangent approximates sine only at small angles. The design-language
+# meaning (bend ratio = declared index at a membrane crossing) is exact; the optics is the anchor,
+# not the claim.
+meta	name	shape-refraction
+meta	catalog	shapes
+meta	shape-zetaid	15fbc51afc2e1784be252a7d25ac69d7
+gen	bend	15fbc51afc2e1784be252a7d25ac69d7	1	7	membrane:16;index-milli:2000
+constant	membrane-row	16	the membrane's court row	the medium boundary — where the ring/snap/frost crossing happens; mid-court so both media show
+constant	impact-col	22	the crossing point's column	off-center so the bent ray has room to run its longer horizontal
+constant	dx-in	14	incoming run (columns)	with dy-in equal, incidence is the unit slope — one clean 45-degree reference angle
+constant	dy-in	14	incoming rise (rows)	equal to dx-in by the incidence law below; the reference the bend is measured against
+constant	dx-out	24	outgoing run (columns)	dy-out * index-milli / 1000 exactly — the bend the index buys, in integers
+constant	dy-out	12	outgoing rise (rows)	chosen so dx-out lands exactly and the ray exits on the court
+constant	index-milli	2000	refraction index, x1000	the target medium's density-of-uncertainty: 2.000 means each row of descent buys twice the run it did above the membrane
+law	snell-tangent	dx-out * 1000 = dy-out * index-milli
+law	unit-incidence	dx-in = dy-in
+law	crossing-gated	code:shape-refraction geometry (bend exact, incidence unit, ray+ghost+bend on court — same constants drawn and gated)
+prereq	the-worldline	shapes/cartridges/worldline.lines — the unbent line this shape bends
+prereq	the-frost-register	src/Core/GlassHalo.fs — clear default, frosted earned; the membrane borrows frost's dashed translucency
+edge	same-crossing	shape-lightcone	both draw a LAW about slopes on the court: the lightcone bounds them, the membrane bends them
+edge	counterfactual-ink	shape-adinkra	the adinkra dashes minus signs; this shape dashes the UNBENT GHOST — both use dash for what-is-not (sign there, counterfactual here)
+anim	draw	bend
+# treaties — written only by each oracle's own choice (consent first); dissent is a verdict.
+treaty	fsharp	bytes	ratified	tangent-Snell holds exactly in integers (24*1000 = 12*2000); the acceptance gate computes it from the same constants the renderer draws
+treaty	otto	meaning	ratified	the gap between ghost and ray is the refraction made visible — the crossing is marked because noninterference says crossings must be; my own frame, my own choice
