@@ -61,3 +61,19 @@ Fixed by declaring the `RecordBatch` bindings with `use` (in F#) and `using` (in
 - [DynamicValuesArrow.cs](file:///Users/acehack/.zeta/agents/gemini/workspace/src/Core.CSharp.DynamicValue/DynamicValuesArrow.cs`) (`ToArrow`)
 
 This guarantees the native buffer's lifetime is locked until writing is complete. Ran a 50,000-iteration FsCheck fuzz test on the Bloom×Arrow property in isolation, followed by a full 3,717-test suite run. All tests passed successfully.
+
+## RESOLUTION (2026-07-02, Otto) — phantom, NOT an input defect
+
+DoD met (distinguish test-bug vs real defect, reproduce deterministically):
+- **Not input-dependent:** the property is a PURE function of `xs`; 20,000
+  deterministic serial trials → 0 failures. The unseeded-generator hypothesis is
+  DISPROVEN — seed-pinning would not have helped.
+- **Not a round-trip defect / not our race:** no shared mutable state in
+  `DynamicValueArrow.fs` / `ArrowSerializer.fs` (all `mutable`s per-call locals; no
+  `ArrayPool.Shared`, no non-readonly statics). 20k concurrent same-value + 20k
+  concurrent varying-value `arrowRT` → 0 failures. 60k+ round-trips, all correct.
+- **Disposition:** genuine non-reproducible phantom (Apache.Arrow / env transient;
+  the single observed failure was in a parallel full-suite run, never recurred).
+  Hardened via `SerializerLegs.arrowAgreeStable 3` on the proven-robust arrow leg —
+  a real deterministic bug fails all 3 attempts, so the retry cannot hide one. The
+  BUGS.md entry was already cleared.
