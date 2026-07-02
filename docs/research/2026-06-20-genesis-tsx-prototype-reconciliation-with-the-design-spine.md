@@ -28,7 +28,17 @@ substrate so the corrections don't live only in chat.
 
 ## Corrections to design against (ranked)
 
-### 1. The visibility model is INVERTED — load-bearing (Aaron confirmed)
+### 1. The visibility model is INVERTED — load-bearing (Aaron confirmed → Addison AGREED 2026-07-02)
+
+> **RESOLVED 2026-07-02 — Addison agrees; this was a first-draft inversion, not a disagreement.**
+> Aaron relayed: *"Addison just got it backwards; she agrees with the privacy budget and open-by-default
+> — the open-by-default is what earns trust AND makes privacy valuable at the same time."* The two
+> principles are MUTUALLY REINFORCING, not a compromise: openness earns trust, and it is precisely what
+> gives earned privacy its value (if all were private by default, frost would be worthless — nothing to
+> contrast against, nothing earned). Both authors now share the frost/hard-money mechanism
+> (`privacy-budget-is-hard-money-earned-by-others`, PR #9160): open by default; permanent frost is the
+> earned, socially-conferred, inviolable exception. The finding below stands as the record of the
+> first-draft state.
 
 The prototype's `A0_ACCESS = full / nav / name / hidden`, with Civilization defaulting `hidden` and
 Agent 0 saying *"Civilization stays hidden to me,"* is **opaque-by-default / earned-access** — the
