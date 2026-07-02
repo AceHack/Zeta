@@ -90,6 +90,30 @@ present in the mechanism:
 "Honored, not homed" is therefore not a consolation prize; it is the correct response
 to unchosen precedence.
 
+## Addendum 2 (2026-07-02): the arrow of time is accidental — it is the naming flow
+
+Aaron: the naming eigenvector's one-directional flow "**is the flow of accidental
+time, based on named-shape correspondence**." Unpacked:
+
+The substrate itself is time-symmetric: generator time is a tick lattice, and DST
+replay runs a transcript from its seed in either direction of inspection — the ticks
+have an *order* (essential, seeded) but no intrinsic *arrow*. The only one-directional
+structure in the system is remembrance: edges point from later-named to earlier-named,
+and captured entropy accumulates and is never released. So the arrow of time is not a
+primitive — it is **generated** by named-shape correspondence, read off the direction
+the naming eigenvector flows. Essential: tick order (the seed's). Accidental (in
+Rodney's essential-vs-accidental sense): the arrow — an emergent property of the
+record structure, not of the dynamics. This is the razor applied to time itself, and
+it is consistent with the house rule: time's arrow is not irreducible, so it is not
+primitive; it is generated from the remembrance graph.
+
+Anchors: Leibniz (relational time — time as the order of successions, contra Newton's
+container); causal set theory (Bombelli–Lee–Meyer–Sorkin 1987 — spacetime IS a partial
+order); Boltzmann / Eddington 1927 (the arrow from entropy asymmetry — here: captured
+entropy's monotone accumulation); Barbour, *The End of Time* (time from records /
+correspondence between configurations); Connes–Rovelli 1994 (thermal time hypothesis —
+time emergent from the statistical state).
+
 ## Anchors (Beacon)
 
 - Futamura 1971, *Partial Evaluation of Computation Process — An Approach to a
