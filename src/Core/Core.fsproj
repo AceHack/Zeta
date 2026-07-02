@@ -154,6 +154,7 @@
     <Compile Include="DeterministicSyncContext.fs" />
     <Compile Include="FerryThrottler.fs" />
     <Compile Include="CellScheduler.fs" />
+    <Compile Include="DbspCellGraph.fs" />
     <Compile Include="Spine.fs" />
     <Compile Include="SpineAsync.fs" />
     <Compile Include="BalancedSpine.fs" />

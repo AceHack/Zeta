@@ -47,6 +47,7 @@
     <Compile Include="Algebra/SignalQuality.Tests.fs" />
     <Compile Include="Algebra/Semiring.Tests.fs" />
     <Compile Include="Algebra/CellScheduler.Tests.fs" />
+    <Compile Include="Algebra/DbspCellGraph.Tests.fs" />
     <Compile Include="Algebra/ProbabilitySemiring.Tests.fs" />
     <Compile Include="Algebra/ProbabilitySemiring.Boundary.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
