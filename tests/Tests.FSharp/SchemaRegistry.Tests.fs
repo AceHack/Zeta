@@ -101,3 +101,70 @@ let ``SchemaRegistry: invertOps reverses order and inverts each op; None if any 
         SR.invertOps [ SR.RenameField("old", "new"); SR.AddField("b", DynamicValue.Int 0L) ]
     )
     Assert.Equal<SR.FieldOp list option>(None, SR.invertOps [ SR.RemoveField "x" ])
+
+// ═══════════════════════════════════════════════════════════════════
+// Slice 3 (081KWFXTHJY step 5): the schema-plane projection — the
+// registry's op stream folded into SchemaZ. Version = prefix,
+// operational on the existing registry.
+// ═══════════════════════════════════════════════════════════════════
+
+module private SchemaPlaneFixtures =
+    /// v1→v2 add id:Int, name:String · v2→v3 rename name→full_name · v3→v4 remove id
+    let chain =
+        [ { SchemaRegistry.From = 1; SchemaRegistry.To = 2
+            SchemaRegistry.Ops =
+              [ SchemaRegistry.AddField("id", DynamicValue.Int 0L)
+                SchemaRegistry.AddField("name", DynamicValue.String "") ] }
+          { SchemaRegistry.From = 2; SchemaRegistry.To = 3
+            SchemaRegistry.Ops = [ SchemaRegistry.RenameField("name", "full_name") ] }
+          { SchemaRegistry.From = 3; SchemaRegistry.To = 4
+            SchemaRegistry.Ops = [ SchemaRegistry.RemoveField "id" ] } ]
+
+    let reg = SchemaRegistry.register "user" chain SchemaRegistry.empty
+
+open SchemaPlaneFixtures
+
+[<Fact>]
+let ``schemaAt folds the op stream: every version is the right well-formed prefix`` () =
+    let fieldsAt v =
+        match SchemaRegistry.schemaAt reg "user" v with
+        | Ok s ->
+            Assert.True(SchemaZ.wellFormed s)
+            SchemaZ.fields s |> List.map (fun f -> f.Name, f.Type) |> List.sortBy fst
+        | Error e -> failwith e
+    Assert.Equal<(string * DynamicValueType) list>([], fieldsAt 1)
+    Assert.Equal<(string * DynamicValueType) list>(
+        [ "id", DynamicValueType.Int; "name", DynamicValueType.String ], fieldsAt 2)
+    Assert.Equal<(string * DynamicValueType) list>(
+        [ "full_name", DynamicValueType.String; "id", DynamicValueType.Int ], fieldsAt 3)
+    Assert.Equal<(string * DynamicValueType) list>(
+        [ "full_name", DynamicValueType.String ], fieldsAt 4)
+
+[<Fact>]
+let ``schemaDiff is a Z-set difference: adds are +1, removes are -1`` () =
+    match SchemaRegistry.schemaDiff reg "user" 2 4 with
+    | Ok d ->
+        // v2→v4: name renamed to full_name (−name, +full_name), id removed (−id)
+        let rows = [ for e in d -> (e.Key.Name, e.Key.Type), e.Weight ] |> List.sortBy fst
+        Assert.Equal<((string * DynamicValueType) * int64) list>(
+            [ ("full_name", DynamicValueType.String), 1L
+              ("id", DynamicValueType.Int), -1L
+              ("name", DynamicValueType.String), -1L ],
+            rows)
+    | Error e -> failwith e
+
+[<Fact>]
+let ``ghost remove in the op stream is a SURFACED error, not silent absorption`` () =
+    let bad =
+        SchemaRegistry.register "b"
+            [ { SchemaRegistry.From = 1; SchemaRegistry.To = 2
+                SchemaRegistry.Ops = [ SchemaRegistry.RemoveField "never_added" ] } ]
+            SchemaRegistry.empty
+    match SchemaRegistry.schemaAt bad "b" 2 with
+    | Error e -> Assert.Contains("ghost remove", e)
+    | Ok _ -> Assert.True(false, "expected the inconsistent op stream to be detected")
+
+[<Fact>]
+let ``unknown schema id and missing step are errors`` () =
+    Assert.True(match SchemaRegistry.schemaAt reg "nope" 2 with Error _ -> true | _ -> false)
+    Assert.True(match SchemaRegistry.schemaAt reg "user" 9 with Error _ -> true | _ -> false)

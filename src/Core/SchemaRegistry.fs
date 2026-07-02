@@ -155,3 +155,61 @@ module SchemaRegistry =
                         | _ -> Error(sprintf "schema '%s' must map to an array of migrations" id)))
                 (Ok empty)
         | _ -> Error "registry must be an object"
+
+    // ═════════════════════════════════════════════════════════════════
+    //  The schema-plane projection (081KWFXTHJY step 5, slice 3): the
+    //  registry's op stream folded into a SchemaZ — "a schema version is
+    //  a prefix of the delta stream" made operational on the EXISTING
+    //  registry, no new storage.
+    //
+    //  The ops carry no explicit type, so the fold is STATEFUL: AddField
+    //  reads the type from its default's runtime tag; RemoveField and
+    //  RenameField resolve the current (name, type) row from the schema
+    //  folded so far. An op that references a field absent from the fold
+    //  (ghost remove / ghost rename) is a SURFACED error — an
+    //  inconsistent op stream is detected, never silently absorbed.
+    // ═════════════════════════════════════════════════════════════════
+
+    /// Fold one declarative op into the schema plane. Stateful: the current
+    /// schema resolves the types RemoveField/RenameField retract.
+    let private foldOp (schema: SchemaZ) (op: FieldOp) : Result<SchemaZ, string> =
+        match op with
+        | AddField (k, def) ->
+            Ok(SchemaZ.applyDelta (SchemaZ.addFieldDelta k (DynamicValue.typeOf def)) schema)
+        | RemoveField k ->
+            match SchemaZ.fields schema |> List.tryFind (fun f -> f.Name = k) with
+            | Some fid -> Ok(SchemaZ.applyDelta (SchemaZ.removeFieldDelta fid.Name fid.Type) schema)
+            | None -> Error(sprintf "RemoveField '%s': field not present in the folded schema (ghost remove)" k)
+        | RenameField (o, n) ->
+            match SchemaZ.fields schema |> List.tryFind (fun f -> f.Name = o) with
+            | Some fid -> Ok(SchemaZ.applyDelta (SchemaZ.renameFieldDelta o n fid.Type) schema)
+            | None -> Error(sprintf "RenameField '%s'->'%s': field not present in the folded schema (ghost rename)" o n)
+
+    /// The schema (as a SchemaZ) of `schemaId` AT `version` — the fold of
+    /// every registered op on the version prefix `[minFrom, version)`.
+    /// Version 1 (or the chain's smallest `From`) is the empty schema's
+    /// first successor; asking for a version past the chain is an error.
+    let schemaAt (r: Registry) (schemaId: string) (version: int) : Result<SchemaZ, string> =
+        match Map.tryFind schemaId r.Schemas with
+        | None -> Error(sprintf "unknown schema id '%s'" schemaId)
+        | Some migs ->
+            let start = migs |> List.map (fun m -> m.From) |> function [] -> version | xs -> List.min xs
+            let rec step cur schema =
+                if cur = version then Ok schema
+                else
+                    match migs |> List.tryFind (fun m -> m.From = cur && m.To = cur + 1) with
+                    | None -> Error(sprintf "no migration registered from version %d to %d" cur (cur + 1))
+                    | Some m ->
+                        m.Ops
+                        |> List.fold (fun acc op -> acc |> Result.bind (fun s -> foldOp s op)) (Ok schema)
+                        |> Result.bind (step (cur + 1))
+            if version < start then Error(sprintf "version %d precedes the chain's first version %d" version start)
+            else step start SchemaZ.empty
+
+    /// Schema DIFF between two versions — a Z-set difference on the schema
+    /// plane: rows with weight +1 were ADDED going v1→v2, weight −1 were
+    /// REMOVED. Free from the algebra; no per-op diffing code.
+    let schemaDiff (r: Registry) (schemaId: string) (v1: int) (v2: int) : Result<SchemaZ, string> =
+        match schemaAt r schemaId v1, schemaAt r schemaId v2 with
+        | Ok s1, Ok s2 -> Ok(s2 - s1)
+        | Error e, _ | _, Error e -> Error e
