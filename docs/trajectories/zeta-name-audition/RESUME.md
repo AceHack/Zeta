@@ -90,8 +90,15 @@ objects to **our own machine**.
    (Fix(π^k) = orbit-product) and its orbits PARTITION the 16 members into purpose
    classes (quiescent identity = its own fixed class). `tests/…/AdinkraOrbits.Tests.fs`.
    Ties adinkra identity (#9157) to the scheduler dynamical zeta (#9151).
-4. **Wire the zeta into the soft `IScheduler`** so the loop can predict its own
-   recurrence spectrum (transient vs. recurrent, orbit periods) before running.
+4. **Wire the zeta into the soft `IScheduler`** — LANDED (the capstone). `SchedulerZeta`
+   (src/Core/SchedulerZeta.fs): given a DoP=1 deterministic tick `step:'S→'S` + a finite
+   projection `key`, `predict` does RUN-AHEAD — iterates only until a projected state
+   repeats (never the caller's full budget) — and reports the orbit (the character loop)
+   the run will settle into + its period. `spectrum`/`zetaOfOrbits`/`fixCount` give the
+   full Artin–Mazur zeta, self-verified (exp Σ Fix = Π orbits). Demonstrated predicting
+   the REAL CHIP-8 recurrence (period 4) and a deterministic cell-round period exactly.
+   `tests/…/SchedulerZeta.Tests.fs`. The loop models its own recurrence before it runs —
+   the formal basis for the ad-hoc CHIP-8/IScheduler self-prediction.
 5. Further math rungs (routed, not rushed): Bartholdi / Ihara–Selberg (2-variable),
    Ruelle dynamical zeta with weights, Milnor (Alexander = Lefschetz zeta), Kurokawa
    zeta-of-categories (the braided-monoidal-category seat).

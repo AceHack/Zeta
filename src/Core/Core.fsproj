@@ -171,6 +171,7 @@
     <Compile Include="IsrLift.fs" />
     <Compile Include="SoftIsr.fs" />
     <Compile Include="SoftScheduler.fs" />
+    <Compile Include="SchedulerZeta.fs" />
     <Compile Include="SoftThrottle.fs" />
     <Compile Include="RecordedSource.fs" />
     <Compile Include="SimFramework.fs" />

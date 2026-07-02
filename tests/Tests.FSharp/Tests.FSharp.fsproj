@@ -359,6 +359,7 @@
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />
     <Compile Include="Chip8DynamicalZeta.Tests.fs" />
+    <Compile Include="SchedulerZeta.Tests.fs" />
     <Compile Include="BinaryCode.Tests.fs" />
     <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
