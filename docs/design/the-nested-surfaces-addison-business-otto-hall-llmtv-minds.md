@@ -106,9 +106,20 @@ shared. See the genesis reconciliation doc's RESOLVED note.
   change. Verified live: three independent nodes on one multicast group tiled each
   other into the grid; the **frost membrane held over the real socket** (frosted
   content never left the source; only veil labels crossed). Run it:
-  `bun src/Core.TypeScript/discovery/llmtv-node.demo.ts`. Remaining: **Reticulum**
-  as a second transport into the same `BroadcastTransport`/`DiscoveryTransport` port
-  (UDP is the first, not the only), and global DHT-like discovery over it.
+  `bun src/Core.TypeScript/discovery/llmtv-node.demo.ts`.
+- **Reticulum transport — LANDED** (`reticulum-transport.ts`, #9192): the second
+  transport into the same ports — self-certifying destination hash from the ZetaId,
+  announce + best-hop path table, and transport-node relay that BRIDGES two meshes
+  (the seen-frame-id set is a G-set; the join is union — "there are no strangers").
+- **Global DHT path discovery — LANDED** (`dht-discovery.ts`): Kademlia over the
+  destination hashes — XOR distance, k-bucket routing table (bucket = leading-zero-
+  bits of the XOR, MRU refresh, oldest-eviction), and an iterative lookup that
+  converges on a target BEYOND direct announce range by walking closer nodes. This
+  is the "always discoverable if it's in broadcast range anywhere, even over the
+  global internet" layer. Pure + DST-tested (multi-hop convergence proven over a fake
+  global graph); the lookup's `query` is injected so the real async transport wraps it
+  at the edge. Remaining: bind the physical `rnsd`/TCP `PacketTransport`; the
+  linked-clone protocol (a clone opts a region onto a shared subject — the hive-mind).
 - **Replay/artifact source adapter — LANDED.**
   `src/Core.TypeScript/discovery/llmtv-replay.ts` is the pure seam between live mesh
   frames and the generated page. A UDP/Reticulum runner can record the exact
