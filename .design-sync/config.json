@@ -31,12 +31,38 @@
     "TabsTrigger": null
   },
   "overrides": {
-    "Dialog": { "cardMode": "single", "viewport": "920x620" },
-    "Sheet": { "cardMode": "single", "viewport": "920x620" },
-    "Badge": { "cardMode": "column" },
-    "Card": { "cardMode": "column" },
-    "Textarea": { "cardMode": "column" },
-    "Tabs": { "cardMode": "column" }
+    "Dialog": {
+      "cardMode": "single",
+      "viewport": "920x620"
+    },
+    "Sheet": {
+      "cardMode": "single",
+      "viewport": "920x620"
+    },
+    "Badge": {
+      "cardMode": "column"
+    },
+    "Card": {
+      "cardMode": "column"
+    },
+    "Textarea": {
+      "cardMode": "column"
+    },
+    "Tabs": {
+      "cardMode": "column"
+    },
+    "Button": {
+      "cardMode": "column"
+    },
+    "Input": {
+      "cardMode": "column"
+    },
+    "Label": {
+      "cardMode": "column"
+    },
+    "Select": {
+      "cardMode": "column"
+    }
   },
   "docsMap": {
     "Badge": "../../../../../.design-sync/docs/badge.md",
