@@ -73,6 +73,31 @@ module GrammarIr =
               "productions", DynamicValue.Array(g.Productions |> List.map productionToDv)
               "start", DynamicValue.String g.Start ]
 
+    // ── Closure ("the dictionary defines all its own words") ──
+
+    /// The **closure** check (Aaron 2026-07-02: the homoiconic meta-grammar is "english itself
+    /// as its own grammar … a properly written dictionary that has every word it uses defined
+    /// by other words"). Every symbol referenced in a production RHS must be DEFINED within the
+    /// grammar: a nonterminal by having at least one production; a terminal by being in the
+    /// terminals table. Returns the referenced-but-undefined symbols (`start` included as a
+    /// reference). Empty ⇒ the grammar is CLOSED / self-contained — the first machine-checkable
+    /// step toward the math team's provably-homoiconic meta-grammar (no ungrounded word).
+    let undefinedSymbols (g: Grammar) : Symbol list =
+        let definedTerms = g.Terminals |> List.map (fun t -> t.Name) |> Set.ofList
+        let definedNonTerms = g.Productions |> List.map (fun p -> p.Lhs) |> Set.ofList
+        let referenced =
+            (if System.String.IsNullOrEmpty g.Start then [] else [ NonTerm g.Start ])
+            @ (g.Productions |> List.collect (fun p -> p.Rhs))
+        referenced
+        |> List.filter (fun s ->
+            match s with
+            | Term n -> not (definedTerms.Contains n)
+            | NonTerm n -> not (definedNonTerms.Contains n))
+        |> List.distinct
+
+    /// A grammar is CLOSED when every referenced symbol is defined (no ungrounded word).
+    let isClosed (g: Grammar) : bool = List.isEmpty (undefinedSymbols g)
+
     // ── DynamicValue → Grammar (total; malformed input ⇒ Error, never an exception) ──
 
     let private reqStr (key: string) (dv: DynamicValue) : Result<string, string> =

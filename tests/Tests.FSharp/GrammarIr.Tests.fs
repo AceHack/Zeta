@@ -46,6 +46,19 @@ let ``BIJECTION: a grammar round-trips Grammar -> DynamicValue -> Grammar`` () =
     | Error e -> Assert.Fail(sprintf "round-trip failed: %s" e)
 
 [<Fact>]
+let ``CLOSURE: the expr grammar is closed (every word defined); a dangling reference is caught`` () =
+    // "a properly written dictionary that has every word it uses defined by other words"
+    // (Aaron 2026-07-02): the expr grammar references only symbols it defines ⇒ closed.
+    Assert.True(G.isClosed exprGrammar)
+    Assert.Empty(G.undefinedSymbols exprGrammar)
+    // introduce an ungrounded word: a production referencing an undefined nonterminal `ghost`.
+    let broken =
+        { exprGrammar with
+            Productions = exprGrammar.Productions @ [ { Lhs = "factor"; Rhs = [ G.NonTerm "ghost" ] } ] }
+    Assert.False(G.isClosed broken)
+    Assert.Contains(G.NonTerm "ghost", G.undefinedSymbols broken)
+
+[<Fact>]
 let ``RUNG 2 SERVES RUNG 3: the grammar-as-value-tree rides the codec stack (byte-lockable, DST-replayable)`` () =
     // A grammar is just data ⇒ it inherits every codec on the port. This is the whole point
     // of "the IR as a DynamicValue schema": a grammar byte-locks and DST-replays for free.

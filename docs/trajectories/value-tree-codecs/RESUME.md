@@ -58,16 +58,40 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
 
 ## NEXT PICKUP (subsumed by the ladder — scope rung 3 with Aaron; LARGE)
 
+<<<<<<< Updated upstream
+1. **Zeta Grammar IR as a `DynamicValue` schema** — the grammar is data ⇒ rides rung-2 codecs
+   (byte-lockable, DST-replayable). The natural first, bounded piece.
+2. **`.g4` → Grammar IR ingester** (compatible subset; log drops — no silent truncation), from
+   one grammars-v4 asset. **KDL and lenient-YAML are subsumed here** — both are just grammars
+   ingested (KDL/YAML `.g4` exist), not bespoke hand-parsers.
+3. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung).
+4. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+=======
 1. ✅ **Zeta Grammar IR as a `DynamicValue` schema** — LANDED (`src/Core/GrammarIr.fs`):
    `Grammar` (terminals/nonterminals/productions/start) ⇄ `DynamicValue` bijection; grammar rides
    the codec stack (byte-lockable, DST-replayable); total parse. STRUCTURAL core only — v2 adds
    semantic actions / precedence / recovery / incremental hooks (design pass with Aaron).
-2. **`.g4` → Grammar IR ingester** (compatible subset; log drops — no silent truncation), from
-   one grammars-v4 asset. **KDL and lenient-YAML are subsumed here** — both are just grammars
-   ingested (KDL/YAML `.g4` exist), not bespoke hand-parsers. **← resume here.**
-3. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung).
-4. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+2. ✅ **`.g4` → Grammar IR ingester** — LANDED (`src/Core/Antlr4Import.fs`): compatible (BNF)
+   subset; EBNF/actions **skipped + logged** (`Ingest.Skipped`, no silent truncation);
+   deterministic (hex-named literal terminals, not GetHashCode); total on hostile input.
+   OPEN FORK (design, for Aaron): how the neutral IR represents **EBNF** (carry it vs. desugar
+   to BNF) — currently deferred by log-skipping. Then point it at YAML/KDL `.g4` to retire those.
+3. ✅ **Grammar closure check** — `GrammarIr.isClosed`/`undefinedSymbols`: "every word defined by
+   other words" (Aaron's dictionary). First machine-checkable step toward the homoiconic
+   meta-grammar. **← resume: the homoiconic-meta-grammar vision + math-team proof obligations.**
+4. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung).
+5. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+>>>>>>> Stashed changes
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
+
+## HOMOICONIC META-GRAMMAR (2026-07-02, Aaron): the telos
+
+*"our meta grammar should be homoiconic, provably by the math team … english itself as its own
+grammar … a dictionary that has every word it uses defined by other words."* Homoiconic = the
+Grammar IR is a `DynamicValue` (already). Dictionary-closure = `isClosed` (landed). Proof
+obligations (route to Soraya / `Core.Lean4` math team): homoiconicity fixed point, closure +
+totality, self-hosting (Futamura, `gen(gen)==gen`). Full:
+`docs/research/2026-07-02-homoiconic-meta-grammar-english-as-its-own-grammar-dictionary-closure-provable-by-math-team.md`.
 
 > Rung 3 is LARGE + design-heavy and already has a design (ZetaParse). Do it under Aaron's
 > scope steer, building on the existing foundation — not unilaterally, not reinvented.
