@@ -243,6 +243,7 @@
     <Compile Include="ZetaOverPrimeShapes.Tests.fs" />
     <Compile Include="CoordinationSpectrum.Tests.fs" />
     <Compile Include="IharaZeta.Tests.fs" />
+    <Compile Include="SchedulerDynamicalZeta.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
