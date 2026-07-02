@@ -22,19 +22,18 @@ type: chore
 
 # 081KLL7PPSUMF84HN7WN96ZEQ1P77U — Ace setup-manifest realizers
 
+## Status 2026-07-02 (cutover complete)
+
+Prerequisites satisfied. Row **P2 / in-progress** — install-script cutover landed;
+shell fallback retirement is the remaining hygiene step.
+
+- **Slices 1–4 (#8984, #8992, #9075, #9188):** 14 / 14 Bun realizers.
+- **Cutover (#9195):** `linux.sh` / `macos.sh` call `ace-realize --pre-mise` +
+  `--post-mise` (install-graph order); shell `.sh` fallback preserved.
+- **Next:** retire `tools/setup/mechanisms/*.sh` from bash-retirement inventory after
+  soak; update Ace mechanism pointers to Bun realizers.
+
 ## Status 2026-07-02 (slice 4 complete)
-
-Prerequisites satisfied: **081KDU93…** (#8920) + **#8948** gate green. Row **P2 /
-in-progress** — all mechanism realizers Bun-ported; cutover next.
-
-- **Slice 1 (#8984):** `setup-realize.ts` + `from-uv-tool` + `from-bun-global`.
-- **Slice 2 (#8992):** dotnet/bun-link realizers + `realize_mechanism()` router.
-- **Slice 3 (#9075):** `from-elan`, `from-url` + `curl-fetch` helper.
-- **Slice 4 (#9188):** final 7 — `from-deb`, `from-shim`, `from-autotools-tarball`,
-  `from-uv-venv`, `from-opam-git`, `from-installer`, `from-ollama` + shared `when.ts`.
-- **Coverage:** 14 / 14 mechanism realizers Bun-ported.
-- **Next:** `linux.sh` → `ace-realize --all` cutover; retire shell `.sh` fallbacks when
-  confident.
 
 ## Status 2026-07-02 (slice 3)
 

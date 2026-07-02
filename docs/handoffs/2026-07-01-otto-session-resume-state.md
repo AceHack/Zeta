@@ -1,31 +1,21 @@
-# Otto session resume — 2026-07-02 (post slice 4)
+# Otto session resume — 2026-07-02 (post cutover)
 
-Resume snapshot after **#9188 merged** (Ace Bun realizers slice 4 — **14/14 complete**).
-Main at save: `5af73b80c`.
+Main at save: `faa85be9f` (post **#9195** ace-realize cutover).
 
-## 081KLL7… Bun realizer migration — COMPLETE
+## 081KLL7… — cutover complete
 
-All 14 mechanism realizers now have Bun implementations under
-`src/Core.TypeScript/ace/setup-realizers/`:
+- **14/14** Bun realizers under `src/Core.TypeScript/ace/setup-realizers/`
+- `linux.sh`: `realize_mechanisms --pre-mise` (post-apt) + `--post-mise` (post-mise PATH)
+- `macos.sh`: `realize_mechanisms --post-mise`
+- `setup-realize.ts`: `--pre-mise`, `--post-mise`, `--all` in install-graph order
+- Shell `.sh` fallback remains via `realize_mechanisms_shell_fallback`
 
-| Slice | PR | Mechanisms |
-|-------|-----|------------|
-| 1 | #8984 | `from-uv-tool`, `from-bun-global` |
-| 2 | #8992 | `from-dotnet-global`, `from-dotnet-workload`, `from-bun-link`, `host-tier` |
-| 3 | #9075 | `from-elan`, `from-url`, `curl-fetch` |
-| 4 | #9188 | `from-deb`, `from-shim`, `from-autotools-tarball`, `from-uv-venv`, `from-opam-git`, `from-installer`, `from-ollama`, `when` |
+## Next on this track
 
-`linux.sh` / `macos.sh` route every mechanism via `realize_mechanism()` (Bun first, shell
-`.sh` fallback).
+- Retire `tools/setup/mechanisms/*.sh` from active inventory after soak
+- Point Ace mechanism pointers at Bun realizers (not `.sh` paths)
 
-## Open / next — resume targets
+## Other resume targets
 
-1. **081KLL7… cutover** — replace per-mechanism `realize_mechanism` calls with
-   `ace-realize --all`; retire shell `.sh` fallbacks once soak-tested.
-2. **081KSXN940008QG0R002FWR9B2** — work-item event G-Set / DORA umbrella.
-3. **Lifecycle triad gaps** (`081KVP2M1…`) — KRL revocation, cluster-scoped teardown.
-
-## Discipline
-
-- Canonical backlog keys are **zetaids only**.
-- Regenerate `docs/BACKLOG.md` after row edits.
+- **081KSXN…** — work-item event G-Set / DORA
+- **081KVP2M1…** — lifecycle triad (KRL revocation, cluster teardown)
