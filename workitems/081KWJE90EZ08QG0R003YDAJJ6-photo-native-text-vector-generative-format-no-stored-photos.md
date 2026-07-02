@@ -32,6 +32,23 @@ REDRAWS the content on demand. The stored artifact is diffable, mergeable, byte-
 of truth. End-state target: the representation IS a **chip9 cartridge** — the capture becomes a
 small program a chip9 host executes to draw (and predict) itself, with CSS as one host among many.
 
+## Why chip9 carts — the load-bearing rationale (Aaron 2026-07-02, follow-up)
+
+> "chip9 carts as the capture format isn't a joke. It's so we can **exhaustively,
+> superdeterministically search memory space like Cheat Engine**."
+
+The cart target is not aesthetics — it is **searchability**. A capture stored as a chip9 cart is a
+program in a TINY, fully deterministic VM: bounded memory, bounded instruction set, seeded execution
+(DST). That makes the space of captures a **memory space you can scan the way Cheat Engine scans
+RAM** — exhaustive enumeration, find-what-writes/antecedent tracing, conditional triggers, diffing
+two carts as diffing two runs — the `hooks/README.md` Cheat-Engine-method common ground applied to
+CONTENT, not just the .NET runtime. Superdeterminism is what makes the search COMPLETE: every cart
+replays identically from its seed, so a scan over cart-space misses nothing and every hit is
+reproducible. A photo stored as pixels is opaque to this; a photo stored as a cart is queryable
+program-matter. (Composes: DST §7 · noninterference §13 (all entropy via the seed) ·
+only-the-irreducible-is-primitive (gen(gen)==gen — regenerating IS verifying) · the R4
+observation-log-as-generator residual split.)
+
 ## Layered scope (razored)
 
 1. **Semantic layer (already real, $0):** vision-model transcription photo -> structured text
