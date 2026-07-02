@@ -41,6 +41,7 @@ surface: not a dashboard of what happened, but a live window into what every min
 expects to happen next, shared.
 
 Load-bearing properties already in the substrate:
+
 - **QPG not DPI** (`vocab/acronyms/qpg.md`, `llmhdtv.md`) — meaning-per-glyph is the
   metric; an LLM and a human both read glyphs, not pixels. LLMTV optimizes DPI AWAY.
 - **Noninterference contract** (`universal/television.md`, manifesto §13) — LLMTV is

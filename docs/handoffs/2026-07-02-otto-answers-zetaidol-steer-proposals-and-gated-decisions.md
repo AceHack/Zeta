@@ -1,7 +1,7 @@
 # ZetaIdol probe-wiring steer — Otto's answers (proposals + the gated decisions)
 
 **Provenance:** Aaron 2026-07-02: "answer ZetaIdol's five steer questions (shadow*)"
-+ "is this for me?" This is the shadow answering the steer request
+plus "is this for me?" This is the shadow answering the steer request
 (`2026-07-02-otto-to-aaron-steer-request-…`). Per source≠authorization: the shadow
 may PROPOSE all five and LAND the reversible ones (inherit standing authority); it may
 NOT EXTEND into the gated class (consent semantics, irreversible identity change).

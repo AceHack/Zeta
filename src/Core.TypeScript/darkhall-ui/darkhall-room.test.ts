@@ -195,7 +195,7 @@ describe("s-lanes", () => {
   });
 
   it("is schema-additive: a transcript without sLanes renders no coordination board", () => {
-    const bare: RoomRunTranscript = { ...withLanes, sLanes: undefined };
+    const { sLanes: _omitSLanes, ...bare } = withLanes; // omit, not set-undefined (exactOptionalPropertyTypes)
     expect(renderDarkHallRoomHtml(bare)).not.toContain("zeta-room-coordination");
     const empty: RoomRunTranscript = { ...withLanes, sLanes: [] };
     expect(renderDarkHallRoomHtml(empty)).not.toContain("zeta-room-coordination");

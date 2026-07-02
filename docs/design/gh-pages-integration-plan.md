@@ -25,6 +25,7 @@ have."
 ## First slice — LANDED (this PR)
 
 `hall/index.html` — a self-contained neon-liminal "Dark Hall" landing that:
+
 - fuses the three chrome palettes into one token block (the mash, minimal),
 - inlines three real shape goldens (adinkra/braid/sybil-verdict SVGs, copied from
   `db/shapes/golden/`) as QPG hero art — `image-rendering: pixelated`, honest,

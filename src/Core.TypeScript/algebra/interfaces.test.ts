@@ -2,7 +2,7 @@ import { describe, test, expect } from "bun:test";
 import {
   numberSemiring, additiveGroup, maxLattice, boolOrLattice,
   setUnionMonoid, jsonCodec,
-  type ISemiring,
+  type ISemiring, type IRing,
 } from "./interfaces";
 
 describe("ISemiring<number> — ring laws", () => {
@@ -126,7 +126,8 @@ describe("interface composability — StarRing IS-A ISemiring", () => {
     const r: ISemiring<number> = realRing; // structural subtype
     expect(r.add(r.zero, 5)).toBe(5);
     expect(r.mul(r.one, 7)).toBe(7);
-    expect(r.add(3, r.negate(3))).toBe(r.zero);
+    const ring: IRing<number> = realRing; // ring tier adds negate (not on the semiring view)
+    expect(ring.add(3, ring.negate(3))).toBe(ring.zero);
   });
 
   test("complexRing satisfies ISemiring contract", () => {
