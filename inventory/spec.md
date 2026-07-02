@@ -1,5 +1,16 @@
 # Inventory System — Specification
 
+> **PIVOT 2026-07-02 (owner decision, Aaron): git IS the database.** The Supabase backend below is
+> RETIRED before launch: the seeded project went unreachable/paused on the free tier, and the owners
+> chose an open git-native register instead — one ZetaId-keyed file per item under `items/`
+> (see `items/README.md`), git history as the immutable change log, GitHub permissions as roles,
+> `items.json` as the generated read-model for the static viewer. Current data source: the paper
+> register (photo transcription incoming). The Supabase-era spec below is preserved as lineage —
+> its data model, status enum, and QR/export requirements carry forward; its auth/RLS/Postgres
+> machinery does not. The 1,107-line `lib/inventory-app.js` is legacy pending the lean read-only
+> viewer (workitem filed).
+
+
 ## Definition of done
 
 A logged-in user sees the seeded inventory on the Zeta site. Viewers can search/sort; Editors can

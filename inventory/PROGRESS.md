@@ -4,6 +4,11 @@ Status: [ ] todo · [~] doing · [x] gate passed (record HOW verified — eviden
 
 ## Decisions log
 
+- **PIVOT 2026-07-02: git-as-database (Aaron).** Supabase retired (project paused/unreachable;
+  Addison moved the working register to paper). Landed: `items/` schema + `new-item.ts` mint
+  (Category.InventoryAsset=10, Generic layout, time-sortable) + `generate-items-json.ts` (+tests)
+  + 2 SAMPLE items. Next: paper-photo transcription replaces samples; lean read-only viewer
+  replaces supabase-js app; QR + depreciation export reattach to items.json.
 - Backend: Supabase, USA region, owner-owned. Connector-first; CLI fallback.
 - Archive over delete. $0 target; anon read-only heartbeat to prevent pause; manual + scheduled export.
 - service_role key: forbidden everywhere.

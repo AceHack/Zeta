@@ -20,3 +20,9 @@ entries:
     name: Spawn
   - id: 8
     name: WorkItem
+  # ContentAddress registered in zeta-id/types.ts; yaml had drifted (backfilled 2026-07-02)
+  - id: 9
+    name: ContentAddress
+  # Physical asset register — git-as-database inventory (inventory/items/), LFG hardware fleet
+  - id: 10
+    name: InventoryAsset

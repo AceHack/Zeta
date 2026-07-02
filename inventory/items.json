@@ -1,0 +1,45 @@
+{
+  "generated_by": "src/Core.TypeScript/inventory/generate-items-json.ts",
+  "count": 2,
+  "total_value_usd": 8198,
+  "items": [
+    {
+      "id": "0EFJ9RW179ZFT9WBMXZZNYM92A",
+      "name": "Mac Studio M2 Ultra 192GB",
+      "brand": "Apple",
+      "model_pn": "Z180",
+      "qty": 1,
+      "device_type": "cpu-system",
+      "category": "compute",
+      "status": "active",
+      "location": "office",
+      "assignment_purpose": "forge-host / build machine",
+      "value_usd": 6599,
+      "serial": "",
+      "acquired": "",
+      "assigned_machine": "acehacks-mac-studio.local",
+      "sample": true,
+      "notes": "",
+      "file": "inventory/items/0EFJ9RW179ZFT9WBMXZZNYM92A-mac-studio-m2-ultra-192gb.md"
+    },
+    {
+      "id": "0EFJ9RW1DD28A33YN3F9NCAP9E",
+      "name": "RTX 4090 Founders Edition",
+      "brand": "NVIDIA",
+      "model_pn": "",
+      "qty": 1,
+      "device_type": "gpu",
+      "category": "compute",
+      "status": "storage",
+      "location": "lab-shelf",
+      "assignment_purpose": "k3s gpu node (pending rack)",
+      "value_usd": 1599,
+      "serial": "",
+      "acquired": "",
+      "assigned_machine": "",
+      "sample": true,
+      "notes": "",
+      "file": "inventory/items/0EFJ9RW1DD28A33YN3F9NCAP9E-rtx-4090-founders-edition.md"
+    }
+  ]
+}
