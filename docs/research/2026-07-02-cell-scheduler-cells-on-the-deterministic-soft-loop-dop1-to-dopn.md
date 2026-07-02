@@ -95,6 +95,14 @@ message-log replay reproduces the whole society (DST at the fleet scale).
 2. **DoP=N via `FerryThrottler`** — same `step`, ready-queue becomes the ferry
    queue. Land the **DoP-invariance property test** (`run(1) == run(N)` over random
    noninterfering cell workloads) — the scale-free proof.
+   **LANDED** (`runFerryToQuiescence`, 3 tests). Round-based: each round steps
+   every ready cell once (head message), fanning the pure `stepFn` through a
+   `FerryThrottler<'St*'Msg, _>` at the chosen DoP, and reassembling results in
+   deterministic cell-id order **before** the merge — so DoP-invariance holds by
+   construction (concurrency lives only in the pure step's *execution*; the
+   *ordering* state depends on is restored). Tested `run(1)==run(4)==run(16)`;
+   agrees with slice 1's sequential runner on commutative workloads; the runaway
+   backstop stays a named `Error`.
 3. **Fairness + parking** — per-step reduction budget (BEAM-style), park/wake on
    message, starvation-freedom test.
 4. **Soft cells** — `stepSoft` variant: cells hold distributions (`SoftValue`),

@@ -92,7 +92,6 @@
     <Compile Include="SoftValue.fs" />
     <Compile Include="BonsaiSoft.fs" />
     <Compile Include="DurableYinYang.fs" />
-    <Compile Include="CellScheduler.fs" />
     <Compile Include="ActionGrid.fs" />
     <Compile Include="DynamicValueXmlPolicy.fs" />
     <Compile Include="Circuit.fs" />
@@ -154,6 +153,7 @@
     <Compile Include="Fusion.Equation.fs" />
     <Compile Include="DeterministicSyncContext.fs" />
     <Compile Include="FerryThrottler.fs" />
+    <Compile Include="CellScheduler.fs" />
     <Compile Include="Spine.fs" />
     <Compile Include="SpineAsync.fs" />
     <Compile Include="BalancedSpine.fs" />

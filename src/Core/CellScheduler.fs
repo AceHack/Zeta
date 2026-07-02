@@ -13,9 +13,11 @@ namespace Zeta.Core
 //  cell's work: `step : 'St -> 'Msg -> 'St * (CellId * 'Msg) list`
 //  (new state + emitted messages). The YinYang wiring (`'St = DynamicValue`
 //  via DurableYinYang.evolve) is one instantiation — see `yinYangStep`.
-//  Slice 2 will feed this exact ready-queue to a FerryThrottler for DoP=N
-//  and prove `run(1) == run(N)`; slice 1 is the deterministic core it
-//  must match.
+//  Slice 2 (`runFerryToQuiescence`) feeds the per-round ready-set through a
+//  FerryThrottler at DoP=N, reassembling results in deterministic cell-id
+//  order before merge — so `run(DoP=1) == run(DoP=N)` holds by construction
+//  (the scale-free law, tested at DoP 1/4/16). Slice 1's sequential runner is
+//  the deterministic reference it matches on commutative workloads.
 // ═══════════════════════════════════════════════════════════════════
 
 /// A cell's routing identity.
@@ -90,6 +92,95 @@ module CellScheduler =
                 | None -> Ok s.Cells
                 | Some s' -> loop (n + 1) s'
         loop 0 s0
+
+    // ═══════════════════════════════════════════════════════════════
+    //  Slice 2 — DoP=N via FerryThrottler, and the run(1)==run(N) law.
+    //
+    //  A ROUND-BASED runner: each round steps EVERY currently-ready cell
+    //  once (on its head message), fanning the pure `stepFn` computations
+    //  through a `FerryThrottler` at the chosen DoP. The ferry executes
+    //  steps concurrently, but the results are REASSEMBLED in deterministic
+    //  cell-id order BEFORE any state merge — so the merge (and therefore
+    //  the whole run) is independent of DoP and of ferry completion order.
+    //  `run(DoP=1) == run(DoP=N)` holds by construction (concurrency lives
+    //  only in the pure step's *execution*; the *ordering* that state depends
+    //  on is restored deterministically). The knob changes throughput, never
+    //  the answer — the scale-free claim as an executable law (§1).
+    //
+    //  Noninterference (§13) is what makes the ferry safe: `stepFn` reads
+    //  only (its own state, one message) and returns (new state, emitted) —
+    //  no ambient clock, no shared mutable state — so two cells on two
+    //  ferries cannot observe each other mid-step.
+    // ═══════════════════════════════════════════════════════════════
+
+    /// Recompute the ready set deterministically: cell-ids with a non-empty
+    /// inbox, in sorted (Ordinal) order — the canonical round order.
+    let private readyOf (s: State<'St, 'Msg>) : CellId list =
+        s.Inbox
+        |> Map.toList
+        |> List.choose (fun (id, q) -> if List.isEmpty q then None else Some id)
+        |> List.sortWith (fun a b -> System.String.CompareOrdinal(a, b))
+
+    /// Run to quiescence with a `FerryThrottler` at `config.MaxDegreeOfParallelism`
+    /// ferries. Round-based; result is byte-identical across DoP (the scale-free
+    /// law). `maxRounds` is the named non-termination backstop (not a silent cap).
+    let runFerryToQuiescence
+        (config: FerryThrottlerConfig)
+        (stepFn: 'St -> 'Msg -> 'St * (CellId * 'Msg) list)
+        (maxRounds: int)
+        (s0: State<'St, 'Msg>)
+        : System.Threading.Tasks.Task<Result<Map<CellId, 'St>, string>> =
+        // The batch processor applies the pure step to each (state, message).
+        let processBatch (mem: System.ReadOnlyMemory<'St * 'Msg>) (_ct: System.Threading.CancellationToken) =
+            let src = mem.ToArray()
+            let out = Array.map (fun (st, m) -> stepFn st m) src
+            System.Threading.Tasks.Task.FromResult out
+        task {
+            use throttler =
+                new FerryThrottler<'St * 'Msg, 'St * (CellId * 'Msg) list>(config, processBatch)
+            // `while` + mutable state (a `let rec` inside a task CE is not statically
+            // compilable — FS3511); the round semantics are unchanged.
+            let mutable s = s0
+            let mutable round = 0
+            let mutable result : Result<Map<CellId, 'St>, string> option = None
+            while result.IsNone do
+                if round > maxRounds then
+                    result <- Some(Error(sprintf "cell scheduler did not quiesce in %d rounds (non-terminating message cycle?)" maxRounds))
+                else
+                    match readyOf s with
+                    | [] -> result <- Some(Ok s.Cells)
+                    | ready ->
+                        // Each ready cell processes its head message this round.
+                        let work =
+                            ready
+                            |> List.map (fun id -> id, Map.find id s.Cells, List.head (inboxOf id s))
+                        // Fan the pure steps through the ferry (DoP=N), holding the
+                        // result tasks IN ORDER so completion order is irrelevant.
+                        let! results =
+                            work
+                            |> List.map (fun (_, st, m) -> throttler.ProcessAsync((st, m)))
+                            |> System.Threading.Tasks.Task.WhenAll
+                        let zipped = List.zip work (List.ofArray results)
+                        // Phase 1: apply new states + consume the processed head
+                        // messages — all keyed by distinct cell-ids, so order-free.
+                        let afterConsume =
+                            zipped
+                            |> List.fold
+                                (fun (acc: State<'St, 'Msg>) ((id, _, _), (st', _)) ->
+                                    { acc with
+                                        Cells = Map.add id st' acc.Cells
+                                        Inbox = Map.add id (List.tail (inboxOf id acc)) acc.Inbox })
+                                s
+                        // Phase 2: route all emitted messages, in deterministic
+                        // (processing-cell, then emission) order.
+                        let routed =
+                            zipped
+                            |> List.collect (fun (_, (_, emitted)) -> emitted)
+                            |> List.fold (fun acc (t, m) -> deliver t m acc) afterConsume
+                        s <- routed
+                        round <- round + 1
+            return result.Value
+        }
 
     /// The YinYang instantiation: a cell's state is its `Remains`
     /// (`DynamicValue`), stepped by `DurableYinYang.evolve` against a fixed
