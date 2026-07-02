@@ -74,8 +74,14 @@ shared. See the genesis reconciliation doc's RESOLVED note.
 
 - `hall/` (dark hall) — LANDED.
 - `hall/vault/` (Addison's cutaway, the settlement) — LANDED.
-- **`hall/tv/` — LLMTV: the centerpiece.** A dweller's mind as a QPG watch surface:
-  a seeded transcript of soft predictions rendered glyph-dense, one-way, ledgered.
-  Start with ONE dweller (a static seeded frame, DST-replayable, zero JS at rest),
-  then the society grid (every dweller's LLMTV tiled), then the Reticulum broadcast
-  wiring. This is the next slice and the one that carries the thesis.
+- **`hall/tv/` — LLMTV: the centerpiece — LANDED + GENERATED.** A dweller's mind as
+  a QPG watch surface: a seeded transcript of soft predictions rendered glyph-dense,
+  one-way, ledgered. The single-dweller frame and the **society grid** (every
+  dweller's LLMTV tiled) are both landed, and the page is now the real output of a
+  generator (`src/Core.TypeScript/darkhall-ui/darkhall-tv.ts`, emitted by
+  `darkhall-tv.emit.ts`) — the homoiconic twin of `darkhall-room.ts`, closing the
+  hand-authored gap. DU temperature → `data-temp`; soft `(value, ε)` travels as
+  integer milli (no floats in the bytes); the grid is `dwellers.map` (scale-free,
+  1 dweller and N on the same path); frost renders only its public veil label, never
+  its contents (`privacy-budget-is-hard-money`). Remaining: the **Reticulum broadcast
+  wiring** — the live multi-source feed behind the still frame.
