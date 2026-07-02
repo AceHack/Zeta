@@ -3,7 +3,11 @@ import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { realizeFromElan } from "./setup-realizers/from-elan.ts";
+import { realizeFromInstaller } from "./setup-realizers/from-installer.ts";
+import { realizeFromOllama } from "./setup-realizers/from-ollama.ts";
+import { realizeFromShim } from "./setup-realizers/from-shim.ts";
 import { realizeFromUrl } from "./setup-realizers/from-url.ts";
+import { realizeFromUvVenv } from "./setup-realizers/from-uv-venv.ts";
 import { repairCodexServiceTierConfig } from "./setup-realizers/from-bun-global.ts";
 import { realizeFromUvTool } from "./setup-realizers/from-uv-tool.ts";
 import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
@@ -12,13 +16,20 @@ import { getSetupRealizer, listSetupRealizerIds } from "./setup-realizers/index.
 describe("setup-realizers registry", () => {
   test("lists Bun realizer ids in stable order", () => {
     expect(listSetupRealizerIds()).toEqual([
+      "from-autotools-tarball",
       "from-bun-global",
       "from-bun-link",
+      "from-deb",
       "from-dotnet-global",
       "from-dotnet-workload",
       "from-elan",
+      "from-installer",
+      "from-ollama",
+      "from-opam-git",
+      "from-shim",
       "from-url",
       "from-uv-tool",
+      "from-uv-venv",
     ]);
   });
 
@@ -110,5 +121,54 @@ describe("realizeFromElan dry-run", () => {
     const result = await realizeFromElan(ctx);
     expect(result.skipped).toBe(false);
     expect(result.actions.length).toBeGreaterThan(0);
+  });
+});
+
+describe("realizeFromShim dry-run", () => {
+  test("skips when manifest missing", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-shim-"));
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromShim(ctx);
+    expect(result.skipped).toBe(true);
+  });
+});
+
+describe("realizeFromUvVenv dry-run", () => {
+  test("skips without quantum opt-in", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-venv-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(join(manifestDir, "from-uv-venv"), "qsharp\n");
+    const prev = process.env.ZETA_INSTALL_QUANTUM;
+    delete process.env.ZETA_INSTALL_QUANTUM;
+    delete process.env.ZETA_INSTALL_FULL;
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromUvVenv(ctx);
+    if (prev !== undefined) process.env.ZETA_INSTALL_QUANTUM = prev;
+    expect(result.skipped).toBe(true);
+  });
+});
+
+describe("realizeFromInstaller dry-run", () => {
+  test("skips non-interactive without ZETA_INSTALL_FULL", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-installer-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(join(manifestDir, "from-installer"), "probe https://example.com/install.sh\n");
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const stdinTTY = process.stdin.isTTY;
+    Object.defineProperty(process.stdin, "isTTY", { value: false, configurable: true });
+    const result = await realizeFromInstaller(ctx);
+    Object.defineProperty(process.stdin, "isTTY", { value: stdinTTY, configurable: true });
+    expect(result.skipped).toBe(true);
+  });
+});
+
+describe("realizeFromOllama dry-run", () => {
+  test("skips when manifest missing", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-ollama-"));
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromOllama(ctx);
+    expect(result.skipped).toBe(true);
   });
 });

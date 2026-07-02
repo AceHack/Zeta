@@ -218,7 +218,7 @@ for shim_dir in \
 done
 
 realize_mechanism from-uv-tool
-"$SETUP_DIR/mechanisms/from-uv-venv.sh"
+realize_mechanism from-uv-venv
 
 # Make ~/.dotnet/tools available for the remainder of this install.sh
 # process so from-dotnet-global can install globals into $HOME/.dotnet/tools
@@ -229,10 +229,10 @@ realize_mechanism from-elan
 realize_mechanism from-dotnet-global
 realize_mechanism from-dotnet-workload
 realize_mechanism from-url
-"$SETUP_DIR/mechanisms/from-opam-git.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
+realize_mechanism from-opam-git || echo "⚠ from-opam-git failed — see output above; continuing"
 realize_mechanism from-bun-global
 realize_mechanism from-bun-link
-"$SETUP_DIR/mechanisms/from-installer.sh"
-"$SETUP_DIR/mechanisms/from-ollama.sh"
+realize_mechanism from-installer
+realize_mechanism from-ollama
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"
