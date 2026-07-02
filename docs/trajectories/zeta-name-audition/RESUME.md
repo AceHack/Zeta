@@ -35,11 +35,14 @@ objects to **our own machine**.
    |S|. `tests/…/SchedulerDynamicalZeta.Tests.fs` + doc `…artin-mazur-zeta-of-the-
    cell-scheduler-round-map.md`.
 
-## In flight (move-forward #2, not yet landed)
+## Move-forward #2 — LANDED
 
-- **Ihara over the braided catalog directly** — replace K₄ with the graph of the
-  catalog's braid generators, so geodesics are real braid words (weights: crossing=1,
-  plait-move=3, braid=6, per #9146). Ties #9148 to #9146's actual objects.
+- **Ihara over the braided catalog** — the 3 catalog generators (crossing/plait/braid)
+  as the 3 parallel edges of a 2-vertex multigraph; non-backtracking geodesics = braided
+  words. Self-verified geodesic = Bass = closed form `1/((1−u²)²(1−4u²))` to degree 24.
+  `tests/…/BraidCatalogIhara.Tests.fs` + doc `…ihara-zeta-over-the-braided-catalog…md`.
+  Weighted (crossing=1/plait=3/braid=6 edge-lengths, per #9146) = the Bartholdi upgrade,
+  routed below.
 
 ## Ferries from Aaron (2026-07-02 — PRESERVE; these are the vision, not built yet)
 
