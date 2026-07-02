@@ -109,3 +109,17 @@ module ValueTreeCodec =
         codecs
         |> List.filter (fun c -> not (isFaithful c dv))
         |> List.map (fun c -> c.Name)
+
+    /// Lift a codec to TOTAL over the whole `DynamicValue` shape space by routing through
+    /// the versioned `ValueTreeEnvelope`: non-native shapes (`Float`, `Bytes`, later
+    /// `Decimal` / `SoftValue` / Kleene) are carried losslessly as version + category-
+    /// tagged wrappers. This closes the parity debt for a 1-ary format with no native
+    /// bytes/float (JSON/YAML) — `parity json` is faithful on the full eight-shape tree.
+    /// The envelope's version tag makes the wrapper itself zero-downtime-rollable
+    /// (SchemaEvolution 081KSRGFP0008QG0R001Y6RTY9): a newer wire is a clean `Error`, not
+    /// silent corruption. `Provenance` is inherited — parity adds fidelity, not a dependency.
+    let parity (c: Codec) : Codec =
+        { c with
+            Name = c.Name + "+env"
+            Encode = fun dv -> c.Encode(ValueTreeEnvelope.encode dv)
+            Decode = fun bytes -> c.Decode bytes |> Result.bind ValueTreeEnvelope.decode }

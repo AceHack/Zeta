@@ -112,10 +112,14 @@ Our entire sovereign 1-ary core (json/cbor/yaml) is **already zero-third-party-d
 hand-rolled in `DynamicValue.fs` (only `System.Collections.Immutable`, the BCL). That is the
 floor the 2-ary formats get brought up to.
 
-> **Not landed unilaterally:** the wrapper-envelope *schema* (reserved tag keys, collision
-> discipline, exact decimal/tri-boolean encodings, byte-lock interaction) is a design
-> decision for Aaron and touches the canonical/golden-vector lineage — routed as the next
-> slice, not invented in a tick.
+> **LANDED (2026-07-02):** `src/Core/ValueTreeEnvelope.fs` + `ValueTreeCodec.parity`.
+> The wrapper carries a **version** (`v`) and a **category** (`c`) tag under a single
+> reserved key (`$zeta`); a source object that itself uses the key is escaped
+> (category `map`), so an envelope is collision-safe by construction. `parity json` /
+> `parity yaml` are now **total** — the full eight-shape tree (Bytes + Float incl.)
+> round-trips faithfully (`ValueTreeEnvelope.Tests`, 5/5). Landable *because* rollable —
+> see §7. Decimal / SoftValue / Kleene are the next categories to add (a case each, no
+> break to existing payloads).
 
 ### 6. Canonical codec is chosen by the storage substrate (DV2.0)
 
@@ -136,6 +140,63 @@ medium:
 The last row is the reconciliation: the operational store is CBOR (binary), but the
 *verification* substrate that proves the CBOR bijection stays text (hex-in-JSON golden
 vectors) — different concerns, both hold.
+
+### 7. Every serialization decision is zero-downtime-rollable (the envelope is the roll unit)
+
+> Aaron 2026-07-02: *"all of this is not scary cause all of our serialization can be rolled
+> with version numbers and category types, even in our zetaids and even our crypto keys can
+> be rolled all with 0 down time so any decisions here are also rollable and 0 down time
+> upgradable (we should likely get this added to our 0 down time schema evolution proofs,
+> like 0 down time parser updates/replacement proofs)."*
+
+This is why the envelope schema is **not an irreversible decision** — and why it was safe to
+land in a tick. Every wrapped value carries a `version` and a `category`, exactly the tags
+`SchemaEvolution` (081KSRGFP0008QG0R001Y6RTY9) already makes migratable. So:
+
+- **Roll a category/version** — add a `category` case (Decimal, SoftValue, Kleene) or bump
+  the `version`; a reader that knows `{1..N}` serves any wire `≤ N`, and a **newer** wire is
+  a clean `Error`, never silent corruption. A v2 writer rolls out while v1 readers keep
+  serving v1 data — no stop-the-world migration.
+- **Replace the parser/codec impl** — swapping the adapter behind the `ValueTreeCodec` port
+  is the *format-level analogue of a schema migration*. Same wire contract ⇒ transparent
+  swap; new wire ⇒ a versioned, forward/backward-compatible roll. This is the **0-downtime
+  parser-update/replacement proof** (`ValueTreeEnvelope.Tests`): a new (parity-aware) reader
+  reads old bytes (backward), and an old reader reads new bytes without crash or corruption
+  (forward — envelopes seen as plain objects, the unknown-metadata passthrough).
+
+Because the *same* version/category discipline already governs `ZetaId`s and crypto-key
+rotation, the format layer inherits the whole-system property: **nothing here is a one-way
+door.** (Follow-up: fold these parser-roll proofs into the standing schema-evolution proof
+suite.)
+
+### 8. The envelope generalises to event envelopes (CloudEvents / Debezium) — frontmatter shape
+
+> Aaron 2026-07-02: *"we want cloud events / debezium envelopes too even if they don't have a
+> standard for the file type/encoding format yet cause it gives us a common starting point
+> very similar to frontmatter, same kind of graph, and we already understand deps graphs
+> well like our frontmatter and our literal deps that ace package manager keeps up with."*
+
+The parity wrapper is one instance of a more general shape: **metadata block ⊕ payload** —
+the same shape as **frontmatter** (a YAML metadata head over a body) and as the standard
+**event envelopes**:
+
+- **CloudEvents** (CNCF) — a normalised metadata header (`id`, `source`, `type`, `time`,
+  `subject`, …) around a domain `data` payload. A vendor-neutral *common starting point* for
+  "what is this event", independent of transport/encoding.
+- **Debezium** — the change-data-capture envelope (`before` / `after` / `op` / `source` / `ts`),
+  the canonical CDC shape; a natural fit for a Z-set retraction/assertion (`op` ≈ ±1).
+
+These become **envelope categories** on the same port: an event is a value tree whose
+metadata head is a CloudEvents/Debezium-shaped object and whose `data` is the payload tree —
+carried by whichever codec the substrate wants (YAML for git-native, CBOR for the DAG). Even
+without a settled file-type/encoding standard, adopting the envelope shape gives us the
+common frame now. And the frame is a **graph**: envelope metadata *references* other nodes
+(source, subject, causation/correlation ids) — the **same dependency-graph** we already model
+in frontmatter links and in the literal package dependencies the **ace package manager**
+tracks. One graph discipline (deps / frontmatter / event-causation), many surfaces.
+
+> Routed as categories to add on the landed port (not built this pass): `cloudevents` and
+> `debezium` envelope categories, plus the frontmatter ⇄ value-tree bijection.
 
 ## Rollout ledger — "all of those", as an honest checklist
 
@@ -160,11 +221,12 @@ STRING), needs no external library, and pays off directly in the metering domain
 the one likely to start as a `ThirdParty` adapter (native library) — exactly the case the
 hexagonal port exists for: ship behind our interface now, replace later.
 
-**Cross-cutting parity slice (blocks "full fidelity" on the 1-ary codecs):** the
-wrapper-envelope convention that closes JSON/YAML's `Bytes`/`Float` (and future
-Decimal / SoftValue / Kleene tri-boolean) parity debt. Design-gated on Aaron (reserved-key
-schema, byte-lock interaction). Once landed, `crossVerify` of the *full* eight-shape tree
-returns empty for every 1-ary codec, not just the portable subset.
+**Cross-cutting parity slice — ✅ LANDED (2026-07-02):** `ValueTreeEnvelope` +
+`ValueTreeCodec.parity` close JSON/YAML's `Bytes`/`Float` parity debt with a versioned,
+category-tagged, collision-safe wrapper; `crossVerify` of the *full* eight-shape tree now
+returns empty for every 1-ary codec (via `parity`). Remaining categories to add (one case
+each, no break to existing payloads): `decimal` · `soft` (SoftValue) · `kleene` (tri-bool)
+· `cloudevents` · `debezium` — plus the frontmatter ⇄ value-tree bijection (§8).
 
 ## Anchors (Beacon)
 
@@ -174,6 +236,10 @@ returns empty for every 1-ary codec, not just the portable subset.
 - **ASN.1:** ITU-T X.680 (syntax) / X.690 (BER/CER/DER encoding). **DLMS/COSEM:** IEC 62056
   (electricity metering data exchange) — Aaron's Itron/metering prior art.
 - **CBOR:** RFC 8949. **KDL:** kdl.dev (KDL Document Language). **HDF5:** The HDF Group.
+  **base64:** RFC 4648.
+- **Event envelopes:** CloudEvents (CNCF spec) — normalised event metadata; Debezium — the
+  CDC before/after/op envelope (op ≈ Z-set ±1). **Zero-downtime evolution:** `SchemaEvolution.fs`
+  (081KSRGFP0008QG0R001Y6RTY9) — version/migration seed the envelope tags reuse.
 - **Value-tree taxonomy:** `RomDat.fs` (XML = 2-ary banana-split); `DynamicValue.fs`
   (the 8-shape value tree + hand-rolled canonical JSON/CBOR/YAML).
 - **In-repo rules:** `interfaces-free-classes-earned-under-rules` (the port is the free
@@ -188,3 +254,8 @@ returns empty for every 1-ary codec, not just the portable subset.
 - `tests/Tests.FSharp/ValueTreeCodec.Tests.fs` — cross-verify on the portable subset;
   CBOR-is-total; native gaps characterised as parity debt (not accepted limits);
   sovereignty ranking Ours > Bcl > ThirdParty (6/6 green).
+- `src/Core/ValueTreeEnvelope.fs` + `ValueTreeCodec.parity` — the versioned, category-
+  tagged, collision-safe parity wrapper; `parity json`/`parity yaml` become total.
+- `tests/Tests.FSharp/ValueTreeEnvelope.Tests.fs` — full-tree parity closed; collision
+  escape; zero-downtime roll (newer version/unknown category → clean Error); the
+  0-downtime parser-replacement proof (new-reads-old, old-reads-new) (5/5 green).
