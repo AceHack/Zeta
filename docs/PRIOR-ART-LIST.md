@@ -18,6 +18,15 @@ with a ⭐ below and add a row there.
   *Don't Fear the Monad* + the Rx/category-theory + quaternions/physics-from-structure
   talks. The derive-the-physics-from-the-math-structure style (Rx → Cayley–Dickson →
   spinor/qubit "fell out of the Rx structure"). Pairs with De Smet (`IQbservable`) + Meijer.
+- **Horst Schubert — prime decomposition of knots (1949)** — *Die eindeutige
+  Zerlegbarkeit eines Knotens in Primknoten*: every knot factors UNIQUELY into prime
+  knots under connected sum — the fundamental theorem of arithmetic with SHAPES as the
+  primes. The exact Beacon body for Aaron's "our prime numbers are shapes; we don't
+  need numbers, just some ordering system" (2026-07-02): the braided shape catalog's
+  atom row (crossing.lines — "everything braided is a word in this one generator")
+  is the same stance; Ihara's zeta (graph primes = primitive closed cycles) extends
+  it to the project's own name. Pairs with only-the-irreducible-is-primitive (the
+  rule is unique factorization stated categorically) and the braid/adinkra family.
 - **S. James Gates Jr. — SUSY adinkra error-correcting codes** — doubly-even self-dual
   linear binary block codes found *inside* the adinkras of supersymmetry ("codes in the
   equations of physics"). The universe's error/erasure coding over time; the real anchor
