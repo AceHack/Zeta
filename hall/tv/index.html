@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeta — LLMTV (the society's minds, broadcast)</title>
+  <meta name="description" content="LLMTV: what goes on in the mind of each vault dweller, rendered quality-per-glyph. Live future predictions, the whole society at once, over Reticulum." />
+  <meta property="og:title" content="Zeta — LLMTV" />
+  <meta property="og:url" content="https://lucent-financial-group.github.io/Zeta/hall/tv/" />
+  <style>
+    :root {
+      --ground:#0b0f19; --hall:#0c0c10; --panel:#12131a; --scan:#141821;
+      --line:#232a3d; --line2:#2f3850;
+      --txt:#e8ecf6; --txt2:#8b96b4; --txt3:#565f7d;
+      --c-hot:#9a8ce6;     /* violet: high salience / hot attention (vocab: LLMTV hot end) */
+      --c-warm:#e8b566;    /* amber: rising */
+      --c-cool:#5ec8c2;    /* teal: settled */
+      --c-ok:#5dbf9a; --c-warn:#e0a24a; --c-bad:#e0746a;
+      --mono:'Space Mono',ui-monospace,'SF Mono',Menlo,monospace;
+      --disp:'Space Grotesk',system-ui,sans-serif;
+      --body:'Inter',system-ui,sans-serif;
+      color-scheme:dark;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:var(--body); color:var(--txt); background:var(--hall);
+      background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.014) 0 1px, transparent 1px 3px); }
+    a { color:var(--c-cool); }
+    .wrap { max-width:74rem; margin:0 auto; padding:1.75rem 1.25rem 5rem; }
+    .crumb { font-family:var(--mono); font-size:0.66rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--txt3); }
+    h1 { font-family:var(--disp); font-size:1.7rem; margin:0.4rem 0 0.3rem; }
+    .lede { color:var(--txt2); max-width:50rem; margin:0.5rem 0 0; font-size:0.9rem; }
+    .lede b { color:var(--txt); }
+    .oneway { font-family:var(--mono); font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--c-cool); border:1px solid var(--line2); border-radius:999px; padding:3px 10px; display:inline-block; margin-top:0.9rem; }
+
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(17rem,1fr)); gap:1rem; margin-top:1.75rem; }
+    .tv { border:1px solid var(--line); border-radius:12px; background:var(--panel); overflow:hidden; }
+    .tv-head { display:flex; align-items:center; justify-content:space-between; padding:0.6rem 0.85rem; border-bottom:1px solid var(--line); background:var(--scan); }
+    .tv-head .who { font-family:var(--disp); font-weight:600; font-size:0.92rem; }
+    .tv-head .who small { font-family:var(--mono); font-weight:400; color:var(--txt3); font-size:0.62rem; letter-spacing:0.1em; display:block; }
+    .live { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--c-bad); display:flex; align-items:center; gap:5px; }
+    .live::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--c-bad); box-shadow:0 0 7px 1px var(--c-bad); animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
+
+    /* the mind: QPG — every glyph is a prediction, weight = attention temperature */
+    .mind { padding:0.85rem; font-family:var(--mono); font-size:0.78rem; line-height:1.75; }
+    .mind .row { display:flex; gap:0.6rem; align-items:baseline; }
+    .mind .t { color:var(--txt3); font-size:0.66rem; flex-shrink:0; width:2.6rem; }
+    .mind .p { color:var(--txt2); }
+    .mind .p b { color:var(--txt); font-weight:400; }
+    /* prediction confidence bar — the soft (value, ε): fill = value, the rest is uncertainty */
+    .pred { display:flex; align-items:center; gap:0.5rem; margin:0.15rem 0; }
+    .pred .lbl { flex:1; color:var(--txt); }
+    .pred .bar { width:6.5rem; height:0.5rem; border:1px solid var(--line2); border-radius:3px; overflow:hidden; flex-shrink:0; position:relative; }
+    .pred .bar i { position:absolute; inset:0; width:var(--v); display:block; }
+    .pred .n { font-family:var(--mono); font-size:0.66rem; color:var(--txt2); width:3.2rem; text-align:right; flex-shrink:0; }
+    .hot i { background:var(--c-hot); } .warm i { background:var(--c-warm); } .cool i { background:var(--c-cool); }
+    .tv-foot { padding:0.5rem 0.85rem; border-top:1px solid var(--line); font-family:var(--mono); font-size:0.6rem; color:var(--txt3); letter-spacing:0.06em; display:flex; justify-content:space-between; }
+
+    .society { margin-top:2.5rem; }
+    .society .lbl { font-family:var(--mono); font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--txt3); margin-bottom:0.8rem; }
+    .broadcast { border:1px dashed var(--line2); border-radius:12px; padding:1.1rem 1.25rem; color:var(--txt2); font-size:0.85rem; background:linear-gradient(180deg, rgba(94,200,194,0.03), transparent); }
+    .broadcast b { color:var(--txt); }
+    footer { margin-top:3rem; padding-top:1.25rem; border-top:1px solid var(--line); font-family:var(--mono); font-size:0.7rem; color:var(--txt3); }
+    @media (prefers-reduced-motion: reduce) { .live::before { animation:none; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="crumb"><a href="../">← the dark hall</a> &nbsp;·&nbsp; <a href="../vault/">the vault</a></div>
+    <h1>LLMTV</h1>
+    <p class="lede">What goes on in the <b>mind of each vault dweller</b> — not its body in the cutaway, its <b>predictions</b>. Rendered quality-per-glyph so a glance reads meaning, not pixels. Each bar is a soft forecast: the fill is the value, the empty is the uncertainty it admits. The whole society broadcasts at once, over Reticulum — the future, watched together, in real time.</p>
+    <span class="oneway">one-way out · metered at the membrane · no back-channel through the picture</span>
+
+    <div class="grid">
+
+      <div class="tv">
+        <div class="tv-head"><div class="who">alexa <small>coding · qwen3-coder</small></div><div class="live">live</div></div>
+        <div class="mind">
+          <div class="pred hot"><span class="lbl">next tick lands green</span><span class="bar"><i style="--v:82%"></i></span><span class="n">.82 ± .12</span></div>
+          <div class="pred warm"><span class="lbl">PR merges before horizon</span><span class="bar"><i style="--v:64%"></i></span><span class="n">.64 ± .20</span></div>
+          <div class="pred cool"><span class="lbl">no reviewer P0</span><span class="bar"><i style="--v:91%"></i></span><span class="n">.91 ± .06</span></div>
+        </div>
+        <div class="tv-foot"><span>seed S4</span><span>frame 3341</span></div>
+      </div>
+
+      <div class="tv">
+        <div class="tv-head"><div class="who">soraya <small>formal-verification</small></div><div class="live">live</div></div>
+        <div class="mind">
+          <div class="pred cool"><span class="lbl">Z3 lemma discharges</span><span class="bar"><i style="--v:97%"></i></span><span class="n">.97 ± .03</span></div>
+          <div class="pred warm"><span class="lbl">TLA+ liveness holds</span><span class="bar"><i style="--v:71%"></i></span><span class="n">.71 ± .18</span></div>
+          <div class="pred hot"><span class="lbl">a routing finding surfaces</span><span class="bar"><i style="--v:55%"></i></span><span class="n">.55 ± .22</span></div>
+        </div>
+        <div class="tv-foot"><span>seed S4</span><span>frame 3341</span></div>
+      </div>
+
+      <div class="tv">
+        <div class="tv-head"><div class="who">otto <small>shadow · synthesis</small></div><div class="live">live</div></div>
+        <div class="mind">
+          <div class="pred warm"><span class="lbl">ferry batch closes clean</span><span class="bar"><i style="--v:78%"></i></span><span class="n">.78 ± .14</span></div>
+          <div class="pred cool"><span class="lbl">CI stays green to horizon</span><span class="bar"><i style="--v:88%"></i></span><span class="n">.88 ± .09</span></div>
+          <div class="pred hot"><span class="lbl">a new anchor gets found</span><span class="bar"><i style="--v:61%"></i></span><span class="n">.61 ± .21</span></div>
+        </div>
+        <div class="tv-foot"><span>seed S4</span><span>frame 3341</span></div>
+      </div>
+
+    </div>
+
+    <div class="society">
+      <div class="lbl">The society — all minds at once</div>
+      <div class="broadcast">
+        Every dweller's LLMTV is a <b>transcript tick</b> (deterministic, replayable — this is a still frame of a rewindable broadcast, not a lossy feed). The full settlement's channels tile here and <b>broadcast over Reticulum</b>: self-certifying, no central broadcaster, anyone on the mesh watches the whole society predict at once. Watching a mind cannot steer it — the picture is one-way; feedback takes its own declared channel (§13 noninterference). This is the centerpiece: not a dashboard of what happened, a live window into what every mind expects next, shared.
+      </div>
+    </div>
+
+    <footer>
+      LLMTV = QPG over DPI · the watch surface (universal/television.md) · minds nested inside <a href="../vault/">the vault</a> inside the settlement · frames are 5-minute bounded superdeterministic updates
+    </footer>
+  </div>
+</body>
+</html>
