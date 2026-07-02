@@ -4,11 +4,11 @@
 #
 # Order matters:
 #   1. apt packages from manifests/apt (build-essential, curl, etc.)
-#   1b. ace-realize --pre-mise (from-deb, from-shim, from-autotools-tarball) after apt
 #   2. mise (via official installer; no apt package yet)
-#   3. common/mise.sh     — installs dotnet/python/java/bun/uv
-#                           per .mise.toml
-#   4–14. ace-realize --post-mise (all post-mise mechanism realizers)
+#   3. common/mise.sh     — installs dotnet/python/java/bun/uv per .mise.toml
+#   4. ace-realize --all  — all mechanism realizers (install-graph order)
+#   5. common/shellenv.sh — managed PATH file
+#   6. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 #
 # Non-Debian Linuxes (RHEL/Fedora/Arch/Alpine) are deferred — the
 # install-script layering supports adding them alongside apt.
@@ -19,39 +19,13 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 SETUP_REALIZE="$REPO_ROOT/src/Core.TypeScript/ace/setup-realize.ts"
 
-# Prefer Bun realizers when ported (081KLL7…); shell .sh remains fallback.
+# Bun setup realizers (081KLL7…); requires bun on PATH (from mise).
 realize_mechanisms() {
-  if command -v bun >/dev/null 2>&1 && bun "$SETUP_REALIZE" --available from-uv-tool >/dev/null 2>&1; then
-    bun "$SETUP_REALIZE" "$@"
-  else
-    realize_mechanisms_shell_fallback "$@"
+  if ! command -v bun >/dev/null 2>&1; then
+    echo "error: bun required for setup realizers — ensure common/mise.sh ran first" >&2
+    exit 1
   fi
-}
-
-realize_mechanisms_shell_fallback() {
-  local -a ids=()
-  case "${1:-}" in
-    --pre-mise)
-      ids=(from-deb from-shim from-autotools-tarball)
-      ;;
-    --post-mise)
-      ids=(from-uv-tool from-uv-venv from-elan from-dotnet-global from-dotnet-workload from-url from-opam-git from-bun-global from-bun-link from-installer from-ollama)
-      ;;
-    --all)
-      ids=(from-deb from-shim from-autotools-tarball from-uv-tool from-uv-venv from-elan from-dotnet-global from-dotnet-workload from-url from-opam-git from-bun-global from-bun-link from-installer from-ollama)
-      ;;
-    *)
-      ids=("$@")
-      ;;
-  esac
-  local id
-  for id in "${ids[@]}"; do
-    if [ "$id" = from-opam-git ]; then
-      "$SETUP_DIR/mechanisms/${id}.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
-    else
-      "$SETUP_DIR/mechanisms/${id}.sh"
-    fi
-  done
+  bun "$SETUP_REALIZE" "$@"
 }
 
 # Retry-equipped curl helper — DST exception for external dep
@@ -172,11 +146,6 @@ elif [ -f "$APT_MANIFEST" ]; then
   fi
 fi
 echo "✓ apt packages up to date"
-
-# Jammy mechanism fallbacks (from-deb, from-shim, from-autotools-tarball) after apt.
-if [ "$IS_NIXOS" != 1 ]; then
-  realize_mechanisms --pre-mise
-fi
 
 # ── 2. mise ─────────────────────────────────────────────────────────
 # NixOS: use declarative system mise (common.nix / installer ISO). Upstream
@@ -313,6 +282,10 @@ done
 # and find them on PATH in the same run.
 export PATH="$HOME/.dotnet/tools:$PATH"
 
-realize_mechanisms --post-mise
+if [ "$IS_NIXOS" = 1 ]; then
+  realize_mechanisms --post-mise
+else
+  realize_mechanisms --all
+fi
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"

@@ -13,6 +13,11 @@ function readManifest(name: string): string {
   return readFileSync(join(manifestDir, name), "utf8");
 }
 
+/** Bun realizer module path for Ace time-crystal pointers (081KLL7 post-cutover). */
+export function bunMechanismRealizer(mechanismId: string): string {
+  return `src/Core.TypeScript/ace/setup-realizers/${mechanismId}.ts`;
+}
+
 /** Ace-visible pointers for each install mechanism (manifest → realizer → dep graph). */
 export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPointer> {
   return [
@@ -20,7 +25,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-url",
       text: readManifest("from-url"),
       purpose: "HTTPS release assets → declared repo paths (jars, binaries, etc.)",
-      realizer: "tools/setup/mechanisms/from-url.sh",
+      realizer: bunMechanismRealizer("from-url"),
       manifest: "tools/setup/manifests/from-url",
       defaultUpdate: "pinned-url",
     }),
@@ -28,7 +33,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-deb",
       text: readManifest("from-deb"),
       purpose: "Direct .deb installs when distro apt lacks the package",
-      realizer: "tools/setup/mechanisms/from-deb.sh",
+      realizer: bunMechanismRealizer("from-deb"),
       manifest: "tools/setup/manifests/from-deb",
       defaultUpdate: "when-drift-bump-pin",
     }),
@@ -36,7 +41,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-shim",
       text: readManifest("from-shim"),
       purpose: "PATH symlinks when binary name differs from upstream package",
-      realizer: "tools/setup/mechanisms/from-shim.sh",
+      realizer: bunMechanismRealizer("from-shim"),
       manifest: "tools/setup/manifests/from-shim",
       defaultUpdate: "when-drift-bump-pin",
     }),
@@ -44,7 +49,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-autotools-tarball",
       text: readManifest("from-autotools-tarball"),
       purpose: "Pinned upstream autotools tarball → configure/make install (Linux formal solvers)",
-      realizer: "tools/setup/mechanisms/from-autotools-tarball.sh",
+      realizer: bunMechanismRealizer("from-autotools-tarball"),
       manifest: "tools/setup/manifests/from-autotools-tarball",
       defaultUpdate: "pinned-url",
     }),
@@ -52,7 +57,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       text: readManifest("from-uv-tool"),
       ecosystem: "uv-tool",
       purpose: "Python CLI tools via uv tool install",
-      realizer: "tools/setup/mechanisms/from-uv-tool.sh",
+      realizer: bunMechanismRealizer("from-uv-tool"),
       manifest: "tools/setup/manifests/from-uv-tool",
       defaultUpdate: "pinned",
     }),
@@ -60,7 +65,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       text: readManifest("from-uv-venv"),
       ecosystem: "pypi",
       purpose: "Importable Python libraries into repo .venv (uv pip install)",
-      realizer: "tools/setup/mechanisms/from-uv-venv.sh",
+      realizer: bunMechanismRealizer("from-uv-venv"),
       manifest: "tools/setup/manifests/from-uv-venv",
       optIn: ["ZETA_INSTALL_QUANTUM=1", "ZETA_INSTALL_FULL=1"],
       defaultUpdate: "pinned",
@@ -69,7 +74,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-elan",
       text: readManifest("from-elan"),
       purpose: "Lean 4 toolchain manager (pinned elan-init.sh)",
-      realizer: "tools/setup/mechanisms/from-elan.sh",
+      realizer: bunMechanismRealizer("from-elan"),
       manifest: "tools/setup/manifests/from-elan",
       defaultUpdate: "pinned-url",
     }),
@@ -77,7 +82,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       text: readManifest("from-dotnet-global"),
       ecosystem: "dotnet-global",
       purpose: "dotnet tool install --global",
-      realizer: "tools/setup/mechanisms/from-dotnet-global.sh",
+      realizer: bunMechanismRealizer("from-dotnet-global"),
       manifest: "tools/setup/manifests/from-dotnet-global",
       defaultUpdate: "pinned",
     }),
@@ -85,7 +90,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       text: readManifest("from-dotnet-workload"),
       ecosystem: "dotnet-workload",
       purpose: "dotnet workload install",
-      realizer: "tools/setup/mechanisms/from-dotnet-workload.sh",
+      realizer: bunMechanismRealizer("from-dotnet-workload"),
       manifest: "tools/setup/manifests/from-dotnet-workload",
       defaultUpdate: "pinned",
     }),
@@ -93,7 +98,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-opam-git",
       text: readManifest("from-opam-git"),
       purpose: "opam source-build from pinned git commit",
-      realizer: "tools/setup/mechanisms/from-opam-git.sh",
+      realizer: bunMechanismRealizer("from-opam-git"),
       manifest: "tools/setup/manifests/from-opam-git",
       optIn: ["ZETA_INSTALL_FULL=1"],
       defaultUpdate: "pinned",
@@ -102,14 +107,14 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       text: readManifest("from-bun-global"),
       ecosystem: "bun-global",
       purpose: "Agent + peer-AI CLIs via bun install --global",
-      realizer: "tools/setup/mechanisms/from-bun-global.sh",
+      realizer: bunMechanismRealizer("from-bun-global"),
       manifest: "tools/setup/manifests/from-bun-global",
       defaultUpdate: "pinned",
     }),
     {
       schema: "zeta.ace.package-manager-pointers.v1",
       purpose: "Expose repo package bins (ace, zeta-shadow) on PATH via bun link",
-      realizer: "tools/setup/mechanisms/from-bun-link.sh",
+      realizer: bunMechanismRealizer("from-bun-link"),
       manifest: "(repo-root package.json bin map — no separate manifest)",
       dependencies: [
         {
@@ -123,7 +128,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-installer",
       text: readManifest("from-installer"),
       purpose: "Vendor install scripts (HTTPS download-then-exec)",
-      realizer: "tools/setup/mechanisms/from-installer.sh",
+      realizer: bunMechanismRealizer("from-installer"),
       manifest: "tools/setup/manifests/from-installer",
       optIn: ["ZETA_INSTALL_FULL=1"],
       defaultUpdate: "self-updating",
@@ -132,7 +137,7 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       mechanism: "from-ollama",
       text: readManifest("from-ollama"),
       purpose: "Local-LLM primitive — ollama runtime + pinned model",
-      realizer: "tools/setup/mechanisms/from-ollama.sh",
+      realizer: bunMechanismRealizer("from-ollama"),
       manifest: "tools/setup/manifests/from-ollama",
       optIn: ["ZETA_INSTALL_FULL=1"],
       defaultUpdate: "pinned",

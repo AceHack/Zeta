@@ -1,9 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseMechanismManifest } from "./setup-manifest.ts";
+import { listSetupRealizerIds } from "./setup-realizers/index.ts";
 import {
   buildSetupMechanismPointers,
+  bunMechanismRealizer,
   serializeSetupMechanismPointers,
 } from "./setup-mechanism-pointers.ts";
 
@@ -28,10 +30,12 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
     );
   });
 
-  test("buildSetupMechanismPointers covers all install mechanism manifests", () => {
+  test("buildSetupMechanismPointers covers all Bun setup realizers", () => {
     const pointers = buildSetupMechanismPointers();
     expect(pointers.length).toBeGreaterThanOrEqual(13);
-    expect(pointers.every((p) => p.realizer.startsWith("tools/setup/mechanisms/"))).toBe(true);
+    expect(pointers.every((p) => p.realizer.startsWith("src/Core.TypeScript/ace/setup-realizers/"))).toBe(
+      true,
+    );
     for (const p of pointers) {
       expect(p.schema).toBe("zeta.ace.package-manager-pointers.v1");
       if (
@@ -48,15 +52,11 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
     }
   });
 
-  test("every from-*.sh mechanism has an Ace pointer realizer", () => {
+  test("every registered Bun realizer has an Ace pointer", () => {
     const pointers = buildSetupMechanismPointers();
     const realizers = new Set(pointers.map((p) => p.realizer));
-    const mechanismDir = join(repoRoot, "tools/setup/mechanisms");
-    const scripts = readdirSync(mechanismDir)
-      .filter((name) => name.startsWith("from-") && name.endsWith(".sh"))
-      .map((name) => `tools/setup/mechanisms/${name}`);
-    for (const script of scripts) {
-      expect(realizers.has(script)).toBe(true);
+    for (const id of listSetupRealizerIds()) {
+      expect(realizers.has(bunMechanismRealizer(id))).toBe(true);
     }
   });
 

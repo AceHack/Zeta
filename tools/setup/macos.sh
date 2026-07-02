@@ -10,9 +10,9 @@
 #   4. mise (runtime manager)
 #   5. common/mise.sh     — installs dotnet/python/java/bun/uv
 #                           per .mise.toml
-#   6–13. ace-realize --post-mise (all post-mise mechanism realizers)
-#  14. common/shellenv.sh    — managed PATH file
-#  15. common/profile-edit.sh — append the managed-PATH source line to the shell profile
+#   6. ace-realize --all  — all mechanism realizers (install-graph order)
+#   7. common/shellenv.sh — managed PATH file
+#   8. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 
 set -euo pipefail
 
@@ -20,38 +20,13 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 SETUP_REALIZE="$REPO_ROOT/src/Core.TypeScript/ace/setup-realize.ts"
 
+# Bun setup realizers (081KLL7…); requires bun on PATH (from mise).
 realize_mechanisms() {
-  if command -v bun >/dev/null 2>&1 && bun "$SETUP_REALIZE" --available from-uv-tool >/dev/null 2>&1; then
-    bun "$SETUP_REALIZE" "$@"
-  else
-    realize_mechanisms_shell_fallback "$@"
+  if ! command -v bun >/dev/null 2>&1; then
+    echo "error: bun required for setup realizers — ensure common/mise.sh ran first" >&2
+    exit 1
   fi
-}
-
-realize_mechanisms_shell_fallback() {
-  local -a ids=()
-  case "${1:-}" in
-    --pre-mise)
-      ids=(from-deb from-shim from-autotools-tarball)
-      ;;
-    --post-mise)
-      ids=(from-uv-tool from-uv-venv from-elan from-dotnet-global from-dotnet-workload from-url from-opam-git from-bun-global from-bun-link from-installer from-ollama)
-      ;;
-    --all)
-      ids=(from-deb from-shim from-autotools-tarball from-uv-tool from-uv-venv from-elan from-dotnet-global from-dotnet-workload from-url from-opam-git from-bun-global from-bun-link from-installer from-ollama)
-      ;;
-    *)
-      ids=("$@")
-      ;;
-  esac
-  local id
-  for id in "${ids[@]}"; do
-    if [ "$id" = from-opam-git ]; then
-      "$SETUP_DIR/mechanisms/${id}.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
-    else
-      "$SETUP_DIR/mechanisms/${id}.sh"
-    fi
-  done
+  bun "$SETUP_REALIZE" "$@"
 }
 
 # shellcheck source=tools/setup/common/curl-fetch.sh
@@ -255,6 +230,6 @@ done
 
 export PATH="$HOME/.dotnet/tools:$PATH"
 
-realize_mechanisms --post-mise
+realize_mechanisms --all
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"

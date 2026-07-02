@@ -2,7 +2,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "HTTPS release assets → declared repo paths (jars, binaries, etc.)",
-    "realizer": "tools/setup/mechanisms/from-url.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-url.ts",
     "manifest": "tools/setup/manifests/from-url",
     "dependencies": [
       {
@@ -22,14 +22,14 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Direct .deb installs when distro apt lacks the package",
-    "realizer": "tools/setup/mechanisms/from-deb.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-deb.ts",
     "manifest": "tools/setup/manifests/from-deb",
     "dependencies": []
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "PATH symlinks when binary name differs from upstream package",
-    "realizer": "tools/setup/mechanisms/from-shim.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-shim.ts",
     "manifest": "tools/setup/manifests/from-shim",
     "dependencies": [
       {
@@ -43,7 +43,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Pinned upstream autotools tarball → configure/make install (Linux formal solvers)",
-    "realizer": "tools/setup/mechanisms/from-autotools-tarball.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-autotools-tarball.ts",
     "manifest": "tools/setup/manifests/from-autotools-tarball",
     "dependencies": [
       {
@@ -57,7 +57,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Python CLI tools via uv tool install",
-    "realizer": "tools/setup/mechanisms/from-uv-tool.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-uv-tool.ts",
     "manifest": "tools/setup/manifests/from-uv-tool",
     "dependencies": [
       {
@@ -70,7 +70,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Importable Python libraries into repo .venv (uv pip install)",
-    "realizer": "tools/setup/mechanisms/from-uv-venv.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-uv-venv.ts",
     "manifest": "tools/setup/manifests/from-uv-venv",
     "dependencies": [
       {
@@ -110,7 +110,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Lean 4 toolchain manager (pinned elan-init.sh)",
-    "realizer": "tools/setup/mechanisms/from-elan.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-elan.ts",
     "manifest": "tools/setup/manifests/from-elan",
     "dependencies": [
       {
@@ -123,7 +123,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "dotnet tool install --global",
-    "realizer": "tools/setup/mechanisms/from-dotnet-global.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-dotnet-global.ts",
     "manifest": "tools/setup/manifests/from-dotnet-global",
     "dependencies": [
       {
@@ -166,14 +166,14 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "dotnet workload install",
-    "realizer": "tools/setup/mechanisms/from-dotnet-workload.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-dotnet-workload.ts",
     "manifest": "tools/setup/manifests/from-dotnet-workload",
     "dependencies": []
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "opam source-build from pinned git commit",
-    "realizer": "tools/setup/mechanisms/from-opam-git.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-opam-git.ts",
     "manifest": "tools/setup/manifests/from-opam-git",
     "dependencies": [
       {
@@ -189,7 +189,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Agent + peer-AI CLIs via bun install --global",
-    "realizer": "tools/setup/mechanisms/from-bun-global.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-bun-global.ts",
     "manifest": "tools/setup/manifests/from-bun-global",
     "dependencies": [
       {
@@ -207,7 +207,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Expose repo package bins (ace, zeta-shadow) on PATH via bun link",
-    "realizer": "tools/setup/mechanisms/from-bun-link.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-bun-link.ts",
     "manifest": "(repo-root package.json bin map — no separate manifest)",
     "dependencies": [
       {
@@ -220,7 +220,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Vendor install scripts (HTTPS download-then-exec)",
-    "realizer": "tools/setup/mechanisms/from-installer.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-installer.ts",
     "manifest": "tools/setup/manifests/from-installer",
     "dependencies": [
       {
@@ -261,7 +261,7 @@
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Local-LLM primitive — ollama runtime + pinned model",
-    "realizer": "tools/setup/mechanisms/from-ollama.sh",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-ollama.ts",
     "manifest": "tools/setup/manifests/from-ollama",
     "dependencies": [
       {

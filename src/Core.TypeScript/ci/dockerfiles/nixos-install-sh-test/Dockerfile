@@ -119,6 +119,8 @@ COPY .mise.toml /workspace/.mise.toml
 # package.json + bun.lock pin TS-runtime deps if install.sh references
 # them (e.g., bun --version checks); copy to mirror dev environment
 COPY package.json bun.lock* /workspace/
+# src/Core.TypeScript/ace — Bun setup realizers (setup-realize.ts + setup-realizers/)
+COPY src/Core.TypeScript/ace /workspace/src/Core.TypeScript/ace
 # src/Core.TypeScript/accelerator carries the local-LLM primitive's validator + tests
 # (validate-local-llm.ts + local-llm.test.ts) for validation step 4 below.
 COPY src/Core.TypeScript/accelerator /workspace/src/Core.TypeScript/accelerator

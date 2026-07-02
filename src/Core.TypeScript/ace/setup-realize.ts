@@ -3,7 +3,6 @@
 //
 // Post-mise realizers require common/mise.sh + PATH shims first. Pre-mise
 // realizers (from-deb, from-shim, from-autotools-tarball) run after apt on Linux.
-// Shell .sh realizers remain fallback when Bun is unavailable.
 //
 // Usage:
 //   bun src/Core.TypeScript/ace/setup-realize.ts --list
