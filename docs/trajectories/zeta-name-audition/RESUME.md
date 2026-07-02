@@ -71,9 +71,14 @@ objects to **our own machine**.
    the actual CHIP-8 VM step-map / a scheduler configuration, making memory-space
    character-loop orbits formally enumerable — the math-grounded cheat-engine.
    Connect to `Chip8PredictionRoom` / `PredictionScheduler`.
-3. **Adinkra codewords as member identity**: use the doubly-even self-dual code over
-   `GF(2)^N` to assign purpose-based generator codewords to society members; the
-   dynamical zeta's orbits then classify member behaviour.
+3. **Adinkra codewords as member identity** — LANDED (built on the EXISTING
+   `Zeta.Core.AdinkraCode` [8,4,4] module, not reinvented). Added: WHY N=8 (minimal
+   doubly-even self-dual length — none below 8, the E8/Clifford floor); member
+   identity SELF-CORRECTS a 1-bit corruption (nearest-codeword); the weight
+   enumerator `1 + 14y⁴ + y⁸` as a partition function over member identities (ζ
+   shape); identities live on the same `GF(2)^8` as the scheduler round-map (#9151).
+   `tests/…/AdinkraIdentity.Tests.fs`. Remaining: the dynamical zeta's orbits
+   classifying member behaviour (needs the code-preserving round-map).
 4. **Wire the zeta into the soft `IScheduler`** so the loop can predict its own
    recurrence spectrum (transient vs. recurrent, orbit periods) before running.
 5. Further math rungs (routed, not rushed): Bartholdi / Ihara–Selberg (2-variable),
