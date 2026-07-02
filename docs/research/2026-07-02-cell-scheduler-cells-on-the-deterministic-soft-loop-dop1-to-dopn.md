@@ -83,10 +83,15 @@ message-log replay reproduces the whole society (DST at the fleet scale).
 
 ## 5. Slices (each separately shippable)
 
-1. **`CellScheduler` at DoP=1** — the multiplexer over `SoftScheduler.drive`:
-   ready/parked queues, `step` via `DurableYinYang.step`, message routing between
-   cells' inboxes, FIFO fairness. Deterministic round-robin of thousands of cells.
-   Test: N cells, seeded message workload, replays identically.
+1. **`CellScheduler` at DoP=1** — the multiplexer: ready/parked queues, FIFO
+   fairness, message routing between cells' inboxes, named non-termination
+   backstop. Deterministic round-robin of thousands of cells; replays identically.
+   **LANDED** (`src/Core/CellScheduler.fs`, 8 tests) — the multiplexer is made
+   generic over the cell step (`'St -> 'Msg -> 'St * (CellId*'Msg) list`) so the
+   deterministic mechanics are separable from the cell's work; `yinYangStep` is the
+   `DurableYinYang.evolve` instantiation, with the `"__outbox__"` emission
+   convention (pure `routeOutbox`). Wiring to `SoftScheduler.drive` as the dequeuer
+   is folded into slice 2 (where the ready-queue becomes the ferry queue anyway).
 2. **DoP=N via `FerryThrottler`** — same `step`, ready-queue becomes the ferry
    queue. Land the **DoP-invariance property test** (`run(1) == run(N)` over random
    noninterfering cell workloads) — the scale-free proof.
