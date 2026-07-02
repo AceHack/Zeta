@@ -1,0 +1,107 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IKleeneAlgebra",
+  "typeParams": [
+    { "name": "TWeight", "variance": "invariant" }
+  ],
+  "doc": "Kleene algebra — a star-SEMIRING: ISemiring (Zero/One/Add/Mul) plus the iteration operator Star (Kleene closure), Star(a) = One ⊕ a ⊕ (a⊗a) ⊕ …, the least fixpoint of x = One ⊕ (a⊗x). This is the KLEENE star (reflexive-transitive closure), NOT the involution star (Conj) of IStarRing — orthogonal branches. Kleene addition is idempotent (min-plus tropical, booleans, regular-language union), so there is NO additive inverse: this extends ISemiring, never IRing (081KWG9JQ9H). The matrix star over a Kleene algebra computes the all-pairs closure — tropical→shortest paths, boolean→transitive closure (Lehmann 1977; Kozen 1994). Mirrored from src/Core.Abstractions/IKleeneAlgebra.cs and its F# instances (NovelMath TropicalSemiring, KleeneClosure BooleanKleene).",
+  "members": [
+    { "name": "Zero", "kind": "property", "type": "TWeight", "doc": "Additive identity (⊕)." },
+    { "name": "One", "kind": "property", "type": "TWeight", "doc": "Multiplicative identity (⊗)." },
+    {
+      "name": "Add",
+      "kind": "method",
+      "params": [ { "name": "a", "type": "TWeight" }, { "name": "b", "type": "TWeight" } ],
+      "returns": "TWeight",
+      "doc": "Additive combination (⊕) — idempotent in a Kleene algebra (a ⊕ a = a)."
+    },
+    {
+      "name": "Mul",
+      "kind": "method",
+      "params": [ { "name": "a", "type": "TWeight" }, { "name": "b", "type": "TWeight" } ],
+      "returns": "TWeight",
+      "doc": "Multiplicative product (⊗)."
+    },
+    {
+      "name": "Star",
+      "kind": "method",
+      "params": [ { "name": "a", "type": "TWeight" } ],
+      "returns": "TWeight",
+      "doc": "Kleene closure (iteration): Star(a) = One ⊕ (a ⊗ Star(a)) = One ⊕ (Star(a) ⊗ a), the least fixpoint of x = One ⊕ (a⊗x). Tropical (min,+) with non-negative weights ⇒ Star(a)=One (0): a self-loop never improves a shortest path."
+    }
+  ],
+  "laws": [
+    {
+      "id": "add-assoc",
+      "schema": "associative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:add-is-associative",
+      "doc": "Add(Add(a,b),c) = Add(a,Add(b,c)) — a semiring axiom, holds in every Kleene algebra."
+    },
+    {
+      "id": "add-comm",
+      "schema": "commutative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:add-is-commutative",
+      "doc": "Add(a,b) = Add(b,a)."
+    },
+    {
+      "id": "add-identity",
+      "schema": "identity",
+      "op": "Add",
+      "element": "Zero",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:zero-is-additive-identity",
+      "doc": "Add(a, Zero) = a."
+    },
+    {
+      "id": "mul-identity",
+      "schema": "identity",
+      "op": "Mul",
+      "element": "One",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:one-is-multiplicative-identity",
+      "doc": "Mul(a, One) = a = Mul(One, a)."
+    },
+    {
+      "id": "mul-distributes-add",
+      "schema": "distributive",
+      "mul": "Mul",
+      "add": "Add",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:mul-distributes-over-add",
+      "doc": "Mul(a, Add(b,c)) = Add(Mul(a,b), Mul(a,c))."
+    },
+    {
+      "id": "add-idempotent",
+      "schema": "idempotent",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/KleeneClosure.Tests.fs:BooleanKleene is a lawful Kleene algebra (∨/∧, star = true)",
+      "doc": "Add(a, a) = a — the DISTINGUISHING Kleene axiom (idempotent addition). Documented, NOT scalar-cross-verified: it does NOT hold over native +/* arithmetic (only for 0), so the scalar harness must skip it; it holds in the idempotent carriers (boolean ∨, tropical min). Proven in F# on the concrete instances."
+    },
+    {
+      "id": "star-left-unfold",
+      "schema": "star-unfold",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/KleeneClosure.Tests.fs:BooleanKleene is a lawful Kleene algebra (∨/∧, star = true)",
+      "doc": "Star(a) = One ⊕ (a ⊗ Star(a)). Documented (star has no finite scalar encoding — over reals it diverges); proven in F# on BooleanKleene and the tropical instance."
+    },
+    {
+      "id": "star-right-unfold",
+      "schema": "star-unfold",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/KleeneClosure.Tests.fs:BooleanKleene is a lawful Kleene algebra (∨/∧, star = true)",
+      "doc": "Star(a) = One ⊕ (Star(a) ⊗ a). Documented; proven in F#."
+    },
+    {
+      "id": "matrix-star-is-closure",
+      "schema": "closure-equivalence",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/KleeneClosure.Tests.fs:LAW: reachability closure = the naive reachable-set (BFS) on random DAGs+cycles",
+      "doc": "The matrix star over a Kleene algebra computes the all-pairs reflexive-transitive closure — boolean ⇒ reachability (= BFS), tropical ⇒ all-pairs shortest paths (Lehmann 1977). Documented (a matrix/graph-level law); proven in F# against a naive BFS oracle."
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 id: 081KWGHQW5208QG0R002ZHRN94
 type: task
-state: backlog
+state: done
 priority: P3
 slug: mirror-ikleenealgebra-to-the-oracles-ts-python-q-go-ir-gated
 title: "Mirror IKleeneAlgebra to the oracles (TS/Python/Q#/Go + IR) — GATED on the first cross-language consumer"
@@ -52,3 +52,14 @@ carries no such obligation yet.
 
 Anchors: #9111 (the C#/F# landing), 081KWG9JQ9H (the split + Kira's atomicity rule),
 081KWFXTHJY step 4 (the sibling gated-on-consumer decision). Lehmann 1977 / Kozen 1994.
+
+## COMPLETE (2026-07-02, Otto — Aaron-authorized once the pattern was proven)
+
+Mirrored `IKleeneAlgebra` into the zeta-ir-v2 interface treaty:
+`tests/cross-verification/zeta-ir-v2/interfaces/kleene-algebra.ir.json`. The gate
+("first cross-language consumer") was satisfied by the DBSP-operator mirror
+(#9137) proving the pattern; Aaron then authorized this. 5 semiring laws
+cross-verified in TS/Python/Go; 4 Kleene-specific laws (add-idempotent — correctly
+NOT scalar-encoded since it fails over native +; star-left/right-unfold;
+matrix-star-is-closure) documented with proof pointers to the F# BooleanKleene /
+KleeneClosure tests. Interface cross-verify suite green.
