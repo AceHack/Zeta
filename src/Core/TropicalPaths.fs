@@ -148,3 +148,57 @@ module TropicalPaths =
     [<CompiledName "DistanceTo">]
     let distanceTo (v: 'V) (dist: ZSetW<'V, TropicalWeight>) : TropicalWeight =
         ZSetW.lookup ring v dist
+
+    // ── All-pairs via the KLEENE MATRIX STAR (IKleeneAlgebra) ───────────
+    //  Floyd–Warshall IS the tropical matrix star (Lehmann 1977; Kleene):
+    //  the reflexive-transitive closure of the weighted adjacency matrix
+    //  over the (min,+) Kleene algebra. The diagonal starts at the scalar
+    //  Star (One = 0 — the reflexive part); a diagonal that drops below
+    //  One after closure is a NEGATIVE CYCLE (the scalar Star's −∞ marker).
+
+    /// All-pairs shortest distances over the tropical Kleene algebra —
+    /// the matrix star of the edge Z-set. Result maps `(u, v)` to the
+    /// shortest u→v distance; pairs at `+∞` (unreachable) are absent.
+    /// `Error` names the vertex on a reachable negative cycle.
+    [<CompiledName "AllPairs">]
+    let allPairs (edges: ZSetW<'V * 'V, TropicalWeight>) : Result<ZSetW<'V * 'V, TropicalWeight>, string> =
+        let kleene = TropicalSemiring.Kleene
+        // vertex set
+        let vs = HashSet<'V>(HashIdentity.Structural)
+        for e in edges do
+            let (u, v) = e.Key
+            vs.Add u |> ignore
+            vs.Add v |> ignore
+        let verts = List.ofSeq vs
+        // dense working matrix in a dictionary; missing = +∞ (ring.Zero)
+        let d = Dictionary<'V * 'V, TropicalWeight>(HashIdentity.Structural)
+        let get i j = match d.TryGetValue((i, j)) with | true, w -> w | _ -> ring.Zero
+        for e in edges do d.[e.Key] <- e.Weight            // (min-consolidated already)
+        for i in verts do d.[(i, i)] <- ring.One                 // reflexive closure: Star seed = 0
+        // the closure (k-i-j)
+        for k in verts do
+            for i in verts do
+                let dik = get i k
+                if dik <> ring.Zero then                    // skip +∞ rows fast
+                    for j in verts do
+                        let cand = ring.Mul(dik, get k j)    // dik ⊗ dkj  (= +)
+                        let cur = get i j
+                        let better = ring.Add(cur, cand)     // min
+                        if better <> cur then d.[(i, j)] <- better
+        // negative-cycle check via the KLEENE STAR: a vertex sits on a negative
+        // cycle iff the closure drove its diagonal below 0, i.e. Star(dᵢᵢ) diverges
+        // to the −∞ marker (Int64.MinValue) instead of clamping to One.
+        let diverged (w: TropicalWeight) = (kleene.Star w).Value = System.Int64.MinValue
+        let neg = verts |> List.tryFind (fun i -> diverged (get i i))
+        match neg with
+        | Some v -> Error(sprintf "negative cycle through a vertex (%A) — no shortest all-pairs distances" v)
+        | None ->
+            // materialise finite pairs (drop +∞ = unreachable)
+            let pairs =
+                seq { for kv in d do if kv.Value <> ring.Zero then yield kv.Key, kv.Value }
+            Ok(ZSetW.ofSeq ring pairs)
+
+    /// All-pairs distance lookup for one `(u, v)`; `+∞` = unreachable.
+    [<CompiledName "AllPairsDistance">]
+    let allPairsDistance (u: 'V) (v: 'V) (aps: ZSetW<'V * 'V, TropicalWeight>) : TropicalWeight =
+        ZSetW.lookup ring (u, v) aps

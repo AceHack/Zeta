@@ -75,11 +75,25 @@ type TropicalSemiring =
         member _.One  = TropicalWeight.One
         member _.Add(a, b) = a + b   // min
         member _.Mul(a, b) = a * b   // saturating +
+    interface IKleeneAlgebra<TropicalWeight> with
+        // Kleene closure over (min,+): Star(a) = min over k≥0 of k·a.
+        //  • a ≥ 0  → the k=0 term (One = 0) wins: no self-repetition ever helps.
+        //  • a < 0  → repeating drives the cost to −∞ (a negative cycle): unbounded,
+        //             reported as the additive zero (+∞) is WRONG; we signal it as the
+        //             tropical bottom −∞ sentinel so matrix-star can detect it. Here we
+        //             return TropicalWeight One for the non-negative case and, for the
+        //             negative case, the most-negative representable value as the
+        //             "-∞ / negative-cycle" marker (matrix-star treats it as divergent).
+        member _.Star(a) =
+            if a.Value >= 0L then TropicalWeight.One          // = 0
+            else TropicalWeight System.Int64.MinValue          // −∞ marker: negative cycle
 
 [<RequireQualifiedAccess>]
 module TropicalSemiring =
-    /// Singleton instance.
+    /// Singleton instance (semiring tier).
     let Instance : ISemiring<TropicalWeight> = TropicalSemiring()
+    /// Singleton at the Kleene tier — for matrix-star / all-pairs closure.
+    let Kleene : IKleeneAlgebra<TropicalWeight> = TropicalSemiring()
 
 
 // ═══════════════════════════════════════════════════════════════════

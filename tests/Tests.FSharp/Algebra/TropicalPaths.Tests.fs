@@ -117,3 +117,53 @@ let ``LAW: incremental insert equals fresh recompute on random graphs`` (base': 
         | Ok (_, di), Ok df -> di = df
         | Error _, Error _ -> true
         | _ -> false
+
+// ═══════════════════════════════════════════════════════════════════
+// IKleeneAlgebra — tropical Kleene star + all-pairs via the matrix star
+// (Lehmann 1977). The star branch is orthogonal to IStarRing's involution.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``tropical Kleene Star clamps to One for non-negative, diverges for negative`` () =
+    let k = TropicalSemiring.Kleene
+    Assert.Equal(TropicalWeight.One, k.Star(TropicalWeight 5L))   // 0: no self-repeat helps
+    Assert.Equal(TropicalWeight.One, k.Star(TropicalWeight 0L))
+    Assert.Equal(TropicalWeight System.Int64.MinValue, k.Star(TropicalWeight -1L)) // −∞ marker
+
+[<Fact>]
+let ``allPairs computes the matrix-star closure (hand-checked)`` () =
+    let edges = TropicalPaths.ofEdges [ "A","B",1L; "B","C",2L; "A","C",5L; "C","A",4L ]
+    match TropicalPaths.allPairs edges with
+    | Error e -> failwith e
+    | Ok aps ->
+        let d u v = TropicalPaths.allPairsDistance u v aps
+        Assert.Equal(TropicalWeight 0L, d "A" "A")   // reflexive
+        Assert.Equal(TropicalWeight 1L, d "A" "B")
+        Assert.Equal(TropicalWeight 3L, d "A" "C")   // A→B→C (1+2) beats A→C (5)
+        Assert.Equal(TropicalWeight 6L, d "B" "A")   // B→C→A (2+4)
+        Assert.Equal(TropicalWeight.Infinity, d "B" "Q") // absent = +∞
+
+[<Fact>]
+let ``allPairs detects a negative cycle via the Kleene star`` () =
+    let edges = TropicalPaths.ofEdges [ "A","B",1L; "B","A",-3L; "B","C",2L ]
+    match TropicalPaths.allPairs edges with
+    | Error msg -> Assert.Contains("negative cycle", msg)
+    | Ok _ -> Assert.True(false, "expected negative-cycle detection")
+
+[<Property(Arbitrary = [| typeof<GraphArb> |], MaxTest = 150)>]
+let ``LAW: allPairs row equals singleSource from that vertex (matrix star ≡ per-source BF)`` (es: (int*int*int64) list) =
+    let edges = TropicalPaths.ofEdges es
+    match TropicalPaths.allPairs edges with
+    | Error _ -> true  // negative cycle — both paths would error; skip
+    | Ok aps ->
+        let ring = TropicalSemiring.Instance
+        // vertices present
+        let vs = System.Collections.Generic.HashSet<int>()
+        for e in edges do let (u,v) = e.Key in vs.Add u |> ignore; vs.Add v |> ignore
+        vs |> Seq.forall (fun src ->
+            match TropicalPaths.singleSource 64 src edges with
+            | Error _ -> true
+            | Ok ss ->
+                // every vertex's all-pairs (src,·) must match single-source-from-src
+                vs |> Seq.forall (fun dst ->
+                    TropicalPaths.allPairsDistance src dst aps = ZSetW.lookup ring dst ss))
