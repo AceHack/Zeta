@@ -53,6 +53,9 @@ module ProbabilitySemiring =
     /// Exact multiplication (⊗ of both the probability and Viterbi semirings).
     let mul (a: Rational) (b: Rational) : Rational = rat (a.Num * b.Num) (a.Den * b.Den)
 
+    /// Exact additive inverse (ℚ is a field ⇒ a genuine ring — 081KWG9JQ9H).
+    let negate (a: Rational) : Rational = rat (-a.Num) a.Den
+
     /// Sign of `a - b` as -1 / 0 / +1 (denominators are positive after normalization).
     let compare (a: Rational) (b: Rational) : int = sign (a.Num * b.Den - b.Num * a.Den)
 
@@ -123,3 +126,24 @@ module ProbabilitySemiring =
     /// counterexample, over rationals.)
     let sharpen (belief: Rational[]) : Rational[] =
         Array.map (fun w -> mul w w) belief
+
+    /// **RationalRing — exact ℚ as a first-class `IRing` (the 081KWG9JQ9H payoff).**
+    /// ℚ is a field, hence a genuine ring: it earns `IRing` (unlike the Viterbi
+    /// `(max,×)` semiring, which is idempotent and stays `ISemiring`-only). Struct
+    /// (stateless, dual-register like `IntegerRing`) so exact-rational weights ride
+    /// `ZSetW`/`WeightedSet` — including retraction (`difference`/`negate`) — at the
+    /// hot-path tier. The `(+,×)` probability semiring, now a lawful ring instance.
+    [<Struct>]
+    type RationalRing =
+        interface ISemiring<Rational> with
+            member _.Zero      = zero
+            member _.One       = one
+            member _.Add(a, b) = add a b
+            member _.Mul(a, b) = mul a b
+        interface IRing<Rational> with
+            member _.Negate(a) = negate a
+
+    [<RequireQualifiedAccess>]
+    module RationalRing =
+        /// Boxed singleton at the ring tier (semiring-only call sites upcast for free).
+        let Instance : IRing<Rational> = RationalRing()
