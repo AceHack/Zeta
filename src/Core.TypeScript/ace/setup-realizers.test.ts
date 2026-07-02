@@ -2,6 +2,8 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { realizeFromElan } from "./setup-realizers/from-elan.ts";
+import { realizeFromUrl } from "./setup-realizers/from-url.ts";
 import { repairCodexServiceTierConfig } from "./setup-realizers/from-bun-global.ts";
 import { realizeFromUvTool } from "./setup-realizers/from-uv-tool.ts";
 import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
@@ -14,6 +16,8 @@ describe("setup-realizers registry", () => {
       "from-bun-link",
       "from-dotnet-global",
       "from-dotnet-workload",
+      "from-elan",
+      "from-url",
       "from-uv-tool",
     ]);
   });
@@ -60,5 +64,51 @@ describe("realizeFromUvTool dry-run", () => {
     const result = await realizeFromUvTool(ctx);
     expect(result.skipped).toBe(false);
     expect(result.actions.some((a) => a.includes("uv tool install zeta-setup-realizer-probe-nonexistent"))).toBe(true);
+  });
+});
+
+describe("realizeFromUrl dry-run", () => {
+  test("skips when manifest missing", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-url-"));
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromUrl(ctx);
+    expect(result.skipped).toBe(true);
+  });
+
+  test("records download for missing dest", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-url-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      join(manifestDir, "from-url"),
+      "tools/probe/jar.jar https://example.com/jar.jar\n",
+    );
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromUrl(ctx);
+    expect(result.skipped).toBe(false);
+    expect(result.actions.some((a) => a.includes("example.com/jar.jar"))).toBe(true);
+  });
+});
+
+describe("realizeFromElan dry-run", () => {
+  test("skips when manifest missing", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-elan-"));
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromElan(ctx);
+    expect(result.skipped).toBe(true);
+  });
+
+  test("runs dry-run path when manifest present", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-elan-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      join(manifestDir, "from-elan"),
+      "elan https://example.com/elan-init.sh sha256=abc\n",
+    );
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromElan(ctx);
+    expect(result.skipped).toBe(false);
+    expect(result.actions.length).toBeGreaterThan(0);
   });
 });

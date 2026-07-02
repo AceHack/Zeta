@@ -305,10 +305,10 @@ realize_mechanism from-uv-tool
 # and find them on PATH in the same run.
 export PATH="$HOME/.dotnet/tools:$PATH"
 
-"$SETUP_DIR/mechanisms/from-elan.sh"
+realize_mechanism from-elan
 realize_mechanism from-dotnet-global
 realize_mechanism from-dotnet-workload
-"$SETUP_DIR/mechanisms/from-url.sh"
+realize_mechanism from-url
 "$SETUP_DIR/mechanisms/from-opam-git.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
 realize_mechanism from-bun-global
 realize_mechanism from-bun-link

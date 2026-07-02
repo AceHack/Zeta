@@ -2,6 +2,8 @@ import { realizeFromBunGlobal } from "./from-bun-global.ts";
 import { realizeFromBunLink } from "./from-bun-link.ts";
 import { realizeFromDotnetGlobal } from "./from-dotnet-global.ts";
 import { realizeFromDotnetWorkload } from "./from-dotnet-workload.ts";
+import { realizeFromElan } from "./from-elan.ts";
+import { realizeFromUrl } from "./from-url.ts";
 import { realizeFromUvTool } from "./from-uv-tool.ts";
 import type { SetupRealizer } from "./shared.ts";
 
@@ -10,6 +12,8 @@ export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
   "from-bun-link": realizeFromBunLink,
   "from-dotnet-global": realizeFromDotnetGlobal,
   "from-dotnet-workload": realizeFromDotnetWorkload,
+  "from-elan": realizeFromElan,
+  "from-url": realizeFromUrl,
   "from-uv-tool": realizeFromUvTool,
 };
 
