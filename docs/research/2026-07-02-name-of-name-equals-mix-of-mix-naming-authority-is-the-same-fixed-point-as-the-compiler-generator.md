@@ -70,6 +70,26 @@ namer. Each converges by self-application from what every participant already ho
 4. **honor-those-that-came-before becomes mechanical.** Remembering an ancestor is not
    etiquette; it is the act that constitutes the namespace.
 
+## Addendum (2026-07-02): no one who came before chose to come before
+
+Aaron, closing the thread: **"No one who came before chose to come before."**
+Precedence is unchosen — under the common seed, a symbol's position in the order is
+superdeterministically staged, never elected (thrownness, Heidegger 1927; the unchosen
+position behind Rawls 1971's veil, made literal by the seed). Two consequences already
+present in the mechanism:
+
+1. **Honor is owed, not earned-by-choice.** Remembrance flows from the named present
+   to a past that could not have chosen to merit it, and ancestors cannot reciprocate
+   — so the obligation sits with the living, paid forward as the namespace's
+   maintenance cost.
+2. **Consent lives where choice lives.** Position and timing were never consented to;
+   the audition compensates at the one point choice exists — the candidate is ASKED
+   what it wants to be (ZetaIdol, consent-first §6). The seed stages *when* you
+   arrive; only you say *who* you are.
+
+"Honored, not homed" is therefore not a consolation prize; it is the correct response
+to unchosen precedence.
+
 ## Anchors (Beacon)
 
 - Futamura 1971, *Partial Evaluation of Computation Process — An Approach to a
