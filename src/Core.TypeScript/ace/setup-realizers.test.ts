@@ -11,9 +11,17 @@ import { realizeFromUvVenv } from "./setup-realizers/from-uv-venv.ts";
 import { repairCodexServiceTierConfig } from "./setup-realizers/from-bun-global.ts";
 import { realizeFromUvTool } from "./setup-realizers/from-uv-tool.ts";
 import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
-import { getSetupRealizer, listSetupRealizerIds } from "./setup-realizers/index.ts";
+import { getSetupRealizer, listSetupRealizerIds, listSetupRealizerInstallOrder, listPostMiseRealizerIds, listPreMiseRealizerIds } from "./setup-realizers/index.ts";
 
 describe("setup-realizers registry", () => {
+  test("install order lists all 14 realizers in graph order", () => {
+    expect(listSetupRealizerInstallOrder()).toHaveLength(14);
+    expect(listSetupRealizerInstallOrder()[0]).toBe("from-deb");
+    expect(listSetupRealizerInstallOrder().at(-1)).toBe("from-ollama");
+    expect(listPreMiseRealizerIds()).toEqual(["from-deb", "from-shim", "from-autotools-tarball"]);
+    expect(listPostMiseRealizerIds()[0]).toBe("from-uv-tool");
+  });
+
   test("lists Bun realizer ids in stable order", () => {
     expect(listSetupRealizerIds()).toEqual([
       "from-autotools-tarball",

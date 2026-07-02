@@ -10,15 +10,7 @@
 #   4. mise (runtime manager)
 #   5. common/mise.sh     — installs dotnet/python/java/bun/uv
 #                           per .mise.toml
-#   6. mechanisms/from-uv-tool.sh — uv-managed Python CLI tools
-#   7. mechanisms/from-uv-venv.sh — optional project .venv deps (opt-in)
-#   8. mechanisms/from-elan.sh     — Lean toolchain
-#   9. mechanisms/from-dotnet-global.sh — dotnet global tools
-#  10. mechanisms/from-url.sh   — HTTPS assets → repo paths
-#  10b. mechanisms/from-opam-git.sh — opam git source-build (ZETA_INSTALL_FULL)
-#  11. mechanisms/from-bun-global.sh — bun-global CLIs
-#  12. mechanisms/from-installer.sh — vendor install scripts
-#  13. mechanisms/from-ollama.sh   — local-LLM primitive
+#   6–13. ace-realize --post-mise (all post-mise mechanism realizers)
 #  14. common/shellenv.sh    — managed PATH file
 #  15. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 
@@ -28,13 +20,38 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 SETUP_REALIZE="$REPO_ROOT/src/Core.TypeScript/ace/setup-realize.ts"
 
-realize_mechanism() {
-  local id="$1"
-  if command -v bun >/dev/null 2>&1 && bun "$SETUP_REALIZE" --available "$id" >/dev/null 2>&1; then
-    bun "$SETUP_REALIZE" "$id"
+realize_mechanisms() {
+  if command -v bun >/dev/null 2>&1 && bun "$SETUP_REALIZE" --available from-uv-tool >/dev/null 2>&1; then
+    bun "$SETUP_REALIZE" "$@"
   else
-    "$SETUP_DIR/mechanisms/${id}.sh"
+    realize_mechanisms_shell_fallback "$@"
   fi
+}
+
+realize_mechanisms_shell_fallback() {
+  local -a ids=()
+  case "${1:-}" in
+    --pre-mise)
+      ids=(from-deb from-shim from-autotools-tarball)
+      ;;
+    --post-mise)
+      ids=(from-uv-tool from-uv-venv from-elan from-dotnet-global from-dotnet-workload from-url from-opam-git from-bun-global from-bun-link from-installer from-ollama)
+      ;;
+    --all)
+      ids=(from-deb from-shim from-autotools-tarball from-uv-tool from-uv-venv from-elan from-dotnet-global from-dotnet-workload from-url from-opam-git from-bun-global from-bun-link from-installer from-ollama)
+      ;;
+    *)
+      ids=("$@")
+      ;;
+  esac
+  local id
+  for id in "${ids[@]}"; do
+    if [ "$id" = from-opam-git ]; then
+      "$SETUP_DIR/mechanisms/${id}.sh" || echo "⚠ from-opam-git failed — see output above; continuing"
+    else
+      "$SETUP_DIR/mechanisms/${id}.sh"
+    fi
+  done
 }
 
 # shellcheck source=tools/setup/common/curl-fetch.sh
@@ -236,22 +253,8 @@ for shim_dir in \
   fi
 done
 
-realize_mechanism from-uv-tool
-realize_mechanism from-uv-venv
-
-# Make ~/.dotnet/tools available for the remainder of this install.sh
-# process so from-dotnet-global can install globals into $HOME/.dotnet/tools
-# and find them on PATH in the same run.
 export PATH="$HOME/.dotnet/tools:$PATH"
 
-realize_mechanism from-elan
-realize_mechanism from-dotnet-global
-realize_mechanism from-dotnet-workload
-realize_mechanism from-url
-realize_mechanism from-opam-git || echo "⚠ from-opam-git failed — see output above; continuing"
-realize_mechanism from-bun-global
-realize_mechanism from-bun-link
-realize_mechanism from-installer
-realize_mechanism from-ollama
+realize_mechanisms --post-mise
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"

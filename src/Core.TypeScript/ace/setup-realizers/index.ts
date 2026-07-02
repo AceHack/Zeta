@@ -31,8 +31,50 @@ export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
   "from-uv-venv": realizeFromUvVenv,
 };
 
+/** Matches tools/setup/linux.sh install-graph order (pre-mise, after apt). */
+export const PRE_MISE_REALIZER_IDS = [
+  "from-deb",
+  "from-shim",
+  "from-autotools-tarball",
+] as const;
+
+/** Matches tools/setup/linux.sh install-graph order (post-mise.sh, after PATH shims). */
+export const POST_MISE_REALIZER_IDS = [
+  "from-uv-tool",
+  "from-uv-venv",
+  "from-elan",
+  "from-dotnet-global",
+  "from-dotnet-workload",
+  "from-url",
+  "from-opam-git",
+  "from-bun-global",
+  "from-bun-link",
+  "from-installer",
+  "from-ollama",
+] as const;
+
+export const SETUP_REALIZER_INSTALL_ORDER = [
+  ...PRE_MISE_REALIZER_IDS,
+  ...POST_MISE_REALIZER_IDS,
+] as const;
+
+/** Mechanisms that warn and continue on failure (mirrors linux.sh opam-git || echo). */
+export const BEST_EFFORT_REALIZER_IDS = new Set<string>(["from-opam-git"]);
+
 export function listSetupRealizerIds(): readonly string[] {
   return Object.keys(SETUP_REALIZERS).sort();
+}
+
+export function listSetupRealizerInstallOrder(): readonly string[] {
+  return SETUP_REALIZER_INSTALL_ORDER.filter((id) => id in SETUP_REALIZERS);
+}
+
+export function listPreMiseRealizerIds(): readonly string[] {
+  return PRE_MISE_REALIZER_IDS.filter((id) => id in SETUP_REALIZERS);
+}
+
+export function listPostMiseRealizerIds(): readonly string[] {
+  return POST_MISE_REALIZER_IDS.filter((id) => id in SETUP_REALIZERS);
 }
 
 export function getSetupRealizer(id: string): SetupRealizer | undefined {
