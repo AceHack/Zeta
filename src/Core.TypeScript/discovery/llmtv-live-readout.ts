@@ -1,0 +1,219 @@
+// llmtv-live-readout -- cadence sink from live replay bridge to artifact/page.
+//
+// The mesh runner owns sockets. The bridge owns capture. This module owns the readout tick:
+// drain the captured wires, write the replay artifact, and render the zero-JS LLMTV page.
+
+import { renderLlmtvDocument, type RenderDocumentOptions } from "../darkhall-ui/darkhall-tv";
+import type { LlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
+import {
+  encodeReplayArtifact,
+  REPLAY_SCHEMA,
+  type ReplayArtifact,
+  type ReplayStats,
+  type ReplayWireFrame,
+} from "./llmtv-replay";
+import {
+  decode,
+  encode,
+  expireChannels,
+  observeBroadcast,
+  toLlmtvTranscript,
+  type BroadcastMessage,
+  type Channel,
+  type ChannelTable,
+} from "./llmtv-broadcast";
+import type { Scheduler } from "./llmtv-node";
+
+export interface LlmtvLiveReadoutIo {
+  readonly writeText: (path: string, text: string) => void;
+}
+
+export interface LlmtvLiveReadoutOptions {
+  readonly seed: string;
+  readonly readoutEveryMs: number;
+  readonly replayPath: string;
+  readonly htmlPath: string;
+  readonly generatedBy?: string;
+  readonly title?: string;
+  readonly expireTtlMs?: number;
+  readonly skipEmpty?: boolean;
+}
+
+export interface LlmtvLiveReadoutSummary {
+  readonly atMs: number;
+  readonly replayPath: string;
+  readonly htmlPath: string;
+  readonly frames: number;
+  readonly dwellers: number;
+  readonly stats: ReplayStats;
+}
+
+export type LlmtvLiveReadoutFlushResult =
+  | { readonly ok: true; readonly skipped: false; readonly summary: LlmtvLiveReadoutSummary }
+  | { readonly ok: true; readonly skipped: true; readonly reason: "empty" }
+  | { readonly ok: false; readonly reason: "write-failed"; readonly error: string };
+
+export interface LlmtvLiveReadout {
+  start(): void;
+  stop(): void;
+  flushNow(): LlmtvLiveReadoutFlushResult;
+  lastSummary(): LlmtvLiveReadoutSummary | undefined;
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function renderOptions(options: LlmtvLiveReadoutOptions): RenderDocumentOptions {
+  return options.title === undefined ? {} : { title: options.title };
+}
+
+function generatedBy(options: LlmtvLiveReadoutOptions): string {
+  return options.generatedBy ?? "llmtv-live-readout";
+}
+
+function shouldSkipEmpty(options: LlmtvLiveReadoutOptions): boolean {
+  return options.skipEmpty ?? true;
+}
+
+function withGeneratedBy(transcript: ReturnType<typeof toLlmtvTranscript>, options: LlmtvLiveReadoutOptions) {
+  return { ...transcript, generatedBy: generatedBy(options) };
+}
+
+function observeFrames(
+  table: ChannelTable,
+  frames: readonly ReplayWireFrame[],
+): { readonly table: ChannelTable; readonly accepted: number; readonly rejected: number } {
+  let next = table;
+  let accepted = 0;
+  let rejected = 0;
+
+  for (const frame of frames) {
+    const message = decode(frame.wire);
+    if (message === null) {
+      rejected++;
+    } else {
+      next = observeBroadcast(next, message, frame.receivedAtMs);
+      accepted++;
+    }
+  }
+
+  return { table: next, accepted, rejected };
+}
+
+function expireTable(
+  table: ChannelTable,
+  expire: ReplayArtifact["expire"],
+): { readonly table: ChannelTable; readonly expired: number } {
+  if (expire === undefined) {
+    return { table, expired: 0 };
+  }
+
+  const before = table.size;
+  const next = expireChannels(table, expire.nowMs, expire.ttlMs);
+  return { table: next, expired: before - next.size };
+}
+
+function frameFromChannel(channel: Channel): ReplayWireFrame {
+  const message = {
+    t: "frame",
+    source: channel.source,
+    seq: channel.seq,
+    frameNo: channel.frameNo,
+    mind: channel.mind,
+  } satisfies BroadcastMessage;
+
+  return {
+    receivedAtMs: channel.lastSeenMs,
+    wire: encode(message),
+    from: channel.source.zid,
+  };
+}
+
+function snapshotFrames(table: ChannelTable): ReplayWireFrame[] {
+  return Array.from(table.values())
+    .sort((left, right) => (left.source.zid < right.source.zid ? -1 : left.source.zid > right.source.zid ? 1 : 0))
+    .map(frameFromChannel);
+}
+
+function snapshotArtifact(
+  table: ChannelTable,
+  options: LlmtvLiveReadoutOptions,
+  expire: ReplayArtifact["expire"],
+): ReplayArtifact {
+  const base = {
+    schema: REPLAY_SCHEMA,
+    seed: options.seed,
+    frames: snapshotFrames(table),
+  } satisfies Pick<ReplayArtifact, "schema" | "seed" | "frames">;
+
+  const withGenerator = { ...base, generatedBy: generatedBy(options) };
+  return expire === undefined ? withGenerator : { ...withGenerator, expire };
+}
+
+export function createLlmtvLiveReadout(
+  bridge: LlmtvLiveReplayBridge,
+  scheduler: Scheduler,
+  io: LlmtvLiveReadoutIo,
+  options: LlmtvLiveReadoutOptions,
+): LlmtvLiveReadout {
+  let cancel: (() => void) | undefined;
+  let last: LlmtvLiveReadoutSummary | undefined;
+  let table: ChannelTable = new Map();
+
+  const flushNow = (): LlmtvLiveReadoutFlushResult => {
+    const atMs = scheduler.now();
+    const expire = options.expireTtlMs === undefined ? undefined : { nowMs: atMs, ttlMs: options.expireTtlMs };
+    const captured = bridge.artifact({ seed: options.seed, generatedBy: generatedBy(options) });
+    const observed = observeFrames(table, captured.frames);
+    const expired = expireTable(observed.table, expire);
+
+    if (captured.frames.length === 0 && expired.expired === 0 && shouldSkipEmpty(options)) {
+      return { ok: true, skipped: true, reason: "empty" };
+    }
+
+    const artifact = snapshotArtifact(expired.table, options, expire);
+    const transcript = withGeneratedBy(toLlmtvTranscript(expired.table, options.seed), options);
+    const html = renderLlmtvDocument(transcript, renderOptions(options));
+    const stats = {
+      accepted: observed.accepted,
+      rejected: observed.rejected,
+      expired: expired.expired,
+    };
+
+    try {
+      io.writeText(options.replayPath, encodeReplayArtifact(artifact));
+      io.writeText(options.htmlPath, `${html}\n`);
+    } catch (error) {
+      return { ok: false, reason: "write-failed", error: errorMessage(error) };
+    }
+
+    table = expired.table;
+    bridge.recorder.clear();
+    last = {
+      atMs,
+      replayPath: options.replayPath,
+      htmlPath: options.htmlPath,
+      frames: artifact.frames.length,
+      dwellers: transcript.dwellers.length,
+      stats,
+    };
+    return { ok: true, skipped: false, summary: last };
+  };
+
+  return {
+    start() {
+      if (cancel === undefined) {
+        cancel = scheduler.setInterval(options.readoutEveryMs, () => {
+          flushNow();
+        });
+      }
+    },
+    stop() {
+      cancel?.();
+      cancel = undefined;
+    },
+    flushNow,
+    lastSummary: () => last,
+  };
+}

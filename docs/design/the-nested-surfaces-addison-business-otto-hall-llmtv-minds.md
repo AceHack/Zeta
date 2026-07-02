@@ -142,6 +142,12 @@ shared. See the genesis reconciliation doc's RESOLVED note.
   runner can keep the physical mesh; the bridge wraps the injected broadcast port,
   records self/peer frames into deterministic replay artifacts, and exposes a drain
   operation for website/desktop readout ticks.
+- **Live readout cadence — LANDED.**
+  `src/Core.TypeScript/discovery/llmtv-live-readout.ts` is the website/desktop sink:
+  on an injected scheduler cadence it drains the bridge, writes `zeta.llmtv.replay.v1`
+  JSON, and renders the zero-JS LLMTV page. Empty ticks are cold skips, not page
+  erasure; write failures return typed feedback instead of throwing through the room
+  loop. The UDP demo now uses this path, emitting both replay JSON and HTML.
 - **Replay artifact renderer — LANDED.**
   `src/Core.TypeScript/discovery/llmtv-replay-render.ts` is the source-owned file
   bridge: given a captured `zeta.llmtv.replay.v1` JSON artifact, it emits the same

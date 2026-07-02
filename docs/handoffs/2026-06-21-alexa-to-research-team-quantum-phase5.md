@@ -80,13 +80,12 @@ These are the "quantum-native" extensions that make the system physically correc
 - Lean proof of Landauer bound (if expressible) = deferred escalation
 - Must integrate with existing cost-counter pattern (injected effect, not ambient mutable)
 
-
 ## Follow-up: Aaron's Adj correction (2026-07-02)
 
 Soraya corrected CALM → Ctl (correct for coordination). But Aaron's original Adj
 framing was describing a DIFFERENT axis: **simulating measurement without collapse**.
 
-### Three axes, not two:
+### Three axes, not two
 
 | Axis | Q# Functor | Meaning | Example |
 |------|-----------|---------|---------|
@@ -94,23 +93,24 @@ framing was describing a DIFFERENT axis: **simulating measurement without collap
 | Reversible observation | `Adj` | Can peek without destroying (soft measurement) | bornProb, snap |
 | Both | `Adj + Ctl` | Full Clifford gate | CNOT, Hadamard |
 
-### The demon's two operations:
+### The demon's two operations
 
 - **READ** = free (Adj, reversible peek, support unchanged, zero heat)
   - This IS AmplitudeEmu.bornProb — reads probabilities without collapsing
   - Adjointable because nothing was erased
-  
+
 - **ERASE** = costly (non-Adj, branch erasure, support drops, Landauer heat paid)
   - This IS measurement/collapse/snap/commit
   - Non-adjointable because information was irreversibly destroyed
 
-### The gate between ledgers:
+### The gate between ledgers
 
 The `Adj` functor IS the gate between Ledger A (support/state) and Ledger B (heat/environment):
+
 - `Adj` ops stay in Ledger A (reversible, no heat, the demon reads for free)
 - Non-`Adj` ops discharge from A to B (irreversible, heat paid, the demon erases)
 
-### Entropy tracker update needed:
+### Entropy tracker update needed
 
 ```
 {
