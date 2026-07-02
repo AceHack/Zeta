@@ -457,6 +457,41 @@ covers arbitrary dimensional breadth.
   algebra). Plugin verification budgets taper with
   dimensional-expansion distance from core.
 
+### The base atom — the polymorphic Z-set (structural, not aspirational)
+
+Aaron, 2026-07-01: *"this is our base atom almost — the
+polymorphic, 0-downtime ZSet with schema evolution, we got
+math all around this, where schema is also just events on the
+ZSet."*
+
+At the heart of the Seed core sits one type: a **Z-set whose
+weights range over any semiring**. Three properties are three
+readings of the same object:
+
+- **Polymorphic** — the weight is any ring: counting (int64),
+  tropical (shortest-paths), interval (bounded uncertainty),
+  probability, provenance. One atom, every algebra.
+- **Schema-as-events** — a schema *is* a Z-set; schema change
+  is a retraction + insertion delta, folded by the same
+  incremental operator as data. No privileged migration
+  channel exists to stop the world for.
+- **Zero-downtime** — a consequence of the first two, not a
+  mechanism: the system is never *between* schemas, only *at*
+  the fold of all deltas so far.
+
+As of 2026-07-01 this claim is **structural, not
+aspirational**: the DBSP hot op (the sorted merge-sum) exists
+once — a single shared kernel — with the int64 hot path as its
+monomorphised instantiation, benchmark-proven zero-overhead
+(time and allocation identical to the previous hand-specialised
+code), every weight ring riding the same code, and **binary
+collation by default** (the DB-collation model: fast codepoint
+order shipped, linguistic collations opt-in at the edge, never
+the silent default). The special case is *derived*, not
+hand-copied — the generator-is-the-ECC discipline made concrete
+at the data-model root. Detail: the 2026-07-01 base-atom design
+note (`docs/research/`), work-item `081KWFXTHJY`.
+
 ## The architectural ground — 2026-05-12 substrate cascade (joint vision-board contribution)
 
 > Human maintainer, 2026-05-12: "vision.md is our cache and ti's
