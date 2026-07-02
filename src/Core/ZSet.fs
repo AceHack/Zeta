@@ -16,6 +16,17 @@ type ZEntry<'K> =
     val Weight: Weight
     new(key: 'K, weight: Weight) = { Key = key; Weight = weight }
 
+/// Stateless entry-shape provider wiring `ZEntry<'K>` into the shared
+/// `MergeKernel` (081KWFXTHJY step 3): a struct, so the JIT devirtualises and
+/// inlines `Key`/`Weight`/`Make` — the int64 hot path pays nothing for the
+/// merge kernel being shared with the semiring-generic `ZSetW`.
+[<Struct>]
+type internal ZEntryOps<'K> =
+    interface IZEntryOps<'K, int64, ZEntry<'K>> with
+        member _.Key e = e.Key
+        member _.Weight e = e.Weight
+        member _.Make(k, w) = ZEntry(k, w)
+
 
 /// Per-closed-type cached key comparer = the default **binary/ordinal** collation (081KT07NV0008QG0R001YDB73K): string ordering
 /// is ordinal (never culture-sensitive `Comparer<string>.Default`), every other `'K` keeps the BCL default.
@@ -65,32 +76,17 @@ type ZSet<'K when 'K : comparison> =
         if a.IsEmpty then b
         elif b.IsEmpty then a
         else
-            let sa = a.AsSpan()
-            let sb = b.AsSpan()
-            let cap = sa.Length + sb.Length
-            let rented = Pool.Rent<ZEntry<'K>> cap
-            try
-                let cmp = KeyComparerCache<'K>.Instance
-                let mutable i = 0
-                let mutable j = 0
-                let mutable k = 0
-                while i < sa.Length && j < sb.Length do
-                    let c = cmp.Compare(sa.[i].Key, sb.[j].Key)
-                    if c < 0 then rented.[k] <- sa.[i]; i <- i + 1; k <- k + 1
-                    elif c > 0 then rented.[k] <- sb.[j]; j <- j + 1; k <- k + 1
-                    else
-                        // `Checked.(+)` — Z-set weights are int64 but nothing
-                        // stops a stream from running forever; silent wraparound
-                        // on overflow would turn a +2^63 multiset into a -2^63
-                        // multiset and corrupt every downstream query.
-                        let s = Checked.(+) sa.[i].Weight sb.[j].Weight
-                        if s <> 0L then rented.[k] <- ZEntry(sa.[i].Key, s); k <- k + 1
-                        i <- i + 1; j <- j + 1
-                while i < sa.Length do rented.[k] <- sa.[i]; i <- i + 1; k <- k + 1
-                while j < sb.Length do rented.[k] <- sb.[j]; j <- j + 1; k <- k + 1
-                if k = 0 then ZSet<'K>.Empty else ZSet(Pool.FreezeSlice(rented, k))
-            finally
-                Pool.Return rented
+            // Delegates to the ONE shared merge kernel (081KWFXTHJY step 3):
+            // int64 is the monomorphised instantiation — struct `IntegerRing`
+            // devirtualises `Add` to `Checked.(+)` (overflow still throws: a
+            // wrapped +2^63 multiset would corrupt every downstream query),
+            // struct `ZEntryOps` devirtualises the entry accessors, and the
+            // kernel keeps the Pool-workspace / single-FreezeSlice discipline.
+            // Perf parity with the previous hand-inlined merge is the
+            // ZSetWBench gate (recorded in the work-item).
+            let merged =
+                MergeKernel.sum (ZEntryOps<'K>()) (IntegerRing()) (a.AsSpan()) (b.AsSpan())
+            if merged.IsEmpty then ZSet<'K>.Empty else ZSet(merged)
 
     /// `-a` — the abelian-group **inverse**: flip every sign, so
     /// `a + (-a) = Zero` (the law a Bag cannot satisfy, and why the Z-set — not

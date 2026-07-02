@@ -146,14 +146,32 @@ the dynamic/cold escape hatch**, not the default.
    Struct-ring MATCHES `ZSet.add` on time (ratio 0.95–1.02) AND allocation (Alloc
    Ratio 1.00) at every size. Boxed instance-passing pays 1.5–2.0× time + 2.3× alloc
    — confirming it is correctly the cold path. **Zero-overhead is proven.**
-3. Reframe `ZSet<'K>` in terms of it — now JUSTIFIED by the gate above, but PENDING
-   an explicit go: it touches the hottest path in the whole DBSP substrate (every
-   consumer of `ZSet.(+)`/`ZSet.add`), so it wants review, not an autonomous land.
-   Plan: reframe `ZSet.(+)` etc. to delegate to `ZSetW.sumBy (IntegerRing())` (or
-   `type ZSet<'K> = ...` façade), re-run this bench as the regression gate, ripple
-   through consumers. Big blast radius — do as its own reviewed change.
+3. ✅ REFRAME DONE (2026-07-01, Aaron-authorized "we can handle this"). Implemented
+   as a **shared kernel**, not delegation-through-copies and not a `ZEntry` type
+   abbreviation (F# abbreviations erase from the assembly → would break C#/NuGet
+   consumers of the published Zeta.Core; Ilyana conservatism — public surface
+   untouched). `src/Core/MergeKernel.fs`: ONE sorted merge-sum, `internal inline`
+   (internal-inline may use the internal ordinal `KeyComparerCache`; public-inline
+   couldn't — FS1113), generic over entry shape (`IZEntryOps` struct providers:
+   `ZEntryOps` for `ZEntry`, `ZEntryWOps` for `ZEntryW`) and struct ring; Pool
+   workspace + single FreezeSlice. All THREE sum paths now delegate:
+   `ZSet.(+)` (struct `IntegerRing`, fully monomorphised), `ZSetW.sumBy` (struct
+   ring straight through), `ZSetW.sum` (boxed ring via struct `BoxedRing` adapter).
+   The DBSP hot op exists ONCE; int64 is the monomorphised instantiation
+   (generator-is-the-ECC: the special case is derived, not hand-copied).
+
+   **Regression gate PASSED** (BDN medium + a focused tie-breaker run):
+   kernel-backed `ZSetAdd` = 60.4–61.2 ns / 740.3 ns / 18.45–18.55 µs vs recorded
+   baseline 65.1 / 724.6 / 18.01 — within noise at every size (one 828 ns outlier
+   at 256 disproved by the tie-breaker's 740.3 and by same-run StructRing 712.5);
+   allocations byte-identical (408 B / 6168 B / ~98.4 KB). Side win: the boxed
+   instance path improved ~25–40% and its Alloc Ratio fell 2.3× → **1.00** (the
+   kernel's Pool discipline replaced its double-allocating builder).
+   Full suite 3741/3741 green.
 4. Honor ordinal-collation parity (`culture-invariant-by-default` — the
    `GCounter.Merge` vs `ZSet.ofSeq` associativity bug lives in this area).
+   ✅ Enforced in the kernel itself: key order is hard-wired to `KeyComparerCache`
+   (the binary-collation default); no ordering site left to drift.
 5. Full `dotnet build -c Release` 0-warnings + tests green + Naledi perf sign-off.
 
 Anchors: [[only-the-irreducible-is-primitive-generate-the-rest]] (int64 is the

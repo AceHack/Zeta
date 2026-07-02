@@ -43,6 +43,15 @@ type ZEntryW<'K, 'W> =
     val Weight: 'W
     new(key: 'K, weight: 'W) = { Key = key; Weight = weight }
 
+/// Stateless entry-shape provider wiring `ZEntryW<'K,'W>` into the shared
+/// `MergeKernel` (081KWFXTHJY step 3) — the polymorphic twin of `ZEntryOps`.
+[<Struct>]
+type internal ZEntryWOps<'K, 'W> =
+    interface IZEntryOps<'K, 'W, ZEntryW<'K, 'W>> with
+        member _.Key e = e.Key
+        member _.Weight e = e.Weight
+        member _.Make(k, w) = ZEntryW(k, w)
+
 
 /// Polymorphic Z-set `Z[K, W]` — finitely-supported map `K -> W` where
 /// `W` forms a ring (and zero-weighted entries are dropped). Stored as
@@ -206,44 +215,15 @@ module ZSetW =
     /// is a linear two-pointer merge — O(|a| + |b|) — not the
     /// O(n log n) a `SortedDictionary` rebuild would cost.
     let sum (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
-        let aSpan = a.AsSpan()
-        let bSpan = b.AsSpan()
-        if aSpan.IsEmpty then b
-        elif bSpan.IsEmpty then a
+        if a.IsEmpty then b
+        elif b.IsEmpty then a
         else
-            let zero = ring.Zero
-            let eq = EqualityComparer<'W>.Default
-            let cmp = KeyComparerCache<'K>.Instance
-            // Upper bound on output length is |a| + |b|; zero entries dropped
-            // shrinks it. Use a builder sized to the upper bound; trim via
-            // ToImmutable rather than MoveToImmutable since the final count
-            // may be strictly less than the allocated capacity.
-            let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(aSpan.Length + bSpan.Length)
-            let mutable i = 0
-            let mutable j = 0
-            while i < aSpan.Length && j < bSpan.Length do
-                let kA = aSpan.[i].Key
-                let kB = bSpan.[j].Key
-                let c = cmp.Compare(kA, kB)
-                if c < 0 then
-                    builder.Add(aSpan.[i])
-                    i <- i + 1
-                elif c > 0 then
-                    builder.Add(bSpan.[j])
-                    j <- j + 1
-                else
-                    let combined = ring.Add(aSpan.[i].Weight, bSpan.[j].Weight)
-                    if not (eq.Equals(combined, zero)) then
-                        builder.Add(ZEntryW(kA, combined))
-                    i <- i + 1
-                    j <- j + 1
-            while i < aSpan.Length do
-                builder.Add(aSpan.[i])
-                i <- i + 1
-            while j < bSpan.Length do
-                builder.Add(bSpan.[j])
-                j <- j + 1
-            ZSetW(builder.ToImmutable())
+            // The boxed ring rides into the shared kernel via the struct
+            // `BoxedRing` adapter — same virtual-call cost this path always
+            // had, but ONE merge implementation instead of a hand copy.
+            let merged =
+                MergeKernel.sum (ZEntryWOps<'K, 'W>()) (BoxedRing<'W>(ring)) (a.AsSpan()) (b.AsSpan())
+            if merged.IsEmpty then ZSetW<'K, 'W>.Empty else ZSetW(merged)
 
     /// Negate every weight via `ring.Negate` — additive inverse. The
     /// ring axiom `negate a `Add` a = zero` is required for retraction.
@@ -353,34 +333,15 @@ module ZSetW =
     /// specialised `ZSet.add` — verified by `ZSetWBench`.
     let sumBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                      (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
-        let aSpan = a.AsSpan()
-        let bSpan = b.AsSpan()
-        if aSpan.IsEmpty then b
-        elif bSpan.IsEmpty then a
+        if a.IsEmpty then b
+        elif b.IsEmpty then a
         else
-            let zero = ring.Zero
-            let eq = EqualityComparer<'W>.Default
-            let cmp = KeyComparerCache<'K>.Instance
-            let cap = aSpan.Length + bSpan.Length
-            let rented = Pool.Rent<ZEntryW<'K, 'W>> cap
-            try
-                let mutable i = 0
-                let mutable j = 0
-                let mutable k = 0
-                while i < aSpan.Length && j < bSpan.Length do
-                    let c = cmp.Compare(aSpan.[i].Key, bSpan.[j].Key)
-                    if c < 0 then rented.[k] <- aSpan.[i]; i <- i + 1; k <- k + 1
-                    elif c > 0 then rented.[k] <- bSpan.[j]; j <- j + 1; k <- k + 1
-                    else
-                        let combined = ring.Add(aSpan.[i].Weight, bSpan.[j].Weight)
-                        if not (eq.Equals(combined, zero)) then
-                            rented.[k] <- ZEntryW(aSpan.[i].Key, combined); k <- k + 1
-                        i <- i + 1; j <- j + 1
-                while i < aSpan.Length do rented.[k] <- aSpan.[i]; i <- i + 1; k <- k + 1
-                while j < bSpan.Length do rented.[k] <- bSpan.[j]; j <- j + 1; k <- k + 1
-                if k = 0 then ZSetW<'K, 'W>.Empty else ZSetW(Pool.FreezeSlice(rented, k))
-            finally
-                Pool.Return rented
+            // Same shared kernel as `ZSet.(+)` — the struct ring monomorphises
+            // straight through it (this delegation is what the ZSetWBench
+            // parity table certified).
+            let merged =
+                MergeKernel.sum (ZEntryWOps<'K, 'W>()) ring (a.AsSpan()) (b.AsSpan())
+            if merged.IsEmpty then ZSetW<'K, 'W>.Empty else ZSetW(merged)
 
     /// Zero-overhead negate (struct ring by value; requires a full ring).
     let negateBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
