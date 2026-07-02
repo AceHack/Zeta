@@ -121,6 +121,37 @@ module CellScheduler =
         |> List.choose (fun (id, q) -> if List.isEmpty q then None else Some id)
         |> List.sortWith (fun a b -> System.String.CompareOrdinal(a, b))
 
+    // ── Slice 3: fairness + parking observability ──
+    //
+    // Fairness is STRUCTURAL, not a tuning knob: `runFerryToQuiescence` steps
+    // every ready cell exactly once per round (perfect round-robin), so no cell
+    // can starve another regardless of how much work it generates. Parking is
+    // FREE: an idle cell (empty inbox) is simply absent from the ready set and
+    // costs nothing until a message wakes it — the idle-counter externalised into
+    // the inbox structure, never a spinning loop.
+    //
+    // The BEAM-style per-step *reduction budget* is DELIBERATELY OMITTED (scope
+    // honesty §6): its job is to stop one cell monopolising a ferry when a single
+    // step does unbounded work — but here every step is bounded to exactly ONE
+    // message, so a budget knob would be unearned weight (only-the-irreducible-is-
+    // primitive; interfaces-free-classes-earned). If a future step variant folds
+    // many messages per turn, THAT is when the budget is earned — not before.
+
+    /// The cells ready to step (non-empty inbox), in canonical round order.
+    /// The externalised active-set — its length is the round's fan-out width.
+    let activeCells (s: State<'St, 'Msg>) : CellId list = readyOf s
+
+    /// The parked cells (empty inbox), sorted (Ordinal). Parked cells cost
+    /// nothing; they re-enter the active set only when a message is delivered.
+    let parkedCells (s: State<'St, 'Msg>) : CellId list =
+        s.Cells
+        |> Map.toList
+        |> List.choose (fun (id, _) ->
+            match Map.tryFind id s.Inbox with
+            | Some(_ :: _) -> None
+            | _ -> Some id)
+        |> List.sortWith (fun a b -> System.String.CompareOrdinal(a, b))
+
     /// Run to quiescence with a `FerryThrottler` at `config.MaxDegreeOfParallelism`
     /// ferries. Round-based; result is byte-identical across DoP (the scale-free
     /// law). `maxRounds` is the named non-termination backstop (not a silent cap).

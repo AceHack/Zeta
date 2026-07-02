@@ -175,3 +175,64 @@ let ``ferry runner: non-terminating cycle hits the named backstop`` () : Task =
         | Ok _ -> failwith "expected non-termination backstop to fire"
         | Error e -> Assert.Contains("did not quiesce", e)
     }
+
+// ── Slice 3: fairness (structural round-robin) + parking observability ──
+
+// Drive the sequential `step` by hand, recording which cell runs each turn —
+// the head of `Ready` is the cell about to step. Lets us OBSERVE ordering
+// (fairness) without a per-round hook.
+let private processingOrder (s0: CellScheduler.State<int, Msg>) : CellId list =
+    let order = System.Collections.Generic.List<CellId>()
+    let mutable s = s0
+    let mutable go = true
+    while go do
+        match s.Ready with
+        | [] -> go <- false
+        | id :: _ ->
+            order.Add id
+            match CellScheduler.step trivialStep s with
+            | Some s' -> s <- s'
+            | None -> go <- false
+    List.ofSeq order
+
+[<Fact>]
+let ``starvation-freedom: a flooding cell does not stall its peers`` () =
+    // "hot" has 100 messages, "cold" has 1. A starving scheduler would drain hot
+    // fully before ever touching cold; a fair one runs cold almost immediately.
+    let cells = [ "hot", 0; "cold", 0 ]
+    let msgs = [ for _ in 1 .. 100 -> "hot", leaf 1 ] @ [ "cold", leaf 1 ]
+    let order = processingOrder (CellScheduler.init cells msgs)
+    let coldIdx = List.findIndex ((=) "cold") order
+    Assert.True(coldIdx <= 1, sprintf "cold starved: first ran at turn %d" coldIdx)
+
+[<Fact>]
+let ``fairness is structural round-robin (peers interleave, not drain-one-then-other)`` () =
+    // Two cells, three messages each. Round-robin ⇒ a,b,a,b,a,b — NOT a,a,a,b,b,b.
+    let cells = [ "a", 0; "b", 0 ]
+    let msgs = [ for _ in 1 .. 3 -> "a", leaf 1 ] @ [ for _ in 1 .. 3 -> "b", leaf 1 ]
+    let order = processingOrder (CellScheduler.init cells msgs)
+    Assert.Equal<CellId list>([ "a"; "b"; "a"; "b"; "a"; "b" ], order)
+
+[<Fact>]
+let ``parking observability: active and parked partition the cell set`` () =
+    let cells = [ "busy", 0; "idle1", 0; "idle2", 0 ]
+    let s = CellScheduler.init cells [ "busy", leaf 1 ]
+    Assert.Equal<CellId list>([ "busy" ], CellScheduler.activeCells s)
+    Assert.Equal<CellId list>([ "idle1"; "idle2" ], CellScheduler.parkedCells s)
+    // active ⊎ parked = all cells (a clean partition, no overlap, no gaps)
+    let all = (CellScheduler.activeCells s @ CellScheduler.parkedCells s) |> List.sort
+    Assert.Equal<CellId list>([ "busy"; "idle1"; "idle2" ], all)
+
+[<Fact>]
+let ``at quiescence every cell is parked`` () =
+    let cells = [ "a", 0; "b", 0 ]
+    let s = CellScheduler.init cells [ "a", leaf 1; "b", leaf 2 ]
+    // run the sequential scheduler to quiescence by hand, then inspect the state
+    let mutable cur = s
+    let mutable go = true
+    while go do
+        match CellScheduler.step trivialStep cur with
+        | Some s' -> cur <- s'
+        | None -> go <- false
+    Assert.Empty(CellScheduler.activeCells cur)
+    Assert.Equal<CellId list>([ "a"; "b" ], CellScheduler.parkedCells cur)

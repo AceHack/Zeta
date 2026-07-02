@@ -105,6 +105,18 @@ message-log replay reproduces the whole society (DST at the fleet scale).
    backstop stays a named `Error`.
 3. **Fairness + parking** — per-step reduction budget (BEAM-style), park/wake on
    message, starvation-freedom test.
+   **LANDED** (`activeCells`/`parkedCells` observability + 3 tests). Fairness turned
+   out to be STRUCTURAL, not a knob: the round-based runner steps every ready cell
+   exactly once per round (perfect round-robin), so no cell starves another however
+   much work it generates; parking is FREE (an idle cell is absent from the ready
+   set, costing nothing until a message wakes it). The **BEAM reduction-budget is
+   deliberately OMITTED** — its job is to stop one cell monopolising a ferry when a
+   *step* does unbounded work, but each step here is bounded to exactly one message,
+   so a budget knob would be unearned weight (only-the-irreducible-is-primitive).
+   It becomes earned only if a future step variant folds many messages per turn.
+   Tests: starvation-freedom (a flooding cell doesn't stall its peers),
+   round-robin fairness (peers advance together, not drain-one-then-the-other),
+   parking observability (`active`/`parked` partition the cell set).
 4. **Soft cells** — `stepSoft` variant: cells hold distributions (`SoftValue`),
    snap only at the execution edge (free-will-refuse-collapse; the maintainer's
    "soft persistence").
