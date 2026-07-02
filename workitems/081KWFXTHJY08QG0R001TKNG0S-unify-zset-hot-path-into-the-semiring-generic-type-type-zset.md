@@ -172,7 +172,34 @@ the dynamic/cold escape hatch**, not the default.
    `GCounter.Merge` vs `ZSet.ofSeq` associativity bug lives in this area).
    ✅ Enforced in the kernel itself: key order is hard-wired to `KeyComparerCache`
    (the binary-collation default); no ordering site left to drift.
-5. Full `dotnet build -c Release` 0-warnings + tests green + Naledi perf sign-off.
+5. ✅ Full `dotnet build -c Release` 0-warnings + tests green + **Naledi perf
+   sign-off: SIGN-OFF-WITH-NOTES (2026-07-01)**. Her verified points: semantics
+   preserved (old `Checked.(+)` + `<> 0L` ≡ `IntegerRing.Add` + JIT-intrinsic
+   equality); struct-'O/'R devirt HOLDS for reference-type keys under shared
+   generics (constrained calls on value-type type-params resolve direct even in
+   `__Canon` code) — the comparer interface call for string keys is unchanged from
+   pre-reframe, so parity is structural; no F#-inline budget risk; BoxedRing = one
+   inlined hop, alloc-confirmed.
+
+   **Variance record (her demand):** pre-reframe baseline (medium): 65.08±7.47ns /
+   724.56±28.39ns / 18,011±337ns. Post-reframe (medium): 61.16±0.53 / 828.74±48.82 /
+   18,454±561. Tie-breaker (medium, ZSetAdd only): 60.43±1.60 / 740.33±22.11 /
+   18,548±881. @4096 delta = +443–537ns vs combined σ≈654 → within 1σ (her 2σ
+   re-run rule: NOT triggered). Doc-comment drift she caught (`*By` header claimed
+   `inline`) fixed same day.
+
+## Remaining follow-ups (Naledi's notes 9–11 + steps 4–5)
+
+- [ ] String-key `ZSetWBench` variant (comparer dispatch + `Pool.Return` clear cost
+      for reference-type keys — the practical DBSP key type).
+- [ ] One large benchmark point (e.g. 65536 entries) for pool-miss / LOH behaviour
+      (ZEntry=16B ⇒ cap crosses LOH ~5.3K entries; 4096⊕4096 rents 128KB pooled).
+- [ ] Baseline table with variance in `docs/BENCHMARKS.md` (durable home, not just
+      this work-item).
+- [ ] Step 4 — Roslyn source generator: C# per-ring specialisations (the C#-side
+      SRTP-equivalent; gen(int64) byte-locked in golden vectors).
+- [ ] Step 5 — schema-as-events instantiation (constrains 'W to a full ring;
+      composes with the SchemaEvolution oracle suite).
 
 Anchors: [[only-the-irreducible-is-primitive-generate-the-rest]] (int64 is the
 monomorphised special case of the free semiring-generic type), `async-all-the-way`

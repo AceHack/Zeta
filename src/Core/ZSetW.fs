@@ -284,19 +284,21 @@ module ZSetW =
     // ═══════════════════════════════════════════════════════════════
     //  Zero-overhead hot path (081KWFXTHJY step 2b) — `*By` variants.
     //
-    //  The ring is passed BY VALUE as a struct generic `'R` and the op is
-    //  `inline`. At each closed instantiation `'R` is a concrete struct
-    //  (e.g. `IntegerRing`), so the interface calls `ring.Add/Mul/Negate`
-    //  are candidates for JIT devirtualisation + inlining to bare
-    //  primitives — no vtable dispatch, unlike the instance-passing ops
-    //  above (which box the ring behind `ISemiring<'W>` and pay a virtual
-    //  call per weight op). Same results as the instance ops (proven in
-    //  ZSetW.Tests); the win is dispatch cost, verified by the benchmark
-    //  (ZSetWBench) — that measurement is the step-3 reframe gate.
+    //  The ring is passed BY VALUE as a struct generic `'R`. These
+    //  functions are NOT F# `inline` (the shared kernel they call is the
+    //  internal-inline piece; a public inline here would collide with the
+    //  internal `KeyComparerCache` — FS1113). They don't need to be: the
+    //  CLR emits a specialised body per value-type `'R` instantiation, so
+    //  the interface calls `ring.Add/Mul/Negate` devirtualise + inline to
+    //  bare primitives — no vtable dispatch, unlike the instance-passing
+    //  ops above (boxed `ISemiring<'W>`, one virtual call per weight op).
+    //  Same results as the instance ops (proven in ZSetW.Tests); the win
+    //  is dispatch cost, certified by ZSetWBench (the step-3 gate, PASSED
+    //  — Naledi sign-off-with-notes 2026-07-01).
     //
-    //  NOTE: `inline` requires callers to instantiate `'R` at a known
-    //  struct type; a boxed `ISemiring<'W>` value cannot flow here (use
-    //  the instance-passing ops for the dynamic-ring cold path).
+    //  NOTE: callers must instantiate `'R` at a known struct type; a
+    //  boxed `ISemiring<'W>` value cannot flow here (use the
+    //  instance-passing ops for the dynamic-ring cold path).
     // ═══════════════════════════════════════════════════════════════
 
     /// Zero-overhead singleton (struct ring by value).
