@@ -118,6 +118,13 @@ with a ⭐ below and add a row there.
   Gibbons-Wu; references for `NovelMathExt.fs`.
 - **Tropical semiring / min-plus algebra** — reference for
   `NovelMath.fs`; Golan *Semirings and their Applications*.
+- **Semiring/ring boundary (idempotency forbids additive inverses)** —
+  Vandiver 1934 (Bull. AMS 40, the founding semiring paper); Golan 1999
+  ch. 1/4 (zerosumfree, `V(S)={0}` for idempotent semirings);
+  Baccelli–Cohen–Olsder–Quadrat 1992 *Synchronization and Linearity* §3.2
+  (dioids: idempotent addition incompatible with invertibility). Grounds
+  the IRing/ISemiring split (081KWG9JQ9H): Tropical's missing `Negate` is
+  a proven classical theorem.
 - **Residuated lattices** — Galatos-Jipsen-Kowalski-Ono 2007; shapes
   `Residuated.fs`.
 - **HyperLogLog** — Flajolet-Fusy-Gandouet-Meunier; HLL++ (Ertl

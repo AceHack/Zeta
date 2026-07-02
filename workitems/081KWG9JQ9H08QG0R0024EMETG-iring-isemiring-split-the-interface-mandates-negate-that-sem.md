@@ -36,11 +36,29 @@ runtime-throw-if-you're-lucky to does-not-compile. Ledger: `db/uncertainty/`
 The additive-inverse axiom is **THE** irreducible boundary between a semiring
 (rig) and a ring — it is not a design preference we could paper over:
 
-> **Theorem (why Tropical can never comply):** in an idempotent semiring
-> (`a ⊕ a = a`, which min-plus is), if any `a` had an additive inverse then
+> **Theorem (why Tropical can never comply) — HISTORICALLY PROVEN, anchored
+> (Aaron 2026-07-02: "only a TODO if it's a theorem and not a proven one from
+> history"):** in an idempotent semiring (`a ⊕ a = a`, which min-plus is), if
+> any `a` had an additive inverse then
 > `0 = a ⊕ (−a) = (a ⊕ a) ⊕ (−a) = a ⊕ (a ⊕ (−a)) = a ⊕ 0 = a` — every
 > invertible element is zero. An idempotent semiring with inverses is trivial.
-> Tropical's missing `Negate` is a **theorem**, not a TODO.
+>
+> **The anchors (not our result — a classical one):**
+> - **Vandiver 1934**, *Note on a simple type of algebra in which the
+>   cancellation law of addition does not hold* (Bull. AMS 40) — the founding
+>   semiring paper; its entire point is that such systems cannot be embedded
+>   in rings (addition doesn't even cancel, let alone invert).
+> - **Golan 1999**, *Semirings and their Applications*, ch. 1 & 4 — the
+>   standard reference: `V(S)` = the additively-invertible elements; a
+>   semiring is *zerosumfree* when `a ⊕ b = 0 ⇒ a = b = 0`, and **every
+>   idempotent semiring is zerosumfree** (the 3-line argument above is the
+>   textbook proof), so `V(S) = {0}`.
+> - **Baccelli–Cohen–Olsder–Quadrat 1992**, *Synchronization and Linearity*
+>   (the max-plus book), §3.2 — for dioids specifically: idempotency of
+>   addition is INCOMPATIBLE with additive invertibility; max/min-plus is
+>   their canonical system.
+>
+> So Tropical's missing `Negate` is a **proven classical theorem**, not a TODO.
 
 Per `only-the-irreducible-is-primitive`: the free/irreducible object here is the
 **semiring** (Zero/One/Add/Mul — the rules of the game); the **ring is the earned
