@@ -181,3 +181,67 @@ vectors:
     location: 1
     expected_hex: "0ffffffffffff9c1f80ff80800000000"
     expected_crockford: "0FZZZZZZZZZ70ZG3ZR10000000"
+
+  - id: all-zero
+    version: 0
+    timestamp: 0
+    chromosome: 0
+    category: 0
+    firefly: 0
+    authority_type: Raw
+    authority_raw: 0
+    persona: 0
+    momentum_type: Raw
+    momentum_raw: 0
+    location: 0
+    expected_hex: "00000000000000000000000000000000"
+    expected_crockford: "00000000000000000000000000"
+
+  - id: max-128
+    type: max-128
+    version: 0
+    timestamp: 0
+    chromosome: 0
+    category: 0
+    firefly: 0
+    authority_type: Raw
+    authority_raw: 0
+    persona: 0
+    momentum_type: Raw
+    momentum_raw: 0
+    location: 0
+    expected_hex: "ffffffffffffffffffffffffffffffff"
+    expected_crockford: "7ZZZZZZZZZZZZZZZZZZZZZZZZZ"
+
+  - id: overflow-reject-1
+    type: parse-reject
+    version: 0
+    timestamp: 0
+    chromosome: 0
+    category: 0
+    firefly: 0
+    authority_type: Raw
+    authority_raw: 0
+    persona: 0
+    momentum_type: Raw
+    momentum_raw: 0
+    location: 0
+    expected_hex: "rejected"
+    expected_crockford: "80000000000000000000000000"
+
+  - id: lenient-alias-1
+    type: lenient-alias
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: HumanVerified
+    authority_raw: null
+    persona: 1
+    momentum_type: Normal
+    momentum_raw: null
+    location: 1
+    input_crockford: "081jvqxncd370zg2r01000000o"
+    expected_hex: "080cb77ed58d19c1f80b000800000000"
+    expected_crockford: "081JVQXNCD370ZG2R010000000"

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/big"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -255,20 +256,22 @@ func TestCrossVerifyTriBoolean(t *testing.T) {
 }
 
 type ZetaIdVector struct {
-	Id                string `yaml:"id"`
-	Version           uint8  `yaml:"version"`
-	Timestamp         uint64 `yaml:"timestamp"`
-	Chromosome        uint8  `yaml:"chromosome"`
-	Category          uint8  `yaml:"category"`
-	Firefly           uint8  `yaml:"firefly"`
-	AuthorityType     string `yaml:"authority_type"`
-	AuthorityRaw      *uint8 `yaml:"authority_raw"`
-	Persona           uint8  `yaml:"persona"`
-	MomentumType      string `yaml:"momentum_type"`
-	MomentumRaw       *uint8 `yaml:"momentum_raw"`
-	Location          uint8  `yaml:"location"`
-	ExpectedHex       string `yaml:"expected_hex"`
-	ExpectedCrockford string `yaml:"expected_crockford"`
+	Id                string  `yaml:"id"`
+	Type              *string `yaml:"type"`
+	InputCrockford    *string `yaml:"input_crockford"`
+	Version           uint8   `yaml:"version"`
+	Timestamp         uint64  `yaml:"timestamp"`
+	Chromosome        uint8   `yaml:"chromosome"`
+	Category          uint8   `yaml:"category"`
+	Firefly           uint8   `yaml:"firefly"`
+	AuthorityType     string  `yaml:"authority_type"`
+	AuthorityRaw      *uint8  `yaml:"authority_raw"`
+	Persona           uint8   `yaml:"persona"`
+	MomentumType      string  `yaml:"momentum_type"`
+	MomentumRaw       *uint8  `yaml:"momentum_raw"`
+	Location          uint8   `yaml:"location"`
+	ExpectedHex       string  `yaml:"expected_hex"`
+	ExpectedCrockford string  `yaml:"expected_crockford"`
 }
 
 type ZetaIdYaml struct {
@@ -317,44 +320,104 @@ func TestCrossVerifyZetaId(t *testing.T) {
 
 	outMap := make(map[string]ZetaIdOutput)
 	for _, v := range y.Vectors {
-		var authRaw uint8
-		if v.AuthorityRaw != nil {
-			authRaw = *v.AuthorityRaw
-		}
-		var momRaw uint8
-		if v.MomentumRaw != nil {
-			momRaw = *v.MomentumRaw
-		}
+		var hexVal string
+		var crockfordVal string
+		var roundtripOk bool
+		var matchesExpected bool
 
-		obs := zeta_id.ZetaObservation{
-			Version:    v.Version,
-			Timestamp:  v.Timestamp,
-			Chromosome: v.Chromosome,
-			Category:   v.Category,
-			Firefly:    v.Firefly,
-			Authority:  zeta_id.Authority{Type: zeta_id.AuthorityType(v.AuthorityType), Value: authRaw},
-			Persona:    v.Persona,
-			Momentum:   zeta_id.Momentum{Type: zeta_id.MomentumType(v.MomentumType), Value: momRaw},
-			Location:   v.Location,
+		if v.Type != nil && *v.Type == "parse-reject" {
+			_, parseErr := zeta_id.Parse(v.ExpectedCrockford)
+			parseFailed := parseErr != nil
+			canonicalOk := zeta_id.IsCanonical(v.ExpectedCrockford)
+
+			hexVal = "rejected"
+			crockfordVal = "rejected"
+			roundtripOk = parseFailed && !canonicalOk
+			matchesExpected = v.ExpectedHex == "rejected"
+		} else if v.Type != nil && *v.Type == "max-128" {
+			maxVal := new(big.Int).Sub(new(big.Int).Lsh(big.NewInt(1), 128), big.NewInt(1))
+			hexVal = fmt.Sprintf("%032x", maxVal)
+			crockfordVal = zeta_id.Format(maxVal)
+
+			parsedID, parseErr := zeta_id.Parse(crockfordVal)
+			parseOk := parseErr == nil && parsedID.Cmp(maxVal) == 0
+			canonicalOk := zeta_id.IsCanonical(crockfordVal)
+
+			roundtripOk = parseOk && canonicalOk
+			matchesExpected = hexVal == v.ExpectedHex && crockfordVal == v.ExpectedCrockford
+		} else if v.Type != nil && *v.Type == "lenient-alias" {
+			var authRaw uint8
+			if v.AuthorityRaw != nil {
+				authRaw = *v.AuthorityRaw
+			}
+			var momRaw uint8
+			if v.MomentumRaw != nil {
+				momRaw = *v.MomentumRaw
+			}
+
+			obs := zeta_id.ZetaObservation{
+				Version:    v.Version,
+				Timestamp:  v.Timestamp,
+				Chromosome: v.Chromosome,
+				Category:   v.Category,
+				Firefly:    v.Firefly,
+				Authority:  zeta_id.Authority{Type: zeta_id.AuthorityType(v.AuthorityType), Value: authRaw},
+				Persona:    v.Persona,
+				Momentum:   zeta_id.Momentum{Type: zeta_id.MomentumType(v.MomentumType), Value: momRaw},
+				Location:   v.Location,
+			}
+
+			packed, err := zeta_id.Pack(obs, zeta_id.DeterministicEnv{})
+			if err != nil {
+				t.Fatalf("failed to pack observation for %s: %v", v.Id, err)
+			}
+			hexVal = zeta_id.ToHex(packed)
+			crockfordVal = zeta_id.Format(packed)
+
+			parsedID, parseErr := zeta_id.Parse(*v.InputCrockford)
+			parseOk := parseErr == nil && parsedID.Cmp(packed) == 0
+			inputCanonicalOk := zeta_id.IsCanonical(*v.InputCrockford)
+			expectedCanonicalOk := zeta_id.IsCanonical(v.ExpectedCrockford)
+
+			roundtripOk = parseOk && !inputCanonicalOk && expectedCanonicalOk
+			matchesExpected = hexVal == v.ExpectedHex && crockfordVal == v.ExpectedCrockford
+		} else {
+			var authRaw uint8
+			if v.AuthorityRaw != nil {
+				authRaw = *v.AuthorityRaw
+			}
+			var momRaw uint8
+			if v.MomentumRaw != nil {
+				momRaw = *v.MomentumRaw
+			}
+
+			obs := zeta_id.ZetaObservation{
+				Version:    v.Version,
+				Timestamp:  v.Timestamp,
+				Chromosome: v.Chromosome,
+				Category:   v.Category,
+				Firefly:    v.Firefly,
+				Authority:  zeta_id.Authority{Type: zeta_id.AuthorityType(v.AuthorityType), Value: authRaw},
+				Persona:    v.Persona,
+				Momentum:   zeta_id.Momentum{Type: zeta_id.MomentumType(v.MomentumType), Value: momRaw},
+				Location:   v.Location,
+			}
+
+			packed, err := zeta_id.Pack(obs, zeta_id.DeterministicEnv{})
+			if err != nil {
+				t.Fatalf("failed to pack observation for %s: %v", v.Id, err)
+			}
+			hexVal = zeta_id.ToHex(packed)
+			crockfordVal = zeta_id.Format(packed)
+
+			unpacked := zeta_id.Unpack(packed)
+			parsedID, parseErr := zeta_id.Parse(crockfordVal)
+			parseOk := parseErr == nil && parsedID.Cmp(packed) == 0
+			isCanonical := zeta_id.IsCanonical(crockfordVal)
+
+			roundtripOk = observationsEqual(obs, unpacked) && parseOk && isCanonical
+			matchesExpected = hexVal == v.ExpectedHex && crockfordVal == v.ExpectedCrockford
 		}
-
-		packed, err := zeta_id.Pack(obs, zeta_id.DeterministicEnv{})
-		if err != nil {
-			t.Fatalf("failed to pack observation for %s: %v", v.Id, err)
-		}
-		hexVal := zeta_id.ToHex(packed)
-		crockfordVal := zeta_id.Format(packed)
-
-		unpacked := zeta_id.Unpack(packed)
-		parsedID, parseErr := zeta_id.Parse(crockfordVal)
-		parseOk := parseErr == nil && parsedID.Cmp(packed) == 0
-		isCanonical := zeta_id.IsCanonical(crockfordVal)
-
-		// Match the canonical (TS/Rust/Python) semantics exactly: roundtripOk
-		// folds in the base32 round-trip + canonical check; matchesExpected folds
-		// in the expected_crockford comparison alongside expected_hex.
-		roundtripOk := observationsEqual(obs, unpacked) && parseOk && isCanonical
-		matchesExpected := hexVal == v.ExpectedHex && crockfordVal == v.ExpectedCrockford
 
 		outMap[v.Id] = ZetaIdOutput{
 			Hex:             hexVal,

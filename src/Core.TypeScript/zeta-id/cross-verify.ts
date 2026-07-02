@@ -1,6 +1,6 @@
 import { pack, unpack, DETERMINISTIC_ENV } from "./zeta-id";
 import { format as formatB32, parse as parseB32, isCanonical } from "./encoding";
-import type { ZetaObservation, Authority, Momentum } from "./types";
+import type { ZetaObservation, Authority, Momentum, ZetaId } from "./types";
 import { parse } from "../yaml/dom";
 import type { YamlValue } from "../yaml/dom";
 
@@ -19,6 +19,8 @@ interface FlatVector {
   location: number;
   expected_hex: string;
   expected_crockford: string;
+  type?: string;
+  input_crockford?: string;
 }
 
 // --- YamlValue → FlatVector[] navigation (own-the-interface: route through our port,
@@ -60,7 +62,9 @@ function yamlValueToFlatVectors(root: YamlValue): FlatVector[] {
   return vectorsVal.items.map((item, i) => {
     const ctx = `vectors[${i}]`;
     const m = expectMap(item, ctx);
-    return {
+    const typeVal = m.find(([k]) => k === "type");
+    const inputCrockfordVal = m.find(([k]) => k === "input_crockford");
+    const res: FlatVector = {
       id: asStr(field(m, "id", ctx), `${ctx}.id`),
       version: asNum(field(m, "version", ctx), `${ctx}.version`),
       timestamp: asNum(field(m, "timestamp", ctx), `${ctx}.timestamp`),
@@ -76,6 +80,13 @@ function yamlValueToFlatVectors(root: YamlValue): FlatVector[] {
       expected_hex: asStr(field(m, "expected_hex", ctx), `${ctx}.expected_hex`),
       expected_crockford: asStr(field(m, "expected_crockford", ctx), `${ctx}.expected_crockford`),
     };
+    if (typeVal) {
+      res.type = asStr(typeVal[1], `${ctx}.type`);
+    }
+    if (inputCrockfordVal) {
+      res.input_crockford = asStr(inputCrockfordVal[1], `${ctx}.input_crockford`);
+    }
+    return res;
   });
 }
 
@@ -119,37 +130,78 @@ let hexMismatches = 0;
 let crockfordMismatches = 0;
 
 for (const v of vectors) {
-  const obs = toObservation(v);
-  const packed = pack(obs, DETERMINISTIC_ENV);
-  const hex = packed.toString(16).padStart(32, "0");
-  const crockford = formatB32(packed);
+  let hex: string;
+  let crockford: string;
+  let roundtripOk: boolean;
+  let matchesExpected: boolean;
 
-  const unpacked = unpack(packed);
-  const roundtripOk = Bun.deepEquals(unpacked, obs);
-  const matchesExpected = hex === v.expected_hex;
-  const parsedId = parseB32(crockford);
-  const parseOk = parsedId === packed;
-  const canonicalOk = isCanonical(crockford);
-  const crockfordMatches = crockford === v.expected_crockford;
+  if (v.type === "parse-reject") {
+    let parseFailed = false;
+    try {
+      parseB32(v.expected_crockford);
+    } catch {
+      parseFailed = true;
+    }
+    const canonicalOk = isCanonical(v.expected_crockford);
+
+    hex = "rejected";
+    crockford = "rejected";
+    roundtripOk = parseFailed && !canonicalOk;
+    matchesExpected = v.expected_hex === "rejected";
+  } else if (v.type === "max-128") {
+    const maxVal = (1n << 128n) - 1n;
+    hex = maxVal.toString(16).padStart(32, "0");
+    crockford = formatB32(maxVal as ZetaId);
+
+    const parsedId = parseB32(crockford);
+    const parseOk = parsedId === maxVal;
+    const canonicalOk = isCanonical(crockford);
+
+    roundtripOk = parseOk && canonicalOk;
+    matchesExpected = hex === v.expected_hex && crockford === v.expected_crockford;
+  } else if (v.type === "lenient-alias") {
+    const obs = toObservation(v);
+    const packed = pack(obs, DETERMINISTIC_ENV);
+    hex = packed.toString(16).padStart(32, "0");
+    crockford = formatB32(packed);
+
+    const parsedId = parseB32(v.input_crockford!);
+    const parseOk = parsedId === packed;
+    const inputCanonicalOk = isCanonical(v.input_crockford!);
+    const expectedCanonicalOk = isCanonical(v.expected_crockford);
+
+    roundtripOk = parseOk && !inputCanonicalOk && expectedCanonicalOk;
+    matchesExpected = hex === v.expected_hex && crockford === v.expected_crockford;
+  } else {
+    const obs = toObservation(v);
+    const packed = pack(obs, DETERMINISTIC_ENV);
+    hex = packed.toString(16).padStart(32, "0");
+    crockford = formatB32(packed);
+
+    const unpacked = unpack(packed);
+    const roundtripVal = Bun.deepEquals(unpacked, obs);
+    const parsedId = parseB32(crockford);
+    const parseOk = parsedId === packed;
+    const canonicalOk = isCanonical(crockford);
+
+    roundtripOk = roundtripVal && parseOk && canonicalOk;
+    matchesExpected = hex === v.expected_hex && crockford === v.expected_crockford;
+  }
 
   results[v.id] = {
     hex,
     crockford,
-    roundtripOk: roundtripOk && parseOk && canonicalOk,
-    matchesExpected: matchesExpected && crockfordMatches,
+    roundtripOk,
+    matchesExpected,
   };
 
-  if (!roundtripOk || !parseOk || !canonicalOk) {
+  if (!roundtripOk) {
     unpackMismatches++;
     console.error(`Roundtrip/CrockfordParse/Canonical MISMATCH for ${v.id}`);
   }
   if (!matchesExpected) {
     hexMismatches++;
-    console.error(`Hex MISMATCH for ${v.id}: got ${hex}, expected ${v.expected_hex}`);
-  }
-  if (!crockfordMatches) {
-    crockfordMismatches++;
-    console.error(`Crockford MISMATCH for ${v.id}: got ${crockford}, expected ${v.expected_crockford}`);
+    console.error(`Hex EXPECTED MISMATCH for ${v.id}: got ${hex}, expected ${v.expected_hex}`);
   }
 }
 

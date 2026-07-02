@@ -1,4 +1,10 @@
 {
+  "all-zero": {
+    "hex": "00000000000000000000000000000000",
+    "crockford": "00000000000000000000000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
   "authority-best-effort": {
     "hex": "080cb77ed58d18074017000800000000",
     "crockford": "081JVQXNCD303M05R010000000",
@@ -35,6 +41,18 @@
     "roundtripOk": true,
     "matchesExpected": true
   },
+  "lenient-alias-1": {
+    "hex": "080cb77ed58d19c1f80b000800000000",
+    "crockford": "081JVQXNCD370ZG2R010000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "max-128": {
+    "hex": "ffffffffffffffffffffffffffffffff",
+    "crockford": "7ZZZZZZZZZZZZZZZZZZZZZZZZZ",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
   "momentum-background": {
     "hex": "080cb77ed58d19c1f809000800000000",
     "crockford": "081JVQXNCD370ZG28010000000",
@@ -68,6 +86,12 @@
   "momentum-raw-255": {
     "hex": "0ffffffffffff9c1f80ff80800000000",
     "crockford": "0FZZZZZZZZZ70ZG3ZR10000000",
+    "roundtripOk": true,
+    "matchesExpected": true
+  },
+  "overflow-reject-1": {
+    "hex": "rejected",
+    "crockford": "rejected",
     "roundtripOk": true,
     "matchesExpected": true
   }
