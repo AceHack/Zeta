@@ -240,6 +240,7 @@
     <Compile Include="AdinkraViz.Tests.fs" />
     <Compile Include="CptSymmetry.Tests.fs" />
     <Compile Include="GeoSuperdeterminism.Tests.fs" />
+    <Compile Include="ZetaOverPrimeShapes.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
