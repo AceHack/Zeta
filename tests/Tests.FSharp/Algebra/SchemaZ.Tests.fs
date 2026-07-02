@@ -150,3 +150,109 @@ let ``MigrationZ carries both planes and they agree on addField`` () =
     match m.Data.Up v with
     | DynamicValue.Object kvs -> Assert.True(kvs |> List.exists (fun (k, _) -> k = "flag"))
     | _ -> Assert.True(false, "expected Object")
+
+// ═══════════════════════════════════════════════════════════════════
+// Slice 2 — MigrationZ.compile: the data plane DERIVED from the delta.
+// ═══════════════════════════════════════════════════════════════════
+
+let private obj' kvs = DynamicValue.Object kvs
+let private unwrap r = match r with Ok m -> m | Error e -> failwithf "compile failed: %s" e
+
+[<Fact>]
+let ``compiled add: Up supplies the default, Down removes it — round-trip id`` () =
+    let delta = SchemaZ.addFieldDelta "flag" DynamicValueType.Bool
+    let m = MigrationZ.compile 1 [] (Map [ "flag", DynamicValue.Bool false ]) delta |> unwrap
+    let v = obj' [ "x", DynamicValue.Int 1L ]
+    let up = m.Up v
+    match up with
+    | DynamicValue.Object kvs -> Assert.True(kvs |> List.exists (fun (k, x) -> k = "flag" && x = DynamicValue.Bool false))
+    | _ -> Assert.True(false)
+    Assert.True(((m.Down.Value) up = v), "down(up(v)) must equal v")
+
+[<Fact>]
+let ``compiled remove is windowed-lossless: the value survives in the dump and Down restores it exactly`` () =
+    let delta = SchemaZ.removeFieldDelta "secret" DynamicValueType.String
+    let m = MigrationZ.compile 3 [] Map.empty delta |> unwrap
+    let v = obj' [ "keep", DynamicValue.Int 7L; "secret", DynamicValue.String "s3" ]
+    let up = m.Up v
+    // gone from the top level, stashed in the dump
+    match up with
+    | DynamicValue.Object kvs ->
+        Assert.False(kvs |> List.exists (fun (k, _) -> k = "secret"))
+        Assert.True(kvs |> List.exists (fun (k, _) -> k = SchemaEvolution.dumpKey))
+    | _ -> Assert.True(false)
+    Assert.True(((m.Down.Value) up = v), "restoreFromDump must be position-exact")
+
+[<Fact>]
+let ``compiled rename WITH hint carries the value across — round-trip id`` () =
+    let delta = SchemaZ.renameFieldDelta "old" "new" DynamicValueType.Int
+    let m = MigrationZ.compile 5 [ { MigrationZ.From = "old"; MigrationZ.To = "new" } ] Map.empty delta |> unwrap
+    let v = obj' [ "old", DynamicValue.Int 42L ]
+    let up = m.Up v
+    Assert.True((up = obj' [ "new", DynamicValue.Int 42L ]))
+    Assert.True(((m.Down.Value) up = v))
+
+[<Fact>]
+let ``THE AMBIGUITY THEOREM: rename and remove+add are EQUAL deltas but different data planes — and unhinted loses nothing`` () =
+    // Schema plane: identical
+    let renameDelta = SchemaZ.renameFieldDelta "a" "b" DynamicValueType.Int
+    let removeAddDelta =
+        SchemaZ.applyDelta (SchemaZ.addFieldDelta "b" DynamicValueType.Int) (SchemaZ.removeFieldDelta "a" DynamicValueType.Int)
+    Assert.True((renameDelta = removeAddDelta), "the algebra deliberately cannot tell them apart")
+    // Data plane: hinted carries the value; unhinted takes the conservative windowed form
+    let v = obj' [ "a", DynamicValue.Int 9L ]
+    let hinted = MigrationZ.compile 1 [ { MigrationZ.From = "a"; MigrationZ.To = "b" } ] Map.empty renameDelta |> unwrap
+    let unhinted = MigrationZ.compile 1 [] (Map [ "b", DynamicValue.Int 0L ]) renameDelta |> unwrap
+    Assert.True((hinted.Up v = obj' [ "b", DynamicValue.Int 9L ]))
+    let uv = unhinted.Up v
+    match uv with
+    | DynamicValue.Object kvs ->
+        // "b" got the default, "a"'s real value is stashed in the dump — NOT silently lost
+        Assert.True(kvs |> List.exists (fun (k, x) -> k = "b" && x = DynamicValue.Int 0L))
+        Assert.True(kvs |> List.exists (fun (k, _) -> k = SchemaEvolution.dumpKey))
+    | _ -> Assert.True(false)
+    // and both round-trip
+    Assert.True(((unhinted.Down.Value) uv = v))
+
+[<Fact>]
+let ``compiled mixed delta (rename + remove + add) round-trips`` () =
+    let delta =
+        SchemaZ.fold
+            [ SchemaZ.renameFieldDelta "id" "user_id" DynamicValueType.Int
+              SchemaZ.removeFieldDelta "legacy" DynamicValueType.String
+              SchemaZ.addFieldDelta "email" DynamicValueType.String ]
+            SchemaZ.empty
+    let m =
+        MigrationZ.compile 7 [ { MigrationZ.From = "id"; MigrationZ.To = "user_id" } ]
+            (Map [ "email", DynamicValue.String "" ]) delta
+        |> unwrap
+    let v = obj' [ "id", DynamicValue.Int 1L; "legacy", DynamicValue.String "old" ]
+    let up = m.Up v
+    Assert.True(((m.Down.Value) up = v), "full mixed round-trip must be id")
+
+[<Fact>]
+let ``compile errors are surfaced, never silent`` () =
+    // non-unit weight
+    let dup = SchemaZ.fold [ SchemaZ.addFieldDelta "a" DynamicValueType.Int; SchemaZ.addFieldDelta "a" DynamicValueType.Int ] SchemaZ.empty
+    Assert.True(match MigrationZ.compile 1 [] Map.empty dup with Error _ -> true | _ -> false)
+    // hint that matches nothing
+    let d = SchemaZ.addFieldDelta "x" DynamicValueType.Int
+    Assert.True(match MigrationZ.compile 1 [ { MigrationZ.From = "p"; MigrationZ.To = "q" } ] Map.empty d with Error _ -> true | _ -> false)
+    // add without default
+    Assert.True(match MigrationZ.compile 1 [] Map.empty d with Error _ -> true | _ -> false)
+    // retype disguised as rename hint (types differ)
+    let retype = SchemaZ.retypeFieldDelta "age" DynamicValueType.String DynamicValueType.Int
+    Assert.True(match MigrationZ.compile 1 [ { MigrationZ.From = "age"; MigrationZ.To = "age" } ] Map.empty retype with Error _ -> true | _ -> false)
+
+[<Fact>]
+let ``compiled migrations slot into the SchemaEvolution.migrate stream`` () =
+    let m1 = MigrationZ.compile 1 [] (Map [ "b", DynamicValue.Int 0L ]) (SchemaZ.addFieldDelta "b" DynamicValueType.Int) |> unwrap
+    let m2 = MigrationZ.compile 2 [ { MigrationZ.From = "b"; MigrationZ.To = "c" } ] Map.empty (SchemaZ.renameFieldDelta "b" "c" DynamicValueType.Int) |> unwrap
+    let v = obj' [ "a", DynamicValue.Int 1L ]
+    match SchemaEvolution.migrate [ m1; m2 ] 1 3 v with
+    | Ok v3 ->
+        Assert.True((v3 = obj' [ "a", DynamicValue.Int 1L; "c", DynamicValue.Int 0L ]))
+        match SchemaEvolution.migrateDown [ m1; m2 ] 3 1 v3 with
+        | Ok back -> Assert.True((back = v))
+        | Error e -> Assert.True(false, e)
+    | Error e -> Assert.True(false, e)

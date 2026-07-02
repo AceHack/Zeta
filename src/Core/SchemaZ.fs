@@ -105,8 +105,115 @@ module SchemaZ =
 /// A migration with both planes explicit: the schema half as a Z-set delta
 /// (this file's algebra), the data half as the shipped `SchemaEvolution`
 /// migration (Up/Down value transforms, dump window — verbatim, unchanged).
-/// Slice 2 (future) derives the data plane FROM the delta for the standard
-/// field ops; until then the two are carried side by side.
+/// `MigrationZ.compile` (slice 2) DERIVES the data plane from the delta for
+/// the standard field ops; hand-written data planes remain available for
+/// custom migrations.
 type MigrationZ =
     { SchemaDelta: SchemaZ
       Data: SchemaEvolution.Migration }
+
+[<RequireQualifiedAccess>]
+module MigrationZ =
+
+    // ═════════════════════════════════════════════════════════════════
+    //  Slice 2 — the data plane DERIVED from the delta (081KWFXTHJY):
+    //  the generator-is-the-ECC move. The opaque Up/Down functions become
+    //  the COMPILED form of the schema delta; the delta is the source of
+    //  truth, the code is generated from it.
+    //
+    //  The one honest limit (a theorem about the design, tested):
+    //  `renameFieldDelta a b T` and `removeFieldDelta a T + addFieldDelta
+    //  b T` are EQUAL as schema deltas — the algebra deliberately cannot
+    //  tell them apart — but they are DIFFERENT data transforms (rename
+    //  carries the value across; remove+add does not). Value
+    //  correspondence is data-plane intent that the schema plane does not
+    //  and should not carry. So `compile` takes explicit RENAME HINTS;
+    //  every unhinted −1/+1 pair derives as the conservative
+    //  windowed-lossless form (stash-to-dump on remove, default on add) —
+    //  nothing is ever silently lost, per the dump doctrine.
+    // ═════════════════════════════════════════════════════════════════
+
+    /// Data-plane intent the schema delta cannot carry: "the value of
+    /// `From` becomes the value of `To`" (rename keeps the type; the
+    /// schema rows differ only in name).
+    type RenameHint = { From: string; To: string }
+
+    /// Compile a schema delta into a data-plane `SchemaEvolution.Migration`.
+    ///
+    /// Classification (deterministic, binary-collation order):
+    ///  • hinted (−1 (a,T), +1 (b,T)) pairs  → `renameField a b` (value carried)
+    ///  • remaining −1 rows                  → `stashToDump` (windowed-lossless remove)
+    ///  • remaining +1 rows                  → `addField` with `defaults` (backward compat)
+    /// `Down` composes the exact inverses in reverse order — total, because
+    /// every derived op is invertible-in-the-window (`restoreFromDump` /
+    /// `removeField` / rename-swapped).
+    ///
+    /// Errors (Result, never silent): a weight outside {−1,+1} (an
+    /// ill-formed delta is not a migration); a hint that doesn't match the
+    /// delta's rows; an add row with no default supplied.
+    let compile
+        (fromV: int)
+        (hints: RenameHint list)
+        (defaults: Map<string, DynamicValue>)
+        (delta: SchemaZ)
+        : Result<SchemaEvolution.Migration, string> =
+        // 1. Split rows; reject non-unit weights up front.
+        let rows = [ for e in delta -> e.Key, e.Weight ]
+        match rows |> List.tryFind (fun (_, w) -> w <> 1L && w <> -1L) with
+        | Some (k, w) -> Error(sprintf "delta row (%s: %A) has weight %d — not a unit migration delta" k.Name k.Type w)
+        | None ->
+
+        let removes = rows |> List.filter (fun (_, w) -> w = -1L) |> List.map fst
+        let adds = rows |> List.filter (fun (_, w) -> w = 1L) |> List.map fst
+
+        // 2. Consume rename hints: each must match a (−1 From, +1 To) pair of equal type.
+        let validate () =
+            hints
+            |> List.fold
+                (fun acc hint ->
+                    match acc with
+                    | Error _ -> acc
+                    | Ok (rem: FieldId list, add: FieldId list, ren) ->
+                        match rem |> List.tryFind (fun r -> r.Name = hint.From),
+                              add |> List.tryFind (fun a -> a.Name = hint.To) with
+                        | Some r, Some a when r.Type = a.Type ->
+                            Ok(List.filter ((<>) r) rem, List.filter ((<>) a) add, (hint, r.Type) :: ren)
+                        | Some r, Some a ->
+                            Error(sprintf "rename hint %s->%s: types differ (%A vs %A) — that is a retype, not a rename" hint.From hint.To r.Type a.Type)
+                        | _ ->
+                            Error(sprintf "rename hint %s->%s does not match the delta's -1/+1 rows" hint.From hint.To))
+                (Ok(removes, adds, []))
+
+        match validate () with
+        | Error e -> Error e
+        | Ok (remainingRemoves, remainingAdds, renames) ->
+
+        // 3. Every remaining add needs a default (backward compat is a data-plane fact).
+        match remainingAdds |> List.tryFind (fun a -> not (defaults.ContainsKey a.Name)) with
+        | Some a -> Error(sprintf "add of field '%s' has no default supplied — backward compatibility needs one" a.Name)
+        | None ->
+
+        // 4. Compose Up/Down in deterministic (binary-collation) order:
+        //    renames, then removes (stash — windowed-lossless), then adds.
+        let sortByName xs = xs |> List.sortWith (fun (a: FieldId) b -> Collation.binary.Compare(a.Name, b.Name))
+        let renamesSorted = renames |> List.sortWith (fun ((h1, _): RenameHint * _) (h2, _) -> Collation.binary.Compare(h1.From, h2.From))
+        let removesSorted = sortByName remainingRemoves
+        let addsSorted = sortByName remainingAdds
+
+        let upSteps =
+            [ for (h, _) in renamesSorted -> SchemaEvolution.renameField h.From h.To
+              for r in removesSorted -> SchemaEvolution.stashToDump r.Name
+              for a in addsSorted -> SchemaEvolution.addField a.Name defaults.[a.Name] ]
+
+        let downSteps =
+            [ for a in List.rev addsSorted -> SchemaEvolution.removeField a.Name
+              for r in List.rev removesSorted -> SchemaEvolution.restoreFromDump r.Name
+              for (h, _) in List.rev renamesSorted -> SchemaEvolution.renameField h.To h.From ]
+
+        let composeAll steps v = steps |> List.fold (fun acc f -> f acc) v
+
+        Ok
+            { From = fromV
+              To = fromV + 1
+              Up = composeAll upSteps
+              Down = Some(composeAll downSteps) }
