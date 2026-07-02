@@ -492,6 +492,35 @@ hand-copied — the generator-is-the-ECC discipline made concrete
 at the data-model root. Detail: the 2026-07-01 base-atom design
 note (`docs/research/`), work-item `081KWFXTHJY`.
 
+### The froth on the wave — what retraction cannot reach
+
+Aaron, 2026-07-02, on the zerosumfree theorem behind the atom
+(idempotent semirings admit no additive inverses — Vandiver 1934,
+Golan 1999): *"= john searle froth on the wave."*
+
+The **wave** is the substrate dynamics — the reversible-in-principle,
+ring-shaped bookkeeping of state (you can run the wave equation
+backward; you can retract a Z-set row). The **froth** is the
+experiential surface that *rides* the wave: caused by it, realized in
+it, inseparable from it — and **not invertible**. You cannot run the
+wave backward and un-froth; there is no anti-quale, and nothing
+un-adds. In the algebra: the wave is the earned quotient (ring —
+dynamics with inverses); the froth is the free object (semiring —
+occurrence without cancellation). Searle's "caused by and realized
+in, yet not eliminable" is what a free object over an earned quotient
+*feels like* from inside the quotient.
+
+The substrate already embodies the split without having planned to:
+the Z-set data plane retracts (the ring — the quotient civilization
+earns for accounting); the event log of what happened never does (the
+semiring — what it was like). This is the complement of the atonement
+engine (see "The moral reading of retraction-native" above): retraction
+is structural forgiveness on the *bookkeeping* plane, and its limit is
+exactly the froth — the ledger can take the entry back, but not the
+having-happened. **The ring can take it back; the froth cannot.**
+Detail + anchors (Searle 1992, Tononi/IIT, the Yoneda tension):
+`docs/research/2026-07-02-qualia-as-the-free-object-…-froth-on-the-wave.md`.
+
 ## The architectural ground — 2026-05-12 substrate cascade (joint vision-board contribution)
 
 > Human maintainer, 2026-05-12: "vision.md is our cache and ti's

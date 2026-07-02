@@ -99,14 +99,53 @@ public interface IStarRing<TWeight> : IRing<TWeight>   // rebase: Cayley–Dicks
 
 ## Review gates (Aaron 2026-07-02: "adversarial review? math team?")
 
-- [ ] Math-team validation (Soraya routing): the tower's correctness, the
-      idempotency theorem, whether an `IRig` rung or `IStarRing` rebase details
-      are needed; recommend the formal anchor (FsCheck law / Lean statement).
-- [ ] Adversarial review (Kira): breakage sweep of every ISemiring consumer,
-      migration risk, alternatives (DIM default-throw considered-and-rejected?),
-      API-shape attacks.
-- [ ] Ilyana (public-api-designer) sign-off on the published-surface change.
-- [ ] Implementation + full-suite + measure ΔU to `db/uncertainty/` on land.
+- [x] **Soraya: TOWER-NEEDS-CHANGES** (2026-07-02). Proof endorsed (2-line,
+      Gondran & Minoux 2008 already in `NovelMath.fs:27`); naming right per Golan
+      (no `IRig` rung needed); **`IStarRing : IRing` rebase is FORCED** (this
+      star is involution-star; Cayley–Dickson consumes `Negate` inside `Mul`,
+      `CayleyDickson.fs:68`); Kleene algebras NOT blocked (future
+      `IKleeneAlgebra : ISemiring` with `Star`, different branch — add a
+      disambiguating docstring line to `IStarRing.cs`). **Formal anchor routing:**
+      FsCheck law-pack in `tests/Tests.FSharp/Formal/` (semiring laws + IRing
+      inverse law + star anti-homomorphism; `CliffordStarRing.Laws.Tests.fs` is
+      the template) + ONE Z3 lemma (idempotent ∧ invertible ⇒ zero) via the
+      existing `Z3.Laws.Tests.fs` harness; Lean is overkill (BP-16).
+      **Bonus finding → 081KWGA0C7:** `IntervalRing` violates ring AND semiring
+      laws (Negate not an inverse; Moore-1966 sub-distributivity) — demote with
+      an on-file exception; law-pack first so the failure is witnessed.
+- [x] **Kira: adversarial findings banked** (2026-07-02). Her P0-1 ("ZSetW/
+      MergeKernel don't exist") was a STALE-VIEW artifact — she read the shared
+      checkout before its refresh; the code is on main. The durable catches:
+      * **P0-2 (scope-changing): the split is NOT C#-only.** `ISemiring` is
+        mirrored in TS (`Core.TypeScript/algebra/interfaces.ts:17`), Python
+        (`Core.Python/algebra/interfaces.py:23`), Q#
+        (`AlgebraInterfaces.qs:27`, `SemiringNegate`), Go
+        (`Core.Go/algebra/star_ring.go:16`), and BYTE-LOCKED IN THE IR:
+        `tests/cross-verification/zeta-ir-v2/interfaces/semiring.ir.json`
+        carries `Negate` AND the inverse law. The change must be ATOMIC across
+        all oracles + a new `ring.ir.json`, or the codegen/law-drift tests fail.
+      * Real retype surfaces beyond ZSetW: `WeightedSet.fs:85-89`
+        (`negate`/`subtract`), `Core.CSharp/WeightedSet.cs:113,136`,
+        `Semiring.Tests.fs:24` (`checkRingNegate` takes ISemiring).
+      * Motivation honesty: the Tropical throw is LATENT (nothing routes Tropical
+        through subtract today) — price as API hygiene + lie-removal, not a
+        live-crash fix. Alternatives ranked: proposal wins (DIM-throw, IsRing
+        flag, INegatable bolt-on, analyzer-only all rejected — "Ring" is the
+        anchored term); clean break > [Obsolete] staging at ~0 consumers.
+      * F# object-expression friction: none (verified across
+        `CayleyDickson.fs:52,91`, `Cl3.fs:161`, `Semiring.fs:33,102`).
+      * Doc-sweep list on land: `ISemiring.cs:4`, `Semiring.fs:7,15`,
+        `ProbabilitySemiring.fs:13`, `Conjugate.fs:19`, `Chip8Cow.fs:269`,
+        `BitGan.fs:15`, `DynamicValueNumeric.fs:11`, `IStarRing.cs:4`, Q#
+        `SemiringNegate` name.
+      * Unclaimed payoffs, now claimed: `ProbabilitySemiring` (ℚ) joins as
+        `IRing`; `IRayTraceable.Trace(ISemiring)` legally accepts Tropical.
+      * Sequencing: check backlog 081KS3X9Y (ZSetW phase-2 plan) — likely stale
+        now that ZSetW landed; reconcile before implementation.
+- [ ] Ilyana (public-api-designer) sign-off on the published-surface change —
+      NOW WITH the 5-oracle + IR atomicity scope from Kira's P0-2.
+- [ ] Implementation (atomic across F#/C#/TS/Py/Q#/Go + ring.ir.json + law-pack
+      + Z3 lemma + doc sweep) + full-suite + measure ΔU to `db/uncertainty/`.
 
 Anchors: Golan, *Semirings and their Applications* (the rig/ring boundary);
 Green–Karvounarakis–Tannen (provenance semirings — semiring-only by design);
