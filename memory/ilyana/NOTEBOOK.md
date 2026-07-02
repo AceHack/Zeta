@@ -1,3 +1,13 @@
+## 2026-07-02 — IRing/ISemiring split: APPROVE-WITH-CONDITIONS (081KWG9JQ9H)
+
+The ten-year test ran backwards: the contract we could not keep was the shipped
+one (ISemiring mandating Negate that lawful instances provably cannot have).
+Approved the clean break pre-v1 with five conditions (laws-before-interface;
+six-oracle + IR atomicity; SemVer major; doc-sweep gate incl. Semiring.fs:16
+variance-comment fix; zero is-IRing downcasts). Precedent: IGroup : IMonoid.
+New forever-promise watched: Trace(ISemiring) must never negate — witnessed in
+the law-pack. (Banked by Otto from my advisory review, per my note.)
+
 # Public-API Designer — Notebook
 
 Maintained by Ilyana. Newest first.

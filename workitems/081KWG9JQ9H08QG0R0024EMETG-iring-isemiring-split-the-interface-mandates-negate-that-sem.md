@@ -142,8 +142,28 @@ public interface IStarRing<TWeight> : IRing<TWeight>   // rebase: Cayley–Dicks
         `IRing`; `IRayTraceable.Trace(ISemiring)` legally accepts Tropical.
       * Sequencing: check backlog 081KS3X9Y (ZSetW phase-2 plan) — likely stale
         now that ZSetW landed; reconcile before implementation.
-- [ ] Ilyana (public-api-designer) sign-off on the published-surface change —
-      NOW WITH the 5-oracle + IR atomicity scope from Kira's P0-2.
+- [x] **Ilyana: APPROVE-WITH-CONDITIONS** (2026-07-02). "The ten-year test runs
+      backwards here: the contract we could NOT keep for ten years is the current
+      one" — removing Negate SHRINKS the surface; clean break correct pre-v1
+      ([Obsolete] staging would ship the lie through the deprecation window).
+      Naming canonical (keep ISemiring; IRing per Golan); in-assembly precedent:
+      IGroup : IMonoid already earns Inverse via subinterface — the split makes
+      the ring tower consistent with the existing group tower. Variance: nil
+      (TWeight is invariant in this family; Semiring.fs:16's "generic variance"
+      comment is inaccurate — fix in the doc sweep). New-contract watch:
+      Trace(ISemiring) accepting Tropical = a forever promise that Trace never
+      negates — witness it in the law-pack; future negation inside Trace becomes
+      an IRing constraint, never a downcast.
+      **CONDITIONS (merge gates):**
+      1. Law-pack + Z3 lemma land BEFORE the interface change; IntervalRing's
+         failures WITNESSED, then demoted with the on-file exception
+         (081KWGA0C7); IntervalRing is never retyped IRing.
+      2. Atomic across all six oracles + ring.ir.json; semiring.ir.json drops
+         the Negate law in the same change.
+      3. SemVer MAJOR bump on Zeta.Core.Abstractions + BREAKING release note.
+      4. Kira's doc-sweep as merge gate, + Semiring.fs:16.
+      5. Post-retype audit: zero `is IRing` runtime downcasts — capability flows
+         by constraint only.
 - [ ] Implementation (atomic across F#/C#/TS/Py/Q#/Go + ring.ir.json + law-pack
       + Z3 lemma + doc sweep) + full-suite + measure ΔU to `db/uncertainty/`.
 
