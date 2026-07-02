@@ -82,9 +82,14 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    **Parses ambiguous grammars SLR can't** (`E → E + E | id`), agrees with SLR on unambiguous
    ones. Naive GLR — the graph-structured-stack sharing + a GLR parse-FOREST (currently
    accept/reject only) are the next refinements. **← resume: GSS + parse forest, or LALR.**
-6. Point ingester+backend at **YAML / KDL `.g4`** (grammars-v4) — now robust to their conflicts
-   via GLR; retires the lenient-YAML finding and the KDL fork (both become grammars ingested +
-   parsed, not hand-parsers).
+6. ✅ **KDL fork RETIRED** — full ladder proven end-to-end on a real KDL grammar
+   (`tests/…/GrammarLadder.Tests.fs`): `.g4 → ingest → GrammarIr (closed) → buildGlr → glrParse`
+   parses KDL documents incl. the genuinely-ambiguous `node ID` case (GLR fork). KDL is a
+   grammar we ingest + parse, not a hand-written codec.
+   **YAML finding (honest):** YAML is **indentation-sensitive ⇒ NOT context-free**, so an LR/GLR
+   grammar cannot consume it without an **INDENT/DEDENT lexer** preprocessing pass (the Python
+   approach). The lenient-YAML need is therefore a *lexer* task, not a grammar one — recorded, not
+   forced through the CFG path. **← resume: an INDENT/DEDENT lexer, or the GLR parse forest.**
 7. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
