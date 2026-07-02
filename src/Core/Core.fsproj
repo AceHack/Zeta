@@ -63,6 +63,7 @@
     <Compile Include="ValueTreeCodec.fs" />
     <Compile Include="EventEnvelope.fs" />
     <Compile Include="Frontmatter.fs" />
+    <Compile Include="GrammarIr.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
     <Compile Include="Resume.fs" />

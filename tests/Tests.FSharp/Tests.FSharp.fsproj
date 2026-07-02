@@ -92,6 +92,7 @@
     <Compile Include="Asn1Der.Tests.fs" />
     <Compile Include="EventEnvelope.Tests.fs" />
     <Compile Include="Frontmatter.Tests.fs" />
+    <Compile Include="GrammarIr.Tests.fs" />
     <Compile Include="DynamicValue.Arrow.Tests.fs" />
     <Compile Include="Predicate.Tests.fs" />
     <Compile Include="Policy.Tests.fs" />
