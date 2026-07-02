@@ -4,22 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!--
-    HARDENED Content-Security-Policy (Phase 7 Part 1). Locks the network surface:
-      - script-src / style-src = 'self' ONLY. 'unsafe-inline' is GONE: all JS lives
-        in same-origin lib/*.js and all CSS in inventory.css (no inline <script>,
-        no <style>, no style="" attrs, no inline event handlers).
-      - cdn.jsdelivr.net REMOVED: supabase-js is vendored same-origin + SRI-pinned.
-      - connect-src pinned to 'self' + this project's Supabase host only.
-      - object/base/form-action locked down.
-    Regression guard: inventory/proofs/phase7-csp-proof.ts fails if 'unsafe-inline',
-    an off-origin script, or any inline JS/CSS is reintroduced.
-    Fonts: system-ui only (owner decision 2026-05-31) — NO font CDN added.
+    HARDENED Content-Security-Policy (carried forward from the Phase 7 hardening;
+    tightened for the git-as-database pivot 2026-07-02):
+      - script-src / style-src = 'self' ONLY; no inline JS/CSS, no event handler attrs.
+      - connect-src = 'self' ONLY (Supabase host REMOVED - the viewer reads the
+        committed items.json read-model; git is the database).
+      - Regression guard: inventory/proofs/phase7-csp-proof.ts.
+    Fonts: system-ui only (owner decision 2026-05-31).
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self';
     style-src 'self';
-    connect-src 'self' https://mdtbgreryqddloluhdmm.supabase.co;
+    connect-src 'self';
     img-src 'self' data:;
     base-uri 'none';
     object-src 'none';
@@ -35,153 +32,47 @@
     <header>
       <div class="logo-area">
         <h1>Zeta Inventory</h1>
-        <p class="subtitle">Secure inventory · sign in to continue</p>
+        <p class="subtitle">LFG asset register &middot; git is the database &middot; edits are commits</p>
       </div>
       <div class="status-area">
-        <div class="status-badge"><div class="pulse"></div><span id="conn-badge">Secured by RLS</span></div>
+        <span class="status-badge" id="totals-badge">loading&hellip;</span>
       </div>
     </header>
 
-    <!-- ===================== SIGN-IN VIEW (sign-in form ONLY) ===================== -->
-    <!-- Intentionally NO sign-up form, NO "create account" link. Accounts are
-         created only by an admin in the Supabase dashboard. (unchanged from Phase 2) -->
-    <section id="signin-view" class="panel hidden" aria-labelledby="signin-h">
-      <h2 id="signin-h">Sign in</h2>
-      <form id="signin-form" autocomplete="on" novalidate>
-        <div class="mb-14">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required autocomplete="username" inputmode="email" />
-        </div>
-        <div class="mb-14">
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password" required autocomplete="current-password" />
-        </div>
-        <button id="signin-btn" type="submit">Sign in</button>
-      </form>
-      <div id="signin-msg" class="msg hidden" role="alert" aria-live="assertive"></div>
+    <section class="panel">
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Search name, brand, serial, location&hellip;" autocomplete="off" />
+        <select id="status-filter">
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="storage">In storage</option>
+          <option value="attention">Needs attention</option>
+          <option value="repair">In repair</option>
+          <option value="retired">Retired</option>
+          <option value="disposed">Disposed</option>
+          <option value="missing">Missing</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table id="items-table">
+          <thead>
+            <tr>
+              <th data-sort="name">Name</th>
+              <th data-sort="brand">Brand</th>
+              <th data-sort="device_type">Type</th>
+              <th data-sort="status">Status</th>
+              <th data-sort="location">Location</th>
+              <th data-sort="qty">Qty</th>
+              <th data-sort="value_usd">Value</th>
+            </tr>
+          </thead>
+          <tbody id="items-body"></tbody>
+        </table>
+      </div>
+      <p class="subtitle" id="empty-note" hidden>No items match.</p>
     </section>
-
-    <!-- ===================== AUTHENTICATED VIEW ===================== -->
-    <section id="app-view" class="hidden">
-      <div class="panel">
-        <div class="row row-between">
-          <div class="row row-gap-sm">
-            <span class="muted">Signed in:</span> <span id="who" class="badge"></span>
-            <span class="badge" id="role"></span>
-          </div>
-          <label id="debug-wrap" class="attn-toggle hidden mr-8"><input type="checkbox" id="debug-toggle" /> Debug</label>
-          <button id="signout-btn" class="secondary" type="button">Sign out</button>
-        </div>
-      </div>
-
-      <!-- Inventory read panel -->
-      <div class="panel">
-        <h2>Inventory</h2>
-        <div class="controls">
-          <div class="control-field">
-            <label for="search">Search</label>
-            <input id="search" type="search" placeholder="name, brand, model, type, category…" autocomplete="off" />
-          </div>
-          <div class="control-field">
-            <label for="f-category">Category</label>
-            <select id="f-category"><option value="">All</option></select>
-          </div>
-          <div class="control-field">
-            <label for="f-brand">Brand</label>
-            <select id="f-brand"><option value="">All</option></select>
-          </div>
-          <div class="control-field">
-            <label for="f-status">Status</label>
-            <select id="f-status"><option value="">All</option></select>
-          </div>
-          <div class="control-field">
-            <label for="f-location">Location</label>
-            <select id="f-location"><option value="">All</option></select>
-          </div>
-        </div>
-        <div class="toolbar">
-          <div class="left">
-            <label class="attn-toggle"><input type="checkbox" id="f-attn" /> Needs Attention only</label>
-            <label class="attn-toggle"><input type="checkbox" id="f-archived" /> Include archived</label>
-            <button id="reset-btn" class="secondary" type="button">Reset</button>
-            <button id="add-btn" class="btn-sm hidden" type="button">+ Add item</button>
-            <button id="manage-fields-btn" class="btn-sm secondary hidden" type="button">⚙ Manage fields</button>
-            <!-- Phase 6: export (ALL signed-in roles per the permission matrix) + printable QR labels -->
-            <button id="export-csv-btn" class="btn-sm secondary" type="button" title="Export all loaded items as CSV">⤓ CSV</button>
-            <button id="export-json-btn" class="btn-sm secondary" type="button" title="Export all loaded items as JSON (full-fidelity backup)">⤓ JSON</button>
-            <button id="print-labels-btn" class="btn-sm secondary" type="button" title="Print QR labels for the items currently in view">⎙ Labels</button>
-            <span class="sort-hint">Tip: click a column to sort · shift-click to add a secondary sort</span>
-          </div>
-          <span class="count-pill" id="count-pill">—</span>
-        </div>
-
-        <div id="inv-status" class="msg info hidden" aria-live="polite"></div>
-
-        <div class="mt-16">
-          <!-- wide: table -->
-          <div class="view-table">
-            <div class="table-wrap">
-              <table class="inv" aria-label="Inventory items">
-                <thead><tr id="inv-thead"></tr></thead>
-                <tbody id="inv-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-          <!-- narrow: cards -->
-          <div class="view-cards"><div class="cards" id="inv-cards"></div></div>
-          <div id="empty-state" class="empty-state hidden">No items match your search/filters.</div>
-        </div>
-      </div>
-
-      <!-- Phase-2 diagnostics — admin-only, revealed via the Debug toggle (Phase 4). -->
-      <div class="panel hidden" id="diag-panel">
-        <details class="diag" open>
-          <summary>Diagnostics (Phase 2 auth/RLS proof scaffolding)</summary>
-          <hr />
-          <h3 class="h3-sub">Sample item <span class="muted">(sign-out clears this)</span></h3>
-          <div id="sample-item" class="muted">—</div>
-          <hr />
-          <h3 class="h3-sub">Edit probe <span class="muted">(DB decides, not the UI)</span></h3>
-          <div class="row"><button id="probe-btn" class="secondary" type="button">Attempt edit (UPDATE items)</button></div>
-          <div id="probe-msg" class="msg hidden" aria-live="polite"></div>
-        </details>
-      </div>
-    </section>
-
-    <div id="status" class="muted fs-085" aria-live="polite"></div>
   </div>
 
-  <!-- Phase 4: reusable modal (edit / add / confirm / history / conflict) -->
-  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-box">
-      <div class="modal-head"><h2 id="modal-title">—</h2><button id="modal-x" class="icon-btn" type="button" aria-label="Close">×</button></div>
-      <div id="modal-body" class="modal-body"></div>
-      <div id="modal-msg" class="msg hidden" role="alert" aria-live="assertive"></div>
-      <div id="modal-foot" class="modal-foot"></div>
-    </div>
-  </div>
-
-  <!-- Phase 6: printable QR label sheet — rendered ONLY when printing (see @media print). -->
-  <div id="label-sheet" class="label-sheet" aria-hidden="true"></div>
-
-  <!-- supabase-js v2.108.2 — VENDORED same-origin (Phase 7 hardening), byte-identical
-       from npm @supabase/supabase-js@2.108.2/dist/umd/supabase.min.js (the package's
-       declared browser entrypoint, what the old @2 CDN URL resolved to). SRI pins it and
-       the CSP drops cdn.jsdelivr.net entirely. Provenance + sha384 recorded in PROGRESS.md.
-       Updates are now a deliberate manual repo step (owner-accepted trade-off, Q2=A). -->
-  <script src="lib/supabase-js-2.108.2.umd.min.js"
-          integrity="sha384-JWEyvHh+lRf0sN/WWY+QTQwX+CyWqmNg4tkc8GQzAMEtR2wGNrCJlvnu1lHD1kDm"></script>
-  <!-- Phase 5: shared custom-field logic (same-origin; CSP script-src 'self').
-       ONE SOURCE OF TRUTH with inventory/proofs/custom-fields.unit.test.ts. -->
-  <script src="lib/custom-fields.js"></script>
-  <!-- Phase 6: vendored QR encoder (kazuhikoarase/qrcode-generator v1.4.4, MIT,
-       byte-identical, sha384 8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k)
-       + shared export/deep-link logic. BOTH same-origin (CSP script-src 'self');
-       NO new CDN, NO CSP change. ONE SOURCE OF TRUTH with inventory/proofs/*. -->
-  <script src="lib/qrcode-generator-1.4.4.js"></script>
-  <script src="lib/inventory-export.js"></script>
-  <!-- Phase 7: app logic extracted to a same-origin file so the CSP can drop
-       script-src 'unsafe-inline'. ONE SOURCE OF TRUTH with the former inline block. -->
-  <script src="lib/inventory-app.js"></script>
+  <script type="module" src="lib/inventory-viewer.js"></script>
 </body>
 </html>

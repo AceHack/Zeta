@@ -2,10 +2,9 @@
 # ---------------------------------------------------------------------------------------
 # Keeps the CSP hardening and the shared lib logic from regressing:
 #   * inventory/proofs/phase7-csp-proof.ts — asserts the shipped index.html keeps a
-#     locked CSP (script-src/style-src 'self', no 'unsafe-inline', no off-origin CDN),
-#     no inline JS/CSS, and supabase-js vendored same-origin with an SRI matching the
-#     file on disk.
-#   * inventory/proofs/*.unit.test.ts — the shared custom-field + export/QR logic.
+#     locked CSP (script/style/connect-src 'self', no 'unsafe-inline', no off-origin
+#     host), no inline JS/CSS, and every referenced script/stylesheet on disk.
+#   * inventory/proofs/viewer.unit.test.ts — the viewer's pure filter/sort/escape logic.
 # Static + offline only (no network, no secrets, no browser). The live in-browser
 # CSP-no-violations check is the Part-2 Auditor's job.
 name: inventory-hardening-check
@@ -44,5 +43,5 @@ jobs:
       - name: CSP hardening proof (static)
         run: bun inventory/proofs/phase7-csp-proof.ts
 
-      - name: Inventory lib unit tests
-        run: bun test inventory/proofs/custom-fields.unit.test.ts inventory/proofs/inventory-export.unit.test.ts
+      - name: Inventory viewer unit tests
+        run: bun test inventory/proofs/viewer.unit.test.ts

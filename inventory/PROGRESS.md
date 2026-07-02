@@ -9,6 +9,10 @@ Status: [ ] todo · [~] doing · [x] gate passed (record HOW verified — eviden
   (Category.InventoryAsset=10, Generic layout, time-sortable) + `generate-items-json.ts` (+tests)
   + 2 SAMPLE items. Next: paper-photo transcription replaces samples; lean read-only viewer
   replaces supabase-js app; QR + depreciation export reattach to items.json.
+- **Phase B 2026-07-02: lean viewer landed.** index.html + lib/inventory-viewer.js (ES module,
+  read-only over items.json, CSP tightened to connect-src 'self'); Supabase-era libs/proofs/sql/seed
+  DELETED (lineage in git history); csp-proof rewritten to the new contract; hardening workflow +
+  preflight items.json staleness gate updated. QR lib retained for the label phase.
 - Backend: Supabase, USA region, owner-owned. Connector-first; CLI fallback.
 - Archive over delete. $0 target; anon read-only heartbeat to prevent pause; manual + scheduled export.
 - service_role key: forbidden everywhere.
