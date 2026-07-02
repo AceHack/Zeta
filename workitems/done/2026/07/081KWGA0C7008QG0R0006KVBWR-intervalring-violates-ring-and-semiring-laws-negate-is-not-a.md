@@ -1,11 +1,12 @@
 ---
 id: 081KWGA0C7008QG0R0006KVBWR
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: intervalring-violates-ring-and-semiring-laws-negate-is-not-a
 title: "IntervalRing violates ring AND semiring laws — Negate is not an inverse, distributivity fails (phantom retraction residue)"
 created: 2026-07-02T02:19:57.024Z
+completed: 2026-07-02T03:25:48Z
 depends_on: []
 composes_with: []
 ---
@@ -59,3 +60,10 @@ intervals, the true inverses); Golan 1999. Depends on / composes with
 081KWG9JQ9H (the split). Found-by lineage: [[fable5-enhancements]] memory,
 adversarial-review economics ([[every-bug-has-economic-value]]).
 
+
+## RESOLVED (2026-07-02, PR #9105)
+
+Demoted exactly per the routing: the law pack landed FIRST (#9103) so both lies
+are witnessed; the split (#9105) then removed IntervalRing's unlawful Negate and
+pinned the on-file substrate-honest exception in its docstring. It implements
+`ISemiring` only, never `IRing`; the phantom-residue path no longer type-checks.

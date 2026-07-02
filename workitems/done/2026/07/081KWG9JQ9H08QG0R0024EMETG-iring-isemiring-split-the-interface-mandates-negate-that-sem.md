@@ -1,11 +1,12 @@
 ---
 id: 081KWG9JQ9H08QG0R0024EMETG
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: iring-isemiring-split-the-interface-mandates-negate-that-sem
 title: "IRing/ISemiring split — the interface mandates Negate that semirings provably cannot have (type-level lie, runtime throws)"
 created: 2026-07-02T02:12:29.617Z
+completed: 2026-07-02T03:25:48Z
 depends_on: []
 composes_with: []
 ---
