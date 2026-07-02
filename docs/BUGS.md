@@ -105,8 +105,6 @@ can no longer pass with Go silent.
 
 ## P1 — serious
 
-
-
 ### ZetaId base32 cross-verify lacks edge vectors + has two overflow algorithms
 
 - **Site:** `tests/cross-verification/zeta-id/vectors.yaml` (12 happy-path only); `parse` in TS/Py (bigint, post-check `>MASK_128`) vs C#/F#/Rust (u128, pre-guard `firstVal>=8`)
