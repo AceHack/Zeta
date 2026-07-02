@@ -190,11 +190,11 @@ the dynamic/cold escape hatch**, not the default.
 
 ## Remaining follow-ups (Naledi's notes 9–11 + steps 4–5)
 
-- [ ] String-key `ZSetWBench` variant (comparer dispatch + `Pool.Return` clear cost
+- [x] String-key `ZSetWBench` variant (DONE 2026-07-02: exact parity, ratio 1.00 all sizes) (comparer dispatch + `Pool.Return` clear cost
       for reference-type keys — the practical DBSP key type).
-- [ ] One large benchmark point (e.g. 65536 entries) for pool-miss / LOH behaviour
+- [x] One large benchmark point (DONE 2026-07-02: 65536 ratio 1.04±0.03, alloc identical) (e.g. 65536 entries) for pool-miss / LOH behaviour
       (ZEntry=16B ⇒ cap crosses LOH ~5.3K entries; 4096⊕4096 rents 128KB pooled).
-- [ ] Baseline table with variance in `docs/BENCHMARKS.md` (durable home, not just
+- [x] Baseline table with variance in `docs/BENCHMARKS.md` (DONE 2026-07-02) (durable home, not just
       this work-item).
 - [ ] Step 4 — Roslyn source generator: C# per-ring specialisations (the C#-side
       SRTP-equivalent; gen(int64) byte-locked in golden vectors).
