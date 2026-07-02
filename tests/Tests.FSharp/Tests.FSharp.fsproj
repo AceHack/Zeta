@@ -245,6 +245,7 @@
     <Compile Include="IharaZeta.Tests.fs" />
     <Compile Include="SchedulerDynamicalZeta.Tests.fs" />
     <Compile Include="BraidCatalogIhara.Tests.fs" />
+    <Compile Include="BraidIsaZetaConsistency.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />
