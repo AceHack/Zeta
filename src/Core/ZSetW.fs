@@ -162,12 +162,16 @@ type ZSetW<'K, 'W when 'K : comparison> =
 module ZSetW =
 
     /// Empty Z-set over weight semiring 'W.
+    [<CompiledName "Empty">]
     let empty<'K, 'W when 'K : comparison> : ZSetW<'K, 'W> = ZSetW<'K, 'W>.Empty
 
+    [<CompiledName "Count">]
     let count (z: ZSetW<'K, 'W>) = z.Count
+    [<CompiledName "IsEmpty">]
     let isEmpty (z: ZSetW<'K, 'W>) = z.IsEmpty
 
     /// Singleton entry; if `weight` equals `ring.Zero` returns empty.
+    [<CompiledName "Singleton">]
     let singleton (ring: ISemiring<'W>) (key: 'K) (weight: 'W) : ZSetW<'K, 'W> =
         if EqualityComparer<'W>.Default.Equals(weight, ring.Zero) then
             ZSetW<'K, 'W>.Empty
@@ -176,6 +180,7 @@ module ZSetW =
 
     /// Build from an arbitrary sequence; duplicate keys are combined
     /// via `ring.Add`; entries equal to `ring.Zero` are dropped.
+    [<CompiledName "OfSeq">]
     let ofSeq (ring: ISemiring<'W>) (xs: seq<'K * 'W>) : ZSetW<'K, 'W> =
         let agg = SortedDictionary<'K, 'W>(KeyComparerCache<'K>.Instance)
         for (k, w) in xs do
@@ -190,7 +195,15 @@ module ZSetW =
                 builder.Add(ZEntryW(kv.Key, kv.Value))
         ZSetW(builder.ToImmutable())
 
+    /// C#-friendly `ofSeq` over ValueTuples (Iris event-storm F2, 2026-07-02):
+    /// `ZSetWModule.OfValuePairs(ring, new[] { ("x", 2L), ("y", 1L) })` — no
+    /// `System.Tuple.Create` ceremony. Same semantics as `ofSeq`.
+    [<CompiledName "OfValuePairs">]
+    let ofValuePairs (ring: ISemiring<'W>) (pairs: seq<struct ('K * 'W)>) : ZSetW<'K, 'W> =
+        ofSeq ring (pairs |> Seq.map (fun struct (k, w) -> k, w))
+
     /// Lookup weight at key; returns `ring.Zero` when key absent.
+    [<CompiledName "Lookup">]
     let lookup (ring: ISemiring<'W>) (key: 'K) (z: ZSetW<'K, 'W>) : 'W =
         let span = z.AsSpan()
         if span.IsEmpty then ring.Zero
@@ -214,6 +227,7 @@ module ZSetW =
     /// Both inputs are already sorted by key (ZSetW invariant), so this
     /// is a linear two-pointer merge — O(|a| + |b|) — not the
     /// O(n log n) a `SortedDictionary` rebuild would cost.
+    [<CompiledName "Sum">]
     let sum (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         if a.IsEmpty then b
         elif b.IsEmpty then a
@@ -235,6 +249,7 @@ module ZSetW =
     /// that work over non-ring semirings must avoid `negate`/`difference`
     /// and use ring-specific equivalents (for tropical: there is no
     /// retraction — "minimum so far" is monotone-decreasing only).
+    [<CompiledName "Negate">]
     let negate (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         let span = a.AsSpan()
         let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(span.Length)
@@ -247,10 +262,12 @@ module ZSetW =
     /// Same ring-requires-additive-inverse caveat as `negate` — semirings
     /// without `Negate` (e.g., `TropicalSemiring`) will surface
     /// `InvalidOperationException` from the underlying `ring.Negate` call.
+    [<CompiledName "Difference">]
     let difference (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         sum ring a (negate ring b)
 
     /// Scale every weight by `scalar` via `ring.Mul`.
+    [<CompiledName "Scale">]
     let scale (ring: ISemiring<'W>) (scalar: 'W) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         if EqualityComparer<'W>.Default.Equals(scalar, ring.Zero) then
             ZSetW<'K, 'W>.Empty
@@ -266,6 +283,7 @@ module ZSetW =
     /// Bridge: project a ZSetW<'K, int64> to the existing ZSet<'K>.
     /// Lets callers move polymorphic results into the int64 hot path
     /// where the rest of the substrate currently lives.
+    [<CompiledName "ToZSetIntegerRing">]
     let toZSetIntegerRing (a: ZSetW<'K, int64>) : ZSet<'K> =
         let span = a.AsSpan()
         let builder = ImmutableArray.CreateBuilder<ZEntry<'K>>(span.Length)
@@ -274,6 +292,7 @@ module ZSetW =
         ZSet(builder.MoveToImmutable())
 
     /// Bridge: lift the existing ZSet<'K> to ZSetW<'K, int64>.
+    [<CompiledName "OfZSetIntegerRing">]
     let ofZSetIntegerRing (a: ZSet<'K>) : ZSetW<'K, int64> =
         let span = a.AsSpan()
         let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, int64>>(span.Length)
@@ -302,6 +321,7 @@ module ZSetW =
     // ═══════════════════════════════════════════════════════════════
 
     /// Zero-overhead singleton (struct ring by value).
+    [<CompiledName "SingletonBy">]
     let singletonBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                            (key: 'K) (weight: 'W) : ZSetW<'K, 'W> =
         if EqualityComparer<'W>.Default.Equals(weight, ring.Zero) then
@@ -310,6 +330,7 @@ module ZSetW =
             ZSetW(ImmutableArray.Create(ZEntryW(key, weight)))
 
     /// Zero-overhead build-from-sequence (struct ring by value).
+    [<CompiledName "OfSeqBy">]
     let ofSeqBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                        (xs: seq<'K * 'W>) : ZSetW<'K, 'W> =
         let agg = SortedDictionary<'K, 'W>(KeyComparerCache<'K>.Instance)
@@ -333,6 +354,7 @@ module ZSetW =
     /// which cost a second allocation and an uncached comparer). Combined with the
     /// devirtualised struct-ring `Add`, this is the int64 path meant to MATCH the
     /// specialised `ZSet.add` — verified by `ZSetWBench`.
+    [<CompiledName "SumBy">]
     let sumBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                      (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         if a.IsEmpty then b
@@ -346,6 +368,7 @@ module ZSetW =
             if merged.IsEmpty then ZSetW<'K, 'W>.Empty else ZSetW(merged)
 
     /// Zero-overhead negate (struct ring by value; requires a full ring).
+    [<CompiledName "NegateBy">]
     let negateBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                         (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         let span = a.AsSpan()
@@ -355,11 +378,13 @@ module ZSetW =
         ZSetW(if span.Length = 0 then ImmutableArray.Empty else builder.MoveToImmutable())
 
     /// Zero-overhead difference `a - b` (struct ring by value).
+    [<CompiledName "DifferenceBy">]
     let differenceBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                             (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         sumBy ring a (negateBy ring b)
 
     /// Zero-overhead scale (struct ring by value).
+    [<CompiledName "ScaleBy">]
     let scaleBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
                        (scalar: 'W) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         if EqualityComparer<'W>.Default.Equals(scalar, ring.Zero) then

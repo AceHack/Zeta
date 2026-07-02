@@ -43,22 +43,26 @@ type SchemaZ = ZSet<FieldId>
 module SchemaZ =
 
     /// The empty schema.
+    [<CompiledName "Empty">]
     let empty: SchemaZ = ZSet.Empty
 
     /// A schema from a field list (each present once). Duplicate (name, type)
     /// pairs consolidate to weight >1 and will FAIL wellFormed — garbage in,
     /// detected out.
+    [<CompiledName "OfFields">]
     let ofFields (fields: FieldId seq) : SchemaZ =
         ZSet.ofSeq (fields |> Seq.map (fun f -> f, 1L))
 
     /// Every field present exactly once (all weights = +1). The integrity
     /// check the fold gives us for free: weight 2 = duplicate add; -1 =
     /// remove-before-add; any ≠ +1 after a merge = a real conflict, surfaced.
+    [<CompiledName "WellFormed">]
     let wellFormed (s: SchemaZ) : bool =
         s.AsSpan().ToArray() |> Array.forall (fun e -> e.Weight = 1L)
 
     /// The fields of a well-formed schema (weight-+1 rows), sorted by the
     /// binary-collation key order.
+    [<CompiledName "Fields">]
     let fields (s: SchemaZ) : FieldId list =
         [ for e in s do
             if e.Weight = 1L then yield e.Key ]
@@ -66,20 +70,24 @@ module SchemaZ =
     // ── Deltas: the schema half of a migration, as data ──────────────
 
     /// Delta: add a field. (+1 on the pair.)
+    [<CompiledName "AddFieldDelta">]
     let addFieldDelta (name: string) (ty: DynamicValueType) : SchemaZ =
         ZSet.ofSeq [ { Name = name; Type = ty }, 1L ]
 
     /// Delta: remove a field. (−1 on the pair — a retraction.)
+    [<CompiledName "RemoveFieldDelta">]
     let removeFieldDelta (name: string) (ty: DynamicValueType) : SchemaZ =
         ZSet.ofSeq [ { Name = name; Type = ty }, -1L ]
 
     /// Delta: rename a field. Retract the old identity, insert the new —
     /// never an in-place mutation.
+    [<CompiledName "RenameFieldDelta">]
     let renameFieldDelta (oldName: string) (newName: string) (ty: DynamicValueType) : SchemaZ =
         ZSet.ofSeq [ { Name = oldName; Type = ty }, -1L; { Name = newName; Type = ty }, 1L ]
 
     /// Delta: retype a field. Same retract+insert shape as rename — the
     /// pair is the identity, so a type change is a different field row.
+    [<CompiledName "RetypeFieldDelta">]
     let retypeFieldDelta (name: string) (oldTy: DynamicValueType) (newTy: DynamicValueType) : SchemaZ =
         ZSet.ofSeq [ { Name = name; Type = oldTy }, -1L; { Name = name; Type = newTy }, 1L ]
 
@@ -87,6 +95,7 @@ module SchemaZ =
 
     /// Apply a delta: Z-set sum via the one shared merge kernel — the same
     /// fold that maintains data. No privileged schema channel.
+    [<CompiledName "ApplyDelta">]
     let applyDelta (delta: SchemaZ) (s: SchemaZ) : SchemaZ = s + delta
 
     /// Roll back a delta: sum of the ring NEGATE. Always defined — on the
@@ -94,12 +103,23 @@ module SchemaZ =
     /// (`(s + d) + (-d) = s` is a theorem of ℤ, not a promise of a Down
     /// function). Data-plane recovery (the value a dropped field held) is
     /// SchemaEvolution's dump machinery, untouched.
+    [<CompiledName "RollbackDelta">]
     let rollbackDelta (delta: SchemaZ) (s: SchemaZ) : SchemaZ = s + (-delta)
 
     /// Fold a delta stream from a starting schema. A schema VERSION is a
     /// prefix of this stream — position in the fold, not a privileged int.
+    [<CompiledName "Fold">]
     let fold (deltas: SchemaZ seq) (start: SchemaZ) : SchemaZ =
         deltas |> Seq.fold (fun acc d -> acc + d) start
+
+    /// The rows that make a schema ill-formed (weight ≠ +1), WITH their
+    /// weights — the conflict PAYLOAD `wellFormed`'s bool cannot carry
+    /// (Iris event-storm 2026-07-02: a detected conflict must name the
+    /// offending field, not just say "false"). Empty list ⇔ well-formed.
+    [<CompiledName "Conflicts">]
+    let conflicts (s: SchemaZ) : (FieldId * int64) list =
+        [ for e in s do
+            if e.Weight <> 1L then yield e.Key, e.Weight ]
 
 
 /// A migration with both planes explicit: the schema half as a Z-set delta
@@ -151,6 +171,7 @@ module MigrationZ =
     /// Errors (Result, never silent): a weight outside {−1,+1} (an
     /// ill-formed delta is not a migration); a hint that doesn't match the
     /// delta's rows; an add row with no default supplied.
+    [<CompiledName "Compile">]
     let compile
         (fromV: int)
         (hints: RenameHint list)
