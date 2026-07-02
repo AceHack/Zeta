@@ -220,3 +220,55 @@ let ``SORAYA'S FINDING LOCKED: a λ-mixing honestly-local pair is falsely convic
     Assert.False((chshSybil BellTest.ClassicalBound [ a; b ]).AllDistinct) // the FALSE conviction, locked as evidence
     // the fix direction: a concentration-shaped margin acquits the innocent pair
     Assert.True((chshSybil (BellTest.ClassicalBound + 0.15) [ a; b ]).AllDistinct)
+
+// ── Soraya batch 2b: the ε(n) calibration (Hoeffding-shaped; header states the tolerance) ──
+// Gate calibration: δ = 0.01 per pair at n = 4096 gives ε ≈ 0.192. All statistics
+// below are SEEDED (DST §7) — deterministic instances of the distributional claim;
+// the paper-grade concentration proof stays routed (Lean/Mathlib, outward-claim time).
+
+[<Fact>]
+let ``MARGIN SHAPE: ε(n,δ) = sqrt(32·ln(1/δ)/n) — monotone down in n, up as δ shrinks, ≈0.19 at (4096, 0.01)`` () =
+    let e = chshMargin 0.01 4096
+    Assert.InRange(e, 0.18, 0.20)
+    Assert.True(chshMargin 0.01 16384 < e)
+    Assert.True(chshMargin 0.0001 4096 > e)
+    Assert.Equal(infinity, chshMargin 0.01 0)
+    Assert.Equal(infinity, chshMargin 0.0 4096)
+
+let private lambdaMixingPair (seedA: int) (seedB: int) (seedL: int) (n: int) =
+    let sa = bits seedA n
+    let sb = bits seedB n
+    let lam = bits seedL n
+    let a =
+        List.zip sa lam
+        |> List.map (fun (x, l) ->
+            { AntiSybil.ChshRound.Setting = x
+              Outcome = if l = 0 then 1 else 1 - 2 * x })
+    let b =
+        List.zip sb lam
+        |> List.map (fun (y, l) ->
+            { AntiSybil.ChshRound.Setting = y
+              Outcome = if l = 0 then 1 else 1 - 2 * y })
+    a, b
+
+[<Fact>]
+let ``THE STATISTICS GATE: 100 seeded λ-mixing instances all sit under 2 + ε(4096, 0.01) — the margin holds where bare 2.0 failed`` () =
+    let margin = 2.0 + chshMargin 0.01 4096
+    let mutable above2 = 0
+    for seed in 1 .. 100 do
+        let a, b = lambdaMixingPair (300 + seed) (500 + seed) (700 + seed) 4096
+        let s = chshS a b
+        if s > 2.0 then above2 <- above2 + 1
+        Assert.True(s <= margin, sprintf "seed %d: S = %f exceeds calibrated %f" seed s margin)
+    // and the finding's texture, quantified: roughly half the honest instances DO exceed bare 2.0
+    Assert.InRange(above2, 25, 75)
+
+[<Fact>]
+let ``THE FIX, DEMONSTRATED: chshSybilCalibrated acquits the λ-mixing innocents and still convicts the conducted pair`` () =
+    let a, b = lambdaMixingPair 211 223 227 4096 // the exact instance falsely convicted at bare 2.0
+    Assert.True((chshSybilCalibrated 0.01 [ a; b ]).AllDistinct)
+    let ca, cb = conductedPair 149 151 4096 // S = 4 clears any sane margin
+    let v = chshSybilCalibrated 0.01 [ ca; cb ]
+    Assert.Equal(1, v.DistinctCount)
+    let ia, ib = independentPair 107 109 4096
+    Assert.True((chshSybilCalibrated 0.01 [ ia; ib ]).AllDistinct)

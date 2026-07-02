@@ -1041,3 +1041,25 @@ let ``Z3 vs CVC5 cross-check harness catches a planted disagreement`` () =
         else
             if File.Exists(replayPath) then File.Delete(replayPath)
 
+
+[<Fact>]
+let ``Z3 proves THE CHSH LOCAL-HIDDEN-VARIABLE BOUND: for deterministic ±1 outcomes, ab − ab' + a'b + a'b' ≤ 2 (Soraya batch 2a)`` () =
+    // The inequality behind AntiSybil.chshSybil's conviction semantics (Bell 1964;
+    // CHSH 1969): any deterministic local assignment of ±1 outcomes to the four
+    // measurement slots keeps the CHSH combination within [−2, 2]. Shared classical
+    // randomness is a convex mixture of these deterministic strategies, so the
+    // expectation bound follows by convexity — the finite-sample margin ε(n) on the
+    // EMPIRICAL Ŝ is the separate, Hoeffding-calibrated statement (AntiSybil.chshMargin).
+    let script =
+        "(declare-const a Int)\n" +
+        "(declare-const b Int)\n" +
+        "(declare-const a2 Int)\n" +
+        "(declare-const b2 Int)\n" +
+        "(assert (or (= a 1) (= a (- 1))))\n" +
+        "(assert (or (= b 1) (= b (- 1))))\n" +
+        "(assert (or (= a2 1) (= a2 (- 1))))\n" +
+        "(assert (or (= b2 1) (= b2 (- 1))))\n" +
+        "(assert (not (and (<= (+ (- (* a b) (* a b2)) (* a2 b) (* a2 b2)) 2)\n" +
+        "                  (>= (+ (- (* a b) (* a b2)) (* a2 b) (* a2 b2)) (- 2)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "CHSH LHV bound (deterministic strategies)" script

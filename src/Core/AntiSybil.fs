@@ -189,6 +189,51 @@ module AntiSybil =
           SourceOf = sourceOf
           AllDistinct = distinct = k }
 
+    /// Hoeffding-shaped conviction margin ε(n, δ) for the CHSH oracle (Soraya
+    /// batch 2b — the calibration the BUGS.md P1 asked for). Derivation: each
+    /// bucket mean of ±1 outcomes is sub-Gaussian with parameter 1/n_b; Ŝ is a
+    /// ±-signed sum of the four independent bucket means, so its deviation is
+    /// sub-Gaussian with parameter Σ 1/n_b ≈ 16/n under uniform probe settings
+    /// (n_b ≈ n/4 — architectural: WE choose the settings, seeded uniform).
+    /// P(Ŝ − E[Ŝ] ≥ ε) ≤ exp(−n·ε²/32) ⇒ ε(n, δ) = sqrt(32·ln(1/δ)/n).
+    /// Scope: per-round-independent local strategies (shared λ i.i.d. across
+    /// rounds); Hoeffding 1963, finite-statistics DI lineage Pironio et al. 2010.
+    let chshMargin (delta: float) (rounds: int) : float =
+        if rounds <= 0 || delta <= 0.0 || delta >= 1.0 then infinity
+        else sqrt (32.0 * log (1.0 / delta) / float rounds)
+
+    /// The CALIBRATED CHSH identity oracle: conviction at `2 + ε(n, δ)` with the
+    /// pair's own run length, so an honestly-local pair at the bound is falsely
+    /// convicted with probability ≤ δ (per pair) — the sound default the bare-
+    /// threshold `chshSybil` is not. Same one-way inference: convicts sameness,
+    /// never acquits. Deterministic (DST §7).
+    let chshSybilCalibrated (delta: float) (streams: ChshRound list list) : SybilVerdict =
+        let k = List.length streams
+        let arr = List.toArray streams
+        let parent = Array.init k id
+        let rec find i = if parent.[i] = i then i else (let r = find parent.[i] in parent.[i] <- r; r)
+        let union i j = let ri, rj = find i, find j in if ri <> rj then parent.[ri] <- rj
+
+        for i in 0 .. k - 1 do
+            for j in i + 1 .. k - 1 do
+                let n = min (List.length arr.[i]) (List.length arr.[j])
+                if abs (chshS arr.[i] arr.[j]) > 2.0 + chshMargin delta n then
+                    union i j
+
+        let roots = [ 0 .. k - 1 ] |> List.map find
+        let canon =
+            roots
+            |> List.distinct
+            |> List.mapi (fun id r -> r, id)
+            |> Map.ofList
+        let sourceOf = roots |> List.mapi (fun i r -> i, canon.[r]) |> Map.ofList
+        let distinct = canon.Count
+
+        { ClaimedCount = k
+          DistinctCount = distinct
+          SourceOf = sourceOf
+          AllDistinct = distinct = k }
+
     [<Literal>]
     let SeamName = "sim"
 
