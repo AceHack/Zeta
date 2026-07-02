@@ -39,16 +39,36 @@ interop) is blocked on a **lenient YAML parser** — the same backlogged parser-
 layer (FParsec / GLR / ANTLR-shaped) noted in `RomDat`'s tokenizer seam. Frontmatter ships
 as a lossless verbatim split now; `tryMeta` is best-effort until the lenient parser lands.
 
-## NEXT PICKUP (delayed slices — Aaron 2026-07-02 "either both … whichever we delay")
+## THE LADDER (2026-07-02): codecs are rung 2 of a spec→generated-parser ladder
 
-1. **KDL** — the clean text 2-ary codec (node children ⊕ properties). Our-own reader/writer.
-   **← resume here.** NOTE: its value-tree MAPPING is a convention decision (rigid
-   KDL-shaped encoding vs. general-KDL parser) — pick deliberately, likely with Aaron's input.
-2. **Lenient YAML parser** — unblocks structured frontmatter meta + human-YAML interop
-   (the canonical-only finding above). Part of the parser-combinator backlog.
-3. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene
-   tri-boolean) — each needs a DU decision, do NOT add unilaterally.
-4. HDF5 (starts `ThirdParty` — the case the port exists for); GraphViz DOT (graph, lossy).
+Aaron: *"our zetaid is a tiny parser generator … bits, a bit parser/generator … the ANTLR
+stuff is likely just docs/research … LARGE scope: compile to/from our IR and most other ANTLR
+grammars using our parser generators and the open free ANTLR grammars; small changes to
+existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one ladder:
+
+- **rung 1 (built):** `Core.FSharp.ZetaId` — spec (`zeta-id-v1-layout.yaml`) → `GeneratedBitLayout`
+  → bit parser/generator. The proven-in-miniature seed.
+- **rung 2 (built, this trajectory):** format codecs over `DynamicValue`.
+- **rung 3 (designed, not built):** **ZetaParse** — ingest ANTLR `.g4` / Yacc / Tree-sitter /
+  `.zg` → **Zeta Grammar IR** → LR/GLR parser (6 langs). Consume `antlr/grammars-v4` (MIT/BSD;
+  don't reinvent). Docs: `zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21` (Amara);
+  `antlr-grammar-survey-{2026-05-21,2026-06-13}` (Lior).
+
+**Full synthesis:** `docs/research/2026-07-02-parser-generator-foundation-ladder-zetaid-bits-to-value-tree-codecs-to-zetaparse-grammar-ir-antlr.md`.
+
+## NEXT PICKUP (subsumed by the ladder — scope rung 3 with Aaron; LARGE)
+
+1. **Zeta Grammar IR as a `DynamicValue` schema** — the grammar is data ⇒ rides rung-2 codecs
+   (byte-lockable, DST-replayable). The natural first, bounded piece.
+2. **`.g4` → Grammar IR ingester** (compatible subset; log drops — no silent truncation), from
+   one grammars-v4 asset. **KDL and lenient-YAML are subsumed here** — both are just grammars
+   ingested (KDL/YAML `.g4` exist), not bespoke hand-parsers.
+3. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung).
+4. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+   each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
+
+> Rung 3 is LARGE + design-heavy and already has a design (ZetaParse). Do it under Aaron's
+> scope steer, building on the existing foundation — not unilaterally, not reinvented.
 
 ## Anchors
 
