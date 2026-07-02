@@ -1,16 +1,18 @@
 module Zeta.Tests.Antlr4ImportTests
 
-// INGEST ANTLR .g4 → ZETA GRAMMAR IR (rung 3, step 2) — shadow*, Aaron 2026-07-02:
-// "compile to/from our IR and most other ANTLR grammars … small changes to existing ANTLR
-// grammars is fine." Don't RUN ANTLR — ingest the compatible (BNF) subset; skip + LOG the
-// rest (no silent truncation). Proofs:
-//   1. INGEST — a small BNF .g4 yields the expected terminals / productions / start.
-//   2. NO SILENT TRUNCATION — an EBNF rule is SKIPPED and LOGGED (surfaced in Ingest.Skipped).
-//   3. RIDES THE LADDER — the ingested grammar → DynamicValue rides the codec stack and
-//      round-trips through GrammarIr (ingest feeds rung-2 byte-lock/DST-replay).
-//   4. TOTAL — malformed / hostile .g4 yields a clean Error or logged skips, never an exception.
+// INGEST ANTLR .g4 → ZETA GRAMMAR IR, with EBNF DESUGARED to BNF (rung 3) — shadow*,
+// Aaron 2026-07-02: "compile to/from our IR and most other ANTLR grammars"; recommended
+// default "desugar to BNF". EBNF operators (* + ? and groups) are desugared to helper
+// nonterminals; only semantic actions / predicates / wildcards are skipped + logged. Proofs:
+//   1. INGEST + DESUGAR — a grammar full of EBNF ingests; the EBNF is NOT skipped.
+//   2. CLOSURE IS PRESERVED — the desugared grammar is `isClosed` (every helper nonterminal a
+//      * / ? / (…) generates is itself defined). This is the strongest desugar-correctness signal.
+//   3. ACTIONS still skipped + logged (pure-grammar-first), while EBNF is not.
+//   4. RIDES THE LADDER — the grammar rides the codec stack and round-trips the IR.
+//   5. DETERMINISM — same .g4 → identical grammar (helper names are `rule_gN`, not GetHashCode).
+//   6. TOTAL — malformed / hostile .g4 never throws.
 //
-// Anchors: ZetaParse (Amara, "normalise the compatible subset"); antlr/grammars-v4 (MIT/BSD).
+// Anchors: ZetaParse (Amara); Knuth/Tomita (LR/GLR want BNF); antlr/grammars-v4 (MIT/BSD).
 
 open global.Xunit
 open Zeta.Core
@@ -19,45 +21,48 @@ module A = Antlr4Import
 module G = GrammarIr
 module VTC = ValueTreeCodec
 
-/// A small BNF-subset grammar (arithmetic), plus one EBNF rule that must be skipped+logged.
+/// A grammar exercising every EBNF form: `*`, `?`, `(… | …)` groups, plus an action to skip.
 let private g4 =
     """
 grammar Expr;
-// a comment — must be stripped
-expr : expr PLUS term | term ;
-term : term STAR factor | factor ;
-factor : NUM ;
-list : expr (',' expr)* ;   /* EBNF — must be skipped + logged */
-PLUS : '+' ;
-STAR : '*' ;
+prog : stat* ;
+stat : expr ';' ;
+expr : term (('+' | '-') term)* ;
+term : atom ('*' atom)? ;
+atom : NUM | '(' expr ')' ;
+act  : NUM { doStuff(); } ;   // action must be skipped + logged
 NUM  : [0-9]+ ;
 """
 
 [<Fact>]
-let ``INGEST: a BNF .g4 yields the expected terminals, productions, and start symbol`` () =
+let ``INGEST + DESUGAR: a grammar full of EBNF ingests; the EBNF is desugared, not skipped`` () =
     match A.ingest "expr" g4 with
     | Ok ing ->
-        let g = ing.Grammar
-        Assert.Equal("expr", g.Start) // first parser rule
-        let termNames = g.Terminals |> List.map (fun t -> t.Name)
-        Assert.Contains("PLUS", termNames)
-        Assert.Contains("STAR", termNames)
-        Assert.Contains("NUM", termNames)
-        let ntNames = g.NonTerminals |> List.map (fun nt -> nt.Name)
-        Assert.Contains("expr", ntNames)
-        Assert.Contains("factor", ntNames)
-        // expr(2) + term(2) + factor(1) = 5 productions (list is skipped)
-        Assert.Equal(5, List.length g.Productions)
+        Assert.Equal("prog", ing.Grammar.Start)
+        // desugaring emits helper nonterminals (rule_gN) for * / ? / groups
+        let ntNames = ing.Grammar.NonTerminals |> List.map (fun nt -> nt.Name)
+        Assert.Contains("prog", ntNames)
+        Assert.True(ntNames |> List.exists (fun n -> n.Contains "_g"), "desugaring must emit helper nonterminals")
+        // no EBNF-skip diagnostics (EBNF is desugared); NUM terminal present
+        Assert.False(ing.Skipped |> List.exists (fun s -> s.Contains "EBNF"))
+        Assert.Contains("NUM", ing.Grammar.Terminals |> List.map (fun t -> t.Name))
     | Error e -> Assert.Fail(sprintf "ingest failed: %s" e)
 
 [<Fact>]
-let ``NO SILENT TRUNCATION: the EBNF rule is skipped AND logged`` () =
+let ``CLOSURE PRESERVED: the desugared grammar is closed — every generated helper is defined`` () =
+    // The strongest desugar-correctness signal: if any * / ? / (…) left a dangling helper
+    // nonterminal, closure would fail. (NUM is defined; synthesised literal terminals too.)
     match A.ingest "expr" g4 with
     | Ok ing ->
-        Assert.NotEmpty(ing.Skipped)
-        Assert.True(ing.Skipped |> List.exists (fun s -> s.Contains "list"), "the EBNF rule 'list' must be logged as skipped")
-        // and it must NOT have leaked into the grammar
-        Assert.False(ing.Grammar.NonTerminals |> List.exists (fun nt -> nt.Name = "list"))
+        let undef = G.undefinedSymbols ing.Grammar
+        Assert.True(G.isClosed ing.Grammar, sprintf "grammar must be closed; undefined: %A" undef)
+    | Error e -> Assert.Fail(sprintf "ingest failed: %s" e)
+
+[<Fact>]
+let ``ACTIONS still skipped + logged (EBNF is not): pure-grammar-first`` () =
+    match A.ingest "expr" g4 with
+    | Ok ing ->
+        Assert.True(ing.Skipped |> List.exists (fun s -> s.Contains "action"), "the { } action must be logged as skipped")
     | Error e -> Assert.Fail(sprintf "ingest failed: %s" e)
 
 [<Fact>]
@@ -73,11 +78,38 @@ let ``RIDES THE LADDER: the ingested grammar rides the codec stack and round-tri
 
 [<Fact>]
 let ``DETERMINISM: ingesting the same .g4 twice yields identical grammars (byte-lockable)`` () =
-    // synthesised literal-terminal names must be deterministic (hex of bytes, not GetHashCode).
-    let withLit = "grammar L; stmt : 'begin' expr 'end' ; expr : NUM ; NUM : [0-9]+ ;"
-    match A.ingest "L" withLit, A.ingest "L" withLit with
+    match A.ingest "expr" g4, A.ingest "expr" g4 with
     | Ok a, Ok b -> Assert.Equal(G.toDynamicValue a.Grammar, G.toDynamicValue b.Grammar)
-    | _ -> Assert.Fail "ingest should succeed on a literal-bearing grammar"
+    | _ -> Assert.Fail "ingest should succeed twice"
+
+/// The canonical JSON grammar (grammars-v4 shape) — a REAL grammar, EBNF-heavy.
+let private jsonG4 =
+    """
+grammar JSON;
+json  : value ;
+value : STRING | NUMBER | obj | arr | 'true' | 'false' | 'null' ;
+obj   : '{' pair (',' pair)* '}' | '{' '}' ;
+pair  : STRING ':' value ;
+arr   : '[' value (',' value)* ']' | '[' ']' ;
+STRING : '"' (ESC | SAFECODEPOINT)* '"' ;
+NUMBER : '-'? INT ;
+INT    : '0' | [1-9] [0-9]* ;
+"""
+
+[<Fact>]
+let ``MILESTONE: a real JSON grammar fully ingests and stays CLOSED (EBNF desugared end-to-end)`` () =
+    match A.ingest "json" jsonG4 with
+    | Ok ing ->
+        Assert.Equal("json", ing.Grammar.Start)
+        Assert.True(
+            G.isClosed ing.Grammar,
+            sprintf "JSON grammar must be closed; undefined: %A" (G.undefinedSymbols ing.Grammar)
+        )
+        let terms = ing.Grammar.Terminals |> List.map (fun t -> t.Name)
+        Assert.Contains("STRING", terms)
+        Assert.Contains("NUMBER", terms)
+        Assert.Empty(VTC.crossVerify [ VTC.parity VTC.json; VTC.cbor ] (G.toDynamicValue ing.Grammar))
+    | Error e -> Assert.Fail(sprintf "JSON ingest failed: %s" e)
 
 [<Fact>]
 let ``TOTAL: malformed / hostile .g4 never throws — clean Error or logged skips`` () =
@@ -87,8 +119,10 @@ let ``TOTAL: malformed / hostile .g4 never throws — clean Error or logged skip
           ":::;;;"
           "A : 'unterminated"
           "rule : /* unterminated comment"
-          "x : [unterminated class"
-          "grammar X; a : ( ( ( nested"
+          "x : ( ( ( nested unclosed groups"
+          "y : a b )))) unbalanced"
+          "z : x* * * ? ? ("
+          System.String('(', 500)
           System.String('{', 500) ]
     for g in hostile do
         let ok =

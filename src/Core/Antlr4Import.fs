@@ -141,85 +141,211 @@ module Antlr4Import =
         rules |> List.ofSeq
 
     let private isIdentStart (c: char) = Char.IsLetter c || c = '_'
-    let private ebnfOrAction (s: string) : bool =
-        s.IndexOfAny([| '*'; '+'; '?'; '('; ')'; '{'; '<'; '~'; '.' |]) >= 0
+    // ── EBNF desugaring: a parser-rule body → BNF productions ──
+    // ANTLR is EBNF; the Grammar IR / an LR·GLR backend want BNF. So we DESUGAR the EBNF
+    // operators to helper nonterminals (Aaron 2026-07-02, recommended default — "desugar to
+    // BNF"): x* → H:ε|H x ; x+ → H:x|H x ; x? → H:ε|x ; (a b|c) → H:a b|c. Semantic actions
+    // `{…}`, predicates/options `<…>`/`[…]`, and `.`/`~` wildcards are still skipped + logged
+    // (pure-grammar-first). Helper names are deterministic (`rule_gN`) for byte-lock/DST.
 
-    /// A parser-rule alternative → a symbol list. Tokens are identifiers (refs) or `'literals'`
-    /// (implicit terminals, accumulated in `lits`).
-    let private parseAlt (alt: string) (lits: ResizeArray<string * string>) : GrammarIr.Symbol list =
-        let syms = ResizeArray<GrammarIr.Symbol>()
+    type private Tok =
+        | TId of string
+        | TStr of string
+        | TLP
+        | TRP
+        | TBar
+        | TStar
+        | TPlus
+        | TQuest
+        | TEq
+        | THash
+
+    let private tokenizeBody (ruleName: string) (body: string) (skipped: ResizeArray<string>) : Tok list =
+        let toks = ResizeArray<Tok>()
         let mutable i = 0
-        let n = alt.Length
+        let n = body.Length
+        let mutable loggedAction = false
+        let mutable loggedPred = false
+        let mutable loggedWild = false
         while i < n do
-            let c = alt.[i]
+            let c = body.[i]
             if Char.IsWhiteSpace c then
                 i <- i + 1
             elif c = '\'' then
                 let sb = StringBuilder()
                 i <- i + 1
-                while i < n && alt.[i] <> '\'' do
-                    if alt.[i] = '\\' && i + 1 < n then
-                        sb.Append(alt.[i]).Append(alt.[i + 1]) |> ignore
+                while i < n && body.[i] <> '\'' do
+                    if body.[i] = '\\' && i + 1 < n then
+                        sb.Append(body.[i]).Append(body.[i + 1]) |> ignore
                         i <- i + 2
                     else
-                        sb.Append alt.[i] |> ignore
+                        sb.Append body.[i] |> ignore
                         i <- i + 1
-                i <- i + 1 // closing quote
-                let lit = sb.ToString()
-                // deterministic name (NOT GetHashCode — string hashes are per-process randomised,
-                // which would break DST determinism + byte-lock): hex of the literal's UTF-8 bytes.
-                let name = "LIT_" + Convert.ToHexString(Encoding.UTF8.GetBytes lit)
-                lits.Add(name, lit)
-                syms.Add(GrammarIr.Term name)
+                i <- i + 1
+                toks.Add(TStr(sb.ToString()))
             elif isIdentStart c then
-                let start = i
-                while i < n && (Char.IsLetterOrDigit alt.[i] || alt.[i] = '_') do
+                let s = i
+                while i < n && (Char.IsLetterOrDigit body.[i] || body.[i] = '_') do
                     i <- i + 1
-                let name = alt.Substring(start, i - start)
-                if Char.IsUpper name.[0] then syms.Add(GrammarIr.Term name) else syms.Add(GrammarIr.NonTerm name)
-            else
-                i <- i + 1 // skip stray punctuation defensively
-        syms |> List.ofSeq
-
-    /// Split a parser-rule body on top-level `|` (respecting `'…'` and `[…]`).
-    let private splitAlts (body: string) : string list =
-        let alts = ResizeArray<string>()
-        let sb = StringBuilder()
-        let mutable inStr = false
-        let mutable inCls = false
-        let mutable i = 0
-        let n = body.Length
-        while i < n do
-            let c = body.[i]
-            if inStr then
-                sb.Append c |> ignore
-                if c = '\\' && i + 1 < n then
-                    sb.Append body.[i + 1] |> ignore
-                    i <- i + 1
-                elif c = '\'' then
-                    inStr <- false
+                toks.Add(TId(body.Substring(s, i - s)))
+            elif c = '(' then
+                toks.Add TLP
                 i <- i + 1
-            elif inCls then
-                sb.Append c |> ignore
-                if c = ']' then inCls <- false
-                i <- i + 1
-            elif c = '\'' then
-                inStr <- true
-                sb.Append c |> ignore
-                i <- i + 1
-            elif c = '[' then
-                inCls <- true
-                sb.Append c |> ignore
+            elif c = ')' then
+                toks.Add TRP
                 i <- i + 1
             elif c = '|' then
-                alts.Add(sb.ToString())
-                sb.Clear() |> ignore
+                toks.Add TBar
+                i <- i + 1
+            elif c = '*' then
+                toks.Add TStar
+                i <- i + 1
+            elif c = '+' then
+                toks.Add TPlus
+                i <- i + 1
+            elif c = '?' then
+                toks.Add TQuest
+                i <- i + 1
+            elif c = '=' then
+                toks.Add TEq
+                i <- i + 1
+            elif c = '#' then
+                toks.Add THash
+                i <- i + 1
+            elif c = '{' then
+                let mutable d = 0
+                let mutable go = true
+                while i < n && go do
+                    (if body.[i] = '{' then d <- d + 1
+                     elif body.[i] = '}' then
+                         d <- d - 1
+                         if d = 0 then go <- false)
+                    i <- i + 1
+                if not loggedAction then
+                    skipped.Add(sprintf "rule '%s': action block(s) skipped" ruleName)
+                    loggedAction <- true
+            elif c = '<' then
+                while i < n && body.[i] <> '>' do
+                    i <- i + 1
+                if i < n then i <- i + 1
+                if not loggedPred then
+                    skipped.Add(sprintf "rule '%s': predicate/option skipped" ruleName)
+                    loggedPred <- true
+            elif c = '[' then
+                while i < n && body.[i] <> ']' do
+                    i <- i + 1
+                if i < n then i <- i + 1
+                if not loggedPred then
+                    skipped.Add(sprintf "rule '%s': element-option skipped" ruleName)
+                    loggedPred <- true
+            elif c = '.' || c = '~' then
+                if not loggedWild then
+                    skipped.Add(sprintf "rule '%s': '.'/'~' wildcard dropped" ruleName)
+                    loggedWild <- true
                 i <- i + 1
             else
-                sb.Append c |> ignore
                 i <- i + 1
-        alts.Add(sb.ToString())
-        alts |> List.ofSeq
+        toks |> List.ofSeq
+
+    /// Desugar a parser rule `ruleName : body ;` into BNF productions (appended to `prods`),
+    /// emitting helper nonterminals for EBNF `* + ? ( )`. `lits` collects synthesised literal
+    /// terminals. Total: never throws (position always advances or the loop ends).
+    let private desugarParserRule
+        (ruleName: string)
+        (body: string)
+        (prods: ResizeArray<GrammarIr.Production>)
+        (lits: ResizeArray<string * string>)
+        (skipped: ResizeArray<string>)
+        : unit =
+        let toks = tokenizeBody ruleName body skipped |> Array.ofList
+        let mutable pos = 0
+        let mutable counter = 0
+        let peek () = if pos < toks.Length then Some toks.[pos] else None
+        let peekAt k = if pos + k < toks.Length then Some toks.[pos + k] else None
+        let advance () = pos <- pos + 1
+
+        let fresh () =
+            let nm = sprintf "%s_g%d" ruleName counter
+            counter <- counter + 1
+            nm
+
+        let synthLit (lit: string) : GrammarIr.Symbol =
+            let name = "LIT_" + Convert.ToHexString(Encoding.UTF8.GetBytes lit)
+            lits.Add(name, lit)
+            GrammarIr.Term name
+
+        let rec parseAltsInto (lhs: string) : unit =
+            prods.Add({ Lhs = lhs; Rhs = parseSeq () })
+            while peek () = Some TBar do
+                advance ()
+                prods.Add({ Lhs = lhs; Rhs = parseSeq () })
+
+        and parseSeq () : GrammarIr.Symbol list =
+            let syms = ResizeArray<GrammarIr.Symbol>()
+            let mutable go = true
+            while go do
+                match peek (), peekAt 1 with
+                | Some(TId _), Some TEq -> // drop a `label=` prefix
+                    advance ()
+                    advance ()
+                | _ -> ()
+                match peek () with
+                | Some THash -> // `# AltLabel` ends the alternative
+                    advance ()
+                    (match peek () with
+                     | Some(TId _) -> advance ()
+                     | _ -> ())
+                    go <- false
+                | Some(TId _)
+                | Some(TStr _)
+                | Some TLP -> syms.Add(parseElement ())
+                | _ -> go <- false
+            syms |> List.ofSeq
+
+        and parseElement () : GrammarIr.Symbol =
+            let atom = parseAtom ()
+            match peek () with
+            | Some TStar ->
+                advance ()
+                let h = fresh ()
+                prods.Add({ Lhs = h; Rhs = [] })
+                prods.Add({ Lhs = h; Rhs = [ GrammarIr.NonTerm h; atom ] })
+                GrammarIr.NonTerm h
+            | Some TPlus ->
+                advance ()
+                let h = fresh ()
+                prods.Add({ Lhs = h; Rhs = [ atom ] })
+                prods.Add({ Lhs = h; Rhs = [ GrammarIr.NonTerm h; atom ] })
+                GrammarIr.NonTerm h
+            | Some TQuest ->
+                advance ()
+                let h = fresh ()
+                prods.Add({ Lhs = h; Rhs = [] })
+                prods.Add({ Lhs = h; Rhs = [ atom ] })
+                GrammarIr.NonTerm h
+            | _ -> atom
+
+        and parseAtom () : GrammarIr.Symbol =
+            match peek () with
+            | Some(TId name) ->
+                advance ()
+                if Char.IsUpper name.[0] then GrammarIr.Term name else GrammarIr.NonTerm name
+            | Some(TStr lit) ->
+                advance ()
+                synthLit lit
+            | Some TLP ->
+                advance ()
+                let h = fresh ()
+                parseAltsInto h
+                (match peek () with
+                 | Some TRP -> advance ()
+                 | _ -> ())
+                GrammarIr.NonTerm h
+            | _ ->
+                advance () // defensive: consume to guarantee progress
+                GrammarIr.NonTerm(fresh ())
+
+        parseAltsInto ruleName
 
     /// Ingest a `.g4` grammar string into the compatible-subset Grammar IR. `grammarId` names
     /// the resulting grammar. Total: malformed input yields `Error`, never an exception.
@@ -228,7 +354,6 @@ module Antlr4Import =
             let body = stripComments g4
             let rules = splitRules body
             let terminals = ResizeArray<GrammarIr.Terminal>()
-            let nonterminals = ResizeArray<string>()
             let productions = ResizeArray<GrammarIr.Production>()
             let lits = ResizeArray<string * string>()
             let skipped = ResizeArray<string>()
@@ -259,15 +384,9 @@ module Antlr4Import =
                         // lexer rule → terminal; pattern kept raw (regex not parsed here)
                         terminals.Add({ Name = name; Pattern = ruleBody })
                     else
-                        // parser rule → productions; only the BNF-compatible subset
-                        if ebnfOrAction ruleBody then
-                            skipped.Add(sprintf "parser rule '%s' uses EBNF/action/predicate (not in compatible subset)" name)
-                        else
-                            if not (nonterminals.Contains name) then
-                                nonterminals.Add name
-                            if start = "" then start <- name // first parser rule = start symbol
-                            for alt in splitAlts ruleBody do
-                                productions.Add({ Lhs = name; Rhs = parseAlt alt lits })
+                        // parser rule → BNF productions (EBNF desugared to helper nonterminals)
+                        if start = "" then start <- name // first parser rule = start symbol
+                        desugarParserRule name ruleBody productions lits skipped
             // fold synthesised literal terminals (dedup by name)
             for (name, pat) in lits do
                 if not (terminals |> Seq.exists (fun t -> String.Equals(t.Name, name, ord))) then
@@ -279,7 +398,13 @@ module Antlr4Import =
                     { Grammar =
                         { Id = grammarId
                           Terminals = terminals |> List.ofSeq
-                          NonTerminals = nonterminals |> List.ofSeq |> List.map (fun n -> { GrammarIr.NonTerminal.Name = n })
+                          // nonterminals = every production LHS (declared rules + desugar helpers), distinct
+                          NonTerminals =
+                            productions
+                            |> Seq.map (fun p -> p.Lhs)
+                            |> Seq.distinct
+                            |> Seq.map (fun n -> { GrammarIr.NonTerminal.Name = n })
+                            |> List.ofSeq
                           Productions = productions |> List.ofSeq
                           Start = start }
                       Skipped = skipped |> List.ofSeq }

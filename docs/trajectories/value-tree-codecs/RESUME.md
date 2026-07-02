@@ -62,16 +62,19 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    `Grammar` (terminals/nonterminals/productions/start) ⇄ `DynamicValue` bijection; grammar rides
    the codec stack (byte-lockable, DST-replayable); total parse. STRUCTURAL core only — v2 adds
    semantic actions / precedence / recovery / incremental hooks (design pass with Aaron).
-2. ✅ **`.g4` → Grammar IR ingester** — LANDED (`src/Core/Antlr4Import.fs`): compatible (BNF)
-   subset; EBNF/actions **skipped + logged** (`Ingest.Skipped`, no silent truncation);
-   deterministic (hex-named literal terminals, not GetHashCode); total on hostile input.
-   OPEN FORK (design, for Aaron): how the neutral IR represents **EBNF** (carry it vs. desugar
-   to BNF) — currently deferred by log-skipping. Then point it at YAML/KDL `.g4` to retire those.
+2. ✅ **`.g4` → Grammar IR ingester** — LANDED (`src/Core/Antlr4Import.fs`). EBNF FORK RESOLVED
+   (Aaron's recommended default, 2026-07-02): **EBNF is DESUGARED to BNF** — `x*`→`H:ε|H x`,
+   `x+`→`H:x|H x`, `x?`→`H:ε|x`, `(…)`→helper — via a recursive-descent desugarer with
+   deterministic helper names (`rule_gN`). Actions/predicates/wildcards still skipped + logged
+   (pure-grammar-first). Total on hostile input. **MILESTONE: a real JSON `.g4` fully ingests
+   and stays `isClosed`.** Next: point it at YAML/KDL `.g4` → retires the lenient-YAML + KDL findings.
 3. ✅ **Grammar closure check** — `GrammarIr.isClosed`/`undefinedSymbols`: "every word defined by
-   other words" (Aaron's dictionary). First machine-checkable step toward the homoiconic
-   meta-grammar. **← resume: the homoiconic-meta-grammar vision + math-team proof obligations.**
-4. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung).
-5. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+   other words" (Aaron's dictionary). Also the desugar-correctness signal (a dangling helper ⇒
+   not closed). First machine-checkable step toward the homoiconic meta-grammar.
+4. **LR/GLR backend** emitting an F# parser from the Grammar IR (the ZetaParse rung). **← resume here.**
+5. Point the ingester at **YAML / KDL `.g4`** (grammars-v4) — retires the lenient-YAML finding
+   and the KDL fork (both become grammars ingested, not hand-parsers).
+6. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
 ## HOMOICONIC META-GRAMMAR (2026-07-02, Aaron): the telos
