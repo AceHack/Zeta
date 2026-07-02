@@ -141,10 +141,12 @@ message-log replay reproduces the whole society (DST at the fleet scale).
    the DurableYinYang doctrine). Tests: restart→identical state; resume-then-continue;
    independent cells recover independently.
 
-> **ALL FIVE SLICES LANDED** (2026-07-02, #9118 · #9120 · #9121 · #9122 · this PR).
-> The cell scheduler is complete as designed: a generic DoP=1→DoP=N deterministic
-> multiplexer (`run(1)==run(N)` proven), structural fairness + observable parking,
-> soft cells that snap only at the edge, and free DurableSaga recovery. 22 tests.
+> **ALL FIVE SLICES LANDED** (2026-07-02, #9118 · #9120 · #9121 · #9122 · #9123),
+> plus a post-completion adversarial-review fix (#9125). The cell scheduler is
+> complete as designed: a generic DoP=1→DoP=N deterministic multiplexer
+> (`run(1)==run(N)` proven, now on a NON-commutative workload), structural fairness
+> + observable parking, soft cells that snap only at the edge, and free DurableSaga
+> recovery. 25 tests. Remaining review findings are consumer-gated debt (§6a).
 
 ## 6. What this deliberately is NOT (scope honesty)
 
@@ -154,6 +156,38 @@ message-log replay reproduces the whole society (DST at the fleet scale).
 - Not distributed-across-machines in v1 — thousands of cells on ONE box's loop;
   cross-box is the Reticulum/bus layer, later (the DoP knob generalises to it, but
   that's its own design).
+
+### 6a. Known limitations — CONSUMER-GATED debt (adversarial review, 2026-07-02)
+
+A harsh-critic pass found one P0 (a sequential-runner FIFO violation — the re-ready
+rotated a cell's inbox head→tail; **FIXED** in #9125 with non-commutative
+DoP-invariance tests that now prove the real invariant). The remaining findings are
+**deliberately deferred until a first real consumer exists** — optimising an
+unmeasured hot path on a consumer-less module is exactly the speculative work the
+no-speculative-surface / only-the-irreducible razors forbid (the shape of the load
+should be revealed by a workload, not guessed):
+
+- **O(n²) queues at the "thousands of cells" scale (P1).** Inbox is a `'Msg list`
+  (`q @ [msg]` is O(inbox); a cell receiving k messages pays O(k²)); `Ready` is a
+  `CellId list` (`List.contains` + `@ [id]` is O(|Ready|) per delivery). `readyOf`
+  recomputes O(C log C) each round. The determinism-preserving fix when earned:
+  `ImmutableQueue` inboxes (O(1), Okasaki) + `Ready` as `ImmutableQueue` + a
+  membership `Set`. Deferred: correct today, and the real access pattern (fan-out
+  width, inbox depth, round count) is unknown without a consumer.
+- **Ferry path maintains `Ready` it never reads (P1).** `runFerryToQuiescence`
+  selects via `readyOf` (recomputed from `Inbox`); the `deliver` Ready bookkeeping
+  is dead work there. Fix when the perf pass lands: a `deliverInbox` variant. Bundled
+  with the queue refactor (both touch `deliver`).
+- **Silent drops are unmetered (P2, §13).** Unknown-target messages (`deliver`) and
+  malformed outbox entries (`routeOutbox`) are dropped with no counter — a "society"
+  claiming metered noninterference should count losses. Add a drop counter with the
+  same pass.
+- **`softStep` conflates evolve-error with confidence-hold (P1-as-filed).** `Error _
+  -> remains, []` is INTENTIONAL here — the `DurableYinYang` doctrine is "malformed
+  `Acts` ⇒ the cell holds, never corrupts", so an evolve failure and a below-threshold
+  refuse-collapse legitimately share the "hold" observable. A metered error *count*
+  (to distinguish a broken cell from a cautious one) is the §13 nicety, deferred with
+  the metering work above.
 
 ## 7. Anchors (Beacon)
 
