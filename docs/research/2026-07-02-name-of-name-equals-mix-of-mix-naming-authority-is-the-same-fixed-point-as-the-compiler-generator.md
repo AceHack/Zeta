@@ -148,6 +148,35 @@ generator stages; the house's anchors braid); Feynman–Stückelberg interpretat
 T violation *because* CPT holds — asymmetry in one factor is paid for in another,
 never in the composite).
 
+### Addendum 3.1: Aaron's refined dictionary
+
+Aaron, verbatim: **"conjugation ≈ uncertainty · parity ≈ adinkra mod 2 · tick =
+tick/DST."** This sharpens the factor map:
+
+- **C — conjugation ≈ uncertainty.** Conjugate pairs are where uncertainty lives
+  (Heisenberg's conjugate variables; Fourier duality). In Zeta the conjugate of an
+  assertion is its retraction: the pair brackets an uncertainty, and a `measure`/fix
+  collapses the pair and banks ΔU to `db/uncertainty/` (every-bug-has-economic-value).
+  Charge conjugation is the uncertainty flip — swap every claim with its conjugate.
+- **P — parity ≈ adinkra mod 2.** Parity is not a spatial mirror; it is THE Z/2
+  grading the adinkra already carries: the boson/fermion popcount checkerboard,
+  Gates' odd-dash faces, and the braid's sign character (the B3 → Z/2 exponent-sum
+  homomorphism on the adinkra↔braid edge row). The mod-2 register IS the parity
+  quantum number.
+- **T — tick/DST.** As stated: tick reversal, granted by deterministic replay.
+
+The composite conjecture is unchanged but reads better in the refined vocabulary:
+reverse the ticks, flip every claim to its uncertainty-conjugate, flip the mod-2
+grade — every cartridge law still holds. Each factor alone may fail (the arrow, the
+record); the composite may not.
+
+Captured at Aaron's request (the conversational rendering, kept): a retraction (−1)
+is the Feynman–Stückelberg antiparticle of its insertion — the same event traveling
+backward in replay; the dv2 rule's "retraction is correction, not duplicate-guard"
+is CPT's explanation — it is the conjugate event, not a repeat. And among CPT's
+provers is the same Bell whose inequalities the coincidence generator stages: *the
+house's ancestors remember each other too.*
+
 ## Anchors (Beacon)
 
 - Futamura 1971, *Partial Evaluation of Computation Process — An Approach to a
