@@ -61,6 +61,15 @@ function log(message: string): void {
   appendFileSync(join(logDir, "runner.log"), `${nowIso()} [${personaName}] ${message}\n`);
 }
 
+function getSignalNumber(signal: string): number {
+  const signals: Record<string, number> = {
+    SIGHUP: 1, SIGINT: 2, SIGQUIT: 3, SIGILL: 4, SIGTRAP: 5,
+    SIGABRT: 6, SIGFPE: 8, SIGKILL: 9, SIGUSR1: 10, SIGSEGV: 11,
+    SIGUSR2: 12, SIGPIPE: 13, SIGALRM: 14, SIGTERM: 15
+  };
+  return signals[signal] ?? 0;
+}
+
 function exec(command: string, args: string[], timeoutMs: number): { status: number; stdout: string; stderr: string } {
   const result = spawnSync(command, args, {
     cwd: worktree,
@@ -77,8 +86,22 @@ function exec(command: string, args: string[], timeoutMs: number): { status: num
     timeout: timeoutMs,
     maxBuffer: 20 * 1024 * 1024,
   });
+  
+  let status = result.status;
+  if (status === null) {
+    if (result.error && (result.error as any).code === "ETIMEDOUT") {
+      status = 124;
+    } else if (result.signal) {
+      status = 128 + getSignalNumber(result.signal);
+    } else if (result.error) {
+      status = 127;
+    } else {
+      status = 1;
+    }
+  }
+
   return {
-    status: result.status ?? (result.signal ? 124 : 1),
+    status,
     stdout: result.stdout ?? "",
     stderr: result.stderr ?? String(result.error ?? ""),
   };
@@ -94,24 +117,42 @@ function acquireLock(): boolean {
     mkdirSync(lockDir, { recursive: false });
     writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\npersona=${personaName}\nacquired_at=${nowIso()}\n`);
     return true;
-  } catch {
+  } catch (err: any) {
+    if (err.code !== "EEXIST") {
+      log(`ERROR: lock acquisition failed with system error: ${err.message}`);
+      console.error(`ERROR: lock acquisition failed: ${err.message}`);
+      return false;
+    }
     try {
-      const meta = readFileSync(join(lockDir, "metadata"), "utf8");
+      const metaPath = join(lockDir, "metadata");
+      if (!existsSync(metaPath)) {
+        log(`WARNING: lock directory exists but metadata is missing. Forcing recreation.`);
+        rmSync(lockDir, { recursive: true, force: true });
+        mkdirSync(lockDir, { recursive: false });
+        writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\npersona=${personaName}\nacquired_at=${nowIso()}\n`);
+        return true;
+      }
+      const meta = readFileSync(metaPath, "utf8");
       const pidMatch = meta.match(/^pid=(\d+)$/m);
       if (pidMatch) {
         const pid = Number(pidMatch[1]);
-        try { process.kill(pid, 0); return false; } catch { /* stale */ }
+        try { process.kill(pid, 0); return false; } catch { /* stale process */ }
       }
       const acquiredMatch = meta.match(/^acquired_at=(.+)$/m);
       if (acquiredMatch?.[1]) {
         const age = Date.now() - new Date(acquiredMatch[1]).getTime();
         if (age < lockTtlMs) return false;
       }
+      log(`WARNING: lock is stale or process is dead. Cleaning up stale lock.`);
       rmSync(lockDir, { recursive: true, force: true });
       mkdirSync(lockDir, { recursive: false });
       writeFileSync(join(lockDir, "metadata"), `pid=${process.pid}\nrun_id=${runId}\npersona=${personaName}\nacquired_at=${nowIso()}\n`);
       return true;
-    } catch { return false; }
+    } catch (innerErr: any) {
+      log(`ERROR: lock cleanup/acquisition failed: ${innerErr.message}`);
+      console.error(`ERROR: lock cleanup/acquisition failed: ${innerErr.message}`);
+      return false;
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import type { ContainerHost, LocalClusterCreateSpec, LocalClusterDriver, ProcessRunner } from "../ports.ts";
-import { runOrExit } from "./spawn-process-runner.ts";
+import { assertCommandSucceeded, runOrExit } from "./spawn-process-runner.ts";
 
 function runOptionsWithEnv(
   env: NodeJS.ProcessEnv | undefined,
@@ -13,12 +13,13 @@ export function kindLocalClusterDriver(runner: ProcessRunner, host: ContainerHos
 
   return {
     shape: "kind-in-docker",
-    list: () =>
-      runner
-        .run("kind", ["get", "clusters"], runOptionsWithEnv(env()))
-        .stdout.split("\n")
+    list: () => {
+      const result = runner.run("kind", ["get", "clusters"], runOptionsWithEnv(env()));
+      assertCommandSucceeded(result, "kind", ["get", "clusters"]);
+      return result.stdout.split("\n")
         .map((line) => line.trim())
-        .filter((line) => line.length > 0),
+        .filter((line) => line.length > 0);
+    },
     create: (spec: LocalClusterCreateSpec) => {
       const args = ["create", "cluster", "--name", spec.name, "--config", spec.configPath];
       if (spec.waitForReady !== false) {
@@ -35,12 +36,13 @@ export function kindLocalClusterDriver(runner: ProcessRunner, host: ContainerHos
 export function k3dLocalClusterDriver(runner: ProcessRunner): LocalClusterDriver {
   return {
     shape: "k3d-in-docker",
-    list: () =>
-      runner
-        .run("k3d", ["cluster", "list"])
-        .stdout.split("\n")
+    list: () => {
+      const result = runner.run("k3d", ["cluster", "list"]);
+      assertCommandSucceeded(result, "k3d", ["cluster", "list"]);
+      return result.stdout.split("\n")
         .map((line) => line.split(/\s+/)[0] ?? "")
-        .filter((name) => name.length > 0 && name !== "NAME"),
+        .filter((name) => name.length > 0 && name !== "NAME");
+    },
     create: (spec) =>
       runOrExit(runner, "k3d", ["cluster", "create", "--config", spec.configPath, "--wait=false"], { stdio: "inherit" }),
     delete: (name) => runOrExit(runner, "k3d", ["cluster", "delete", name], { stdio: "inherit" }),
