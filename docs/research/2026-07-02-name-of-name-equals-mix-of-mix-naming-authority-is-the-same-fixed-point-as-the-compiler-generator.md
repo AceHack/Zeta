@@ -114,6 +114,40 @@ entropy's monotone accumulation); Barbour, *The End of Time* (time from records 
 correspondence between configurations); Connes–Rovelli 1994 (thermal time hypothesis —
 time emergent from the statistical state).
 
+## Addendum 3 (2026-07-02): "this is CPT symmetry" — the substrate's symmetry named
+
+Aaron identifies the time-symmetric substrate as **CPT symmetry**: fundamental
+dynamics are invariant under the combined operation of charge conjugation (C), parity
+(P), and time reversal (T); the arrow lives in records/boundary conditions, never in
+the laws. The identification is exact enough to be operational, because each factor
+has a concrete Zeta realization:
+
+- **T — tick reversal.** Replay the transcript in reverse; the seed-staged lattice
+  admits it (DST).
+- **C — weight negation.** Z-sets carry signed multiplicities: swap insertions and
+  retractions (+1 ↔ −1). A retraction IS the Feynman–Stückelberg antiparticle of an
+  insertion — the same event traveling backward in replay. (The dv2 rule already
+  notes retraction is *correction*, not duplicate-guard — this is why: it is the
+  conjugate event, not a repeat.)
+- **P — mirror.** Braid crossings σ ↔ σ⁻¹ (the crossing golden's two cases); layout
+  reflection for graph shapes. The adinkra gauge lemma is the nearby statement:
+  local sign flips (a gauge move) preserve face parity while the global twist is
+  protected.
+
+**Signable conjecture (Soraya-style):** the composite CPT map — reverse ticks, negate
+weights, mirror crossings — is a law-preserving involution on transcripts: folding a
+CPT-transformed transcript yields the CPT-image of the folded state, and every
+cartridge `law` row holds on both. Each factor alone may fail (that failure IS the
+record structure — the arrow); the composite must not. This is a property test the
+DST harness can run today: `fold(CPT(t)) = CPT(fold(t))`.
+
+Anchors: CPT theorem — Schwinger 1951, Lüders 1954, Pauli 1955, and **J. S. Bell 1955**
+(his proof of a CPT version — the same Bell whose inequalities the coincidence
+generator stages; the house's anchors braid); Feynman–Stückelberg interpretation
+(antiparticles as particles backward in time); Cronin & Fitch 1964 (CP violation ⇒
+T violation *because* CPT holds — asymmetry in one factor is paid for in another,
+never in the composite).
+
 ## Anchors (Beacon)
 
 - Futamura 1971, *Partial Evaluation of Computation Process — An Approach to a
