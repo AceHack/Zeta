@@ -1385,3 +1385,108 @@ jobs:
             tests/cross-verification/_harness/generated-ring-laws.test.ts \
             tests/cross-verification/_harness/generated-star-ring-laws.test.ts \
             tests/cross-verification/_harness/generated-kleene-laws.test.ts
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Full Verification Gate — 7-language oracle + cost + proofs
+  # ═══════════════════════════════════════════════════════════════════
+  #
+  # Runs the LIVE cross-language execution oracle (generates code in 7
+  # languages, compiles each, executes, byte-compares outputs) plus the
+  # algebraic law gate, cost analysis, and Rust/Go compilation.
+  # Requires the FULL toolchain (all 7 runtimes + E-prover).
+  # Fails if ANY tool is missing — no partial verification.
+  full-verify:
+    name: full-verify (7-lang oracle + cost + proofs)
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    needs: [path-filter]
+    if: needs.path-filter.outputs.code == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Cache install.sh outputs (mise runtimes + cargo + dotnet)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            ~/.cargo
+          key: full-verify-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain (all 7 languages + E-prover)
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            backoff=$((attempt * 30))
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: QDK venv setup (uv sync)
+        run: uv sync --project src/Core.Python
+
+      - name: Smoke check (all 7 toolchains functional)
+        run: CI=true ./tools/setup/common/smoke-7-toolchains.sh
+
+      - name: Install npm devDependencies
+        run: bun install --frozen-lockfile
+
+      - name: Rust tests (Core.Rust.Observe)
+        run: cargo test --manifest-path src/Core.Rust.Observe/Cargo.toml
+
+      - name: Go tests (Core.Go/algebra)
+        run: go test ./algebra/
+        working-directory: src/Core.Go
+
+      - name: Cross-verify IR (7-language byte-lock oracle)
+        run: bun test tests/cross-verification/_harness/cross-verify-ir.test.ts
+        timeout-minutes: 5
+
+      - name: Interface law oracle (per-directory)
+        run: bun test tests/cross-verification/zeta-ir-v2/interfaces/cross-verify-interfaces.test.ts
+        timeout-minutes: 5
+
+      - name: Law proof gate (proof references exist + tests pass)
+        run: bun test tests/cross-verification/_harness/law-proof-gate.test.ts
+        timeout-minutes: 3
+
+      - name: Cost tests (counter + envelope + growth)
+        run: |
+          bun test src/Core.TypeScript/algebra/cost-counter.test.ts
+          bun test src/Core.TypeScript/algebra/cost-envelope.test.ts
+          bun test src/Core.TypeScript/algebra/cost-growth-property.test.ts
+
+      - name: Clifford cross-verify (Cl(3,0) geometric algebra)
+        run: bun test tests/cross-verification/_harness/codegen-clifford.test.ts
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+            PRIORITY="normal"
+            if [ "${{ github.event_name }}" = "schedule" ]; then
+              PRIORITY="elevated-unattended"
+            fi
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d "{
+                \"text\": \"🚨 full-verify FAILED ($PRIORITY)\",
+                \"blocks\": [{
+                  \"type\": \"section\",
+                  \"text\": {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Job:* ${{ github.job }}\\n*Run:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\\n*Trigger:* ${{ github.event_name }}\\n*Priority:* $PRIORITY\"
+                  }
+                }]
+              }"
+          fi
