@@ -48,7 +48,7 @@
     "dependencies": [
       {
         "ecosystem": "from-autotools-tarball",
-        "spec": "eprover https://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_3.2/E.tgz",
+        "spec": "eprover https://github.com/eprover/eprover/archive/refs/tags/E-3.2.0.tar.gz",
         "update": "pinned-url",
         "when": "linux"
       }

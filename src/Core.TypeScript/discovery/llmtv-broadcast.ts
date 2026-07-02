@@ -81,7 +81,13 @@ export function frostStrip(mind: SourceMind): BroadcastMind {
 /// The broadcast wire vocabulary. TWO messages, both source→mesh. There is deliberately
 /// NO viewer→source variant: that absence is the noninterference guarantee (§13).
 export type BroadcastMessage =
-  | { readonly t: "frame"; readonly source: BroadcastSource; readonly seq: number; readonly frameNo: number; readonly mind: BroadcastMind }
+  | {
+      readonly t: "frame";
+      readonly source: BroadcastSource;
+      readonly seq: number;
+      readonly frameNo: number;
+      readonly mind: BroadcastMind;
+    }
   | { readonly t: "dark"; readonly source: BroadcastSource; readonly seq: number };
 
 const SCHEMA = "zeta.llmtv.broadcast.v1";
@@ -100,13 +106,79 @@ export type ChannelTable = ReadonlyMap<string, Channel>;
 
 /// Publish a frame: project the source mind through the membrane, then wrap it. The only
 /// way to build a "frame" message — you cannot hand-assemble one around a SourceMind.
-export function publishFrame(source: BroadcastSource, seq: number, frameNo: number, mind: SourceMind): BroadcastMessage {
+export function publishFrame(
+  source: BroadcastSource,
+  seq: number,
+  frameNo: number,
+  mind: SourceMind,
+): BroadcastMessage {
   return { t: "frame", source, seq, frameNo, mind: frostStrip(mind) };
 }
 
 /// TEXT wire (JSON, no binary in the proof lineage) with a schema tag.
 export function encode(msg: BroadcastMessage): string {
   return JSON.stringify({ schema: SCHEMA, msg });
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === "object" && value !== null ? (value as Record<string, unknown>) : null;
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function isMindTemp(value: unknown): value is MindTemp {
+  return value === "hot" || value === "warm" || value === "cool";
+}
+
+function isBroadcastSource(value: unknown): value is BroadcastSource {
+  const record = asRecord(value);
+  return record !== null && typeof record.zid === "string" && typeof record.name === "string";
+}
+
+function isBroadcastPrediction(value: unknown): value is BroadcastPrediction {
+  const record = asRecord(value);
+  return (
+    record !== null &&
+    typeof record.label === "string" &&
+    isMindTemp(record.temp) &&
+    isFiniteNumber(record.valueMilli) &&
+    isFiniteNumber(record.epsilonMilli)
+  );
+}
+
+function isBroadcastMind(value: unknown): value is BroadcastMind {
+  const record = asRecord(value);
+  if (
+    record === null ||
+    typeof record.role !== "string" ||
+    typeof record.hat !== "string" ||
+    !Array.isArray(record.predictions) ||
+    !record.predictions.every(isBroadcastPrediction)
+  ) {
+    return false;
+  }
+
+  if (record.frostMarker === undefined) {
+    return true;
+  }
+
+  const frostMarker = asRecord(record.frostMarker);
+  return frostMarker !== null && typeof frostMarker.veilLabel === "string";
+}
+
+function isBroadcastMessage(value: unknown): value is BroadcastMessage {
+  const record = asRecord(value);
+  if (record === null || !isBroadcastSource(record.source) || !isFiniteNumber(record.seq)) {
+    return false;
+  }
+
+  if (record.t === "dark") {
+    return true;
+  }
+
+  return record.t === "frame" && isFiniteNumber(record.frameNo) && isBroadcastMind(record.mind);
 }
 
 /// Guarded decode — foreign / malformed / wrong-schema input returns null, never throws.
@@ -117,12 +189,12 @@ export function decode(text: string): BroadcastMessage | null {
   } catch {
     return null;
   }
-  if (typeof parsed !== "object" || parsed === null) return null;
-  const p = parsed as { schema?: unknown; msg?: unknown };
-  if (p.schema !== SCHEMA || typeof p.msg !== "object" || p.msg === null) return null;
-  const m = p.msg as { t?: unknown };
-  if (m.t === "frame" || m.t === "dark") return p.msg as BroadcastMessage;
-  return null;
+  const record = asRecord(parsed);
+  if (record === null || record.schema !== SCHEMA) {
+    return null;
+  }
+
+  return isBroadcastMessage(record.msg) ? record.msg : null;
 }
 
 function upsert(table: ChannelTable, channel: Channel): ChannelTable {
@@ -142,7 +214,13 @@ export function observeBroadcast(table: ChannelTable, msg: BroadcastMessage, now
   switch (msg.t) {
     case "frame":
       if (current && msg.seq <= current.seq) return table; // stale or duplicate — no-op
-      return upsert(table, { source: msg.source, seq: msg.seq, frameNo: msg.frameNo, mind: msg.mind, lastSeenMs: nowMs });
+      return upsert(table, {
+        source: msg.source,
+        seq: msg.seq,
+        frameNo: msg.frameNo,
+        mind: msg.mind,
+        lastSeenMs: nowMs,
+      });
     case "dark": {
       if (!current || msg.seq < current.seq) return table; // stale going-dark — keep the newer frame
       const next = new Map(table);

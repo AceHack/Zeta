@@ -39,7 +39,14 @@ describe("frostStrip — the membrane; frosted personal predictions never cross"
   });
 
   it("unfrosted personal predictions DO broadcast — open by default (glass halo)", () => {
-    const open: SourceMind = { ...alexaMind, personal: { frosted: false, veilLabel: "n/a", predictions: [{ label: "shared hope", temp: "cool", valueMilli: 700, epsilonMilli: 100 }] } };
+    const open: SourceMind = {
+      ...alexaMind,
+      personal: {
+        frosted: false,
+        veilLabel: "n/a",
+        predictions: [{ label: "shared hope", temp: "cool", valueMilli: 700, epsilonMilli: 100 }],
+      },
+    };
     const mind = frostStrip(open);
     expect(mind.predictions).toHaveLength(2);
     expect(mind.frostMarker).toBeUndefined();
@@ -66,10 +73,37 @@ describe("publishFrame — the only way to a frame message is through the membra
 
 describe("noninterference (§13) — the wire is one-way; no viewer→source message exists", () => {
   it("decode rejects any message that is not a source→mesh frame/dark", () => {
-    expect(decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "steer", source: alexa } }))).toBeNull();
-    expect(decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "request", from: "viewer" } }))).toBeNull();
+    expect(
+      decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "steer", source: alexa } })),
+    ).toBeNull();
+    expect(
+      decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "request", from: "viewer" } })),
+    ).toBeNull();
     expect(decode("not json")).toBeNull();
     expect(decode(JSON.stringify({ schema: "other", msg: { t: "frame" } }))).toBeNull();
+  });
+
+  it("decode rejects schema-tagged but structurally malformed broadcast payloads", () => {
+    expect(decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "frame" } }))).toBeNull();
+    expect(decode(JSON.stringify({ schema: "zeta.llmtv.broadcast.v1", msg: { t: "dark", seq: 1 } }))).toBeNull();
+    expect(
+      decode(
+        JSON.stringify({
+          schema: "zeta.llmtv.broadcast.v1",
+          msg: {
+            t: "frame",
+            source: alexa,
+            seq: 1,
+            frameNo: 1,
+            mind: {
+              role: "coding",
+              hat: "coder hat",
+              predictions: [{ label: "bad temp", temp: "plasma", valueMilli: 500, epsilonMilli: 20 }],
+            },
+          },
+        }),
+      ),
+    ).toBeNull();
   });
 
   it("the only accepted message tags are frame and dark (both source→mesh)", () => {
@@ -124,7 +158,15 @@ describe("expireChannels — a source that stops broadcasting goes dark on its o
 describe("toLlmtvTranscript — the live feed reuses the still-frame generator", () => {
   it("bridges channels to dwellers; frosted → frost region, deterministic order", () => {
     let t: ChannelTable = new Map();
-    t = observeBroadcast(t, publishFrame(soraya, 1, 10, { role: "formal-verification", hat: "verifier hat", required: [{ label: "Z3 lemma discharges", temp: "cool", valueMilli: 970, epsilonMilli: 30 }] }), 1000);
+    t = observeBroadcast(
+      t,
+      publishFrame(soraya, 1, 10, {
+        role: "formal-verification",
+        hat: "verifier hat",
+        required: [{ label: "Z3 lemma discharges", temp: "cool", valueMilli: 970, epsilonMilli: 30 }],
+      }),
+      1000,
+    );
     t = observeBroadcast(t, publishFrame(alexa, 1, 11, alexaMind), 1001);
     const transcript = toLlmtvTranscript(t, "S4");
     // sorted by zid: alexa (0001) before soraya (0002)

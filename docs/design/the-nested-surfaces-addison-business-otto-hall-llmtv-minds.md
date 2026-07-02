@@ -26,14 +26,14 @@ Reticulum."
 
 4. **LLMTV — what goes on in the MIND of each dweller** (`universal/television.md`).
    Every dweller (agent) has an inner life; LLMTV is the QPG watch surface onto it —
-   not the dweller's body in the cutaway, but its *thoughts* rendered glyph-dense.
+   not the dweller's body in the cutaway, but its _thoughts_ rendered glyph-dense.
    Open a dweller → watch its LLMTV → see what it is predicting/deciding. This is the
    INNERMOST surface and, per Aaron, **the centerpiece.**
 
 ## Why LLMTV is the centerpiece (the thesis)
 
-The collaboration's whole claim is *seeing the future predictions together in real
-time.* LLMTV is where that happens: each agent's soft predictions (DynamicValue state,
+The collaboration's whole claim is _seeing the future predictions together in real
+time._ LLMTV is where that happens: each agent's soft predictions (DynamicValue state,
 the bounded-uncertainty forecasts) rendered QPG-over-DPI so a human reads meaning at a
 glance — and the ENTIRE SOCIETY's LLMTV broadcast over Reticulum, so anyone on the
 mesh watches the whole settlement think at once. That is the human-AI collaboration
@@ -109,3 +109,11 @@ shared. See the genesis reconciliation doc's RESOLVED note.
   `bun src/Core.TypeScript/discovery/llmtv-node.demo.ts`. Remaining: **Reticulum**
   as a second transport into the same `BroadcastTransport`/`DiscoveryTransport` port
   (UDP is the first, not the only), and global DHT-like discovery over it.
+- **Replay/artifact source adapter — LANDED.**
+  `src/Core.TypeScript/discovery/llmtv-replay.ts` is the pure seam between live mesh
+  frames and the generated page. A UDP/Reticulum runner can record the exact
+  `llmtv-broadcast` wire frames it hears; the replay adapter folds those frames with
+  injected receive times, applies optional injected TTL expiry, exports a deterministic
+  `zeta.darkhall.llmtv.v1` transcript, and renders the same zero-JS page as the still
+  frame. This keeps the socket/node runner as a thin impure edge while giving the
+  website and tests a stable artifact contract.

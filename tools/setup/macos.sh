@@ -165,8 +165,27 @@ fi
 echo "✓ brew casks up to date"
 
 # ── 4. mise ─────────────────────────────────────────────────────────
-# Keep in sync with .mise.toml min_version and tools/setup/linux.sh MISE_PIN_VERSION.
-MISE_PIN_VERSION="2026.6.12"
+# Keep in sync with .mise.toml min_version. macOS installs mise via Homebrew,
+# whose formula advances in place; accept newer versions and enforce only the
+# repo's minimum supported release.
+MISE_MIN_VERSION="2026.6.12"
+
+zeta_version_at_least() {
+  awk -v have="$1" -v want="$2" '
+    BEGIN {
+      n = split(have, h, ".")
+      m = split(want, w, ".")
+      max = n > m ? n : m
+      for (i = 1; i <= max; i++) {
+        hv = i in h ? h[i] + 0 : 0
+        wv = i in w ? w[i] + 0 : 0
+        if (hv > wv) exit 0
+        if (hv < wv) exit 1
+      }
+      exit 0
+    }
+  '
+}
 
 installed_mise_version=""
 if command -v mise >/dev/null 2>&1; then
@@ -179,13 +198,13 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 
 installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
-if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
-  echo "↓ upgrading mise ${installed_mise_version:-unknown} → ${MISE_PIN_VERSION} via Homebrew..."
+if ! zeta_version_at_least "$installed_mise_version" "$MISE_MIN_VERSION"; then
+  echo "↓ upgrading mise ${installed_mise_version:-unknown} → at least ${MISE_MIN_VERSION} via Homebrew..."
   brew update
   brew upgrade mise || brew install mise
   installed_mise_version="$(mise --version 2>/dev/null | awk '{print $1}')"
-  if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
-    echo "error: mise is ${installed_mise_version}, but .mise.toml requires ${MISE_PIN_VERSION}" >&2
+  if ! zeta_version_at_least "$installed_mise_version" "$MISE_MIN_VERSION"; then
+    echo "error: mise is ${installed_mise_version}, but .mise.toml requires at least ${MISE_MIN_VERSION}" >&2
     echo "  run: brew update && brew upgrade mise" >&2
     exit 1
   fi
