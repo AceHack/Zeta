@@ -203,7 +203,7 @@ module SchedulerZeta =
     /// loading a game is like having Shiva reload/calculate from zetaid the expected
     /// orbits of the games being played." Each game is registered by its FINGERPRINT
     /// (its ZetaId); its expected orbit (fixed points) is DERIVED from the game's
-    /// dynamics and held WEAKLY. `Select` is the soft-GC pass: given the current
+    /// dynamics and held while attended. `Select` is the soft-GC pass: given the current
     /// soft-selection weights (the prediction distribution over game fingerprints) and
     /// a threshold, it UNLOADS every game whose weight is below threshold (Shiva sweeps
     /// the unattended) and LOADS — regenerates from the fingerprint — every strongly-
@@ -223,33 +223,32 @@ module SchedulerZeta =
     [<Sealed>]
     type SoftFixedPointTable<'F, 'S, 'K when 'F: equality and 'F: comparison and 'F: not null and 'K: equality and 'K: not null>() =
         let games = System.Collections.Generic.Dictionary<'F, ('S -> 'K) * ('S -> 'S) * 'S>()
-        let cache = System.Collections.Generic.Dictionary<'F, System.WeakReference<'S[]>>()
+        let loaded = System.Collections.Generic.Dictionary<'F, 'S[]>()
         let mutable loads = 0
 
         /// Register a game (fingerprint = its ZetaId) with its dynamics (key/step/start).
         member _.Register(fingerprint: 'F, key: 'S -> 'K, step: 'S -> 'S, start: 'S) =
             games.[fingerprint] <- (key, step, start)
+            loaded.Remove fingerprint |> ignore
 
         /// Regenerate a game's expected orbit FROM its fingerprint (Shiva calculate).
         member private _.Load(f: 'F) : 'S[] =
             let (key, step, start) = games.[f]
             let arr = orbitStates key step start |> List.toArray
-            cache.[f] <- System.WeakReference<'S[]>(arr)
+            loaded.[f] <- arr
             loads <- loads + 1
             arr
 
-        /// The expected orbit of a game — loaded from the weak table, or regenerated
-        /// (O(reachable)) from its fingerprint if the GC / a soft sweep unloaded it.
+        /// The expected orbit of a game — loaded from the attended table, or regenerated
+        /// (O(reachable)) from its fingerprint if a soft sweep unloaded it.
         member this.Orbit(f: 'F) : 'S[] =
-            match cache.TryGetValue f with
-            | true, wr -> (match wr.TryGetTarget() with | true, a -> a | _ -> this.Load f)
+            match loaded.TryGetValue f with
+            | true, orbit -> orbit
             | _ -> this.Load f
 
-        /// Is a game's orbit currently LOADED (weak-alive)?
+        /// Is a game's orbit currently LOADED (attended, not swept)?
         member _.IsLoaded(f: 'F) : bool =
-            match cache.TryGetValue f with
-            | true, wr -> (match wr.TryGetTarget() with | true, _ -> true | _ -> false)
-            | _ -> false
+            loaded.ContainsKey f
 
         /// Total (re)loads — Shiva calculate-from-fingerprint events.
         member _.Loads = loads
@@ -262,4 +261,4 @@ module SchedulerZeta =
             for KeyValue(f, _) in games do
                 let w = match Map.tryFind f weights with | Some x -> x | None -> 0.0
                 if w >= threshold then this.Orbit f |> ignore   // load / keep the attended
-                else cache.Remove f |> ignore                    // unload the unattended (soft GC)
+                else loaded.Remove f |> ignore                   // unload the unattended (soft GC)

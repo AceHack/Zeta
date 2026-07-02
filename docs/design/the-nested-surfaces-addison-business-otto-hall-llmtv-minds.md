@@ -128,6 +128,14 @@ shared. See the genesis reconciliation doc's RESOLVED note.
   `zeta.darkhall.llmtv.v1` transcript, and renders the same zero-JS page as the still
   frame. This keeps the socket/node runner as a thin impure edge while giving the
   website and tests a stable artifact contract.
+- **Replay recorder — LANDED.**
+  `src/Core.TypeScript/discovery/llmtv-replay-recorder.ts` is the live-to-artifact
+  capture seam. It wraps any `BroadcastTransport`, records valid LLMTV broadcast wires
+  with an injected clock, and snapshots them as `zeta.llmtv.replay.v1`. Foreign or
+  malformed wires stay cold by default; if a caller asks for bounded capture, the
+  default policy is no-forget/backpressure. The explicit `drop-oldest` mode is allowed
+  only with a heat record, so information loss is visible to debugging and room
+  accounting.
 - **Replay artifact renderer — LANDED.**
   `src/Core.TypeScript/discovery/llmtv-replay-render.ts` is the source-owned file
   bridge: given a captured `zeta.llmtv.replay.v1` JSON artifact, it emits the same

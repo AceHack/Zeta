@@ -48,10 +48,7 @@ interface AllowlistIntegrity {
   readonly staleCategoryEntries: readonly string[];
 }
 
-export type RetainedShellCategory =
-  | "host-service wrappers"
-  | "nixos installer"
-  | "setup/bootstrap";
+export type RetainedShellCategory = "host-service wrappers" | "nixos installer" | "setup/bootstrap";
 
 export interface RetainedShellCategorySummary {
   readonly category: RetainedShellCategory;
@@ -74,10 +71,7 @@ export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS
 const SHELL_INTERPRETERS = new Set(["bash", "dash", "sh", "zsh", "ksh"]);
 const ENV_OPTIONS_WITH_SEPARATE_OPERAND = new Set(["-a", "-P", "-u", "--argv0", "--chdir", "--path", "--unset"]);
 const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = ["--argv0=", "--chdir=", "--path=", "--unset="];
-const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = [
-  "db/",
-  "docs/recovered-orphan-branches-",
-];
+const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recovered-orphan-branches-"];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -90,6 +84,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/setup/common/mise.sh",
   "tools/setup/common/profile-edit.sh",
   "tools/setup/common/shellenv.sh",
+  "tools/setup/common/smoke-7-toolchains.sh",
   "tools/setup/common/sync-prior-art.sh",
   "tools/setup/doctor.sh",
   "tools/setup/host-loop-bootstrap.sh",
@@ -154,6 +149,7 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "tools/setup/mechanisms/from-uv-venv.sh": "setup/bootstrap",
   "tools/setup/mechanisms/_when.sh": "setup/bootstrap",
   "tools/setup/common/shellenv.sh": "setup/bootstrap",
+  "tools/setup/common/smoke-7-toolchains.sh": "setup/bootstrap",
   "tools/setup/common/sync-prior-art.sh": "setup/bootstrap",
   "tools/setup/doctor.sh": "setup/bootstrap",
   "tools/setup/host-loop-bootstrap.sh": "setup/bootstrap",

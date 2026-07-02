@@ -114,17 +114,29 @@ describe("Clifford cross-language verification (Cl(3,0) byte-lock)", () => {
     const ts = runScript("ts", TS_CLIFFORD, tmpDir);
     const py = runScript("py", PY_CLIFFORD, tmpDir);
     const go = runScript("go", GO_CLIFFORD, tmpDir);
-    try { rmSync(tmpDir, { recursive: true }); } catch {}
+    try {
+      rmSync(tmpDir, { recursive: true });
+    } catch {}
 
     expect(ts).not.toBeNull();
     expect(py).not.toBeNull();
     expect(go).not.toBeNull();
 
+    if (ts === null || py === null || go === null) {
+      throw new Error("Clifford cross-verify script failed; see stderr above");
+    }
+
     // All three must agree on every operation (compare parsed arrays, not string formatting)
-    for (const key of Object.keys(ts!)) {
-      const tsVal = JSON.parse(ts![key]!);
-      const pyVal = JSON.parse(py![key]!);
-      const goVal = JSON.parse(go![key]!);
+    for (const key of Object.keys(ts)) {
+      const tsText = ts[key];
+      const pyText = py[key];
+      const goText = go[key];
+      if (tsText === undefined || pyText === undefined || goText === undefined) {
+        throw new Error(`missing Clifford output for ${key}`);
+      }
+      const tsVal = JSON.parse(tsText);
+      const pyVal = JSON.parse(pyText);
+      const goVal = JSON.parse(goText);
       expect(tsVal).toEqual(pyVal);
       expect(tsVal).toEqual(goVal);
     }
@@ -133,7 +145,9 @@ describe("Clifford cross-language verification (Cl(3,0) byte-lock)", () => {
   test("e1*e1 = scalar 1 (Euclidean signature)", () => {
     mkdirSync(tmpDir, { recursive: true });
     const ts = runScript("ts", TS_CLIFFORD, tmpDir);
-    try { rmSync(tmpDir, { recursive: true }); } catch {}
+    try {
+      rmSync(tmpDir, { recursive: true });
+    } catch {}
     // e1*e1 should be [1,0,0,0,0,0,0,0] (scalar 1, Euclidean)
     expect(ts!["e1*e1"]).toBe("[1,0,0,0,0,0,0,0]");
   });
@@ -141,7 +155,9 @@ describe("Clifford cross-language verification (Cl(3,0) byte-lock)", () => {
   test("e1*e2 = e12 (bivector)", () => {
     mkdirSync(tmpDir, { recursive: true });
     const ts = runScript("ts", TS_CLIFFORD, tmpDir);
-    try { rmSync(tmpDir, { recursive: true }); } catch {}
+    try {
+      rmSync(tmpDir, { recursive: true });
+    } catch {}
     // e1*e2: mask = 1^2 = 3 (e12), sign = +1 (no reordering needed)
     expect(ts!["e1*e2"]).toBe("[0,0,0,1,0,0,0,0]");
   });
