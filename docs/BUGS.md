@@ -105,7 +105,6 @@ can no longer pass with Go silent.
 
 ## P1 — serious
 
-
 ### Checkpoint corruption is indistinguishable from absence (round-2 hunt, 2026-06-12)
 
 - **Site:** `src/Core/Checkpoint.fs:124-170` (`FileCheckpointStore.LoadCheckpointAsync`)

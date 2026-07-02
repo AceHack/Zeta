@@ -21,10 +21,10 @@ open Zeta.Core
 
 // Resolve a registered generator by name (registry ROW), else fall back to the
 // pure content-address. Both must equal the canonical vector.
-let resolve (name: string) (version: int) : string =
+let resolve (name: string) (version: int) : string * string =
     match GeneratorRegistry.byName name with
-    | Some e when e.Version = version -> e.ZetaId
-    | _ -> GeneratorRegistry.idOf name version
+    | Some e when e.Version = version -> e.ZetaId, e.ZetaIdV2
+    | _ -> GeneratorRegistry.idOf name version, GeneratorRegistry.idOfV2 name version
 
 let inputs =
     [ "rng.splitmix64@1", "rng.splitmix64", 1
@@ -39,7 +39,11 @@ sb.AppendLine("  \"_source\": \"generated-from-ir\",") |> ignore
 inputs
 |> List.iteri (fun i (id, name, version) ->
     let comma = if i < inputs.Length - 1 then "," else ""
-    sb.AppendLine(sprintf "  \"%s\": \"%s\"%s" id (resolve name version) comma) |> ignore)
+    let v1, v2 = resolve name version
+    sb.AppendLine(sprintf "  \"%s\": {" id) |> ignore
+    sb.AppendLine(sprintf "    \"v1\": \"%s\"," v1) |> ignore
+    sb.AppendLine(sprintf "    \"v2\": \"%s\"" v2) |> ignore
+    sb.AppendLine(sprintf "  }%s" comma) |> ignore)
 sb.AppendLine("}") |> ignore
 
 let here = __SOURCE_DIRECTORY__

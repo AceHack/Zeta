@@ -18,20 +18,25 @@ vectors:
   - id: rng.splitmix64@1
     name: rng.splitmix64
     gen_version: 1
-    result: "129c1fac3a48075b481c0f10f30deb06"
+    v1: "129c1fac3a48075b481c0f10f30deb06"
+    v2: "129c1fac3a48075bc89934da1e90fbe4"
   - id: boundary.glow@1
     name: boundary.glow
     gen_version: 1
-    result: "bb074fb3fefaa419c660f62218eeb912"
+    v1: "bb074fb3fefaa419c660f62218eeb912"
+    v2: "bb074fb3fefaa41909d3171cdbf5d1ec"
   - id: boundary.glow@2
     name: boundary.glow
     gen_version: 2
-    result: "bb074cb3fefa9f00c661972218efcaa5"
+    v1: "bb074cb3fefa9f00c661972218efcaa5"
+    v2: "bb074cb3fefa9f0009d3182a5bf5d1ec"
   - id: kernel.rbf@1
     name: kernel.rbf
     gen_version: 1
-    result: "28e0a82bea989793c194656392bd1096"
+    v1: "28e0a82bea989793c194656392bd1096"
+    v2: "28e0a82bea989793ab7c01e8ed9e8e24"
   - id: zetaid.glyph@1
     name: zetaid.glyph
     gen_version: 1
-    result: "f42317cf4d9df65dbb63d5e27430f384"
+    v1: "f42317cf4d9df65dbb63d5e27430f384"
+    v2: "f42317cf4d9df65d1cf4ff31c509f484"
