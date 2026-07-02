@@ -361,7 +361,20 @@ async function runObserveInline(): Promise<string> {
 
     return `observe-inline:${result.tier}:${execNote}`;
   } catch (err) {
-    log(`observe-inline failed: ${err instanceof Error ? err.message : String(err)}`);
+    const errorDetails = err instanceof Error ? (err.stack ?? err.message) : String(err);
+    log(`observe-inline failed: ${errorDetails}`);
+    try {
+      writeFileSync(join(stateDir, "last-agent-run.json"), JSON.stringify({
+        run_id: runId,
+        persona: personaName,
+        status: 1,
+        started_at: nowIso(),
+        updated_at: nowIso(),
+        error: errorDetails,
+      }, null, 2));
+    } catch (writeErr: any) {
+      log(`ERROR: failed to write last-agent-run.json on failure path: ${writeErr.message}`);
+    }
     return "observe-inline:error";
   }
 }
