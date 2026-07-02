@@ -142,3 +142,33 @@ let ``orbitStates returns exactly the recurrent set (the fixed points), transien
     let key (x: int) = x
     let orbit = SchedulerZeta.orbitStates key step 0 |> List.sort
     Assert.Equal<int list>([ 3; 4; 5; 6 ], orbit)   // the 4-cycle, no transient (0,1,2)
+
+// ── SOFT GC by fingerprint (data-signature) selection — soft game selection ──
+
+[<Fact>]
+let ``SoftFixedPointTable: soft game selection GCs unattended games, regenerates the selected from their fingerprint`` () =
+    // Two games keyed by DATA-SIGNATURE fingerprints (TOSEC-style ROM hashes), each a
+    // counter with a distinct period ⇒ distinct expected orbits. In soft/prediction
+    // mode, loading a game = Shiva recomputing its orbits from its ZetaId (fingerprint).
+    let table = SchedulerZeta.SoftFixedPointTable<string, int, int>()
+    let counter (n: int) = fun (x: int) -> (x + 1) % n
+    table.Register("tosec:CRC-AAAA", id, counter 4, 0)   // game A ⇒ period-4 orbit
+    table.Register("tosec:CRC-BBBB", id, counter 3, 0)   // game B ⇒ period-3 orbit
+
+    // prediction strongly selects A, not B (soft-selection weights; threshold 0.5)
+    table.Select(Map.ofList [ "tosec:CRC-AAAA", 0.9; "tosec:CRC-BBBB", 0.1 ], 0.5)
+    Assert.True(table.IsLoaded "tosec:CRC-AAAA")         // attended ⇒ loaded (orbit calculated)
+    Assert.False(table.IsLoaded "tosec:CRC-BBBB")        // unattended ⇒ soft-GC'd
+    Assert.Equal(4, (table.Orbit "tosec:CRC-AAAA").Length)   // A's period-4 orbit
+    let orbitA = table.Orbit "tosec:CRC-AAAA"
+
+    // attention SWAPS: now B is selected, A is not — Shiva sweeps A, reloads B
+    table.Select(Map.ofList [ "tosec:CRC-AAAA", 0.1; "tosec:CRC-BBBB", 0.9 ], 0.5)
+    Assert.False(table.IsLoaded "tosec:CRC-AAAA")        // A swept (not currently selected)
+    Assert.True(table.IsLoaded "tosec:CRC-BBBB")         // B loaded (regenerated from its fingerprint)
+    Assert.Equal(3, (table.Orbit "tosec:CRC-BBBB").Length)   // B's period-3 orbit
+
+    // re-selecting A regenerates its orbit EXACTLY from its fingerprint (lossless)
+    let orbitA2 = table.Orbit "tosec:CRC-AAAA"
+    Assert.Equal<int[]>(Array.sort orbitA, Array.sort orbitA2)
+    Assert.True(table.Loads >= 3, "Shiva recalculated orbits on each (re)selection")

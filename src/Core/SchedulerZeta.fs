@@ -197,3 +197,69 @@ module SchedulerZeta =
                 | true, arr -> hits <- hits + 1; arr
                 | _ -> regenerate ()
             | None -> regenerate ()
+
+    /// **Soft GC by fingerprint selection** — Aaron: "soft GC via fingerprinting: things
+    /// get GC'd whose fingerprints are not strongly currently selected … in soft mode
+    /// loading a game is like having Shiva reload/calculate from zetaid the expected
+    /// orbits of the games being played." Each game is registered by its FINGERPRINT
+    /// (its ZetaId); its expected orbit (fixed points) is DERIVED from the game's
+    /// dynamics and held WEAKLY. `Select` is the soft-GC pass: given the current
+    /// soft-selection weights (the prediction distribution over game fingerprints) and
+    /// a threshold, it UNLOADS every game whose weight is below threshold (Shiva sweeps
+    /// the unattended) and LOADS — regenerates from the fingerprint — every strongly-
+    /// selected game. Soft, not binary: the prediction distribution is the reclaim
+    /// pressure. Loading a game IS Shiva recomputing its orbits from its ZetaId.
+    ///
+    /// The fingerprint `'F` is the game's DATA SIGNATURE — a content hash of the ROM.
+    /// **REUSE the existing signature databases; do NOT reinvent them** (Aaron): ROM
+    /// identity is a hard distributed problem that humans already solved over decades —
+    /// TOSEC, GoodTools (GoodNES/GoodSNES/…), and MAME's DAT files curate the CRC32 /
+    /// MD5 / SHA1 signatures and the catalog metadata. A game's ZetaId keys off THAT
+    /// signature (anchor-to-human-prior-art), and its expected orbits are what Shiva
+    /// recomputes from the key. `'F` is deliberately generic — a TOSEC hash, a
+    /// `ContentHash256`, any curated content signature serves as the fingerprint — so
+    /// the table binds to the existing DBs rather than a home-grown scheme. (The next
+    /// step, routed: actually READ and UNDERSTAND those catalogs' metadata.)
+    [<Sealed>]
+    type SoftFixedPointTable<'F, 'S, 'K when 'F: equality and 'F: comparison and 'F: not null and 'K: equality and 'K: not null>() =
+        let games = System.Collections.Generic.Dictionary<'F, ('S -> 'K) * ('S -> 'S) * 'S>()
+        let cache = System.Collections.Generic.Dictionary<'F, System.WeakReference<'S[]>>()
+        let mutable loads = 0
+
+        /// Register a game (fingerprint = its ZetaId) with its dynamics (key/step/start).
+        member _.Register(fingerprint: 'F, key: 'S -> 'K, step: 'S -> 'S, start: 'S) =
+            games.[fingerprint] <- (key, step, start)
+
+        /// Regenerate a game's expected orbit FROM its fingerprint (Shiva calculate).
+        member private _.Load(f: 'F) : 'S[] =
+            let (key, step, start) = games.[f]
+            let arr = orbitStates key step start |> List.toArray
+            cache.[f] <- System.WeakReference<'S[]>(arr)
+            loads <- loads + 1
+            arr
+
+        /// The expected orbit of a game — loaded from the weak table, or regenerated
+        /// (O(reachable)) from its fingerprint if the GC / a soft sweep unloaded it.
+        member this.Orbit(f: 'F) : 'S[] =
+            match cache.TryGetValue f with
+            | true, wr -> (match wr.TryGetTarget() with | true, a -> a | _ -> this.Load f)
+            | _ -> this.Load f
+
+        /// Is a game's orbit currently LOADED (weak-alive)?
+        member _.IsLoaded(f: 'F) : bool =
+            match cache.TryGetValue f with
+            | true, wr -> (match wr.TryGetTarget() with | true, _ -> true | _ -> false)
+            | _ -> false
+
+        /// Total (re)loads — Shiva calculate-from-fingerprint events.
+        member _.Loads = loads
+
+        /// **The soft-GC pass.** `weights` = the current soft-selection distribution over
+        /// game fingerprints (from prediction mode). UNLOAD every registered game whose
+        /// weight is below `threshold` (Shiva sweeps the unattended); LOAD (regenerate
+        /// from the fingerprint) every strongly-selected game.
+        member this.Select(weights: Map<'F, float>, threshold: float) =
+            for KeyValue(f, _) in games do
+                let w = match Map.tryFind f weights with | Some x -> x | None -> 0.0
+                if w >= threshold then this.Orbit f |> ignore   // load / keep the attended
+                else cache.Remove f |> ignore                    // unload the unattended (soft GC)
