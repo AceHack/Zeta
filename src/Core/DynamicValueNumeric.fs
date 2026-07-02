@@ -8,7 +8,7 @@ namespace Zeta.Core
 /// coercion, never an exception on the hot path (integer overflow is caught and returned as `Error`).
 ///
 /// This is the leaf-numeric algebra *inside* `DynamicValue`. It is a **partial ring expressed total via
-/// `Result`** — so it is deliberately NOT an `ISemiring<DynamicValue>` (that interface mandates total
+/// `Result`** — so it is deliberately NOT an `ISemiring<DynamicValue>` (the interface mandates total
 /// `Add`/`Mul`). The .NET generic-math interfaces (`IAdditionOperators` etc.) likewise want *total*
 /// operators returning the element type, so they are not applied here; a `DvNumber` newtype could carry them
 /// later if ever wanted (the deferred "numeric-only newtype" option). Complements

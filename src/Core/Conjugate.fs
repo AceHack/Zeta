@@ -16,7 +16,7 @@ namespace Zeta.Core
 /// - **The algebra (#7080).** Over `SoftValue`: `mix` (⊕, mixture — a *commutative monoid*) and `product` (⊗,
 ///   Bayesian conjunction — a *monoid*). **Honest finding:** probabilities have **no additive inverse**, so
 ///   this is a **semiring-WITHOUT-negate (a rig / the probability/expectation semiring)** — it does **not**
-///   satisfy the repo's `ISemiring<_>` (which *requires* `Negate`). So `Conjugate`/`SoftValue` fit a *rig*,
+///   satisfy the repo's `IRing<_>` (which requires `Negate`); post-081KWG9JQ9H they COULD fit `ISemiring` (now a true rig interface) if their ops were total. They fit a *rig*,
 ///   not a ring; forcing an `ISemiring` instance would be unlawful. The numeric interface it honestly fits is
 ///   the commutative-monoid-⊕ + monoid-⊗ rig below. F# reference oracle.
 module Conjugate =

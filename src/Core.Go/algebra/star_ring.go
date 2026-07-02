@@ -7,13 +7,27 @@ package algebra
 
 import "math"
 
-// StarRing is the *-ring interface: Zero/One/Add/Mul/Negate + Conj.
-type StarRing[T any] interface {
+// Semiring is the free tier: Zero/One/Add/Mul — no additive inverse
+// (lawful semirings such as tropical min-plus provably cannot supply one;
+// 081KWG9JQ9H).
+type Semiring[T any] interface {
 	Zero() T
 	One() T
 	Add(a, b T) T
 	Mul(a, b T) T
+}
+
+// Ring is the earned quotient over Semiring: adds the additive inverse
+// (Add(a, Negate(a)) == Zero), which retraction requires.
+type Ring[T any] interface {
+	Semiring[T]
 	Negate(a T) T
+}
+
+// StarRing is the *-ring interface: a Ring + the Conj involution
+// (involution star, not Kleene star).
+type StarRing[T any] interface {
+	Ring[T]
 	Conj(a T) T
 	IsZero(a T) bool
 }

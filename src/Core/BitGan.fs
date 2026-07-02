@@ -12,7 +12,7 @@ namespace Zeta.Core
 ///
 /// **Honest scope:** this is the convergent *dynamical system* (the engine), not a ring — combine/algebra over
 /// it has the same no-additive-inverse caveat as `Conjugate`/`SoftValue` (#7080), so it does not implement the
-/// `Negate`-requiring `ISemiring`. The "numerics" it carries are the entropy/step dynamics below.
+/// `Negate`-requiring `IRing` (post-081KWG9JQ9H; `ISemiring` itself no longer mandates Negate). The "numerics" it carries are the entropy/step dynamics below.
 module BitGan =
 
     open ZetaCli

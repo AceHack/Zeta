@@ -23,8 +23,10 @@ namespace Zeta.Algebra {
     /// Multiplicative product.
     function SemiringMul(a : Int, b : Int) : Int { return a * b; }
 
-    /// Additive inverse.
-    function SemiringNegate(a : Int) : Int { return -a; }
+    /// Additive inverse — RING tier (081KWG9JQ9H: semirings carry no negate;
+    /// integers are a full ring, so the oracle keeps the operation under the
+    /// ring name).
+    function RingNegate(a : Int) : Int { return -a; }
 
     // ─── IStarRing (over Int — conj = identity for integers) ────────────
 

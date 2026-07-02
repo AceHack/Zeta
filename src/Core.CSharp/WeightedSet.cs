@@ -108,9 +108,9 @@ public sealed class WeightedSet<TK, TW> : ITensor<TK, TW>
     /// <summary>
     /// Negates every weight (additive inverse).
     /// </summary>
-    /// <param name="sr">The semiring algebra.</param>
+    /// <param name="sr">The ring algebra (additive inverse required — 081KWG9JQ9H).</param>
     /// <returns>A new negated tensor.</returns>
-    public WeightedSet<TK, TW> Negate(ISemiring<TW> sr)
+    public WeightedSet<TK, TW> Negate(IRing<TW> sr)
     {
         ArgumentNullException.ThrowIfNull(sr);
         if (this.IsEmpty) return this;
@@ -126,10 +126,10 @@ public sealed class WeightedSet<TK, TW> : ITensor<TK, TW>
     /// <summary>
     /// Subtracts another tensor from the current one.
     /// </summary>
-    /// <param name="sr">The semiring algebra.</param>
+    /// <param name="sr">The ring algebra (additive inverse required — 081KWG9JQ9H).</param>
     /// <param name="other">The other tensor to subtract.</param>
     /// <returns>A new tensor representing the difference.</returns>
-    public WeightedSet<TK, TW> Subtract(ISemiring<TW> sr, WeightedSet<TK, TW> other)
+    public WeightedSet<TK, TW> Subtract(IRing<TW> sr, WeightedSet<TK, TW> other)
     {
         ArgumentNullException.ThrowIfNull(sr);
         ArgumentNullException.ThrowIfNull(other);

@@ -20,8 +20,8 @@ let inline checkMonoidLaws (sr: ISemiring<'W>) (a: 'W) =
     // a * One = a   (right identity)
     sr.Mul(a, sr.One) |> should equal a
 
-/// Verify additive inverse: a + Negate(a) = Zero.
-let inline checkRingNegate (sr: ISemiring<'W>) (a: 'W) =
+/// Verify additive inverse: a + Negate(a) = Zero (ring tier — 081KWG9JQ9H).
+let inline checkRingNegate (sr: IRing<'W>) (a: 'W) =
     sr.Add(a, sr.Negate(a)) |> should equal sr.Zero
 
 
@@ -113,13 +113,12 @@ let ``IntervalRing — Mul with negative interval uses Kaucher hull`` () =
     c.Lo |> should equal -8.0
     c.Hi |> should equal 12.0
 
-[<Fact>]
-let ``IntervalRing — Negate reverses interval`` () =
-    let sr = IntervalRing.Instance
-    let a  = IntervalWeight(2.0, 5.0)
-    let n  = sr.Negate(a)
-    n.Lo |> should equal -5.0
-    n.Hi |> should equal -2.0
+
+// NOTE (081KWG9JQ9H): IntervalRing no longer carries Negate — it was demoted to
+// ISemiring-only (its negation was provably not an inverse, and distributivity
+// fails: Moore 1966). The residue/dependency-problem facts formerly tested here
+// live on, member-free, in Formal/SemiringRing.Laws.Tests.fs. Tropical's
+// throwing-Negate test is likewise deleted: the misuse no longer compiles.
 
 [<Fact>]
 let ``IntervalRing — monoid laws`` () =
@@ -127,24 +126,7 @@ let ``IntervalRing — monoid laws`` () =
     checkMonoidLaws sr (IntervalWeight(3.0, 7.0))
     checkMonoidLaws sr (IntervalWeight(-1.0, 1.0))
 
-[<Fact>]
-let ``IntervalRing — point intervals satisfy ring negate law`` () =
-    // Point intervals [v,v] behave like real numbers: [v,v] + [-v,-v] = [0,0].
-    let sr = IntervalRing.Instance
-    checkRingNegate sr (IntervalWeight.Point 3.0)
-    checkRingNegate sr (IntervalWeight.Point(-2.0))
 
-[<Fact>]
-let ``IntervalRing — non-point negate gives width-doubled result (not zero)`` () =
-    // Standard interval arithmetic: [a,b] + [-b,-a] = [a-b, b-a], not [0,0].
-    // This is the interval dependency problem — uncertainty doesn't cancel.
-    // Analogy: Spanner TrueTime can't subtract its uncertainty window away.
-    let sr = IntervalRing.Instance
-    let a  = IntervalWeight(3.0, 7.0)   // width 4
-    let r  = sr.Add(a, sr.Negate(a))
-    r.Lo |> should equal -4.0           // 3 - 7
-    r.Hi |> should equal  4.0           // 7 - 3
-    r.Width |> should equal 8.0         // doubled uncertainty
 
 [<Fact>]
 let ``IntervalRing — uncertainty widens under repeated Add`` () =
@@ -193,7 +175,3 @@ let ``TropicalSemiring — monoid laws`` () =
     checkMonoidLaws sr (TropicalWeight 10L)
     checkMonoidLaws sr TropicalWeight.Infinity
 
-[<Fact>]
-let ``TropicalSemiring — Negate raises (no additive inverse)`` () =
-    (fun () -> TropicalSemiring.Instance.Negate(TropicalWeight 1L) |> ignore)
-    |> should throw typeof<System.InvalidOperationException>

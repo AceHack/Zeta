@@ -243,27 +243,23 @@ module ZSetW =
     /// ring axiom `negate a `Add` a = zero` is required for retraction.
     ///
     /// **Requires a full ring**: this calls `ring.Negate` on every entry's
-    /// weight. Semirings WITHOUT additive inverse (e.g., `TropicalSemiring`,
-    /// whose `Negate` raises `InvalidOperationException` per its docstring)
-    /// cannot satisfy this and the exception propagates verbatim. Callers
-    /// that work over non-ring semirings must avoid `negate`/`difference`
-    /// and use ring-specific equivalents (for tropical: there is no
-    /// retraction — "minimum so far" is monotone-decreasing only).
+    /// weight. Retraction REQUIRES a full ring, and since the IRing split
+    /// (081KWG9JQ9H) the signature says so: semirings without additive
+    /// inverse (tropical min-plus — provably inverse-free, Vandiver 1934 /
+    /// Golan 1999) simply cannot be passed here. Compile error, not throw.
     [<CompiledName "Negate">]
-    let negate (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
+    let negate (ring: IRing<'W>) (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         let span = a.AsSpan()
         let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(span.Length)
         for i in 0 .. span.Length - 1 do
             builder.Add(ZEntryW(span.[i].Key, ring.Negate(span.[i].Weight)))
         ZSetW(builder.MoveToImmutable())
 
-    /// Difference: `a - b = a `sum` (negate b)`.
-    ///
-    /// Same ring-requires-additive-inverse caveat as `negate` — semirings
-    /// without `Negate` (e.g., `TropicalSemiring`) will surface
-    /// `InvalidOperationException` from the underlying `ring.Negate` call.
+    /// Difference: `a - b = a `sum` (negate b)`. Requires `IRing` — the
+    /// ring axiom `Add(a, Negate a) = Zero` is what makes the retraction
+    /// exact (and its absence is a compile error since 081KWG9JQ9H).
     [<CompiledName "Difference">]
-    let difference (ring: ISemiring<'W>) (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
+    let difference (ring: IRing<'W>) (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         sum ring a (negate ring b)
 
     /// Scale every weight by `scalar` via `ring.Mul`.
@@ -367,9 +363,10 @@ module ZSetW =
                 MergeKernel.sum (ZEntryWOps<'K, 'W>()) ring (a.AsSpan()) (b.AsSpan())
             if merged.IsEmpty then ZSetW<'K, 'W>.Empty else ZSetW(merged)
 
-    /// Zero-overhead negate (struct ring by value; requires a full ring).
+    /// Zero-overhead negate (struct ring by value; `IRing` — the type now
+    /// carries the "requires a full ring" fact).
     [<CompiledName "NegateBy">]
-    let negateBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    let negateBy (ring: 'R when 'R : struct and 'R :> IRing<'W>)
                         (a: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         let span = a.AsSpan()
         let builder = ImmutableArray.CreateBuilder<ZEntryW<'K, 'W>>(span.Length)
@@ -377,9 +374,9 @@ module ZSetW =
             builder.Add(ZEntryW(span.[i].Key, ring.Negate(span.[i].Weight)))
         ZSetW(if span.Length = 0 then ImmutableArray.Empty else builder.MoveToImmutable())
 
-    /// Zero-overhead difference `a - b` (struct ring by value).
+    /// Zero-overhead difference `a - b` (struct ring by value; `IRing`).
     [<CompiledName "DifferenceBy">]
-    let differenceBy (ring: 'R when 'R : struct and 'R :> ISemiring<'W>)
+    let differenceBy (ring: 'R when 'R : struct and 'R :> IRing<'W>)
                             (a: ZSetW<'K, 'W>) (b: ZSetW<'K, 'W>) : ZSetW<'K, 'W> =
         sumBy ring a (negateBy ring b)
 

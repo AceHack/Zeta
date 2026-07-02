@@ -266,7 +266,7 @@ module Chip8Cow =
     /// `frame × frame`, just as qubit *states* are an `IGroup` not a ring). But the **time-evolution is a
     /// genuine monoid**: state-transitions `Frame → Frame` compose, with the no-op as identity. `step` is one
     /// element; `run n` = the monoid power. (Surrounding interfaces that ARE genuine: this monoid; the CRDT
-    /// memory-merge = `ISemilattice`; `SoftValue<Frame>` = a rig *without* `Negate`. Implement the interface the
+    /// memory-merge = `ISemilattice`; `SoftValue<Frame>` = a rig *without* `Negate` (the `ISemiring` tier post-081KWG9JQ9H). Implement the interface the
     /// structure has — don't force a ring.) Matches the `ImaginaryStack.complex : IStarRing` value pattern.
     let dynamics: IMonoid<Frame -> Frame> =
         { new IMonoid<Frame -> Frame> with

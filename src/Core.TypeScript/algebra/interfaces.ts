@@ -14,12 +14,22 @@
 
 // ─── ISemiring<T> ───────────────────────────────────────────────────────
 
-/** Semiring: additive monoid (Zero, Add) + multiplicative monoid (One, Mul) + Negate. */
+/** Semiring (rig): additive monoid (Zero, Add) + multiplicative monoid (One, Mul).
+ * NO additive inverse — lawful semirings (tropical min-plus) provably cannot
+ * always supply one (idempotent ⇒ zerosumfree: Vandiver 1934, Golan 1999).
+ * Retraction-capable algebras implement IRing (081KWG9JQ9H). */
 export interface ISemiring<T> {
   readonly zero: T;
   readonly one: T;
   add(a: T, b: T): T;
   mul(a: T, b: T): T;
+}
+
+// ─── IRing<T> ───────────────────────────────────────────────────────────
+
+/** Ring: the earned quotient over ISemiring — adds the additive inverse
+ * (add(a, negate(a)) = zero), which retraction/undo/DBSP rollback require. */
+export interface IRing<T> extends ISemiring<T> {
   negate(a: T): T;
 }
 
@@ -118,8 +128,8 @@ export interface IWritePort<T> {
 
 // ─── Instances ──────────────────────────────────────────────────────────
 
-/** Number as a semiring (standard arithmetic). */
-export const numberSemiring: ISemiring<number> = {
+/** Number as a ring (standard arithmetic; ring tier — negate is lawful here). */
+export const numberSemiring: IRing<number> = {
   zero: 0,
   one: 1,
   add: (a, b) => a + b,

@@ -164,8 +164,24 @@ public interface IStarRing<TWeight> : IRing<TWeight>   // rebase: Cayley–Dicks
       4. Kira's doc-sweep as merge gate, + Semiring.fs:16.
       5. Post-retype audit: zero `is IRing` runtime downcasts — capability flows
          by constraint only.
-- [ ] Implementation (atomic across F#/C#/TS/Py/Q#/Go + ring.ir.json + law-pack
-      + Z3 lemma + doc sweep) + full-suite + measure ΔU to `db/uncertainty/`.
+- [x] **Implementation LANDED (2026-07-02, atomic).** Surfaces: ISemiring.cs
+      (Negate removed) + NEW IRing.cs + IStarRing.cs rebased (+ Kleene note);
+      F# Semiring.fs (IntegerRing → IRing, Instance retyped; IntervalRing
+      DEMOTED with the on-file exception, Negate deleted), NovelMath.fs
+      (Tropical's throwing Negate DELETED), MergeKernel.fs (BoxedRing →
+      semiring-tier), ZSetW negate/difference/negateBy/differenceBy → IRing,
+      WeightedSet.fs negate/subtract → IRing; C# IntegerRing.cs → IRing,
+      WeightedSet.cs Negate/Subtract → IRing; mirrors split in TS
+      (interfaces.ts + IRing), Python (Ring class; RealSemiring retiered),
+      Q# (SemiringNegate → RingNegate), Go (Semiring/Ring/StarRing embeds);
+      IR treaty: semiring.ir.json drops Negate + inverse law, NEW ring.ir.json
+      carries them, star-ring.ir.json extends IRing; generated law files
+      regenerated (+ generated-ring-laws), codegen tests updated. Doc sweep
+      (Kira's list + Semiring.fs:16) done. Version 2.0.0 + PackageReleaseNotes
+      (Ilyana #3). Zero `is IRing` downcasts (Ilyana #5). ΔU measured to
+      db/uncertainty/081KWG9JQ9H-iring-isemiring-split.md. Gates: full .NET
+      build 0 warnings; 3777/3782 F# (1 TLC JVM flake, passes solo); 385 C#;
+      284 TS; Go builds; Python parses.
 
 Anchors: Golan, *Semirings and their Applications* (the rig/ring boundary);
 Green–Karvounarakis–Tannen (provenance semirings — semiring-only by design);

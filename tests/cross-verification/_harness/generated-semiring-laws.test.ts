@@ -37,14 +37,6 @@ describe("ISemiring — algebraic law property tests (generated)", () => {
     }
   });
 
-  test("add-inverse: Add(a, Negate(a)) = Zero", () => {
-    // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:negate-is-additive-inverse
-    for (let i = 0; i < N; i++) {
-      const a = gen();
-      expect(eq(r.add(a, r.negate(a)), r.zero)).toBe(true);
-    }
-  });
-
   test("mul-identity: Mul(a, One) = a = Mul(One, a)", () => {
     // PROVEN: src/Core.TypeScript/algebra/interfaces.test.ts:one-is-multiplicative-identity
     for (let i = 0; i < N; i++) {

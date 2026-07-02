@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Zeta.Core.Abstractions</RootNamespace>
     <AssemblyName>Zeta.Core.Abstractions</AssemblyName>
+    <!-- 2.0.0: BREAKING — ISemiring lost Negate (moved to new IRing : ISemiring;
+         IStarRing rebased onto IRing). 081KWG9JQ9H, Ilyana condition 3. -->
+    <Version>2.0.0</Version>
+    <PackageReleaseNotes>BREAKING (2.0.0): ISemiring&lt;T&gt; no longer declares Negate. New IRing&lt;T&gt; : ISemiring&lt;T&gt; carries the additive inverse; IStarRing&lt;T&gt; now extends IRing&lt;T&gt;. Retraction over inverse-free semirings (tropical) is a compile error instead of a runtime throw. Work-item 081KWG9JQ9H.</PackageReleaseNotes>
   </PropertyGroup>
 
   <!-- Language-NEUTRAL contract library (the naming convention, 2026-06-07: interface/contract libs are

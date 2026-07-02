@@ -82,11 +82,12 @@ module WeightedSet =
         { Entries = m }
 
     /// Negate every weight (ring inverse — for retraction / subtraction).
-    let negate (sr: ISemiring<'W>) (ws: WeightedSet<'K, 'W>) : WeightedSet<'K, 'W> =
+    /// `IRing` since 081KWG9JQ9H: inverse-free semirings are rejected at compile time.
+    let negate (sr: IRing<'W>) (ws: WeightedSet<'K, 'W>) : WeightedSet<'K, 'W> =
         { Entries = ws.Entries |> Map.map (fun _ w -> sr.Negate(w)) }
 
-    /// `a − b` = `a ⊕ (−b)`.
-    let subtract (sr: ISemiring<'W>) (a: WeightedSet<'K, 'W>) (b: WeightedSet<'K, 'W>) : WeightedSet<'K, 'W> =
+    /// `a − b` = `a ⊕ (−b)`. `IRing` since 081KWG9JQ9H.
+    let subtract (sr: IRing<'W>) (a: WeightedSet<'K, 'W>) (b: WeightedSet<'K, 'W>) : WeightedSet<'K, 'W> =
         add sr a (negate sr b)
 
     /// Scale every weight by `w` on the left (⊗); `Zero` results pruned (`×Zero` annihilates).

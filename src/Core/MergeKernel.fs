@@ -41,7 +41,8 @@ type internal IZEntryOps<'K, 'W, 'E> =
 /// call sites (the kernel). This is the instance-passing COLD path made
 /// kernel-compatible: the adapter itself devirtualises; its `inner` calls
 /// stay virtual — the same cost the boxed path always paid, now routed
-/// through the one kernel instead of a hand-copied merge.
+/// through the one kernel instead of a hand-copied merge. Semiring-tier by
+/// design: the kernel's merge only ever needs Add/Zero (081KWG9JQ9H).
 [<Struct>]
 type internal BoxedRing<'W>(inner: ISemiring<'W>) =
     interface ISemiring<'W> with
@@ -49,7 +50,6 @@ type internal BoxedRing<'W>(inner: ISemiring<'W>) =
         member _.One = inner.One
         member _.Add(a, b) = inner.Add(a, b)
         member _.Mul(a, b) = inner.Mul(a, b)
-        member _.Negate(a) = inner.Negate(a)
 
 [<RequireQualifiedAccess>]
 module internal MergeKernel =

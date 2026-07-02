@@ -20,7 +20,12 @@ B = TypeVar("B", covariant=True)
 
 
 class Semiring(ABC, Generic[T]):
-    """Semiring: Zero/One/Add/Mul/Negate. The ring floor for DBSP weights."""
+    """Semiring (rig): Zero/One/Add/Mul — the FREE tier for DBSP weights.
+
+    Deliberately no additive inverse: lawful semirings (tropical min-plus)
+    provably cannot always supply one (idempotent => zerosumfree; Vandiver
+    1934, Golan 1999). Retraction-capable algebras implement Ring
+    (081KWG9JQ9H)."""
 
     @property
     @abstractmethod
@@ -36,6 +41,14 @@ class Semiring(ABC, Generic[T]):
     @abstractmethod
     def mul(self, a: T, b: T) -> T: ...
 
+
+# ─── IRing ───────────────────────────────────────────────────────────────
+
+
+class Ring(Semiring[T]):
+    """Ring: the earned quotient over Semiring — adds the additive inverse
+    (add(a, negate(a)) == zero), which retraction requires (081KWG9JQ9H)."""
+
     @abstractmethod
     def negate(self, a: T) -> T: ...
 
@@ -43,8 +56,9 @@ class Semiring(ABC, Generic[T]):
 # ─── IStarRing ───────────────────────────────────────────────────────────
 
 
-class StarRing(Semiring[T]):
-    """Star-ring: Semiring + Conj (involution). Cayley-Dickson tower floor."""
+class StarRing(Ring[T]):
+    """Star-ring: Ring + Conj (involution star, not Kleene star).
+    Cayley-Dickson tower floor."""
 
     @abstractmethod
     def conj(self, a: T) -> T: ...
@@ -142,7 +156,7 @@ class Port(ABC, Generic[T]):
 # ─── Instances ───────────────────────────────────────────────────────────
 
 
-class RealSemiring(Semiring[float]):
+class RealSemiring(Ring[float]):
     """Float semiring (standard arithmetic)."""
 
     @property

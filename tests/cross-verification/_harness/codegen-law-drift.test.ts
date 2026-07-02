@@ -11,6 +11,12 @@ const generatedLawCases = [
     instanceExpr: "require('../../../src/Core.TypeScript/algebra/interfaces').numberSemiring",
   },
   {
+    name: "IRing",
+    irFile: "../zeta-ir-v2/interfaces/ring.ir.json",
+    generatedFile: "generated-ring-laws.test.ts",
+    instanceExpr: "require('../../../src/Core.TypeScript/algebra/interfaces').numberSemiring",
+  },
+  {
     name: "IStarRing",
     irFile: "../zeta-ir-v2/interfaces/star-ring.ir.json",
     generatedFile: "generated-star-ring-laws.test.ts",

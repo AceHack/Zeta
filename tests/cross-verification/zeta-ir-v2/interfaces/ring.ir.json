@@ -1,0 +1,40 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IRing",
+  "typeParams": [
+    {
+      "name": "TWeight",
+      "variance": "invariant"
+    }
+  ],
+  "extends": [
+    "ISemiring"
+  ],
+  "doc": "Ring interface — the earned quotient over ISemiring: adds the additive inverse (Negate), which retraction/undo/DBSP rollback require (081KWG9JQ9H).",
+  "members": [
+    {
+      "name": "Negate",
+      "kind": "method",
+      "params": [
+        {
+          "name": "a",
+          "type": "TWeight"
+        }
+      ],
+      "returns": "TWeight",
+      "doc": "Additive inverse: Add(a, Negate(a)) = Zero."
+    }
+  ],
+  "laws": [
+    {
+      "id": "add-inverse",
+      "schema": "inverse",
+      "op": "Add",
+      "inverse": "Negate",
+      "identity": "Zero",
+      "status": "proven",
+      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:negate-is-additive-inverse",
+      "doc": "Add(a, Negate(a)) = Zero"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ namespace Zeta.Core
 /// — floats (continuous θ, mixing rate) are out of the proof lineage (the SoftValue discipline). The
 /// `(+,×)` forward step = a Markov/HMM-forward transition; the `(max,×)` Viterbi step = the best-path score.
 ///
-/// Honest interface note: the existing `ISemiring` is really a *Ring* (it mandates `Negate`). ℚ is a field,
+/// Honest interface note (updated 081KWG9JQ9H): the tower is now split — `ISemiring` (no Negate) vs `IRing`. ℚ is a field,
 /// so the probability semiring is a genuine ring; the Viterbi `(max,×)` semiring is idempotent and has **no**
 /// additive inverse, so it is honestly NOT a ring — these are kept as plain operations here rather than faking
 /// a `Negate`. (Wiring ℚ-probability into `ISemiring` is a follow-up nicety; the load-bearing thing is the

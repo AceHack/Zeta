@@ -15,7 +15,7 @@ namespace Zeta.Tests.CSharp;
 
 public class WeightedSetTests
 {
-    private static readonly ISemiring<long> sr = IntegerRing.Instance;
+    private static readonly IRing<long> sr = IntegerRing.Instance;
 
     [Fact]
     public void OfSeqCombinesDuplicateCoordinatesViaAddAndPrunesZero()

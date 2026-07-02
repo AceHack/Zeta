@@ -6,12 +6,12 @@ namespace Zeta.Core.CSharp;
 /// <summary>
 /// C# implementation of the 64-bit integer ring, avoiding namespace collisions.
 /// </summary>
-public sealed class IntegerRing : ISemiring<long>
+public sealed class IntegerRing : IRing<long>
 {
     /// <summary>
     /// The singleton instance of the integer ring.
     /// </summary>
-    public static readonly ISemiring<long> Instance = new IntegerRing();
+    public static readonly IRing<long> Instance = new IntegerRing();
 
     private IntegerRing() { }
 

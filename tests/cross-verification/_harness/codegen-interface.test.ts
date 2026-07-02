@@ -8,6 +8,7 @@ import { join } from "node:path";
 
 const irDir = join(import.meta.dir, "../zeta-ir-v2/interfaces");
 const semiring: InterfaceIr = JSON.parse(readFileSync(join(irDir, "semiring.ir.json"), "utf-8"));
+const ring: InterfaceIr = JSON.parse(readFileSync(join(irDir, "ring.ir.json"), "utf-8"));
 const starRing: InterfaceIr = JSON.parse(readFileSync(join(irDir, "star-ring.ir.json"), "utf-8"));
 const zsetIsa: InterfaceIr = JSON.parse(readFileSync(join(irDir, "zset-isa.ir.json"), "utf-8"));
 
@@ -17,7 +18,7 @@ describe("codegen-interface — ISemiring", () => {
     expect(cs).toContain("public interface ISemiring<TWeight>");
     expect(cs).toContain("TWeight Zero { get; }");
     expect(cs).toContain("TWeight Add(TWeight a, TWeight b)");
-    expect(cs).toContain("TWeight Negate(TWeight a)");
+    expect(cs).not.toContain("TWeight Negate(TWeight a)"); // 081KWG9JQ9H: Negate lives in IRing
     expect(cs).toContain("namespace Zeta.Core");
   });
 
@@ -63,6 +64,20 @@ describe("codegen-interface — ISemiring", () => {
   });
 });
 
+describe("codegen-interface — IRing", () => {
+  test("C# emits ring interface extending ISemiring with Negate", () => {
+    const cs = emitCSharp(ring);
+    expect(cs).toContain("public interface IRing<TWeight> : ISemiring<TWeight>");
+    expect(cs).toContain("TWeight Negate(TWeight a)");
+  });
+
+  test("TypeScript emits ring interface extending ISemiring", () => {
+    const ts = emitTypeScript(ring);
+    expect(ts).toContain("export interface IRing<TWeight> extends ISemiring<TWeight>");
+    expect(ts).toContain("Negate(a: TWeight): TWeight");
+  });
+});
+
 describe("codegen-interface — IStarRing (with inheritance + laws)", () => {
   test("C# includes variance annotation (invariant = no prefix)", () => {
     const cs = emitCSharp(starRing);
@@ -74,7 +89,7 @@ describe("codegen-interface — IStarRing (with inheritance + laws)", () => {
 
   test("C# includes extends clause", () => {
     const cs = emitCSharp(starRing);
-    expect(cs).toContain(": ISemiring<TWeight>");
+    expect(cs).toContain(": IRing<TWeight>"); // 081KWG9JQ9H rebase
   });
 
   test("C# includes laws as XML remarks", () => {
@@ -85,17 +100,17 @@ describe("codegen-interface — IStarRing (with inheritance + laws)", () => {
 
   test("TypeScript includes extends clause", () => {
     const ts = emitTypeScript(starRing);
-    expect(ts).toContain("extends ISemiring<TWeight>");
+    expect(ts).toContain("extends IRing<TWeight>"); // 081KWG9JQ9H rebase
   });
 
   test("Rust includes supertrait bound", () => {
     const rs = emitRust(starRing);
-    expect(rs).toContain(": ISemiring");
+    expect(rs).toContain(": IRing"); // 081KWG9JQ9H rebase
   });
 
   test("Go includes embedded interface", () => {
     const go = emitGo(starRing);
-    expect(go).toContain("ISemiring[TWeight]");
+    expect(go).toContain("IRing[TWeight]"); // 081KWG9JQ9H rebase
   });
 
   test("Conj method present in all targets", () => {

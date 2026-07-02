@@ -9,8 +9,9 @@ module WS = Zeta.Core.WeightedSet
 let private cplx a b : Complex = { Real = a; Imag = b }
 let private quat a b c d : Quaternion = { Real = cplx a b; Imag = cplx c d }
 
-// the unified floor: a tower is an IStarRing, hence an ISemiring — drops straight into WeightedSet
-let private q = ImaginaryStack.quaternion :> ISemiring<Quaternion>
+// the unified floor: a tower is an IStarRing, hence an IRing (and an ISemiring) — drops straight
+// into WeightedSet, retraction included (081KWG9JQ9H tower).
+let private q = ImaginaryStack.quaternion :> IRing<Quaternion>
 
 let private one = quat 1.0 0.0 0.0 0.0
 let private i = quat 0.0 1.0 0.0 0.0
@@ -57,7 +58,7 @@ let private qzero : Quaternion = quat 0.0 0.0 0.0 0.0
 let private ozero : Octonion = { Real = qzero; Imag = qzero }
 
 // Octonion = Doubled<Quaternion>
-let private oalg = ImaginaryStack.octonion :> ISemiring<Octonion>
+let private oalg = ImaginaryStack.octonion :> IRing<Octonion>
 let private oOne : Octonion = { Real = one; Imag = qzero }
 let private oI   : Octonion = { Real = i; Imag = qzero }    // an imaginary unit (lower half)
 let private oE4  : Octonion = { Real = qzero; Imag = one }  // the doubling unit e4 (upper half)
@@ -78,7 +79,7 @@ let ``octonion WeightedSet: add combines coordinates; scale by One identity, by 
     Assert.True(WS.isEmpty (WS.scale oalg oalg.Zero c))
 
 // Sedenion = Doubled<Octonion>
-let private salg = ImaginaryStack.sedenion :> ISemiring<Sedenion>
+let private salg = ImaginaryStack.sedenion :> IRing<Sedenion>
 let private sOne : Sedenion = { Real = oOne; Imag = ozero }
 let private sI   : Sedenion = { Real = oI;   Imag = ozero }
 let private sE8  : Sedenion = { Real = ozero; Imag = oOne }  // the doubling unit e8

@@ -39,7 +39,7 @@ let private distributes (r: ISemiring<'W>) a b c =
     r.Mul(a, r.Add(b, c)) = r.Add(r.Mul(a, b), r.Mul(a, c))
     && r.Mul(r.Add(b, c), a) = r.Add(r.Mul(b, a), r.Mul(c, a))
 let private zeroAnnihilates (r: ISemiring<'W>) a = r.Mul(a, r.Zero) = r.Zero && r.Mul(r.Zero, a) = r.Zero
-let private negateInverts (r: ISemiring<'W>) a = r.Add(a, r.Negate a) = r.Zero
+let private negateInverts (r: IRing<'W>) a = r.Add(a, r.Negate a) = r.Zero
 
 // ── generators (bounded: Checked ops must not overflow mid-law) ─────
 
@@ -84,32 +84,28 @@ let ``TropicalSemiring satisfies every semiring law`` (a: TropicalWeight) (b: Tr
     && mulAssociates r a b c && oneIsIdentity r a && distributes r a b c
     && zeroAnnihilates r a
 
-// …whose Negate is a PROVEN impossibility, currently a runtime throw.
-
-[<Fact>]
-let ``WITNESS (Tropical): Negate throws — idempotent semirings admit no inverses (Vandiver 1934 / Golan 1999)`` () =
-    // After the split this witness is DELETED: TropicalSemiring will not have
-    // a Negate member to call, and the misuse will not compile.
-    let r = TropicalSemiring.Instance
-    Assert.Throws<InvalidOperationException>(fun () -> r.Negate(TropicalWeight 3L) |> ignore)
-    |> ignore
+// …whose Negate is a PROVEN impossibility — and since the split (081KWG9JQ9H)
+// an UNREPRESENTABLE one: TropicalSemiring has no Negate member; asking it to
+// retract does not compile. The former runtime-throw witness is deleted, as
+// its own comment promised. The theorem lives on in the Z3 lemma below.
 
 // ── IntervalRing: the double lie, WITNESSED (081KWGA0C7) ─────────────
 
 [<Fact>]
-let ``WITNESS (IntervalRing lie 1): Negate is not an additive inverse`` () =
+let ``WITNESS (IntervalRing lie 1): Moore negation is not an additive inverse`` () =
     // [1,2] + (−[1,2]) = [1,2] + [−2,−1] = [−1,1] ≠ [0,0] — Moore negation
     // over intervals never cancels unless the interval is a point.
+    // Member-free since the demotion: Moore negation written out explicitly.
     let r = IntervalRing.Instance
     let x = IntervalWeight(1.0, 2.0)
-    let residue = r.Add(x, r.Negate x)
+    let residue = r.Add(x, IntervalWeight(-x.Hi, -x.Lo))
     residue |> should equal (IntervalWeight(-1.0, 1.0))
     residue |> should not' (equal r.Zero)
 
 [<Property(Arbitrary = [| typeof<LawArb> |])>]
 let ``WITNESS (IntervalRing lie 1, general): a − a leaves phantom residue of width 2·Width(a)`` (a: IntervalWeight) =
     let r = IntervalRing.Instance
-    let residue = r.Add(a, r.Negate a)
+    let residue = r.Add(a, IntervalWeight(-a.Hi, -a.Lo))
     // the residue is [Lo−Hi, Hi−Lo]: zero ONLY for point intervals — this is
     // exactly the phantom retraction residue DBSP folds would accumulate.
     residue = IntervalWeight(a.Lo - a.Hi, a.Hi - a.Lo)

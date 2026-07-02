@@ -2,18 +2,22 @@ namespace Zeta.Core
 
 open System.Runtime.CompilerServices
 
-/// Semiring (ring) interface for first-class uncertainty in DBSP weights.
-/// Enables ZSet<'K,'W> parameterization over integer, probabilistic,
-/// Gaussian, provenance, etc. semirings; Negate makes it a full ring,
-/// which retraction (negative weights) requires.
+/// Weight-algebra instances for DBSP weights, over the SPLIT tower
+/// (081KWG9JQ9H): `ISemiring` (Zero/One/Add/Mul — the free tier) and
+/// `IRing : ISemiring` (+ Negate — the earned quotient retraction requires).
 ///
-/// Axioms (all implementations must satisfy):
+/// Semiring axioms (every implementation):
 ///   (S, Add, Zero) forms a commutative monoid
 ///   (S, Mul, One)  forms a monoid
 ///   Mul distributes over Add
 ///   Mul _ Zero = Zero (annihilator)
-///   Negate a `Add` a = Zero (additive inverse, ring axiom)
-// Algebraic interfaces (ISemiring, IMonoid, IGroup, ISemilattice) are defined in C# (Zeta.Core.Abstractions) to support generic variance.
+/// Ring axiom (IRing implementations only):
+///   Negate a `Add` a = Zero (additive inverse)
+/// Law pack: tests/Tests.FSharp/Formal/SemiringRing.Laws.Tests.fs.
+// Algebraic interfaces (ISemiring, IRing, IMonoid, IGroup, ISemilattice) are defined in C#
+// (Zeta.Core.Abstractions) per the contract-library convention (interface libs are C#,
+// language-neutral). NOTE: TWeight is necessarily INVARIANT in this family (input and output
+// positions) — the earlier "to support generic variance" rationale was inaccurate (Ilyana).
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -36,12 +40,15 @@ type IntegerRing =
         member _.One        = 1L
         member _.Add(a, b)  = Checked.(+) a b
         member _.Mul(a, b)  = Checked.(*) a b
+    interface IRing<int64> with
         member _.Negate(a)  = Checked.(~-) a
 
 [<RequireQualifiedAccess>]
 module IntegerRing =
     /// Boxed singleton for the instance-passing (cold / dynamic-ring) path.
-    let Instance : ISemiring<int64> = IntegerRing()
+    /// Typed at the most capable tier (`IRing`) — semiring-only call sites
+    /// upcast for free.
+    let Instance : IRing<int64> = IntegerRing()
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -87,6 +94,17 @@ type IntervalWeight =
     override this.ToString() = sprintf "[%g, %g]" this.Lo this.Hi
 
 /// **Struct** (stateless) — same dual-register rationale as `IntegerRing`.
+///
+/// **DEMOTED — substrate-honest exception on file (081KWGA0C7):** intervals under
+/// Moore arithmetic are NOT a lawful ring and not even a lawful semiring —
+/// (1) negation is no additive inverse (`[a,b] + [−b,−a] = [a−b, b−a] ≠ [0,0]`
+/// unless `a = b`), so retraction over interval weights leaves phantom residue;
+/// (2) distributivity FAILS (Moore 1966 sub-distributivity — witnessed in
+/// `SemiringRing.Laws.Tests.fs`). It therefore implements `ISemiring` only
+/// (never `IRing` — Ilyana condition, 081KWG9JQ9H), carries no `Negate`, and its
+/// lawful subset is the additive monoid + annihilation (also witnessed). A true
+/// Kaucher directed-interval rebuild would gain additive inverses but still not
+/// distributivity; a ring rung is mathematically unreachable for intervals.
 [<Struct>]
 type IntervalRing =
     interface ISemiring<IntervalWeight> with
@@ -106,7 +124,6 @@ type IntervalRing =
                 min (min p1 p2) (min p3 p4),
                 max (max p1 p2) (max p3 p4))
 
-        member _.Negate(a) = IntervalWeight(-a.Hi, -a.Lo)
 
 [<RequireQualifiedAccess>]
 module IntervalRing =

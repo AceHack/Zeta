@@ -30,7 +30,7 @@ public class SemiringZSetWConsumerTests
     [Fact]
     public void CSharpCanDriveTheIntegerRingThroughISemiring()
     {
-        ISemiring<long> ring = IntegerRingModule.Instance;
+        IRing<long> ring = IntegerRingModule.Instance;
         Assert.Equal(0L, ring.Zero);
         Assert.Equal(1L, ring.One);
         Assert.Equal(7L, ring.Add(3L, 4L));
@@ -41,7 +41,7 @@ public class SemiringZSetWConsumerTests
     [Fact]
     public void CSharpBuildsSumsAndRetractsAPolymorphicZSetWithValueTuples()
     {
-        ISemiring<long> ring = IntegerRingModule.Instance;
+        IRing<long> ring = IntegerRingModule.Instance;
         var a = ZSetWModule.OfValuePairs(ring, new[] { ("x", 2L), ("y", 1L) });
         var b = ZSetWModule.OfValuePairs(ring, new[] { ("y", -1L), ("z", 5L) });
 

@@ -1,14 +1,58 @@
 {
   "schema": "zeta-ir-v2-interface",
   "name": "ISemiring",
-  "typeParams": [{ "name": "TWeight", "variance": "invariant" }],
-  "doc": "Semiring (ring) interface for first-class uncertainty in DBSP weights.",
+  "typeParams": [
+    {
+      "name": "TWeight",
+      "variance": "invariant"
+    }
+  ],
+  "doc": "Semiring (rig) interface — the free tier for DBSP weights: Zero/One/Add/Mul, NO additive inverse (idempotent semirings are provably zerosumfree: Vandiver 1934, Golan 1999). Retraction lives in IRing (081KWG9JQ9H).",
   "members": [
-    { "name": "Zero", "kind": "property", "type": "TWeight", "doc": "Additive identity." },
-    { "name": "One", "kind": "property", "type": "TWeight", "doc": "Multiplicative identity." },
-    { "name": "Add", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive combination (⊕)." },
-    { "name": "Mul", "kind": "method", "params": [{"name": "a", "type": "TWeight"}, {"name": "b", "type": "TWeight"}], "returns": "TWeight", "doc": "Multiplicative product (⊗)." },
-    { "name": "Negate", "kind": "method", "params": [{"name": "a", "type": "TWeight"}], "returns": "TWeight", "doc": "Additive inverse." }
+    {
+      "name": "Zero",
+      "kind": "property",
+      "type": "TWeight",
+      "doc": "Additive identity."
+    },
+    {
+      "name": "One",
+      "kind": "property",
+      "type": "TWeight",
+      "doc": "Multiplicative identity."
+    },
+    {
+      "name": "Add",
+      "kind": "method",
+      "params": [
+        {
+          "name": "a",
+          "type": "TWeight"
+        },
+        {
+          "name": "b",
+          "type": "TWeight"
+        }
+      ],
+      "returns": "TWeight",
+      "doc": "Additive combination (⊕)."
+    },
+    {
+      "name": "Mul",
+      "kind": "method",
+      "params": [
+        {
+          "name": "a",
+          "type": "TWeight"
+        },
+        {
+          "name": "b",
+          "type": "TWeight"
+        }
+      ],
+      "returns": "TWeight",
+      "doc": "Multiplicative product (⊗)."
+    }
   ],
   "laws": [
     {
@@ -35,16 +79,6 @@
       "status": "proven",
       "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:zero-is-additive-identity",
       "doc": "Add(a, Zero) = a"
-    },
-    {
-      "id": "add-inverse",
-      "schema": "inverse",
-      "op": "Add",
-      "inverse": "Negate",
-      "identity": "Zero",
-      "status": "proven",
-      "proof": "src/Core.TypeScript/algebra/interfaces.test.ts:negate-is-additive-inverse",
-      "doc": "Add(a, Negate(a)) = Zero"
     },
     {
       "id": "mul-identity",
