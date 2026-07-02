@@ -1,0 +1,53 @@
+{
+  "projectId": "f52fe130-fd0d-4310-93c2-19b6ce2a4ecc",
+  "shape": "package",
+  "pkg": "zeta-portal-web",
+  "globalName": "ZetaPortalUI",
+  "srcDir": "src/components/ui",
+  "tsconfig": "tsconfig.json",
+  "buildCmd": "/opt/homebrew/bin/mise exec bun -- bunx tailwindcss -c ../../../.design-sync/tailwind.ds.config.mjs -i src/index.css -o .ds-css/styles.css --content './src/**/*.{ts,tsx},./index.html,../../../.design-sync/previews/**/*.tsx'",
+  "cssEntry": ".ds-css/styles.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "extraFonts": [
+    "node_modules/@fontsource-variable/inter/index.css",
+    "../../../../../.design-sync/fonts/inter-alias.css"
+  ],
+  "componentSrcMap": {
+    "CardContent": null,
+    "CardDescription": null,
+    "CardFooter": null,
+    "CardHeader": null,
+    "CardTitle": null,
+    "DialogBody": null,
+    "DialogDescription": null,
+    "DialogFooter": null,
+    "DialogHeader": null,
+    "DialogTitle": null,
+    "SheetBody": null,
+    "SheetHeader": null,
+    "SheetTitle": null,
+    "TabsContent": null,
+    "TabsList": null,
+    "TabsTrigger": null
+  },
+  "overrides": {
+    "Dialog": { "cardMode": "single", "viewport": "920x620" },
+    "Sheet": { "cardMode": "single", "viewport": "920x620" },
+    "Badge": { "cardMode": "column" },
+    "Card": { "cardMode": "column" },
+    "Textarea": { "cardMode": "column" },
+    "Tabs": { "cardMode": "column" }
+  },
+  "docsMap": {
+    "Badge": "../../../../../.design-sync/docs/badge.md",
+    "Button": "../../../../../.design-sync/docs/button.md",
+    "Card": "../../../../../.design-sync/docs/card.md",
+    "Dialog": "../../../../../.design-sync/docs/dialog.md",
+    "Input": "../../../../../.design-sync/docs/input.md",
+    "Label": "../../../../../.design-sync/docs/label.md",
+    "Select": "../../../../../.design-sync/docs/select.md",
+    "Sheet": "../../../../../.design-sync/docs/sheet.md",
+    "Tabs": "../../../../../.design-sync/docs/tabs.md",
+    "Textarea": "../../../../../.design-sync/docs/textarea.md"
+  }
+}
