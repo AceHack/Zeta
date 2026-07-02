@@ -1,0 +1,166 @@
+module Zeta.Tests.DarkHallRoomTranscriptTests
+
+open System.Diagnostics
+open global.Xunit
+open Zeta.Core
+
+module Runtime = DarkHallCabinetRuntime
+module RoomLoop = DarkHallRoomLoop
+module Scheduler = DarkHallScheduler
+module Transcript = DarkHallRoomTranscript
+
+let private setRegRom =
+    [| 0x6Auy; 0x0Cuy; 0x12uy; 0x02uy |]
+
+let private inputAfterOne =
+    [| 0x60uy; 0x00uy; 0xE0uy; 0x9Euy; 0x60uy; 0x01uy |]
+
+let private chooseById id (readout: Runtime.ControllerReadout) : RoomLoop.ControllerChoice =
+    let cell =
+        GridBinding.bound readout.Grid
+        |> List.tryFind (fun (_, action) -> action.Id = id)
+        |> Option.map fst
+        |> Option.defaultValue -1
+
+    { Cell = cell
+      Tier = RoomLoop.ChoiceTier.Operator
+      Confidence = 1.0
+      Reason = "test-selected action id" }
+
+let private wait (task: System.Threading.Tasks.Task<'T>) : 'T =
+    task.GetAwaiter().GetResult()
+
+let private mustOk =
+    function
+    | Ok value -> value
+    | Error feedback -> failwithf "expected Ok, got %A" feedback
+
+let private rejectSlots slots : ModuloGSetConfig =
+    ModuloGSetConfig.rejectCollision slots
+
+let private emptyBoundary source room budget =
+    ModuloGSet.empty<string> (rejectSlots 4)
+    |> mustOk
+    |> RoomBoundary.create source room budget
+
+let private sampleVault () =
+    let v =
+        DoorGraph.empty
+        |> DoorGraph.addRoom "darkhall"
+        |> DoorGraph.addRoom "glass"
+
+    DoorGraph.addDoor (DoorGraph.door "darkhall" "glass" "door-key") v |> mustOk
+
+let private ctx () : IntrCtx =
+    { Memetic = "room-transcript"
+      Prompt = ""
+      Trust = ""
+      Log = ""
+      Otel = ActivityContext() }
+
+let private timer =
+    function
+    | TimerElapsed _ -> true
+    | _ -> false
+
+let private boundaryState boundary =
+    Scheduler.initialWithBoundary Arcade.room Chip9Capabilities.chip8Default boundary
+
+let private boundaryPlan sourceName boundaryFor choose : RoomRun.BoundaryTickPlan<string> =
+    { HandlerName = "room-transcript-boundary"
+      Matches = timer
+      SourceName = sourceName
+      RequestFor = fun _ -> None
+      BoundaryFor = boundaryFor
+      Choose = choose
+      Interrupts = fun _ -> [ TimerElapsed 17 ]
+      Context = ctx ()
+      Seed = 42L }
+
+let private softPlan sourceName rom width : RoomRun.SoftDrivePlan =
+    { SourceName = sourceName
+      Value = SoftDashboard.sumMemory
+      CyclesPerFrame = 1
+      Depth = 1
+      Width = width
+      Frames = 1
+      Start = Chip8Cow.create 1UL |> Chip8Cow.loadRom rom }
+
+[<Fact>]
+let ``room transcript exports the source-owned contract consumed by the css UI`` () =
+    let requestFor (action: Runtime.CabinetAction) =
+        if action.Id = "darkhall.play.soft-chip8" then
+            Some(Runtime.RunSoftChip8(1UL, setRegRom, 5))
+        else
+            None
+
+    let run =
+        RoomLoop.run
+            "darkhall-room-transcript"
+            (NullHeatSink() :> IHeatSink)
+            requestFor
+            (chooseById "darkhall.play.soft-chip8")
+            1
+            (RoomLoop.initial Arcade.room Chip9Capabilities.chip8Default)
+        |> wait
+
+    let transcript = Transcript.ofRunOutcome "0x1" "fsharp-room-loop" run
+
+    Assert.Equal(Transcript.Schema, transcript.Schema)
+    Assert.Equal("darkhall", transcript.RoomName)
+    Assert.Equal(16, transcript.Controller.Length)
+    Assert.Contains(transcript.Controller, fun cell -> cell.Selected && cell.ActionId = "darkhall.play.soft-chip8")
+    Assert.Single(transcript.Ticks) |> ignore
+    Assert.Single(transcript.HeatRows) |> ignore
+    Assert.Equal("execute", transcript.Ticks.Head.Phase)
+    Assert.Equal("ok", transcript.Ticks.Head.Outcome)
+
+    let json = Transcript.toJson transcript
+
+    Assert.Contains("\"schema\": \"zeta.darkhall.room-ui.v1\"", json)
+    Assert.Contains("\"controller\"", json)
+    Assert.Contains("\"heatRows\"", json)
+    Assert.DoesNotContain("UnionCase", json)
+
+[<Fact>]
+let ``unified room run transcript preserves boundary and soft heat rows`` () =
+    task {
+        let boundary = emptyBoundary "room-transcript-boundary" "darkhall" 5
+        let vault = sampleVault ()
+
+        let plan =
+            boundaryPlan
+                "room-transcript-boundary"
+                (fun action ->
+                    if action.Id = "darkhall.edit-grammar" then
+                        Some(RoomLoop.BoundaryCommand.Traverse(Set.empty, "glass", vault))
+                    else
+                        None)
+                (chooseById "darkhall.edit-grammar")
+
+        let! result =
+            RoomRun.boundaryTickThenSoftDrive
+                (NullHeatSink() :> IHeatSink)
+                plan
+                (softPlan "room-transcript-soft" inputAfterOne 1)
+                (boundaryState boundary)
+
+        match result with
+        | Error feedback -> Assert.Fail(sprintf "expected unified room run to complete, got %A" feedback)
+        | Ok run ->
+            let transcript = Transcript.ofUnifiedHeatRun "0x2a" "fsharp-unified-room-run" run
+            let heatKinds = transcript.HeatRows |> List.collect _.HeatKinds
+
+            Assert.Equal(16, transcript.Controller.Length)
+            Assert.Contains(transcript.Controller, fun cell -> cell.Selected && cell.ActionId = "darkhall.edit-grammar")
+            Assert.Equal(run.HeatRows.Length, transcript.HeatRows.Length)
+            Assert.Contains("room-boundary.door-denied", heatKinds)
+            Assert.Contains("soft-emu.prune", heatKinds)
+            Assert.Contains(transcript.Ticks, fun tick -> tick.Phase = "measure" && tick.Outcome = "backpressure")
+
+            let json = Transcript.toJson transcript
+
+            Assert.Contains("\"generatedBy\": \"fsharp-unified-room-run\"", json)
+            Assert.Contains("\"room-boundary.door-denied\"", json)
+            Assert.Contains("\"soft-emu.prune\"", json)
+    }

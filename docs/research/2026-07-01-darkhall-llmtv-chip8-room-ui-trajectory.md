@@ -45,6 +45,21 @@ animation loop, or central UI clock in the slice.
 6. **Desktop later:** once the website readout is honest and useful, package the same source-owned room
    surface into a desktop shell.
 
+## Substrate adapters
+
+The browser surface should not poll GitHub GraphQL in its frame loop. The UI consumes one neutral room
+transcript contract; the live source behind that contract is an adapter:
+
+- **Static artifact:** committed JSON/HTML transcript for golden tests, demos, and LLMTV snapshots.
+- **Git-native adapter:** local repo/object/event-log reader, matching `src/Core.TypeScript/observe/room/git/`.
+- **Forge-host adapter:** GitHub/GitLab/Forgejo ceremony and rate limits, matching
+  `src/Core.TypeScript/observe/room/forge/`.
+- **HTTP adapter:** room-service stream for the website/desktop shell when a host process is available.
+
+Git-native is the canonical substrate path. Forge-host is an optional ceremony path, not the UI runtime's
+identity. That keeps the website portable: a room transcript can come from a static file, local git, a forge
+host, or a future room service without teaching the renderer about those sources.
+
 ## No central animation clock
 
 Visual motion should be a projection of state, not a second runtime. CSS transitions or SVG/CSS geometry may

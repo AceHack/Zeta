@@ -382,6 +382,7 @@
     <Compile Include="DarkHallRoomLoop.fs" />
     <Compile Include="DarkHallScheduler.fs" />
     <Compile Include="RoomRun.fs" />
+    <Compile Include="DarkHallRoomTranscript.fs" />
     <Compile Include="ReticulumQuantum.fs" />
     <Compile Include="Skadium.fs" />
     <Compile Include="BowlingAlley.fs" />
