@@ -1,7 +1,7 @@
 ---
 id: 081KVP2M1QS08QG0R000JSXE1E
 type: task
-state: backlog
+state: closed
 priority: P1
 slug: complete-the-lifecycle-triad-unified-per-port-rotate-command
 title: "Complete the lifecycle triad: unified per-port rotate command (machine/CA/cert/cluster) + revocation (KRL) + cluster-scoped teardown — gaps surfaced by the onboarding round-trip harness (Aaron 2026-06-21)"
@@ -30,19 +30,19 @@ composes_with: ["081KVNXBR4S08QG0R0015DHBBN", "081KVNTNTDQ08QG0R0017NBBWB"]
   (a pre-rotation cert's signing-CA fingerprint stays in the trusted set after rotation, real
   `ssh-keygen -L`); one-fingerprint (1 biometric covers all ports); round-trip harness extended
   (setup→rotate→teardown→re-setup converges, N=3). Sandbox-only verified (real keys untouched).
-  **The lifecycle triad is now complete: generate ✅ · rotate ✅ · teardown ✅.** Remaining below.
-- **No revocation primitive** — OpenSSH **KRL** / `RevokedKeys` (revoke a compromised key/cert,
-  distributed via the directory; the `−1` retraction + cascade-with-warnings).
-- **No cluster-scoped teardown** — the inverse of `setup-cluster` (teardown #9000 covers machine/
-  CA/keyring local + repo; add the cluster trust-root teardown).
-- **SecretStore (1Password) rotate/teardown** are runbook prose + print-only note — intentional
-  (operator's call to delete durable backups), but wire the rotate (Active↔Standby swap) as the
-  overlap.
+- **✅ DONE: KRL revocation primitive.** `tools/setup/persona-keys/revoke.{ts,-cli.ts,.test.ts}` —
+  OpenSSH KRL via `ssh-keygen -k`; stages `maintainers/<ca>/revoked-keys.krl` for PR; dry-run
+  default; `--confirm` + one biometric for real revoke. The `−1` retraction for compromised device
+  certs (surgical — CA + other machines keep working).
+- **✅ DONE: cluster-scoped teardown.** `tools/setup/persona-keys/teardown-cluster.{ts,-cli.ts,.test.ts}`
+  — inverse of `setup-cluster` (CA private wipe + repo unregister of CA pubkey + trusted-user-ca-keys).
+- **SecretStore (1Password) rotate/teardown** — runbook prose + print-only note (intentional;
+  operator deletes durable backups). Overlap-window Active↔Standby swap deferred to runbook.
 
 ## Done already (the harness proves)
 
-setup (generate) ✅ + teardown ✅ exist + round-trip-tested (sandbox, N=3 convergence, N+M-correct,
-real keys untouched — #9016). This item closes the **rotate** corner + revocation + cluster teardown.
+setup (generate) ✅ + rotate ✅ + teardown ✅ + cluster teardown ✅ + KRL revoke ✅ — round-trip-tested
+(sandbox, N=3 convergence, N+M-correct, real keys untouched — #9016).
 
 ## Composes / anchors
 
@@ -51,3 +51,9 @@ KeyState rotation (`docs/research/2026-06-21-zero-downtime-key-rotation-itron-ke
 Lifecycle-triad + reconciler doc (2026-06-21). Blast-radius no-orphan proof
 (`…-smart-cascading-teardown-…`). Composes: identity+crypto unify (081KVNXBR4S0), vault-separation
 (081KVNTNTDQ0). Anchors: OpenSSH KRL/`RevokedKeys`; the overlap-window dual-key (2026-06-15 decision).
+
+## Deferred (named, not in scope)
+
+- Threshold/Shamir k-of-n (081KVP3GYW1)
+- Org-vs-user-CA conflict (081KVP3GYWS0)
+- Unified cluster-trust-root rotate (single command spanning cluster + machine scopes)

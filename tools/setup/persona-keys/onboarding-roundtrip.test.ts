@@ -513,7 +513,7 @@ test("ROTATE GAP CLOSED: a per-PORT rotate command now exists (rotate.ts) for ma
   // and CA key (exercised end-to-end in the leg below + in rotate.test.ts). The keyset.rotate
   // dual-key SET primitive (above) and keyring.sh remain the SET / USER-seed primitives. NOT in
   // scope (named, deferred): threshold/Shamir k-of-n (081KVP3GYW1), org-vs-user-CA conflict
-  // (081KVP3GYWS0), KRL revocation, and a unified cluster-trust-root rotate.
+  // (081KVP3GYWS0), and a unified cluster-trust-root rotate. KRL revocation is CLOSED (revoke.ts).
   const rotateSrc = readFileSync(join(import.meta.dir, "rotate.ts"), "utf8");
   expect(/export\s+(async\s+)?function\s+rotate/.test(rotateSrc)).toBe(true);
   for (const port of ROTATE_PORTS) expect(rotateSrc).toContain(port);
@@ -521,6 +521,21 @@ test("ROTATE GAP CLOSED: a per-PORT rotate command now exists (rotate.ts) for ma
   // The dual-key SET primitive still lives in keyset.ts (the sibling, confirmed above).
   const keysetSrc = readFileSync(join(import.meta.dir, "keyset.ts"), "utf8");
   expect(/export\s+function\s+rotate/.test(keysetSrc)).toBe(true);
+});
+
+test("REVOKE GAP CLOSED: KRL revocation command now exists (revoke.ts)", () => {
+  // The −1 retraction primitive the #9016 harness named is now CLOSED (081KVP2M1QS08QG0R000JSXE1E):
+  // revoke.ts appends a compromised device cert to maintainers/<ca>/revoked-keys.krl (staged for PR).
+  const revokeSrc = readFileSync(join(import.meta.dir, "revoke.ts"), "utf8");
+  expect(/export\s+(async\s+)?function\s+revokeCert/.test(revokeSrc)).toBe(true);
+  expect(revokeSrc).toContain("revoked-keys.krl");
+  expect(revokeSrc).toContain("ssh-keygen");
+});
+
+test("CLUSTER TEARDOWN GAP CLOSED: cluster-scoped teardown exists (teardown-cluster.ts)", () => {
+  const src = readFileSync(join(import.meta.dir, "teardown-cluster.ts"), "utf8");
+  expect(/export\s+(async\s+)?function\s+teardownCluster/.test(src)).toBe(true);
+  expect(src).toContain("trusted-user-ca-keys");
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════════

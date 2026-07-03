@@ -13,6 +13,8 @@
  *   demo/metrics.json (overwritten each run)
  */
 
+import { loadWorkItemDoraMetrics } from "./work-item-metrics.ts";
+
 const OWNER = "Lucent-Financial-Group";
 const REPO = "Zeta";
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
@@ -274,9 +276,11 @@ async function main() {
     dateAgo: timeAgo(c.commit.author.date),
   }));
 
+  const workItemsDora = loadWorkItemDoraMetrics("workitems");
+
   const metrics = {
     generated: new Date().toISOString(),
-    schema_version: "0.1.0",
+    schema_version: "0.2.0",
     metrics: {
       prs_merged_24h: mergedToday.length,
       prs_merged_1h: mergedLastHour.length,
@@ -294,6 +298,7 @@ async function main() {
     agents,
     pr_queue: [...prQueue, ...recentMerged],
     recent_commits: recentCommits,
+    ...(workItemsDora ? { work_items_dora: workItemsDora } : {}),
   };
 
   const outPath = "demo/metrics.json";
