@@ -29,6 +29,7 @@
     <Compile Include="ForceLayout.fs" />
     <Compile Include="MetaspaceMap.fs" />
     <Compile Include="GlassHalo.fs" />
+    <Compile Include="Detour.fs" />
     <Compile Include="DoorGraph.fs" />
     <Compile Include="Fixpoint.fs" />
     <Compile Include="Orbit.fs" />

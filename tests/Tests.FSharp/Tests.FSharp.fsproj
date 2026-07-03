@@ -16,6 +16,7 @@
     <Compile Include="_Support/SerializerLegs.fs" />
 
     <!-- Algebra/ -->
+    <Compile Include="Detour.Tests.fs" />
     <Compile Include="Algebra/Weight.Tests.fs" />
     <Compile Include="Algebra/CayleyDickson.Tests.fs" />
     <Compile Include="Algebra/Octonion.Laws.Tests.fs" />
