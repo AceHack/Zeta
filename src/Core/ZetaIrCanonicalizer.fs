@@ -47,7 +47,15 @@ module ZetaIrCanonicalizer =
         | ZetaIrV4.XRotXor [] :: rest -> fuseOps width rest
         
         // Zero absorption
-        | ZetaIrV4.Mul 0L :: _ -> [ ZetaIrV4.Mul 0L ]
+        | ZetaIrV4.Mul 0L :: rest ->
+            // Mul 0 absorbs all MULTIPLICATIVE operations before it, but we can't drop what comes AFTER it.
+            // Wait, if it's `x = x * 0`, then the state becomes 0.
+            // If the next op is `Add b`, then state becomes `0 + b = b`.
+            // So `Mul 0 :: Add b :: rest` is equivalent to `Mul 0 :: Add b :: rest`.
+            // Actually, `Mul 0` is just a constant assignment. We should just process the rest normally.
+            // Wait, if we drop `rest`, we change semantics! `x = x * 0; x = x + 5;` -> `x = 5`.
+            // If we drop `rest`, we get `x = x * 0` -> `x = 0`. This is a BUG in the F# code!
+            ZetaIrV4.Mul 0L :: fuseOps width rest
 
         // Mul/Add fusion using AffineZ2W
         | ZetaIrV4.Mul a :: ZetaIrV4.Mul b :: rest ->

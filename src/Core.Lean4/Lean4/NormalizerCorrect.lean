@@ -45,6 +45,10 @@ def evalOp (op : Op) (state : UInt64) : UInt64 :=
       let folded := ss.foldl (fun acc s => acc ^^^ (state >>> (UInt64.ofNat s))) 0
       state ^^^ folded
 
+/-- Evaluates a list of ops sequentially (left to right) -/
+def evalOps (ops : List Op) (state : UInt64) : UInt64 :=
+  ops.foldl (fun s op => evalOp op s) state
+
 -- ═══ `normalizeOp`: The Lowering Function ═════════════════════════════════════
 
 /-- Lowers a v4 op into the 4-op minimal generating set. -/
@@ -109,5 +113,15 @@ theorem normalizeOp_closes_over_core_four (op : Op) :
   case rotl r => exact trivial
   case xrotxor rs => exact trivial
   case xshrxor ss => exact trivial
+
+/-- Normalizing a list of ops element-wise preserves denotation. -/
+theorem normalizeOps_preserves_eval (ops : List Op) (state : UInt64) :
+    evalOps (ops.map normalizeOp) state = evalOps ops state := by
+  induction ops generalizing state with
+  | nil => rfl
+  | cons op ops ih =>
+    dsimp [evalOps]
+    rw [normalizeOp_preserves_eval op state]
+    exact ih (evalOp op state)
 
 end Zeta.NormalizerCorrect
