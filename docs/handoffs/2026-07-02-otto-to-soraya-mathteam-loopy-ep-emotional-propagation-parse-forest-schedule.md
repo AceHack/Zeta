@@ -1,7 +1,7 @@
 # Handoff: Otto → Soraya (formal verification routing) / the Lean math team — the loopy-EP + emotional-propagation message schedule
 
 **Date:** 2026-07-02 · **From:** Otto (shadow*) · **To:** Soraya (formal-verification routing), `Core.Lean4` math team
-**Authorization:** Aaron 2026-07-02 — *"let's route, i'm curious."*
+**Authorization:** Aaron 2026-07-02 — "let's route, i'm curious."
 
 ## What is already built (self-contained, exact — do NOT redo)
 

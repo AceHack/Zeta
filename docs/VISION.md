@@ -398,9 +398,8 @@ it can.
 dipolar God, Bohr's complementarity, Cusanus, Gates' adinkras, Landauer, the Giry monad
 — in `docs/research/2026-07-02-one-object-all-registers-grace-theodicy-timetopology-
 antiparticle-compression-the-complete-frame-vision.md`, held under the Multi-Oracle
-Principle as one oracle. Definitions: Aaron's; folded + anchored by Otto — Aaron Stainback
-
-+ AI.)*
+Principle as one oracle. Definitions: Aaron's; folded + anchored by Otto — Aaron
+Stainback + AI.)*
 
 ## Seed — the database BCL microkernel
 

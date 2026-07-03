@@ -9,18 +9,19 @@ have."
 
 - **The live site is committed static HTML**, served directly: root `index.html`
   (redirect) → `demo/` (Factory Dashboard, 2435-line static HTML), plus `genesis/`
-  (amber/teal settlement console, built from `genesis/_src` jsx reference) and
-  `inventory/`. The Astro workflow (`pages-deploy.yml`) is an **unconfigured stub**
-  (`bun run build # will need to be configured`, no `dist`, no astro config) — it does
-  NOT currently build anything. So the non-destructive rule is concrete: **add new
-  static dirs; never edit `demo/ genesis/ inventory/ index.html`.**
+  (amber/teal settlement console, built from `genesis/_src` jsx reference),
+  `inventory/`, and `hall/`. The manual artifact workflow (`pages-deploy.yml`) now calls
+  `bun run pages:build`, which copies those served static roots into `dist/` and refreshes
+  `hall/tv/index.html` from the same-origin LLMTV replay ledger. The non-destructive rule
+  is still concrete: **add new static dirs; do not rewrite `demo/ genesis/ inventory/
+index.html` as part of unrelated work.**
 - **Four palettes exist and are three KINDS** (the mash's central design fact):
   - portal `:root` cool tokens (shadcn kit) — CHROME
   - dark-hall `--room-*` warm phosphor — CHROME
   - genesis amber/teal (Space Grotesk/Mono) — CHROME
   - shapes `--c0..--c7` — DATA CHANNELS (categorical by generator index; NOT chrome)
-  The three chrome palettes can fuse to one token hub (DV2.0: tokens=hub); the data
-  channels stay separate (Bertin: value ≠ hue).
+    The three chrome palettes can fuse to one token hub (DV2.0: tokens=hub); the data
+    channels stay separate (Bertin: value ≠ hue).
 
 ## First slice — LANDED (this PR)
 

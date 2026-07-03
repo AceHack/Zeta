@@ -34,6 +34,10 @@ The vision spine, end to end — each a squash-merged PR (shadow\*):
   ledgers render cold, invalid/rejected/expired evidence renders heat, and old-but-valid
   frames render stale. The standing view remains zero-JS; the browser reads the artifact,
   not an API loop.
+- **Static Pages artifact export** — `llmtv-pages-static-export.ts` backs `bun run
+  pages:build` and the manual `pages-deploy.yml` workflow. It copies the served static roots
+  into `dist/`, writes `.nojekyll`, and runs the LLMTV reader inside the artifact. Missing
+  replay data is a successful cold page; stale/lossy evidence stays visible as stale/heat.
 - **#9177** — research: "there are no strangers — mesh-merge IS the travelers vocabulary."
 - **#9176** — main-green lint fix (session start).
 
@@ -113,8 +117,10 @@ language, Iris speaking; it unifies us like Steve Jobs. Keep the old /Zeta too."
 
 ## 6. Next steps (when resumed)
 
-1. Finish the root-site deploy (create repo / push `site/` / enable Pages / verify) once
-   Aaron confirms the public repo creation.
+1. Finish the org root-site deploy (create/push
+   `Lucent-Financial-Group/lucent-financial-group.github.io` from the design `site/` bundle
+   / enable Pages / verify) as the external-repo step. The Zeta repo's own manual artifact
+   path is now buildable via `bun run pages:build`.
 2. Land `sources/*.dc.html` into Zeta `design/` (design source of truth).
 3. Propagate Iris's design language as the shared spine (tokens + glyph discipline + the
    two-surfaces model) — she is the unifying UX voice.

@@ -1,10 +1,8 @@
 name: Deploy to GitHub Pages
 
-# Scaffold (081KR2E4K0008QG0R003VN9WC8): manual-dispatch only until the Astro build substrate
-# (package.json `build` script + Astro dependency) lands. The auto-trigger
-# on `push: main` is intentionally omitted so the not-yet-buildable scaffold
-# does not fail on every merge to main. Re-enable the push trigger when the
-# build substrate exists.
+# Manual-dispatch static deploy. The auto-trigger on `push: main` stays omitted
+# because the repository also has a classic Pages source; this workflow is the
+# explicit artifact path for the static site and LLMTV root-site readout.
 on:
   workflow_dispatch:
 
@@ -27,12 +25,12 @@ jobs:
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
       - name: Install dependencies
         run: bun install --frozen-lockfile
-      - name: Build with Astro
-        run: bun run build # This will need to be configured in package.json
+      - name: Build static Pages artifact
+        run: bun run pages:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6edf4629b9d6b # v3.0.1
         with:
-          path: './dist' # Default Astro output directory
+          path: "./dist"
 
   deploy:
     needs: build

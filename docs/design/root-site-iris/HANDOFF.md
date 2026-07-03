@@ -126,6 +126,18 @@ mesh, Reticulum/UDP transport, and scheduler write static artifacts; the website
 latest committed or locally generated files. Missing files stay cold, stale frames stay
 stale, and invalid/lossy replay stays heat — never fake live status.
 
+For the Zeta repo's own artifact-based Pages path, the manual workflow now calls the
+source-owned static exporter:
+
+```bash
+bun run pages:build
+```
+
+That command copies the served static roots into `dist/`, writes `.nojekyll`, and then runs
+the same LLMTV static reader inside `dist/`. A missing `data/llmtv-live.replay.json` is a
+successful cold build, not a failed deploy; invalid or lossy replay evidence is rendered as
+heat in `dist/hall/tv/index.html`.
+
 ## Offline / PWA
 
 The bundle is a full PWA: `manifest.webmanifest` + `sw.js` + icons; every page registers the
