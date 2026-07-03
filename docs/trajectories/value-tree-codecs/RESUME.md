@@ -92,9 +92,18 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    tokenizer): source → INDENT/DEDENT/NEWLINE token stream; inconsistent-dedent + leading-tab are
    clean Errors. Bridge PROVEN end-to-end (`Indentation.Tests`): indented source → layout →
    GLR-parse a block grammar. Indentation-sensitive languages are now reachable by the CFG backend.
-   **← resume: the GLR parse forest (real trees for ambiguous parses), or a full regex lexer
-   (word → terminal classification, so raw text — not pre-named tokens — feeds the parser).**
-7. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+7. ✅ **GLR parse FOREST** — LANDED (`Slr.glrForest`): every distinct parse tree of ambiguous
+   input (each a `DynamicValue`), deduped + capped. `id+id+id` under `E→E+E|id` → ≥2 trees; an
+   unambiguous string → exactly one.
+   **THE TELOS (Aaron 2026-07-02):** the forest is the SUPPORT of a distribution over parses — an
+   ambiguous **superposition over the ISA**. Weight it with **EP/BP/VMP (Infer.NET-style message
+   passing) + custom emotional propagation** → a `SoftValue` over parses (the forest IS a factor
+   graph; inside–outside = BP on it). Full: `docs/research/2026-07-02-ambiguous-parse-forest-as-
+   factor-graph-ep-bp-vmp-emotional-propagation-soft-superposition-over-isa.md`.
+   **← resume: the inference rung** — weighted forest → BP/inside–outside → SoftValue over parses
+   (Zeta.Bayesian); then EP/VMP + emotional propagation (math-team formalize); parses → ISA.
+   (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
+8. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
 ## HOMOICONIC META-GRAMMAR (2026-07-02, Aaron): the telos

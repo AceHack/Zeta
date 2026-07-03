@@ -308,6 +308,49 @@ module Slr =
                             | None -> ()
         accepted
 
+    /// GLR parse FOREST: return ALL distinct parse trees for the input — so an ambiguous grammar
+    /// yields every parse (e.g. `E → E + E | id` on `id + id + id` gives both associativities),
+    /// each tree a `DynamicValue` (leaf `{term}`, internal `{rule, kids}`) that rides the codec
+    /// stack. Extends the fork BFS with a parallel tree stack; collects at each Accept, deduped by
+    /// structural equality, capped at `maxTrees`. Total: never throws. (Enumerated trees, not a
+    /// shared packed forest — the SPPF sharing is the next refinement; `maxTrees` bounds blow-up.)
+    let glrForest (t: GlrTables) (maxTrees: int) (tokens: string list) : DynamicValue list =
+        let leaf tok = DynamicValue.Object [ "term", DynamicValue.String tok ]
+        let node lhs kids = DynamicValue.Object [ "rule", DynamicValue.String lhs; "kids", DynamicValue.Array kids ]
+        let input = List.toArray (tokens @ [ endMarker ])
+        // config = (state stack, tree stack (head = top), input position)
+        let queue = System.Collections.Generic.Queue<int list * DynamicValue list * int>()
+        let visited = System.Collections.Generic.HashSet<int list * DynamicValue list * int>(HashIdentity.Structural)
+        let results = System.Collections.Generic.HashSet<DynamicValue>(HashIdentity.Structural)
+        let enqueue cfg = if visited.Add cfg then queue.Enqueue cfg
+        enqueue ([ t.Start ], [], 0)
+        let mutable steps = 0
+        while queue.Count > 0 && results.Count < maxTrees && steps < 2_000_000 do
+            steps <- steps + 1
+            let (stack, trees, ip) = queue.Dequeue()
+            match stack with
+            | [] -> ()
+            | s :: _ ->
+                let a = if ip < input.Length then input.[ip] else endMarker
+                for act in (Map.tryFind (s, a) t.Action |> Option.defaultValue []) do
+                    match act with
+                    | Accept ->
+                        match trees with
+                        | [ root ] -> results.Add root |> ignore
+                        | _ -> ()
+                    | Shift j -> enqueue (j :: stack, leaf a :: trees, ip + 1)
+                    | Reduce p ->
+                        let (lhs, rhs) = t.Prods.[p]
+                        let n = List.length rhs
+                        if List.length stack > n && List.length trees >= n then
+                            let popped = List.skip n stack
+                            let kids = trees |> List.truncate n |> List.rev
+                            let restTrees = trees |> List.skip n
+                            match Map.tryFind (List.head popped, lhs) t.Goto with
+                            | Some g -> enqueue (g :: popped, node lhs kids :: restTrees, ip)
+                            | None -> ()
+        results |> List.ofSeq
+
     /// Run the shift/reduce driver over a token stream (terminal names). Returns the sequence of
     /// production indices reduced (the rightmost derivation in reverse) on accept, or an `Error`
     /// describing the first rejection. Total: never throws.

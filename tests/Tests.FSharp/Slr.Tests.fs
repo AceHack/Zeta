@@ -165,3 +165,26 @@ let ``GLR agrees with SLR on the unambiguous expression grammar`` () =
               [] ] do
             Assert.Equal(Slr.accepts slr toks, Slr.glrParse glr toks)
     | _ -> Assert.Fail "both builds should succeed"
+
+[<Fact>]
+let ``GLR FOREST: an ambiguous parse yields MULTIPLE trees (the superposition's support); each is a DynamicValue`` () =
+    match Slr.buildGlr ambiguousExpr with
+    | Ok t ->
+        // id + id + id is ambiguous under E → E + E | id ⇒ ≥ 2 distinct parse trees
+        // (left-assoc and right-assoc) — the support of the superposition over parses.
+        let forest = Slr.glrForest t 16 [ "id"; "+"; "id"; "+"; "id" ]
+        Assert.True(List.length forest >= 2, sprintf "expected ≥2 parses, got %d" (List.length forest))
+        // every tree is rooted at E, and IS a DynamicValue that rides the codec stack (homoiconic)
+        for tree in forest do
+            Assert.Equal(Some(DynamicValue.String "E"), DynamicValue.get "rule" tree)
+            Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] tree)
+        // an unambiguous string has exactly ONE parse
+        Assert.Equal(1, List.length (Slr.glrForest t 16 [ "id" ]))
+        Assert.Equal(1, List.length (Slr.glrForest t 16 [ "id"; "+"; "id" ]))
+    | Error e -> Assert.Fail(sprintf "glr build failed: %s" e)
+
+[<Fact>]
+let ``GLR FOREST: an unambiguous grammar yields exactly one tree`` () =
+    match Slr.buildGlr exprGrammar with
+    | Ok t -> Assert.Equal(1, List.length (Slr.glrForest t 16 [ "id"; "+"; "id"; "*"; "id" ]))
+    | Error e -> Assert.Fail(sprintf "glr build failed: %s" e)
