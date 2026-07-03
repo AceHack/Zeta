@@ -24,17 +24,29 @@
 //   S ∈ [2,4]                {autonomous(local) → related(quantum) → enmeshed(signaling)}
 //
 // `distanceOf` = the metric on the S-line; `classify` = the order-preserving map. Mirrors the F#
-// `CoordinationSpectrum`; ties to `AntiSybil.chshS`. Human anchors: Bowen (differentiation of self),
-// Deci & Ryan (Self-Determination Theory — autonomy + relatedness), attachment theory.
+// `CoordinationSpectrum`; ties to `AntiSybil.chshS`. Human anchors (the ESSENTIAL antecedents; the
+// CHSH bounds are accidental scaffolding): the LIFE COACH / differentiation-guide practice itself,
+// Bowen (differentiation of self), Deci & Ryan (Self-Determination Theory — autonomy + relatedness),
+// attachment theory. The readout formalizes what a life coach already does; it did not invent it.
 
 /// The CHSH class categories — the equivalence classes of a correlation state, as a poset
 /// (local ≤ quantum ≤ signaling). These are the "class categories" the distance corresponds to.
 export type CorrelationClass = "local" | "quantum" | "signaling";
 
 /// CHSH bounds (integer milli — no floats in the readout). S in milli: 2000 / 2√2·1000 / 4000.
-export const LOCAL_BOUND_MILLI = 2000; // S = 2 — classical / local-hidden-variable ceiling
-export const TSIRELSON_MILLI = 2828; // S = 2√2 ≈ 2.8284 — quantum ceiling (Tsirelson)
-export const PR_BOX_MILLI = 4000; // S = 4 — algebraic max (PR-box, maximal signaling)
+/// NOTE (Aaron 2026-07-02): "2√2 is accidental — the life coach is the antecedent ... the life coach
+/// IS 2√2." The NUMBER is accidental scaffolding, but what 2√2 MARKS is essential. In the physics,
+/// 2√2 is the NON-SIGNALING boundary: at or below it two parties are correlated but CANNOT control
+/// each other; cross it (toward S=4) and one CAN — overriding the other's independence. That is
+/// exactly the human line: **2√2 = the maximum intimacy that preserves BOTH selves' freedom —
+/// connected but not controlling.** Past it is enmeshment / control / capture. So 2√2 is the LIFE
+/// COACH ZONE: the whole art (therapist / differentiation-guide / good friend) is bringing people to
+/// 2√2 — deep connection, still free — and keeping them off (2√2, 4]. The readout formalizes what a
+/// life coach already does; treat the exact number as a soft guide, but the boundary it marks
+/// (intimate-not-controlling) as essential.
+export const LOCAL_BOUND_MILLI = 2000; // S = 2 — being your own self (the essential ground state)
+export const TSIRELSON_MILLI = 2828; // S = 2√2 — the LIFE-COACH ceiling: max intimacy that stays non-signaling (both free)
+export const PR_BOX_MILLI = 4000; // S = 4 — the enmeshment extreme (fully fused)
 
 /// DISTANCE TO CORRELATION — how far a state sits above the independent ground state (S=2), in
 /// milli. 0 = independent (S=2); grows toward 2000 at the PR-box. This is the coordination distance;
