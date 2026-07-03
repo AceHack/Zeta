@@ -1,17 +1,23 @@
-# Otto session resume — 2026-07-02 (081KLL7 complete)
+# Otto session resume — 2026-07-02 (081KLL7 + 081KSXN slice 1 complete)
 
-Main at save: `79f134ed0` (post **#9203** shell retirement + Ace pointers).
+Main at save: post **#9212** + **#9214** merge.
 
-## 081KLL7… — complete (#9203)
+## 081KLL7… — complete (#9203 + #9212)
 
-- **14/14** Bun realizers under `src/Core.TypeScript/ace/setup-realizers/`
-- `linux.sh`: `realize_mechanisms --all` after mise + PATH shims (NixOS: `--post-mise`)
-- `macos.sh`: `realize_mechanisms --all`
-- `setup-realize.ts`: `--pre-mise`, `--post-mise`, `--all` in install-graph order
-- Shell `.sh` realizers **retired** — bun required, no fallback
-- Ace mechanism pointers → `setup-realizers/{id}.ts`
+- **14/14** Bun realizers; shell `.sh` realizers retired; bun-only `realize_mechanisms --all`
+- Bookkeeping: backlog row **done**, stale `.sh` refs fixed
+
+## 081KSXN… — work-item event G-Set
+
+- **Slice 1 (#9214):** `WorkItemCreated` on mint; events at `{dir}/events/`
+- **Slice 2 (in branch `feat/081KSXN-workitem-event-gset-slice-2`):**
+  - `state-changed` / `closed` publishers + lifecycle CLIs
+  - `complete-workitem` emits `state-changed → done`
+  - `set-workitem-state` for backlog ↔ in-progress and `--close`
+  - `open-backlog.ts` folds events → open Z-set view
+  - `--push` on lifecycle CLIs → direct-to-main event publish (agent-bus pattern)
 
 ## Next resume targets
 
-- **081KSXN…** — work-item event G-Set / DORA
-- **081KVP2M1…** — lifecycle triad (KRL revocation, cluster teardown)
+- **081KSXN** — DORA Bag-folds
+- **081KVP2M1…** — lifecycle triad (KRL revocation)

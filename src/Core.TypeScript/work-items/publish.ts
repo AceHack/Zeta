@@ -2,7 +2,7 @@
  * Work-item event G-Set publish (081KSXN940008QG0R002FWR9B2 slice 1).
  *
  * `writeEvent` is pure (atomic wx create; idempotent on identical content).
- * Git direct-to-main is deferred to a later slice — callers write locally first.
+ * Optional direct-to-main git push: `git-push.ts` + CLI `--push` (slice 2c).
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
@@ -14,6 +14,7 @@ import {
   serializeEvent,
   type WorkItemEvent,
 } from "./types";
+import { gitPushEventFile } from "./git-push";
 
 export type WriteResult =
   | { readonly kind: "created"; readonly path: string }
@@ -42,4 +43,15 @@ export function writeEvent(
       ? { kind: "exists-identical", path }
       : { kind: "collision", path };
   }
+}
+
+/** Push a newly-written event to main when `--push` is set (no-op unless `created`). */
+export function maybeGitPushEvent(
+  result: WriteResult,
+  event: WorkItemEvent,
+  by: string,
+  push: boolean,
+): void {
+  if (!push || result.kind !== "created") return;
+  gitPushEventFile(result.path, by, event);
 }

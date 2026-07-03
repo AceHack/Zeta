@@ -34,7 +34,7 @@ import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
 import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
 import { makeCreatedEvent, mintWorkItemEventIdHex } from "../work-items/types";
-import { writeEvent, type WriteResult } from "../work-items/publish";
+import { writeEvent, maybeGitPushEvent, type WriteResult } from "../work-items/publish";
 
 export type WorkItemType = "task" | "bug";
 
@@ -158,6 +158,7 @@ export function publishCreatedEvent(
   env: WorkItemEnv,
   by: string,
   eventsRoot?: string,
+  push = false,
 ): WriteResult {
   const atMs = env.nowMs();
   const event = makeCreatedEvent(
@@ -173,7 +174,9 @@ export function publishCreatedEvent(
     atMs,
     (ms) => mintWorkItemEventIdHex(env, ms),
   );
-  return writeEvent(event, eventsRoot);
+  const result = writeEvent(event, eventsRoot);
+  maybeGitPushEvent(result, event, by, push);
+  return result;
 }
 
 // ── CLI ──────────────────────────────────────────────────────────────────────
@@ -237,6 +240,7 @@ function main(argv: readonly string[]): number {
 
   const dir = args["dir"] ?? "workitems";
   const path = join(dir, minted.filename);
+  const push = args["push"] === "true";
 
   if (args["dry-run"]) {
     process.stdout.write(`[dry-run] would write ${path}\n\n${minted.content}`);
@@ -251,7 +255,7 @@ function main(argv: readonly string[]): number {
   }
   writeFileSync(path, minted.content, "utf8");
   const actor = process.env.ZETA_WORKITEM_ACTOR ?? "otto-cli";
-  const eventResult = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor, workItemEventsRoot(dir));
+  const eventResult = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor, workItemEventsRoot(dir), push);
   if (eventResult.kind === "collision") {
     process.stderr.write(`new-workitem: event collision at ${eventResult.path}\n`);
     return 1;

@@ -26,14 +26,17 @@
 import { mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync, appendFileSync } from "node:fs";
 import { join, basename, dirname } from "node:path";
 import { isCanonical, ZETAID_BASE32_LEN } from "../zeta-id/encoding";
-import { SYSTEM_ENV, type WorkItemEnv } from "./new-workitem";
+import { SYSTEM_ENV, workItemEventsRoot, type WorkItemEnv } from "./new-workitem";
+import { publishStateChangedEvent } from "../work-items/lifecycle";
+import { parseLifecycleState, type WorkItemLifecycleState } from "../work-items/types";
 
 export interface CompletedWorkItem {
   readonly zetaid: string;
   readonly fromPath: string;
   readonly toPath: string;
+  readonly fromState: WorkItemLifecycleState;
   readonly newContent: string;
-  readonly indexLine: string; // JSONL line for workitems/done/index.jsonl
+  readonly indexLine: string; // JSONL line for <workitems>/done/index.jsonl
 }
 
 function pad2(n: number): string {
@@ -65,7 +68,16 @@ export function completeWorkItem(content: string, fromPath: string, env: WorkIte
   const yyyy = String(d.getUTCFullYear());
   const mm = pad2(d.getUTCMonth() + 1);
   const completedIso = d.toISOString();
-  const toPath = join("workitems", "done", yyyy, mm, file);
+  const workItemsDir = dirname(fromPath);
+  const toPath = join(workItemsDir, "done", yyyy, mm, file);
+
+  const fromState = parseLifecycleState(extractFrontmatterField(content, "state"));
+  if (!fromState) {
+    throw new Error("complete-workitem: no valid `state:` field in frontmatter");
+  }
+  if (fromState === "done" || fromState === "closed") {
+    throw new Error(`complete-workitem: item already terminal (state: ${fromState})`);
+  }
 
   // Update frontmatter: state → done; insert/replace `completed:`.
   let newContent = content;
@@ -89,7 +101,7 @@ export function completeWorkItem(content: string, fromPath: string, env: WorkIte
   const indexLine =
     JSON.stringify({ id: zetaid, path: toPath, completed: completedIso, title: title.replace(/^"|"$/g, "") }) + "\n";
 
-  return { zetaid, fromPath, toPath, newContent, indexLine };
+  return { zetaid, fromPath, toPath, fromState, newContent, indexLine };
 }
 
 // ── CLI ──────────────────────────────────────────────────────────────────────
@@ -117,6 +129,7 @@ function resolvePath(arg: string, dir: string): string | null {
 function main(argv: readonly string[]): number {
   const args = argv.filter((a) => !a.startsWith("--"));
   const flags = new Set(argv.filter((a) => a.startsWith("--")));
+  const push = flags.has("--push");
   const dirIdx = argv.indexOf("--dir");
   const dir = dirIdx >= 0 ? argv[dirIdx + 1]! : "workitems";
   const target = args[0];
@@ -152,8 +165,28 @@ function main(argv: readonly string[]): number {
   }
   writeFileSync(done.toPath, done.newContent, "utf8");
   rmSync(done.fromPath);
-  appendFileSync(join("workitems", "done", "index.jsonl"), done.indexLine, "utf8");
-  process.stdout.write(`completed ${done.zetaid}\n  ${done.fromPath} → ${done.toPath}\n`);
+  const workItemsDir = dirname(done.fromPath);
+  appendFileSync(join(workItemsDir, "done", "index.jsonl"), done.indexLine, "utf8");
+
+  const actor = process.env.ZETA_WORKITEM_ACTOR ?? "otto-cli";
+  const eventsRoot = workItemEventsRoot(workItemsDir);
+  const stateResult = publishStateChangedEvent(
+    done.zetaid,
+    done.fromState,
+    "done",
+    SYSTEM_ENV,
+    actor,
+    eventsRoot,
+    push,
+  );
+  if (stateResult.kind === "collision") {
+    process.stderr.write(`complete-workitem: event collision at ${stateResult.path}\n`);
+    return 1;
+  }
+
+  process.stdout.write(
+    `completed ${done.zetaid}\n  ${done.fromPath} → ${done.toPath}\n  event: ${stateResult.path}\n`,
+  );
   return 0;
 }
 

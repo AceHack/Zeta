@@ -127,3 +127,40 @@ export function makeCreatedEvent(
     payload,
   };
 }
+
+export function makeStateChangedEvent(
+  payload: WorkItemStateChangedPayload,
+  by: string,
+  atMs: number,
+  mintAt: (atMs: number) => string = (ms) => mintWorkItemEventIdHex(DEFAULT_ENV, ms),
+): Extract<WorkItemEvent, { kind: "state-changed" }> {
+  return {
+    id: mintAt(atMs),
+    at: new Date(atMs).toISOString(),
+    by,
+    kind: "state-changed",
+    payload,
+  };
+}
+
+export function makeClosedEvent(
+  payload: WorkItemClosedPayload,
+  by: string,
+  atMs: number,
+  mintAt: (atMs: number) => string = (ms) => mintWorkItemEventIdHex(DEFAULT_ENV, ms),
+): Extract<WorkItemEvent, { kind: "closed" }> {
+  return {
+    id: mintAt(atMs),
+    at: new Date(atMs).toISOString(),
+    by,
+    kind: "closed",
+    payload,
+  };
+}
+
+const LIFECYCLE_STATES: readonly WorkItemLifecycleState[] = ["backlog", "in-progress", "done", "closed"];
+
+export function parseLifecycleState(raw: string | undefined): WorkItemLifecycleState | undefined {
+  if (!raw) return undefined;
+  return (LIFECYCLE_STATES as readonly string[]).includes(raw) ? (raw as WorkItemLifecycleState) : undefined;
+}

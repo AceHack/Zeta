@@ -15,8 +15,9 @@ function mintSample() {
 test("moves to done/YYYY/MM from the COMPLETION date, keeps the filename", () => {
   const { m, fromPath } = mintSample();
   const done = completeWorkItem(m.content, fromPath, detEnv(DONE_MS));
-  expect(done.toPath).toBe(`workitems/done/2026/06/${m.filename}`); // completion month, not creation
+  expect(done.toPath).toBe(`workitems/done/2026/06/${m.filename}`);
   expect(done.zetaid).toBe(m.zetaid);
+  expect(done.fromState).toBe("backlog");
 });
 
 test("frontmatter: state → done and completed datetime added (precise, for DORA)", () => {
@@ -49,9 +50,16 @@ test("DST: same (content, path, env) replays identically", () => {
   expect(a.indexLine).toBe(b.indexLine);
 });
 
+test("honors custom work-items dir for done path", () => {
+  const { m } = mintSample();
+  const fromPath = `/tmp/wi/${m.filename}`;
+  const done = completeWorkItem(m.content, fromPath, detEnv(DONE_MS));
+  expect(done.toPath).toBe(`/tmp/wi/done/2026/06/${m.filename}`);
+});
+
 test("rejects a non-ZetaId filename and missing state field", () => {
   const { m } = mintSample();
-  expect(() => completeWorkItem(m.content, "workitems/081KSXN940008QG0R002FWR9B2-legacy.md", detEnv(DONE_MS))).toThrow();
+  expect(() => completeWorkItem(m.content, "workitems/not-a-zetaid-at-all.md", detEnv(DONE_MS))).toThrow();
   const noState = m.content.replace(/^state:.*$/m, "# no state");
   expect(() => completeWorkItem(noState, `workitems/${m.filename}`, detEnv(DONE_MS))).toThrow();
 });
