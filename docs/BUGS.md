@@ -105,6 +105,24 @@ can no longer pass with Go silent.
 
 ## P1 — serious
 
+### Discovery-beacon wire is unsigned — spoof / poison / forged-evict (bus, shadow*)
+
+- **Site:** `src/Core.TypeScript/discovery/discovery-beacon.ts:99-124` (`observe`) — `hello`/`probeMatch` upsert an attacker-supplied `{ep, zid, routes}` into every listener's PeerTable with NO authenticity check; `bye` (l.110-114) deletes a peer by `endpointKey(msg.ep)` with zero auth (one forged `bye` evicts any node from every table).
+- **Found:** 2026-07-03 by Otto (bus-doc anti-entropy sweep), Aaron steer ("ais should just do similar/same" as the human auth)
+- **Severity:** P1
+- **Symptom:** WS-Discovery multicast reborn on the mesh has no auth layer — `decode()` is guarded against crashes but nothing verifies the sender owns the ZetaId/routes it claims. Unauthenticated `bye` IS a forged Z-set retraction (revoke-without-authority).
+- **Fix:** REUSE the already-shipped human auth — do NOT invent. Personas share the `tools/setup/persona-keys/` keyring (README: "each traveler — persona **or** human maintainer"). Bind `zid` to the persona keyring pubkey; sign `hello`/`probeMatch`/`bye` with `ace/signing.ts` (Ed25519 over canonical key-sorted JSON, `key_id=ed25519:sha256(SPKI)[..16]`) and verify against a trust-store before upsert/delete; `bye` must be self-signed by the leaving peer. Rotation = the existing dual-key overlap-window ADR (2026-06-15), unchanged.
+- **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory
+
+### Reticulum relay `seenFids` is a grow-only set — memory-exhaustion DoS (bus, shadow*)
+
+- **Site:** `src/Core.TypeScript/discovery/reticulum-transport.ts:158` (`const seenFids = new Set<string>()`)
+- **Found:** 2026-07-03 by Otto (bus-doc anti-entropy sweep)
+- **Severity:** P1
+- **Symptom:** the relay dedup set NEVER evicts, while sibling state has GC (`paths.gc(nowMs, ttlMs)`, `PeerTable.expire()`). A relay accumulates one entry per distinct frame id forever → unbounded memory → OOM; spoofable frame ids (`${dest}:${fidSeq}`) make it trivially floodable. Idempotency §12 only needs a *recent* dedup window, not all-time.
+- **Fix:** bound it — time-windowed (add a timestamp to the fid or evict by count) or LRU/ring by insert order.
+- **Who:** architect (Kenji) → discovery/bus owner
+
 ### ZetaId base32 cross-verify lacks edge vectors + has two overflow algorithms
 
 - **Site:** `tests/cross-verification/zeta-id/vectors.yaml` (12 happy-path only); `parse` in TS/Py (bigint, post-check `>MASK_128`) vs C#/F#/Rust (u128, pre-guard `firstVal>=8`)
