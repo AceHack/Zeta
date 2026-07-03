@@ -63,3 +63,49 @@ let ``THE FIXPOINT gen(gen)==gen: a residual is a fixed point of mix(., empty)``
 let ``A MixCall IS BYTE-LOCKABLE DATA: the reified mix invocation rides the codec stack`` () =
     let call = MixIr.mixCall IsaSpec.mos6502 MixIr.mos6502Load (DynamicValue.Array [ IsaSpec.ldaImm 1; IsaSpec.brk ]) (Map.ofList [ 0, 2 ]) Map.empty
     Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] call)
+
+// ── slice 2: the mix ALGORITHM as data (shadow*, Aaron 2026-07-03 "this sounds great lets continue").
+// specializeMem's per-effect decision (setreg→registers, setmem→memory, halt→drop) was F# match arms;
+// now it is a `mixDef` rule table read by a fixed engine. Proofs:
+//   5. FAITHFUL: specializeReified defaultMixDef = specializeMem, byte-for-byte (CHIP-8 and 6502).
+//   6. ONE ALGORITHM, EVERY ISA: the SAME defaultMixDef value drives both ISAs (it is over the effect
+//      vocabulary, not opcodes) — the partial-evaluation algorithm is a single data object.
+//   7. THE ALGORITHM IS BYTE-LOCKABLE DATA: defaultMixDef rides the codec stack.
+
+let private reifiedResidual mixDef spec load p statics =
+    match MixIr.runReifiedMix mixDef spec load p statics Map.empty with
+    | Ok(res, _, _) -> res
+    | Error e -> failwithf "runReifiedMix failed: %s" e
+
+let private nativeMemResidual spec load p statics =
+    match IsaSpec.specializeMem spec load p statics Map.empty with
+    | Ok(res, _, _) -> res
+    | Error e -> failwithf "native specializeMem failed: %s" e
+
+[<Fact>]
+let ``FAITHFUL: the reified algorithm reproduces native specializeMem byte-for-byte (both ISAs)`` () =
+    let chip8P = Isa.prog [ Isa.set 0 5; Isa.add 0 3; Isa.addr 1 0; Isa.mov 2 1; Isa.halt ]
+    Assert.Equal<DynamicValue>(
+        nativeMemResidual IsaSpec.chip8 Isa.set chip8P Map.empty,
+        reifiedResidual MixIr.defaultMixDef IsaSpec.chip8 MixIr.chip8Load chip8P Map.empty
+    )
+    let m6502P =
+        DynamicValue.Array [ IsaSpec.staZp 10; IsaSpec.ldaZp 10; IsaSpec.adcImm 5; IsaSpec.staZp 11; IsaSpec.adcZp 20; IsaSpec.staZp 12; IsaSpec.brk ]
+    Assert.Equal<DynamicValue>(
+        nativeMemResidual IsaSpec.mos6502 IsaSpec.load6502 m6502P (Map.ofList [ 0, 7 ]),
+        reifiedResidual MixIr.defaultMixDef IsaSpec.mos6502 MixIr.mos6502Load m6502P (Map.ofList [ 0, 7 ])
+    )
+
+[<Fact>]
+let ``ONE ALGORITHM, EVERY ISA: the same mixDef value drives CHIP-8 and the 6502`` () =
+    // The identical defaultMixDef object specializes correctly for two different ISAs.
+    let chip8P = Isa.prog [ Isa.set 0 9; Isa.addr 1 0; Isa.halt ]
+    let m6502P = DynamicValue.Array [ IsaSpec.ldaImm 9; IsaSpec.staZp 3; IsaSpec.adcZp 30; IsaSpec.brk ]
+    let a = reifiedResidual MixIr.defaultMixDef IsaSpec.chip8 MixIr.chip8Load chip8P Map.empty
+    let b = reifiedResidual MixIr.defaultMixDef IsaSpec.mos6502 MixIr.mos6502Load m6502P Map.empty
+    Assert.Equal<DynamicValue>(nativeMemResidual IsaSpec.chip8 Isa.set chip8P Map.empty, a)
+    Assert.Equal<DynamicValue>(nativeMemResidual IsaSpec.mos6502 IsaSpec.load6502 m6502P Map.empty, b)
+
+[<Fact>]
+let ``THE ALGORITHM IS BYTE-LOCKABLE DATA: defaultMixDef rides the codec stack`` () =
+    Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] MixIr.defaultMixDef)

@@ -625,3 +625,106 @@ module IsaSpec =
                 let knownMemMap = knownMem |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
                 Ok(DynamicValue.Array(List.ofSeq residual), knownRegMap, knownMemMap)
         | _ -> Error "isaspec: program must be an array of instructions"
+
+    /// **The mix ALGORITHM, driven by a data rule table (`mixDef`) — mix-as-data slice 2.**
+    /// `specializeMem` hard-codes the per-effect decision (setreg folds into registers, setmem into
+    /// memory, halt drops) as F# `match` arms. This reads those decisions from DATA: a `mixDef` is
+    /// `{ rules:[{e, action, target}] }` where `action` ∈ {"fold","drop"} and `target` ∈ {"reg","mem"}.
+    /// The engine here is a fixed set of abstract-actions; the algorithm's SHAPE (which effect folds
+    /// into which state, which drops, which is out of the fragment) is the `mixDef` value. Crucially
+    /// the same `mixDef` drives EVERY ISA (it is over the effect vocabulary, not opcodes), so the
+    /// partial-evaluation algorithm is now one data object. Faithful: with the default rules,
+    /// `specializeReified defaultMixDef … = specializeMem …` (proven differentially).
+    let specializeReified
+        (mixDef: DynamicValue)
+        (isaSpec: DynamicValue)
+        (loadImm: int -> int -> DynamicValue)
+        (program: DynamicValue)
+        (staticRegs: Map<int, int>)
+        (staticMem: Map<int, int>)
+        : Result<DynamicValue * Map<int, int> * Map<int, int>, string> =
+        // the reified rule table: effect-kind → (action, target)
+        let rules = System.Collections.Generic.Dictionary<string, string * string>()
+        match DynamicValue.get "rules" mixDef with
+        | Some(DynamicValue.Array rs) ->
+            for r in rs do
+                match DynamicValue.get "e" r with
+                | Some(DynamicValue.String e) ->
+                    let action =
+                        match DynamicValue.get "action" r with
+                        | Some(DynamicValue.String a) -> a
+                        | _ -> "reject"
+                    let target =
+                        match DynamicValue.get "target" r with
+                        | Some(DynamicValue.String t) -> t
+                        | _ -> ""
+                    rules.[e] <- (action, target)
+                | _ -> ()
+        | _ -> ()
+
+        let table = System.Collections.Generic.Dictionary<string, DynamicValue[]>()
+        match DynamicValue.get "ops" isaSpec with
+        | Some(DynamicValue.Array ops) ->
+            for o in ops do
+                match DynamicValue.get "op" o, DynamicValue.get "eff" o with
+                | Some(DynamicValue.String name), Some(DynamicValue.Array effs) -> table.[name] <- List.toArray effs
+                | _ -> ()
+        | _ -> ()
+
+        match program with
+        | DynamicValue.Array instrs ->
+            let known = System.Collections.Generic.Dictionary<int, int>()
+            for KeyValue(k, v) in staticRegs do
+                known.[k] <- wrap v
+            let knownMem = System.Collections.Generic.Dictionary<int, int>()
+            for KeyValue(k, v) in staticMem do
+                knownMem.[k] <- wrap v
+            let residual = System.Collections.Generic.List<DynamicValue>()
+            let mutable err = None
+            // the fixed abstract-action: fold a static write into `state`, else materialize + residualize.
+            let foldOrResidualize (state: System.Collections.Generic.Dictionary<int, int>) ins keyV valV =
+                match tryStatic keyV ins known knownMem with
+                | None -> err <- Some "isaspec specializeReified: dynamic key not in the fragment"
+                | Some key ->
+                    match tryStatic valV ins known knownMem with
+                    | Some v -> state.[key] <- wrap v // fold
+                    | None ->
+                        for r in readsInKnown valV ins known knownMem do
+                            residual.Add(loadImm r known.[r])
+                        residual.Add ins
+                        state.Remove key |> ignore // written target goes dynamic
+            for ins in instrs do
+                if err.IsNone then
+                    let opName =
+                        match DynamicValue.get "op" ins with
+                        | Some(DynamicValue.String s) -> s
+                        | _ -> "?"
+                    match table.TryGetValue opName with
+                    | false, _ -> err <- Some(sprintf "isaspec specializeReified: no spec for op '%s'" opName)
+                    | true, [| eff |] ->
+                        let effKind =
+                            match DynamicValue.get "e" eff with
+                            | Some(DynamicValue.String s) -> s
+                            | _ -> "?"
+                        match rules.TryGetValue effKind with
+                        | false, _ -> err <- Some(sprintf "isaspec specializeReified: no mixDef rule for effect '%s'" effKind)
+                        | true, (action, target) ->
+                            match action, target with
+                            | "drop", _ -> () // e.g. halt: no residual effect
+                            | "fold", "reg" ->
+                                match DynamicValue.get "i" eff, DynamicValue.get "val" eff with
+                                | Some iv, Some vv -> foldOrResidualize known ins iv vv
+                                | _ -> err <- Some "isaspec specializeReified: setreg operands"
+                            | "fold", "mem" ->
+                                match DynamicValue.get "addr" eff, DynamicValue.get "val" eff with
+                                | Some av, Some vv -> foldOrResidualize knownMem ins av vv
+                                | _ -> err <- Some "isaspec specializeReified: setmem operands"
+                            | _ -> err <- Some(sprintf "isaspec specializeReified: unsupported rule (%s,%s) for '%s'" action target effKind)
+                    | true, _ -> err <- Some(sprintf "isaspec specializeReified: op '%s' is not single-effect" opName)
+            match err with
+            | Some e -> Error e
+            | None ->
+                let knownRegMap = known |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
+                let knownMemMap = knownMem |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
+                Ok(DynamicValue.Array(List.ofSeq residual), knownRegMap, knownMemMap)
+        | _ -> Error "isaspec: program must be an array of instructions"

@@ -139,3 +139,31 @@ module MixIr =
 
     /// Extract the residual program from a `runMixCall` result.
     let residualOf (result: DynamicValue) : DynamicValue option = DynamicValue.get "residual" result
+
+    // ── slice 2: the mix ALGORITHM as data ──
+
+    /// The partial-evaluation algorithm, reified as a data rule table (`mixDef`). Each rule says how an
+    /// effect kind is specialized: `setreg` folds into the register state, `setmem` into memory, `halt`
+    /// drops. This ONE value is the algorithm for EVERY ISA (it is over the effect vocabulary, not
+    /// opcodes) — the same `defaultMixDef` drives CHIP-8 and the 6502. With the default rules,
+    /// `IsaSpec.specializeReified defaultMixDef … = specializeMem …` (faithful, proven differentially).
+    let defaultMixDef: DynamicValue =
+        DynamicValue.Object
+            [ "rules",
+              DynamicValue.Array
+                  [ DynamicValue.Object [ "e", DynamicValue.String "setreg"; "action", DynamicValue.String "fold"; "target", DynamicValue.String "reg" ]
+                    DynamicValue.Object [ "e", DynamicValue.String "setmem"; "action", DynamicValue.String "fold"; "target", DynamicValue.String "mem" ]
+                    DynamicValue.Object [ "e", DynamicValue.String "halt"; "action", DynamicValue.String "drop"; "target", DynamicValue.String "" ] ] ]
+
+    /// Run the mix with the algorithm supplied as data (`mixDef`) AND the loadImm as data (`loadDesc`).
+    /// Now BOTH the mix's decision procedure and its materialization strategy are values — the only
+    /// native part left is the fixed abstract-action engine (`IsaSpec.specializeReified`).
+    let runReifiedMix
+        (mixDef: DynamicValue)
+        (spec: DynamicValue)
+        (loadDesc: DynamicValue)
+        (program: DynamicValue)
+        (staticRegs: Map<int, int>)
+        (staticMem: Map<int, int>)
+        : Result<DynamicValue * Map<int, int> * Map<int, int>, string> =
+        IsaSpec.specializeReified mixDef spec (fun r v -> buildLoad loadDesc r v) program staticRegs staticMem
