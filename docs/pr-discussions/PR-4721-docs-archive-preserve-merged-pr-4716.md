@@ -27,6 +27,7 @@ This PR preserves the discussion archive for merged PR #4716.
 Preserves the discussion archive for merged PR #4716 by adding a new `docs/pr-discussions/` markdown record with PR metadata, the original PR description content, and the Copilot review thread.
 
 **Changes:**
+
 - Add a PR discussion archive markdown file for PR #4716 (YAML frontmatter + preserved content).
 - Capture the PR description sections (Summary/Test plan) and the Copilot review thread text.
 

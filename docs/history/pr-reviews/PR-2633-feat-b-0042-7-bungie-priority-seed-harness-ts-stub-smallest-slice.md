@@ -28,21 +28,25 @@
 ## Description
 
 ## Summary
+
 - Claimed + implemented **smallest safe slice** of 081KQ3HBZ0008QG0R002GDRFS5 (P2): 081KQ3HBZ0008QG0R002GDRFS5.7 Priority-seed harness as F#/TS-first code (per "Prefer F#/TS code over docs" + "TS over bash").
 - Parent 081KQ3HBZ0008QG0R002GDRFS5 already re-decomposed (2026-05-09); this lands the harness child (data module + resonance classifier stub). Re-decomposed mid-build per rule (assume mistakes in prior split).
 - Exactly one bounded step, dedicated worktree + pushed claim branch, root checkout untouched.
 - No docs changes; pure code substrate.
 
 ## Focused checks (passed)
+
 - `bun run tools/bungie/priority-seed-harness.ts` → clean run, outputs 7 titles + tags
 - `bun --check tools/bungie/priority-seed-harness.ts` → 0 errors
 - Build gate (root): `dotnet build -c Release` → 0 warnings 0 errors (pre-work)
 
 ## Scope discipline
+
 - Stub only (no FS, no net, minimal). Follows AGENT-CLAIM-PROTOCOL + CLAUDE.md start-gate (prior-art/depends walked via refresh + read; no broken pointers).
 - Composes with 081KQ3HBZ0008QG0R003V6B2ME parent track. WONT-DO clean (no conflict).
 
 ## Next
+
 - Future slices can claim 081KQ3HBZ0008QG0R002GDRFS5.1–6 independently. This PR owns through merge.
 
 Co-Authored-By: Grok <noreply@x.ai>

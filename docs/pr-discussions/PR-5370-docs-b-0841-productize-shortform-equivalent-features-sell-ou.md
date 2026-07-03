@@ -69,6 +69,7 @@ Each is structurally identical to what Shortform produces. The discipline IS the
 Adds a new P2 backlog row (081KSGS9H0008QG0R001876MP6) describing a 4-phase plan to productize Shortform-like deep-guide outputs and the underlying substrate-engineering discipline, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P2/081KSGS9H0008QG0R001876MP6-*.md` backlog row with Phase 1–4 (including 4a/4b split) plan and acceptance criteria.
 - Updated `docs/BACKLOG.md` to list 081KSGS9H0008QG0R001876MP6 under P2.
 

@@ -80,6 +80,7 @@ external defensibility.
 > it's evolution, not revolution, that's f*****g slick."
 
 Decoded:
+
 - "Hulu" likely speech-recognition artifact (possibly
   "Looking" or filler word; substrate-honest preservation;
   not Hulu the streaming service)
@@ -245,7 +246,9 @@ defensibility:**
 
 This composes with the additive-not-zero-sum rule + the
 peacemaker substrate + the empty-victory pattern rejection
+
 + the joint-control-via-barter framing. The framework
+
 operates as positive-sum infrastructure, not zero-sum
 displacement.
 

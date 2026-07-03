@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Adds `tools/backlog/pr-publication-executor.ts` — the executor that takes a `PublicationPlan`, writes the PR body file, pushes the branch, opens the PR via `gh pr create`, extracts the PR URL, and arms auto-merge via `gh pr merge --auto --squash` when the gate allows.
 - Command runner is dependency-injected (`CommandRunner` interface) so the executor is fully testable without hitting real git/gh CLIs.
 - 10 focused tests covering happy path, push failure, create-pr failure, auto-merge gating, auto-merge failure, URL extraction, and URL substitution.
 - Closes 081KR2E4K0008QG0R0022RVRCZ (P0).
 
 ## Test plan
+
 - [x] `bun test tools/backlog/pr-publication-executor.test.ts` — 10 pass, 45 expect() calls
 - [x] `bun test tools/backlog/pr-publication-plan.test.ts` — 15 pass (no regression)
 - [x] `dotnet build -c Release` — 0 Warning(s), 0 Error(s)

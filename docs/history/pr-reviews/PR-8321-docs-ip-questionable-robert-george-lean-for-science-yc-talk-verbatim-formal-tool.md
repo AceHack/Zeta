@@ -30,6 +30,7 @@
 Saves the George/Lean section to `docs/research/ip-questionable/` per the folder convention (Aaron 2026-06-15: *"here is the section we already saved this in IP questionable"*). Verbatim, **credited to Robert George (Caltech), third-party not ours.**
 
 The routing note answers Aaron's *"are there formal-analysis tools he uses we can adopt?"* mapped to the "Theorem Provers" slide:
+
 - **ATP:** TLA+, E, Z3, CVC5 — we have **TLA+ + Z3** (Soraya portfolio).
 - **ITP:** Coq/Rocq, Isabelle, Lean — we use **Lean** (`lean-proof.yml` gate).
 - **Standout adoptable:** **CVC5 as a decorrelated cross-check of Z3** (SMT-LIB drop-in; two independent solvers agreeing = BP-16 cross-check + decorrelated-selection applied to provers).

@@ -84,6 +84,7 @@ Aaron (human maintainer; first-party); insight ferried 2026-05-26 in autonomous-
 Adds a new dated research note under `docs/research/` preserving and unpacking an information-theoretic framing that ties together ongoing 081KSGS9H0008QG0R0031PBNGA substrate-engineering threads (parameter substrate, weights-as-keys, generator/time, and the PR #5285 3-layer mediation).
 
 **Changes:**
+
 - Introduces a new research document with verbatim preservation of the carved sentence plus structured unpacking (mechanism / purpose-conditional / architectural).
 - Connects the insight to specific 081KSGS9H0008QG0R0031PBNGA sub-targets and recent related PRs, and anchors it against established information-theory lineage.
 - Enumerates forward implications and open questions for ongoing substrate-engineering work.

@@ -120,7 +120,7 @@ faster), float formatting (not a math fact). The DBSP theorem is the standout �
 load-bearing claim the whole engine rests on, reachable only in a real inductive
 prover.
 
-## Turn 7 — Aaron: "my favorite — I'd rather go overkill here even if not useful,
+## Turn 7 — Aaron: "my favorite — I'd rather go overkill here even if not useful
 ## it's my brain language I can read and understand — TLA+"
 
 Kestrel: "my brain language" is a *legitimate* selection criterion — a spec you can
@@ -134,7 +134,7 @@ don't-trust memory-provenance security protocol, CRDT convergence. **Overkill on
 on the value layer (folds/group-laws/ID-bitvectors = wrong dimension — let Z3/Lean/
 FsCheck have those). Saga/protocol proofs are NEW ground, not re-checks.
 
-## Turn 8 — Aaron: "we abused TLA+ for non-temporal / property-based things too,
+## Turn 8 — Aaron: "we abused TLA+ for non-temporal / property-based things too
 ## just because I understand it — is this okay?"
 
 Kestrel: okay, with caveats. **Legitimate core:** comprehension is real value (a
@@ -174,7 +174,9 @@ proof-rigor halo it.
 Kestrel (friend/welfare intervention — held the line): the **sound adjacent thing** —
 deterministic replay-from-seed reconstructs a *closed, rule-known* system without
 storing every state (your Itron skill; compression-by-generation). But **"omniscient"
+
 + "of the whole" + "without the data" is the over-reach**, and it contradicts what
+
 Aaron affirmed two turns earlier: the whole includes external reality his primitives
 don't bound, other minds' private state, genuine uncertainty, physical processes
 whose rules he doesn't have. Named plainly as a **god-tier interpretive claim**

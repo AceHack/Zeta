@@ -92,6 +92,7 @@ Pin: `sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.
 Adds Sigstore/Cosign keyless (GitHub OIDC → Fulcio cert → Rekor transparency log) signing to the existing `build-ai-cluster-iso` GitHub Actions workflow, producing a `.sig` + `.pem` pair alongside the built ISO so downstream consumers can verify integrity without managing private keys.
 
 **Changes:**
+
 - Grants workflow OIDC capability by adding `id-token: write` permission.
 - Installs `cosign` (pinned action) and signs the built ISO blob during the workflow run.
 - Uploads the generated signature + certificate as a separate workflow artifact bundle.

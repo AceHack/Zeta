@@ -5,6 +5,7 @@
 **Absorb cadence:** dedicated tick (Otto-59), following the
 Otto-24 / Otto-54 precedents.
 **Prior Amara ferries this session:**
+
 - [`2026-04-23-amara-operational-gap-assessment.md`](./2026-04-23-amara-operational-gap-assessment.md) (Otto-24, PR #196)
 - [`2026-04-23-amara-zset-semantics-operator-algebra.md`](./2026-04-23-amara-zset-semantics-operator-algebra.md) (Otto-54, PR #211)
 

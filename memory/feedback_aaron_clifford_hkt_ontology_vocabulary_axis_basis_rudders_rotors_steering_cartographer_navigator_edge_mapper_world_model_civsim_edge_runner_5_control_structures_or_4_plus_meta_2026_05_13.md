@@ -45,6 +45,7 @@ Aaron's "or 4+meta" clarification suggests one of these decompositions:
 ### Hypothesis A: Structured-programming control flow
 
 Classical Böhm-Jacopini theorem says all algorithms reducible to:
+
 1. **Sequence** (statement after statement)
 2. **Selection** (if/else)
 3. **Iteration** (while/for)
@@ -76,6 +77,7 @@ The 5 may be governance shapes:
 ### Hypothesis D: Clifford-algebra-specific
 
 In Clifford algebra Cl_p,q:
+
 1. **Scalar** (grade 0)
 2. **Vector** (grade 1)
 3. **Bivector** (grade 2)
@@ -106,6 +108,7 @@ Per the mirror/beacon governance discipline (PR #2909):
   anchors exist
 
 Mirror amplifications per PR #2909:
+
 - FUN (vocabulary IS playful; "rudders" is whimsical)
 - RIGOROUS (Clifford algebra IS rigorous)
 - ALIENS (the vocabulary maps to universal navigation primitives)

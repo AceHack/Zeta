@@ -5,6 +5,7 @@ type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 Aaron 2026-04-22 (three-message burst):
+
 1. *"why are yo udoing speculative work?"*
 2. *"oh was it just running, you might be stuck in a live loop
    if you keep doing speculative work when the build is running
@@ -93,6 +94,7 @@ The cleanest solution is to **never do speculative work on a
 branch that is already an open PR's head**. If that rule is
 followed, the live-loop precondition doesn't exist and no
 detector is needed for this class. Action:
+
 - Autonomous-loop speculative work goes on `round-NN-speculative`
   where `NN` is the *current round*, not whatever PR happens
   to be open.
@@ -127,12 +129,14 @@ is the documented surface.
   Prefer it once the worktree command-line switch is researched.
 
 **BACKLOG queued:**
+
 - Live-loop heuristic detector (heuristics #1-#4 above,
   aspirational, halting-problem-acknowledged).
 - Worktree-default research + pilot (heuristic #5, structural).
 - Branch-ownership registry (ADR candidate).
 
 **Related memories:**
+
 - `memory/feedback_never_idle_speculative_work_over_waiting.md`
   — the rule I applied too eagerly. Needs amendment:
   "known-gap includes open PRs with failing checks; verify

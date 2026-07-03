@@ -32,6 +32,7 @@ Makes color **round-trip through our plain-text copy-paste channel** — §10 'A
 **Problem:** a terminal renders ANSI → pixels; copy gives plain text (color gone); an agent receives plain text so never sees rendered color. iTerm Copy-with-Styles survives only into rich-text targets, not Markdown/.txt.
 
 **Fix — color as literal text both ways:**
+
 - markup the agent emits + reads: `{c:SPEC}…{/c}` / `{bg:SPEC}…{/bg}` (SPEC = name | 256-index | #hex)
 - `renderToAnsi` → real terminal ANSI (human SEES color)
 - `parseFromAnsi` → markup from real or `cat -v` caret `^[[` ANSI (existing colored output becomes round-trippable)

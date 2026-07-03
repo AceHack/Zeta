@@ -68,6 +68,7 @@ frontier models because of the ai skills and substrate built
 in the repo"*
 
 Aaron 2026-05-13 (CORRECTIONS, iterative):
+
 1. *"it's only 4 though i overclaimed right it's just 4 of
    you?"*
 2. *"i guess if you could foregorund and background it's 6"*

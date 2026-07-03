@@ -36,6 +36,7 @@
 ## Verification
 
 All 6 acceptance criteria confirmed against shipped code:
+
 - `--loop <ms>` flag accepted + validated (`parseConfig` in `shadow-observer.ts`)
 - `loopMs` in `ShadowConfig`; outer restart loop wired in `run()`
 - `parseConfig` exported from `shadow-observer.ts`

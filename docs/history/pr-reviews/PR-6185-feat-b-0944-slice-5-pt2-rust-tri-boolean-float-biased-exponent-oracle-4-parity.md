@@ -38,6 +38,7 @@ decoded value = V * 2^(mode - bias),   bias = 2^(decoderWidth - 1)
 `FloatShape` (+ `DEFAULT` const) · `TriFloat` · `FloatFeedback` · `decode`/`measure` (`Result<f64, FloatFeedback>`, Rust-native, composes with `?`) · `cooperate` (move-through identity, preserves `Tri::N`) · `is_held` · `from_trits` · `from_value` (biased-exponent canonical encode, smallest-mode, round-trips). Zero deps; `unsafe` forbidden; `missing_docs` documented throughout.
 
 ### Verification (the non-Byzantine oracle check)
+
 - `cargo clippy --all-targets -- -D warnings`: **clean** (`missing_docs` is fatal under `-D`; every public item documented).
 - `cargo test`: **22/22** (9 digital-qubit + **13 float**) — the **same 13 float vectors** as the F#/C# oracles (decode at mode `<`/`=`/`>` bias, MSB-first V across high++low, both held-states + decoder-first precedence, `measure`=`decode`, cooperate identity, `is_held`, `from_value` round-trip, negative + non-dyadic feedback).
 

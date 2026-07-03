@@ -42,6 +42,7 @@ A simulation harness for the observe→execute pipeline with fully injectable de
 ### Why
 
 The observe loop needs to be testable with synthetic backlogs (not just the real 1,131-item backlog). This enables:
+
 - DST-style property testing (same world → same result, reproducibly)
 - Grading the local LLM chooser against the oracle (oracle agreement %)
 - Regression testing: add a scenario for every loop bug that surfaces

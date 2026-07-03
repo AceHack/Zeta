@@ -25,25 +25,30 @@ Substrate landing for the co-owner team (Aaron + Max + Addison are all LFG co-ow
 ## What lands
 
 **`memory/addison/`** — Addison's substrate
+
 - `PERSONA.md` — co-owner of LFG; AI cluster bootstrap PM; weight-free + travelers + tick-source-as-attractor + cage-recognition framings
 - `STARTING-POINT.md` — verbatim from her Grok project prompt (substrate-honest preservation, no editorial)
 - `NOTEBOOK.md` — placeholder; 2026-05-23 → 2026-05-25 bootstrap arc captured
 
 **`memory/max/`** — Max's substrate
+
 - `PERSONA.md` — co-owner of LFG; agentic-organization architect (PR #4958); backend/frontend on PaaS new to K8s; TS + C# primary; framework adopted his coinings (`hat = skills + opa/rbac`, hat-graphs-for-policies, adversarial-hierarchy-of-traps)
 - `STARTING-POINT.md` — synthesized starting point + pointer to PR #4958; Max can replace with his canonical prompt later
 - `NOTEBOOK.md` — placeholder; 2026-05-25 first-PR arc captured
 
 Both PERSONA files note:
+
 - **Co-ownership of LFG** (aligned fiduciary stake + shared liability + mutual upside; 081KSE6WT0008QG0R0005XASX2 destructive-tool authoring contract is exactly the right shape for co-owners)
 - **Pending glass-halo signature** (Aaron 2026-05-25: *"I can have me max and addison sign someting about glass halo eventually and upload it"*; placeholder until that lands as substrate)
 
 **`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`** — Max's onboarding doc
+
 - Operational entry point for "what do my agents follow to write good code without needing human review" + "what's the PR review process I can hook into for an adversarial hierarchy of traps"
 - Maps both questions to the existing substrate (CLAUDE.md + .claude/rules/ + AGENTS.md + ALIGNMENT.md + GLOSSARY.md + GOVERNANCE.md for discipline; persona reviewers + plugin reviewers + auto-fire reviewers + CI gates for the adversarial hierarchy)
 - Adopts Max's "adversarial hierarchy of traps" coinage as the organizing principle for the review section
 
 **`docs/governance/MANIFESTO.md`** — building-codes recast per 081KRMEXM0008QG0R00278KS63
+
 - Title: "Root Discipline Manifesto" → "Zeta Root Discipline Specification"
 - Opening: building-codes framing (Kestrel-suggested) replacing ideological-commitment framing
 - Constitutional language softened to specification-grade throughout
@@ -85,6 +90,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -103,6 +109,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR lands new contributor substrate for two new human co-owners (persona folders under `memory/<persona>/`), adds an operational onboarding entry-point for agent authoring + PR review, and recasts the governance manifesto framing into a “building-codes/specification” shape (081KRMEXM0008QG0R00278KS63).
 
 **Changes:**
+
 - Add `memory/max/` and `memory/addison/` persona anchors (PERSONA / STARTING-POINT / NOTEBOOK).
 - Add `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` as a consolidated operational index for agent discipline + review layers.
 - Update `docs/governance/MANIFESTO.md` framing/title language from “manifesto/constraints” toward “specification/specifications”.
@@ -184,6 +191,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

@@ -30,6 +30,7 @@
 Files **081KSXN940008QG0R002KEJ7C2** — the tracked Bun→Node migration the tools-runtime ADR v6 addendum (#6293) named.
 
 ~29 `tools/` files use Bun-only APIs (`Bun.argv`/`file`/`write`/`Glob`/`spawn[Sync]`/`sleep`/`which`/`stdin`). The row:
+
 - **Migrate** production tool code to `node:`/`process` equivalents (full API→node table inside).
 - **Keep on Bun**: `*.test.ts` using `bun:test`/`Bun.spawn` — the accelerator test path the ADR reserves.
 - **Gated** on the ADR v6 addendum being Accepted.

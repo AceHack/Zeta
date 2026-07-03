@@ -30,6 +30,7 @@
 Pre-empt at brief-ack #5 with bounded substrate-engineering hygiene: composes_with reciprocity for the just-landed god-tier-claims rule (#4231 → renamed via #4235).
 
 Edits (1-line each):
+
 - .claude/rules/algo-wink-failure-mode.md — god-tier IS the high-stakes case algo-wink catches
 - .claude/rules/default-to-both.md — don't-collapse IS both-default at metaphysical-claim scope
 - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md (auto-loaded) — PERSONAL INVARIANT operates at substrate-preservation scope

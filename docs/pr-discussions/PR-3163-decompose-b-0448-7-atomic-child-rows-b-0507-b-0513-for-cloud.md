@@ -78,6 +78,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -96,6 +97,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Documentation-only backlog decomposition of 081KRFA460008QG0R000CYBGKW into seven dependency-ordered child backlog rows for Cloud Routines integration.
 
 **Changes:**
+
 - Marks 081KRFA460008QG0R000CYBGKW as decomposed and adds child row references.
 - Adds 081KRHWGX0008QG0R000E8BHQ9..081KRHWGX0008QG0R003TCDFZ5 child rows covering research, schema, installer support, first declaration, registration, README updates, and memory capture.
 - Defines dependency ordering and acceptance criteria for each slice.

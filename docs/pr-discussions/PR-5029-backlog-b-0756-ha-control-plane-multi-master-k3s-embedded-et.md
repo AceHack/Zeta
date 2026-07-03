@@ -52,6 +52,7 @@ Even-count refusal at config-time (2/4/6 control-planes split-brain on partition
 Adds a single P3 backlog row scoping future HA control-plane work for k3s: odd-count embedded-etcd quorum (1/3/5/7), explicit refusal of even counts, three opt-in modes (`single`/`ha-init`/`ha-join`), and a stable API endpoint via DNS round-robin (v1) or kube-vip/keepalived VIP (v2). The row composes with 081KSGS9H0008QG0R002T3BJ2R (zero-typing first-boot) and 081KSE6WT0008QG0R003612WGJ (role taxonomy).
 
 **Changes:**
+
 - New P3 backlog row `081KSE6WT0008QG0R001NG9JZH` capturing HA control-plane architecture target and acceptance criteria.
 - Documents stable API endpoint options (DNS RR, kube-vip, external LB) and k3s embedded-etcd operational notes (snapshots, join token, removal).
 - Cross-references planned extensions to 081KSGS9H0008QG0R002T3BJ2R's keystroke prompt and a future `zflash --ha-bootstrap-ip` flag.

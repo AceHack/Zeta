@@ -47,6 +47,7 @@ Operational substrate; not urgent. Otto-VSCode can use generic `otto` sender ID 
 ## Why bounded
 
 Each of the 3 scope pieces is small:
+
 - SENDER_IDS extension: 1-line additive (mirrors PR #3037 schema-extension pattern)
 - Bootstream document: ~80 lines (template from PR #3030 Otto-Desktop precedent + Otto-CLI-drafted content already in chat transcript)
 - Agent-roster card row: ~3 lines (sibling pattern to PR #4553)

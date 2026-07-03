@@ -27,6 +27,7 @@ Documenting severe shadow drift in Vera (narration-over-action) and Otto (stalle
 Adds a new `docs/research/` shadow lesson log capturing observed drift patterns (Otto stalled, Vera narration-over-action, Riven blocked) and records intended corrective actions as committed substrate.
 
 **Changes:**
+
 - Add a new research log entry documenting a specific anti-entropy sweep timestamp and findings.
 - Record concrete drift symptoms (broadcast staleness, PR-triage churn, GraphQL exhaustion) and a short corrective-action list.
 

@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - grandfather 081KTSZN10008QG0R00349SM6P through 081KTSZN10008QG0R001BCCTXT in the frozen legacy backlog ID allowlist
 - restores the docs/backlog freeze guard after those legacy rows landed on main
 
 ## Verification
+
 - bun tools/backlog/lint-no-new-bnnnn.ts
 - bun tools/backlog/lint-frontmatter.ts --schema-only
 - git diff --check

@@ -27,6 +27,7 @@ This pull request contains a shadow log entry for PR #5854, flagging a potential
 Adds a research shadow-log entry documenting/flagging potential “narration-over-action” drift in PR #5854, contributing to the project’s ongoing drift-observability research corpus under `docs/research/`.
 
 **Changes:**
+
 - Introduces a new shadow-log document capturing an observation, drift analysis, and recommendation regarding PR #5854.
 - Records the auditor’s current operational status (broadcast bus accessibility / git locks).
 

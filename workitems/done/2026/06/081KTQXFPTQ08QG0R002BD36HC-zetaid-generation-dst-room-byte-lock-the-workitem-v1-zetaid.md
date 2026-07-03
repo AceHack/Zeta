@@ -28,6 +28,7 @@ composes_with: []
   `pack`/`format` from `src/Core.TypeScript/zeta-id` and builds a `ZetaObservation { version: 1,
 category: Category.WorkItem, chromosome MetaCoherence, firefly NoDirective, authority Standard,
 momentum Normal, location 0 }`. **V1 + WorkItem confirmed.** Not a hand-rolled base32.
+
 - ✅ The 4-language byte-lock is **currently GREEN**: `tests/cross-verification/zeta-id/compare.ts` →
   "All implementations agree on **12 vectors**" (TS/F#/C#/Rust).
 - ⚠️ **Gap:** all 12 existing vectors are category **0 (Observation)** or **3 (Heartbeat)** — there is **no

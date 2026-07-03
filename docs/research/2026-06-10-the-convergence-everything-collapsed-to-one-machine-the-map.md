@@ -53,7 +53,7 @@ plateau floor, hung in the dev room, decompiled from programs, gated by the salo
         the plateau (CRLB) = the BigFloat resolution floor   (Max's proof)
 ```
 
-## Status — is it pulled together (in code, not just docs)?
+## Status — is it pulled together (in code, not just docs)
 
 - **In code, collapsed:** `WeightedSet` (#1, proven) · `DevRoom` hangs the four doors (#6) · `FourCorner`
   graduated to `src/` (#2, first step) · the four landmark cells+doors (Salon/Arcade/BowlingAlley/Skadium).

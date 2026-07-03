@@ -39,5 +39,6 @@ Session arc at natural completion: 14+ PRs landed today, 4 of 4 catch-once-then-
 This PR adds a single hygiene-history tick shard documenting the 2050Z wait-CI checkpoint and the “audit-first-then-decide” null-actionable outcome.
 
 **Changes:**
+
 - Adds the 2050Z tick record under hygiene history.
 - Records active PR dependencies, cron sentinel status, and next-session pickup options.

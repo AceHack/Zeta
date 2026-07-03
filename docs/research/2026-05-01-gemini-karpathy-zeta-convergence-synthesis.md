@@ -163,6 +163,7 @@ identifies Provenance + Epistemology as Zeta's distinctive depth
 beyond Karpathy's "how to use agents" surface.
 
 **What's operationally accurate:**
+
 - The discipline layer (poll-the-gate, proceed-but-verify, no-copy-
   only-learning) is operational and battle-tested.
 - CLAUDE.md as boot-sequence — operational.
@@ -173,6 +174,7 @@ beyond Karpathy's "how to use agents" surface.
 - Substrate-IS-product framing — operational.
 
 **What's partially aspirational:**
+
 - *"Aaron supplies taste; Otto formalizes rules into durable
   Markdown substrate"* — true for the patterns Aaron has been
   validating; the broader "co-architect" framing is calibrated by
@@ -184,6 +186,7 @@ beyond Karpathy's "how to use agents" surface.
   claim hold (CLAUDE.md bullet, PR #1160).
 
 **What's queued (NOT operational yet):**
+
 - *"DecisionSignals and AgencyReceipts: immutable receipts proving
   why action was allowed"* — partial. DecisionSignal round-3
   doctrine landed; full SharedEffect + AttributionRecord +
@@ -200,6 +203,7 @@ above the operational discipline. It composes with Aaron's
 *"formally specify and verify yourself tied to human intelectual
 lineage"* and Amara's *"Karpathy names the paradigm; Zeta builds
 the operating system for it"* into a three-layer thesis:
+
 - Karpathy: agentic engineering is the new mode (operational)
 - Zeta: agentic engineering needs an operating system (
   infrastructural)

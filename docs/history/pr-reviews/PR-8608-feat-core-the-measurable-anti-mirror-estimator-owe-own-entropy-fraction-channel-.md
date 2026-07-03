@@ -30,6 +30,7 @@
 Aaron 2026-06-19: *"build the ρ_owe estimator."* Implements the scoped anti-mirror signal.
 
 **`src/Core/Decorrelation.fs`** — channel-generic no-hidden-shared-cause estimator (nats):
+
 - entropy / weightedEntropy / jointEntropy / conditionalEntropy / mutualInformation
 - **`ρ_owe = H(A|U,C)/H(A|C)`** — mirror (A=f(U))⇒0, independent⇒1. **Stake-weighting** = the false-green guard. Degenerate `H(A|C)≈0`⇒0 (constant agent not credited — necessary-not-sufficient).
 - One estimator → anti-mirror / G3b / oracle-independence / decorrelated-critic (swap the two variables). = Goguen–Meseguer noninterference Shannon-quantified.

@@ -44,6 +44,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -62,6 +63,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a minimal 2055Z hygiene tick shard documenting in-flight PR state, audit results, and why the audit findings were deferred rather than handled in this tick.
 
 **Changes:**
+
 - Adds a new 2055Z tick-history shard.
 - Records cross-platform parity and formal-artifact audit outcomes.
 - Links the tick decision to the audit-first-then-decide memory file.

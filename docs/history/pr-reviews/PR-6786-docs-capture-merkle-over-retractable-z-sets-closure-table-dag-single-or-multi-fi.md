@@ -31,6 +31,7 @@
 Refines the fs-Merkle design (`081KTGTJC1Q`) per Aaron 2026-06-07: *"Merkle over DBSP retractable Z-sets, maybe use our closure table, filesystem inside one file with the closure table over Z-sets, or multi-file using the existing OS filesystem."*
 
 Makes the fs-Merkle store **be** the existing substrate, not a bolt-on:
+
 - **Merkle leaves = retractable Z-set entries** `(element, weight)`, not opaque byte chunks → the content-addressed node IS the differential structure; **retraction is native** (a weight-negating Z-set, no special undo).
 - **DAG ancestry = a closure table**, itself a **Z-set of edges** → Z-sets all the way down (leaves + structure) → recursive/self-similar (manifesto §9/§10) for free; same DBSP incremental-view machinery maintains the history graph.
 - **Two physical layouts, one logical structure**: **single-file** (whole fs in one file, closure-table-over-Z-sets, SQLite-shaped + VFS) OR **multi-file** (ride the OS filesystem, git-loose-object-shaped). Mirrors git's loose-vs-packfile duality; both pass the backend-parity test.

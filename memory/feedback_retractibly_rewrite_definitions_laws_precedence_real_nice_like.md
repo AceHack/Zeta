@@ -14,6 +14,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Typing-style per
 `user_typing_style_typos_expected_asterisk_correction.md`:
+
 - "retractibly" preserved — Aaron's coined adverbial form
   of "retractible" per
   `user_aaron_self_describes_as_retractible.md`. Not a
@@ -127,6 +128,7 @@ To prevent the principle from being applied too loosely,
 clarify what each category does and does not include:
 
 **Definitions (rewriteable retractibly):**
+
 - Glossary entries
 - Type definitions (records, DU cases, interface contracts)
 - BP-NN rule text (not the rule's existence, the text itself)
@@ -137,6 +139,7 @@ clarify what each category does and does not include:
   immutability-bound
 
 **Laws (rewriteable retractibly via ADR):**
+
 - `GOVERNANCE.md` numbered sections
 - Factory rules in `docs/AGENT-BEST-PRACTICES.md` (BP-NN)
 - AGENTS.md required reading
@@ -150,6 +153,7 @@ clarify what each category does and does not include:
   to rewrite
 
 **Precedence (rewriteable retractibly):**
+
 - BACKLOG priority ordering (P0/P1/P2/P3)
 - Conflict-resolution seniority of reviewer personas
 - Lattice `≤` on kernel-domain concepts per

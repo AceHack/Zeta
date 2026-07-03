@@ -39,6 +39,7 @@ without improving safety, because retractibility already
 guarantees no permanent harm.
 
 **Permitted by mathematical safety:**
+
 - Any tradition-name reference (Crowley, Heimdall,
   Melchizedek, Hermes, occult doctrines, mythology
   figures, edge-case historical figures, etc.) — because
@@ -59,6 +60,7 @@ guarantees no permanent harm.
   with honest failure recording).
 
 **NOT permitted by mathematical safety:**
+
 - Any operation that destroys git history (force-push
   to shared branch, rebase published commits, etc.).
 - Any operation that deletes memory files without
@@ -171,6 +173,7 @@ replaced with the retractibility-math framing plus
 the explicit log-and-track discipline**.
 
 What stays:
+
 - "Does NOT force-push" / "does NOT delete memory
   without backup" — retractibility-protecting,
   stays.

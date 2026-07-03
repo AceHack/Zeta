@@ -13,6 +13,7 @@ Only the SIMPLIFYING insights kept here (his razor: "simplify, don't expand").
 
 **Serialize the Rx/Bonsai reactive engine as a SIBLING inside `DynamicValue`, next to the static value
 tree, with a discriminator (the "dots" in the yin-yang).** Then one `DynamicValue` holds BOTH:
+
 - **yin = what remains** — the static, canonical value tree (the data).
 - **yang = what acts** — the reactive Rx/Bonsai engine (the operation).
 

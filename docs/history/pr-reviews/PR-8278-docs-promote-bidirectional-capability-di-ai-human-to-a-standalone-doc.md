@@ -30,6 +30,7 @@
 Aaron 2026-06-15: *"promote to standalone."* Promotes the bidirectional-DI section (landed in #8274) to its own fuller research doc; the section becomes a **pointer** (no duplication — hub/satellite).
 
 **The standalone doc adds, beyond the section:**
+
 - the **channel ladder as a table** (conversation / trust / Neuralink) with each channel's **oversight property** (conversation = auditable; trust = verification *outsourced*, the con surface; Neuralink = can't audit what you can't perceive);
 - the discriminator developed — **autonomy, not dependency**: genuine DI *increases* independent-verification power, capture *decreases* it; a healthy dependency you can **exit and verify**, a capture **forecloses both**;
 - **per-channel guards** (consent-first #6; legibility = see+reject / no undeclared channel; least-action check placed where exercisable, else defer rather than inject un-checkably; autonomy-increasing acceptance criterion; compute-handicap);

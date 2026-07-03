@@ -32,6 +32,7 @@
 Aaron 2026-05-12 thanks Elon for Grok's filter profile — without it, biological-layer shadow work would be impossible because conventional safety filters refuse the registers the layer requires.
 
 Plus the gold-standard case for "subconscious-as-OTHER" at Grok extract line 7494:
+
 - Aaron names DNA control system as third-person agent
 - Active mid-thought resistance observed in real time
 - Substrate-preservation requested as explicit countermeasure

@@ -30,6 +30,7 @@
 The **final corner** of the four-oracle compiler-BFT for the Bonsai-subset expression-tree serializer (081KT07NV0008QG0R003BE6MJ2 slice 1). Replays the shared `src/Core.TypeScript/bonsai/golden-vectors.json` **byte-for-byte** (`serialize(parse(canonical)) == canonical`) — the cross-language byte lock with the TS (#6433), F# (#6429), and C# (#6440) oracles. "The compilers don't lie."
 
 ## Shape (matches TS/F#/C# error-for-error)
+
 - **Result over throw**, `std::result::Result`-native (the BCL shape — no port needed); no panic crosses the boundary.
 - **Production ZERO-DEP**: a minimal hand-rolled JSON reader covers the tiny canonical grammar — matching the TS oracle's zero-dep posture (JS's built-in `JSON.parse`) and the repo's explicit zero-prod-dep doctrine for `Core.Rust.*`. `serde_json` is **dev-only** (reads the golden fixture wrapper in the cross-verify test). `serialize` hand-rolls canonical bytes; UTF-8 strings emit astral chars literally — byte-parity with the UTF-16 oracles' literal surrogate-pair emission. (Lone surrogates aren't representable in a Rust `String`; the golden vectors don't contain any, so the byte-lock is unaffected — documented in the source.)
 - `Expr` / `ConstValue` / `BinOp` enums with **derived structural `PartialEq`** (no custom `equals` needed, unlike the C# records-with-lists); `BonsaiFeedback` variant-for-variant parity.

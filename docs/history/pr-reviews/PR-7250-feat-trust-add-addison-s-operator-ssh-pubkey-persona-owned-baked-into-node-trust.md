@@ -28,6 +28,7 @@
 ## Description
 
 Addison had never used SSH — generated a local ed25519 key for her (on the shared Mac, `~/.ssh/id_ed25519_addison`) and published the **public** key:
+
 - `maintainers/Addisons820/ssh-pubkeys.txt` — persona-owned original.
 - `operator-ssh-keys.txt` — baked into the `zeta` trust set.
 

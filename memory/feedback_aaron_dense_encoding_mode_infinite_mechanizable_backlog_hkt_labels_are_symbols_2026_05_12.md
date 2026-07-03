@@ -57,6 +57,7 @@ Aaron's extension: **INFINITE** mechanizable backlog wins. The
 unbounded.
 
 Composes with:
+
 - `.claude/rules/largest-mechanizable-backlog-wins.md` (the
   base rule — Aaron names this as the logical conclusion)
 - The economic-emergent-from-imagined-or-real-scarcity finding
@@ -95,6 +96,7 @@ CHOSEN symbol for a slot in that structure. The labels are:
 - Not the architectural fact themselves
 
 This composes with:
+
 - `.claude/rules/razor-discipline.md` — labels are
   operational naming, not metaphysical claims about what
   the class IS
@@ -151,6 +153,7 @@ messages carrying multiple architectural extensions per
 message. Each message is high-multiplicity substrate.
 
 This composes with:
+
 - Z-set algebra: each message is a Z-set entry with
   high multiplicity (multiple architectural deltas
   encoded in compact form)
@@ -192,6 +195,7 @@ landing.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that "infinite backlog" means unlimited
   ambition without razor-discipline** — Rodney's Razor still
   cuts essential-vs-accidental at landing time; the

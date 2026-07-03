@@ -33,11 +33,13 @@ Smallest safe slice of 081KR50HA0008QG0R002ZNFQBZ (P1): added `tools/skill-catal
 This is code (TS), not docs; obeys Rule 0 (TS over bash), prefers F#/TS over docs, and re-decomposes the broad M-effort item (assume decomposition mistakes) into tooling + targeted batches. The audit enables precise next carving passes (one PR per ~5 skills).
 
 ## Why this slice
+
 - 081KR50HA0008QG0R002ZNFQBZ is too broad for one PR (200+ skills). Re-decomposed to: 1) audit tool (this), 2) batch carving (future).
 - Tool runs in <2s, outputs actionable list.
 - Composes with skill-tune-up / skill-improver / router budget work.
 
 ## Focused checks (included in this PR)
+
 - **dotnet build -c Release**: 0 Warning(s) 0 Error(s) — gate passed.
 - **New tool run** (in worktree):
 ```

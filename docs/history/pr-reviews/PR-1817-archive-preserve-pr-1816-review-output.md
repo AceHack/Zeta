@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserves the generated PR #1816 review archive after the merge workflow hit the expected direct-push repository rule guard
 - Adds the manifest entry for merge commit 82c222ceefe2a77f079fc30a17736ff8fd19f6a7
 - Local replay is deterministic: archive=noop, manifest=noop, threads=2, resolved=2, unresolved=0
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - bunx markdownlint-cli2 docs/history/pr-reviews/PR-1816-docs-add-shadow-irreducibility-operational-guardrail.md
 

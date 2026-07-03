@@ -31,11 +31,13 @@
 Re-decomposed broad 081KQ3HBZ0008QG0R001K0EC2C (L-effort research track, 11 CTF flags) before implementation — assumed .1 docs-heavy decomposition mistake (lacked executable surface). One bounded step only: pure-TS types + stub validator in `tools/edge-claims/claim-validator.ts`.
 
 ## What changed + why
+
 - `EdgeClaimFlag`, `CTFChallenge`, `ValidationResult` types (retractibility-native)
 - `validateEdgeClaimFlag` stub (enforces minimal falsifiability; real CTF engine next slice)
 - Composes with 081KR7JY10008QG0R0035HP11K catalog seeds; prefers TS code over docs per Rule 0
 
 ## Focused checks (included)
+
 - dotnet build -c Release (root): 0 Warning(s) 0 Error(s)
 - bun 1.3.13 + TS file syntax clean (stub validated by construction)
 - No root checkout touched; dedicated worktree + pushed claim branch only

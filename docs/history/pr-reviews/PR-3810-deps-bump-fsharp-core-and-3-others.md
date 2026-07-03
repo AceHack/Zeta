@@ -51,6 +51,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.85>
 
 ## What's Changed
+
 * Add MA0200 for empty property patterns on non-nullable value types by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1160
 
 
@@ -61,6 +62,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.85>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.84>
 
 ## What's Changed
+
 * Ignore `[Experimental]` overloads in MA0040 cancellation-token matching by @Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1157
 
 
@@ -71,6 +73,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.84>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.83>
 
 ## What's Changed
+
 * Add NonAsyncDisposableTypeAttribute for await using by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1154
 
 
@@ -81,6 +84,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.83>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.82>
 
 ## What's Changed
+
 * Add NonAwaitableTypeAttribute for MA0042/MA0045 by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1153
 
 
@@ -91,6 +95,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.82>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.81>
 
 ## What's Changed
+
 * Improve annotations documentation and rule references by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1151
 
 
@@ -107,6 +112,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.80>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.79>
 
 ## What's Changed
+
 * Document comparison page maintenance expectations by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1146
 * Allow MA0196 inheritdoc on constructors matching base signatures by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1149
 * Add annotation-based exclusions for MA0042 and MA0045 by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1148
@@ -119,6 +125,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.79>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.78>
 
 ## What's Changed
+
 * Optimize analyzer hot paths and metadata lookups by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1144
 
 

@@ -32,6 +32,7 @@ Substantive rule extension capturing today's 15:14Z empirical observation: \`git
 ## Empirical anchor
 
 PR #3894 merged at 15:11Z. At 15:14Z:
+
 - \`git log origin/main --since=\"20 min ago\"\` → EMPTY (PR invisible)
 - \`git log origin/main --since=\"30 min ago\"\` → EMPTY (PR invisible)
 - \`git log origin/main | head -3\` → shows #3894 at top ✓

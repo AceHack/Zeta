@@ -34,6 +34,7 @@ Fix-forward for PR #5694 (merged at \`79c65845\` 2026-05-28T03:42Z). Copilot P1 
 **Copilot finding** (thread \`PRRT_kwDOSF9kNM6FSam_\`): \`docs/playbooks/README.md\` lines 51-52 introduced direct persona names ("Otto", "Alexa", "Riven", "Vera", "Lior") in a current-state doc under \`docs/\`, violating \`docs/AGENT-BEST-PRACTICES.md\` "No name attribution in code, docs, or skills" rule.
 
 \`docs/playbooks/README.md\` is NOT in:
+
 - the **closed list** of history/research surfaces (memory/, docs/backlog/, docs/research/, etc.)
 - the **roster-mapping carve-out** (.claude/skills/, .claude/agents/, AGENTS.md, GOVERNANCE.md, etc.)
 

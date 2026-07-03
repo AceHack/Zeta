@@ -96,6 +96,7 @@ controlled input friction — a reactor, not a vacuum."**
 ```
 
 Where:
+
 - `η(substrate_t)` — efficiency, rising with substrate coherence
 - `LearningGain(Δ_t)` — durable structure per friction event
 - `ξ(substrate_t)` — friction cost, falling with substrate maturity

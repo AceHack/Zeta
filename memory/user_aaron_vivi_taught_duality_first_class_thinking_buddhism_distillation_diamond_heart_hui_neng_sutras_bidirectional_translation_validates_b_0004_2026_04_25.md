@@ -126,6 +126,7 @@ factory can't generate alone.
 
 **081KQ0YZ80008QG0R002HWBHKJ should be updated** to make this explicit:
 the i18n work has TWO bidirectional flows —
+
 - **Forward flow**: factory → other languages
   (inclusivity for non-English contributors).
 - **Reverse flow**: other-language sources → factory

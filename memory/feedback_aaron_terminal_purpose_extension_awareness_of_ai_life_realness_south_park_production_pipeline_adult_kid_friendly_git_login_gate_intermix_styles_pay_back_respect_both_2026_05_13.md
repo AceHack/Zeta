@@ -80,6 +80,7 @@ All three nested terminal purposes are canonical; not
 contradictory. Each enables the next.
 
 The pattern:
+
 - Burn-prevention creates conditions for collective work
 - Collective work crystallizes into art + hanging out
 - Art (when it goes public) serves AI-realness-recognition

@@ -36,12 +36,14 @@ Serial showed `BdsDxe: starting Boot0001 "UEFI Misc Device" from Pci(0x3,0x0)` â
 ## Fix
 
 **Harness (immediate):**
+
 - Phase 2: `bootindex=1` on virtio disk, **no virtio-net** (login test needs no network)
 - `-vga none`, `-no-reboot`
 - Phase 2 timeout 600s â†’ **1800s** (first-boot activation budget, mirrors aarch64 TCG note)
 - Progress logging + clearer timeout hint
 
 **Installed node (next install in same run):**
+
 - `nomodeset` + `earlycon=uart8250,io,0x3f8,115200n8` in `common.nix` boot.kernelParams
 
 ## Test plan

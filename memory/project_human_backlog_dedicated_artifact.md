@@ -43,7 +43,7 @@ Key substrings:
   expected to be a **place you go**, same UX shape as a
   GitHub Issues list or a Jira board.
 
-## Why:
+## Why
 
 - **Pull > push UX for asks.** When agents interrupt the
   human with individual asks, the human cannot batch or
@@ -76,7 +76,7 @@ Key substrings:
   and the human. "File the row" is a deterministic move
   that resolves the indecision.
 
-## How to apply:
+## How to apply
 
 - **On any kind of block that needs human action**: file
   a row in `docs/HUMAN-BACKLOG.md`. Pick the right

@@ -27,6 +27,7 @@ consistently with the way `docs/INVARIANT-SUBSTRATES.md`
 positions the framework next to TLA+, Z3, Lean, FsCheck.
 
 **Sweep surface (round 43):**
+
 - `docs/INVARIANT-SUBSTRATES.md` — stance doc.
 - `tools/invariant-substrates/tally.sh` — aggregator.
 - `.claude/skills/prompt-protector/skill.yaml` — first
@@ -41,6 +42,7 @@ during the rename and flags legacy-key hits. Once the sweep
 is clean the legacy fallback can be removed.
 
 **How to apply:**
+
 - New `skill.yaml` files: use `hypothesis:` only.
 - Prose that previously said "guess tier" now says
   "hypothesis tier".

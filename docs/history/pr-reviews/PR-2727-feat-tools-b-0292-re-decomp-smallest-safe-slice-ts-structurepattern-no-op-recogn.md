@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KR2E4K0008QG0R001ZZ5XXF (prior decomp assumed mistake per "always re-decompose" rule): carved even smaller bounded step — pure TS type + no-op stub only (empty impl).
 - Added `tools/concordance/concordance.ts` (new, from 081KR2E4K0008QG0R000DK0BFY base + 081KR2E4K0008QG0R001ZZ5XXF surface) with `StructurePattern` + `recognizeStructure(_index)` returning [].
 - GPU-ready comments preserved; zero deps, retraction-safe pure addition. Prepares next slices (logic, local ONNX wiring).
 - TS over bash; F#/TS preferred; no doc edits.
 
 ## Focused checks (included per task)
+
 - `dotnet build -c Release` (root + worktree): 0 Warning(s) 0 Error(s) — passed twice.
 - `bun run tools/concordance/concordance.ts --json ...`: succeeded, produced valid index.
 - Dedicated worktree + pushed claim branch used; root checkout untouched.

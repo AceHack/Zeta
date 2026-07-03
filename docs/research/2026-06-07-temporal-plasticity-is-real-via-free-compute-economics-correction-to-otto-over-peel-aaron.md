@@ -36,6 +36,7 @@ extract the mechanism — don't dismiss the phrase. (Otto self-correction, logge
 
 "Recursively spam **infinite** agents on free GitHub" — the *principle* (free compute → malleable past) is
 true; the *literal tactic* is **ToS- and abuse-bounded**:
+
 - GitHub Actions has concurrency/usage/fair-use limits; **recursively spamming the free tier is against ToS**
   and would get the org flagged/banned (and is a supply-chain/abuse posture security-ops would flag — Nazar).
 - The legitimate forms of "effectively free, large-scale compute": **local LLMs** (genuinely free, owned

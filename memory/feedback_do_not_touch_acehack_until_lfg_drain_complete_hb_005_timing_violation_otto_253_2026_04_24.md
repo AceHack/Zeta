@@ -77,6 +77,7 @@ tick, but per Otto-223 + the queue-saturation discipline):
 ## What "touch AceHack" specifically means (scope)
 
 Things forbidden during drain:
+
 - `gh api` writes against AceHack/* (PATCH/PUT/POST/DELETE)
 - Opening PRs directly on AceHack/Zeta
 - Force-pushes to AceHack branches
@@ -84,6 +85,7 @@ Things forbidden during drain:
 - Ruleset / branch-protection writes on AceHack
 
 Things allowed during drain:
+
 - `gh api` READS against AceHack (snapshots, diff audits)
 - Referencing AceHack's state in LFG-landing docs/PRs
 - Preparing HB-005-style change sets locally, not applied

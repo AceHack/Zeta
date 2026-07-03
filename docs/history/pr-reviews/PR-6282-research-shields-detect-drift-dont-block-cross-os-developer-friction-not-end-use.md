@@ -32,6 +32,7 @@ Captures the operator **why** behind shields-detect-not-block as substrate (not 
 **The principle:** one person can't test cross-OS from one machine → the matrix must *detect* drift; but blocking on it is **developer-time friction for a dev-time problem that never reaches the end user** → detect, don't block. Cadence varies; non-blocking is the invariant.
 
 **The value-add — resolving a latent tension** (assert-don't-skip vs detect-not-block) into a 3-part synthesis:
+
 - **ASSERT** — real detection, no skip-to-green (a green-by-skip detects nothing).
 - **NON-BLOCK** — non-required; doesn't gate forward progress.
 - **VISIBLE** — drift surfaced when it fires (081KSV2WD0008QG0R001XKG1B5 "silently-red" is the *visibility* hole — fixed by surfacing, not by blocking).

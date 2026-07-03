@@ -292,6 +292,7 @@ External-defensibility framing for the framework:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all framework design reduces to
   bandwidth engineering** — bandwidth is one (load-bearing)
   framing; the framework also addresses alignment, anti-

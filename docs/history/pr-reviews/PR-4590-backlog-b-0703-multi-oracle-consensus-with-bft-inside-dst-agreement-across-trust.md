@@ -48,6 +48,7 @@ Without this row, the architectural decision is buried in conversation context. 
 ## How Adinkra structure naturally encodes agreement strength
 
 The N-color Adinkra structure (081KRW63S0008QG0R000QJR08H) maps directly onto N-of-N oracle agreement:
+
 - Full N-oracle agreement → full N-color Adinkra (max private space)
 - K-of-N agreement → K-color Adinkra (proportional)
 - Below threshold → degenerate / no codeword

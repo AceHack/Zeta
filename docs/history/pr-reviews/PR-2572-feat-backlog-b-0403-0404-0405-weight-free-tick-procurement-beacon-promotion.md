@@ -30,6 +30,7 @@
 ## Summary
 
 From Claude.ai asymmetric critic session:
+
 - **081KR7JY10008QG0R0021F5609** P1: Weight-free verification — hat-and-timeboxed-authority + chaos testing
 - **081KR7JY10008QG0R003H102F0** P2: Tick procurement — agent economic agency for autonomous resource acquisition
 - **081KR7JY10008QG0R001FV5FND** P1: Beacon promotion gate — observable mirror→beacon pipeline

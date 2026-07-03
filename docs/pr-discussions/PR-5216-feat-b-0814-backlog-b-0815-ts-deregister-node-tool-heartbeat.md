@@ -51,6 +51,7 @@ Exit codes: 0=PR opened (or direct push) / 1=invocation error / 2=host not found
 This PR adds cluster-operations substrate for removing registered nodes from the GitOps tree, plus backlog rows capturing the deregistration tool and a follow-on heartbeat/expiration design space.
 
 **Changes:**
+
 - Add `tools/cluster/deregister-node.ts` Bun/TS CLI to delete `maintainers/<op>/cluster-nodes/<host>/`, commit, push, and open a PR (or optionally push directly).
 - Add backlog rows 081KSGS9H0008QG0R000EPPQTR (tool) and 081KSGS9H0008QG0R000JVGZKG (heartbeat/expiration design options).
 - Update `docs/BACKLOG.md` to include the new backlog entries.

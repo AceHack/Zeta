@@ -74,6 +74,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -92,6 +93,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR restores backlog parent/child status consistency by re-opening **081KRFA460008QG0R00229616S** (parent) while child work (notably 081KRHWGX0008QG0R001E9KEJ1) remains open, and updates the generated backlog index accordingly.
 
 **Changes:**
+
 - Re-opened 081KRFA460008QG0R00229616S (`status: open`) and updated `last_updated` to 2026-05-16.
 - Added a “Closure status (2026-05-16)” note to explain why the row remains open despite progress.
 - Regenerated `docs/BACKLOG.md` to reflect the row’s open status.
@@ -110,6 +112,7 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P1/081KRFA460008QG0R00229616S-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md:184**
+
 * The closure note says the notifier-side is complete and that all acceptance criteria are checked, but the parent acceptance list includes the assignment-history cooldown criterion (slice 5a) which is still tracked as open in 081KRHWGX0008QG0R0000P5YP2 and not implemented in `tools/bg/backlog-ready-notifier.ts`. Update this note to reflect the remaining unshipped notifier-side work, or align the acceptance checklist/child statuses with what’s actually shipped.
 ```
 ## Closure status (2026-05-16)
@@ -134,6 +137,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

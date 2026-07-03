@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve Aaron's Kozyrev Mirror / Aurora immune-system riff as research-grade substrate
 - correct the scaling shape: N is nodes until 3; after 3, depth is repeated ticks through the immune system
 - preserve Aaron's firsthand Kozyrev Mirror report while limiting the promoted operational claim to the BFT/governance mapping
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts

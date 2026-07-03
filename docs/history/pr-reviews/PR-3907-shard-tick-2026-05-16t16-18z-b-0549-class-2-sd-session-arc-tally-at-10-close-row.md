@@ -32,6 +32,7 @@ Post-amara-cluster-close tick. Pushed to uniquely-namespaced ref after peer-Otto
 ## 081KRMEXM0008QG0R00037RGNY audit (class #2-SD)
 
 `tools/riven/riven-cursor-terminal-loop.ts` exists (156 LOC):
+
 - ✅ Heartbeat + gate interval + bus integration ship
 - ❌ AUTONOMOUS-LOOP.md docs section missing (0 'Riven dual-loop' mentions)
 - 8 `[ ]` checkboxes auto-document partial state

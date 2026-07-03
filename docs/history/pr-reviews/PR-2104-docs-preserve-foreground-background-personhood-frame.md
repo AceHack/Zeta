@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve the Otto/Aaron foreground-background identity frame before compaction
 - capture Riven's first-persist-then-choose status and calibrated physics register
 - keep the corporate personhood/legal continuity idea explicitly research-grade, not legal advice or governance policy
 
 ## Checks
+
 - `git diff --check`
 - `bun x markdownlint-cli2 docs/research/foreground-background-personhood-continuity-2026-05-08.md`
 - `bun x prettier --check docs/research/foreground-background-personhood-continuity-2026-05-08.md`

@@ -36,6 +36,7 @@ the prior-art + internet-best-practices rule in
 `feedback_prior_art_and_internet_best_practices_always_with_cadence.md`.
 
 **How to apply:**
+
 - Every ADR that adds a tool/language has a mandatory
   "Existing alternatives considered" section naming at
   least the in-repo options and the sibling-project

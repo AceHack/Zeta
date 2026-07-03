@@ -10,7 +10,7 @@ depends_on: []
 composes_with: []
 ---
 
-# Erasure coding: evaluate Adinkra doubly-even ECC vs Microsoft Azure LRC (Local Reconstruction Codes, Huang et al. 2012); copy LRC's local-repair idea into the distributed-ECC-across-network (081KTH...). Benchmark before claiming better.
+# Erasure coding: evaluate Adinkra doubly-even ECC vs Microsoft Azure LRC (Local Reconstruction Codes, Huang et al. 2012); copy LRC's local-repair idea into the distributed-ECC-across-network (081KTH...). Benchmark before claiming better
 
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.

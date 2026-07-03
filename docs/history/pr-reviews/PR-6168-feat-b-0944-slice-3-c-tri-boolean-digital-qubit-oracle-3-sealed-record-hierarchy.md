@@ -30,12 +30,14 @@
 Third **summonable-BFT oracle** — C# parity of the tri-boolean digital qubit (081KSV2WD0008QG0R00051XS0N), mirroring the TS + F# oracles.
 
 ## What
+
 - **`Tri`** = closed sealed-record hierarchy (`TrueCell | FalseCell | NCell`; private ctor ⇒ closed) with `T`/`F`/`N` singletons. `N` is the **held living-uncertainty** case, **not** C# `null`; records give structural equality.
 - **`CollapseFeedback`** enum + **`MeasureResult`** sealed-record hierarchy (`Resolved | Collapsed`) = the C# form of F# `Result<bool, CollapseFeedback>` / TS `MeasureResult` (asymmetric-authorship — value **and** feedback channels both first-class).
 - **`TriOps`**: `FromBool/Held/IsLiving/IsCertain/Eq/Cooperate/Measure/MapTri/BindTri/NotTri/AndTri/OrTri` — full parity surface. `cooperate` preserves `N`; `measure` is the only collapse and **surfaces feedback on N** (never silent); Kleene NOT/AND/OR. (Named `TriOps`, not `TriBoolean`, because the namespace is already `Zeta.Core.CSharp.TriBoolean` — Meziantou MA0049.)
 - **Zero external deps** in the production lib (supply-chain doctrine).
 
 ## Verified locally (the non-Byzantine-oracle check)
+
 - `dotnet build -c Release`: **0 warnings, 0 errors** on both the lib and the test project (TreatWarningsAsErrors + Meziantou + CA analyzers all green).
 - `dotnet test`: **8/8 passed** (vectors mirror `tests/Tests.FSharp/TriBoolean`).
 

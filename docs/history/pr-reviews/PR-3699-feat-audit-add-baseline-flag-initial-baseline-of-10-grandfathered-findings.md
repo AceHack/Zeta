@@ -30,6 +30,7 @@
 ## What
 
 Adds `--baseline <path>` flag to [`audit-tick-shard-relative-paths.ts`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/tools/hygiene/audit-tick-shard-relative-paths.ts). With a baseline file loaded:
+
 - Findings get partitioned into `baselineMatched` and `newFindings`
 - `--enforce` mode exits 1 only on **NEW findings** (not in baseline)
 - JSON output adds `newFindings`, `baselineMatched`, `baselineLoaded` fields

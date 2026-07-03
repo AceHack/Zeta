@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - make QSharpOracle F# tests discover the repo root from ZETA_REPO_ROOT, GITHUB_WORKSPACE, AppContext.BaseDirectory, current directory, or source directory
 - validate candidate roots by both Zeta.sln and tools/qsharp-oracle/qsharp-golden.json
 - fixes the CI build-and-test failure where deterministic source paths made __SOURCE_DIRECTORY__ insufficient
 
 ## Verification
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~QSharpOracleTests --disable-build-servers -m:1
 - bun --bun tsc --noEmit -p tsconfig.json
 - bun test tools/qsharp-oracle/qsharp-golden.test.ts

@@ -52,6 +52,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -70,6 +71,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new documentation registry intended to capture Zeta’s “human anchors” (intellectual foundations), and batches in several merged PR discussion archives to expand the git-native preservation corpus under `docs/pr-discussions/`.
 
 **Changes:**
+
 - Added `docs/HUMAN-ANCHOR-ARRAY.md` as a new “Human Anchor Array” registry.
 - Archived PR discussions for PRs #2741, #2742, #2743, and #2745 under `docs/pr-discussions/` via `tools/pr-preservation/archive-pr.ts`.
 
@@ -111,6 +113,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -148,6 +151,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -173,6 +177,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -204,6 +209,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -226,6 +232,7 @@ Copilot reviewed 20 out of 20 changed files in this pull request and generated 6
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md:613**
+
 * P1: The pattern summary says “37 catches” and the confident-fabrication row lists catches up to 32, but this file now includes “Catch 38” below and also states recurrence is now 8. Update the summary header + table (catches list and recurrence) so it matches the newly added Catch 38 section.
 ```
 ## Pattern summary (canonical — 37 catches, 13 classes, 1 meta-class)
@@ -254,6 +261,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

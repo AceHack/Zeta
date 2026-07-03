@@ -155,6 +155,7 @@ Entropy stays as secondary descriptor.
 primitives landed: `Graph.internalDensity` + `exclusivity`
 
 + `conductance`. Tests verify K₃ density = 10, isolated-K₃
+
 exclusivity = 1, well-isolated-subset conductance < 0.1.
 
 ### Correction #4: Stake covariance acceleration needs

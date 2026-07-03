@@ -60,6 +60,7 @@ Research-grade substrate, not a completed proof. Hand-off-ready for proof-engine
 Adds the missing “Imaginary Stack” Step-1 research substrate for 081KRQ1AB0008QG0R001YAF3TR/081KRMEXM0008QG0R002YSPW1X, including two research notes and a Lean 4 toy-model scaffold intended for future formal verification work.
 
 **Changes:**
+
 - Adds a new P2 backlog row (081KRQ1AB0008QG0R001YAF3TR) defining Step-1 scope and acceptance criteria.
 - Adds two `docs/research/` notes formalizing the 4D cube + imaginary-doubling framing and a toy “Lemma 1” statement.
 - Adds a Lean 4 toy-model file intended to encode the toy lemma structure.
@@ -80,6 +81,7 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:113**
+
 * P0: `projReal` pattern-matches an 8-tuple as `(r, w, p, a, _, _, _, _)`, but `Imag8` is a nested `Prod`, so this destructuring won’t typecheck as written. After switching `Imag8` to an indexable container/structure, update `projReal` to extract the first four coordinates in a way that actually elaborates.
 ```
 def projReal (x : Imag16) : Real4 :=
@@ -87,6 +89,7 @@ def projReal (x : Imag16) : Real4 :=
   ⟨r, w, p, a⟩
 ```
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
+
 * P0: `reconstruction_property` is currently not syntactically/typably well-formed: the theorem statement uses `sorry` in the type position, and `partial = fun i => (v.1.1, ... ) i` attempts to index a tuple with `i`. If this is meant to be a Lean-checkable artifact, give the theorem a real proposition (even `True` as a placeholder) and define `partial` via a properly indexable view of `v` (e.g., a function `Fin 16 → F` with a `Finset`/embedding for the chosen 12 coordinates).
 ```
 theorem reconstruction_property
@@ -116,6 +119,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -141,6 +145,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -166,6 +171,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -188,6 +194,7 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated 4 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
+
 * This statement uses tuple projections on `v : Imag16 := Imag8 × Imag8` (e.g. `v.1.3`, `v.1.8`, `v.2.4`), which are not valid for nested `Prod` tuples. This makes the lemma statement ill-typed, even before the proof. After switching `Imag8`/`Imag16` to a vector/structure representation, rewrite this `partial = ...` definition using the appropriate coordinate selectors.
 ```
 theorem reconstruction_property
@@ -210,6 +217,7 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
+
 * P0: `reconstruction_property`’s hypothesis builds a 12-tuple `(v.1.1, …, v.2.4)` and then applies it to `i` as if it were a function `Fin 12 → F`. Tuple literals don’t coerce to functions, and this also repeats the `.3`…`.8` indexing issue from `Imag8`. Consider defining an explicit projection `proj12 : Imag16 → (Fin 12 → F)` (or to a `Vector F 12`) and write the hypothesis as `partial = proj12 v`.
 ```
 theorem reconstruction_property
@@ -235,6 +243,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -257,6 +266,7 @@ Copilot reviewed 12 out of 13 changed files in this pull request and generated 4
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
+
 * P0: The `partial = fun i => (v.1.1, v.1.2, ..., v.2.4) i` hypothesis is not valid Lean: a tuple isn’t a function, and (given the current `Imag8` encoding) fields like `v.1.2` are not `F`. To make `reconstruction_property` stateable/provable, introduce an explicit linearization `toVec : Imag16 → (Fin 16 → F)` (or similar) and define `partial` via `fun i => (toVec v) (embed i)`.
 ```
 theorem reconstruction_property
@@ -282,6 +292,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -307,6 +318,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -329,6 +341,7 @@ Copilot reviewed 13 out of 14 changed files in this pull request and generated 3
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
+
 * P0: The `reconstruction_property` hypothesis builds `partial` via `(v.1.1, v.1.2, ..., v.2.4) i`, but (1) tuple literals don’t coerce to `Fin 12 → F`, and (2) `v.1.2`/`v.2.2` etc aren’t “2nd coordinate” of an 8-tuple when `Imag8` is nested `Prod`. This statement is currently ill-typed; introduce an explicit `toFin12 : Imag16 → (Fin 12 → F)` (or similar) that selects the 12 observed coordinates and use that in the equality.
 ```
 theorem reconstruction_property
@@ -354,6 +367,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -376,6 +390,7 @@ Copilot reviewed 16 out of 17 changed files in this pull request and generated 4
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:113**
+
 * `projReal` pattern-matches `Imag16` as if `Imag8` were an 8-ary tuple. With `abbrev Imag8 := F × F × ...`, the underlying type is nested `Prod`, so the pattern `((r, w, p, a, _, _, _, _), _)` will not match. This should be rewritten to destructure the nested `Prod` (or change `Imag8`’s representation so 8-way destructuring works).
 ```
 def projReal (x : Imag16) : Real4 :=
@@ -383,6 +398,7 @@ def projReal (x : Imag16) : Real4 :=
   ⟨r, w, p, a⟩
 ```
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
+
 * This theorem statement won’t typecheck as written: it uses tuple projections `v.1.3`…`v.1.8` (not available for nested `Prod`), and it attempts to treat a 12-tuple `(v.1.1, ..., v.2.4)` as a function `Fin 12 → F` by applying `(…) i`. Also, `: sorry := by ...` places `sorry` in the *type* position, leaving the proposition unspecified. Please rewrite the statement to use a well-defined projection `Imag16 → (Fin 12 → F)` (or similar) and give an explicit proposition, keeping `sorry` only for the proof term if you want placeholders.
 ```
 theorem reconstruction_property
@@ -397,6 +413,7 @@ theorem reconstruction_property
   sorry
 ```
 **tools/lean4/ImaginaryStack/ToyModel.lean:164**
+
 * `lemma1_toy` also uses `sorry` in the *type* position (`… ∀ (v) (S), sorry := by …`). That makes the lemma’s proposition undefined and prevents downstream use even as a placeholder. Please replace the `sorry` in the type with an explicit statement (even if weak/temporary), and keep `sorry` only as the proof placeholder if needed.
 ```
 theorem lemma1_toy :
@@ -419,6 +436,7 @@ Copilot reviewed 17 out of 18 changed files in this pull request and generated 5
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
+
 * `reconstruction_property` uses tuple projections like `v.1.3` and applies an `Imag16` tuple literal as a function `(…) i`, neither of which typechecks with the current `Imag16 := Imag8 × Imag8` representation. Also, using `sorry` as the theorem’s *type* (`: sorry := …`) leaves the proposition unspecified. Suggest defining an explicit projection `proj12 : Imag16 → Fin 12 → F` and stating the property as a concrete `Prop`, leaving only the proof as `by sorry` if needed.
 ```
 theorem reconstruction_property
@@ -433,6 +451,7 @@ theorem reconstruction_property
   sorry
 ```
 **tools/lean4/ImaginaryStack/ToyModel.lean:164**
+
 * `lemma1_toy` also uses `sorry` in the theorem type (`… : … sorry := by …`), so the statement itself is not a well-defined proposition. Even for a scaffold, it’s better to write an explicit `Prop` (e.g., quantify `R` and state the intended reconstruction condition) and keep `sorry` only for the proof term.
 ```
 theorem lemma1_toy :
@@ -458,6 +477,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -480,6 +500,7 @@ Copilot reviewed 20 out of 21 changed files in this pull request and generated 4
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
+
 * P0: `reconstruction_property` has `: sorry` in the *type* position, so the theorem statement is unspecified (not just the proof). Additionally, the hypothesis defining `partial` applies an index `i` to a tuple-like expression, which is not a `Fin 12 → F` function. Replace the theorem type with a concrete proposition (e.g., a matrix equality / coordinate equality) and define `partial` via a real projection function from `Imag16` to `Fin 12 → F`.
 ```
 -- Placeholder matrix (to be filled by a concrete proof attempt)
@@ -498,6 +519,7 @@ theorem reconstruction_property
   sorry
 ```
 **tools/lean4/ImaginaryStack/ToyModel.lean:164**
+
 * P0: `lemma1_toy` also uses `sorry` in the type position (`... : ... sorry := by`), so it does not state an actual proposition. This prevents any downstream proof attempt from even typechecking the goal. Provide an explicit statement for the existence/behavior of the reconstruction map and leave only the proof term(s) as `sorry`.
 ```
 theorem lemma1_toy :
@@ -523,6 +545,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -543,6 +566,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 P0: `Imag8` is defined as an 8-tuple (`F × F × ...`), but the code treats it as if it had projections `.3` … `.8`. In Lean, nested `Prod` only has `.1`/`.2`, so this multiplication definition won’t elaborate. Use a representation with usable indexing (e.g., `Fin 8 → F`, `Vector F 8`, or a `structure` with 8 named fields) and rewrite `mul` accordingly.
 
 This issue also appears in the following locations of the same file:
+
 - line 111
 - line 133
 
@@ -747,6 +771,7 @@ Useful? React with 👍 / 👎.
 `Imag8` is defined as an 8-tuple via `F × F × ...`, which in Lean is a right-nested `Prod`. As a result, fields like `a.3`…`a.8`/`c.3`…`c.8` do not exist and this `mul` definition will not typecheck. Consider switching `Imag8` to a representation with indexed projection (e.g., `Fin 8 → F`, `Vector F 8`, or a `structure` with 8 named fields) and update the multiplication accordingly.
 
 This issue also appears in the following locations of the same file:
+
 - line 111
 - line 133
 - line 159
@@ -776,6 +801,7 @@ This doc instructs checking `ls .git/worktrees/*/lock`, but that path is unlikel
 `Imag8` is defined as a nested `Prod` (`F × F × …`), but `mul` treats it as if it had `.2`…`.8` projections. In Lean, `Prod` only has `.1` and `.2`, so these field accesses (and the resulting arithmetic) won’t typecheck. Consider representing `Imag8` as `Fin 8 → F` / `Vector F 8`, or destructuring with tuple pattern-matching before doing coordinate-wise operations.
 
 This issue also appears in the following locations of the same file:
+
 - line 133
 - line 159
 
@@ -820,6 +846,7 @@ Useful? React with 👍 / 👎.
 P0: `Imag8` is defined as a nested `Prod` (`F × F × ...`), but `mul` treats it like an 8-field structure (`a.3` … `a.8`) and also multiplies `a.2 * c.2` where `a.2` is not an `F`. This does not typecheck and makes the Lean artifact unusable as-is. Use a representation with proper indexing (e.g. `Fin 8 → F`, `Vector F 8`, or a `structure` with named fields) and rewrite `mul` accordingly.
 
 This issue also appears in the following locations of the same file:
+
 - line 129
 - line 159
 

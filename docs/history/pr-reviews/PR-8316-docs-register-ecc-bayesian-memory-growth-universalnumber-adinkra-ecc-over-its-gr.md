@@ -32,6 +32,7 @@ Ferries Aaron's combine (shadow*): *"bigfloat plus ECC over its growth data is l
 **Reframe:** the two growth axes (precision / structure) combine — run the generator-as-ECC over the autogrow precision-bits, precision growing Bayesianly per evidence = a **correctable growing memory**.
 
 **Composes three pieces that already exist:**
+
 - autogrow precision = `UniversalNumber` port (`src/Core/UniversalNumber.fs`, `IUniversalNumber<'T>` + `BitsUsed`; bigint + TriBoolean BigFloat adapters; = Gustafson *unum*)
 - ECC = adinkra `[8,4]` doubly-even self-dual + `gen(gen)=gen` (§A-discharged)
 - Bayesian growth = `BeliefConvergence.fs` / `SoftValue` / `db/uncertainty/`

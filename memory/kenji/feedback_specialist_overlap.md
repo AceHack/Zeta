@@ -38,6 +38,7 @@ The correction landed as GOVERNANCE.md §16's "Overlap is
 expected, not redundancy" clause.
 
 **How to apply:**
+
 - When evaluating a roster change, ask "does this seat
   bring a lens that no other seat carries from the same
   lane?" — not "does any other seat share its core?"

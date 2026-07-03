@@ -12,7 +12,7 @@ lines: this IS the standard figure of the anyon/TQC literature (Kitaev's papers,
 that. Our event diamonds (a small lightcone worn at each exchange) are OUR addition — not standard,
 honestly labeled, and they earn their place by carrying the causal-order law.
 
-## Is it simple? — No, and it shouldn't be: it's a WORD. The atom is simpler.
+## Is it simple? — No, and it shouldn't be: it's a WORD. The atom is simpler
 
 The figure decomposes, and now the decomposition is IN the catalog: **shape-crossing** (the 14th
 cartridge... the 13th — the atom): two strands, ONE crossing — σ itself. The three smallest braid

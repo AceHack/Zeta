@@ -23,6 +23,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new research note documenting a “Lior drift report” for 2026-05-27, capturing observed operational drift signals (stale broadcasts, dirty-tree paralysis, PR capacity pressure, and worktree sprawl) and listing intended corrective actions. This fits into the repo’s ongoing `docs/research/` operational journaling and shadow-log ecosystem.
 
 **Changes:**
+
 - Add a new drift report entry under `docs/research/` for 2026-05-27.
 - Document observations about agent broadcast staleness/paralysis and workflow hygiene issues.
 - Record proposed “antigravity actions” to reduce PR churn and address worktree hygiene.

@@ -29,6 +29,7 @@
 
 ## Summary
 Decomposed broad 081KQB8J40008QG0R003XNATZJ (P2 unified lint) into 4 smallest atomic P3 child rows:
+
 - 081KQB8J40008QG0R003XNATZJ.1: rule + boundary + claim table extraction (TS schema, S)
 - 081KQB8J40008QG0R003XNATZJ.2: filename-timestamp HHMM drift (TS-first, S, dep .1)
 - 081KQB8J40008QG0R003XNATZJ.3: tick-ordinal computed-from-dir drift (TS-first, S, dep .1)
@@ -39,11 +40,13 @@ Re-decomp per "assume mistakes" rule; original bundled too much + bash bias. Now
 **Exactly one bounded step taken** (decomp only; no lint code). Root checkout untouched; dedicated worktree + pushed claim branch used.
 
 ## Focused checks (worktree)
+
 - `dotnet build -c Release`: **0 warnings, 0 errors** (gate clean).
 - `git status`: only the 4 new child rows.
 - No other mutations.
 
 ## Why this decomp
+
 - Original too broad for single M row.
 - Enables parallel work on independent drift classes.
 - Aligns with recent decomp pattern (e.g. 081KQB8J40008QG0R0005ZEYNN, 081KQ8P5D0008QG0R003MY8246).

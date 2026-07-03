@@ -49,6 +49,7 @@ Tick shard for Otto-background-worker 1731Z. Triaged 3 PRs matching gate=BLOCKED
 Adds a hygiene-history tick shard documenting the 1731Z Otto-background-worker cold-boot triage of `gate=BLOCKED + nextAction=resolve-threads` PRs, and records the decision to forward-signal peer-owned PRs rather than stepping on active peer iteration.
 
 **Changes:**
+
 - Adds a new tick shard at `docs/hygiene-history/ticks/2026/05/26/1731Z.md` capturing cold-boot actions, discriminator pass, and rationale for forward-signaling.
 - Records a special-case note about merge-conflict markers in PR #5178 and links to the forward-signal comments posted.
 

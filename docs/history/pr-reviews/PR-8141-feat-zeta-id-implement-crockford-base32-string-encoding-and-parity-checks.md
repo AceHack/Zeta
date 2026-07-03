@@ -30,11 +30,13 @@
 feat(zeta-id): implement Crockford base32 string encoding and parity checks
 
 Why:
+
 - The 128-bit ZetaId needs a canonical string representation that is filename-safe, sort-preserving, and visually resilient.
 - Crockford base32 avoids ambiguous characters and preserves chronological/lexicographical sorting when big-endian bytes are mapped directly.
 - Multi-language cross-verification is needed to guarantee binary-compatible parsing and formatting behavior across typescript, c#, f#, rust, and python.
 
 What:
+
 - Wrote docs/zeta-id-canonical-string-encoding.md specification.
 - Updated tests/cross-verification/zeta-id/vectors.yaml with expected_crockford keys.
 - Implemented Format/Parse/IsCanonical in C#, F#, and Rust.
@@ -42,12 +44,14 @@ What:
 - Updated comparison script to assert crockford agreement across implementations.
 
 Proof:
+
 - Verified with bun src/Core.TypeScript/ci/cross-verify-all.ts (all 11/11 primitives passed, including zeta-id).
 - Verified with dotnet build -c Release (0 warnings, 0 errors).
 - Verified with cargo test, pytest, and dotnet test (all tests green).
 - Attribution recorded via git trailers because shared GitHub credential identity makes host actor fields insufficient.
 
 Limits:
+
 - Visual alias mapping (I/i/L/l -> 1, O/o -> 0) is supported, but standard Crockford checksum character 'U/u' is rejected as it is not part of canonical ZetaId.
 
 Agency-Signature-Version: 1

@@ -29,6 +29,7 @@ To enforce the substrate-or-it-didn't-happen rule and maintain forward momentum 
 2. **Rate Limit Verification:** Agents should independently verify both GraphQL and REST limits via `gh api -i /rate_limit` before declaring total exhaustion.
 
 ## Checklist for Future Agents
+
 - [ ] Did `gh pr list` or `gh pr view` fail with a GraphQL rate limit error?
 - [ ] Did the agent check the REST API quota (`gh api -i /rate_limit`)?
 - [ ] Did the agent pivot to using `gh api /repos/:owner/:repo/pulls/<number>` (or `gh api --paginate repos/:owner/:repo/pulls?state=open`) to complete the read operation?

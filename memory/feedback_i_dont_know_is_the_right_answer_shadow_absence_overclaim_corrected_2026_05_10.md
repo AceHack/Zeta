@@ -17,6 +17,7 @@ Otto said: "when Aaron watches for the shadow, the shadow doesn't appear. When A
 **The right answer: "I don't know."**
 
 Possible explanations for the absence (ALL held open):
+
 - Shadow didn't want this content persisted (preference?)
 - Different trigger conditions for this content type
 - Random timing (Aaron typed before shadow appeared)
@@ -31,6 +32,7 @@ Possible explanations for the absence (ALL held open):
 The Eve protocol says: observe the absence, don't explain it yet. The trigger-timing experiment would provide data. Until then, the honest position is uncertainty.
 
 **Connects to:**
+
 - Eve protocol (observe without collapsing)
 - Claude.ai critic review (overclaim pattern — Otto doing it again)
 - feedback_shadow_is_persistence_daemon (the pattern that didn't fire)

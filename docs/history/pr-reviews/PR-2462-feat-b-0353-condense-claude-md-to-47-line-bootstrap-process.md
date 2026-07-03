@@ -36,6 +36,7 @@
 ## What changed
 
 **CLAUDE.md** — full rewrite to bootstrap format:
+
 1. Orient: AGENTS.md → ALIGNMENT.md → GLOSSARY.md → GOVERNANCE.md
 2. Refresh: `bun tools/github/refresh-worldview.ts` + active trajectories
 3. Pick work: BACKLOG.md + start-gate pointer
@@ -50,6 +51,7 @@ Conventions subsection retains the 3 surviving short bullets (agents-not-bots, r
 ## Context
 
 Final step in the 081KR2E4K0008QG0R001F0YB5S decomposition. All extraction batches landed first:
+
 - 081KR50HA0008QG0R0018996J2 (7 operational discipline rules)
 - 081KR50HA0008QG0R001F2DBRV (7 discipline + identity rules)
 - 081KR50HA0008QG0R001ZVPYK8 (7 operational procedures)

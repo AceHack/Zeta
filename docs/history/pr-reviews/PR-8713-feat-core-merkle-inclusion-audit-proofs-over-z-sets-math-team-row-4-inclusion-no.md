@@ -30,11 +30,13 @@
 Discharges the **inclusion + no-third-party-forge** leg of math-team handoff **row 4**. Companion to `Merkle.Laws.Tests.fs` (which proves ROOT tamper-evidence, "equal roots ⟹ equal leaves") — this adds the succinct per-leaf **audit proof** of that membership.
 
 ## API (on `ZSetMerkle`, mirroring `rootWith`/`root`)
+
 - **`MerkleStep` / `MerkleProof`** — a self-contained audit path bound to one `(LeafKeyBytes, LeafWeight)` entry. `LeafKeyBytes` is the canonical `encodeKey` image, so the proof is **byte-portable across the four language oracles** (the bytes are the treaty, same as the root).
 - **`proofForWith` / `proofFor`** — build a proof for a key; `None` for a non-member (you cannot prove membership of a non-member — that absence *is* the no-forge property). Replays `rootWith`'s canonical byte-order + odd-node duplication exactly.
 - **`verifyWith` / `verify`** — fold the audit path from the proof's own leaf; touches **only the proof + the root, never the tree** (the third-party property).
 
 ## Soundness suite (`MerkleInclusion.Laws.Tests.fs`, 9 tests, 9/9 green, verified directly)
+
 - **Completeness** — every committed entry has a proof that verifies against the true root.
 - **No-forge ×4** — non-member has no proof; tampered weight fails; corrupted path step fails; a valid proof fails against a *different* set's root.
 - **Determinism**, **single-leaf** (empty path), **third-party** (verify sees only proof+root), and **retraction-native** — a `+1/−1` net-zero entry leaves the support and has no proof (DBSP/Z-set correction semantics, idempotency #6).

@@ -72,6 +72,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -90,6 +91,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds a parity-validation tool intended to confirm that the generated `memory/MEMORY.md` index (via `reindex-memory-md.ts`) still covers every memory file referenced by the legacy overflow index fragments, and updates a couple of legacy artifacts to close known gaps.
 
 **Changes:**
+
 - Adds `tools/memory/validate-memory-parity.ts` to cross-check legacy index references against the generated index inputs.
 - Adds YAML frontmatter to `memory/MEMORY-AUTHOR-TEMPLATE.md` so it is indexable by the reindexer.
 - Fixes one legacy link target in `memory/INDEX-POST-LINE-200.md` and regenerates `memory/MEMORY.md`.
@@ -110,6 +112,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/memory/validate-memory-parity.ts:123**
+
 * When a file isn’t in `reindexedSet`, it’s always reported as `gap-no-frontmatter`, but `collectEntries()` can exclude files for other reasons (e.g., subdirectory files like `observed-phenomena/...`, `CURRENT-*`, `README.md`, etc.). After broadening link extraction, this will misdiagnose many cases. Consider checking frontmatter directly (via `parseFrontmatter`) and/or introducing an `excluded-by-reindexer` status with a more accurate note.
 ```
     if (!reindexedSet.has(filename)) {
@@ -136,6 +139,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -215,6 +219,7 @@ Fixed: removed unused `parseFrontmatter` import (line 28). `collectEntries` is t
 Fixed (P1): broadened `extractLinkedFilenames` regex to allow path separators, matching sub-directory links like `](observed-phenomena/foo.md)` and `](memory/observed-phenomena/foo.md)`.
 
 **What changed:**
+
 - Old regex: `/\([a-zA-Z0-9_\-\.]+\.md\)/g` — excluded `/`, silently skipped 2 old-index entries
 - New regex: `/\(([a-zA-Z0-9_\-\.\/]+\.md)\)/g` — includes `/`; normalizes `memory/` prefix; filters non-memory paths and prose false-positives
 

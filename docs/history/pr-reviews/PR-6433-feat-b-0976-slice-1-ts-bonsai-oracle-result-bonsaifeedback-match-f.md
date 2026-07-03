@@ -30,6 +30,7 @@
 Converts the TS reference Bonsai oracle from throw to a pure-`Result` contract, **matching the F# oracle (#6429)** — "make them match." Same node-set, same canonical bytes, same `BonsaiFeedback` variant set, same error channel.
 
 ## What changed
+
 - `serialize`/`parse` return `Result<_, BonsaiFeedback>` — no exception crosses the boundary (result over throw). TS owns a **minimal zero-dep `Result` port** (no BCL Result in JS; a consumer can adapt to neverthrow at the seam — hexagonal).
 - `BonsaiFeedback` **mirrors the F# DU exactly** (the shared cross-oracle payload): `UnsupportedVersion / MalformedJson / UnknownKind / UnknownConstTag / UnknownOp / ExpectedString / ExpectedBool / ExpectedInt / NonSafeInt / TooDeep / NonCanonical`. `where` fields are JSON-pointer keys (ProblemDetails-ready for the accumulate-mode).
 - Adopts the shared **`BONSAI_MAX_DEPTH = 1024`** cap (TS lacked one → now matches F#'s `TooDeep` + the cross-oracle depth contract).

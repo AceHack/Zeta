@@ -29,23 +29,27 @@ created: 2026-05-15
 ### The categorical architecture
 
 **Base topos `Zeta`**:
+
 - Objects: irreducible things (entities that cannot be decomposed without losing identity)
 - Morphisms: relations between irreducible things (the "relativity of relations")
 - Subobject classifier: truth values relative to the observer (QBism-compatible)
 
 **Internal monad `M` for memory (Remember-When)**:
+
 - `M X` = space of memory states over object `X`
 - `μ : M² → M` = flatten nested memory (reconstruct from partial degradation)
 - `η : Id → M` = embed object into its memory (the "I am here now" state)
 - Satisfies monad associativity (`μ ∘ Mμ = μ ∘ μ_M`) — *not* idempotence; preserves pullbacks; has comonoid structure
 
 **Internal modal operator `A` for attention (Pay-Attention)**:
+
 - `A : Ω → Ω` where `Ω` is the subobject classifier
 - `A(p)` = truth value of proposition `p` relative to current observer's attention state
 - Not a closure or interior operator, observer-relative, idempotent
 - Generalizes quantum measurement projection
 
 **Combined structure `Zeta_{RA}`**:
+
 - Topos equipped with both `M` and `A`
 - Coherence conditions: provisional only — under stated signatures (`M : Zeta → Zeta`, `A : Ω → Ω`), the originally-proposed laws `M(A(p)) = A(M(p))`, `A(μ_X) = μ_{A(X)} ∘ A(M(A(X)))`, `A(η_X) = η_{A(X)}` are **not well-typed** (Codex P1 on PR #3614). Step 1.5 reformulation: Law 1' restated propositionally as `A ∘ θ ∘ M(p) = θ ∘ M(A ∘ p)` (requires strength `θ : M(Ω) → Ω`); Laws 2 and 3 deferred until an `A`-lifting `Ã : Zeta → Zeta` is constructed (open research; complicated by `A` *not* being a closure operator).
 

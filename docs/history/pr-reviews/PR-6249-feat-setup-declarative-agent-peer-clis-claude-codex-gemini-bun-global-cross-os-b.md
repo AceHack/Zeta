@@ -46,6 +46,7 @@ Operator 2026-05-31: *"all these clis should be part of our declarative installs
 The **non-package-manager** CLIs (grok / cursor-agent / kiro) ship their own one-line installers → a declarative **one-liner installer registry** with idempotent install/update commands, cross-OS.
 
 ## Verification
+
 - `bash -n` clean (linux/macos/agent-clis); `shellcheck agent-clis.sh` clean.
 - diff vs main is **only** the agent-clis insert (no clobber of the newer main); `agent-clis.sh` mode `100755`.
 

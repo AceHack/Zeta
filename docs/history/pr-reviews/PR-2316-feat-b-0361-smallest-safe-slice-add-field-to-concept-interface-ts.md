@@ -35,11 +35,13 @@ This is the single bounded TS-code change (per "prefer F#/TS code over docs" and
 Re-decomposition note: 081KR50HA0008QG0R001G4QHQF's three-workflow scope was treated as too broad for one PR; this slice isolates the schema extension as the atomic first step. Future slices can wire the lookup, populate anchors, and update the skill.
 
 ## Focused checks (included per task rule)
+
 - `bun tools/alignment/concept_registry.ts` — executes cleanly, produces valid JSON registry (no runtime impact from optional field).
 - `dotnet build -c Release` — 0 Warning(s) 0 Error(s) (verified pre- and post-edit; no .NET code touched).
 - Change is additive and backward-compatible; all existing extraction paths continue to work.
 
 ## Task compliance
+
 - Dedicated worktree + pushed claim branch used; root checkout untouched.
 - Exactly one bounded step taken.
 - PR opened against LFG as required.

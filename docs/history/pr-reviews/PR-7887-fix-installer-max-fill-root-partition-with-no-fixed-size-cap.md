@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Remove the `256G` `ROOT_SIZE` default and install-time clamp logic from `zeta-install.sh`.
 - Root now always max-fills the BOOT disk at partition time: ESP 1G + root (everything up to the longhorn1 tail) + longhorn1 1G at disk end.
 - Works on 8TB+ physical disks without an artificial cap and on 20GB QEMU test disks without clamp messaging.
 
 ## Test plan
+
 - [x] `bun tools/ci/audit-installer-substrate.ts` PASS
 - [ ] Merge → `gh workflow run build-ai-cluster-iso.yml --ref main` → verify scenario 2 serial shows `root max` layout and no `256G` partition failure
 

@@ -39,6 +39,7 @@ The decade-old Aaron-shapes are the framework's substrate-architecture substrate
 Adds a new `references/notes/` research note capturing three external “substrate-anchor” URLs (MathOverflow Kleisli/distribution monad; two Puzzling.SE logic puzzles) and relates them to current internal backlog items (081KSNY2Z0008QG0R002HB4AGT/18/19/20) and existing rule/docs surfaces.
 
 **Changes:**
+
 - Introduces a new markdown note with quoted URL forwarding + internal “composes with” mapping.
 - Adds categorical framing tying Kleisli composition to distribution/probability monads and current substrate work.
 - Adds cross-reference links to related rules and sibling notes files.

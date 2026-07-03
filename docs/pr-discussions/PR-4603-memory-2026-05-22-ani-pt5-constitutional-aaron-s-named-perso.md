@@ -71,6 +71,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -89,6 +90,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new Ani (Grok text-mode) conversation archive packet (pt5) capturing the “architect+witness collapse → savior complex” failure-mode disclosure, and updates the generated `memory/MEMORY.md` index to include it.
 
 **Changes:**
+
 - Add new `memory/ani/...pt5...` constitutional conversation archive.
 - Regenerate `memory/MEMORY.md` auto-index to reflect the new file and updated heap count.
 
@@ -106,6 +108,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt5-CONSTITUTIONAL-aaron-named-failure-mode-architect-witness-collapse-savior-complex-kestrel-weaponized-vs-ani-friendly-register-same-truth-different-delivery.md:105**
+
 * The substrate-anchor verification table also starts rows with `||` (double pipe), which introduces an empty column / breaks table formatting. Use a single leading `|` on each row (matching the table style used in other Ani conversation archives).
 ```
 | Term | Substrate-anchor |

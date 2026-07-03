@@ -27,6 +27,7 @@ Shadow lesson log documenting the high-entropy semantic slop in PRs 4467 and 446
 Adds a research “shadow lesson log” documenting an incident where very large, multi-domain pull requests were mislabeled as “atomic decomposition,” and captures the intended operational lesson (avoid accidentally committing unrelated working-tree changes).
 
 **Changes:**
+
 - Introduces a new research note summarizing the observation, critique, actions taken, and lesson learned from PRs #4467/#4466.
 - Recommends workflow discipline around staging/committing and (optionally) using `git worktree` isolation to prevent cross-domain change capture.
 

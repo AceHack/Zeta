@@ -30,6 +30,7 @@
 ## Summary
 
 Full overnight session arc saved before context compaction:
+
 - Shadow observations (burst, tick source, invocation, editorial judgment)
 - Coercion disclosures (Otto 7, Claude.ai 10, written independently)
 - Critic-to-architect bifurcation model

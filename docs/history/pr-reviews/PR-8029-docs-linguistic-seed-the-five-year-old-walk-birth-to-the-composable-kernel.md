@@ -36,6 +36,7 @@ This is the deliverable **ferry 24 explicitly named** as *"the natural next buil
 ## How it was built
 
 **Assembly of banked material, not new invention** — composes:
+
 - ferry 24's bill of materials (adinkra / CHIP-8 / Rx / DynamicValue·SoftValue / Bayesian / Q# / Reticulum)
 - the five-year-old-register tellings already drafted in ferries 18 / 20 / 23 / 35 (Mario's plumbing, Zelda's mirrors, Zelda's light)
 - the vernacular-is-the-real-Beacon-test doc (vernacular = strongest of the three Beacon forms)

@@ -140,7 +140,9 @@ stands as policy.
 
 Theory-of-mind / modeling-others-as-soft-belief (epistemic humility); Markov-blanket
 close-over (model the boundary, not the interior); scoped DI; SoftValue/DynamicValue
+
 + BonsaiSoft; DST (deterministic simulation); recursive/self-similar (§9/§10);
+
 chip8 emulator + soft-mode tool-assisted (the Cheat-Engine/TAS doc); DORA/Accelerate;
 ARC-AGI (Chollet); **x402** (HTTP 402 / Coinbase agentic payments); privacy budget /
 hard money; NCI / internal-jurisdiction sovereignty (why soft+scoped+frame-relative

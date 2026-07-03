@@ -32,6 +32,7 @@
 **Narrowed install-graph harvest** — graduates the local-LLM sovereignty substrate `accelerator → main`, per the operator decision to **narrow to just the install-graph**. Supersedes the over-broad #6120.
 
 **17 files / +956, purely additive.** Brings only:
+
 - **local-LLM primitive** — `tools/setup/common/local-llm.sh` (nix `--out-link` GC-rooted + `LD_LIBRARY_PATH`-clean wrapper on NixOS; binary on ubuntu; brew on mac) + `manifests/local-llm` + apt/brew + linux/macos wiring
 - **the reusable TS** — `local-llm.ts` (`chooseIndex`=choose.ts, `classify`=observe.ts; account-free, DST temp0+seed) + test + `validate-local-llm.ts`
 - **the Docker Ubuntu+NixOS install.sh test shield** (asserts the local-LLM actually works — no skip-to-green)

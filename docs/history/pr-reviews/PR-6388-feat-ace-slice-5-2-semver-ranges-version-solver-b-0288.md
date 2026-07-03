@@ -32,6 +32,7 @@
 Implements the slice-5.2 spec (#6376): a registry dependency can name a package by **name + semver range**; `ace install` solves the range constraints across the transitive graph to one concrete version per package, then feeds the solved graph into slice-5.1's unchanged verify + atomic-install engine.
 
 ### What changed
+
 - **`tools/ace/semver.ts`** (new, pure) — pragmatic semver subset: `parseVersion`, `compareVersions`, `parseRange` (`^ ~ >= <= > < =`, exact, `* / x` wildcard, space-AND), `satisfies`, `maxSatisfying`. `^`/`~` desugaring incl. `^0.x` / `^0.0.x`.
 - **`tools/ace/solver.ts`** (new) — deterministic **newest-first backtracking** `solve()`. Classifies edges by **source**: inline = pre-decided (version + url/hash, never registry-routed); registry = range-solved against registry versions. Re-validates already-assigned packages on **every** new constraint; **retracts an abandoned version's contributed constraints on repair** (source-tagged, so a version-dependent transitive dep can't over-constrain unrelated packages).
 - **`tools/ace/resolve.ts`** — new `solved: Map<string,string>` param; registry edges resolve their concrete version from the map + a `satisfies` **defense-in-depth re-check** (a solved version violating the edge's range → `unsatisfiable`); concrete version threaded through all bookkeeping; new `unsatisfiable`/`bad-range` reasons. Every slice-5.1 verify step intact.
@@ -39,16 +40,19 @@ Implements the slice-5.2 spec (#6376): a registry dependency can name a package 
 - **`.claude/skills/ace/SKILL.md`** — range-dep + solver docs.
 
 ### Testing (163 tests pass; full-repo strict-tsc clean; markdownlint clean)
+
 - **node-semver differential** (`semver.test.ts`) — our `satisfies`/`maxSatisfying` asserted against the `semver` npm package over a corpus (always runs under bun).
 - **Z3 differential** (`solver.z3.test.ts`) — Z3 as a SAT oracle cross-checking the TS solver's ok/unsatisfiable verdicts (per your "use z3 to test our ts"). See caveat below.
 - **solver unit** — inline-only/empty-registry back-compat, range→newest, transitive-backtrack re-validation, unsatisfiable, bad-range, mixed inline+registry, determinism, **+ 2 P1-regression tests** (constraint retraction).
 - **resolve + ace e2e** — ranged install→newest, unsatisfiable→exit-1-store-empty, inline-only back-compat, `--print-resolution`.
 
 ### Review gate caught + fixed before merge
+
 - **P1 (solver correctness)** — final review constructed a runnable false-`unsatisfiable` on version-dependent dep graphs (stale monotone constraints). **Fixed** via source-tagged constraint retraction (`70c476cb2`); both reviewer failing cases are now regression tests.
 - **P2** — SKILL.md reason-name drift (`registry-unsatisfiable` → `unsatisfiable`). Fixed.
 
 ### Caveats / follow-ups (substrate-honest)
+
 - **z3-solver + Bun:** `z3-solver`'s Emscripten-pthreads WASM doesn't load under Bun 1.3.12; the Z3 differential bridges via a `node -e` subprocess (Node present locally), runs + asserts (no skip). CI doesn't run the bun ace tests (only `lint (tsc tools)` + the .NET `build-and-test`), so the Z3 + node-semver differentials are a **local gate** — same as all prior ace slices. Worth a follow-up if Bun adds pthreads-WASM support (drop the node bridge).
 - **Deferred (sliced off):** 081KT07NV0008QG0R002WK9064 advanced semver (`||`/hyphen/pre-release/build-metadata), 081KT07NV0008QG0R000SJ34AK remote registry, 081KT07NV0008QG0R003659TWT single-fetch cache. Slice 5.3 = lockfile.
 

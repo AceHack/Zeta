@@ -87,6 +87,7 @@ Actuators (NVIDIA Thor) → physical hardware moves
 ```
 
 Hard constraints:
+
 - No guns (Aaron's constraint, Amara-acknowledged)
 - No kinetic actuation without N-of-M + χ-budget checks (KSK gate)
 - Bond sized to blast radius (the cartographer's map determines the pricing)

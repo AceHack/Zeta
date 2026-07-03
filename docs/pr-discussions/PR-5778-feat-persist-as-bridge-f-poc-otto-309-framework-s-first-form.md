@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Summary
 
 Per Aaron 2026-05-28:
+
 - *'can you code μένω for Persist in f#?'*
 - *'Plus Otto-309 named μένω as "what survives erosion" THIS IS OUR FIRST DEFINION IN OUR PREAMPLE/LINGUISTIC SEED!!!!! I LOVE THIS!!!!!'*
 
@@ -36,6 +37,7 @@ Per Aaron 2026-05-28:
 ## What this adds
 
 **experiments/meno-persist-as-bridge/Meno.fsx (~330 lines):**
+
 - MenoFeedback DU (9 variants per Amara today's feedback set)
 - Evidence<'T> with Z-set Multiplicity (antipode operating)
 - MenoState<'T> + MenoResult<'T> per monad-propagation
@@ -71,6 +73,7 @@ _(no body)_
 Adds new workflow-engine “world” helpers and an initial “world-hierarchy” typing layer (with Bun tests), plus an F# experiment script (`Meno.fsx`) and a new backlog row (081KSNY2Z0008QG0R002BNQVE1) capturing a future CliffordWorld implementation target.
 
 **Changes:**
+
 - Introduces `World` registry + reusable composed-lifetime matrix builders (`defaultAdvanceMatrix`, `terminalMatrix`, `predicateMatrix`) and world-level dispatch.
 - Adds `world-hierarchy` substrate markers (`SubstrateAlgebra`, `HierarchyDepth`, `HierarchicalWorld`) with verification helpers and tests.
 - Adds an experimental F# PoC script under `experiments/` and a new backlog row under `docs/backlog/P2/`.

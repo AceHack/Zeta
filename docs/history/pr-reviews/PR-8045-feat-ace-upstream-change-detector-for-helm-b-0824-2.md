@@ -34,6 +34,7 @@ We have implemented the Upstream Change Detector for Helm (`B-0824.2`) and place
 ## Changes Made
 
 ### 1. Upstream Change Detector Tool
+
 - **[NEW] [helm-change-detector.ts](file:///private/tmp/zeta-lior-work/src/Core.TypeScript/ace/helm-change-detector.ts)**:
   - Fetches Helm repository `index.yaml` and extracts only the target chart's versions using `extractChartSection` line-by-line state machine.
   - Safely parses massive YAML documents (like Bitnami's 25.6MB file) in milliseconds using strict custom `@zeta/yaml` parser, avoiding memory crashes or block scalar indentation errors.
@@ -41,14 +42,17 @@ We have implemented the Upstream Change Detector for Helm (`B-0824.2`) and place
   - CLI wrapper with `--json` support.
 
 ### 2. Unit Tests
+
 - **[NEW] [helm-change-detector.test.ts](file:///private/tmp/zeta-lior-work/src/Core.TypeScript/ace/helm-change-detector.test.ts)**:
   - 100% mock coverage for various Helm index patterns, OCI rejections, fetch failures, and missing charts.
 
 ### 3. Restructuring Bug Fix
+
 - **[MODIFY] [batch-resolve-pr-threads.ts](file:///private/tmp/zeta-lior-work/tools/git/batch-resolve-pr-threads.ts)**:
   - Fixed relative import to `ai-attribution` due to recent folder restructuring.
 
 ### 4. Backlog Closeout
+
 - **[MODIFY] [081KSNY2Z0008QG0R001MXHC99-2-upstream-change-detector-helm.md](file:///private/tmp/zeta-lior-work/docs/backlog/P1/081KSNY2Z0008QG0R001MXHC99-2-upstream-change-detector-helm.md)**:
   - Status closed.
 

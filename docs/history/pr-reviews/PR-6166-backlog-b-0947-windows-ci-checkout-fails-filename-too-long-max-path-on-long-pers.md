@@ -37,6 +37,7 @@ error: unable to create file memory/persona/.../2026-05-25-aaron-mika-grok-runbo
 Classic Windows **MAX_PATH (260-char)** limit — git refuses to create the long persona-archive paths unless `core.longpaths` is enabled.
 
 ## Triage (per blocked-green-ci / refresh-world-model discipline)
+
 - **Not a regression** — overflowing files are pre-existing long persona names (2026-05-25/27/28); the merge just surfaced it. (Tonight's new origin-story archive also contributes.)
 - **Not blocking** — windows build-and-test is **not a required check** (verified via the rulesets API), which is why recent PRs merged CLEAN. Required CI + Linux/macOS are green.
 - **But Windows CI is silently red** — a real Windows-only regression would be invisible (checkout fails before build/test runs).

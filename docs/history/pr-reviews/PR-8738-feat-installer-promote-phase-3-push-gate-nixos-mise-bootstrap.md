@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Promote QEMU phase-3 (`QEMU_FIRST_SESSION_PHASE3=1`) to scenario 2 on every `build-ai-cluster-iso` **push** — society proof [run 27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618) green
 - Fix NixOS mise bootstrap during `zeta-install.sh` Step 6.95a: upstream tarball mise fails on NixOS (`cannot execute: required file not found`); use nixpkgs `mise` instead
 - Installer ISO now ships `mise`; target bootstrap passes `/run/current-system/sw/bin` on PATH
@@ -35,6 +36,7 @@
 - Trajectory docs updated (S4 complete, S6 UX co-design next)
 
 ## Test plan
+
 - [ ] `nix flake check --no-build` (local)
 - [ ] `docker-nixos-install-sh-test` workflow
 - [ ] `build-ai-cluster-iso` scenario 2 with phase-3 markers on push

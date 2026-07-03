@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Trim `.claude/skills/*/SKILL.md` frontmatter `description:` metadata to the preferred description-length budget.
 - Preserve routing terms while making no skill body edits.
 - Drain the skill-description audit from hard-error and preferred-warning state to fully clean.
 
 ## Checks
+
 - `bun tools/hygiene/audit-skill-description-length.ts` -> checked 260 skill descriptions; 0 errors, 0 warnings
 - `git diff --check HEAD~1 HEAD`
 - `bun tools/hygiene/audit-agencysignature-main-tip.ts --commit HEAD`
 
 ## Coordination
+
 - Vera/Codex claim: `claim/backlog-0347-7-skill-description-budget-codex-20260601T1238Z`
 - Scope: 081KSRGFP0008QG0R002SV9GGY metadata-only cleanup
 

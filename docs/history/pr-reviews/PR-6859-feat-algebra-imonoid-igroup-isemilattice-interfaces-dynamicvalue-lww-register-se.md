@@ -35,7 +35,9 @@ commutative+idempotent monoid = a CRDT merge / the confluence resolver.
 
 DynamicValue instance: an LWW-register join-semilattice (content-hash LWW over canonical CBOR; Null=bottom),
 provably associative/commutative/idempotent — the associativity law test CAUGHT that a recursive deep-merge
+
 + LWW is NOT associative without per-key versioning, so deep merge stays the domain of the versioned LwwMap
+
 CRDT (documented). Additive: no change to the public DynamicValue DU. 7 law tests. Implementing operator
 interfaces ON the type / adopting .NET INumber at leaves = API-reviewed next step (backlog).
 

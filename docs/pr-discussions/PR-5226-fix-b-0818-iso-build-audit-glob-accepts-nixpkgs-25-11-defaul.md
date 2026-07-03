@@ -25,12 +25,14 @@ PR #5222 (glxinfo P0 fix-fwd) merged successfully, but the post-merge build-iso 
 ## Two-layer fix
 
 **This PR (fix-fwd, immediate unblock)**:
+
 - \`.github/workflows/build-ai-cluster-iso.yml\` audit glob accepts EITHER \`zeta-installer-*.iso\` OR \`nixos-minimal-*.iso\`
 - \`.github/workflows/build-installer-iso.yml\` same fix
 - Updated error messages cite 081KSGS9H0008QG0R00033DT02 for the substrate-layer fix
 - ISO content is correct; only filename pattern changed
 
 **081KSGS9H0008QG0R00033DT02 (substrate-layer follow-up)**:
+
 - Investigate which 25.11 option actually drives the ISO filename (\`image.baseName\` / \`system.nixosLabel\` / both)
 - Update \`configuration.nix\` with correct override
 - Optionally tighten the workflow glob back once landed
@@ -58,6 +60,7 @@ PR #5222 (glxinfo P0 fix-fwd) merged successfully, but the post-merge build-iso 
 This PR unblocks post-merge ISO build workflows after the nixpkgs 25.11 bump changed the default ISO filename (from the Zeta-branded `zeta-installer-*.iso` to nixpkgs’ `nixos-minimal-*.iso`), while tracking the substrate-layer root-cause investigation via a new backlog row.
 
 **Changes:**
+
 - Loosened the ISO “audit/locate” glob in the installer ISO workflows to accept either `zeta-installer-*.iso` or `nixos-minimal-*.iso`.
 - Updated workflow error messages to reference 081KSGS9H0008QG0R00033DT02 for the follow-up substrate fix.
 - Added backlog row 081KSGS9H0008QG0R00033DT02 documenting the investigation target and candidate fixes for restoring the intended ISO name override.

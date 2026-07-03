@@ -30,6 +30,7 @@
 Sequencing correction from Aaron 2026-06-02: *"we need geospatial algebra agreement on our normal 4×4s first before SAFE-FME-like borders — i can get all of those and we can efficiently store instead of 50 copies of redundant data — but we need the geospatial core hardened first, high priority, on primitives."*
 
 **New prereq row 081KT2T2J0008QG0R002ZG89QA — geospatial core algebra, hardened, 4×4-bonded:**
+
 - **canonical geometry types** (Point/LineString/Polygon/MultiPolygon — OGC-shaped, *our* types; GeoJSON/WKT/WKB/EPSG/PROJ/SAFE-FME adapt in behind our port);
 - **CRS/datum/projection first-class** — store geodetic canonical, **project-on-query**;
 - **topology + set algebra** — DE-9IM predicates; region union/intersection/difference = **Z-set/retraction-native**; distance/area/buffer; coords → generic-math `INumber<TSelf>`;

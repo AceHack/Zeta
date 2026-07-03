@@ -36,11 +36,13 @@ Smallest safe slice of 081KQ8P5D0008QG0R0030BTJZK (P2): rename the otto_275_fore
 - TS preference respected (no new bash; shell only for git/setup)
 
 ## Changes
+
 - File: `memory/feedback_otto_275_forever_manufactured_patience_2026_04_26.md` (renamed)
 - Frontmatter `name`/`description` updated
 - Body section reframed from taxonomy-9th to Otto-352 note
 
 ## Focused checks (included per rules)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — gate passed (pre and post-edit)
 - Rename + edit verified via ls/grep/status
 - No CI impact (md-only change)

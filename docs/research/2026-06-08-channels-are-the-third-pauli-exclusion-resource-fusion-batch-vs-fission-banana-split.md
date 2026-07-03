@@ -8,6 +8,7 @@ get combined (fusion) vs banana split (fission)."*
 
 The exclusion trilogy is now complete — three finite, discrete, exclusively-held resources, same fermionic
 structure each time:
+
 1. **Identities** — `AntiSybil` (non-fungible drift; a forger can't occupy two distinct sources).
 2. **Hats** — `ForwardMomentum.HatPool` (finite jobs, one wearer each; #7065).
 3. **Channels** — *this*: communication channels are **quantized** (only `x` of them), discrete and
@@ -18,6 +19,7 @@ structure each time:
 
 Because channels are finite (`x`), items can't all pass at once — they **pressurize** into the bounded queue
 and get **combined into batches**:
+
 - **Fusion = combine, many → one** — the **batch** (channel-pressure drives individual items together). The
   **join / converge** direction of the timeline taxonomy (#7073), under throttle pressure.
 - **Fission = split, one → many** — the **banana split** (Fokkinga). The **fork** direction.

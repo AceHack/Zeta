@@ -43,6 +43,7 @@ After this PR: 2/5 personas + 2 vendors enabled. One more vendor (3c Vera/Codex 
 PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (081KSKBP80008QG0R003Z4C0D0 Phase 1 + 3 refactor) · 081KSGS9H0008QG0R001JNKBFD · 081KSGS9H0008QG0R002T0XQ50 · 081KSGS9H0008QG0R002F04ECB
 
 Sources:
+
 - [@google/gemini-cli on npm](https://www.npmjs.com/package/@google/gemini-cli)
 - [Gemini CLI authentication docs](https://geminicli.com/docs/get-started/authentication/)
 

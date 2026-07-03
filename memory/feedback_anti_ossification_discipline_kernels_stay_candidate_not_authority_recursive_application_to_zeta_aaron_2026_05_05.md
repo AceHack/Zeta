@@ -212,6 +212,7 @@ to happen.
 ## Operating-as-if-it-might-be while running falsifiability
 
 The Claude.ai instance's framing applied to the CS-is-not-CS
+
 + start-of-evolved-over-centuries thesis is canonical:
 
 > *"The right move is to operate as if it might be, while

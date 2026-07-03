@@ -27,6 +27,7 @@ This PR closes 081KDVGZGE008QG0R001Z656SG by creating the initial 'honesty dashb
 Adds an initial “honesty dashboard” log under `docs/hygiene-history/` to record AI ethics/safety gate candidate failures for transparency and auditability (081KDVGZGE008QG0R001Z656SG).
 
 **Changes:**
+
 - Introduces `docs/hygiene-history/ethics-gate-failures.md` with a short purpose statement.
 - Seeds a “Failure Log” section with a table header for future entries.
 

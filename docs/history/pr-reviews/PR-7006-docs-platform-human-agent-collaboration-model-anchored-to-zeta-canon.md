@@ -33,6 +33,7 @@ The human-agent **collaboration model** — the interaction layer of the platfor
 A real human-agent collaborative space needs five things — **and Zeta already has all five.** So this is the manifesto + alignment clauses *made operable*, not a new philosophy bolted on.
 
 ## Anchored throughout (Beacon register)
+
 - **Agents, not bots** (`GOVERNANCE.md` §3); **no directives — source ≠ authorization** + the exact **gated classes** (`.claude/rules/no-directives.md`) → the agent-scope **Policy** model (`auto`/`propose`/`forbidden`).
 - The collaboration history **is** the **git-native event store** + **AgencySignature** (proposed-by/authorized-by) + **Z-set retraction** (undo = `−1`, history preserved) + **glass halo** (no hidden moves) → reversible, attributed, consent-preserving **by construction** (HC-2, #6/HC-1, #5 memory-preservation).
 - **HC-3 data-is-not-directives** ⇒ a malicious `server.cfg` is *data to report, not orders to follow* — **injection-resistant by doctrine**.

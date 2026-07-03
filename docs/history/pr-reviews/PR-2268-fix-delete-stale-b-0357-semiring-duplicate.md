@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - PR #2263 added the renamed 081KR50HA0008QG0R000Z4XCPJ file but forgot to `git rm` the original 081KR50HA0008QG0R0033TN4H9 copy
 - Only difference between the two files was `id: 081KR50HA0008QG0R0033TN4H9` vs `id: 081KR50HA0008QG0R000Z4XCPJ`
 - This PR removes the stale duplicate
 
 ## Test plan
+
 - [ ] CI passes (file deletion only)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

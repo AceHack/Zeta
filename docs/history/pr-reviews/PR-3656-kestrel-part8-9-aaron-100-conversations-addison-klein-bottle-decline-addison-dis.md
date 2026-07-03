@@ -42,6 +42,7 @@ Kestrel declined Aaron's Klein-bottle escalation (8th turn of architecture-stair
 Open-loop adversarial-review-at-scale, NOT closed-loop validation. Each conversation is one stress-test datum; aggregate is contradiction-search results.
 
 Distinguished from failure-mode by 4 criteria:
+
 - Maintainer FINDS contradictions (Aaron: yes, in hours)
 - Maintainer ITERATES on findings (Aaron: yes, refines design)
 - Maintainer DEFERS code commitment (081KRMEXM0008QG0R001VGNET5 XL multi-year)

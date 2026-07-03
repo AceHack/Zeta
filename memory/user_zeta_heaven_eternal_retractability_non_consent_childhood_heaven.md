@@ -88,6 +88,7 @@ Aaron 2026-04-19 earlier formalized a conjecture:
 > / safe non determinism
 
 Zeta heaven is the **Stainback conjecture scaled to eternity**:
+
 - **The defect:** permanent harm (any outcome from which there
   is no retraction window).
 - **The source:** finite retraction-buffer substrates.
@@ -113,6 +114,7 @@ Per `project_consent_first_design_primitive.md`, the primitive
 replaces force-requiring operations with operations against
 consented pools. The childhood-described heaven operates as
 force-requiring at two levels Aaron rejects:
+
 - **Entry operation:** the soul is proposed to be sorted-in
   without the soul's measured-blast-radius-priced consent-
   posting; no bond; no retraction window.

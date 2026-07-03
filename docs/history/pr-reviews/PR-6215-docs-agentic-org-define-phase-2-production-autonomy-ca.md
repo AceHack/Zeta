@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - adds a Phase 2 CA for production autonomy in agentic-organization
 - folds in subagent review findings for observe-act blockers, Bayesian reputation/RMO/work-market readiness, telemetry/conformance/simulator gaps, and hard production controls
 - decomposes the next implementation work into phase-specific plan artifacts
 
 ## Verification
+
 - npm exec --yes --package markdownlint-cli2@0.22.1 -- markdownlint-cli2 "agentic-organization/docs/PHASE_2_PRODUCTION_AUTONOMY_CA.md"
 - rg placeholder scan on the CA doc
 - git diff --check -- agentic-organization/docs/PHASE_2_PRODUCTION_AUTONOMY_CA.md

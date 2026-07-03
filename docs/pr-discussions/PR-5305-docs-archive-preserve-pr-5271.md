@@ -27,6 +27,7 @@ Preserve discussion from PR #5271.
 Adds a new PR-preservation archive document under `docs/pr-discussions/` to capture the discussion/review content from PR #5271 for long-term provenance and auditability.
 
 **Changes:**
+
 - Adds a new PR discussion archive file for PR #5271, including YAML frontmatter metadata and preserved PR body/review threads.
 
 ## General comments

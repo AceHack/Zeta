@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add already-landed `081KTZ4EF0008QG0R001R3XPYV` to `tools/backlog/frozen-bnnnn-ids.json`
 - restores the no-new-B-NNNN cutover guard after #7783 introduced a legacy backlog row
 
 ## Verification
+
 - `bun tools/backlog/lint-no-new-bnnnn.ts`
 - `bun tools/backlog/lint-frontmatter.ts --schema-only`
 - `git diff --check`

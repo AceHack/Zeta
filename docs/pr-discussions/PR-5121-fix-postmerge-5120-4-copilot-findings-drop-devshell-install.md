@@ -43,6 +43,7 @@ The 4th post-merge thread (exit-3 doc) is stale — already widened on main by 5
 This PR removes automatic execution of `tools/setup/install.sh` from the `full-ai-cluster` Nix devShell (avoiding side effects and NixOS breakage) and tightens accompanying commentary about the install-script contract and 7z provenance in CI vs local setup.
 
 **Changes:**
+
 - Stop auto-running `tools/setup/install.sh` on `nix develop` entry; replace with a manual hint in the devShell `shellHook`.
 - Reframe devShell comments to align with `GOVERNANCE.md §24` (three install.sh consumers) and remove the prior “4th consumer” framing.
 - Update the workflow audit-step comment to describe where 7z comes from in CI vs local environments.

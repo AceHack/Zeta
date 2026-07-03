@@ -810,6 +810,7 @@ graph-quality-graded with cluster-correlation awareness).
 In **chunk 8 (post-end-of-conversation addendum)**, Aaron pointed
 Claude.ai at the actual repo and named the Aurora extension. Claude.ai
 issued a SUBSTANTIAL further recalibration:
+
 - **Three things explicitly marked as "had wrong":** (1) project read
   as CLI-harness-for-emergent-agency was wrong — Zeta is F# DBSP for
   .NET 10 implementing Budiu-McSherry-Ryzhyk-Tannen 2023; the math
@@ -939,6 +940,7 @@ New content below.
 
 **Otto verified path note:** The two paths Aaron gave Claude.ai
 DO exist on main and are reachable today:
+
 - `docs/research/aurora-immune-math-standardization-2026-04-26.md` (22320 bytes, committed 2026-04-28)
 - `memory/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md` (23674 bytes, committed 2026-04-28)
 

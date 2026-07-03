@@ -47,6 +47,7 @@ Per Mika 2026-05-26 substrate (homelab-first; production-mode deferred):
 ## What this enables for next re-flash
 
 After this lands → next ISO build triggers (push to `full-ai-cluster/**` matches the broadened trigger paths) → fresh artifact has:
+
 - iter-5.1 (wifi persist) + iter-5.2 (hostname inject) + iter-5.2.2 (install-time auto-gen + login banner) + iter-5.3 (password prompt) + **iter-5.4.0 (gh-auth + operator-pubkey-copy)**
 - Empirical UX: boot → 6.x prompts → gh auth login → operator authenticates → ssh from any of operator's GitHub-registered keys works on first boot
 
@@ -76,6 +77,7 @@ After this lands → next ISO build triggers (push to `full-ai-cluster/**` match
 This PR adds an iter-5.4.0 “homelab-mode” install-time flow that lets an operator authenticate with GitHub (`gh auth login`) and automatically inject their GitHub-registered SSH public keys into the freshly installed node’s `zeta` account, reducing post-install manual steps.
 
 **Changes:**
+
 - Adds a new Step 6.8 to `zeta-install.sh` to optionally run `gh auth login`, fetch SSH keys via `gh ssh-key list`, and write them into the target root under `/mnt/etc/zeta/operator-authorized-keys`.
 - Introduces a new NixOS module that reads `/etc/zeta/operator-authorized-keys` (if present) and contributes the parsed keys to `users.users.zeta.openssh.authorizedKeys.keys`.
 - Updates the installer ISO config and cluster common module imports to include and activate the new functionality.

@@ -26,7 +26,9 @@ The closed-over external state = **one unified env/dependency map across everyth
 | **Cluster** | **ArgoCD** | GitOps — declarative desired cluster state continuously reconciled |
 
 End to end, the *whole environment* is one declarative, pointer-based map: **NixOS (metal/OS) + Ace (in-between)
+
 + ArgoCD (cluster)** = the complete external-state closure. Everything the agent/system depends on is closed
+
 over declaratively, by reference, in one map.
 
 ## Refinement: Ace pointers span ALL layers — OS and cluster deps too, not just the middle (Aaron, cont.)

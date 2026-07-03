@@ -17,10 +17,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - mark the TypeScript/Bun bash-retirement phase closed-maintained now that #2764 is merged
 - replace the stale shepherd-PR next action with maintain-the-guard drift handling
 
 ## Checks
+
 - bun run hygiene:check-bash-retirement-inventory
 - git diff --check
 
@@ -33,6 +35,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Updates the TypeScript/Bun migration trajectory to reflect that the bash-retirement inventory guard (#2764) is already landed and that the bash-retirement phase is now in a closed/maintenance state, so automated backlog runners stop selecting a stale “next action”.
 
 **Changes:**
+
 - Mark the bash-retirement phase as closed-maintained and update the “Next concrete action” to ongoing guard maintenance.
 - Add a new claim file documenting the Codex loop slice used to perform the update.
 

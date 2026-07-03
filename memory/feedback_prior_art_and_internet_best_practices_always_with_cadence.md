@@ -38,6 +38,7 @@ once-good choice that rotted because the checker didn't
 keep pace with Roslyn.
 
 **How to apply:**
+
 - Any ADR that introduces a new tool / language / library
   MUST cite both (a) prior art inspected and (b) dated
   internet-best-practices findings. Undated findings are

@@ -57,6 +57,7 @@ rendering.)
 > instead of digital** lol."* / *"**It's its own boxart**."*
 
 Both exact:
+
 - **The 8-track tape, precisely**: a Turing tape is one head, one track, one sequence. This format is
   MANY TRACKS — every `anim`/`gen`/`sim` section an independent loop playing in parallel (zero clocks,
   no head contention) — the 8-track's parallel program channels, not the single-head crawl. "Analog"

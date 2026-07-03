@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds a bounded `--reconcile <relPath> --decision <decision> [--note <text>]` action to `tools/hygiene/divergence-reconcile.ts`.
 - Keeps default / `--list` behavior as a non-failing pending-shard report, while argv validation rejects incomplete or non-canonical write-back attempts before file mutation.
 - Updates the 081KR7JY10008QG0R000MH7PJT backlog row with the Codex CLI action slice and focused evidence.
 
 ## Checks
+
 - `bun test tools/hygiene/divergence-reconcile.test.ts`
 - `bun run typecheck`
 - `git diff --check`
@@ -41,6 +43,7 @@
 - `bun tools/hygiene/divergence-reconcile.ts --list`
 
 ## Limits
+
 - This still does not touch GitHub review-thread resolution; the live dual-loop end-to-end path remains blocked on 081KQJZR90008QG0R000FTJ1TC.
 
 Agency-Signature-Version: 1

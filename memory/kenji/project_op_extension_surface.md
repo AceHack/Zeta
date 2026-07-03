@@ -28,6 +28,7 @@ parallel and returned divergent recommendations:
   zeta-plugin` scaffolding template.
 
 Each found something the other two missed:
+
 - Ilyana spotted the extension-cliff test-harness gap.
 - Tariq spotted that Bayesian's `BayesianRateOp` is
   retraction-lossy by design — no interface/DU/class
@@ -44,6 +45,7 @@ large. Likely path: the design doc at
 synthesis; implementation phases across round 27 + 28.
 
 **How to apply (as architect):**
+
 - When returning to this file on wake-up: the three
   recommendations live at `memory/<persona>/public-api-
   designer/NOTEBOOK.md` (Ilyana), `memory/<persona>/

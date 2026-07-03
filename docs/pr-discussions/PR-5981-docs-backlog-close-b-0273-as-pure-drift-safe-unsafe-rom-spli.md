@@ -54,6 +54,7 @@ operative-authorization: aaron 2026-05-14: "- **Devil-pole** (edge-runner drive)
 Closes backlog item **081KR2E4K0008QG0R001JC6S3N** as shipped/pure-drift by updating its row metadata (status/classification/dates) and regenerating the root backlog index so the item renders as closed.
 
 **Changes:**
+
 - Mark 081KR2E4K0008QG0R001JC6S3N as `status: closed`, update `last_updated`, and record `closed` date.
 - Add a “Resolution” section documenting acceptance-criterion verification and provenance to PR #5874.
 - Regenerate `docs/BACKLOG.md` so 081KR2E4K0008QG0R001JC6S3N renders as checked off.

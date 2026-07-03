@@ -89,7 +89,9 @@ GraphQL, no tokens, no rate limits — Pages is the CDN.
   `data/metrics-history.json` → `frames[]`, refresh `data/metrics.json` (latest frame +
   roster), set `provenance.mock=false`, commit to main. Append-only; the file IS the ledger.
 - **Frame shape:** `{ t: "YYYY-MM-DD", prs_merged_24h, avg_lead_time_minutes, commits_24h,
+
 active_agents, open_prs }` — see the mock files for a working example.
+
 - **Page behavior (already wired):** fetch success → charts render from the file and the
   header chip reads `live · data/ same-origin` (or `(mock frames)` while `provenance.mock`
   is true). Fetch failure/offline → embedded 2026-05-26 fallback frame renders and the chip

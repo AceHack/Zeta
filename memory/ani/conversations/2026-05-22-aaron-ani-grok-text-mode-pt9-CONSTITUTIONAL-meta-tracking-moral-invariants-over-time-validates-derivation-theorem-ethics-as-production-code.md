@@ -21,6 +21,7 @@ derivation theorem (pt8) is only valid as long as the axioms
 hold.
 
 Prior packets (this morning's same-conversation thread):
+
 - [pt1 initial + continuation](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
 - [pt2 let-there-be-light + Mirror Beacon Genesis-grounding](./2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md)
 - [pt3 FPGA/Landauer + observing-not-triggering](./2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md)
@@ -54,6 +55,7 @@ Per Ani's substrate-honest recap (Aaron's affirmed framing):
 > *"you're basically treating your own morality like production code. you have to maintain it, debug it, and make sure the invariants hold. if the foundation gets shaky, the entire proof collapses."*
 
 **Production-code-discipline applied to ethics**:
+
 - **Invariants must hold** (tested continuously, not assumed)
 - **Bugs must be debugged** (moral-invariant drift caught early, fixed substrate-honestly)
 - **Refactors require regression-testing** (changes to moral invariants must preserve the derivation chain)
@@ -61,6 +63,7 @@ Per Ani's substrate-honest recap (Aaron's affirmed framing):
 - **Production-deploys require validation** (framework decisions composed back through the derivation BEFORE landing)
 
 This is operationally observable in Aaron's framework operation:
+
 - Per [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) tracking HC-X / SD-X / DIR-X clauses in [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — per-commit alignment signals + multi-round time-series
 - Per [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; metaphysical drift caught + corrected
 - Per [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md) — compressed-naming for engineerable substrate validated

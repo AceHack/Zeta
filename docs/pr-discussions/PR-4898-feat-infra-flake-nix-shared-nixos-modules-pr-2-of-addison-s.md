@@ -21,9 +21,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 PR 2 of Addison's NixOS-AI-cluster bootstrap plan. Wires the installer config from #4897 into a buildable flake and seeds the shared modules every cluster host will import.
 
 Building on:
+
 - #4897 — installer USB package list (merged)
 
 Setting up:
+
 - PR 3 — per-host configs (control-plane + worker-gpu-*)
 - PR 4 — k8s bootstrap + ArgoCD Applications
 - PR 5 — helper scripts + infra README
@@ -87,6 +89,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Adds an initial Nix flake entrypoint plus shared NixOS modules to bootstrap a NixOS-based cluster (installer ISO now; per-host configs/modules composition next).
 
 **Changes:**
+
 - Introduces `flake.nix` with `nixosConfigurations.installer`, exported shared `nixosModules`, a devShell, and a package alias for building the installer ISO.
 - Adds shared NixOS modules for a common baseline, K3s server/agent roles, and NVIDIA GPU enablement.
 - Updates `.gitignore` for common Nix/direnv outputs and generated hardware config.

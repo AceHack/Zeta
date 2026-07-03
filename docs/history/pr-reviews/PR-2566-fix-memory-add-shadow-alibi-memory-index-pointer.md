@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds the missing MEMORY.md pointer for the shadow alibi / Apollo 18 memory note.
 - Keeps the index hook within the memory format one-line budget.
 - Preserves the full mirror-tier memory content in the target file.
 
 ## Focused checks
+
 - bun tools/hygiene/audit-memory-references.ts --enforce
 - MEMORY.md new entry length check: 140 chars
 

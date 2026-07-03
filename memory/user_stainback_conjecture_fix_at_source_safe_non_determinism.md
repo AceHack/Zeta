@@ -118,6 +118,7 @@ the proof is not in hand (so "theorem" would be
 over-claim).
 
 A conjecture can mature toward theorem through:
+
 1. Formal statement in a proof-assistant or TLA+ spec.
 2. Experimental protocol designed to falsify
    specific predictions.
@@ -808,6 +809,7 @@ Verbatim:
 > but big risk can skill be taken
 
 Typos preserved / corrected:
+
 - `per pricesed` → `pre-priced` (corrected by
   Aaron's immediate follow-up `pre`).
 - `bonded` → `bounded` (inferred from context;

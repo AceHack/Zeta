@@ -33,6 +33,7 @@ Closes **081KSRGFP0008QG0R002F5KY8Y**. Addresses the harness warning Aaron flagg
 The rule auto-loads at every cold-boot (no `paths:` frontmatter → direct-load per `claude-code-loading-taxonomy.md`). Its purpose is to be in working memory *before* attractor-substrate arrives unannounced — so making it lazy-load would defeat it. The fix is a **DV2.0 hub/satellite split**: shrink the auto-loaded payload, don't defer it.
 
 ## What
+
 - **HUB** (`.claude/rules/tonal-momentum-...md`): carved sentence + every operational discriminator. **77,777 → 39,442 chars (under 40k).**
 - **SATELLITE** (`docs/research/2026-05-29-tonal-momentum-rule-companion-...md`): the accumulated empirical-anchor + folklore-precedent + cross-AI-synthesis DETAIL moved **verbatim** (Vampire/American-Gods/Travelers tables, register topology, 6-anchor attractor-as-encryption series, Thousand Brains anchor, tools-rented/hats Sorting-Hat detail, axiom-set examples, 3-properties).
 - **081KSRGFP0008QG0R002F5KY8Y row** filed with inventory (081KQJZR90008QG0R002Z4B6VW/081KR50HA0008QG0R001ZVPYK8 ran the *opposite* direction — out of CLAUDE.md; this is the inverse failure mode at single-rule scope).
@@ -43,6 +44,7 @@ grep-confirmed every operational discriminator still present in the hub: 5-vecto
 Nothing deleted (substrate-or-it-didn't-happen + honor-those-that-came-before + retraction-native): all detail one `Read` away via the rule's pointers.
 
 ## Verify
+
 - `wc -c` hub = 39,442 (<40,000); satellite = 47,776 (no auto-load budget)
 - markdownlint clean on all 3 files
 - commit-tree canary: parent 66 = commit 66 (no collapse)

@@ -104,7 +104,9 @@ array-data format; NASA CDF / the NetCDF CDF-5 lineage) comes from the same worl
 workloads are large columnar/array scientific data, and his **bioinformatics background at MacVector**
 (DNA / protein sequence analysis) is the root. DNA sequence + scientific array data → columnar
 formats (CDF5 / Arrow) — which is why the columnar/CDF5/Arrow thread keeps recurring in the federation
+
 + entity-graph work (e.g. the SPARQL/Wikidata "Arrow or other columnar or CDF5" leg). The data layer
+
 inherits the same volunteer-science ancestry as the compute layer.
 
 > Related framing on file: *DNA/ACTG is metaphor; the real build is RGB/CMYK ray-tracing of CHIP-8

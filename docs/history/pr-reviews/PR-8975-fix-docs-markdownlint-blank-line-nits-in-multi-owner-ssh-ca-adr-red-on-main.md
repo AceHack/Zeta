@@ -37,6 +37,7 @@ of **every open PR** even when the doc isn't in their diff (e.g. the Merge1
 go green.
 
 Fixes (no content change):
+
 - **MD022** (headings need surrounding blank lines) — added a blank line under
   the three `### N.` headings (`### 1. Identity…`, `### 2. Authorization…`,
   `### 3. Host identity…`).

@@ -107,6 +107,7 @@ Dop (id . id) s n
 ```
 
 At n=0:
+
 - `s 0 = delta_0 0 = 1`
 - `zInv s 0 = 0` (by `zInv_zero`)
 
@@ -240,6 +241,7 @@ as `Q^Delta := D . Q . I`."
 
 **Proposition 3.2.** "(Properties of the incremental version):
 For computations of appropriate types, the following hold:
+
 - **inversion:** `Q -> Q^Delta` is bijective; its inverse is
   `Q -> I . Q . D`.
 - **invariance:** `+^Delta = +, (z^-1)^Delta = z^-1, -^Delta = -, I^Delta = I,

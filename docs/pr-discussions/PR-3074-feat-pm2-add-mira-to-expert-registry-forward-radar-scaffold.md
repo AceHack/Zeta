@@ -26,6 +26,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Context
 
 081KQGDBJ0008QG0R000RWAA67 had two children already closed:
+
 - 081KR2E4K0008QG0R0035RG9G6 (closed): `.claude/skills/product-manager/SKILL.md` + `.claude/agents/pm2.md` (persona: Mira)
 - 081KR2E4K0008QG0R003VB7ZZR (closed): first research pass doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` (6 gaps → 081KRFA460008QG0R001QFS6EV, 081KRFA460008QG0R002JQERS5, 081KRFA460008QG0R00168759Y, 081KRFA460008QG0R000EJK30F, 081KRFA460008QG0R003C00WKR-433, 081KRFA460008QG0R0018SN61J)
 
@@ -72,6 +73,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -90,6 +92,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Docs-only slice that closes the three remaining open acceptance criteria of 081KQGDBJ0008QG0R000RWAA67 (PM-2 role activation): registers the new PM-2 persona in the expert roster, and scaffolds the forward-radar output directory with a memo template and a calibration tracker. The pre-existing work (081KR2E4K0008QG0R0035RG9G6 skill+agent, 081KR2E4K0008QG0R003VB7ZZR first research pass) is already merged; this PR is the connective tissue.
 
 **Changes:**
+
 - Add the **Mira** (PM-2) row to `docs/EXPERT-REGISTRY.md`.
 - Create `docs/forward-radar/TEMPLATE.md` (canonical memo template, weekly Sundays-UTC cadence).
 - Create `docs/forward-radar/calibration.md` (Lead-time% / Action-rate% tracker, quarterly review note).
@@ -111,6 +114,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/forward-radar/calibration.md:49**
+
 * Direct name attribution ("Aaron corrections") on a current-state surface. Per the Otto-279 role-ref convention (and the surface-path-first check), `docs/forward-radar/` is not in the closed list of history surfaces and not in the roster-mapping carve-out (the carve-out only covers `.github/copilot-instructions.md`, `AGENTS.md`, `GOVERNANCE.md`, `docs/CONFLICT-RESOLUTION.md`). Replace with a role-ref such as "human-maintainer corrections" — the name belongs only on history/research surfaces.
 ```
    review findings, Aaron corrections that revealed missing features.
@@ -131,6 +135,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

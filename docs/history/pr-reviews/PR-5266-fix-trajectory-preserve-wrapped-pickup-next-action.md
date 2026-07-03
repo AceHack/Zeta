@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - preserve continuation lines for top-level trajectory metadata fields such as Next concrete action
 - add focused readTrajectoryPackets coverage for wrapped next-action text
 
 ## Checks
+
 - bun test tools/trajectories/autonomous-pickup.test.ts
 - bunx prettier --check tools/trajectories/autonomous-pickup.ts tools/trajectories/autonomous-pickup.test.ts
 - git diff --check
 
 ## Local gap
+
 - bun run typecheck could not run in this isolated worktree because tsc is not installed locally (script exited 127).
 
 Claim: claim/codex-loop-backlog-next-action-continuation-20260526

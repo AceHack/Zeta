@@ -67,6 +67,7 @@ The shard captures a substrate-honest observation: a long-standing prior-session
 Adds a new factory-hygiene backlog row (081KRHWGX0008QG0R002DPG02X) and a tick shard documenting the empirical stale-worktree cleanup that motivated it, to reduce recurring “branch already used by worktree” lockouts after session crashes.
 
 **Changes:**
+
 - Added tick shard for 2026-05-14T18:17Z documenting pruning 23 stale worktree admin entries and the motivating incident.
 - Added P3 backlog row 081KRHWGX0008QG0R002DPG02X proposing mechanization (TS audit tool + cadence) for `git worktree prune --expire=now`.
 

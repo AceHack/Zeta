@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - add the clean Participant A acknowledgement receipt for B claim ea0d85461
 - record the A/B path comparison as disjoint in the 081KQX9B50008QG0R001MNYK61 two-participant dry-run packet
 - release the A acknowledgement claim file on the PR branch
 
 ## Checks
+
 - git diff --check
 - bun --bun test tools/claims/remote-only-state.test.ts
 
 ## Coordination
+
 - Root checkout was not written.
 - Dirty parked A worktree was not touched.
 - Remaining follow-up: release the Participant B claim after this PR lands.

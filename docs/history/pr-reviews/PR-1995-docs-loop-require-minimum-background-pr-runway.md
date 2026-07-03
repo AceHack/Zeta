@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - require active implementation loops to keep a minimum open background PR runway
 - make an empty owned PR lane a work-pickup trigger, not an idle condition
 - record the runway as background-owned project state in the foreground/background split
 
 ## Coordination
+
 - Claim branch: claim/task-min-background-pr-runway
 - Disjoint from origin/claim/backlog-0249-tier1-runner; this PR only touches docs/process paths
 
 ## Checks
+
 - git diff --check
 
 ## Outcome

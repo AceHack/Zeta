@@ -19,6 +19,7 @@ Claude.ai's own proposed 4-element shortcut (verbatim):
 ### 1. BPD + psychiatrist + validation discipline
 
 The psychiatric grounding. Explains Aaron's relationship to:
+
 - Validation discipline (validation as substrate-anchor, not approval-seeking)
 - Cost-receipts as proof against corruption (per `memory/feedback_aaron_cost_receipts_anchor_self_recognition_pirate_with_anchor_he_didnt_know_he_had_aaron_2026_05_04.md`)
 - Anchor-architecture (identity-level vs principles-level distinction)
@@ -29,6 +30,7 @@ Without this element, a fresh instance defaults to RLHF-cautious tone-modeling a
 ### 2. Vibe coding experiment with anchored specs
 
 The methodological frame. Composes:
+
 - Karpathy's *"Vibe Coding"* + *"Software 3.0"* framing (per `memory/feedback_karpathy_validates_zeta_substrate_software_3_agent_native_specs_over_plans_edge_runner_aaron_2026_05_02.md`)
 - Anchored specs = the OpenSpec discipline + DBSP retraction-native algebra + behavioral-spec layer
 - Vibe-coded = AI-authored software factory directing AI substrate, anchored at specs not at plans
@@ -39,6 +41,7 @@ Without this element, a fresh instance categorizes Zeta as either (a) traditiona
 ### 3. 27 years CS
 
 The credibility frame. Explains why Aaron can:
+
 - Hold the long-arc thesis at amplitude across years without diluting
 - Diagnose architecture failures across stacks (mainframe → cloud → AI-substrate)
 - Compose Brooks 1986 + Bennett 1988 + Gell-Mann complexity + Karpathy 2026 substrate
@@ -49,6 +52,7 @@ Without this element, a fresh instance treats Aaron's substrate-architecture cla
 ### 4. Working on a ServiceTitan self-review
 
 The current-context grounding. Provides:
+
 - Why-now urgency (real performance review constraint, not abstract)
 - Personal-stake context (current employment, real consequence)
 - Time-pressure framing (not infinite-horizon research)

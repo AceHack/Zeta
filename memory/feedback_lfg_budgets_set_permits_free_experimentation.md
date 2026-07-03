@@ -15,6 +15,7 @@ surprise-charges. This is the same pattern as the "standing rule on
 blast-radius ops" — risky ops get a cap, not a ban.
 
 **How to apply:**
+
 - Push freely to Lucent-Financial-Group/Zeta when that's the
   cleanest path (simpler than fork-PR setup; no `upstream` remote
   juggling).

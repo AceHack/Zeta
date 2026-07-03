@@ -31,6 +31,7 @@ TS has no operator overloading / generic-math, so we **push our own port as a re
 
 ### What
 Z-set is an abelian **group**, so it extends the shared `Monoid` (from `g-set.ts`: `empty` + `concat`) with `invert` (= `negate`) + `subtract` (= `union∘negate`) as an `AbelianGroup<T>` interface. **NOT `INumber`** — no ordering; the ring scalar is per-element. Factories are comparator-specific (the F#/C#/Rust twins bake the comparer into the type / use a default):
+
 - `monoid(compare): Monoid<ZSet<T>>` — additive-monoid view (parity with G-Set/Bag)
 - `abelianGroup(compare): AbelianGroup<ZSet<T>>` — the distinguishing surface (invert + subtract)
 - `concatAll(compare, zs)` — fold a collection (the `Sum` / `Seq.sum` analog)

@@ -52,6 +52,7 @@ Per `automated-tests-are-the-shield-assert-dont-skip.md`: the test **asserts the
 ## Follow-up (offered, not in this PR)
 
 Replicate the pattern to the other 3 shields once this template is validated green:
+
 - **wsl** — direct 2nd `install.sh` invocation + same grep assert (easy).
 - **nixos** — via its TS driver (different mechanics).
 - **windows** — 2nd `install.ps1` run; pairs with #6239's now-idempotent ollama step (`ollama list` skip + no re-pull).

@@ -50,6 +50,7 @@ When `git cherry-pick` fails (conflict or other error), the repo is left in `CHE
 Each layer caught a different failure scenario the previous didn't cover. Codex + Copilot complementary reviewing producing operationally robust code.
 
 ## Test plan
+
 - [x] `bunx tsc --noEmit` clean
 - [x] `bun test missed-substrate-detector.test.ts` — 31 pass / 0 fail
 - [x] `bun test missed-substrate-recovery.test.ts` — 17 pass / 0 fail

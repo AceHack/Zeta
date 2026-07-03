@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Run 402: iter-5.3 fix worked (phase 1 green in ~8m) but phase 2 timed out waiting for node login on serial.
 - Root cause: installer ISO has console=ttyS0 (PR #5324); installed nodes in common.nix did not — QEMU phase-2 serial log was 172 bytes.
 - Mirror installer kernelParams + enable services.getty.serial on all cluster hosts.
 
 ## Test plan
+
 - Merge and verify build-ai-cluster-iso scenario 2 passes phase 1 + phase 2
 - Re-dispatch workflow for scenarios 3/4
 

@@ -42,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard for **2026-05-24 2206Z**, documenting the merge of PR #4869 via FP-thread resolution and updating the observed fleet metrics (53→58 open PRs) while continuing lane-discipline reporting.
 
 **Changes:**
+
 - Adds a new tick report capturing the 2206Z snapshot (fleet counts, API budgets, main HEAD, and recent commits).
 - Documents the FP-thread “stale-but-fresh-looking findings” resolution that unblocked auto-merge for PR #4869.
 - Extends the lane-scope lineage table through the new 2206Z observation.

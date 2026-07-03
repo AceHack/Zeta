@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Fixes `lint (tsc tools)` CI failure introduced by PR #2286 (feat/081KR2E4K0008QG0R003RVDX91)
 - `rawSnapshotRef: undefined` violates `exactOptionalPropertyTypes: true` — TS2375
 - Fix: omit the optional property entirely instead of explicitly setting it to `undefined`
@@ -36,6 +37,7 @@
 With `exactOptionalPropertyTypes: true`, TypeScript distinguishes between a property being absent and being explicitly `undefined`. The type `rawSnapshotRef?: string` does not allow `rawSnapshotRef: undefined` — the property must be omitted from the object literal.
 
 ## Test plan
+
 - [x] `bun --bun tsc --noEmit -p tsconfig.json` passes cleanly
 - [ ] CI gate: `lint (tsc tools)` passes
 

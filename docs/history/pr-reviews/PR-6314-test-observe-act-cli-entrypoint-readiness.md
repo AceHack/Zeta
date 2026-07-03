@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - adds a package metadata test for the observe-act CLI script, bin entry, Node engine floor, and shebang
 - updates the Phase 2 CA to mark package/bin readiness as a completed checkpoint instead of a blocker
 
 ## Verification
+
 - node --experimental-strip-types --test apps/agent-cli/test/agent-cli-main.test.ts
 - npm run typecheck
 - npm test
@@ -39,6 +41,7 @@
 - dotnet build -c Release is blocked locally because global.json requests SDK 10.0.203; installed SDKs are 9.0.100, 9.0.200, and 10.0.101
 
 ## Review note
+
 - Requested subagent review could not be spawned because the agent thread limit is currently reached.
 
 ## Outcome

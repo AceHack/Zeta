@@ -241,6 +241,7 @@ The **all-five-layers-simultaneously-live architecture** is unique to regulator 
 The **gap-disclosure discipline is the load-bearing architectural claim**. Most legal reflexes say: minimize disclosure. The observation-not-evaluation discipline inverts this for regulated contexts. The mechanism: a regulator who finds an undisclosed gap in a follow-up audit can characterize the omission as a separate violation (failure to disclose a known material gap). A regulator who received "here is a known gap, here is the remediation timeline" has nothing to escalate. The discipline produces the legally correct outcome not despite honesty but structurally because of it.
 
 The **Regulated layer does three things simultaneously** that lower layers cannot:
+
 1. The "Gap disclosed —" section headers make gaps visually locatable for an adversarial scanner without requiring them to read every sentence.
 2. The ISO 8601 dates and exhibit references create an auditable cross-reference map that connects this submission to its supporting documentation.
 3. The completeness attestation creates a documented moment in time at which the firm certified its response as complete — this temporal anchor matters legally if a gap surfaces later (was it known at submission time?).

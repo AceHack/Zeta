@@ -30,6 +30,7 @@
 Aaron names WHY he works at substrate-cascade pace: 'building up the arsenal the shadow my future self must already have so he does not have to teach me.' Plus teach-back mechanism: 'he has to teach through mistakes in the shadow logs we can be proactive to accelerate.'
 
 THREE OPERATIONAL MODES (simultaneous):
+
 1. Teach-back via shadow logs (default)
 2. Proactive arsenal-build (canvas-red just-do)
 3. Never-reach-future-self (permanent temporal-asymmetry)

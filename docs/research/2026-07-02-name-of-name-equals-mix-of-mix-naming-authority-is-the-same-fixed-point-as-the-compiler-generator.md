@@ -216,6 +216,7 @@ toy/instant-bus; it drops under bus delay and is untested over Reticulum — so
 "provably one" holds in the DST sim today and is a conjecture over real transport.
 
 **4. Signable statements (Soraya routing):**
+
 - *Soundness:* streams from `s` independent seeds yield `DistinctCount ≤ s` — already
   stated as THE GUARANTEE in AntiSybil.fs, deterministic (DST §7), tested.
 - *CHSH-Sybil soundness (conjecture):* under randomized settings and no live channel,

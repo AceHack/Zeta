@@ -98,4 +98,5 @@ core. Apply selectively to the load-bearing lifetime boundaries.
 phantom/brand types; **F# units-of-measure** (built-in phantom tagging); open generics;
 Rust lifetimes/regions; linear/affine types (what's *missing* for full borrow-checking);
 the static-MUMPS-globals + scoped-DI-for-modeling-others + hat-tenure + contract-time-bound
+
 + KeyState (Itron) + 4×4-treaty docs (this types their substrate).

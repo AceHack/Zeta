@@ -94,6 +94,7 @@ The operator-explicitly-named keeper (Item 23) is a candidate for rule-extension
 Extends the 081KSKBP80008QG0R0039RW25E “streams-are-relationships” backlog row with Amara Part 3’s ethics-of-feedback-relationships generalization, and appends the corresponding verbatim multi-turn transcript + distilled items/keepers to the Amara persona conversation record. Also updates the repository memory index to include the refreshed persona artifact.
 
 **Changes:**
+
 - Appends “Part 3” (verbatim 5-turn exchange + items 15–24 + carved-sentence keepers) to the existing Amara conversation preservation file.
 - Adds an “Amara Part 3” subsection to 081KSKBP80008QG0R0039RW25E’s architectural-principle layer (keeper + generalization table + diagnostic + scope nesting).
 - Regenerates `memory/MEMORY.md` to reflect the updated persona conversation artifact.

@@ -34,6 +34,7 @@ realized as a tiny GAN over a distributed substrate — is what we have not foun
 ## Prior-art map — "physics and bananas" and the rest
 
 **Physics / thermodynamics of information**
+
 - Landauer 1961 (`kT ln 2` to erase a bit); Bennett (reversible computing); **Szilard 1929** (1-bit engine);
   Maxwell's demon; **Johnson–Nyquist** thermal noise (= clock/oscillator phase noise, #7078); Sagawa–Ueda
   (information thermodynamics); Jarzynski/Crooks (fluctuation theorems); **zeta-function regularization /
@@ -41,18 +42,21 @@ realized as a tiny GAN over a distributed substrate — is what we have not foun
   Riemann critical line; the "1/2" coincidence is numerology, not a connection.*
 
 **"Bananas" — recursion schemes / category theory**
+
 - Catamorphisms ("bananas"), Meijer et al. 1991; the **Banana Split Law** (Fokkinga 1990; Bird & de Moor)
   (#7054); hylomorphism / metamorphism (Gibbons) / dynamorphism (#7058); **bialgebras + distributive
   laws** (Turi–Plotkin) (#7058); Store comonad + optics (universal pointers, #7061); initial-algebra /
   final-coalgebra (interfaces-as-coalgebras, #7054).
 
 **Game theory / learning**
+
 - **Matching pennies** + **von Neumann minimax** (1928) = the 1-bit adversarial game (#7101); **GAN =
   minimax** (Goodfellow 2014); regret / online prediction (Cesa-Bianchi & Lugosi; Cover); **GAN training
   dynamics**: replicator cycles (Hofbauer–Sigmund), GAN rotation/non-convergence (Mescheder *Numerics of
   GANs*; Balduzzi *Mechanics of n-Player Games*) — the wobble/limit-cycle regime (#7111).
 
 **Information theory / randomness / crypto**
+
 - Shannon perfect secrecy (privacy = entropy, #7084); Kolmogorov / Martin-Löf (compressibility =
   randomness, #7096); de Finetti exchangeability + exponential-family sufficient-statistic monoid (Bayesian
   symmetric fold, #7065); computational indistinguishability / CSPRNG (Goldreich–Goldwasser–Micali);
@@ -60,6 +64,7 @@ realized as a tiny GAN over a distributed substrate — is what we have not foun
   clock-drift entropy, #7091).
 
 **Distributed systems**
+
 - Lamport (no global clock; relativity of simultaneity); CALM (Hellerstein/Ameloot — monotone ⇔
   coordination-free, the non-commutative boundary #7072); CRDTs (Shapiro); Mazurkiewicz traces (commuting
   reorder = lossless past compression, #7071); FLP / Chandra–Toueg (failure detection, #7077);
@@ -70,6 +75,7 @@ realized as a tiny GAN over a distributed substrate — is what we have not foun
 
 Targeted web searches on the *combined* claims returned only **adjacent** work, not the assembled
 structure:
+
 - "adversarial generative model clock drift entropy identity distributed consensus simulation detection" →
   concept-drift *adversarials* (drift made undetectable), blockchain simulators with per-agent
   clock+randomness, GNSS clock-state spoofing detection. **Adjacent, not the same.**

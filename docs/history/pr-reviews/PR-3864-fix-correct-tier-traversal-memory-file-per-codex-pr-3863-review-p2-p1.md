@@ -34,6 +34,7 @@ Inline corrections to [`memory/feedback_rate_limit_tier_traversal_empirical_sess
 ## Codex findings — both real
 
 **P2 (line 78):** "approached Pure-git tier (200-1000)" — wrong. Per [`.claude/rules/refresh-world-model-poll-pr-gate.md`](.claude/rules/refresh-world-model-poll-pr-gate.md), the tiers are:
+
 - Extreme cost-aware: **200-1000**
 - Pure-git: **0-200**
 
@@ -50,6 +51,7 @@ Model providers differ (Claude / Qwen / Grok / Codex / Gemini) but the **`gh` us
 Both fixes inline as "Correction" notes preserving the original trajectory — per [`.claude/rules/substrate-or-it-didnt-happen.md`](.claude/rules/substrate-or-it-didnt-happen.md) strike-don't-annotate refinement applied at memory-file scope. Each correction cites this PR for traceability.
 
 ## Test plan
+
 - [ ] CI green (docs-only)
 - [ ] Broken-commit canary clear
 

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a Bun drift test that regenerates semiring/star-ring law property tests from the locked IR files and byte-compares them with the checked-in generated outputs
 - export the law generator IR type for that self-test
 - remove dead locals from cross-verify-laws.ts, fixing the current main-tip TS lint failure from d196c3e5
 
 ## Validation
+
 - bun test tests/cross-verification/_harness/codegen-law-drift.test.ts tests/cross-verification/_harness/generated-semiring-laws.test.ts tests/cross-verification/_harness/generated-star-ring-laws.test.ts
 - bun src/Core.TypeScript/lint/lint-typescript.ts
 - bun run preflight:quick

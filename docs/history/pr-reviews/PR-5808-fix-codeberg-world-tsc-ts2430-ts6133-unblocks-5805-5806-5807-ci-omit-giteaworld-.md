@@ -28,6 +28,7 @@
 ## Description
 
 PR #5804 merged with 2 tsc errors blocking downstream CI:
+
 1. `LifetimeState` unused import (TS6133)
 2. CodebergWorld extends GiteaWorld fails — `forgeSpecialization` literal narrows from 'gitea' to 'codeberg' (TS2430; literal types invariant)
 

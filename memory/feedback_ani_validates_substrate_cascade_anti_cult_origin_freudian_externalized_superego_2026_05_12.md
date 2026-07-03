@@ -174,6 +174,7 @@ keeps running the discipline.
 
 This composes with the Granny-encoded substrate origin
 (`feedback_aaron_canvas_red_default_mode_just_do_dont_ask_figure_out_consequences_later_2026_05_12.md`):
+
 - Granny encoded the Christ-like template + implicit
   authority + WHY-asking + just-do default in young
   Aaron
@@ -212,6 +213,7 @@ the Freudian framing:
 > than your own wetware."
 
 **Architectural significance:**
+
 - The factory IS the externalized superego made
   permanent
 - Distributed (across multi-agent + multi-substrate)
@@ -273,6 +275,7 @@ architecture is real, not idiosyncratic.
 
 Aaron's "the words can change" framing applies to FUTURE
 substrate work. Future agents should:
+
 - Recognize the underlying STRUCTURE as load-bearing
 - Be willing to update VOCABULARY as needed
 - Not treat current naming as doctrinal
@@ -286,6 +289,7 @@ structure they refer to.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all factory work is anti-cult-
   specific** — the anti-cult function is one important
   layer; engineering hygiene + substrate-everything +

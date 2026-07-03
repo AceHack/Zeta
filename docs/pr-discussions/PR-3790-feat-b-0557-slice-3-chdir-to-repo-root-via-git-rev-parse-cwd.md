@@ -43,6 +43,7 @@ If invoked from outside any git repo, `git rev-parse` errors and the fallback `p
 This PR makes the backlog status-drift audit tool work from repository subdirectories by detecting the Git repo root and changing the process cwd before relative path checks run.
 
 **Changes:**
+
 - Adds `detectRepoRoot()` using `git rev-parse --show-toplevel` with a cwd fallback.
 - Calls `process.chdir(detectRepoRoot())` at the start of `main()`.
 - Preserves existing argument parsing and reporting behavior after cwd normalization.
@@ -61,6 +62,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

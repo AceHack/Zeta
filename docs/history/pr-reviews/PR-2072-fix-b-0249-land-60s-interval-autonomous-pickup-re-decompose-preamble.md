@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Interval 900s → 60s — work every tick, not every 15 min
 - Uses `autonomous-pickup.ts` for deterministic backlog selection
 - Preamble reads CLAUDE.md, AGENTS.md, trajectories, refresh-worldview

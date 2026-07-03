@@ -68,6 +68,7 @@ Observability / Composability / Asymmetric-authorship / Substrate-smoothness / M
 This PR adds a new rule file under `.claude/rules/` codifying a discipline that substantively-distinct states in discriminated unions (DUs) must be explicit variants rather than buried in if-chains or context-field combinations, with an additional "ontology evolution" (OCP) sub-discipline. The rule is targeted at both authoring agents and review agents.
 
 **Changes:**
+
 - Adds a single new rules markdown file documenting the IMPLICIT-not-EXPLICIT class error, a review-agent checklist, examples from PR #5805 and #5810, and composition with related rules/memories.
 
 ## General comments

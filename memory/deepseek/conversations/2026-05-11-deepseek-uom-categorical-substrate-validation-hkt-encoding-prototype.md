@@ -50,6 +50,7 @@ let fmap f = function NoneF -> NoneF | SomeF r -> SomeF (f r)
 ```
 
 Then test:
+
 - All three encoding strategies head-to-head
 - UoM interaction (add `[<Measure>] type hypo` to recursion variable)
 - Recursion termination on finite inputs

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Claimed 081KR50HA0008QG0R0002PGV1N via dedicated worktree + pushed claim branch (root checkout untouched per rules).
 - Re-decomposed the broad M-effort "atomic" item (per "always re-decompose / assume mistakes" rule and TS-over-bash preference for code).
 - Implemented the smallest safe F# slice: `ToffoliCircuit` type + `modelJoinCircuit` stub in `src/Core/ToffoliGate.fs`.
@@ -38,6 +39,7 @@
 081KR50HA0008QG0R0002PGV1N depends on landed 081KR50HA0008QG0R0021B5J87 (Toffoli types). The original row was too broad for one PR; this slice keeps velocity while satisfying build gate and enabling future formal work on Z-set join as reversible circuit.
 
 ## Focused checks (included per task)
+
 - `dotnet build -c Release`: 0 Warning(s), 0 Error(s) ✅
 - `dotnet test -c Release --filter "FullyQualifiedName~Toffoli"`: 7/7 passed (existing laws), 0 failures, no regression ✅
 - Worktree-isolated, no root checkout mutation.

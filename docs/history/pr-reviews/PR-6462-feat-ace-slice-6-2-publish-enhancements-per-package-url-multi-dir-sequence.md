@@ -30,6 +30,7 @@
 Implements **slice 6.2** of `ace registry publish` (081KT07NV0008QG0R0016FVWD7 deferred enhancements). Spec: #6456. Built subagent-driven per `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice6.2-implementation-plan.md`.
 
 ## Three enhancements
+
 - **Per-package `url` field** — optional top-level `url` (sibling of `manifest`/`files`, outside the signed manifest) overrides the derived `<base>/<name>-<version>.json`. Excluded from `package_hash` (hashes manifest+files only — verified), ignored by signature/content_hash gates, validated as an absolute URL (invalid → skip+warn). A package WITH a `url` is exempt from the `<name>-<version>.json` filename guard (the override decouples URL from filename); WITHOUT a `url` the filename guard still applies. All other scan guards (reserved-key, URL-unsafe identity, deps-array, dep-edge, file-values, `validatePackagePaths`) apply in both cases.
 - **Comma-separated `--packages a,b,c`** — multi-directory scan + merge; each dir must be readable (else hard error); cross-dir duplicate `name@version` → existing duplicate guard. Single dir unchanged.
 - **Explicit `--sequence <n>`** — overrides auto-bump; positive integer (else parse error); the anti-rollback guard goes live (`n <= prev.sequence` → refuse).
@@ -37,10 +38,12 @@ Implements **slice 6.2** of `ace registry publish` (081KT07NV0008QG0R0016FVWD7 d
 **ETag/Last-Modified sidecar: dropped** (consumer conditional-GET + 6.1 deterministic output already cover it).
 
 ## Mechanics
+
 - `buildIndexDoc` input shape: `AcePackage[]` → `ReadonlyArray<{ pkg: AcePackage; url? }>` (per-entry url; `package_hash` unchanged).
 - ace.ts: parse (`--packages` comma-split + `--sequence` positive-int), handler (multi-dir loop, read+validate top-level `url`, conditional filename guard, sequence override).
 
 ## Verification
+
 - `bun test tools/ace/` 291 pass / 0 fail (8 net-new: 2 unit url + 6 e2e); RED-before/GREEN-after + false-green confirmed on the url path.
 - strict `tsc --noEmit` exit 0; markdownlint clean; pure LF.
 

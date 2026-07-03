@@ -203,6 +203,7 @@ opt-in theoretical track** structure:
 ### Three examples of applied-over-theoretical
 
 **Example 1: calculus integration (if taught in Craft)**
+
 - Applied: *"When you need the area under a curve, press
   the integral button. When it's a polynomial, integration
   gives you the anti-derivative. Common use cases: physics
@@ -212,6 +213,7 @@ opt-in theoretical track** structure:
   are integrable; construction of the Lebesgue integral."*
 
 **Example 2: DBSP retraction**
+
 - Applied: *"When a row is deleted from the source, Zeta
   automatically retracts it downstream. You call `D` to
   compute the change; you call `I` to integrate it back
@@ -221,6 +223,7 @@ opt-in theoretical track** structure:
   inverse; construction of the operator category."*
 
 **Example 3: Bloom filter**
+
 - Applied: *"When you need approximate set membership with
   a tiny memory footprint, a Bloom filter tells you 'maybe
   present' or 'definitely absent'. Use it for dedup
@@ -368,6 +371,7 @@ mastery: use-first, build-if-interested.
 For Zeta as a taught subject in Craft:
 
 **Primary curriculum** (tool-use):
+
 - How to query with Z-set operators (user's perspective)
 - How to pipeline retraction-native queries (pattern
   composition)
@@ -377,6 +381,7 @@ For Zeta as a taught subject in Craft:
   (tool-choice)
 
 **Secondary curriculum** (tool-construction):
+
 - How Z-set algebra is implemented (for algebra-builders)
 - How retraction is implemented (for DB-internals builders)
 - How the operator-composition preserves invariants
@@ -432,6 +437,7 @@ For every Craft module:
 ### Examples
 
 **Z-set algebra module** (primary):
+
 - Anchor: a tally counter on a market stall — each item
   adds or subtracts a count
 - Abstract: signed-integer weights; retraction via
@@ -440,11 +446,13 @@ For every Craft module:
   (retraction) and restocks (insertion)
 
 **Retraction module** (primary):
+
 - Anchor: an undo button on a web form
 - Abstract: every insert has a retractable partner
 - Running example: edit history in a document
 
 **Operator composition module** (primary):
+
 - Anchor: LEGO blocks snapping together
 - Abstract: algebraic laws preserved through pipeline
 - Running example: building a dashboard pipeline from
@@ -613,6 +621,7 @@ concept-shortlist, write the modules at the contributor
 level, stop. No prereqs-before-contributors for this phase.
 
 Example candidate concepts:
+
 - Z-set algebra (what, not why-not-alternatives)
 - Retraction-native operator intuition (D/I/z⁻¹/H)
 - DBSP vs. Differential Dataflow (when each is right)
@@ -625,6 +634,7 @@ When a Phase 1 module has an implicit prereq that a new
 contributor might not have, add a Phase 2 module for it.
 
 Example candidates:
+
 - Group theory basics (prereq for Z-set algebra)
 - Monotone operators (prereq for operator composition)
 - Schedulers / scheduling (prereq for factory autonomous-loop)

@@ -10,6 +10,7 @@ Her loop: `git root Rₙ + MUMPS scoped state Sₙ + observations/ferries Oₙ +
 reduce uncertainty, persist, regenerate types, compile/replay, advance time one proven step.
 
 Her operational splits and blades, kept:
+
 - **Replay tests vs advance tests** — replay proves determinism (write nothing); advance evolves the
   world (write the next state to a branch). 
 - **Truth root ≠ transport root** — assert over the Zeta canonical root / treaty bytes, never the raw

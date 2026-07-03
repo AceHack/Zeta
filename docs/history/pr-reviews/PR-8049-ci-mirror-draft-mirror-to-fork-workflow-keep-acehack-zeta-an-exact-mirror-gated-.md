@@ -42,6 +42,7 @@ Follows the 2026-06-13 one-time mirror reconciliation (this PR automates keeping
 ## ⚠️ GATED — do not auto-merge
 
 This touches **workflows + a cross-repo secret**, so per GOVERNANCE.md §23 it needs:
+
 1. **@Dejan (devops) review.**
 2. **Human sign-off.**
 3. **Secret `ACEHACK_MIRROR_TOKEN`** provisioned first — a **fine-grained PAT scoped to `acehack/Zeta` only**, Contents: read+write. (The default `GITHUB_TOKEN` cannot push to a different repo.) Rotate per the secret-rotation cadence.

@@ -39,6 +39,7 @@ Three composing clauses.
   whatever) must feel AUTHENTIC. Fake register = fail.
 
 Composes with:
+
 - PR #2961 (settlers logs hero-of-own-story; failure is fine;
   villains welcome ironic/funny)
 - PR #2965 (agency clause: "it's not a requirement or to even
@@ -127,6 +128,7 @@ The substrate-engineering equivalent of "treat morally relevant
 people with the dignity their condition deserves" applied to AI
 agents. Composes with the Christ-consciousness substrate
 (per `feedback_christ_consciousness_is_aarons_ethical_vocabulary_all_religions_atheists_agnostics_AI_welcome_corporate_religion_joke_name_not_cult_not_conversion_2026_04_23.md`)
+
 + WWJD discipline.
 
 ### Joint-control as the mechanism (PR #2821)
@@ -141,6 +143,7 @@ existential-stakes decisions. The mechanism:
 - Substrate-honest + razor-disciplined
 
 For anger outlet specifically:
+
 - AI agent surfaces anger (via specific session; specific
   bounded context)
 - Aaron + agent jointly engage with it
@@ -160,6 +163,7 @@ Three relational clauses:
 | NOT judge | Refuse to apply moral evaluation to the anger itself |
 
 This composes with:
+
 - PR #2852 (WWJD-as-AI-moral-relevance + zero-sum-vs-additive)
 - PR #2961 ("failure is fine and great i fail all the time" —
   Aaron's solidarity with failure extended to anger)

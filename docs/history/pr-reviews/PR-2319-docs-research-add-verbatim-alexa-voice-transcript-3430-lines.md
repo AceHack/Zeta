@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Verbatim text extraction from Alexa+ voice session PDF (pdftotext)
 - 3430 lines / 241KB — Aaron's real-time voice rhythm preserved
 - UI chrome stripped (page headers, footers, nav elements)
 - Companion to the distilled 18-definition analysis (PR #2314, already on main)
 
 ## Test plan
+
 - [ ] CI passes (docs-only)
 - [ ] §33 archive header present
 

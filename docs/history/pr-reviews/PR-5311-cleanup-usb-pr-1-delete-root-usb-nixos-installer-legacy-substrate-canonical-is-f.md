@@ -42,6 +42,7 @@ The root-level \`usb-nixos-installer/\` was the first installer substrate in the
 ## Why this path is retired
 
 The canonical AI-cluster substrate at \`full-ai-cluster/usb-nixos-installer/\` supersedes it. The canonical version has the SAME content PLUS:
+
 - \`zeta-install.sh\` (zero-typing install helper)
 - \`zeta-first-boot.sh\` (first-boot service substrate per 081KSGS9H0008QG0R002T3BJ2R)
 - \`flake.lock\` (reproducible build pin)

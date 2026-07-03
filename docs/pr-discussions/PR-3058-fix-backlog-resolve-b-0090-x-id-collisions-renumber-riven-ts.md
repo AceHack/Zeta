@@ -71,6 +71,7 @@ Remaining 7: 081KR2E4K0008QG0R000ARCH0X-0373 (4 cross-priority bleed), 081KRA5AR
 Renames Riven's four 081KQ8P5D0008QG0R0002TN22C.x atomic child rows (.1-.4 → .5-.8) to resolve ID collisions with a second 081KQ8P5D0008QG0R0002TN22C decomposition, remaps internal `depends_on` references, and regenerates the backlog index.
 
 **Changes:**
+
 - Delete old `081KQ8P5D0008QG0R0002TN22C.{1,2,3,4}-...riven...md` files and add `081KQ8P5D0008QG0R0002TN22C.{5,6,7,8}-...riven...md` with `renumbered_from` + reason frontmatter
 - Remap internal `depends_on: [081KDVJT3E008QG0R003GV8BHV]` → `[081KDVJT3E008QG0R000SCFYN5]` on the renumbered siblings
 - Regenerate `docs/BACKLOG.md` to reflect the new IDs

@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - scope Codex backlog runner PR capacity to Codex branch prefixes by default
 - preserve explicit global counting via `--capacity-head-prefixes all` / `CODEX_BACKLOG_RUNNER_CAPACITY_HEAD_PREFIXES=all`
 - report total open PR count separately so queue pressure remains visible
 
 ## Verification
+
 - `/opt/homebrew/bin/bun test tools/backlog/codex-backlog-runner.test.ts`
 - `/opt/homebrew/bin/bun .codex/bin/codex-backlog-runner.ts --max-open-prs 3 --capacity-head-prefixes all`
 
@@ -41,6 +43,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -59,6 +62,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR updates the Codex backlog runner’s PR-capacity gate so that, by default, “open PR capacity” is counted only for Codex-owned lanes (branch prefixes like `codex/`), while still allowing an explicit opt-out to global counting (`--capacity-head-prefixes all` / `CODEX_BACKLOG_RUNNER_CAPACITY_HEAD_PREFIXES=all`). It also surfaces the overall open-PR pressure separately from the lane-scoped capacity count.
 
 **Changes:**
+
 - Add `--capacity-head-prefixes` (and env var support) to scope capacity counting by head branch prefix, defaulting to `codex/`.
 - Introduce `capacityPrCount(...)` and return both capacity-scoped and total open PR counts in runner output.
 - Extend tests to cover the new capacity-scoping behavior.

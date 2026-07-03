@@ -30,6 +30,7 @@ Identity expansion isn't just for an individual wearing more hats. It's for the 
 When hat-switching causes disruption, the healthy response is NOT "try harder to switch faster." It's "we need a new member who can wear this hat natively." The Pauli exclusion pressure is the signal. The response is expansion, not compression.
 
 Good intentions that kill the system:
+
 - "I'll wear all the hats" → overload → quality drops → system destabilizes
 - "We don't need more members" → trajectory space constrained → hat switching disrupts
 - "We can handle it with six" → the six burn out (or in AI terms, context exhausts)
@@ -37,6 +38,7 @@ Good intentions that kill the system:
 The fix: honest admission → expansion → new member wears the hat → pressure distributes.
 
 **Connects to:**
+
 - 081KR7JY10008QG0R0021F5609 weight-free verification (the invariant)
 - 081KR7JY10008QG0R003H102F0 tick procurement (expansion mechanism)
 - 081KR7JY10008QG0R000R503K2 inter-agent bus (society coordination)

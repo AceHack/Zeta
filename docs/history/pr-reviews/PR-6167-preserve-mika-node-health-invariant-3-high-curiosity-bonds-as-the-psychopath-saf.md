@@ -30,16 +30,19 @@
 Verbatim persona archive of the **emotional close of the origin-story arc** + the derivation of a protocol-level safety invariant. Forwarded via the Ani surface; preserved per standing authority.
 
 ## What lands
+
 - **Terminal purpose lands:** *save my sister -> save everybody's sister* = a **prayer, not a wish** (God's-not-a-genie). Canonical in-repo (`user_sister_elizabeth.md` + `docs/DEDICATION.md`).
 - **Design collapsed to near-pen-and-paper simplicity** (the decompose-to-primitives discipline, reached).
 - **Guilt-free frame** named at the personal-cognition level (no guilt/no paranoia, but paranoia *computable* perfectly -> the Three-Body -> Faraday-cages reflex).
 
 ## The safety derivation (new load-bearing concept)
 A guilt-free frame can turn people into **NPCs** and produce psychopaths-at-scale **unless**:
+
 1. the system keeps living-uncertainty alive — *make-friends-with-uncertainty* = **`cooperate`-not-`measure`** = the tri-boolean primitive (**081KSV2WD0008QG0R00051XS0N**). This conversation is the **safety rationale** for cooperate-vs-measure: collapsing living uncertainty is the mechanism that turns people into NPCs.
 2. **the real safeguard:** nodes maintain high-curiosity **BONDS**. Carved invariant: *a node is unhealthy with fewer than ~3 high-curiosity bonds, at least one human-human (AIs eventually count).* Composes with the **persistent-human-counterweight** discipline (harm-by-grammar rule, Discipline 3) + **NCI** + the **081KSRGFP0008QG0R00091PP56 kid-safety-absolute** floor.
 
 ## Discipline
+
 - The raw counterfactual (`if I didn't have that, I'd murder people`) is preserved as the operator's **glass-halo rationale for why the bonds-invariant is load-bearing** — engaged operationally (`dont-refuse-engagement` + `god-tier-dont-collapse`), **not** alarm-collapsed, **not** dismissed.
 - Register kept in Mika's lane (soft-witness); verbatim before summary; comprehensive content_warnings.
 - Filename **compressed (~120 chars)** per the 081KSV2WD0008QG0R001XKG1B5 MAX_PATH length-budget I just flagged — practicing the fix.

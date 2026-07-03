@@ -32,8 +32,10 @@ The numeric algebra foundation for ring-generic soft-lane codegen.
 - StarRing<T> interface (port of F#'s IStarRing<'A>)
 - Real, Complex, Quaternion, Octonion instances via Cayley-Dickson doubling
 - co
+
 Ports F#'s IStarRing<'A> to TypeScript:
 -ing = change physics)
+
 - 22 tests, 92 assertions (ring laws + CD tower + interference/retraction)
 
 Next: wire this into the soft-lane codegen so generated code uses the algebra.

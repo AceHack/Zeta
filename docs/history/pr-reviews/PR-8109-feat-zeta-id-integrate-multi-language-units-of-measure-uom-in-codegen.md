@@ -30,17 +30,20 @@
 feat(zeta-id): integrate multi-language Units of Measure (UoM) in codegen
 
 Why:
+
 - Implements compile-time UoM/dimensional correctness for bit layouts, preventing offsets, widths, and timestamp units from being mixed up.
 - Adheres to the approved ADR: docs/DECISIONS/2026-06-13-multi-language-units-of-measure-in-codegen.md.
 - Enforces strict type safety across all 6 languages (F#, C#, TypeScript, Rust, Go, Python) with zero runtime overhead.
 
 What:
+
 - Modified src/Core.TypeScript/zeta-id/zeta-id-generator.ts to emit UoM wrapper structures (F# unit of measure, C# readonly struct, TS branded bigint, Rust NewType struct, Go type alias, Python NewType) and wrap offset/width constants.
 - Updated src/Core.TypeScript/zeta-id/zeta-id.ts to typecheck parameters as Bits.
 - Updated src/Core.CSharp.ZetaId/BitLayout.cs and ZetaIdCodec.cs to use C# Bits wrapper.
 - Updated src/Core.FSharp.ZetaId/Types.fs and BitLayout.fs to use F# bit measure.
 
 Proof:
+
 - Regenerated layout code successfully across all 6 target languages.
 - Solution builds cleanly in Release mode (0 warnings, 0 errors).
 - F# test suite is 100% green (3,145/3,145 tests).

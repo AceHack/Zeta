@@ -51,6 +51,7 @@ And the follow-up clarification:
 **On PATH**: gh + claude + kubectl + helm + k9s + argocd + cilium-cli + hubble + nmblookup + smbclient + git + nodejs/npm + standard tools
 
 **In \$HOME**:
+
 - \`~/Zeta/\` (pre-cloned)
 - \`~/.config/gh/\` (iter-5.4.0 gh auth persisted)
 - \`~/.config/claude/\` (iter-5.5.0 claude login persisted)
@@ -79,6 +80,7 @@ Per \`.claude/rules/non-coercion-invariant.md\` HC-8: operator interactive YES/n
 This PR extends the NixOS cluster install flow to install Claude Code at install-time, persist both GitHub + Claude credentials into the installed `zeta` user’s home, and pre-clone the Zeta repo so the first interactive login can start work immediately.
 
 **Changes:**
+
 - Add installer Step 6.95 to `zeta-install.sh`: npm-install `@anthropic-ai/claude-code`, optional interactive `claude login`, copy `/root/.config/gh` into the installed home, and pre-clone the repo to `/mnt/home/zeta/Zeta`.
 - Update the shared NixOS `common.nix` baseline to include `nodejs_22`, `samba`, and a PATH hook for `~/.npm-global/bin` (plus an attempted `NPM_CONFIG_PREFIX` session variable).
 

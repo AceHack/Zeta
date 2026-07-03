@@ -48,6 +48,7 @@ F# / C# / Rust / TS impls, each cross-verified against `src/Core.TypeScript/z-se
 Z-set meets the canonical bar **more completely than DynamicValue/ZetaId** (adds Z3 + Lean + TLA to FsCheck + byte-lock) → **lead canonical candidate**, pending Soraya ratification + the registry marker.
 
 ### Honest gaps
+
 1. Z3 covers only 2 of 6 abelian-group laws (Z3↔FsCheck cross-check incomplete for identity/inverse/double-neg/sub — a real candidate to close, search-confirmed not duplicative).
 2. The connection was implicit until this note.
 3. Does the gate actually *run* Lean/TLA, or are they green-by-absence? (assert-don't-skip.)

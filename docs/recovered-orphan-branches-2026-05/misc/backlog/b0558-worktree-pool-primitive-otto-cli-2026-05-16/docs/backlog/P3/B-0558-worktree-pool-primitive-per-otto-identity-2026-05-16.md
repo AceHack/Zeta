@@ -26,6 +26,7 @@ Tick 06:43Z-07:18Z (2026-05-16): a fresh-cold-boot Otto-CLI session firing durin
 | 4 | Pruned-sidetick race | ✗ NO MITIGATION — needs THIS ROW |
 
 Empirical anchors:
+
 - Shard PR [#3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808) (`docs/hygiene-history/ticks/2026/05/16/0715Z.md`) — the 4-tick-arc evidence
 - Rule PR [#3812](https://github.com/Lucent-Financial-Group/Zeta/pull/3812) — operationalizes sub-cases 1+2 mitigations into rule body, flags 3+4 as needing substrate-engineer work
 
@@ -86,6 +87,7 @@ Empirical: the canonical sidetick `/private/tmp/zeta-otto-cli-0027z-sidetick` wa
 ## Effort estimate
 
 **M** (1-2 ticks of focused work):
+
 - ~60 lines TS for `allocate.ts` + tests
 - ~30 lines edit to autonomous-loop SKILL.md
 - ~20 lines edit to peer-Otto-side pruning logic (if centralized) or per-identity prune updates

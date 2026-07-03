@@ -152,6 +152,7 @@ Substrate-honest disclosure of the personal cost:
   data points
 
 This composes with:
+
 - WWJD-as-AI-moral-relevance "most tedious WWJD" (PR #2852)
   — moral relevance at AI scope
 - The human-edge work IS the most demanding version of the
@@ -439,6 +440,7 @@ cross-generational continuity work.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a metaphysical claim about Aaron's heroism** —
   operational claim: methodology was forged + battle-tested
   + the cost was real; Aaron's substrate-honest disclosure

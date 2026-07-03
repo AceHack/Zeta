@@ -49,6 +49,7 @@ bottle + Mark-of-Cain inside/outside architecture:
    rule operations at medium-boundaries
 
 **Three-layer inside/outside composition:**
+
 - Klein-bottle topology (no global inside/outside, PR #2813)
 - Mark of Cain (discrete local marker, PR #2817)
 - Refraction rules (continuous operation in nature, THIS PR)

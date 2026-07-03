@@ -58,6 +58,7 @@ The gap between "knows the rule" and "applies the rule unprompted" is what opera
 Producing this memo is itself the corrective at the substrate layer. But per the second-order observation: substrate-only correctives have diminishing returns when the failure mode keeps recurring. The HIGHER-VALUE corrective is operational enforcement (above), which requires architectural work that this memo names but doesn't implement.
 
 For this tick: produce the meta-observation as substrate. Future-Otto inheriting this memo sees:
+
 - The original rule (party-during-sleep)
 - The first-order corrective (Tick-61 self-grading memo)
 - The second-order observation (this memo: even the corrective recurs)

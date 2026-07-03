@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Pure-git tier audit (zero GraphQL) found 5 in-repo `.claude/rules/*.md` files citing `memory/feedback_*.md` paths that exist only at user-scope (`~/.claude/projects/.../memory/`), not in-repo. Cold-boot agents on fresh checkouts (different machine, new contributor, CI agent without user-scope memory) follow these citations and find nothing.
 
 **The 5 dangling refs**:
+
 - `holding-without-named-dependency-is-standing-by-failure.md` → `feedback_classifier_caught_otto_in_standing_by_*_2026_05_15.md`
 - `persistence-choice-architecture-for-zeta-ais.md` → `feedback_aaron_zeta_is_memory_preservation_specialist_first_*_2026_05_15.md`
 - `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` → `feedback_codeql_no_source_seen_*_2026_05_15.md`
@@ -28,6 +29,7 @@ Pure-git tier audit (zero GraphQL) found 5 in-repo `.claude/rules/*.md` files ci
 - `premise-flagged-unverified-stays-unverified-downstream.md` → `feedback_aaron_we_are_the_ones_cooking_it_youtube_*_2026_05_16.md`
 
 **Two architectural options**:
+
 - **A** — promote user-scope memos to in-repo (constitutional memos warrant this; cost varies by size + PII)
 - **B** — citation-form disclosure ("user-scope only; see CURRENT-aaron.md for projection") (cheaper, honest about two-tier architecture)
 
@@ -52,6 +54,7 @@ Substrate-honest pre-empt at brief-ack #4 per the empirical anchor in `holding-w
 Adds a new memory entry capturing an Otto-CLI audit finding that several in-repo `.claude/rules/*.md` documents cite `memory/feedback_*.md` paths that only exist in user-scope memory, making those citations non-resolving for cold-boot agents on fresh checkouts.
 
 **Changes:**
+
 - Adds a new `memory/feedback_*.md` file documenting the 5 dangling rule→memory references and their cold-boot impact.
 - Records proposed remediation options (promote memos in-repo vs citation-form disclosure) and a repeatable grep-based audit method.
 
@@ -60,6 +63,7 @@ Adds a new memory entry capturing an Otto-CLI audit finding that several in-repo
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md:27**
+
 * P1: This hard-codes a specific user-scope directory (with a local username) into a repo-committed memory. Replace with a generic `$HOME/.claude/projects/<x>/memory/`-style path so the audit instructions are reproducible on other machines.
 ```
 
@@ -67,6 +71,7 @@ All 5 verified as `USER-SCOPE-ONLY` by an `ls` check against `$HOME/.claude/proj
 
 ```
 **memory/feedback_otto_cli_audit_in_repo_rules_cite_user_scope_only_memory_files_5_dangling_refs_cold_boot_invisible_2026_05_17.md:60**
+
 * P1: In the suggested audit script, `USER_MEM` is set to a workstation-specific path segment (`-Users-acehack-...`). Use a portable placeholder like `$HOME/.claude/projects/<project>/memory` (or `~/.claude/projects/<x>/memory`) so the snippet can be copy/pasted by contributors and CI agents.
 ```
 # Verify each at user-scope:
@@ -98,6 +103,7 @@ P0: The memory schema validator requires literal body markers `Why:` and `How to
 P1: This embeds a machine-specific user-scope path (includes a local username and workstation directory slug). For portability and privacy, prefer the generic form already used elsewhere (`~/.claude/projects/<x>/memory/`) or `$HOME/.claude/projects/<project>/memory/` rather than a concrete `-Users-...` path.
 
 This issue also appears in the following locations of the same file:
+
 - line 25
 - line 56
 

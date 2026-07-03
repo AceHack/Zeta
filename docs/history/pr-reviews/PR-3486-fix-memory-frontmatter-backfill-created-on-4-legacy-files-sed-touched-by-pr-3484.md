@@ -32,6 +32,7 @@
 Follow-up to PR #3484 (Amara migration). The cross-ref sweep there touched 4 legacy top-level \`memory/*.md\` files that pre-date the \`created:\` required frontmatter field. The memory-index-integrity check (081KRCQQF0008QG0R0037YYP1A) flagged them on PR #3484 as non-required check failures; auto-merge fired anyway because the gate is non-blocking, but the substrate-honest fix is to backfill.
 
 Files + dates (from filename suffix):
+
 - \`feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md\` → \`2026-04-30\`
 - \`feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md\` → \`2026-04-29\`
 - \`feedback_otto_348_maji_vs_messiah_separation_finder_vs_anchor_messiahscore_amara_second_correction_2026_04_26.md\` → \`2026-04-26\`

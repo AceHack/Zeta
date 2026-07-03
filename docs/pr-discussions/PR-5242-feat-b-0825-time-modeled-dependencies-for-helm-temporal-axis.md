@@ -23,6 +23,7 @@ Files [081KSGS9H0008QG0R002PT5C7J](https://github.com/Lucent-Financial-Group/Zet
 **Helm's UNIQUE requirement** — Maven/npm/apt/Cargo don't need time-axis because build-time PMs separate install from continuous-running. Helm CAN'T separate them: install IS deploy IS continuous-running on long-running stateful clusters.
 
 **Missing primitives** at chart-graph layer:
+
 - Multi-version overlap window (postgres v15 + v17 side-by-side during migration)
 - Migration-phase modeling (preparing / cutting-over / dual-running / draining-old / cleanup)
 - Time-aware diamond resolution (per 081KSGS9H0008QG0R0018ES3R4 + 081KSGS9H0008QG0R00367G209)

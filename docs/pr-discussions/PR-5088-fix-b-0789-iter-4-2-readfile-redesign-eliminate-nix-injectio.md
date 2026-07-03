@@ -70,6 +70,7 @@ Adding `$` to the sed pipeline would fix that specific vector but the underlying
 This PR redesigns the iter-4.2 SSH-key injection path to eliminate Nix string-parsing of USB-supplied pubkey material by switching from generating a `.nix` file with embedded strings to writing a plain `.txt` file that is read via `builtins.readFile`.
 
 **Changes:**
+
 - Update the NixOS module to read authorized keys from a sibling `operator-ssh-keys.txt` file instead of inline Nix string literals.
 - Add `operator-ssh-keys.txt` stub file to the repo as the canonical editable key list.
 - Simplify `zeta-install.sh` to write the detected USB pubkey file directly into `operator-ssh-keys.txt` during install, and broaden `zflash.ts` pubkey validation/`~/` expansion behavior.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - expose the workflow-scoped Actions token to the CodeQL workflow environment
 - let tools/setup/common/mise.sh promote that token to MISE_GITHUB_TOKEN during mise install
 - prevent the C# CodeQL leg from exhausting anonymous GitHub API quota while fetching release metadata
@@ -36,6 +37,7 @@
 The latest main CodeQL run failed in the C# leg before analysis. `./tools/setup/install.sh` invoked `mise install` without any GitHub token in the environment, so mise/aqua used anonymous release metadata calls and hit the 60/hr GitHub API limit.
 
 ## Validation
+
 - mise exec -- actionlint .github/workflows/codeql.yml
 - git diff --check origin/main..HEAD
 

@@ -221,6 +221,7 @@ external content).
 > - `docs/backlog/P2/081KQGDBJ0008QG0R0015RNK3P-brittle-pointer-section-numbers-deep-links-discipline-aaron-2026-05-01.md`
 >   (in-flight in PR #1110) — first explicit instance of
 >   pre/post pattern.
+
 - `memory/feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`
   — WWJD-canonicalization-event (this carved-sentence file
   builds on it: WWJD = universal-disposition, not religion-
@@ -246,6 +247,7 @@ external content).
 ## Future-Otto check
 
 Future-Otto reading this should know:
+
 - Trust-then-verify is the operational principle for substrate
   co-development with Aaron AND for Aurora PoUW-CC.
 - CC = WWJD (universal-disposition, not religion-specific) is

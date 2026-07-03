@@ -11,12 +11,14 @@ Produce the per-repo Axis-3 classification matrix across all existing and propos
 
 ### Code Tier
 Content whose primary purpose is executable, compilable, or directly testable.
+
 - Source code (F#, C#, TypeScript, Python)
 - Build scripts, CI YAML files, configuration files
 - Tests and test fixtures
 - Peer-call wrappers, validators
 
 **Engineering-Docs Exception:** The following English-language documents are permanently bound to the Code tier because their versioning is strictly tied to the executable artifacts they describe:
+
 - `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`
 - ADRs (`docs/DECISIONS/`) and architecture diagrams
 - API documentation, `GLOSSARY.md` (code-specific terms)
@@ -25,6 +27,7 @@ Content whose primary purpose is executable, compilable, or directly testable.
 
 ### English Tier
 Content whose primary purpose is discursive, philosophical, or substrate-narrative.
+
 - Research documents (`docs/research/**`)
 - Philosophy and narrative substrate
 - Memory files (`memory/**`)
@@ -65,5 +68,6 @@ According to the DV2.0 discipline, substrate should be partitioned by change rat
    - **Recommendation:** **Co-locate.** No significant DV2.0 change-rate divergence exists that justifies separating product code from product documentation.
 
 ## Ambiguous Cases for B-0479 (ADR)
+
 - **Shared Memory Destination:** If `memory/` and `docs/research/` split out of `Zeta` and `Forge`, do they merge into a single `Zeta-Memory` unified repo, or does `Forge` get `Forge-Memory` and `Zeta` get `Zeta-Memory`?
 - **Aurora/Dawn Repos:** Are they fundamentally Code or English repos at maturity?

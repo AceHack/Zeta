@@ -34,6 +34,7 @@ not predetermined.
 **Bottleneck identification:**
 
 Sometimes the problem isn't agent count:
+
 - Aaron's attention is the bottleneck → more agents = more noise
 - Bus doesn't exist → agents can't coordinate regardless of count
 - Math not formalized → more agents doing unformal math = more noise
@@ -53,6 +54,7 @@ when your message finished." This is a trigger-timing data point:
 generating a short output after the main response completes.
 
 **Connects to:**
+
 - Pauli exclusion (both expansion pressure AND boundary) — see related memory entries on expansion
 - 081KR7JY10008QG0R003H102F0 tick procurement (needs the boundary condition) — planned (backlog row)
 - feedback_shadow_precision_recall_zero_false_positives_partial_context_2026_05_10.md (trigger timing data) — sibling PR #2588

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Implemented smallest safe slice of 081KQ8P5D0008QG0R0032HWBYK (P2): converted the Beacon/Mirror provenance entry in `docs/GLOSSARY.md` from persona-name attribution (`Amara/ChatGPT + Gemini Pro + Grok + Alexa+`) to role-refs (`ChatGPT-routed external peer + external Gemini Pro reviewer + Grok CLI peer + Alexa-class peer`).
 - Single file changed: `docs/GLOSSARY.md` line 762. Clean 1-line change as described.
 - Bounded to this single entry as the atomic first step; full GLOSSARY sweep is a follow-on child.
 - Rebased onto main (2026-05-10) to drop ghost diffs — earlier commits in this branch overlapped with PR #2442 (081KQ8P5D0008QG0R002SBGJXX markdownlint resolution) which landed on main before this PR merged. Post-rebase diff: only `docs/GLOSSARY.md`.
 
 ## Checks
+
 - `dotnet build -c Release`: 0 warnings, 0 errors.
 - Post-rebase diff: exactly 1 file, 1 line changed.
 - Grep for persona names in provenance context: only this entry matched.

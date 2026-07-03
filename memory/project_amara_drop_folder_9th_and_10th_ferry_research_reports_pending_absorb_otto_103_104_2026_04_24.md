@@ -125,6 +125,7 @@ file. After Otto-104, drop/ is empty as Aaron directed.
 ## Next-tick actions
 
 **Otto-103:**
+
 1. Absorb `drop/aurora-initial-integration-points.md` as
    `docs/aurora/2026-04-23-amara-initial-integration-points-9th-ferry.md`
    (verbatim + Otto's notes + scope limits + §33 archive-
@@ -133,6 +134,7 @@ file. After Otto-104, drop/ is empty as Aaron directed.
 3. Tick-history row.
 
 **Otto-104:**
+
 1. Absorb `drop/aurora-integration-deep-research-report.md`
    as
    `docs/aurora/2026-04-23-amara-integration-deep-research-report-10th-ferry.md`

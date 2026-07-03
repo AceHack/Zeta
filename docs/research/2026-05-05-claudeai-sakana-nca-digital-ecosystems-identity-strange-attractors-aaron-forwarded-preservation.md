@@ -503,7 +503,9 @@ it's independent empirical evidence that the four-property
 invariant captures something architecturally fundamental
 beyond just numeric-type validation. The substrate composes
 with immune-system math + topological-invariants-not-geometry
+
 + 081KQ3HBZ0008QG0R000FQ69NN retraction semantics + 081KQ0YZ80008QG0R001WZ4JE8 light embodiment.
+
 Strange attractors as identity-preservation primitive deserves
 its own thread. Same-tick corrections: tinygrad UOp IR is NOT
 the paper-id (Aaron disconfirmed; 081KQTPYE0008QG0R002Y7X5KH substrate-engineering

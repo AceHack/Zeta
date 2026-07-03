@@ -37,6 +37,7 @@ First concrete instance of the codegen-forward trajectory already documented in 
 Adds `gen-ir.test.ts` proving the generator-fidelity invariant BITES: corrupting one IR constant, or dropping a round, diverges from the golden. A wrong generator cannot silently pass the byte-lock.
 
 ## Validation
+
 - `bun test .../splitmix64/_gen/gen-ir.test.ts` → 3 pass
 - `bun src/Core.TypeScript/ci/cross-verify-all.ts` → 13/13 primitives passed
 - tsc gate green

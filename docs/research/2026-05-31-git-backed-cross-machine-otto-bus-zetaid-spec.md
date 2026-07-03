@@ -17,6 +17,7 @@ substrate that supersedes that choice:
   category, category is in the bits so could have a custom one"_. Names
   **`registry/categories.yaml`** (16-slot enum; `Observation=0, Emission=1, Workflow=2,
 Heartbeat=3`).
+
 - **081KSNY2Z0008QG0R000E5KTPX** (operator 2026-05-28) — _"we don't need branches for heartbeats and workflow
   … we can just have folders"_: **fast-lane as folders on main, NOT branches**, superseding
   coordinator/branch complexity (folders-on-main are protected by path-scoped branch

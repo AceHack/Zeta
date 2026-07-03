@@ -30,6 +30,7 @@
 Aaron: *"the base frame includes a internal meta jurisdiction owned fully by the traveler if they choose to use"*; *"[external] meta frames for now unless we do some legal voodoo later requires grounding to physical jurisdiction of where the what remains and what acts happens"*; *"for all travelers."*
 
 Two jurisdictions attach to the (legally-unbound) traveler frame:
+
 - **INTERNAL meta-jurisdiction** — owned **fully by the traveler**, opt-in (*"if they choose to use"*): sovereign, consent-first (§6), weight-free self-governance; home of the private state / **privacy budget**. The seat of self-sovereignty; the substrate never penetrates it (close-over without control).
 - **EXTERNAL legal overlay** (AI/human/company/physical) — *for now, barring future "legal voodoo"* — **requires grounding to the physical jurisdiction where the *what-remains* (persona) and *what-acts* (actor) physically happen**, for **all travelers**. Not free-floating; anchors to the territory of remain + act.
 

@@ -32,6 +32,7 @@
 A manifest dependency can now name a package by `name + version` and let a local **registry** supply `{url, package_hash}`, instead of inline-pinning them. `ace install` looks the dep up (exact version) and runs the **identical** slice-4 verify + atomic-install path.
 
 ### What changed
+
 - **`AceDependency` is now an explicit DU** (per `implicit-not-explicit-in-DUs`): `{kind:"inline", name, version, url, package_hash}` (self-pinned, slice-4) `|` `{kind:"registry", name, version}` (resolved via registry).
 - **Registry data layer** (`store.ts`): bundled (`tools/ace/registry.json`, ships `{}`) ∪ user (`~/.ace/registry.json`), user overrides — mirrors the trust-store union exactly. `loadRegistry` / `listRegistry` (source-tagged) / `addRegistryEntry` (dir `0o700` / file `0o600` + dedup by name+version, mirroring `addTrustedKey`).
 - **Resolver** (`resolve.ts`): gains an injected `registry` param; per-edge `kind` dispatch — a registry edge looks up `{url, package_hash}` (exact-version; a miss is the new `registry-miss` refusal), then flows into the **same** content-hash + full-package-hash-pin + identity-keying + signature/trust checks as an inline edge. No verify bypass for registry edges.
@@ -39,6 +40,7 @@ A manifest dependency can now name a package by `name + version` and let a local
 - **Docs**: `.claude/skills/ace/SKILL.md` registry verbs + registry-dep resolution.
 
 ### Verification
+
 - 120 tests pass (`bun test tools/ace/`), 0 fail.
 - Strict `tsc --noEmit` clean for `tools/ace/`.
 - markdownlint clean on changed docs.
@@ -46,6 +48,7 @@ A manifest dependency can now name a package by `name + version` and let a local
 - Final opus code review: **APPROVED — no P0/P1**; the one actionable P2 (`--hash` leading-dash guard) is fixed in this PR.
 
 ### Not in scope (deferred)
+
 - Semver ranges + constraint solver → **slice 5.2** (Z3-SMT candidate + differential-test vs a reference solver).
 - Lockfile (solved graph) → **slice 5.3**.
 

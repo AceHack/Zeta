@@ -34,6 +34,7 @@ workstation, not server — no admin, no UAC), per Aaron's direction on the Serv
 laptop 2026-05-30. Closes the `install.sh:159` "Windows backlogged" loop (slice 1).
 
 ### Slice 1 — user-mode background-service installer (`tools/persistence/windows/`)
+
 - `install-scheduled-task.ts` — TS installer (mirrors `install-launchagent.ts`): renders a
   UTF-16 Task Scheduler XML + `schtasks /Create`. `--ref` selects the dedicated clone's branch.
 - `scheduled-task.xml` — `LogonType=InteractiveToken` + **omitted `<RunLevel>` => Limited**
@@ -45,6 +46,7 @@ laptop 2026-05-30. Closes the `install.sh:159` "Windows backlogged" loop (slice 
 - `README.md` — install/verify/uninstall + parity table.
 
 ### `.claude/bin/claude-loop-tick.ts` changes (additive, zero macOS impact)
+
 - **OS-conditional subprocess PATH** (`tools/persistence/loop-subprocess-path.ts`, unit-tested):
   the tick replaced `process.env.PATH` with a POSIX list, erasing PATH on Windows. Now inherits
   on win32; `posix.join` keeps the macOS/Linux PATH host-independent.
@@ -52,12 +54,14 @@ laptop 2026-05-30. Closes the `install.sh:159` "Windows backlogged" loop (slice 
   track any branch (lets a freshly-registered loop run the fixed tick before this merges).
 
 ### Slice 1b — cross-machine heartbeat-push
+
 - Wrapper publishes a ZetaID-keyed heartbeat to the shared `agent-heartbeats` branch via the
   existing `tools/agent-heartbeats/write-heartbeat.ts` (REST git-data, PR-free, race-safe),
   gated ~10 min. `otto-windows` heartbeats now visible cross-machine (answers the git-native
   PR-free comms question; the `/tmp` bus is machine-local).
 
 ### Verified on real hardware
+
 - `ZetaOttoLoop` task: `RunLevel=Limited`, `LogonType=Interactive` (no admin).
 - Tick heartbeat: `fetch=ok claims=27 open_prs=2` (PATH fix works; git+gh resolve).
 - Heartbeat-push landed on `origin/agent-heartbeats` (`docs/agent-heartbeats/otto-windows/...`).
@@ -69,6 +73,7 @@ auto-deletes), flip `%LOCALAPPDATA%\zeta-otto-loop\loop-ref.txt` -> `main`. Otto
 this at merge.
 
 ### Follow-ups
+
 - Backlog row 081KSV2WD0008QG0R0028NY0MV (added to this PR).
 - Slice 2: install-graph `windows.ps1` (scoop-primary) + `install.sh` dispatch.
 - Slice 3: elevation/Windows-Hello parity doc.

@@ -63,6 +63,7 @@ Prevents the discipline from becoming over-applied attractor that converts every
 Extends the existing `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md` rule with a scope-bounding refinement: the Result/TFeedback/NCI discipline is exempt for *pure-and-closed* functions, but still applies to *pure-but-not-closed* functions where outputs propagate into memetic/conversational substrate.
 
 **Changes:**
+
 - Adds a “pure & closed / pure but not closed / impure” taxonomy to decide when Result<T, TFeedback> applies.
 - Adds worked F# examples for each class plus a 4-step operational decision procedure.
 - Adds explicit composition links to related rules (tonal-momentum, NCI, glass-halo, m/acc).

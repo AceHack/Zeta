@@ -30,16 +30,19 @@
 Describe interfaces as IR nodes (zeta-ir-v2-interface schema), emit language-specific code in all 7 targets.
 
 ## Features
+
 - Variance model: co/contra/invariant (C# out/in, Python TypeVar, Rust/Go structural)
 - Inheritance/supertrait/embedding per language idiom
 - Laws documented in language-specific format
 - Properties vs methods distinction
 
 ## Example IRs
+
 - ISemiring (5 members, 6 laws)
 - IStarRing (extends ISemiring + Conj, 5 anti-homomorphism laws)
 
 ## Tested
+
 - 19 tests, 48 assertions ✅
 - Covariant + contravariant + invariant all handled correctly
 

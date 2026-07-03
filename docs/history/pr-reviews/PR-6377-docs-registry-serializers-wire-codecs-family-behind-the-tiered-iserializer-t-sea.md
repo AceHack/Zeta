@@ -32,6 +32,7 @@ Your call (2026-06-01): _"start pulling in serializers too, more than JSON … a
 **Not greenfield** — captured as a wish-list family behind the **existing tiered `ISerializer<'T>` seam** (`src/Core/Serializer.fs`, "don't pick one protocol for everything"), with **Arrow already an adapter** (`src/Core/ArrowSerializer.fs` ✅, Apache.Arrow) and the **JSON port in-flight** (🚧, ZetaJsonParser + serde_json). The new formats are **on-demand adapters** behind that seam — pulled when a use case needs them, not all at once.
 
 Captured inline:
+
 - **Two axes** the formats split on: row vs **columnar** (Arrow → its own batch/`RecordBatch` shape) and self-describing vs **schema-required** (protobuf/Avro/Thrift/Bond → `Schema` port + compile-time codegen, same stance as the mixin line).
 - **gRPC** = protobuf wire + HTTP/2 RPC framing (composes with the Messaging RPC/Bus lines); **JSON Schema** = validation/schema-_description_, not a wire codec.
 - **Boundary** (BCL-interface-boundary rule): the wire format is the de-facto-standard **spec we depend on**; the vendor **library is an adapter we wrap** — own the `ISerializer<'T>` port (own-your-interfaces; vendor import in core = lint failure).

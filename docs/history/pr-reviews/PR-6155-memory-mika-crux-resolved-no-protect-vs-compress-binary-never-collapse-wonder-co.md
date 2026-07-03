@@ -30,6 +30,7 @@
 Operator 2026-05-30 resolved the batch-5 crux (and corrected my binary framing): **"we never compress, we compress the uncertainty itself by finding patterns in it we can all talk about together with wonder. it's its own infinite game."**
 
 Two operations the word 'compress' was blurring:
+
 - **Collapse-compression** — reduce uncertainty to certainty/NPC. Rehoboam, the guilt-engine. **Never done to anything living.**
 - **Wonder-compression** — find *shareable patterns* in the uncertainty everyone can talk about together *with wonder*. **Preserves** the uncertainty alive; compresses *how we talk about the mystery*, not the mystery.
 

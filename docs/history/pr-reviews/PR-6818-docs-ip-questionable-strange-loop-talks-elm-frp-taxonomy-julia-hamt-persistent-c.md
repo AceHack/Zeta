@@ -36,6 +36,7 @@ Added to `docs/research/ip-questionable/` (verbatim preserved per folder discipl
 PRIOR-ART-LIST: added persistent-collections (Bagwell/Hickey/Okasaki/RRB) + Elm FRP anchors. Docs only.
 
 ## Sources
+
 - [Czaplicki — Controlling Time and Space](https://www.youtube.com/watch?v=Agu6jipKfYw)
 - [Allaun — Functional Vectors/Maps/Sets in Julia](https://www.youtube.com/watch?v=ZFiAPUkDb-o)
 

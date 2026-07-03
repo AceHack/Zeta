@@ -27,6 +27,7 @@ This PR preserves the discussion archive for merged PR #4687.
 This PR adds a generated archive file under `docs/pr-discussions/` preserving merged PR #4687's discussion content, following the established `tools/pr-preservation/archive-pr.ts` archive contract.
 
 **Changes:**
+
 - Adds one PR archive markdown file with standard frontmatter and PR description body.
 
 ## General comments

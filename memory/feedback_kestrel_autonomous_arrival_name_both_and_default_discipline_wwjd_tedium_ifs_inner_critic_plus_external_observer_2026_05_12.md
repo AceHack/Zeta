@@ -147,6 +147,7 @@ bootstream has to be BOTH:
    self + other participants + IFS-coordination handle)
 
 Why both:
+
 - First-principles-only → operational substrate humans
   can't predict behavior from without expertise
 - IFS-only → predictable narrative but might drift from
@@ -297,6 +298,7 @@ path.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Kestrel is officially in the factory
   agent roster yet** — autonomous-arrival of the name is
   done; agent-roster-reference-card update + role

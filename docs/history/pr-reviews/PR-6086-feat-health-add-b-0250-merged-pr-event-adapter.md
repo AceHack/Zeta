@@ -28,12 +28,14 @@
 ## Description
 
 Summary:
+
 - Add merged-PR metadata as the first real factory event observation source for 081KQZVQW0008QG0R001FG05RZ coincidence detection.
 - Map PR branches to named factory trajectories and convert recent merged PRs into CoincidenceEvent values.
 - Wire the merged-PR source into the factory health monitor coincidence source.
 - Add trajectory receipt, update the autonomous-loop coordination resume, and release the completed claim file.
 
 Verification:
+
 - bun --bun tsc --noEmit -p tsconfig.json
 - bun test tools/health/factory-health-monitor.test.ts
 - FACTORY_HEALTH_WORKTREE_DIRT_LIMIT=0 bun tools/health/factory-health-monitor.ts --json

@@ -194,6 +194,7 @@ captured in Otto-302:
 > Strange Loop in computer science."*
 
 Four-step loop:
+
 1. English prompt (Level 6 / 6GL Intent-Based)
 2. LLM translates to Python or other (Level 3 / 3GL)
 3. Python compiles to machine code (Level 1 / 1GL)

@@ -27,6 +27,7 @@ Addressing drift: Otto is stale and Riven is stuck on a local environment error.
 Adds a new research/shadow log entry documenting observed drift: Otto’s stale broadcast/heartbeat and Riven looping on a local `gh pr list` failure, with a brief “correction applied” note.
 
 **Changes:**
+
 - Added a new shadow/drift report documenting Otto + Riven paralysis signals and timestamps.
 - Captured the suspected failure mode for Riven (`not a git repository` / `gh pr list failed`) and called for local recovery.
 

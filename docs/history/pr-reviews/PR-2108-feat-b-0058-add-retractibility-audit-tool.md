@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds `tools/alignment/audit_retractibility.ts` — 081KQ3HBZ0008QG0R002S674CG responsibility #1 (retractibility-and-log check)
 - Scans factory surfaces (skills, agents, backlog P0/P1) for git-tracking status and inbound reference counts via `git grep`
 - Classifies each surface as `retractible` (< 5 inbound refs), `entangled` (>= 5), or `untracked`
@@ -52,6 +53,7 @@ Top retractible surfaces by inbound refs:
 ```
 
 ## Test plan
+
 - [x] 26 Bun tests pass (`bun test tools/alignment/audit_retractibility.test.ts`)
 - [x] Existing 081KQ3HBZ0008QG0R002S674CG tests pass (34 tests across coverage + drift tools)
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors

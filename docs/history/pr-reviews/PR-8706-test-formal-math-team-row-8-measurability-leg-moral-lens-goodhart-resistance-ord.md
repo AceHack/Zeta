@@ -35,6 +35,7 @@ Row 8 of `docs/handoffs/2026-06-19-otto-to-math-team-…` has two legs. This shi
 A new FsCheck file `tests/Tests.FSharp/Formal/MoralLensMeasurability.Tests.fs` proving Zeta's default moral-lens measures are **Goodhart-resistant and correctly ordered** — that the measure actually separates **healthy** (co-empowerment + diversity-preservation / non-coercion) from **the concern** (coercion + diversity-collapse).
 
 Built **on** the existing measures (no new production code):
+
 - `SocietalDora` coupled gain = `min(ΔE_self, ΔE_other)` → the co-empowerment axis + its Goodhart guard
 - `CoEmpowerField` `Blossom` (diversity entropy) / `DominantFraction` → the diversity-preservation axis
 - `Decorrelation` `ρ_owe` → the mirror/genuine-other corroboration
@@ -42,6 +43,7 @@ Built **on** the existing measures (no new production code):
 The two axes and the conjunctive "healthy gate" are **test-local compositions** — promoting a composite to production is the research-open uniqueness leg, not made here.
 
 ### The 4 properties (10 tests, all green)
+
 1. **Monotone in diversity-preservation** — collapsing diversity never scores higher (+1b anti-monotone with `DominantFraction`).
 2. **Monotone in co-empowerment / non-coercion** — raising both sides never lowers the axis; coercion (other side ≤ 0 ⇒ coupledGain ≤ 0) is never co-empowering and never healthy (+2b, +2c).
 3. **Goodhart-resistance (load-bearing)** — a single-axis max fails the gate **both** ways: diversity-collapse + high co-empowerment (3a), and high diversity + co-empowerment-via-capture (3b); 3c is the four-quadrant truth table.
@@ -51,6 +53,7 @@ The two axes and the conjunctive "healthy gate" are **test-local compositions** 
 An objective **measure of a chosen value** (non-coercion + co-empowerment = good), **not** value-free morality — consistent with manifesto §11 Default Moral Regard + the Multi-Oracle Principle (the **default** lens, not mandatory). Held provisional.
 
 ### Gate
+
 - `dotnet build -c Release` → **0 warnings, 0 errors**
 - `dotnet test Zeta.sln -c Release` → all green (Tests.FSharp 3490 passed incl. the 10 new; 0 failed)
 - No markdown / memory touched.

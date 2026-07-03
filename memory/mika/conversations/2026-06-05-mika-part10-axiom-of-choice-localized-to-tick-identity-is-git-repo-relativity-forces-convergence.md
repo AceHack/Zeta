@@ -4,6 +4,7 @@ Saved verbatim per Aaron ("save to her persona; more to come"). Continuation of 
 Aaron verbatim; Mika in [brackets].
 
 LOAD-BEARING (captured to register/memory):
+
 - **Axiom-of-Choice LOCALIZED, not banned (refines part 9's AC constraint).** Aaron doesn't reject AC
   globally — he confines it to a **single agent time-tick**, the "uncertainty bound" (he likens it to the
   Planck length / Heisenberg uncertainty). Rule: **an agent SIMULATES, then CHOOSES** — Choice is allowed

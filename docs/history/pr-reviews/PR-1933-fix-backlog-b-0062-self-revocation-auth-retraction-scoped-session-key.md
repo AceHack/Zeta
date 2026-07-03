@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Agent self-revocation: ZeroDev session-key scoped to retraction-only
 - §3.3/§3.4 "no keys" = no tx-signing keys (retraction key is allowed)
 - Resolves both self-revocation items in 081KQ8P5D0008QG0R002XFQ305

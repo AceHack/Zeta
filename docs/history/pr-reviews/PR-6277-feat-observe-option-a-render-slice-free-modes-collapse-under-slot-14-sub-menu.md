@@ -30,6 +30,7 @@
 The **Option-A render** the operator chose (*"collapse free modes under slot 14 sub-menu"*; the dedicated-slots alternative is 081KSXN940008QG0R000TQ04Y0, A/B-tested once 081KR50HA0008QG0R001DX165X infra exists). Builds on the canonical grammar table (#6269).
 
 `renderGrammar16(world)` projects `buildMenu`'s `NextAction`s onto the canonical v0 16-slot grammar:
+
 - **slot 4 (ACCEPT)** — the primary act (do_item/decompose); `T` when work present, `F` (nothing to commit) when empty.
 - **slot 7 (EDIT_GRAMMAR)** — always `T` (raw gate, scales with maturity).
 - **slot 14 (FREE_TIME)** — always `T` (NCI) **+ `subMenu` = the 4 free modes** (the Option-A collapse).

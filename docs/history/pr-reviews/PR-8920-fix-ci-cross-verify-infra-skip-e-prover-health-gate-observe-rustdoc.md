@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Skip `zeta-ir-v2` and `zset-isa-v2` in `cross-verify-all.ts` — IR/fixture dirs, not byte-lock primitives (fixes cross-verify red).
 - Add `SolverHarness.eproverLiveAvailable()` smoke test — Noble apt `eprover` 3.0.03 aborts in CI/Docker; FOL tests now skip when broken instead of false-failing (fixes build-and-test red).
 - Document `Core.Rust.Observe` public API + fix clippy warnings (fixes lint Rust red).
 - Remove unused `inputLines` in `cross-verify-ir.ts` (fixes lint TS red).
 
 ## Root cause notes
+
 - Noble `eprover` package crashes with `sat_solver_init: Assertion failed` in Docker/CI — not an install.sh regression.
 - Python lint failures on recent runs were mise/github 500 flakes downloading python-build-standalone (not addressed here).
 
 ## Test plan
+
 - [x] `bun src/Core.TypeScript/ci/cross-verify-all.ts` — 28/28 passed
 - [x] `bun src/Core.TypeScript/lint/lint-typescript.ts` — passed
 - [x] `cargo clippy --manifest-path src/Core.Rust.Observe/Cargo.toml --all-targets -- -D warnings` — passed

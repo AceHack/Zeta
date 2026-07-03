@@ -27,6 +27,7 @@ Preserves discussion threads from merged PRs #4821 (residuated-lattice-tests rev
 This PR adds git-tracked PR discussion archives under `docs/pr-discussions/` as part of the repository’s PR-preservation workflow.
 
 **Changes:**
+
 - Adds an archive file preserving PR #4821 discussion content.
 - Adds an additional archive file for PR #4853 (a tick shard PR discussion).
 

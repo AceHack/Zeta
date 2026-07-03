@@ -49,11 +49,13 @@ Applying the filter to Gemini's two recommendations:
 **Specific evidence (hallucinated):** the cited 8-step checklist file doesn't exist.
 
 **Verifiable status quo:** CLAUDE.md already contains:
+
 - "Read these, in this order" — 7-step entry-point list (AGENTS.md → ALIGNMENT.md → CONFLICT-RESOLUTION.md → GLOSSARY.md → WONT-DO.md → openspec/README.md → GOVERNANCE.md)
 - "Fast-path on wake" — explicit `CURRENT-<maintainer>.md` priority (Aaron / Amara / Ani)
 - ~12 numbered "Ground rules Claude Code honours here" (verify-before-deferring, future-self-not-bound, never-be-idle, search-first authority, substrate-or-it-didn't-happen, no-directives, BLOCKED-with-green-CI investigate, honor-those-that-came-before)
 
 **Resolution:** the substantive intent is **already addressed**. The "Big Picture First" framing isn't named explicitly, but the underlying discipline (read entry-point docs in order before per-prompt action) is operational. No port action this session because:
+
 - Source memory file doesn't exist (can't port from nothing).
 - CLAUDE.md already has a multi-step wake-time read-order.
 - Authoring a new "Big Picture First" section from scratch on a Gemini-hallucinated premise would be speculative substrate generation under cooling-period concerns.
@@ -67,6 +69,7 @@ Applying the filter to Gemini's two recommendations:
 **Specific evidence (verifiable):** the task list at session-bootstrap shows ~53 open tasks, many of which are already mirrored as backlog rows or are inactive multi-week-deferred items.
 
 **Resolution:** real-fix candidate, but **not done this tick** because:
+
 - Audit-and-batch-migrate work is itself substantive (need to per-task verify whether already in backlog vs needs new row).
 - Cooling-period-adjacent — 53 task-state mutations under autonomous loop is a large blast radius; defer to next session-open with rested attention.
 - Safer interim: continue to use TaskUpdate during normal flow when a task is genuinely complete.

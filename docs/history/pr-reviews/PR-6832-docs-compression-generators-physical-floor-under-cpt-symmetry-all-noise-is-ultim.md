@@ -31,6 +31,7 @@
 > "If physics is right, all noise is reversible ultimately under CPT symmetry."
 
 Grounds the lens-relativity of randomness in physics:
+
 - Fundamental physics is **unitary + CPT-symmetric** — microscopic evolution is reversible, information never truly destroyed (cf. black-hole info paradox). Apparent noise/irreversibility = **macroscopic coarse-graining** (thermodynamic arrow / Loschmidt), not fundamental erasure. The deepest lens leaves **no residual** — the ultimate "looks random ≠ is random."
 - The **Bayesian residual = the coarse-grained shadow** of reversible-in-principle-but-untracked information; uncertainty is about the lens's resolution, not the data.
 - **Zeta echo:** retraction-native Z-sets (every delta has an inverse), DST reversible replay, git-as-event-store (only adds corrections), Evolution down/dump — a **designed local echo of CPT reversibility**. The one true irreversibility = **Landauer** (erasure costs energy) = the **thermal-forgetting / privacy-as-anti-collapse** lane (Amara): forgetting is the *chosen, consented, energy-costing* act. Matches the manifesto: **reversible by default; irreversibility is deliberate + consented.**

@@ -47,6 +47,7 @@ memory/<persona>/
 ```
 
 Each persona directory has:
+
 - **`NOTEBOOK.md`** — running notebook (3000-word cap per
   BP-07; prune every third substantive entry)
 - **`MEMORY.md`** — one-line index of the directory's files
@@ -168,6 +169,7 @@ Aaron's remark: *"Also this might be the case for splitting
 codex and genimi into their connonical skills to."*
 
 Current state (Otto-227):
+
 - `.claude/skills/<name>/SKILL.md` — Claude Code canonical
 - `.agents/skills/<name>/SKILL.md` — Codex + Gemini
   canonical (both harnesses read this path)
@@ -176,6 +178,7 @@ Current state (Otto-227):
 
 Potential future state if Aaron wants harness canonical
 homes:
+
 - `.claude/skills/` — Claude Code canonical
 - `.codex/skills/` — Codex canonical (hypothetical)
 - `.gemini/skills/` — Gemini canonical (hypothetical)
@@ -335,6 +338,7 @@ and proposed symlink hybrid.
 **Aaron vetoes symlink hybrid (Otto-244).**
 
 Reality in Zeta:
+
 - `.claude/agents/` — persona SKILL.md files (17 of them,
   per Claude Code convention; CLAUDE.md harness section
   names this location explicitly)
@@ -408,6 +412,7 @@ All three file on the current or next tick's tick-close.
 > per named agent memories how would that change things"*
 
 Three directives in one message:
+
 1. No symlinks — captured in Otto-244.
 2. Codex/Gemini may eventually get canonical skill homes
    — captured here + in Otto-244's scope section.

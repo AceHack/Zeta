@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a Core-owned `Vision.Forecast` envelope and `Vision.IBranchForecaster` port for scheduler-facing branch prediction
 - keep `QuantumFusion.Forecast` as a compatibility alias over the owned Vision forecast shape
 - expose a Bayesian Reticulum forecaster adapter so edge experiments can consume forecasts through `Vision.forecastWith` / `Vision.predictForecast` instead of coupling to the Bayesian module shape
 
 ## Validation
+
 - `dotnet test tests/Bayesian.Tests/Bayesian.Tests.fsproj -c Release -m:1 /p:UseSharedCompilation=false /p:Optimize=false`
 - `dotnet format --verify-no-changes`
 - `dotnet build -c Release -m:1 /p:UseSharedCompilation=false /p:Optimize=false`

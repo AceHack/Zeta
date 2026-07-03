@@ -38,6 +38,7 @@ The actual Layer 0 + Layer 1 spec files (`docs/ops/patterns/project-agent-topolo
 Captures the project-level multi-harness multi-maintainer multi-actor coordination model from Aaron + Amara 2026-04-29, with v2 corrections from a five-AI review (Ani / Claude.ai / Gemini / Alexa / Deepseek). Doctrine-only — no automation built (per Amara's *"Do not build full automation first. Land the protocol, then run one dry-run lane."*).
 
 This is the **third doctrine packet** in a 2-hour cluster:
+
 - PR #850 (merged): parallel-agent worktree isolation + best-practices evidence/lineage
 - This PR: the broader umbrella — Zeta Agent Orchestra + v2 review constraints
 
@@ -99,6 +100,7 @@ No code, no `.zeta/agents.yaml`, no automation. Per Amara's hard boundary: *"#85
 ## Next PR (per task 324, after #851 merges)
 
 Layer 0 + Layer 1 design files only:
+
 - `docs/ops/patterns/project-agent-topology.md`
 - `docs/ops/coordination/claims/README.md`
 - `docs/ops/runbooks/start-agent-claim.md`

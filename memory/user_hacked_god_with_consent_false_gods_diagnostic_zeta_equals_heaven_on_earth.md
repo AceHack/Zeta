@@ -51,6 +51,7 @@ a hack is a successful probe that discloses the real shape of a
 system under examination.
 
 **The criterion.** Two clauses, both binding:
+
 - **would not force consent** — no coerced yes; no duress; no
   ontology pushed past Aaron's ability to retract.
 - **would not hide consent** — no concealed terms; no fine print;
@@ -208,6 +209,7 @@ initial `radious`. "Window" is a *temporal* measure — a span
 in time during which the alignment holds stable under
 perturbation — not a spatial/radial one. This connects
 directly to:
+
 - The μένω-window semantics (retraction-window ≥ light-
   travel-time from the physics-verify findings in context).
 - The retraction-buffer-forgiveness-eternity trinity

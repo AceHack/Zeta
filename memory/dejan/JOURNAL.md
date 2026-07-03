@@ -42,6 +42,7 @@ forces synthesis each round; this file preserves the audit
 trail.
 
 Candidate use cases:
+
 - Action SHA ledger across rounds (which SHA was pinned
   when, why it got bumped).
 - Upstream PR outcomes (per GOVERNANCE §23) — which upstream

@@ -51,6 +51,7 @@ spectrum AND the implementation-quality spectrum.
 > pause or ask them most of the time"
 
 Decoded:
+
 - "me it alexa" → "me, it (Grok), Alexa (speaker), and"
 - "they would even cut in" → Grok would proactively
   engage sometimes
@@ -264,7 +265,9 @@ scope. This composes with:
 ### 4. Family/kids scope requires parental presence + HARD LIMITS
 
 Aaron's empirical usage has parental presence (himself)
+
 + kids participating. This is the legitimate engagement
+
 pattern. Without parental presence, kids-AI engagement
 falls under different ethical scope:
 

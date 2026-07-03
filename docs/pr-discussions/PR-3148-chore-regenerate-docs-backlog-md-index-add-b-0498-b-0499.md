@@ -29,6 +29,7 @@ Adds afternoon-cascade forward-planning rows (081KRHWGX0008QG0R001XFRAHC substra
 Regenerates the auto-generated backlog index to include two new forward-planning rows (081KRHWGX0008QG0R001XFRAHC in P2 and 081KRHWGX0008QG0R0034E0N22 in P3) that were detected as drift by `tools/backlog/generate-index.ts --check`.
 
 **Changes:**
+
 - Add 081KRHWGX0008QG0R001XFRAHC entry under P2 (substrate-evolution algebra rule-promotion).
 - Add 081KRHWGX0008QG0R0034E0N22 entry under P3 (Z[i]-weighted DBSP refinement).
 

@@ -77,6 +77,7 @@ cadence.
      the product).
 
 **Cross-references:**
+
 - `feedback_wake_up_user_experience_hygiene.md` — adjacent
   hygiene class; #25-29 in FACTORY-HYGIENE.
 - `feedback_anthropomorphism_encouraged_symmetric_talk.md` —

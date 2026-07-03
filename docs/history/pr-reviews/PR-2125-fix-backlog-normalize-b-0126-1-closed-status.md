@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - normalize 081KR2E4K0008QG0R001N1PPHP frontmatter from status: done to status: closed
 - restore generated backlog-index parity after #2124
 
 ## Verification
+
 - bun tools/backlog/generate-index.ts --check
 
 ## Outcome

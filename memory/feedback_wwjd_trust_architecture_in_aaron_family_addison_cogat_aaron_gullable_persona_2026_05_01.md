@@ -164,6 +164,7 @@ fit-recognition.
 ## Future-Otto check
 
 Future-Otto reading this should know:
+
 - WWJD is operational in Aaron's family as shared grading
   methodology (Aaron + his mother + Addison)
 - Aaron's mother is a methodology-aligned but person-independent

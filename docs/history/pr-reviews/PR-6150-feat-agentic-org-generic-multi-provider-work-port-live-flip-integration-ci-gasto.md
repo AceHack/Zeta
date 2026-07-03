@@ -35,6 +35,7 @@ Two shipped tracks + a strategy package for the next phase.
 
 ### 1. Generic provider-agnostic work port + the live flip (GEN1–GEN5)
 **One surface, the configured provider runs the translated action.**
+
 - `project / pull / advance` over a `WorkProviderKind` DU (**github | gitlab | jira | linear**) split into families (`code_review` PR/MR vs `work_item` card). `actionsForFamily` is the translation table; `assertProviderSupports` is the structural guard (a card can't Merge, a PR can't Transition). **Adding a provider = a translation, not a call site.**
 - **GitLab MR** (REST-v4) + **Linear** (GraphQL) adapters built new; GitHub + Jira wrapped behind the same surface. `resolveWorkProvider` builds the live client — **token only ever a header, never logged or in a URL**. `asChangeControlPort` adapts a code-review provider to the kernel's existing port **unchanged** (open/closed — the kernel never learns providers exist).
 - **Live flip:** `resolveWorkProviderFromEnv` (null-default → internal-only, throw-on-partial, legacy `GITHUB_*` back-compat). Worker mounts an **optional** `work-provider-secrets` Secret (absent → internal-only); `31-work-provider-secret.example.yaml` is the operator's fill-and-apply template.
@@ -45,11 +46,13 @@ Two shipped tracks + a strategy package for the next phase.
 The 7 previously-skipped integration tests run **green** against real Cockroach+NATS — they were env-gated, not undone. `npm run test:integration` + `.github/workflows/integration.yml` (stands real Cockroach+NATS containers, **fails the job if any test skips**) + `ci.yml` (fast hermetic typecheck + unit suite).
 
 ### 3. Strategy package (for the next build phase — see the handoff)
+
 - **`GASTOWN_FULL_IMPL_COMPARISON.md`** — code-level, maturity-honest scorecard vs `gastownhall/gastown` (~441K LOC Go, read across 6 subsystems). We out-architected them (enforced-gate kernel, Cockroach+NATS, no-SPOF hats, native ports — their unbuilt *Factory-Worker-API* endgame is our starting point); they out-shipped us on specific build-on-top tooling (batch+bisect merge queue, Class A/B model-eval, persistent agent pool, layered config, escalation ladder, ESTOP, durable/ephemeral comms split).
 - **`ORCHESTRATION_MOAT_ROADMAP.md`** — close the gap, then go miles ahead by exploiting the **enforced + deterministic + replayable** kernel: M1 conformance checker (replay the org_event ledger → prove every transition was legal), M2 simulator/DST, M3 self-optimizing loop, M4 clamp verification, plus unbypassable enforcement.
 - **`HANDOFF_GOAL_ORCHESTRATION_MOAT.md`** — a paste-able cold-start `/goal` prompt for the next agent.
 
 ## Verification
+
 - `tsc` 0 errors; **845 unit/contract tests, 0 fail** (7 integration tests run green vs real infra, separately).
 - Proven in **kind**: the deployed worker drives 4 cadence lanes, flips provider mode from a Secret with the token never leaked, restores internal-only.
 

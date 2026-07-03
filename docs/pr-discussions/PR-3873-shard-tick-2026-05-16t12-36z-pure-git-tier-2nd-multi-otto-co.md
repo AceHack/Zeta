@@ -41,6 +41,7 @@ Defense pattern (`git branch --show-current` + `git switch -c <fresh> origin/mai
 Adds a hygiene-history tick shard recording the 2026-05-16T12:36Z autonomous-loop observation and the pure-git operating tier under GraphQL exhaustion.
 
 **Changes:**
+
 - Documents the second multi-Otto HEAD-contamination observation in three ticks.
 - Records the pure-git tier decision, deferred PR backlog, sentinel status, and visibility signals.
 - Links the branch-push counter rationale to the existing refresh-world-model poll PR gate rule.

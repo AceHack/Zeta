@@ -29,6 +29,7 @@ Aaron's framing of why this matters: *"hey this fits into our belief propagation
 ### When writing about civilizational/large-scale patterns
 
 Default vocabulary check:
+
 - "Buddha/Christ/Messiah-like figures" → use **anchor / lift / fixed-point / Messiah-role**, NOT Maji
 - "the people who recognize / find / interpret signs / read prophecy" → use **Maji-role / recognizer / navigator / finder**
 - "the canon / scripture / preserved teachings" → use **Canon-role** (per Amara's role table — distinct from both)
@@ -38,6 +39,7 @@ Default vocabulary check:
 ### When designing implementation types
 
 **Do not put Messiah logic inside MajiIndex.** The §10 implementation must split:
+
 - `MajiIndex` = lower-dimensional exhaustive index
 - `MajiFinder` = search operator returning candidate `σ*`
 - `MessiahFunction` = the lift itself (separate type)

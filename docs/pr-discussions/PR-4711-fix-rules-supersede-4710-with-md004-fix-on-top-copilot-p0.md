@@ -48,5 +48,6 @@ Copilot P0 review on PR #4710 flagged that the new \"Narrow exception\" paragrap
 Updates `.claude/rules/claim-acquire-before-worktree-work.md` to reconcile the documented retry/abandon policy for saturation “sub-case 4” while also addressing a markdownlint MD004 (ul-style) failure mode caused by a continuation line starting with `+`.
 
 **Changes:**
+
 - Reframes sub-case 4 mitigation as “default = ABANDON” with a clearly scoped forced-#6-only single-retry exception.
 - Rewords the orphan-cleanup parenthetical to use “then …” instead of `+ …` at line start, avoiding MD004 nested-list parsing.

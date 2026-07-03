@@ -4,7 +4,7 @@ description: Aaron's 2026-04-22 directive separating sample-code and production-
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-# Samples: readability-first. Real code: zero/low-alloc-first.
+# Samples: readability-first. Real code: zero/low-alloc-first
 
 ## Rule
 

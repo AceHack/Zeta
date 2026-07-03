@@ -11,6 +11,7 @@ contract, and reindexing as a *proven projection from source truth*. Companion t
 
 The existing artifact is **`src/Core/SchemaEvolution.fs`** (the **081KSRGFP0008QG0R001Y6RTY9** foundation — "the zero-downtime
 versioning seed"), 8 tests in `SchemaEvolution.Tests.fs`. It already provides:
+
 - **Migration algebra** — `addField` / `removeField` / `renameField`, total over `DynamicValue` (every
   non-`Object` shape passes through), order-respecting.
 - **Forward compatibility** (old reader, new data): unknown fields *ignored* but *preserved* through
@@ -30,6 +31,7 @@ discharge (§1), parallel experiment-timelines (§2), reindex-as-projection (§3
 
 The reindex `full == incremental` theorem (§3) additionally rests on **DBSP incremental view maintenance**,
 already in `src/Core`:
+
 - **The `full == incremental` theorem IS DBSP's incrementalization soundness** — incremental view
   computation equals from-scratch; exactly the reindex proof obligation. Z-sets + the chain rule are the engine.
 - **`IndexedZSet`** = an index as a derived Z-set; **`Aggregate`/`Residuated`** = derived views, already

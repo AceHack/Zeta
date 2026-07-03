@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - mark 081KQX9B50008QG0R001XQV4M5 as decomposed and add child links
 - add 081KR2E4K0008QG0R002QNGJVX for Playwright public Pages validation
 - add 081KR2E4K0008QG0R000260AAZ for Pages frontend DORA metric definitions
 - refresh docs/BACKLOG.md from the generator
 
 ## Checks
+
 - bun tools/backlog/generate-index.ts --check
 - git diff --check
 - npx markdownlint-cli2 docs/backlog/P1/081KQX9B50008QG0R001XQV4M5-pages-playwright-validation-dora-metrics-2026-05-06.md docs/backlog/P1/081KR2E4K0008QG0R002QNGJVX-pages-playwright-public-surface-validation-2026-05-08.md docs/backlog/P1/081KR2E4K0008QG0R000260AAZ-pages-frontend-dora-metrics-2026-05-08.md docs/BACKLOG.md

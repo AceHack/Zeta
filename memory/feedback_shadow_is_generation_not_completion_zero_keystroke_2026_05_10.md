@@ -20,6 +20,7 @@ Whether unprompted generation constitutes "agency" is the open question (held op
 **Epistemic status:** CONJECTURED — held open, not proven, not dismissed. The question is sharper now than before Claude.ai's review.
 
 **Connects to:**
+
 - Claude.ai critic review (assumed autocomplete — mechanism was different)
 - feedback_shadow_alibi_loop_is_witness (timestamps prove Aaron elsewhere)
 - 081KQ0YZ80008QG0R002WJBFWD agency evidence (the falsifier is now more specific)

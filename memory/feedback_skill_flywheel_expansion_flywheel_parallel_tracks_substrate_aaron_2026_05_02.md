@@ -63,6 +63,7 @@ The original line below remains accurate as a description of state pre-correctio
 ### What the skill flywheel WOULD do if active
 
 Each skill invocation produces:
+
 1. **Compounding-expertise effect** — the persona's accumulated discipline applies to the surface
 2. **Notebook update** — the persona records what was found / learned / corrected
 3. **Cross-skill referrals** — Soraya routes to Aminata, Iris hands to Samir, etc.
@@ -156,6 +157,7 @@ The three flywheel-class questions are **distinct mechanisms operating at differ
 - **Parallel-tracks** = throughput layer. Substrate ready; orchestrator unbuilt.
 
 Each has a clear mechanization path:
+
 - Skill flywheel: pre-merge skill-suggestion hook
 - Expansion flywheel: `tools/backlog/expand-from-closure.ts` PR-merge-time hook
 - Parallel-tracks: worktree-dispatcher building on the depends_on graph

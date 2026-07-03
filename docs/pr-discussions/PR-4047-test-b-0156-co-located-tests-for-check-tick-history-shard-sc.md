@@ -84,6 +84,7 @@ are candidates for follow-on slices.
 Adds co-located Bun tests for the tick-history shard schema checker and exports the validator seam needed by those tests.
 
 **Changes:**
+
 - Exports `ScanResult` and `scanOne` from the shard schema checker.
 - Adds 9 Bun tests covering valid shards and common schema violations.
 - Uses a temporary `REPO_ROOT` fixture to avoid touching the real repository.

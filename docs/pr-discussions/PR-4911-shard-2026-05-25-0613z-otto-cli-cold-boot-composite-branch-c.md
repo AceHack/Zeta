@@ -65,6 +65,7 @@ Composes with: tick-must-never-stop · holding-without-named-dependency-is-stand
 Adds a new hygiene-history tick shard documenting an Otto-CLI cold-boot observation and the forced-#6 isolated-worktree “empirical anchor” under a composite operational state (branch contamination + empty lane + peer covering + dotgit recovered).
 
 **Changes:**
+
 - Introduces a new tick shard at 2026-05-25T06:13Z capturing the composite-state snapshot and the worktree-add guard results.
 - Cross-links the tick narrative to the relevant `.claude/rules/**` discipline files for traceability.
 

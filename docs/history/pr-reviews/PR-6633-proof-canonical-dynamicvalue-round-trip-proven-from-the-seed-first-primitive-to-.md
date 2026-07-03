@@ -32,12 +32,14 @@
 **DynamicValue is the first primitive to satisfy *both* axes of the canonical bar.** It already had the **consensus axis** (4-language byte-lock — TS/F#/C#/Rust agree on `golden-vectors{,-cbor}.json`); the existing golden-vector tests prove the seed *examples* encode to the locked bytes. This PR adds the missing **proof axis** + the **seed-lineage edge** (half-(b)).
 
 ### General round-trip **law** (FsCheck over arbitrary `DynamicValue` trees — not just the seed)
+
 - **CBOR round-trip** — `fromCanonicalCbor ∘ toCanonicalCbor = id` (**8/8 shapes** — CBOR is TOTAL: Float via RFC 8949 §4.2.2 shortest-float, Bytes via major-type-2)
 - **JSON round-trip** — `fromCanonicalJson ∘ toCanonicalJson = id` (**6/8 shapes** — canonical JSON is partial: no Float/Bytes)
 - **canonical CBOR encoding is INJECTIVE** — distinct values never collide (the byte-lock is a *faithful* identity only if encode is injective)
 - **non-finite floats** (NaN, ±inf, −0.0) CBOR round-trip
 
 ### Seed-lineage edge (half-(b)) — the law holds **on the seed**
+
 - every **CBOR** seed vector is a **fixed point** of `encode∘decode` (anchored to `golden-vectors-cbor.json`)
 - every **JSON** seed vector is a fixed point of `encode∘decode` (anchored to `golden-vectors.json`)
 

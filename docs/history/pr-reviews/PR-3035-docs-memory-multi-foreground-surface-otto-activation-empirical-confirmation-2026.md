@@ -35,6 +35,7 @@ Complementary to PR #3034 (Otto-Desktop's `tools/routines/` substrate pattern) â
 - **This PR (Otto-CLI)**: captures the empirical discoveries (architectural gap, approval-friction lane split, routines-vs-CronCreate distinction)
 
 Key discoveries preserved:
+
 1. Claude Desktop Routines are git-tracked (durable across sessions) vs CronCreate session-only
 2. Two cadence layers in Desktop: Loop (minute) + Routine (custom; git-tracked)
 3. **CRITICAL ARCHITECTURAL GAP**: SENDER_IDS doesn't distinguish multi-surface instances; claim.ts treats both Ottos as identical (Vera caught on PR #3032)

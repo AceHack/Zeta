@@ -30,6 +30,7 @@
 Closes the codegen-forward trajectory's last open thread: the generator IR is no longer only a checked-in document — it is the **payload of a row on a real `ZSet<IrRow>`** (`src/Core/GeneratorIrRegistry.fs`).
 
 ## What lands
+
 - **`GeneratorIrRegistry.fs`** — the generator-IR relation: `register` = +1 delta, `retract` = -1 delta (abelian-group inverse), `relationOf` (full) == `incremental` fold, each row's `ZetaId` = the real `GeneratorRegistry.idOf` content-address, `byZetaId` lookup.
 - **TS oracles source IR from the relation** — `splitmix64`/`fmix32` `gen.ts` now call `generatorIr.byZetaId(idOf(name, version))` (bun-side twin `_harness/generator-ir-registry.ts`) instead of reading a bare file path. **`ts-output.json` bytes are unchanged**, so the N-way byte-lock holds.
 - **F# tests (`GeneratorIrRegistry.Tests.fs`, 8)** pin: the relation row reproduces each committed `*.ir.json` **byte-for-byte** (materialised view); the group law (register+retract=Zero); full==incremental; ZetaId=content-address; `byZetaId` resolves live but not retracted rows.
@@ -38,6 +39,7 @@ Closes the codegen-forward trajectory's last open thread: the generator IR is no
 The committed `*.ir.json` files are the rows' **serialised payloads** — the F# tests prove the file IS the relation row's bytes, so the TS view and F# relation are the **same** relation, not two parallel copies. The relation is an in-memory `known` set today (not yet streamed through a running DBSP circuit); that streaming integration is the natural follow-on.
 
 ## Gates
+
 - tsc `--noEmit`: clean (no TS6133)
 - fidelity self-tests: 9/9
 - cross-verify orchestrator: **15/15**

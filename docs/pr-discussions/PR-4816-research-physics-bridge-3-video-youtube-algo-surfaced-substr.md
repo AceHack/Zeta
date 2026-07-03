@@ -29,21 +29,26 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ### Substrate landed
 
 **Research substrate (6 files)**:
+
 - 3 framework-composition analyses at `docs/research/`
 - 3 verbatim transcripts at `docs/research/ip-questionable/`
 
 **IP-questionable folder convention** (new):
+
 - `docs/research/ip-questionable/README.md` — Rodney Aaron Stainback explicit personal-liability acceptance + folder convention documentation
 
 **Constitutional substrate** (auto-loaded rules):
+
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — refusal rule + standing operator-self-constraint
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — four-field `_*_acceptance` attribution pattern + Aaron's constitutional generalization (every AI-blameable risk area routed through named-human attribution; 3-stage progression: per-incident → per-class → corporate/non-profit structures)
 
 **Settings.json updates**:
+
 - `_ip_risk_acceptance` block with Rodney Aaron Stainback as named operator
 - Narrow permission rule for `docs/research/ip-questionable/` PUTs
 
 **Backlog substrate**:
+
 - `081KSBMG30008QG0R00201X7EJ` (P0) — classifier-bypass research + red-team scope + standing constraint
 - `081KSBMG30008QG0R002WAR0WH` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
 
@@ -67,6 +72,7 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ## Reviewer thread status
 
 ~50 threads from chatgpt-codex-connector + copilot-pull-request-reviewer addressed:
+
 - ~33 outdated/addressed: resolved
 - ~17 active: mix of substantive fixes-in-progress + defer-to-operator policy concerns
 - Defer-to-operator policy threads (settings.json operator name, permission rule redundancy, _ip_risk_acceptance enforcement claim) are intentionally left for Aaron's review — they touch the constitutional invariants built in this PR
@@ -89,6 +95,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -107,6 +114,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a documented convention for storing IP-sensitive research substrate under `docs/research/ip-questionable/`, and lands three physics-bridge research analysis writeups sourced from YouTube-surfaced videos.
 
 **Changes:**
+
 - Introduces `docs/research/ip-questionable/README.md` to define how/when to store verbatim third-party content.
 - Adds three new physics-bridge analysis documents (Al-Khalili trilogy, PBS SpaceTime Planck/“Plank” stars, Al-Khalili cosmic-scale episode).
 - Adds/extends frontmatter metadata and “composes_with” linkage for framework cross-references.
@@ -142,6 +150,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -173,6 +182,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -198,6 +208,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -226,6 +237,7 @@ Copilot reviewed 12 out of 12 changed files in this pull request and generated 1
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:112**
+
 * The “Original-intent landing path” section is now outdated because the companion verbatim transcript has already landed in this PR (and with a different filename than the placeholder). Consider updating this section to the actual path (or removing it).
 ```
 in the ip-questionable folder.
@@ -251,6 +263,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

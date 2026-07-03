@@ -29,6 +29,7 @@ The brief the modelers (channeling Aaron / Rodney) work from to bring every toym
 Grouped; each item links to its capture doc (all `docs/research/2026-06-09-*`).
 
 **A. Substrate / DST-as-living-system**
+
 - prod = `dotnet test` (the backend IS the test runner; WASM front over Reticulum).
 - choosable test **finalizers** ⇒ cooperative **self-scaling** up AND down (bounded, not a fork-bomb).
 - **metrics ARE test history**; the one metric = cumulative **uncertainty Δ**.
@@ -36,6 +37,7 @@ Grouped; each item links to its capture doc (all `docs/research/2026-06-09-*`).
   retraction; GVT = merge-to-main frontier.
 
 **B. Rooms (the big one)**
+
 - tests **become rooms**; first room is **6×6** (fs cs ts rs py go × xml yml cbor json arrow protobuf/grpc).
 - a room is a **moonshot conference room**; every test is a **strange attractor / self-evolving
   pattern**, **judged on that** (uncertainty-Δ/stability/generativity), judgments **cascade** (bounded,
@@ -51,6 +53,7 @@ Grouped; each item links to its capture doc (all `docs/research/2026-06-09-*`).
   tests, and LLMs in the test clusters**.
 
 **C. Network / privacy / identity**
+
 - **close over Reticulum** (dep-as-oracle); RNS Identity (X25519+Ed25519) from the seed; **destination
   hash = ZetaId** (self-certifying address, no DNS/IP/CA); our own **Transport-node overlay** on the
   open internet.

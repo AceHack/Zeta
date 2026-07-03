@@ -35,6 +35,7 @@ One bounded step on 081KR2E4K0008QG0R001ZZ5XXF (P1 Concordance AI local GPU): re
 - No new deps, pure addition, retraction-native.
 
 ## Focused checks (included per task rule)
+
 -   Determining projects to restore...
   All projects are up-to-date for restore.
   FactoryDemo.Api.CSharp -> /private/tmp/zeta-riven-b0292-slice/samples/FactoryDemo.Api.CSharp/bin/Release/net10.0/FactoryDemo.Api.CSharp.dll
@@ -57,6 +58,7 @@ Build succeeded.
     0 Error(s)
 
 Time Elapsed 00:00:32.75 in worktree: **0 Warning(s) 0 Error(s)** (clean).
+
 - Usage: bun run [flags] <file or script>
 
 Flags:

@@ -61,6 +61,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Adds a nix-darwin configuration under `infra/nix-darwin/` and wires it into `flake.nix` as `darwinConfigurations.zeta-mac`, enabling maintainers on Apple Silicon macOS to use nix-darwin’s `linux-builder` VM to build the repo’s `x86_64-linux` installer ISO locally.
 
 **Changes:**
+
 - Add nix-darwin workstation configuration enabling `nix.linux-builder` + Rosetta-backed `extra-platforms = [ "x86_64-linux" ]`.
 - Document the intended maintainer workflow (one-command setup, ISO build, troubleshooting) in `infra/nix-darwin/README.md`.
 - Extend `flake.nix` with a `nix-darwin` input and a `darwinConfigurations.zeta-mac` output.
@@ -89,6 +90,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -120,6 +122,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

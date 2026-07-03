@@ -36,6 +36,7 @@ Ferries the **AI half of the resilience thesis** (Aaron 2026-06-15 directed the 
 **AI-tier resilience floor** = the intelligence lifeboat (local distilled/compressed LLM) beside the cart's compute lifeboat; **= §B row 6 made concrete** (teacher-student / LUPI). Distillation = GCF degraded *honestly*, not LCD.
 
 **North star — composable because orthogonal** (scale-free continuum, not two tiers):
+
 - **DeepSeek**: MLA (latent KV), **DSA** (FP8 lightning-indexer top-k, O(L²)→O(Lk)), NSA (natively trainable sparsity), FP8 + FlashMLA.
 - **Google Gemma 4**: QAT (int4/2-bit), hybrid local-global attention, p-RoPE.
 

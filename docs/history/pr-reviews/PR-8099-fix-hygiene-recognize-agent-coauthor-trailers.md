@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - detect Codex, Gemini, Grok, Kiro, and Claude co-author trailers in the AgencySignature audit
 - accept GitHub squash commits where the AgencySignature block remains in the message above the final co-author trailer
 - add focused Bun coverage for agent trailer casing and GitHub-appended co-author shape
 
 ## Validation
+
 - bun test src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.test.ts
 - bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --commit origin/main
 - bun src/Core.TypeScript/lint/lint-typescript.ts

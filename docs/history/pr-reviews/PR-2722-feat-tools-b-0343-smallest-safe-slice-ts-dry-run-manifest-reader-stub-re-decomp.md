@@ -33,10 +33,12 @@ One bounded step for 081KR2E4K0008QG0R002JW751Y (re-decomposed per "assume mista
 **Why this slice**: Original ACs + create+seed = M broad; smallest atomic = stub only. Follow-ups for gh api / idempotency.
 
 ## Changes
+
 - Added `tools/bootstrap-razor/seed-test-repo.ts` (stub, committed in claim branch)
 - Bounded to manifest read + dry-run output; provenance note to 081KQTPYE0008QG0R00392KABJ/081KR2E4K0008QG0R002JW751Y
 
 ## Focused checks (run in dedicated worktree)
+
 - `dotnet build -c Release`: 0 warnings, 0 errors (gate passed)
 - `bun tools/bootstrap-razor/seed-test-repo.ts --dry-run`: executed cleanly, showed expected seed plan (~47 files, excludes listed)
 - `bun --version`: 1.3.13 (pinned)

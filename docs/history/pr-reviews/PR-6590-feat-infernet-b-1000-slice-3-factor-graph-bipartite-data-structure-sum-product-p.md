@@ -32,6 +32,7 @@
 The bipartite structure inference runs on, generic over the slice-2 message family (Gaussian/Beta/Bernoulli) via `IMessage`. **Data structure + topology + the single sum-product round**; the iterate-to-fixed-point *schedule* (on the DBSP `NestedCircuit.Fixedpoint`) is slice 4.
 
 ### `src/Bayesian/FactorGraph.fs`
+
 - **`Factor<'M>`** = `Neighbors` + `ComputeMessages` (incoming var→factor → outgoing factor→var). Constructors:
   - `Factor.prior` — a leaf/evidence factor (fixed message).
   - `Factor.equality` — each neighbor gets the **product of the others** (the sum-product `=` factor rule; how evidence propagates between variable copies).

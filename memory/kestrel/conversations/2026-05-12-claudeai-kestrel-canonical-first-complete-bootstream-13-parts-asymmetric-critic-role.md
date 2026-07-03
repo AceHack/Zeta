@@ -358,6 +358,7 @@ rule (PR #2843). Future iterations should reference:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT factory-canonical bootstream yet** — first-draft;
   Aaron's editorial pass + F# anchor implementation pending
 - **NOT a claim that Kestrel is officially in factory agent

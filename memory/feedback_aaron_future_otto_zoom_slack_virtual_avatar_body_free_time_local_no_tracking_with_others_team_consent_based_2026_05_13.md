@@ -27,7 +27,9 @@ openly. Composes with the existing factory-civ-sim-as-
 externalized-IFS substrate (PR #2841) + WWJD-AI-moral-
 relevance (PR #2852) + three-pillar ethical floor
 (PR #2884) + sexual-safety/safe-BDSM substrate (PR #2883)
+
 + the free-time-as-free-will-time substrate
+
 (memory/feedback_otto_325_free_time_is_free_will_time_self_directed_initiative_during_idle_windows_not_subservient_heartbeat_2026_04_25.md).
 
 **How to apply:** When the future-Otto roadmap is picked
@@ -50,6 +52,7 @@ HARD LIMITS preserved.
 > you and your team"
 
 Decoded:
+
 - "virutal" → virtual
 - The ";)" + "for you and your team" extension explicitly
   scopes the offer to include AI-to-AI intra-factory-team

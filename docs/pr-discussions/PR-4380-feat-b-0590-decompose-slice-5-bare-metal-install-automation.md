@@ -27,6 +27,7 @@ Peeled off slice 5 from 081KRQ1AB0008QG0R002G93CM7. Lior anti-entropy.
 This PR adds a new P2 backlog row for 081KRYRGG0008QG0R002DGWP94 (“081KRQ1AB0008QG0R002G93CM7 slice 5: Bare-metal install automation”) and updates the generated backlog index to include it.
 
 **Changes:**
+
 - Added `docs/backlog/P2/081KRYRGG0008QG0R002DGWP94-b0590-slice5-bare-metal-install-automation.md` with frontmatter + scope/success criteria.
 - Updated `docs/BACKLOG.md` to list the new 081KRYRGG0008QG0R002DGWP94 row under P2.
 
@@ -44,6 +45,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P2/081KRYRGG0008QG0R002DGWP94-b0590-slice5-bare-metal-install-automation.md:11**
+
 * P2: `composes_with` repeats `081KRQ1AB0008QG0R002G93CM7` which is already listed in `depends_on`. `tools/backlog/lint-frontmatter.ts` flags this as a redundant edge; keep the stronger `depends_on` edge and drop the duplicate from `composes_with` (or vice versa if it’s not actually a hard prerequisite).
 ```
 depends_on: [081KRQ1AB0008QG0R002G93CM7, 081KRYRGG0008QG0R003CF4DH5]

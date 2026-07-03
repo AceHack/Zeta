@@ -26,6 +26,7 @@ relevant content, treating it as worth absorbing IS substrate-honest engagement.
 
 The two YouTube-algo videos (this file + PBS SpaceTime Plank Stars file)
 saved together to `docs/research/` per Aaron's direction: *"Save it to research"*
+
 + *"research for physics bridge"*.
 
 ## Physics-bridge composition map

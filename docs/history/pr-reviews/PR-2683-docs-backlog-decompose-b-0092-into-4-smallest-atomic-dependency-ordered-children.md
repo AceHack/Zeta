@@ -31,12 +31,14 @@
 Decomposed broad 081KQ8P5D0008QG0R003ZF64GG (doc + 5 trajectories) per instructions into 4 atomic children + start-gate checklist. Used dedicated worktree + pushed claim branch. No root checkout touched. TS over bash observed (children call out TS tooling). Re-decomp assumed mistakes.
 
 **Children (dependency-ordered):**
+
 - 081KR2E4K0008QG0R000ARCH0X (doc authoring)
 - 081KR2E4K0008QG0R001733JTN (cross-refs, depends 0370)
 - 081KR2E4K0008QG0R0015BCPF7 (T1+T2, TS, depends 0370)
 - 081KR50HA0008QG0R001NNPEXC (T4+T5, depends 0370+0371)
 
 ## Focused checks (included)
+
 - Pre-edit: `dotnet build -c Release` → 0 Warning(s) 0 Error(s)
 - Post-edit: same, clean.
 - `bun tools/hygiene/audit-backlog-items.ts` → 0 new broken depends_on/composes_with from this change (6 pre-existing unrelated orphans noted).

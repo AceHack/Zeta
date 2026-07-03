@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add focused F# coverage for `ToffoliGate.emptyCircuit` and a concrete `ToffoliGateStep` over `WireId`/`WireMap`
 - close stale backlog row `081KRA5AR0008QG0R002X77BEB` and update `docs/BACKLOG.md`
 - release the temporary Codex claim file in-branch
 
 ## Checks
+
 - `dotnet test tests/Tests.FSharp -c Release --filter "ToffoliGate" --logger "console;verbosity=minimal"`
 - `dotnet build -c Release`
 - `/Users/acehack/.bun/bin/bun x markdownlint-cli2 docs/backlog/P1/081KRA5AR0008QG0R002X77BEB-toffoli-circuit-type-wire-map-formal-model.md docs/claims/codex-loop-b0366-2-1-toffoli-circuit-tests-20260529.md`
@@ -40,6 +42,7 @@
 - `git diff --check`
 
 ## Notes
+
 - An initial `dotnet build -c Release --no-restore` attempt failed because the fresh claim worktree lacked solution-wide `project.assets.json` files; reran `dotnet build -c Release` with restore and it passed with 0 warnings / 0 errors.
 
 Agency-Signature-Version: 1

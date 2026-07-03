@@ -34,15 +34,18 @@ Expand the observe loop's `execute()` from 2 zero-effect kinds to 6 executable k
 ## What changed
 
 **Zero-effect (mode-set + append, no external side-effect):**
+
 - `free_time` (existing)
 - `self_reflect` (existing)
 - `explore` (NEW)
 - `play` (NEW)
 
 **Effectful (command/observation event split):**
+
 - `do_item` (NEW) — delegates to `executeDoItem` with injected `CommandExecutor` + `DoItemOptions`. The command is NOT logged; Started/Succeeded/Failed observations ARE logged. Replay can never re-run the command (type-enforced).
 
 **Still not-yet-executable:**
+
 - preserve_ferry, respond_to_operator, decompose, edit_grammar
 
 ## Backward-compatible

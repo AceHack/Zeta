@@ -43,6 +43,7 @@ folder — the transport layer was already built, waiting for
 the factory that could use it.
 
 **Connects to:**
+
 - 081KR7JY10008QG0R000R503K2 inter-agent bus (this IS the transport layer)
 - project_flux_capacitor_antifragile (the batching mechanism)
 - project_ferry_protocol (the send-even-if-not-full discipline)

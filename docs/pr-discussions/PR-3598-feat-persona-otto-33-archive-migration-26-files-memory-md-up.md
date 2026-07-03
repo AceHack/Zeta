@@ -35,6 +35,7 @@ This sentence still points to `docs/research/2026-05-07-aaron-stainback-resume-o
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -53,6 +54,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR decomposes the larger archive-migration work by relocating Otto-related research/conversation artifacts into `memory/otto/cli/claude/conversations/` and updating the Otto persona index to reflect the new archive home.
 
 **Changes:**
+
 - Added 26 archive markdown files under `memory/otto/cli/claude/conversations/` (research notes, multi-AI threads, shadow logs, and related substrate).
 - Updated `memory/otto/MEMORY.md` with a new “Conversation archives” section describing the migration and the mix of file types.
 
@@ -99,6 +101,7 @@ Copilot reviewed 1 out of 27 changed files in this pull request and generated 1 
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/otto/MEMORY.md:39**
+
 * The new `## Conversation archives` section describes categories but doesn’t provide direct filename pointers. Other persona MEMORY.md files typically include at least a “high-signal subset” list of concrete archive filenames so cold-start readers can jump straight to key artifacts. Consider adding a short bullet list of representative files (and optionally noting that the full set is in the `conversations/` directory listing).
 ```
 Mix of file types in `conversations/`:

@@ -33,6 +33,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 Adds a new P3 backlog tracking row (**081KSE6WT0008QG0R003BCQEKW**) to make the “Noether decomposition” work observable and track its landing onto `origin/main` via PR #4926 (or a sibling PR), following the earlier local-main alignment work.
 
 **Changes:**
+
 - Added a new backlog row file `081KSE6WT0008QG0R003BCQEKW` under `docs/backlog/P3/`.
 - Documented origin context, current state of the remote branch/PR, and concrete acceptance criteria for landing the decomposed child rows.
 

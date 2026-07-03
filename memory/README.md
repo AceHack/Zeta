@@ -144,6 +144,7 @@ Personas read their own notebook **before** the shared memory on wake-up, so ind
 ### Structure — two shapes (internal-AI personas vs human personas)
 
 The persona-surface standard splits into TWO shapes:
+
 - **Internal AI persona shape** (factory reviewers / specialists like `architect/kenji/`, `harsh-critic/kira/`, etc.): Contains at minimum `NOTEBOOK.md`, `MEMORY.md`, and `OFFTIME.md`.
 - **Human persona shape** (co-owners / maintainers like `human-maintainer/aaron/`, `human-co-owner/max/`): Contains at minimum `PERSONA.md`, `STARTING-POINT.md`, and `NOTEBOOK.md`.
 

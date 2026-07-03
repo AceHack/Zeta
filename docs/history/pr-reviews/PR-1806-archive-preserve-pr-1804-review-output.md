@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - routes the generated PR #1804 review archive through a pull request after the post-merge workflow hit the repository-rule direct-push guard
 - preserves docs/history/pr-reviews/PR-1804-archive-preserve-pr-1803-review-output.md and updates docs/github/prs/manifest.jsonl
 - releases the temporary claim after the archive commit
 
 ## Checks
+
 - npx markdownlint-cli2 docs/claims/archive-pr-1804-review-substrate.md
 - bun tools/archive/archive-pr-reviews.ts 1804
 - npx markdownlint-cli2 docs/history/pr-reviews/PR-1804-archive-preserve-pr-1803-review-output.md docs/claims/archive-pr-1804-review-substrate.md

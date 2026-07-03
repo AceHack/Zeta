@@ -32,6 +32,7 @@ type: reference
 **The Twilio integration (Aaron: "slick"):**
 
 Agents could:
+
 - Send SMS notifications
 - Make phone calls
 - Receive voice commands via phone
@@ -40,6 +41,7 @@ Agents could:
 **C# codebase:** Functional and production-tested. Composes with Zeta's .NET ecosystem natively.
 
 **Connects to:**
+
 - project_multiplexed_websockets_flux_capacitor (transport layer)
 - project_bft_cost_contingency (Vosk = local, no API cost)
 - 081KR7JY10008QG0R0008NGW95 shadow mode (shadow could have a voice)

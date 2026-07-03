@@ -59,6 +59,7 @@ PR #5083 (iter-4.2 substrate) auto-merged with required checks green; 5 substant
 Fix-forward PR addressing five Copilot review findings from #5083 (iter-4.2 SSH pubkey injection for the cluster install USB). Three P0s would break the install under `set -euo pipefail` or open a Nix code-injection hole; two P1s improve path/key handling on the macOS side.
 
 **Changes:**
+
 - `zeta-install.sh`: filter `find` start-paths to existing dirs (with `|| true`), read pubkey via `sudo cat` process substitution, sed-escape `\` then `"` before interpolating into the generated Nix file, and broaden the case-glob to match `ecdsa-sha2-*` and FIDO `sk-*@*` key prefixes.
 - `zflash.ts`: expand leading `~` / `~/` to `homedir()` before `resolve()` for `--ssh-key`, and broaden the OpenSSH key-type regex to match `ecdsa-sha2-*`, `sk-ssh-ed25519@*`, `sk-ecdsa-sha2-*` (dropping the bogus `ssh-ecdsa` token).
 
@@ -72,6 +73,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated no 
 | `full-ai-cluster/tools/zflash.ts` | Expands `~`/`~/` in `--ssh-key` argument and broadens pubkey-type validation regex. |
 
 Verification spot-checks:
+
 - Nix escape order is correct: `s/\\/\\\\/g` then `s/"/\\"/g` — second pass does not re-double the backslashes added in the first (sequential `-e` apply once each), so `"` → `\"` and `\` → `\\` in the emitted Nix double-quoted string.
 - `~` expansion: `next === "~"` slices 1 (empty tail) → `homedir()`; `~/foo` slices 2 → `join(homedir(), "foo")`. Both correct.
 - `find … || true` plus prior `[ -d "$d" ]` guard removes the `set -e` abort path.

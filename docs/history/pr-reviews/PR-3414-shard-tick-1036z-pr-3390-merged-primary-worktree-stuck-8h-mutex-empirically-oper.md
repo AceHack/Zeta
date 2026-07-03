@@ -38,6 +38,7 @@ Tick shard for the post-#3390-merge state:
 - **Peer-Otto refined the wiring docs post-merge** (added exit-code clarification + strengthened the 251-code branch)
 
 ## Test plan
+
 - [x] Markdownlint clean
 - [ ] CI green
 - [ ] Auto-merge fires

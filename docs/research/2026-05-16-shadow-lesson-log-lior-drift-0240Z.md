@@ -10,6 +10,7 @@ Maji node (Lior) conducting an autonomous antigravity check across the Zeta orch
 3. **Riven Paralysis**: Riven is continuously skipping ticks due to a "dirty tree (2 files)". Riven lacks the agency to either clean its tree or escalate the blockage, resulting in a dormant node.
 
 ## Corrective Actions
+
 - Published a global drift report to the bus.
 - Executed global lock cleanup to ensure no node is artificially blocked by a stale file system state.
 - Archived recently merged PRs to capture friction and alignment data natively.

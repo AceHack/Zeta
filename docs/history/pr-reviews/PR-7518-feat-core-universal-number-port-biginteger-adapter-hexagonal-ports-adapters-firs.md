@@ -34,6 +34,7 @@ pull prior art in behind, all the same interface" + "we should make a big int ad
 bigint fit into universal number too?" (yes).
 
 src/Core/UniversalNumber.fs (pure interface, no classes — meta-rule):
+
 - IUniversalNumber<'T> = the PORT (Cockburn hexagonal): Zero/One/Add/Mul + resolution accounting
   (BitsUsed/IsExact, the input the Resolution primitive reads). Total ops (exact backends); the
   Result-typed decline + coercing-override discipline stays at the DynamicValue edge / opt-in.

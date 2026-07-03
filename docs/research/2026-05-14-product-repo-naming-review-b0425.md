@@ -75,6 +75,7 @@ The `civsim` slug is available for the LFG GitHub org under `Lucent-Financial-Gr
 ### Assessment
 
 Two medium-severity collisions exist:
+
 1. The **Kommando Spezialkräfte** association is notable given the Homeland Security clearance lineage of the product — a reviewer in that space would immediately connect the acronym to the German special forces unit.
 2. The **NIST KSK = Key Signing Key** meaning creates ambiguity in any security-adjacent context.
 
@@ -113,6 +114,7 @@ The cross-linguistic resonance feature (Indonesian/Italian/Spanish) is a genuine
 ### Recommended provisional slug: `lf-dio` ⚠️ (pending re-evaluation)
 
 **Naming-expert notes:** The `dio` slug carries significant collision risk with Digital Innovation One and notable cultural associations. This row recommends flagging DIO for **naming reconsideration when the product is prioritized**, not just disambiguation. Options:
+
 - `lf-dio` — namespaces away from the ed-tech collision; preserves the acronym
 - A new name that embeds the cross-linguistic "God" meaning more distinctly (e.g., `theos`, `divinity`, `deus`) — these avoid the ed-tech collision entirely
 - `distributed-organism` — descriptive, unambiguous, CLI-clean

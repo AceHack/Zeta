@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve generated review archive for merged PR #1825
 - update PR review archive manifest with the PR #1825 archive row
 - route the post-merge archive output through PR flow because protected main rejected the workflow direct push
 
 ## Checks
+
 - GITHUB_SHA=10c6c13754e8bdd321c1ff72e3699a8f8a27c2fc bun tools/archive/archive-pr-reviews.ts 1825
 - deterministic replay of the same command (archive=noop, manifest=noop)
 - git diff --check

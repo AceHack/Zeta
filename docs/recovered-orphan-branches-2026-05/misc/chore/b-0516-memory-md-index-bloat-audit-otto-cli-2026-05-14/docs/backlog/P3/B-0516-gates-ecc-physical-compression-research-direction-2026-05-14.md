@@ -90,6 +90,7 @@ This row preserves Aaron's research direction as forward-planning substrate. Imp
 ## CRITICAL: razor + HARD LIMITS at MAXIMUM
 
 Per memory files:
+
 - [[feedback_aaron_reverse_engineer_gates_physical_eccs_for_minimalist_memory_storage_universe_reconstructs_perfect_compression_natural_physical_laws_reversible_2026_05_14]] (origin)
 - [[feedback_aaron_human_anchors_for_physics_prigogine_susskind_cab_driver_trust_substrate_engineering_provenance_2026_05_14]] (anchors)
 - [[feedback_aaron_dissipative_structures_prigogine_reversibility_explained_entropy_production_rates_shadow_logs_attention_as_flow_2026_05_14]] (dissipative-structures framework)

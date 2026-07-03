@@ -6,6 +6,7 @@
 ## The Instinct
 
 Aaron observed: *"things grow before they shrink."* The `zeta-ir` grammar grew across four evolutionary steps:
+
 1. `v1`: `mul k`, `xorshr s`
 2. `v2`: `rotl r`
 3. `v3`: `xrotxor [r...]`, `xshrxor [s...]`
@@ -28,12 +29,14 @@ Two ops from the earlier versions are completely redundant, subsumed by the late
 
 #### 1. `xorshr s` reduces to `xshrxor [s]`
 This was already explicit in the v3 widening logic (`ZetaIrV3.ofV2Op`).
+
 - `xorshr s` denotes $z \mapsto z \oplus (z \gg s)$
 - `xshrxor [s]` denotes $z \mapsto z \oplus (z \gg s)$
 - **Proof:** Trivial equivalence.
 
 #### 2. `rotl r` reduces to `xrotxor [0, r]`
 This is the hidden collapse. A v2 `rotl r` replaces the accumulator with its rotation. A v3 `xrotxor` XORs rotations back into the accumulator.
+
 - `rotl r` denotes $z \mapsto \text{rotl}(z, r)$
 - `xrotxor [r_1, ..., r_n]` denotes $z \mapsto z \oplus \text{rotl}(z, r_1) \oplus \dots \oplus \text{rotl}(z, r_n)$
 - If we set the list to `[0, r]`, the evaluation is:

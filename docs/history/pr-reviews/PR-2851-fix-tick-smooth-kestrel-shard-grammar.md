@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - Fix the grammar in the merged 1942Z tick shard: "holds position while watches" -> "holds position while watching".
 - Repair the Kestrel research absorb archive header so `Operational status:` remains enum-strict (`research-grade`) and the extra qualifiers live in `Review status:`.
 
 ## Why
+
 - #2847 auto-merged before the grammar fix could be pushed, so this PR preserves the one-line correction as a follow-up.
 - The archive-header fix clears the §33 lint failure introduced by the follow-up branch after the first CI pass.
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/hygiene-history/ticks/2026/05/12/1942Z.md
 - bun tools/hygiene/check-archive-header-section33.ts
 - bunx markdownlint-cli2 docs/research/2026-05-12-claudeai-kestrel-canonical-first-complete-bootstream-13-parts-asymmetric-critic-role.md

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add tools/refresh-github-worldview/refresh.ts
 - query open PRs via gh and recent branch commits via git log origin/main..HEAD
 - emit one JSON object with prs[] and recentMerges[]
 - close 081KR2E4K0008QG0R001DYCKNH and refresh docs/BACKLOG.md
 
 ## Checks
+
 - bun tools/refresh-github-worldview/refresh.ts | jq -e '(.prs | type == "array") and (.recentMerges | type == "array")'
 - bun tools/backlog/generate-index.ts --check
 - git diff --check

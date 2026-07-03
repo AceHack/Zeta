@@ -26,6 +26,7 @@ Addresses 2 Copilot post-merge findings on #5121.
 ### Behavioral change (substrate-honest update — earlier claim of "no behavior change" was incomplete)
 
 The shellHook IS now conditional on host OS, so user-facing output of `nix develop` changes:
+
 - macOS hosts: print the `Host setup (rare): bash tools/setup/install.sh` hint (unchanged behavior)
 - Debian/Ubuntu Linux hosts: same hint (unchanged behavior)
 - NixOS hosts: hint suppressed (new behavior — was previously a footgun pointing operators at a path that errors on `apt-get`)
@@ -54,6 +55,7 @@ Per Copilot finding on this PR: the workflow comment's documented future-proof f
 This PR addresses two post-merge Copilot findings by (1) scoping the `full-ai-cluster` devShell’s host-setup hint to OSes where `tools/setup/install.sh` is expected to work, and (2) reframing a workflow comment to accurately reflect GOVERNANCE.md §24’s “one script, three consumers” rule while noting this workflow intentionally skips running `install.sh`.
 
 **Changes:**
+
 - Update `full-ai-cluster/flake.nix` `shellHook` to show the `install.sh` hint only on macOS and Debian/Ubuntu-family Linux (and show nothing on NixOS).
 - Reword the `build-ai-cluster-iso` workflow comment to treat manifests as canonical dependencies for all `install.sh` consumers, and to clarify this workflow relies on runner preinstalls as a cost shortcut.
 

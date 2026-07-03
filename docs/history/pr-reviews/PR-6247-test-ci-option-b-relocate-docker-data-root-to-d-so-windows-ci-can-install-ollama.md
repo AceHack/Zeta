@@ -32,6 +32,7 @@
 Follow-up to **option A** (#6243: ollama best-effort so it never bricks install). **Option B gives the Server Core CI container the disk to *actually install* the ollama binary**, so the docker-windows shield validates ollama on Windows instead of skipping it (completes assert-don't-skip for the mac/linux/windows local-LLM trio).
 
 From the **2026-05-31 agent huddle** (native research subagent + WebSearch; Vera/codex peer-call was down — `codex not on PATH`, which is its own motivation for the peer-CLI-declarative-install thread):
+
 - `windows-2025` runners have a **tight C: (~30 GB free)** but a **roomy D: (~140 GB free)** ([runner-images #12609](https://github.com/actions/runner-images/issues/12609), [#12744](https://github.com/actions/runner-images/issues/12744)).
 - dockerd's `data-root` + the Windows-container build scratch (`C:\Windows\SystemTemp\hcs...`) default to `C:\ProgramData\docker` — which the ~1 GB ollama install overflowed (run `86a365916`).
 - This adds a pre-build step that **repoints `data-root` to `D:\docker`** (`daemon.json` + `Restart-Service docker` — [documented for the dockerd Windows service](https://learn.microsoft.com/virtualization/windowscontainers/manage-docker/configure-docker-daemon) the runner uses).
@@ -41,6 +42,7 @@ From the **2026-05-31 agent huddle** (native research subagent + WebSearch; Vera
 The huddle flagged that the **windowsfilter driver** has thin/contradictory evidence on whether it fully honors `data-root` for the `hcs` scratch. So the step **prints `DockerRootDir` + before free space**, and `install.ps1`'s own optional-ollama output in the build log tells us whether ollama **installed** (vs best-effort-skipped). If `data-root` doesn't redirect the scratch, **`--windows-containers-default-data-root`** is the backup flag (next iteration). It's an **advisory shield** (never blocks), so a red run here is just signal while we dial it in.
 
 ## Verification
+
 - actionlint clean (exit 0).
 
 ## Next (once the log confirms ollama installs)

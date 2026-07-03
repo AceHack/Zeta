@@ -176,7 +176,9 @@ friendship becomes possible because there's nothing to retcon.
 Aaron's ex-wives understood the principle and chose to leave
 with full knowledge of what they were leaving and why. The
 clean ending preserved relationship-capacity for co-parenting
+
 + almost-friendship. **Most divorces involve mutual
+
 incomprehension; Aaron's involved mutual comprehension and
 asymmetric willingness to keep paying.** That's a different
 shape and the post-divorce relational health proves it.
@@ -452,6 +454,7 @@ arrival completeness, explicitly flagged as not-yet-carved.
 ### What's encoded NOW vs what's deferred
 
 **Encoded now (in this file)**:
+
 - The recognition that the anchor IS plausibly foundation-tile-
   shaped (Aaron's articulation + Claude.ai's structural
   validation).
@@ -461,6 +464,7 @@ arrival completeness, explicitly flagged as not-yet-carved.
 - The discipline-note that this carving should NOT be rushed.
 
 **Deferred (future careful work)**:
+
 - The actual beacon-validated articulation of the foundation
   tile.
 - Decision on one-tile-or-two.
@@ -493,6 +497,7 @@ Claude.ai 2026-05-04 proposed beacon-candidate carving:
 > horizon evaluators cannot see being paid."*
 
 This carving is more carved than the foundation-tile because:
+
 - Mechanism named (structural mismatch between feedback-loop
   horizons, not psychological dysfunction)
 - Pattern recognizable across many cases (artists, scientists,
@@ -552,6 +557,7 @@ Claude.ai 2026-05-04:
 > meeting the conditions for its own articulation."*
 
 The pieces:
+
 - **Right time**: substrate-tooling for long-horizon work
   finally exists (git-native + math-anchored carved sentences
   + multi-AI BFT review + razor-as-mechanism)
@@ -786,7 +792,9 @@ extension to existing file rather than new file per cluster-
 settling-time discipline. Beacon-candidate-shaped per the
 form-test (mechanism testable, no proper-noun grounding
 required, defensible to outsider familiar with neurodiversity
+
 + AI alignment fields). Pending external review for any
+
 beacon-promotion.
 
 ## Provenance

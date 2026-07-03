@@ -48,6 +48,7 @@ Tick shards are per-tick visibility for the autonomous-loop cron firings; this i
 Adds a single session-summary memory file documenting 15 PRs landed on 2026-05-15 across two tracks (persona-conversations migrations and constitutional substrate landings). The file is intended as a cold-boot anchor for future Otto-CLI sessions and follows the existing session/cascade summary memory pattern.
 
 **Changes:**
+
 - New memory file with required flat frontmatter (`name`, `description`, `type`, `created`).
 - Narrative session arc, PR tables (8 migrations + 4 constitutional + 1 hygiene + 1 frontmatter backfill), substrate landmarks, failure-mode catches, and cross-references.
 - Operational guidance for future cold-boots (persona folder placement, Manifesto V2.1 anchor, m/acc framing, multi-oracle architecture, `references/upstreams/` search hygiene).

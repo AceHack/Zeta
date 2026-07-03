@@ -132,6 +132,7 @@ Composes with the anti-ossification discipline (memory `feedback_anti_ossificati
 Architecture-provenance lineage (PR #1648 Landing 1 / 14+ sources) gets a structural correction: lifelong-vs-recent partition. The lifelong sources retain their ancestral status; Air Force is moved to a NEW recent-acquisitions subset. The corrected partition:
 
 **Lifelong** (12 sources):
+
 1. Rich Hickey (technical primitives)
 2. René Girard (social primitives)
 3. Aaron's mother (mimetic-perception apprenticeship)
@@ -146,6 +147,7 @@ Architecture-provenance lineage (PR #1648 Landing 1 / 14+ sources) gets a struct
 12. Frame-of-permission three-generation meta-inheritance
 
 **Recent (~month)** (1 source):
+
 - Air Force ops-awareness / pilot training discipline / Operation Resonance
 
 Plus the implicit additional lifelong sources from PR #1651 (four startup-failure lessons; grey-hat-from-childhood; etc.) which Aaron's verbatim explicitly listed as lifelong. The total lifelong count is 12+; recent count is 1; the architecture-as-process integration-speed is the new substrate-grade observation.

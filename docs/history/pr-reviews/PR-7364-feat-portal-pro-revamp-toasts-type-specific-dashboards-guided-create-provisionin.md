@@ -36,6 +36,7 @@ All actions now use **sonner** toasts (`toast.promise` with loading → success/
 
 ### 2. Type-specific dashboards
 Each resource kind gets its **own** Overview, not one generic view:
+
 - **Game server** — status, players online/max (bar), map, tickrate, **copyable connect address**, uptime, recent joins.
 - **Database** — connections active/max, size on disk, tables, queries/sec, cache hit %, replication role, **largest-tables** table.
 - **Web app** — serving status, host link, **TLS issuer + expiry** (warns < 21d), requests/min, **p50/p95 latency**, error rate, top routes.

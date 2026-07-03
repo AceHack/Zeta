@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - Adds policy decision visibility to the agentic organization command pipeline: denied commands are observed through a generic `PolicyDecisionObservationPort` before any business effects, idempotency lookup, or persistence.
 - Projects allowed policy decision evidence onto audit events and outbox event envelopes, then persists audit policy evidence through the Cockroach adapter without leaking database details into application code.
 - Extends LGTM-friendly observability/workflow visibility with policy decision ID/version and updates package/docs/OpenSpec boundaries for the denied-observation vs allowed-evidence split.
 
 ## Validation
+
 - TDD: added failing regression tests for denied policy observation context, observation failure behavior, allowed policy evidence projection, Cockroach audit policy persistence/null normalization, schema columns, and observability projections before implementing fixes.
 - `npm test`
 - `npm run typecheck`
@@ -40,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds policy-decision traceability through the agentic-organization command path, separating denied-command observation from allowed-command evidence on persisted effects and observability projections.
 
 **Changes:**
+
 - Introduces `PolicyDecisionObservationPort` and denial observation in the command pipeline.
 - Adds allowed policy evidence to audit events, outbox envelopes, Cockroach audit persistence, spans, and workflow visibility records.
 - Updates OpenSpec and architecture/runtime docs to describe the denied-observation vs allowed-evidence split.

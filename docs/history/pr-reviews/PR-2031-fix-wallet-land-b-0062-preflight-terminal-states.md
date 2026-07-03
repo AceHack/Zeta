@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - land 081KQ8P5D0008QG0R002XFQ305 local proposal lifecycle terminal states in wallet spec section 7.3
 - add `retracted` and clarify `frozen` alongside the normal proposal lifecycle
 - update 081KQ8P5D0008QG0R002XFQ305 progress from 16/21 to 18/21 resolved items
 
 ## Checks
+
 - `git diff --check`
 - `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts && bun tools/backlog/generate-index.ts --check`
 - `bunx markdownlint-cli2 docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`

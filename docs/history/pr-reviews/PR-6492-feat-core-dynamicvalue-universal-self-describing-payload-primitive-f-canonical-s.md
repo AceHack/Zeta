@@ -30,11 +30,13 @@
 The serializer for **dynamic shapes** Aaron asked about: a self-describing runtime value tree for shapes not known at compile time. Distinct from the static `ISerializer<'T>` seam (known types) and a **new shape** — not a generalization of the observe oracle's JSON-only `Json` tree.
 
 ## Aaron's directives (2026-06-01), in order
+
 1. *"we should do a new shape for that one"* → fresh `DynamicValue`, not a `Json` lift.
 2. *"support any language that can be dynamic or self describing in the payload"* → the case set `Null | Bool | Int | Float | String | Bytes | Array | Object` is exactly the common self-describing core of **CBOR / msgpack / JSON / YAML**. What makes it a new shape vs `Json`: **`Int` split from `Float`** (carries protobuf int64 / >2^53 without precision loss) and **native `Bytes`** (the binary type JSON fakes with base64).
 3. *"the only way to support a non-self-describing language is a schema registry … schemas change at runtime … runtime schemas and self-describing fit the same shape"* → recorded in the doc + registry: schema-required formats (protobuf/Avro/Thrift) join via a **runtime schema registry** (schema-id → lookup → current shape at runtime); a schema-driven decode yields the **same** runtime `DynamicValue`. The `Schema`/`SchemaRegistry` is a separate port, **not** a shape change.
 
 ## Shape (F# canonical reference; C#/Rust/TS conform later)
+
 - `DynamicValue` DU (8 cases) + `DynamicValueType` tag + `typeOf` — the runtime **QueryInterface**; exhaustive match, no wildcard, so future variants (CBOR tags, BSON dates, decimal128, msgpack ext) break consumers loudly.
 - Lazy bind: strict `try*` accessors (no widening) + `tryField` / `tryItem` + `PropertyPath` `get "a.b[3].c"` (declines miss / out-of-range / type-mismatch / malformed; empty path = identity).
 - Hand-written structural equality (`[<CustomEquality; NoComparison>]`): `Bytes` compares **contents** not the `ImmutableArray` reference; arrays/objects recurse; `Object` is order-sensitive (canonical encoders sort on the wire).

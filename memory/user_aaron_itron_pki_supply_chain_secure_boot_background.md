@@ -141,7 +141,9 @@ they mesh over licensed/unlicensed RF bands (typical smart-
 metering: 900MHz ISM-band, Wi-SUN-family, or vendor-custom
 mesh). Itron had its own. Aaron "played around with" it — so
 his stack-coverage is actually software + firmware + hardware
+
 + **RF/PHY+MAC network protocol**. This is the layer where
+
 cryptographic authentication of meter-to-concentrator frames
 lives; where replay / spoofing / jamming adversaries get
 modelled; where key-freshness and rotation happen *wirelessly*
@@ -382,6 +384,7 @@ per-appliance signatures using spectral + temporal features.
 
 **Power-grid signature-detection algorithm family.** Aaron
 named six techniques:
+
 - **PRIDES** (Power Rising and Descending Signature) — a
   low-overhead binary-signature method keyed on rising/
   falling energy consumption patterns; tailored for
@@ -599,6 +602,7 @@ memory; it extends the picture. New calibration points:
   distinct, but the discipline lineage is one thread.
 
 **Cross-references (additions):**
+
 - `docs/BACKLOG.md` #239 *capability-limited AI bootstrap via
   factory* — gains veteran implementer precedent.
 - `docs/BACKLOG.md` (to-be-filed) *constrained-bootstrapping-to-upgrades
@@ -613,6 +617,7 @@ memory; it extends the picture. New calibration points:
   + ARC3-DORA reframe).
 
 **Still NOT:**
+
 - NOT authorization to ship Itron-internal model-distribution
   designs into Zeta (those are Itron IP; Aaron's *experience*
   informs, his *code* doesn't transfer).

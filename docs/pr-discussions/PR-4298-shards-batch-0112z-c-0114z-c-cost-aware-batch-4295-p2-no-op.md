@@ -27,6 +27,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds three new hygiene-history tick shard entries for 2026-05-19 (0112Z-c, 0113Z-c, 0114Z-c), documenting a cost-aware batching decision and recording that #4295’s P2 markdown ordered-list finding was a no-op / immutable-shard case.
 
 **Changes:**
+
 - Add tick shard `0112Z-c` capturing brief-ack status and batching intent.
 - Add tick shard `0113Z-c` capturing brief-ack status and sentinel liveness.
 - Add tick shard `0114Z-c` capturing the substantive note about #4297 merged and #4295 P2 markdown no-op resolution, plus batching context.

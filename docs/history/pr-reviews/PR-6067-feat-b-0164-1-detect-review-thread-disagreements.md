@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - Add a pure review-thread disagreement detector to divergence-shard tooling.
 - Return a DivergenceInput only when two loop observations target the same PR review thread and their normalized conclusions differ.
 - Add focused tests and record the detector slice in the 081KR7JY10008QG0R000MH7PJT backlog row.
 
 ## Verification
+
 - bun test tools/hygiene/divergence-shard.test.ts
 - git diff --check
 
 ## Coordination
+
 - Dedicated worktree: /Users/acehack/.local/share/zeta-codex-loop/Zeta-worktrees/codex-loop-b0164-1-review-disagreement-detect-20260530
 - Claim branch: claim/codex-loop-b0164-1-review-disagreement-detect-20260530
 - Checked open PR #6066 path set before editing; it touches divergence-reconcile files, not this claim path set.

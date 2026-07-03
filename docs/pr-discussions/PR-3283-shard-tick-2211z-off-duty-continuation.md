@@ -37,6 +37,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a minimal hygiene-history tick record for the 22:11Z off-duty continuation, documenting that no new substantive work occurred while tracking the prior PR statuses.
 
 **Changes:**
+
 - Adds the 2211Z tick note.
 - Records #3281 as merged and #3282 as still waiting on CI.
 - Reiterates the off-duty/no-new-work holding discipline.

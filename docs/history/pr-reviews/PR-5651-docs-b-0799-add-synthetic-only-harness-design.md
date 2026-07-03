@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - add the 081KSGS9H0008QG0R0005RKGTM synthetic-only harness design under docs/security
 - close 081KSGS9H0008QG0R0005RKGTM and mark the 081KSBMG30008QG0R00201X7EJ child criterion complete
 - release the live claim file before review so the PR carries only durable work output
 
 ## Safety boundary
+
 - design-only; no executable harness code
 - no classifier settings payloads, external corpora, real PII, real secrets, or reproduction steps
 - cites 081KSGS9H0008QG0R00383T79V as the implementation boundary and 081KSGS9H0008QG0R001K8P0FJ as the reporting/redaction gate
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - bunx markdownlint-cli2 docs/backlog/P0/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md docs/backlog/P0/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design-2026-05-26.md docs/security/081KSGS9H0008QG0R0005RKGTM-classifier-bypass-synthetic-harness-design.md
 

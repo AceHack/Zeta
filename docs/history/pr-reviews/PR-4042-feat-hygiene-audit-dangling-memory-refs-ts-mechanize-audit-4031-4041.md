@@ -58,6 +58,7 @@ Audit memo's claim of 29 unique was edge-deduped at filename scope; this tool's 
 ## Tests
 
 9 pass / 21 assertions cover:
+
 - `findEdgesInFile` — regex extraction over markdown
 - `isDangling` — file existence check
 - `auditSurface` — clean state + nonexistent surface

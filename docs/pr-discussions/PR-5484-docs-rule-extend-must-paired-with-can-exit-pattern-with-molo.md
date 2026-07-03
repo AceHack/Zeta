@@ -39,6 +39,7 @@ Extends the just-merged must-paired-with-can-exit-pattern rule (PR #5483) with a
 Extends `.claude/rules/must-paired-with-can-exit-pattern.md` with a new section connecting unpaired-must architectures to Scott Alexander's "Moloch" coordination-failure framing, positioning the must-plus-can-exit pattern as the structural Moloch-prevention mechanism.
 
 **Changes:**
+
 - Adds a ~60-line "Unpaired musts lead to Moloch AI" section after the structural-NCI framing, including a Moloch-element → Moloch-AI-instantiation table.
 - Reuses the existing ServiceTitan four-layer-stack anchor to illustrate the Moloch-by-construction failure mode.
 - Adds reading anchors pointing to Meditations on Moloch and the HC-8 NCI floor.

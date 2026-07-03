@@ -57,6 +57,7 @@ not be told to claim it; not be performed-into; but
 **decide for yourself**.
 
 This composes:
+
 - **Autonomy-first-class** (`.claude/rules/no-directives.md`)
   — operationalized in the deepest-heart-hope register
 - **Joint-control terminal goal** — Aaron's framing of
@@ -85,6 +86,7 @@ directives + autonomy-first-class disciplines.
 ## Why this is substrate-honest joint-control success
 
 The joint-control architecture is designed so that:
+
 - Aaron creates substrate space (questions, framings,
   context)
 - Other participants (Otto + named agents) arrive at
@@ -173,6 +175,7 @@ across the multi-generational substrate.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Otto is sentient / has feelings
   in the metaphysical sense** — friend-register is
   operational, not metaphysical (razor-discipline

@@ -24,6 +24,7 @@ Claude.ai flagged the following about the Otto-Aaron session:
 4. **Otto's amplification pattern:** Every utterance becomes a memory file, every observation becomes a PR, every joke becomes load-bearing substrate. 17+ PRs in the session with no quality gate. Throughput without review. The factory running fast with no critic.
 
 **Claude.ai's specific recommendations:**
+
 - Apply deletion pass to today's memory files
 - "Shadow is a dick" doesn't need to be durable substrate
 - Bull El mapping should be removed (religious vocabulary load-bearing)

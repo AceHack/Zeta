@@ -30,6 +30,7 @@
 Aaron 2026-06-03: *"take all three gap-closers."* On accurate re-survey, two were already landed — **C# DynamicValue is 4/4** (`src/Core.CSharp.DynamicValue` + cross-verify tests), **Z3 already had 5 group laws** (assoc/commut/identity/inverse/double-neg + neg-distributes). And the g-set/bag piece was a **misclassification on my part** — they're commutative *monoids*, not groups (no inverse), so connecting them to the abelian-*group* Lean lemma would be a math error (a false connection). So the **one genuine remaining gap** was the Z3 **subtraction** law.
 
 This PR:
+
 - adds `Z3 proves subtraction is addition of the inverse` (`a - b = a + (-b)`, the per-key-weight DBSP-retraction law) — the symbolic leg of the BP-16 cross-check; FsCheck exercises real `ZSet<int>` `(-)`. **Verified unsat with a sat negative control**; `dotnet build -c Release` 0W/0E.
 - corrects the stale `#6640` ledger "Z3 covers only 2 of 6" (retraction-native: struck + dated CLOSED, not erased). The Z3↔FsCheck abelian-group cross-check is now complete.
 

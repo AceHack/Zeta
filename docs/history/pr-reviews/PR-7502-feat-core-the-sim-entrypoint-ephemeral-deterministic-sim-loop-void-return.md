@@ -33,6 +33,7 @@ Aaron approved building the sim entrypoint. First runnable slice of the sim·mea
 captured design into a thing that runs.
 
 src/Core/Sim.fs (pure module, no classes):
+
 - Sim.run (seed) (duration) — runs the deterministic finalizer loop (Finalizer.run) for the duration
   and returns unit (the VOID; produces no output, commits nothing). prod = sim.
 - budgetOf: duration -> tick budget at 60Hz (CHIP-8 lineage); no real clock read (DST: same duration

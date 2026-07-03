@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Retire all five `full-ai-cluster/dev-cluster/*.sh` wrappers; harness + CI call `src/Core.TypeScript/cluster/dev-cluster/*.ts` through hexagonal ports/adapters.
 - Move zflash stack (`cli`, `lib`, `flash-usb`, `file-backed*`, `setup`) into `src/Core.TypeScript/zflash/` with a new `ports.ts` dependency-category map.
 - Fix minio/seaweedfs Helm `releaseName` collision in `object-store` (both used `blob-store`); seaweedfs re-enters the kind **included** gate.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/zflash/`
 - [x] `bun test src/Core.TypeScript/cluster/dev-cluster/`
 - [x] `bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts`
@@ -41,6 +43,7 @@
 - [ ] CI: `zflash-qemu-test` dry-run floor
 
 ## Follow-up (separate PRs)
+
 - Wire `argocd-health-test.ts` spawn path through cluster ports (not only bootstrap CLIs)
 - Restore/migrate `flash-usb-windows.ts` + `flash-and-inject.ts` into `src/` (Windows lane; file missing from tree today)
 

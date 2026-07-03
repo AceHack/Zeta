@@ -35,6 +35,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR updates the factory rule for diagnosing “BLOCKED with green required CI” to add a verify-before-fix discipline for reviewer-thread findings, including an empirical “suspect-by-default” list for known false-positive classes and guidance for handling stale-but-previously-true findings.
 
 **Changes:**
+
 - Add a “verify-before-fix” step after surfacing unresolved review threads to reduce wasted fixes/regressions from hallucinated findings.
 - Introduce an empirical suspect-by-default list (currently the table-pipe false-positive class) with a threshold for inclusion.
 - Document how to resolve stale-but-fresh-looking findings as no-ops when the underlying state self-heals.

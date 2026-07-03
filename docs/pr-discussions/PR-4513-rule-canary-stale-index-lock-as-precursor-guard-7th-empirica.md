@@ -54,6 +54,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -72,6 +73,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates the existing operational rule documenting the “docs-only PR CodeQL failure = broken commit canary” pattern by adding a new precursor signal and documenting an additional observed incident, aiming to catch index/worktree corruption earlier in the workflow.
 
 **Changes:**
+
 - Adds a new “stale `index.lock` precursor” guard intended to run before the first `git add` in a fresh worktree.
 - Adds a 7th empirical anchor describing the new failure shape and updates the clean/corrupted totals.
 

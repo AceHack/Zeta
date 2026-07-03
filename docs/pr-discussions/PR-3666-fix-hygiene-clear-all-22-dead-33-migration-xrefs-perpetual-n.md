@@ -67,6 +67,7 @@ The other 4 perpetual non-required-check failures remain:
 This PR fixes the perpetual `lint (§33 migration xrefs)` failure by updating stale cross-references that still point at `docs/research/<NAME>.md` to instead point at the migrated archive location `memory/otto/cli/claude/conversations/<NAME>.md`.
 
 **Changes:**
+
 - Updated 22 xrefs across memory files, backlog rows, and a `.claude/rules` doc to the post-migration archive paths.
 - Kept changes scoped to specific known-migrated filenames (no blanket `docs/research/` rewrite).
 - Updated `memory/CURRENT-aaron.md` and related memos to reference the new archived conversation paths.

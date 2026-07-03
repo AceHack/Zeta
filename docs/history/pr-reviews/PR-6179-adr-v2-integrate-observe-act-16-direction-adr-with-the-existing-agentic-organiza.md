@@ -33,11 +33,13 @@ Per your "look at the agentic organization docs + see how the ADR integrates + u
 The **`observe.ts` keystone already exists and is designed in depth** — `OBSERVE_COMPOSER_AND_RUN_STATE.md` (code anchor `agentic-organization/packages/application/src/observe.ts`): `observe()` (pure) → memoryless `composer.compose()` → `decide()` (rejects illegal picks), the `RunScope` / `RunLifecyclePhase` / `ObserveResult` / `ComposerSelection` DUs, `DeterministicRule` vetoes, and a **≥3-agent constitution ratification gate**. And the **"Universal Action Grammar" is already a named concept** (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`: *"reuse those ideas instead of inventing another unrelated action language ... the Universal Action Grammar becomes the shared action representation inside phases"*).
 
 **v1 of the ADR proposed a parallel observe.ts + action language — that was wrong.** v2 reframes it to **render the existing keystone**, contributing only three things on top:
+
 1. the **fixed 16-slot Xbox-controller rendering** of the keystone's per-`RunScope` legal options (the concrete fixed-slot form of the already-named Universal Action Grammar);
 2. **tri-boolean (081KSV2WD0008QG0R00051XS0N) `Tri[16]` per-slot availability** wired to the keystone's `ObserveResult` `readout|feedback` (`Result<T,TFeedback>`) + `DeterministicRule` vetoes (`T`=legal, `F`=vetoed, `N`=held);
 3. the **local-USB single-node (no-cloud) deployment** of the same keystone, alongside the cluster runtime — the 16-way constrained decode is exactly what makes a small local model a viable composer without the cluster.
 
 ## What changed in the ADR
+
 - Added an **Integration section** mapping every ADR concept onto the existing keystone DUs.
 - Replaced "git-only, 128-bit ids" with the precise **git-as-db ZetaId-CRDT G-Set + Cockroach rebuildable index** (`GIT_COCKROACH_SYNC` / `frontmatter-db`).
 - Mapped the 16 slots → `RunScope` (Scope slots), `ComposerSelection.select/.hold` (Commit A/B), the constitution gate (escalate R3).

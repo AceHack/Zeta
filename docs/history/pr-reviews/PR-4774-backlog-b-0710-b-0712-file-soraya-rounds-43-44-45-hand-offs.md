@@ -34,17 +34,20 @@ Files Soraya's three pending findings (rounds 43+44+45) as backlog rows in one c
 ## Three rows
 
 **081KS923C0008QG0R003GHCG1P** — DBSP chain rule BP-16 cross-check
+
 - Lean artifact is single-tool; needs FsCheck cross-trace + Z3 pointwise lemma
 - Composes with just-merged PR #4772 (Lean README + CI badge) — this is gap #3 of the chain-rule publication arc
 - Effort: S+S
 
 **081KS923C0008QG0R0005VM4FB** — Residuated FsCheck property file
+
 - `src/Core/Residuated.fs` is the ONLY CRDT-class file with zero FsCheck (sanity-checked across PNCounter, OrSet, Lww, GCounter, DeltaCrdt, Bloom, CountMin, Haar, HyperLogLog, HyperMinHash — all have tests)
 - Round-17 regression-guard: prior "O(1) amortised" claim was actually O(n); harsh-critic caught it; FsCheck pins the law
 - Three properties: Galois + residual + retraction equivalence
 - Effort: S
 
 **081KS923C0008QG0R001N2RSGJ** — WitnessDurable commit protocol formal verification triple
+
 - `Durability.fs:14-22` self-declares TLA+ prereq; type itself is the gate (`Save` throws until proven)
 - P0 triple: TLA+ for state-machine safety + Z3 for quorum arithmetic + FsCheck for real-code cross-check
 - Soraya explicitly named + REJECTED the TLA+-hammer trap (don't bundle quorum arithmetic into TLA+; Z3 closes in seconds vs TLC enumeration)

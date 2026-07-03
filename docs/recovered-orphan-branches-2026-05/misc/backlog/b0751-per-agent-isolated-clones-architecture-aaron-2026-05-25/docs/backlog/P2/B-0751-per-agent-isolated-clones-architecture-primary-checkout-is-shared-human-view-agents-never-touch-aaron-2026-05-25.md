@@ -66,6 +66,7 @@ Architectural decision: agent isolation moves from worktree-level (shared `.git/
 ```
 
 Each clone:
+
 - Independent `.git/` directory
 - Own working tree
 - Own remote tracking (`origin/main` per clone via independent fetches)

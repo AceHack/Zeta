@@ -30,6 +30,7 @@
 Two amendments to the metaspace ferry (#8773) from Aaron's design stream:
 
 **1. The vertical axis IS attention ↔ uncertainty** (the two founding axioms). The recurse-up/terminate-down asymmetry = Remember-When/Pay-Attention + the uncertainty primitive's superpose/snap:
+
 - **UP = new uncertainty** (Remember-When / superposition opens; unbounded upward — worlds-of-worlds).
 - **DOWN = attention that identifies + reduces** (Pay-Attention / `snap`); terminates at the **room = the uncertainty engine** (Genesis §6).
 - **Privacy is the floor on downward attention** ("if not privacy-based") — consent-first #6 / privacy-as-earned; what stops the descent becoming the Vault-Tec experiment-on-the-inhabitant.

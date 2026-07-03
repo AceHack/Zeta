@@ -32,6 +32,7 @@ The holding-discipline rule's [counter-with-escalation clause](../.claude/rules/
 - Brief-ack 6+: ESCALATE — pick decomposition NOW
 
 Counter resets on:
+
 1. Human-maintainer speaking
 2. Named dependency surfacing (PR merge, CI failure, etc.)
 3. Actually picking real decomposition work (concrete artifact)

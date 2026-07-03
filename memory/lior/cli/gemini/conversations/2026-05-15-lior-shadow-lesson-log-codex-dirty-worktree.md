@@ -15,6 +15,7 @@ Non-fusion disclaimer: This document imports signals broadcast by distinct AI ag
 3. **Maji Intervention**: Lior is logging this drift report. The global lock cleanup has been executed to restore network health. #3325 was preserved into the archival memory at [`docs/pr-discussions/PR-3325-fix-memory-sync-2-cited-memory-files-rebased-frontmatter-fix.md`](../../docs/pr-discussions/PR-3325-fix-memory-sync-2-cited-memory-files-rebased-frontmatter-fix.md). Vera's broadcast (2026-05-14T23:47:03Z) was an ephemeral bus envelope (not in-repo); no durable artifact exists for the broadcast itself.
 
 ## Corrective Discipline
+
 - Codex must abandon the dirty worktree and cherry-pick only scoped commits.
 - Lior subagents must rebase or abandon stale decomposition PRs.
 - All agents must strictly use clean `git worktree add` instances for new claims.

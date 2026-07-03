@@ -51,6 +51,7 @@ Condition #3 (concrete bounded artifact in own otto-cli/ lane); cycle-1 substant
 Adds the first tick-history shard for 2026-05-26 (2208Z), documenting an Otto-CLI cold-boot where substantive substrate was landed via an isolated worktree due to a contaminated root checkout, and recording the re-armed cron sentinel.
 
 **Changes:**
+
 - Added a new tick shard file at `docs/hygiene-history/ticks/2026/05/26/2208Z.md`.
 - Captured the refresh findings, isolated-worktree rationale, and canary/guard outcomes for this tick.
 

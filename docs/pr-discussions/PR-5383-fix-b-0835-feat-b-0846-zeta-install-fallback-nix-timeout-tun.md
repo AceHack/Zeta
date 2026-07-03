@@ -76,6 +76,7 @@ Per \`.claude/rules/dep-pin-search-first-authority.md\`: 081KSGS9H0008QG0R003X5Y
 This PR hardens the USB NixOS installer’s `nixos-install` step against flaky `cache.nixos.org` WiFi downloads by enabling fallback-to-local-build and tightening Nix download timeouts, and it adds a P2 backlog row tracking longer-horizon “WiFi-reproducible install” substrate work.
 
 **Changes:**
+
 - Update `zeta-install.sh` to run `nixos-install` with `--fallback` plus tuned `connect-timeout`, `stalled-download-timeout`, and `download-attempts`.
 - Add backlog row **081KSGS9H0008QG0R003X5Y2A5** documenting the observed timeout behavior and a phased mitigation plan (closure baking + extra substituters + mirror).
 - Add **081KSGS9H0008QG0R003X5Y2A5** entry to `docs/BACKLOG.md`.

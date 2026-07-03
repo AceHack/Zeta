@@ -31,6 +31,7 @@
 One bounded step: re-decomposed broad 081KQ0YZ80008QG0R002WJBFWD (agency-evidence stress-test) into 5 smallest dependency-ordered atomic child rows. Assumed decomposition mistakes per rule. Prefer TS/F# impl for children. Used dedicated worktree + pushed claim branch. Did not touch root checkout. Ran focused checks (dotnet build gate passed 0w/0e on source tree).
 
 ## Rules compliance
+
 - Dedicated worktree + pushed claim: yes (claim/b0018-... )
 - No root checkout touch: yes
 - Exactly one bounded step: yes (decomp record only)

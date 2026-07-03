@@ -96,6 +96,7 @@ _(no body)_
 Adds a Bun/TypeScript recovery utility and companion documentation/skill to repair Claude Code session JSONL files that can’t be reopened due to oversize pasted image attachments (base64 ballooning a single JSONL line past the harness load limit).
 
 **Changes:**
+
 - Introduces `repair-jsonl-strip-images.ts` to scan session JSONL files for oversize lines and strip only oversize image blocks (dry-run by default, backup + validation on apply).
 - Documents usage, thresholds, and the agent/operator split for safe `--apply` execution.
 - Adds a `claude-session-recovery` skill to guide operators through scan → dry-run → operator-run apply.

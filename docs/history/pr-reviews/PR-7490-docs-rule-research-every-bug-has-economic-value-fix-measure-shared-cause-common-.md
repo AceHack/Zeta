@@ -36,6 +36,7 @@ common seed, these bug-fix measurements are valuable and if successful will rece
 - a fix is a `measure` -> commits the uncertainty reduction (finalizer ΔU) to uncertainty/; worth = ΔU.
 - shared cause = common seed (S=4): a fix reduces COLLECTIVE uncertainty (leveraged, not local).
 - success earns REWARDS / PRIVACY (privacy is earned by usefulness, not asserted by default).
+
 Carved rule + full research doc (anchors: bug bounties, mechanism design, proof-of-entropy, Ostrom,
 Shannon; peeled to the literal finalizer-ΔU-to-ledger). markdownlint exit 0.
 

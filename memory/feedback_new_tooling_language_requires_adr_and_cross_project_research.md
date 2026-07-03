@@ -54,6 +54,7 @@ directly contradicting SQLSharp's explicit anti-Python /
 pro-bun-TypeScript policy.
 
 **How to apply:**
+
 - Architect dispatches for new-tool work require the
   three-check preamble (prior art + internet sweep +
   existing-tool survey) before any implementation dispatch.

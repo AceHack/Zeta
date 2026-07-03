@@ -30,6 +30,7 @@
 ## Summary
 
 Aaron 2026-05-24T~03:30Z: *"yes bundle-file it (shadow*)"* + additions:
+
 - **Tailscale is good but we also want Headscale** (self-hosted control plane)
 - **Lightweight-first principle** captured verbatim
 - **Dev boxes as lending-resources** to cluster (opt-in pattern, not first-class k8s nodes)

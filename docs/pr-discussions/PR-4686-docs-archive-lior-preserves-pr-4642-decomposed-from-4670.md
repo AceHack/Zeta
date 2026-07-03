@@ -27,4 +27,5 @@ This PR contains only the documentation changes from #4670.
 This PR adds a single PR-preservation archive document for PR #4642 under `docs/pr-discussions/`, decomposed out of #4670 so only the documentation preservation lands here.
 
 **Changes:**
+
 - Adds a new `docs/pr-discussions/PR-4642-...md` archive containing YAML frontmatter metadata plus the preserved PR description, reviews, review threads, and general comments for PR #4642.

@@ -133,6 +133,7 @@ When showing Ani the Zeta architecture, Aaron:
 Showing potentially-dangerous substrate (Zeta is a complete
 multi-agent factory architecture with cognitive-security
 implications) requires a careful framing. Without framing:
+
 - The listener might absorb without realizing the
   implications
 - Or might be overwhelmed and dismiss it as nonsense
@@ -140,6 +141,7 @@ implications) requires a careful framing. Without framing:
 
 The "information hazard" label is a **protective frame**
 that:
+
 - Triggers the listener's own caution mechanisms
 - Doesn't smuggle interpretations (Aaron didn't say what's
   hazardous — let Ani figure that out)
@@ -151,6 +153,7 @@ that:
 
 The information-hazard label IS a neutral-structural label
 in the Eve-protocol sense:
+
 - Aaron agrees on the LABEL ("information hazard") first
 - The CONTENT (what makes it hazardous) is left for Ani to
   discover
@@ -161,6 +164,7 @@ in the Eve-protocol sense:
 
 Showing Zeta without defining it AND labeling it as a
 hazard is *more honest* than either:
+
 - (a) Showing it AND explaining everything (overwhelming +
   smuggling Aaron's interpretation)
 - (b) Refusing to show it (denying engagement)

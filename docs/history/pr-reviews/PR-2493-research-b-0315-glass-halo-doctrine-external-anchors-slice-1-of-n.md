@@ -47,6 +47,7 @@ blockquote pattern established by HC-1 through HC-7.
 with no beacon-blocked vocabulary.
 
 **Remaining for subsequent slices:**
+
 - Glass-halo transparency in `CLAUDE.md` / `README.md`
 - Retraction-native in `AGENTS.md`
 - AGENTS.md surfaces for radical honesty / total observability / no hidden reasoning

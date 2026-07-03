@@ -63,6 +63,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -81,6 +82,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Closes backlog row 081KQGDBJ0008QG0R000RWAA67 by updating its frontmatter to `status: closed` and adding completion notes that trace each acceptance criterion to the merged deliverable(s).
 
 **Changes:**
+
 - Update 081KQGDBJ0008QG0R000RWAA67 frontmatter (`status`, `last_updated`, plus closure metadata fields).
 - Add a “Completion notes” section with an AC→deliverable traceability table.
 

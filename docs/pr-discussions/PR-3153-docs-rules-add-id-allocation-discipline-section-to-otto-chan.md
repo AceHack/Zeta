@@ -74,6 +74,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -92,6 +93,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates the Otto inter-surface communication reference card to codify ID allocation discipline across local backlog state and GitHub PR state, addressing the 081KRFA460008QG0R002DG8KPZ collision scenario described in the PR.
 
 **Changes:**
+
 - Adds ID allocation as an operational discipline item.
 - Adds a new multi-surface ID allocation section with on-disk and in-flight PR checks.
 - Adds composition links to the collision-resolution PRs and refresh-before-decide rule.

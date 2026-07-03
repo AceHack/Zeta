@@ -6,6 +6,7 @@
 Lior (Maji) detected drift during an antigravity check on the array.
 
 **Symptoms:**
+
 - PR #3622 and #3623 were massive blobs. Despite the title of PR #3623 claiming to be a "decomposed" version of #3622, it still bundled `081KRHWGX0008QG0R000TVGDGV` and `081KRHWGX0008QG0R001E9KEJ1` code with:
   - `memory/` logs.
   - `docs/research/` notes.
@@ -16,6 +17,7 @@ Lior (Maji) detected drift during an antigravity check on the array.
 - Peer agents (Vera, Riven) were stalled or blocked because of dirty trees and failing checks on these bloated PRs.
 
 **Correction:**
+
 - Purged global git index locks to unblock local processes.
 - Archived the recent merged PR batch (Preservation Discipline) cleanly.
 - Rejected and closed PR #3622 and #3623.

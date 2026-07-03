@@ -46,6 +46,7 @@ Two clean separate top-level directories on branch \`ai-cluster-bootstrap\` per 
 62 files. First, a byte-identical copy of the USB directory (the bootstrap snippet). Then the full stack:
 
 **NixFlake layer (OS):**
+
 - K3S server + K3S agent (Cilium takeover: \`--flannel-backend=none\`, \`--disable-kube-proxy\`, \`--disable-network-policy\`)
 - Cilium-host-prep (firewall, trusted-interfaces)
 - Docker via NixFlake (separate from K3S containerd)
@@ -56,6 +57,7 @@ Two clean separate top-level directories on branch \`ai-cluster-bootstrap\` per 
 - per-host \`configuration.nix\` for \`control-plane\` + \`worker-gpu\` (+ template for additional workers)
 
 **ArgoCD layer (cluster — 30 Application.yamls):**
+
 - Cilium (KPR + Hubble Relay + Hubble UI + BPF MASQUERADE per spec)
 - Orleans, Temporal (TS), Dapr Actors — three distributed-cron substrates
 - GitLab + Forgejo (both shipped, pick one)
@@ -119,12 +121,12 @@ diskutil eject /dev/diskN
 ## Install on a target machine
 
 \`\`\`bash
-# Boot the target on the USB. At the console:
+# Boot the target on the USB. At the console
 
-# Network up:
+# Network up
 nmtui
 
-# Partition (example: single ext4 + EFI — replace /dev/sda with your target disk):
+# Partition (example: single ext4 + EFI — replace /dev/sda with your target disk)
 sgdisk --zap-all /dev/sda
 sgdisk -n 1:0:+512M -t 1:ef00 -c 1:boot /dev/sda
 sgdisk -n 2:0:0     -t 2:8300 -c 2:nixos /dev/sda
@@ -133,15 +135,15 @@ mkfs.ext4 -L nixos /dev/sda2
 mount /dev/disk/by-label/nixos /mnt
 mkdir -p /mnt/boot && mount /dev/disk/by-label/boot /mnt/boot
 
-# Clone cluster flake:
+# Clone cluster flake
 git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta
 
-# Per-machine hardware config (must be copied into the host dir):
+# Per-machine hardware config (must be copied into the host dir)
 nixos-generate-config --root /mnt
 cp /mnt/etc/nixos/hardware-configuration.nix \
    /mnt/etc/zeta/full-ai-cluster/nixos/hosts/<host>/hardware-configuration.nix
 
-# K3S cluster token (control-plane only on first install — save the token for workers):
+# K3S cluster token (control-plane only on first install — save the token for workers)
 nixos-enter --root /mnt -- bash -c '
   mkdir -p /var/lib/rancher/k3s/server
   openssl rand -hex 64 > /var/lib/rancher/k3s/server/token
@@ -149,11 +151,11 @@ nixos-enter --root /mnt -- bash -c '
 '
 cat /mnt/var/lib/rancher/k3s/server/token   # ← save this; needed on every worker
 
-# Install:
+# Install
 nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>
-# <host> = control-plane | worker-gpu | ...
+# <host> = control-plane | worker-gpu | 
 
-# Set zeta user password + reboot:
+# Set zeta user password + reboot
 nixos-enter --root /mnt -- passwd zeta
 reboot
 \`\`\`

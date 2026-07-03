@@ -69,6 +69,7 @@ bun tools/memory/validate-memory-parity.ts → 672/672 covered, 0 gaps, 0 missin
 Fixes 081KR2E4K0008QG0R001M8NJ56 by making the memory reindexer recursive so files in `memory/` subdirectories (e.g., `memory/observed-phenomena/`) are included in `MEMORY.md`. Resolves the final 2 parity gaps (672/672 covered).
 
 **Changes:**
+
 - Replaces non-recursive `collectEntries` with a `collectEntriesRecursive` helper using `readdir({ withFileTypes: true })`, storing `filename` as a path relative to `baseDir`.
 - Adds 2 tests covering recursive discovery and subdir-relative filename.
 - Marks 081KR2E4K0008QG0R001M8NJ56 closed (backlog row + regenerated `docs/BACKLOG.md`) and updates `MEMORY.md` heap-count footer (1103 → 1130).
@@ -104,6 +105,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

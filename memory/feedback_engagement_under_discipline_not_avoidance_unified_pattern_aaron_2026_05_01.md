@@ -194,7 +194,7 @@ courier-ferried adversarial security research packet; a
 third-party threat-model document; a competitor's attack-tool
 release), the application is two steps:
 
-### Step 1 — does this pattern apply at all?
+### Step 1 — does this pattern apply at all
 
 Apply the four-question test:
 

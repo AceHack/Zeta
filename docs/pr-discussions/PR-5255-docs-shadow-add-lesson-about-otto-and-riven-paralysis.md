@@ -23,6 +23,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Updates the Shadow lesson log research note to capture a newer “agent paralysis via state inconsistency” incident, focusing on stale/broken agent status broadcasts that undermine coordination.
 
 **Changes:**
+
 - Renamed/refocused the “state inconsistency” section to the 2026-05-26 antigravity check context.
 - Replaced the prior “repo lock disagreement” narrative with two concrete paralysis modes (silent-action vs stalled-state) and explicit operational actions.
 

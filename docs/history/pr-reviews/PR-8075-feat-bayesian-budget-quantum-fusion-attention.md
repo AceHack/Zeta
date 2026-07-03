@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - adds an evidence ledger to the Bayesian quantum-fusion report: delta count, touched identities, exterior identities, and hidden interior identities
 - adds `fuseDeltasWithAttention`, `fuseOracleWithAttention`, and `predictExteriorWithAttention` so experiments can prioritize fused facts under the Vision tank
 - pins the invariant that attention changes boarding order, not DBSP arithmetic truth; byte/time horizon pressure backpressures without changing exterior fusion
@@ -37,6 +38,7 @@
 This connects the Vision budget policy to the DBSP uncertainty lane without making Q# or Bayesian inference the runtime. Zeta still owns the signed ZSet -> exterior GSet fusion; attention only decides which already-fused futures get inspected first.
 
 ## Validation
+
 - `dotnet test tests/Bayesian.Tests/Bayesian.Tests.fsproj -c Release -m:1 /p:UseSharedCompilation=false /p:Optimize=false`
 - `bun --bun tsc --noEmit -p tsconfig.json`
 - `bunx eslint src/Core.TypeScript/cluster/adapters/container-host.ts src/Core.TypeScript/cluster/adapters/local-cluster-drivers.ts src/Core.TypeScript/cluster/adapters/spawn-process-runner.ts`

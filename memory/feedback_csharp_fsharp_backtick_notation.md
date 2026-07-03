@@ -9,6 +9,7 @@ Rule: `C#`, `F#`, `LiquidF#`, and other hash-suffixed language tokens are writte
 **Why:** Aaron's course correction 2026-04-19 after I fixed two markdownlint heading errors (typescript-expert/SKILL.md MD003 "diverges from C #"; liquidfsharp-findings.md MD003 "adopting LiquidF #") by expanding the token. His exact note: "like `C#` like `F#` or something like that instead of C-sharp". Linter pain is real; the right fix is the escape, not the rename — the names are the names.
 
 **How to apply:**
+
 - When markdownlint MD003 (heading-style) flags a line ending `... C #` or `... F #`, fix it by wrapping in backticks (`C#`, `F#`) rather than by prose substitution.
 - The underlying cause is line-wrap: long lines that happen to end at "...C " get a newline-then-`#` which the renderer reads as an atx_closed heading. Backticks end the inline code before the `#` so nothing is heading-interpreted.
 - Applies equally to `F#`, `C#`, `LiquidF#`, `C++`, `H#`, etc. — any token where special punctuation breaks a markdown renderer.

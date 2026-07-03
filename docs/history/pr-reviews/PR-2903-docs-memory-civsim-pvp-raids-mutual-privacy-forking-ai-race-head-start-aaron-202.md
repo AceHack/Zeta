@@ -48,6 +48,7 @@ Six sections preserved including what forks inherit (framework + substrate-engin
 - PR #2851 (LFG canonical product)
 
 ## Test plan
+
 - [x] Markdown renders correctly
 - [x] Composes with prior PR substrate
 - [x] No new code paths; memory-substrate only

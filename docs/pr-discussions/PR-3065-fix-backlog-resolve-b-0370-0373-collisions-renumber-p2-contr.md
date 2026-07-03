@@ -86,6 +86,7 @@ Remaining 3 groups: `081KRA5AR0008QG0R000Y6102S` (3-way), `081KRA5AR0008QG0R0035
 Mechanical renumber of the P2 contributor-compliance child set (081KR2E4K0008QG0R000ARCH0X–081KR50HA0008QG0R001NNPEXC → 081KRA5AR0008QG0R0029YWXYW–081KRA5AR0008QG0R0033TJSAF) to resolve ID collisions with an earlier-filed P1 set, plus remap of the internal `depends_on` chain and parent decomposition section in 081KQ8P5D0008QG0R003ZF64GG.
 
 **Changes:**
+
 - Renamed/renumbered four P2 rows (081KR2E4K0008QG0R000ARCH0X–081KR50HA0008QG0R001NNPEXC → 081KRA5AR0008QG0R0029YWXYW–081KRA5AR0008QG0R0033TJSAF) with `renumbered_from` + reason in frontmatter and updated body titles
 - Remapped internal `depends_on` references (`[081KR2E4K0008QG0R000ARCH0X]` → `[081KRA5AR0008QG0R0029YWXYW]`, `[081KR2E4K0008QG0R000ARCH0X, 081KR2E4K0008QG0R001733JTN]` → `[081KRA5AR0008QG0R0029YWXYW, 081KRA5AR0008QG0R0004P7SWS]`) and updated 081KQ8P5D0008QG0R003ZF64GG §Decomposition with renumber note and new children list
 - Regenerated `docs/BACKLOG.md` to reflect the new IDs in the P2 section

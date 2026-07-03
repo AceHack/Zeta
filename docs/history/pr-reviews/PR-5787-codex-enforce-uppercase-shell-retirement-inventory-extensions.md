@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - Enforce the bash-retirement inventory guard against uppercase shell-family extensions.
 - Add focused regression coverage for uppercase shell drift.
 - Update the TypeScript/Bun migration resume for this guard slice.
 
 ## Validation
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts` (18 pass, 0 fail)
 
 ## Notes
+
 - Origin: codex-launchd-loop run `20260528T122248Z`.
 - Opened as draft so PR CI/review can validate before merge.
 

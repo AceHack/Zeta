@@ -63,6 +63,7 @@ The diagnostic dump pattern (from #5251) worked as designed — revealed actual 
 Updates the installer ISO content audit to tolerate nixpkgs 25.11’s store-hashed kernel/initrd paths by switching from exact-path checks to prefix+suffix pattern matching, so CI can still assert the ISO is bootable across channel bumps.
 
 **Changes:**
+
 - Converted kernel/initrd “any-of” checks from exact `path` matches to `{ prefix, suffix }` pattern candidates.
 - Added a local `matchesAny()` helper to check ISO entries via `startsWith(prefix) && endsWith(suffix)`.
 - Updated failure messages to report pattern candidates (e.g., `boot/*/bzImage`) instead of exact paths.

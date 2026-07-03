@@ -30,6 +30,7 @@
 docs(research): reverse tessellation = braiding; 2x2/3x3 observer weaves; mutual-entropy identity keys; 3-of-3 nested encryption (two orders); the ENCRYPTED NULL unprovability invariant
 
 Aaron's geometry-of-trust node, captured grounded with honest crypto peels:
+
 - reverse tessellation = braiding (a tessellation extruded through time)
 - 2x2 = dual-observer twist (view each other's uncertainty ledger over time)
 - 3x3 = three-observer weave: 3 seeded vectors, mutual-entropy identity keys

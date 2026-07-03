@@ -27,6 +27,7 @@ This PR supersedes #4733 and #4822. It removes sensitive personal information an
 This PR removes sensitive personal-information-containing memory artifacts and attempts to reconcile `memory/MEMORY.md` after rebasing, in line with the goal of fixing schema/index issues introduced by prior work.
 
 **Changes:**
+
 - Delete two memory artifacts containing sensitive personal information.
 - Update `memory/MEMORY.md` auto-index content to reflect the current memory set after rebase.
 - (Needs follow-up) Resolve duplicated auto-generated metadata lines in `memory/MEMORY.md` introduced by conflict/regen drift.

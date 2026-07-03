@@ -30,6 +30,7 @@
 Aaron 2026-06-03: *"the bit-perfect oracles at the data/serializer layer really is us mapping the first stages of our I/O external side of the monad, so we can keep reducing uncertainty in external observations over time."*
 
 Deepens the 3-shapes note (#6658): **shape-1 is the I/O-monad external edge** — where uncertain outside observations enter — and making it **bit-perfect** is how we **monotonically reduce uncertainty in external observation over time**. Places it precisely:
+
 - the **hexagonal / I/O-monad port** (the serializer port `parse: wire → Result<T,Feedback>` IS the Kleisli arrow at the external edge; shape-1 is its first stage)
 - **OPLE `Observe`** (shape-1 = Observe's first stage — external-observation intake)
 - the **uncertainty-reduction telos** (shape-1 reduces it at the I/O edge — the prior to everything downstream)

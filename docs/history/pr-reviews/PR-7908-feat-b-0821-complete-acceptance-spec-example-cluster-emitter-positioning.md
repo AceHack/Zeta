@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Documents the `AppDependencyGraph` spec in `docs/APP-DEPENDENCY-GRAPH.md` and strategic framing in `docs/POSITIONING.md` (Maven-for-Helm).
 - Ships canonical **my-app → postgres** example under `examples/helm-dependency-graph/` with `zeta-chart-outputs.yaml` contracts.
 - Adds `tools/cluster/deps-to-engine-config.ts` — one graph → Flux + ArgoCD manifests (081KSGS9H0008QG0R00352WW0V/081KSGS9H0008QG0R00367G209 cluster build step).
@@ -45,6 +46,7 @@
 | Positioning doc | Done |
 
 ## Test plan
+
 - [x] `bun test tools/cluster/deps-to-engine-config.test.ts`
 - [x] `bun test src/Core.TypeScript/ace/deps.test.ts`
 - [x] `bun test src/Core.TypeScript/ace/ace.test.ts` (deps subcommand block)

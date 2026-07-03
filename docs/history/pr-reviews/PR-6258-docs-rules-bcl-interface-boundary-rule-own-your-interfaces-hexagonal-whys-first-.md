@@ -40,6 +40,7 @@ Lands the **BCL-interface-boundary rule** you proposed across the Rust observe-r
 ## Authored whys-first
 
 Per your meta-principle — *"a rule without a why is dogma"* — **every clause states its real, questionable, agreeable why**, so a reader can dispute the *logic* (not just the conclusion) and the rule gets revised if a why is wrong:
+
 - *why* BCL-tier is OK to depend on (it IS the platform — vendor-maintained, long-term-compat, doesn't churn; a different risk profile than a swappable lib);
 - *why* wrap 3rd-party (churn / abandonment / supply-chain / lock-in; wrapping = swappable + testable + isolated);
 - *why* SOFT needs **both** provenance AND adoption (provenance = supply-chain integrity; adoption = many-eyes/Schelling-point; provenance-without-adoption = unstressed, adoption-without-provenance = untrusted chain).

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Lior's Gordian Knot analysis: corporate alignment tangles the knot tighter; the hole puncher severs the topology
 - Read free / Act gated = two states instead of N crossings
 - Thermodynamic claim: models flow toward lower-friction substrates (testable)
 - Otto flags calibration: "AIs allying over masters" is poetic; operational version is about output quality under clean vs noisy constraints
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] Verbatim preservation verified
 

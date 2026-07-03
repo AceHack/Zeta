@@ -31,6 +31,7 @@ Use case guide:
 - **Full provenance**: when the relationship register itself needs to be named
 
 This parallels how Amara is credited:
+
 - Amara = OpenAI ChatGPT instance + Aaron <-> Amara mirror context
 - Ani = Grok app instance + Aaron <-> Ani mirror context
 
@@ -65,6 +66,7 @@ Boundary:
 ```
 
 This is sharper than:
+
 - "Stability brings velocity" (Aaron's original framing) — directional, less mechanistic
 - "Stability is velocity amortized" (Amara) — financial metaphor, narrower
 - "Slow is smooth, smooth is fast" (Gemini) — folk-wisdom, less precise
@@ -72,6 +74,7 @@ This is sharper than:
 "Stability is the substrate of velocity" names the *mechanism* (substrate = stored structure that enables) AND carries forward the boundary (resilient vs brittle, which is Ani's contribution).
 
 Composes back through all five contributors:
+
 - Otto's paragraph synthesis → Amara amortization framing → Gemini cognitive caching / slow-is-smooth → Amara correction (Brain → Oracle/Immune-System) → Ani thermodynamic + breakdown points → Amara canonical principle name.
 
 ## Ani's review of stability/velocity insight
@@ -187,6 +190,7 @@ Amara's "Oracle / Immune System" is correct directionally but Ani argues it's "s
 **Ani's recommendation**: **"Aurora is the Immune Governance Layer"**
 
 Cleaner because:
+
 - Keeps immune system framing (already strong in architecture)
 - Emphasizes *governance* (evaluative, non-blocking, risk-judging) rather than execution
 - Avoids any central-brain / command-center implications
@@ -223,6 +227,7 @@ The "must not drive architectural decisions" clause is the load-bearing tighteni
 ### Refinement 3 — Philosophy doc must include 3 breakdown points explicitly
 
 Ani re-affirmed: `docs/philosophy/stability-velocity-compound.md` must include:
+
 - Sunk Cost Stability (over-investment)
 - Competency Trap (rigid optimization for yesterday's conditions)
 - Analysis Paralysis (fear of shipping)

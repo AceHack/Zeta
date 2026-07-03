@@ -48,6 +48,7 @@ co-arising antecedents, no "first"; a **superorganism** of origins, like the wor
 
 **This is literally how Aaron debugs — Cheat Engine (Aaron):** "this is how I debug assembly code and write
 triggers and DORA metrics in Cheat Engine." The abstract move is his **concrete method**:
+
 - **Generate the antecedent = "find out what writes/accesses this address."** In **Cheat Engine** you scan
   memory to an effect (a value), then **trace back to the assembly instruction that caused it** — that
   instruction is the value's **antecedent**. Debugging assembly *is* antecedent-generation: effect → cause,

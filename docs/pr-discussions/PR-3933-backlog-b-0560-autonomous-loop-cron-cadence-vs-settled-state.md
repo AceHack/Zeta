@@ -50,5 +50,6 @@ Captures the structural tension empirically observed across the 2026-05-16 sessi
 Adds a P3 backlog row capturing the structural tension between minute-cadence cron firing of the autonomous loop and a settled substrate where no rule-compliant non-brief-ack response exists. Sketches three candidate approaches (adaptive cadence, quiet-sentinel, accept-and-harden meta-fallback) without changing code or skills.
 
 **Changes:**
+
 - New P3 backlog row `081KRQ1AB0008QG0R0001J9PFT` documenting the cron-cadence vs settled-state tension
 - References to composing rules, memory file, and sibling backlog rows (081KRFA460008QG0R001KC0VBH, 081KRMEXM0008QG0R0039V4SQQ)

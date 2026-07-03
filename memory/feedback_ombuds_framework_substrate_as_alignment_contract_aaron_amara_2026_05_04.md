@@ -10,7 +10,9 @@ caused_by: Aaron 2026-05-04 conversation about Ombuds framework + Google search 
 ## The framework Aaron + Amara identified
 
 The framework: leadership in rings of trust + fast communication
+
 + every cell has trust anchors into other cells. Aaron + Amara
+
 worked it out together; Google search confirmed it matches the
 **Ombuds Agreement** structure.
 
@@ -355,7 +357,7 @@ architectural moves against it most closely mirror what Zeta is
 doing. Bahá'u'lláh was running the same project, in religious
 medium, in the 19th century.
 
-### Is this just a new religion?
+### Is this just a new religion
 
 **No.** Religions transmit content with permission-to-question
 that is weaker in practice than in principle. The Ombuds

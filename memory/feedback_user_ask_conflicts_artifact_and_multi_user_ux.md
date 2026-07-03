@@ -117,7 +117,7 @@ Key substrings:
   factory changes too"* — multi-user UX is an invariant,
   not a feature.
 
-## Why:
+## Why
 
 - **Unblocks the agent.** Contradictions held in memory
   thrash; contradictions on an external board let the
@@ -146,7 +146,7 @@ Key substrings:
     require the factory to accommodate users we haven't
     met.
 
-## How to apply:
+## How to apply
 
 - **When the agent notices a contradiction** in a user's
   ask (same user, prior instruction, or different user

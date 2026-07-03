@@ -77,7 +77,7 @@ Instead of maintaining separate input schemas and mapping files, kro uses a sing
 
 The relation is so tight that there is an official CNCF project called **function-kro**. This tool embeds kro directly inside a Crossplane environment, allowing you to use kro's simplified syntax inside a standard Crossplane pipeline.
 
-### The Spectrum: What is "In the Middle"?
+### The Spectrum: What is "In the Middle"
 
 The evolution from low-level cloud tools to higher-level orchestrators follows a clear continuum. Depending on whether you look at cloud provider integrations or declarative framework engines, several prominent tools fit directly between Crossplane and kro.
 
@@ -145,6 +145,7 @@ This research is descriptive (spectrum exists; tools have these properties). It 
 ### Aaron's "composes with machine outside k8s and other things gitops like" framing
 
 Critical signal: the spectrum research is NOT only for k8s scope. Aaron is naming that the SAME pattern-of-thought applies to:
+
 - Per-machine state (081KSE6WT0008QG0R003D199HE; GitOps for machine substrate state)
 - Other GitOps-like things (likely fork state per 081KSE6WT0008QG0R002CC6314; ontology state per 081KSE6WT0008QG0R002CC6314; agent state; etc.)
 

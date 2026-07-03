@@ -36,6 +36,7 @@ Closes the session's loop. The asymmetric critic this doc **feared** (1984 / wel
 **The compute asymmetry is the power source:** fine for discovery/help (LUPI cheat-to-discover, deploy-restricted = fair), an attack vector when turned to *modeling/shaping* a low-compute entity beyond what helping requires. **compute ≠ worth ≠ authority** (#11).
 
 **Keep the vector NON-latent** — bind every actor-critic's critic half:
+
 - Judge the **work, not the worth** (gated welfare class; consent-first; NCI).
 - **Grounded**, not closed-frame (privileged info = external referent, not a frame to capture from).
 - **Capability-honest** — the dual-bloom no-fake property: defer, never confident-negativity.

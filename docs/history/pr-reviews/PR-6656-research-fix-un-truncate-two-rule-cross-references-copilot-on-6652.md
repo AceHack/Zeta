@@ -28,6 +28,7 @@
 ## Description
 
 Fix-forward for the 2 Copilot P1 threads on #6652 (merged before threads posted). Both valid: two cross-references used `...` ellipsis, making the cited rule files non-resolvable. Replaced with exact filenames (verified via `git ls-tree origin/main`):
+
 - `proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md`
 - `autonomous-decider-within-permission-bounds-not-over-permission-liability-expansion.md`
 

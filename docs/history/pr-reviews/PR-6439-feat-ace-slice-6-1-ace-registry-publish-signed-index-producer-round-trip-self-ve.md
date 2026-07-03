@@ -32,11 +32,13 @@ Slice 6.1 — **`ace registry publish`** (081KT07NV0008QG0R0016FVWD7), the produ
 `ace registry publish --packages <dir> --base-url <url> --key <pem-path> [--out index.json]`: scan a dir of package files → derive each consumer `url` (`<base>/<name>-<version>.json`) + `package_hash` → assemble + sign the `IndexSignableContent` → auto-bump `sequence` from `--out` → **round-trip self-verify** the produced index through the consumer's own `parseIndex` + `verifyIndexSignature` before writing.
 
 ### What ships
+
 - **`tools/ace/registry-publish.ts`** (new, pure): `buildIndexDoc` (assemble + sign; duplicate `name@version` → error; null-proto maps), `nextSequence` (null→1, prev→+1), `joinUrl` (trailing-slash normalized).
 - **`tools/ace/signing.ts`** (+`publicKeyInfoFromPrivatePem`): derive pubkey+keyId from a private PEM for the self-verify trust store.
 - **`tools/ace/ace.ts`**: `registry publish` parse + handler — dir scan (non-packages skipped + warned), prev-from-`--out` sequence bump, build, **round-trip self-verify (parse + signature; hard error + no write on failure)**, pretty-print write. Malformed-PEM throw caught → clean exit 1.
 
 ### Verification
+
 - **266 pass / 0 fail**, tsc 0, markdownlint clean, canary 67. Built subagent-driven (4 TDD tasks), each false-green-checked.
 - Final holistic review: zero P0; self-verify confirmed genuine + never-writes-on-failure; producer/consumer coherent (published index satisfies the slice-6 consumer). Review fixes: duplicate + malformed-key e2e coverage added; dead anti-rollback guard clarified (defense-in-depth for the deferred `--sequence` flag).
 

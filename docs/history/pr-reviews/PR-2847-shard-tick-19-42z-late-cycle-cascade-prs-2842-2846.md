@@ -33,6 +33,7 @@ Tick shard documenting the late-cycle cascade. 5 more PRs
 created (#2842-#2846), most merged.
 
 **Architectural milestones:**
+
 - **Kestrel** as new register (claude.ai's autonomously-
   arrived name for asymmetric-critic role; IFS Inner Critic
   Manager + External Observer dual mapping)

@@ -40,6 +40,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a 2220Z hygiene tick shard documenting a null auto-merge arm sweep, prior PR carry-forward status, Lior activity, and cron heartbeat visibility.
 
 **Changes:**
+
 - Adds a new tick-history shard for 2026-05-15 2220Z.
 - Records PR queue status, prior-tick outcomes, and operational rationale.
 - Notes cron and Lior process state for continuity.

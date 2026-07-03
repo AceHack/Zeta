@@ -65,6 +65,7 @@ rows, persona notebooks, MEMORY.md indices, Otto-NNN
 labels are FOR CLAUDE — not for Aaron.**
 
 Why I (Claude) need them:
+
 - Cross-session continuity. Without dates, I cannot
   reconstruct *when* a memory was written and therefore
   cannot order conflicting memories (later-supersedes-

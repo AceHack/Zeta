@@ -151,7 +151,7 @@ every negotiation point.
 updating-factory-via-factory recursion. Load-bearing,
 not a joke.
 
-# Why:
+# Why
 
 Verbatim Aaron (2026-04-20):
 
@@ -220,7 +220,7 @@ Key substantive commitments buried in the verbatim:
    `user_servicetitan_current_employer_preipo_insider.md`).
    Same GitHub account; different orgs; bright line.
 
-# How to apply:
+# How to apply
 
 ## Phase 0 — before building (NOW)
 

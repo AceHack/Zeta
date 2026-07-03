@@ -60,6 +60,7 @@ The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorb
 ## Branch protection
 
 **LFG/main** (full protection):
+
 - PR required
 - checks required
 - conversation resolution required
@@ -68,6 +69,7 @@ The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorb
 - no force-push
 
 **AceHack/main** (mirror-only):
+
 - No PR workflow required
 - No human edits expected
 - Daily sync job may update/reset it to LFG/main
@@ -97,6 +99,7 @@ If AceHack PRs become real again later (i.e., AceHack returns to the active PR t
 ## Trigger memory
 
 Aaron 2026-04-29 sequence:
+
 1. *"amara and i are havining a conversation just forget about ace and put everything on lfg right now we will do another reverse merge later"* — situational permission to skip AceHack.
 2. *"i'm trying to stick with AceHAck->LFG and keep SHAs in sync too, it's not a good way for this. AceHack my personal is paid by my day job company so there is more we could turn on there than lfg i think for checks. Maybe not."* — diagnostic of why double-hop is hard, plus paid-tier-asymmetry observation.
 3. *"okay we are going to do this for now and revisit later, it will make thins a lot simpler too"* + Amara packet — formal LFG-only adoption.
@@ -225,18 +228,21 @@ Verbatim packet preserved at `memory/amara/conversations/2026-04-29-amara-acehac
 When porting bash git scripts to TypeScript (PR #849 lane and successors), and when authoring any new git tooling:
 
 **Tier 1 — normal user (default path):**
+
 - Scripts use `origin`.
 - Assume `origin` is canonical (LFG/Zeta).
 - Do NOT inspect or mutate other remotes.
 - Example: `script-name` — works against `origin/<current-branch>` with normal push/pull.
 
 **Tier 2 — advanced contributor/fork (explicit flags):**
+
 - Accept `--remote`, `--upstream`, `--push-remote` flags.
 - Read repo-local config if provided.
 - Never guess; always require explicit declaration.
 - Example: `script-name --upstream upstream --push-remote origin` — supports the standard GitHub fork workflow without Zeta-specific assumptions.
 
 **Tier 3 — mirror maintenance (dedicated scripts only):**
+
 - Only mirror-maintenance scripts touch mirror remotes.
 - Direction is always explicit on the command line.
 - Example: `script-name sync-mirror --from origin --to acehack-mirror --force-with-lease`.

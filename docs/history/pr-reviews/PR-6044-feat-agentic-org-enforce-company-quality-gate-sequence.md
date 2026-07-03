@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds a company Work OS quality-gate sequence policy so approved later gates require all prior gates to be approved or waived.
 - Wires the policy through a generic quality-gate evaluation state reader port with in-memory and Cockroach adapters.
 - Updates Agentic Organization docs to state gate-chain enforcement is active company policy, while keeping requirement-maturity enforcement as the next work-transition slice.
 
 ## Validation
+
 - `npm run typecheck -- --pretty false`
 - `npm test`
 - `git diff --check` (no whitespace errors; Git reported expected CRLF-to-LF warnings in edited files before commit)

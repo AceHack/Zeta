@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - align 081KQZVQW0008QG0R0032TPKT8 frontmatter title and H1 with the em-dash form already present in docs/BACKLOG.md
 - fixes the generated BACKLOG index drift observed after PR #1868
 
 ## Checks
+
 - tools/backlog/generate-index.sh --check
 - bunx markdownlint-cli2 docs/BACKLOG.md docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md
 - git diff --check

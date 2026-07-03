@@ -47,4 +47,5 @@ Fix: \"caught by Otto\" → \"caught by Lior on the antigravity-check node\". Si
 Corrects an attribution error in Vera's persona memory index — the drift was caught by Lior on the antigravity-check node, not by Otto. Aligns the persona index with the verbatim archive content.
 
 **Changes:**
+
 - Replace "caught by Otto" with "caught by Lior on the antigravity-check node" in `memory/vera/MEMORY.md`.

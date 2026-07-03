@@ -15,6 +15,7 @@ content intentionally omitted from this public-repo archive per substrate-honest
 public-surface discipline, `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`).
 
 This conversation EXTENDS the 2026-05-27 Mika lineage:
+
 - `2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-...` (join-as-first-class)
 - `2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-...-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-...` (DU-workflows + git-append-only)
 

@@ -32,6 +32,7 @@
 Introduces `SymbolicAlgebra.fs`, a reusable Computer Algebra System (CAS) foundation, and rewrites the IR Canonicalizer to use it for true algebraic fusion (not pattern matching).
 
 ### SymbolicAlgebra.fs (new, reusable CAS seed)
+
 - **AffineZ2W**: affine maps `f(x) = a*x + b mod 2^W`. Composition follows the ring law `g(f(x)) = (g.A*f.A)*x + (g.A*f.B + g.B)`. Models Mul/Add chains.
 - **PolyF2Rot**: polynomials in `F2[X]/(X^W - 1)`. Composition is polynomial multiplication reduced mod `(X^W - 1)` (rotation = multiplication by X, XOR = addition). Models XRotXor chains.
 
@@ -39,6 +40,7 @@ Both types expose `.Compose()`, identity/zero constructors, and predicates — t
 
 ### ZetaIrCanonicalizer.fs (rewritten)
 Normalizes to the proven 4-op minimal set, then fuses adjacent ops algebraically:
+
 - Mul-Mul, Add-Add, Mul-Add-Mul, Mul-Add-Add via `AffineZ2W.Compose`
 - XRotXor-XRotXor via `PolyF2Rot.Compose`
 - identity elimination (Mul 1, Add 0, empty XShrXor/XRotXor) and zero absorption (Mul 0)

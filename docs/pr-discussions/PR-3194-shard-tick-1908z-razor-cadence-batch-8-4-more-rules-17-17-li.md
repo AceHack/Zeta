@@ -31,6 +31,7 @@ Reference taxonomy now stable: concrete | glob | template-path | backlog-ID | le
 Adds the 19:08Z hygiene tick shard documenting batch 8 of the razor-cadence cross-reference audit and its cumulative progress.
 
 **Changes:**
+
 - Records batch 8 audit results for four additional `.claude/rules` files.
 - Adds cumulative audit visibility and a developing reference-classification taxonomy.
 - Captures lessons for distinguishing stale pointers from legacy, transient, template, and anti-pattern references.

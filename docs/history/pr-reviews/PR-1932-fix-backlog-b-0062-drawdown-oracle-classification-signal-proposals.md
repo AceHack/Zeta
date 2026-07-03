@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Drawdown oracle: monitor-signed price update (no Chainlink for v0)
 - Classification signal: monitor-signed classification message (same pattern)
 - Both: monitor signs, contract verifies — single pattern for both

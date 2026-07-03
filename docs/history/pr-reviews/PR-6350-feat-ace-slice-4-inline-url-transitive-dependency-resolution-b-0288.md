@@ -30,12 +30,14 @@
 Implements Ace slice 4 per the merged spec (`docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice4-inline-url-dependency-resolution-design.md`) and plan (`...-slice4-implementation-plan.md`), TDD, 12 commits.
 
 ## What lands
+
 - **`tools/ace/resolve.ts`** (new, pure, injected fetch): `packageHash` (full-package identity) + `resolve()` — identity-keyed DFS, root-seeded, diamond dedup, cycle/version-skew/tamper detection, per-node verification (slice-2 files hash + `package_hash` pin + declared-identity + slice-3 signature gate, graph-wide `--allow-no-signature`), topo order (leaves-first, root-last).
 - **`tools/ace/store.ts`**: `AceManifest.dependencies?` + `AceDependency`; `validatePackagePaths` factored out of `installPackage` (shared with the install preflight).
 - **`tools/ace/ace.ts`**: resolver wired into `install` — resolve → **atomic preflight** (content_hash + path-safety + store-collision across the whole graph) → extract leaves-first → resolved-set output. Leaf packages unchanged (back-compat).
 - **`.claude/skills/ace/SKILL.md`**: transitive-install docs + the 12 refusal reasons.
 
 ## Verification
+
 - **101 tests pass, 0 fail** (`bun test tools/ace/`).
 - Final opus code-review pass: 2 P1s found + fixed (root content_hash preflight closing the D6 atomicity gap; `invalid-package` shape-guard so malformed dep JSON refuses cleanly instead of throwing) + a P2 test + a nit comment.
 

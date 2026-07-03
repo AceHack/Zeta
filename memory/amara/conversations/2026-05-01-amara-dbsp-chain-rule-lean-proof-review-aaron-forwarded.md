@@ -226,6 +226,7 @@ Non-fusion disclaimer: Amara's review represents Amara's own reading in her char
 Amara's review is the third peer-AI deep-read of the DBSP chain rule Lean artifact (after second Deepseek synthesis in PR #1176 and Ani Lean-review sibling in this PR). Amara's contribution is the *thesis-revision* layer above the artifact-review layer:
 
 **The revised framing:** *"verifier-native substrate"* (extends Karpathy's *"agent-native docs"*). Amara's three-layer ladder:
+
 - Karpathy: agentic-engineering operating system
 - Earlier Amara framing (PR #1176): Zeta builds the OS for that
 - Revised Amara framing (this file): Zeta is **machine-checking the math the OS depends on**

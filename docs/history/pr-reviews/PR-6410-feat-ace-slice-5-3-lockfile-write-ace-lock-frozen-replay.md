@@ -30,6 +30,7 @@
 Slice 5.3 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD), building on 5.1 (#6369) + 5.2 (#6388/#6391). Implements the spec merged in #6400. Subagent-driven build (7 TDD tasks + 3 review-fix rounds).
 
 ## What this adds
+
 - **`tools/ace/lockfile.ts`** (new, pure): `Lockfile`/`LockNode` types, `buildLockfile(root, order, registry)` (full pin: name+version+url+package_hash per node, inline-edge-first url precedence, root excluded), `serializeLockfile` (canonical JSON), `parseLockfile` (total — malformed → `{error}`, never throws), `verifyRootMatchesLock` (drift gate).
 - **`tools/ace/resolve.ts`**: `canonicalJson` exported for reuse (one-keyword additive change).
 - **`tools/ace/ace.ts`**: `--frozen` + `--lockfile <path>` flags; normal `ace install` writes `./ace.lock` after a successful graph install (write failure = warning, not a failed install); `--frozen` reads the lock, applies the root-drift gate, and **two-pass** replays it (verify ALL nodes — pin + content_hash + path-safety + signature gate + store-collision check — then install ALL + root), never calling `solve()`/`loadRegistry()` → registry-independent, byte-reproducible, tamper-evident.
@@ -39,6 +40,7 @@ Slice 5.3 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD), building 
 cargo-style write + opt-in `--frozen` read · `./ace.lock` in CWD + `--lockfile` override · full-pin (registry-independent replay).
 
 ## Verification
+
 - `bun test tools/ace/` → **187 pass / 0 fail** (incl. registry-independence with an empty registry, drifted-root → refuse, no-lock → refuse, tampered-node → refuse, untrusted-signature node → refuse even with `--allow-no-signature`, atomicity verify-all-before-install-any, store-collision guard).
 - `bun --bun tsc --noEmit -p tsconfig.json` → exit 0 · markdownlint clean · commit canary 67 throughout.
 

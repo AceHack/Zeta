@@ -41,6 +41,7 @@ type: project
 YARP is the proxy for tiers 1-3. Arrow bypasses it at Tier 0. The proxy only exists where trust requires verification.
 
 **Connects to:**
+
 - project_zero_trust_four_primitives (WHERE primitive)
 - project_spiffe_concept_steal (the full stack)
 - project_microkernel_trust_tier_router (kernel routes on trust)

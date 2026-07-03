@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - replace the stale TS/Bun migration multi-candidate queue with one atomic child candidate
 - record live inventory evidence that Bucket B peer-call/lint/budget/git scripts are TS while Bucket C GitHub-settings bash scripts remain decision-gated
 - keep the child scoped to documentation/control-plane updates only
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - bun run lint:markdown docs/trajectories/typescript-bun-migration/RESUME.md
 - rg --files tools/peer-call tools/lint tools/budget tools/git tools/hygiene | rg '(peer-call/(codex|gemini|grok)\.(sh|ts)|lint/(no-empty-dirs|runner-version-freshness|no-directives-otto-prose|doc-comment-history-audit)\.(sh|ts)|budget/(daily-cost-report|project-runway|snapshot-burn)\.(sh|ts)|git/(batch-resolve-pr-threads|push-with-retry)\.(sh|ts)|hygiene/(check-github-settings-drift|snapshot-github-settings)\.sh)'

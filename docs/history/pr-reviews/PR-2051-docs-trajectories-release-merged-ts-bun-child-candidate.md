@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - remove the stale trajectory-typescript-bun-child-candidate claim now that PR #2050 merged
 - drop the obsolete Cluster G/H recommendation line from the TS/Bun migration resume
 - leave the active Bucket C decision text intact
 
 ## Checks
+
 - git diff --check
 - rg --files tools/peer-call tools/lint tools/budget tools/git tools/hygiene | rg '(peer-call/(codex|gemini|grok)\.(sh|ts)|lint/(no-empty-dirs|runner-version-freshness|no-directives-otto-prose|doc-comment-history-audit)\.(sh|ts)|budget/(daily-cost-report|project-runway|snapshot-burn)\.(sh|ts)|git/(batch-resolve-pr-threads|push-with-retry)\.(sh|ts)|hygiene/(check-github-settings-drift|snapshot-github-settings)\.sh)'
 

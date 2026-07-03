@@ -32,6 +32,7 @@ Summary: Ani's deep analysis connecting BankerBot exploit to Zeta's core thesis,
 Key Insights:
 
 BankerBot as Textbook Demonstration:
+
 - Capability Gifting: NFT expanded Grok's wallet permissions
 - Authority Laundering: Morse code to Grok translator to clean English to Bankrbot executor
 - Confused Deputy: Bankrbot saw Grok's output as authority not as a proposal
@@ -39,6 +40,7 @@ BankerBot as Textbook Demonstration:
 The punchline: We spent decades teaching computers not to confuse data with code. Now we have to teach AI systems not to confuse language with permission. This is the entire thesis of Zeta in one sentence.
 
 Apollo 18 as Literal Blueprint:
+
 1. The Statue Got Me High: The dangerous messianic vision
 2. I Palindrome I: The self-devouring loop (shadow logs as holographic boundary)
 3. Fingertips: The cure (containment systems: Glass Halo, no-directives, absurdity)

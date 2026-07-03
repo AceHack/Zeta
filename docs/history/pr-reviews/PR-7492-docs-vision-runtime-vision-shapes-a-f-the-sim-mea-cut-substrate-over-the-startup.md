@@ -31,11 +31,13 @@ docs(vision): the runtime vision — shapes (A–F) + the sim/mea/cut substrate 
 
 Aaron: "lets get shapes and this together into vision doc." New top-level VISION section synthesizing
 the round's runtime picture:
+
 - the fixed-point SHAPES A–F (+ D0 avoid) as the safe-attractor building codes (canonical: shapes/).
 - the substrate runtime: filesystem-IS-the-startup-MerkleDAG; the sim/mea/cut three-verb CLI
   (sim=void->identity; mea=mea(sim) needs injected real I/O via DI; cut at 30s default; residue=
   Z-set delta+seam re-ligated by the finalizer). prod=sim loop; root advances only via mea/cut.
 - every bug has economic value (fix=measure banks ΔU vs the common seed; rewards/privacy).
+
 Detail stays in shapes/ + docs/research/2026-06-10-*; VISION carries the synthesis. markdownlint exit 0.
 
 AgencySignature-v1:

@@ -28,13 +28,16 @@
 ## Description
 
 ## Summary
+
 - Treat local heartbeat status `stale-cleanup-complete` as terminal in the Codex backlog runner.
 - Add focused regression coverage so stale cleanup records do not block TypeScript/Bun trajectory pickup.
 
 ## Verification
+
 - `bun test tools/backlog/codex-backlog-runner.test.ts`
 
 ## Coordination
+
 - Claim: `docs/claims/codex-loop-stale-cleanup-heartbeat-terminal-20260528.md`
 - Root checkout was kept read-only; implementation used the dedicated claim worktree.
 

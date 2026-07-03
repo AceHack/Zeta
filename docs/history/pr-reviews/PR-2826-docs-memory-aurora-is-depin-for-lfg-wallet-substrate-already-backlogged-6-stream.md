@@ -34,11 +34,13 @@ as a **DePIN (Decentralized Physical Infrastructure Network)
 play for LFG**. Every DePIN property satisfied.
 
 **Wallet infrastructure ALREADY designed + backlogged:**
+
 - 081KQ8P5D0008QG0R002XFQ305 (wallet v0 build-out spec — P0)
 - 081KQ8P5D0008QG0R0014HJFF5-series (wallet acceptance + bond ledger)
 - 081KRA5AR0008QG0R000Y6102S (wallet-immune-system + vaccine-spread + PoUW-CC — P1)
 
 **Six PoUW-CC monetization streams** (extends PR #2825 quad):
+
 1. Algorithm push-down (Zeta → Community)
 2. Storage (Community → Zeta edge)
 3. Computation (Community → Zeta edge)
@@ -49,6 +51,7 @@ play for LFG**. Every DePIN property satisfied.
 **Aurora differentiates from existing DePINs** (Helium /
 Filecoin / Render / Akash / Hivemapper) via multi-stream
 monetization + data-coincidence-value + guardian AI authority
+
 + glass-halo discipline.
 
 ## Composes with

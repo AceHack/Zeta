@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - convert malformed observe-act CLI run IDs into flag-specific setup feedback instead of thrown snapshot construction errors
 - convert malformed hat-assignment IDs through the same CLI feedback boundary
 - record the Phase 2.2 parser-hardening checkpoint and KIND boundary
 
 ## Verification
+
 - npm test -- apps/agent-cli/test/agent-cli.test.ts (1205 tests / 1198 pass / 0 fail / 7 skipped)
 - npm run typecheck
 - git diff --check
 
 ## Review Notes
+
 - Subagent review was attempted but the runner returned agent thread limit reached. This PR is intentionally scoped to the CLI boundary and has direct regression tests for the previously throwing paths.
 - KIND was not rerun because this is pre-observe CLI input validation; existing observe-act KIND coverage exercises the successful runAgentCliMain path.
 

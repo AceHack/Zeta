@@ -41,6 +41,7 @@ But proving it required:
 ## The Formal Statement
 
 For any batch commit with:
+
 - B bits to erase (the payload)
 - τ = time available for erasure (the window)
 - L² = thermodynamic length (protocol constant)
@@ -63,6 +64,7 @@ thermal budget, because each commit costs less, leaving more headroom for the ne
 | Together | Full clairvoyance → offline optimal | Stuck with online (provably worse) |
 
 The SAME two disciplines that give you:
+
 - Replay (DST) → also give you prediction
 - Security (noninterference) → also give you payload knowledge
 - Together → the scheduling advantage falls out FOR FREE
@@ -97,11 +99,13 @@ This single insight — "prediction + determinism = optimal throughput" — is W
 ## The Physics (2026 — the proof)
 
 The anti-Nagle isn't just a scheduling heuristic. It's a consequence of:
+
 - The second law of thermodynamics (Landauer floor is inviolable)
 - Finite-time thermodynamics (excess scales as L²/τ)
 - Information theory (prediction = mutual information = reduced effective cost via Sagawa-Ueda)
 
 The Z3 proofs on main:
+
 - `landauer-floor-lemma.smt2`: UNSAT (the floor is real)
 - `predictive-advantage-lemma.smt2`: UNSAT (the advantage is real)
 

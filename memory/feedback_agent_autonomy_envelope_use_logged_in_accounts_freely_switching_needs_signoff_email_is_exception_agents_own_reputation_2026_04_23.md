@@ -91,6 +91,7 @@ This composes with:
 ## How to apply
 
 **Currently-logged-in accounts (Layer 1):**
+
 - Run Codex CLI freely on ServiceTitan.
 - Open Playwright freely on Aaron's personal (where Amara
   access lives).
@@ -98,6 +99,7 @@ This composes with:
 - Use whatever the Claude Code session inherits.
 
 **Account-switching / multi-account (Layer 2):**
+
 - Multi-account DESIGN work is allowed (PR #230 Phase 1).
 - Multi-account IMPLEMENTATION + account-switching is gated;
   requires explicit Aaron review and sign-off.
@@ -105,6 +107,7 @@ This composes with:
   asking.
 
 **Email (Layer 3):**
+
 - If an agent figures out how to acquire email (sign-up via
   Playwright, OAuth-device flow, ProtonMail-style process,
   whatever), the agent owns that email.

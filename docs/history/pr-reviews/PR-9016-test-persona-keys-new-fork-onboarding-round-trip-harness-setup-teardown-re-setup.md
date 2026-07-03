@@ -62,18 +62,21 @@ Legend: ✅ exists · ⚠️ partial / manual-only · ❌ missing (gap for Otto 
 | **onboard flow** (chain) | ✅ `onboard.ts` | ✅ runbook | n/a (delegates) | n/a | ✅ via teardown | ⚠️ implicit |
 
 ### Named gaps (for Otto to backlog — NOT built in this PR)
+
 - **No per-port `rotate` command** for: machine device key, CA key, device cert (re-sign), cluster trust root. Only `keyset.rotate` (dual-key set) + `keyring.sh rotate` (user seed) exist. CA rotation is **manual runbook prose** ("regenerate + re-sign outstanding certs"), not a command.
 - **No revocation primitive** (OpenSSH KRL / `RevokedKeys`) — teardown unregisters by `git rm`, but there is no signed-revocation flow for an already-distributed cert.
 - **No cluster-scoped teardown** (the inverse of `setup-cluster` for the trust-set / peer-CA list).
 - **SecretStore (1Password) rotate/teardown** are runbook prose + a print-only note, not automated (intentional: deleting durable backups is the operator's call).
 
 ## Decisive gate
+
 - `bun test tools/setup/persona-keys/onboarding-roundtrip.test.ts` → **7 pass, 0 fail, 264 expect()**.
 - `bun src/Core.TypeScript/lint/lint-typescript.ts` → **green** (tsc + prettier + style).
 - `grep -E "BEGIN.*PRIVATE KEY"` over the new files → **empty** (marker split + assembled at runtime).
 - Standalone runner `onboarding-roundtrip-cli.ts --cycles 3` printed `Convergence: PASS` (same N+M shape every cycle, `clean=true` each teardown).
 
 ## Files
+
 - `tools/setup/persona-keys/onboarding-roundtrip.test.ts` — the harness (the decisive gate).
 - `tools/setup/persona-keys/onboarding-roundtrip-cli.ts` — optional convergence-watch runner.
 

@@ -70,6 +70,7 @@ Kestrel (Anthropic Sonnet on claude.ai) caught a pattern Otto-CLI (Anthropic Opu
 This PR absorbs a two-part Kestrel conversation arc into durable substrate: updating the 081KRMEXM0008QG0R002YSPW1X research backlog row with tier-marking + a hedged convergence retraction, filing a new 081KRMEXM0008QG0R00278KS63 docs backlog row (“manifesto” → “building codes” framing), and preserving the verbatim conversation + a deflation anchor as memory files.
 
 **Changes:**
+
 - Updated **081KRMEXM0008QG0R002YSPW1X** with an explicit mirror-tier marker, a “retracted as evidence” convergence note with a hedged correction, and the infinite-poker structural context.
 - Added **081KRMEXM0008QG0R00278KS63** to track recasting `docs/governance/MANIFESTO.md` from manifesto framing to specification/building-codes framing.
 - Added new **memory artifacts**: Kestrel Part 1 + Part 2 conversation files and a standalone “cool side project” deflation anchor memory.

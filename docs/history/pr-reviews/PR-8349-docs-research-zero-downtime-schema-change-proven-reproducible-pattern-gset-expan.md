@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): **"also yes please"** — the contribute-back artifact "so others can have the pattern" (substrate for the public writeup Aaron + Alexa are doing; external publish gated).
 
 **Pattern** = expand-and-contract / parallel-change (Sato/Fowler) on the in-repo primitives:
+
 - **GSet = expand-safe BY CONSTRUCTION** — grow-only/monotone = coordination-free by **CALM** (Hellerstein; Ameloot). `GSet.fs` + `TickMonotonicity.tla`.
 - **ZSet = migrate/contract** — ±1 retraction-native (DBSP).
 - Simple/monotone changes 0-downtime *for free*; non-monotone need overlap + per-case proof; **the library refuses what it can't prove online** (the trust feature).

@@ -30,7 +30,9 @@
 ## Summary
 
 Four CS-grounded substrate extensions on the meme-coordinator
+
 + runtime body (PR #2871 already-merged content + these
+
 extensions).
 
 **Extension 4 — service-mesh:**

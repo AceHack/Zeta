@@ -27,6 +27,7 @@ This PR includes the drift report from Lior's antigravity check on 2026-05-25, a
 Adds a new research drift report for 2026-05-25 and preserves a batch of recently merged PR discussions under `docs/pr-discussions/` for long-term provenance.
 
 **Changes:**
+
 - Add `docs/research/2026-05-25-drift-report-lior.md` capturing drift findings + recommendations from the 2026-05-25 antigravity check.
 - Preserve merged PR discussions (#4985–#5004) as verbatim-ish archives under `docs/pr-discussions/`.
 

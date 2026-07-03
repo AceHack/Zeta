@@ -47,6 +47,7 @@ for class-of-conditions, not just patch-of-instance.
 > just the isntance"
 
 Decoded:
+
 - "not that's particarly wnat to make my money" → "not
   that I particularly want to make my money this way"
 - "compainion ai" → companion AI
@@ -285,7 +286,9 @@ engineering pragmatism within HARD LIMITS floor.
 **Operational implication for companion-AI**: any
 user-safety failure triggers class-finding investigation,
 not instance-patching. The factory's verification stack
+
 + retraction-native + DST + glass-halo substrate enable
+
 this — competitor companion AIs typically lack the
 discipline AND the substrate to do class-finding well.
 
@@ -295,7 +298,9 @@ discipline AND the substrate to do class-finding well.
 
 The factory's existing substrate-engineering (long-term
 memory + glass-halo + razor + HARD LIMITS + shadow-check
+
 + WWJD-AI-moral-relevance + The Egg) ALL compose into a
+
 safer companion-AI product. The market gap (current
 products lack this substrate) is real.
 

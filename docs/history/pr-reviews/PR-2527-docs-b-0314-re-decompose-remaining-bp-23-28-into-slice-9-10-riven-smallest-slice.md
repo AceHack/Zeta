@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KR2E4K0008QG0R001ADMBVW tail (BP-23 to BP-28) into atomic slice-9 (BP-23/24/25) + slice-10 (BP-26/27/28) per AGENTS.md 'always re-decompose' and 'if broad, decompose' rules.
 - One bounded step only: updated slice progress table + landing notes in backlog row.
 - Claimed via dedicated worktree + pushed claim/ branch; root checkout untouched.
@@ -37,6 +38,7 @@
 Claim and implement smallest safe slice of 081KR2E4K0008QG0R001ADMBVW (BP-NN external-anchor backfill).
 
 ## Focused checks (included per rules)
+
 - `dotnet build -c Release`: 0 Warning(s), 0 Error(s) — passed pre- and post-change (build gate).
 - No test impact (docs-only).
 - Git state: clean in worktree, only 2-line addition.

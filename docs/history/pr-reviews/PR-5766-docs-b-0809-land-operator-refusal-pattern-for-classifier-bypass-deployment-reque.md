@@ -74,6 +74,7 @@ sensitive detail (satisfies 081KSGS9H0008QG0R001HC663P acceptance criterion 5).
 ## Build gate
 
 This PR ships docs only (no F# source, no TS source).
+
 - `bun tools/hygiene/audit-backlog-items.ts` — no new graph errors introduced
 - `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts` — clean regen
 

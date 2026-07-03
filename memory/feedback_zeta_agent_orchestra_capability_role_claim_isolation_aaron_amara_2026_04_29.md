@@ -29,6 +29,7 @@ Humans
 ## Cross-harness memory — the substrate / adapter split
 
 **Canonical substrate** (one source-of-truth; entries marked `[planned]` are not yet in the repo and should not be linked-to as live):
+
 - `memory/` — durable cross-harness lessons + MEMORY.md index
 - `docs/active-trajectory.md` — current lane pointer
 - `docs/ops/**` — runbooks, patterns, incidents
@@ -36,6 +37,7 @@ Humans
 - `docs/backlog/**` — planning surface
 
 **Harness-specific bootstrap pointers** (thin adapters, not duplicates):
+
 - `CLAUDE.md` — Claude Code
 - `AGENTS.md` — closest to universal; Codex CLI auto-loads; other harnesses should point at it
 - `.github/copilot-instructions.md` — Copilot PR review
@@ -114,6 +116,7 @@ If any fail: peer may run read-only or patch-only, not write-autonomous.
 ## Work claim protocol
 
 **GitHub-native claim** (live truth):
+
 - LFG issue or PR with labels (e.g. `claim:active`, `agent:codex`, `maintainer:aaron`, `lane:budget`, `risk:docs-only`)
 - PR body declares: owner, actor, branch, worktree/clone, file allowlist, file denylist, stop conditions, expected deliverable.
 
@@ -146,6 +149,7 @@ stop_conditions: [...]
 ```
 
 Examples:
+
 - `aaron/codex/budget-cadence-2026-04-29`
 - `aaron/gemini/best-practices-research-2026-04-29`
 - `otto/claude/ts-hygiene-port-2026-04-29`
@@ -178,6 +182,7 @@ A lane is valid only if both surfaces agree on:
 | Git mirror | durable rules (claim allowlist, capability, stop conditions, sync history) |
 
 If they disagree:
+
 - Issue/PR is live truth (status, comments, blockers).
 - Git mirror is durable truth (rules, allowlist, claim spec).
 - Stale mirror must be refreshed before autonomous mutation.
@@ -187,6 +192,7 @@ If they disagree:
 A coordinator does not write all code. A coordinator allocates safe work.
 
 Coordinator duties:
+
 - maintain claim board
 - assign branches/worktrees
 - prevent file overlap
@@ -199,6 +205,7 @@ Coordinator duties:
 ## Windows peer mode
 
 Windows is fine when safe, but no hidden assumptions:
+
 - Own clone or worktree
 - Normalized path reporting
 - No reliance on macOS shell behavior
@@ -225,6 +232,7 @@ Authority peers do not exist by default.
 ### Layer 0 — Doctrine only (THIS memory file)
 
 Lands first. No automation. Captures:
+
 - The carved sentences
 - Capability taxonomy (review_only / patch_only / write_worktree / push_branch / open_pr / merge_pr / authority_mutation)
 - Dual-ledger principle (GitHub = live truth, Git = durable truth)
@@ -236,6 +244,7 @@ Lands first. No automation. Captures:
 ### Layer 1 — Claim protocol
 
 Define the claim schema and lifecycle:
+
 - GitHub issue/PR = live operational truth
 - Git mirror at `docs/ops/coordination/claims/CLAIM-<id>.md` = durable summarized truth
 - Every write-capable actor needs a claim (no autonomous write without one)
@@ -251,6 +260,7 @@ Add explicit overlap rules (Claude.ai catch — design currently has detection b
 - High-risk files always require coordinator approval on overlap, regardless of timestamp.
 
 **High-risk files** (always require coordinator approval on any overlap):
+
 - `memory/**`
 - `docs/active-trajectory.md`
 - `.github/**`
@@ -310,6 +320,7 @@ roles:
 **Do not declare the protocol operational until CI checks exist.** Without enforcement, the claim protocol relies on agent discipline — which the factory has already proved doesn't hold without mechanical guard (parallel-agent collision incident).
 
 Required CI checks before protocol activation (each check resolves against the schema introduced in Layer 3 — `agents/project-agents.yaml` — and the active-claim board introduced in Layer 2):
+
 - `PR changed files ⊆ claim allowlist` (mechanical)
 - `PR changed files ∩ claim denylist = empty` (mechanical)
 - `claim exists for write-capable PR` (mechanical)
@@ -322,11 +333,13 @@ Claim protocol without enforcement = same shape as "bare main in automation" rul
 ### Layer 5 — Multi-harness dry run
 
 First dry run:
+
 - One non-coordinator harness (likely a Windows peer CLI)
 - Read-only first → patch-only → isolated docs-only write → PR → no merge authority
 - Success signal: a fresh maintainer/agent can start a peer lane, avoid overlap, open a PR, survive cold start, close the claim without corrupting another lane.
 
 Windows peers require extra bootstrap before write mode (Ani + Deepseek + Claude.ai catches):
+
 - WSL vs Git Bash vs native shell **declared explicitly**
 - Line ending policy **declared** (`lf` or `crlf`)
 - Path normalization behavior **declared**
@@ -402,12 +415,14 @@ These should NOT share one actor identity — they have different trust, differe
 The role/actor split also matters: `role_id: git-expert` is the pinned role; `actor_id: aaron-mac/codex-cli/git-expert` is the actor currently filling it. A different harness can fill the same role later (`maintainer2-linux/gemini-cli/git-expert`) without confusing the role's accumulated context.
 
 Why each layer matters:
+
 - **Stable actor IDs** are for revocation, audit, trust calibration, capability grants.
 - **Sessions** are for logs and debugging (ephemeral).
 - **Hosts** are *not* authority buckets — `aaron-mac` is not "the Mac agent" with one big capability set.
 - **Roles** are *not* actors — `git-expert` is the role; the actor is whoever (host+harness combination) fills it.
 
 Revocation example: `aaron-windows/codex-cli/patch-peer` can be downgraded to `review_only` without affecting:
+
 - `aaron-mac/claude-code/coordinator`
 - `aaron-windows/gemini-cli/review-peer`
 - another maintainer's Codex actor
@@ -425,6 +440,7 @@ If a peer CLI is compromised — prompt-injected, deliberately misaligned, or ju
 **Future-policy shape** (must exist before any write-capable autonomous peer is granted): any sufficiently-authorized maintainer can immediately downgrade an actor's capability set to `review_only`, with the reduction taking effect at the next claim check.
 
 On downgrade:
+
 - No new write claims accepted from the actor.
 - Active write claims become blocked (state: `actor-suspended`).
 - Open PRs labeled `actor-suspended`; coordinator reviews before continuing.
@@ -437,6 +453,7 @@ Without this, a compromised write-capable actor can produce many PRs before bein
 The v1 design distinguishes humans from harnesses but doesn't say what makes someone a maintainer with authority to grant claims. Currently it's Aaron.
 
 Open questions for future rounds (do not solve in this design):
+
 - How does a new maintainer get added?
 - Who can revoke a maintainer?
 - Can maintainers grant capabilities to other maintainers, or only to actors?
@@ -451,6 +468,7 @@ Open questions for future rounds (do not solve in this design):
 What happens when an actor needs to act before claim infrastructure is ready, or in a recoverable but urgent situation?
 
 **Future-policy shape** — once claims are operational, an actor may take a write or destructive action without a pre-existing claim ONLY IF all are true:
+
 1. The action is **reversible** (no force-push, no deletion, no authority mutation, no irreversible data loss).
 2. The actor immediately creates a post-hoc claim referencing the emergency action.
 3. The maintainer / coordinator is notified within a defined window (e.g. 1 hour).
@@ -497,6 +515,7 @@ When this can change: a successful Phase 2 dry-run that demonstrates autonomous 
 ### Regime-change concern flagged (Claude.ai catch)
 
 This design is the right *first* answer to the multi-maintainer question. The *complete* answer probably involves changes to:
+
 - The alignment trajectory measurement (currently calibrated to single-maintainer regime)
 - The bead system
 - The consolidation gates
@@ -522,6 +541,7 @@ Active Claim  = "The project granted this actor a lane."
 External humans/agents may **create** claim requests. Only trusted maintainers / authorized automation may **promote** claim requests to active claims.
 
 This separation is essential because:
+
 - A `Claim Request` is intake — it carries proposed scope, no authority.
 - An `Active Claim` is grant — it carries scoped authority, mechanically enforced.
 - Without the distinction, anyone discovering the repo could assume their request *is* a claim and proceed.
@@ -549,6 +569,7 @@ Optional later:
 Unknown external human or agent defaults to: **`review_only` / `patch_only`**.
 
 They MAY:
+
 - open an issue
 - request a claim
 - open a PR
@@ -556,6 +577,7 @@ They MAY:
 - comment / review
 
 They MAY NOT:
+
 - assume an active claim
 - touch high-risk files without approval
 - claim exclusive ownership of files
@@ -583,6 +605,7 @@ A public claim request asks (form fields):
 - Expiration date / timebox
 
 Labels applied on submission:
+
 - `claim:requested`
 - `external`
 - `agent` or `human`
@@ -638,6 +661,7 @@ Git mirror      = durable summarized truth.
 ```
 
 If they disagree:
+
 - GitHub live state wins for current status.
 - Git mirror must be marked `stale` or `drift`.
 - **No autonomous write-capable actor may proceed from `stale` / `drift` state.**
@@ -646,22 +670,26 @@ If they disagree:
 ### Drift cases
 
 **Case A — external human/agent updates only GitHub issue**:
+
 - Mirror becomes stale.
 - Sync bot or maintainer updates git mirror.
 - Until synced, active write claims pause if the changed field is critical.
 
 **Case B — someone edits git claim mirror only**:
+
 - Issue becomes stale relative to git mirror.
 - Sync bot comments on issue: "Git mirror changed at commit X; please review."
 - If live issue disagrees, issue wins until resolved.
 
 **Case C — PR appears without claim**:
+
 - Allowed for small drive-by contributions.
 - PR gets label `claim:missing` or `claim:not-required`.
 - If PR touches high-risk files: block and request claim.
 - If docs-only low-risk: maintainer may mark `claim:not-required`.
 
 **Case D — external agent edits claim file in PR**:
+
 - Treat as proposed claim mirror, not active claim.
 - Maintainer must create / link GitHub issue before it becomes active.
 
@@ -670,6 +698,7 @@ If they disagree:
 Future tool: `tools/claims/reconcile-claims.ts`
 
 Responsibilities:
+
 - List claim issues.
 - List git-native claim mirrors.
 - Compare status / updated timestamps.
@@ -680,6 +709,7 @@ Responsibilities:
 - Comment on issue / PR only for threshold events (bounded publication).
 
 **Bounded publication policy** — comment ONLY on:
+
 - Mirror created.
 - Drift detected.
 - Sync failed.
@@ -792,6 +822,7 @@ During the v3 draft in PR #852 (layered actor identity + public claim intake), f
 Claude.ai catch: *"`aaron-mac/claude-code/coordinator` is meaningful for audit only if something prevents impersonation. Today, anything with the right config can claim to be that actor."*
 
 **v4 binding requirement**:
+
 - Every actor has a registry entry under `actors/<encoded-actor-id>.yaml`. Filename encoding must be cross-platform safe (no path separators and no Windows-forbidden chars `:`, `/`, `\`, `*`, `?`, `"`, `<`, `>`, `|`; no trailing dot or space; not a Windows reserved device name `CON`/`PRN`/`AUX`/`NUL`/`COM1`-`COM9`/`LPT1`-`LPT9`) **AND must be reversible / collision-free** so distinct actor IDs cannot alias to the same filename. Canonical encoding: percent-encode the actor_id per RFC 3986 (`%3A` for `:`, `%2F` for `/`), preserving case in the encoded form, and use that as the basename. Example: `zeta://aaron-mac/claude-code/coordinator` → `actors/zeta%3A%2F%2Faaron-mac%2Fclaude-code%2Fcoordinator.yaml`. Decoding the basename always recovers the original `actor_id:` byte-for-byte. The registry record itself carries the original `actor_id:` field as the canonical string (filename is the lookup key + a derivable form, not the source of truth for the ID).
 - Registry declares public key fingerprint (Ed25519 preferred; GitHub-native commit verification as MVP fallback).
 - Privileged mutations must be attributable to a bound actor.
@@ -908,6 +939,7 @@ Without auto-expiration, claim requests pile up and the queue becomes ambiguous 
 **Status**: *Required before AGENTS.md publishes claim-request pathway.*
 
 A publicly-advertised claim-request endpoint is an attack surface. Mitigations (Claude.ai catch):
+
 - Rate limit per `external:<github-login>` (e.g. N requests per day).
 - Minimum GitHub account age for E2+ promotion.
 - Optional maintainer-sponsor requirement above E3.
@@ -932,6 +964,7 @@ This composes with the existing prompt-protector skill discipline: external cont
 The v3 rule "no stale/drift claim authorizes mutation" only works if it's checked *mechanically* and *before every write action* — not just at PR-open time. An autonomous session can act on a claim that went stale 90 minutes ago if the only check is at PR creation (Claude.ai catch).
 
 **Pre-action freshness check** (must be implemented in each harness adapter):
+
 - Claim exists?
 - Claim active?
 - Claim not stale/drift?
@@ -952,6 +985,7 @@ The v3 high-risk file list is a denylist. Denylists rot — someone adds `secret
 **Status**: *Active doctrine for next actor-registry PR.*
 
 When a pinned role changes host or harness:
+
 - Old `actor_id` is **retired** (status changes to `retired`; immutable record preserved).
 - New `actor_id` is created.
 - The role memory persists (the role's accumulated context, doctrine, judgment history).
@@ -964,6 +998,7 @@ Example: `zeta://aaron-mac/codex-cli/git-expert` does NOT become `zeta://aaron-w
 **Status**: *Required before two concurrent autonomous actors can write.*
 
 If two active claims overlap on file scope:
+
 - First valid active claim by GitHub timestamp wins by default.
 - Later claim must narrow scope, wait for first to close, or escalate to coordinator.
 - High-risk overlap always requires maintainer/coordinator approval (no timestamp-wins shortcut).
@@ -1000,6 +1035,7 @@ The full follow-up task set is **#325-#338** (v2 added #325-#331 for the Layer 0
 ## What this doctrine memory file is (and is NOT) — precision per Amara v2
 
 **Allowed framing**:
+
 - ✅ Zeta Agent Orchestra **doctrine captured**.
 - ✅ Cold-start substrate updated.
 - ✅ Capability/role/claim/isolation **vocabulary preserved**.
@@ -1007,6 +1043,7 @@ The full follow-up task set is **#325-#338** (v2 added #325-#331 for the Layer 0
 - ✅ Phase 1 implementation/design task created (task 324).
 
 **Not allowed framing** (prevents false-progress drift):
+
 - ❌ NOT "claim protocol operational."
 - ❌ NOT "multi-harness mode ready."
 - ❌ NOT "agents.yaml accepted."

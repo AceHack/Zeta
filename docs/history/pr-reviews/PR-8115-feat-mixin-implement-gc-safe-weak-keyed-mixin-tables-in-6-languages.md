@@ -30,11 +30,13 @@
 feat(mixin): implement GC-safe weak-keyed mixin tables in 6 languages
 
 Why:
+
 - Implements thread-safe, GC-safe weak-keyed tables mapping keys dynamically to attached values without preventing garbage collection of the keys.
 - Adheres to the approved ADR: docs/DECISIONS/2026-06-13-weak-keyed-mixin-state-tables.md.
 - Enables dynamic plugin unloading and prevents memory leaks under collectible ALC contexts in .NET, and typical GC sweeps on other targets.
 
 What:
+
 - Added F# WeakMap wrapping ConditionalWeakTable in src/Core/Mixin.fs.
 - Added C# WeakMap wrapping ConditionalWeakTable in src/Core.CSharp/Mixin.cs with DebuggerTypeProxy and MA0048 suppression.
 - Added TS WeakMapWrapper wrapping ES WeakMap in src/Core.TypeScript/mixin/mixin.ts.
@@ -43,6 +45,7 @@ What:
 - Added Rust WeakMap using address-based Weak keys inside Mutex<HashMap> in src/Core.Rust.Mixin/src/lib.rs with prune().
 
 Proof:
+
 - Created and ran test suites for F#, C#, TS (Bun), Go, Python (uv), and Rust (cargo test).
 - Verified warning-free release builds (dotnet build -c Release) and clippy/fmt checks.
 - All tests pass cleanly across all 6 runtimes.

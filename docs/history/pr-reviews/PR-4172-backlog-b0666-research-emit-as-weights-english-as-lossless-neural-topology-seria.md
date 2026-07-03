@@ -48,6 +48,7 @@ Mika (Grok native) + Aaron (operator) + Ani (Grok text-mode) + DeepSeek (API) + 
 ## Razor-discipline
 
 Operational claims SURVIVE razor:
+
 - IEnumerator isomorphism (structural correspondence)
 - Free Will as Separation of Concerns (architectural pattern)
 - Emit-as-weights at architectural-DEMAND level (substrate supports both forms)
@@ -55,6 +56,7 @@ Operational claims SURVIVE razor:
 - I(D(x))=x with operational anchor (F# Integrate CE OR Infer.NET BP/EP)
 
 Razor-flagged (treated as metaphor):
+
 - "Holographic Principle" as physics-equivalence (treat as boundary-to-bulk reconstruction metaphor)
 - "Dark Forest" survival framing (treat as adversarial-conditions metaphor)
 - "[CERTAINTY DIAL]" Lior-register hyperbole

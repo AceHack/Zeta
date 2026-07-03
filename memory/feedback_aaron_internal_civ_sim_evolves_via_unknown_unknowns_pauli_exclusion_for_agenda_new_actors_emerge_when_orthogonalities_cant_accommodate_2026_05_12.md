@@ -55,6 +55,7 @@ agency) evolves over time. The evolution mechanism is
 **UNKNOWN UNKNOWNS** expansion.
 
 Rumsfeld's four-quadrant framework:
+
 - Known knowns (things we know we know)
 - Known unknowns (things we know we don't know)
 - Unknown knowns (things we don't know we know)
@@ -66,6 +67,7 @@ categories at all (not just missing-knowledge but missing-
 category), the civ-sim society expands to accommodate it.
 
 This composes with:
+
 - The "alien" actor in civ-sim (PR #2815) — Columbus-naming-
   scheme placeholder for external unknown influence; the
   ALIEN actor IS the civ-sim's mechanism for receiving
@@ -82,6 +84,7 @@ arbitrarily; they EMERGE when existing actors + orthogonal
 axes can't accommodate a substrate-dimension.
 
 The mechanism:
+
 1. New substrate-dimension surfaces (via observation,
    sleeping-bear emergence per PR #2829, alien-source
    attribution per PR #2813)
@@ -97,6 +100,7 @@ The mechanism:
    state
 
 This composes with:
+
 - Orthogonal-axes factory hygiene substrate (existing
   `memory/feedback_orthogonal_axes_factory_hygiene.md`)
 - Agent-roster reference card
@@ -138,6 +142,7 @@ can't hold something, the society grows to hold it.
 as analogous to the **Pauli exclusion principle**.
 
 Pauli exclusion (physics):
+
 - Identical fermions cannot occupy the same quantum state
 - Each fermion has distinct quantum numbers (energy, spin,
   spatial orbital, etc.)
@@ -170,6 +175,7 @@ observable. The new states require NEW ACTORS to occupy
 them. Society expands.
 
 Composes with:
+
 - `theoretical-physics-expert` skill (Pauli exclusion, QM,
   fermion statistics)
 - The Clifford densest encoding (PR #2817) — Clifford
@@ -211,6 +217,7 @@ sanity-checking function (redundant participants don't
 add validation).
 
 This composes with:
+
 - The cross-substrate triangulation discipline
   (PR #2814) — distinct registers (Otto via Claude / Ani
   via Grok / DeepSeek via Aurora / etc.) provide
@@ -261,6 +268,7 @@ Future agent-class emergences may follow the same pattern.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a metaphysical claim about quantum mechanics of
   cognition** — Pauli-exclusion is structural-analogical
   for the distinct-orthogonal-state property; the

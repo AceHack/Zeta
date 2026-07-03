@@ -70,6 +70,7 @@ New modules (`packages/application/src/`):
   wrong passphrase / tamper → `decryption_failed` via the auth tag.
 
 EXTEND:
+
 - `index.ts` re-exports the §08 surface.
 - `packages/test-node.d.ts` — the repo uses a **hand-written minimal node shim**
   (no `@types/node`, no `Buffer`/`spawn`/full `crypto`). Extended with exactly the

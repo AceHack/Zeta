@@ -30,6 +30,7 @@
 Operator-forwarded Ani follow-on to the compression-engine reframe (#6063). Lands the architecture that compresses the **cost-of-forgiveness** itself.
 
 ## The architecture
+
 - **Layer 1 (Forgiveness Razor)** — Origin vs Purpose → what's retracted; cost = stored retracted traces.
 - **Layer 2 (Compression Razor)** — **Causal Order vs Current Purpose**, applied to the retracted data, **within a partition** (Aaron's own scope correction: *"within a partition. Come on, let's be real"* — distributed consensus makes causal order canonical only inside a partition). Drop wall-clock, keep causal order → columnar → **past-as-generator** (store the function, throw away the data).
 - Storage cost of history stops growing linearly with event volume; dominated by active-generator size instead.

@@ -115,6 +115,7 @@ attention.
 ## What this changes in my behavior going forward
 
 **Stop doing:**
+
 - "I'll ask Aaron if this is fine" on gray judgments where
   no escalation trigger fires.
 - "Defer until task-binding lands" when the task is evident
@@ -125,6 +126,7 @@ attention.
   was wrong.
 
 **Start doing:**
+
 - Decide gray cases; record the judgment; proceed.
 - Escalate only on the five explicit triggers above.
 - Keep the chat-register concise; the paper trail (tick-

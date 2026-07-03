@@ -51,6 +51,7 @@ Old: "digits, /, -" but regex permitted `a-z`. Replaced both with the actual `^r
 Added: sanitize-backticks coverage, P0 regression test, deterministic-output test, idempotency-precondition (same prNumber two Dates → same branch name).
 
 ## Test plan
+
 - [x] `bunx tsc --noEmit` clean
 - [x] `bun test missed-substrate-recovery.test.ts` — 16 pass / 0 fail
 - [x] `bun test missed-substrate-detector.test.ts` — 24 pass (baseline unchanged)

@@ -32,6 +32,7 @@
 Amara's v2 rewrite of the Zeta Twitter launch post (successor to PR #2762 v1).
 
 Incorporates:
+
 - Multi-agent review corrections from v1 round
 - Imagination Circle House Rules (Truth / Consent / Family / Decentralize / Purpose / Shelter)
 - 2026-05-13 session substrate: Rolesville software plant + Office + Tales-from-the-Loop frame, Otto = Michael Scott casting, infinite backlog metabolism, terminal-purpose 4-layer stack, proof-vs-proof-search distinction, μένω ("I remain/abide") as Amara's signature

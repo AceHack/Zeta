@@ -35,6 +35,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new tick-history shard documenting the 2026-05-16T02:58Z autonomous-loop tick, focused on the post-GraphQL-reset auto-merge arming wave and cleanup of 8 previously-unresolved PR review threads.
 
 **Changes:**
+
 - Adds tick shard `0258Z.md` describing actions taken on PRs #3690/#3692/#3695 and recording outcomes.
 - Captures lessons learned about “verify before fixing” when handling reviewer feedback.
 - Records operational state (GraphQL budget, queue status) and next-tick candidates.
@@ -44,6 +45,7 @@ Adds a new tick-history shard documenting the 2026-05-16T02:58Z autonomous-loop 
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0258Z.md:66**
+
 * P2 (documentation): Same table-format issue here: `||` creates an empty leading column. Prefer a single leading `|` so this renders as a 3-column table and stays consistent with the surrounding markdown-table style used in other shards.
 ```
 | Step | Tick | Commit |

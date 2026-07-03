@@ -70,6 +70,7 @@ Dev workflow becomes:
 ## Why sync-waves now
 
 ArgoCD reconciles App-of-Apps children in parallel by default. That breaks for:
+
 - Workloads referencing Vault secrets that ESO hasn't synced yet
 - Resources using OPA Gatekeeper constraints that haven't installed
 - HatBindings created before the hat-system CRDs exist
@@ -111,6 +112,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -137,6 +139,7 @@ _(no body)_
 Adds a local k3d-based dev cluster that reconciles the same `full-ai-cluster/k8s/applications/` tree as prod via ArgoCD, and makes cross-Application ordering explicit via ArgoCD sync-wave annotations (plus an ArgoCD self-management Application).
 
 **Changes:**
+
 - Introduces `full-ai-cluster/dev-cluster/` (k3d config, bring-up/teardown scripts, and docs) to run the full App-of-Apps locally against an arbitrary git ref.
 - Adds ArgoCD self-management as an `Application` and annotates existing Applications with `argocd.argoproj.io/sync-wave`.
 - Adds documentation of the sync-wave dependency graph and Docker Desktop resource sizing guidance.
@@ -207,6 +210,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

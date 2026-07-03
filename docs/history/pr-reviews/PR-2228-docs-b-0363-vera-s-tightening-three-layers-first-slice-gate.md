@@ -30,6 +30,7 @@
 ## Summary
 
 Apply Vera's review to 081KR50HA0008QG0R00125PA8G:
+
 - Three-layer architecture (concept + full-text + regex accelerator)
 - "Index narrows candidates, source is truth" principle
 - First-slice gate: deterministic builder + size report + hard MB cap before committing segments

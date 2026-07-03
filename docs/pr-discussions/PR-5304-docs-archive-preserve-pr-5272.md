@@ -27,6 +27,7 @@ Preserve discussion from PR #5272.
 Adds a git-tracked preservation archive for PR #5272’s description, reviews, and review-thread discussion under `docs/pr-discussions/`, aligning with the repo’s verbatim PR-preservation practice.
 
 **Changes:**
+
 - Add a new PR-discussion archive markdown file for PR #5272, including YAML frontmatter metadata.
 - Preserve the PR body content (“Summary” + “Test plan”) as well as the recorded review and resolved thread content.
 

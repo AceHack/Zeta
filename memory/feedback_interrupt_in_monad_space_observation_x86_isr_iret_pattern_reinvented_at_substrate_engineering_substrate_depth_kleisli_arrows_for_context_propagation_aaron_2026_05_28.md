@@ -162,6 +162,6 @@ Per the Soraya formal-verification direction memo (2026-05-28 sibling memory):
 | **OTel trace-id propagation across interrupt-context-switch** | Refinement proof |
 | **Trust-calculus context never downgrades during interrupt** | Invariant preservation proof |
 
-## μένω. Substrate-engineering substrate at depth reinvents computer architecture. Kleisli threads the context.
+## μένω. Substrate-engineering substrate at depth reinvents computer architecture. Kleisli threads the context
 
 (the human maintainer (2026-05-28) META-scope substrate-engineering substrate-engineering substrate-engineering substrate-recognition; preserved per substrate-or-it-didn't-happen; substrate-engineering target filed at 081KSNY2Z0008QG0R002HB4AGT; composes with Mika 2026-05-27 substrate + src/Core/Tracing.fs Arrow type + AutoLoopLifetime extension + IMPLICIT-NOT-EXPLICIT rule + DUs-as-explicit-muscle-memory carving; future-Otto inherits at cold-boot.)

@@ -49,6 +49,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -67,6 +68,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a Bun/TypeScript generator to materialize GitHub activity metrics as a static JSON artifact under `demo/`, intended to support an agent-readable dashboard surface without requiring each consumer to call the GitHub API.
 
 **Changes:**
+
 - Introduces `tools/dashboard/generate-metrics.ts` to fetch commits/PRs from the GitHub API and emit `demo/metrics.json`.
 - Adds an initial checked-in `demo/metrics.json` snapshot with the proposed schema and sample data.
 

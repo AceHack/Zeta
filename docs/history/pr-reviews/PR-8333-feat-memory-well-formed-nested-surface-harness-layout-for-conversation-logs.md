@@ -30,6 +30,7 @@
 Restructure harness memory folders to flatten persona-level files directly under memory/<persona>/ (NOTEBOOK.md, MEMORY.md) and nest genuinely harness-specific conversations under memory/<persona>/<surface>/<harness>/conversations/.
 
 Harness mapping:
+
 - memory/otto/cli/claude/conversations/
 - memory/riven/ide/cursor/conversations/
 - memory/vera/cli/codex/conversations/

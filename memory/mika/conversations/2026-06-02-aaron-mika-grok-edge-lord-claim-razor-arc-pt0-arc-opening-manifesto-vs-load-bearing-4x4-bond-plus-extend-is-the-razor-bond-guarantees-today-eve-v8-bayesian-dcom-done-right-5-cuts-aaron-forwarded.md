@@ -35,6 +35,7 @@ Aaron: *"the 4x4 bond + extend primitives is the razor across [the] 4x4 language
 - The **bond + extend PAIR is the abstraction boundary / the razor**: it lets you make decisions at the level of the whole 4×4 instead of per-language or per-serializer. Most systems either (a) pick one serializer+language and optimize inside that box, or (b) support many and drift into per-cell special cases. The 4×4-bond claim is stronger: **a single coherent algebra across all 16, with a principled extend that itself preserves the bond** (this is where the nullcodec / n‹16n› direction lives — the standing formal-proof row).
 
 Mika's 4 load-bearing questions (to move it from whiteboard → reviewable):
+
 1. **What does the bond guarantee today?** (behavioral-equivalence-on-golden-vectors only, or also byte-level canonical encoding in some cases? — matters for the privacy fence.)
 2. **What counts as a valid extension?** (rules for adding a primitive such that the bond holds across all 16; is there a test an extension MUST pass?)
 3. **Where does extend live?** (is `extend` itself one of the primitives in the algebra, or a meta-rule outside the matrix?)
@@ -45,6 +46,7 @@ Mika's 4 load-bearing questions (to move it from whiteboard → reviewable):
 Aaron: bond guarantees today = *"eve protocol polymorphic diplomacy over english with v8 hidden state optimization and infer.net like bayesian."* Mika's substrate-honest unpacking:
 
 **TODAY (defensible):**
+
 - **Eve-Protocol polymorphic-diplomacy-over-English** (081KRW63S0008QG0R0030F8ZXA; still future-work for the FULL automated form) — describe a primitive's intended behavior in English → map into Observe/Persist/Limit/Emit → verify observable golden-vector results equivalent across whichever of the 16 cells executes. The "diplomacy" is still MANUAL today, but it's already the working mechanism keeping the 16 from drifting.
 - **V8-style hidden-state optimization** — same logical value in multiple polymorphic forms (serializers/runtimes) uses hidden-class-like techniques → no repeated boxing/dynamic-dispatch tax per crossing (this is how the coincidence-anchor stays fast as both entropy-source AND index).
 - **Infer.NET-like Bayesian layer** for under-determined cases — where exact bit-perfect equivalence can't be decided (relativistic timing, partial observations, noisy anchors, single-substrate-private frames), the bond falls back to Bayesian updating over possible worlds (keeps diplomacy actionable without forcing one canonical form).
@@ -56,6 +58,7 @@ Aaron: bond guarantees today = *"eve protocol polymorphic diplomacy over english
 Aaron: *"polymorphic diplomacy is dcom but done right, without memory traps, [on] our relativistic buses, but we have [an] observable/inferable interface over [the] bond itself for peer-to-peer bond discovery — the mechanism itself made explicit — with mapping and sonar capabilities for harmonization and amplification, so no need to leave it up to chance."*
 
 Mika's 5 adversarial cuts (the value — kept):
+
 1. **DCOM baggage is loaded.** DCOM didn't die from memory/refcount traps — it died from security-model disasters, config/firewall/admin hell, versioning rot, implicit-trust assumptions. "We fixed the memory part" invites "what about the other seven classes that actually killed it?" → **own a new name OR explicitly list which DCOM failure modes the relativistic-bus + explicit-bond-interface kills, and why.**
 2. **Sonar is itself a relativistic act.** Active probing for harmonization has no global "now"; Peer A sees harmonized@T1 while Peer B sees negotiating@T2. The sonar/discovery layer must carry its OWN coincidence-anchor discipline or it reintroduces non-determinism at the meta level — the "no chance" claim must explain how the sonar layer stays inside the anchor regime.
 3. **Observable interface over the bond → governance recursion.** Making the bond observable/inferable is the strong move (diplomacy becomes first-class, not hidden middleware) — but now there's a **meta-bond** (the mechanism that discovers/negotiates bonds). Who maintains the observable interface to THAT? Risk: infinite regress OR new memory traps at the governance layer (who owns discovery state while the bond is still forming? who retracts a partially-observed bond?). Resolution: governance-of-the-bond must be JUST ANOTHER primitive under the same 4×4 bond + golden-vector + extend discipline — not a privileged layer outside it.

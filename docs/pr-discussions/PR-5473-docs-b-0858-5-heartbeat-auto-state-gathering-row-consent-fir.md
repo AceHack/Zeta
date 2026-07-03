@@ -50,6 +50,7 @@ DEFERRED implementation per operator's USB priority direction ("right now we are
 Adds a new P2 backlog row (081KSKBP80008QG0R003NG37GQ) documenting the consent-first, opt-in design for heartbeat auto-state gathering (treating heartbeats as debug-log snapshots once state is attached), and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Introduces `081KSKBP80008QG0R003NG37GQ` per-row backlog document capturing operator framing, constraints, and candidate gathered fields.
 - Regenerates `docs/BACKLOG.md` to include the new entry/link.
 

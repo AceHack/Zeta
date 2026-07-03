@@ -27,6 +27,7 @@ This PR contains the Lean 4 toy model for the imaginary stack, decomposed from #
 This PR updates the research write-up for the “imaginary stack” Lean 4 toy model by removing an explanatory note about how the ℝ-norm inequality statement relates to a finite-field (`ZMod p`) mechanization approach.
 
 **Changes:**
+
 - Removed the “field choice (ℝ vs ZMod 17)” clarification block from the lemma handoff document.
 
 ## Review threads

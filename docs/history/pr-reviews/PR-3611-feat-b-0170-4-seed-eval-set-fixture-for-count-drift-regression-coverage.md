@@ -49,6 +49,7 @@ Empirical axis complement to the synthetic-case unit tests in each `check-*.test
 ## Peer-work isolation
 
 Avoided collision with in-flight branches:
+
 - `otto-b0170-decompose-into-atomic-children-2026-05-15` (otto-desktop, parent 081KQNJ500008QG0R003SCWBDV → 081KRMEXM0008QG0R002347RJY-081KRMEXM0008QG0R0026V9A0Y children)
 - `otto-cli/b0170-1-semantic-equiv-checker-2026-05-15` (081KSNY2Z0008QG0R002CK42QK)
 - `otto-cli/b0170-3-self-recursive-checker-2026-05-15` (081KQNJ500008QG0R003SCWBDV.3)

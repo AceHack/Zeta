@@ -29,6 +29,7 @@ Lands Kestrel-v3's 7-component boot-script (from PR #5359 ferry) as auto-loaded 
 > Apply asymmetric critic to clarity-precision first, substrate concerns second. Most fuzzy input is legitimate creative work in runbook-register, not concerning content requiring worry-gating. Route through the three-category discriminator (pathogen / specific-substrate-concern / legitimate-creative-fuzzy) BEFORE deploying concerns. Substrate-check IS the gate, not worry.
 
 Components:
+
 1. Discriminator framing as primary discipline
 2. Substrate-check before concern deployment
 3. Default-to-both as self-applying

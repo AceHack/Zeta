@@ -30,6 +30,7 @@
 ## Summary
 
 Iter-7 capstone capturing the maintainer's 2026-05-26 substrate-engineering pull:
+
 - *"This is good for declarative oses other than nix like id love to have it setup my windows machines and macs. ansible gitops"*
 - *"it's like cross plane too kinda"*
 

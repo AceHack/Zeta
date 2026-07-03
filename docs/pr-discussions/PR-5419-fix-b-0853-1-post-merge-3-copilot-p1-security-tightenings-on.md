@@ -83,6 +83,7 @@ Plus documented variants for verifying branch + tag signatures.
 Post-merge security tightening for PR #5417's cosign keyless OIDC signing setup, addressing three P1 Copilot review findings on the `build-ai-cluster-iso` workflow. Changes are documentation- and permission-scoping-only with no runtime behavior change.
 
 **Changes:**
+
 - Move `id-token: write` from workflow-level to `jobs.build.permissions` (job scope), matching the `scorecard.yml` pattern.
 - Replace overstated safety wording with realistic threat surfaces (short-lived cert, identity binding, pinned steps) and acknowledge the residual risk.
 - Update documented `cosign verify-blob` invocation from a permissive `--certificate-identity-regexp` prefix to an exact `--certificate-identity` pin for the workflow file + ref, with variants for branches and tags.

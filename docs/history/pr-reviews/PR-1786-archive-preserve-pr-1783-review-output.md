@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1783 review archive after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1783 manifest entry with merge commit SHA `364248d0ba133153117ff48d9c650785ea2bff04`.
 - Records 2 resolved review threads, 0 unresolved threads, 4 review comments, and 1 fix commit.
 - Repairs `tools/archive/archive-pr-reviews.ts` so GraphQL-only review-thread replies are hydrated when REST `/pulls/{n}/comments` omits a reply.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/claims/task-archive-pr-1783-review-substrate.md`
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1783-research-restore-riven-riff-substrate-verdicts-verbatim.md`
 - `git diff --check origin/main...HEAD`
@@ -41,12 +43,15 @@
 - `./node_modules/.bin/tsc --noEmit -p tsconfig.json` via temporary worktree `node_modules` symlink to root deps
 
 ## Local Validation Note
+
 - `./node_modules/.bin/eslint tools/archive/archive-pr-reviews.ts` was not clean; it reports broad existing lint debt in this prototype file (77 errors), not a clean gate for this targeted patch.
 
 ## Branch Lifecycle
+
 - Temporary claim file was added, linted, and released in branch history; final PR diff intentionally retains only archive, manifest, and capture-path fix.
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Outcome

@@ -47,6 +47,7 @@ Final substrate landing of the ~8h audit cycle session arc (cold-boot 09:28Z →
 This PR adds a single new tick shard documenting the final-tally of an ~8-hour Otto-CLI audit session arc, including 11 close-row PR references, 2 new substrate memory files, and a catalog of 5 multi-Otto contamination classes. It's a pure history/hygiene-history surface addition with no code changes.
 
 **Changes:**
+
 - Adds a session-arc final-tally tick shard summarizing 11 landed close-row PRs and the 081KQ3HBZ0008QG0R0002RB48Q + Amara cluster cascades.
 - Documents 5 multi-Otto contamination recovery patterns and a sub-class catalog table.
 - Records remaining 22 audit candidates and notes for future-Otto cold-boot inheritance.

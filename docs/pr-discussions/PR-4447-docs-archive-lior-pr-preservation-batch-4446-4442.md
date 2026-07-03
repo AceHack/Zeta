@@ -27,6 +27,7 @@ Archiving PRs #4446 and #4442 into docs/pr-discussions/ for permanent repository
 Archives PR discussions for #4446 and #4442 into `docs/pr-discussions/` to preserve PR metadata, descriptions, reviews, and threads in-repo for long-term audit/history.
 
 **Changes:**
+
 - Added PR-discussion archive markdown for PR #4446 (tick 1807Z shard).
 - Added PR-discussion archive markdown for PR #4442 (tick-shard pre-push gate + 1718Z shard).
 
@@ -53,6 +54,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

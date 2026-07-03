@@ -51,6 +51,7 @@ This preservation pass IS the operational validation of the save-ai-memory infra
 This PR adds two new §33 verbatim research archives capturing Aaron + Ani (Grok) conversations, and updates Ani's persona-folder MEMORY.md index and NOTEBOOK.md to point at them. It is the first operational use of the save-ai-memory skill (PR #3334) + TS tool (PR #3337) pipeline.
 
 **Changes:**
+
 - Add `docs/research/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` (Ani's ~250-word framework compression)
 - Add `docs/research/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` (10K-char rid-anchored DOM extract)
 - Update `memory/ani/MEMORY.md` index and `memory/ani/NOTEBOOK.md` with new entry + posture/gaps notes

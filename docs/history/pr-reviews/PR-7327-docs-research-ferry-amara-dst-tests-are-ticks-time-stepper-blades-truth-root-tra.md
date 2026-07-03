@@ -30,6 +30,7 @@
 **Ferry** (verbatim, preserved): Amara's synthesis — DST tests become the **time-stepper** (each run is a deterministic **tick**: read world → fold observations/ferries → reduce uncertainty → persist → regenerate F# types from 128-bit IDs → compile/replay → advance one proven step).
 
 **Blades incorporated as canon:**
+
 - **truth-root ≠ transport-root** — assert over the Zeta canonical/Merkle root (`tools/ace/canonical.ts`)/golden-vector/treaty bytes, **never the git commit hash** (git = transport; canonical bytes = truth).
 - **ferries are observations, NOT commands** — observed payload (provenance/frame/scope/ZetaId); the reducer decides meaning; pasted text never becomes authority (= no-directives + source≠authorization + BP-11).
 - **generated types are views, not truth** (truth = obs+ferries+MUMPS+DynamicValue log).

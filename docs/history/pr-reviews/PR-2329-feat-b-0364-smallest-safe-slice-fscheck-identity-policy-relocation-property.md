@@ -29,6 +29,7 @@
 
 ## Summary
 Smallest safe slice of 081KR50HA0008QG0R00096ZEYA (re-decomposed from atomic: identity base before non-trivial queries).
+
 - Added `tests/Tests.FSharp/Properties/Policy.Relocation.Tests.fs` with one FsCheck property proving semantic preservation for identity query relocation (local == central after reintegration via ZSet equality).
 - 1000+ generated inputs (MaxTest=1000), clamps for safety.
 - Build gate: 0 warnings, 0 errors.
@@ -37,6 +38,7 @@ Smallest safe slice of 081KR50HA0008QG0R00096ZEYA (re-decomposed from atomic: id
 This is the base step; join/aggregate non-trivial query is follow-on bounded slice. Composes with 081KR50HA0008QG0R0010RZTJK, 081KR50HA0008QG0R0033TN4H9.
 
 ## Test plan
+
 - [x] dotnet build -c Release (0/0)
 - [x] Focused FsCheck run (1000 inputs, green)
 - [x] No root checkout touched (dedicated worktree + pushed claim branch)

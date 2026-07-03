@@ -30,6 +30,7 @@
 **Seed-first** (Aaron 2026-06-01). A new zero-dep Rust crate (`zeta-core-dynamic-value`) grown to AGREE with the shared seed (`src/Core.TypeScript/dynamic-value/golden-vectors.json`). **Four oracles now independently agree on the seed**: TS (#6499, merged) + F# (#6500) + C# (#6502) + Rust (here) — none ported from another; all grown to agree on the canonical *data*.
 
 ## What's here
+
 - **`src/lib.rs`** — `DynamicValue` enum (8 shapes) + `to_canonical_json` (canonical-encode side of the byte-lock). Minified; **Object keys in INSERTION order** (NOT sorted — order-significant; key-sorting would be lossy/non-bijective); Int = bare exact decimal; String = RFC 8259 minimal escaping (`/` not escaped; control U+0000..001F short-form or `\u00XX` lowercase; raw UTF-8 else). **Float + Bytes panic** (DEFERRED — lock under CBOR or tagged-JSON).
 - **`tests/cross_verify.rs`** — loads the 31 seed vectors, builds the value from the tagged form, asserts `to_canonical_json() == json`. Green. `serde_json` is **dev-only** (production core is zero-dep), matching `Core.Rust.{Observe,Algebra}`.
 

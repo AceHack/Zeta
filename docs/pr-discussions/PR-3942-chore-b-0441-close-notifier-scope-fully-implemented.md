@@ -63,6 +63,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -81,6 +82,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Closes backlog row **081KRFA460008QG0R00229616S** by updating its per-row file to `status: closed`, marking acceptance criteria as shipped, and regenerating the `docs/BACKLOG.md` index to reflect that closure.
 
 **Changes:**
+
 - Mark `docs/backlog/P1/081KRFA460008QG0R00229616S-*.md` as **closed**, update `last_updated`, and flip remaining acceptance checkboxes to `[x]` with slice annotations.
 - Regenerate `docs/BACKLOG.md` so the 081KRFA460008QG0R00229616S entry is shown as closed.
 

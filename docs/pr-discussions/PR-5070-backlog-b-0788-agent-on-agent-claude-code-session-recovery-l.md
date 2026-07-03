@@ -64,6 +64,7 @@ Full design in the row body.
 Adds a new P3 backlog row (081KSE6WT0008QG0R000TMNCVS) documenting the *deferred* eventual-state design for agent-on-agent Claude Code session recovery (lifting the operator-runs gate only after explicit safety-substrate lift criteria are met), and refreshes the generated backlog index accordingly.
 
 **Changes:**
+
 - Added `docs/backlog/P3/081KSE6WT0008QG0R000TMNCVS-…` capturing lift criteria + 3-component eventual design (settings acceptance, bus envelope, audit log).
 - Regenerated `docs/BACKLOG.md` to include the new row (and any newly discovered P3 rows in that range).
 

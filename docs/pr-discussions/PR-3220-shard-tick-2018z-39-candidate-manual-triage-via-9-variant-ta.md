@@ -37,6 +37,7 @@ EOF
 Adds a new hygiene-history tick shard documenting the manual triage of `audit-rule-cross-refs.ts` output using the established 9-variant taxonomy, including counts and “future mechanization” heuristics.
 
 **Changes:**
+
 - Add a 2026-05-14 20:18Z tick shard capturing 39-candidate classification results.
 - Record variant-specific heuristics intended to inform a future Layer B mechanization pass.
 

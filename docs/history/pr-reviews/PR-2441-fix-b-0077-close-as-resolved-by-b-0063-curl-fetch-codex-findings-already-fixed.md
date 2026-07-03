@@ -45,6 +45,7 @@ Both findings were **already resolved** as a side-effect of 081KQ8P5D0008QG0R001
 | Forward-sync to LFG | ✅ Resolved | PR #2114 landed directly on LFG (AceHack-first workflow abandoned 2026-05-02) |
 
 **Verified call-site audit:**
+
 - `tools/setup/macos.sh:56` — `curl_fetch --output "${HOMEBREW_INSTALLER_TMP}"` ✓
 - `tools/setup/linux.sh:98` — `curl_fetch --output "${MISE_TMP}/${MISE_TARBALL}"` ✓
 - `tools/setup/common/elan.sh:44` — `curl_fetch --output "${ELAN_INIT_TMP}"` ✓
@@ -52,6 +53,7 @@ Both findings were **already resolved** as a side-effect of 081KQ8P5D0008QG0R001
 ## Change
 
 Single file updated: `docs/backlog/P2/081KQ8P5D0008QG0R001K10784-…md`
+
 - `status: open` → `status: done`
 - `last_updated: 2026-05-02` → `2026-05-10`
 - Acceptance checkboxes checked with evidence

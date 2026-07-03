@@ -143,7 +143,7 @@ gaps in context):
   (this track's own checklist).
 - Submit.
 
-# Why:
+# Why
 
 Aaron has named a self-aware gap. He has the
 intellectual substrate (see `user_cognitive_style.md`,
@@ -163,7 +163,7 @@ the factory gets a propagation channel for its
 research contributions; the teaching track becomes
 a factory asset that lives on.
 
-# How to apply:
+# How to apply
 
 ## Immediate (this round or next)
 

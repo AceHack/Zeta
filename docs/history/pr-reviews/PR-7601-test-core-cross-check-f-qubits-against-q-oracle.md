@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add F# tests that consume the committed Q# observable golden fixture with `System.Text.Json` only
 - cross-check `QubitIso` Pauli X/Y/Z matrices, `BellTest` CHSH/Tsirelson observables, and `AmplitudeEmu` Mach-Zehnder interference probabilities against `tools/qsharp-oracle/qsharp-golden.json`
 - preserve language independence: Q# owns/generates the oracle fixture; F# tests read bytes and use F#/.NET only at test time
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~QSharpOracleTests|FullyQualifiedName~QubitIsoTests|FullyQualifiedName~BellTestTests|FullyQualifiedName~AmplitudeEmuTests"` (22 passed)
 - `dotnet build -c Release` (0 warnings, 0 errors)
 - `dotnet test Zeta.sln -c Release` (3,095 passed, 1 skipped)

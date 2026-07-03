@@ -69,6 +69,7 @@ projection, not the model.
 
 **Honest scope:** be 3D-*ready*, not 3D-*now* — store 3D-capable coordinates + use the projection
 pattern, but render/interact only in the 2D viewport for now. Don't pull in a 3D engine; keep `Cl3`
+
 + a projection function.
 
 ## The navigation gesture: zoom = level-traversal, enter = frame change + boundary crossing

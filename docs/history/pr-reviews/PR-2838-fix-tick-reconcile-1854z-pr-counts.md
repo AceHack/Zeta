@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - reconcile the 1854Z tick shard totals with the listed PR states: 8 merged and 2 in CI for PRs #2824-#2833
 - avoid implying all ten follow-on PRs had landed at tick close
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/hygiene-history/ticks/2026/05/12/1854Z.md
 - git diff --check origin/main..HEAD
 

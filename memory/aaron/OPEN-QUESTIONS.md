@@ -25,6 +25,7 @@ bridge — explicitly NOT a 7th wall**. Earlier larger guesses (4-axis cube; the
 interrogatives Who/What/When/Where/Why/How; "Where When") were **wrong and retracted**.
 
 **Why the gut feeling is worth pondering (not dismissable):**
+
 - The **third pair is the un-clean one** — unlike the seed pair (memory↔observation)
   and the vector pair (direction↔magnitude), which are tidy conjugate dimensions,
   Rainbow Table (identity-resolution) + Observe Emit (read/write) are two *different

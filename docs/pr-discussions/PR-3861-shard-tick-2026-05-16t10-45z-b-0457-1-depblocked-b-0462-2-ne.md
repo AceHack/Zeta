@@ -64,6 +64,7 @@ Budget-conservative tick: audit-only, no close-row (GraphQL 1600/5000 = 32% hour
 This PR adds a single tick-history file documenting an audit-only hygiene tick. It records the findings for backlog rows 081KRA5AR0008QG0R000KKJRVA and 081KRA5AR0008QG0R0019Q33F7, introduces a new sub-class label (`#1-DepBlocked`) for the drift-audit catalog, and updates the running triage tally.
 
 **Changes:**
+
 - New tick log under `docs/hygiene-history/ticks/2026/05/16/1045Z.md` summarizing audits of 081KRA5AR0008QG0R000KKJRVA and 081KRA5AR0008QG0R0019Q33F7.
 - Introduces the `#1-DepBlocked` sub-class for rows whose own scope is met but whose `depends_on:` ancestor is still partial.
 - Updates the cycle-wide triage tally to 32/38 triaged.

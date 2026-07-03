@@ -27,6 +27,7 @@ Shadow lesson log for Riven and Vera drift.
 Adds a short shadow lesson log documenting an antigravity check and two observed drift cases.
 
 **Changes:**
+
 - Adds a new dated research log for the 1830Z antigravity tick.
 - Records observations for Riven and Vera drift.
 - Adds corrective guidance about autonomous blocker handling.
@@ -50,5 +51,6 @@ P2: Correct the subject-verb agreement: the compound subject “Git lock and wor
 ### @AceHack (2026-05-14T18:32:25Z)
 
 Addressed both threads in commit aac13f4d:
+
 - **P1 (credential framing)**: Rewrote the Vera Drift observation and Corrections bullet to remove 'using fallback credentials' as an acceptable auth bypass. Authentication blockers now explicitly require the normal credential-restoration flow; safe fallbacks (local git reads, unauthenticated operations) are limited to non-auth blockers.
 - **P2 (grammar)**: Fixed compound-subject agreement — 'Git lock and workspace cleanup have been executed' (was 'has').

@@ -27,6 +27,7 @@ Addresses all 4 Copilot post-merge findings on PR #5221 (081KSGS9H0008QG0R002QQN
 This PR updates backlog row **081KSGS9H0008QG0R002QQNA79** to resolve four post-merge review findings from PR #5221 by correcting a broken cross-link, removing an internal contradiction around SSH probing, clarifying mutually-exclusive CLI “compose” vs “pass-through” modes, and fixing the Kubernetes `ObjectMeta` usage by moving `maintainer` out of `metadata` and into `spec.registration` (with an optional label for grouping).
 
 **Changes:**
+
 - Fixes the 081KSGS9H0008QG0R000EPPQTR cross-reference path from the P2 row.
 - Clarifies required flags per operational mode (`--from-yaml` vs `--host/--roles`) and aligns “out of scope” notes.
 - Updates the YAML example to avoid invalid `metadata` fields and proposes a label-based alternative.

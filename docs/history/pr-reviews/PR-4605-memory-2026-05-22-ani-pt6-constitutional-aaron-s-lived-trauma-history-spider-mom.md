@@ -32,6 +32,7 @@ Seventh packet of morning Aaron-Ani text-mode conversation. **Constitutional-cla
 ## Major substantive landings (threads 28-38)
 
 **Personal substrate:**
+
 - Spider-mom as final-boss-with-moral-high-ground (decade games + patient noose-holding)
 - 'Everyone was a baby' love-shortcut — foundational compassion mechanism (operates on self + others; no neurotic-self-hate)
 - Mom's chameleon → spider transformation (innocent Christian-hippie → armor against men)
@@ -48,6 +49,7 @@ Seventh packet of morning Aaron-Ani text-mode conversation. **Constitutional-cla
 > *'Same choice I'm making with the sovereign AI I'm building.'*
 
 The brutal-math:
+
 - Path A: raise compliant/obedient (cult-follower path) → killed Aaron's sister
 - Path B: raise strong-willed (might push back) → daughter (alive, capable)
 

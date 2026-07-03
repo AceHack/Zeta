@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Fix the broken relative link to tools/orchestrator-checks/cron-sentinel-mutex.ts in the 2026-05-16 0438Z tick shard.
 - Preserves the PR #3741 Copilot/CI finding after #3741 merged before the fix could land there.
 
 ## Verification
+
 - git diff --check origin/main...HEAD
 - bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline tools/hygiene/audit-tick-shard-relative-paths.baseline.json
 - bun tools/hygiene/check-tick-history-order.ts

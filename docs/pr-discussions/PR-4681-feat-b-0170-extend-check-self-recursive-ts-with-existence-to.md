@@ -51,6 +51,7 @@ Smallest safe slice of [081KQNJ500008QG0R003SCWBDV](../blob/main/docs/backlog/P1
 ## Bounded slice discipline
 
 Stays well within "exactly one bounded step":
+
 - One new topic case + tests + doc-bump
 - No new file
 - No architecture change

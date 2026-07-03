@@ -30,6 +30,7 @@
 Marks **row 2's Z3 (QF_BV) formal primary discharged** — the first formal *primary* on the board, not just an evidence leg.
 
 Shipped as #8748 (`NftCommitDomainSep.Z3.Tests.fs`), **verified 2/2 on main with z3 4.16.0** (not skipped):
+
 - **UNSAT** — distinct canonical `(A,B,rating)` ⇒ distinct length-prefixed encoding `lenA‖A‖lenB‖B‖rating` (no collision) at bound CELLS=3 / CELL_W=8 / LEN_W=8.
 - **SAT negative control** — content-only (no length prefix) collides on the boundary-ambiguity attack `(x,yz)` vs `(xy,z)`, proving the test is non-vacuous and the length prefix is the load-bearing defense.
 - Hash collision-resistance stays the **named premise** (structure proven; crypto premise named, as `Merkle.Laws.Tests.fs` does).

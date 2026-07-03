@@ -104,6 +104,7 @@ the markdown FORMATTING (backticks, reflow) changes.
 
 Out of scope (language name can appear in any form
 that's syntactically required):
+
 - Code comments inside `.fs` / `.cs` — use whatever
   the language style demands
 - XML doc comments (`/// <summary>`) — same

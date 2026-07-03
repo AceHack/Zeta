@@ -33,6 +33,7 @@ Starts the **resume-engine slice** — the self-evolving-saga kernel the seriali
 A small-step **CEK machine** over the Bonsai-subset `Expr`. **`call` nodes are activities** (the suspension points). Pure parts (`const`/`param`/`binary`/`cond`) evaluate inline; at an activity the machine **suspends**, handing back a fully serializable **`SagaState`** = the remaining continuation (the `kont` stack) + the pending activity. `resume(state, result)` **restores** the continuation and feeds the result back as the call's value — it does **not** replay from the top, so prior activities are never re-invoked (vs Temporal's replay-with-memoization). Each `kont` frame **is the closure** — it captures exactly the env + sub-expr it still needs (the slice's "serialize closure + expr-tree").
 
 ## Shape (matches the Bonsai oracle conventions)
+
 - **Result over throw**: `start`/`resume`/`serializeState`/`parseState` return `Result<_, ResumeFeedback>` (`Unbound` / `TypeMismatch` / `UnsupportedNode` / `MalformedState`); internal typed signal adapted at the boundary.
 - **State round-trips canonically** — persist at a suspension, restore, resume (the durability property; sets up cross-machine resume once the other oracles ferry).
 - Slice-1 scope: `const`/`param`/`binary`/`cond`/`call`. `lambda` application deferred to slice-2 (declines `UnsupportedNode`).

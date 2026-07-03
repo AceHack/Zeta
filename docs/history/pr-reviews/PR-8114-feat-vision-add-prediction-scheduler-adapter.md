@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 - Add `PredictionScheduler`, a thin adapter from `PredictionInference` to `SoftScheduler.HandlerK`.
 - Add `Planned` scheduler state with tank, tick, last exact prediction, boarded bytes, and deferred bytes.
 - Add policy and wrapper handlers so rooms can forecast candidates, apply attention/gravity priority, and still run normal soft scheduler actions.
@@ -37,6 +38,7 @@
 This keeps the interfaces as freedom and stability: Q#/Bayesian/Reticulum/CHIP-9 experiments can feed candidates into our owned kernel, while the runtime remains pure Core F# and exception-free. Attention changes ordering; posterior arithmetic truth stays exact.
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release -m:1 /p:UseSharedCompilation=false --filter "FullyQualifiedName~PredictionScheduler|FullyQualifiedName~PredictionInference|FullyQualifiedName~Chip8Observer"`
 - `dotnet build -c Release -m:1 /p:UseSharedCompilation=false`
 - `dotnet test Zeta.sln -c Release -m:1 /p:UseSharedCompilation=false --no-build`

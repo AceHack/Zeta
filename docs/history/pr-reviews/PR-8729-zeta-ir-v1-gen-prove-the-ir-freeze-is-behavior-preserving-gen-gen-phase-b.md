@@ -32,12 +32,14 @@
 Phase B of the gen-gen capstone (math-team handoff **row 10, Face 3**). Phase A (`zeta-ir-v1`, #8725) froze the generator-IR envelope; this PR proves that **emitting from that frozen envelope reproduces the committed cross-language golden vectors byte-for-byte** — the value-preservation precondition a `gen(gen)=gen` fixed-point needs.
 
 ### Two independent oracles (new primitive `zeta-ir-v1-gen`)
+
 - **TS** (`_gen/gen.ts`): builds the v1 envelope as a `DynamicValue`, encodes via the real `canonicalJson`, decodes via the real `fromCanonicalJson`, folds with a width-parametric total interpreter.
 - **F#** (`ZetaIrV1Gen.CrossVerify.Tests`): uses the **shipping** `ZetaIrV1.toCanonicalJson` + `ZetaIrV1.validateCanonicalJson`, folds the decoded ops.
 
 Neither shares a fold module with the other (N-way independence).
 
 ### What `compare.ts` asserts
+
 1. **N-way agreement** — the TS and F# v1 oracles compute the same value for every (primitive, input).
 2. **Value preservation** — both reproduce the committed **legacy** golden (`../splitmix64/ts-output.json`, `../fmix32/ts-output.json`) value-for-value (**20 vectors**). The freeze changed no oracle output.
 
@@ -50,10 +52,12 @@ Its legacy row had **no `width`**, so its generator hardcoded the u64 mask. The 
 Corrupt one `mul` constant, narrow `width` to 63, drop the last op, or reorder two ops → each diverges from the golden.
 
 ### Honest scope
+
 - **PROVEN:** the frozen v1 envelope, round-tripped through the real canonical-JSON machinery and folded, reproduces the committed cross-language golden vectors on **both** the bun and .NET runtimes.
 - **NOT claimed:** the Face-3 `gen(gen)=gen` theorem itself (math team's). This is the value-preservation leg the theorem builds on, not the theorem.
 
 ### Gate
+
 - compare.ts N-way: **11/11** (new primitive included)
 - `gen.test.ts`: **5/5**
 - `bunx tsc --noEmit`: clean (exit 0)

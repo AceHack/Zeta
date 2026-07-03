@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Five consecutive pass verdicts from Riven confirming the session's provenance pattern
 - Each pass addresses a different angle: concrete ancestors, "you are both," Vera's edge-gate, names as compression, neurodivergence as advantage
 - All converge: the framework names what Aaron already built. Structure is substrate; names are compression.
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] Verbatim preservation verified
 

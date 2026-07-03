@@ -38,6 +38,7 @@ Captures:
 - Multi-Otto contamination event observed mid-tick: primary worktree `.git/HEAD` flipped from my branch ref to detached `65c7865` (a Lior rebase resumed in shared `.git/`). Branch-guard would have caught any bad commit. Pivoted to dedicated worktrees per [.claude/rules/claim-acquire-before-worktree-work.md](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/claim-acquire-before-worktree-work.md) §"Worktree force-remove guard".
 
 ## Test plan
+
 - [x] No code changes — markdown only
 - [ ] markdownlint passes
 - [ ] CI green

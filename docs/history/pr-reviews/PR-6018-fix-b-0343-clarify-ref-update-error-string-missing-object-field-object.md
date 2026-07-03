@@ -30,6 +30,7 @@
 Carries forward a valid Copilot review finding from the redundant-closed PR #6017 onto the canonical landing.
 
 ## Context
+
 - #6017 and #6015 both implemented `parseSeedRefUpdateResponse` in `tools/bootstrap-razor/seed-test-repo.ts` (~90% identical double-landing across lanes).
 - #6017 was correctly closed as redundant; #6015 merged as canonical (`22c1a03ca`).
 - Copilot's error-string clarity finding was filed on #6017 (the closed copy) and never carried to the canonical version.
@@ -40,6 +41,7 @@ Line 818: `"ref-update response missing object \`object\`"` → `"ref-update res
 The original read ambiguously as "missing object object". The reword matches the sibling parsers' `"missing string <field>"` phrasing and makes malformed-response logs easier to interpret.
 
 ## Verification
+
 - Test asserts via `.toContain("object")` (substring), unchanged.
 - `bun test tools/bootstrap-razor/seed-test-repo.test.ts` → 101 pass / 0 fail.
 

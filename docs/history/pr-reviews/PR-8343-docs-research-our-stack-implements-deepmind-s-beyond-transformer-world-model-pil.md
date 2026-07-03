@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): **"yes"** — ferry our connections. Our own Beacon analysis mapping the DeepMind-AGI-strategy talk's pillars to our existing substrate. The talk is the cited source (ip-questionable); this note coins nothing of theirs.
 
 **Mapping (our pieces, deterministically):**
+
 - Griffin / O(1) recurrent state → **Bayesian belief-state** (`BeliefConvergence.observe`; `BitGan` yin/yang)
 - world-model-that-plans → **BNN-mix + `SoftChip8Flux.lookAheadFunded` + `PredictionScheduler` + CHIP-8 scheduler** (deterministic/Bayesian/metered self-world-model)
 - diffusion → **emit/retract** (ZSet ±1)

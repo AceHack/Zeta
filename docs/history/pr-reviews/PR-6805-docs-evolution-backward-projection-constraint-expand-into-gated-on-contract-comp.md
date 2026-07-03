@@ -31,6 +31,7 @@
 Captures Aaron's 2026-06-07 constraint: *"you can't expand into new relations until the migration window is complete and the old flat code is removed, because you can't project backwards losslessly."*
 
 A mathematically-forced **temporal ordering** on expand/migrate/contract:
+
 - Adding a relation is reversible; **writing data only the new relations can represent** is **not** safe while any old flat reader remains (serving it needs a **lossy backward projection**).
 - Gate: expand-schema → migration window (coexist, backfill; old readers served by *lossless* down-projection) → **CONTRACT** (remove last flat reader) → **only then expand-into**.
 - Rule: `mayExpandInto(rel) ⟺ no reader needs a lossless flat projection of it` — the down-direction of the invertibility taxonomy applied *temporally*; mechanizable by tracking window/contract state. A correctness barrier, not policy.

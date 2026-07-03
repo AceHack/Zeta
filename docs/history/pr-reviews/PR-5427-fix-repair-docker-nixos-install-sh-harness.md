@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserves the nixos/nix base image PATH so core tools remain visible after PATH pre-staging
 - adds the Nix userspace commands and runtime libraries needed by install.sh and .mise.toml tool downloads
 - exposes compatible glibc loader/library paths for dynamically linked Linux binaries inside the Nix image
 
 ## Verification
+
 - git diff --check
 - bun tools/ci/docker-nixos-install-sh-test.ts
 

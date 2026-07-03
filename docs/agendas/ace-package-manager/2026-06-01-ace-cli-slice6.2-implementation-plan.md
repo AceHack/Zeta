@@ -304,6 +304,7 @@ guards, URL-unsafe identity guard — is unchanged EXCEPT the two changes below.
 not the old single dir.)
 
 - Read + validate the optional `url`, and make the filename guard conditional. After the
+
 content_hash-match check and before/around the filename guard:
 
 ```ts

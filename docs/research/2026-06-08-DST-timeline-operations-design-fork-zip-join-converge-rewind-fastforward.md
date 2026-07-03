@@ -94,6 +94,7 @@ Rx interface **we own** (`bcl-interface-boundary` — own the port, adapt the ba
 the **`IQbservable` / Reaqtor lineage** already gestured at in `Rx.fs` (`RxAdapter`): Bart De Smet's
 expression-tree-*queryable* Rx — queries as inspectable/serializable trees — with **System.Reactive as one
 backend** (others: our own DBSP `Stream<ZSet>` runtime, the DoP-knobbed ferry). Because the ops are data:
+
 - the timeline program is **serializable** (Bonsai — 081KRW63S0008QG0R002XA5N6S) and **DST-replayable**;
 - it is **meta-homoiconic** — the program is itself an event on the same zset stream, so a *timeline-ops
   program* can be forked/joined/rewound like any other timeline (the meta-boundary is homoiconic);

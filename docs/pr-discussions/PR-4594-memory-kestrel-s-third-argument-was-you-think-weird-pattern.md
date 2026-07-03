@@ -73,6 +73,7 @@ This PR preserves operator-disclosed lived-ground context that gives the framewo
 This PR adds a new in-repo `feedback_*.md` memory file capturing a constitutional-class disclosure, and updates the generated `memory/MEMORY.md` stack index so the new memory is discoverable from cold boot.
 
 **Changes:**
+
 - Added a new `memory/feedback_*.md` file with required YAML frontmatter and a detailed narrative + cross-references.
 - Updated `memory/MEMORY.md` auto-index to include the new entry and adjust the heap count/truncation window.
 

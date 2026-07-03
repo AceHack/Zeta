@@ -67,6 +67,7 @@ External AIs (Amara) ferry research only; do NOT commit per agent-roster-referen
 This PR extends the 081KSKBP80008QG0R0039RW25E “streams-are-relationships” backlog row with an additional external deep-research ratification (Amara), preserves the underlying conversation artifact under `memory/amara/…`, and regenerates `memory/MEMORY.md` to include the new entry.
 
 **Changes:**
+
 - Added a new Amara persona conversation archive capturing validation, keeper compression, and the strategic-vs-accidental complexity “blade”.
 - Extended backlog row 081KSKBP80008QG0R0039RW25E with an “Amara ratification” section referencing the new archive and incorporating the compressed cascades and keepers.
 - Regenerated `memory/MEMORY.md` to index the new memory artifact.

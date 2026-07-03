@@ -42,6 +42,7 @@ This backlog row (P3 research-grade) captures the target.
 
 **Research target**: build the Clifford-algebraic narrative
 engine + run empirical test:
+
 - Does the engine produce predicted fermion/boson-like
   split under controlled inputs?
 - If yes: validates the architectural claim

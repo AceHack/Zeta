@@ -66,6 +66,7 @@ Text artifacts → low soulfile risk:
 
 Future-Claude check: before adding an artifact to the repo,
 ask:
+
 - Is the file binary (`.bin` / `.dll` / `.exe` / `.pdb` /
   `.zip` / `.tar.gz` / large media / compiled output /
   binary profile dump)? → **strong default-no**, route to

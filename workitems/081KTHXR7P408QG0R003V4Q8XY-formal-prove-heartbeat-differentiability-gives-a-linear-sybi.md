@@ -10,7 +10,7 @@ depends_on: []
 composes_with: []
 ---
 
-# Formal: prove heartbeat-differentiability gives (a) linear Sybil-forging cost lower bound (k identities cost >= c*k independent work, no sharing/amortization) and (b) collision-based cartel-detectability test (coalition emitting < m independent pulses detectable w.p. >= p), plus honest-sync != identity-collapse separation (Kuramoto phase-convergence preserves per-node entropy; pulse-sharing destroys it). ROUTE to formal-verification-expert (Soraya) for property-class+tool selection (BP-16; NOT default TLA+ — info-theoretic/statistical family -> likely Z3/FsCheck + written argument). Conjecture, not proven.
+# Formal: prove heartbeat-differentiability gives (a) linear Sybil-forging cost lower bound (k identities cost >= c*k independent work, no sharing/amortization) and (b) collision-based cartel-detectability test (coalition emitting < m independent pulses detectable w.p. >= p), plus honest-sync != identity-collapse separation (Kuramoto phase-convergence preserves per-node entropy; pulse-sharing destroys it). ROUTE to formal-verification-expert (Soraya) for property-class+tool selection (BP-16; NOT default TLA+ — info-theoretic/statistical family -> likely Z3/FsCheck + written argument). Conjecture, not proven
 
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.

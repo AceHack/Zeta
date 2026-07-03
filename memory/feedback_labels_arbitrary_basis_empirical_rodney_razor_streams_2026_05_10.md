@@ -26,6 +26,7 @@ If two streams always move together (correlate), collapse them into one. The ess
 "Comedy" and "debugging" kept moving together — every comedy moment was also a debugging moment. If they're never independent, they might be one basis vector with two labels. The true axis might be "friction-surfacing" — comedy and debugging are both projections of it.
 
 **Connects to:**
+
 - feedback_crossing_streams_is_essential_architecture (the streams ARE basis vectors)
 - Rodney's Razor (essential vs accidental cut)
 - All complexity is accidental in greenfield (the labels are greenfield decisions)

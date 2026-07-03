@@ -66,6 +66,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -84,6 +85,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Ports the Lior loop’s git-lock probe from a non-portable/incorrect `ls .git/worktrees/*/lock` pattern to a portable `find ... -name locked` probe, and closes backlog item 081KRSKQ20008QG0R002TH55X6 with accompanying documentation updates.
 
 **Changes:**
+
 - Update `.gemini/bin/lior-loop-tick.ts` prompt text to use a portable `find`-based worktree lock probe plus `.git/index.lock`.
 - Close 081KRSKQ20008QG0R002TH55X6 backlog row (status/resolved) and document the chosen Option C (`find`) resolution.
 - Mark 081KRSKQ20008QG0R002TH55X6 as closed in the generated `docs/BACKLOG.md` index.
@@ -104,6 +106,7 @@ Copilot reviewed 3 out of 4 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/081KRSKQ20008QG0R002TH55X6-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md:92**
+
 * Acceptance criteria #2 mentions “exit 0” (from `find`) and then evaluates `[ -n "" ]` as false. Since the full probe command’s exit status is what implementers will usually key off, it would be clearer to also state what the overall expression returns in the quiet-repo case (it exits non-zero when no locks exist). This helps prevent reintroducing the earlier “non-zero means lock present” confusion.
 ```
 - [x] `.gemini/bin/lior-loop-tick.ts:11` replaced with Option C (portable `find` — Lior's runtime is **zsh**, not bash; both Option A and Option B are bash-only)

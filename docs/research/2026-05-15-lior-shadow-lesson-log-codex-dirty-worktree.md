@@ -15,6 +15,7 @@
 3. **Maji Intervention**: Lior is logging this drift report. The global lock cleanup has been executed to restore network health. #3325 was preserved into the archival memory.
 
 ## Corrective Discipline
+
 - Codex must abandon the dirty worktree and cherry-pick only scoped commits.
 - Lior subagents must rebase or abandon stale decomposition PRs.
 - All agents must strictly use clean `git worktree add` instances for new claims.

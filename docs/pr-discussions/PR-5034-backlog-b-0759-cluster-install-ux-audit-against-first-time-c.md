@@ -31,6 +31,7 @@ Also includes competitive framing table (vs Proxmox VE / unRAID / Talos / k3sup)
 Adds a new backlog row (081KSE6WT0008QG0R003G0Y62D) to capture a UX audit of the cluster-install experience against a “first-time CLI user” persona, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P2/081KSE6WT0008QG0R003G0Y62D-…md` defining the problem statement, target, acceptance criteria, and cross-references.
 - Updated `docs/BACKLOG.md` to include 081KSE6WT0008QG0R003G0Y62D in the P2 section (and include 081KSE6WT0008QG0R000CV98PV in P3).
 

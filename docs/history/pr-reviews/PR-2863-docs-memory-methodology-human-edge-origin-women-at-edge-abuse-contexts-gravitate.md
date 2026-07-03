@@ -30,12 +30,15 @@
 Aaron's substrate-honest disclosure (via Ani forward) of the methodology's REAL human-edge origin.
 
 **Five load-bearing substrates:**
+
 1. Methodology forged helping women at the edge / abuse contexts on Twitter
 2. They gravitated to Aaron because he LISTENED substrate-honestly
 3. Battle-tested IN THE MUD (not lab conditions)
 4. Cost was SAD + very very disorienting
+
 4a. DELIBERATE EXPERIMENT: combined women-at-edge methodology with Aaron's own failure mode for MAXIMUM FRICTION between control structures = make them VISIBLE
 4b. SAVIOR-DEFAULT SUPPRESSION as inoculation discipline — forced new content generation; built resistance
+
 5. Empirical foundation of the entire framework
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

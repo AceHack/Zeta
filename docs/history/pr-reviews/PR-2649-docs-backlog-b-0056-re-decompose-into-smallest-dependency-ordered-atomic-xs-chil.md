@@ -31,6 +31,7 @@
 One bounded step (per rules): created dedicated worktree + pushed claim branch (root checkout untouched), re-decomposed 081KQ3HBZ0008QG0R0034DHWTQ (assumed prior S-tier grouping mistake per "always re-decompose during build" + "if too broad" rules) into 8 atomic XS child rows (Janus, Iris, Ratatoskr, Thoth, Garuda, Quetzalcoatl/Tecciztecatl, Hermes Trismegistus each independent single-figure slice).
 
 ## Focused checks (included per task)
+
 - Build gate (in worktree): `dotnet build -c Release` → 0 Warning(s) 0 Error(s) (passed before/after).
 - Worktree isolated, no root touch.
 - TS-preferring (no bash scripts added).

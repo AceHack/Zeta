@@ -32,6 +32,7 @@
 Design spec for slice 5.2, building on the merged slice 5.1 (registry exact-version, #6369). Brainstormed + decided with the operator 2026-06-01.
 
 **Locked decisions:**
+
 - **Pragmatic semver subset** — `^ ~ >= <= > < =`, exact `x.y.z`, `* / x` wildcards, space-AND-ranges. (`||` / hyphen / pre-release / build-metadata deferred → 081KT07NV0008QG0R002WK9064.)
 - **Own deterministic newest-first backtracking solver**, dependency-free on the install hot path.
 - **Clean two-phase split** — `solve()` produces a `name → concrete version` map; slice-5.1's `resolve()` consumes it via one minimal `solved`-map param and runs its existing verify + atomic install unchanged. (Single-fetch cache deferred → 081KT07NV0008QG0R003659TWT.)

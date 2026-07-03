@@ -32,12 +32,14 @@ Rust has no `System.Numerics`, so we **push our own port** — the `std::ops` tr
 Z-set is an abelian **group**, so — unlike the G-Set (#6469) / Bag (#6367) rungs (`Add` + `Default` + `Sum` only) — it also surfaces `Sub` + `Neg`.
 
 ### What
+
 - `impl Add/Sub/Neg for &ZSet<T>` (**ref-operators**: `&a + &b`, `-&a`, `&a - &b`), `impl Default` (the `Zero` analog), `impl Sum`.
 - **Ref-operators, not by-value:** the type has an inherent `add(&self, x: T)` (add ONE key); a by-value `Add for ZSet` would let `Add::add(self, Self)` win method resolution over it for owned receivers, silently breaking `z.add(key)`. The ref-operator keeps both (the G-Set #6469 fix).
 - `+` IS `union`, `-a` IS `negate`, `a - b` IS `union(negate)`. `Sum` uses `reduce().unwrap_or_default()` (folds from the first element — no identity-clone seed; matches Bag #6474).
 - **Zero prod-deps** — `Default` is std's identity trait, no `num_traits`.
 
 ### Verification
+
 - Diff isolated to `src/zset.rs` (114 insertions); `rustfmt --check src/zset.rs` **clean**; `clippy --all-targets -D warnings` **clean**; `zset_cross_verify` golden replay **green**.
 - *(Pre-existing fmt diffs in `bag.rs`/`indexed_zset.rs` are a local-rustfmt-version artifact on untouched files — not part of this change; recent Rust PRs merged with them so CI's rustfmt agrees with current formatting.)*
 

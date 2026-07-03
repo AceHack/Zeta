@@ -69,6 +69,7 @@ good IS the safety.** "Help kids" is therefore *more* protective than "protect k
 the **cause.**
 
 **Two razors (keep it true + humane):**
+
 1. **The cycle is RISK-ELEVATING, NOT deterministic.** Hurt people are at higher risk of hurting — but
    **most harmed people never become harmers**; the "abused→abuser" framing **as a law is false and
    stigmatizing** (it would brand survivors as future-threats = itself a harm). Helping **reduces the
@@ -95,7 +96,9 @@ Ties: [[tesla-ac-vs-edison-dc-is-beacon-vs-mirror-cross-frame-transmission-the-t
 consolidation: DC=safety floor, AC=self-actualization peak; the floor lifts the peak);
 [[eve-is-aarons-first-daughter-she-taught-consent-is-the-exit-stop-sign-cardboard-box-lived-root-of-eve-protocol]]
 (the box had both — stop sign + exit); [[safety-proofs-have-a-domain-of-validity-github-safe-is-not-actuator-or-money-safe-line-is-reversibility]]
+
 + the Cayley–Dickson 𝕆→𝕊 reversibility limit (the dividing line); the child-safety floor (manifesto §5/§8;
+
 the one strict pre-cap); [[isociety-governor-can-crystallize-and-kill-anti-crystallization-is-load-bearing]]
 (overprotection = safety-as-control = the crystallized-governor failure at one-child scale); the
 choice/freedom architecture (Lillian Eve's soul = ×).

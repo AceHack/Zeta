@@ -33,6 +33,7 @@ Resolve `name@range` against a **hosted, signed** catalog fetched over HTTP(S), 
 **under** the local registry, with **all per-package verification unchanged**.
 
 **Decisions locked with operator 2026-06-01:**
+
 - **Full index trust now** — three gates on the index: ed25519 **signature** (trust store, optional per-registry pin) + monotonic-**sequence anti-rollback** + `issued_at` **freshness** (default 30-day max-staleness). A remote registry is never shipped unsigned; anti-rollback + freshness defend availability/version-selection where the per-package pin can't.
 - **Cache-fallback + `--offline`** — unreachable remote → cached index or local-only with warning; `--offline` skips remotes (skips only the freshness gate on cache; sig + anti-rollback still enforced).
 - **Conditional-GET caching** — ETag/Last-Modified revalidation, content-addressed body cache under `~/.ace/registry-cache/`.

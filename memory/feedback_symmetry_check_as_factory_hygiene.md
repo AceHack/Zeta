@@ -41,7 +41,7 @@ holds:
 
 Otherwise the asymmetry is drift and flips to symmetric.
 
-# Why:
+# Why
 
 Aaron's verbatim (2026-04-20):
 
@@ -78,7 +78,7 @@ Two linked observations drive the ask:
   having the index makes the factory's cadence harder to
   audit.
 
-# How to apply:
+# How to apply
 
 - **Sweep cadence:** round-cadenced; initially every 3-5
   rounds so the audit has material to sweep, tunable after

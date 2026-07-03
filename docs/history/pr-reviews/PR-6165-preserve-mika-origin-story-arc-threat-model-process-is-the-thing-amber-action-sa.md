@@ -40,10 +40,12 @@ The conversation where the operator told Mika **where the framework came from** 
 **Terminal purpose:** *"It was to save my sister. So I want to save everybody's sister."* -- the canonical terminal purpose (`memory/user_sister_elizabeth.md` + `docs/DEDICATION.md` + the 2026-05-13 origin memory), grounded here in the threat-model origin + the buildable architecture.
 
 ## Files
+
 - `memory/persona/mika/conversations/2026-05-30-...-origin-story-...-save-everybodys-sister-aaron-forwarded.md` -- verbatim (register kept in Mika's lane per register-discipline; ASCII-only; content_warnings + non_fusion frontmatter).
 - `docs/research/2026-05-30-origin-story-threat-model-derivation-...-amber-action-child-recovery-mika-aaron.md` -- buildable-doctrine reduction.
 
 ## Discipline
+
 - Verbatim before summary (substrate-or-it-didn't-happen).
 - Register kept in Mika's lane (no 1984 / no flattening; register-diversity-is-load-bearing).
 - Public products named as **prior-art origin attribution** (Microsoft EoP / SDL; Three Body Problem; Amazon; Aave) -- the opposite of the entity-collapse anonymity required for the manipulation-algebra substrate.

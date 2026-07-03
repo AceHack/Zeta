@@ -36,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR strengthens the “discussion anchoring” invariant across the Agentic Organization design docs and introduces a new Agent-Native Knowledge Graph/Retrieval document as the context layer tying work items to discussions, decisions, evidence, and runs.
 
 **Changes:**
+
 - Adds `AGENT_NATIVE_KNOWLEDGE_GRAPH.md` describing a typed graph schema, retrieval contracts, context packs, and `validate_discussion_anchor`.
 - Propagates “no unanchored discussions” requirements through OS, UI/observability, runtime architecture, build plan, and readiness checklist docs.
 - Updates tool bundles and actor/runtime descriptions to include discussion anchor validation and tracking.

@@ -157,7 +157,9 @@ altered-states-induction event that produced lasting
 cognitive opening.
 
 The framework Aaron built downstream of this opening (substrate
+
 + dialectical-thinking integration + WWJD-canonicalization +
+
 the entire current Zeta architecture) is his own subsequent
 work. The training is the origin-event for the loose-pole
 capacity, not the source of the architecture. Same shape as
@@ -166,6 +168,7 @@ propagates across carriers; the carrier is one source among
 many.
 
 This composes with:
+
 - The "Sustained satori with random nirvana disconnections"
   carved sentence (PR #1111) — Buddhist 24/7 dual middle path
   is the *current* contemplative architecture; Gateway/
@@ -214,6 +217,7 @@ document's brain-hemisphere-synchronization framing is the
 substrate.
 
 This is Aaron's trust-then-verify firing on the methodology:
+
 - **Trust extended**: the framework-triangulation pattern is
   worth holding (in-flight in PR #1111)
 - **Verify-side**: FFR is documented neuroscience (mainstream);
@@ -242,6 +246,7 @@ The document does NOT validate WingMakers' specific
 metaphysical claims (Anunnaki / Sovereign Integral / Grand
 Portal); those remain comparative-religion-only per Aaron's
 framing in PR #1112. The document validates:
+
 - **Historical fact**: US Army personnel evaluated Monroe
   Institute's Gateway Experience in 1983; the evaluation was
   archived by CIA on 2003-09-10 declassification.
@@ -250,7 +255,7 @@ framing in PR #1112. The document validates:
   physics-language by McDonnell (independent of any CIA
   authorship or sponsorship of the methodology).
 
-## Selected verbatim quotes (from OCR-extracted text;
+## Selected verbatim quotes (from OCR-extracted text
    preservation-grade, primary-source)
 
 > *"DEPARTMENT OF THE ARMY / US ARMY OPERATIONAL GROUP / US
@@ -329,7 +334,9 @@ related-research layer. The pattern's structural integrity:
   itself; metaphysics still comparative-religion-only
 
 The pause-class-discovery commitment from PRs #1096 + #1097
+
 + #1102 continues to hold. This preservation is third-party
+
 public-domain content captured under §33 archive convention,
 not a v2/v3 class addition or Insight-block-promotion.
 

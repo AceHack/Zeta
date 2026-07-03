@@ -54,6 +54,7 @@ All 7 081KR2E4K0008QG0R00289GE8Z principles now anchored. Remaining open criteri
 ## Cross-principle insight
 
 Slice-2 anchors reveal two natural pairs:
+
 - **Behavioral pair (Otto-275 + Otto-279):** converge on organizational behavior theory (Csikszentmihalyi, Katz & Kahn) + AI metacognition — sustainable agency through self-audit and role-commitment
 - **Language/documentation pair (Otto-351 + Otto-352):** converge on linguistics (Halliday, Bernstein, Gumperz) + Mertonian science norms — Beacon-class artifacts must be accessible to observers outside the factory's shared context
 

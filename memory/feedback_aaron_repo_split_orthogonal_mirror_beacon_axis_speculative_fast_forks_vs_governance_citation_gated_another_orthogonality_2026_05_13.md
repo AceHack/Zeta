@@ -14,6 +14,7 @@ extends the discipline from language to REPO TOPOLOGY scope.
 
 **How to apply:** When designing repo splits, classify each
 repo on BOTH:
+
 - **Axis 1** — Factory / Product / Owner-only (per 081KRFA460008QG0R001H98EXJ +
   081KRFA460008QG0R003JQ46J4 + PR #2905 forker-perspective META-discipline)
 - **Axis 2** — Mirror / Beacon (per PR #2909 governance
@@ -68,6 +69,7 @@ substrate / etc.). This NEW axis extends the discipline to
 repo topology.
 
 The composing principle:
+
 - Multiple orthogonal axes provide independent design
   constraints
 - Each axis serves a different design question

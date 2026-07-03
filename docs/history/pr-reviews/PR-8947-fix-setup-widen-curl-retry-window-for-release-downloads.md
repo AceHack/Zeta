@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - widen the shared curl_fetch retry envelope from a short 5-retry/2-second window to a bounded multi-minute retry budget
 - keep the retry policy configurable with ZETA_CURL_RETRY_COUNT, ZETA_CURL_RETRY_DELAY_SECONDS, and ZETA_CURL_RETRY_MAX_TIME_SECONDS
 - point the Windows install smoke at the canonical tools/setup/manifests/from-bun-global manifest instead of the retired agent-clis path
@@ -42,6 +43,7 @@ After the retry fix, the Windows Docker install shield surfaced a separate stale
 The rerun then reached the AI-cluster ISO workflow and proved another independent CI issue: x64 build-iso cancelled at the 90-minute PR job budget while still actively compiling Nix dependencies in Build installer ISO.
 
 ## Validation
+
 - bash -n tools/setup/common/curl-fetch.sh
 - shellcheck tools/setup/common/curl-fetch.sh
 - curl_fetch file URL smoke with small retry overrides

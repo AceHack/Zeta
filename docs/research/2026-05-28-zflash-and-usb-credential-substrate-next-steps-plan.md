@@ -144,7 +144,7 @@ Track F (cross-track heal): ─────────────── CP-6 �
 
 ## 4. Compose-points with 081KSNY2Z0008QG0R0011XCT94 PQ git-crypt + 081KSNY2Z0008QG0R003FR5TVG symbiotic self-healing
 
-### 4.1 With 081KSNY2Z0008QG0R0011XCT94 — when relative to zflash work?
+### 4.1 With 081KSNY2Z0008QG0R0011XCT94 — when relative to zflash work
 
 **Substrate-honest:** 081KSNY2Z0008QG0R002JKH50A + 081KSNY2Z0008QG0R0011XCT94 should NOT block CP-1..CP-6. Operator's USB-iteration-speed priority needs current 081KSKBP80008QG0R003AX2A69 substrate empirically demonstrable FIRST. Then 081KSNY2Z0008QG0R002JKH50A/081KSNY2Z0008QG0R0011XCT94 lands as additive.
 

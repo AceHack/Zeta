@@ -18,6 +18,7 @@ shared grammar so the fifth system reuses it instead of growing.
 ## The shared grammar (what converges)
 
 Every system above is the same five-part sentence:
+
 1. **A port we OWN**, named by a stable identity (interface type or ZetaId — and the ZetaId IS
    the more general one: content-addressed, version-bumped, language-neutral).
 2. **Adapters** supplying the port (ours and theirs; the hexagonal rule — theirs never enters Core).

@@ -79,7 +79,9 @@ answer if structural-fix is unavailable.
 
 **Concrete velocity proof point** (the curl 502 case
 2026-04-28): one PR adding `tools/setup/common/curl-fetch.sh`
+
 + refactoring 4 call sites permanently absorbs the upstream-
+
 mirror-5xx failure class for the install path. The companion
 process-discipline memory (verify-first before rerun) goes from
 "applied to every CI failure" to "applied to OTHER classes that

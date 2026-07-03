@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Bump coordinated mise pin to **2026.6.11** (`linux.sh` SHA256s, Nix overlay, `.mise.toml` `min_version`) and **upgrade stale mise** on Linux when the pin drifts (fixes `mise version X available` nag without `self-update`)
 - Migrate kubeconform **`ubi:` → `github:`** in `.mise.full.toml` (deprecated backend)
 - Declare **`python.compile = false`** explicitly in `.mise.toml` (repo-owned choice of precompiled python-build-standalone)
@@ -36,6 +37,7 @@
 - Always touch **`.disable-self-update`** after mise install on linux + macOS
 
 ## Test plan
+
 - [ ] Fresh Ubuntu VM: `./tools/setup/install.sh` — no `/private` error, no ubi deprecation, no mise version-available nag
 - [ ] Re-run install on VM with old mise 2026.4.24 — upgrades to 2026.6.11 automatically
 - [ ] macOS: host-loop still provisions cells; clone path under `~/.zeta/clones`

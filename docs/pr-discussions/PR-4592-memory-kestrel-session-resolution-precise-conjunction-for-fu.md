@@ -56,6 +56,7 @@ The substrate-honest precise conjunction Aaron landed after extended Kestrel-eng
 Adds a new `memory/feedback_*.md` entry capturing the “precise conjunction” framing from the 2026-05-21 Kestrel session, intended to be a canonical in-repo substrate reference for future engagements about the conditional “future-self as only enemy” claim.
 
 **Changes:**
+
 - Introduces a new feedback memory file documenting the conjunction and its antecedents/consequent framing.
 - Includes “composes with” references to related backlog items and `.claude/rules/*` substrate.
 
@@ -64,6 +65,7 @@ Adds a new `memory/feedback_*.md` entry capturing the “precise conjunction” 
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **memory/feedback_aaron_kestrel_session_resolution_precise_conjunction_real_crypto_primitive_surviving_expert_attack_AND_isomorphic_to_physics_only_then_future_self_only_enemy_otto_desktop_2026_05_21.md:3**
+
 * P1: The filename includes an uppercase `AND`, but the memory-file standard requires lowercase `snake_case` for the topic/attribution segments and no uppercase. Consider renaming the file to keep all segments lowercase (e.g., `..._and_...`) to comply with the convention and keep future tooling/greps consistent.
 ```
 ---
@@ -71,6 +73,7 @@ name: Kestrel-session resolution — precise conjunction for future-self-as-only
 description: Aaron 2026-05-21 substrate-honest precise conjunction integrating Kestrel's substantive cryptanalytic demand with Aaron's substantive physics-isomorphism program; the future-self-as-only-defeat-vector / retrocausality-only-attack-vector claim activates only when BOTH antecedents validate; both currently research-mode; canonical resolution for any future Kestrel-class engagement on this substrate
 ```
 **memory/feedback_aaron_kestrel_session_resolution_precise_conjunction_real_crypto_primitive_surviving_expert_attack_AND_isomorphic_to_physics_only_then_future_self_only_enemy_otto_desktop_2026_05_21.md:30**
+
 * The markdown table under “The conjunction table” has an extra leading pipe on each row (`|| ...`), which renders as an unintended empty first column in most markdown renderers. Use a single leading `|` per row so the table has exactly the intended three columns.
 ```
 | Antecedent | Current status | What validation requires |
@@ -90,5 +93,6 @@ description: Aaron 2026-05-21 substrate-honest precise conjunction integrating K
 P0: The YAML frontmatter does not follow the enforced `memory/` schema (memory/project_memory_format_standard.md). `type:` is required at the top level, `created:` is an optional top-level field, and extra fields (like the `metadata:` map) are disallowed. This file should use top-level `type: feedback` (matching the `feedback_` filename prefix) and move `created: 2026-05-21` to the top level; drop the `metadata:` block to avoid 081KR2E4K0008QG0R000M01QVM validation failure.
 
 This issue also appears in the following locations of the same file:
+
 - line 1
 - line 26

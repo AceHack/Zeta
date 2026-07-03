@@ -38,6 +38,7 @@ first principles → the rediscovery proves the architecture
 is correct (same mind produces same structure twice).
 
 Same pattern as:
+
 - LucentAICloud event-sourcing → Zeta DBSP kernel
 - MultiplexedWebSockets → 081KR7JY10008QG0R000R503K2 bus transport
 - IThrottler flux capacitor → batching/throttling patterns

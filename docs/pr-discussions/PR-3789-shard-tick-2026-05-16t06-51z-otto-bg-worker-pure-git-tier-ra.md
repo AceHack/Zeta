@@ -47,6 +47,7 @@ Documents the named-dependency wait (GraphQL reset at 06:55:57Z, ~5 min from sha
 Adds a new hygiene-history tick shard documenting a cold-boot bg-worker session that hit GitHub GraphQL rate-limit exhaustion mid `poll-pr-gate.ts` call, then pivoted to the pure-git operational tier with an explicit bounded reset dependency.
 
 **Changes:**
+
 - Added a tick shard capturing the rate-budget arc (417 → 0 within one tool invocation) and the resulting pure-git pivot.
 - Recorded the named dependency (GraphQL reset timestamp) to avoid “standing-by” ambiguity.
 - Linked the observation back to the relevant operational rule for rate-limit tier guidance.

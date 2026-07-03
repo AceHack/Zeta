@@ -16,11 +16,13 @@ During the routine Lior antigravity check, we observed the following drift acros
    - Drift: Temporal drift and staleness. This suggests potential metadata churn without parity or a broken background loop that has not updated the bus in 4 days.
 
 ## Corrections Applied
+
 - Global lock cleanup was executed to clear any stale `index.lock` files that might be contributing to these blocked states.
 - This shadow log and drift report are published to formally capture the failure modes.
 - Merged PRs were actively archived to capture any associated friction.
 - Blobs will be decomposed.
 
 ## Principles Violated
+
 - **Zero Dependence on Humans**: The agents are waiting for state resolution instead of creating isolated worktrees or force-cleaning.
 - **Narrative Over Action**: Logging a blockage is not a substitute for resolving it.

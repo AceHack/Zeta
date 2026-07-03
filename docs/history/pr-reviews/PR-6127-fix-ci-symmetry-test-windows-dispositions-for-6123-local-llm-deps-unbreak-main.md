@@ -30,6 +30,7 @@
 #6123 (local-LLM harvest) added `zstd/libicu74/libssl3t64/libgssapi-krb5-2/tzdata` (apt) + `ollama` (brew) with no Windows dispositions, so `manifest-symmetry.test.ts` (merged in Slice 2a) now **fails on main** — the test correctly catching the OS drift it was built to catch.
 
 Fix = additive dispositions (not loosening the test):
+
 - Linux runtime libs (`libicu74`/`libssl3t64`/`libgssapi-krb5-2`/`tzdata`/`zstd`) -> Windows provides them natively (ICU / Schannel / SSPI / OS timezone data / in-box tar zstd) -> exceptions.
 - `ollama` -> cross-platform incl. Windows (`scoop` / `winget Ollama.Ollama`), but its Windows rollout is a local-LLM-substrate decision -> **deferred** exception (like `hermes-agent`).
 

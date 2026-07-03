@@ -34,6 +34,7 @@ operator: *"build loadWorld to close the real loop next."* The read side of obse
 `loadWorld() → observe/observeWithLlm → execute (append event) → loadWorld() → …`
 
 **Two channels, each its own source of truth:**
+
 - **BACKLOG** ← the existing selector (the oracle) via `nextActionFromBacklog` — *not* reimplemented (per backlog-reader's "selector is the oracle"). The chosen item IS the world's backlog for the tick; a free_time selection (empty/blocked) → empty backlog.
 - **MODE** ← a **fold of the event log** (v5: state is a projection of the log). The events `execute` appended via the folder sink carry the chosen mode; folding yields the persisted mode — **the read side of what the sink writes, the loop closing on itself.**
 

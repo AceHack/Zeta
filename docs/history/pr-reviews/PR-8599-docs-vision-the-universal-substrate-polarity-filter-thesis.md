@@ -32,6 +32,7 @@
 > **The universal is the substrate; the particular is the filter.**
 
 Adds to VISION.md (appends, does not overwrite):
+
 - Three-layer certainty (quantum → soft → hard = derived view)
 - Lenses as polarity filters (snap = the filter, soft all the way down)
 - Meta-space = Markov boundary (entropy in/out tracked precisely)

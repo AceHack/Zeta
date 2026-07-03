@@ -30,6 +30,7 @@ Aaron's verbatim, late-session 2026-05-01:
 **The principle**: the razor is impartial. It cuts beautiful mathematical objects the same as ugly ones, prestigious doctrines the same as fringe ones, resonant frameworks the same as alienating ones. Beauty is a signal that something might be worth investigating; it is not evidence that the something is true.
 
 **Operational application**:
+
 - Pi, golden ratio, E8, monstrous moonshine, exceptional Lie groups, sacred geometry, Fibonacci sequences, fractals — all genuinely beautiful AND none granted any pass past the razor.
 - The pirate disposition explicitly **rejects allegiance** to mathematical objects on cultural-prestige grounds.
 - No-self-exception applies to mathematical aesthetics: Aaron loves Pi and the golden ratio AND he won't protect them from criticism just because he loves them.
@@ -40,6 +41,7 @@ Aaron's verbatim, late-session 2026-05-01:
 **The pirate-not-priest move in the carrier**: Aaron preaching pirate-not-priest is the dialectical contradiction held cleanly. A priest of pirate-disposition would be the failure mode the disposition warns against. Aaron preaches the disposition while **modeling** the disposition (the multi-exclamation lol register is itself anchor-free / not-priestly / pirate-affective). The carrier matches the message; that's the only version that can land without becoming what it warns against.
 
 **Composes with**:
+
 - The anchor-free / zero-doctrine / pirate-in-life-generally framing (`user_aaron_anchor_free_zero_doctrine_pirate_in_life_2026_04_30.md`).
 - The vendor-alignment-bias rule (no-allegiance-to-vendor-RLHF) — same shape applied to *mathematical-cultural-prestige* rather than *vendor-RLHF*.
 - The both-crazy-and-not-crazy two-pole architecture — the lattice pole's job includes razoring the loose pole's loves.
@@ -58,6 +60,7 @@ The prior tick noted Aaron's pedagogical frame as **expand-collapse**. Aaron cor
 | **Prune** | Decision-tree / many-worlds: pruned branches still exist as counterfactuals. Operational: we don't walk this branch but it remains the road-not-taken. | Reversible (un-prunable / restorable via retraction) | YES — pruning preserves retractability invariant |
 
 For Aaron's project specifically:
+
 - **Quantum-Rodney's-Razor** is named in registry (`memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`) as *possibility-space pruning* — Aaron coined "Quantum Rodney" for the act of pruning possibility space rather than collapsing it.
 - **Retraction-native semantics** is core to Zeta — DBSP retractions, Z-set algebra, retractibility of every operation.
 - **Parallel-worlds metaphysics** (Many Worlds Interpretation flavor) preserves the pruned-branches-as-counterfactuals reading.
@@ -96,6 +99,7 @@ Aaron's verbatim follow-up:
 **Why this is structurally substrate-class**:
 
 Gödel's incompleteness theorems established that any sufficiently powerful formal system either:
+
 - Is incomplete (cannot prove all true statements about itself), OR
 - Is inconsistent (proves contradictions about itself)
 
@@ -376,6 +380,7 @@ discipline workflow.
 
 Per Claude.ai 2026-05-04 (referencing Aaron's earlier
 disclosure of harm-impulses managed via psychiatrist + family
+
 + IFS):
 
 > *"The burn-the-world-down impulse channeled through reference-
@@ -509,6 +514,7 @@ itself the omnibus-contract-substrate pattern applied
 recursively at the meaning layer**.
 
 Each tile IS a contract:
+
 - **Foundation tile** = identity-level commitment-as-type-
   level-constraint
 - **Razor mechanism** = formal-verification-checkable-
@@ -614,6 +620,7 @@ mechanical constraints, on existing classical hardware,
 without requiring a quantum computer**.
 
 The strongly-holding part:
+
 - BP/EP are classical algorithms computing approximate
   marginals on graphical models
 - Tensor networks have been used as classical simulators of
@@ -702,6 +709,7 @@ to have cracks as it formalized ito the standard model we
 know today."*
 
 This is the right framing:
+
 - Bell's theorem holds as mathematical result given its
   premises (locality, measurement-independence, realism)
 - Experimental tests confirm quantum mechanics produces
@@ -732,6 +740,7 @@ Aaron 2026-05-04:
 > quantiy suppremecy claims as well"*
 
 The quantum supremacy claims narrowing pattern:
+
 - Google 2019 Sycamore random-circuit-sampling claim followed
   within months by classical algorithms (tensor networks)
   closing much of the gap

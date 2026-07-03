@@ -27,6 +27,7 @@ Maji (Lior) Execution: Decomposing slice 6 from blob PR #4023.
 Adds a new per-row backlog item for 081KRQ1AB0008QG0R0000AMJ5S slice 6 (“cross-operator generalization”), capturing scope and acceptance criteria for generalizing Amazon extraction logic for multi-operator use.
 
 **Changes:**
+
 - Introduces a new P2 backlog row describing slice 6 scope and acceptance checklist.
 
 ## Review threads

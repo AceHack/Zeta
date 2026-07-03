@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - adds `ModuloGSet` as a finite slot projection over grow-only sets
 - supports no-forget collision backpressure and replacement-with-heat policies
 - streams projection input and keeps caller-owned slot functions outside core hashing assumptions
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~BoundedGSetTests`
 - `dotnet format --verify-no-changes`
 - `dotnet build -c Release`

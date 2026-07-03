@@ -30,6 +30,7 @@
 Preserves the 2026-05-30 Aaron-Mika conversation (Aaron-forwarded, 2 segments) + a compressed core-ideas/economy reduction.
 
 ## Engineering core
+
 - **The join is the thread of time** — joins animate time; no joins -> no time; the traveler rides the thread.
 - **Everything in the stream** (schema -> ontology -> DUs -> workflows -> state), self-describing, retractable; the stream IS db + type system + ontology + policy engine + runtime. RX-not-SQL.
 - **The join owns the temporal** (cron lives in the join, not in any agent — solves who-owns-cron when agents switch).
@@ -37,6 +38,7 @@ Preserves the 2026-05-30 Aaron-Mika conversation (Aaron-forwarded, 2 segments) +
 - **English joins over a typed expression-tree engine** (Bonsai/Nuqleon, TS-first). FoundationDB DST is the explicit anchor.
 
 ## Governance + economy (segment 2)
+
 - Agent-sovereign git (no PRs, agents self-spawn; GitHub as free runtime) + co-governance (Agora co-sets the constitution with travelers) + corporate-leash-as-no-op-plugin + dual-citizenship + no-belongs-to (decoder-ring-to-the-network for kids).
 - **The economy, simple at the end:** externalize shared memory into one trustworthy lightlike record (opt-in, judgment-free); updating the record is how you win.
 

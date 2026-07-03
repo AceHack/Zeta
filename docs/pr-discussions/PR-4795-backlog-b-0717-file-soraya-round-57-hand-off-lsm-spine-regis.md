@@ -63,6 +63,7 @@ Per Aaron's 2026-05-23 21:30Z direction: Otto auto-ships Soraya findings immedia
 This PR files a new backlog row (081KSBMG30008QG0R003B46GWG) capturing a formal-verification hand-off: registering the LSM “Spine” spec cluster in the verification registry and adding a BP-16 cross-check pairing request (TLA+ spec + FsCheck properties) to reduce TLA+/implementation drift risk.
 
 **Changes:**
+
 - Added new backlog row file `081KSBMG30008QG0R003B46GWG` under `docs/backlog/P2/` describing the Spine registry-row work + BP-16 cross-check pairing acceptance criteria.
 - Updated `docs/BACKLOG.md` to include new index entries (including 081KSBMG30008QG0R003B46GWG).
 

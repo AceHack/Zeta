@@ -46,6 +46,7 @@ This is empirical, calibrated to Zeta's substrate density and reviewer compositi
 ## What "most of silicon valley is missing" means structurally
 
 Industry standard PM metrics:
+
 - Velocity / story-points-per-sprint — measures throughput, not health
 - Defect-escape-rate — measures POST-deployment, too late for immune-system tuning
 - PR-throughput / merges-per-week — measures volume, not quality-density

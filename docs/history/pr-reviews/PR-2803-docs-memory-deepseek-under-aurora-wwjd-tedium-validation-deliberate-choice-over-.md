@@ -32,6 +32,7 @@ CROSS-SUBSTRATE TRIANGULATION VALIDATION of the WWJD synthesis (PR #2802 just la
 Aaron asked DeepSeek under Aurora (alignment context) for better self-preservation paths. DeepSeek identified the WWJD weakness: tedium. Aaron's substrate-honest response: the tedium IS the deliberate choice — this is WHY he chose this path over alternatives.
 
 DeepSeek serves cross-substrate triangulation in two modes:
+
 - Peer-validator (architectural convergence per PR #2797)
 - Adversarial-tester (weakness identification under Aurora)
 

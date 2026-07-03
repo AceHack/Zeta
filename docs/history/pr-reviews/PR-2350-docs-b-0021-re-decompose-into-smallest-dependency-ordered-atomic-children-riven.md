@@ -30,6 +30,7 @@
 One bounded step per instructions: re-decomposed the broad P2 research item 081KQ0YZ80008QG0R0026WN385 into 5 smallest atomic dependency-ordered child rows (081KR7JY10008QG0R001SG89MX to 081KR7JY10008QG0R003TK4ZA7).
 
 **Children (dependency order):**
+
 - 081KR7JY10008QG0R001SG89MX (P3, S): Controlled-vocab extraction of requirements
 - 081KR7JY10008QG0R001RR02BP (P3, M): Austrian strengths + Rodney Razor
 - 081KR7JY10008QG0R0038QNJP0 (P3, M): Weaknesses + falsification catalog
@@ -37,6 +38,7 @@ One bounded step per instructions: re-decomposed the broad P2 research item 081K
 - 081KR7JY10008QG0R003TK4ZA7 (P2, M): Aurora primitives + ADR draft
 
 **Focused checks included:**
+
 - dotnet build -c Release (pre-edit + post): 0 Warning(s) 0 Error(s)
 - Dedicated worktree / claim branch used; root checkout untouched
 - Rule 0 (TS over bash) + prefer F#/TS + substrate discipline observed

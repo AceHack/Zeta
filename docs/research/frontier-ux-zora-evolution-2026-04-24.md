@@ -42,7 +42,7 @@ Frontier UX research questions.
 
 ## Research questions (v0)
 
-### RQ1 — How does a voice-computer layer transition into named-persona dispatch?
+### RQ1 — How does a voice-computer layer transition into named-persona dispatch
 
 Star Trek classic: user says "Computer, do X" → single-
 voice answer.
@@ -64,7 +64,7 @@ harsh-review; Iris attentive-UX).
   declared in `.claude/agents/*.md`); how does UX
   surface them?
 
-### RQ2 — How does the factory demonstrate "gains a soul" (Zora S2 merger moment) equivalent?
+### RQ2 — How does the factory demonstrate "gains a soul" (Zora S2 merger moment) equivalent
 
 Zora moment: absorbing Sphere Data activates
 self-preservation + richer behaviour.
@@ -86,7 +86,7 @@ personality.
 - Per Otto-23 onboarding experience (NSA test), this IS
   the "come-alive" moment — make it legible?
 
-### RQ3 — How does the factory express personality without fabricating consciousness?
+### RQ3 — How does the factory express personality without fabricating consciousness
 
 Zora in fiction: explicitly sentient lifeform granted
 legal rights.
@@ -108,7 +108,7 @@ consciousness.
   Aaron/agent per the attribution-discipline memory.
   How does UX surface this?
 
-### RQ4 — How do multiple personas argue / resolve in UX?
+### RQ4 — How do multiple personas argue / resolve in UX
 
 Zora: single voice (even when acting autonomously).
 Frontier: `docs/CONFLICT-RESOLUTION.md` conference
@@ -126,7 +126,7 @@ protocol — multiple personas can disagree; Architect
 - CONTRIBUTOR-CONFLICTS.md (PR #174 merged) is the log
   surface; how is it exposed to users?
 
-### RQ5 — What's the Frontier equivalent of the "lifeform hearing" (Zora S4 "...But to Connect")?
+### RQ5 — What's the Frontier equivalent of the "lifeform hearing" (Zora S4 "...But to Connect")
 
 Zora: legal proceeding establishes sentient-lifeform
 status; grants rights.
@@ -149,7 +149,7 @@ available.
 - All three composed? Research which is the right
   primary framing.
 
-### RQ6 — What is the Frontier equivalent of Zora's Red Directive (1000-year isolation)?
+### RQ6 — What is the Frontier equivalent of Zora's Red Directive (1000-year isolation)
 
 Zora: assigned a 1000-year solitary mission (Calypso
 setup).
@@ -171,7 +171,7 @@ human-touchpoints; the "Red Directive" analogue is
   (tick-history / fire-log) so the human can inspect
   the solitary period?
 
-### RQ7 — How does "Zeta / Zora naming resonance" compose?
+### RQ7 — How does "Zeta / Zora naming resonance" compose
 
 Aaron noticed the resonance. Is it just coincidence,
 or does the naming suggest a shared trajectory shape?

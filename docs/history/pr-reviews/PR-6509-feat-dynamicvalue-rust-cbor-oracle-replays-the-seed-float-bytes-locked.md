@@ -30,6 +30,7 @@
 Third of the four CBOR oracles (one authors, others replay) — the **Rust oracle** agrees on the canonical-CBOR seed (`golden-vectors-cbor.json`). Float + Bytes locked in Rust too.
 
 ## What
+
 - `DynamicValue::to_canonical_cbor(&self) -> Vec<u8>` — **total** (no `Result`): CBOR has a canonical form for every shape.
 - **Float**: RFC 8949 §4.2.2 shortest-float. Rust has no stable `f16` and the core is **zero-dep** (no `half` crate), so f64→f16 is hand-rolled and **gated on an exact round-trip** (`f16_to_f32(bits).to_bits() == f32.to_bits()`) — f16 is emitted *only* for genuinely f16-exact values, so a rounding imperfection can never produce non-canonical output (non-exact → float32). `NaN → 0xf97e00`; ±0/±Inf sign-preserved.
 - **Bytes**: native major-type-2 byte string.

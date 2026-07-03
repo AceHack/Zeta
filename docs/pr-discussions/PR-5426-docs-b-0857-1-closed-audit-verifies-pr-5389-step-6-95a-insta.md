@@ -65,6 +65,7 @@ Closed at landing. No implementation work needed; substrate is correct.
 Documentation-only PR that adds a new closed P2 backlog sub-row (081KSKBP80008QG0R002EKF67B) recording the audit of PR #5389's integration claim, and corrects the parent 081KSKBP80008QG0R002J03WGA row body to reflect the verified-present state of the `tools/setup/install.sh` invocation in `zeta-install.sh`.
 
 **Changes:**
+
 - Adds new backlog row file `081KSKBP80008QG0R002EKF67B` (status: closed) documenting the audit result with grep-verified line references.
 - Updates the parent `081KSKBP80008QG0R002J03WGA` row body to replace the inaccurate "grep finds NO actual invocation" claim with the audit-verified finding.
 

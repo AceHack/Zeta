@@ -36,6 +36,7 @@ mirroring `CURSOR.md` (081KR50HA0008QG0R003G7DR8Z.2) and `KIRO.md` (081KSRGFP000
 (AGENTS.md, CODEX.md, CURSOR.md)"*.
 
 Files (docs-only, 5):
+
 - `CODEX.md` (new) — six-step pointer tree, Codex-specific cells filled.
 - `AGENTS.md` — registry entry updated (the slot already anticipated a root `CODEX.md`).
 - `docs/BOOTSTRAP-TEMPLATE.md` — Existing-instances table: CODEX.md row added; `.codex/AGENTS.md` clarified as the Codex-owned deep addendum.

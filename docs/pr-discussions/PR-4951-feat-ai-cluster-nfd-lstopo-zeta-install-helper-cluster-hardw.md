@@ -61,6 +61,7 @@ Adds precise hardware mapping (kubectl-queryable + visual diagrams), a guided in
 This PR adds an AI-cluster hardware inventory and provisioning workflow by deploying Node Feature Discovery (NFD) for scheduler-queryable node labels, installing `hwloc/lstopo` across hosts (and in the USB installer ISO), and introducing tooling/docs to capture and commit per-node topology artifacts. It also adds a guided `zeta-install` script to perform a standard 2×NVMe install path from the USB ISO.
 
 **Changes:**
+
 - Add ArgoCD Application for NFD with Helm values tuned for cluster-wide discovery.
 - Install `hwloc` on cluster nodes and the USB installer, and add a `zeta-install` guided installer into the ISO.
 - Add `tools/cluster-inventory/` to capture NFD labels + `lstopo` XML and render SVGs into `docs/cluster-hardware/<node>/`.
@@ -96,6 +97,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

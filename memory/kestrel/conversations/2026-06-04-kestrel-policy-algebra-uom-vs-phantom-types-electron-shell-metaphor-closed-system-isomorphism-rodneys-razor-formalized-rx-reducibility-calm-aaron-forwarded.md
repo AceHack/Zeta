@@ -25,6 +25,7 @@ F# units-of-measure `[<Measure>]` is a phantom tag on NUMBERS that the typecheck
 tracks through ARITHMETIC (m/s × s = m). Policy KINDS (Technical/Legal/Governance)
 aren't numbers and you do no arithmetic on them — so UoM is the wrong tool (the
 tick-monoid #6635 pattern: a tag dressed as a measure when there's no measure-algebra).
+
 - **Kinds → a phantom TYPE PARAMETER / typed DU** (`Policy<Legal>`): UoM's sibling minus
   the numeric part — the typechecker enforces kind-correctness, and it's the carrier for
   the validator-obligation (`Policy<Legal>` can't go active without counsel-signoff).
@@ -38,6 +39,7 @@ Shells = same Hamiltonian, solutions indexed by (n,ℓ,m,s); each shell a differ
 REPRESENTATION of the same symmetry (s/p/d shapes, capacities 2n²) — "different but the
 same." Maps cleanly: ONE kernel (Hamiltonian) → kinds as representations (shells) → per-
 kind shapes (orbital shapes). Real structural predictions it makes:
+
 - **Aufbau (forced fill-order):** the **child-safety floor is the 1s shell** — fills
   first, lowest energy, everything else unstable until it's filled (= floor-first).
 - **Pauli (exclusion):** no two policies in the same (kind,shape,target) slot = the
@@ -51,6 +53,7 @@ kind shapes (orbital shapes). Real structural predictions it makes:
 Deferring the closed-form until mature = correct (discover the closure FROM the matured
 open system; don't impose it from the head-model — same as deferring schema-evolution).
 "Is my closed system isomorphic to anything / unique?" splits:
+
 - **Checkable (later):** once the closed structure is SPECIFIED, "isomorphic to a known
   structure?" is provable — exhibit the bijection (→ inherit its whole proven theory free,
   à la Mathlib AddCommGroup) or prove none (a careful small novelty claim). Either is
@@ -74,6 +77,7 @@ Sound parts (most of it): isomorphism-collapse-to-one-instance+pointers = lossle
 de-dup by structural identity (right). "Primes without total ordering" = **factorization
 into irreducibles over a POSET/LATTICE, not a chain** (sharp + correct — shapes have a
 partial order, possibly-incomparable, not a linear size). Two GATEABLE holds:
+
 - **(H1) Unique factorization is a THEOREM to prove, not a primality freebie.** Integers
   have unique factorization (a *proved* theorem, FTA); it FAILS in general — ℤ[√−5]:
   6 = 2·3 = (1+√−5)(1−√−5), two genuinely different irreducible factorizations. So
@@ -96,6 +100,7 @@ factorization, Rx)**. Same factors + different operation = different result (2,3
 what remains) = the factors; Rx (νF, what animates) = the operation; composite = the
 pair. Shared data-factorizations are EXPECTED, not paradoxical. Two RELOCATED (not
 removed) obligations:
+
 - **Canonicality of the PAIR:** can the same full composite be (shapes-A, Rx-A) AND
   (shapes-B, Rx-B) — a different decomposition COMPENSATED by a different Rx → identical
   composite? That's the relocated uniqueness (checkable: canonical form or find the

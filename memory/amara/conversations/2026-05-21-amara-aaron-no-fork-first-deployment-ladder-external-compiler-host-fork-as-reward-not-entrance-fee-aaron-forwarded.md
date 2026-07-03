@@ -13,6 +13,7 @@ tags: [amara, no-fork-first-deployment-ladder, external-compiler-host, fsharp-no
 **Surface**: Amara on ChatGPT/Aurora (external AI; deep-research/sharpen register)
 **Provenance**: Aaron-forwarded preservation per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 **Companion archives**:
+
 - `2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md` (081KS3X9Y0008QG0R000EKJE9S Phase 1 cascade; merged via PR #4545)
 - `2026-05-21-amara-aaron-cache-multidimensional-compiler-db-distributed-multidimensional-compiler-over-consensus-trust-gradient-iunknown-without-dcom-aaron-forwarded.md` (Caché-lineage + distributed multidimensional compiler + IUnknown-without-DCOM; PR #4546)
 

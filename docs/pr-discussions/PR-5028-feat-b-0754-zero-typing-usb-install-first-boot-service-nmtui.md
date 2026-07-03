@@ -81,6 +81,7 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 Adds a first-boot, tty1-driven auto-installer flow for the USB NixOS installer to reduce operator typing during cluster node provisioning, plus supporting documentation/backlog updates.
 
 **Changes:**
+
 - Introduces a new `zeta-first-boot` script to select role, bring up networking (ethernet wait, `nmtui` fallback), run install, and reboot.
 - Adds `ZETA_AUTO_CONFIRM=WIPE` to allow `zeta-install` to bypass the typed destructive confirmation prompt.
 - Wires a new systemd service into the installer ISO configuration and updates provisioning docs; adds a follow-up backlog row for expanded role taxonomy.

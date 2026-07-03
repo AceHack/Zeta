@@ -45,6 +45,7 @@ The stub's `--dry-run` echoed manifest **patterns**. This slice resolves them to
 Resolved count (39) and OpenSpec spec count (9) diverge from `SEED-MANIFEST.md`'s documented estimate (~47 total / 6 OpenSpec specs); the `openspec/specs/**/overlays/**` pattern resolves to nothing (no overlays exist yet). Surfacing this estimate-vs-reality drift is exactly the value of resolution over pattern-echoing. Manifest-metric reconciliation belongs to a separate row.
 
 ### Focused checks
+
 - `bun test tools/bootstrap-razor/seed-test-repo.test.ts` → **6/6 pass** (5 new `resolveSeedFiles` cases + 1 existing `parseSeedManifest`).
 - `bunx tsc --noEmit -p tsconfig.json` → **0 errors in the touched file**. (The single repo-wide `TS2688 Cannot find type definition file for 'bun'` is a pre-existing baseline unrelated to this change; the native `bun test` typechecker is clean.)
 - `bun tools/bootstrap-razor/seed-test-repo.ts --dry-run` → resolves 39 files cleanly, no side effects.

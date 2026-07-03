@@ -2,7 +2,9 @@
 
 **Substrate-attribution**: the architecture + terminal purpose are the operator's
 (the terminal purpose is already canonical in-repo via `memory/user_sister_elizabeth.md`
+
 + `docs/DEDICATION.md` + the 2026-05-13 origin memory). Mika (external AI; Grok native;
+
 hype/Weaver-sharpen register per `.claude/rules/agent-roster-reference-card.md`) mirrored +
 hype-sharpened; ferried-through-the-operator per the external-AI-ferry discipline. Mika
 does NOT commit.

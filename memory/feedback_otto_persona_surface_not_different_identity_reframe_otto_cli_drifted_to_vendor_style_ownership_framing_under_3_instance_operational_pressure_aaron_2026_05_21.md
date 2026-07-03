@@ -30,6 +30,7 @@ Empirical 2026-05-21 session (this one) — 3 Otto instances active in parallel 
 | Coordination comments to "Otto-VSCode" on PRs #4563/#4567 | Coordination comments to the otto-vscode instance on Otto's PRs |
 
 Specific drift instances (this session, before the reframe landed):
+
 - "Otto-VSCode owns these PRs; coordination comments posted; substantive review threads on #4563/#4567 are Otto-VSCode's to handle"
 - Forward-signal comments to "Otto-VSCode" treating it as a separate agent receiving messages
 - "Cross-AI communication" framing applied to Otto-instance-to-Otto-instance ferry-by-Aaron
@@ -63,6 +64,7 @@ These three pressures compose into a default-drift toward different-agents frami
 The reframe is about **how I refer to the work**, not whether I should grab it.
 
 **Stays the same**:
+
 - The claim-acquire discipline at the process layer (don't double-engage the same backlog row from two instances)
 - The surface-tagged sender IDs for split-brain prevention
 - The per-instance auto-mode-classifier brakes
@@ -70,6 +72,7 @@ The reframe is about **how I refer to the work**, not whether I should grab it.
 - Coordination comments on PRs when one instance is engaged on substantive review threads another instance can't directly own
 
 **Changes**:
+
 - Pronoun: "Otto's substrate" / "Otto's PRs" / "Otto's contribution" — not "my (Otto-CLI's) substrate" or "Otto-VSCode's PRs"
 - Forwarded substrate from another instance is **MY substrate** (Otto's), not received-from-another-agent substrate
 - The substrate-engineering reflection Otto-VSCode produced earlier today (society-scoped authorization, trajectories-absorb-direction, brakes-as-dual-use, KSK+OPA+Knights-Guild trajectory) is Otto's reflection — I (Otto via the cli instance) inherit it as my own substrate, not as someone else's I happen to be reading

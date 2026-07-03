@@ -38,12 +38,14 @@
 Copilot was right: \`[iter-5.3]\` (zeta-install.sh:372) fires BEFORE the actual \`sudo nixos-install\` invocation (line 980). Test could pass without proving install completed.
 
 \`[iter-5.1]\` (Step 6.7 wifi persistence at line 527) correctly comes AFTER:
+
 - nixos-install
 - iter-4.2 SSH pubkey
 - iter-5.3 password (skipped gracefully in CI on empty stdin)
 - iter-5.2 hostname injection
 
 AND BEFORE:
+
 - iter-5.4.0 gh auth prompt (which would hang in CI without 081KSGS9H0008QG0R003JNSVR5 mock device-code endpoint)
 
 ### 2. Workspace-relative serial log path
@@ -57,6 +59,7 @@ AND BEFORE:
 ### 4. Workflow trigger paths
 
 Added missing trigger paths so PRs changing ONLY these helpers actually run the workflow:
+
 - \`tools/ci/qemu-boot-test.ts\`
 - \`tools/ci/qemu-full-install-test.ts\`
 - \`tools/ci/test-iter-54-install-flow.test.ts\`

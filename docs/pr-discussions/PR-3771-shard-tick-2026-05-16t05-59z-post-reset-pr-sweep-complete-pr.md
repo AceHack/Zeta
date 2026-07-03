@@ -29,5 +29,6 @@ Post-rate-reset sweep: 8 PRs opened (#3761-#3768) + auto-merge armed; PR #3746 c
 Adds the 2026-05-16 05:59Z Otto-CLI tick entry to the hygiene-history log, capturing the post-rate-reset PR sweep results and current operational state for traceability.
 
 **Changes:**
+
 - Add a new tick log documenting the post-reset sweep (8 PRs opened with auto-merge armed) and the supersession closure of PR #3746 by PR #3757.
 - Record refreshed system state (cron sentinel, GraphQL rate limit remaining, and `origin/main` advancement) plus follow-up notes for the next tick.

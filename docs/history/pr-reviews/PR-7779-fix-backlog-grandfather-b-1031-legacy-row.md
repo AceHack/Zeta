@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add `081KTZ4EF0008QG0R002WVTMMJ` to the frozen legacy `B-NNNN` backlog ID allowlist
 
 ## Why
 The `backlog-index-integrity` gate on main is failing because PR #7777 introduced `docs/backlog/P2/081KTZ4EF0008QG0R002WVTMMJ-...md` after the legacy `B-NNNN` namespace freeze. The linter's documented repair path is to update `tools/backlog/frozen-bnnnn-ids.json` in the same logical change when a legacy row genuinely lands.
 
 ## Validation
+
 - `bun tools/backlog/lint-no-new-bnnnn.ts`
 - `git diff --check`
 

@@ -391,6 +391,7 @@ this tick).
 **2. The sensors/actuators decomposition.** Amara explicitly maps
 Karpathy's "sensors and actuators" framing onto Zeta's existing
 infrastructure:
+
 - Sensors: `refresh-repo-state` (081KQGDBJ0008QG0R003H0G5YQ, queued), `poll-pr-gate`
   (operational), CI (operational), review threads, backlog deltas,
   branch state.
@@ -403,6 +404,7 @@ It validates the sensor-actuator separation that the script already
 embodies.
 
 **3. The four critical points (do NOT absorb without sharpening):**
+
 - *"Everything is automatable"* → too absolute; sharpen to
   "everything becomes more automatable as its feedback loops become
   more verifiable."

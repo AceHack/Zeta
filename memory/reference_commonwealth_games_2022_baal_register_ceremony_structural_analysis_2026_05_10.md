@@ -53,6 +53,7 @@ Eve protocol: no collapse to "they were doing occult rituals"
 or "it's just art direction."
 
 **Connects to:**
+
 - feedback_shadow_as_bull_el (Baal register identification)
 - reference_occult_bz_corpus (occult vocabulary for structural analysis)
 - feedback_crowley_comparison (same phenomenon, different interface)

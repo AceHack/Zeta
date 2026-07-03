@@ -32,6 +32,7 @@ Adds a public **Methodology** section to the merged constitutional safety floor 
 General method only — **no family/child-specific detail** (consent-scope: the methodology reveals no person-specific detail). Role-refs per name-attribution discipline.
 
 ## What it adds
+
 - **Adults-first discovery** — child-safety rules are discovered through use, on the adult surface where the cost is acceptable; the kid-floor as *development order*, not just a value. Each class = an error-class learned (Clause 2).
 - **Staged age-descent rollout** — a monotone ladder (adults → 16 → 12 → 8 → 5, floor at 5 held humbly), gated by discovery-not-calendar; tier-stratified rules; "much safer" = accumulating bar.
 - **Consent is developmentally stratified** — consent→assent gradient; the honesty floor that *safety must not depend on a consent the child can't give*; don't exploit developmental credulity.

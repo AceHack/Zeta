@@ -30,12 +30,14 @@
 Completes the **algebra ladder G-Set ⊂ Bag ⊂ Z-set across all four oracles** (TS + F# + C# + Rust). Native Rust `ZSet<T>` mirrors `bag.rs`/`gset.rs`.
 
 ### Z-set semantics (the ℕ→ℤ widening)
+
 - signed `i64` weights, per-key SUM combiner
 - **drop-on-net-zero** (retraction) — KEEPS negatives (drop rule `!= 0`, not `<= 0`)
 - `negate` = abelian-group inverse → `union(a, negate(a))` empty
 - `add_w` (signed), `checked_add`/`checked_neg` overflow guards, **zero-dep** production crate
 
 ### Files
+
 - `src/zset.rs` — native impl + 12 zset unit/law tests (inverse, drops-zero-keeps-negatives, retraction, not-idempotent)
 - `tests/zset_cross_verify.rs` — replays the shared `z-set/golden-vectors.json` (dev-only `serde_json`), byte-matches every replay + final state
 - `lib.rs` — `pub mod zset;`

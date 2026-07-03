@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds the first `@agentic-org/policy` package with generic `CommandAuthorizationPort` and `HatAuthorityPort` contracts.
 - Gates the application command pipeline before idempotency lookup, handler dispatch, or persistence, returning typed `policy_denied` errors for inactive hat authority.
 - Strengthens governance boundaries so policy code stays adapter/vendor-free, and updates Agentic Organization docs/OpenSpec to mark denial observation and allowed decision projection as the next visibility slice.
 
 ## Validation
+
 - `npm test`
 - `npm run typecheck`
 - `git diff --check origin/main...HEAD`

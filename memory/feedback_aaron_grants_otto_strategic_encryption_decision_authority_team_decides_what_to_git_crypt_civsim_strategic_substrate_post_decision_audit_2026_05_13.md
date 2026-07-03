@@ -46,6 +46,7 @@ security expertise.
 > new civsim"
 
 Decoded:
+
 - "yu" → you
 - "stratigic" → strategic
 - "git crypted" → git-crypt (per-file git encryption)

@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: replication-expert, gossip-protocols-expert, eventual-consistency-expert, section-numbering-expert, glass-halo-architect
 - Running total: 30 skills carved, ~68K+ chars freed
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

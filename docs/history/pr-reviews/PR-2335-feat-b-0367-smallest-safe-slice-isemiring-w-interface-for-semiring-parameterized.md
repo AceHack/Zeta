@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Added `ISemiring<'W>` interface in `src/Core/Semiring.fs` (new) and wired into `Core.fsproj`.
 - This is the smallest safe slice of 081KR50HA0008QG0R000Z4XCPJ: the foundational type for first-class uncertainty / semiring-parameterized weights in DBSP (ZSet etc. to follow in child rows).
 - Re-decomposed during implementation (original row assumed single atomic despite research classification + L effort + multiple open design decisions listed in the backlog item).
@@ -36,6 +37,7 @@
 Bridges to OpenSpec uncertainty propagation and Infer.NET BP/EP direction. Same circuit topology, different weight semiring.
 
 ## Focused checks
+
 - Dedicated worktree + pushed claim branch used (no root checkout touched).
 - `dotnet build -c Release src/Core/Core.fsproj` → 0 Warning(s), 0 Error(s).
 - Full solution build gate also green (verified in root before worktree entry).

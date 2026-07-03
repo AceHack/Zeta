@@ -66,6 +66,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -84,6 +85,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds four new **P1 backlog row files** documenting the planned “Otto-BFT internal-quorum 3-surface self-recovery” work: an umbrella row plus three slices (rule escalation, cross-surface detector, and a background prompt-unblocker).
 
 **Changes:**
+
 - Added umbrella backlog row **081KRMEXM0008QG0R00138CCZX** describing the 3-surface BFT/quorum framing and decomposition into three slices.
 - Added slice backlog rows **081KRMEXM0008QG0R0039V4SQQ**, **081KRMEXM0008QG0R0026V9A0Y**, **081KRMEXM0008QG0R0001HY6M6** detailing the planned rule change, quorum detector, and background UI actuator concept.
 
@@ -103,6 +105,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
 <summary>Comments suppressed due to low confidence (4)</summary>
 
 **docs/backlog/P1/081KRMEXM0008QG0R00138CCZX-otto-bft-internal-quorum-3-surface-self-recovery-2026-05-15.md:102**
+
 * The `feedback_classifier_caught_otto_in_standing_by_failure_mode_*_2026_05_15` and `feedback_otto_multi_surface_coordination_6_prs_one_day_zero_conflicts_2026_05_13` references don’t currently resolve to files in the repo (and they’re not prefixed with `memory/` or suffixed with `.md`). Please either add the referenced memory files or update these references to the correct existing paths so cross-references remain navigable.
 ```
 - PR #3017 / #3022 (Standing-by detector + bus publish — slice 1
@@ -114,6 +117,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
   scope; this work extends it to recovery scope
 ```
 **docs/backlog/P1/081KRMEXM0008QG0R0039V4SQQ-standing-by-counter-with-escalation-in-rule-2026-05-15.md:60**
+
 * The `feedback_classifier_caught_otto_in_standing_by_failure_mode_*_2026_05_15` reference doesn’t resolve to a file in the repo (and it’s not prefixed with `memory/` or suffixed with `.md`). Please either add the referenced memory file(s) or update this to the correct existing path so the row’s provenance links are usable.
 ```
 - `.claude/rules/wake-time-substrate.md` (load-bearing methodology
@@ -122,6 +126,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
   (the earlier same-shape catch)
 ```
 **docs/backlog/P1/081KRMEXM0008QG0R0026V9A0Y-cross-surface-bus-detector-standing-by-quorum-2026-05-15.md:42**
+
 * This spec references heartbeat envelopes from `otto-launchd`, but `tools/bus/types.ts` currently defines `otto-cli` and `otto-desktop` (no `otto-launchd`). To avoid an ID taxonomy drift, either update the doc to match existing AgentId values or explicitly call out that adding `otto-launchd` to `AgentId` is part of this slice.
 ```
 1. Subscribe pattern in `tools/bg/standing-by-detector.ts` (or
@@ -130,6 +135,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
    window
 ```
 **docs/backlog/P1/081KRMEXM0008QG0R0001HY6M6-background-service-clicks-past-stuck-prompts-2026-05-15.md:41**
+
 * The text mixes the JSON bus concept (“bus heartbeat”) with the local broadcast files under `~/.local/share/zeta-broadcasts/`. Those are different mechanisms in this repo, so this is ambiguous for implementers. Consider clarifying whether the stuck-prompt detector should key off `/tmp/zeta-bus` heartbeat envelopes, the local broadcast bus files, or both, and name the mechanism consistently.
 ```
    - Pattern: process is alive but hasn't emitted bus heartbeat in
@@ -154,6 +160,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -176,6 +183,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P1/081KRMEXM0008QG0R00138CCZX-otto-bft-internal-quorum-3-surface-self-recovery-2026-05-15.md:103**
+
 * These backticked cross-references look like intended pointers to `memory/…` artifacts, but (1) they’re missing the `memory/` prefix and `.md` extension, and (2) the corresponding filenames don’t currently exist in the repo. Suggest updating these to point at existing memory files (or adding the missing memory files) so the provenance links are followable.
 ```
 - PR #3017 / #3022 (Standing-by detector + bus publish — slice 1

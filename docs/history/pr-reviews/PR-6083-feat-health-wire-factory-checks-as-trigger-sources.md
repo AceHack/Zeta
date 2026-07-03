@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Wrap existing factory health monitor probes as explicit standing-query trigger sources.
 - Add bounded source-failure handling and deterministic tests for source ordering/failure conversion.
 - Update autonomous-loop coordination receipt and release the claim file in-branch.
 
 ## Verification
+
 - bun test tools/health/factory-health-monitor.test.ts
 - FACTORY_HEALTH_WORKTREE_DIRT_LIMIT=0 bun tools/health/factory-health-monitor.ts --json
 - git diff --check HEAD~1..HEAD

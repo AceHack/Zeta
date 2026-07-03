@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Remove `INFRA_DIRS` skip so `zeta-ir-v2` and `zset-isa-v2` oracles run in `cross-verify-all` (31/31 locally)
 - Close B-0950 (#8920 landed); mark E-prover + codegen oracle residuals done; unstick B-0951
 - Ace: test that every `from-*.sh` mechanism has a pointer; delete stale `setup-mechanism-pointers.js`
 - Doc hygiene: `FACTORY-TECHNOLOGY-INVENTORY`, `active-trajectory`, typescript-bun migration RESUME
 
 ## Test plan
+
 - [x] `bun src/Core.TypeScript/ci/cross-verify-all.ts` — 31/31
 - [x] `bun test src/Core.TypeScript/ace/setup-mechanism-pointers.test.ts`
 - [ ] gate cross-verify + lint (backlog)

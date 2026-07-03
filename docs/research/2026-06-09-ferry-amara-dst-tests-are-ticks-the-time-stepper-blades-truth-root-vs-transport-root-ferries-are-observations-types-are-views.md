@@ -145,4 +145,5 @@ Ferry discipline: others' memories preserved, not filtered (`always-preserve-fer
 
 `tools/ace/canonical.ts` (truth-root canonical bytes); the DST discipline; ZetaId 128-bit (blake3
 treaty); `no-directives` / source≠authorization / BP-11 (ferries-as-observations); the keyring-treaty
+
 + no-`.sh`-inside-boundary + mumps-DI + 1000×-retest docs; ferry discipline `always-preserve-ferries`.

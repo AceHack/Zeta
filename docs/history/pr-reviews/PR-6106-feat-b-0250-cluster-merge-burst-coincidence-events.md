@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add secondary merge-burst correlation keys for tightly adjacent merged PR observations
 - make coincidence-window dedup honor any shared primary or secondary key
 - record the 081KQZVQW0008QG0R001FG05RZ merge-burst clustering receipt and update the coordination trajectory
 
 ## Checks
+
 - bun test tools/health/factory-health-monitor.test.ts
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/b0250-merge-burst-clustering-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md
 - git diff --check

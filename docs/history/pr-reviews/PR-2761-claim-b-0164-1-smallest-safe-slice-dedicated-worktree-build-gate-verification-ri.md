@@ -31,6 +31,7 @@
 Claimed and implemented the smallest safe slice of 081KR7JY10008QG0R000MH7PJT (P1) per backlog row and re-decomposition.
 
 **One bounded step taken (no more):**
+
 - Created dedicated worktree `/private/tmp/zeta-b0164.1-riven-2026-05-11` (no touch to contested root checkout on `docs/aaron-sept-2025-mesh-vignette-prophecy-2026-05-11`).
 - Pushed claim branch `claim/b0164.1-pr-review-disagreement-preservation-protocol-smallest-slice-riven-2026-05-11`.
 - Re-decomposed the row (assumed mistake in prior "gate + doc update" split): doc-edit unnecessary as pre-start checklist already present; true slice = worktree + claim + focused build verification.
@@ -38,6 +39,7 @@ Claimed and implemented the smallest safe slice of 081KR7JY10008QG0R000MH7PJT (P
 - No other changes; substrate-or-it-didn't-happen satisfied by this PR + branch ref.
 
 ## Why this slice
+
 - 081KR7JY10008QG0R000MH7PJT is blocked on 081KQJZR90008QG0R000FTJ1TC (dual-loop harness); cannot implement protocol glue safely.
 - Re-decomp + claim is the only unblocked, atomic, Rule-0-compliant (TS preference, no .sh), velocity-over-stability step.
 - Enforces AGENTS.md: dedicated worktree, pushed claim branch before write, exactly one step, focused checks in PR body.
@@ -53,6 +55,7 @@ Build succeeded.
 Full output in commit c5de3f27.
 
 ## Next
+
 - 081KR7JY10008QG0R000MH7PJT-impl child remains for post-081KQJZR90008QG0R000FTJ1TC dual-review experiment.
 - Morning reconciliation protocol and divergence-shard usage unchanged (per ACs).
 

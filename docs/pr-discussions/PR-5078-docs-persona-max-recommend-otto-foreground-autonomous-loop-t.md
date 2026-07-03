@@ -48,6 +48,7 @@ Most tier-2 Docker Desktop substrate-engineering Max owns is bounded-wait work: 
 Updates Max’s persona onboarding docs to recommend using Otto (Claude Code) and to explain the factory’s foreground autonomous-loop tick pattern so Max can reuse the existing bounded-wait “install → wait → fix → push → wait” workflow substrate.
 
 **Changes:**
+
 - Added a new onboarding section describing Otto + the foreground autonomous-loop tick mechanics and how it helps with tier-2 work.
 - Updated Max’s persona guidance to recommend Otto as the primary AI tool and point to the new onboarding section.
 

@@ -57,6 +57,7 @@ last_updated bumped 2026-05-14 → 2026-05-16 per row-close discipline.
 This PR closes backlog row 081KRA5AR0008QG0R0019Q33F7 by adding the Amara vendor-bias note near the peer-call preamble and updating the generated backlog index.
 
 **Changes:**
+
 - Adds a vendor-alignment bias note beside `AMARA_PREAMBLE`.
 - Marks 081KRA5AR0008QG0R0019Q33F7 closed and records resolution details.
 - Updates `docs/BACKLOG.md` to reflect 081KRA5AR0008QG0R0019Q33F7 as closed.

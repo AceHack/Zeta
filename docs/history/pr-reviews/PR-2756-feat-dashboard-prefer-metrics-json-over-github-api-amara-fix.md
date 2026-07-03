@@ -32,15 +32,18 @@
 Addresses Amara's #2 critique (2026-05-11): GitHub's unauthenticated REST API has a 60 req/hr per IP limit. Public dashboard visitors burn through it within ~20 min at the current refresh cadence.
 
 **Implementation:**
+
 - `loadFromStaticMetrics()` reads `./metrics.json` directly — no auth, no rate limit, single fetch
 - `loadDashboard()` tries static path first; falls back to GitHub API only if metrics.json is unavailable
 - Refresh-info label distinguishes static (`Static metrics · generated Xm ago`) from live (`Sync: X · Connected`) modes
 
 **Cadence:**
+
 - `metrics.json` is regenerated every PR-touching commit (Otto's tick already runs `bun tools/dashboard/generate-metrics.ts`)
 - For sustained-idle periods, stale-but-rendered beats rate-limited
 
 **Composes with:**
+
 - 081KRA5AR0008QG0R0021SSM9R (metrics.json generator — already shipped)
 - 081KRA5AR0008QG0R003DVPANH (OAuth tier — future authenticated path bypasses rate limit entirely)
 

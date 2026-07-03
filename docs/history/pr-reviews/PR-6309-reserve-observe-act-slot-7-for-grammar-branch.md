@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - reserves ADR slot 7 as an always-selectable edit-grammar/branch Menu16 control
 - returns a typed grammar_branch_requested action without command or MCP side effects
 - moves prompt-flow task overflow to slot 6 paging and updates CLI/lane evidence tests
 - records the checkpoint in the Phase 2 CA plan
 
 ## Verification
+
 - node --experimental-strip-types --test packages/application/test/observe.test.ts apps/agent-cli/test/agent-cli.test.ts
 - node --experimental-strip-types --test apps/workers/test/org-cadence-lanes.test.ts
 - npm run typecheck
@@ -43,6 +45,7 @@
 - dotnet build -c Release is blocked locally by existing SDK pin: global.json requests 10.0.203; installed SDKs are 9.0.100, 9.0.200, 10.0.101
 
 ## Review note
+
 - Requested subagent spec/code-quality reviews could not be spawned because the agent thread limit is currently reached.
 
 

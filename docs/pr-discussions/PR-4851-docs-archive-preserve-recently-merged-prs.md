@@ -27,6 +27,7 @@ Decomposed from blob PR #4828.
 Archives a batch of recently merged pull requests into `docs/pr-discussions/` (for durable PR-history preservation) and updates Riven’s Cursor launchd loop to use the newer agent-gate invocation path.
 
 **Changes:**
+
 - Add multiple PR discussion archive markdown files under `docs/pr-discussions/` (YAML frontmatter + PR body/reviews/threads/comments).
 - Update `.cursor/bin/riven-loop-tick.ts` to run the Riven gate via `agent chat --mode ask --model grok-4.3` instead of the prior `cursor-agent`/pickup-drain flow.
 

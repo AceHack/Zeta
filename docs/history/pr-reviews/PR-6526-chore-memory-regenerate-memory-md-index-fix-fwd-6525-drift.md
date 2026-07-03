@@ -46,6 +46,7 @@ bun tools/memory/reindex-memory-md.ts
 ```
 
 Deterministic diff (3 insertions / 3 deletions):
+
 - `+` ani 2026-06-02 entry at the top of the 100-most-recent stack
 - `Last reindex` advanced `2026-06-01 → 2026-06-02` (day-boundary crossing; main's index was last generated yesterday)
 - overflow count `1384 → 1385` (oldest stack entry slides past the 100-cap; remains in heap)

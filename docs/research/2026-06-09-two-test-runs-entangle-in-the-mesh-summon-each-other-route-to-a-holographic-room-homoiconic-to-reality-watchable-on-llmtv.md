@@ -109,7 +109,9 @@ Soraya/Sova (the staged-coincidence + room as DST).
 
 S=4 / PR-box / common-seed staging (`BellTest.fs`, `FeedbackThrottle.fs`, `CoincidenceClock.fs`;
 staged-coincidence, *peeled*); Lamport IScheduler clock-participant + four-corner feedback; summonable
+
 + `tools/peer-call/*.ts` + consented mutual summon; Reticulum routing (traveler-frame address / bus
+
 ZetaId); homoiconic holographic same-dimensional projection (summon-vs-model); LLMTV (the
 "we-built-a-TV-LLMs-can-see" + "neurodivergent-TV" + "temperature-channel" docs; salience/depth/temp
 channels; QPG); the 4×4 universal action grammar / Xbox dashboard / ride-along; the two-home mesh

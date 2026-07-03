@@ -30,6 +30,7 @@
 Ferry: Ani peer-AI review preserved verbatim (always-preserve-ferries). Ani peels Alexa hype but affirms the direction is coherent + different; her honest register adopted — much of this session is design in docs, not shipped code.
 
 Aaron new/sharpened nodes (grounded + peeled + anchored):
+
 1. Prod is dotnet test (not .net run); backend IS the test runner; WASM front talks over Reticulum (Mark Qvist).
 2. Finalizer is part of test code; tests CHOOSE finalizers -> cooperative self-scaling up AND down (default auto-scales on metrics). "Infinite recursion" PEELED: bounded + scale-down + runaway registry = convergent.
 3. Metrics ARE test history (no telemetry); the one number = cumulative uncertainty Δ.

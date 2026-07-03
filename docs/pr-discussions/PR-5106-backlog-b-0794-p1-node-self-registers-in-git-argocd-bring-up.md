@@ -27,6 +27,7 @@ Aaron 2026-05-26: 'also the machine alt to register itself in git somewhere unde
 Adds a new P1 backlog row (081KSGS9H0008QG0R0027HJZYH) describing a GitOps-native Kubernetes cluster bring-up flow where nodes self-register into the repo and ArgoCD reconciles the cluster/apps from that registration.
 
 **Changes:**
+
 - Added new backlog row file for 081KSGS9H0008QG0R0027HJZYH with sub-target decomposition and acceptance criteria.
 - Updated `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R0027HJZYH entry under P1.
 

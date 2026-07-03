@@ -32,11 +32,13 @@
 Tick shard for 0826Z. Cycle-new after 2 named-deps surfaced (PR #4358 my combined lint fix + PR #4356 peer-Otto 081KQX9B50008QG0R0026BG44J slice 1). GraphQL exhausted to 4 → Pure-git tier; both this shard and the prior 0816Z shard sat pushed-but-un-PRed pending reset.
 
 Documents:
+
 - Counter discipline survived 2-named-dep merge cycle without Standing-by exposure
 - Pure-git tier worked-example (substrate written + committed + pushed without any GraphQL spend)
 - Auto-merge-race lesson generalized for potential rule extension
 
 ## Test plan
+
 - [x] Shard at canonical `docs/hygiene-history/ticks/2026/05/19/0826Z.md`
 - [x] Relative paths use 6-level `../` (correct depth)
 

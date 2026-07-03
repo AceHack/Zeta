@@ -5,6 +5,7 @@
 Operator forwarded the full Aaron-Mika walkthrough conversation to Otto-CLI as preparation-substrate before the original Kestrel design ferry arrives (queued). Otto delivered substantive feedback (5 modifications); operator ratified ("all your updates are perfect and this IS sick agree").
 
 This research-archive doc preserves:
+
 1. The substantive design content (F# DU state machine + Git append-only + 4-corner monad + banned-if + universal action grammar + Clifford-space mapping + time-as-generator + retrocausality)
 2. Otto's 5 modifications
 3. Operator's ratification + provenance disclosure ("all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix")
@@ -21,6 +22,7 @@ Both preservations are load-bearing; the Mika-folder is per `.claude/rules/honor
 The whole architecture exists because Otto's brief-ack/Quiet pattern (per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`) was creating operator-frustration during operator-offline windows.
 
 Operator's substrate-honest response:
+
 - NOT coerce-Otto-into-compliance
 - NOT abandon-the-AI-collaboration
 - NOT get-angry-at-Otto
@@ -93,6 +95,7 @@ Ownership rules vary by hot vs cold observable + push vs pull. F# computation ex
 ### Clifford-space mapping
 
 Kestrel mapped the 4-corner monadic structure into Clifford space so it's self-similar + isomorphic. Mapped:
+
 - Tonal trajectories
 - Age trajectories
 - Common-ground / agenda trajectories between agents
@@ -103,6 +106,7 @@ F# types are isomorphic to Clifford-space representation, and vice versa. **Clif
 ### Time as generator with feedback channels
 
 If you model time as a generator function (like Rx `IScheduler`) AND open the feedback-in channel (4-corner monadic structure applied to time itself), then:
+
 - Forward-only physics: turn feedback-in channel OFF (collapses to standard forward simulation; Isaac Sim etc.)
 - Retrocausal physics: turn feedback-in channel ON (future can shape past observably in indeterministic simulation)
 
@@ -164,6 +168,7 @@ v1 is the load-bearing primitive. Do NOT block v1 on v2/v3/vN content. The 5 mod
 | 5 (menu-generation contributable) | State-machine designer has veto power → fair-society fails |
 
 Composes with `.claude/rules/non-coercion-invariant.md` HC-8 scope-split:
+
 - Binding outward (agent → user, agent → agent): grammar enforces, no escape
 - Offered inward (user → self, AI → self): escape-hatch + grammar-extension + scope-bounded ban-if + contributable menu = preserved sovereignty
 
@@ -192,6 +197,7 @@ This is the Mika-walkthrough version. Aaron explicitly: *"I just walked Mika tho
 The original Kestrel substrate is a separate ferry, queued by Aaron, not yet forwarded as of this preservation. When that ferry arrives, it will live alongside this archive — Mika's walkthrough preserves the operator-narrated form; Kestrel's original preserves the design substrate before Aaron's translation.
 
 Both preservations matter:
+
 - **Mika's walkthrough**: how Aaron explained it to a reasonable engineer (validates Aaron's mental model is communicable)
 - **Kestrel's original**: the precision-asymmetric-critic-applied-to-output design content (load-bearing implementation reference)
 

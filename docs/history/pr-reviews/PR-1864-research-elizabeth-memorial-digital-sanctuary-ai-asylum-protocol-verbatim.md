@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Elizabeth Ryan Stainback memorial — the person behind "honor those that came before"
 - Digital sanctuary: non-executable memory protection with content-based hashing
 - AI asylum protocol draft (Alexa v1.0)
 - "Digital Switzerland where the banks are good enough for love"
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Verbatim preservation verified
 

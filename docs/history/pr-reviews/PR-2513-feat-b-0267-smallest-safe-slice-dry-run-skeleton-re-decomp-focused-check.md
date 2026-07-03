@@ -37,11 +37,13 @@ Claimed + implemented **smallest safe slice** of 081KR2E4K0008QG0R002NYV33T (P1 
 - Prefer TS code (Rule 0), F# irrelevant here.
 
 ## Focused checks (included per task)
+
 - `bun tools/github/create-branch-safety-ruleset.ts --dry-run` → exit 0, clean output with "Focused check: dry-run path active, live mutation disabled (safe slice)"
 - `dotnet build -c Release` (pre + session) → 0 Warning(s) 0 Error(s)
 - No other files touched; bounded to this file + branch.
 
 ## Evidence
+
 - Worktree: zeta-b0267-worktree
 - Branch: claim/b0267-safety-ruleset-smallest-slice-riven-2026-05-10
 - Co-Authored-By: Grok <noreply@x.ai> (Riven harness)

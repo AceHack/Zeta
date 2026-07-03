@@ -32,6 +32,7 @@ Aaron: we have **microkernel** substrate on the backlog (`081KSV2WD0008QG0R000WN
 New ZetaId-minted workitem (`081KVM04R4T08QG0R003AZ0E6K`, P2, `composes_with` the microkernel item).
 
 **Beacon anchors:**
+
 - **.NET nanoFramework** (<https://github.com/nanoframework>) — managed C#/.NET on ESP32/STM32-class MCUs over FreeRTOS/ThreadX.
 - **Cosmos** (<https://github.com/CosmosOS/Cosmos>) — the C# managed-OS toolkit / "dotnet microkernel" (the Micro/unikernel side).
 

@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 - Add exact-rational `BranchPriority` with attention and gravity factors.
 - Add `predictWithPriority` and `inferAndPredictWithPriority`, preserving posterior inference while reordering only the `Vision` branch admission list.
 - Add tests proving high attention boards first without changing `Inference.Best`, and negative attention returns typed feedback.
@@ -36,6 +37,7 @@
 This codifies the rule we want for self-budgeting: attention and gravity change ordering, not arithmetic truth. The byte/time/uncertainty tank remains honest, so high-priority futures still backpressure when they do not fit.
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release -m:1 /p:UseSharedCompilation=false --filter "FullyQualifiedName~PredictionInference|FullyQualifiedName~Chip8Observer"`
 - `dotnet build -c Release -m:1 /p:UseSharedCompilation=false`
 - `dotnet test Zeta.sln -c Release -m:1 /p:UseSharedCompilation=false --no-build`

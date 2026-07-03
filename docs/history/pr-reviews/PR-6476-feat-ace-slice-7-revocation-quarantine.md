@@ -30,14 +30,17 @@
 Implements **slice 7** (revocation/quarantine; 081KR2E4K0008QG0R002YE3MMD, lifecycle stage 12). Spec: #6466. Built subagent-driven per `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice7-implementation-plan.md` (Tasks A→D + a pure-layer fix).
 
 ## What it does
+
 - **Two marks in the signed index (format_version 2):** `revoked` (permanent hard-refuse) + `quarantined` (soft-refuse, override-able), as sibling maps in `IndexSignableContent` — covered by the existing signature + monotonic-sequence anti-rollback + freshness gates (a revocation can't be un-seen by serving an older index). Plain publish stays format_version 1.
 - **Producer:** `ace registry revoke|quarantine|unquarantine <name>@<version> --key <pem> [--reason] [--out]` — read-verify-mark-bump-refresh-sign-selfverify-write (reuses 6.1's mutate-guard: refuses to edit an index this key didn't sign). revoke supersedes quarantine; quarantine errors on already-revoked; no `unrevoke` (permanent). `publish` carries marks forward.
 - **Consumer:** resolve + install refuse marked versions (new `revoked`/`quarantined` ResolveReasons; union-merged across registries). **Revocation overrides the lockfile** (`--frozen` replay re-checks pins; default path re-resolves). `ace install --allow-quarantined` opts in.
 
 ## Mechanics
+
 - `registry-revoke.ts` (new, pure) `applyRevoke`/`applyQuarantine`/`applyUnquarantine` — refresh `issued_at`, strip empty mark maps (format_version reverts to 1 when the last mark clears). `buildIndexDoc` carry-forward. `parseIndex` accepts v1|v2 (v1-with-marks rejected; fail-closed for a v1-only consumer on v2). `loadRegistries` union-merges marks.
 
 ## Verification
+
 - `bun test tools/ace/` 338 pass / 0 fail (47 net-new across registry-revoke/publish/remote/resolve/ace tests); RED→GREEN + 3 false-green checks (resolve gate, lockfile re-check, issued_at).
 - strict `tsc --noEmit` exit 0; markdownlint clean; pure LF.
 

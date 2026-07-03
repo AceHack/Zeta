@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: reducer, glossary-anchor-keeper, formal-analysis-gap-finder, fsharp-analyzers-expert, sql-engine-expert
 - Running total: 35 skills carved, ~74K+ chars freed
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

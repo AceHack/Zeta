@@ -27,6 +27,7 @@ Preserve discussion for PR #5291
 Adds a PR-preservation archive entry under `docs/pr-discussions/` to retain the full description, review summary, and thread/comment history for PR #5291 in-repo.
 
 **Changes:**
+
 - Added a new preserved PR discussion markdown file for PR #5291, including YAML frontmatter metadata and the captured review/comment threads.
 
 ## General comments

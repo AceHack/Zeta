@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Block `Closed-maintained` trajectory packets before autonomous pickup selects implementation work.
 - Add focused coverage for the TypeScript/Bun closed-maintained maintenance lane case.
 - Claim was filed and released on this branch per the git-native claim protocol.
 
 ## Verification
+
 - `bun test tools/trajectories/autonomous-pickup.test.ts`
 - `git diff --check origin/main...HEAD`
 

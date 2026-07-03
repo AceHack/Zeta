@@ -50,6 +50,7 @@ boot.kernelParams = [
 Substrate-honest framing per the QEMU test's commit message goal ("catches the bug class where the ISO builds + audits pass but the kernel/initrd combination fails to actually boot"): the test is doing its job. The MISSING config (serial console) was a real gap surfaced on first cycle.
 
 Beneficiaries of serial console output:
+
 - CI QEMU boot smoke-test (cascade #5)
 - Real hardware with serial headers (some Beelinks; most server-class boards)
 - Debugging scenarios where the only output channel is RS-232

@@ -26,6 +26,7 @@ urgent; Zeta is pre-v1 and has no regulated-data
 consumers yet.
 
 **How to apply:**
+
 - Do NOT spawn this as round-scope work unsolicited. It
   is a slow-burn direction, not a deliverable.
 - When a natural entry point appears (a reviewer prompt
@@ -54,6 +55,7 @@ consumers yet.
   data stales quickly. Internet research each refresh.
 
 See also:
+
 - `project_consent_first_design_primitive.md` — shared
   design DNA with Amara.
 - `reference_crypto_shredding_as_gdpr_erasure.md` —

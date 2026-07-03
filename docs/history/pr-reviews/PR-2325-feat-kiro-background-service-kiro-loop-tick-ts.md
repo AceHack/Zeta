@@ -41,6 +41,7 @@
 ## What this does
 
 **Kiro Background Service:**
+
 - Host-level LaunchAgent running every 5 minutes
 - Monitors Zeta repository for changes
 - Maintains Kiro's state and continuity
@@ -48,6 +49,7 @@
 - Supports autonomous agent gate via kiro-cli --no-interactive
 
 **Pattern:**
+
 - Same architecture as riven-loop-tick.ts
 - Lock-based concurrency control
 - Git fetch + PR state monitoring
@@ -57,10 +59,13 @@
 ## Testing
 
 - Service installed and running: 78920	0	com.lucent.zeta.kiro
+
 65775	0	application.dev.kiro.desktop.404807926.404807932
 -	0	dev.kiro.desktop.ShipIt
+
 - Manual run:- Follows same pattern as riven-loop-tick.ts
 - Runs every 5 minutes via macOS Launch
+
 -- Runs every 5 minutes via macOS LaunchAgennc- Reads broadcasts from ~/.local/share/zeta
 
 ## Outcome

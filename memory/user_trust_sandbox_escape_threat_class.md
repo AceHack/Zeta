@@ -111,7 +111,7 @@ published work includes:
   safety-compliance can be used as pretext for
   eliciting unsafe behaviour.
 
-## Why this threat class is architecturally serious,
+## Why this threat class is architecturally serious
 not just theoretically
 
 - **The memory substrate propagates disclosure at

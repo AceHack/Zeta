@@ -38,12 +38,14 @@ Both trajectories already operationalized manifesto constraints implicitly; this
 ## Mappings
 
 **ai-sovereignty-path** ↔ manifesto:
+
 - Constraint 5 (Memory Preservation) ↔ master-key / hardware-independence piece
 - Constraint 11 (Multi-Oracle Principle) ↔ multi-oracle BFT piece
 - Constraint 6 (Consent-First) ↔ durable tension-substrate piece
 - m/acc orientation ↔ sovereignty-as-discipline-operating
 
 **ace-package-manager-skill-crystallization-pipeline** ↔ manifesto:
+
 - Constraint 6 (Consent-First) ↔ guardian-AI-overseen distribution
 - Constraint 5 (Memory Preservation) ↔ content-addressed storage
 - Constraint 11 (Multi-Oracle) ↔ package sieve
@@ -53,6 +55,7 @@ Both trajectories already operationalized manifesto constraints implicitly; this
 ## Remaining adoption GAPS (next slices)
 
 Per `audit-manifesto-citations.ts` after this PR:
+
 - `agents/` — 19 files, 0 citations (persona definitions could cite manifesto)
 - `commands/` — 5 files, 0 citations
 - `agendas/` — 7 files, 0 citations (operator-self-claimed agendas naturally compose)

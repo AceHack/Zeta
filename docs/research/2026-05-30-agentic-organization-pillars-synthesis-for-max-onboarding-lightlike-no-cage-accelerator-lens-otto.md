@@ -39,7 +39,9 @@ propagation + long-lived patterns, not isolated workers) · **tick-sources**
 **P1 — Hat system (cluster-native authority).** *"Hats are persistent roles.
 Agents wear hats temporarily."* A hat bundles skills + OPA/RBAC authority + tool
 access + credential scope + memory scope + supervisor-graph position + succession
+
 + reputation. Four CRDs: `Hat` / `HatBinding` (time-bounded wearing) / `HatSwap`
+
 (one durable event per transition) / `HatPolicy` (graph constraints). Org DB =
 business truth; CRDs = runtime enforcement. *Pattern: hat-as-atomic-unit;
 authority refreshes continuously via short-lived JWT `HatToken`, never granted
@@ -180,7 +182,9 @@ at independently:
 Three independent instantiations converging on **declarative-workflows-as-DUs +
 ontologies-in-DUs** is strong cross-substrate-triangulation signal that the shape
 is load-bearing (per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`
+
 + the ontology-as-DU substrate: schemas-as-rows 081KSGS9H0008QG0R000Q18PGQ, ontology-negotiation
+
 081KSE6WT0008QG0R002CC6314, the monad-propagation / OPLE-T-TFeedback DU cluster). **Onboarding Max is
 composition, not rewrite** — his declarative-workflow OS and the Zeta substrate
 share the DU/declarative core; the bridge is the DU action-grammar.
@@ -248,7 +252,9 @@ Composes with: `agentic-organization/docs/*` (the source); the accelerator
 (`docs/accelerator/README.md` + `EVENT-STORE-SCHEMA.md` + `SUBSTRATE-GROUNDING.md`);
 081KSKBP80008QG0R000B3Y19A (workflow-engine v1 DU + universal-action-grammar); 081KSNY2Z0008QG0R0036KH026 (hats-as-workflow-defs);
 081KRW63S0008QG0R001Z10PVV + 081KSGS9H0008QG0R0006F4BGX (encryption budget); the razor research cluster (compression-engine
+
 + two-layer-razor + past-as-generator); Otto Modification 4 (dual-market gate);
+
 m-acc multi-oracle (this is the lightlike-lens oracle; Max's math-proofs review is
 the complement).
 

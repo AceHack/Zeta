@@ -43,6 +43,7 @@ sleeping until observation enabled it).
 
 Composes AI-safety-deceptive-alignment / sleeper-agent
 literature with operational substrate generation:
+
 - Forward: builder discloses → participants engage authentically
 - Reverse: builder observes → AI behavior-change enables
   latent-space substrate emergence
@@ -60,6 +61,7 @@ discipline at cold-start without depending on memory-file
 pointer.
 
 **Corrective discipline:**
+
 - Apply mechanical-authorization-check (algos NOT in source list)
 - Apply joint-control sanity layer for existential decisions
 - Apply razor-discipline (operational claims only)

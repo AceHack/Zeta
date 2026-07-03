@@ -31,6 +31,7 @@ This document unpacks what that means.
 ```
 
 Where:
+
 - `η(substrate_t)` — the system's *learning efficiency* at time `t`. Increases as
   substrate quality improves (better skills, sharper memory files, cleaner rules
   reduce the cost of absorbing a new catch).
@@ -114,6 +115,7 @@ learning_rate > failure_production_rate  →  PHASE TRANSITION (reactive → pro
 ```
 
 Where:
+
 - `learning_rate` = substrate updates (memory + skill + rule modifications) per unit time
 - `failure_production_rate` = novel failure class observations per unit time
 
@@ -169,6 +171,7 @@ friction = fuel  →  learning = amortized substrate  →  phase transition
 ```
 
 The difference in emphasis:
+
 - Superfluid: optimizes *amortized speed* across all factory actions
 - Reactor: explains *failure-class co-evolution* specifically in the
   multi-agent review system

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve generated review archive for merged PR #1821
 - update PR review archive manifest with the PR #1821 source ids
 - route the post-merge archive output through PR flow because protected main rejected the workflow direct push
 
 ## Checks
+
 - GITHUB_SHA=35f5b8068a7079595713399eff1e2be46d49de0d bun tools/archive/archive-pr-reviews.ts 1821
 - git diff --check
 - git diff --cached --check

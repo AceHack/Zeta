@@ -45,5 +45,6 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Updates the NixOS installer ISO’s embedded offline runbook (`/etc/zeta-install.md`) so it matches the current flake layout with per-host NixOS configurations and avoids accidentally installing with placeholder hardware configuration.
 
 **Changes:**
+
 - Step 6 now instructs copying the generated `hardware-configuration.nix` into the selected per-host directory under `infra/nixos/hosts/<host>/`.
 - Step 7 now lists the current `flake.nix` `nixosConfigurations` hostnames and clarifies `installer` is ISO-only (not a target install).

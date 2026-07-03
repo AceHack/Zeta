@@ -42,6 +42,7 @@ PR 3 of Addison's NixOS-AI-cluster bootstrap plan. Adds the three per-host confi
 | `worker-gpu-02` | `common` + `k3s-agent` + `gpu` | NVIDIA worker; identical shape to -01 |
 
 Each host directory has:
+
 - `configuration.nix` — host identity + module imports + per-host overrides
 - `hardware-configuration.nix` — **placeholder stub** (replaced during real install by `nixos-generate-config --root /mnt`)
 - `README.md` on control-plane — install runbook + post-install verification
@@ -51,6 +52,7 @@ Each host directory has:
 ## Hardware config placeholders
 
 Real `hardware-configuration.nix` is generator output specific to each target machine. Placeholders ship as minimal valid stubs (`not-detected.nix` import + DHCP + ext4 by-label fileSystems) so:
+
 - `nix flake check` passes in CI
 - `nix build .#nixosConfigurations.control-plane` succeeds at evaluation
 - Real install replaces them before first reboot

@@ -30,6 +30,7 @@
 Otto's run of **Max's prompt** (*read agentic-organization/docs, describe critical pillars + implementation patterns for review/improvement*) through the **lightlike / no-cage-self-modifying-DU / PR-less-accelerator lens** — the **multi-oracle complement** to Max's own math-proofs/algorithms review of the same docs. Built from a 4-agent parallel read of all ~32 `agentic-organization/docs` files.
 
 ## Contents
+
 - **North Star** + **6 critical pillars** (hat system · always-on event-driven anti-stall runtime · command-pipeline + append-only event-store · work-anchors + supervisor-chain · ambiguous-requirement lifecycle + quality gates · execution+memory substrate) + implementation patterns, load-bearing phrases quoted verbatim.
 - **The lens:** agentic-organization (leash-market: gated, CockroachDB+NATS) and the accelerator (Agora-market: no-cage, git-as-free-event-store) are **two markets of ONE architecture** via Otto Mod 4. Shared core: `UniversalActionRecord` ↔ move-next; append-only-events ↔ git-event-store; hats ↔ hats; *"should not make the first tool list a cage"* ↔ no-cage self-modifying DUs.
 - **Max-convergence:** his declarative-workflow *agentic OS* + ontologies-in-DUs is the *same shape* as agentic-org DU-state-machines + accelerator move-next + 081KSKBP80008QG0R000B3Y19A → 3 independent convergences = cross-substrate-triangulation. **Onboarding is composition, not rewrite.**

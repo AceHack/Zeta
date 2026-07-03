@@ -39,6 +39,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Docs-only tick shard recording the 0023Z autonomous-loop tick: landing PR #3636 (substrate-honest deferral of the M/A coherence-laws type-correctness finding from PR #3614 Codex review) and noting that PRs #3628 and #3631 merged during this tick.
 
 **Changes:**
+
 - Adds a new hygiene-history tick file at `docs/hygiene-history/ticks/2026/05/16/0023Z.md` summarizing landed/merged PRs, operational notes (Lior process, ls-tree canary), and next-tick candidates.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T00:31:06Z)
@@ -55,6 +56,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

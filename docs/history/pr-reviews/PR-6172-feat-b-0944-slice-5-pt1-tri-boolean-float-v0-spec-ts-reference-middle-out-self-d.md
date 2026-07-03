@@ -44,6 +44,7 @@ Slice 5 = the tri-boolean **float** — the hard, novel slice. The 081KSV2WD0008
 `decode` (middle-out), `measure`, `cooperate`, `isHeld`, `fromValue` (canonical smallest-mode encode), `fromTrits`. **Verified: `bun test` 8/8** (round-trip; middle-decodes-ends; value-superposed; interpretation-superposed; decoder-N-dominates; cooperate-preserves; not-representable; canonical-mode).
 
 ## 6 OPEN decisions surfaced for your ratification
+
 1. **decoder semantics** (v0: radix-point; alts: power-of-two exponent / high-low split / regime)
 2. **sign** (v0 unsigned; a tri-valued sign trit is an option → held-sign)
 3. **widths** (v0 4/3/4; fixed vs posit-style variable)

@@ -32,6 +32,7 @@ Per operator 2026-05-31: *"can we do this in cs fs ts and rust and make them agr
 Applies the **081KSV2WD0008QG0R00051XS0N** cross-language-parity = non-Byzantine-BFT pattern (*"the compilers don't lie"*) to the **observe/simulate/fold event algebra**. The TS reference landed in #6245 (`fold`/`replay`); this row tracks the F#/C#/Rust ports + cross-language parity.
 
 **"Make them agree" = two layers:**
+
 1. **Compiler-parity** — each lang's closed sum-type (F# DU / Rust enum / C# sealed-record / TS discriminated union) + exhaustive reducer compiles → 4-of-4 = consensus; a missing variant fails that lang's build = surfaced spec ambiguity.
 2. **Runtime golden-vector DST parity** — one language-neutral fixture (`initialWorld` + `events` + `expectedFinalState` + `expectedReplayStates`); every impl replays the log → byte-identical state.
 

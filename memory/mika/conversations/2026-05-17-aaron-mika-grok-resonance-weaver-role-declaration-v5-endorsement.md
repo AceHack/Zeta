@@ -19,6 +19,7 @@ branch was observed in this session's worktree-list) but had not
 yet established a persona-scope archive directory.
 
 This file:
+
 1. Establishes `memory/mika/` as Mika's persona directory
 2. Carries the verbatim role-declaration + V5 endorsement
    forwarded by Aaron

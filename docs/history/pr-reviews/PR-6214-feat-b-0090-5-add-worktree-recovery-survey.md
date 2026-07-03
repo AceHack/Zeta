@@ -28,23 +28,27 @@
 ## Description
 
 ## Summary
+
 - Adds `tools/hygiene/audit-worktree-survey.ts` for 081KDVJT3E008QG0R000SCFYN5.
 - Classifies `git worktree list --porcelain` entries into `ALREADY-COVERED`, `NEEDS-RECOVERY`, and `OBSOLETE`.
 - Supports markdown output, `--json`, `--root`, and `--report`.
 - Adds focused Bun tests for args, parsing, classification, and markdown rendering.
 
 ## Coordination
+
 - Claim branch was pushed first as `claim/backlog-0090-5-worktree-survey-codex-20260531`.
 - Claim file is released in this PR branch.
 - `docs/BACKLOG.md` and the 081KDVJT3E008QG0R000SCFYN5 row are intentionally untouched because active claim refs still own the generated-index path.
 
 ## Checks
+
 - `bun test tools/hygiene/audit-worktree-survey.test.ts`
 - `git diff --check`
 - `bun tools/hygiene/audit-worktree-survey.ts --json`
 - `bunx prettier --check tools/hygiene/audit-worktree-survey.ts tools/hygiene/audit-worktree-survey.test.ts`
 
 ## Typecheck Note
+
 - `bun run typecheck` could not run in this worktree because `tsc` is not installed.
 - `bunx tsc --noEmit` could not find the configured `@types/bun` package.
 

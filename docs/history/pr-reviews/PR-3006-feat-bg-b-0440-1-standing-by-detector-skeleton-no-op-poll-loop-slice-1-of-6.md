@@ -34,12 +34,14 @@ First implementation slice of 081KRFA460008QG0R001KC0VBH (Standing-by failure-mo
 ## What lands
 
 **\`tools/bg/standing-by-detector.ts\`** (76 lines):
+
 - \`DetectorConfig\` type + \`DEFAULT_CONFIG\` (5min poll / 15min idle threshold)
 - \`pollOnce()\` — no-op result with slice-1 placeholder note
 - \`runDetector()\` — loop scaffolding; \`--once\` for cron-driven mode
 - CLI entry with \`--poll-min\` / \`--idle-min\` / \`--once\` flags
 
 **\`tools/bg/standing-by-detector.test.ts\`** (3 tests, all pass):
+
 - Default config thresholds
 - \`pollOnce\` returns ISO-timestamped no-op result
 - \`runDetector\` with \`once:true\` exits after one iteration

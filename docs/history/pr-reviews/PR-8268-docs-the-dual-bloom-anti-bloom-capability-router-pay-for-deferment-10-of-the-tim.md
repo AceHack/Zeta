@@ -32,6 +32,7 @@
 Extends the honest-capability-deferment doc (Aaron 2026-06-15). Makes honest deferment **economical**: a cheap local router that invokes the injected capability only on the genuinely-uncertain minority.
 
 **Construction:** a bloom on the defer-set `S` ("needs env") + a bloom on the complement `S′` ("handle locally" = the anti-bloom). Each is one-sided (no false negatives) → three regions:
+
 - **definitely local** (bloom-`S`: "definitely not in `S`") → no env call
 - **definitely defer** (bloom-`S′`: "definitely not in `S′`") → invoke
 - **ambiguous middle** (both "maybe") → the only place you pay to probe

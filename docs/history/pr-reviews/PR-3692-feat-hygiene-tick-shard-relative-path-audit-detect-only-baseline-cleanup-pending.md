@@ -34,6 +34,7 @@ New audit `tools/hygiene/audit-tick-shard-relative-paths.ts` walks `docs/hygiene
 ## Why
 
 Empirical evidence from this session:
+
 - [PR #3676](https://github.com/Lucent-Financial-Group/Zeta/pull/3676) shipped with 5-`..` paths that resolved to `docs/` (not repo root); Copilot caught it via review thread
 - [PR #3679](https://github.com/Lucent-Financial-Group/Zeta/pull/3679) shipped with the same bug, raced into main before review; fixed post-merge by [PR #3680](https://github.com/Lucent-Financial-Group/Zeta/pull/3680)
 
@@ -42,6 +43,7 @@ The bug class: tick shards live 5 directories below `docs/`, so the count-the-`.
 ## Baseline run
 
 Run on origin/main at 2026-05-16T02:48Z:
+
 - 833 tick shards scanned
 - 17 broken relative-path links across multiple historical shards
 - Real bug classes detected: wrong-depth `..` (081KRFA460008QG0R00061SXRW link in 1436Z), malformed link syntax (`docs/api(v2`), missing-file refs

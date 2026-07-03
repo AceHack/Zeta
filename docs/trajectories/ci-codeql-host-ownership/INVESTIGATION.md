@@ -129,7 +129,7 @@ Evidence type 5 from the locked list — *"specific stale/non-required check evi
 
 The sticky check is **noise**, not a blocker. The actual path to close Lane A is to merge PR #849 as-is.
 
-### Why not change the org config?
+### Why not change the org config
 
 Modifying `default_for_new_repos: "all"` on configuration 244997 would affect every LFG org repo, not just Zeta. Big blast radius. Alternative: detach Zeta specifically — but Zeta isn't explicitly attached, so detachment isn't the operation. Either path requires changes that go beyond the scope of unblocking #849. **Out of scope for Lane A.**
 

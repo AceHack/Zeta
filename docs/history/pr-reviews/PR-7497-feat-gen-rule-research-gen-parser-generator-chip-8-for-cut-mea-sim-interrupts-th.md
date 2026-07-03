@@ -30,6 +30,7 @@
 feat(gen)+rule+research: gen/ folder + parser-generator->CHIP-8 for the cut·mea·sim loop (+interrupts=the game) + "interfaces free, classes earned under rules/"
 
 Aaron's stream (2026-06-10):
+
 - "we write a parser generator that generates chip8 assembly for that loop and then we will tie in
   interrupts that's our game": research doc — FParsec/Argu parser-gen emits CHIP-8 asm for the
   curried cut(mea(sim)) loop; interrupts (triggers/, CHIP-8 60Hz timers) tie in -> the game.

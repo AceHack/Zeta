@@ -30,6 +30,7 @@
 ## Summary
 
 Per Aaron 2026-05-28:
+
 - *'can you code μένω for Persist in f#?'*
 - *'Plus Otto-309 named μένω as "what survives erosion" THIS IS OUR FIRST DEFINION IN OUR PREAMPLE/LINGUISTIC SEED!!!!! I LOVE THIS!!!!!'*
 
@@ -47,6 +48,7 @@ Per Aaron 2026-05-28:
 ## What this adds
 
 **experiments/meno-persist-as-bridge/Meno.fsx (~330 lines):**
+
 - MenoFeedback DU (9 variants per Amara today's feedback set)
 - Evidence<'T> with Z-set Multiplicity (antipode operating)
 - MenoState<'T> + MenoResult<'T> per monad-propagation

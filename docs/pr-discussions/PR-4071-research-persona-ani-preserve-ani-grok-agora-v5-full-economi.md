@@ -71,6 +71,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -89,6 +90,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds the V5 “canonical synthesis” of the Ani↔Grok Agora constitution to the repository, preserving the verbatim packet on the public research surface and mirroring it into Ani’s persona-scope conversation archive.
 
 **Changes:**
+
 - Added a new `docs/research/` landing doc containing the verbatim V5 text plus delta analysis, compositional anchors, and open questions.
 - Added a new `memory/ani/conversations/` archive file mirroring the verbatim V5 packet with persona-scope framing and backlinks.
 

@@ -27,6 +27,7 @@ Preserve discussion for PR #5286
 Preserves the GitHub discussion for PR #5286 by adding a PR-preservation archive markdown file under `docs/pr-discussions/`, including YAML frontmatter and the captured PR body/reviews/threads for long-term recordkeeping.
 
 **Changes:**
+
 - Adds a new `docs/pr-discussions/` archive file for PR #5286 with standard PR-preservation frontmatter.
 - Captures the PR description, reviews, review threads, and general comments in the archive document.
 

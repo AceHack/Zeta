@@ -52,6 +52,7 @@ Hits the **≥3 BFT floor** Aaron named earlier 2026-05-27 (*"we should have thr
 [PR #5397](https://github.com/Lucent-Financial-Group/Zeta/pull/5397) (Phase 3d Lior sibling) · PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (081KSKBP80008QG0R003Z4C0D0 Phase 1 + 3 refactor) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) · [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-...) · [081KS3X9Y0008QG0R00218150M multi-oracle BFT](docs/backlog/P*/081KS3X9Y0008QG0R00218150M-...)
 
 Sources:
+
 - [@openai/codex on npm](https://www.npmjs.com/package/@openai/codex)
 - [Codex authentication docs](https://developers.openai.com/codex/auth)
 

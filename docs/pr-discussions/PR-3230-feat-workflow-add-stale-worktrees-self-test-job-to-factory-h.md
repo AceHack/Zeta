@@ -29,6 +29,7 @@ Composes the third hygiene tool (`audit-stale-worktrees.ts` from PR #3225) into 
 Adds a third factory-hygiene workflow job so the stale-worktrees audit tool’s unit tests run in the daily hygiene cadence.
 
 **Changes:**
+
 - Adds `stale-worktrees-self-test` job on Ubuntu 24.04.
 - Checks out the repo, installs Bun, and runs `tools/hygiene/audit-stale-worktrees.test.ts`.
 

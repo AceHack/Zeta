@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - add bounded FsCheck laws for the Toffoli weight multiplication fragment
 - prove forward/reverse execution restores retained wires
 - prove retained-wire key sets are preserved and erased-bit accounting stays zero
 
 ## Checks
+
 - git diff --check -- tests/Tests.FSharp/Formal/ToffoliGate.Laws.Tests.fs
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~ToffoliGate" (18/18)
 
 ## Coordination
+
 - Claim branch: claim/codex-loop-b0366-2-3-reversibility-laws-20260601T222009Z
 - Root checkout was not used as a write surface.
 

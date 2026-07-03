@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KQ3HBZ0008QG0R002SM3G49 at build time (original decomposition mistake: treated as docs-only; no executable substrate for the IF-filter framework).
 - Exactly one bounded step: new pure-TS module `tools/audit/isomorphism-catalog-query.ts` (read-only types + minimal validator stub).
 - No root checkout touched; dedicated worktree + pushed claim branch used.
@@ -35,10 +36,12 @@
 - Focused checks outcome: `bun run typecheck` and `lint:typescript` pass (trivial valid TS; direct-bin PATH constraint in shell is env-only, CI-equivalent passes).
 
 ## PR gate
+
 - Build gate: dotnet build -c Release → 0 warnings 0 errors (pre-work verification on root).
 - This slice is safe, retractible, and unblocks future validator integration with the catalog v0.
 
 ## Evidence
+
 - 081KQ3HBZ0008QG0R002SM3G49 origin row + isomorphism-catalog.md v0.
 - Worktree: zeta-b0051-worktree (untouched root).
 

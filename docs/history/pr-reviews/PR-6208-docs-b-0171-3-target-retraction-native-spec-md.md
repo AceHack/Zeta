@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - updates 081KSNY2Z0008QG0R0016VFTRX acceptance criteria to target `openspec/specs/retraction-native/spec.md`
 - clarifies that the existing README can remain background material but is not inventory-discovered
 - releases the claim file in-branch
@@ -36,11 +37,13 @@
 #6207 clarified that the strict OpenSpec inventory gate only treats directories with `spec.md` as capability specs. 081KSNY2Z0008QG0R0016VFTRX still directed implementation to `README.md`, which would keep the formal retraction-native capability invisible to the inventory scanner.
 
 ## Checks
+
 - `bun tools/openspec/inventory.ts --enforce --fail-on-unmapped-specs`
 - `git diff --check`
 - `bunx prettier --check docs/backlog/P1/081KSNY2Z0008QG0R0016VFTRX-author-retraction-native-spec.md`
 
 ## Limits
+
 - Does not author the retraction-native spec itself.
 - Does not touch `docs/BACKLOG.md` or #6200.
 

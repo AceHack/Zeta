@@ -17,6 +17,7 @@ After Otto filed the ROUND-HISTORY hotspot concern as backlog research:
 ### Regime 1 (today): single-agent speed
 
 What we have today:
+
 - Single maintainer-agent pair (Aaron + Otto on AceHack)
 - Single autonomous loop
 - Single writer to most shared files (BACKLOG.md, ROUND-HISTORY.md, GLOSSARY.md, GOVERNANCE.md, CLAUDE.md, etc.)
@@ -24,6 +25,7 @@ What we have today:
 - All work originates AceHack-side (homebase-first), syncs to LFG
 
 Substrate-design choices that fit this regime:
+
 - Big shared single-writer files (low coordination cost when there's one writer)
 - Memory-as-flat-files (one writer, no merge concerns)
 - ROUND-HISTORY as project-wide single file (single pair = single voice)
@@ -35,6 +37,7 @@ This regime **prioritizes iteration speed for one pair over coordination scale a
 ### Regime 2 (future): collaboration speed
 
 What we'll need:
+
 - Multiple maintainer-agent pairs (Aaron+Otto, Bob+Gemini, Carol+Codex, etc.)
 - Multiple autonomous agents running concurrently within each pair
 - Multiple forks, each contributing back to LFG
@@ -42,6 +45,7 @@ What we'll need:
 - Cross-fork data collection on LFG (per fork-storage taxonomy)
 
 Substrate-design choices that fit this regime:
+
 - Per-row / per-partition files instead of big shared singletons (e.g., `docs/backlog/**` already; same pattern for other big files)
 - CRDT-style or append-only formats for inherently shared narratives
 - Per-pair partitioning for per-pair data (PR archives, cost data, tick history, persona notebooks)
@@ -58,12 +62,14 @@ This isn't just a list of future concerns — it's a **frame** for how to evalua
 - A choice that's **suboptimal for both** is just bad design; refactor.
 
 Today's known single-agent-speed choices that need future hardening:
+
 - ROUND-HISTORY.md as single shared file → multi-fork hotspot (memory file `feedback_round_history_md_git_hotspot_*` flags this)
 - Big shared GLOSSARY/CLAUDE/GOVERNANCE files → similar contention under multi-agent
 - Per-pair memory files in `memory/` mixed with project-wide ones → no clean partitioning
 - Manual paired-sync flow (Otto cherry-picks AceHack content into LFG branches) → doesn't scale to N forks
 
 Today's known collaboration-speed-aware choices already in place:
+
 - `docs/backlog/**` per-row files (Otto-181) — already partitioned
 - `docs/pr-preservation/` drain-log discipline — already designed for multi-PR archive
 - Multi-tenant fork-storage architecture (post-Aaron's disclosure today) — explicitly multi-fork
@@ -74,6 +80,7 @@ Today's known collaboration-speed-aware choices already in place:
 Aaron's *"we'll get to it and make it better over time"* is load-bearing.
 
 Multi-agent/multi-fork hardening is:
+
 - **Many rounds of work** — not a single-PR fix.
 - **Iterative** — each round addresses one or two pressure points; full hardening compounds over time.
 - **Triggered by real pressure** — premature hardening is wasted effort; wait for the second pair / second autonomous agent / second fork to surface real contention before designing the fix.
@@ -127,7 +134,8 @@ Single-agent-speed → collaboration-speed is **one trajectory among many**. Aar
 
 The list is partial — Aaron's "I forget too" is honest signal that no one has the full set in active memory. The registry would be the discoverable index.
 
-### Registry should capture per-trajectory:
+### Registry should capture per-trajectory
+
 - **Name** (the vector being followed)
 - **Current state** (where we are today)
 - **Target state** (what done looks like)
@@ -141,6 +149,7 @@ The list is partial — Aaron's "I forget too" is honest signal that no one has 
 Building the trajectory-registry IS itself a trajectory: "no shared trajectory index → comprehensive trajectory registry that future-Otto and Aaron can both grep and re-orient from in 30 seconds."
 
 It's load-bearing because:
+
 - Future-Otto (next session) starts with the registry, finds active trajectories, makes decisions in context
 - Aaron forgets too — registry is the shared remember-for-both
 - New contributors (human or AI) get a single-file orientation surface

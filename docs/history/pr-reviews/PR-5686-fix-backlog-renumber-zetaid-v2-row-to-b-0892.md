@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - renumber the P2 ZetaID v2 backlog row from 081KSNY2Z0008QG0R003R0Z7D2 to 081KSNY2Z0008QG0R002QA720J, preserving 081KSNY2Z0008QG0R003R0Z7D2 for the merged reproducibility-as-causal-attribution row
 - update ZetaID references in dependent backlog items
 - regenerate docs/BACKLOG.md
 
 ## Verification
+
 - bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
 - bun tools/backlog/generate-index.ts --check
 - rg stale ZetaID/081KSNY2Z0008QG0R003R0Z7D2 references; only the P1 081KSNY2Z0008QG0R003R0Z7D2 row remains

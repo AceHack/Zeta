@@ -31,6 +31,7 @@ and got running output; 5:00 walked Circuit.fs + Handles.fs
 for API shape; 9:52 decision point.
 
 **Three consumer-questions verdict:**
+
 - *What does this do?* ✓ clear in the first 4 lines.
 - *Is it for me?* ⚠ MIXED — README lists ~70 operators /
   sketches / durability modes as present-tense; VISION.md
@@ -46,6 +47,7 @@ section believes `circuit.Durability(DurabilityMode.
 WitnessDurable)` is callable today; WDC actually throws
 `NotImplementedException` in production. Same pattern for
 several sketches and runtimes that land across rounds 34-38.
+
 - **Route:** Kai (framing) + Samir (README edit).
 - **Proposal:** Split "Shipped in v1" from "Research
   preview (landing round N)" with an explicit v1.0
@@ -59,6 +61,7 @@ README.md:14-29 introduces `z^-1`, `D`, `I`, `↑`, chain
 rules with no link to GLOSSARY.md §"Core ideas" where the
 plain-English gloss lives. +45s cold-start cost for non-
 academic readers.
+
 - **Route:** Samir.
 - **Proposal:** Link GLOSSARY on first use of each notation
   symbol; or move plain-English summary into a README
@@ -69,10 +72,12 @@ the type signature alone for `Circuit` doesn't know the
 two-step pattern (`Circuit.create()` → `circuit.ZSetInput()`).
 Quick-tour resolves this but the file itself doesn't tell
 the story in XML docs.
+
 - **Route:** Ilyana (API shape guidance) + Samir (XML doc
   wording).
 
 **Clean findings (no action).**
+
 - `docs/NAMING.md` pointer from README:10 resolves in 4s
   and disambiguates DBSP (academic) vs Zeta (product).
   Good model for other cross-refs.
@@ -87,16 +92,19 @@ the story in XML docs.
   Matches Demo/Program.fs shape.
 
 **Aspiration / reality drift catalogue (this round).**
+
 - README.md:31-86 / WDC + several sketches + plugins /
   claimed shipped, actual: research-preview or stub.
 
 **Recommended new entries.**
+
 - `docs/GLOSSARY.md`: no change — the entries are already
   good; the gap is README not *linking* to them.
 - `docs/DEBT.md` `ux-drift` tag: (a) README v1 vs post-v1
   framing; (b) GLOSSARY link from README DBSP section.
 
 **Audit metrics baseline (for trend measurement next round).**
+
 - Pointers audited: 8.
 - Time-to-installed: 3m 20s (dotnet build + run Demo).
 - Time-to-answer-three-questions: 9m 52s.
@@ -109,6 +117,7 @@ Aaron sign-off on the v1-vs-post-v1 framing decision — not
 unilateral. Logged as BACKLOG P1.
 
 **Pruning log.**
+
 - Round 34 — second audit entry. Next prune check at
   round 37 (every-third-audit cadence, BP-07). Current
   word count well under cap.

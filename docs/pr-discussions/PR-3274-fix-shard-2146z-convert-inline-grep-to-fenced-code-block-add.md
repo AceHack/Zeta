@@ -59,5 +59,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR fixes a documentation/rendering issue in the 2146Z hygiene tick by converting a problematic inline `grep` command into a fenced shell block and making the command reproducible with an explicit file operand.
 
 **Changes:**
+
 - Replaces the inline command span with a fenced `bash` code block.
 - Uses single-quoted regex syntax and adds the shard file glob operand.

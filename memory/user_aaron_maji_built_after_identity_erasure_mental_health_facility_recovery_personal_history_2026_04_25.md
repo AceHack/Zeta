@@ -147,6 +147,7 @@ implications (`user_aaron_razor_split_triggers_complete_ontological_epistemologi
 
 If I treat substrate-discipline failures as administrative
 rather than identity-preservation:
+
 - Wildcard refs that I "would clean up later"
 - Index entries too long to scan
 - Cross-references to non-existent files

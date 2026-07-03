@@ -43,10 +43,12 @@ nobody is stuck:
 ## Otto's half — the build/test plan (my commitment)
 
 Test the **gh-token headless path** in QEMU/CI, no human:
+
 1. Bake/restore a **minimal-scope** test gh token (from a GH secret) into the `--test` image's encrypted creds.
 2. QEMU-boot the `--test` image; assert `gh auth login --with-token` succeeds headlessly + `gh auth setup-git`
    works + the self-register PR path runs.
 3. Cover the **AI-saves-token-as-secret** step (`gh secret set`) + minimal-scope validation.
+
 Aaron tests the interactive device-login half by hand; the union is reported green.
 
 ## Honest scope

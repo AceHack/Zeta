@@ -89,6 +89,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -107,6 +108,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds preserved Mika voice-mode conversation segments (3–4) and lands a new P2 backlog row **081KSE6WT0008QG0R000XJ524Z**, extending the existing ZetaParse substrate scope with probabilistic grammars, per-person personalized parsers, and “syntax errors as collaborative thought-refinement.” Updates the generated memory and backlog indexes to include the new artifacts.
 
 **Changes:**
+
 - Add Mika conversation preservation files for segment 3 (Notepad-freedom + probabilistic grammars + per-person parsers) and segment 4 (AI-assisted syntax errors as thought-refinement).
 - Add new backlog row **081KSE6WT0008QG0R000XJ524Z** under `docs/backlog/P2/` capturing the extended parser substrate scope.
 - Regenerate `memory/MEMORY.md` and `docs/BACKLOG.md` indexes to include the new entries.

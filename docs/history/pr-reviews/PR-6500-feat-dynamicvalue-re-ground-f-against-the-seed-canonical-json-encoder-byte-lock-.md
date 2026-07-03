@@ -30,6 +30,7 @@
 Follow-up to the seed (#6499, merged). **Seed-first** (Aaron 2026-06-01: _"we are growing code from the seeds"_): the F# oracle now AGREES with the shared seed (`src/Core.TypeScript/dynamic-value/golden-vectors.json`), not the other way round. Two oracles now independently agree on the seed: **TS** (32 green, #6499) + **F#** (byte-lock green, here).
 
 ## What's here
+
 - **`DynamicValue.toCanonicalJson`** + `escapeJsonString` — the canonical-encode side of the byte-lock. Minified; **Object keys in INSERTION order** (NOT sorted — Object is order-significant; key-sorting would be lossy/non-bijective); Int = bare exact decimal (invariant); String = RFC 8259 minimal escaping (`/` not escaped; control U+0000..001F short-form or `\u00XX` lowercase; raw UTF-8 else). **Float + Bytes raise** `InvalidOperationException` (DEFERRED — lock under CBOR or tagged-JSON).
 - **`DynamicValue.GoldenVectors.Tests.fs`** — loads the 31 seed vectors, builds DynamicValue from the tagged form, asserts `toCanonicalJson(value) === json`. Green (Release, 0 warnings).
 - **Fixes the `DynamicValue.fs` doc-comment contradiction** the seed surfaced — it said the wire encoder "sorts keys when byte-locking"; corrected to order-PRESERVING.

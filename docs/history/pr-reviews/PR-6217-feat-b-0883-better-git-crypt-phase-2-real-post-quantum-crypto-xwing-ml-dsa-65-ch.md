@@ -32,6 +32,7 @@
 Wires the v1 type scaffold (`types.ts`) to actual post-quantum primitives in new `crypto.ts`: `generateRecipientKeyPair` / `encrypt` / `decrypt` / `encodeEnvelope` / `decodeEnvelope`.
 
 ### What's implemented
+
 - **XWing** (ML-KEM-768 + X25519 hybrid) KEM + **ML-DSA-65** signatures — `@noble/post-quantum`
 - **HKDF-SHA256** — `@noble/hashes`; **ChaCha20-Poly1305** content + CEK-wrap AEAD — `@noble/ciphers`
 - **canonical CBOR** envelope — `cborg` (deterministic, so sign-over-encoded-bytes / verify agree)
@@ -41,6 +42,7 @@ Wires the v1 type scaffold (`types.ts`) to actual post-quantum primitives in new
 
 ### Empirical API correction (runtime = the oracle)
 A probe against the **installed** packages caught two errors in the v1 design memo's pseudocode before they reached code:
+
 - memo's `chacha20poly1305(key).encrypt(nonce, pt)` **fails** on `@noble/ciphers@2.2.0` → corrected to `chacha20poly1305(key, nonce).encrypt(pt)`
 - memo's 3-arg `ml_dsa65.sign(msg, sk, context)` **fails** → 2-arg `sign(msg, sk)`; domain-separation `ctx` lives inside the signed CBOR instead
 

@@ -44,6 +44,7 @@ Extends the **always-active substrate-engineering discipline set** in its canoni
 | **Idempotency** *(new)* | **Effects / replay / merge** | **apply-N == apply-once: retry/replay/merge-safe** |
 
 ### Why it's load-bearing *with* the existing five
+
 - **DST sibling** — DST *requires* replay; idempotency makes replay *safe* (re-applying an event = no-op).
 - **lock-free** — CAS retry loops require idempotent ops.
 - **git-as-db** — the G-Set CRDT event-fold is idempotent by construction (the whole rebuild-the-index model).

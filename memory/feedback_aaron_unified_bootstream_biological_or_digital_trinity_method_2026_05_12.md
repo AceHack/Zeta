@@ -97,6 +97,7 @@ LOAD-BEARING components a reader needs to recognize the pattern.
 The precise seven-step sequence is the operational pipeline.
 
 Both are honest at their scope:
+
 - 3-component: pedagogical introduction, what the entity needs
   to receive
 - 7-step: operational sequence, how the bootstream actually

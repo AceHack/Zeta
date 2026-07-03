@@ -66,6 +66,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -84,6 +85,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a second-pass research memo for the Frontier UI rename (mythology/FF7 candidate scan + conflict notes) and records a new BACKLOG item to bound “Scientology thematic research” to public-domain-only, non-adoption scope.
 
 **Changes:**
+
 - Added `docs/research/frontier-rename-name-pass-2-otto-175.md` with additional naming candidates and conflict-scan notes, plus sources/cross-references.
 - Appended a new P2 BACKLOG row specifying scope, non-adoption constraints, and a proposed deliverable memo for the Scientology-themed research.
 

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds `ForecastBudgeted`, `forecastPolicyHandler`, and `wrapForecastHandlerK` so Vision can record branch forecasts from the owned `IBranchForecaster` port while keeping room state separate from plugin branch state.
 - Adds core Vision tests for forecast admission/backpressure and scheduler feedback.
 - Adds a Bayesian Reticulum test proving the Reticulum forecaster flows through the Vision scheduler wrapper.
@@ -38,6 +39,7 @@
 This keeps Q#/Bayesian/Reticulum-style experiments behind an owned interface. The scheduler sees forecast reports and honest byte backpressure; plugin arithmetic stays outside core runtime assumptions.
 
 ## Validation
+
 - `bun src/Core.TypeScript/lint/no-python-files.ts`
 - `bun src/Core.TypeScript/lint/lint-typescript.ts`
 - `ruff check src/Core.Python/src src/Core.Python/tests`

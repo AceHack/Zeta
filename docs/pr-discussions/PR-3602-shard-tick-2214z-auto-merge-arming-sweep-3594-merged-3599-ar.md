@@ -42,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a hygiene-history tick shard documenting a 22:14Z autonomous-loop auto-merge arming sweep for stuck actionable PRs.
 
 **Changes:**
+
 - Records PR queue refresh results for #3594 and #3599.
 - Documents auto-merge actions and verification signals.
 - Captures the borrowed-worktree mitigation used while Lior-gemini processes were active.

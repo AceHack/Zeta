@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserve the two Copilot-authored research notes that were untracked in the contested root checkout.
 - Add research-grade/non-policy boundaries and stale-state warnings so operational status still comes from git/GitHub/worktrees/heartbeats.
 - Correct the Riven manager contract wording so the broadcast bus is a coordination cache, not sole authority.
 
 ## Verification
+
 - bun x markdownlint-cli2 docs/research/2026-05-08-background-service-as-ai-persistence-layer.md docs/research/2026-05-08-riven-trajectory-manager-upgrade-learnings.md
 - git diff --check origin/main...HEAD
 

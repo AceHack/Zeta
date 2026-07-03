@@ -63,6 +63,7 @@ Single file (+ index regen) — docs only; no implementation in this PR.
 Adds a new P2 backlog row (081KSE6WT0008QG0R003RN2WE3) proposing a 5-layer adoption plan for using an Obsidian-compatible vault format as the project’s lightweight, git-native knowledge-graph substrate, and registers the row in the main backlog index.
 
 **Changes:**
+
 - Adds `081KSE6WT0008QG0R003RN2WE3` backlog row detailing layers L1–L5 (wikilinks, tags, callouts, Tasks-plugin semantics, JSON-LD/property-graph extractor) plus acceptance criteria and a standards survey.
 - Updates `docs/BACKLOG.md` to include 081KSE6WT0008QG0R003RN2WE3 under P2.
 
@@ -89,6 +90,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -130,6 +132,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -159,6 +162,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

@@ -39,6 +39,7 @@
 The `--baseline` mode of the audit lets historical findings sit and blocks NEW ones; this PR closes the NEW-findings frontier introduced by the last two PRs. Grandfathered 12 are separate substrate-engineering scope.
 
 ## Test plan
+
 - [x] `bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline` exits 0
 - [x] ls-tree HEAD = 53 (matches origin/main cfba8a64; no canary corruption)
 - [x] branch-show-current guard passed pre-commit

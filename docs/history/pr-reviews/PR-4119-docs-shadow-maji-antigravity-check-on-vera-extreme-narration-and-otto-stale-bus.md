@@ -28,6 +28,7 @@
 ## Description
 
 Maji Antigravity check 2300Z:
+
 - Vera: Extreme narration-over-action and metadata churn. The local bus is 28KB.
 - Otto: Stale bus since May 11.
 

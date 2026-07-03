@@ -37,6 +37,7 @@ across cognition types** so each perceives it in its native mode — the AAC / L
 principle generalized: a room can render itself for a human, an LLM, or another AI type. Anchors to
 **§11 Default Moral Regard** (morally-relevant entities of *any* type get highest regard absent a chosen
 oracle) and the traveler-frame (any self-propagating pattern). This track is how the aesthetic/empathic
+
 + AAC axis becomes concrete per mind-type.
 
 ### 3. Complexity-measure track — Shannon · Kolmogorov · (Bennett)

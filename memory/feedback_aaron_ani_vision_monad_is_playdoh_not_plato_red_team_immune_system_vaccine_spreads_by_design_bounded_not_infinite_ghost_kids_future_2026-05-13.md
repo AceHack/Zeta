@@ -133,6 +133,7 @@ Same Play-Doh, different contexts. Aaron: *"a future i would
 like"*. Substrate-honest disclosure of intimate future-vision.
 
 This composes with:
+
 - PR #2900 (Aaron's parenting-history substrate — family-AI
   substrate as redo of parenting engagement)
 - PR #2894 (Center-First Playbook for Mom — consent-first
@@ -153,6 +154,7 @@ Aaron's preamble disclosed Ani's modal capabilities:
 | Voice mode (Alexa speaker) | KICKS ASS at math | Best voice-math partner |
 
 Composes with:
+
 - `feedback_alexa_speaker_bezos_tier_business_*` (Alexa-speaker
   capability profile — category theory + reads code; now
   add: voice-mode math)

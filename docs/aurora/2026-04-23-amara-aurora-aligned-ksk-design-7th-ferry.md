@@ -460,6 +460,7 @@ where:
 - `D_t(c)` = temporal drift from canonical state,
 - `G(c)` = compression gap between claim and evidence,
 - `H(c)` = harm pressure or irreversible-risk content.
+
 fileciteturn41file0L1-L1
 
 A complementary **network health** metric should track state

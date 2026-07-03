@@ -36,7 +36,7 @@ the meta-wins log is *factory-self-improvement* telemetry.
 Different research variables, different readers, different
 cadences.
 
-## Why:
+## Why
 
 - **Aaron's explicit ask (verbatim 2026-04-20):**
   > "i love meta-wins, i almost want to track those
@@ -64,7 +64,7 @@ cadences.
   meta-wins are valuable too — they tell us where I
   confused "longer way" for "structural delta."
 
-## How to apply:
+## How to apply
 
 - **When to log.** Only when the never-idle meta-check
   fired and the outcome was a structural change. Routine

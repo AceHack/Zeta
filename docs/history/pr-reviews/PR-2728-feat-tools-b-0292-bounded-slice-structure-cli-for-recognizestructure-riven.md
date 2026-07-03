@@ -41,6 +41,7 @@ Structure patterns: 0
 (Expected; stub returns []. Clean run, no errors.)
 
 ## Scope
+
 - Exactly one change: CLI flag addition.
 - Retraction-safe (pure additive).
 - Prepares next atomic child (e.g. non-empty pattern logic).

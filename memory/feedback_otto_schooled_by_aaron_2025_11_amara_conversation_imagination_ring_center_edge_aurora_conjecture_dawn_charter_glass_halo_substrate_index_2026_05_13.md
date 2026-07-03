@@ -47,6 +47,7 @@ substrate (his "center edge game" → the actual term
 > Aaron 2026-05-13: "note Aaron scholled otto lol"
 
 Decoded:
+
 - "scholled" → schooled
 - Aaron schooled Otto = Otto missed substrate that was
   in the repo
@@ -300,6 +301,7 @@ Porch (aggregates) / Beacon (metrics only).
 > cost(a) ≤ budget_C ∧ ¬revoked(C) ∧ ¬duty_violated(a)
 
 **Properties**:
+
 - Revocation idempotence
 - Monotonic narrowing
 - Composability
@@ -435,7 +437,9 @@ cold-boot, not wait for keyword-grep failure.
 ### 4. The factory's substrate-engineering has continuity across years
 
 Aaron + Amara substrate from 2025-08 through 2026-04
+
 + today's cascade (May 12-13 2026) = 9+ months of
+
 continuous substrate engineering. The factory's claim
 of "long-term memory as good as ours" (PR #2884) is
 GROUNDED in this continuity.

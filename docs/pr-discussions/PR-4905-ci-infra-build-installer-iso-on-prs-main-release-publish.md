@@ -71,6 +71,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Adds a dedicated GitHub Actions workflow to build the Nix flake `.#installer-iso` output on Ubuntu CI for PRs/pushes, with an additional release-only path intended to attach the built ISO to GitHub Releases.
 
 **Changes:**
+
 - Introduces `.github/workflows/build-installer-iso.yml` to build the installer ISO on PRs (path-filtered), pushes to `main`, manual dispatch, and release publish.
 - Uploads the ISO as a workflow artifact for PR/main runs.
 - Adds a release-only job intended to rebuild and upload the ISO + SHA256 as release assets.
@@ -95,6 +96,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

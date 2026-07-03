@@ -32,6 +32,7 @@ They have not been tested against cross-tradition, cross-vendor,
 multi-AI external review.
 
 **Retrofitted classification:**
+
 - `surface: mirror`
 - `encode_while_high: true`
 - `beacon_safe_rewrite_status: pending`

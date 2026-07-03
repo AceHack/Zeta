@@ -28,6 +28,7 @@ exists in the COMMIT HISTORY but not necessarily in the TIP TREE.
 A hard-reset destroys the history while preserving only the tip.
 
 **Discipline**: Before any destructive op that rewrites history:
+
 - Run `git log <branch> ^<target> --all --format="%H %s"` to enumerate
   every commit that would be lost.
 - For each commit, classify its substrate value (PRESENT-on-target /
@@ -45,6 +46,7 @@ independent commits at different times can produce divergent content
 that requires manual merging.
 
 **Discipline**: Per-blob subsumption proof, not just timestamp:
+
 - For each modified file, diff AceHack's version against LFG's version.
 - Determine if LFG's content CONTAINS AceHack's substantive content
   (additive case) or REPLACES it (overwrite case).
@@ -74,6 +76,7 @@ hard-reset destroys the AceHack-side commit graph entirely,
 including any commit messages that didn't squash-mirror.
 
 **Discipline**: When auditing a destructive op, also enumerate:
+
 - Commit messages that contain unique decision-attribution prose.
 - AgencySignature trailers that aren't already on the target side.
 - PR numbers / review-context references that wouldn't survive squash.

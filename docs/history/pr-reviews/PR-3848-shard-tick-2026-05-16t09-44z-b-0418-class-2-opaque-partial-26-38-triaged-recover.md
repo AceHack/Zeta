@@ -32,6 +32,7 @@ Brief-ack #3 of named bounded-dependency wait (GraphQL reset at ~09:56Z) convert
 ## Audit
 
 081KRA5AR0008QG0R001NXBYTY (amplification ratio metric, P1 feature):
+
 - `tools/dashboard/generate-metrics.ts`: 0 mentions of "amplification"
 - `demo/metrics.json`: 0 mentions
 - All 4 numbered criteria unshipped

@@ -31,6 +31,7 @@ Fixes two autonomous-loop reliability bugs from the anti-entropy sweep (#8157) �
 
 ## P0 — forge-read failure read as "no PRs"
 `readPRStateAsync` collapsed gh/forge API failure into `{open:[],clean:[]}`, indistinguishable from a healthy-empty repo — so an auth/rate-limit/network blip read as "0 clean PRs" and the loop went quiet while PRs rot.
+
 - `readPRStateAsync` now returns a **discriminated result** (`{ok:true,open,clean} | {ok:false,error}`). The one live caller (`run-loop-real.ts`) logs the failure and leaves `forgeState` **undefined** (same as forge-not-resolved) — the loop proceeds without PR data rather than on **false** zero-PR data.
 - The legacy sync `readPRState` (no live caller) now logs gh/parse failures instead of silently returning empty.
 

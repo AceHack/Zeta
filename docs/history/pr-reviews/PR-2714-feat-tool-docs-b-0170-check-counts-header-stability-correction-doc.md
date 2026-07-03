@@ -29,22 +29,26 @@
 
 ## Summary
 One bounded step on 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker TS tool), plus an explicitly included research archive absorb.
+
 - Re-decomposed assumption: 081KQNJ500008QG0R003SCWBDV marked atomic but now has 5/8 check-types shipped (count + existence + path-form + cross-surface + convention).
 - Smallest safe tool slice: refreshed check-counts.ts header (v1.0) + deferred list to reflect sibling modules and remaining 3 sub-classes.
 - Research archive scope: added `docs/research/2026-05-11-claudeai-three-week-stability-correction-beacon-metrics.md`, capturing the Claude.ai three-week stability correction as beacon/candidate evidence rather than an enforced tool change.
 - Follows TS-over-bash, one-step, worktree+claim-branch, no root touch.
 
 ## Focused checks (included per task)
+
 - `bun test tools/substrate-claim-checker/check-counts.test.ts`: 16 pass, 0 fail, 38 expect() calls — all green.
 - `dotnet build -c Release` (pre-work): 0 Warning(s), 0 Error(s).
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch before write.
 - Exactly one bounded step.
 - Claim branch: claim/b0170-substrate-claim-checker-smallest-slice-riven-2026-05-11
 - Co-Authored-By trailer on commit.
 
 ## Next (after this PR)
+
 - Remaining: semantic-equivalence, empirical-output, self-recursive (future atomic children per re-decomp).
 
 Closes smallest slice of 081KQNJ500008QG0R003SCWBDV.

@@ -11,6 +11,7 @@ Apply Aaron's smell test: *"If two substrate clusters need DIFFERENT GitHub rule
 
 ### 1. `LFG/Zeta` (main)
 Uses **GitHub Rulesets**:
+
 - **Branch Safety** (16189060): Requires linear history, blocks non-fast-forward, blocks deletion.
 - **CI Gate** (16134995): Requires 7 strict status checks (`build-and-test` on macos/ubuntu/ubuntu-arm, `actionlint`, `markdownlint`, `semgrep`, `shellcheck`).
 - **Review Policy** (16168181): Requires `copilot_code_review`, requires PR thread resolution. Squash-merge only.
@@ -19,16 +20,20 @@ Legacy protection: Requires conversation resolution. `allow_squash_merge: true`,
 
 ### 2. `AceHack/Zeta` (mirror)
 Uses **GitHub Rulesets**:
+
 - **Default** (15524390): Requires linear history, blocks deletion/non-fast-forward, requires `copilot_code_review`, requires `code_quality` (all severity). Squash-merge only. Includes bypass permissions for the `AceHack` user.
+
 `allow_squash_merge: true`, `allow_auto_merge: true`.
 
 ### 3. `LFG/civsim` (new product repo)
 Uses **Legacy Branch Protection** on `main`:
+
 - Requires 1 approving review.
 - Strict status checks enabled (but empty context list).
 - Requires signed commits.
 - Requires linear history, blocks force pushes.
 - Requires conversation resolution.
+
 `allow_squash_merge: true`, `allow_auto_merge: true`.
 
 ## Divergence Comparison Matrix
@@ -62,6 +67,7 @@ Uses **Legacy Branch Protection** on `main`:
 ## Recommended Axis-3 Implications
 
 The ruleset divergence smell test **strongly validates** Axis-3.
+
 - **Code vs English Split:** Mechanically justified by the need for divergent required status checks (compilation/tests vs linting).
 - **Formal Verification Split:** Mechanically justified by divergent CI execution limits and specific proof-validation gates.
 - **Engineering-Docs Exception:** Docs like `README` and `ADRs` must stay with Code because their *versioning* is strictly tied to the code they describe. While they don't need compilation, they must be gated by the same PR review process as the code they touch.

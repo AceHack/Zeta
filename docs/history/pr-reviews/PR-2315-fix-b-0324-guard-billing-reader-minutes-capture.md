@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - guard the required Actions minutes capture before normalizing it
 - preserve the existing parse-error result shape when the regex match lacks that capture
 
@@ -35,6 +36,7 @@
 Main push gate is failing `lint (tsc tools)` at `tools/playwright/github-ui/billing-reader.ts(81,34)` after #2313/#2314. This fixes that TypeScript regression from current `main`.
 
 ## Verification
+
 - `bun --bun tsc --noEmit -p tsconfig.json`
 - `bun test tools/playwright/github-ui/billing-reader.test.ts`
 

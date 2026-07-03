@@ -33,5 +33,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Fixes two broken relative links in the `0213Z.md` tick shard. The file lives 6 directories below the repo root (`docs/hygiene-history/ticks/2026/05/16/`), so paths needed `../../../../../../` (six `..`) rather than the original five to reach repo root before descending into `docs/backlog/...` and `.claude/rules/...`. Same xref-integrity pattern previously flagged on PR #3676.
 
 **Changes:**
+
 - Corrects `..` depth from 5 to 6 on the `081KRMEXM0008QG0R000ARAR7P` backlog row link.
 - Corrects `..` depth from 5 to 6 on the `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` link.

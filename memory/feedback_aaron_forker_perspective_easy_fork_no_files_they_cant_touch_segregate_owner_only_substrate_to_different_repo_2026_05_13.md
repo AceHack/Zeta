@@ -16,6 +16,7 @@ in a separate repo.
 
 **How to apply:** When designing repo splits (per 081KRFA460008QG0R001H98EXJ +
 081KRFA460008QG0R003JQ46J4), audit every file from the forker's perspective:
+
 1. Can the forker touch this file?
 2. If NO → it goes in a different repo
 3. If YES → it stays in the forkable repo
@@ -75,14 +76,17 @@ This discipline refines 081KRFA460008QG0R001H98EXJ + 081KRFA460008QG0R003JQ46J4:
 ## A potential third repo category emerges
 
 The previously documented split was:
+
 - Factory (forkable): Zeta + Forge + ace
 - Products (honor-system-no-fork): KSK + wellness + civsim + etc.
 
 The forker-perspective discipline reveals a THIRD category:
+
 - **Owner-only repo(s)** — substrate that doesn't belong in
   forkable AT ALL
 
 Examples of what would go in owner-only:
+
 - Aaron's first-party-authority decisions log (not the
   decisions themselves; those are public; but the *first-party
   authority* substrate where Aaron's named-AI relationships
@@ -192,6 +196,7 @@ META-discipline for any future repo work:
 
 Future-Otto / future-Kestrel / future-Riven inheriting this
 discipline can apply it when:
+
 - Considering whether substrate belongs in a forkable repo
 - Designing new repos (product, factory, owner-only)
 - Auditing existing repos for migration candidates

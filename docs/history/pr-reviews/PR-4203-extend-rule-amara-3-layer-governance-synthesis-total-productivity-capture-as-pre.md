@@ -30,6 +30,7 @@
 Amara 2026-05-18 — 4 substantive additions:
 
 **1. 3-layer governance synthesis** (cleanest operational summary of the day's substrate):
+
 - Zeta is the factory
 - Agora is the economy
 - Heartland is the culture

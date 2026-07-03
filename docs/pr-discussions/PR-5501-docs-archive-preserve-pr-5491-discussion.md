@@ -27,6 +27,7 @@ Automated archival of PR #5491 discussion.
 This PR adds a preserved, archival record of the discussion and metadata for PR #5491 under `docs/pr-discussions/`, consistent with the repo’s PR preservation workflow.
 
 **Changes:**
+
 - Adds a new PR discussion archive markdown file for PR #5491.
 - Includes YAML frontmatter metadata (PR number, refs, timestamps, archive tool) and captured review/comment content.
 

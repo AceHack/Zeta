@@ -30,6 +30,7 @@
 Synthesis of two Aaron messages 2026-06-02 + a Codex P2 graph fix.
 
 **081KT2T2J0008QG0R003C166K4 (synthesis/framing row)** — *"aperiodic ownership over our hex core and 4×4 extension points that we can retrofit each with our UAG ... all the infrastructure a smart agent city needs like radar cell towers everything humans have but from a mathematic memetic amplification ... ruthless HKT hygiene but at memetic and physics amplification levers and interference pattern generators"* + *"and our interferometers for strange lightlike measurements."*
+
 - **aperiodic ownership** (081KS3X9Y0008QG0R002MZF3A7 non-fungible-by-geometry + 081KT2T2J0008QG0R002Z46D8Q tiles) over the **hex core** (081KT2T2J0008QG0R0026MS6PV) + **4×4 extension points** (081KT07NV0008QG0R0032MCYER/081KT2T2J0008QG0R002Z46D8Q lanes);
 - each **UAG-retrofittable** (081KSKBP80008QG0R000B3Y19A — one action grammar drives every extension point);
 - **smart-agent-city infrastructure** (radar=orientation-tile · cell-towers=Reticulum mesh · addressing · maps/borders · economy · utilities — *everything humans have*, built from math not concrete);

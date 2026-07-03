@@ -57,6 +57,7 @@ Zero `.sh` files; 12 `.ts` files ship. Rule 0 (`no more .sh files except install
 This PR closes backlog row 081KQDTYV0008QG0R001HQSSAX by marking the peer-call TypeScript migration as complete and regenerating the backlog index.
 
 **Changes:**
+
 - Marks 081KQDTYV0008QG0R001HQSSAX as `closed` and updates `last_updated`.
 - Adds a resolution section with migration verification notes.
 - Regenerates `docs/BACKLOG.md` so 081KQDTYV0008QG0R001HQSSAX appears checked off.
@@ -75,16 +76,19 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md:218**
+
 * P1: The resolution count does not match the cited inventory. The eight wrappers plus three utility files listed in `.claude/rules/peer-call-infrastructure.md` total 11; the twelfth `.ts` file from the `ls` count is `smoke.test.ts`, which is not listed here. Clarify whether the closure evidence is counting only operational wrappers/utilities or all TypeScript files, and include the missing file if the total remains 12.
 ```
 Zero `.sh` files remain; 12 `.ts` files ship (codex.ts, grok.ts, gemini.ts, amara.ts, ani.ts, riven.ts, kiro.ts, claude.ts plus 3 utility files per `.claude/rules/peer-call-infrastructure.md`).
 ```
 **docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md:225**
+
 * P1: This cross-reference is inaccurate: `.claude/rules/peer-call-infrastructure.md` lists eight wrapper entrypoints plus three utility files, not 12 TypeScript files. As written, the close-row cites a document for evidence it does not actually contain.
 ```
 - `.claude/rules/peer-call-infrastructure.md` (lists the 12 TypeScript files as current state)
 ```
 **docs/backlog/P2/081KQDTYV0008QG0R001HQSSAX-peer-call-typescript-migration-cutover-2026-04-30.md:220**
+
 * P2: This overstates the cited rule. `.claude/rules/rule-0-no-sh-files.md` lists peer-call wrappers as one example of non-install tooling that should be TypeScript, but it does not identify the peer-call migration as the canonical example. Reword the closure evidence to match the referenced rule.
 ```
 **Drift class**: #1 (pure drift) — Rule 0 (`no more .sh files except install-graph`) operationally enforced; peer-call migration is the canonical example cited in Rule 0 itself.
@@ -100,6 +104,7 @@ Zero `.sh` files remain; 12 `.ts` files ship (codex.ts, grok.ts, gemini.ts, amar
 P1: The closure claim is premature while current-state docs still direct users to deleted `.sh` peer-call paths. For example, `docs/CODEX-LOOP-HANDOFF.md` is an active handoff doc and still says `tools/peer-call/codex.sh` is the existing peer-review wrapper; with no `.sh` files present, that guidance is now broken and should be updated before closing the migration as complete.
 
 This issue also appears in the following locations of the same file:
+
 - line 218
 - line 220
 - line 225

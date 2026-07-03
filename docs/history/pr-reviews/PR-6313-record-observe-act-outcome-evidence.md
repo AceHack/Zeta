@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - adds selected implementation kind and action outcome to AgentCliCycleEvidence
 - persists `observe-act:selected_impl:*` and `observe-act:action_outcome:*` evidence refs from CLI main and worker lanes
 - covers both persistence paths with tests and records the Phase 2 checkpoint
 
 ## Verification
+
 - node --experimental-strip-types --test apps/agent-cli/test/agent-cli-main.test.ts apps/workers/test/org-cadence-lanes.test.ts apps/agent-cli/test/agent-cli.test.ts
 - npm run typecheck
 - npm test
@@ -41,6 +43,7 @@
 - dotnet build -c Release is blocked locally by existing SDK pin: global.json requests 10.0.203; installed SDKs are 9.0.100, 9.0.200, 10.0.101
 
 ## Review note
+
 - Requested subagent review could not be spawned because the agent thread limit is currently reached.
 
 

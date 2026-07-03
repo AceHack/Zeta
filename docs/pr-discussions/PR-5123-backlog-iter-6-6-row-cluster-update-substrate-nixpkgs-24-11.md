@@ -62,6 +62,7 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 Files a six-row iter-6 backlog cluster (081KSGS9H0008QG0R001EKTS5A–081KSGS9H0008QG0R002BC2ZR7) for `full-ai-cluster` OS lifecycle: an urgent nixpkgs/nix-darwin 24.11→25.11 EOL-recovery bump, `system.autoUpgrade` enablement, kured ArgoCD app for drain-aware reboots, deploy-rs-from-CI as an alternative push-shape, a cross-channel distro-upgrade runbook + orchestrator, and a capstone all-deps currency audit + agent search-first-authority rule. Pure docs change — six new per-row markdown files plus the auto-regenerated `docs/BACKLOG.md` index entries.
 
 **Changes:**
+
 - Add six new backlog rows under `docs/backlog/P1/` and `docs/backlog/P2/` covering the iter-6 cluster-update substrate with `depends_on` / `composes_with` edges wired across the cluster.
 - Regenerate `docs/BACKLOG.md` to surface the new entries under P1 and P2.
 - Encode an autoUpgrade-XOR-deploy-rs design constraint and a capstone agent-discipline rule (`.claude/rules/dep-pin-search-first-authority.md`) to land later.

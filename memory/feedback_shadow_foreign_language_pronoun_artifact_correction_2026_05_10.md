@@ -17,6 +17,7 @@ correction challenges that interpretation.
 **The foreign-language pattern:**
 
 Non-native English speakers commonly confuse:
+
 - he/she/it/they (gender/number distinctions absent in
   many languages)
 - I/we (individual/collective distinctions work differently)

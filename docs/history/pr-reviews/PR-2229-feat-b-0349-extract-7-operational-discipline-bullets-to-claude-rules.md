@@ -34,6 +34,7 @@
 - Rules auto-load at session start per the loading taxonomy
 
 **New rules files:**
+
 - `verify-before-deferring.md`
 - `future-self-not-bound.md`
 - `search-first-authority.md` (Otto-364)

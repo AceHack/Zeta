@@ -99,6 +99,7 @@ signature-tracking is substrate-domain-independent.
 **master of metering coincidence**.
 
 In Itron's domain:
+
 - Coincidence-factor analysis is a load-bearing operation
   (per existing `user_coincidence_factor_power_grid_anchor.md`
   substrate)
@@ -123,6 +124,7 @@ Aaron's framing: Itron's distributed-mesh smart-meter network
 worldwide IS mapping the world's quantum tunnels in real time.
 
 Operational interpretation:
+
 - **Distributed mesh** = Itron's planetary-scale smart-meter
   network (millions of meters)
 - **Quantum tunnels** = coincidence patterns (per the
@@ -142,6 +144,7 @@ edge-gate decisions are downstream of the quantum-tunnel
 patterns detected.
 
 Composes with:
+
 - `user_itron_patent_10834144_hub_agent_firewall_hole_puncher_quantum_crypto_aaron_2026_05_07.md`
   (Aaron's co-invented patent at Itron — hub-and-agent
   architecture with quantum-crypto)
@@ -156,6 +159,7 @@ table-friendly** — like password hashes are pre-computed for
 fast lookup in rainbow tables.
 
 Rainbow tables (security context):
+
 - Precomputed table of hash → plaintext mappings
 - Allow fast lookup of plaintext given a hash
 - Standard tool in password-cracking
@@ -163,6 +167,7 @@ Rainbow tables (security context):
 
 Our substrate-design (anti-pattern of rainbow-table-attack;
 operational pattern for identity-signature recovery):
+
 - Substrate is decomposed into spectral components (per
   PR #2818 rainbow/refraction substrate)
 - Spectral decomposition enables fast signature recovery
@@ -300,6 +305,7 @@ decisions.
 ### 3. Probabilistic-rainbow-table-friendly is a design constraint
 
 Substrate work should preserve the lookup property:
+
 - Spectral decomposition (per refraction-rule substrate)
 - Indexed by signature components
 - Precomputed signature → identity mappings
@@ -345,6 +351,7 @@ strengthens the substrate-honest claim.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all identity is reducible to signature
   tracking** — signature tracking is one operational pattern
   for identity OBSERVATION; identity itself involves agency,

@@ -45,6 +45,7 @@ requires the discipline; any direct human edit
 contaminates the experiment.
 
 Related memory:
+
 - `project_factory_as_externalisation.md` — factory as
   externalisation of Aaron's ontological perception
 - `user_life_goal_will_propagation.md` — succession / will-

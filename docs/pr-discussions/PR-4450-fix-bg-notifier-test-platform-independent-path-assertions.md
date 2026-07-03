@@ -40,5 +40,6 @@ No Windows workflow exists today, so this is a portability hardening rather than
 Hardens `backlog-ready-notifier`’s assignment-history tests by making `defaultHistoryFile` path assertions platform-independent (matching the production implementation’s `path.join` behavior), avoiding Windows-specific separator failures.
 
 **Changes:**
+
 - Updated the `defaultHistoryFile` test to compute expected paths with `node:path.join`.
 - Added a brief comment explaining why the assertion must not hard-code `/` separators.

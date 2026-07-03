@@ -44,6 +44,7 @@ Rate-limit: 565 → ~555 GraphQL; 10min to reset. Extreme cost-aware tier contin
 Adds a new hygiene-history tick shard documenting the 15:47Z cascade confirmation for 081KRA5AR0008QG0R0019Q33F7 and capturing a branch-discipline catch of peer worktree contamination.
 
 **Changes:**
+
 - Adds tick shard `1547Z.md` with refresh state, cascade confirmation, and peer-contamination observation.
 - Records operational notes on rate-limit posture and branch recovery steps.
 - Adds cross-references (“Composes with”) to related rules/docs/backlog items.

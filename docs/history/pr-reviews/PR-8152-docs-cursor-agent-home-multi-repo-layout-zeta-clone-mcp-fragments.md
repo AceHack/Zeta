@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Document the agent-home multi-repo layout in `CURSOR.md`, including how clone-local MCP fragments roll up into agent-home MCP config.
 - Add `.cursor/agent-home-mcp.json` as the Zeta MCP fragment for agent-home workspaces.
 - Add `zeta-mcp-launch.ts` to resolve the repo root from script location and launch/build the MCP server reliably from `Zeta/` under agent-home.
 
 ## Test plan
+
 - [x] `git diff --stat origin/main...HEAD`
 - [x] Verify only `CURSOR.md`, `.cursor/agent-home-mcp.json`, and `src/Core.TypeScript/cursor/zeta-mcp-launch.ts` are included
 

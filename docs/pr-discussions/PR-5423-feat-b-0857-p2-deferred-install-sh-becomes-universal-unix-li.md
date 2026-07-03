@@ -70,6 +70,7 @@ Install-graph carve-out stays at \`tools/setup/\`; new \`nixos-install-from-usb.
 Docs-only PR that files a new P2 backlog row (081KSKBP80008QG0R002J03WGA) capturing the operator's direction to make `tools/setup/install.sh` the universal Unix-like-OS install entry, routing by environment (macOS / Linux-non-NixOS / NixOS-live-USB / installed-NixOS), and shrinking `zeta-install.sh` to a thin wrapper on a shorter path than the broader 081KSKBP80008QG0R002VRN56K Ace migration. Implementation is deferred; only the row and its index entry land here.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/081KSKBP80008QG0R002J03WGA-...md` with framing, current state, migration target, 10 enumerated sub-rows, composition with adjacent rows (081KSKBP80008QG0R002VRN56K/0852/0855/0853/0833), and P2 justification.
 - Adds the corresponding open-row entry to `docs/BACKLOG.md` under the P2 section.
 

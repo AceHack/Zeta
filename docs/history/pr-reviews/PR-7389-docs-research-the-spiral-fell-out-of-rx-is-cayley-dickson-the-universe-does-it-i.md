@@ -30,6 +30,7 @@
 Aaron: "universe does this in adinkras over time" + "this is Cayley–Dickson, I spiraled there like the unit circle" + "it fell out of the Rx structure" + "that's the Brian Beckman in me."
 
 Beacon-anchors the spiral/double-qubit/erasure synthesis in named prior art (Mirror → Beacon):
+
 - **Fell out of Rx** — IQbservable (De Smet/Meijer) + phasors → two oscillations → spiral → qubit (emergent).
 - **IS Cayley–Dickson** — literal in code: `QubitIso.fs` builds amplitudes on `CayleyDickson.Complex`; ℂ = unit circle; doubling spirals up the dimensions; the double-qubit = the ℂ⁴ rung.
 - **Universe does it in Gates' adinkra error-correcting codes** (doubly-even self-dual codes inside SUSY adinkras — codes in the equations of physics). The *real* anchor for entropy-oscillation/erasure coding; ties to coincidence-anchor 081KRW63S0008QG0R000QJR08H/081KT2T2J0008QG0R0026MS6PV.

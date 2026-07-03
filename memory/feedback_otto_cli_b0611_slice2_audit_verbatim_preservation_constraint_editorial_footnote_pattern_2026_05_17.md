@@ -95,7 +95,9 @@ work is bounded by:
 ## Per-file work estimate
 
 For each of the 6 conversation files: 1 editorial-footnote section
+
 + ~4 lines per cited ref. Most files cite 1-2 refs; one file
+
 (`memory/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md`)
 cites 2 refs. One file (`memory/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`)
 cites 2 refs. Total: ~30 lines of editorial footnote across 6

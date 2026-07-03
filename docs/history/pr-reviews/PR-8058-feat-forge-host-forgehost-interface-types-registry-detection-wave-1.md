@@ -32,6 +32,7 @@
 Wave 1 of the forge-host-adapter spec. Establishes the foundation layer for multi-forge support.
 
 ### What's here
+
 - **types.ts** — All host-agnostic data types (Result, ForgeError, PullRequest, PrGateState, Issue, CiCheck, RepoInfo, etc.)
 - **forge-host.ts** — The `ForgeHost` interface: PR state/actions, issues, CI, repo info, git data API. All methods return `Result<T, ForgeError>` — never throw.
 - **result.ts** — `ok()`, `err()`, `forgeError()` constructors with consistent retryable classification

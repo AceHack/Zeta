@@ -57,6 +57,7 @@
 **Resolution gate:** anchor #10 at ~04:00Z discriminates.
 
 ## Test plan
+
 - [x] Sentinel armed (\`bf82d0a2\`)
 - [x] Isolated worktree off origin/main @ \`209c18c5f2\` (ls-tree=55, status=0)
 - [x] Branch in Otto-CLI lane (\`otto-cli/dotgit-9th-anchor-descent-0240z\`)

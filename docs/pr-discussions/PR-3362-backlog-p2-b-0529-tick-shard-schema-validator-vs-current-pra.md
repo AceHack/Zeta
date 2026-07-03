@@ -47,6 +47,7 @@ P2 priority because the validator is NOT wired to CI — drift is invisible at g
 Adds a new P2 backlog row (081KRMEXM0008QG0R002HBY56V) to document and track the drift between the tick-shard schema validator’s “pipe-row first line” expectation and the May 2026 practice of H1-rich shard bodies, including options and a recommended hybrid approach.
 
 **Changes:**
+
 - Introduces backlog item **081KRMEXM0008QG0R002HBY56V** describing the validator/practice mismatch and its operational implications.
 - Captures concrete reproduction output and proposes a sequenced remediation plan (backfill → docs update → CI wiring).
 

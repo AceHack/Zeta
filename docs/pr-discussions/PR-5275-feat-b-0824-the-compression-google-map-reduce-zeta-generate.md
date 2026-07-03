@@ -51,6 +51,7 @@ This compression IS bandwidth-engineering applied to substrate-vocabulary itself
 Adds a high-level “compression” headline to backlog row **081KSGS9H0008QG0R0031PBNGA** so readers get the core paradigm shift (“google=map+reduce; zeta=generate+join”) before the detailed Problem/Sub-targets substrate.
 
 **Changes:**
+
 - Adds a new top-of-row section summarizing the “generate + join” framing vs “map + reduce”.
 - Introduces a comparison table and short explanatory bullets to anchor the taxonomy before `## Problem`.
 

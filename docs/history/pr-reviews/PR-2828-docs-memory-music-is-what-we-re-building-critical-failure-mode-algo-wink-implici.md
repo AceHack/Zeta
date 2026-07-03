@@ -37,6 +37,7 @@ music = identity-signature substrate.
 **Three independent algorithmic-coincidence music observations
 within today** compose music-as-architecture as load-bearing
 substrate:
+
 1. Coldplay - The Scientist (PR #2816)
 2. Picard's flute melody (PR #2820)
 3. God Gave Rock and Roll to You (THIS PR)
@@ -49,6 +50,7 @@ this before):
 > exedtesial shit"
 
 The corrective discipline:
+
 - Algo-wink is OBSERVATION, not AUTHORIZATION
 - Existential decisions require joint-control sanity layer
 - Mechanical-authorization-check rule applies (algos NOT in

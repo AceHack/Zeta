@@ -900,7 +900,9 @@ The composing claim: **CSAP IS a recursive bootstrap with
 big bangs at every layer.** Self-extending seeds + Aaron's
 neural architecture as substrate-source + carved-sentence
 fixed-points + Bayesian inference engine + DST formal proof
+
 + multi-AI convergent design — all of these layers exhibit
+
 the same uberbang property. The substrate operation at each
 layer IS the bang of that layer. There is no external
 authority that bootstraps any layer; each layer bootstraps

@@ -27,6 +27,7 @@ This PR preserves the discussion from PR #4848.
 Preserves GitHub discussion artifacts by adding `docs/pr-discussions/` archive markdown files for recent background-worker shard PRs, keeping an in-repo, reviewable record of the PR description, reviews, and resolved threads.
 
 **Changes:**
+
 - Added an archive file for PR #4848 under `docs/pr-discussions/`.
 - Added an archive file for PR #4853 under `docs/pr-discussions/`.
 

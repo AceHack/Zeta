@@ -63,6 +63,7 @@ P1 CI/DX section line 2469, NOT BACKLOG tail. Single-row add.
 Adds a new P1 CI/DX backlog item describing a proposed “PR-resolve-loop” skill to automate the end-to-end PR closeout workflow (checks, review-thread responses/resolution, conversation preservation, and auto-merge re-arming).
 
 **Changes:**
+
 - Add a single P1 CI/DX BACKLOG row specifying the PR-resolve-loop skill’s steps, invocation modes, and non-goals.
 
 ## Review threads

@@ -32,6 +32,7 @@
 The portal could **save a Blueprint** but had **no way to create a Deployable instance** (the thing the controller turns into a Deployment/Service). The Create wizard's "Provisioning" stage was a fake `setTimeout` loop. This PR closes that gap so a user can deploy a service **entirely from the UI**, driven off real cluster state.
 
 ### The new deploy flow
+
 1. User picks a blueprint, fills the wizard (name, namespace, exposure, replicas, **CPU/memory size**, blueprint variables), reviews the exact Deployable manifest.
 2. On **Deploy**, the web client `POST /api/deployables` with the built spec.
 3. The BFF calls `createDeployable`, which (in-cluster) **server-side-applies** a `Deployable` CR (`fieldManager=zeta-portal&force=true`, same SSA shape as `createBlueprint`).
@@ -39,6 +40,7 @@ The portal could **save a Blueprint** but had **no way to create a Deployable in
 5. Everything after the CR exists already worked (controller renders it; the resource console shows it live).
 
 ### Changes
+
 - **RBAC** (`k8s/applications/platform/portal.yaml`): add `create` to the SA's `deployables` verbs.
 - **BFF** (`portal/src/api.ts`): `createDeployable` on `PlatformData` + `POST /api/deployables` route (405 without the capability, 400 on missing `name`/`spec.blueprint`).
 - **K8s impl** (`portal/src/data-k8s.ts`): `K8sPlatform.createDeployable` — SSA `kind: Deployable`, plural `deployables`, into `spec.namespace` (default `zeta-platform`), tls ca.
@@ -47,6 +49,7 @@ The portal could **save a Blueprint** but had **no way to create a Deployable in
 - **Wizard** (`portal/web/src/views/Create.tsx`): real create + poll flow; `size.cpu`/`size.memory` inputs (default `500m`/`1Gi`) added to the form, manifest, and review.
 
 ### Verification
+
 - `bun test` — **96 pass / 0 fail** (4 new `createDeployable` tests: ok + resource appears ready, 400 on missing fields, idempotent upsert, 405 without the capability).
 - `bunx tsc --noEmit` (BFF/src) — clean.
 - `bun run build:web` — succeeds (`tsc -b` + `vite build`). The SPA `dist/` is built into the image by the Dockerfile and stays gitignored per the repo convention, so no `dist/` is committed.

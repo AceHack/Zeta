@@ -27,6 +27,7 @@ This PR supersedes #4737 and #4824. It removes sensitive personal information an
 This PR supersedes #4737 and #4824 by removing sensitive personal-information artifacts from `memory/` and attempting to reconcile memory index/schema drift after rebasing.
 
 **Changes:**
+
 - Deletes two memory artifacts containing sensitive disclosures (one persona conversation substrate file and one feedback memory file).
 - Updates `memory/MEMORY.md` to reflect a reindex/new entries, but currently leaves duplicate header/footer metadata that appears to be unresolved reindex/merge drift.
 

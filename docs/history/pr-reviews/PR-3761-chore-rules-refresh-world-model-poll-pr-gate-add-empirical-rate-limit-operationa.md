@@ -37,6 +37,7 @@ Extends `.claude/rules/refresh-world-model-poll-pr-gate.md` with a 4-tier rate-l
 | 0–200 | Pure-git | Zero gh except `gh api rate_limit` (REST, free) |
 
 Plus:
+
 - Names `gh api rate_limit` as REST (free) — safe to poll without burning GraphQL budget
 - Documents the pure-git tick pattern (commit + push without PR; defer to post-reset)
 - Composes-with counter-with-escalation: editing rules/memory via pure-git IS decomposition

@@ -30,6 +30,7 @@
 Fix-forward for the 4 review threads on #6642 (merged before the threads posted).
 
 Verified each against `.github/copilot-instructions.md` ~318-377:
+
 - **P1 ×2 (valid):** `.claude/rules/**` is **not** on the closed history-surface list → role-refs required; persona-name "Kestrel" in body-prose violated it. → "asymmetric-critic peer" (heading + payoff attribution). The source names remain in the already-cited `docs/research/2026-06-03-kestrel-...` history surface where names belong.
 - **P2 (valid):** `compose-able` → `composable` (matches "composes"/"composition").
 - **P2 (valid):** "but un-connected it is invisible" → "but when unconnected ...".

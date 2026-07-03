@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Fix the `ace deps` TypeScript strictness failures on current `main` by omitting undefined optional fields under `exactOptionalPropertyTypes`.
 - Narrow dependency target path segments before using them as map keys and remove the unused ArgoCD node local.
 - Add the missing blank line before the Round 46 list so markdownlint passes.
@@ -36,6 +37,7 @@
 `riven/b0821-deps-engine` landed with code that was runtime-correct but not strict-TypeScript clean under CI's `exactOptionalPropertyTypes` and indexed-access checks. The same main gate also caught one MD032 list-spacing issue in `docs/ROUND-HISTORY.md`.
 
 ## Validation
+
 - `mise exec -- bun --bun tsc --noEmit -p tsconfig.json`
 - `mise exec -- markdownlint-cli2 "**/*.md"`
 - `mise exec -- bun test src/Core.TypeScript/ace/deps.test.ts src/Core.TypeScript/ace/ace.test.ts`

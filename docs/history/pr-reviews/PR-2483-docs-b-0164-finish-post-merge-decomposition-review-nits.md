@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - mark 081KQJZR90008QG0R002GJAJ19 with the supported decomposed parent state
 - move the cron-topology decision artifact target from ignored research-shard pattern to ADR space
 
 ## Checks
+
 - bun tools/backlog/generate-index.ts --check
 - bun run lint:markdown docs/backlog/P1/081KQJZR90008QG0R002GJAJ19-dual-loop-substrate-attribution-and-reconciliation-protocol-2026-05-02.md docs/backlog/P1/081KR7JY10008QG0R0035GWRQ0-cron-tick-coordination-dual-loop.md
 - git diff --check

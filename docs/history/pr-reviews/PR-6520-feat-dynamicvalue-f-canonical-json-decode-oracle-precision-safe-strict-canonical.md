@@ -30,10 +30,12 @@
 Third of the four JSON-decode oracles (TS #6518, C# #6519 landed/landing; Rust follows). `fromCanonicalJson` is the inverse of `toCanonicalJson` for the 6 locked shapes (Float + Bytes DEFERRED in JSON — they lock under CBOR).
 
 ## What
+
 - Adds `fromCanonicalJson` to `DynamicValue.fs`, mirroring the CBOR-decode functional style (mutable `pos` + `let rec readValue () … and …`) + the **shared `DecodeError` DU** + the fixed-point canonical check.
 - `DynamicValue.JsonDecode.Tests.fs`: round-trip over the seed (structural) + 23 rejection assertions.
 
 ## Precision-safe + strict-canonical
+
 - **int64 precision**: number token parsed as **text** via `System.Int64.TryParse` (never via a float); on a `-?[0-9]+` token the only failure is overflow → `IntegerOverflow`.
 - **fixed-point**: `toCanonicalJson decoded = input` → else `NonCanonical` (rejects whitespace, non-minimal escapes, leading zeros).
 - **deferred**: a number with `.`/`e`/`E` → `Unsupported`.

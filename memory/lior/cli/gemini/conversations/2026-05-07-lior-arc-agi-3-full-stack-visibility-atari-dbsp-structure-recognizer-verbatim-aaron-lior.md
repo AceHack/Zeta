@@ -67,6 +67,7 @@ different layers of the same stack, and the sequencing matters:
    They compose; neither is useful alone for ARC-AGI-3.
 
 Recommended sequence:
+
 - 081KQZVQW0008QG0R002QZAFB2 (structure recognizer) — the eyes
 - 081KQZVQW0008QG0R003FXRGQZ (DBSP Atari bridge) — the body
 - 081KQZVQW0008QG0R001CQPQ0E (WebSocket port) — the transport

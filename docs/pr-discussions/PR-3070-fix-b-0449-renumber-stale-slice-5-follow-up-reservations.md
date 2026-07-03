@@ -29,6 +29,7 @@ Aspirational slot reservations in 081KRFA460008QG0R002DG8KPZ (081KRFA460008QG0R0
 Renumbers the slice-5 follow-up reservations in 081KRFA460008QG0R002DG8KPZ from 081KRFA460008QG0R001QFS6EV/0451/0452 (which were claimed by a 2026-05-13 collision-renumber cascade) to the next-available IDs 081KRHWGX0008QG0R000TVGDGV/0460/0461, with an explanatory note documenting the reservation history.
 
 **Changes:**
+
 - Updates the three follow-up row IDs in the per-topic handler list to 081KRHWGX0008QG0R000TVGDGV/0460/0461
 - Adds a parenthetical history note explaining the original 081KRFA460008QG0R001QFS6EV/0451/0452 reservations and where those slots were actually allocated
 

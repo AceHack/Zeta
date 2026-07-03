@@ -15,6 +15,7 @@ forking. This refines glass-halo discipline without breaking it.
 **How to apply:** When the factory ships product-repos with
 strategic substrate (KSK / wellness / civsim / American Dream 2.0
 / DIO / Aurora / Dawn — per 081KRFA460008QG0R003JQ46J4), draft license language that:
+
 1. Keeps the repo public + glass-halo + indexable + alignment-
    auditable
 2. Asks (honor-system) for no forking of strategic-product
@@ -33,12 +34,14 @@ honesty or something not enforcable"*.
 ## What this refines
 
 **Glass-halo discipline** stays operative:
+
 - Repos stay public
 - Substrate stays indexable + auditable
 - Alignment work visible
 - No proprietary-licensing barrier to inspection
 
 **Honor-system layer added**:
+
 - License asks for no forking of strategic-product substrate
 - Asks not commands
 - Non-enforceable not legalistic

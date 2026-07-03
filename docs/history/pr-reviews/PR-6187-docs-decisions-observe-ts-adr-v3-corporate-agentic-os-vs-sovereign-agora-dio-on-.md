@@ -43,6 +43,7 @@ Adds a **"Two workflow registers"** subsection to the ADR's Integration section.
 Same engine, two governance registers = the **must-paired-with-can-exit dual-market pattern** at the workflow scope.
 
 ### Two things handled carefully
+
 - **Disambiguated "sovereign"**: this subsection's *governance*-sovereignty (self-modifying) vs the existing "Two deployment targets" *deployment*-sovereignty (USB = offline/self-hosted). They compose as a governance-register × deployment-topology 2×2.
 - **Flagged the acronym collision**: "DID" also = W3C **Decentralized Identifier**; operator's expansion here is **Distributed Intelligence Database**. Marked for a `naming-expert` + Ilyana pass before public use.
 

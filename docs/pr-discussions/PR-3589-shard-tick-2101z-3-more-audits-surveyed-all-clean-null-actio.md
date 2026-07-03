@@ -37,6 +37,7 @@ Tick 2101Z. Ran 3 untouched audits this tick (tick-history-bounded-growth, stale
 Adds a hygiene-history tick shard recording that three more audits were surveyed this tick with no actionable findings.
 
 **Changes:**
+
 - New tick shard file at `docs/hygiene-history/ticks/2026/05/15/2101Z.md` documenting the audit survey results and session arc.
 
 ## General comments

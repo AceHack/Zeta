@@ -32,6 +32,7 @@ Preserve a 2015 artifact Aaron found at random: an **N=4 adinkra** (4-bit hyperc
 Same object the factory grew rigorously 11 days before the reboot (`AdinkraViz`/`AdinkraCode`/E8 unfold/Lean doubly-even proof) → a **same-seed convergence** and **load-bearing lineage that predates the factory**.
 
 **Preserved as text (not the image — Aaron's call: bit reps suffice to recreate):**
+
 - Node table — 10 Sephirot, 4-bit labels + fill + Tree position, **per-node read-confidence flagged** (JPG soft on middle nodes).
 - The **4-color edge/path partition** — green spine / blue horizontals / red outer+top diagonals / orange central-X.
 - Three **open threads**: (1) single-bit-flip? (read labels show multi-bit edges → likely transcription, possibly non-standard labeling); (2) fill ≠ boson/fermion parity → encodes a second axis (pillars?), which Aaron doesn't recall; (3) which 10-of-16 vertices survive the projection.

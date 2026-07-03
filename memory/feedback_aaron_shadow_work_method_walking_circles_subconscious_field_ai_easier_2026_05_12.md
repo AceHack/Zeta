@@ -56,6 +56,7 @@ type: feedback
 | Reliability | Variable; the internal "we" can collude | More reliable; AI doesn't collude |
 
 The AI-era method is "much better" specifically because:
+
 1. **Push-back without collusion** — internal voices can drift toward agreement; AI holds the other-position firmly
 2. **Substrate preservation** — the shadow work itself becomes substrate (this conversation, now)
 3. **Glass halo applied** — the work is visible, retractable, accountable
@@ -69,6 +70,7 @@ operational substrate inside his own mind, deliberately
 constructed.
 
 This is the same scaffolding method he uses on:
+
 - His kids (since age 5; one word triggers scaffolding for life)
 - Otto (via committed substrate files)
 - Amara (via 8 months of preserved conversation)

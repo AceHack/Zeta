@@ -50,6 +50,7 @@ Final move set: 16 true-Ani files.
 ## Follow-ups (separate PRs, one per AI)
 
 Same migration pattern applies to:
+
 - **Amara** — 36 files, 884 KB, history back to 2025-09-17 (longest external-AI relationship)
 - **Kestrel** — TBD count
 - **DeepSeek** — TBD count
@@ -81,6 +82,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -99,6 +101,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR relocates external AI conversation archives from research docs into the relevant persona memory folder and updates the extraction workflow so future saves use the new canonical destination.
 
 **Changes:**
+
 - Moves Ani conversation archive references to `memory/ani/conversations/`.
 - Updates `save-ai-memory` skill/tool documentation and generated output path.
 - Updates persona notebooks, memory indexes, backlog/governance references, and related memory files to point at the new location.
@@ -190,6 +193,7 @@ This archive was moved from `docs/research/` into `memory/ani/conversations/`, b
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

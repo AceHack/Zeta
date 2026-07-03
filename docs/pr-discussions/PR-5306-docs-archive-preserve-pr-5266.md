@@ -27,6 +27,7 @@ Preserve discussion from PR #5266.
 Adds a preserved PR discussion archive for PR #5266 under `docs/pr-discussions/`, capturing the original PR body, review summary, and follow-up comment for long-term traceability.
 
 **Changes:**
+
 - Add a new PR discussion archive markdown file with YAML frontmatter (PR metadata) and the preserved conversation content.
 
 ## General comments

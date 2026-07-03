@@ -38,6 +38,7 @@ meta rule."
   confers the class privilege, not the substrate). Kin noted: no-directives, rules-are-small-carved-
   sentences, thoughts-free-actions-razored.
 - the carved rule stays in .claude/rules/ (startup surface); meta/ is the recognition + index.
+
 markdownlint exit 0.
 
 AgencySignature-v1:

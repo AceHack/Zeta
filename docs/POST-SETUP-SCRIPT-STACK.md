@@ -13,7 +13,7 @@ expensive.
 
 ## The three-question decision flow
 
-### Q1 — Is this a pre-setup script?
+### Q1 — Is this a pre-setup script
 
 A pre-setup script is one that runs **before** the factory's
 canonical tooling (bun, dotnet, etc.) is installed. It must
@@ -30,7 +30,7 @@ deciding.**
 
 **If no** — continue to Q2.
 
-### Q2 — Is this a skill-bundled script?
+### Q2 — Is this a skill-bundled script
 
 A skill-bundled script lives inside
 `.claude/skills/<skill-slug>/scripts/` and ships as part of
@@ -47,7 +47,7 @@ mind that a heavier dep reduces the skill's portability.
 **If no** — it lives under `tools/` as a standalone
 post-setup tool. Continue to Q3.
 
-### Q3 — Does this belong in bash, or in bun + TypeScript?
+### Q3 — Does this belong in bash, or in bun + TypeScript
 
 Default: **bun + TypeScript**. Reasons:
 

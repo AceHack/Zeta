@@ -28,6 +28,7 @@ Sharpens the sonar/ray-tracing pair from the Ani ferry into two precise, distinc
 ## Why the pairing matters
 
 Ray-tracing and sonar are the **two halves of the meter**, one per regime:
+
 - **inside the boundary** (local, controllable) → **ray-tracing** → certainty (prove everything);
 - **across the boundary** (network, uncontrollable) → **sonar** → resolution-by-oscillation (the only way
   to measure an edge you can't compute through).

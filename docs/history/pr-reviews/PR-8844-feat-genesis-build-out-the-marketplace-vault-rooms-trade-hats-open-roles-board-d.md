@@ -53,6 +53,7 @@ Reputation is modeled as a **public, read-only profile attribute** — a score +
 **Mercer** (market-maker) and **Verity** (escrow & arbiter) wear the new hats. All five agents now carry a public Standing.
 
 ### Verification
+
 - `npm run build` — clean (0 errors)
 - Rendered end-to-end with Playwright — no console errors; vault → room → hat → agent all navigable
 

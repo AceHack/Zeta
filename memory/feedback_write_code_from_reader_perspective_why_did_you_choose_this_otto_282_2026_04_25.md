@@ -246,6 +246,7 @@ authoring-perspective.
   alone.
 
 The two compose:
+
 - WHAT — encoded in names + types. Don't comment.
 - WHY — encoded in rationale. Comment when non-obvious.
 

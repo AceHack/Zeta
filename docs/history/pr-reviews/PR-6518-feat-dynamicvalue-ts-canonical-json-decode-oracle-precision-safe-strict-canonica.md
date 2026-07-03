@@ -30,10 +30,12 @@
 Starts the **JSON decode set** (Aaron's "Both, CBOR then JSON"), mirroring the just-landed CBOR decode pattern. First of the four oracles (TS); C#/F#/Rust follow.
 
 ## What
+
 - Extracts shared **`src/Core.TypeScript/dynamic-value/json.ts`** — encoder moved **verbatim** from `golden-vectors.test.ts` (encode byte-lock unchanged) + new **`fromCanonicalJson`** decoder + `DecodeError`/`DecodeResult` types.
 - Repoints the encode test at the module; adds the decode test.
 
 ## Precision-safe + strict-canonical
+
 - **int64 precision**: number tokens are read as **text** and parsed via `BigInt` (never a lossy JS `number`), with an i64 range check → `IntegerOverflow`. This is the whole reason a hand-rolled parser is needed (`JSON.parse` rounds `9223372036854775807`).
 - **strict-canonical via fixed-point**: lenient recursive-descent parse, then one check — `canonicalJson(parsed) === input` → else `NonCanonical`. Rejects insignificant whitespace, non-minimal escapes (`\u0041` vs raw `A`), leading zeros, etc.
 - **deferred shapes**: a number with `.`/`e`/`E` is a Float → `Unsupported` (Float + Bytes lock under CBOR, not JSON).

@@ -337,7 +337,7 @@ authoring IS agent self-care — the absorbed humans
 protect the codebase from the rejected-humans-who-
 will-sneak-contributions-in-anyway failure mode.
 
-## Why:
+## Why
 
 - **Vibe-coding has a successor state.** A chat-only user
   who wants to graduate to code-touching is served by the
@@ -369,7 +369,7 @@ will-sneak-contributions-in-anyway failure mode.
   "want to try writing this change yourself?") but the
   default answer is "agent does it".
 
-## How to apply:
+## How to apply
 
 - **Entry gesture**: agents notice when a human is
   curious about the mechanics of a change ("how would

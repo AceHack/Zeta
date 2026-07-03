@@ -30,6 +30,7 @@
 Preserves the **engineering/governance substrate** from a forwarded Kestrel × maintainer session (continues the formal-proof + wellness/medical-device cadence). Personal/wellbeing/personal-history content and the business ventures from the same exchange are **intentionally excluded** (harm-by-grammar — the village's lane; Kestrel held it in-conversation).
 
 **Substrate captured (7 threads):**
+
 1. **Open-source ethic** — open-source asymmetric advantages, license fair competition; the honest line is **moats vs craftsmanship** (externally-checkable). ServiceTitan boundary held.
 2. **Responsible-disclosure DORA gate** — split clock (minimize discovery→sent; follow coordinated sent→public), hard-stop teeth; **kid-floor escalation** (unamendable, authorities/NCMEC, predetermined legal human-routed path; composes 081KSRGFP0008QG0R00091PP56).
 3. **Floor-change governance** — unamendable-by-you + correctable by hard external process; asymmetric (strengthen > weaken); genuinely-independent **multi-stakeholder steward**; federate into existing bodies, child-first motive.

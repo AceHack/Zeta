@@ -58,7 +58,9 @@ Reviewer P1 (`PRRT_kwDOSF9kNM5_lVdW`) flagged this as over-claim:
 
 The fix narrowed the claim to per-jurisdiction + per-title +
 per-acquisition-provenance verification, with explicit DMCA 1201
+
 + 17 USC 117 caveats + agent-acting-on-behalf-of-natural-person
+
 legal-interpretation-unsettled framing.
 
 ## The generalisation

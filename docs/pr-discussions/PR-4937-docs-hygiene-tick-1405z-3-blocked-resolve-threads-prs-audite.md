@@ -61,6 +61,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -79,6 +80,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-25 1405Z Otto-CLI background-worker audit of three `resolve-threads` PRs (cross-lane, read-only), capturing classifications and disposition.
 
 **Changes:**
+
 - Introduces a new tick shard at `docs/hygiene-history/ticks/2026/05/25/1405Z.md` with the audit narrative, per-PR classifications, and summary table.
 - Links to relevant lane-discipline and investigate-threads rules, plus prior tick precedent.
 

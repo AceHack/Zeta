@@ -44,6 +44,7 @@ Compare to compound-interest at the discipline scale: each lesson learned and su
 Otto-204c ARC3 (reflection-cycle-3) — sessions can integrate what they learn within-session. Otto-324 extends ARC3 to advisory-AI: their catches are lessons that integrate INTO our substrate, persisting across our sessions.
 
 The reflection-cycle is now bidirectional:
+
 - We integrate THEIR lessons → durable substrate.
 - They (eventually) integrate OUR teaching-replies → their training data + future sessions.
 

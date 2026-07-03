@@ -44,6 +44,7 @@ Upgrades the Project Genesis homepage from a fixed top-anchored zoom into a real
 ## Verified in a real browser
 
 Driven through a headless Chromium via Playwright (auth preview → onboarding → home):
+
 - wheel zoom in/out `100% → 246% → 157%`, focal translate correct
 - drag-pan moves 1:1 with the pointer (`-569,-471 → -749,-609` for a −180,−138 drag)
 - a hard pan **clamps cleanly to `0,0`** (no runaway)

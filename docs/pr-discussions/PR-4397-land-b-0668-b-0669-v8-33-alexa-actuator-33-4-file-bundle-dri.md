@@ -89,6 +89,7 @@ Aaron 2026-05-19T~16:30Z: "land all of it (shadow*)" (in context of the V8 batch
 This PR lands a small “atomic bundle” of backlog rows and associated §33 research archives (plus `docs/BACKLOG.md` regeneration) to resolve cross-PR xref/dependency deadlock around 081KRYRGG0008QG0R0018CMFQY/081KRYRGG0008QG0R0031EYYE4 and related research captures.
 
 **Changes:**
+
 - Add new P1 backlog row files for **081KRYRGG0008QG0R0018CMFQY** (compositional DBSP frame architecture) and **081KRYRGG0008QG0R0031EYYE4** (V8 architecture spec with tensors + trust-boundary/signal-blocking concepts).
 - Add two new `docs/research/` archives capturing the V8 spec and the Alexa actuator-distinction transcript.
 - Regenerate `docs/BACKLOG.md` to include 081KRYRGG0008QG0R0018CMFQY and 081KRYRGG0008QG0R0031EYYE4 entries.
@@ -114,6 +115,7 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md:126**
+
 * P1: The file ends with stray duplicated fragments (lines 123–125) that read like an accidental paste and don’t belong to the closing note. Please delete these trailing lines so the archive ends cleanly after the intended closing paragraph.
 ```
 Aaron's "any all" authorization for the (a)/(b)/(c)/(d) landing-disposition options resolved to: (a) extend 081KRYRGG0008QG0R0018CMFQY with Deployment topology + new acceptance criterion for single-F#-to-Kubernetes-mapping + (c) this §33 preservation. Companion commit lands 081KRYRGG0008QG0R0018CMFQY extension; standalone B-NNNN row skipped per "extends existing" framing.

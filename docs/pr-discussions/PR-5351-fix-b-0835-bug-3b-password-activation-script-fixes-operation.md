@@ -86,6 +86,7 @@ Operator 2026-05-26 physical hardware-support test: \"the password i set it stil
 Fixes 081KSGS9H0008QG0R00120EEHM Bug 3b in the NixOS install flow where an operator-provided password hash was ignored due to evaluation-time file reads pointing at the wrong root (live ISO vs install target) and/or being blocked in pure evaluation.
 
 **Changes:**
+
 - Removes evaluation-time `builtins.readFile`/`builtins.pathExists` password-hash injection logic.
 - Sets a build-time fallback hash for `users.users.zeta.hashedPassword` and adds an activation-time script that applies `/etc/zeta/initial-hashedpassword` (when present) via `usermod -p`.
 - Updates module commentary to document the root cause and the activation-time fix behavior across install/rebuild/CI scenarios.

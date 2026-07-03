@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 Delivers slice 1 and 2 of 081KRFA460008QG0R000CYBGKW (Cloud Routines).
+
 - 081KRHWGX0008QG0R000E8BHQ9: Added research doc on cloud routines API, auth, and triggers.
 - 081KRHWGX0008QG0R002S107P7: Added cloud-schedule.schema.json, updated install.ts with types, and updated tools/routines/README.md.
 
@@ -29,6 +30,7 @@ Delivers slice 1 and 2 of 081KRFA460008QG0R000CYBGKW (Cloud Routines).
 Lands slices 1 and 2 of 081KRFA460008QG0R000CYBGKW (Cloud Routines): a research doc capturing the Anthropic Cloud Routines API/auth/trigger surface, plus a schema and TypeScript types laying the groundwork for `cloud-schedule.json` files alongside the existing Desktop `schedule.json`.
 
 **Changes:**
+
 - Adds `tools/routines/cloud-schedule.schema.json` (taskId + trigger oneOf: scheduled/github_event/api, plus repos/connectors/notes).
 - Exports `CloudTrigger` and `CloudScheduleResult` types from `tools/routines/install.ts` (no reader/consumer wired yet).
 - Adds research doc and closes 081KRHWGX0008QG0R000E8BHQ9/081KRHWGX0008QG0R002S107P7 backlog rows; updates `tools/routines/README.md` to document `cloud-schedule.json`.

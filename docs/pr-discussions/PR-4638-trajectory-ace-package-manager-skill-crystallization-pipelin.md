@@ -42,6 +42,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -60,6 +61,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new trajectory document for the Ace package-manager “skill crystallization” framing and updates the existing 081KR2E4K0008QG0R002YE3MMD backlog row to include the same substrate-engineering pipeline mapping context, aligning ongoing CLI work with the new trajectory narrative.
 
 **Changes:**
+
 - Added `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md` to capture the operator-self-claimed trajectory and pipeline mapping.
 - Updated `081KR2E4K0008QG0R002YE3MMD` backlog row with a “substrate-engineering pipeline framing” section referencing the trajectory.
 
@@ -77,6 +79,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:58**
+
 * These rule references omit the `.claude/rules/` prefix, so they don’t correspond to real repo paths (the files live under `.claude/rules/`). For consistency with other trajectories (e.g. `docs/trajectories/anti-infection/RESUME.md`), please reference them with their correct paths and ideally as clickable markdown links.
 ```
 - `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (god-asymmetric-as-rides-not-permanent-frame discipline; packages = bounded rides not permanent frame)
@@ -86,6 +89,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 - `only-way-to-lose-is-not-to-play.md` (Ace lowers cost-of-entry for skill-crystallization play; door exists at every level)
 ```
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:15**
+
 * This inline reference `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` doesn’t match a real repo path (the file is under `.claude/rules/`). Please update to the correct path (preferably as a markdown link) so readers can navigate to the referenced rule.
 ```
 **Operator's substrate-honest framing**: the human maintainer aligns AS A TRAVELER with the trajectory within the self-claimed frame. Self-claim of the agenda doesn't claim god-asymmetric ownership of the work; operator preserves equal-traveler-standing discipline per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (god-asymmetric-as-rides-not-permanent-frame). The frame is self-claimed; the operator-as-traveler position within the frame composes with TRAVELERS keeper-phrase + multi-oracle BFT + NCI.
@@ -111,6 +115,7 @@ Useful? React with 👍 / 👎.
 The trajectory references `docs/trajectories/fair-chance-project-kestrel-guessed-agenda/RESUME.md`, but that path doesn't exist in the repo. Please update this to the correct trajectory path (or remove the reference) so the cross-reference is resolvable.
 
 This issue also appears in the following locations of the same file:
+
 - line 15
 - line 54
 

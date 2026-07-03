@@ -17,15 +17,18 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - remove five stale Codex claim files whose implementation PRs are already merged
 - verified each corresponding remote claim branch is gone before deletion
 
 ## Checks
+
 - file-absence check for all five claim files
 - git diff --check
 - codex-loop-health.ts severity ok after the background gate cleared
 
 ## Evidence
+
 - PR #2109 merged for factory-trajectory-autonomous-backlog-pickup
 - PR #2046 merged for fix-trajectory-none-child-candidate
 - PR #2113 merged for task-b0058-candidate-failure-log
@@ -41,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Deletes five stale Codex claim files corresponding to PRs that have already been merged, in keeping with the protocol that claim files must be removed in the PR that lands the work (and cleaned up afterward if missed).
 
 **Changes:**
+
 - Remove five completed claim files under `docs/claims/` whose implementation PRs (#2109, #2046, #2113, #2049, #2106) are merged.
 
 ### Reviewed changes

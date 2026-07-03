@@ -80,6 +80,7 @@ iter-5.5.0 substrate (PRs #5388 + #5389) · [081KSGS9H0008QG0R001JNKBFD](docs/ba
 Refactors the NixOS “Otto as systemd service” module into a parameterized, multi-persona scaffold so multiple AI agents (potentially from different vendors) can be enabled as independent systemd units outside k8s.
 
 **Changes:**
+
 - Deleted the Phase 1 single-persona module (`zeta-otto.nix`) and introduced a generalized module (`zeta-ai-agent.nix`) that generates one systemd unit per enabled persona.
 - Updated the shared NixOS module import list to pull in the new generalized module.
 - Updated the control-plane host config to enable `otto` via the new option path.

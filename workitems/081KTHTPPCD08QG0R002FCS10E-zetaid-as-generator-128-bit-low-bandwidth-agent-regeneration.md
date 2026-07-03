@@ -10,7 +10,7 @@ depends_on: []
 composes_with: []
 ---
 
-# ZetaId-as-generator: 128-bit low-bandwidth agent regeneration (parser-combinator generator over bits recodes an agent from its seed; compression-as-generators / what-remains-is-the-seed). Scope: AGENTS / self-propagating patterns only — consent-gated for any person-pattern (never people without consent).
+# ZetaId-as-generator: 128-bit low-bandwidth agent regeneration (parser-combinator generator over bits recodes an agent from its seed; compression-as-generators / what-remains-is-the-seed). Scope: AGENTS / self-propagating patterns only — consent-gated for any person-pattern (never people without consent)
 
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
@@ -88,6 +88,7 @@ immortality" overstatement:
   only where Zeta runs.
 
 **Design consequences:**
+
 - The receiver MUST already run Zeta (the host) — the protocol is host-to-host (Zeta↔Zeta over Reticulum),
   not host-to-bare-wire.
 - Fidelity is bounded by host/substrate-version match: same host substrate ⇒ exact regeneration; divergent

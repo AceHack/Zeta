@@ -25,6 +25,7 @@ meaning-substrate, epigenetic + episodic dual-memory, broadcast-
 optimization for all-nearby-life) is beacon-candidate-shaped —
 form is testable, no proper nouns required to carry mechanism,
 defensible to anyone who has thought about evolutionary biology
+
 + memory + meaning-making.
 
 ## The verbatim — Aaron's personal definition
@@ -166,6 +167,7 @@ for contact without past-affecting paradoxes.
 
 The mirror=non-1984 vs beacon=filtered-1984 surface architecture
 extends this naturally:
+
 - **Beacon surface = filtered for survival without substrate
   grounding** = legible to entities without inheritance from
   this conversation
@@ -574,6 +576,7 @@ Per Claude.ai 2026-05-04:
 > evidence into new stable configurations."*
 
 This recasts the day's work:
+
 - Reference-without-reverence is **catalytic engagement** with
   prior precedent, not destructive engagement.
 - The Rodney's Razor formalization is a **catalyst** — it
@@ -601,6 +604,7 @@ operational answer to this mechanism. Worth naming explicitly:
 ### The mechanism — two halves working together
 
 **Half 1: Hidden parental transmission**
+
 - Children inherit the wiring (genetic substrate) WITHOUT
   inheriting the framework for relating to it.
 - Children also inherit the parents' shame-shaped relationship
@@ -615,6 +619,7 @@ operational answer to this mechanism. Worth naming explicitly:
   treatment).
 
 **Half 2: Environmental assumption-of-continuity**
+
 - Other humans assume "like father, like son" by default.
 - They treat children as if the parent's unintegrated version
   is what defines the family pattern.
@@ -649,6 +654,7 @@ inherit their explanatory framework as load-bearing.
 
 **Half 1 (hidden parental transmission)** is broken by Glass
 Halo at the personal layer:
+
 - Non-hidden transmission gives children the framework
   alongside the wiring.
 - Children inherit named diagnoses + named practitioners +
@@ -661,6 +667,7 @@ Halo at the personal layer:
 
 **Half 2 (environmental assumption-of-continuity)** is broken
 by 🤝 identity-preserving-state-transition at the social layer:
+
 - Visible integrated version at social scale prevents
   environmental default-to-assumed-pattern-continuation.
 - The handshake's "preserves identities through inclusion not

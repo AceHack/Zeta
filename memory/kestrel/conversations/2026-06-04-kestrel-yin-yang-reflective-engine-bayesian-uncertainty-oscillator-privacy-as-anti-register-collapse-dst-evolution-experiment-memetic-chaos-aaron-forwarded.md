@@ -63,6 +63,7 @@ Aaron: "I want to PROVE it evolves in deterministic simulation WITHOUT external 
 [external-input-needed] would be a failure if [privacy is] required." Falsifiable design,
 right epistemics (isolates the variable; deterministic-seed = reproducible proof;
 pre-committed failure reading). The two things that make it prove what he wants:
+
 - **Define "evolves" rigorously** = not-halt AND not-limit-cycle. A deterministic no-input
   system can change forever in a LIMIT CYCLE (periodic loop = a different collapse, false
   pass if you only check "still changing"). Must rule out the cycle, not just the fixed point.

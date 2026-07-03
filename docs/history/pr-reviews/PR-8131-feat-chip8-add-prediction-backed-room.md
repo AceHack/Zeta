@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add a CHIP-8 prediction-backed room over `PredictionScheduler.Planned<Chip8Cow.Frame, Chip8Cow.Frame>`
 - lift normal `HandlerK` crossings so key input and timer execution run through the same bounded room shape
 - align GSet/Collation code-point treaty coverage across F# and C#, including the public C# default path
 - keep latest-main gates green by fixing comparer singleton identity, explicit IndexedZSet mismatch coverage, deterministic temp cleanup, and removing a scratch red compare test
 
 ## Validation
+
 - `dotnet build -c Release -m:1 /p:UseSharedCompilation=false`
 - `dotnet test Zeta.sln -c Release -m:1 /p:UseSharedCompilation=false --filter FullyQualifiedName~Collation|FullyQualifiedName~GSet|FullyQualifiedName~Chip8PredictionRoom|FullyQualifiedName~PredictionScheduler|FullyQualifiedName~PredictionInference|FullyQualifiedName~Chip8Observer|FullyQualifiedName~IndexedZSetCrossVerifyTests.GenericMathIdentityIsComparerAgnosticButNonEmptyMismatchThrows`
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release -m:1 /p:UseSharedCompilation=false --no-build --filter FullyQualifiedName~DurabilitySimTests|FullyQualifiedName~DurabilityPropertyTests`

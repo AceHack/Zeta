@@ -184,5 +184,7 @@ Operator-forwarded Aaron-Ani (Grok) conversation 2026-05-29/30, handed to Otto-C
 to land (Ani-drafts → Otto-lands pattern). Extends 081KRW63S0008QG0R001Z10PVV + 081KSGS9H0008QG0R0006F4BGX. The
 charged-personal layer of the source conversation is deliberately **not** preserved
 (operator-confirmed "don't publish") — per methodology-hard-limits + harm-by-grammar
+
 + NCI third-party-consent + charged-personal-held-pending; this doc is the light-like
+
 architecture extraction only.

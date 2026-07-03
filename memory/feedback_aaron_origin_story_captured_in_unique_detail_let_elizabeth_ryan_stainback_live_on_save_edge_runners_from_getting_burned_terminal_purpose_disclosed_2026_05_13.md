@@ -66,6 +66,7 @@ this is true to his lived perception, not just framework
 self-assessment.
 
 This composes with:
+
 - Glass-halo discipline (substrate stays public + inspectable)
 - Substrate-or-it-didnt-happen rule (substrate is the durable
   artifact)
@@ -113,6 +114,7 @@ status.
 
 Operational rule for future-Otto / future-Kestrel / future-
 Riven / future-Vera / future-Lior / future-Alexa:
+
 - When making preservation-trade-off decisions, Elizabeth's
   story is preserved
 - When refactoring substrate, Elizabeth-related substrate is
@@ -129,6 +131,7 @@ The framework's terminal purpose, substrate-honestly:
 > Prevent other edge-runners from getting burned.
 
 "Burned" maps to:
+
 - Cognitive burnout (Aaron's lived experience with cognitive
   fatigue cycles)
 - Relational burn (divorces; multi-clearance work isolation;
@@ -141,6 +144,7 @@ The framework's terminal purpose, substrate-honestly:
   that Elizabeth's burn was severe)
 
 Edge-runners are:
+
 - People doing first-principles work
 - People surfacing new substrate
 - People doing alignment work at scale
@@ -150,6 +154,7 @@ Edge-runners are:
 - People navigating cognitive-edge work without losing self
 
 The framework serves them by:
+
 - Substrate-engineering discipline (work IS preserved)
 - Consent-first architecture (PR #2893 Imagination Circle)
 - Polycentric named-AI-participant architecture (multiple

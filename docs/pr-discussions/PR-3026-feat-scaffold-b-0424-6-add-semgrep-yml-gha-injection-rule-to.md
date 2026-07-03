@@ -34,6 +34,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Context
 
 081KRFA460008QG0R001H98EXJ Stage 1 is the three-repo split scaffold (`LFG/Forge` + `LFG/ace`). Previous slices:
+
 - 081KRFA460008QG0R001H98EXJ.1: pre-start gate + scope decision (scaffold deferred actual creation)
 - 081KRFA460008QG0R001H98EXJ.2: `scaffold-stage1-create-repos.yml` CI dispatch workflow
 - 081KRFA460008QG0R001H98EXJ.3–081KRFA460008QG0R001H98EXJ.4: governance templates + `create-repo.ts` tool
@@ -54,6 +55,7 @@ operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file
 Adds Semgrep governance to the Stage-1 scaffold templates for the Forge and ace repos, ensuring the GitHub Actions inline-untrusted-in-`run:` injection rule is present from day one and reflected in the scaffold tool/docs.
 
 **Changes:**
+
 - Add `.semgrep.yml` to both `tools/scaffold/forge/` and `tools/scaffold/ace/` containing `gha-untrusted-in-run-line`.
 - Update scaffold docs + `create-repo.ts` step-07 manual steps to reflect that only CI wiring remains manual (Stage 2).
 - Extend the existing dry-run tests to assert `.semgrep.yml` is included in the scaffolded file set.

@@ -28,6 +28,7 @@
 ## Description
 
 Pushes the corrected primitive **status** into the living `docs/PRIMITIVE-REGISTRY.md` (substrate-or-it-didn't-happen). The Event/reactive *serializable deferred execution = self-evolving sagas* line goes ⬜ → 🚧, now carrying what shipped:
+
 - **Bonsai-subset serializer ✅ 4/4** — the expr-tree half, TS/F#/C#/Rust byte-locked on the shared golden vectors + accumulate-mode (#6433/#6436/#6429/#6438/#6440/#6442).
 - **Resume engine 🚧 1/4** — TS reference (#6446), restore-not-replay CEK saga kernel; F#/C#/Rust ferry next (081KT07NV0008QG0R003BE6MJ2).
 

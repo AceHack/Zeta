@@ -35,6 +35,7 @@ Dedicated absorb of Amara's 19th courier ferry per CC-002 close-on-existing disc
 4. `ISimulationDriver` + VTS promotion to core
 5. Simulated filesystem (DiskBackingStore rewrite)
 6. Cartel-Lab DST calibration (aligns with #342)
+
 Plus: `tools/git/push-with-retry.sh` retry-audit finding; DST-held + FDB-grade criteria lock.
 
 ## DST grade (Amara's assessment, not factory-certified)
@@ -60,6 +61,7 @@ Amara verdict: *"strong draft / not canonical yet."*
 Adds a new Aurora research/absorb document capturing Amara’s 19th-ferry DST audit (Part 1) plus her 5.5 correction pass (Part 2), with Otto’s operationalization notes and cross-references for follow-on work.
 
 **Changes:**
+
 - Introduces a new `docs/aurora/` ferry absorb covering DST audit findings and a revised remediation roadmap.
 - Documents queued “graduation” items (scanner/artifacts/scheduler/fs simulation) and reiterates non-authorization boundaries.
 

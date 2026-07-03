@@ -48,6 +48,7 @@ The taxonomy survey names all **11 implicit meta-cognitive moves** already opera
 | Retractible ceiling | Higher-order meta: safe because substrate is retraction-native (Aaron 2026-04-21 correction arc preserved verbatim) |
 
 Also includes:
+
 - Six **measurables candidates** table with measurement procedures and automation status
 - **Meta-drift** failure mode with observable symptoms
 - **Distributed vs concentrated** pre-commit with F1/F2/F3 rationale and evidence threshold for revisit

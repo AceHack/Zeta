@@ -32,6 +32,7 @@
 The codegen-forward narrowed thread (from the Phase-B memory). Until now the committed `splitmix64.ir.json` / `fmix32.ir.json` were **hand-maintained artifacts living parallel to** the frozen `zeta-ir-v1` envelope (#8725) — two things that had to be kept in sync by discipline. This PR makes the v1 `Ir` the **single source**: the legacy file becomes a **derived, byte-lock-guaranteed projection** of it.
 
 ### `ZetaIrV1.toLegacyIrJson : Ir -> Result<string, EncodeError> option`
+
 - Projects a frozen v1 `Ir` back to the **exact committed legacy bytes**, in each generator's pre-v1 field order, through the **real** `DynamicValue.toCanonicalJson` machinery:
   - splitmix64 → `generator, version, zetaId, ops` (no `width`, no `schema`)
   - fmix32 → `generator, version, width, ops` (no `zetaId`, no `schema`)
@@ -39,6 +40,7 @@ The codegen-forward narrowed thread (from the Phase-B memory). Until now the com
 - Returns `None` for a generator with no legacy file (no fabricated artifact).
 
 ### Byte-locks on **both** runtimes (independent)
+
 - **F#** `ZetaIrV1.Tests` (+4): the derived splitmix64/fmix32 bytes equal the committed files **character-for-character**; the derived splitmix64 reconstructs the stored `zetaId` from identity; an unknown generator → `None`.
 - **TS** `legacy-source.test.ts` (+4): the same property on **bun**, with the id reconstructed via the harness's own `idOf` (the relation's content-address, not copied), and a green-can-turn-red guard on an op-constant change.
 
@@ -46,10 +48,12 @@ The codegen-forward narrowed thread (from the Phase-B memory). Until now the com
 **Zero committed bytes change** — additions only. Every existing consumer stays byte-identical and green: the bun harness still folds the same legacy files, and `GeneratorIrRegistry.Tests` still pin the live Z-set relation row against them.
 
 ### Honest scope
+
 - **PROVEN:** the legacy file is a deterministic, test-guaranteed projection of the frozen v1 envelope on **both** .NET and bun; the stored `zetaId` is reconstructible from identity alone.
 - **NOT claimed:** the Face-3 `gen(gen)=gen` theorem itself (math team's). This removes the last hand-maintained parallel between the frozen IR and its serialised forms — one more piece of the substrate made single-sourced.
 
 ### Gate
+
 - F# generator/IR/v1 sweep: **46/46**
 - compare.ts N-way: **11/11**
 - bun `zeta-ir-v1-gen` dir: **9/9**

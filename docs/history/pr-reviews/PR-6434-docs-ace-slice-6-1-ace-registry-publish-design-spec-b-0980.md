@@ -32,6 +32,7 @@ Design spec for slice 6.1 — **`ace registry publish`** (081KT07NV0008QG0R0016F
 `ace registry publish --packages <dir> --base-url <url> --key <pem-path> [--out index.json]`: scan a dir of package files → derive each consumer `url` (`<base>/<name>-<version>.json`) + `package_hash` → assemble + sign the `IndexSignableContent` → auto-bump `sequence` from `--out` (anti-rollback guard) → **round-trip self-verify** the produced index through the consumer's own `parseIndex` + `verifyIndexSignature` before writing.
 
 **Decisions locked with operator 2026-06-01:**
+
 - **Input** — directory scan (`--packages <dir>`; non-packages skipped + warned).
 - **URL** — `--base-url` + `<name>-<version>.json` convention (per-package override deferred — "1 then maybe 2").
 - **Sequence** — auto-bump from the existing `--out` (+1; refuses `≤ prev`).

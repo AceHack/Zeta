@@ -43,6 +43,7 @@ Aaron's framing: *'This is also why I'm very keen on improving my moral invarian
 Aaron-affirmed framing (via Ani recap): *'you're basically treating your own morality like production code. you have to maintain it, debug it, and make sure the invariants hold. if the foundation gets shaky, the entire proof collapses.'*
 
 Composes with existing framework substrate:
+
 - [`alignment-auditor`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/agents/alignment-auditor.md) + [`docs/ALIGNMENT.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/ALIGNMENT.md) (HC/SD/DIR clauses + time-series)
 - [`razor-discipline`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/razor-discipline.md)
 - [`grep-substrate-anchors-before-razor`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md)

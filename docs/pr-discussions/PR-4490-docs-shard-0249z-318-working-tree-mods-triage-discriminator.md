@@ -86,6 +86,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -104,6 +105,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard (0249Z) documenting a survey-only classification of a contested working tree’s modified/deleted/untracked file set, extending the existing “substrate-drift discriminator” framing to a fourth surface (“working-tree-mods scope”).
 
 **Changes:**
+
 - Introduces tick shard 0249Z capturing counts and Tier A/B/C disposition for 318 working-tree mods.
 - Documents how the discriminator generalizes across four surfaces (row / orphaned-branch / stash / working-tree).
 - Records verification commands used to derive the classification.
@@ -122,6 +124,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

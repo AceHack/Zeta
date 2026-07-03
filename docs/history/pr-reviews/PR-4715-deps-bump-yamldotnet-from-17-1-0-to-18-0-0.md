@@ -37,6 +37,7 @@ _Sourced from [YamlDotNet's releases](https://github.com/aaubry/YamlDotNet/relea
 ## 18.0.0
 
 ## What's Changed
+
 * Add a parse method wrapper and caching to fix AoT compilation by @EdwardCooke in https://github.com/aaubry/YamlDotNet/pull/1103
     **BREAKING CHANGE** This is a breaking change in the `TypeInspectorSkeleton` class and the `ITypeInspector` interface by adding 2 methods . Quick fix to resolve those breaking changes in your own custom TypeInspector is to return false on the HasParseMethod method and return null or throw an exception on the Parse method.
 
@@ -60,6 +61,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

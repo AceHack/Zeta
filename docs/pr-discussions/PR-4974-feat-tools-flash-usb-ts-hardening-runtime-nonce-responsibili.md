@@ -67,6 +67,7 @@ Composes with the framework's autonomy-first-class + NCI disciplines: agents act
 Hardens the `full-ai-cluster/tools/flash-usb.ts` safety confirmation gate by requiring an explicit responsibility-acceptance phrase that includes a fresh per-run nonce, and documents/permits agent invocation via `.claude/settings.json`.
 
 **Changes:**
+
 - Add a per-run random nonce and require typing `accept-destroy <device> <nonce>` to proceed.
 - Expand README + script header text around the new confirmation semantics and liability framing.
 - Add a path-scoped Claude permissions allow rule for invoking `flash-usb.ts`.

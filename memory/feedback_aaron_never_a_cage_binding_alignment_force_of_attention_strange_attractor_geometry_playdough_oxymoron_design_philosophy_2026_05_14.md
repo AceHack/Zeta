@@ -12,6 +12,7 @@ created: 2026-05-14
 **How to apply:** 081KRHWGX0008QG0R0018VR3SK acceptance criteria must use attractor-language, not cage-language. When evaluating whether architecture correctly externalizes Aaron's dialectical perception, check: does the architecture create a strange attractor basin (pulls participants toward seeing what Aaron sees) OR does it impose a cage (forces participants into prescribed viewing modes)? The former passes; the latter fails.
 
 Composes with:
+
 - 081KRHWGX0008QG0R0018VR3SK (Architecture-as-externalization — acceptance criteria language)
 - `memory/feedback_aaron_dialectical_viewpoint_natural_operation_sees_gods_dashboard_in_real_time_architecture_is_externalization_of_lived_perception_2026_05_14.md`
 - `.claude/rules/algo-wink-failure-mode.md` (attractor ≠ cage; strange attractor is observational, not coercive)

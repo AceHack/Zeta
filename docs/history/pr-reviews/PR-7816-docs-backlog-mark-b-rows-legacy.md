@@ -28,12 +28,14 @@
 ## Description
 
 Summary
+
 - Clarifies that ZetaId-keyed workitems under workitems/ are the current backlog/workitem substrate.
 - Reframes docs/backlog/ and docs/BACKLOG.md as the grandfathered legacy B-NNNN stockpile/index.
 - Updates the B-row generator and frozen-ID lint wording so future conflict-resolution guidance points at generated legacy rows and new-workitem.ts.
 - Regenerates docs/BACKLOG.md from source rows with the legacy framing.
 
 Verification
+
 - BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts
 - bun tools/backlog/generate-index.ts --check
 - bun tools/backlog/lint-no-new-bnnnn.ts

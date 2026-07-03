@@ -32,6 +32,7 @@ Aaron 2026-06-19 (part 10), *"both please."*
 **(1) memory(project)** — the canonical **architecture definition of Zeta**, quote-anchored: **Zeta is null** (undifferentiated base / free object / ⊥; identity = a **lens** over null); **meaning = the remembered links** (edges not nodes; relational/decentralized identity + memory-preservation + no-collapse — *null base, sacred edges*); **QPG** = quality per glyph, not dots per inch.
 
 **(2) feat(core)** — fold **QPG into `src/Core/SocietalDora.fs`** (weight by link quality, not count):
+
 - `edgeQpg = max(0,ρ_owe) × meanPositiveCoupledGain` — link quality (genuine-other × depth); mirror/extractive ⇒ 0.
 - `MeanQpg` + **`QpgWeightedEmpowerment`** = `Σ(qpg_e·empFreq_e)/Σqpg_e` — empowerment weighted by quality, so a deep genuine link isn't drowned by shallow/mirror ones.
 

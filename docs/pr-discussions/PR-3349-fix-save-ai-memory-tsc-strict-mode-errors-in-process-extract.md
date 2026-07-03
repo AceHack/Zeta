@@ -37,6 +37,7 @@ Previously `bun process-extract.ts --ai-name` (no value) would silently consume 
 | Runtime smoke (existing CLI shape) | works | works |
 
 ## Test plan
+
 - [x] `bunx tsc --noEmit` passes (verified locally)
 - [ ] CI green
 - [ ] No new warnings in `bun run`
@@ -52,6 +53,7 @@ Previously `bun process-extract.ts --ai-name` (no value) would silently consume 
 This PR addresses TypeScript strict-mode (`exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`) compilation errors in the Bun CLI tool `tools/save-ai-memory/process-extract.ts`, improving argument parsing safety and string indexing behavior.
 
 **Changes:**
+
 - Adds a `nextArg(name)` helper in `parseArgs` to avoid `string | undefined` from `argv[++i]` and emit an error when a flag is missing a following value.
 - Updates `capitalizeName` to use `charAt(0)` instead of `name[0]` under `noUncheckedIndexedAccess`.
 

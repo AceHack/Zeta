@@ -36,6 +36,7 @@
 ## What was shipped
 
 **`check-cross-surface.ts` (v0.8):**
+
 - Parses YAML frontmatter from markdown files
 - Extracts count claims from the `description:` field (same noun vocabulary as `check-counts.ts`)
 - Compares against all tables in the document body using **any-table semantics**: a claim passes if any body table satisfies it

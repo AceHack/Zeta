@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - adds a bounded review-request artifact for 081KR7JY10008QG0R000R503K2 inter-agent bus design
 - narrows reviewer questions to v0 transport, envelope fields, injection controls, circuit breakers, git-native boundaries, and a safe acceptance test
 - updates the claim file with the chosen path set
 
 ## Verification
+
 - bun run lint:markdown -- docs/claims/backlog-0400-review-request-vera-20260510.md docs/research/2026-05-10-b0400-inter-agent-bus-bounded-review-request.md
 - git diff --check
 

@@ -30,6 +30,7 @@
 Aaron 2026-06-02 (shadow*): *"land the b-0643 ksk defensive architecture build row."* Sub-row of **081KRW63S0008QG0R002ZRYY4F** (KSK SDK); build targets from the #6565 synthesis (information-suppression spectrum → KSK defensive architecture). P1.
 
 The five defensive primitives (each with a golden-vector acceptance criterion):
+
 1. **opt-in bus lane (internal) + border protocol (external)** — graduated agent-chosen protection + boundary threat-escalation (081KT2T2J0008QG0R0026MS6PV; detection via 081KRW63S0008QG0R003Z7QV2A)
 2. **Faraday shields NOT cages** — `must-paired-with-can-exit` + NCI (protect-without-trap; variable strength per force; every shield has a named exit so it can't become a cage)
 3. **concentric threat-level rings** — dynamic migration; protection scales with actual risk (081KRW63S0008QG0R0004P69JA/081KSNY2Z0008QG0R00390T4DJ)

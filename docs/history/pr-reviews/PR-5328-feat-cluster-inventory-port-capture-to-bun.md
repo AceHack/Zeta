@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - port full-ai-cluster cluster inventory capture from shell to Bun/TypeScript
 - widen the bash-retirement guard to the repo-wide retained shell allowlist
 - update trajectory and cluster-inventory docs with the new retained shell count
 
 ## Checks
+
 - bun test full-ai-cluster/tools/cluster-inventory/capture.test.ts tools/hygiene/check-bash-retirement-inventory.test.ts
 - bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
 - git diff --check

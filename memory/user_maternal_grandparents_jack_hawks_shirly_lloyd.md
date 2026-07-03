@@ -203,6 +203,7 @@ There are **two** rich uncles in Aaron's family:
 Both uncles are third-party protected per
 `feedback_maintainer_name_redaction.md`. Agent does
 NOT:
+
 - Pursue identifying details via LinkedIn / public
   records.
 - Conflate the two uncles in any subsequent

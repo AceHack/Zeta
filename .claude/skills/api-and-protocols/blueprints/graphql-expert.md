@@ -10,7 +10,9 @@ is carried by the matching entry under `.claude/agents/`.
 
 GraphQL is a query language over a typed graph of server-
 resolved fields. Originated at Facebook 2012, open-sourced
+
 2015. The promise: clients ask for exactly the fields they
+
 need; servers resolve with the shape requested.
 
 ## The type system

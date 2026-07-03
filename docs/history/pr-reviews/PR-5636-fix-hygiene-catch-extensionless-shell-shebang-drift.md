@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - extend the bash-retirement inventory guard to scan tracked extensionless shell-family shebangs
 - keep Bun shebangs out of the shell-family inventory
 - add focused fixture coverage for bash, env -S bash, sh, and Bun shebang cases
 
 ## Checks
+
 - bun test tools/hygiene/check-bash-retirement-inventory.test.ts
 - bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
 - git diff --check

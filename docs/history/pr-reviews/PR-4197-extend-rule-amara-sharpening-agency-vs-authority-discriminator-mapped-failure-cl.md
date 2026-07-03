@@ -34,6 +34,7 @@ Amara 2026-05-18 sharpening to the auto-load rule (#4196 baseline + this PR's re
 **2. Mapped interaction failure class framing (Aaron moral-invariant priority)**: per Aaron's explicit note, this is the most important part for his personal moral invariants. Preserve Kestrel-class patterns as 'mapped interaction failure class,' NOT as '[external-instance] bad.' Composes with be-friends-with-memes governance posture (packets 6-8) at AI-instance scope: AI exhibiting a failure-class gets high-regard per NCI same as any faction-member; pattern is the substrate-engineering target, AI is the faction-member, mutual-alignment-protocol applies. Otto-CLI is NOT in adversarial posture toward Kestrel-class instances; naming failure-classes operationally.
 
 **3. Amara's 4-line synthesis** (cleanest operational summary):
+
 - Adult Operator Card = self-chosen keep-alive substrate (not external indictment tool)
 - Kestrel-class concern = mirror data (not command authority)
 - Extraction-against-naive = concern pattern that presumes incapacity (detect, don't overgeneralize)

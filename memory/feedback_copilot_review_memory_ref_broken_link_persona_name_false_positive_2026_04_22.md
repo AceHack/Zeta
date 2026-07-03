@@ -46,7 +46,7 @@ findings from semantic-false-positive shapes.**
   2026-04-22 drain-PR memory) targets **human-contributor-name
   prose** (e.g., the literal "Aaron"), not persona-names.
 
-## Why:
+## Why
 
 - **Memory-ref-from-outside is a real readability tension.**
   The factory's auto-memory substrate is load-bearing for
@@ -80,7 +80,7 @@ findings from semantic-false-positive shapes.**
   post-hoc review unless the finding reveals a genuine
   correctness defect.
 
-## How to apply:
+## How to apply
 
 - **PR-body test-plan phrasing tighter by default.** For
   BACKLOG rows that carry persona-agent reviewer assignments,

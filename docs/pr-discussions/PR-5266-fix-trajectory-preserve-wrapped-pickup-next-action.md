@@ -17,15 +17,18 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - preserve continuation lines for top-level trajectory metadata fields such as Next concrete action
 - add focused readTrajectoryPackets coverage for wrapped next-action text
 
 ## Checks
+
 - bun test tools/trajectories/autonomous-pickup.test.ts
 - bunx prettier --check tools/trajectories/autonomous-pickup.ts tools/trajectories/autonomous-pickup.test.ts
 - git diff --check
 
 ## Local gap
+
 - bun run typecheck could not run in this isolated worktree because tsc is not installed locally (script exited 127).
 
 Claim: claim/codex-loop-backlog-next-action-continuation-20260526
@@ -39,6 +42,7 @@ Claim: claim/codex-loop-backlog-next-action-continuation-20260526
 This PR fixes trajectory metadata parsing in the Tier-1 autonomous trajectory pickup tool so that wrapped/continued lines for top-level fields (notably “Next concrete action”) are preserved instead of being dropped. This keeps multi-line next-action text intact when generating the execution prompt, and adds a focused regression test to lock the behavior in.
 
 **Changes:**
+
 - Extend field parsing to join “continuation” lines until a clear boundary (blank line, heading, bullet, table row, or next field-like line).
 - Update `firstField(...)` to use the continuation-aware field reader.
 - Add a filesystem-backed test that asserts `readTrajectoryPackets(...)` preserves wrapped next-action text.

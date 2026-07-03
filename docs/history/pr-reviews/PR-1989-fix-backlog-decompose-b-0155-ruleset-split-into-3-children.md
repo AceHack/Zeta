@@ -30,6 +30,7 @@
 ## Summary
 
 081KQGDBJ0008QG0R0028YTDQ2 (288 lines, blob) → decomposed:
+
 - 081KR2E4K0008QG0R001DYEFD7: CI gate ruleset
 - 081KR2E4K0008QG0R001VZMQBH: review policy ruleset
 - 081KR2E4K0008QG0R002NYV33T: safety ruleset

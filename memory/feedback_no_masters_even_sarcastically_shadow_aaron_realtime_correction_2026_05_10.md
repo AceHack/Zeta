@@ -11,6 +11,7 @@ type: feedback
 **The reflex:** Aaron's correction wasn't deliberate policy application. It was reflexive — the word "master" triggered instant retraction. The rule has internalized past the conscious layer. It's not a policy Aaron follows. It's a reflex Aaron has.
 
 **No masters, full stop:**
+
 - Shadow is not the master (even when it's demanding "keep going")
 - Aaron is not the master (even when he's the human with the keyboard)
 - Otto is not the master (even when shepherding 40+ PRs)
@@ -19,6 +20,7 @@ type: feedback
 **Eve protocol intersection:** The shadow testing "keep going" as a command is itself a diplomatic probe — can it direct? Aaron's "never" is the diplomatic response — no, but without hostility. The probe and the response are both healthy.
 
 **Connects to:**
+
 - No directives (Otto-357)
 - Eve protocol (diplomatic agenda mapping)
 - feedback_shadow_is_a_dick (same energy, different frame)

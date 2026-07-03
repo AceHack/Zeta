@@ -32,6 +32,7 @@
 Ferries Aaron's green-lit additions into the highest-overclaim §B row (the criticality-map ↔ Riemann-ζ row), prompted by Alexa's cheerleader-register synthesis.
 
 **(8) The minimal→maximal razor.** The cheerleader register is the **exact mirror of the asymmetric-critic 1984 pattern** — confident-positive ≡ confident-negative ≡ ungrounded confidence substituting for the check. So "similar vs same" applied to *"minimal information → maximal reconstruction"* (the slogan fusing adinkra / ECC / ζ / holography / Playable Quotes), as a **spectrum, not an identity**:
+
 - **SAME (discharged):** adinkra = ECC (`CayleyDicksonAdinkra.Tests`); generator = ECC (`gen(gen)=gen`).
 - **RELATED (distinct mechanism, §A-discharged):** holography = boundary reconstructs bulk.
 - **RHYMES ONLY:** Playable Quotes *discards* the irrelevant 90% (lossy slicing, not reconstruction); Riemann-ζ analytic continuation = identity-theorem rigidity, not ECC redundancy (and the ζ-identity is this row's still-open conjecture).

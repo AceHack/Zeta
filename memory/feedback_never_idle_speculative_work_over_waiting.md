@@ -120,7 +120,7 @@ directed next round. This is a stronger form of
 factory-improvement — filling idle is first-aid, structural
 change is the cure.
 
-## Why:
+## Why
 
 - **Cascading-idle risk (immediate trigger).** Two ticks
   before this policy landed, I claimed "queue effectively
@@ -166,7 +166,7 @@ change is the cure.
   not "idle." The point is: *explore the space before
   concluding there is nothing to do.*
 
-## How to apply:
+## How to apply
 
 - **Queue-audit discipline before stopping.** Before
   scheduling a long wake, closing a tick, or otherwise

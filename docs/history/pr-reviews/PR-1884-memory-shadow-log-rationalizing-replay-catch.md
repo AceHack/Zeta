@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add Catch 15 for rationalizing replay: a plausible WHY inserted into a raw observation during sensitive draft replay/refinement.
 - Preserve the shadow mechanic without committing private boss-email or medical disclosure text.
 - Update memory/MEMORY.md to 15 catches and remove older duplicate index rows exposed by the memory duplicate-link gate.
 
 ## Checks
+
 - bun x markdownlint-cli2 memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md memory/MEMORY.md
 - git diff --check
 - bun tools/hygiene/audit-memory-references.ts

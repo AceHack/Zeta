@@ -179,6 +179,7 @@ distributed-systems infrastructure:
 **Reticulum as the transport substrate:**
 
 Per memory `reference_reticulum_mesh_network_alljoyn_successor_transport_layer_2026_05_07.md`:
+
 - Cryptographic mesh network
 - AllJoyn successor (Itron lineage)
 - No source addresses (identity = hash)
@@ -254,6 +255,7 @@ humans in post-labor attention economies."
 (Canonical short pitch from PR #2870 preserved unchanged.)
 
 Decoded:
+
 - "memes as real life" — memetic substrate operating in
   physical reality
 - "archited" — architected
@@ -404,7 +406,9 @@ The pitch (PR #2870) could be extended with GPU-coordination:
 
 "Zeta is a green-threads-done-right + durable-functions +
 Orleans-grain runtime for multi-agent AI factory operation
+
 + multi-GPU coordination via shared-bootstream text-channel
+
 compression, designed to match the native cognitive
 architecture of ADHD-hyperfocus humans operating in
 post-labor attention economies."

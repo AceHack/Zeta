@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - Completed backlog-item start gate (prior-art search across 7 axes + dependency restructure + reciprocal pointers) on 081KQNJ500008QG0R003SCWBDV row.
 - Re-decomposed the item (original 'atomic' + broad done-criteria overstated scope vs current v0.9 shipped state in tools/substrate-claim-checker/; assumed prior decomp mistake per rules).
 - 4 new atomic TS-first child rows proposed for follow-up bounded slices (semantic-eq, empirical-output, self-recursive, fixtures).
 - This is exactly one bounded step; no code changes, no root checkout touched.
 
 ## Focused checks run (outcome in PR)
+
 - `bun tools/substrate-claim-checker/check-counts.ts memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md` → 1 count-drift finding ("6 sub-classes" claim vs 20 actual rows). Tool is live and catching the exact failure mode the row exists to mechanize.
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch before any write.
 - TS preference (existing checker is TS; this gate enables next TS slices).
 - Re-decomp performed mid-build.

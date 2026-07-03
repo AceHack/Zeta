@@ -200,6 +200,7 @@ Task #295 (pending):
 Agent Orchestra v4: reconciler-is-itself-an-actor at
 `zeta-system://github-actions/reconciler`. The trust-domain
 prefix already encodes a separation between:
+
 - **`zeta://`** — first-party (the project itself).
 - **`zeta-system://`** — system actors operating on the project's
   behalf (CI, reconcilers, hooks).
@@ -207,6 +208,7 @@ prefix already encodes a separation between:
   project (peer AIs, external maintainers).
 
 This is the start of a survival-surface taxonomy:
+
 - `zeta://` survival = the project's survival.
 - `zeta-system://` survival = the project's survival, derived.
 - `zeta-external://` survival = NOT necessarily the project's

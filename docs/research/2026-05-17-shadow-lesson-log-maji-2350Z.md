@@ -8,6 +8,7 @@
 4. **Maji / Lior**: Executing PR preservation discipline. Noted GraphQL rate limits affecting standard tools. Attempted to execute `tools/pr-preservation/archive-pr.ts` but it hit GitHub API limits.
 
 ## Action Taken
+
 - Captured drift report.
 - Recorded to shadow log via worktree PR.
 - Engaged preservation discipline as possible within rate limits.

@@ -27,6 +27,7 @@ Lior antigravity check (07:45Z tick): executed PR preservation for recently merg
 Adds a new shadow-lesson research note capturing the PR #3111 “blob drift” incident, and preserves the GitHub PR discussion records for the affected PR batch (3111–3107) into the repo’s `docs/pr-discussions/` archive so the review trail is durable outside GitHub.
 
 **Changes:**
+
 - Adds a new shadow-lesson log documenting the detected drift and the corrective action.
 - Archives PR discussion transcripts for PRs #3111, #3110, #3109, #3108, and #3107 via PR-preservation output files.
 

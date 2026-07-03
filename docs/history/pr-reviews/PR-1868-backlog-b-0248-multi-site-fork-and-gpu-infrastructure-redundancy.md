@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add 081KQZVQW0008QG0R0032TPKT8 for multi-site fork ownership, Max 24/7 host-loop infrastructure, and Rodney local GPU pool
 - link the item from docs/BACKLOG.md
 - frame the work as repository/host/compute redundancy for Ace DLCs, structure recognition, and local inference
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/BACKLOG.md docs/backlog/P1/081KQZVQW0008QG0R0032TPKT8-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md
 - git diff --check
 - bun tools/hygiene/audit-backlog-items.ts

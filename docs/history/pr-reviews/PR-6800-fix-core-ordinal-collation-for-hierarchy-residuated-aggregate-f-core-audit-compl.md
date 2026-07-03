@@ -28,6 +28,7 @@
 ## Description
 
 ## What — the last F# core ordering sites (081KT07NV0008QG0R001YDB73K)
+
 - **Hierarchy.fs** (closure table): `ClosurePair.CompareTo` + `DescendantsOf`/`AncestorsOf` filters → `KeyComparerCache<'N>`. `Equals`/`GetHashCode` already used `EqualityComparer` (ordinal) — left as-is.
 - **Residuated.fs**: `ResidualMax` passed `Comparer<'K>.Default` → `KeyComparerCache<'K>`.
 - **Aggregate.fs**: `GroupByMin`/`GroupByMax` value comparison (`Comparer<'V>.Default`) → `KeyComparerCache<'V>`, so string value min/max is now deterministic/ordinal.

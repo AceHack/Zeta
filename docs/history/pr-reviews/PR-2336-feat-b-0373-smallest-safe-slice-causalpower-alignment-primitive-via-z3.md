@@ -34,6 +34,7 @@
 - Anchor: Pearl (2009) "Causality" §1.3 — interventional independence.
 
 **Z3 model (the type definition):**
+
 - `SharedTrace` — uninterpreted sort for observable shared event sequence
 - `PrivateState<A>` — modelled as `Int` (agent A's integer-typed local variable)
 - `PolicyA: Int × SharedTrace → Action` — uninterpreted function

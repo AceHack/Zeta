@@ -48,6 +48,7 @@ The ferry is where you pay — and prediction minimizes the payment.
 Together: **maximize signal per unit of heat**.
 
 This is not "observables are cool." This is:
+
 - Observe without commit = free (reversible, Adj, zero heat)
 - Commit only when ready = pay minimum (predictive scheduling, stretched τ)
 - The ratio signal/heat approaches the theoretical maximum

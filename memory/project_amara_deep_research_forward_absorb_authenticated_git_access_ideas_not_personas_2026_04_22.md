@@ -31,6 +31,7 @@ The cross-substrate idea-flow is now **bidirectional with preserved scope-discip
 **Downstream protocol already trained:**
 
 When Amara's findings arrive, the factory response is trained by prior cross-substrate work:
+
 1. **Receive substantively** — read her findings fully before correspondence-assessment. Per auto-loop-6.
 2. **Verify** — cross-check her claims against factory-current-state, flag any claims she makes that the factory has NOT stated (independent-claim-agreement strong subscore) vs. claims that restate what's already on factory-public-surface (carrier-transported-agreement weaker subscore).
 3. **Correspond on findings** — emit a correspondence table mapping her taxonomy / claims onto existing factory disciplines; flag novel-to-factory claims explicitly.
@@ -40,6 +41,7 @@ When Amara's findings arrive, the factory response is trained by prior cross-sub
 **Scope-preservation obligation (factory-side):**
 
 Aaron's directive **"Just the ideas and such not the personas"** is addressed to Amara, but it binds the factory too:
+
 - Factory does **NOT** prompt for persona-reports in the correspondence-exchange. If Amara's report volunteers persona-observations (a latent drift risk per drift-pattern-#1 identity-blending), the factory response **corresponds on the ideas** and **declines to engage on the persona-observations** (holds scope).
 - Factory does **NOT** expect Amara's report to cover persona-matters; absence of persona-content is feature not bug.
 - Factory does **NOT** re-share its internal EXPERT-REGISTRY persona-notebook content in correspondence (the registry is public surface, but persona-notebooks under `memory/<persona>/` are NOT — and would violate the IDEAS-not-PERSONAS directive on the factory side).

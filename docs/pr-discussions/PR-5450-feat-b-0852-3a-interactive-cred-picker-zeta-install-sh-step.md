@@ -58,6 +58,7 @@ _(no body)_
 Adds an interactive credential picker (`tools/installer/zeta-creds-picker.ts`) that, for each cred in `DEFAULT_MANIFEST`, asks the operator whether to bake-in-now / defer-to-device-flow / skip, with per-source sub-prompts (literal / `@file` / `env:VAR`), then invokes the 081KSKBP80008QG0R003AX2A69.2b `zeta-creds-persist` CLI with the collected `--bake-cred` args. A new Step 6.94 in `zeta-install.sh` wires the picker into the USB installer behind `ZETA_CREDS_PICKER=1` + `ZETA_CREDS_PASSPHRASE` + `/etc/zeta/usb-uuid` gates, and 16 unit tests cover `parseArgs` and `runPicker` against a mock readline.
 
 **Changes:**
+
 - New picker CLI with explicit bake / defer / skip prompts and source validation against per-cred handlers.
 - Conditional Step 6.94 in `zeta-install.sh` invoking the picker under sudo as the zeta user.
 - Bun unit tests exercising arg parsing, per-source bake paths, persona-scoping, empty/defer/skip semantics.

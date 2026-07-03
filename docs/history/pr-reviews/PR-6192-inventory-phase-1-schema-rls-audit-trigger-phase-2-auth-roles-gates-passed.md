@@ -41,6 +41,7 @@ Source-of-truth SQL authored in `inventory/sql/` for the owner to run in the Sup
 **Owner-approved decisions:** no client INSERT on `change_log`; single `category` column; `status` text+CHECK; `changed_at` rename; GIN index deferred to Phase 5.
 
 ### Phase 1 gate (passes only with observed output)
+
 1. logged-in client UPDATE/DELETE on `change_log` → refused (RLS 0-rows);
 2. broken-vs-fixed: guard disabled → tamper succeeds, restored on rollback;
 3. unauthenticated anon read on each sensitive table → `[]`.

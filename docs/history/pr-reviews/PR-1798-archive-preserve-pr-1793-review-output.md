@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve the generated PR #1793 review archive after the post-merge workflow hit the repository-rule direct-push guard
 - append the PR #1793 manifest entry for merge commit 05f6b41e1f5dec8ce92ab0c4efac2c9811c7cc5a
 - release the git-native claim in the same branch
 
 ## Checks
+
 - npx markdownlint-cli2 docs/claims/archive-pr-1793-review-substrate.md
 - npx markdownlint-cli2 docs/history/pr-reviews/PR-1793-research-lior-micro-kernel-antigravity-ide-mapping-verbatim.md docs/claims/archive-pr-1793-review-substrate.md
 - GITHUB_SHA=05f6b41e1f5dec8ce92ab0c4efac2c9811c7cc5a bun tools/archive/archive-pr-reviews.ts 1793

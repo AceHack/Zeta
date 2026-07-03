@@ -53,6 +53,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Pins the `nix-darwin` flake input to the `nix-darwin-24.11` release branch so it matches the repo’s `nixpkgs` pin (`nixos-24.11`) and avoids nix-darwin’s branch-mismatch assertion during evaluation.
 
 **Changes:**
+
 - Switch `inputs.nix-darwin.url` from `.../master` to `.../nix-darwin-24.11`.
 - Update inline documentation in `flake.nix` to explain/justify the required branch match and the “bump in lockstep” rule.
 

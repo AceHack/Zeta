@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - parse recent docs/trajectories/** commit receipts into 081KQZVQW0008QG0R001FG05RZ coincidence events
 - combine trajectory receipt events with the merged-PR event source in the factory health monitor
 - add focused parser coverage plus the 081KQZVQW0008QG0R001FG05RZ trajectory receipt and RESUME status update
 
 ## Verification
+
 - bun run typecheck -- --noEmit -p tsconfig.json
 - bun test tools/health/factory-health-monitor.test.ts
 - FACTORY_HEALTH_WORKTREE_DIRT_LIMIT=0 bun tools/health/factory-health-monitor.ts --json

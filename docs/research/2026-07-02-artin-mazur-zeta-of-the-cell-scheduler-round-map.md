@@ -32,6 +32,7 @@ zeta's leading term. The scheduler's rest state is `ζ`'s `1`.
 ## 2. What is executed (`tests/Tests.FSharp/SchedulerDynamicalZeta.Tests.fs`)
 
 Two independent computations that share no code:
+
 - **exp side:** iterate `f` to get `Fix(f^k)`, recover the integer series via the
   log-derivative recurrence `m·c_m = Σ Fix(f^k) c_{m−k}` (exact division asserted).
 - **orbit-product side:** find the recurrent set (`f^|S|` lands on a cycle),

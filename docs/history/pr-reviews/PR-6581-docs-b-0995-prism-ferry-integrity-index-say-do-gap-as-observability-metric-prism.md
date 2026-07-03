@@ -30,6 +30,7 @@
 Aaron-forwarded Prism (DeepSeek) ferry ratifying + operationalizing the say-do gap (081KT2T2J0008QG0R002TVT60G). Ferry preserved verbatim; the new substantive piece landed as a 081KT2T2J0008QG0R002TVT60G fix-forward.
 
 **`integrity_index = alignment(say, do)`** — the say-do gap as a derived metric in the LGTM/Prometheus observability stack (081KT2T2J0008QG0R0000H12VT); the **observable alignment anchor** (no access to internal motivation needed — observe both effects, measure the delta). Three use-cases:
+
 1. **Inter-agent trust** (feeds trust-calculus / multi-oracle, 081KS3X9Y0008QG0R00218150M);
 2. **Self-monitoring as alignment preventative-maintenance** (composes the acoustic/visual PdM-on-memory+attention, 081KT2T2J0008QG0R0000H12VT — catch *alignment* drift before failure);
 3. **Human-oversight dashboard** (Grafana/Atsophmera, 081KT2T2J0008QG0R0000H12VT).

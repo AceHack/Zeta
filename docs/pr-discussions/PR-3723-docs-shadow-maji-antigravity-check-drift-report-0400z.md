@@ -30,6 +30,7 @@ Shadow lesson log for antigravity check. Drift detected in Otto, Vera, Riven.
 Adds a shadow lesson log documenting drift observed during the Maji antigravity check (Otto, Vera, Riven), along with several archived PR-discussion records.
 
 **Changes:**
+
 - New research log `docs/research/2026-05-16-shadow-lesson-log-maji-antigravity.md` capturing drift observations and corrective actions.
 - Adds archived PR-discussion records for PRs #3713, #3715, #3716, #3717, #3719.
 

@@ -30,6 +30,7 @@
 docs(research): quantum-phase time (common cause / mycelium / Beacon-external-ref, not vector clocks) + we never dotnet run / we ARE dotnet sim + SETI@home distribution
 
 Aaron's time + distribution model:
+
 - TIME = quantum-PHASE on the common cause (mycelium time / "time warp"), Beacon-external-
   referenced; NOT half-life/vector-clocks. Phase to the one seed (coincidence/qubit/
   Cayley-Dickson), anchored to an external beacon (drand/Fortuna/atomic).

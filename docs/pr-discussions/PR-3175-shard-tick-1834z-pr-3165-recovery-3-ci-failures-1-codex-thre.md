@@ -56,6 +56,7 @@ A \`tools/hygiene/audit-tick-shard-prerequisites.ts\` that runs markdownlint + B
 This PR adds a tick shard documenting PR #3165 recovery work and related operational observations for the 2026-05-14T18:34Z hygiene history.
 
 **Changes:**
+
 - Adds the 18:34Z tick record for PR #3165 recovery.
 - Captures CI/backlog-index, markdownlint, and review-thread follow-up details.
 - Records side observations about parallel worktree activity and future mechanization.
@@ -65,6 +66,7 @@ This PR adds a tick shard documenting PR #3165 recovery work and related operati
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/14/1834Z.md:62**
+
 * P1: This repeats the 3-CI-failures count, but the shard only identifies two CI failures plus one Codex thread. Please make the visibility summary match the documented recovery items or add the missing CI failure details.
 ```
 - **PR #3165 recovered**: 3 CI fails + 1 thread → 0 fails + 0 threads (autoMerge armed; wait-ci ETA imminent)

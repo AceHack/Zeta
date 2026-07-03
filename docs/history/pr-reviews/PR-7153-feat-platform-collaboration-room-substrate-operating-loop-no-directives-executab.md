@@ -35,12 +35,14 @@ The **AI-native heart** of the platform. Every Deployable's `ai` block promises 
 
 ### `policy.ts` — the "who decides" engine
 `decide(policy, action)` → `auto` | `propose` | `forbidden`. **Source ≠ authorization** ([no-directives](../.claude/rules/no-directives.md)):
+
 - A **gated class** (`budget`, `non-reversible`, `wont-do`, `hard-limits`, `force-push`, `external-repo`) **always escalates above `auto`** — even on an `auto` domain. A gated action can never run on standing authority.
 - The **hard floor** (`wont-do`/`hard-limits`) is `forbidden`.
 - Unknown domain **fails closed**. Mirrors `policy-default.yaml`.
 
 ### `room.ts` — the attributed, retraction-native collaboration stream
 One ordered Event log humans and personas both write to (the **glass halo** for a piece of work).
+
 - **Undo is a Z-set retraction** (`+1` then `−1`; both persist in the trace — **HC-2** made visible). `live()` nets retractions out; `trace()` is never rewritten.
 - Every Event carries an **AgencySignature**: `proposedBy` (source, zero authority) + `authorizedBy` (a human, for gated).
 - **Deterministic** Event ids (no wall-clock) → a Room replays identically (**manifesto §7 DST**).

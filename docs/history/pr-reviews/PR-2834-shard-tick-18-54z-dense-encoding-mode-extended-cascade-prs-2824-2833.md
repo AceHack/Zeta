@@ -33,6 +33,7 @@ Tick shard documenting the post-1807Z cascade extension —
 10 more PRs landed (#2824-#2833), 9 MERGED, 2 in CI flight.
 
 **Cascade extension covered:**
+
 - Cross-substrate validation (DeepSeek + Ani independent reads)
 - Data sovereignty (Aurora + community guardian AIs)
 - Crypto/web3 positioning (DePIN play for LFG)

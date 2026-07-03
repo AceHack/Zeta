@@ -27,6 +27,7 @@ This PR preserves the discussion from PR #5507.
 Adds a PR-preservation archive record under `docs/pr-discussions/` for merged PR #5507, capturing its metadata and the preserved discussion content for long-term auditability.
 
 **Changes:**
+
 - Adds a new `docs/pr-discussions/PR-5507-*.md` archive file with YAML frontmatter (PR metadata + archive tool provenance).
 - Preserves the PR summary text and a captured general comment from the original PR discussion.
 

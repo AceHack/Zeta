@@ -30,6 +30,7 @@
 Aaron's stream: single-word carved-sentence folder → letters by language → shapes → colors/temperatures → "self-throttler belongs in grams/2" → "grams/1 is words; grams/1 is the canonical home, words is a label (symlink) on that."
 
 Establishes **folder structure for unique organization** (the path IS the address) — core date-agnostic vocabulary folders (DV2.0 hubs), one carved sentence per single-token file:
+
 - `grams/<n>/` — terms by token count; **grams/1 = canonical single-word home; `words/` = a label (symlink) on grams/1**; `grams/2/` holds the bigrams (self-throttler, soft-value, solid-ground, anti-message, time-warp, close-over, imagination-circle).
 - `letters/<language>/` — Latin (A–G→shapes), Greek (loaded math letters, ζ=our name), Hebrew alephbet (aleph=ℵ).
 - `shapes/` — A–G fixed-point shapes + geometry (circle/hexagon/triangle/möbius/klein-bottle/torus/penrose).

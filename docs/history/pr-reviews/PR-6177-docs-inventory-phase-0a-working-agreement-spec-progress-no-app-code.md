@@ -32,15 +32,18 @@
 Commits the three `/inventory` contract docs and resolves the Phase 0a open items. **`CLAUDE.md` and `spec.md` are committed verbatim** (no edits). **`PROGRESS.md`** is the verbatim contract **plus** an appended *Phase 0a appendix* (authorized by task #8: "appendix notes to PROGRESS.md, not edits to CLAUDE.md or spec.md").
 
 ### Files
+
 - `inventory/CLAUDE.md` — working agreement (verbatim)
 - `inventory/spec.md` — specification (verbatim)
 - `inventory/PROGRESS.md` — progress/plan (verbatim) + Phase 0a appendix
 
 ### Confirmations
+
 - **Item #4 (two external checks): agreed.** Verified this container can `curl` external hosts (HTTP 200 to supabase.com + api.github.com). Plan: I run the unauthenticated anon-key checks in Phase 1; a fresh-session Auditor re-runs them in Phase 7. I do **not** self-certify them as sole sign-off.
 - **Item #5: autonomous-loop SessionStart hook DECLINED** — conflicts with `inventory/CLAUDE.md`; not run.
 
 ### Resolved open items (item #6) — details in the PROGRESS.md appendix
+
 - **(a) Pages deploy** — via GitHub **Action** (`pages-deploy.yml`), but currently a **non-functional scaffold** (`workflow_dispatch`-only; no `build` script / no Astro dep in root `package.json`). Repo also has a static root `index.html`→`demo/`. ⚠️ **Needs owner confirmation of Settings → Pages → Source.** Inventory's actual deploy path is an open *design* item for a later phase (flagged so Phase 7 isn't surprised).
 - **(b) Supabase free tier** — re-confirmed from supabase.com/pricing: **unchanged** (500 MB DB, 5 GB egress, **7-day inactivity pause**). Heartbeat plan is correct. Also flagged the **anon → `sb_publishable_…`** API-key naming migration (legacy anon still valid; legacy removed late 2026; `service_role`/`sb_secret_…` remain forbidden).
 - **(c) region = USA** — acceptable; standard US regions available.
@@ -49,6 +52,7 @@ Commits the three `/inventory` contract docs and resolves the Phase 0a open item
 Provided in the PROGRESS.md appendix (create project → US region → Free; RLS-on note; where to find Project URL + publishable/anon key). The **service_role/secret key is never requested**.
 
 ### Notes
+
 - Phase 0a GATE ("owner approves docs + resolved items") **not yet met** — phase left `[ ]`. Awaiting your approval before Phase 0b.
 - The `spec.md` permission-matrix table was committed **verbatim** including its missing markdown header-separator row — flagged, not edited.
 

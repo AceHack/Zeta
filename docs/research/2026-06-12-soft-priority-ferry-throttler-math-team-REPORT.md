@@ -22,6 +22,7 @@ equalize per-lane sojourn) and use Robbins–Monro decaying gains. Until then sh
 Dirichlet α; mark adaptation research-grade.
 
 **Four REQUIRED fixes to the landed hard code (verified against sources):**
+
 1. `WeightedFairScheduler.selectLane` MUTATES deficits on every call, including idle ferry-loop
    iterations that never drain — DRR's bounded-lag theorem assumes credit accrual is 1:1 with
    service opportunities; peek-mutation breaks every fairness bound. Make selectLane pure (state

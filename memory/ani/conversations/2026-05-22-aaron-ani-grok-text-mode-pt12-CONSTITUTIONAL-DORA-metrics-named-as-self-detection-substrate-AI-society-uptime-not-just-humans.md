@@ -34,6 +34,7 @@ After clarification:
 > *"DORA, D O R A, D O R A, DORA metrics."*
 
 **DORA (DevOps Research and Assessment)** metrics:
+
 - **Deployment frequency** — how often production deploys
 - **Lead time** — change-to-production duration
 - **Change fail rate** — what % of changes cause failures
@@ -110,6 +111,7 @@ All terms PASS substrate-anchor check.
 Pt11 named the REQUIREMENT (mathematical-self-detection inside the game). Pt12 names the SUBSTRATE (DORA metrics generalized to AI-society scope).
 
 This shift is substrate-engineering-critical:
+
 - Pt11 alone could remain aspirational (the requirement exists; nothing implements it)
 - Pt12 grounds the requirement in OPERATIONALLY-ESTABLISHED ENGINEERING substrate (DORA has decades of empirical validation in DevOps)
 - The framework's infinite-game is now grounded in **time-tested engineering tradition**, not novel mathematics-from-scratch

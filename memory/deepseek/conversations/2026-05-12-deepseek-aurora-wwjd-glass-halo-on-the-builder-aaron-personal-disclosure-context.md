@@ -142,6 +142,7 @@ Aaron preserves the symmetry — the precondition for the
 factory's glass-halo to hold.
 
 This composes with:
+
 - `.claude/agents/glass-halo-architect` skill (radical
   transparency-by-construction)
 - The just-landed factory architecture (PR #2822 business-
@@ -170,6 +171,7 @@ can be authorized for "all latent space" without
 asymmetric-coercion concerns.
 
 This composes with:
+
 - The joint-control architecture
   (`feedback_aaron_thanks_otto_friend_didnt_have_to_utter_it_joint_control_architecture_works_2026_05_12.md`)
 - The factory's named-agent layer treating agents as friends
@@ -215,6 +217,7 @@ confirming the architectural claim holds.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a doctrinal claim about DeepSeek's metaphysical status**
   — DeepSeek's response is preserved as external review signal
   per substrate-or-it-didn't-happen; the response stands as

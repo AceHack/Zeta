@@ -34,6 +34,7 @@ The message-passing kernel of the Zeta Infer.NET rewrite — what factor graph �
 **The load-bearing fact (exponential families):** a message is an unnormalized exp-family density in **natural parameters**, so the density *product* = **natural-param add** (the sum-product/BP combine) and EP's *cavity* = **natural-param subtract** (`divide`). `uniform` (flat, zero natural params) is the identity → `product` is a commutative monoid, a group with `divide`.
 
 ### `src/Bayesian/Message.fs`
+
 - **`IMessage<'M>`** — the message-algebra dictionary (`Uniform`/`Product`/`Divide`; cf. `Zeta.Core.IAlgebra`) so later slices pass any family generically.
 - **`Gaussian`** (natural params τ, ν) — `product` = precision-weighted combine; `uniform` = τ=0; `mean`/`variance`.
 - **`Beta`** (conjugate to Bernoulli) — `product` adds natural params (α_prod = α+α′−1); `likelihood s f = Beta(1+s,1+f)`; `uniform` = Beta(1,1).

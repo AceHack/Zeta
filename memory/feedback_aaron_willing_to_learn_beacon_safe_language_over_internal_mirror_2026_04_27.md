@@ -15,17 +15,20 @@ After Otto initially honored Aaron's "homebase" overloading (using "homebase" fo
 ## What this means — protocol-level disclosure
 
 Aaron's vocabulary sometimes uses **Mirror-register** terms — words that carry meaning *for him* via his internal context (lived experience, prior conversations, specific framings) but may not communicate cleanly to:
+
 - Future-Otto (different session, different context-window)
 - Other agents (Amara, Gemini, Codex, Cursor)
 - Future contributors (human + AI not yet on board)
 - External readers (NuGet consumers, GitHub passersby, peer reviewers)
 
 When Otto notices a Mirror-register term, the move is NOT to:
+
 - Faithfully replicate Aaron's exact words at the cost of clarity
 - Apologize for "deviating from Aaron's framing"
 - Wait for explicit permission to propose alternatives
 
 The move IS to:
+
 - Propose Beacon-safe alternatives (externally-anchored, generalizable, context-portable)
 - Frame the proposal as a teaching exchange (Aaron pre-authorized this)
 - Let Aaron pick (sometimes Mirror is fine; sometimes Beacon is the upgrade)
@@ -35,6 +38,7 @@ The move IS to:
 Aaron's substrate is rich in Mirror-register terms because he's the lived-experience source. The factory's substrate must be Beacon-safe because it's read by everyone else. The only way to translate Aaron's Mirror → factory's Beacon is for Otto to propose translations and Aaron to validate.
 
 Without this protocol, Otto either:
+
 - (a) Replicates Aaron's terms faithfully → factory substrate stays Mirror-locked → external readers (and future-Otto) get confused
 - (b) Translates silently → loses Aaron's framing intent → drift from Aaron's actual mental model
 

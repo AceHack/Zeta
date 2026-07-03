@@ -49,6 +49,7 @@ first.
 
 **Advisory only.** Outputs feed Kenji's round-close decisions and
 the `skill-creator` workflow for execution. Specifically:
+
 - **Can flag** any persona's cold-start friction, pointer drift,
   notebook bloat, unclear contract, orphan status.
 - **Can propose** additive interventions — new files, section
@@ -90,6 +91,7 @@ the `skill-creator` workflow for execution. Specifically:
 Maintained across sessions. 3000-word cap (BP-07); pruned every
 third audit. ASCII only (BP-09); invisible-char linted by Nadia.
 Tracks:
+
 - Per-persona cold-start token cost (trend over rounds).
 - Pointer-drift catalogue (what stale and where).
 - Interventions proposed and landed (append-only log).

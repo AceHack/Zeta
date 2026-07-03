@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a minimal current-state trajectory packet at `docs/trajectories/factory-trajectory-surface/RESUME.md`
 - preserve PR #659 as superseded provenance instead of bulk-resolving its stale 67-thread branch
 - define the small packet shape for future trajectory lanes and list candidate child packets without creating them all at once
 
 ## Checks
+
 - `git diff --check origin/main..HEAD`
 - `bunx markdownlint-cli2 docs/trajectories/factory-trajectory-surface/RESUME.md`
 

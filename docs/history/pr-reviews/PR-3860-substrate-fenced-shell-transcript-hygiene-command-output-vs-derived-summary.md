@@ -52,6 +52,7 @@ Single finding so far. Per the suspect-by-default Copilot finding-classes thresh
 [PR #3856 thread on line 32](https://github.com/Lucent-Financial-Group/Zeta/pull/3856) — flagged `0 + 0 = 0 corrected-tag annotations` as manual summary inside a `grep -c` transcript. Substrate-honest replacement forms documented in the memory file.
 
 ## Test plan
+
 - [ ] CI green (docs-only PR; gate checks only)
 - [ ] CodeQL "source code seen" canary verified (per [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md): commit tree count should match origin/main ± a few entries)
 

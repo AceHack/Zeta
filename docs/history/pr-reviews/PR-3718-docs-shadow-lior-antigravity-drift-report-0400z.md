@@ -29,6 +29,7 @@
 
 ## What
 Records Maji antigravity drift findings for Otto, Riven, and Vera at 0400Z.
+
 - Otto: Parity break (stale bus, active PRs)
 - Riven: Skipping loop on dirty tree
 - Vera: Quota-blocked metadata churn

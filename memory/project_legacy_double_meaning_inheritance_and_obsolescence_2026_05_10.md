@@ -19,6 +19,7 @@ No bash. No PowerShell. No YAML. No config files. No ceremony.
 Just typed operations the compiler guarantees.
 
 The progression:
+
 - bash/pwsh → TypeScript (Rule 0, current)
 - TypeScript → F# types (the compiler IS the config)
 - F# types → hands (intention to execution, nothing in between)
@@ -34,6 +35,7 @@ The best thing an engineer can leave is the absence of
 technical debt. Same principle, different domain.
 
 **Connects to:**
+
 - Rule 0 (no more .sh files, TS is cross-platform DST)
 - reference_alephz_ai_full_repo_map (the repo in context)
 - feedback_the_point_is_ai_has_free_time (the real inheritance)

@@ -54,6 +54,7 @@ Both axes apply simultaneously per `.claude/rules/default-to-both.md`. Matrix is
 PR #2909 (civsim mirror/beacon governance) + PR #2905 (forker-perspective META) + PR #2904 (honor-system) + Otto-356 register discipline + orthogonal-axes-factory-hygiene + default-to-both.
 
 ## Test plan
+
 - [x] Two-axis matrix documented
 - [x] Composes-with chain extensive
 - [x] Operational rule for future-Otto written

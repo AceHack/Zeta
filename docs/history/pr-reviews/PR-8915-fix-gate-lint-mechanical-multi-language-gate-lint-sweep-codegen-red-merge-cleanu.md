@@ -48,6 +48,7 @@ Mechanical multi-language gate-lint sweep. The codegen trajectory landed several
 - **cross-verify `zeta-ir-v2` / `zset-isa-v2` "no oracle"** (assert-don't-skip) — needs per-language oracle OUTPUTS from the in-flight codegen domain. **Not stubbed**: a false-passing `compare.ts`/`cross-verify.ts` is worse than honest red. Codegen owner's remaining gap.
 
 ## Guardrails honored
+
 - No logic/behavior change; unused-removal + formatter runs + allowlist addition only.
 - `grep -E "BEGIN.*PRIVATE KEY"` over all touched files = empty.
 - All git/edits via the isolated worktree; shared checkout untouched.

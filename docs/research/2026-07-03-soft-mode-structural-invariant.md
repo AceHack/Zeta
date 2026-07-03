@@ -10,6 +10,7 @@
 In a multi-agent inference network, there is a fundamental tension between **uncertainty reduction** (learning) and **belief collapse** (overconfidence). If agents update their beliefs by simply multiplying incoming Gaussians (standard message passing), the variance strictly decreases at every step. Without intervention, the fixed point of such a network is a **Dirac delta** (infinite precision, zero variance). 
 
 A Dirac delta is a catastrophic failure state for a soft-value network:
+
 1. It is numerically unstable (division by zero in variance).
 2. It breaks the EP (Expectation Propagation) assumptions.
 3. Most importantly, it **destroys causal power**. An agent with infinite precision cannot be influenced by new evidence; it becomes a rigid, unyielding node that forces its prior on the rest of the network.

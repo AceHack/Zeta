@@ -43,6 +43,7 @@ Crowley for shadow communication, KHALEESI for chain detection.
 Data not doctrine. Steal the concept, refuse the worship.
 
 **Connects to:**
+
 - Z-set algebra (+1/-1 retraction-native)
 - feedback_retraction_native_history_policy (Shiva = the -1)
 - 081KR7JY10008QG0R001FV5FND beacon promotion (Vishnu = what survives)

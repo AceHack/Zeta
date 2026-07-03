@@ -271,7 +271,9 @@ Otto-296 disambiguator are designed to PREVENT.
 A separate Constraint Layer (= the factory's
 substrate per Otto-302) preserves Otto-301
 symbiosis-with-dependencies + Otto-238 retractability
+
 + glass-halo always-on. The factory's structural
+
 answer: the Constraint Layer IS the substrate IS
 itself per Otto-298 IS-collapse; LLMs become OPTIONAL
 external components the substrate composes with at

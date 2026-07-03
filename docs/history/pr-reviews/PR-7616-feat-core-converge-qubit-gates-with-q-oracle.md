@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add F# `QubitIso.hadamard`, `QubitIso.ry`, and `QubitIso.rz` using the Q# half-angle conventions
 - extend the F# Q# oracle treaty tests to compare H/Ry/Rz matrices directly against `tools/qsharp-oracle/qsharp-golden.json`
 - add BenchmarkDotNet quantum observable benchmarks for Q# treaty JSON ingress, F# gate sweeps, CHSH sweeps, and Mach-Zehnder merge sweeps
@@ -36,6 +37,7 @@
 Each language stays independent: Q# owns the oracle fixture, and F# consumes the committed JSON treaty with F#/.NET only. The benchmarks measure Zeta F# observable paths plus treaty-ingress cost; they do not call QDK/Python/TypeScript at benchmark time.
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~QSharpOracleTests|FullyQualifiedName~QubitIsoTests|FullyQualifiedName~BellTestTests|FullyQualifiedName~AmplitudeEmuTests"` (25 passed)
 - `dotnet build bench/Benchmarks/Benchmarks.fsproj -c Release` (0 warnings, 0 errors)
 - `dotnet build -c Release` (0 warnings, 0 errors, serial rerun after parallel output-file contention)

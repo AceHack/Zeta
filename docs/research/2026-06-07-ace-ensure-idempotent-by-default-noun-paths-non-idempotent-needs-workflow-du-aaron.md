@@ -12,6 +12,7 @@ Ace is `ace <verb> <noun>` (the #6957 grammar; `ace` is a seam/tool). The canoni
 *idempotent*: converge to "this is present," apply-N-times == apply-once.
 
 Noun grammar (scoped/qualified paths):
+
 - `ace ensure npm` — ensure the npm ecosystem present.
 - `ace ensure npm.foo` — ensure package `foo` in the `npm` namespace (dotted path = namespace.package).
 - `ace ensure compiler.rust` — ensure the Rust compiler (`compiler` namespace).

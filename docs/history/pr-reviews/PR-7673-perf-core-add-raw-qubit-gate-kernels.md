@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add `QubitIso.RawState`, a struct carrier for hot observable loops
 - add raw Pauli/H/Ry/Rz kernels plus raw norm and Born measurement helpers
 - lock raw kernels against the readable F# `JoinState` gate surface and the Q# golden matrix treaty
@@ -37,6 +38,7 @@
 Q# still owns the oracle fixture. F# validates and benchmarks against the committed JSON treaty with F#/.NET only; no QDK, Python, or TS runtime dependency is introduced.
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~QSharpOracleTests|FullyQualifiedName~QubitIsoTests|FullyQualifiedName~BellTestTests|FullyQualifiedName~AmplitudeEmuTests"` (27 passed)
 - `dotnet build bench/Benchmarks/Benchmarks.fsproj -c Release` (0 warnings, 0 errors; SDK emitted a non-warning MVID note)
 - `dotnet build -c Release` (0 warnings, 0 errors)

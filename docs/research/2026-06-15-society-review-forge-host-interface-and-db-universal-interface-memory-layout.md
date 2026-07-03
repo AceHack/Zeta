@@ -59,7 +59,9 @@ capability sub-interface).
 ## B. `db/` universal-interface — verdict: the crux is built; correct the framing; ship the minimal version first
 
 **The structural crux is ALREADY BUILT** (Kenji) — and I missed it: `src/Core/DagFs.fs`
+
 + `src/Core/ContentStore.fs` implement the multi-parent DAG (`links: path → MerkleHash`,
+
 `pathsOf`, `editLocal`/`editEverywhere` = the two edit modes), content-addressed,
 conflict-free merge. **Buildable on existing code, not aspirational.** Integrity
 (`ContentStore`, keyed by hash) and retrieval (`DagFs.links`, keyed by path) are *two

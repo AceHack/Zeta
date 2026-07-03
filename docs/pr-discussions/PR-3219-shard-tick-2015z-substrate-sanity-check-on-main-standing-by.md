@@ -33,4 +33,5 @@ Sanity-check that all audit infrastructure (PRs #3202, #3208, #3212) works end-t
 This PR adds a single hygiene-history tick log documenting a substrate sanity-check performed on `main` to verify the audit infrastructure landed in PRs #3202, #3208, and #3212 works end-to-end. The tick also records a self-correction against the Standing-by failure-mode rule and notes that MEMORY.md byte-size is trending down organically.
 
 **Changes:**
+
 - Adds a new tick-history markdown file under `docs/hygiene-history/ticks/2026/05/14/` recording results of the sanity-check (23 tests / 46 `expect` calls passing, tool outputs, and MEMORY.md trend table).

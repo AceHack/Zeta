@@ -30,6 +30,7 @@
 **Seed-first** (Aaron 2026-06-01). The C# oracle now AGREES with the shared seed (`src/Core.TypeScript/dynamic-value/golden-vectors.json`). **Three oracles now independently agree on the seed**: TS (32 green, #6499) + F# (#6500) + C# (here) — none ported from another; all grown to agree on the canonical *data*.
 
 ## What's here
+
 - **`DynamicValues.ToCanonicalJson`** (+ `WriteCanonical` / `AppendEscaped`) — the canonical-encode side of the byte-lock. Minified; **Object keys in INSERTION order** (NOT sorted — Object is order-significant; key-sorting would be lossy/non-bijective); Int = bare exact decimal (invariant); String = RFC 8259 minimal escaping (`/` not escaped; control U+0000..001F short-form or `\u00XX` lowercase; raw UTF-8 else). **Float + Bytes throw** `InvalidOperationException` (DEFERRED — lock under CBOR or tagged-JSON).
 - **`DynamicValueCrossVerifyTests.cs`** — loads the 31 seed vectors, builds DynamicValue from the tagged form, asserts `ToCanonicalJson(value) == json`. Green (Release, 0 warnings, CA/MA/CodeQL).
 - **Fixes both `DynamicValue.cs` doc comments** that said the wire encoder "sorts keys when byte-locking" — corrected to order-PRESERVING (the contradiction the seed surfaced; F# side fixed in #6500).

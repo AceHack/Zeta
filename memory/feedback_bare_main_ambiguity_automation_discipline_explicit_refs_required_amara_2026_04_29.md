@@ -267,7 +267,9 @@ alone in multi-step contexts.
 ## Concurrency caveat for the fetch/switch pattern (Claude.ai 2026-04-29)
 
 The `git fetch origin refs/heads/main:refs/remotes/origin/main`
+
 + `git switch --detach refs/remotes/origin/main` pattern
+
 guarantees an **explicit base ref**, NOT a globally stable
 base across parallel ticks. If two agents fetch at different
 moments, they may branch from different `origin/main` SHAs.

@@ -29,6 +29,7 @@ End-to-end heartbeat substrate landed in one PR (operator 2026-05-27: "make sure
 ## Operator-side note for direct-push
 
 To enable direct-to-main push without PR gating, either:
+
 - Add path-scoped branch protection exclusion for \`docs/agent-heartbeats/**\` on main, OR
 - Create an \`agent-heartbeats\` branch with NO protection (use \`--branch agent-heartbeats\`)
 
@@ -53,6 +54,7 @@ ZetaID-unique filenames guarantee no concurrent-agent collision on either.
 Adds an “agent heartbeat” substrate to record autonomous-loop ticks as ZetaID-addressed markdown files, including a Bun/TypeScript writer (with optional direct REST-based push), documentation of the folder/branch conventions, a seeded first heartbeat, and an operational-practice update in `AGENTS.md`.
 
 **Changes:**
+
 - Introduces `tools/agent-heartbeats/write-heartbeat.ts` to generate ZetaID-based heartbeat files and optionally push them via GitHub’s git-data REST API (through `gh api`) with retry-on-race behavior.
 - Adds Bun unit tests for argument parsing and heartbeat rendering/packing helpers.
 - Documents the heartbeat folder layout and lookup strategy; seeds an initial heartbeat record; updates `AGENTS.md` to require heartbeat-via-commit discipline.

@@ -26,7 +26,7 @@ and just push fixes when we need it, we become the
 maintainer"* — is not a workaround for the block; it is a
 better discipline that the block was protecting the space for.
 
-## Why:
+## Why
 
 - **Pinned-community-dependency is supply-chain-fragile.**
   `npm install -g <community-package>` pulls opaque bytes that
@@ -87,7 +87,7 @@ better discipline that the block was protecting the space for.
   Both layers (body-prose + commit-trailer) should carry
   the provenance.
 
-## How to apply:
+## How to apply
 
 - **Before depending on any community-built project:**
   (i) check the license — MIT/Apache/BSD = absorb-eligible;

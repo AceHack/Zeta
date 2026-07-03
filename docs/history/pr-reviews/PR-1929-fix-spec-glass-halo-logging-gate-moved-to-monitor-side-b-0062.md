@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Logging failure: "tx fails" → "monitor triggers freeze"
 - Separation of concerns: logging is off-chain, enforcement stays off-chain
 - 081KQ8P5D0008QG0R002XFQ305 item resolved

@@ -30,6 +30,7 @@
 docs(research): quantum topological stability over Reticulum in real time, Chip-8 as bit-perfect truth between observers — the naming capstone
 
 Aaron's one-line name for the weave -> encrypted-null -> common-cause -> S=4 arc:
+
 - topological = the braid/weave; info in crossing-structure (homotopy-invariant)
   -> robust to noise (topological-quantum-computing principle, Kitaev) = WHY stable
 - quantum = the S=4 common-cause correlation (encrypted null + immaculate coincidence)

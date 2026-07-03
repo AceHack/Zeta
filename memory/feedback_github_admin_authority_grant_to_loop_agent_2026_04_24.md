@@ -40,6 +40,7 @@ inaugural use):
 - Branch-protection-related ops via `gh api`.
 
 **NOT in scope** (separate grants required):
+
 - Org-level admin (org settings, org-level rulesets).
 - Repo deletion / transfer.
 - Member management.

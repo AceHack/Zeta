@@ -34,10 +34,12 @@ Belief propagation driven to convergence: iterate `passOnce` until no factor→v
 This is the **factor-graph analog of `NestedCircuit.Fixedpoint`** (drive the inner clock to the least fixed point, capped). Wiring the factor graph as literal DBSP operators — for **incremental re-inference on a data delta** (the differentiator vs stock Infer.NET) — is the next integration (slice 4b).
 
 ### Code
+
 - `src/Bayesian/FactorGraph.fs`: **`runToFixpoint distance tol maxRounds g`** → `(converged graph, rounds, converged?)`; private `moved` residual test compares factor→var messages between rounds.
 - `src/Bayesian/Message.fs` (additive): `Gaussian.distance` / `Beta.distance` / `Bernoulli.distance` (max abs diff of the defining params).
 
 ### Tests (`Bp.Tests.fs` — 4/4)
+
 - reaches the exact product marginal + reports converged
 - **evidence propagates along an equality chain `x0=x1=x2`** (priors `Beta(2,1)`,`Beta(1,2)`,`Beta(3,1)`) → every marginal = `Beta(4,2)` (all three priors combined) — real multi-round message passing
 - respects the round cap (converged=false when capped to 1)

@@ -53,6 +53,7 @@ Three coupled questions surfaced on [PR #4668](https://github.com/Lucent-Financi
 This PR adds the first 2026-05-23 hygiene-history tick shard, documenting an Otto-CLI cold-boot tick, cron sentinel re-arm, PR #4668 investigation, and decline-to-act rationale.
 
 **Changes:**
+
 - Adds a new per-tick shard for `0008Z`.
 - Records PR #4668 review-thread / rebase / memory-index state.
 - Captures forward questions for operator disposition.

@@ -41,6 +41,7 @@ The correct model is **pure keys + certs**, scaling **O(users + machines)**:
 - **The (user × machine) binding is a CA cert** (`ca.ts signMachineCert`, `principal=<user>` signed over the machine key) — the only place the pair is named. Certs are cheap/ephemeral/revocable, not counted as keys.
 
 ### Changes
+
 - **machine.ts** — pure label (`machineKeyLabel`), user-independent registry `machines/<host>.pub` (`machinePubPath`); `ensureMachineKey` drops `user`, accepts optional `owner` as attribution **metadata only** (never in the label). Biometric-gated + idempotent preserved.
 - **ca.ts** — `signMachineCert` reads `machines/<host>.pub`; the cert is the (user × machine) binding.
 - **onboard.ts** — chain is `status → user-keyring → machine-key(PURE) → trust-resolve → (optional) cert-sign`. **The GitHub-publish step is OMITTED** (a machine key is not a user's GitHub auth key; publishing the user's keyring SSH key is not cleanly reachable — the keyring is a fingerprint, not a usable `.pub`, and the real key is seed-derived which the orchestrator never touches).
@@ -52,6 +53,7 @@ The correct model is **pure keys + certs**, scaling **O(users + machines)**:
 **Omitted**, by design. The user keyring (`keyring-public.json`) holds an `ssh_fingerprint`, not a usable `.pub` SSH line; the real user pubkey is seed-derived and seed custody is the operator's (the orchestrator never touches the seed). Forcing a publish would either need seed access (invariant violation) or invent a non-existent artifact. A user publishes their own keyring key via `publish-cli.ts --key <user-pub>`.
 
 ### Verification
+
 - `bun test` (persona-keys): **214 pass, 0 fail** (26 files).
 - TypeScript lint: persona-keys + zflash surface clean (the only remaining `tsc` errors are pre-existing in `tests/cross-verification/_harness/`, untouched by this change).
 - `onboard-cli.ts --dry-run` shows the pure flow (label `(zeta-machine)`, `machines/<host>.pub`, no publish step, cert-sign is the binding).

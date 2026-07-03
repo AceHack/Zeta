@@ -32,6 +32,7 @@
 SPIRE crash-looped and the storage zoo (vault/cockroach/mimir/loki/weaviate) hung Pending. Three real bugs:
 
 **SPIRE (both validated live):**
+
 1. values used `ca_subject`/`common_name` (snake) — chart wants `caSubject`/`commonName` (camel) → `caSubject.country must be set`.
 2. chart renders `ClusterSPIFFEID` but ships CRDs as a separate `spire-crds` chart that was never installed → `no matches for kind "ClusterSPIFFEID"`. Added a `spire-crds` HelmChart (v0.5.0) ahead of `spire`; helm-controller retries until CRDs land. After both → spire reached `REVISION: 1`.
 

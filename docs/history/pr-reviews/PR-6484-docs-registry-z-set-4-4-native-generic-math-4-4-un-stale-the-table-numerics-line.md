@@ -30,6 +30,7 @@
 The Z-set ladder rung is fully landed but `docs/PRIMITIVE-REGISTRY.md` lagged reality.
 
 ### Two edits
+
 - **Table row (Z-set):** `🚧 ✅ ⚠️ ❌` → **`✅ ✅ ✅ ✅`**. Native conformance is 4/4 (TS #6389 · F# #6392 · C# #6395 native treaty impl · Rust #6396), and generic-math just completed 4/4 (F# #6480 · C# #6481 · Rust #6482 · TS #6483). Added the full PR provenance.
 - **Numerics / generic-math status line:** the Z-set abelian-GROUP rung moved from *"⬜ PENDING … flagged for a deliberate go"* to **"✅ DONE 4/4"** — and recorded that the F#/C# pooled/span hot-path combiners were **not moved** (the operators delegate to them: perf-neutral, only the SRTP/IWSAM surface is added on the type), which resolved the deliberate-go flag. **IndexedZSet** abelian-group generic-math is now the single remaining ladder rung.
 

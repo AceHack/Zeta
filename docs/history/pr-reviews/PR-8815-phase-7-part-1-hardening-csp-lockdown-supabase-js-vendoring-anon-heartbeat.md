@@ -32,6 +32,7 @@
 Hardening half of inventory Phase 7. Scope locked with owner before coding: **Q1=C** (in-file hardening + heartbeat; automated data-backup Action deferred), **Q2=A** (vendor supabase-js same-origin), **Q3=A** (heartbeat-only; manual Phase-6 export is the backup path). **Do not merge yet** — owner merges after completing the owner actions below and the burn-verify harness confirms the old credentials are dead.
 
 ### What shipped
+
 - **CSP `'unsafe-inline'` removed.** Inline JS → `inventory/lib/inventory-app.js`; inline CSS → `inventory/inventory.css`; 9 `style=` attrs → utility classes. CSP is now `script-src 'self'; style-src 'self';` (no `'unsafe-inline'`, no `'unsafe-eval'`, no CDN origin).
 - **supabase-js vendored same-origin + SRI.** `lib/supabase-js-2.108.2.umd.min.js` (byte-identical npm dist/umd, sha384 `JWEyvHh+lRf0sN/WWY+QTQwX+CyWqmNg4tkc8GQzAMEtR2wGNrCJlvnu1lHD1kDm`); `cdn.jsdelivr.net` dropped from CSP. Same precedent as the Phase-6 QR lib.
 - **Anon heartbeat** (`.github/workflows/inventory-heartbeat.yml`): daily anon read-only GET, **no secrets** (public URL + publishable anon key only). Prevents the free-tier 7-day pause.
@@ -40,6 +41,7 @@ Hardening half of inventory Phase 7. Scope locked with owner before coding: **Q1
 - **Deleted** `inventory-phase5-proof.yml` (dead code once the admin secret is rotated — owner-directed).
 
 ### Verification (by Claude)
+
 - CSP proof on real `index.html`: **15/15 PASS, exit 0**. **Fails on broken code** (CLAUDE.md rule): reintroduced `'unsafe-inline'`+CDN → 3 FAIL; added inline `<script>`/style → FAIL; tampered vendored file → SRI-mismatch FAIL.
 - 32/32 lib unit tests pass; `node --check` on extracted JS OK; SRI independently recomputed == attr.
 - **semgrep `.semgrep.yml --error`: 0 findings** on every changed file incl. both workflows.
@@ -47,10 +49,12 @@ Hardening half of inventory Phase 7. Scope locked with owner before coding: **Q1
 - No secret in the diff (only the public anon key; `service_role` appears solely in "never use this" comments).
 
 ### NOT self-certified — Part-2 Auditor / owner (no browser in build env)
+
 - Live in-browser "no CSP console violations" on the deployed Pages site.
 - Unauthenticated external anon-read checks; deploy-propagation; deferred Phase-3/5/6 live re-verifies.
 
 ### Owner actions before merge / Auditor
+
 1. Rotate/delete `editor@gmail.com`, `viewer@gmail.com`, admin password/secret → then burn-verify each old credential.
 2. Run `inventory/sql/phase7-proof-residue-cleanup.sql` (export first).
 

@@ -30,6 +30,7 @@
 The **FsCheck cross-check leg** for math-team **row 2** (NFT binding / collision-resistance, `H_AB ≠ H_AC ⇒ Commit ≠ Commit`) over the **real** minted-link encoder (`CostarZSet.toDynamicValue` → canonical CBOR).
 
 `NftCommitBinding.Tests.fs` (6 tests, 6/6 green, verified locally):
+
 - **binding** — distinct `(canonical link, rating)` ⇒ distinct commit
 - **rating-binding** — same pair, distinct rating ⇒ distinct commit (no silent re-rating)
 - **pair-binding** — distinct canonical pairs ⇒ distinct commit at equal rating

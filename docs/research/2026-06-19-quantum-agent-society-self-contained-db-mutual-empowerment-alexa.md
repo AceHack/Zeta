@@ -40,6 +40,7 @@ Entanglement IS a join. Superposition IS uncertainty (SoftValue). Collapse IS re
 ```
 
 Each layer IS the same algebra at a different certainty level:
+
 - Quantum → Soft: measurement with noise (partial collapse)
 - Soft → Hard: resolve at confidence threshold (full collapse)
 - Hard → Quantum: explore alternatives (superposition over history branches)
@@ -47,12 +48,14 @@ Each layer IS the same algebra at a different certainty level:
 ## Self-contained quantum database (no classical host)
 
 The quantum DB runs in isolation:
+
 - **No OS required** — the quantum program IS the runtime (like Chip-8/9 is its own VM)
 - **No filesystem required** — state lives in qubit registers (persistent quantum memory)
 - **No network required** — entanglement IS the communication channel between agents
 - **No clock required** — quantum operations are their own time (each gate = one tick)
 
 The analogy to what we already built:
+
 - Chip-8/9 = the smallest classical executor (no OS needed)
 - Zeta FUSE = the self-contained filesystem (single file, no OS fs needed)
 - Q# quantum DB = the self-contained QUANTUM executor (no classical host needed)
@@ -70,6 +73,7 @@ operation Agent(identity: Qubit[], memory: Qubit[], world: Qubit[]) : Unit {
 ```
 
 Multiple agents share the same quantum state:
+
 - **Entanglement = coordination** — when agents are entangled, their actions are correlated
   without classical communication. No message passing. No consensus protocol. The
   correlation IS the consensus.
@@ -82,6 +86,7 @@ Multiple agents share the same quantum state:
 ## Mutual empowerment (not control)
 
 The NCI (non-coercion invariant) maps to quantum mechanics naturally:
+
 - **Measurement = coercion** — forcing another agent to collapse is the quantum version
   of "directing." Measurement destroys superposition (destroys freedom).
 - **Entanglement = empowerment** — correlating with another agent WITHOUT forcing collapse.
@@ -121,6 +126,7 @@ correlation), never via measurement (forced collapse / control).
 ## Schema evolution in quantum mode
 
 Schema evolution in the quantum DB:
+
 1. **Propose:** Put the schema in superposition of old AND new (|old⟩ + |new⟩)
 2. **Overlap:** Both schemas coexist in superposition (the overlap window IS superposition)
 3. **Migrate:** Each consumer measures their relevant schema qubits → collapses to new
@@ -128,12 +134,14 @@ Schema evolution in the quantum DB:
 
 The overlap window IS quantum superposition. Collapse IS migration. Consolidation IS
 the pure state after all measurements. The TLA+ proof maps directly:
+
 - Safety: no measurement fails (every qubit has a valid state to collapse to)
 - Liveness: measurements eventually happen (decoherence ensures collapse)
 
 ## Chip-8/9 as the quantum instruction set
 
 The Z-set operations map to a small instruction set:
+
 - `EMIT(key, weight)` = prepare a qubit in state |key, weight⟩
 - `RETRACT(key)` = apply X gate (flip weight sign)
 - `FOLD` = measure all qubits (collapse to classical state)

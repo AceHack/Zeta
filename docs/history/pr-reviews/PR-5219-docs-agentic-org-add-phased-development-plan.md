@@ -32,6 +32,7 @@
 Adds a canonical phase-by-phase development roadmap for Agentic Organization so the next implementation step is explicit instead of rediscovered each turn.
 
 The new plan covers:
+
 - current executable state;
 - always-on work rules for TDD, SOLID, events, documentation, review, and validation;
 - Phase 0 orientation/maintenance plus Phases 1-25 implementation phases from process adapters through hardening/extraction;

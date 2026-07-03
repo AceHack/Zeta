@@ -15,6 +15,7 @@ have."
   `hall/tv/index.html` from the same-origin LLMTV replay ledger. The non-destructive rule
   is still concrete: **add new static dirs; do not rewrite `demo/ genesis/ inventory/
 index.html` as part of unrelated work.**
+
 - **Four palettes exist and are three KINDS** (the mash's central design fact):
   - portal `:root` cool tokens (shadcn kit) — CHROME
   - dark-hall `--room-*` warm phosphor — CHROME

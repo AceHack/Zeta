@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - wires ADR slot 14 as an always-selectable free-time/rest Menu16 control
 - returns a typed rested action without command or MCP side effects
 - updates agent CLI rendering/evidence counts and documents the checkpoint in the Phase 2 CA plan
 
 ## Verification
+
 - npm run typecheck
 - npm test
 - git diff --check HEAD~2..HEAD
@@ -40,6 +42,7 @@
 - dotnet build -c Release is blocked by existing SDK pin: global.json requests 10.0.203; installed SDKs are 9.0.100, 9.0.200, 10.0.101
 
 ## Review note
+
 - Requested subagent spec/code-quality reviews could not be spawned because the agent thread limit is currently reached.
 
 ## Outcome

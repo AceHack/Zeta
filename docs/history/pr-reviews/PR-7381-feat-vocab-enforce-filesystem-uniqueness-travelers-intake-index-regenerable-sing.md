@@ -28,6 +28,7 @@
 ## Description
 
 Built (all green):
+
 - **`vocab-uniqueness.ts`** — enforces one canonical home per traveler (grams term-name globally unique; symlinks resolve; travelers/ intake ≠ a homed duplicate).
 - **`docs/travelers/`** — checked-in symlinks to the homed grams travelers + a lifecycle README (intake real-file → move to natural home → symlink back).
 - **`build-vocab-index.ts` → `docs/VOCAB-INDEX.md`** — the regenerable single-file cache of every traveler (89; deterministic; `--check` gates staleness).

@@ -36,6 +36,7 @@ Found via `git ls-tree -r FETCH_HEAD | grep no-directives-otto-prose` after conf
 ## Fix
 
 Line 1 link target:
+
 - `../../../../../research/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md`
 - → `../../../../../../memory/persona/otto/conversations/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md`
 

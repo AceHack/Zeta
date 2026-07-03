@@ -35,6 +35,7 @@
 ## What was removed
 
 **17 rule-covered entries** — each had a corresponding auto-loaded `.claude/rules/*.md` file that already surfaces the rule content and points to the underlying `memory/` file. MEMORY.md index entries are redundant when the rule itself is always in context:
+
 - `Otto-363` (substrate-or-it-didnt-happen), `Otto-364` (search-first-authority)
 - `mechanical-authorization-check`, `refresh-before-decide`, `wake-time-substrate`
 - `no-op-cadence-failure-mode`, `shard-cadence-triumph`, `edge-defining-work-not-speculation`

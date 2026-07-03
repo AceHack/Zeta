@@ -27,6 +27,7 @@ Implements the presentation side of 081KQX9B50008QG0R0004N4HNK (SEO). Adds meta 
 Adds SEO/social sharing metadata to the Zeta Factory Dashboard demo page to support 081KQX9B50008QG0R0004N4HNK’s presentation layer goals (search snippets + rich previews).
 
 **Changes:**
+
 - Added `<meta name="description">` for the dashboard page.
 - Added OpenGraph + Twitter Card meta tags for richer link previews.
 - Added `SoftwareApplication` JSON-LD structured data.

@@ -27,6 +27,7 @@ This PR preserves the discussion archive for merged PR #4690.
 This PR adds a git-native discussion archive for merged PR #4690 under `docs/pr-discussions/`, capturing PR metadata plus the preserved review content for long-term traceability outside GitHub.
 
 **Changes:**
+
 - Added a new PR discussion archive markdown file for PR #4690 (YAML frontmatter + archived PR description/reviews/threads).
 
 ## General comments

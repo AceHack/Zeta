@@ -46,6 +46,7 @@ The pattern: two concurrent Otto-CLI claude-code sessions firing autonomous-loop
 - PR #3370 — landed the root-cause analysis this row implements
 
 ## Test plan
+
 - [x] Markdownlint clean locally
 - [ ] CI green
 - [ ] Auto-merge fires

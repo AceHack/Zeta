@@ -44,6 +44,7 @@ Otto-CLI bg-worker autonomous-loop tick. Substrate-honest disposition of operato
 This PR adds a new hygiene-history tick shard documenting the 2026-05-27T13:03Z Otto-CLI bg-worker run, including sentinel re-arming, a clean build gate observation, and a discriminator-pass summary over open PRs.
 
 **Changes:**
+
 - Add a new tick entry capturing the Cron sentinel re-arm and build gate result.
 - Record discriminator-pass classification of 40 open PRs and the read-only investigation of the 2 BLOCKED PRs.
 - Link the tick narrative to relevant `.claude/rules/*` policy documents.

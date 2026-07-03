@@ -62,6 +62,7 @@ Fresh Otto-CLI background-worker session in `greedy-yawning-flamingo` worktree f
 This PR adds a tick-history shard documenting Otto-CLI cron-sentinel recovery and session-only cron behavior observed during the 2026-05-17 0252Z tick.
 
 **Changes:**
+
 - Adds a new per-tick hygiene-history shard for `0252Z`.
 - Records cron re-arm evidence, rate-limit state, authorization triage, and disposition.
 
@@ -79,6 +80,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

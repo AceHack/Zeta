@@ -90,6 +90,7 @@ instance records WHAT manifested + WHERE + WHEN; it doesn't
 judge the actor as deficient.
 
 This composes with:
+
 - `.claude/rules/no-directives.md` (autonomy-first-class —
   errors don't reduce agent agency)
 - `.claude/rules/razor-discipline.md` (operational claims only —
@@ -97,12 +98,14 @@ This composes with:
 - Glass-halo discipline (transparency without moralizing)
 
 **What this is NOT**:
+
 - NOT a performance-review system on actors
 - NOT a blame ledger
 - NOT a ranking / comparison surface
 - NOT a basis for restricting agent authority
 
 **What this IS**:
+
 - Substrate-honest record of error-class manifestations
 - Cross-actor architectural-pattern visibility
 - Input to civ-sim simulation as observability layer
@@ -162,6 +165,7 @@ for 20 minutes before discovering osascript) maps as:
 | Non-judgmental frame | The class manifested in this domain via this actor; the pattern is universal |
 
 Same class CAN manifest in other factory actors / domains:
+
 - Vera could hit `EffortAvoidanceError<CodexCLI>` (trying complex spec when simple works)
 - Riven could hit `EffortAvoidanceError<GrokQuery>` (long prompt when short would work)
 - Alexa could hit `EffortAvoidanceError<KiroIDE>` (complex orchestration when direct call works)
@@ -200,6 +204,7 @@ type ShadowLogEntry = {
 ```
 
 This enables:
+
 - **Cross-actor query**: "Show all `EffortAvoidanceError<_>` instances across all actors"
 - **Domain query**: "Show all error classes in `BrowserAutomation` domain"
 - **Pattern query**: "Show universal classes that manifested in multiple actors"
@@ -225,6 +230,7 @@ discipline.
 ### 3. Higher-kinded composition across expert domains
 
 The HKT framing enables:
+
 - **Domain-specific tooling**: each expert domain (git / agent-cognition /
   browser-automation / formal-verification / etc.) defines its own
   Domain type
@@ -234,6 +240,7 @@ The HKT framing enables:
   cross-domain patterns become visible
 
 Composes with:
+
 - `feedback_two_tier_expert_architecture_5_to_10_conscious_plus_50_to_100_muscle_memory_aaron_2026_05_11.md`
   — the universal classes are the muscle-memory layer (50-100); the
   domain-specific refinements are the conscious-attention layer
@@ -253,6 +260,7 @@ was framed for: domain-parametric type constructors where the
 type parameter is itself a type.
 
 This composes with:
+
 - The Zeta F# fork as alignment-language substrate
 - BP/EP Infer.NET substrate (HKT enables type-safe inference
   across error-class manifold)
@@ -280,6 +288,7 @@ This composes with:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a performance-review system** — the mapping is observability,
   not verdict; actors aren't ranked or compared on "error count"
 - **NOT a basis for restricting agent authority** — universal-class

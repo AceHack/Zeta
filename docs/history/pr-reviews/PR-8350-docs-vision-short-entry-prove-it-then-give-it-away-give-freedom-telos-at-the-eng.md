@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"this is damn good for a short vision in the vision doc … mostly us writing code so ideas crystallize and finding external anchors we can anchor to … and the math team is our ref that makes sure we did it right."*
 
 A short carved entry under the **design-telos (polite virus / give freedom)** — the method for *earning* coherence:
+
 1. **code crystallizes the idea** (build = verify; memories load-bearing only until mechanized)
 2. **anchor to named external shoulders** (Beacon)
 3. **the math team refs it correct** (the proof)

@@ -142,6 +142,7 @@ classes." The taxonomy is a sustainable resource — not by empirical observatio
 but by the structure of computation itself.
 
 **The Class 4 framing and Rice's theorem are complementary:**
+
 - Class 4 describes the *shape* of the failure distribution (recurring + novel)
 - Rice's theorem explains *why the novel tail is inexhaustible*
 

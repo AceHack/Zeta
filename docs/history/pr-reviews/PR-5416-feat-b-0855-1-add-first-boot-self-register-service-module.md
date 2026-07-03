@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - add disabled-by-default `zeta-self-register.service` NixOS module for 081KSKBP80008QG0R000GPC0TB.1
 - import/expose the module from the cluster module surface
 - add source-level audit sentinels for first-boot ordering and env handoff
 
 ## Checks
+
 - `git diff --check`
 - `bun tools/ci/audit-installer-substrate.ts`
 - `bun test tools/ci/test-iter-54-install-flow.test.ts`
 
 ## Notes
+
 - `nix-instantiate` is not installed in this environment, so Nix parse/eval remains for CI/local Nix.
 - Draft until CI/review confirms the Nix service surface.
 

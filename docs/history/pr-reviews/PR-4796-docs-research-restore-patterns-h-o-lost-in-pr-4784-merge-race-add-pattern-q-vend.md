@@ -58,6 +58,7 @@ The wear-down design's customer-side outcome (Pattern P over-fulfillment) gets s
 
 1-2. Order placed + partial delivery
 3-4. Customer applies wear-down-resistance + parallel-channel-redundancy
+
 5. Vendor over-replaces (chat-side wrong-target + phone-side correct-target)
 6. Vendor's over-replacement detection flags originals as "duplicates"
 7. **Vendor remote-deactivates MAC addresses** → customer logs out → hardware bricked
@@ -69,6 +70,7 @@ Every cloud-attached IoT device has structurally identical Pattern Q exposure. A
 ### Vendor-management AI principle (most stringent)
 
 Future Zeta vendor-management AI should:
+
 - Treat cloud-attached IoT as **partial-ownership** (physical possession ≠ full ownership when vendor retains service-side CRUD)
 - Monitor for post-delivery vendor-side CRUD activity
 - Maintain alarm threshold for hardware-bricking events

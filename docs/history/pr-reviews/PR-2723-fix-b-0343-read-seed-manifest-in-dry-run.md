@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - parse include/exclude entries from docs/bootstrap-razor/SEED-MANIFEST.md for dry-run output
 - export parseSeedManifest/main and keep CLI process.exit behind import.meta.main
 - add a parser regression test for fenced YAML manifest entries
@@ -36,12 +37,14 @@
 Follow-up to PR #2722 Copilot review threads. PR #2722 auto-merged while Vera was preparing the fix, so this branch applies the review fix on top of current main.
 
 ## Verification
+
 - bun test tools/bootstrap-razor/seed-test-repo.test.ts
 - bun tools/bootstrap-razor/seed-test-repo.ts --dry-run
 - bun tools/bootstrap-razor/seed-test-repo.ts --help
 - git diff --check HEAD~1..HEAD
 
 Not run locally:
+
 - bun run typecheck --pretty false (local worktree has no tsc/node_modules; exits 127 before checking code)
 
 ## Outcome

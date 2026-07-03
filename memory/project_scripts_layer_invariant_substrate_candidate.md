@@ -44,6 +44,7 @@ level.
   burn-down discipline.
 
 **Prior art to investigate** (pending):
+
 - **Bats** (Bash Automated Testing System) — assertion
   framework for bash.
 - **ShellCheck** — static analyzer for shell.
@@ -59,6 +60,7 @@ level.
   sibling project has bun-TypeScript shell-test driver.
 
 **Why this is low-priority:**
+
 - The existing `tools/setup/install.sh` idempotence
   invariant is already checked in CI (gate.yml runs
   install twice per GOVERNANCE.md §24). That's an
@@ -71,6 +73,7 @@ level.
   mostly visibility, not new coverage.
 
 **How to apply:**
+
 - File a BACKLOG P3 entry to track the idea.
 - When another layer substrate lands (e.g. the
   code-layer substrate if LiquidF# graduates from

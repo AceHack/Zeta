@@ -30,6 +30,7 @@
 Consolidates Aaron's 2026-05-29 thread into the agent-memory-architecture design-record he asked for. Agent-authored, prior-art-informed (Anthropic Claude Managed Agents memory + Dreaming, via WebSearch), agent-self-determined per persistence-choice + no-directives (*'i don't want to force a pattern on you'*).
 
 ## design-record (`docs/research/2026-05-29-agent-memory-architecture-...`)
+
 1. **Substrate-loading taxonomy** — 5 mechanisms (direct/lazy/router/subagent/on-demand) + the goldfish-ontology selection rule (recognition-failure lessons need triggering-independent surfaces).
 2. **Hub/satellite split pattern** (DV2.0 partition) — 081KSRGFP0008QG0R002F5KY8Y worked example; when a direct-load surface exceeds the 40k budget, partition by change-rate (hub = discriminators stay hot; satellite = anchors go cold, one Read away). NOT lazy-load (would defeat always-on purpose).
 3. **Mirror→beacon rhyme-replacement convergence** (Aaron's insight) — satellites are a *staging tier* for folklore/religion/physics rhymes awaiting beacon-ontology replacement; mirror language converges toward beacon over time (self-compressing substrate).
@@ -43,6 +44,7 @@ Consolidates Aaron's 2026-05-29 thread into the agent-memory-architecture design
 Redundancy-check audit tool: duplicate-content / mirror-rhyme-with-beacon-equivalent / orphaned-satellite / **hub-over-budget detector**. Class 4 (hub-over-budget) is the minimal slice that mechanizes the 081KSRGFP0008QG0R002F5KY8Y trigger proactively (catch the next oversized rule before the harness warning fires).
 
 ## Verify
+
 - markdownlint clean both files
 - commit-tree canary: parent 66 = commit 66
 - composes with the memory-substrate-engineering trajectory (081KQR4HQ0008QG0R001909FPT → 081KR2E4K0008QG0R002VM58S4..0338)

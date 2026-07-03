@@ -274,6 +274,7 @@ approximate inference (EP, VMP, Gibbs).
 Why infer.net vs other frameworks (Pyro, Stan, Gen,
 etc.)? Aaron doesn't say explicitly, but plausible
 reasons:
+
 - Infer.net handles LARGE discrete graphical models
   well (corpus is a large graph)
 - Infer.net's message-passing is transparent

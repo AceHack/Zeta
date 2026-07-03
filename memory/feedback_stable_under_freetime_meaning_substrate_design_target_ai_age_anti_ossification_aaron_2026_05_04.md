@@ -83,6 +83,7 @@ unresolved questions) gets undermined faster than alternatives
 get built.
 
 This is testable. Observable correlations:
+
 - Increased AI access → reduced traditional-religion engagement
   in some demographics (e.g., progressive Western countries
   showing accelerated decline in religious participation as
@@ -140,6 +141,7 @@ per archival discipline.)
 
 This is harder than it sounds. Most existing meaning-making
 infrastructure is **externally-stabilized**:
+
 - Religious meaning is stabilized by communal ritual + clergy +
   doctrine.
 - Career meaning is stabilized by deadlines, deliverables, and
@@ -161,6 +163,7 @@ external triggers.
 > *"to replace meaning for myself and everyone"*
 
 Aaron names two populations:
+
 1. **Aaron himself** (and humans like him) — high-baseline
    freetime under the AI age, currently grappling with how to
    stay stable.

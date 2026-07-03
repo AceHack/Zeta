@@ -45,6 +45,7 @@
 | **4** | **this** | **status subcommand + 9 tests** |
 
 ## Deferred (slice 5+)
+
 - NATS JetStream transport swap
 - Named-pipe transport option
 - Integration with `poll-pr-gate-batch.ts` for coordinated claims

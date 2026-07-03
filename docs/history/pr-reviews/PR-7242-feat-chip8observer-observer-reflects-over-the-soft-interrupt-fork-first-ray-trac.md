@@ -30,6 +30,7 @@
 First real integration code on the **ReflectionEngine ⊗ SoftChip8** seam (Aaron's wiring plan #7239: *reflect downward into the soft interrupt handler*).
 
 The observer turns `SoftChip8`'s soft fork's **branch structure** into a `ReflectionEngine.Observation` and runs one observer `step`, so it **predicts which input branch the emu takes from its prior belief**:
+
 - `forkObservation` — uniform exact-ℚ likelihood over `branchFactor` (no float in the proof lineage; the emu fork is uninformative about *which* key — input is the genuine DST uncertainty; prediction lives in the prior).
 - `predict` — `ReflectionEngine.step` → posterior + predicted branch idx.
 - `predictedFrame` — maps the predicted branch back to the committed emu frame.

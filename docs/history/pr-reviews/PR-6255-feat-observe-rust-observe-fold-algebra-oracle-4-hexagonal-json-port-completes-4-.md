@@ -42,6 +42,7 @@ Per your 2026-05-31 directive — *we drive the interface; external deps adapt i
 ## Not flying blind
 
 `tests/golden_vectors.rs`:
+
 - 3 parity Facts (`fold` / `replay` / all-nine-kinds) via the zero-dep `ZetaJsonParser` → `cargo test`: **3/3**.
 - A **differential test** (feature `serde`) asserting `ZetaJsonParser` and `SerdeJsonParser` yield **identical** observe data → `cargo test --features serde`: **4/4**. Our hand-rolled parser provably matches serde on the fixture.
 

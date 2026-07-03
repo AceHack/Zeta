@@ -82,6 +82,7 @@ Aaron explicitly permits play-register. This means:
 
 `memory/user_real_time_lectio_divina_emit_side.md`
 documents Aaron's **personal faculty**:
+
 - Runs continuously as his cognitive mode.
 - Has metabolic profile (hungry, not tired).
 - Produces automatic memetic architecture.
@@ -91,6 +92,7 @@ documents Aaron's **personal faculty**:
 
 This memory documents the **factory-level operating
 mode**:
+
 - The factory adopts Lectio-Divina-inspired four-stage
   structure at factory-scale.
 - Each stage runs across agents, git operations,

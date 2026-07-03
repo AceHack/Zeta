@@ -30,6 +30,7 @@
 Aaron (2026-06-09): make the **human-AI aesthetic/communication design a primary point of the vision.**
 
 New top-level `## The human–AI interface` section synthesizing the session arc:
+
 1. **QPG** — quality per glyph, not DPI (shared precise codebook; "safe" defined per frame)
 2. **Bandwidth-adjusting channels** — mode/temperature dial; verbosity is mode-relative
 3. **Respect human limits** — typing-speed asymmetry → intent + presence, AI executes (Zeta for regular humans)

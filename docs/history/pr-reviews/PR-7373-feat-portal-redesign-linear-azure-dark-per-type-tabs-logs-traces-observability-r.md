@@ -32,6 +32,7 @@
 The real redesign you asked for, plus per-resource-type tabs and the logs/traces observability + AI connector.
 
 ### Redesign — Linear/Vercel minimalism × cloud-console structure, refined neutral dark
+
 - **New theme**: flat neutral palette (not blue-tinted), **hairline 1px borders**, one restrained accent, tighter type. **Removed the glow + grid background** (those read as gamey).
 - **Shell rebuilt**: minimal Linear-style sidebar; **cloud-console header with a breadcrumb** (`acme / Resources / <name>`) + command bar; flat logo.
 - **Resources is a clean grouped list** (cloud-console rows), not chunky cards.
@@ -48,6 +49,7 @@ The real redesign you asked for, plus per-resource-type tabs and the logs/traces
 New per-type content: **Connections** (DB pool + clients), **Routes** (host/TLS/routes), **Schedule** (run history).
 
 ### Observability — pull logs + traces, organized + exportable, connected to the AI
+
 - **Logs tab**: level filter + counts, search, **export to `.log`**, and an **"Ask `<persona>`"** button that sends the logs/traces to the Room and shows the agent's analysis inline.
 - **Traces tab**: trace list + a **span waterfall**, **export to JSON**. Backend `ResourceOps.traces()` with type-appropriate spans.
 - **Room-AI log/trace connector**: the chat handler feeds the resource's recent errors + trace summaries into the (still **resource-sandboxed**) agent context; the agent gained a log-analysis intent — ask *"why is it crashing / analyze the logs"* and it reasons over the actual telemetry (spots the OOM, proposes the budget-gated memory bump), or reports healthy when clean.

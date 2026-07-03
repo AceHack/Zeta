@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Disable shared compilation for F# projects so `fsc` gates do not depend on stale compiler-server state.
 - Keeps C# shared compilation untouched; the property is scoped to `.fsproj`.
 - Fix the TypeScript observe test narrowing that CI surfaced from latest main so `feedback.reason` is read only after proving `append-failed`.
 
 ## Verification
+
 - `dotnet format --verify-no-changes`
 - `dotnet build src/Core/Core.fsproj -c Release -m:1`
 - `dotnet build Zeta.sln -c Release -m:1`

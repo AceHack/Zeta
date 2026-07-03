@@ -30,7 +30,9 @@
 Aaron 2026-06-07: 'we should allow tensors to be referenced from DynamicValue — our ITensor.' A tensor
 leaf in a ragged DynamicValue tree (e.g. a model state_dict node) is NOT stored inline; the dense buffer /
 sparse Z-set lives in the content-addressed store and DynamicValue holds a reference: address (MerkleHash)
+
 + shape + dtype + backing kind (Dense=Tensor<T>/BLAS/TensorPrimitives, Sparse=ZSet/WeightedSet). Navigate
+
 TO the leaf with Globals' MUMPS verbs, dereference, index INTO the dense buffer with BLAS (Aaron's
 Boost-uBLAS-at-MacVector anchor).
 

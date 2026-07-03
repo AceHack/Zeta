@@ -29,6 +29,7 @@
 
 ## Summary
 Decomposed 081KQDTYV0008QG0R001VJP216 (P2 peer-call architecture refactor) into 4 smallest dependency-ordered atomic child rows:
+
 - 081KRA5AR0008QG0R000Y6102S: TS audit of current duplication post-migration (buildable-now)
 - 081KRA5AR0008QG0R0035N4S6C: persona-loader.ts shared module (blocked on 0409)
 - 081KRA5AR0008QG0R000C3P8KP: grok.ts --persona flag (blocked on 0410)
@@ -40,11 +41,13 @@ All children TS-first per Rule 0. Parent updated with depends_on/children/decomp
 081KQDTYV0008QG0R001VJP216 was broad (M effort, 5-script to 3+flag + deprecation). Re-decomposition assumed prior mistakes and produced atomic, buildable slices with clear edges. Matches AGENTS.md "always re-decompose" and "if too broad, decompose before implementation".
 
 ## Focused checks (in dedicated worktree)
+
 - dotnet build -c Release: **0 Warning(s) 0 Error(s)** (passed)
 - git worktree + pushed claim before any write (per rules)
 - No bash used (TS preference honored; no generate-index.sh invoked)
 
 ## Evidence
+
 - Worktree: .config/superpowers/worktrees/Zeta/claim-b0120-...
 - Branch: origin/claim/b0120-decompose-smallest-atomic-children-riven-2026-05-11
 - Co-Authored-By trailer present

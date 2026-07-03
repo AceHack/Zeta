@@ -54,6 +54,7 @@ The canary rule (`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commi
 This tick documents the empirical anchor for that future refinement; the rule edit itself is deferred to a follow-up tick.
 
 ## Test plan
+
 - [x] `git ls-tree HEAD` = 53 post-commit (canary check passed)
 - [x] `git branch --show-current` guard before commit (race-window mitigation)
 - [x] Isolated worktree at `/private/tmp/zeta-otto-cli-cold-boot-1413z` (per saturation-ceiling guidance)

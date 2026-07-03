@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Fix quiet-state trajectory links to .claude/rules/* from the nested trajectory directory.
 - Replace the dead dont-fabricate-substrate xref with the existing holding/brief-ack rule that carries the fabricated-substrate discipline.
 
 ## Verification
+
 - git diff --check origin/main..HEAD
 - markdownlint-cli2 docs/trajectories/autonomous-loop-quiet-state/RESUME.md
 - verified referenced .claude/rules/* files exist and stale patterns are absent

@@ -31,6 +31,7 @@ Generated with Claude Code
 Adds a preserved research note for the KHALEESI (USENIX Security ’22) prior-art and files a low-priority backlog item (081KSNY2Z0008QG0R001CD4174) that frames it as a future “Kleisli-severance” substrate target within the broader framework vocabulary.
 
 **Changes:**
+
 - Added a `references/notes/` research note summarizing the paper and mapping it onto existing substrate concepts.
 - Added a new P3 backlog row `081KSNY2Z0008QG0R001CD4174` capturing a very-low-priority future work target.
 - Updated the generated `docs/BACKLOG.md` index to include `081KSNY2Z0008QG0R001CD4174`.

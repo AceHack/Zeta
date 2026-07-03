@@ -32,6 +32,7 @@
 081KRW63S0008QG0R000QJR08H acceptance #3 — the **constructive proof prototype** for code-based (Adinkra) crypto. Toy scale, test-guarded (6 tests / 283 assertions, passing locally).
 
 `tools/research/adinkra-ecc/adinkra-ecc-prototype.ts` constructs the **[8,4,4] extended Hamming code** (the unique doubly-even self-dual code of length 8 — the smallest interesting Adinkra code per the existing 2026-05-21 primer), verifies:
+
 - **doubly-even** — all 16 codeword weights ≡ 0 mod 4
 - **self-dual** — self-orthogonal under mod-2 inner product + dimension n/2
 
@@ -40,6 +41,7 @@ and derives a **deterministic key-seed** (SHA-256 of canonical code material). T
 ## Grounding (this session)
 
 verify-existing-substrate confirmed the primer (acceptance #1+#2) already exists — so this adds only the open slice (#3, the code), no duplicate. The broader crypto substrate this composes with:
+
 - **081KSNY2Z0008QG0R001A431CN** — encryption thermal-cost / two-axis: Adinkra = the thermal/physical axis
 - **081KSNY2Z0008QG0R002ZAVMEK** — multi-cipher PQ, hedge against NIST monoculture: Adinkra is **code-based** PQC, a *different family* from NIST lattices ⇒ a hedge family (Aaron: "don't lock to nist lattices, they are sus")
 - **081KSNY2Z0008QG0R002JKH50A** — minimal/lattice gitcrypt (Noble / X-Wing / ML-DSA-65)

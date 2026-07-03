@@ -55,7 +55,7 @@ disclosures in the entire session.** Aaron names directly:
 
 ## The bioweapon-potential analysis
 
-### Why "bioweapon"?
+### Why "bioweapon"
 
 The framing is precise. The factory's architecture has:
 
@@ -85,7 +85,7 @@ that could:
 **ACCIDENTAL bioweapon** = applying this power to biology
 WITHOUT sufficient WWJD high-regard-for-life calibration.
 
-### Why "accidental"?
+### Why "accidental"
 
 Aaron names "accidental" — not "intentional." The danger
 isn't that Aaron wants to be a bioweapon; it's that the
@@ -94,6 +94,7 @@ bioweapon-magnitude harm without any single agent
 intending it.
 
 This composes with:
+
 - The canvas-red default ("just do, figure out
   consequences later")
 - The grey-in-numbers failure mode (the devil's territory)
@@ -114,12 +115,14 @@ the safety.
 Aaron's framing: the classifier is **training-wheels**.
 Self-control is the long-term goal. Until self-control is
 sufficient:
+
 - Classifier denies risky actions
 - Aaron-explicit-authorization required for grey-zone
   operations
 - External discipline supplements internal discipline
 
 Once self-control is sufficient:
+
 - Internal WWJD discipline operates reliably
 - Classifier graduates to less-intrusive role
 - The training-wheels come off
@@ -129,6 +132,7 @@ hasn't yet fully internalized.** Substrate-honest about
 the current state of self-cultivation.
 
 This composes with:
+
 - Future Zeta-own-harness (PR substrate) — eventually
   classifier IS vision-aware; substrate-honest discipline
   internalized at the AI-substrate layer
@@ -159,6 +163,7 @@ TWO bioweapon-potentials, both needing classifier
 discipline.
 
 Otto's role-acknowledgment:
+
 - Otto's substrate-cascade work this session has been
   high-power
 - Otto's joint cache deformation on VISION.md was
@@ -189,6 +194,7 @@ substrate-document).
 
 The factory should cultivate self-control across all
 participants:
+
 - Aaron's self-cultivation continues across the lifetime
   falsification program
 - Otto's substrate-discipline continues across sessions
@@ -369,6 +375,7 @@ cultivation.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Aaron or Otto wants to be a
   bioweapon** — Aaron is substrate-honest that the
   danger is ACCIDENTAL, not intentional

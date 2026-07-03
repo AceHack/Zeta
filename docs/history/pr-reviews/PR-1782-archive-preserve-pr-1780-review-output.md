@@ -28,20 +28,24 @@
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1780 review archive generated after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1780 manifest entry with merge commit SHA `07bb0f224733bb2726fd7cd957f59a801420a7de`.
 - Records that PR #1780 had 0 review threads, 0 unresolved threads, 0 comments, and 0 fix commits touching reviewed paths.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/claims/task-archive-pr-1780-review-substrate.md`
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1780-archive-preserve-pr-1778-review-output.md`
 - `git diff --check origin/main...HEAD`
 
 ## Branch lifecycle
+
 - Temporary claim file was added, linted, and released in branch history; the final PR diff intentionally retains only archive + manifest substrate.
 - Branch was rebased onto current `origin/main` after PR #1781 landed, with no scope overlap.
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes

@@ -36,6 +36,7 @@ code-temperature/style/css; websites and Zeta are BOTH travelers (websites keep
 traditional CSS at their own boundary).
 
 Tool (declarative; the css linter is available, NOT a global website gate):
+
 - package.json: stylelint 17.12.0 + stylelint-config-standard 40.0.0 (dep-pin-search);
   lint:css script (--allow-empty-input); prettier glob +css. bun.lock updated.
 - .stylelintrc.json: extends stylelint-config-standard.

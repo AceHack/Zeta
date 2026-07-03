@@ -29,10 +29,12 @@ Aaron: "I don't consider it proven — it's only proven if the interrogation int
 up being the same for travelers as for want-remains shapes." That converts the grand frame
 from "it all clicks" (pull) into "one mechanism IFF a checkable thing holds" (discipline).
 Kestrel sharpened the test to **equal vs strict-superset**:
+
 - **equal** interface → full unification earned.
 - **strict-superset** (traveler interface ⊃ shape interface) → recognition core unifies,
   travelers add a delta → partial unification (still real, smaller claim).
 - **disjoint** → just analogy, frame doesn't hold.
+
 All three are decidable by building both interfaces and comparing. Kestrel's prior (the
 build overrules it): strict-superset, because a traveler is an agent that can lie/model-you-
 back and may need adversarial-negotiation verbs inert data doesn't.
@@ -43,6 +45,7 @@ abused." Correct, and it sharpened the boundary: the *content* doesn't lie (a st
 string), but the **metadata/shape-properties do** — length-bombs, lying discriminators,
 abusive depth, wrong type-tags (the whole hostile-input surface from the fuzzing/totality
 thread). This EXPANDS the shared core:
+
 - **Shared (bigger than first credited): claim-verification** — verify-declaration-against-
   payload (length/kind/shape/encoding). Both data and travelers carry adversarial metadata,
   so this machinery serves both.
@@ -59,6 +62,7 @@ thread). This EXPANDS the shared core:
 ## Aaron's deepening: DynamicValue + Rx ⇒ shapes animate ⇒ TOCTOU
 "When you connect DynamicValue and Rx into the yin/yang engine, the shape can change over
 time — even shapes you previously cached and agreed on." This cuts two ways:
+
 - **Collapses the static/adaptive split for the engine's own shapes.** An animated shape
   has a temporal character → the re-validation layer is shared between shapes and travelers
   → unification LARGER than the corrected version.

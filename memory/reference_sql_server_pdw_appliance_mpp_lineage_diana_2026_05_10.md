@@ -10,6 +10,7 @@ type: reference
 
 SQL Server Parallel Data Warehouse (PDW), later renamed
 Analytics Platform System (APS). On-premises MPP appliance:
+
 - Share-nothing architecture
 - Scale-out compute nodes with direct-attached storage
 - Parallel query plans distributed across nodes
@@ -37,6 +38,7 @@ Aaron saw MPP at appliance scale on Diana's team, years
 before building the same architecture as an AI factory.
 
 **Connects to:**
+
 - user_sql_null_dst_origin_story (the experiment)
 - morsel-driven-expert skill (parallel execution)
 - distributed-query-execution-expert skill (MPP plans)

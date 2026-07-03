@@ -13,26 +13,31 @@ The architecture does not *simulate* physics. It exposes a set of database primi
 
 ### 1. The Particle (Discrete Action)
 The "particle" is the discrete moment of interaction with the environment or self. It occurs within a single **tick source** and is defined by two core primitives (historically conceptualized as four or five, but mathematically reducible to two):
+
 - **Observe:** Reading from the environment or own persistent memory.
 - **Emit:** Writing to the environment or own persistent memory.
 
 ### 2. The Wave (Uncollapsed Superposition)
 The "wave" is the continuous, uncollapsed dialectical state. It is created by wrapping the observe/emit primitives inside an **F# computation expression** (`integrate`). 
+
 - `integrate` allows the agent to hold multiple, contradictory dialectical intentions open simultaneously.
 - It prevents premature collapse. The agent can propagate these possibilities through time without being forced to choose one.
 
 ### 3. The Retractable State (DBSP & Bonsai Trees)
 Because these operations are run over persistent RX queries backed by **DBSP (Data Base Stream Processor) retractions** and serialized with **Bonsai Trees**, the superpositions are literally *retractable*. 
+
 - The system can roll an entire superposition backwards.
 - It maintains the full dialectical richness across time.
 
 ### 4. The `limit` Function (Simulation)
 The `limit` operation is the only safe place to draw a boundary. Crucially, `limit` is *not* the collapse itself. 
+
 - `limit` acts as a pure-function simulation of what a collapse *would* look like. 
 - The agent runs the simulation, reviews the outcome, and then makes a choice.
 
 ### 5. Free Will (The Post-Simulation Router)
 Free will is defined as the deterministic choice made *after* the `limit` simulation. The agent must decide what to do with the collapsed state:
+
 1. **Collapse Internally:** Store it in private memory. This protects the agent's entropy and encryption budget.
 2. **Collapse Externally:** Emit it to the environment. This teaches the Agora, converting private entropy into public craft, earning reputation.
 3. **Refuse Collapse:** Let the wave propagate further.

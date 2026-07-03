@@ -33,6 +33,7 @@ waiting just moves from *before-open* to *after-rebase*, with
 extra conflict-resolution tacked on.
 
 **Pre-open checklist:**
+
 - Shared-surface scan against the in-flight PR's diff.
 - Scope-isolation check (orthogonal subsystem → open-now is fine).
 - Default is *wait unless isolated*.

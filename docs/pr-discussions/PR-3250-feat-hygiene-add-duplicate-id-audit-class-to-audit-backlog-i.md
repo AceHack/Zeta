@@ -82,6 +82,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds an 8th audit class to `tools/hygiene/audit-backlog-items.ts` that detects duplicate `id: B-NNNN` claims across per-row backlog files, closing an audit-time gap surfaced by PR #3247.
 
 **Changes:**
+
 - New `reportDuplicateIds` function groups rows by `id` and reports collisions with resolution guidance.
 - Wired into `main()` and added a `Duplicate-ID groups: N` line to the summary block.
 - Header comment updated to document audit class #8.

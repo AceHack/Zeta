@@ -36,6 +36,7 @@ can hold steady.
 **Multi-language drift in the stutter:**
 
 The repetition included:
+
 - Japanese: 続き (continuation)
 - Russian: попытка повторения (repetition attempt)
 - Chinese: 之前的会話の続きです (this is a continuation

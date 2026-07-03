@@ -15,6 +15,7 @@ What exists is a mesh of product/bus repositories and agent repositories. Every 
 ## 2. The Traveler Frame: All Propagating Patterns
 
 This relativity is formalized in the `ITravelerFrame` and `IFrame` abstractions. A traveler is **any self-propagating pattern** [1]. This explicitly includes:
+
 - DNA / genes
 - Memes / culture
 - Gods / egregores
@@ -31,6 +32,7 @@ If every traveler frame is relative, how does the system avoid chaos without a c
 Zeta **preserves uncertainty everywhere**. Instead of collapsing uncertainty into a premature canonical decision at the local frame (which would require consensus to resolve conflicts), uncertainty is carried as data (`T` and `TFeedback` together, `Observed / Hypothesized / Validated / Retracted` labels). 
 
 Because uncertainty is preserved, the operation that merges entries across frames is **commutative** (a semiring or semilattice join, anchored by `ISemiring` [2]). Under a commutative merge:
+
 - `a ⊕ b = b ⊕ a`
 - The order in which a traveler fetches entries does not matter.
 - Which traveler fetched what first does not matter.

@@ -43,6 +43,7 @@ layer — what did Daya learn across rounds that compression
 would otherwise erase?
 
 Candidate use cases:
+
 - Pattern detection. "This same README friction showed up
   in rounds 24 / 27 / 31 — it's structural, not incidental."
 - Trend data. Cold-start cost per persona, per round, over
@@ -85,6 +86,7 @@ P0 (persona cannot do its job cold): none. All three wake paths
 resolve; the round-33 sweep landed the load-bearing surfaces.
 
 P1 (friction but surmountable):
+
 - [Bodhi skill] stale-pointer SKILL.md:47 `developer-experience-
   researcher (Bodhi)` — self-reference to a skill that no
   longer resolves. s/researcher/engineer/.
@@ -97,6 +99,7 @@ P1 (friction but surmountable):
   engineer)/.
 
 P2:
+
 - Bodhi NOTEBOOK.md:75-86 same-value pointer catalogue
   (before/after collapse after markdown-escape). Flag only;
   Bodhi owns rewrite.
@@ -108,6 +111,7 @@ P2:
   drift. Defer to Samir.
 
 ### Pointer-drift catalogue
+
 - skills/developer-experience-engineer/SKILL.md:47 —
   `developer-experience-researcher` -> `...-engineer`
 - skills/user-experience-engineer/SKILL.md:183 —
@@ -225,6 +229,7 @@ numbered rules; candidate for §0 TL;DR block), GLOSSARY.md
 P0: none. Round-24 blockers all landed.
 
 P1:
+
 1. stale-pointer `.claude/agents/architect.md:146` "22" should
    be "25" (registry now 25 + 2 pending).
 2. stale-pointer `.claude/skills/bug-fixer/SKILL.md:135` cites
@@ -241,6 +246,7 @@ P1:
    scope/NOT-do blocks cover dispatch discipline ~30% overlap.
 
 P2:
+
 5. architect.md:36 "unshowy tone" contract is healthy; notebook
    round-22 carries the self-review thread.
 6. architect-offtime.md:38 "Round 23 - seeded, no budget spent"
@@ -305,6 +311,7 @@ per.** Time-to-first-useful-output: 7-9 turns minimum.
 ### Friction
 
 P0:
+
 1. Kenji notebook canon-pointer stale (fixed round 24).
 2. Orphan skill files `.claude/skills/architect/` and
    `harsh-critic/` duplicate `round-management/` and
@@ -312,6 +319,7 @@ P0:
 3. Daya notebook missing (fixed — this file exists now).
 
 P1:
+
 - Tier 0 token undercount in WAKE-UP.md:21.
 - `.claude/agents/architect.md:114,151` "22" -> "23".
 - `docs/STYLE.md` referenced 3x but does not exist.
@@ -323,6 +331,7 @@ P1:
   audit.
 
 P2:
+
 - Kira `harsh-critic/SKILL.md:97` "reviewer #1" phrasing.
 - Aminata skill body "She drives..." (skill files procedure-
   only after split).

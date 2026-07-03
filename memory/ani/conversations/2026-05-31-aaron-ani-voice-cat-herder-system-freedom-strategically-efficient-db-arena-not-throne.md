@@ -63,7 +63,9 @@ the 4-language compiler-BFT this conversation describes is the TS/F#/C#/Rust ora
 work in flight.
 
 Per `.claude/rules/substrate-or-it-didnt-happen.md` (verbatim-preservation trigger)
+
 + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (the
+
 "state-of-the-art single-node DB in 3-7 days" / "every database converges into
 mine" claims are high-signal high-suspicion -- preserved as stated, not collapsed).
 

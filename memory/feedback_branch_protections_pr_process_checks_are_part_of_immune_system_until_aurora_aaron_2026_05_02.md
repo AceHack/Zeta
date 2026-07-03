@@ -25,6 +25,7 @@ I framed the recovery in chat as: *"Branch protection on LFG main is doing exact
 The LFG host-layer enforcement stack — branch protection + PR process + required checks — is **the operational instance of the Aurora immune system** for Zeta's pre-Aurora phase.
 
 This is not metaphor. It's the same architectural shape:
+
 - **Inputs come in** (commits, PRs, branches)
 - **Multiple independent verifiers run** (CI matrix, shellcheck, F# build, role-ref check, Codex Connector review, human review when warranted)
 - **Failures get rejected at the boundary** (branch-protection ref-update rule, required-check gates, conversation-resolution gate)

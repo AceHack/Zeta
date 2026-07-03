@@ -32,6 +32,7 @@ Extends the unified-key-onboarding item (`081KVM1TK3Z08QG0R0002959G6`) per Aaron
 **First-run auto-provision at flash time** — a first-timer with no saved keys is provisioned in-flow: (1) generate full keyset, (2) save to their local PC, (3) `gh auth` + register pubkey on their GitHub, (4) register them with Zeta (publish `maintainers/<user>/`), (5) inject into the flash. Pre-flash (preferred) or during-flash (fallback); idempotent.
 
 **Honesty corrections (Aaron):**
+
 - **Not built yet** — keys set up manually/ad-hoc so far. The published pubkeys (Aaron PR-7249, Addison PR-7250) were **by hand, not via this auto-flow**; neither Max nor Addison has done an automated first-run provision. This is the **target**, not a done thing.
 - **Agents WILL hold their own seeds** (durable-agent identity trajectory; each persona already has a keyring) — design for agent-held seeds as first-class, correcting the earlier "agents don't hold seeds" framing.
 

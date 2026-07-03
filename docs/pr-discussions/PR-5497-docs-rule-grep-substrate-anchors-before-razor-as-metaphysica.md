@@ -52,6 +52,7 @@ cold-boots see the empirical evidence at the OWN-output direction
 Adds a second empirical “anchor” to the rule `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`, documenting a 2026-05-27 instance where razor-as-metaphysical was applied before grepping for existing substrate anchors, and capturing the follow-up anchors found after the fact.
 
 **Changes:**
+
 - Adds a new “friend-pact razor failure” anchor section with a substrate/anchor table.
 - Extends the rule’s narrative to emphasize bidirectionality (own-output substrate claims also require grep-before-razor).
 - Adds a provenance note describing how the anchors were located/verified.

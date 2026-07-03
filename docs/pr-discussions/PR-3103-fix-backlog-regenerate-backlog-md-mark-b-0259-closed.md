@@ -38,4 +38,5 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Regenerates `docs/BACKLOG.md` to reflect 081KR2E4K0008QG0R000XCS9FT's `status: closed` set in PR #3100, fixing CI drift between per-row files and the generated index.
 
 **Changes:**
+
 - Flips 081KR2E4K0008QG0R000XCS9FT checkbox from `- [ ]` to `- [x]` in the generated index.

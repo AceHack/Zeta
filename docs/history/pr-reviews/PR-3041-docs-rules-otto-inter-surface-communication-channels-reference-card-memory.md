@@ -39,6 +39,7 @@ Lands as **two artifacts**:
 ## 8 channels in 2 classes
 
 ### Ambient (state-of-the-world; both Ottos read continuously)
+
 - **Git** — commits, branches, PRs, rebase (canonical async-handoff)
 - **`.claude/rules/`** auto-load — wake-time discipline
 - **Bootstream** — project-knowledge file for cold-boot substrate
@@ -47,6 +48,7 @@ Lands as **two artifacts**:
 - **PR review threads** — Codex/Copilot findings visible to both lanes
 
 ### Explicit (active signaling; meant to be observed by peer)
+
 - **Bus envelopes** (\`/tmp/zeta-bus/\`) — advisory broadcasts
 - **Claim coordinator** (\`tools/bus/claim.ts\`) — backlog row locking
 - **Routines schedule** — Desktop cron fire IS a signal to CLI
@@ -61,6 +63,7 @@ Aaron asked Otto on CLI + Otto on Desktop simultaneously. Independent observatio
 ## Empirical validation
 
 All 8 channels exercised in the 2026-05-13 session:
+
 - 6 commits on [PR #3034](https://github.com/Lucent-Financial-Group/Zeta/pull/3034) across both Otto processes (zero conflicts via rebase-on-pull)
 - 3 memory files (split-brain, multi-foreground-surface activation, identity-stays-unified)
 - PR #3032 claim-acquire rule merged → auto-loaded for future sessions

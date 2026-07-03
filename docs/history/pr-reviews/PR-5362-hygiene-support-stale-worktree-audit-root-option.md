@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add `--root PATH` to `audit-stale-worktrees` so callers can inspect a control clone without changing cwd
 - route list/prune through `git -C <root>` and cover argument parsing
 - handle `spawnSync` launch errors explicitly in `audit()` + `runPrune()` (per Copilot review on this PR)
@@ -36,6 +37,7 @@
 - claim was released per AGENT-CLAIM-PROTOCOL.md §TL;DR step 5 (no claim file shipped with this PR; coordination artifact deleted on landing)
 
 ## Checks
+
 - `bun test tools/hygiene/audit-stale-worktrees.test.ts` (12 pass)
 - `bun tools/hygiene/audit-stale-worktrees.ts --root /Users/acehack/.local/share/zeta-codex-loop/Zeta`
 - `bun tools/hygiene/audit-stale-worktrees.ts --root /tmp/__nonexistent` → exit 128 with clean error

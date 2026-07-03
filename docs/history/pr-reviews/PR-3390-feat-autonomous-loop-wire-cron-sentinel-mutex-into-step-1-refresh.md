@@ -63,6 +63,7 @@ Per the file's existing role, this update propagates to:
 - [PR #3386](https://github.com/Lucent-Financial-Group/Zeta/pull/3386) — bulk rule-link depth fix on affected shards
 
 ## Test plan
+
 - [x] Markdownlint clean
 - [x] Both relative links verified to resolve
 - [ ] CI green

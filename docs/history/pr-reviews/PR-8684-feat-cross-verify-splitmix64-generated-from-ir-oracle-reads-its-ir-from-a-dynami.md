@@ -31,6 +31,7 @@
 Completes the codegen-forward step started in #8679: the splitmix64 `generated-from-ir` oracle's IR is no longer an inline TS literal — it is a **real DynamicValue row**, byte-locked cross-language.
 
 ## Changes
+
 - **`splitmix64/_gen/splitmix64.ir.json`** — the finalizer IR as a canonical-JSON DynamicValue (`ops` as objects; u64 multipliers stored as their **signed-int64 bit-pattern**, since `DynamicValue.Int` is int64 and the mix multiply is mod 2^64, so the reinterpretation is bit-exact).
 - **`gen.ts`** now READS that row, DECODES it via the project's real canonical-JSON decoder (`fromCanonicalJson`), projects the decoded `Tagged` ops, and folds. The mixer algorithm no longer appears as code in the generator — it lives in the row. Emitted `ts-output.json` is **byte-identical** (all 6 oracles still agree on 10 vectors).
 - **`gen-ir.test.ts`** upgraded to load the IR FROM the row, assert it is a canonical DynamicValue (decoder accepts + fixed-point `canonicalJson(decode x) == x`), and that corruption still bites.
@@ -40,6 +41,7 @@ Completes the codegen-forward step started in #8679: the splitmix64 `generated-f
 This makes "the IR is a row in the schema" literally true: the generator reads its algorithm from a serialised DynamicValue, decoded through the same canonical-JSON machinery the rest of Zeta uses, and that row's bytes are locked across TS and F#.
 
 ## Validation
+
 - `cross-verify-all` → **14/14**
 - splitmix64 `gen-ir.test` → **4/4**
 - F# `DynamicValueCanonicalTests` → **9/9** (incl. the new IR-row byte-lock)

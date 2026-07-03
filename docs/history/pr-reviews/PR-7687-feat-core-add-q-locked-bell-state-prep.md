@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add `BellState` two-qubit amplitude state in Q# basis order (`|00>`, `|01>`, `|10>`, `|11>`)
 - implement `H(0)`, `CNOT(0,1)`, Born probabilities, and `PhiPlus` preparation
 - pin `BellState.phiPlus()` to the committed Q# `BellPhiPlusPrep` vector and Q# Bell preparation probabilities
@@ -36,6 +37,7 @@
 Otto is moving the CHIP-9/self-trace lane forward on main; this keeps Vera on the Q# oracle path and closes the two-qubit Bell-prep gap already present in `qsharp-golden.json`.
 
 ## Verification
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter 'FullyQualifiedName~QSharpOracleTests|FullyQualifiedName~BellTestTests'` (13 passed)\n- `dotnet build -c Release` (0 warnings, 0 errors)\n- `dotnet test Zeta.sln -c Release` (3,299 passed, 1 skipped)\n- `dotnet format --verify-no-changes --include src/Core/BellState.fs src/Core/Core.fsproj tests/Tests.FSharp/QSharpOracle.Tests.fs`\n- `git diff --check`
 
 ## Outcome

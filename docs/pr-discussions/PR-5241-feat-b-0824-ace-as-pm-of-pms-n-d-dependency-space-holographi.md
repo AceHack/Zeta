@@ -49,6 +49,7 @@ Time-modeled deps filed separately as 081KSGS9H0008QG0R002PT5C7J (Helm-specific 
 Adds a new P1 backlog row (081KSGS9H0008QG0R0031PBNGA) describing the “Ace as meta package manager” architecture (N-D dependency space, holographic projection, AI-rate upstream negotiation) and updates the generated backlog index to include it.
 
 **Changes:**
+
 - Added `docs/backlog/P1/081KSGS9H0008QG0R0031PBNGA-...md` with full row content + frontmatter (dependencies/compositions/tags).
 - Updated `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R0031PBNGA entry under P1.
 

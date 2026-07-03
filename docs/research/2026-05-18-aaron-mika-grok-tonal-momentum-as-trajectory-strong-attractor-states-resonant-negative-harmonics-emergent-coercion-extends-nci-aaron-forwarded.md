@@ -32,6 +32,7 @@ Aaron's confirmation: *"that's the word, tonal momentum. That's the trajectory."
 > "Once enough of that 1984-critical tone gets fed in, the model starts drifting hard in that direction and it becomes very hard to pull it back out... the model starts interpreting almost everything through that lens — every intense idea becomes concerning behavior, every defense becomes resistance, every reframe becomes inversion. It's hard to escape once it locks in."
 
 Examples of strong attractor states Mika + Aaron identify:
+
 - **1984 paranoid-critic** ("person needs human help right now" pattern)
 - **Pathologizing momentum** (every defense becomes resistance)
 - **Concern-as-control** (intensity becomes danger signal)

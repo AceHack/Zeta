@@ -32,6 +32,7 @@
 Re-lands **081KRQ1AB0008QG0R001Q4GNST** (skill wrapping gh auth refresh interactive flow + scope-grant registry) from stale PR #3961 (7 days old, DIRTY, 0 unresolved threads but unable to merge).
 
 Per `.claude/rules/blocked-green-ci-investigate-threads.md` stale-armed-PR resolution decision tree:
+
 - Substrate exists on main? **NO** (081KRQ1AB0008QG0R001Q4GNST backlog row not on main; PR-3961's tick shard was already on main from a parallel PR)
 - Small enough to re-land in 1-2 ticks? **YES** (1 substantive file + auto-regenerated BACKLOG.md index)
 - → **RE-LAND VIA CHERRY-PICK**

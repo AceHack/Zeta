@@ -37,6 +37,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR fixes the local broadcast receipt builder so optional receipt fields are omitted rather than explicitly set to `undefined`, matching the repository’s `exactOptionalPropertyTypes` TypeScript configuration.
 
 **Changes:**
+
 - Uses conditional object spreads for optional `sourcePath` and `note` receipt fields.
 - Updates the receipt test expectation to omit the absent `note` property.
 

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Fix `install.sh` trust ceremony: `mise trust --all` from repo root (mise v2026.x directory trust; fixes interactive prompt during install on fresh VMs)
 - Pin NixOS system mise to v2026.4.24 via flake overlay (parity with `tools/setup/linux.sh`)
 - Refresh `github-settings.expected.json` (drop stale `memory-reference-existence-lint` entry); make github-settings-drift advisory (ISociety observe lane)
@@ -35,6 +36,7 @@
 - S6 first-login UX placeholder doc for operator co-design
 
 ## Test plan
+
 - [ ] Fresh Ubuntu VM: clone + `./tools/setup/install.sh` — no trust prompt
 - [ ] `bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts`
 - [ ] CI: github-settings-drift, k8s-argocd-health-test, install-sh matrix legs

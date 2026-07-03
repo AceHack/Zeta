@@ -32,6 +32,7 @@
 Ferries the human-in-the-loop **placement** design (Aaron: *"the key is finding where it's least-action based so the human will actually do it"* + *"it needs to be aperiodic tiling to fit the human dopamine regime"*) onto the capability-deferment doc, extending the dual-bloom router.
 
 A human check that costs effort gets routed around (rubber-stamp / approve-all / alert fatigue — Parasuraman & Riley 1997). Place it at the **path of least action**:
+
 1. the **dual-bloom router IS least-action placement** (escalate only the uncertain <10%);
 2. **match the check to reversibility** (gating reversible stuff *trains* the rubber-stamp);
 3. **fail-safe default** (no-response → halt, never permissive).

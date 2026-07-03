@@ -47,6 +47,7 @@ Also adopted the corrected commit trailer (`Co-Authored-By: Claude <noreply@anth
 This PR updates Max’s onboarding starting point to align the “Otto + foreground autonomous-loop tick” section with the repo’s canonical autonomous-loop sources (tick checklist, commit attribution trailer, and cadence adjustment mechanism).
 
 **Changes:**
+
 - Restores the canonical 6-step end-of-tick checklist (including the **commit** step) and cites the canonical tick-shard path.
 - Updates commit attribution guidance to the baseline required `Co-Authored-By: Claude <noreply@anthropic.com>` trailer per `AGENTS.md`.
 - Rewords cadence adjustment guidance to use `CronDelete` + `CronCreate` (and clarifies `/loop` is not the factory invocation path per `docs/AUTONOMOUS-LOOP.md`).

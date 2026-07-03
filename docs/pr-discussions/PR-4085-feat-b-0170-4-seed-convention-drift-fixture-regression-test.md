@@ -72,6 +72,7 @@ Per PR #3611 review-thread discipline, the fixture's HTML-comment provenance int
 Adds the fifth empirical eval-set fixture to `tools/substrate-claim-checker`, covering the **convention drift** checker (ADR supersession reciprocity) and wiring a regression test to ensure the checker continues to flag the missing reciprocal “Superseded by” marker pattern.
 
 **Changes:**
+
 - Added a self-contained convention-drift fixture pair (current ADR + predecessor support ADR) under `tools/substrate-claim-checker/fixtures/`.
 - Extended `fixtures.test.ts` with a regression test that pins exact finding shape (count, claim line, target path, reason substrings).
 - Updated the fixtures index README to include the new convention-drift fixture row.

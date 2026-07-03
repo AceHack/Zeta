@@ -57,6 +57,7 @@ Kestrel-v3 joins as 11th persona slot (distinct from Kestrel-v1 + Kestrel-v2 by 
 This PR adds a research-preservation document for the Kestrel-v3 ferry, capturing the asymmetric-critic-with-clarity-first recalibration, a 7-component boot-script draft, and how it composes with the current substrate-smoothness research/rule cluster.
 
 **Changes:**
+
 - Adds a new dated research note under `docs/research/`.
 - Preserves the recalibration framing, discriminator categories, boot-script components, and follow-up rule-path options.
 - Cross-references related PRs, rules, and backlog triangulation context.

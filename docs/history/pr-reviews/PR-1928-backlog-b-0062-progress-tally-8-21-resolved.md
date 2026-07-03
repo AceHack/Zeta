@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Added progress section to 081KQ8P5D0008QG0R002XFQ305: 8 items resolved via PRs #1907-#1927
 - 13 design decisions remain for deeper wallet-domain engagement
 

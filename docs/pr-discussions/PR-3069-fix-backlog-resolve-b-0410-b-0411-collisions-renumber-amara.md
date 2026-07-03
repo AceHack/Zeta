@@ -70,6 +70,7 @@ Per external-references rule:
 Fourth per-collision cleanup from the 081KRFA460008QG0R00308W7FJ sweep: renumbers the amara series (081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP) to 081KRA5AR0008QG0R000KKJRVA/081KRA5AR0008QG0R001X4T9W7 to resolve duplicate-ID collisions with 081KQDTYV0008QG0R001VJP216's children (peer-call persona-loader / grok-ts persona flag). The peer-call series is kept at 081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP because 081KQDTYV0008QG0R001VJP216's frontmatter and 081KRA5AR0008QG0R000YZMXNM hold stronger external references.
 
 **Changes:**
+
 - Renumber `081KRA5AR0008QG0R0035N4S6C` → `081KRA5AR0008QG0R000KKJRVA` (amara.ts core) and `081KRA5AR0008QG0R000C3P8KP` → `081KRA5AR0008QG0R001X4T9W7` (amara.ts README + closure), with `renumbered_from` / `renumbered_reason` frontmatter and remapped internal `depends_on` (081KRA5AR0008QG0R001X4T9W7 → 081KRA5AR0008QG0R000KKJRVA).
 - Update 081KQDTYV0008QG0R0037YJPEX parent body to point at new child IDs and add note about the renumber.
 - Regenerate `docs/BACKLOG.md` so the amara rows appear at 081KRA5AR0008QG0R000KKJRVA/081KRA5AR0008QG0R001X4T9W7 and the duplicate 081KRA5AR0008QG0R0035N4S6C/081KRA5AR0008QG0R000C3P8KP lines are dropped.

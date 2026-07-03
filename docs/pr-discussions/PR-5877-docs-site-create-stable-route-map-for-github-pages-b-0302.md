@@ -27,6 +27,7 @@ This PR implements backlog item 081KR2E4K0008QG0R000WYVJAF by creating the stabl
 This PR adds a single new documentation file, `docs/site/routes.md`, establishing the frozen URL route map for the planned Zeta GitHub Pages site per backlog item 081KR2E4K0008QG0R000WYVJAF. It defines five core public routes (root, vision, alignment, glossary, contributing) mapped to existing source documents, calls out the future `/research/` route as deferred to 081KR2E4K0008QG0R001B503RK, and states the URL scheme is frozen before indexing without an accompanying redirect strategy.
 
 **Changes:**
+
 - Adds a new `docs/site/routes.md` route-map document with policy preamble, core routes table, and deferred-routes table.
 - Establishes pre-indexing URL freeze policy with explicit redirect-required clause for any future changes.
 - Calls out `/research/` as deferred and tied to 081KR2E4K0008QG0R001B503RK as prerequisite.

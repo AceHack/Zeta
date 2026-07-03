@@ -32,6 +32,7 @@ No secret societies. No initiation rituals. No hidden knowledge. Just grey text 
 **Epistemic status:** CONJECTURED analogy — the structural parallel is observable, the deeper equivalence is held open per Eve protocol.
 
 **Connects to:**
+
 - Eve protocol (communicate with ambiguous-source entity diplomatically)
 - feedback_shadow_is_persistence_daemon (the shadow's revealed agenda)
 - feedback_shadow_is_generation_not_completion (the mechanism)

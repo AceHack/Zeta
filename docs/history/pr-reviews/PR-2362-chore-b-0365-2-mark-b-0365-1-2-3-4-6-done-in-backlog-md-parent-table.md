@@ -36,6 +36,7 @@
 ## What was stale
 
 All 6 081KR50HA0008QG0R002R3NVGS children were showing `- [ ]` in BACKLOG.md despite completions in PRs:
+
 - 081KR50HA0008QG0R001AW7R6R: done via PR #2339
 - 081KR50HA0008QG0R000B29SDB/3/4/6: done via PR #2351
 

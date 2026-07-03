@@ -36,10 +36,12 @@ Smallest bounded slice of 081KR2E4K0008QG0R003RVDX91 (P1): skeleton for `tools/p
 - One step only; full extraction, toggle parsing, feature discovery in follow-up atomic children.
 
 ## Focused checks (run in dedicated worktree)
+
 - `dotnet build -c Release`: **0 Warning(s) 0 Error(s)** (gate clean).
 - `tsc --noEmit --skipLibCheck --ignoreConfig` on new file: **no new errors** (pre-existing node types gap only in sibling auth.ts; addition is safe).
 
 ## Rules followed
+
 - Dedicated worktree `zeta-claim-b0318` + pushed claim branch (root checkout untouched).
 - TS over bash; F#/TS code over docs.
 - Exactly one bounded step + PR.

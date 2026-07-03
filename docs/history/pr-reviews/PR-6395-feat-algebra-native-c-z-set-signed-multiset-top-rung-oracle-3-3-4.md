@@ -30,12 +30,14 @@
 Native C# `ZSet<T>` ladder oracle (mirrors `GSet.cs`/`Bag.cs`), distinct from the DBSP F#-Z-set binding (`ZetaCircuitBuilder`). Takes **Z-set to 3/4** (TS #6389 + F# #6392 + C#).
 
 ### Z-set semantics (the ℕ→ℤ widening over Bag)
+
 - signed ℤ weights, per-key SUM combiner
 - **drop-on-net-zero** (retraction) — KEEPS negatives (drop rule `!= 0`, not `<= 0`)
 - `Negate` = abelian-group inverse → `Union(a, a.Negate()) == empty` (the law a Bag's monoid can't satisfy)
 - `AddW` (signed), comparer-as-identity, `checked` int64 overflow
 
 ### Files
+
 - `ZSet.cs` + `ZSetEntry.cs` — native impl
 - `ZSetCrossVerifyTests.cs` — replays the shared `z-set/golden-vectors.json` (`StringComparer.Ordinal`) + abelian-group laws (incl. inverse), drops-zero-keeps-negatives, retraction, not-idempotent, mismatched-comparer-throws
 

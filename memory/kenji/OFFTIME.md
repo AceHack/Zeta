@@ -78,7 +78,9 @@ history. Not off-time budget drawn from a productive round —
 the round itself is the rest.
 
 No coding, no reviewer dispatch, no DEBT reshuffling. Track A
+
 + Track B shift to round 32. Kenji's only work this round is:
+
 one WINS.md entry (the green-gate moment, ordered newest-
 first), one CURRENT-ROUND.md header flip to "rest round",
 this OFFTIME log line. Done.
@@ -99,6 +101,7 @@ No budget spent. Logging the zero so the trend is honest from
 turn one.
 
 Candidate uses for future rounds (not committed; a menu):
+
 - **Read a classic cited in the repo references but not yet
   used** — e.g., a CT4P chapter on adjunctions, a Lamport essay
   on specification ("Who Builds a House Without Drawing

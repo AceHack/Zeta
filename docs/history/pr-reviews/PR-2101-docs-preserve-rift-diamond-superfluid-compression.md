@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve `rift -> diamond -> superfluid` as the named compression pipeline
 - connect the frame to existing diamond, MDL/kernel, linguistic seed, superfluid, hats, and self-governance substrate
 - keep the note research-grade, with promotion left as a separate step
 
 ## Checks
+
 - `git diff --check origin/main...HEAD`
 - `bun x markdownlint-cli2 docs/research/2026-05-08-rift-diamond-superfluid-compression-pipeline.md`
 - `bun x prettier --check docs/research/2026-05-08-rift-diamond-superfluid-compression-pipeline.md`

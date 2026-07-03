@@ -26,6 +26,7 @@ cross-platform — which is how we ended up flipping 3 scripts
 to "stay bash forever" without pricing the Windows-twin cost.
 
 The four target platforms:
+
 - **macOS (darwin)** — factory host platform (Aaron's dev
   machine; `macos-latest` on GitHub Actions).
 - **Windows** — first-class developer platform via PowerShell.
@@ -84,13 +85,16 @@ The four target platforms:
 **Pattern: visibility precedes enforcement.** A factory
 property that is nowhere in the audit surface is functionally
 absent, even if stated in a memory or doc. The audit existing
+
 + running + printing the gap is what makes the commitment real.
+
 Enforcement can flip on later — the cheap move is making the
 property visible NOW. This is the same principle behind
 "instrument first, cadence second" from
 `feedback_data_driven_cadence_not_prescribed.md`.
 
 **Related memories:**
+
 - `memory/feedback_stay_bash_forever_implies_powershell_twin_obligation.md`
   — the Windows-twin cost reframe that preceded this memory
   by hours.

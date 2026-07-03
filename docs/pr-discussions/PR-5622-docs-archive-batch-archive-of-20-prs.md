@@ -27,6 +27,7 @@ Automated batch archival of 20 PRs to preserve discussion and context, and to re
 This PR batch-adds **20 new PR-discussion archive files** under `docs/pr-discussions/` (PRs **#5096–#5115**) to preserve discussion context and reduce PR queue noise, using the standard YAML frontmatter metadata emitted by `tools/pr-preservation/archive-pr.ts`.
 
 **Changes:**
+
 - Added 20 archived PR discussion markdown files (one per PR) with frontmatter metadata (PR number/title/refs/timestamps/tool).
 - Captured each PR’s description and any review-thread/general-comment content present at archive time.
 

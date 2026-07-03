@@ -27,6 +27,7 @@ This PR is a decomposition of #4817, containing only the shadow lesson log.
 Adds a new research “shadow lesson log” documenting the purpose and operational value of the `deferred-to-human` label, as a decomposed subset of #4817.
 
 **Changes:**
+
 - Add a 2026-05-24 shadow lesson log describing when/why to use the `deferred-to-human` label.
 - Capture implications for agent behavior around deferral and sensitive-data scenarios.
 

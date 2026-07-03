@@ -30,6 +30,7 @@
 docs(research)+sims: `sim` = infinite resolution on Reticulum (collective-we Markov bounds, quantum precision, ZetaId+trust-anchor+CHIP-8+ray-tracing) + `sim` vs `measure` (ephemeral vs committing)
 
 Aaron's stream (2026-06-10), captured:
+
 - bounds/ is also the COLLECTIVE-WE Markov boundary (Pearl blanket around the "us"), precisely
   measurable to QUANTUM PRECISION over Reticulum (answers "measure speed over Reticulum": phase at
   the boundary).

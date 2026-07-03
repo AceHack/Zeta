@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - **`self-reg-serial.ts`**: parse + validate `[iter-5.4.1-ci]` dry-run lines (maintainer, node, tree-path) from QEMU serial output.
 - **`argocd-cluster-node-reconcile.ts`**: pure-function reconcile planner for B-0813 — given `maintainers/<op>/cluster-nodes/<host>/node.yaml` + ClusterNode YAML, derive expected CR name, namespace, role labels (no live ArgoCD).
 - **`qemu-full-install-test.ts`**: phase 1 now fails if iter-5.4.1-ci tree-path is internally inconsistent.
 - Trajectory RESUME updated: slices 1–2 landed; slice 3 in progress.
 
 ## Waiting (not in this PR)
+
 - `build-iso` on main still queued — scenario 2 advisory run will exercise slice 2 markers end-to-end once runners pick it up.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ci/{self-reg-serial,argocd-cluster-node-reconcile,qemu-full-install-test,cluster-node-yaml}.test.ts` — 10/10
 - [ ] gate lint (tsc) + build-and-test
 

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Mark 081KR50HA0008QG0R001AW7R6R as done (status: open → done) with resolved/resolved_by fields
 - Check all acceptance criteria (all 6 criteria met per PR #2339)
 - Add Resolution section summarizing what was delivered
@@ -36,6 +37,7 @@
 ## Evidence
 
 PR #2339 (`ee10eca7`) merged the shadow log backfill:
+
 - 30 catches in `memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md` (562 lines)
 - Catch 30 with `pattern_key: tautology-laundering`, 081KR50HA0008QG0R0033TN4H9 reference
 - consensus-smoothness meta-class documented
@@ -45,6 +47,7 @@ PR #2339 (`ee10eca7`) merged the shadow log backfill:
 PR #2341 fixed the MEMORY.md index entry (15→30 catches). This PR closes the backlog item itself.
 
 ## Test plan
+
 - [ ] Verify `status: done` in 081KR50HA0008QG0R001AW7R6R frontmatter
 - [ ] Verify BACKLOG.md shows `[x]` for 081KR50HA0008QG0R001AW7R6R with PR #2339 reference
 - [ ] Lint (markdownlint) passes

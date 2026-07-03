@@ -96,6 +96,7 @@ A message `μ_{f→V}` from factor `f` to variable `V` is:
 ```
 
 In the multi-agent setting:
+
 - **Agent output is the observation.**
 - The message from agent `i` to `V_safe` is the agent's
   marginal likelihood ratio: `P(obs_i | V_safe=true) / P(obs_i | V_safe=false)`.
@@ -221,6 +222,7 @@ framing; 081KR50HA0008QG0R003T5MZAC provides the hardware-layer realization.
 | **3 — FPGA** | Reversible inference | Message-passing implemented as reversible Toffoli gate circuits; zero heat per inference step at the Landauer limit | HARDWARE layer | SPECULATIVE (081KR50HA0008QG0R003T5MZAC) |
 
 **Migration slice for Stage 2:**
+
 1. Define `FactorGraph<V, F>` type with variable nodes `V`,
    factor nodes `F`, and typed message edges.
 2. Wrap each peer-call script as an `IFactor<V>` — takes the

@@ -28,10 +28,12 @@
 ## Description
 
 Summary:
+
 - Add the missing top-level `type: feedback` and `created: 2026-06-15` fields to the heartbeat memo that landed in #8373.
 - Remove the duplicate nested `metadata.type` so the memory file has one canonical type field while preserving origin metadata.
 
 Verification:
+
 - Frontmatter completeness check for `name`, `description`, `type`, and `created` passes locally.
 - `git diff --check`
 - `mise exec -- bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --commit HEAD`

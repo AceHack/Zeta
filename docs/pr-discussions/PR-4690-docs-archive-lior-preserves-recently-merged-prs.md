@@ -27,6 +27,7 @@ This PR preserves the discussion and changes from recently merged PRs.
 This PR adds a batch of preserved PR-discussion archive files under `docs/pr-discussions/`, capturing metadata + summary/test-plan content for a set of recently merged PRs.
 
 **Changes:**
+
 - Add new PR-discussion preservation markdown files (YAML frontmatter + archived content) for PRs #4591–#4598 and #4660–#4687.
 - Record the preserved PR metadata (timestamps, refs, tool provenance) and the archived narrative content for traceability.
 

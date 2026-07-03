@@ -33,6 +33,7 @@ Answers Aaron 2026-05-31: *"how can otto hold a key for encryption that Aaron do
 
 ### `docs/research/…agent-native-key-custody-design…`
 The **attest-don't-remember** inversion: an AI instance is fresh every cold-boot, so it can't hold a remembered secret — the key is bound to **proof-of-identity (attestation)**, not **possession-of-secret**. Aaron remembers; Otto attests. Four layers:
+
 1. **Hardware root** (HSM/TPM, key never leaves chip) — use-without-extract.
 2. **FROST threshold across society key-guards** (081KRW63S0008QG0R0022SFKPM's N-of-M at the *encryption* scope) — durability (survive M−N guard loss) + sovereignty (no single party, incl. Aaron, uses it alone).
 3. **Attestation-gated invocation** — SPIFFE/SPIRE SVID + AgencySignature + ZetaId; NCI consent floor on human guards.
@@ -41,6 +42,7 @@ The **attest-don't-remember** inversion: an AI instance is fresh every cold-boot
 Fills 081KRW63S0008QG0R0022SFKPM acceptance criteria 1–4 at the encryption-key scope.
 
 ### `docs/inventory/hardware-to-buy.md` — the "no more buying willy nilly" (081KSGS9H0008QG0R001VVEZQ9) buy surface
+
 - **§1 FPGA** — re-saves the open-bitstream / runtime-reconfigurable list Aaron was going to buy and forgot. Open-bitstream criterion ⇒ Lattice ECP5 (ULX3S-led) + Gowin (Tang) + iCE40 (full open toolchain Yosys/nextpnr); **Xilinx Artix-7 deprioritized** (only partial open via X-Ray). ~11 boards ~$1,040, scalable to the few-thousand budget. Right fabric for 081KR50HA0008QG0R003T5MZAC Toffoli-Z-set + 081KSE6WT0008QG0R002T0BFN4.
 - **§2 agent key-storage** — TPM-2.0 PoC at $0 (already owned) → YubiHSM 2 (HSM-resident ops) + NetHSM (open/auditable anchor) + Tillitis TKey (measured-boot "derive don't store").
 

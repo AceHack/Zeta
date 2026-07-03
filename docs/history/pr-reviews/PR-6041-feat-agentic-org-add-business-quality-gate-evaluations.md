@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Adds the Agentic Organization business quality gate lifecycle docs for RFP/customer review, BRD, architecture, implementation/runtime validation, final business validation, and release readiness.
 - Implements the generic `record_quality_gate_evaluation` command with typed gate kinds/outcomes, required evidence artifacts, final business-rule validation, schedule authority, audit, outbox, and command-pipeline coverage.
 - Persists quality gate evaluations through the in-memory command store and Cockroach-backed command outcome adapter with additive migration `0010_agentic_org_quality_gate_evaluation_kernel`.
 
 ## Validation
+
 - `npm run typecheck -- --pretty false`
 - `npm test`
 - `git diff --check -- agentic-organization` (only CRLF-to-LF warnings in edited test files, no whitespace errors)
 
 ## Review
+
 - Subagent review found initial gate validation gaps; fixed them.
 - Follow-up subagent review reported no blocking SOLID, lifecycle, docs/code, or vendor-boundary issues.
 

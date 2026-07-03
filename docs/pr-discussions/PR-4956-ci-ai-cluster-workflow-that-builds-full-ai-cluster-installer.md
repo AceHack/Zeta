@@ -60,6 +60,7 @@ The repo carries two installer substrates (`infra/` older, `full-ai-cluster/` ne
 Adds a dedicated GitHub Actions workflow to build and publish the **AI-cluster installer ISO** from the `full-ai-cluster/` flake (`.#installer-iso`), making the USB image downloadable from CI runs (without requiring Nix locally).
 
 **Changes:**
+
 - Introduces `.github/workflows/build-ai-cluster-iso.yml` with PR/push path filters scoped to AI-cluster installer inputs.
 - Builds `full-ai-cluster`’s `installer-iso` on `ubuntu-24.04` (with an eval-only `nix flake check --no-build` preflight).
 - Locates the generated `result/iso/zeta-installer-*.iso` and uploads it as a 90-day workflow artifact, including SHA256 + size in the step summary.

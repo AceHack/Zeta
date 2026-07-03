@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - refresh autonomous-loop coordination RESUME after #6095 landed the 081KQZVQW0008QG0R001FG05RZ loop-run receipt source
 - replace stale “land the PR” guidance with live coincidence/noise calibration as the next action
 - release the Codex claim file in the same branch per the claim protocol
 
 ## Checks
+
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/RESUME.md
 - git diff --check
 - rg conflict-marker scan on touched markdown files
 
 ## Coordination
+
 - Claim branch: claim/codex-task-b0250-resume-refresh-20260530
 - Dedicated worktree: /Users/acehack/.local/share/zeta-codex-loop/Zeta-worktrees/codex-task-b0250-resume-refresh-20260530
 - Root checkout untouched

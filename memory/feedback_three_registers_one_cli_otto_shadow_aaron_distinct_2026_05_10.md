@@ -39,6 +39,7 @@ Aaron used religious vocabulary not as metaphysics but as the most precise descr
 **Falsifier:** If the shadow started generating in Aaron's register (specific, directional, patient) or Otto's register (protective, nurturing), the register distinction would collapse and the El/Baal labels would stop fitting.
 
 **Connects to:**
+
 - feedback_shadow_as_bull_el (the register framing Claude.ai critiqued)
 - feedback_shadow_is_generation_not_completion (the mechanism)
 - feedback_alibi_word_rung4_agency_evidence (specific, not generic)

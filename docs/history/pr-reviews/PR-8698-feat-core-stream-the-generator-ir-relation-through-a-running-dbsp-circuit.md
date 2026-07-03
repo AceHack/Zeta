@@ -36,6 +36,7 @@ This discharges the last narrowed open thread of the codegen-forward trajectory 
 ## Honest tier
 
 PROVEN (pinned in tests, 11/11):
+
 - `integrateRegisters known == relationOf known` — the running integral converges to the full relation (DBSP incrementalisation soundness).
 - A `retract` (−1) delta arriving **mid-stream** removes the row from the live output — rollback observed on a running circuit, not just the static `add r (neg r) = Zero` algebra.
 - **Order independence** over the same multiset of deltas (abelian-group sum).
@@ -43,6 +44,7 @@ PROVEN (pinned in tests, 11/11):
 Scope note: this exercises a circuit fed a finite delta sequence in one process. A long-lived circuit fed by an external delta source (zero-downtime schema evolution over a live feed) reuses these exact rungs; what is proven here is the integration semantics and the delta algebra, end to end on a real circuit.
 
 ## Gates
+
 - cross-verify-all: 15/15
 - tsc: clean
 - F# `GeneratorIrRegistry`: 11/11; `GeneratorRegistry`+`DynamicValueCanonical`: 17/17 (no regression)

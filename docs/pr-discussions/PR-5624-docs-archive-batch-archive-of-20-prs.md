@@ -27,6 +27,7 @@ Automated batch archival of 20 PRs to preserve discussion and context, and to re
 Archives 20 recently merged pull requests into `docs/pr-discussions/**` using the repo’s PR-preservation tooling, capturing YAML frontmatter plus the PR body and review-thread context to preserve discussion while reducing live PR queue noise.
 
 **Changes:**
+
 - Adds 20 new PR discussion archive markdown files under `docs/pr-discussions/` (one per PR).
 - Each archive includes the standard PR-preservation YAML frontmatter (`pr_number`, `title`, `author`, timestamps, refs, `archived_at`, `archive_tool`) followed by the preserved PR content and review threads.
 

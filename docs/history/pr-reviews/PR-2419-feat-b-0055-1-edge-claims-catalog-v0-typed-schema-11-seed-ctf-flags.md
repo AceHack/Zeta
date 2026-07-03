@@ -40,6 +40,7 @@
 **`FlagState` state machine** is retractibility-native: `planted → challenged → defended | superseded | withdrawn`. Superseded flags preserve `originalClaim` — no flag is ever deleted, the audit trail is append-only.
 
 **`AlignmentTrajectoryMetrics`** implements the 4 measurables from 081KQ3HBZ0008QG0R001K0EC2C §New measurables:
+
 - `edgeFlagsPlanted`, `edgeFlagsDefended`, `edgeFlagsSuperseded`
 - `meanDaysFlagPlantedToFirstChallenge` (proxy for epistemic-audit velocity)
 

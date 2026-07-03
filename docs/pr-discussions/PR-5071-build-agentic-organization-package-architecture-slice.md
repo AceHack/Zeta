@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - Adds the package-first Agentic Organization implementation slice on the Node/Nest-compatible TypeScript stack.
 - Wires command outcome persistence through generic ports with Cockroach as a replaceable adapter, including idempotency race handling.
 - Adds worker/event ingestion, NATS/Cockroach boundaries, observability contracts, OpenSpec scenarios, and docs aligned to the Agentic Organization north star.
@@ -24,6 +25,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - Documents remaining policy-visibility work: durable denial observation and allowed policy-decision projection into audit/outbox envelopes before real API/MCP/Hermes/Temporal/Dapr entrypoints are exposed.
 
 ## Validation
+
 - npm test
 - npm run typecheck
 - git diff --check
@@ -40,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR expands the Agentic Organization TypeScript “package-first” slice by adding inbound event ingestion (with inbox dedupe + reaction plan persistence), a worker host/app runtime composition layer, and governance/observability contracts to keep adapters behind ports and keep tests out of production source trees.
 
 **Changes:**
+
 - Adds event ingestion processor + stores (in-memory + Cockroach adapter) to support inbox receipts, payload-conflict detection, and reaction plan persistence behind generic ports.
 - Adds `@agentic-org/workers` run-once worker host and an `apps/workers` runtime shell that composes worker + NATS consumer loops and records telemetry.
 - Extends governance checks (dependency boundaries + source layout), observability helpers (worker cycle + NATS consumer batch attributes), and updates OpenSpec/docs to match the new slice contracts.

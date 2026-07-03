@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - mark the TypeScript/Bun bash-retirement phase closed-maintained now that #2764 is merged
 - replace the stale shepherd-PR next action with maintain-the-guard drift handling
 
 ## Checks
+
 - bun run hygiene:check-bash-retirement-inventory
 - git diff --check
 

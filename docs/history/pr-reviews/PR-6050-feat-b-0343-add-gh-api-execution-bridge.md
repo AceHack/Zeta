@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Adds a testable `gh api` invocation/runner bridge for the 081KR2E4K0008QG0R002JW751Y seed-test-repo tool.
 - Maps existing pure request builders to `gh api -X <method> <path>` calls and serializes JSON request bodies through `--input -`.
 - Keeps tests side-effect-free through an injected runner; no real repository is created during tests.
 - Releases `docs/claims/codex-loop-b0343-gh-seed-20260529.md` in this PR branch.
 
 ## Checks
+
 - `bun test tools/bootstrap-razor/seed-test-repo.test.ts` (107 pass)
 - `git diff --check`
 - `bun run typecheck` attempted; blocked locally because `tsc` is not installed in this worktree.

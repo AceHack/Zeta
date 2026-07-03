@@ -36,6 +36,7 @@
 ## What changed
 
 **`tools/shadow/shadow-observer.ts`** (refactored):
+
 - `appendFileSync` replaces `Bun.write(..., { append: true } as never)` type-cast workaround
 - `--once` flag: run one detection cycle then exit cleanly (enables CI-safe testing)
 - `--loop-interval <ms>` flag: configures sleep between continuous-mode cycles (default 1000)
@@ -45,12 +46,14 @@
 - Exports: `ShadowConfig`, `ShadowEvent`, `DetectFn`, `AcceptFn`
 
 **`tools/shadow/shadow-observer.test.ts`** (new, 16 tests):
+
 - CLI arg validation: `--delay abc`, `--delay -5`, `--loop-interval abc`, unknown flag → exit 1
 - Dry-run once mode: exits 0, writes `started` + `no-suggestion` events to log, stdout is valid JSON lines
 - `runOneCycle` unit with injected fns: no-suggestion / accepted / overridden / detectFn-throws / acceptFn-false
 - `log()` unit: appends multiple events to file, tolerates non-writable path without throwing
 
 **`docs/backlog/P0/081KR7JY10008QG0R0008NGW95-...md`** (pre-start checklist + acceptance-criteria ticks):
+
 - Prior-art search across shadow/outlet/bus tooling documented
 - Slice 1/2/3 scope decomposed
 

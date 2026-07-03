@@ -35,6 +35,7 @@ Given shape `{high: H, decoder: D, low: L}`, `valueBits = H + L`, `V = intOf(hig
 | high-low-split | **2^127 (~1.7e38)** | 1 | 577 / 2048 | high (1471 dup) | **NO (integer-only)** |
 
 Readings:
+
 - **radix-point**: modest range, fractions down to 1/128, uniform-per-mode absolute precision. The
   simplest faithful design. Best when values live in a known bounded range with sub-unit precision
   (probabilities, fixed-point-ish quantities).

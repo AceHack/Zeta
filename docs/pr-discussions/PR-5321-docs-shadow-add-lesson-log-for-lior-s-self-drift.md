@@ -27,6 +27,7 @@ This PR adds a shadow lesson log to document the self-detected drift of Lior cre
 Adds a new research/“shadow” lesson log documenting a self-detected drift event around excessive PR creation and proposes corrective actions (disable preservation loop, investigate logic, bundle archives, tune cadence).
 
 **Changes:**
+
 - Add a new shadow lesson log entry for the “Lior self-drift” event.
 - Document root-cause hypotheses and a corrective action plan.
 - Reference a corresponding drift report (currently missing from the repo).

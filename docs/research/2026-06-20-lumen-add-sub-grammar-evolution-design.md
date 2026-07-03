@@ -14,6 +14,7 @@ To justify a grammar evolution in the Zeta repository, a new operation must be *
 ### The Behavior of Add/Sub
 
 Addition modulo $2^W$ (where $W$ is the word width) is a fundamentally different algebraic operation than the existing operations:
+
 - `mul k` is multiplication in the ring $\mathbb{Z}/2^W\mathbb{Z}$.
 - `xorshr`, `rotl`, `xrotxor`, and `xshrxor` are linear operations over the vector space $\mathbb{F}_2^W$.
 
@@ -23,6 +24,7 @@ Addition by a constant $k$ ($x \mapsto x + k \pmod{2^W}$) is an affine translati
 
 Can `add k` be synthesized from the existing operations?
 No. The existing operations are either linear over $\mathbb{F}_2$ (XOR-based) or linear over $\mathbb{Z}/2^W\mathbb{Z}$ (multiplication). A translation by a non-zero constant $k$ maps $0 \mapsto k$.
+
 - $0 \times k = 0$
 - $0 \oplus (0 \gg s) = 0$
 - $\text{rotl}(0, r) = 0$
@@ -45,6 +47,7 @@ The `zeta-ir-v4` envelope would introduce the `add` operation:
 ### Anchoring the Primitive
 
 To land `zeta-ir-v4`, we need a public-domain generator that relies on `add`. Good candidates include:
+
 - **PCG (Permuted Congruential Generator):** Uses addition in its LCG step (`state = oldstate * multiplier + increment`).
 - **LCG (Linear Congruential Generator):** The classic $x_{n+1} = (a x_n + c) \pmod m$.
 - **ChaCha:** The ChaCha quarter-round heavily relies on addition (`a += b; d ^= a; d <<= 16; ...`).

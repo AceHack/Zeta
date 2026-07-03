@@ -70,7 +70,7 @@ capability skills — per tech. One atomic expert-skill is a
 useful seed but usually not enough. The group is the
 first-class unit.
 
-## Why:
+## Why
 
 - **Tech without a skill is tech without a custodian.** The
   factory design primitive is expert-skills-as-custodians —
@@ -109,7 +109,7 @@ first-class unit.
   cadence check. That's a gap detected by luck, not by
   the factory. The policy is the cadence-check fix.
 
-## How to apply:
+## How to apply
 
 - **On new MCP / plugin / tech pull-in:**
   1. Before or alongside the tech add, Grep

@@ -37,4 +37,5 @@ Counter status: substantive-pick #1 of new (post-merge) arc.
 Single-file tick shard documenting the autonomous-loop tick at 1320Z, capturing the post-merge new-arc start after PR #4059 merged and the substrate-preservation action of pushing peer-Otto's local-only 1317Z shard and opening PR #4078.
 
 **Changes:**
+
 - Adds tick shard under `docs/hygiene-history/ticks/2026/05/17/` with YAML frontmatter and the standard 7-step autonomous-loop structure.

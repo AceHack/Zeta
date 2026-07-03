@@ -34,6 +34,7 @@ Discharges the lone `sorry` in `gen_self_application` (`src/Core.Lean4/Lean4/Gen
 The brief predicted the ∀-quantified-codec form would be **FALSE**. The truth is **VACUOUS**: its hypothesis is unsatisfiable, and the obstruction is *upstream of the op grammar*.
 
 ### Theorems proven (all sorry-free, zero Mathlib)
+
 - `no_bounded_injection` — self-contained pigeonhole (core Lean 4): no injective `Nat → Nat` is bounded. Strong induction on the bound, reindexing around the top value.
 - `fam` / `fam_injective` — explicit infinite family of distinct `IrTerm`s (op-list length `n`); witnesses `IrTerm` is infinite.
 - `no_total_uint64_codec` — **the obstruction**: `decode ∘ encode = id` forces `encode` injective; `IrTerm` infinite + `UInt64` finite (`< 2^64`) ⇒ a bounded injection `Nat → Nat`, impossible.
@@ -44,6 +45,7 @@ The brief predicted the ∀-quantified-codec form would be **FALSE**. The truth 
 **No.** The wall is the **finite register**, not the affine-vs-linear op vocabulary. `add` (v4) changes what the fold can compute but not the cardinality mismatch (infinite `IrTerm` → finite `UInt64`). So v1 vs v4 is irrelevant to *this* theorem; the real quine lives on a finite/canonical subdomain.
 
 ## Verification (decisive gate)
+
 - `lake build Lean4.GenGenFixpoint` green; `lean Lean4/GenGenFixpoint.lean` reports zero warnings.
 - **0** `sorry`/`admit`/`native_decide` in tactic blocks (remaining occurrences are docstring prose).
 - `#print axioms gen_self_application` ⇒ `[propext, Classical.choice, Quot.sound]` — the standard Lean foundations, **no `sorryAx`**. (`Classical.choice` enters via `by_cases`/`omega`; it is not `sorry`.)

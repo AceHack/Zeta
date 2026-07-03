@@ -33,6 +33,7 @@ Restores Catch 27 (which was accidentally overwritten) and appends Riven review 
 Also carries the 081KQGDBJ0008QG0R0022EW5ZE Phase 2 shard-schema checker migration from shell to TypeScript/Bun.
 
 ## Integrity
+
 - Tables and z-set counts remain accurate (20-5).
 - `bun tools/hygiene/check-tick-history-shard-schema.ts --files docs/hygiene-history/ticks/2026/05/01/1458Z.md` passes.
 - Import smoke test confirms `main` exports without top-level exit.

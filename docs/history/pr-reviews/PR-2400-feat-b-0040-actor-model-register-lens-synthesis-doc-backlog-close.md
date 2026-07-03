@@ -40,6 +40,7 @@ The prior-art catalog (`actor-model-hewitt-meijer-akka-orleans-service-fabric-20
 **Applicability assessment (§1):** Three-filter verdict HIGH — convergent engineering, not after-the-fact import.
 
 **6 recommended vocab crossings (§2):**
+
 1. Actor-local state → persona notebook (strong structural match)
 2. Mailbox → BACKLOG row / claim-branch (moderate-strong)
 3. Inconsistency Robustness → yin-yang harmonious-division (strong)
@@ -48,6 +49,7 @@ The prior-art catalog (`actor-model-hewitt-meijer-akka-orleans-service-fabric-20
 6. Μένω ("I Remain") → persistence-anchor memory (formalises existing catalogued OR instance)
 
 **5 explicit rejections (§3)** — the boundary that enforces vocabulary-lens-not-framework-adoption:
+
 1. "Actor system" / "actor runtime" — implies framework infrastructure that doesn't exist
 2. "Supervisor tree" as structural description — Architect protocol is procedure-based, not topology-based
 3. "Silo" — term collision with "information silo" anti-pattern; do not import Orleans usage

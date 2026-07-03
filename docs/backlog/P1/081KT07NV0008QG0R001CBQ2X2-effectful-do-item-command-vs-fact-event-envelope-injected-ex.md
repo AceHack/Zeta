@@ -223,7 +223,7 @@ A local-LLM with a bash surface is a real attack/footgun surface. The floor (per
   fake executor + just-bash sandbox are the test/dev surfaces; the real-FS surface
   for the autonomous foreground loop is a separate, later, gated decision.
 
-## §4 Open design question — what does do_item actually RUN?
+## §4 Open design question — what does do_item actually RUN
 
 `BacklogItem` carries `{id, title, ready, ambiguous, needsNewAction?}` — **no
 command**. "Doing 081KSNY2Z0008QG0R002JKH50A" is not a single shell line; it's open-ended agent work.

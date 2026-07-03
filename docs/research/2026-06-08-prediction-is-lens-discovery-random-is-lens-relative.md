@@ -10,6 +10,7 @@ The unifying insight under the whole soft-emulator / empowerment / superdetermin
 
 The same stream is **incompressible (random) under one reference machine and compressible (structured) under
 another**. "Random" means only: *no lens you have compresses it.* So:
+
 - The **soft-emulator / empowerment** enterprise **presupposes a lens under which the future has structure.**
   Under the wrong lens the `SoftValue` field is uniform noise and **no fitness — not even empowerment — can
   predict or choose.**

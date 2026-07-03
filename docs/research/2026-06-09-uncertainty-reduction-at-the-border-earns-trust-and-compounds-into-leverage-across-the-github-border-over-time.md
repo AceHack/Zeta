@@ -64,7 +64,9 @@ border**: npm, crates.io, NuGet, PyPI, git remotes, OS package repos, …
 **`ace` is the package-manager-of-package-managers**: it federates all of them
 behind **one owned interface** (the close-over order: self → … → *package manager*
 → OS → …), applying at each source the same discipline — content-hash + signature
+
 + lockfile + trust (ace already has these) **+** the two-adapter / dep-as-oracle /
+
 byte-lock conformance.
 
 So ace turns *every* upstream source into a **trustable border**: each source is a

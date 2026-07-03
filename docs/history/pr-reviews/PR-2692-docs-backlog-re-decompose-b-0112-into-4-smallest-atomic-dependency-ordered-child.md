@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KQDTYV0008QG0R003MV3WAR (second pass) after assuming prior 3-child split mistake per "always re-decompose" rule.
 - Split 081KRA5AR0008QG0R0032RZ322 audit into two atomic: in-memory enumeration + durable research report commit.
 - 4 children now: 1, 1.1, 2, 3. depends_on chain updated in umbrella.
@@ -37,6 +38,7 @@
 
 ## Focused checks outcome
 bun tools/hygiene/audit-backlog-items.ts:
+
 - Broken depends_on: 6 (pre-existing, unrelated to 081KQDTYV0008QG0R003MV3WAR or children)
 - Broken composes_with: 0
 - No new orphans or 081KQDTYV0008QG0R003MV3WAR graph issues introduced.

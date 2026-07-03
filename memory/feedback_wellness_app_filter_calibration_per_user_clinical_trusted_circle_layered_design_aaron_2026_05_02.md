@@ -57,6 +57,7 @@ The wellness app needs the same shape because it faces the same fundamental prob
 The generalization: **any AI doing language pattern-matching for safety purposes faces structurally-equivalent false-positive problems for users whose normal patterns deviate from training distribution.** The same four-layer architecture (per-user baseline + trusted-circle + clinical/expert + app-as-one-node) applies wherever the AI might otherwise flag legitimate-but-unusual user behavior as concerning.
 
 Examples beyond wellness:
+
 - **Content moderation**: technically-precise discussion of taboo topics by domain experts (security researchers discussing exploits, medical professionals discussing patient cases) triggers filters trained on population-mean
 - **Fraud detection**: legitimate users with atypical transaction patterns (international travelers, emergency expenses, generous gift-givers) trigger fraud filters
 - **Legal compliance**: lawyers discussing case law, journalists describing incidents, historians documenting atrocities all use language that triggers safety filters trained on population-mean

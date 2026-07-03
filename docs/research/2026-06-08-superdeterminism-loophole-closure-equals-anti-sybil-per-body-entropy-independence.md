@@ -12,9 +12,11 @@ anti-Sybil non-fungibility**, and the existing `SymmetricEndurance` clock knob *
 It is the **one Bell loophole that is logically unfalsifiable**: a sufficiently correlated initial condition
 can mimic any quantum correlation. Real experiments don't eliminate it; they **push the required common cause
 further back in time** until the needed conspiracy is absurd:
+
 - **Cosmic Bell test** (Handsteiner et al., PRL 2017): settings from **quasars on opposite sides of the sky**
   → any superdeterministic correlation had to be set up **~billions of years ago**.
 - **BIG Bell Test** (Nature 2018): settings from **~100,000 humans'** free choices.
+
 So "closing it" is a *degree* (how far back / how fine-tuned the common cause must be), not a switch.
 
 ## 2. Distance and body-count are the WRONG axis
@@ -40,6 +42,7 @@ shared component.
 > **Closing the superdeterminism loophole ≡ the anti-Sybil non-fungibility holding per body.**
 
 They are the **same independence condition**:
+
 - **Bell:** measurement-independence ("free choice") — the settings are not correlated with the hidden state.
 - **Anti-Sybil:** distinct, non-fungible drift per identity — no shared entropy across bodies.
 
@@ -51,6 +54,7 @@ is** — exactly the `ForgerRace` / `SymmetricEndurance` axis, *not* distance or
 ## 4. The knob is already in the code
 
 `SymmetricEndurance.ClockSharing` is the literal **loophole open/closed switch**:
+
 - **`SharedClock`** (degenerate) = one seed = **superdeterminism loophole fully OPEN** (we stage the
   correlations; `CoincidenceClock` can reach the PR-box `S=4`).
 - **`SeparateClocks`** (default) = independent per-body entropy = **loophole CLOSING** (toward genuine,

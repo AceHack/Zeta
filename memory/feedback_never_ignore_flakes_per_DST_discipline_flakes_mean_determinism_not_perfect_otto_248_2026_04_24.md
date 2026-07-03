@@ -101,6 +101,7 @@ really about):
 
 Not flakes (genuinely external transience, acceptable to
 retry):
+
 - GitHub API rate limit (retry with backoff is protocol)
 - Remote server 5xx on first hit, 200 on retry
 - `gh api` transient network failure

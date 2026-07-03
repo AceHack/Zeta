@@ -53,6 +53,7 @@ Generated with Claude Code
 Adds a Bun/TypeScript measurement tool for 081KSNY2Z0008QG0R001JQABB4 to compute GitHub PR compression metrics, plus unit tests for parsing, metric calculation, interpretation, and formatting.
 
 **Changes:**
+
 - Adds `measure.ts` CLI for collecting PR state via `gh pr list` and emitting JSON metrics.
 - Adds `measure.test.ts` covering argument parsing, time-window conversion, metric computation, interpretation tiers, and formatted output.
 

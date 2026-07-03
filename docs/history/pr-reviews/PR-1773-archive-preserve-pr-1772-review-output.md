@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1772 review archive generated after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1772 manifest entry with merge commit SHA `6e7bdade5b30eb1d78e28879e39fab74fc717213`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/claims/task-archive-pr-1772-review-substrate.md`
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1772-archive-preserve-pr-1771-review-output.md`
 - `git diff --check origin/main...HEAD`
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes

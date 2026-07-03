@@ -78,7 +78,9 @@ definition:
   troubleshooting where applicable.
 
 Cascade is a pipeline: each step reads the command definition
+
 + the previous step's output, produces its artifact, succeeds
+
 or fails visibly.
 
 ## Alignment with factory substrate

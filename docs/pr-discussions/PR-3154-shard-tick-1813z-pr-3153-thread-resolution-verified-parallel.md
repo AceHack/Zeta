@@ -54,6 +54,7 @@ Removed stale `/private/tmp/zeta-otto-id-alloc` worktree (4h-old leftover from y
 This PR adds a single tick-history shard documenting the Otto-CLI agent's work resolving a Codex P2 review thread on PR #3153. The shard records verification of a portable `find` command fix authored in parallel by another agent, closure of the review thread via GraphQL, and cleanup of a stale worktree.
 
 **Changes:**
+
 - Adds new tick-history shard at `docs/hygiene-history/ticks/2026/05/14/1813Z.md` documenting PR #3153 thread resolution
 - Records parallel-Otto coordination pattern (one agent fixes, another verifies + closes thread)
 - Notes stale-worktree cleanup and suggests periodic `git worktree prune` cadence

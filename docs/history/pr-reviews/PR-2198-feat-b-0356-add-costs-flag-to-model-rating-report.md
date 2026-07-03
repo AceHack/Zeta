@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Add `--costs` flag to `model-rating-report.ts` that derives dollar costs from JSONL token counts using the current rate card
 - Update `Rating` interface to include optional token fields (`input_tokens`, `output_tokens`, `cache_read_tokens`, `cache_creation_tokens`)
 - Add `RATE_CARD` constant with current Anthropic pricing (opus/sonnet/haiku)
@@ -36,6 +37,7 @@
 Per 081KR50HA0008QG0R003B1S5NF design: tokens are the atoms, cost is derived at query time. The rate card lives in the report tool, not in the JSONL — when pricing changes, update the rate card and re-run.
 
 ## Test plan
+
 - [x] `bun tools/ops/model-rating-report.ts --costs` runs and shows cost table
 - [ ] Verify cost derivation after next loop tick with token data populates
 

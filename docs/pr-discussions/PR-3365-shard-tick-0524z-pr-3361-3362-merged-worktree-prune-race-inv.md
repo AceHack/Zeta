@@ -44,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds the 2026-05-15 05:24Z tick-history shard documenting merges of PRs #3361/#3362 and capturing the current state of the worktree-prune-race investigation (including cleared suspects and remaining candidates).
 
 **Changes:**
+
 - Introduces a new tick shard file `0524Z.md` with the required pipe-row header plus an H1-rich narrative body.
 - Records investigation results for the worktree-prune-race incident and enumerates remaining suspects for follow-up.
 
@@ -52,6 +53,7 @@ Adds the 2026-05-15 05:24Z tick-history shard documenting merges of PRs #3361/#3
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/15/0524Z.md:58**
+
 * The markdown link to `.claude/rules/verify-before-deferring.md` uses `../../../../../...`, which appears to be one directory short from this file location and will resolve to a non-existent `docs/.claude/...` path. Update the link to a correct relative (or repo-root-relative) path.
 ```
 This composes with [`.claude/rules/verify-before-deferring.md`](../../../../../.claude/rules/verify-before-deferring.md) — instead of writing "next tick I'll investigate this", THIS tick did partial investigation and recorded which candidates are now cleared.

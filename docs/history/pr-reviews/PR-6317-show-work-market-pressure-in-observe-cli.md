@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - render scoped work-market pressure, shard totals, stale claim counts, and active claim fencing in the observe-act CLI screen
 - load production work-market queue context from `AGENTIC_ORG_WORK_MARKET_QUEUES_JSON` with typed setup feedback for malformed queue, lease, and review state
 - record the Phase 2 CA checkpoint for foreground work-market visibility
 
 ## Verification
+
 - `node --experimental-strip-types --test apps/agent-cli/test/agent-cli.test.ts apps/agent-cli/test/agent-cli-main.test.ts packages/application/test/work-market.test.ts packages/application/test/observe-for-hat.test.ts`
 - `npm run typecheck`
 - `npm test`
@@ -41,6 +43,7 @@
 - `dotnet build -c Release` blocked locally because `global.json` requires .NET SDK `10.0.203`; installed SDKs are `10.0.101`, `9.0.200`, and `9.0.100`
 
 ## Review Notes
+
 - Requested subagent review for this checkpoint, but spawning failed with `collab spawn failed: agent thread limit reached`; local review caught and fixed the lossy work-market `reviews` parser gap.
 
 

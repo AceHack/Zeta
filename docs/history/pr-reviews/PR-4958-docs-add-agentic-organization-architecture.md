@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - Add the Agentic Organization design set under `docs/agentic-organization/`
 - Index the docs from `docs/README.md`
 - Capture the TypeScript app architecture as shared npm capability packages composed by NestJS orchestrator apps
 
 ## Notes
+
 - Docs-only change
 - Local validation was limited because `bun` is not installed and the required .NET SDK `10.0.203` from `global.json` is not installed in this workspace
 
 ## Validation
+
 - Confirmed branch is clean after commit
 - Checked stale `hermes-organization` links were removed from the new docs path
 

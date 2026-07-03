@@ -28,6 +28,7 @@
 ## Description
 
 Delivers 081KRHWGX0008QG0R001VR9FNA: Author autonomous-loop/cloud-schedule.json
+
 - Configures autonomous-loop as the first Cloud Routine
 - Scheduled trigger added for catch-43 daily run
 - Marked 081KRHWGX0008QG0R001VR9FNA as closed

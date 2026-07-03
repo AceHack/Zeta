@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Monitor-stall: frozen state covers it (PR #1935)
 - Material-spend: >10% bond OR new counterparty OR new venue
 - Schema: defer YAML to v0+1, prose for v0

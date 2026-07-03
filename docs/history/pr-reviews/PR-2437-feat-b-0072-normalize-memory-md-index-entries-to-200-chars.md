@@ -36,6 +36,7 @@
 ## What changed in MEMORY.md
 
 Entries fall in two categories:
+
 1. **119 entries** — link display title fit; only description was truncated to ≤80 chars at the nearest sentence/word boundary (with `…` appended when cut).
 2. **71 entries** — link path length left ≤12 chars of budget for display title + description; display title truncated with `**…**` closing preserved; description dropped for these.
 

@@ -51,6 +51,7 @@ and fermions.
      receipts / mesh-routing tables
 
 **Operational implications:**
+
 - Unknown-unknowns expansion produces FERMION-CLASS new
   actors; boson-class doesn't require new actors
 - 6-stream PoUW-CC (PR #2826) is BOSON-CLASS flow

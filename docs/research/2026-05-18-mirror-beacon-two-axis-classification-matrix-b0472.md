@@ -25,6 +25,7 @@ Populate the two-axis classification matrix for all existing and proposed LFG re
 | **Aaron-private governance** | Owner-only | **Beacon** | Private, citation-gated governance substrate. |
 
 ## Ambiguous Cases
+
 - **LFG/civsim:** The original 081KRFA460008QG0R0007RWSN1 assumption was `Mirror`. However, given the PR #2909 governance escalation and the fact that it is the flagship external implementation of the mutual-privacy engine, it has functionally bypassed the Mirror tier and established itself as a Beacon. This will be flagged for explicit resolution in the 081KRHWGX0008QG0R0023FDYVE ADR.
 
 ## Conclusion

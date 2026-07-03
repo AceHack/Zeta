@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Normalize backlog IDs before building empty-queue claim slugs, so dotted IDs like 081KR7JY10008QG0R000MH7PJT become claim-safe slugs like backlog-0164-1.
 - Add a regression test that only succeeds when claim-worktree-bootstrap is called with the normalized dotted-ID slug.
 - Remove the transient claim file from the final PR diff while preserving the pushed claim history.
 
 ## Verification
+
 - bun test tools/backlog/empty-queue-pickup.test.ts
 - git diff --check
 - Attempted: bun run typecheck (blocked: tsc is not installed in this worktree; node_modules/.bin/tsc is missing)

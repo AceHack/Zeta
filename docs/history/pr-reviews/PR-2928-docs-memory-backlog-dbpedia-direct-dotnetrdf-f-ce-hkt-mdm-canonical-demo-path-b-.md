@@ -28,6 +28,7 @@
 ## Description
 
 Aaron's two-path response:
+
 - **Path B (081KRFA460008QG0R0018SN61J, do NOW)**: Direct dotNetRDF API + F# CE — medium effort, works on current F#
 - **Path A (DEFERRED)**: Type provider on Don Syme's FSharp.TypeProviders.SDK — high effort, waits for F#-compiler-fork-for-AI-safety with real HKT over Clifford
 

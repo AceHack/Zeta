@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: static-analysis-expert, factory-automation-gap-finder, github-repo-transfer, sql-expert, performance-analysis-expert
 - Running total: 55 skills carved, ~93K+ chars freed
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

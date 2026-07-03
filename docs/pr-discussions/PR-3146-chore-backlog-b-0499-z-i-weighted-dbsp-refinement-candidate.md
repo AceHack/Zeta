@@ -55,6 +55,7 @@ The Cartesian-dualism mapping (pay-attention = real axis, remember-when = imagin
 Adds a new P3 backlog row preserving the Z[i]-weighted DBSP refinement candidate from a research cascade as forward-planning substrate.
 
 **Changes:**
+
 - New backlog row file under `docs/backlog/P3/` with canonical frontmatter (id, priority, status, composes_with: [081KRHWGX0008QG0R001XFRAHC])
 - Documents the candidate's algebraic motivation, research-grade tests, acceptance criteria, and P3 rationale
 
@@ -72,6 +73,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

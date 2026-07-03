@@ -37,6 +37,7 @@
 ## Design
 
 The extractor is a pure function (`extractPaceInstructions(rootPath)`) with no side effects. It:
+
 1. Strips YAML frontmatter before scanning body text
 2. Matches pace-relevant patterns (go hard, grind, rest, hold, cooling period, etc.)
 3. Infers source attribution from body text first, filename second

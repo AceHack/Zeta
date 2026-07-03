@@ -32,12 +32,14 @@ Fourth + final **summonable-BFT oracle** for the digital qubit — Rust parity o
 This is the repo's **first Rust crate** (Rust was greenfield — no prior `.rs`, no Cargo, no Rust CI; 081KS3X9Y0008QG0R001Z8SBZJ ZetaId-Rust still open). Layout per the 081KS3X9Y0008QG0R001Z8SBZJ spec convention: `src/Core.Rust.TriBoolean/` with `Cargo.toml` + `src/lib.rs`.
 
 ## What
+
 - **`enum Tri { True, False, N }`** — `N` is the held living-uncertainty variant. **Rust has no `null`**, so the C# null-misclassification class *cannot occur here by construction* (the type system guarantees `Tri` is always one of three variants — no fourth "missing" state to guard). `Copy` ⇒ allocation-free.
 - **`CollapseFeedback`** enum; **`measure`** returns `Result<bool, CollapseFeedback>` (Rust-native `Result`) and composes with `?` (a test demonstrates `?`-propagation).
 - Full parity surface: `from_bool/held/is_living/is_certain/eq/cooperate/measure/map_tri/bind_tri/not_tri/and_tri/or_tri`. rustc **enforces exhaustive match** (non-exhaustive match is a hard compile error — stronger than the C# sealed-record + `UnreachableException` arm). `bind_tri` needs no continuation-null-check (Rust types forbid null).
 - edition 2024; **zero external dependencies** (supply-chain doctrine); `unsafe_code = forbid`. `Cargo.lock` committed (zero-dep, reproducibility); `/target` gitignored (crate-local, cargo convention).
 
 ## Verified locally (the non-Byzantine-oracle check)
+
 - `cargo build --release`: clean
 - `cargo test`: **9/9 pass**
 - `cargo clippy --all-targets -- -D warnings`: clean (0 warnings)

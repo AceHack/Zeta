@@ -495,6 +495,7 @@ seed-invoke is the natural extension; no architectural
 shift required, just commitment to keep the path open.
 
 **Operational implications for the absorption path:**
+
 - Infer.NET runs in-process (.NET library, not service);
   absorption keeps the local-native property.
 - Bouncy Castle runs in-process (.NET library);
@@ -509,6 +510,7 @@ shift required, just commitment to keep the path open.
   itself doesn't depend on cloud reachability.
 
 **What this is NOT:**
+
 - Not a prohibition on using cloud-LLMs in the current
   state (we are right now); the substrate's current
   text-rendered form NEEDS LLM intermediation, and the

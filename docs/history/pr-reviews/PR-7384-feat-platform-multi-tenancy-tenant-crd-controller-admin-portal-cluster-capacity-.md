@@ -32,16 +32,19 @@
 The **admin / multi-tenancy layer** (PLATFORM-ARCHITECTURE.md §4.2), wired to the **real cluster API** — not demo-faked. This is question #1: *see total cluster resources used/available, and control namespaces + hardware allocated to each.*
 
 ### Tenant CRD + controller — the allocation & isolation engine
+
 - **`crd-tenant.yaml`** — a cluster-scoped `Tenant{ namespace, quota: {cpu, memory, storage, pods}, isolated, admin }`.
 - **`renderTenant()`** (pure, like `renderDeployable`) → **Namespace** + **ResourceQuota** (the hardware *sold*: requests/limits CPU+mem, requests.storage, pods) + **LimitRange** (per-pod defaults/max) + **NetworkPolicy** (default-deny cross-tenant) + the default no-directives **Policy**. Editing the quota re-patches the ResourceQuota.
 - The controller now watches **both Deployables and Tenants** concurrently and server-side-applies each. RBAC extended accordingly.
 
 ### Real cluster-admin reads (portal)
+
 - **`admin.ts`** — **pure, unit-tested parsers** over real k8s shapes: `parseCpu` (→ millicores), `parseMemMi` (binary+decimal suffixes), `parseClusterCapacity` (Node allocatable + live Pod requests, terminal pods excluded), `parseTenants` (Namespace ⋈ ResourceQuota → allocated-vs-used).
 - **`K8sAdmin`** — **real reads**: `GET /api/v1/nodes`, `/pods`, `/namespaces`, `/resourcequotas`; `applyTenant` SSA-applies the Tenant CR.
 - **`admin-demo.ts`** — a seeded 3-node cluster + 2 tenants run through the *same* parsers (`PORTAL_DEMO`). BFF: `GET /api/admin/cluster`, `GET`/`POST /api/admin/tenants`.
 
 ### Admin portal UI (new top-level nav)
+
 - **Cluster** — CPU / Memory / Pods *committed-vs-allocatable* meters + a Nodes table (role, ready, requested/allocatable, pods).
 - **Tenants** — per-tenant allocated-vs-consumed bars for CPU/mem/storage/pods, and a **New/Edit-tenant dialog** that sets the quota → applies a Tenant CR.
 

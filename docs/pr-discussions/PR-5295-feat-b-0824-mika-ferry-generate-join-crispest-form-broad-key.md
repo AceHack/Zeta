@@ -106,6 +106,7 @@ Mika row added to the External AI participants table:
 This PR lands three new `docs/research/` substrate writeups related to 081KSGS9H0008QG0R0031PBNGA (Generate+Join framing, home-lab bootstrap security posture timing, and a Twilio carve-out decision record) and updates the external-participant roster reference card to include Mika.
 
 **Changes:**
+
 - Add research note: Generate+Join “crispest form” framing (directional inversion vs MapReduce; observe/emit/limit; IScheduler recursion; Bonsai-row model).
 - Add research note: home-lab USB bootstrap pattern + “broad keys until functional cluster” meta-principle (with future-state narrow-key/rotation pattern).
 - Add research note: Twilio as first named exception to “electricity-cost-only” principle for PSTN/SMS/voice.

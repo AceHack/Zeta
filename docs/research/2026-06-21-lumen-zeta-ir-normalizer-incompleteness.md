@@ -29,6 +29,7 @@ The simplest counterexample exploits the associativity of multiplication in the 
 
 Both programs compute $f(x) = x \times 6 \pmod{2^W}$.
 Because `Mul` is already a core-four operation, the normalizer preserves both programs exactly as written:
+
 * `normalize(A)` = `[Mul 2, Mul 3]`
 * `normalize(B)` = `[Mul 6]`
 
@@ -42,6 +43,7 @@ A second counterexample exploits the algebraic structure of bitwise rotation.
 
 Both programs compute a total left-rotation by 3 bits.
 The normalizer lowers `Rotl r` to `XRotXor [0, r]`:
+
 * `normalize(A)` = `[XRotXor [0, 1], XRotXor [0, 2]]`
 * `normalize(B)` = `[XRotXor [0, 3]]`
 
@@ -53,5 +55,6 @@ The incompleteness is not a flaw in the normalizer, but a deliberate architectur
 The normalizer's job is **vocabulary reduction** (6 ops $\to$ 4 ops), not **algebraic simplification**. Building a true canonical normal form for program equivalence would require a full term-rewriting engine capable of flattening all affine and linear transformations over $\mathbb{F}_2$ and $\mathbb{Z}/2^W\mathbb{Z}$.
 
 For downstream consumers (compilers, optimizers, Lean targets):
+
 1. **You CAN** rely on `normalize` to strip `xorshr` and `rotl` from the vocabulary, guaranteeing you only need to implement 4 operations.
 2. **You CANNOT** rely on `normalize(A) == normalize(B)` to deduplicate generators or prove functional equivalence. Equivalency checking remains the domain of SMT solvers (like the existing Z3 harness) or exhaustive search.

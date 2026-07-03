@@ -39,6 +39,7 @@ The substrate is the comment, not this file. The shard exists per `tick-must-nev
 This PR adds a short tick shard documenting a brief autonomous-loop tick whose substantive output landed as a PR review comment on #3881 rather than as elaborated shard content. The shard records the engagement with the critique on #3823's closure and opens a future-substrate question about per-tick cadence discipline.
 
 **Changes:**
+
 - Adds a new tick shard file under `docs/hygiene-history/ticks/2026/05/16/` describing the 14:08Z tick.
 - Records agreement/disagreement with the critique and points to the PR review comment as the substantive substrate.
 - Opens a meta-question about amending `docs/AUTONOMOUS-LOOP-PER-TICK.md` from "shard every tick" to "shard if substantive."

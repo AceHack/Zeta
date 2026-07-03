@@ -43,6 +43,7 @@ Three metric streams:
 ## Implementation questions for team
 
 ### Definitions
+
 1. What counts as a "deployment"? Merged PR touching runtime code only? Or all PRs?
 2. What counts as a "change failure"? Reverted PR? Follow-up fix? Shadow log entry?
 3. Time windows: 30-day rolling + 24-hour fast feedback?
@@ -50,6 +51,7 @@ Three metric streams:
 5. MTTR: includes Aaron's notice time or just notice→fix?
 
 ### Architecture
+
 6. Dashboard audience: Aaron? Otto? External reviewers? Pick primary first
 7. Mirror content directory: separate from memory/ or frontmatter tag?
 8. Staleness check: 90-day unreferenced mirror entries → archive signal?
@@ -59,6 +61,7 @@ Three metric streams:
 12. Baseline measurement period before dashboard goes live
 
 ### Mirror/Beacon pipeline
+
 13. Healthy factory: high mirror velocity, moderate promotion rate, clear time-lag
 14. Unhealthy factory: instant promotion (tier collapse) or zero promotion (pile-up)
 15. Cross-reference density as inversion detection signal

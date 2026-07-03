@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Decomposed broad P2 081KQ8P5D0008QG0R0002TN22C (M effort, trajectory-shaped) into 4 smallest atomic S-effort child rows with strict dependency order.
 - Used dedicated worktree + pushed claim branch; root checkout untouched (per rules).
 - Exactly one bounded step: this decomp PR only. No implementation.
@@ -35,18 +36,21 @@
 - Prefer F#/TS: children 0090.2/3 scoped as TS scanners; cadence hook is wiring.
 
 ## Children (dependency-ordered)
+
 1. 081KDVJT3E008QG0R003GV8BHV — taxonomy (root)
 2. 081KDVJT3E008QG0R00183ME0R — worktree delta audit (TS)
 3. 081KDVJT3E008QG0R000P3YGTX — PR/orphan/draft scan
 4. 081KDVJT3E008QG0R002GGF22P — cadence + hygiene-history hook
 
 ## Focused checks (run in worktree before commit)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) (gate passed, same as root).
 - `rg --files-with-matches 'B-00[0-9][0-9]\.' docs/backlog/`: confirmed .N naming pattern (e.g. 081KR7JY10008QG0R001JW71CT) already in use for atomic children.
 - `git status --short`: only the 5 intended files (parent update + 4 new children).
 - No other surfaces touched.
 
 ## Rules followed
+
 - TS over bash (Rule 0) — scanners specified as TS.
 - Substrate or it didn't happen — committed claim branch + PR.
 - One bounded step + open PR.

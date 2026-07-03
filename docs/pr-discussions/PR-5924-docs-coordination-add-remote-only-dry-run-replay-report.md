@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add a remote-only replay report for the autonomous-loop coordination trajectory
 - ground the report in 081KQX9B50008QG0R001MNYK61 and the existing remote-only coordination matrix
 - release the temporary Codex claim in-branch so the PR diff carries only the durable report
 
 ## Checks
+
 - scratch git replay fetched origin/claim/* and read the active claim without local bus/GitHub API
 - git diff --check origin/main...HEAD
 

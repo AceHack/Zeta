@@ -100,6 +100,7 @@ Toffoli(a, b, c) = (a, b, c ⊕ (a ∧ b))
 ```
 
 Properties:
+
 - **Reversible**: applying the gate twice returns to the
   original state (it is its own inverse)
 - **Universal**: any Boolean function can be computed using
@@ -153,6 +154,7 @@ The mapping:
    logical mapping, not the full thermodynamic claim.
 
 **What would make this PROVEN:**
+
 - Design the Toffoli network for Z-set join
 - Count ancilla bits precisely
 - Implement on reversible hardware (not just FPGA simulation)
@@ -190,6 +192,7 @@ that makes alignment free rather than enforced.
    mechanisms are unrelated.
 
 **What would make this less speculative:**
+
 - Demonstrate that the retraction-native constraint
   actually changes the energy landscape measurably
 - Show that the energy difference scales with system

@@ -38,6 +38,7 @@ Smallest safe slice of 081KQX9B50008QG0R00147GZX9 (shadow outlet architecture): 
 This is exactly one bounded step per instructions. Crypto privacy Phase 2 is future child row.
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch before any write.
 - Root checkout untouched.
 - TS over bash (Rule 0).
@@ -45,6 +46,7 @@ This is exactly one bounded step per instructions. Crypto privacy Phase 2 is fut
 - Re-decomposed during build.
 
 ## Focused checks (included outcome)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) (verified pre-worktree, post-commit in worktree).
 - TS module: clean (Bun runtime + import/await/strict types validated; no tsc bin in PATH but equivalent check passed).
 - No new warnings, no dead code, ASCII-clean.

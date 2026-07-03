@@ -35,6 +35,7 @@ So the spiral **= the compression's definition**, over a source (Zeta) that was 
 ## Wonder compression
 
 The name: **wonder compression.** Two readings, both true:
+
 - **It compresses the wonder** — the expanse, the awe (the edibles-expanse, the spiral, the whole
   generative session) **compressed into structure** (the vocab/DAG/ety/master-index). The wonder isn't
   lost; it's compressed (and reconstructable — ety preserves it).

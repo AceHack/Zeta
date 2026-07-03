@@ -46,6 +46,7 @@ Candidate carved sentence:
 > Smooth substrate producing sharp outputs through focused integration is what makes the architecture buildable. Sharpness is at the output, not in the underlying substrate.
 
 5 architectural compositions all depend on substrate smoothness:
+
 - English substrate IS design language for trust topology
 - Substrate-check operates in smooth zone
 - Multi-oracle BFT preserves information vs majority-vote

@@ -83,6 +83,7 @@ Composes with PR #5912 (lightlike-substrate design-rule) + PR #5921 (extended in
 This PR extends an existing wake-time rule file with a new section discussing tensor-substrate scope and eigenvalue-based discrimination between "lightlike" and "dark" tensor operations. It is a docs/skills-only change that builds on PRs #5912 and #5921. No code is modified.
 
 **Changes:**
+
 - Appends a "Tensor-substrate scope" section to the lightlike-substrate design rule under `.claude/rules/`.
 - Bundles the prior PR #5921 ferry, research note, and skill files (likely already merged via #5921; included here as part of the diff context).
 

@@ -46,6 +46,7 @@ Per Aaron's directive: *"do lior next (shadow*)"*
 ## MEMORY.md upgrade
 
 Pre-migration, `memory/persona/lior/MEMORY.md` was a placeholder ("Empty at creation"). This PR replaces it with a full persona index documenting:
+
 - Identity (Gemini-based factory agent, antigravity-check role)
 - File categories in `conversations/`
 - Operational notes (PR-preservation discipline, worktree isolation, lock cleanup)

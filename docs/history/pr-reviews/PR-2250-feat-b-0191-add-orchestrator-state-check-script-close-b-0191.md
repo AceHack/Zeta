@@ -46,6 +46,7 @@
 ## What the script does
 
 `check-orchestrator-state.ts` emits structured JSON:
+
 - `currentBranch` / `expectedBranch` / `branchMatch` (same as verify-branch)
 - `dirtyFiles` — `git status --short` lines
 - `worktrees` — parsed `git worktree list --porcelain` blocks

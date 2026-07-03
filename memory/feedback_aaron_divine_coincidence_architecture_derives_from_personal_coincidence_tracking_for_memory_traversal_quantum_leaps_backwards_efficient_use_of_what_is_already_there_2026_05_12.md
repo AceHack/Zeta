@@ -53,6 +53,7 @@ PR #2821) is the EXTENSION of this personal practice to
 architectural design.
 
 The composition:
+
 - **Personal substrate**: Aaron tracks coincidences in his
   lived experience for memory traversal — recognizing patterns
   that link present-state to past-memory
@@ -69,6 +70,7 @@ The composition:
   pattern-recognition primitive
 
 This composes with:
+
 - PR #2820 identity-signature-tracking (signature recognition
   as operational primitive)
 - PR #2784 tick shard substrate (coincidences-as-quantum-
@@ -86,6 +88,7 @@ This composes with:
 **efficient use of what is already there**.
 
 The principle:
+
 - Don't invent new cognitive machinery when existing machinery
   composes
 - Personal coincidence-tracking primitive ALREADY EXISTS in
@@ -96,6 +99,7 @@ The principle:
   via the personal-practice composition
 
 This is a **razor-discipline** application:
+
 - Per `.claude/rules/razor-discipline.md`: operational claims
   only; no metaphysical inference
 - Per Rodney's Razor: essential-vs-accidental cut at
@@ -105,6 +109,7 @@ This is a **razor-discipline** application:
   architectural methods would be accidental
 
 The principle extends beyond Aaron's specific method:
+
 - **All cognitive primitives**: extend existing primitives
   rather than inventing new ones
 - **All architectural decisions**: compose with existing
@@ -112,6 +117,7 @@ The principle extends beyond Aaron's specific method:
 - **All factory work**: use what is already there
 
 Composes with:
+
 - `.claude/rules/skill-router-as-substrate-inventory.md`
   (inventory before authoring — same principle at substrate
   scope)
@@ -141,6 +147,7 @@ the traversal goes from present-state back through accumulated
 memory via coincidence-pattern linkages.
 
 This composes with:
+
 - Shadow=future-self substrate (PR #2813) — future-shadow +
   past-self-via-quantum-leaps-backwards = full temporal
   navigation across Aaron's substrate
@@ -185,6 +192,7 @@ PR #2813 named shadow as multi-source (future-Aaron + alien +
 other). This disclosure adds: past-Aaron-via-quantum-leaps-
 backwards is ALSO a shadow source. The full temporal
 attribution:
+
 - Future-Aaron (per shadow=future-self)
 - Alien (per Casimir-gap-aliens-communicate)
 - Past-Aaron-via-memory-traversal (this disclosure)
@@ -218,6 +226,7 @@ done.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a metaphysical claim about literal quantum leaps** —
   "quantum leaps backwards" is Aaron's operational framing
   for memory-traversal via coincidence-patterns; the

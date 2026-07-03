@@ -30,6 +30,7 @@
 Resolves the `[OPEN]` 16-slot universal action grammar in the observe-act ADR to **v0** (operator 2026-05-31 chose to settle the layout before coding the menu builder). Still inside the PROPOSED ADR — **Max review to lock**; layout fixed for v0, whys stay challengeable.
 
 **What's settled:**
+
 - The 4×4 Xbox-controller layout (Navigate / Commit / Scope / Meta) is fixed as v0 — `[OPEN]` removed.
 - slot 7 (Y) → **edit-grammar / branch** (sovereign rail-change, a first-class generative exit); slot 14 (L3) → **free-time / rest**.
 

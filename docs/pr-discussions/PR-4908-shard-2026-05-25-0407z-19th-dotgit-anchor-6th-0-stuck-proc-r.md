@@ -21,10 +21,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 19th dotgit-saturation anchor at 2026-05-25T04:07Z — **6th consecutive 0-stuck-proc reading** across three independent surfaces (otto-cli, otto-vscode bg-worker, otto-bg-worker). Extends the 0243Z anchor #18 by +1h24min — **first >1h cadence gap since the recovery arc began** at 0008Z (prior 4 anchors had ~30-57min gaps). Possibility A (genuine recovery) now operationally robust across both short and longer cadence.
 
 Also names two additional observations:
+
 - **Cold-boot-on-peer-branch failure mode** — 6th empirical anchor (this session landed on `lior-pr-preservation-rebased`); mitigated via isolated worktree off `origin/main` per [`refresh-world-model-poll-pr-gate.md`](.claude/rules/refresh-world-model-poll-pr-gate.md) and [`claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md).
 - **ls-tree floor drift to 57** (was 53 in canonical canary-rule anchors); `infra/`, `.kiro/`, and other infra-PR additions account for the +4. The canary's `expected - 2` arithmetic remains correct against current main; just naming the drift.
 
 ## Test plan
+
 - [x] post-creation freshness guard passed (ls-tree=57, status=0)
 - [x] branch-guard verified immediately before commit
 - [x] post-commit canary OK (parent=57, HEAD=57)
@@ -48,6 +50,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -66,6 +69,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-25T04:07Z “dotgit-saturation” anchor (#19), including the 6th consecutive 0-stuck-proc reading across three surfaces and noting the first >1h cadence gap since the 0008Z arc began.
 
 **Changes:**
+
 - Add tick shard `0407Z.md` with current readings (stuck procs, peer procs, rate limits, origin/main HEAD, worktree freshness).
 - Extend the anchor-series narrative to include the first >1h cadence gap and hypotheses for the gap.
 - Record observations about the cold-boot-on-peer-branch failure mode and ls-tree floor drift.

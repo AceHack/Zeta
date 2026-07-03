@@ -105,7 +105,7 @@ factory's evolution.
   with AI) overlaps the `x402` / `ERC-8004` / Aurora-pitch
   thesis already in memory — this is not a forced fit.
 
-## How to apply:
+## How to apply
 
 - **If Aaron mentions Lucent again:** treat it as the umbrella
   legal entity for factory-external things (email `From:`

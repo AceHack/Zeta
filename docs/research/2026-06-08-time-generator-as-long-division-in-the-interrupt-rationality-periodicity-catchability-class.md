@@ -12,6 +12,7 @@ The **interrupt is the DST time source** (emulator interrupt = the tick generato
 `2026-06-08-DST-timeline-operations-...md`). Place a **long-division generator in the interrupt**: the
 **remainder is the state**, each interrupt tick emits a digit and updates the remainder. The remainder set is
 finite, so by **pigeonhole**:
+
 - **rational** divisor → the remainder **eventually cycles** → **periodic** tick stream;
 - **irrational** rate (e.g. `2√2`) → **never cycles** → **aperiodic** forever.
 

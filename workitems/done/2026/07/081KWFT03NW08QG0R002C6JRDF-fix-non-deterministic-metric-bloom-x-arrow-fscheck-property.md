@@ -56,6 +56,7 @@ Root-caused the non-deterministic failure to a **GC lifetime race condition** on
 In `toArrow` (and similarly in `ArrowSerializer.fs`'s key-weight `ZSet` serialisers), the temporary `RecordBatch` was constructed but never disposed or explicitly kept alive via `use` or `using`. During high-concurrency test runs (e.g. xUnit running thousands of tests in parallel), a concurrent garbage collection could occur while `writer.WriteRecordBatch(batch)` was executing. Since the local `batch` reference was no longer needed in the remaining F# instructions of `toArrow`, the JIT compiler marked it eligible for GC. The GC collected it and ran its finalizer, which freed the unmanaged buffer backing the Arrow arrays. The writer then attempted to copy from the deallocated buffer using `Memmove`, causing an `AccessViolationException` that resulted in a flaky test failure.
 
 Fixed by declaring the `RecordBatch` bindings with `use` (in F#) and `using` (in C#) in all four serialization sites:
+
 - [DynamicValueArrow.fs](file:///Users/acehack/.zeta/agents/gemini/workspace/src/Core/DynamicValueArrow.fs) (`toArrow`)
 - [ArrowSerializer.fs](file:///Users/acehack/.zeta/agents/gemini/workspace/src/Core/ArrowSerializer.fs) (`Write` for `int64` and `string`)
 - [DynamicValuesArrow.cs](file:///Users/acehack/.zeta/agents/gemini/workspace/src/Core.CSharp.DynamicValue/DynamicValuesArrow.cs`) (`ToArrow`)
@@ -65,6 +66,7 @@ This guarantees the native buffer's lifetime is locked until writing is complete
 ## RESOLUTION (2026-07-02, Otto) — phantom, NOT an input defect
 
 DoD met (distinguish test-bug vs real defect, reproduce deterministically):
+
 - **Not input-dependent:** the property is a PURE function of `xs`; 20,000
   deterministic serial trials → 0 failures. The unseeded-generator hypothesis is
   DISPROVEN — seed-pinning would not have helped.

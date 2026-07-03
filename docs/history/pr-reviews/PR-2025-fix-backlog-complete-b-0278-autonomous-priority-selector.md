@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - complete 081KR2E4K0008QG0R001GFXN05 selector semantics: priority then creation/update age, decompose-first action, decomposed-parent/open-child skip, and open PR branch/title claims
 - close 081KR2E4K0008QG0R001GFXN05 and regenerate docs/BACKLOG.md
 - add focused tests for equal-priority age ordering and decomposed-parent child blocking
 
 ## Checks
+
 - bun run typecheck
 - bunx eslint tools/backlog/autonomous-pickup.ts tools/backlog/autonomous-pickup.test.ts
 - bun test tools/backlog/autonomous-pickup.test.ts

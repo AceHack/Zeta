@@ -27,4 +27,5 @@ Sibling PR landing resolves the cross-reference; no-op.
 Adds a new hygiene-history tick shard for the 2026-05-19 01:10Z window, recording that PR #4292’s remaining P2 thread was resolved as a no-op after a sibling PR landed the relevant cross-reference.
 
 **Changes:**
+
 - Added `0110Z-c` tick shard with a valid 6-column header row and brief narrative summary.

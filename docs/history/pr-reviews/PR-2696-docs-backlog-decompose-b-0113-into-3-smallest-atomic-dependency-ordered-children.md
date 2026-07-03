@@ -31,6 +31,7 @@
 Decomposed broad 081KQDTYV0008QG0R002424VSE (bash proposal + hook/CI tradeoff) into 3 smallest dependency-ordered atomic child rows per AGENTS.md "always re-decompose... assume mistakes" + Rule 0 (TS over bash).
 
 Children:
+
 - 081KRA5AR0008QG0R002A78X5F (root): TS CURRENT staleness checker core (Bun/git, testable, no side effects)
 - 081KRA5AR0008QG0R0010A24JD (depends .1): CI gate integration (non-blocking local, blocking merge)
 - 081KRA5AR0008QG0R0016B8371 (depends .1+.2): rule/memory substrate update (Otto-363 compliance)
@@ -40,11 +41,13 @@ Parent 081KQDTYV0008QG0R002424VSE updated with start-gate proof (prior-art + dep
 Exactly one bounded step: decomp + PR only. Dedicated worktree + pushed claim branch; root checkout untouched.
 
 ## Focused checks included
+
 - dotnet build -c Release (worktree) → 0 Warning(s) 0 Error(s)
 - Prior-art search across specified surfaces: no prior mechanical check found
 - Dependency chain: clean, reciprocal composes_with added
 
 ## Evidence
+
 - Worktree: .config/superpowers/worktrees/Zeta/claim-b0113-...
 - Branch: claim/b0113-decompose-smallest-atomic-children-riven-2026-05-11
 - Commit: 559dfddd (trailer: Co-Authored-By: Grok <noreply@x.ai>)

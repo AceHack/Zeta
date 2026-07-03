@@ -61,6 +61,7 @@ _(no body)_
 This PR adds a new `tools/peer-call/` wrapper that invokes Grok via the native `grok` CLI (Grok-Build) to replace the currently-broken cursor-agent-based Grok path (081KRA5AR0008QG0R0011ZGRZT). It fits into the existing peer-call suite by providing a headless CLI entrypoint with the peer-call firewall, context attachment flags, and output capture marker for shell callers.
 
 **Changes:**
+
 - Introduces `tools/peer-call/grok-build.ts`, a Bun/TypeScript wrapper around `grok -p` with read-only allow rules.
 - Implements `--file`, `--context-cmd`, `--output-file`, `--thinking`, `--json`, and `--allow-empty` flag handling plus OUTPUT-FILE capture behavior.
 - Adds firewall gating via `peerFirewallCheck(..., GROK_SUBSTANTIVE_TRIGGERS)`.

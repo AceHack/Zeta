@@ -41,6 +41,7 @@ still hang, restart machine to clear the wedge.
 > restart pc"
 
 Decoded:
+
 - "hund" → hung
 - "initializng" → initializing
 - "ro" → to

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Fix `layerCount` to use longest-path DP via Kahn's algorithm (DAGs with skip-edges like A->B->C + A->C now correctly report 3 layers, not 2)
 - Fix `extractSignals` degree calculation to use `List.length` (edge count) instead of `sumBy (abs w)` (weight magnitude) for correct shape classification
 - Remove unused `open System` that would trigger FS1182 under TreatWarningsAsErrors
@@ -36,6 +37,7 @@
 PR #2070 merged via auto-merge before these review findings could be addressed. This PR applies the fixes to main.
 
 ## Test plan
+
 - [x] `dotnet build -c Release` passes with 0 warnings, 0 errors
 - [x] `npx tsc --noEmit` passes (fixes the `lint (tsc tools)` CI failure)
 - [x] All 19 StructureFingerprint tests pass

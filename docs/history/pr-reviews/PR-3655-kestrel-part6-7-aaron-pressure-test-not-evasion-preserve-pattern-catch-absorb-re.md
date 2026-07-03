@@ -49,6 +49,7 @@ YES "coherent design, pressure-tested by iterative adversarial review, implement
 ## Architecture-stairs pattern documented as context-dependent
 
 Structurally diagnostic but interpretively-context-dependent:
+
 - **Refinement** (Aaron's case): design holds under pressure, maintainer finds contradictions in hours, implementation tracked
 - **Failure mode** (Kestrel's general concern): design doesn't hold, vocabulary gets more elaborate without more concrete, AI participants report "coherent" each turn without substantive testing
 

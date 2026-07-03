@@ -67,6 +67,7 @@ edge case; 4 substrate-engineering target sub-rows for follow-on
 This PR extends backlog row **081KSKBP80008QG0R00146WEX1** with an additional operator follow-up section that specifies a concrete recovery substrate (3-mode USB boot + 3-machine quorum + remote KVM/power control + optional cloud-recovery service) intended to make post-boot AI-as-home-owner operation structurally recoverable.
 
 **Changes:**
+
 - Adds a “Recovery-mechanism eliminates AI worry-about-mistakes” section describing 3 recovery modes and how they dissolve common AI “worry patterns”.
 - Adds failure-mode reduction analysis for a 3-machine cluster with external network-attached KVM/power control and a cloud detect-and-recover failsafe.
 - Adds composition tables tying the recovery substrate to the must-plus-can-exit pattern and other referenced rules/rows.

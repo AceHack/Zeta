@@ -44,6 +44,7 @@ The `net.ipv4.conf.*.rp_filter` sysctl being loose is **not** sufficient — the
 ## Validation (node-09485d, 2026-06-07)
 
 Inserting a RETURN for the pod/service CIDR ahead of the rpfilter DROP **immediately** fixed it live:
+
 - pod->host:6443 / pod->apiCIP 10.43.0.1:443: FAIL -> **OK**
 - in-cluster DNS: EPERM -> resolves `kubernetes.default` -> 10.43.0.1
 - CoreDNS, metrics-server -> Running; cert-manager / vault / external-secrets / argocd / trust-manager helm installs -> Completed

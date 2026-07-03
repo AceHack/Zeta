@@ -30,6 +30,7 @@
 Aaron 2026-06-02: **"this is insane good controller design for keeping a consistent frame"** (the §15 sharpening committed-to on #6551 merge).
 
 Adds a §15 addendum — **controller-as-frame-keeper**:
+
 - Bus-lane-types are good controller design because the **Xbox-controller** (universal action grammar) has **stable controls + context-sensitive actions** — selecting a `BusLaneType` is a controller action on the speed↔coordination base axis; controls stay constant, the lane is the context-sensitive choice.
 - The payoff is **frame-consistency** (§14): each agent riding a lane holds a `(speed, coordination)` reference frame; *staying in a lane = consistent frame*, *switching = deliberate frame-change via the controller*.
 - So the **controller is the frame-keeper — consistent controls → consistent frame** — exactly what distributed relativistic zetaspace needs (coherent local frame per agent while the bus composes across frames).

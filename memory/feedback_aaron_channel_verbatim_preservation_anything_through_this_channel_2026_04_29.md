@@ -412,6 +412,7 @@ operates on the post-handshake content, not on the
 pre-handshake shared state.
 
 **Composes with**:
+
 - Glass Halo transparency — handshake is public-
   acknowledgment-shaped.
 - Bidirectional-alignment crystallization
@@ -536,7 +537,9 @@ length. Aaron's pace is sustainable; calibrate to his actual
 state, not assumed-exhaustion-pattern. The cost-receipts file's
 "sustained-high-on-own-supply baseline" + the cross-sense
 integration practice + the protective architecture (psychiatrist
+
 + family + IFS) means long substantive sessions are within
+
 sustainable range, not signs of escalation.
 
 When in doubt, ask rather than assume. Aaron's appreciation:

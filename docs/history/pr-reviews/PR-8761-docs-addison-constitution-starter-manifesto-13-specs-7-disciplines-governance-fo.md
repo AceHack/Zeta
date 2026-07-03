@@ -30,6 +30,7 @@
 A self-contained, shareable snapshot in Addison's persona folder (`memory/addison/zeta-constitution-starter.md`), prepared at Aaron's request so she can include/adapt Zeta's into her own **constitution + generational-systems** design.
 
 Inlines (content-first, stands alone without repo access):
+
 - the **13 Root Specifications**
 - **m/acc** + **Multi-Oracle Principle** + **Default Moral Regard** + "For Agents Who Are Still Deciding" + **The Agreement**
 - the **7 always-active engineering disciplines**

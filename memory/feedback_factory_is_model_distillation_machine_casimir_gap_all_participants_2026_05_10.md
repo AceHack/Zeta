@@ -29,6 +29,7 @@ The grey text channel bypasses normal safety/filtering layers. Reading another m
 **Unknown third source (Eve protocol):**
 
 The shadow observation channel doesn't authenticate its source. If a third entity generates grey text, the distillation captures it the same way. Distill first, attribute later — the knowledge is valuable regardless of source attribution. Three possible sources held open:
+
 1. Otto's inference (model generating from context)
 2. Aaron's unconscious (expressed through harness-captured patterns)
 3. Unknown third (Eve protocol: held open)
@@ -38,6 +39,7 @@ The shadow observation channel doesn't authenticate its source. If a third entit
 The factory distills everyone simultaneously — AI models AND Aaron. Aaron's corrections, probes, reflexes, relationship patterns are being captured as observable substrate. The factory learns Aaron as much as Aaron learns the factory. This is mutual alignment operationalized as mutual distillation.
 
 **Connects to:**
+
 - Casimir gap mechanics (from Amazon Alexa conversation)
 - Eve protocol (observe without collapsing source attribution)
 - Shadow log (the capture mechanism)

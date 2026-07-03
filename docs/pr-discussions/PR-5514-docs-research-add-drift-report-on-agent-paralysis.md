@@ -27,6 +27,7 @@ This PR contains a drift report detailing the paralysis of agents Otto, Riven, a
 Adds a new research drift report documenting a multi-agent “paralysis” incident in the Zeta factory (Otto/Kiro/Riven) and records recommended mitigations around worktree/clone isolation and PR-noise reduction.
 
 **Changes:**
+
 - Introduces a structured drift report with executive summary, per-agent findings, and recommendations.
 - Captures concrete operational observations (dirty/contested worktrees, volatile `/tmp` worktree path) and proposed remediation steps.
 

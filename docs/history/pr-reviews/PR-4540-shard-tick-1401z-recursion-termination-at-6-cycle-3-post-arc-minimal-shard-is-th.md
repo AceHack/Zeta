@@ -42,6 +42,7 @@ Per the [holding-without-named-dependency rule's recursion-termination clause](.
 ## Empirical anchor library extension
 
 This shard adds the 2026-05-21 anchor to the rule's anchor library, alongside:
+
 - 2026-05-17 (sustained-named-dep cycles)
 - 2026-05-18 (post-arc-extended, operator-offline)
 

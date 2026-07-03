@@ -27,6 +27,7 @@ This PR preserves the discussions for recently merged PRs.
 This PR adds a new batch of preserved discussion archives for recently merged PRs under `docs/pr-discussions/`, and updates `.gitignore` to ignore alignment tool output.
 
 **Changes:**
+
 - Added PR discussion archive markdown files for merged PRs (#4965–#5034 subset).
 - Updated `.gitignore` to ignore `tools/alignment/out/`.
 

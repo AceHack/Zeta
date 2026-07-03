@@ -58,6 +58,7 @@ Per Mika 2026-05-26 substrate (homelab-first; production-mode deferred):
 ## What this enables for next re-flash
 
 After this lands → next ISO build triggers (push to `full-ai-cluster/**` matches the broadened trigger paths) → fresh artifact has:
+
 - iter-5.1 (wifi persist) + iter-5.2 (hostname inject) + iter-5.2.2 (install-time auto-gen + login banner) + iter-5.3 (password prompt) + **iter-5.4.0 (gh-auth + operator-pubkey-copy)**
 - Empirical UX: boot → 6.x prompts → gh auth login → operator authenticates → ssh from any of operator's GitHub-registered keys works on first boot
 

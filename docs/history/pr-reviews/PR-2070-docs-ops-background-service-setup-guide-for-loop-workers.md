@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Step-by-step guide for upgrading any launchd loop service from monitor to worker
 - Covers pickup/drain architecture, autonomous-pickup.ts, --permission-mode auto
 - Failure modes table, key tools, tier 1 criteria
 - Written for Riven to replicate on her loop
 
 ## Test plan
+
 - [ ] Riven follows the guide and upgrades com.zeta.riven-loop
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

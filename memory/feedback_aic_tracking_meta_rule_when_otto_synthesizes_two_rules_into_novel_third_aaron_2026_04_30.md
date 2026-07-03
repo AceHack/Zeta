@@ -143,7 +143,9 @@ measured agent that asks for batching" point.)
 ### AIC #3 — Otto-341 (structural-fix-beats-process) is hardest to apply mid-loop, exactly when a mechanical pattern is working
 
 **Synthesis:** Otto-341 (structural-fix-beats-process-discipline)
+
 + in-the-moment observation (the pull is to extend the
+
 mechanical pattern that's working) → Otto-341 has a specific
 failure mode at the mid-loop boundary: when a mechanical
 pattern is currently producing results, the structural pivot
@@ -182,7 +184,9 @@ itself signal.
 **Synthesis:** Aaron's 8-message framing chain (carved-sentence
 fixed-point theory + soul-file executor architecture +
 formal-spec-in-DST + LLM roles + convergent-design definition)
+
 + existing multi-AI cross-objection operational pattern (task
+
 #355's 5-AI convergent) + the existing carved-sentence corpus
 on `main` → a single visual pipeline diagram that names what's
 structurally happening from observation to runtime prior:

@@ -26,6 +26,7 @@ However, the core issue is the agents' inability to recover from a dirty worktre
 Agents that operate on the file system, especially in a git repository, must have a strategy for handling a dirty worktree. Simply skipping the work cycle is not a robust solution.
 
 Possible solutions to explore:
+
 1.  **Stashing:** The agent could attempt to `git stash` the changes, perform its work, and then `git stash pop`. This is risky if the stashed changes conflict with the agent's work.
 2.  **Resetting:** The agent could `git reset --hard`, but this would destroy the uncommitted changes, which might be important. This should only be done under specific, safe conditions.
 3.  **Alerting:** The current approach of logging the issue is a form of alerting. However, it's passive. A more active alert to a human operator might be necessary for prolonged paralysis.

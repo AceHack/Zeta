@@ -44,6 +44,7 @@ visible in long-term memory. The NOTEBOOK prune cadence can't
 show it without a destination.
 
 Candidate use cases:
+
 - Recurring CONTRIBUTING.md friction across rounds.
 - Install-script felt-friction patterns vs Dejan's mechanical
   parity tracking.
@@ -80,6 +81,7 @@ actual file `Zeta.sln`.
 
 **Fix:** single perl sweep across `.md` / `.yml` / `.yaml` /
 `.sh` files under repo root:
+
 - `src/Dbsp.Core/Dbsp.Core.fsproj` → `src/Core/Core.fsproj`
 - `src/Dbsp.Core` → `src/Core`
 - `tests/Dbsp.Tests.FSharp` → `tests/Tests.FSharp`

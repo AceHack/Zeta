@@ -58,6 +58,7 @@ Refinement recorded NOW per Aaron 2026-05-27 separation-of-concerns discipline (
 Refines backlog row **081KSKBP80008QG0R003AX2A69** to document a **phase-split** between flash-time (operator Mac) and boot/setup-time (target console) GitHub authentication, aligning each auth method with the most ergonomic operator-UX phase.
 
 **Changes:**
+
 - Adds a new “Phase-split” section describing flash-time PAT injection (optional) vs boot-time device-flow / PAT fallback / skip.
 - Documents the rationale/tradeoffs of the phase split vs a picker-only-at-install-time approach.
 - Explicitly calls out the “same USB → multiple machines = same PAT” fleet-vs-isolation edge case and advises surfacing it in prompts.

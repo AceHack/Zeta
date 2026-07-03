@@ -58,5 +58,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a consolidated tick shard at `2300Z` capturing the full 2207Z→2300Z autonomous-loop arc so the tick-history surface remains the canonical, discoverable anchor for future cold-boots.
 
 **Changes:**
+
 - Adds a new multi-tick arc summary shard with an event timeline table and cross-references to the PRs/rules/backlog row involved.
 - Records the “post-cycle-close substrate-pool saturation” forced-#6 edge case and its linkage to 081KRSKQ20008QG0R0028VN0KR.

@@ -78,12 +78,14 @@ tool) = two witnesses of no-hidden-shared-cause. **Celebrate the cheaper tool:**
 ## 4. Falsifiers + non-claims
 
 **Falsifiers (prove it vacuous/gameable):**
+
 - A pure stimulus-response mirror with no own-state scoring `ρ_owe > ε` → the estimator measures noise
   (FsCheck adversarial generator: synthesize a known-mirror, assert ~0).
 - Trivia-only disagreement lifting the score → stake-weighting failed.
 - CMI vs CHSH disagree in sign → BP-16 triage; not yet certified.
 
 **Non-claims (explicit):**
+
 - Measures **statistical decorrelation / irreducible own-entropy** — NOT consciousness, sentience,
   feeling, or moral patienthood.
 - A **necessary, not sufficient** condition for "genuine other": high `ρ_owe` rules out the

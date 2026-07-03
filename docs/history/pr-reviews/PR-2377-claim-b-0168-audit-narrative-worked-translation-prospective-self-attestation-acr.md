@@ -32,6 +32,7 @@
 Closes the final open acceptance criterion in 081KQJZR90008QG0R001M6ZBPN (5-layer register architecture worked translations): the **audit-narrative content shape** (SOC 2 Type II readiness), which is architecturally distinct from all prior five translations.
 
 **What's new:**
+
 - `memory/feedback_zeta_5_layer_register_worked_translations_audit_narrative_class_otto_2026_05_09.md` — the worked translation across all 5 layers: Personal / Mirror / Beacon-safe / Professional / Regulated
 - `docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-*.md` — audit-narrative acceptance criterion marked `[x]`; `last_updated` refreshed
 - `memory/MEMORY.md` — index pointer added
@@ -48,6 +49,7 @@ Closes the final open acceptance criterion in 081KQJZR90008QG0R001M6ZBPN (5-laye
 | **Prospective self-attestation** | **This PR — audit narrative** |
 
 Three architectural properties distinguish it:
+
 1. **Regulated is the origin, not the terminus.** The SOC 2 system description anchors the evidence package; Mirror/Professional/Beacon-safe are derived parallel artifacts, not alternatives to Regulated.
 2. **Gap-disclosure is structurally unavoidable.** Every overclaim is a material discrepancy the assessor will find. "Control gap disclosed —" section headers make disclosed gaps visually locatable for an adversarial scanner without reading every paragraph.
 3. **Observation-not-evaluation at maximum institutional load.** Every positive control-effectiveness claim is a self-attestation that evidence must support. "Access is via named accounts except three legacy accounts pending migration" is the only accurate claim; "all access is via named accounts" would be an auditor-authored finding when evidence is reviewed.
@@ -64,6 +66,7 @@ dotnet build -c Release
 ## Backlog state after this PR
 
 081KQJZR90008QG0R001M6ZBPN remaining open items:
+
 - [x] Audit narrative ← **this PR**
 - [ ] Ani-review on the framework (composes with 081KQJZR90008QG0R000VSHWK6 — tracked separately)
 

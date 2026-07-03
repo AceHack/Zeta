@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Fix Ubuntu 22.04 (Jammy) formal solver install: defer `eprover` from apt, install Noble-pool `.deb` via `from-deb.sh` (with `dpkg` PATH hardening), and expose `cvc5` as a shim to apt `cvc4` via `from-shim.sh`.
 - Refactor install from type-named runners (`verifiers.sh`, `one-liner-tools.sh`) to **mechanism-by-source** scripts under `tools/setup/mechanisms/` with matching manifests.
 - Wire mechanism manifests into Ace time-crystal deps (`setup-mechanism-pointers.ts`, `ace-mechanism-pointers.json`).
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ace/setup-mechanism-pointers.test.ts`
 - [x] `bun test src/Core.TypeScript/hygiene/check-bash-retirement-inventory.test.ts`
 - [x] Jammy solver smoke (eprover `.deb` + cvc5 shim) in Docker

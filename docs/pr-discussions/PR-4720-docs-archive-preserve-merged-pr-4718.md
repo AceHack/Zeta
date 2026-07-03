@@ -27,5 +27,6 @@ This PR preserves the discussion archive for merged PR #4718.
 This PR adds a preserved discussion archive for merged PR #4718 under the repository’s PR discussion history surface.
 
 **Changes:**
+
 - Adds frontmatter metadata for PR #4718.
 - Captures the archived Copilot review content from that PR.

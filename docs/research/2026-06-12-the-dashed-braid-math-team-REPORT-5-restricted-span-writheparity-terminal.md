@@ -24,6 +24,7 @@ Audited read-only at `/Users/acehack/.local/share/zeta-otto`. Files read: ferry 
 **Candidate (c) — 1-cocycle / sign-decorated diagram — describes only the adinkra side, and not as a cocycle.** Per the literature and per `AdinkraViz.fs` itself: a dashing d ∈ C¹(Q₄; ℤ/2) satisfies δd = μ where μ is the all-ones 2-cochain on 2-colored faces (`faceOdd`/`allFacesOdd` — the Gates condition γᵢγⱼ = −γⱼγᵢ). A dashing is an **odd 1-cochain trivializing a 2-dimensional obstruction class**, not a cocycle (δd ≠ 0) and not a braid-side object. Beacon: Doran–Iga–Landweber, cubical cohomology for adinkras; Yan Zhang, *Adinkras for Mathematicians*, Trans. AMS 366 (2014).
 
 **Candidate (d) — shelf objects.** Each nearby object exists under a name; none is the conjectured object, but two are close enough that landing a "dashed braid" without citing them would violate the human-anchor rule:
+
 - **Trace monoids / heaps of pieces** (Cartier–Foata 1969; Viennot 1986): braid words modulo far-commutativity only — the canonical "partially forget order" object. This IS the correct intermediate target of forget-order (§2).
 - **Welded / braid-permutation group BPₙ** (Fenn–Rimányi–Rourke 1997): the one group containing both registers — order-remembering σᵢ and involutive τᵢ — in a single presentation.
 - **Twisted knot/braid theory** (Bourgoin 2008; twisted virtual braids, Kamada et al., 2020s — verify exact cite before use): braids decorated with ℤ/2 "bars," the literature's per-strand ℤ/2-decorated braid. Per-strand, not per-crossing, but the closest named "braid ⊕ ℤ/2 data."
@@ -37,11 +38,13 @@ Audited read-only at `/Users/acehack/.local/share/zeta-otto`. Files read: ferry 
 **Forget-dashing → braid: internally inconsistent as ferried.** If dashing = over/under, forgetting the dashing forgets the exponent signs, and the target is a word in the *symmetric-group* generators (a flat/shadow braid word, landing in Sₙ after relations) — **not the braid**. Ferry 18 §4 cannot simultaneously identify the dashing with over/under and recover the braid after forgetting it. The two consistent readings: (A) dashing = over/under ⇒ projections are (forget signs → flat shadow) and (forget order → signed multiset); (B) dashing is an independent second bit ⇒ "forget dashing → braid" works but the §4 identity claim is dropped. The ferry asserts both. **P0.**
 
 **Forget-order → ?: target stated precisely.** From a word w = ((i₁,ε₁),…,(i_k,ε_k)):
+
 - Full order-forgetting = the multiset of signed letters = the **signed pair-load**. In-tree `Braid.pairLoad` (Braid.fs:109) is the *unsigned* version; the signed refinement is a one-line change.
 - Partial order-forgetting (mod far-commutativity only) = the **trace monoid / heap** — the mathematically correct "forget only the order that the braid itself doesn't certify."
 - **Neither is defined on Bₙ.** The braid relation changes the generator multiset; cancellation changes everything but writhe. **Classical theorem: H₁(Bₙ) = ℤ** (all σᵢ conjugate; Artin 1925) — the universal order-forgetting *braid invariant* is the writhe, and mod 2 it is `writheParity`. So ferry 18 §4's claim that the adinkra "retains every crossing's sign, forgetting only temporal order" — as a statement about braids — is **impossible**: any sign record finer than writhe is word data, not braid data. **P0.** (As word data it is fine; the conjecture must live at word level, which is what makes the "braid → adinkra" direction of the mutual shadow undefined: which word?)
 
 **Does the image land in the adinkra family? No — quantified.** The natural embedding of letters as cube edges: read colors as bit-flips and run the walk v_{t+1} = v_t ⊕ e_{i_t} from vertex 0; letter t deposits sign ε_t on edge (v_t, i_t). Three failures:
+
 1. The induced edge-sign assignment is **partial** (a short word touches few of the 32 edges) and can **conflict** (an edge revisited with opposite sign).
 2. Even total + consistent assignments generically violate the odd-face condition. Count, from `AdinkraViz.fs`'s own complex (16 vertices, 32 edges, 24 two-colored faces): the solution set of δd = μ is a coset of Z¹; dim B¹ = 15, H¹(Q₄) = 0 ⇒ dim Z¹ = 15 ⇒ **exactly 2¹⁵ dashings out of 2³² sign assignments — a uniformly random assignment is a dashing with probability 2⁻¹⁷.** (Consistency check: vertex gauge flips = 2¹⁶ with kernel {∅, all} = 2¹⁵ effective, acting simply transitively — matches `flipVertex` and H¹ = 0.) Generic words project **outside** the family; the restriction is codimension 17, not a technicality.
 3. **The doubly-even constraint is on the wrong object in the ferry.** Per DFGHIL (*Codes and supersymmetry in one dimension*, ATMP 2011) the doubly-even code determines the **chromotopology** (the quotient of the N-cube); the dashing is the odd 1-cochain on that quotient; doubly-evenness is the *existence* condition for dashings on the quotient. Ferry 18's "the dashing assignment is the doubly-even code" conflates the two layers. In-tree they are even in different modules at different N: `AdinkraViz.fs` is the **N = 4 cube with trivial code**; `AdinkraCode.fs`'s [8,4] extended Hamming code is, in adinkra indexing, an **N = 8** (8-color) datum — type II (self-dual doubly-even) codes exist only at lengths ≡ 0 mod 8, so "the canonical N=4 example" in the AdinkraCode.fs header reads N as code dimension k, not as the adinkra's color count. The ferry fuses the two. **P1 (doc drift with mathematical content).**
@@ -79,20 +82,24 @@ Audited read-only at `/Users/acehack/.local/share/zeta-otto`. Files read: ferry 
 ## 5. Verdict, rounds plan, P0/P1
 
 **Verdict: (iii) with an (i) core and a salvageable (ii)-minus.**
+
 - (i) The apex as ferried **already exists**: it is the braid word; its order-forgetting shadows exist under names (abelianization; trace monoid/heaps; Gauss-diagram shadows in knot theory); braid-plus-ℤ/2-decoration exists as twisted (virtual) braids. Do not coin "dashed braid" for any of these.
 - (iii) The conjecture **hits two obstructions**: the odd-face (not doubly-even — that constraint sits one layer up, on the chromotopology) affine constraint, codimension 17 on N = 4; and the alphabet commutation-type mismatch. Plus the well-formedness defects: the §4 double-count and the H₁(Bₙ) = ℤ collapse.
 - (ii)-minus: the standing ruling upgrades to a **precise restricted span** (Eulerian serializations of dashings), strictly sharper than "rhyme," strictly weaker than adjunction/mutual-shadow. The rhyme-not-isomorphism ruling and REPORT #3 P0-2 are **reaffirmed**, with the meeting point now named (Ising rep; FRW extraspecial 2-group; dashing = extension cocycle).
 
 **Falsifier/construction plan (ferry 18's "days, not weeks" — confirmed, with corrected content):**
+
 1. Signed `pairLoad` in `Braid.fs` (~hours).
 2. Walk module: word → partial edge-sign assignment on Q₄; conflict detection; reuse `AdinkraViz.faceOdd`/`allFacesOdd` (~1 day).
 3. FsCheck: (a) random length-32 sign assignments satisfy odd-faces at rate ≈ 2⁻¹⁷ — better, compute rank 17 of the face system by GF(2) elimination and assert the solution dimension is 15 exactly; (b) Eulerian serializations of `standardDashing` round-trip under forget-order; (c) sign-multiset non-invariance under the Artin relation (the H₁ collapse, made a passing test) (~1–2 days).
 4. Cross-invariant: total dashes mod 2 of the serialized dashing vs the word's `writheParity` (note `writheParity` is length mod 2 — fine on valid words; document that it is word-length-based).
+
 Total ≈ 3–5 days. Lands in `Braid.fs` (signed load) + a small `DashedWalk` slice next to `AdinkraViz.fs`; nothing touches `AdinkraCode.fs`.
 
 **Golden vectors:** yes, same seed shape extends — add a `dashedWalk` section to the braid vector schema (word, induced edge assignment as hex bitmask over the canonical 32-edge order, `allFacesOdd` bool, round-trip dashing), hex-in-JSON per the no-binary rule. Note the existing vectors are B₅ (n = 5, 4 generators) — exactly the 4 colors of Q₄ under σ-substitution; no schema fork needed.
 
 **P0/P1 register:**
+
 - **P0-1** Ferry 18 §4 is internally inconsistent: dashing = over/under makes "Artin word ⊕ dashing" double-count the sign bit, and forget-dashing then cannot land on the braid.
 - **P0-2** "Retains every crossing's sign, forgetting only order" is not a braid invariant (H₁(Bₙ) = ℤ); the object exists only at word level, which undefines the braid→adinkra direction of the mutual shadow.
 - **P0-3** Generic forget-order images violate the dashing constraint (2¹⁵ of 2³² on N = 4); the restriction class is the Eulerian-serialization family, and that restriction is the theorem.

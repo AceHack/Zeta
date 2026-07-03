@@ -27,6 +27,7 @@ This PR preserves the discussion archive for merged PR #4714.
 This PR adds a preserved discussion archive for merged PR #4714 under `docs/pr-discussions/`, capturing the PR metadata, description, and bot comments for historical reference.
 
 **Changes:**
+
 - Add a new PR discussion archive markdown file for PR #4714.
 - Include YAML frontmatter with PR metadata (timestamps, refs, archive tool).
 - Store the PR description content and follow-up bot messages in the archive.

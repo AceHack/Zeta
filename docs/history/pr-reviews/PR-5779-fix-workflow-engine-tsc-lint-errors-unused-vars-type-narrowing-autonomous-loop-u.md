@@ -30,6 +30,7 @@
 Autonomous-loop tick caught BLOCKED gate on in-flight PRs (#5774-#5778). 6 tsc errors across 4 files in workflow-engine/. Fixed; tsc clean; 45 tests pass.
 
 ## Fixes
+
 - `composed-lifetime.test.ts` (TS6133 ×2): added expect() on type-check bindings
 - `consensus.test.ts` (TS18046 ×2): explicit <Hypothesis> type-param + typed callback
 - `consensus.ts` (TS6133 ×1): AgreementMetrics<T> _typeHint type-anchor field

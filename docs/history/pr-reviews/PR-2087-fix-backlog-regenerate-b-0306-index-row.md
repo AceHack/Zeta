@@ -28,14 +28,17 @@
 ## Description
 
 ## What
+
 - Follow up on #2086, which closed the 081KR2E4K0008QG0R0007CFSZ7 row but merged with `docs/BACKLOG.md` still unchecked.
 - Regenerate the backlog index so 081KR2E4K0008QG0R0007CFSZ7 is marked closed in the generated index.
 
 ## Verification
+
 - `bun tools/backlog/generate-index.ts --check`
 - `git diff --check`
 
 ## Notes
+
 - Root checkout was not edited; this was built in `/Users/acehack/.codex/worktrees/pr2086-index-fix`.
 - This is disjoint from #2085, which owns the extractor correctness follow-up.
 

@@ -36,6 +36,7 @@
 ## Design
 
 The honor-system license text:
+
 - Keeps repos **public** — glass-halo preserved, alignment-auditable, indexable
 - **Asks** (not commands) for no competitive forking — honor-system, non-enforceable
 - Is **substrate-honest** about non-enforceability (razor-discipline: no claim of power we don't have)

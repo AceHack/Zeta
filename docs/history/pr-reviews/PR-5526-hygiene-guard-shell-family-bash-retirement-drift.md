@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - extend bash-retirement inventory enumeration from `.sh` only to shell-family globs: `.sh`, `.bash`, `.zsh`, `.ksh`, `.command`
 - add a temp-repo test proving shell-family files are enumerated while `tools/lean4/` vendor scripts remain excluded
 - update the TypeScript/Bun migration resume to match the widened guard surface
 
 ## Checks
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun tools/hygiene/check-bash-retirement-inventory.ts --enforce`
 - `git diff --check`

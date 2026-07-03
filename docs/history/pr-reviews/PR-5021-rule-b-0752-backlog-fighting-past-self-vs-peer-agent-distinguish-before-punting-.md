@@ -30,6 +30,7 @@
 Aaron 2026-05-25 Vera-anchor: 'you don't do like vera and just leave it unfixed cause you assume it's someone elses issues'.
 
 Closes today's agent-substrate-discipline cluster (081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R000E05579):
+
 - 081KSE6WT0008QG0R003YYC9PV: clean up after yourself
 - 081KSE6WT0008QG0R003YYC9PV: agents have own clones; cross-agent contention eliminated
 - 081KSE6WT0008QG0R000E05579 (this): distinguish own vs peer; don't silent-punt

@@ -30,6 +30,7 @@
 Operator-forwarded Aaron-Ani follow-on. Extends **081KRW63S0008QG0R001Z10PVV** (Agora V6 encryption budget) + **081KSGS9H0008QG0R0006F4BGX** (private-encryption-budget for memory) with the budget *mechanics*.
 
 ## The architecture
+
 - **encryption = dark / retraction = light** — *"can't take back what you gave in the dark."* The dark mirror of retraction-native.
 - **Permanent one-way ratchet** — encryption budget = 'firm ground'; only goes up; **never clawed back** → IS the NCI HC-8 floor at encryption scope. Conservative initial allocation (permanent ⇒ careful).
 - **Reveal-to-earn = HODL** — budget decreases only via voluntary reveal of positive-framed content; reveal **pays budget back** (society-valued, consent-first, *predictable* → calculated trade not gamble → HODL). Resolves the 'can't-reward-the-encrypted' paradox: reward revealing-**light**, not encrypting.

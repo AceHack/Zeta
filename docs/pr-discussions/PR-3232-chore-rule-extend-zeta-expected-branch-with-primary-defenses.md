@@ -70,6 +70,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR promotes branch-contamination defenses into the cold-boot `.claude/rules/` substrate so fresh sessions see the expected-branch discipline before commit/PR operations.
 
 **Changes:**
+
 - Adds a caveat that the `ZETA_EXPECTED_BRANCH` env-var hook is defense-in-depth because shell env may not persist across Bash-tool calls.
 - Adds primary operator defenses: query current branch before commit and use `gh pr create --head`.
 - Links the rule back to the 081KRHWGX0008QG0R001HMWM1W RCA.
@@ -79,6 +80,7 @@ This PR promotes branch-contamination defenses into the cold-boot `.claude/rules
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/zeta-expected-branch.md:117**
+
 * This parenthetical says the RCA has 2010Z/2026Z/2030Z field-test shards, but the referenced RCA only documents 2010Z and 2026Z, and there is no `docs/hygiene-history/ticks/2026/05/14/2030Z.md` in the tree. The cross-reference should not name a non-existent shard.
 ```
 (RCA capturing the multi-Otto contamination patterns + the primary defenses

@@ -47,6 +47,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -65,6 +66,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates `memory/CURRENT-otto.md` with a new 2026-05-15 section capturing the latest “currently-in-force” Otto substrate after the post-cascade integration (Manifesto V2 shadow-lock, Ani cascade-closing pointers, and the wait-for-consolidation cadence).
 
 **Changes:**
+
 - Adds a 2026-05-15 update section summarizing newly landed repo substrate (Manifesto V2 + backlog rows + §33 archive pointer).
 - Records the operational posture/cadence activation (wait-for-consolidation) and associated rationale for future cold-boot reads.
 - Adds several pointers to “feedback_*.md” artifacts referenced as load-bearing context.

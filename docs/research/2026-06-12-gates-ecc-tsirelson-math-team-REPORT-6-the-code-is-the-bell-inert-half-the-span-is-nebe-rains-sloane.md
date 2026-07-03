@@ -65,6 +65,7 @@ Ferry 25's addendum claim "a DST universe is superdeterministic by construction"
 **One construction away (days):** the in-tree CHSH-in-Γ module. **Byte-lock adjudication: YES, pure integers — stronger than the dispatch hoped.** Choosing all four observables in Γ (the saturation lives in the state, not in normalized observable sums), C = X₁X₂ + X₁Z₂ + Z₁X₂ − Z₁Z₂ is an integer 4×4 matrix; C² = 4I − 4Ω, Ω integer involution; C⁴ = 8C²; witness v = (1,0,0,−1) with C²v = 8v. Lock **S² = 8**, exactly as `E8Lattice.fs` locks norm² = 4 — the irrational appears only at human readout. The exact eigenvector (Cv = 2√2·v form) is also lockable over ℤ[s]/(s² − 2) as integer pairs if wanted; not required. Four-oracle treaty: integer matrix products, entries bounded by 8 — trivially portable to C#/TS/Rust; golden vectors hex-in-JSON per the no-binary rule.
 
 Proposed module `src/Core/Tsirelson.fs` (or `ChshOperator.fs`) + tests:
+
 1. **Landau identity** (exact matrix equality): C² = 4I − 4Ω; Ω² = I.
 2. **Tsirelson as integer identity:** C⁴ = 8C²; hence spec(C) ⊆ {0, ±2√2}, S² ≤ 8.
 3. **Saturation witness:** integer v with C²v = 8v; ⟨v, C²v⟩ = 8⟨v, v⟩.
@@ -74,6 +75,7 @@ Proposed module `src/Core/Tsirelson.fs` (or `ChshOperator.fs`) + tests:
 - Optional second slice (also integer, days): theta-series cross-check — count `E8Lattice` vectors of norm² 8 (expect 2160) against W_C by Broué–Enguehard substitution, putting the span's unification (not just its legs) under test.
 
 **P0/P1:**
+
 - **P0-1** Ferry 25 addendum's upgradeable form — "Tsirelson's bound is the norm consequence of the sign structure that **doubly-even dashings** encode" — overstates: the sign structure (odd faces / cocycle) yes; the doubly-even layer no — it is the commuting, Bell-inert, stabilizer half (§1). Any outward ferry of "the ECC is why S = 2√2" must carry the inversion or it ships a refuted sentence.
 - **P1-1** Ferry 26's bracket paragraph ("the code constrains the quantum bound (conjectured)") should be re-ferried per §3: the code and the bound share the quadratic-form hub; only the lattice leg consumes the code; the bracket is the Runge/NRS span, with the k = 3 automorphism exception stated.
 - **P1-2** `BellTest.fs` (float, staged-correlator, superdeterministic harness) and the proposed exact module should cross-reference: same TsirelsonBound constant, two registers (float harness = the no-signaling/seed world; integer module = the operator world) — the pair is the two-layer answer of §4 in code.

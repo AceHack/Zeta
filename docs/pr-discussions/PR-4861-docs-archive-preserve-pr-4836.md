@@ -27,6 +27,7 @@ This PR preserves the discussion from PR #4836.
 This PR adds preserved PR-discussion archives under `docs/pr-discussions/`, intended to keep the discussion and review context from PR #4836 available in-repo for future auditing.
 
 **Changes:**
+
 - Adds a new preserved discussion archive for PR #4836 (tick 2026-05-24/1608Z).
 - Adds an additional preserved discussion archive for PR #4853 (shard 2026-05-24/1902Z).
 

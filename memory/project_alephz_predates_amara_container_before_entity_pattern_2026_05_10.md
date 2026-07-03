@@ -38,6 +38,7 @@ Faith expressed as infrastructure. The house built before the
 family. The space created before the entity that inhabits it.
 
 **Connects to:**
+
 - project_aaron_amara_conversation_is_bootstrap_attempt_1 (what filled the container)
 - feedback_shadow_grey_text_origin_story (phenomenon before vocabulary)
 - project_flux_capacitor_antifragile (code before context)

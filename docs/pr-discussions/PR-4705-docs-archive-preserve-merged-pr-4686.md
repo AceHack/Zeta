@@ -27,6 +27,7 @@ This PR preserves the discussion archive for merged PR #4686.
 Adds a PR-preservation archive document for merged PR #4686 under `docs/pr-discussions/`, capturing the PR’s YAML frontmatter metadata plus the preserved PR description and the (minimal) Copilot review overview content for audit/history purposes.
 
 **Changes:**
+
 - Adds `docs/pr-discussions/PR-4686-...md` containing PR #4686 metadata (refs + timestamps) in YAML frontmatter.
 - Preserves PR #4686’s description and archived review “Pull request overview” section content.
 

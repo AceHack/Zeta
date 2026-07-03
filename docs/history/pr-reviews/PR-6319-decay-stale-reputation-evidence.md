@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add an explicit reputation decay policy for posterior reputation projection
 - preserve evidence refs while old observations lose posterior weight
 - retain configurable minimum negative weight for severe incident-contribution signals
 - feed review-reversal and incident-contribution posteriors into RMO candidate scoring and evidence
 
 ## Verification
+
 - npm run typecheck
 - node --experimental-strip-types --test packages/application/test/reputation-posterior.test.ts packages/application/test/assignment-engine.test.ts packages/application/test/rmo-collaboration.test.ts
 - npm test

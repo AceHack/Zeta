@@ -86,4 +86,5 @@ Parameterized / matrix / theory tests (xUnit `[Theory]`, FsCheck, bun `test.each
 (081KS3X9Y0008QG0R00218150M) + the compiler-speaks-English easing the treaty; the meeting protocol / Dark Hall /
 traveler-frame (the room); Summonable + `tools/peer-call/*.ts` (summoned participants); homoiconic
 holographic same-dimensional summon (projecting into the room); truth-root ≠ git-hash; tests-are-ticks
+
 + the 1000×-keyring-DST single-cell seed; graceful-failure (open branch + investigation tick).

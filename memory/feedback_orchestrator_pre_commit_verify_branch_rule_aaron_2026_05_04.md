@@ -30,6 +30,7 @@ git branch --show-current
 ```
 
 If output is **not** the expected branch:
+
 - STOP. Do not commit.
 - Investigate why the branch is wrong (likely worktree-shared-`.git` HEAD propagation).
 - Fix via `git checkout <expected-branch>` (and verify again).
@@ -46,6 +47,7 @@ The verification step is small (one shell command) but it's the difference betwe
 ## Mechanization candidate (future work)
 
 A pre-commit hook OR a wrapper around `git commit` could automate the check:
+
 - Hook reads expected-branch from environment variable / .git/config / file
 - Aborts commit if `git branch --show-current` doesn't match
 - Outputs a clear error: "Expected branch X, currently on Y. Run `git checkout X` and verify."

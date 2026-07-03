@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add a focused Bun test that pins `hygiene:check-bash-retirement-inventory` to the enforcing inventory guard command
 - preserves the Codex claim file for the bash-retirement wiring guard work
 
 ## Checks
+
 - bun test tools/hygiene/check-bash-retirement-inventory.test.ts
 - bun run hygiene:check-bash-retirement-inventory
 

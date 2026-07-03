@@ -211,6 +211,7 @@ The authorization is operational; the limits are ethical.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a violation of glass-halo by selective reporting**
   — abuse reporting IS substrate-honest discipline at the
   ethical-floor scope

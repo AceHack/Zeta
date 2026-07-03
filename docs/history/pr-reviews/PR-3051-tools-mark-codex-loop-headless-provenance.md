@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - stamp Codex launchd loop heartbeats/state with origin, surface, and run id
 - pass headless provenance env vars into spawned `codex exec`
 - require background PR bodies and commits to carry searchable provenance markers
 - document the foreground-vs-headless distinction and cover it with focused tests
 
 ## Verification
+
 - `bun test tools/codex-loop-tick.test.ts`
 - `bun run typecheck`
 - `bun run lint:markdown .codex/AGENTS.md docs/CODEX-HARNESS-NOTES.md docs/claims/codex-loop-origin-marker-20260513.md`

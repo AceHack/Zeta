@@ -58,6 +58,7 @@ Single file (+ index regen) — docs only; no code in this PR.
 Codifies a repository convention for authoring destructive CLI tools by documenting a three-part “destructive-tool authoring contract” (safety rails, path-scoped agent invocation permission, and a runtime acceptance gate with a per-run nonce) using `flash-usb.ts` as the canonical reference.
 
 **Changes:**
+
 - Adds a new P2 backlog row (081KSE6WT0008QG0R0005XASX2) documenting the destructive-tool contract, including a TypeScript skeleton/template.
 - Regenerates `docs/BACKLOG.md` to include the new backlog entry.
 

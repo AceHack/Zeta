@@ -173,6 +173,7 @@ eliminate the perturbations (can't); it keeps the
 ship level by actively balancing.
 
 Same for factory:
+
 - Perturbations: mistakes, drift, tool changes,
   subagent overclaims, forgetting, scale-change.
 - Tilt: accumulated patterns that go un-countered.
@@ -212,6 +213,7 @@ Three variants, picked per mistake-class:
 
 **Variant A — PREVENT recurrence** (gate at the
 boundary):
+
 - CI lint rules, pre-commit hooks, type-system
   constraints, required-check gates, prompt-level
   subagent constraints, mandatory-review rules.
@@ -226,6 +228,7 @@ boundary):
 
 **Variant B — DETECT and REPAIR on cadence** (sweep
 after the fact):
+
 - Cadenced audits, drift-detection scripts, FACTORY-
   HYGIENE rows that fire every N rounds, standing
   reconciliation tools, the clean-default smell
@@ -242,6 +245,7 @@ after the fact):
   between host + git-native state.
 
 **Variant C — BOTH** (defense-in-depth):
+
 - Layer the two: prevent what you can + detect the
   rest. Preferred for CRITICAL mistake-classes where
   a single recurrence is costly (data loss,

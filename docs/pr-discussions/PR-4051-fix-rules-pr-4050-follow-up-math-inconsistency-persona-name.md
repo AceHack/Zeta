@@ -51,6 +51,7 @@ Both findings were valid. The original section landed via the rule's own forced-
 Updates a factory rule document to correct an internal cycle/artifact count inconsistency from PR #4050 and to remove named attribution from a current-state rules surface.
 
 **Changes:**
+
 - Renames the empirical-anchor section header to avoid named attribution (“Sustained-named-dep…”).
 - Reconciles the pre-empt-at-#5 cycle count by labeling cycles 1–10 and updating the “Pattern observed” summary.
 - Reframes the “12 artifacts” claim into “12 PR-content changes” with a breakdown of which changes were produced by the pre-empt cadence.

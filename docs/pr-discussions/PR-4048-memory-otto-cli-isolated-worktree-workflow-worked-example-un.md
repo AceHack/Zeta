@@ -65,6 +65,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -83,6 +84,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a single memory memo documenting a worked example of the isolated-worktree commit workflow after the `zeta-expected-branch` race-window caveat.
 
 **Changes:**
+
 - Adds a feedback memory file with YAML frontmatter.
 - Documents Steps 0–6 of the isolated-worktree workflow.
 - Captures empirical anchors and related rule links.

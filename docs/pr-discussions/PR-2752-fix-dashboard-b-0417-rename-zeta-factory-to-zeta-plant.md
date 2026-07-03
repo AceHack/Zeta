@@ -27,6 +27,7 @@ Updates terminology from 'Factory' to 'Plant' to reflect the organic, living nat
 Updates the demo dashboard’s visible branding from “Zeta Factory” to “Zeta Plant” to reflect the new terminology used across the project.
 
 **Changes:**
+
 - Renamed the HTML document title to “Zeta Plant Dashboard”.
 - Updated the header branding text from “Zeta Factory” to “Zeta Plant” (including the subtitle).
 

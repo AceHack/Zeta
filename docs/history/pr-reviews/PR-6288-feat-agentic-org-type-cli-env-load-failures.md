@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add typed result-returning env loaders for observe-act prompt-flow and hierarchy JSON inputs
 - route runAgentCliMain through those typed loaders before invoking the observe-act cycle
 - keep the existing throwing helpers for internal call sites while naming malformed JSON env variables in setup feedback
 - record the Phase 2.2 checkpoint and proof boundary in NORTH_STAR_ALIGNMENT_CHECKPOINT.md
 
 ## Verification
+
 - npm run typecheck
 - npm test
 - git diff --check

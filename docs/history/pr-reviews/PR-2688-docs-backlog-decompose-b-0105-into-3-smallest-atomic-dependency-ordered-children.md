@@ -31,6 +31,7 @@
 Decomposed 081KQB8J40008QG0R0021GX1HK (P2 consolidation to ≤3 durable homes) into 3 smallest dependency-ordered atomic child rows (081KRA5AR0008QG0R0031VF018, .2, .3). Re-decomp applied per standing rule (assume mistakes). Bounded to doc authoring + wiring only; no Home content implementation yet.
 
 **Children:**
+
 - 081KRA5AR0008QG0R0031VF018 (S, parallel): Home 1 operational doc
 - 081KRA5AR0008QG0R002JS7GRB (S, parallel): Home 3 memory taxonomy
 - 081KRA5AR0008QG0R001QT2ZXQ (M, depends 1+2): 081KQB8J40008QG0R003XNATZJ update + index + links + supersede
@@ -38,6 +39,7 @@ Decomposed 081KQB8J40008QG0R0021GX1HK (P2 consolidation to ≤3 durable homes) i
 One bounded step in dedicated worktree on pushed claim branch; root checkout untouched (AGENTS.md / autonomous pickup rule).
 
 ## Focused checks (included per rule)
+
 - ls + wc: 3 new rows (34/35/35 LOC) + parent updated (157 LOC)
 - grep durable-home: 4 files hit
 - dep graph: 1/2 parallel, 3 after — correct order
@@ -45,6 +47,7 @@ One bounded step in dedicated worktree on pushed claim branch; root checkout unt
 - No bash; pure TS-preferring doc shape (Rule 0)
 
 ## Test plan
+
 - [x] Child rows exist with frontmatter + scope
 - [x] Deps ordered + composes_with
 - [x] Parent 081KQB8J40008QG0R0021GX1HK marked decomposed + decomposition table

@@ -31,4 +31,5 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR adds a single tick-history shard documenting tick 17 of an autonomous session, which shipped a bundled pre-push hygiene helper (`check-shard-before-push.ts`) via PR #3716. The shard fits the established `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` archival pattern.
 
 **Changes:**
+
 - New tick-history shard at `docs/hygiene-history/ticks/2026/05/16/0344Z.md` recording landed PRs (#3711, #3709, #3710), the new helper, verification table, and next-tick candidates.

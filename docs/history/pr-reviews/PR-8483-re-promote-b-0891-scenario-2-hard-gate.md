@@ -31,6 +31,7 @@
 Scenario 2 green on main (run 27602908527): phase-2 UEFI disk boot reached `node-071392 login:` after #8478 initrd virtio fix. Removes `continue-on-error: true` from the QEMU full-install step.
 
 ## Test plan
+
 - [x] Prior run 27602908527 scenario 2 passed
 - [ ] Next push build-iso fails job if scenario 2 regresses
 

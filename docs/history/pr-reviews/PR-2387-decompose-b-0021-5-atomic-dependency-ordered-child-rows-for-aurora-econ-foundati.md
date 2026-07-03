@@ -42,6 +42,7 @@ Decomposes 081KQ0YZ80008QG0R0026WN385 (P2, L-effort) — Aurora world-modeling e
 | 081KR7JY10008QG0R003TK4ZA7 | P2 | Aurora econ-primitive identification + ADR (investigate-don't-accept final synthesis, Otto-322/331) |
 
 **Key design decisions:**
+
 - 081KR7JY10008QG0R001SG89MX defines evaluation criteria *independently* of any school — prevents the failure mode where a "rigorous investigation" pre-assumes the conclusion by using the favored school's framing
 - 081KR7JY10008QG0R0038QNJP0 (weakness audit) runs after 081KR7JY10008QG0R001RR02BP (strengths) so both feed 081KR7JY10008QG0R0032QYPW5 as a paired, balanced assessment
 - No row makes a school commitment; only 081KR7JY10008QG0R003TK4ZA7 synthesizes
@@ -49,6 +50,7 @@ Decomposes 081KQ0YZ80008QG0R0026WN385 (P2, L-effort) — Aurora world-modeling e
 - Parent's preliminary sketch section (added by prior worker 2026-05-09) replaced by canonical child table with dependency graph
 
 **Focused checks:**
+
 - `dotnet build -c Release` → `0 Warning(s)  0 Error(s)` ✓
 - No bash files added (Rule 0) ✓
 - All new files in `docs/backlog/P2/` and `docs/backlog/P3/` ✓

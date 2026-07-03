@@ -30,6 +30,7 @@
 Aaron: "build the finalizer framework (shadow*)" + "need a temperature folder, Max agrees."
 
 `vocab/Finalizer.fs` (isolated project; **0 warnings / 0 errors**; interfaces + currying, no classes). The prod=test engine, minimal + real:
+
 - **TickResult** — metrics the finalizer reads (DeltaU = uncertainty-Δ; Temperature [0,1]; Bounded; Merged).
 - **FinalizerAction** — ScaleUp/ScaleDown (self-scale by temperature), Hold, Quarantine, **ReKick** (merged → next wave; the recursion edge), Stop.
 - **IFinalizer** — choosable per test.

@@ -39,6 +39,7 @@ the proof expert or formal analysis expert persona or something." Verified subst
 | **Soraya** | **(missing — this row addresses)** |
 
 Currently formal-verification work only fires during:
+
 - xUnit test cycles (`dotnet test` in CI)
 - Explicit Otto subagent dispatch (Otto invokes Soraya via Agent tool)
 
@@ -59,6 +60,7 @@ Mirror the `tools/kiro/kiro-loop-tick.ts` structure:
 ### Phase 2 — per-tick discipline
 
 Each tick:
+
 1. Refresh worktree (`git fetch` + reset to current main)
 2. Read `docs/research/verification-registry.md` for current job list
 3. Pick ONE job by round-robin priority (oldest-last-check first; or drift-flagged first)
@@ -68,7 +70,9 @@ Each tick:
    - Z3 law → `dotnet test --filter "FullyQualifiedName~<test-name>"` (Z3 substrate)
    - Alloy spec → `tools/formal-verification/run-alloy.ts <spec>`
 5. Publish outcome via bus envelope: `claim.ts publish --from soraya --topic "formal-verification-result" 
+
 --body '{"job":"<name>","verifier":"<tla|lean|z3|alloy>","result":"<pass|fail|skip>","duration_ms":N,"sha":"<git-sha>"}'`
+
 6. Update `docs/research/verification-registry.md` with last-check timestamp + result (separate PR? or in-memory state only?)
 
 ### Phase 3 — subscriber wiring
@@ -92,17 +96,21 @@ Recommendation: latter (Otto-subagent-tagged). Less surface-area change; preserv
 ## Acceptance
 
 ### Phase 1
+
 - `tools/soraya/soraya-loop-tick.ts` lands following kiro-loop-tick.ts template
 - Launchd plist + install script (mirror `tools/kiro/install-kiro-loop-tick.plist` pattern if it exists)
 
 ### Phase 2
+
 - One full per-tick cycle empirically runs against an existing TLA+ spec (e.g., `tools/tla/specs/SmokeCheck.tla`)
 - Outcome published via bus envelope; verified by inspecting `/tmp/zeta-bus/` after tick
 
 ### Phase 3
+
 - Subscriber reacts to one formal-verification-result envelope (test case sufficient)
 
 ### Phase 4
+
 - Sender-ID decision documented + landed (either `soraya` added or `otto-formal-verification` adopted convention)
 
 ## Composes with rules

@@ -28,6 +28,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 The `--baseline` mode of the audit lets historical findings sit and blocks NEW ones; this PR closes the NEW-findings frontier introduced by the last two PRs. Grandfathered 12 are separate substrate-engineering scope.
 
 ## Test plan
+
 - [x] `bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline` exits 0
 - [x] ls-tree HEAD = 53 (matches origin/main cfba8a64; no canary corruption)
 - [x] branch-show-current guard passed pre-commit
@@ -44,6 +45,7 @@ The `--baseline` mode of the audit lets historical findings sit and blocks NEW o
 This PR fixes broken relative links from tick shards under `docs/hygiene-history/ticks/YYYY/MM/DD/` to files under repo-root `.claude/rules/` by correcting the required directory traversal depth from 5 to 6 `../` segments.
 
 **Changes:**
+
 - Update `.claude/rules/*` relative links in `0608Z.md` to use `../../../../../../` (6 levels) instead of the prior too-shallow depth.
 - Update `.claude/rules/*` relative links in `0803Z.md` to use `../../../../../../` (6 levels) instead of the prior too-shallow depth.
 

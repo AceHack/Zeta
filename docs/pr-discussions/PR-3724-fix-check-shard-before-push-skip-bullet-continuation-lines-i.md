@@ -33,5 +33,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Fixes a false-positive in the MD032 helper scan: bullet-continuation lines (leading whitespace) were being treated as paragraphs preceding a list, triggering spurious findings. Adds an `isContinuationLine` predicate and skips when the previous line is a continuation.
 
 **Changes:**
+
 - Add `isContinuationLine(line)` helper detecting leading whitespace.
 - Skip MD032 trigger when previous line is a continuation line.

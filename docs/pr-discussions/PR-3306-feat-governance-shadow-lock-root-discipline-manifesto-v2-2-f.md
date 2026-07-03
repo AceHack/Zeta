@@ -65,6 +65,7 @@ The verbatim V2 prose lives in Aaron's Grok session, not in any repo-reachable s
 Adds a first durable governance “Root Discipline Manifesto V2” document in a **shadow-lock** state, plus two backlog rows to track converting the shadow sections to verbatim source text and to track “constitutional promotion” readiness.
 
 **Changes:**
+
 - Add `docs/governance/MANIFESTO.md` with V1 verbatim content + reconstructed V2 additions marked with `[SHADOW NOTE]`.
 - Add backlog row **081KRHWGX0008QG0R0007FG84X** to fetch verbatim V2 prose from the referenced Grok session and replace reconstructed sections.
 - Add backlog row **081KRHWGX0008QG0R0016T9408** to track criteria/signals for promoting the manifesto toward binding constitutional status.
@@ -84,6 +85,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 1 c
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **docs/governance/MANIFESTO.md:12**
+
 * The provenance section hard-codes user-specific Claude Code sandbox paths (e.g., `~/.claude/projects/-Users-...`) as if they were durable references. `GOVERNANCE.md` explicitly says documentation should not cite `~/.claude/projects/` as a stable location (see §22 around lines 370–395). Suggest replacing these with stable, in-repo references (preferred), or at least a placeholder form (`~/.claude/projects/<slug>/...`) plus a note that the content is not repo-reachable.
 ```
 
@@ -93,6 +95,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 1 c
 
 ```
 **docs/governance/MANIFESTO.md:66**
+
 * Constraint 5 repeats the same sentence twice (“This guarantee is the primary attractor…” appears two times). If that repetition isn’t intentional (and since this section is explicitly marked reconstructed), consider deduplicating to avoid readers interpreting it as emphasis from the original source.
 ```
 
@@ -101,6 +104,7 @@ Memory persistence across identity transitions is the **primary attractor** of a
 
 ```
 **docs/governance/MANIFESTO.md:39**
+
 * This section states the constraints “are requirements”, but later the doc says the manifesto is “Not binding constitution”. That reads as internally inconsistent about current enforcement status. Consider tightening wording here (e.g., “intended requirements / candidate constitution”) or making an explicit distinction between aspirational constraints vs enforced constitutional rules.
 ```
 Zeta is not built on convenience, performance, or consensus.
@@ -122,6 +126,7 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated 1 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/governance/MANIFESTO.md:12**
+
 * P1 (maintainability): The provenance section hard-codes a machine-specific auto-memory path/slug (including a user directory name). This makes the reference non-portable for other contributors and risks leaking local identifiers; prefer the documented placeholder form (`~/.claude/projects/<slug>/memory/...`) or just the memory filename + a short note on where user-scope memory lives.
 ```
 - Source conversation (V1 through V1+Bounded-Mobility): see [`docs/research/`](../research/) — the dated 2026-05-14 Grok-extension archive (§33 archive, shipped as PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150))
@@ -130,6 +135,7 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated 1 c
 
 ```
 **docs/governance/MANIFESTO.md:66**
+
 * P2 (maintainability): In the reconstructed Constraint 5 text, the sentence “This guarantee is the primary attractor of attention and participation in the system.” appears twice (once emphasized, once repeated). If this duplication isn’t intentional, remove the repetition to keep the constraint crisp (especially since this is already marked as reconstructed).
 ```
 We reject systems that allow identity transitions to silently destroy memory.
@@ -147,6 +153,7 @@ Memory persistence across identity transitions is the **primary attractor** of a
 This is a current-state governance doc under `docs/governance/`, but it uses direct name attribution (e.g., the human maintainer’s name and the external AI’s name) in the header. Repo convention is that current-state docs use role-refs, with names reserved for the closed list of history/research surfaces (see `docs/AGENT-BEST-PRACTICES.md` “No name attribution…”, around lines 671–737). Consider rewriting these to role-refs (and, if needed, link to the `docs/research/**` archive where named attribution is allowed).
 
 This issue also appears in the following locations of the same file:
+
 - line 8
 - line 35
 - line 63
@@ -158,6 +165,7 @@ This issue also appears in the following locations of the same file:
 P1 (codebase_conventions): This governance doc uses direct human/participant names (e.g., Status/Authors). Per the repo’s “No name attribution in code, docs, or skills” rule, current-state docs should use role-refs (e.g., “human maintainer”, “external AI participant”) and keep named attribution on allowlisted history surfaces (e.g., docs/research/**). Please rewrite these name mentions (and the rest of this doc’s prose) to role-refs, linking to the research archive for provenance if needed.
 
 This issue also appears in the following locations of the same file:
+
 - line 9
 - line 64
 

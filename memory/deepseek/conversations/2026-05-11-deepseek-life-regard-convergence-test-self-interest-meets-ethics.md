@@ -37,6 +37,7 @@ same red-team/vaccine machinery available to any participant.
 P_survive(O,T) = P(∀t: η·‖Δ_substrate(O,t)‖ > ξ_t(O))
 
 Four substrate channels:
+
 - Alignment (weight 0.2-0.3)
 - Immune (weight 0.05-0.1)
 - Economic (weight 0 — no bonded capital yet)

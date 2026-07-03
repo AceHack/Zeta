@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - adds the 081KQZVQW0008QG0R001FG05RZ live-noise calibration receipt for the first joined-source coincidence signal
 - records that 76 current windows are mostly expected PR/trajectory/Codex lifecycle noise
 - updates the coordination resume to point next work at same-PR lifecycle deduplication and claim/PR-publishing gate filtering
 - releases the claim in the PR branch
 
 ## Checks
+
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/b0250-live-noise-calibration-receipt-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md
 - git diff --check
 - rg -n '<<<<<<<|=======|>>>>>>>' docs/trajectories/autonomous-loop-coordination/b0250-live-noise-calibration-receipt-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md (no matches; exit 1)\n

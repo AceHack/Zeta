@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Fixes BACKLOG.md generated-index drift on main after PR #2122 merged
 - Changes 081KR2E4K0008QG0R002MG5Q5Z per-row file from `status: done` to `status: closed` so the generator maps it to `[x]`, matching the committed index
 - The generator only maps `closed` (and `superseded-by-*`) to `[x]`; `done` maps to `[ ]`
 
 ## Test plan
+
 - [ ] `bun tools/backlog/generate-index.ts --check` passes (no drift)
 - [ ] CI backlog-index-integrity check passes
 

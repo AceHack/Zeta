@@ -37,6 +37,7 @@ Authoring this memory file triggered git ref-lock contention with peer Otto-CLI 
 Second counter-with-escalation forced #6 of the session per [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md). Borrow-on-existing pattern used (`git switch -c <new> origin/main`) per [`.claude/rules/claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md).
 
 ## Test plan
+
 - [ ] CI green (docs-only PR)
 - [ ] Broken-commit canary clear (tree count vs origin/main)
 
@@ -51,6 +52,7 @@ Second counter-with-escalation forced #6 of the session per [`.claude/rules/hold
 Adds a single new feedback memory file under `memory/` that documents an empirical rate-limit trace from an Otto-CLI session, validating the operational-tier discipline and shared-token contention pattern.
 
 **Changes:**
+
 - New memory file capturing rate-limit tier traversal observations (Normal → Cost-aware → Extreme → Normal via reset).
 - Includes empirical trace table, observations, and cross-references to related `.claude/rules/` files.
 
@@ -68,6 +70,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

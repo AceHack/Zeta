@@ -36,6 +36,7 @@
 ## What's in this PR
 
 **`src/Core/CayleyDickson.fs`** (+161 LOC):
+
 - `IAlgebra<'A>` — dictionary interface (Zero / Add / Negate / Mul / Conj); chosen over F# SRTPs so the structural lift `IAlgebra<'A> → IAlgebra<Doubled<'A>>` is directly expressible
 - `Doubled<'A>` — record type with Real + Imag fields
 - `Doubled.algebra` — the Cayley-Dickson construction itself (one function, ~20 lines)
@@ -44,6 +45,7 @@
 - `ImaginaryStack` module with pre-computed algebra instances at each level
 
 **`tests/Tests.FSharp/Algebra/CayleyDickson.Tests.fs`** (+172 LOC, 12 tests):
+
 - Complex: i² = −1; addition + multiplication commutative; conjugation flips imaginary sign
 - Quaternion: multiplication LOSES commutativity (i·j ≠ j·i — the classical loss point); addition stays commutative; multiplication still associative
 - Octonion: addition stays commutative; multiplication LOSES associativity (exhibited via specific triple)

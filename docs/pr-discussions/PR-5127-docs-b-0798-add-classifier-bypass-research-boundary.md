@@ -42,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a durable, non-operational research-boundary document for 081KSBMG30008QG0R00201X7EJ/081KSGS9H0008QG0R00383T79V and wires it into the backlog rows so future work has explicit allowed/forbidden evidence classes and stop conditions.
 
 **Changes:**
+
 - Add `docs/security/081KSBMG30008QG0R00201X7EJ-classifier-bypass-research-boundary.md` defining the standing constraint, evidence class boundaries, stop conditions, reporting/dependency rules, and closure gate.
 - Update 081KSGS9H0008QG0R00383T79V to compose with the new boundary doc and mark acceptance items complete with an output summary.
 - Update 081KSBMG30008QG0R00201X7EJ to link to the active 081KSGS9H0008QG0R00383T79V boundary location.

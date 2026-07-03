@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a 081KQX9B50008QG0R0026BG44J local/remote cluster replay receipt from a fresh clone
 - update the autonomous-loop coordination RESUME pointer to the next child packet
 - release the temporary git-native claim file in the same branch history
 
 ## Proof
+
 - git diff --check
 - /Users/acehack/.bun/bin/bun x markdownlint-cli2 docs/trajectories/autonomous-loop-coordination/local-remote-cluster-replay-receipt-2026-05-29.md docs/trajectories/autonomous-loop-coordination/RESUME.md docs/claims/codex-loop-b0211-cluster-replay-receipt-20260529.md
 - /Users/acehack/.bun/bin/bun x markdownlint-cli2 docs/trajectories/autonomous-loop-coordination/local-remote-cluster-replay-receipt-2026-05-29.md docs/trajectories/autonomous-loop-coordination/RESUME.md

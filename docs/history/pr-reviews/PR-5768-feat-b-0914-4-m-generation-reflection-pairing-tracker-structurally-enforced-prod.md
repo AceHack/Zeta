@@ -32,6 +32,7 @@
 **M** in Aaron's *'S M L all please in that order lol'* sequence. Structurally enforces producer-verifier pairing Kestrel named in 15th-ferry §33.6 mouth-ears-threads as workflow engine substrate.
 
 **Tournament loop NOW STRUCTURALLY COMPLETE** (modulo LLM-call substrate):
+
 1. Generate hypotheses (LLM)
 2. `recordEmission(state, emission)` (pairing)
 3. Verifier: `recordVerification(state, verification)` (pairing)

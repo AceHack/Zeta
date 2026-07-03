@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add a scheduler-facing `FusionSnapshot`/`Forecast` surface for Bayesian quantum fusion
 - price Reticulum observable-delta wire bytes into each Vision future branch
 - carry Reticulum source/sequence metadata in `ReticulumFuture` while keeping exterior DBSP fusion as a G-set view
 - add tests proving attention changes boarding order without changing arithmetic truth or leaking retracted interior churn
 
 ## Validation
+
 - `dotnet test tests/Bayesian.Tests/Bayesian.Tests.fsproj -c Release -m:1 /p:UseSharedCompilation=false /p:Optimize=false`
 - `dotnet format --verify-no-changes`
 - `dotnet build -c Release -m:1 /p:UseSharedCompilation=false /p:Optimize=false`

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Move the text-carried ANSI color round-trip module from `tools/ansi` into `src/Core.TypeScript/ansi`.
 - Update the CLI/README paths to the new source-owned location.
 - Refactor the parser into smaller source-lint-clean helpers while preserving the existing observable round-trip contract.
 
 ## Verification
+
 - `bun test src/Core.TypeScript/ansi/color-markup.test.ts`
 - `mise exec -- ./node_modules/.bin/eslint src/Core.TypeScript/ansi`
 - `mise exec -- ./node_modules/.bin/prettier --check src/Core.TypeScript/ansi`

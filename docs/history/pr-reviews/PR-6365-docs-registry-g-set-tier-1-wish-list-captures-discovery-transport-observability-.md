@@ -32,6 +32,7 @@ Two things, both maintainer-directed this session.
 **G-Set → Tier-1.** C# #6363 merged, so G-Set is genuinely 4/4 — promoted from the in-progress table to the Tier-1/2 stable base (next to ZetaId/Observe/TriBoolean). Bag updated to TS-reference-in-flight (#6364).
 
 **Wish-list captures** ("so we don't forget what we want" — all ⬜ wished, additive):
+
 - **Discovery / transport** (decentralized): Nostr · DHT · IPFS · Reticulum-over-IP · Reticulum-over-mesh · 802.11ah HaLow — multi-channel by design; xref'd to existing backlog (Reticulum 081KS3X9Y0008QG0R002MZF3A7/081KSE6WT0008QG0R003C9KGQE/081KSE6WT0008QG0R003WMG4XV; Green Lantern + HaLow 081KQZVQW0008QG0R00348SHDZ/081KR2E4K0008QG0R001SWEPNV/081KR2E4K0008QG0R003MJ4JK0).
 - **Observability**: structured logging · OTel/metrics · benchmarking — modeled on .NET `System.Diagnostics.Metrics` (`Meter`-anchored, tagged). The nice composition: `Counter<T>`≈Bag-fold, `UpDownCounter<T>`≈Z-set/PN-Counter-fold, `Histogram<T>`≈Bag-over-buckets — instruments as **folds over the algebra ladder**, which is exactly the database-design ADR's "metrics = Bag-fold view of the event log."
 - **Test framework**: cross-lang assert/property/golden-vector harness.

@@ -68,6 +68,7 @@ produced PR #5505 + #5507:
 This PR adds an always-on Claude rule documenting a cross-language “monad-propagation” substrate pattern for uniform feedback/error propagation across languages and SQL recursive CTEs.
 
 **Changes:**
+
 - Adds a new `.claude/rules/` rule defining the three-part pattern.
 - Provides cross-language instantiation examples and operational benefits.
 - Connects the rule to related framework rules and substrate concepts.

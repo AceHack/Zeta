@@ -125,6 +125,7 @@ operating against this limit.
 ### Real HKT = first-class M<'T>
 
 Real HKT means:
+
 - `M<'T>` as a parameterized constructor that can be
   abstracted over (not just unified at use)
 - Type classes / traits over higher-kinded constructors
@@ -132,6 +133,7 @@ Real HKT means:
 - Composable HKT (HKT-of-HKT)
 
 This composes with:
+
 - PR #2840 (bootstream + F# anchor + dotnet build sanity-check)
 - PR #2832 (civ-sim Pauli-exclusion-for-agenda HKT encoding)
 - PR #2815 (HKT error classes — universal/domain refinement)
@@ -155,6 +157,7 @@ Real-HKT-over-Clifford means:
 ### AI safety motivation
 
 The fork's purpose is AI safety. Composes with:
+
 - PR #2892 (KSK Kinetic Safeguard Kernel — typed safety for
   AI-physical-actuator control)
 - PR #2898 (non-glass-halo encryption — post-quantum lattice)

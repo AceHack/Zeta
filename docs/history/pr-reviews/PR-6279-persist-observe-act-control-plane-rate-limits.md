@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add Cockroach migration `0024_agentic_org_control_plane_rate_limits` with typed scope/kind constraints
 - add durable control-plane rate-limit upsert/list methods and exports
 - wire production agent CLI to load active Cockroach rate limits at the act-time authorizer boundary
 - extend the Phase 2.8 KIND proof to upsert/read a durable rate-limit row before enforcement
 
 ## Verification
+
 - `node --experimental-strip-types --test packages/state-cockroach/test/cockroach-schema.test.ts packages/state-cockroach/test/cockroach-control-plane-state-store.test.ts apps/agent-cli/test/agent-cli-main.test.ts packages/application/test/control-plane-guard.test.ts` => 65/65 pass
 - `npm run typecheck`
 - `npm test` => 1198 tests, 1191 pass, 0 fail, 7 skipped
@@ -41,6 +43,7 @@
 - KIND proof: `COCKROACH_DATABASE_URL=postgresql://root@localhost:26263/defaultdb?sslmode=disable node --experimental-strip-types deploy/run-control-plane-secret-scopes.ts` => `PROOF: PASS` for `org-control-plane-secrets-11731bb7` with durable `activeRateLimitIds: [rate-limit-provider-11731bb7]`
 
 ## Review caveat
+
 - Attempted to spawn a required subagent review for this checkpoint, but the thread is currently at the subagent limit (`collab spawn failed: agent thread limit reached`). This PR should receive a subagent review before merge.
 
 ## Outcome

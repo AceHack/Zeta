@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add an executable Phase 2 production readiness gate over the eight CA readiness properties
 - compose the aggregate gate with pilot readiness so launch blockers and backlog are typed
 - update the Phase 2 CA from design text to implemented-gated status after the pilot-readiness checkpoint
 
 ## Verification
+
 - node --experimental-strip-types --test packages/application/test/phase-2-production-readiness.test.ts packages/application/test/pilot-readiness.test.ts
 - npm run typecheck
 - npm test

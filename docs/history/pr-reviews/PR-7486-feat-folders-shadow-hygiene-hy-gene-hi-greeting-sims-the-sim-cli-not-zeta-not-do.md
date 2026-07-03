@@ -30,6 +30,7 @@
 feat(folders)+shadow: hygiene/ = hy+gene + hi/ greeting + sims/ (the `sim` CLI — not zeta, not dotnet)
 
 Aaron's wordplay decomposition + CLI naming (2026-06-10):
+
 - hygiene/  — substrate-cleanliness home (the *why*); points to tools/hygiene (the *how*,
               enforced by gate). "hygiene = hy + gene."
 - gene/     — the generative/lineage/seed half: the 128-bit common-cause seed as Zeta's gene

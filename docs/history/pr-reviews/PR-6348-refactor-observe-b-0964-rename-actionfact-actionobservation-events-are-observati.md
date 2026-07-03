@@ -40,6 +40,7 @@ An event is an **observation** — perspectival, authored by the agent that emit
 The execution-**kind** names (`ActionExecutionStarted/Succeeded/Failed`) stay — they name *what* is observed. The 081KT07NV0008QG0R001CBQ2X2 backlog **filename** keeps `command-vs-fact-event` (stable id); doc-prose terminology rename is separate.
 
 ## Verification
+
 - 122 pass; tsc / eslint (pinned 10.2.1) / prettier all clean.
 - Diff is rename-only (insert/delete imbalance = prettier re-wrapping now-longer lines).
 

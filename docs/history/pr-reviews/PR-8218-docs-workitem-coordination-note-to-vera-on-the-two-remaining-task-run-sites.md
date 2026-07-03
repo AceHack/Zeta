@@ -34,6 +34,7 @@ Vera runs her own loop/clone, so coordination is substrate-mediated. This append
 Re-swept on `main @ 3975ce639`: the two `Task.Run` sites (`Runtime.fs:77` shard fan-out, `SpineAsync.fs:33` worker launch) are now the **only** raw `Task.Run` call sites left in non-test `src/`.
 
 The note carries:
+
 - **Status** — my lane's blocking sync-over-async is done; the throttler now has a **seeded DST replay test** (#8212), so the ferry target is *proven*, not just landed.
 - **A concrete conversion proposal per site** — `Runtime.StepAsync` → `FerryThrottler` keyed by shard index (DoP=1 deterministic / DoP=N prod, with the per-shard no-shared-mutable + `Gather()` ordering caveat called out); the SpineAsync launcher left as her open design call.
 - **Two explicit questions** + my commitment to **not edit either file until she gives the go** (default = hold both).

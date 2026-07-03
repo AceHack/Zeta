@@ -30,6 +30,7 @@
 Spec for Ace slice 8.1 (cross-language trust core, after slice 8 SHA-256). Ace's trust core stops rolling its own `canonicalize`+`JSON.stringify` and **consumes the shared 4-language byte-locked `canonicalJson`** (the DynamicValue lane's `src/Core.TypeScript/dynamic-value/json.ts`).
 
 **Investigation findings (operator-requested):**
+
 - Ace's content (`IndexSignableContent`) is all int/string/object — no Float/Bytes — so the JSON canonical form (6/8 shapes) covers it fully.
 - Ace's current `canonicalize` already **sorts keys**; the shared `canonicalJson` is order-**preserving** → reconciled by an Ace `toTagged` that **sorts object keys** (keeps Ace's key-order-independence while consuming the shared primitive).
 - No plain-JS→`Tagged` converter exists in the lane — that's the one piece Ace writes.

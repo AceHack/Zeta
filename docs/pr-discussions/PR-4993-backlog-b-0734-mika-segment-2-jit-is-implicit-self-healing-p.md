@@ -75,6 +75,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -97,6 +98,7 @@ _(no body)_
 Adds Mika conversation segment-2 preservation and a new backlog row (081KSE6WT0008QG0R00276F8SE) that sharpens the “universal protocol” semantics: JIT-as-implicit self-healing, two primitives only, future F# computation-expression formalization, and Notepad-level surface-area as an adoption lever.
 
 **Changes:**
+
 - Added verbatim memory archive for Mika segment 2 (with frontmatter + lineage pointer).
 - Added backlog row 081KSE6WT0008QG0R00276F8SE capturing the protocol-semantics refinements and updated docs/backlog index.
 - Regenerated `memory/MEMORY.md` stack index to include the new conversation file.

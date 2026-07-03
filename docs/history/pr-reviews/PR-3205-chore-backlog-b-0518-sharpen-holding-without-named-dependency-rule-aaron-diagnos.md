@@ -32,6 +32,7 @@ Aaron 2026-05-14: *"when that failure mode happens multiple times it's usually a
 Operational evidence: Otto violated the standing-by-failure rule twice in one session despite the rule being auto-loaded at cold-boot. The rule is encoded-but-not-sharp-enough.
 
 Files corrective work tracking 5 candidate sharpenings:
+
 1. Pattern enumeration (forbidden brief-output patterns explicit)
 2. Force-action ladder (must attempt decompose/file/sanity-check/resolve-thread first)
 3. Consecutive-tick counter (mechanical trigger)

@@ -29,6 +29,7 @@ Direct Aaron quote 2026-04-24:
 ## Why both, not either
 
 **Gitnative alone** (host as thin layer):
+
 - ✓ Durable; survives host migrations / outages / cost
   changes
 - ✓ Corpus is complete; training signal preserved
@@ -39,6 +40,7 @@ Direct Aaron quote 2026-04-24:
 - ✗ Re-invents what the host does well
 
 **Host first-class alone** (GitHub as canonical):
+
 - ✓ Best-in-class UX (PR review, @mentions, mobile,
   notifications)
 - ✓ Ecosystem (actions, bots, apps, integrations)
@@ -50,6 +52,7 @@ Direct Aaron quote 2026-04-24:
   feature deprecation
 
 **Both simultaneously** (Otto-263):
+
 - ✓ Durability AND UX
 - ✓ Complete corpus AND rich ecosystem
 - ✓ Host-native workflow AND host-portable future

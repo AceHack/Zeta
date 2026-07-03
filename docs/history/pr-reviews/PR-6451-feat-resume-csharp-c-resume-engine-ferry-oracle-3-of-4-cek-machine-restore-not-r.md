@@ -58,6 +58,7 @@ While building this I discovered the four-oracle "byte-locked" claim does **not*
 This is fine for the **slice-1 contract** (the golden's own description = same suspension sequence + final value + per-oracle round-trip, which all oracles meet; cross-machine byte-identity is a stated slice-2 goal in `resume.ts`'s header). But it means a TS-persisted state would not restore on F# for multi-frame konts.
 
 **This C# ferry matches the TS reference** (top-last), so C# == TS by construction. Recommended follow-up (not in this PR — it's a cross-oracle contract decision + touches the in-CI #6448):
+
 1. Align the F# `kont` order to the TS reference (serialize/parse reverse the cons-list).
 2. Add an `expectedStateAtSuspension` field to `resume-golden.json` so every oracle asserts its `SerializeState` bytes equal the TS-authored expected — the assertion that would have caught this.
 

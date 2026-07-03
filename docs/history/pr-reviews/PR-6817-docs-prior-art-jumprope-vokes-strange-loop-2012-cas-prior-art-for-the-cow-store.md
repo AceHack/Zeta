@@ -36,6 +36,7 @@
 Research doc + **PRIOR-ART-LIST** entries (Jumprope/Vokes, Skip Lists/Pugh) + backlog **`081KTH1Z6G7`** (P3). Docs only.
 
 ## Sources
+
 - [Data Structures: The Code That Isn't There (InfoQ)](https://www.infoq.com/presentations/Data-Structures/)
 - [Strange Loop 2012 abstract](https://thestrangeloop.com/2012/data-structures-the-code-that-isnt-there.html)
 

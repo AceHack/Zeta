@@ -77,6 +77,7 @@ Stability is velocity amortized.
 The amortization framing is cleaner because it names the *mechanism*: stability is investment that pays out over future operations. The investment looks like cost at construction-time; the return looks like reduced cost-per-future-change. That's amortization.
 
 This composes with:
+
 - The factory's whole stability investment pattern (alignment substrate, retraction-native, kill switches, BP-11, shared vocabulary) — every one of these is "stability amortized."
 - Aaron's "stability brings velocity" framing — Amara's amortization terminology makes the mechanism explicit.
 
@@ -206,6 +207,7 @@ The "(often called 'classical/quantum' internally)" preserves the Mirror connect
 ### Cross-AI convergence
 
 Both Amara and Gemini Pro independently:
+
 - Validated the synthesis
 - Identified the same temporal-window mechanism (short vs long horizon)
 - Refined the framing for external Beacon-safety

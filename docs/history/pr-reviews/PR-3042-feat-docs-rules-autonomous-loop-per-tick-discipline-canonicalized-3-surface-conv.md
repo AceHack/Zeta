@@ -52,6 +52,7 @@ Factors the per-tick autonomous-loop discipline into a single canonical file all
 ## Update protocol
 
 When the per-tick discipline evolves:
+
 1. Land the new rule at `.claude/rules/<name>.md` (CLI picks up via auto-load)
 2. Update `docs/AUTONOMOUS-LOOP-PER-TICK.md` to reference the new rule
 3. Desktop + cloud inherit automatically at next fresh-session cold-boot

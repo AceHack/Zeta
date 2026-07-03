@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add focused renderReport coverage for unsorted retained-shell allowlist output
 - Assert the out-of-order integrity heading and formatted violation line
 - Release the transient claim artifact so the PR final diff is only the test file
 
 ## Checks
+
 - bun test tools/hygiene/check-bash-retirement-inventory.test.ts
 - bun run hygiene:check-bash-retirement-inventory
 

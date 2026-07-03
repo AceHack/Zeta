@@ -149,6 +149,7 @@ The `\` line continuations preserve a single shell command so the `&&`
 chain stays intact through all stages.)
 
 Result:
+
 - 11 files added (1 modified BACKLOG.md + 10 new substrate files)
 - Branch guard passed (✓)
 - Commit landed (10 new files created per git output)

@@ -32,6 +32,7 @@
 Durably checkpoints the Futamura-projection ↔ three-Faces mapping into the `gen-gen-self-hosting-bytelock` RESUME, so it survives a machine crash (capture-the-externalization — chat alone isn't durable).
 
 Adds an explicit table + framing:
+
 - **Face 1** self-dual fixed point (`isSelfDual`) ✅ PROVEN
 - **Face 2** idempotent codespace projector Π²=Π (`project`) ✅ PROVEN
 - **Face 3** `mix(mix,mix)=cogen` reflective fixpoint — `gen(gen)` byte-identical — ⏳ **OPEN (§B), the capstone**

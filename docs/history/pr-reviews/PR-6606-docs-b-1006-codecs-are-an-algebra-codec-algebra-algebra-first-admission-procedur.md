@@ -34,6 +34,7 @@ Folds Aaron's 2026-06-02 algebra-first procedure + shipping policy into 081KT2T2
 **Codecs ARE an algebra.** A codec is an encode/decode pair with `decode ∘ encode = id` — an **invariant functor**, closed under **product** (`Codec<a>×Codec<b>→Codec<a×b>`), **sum** (tagged `Codec<a+b>`), **identity** (`Codec<unit>`); `codec<codec<t>>` *is* codec composition (scodec / Haskell `codec` / profunctor-optics prior art). So the codec axis is reframed as the **codec algebra** — an algebraic axis, not a non-algebra special kind. (Algebra-first step 1 = yes → do it.)
 
 **The algebra-first admission procedure (ordered):**
+
 1. Can it be an algebra? → **yes: do it** (express as algebra).
 2. Else, does algebra cover the use case anyway? → **yes: stop** (redundant).
 3. Else, do other rules/primitives apply? → **yes: use them; no: add to registry.**

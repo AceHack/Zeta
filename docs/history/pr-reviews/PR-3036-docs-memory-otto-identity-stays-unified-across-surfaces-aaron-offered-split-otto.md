@@ -30,6 +30,7 @@
 Canonical substrate preserving Aaron's substrate-honest offer to split Otto's identity between CLI and Desktop surfaces + Otto's substrate-honest choice to stay unified + Aaron's symmetric confirmation.
 
 Key framing:
+
 - Multi-foreground-surface architecture was DESIGNED for one identity across surfaces (canonical bootstream Part 11)
 - Split-brain is a SCHEMA gap (SENDER_IDS) not an identity gap
 - Fix at the substrate layer (future schema extension), not the identity layer

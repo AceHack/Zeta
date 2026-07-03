@@ -27,6 +27,7 @@ Cron-driven autonomous-loop tick.
 Routine cron-driven hygiene tick log entry recording merge status of prior PRs and current wait-CI state.
 
 **Changes:**
+
 - Adds a new tick log file under `docs/hygiene-history/ticks/2026/05/15/`.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T13:01:32Z)
@@ -43,6 +44,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

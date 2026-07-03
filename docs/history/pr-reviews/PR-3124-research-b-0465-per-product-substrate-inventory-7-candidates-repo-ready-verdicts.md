@@ -48,6 +48,7 @@
 ## Prior-art search (per backlog-item-start-gate)
 
 Searched:
+
 - Skill router: no existing "product-substrate-inventory" skill
 - `memory/` grepped for all 7 product terms (ksk, civsim, wellness, american dream, DIO, aurora, dawn)
 - `docs/research/` and `docs/backlog/` grepped for same

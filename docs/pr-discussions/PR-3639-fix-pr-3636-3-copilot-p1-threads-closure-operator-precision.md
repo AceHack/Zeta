@@ -53,6 +53,7 @@ docs/backlog/P2/081KRMEXM0008QG0R002YSPW1X-...md  +1/-1 (last_updated, preemptiv
 This PR resolves three previously-raised P1 review threads by tightening the mathematical phrasing around why a Lawvere–Tierney-style lifting is obstructed (closure-operator failure, not “non-monotonicity within a context”) and by bringing backlog row frontmatter back into schema compliance via `last_updated` bumps.
 
 **Changes:**
+
 - Rewords Step 1.5 text in the research doc and its paired memory note to correctly attribute the obstruction to `A` not being a closure operator (`p ≤ A(p)` not assumed), explicitly distinguishing this from within-context monotonicity (finite-limit preservation) and from observer-context shifts.
 - Bumps `last_updated` on 081KRMEXM0008QG0R003YWZC21 to reflect a prior content edit, per backlog schema.
 - Preemptively bumps `last_updated` on 081KRMEXM0008QG0R002YSPW1X for the same schema-violation class.

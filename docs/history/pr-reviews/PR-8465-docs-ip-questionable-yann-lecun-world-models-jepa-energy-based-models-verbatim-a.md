@@ -30,6 +30,7 @@
 Aaron 2026-06-16: *"add to ip questionable, very relevant."* Third-party YouTube talk transcript (Yann LeCun on world models / JEPA / energy-based inference); Zeta claims no authorship, asserts no license; deletable as a single file. Timestamps dropped, spoken text faithful.
 
 The in-file shadow routing note maps the convergences with Zeta (Mirror register, polemic peeled):
+
 - **world-models in ABSTRACT space, not pixels / digital twins** = our §9g `gist`/traveler-frame
 - **inference by energy minimization** = soft-inference / measure-not-assert
 - **guardrails as objectives optimized on every output ("can't jailbreak")** = the child-safety floor / Aurora viability kernel (#8439, `PermanentHarmHorizon`)

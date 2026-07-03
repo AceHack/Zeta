@@ -31,6 +31,7 @@ Realises the **StatefulSet + volumeClaimTemplates(PVC) → `longhorn` StorageCla
 
 ## What it adds
 `k8s/applications/agent-memory/` (App-of-Apps picks it up; sync-wave 10, after Longhorn -15):
+
 - **StatefulSet** `agent-memory` — each replica gets a **stable identity** (`agent-memory-N`) **and its own Longhorn PVC** via `volumeClaimTemplates`. One durable volume per persona (otto/lior/vera). `replicas: 1` on the single node; bump to scale — each new ordinal auto-provisions its own PVC.
 - **headless Service** — stable per-replica DNS.
 - **namespace** — gatekeeper-exempt so a policy outage can't block the agents' own memory.
@@ -39,6 +40,7 @@ Realises the **StatefulSet + volumeClaimTemplates(PVC) → `longhorn` StorageCla
 A Deployment with a shared PVC can't give per-replica stable storage; `emptyDir`/`hostPath` don't survive reschedule. StatefulSet + `volumeClaimTemplates` → Longhorn is the only combo that gives each agent a durable volume that re-binds across restart/reschedule/node-failure.
 
 ## Relationship to existing memory
+
 - This = the raw **file-memory** substrate (the `memory/` files + `.claude` state, today host-only under systemd).
 - `hindsight` (already in repo) = the **semantic/vector** memory **service**, also Longhorn-backed.
 

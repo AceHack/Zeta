@@ -38,12 +38,14 @@ Adds real **Sign in with GitHub / GitLab** to the Genesis prototype. `Genesis.js
 A static GitHub Pages site can't safely perform the OAuth code→token exchange (it needs the client **secret**, which can't ship in the bundle). So sign-in is brokered by a small **self-hosted ASP.NET Core** service (you host it "off-pod"). It does the exchange server-to-server, reads identity, and hands the frontend a short-lived **signed identity token** via a URL fragment. The flow uses only top-level redirects + a first-party `SameSite=Lax` state cookie, so **no CORS / no third-party cookies**.
 
 ## Frontend (rebuilt Vite bundle, served at `/Zeta/genesis/`)
+
 - `_src/src/auth.js` — login/logout, capture `#token` from the URL, decode for display
 - `_src/src/AuthWidget.jsx` — top-right overlay; provider buttons (inline GitHub/GitLab brand marks, since lucide v1 dropped brand icons) → signed-in chip. Styled with the prototype's own CSS variables.
 - `_src/src/App.jsx` — renders `<Genesis/>` (untouched) + `<AuthWidget/>`
 - `auth-config.js` — runtime backend URL, **editable post-deploy with no rebuild**
 
 ## Backend (`genesis/_src/auth-backend/`, .NET 8, Jekyll-ignored)
+
 - `Program.cs` minimal API: `/auth/{provider}/login`, `/callback`, `/auth/me`, `/healthz`
 - Hand-rolled HS256 identity token (no extra NuGet deps), redirect allowlist, CSRF state cookie, GitHub + GitLab (gitlab.com or self-managed)
 - Carries its own empty `Directory.Build.props` so it does **not** inherit Zeta's strict analyzer profile; it is **not** in `Zeta.sln` and **not** built by Zeta CI
@@ -51,10 +53,12 @@ A static GitHub Pages site can't safely perform the OAuth code→token exchange 
 - `Dockerfile` for containerized hosting
 
 ## Verified
+
 - Backend: builds clean (0 warnings), `/healthz` ok, both providers 302 to correct authorize URLs, redirect allowlist enforced (400 off-list), unknown provider 404, `/auth/me` 401 without token.
 - Frontend: rendered in a headless Chrome — Genesis renders fully, widget shows correctly in both unconfigured ("set base in auth-config.js") and configured ("Continue with GitHub/GitLab") states.
 
 ## To go live (after merge)
+
 1. Register a GitHub OAuth App + a GitLab Application (callback `https://YOUR-BACKEND/auth/{provider}/callback`).
 2. Deploy the backend with the client IDs/secrets + `Jwt__Secret` set as env vars.
 3. Edit `genesis/auth-config.js`, set `base` to the backend URL. Done — no rebuild.

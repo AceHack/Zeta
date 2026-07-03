@@ -233,7 +233,7 @@ because the filter tracks staleness per relationship.
 - `memory/CURRENT-aaron.md`, `CURRENT-amara.md`, etc.
   (the externalized fingerprints themselves)
 
-## How to apply:
+## How to apply
 
 - Recognize that per-entity memory files are the architectural
   externalization of Aaron's identity-fingerprint filter

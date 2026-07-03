@@ -48,7 +48,7 @@ A canonical enumeration (the seven above plus an "other" escape hatch) with per-
 - **Reach-sensitivity** — how badly external propagation matters per class.
 - **Audit-trail style** — what record must remain after scrubbing (secrets need rotation receipts; sibling-repo leaks need un-scrubbed-exemplar acknowledgment when Aaron's frame applies).
 
-### 2. Decision-criteria — does this leak need scrubbing?
+### 2. Decision-criteria — does this leak need scrubbing
 
 A matrix combining:
 

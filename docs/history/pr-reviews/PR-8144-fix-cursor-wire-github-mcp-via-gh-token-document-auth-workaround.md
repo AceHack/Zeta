@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Register the project `github` MCP server in `.cursor/mcp.json` (uses existing `src/Core.TypeScript/cursor/github-mcp.ts`)
 - Document the marketplace GitHub plugin OAuth bug and workaround in `CURSOR.md`
 
 ## Test plan
+
 - [x] `.cursor/mcp.json` points at checked-in launcher script
 - [ ] Cursor reload shows `github` server; `gh auth login` + Docker running → server starts
 - [ ] Disable `plugin-github-github` marketplace plugin to avoid malformed Bearer header errors

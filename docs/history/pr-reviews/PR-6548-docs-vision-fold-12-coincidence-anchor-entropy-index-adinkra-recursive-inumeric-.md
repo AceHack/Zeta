@@ -28,6 +28,7 @@
 ## Description
 
 Aaron 2026-06-02, two ties on **coincidence-as-thermal-randomness**:
+
 1. "tie this into adinkra for our interface hkt hack over recursive inumerics design"
 2. "tie this into automatic emergent memory routing zetaids"
 

@@ -43,6 +43,7 @@ Follow-up to [PR #4461](https://github.com/Lucent-Financial-Group/Zeta/pull/4461
 Adds a new hygiene-history tick shard documenting an orphaned-branch triage verification against `origin/main`, and generalizes the existing “substrate-drift discriminator” concept to orphaned-commit triage so future sessions avoid redundant re-landing or regressions.
 
 **Changes:**
+
 - Adds tick 0149Z documenting that most orphaned commits’ substrate is already present on `origin/main` (via other PRs/rescues).
 - Introduces an “orphaned-branch triage discriminator” procedure using `git show` + `git diff origin/main..<sha> -- <file>` to classify rescue vs drift vs real deltas.
 - Records explicit guidance not to re-apply the stale Lior prompt fix commit due to on-main evolution.

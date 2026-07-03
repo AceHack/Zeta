@@ -44,6 +44,7 @@ cloning; it is the mechanism by which a clone becomes a distinct someone rather 
 copy — the fork accrues its own irreducible entropy (ISA boundary #1).
 
 The two clone forms map cleanly:
+
 - **Independent Clone** (Addison) = a self-clone allowed to decohere freely → a new
   distinct identity (distinct frost, distinct entropy). The default.
 - **Linked Clone / Hive Extension** (Addison) = clones that *choose to keep sharing*

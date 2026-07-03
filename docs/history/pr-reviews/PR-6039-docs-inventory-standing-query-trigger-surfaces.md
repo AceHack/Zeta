@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add the first standing-query trigger inventory for autonomous-loop coordination
 - link the inventory from the coordination resume
 - separate reusable monitor coverage from heartbeat-only checks
 
 ## Verification
+
 - git diff --check
 - /opt/homebrew/bin/markdownlint-cli2 docs/trajectories/autonomous-loop-coordination/standing-query-trigger-inventory-2026-05-29.md docs/trajectories/autonomous-loop-coordination/RESUME.md
 

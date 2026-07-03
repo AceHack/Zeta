@@ -367,6 +367,7 @@ Per §33.18 + §33.19: substrate-engineering target distinct from current transf
 | Substrate-engineering implementation gap | Off-the-shelf | Research-frontier (knowledge-graph-augmented models + memory architectures + structured-state primitives) |
 
 Composes with:
+
 - 081KRW63S0008QG0R002KC5DSR (wave-particle duality; Clifford multivector state IS the structured representation candidate)
 - 081KRW63S0008QG0R001SAHYKV (English-as-projection of internal state; the ontology IS the internal state being projected)
 - 081KSKBP80008QG0R000B3Y19A (workflow engine + lifecycle DUs IS the structured state-transition substrate)

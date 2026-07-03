@@ -56,6 +56,7 @@ Full 35-tick timeline showing the 8 pre-empt cycles, the bus-envelope-validated 
 Adds an empirical success anchor to the autonomous-loop rule for handling sustained named-dependency waits without falling into repeated brief-ack failure mode.
 
 **Changes:**
+
 - Adds a 2026-05-17 session timeline documenting pre-empt-at-#5 cycles.
 - Records related coordination, branch-safety, and polling-rule composition lessons.
 - Clarifies that forced #6 is a failsafe, while successful pre-emption is also valid termination.

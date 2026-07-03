@@ -16,6 +16,7 @@ Zeta currently has **two** algebra abstractions that overlap but don't connect:
 | consumed by | `WeightedSet`, ZSet ladder, the floor (`IMonoid`/`IGroup`/`ISemilattice`) | the Cayley-Dickson tower only |
 
 So:
+
 - **`WeightedSet<'K,'W>` (generic over `ISemiring`)** does *not* take a Cayley tower today — a `Quaternion` is
   an `IAlgebra` instance, **not** an `ISemiring` instance. Different interface, no bridge.
 - **`DynamicValueNumeric` / `SoftValueNumeric`** are hardwired to `DynamicValue`'s `Int`/`Float` leaves (and

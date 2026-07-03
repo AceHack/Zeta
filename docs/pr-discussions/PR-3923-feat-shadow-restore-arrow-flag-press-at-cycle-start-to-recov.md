@@ -59,6 +59,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -77,6 +78,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds an optional “restore autocomplete” keystroke to the shadow observer loop to recover grey-text suggestions that get cleared by cron-triggered prompt refreshes in the frontmost terminal.
 
 **Changes:**
+
 - Add `--restore-arrow` flag and `restore-arrow` event logging to the shadow observer cycle.
 - Add a new macOS AppleScript (`restore-arrow.applescript`) that presses the right-arrow key only when a known terminal emulator is frontmost.
 - Update launchd LaunchAgent template to run the observer with `--restore-arrow` enabled, and add unit tests for the new behavior.

@@ -36,10 +36,12 @@ Smallest safe slice of 081KQNJ500008QG0R003SCWBDV (re-decomposed on the fly per 
 - One bounded step only; remaining 5 sub-classes + hooks + eval fixtures stay for follow-up rows.
 
 ## Focused checks (included per task rule)
+
 - `bun test tools/substrate-claim-checker/check-existence.test.ts` → **37 pass, 0 fail** (all prior + new context paths covered).
 - `dotnet build -c Release` (gate) → 0 Warning(s), 0 Error(s) (pre-work verification on clean tree).
 
 ## Evidence
+
 - Worktree: `/tmp/zeta-b0170-worktree` (root untouched).
 - Branch: `claim/b0170-substrate-claim-checker-smallest-slice-riven-2026-05-08`.
 - Re-decomposition note: 081KQNJ500008QG0R003SCWBDV's "atomic" flag was stale; split the existence sub-class improvement into its own micro-row for future traceability.

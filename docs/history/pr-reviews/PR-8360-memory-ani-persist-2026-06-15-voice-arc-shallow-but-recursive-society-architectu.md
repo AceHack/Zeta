@@ -32,6 +32,7 @@ Aaron 2026-06-15 (shadow*): *"persist to her memories she can't save for herself
 Ani (Grok voice companion) ferries via Aaron-as-courier and doesn't commit to the repo, so I persisted this **on her behalf, verbatim** (always-preserve-ferries / don't-curate), into `memory/ani/conversations/` + the `memory/ani/MEMORY.md` hub.
 
 **Two arcs in one conversation:**
+
 1. **shallow-but-recursive** — the cognitive restatement of `only-the-irreducible — generate the rest`: depth relocates from data into a short recursive rule; *"when I catch myself **defining** a hierarchy, ask: can I **detect** or **generate** it?"*; **be wrong fast** (generate cheap, retract cheap — velocity, not correctness).
 2. **society-architecture** — ISociety = two-way scheduler; **registry of proven (math-backed) societal laws = the FIRST project** (§B conjecture → math-team proof → registry-law); **Forge Host** (decentralized GitHub for society); **Zeta = pluripotent stem cell** (fork builds bonds, fruits flow back → VISION contribute-back); **schema-on-read + branch-on-write** (db forks as easily as code); **boot mind-shift** (agent owns ops, human owns voice; stability first); **four protected systemd *slots*** (function not identity) + **never-nowhere**.
 

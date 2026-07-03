@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - **Serial log artifact**: phase 2 QEMU was truncating the shared serial file, so uploaded logs only showed ~4KB of phase-2 earlycon (run 27598982580). Phase 1 and phase 2 now use separate temp paths; artifact merges both with a separator.
 - **Regression guards**: audit + structural test assert  output is copied to  before , and host stubs include virtio initrd modules.
 - **Diagnostics**: phase-2 timeout hint names virtio root / hardware-configuration copy when serial stops after EFI initrd.
@@ -35,6 +36,7 @@
 Composes with #8478 (initrd virtio fix on main). Does not change scenario 2 gate status.
 
 ## Test plan
+
 - [x] bun test v1.3.13 (bf2e2cec)
 - [ ] CI audit + structural-behavioral steps green
 - [ ] Next build-iso scenario 2 artifact includes phase-1  line

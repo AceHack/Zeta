@@ -47,6 +47,7 @@ Adds the deepest anchor for the 3-scope analysis (biological / intra-AI MoE / mu
 ## What lands (1 file, +47 lines to existing research doc)
 
 Updates `docs/research/2026-05-26-aaron-thousand-brains-hawkins-...`:
+
 - Sub-section 4 added (after sub-section 3 "High-precision fusion is achievable end-state")
 - Bloom-filter properties table (4 rows: bloom-filter property ↔ biological substrate analog)
 - 3-scope analysis table updated showing filter-source + tunability per scope (biological → cultural-shift; intra-AI MoE → re-training; multi-AI substrate → substrate-discipline)

@@ -27,6 +27,7 @@ Preserve discussion for PR #5285
 Adds a PR-discussion preservation artifact for PR #5285 to keep the merged PR’s description/summary available in-repo under `docs/pr-discussions/` (the repo’s archival surface for PR conversations).
 
 **Changes:**
+
 - Added a new `docs/pr-discussions/PR-5285-…md` file containing YAML frontmatter (PR metadata) plus the preserved PR body content.
 
 ## General comments

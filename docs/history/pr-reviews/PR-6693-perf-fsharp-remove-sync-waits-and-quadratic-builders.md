@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - remove sync-over-async from `SpineAsync` by awaiting `WaitToReadAsync` in the background worker instead of blocking on `.Result`
 - make `SoftValue` candidate merging linear-time while preserving first-seen ordering
 - decode schema-registry arrays with cons + reverse instead of repeated list append
 - replace `WatermarkTracker`'s monitor lock with monotone `Interlocked.CompareExchange` publish loops and volatile reads
 
 ## Audit Notes
+
 - I did not add fake async wrappers around currently synchronous storage APIs. `DiskBackingStore` is sync by interface; a real async improvement should be an additive `IAsyncBackingStore` / async-backed spine design rather than `Task.Run` around synchronous file I/O.
 - Remaining source locks are concentrated around intentionally serialized state or deterministic/test harness code; this PR removes the lock that contradicted `WatermarkTracker`'s atomic-publication intent.
 
 ## Validation
+
 - `dotnet build -c Release` — passed, 0 warnings / 0 errors
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release` — passed, 1706 passed / 1 skipped
 - `dotnet test Zeta.sln -c Release` — passed, 2073 passed / 1 skipped

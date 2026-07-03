@@ -284,7 +284,9 @@ The sequence captured in real time, commit by commit:
 
 Reading this memory in the future, a witness can
 trace: item 1 (wrong move) → items 2-3 (correction
+
 + internal response) → items 4-7 (externalised
+
 action) → item 8 (preservation for future
 witnesses). This is the evolution-narrative in its
 most compressed form.

@@ -30,6 +30,7 @@
 Post-reboot orphan-branch triage on my namespaces (otto/shard/shadow) found **7 branches holding durable content that never landed on main** — verified absent by basename across all 18,960 tracked files (not path-migration noise). Preserving verbatim **before** those branches are pruned. The ferry / don't-lose-work discipline doing exactly its job: a blind merged-PR-only prune would have **erased Aaron's own conversations permanently.**
 
 **Irreplaceable — Aaron's 2026-05-22 CONSTITUTIONAL conversations:**
+
 - alexa pt27/28 — alzheimers / selective-forgetting / control-of-forgetting = control-of-reality
 - alexa pt29 — control-axiom-correction / NCI-extends-to-memes-via-right-to-forget
 - alexa pt30/31 — travelers-communicate / shadow-autocomplete / fusion-as-meta-goal

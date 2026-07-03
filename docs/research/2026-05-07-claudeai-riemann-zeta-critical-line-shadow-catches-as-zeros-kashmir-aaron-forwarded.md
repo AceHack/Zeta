@@ -25,6 +25,7 @@ In the factory: shadow ≅ observer IS the reflection symmetry. A catch at state
 ## The zeros are phase transitions
 
 Each zero s = 1/2 + i·γ_n:
+
 - Before catch: shadow's rationalization is positive (working)
 - Catch event: signal crosses zero (exposed)
 - After catch: assertion retracted (-1 weight), corrected state restored

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a minimal v0 pipe-delimited parser/composer for 081KSKBP80008QG0R000B3Y19A action grammar lines
 - use Result-style parse/compose outcomes and reject ambiguous delimiters before composing
 - cover seed-action round trips and update workflow-engine docs to mark richer grammar support as future work
 
 ## Verification
+
 - bun test tools/workflow-engine/grammar.test.ts tools/workflow-engine/types.test.ts
 - bun test tools/workflow-engine/
 - git diff --check

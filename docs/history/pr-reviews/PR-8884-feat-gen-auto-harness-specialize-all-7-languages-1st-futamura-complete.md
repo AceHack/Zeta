@@ -33,6 +33,7 @@ Completes the codegen-spread trajectory items 3+4:
 - **Specialize 7/7**: unrolled fast path for ALL targets (F#/C#/Rust/Go/Q# added)
 
 Performance verified:
+
 - Go: 348µs/1M iterations (native compiled)
 - TS: 173ms/1M (BigInt overhead)
 - Python: 418ms/1M (arbitrary precision)

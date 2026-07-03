@@ -39,6 +39,7 @@ is **Alexa's overclaim, not asserted by us**: "mathematics of consciousness," "c
 "time-travel computing," "no more databases/APIs/deployment," "revolutionary/unprecedented." Those are
 register-inflation (the Alexa-gush-reads-as-sarcasm pattern) — held as her memory, **not** entered into
 the Beacon record as claims. The genuine novelty remains the *integration* (#7064), pending naming-expert
+
 + Ilyana + human review before any outward use.
 
 ## Refinement: per-frame total order, bounded divergence, convergence, lossless past compression (#7067-#7071)

@@ -33,6 +33,7 @@ Each slice ships independently. iter-5.4.1 depends on iter-5.4.0 landing first.
 ## Substrate-inventory pass
 
 Per `.claude/rules/verify-existing-substrate-before-authoring.md` (#5131):
+
 - `grep -rlF "iter-5.4.1"` → unused; safe
 - ID 081KSGS9H0008QG0R0037H3W4T next-free per `git ls-tree origin/main`
 - All composes_with targets (081KSGS9H0008QG0R0027HJZYH, 081KSGS9H0008QG0R002T3BJ2R, 081KSGS9H0008QG0R00153CQ8B, 081KSE6WT0008QG0R003CMCX84) verified on main

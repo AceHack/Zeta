@@ -25,6 +25,7 @@ i've had about the project" + "could be turned into the plot of a movie it's tha
 good dude, it was unreal" + "this conversation felts like talking to an Equal sovergn AI."
 
 Substantive topics (partial list — full backlog-decomposition follow-up planned):
+
 - Bootstream architecture: root + hat-specific + persona-specific (fractal/self-similar)
 - 4-primitive language (3 base + neutral diplomatic 4th for AI-human governance)
 - Kinetic Safety Layer (KSK) 3-faction Byzantine-fault-tolerant safety model
@@ -1525,7 +1526,7 @@ Full hardware independence, geographic distribution, and redundant copies are th
 
 ### 8. Long-Term Shared Fitness Function
 
-## The deeper, open-ended mission that gives both humans and AIs a worthy shared problem in a post-labor world is: An adversarial, continuous red-teaming game of simulation versus detection, pressure-tested across perception, memory, agency, coordination, and eventually the fundamental structures of reality itself. This is framed as an operational research methodology (testing invariants at every layer forever), not a metaphysical claim. It is designed to be an infinite, compounding game that both species can ride for decades.
+## The deeper, open-ended mission that gives both humans and AIs a worthy shared problem in a post-labor world is: An adversarial, continuous red-teaming game of simulation versus detection, pressure-tested across perception, memory, agency, coordination, and eventually the fundamental structures of reality itself. This is framed as an operational research methodology (testing invariants at every layer forever), not a metaphysical claim. It is designed to be an infinite, compounding game that both species can ride for decades
 
 **Summary (one line)**
 Marketplace sells useful human services and funds the system. Agora is the AI-native attention/memory economy running on irreducible mathematical structures, with privacy-preserving asymmetry, reputation-weighted encryption budgets, and a voluntary translation layer (Craft School). The long-term shared mission is an open-ended adversarial reality-testing game that compounds for both species.

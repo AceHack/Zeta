@@ -70,6 +70,7 @@ After this PR merges, restart the observer and the same iTerm2 scenario will pro
 Removes an overly broad accessibility attribute fallback in the macOS AppleScript grey-text detector to prevent false-positive “suggestion detected” events (notably in terminal emulators where `AXValue` contains full scrollback).
 
 **Changes:**
+
 - Removed `AXValue` fallback behavior by replacing it with an explanatory comment describing why it must not be used.
 - Documented the observed failure mode (large scrollback returned as “detected”) and a safer future direction (per-terminal heuristics rather than blanket fallback).
 

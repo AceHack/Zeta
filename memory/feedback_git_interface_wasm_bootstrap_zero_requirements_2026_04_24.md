@@ -71,6 +71,7 @@ Zeta's DB via Zeta's own git server. The factory
 becomes self-hosting of its own git ecosystem.
 
 Maintainer follow-up 2026-04-24 (after Mode 1 admin UI
+
 + native F# git impl):
 
 > *"we could use mode 2 as our ui and have it auto
@@ -89,6 +90,7 @@ stays as fallback / audit-trail / durable-substrate.
 ALPN-style / HTTP-Upgrade-style pattern.
 
 **Why this is clean:**
+
 - Cold-start: zero protocol negotiation cost paid
   until you have a connection.
 - Warm-state: upgraded comm is fast.
@@ -102,6 +104,7 @@ This combines Mode 2 (browser-only UX) with Mode 1
 architecture where the WASM frontend talks to a Mode 1
 backend over an upgraded fast protocol AFTER the
 git-bootstrap handshake. Three architectural slots:
+
 1. Browser UI (Mode 2 WASM-F#)
 2. Backend server (Mode 1 native F#)
 3. Wire protocol (git → upgraded fast binary)
@@ -136,6 +139,7 @@ plans first.
 
 The bootstrap thesis is the **adoption-friction
 collapse**:
+
 - Mode 1: download one file, run it (commodity-OS only)
 - Mode 2: open a tab (commodity-browser only)
 

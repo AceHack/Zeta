@@ -33,16 +33,19 @@ Builds on #8261 with Aaron's 2026-06-15 streamed extensions, and adopts his **no
 
 ### Search-half (vs the capture-half)
 From a *described* achievement → search the game's state-space for the input sequence that reaches it → mint the quote (Adam Smith's "search within interactive media"). Two worked examples that stress different parts of the system:
+
 - **Mike Tyson's Punch-Out!!** = a *skill* quote (learned input pattern; tolerates a sloppy emulator).
 - **SMB Minus World** = a *glitch* quote = the **determinism stress test**: wall-clip skips loading the `4,3,2` warp zone → stale default `36,5,36` → world 36 (blank tens-digit reads "−1"). A **stale, un-refreshed pointer dereferenced** (the pointer thread). Emulation-dependent (NES dead-end vs FDS beatable) → faithful replay needs byte-exact state → our **DST/DoP=1** delta. Grounded against [Super Mario Wiki](https://www.mariowiki.com/Minus_World).
 
 ### Record quote (NES Golf — Aaron's dad's unmatched score) → the founding *why*
+
 - **DST replay turns preservation into measurement** — quantify the *rarity* of the achievement (model-relative).
 - **The better "Nintendo Power"**: a Polaroid proved a number appeared on a screen; a quote = screenshot + input-log (byte-exact replay) + DST rarity = verifiable, replayable, quantifiable attestation.
 - **Provenance seam (honest):** replay of a *recorded* run proves authorship; a past *unrecorded* run → search-half proves achievability + rarity, not authorship → capture-before-loss (manifesto §5).
 - **Nintendo Power postscript:** the magazine is community-preserved (torrent; Aaron holds a complete set) → Dad's score is checkable *if* published; the magazine itself is an IP-questionable artifact = the same preserve-segregate-takedown posture (we reference, never republish).
 
 ### IP → structure (Aaron: "store in IP-questionable, let people DMCA-takedown easily")
+
 - **New `docs/ip-questionable/`** quarantine folder + notice-and-takedown `README` (segregation, provenance-not-authorship, surgical single-file delete, prefer originals; honest "risk-reducing posture, not legal advice" note).
 - **Moved** the verbatim Strange Loop talk transcript out of the research doc into `docs/ip-questionable/2026-06-15-playable-quotes-strange-loop-2023-transcript.md` — self-contained, deletable on notice. The research doc links to it; the analysis stands on its own with cited sources.
 

@@ -56,4 +56,5 @@ Still hit by mise rate-limit lint failures from prior tick. Reran failed jobs vi
 Tick shard documenting recovery actions on two in-flight PRs: arithmetic/glob fixes applied to PR #3179 after Codex review, and CI reruns for PR #3181 to clear mise rate-limit failures.
 
 **Changes:**
+
 - Adds a single new tick-history file under `docs/hygiene-history/ticks/2026/05/14/` documenting the 1851Z tick.

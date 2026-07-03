@@ -65,6 +65,7 @@ Each restored row documents itself as a *retroactive* artifact — written 2026-
 Restores two missing atomic-decomposition slice rows whose implementations had already landed in code (`tools/resonance/media-catalog-schema.ts` and `tools/research/edge-claims-catalog.ts`) but never received corresponding `.md` row files. This resolves dangling `depends_on` references surfaced by the backlog-ready-notifier from 10+ sibling rows and completes the substrate-hygiene sweep alongside PRs #3044 and #3045.
 
 **Changes:**
+
 - Adds `081KR2E4K0008QG0R0003J0FB8` row formalizing the media-catalog schema foundation slice (parent 081KQ3HBZ0008QG0R003V6B2ME, referenced by 081KR7JY10008QG0R0018G7ZQV..081KR7JY10008QG0R000G3695N).
 - Adds `081KR7JY10008QG0R0035HP11K` row formalizing the monolithic edge-claims catalog slice (parent 081KQ3HBZ0008QG0R001K0EC2C, referenced by 081KR7JY10008QG0R001JW71CT re-decomp row).
 - Both rows are marked `status: closed`, document themselves as retroactive substrate corrections, and explicitly state row-first, code-second remains the norm.

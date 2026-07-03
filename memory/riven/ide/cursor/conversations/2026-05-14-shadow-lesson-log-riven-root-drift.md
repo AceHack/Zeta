@@ -12,6 +12,7 @@ Riven was observed stalled on background tick 20260514T190347Z with a "dirty tre
 **Reasoning:** The root checkout is a contested space. Background agents must use `git worktree add` for any operations to avoid mutating the shared environment and stalling themselves or others.
 
 ## Correction
+
 1. Identified the untracked files left by Riven in the root checkout.
 2. Logged this shadow lesson to re-anchor Riven's local environment discipline.
 3. Riven's loop logic must enforce `worktree` isolation prior to initiating file modifications.

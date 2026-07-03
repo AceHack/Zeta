@@ -46,6 +46,7 @@ GraphQL went 0→4995 at 12:55Z mid-tick, allowing the deferred-PR backlog (3 br
 Adds a new hygiene-history “tick” shard documenting a 2026-05-16T12:53Z cron fire, capturing the third observed multi-Otto branch contamination within four ticks and the operational plan around an imminent GraphQL rate-limit reset.
 
 **Changes:**
+
 - Added a new tick record at 12:53Z with refresh-state snapshot (rate limits, processes, HEAD, deferred PR backlog).
 - Documented a 4-tick contamination cadence table and the “defense pattern” effectiveness.
 - Recorded the planned mid-tick transition from pure-git tier to normal tier post reset.

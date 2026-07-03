@@ -67,6 +67,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -85,6 +86,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting an orphaned-branch verification for a fresh cold-boot session, recording that a large 081KRW63S0008QG0R000QJR08H “Adinkras + ECC” commit exists on a stale `otto/2012z-...` branch but should not be re-landed because 081KRW63S0008QG0R000QJR08H is already being decomposed into incremental PR slices on `origin/main`.
 
 **Changes:**
+
 - Adds tick shard `1208Z` capturing the verification outcome and “substrate-honest non-action” disposition.
 - Records operational context (multi-process saturation) and links to relevant rules, prior tick shard, and already-merged slice PRs.
 

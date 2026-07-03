@@ -36,6 +36,7 @@
 ## Changes
 
 **`docs/backlog/P1/081KRFA460008QG0R00308W7FJ-*.md`** — `status: open → closed`; ACs checked off:
+
 - [x] All 12 colliding groups resolved (across PRs #3056–#3073)
 - [x] `audit-duplicate-row-ids.ts` exits 0 on main — verified 2026-05-14
 - [x] All cross-references updated (renumbered rows carry `renumbered_from` provenance)

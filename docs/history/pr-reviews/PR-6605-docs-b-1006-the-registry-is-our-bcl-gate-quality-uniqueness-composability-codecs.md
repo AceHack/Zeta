@@ -32,6 +32,7 @@ Folds Aaron's 2026-06-02 framing into 081KT2T2J0008QG0R0008TFHJT (follow-up to m
 > *"codecs should be part of that list eventually when they pass same quality gates[;] only quality gates and uniqueness plus composability stops [a candidate] from getting in[to the] registry. this is our BCL[.] the more we ship the more we can guarantee cross language with ace distribution."*
 
 **The promotion gate is exactly three barriers** — nothing else gatekeeps (no taste, no politics):
+
 1. **Quality** — stated laws + tests (byte-lock golden vectors for cross-language).
 2. **Uniqueness** — not a duplicate / view / composition (the 4-question triage).
 3. **Composability** — composes at the HKT level (081KT2T2J0008QG0R0038CRFJM).

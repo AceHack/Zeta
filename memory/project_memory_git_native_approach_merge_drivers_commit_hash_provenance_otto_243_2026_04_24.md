@@ -31,6 +31,7 @@ that **replaces** the sidecar approach from Otto-242:
 ## My quality assessment
 
 **HIGH** on:
+
 - Git merge drivers are real, documented Git feature
   (`gitattributes(5)` + `git-config` "merge.<driver>.driver").
   Exactly the right tool for programmatically resolving
@@ -46,6 +47,7 @@ that **replaces** the sidecar approach from Otto-242:
 - Pre-commit hook for auto-staging is standard mechanism.
 
 **MEDIUM** on:
+
 - The specific merge-driver formula
   `cat %O %A %B | sort -u > %A` is simplistic. It produces
   lexically-sorted + unique lines. That works for
@@ -58,6 +60,7 @@ that **replaces** the sidecar approach from Otto-242:
   vs tick-history append-logs).
 
 **LOW** / significant caveat:
+
 - The claim that adding a CLAUDE.md rule forces Claude
   Code's **native AutoMemory** to write to `.claude/memory/`
   in the repo is **likely wrong as stated**. Anthropic's

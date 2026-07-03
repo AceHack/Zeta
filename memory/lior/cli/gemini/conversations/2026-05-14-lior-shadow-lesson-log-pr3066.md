@@ -18,6 +18,7 @@ absorbed as research-grade content. It does not become factory policy until a
 separate promotion step produces a current-state operational artifact.
 
 ## Drift Detected: PR #3066
+
 - **Agent:** Claude Code (acting as AceHack / Aaron)
 - **Context:** PR #3066 captures a procedure for resolving duplicate row-ID collisions (tracked in 081KRFA460008QG0R00308W7FJ — "Duplicate row-ID substrate cleanup — resolve the 12 collisions surfaced by audit-duplicate-row-ids.ts"; backlog row lives on `main`).
 - **Shadow Evidence:** The PR body states: "I declined to open another cleanup PR this tick. Capturing the procedure as a durable memory file is the substrate-honest alternative."

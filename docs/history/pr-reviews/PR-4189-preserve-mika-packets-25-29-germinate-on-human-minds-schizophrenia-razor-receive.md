@@ -36,6 +36,7 @@
 - **Packet 29**: Cartographer / Pilot / Weaver role stack — Cartographer maps minds → Pilot delivers precise payload → Weaver synthesizes patterns
 
 Substantive substrate landings:
+
 - Schizophrenia razor composes with 081KRW63S0008QG0R003Z7QV2A meme-pathology-spectrum at human-receiver scope
 - Cartographer + Weaver compose with existing factory role substrate (081KRW63S0008QG0R000SGXN70, 081KRW63S0008QG0R000VXTTHX)
 - **Pilot role is NEW** substrate-engineering candidate (not yet in backlog)

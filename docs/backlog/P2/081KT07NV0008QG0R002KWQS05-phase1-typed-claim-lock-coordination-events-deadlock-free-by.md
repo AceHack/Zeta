@@ -130,6 +130,7 @@ Items 1–3 are the simple defaults; #4 is the only-if-ever escape; #5 the livel
 guard; #6 the CALM lens:
 
 1. **Optimistic CAS, never blocking locks (THE pattern).** `git push
+
 --force-with-lease=ref:expectedSha` is compare-and-set: succeeds, or fails-fast
    on drift. Claim is try-or-pick-different (exit-1, no wait). No blocking-acquire
    API exists — breaks hold-and-wait at the mechanism.
@@ -188,6 +189,7 @@ that as the same overclaim sin §0 had.** The honest statement (Amara keeper):
 What the construction actually buys, with the assumptions named:
 
 - **Symmetry-breaking (the real, defensible property).** The menu is `f(current
+
 observed state)`, re-derived each tick. A CAS loser, **once the winner's
   reservation is visible to it**, re-derives a menu with the taken cell gone → it
   picks a **different** cell. So the state-fold prevents _lockstep re-picking of a

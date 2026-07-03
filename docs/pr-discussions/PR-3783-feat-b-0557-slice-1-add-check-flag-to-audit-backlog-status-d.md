@@ -46,6 +46,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a CI-oriented `--check` mode to the backlog status-drift auditor and records a related hygiene tick shard.
 
 **Changes:**
+
 - Adds `--check` flag validation, help text, and exit code 65 when drift candidates exist.
 - Adds a 2026-05-16 hygiene-history tick shard documenting first real-world use of the auditor.
 
@@ -63,12 +64,14 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0638Z.md:32**
+
 * This workflow step says the 081KRHWGX0008QG0R0029WA0HQ row was closed and BACKLOG regenerated, but those changes are not present in this PR: 081KRHWGX0008QG0R0029WA0HQ remains open in its row file and in `docs/BACKLOG.md`. The shard should either include/land after the close-row update or avoid recording the close as completed.
 ```
 5. **Close**: status: open → closed + Resolution section + BACKLOG.md regen
 6. **Open PR**: [PR #3781](https://github.com/Lucent-Financial-Group/Zeta/pull/3781) + arm auto-merge
 ```
 **docs/hygiene-history/ticks/2026/05/16/0638Z.md:53**
+
 * This visibility signal repeats that 081KRHWGX0008QG0R0029WA0HQ was closed, but the reviewed tree still has 081KRHWGX0008QG0R0029WA0HQ open. That makes the new history shard inconsistent with the repository state unless the close-row PR is merged first.
 ```
 - 081KRHWGX0008QG0R0029WA0HQ closed via PR #3781 (first real-world use of new audit tool; pure-drift confirmed)
@@ -102,6 +105,7 @@ This new tick shard starts with an H1, but the canonical shard schema requires t
 This records 081KRHWGX0008QG0R0029WA0HQ as already closed via PR #3781, but in the reviewed tree 081KRHWGX0008QG0R0029WA0HQ is still `status: open` and `docs/BACKLOG.md` still lists it as open. If the close-row PR is a separate branch, this shard should not land before that PR or it will introduce historical/status drift.
 
 This issue also appears in the following locations of the same file:
+
 - line 31
 - line 53
 

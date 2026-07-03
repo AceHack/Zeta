@@ -55,6 +55,7 @@ Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this update
 Documentation-only PR adding Max's near-term workstream (tier-2 Docker Desktop + Kubernetes dev-experience) to his persona files under `memory/max/`. Both files are on the history-surface allowlist (`memory/**`), so persona name attribution is in-policy.
 
 **Changes:**
+
 - Adds "Current focus" section to `PERSONA.md` describing the tier-2 workstream, sub-scopes, topology, Touch ID integration, and skills/scripts encoding contract
 - Adds matching "Current focus" section to `STARTING-POINT.md` with cold-boot reading list, applicable disciplines, first deliverables, and updated 30-day success metrics
 

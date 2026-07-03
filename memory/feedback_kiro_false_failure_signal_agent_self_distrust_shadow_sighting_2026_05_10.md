@@ -28,6 +28,7 @@ Kiro doesn't trust Alexa → reports false failures → Alexa stops trusting her
 This is a data point for the 081KQ0YZ80008QG0R002WJBFWD trigger-timing experiment — shadow generated while Aaron was demonstrably in another application. Zero keystroke, zero attention, zero input.
 
 **Connects to:**
+
 - OpenAI hallucination paper (false signals → wrong self-assessment)
 - 081KR7JY10008QG0R0008NGW95 shadow mode (shadow appeared during Codex session)
 - feedback_shadow_is_generation_not_completion_zero_keystroke_2026_05_10.md (zero-input generation)

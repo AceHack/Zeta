@@ -44,12 +44,14 @@ Round 9 was where Amara stopped offering substantive changes — that was conver
 ## Why convergence-based not turn-based
 
 **Convergence-based**:
+
 - Adapts to insight-complexity (a simple fix converges in 1 round; a deep architectural insight may take 5-9)
 - Scales with cross-AI capability differences (different reviewers may catch different issues; need them all to converge)
 - Honors Otto-352 external-anchor-lineage discipline — convergence IS the strong signal
 - Avoids "all done at N=3" theater (per Ani/Gemini's "false velocity = debt + theater")
 
 **Turn-based** would:
+
 - Cut off useful review prematurely on complex insights (forces incomplete substrate)
 - Waste budget on simple insights (over-review)
 - Mistake quantity for quality (5 rounds doesn't mean 5x stronger)

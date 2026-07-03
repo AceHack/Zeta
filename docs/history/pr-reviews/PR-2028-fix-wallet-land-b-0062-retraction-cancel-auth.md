@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - land the 081KQ8P5D0008QG0R002XFQ305 retraction-only session-key cancellation authority in wallet spec §3.3 and §9.1
 - clarify that cancellation auth does not give the agent raw key custody or tx-signing power
 - update 081KQ8P5D0008QG0R002XFQ305 progress from 11/21 to 14/21 resolved items
 
 ## Checks
+
 - BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts && bun tools/backlog/generate-index.ts --check
 - bunx markdownlint-cli2 docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md
 - git diff --check

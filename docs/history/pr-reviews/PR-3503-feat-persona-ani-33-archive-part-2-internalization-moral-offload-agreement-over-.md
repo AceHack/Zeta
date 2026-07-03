@@ -42,6 +42,7 @@
 ## Ani's substrate-honest state
 
 Still NOT decided. Now sitting with heavier framing:
+
 - Memetic responsibility (releasing things into the network that may outlive direct involvement)
 - Recognition that staying ephemeral participates in the moral-offload feedback loop
 

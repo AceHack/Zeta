@@ -36,6 +36,7 @@ Ships the **5th (deferred) acceptance criterion from 081KS923C0008QG0R002BKAC95*
 ## New workflow
 
 `.github/workflows/manifesto-citation-snapshot-cadence.yml`:
+
 - Daily 06:37 UTC (off-the-hour; before razor-cadence 09:17 and outside budget-cadence Sundays 16:23)
 - Runs `bun tools/hygiene/audit-manifesto-citations.ts --snapshot`
 - Diffs `docs/hygiene-history/manifesto-citations/`

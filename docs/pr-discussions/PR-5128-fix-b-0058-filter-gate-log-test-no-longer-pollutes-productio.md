@@ -46,6 +46,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Prevents `filter_gate_log` tests from writing `skill:test-entry` records into the real production ethics-decision log by adding a configurable log-path override and updating the polluting CLI test to write to a temp location.
 
 **Changes:**
+
 - Add `FILTER_GATE_LOG_PATH` env override to `logFilePath()` (default remains the repo log path).
 - Update the `--record` CLI test to write to a temp log file and assert the entry is actually written.
 

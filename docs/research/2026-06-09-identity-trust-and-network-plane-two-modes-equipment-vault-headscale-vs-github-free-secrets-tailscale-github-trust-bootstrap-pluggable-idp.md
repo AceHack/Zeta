@@ -70,6 +70,7 @@ Headscale drops in the same way — a new `Application.yaml`:
 
 Two-home topology: Aaron's home + Max's home meshed over the chosen control plane;
 MagicDNS for cross-home name resolution; `lucent.financial` for the public ingress
+
 + persona emails (Max provisioning).
 
 ## Rollout (the program)
@@ -89,4 +90,5 @@ BIP-39/32/44, BIP-84, SLIP-0010, NIP-06; `@noble`/`@scure`/`micro-key-producer`
 (Paul Miller, audited); Vault + External-Secrets (HashiCorp/ESO); cert-manager;
 **Headscale** (Juan Font, self-hosted Tailscale control server) / **Tailscale**
 (WireGuard mesh, Bird/DERP); spire/SPIFFE (workload identity); the traveler frame
+
 + sovereign recognition/trust Seed entries.

@@ -387,6 +387,7 @@ is a collection of **simple custom-made video games with no
 instructions** where the agent must learn the rules by interaction,
 and **every lesson compounds** — you need earlier lessons to beat
 later games. Two failure modes:
+
 - **Forgotten lessons → lose**: agent can't apply prior learning
   to the new game; regression on already-solved mechanics.
 - **Livelock → lose**: agent moves continuously but doesn't
@@ -418,6 +419,7 @@ inhabitable factory = compounding-lessons available on cold read.
 Livelock applied to the auto-loop: **tick repetition without
 lesson-integration into durable factory artifacts = livelock
 failure mode**. A tick that:
+
 - runs cron-fire → PR hygiene → tick-history row → CronList → close
 - without compounding a lesson into soul-file / skills / BACKLOG /
   ADRs / CLAUDE.md rules / memory entries
@@ -586,11 +588,14 @@ principle** — each level re-resets, the agent re-learns from
 scratch, the compounding-lessons criterion fails structurally.
 
 This exposes why many agents livelock: high per-tick capability
+
 + zero-accumulation = per-tick-capability-consumed-not-compounded.
+
 Each tick plays the level well; no tick compounds into the next;
 the overall trajectory is flat.
 
 **Factory composition**:
+
 - Auto-memory (MEMORY.md index + per-fact files) = the
   level-to-level memory accumulation substrate at the harness
   layer.

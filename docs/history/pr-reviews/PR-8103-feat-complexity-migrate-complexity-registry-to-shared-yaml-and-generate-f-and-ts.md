@@ -30,15 +30,18 @@
 feat(complexity): migrate complexity registry to shared yaml and generate F# and TS
 
 Why:
+
 - Relocates the manual, hardcoded complexity map database from F# code to a shared, language-agnostic YAML file registry/complexity-registry.yaml.
 - Establishes a single source of truth that can be used to generate/load complexity information across multiple languages (e.g. F# and TS), reducing manual code duplication over time and supporting pluggability.
 
 What:
+
 - Added registry/complexity-registry.yaml containing the 81 Big-O complexity rows.
 - Created src/Core.TypeScript/complexity/complexity-generator.ts to parse the YAML file and regenerate ComplexityRegistry.fs and complexity-registry.gen.ts.
 - Regenerated F# complexity map in src/Core/ComplexityRegistry.fs and TS mapping in src/Core.TypeScript/complexity/complexity-registry.gen.ts.
 
 Proof:
+
 - Verified that F# compiles with zero warnings or errors (dotnet build -c Release).
 - Verified that the full F# test suite passes 100% green (dotnet test Zeta.sln -c Release).
 - Verified that TypeScript compile is clean (tsc --noEmit).
@@ -47,6 +50,7 @@ Proof:
 - Attribution recorded via git trailers because shared GitHub credential identity makes host actor fields insufficient.
 
 Limits:
+
 - The parser in complexity-generator.ts is simple and relies on basic YAML structure; if more complex features of YAML are needed in the future, it may require a full YAML library.
 
 Agency-Signature-Version: 1

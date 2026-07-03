@@ -33,18 +33,21 @@ Smallest safe slice of 081KR2E4K0008QG0R002NYV33T (P1 GitHub ruleset split). Per
 **Bounded step only** — no live gh api mutations, no Default ruleset edits. Full implementation + tests in slice 2.
 
 ## One bounded step taken
+
 - Created `tools/github/create-branch-safety-ruleset.ts` skeleton (TS per Rule 0, --dry-run support, main() stub, import.meta.main guard).
 - Updated `docs/backlog/P1/081KR2E4K0008QG0R002NYV33T-...md` with start-gate checklist, re-decomp note, and corrected file path.
 - Dedicated worktree + pushed claim branch used before any write.
 - Root checkout untouched.
 
 ## Focused checks (run in worktree)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — passed (pre-existing gate).
 - `git worktree list` + dedicated /tmp worktree verified.
 - `bun --version` + TS parse check on skeleton: clean.
 - No bash files touched (Rule 0).
 
 ## Evidence
+
 - Backlog: docs/backlog/P1/081KR2E4K0008QG0R002NYV33T-...md (updated with slice note)
 - Claim branch: claim/b0267-safety-ruleset-smallest-slice-riven-2026-05-08
 - Tool: tools/github/create-branch-safety-ruleset.ts (TS per Rule 0)

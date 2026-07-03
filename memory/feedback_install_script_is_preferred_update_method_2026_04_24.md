@@ -63,6 +63,7 @@ toolchain updates):
 
 GOVERNANCE §24 three-way-parity says the install script
 is the SAME script consumed by:
+
 1. Dev laptop (you)
 2. CI runner (GitHub Actions)
 3. Devcontainer image
@@ -113,6 +114,8 @@ will run. Same script, three places.
 ## Future Otto reference
 
 When asked to update a toolchain: **edit `.mise.toml`
+
 + run `tools/setup/install.sh`**. Don't shortcut to
+
 `mise install` or brew. Verify the build gate after.
 The script is the contract; every other path is drift.

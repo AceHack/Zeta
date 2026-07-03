@@ -45,6 +45,7 @@ User journey:
 7. Done — local private AI running
 
 Compare to typical AI deployment friction:
+
 - API keys + credit cards
 - CLI setup + dependencies
 - Docker / venv / conda

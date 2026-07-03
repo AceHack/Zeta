@@ -45,6 +45,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick memory file documenting the 2026-05-16T05:16Z session, including PR merge outcomes and validation of the deferred-fix-with-acknowledgment pattern.
 
 **Changes:**
+
 - New markdown shard for the 05:16Z tick
 - Documents 3 PR merges and thread-resolution activity on PR #3748
 - Notes remaining open peer-lane PRs

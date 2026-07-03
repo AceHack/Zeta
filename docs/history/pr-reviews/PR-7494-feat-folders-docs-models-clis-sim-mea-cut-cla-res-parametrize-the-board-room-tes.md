@@ -30,6 +30,7 @@
 feat(folders)+docs: models/ (toy→real society models) + clis/ (sim·mea·cut·cla·res verb family) + parametrize the board-room test on the society models
 
 Aaron's stream (2026-06-10):
+
 - "we need a models folder" + "figure out where the math nerds are on the toy and real models":
   models/ indexes the society models. STATE: toymodels v1->v3 (toymodel3) consolidated AT THE MATH
   TEAM; GRADUATED toymodel->realmodel (unlimited rounds + completeness critic); toymodel4/5 scope the

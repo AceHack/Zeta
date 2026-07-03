@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Full Claude.ai conversation extracted via osascript/Chrome (974KB, 9597 lines)
 - "CLI harness autonomous operation guidance" — the conversation that includes alignment pushback, Ace architecture, patent provenance
 - All sensitive names scrubbed per naming-consent rules
 - Extracted using Aaron's authenticated Chrome session via AppleScript JS execution
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Zero sensitive names remaining (verified: grep returns 0)
 - [ ] Verbatim preservation verified (minus name scrubs)

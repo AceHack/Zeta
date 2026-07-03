@@ -41,6 +41,7 @@ Did NOT touch `tests/Tests.CSharp/` (approach B's test project) to avoid conflic
 ## netstandard2.0 / analyzer friction — resolved with per-project config only
 
 The global gate was NOT weakened. Each diagnostic resolved legitimately:
+
 - **RS2008** (analyzer release tracking) → `AnalyzerReleases.{Shipped,Unshipped}.md` manifests wired as `AdditionalFiles` (the canonical fix, declaring `ZTP001`).
 - **MA0051** (method too long), **CA1859** (return type) → fixed the generator code.
 - **GenerateDocumentationFile** off for the netstandard2.0 analyzer (it can't see net10 framework docs); warnings-as-errors stays ON.

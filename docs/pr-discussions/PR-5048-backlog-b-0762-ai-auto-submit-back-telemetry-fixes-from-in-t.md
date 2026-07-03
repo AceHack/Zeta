@@ -27,6 +27,7 @@ Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install 
 Adds a new P2 backlog row (081KSE6WT0008QG0R003FG3E8R) describing an install-time opt-in telemetry loop that can auto-generate minimal-diff fix PRs from in-the-wild failures, aiming to drive “adoption cost → 0” via a network-effect feedback cycle.
 
 **Changes:**
+
 - Added backlog row **081KSE6WT0008QG0R003FG3E8R** capturing the telemetry + auto-fix flywheel concept, acceptance criteria, and privacy/security floor.
 - Updated `docs/BACKLOG.md` index to include **081KSE6WT0008QG0R003FG3E8R** under P2.
 

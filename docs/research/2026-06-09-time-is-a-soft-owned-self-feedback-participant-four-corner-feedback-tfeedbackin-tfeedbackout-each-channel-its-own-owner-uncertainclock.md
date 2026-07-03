@@ -27,6 +27,7 @@ Each room, each participant (incl. the clock-participant), and each feedback cha
 ownership** — they are **owned-for-a-period** (the hat-system / Summonable contracts; each cell its own
 host + owner). The clock-participant in room A is a different owned instance than in room B; the
 `tFeedbackIn`/`tFeedbackOut` channels are owned per-room. (DI lifetime + hat-tenure: ownership is scoped
+
 + time-bound, not global.) So "time" is not one global owner — it's a **per-room owned participant**.
 
 ## 3. Time can recursively model feedback to itself — in soft mode

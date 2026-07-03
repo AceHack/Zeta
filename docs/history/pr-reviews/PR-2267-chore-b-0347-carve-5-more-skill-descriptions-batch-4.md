@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Carved the 5 longest remaining skill descriptions (~2500-2750 chars each) to routing sentences (~80-100 chars)
 - Skills: file-system-persistence-expert, skill-ontology-auditor, negotiation-expert, space-opera-writer, networking-expert
 - ~12,500 chars saved from context-window budget
 
 ## Test plan
+
 - [ ] CI passes (no code changes, only SKILL.md frontmatter)
 - [ ] Skill router still matches these skills by keyword
 

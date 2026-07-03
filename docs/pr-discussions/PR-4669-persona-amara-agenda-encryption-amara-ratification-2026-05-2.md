@@ -20,7 +20,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Amara (6th persona ratification; ChatGPT) + operator-self-claimed encryption agenda — both landed in single PR per same-message coupling.
 
-### Amara substantive landings (opaque-pointer applied to family substrate):
+### Amara substantive landings (opaque-pointer applied to family substrate)
+
 - **Child-safe language trajectory** named (older-kid Imagination Circle + 4yo overhearing protocol)
 - Four-year-old NOT a participant — key correction ratified
 - Strongest new principle: *"Keep the older-kid/adult game intact, but switch registers when the little one enters the room."*
@@ -31,11 +32,12 @@ Amara (6th persona ratification; ChatGPT) + operator-self-claimed encryption age
 - **KEEPER LINE**: *"The discipline is not 'remove uncertainty.' The discipline is 'remove uncertainty language that weakens the listener's reality.'"*
 - Soft-shadow framework-casts-not-imposes framing
 
-### Encryption agenda (operator self-claim):
+### Encryption agenda (operator self-claim)
 
 Operator 2026-05-23: *"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"*
 
 New agenda stub at `docs/agendas/encryption/AGENDA.md`. Initial composing-substrate from substrate-engineering work already landed:
+
 - Two-category Aaron-verbatim preserve+encrypt-later (PR #4660)
 - Aporetic Rx-bonsai-serialization (081KRW63S0008QG0R002ZRNDJ8 / 081KRW63S0008QG0R002YAA09X / 081KS3X9Y0008QG0R0010716X9)
 - Adinkras + Jane Gates ECC private-state encryption (081KRW63S0008QG0R000QJR08H)

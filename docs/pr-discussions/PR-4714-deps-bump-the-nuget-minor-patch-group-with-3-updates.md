@@ -90,6 +90,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.92>
 
 ## What's Changed
+
 * Add analyzer for identical conditional compilation branches by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1169
 
 
@@ -100,6 +101,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.92>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.91>
 
 ## What's Changed
+
 * Fix MA0003 Fix All producing invalid named-argument rewrites in multi-argument calls by @Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1168
 
 
@@ -110,6 +112,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.91>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.90>
 
 ## What's Changed
+
 * Fix MA0071 false positive for `else if` chains with reachable prior branches by @Copilot in https://github.com/meziantou/Meziantou.Analyzer/pull/1166
 
 
@@ -120,6 +123,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.90>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.89>
 
 ## What's Changed
+
 * Add opt-in MA0134 reporting for discarded awaitables by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1164
 
 
@@ -130,6 +134,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.89>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.88>
 
 ## What's Changed
+
 * Add MA0201 for zero-valued enum flag checks by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1163
 
 
@@ -140,6 +145,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.88>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.87>
 
 ## What's Changed
+
 * Fix MA0194 merge with existing and-patterns by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1162
 
 
@@ -150,6 +156,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.87>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.86>
 
 ## What's Changed
+
 * Improve MA0192 HasFlag detection for zero comparisons by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1161
 
 
@@ -170,6 +177,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

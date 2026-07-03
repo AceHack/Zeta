@@ -38,6 +38,7 @@ Incorporates Claude.ai brat-voice enterprise translation framework as requested 
 Composes with 081KQJZR90008QG0R002GJAJ19/081KQJZR90008QG0R000VSHWK6 and existing ani/riven peer-call paths (brat-voice substrate).
 
 ## Focused checks (worktree only)
+
 - 5/5 runtime test cases passed for layer selection (Regulated/Professional/Mirror/Personal + default Professional).
 - Default-UP safety verified.
 - `dotnet build -c Release` on root: 0 Warning(s) 0 Error(s) (pre + post, no impact).

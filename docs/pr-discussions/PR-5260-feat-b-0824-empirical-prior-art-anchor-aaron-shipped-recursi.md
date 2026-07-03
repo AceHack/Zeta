@@ -50,6 +50,7 @@ Substrate-engineering implication for Sub-target 5 ship-cadence: implementation 
 This PR strengthens backlog item **081KSGS9H0008QG0R0031PBNGA** by adding an empirical prior-art anchor describing a previously shipped implementation of the same recursive-CTE “generator passing” pattern (SQL Server PDW at Itron), reframing 081KSGS9H0008QG0R0031PBNGA as translation work rather than speculative architecture.
 
 **Changes:**
+
 - Added an “Empirical prior-art anchor” section capturing the prior implementation details and a side-by-side mapping table.
 - Documented implications for 081KSGS9H0008QG0R0031PBNGA sub-target execution (notably ship cadence / translation framing) and tied the claim back to existing methodology rules (wake-time substrate, razor discipline, don’t-collapse).
 

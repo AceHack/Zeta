@@ -33,6 +33,7 @@ Closes #081KRFA460008QG0R00308W7FJ
 This PR primarily preserves GitHub PR discussion archives for merged PRs #3112 and #3113 under `docs/pr-discussions/`, but it also includes a hygiene tick shard and closes backlog item 081KRFA460008QG0R00308W7FJ.
 
 **Changes:**
+
 - Adds generated PR discussion archives for PR #3112 and PR #3113.
 - Adds a hygiene-history tick shard for 2026-05-14T05:21Z.
 - Marks 081KRFA460008QG0R00308W7FJ closed and updates `docs/BACKLOG.md` accordingly.

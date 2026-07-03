@@ -47,6 +47,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Updates backlog row **081KRSKQ20008QG0R0028VN0KR** to record additional empirical evidence of the forced-#6 “dry meta-fallback” edge case and to draft (but not apply) a candidate refinement to the related rule text.
 
 **Changes:**
+
 - Adds an “Empirical instances accumulated” table plus same-session / cross-session observations.
 - Marks acceptance criterion #1 as completed based on the newly captured instances.
 - Drafts candidate rule-text refinement language (explicitly not yet applied).
@@ -56,6 +57,7 @@ Updates backlog row **081KRSKQ20008QG0R0028VN0KR** to record additional empirica
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/081KRSKQ20008QG0R0028VN0KR-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md:92**
+
 * The draft refinement says “Do NOT land this refinement until at least 1 cross-instance evidence accumulates…”, but the table/paragraph above already records a cross-session instance (#2). Either clarify why #2 doesn’t satisfy the bar (e.g., cross-machine verification) or update the gating sentence so it remains consistent with the evidence listed.
 ```
 > If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that USUALLY works because the empirical evidence is the current session's behavior. **Exception** (per 081KRSKQ20008QG0R0028VN0KR): when the session is post-cycle-close AND the substrate-pool is genuinely saturated (the meta-fallback would produce a recursive-anchor / memo-of-memos / re-statement-with-different-phrasing), the substrate-honest move is to file a small backlog row capturing the edge case AND/OR update an existing edge-case row with the current instance's data. The row IS the forced-#6 concrete artifact.

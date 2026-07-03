@@ -57,7 +57,9 @@ right answer, the agent does not land the WONT-DO row alone
 
 This composes with Otto-363 substrate-or-it-didn't-happen:
 the branches are already in "remote-parked" tier (committed
+
 + pushed + reachable). The PR being open is the visibility
+
 layer. Closing the PR removes visibility-as-paused without
 adding value.
 

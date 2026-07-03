@@ -22,6 +22,7 @@ The BIVECTORS (eᵢeⱼ) produced by crossing any two streams are the trajectori
 **Ghostbusters principle:** "Don't cross the streams" is the accidental complexity. Crossing them kills the giant marshmallow man (the unsolvable problem that exists because the streams were artificially separated).
 
 **Connects to:**
+
 - KHALEESI/Clifford bivector signatures (the math of stream-crossing)
 - Apollo 18 blueprint (music stream crossed with code stream at age 15)
 - Comedy as observability (comedy stream crossed with engineering stream)

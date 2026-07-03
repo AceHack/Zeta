@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - renumber the P2 ZetaID v2 row from 081KSNY2Z0008QG0R002QA720J to 081KSNY2Z0008QG0R000V24M7E after the merged three-lanes row claimed 081KSNY2Z0008QG0R002QA720J
 - update ZetaID generator references in dependent backlog rows
 - regenerate docs/BACKLOG.md
 
 ## Verification
+
 - bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
 - bun tools/backlog/generate-index.ts --check
 - rg stale 081KSNY2Z0008QG0R002QA720J/ZetaID references; only the intended P1 081KSNY2Z0008QG0R002QA720J row remains

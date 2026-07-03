@@ -29,6 +29,7 @@ Per row-close gate triage (PR #3757 step-0 discriminator): 081KRMEXM0008QG0R000K
 Adds a "Status (2026-05-16)" section to the 081KRMEXM0008QG0R000K25MXS backlog row, documenting that — per the row-close gate's new step-0 substrate-drift discriminator (PR #3757) — the row is in partial-completion (Slice B lint tool + gate.yml job shipped via PRs #3548/#3555; Slice A persona-batched sweep still pending, evidenced by lint failures on PRs #3670/#3659/#3643/#3633/#3599). Row remains `status: open`.
 
 **Changes:**
+
 - Append a Status section distinguishing partial-completion from drift, with explicit Shipped/Pending breakdown
 - Cite the audit anchor (pure-git verification that the tool exists and the gate.yml job is wired)
 

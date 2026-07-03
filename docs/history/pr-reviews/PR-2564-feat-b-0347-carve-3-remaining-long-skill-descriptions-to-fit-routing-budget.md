@@ -37,6 +37,7 @@ One bounded slice of 081KR50HA0008QG0R002ZNFQBZ (re-decomposed on assumption of 
 - Follows: dedicated worktree + pushed claim branch, no root checkout touch, TS over bash, one atomic step, Co-Authored-By trailer.
 
 ## Acceptance (partial)
+
 - [x] 3/3 remaining long descriptions carved
 - [x] 0 dropped by router (via length)
 - Routing quality: cold-start match preserved (terms intact).

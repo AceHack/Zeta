@@ -15,11 +15,13 @@ type: feedback
 The 0-diff "starting point" Aaron is driving us toward operates on BOTH:
 
 ### Axis 1: Content
+
 - **Metric**: `git diff acehack/main..origin/main --shortstat`
 - **Target**: empty (zero files changed, zero insertions, zero deletions)
 - **Exceptions**: documented inline (e.g. "this 35-line drift is the laptop-only memory file with the LFG-side review fix; will absorb via hard-reset")
 
 ### Axis 2: Commit count
+
 - **Metric**: `git rev-list --left-right --count origin/main...acehack/main`
 - **Target**: `0\t0` (zero ahead AND zero behind — both directions)
 - **Exceptions**: documented inline (e.g. "AceHack temporarily ahead by 1 during the brief window between PR landing and hard-reset to LFG main")

@@ -33,6 +33,7 @@ Composes with iter-5.1+5.2+5.2.1 substrate already on main. `zflash --host pikac
 This PR updates the full-ai-cluster install substrate to avoid hostname collisions when reusing the same USB across multiple machines, and improves console UX by showing the hostname before login.
 
 **Changes:**
+
 - Move auto-generated hostname creation from `zflash` flash-time to `zeta-install.sh` install-time (per-node/per-install unique hostname when `--host` isn’t provided).
 - Add a NixOS getty login banner module to display hostname + SSH hint pre-login, and import it via `common.nix`.
 - Update `zflash` messaging to reflect the new install-time hostname behavior.

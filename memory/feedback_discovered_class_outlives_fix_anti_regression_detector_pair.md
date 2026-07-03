@@ -6,6 +6,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 Aaron 2026-04-22 (two-message reframe on live-loop
  research doc):
+
 1. *"detection becomes unnecessary for this class.  even with
    the fix does not mean we could not regress"*
 2. *"a discovered class is a discovered class even if you fix

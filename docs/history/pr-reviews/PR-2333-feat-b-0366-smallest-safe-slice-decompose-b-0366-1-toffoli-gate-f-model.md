@@ -47,12 +47,14 @@
 ### Implementation (081KR50HA0008QG0R0021B5J87)
 
 **`src/Core/ToffoliGate.fs`** — new module:
+
 - `Bit` (Zero/One), `ToffoliWires` (A, B, C), `ZSetGateOp` (Assert/Retract)
 - `ToffoliGate.apply`: the Toffoli gate `(a,b,c) → (a, b, c ⊕ (a∧b))`
 - `ToffoliGate.encode`: maps Assert/Retract to forward application (same gate — self-inverse)
 - `ToffoliGate.assertThenRetract`: proves round-trip identity at the gate level
 
 **`tests/Tests.FSharp/Formal/ToffoliGate.Laws.Tests.fs`** — 7 tests:
+
 - 4 FsCheck properties (MaxTest=256, covers all 8 possible wire states many times)
   - Self-inverse: `apply (apply w) = w`
   - Assert-retract identity: `assertThenRetract w = w`

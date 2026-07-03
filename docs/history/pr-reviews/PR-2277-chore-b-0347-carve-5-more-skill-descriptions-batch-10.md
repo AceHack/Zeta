@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: editorconfig-expert, execution-model-expert, sql-parser-expert, query-optimizer-expert, push-pull-dataflow-expert
 - Running total: 45 skills carved, ~84K+ chars freed
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

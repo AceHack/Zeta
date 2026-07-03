@@ -28,11 +28,13 @@
 ## Description
 
 Summary:
+
 - Follow-up to #6084 after the non-required tsc tools job exposed strict array-index typing in the new test.
 - Replaces events[0]/events[1] in the expected window with named CoincidenceEvent constants.
 - Branch is based on current origin/main and contains only the test strictness fix.
 
 Verification:
+
 - bun --bun tsc --noEmit -p tsconfig.json
 - bun test tools/health/factory-health-monitor.test.ts
 - git diff --check origin/main..HEAD

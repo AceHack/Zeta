@@ -29,6 +29,7 @@ Three-phase substrate-engineering trajectory:
 ## Substitution mapping
 
 GitHub primitive → Workflow-engine replacement:
+
 - PR → WorkflowLifetime DU (081KSKBP80008QG0R000B3Y19A.5)
 - Branch protection → StandardVerdict DUs + lifetime-pair matrices
 - Required checks → dispatchInWorld Result<T, TFeedback>
@@ -63,6 +64,7 @@ NO new backlog rows per 'common sense 2.0' signal — substrate sufficient.
 Adds a feedback memory capturing a three-phase trajectory where the workflow-engine substrate moves from GitHub PR dogfooding toward becoming the primary workflow substrate, with GitHub retained as backup/fork protection.
 
 **Changes:**
+
 - Adds a new `memory/feedback_*.md` file documenting the trajectory, substitution mapping, and readiness criteria.
 - Regenerates `memory/MEMORY.md` to include the new memory entry and update the truncated heap count.
 

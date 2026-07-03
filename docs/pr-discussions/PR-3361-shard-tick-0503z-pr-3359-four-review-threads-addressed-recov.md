@@ -46,6 +46,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR adds a new hygiene-history tick shard (`0503Z`) documenting the resolution of review threads on PR #3359, plus observations about validator vs practice drift and a “recovery worktree borrowing” workflow.
 
 **Changes:**
+
 - Adds a pipe-row header and narrative tick entry for 2026-05-15 0503Z.
 - Documents poll-pr-gate vs GraphQL thread-count mismatch and shard-schema validator drift.
 - Records repeated worktree-borrowing usage with WIP preserved across branch switches.

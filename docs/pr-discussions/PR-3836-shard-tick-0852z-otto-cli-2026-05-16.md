@@ -29,5 +29,6 @@ Slow-cadence cycle shard from this resume-session series. Post-reset batch.
 Adds a new hygiene-history tick entry for the resume-session slow-cadence cycle, recording the current GitHub GraphQL rate-limit state and the planned post-reset PR batch trigger.
 
 **Changes:**
+
 - Added tick log `2026-05-16T08:52Z` documenting rate-limit exhaustion (0/5000) and estimated reset time.
 - Recorded branch batch status (4 branches awaiting post-reset PR batch) and confirmed cron sentinel health.

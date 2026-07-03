@@ -505,6 +505,7 @@ weight).
 **Architectural implication — future formalization path:**
 
 A `VocabZSet` type (Z-set over meanings) with operations:
+
 - `resolve: (pack-context, word) → VocabZSet`
 - `retract: Meaning → VocabZSet`  (Lawvere-escape primitive)
 - `disambiguate: VocabZSet → Resolved | PartialWithManifest | CircuitBreak`

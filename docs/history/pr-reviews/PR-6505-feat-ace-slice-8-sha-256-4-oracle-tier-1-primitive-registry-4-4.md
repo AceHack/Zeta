@@ -30,17 +30,20 @@
 Ace slice 8: **SHA-256 as a 4-language Tier-1 primitive** (registry `⬜ SHA-256` → `✅ 4/4`). First step of the cross-language Ace trust core. Builds on the YAML port (#6501) — **all four oracles read the fixture through our YAML port, not Bun.YAML/YamlDotNet** (the dogfooding payoff of sequencing the port first).
 
 ## Oracles (byte-identical on 5 golden vectors)
+
 - **TS** — `node:crypto` behind our `sha256`/`sha256Hex`; cross-verify reads `vectors.yaml` via `../yaml/dom` `parse()`.
 - **Rust** — **hand-rolled SHA-256 (FIPS 180-4)**, zero-dep production crate; cross_verify dev-deps `zeta-core-yaml` to read the fixture.
 - **F#** — `System.Security.Cryptography.SHA256.HashData` + `Convert.ToHexStringLower`; cross-verify via `Zeta.Core.FSharp.Yaml.Dom.parse`.
 - **C#** — BCL-clean (no FSharp.Core), same BCL hash; cross-verify via `Zeta.Core.CSharp.Yaml.YamlDom.Parse`.
 
 ## Verification (Tier-1)
+
 - **4/4 byte-identical** on 5 vectors (`tests/cross-verification/sha256`): empty / abc / NIST 2-block / Ace-JSON / hex-bytes. Independently confirmed: all four oracles match Python `hashlib` on the 3 standard (FIPS/NIST) vectors — externally anchored, not self-certified.
 - Per-lang unit tests assert the 3 standard vectors (hard-coded expected); the Rust hand-roll's correctness is gated by the published vectors.
 - `dotnet build -c Release` 0-warn; F# 1147 / C# 146 suites green (0 regressions); `cargo test` 0-warn; `tsc` 0.
 
 ## Notes
+
 - Spec + plan under `docs/agendas/ace-package-manager/`. Brainstormed/decided with the operator 2026-06-01 (cross-language trust core, foundation-first at SHA-256).
 - Next trust-core slices (own specs): canonical-JSON (8.1) → package_hash (8.2) → ed25519 (8.3) → index-verify (8.4).
 

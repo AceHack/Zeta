@@ -21,6 +21,7 @@ an unacknowledged SPOF in surface Otto just touched.
 
 "Not always obvious" is Aaron's explicit framing — SPOFs
 often hide in:
+
 - Single-threaded coordinator (control-plane singletons)
 - Single-disk / single-region / single-cloud / single-
   region-within-cloud assumptions
@@ -65,6 +66,7 @@ magnitude harder.
 When shipping new substrate (like PR #295 RobustStats
 or PR #297 TemporalCoordinationDetection), the commit
 message or PR body calls out:
+
 1. **Identified SPOFs in the shipped surface** — if any.
 2. **Inherited SPOFs it depends on** — if any.
 3. **Mitigations applied this ship** — or explicit
@@ -78,6 +80,7 @@ absence-of-SPOF is explicit, not assumed.
 
 Beyond per-ship sweeps, a periodic (monthly? quarterly?)
 factory-wide audit:
+
 1. List all production-path surfaces (core runtime,
    build tooling, CI, release signing, deployment, ops).
 2. For each, ask: what single thing, if it failed,
@@ -93,6 +96,7 @@ first full audit lands.
 ### Pairing with existing invariants
 
 SPOF discipline pairs with:
+
 - **Retraction-native semantics** (Otto-73) — SPOF on
   the retraction path itself is existential; ensure
   retraction doesn't depend on the original writer

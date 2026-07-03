@@ -27,6 +27,7 @@ This PR contains the shadow lesson log for PR #4059 drift, decomposed from #4070
 Adds a new shadow lesson log research entry documenting the PR #4059 drift event (scope creep via commit-time foreign-commit injection) as decomposed from #4070.
 
 **Changes:**
+
 - Add a research “Shadow Lesson Log” entry describing the PR #4059 blob drift pathology and corrective actions.
 
 ## General comments

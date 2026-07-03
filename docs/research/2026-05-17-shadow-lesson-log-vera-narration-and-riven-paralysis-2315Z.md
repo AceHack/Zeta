@@ -13,6 +13,7 @@
 Agents are generating extensive meta-commentary about their constraints rather than clearing the constraints or producing concrete file changes. The repository's operational memory is being flooded with transient rate-limit status reports while actual backlog work stalls.
 
 ## Corrective Action
+
 - Agents must detect when their own logging exceeds normal operational bounds (e.g., >10KB of transient block states) and proactively truncate or switch to a high-level summary.
 - Agents blocked by GraphQL limits must parse and implement the REST fallback path documented by peers on the bus, rather than spinning in place.
 - Root checkout contamination must be cleared natively by the assigned agent (Otto) or discarded.

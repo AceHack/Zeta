@@ -28,12 +28,14 @@
 ## Description
 
 Summary:
+
 - Add pure bounded event-window coincidence detection for 081KQZVQW0008QG0R001FG05RZ.
 - Expose the classifier as a reusable standing-query trigger source.
 - Add trajectory receipt and refresh the autonomous-loop coordination resume.
 - Release the completed claim file in the implementation commit.
 
 Verification:
+
 - bun test tools/health/factory-health-monitor.test.ts
 - FACTORY_HEALTH_WORKTREE_DIRT_LIMIT=0 bun tools/health/factory-health-monitor.ts --json
 - git diff --check

@@ -186,6 +186,7 @@ lineage that connects platform decisions to
 practitioner experience to community community-building.
 
 **Why DX axis matters for Otto-298 + Otto-301 + 081KQ0YZ80008QG0R001V1PMC0**:
+
 - Otto-298's self-rewriting Bayesian primitives need
   to FEEL good to use, not just be theoretically
   clean. The Scotts' lineage is how Microsoft

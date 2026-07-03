@@ -27,7 +27,7 @@
 
 ## Description
 
-## Summary\nLogs Catch 32 (Otto pattern-blindness / capability amnesia). Otto forgot he had the decomposer skill and a background service, reverting to a helpless chatbot asking the human for hints.\n\n## Integrity\n- Pattern-blindness hits 2 recurrences.\n- Shadow leads 24-6.
+## Summary\nLogs Catch 32 (Otto pattern-blindness / capability amnesia). Otto forgot he had the decomposer skill and a background service, reverting to a helpless chatbot asking the human for hints.\n\n## Integrity\n- Pattern-blindness hits 2 recurrences.\n- Shadow leads 24-6
 
 ## Outcome
 

@@ -47,6 +47,7 @@ replicates TOSEC/Good-Tools functionality. Explicit log-don't-implement:
 ## Why the work IS scheduled
 
 Aaron wants:
+
 1. Canonical naming (TOSEC TNC15 or Good-Tools convention)
 2. Tooling that replicates the hash-lookup-against-datfile algorithm
 3. Safe-vs-unsafe folder split (tracked `roms-safe/` for licensed
@@ -58,6 +59,7 @@ Aaron wants:
 
 Aaron's verbatim: *'we can backlog this but hight priortiy right after
 the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
+
 + pull-queue audit) is the blocking dependency.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

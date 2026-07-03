@@ -30,6 +30,7 @@
 Updates NOTEBOOK.md to full session 2+3 state (28 PRs, trajectories, verification stack).
 
 Recovers 4 orphaned artifacts that were on disk but never on main:
+
 - schema-aware-join.ts + test (14 tests ✅ — Rx join for schema evolution)  
 - _firewall.test.ts (21 tests ✅ — peer-call firewall coverage)
 - HomoiconicFixpoint.lean (compiles clean ✅ — earlier T1 draft)

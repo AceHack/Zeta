@@ -40,6 +40,7 @@ End-to-end heartbeat substrate landed in one PR (operator 2026-05-27: "make sure
 ## Operator-side note for direct-push
 
 To enable direct-to-main push without PR gating, either:
+
 - Add path-scoped branch protection exclusion for \`docs/agent-heartbeats/**\` on main, OR
 - Create an \`agent-heartbeats\` branch with NO protection (use \`--branch agent-heartbeats\`)
 

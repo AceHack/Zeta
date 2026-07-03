@@ -36,11 +36,13 @@ Preserves the CAP/PACELC analysis you asked to capture (and re-review). New `doc
 **Your core survives both rounds:** *no single global consistency surface across the multi-repo/multi-project society* — there is no shared `main`, no global lock ("which main?" → none).
 
 **But round 2 refuted the round-1 framing that "the only CP is the per-row git CAS."** Both peers, independently + repo-grounded:
+
 - **PACELC category error** — per-agent state is **CA-local / PACELC undefined intra-process** (a process can't partition from itself), *not* "PC/EC."
 - **Layered coordination stack, not one per-row CP:** the per-row git CAS is the **authoritative backstop** under (a) the **bus claim** (`tools/bus/claim.ts` — advisory first-to-claim + TTL; bus partition ⇒ double-acquire then race on git), (b) **ID allocation** (sequential `B-NNNN` needs a consistent view ⇒ collision risk; **content-addressed ZetaIds (081KSXN940008QG0R000JZVFXX) avoid this**), (c) per-shared-repo **`origin/main`** serialization. Correctness is in how the layers **compose under partial connectivity**.
 - **Cross-row work** (decomposition / cascade) needs the 081KT07NV0008QG0R002KWQS05 single-resource + release-before-acquire rule; **hot-row contention** is the open **081KT07NV0008QG0R001N9GJWX** bounded-wait-freedom problem (not solved by construction).
 
 ## Files
+
 - `docs/research/2026-06-01-cap-posture-...-gemini-grok-aaron.md` — both rounds verbatim + synthesis (§33 headers; retraction-native: round-1 kept alongside the round-2 correction).
 - `docs/backlog/P2/081KT07NV0008QG0R002KWQS05-...md` §0.1 — corrected CAP-posture note (layered stack; PACELC-undefined-intra-process).
 

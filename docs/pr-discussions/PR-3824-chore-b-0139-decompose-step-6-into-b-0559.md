@@ -27,6 +27,7 @@ Automated decomposition of step 6 from blob 081KQGDBJ0008QG0R002S9SWH6.
 Automated decomposition of step 6 from 081KQGDBJ0008QG0R002S9SWH6 into a new P1 backlog row 081KRQ1AB0008QG0R002J484S1 (verify-before-state-claim audit), with the parent row's `children` list updated to reference the new child.
 
 **Changes:**
+
 - Add new backlog row `081KRQ1AB0008QG0R002J484S1` describing a verify-before-state-claim hygiene audit decomposed from 081KQGDBJ0008QG0R002S9SWH6 step 6.
 - Update parent row 081KQGDBJ0008QG0R002S9SWH6's `children` frontmatter to include 081KRQ1AB0008QG0R002GWSJGQ and 081KRQ1AB0008QG0R002J484S1.
 
@@ -53,6 +54,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

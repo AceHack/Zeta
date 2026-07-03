@@ -30,6 +30,7 @@
 Forced-escalation pure-git substrate work (counter at #6; GraphQL was 0/5000).
 
 After ~13 autonomous-loop ticks of audit-triage on 2026-05-16, the disposition space stabilized into:
+
 - 7 primary classes: #1, #2, #2-SD, #3, #4, FP-2, FP-3
 - 4 sub-class overlays: #1-Ready, #1-DepBlocked, #2-Ready, #2-Execution-atom
 

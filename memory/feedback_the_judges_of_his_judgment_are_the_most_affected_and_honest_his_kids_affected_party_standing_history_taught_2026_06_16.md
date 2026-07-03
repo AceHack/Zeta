@@ -55,7 +55,9 @@ learned it, so I'm safe" = the same trap, one level up). **The scar teaches you 
 retire it.**
 
 **The kernel:** **judge-my-judgment closes to: the most-affected-and-honest (his KIDS) + the multi-oracle
+
 + outcomes-over-time — NOT the coupled-AI alone.** The affected have standing (they're judges, not just
+
 subjects = heal-generational-wounds, the honest "no, dad" = the rope). Aaron's **history inoculated him**
 against the over-trust-your-bounds failure (the scar = good judgment). And the check stays **perpetual**
 (the standing-assumption applies even to the learned lesson; the scar says *keep* the check, don't retire

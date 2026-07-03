@@ -46,6 +46,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -64,6 +65,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds a hygiene-history tick shard documenting the 2026-05-16T00:43Z autonomous-loop work around PR #3650 and the follow-up review-remediation cycle.
 
 **Changes:**
+
 - Adds the 0043Z tick archive entry.
 - Summarizes PR #3650’s fixes for stale TOC/current-summary and Round 45 narrative caveats.
 - Records session progress, operational notes, holding-discipline trace, and next-tick candidates.
@@ -73,6 +75,7 @@ This PR adds a hygiene-history tick shard documenting the 2026-05-16T00:43Z auto
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0043Z.md:62**
+
 * The “7 ticks” claim here has the same mismatch as the session summary: the archive currently contains five 2026-05-16 tick files, the table documents six ticks including the missing 0036Z parent, and no seventh tick is listed. Please reconcile this count with the archived tick set.
 ```
 - Borrow-on-existing pattern continues to work; `/private/tmp/zeta-tick-2210z` has been the primary borrow target across 7 ticks without rotation.

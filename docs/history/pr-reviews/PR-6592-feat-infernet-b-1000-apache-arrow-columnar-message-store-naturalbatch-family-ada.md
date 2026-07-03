@@ -35,6 +35,7 @@ Aaron: *"add arrows to all our primitives for in memory columnar store bit effic
 Store a batch of N messages as **struct-of-arrays in natural parameters**. In natural params message **product = column-wise vector ADD** and **divide = column-wise SUBTRACT** for *every* family — contiguous, SIMD-friendly, and bit-exact equivalent to the scalar `Message` ops. The columns are Apache Arrow `DoubleArray`s → zero-copy, cross-language, the in-memory columnar store (composes `ArrowSerializer`; Apache.Arrow 23.0.0 already a dep).
 
 ### `src/Bayesian/MessageBatch.fs`
+
 - **`NaturalBatch`** = `{ Columns: float[][] }` (K cols × N) + `Count`/`Dim`; `product`/`divide` = column-wise vector add/sub.
 - **`IColumnar<'M>`** (columnar twin of `IMessage`) + `Columnar.gaussian` (ν,τ — identity), `Columnar.beta` (α-1,β-1), `Columnar.bernoulli` (log-odds). Natural-param framing → product is a raw column add for all families.
 - `ofMessages`/`toMessages`, `toRecordBatch`/`ofRecordBatch` (Arrow `DoubleArray` columns).
@@ -43,6 +44,7 @@ Store a batch of N messages as **struct-of-arrays in natural parameters**. In na
 **batched product = scalar product element-wise, per family** (Gaussian; Beta → conjugate posterior `Beta(7,4)` via α-1 columns; Bernoulli via log-odds) — the columnar store is bit-exact to the algebra · batched divide inverts product (EP cavity) · `NaturalBatch` round-trips through an Arrow `RecordBatch` · pack/unpack identity + Dim/Count.
 
 ### Next
+
 - pair with the **Itron batched-throttled-processor pattern** (concept-not-code, clean-room): accumulate messages, flush a columnar batch on a trigger — `RecordBatch` is made for this
 - extend Arrow columnar to `Vector`/`Wall` + the `FactorToVar` message store (vectorized `passOnce`)
 - Arrow IPC bytes for cross-process via `ArrowSerializer`

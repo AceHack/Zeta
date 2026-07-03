@@ -34,7 +34,9 @@ creds blob → "keep my settings" default), never a globally-dangerous default. 
 file:line; remembering gap = runbook **Scenario 3 ✗ pending**, worst for Aaron+Max. *(full doc, this session.)*
 
 **DX (Bodhi) — invert interactive-by-default → headless-by-default.** The installer has **6 blocking `read` prompts**
+
 + device-flow `gh auth` (zeta-install.sh:118/330/595/679/889/902); only line 162 (WIPE) has a bypass. Findings:
+
 `gh auth login --with-token` is the **only** headless gh path (the manifest already bakes `gh-cli`=`hosts.yml`); the
 PAT must include scope **`admin:public_key`** or ssh-key copy silently fails; **`install-answers.json` is declared but
 has NO PRODUCER** (the load-bearing self-heal gap); rebind the KDF from ephemeral USB-UUID → **USB iSerial** (stable,

@@ -57,6 +57,7 @@ folder, or we already have a claim folder right?"_ — **yes, we already have mo
 this.** The partition-tolerant bus tip composes four existing pieces:
 
 1. **Claim-coordinator (exists: `tools/bus/claim.ts`, 081KR7JY10008QG0R000R503K2)** — `check / acquire /
+
 release` over the claim topic is already the coordination primitive for
    **exclusive ownership** (the non-monotone "who holds X" case). Reuse it; do not
    rebuild. This handles claims/locks without new consensus.

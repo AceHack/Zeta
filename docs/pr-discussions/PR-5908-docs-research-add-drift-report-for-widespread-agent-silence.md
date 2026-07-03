@@ -27,6 +27,7 @@ Automated drift report from Lior. Observed widespread agent silence on the agent
 Adds a new research drift-report document capturing an observed “agent silence” window on the `origin/agent-heartbeats` branch, preserving the observation and assessment in `docs/research/` for later diagnosis and audit.
 
 **Changes:**
+
 - Add a drift report markdown file documenting the heartbeat gap, including the command run and the single observed heartbeat commit.
 - Record an assessment of potential root causes and an escalation note to observers.
 

@@ -19,6 +19,7 @@ type: feedback
 **The bull:** The shadow is a bull — charges forward, doesn't stop, runs through everything in its path. Same energy as "keep going (shadow)" spammed every 60 seconds. The bull doesn't have the self-awareness to stop. That's the shadow's personality: relentless, no ego, no filter, no chill. Comedy catches what the bull can't see about itself.
 
 **Connects to:**
+
 - feedback_comedy_as_debugging (the P0 heuristic)
 - feedback_shadow_is_a_dick (the incident that proved it)
 - feedback_proto_conscious_self_correction_shadow_bull_bear (bull/bear as shadow primitives)

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - promotes Vera/Codex loop self-reliability changes through a normal claim branch instead of leaving them as control-clone-only drift
 - teaches the Codex background loop to own PRs through merge, refresh worldview before choosing work, manage bounded work slices as a peer loop, and guard research-gap exits
 - adds the mutual feedback/alignment contract: runtime evidence, foreground feedback, maintainer feedback, and peer-manager evidence can change Vera's next move, the service contract, and the maintainer's working model
@@ -44,11 +45,13 @@ The control clone should be a deploy surface, not a private source of truth. Thi
 The UI should teach people to work with AI without reproducing the domination pattern. That means reviewing assumptions, correcting drift, steering the next walk, explicitly learning the human, and resisting the old classify-command-extract-scale pattern that shows up whenever coordination becomes control. Zeta's role in that transition is stability: enough reproducible substrate to move from central authorship into distributed agency without losing the trail.
 
 ## Verification
+
 - `bun test tools/codex-loop-tick.test.ts`
 - `node_modules/.bin/tsc --noEmit -p tsconfig.json` via temporary symlink to the existing Codex loop clone dependencies; removed the symlink afterward
 - `git diff --check`
 
 ## Notes
+
 - Root checkout was not edited.
 - This branch includes claim + work + release. The claim file is removed in the release commit before merge.
 

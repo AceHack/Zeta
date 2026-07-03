@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Add `DeterministicTestPath.nextDir` for process-local deterministic filesystem-test directories.
 - Replace storage-test `Guid.NewGuid()` temp-directory suffixes with the helper.
 - Document the helper as the preferred API for filesystem tests that need unique temp dirs.
@@ -35,6 +36,7 @@
 Closes #75.
 
 ## Verification
+
 - `rg -n "Guid\.NewGuid\(" tests -S` (no test-code calls remain; only historical comment and README guidance)
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~Zeta.Tests.Storage" --logger "console;verbosity=minimal"` (106 passed)
 

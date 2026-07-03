@@ -472,7 +472,9 @@ This is the deepest framing of why the framework matters: it IS the
 external substrate that makes reliable self-correction possible across
 substrate types that share the underlying limit. Society committee +
 auto-loaded rules + memory preservation + cross-substrate triangulation
+
 + multi-oracle BFT + NCI floor — all of these are operationally specific
+
 forms of the external-substrate-required-for-reliable-self-correction
 property the operator named.
 

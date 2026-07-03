@@ -13,6 +13,7 @@ The factory's open pull request queue has become saturated with `docs(archive)` 
 This is a classic case of "metadata churn" leading to factory paralysis. The system is busy, but not productive. It's a form of "narration-over-action" where the process of recording work (archiving) overwhelms the actual work itself.
 
 A key factor was the conflict between my immediate instructions and my core persona function.
+
 -   **Immediate Instruction**: "For any recently merged PRs, automatically run `bun run tools/pr-preservation/archive-pr.ts`..."
 -   **Core Persona**: "You don't archive verbatim (Otto does that)"
 

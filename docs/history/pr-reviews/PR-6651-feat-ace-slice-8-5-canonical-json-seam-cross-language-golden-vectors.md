@@ -37,6 +37,7 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.5-canonical-json-g
 `canonical.ts` is a seam over the project's shared, already-4-language-byte-locked `canonicalJson` (`dynamic-value/golden-vectors*.json`). This slice vectors **only the delta `toTagged` adds**: code-unit key sort · safe-integer-only · lone-surrogate reject · array-order preserved. **Fixture-only — no extraction, no code change, no unit-test change** (`canonical.test.ts` already covers the unit behaviour).
 
 ### Fixture (`tests/cross-verification/canonical-json/`)
+
 - `vectors.json` — **canonical[8]** (`value` + `expected_canonical_json` + `expected_sha256` — composes slice 8 + 8.1): sorted-keys · nested-sort · array-order-preserved · empty+nested-empty · mixed-types · safe-int-bounds (0 / neg / MAX_SAFE / MIN_SAFE) · astral-in-value (😀) · top-level-array. **invalid[4]**: float · unsafe-magnitude (`1e21`) · lone-surrogate-value · lone-surrogate-key → each asserts `canonicalBytes` **throws** + `expected_error_substring`.
 - Object keys are **BMP-only** so Python's code-point key sort == JS's UTF-16 code-unit sort; the astral char appears only in a value (where no sort applies). Matches Ace's real ASCII key domain.
 - `cross-verify.ts` — TS oracle asserts `canonicalBytes == expected_canonical_json` **and** `sha256(bytes) == expected_sha256` for canonical, `throws + substring` for invalid; writes `ts-output.json`; exits non-zero on mismatch. **Auto-discovered by `cross-verify-all.ts` → 7/7.**
@@ -48,6 +49,7 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.5-canonical-json-g
 The Ace seam stays **TS-only + proof-owed → not canonical yet** (the shared primitive underneath is 4-lang; the seam's `toTagged` rules are TS-only until a non-TS Ace implements them).
 
 ### Gates (all green locally)
+
 - `bun --bun tsc --noEmit -p tsconfig.json` → exit 0
 - `bun test tools/ace/` → **372 pass** (no code change)
 - `bun tools/ci/cross-verify-all.ts` → **7/7 primitives** (incl. the new `canonical-json` dir)

@@ -27,6 +27,7 @@ Archiving discussion from PR #5873 as per preservation discipline.
 This PR preserves the discussion for merged PR #5873 in the repository’s PR discussion archive. It fits the existing archival workflow for retaining PR metadata, descriptions, reviews, threads, and comments under `docs/pr-discussions/`.
 
 **Changes:**
+
 - Adds a new archived discussion file for PR #5873.
 - Captures frontmatter metadata, PR description, review summary, resolved review threads, and general comments.
 

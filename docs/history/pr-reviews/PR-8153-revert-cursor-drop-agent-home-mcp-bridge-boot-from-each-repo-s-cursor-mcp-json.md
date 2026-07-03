@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - remove the agent-home MCP bridge artifacts by deleting `.cursor/agent-home-mcp.json` and `src/Core.TypeScript/cursor/zeta-mcp-launch.ts`
 - update `CURSOR.md` so Agent home guidance is repo-native (`.cursor/mcp.json` per clone) with no agent-home assembled MCP flow
 - prune MCP section references to the removed bridge files
 
 ## Test plan
+
 - [x] verify removed files are deleted in git diff
 - [x] verify `CURSOR.md` Agent home section matches B-0894.3 repo-native layout text
 - [x] verify branch is rebased from `origin/main`

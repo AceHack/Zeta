@@ -42,6 +42,7 @@ This amendment closes the loop: future launch substrate PRs no longer trigger th
 13-line insertion into the existing closed-list at \`docs/AGENT-BEST-PRACTICES.md\` line 699-707 (after \`docs/active-trajectory.md\`):
 
 \`\`\`
+
 - docs/launch/** — launch substrate (public-facing
   positioning artifacts; persona names + external
   creator attributions allowed because the substrate's

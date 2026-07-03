@@ -28,6 +28,7 @@
 ## Description
 
 What changed:
+
 - Removed the legacy RejectNew bounded-GSet policy case so the cold finite-room behavior is named only as NoForgetBackpressure.
 - Added BoundedGSetConfig and ModuloGSetConfig constructors for no-forget, rolling, and collision policies.
 - Updated room, soft-emulator, scheduler, and heat-sink tests to use the canonical no-forget/backpressure vocabulary.
@@ -36,6 +37,7 @@ Why:
 Pre-v1 means we should not carry a compatibility alias that hides the policy we actually want. Forgetting is heat; no-forget is backpressure.
 
 Validation:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release with focused room/heat filter: 104 passed.
 - dotnet format --verify-no-changes.
 - dotnet build -c Release: 0 warnings, 0 errors.

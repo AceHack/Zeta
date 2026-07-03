@@ -32,17 +32,20 @@
 Wave 3 of the forge-host-adapter spec.
 
 ### Task 4: Move batch-resolve-pr-threads.ts
+
 - Moved from `git/` to `forge-host/github/` — it's 100% GitHub GraphQL, never belonged in git-native
 - Fixed import path for `ai-attribution`
 - `git/` now contains only `push-with-retry.ts` (genuinely git-native transport retry)
 
 ### Task 5: Extract readPRState behind ForgeHost
+
 - Added `readPRStateAsync(forge: ForgeHost)` to `observe/world-infra.ts`
 - Delegates to `forge.listOpenPullRequests({ limit: 20 })` — fully host-agnostic
 - Legacy synchronous `readPRState()` preserved for backward compat (observe loop is currently sync)
 - When the observe loop goes async, `readPRStateAsync` becomes the primary path
 
 ### Verification
+
 - 38 tests pass, 0 TS errors
 
 Co-Authored-By: Kiro <noreply@kiro.dev>

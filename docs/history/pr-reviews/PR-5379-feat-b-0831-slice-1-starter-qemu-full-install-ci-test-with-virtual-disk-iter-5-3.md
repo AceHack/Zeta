@@ -32,6 +32,7 @@
 081KSGS9H0008QG0R0011BC7T2 Slice 1 starter per Aaron 2026-05-26 authorization: *"moving testing of zflash and the iso/usb and cluster join would be great while i test on the pc again"*.
 
 Extends \`qemu-boot-test.ts\` (cascade #5) by:
+
 - Attaching virtual hard disk (qcow2; 20GB sparse) as install target
 - NAT'd internet (zeta-install needs git clone + nix substitution)
 - Waits for \`[iter-5.3]\` marker in serial log
@@ -39,6 +40,7 @@ Extends \`qemu-boot-test.ts\` (cascade #5) by:
 ## Success marker
 
 \`[iter-5.3]\` — appears at the zeta-install.sh password-prompt line. Reaching it proves install completed:
+
 - Boot
 - Partition + format
 - nixos-install

@@ -31,6 +31,7 @@
 > "you can merge two independent streams/git-repos AND within a branch on the same git repo."
 
 Both scopes use the **same `DagFs.merge`** because content addresses are **global + history-independent**:
+
 - **within one repo** — merge two branches (shared history);
 - **across independent repos/streams** — merge two roots with **no common ancestor**.
 

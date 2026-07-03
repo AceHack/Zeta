@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Stamp `/etc/zeta/qemu-first-session-ci` on `ZETA_AUTO_CONFIRM=WIPE` installs and run `zeta-first-session-ci.service` at boot (demo dry-run, markers teed to ttyS0).
 - Opt-in harness assertion: set `QEMU_FIRST_SESSION_PHASE3=1` on `qemu-full-install-test` phase 2 (enabled on scenario 2 `workflow_dispatch` only — push path unchanged).
 - Adds `detectPhase2Success` / `qemu-first-session-phase3` helpers + unit tests (43 passing in touched suites).
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ci/qemu-first-session-phase3.test.ts src/Core.TypeScript/ci/qemu-full-install-test.test.ts`
 - [ ] Society: `workflow_dispatch` build-ai-cluster-iso — scenario 2 should assert `zeta-first-session: begin|complete` on serial log
 - [ ] Promote to hard gate on push after one green dispatch

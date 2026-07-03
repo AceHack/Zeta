@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - preserve the trust-then-verify claim for future Bitcoin/content-filter debates
 - preserve the slow-trust lethal-latency case study as user-visible lineage context
 - keep both artifacts in repo memory so they survive local machine crashes
 
 ## Notes
+
 - This PR finishes the branch Otto already pushed after the direct push to protected main was rejected.
 - The branch contains only the two memory files from that save request.
 
 ## Verification
+
 - Diff scoped to `memory/project_trust_then_verify_claim_bitcoin_discord_debates_aaron_2026_05_10.md` and `memory/user_slow_trust_lethal_latency_case_study_jail_2026_05_10.md`.
 - No root checkout edits from Vera.
 

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Close **B-0967** after #7911 (`--scope included` landed; 14 apps Synced+Healthy on kind + CI).
 - Mint two P1 follow-on workitems:
   - `081KV13CRJF08QG0R001NFZTFH` — full scope (`--scope full` on k3d/kind + drift-repair)
@@ -35,6 +36,7 @@
 - Regenerate `docs/BACKLOG.md` index (`B-0967` → `[x]`).
 
 ## Test plan
+
 - [x] `bun src/Core.TypeScript/backlog/generate-index.ts --check` (or force write matches committed)
 - [x] `bun tools/backlog/lint-no-new-bnnnn.ts` passes (no new B-named files)
 

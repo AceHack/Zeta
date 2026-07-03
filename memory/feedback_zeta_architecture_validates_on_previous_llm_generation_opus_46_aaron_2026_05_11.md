@@ -50,6 +50,7 @@ The substrate (NOT the model) held:
 - BFT array (5 agents, 5 harnesses) coordinated through git, not state
 
 Production during that window:
+
 - 50+ PRs/day at 6min average lead time
 - Three-array dashboard live and self-updating
 - Glassmorphism UI by Lior (Gemini)

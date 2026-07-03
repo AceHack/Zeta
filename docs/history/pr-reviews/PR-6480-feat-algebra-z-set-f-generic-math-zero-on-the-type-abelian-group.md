@@ -30,6 +30,7 @@
 Retrofit the **System.Numerics-shaped generic-math interface** onto the F# Z-set — the next rung after G-Set (#6467) and Bag (#6472). Z-set is an abelian **group**, so it gets the inverse rungs `(~-)`/`(-)` on top of the monoid `Zero`/`(+)`.
 
 ### What
+
 - `static member Zero` / `(+)` / `(~-)` / `(-)` on the `ZSet<'K>` type.
 - The pooled sorted-merge combiner (`add`) and `negate` **relocate onto the type** as the `(+)` and `(~-)` operators — F# SRTP (`LanguagePrimitives.GenericZero`, `Seq.sum`, generic `+`/`-`/`~-`) resolves operators *on the type*, and the `ZSet` module is `ModuleSuffix` (defined after the type) so a type-member can't forward-delegate to it.
 - Module `add`/`neg`/`sub` become thin delegators. **Hot path is perf-neutral** (same code, new home); `Checked.(+)`/`Checked.(-)` overflow guards preserved.
@@ -40,6 +41,7 @@ Retrofit the **System.Numerics-shaped generic-math interface** onto the F# Z-set
 F# has native generic-math; this is the F# idiom rung. Same shape as the G-Set/Bag ladder.
 
 ### Tests (+6, **58/58** ZSet pass; Core builds 0 warn / 0 err)
+
 - operator `≡` module fn (delegation is real)
 - `Zero` = `empty` = `LanguagePrimitives.GenericZero`
 - abelian-group inverse via operators: `a + (-a) = Zero` and `a - a = Zero`

@@ -56,6 +56,7 @@ Auto-classifier needs multi-pattern detection across all 6 locations.
 Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the forced-escalation audit of backlog row 081KR2E4K0008QG0R002JW751Y and extending the observed #2-SD sub-location catalog to 6 patterns.
 
 **Changes:**
+
 - Adds a new tick log entry capturing the 081KR2E4K0008QG0R002JW751Y audit evidence (script/manifest existence, bounded-slice note, dry-run presence).
 - Records updated drift-audit tally counts and a catalog of #2-SD signal locations.
 - Captures operational context (rate-limit tier, sentinel status, PR reference).
@@ -65,6 +66,7 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 <summary>Comments suppressed due to low confidence (4)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:40**
+
 * P1: This acceptance-criteria table uses `||` at the start of each row, which introduces an unintended empty column and renders incorrectly. Use standard Markdown table syntax with a single leading `|` like other tick files.
 ```
 | Acceptance criterion | State |
@@ -74,6 +76,7 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 | 3. Idempotent — re-running against existing repo reports status, no duplicate | ❌ row's own line 4-5: "No gh, no create, no repo mutation" |
 ```
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:62**
+
 * P1: The drift-audit tally table is written with a `||` row prefix, which produces an empty first column and breaks GitHub Markdown rendering. Switch to the usual `| ... |` table format used in other tick shards.
 ```
 | Class | Count | Latest |
@@ -83,6 +86,7 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 | 1-DepBlocked | 1 | 081KRA5AR0008QG0R000KKJRVA |
 ```
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:86**
+
 * P1: This table also uses `||` at the start of rows, which creates an extra empty column and renders incorrectly. Please convert to standard Markdown table formatting (`| Location | Examples |`, `|---|---|`, etc.).
 ```
 | Location | Examples |
@@ -92,6 +96,7 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 | Acceptance `[ ]` checkboxes | 081KRMEXM0008QG0R003GP8W0C, 081KRA5AR0008QG0R001NXBYTY, 081KRA5AR0008QG0R001X4T9W7 |
 ```
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:102**
+
 * P1: The counter/disposition table is using `||` prefixes, which adds an unintended empty first column and breaks table rendering. Use the standard single-pipe Markdown table syntax here as well.
 ```
 | Tick | Disposition |
@@ -111,6 +116,7 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 P1: These tables start with `||` (empty first column), which breaks Markdown table rendering and is inconsistent with other tick shards (they use `| ... |`). Convert this to a normal pipe table (`| Surface | State |` etc.) so the content renders correctly on GitHub.
 
 This issue also appears in the following locations of the same file:
+
 - line 36
 - line 58
 - line 82

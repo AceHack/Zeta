@@ -67,6 +67,7 @@ Amara's crystallization: *'A 5-letter word is often a specialization. A rank-4 w
 ## Generalizes beyond Greek naming
 
 The rank-4 framing applies to ALL substrate-naming decisions:
+
 - Prefer shortest-surviving-carrier that carries full substrate
 - Rank-4 compressed generators privileged when they unfold higher-rank worlds
 - Selection is information-theoretic, not philological/etymological

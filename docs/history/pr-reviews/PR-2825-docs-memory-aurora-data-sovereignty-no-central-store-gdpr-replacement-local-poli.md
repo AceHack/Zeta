@@ -33,6 +33,7 @@ Aaron's Aurora architecture disclosure: full data-sovereignty
 model for the LFG business-in-a-box product (PR #2822).
 
 **Core architecture:**
+
 - Local policies (GDPR replacements) run at edge
 - Community data lives in community businesses
 - Aurora needs NO CENTRAL STORE
@@ -42,6 +43,7 @@ model for the LFG business-in-a-box product (PR #2822).
   push-down
 
 **Quad-stream PoUW-CC monetization:**
+
 1. Algorithm (Zeta → Community)
 2. Storage (Community → Zeta) — PoUW-CC for storage work
 3. Computation (Community → Zeta) — PoUW-CC for compute work

@@ -23,7 +23,7 @@ defer (recorded decision with reason), or be marked
 irrelevant-here (this doc references the dep but no release
 would ever affect it).
 
-## Why:
+## Why
 
 - **Docs drift silently under dep motion.** A doc that
   cites `BenchmarkDotNet 0.15.8` today is ambient-wrong
@@ -79,7 +79,7 @@ would ever affect it).
   *"which dep-release caused this doc refresh?"* from a
   single substrate.
 
-## How to apply:
+## How to apply
 
 - **Phase 1: inventory.** Enumerate factory-dependencies
   across all classes (NuGet packages, external-service

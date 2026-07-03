@@ -103,7 +103,7 @@ Key substrings:
   external service"* — confirms the git-native
   invariant for UI even within the pluggable frame.
 
-## Why:
+## Why
 
 - **Real consumer reality is pluralistic.** Teams come
   with installed ecosystems — Jira, Linear, Confluence,
@@ -138,7 +138,7 @@ Key substrings:
   plugin, not a default. See
   `feedback_free_beats_cheap_beats_expensive.md`.
 
-## How to apply:
+## How to apply
 
 - **When proposing a factory feature that needs
   storage** (backlog, index cards, ES stickies, round

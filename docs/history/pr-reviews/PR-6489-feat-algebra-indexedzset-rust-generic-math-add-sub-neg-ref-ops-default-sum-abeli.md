@@ -30,6 +30,7 @@
 The Rust rung of the last ladder primitive (after F# #6485 + C# #6486). Rust has no `System.Numerics`, so we **push our own port** — the `std::ops` traits. IndexedZSet (`Z[K×V]`) is an abelian **group**, so — like the Z-set rung (#6482) — it surfaces `Sub` + `Neg` on top of `Add`. `Default` = the `Zero` analog (empty); `Sum` folds a collection. The bilinear `join` is the ring product (surfaced separately).
 
 ### Idiomatic / lifetime-friendly (per the maintainer's check)
+
 - **Ref-operators** `impl Add/Sub/Neg for &IndexedZSet<K,V>` (`&a + &b` / `-&a` / `&a - &b`): the type owns a `Vec`, so by-value ops would force a move on every `+` — the ref-operator **borrows inputs + returns owned, so no lifetimes leak** (the idiomatic form for non-`Copy` collections, same as `std`).
 - The inherent combiner is itself named `add`, so the trait methods delegate via the **type path** (`IndexedZSet::add` — inherent-method precedence) to avoid self-recursion.
 - `Sum` uses `reduce().unwrap_or_default()` (folds from the first element, no identity-clone seed) — an iterator combinator, not a manual loop.

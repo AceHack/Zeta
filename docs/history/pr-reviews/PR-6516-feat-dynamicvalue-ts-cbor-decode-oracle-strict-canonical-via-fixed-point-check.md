@@ -30,11 +30,13 @@
 Last of the four CBOR-decode oracles (C# #6512, F# #6514, Rust #6515 already landed/landing). Completes the byte↔value bijection for the **total** CBOR form across all four oracles.
 
 ## What
+
 - Extracts shared **`src/Core.TypeScript/dynamic-value/cbor.ts`** — encoder moved **verbatim** from the test (seed byte-lock unchanged) + new **`fromCanonicalCbor`** decoder + `DecodeError`/`DecodeResult` types.
 - Repoints the existing **encode** test at the module (no inline encoder) and adds the new **decode** test.
 
 ## Strict-canonical via one fixed-point check
 Per-form readers stay lenient; a single check — `canonicalCbor(decoded)` must equal the input bytes — rejects every non-canonical form as `NonCanonical`:
+
 - non-shortest int / length width (`18 00`, `18 17`)
 - non-shortest float / non-canonical NaN (`f9 7e01`, `fa 3f800000`, `fb 3ff0…`)
 - invalid UTF-8 (lenient `TextDecoder` repairs to U+FFFD → re-encodes differently)

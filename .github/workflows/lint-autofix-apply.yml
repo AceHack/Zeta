@@ -89,7 +89,7 @@ jobs:
           if git apply --index "$patch" 2>/dev/null; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "style: mechanical lint auto-heal (markdownlint --fix)"
+            git commit -m "style: mechanical lint auto-heal (MD032/MD026 safe fixer)"
             # ff-only push: HEAD = head_sha + heal. Succeeds iff head_branch is
             # still at head_sha; if the branch moved since produce the non-ff push
             # is rejected and we skip (next push re-triggers) — never force.

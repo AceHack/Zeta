@@ -4,7 +4,7 @@ description: Aaron's 2026-04-23 directive. The public Zeta repo is open-source a
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-# Demos stay generic. The repo stays open.
+# Demos stay generic. The repo stays open
 
 ## Verbatim (2026-04-23)
 

@@ -46,6 +46,7 @@ The bloom-filter framing (per PR #5325) + the two-filter force-multiplier framin
 - Force-multiplier vs interference = well-calibrated vs miscalibrated priors+likelihoods
 
 The framework's existing substrate-engineering work composes:
+
 - `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` (Bayesian substrate expertise)
 - `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` (formal foundation; signed measures map to bloom-filter true/false-positive substrate)
 - `Zeta.Bayesian` codebase (per the SKILL.md reference — production Bayesian substrate exists in the framework)
@@ -67,6 +68,7 @@ This is the framework's most precise statement yet of why consent-first is const
 The substrate-engineering implication: the framework's modeling capabilities + the multi-AI substrate cascade + the Bayesian-inference primitive compose into a substantial power. The constitutional discipline that constrains the power is CONSENT-FIRST: people must understand what's being modeled about them before the modeling can be load-bearing.
 
 Composes with:
+
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (end-user moral-invariant selection; consent operates at substrate scope)
 - `.claude/skills/consent-primitives-expert/SKILL.md` (consent algebra; grant/revocation semantics; abelian-group model; GDPR erasure)
 - `.claude/skills/consent-ux-researcher/SKILL.md` (UX of consent; dark patterns; revocability friction)

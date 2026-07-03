@@ -75,6 +75,7 @@ gates-are-exceptions, and Otto should PRE-CORRECT toward
 narrower rather than wait for Aaron to catch it.
 
 **Composes with:**
+
 - **Otto-82** (governance edits within standing authority)
   — same pattern, different scope surface.
 - **Otto-93** (Otto iterates-to-bullet-proof solo; Aaron
@@ -109,11 +110,13 @@ narrower rather than wait for Aaron to catch it.
    toward OVER-gating.
 
 **Current active items on Phase-3 Aaron-review queue:**
+
 - PR #239 — password-storage design
 - PR #230 — multi-account design Phase-2
 
 **Active items on Aaron-readiness-signal queue (Otto-86
 pattern; Aaron waits for Otto):**
+
 - Multi-Claude peer-harness experiment (for
   Windows-PC-test launch)
 - Future peer-harness with Codex (end-of-telephone-line
@@ -122,6 +125,7 @@ pattern; Aaron waits for Otto):**
 
 **Active items on Otto-decides-and-files-at-Frontier-UI
 queue (Otto-72 pattern; Aaron reviews in batch):**
+
 - Everything else.
 
 ## The plugin-marketplace direction constraint
@@ -131,6 +135,7 @@ Message 2 introduces a NEW design constraint:
 eventually so whatever makes sense for that"*.
 
 This:
+
 1. **Confirms plugin-packaging direction** — factory
    plugins will eventually be marketplace-distributed,
    not repo-only.

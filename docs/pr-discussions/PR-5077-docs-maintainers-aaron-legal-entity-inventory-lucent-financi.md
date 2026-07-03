@@ -72,6 +72,7 @@ Source PDFs at `drop/` remain in place (gitignored per `drop/README.md` protocol
 Adds a maintainer-scoped documentation surface capturing a Stage-3 “structural risk-holder” inventory for two North Carolina C-Corps, intended to be referenced by the legal-risk-acceptance framework and future `.claude/settings.json` attachment records.
 
 **Changes:**
+
 - Introduces `maintainers/aaron/legal-entities/inventory.md` documenting two entities and their NC SOS metadata.
 - Defines scope boundaries for what is intentionally not mirrored into the repo (EINs, addresses, BOI, bank info).
 - Adds forward pointers for future consent files and Stage-3 attachment records.

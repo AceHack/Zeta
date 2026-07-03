@@ -30,6 +30,7 @@
 The **C# corner** of the four-oracle compiler-BFT for the Bonsai-subset expression-tree serializer (081KT07NV0008QG0R003BE6MJ2 slice 1). Replays the shared `src/Core.TypeScript/bonsai/golden-vectors.json` **byte-for-byte** (`serialize(parse(canonical)) == canonical`) — the cross-language byte lock with the TS reference (#6433) + F# (#6429) oracles. "The compilers don't lie."
 
 ## Shape (matches TS/F# error-for-error)
+
 - **Result over throw**: owns a minimal `Result<T, TError>` port (C# has no BCL `Result` — per the BCL-interface-boundary rule: depend on BCL interfaces, else own your own). `Serialize`/`Parse` return `Result<_, BonsaiFeedback>`; an internal typed signal (`BonsaiFail`) is adapted to `Result` at the two boundaries (contract-vs-mechanism split).
 - **Serialize** hand-rolls canonical compact bytes (the BCL `JsonSerializer` escapes more chars than JS `JSON.stringify`, so byte-exactness needs the hand-roll); surrogate-aware string escaping matched to `JSON.stringify`. **Parse** leans on `System.Text.Json` (BCL) + the canonical-only guard.
 - `BonsaiFeedback` / `Expr` / `ConstValue` as sealed-record hierarchies (variant-for-variant parity with the F# DUs); `BinOp` enum; ergonomic `Build.*` constructors.

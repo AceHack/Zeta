@@ -28,21 +28,25 @@
 ## Description
 
 ## Summary
+
 - Adds hierarchy operating readouts to `observe.ts` so executive, C-suite, director, TPM/manager, lead, and IC hats get scoped priority items, scoped metrics, and legal management actions.
 - Extends hierarchy snapshots with work batches and work items so TPM workflows can prioritize initiative execution instead of only seeing projects/initiatives.
 - Wires the operating readout through the agent CLI and observe-act worker lane, including JSON ingestion via `AGENTIC_ORG_HIERARCHY_JSON`.
 
 ## Workflow gaps covered
+
 - Directors now see department initiative priority scope and legal actions such as priority decisions and staffing requests.
 - TPMs now see initiative execution priority across work batches/work items plus meeting, scheduling, and escalation actions.
 - CLI and worker tests cover the end-to-end observe surface so agents can consume the scoped workflow context.
 
 ## Test plan
+
 - `npm run typecheck`
 - `node --experimental-strip-types --test packages/application/test/observe.test.ts apps/agent-cli/test/agent-cli.test.ts apps/workers/test/org-cadence-lanes.test.ts`
 - `npm test`
 
 ## Merge status
+
 - Merged current `origin/main` into this branch before opening the PR.
 - Checked existing PR #6192: still OPEN, `mergedAt: null`.
 

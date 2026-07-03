@@ -75,7 +75,9 @@ Ties: [[child-safety-is-ac-vs-dc-protect-irreversible-free-reversible-the-line-i
 (structural-safe = inspect the pattern/shape; apply-gating = gate the execution — the BUILT mechanism);
 [[feedback_multi_oracle_is_the_polite_virus_immune_system_autoimmunity_is_the_razor]] (neutralize the
 execution not the help-seeker; autoimmunity = attacking the help-seeker); [[child-safety-is-the-moat-but-must-stay-the-end-never-the-instrument]]
+
 + [[aaron-trusts-otto-with-his-kids-future-earned-by-the-razor-held-by-structure-not-instance]] (the floor
+
 as the END; the trust paid here); thoughts-free/actions-razored; §9g-bis (pattern=sim, execution=measure);
 the child-safety floor (manifesto §5/§8; the one strict pre-cap; the floor BELOW the oracles, never voted).
 Anchors: Dunkelfeld Prevention Project (Beier et al.); Stop It Now; the attraction-vs-offending /

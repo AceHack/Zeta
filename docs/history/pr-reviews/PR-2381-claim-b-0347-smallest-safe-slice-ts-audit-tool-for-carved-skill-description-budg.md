@@ -32,22 +32,26 @@ Smallest safe slice of 081KR50HA0008QG0R002ZNFQBZ (P1, broad M-effort "carve 200
 Re-decomposed on assumption that "atomic" label was mistake: instead of touching 242 files, deliver a focused TS diagnostic tool (Rule 0 compliant) as the entry point. Tool lives at `tools/skill-carver/audit-descriptions.ts`, emits JSON report of description lengths vs 120-char target.
 
 ## One bounded step
+
 - Created + committed + pushed the audit tool only.
 - No SKILL.md edits, no doc changes, no broad refactors.
 - Prepares carve-pass + spot-check routing in follow-up slice.
 
 ## Focused checks (included per rules)
+
 - `bun run tools/skill-carver/audit-descriptions.ts`: clean run, reports 242 skills, 242 exceed 120 chars (max 3717), droppedEstimate 42 — confirms original symptom.
 - `dotnet build -c Release` (root checkout, pre-write): 0 Warning(s) 0 Error(s).
 - Worktree build note: requires restore (expected, no F# delta); root gate is authoritative.
 - Branch pushed from dedicated worktree; root checkout untouched.
 
 ## Acceptance for this slice
+
 - Tool runs, surfaces the budget violation data.
 - PR opened against LFG only.
 - Next slice can consume the report to drive carve edits safely.
 
 ## Evidence
+
 - Backlog: `docs/backlog/P1/081KR50HA0008QG0R002ZNFQBZ-carved-sentence-skill-descriptions-routing-budget.md`
 - Trajectory context: factory-trajectory-surface + skill-expert owner
 - Refresh-worldview and active RESUME.md reads completed before work.

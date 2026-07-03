@@ -80,6 +80,7 @@ without per-use sign-off:
 | Wikipedia                 | First-pass context       | implicit (factory uses routinely) |
 
 **Not authorized** without explicit Aaron sign-off:
+
 - Paid courses / subscriptions where factory would
   need to purchase access. (OCW / free-audit is
   the authorized tier.)

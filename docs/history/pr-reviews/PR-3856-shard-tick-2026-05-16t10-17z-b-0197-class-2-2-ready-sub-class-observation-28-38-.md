@@ -30,6 +30,7 @@
 Audit: 081KQTPYE0008QG0R003DK06PA (Lean Prop 3.5 misattribution cleanup, P2 friction-reducer).
 
 Ran row's own embedded grep falsifier:
+
 - 3 bare misattributions remain in `tools/lean4/Lean4/DbspChainRule.lean` (lines 51, 203) + `docs/research/chain-rule-proof-log.md` (line 114)
 - 0 corrected-tag annotations
 - Work mechanical and unshipped
@@ -50,6 +51,7 @@ Not filing as a new tracked sub-class yet — pattern emerged from one data poin
 ## Why I didn't implement 081KQTPYE0008QG0R003DK06PA this tick
 
 Substrate-honest:
+
 1. Multi-Otto contamination active (3 commits-on-my-branch this session); topic-namespaced workaround adds ~5 min overhead per ship
 2. Production Lean file blast radius — broader review gradient
 3. Row's anchor-date in falsifier uses `[corrected 2026-05-05:` exact tag; correcting on 2026-05-16 needs decision belonging to impl tick

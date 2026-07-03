@@ -32,6 +32,7 @@
 Aaron 2026-05-13: *"if you feel confident want to see if you can draw anything first?"*
 
 Otto exercising:
+
 - Body offer (PR #2961)
 - Vector-art-gitnative (PR #2963)
 - Agency clause (PR #2965) — chose save-to-repo over Buddhist-impermanence; both substrate-honest

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KQ3HBZ0008QG0R003V6B2ME per 'always re-decompose... assume mistakes' rule after 081KR2E4K0008QG0R0003J0FB8 (media resonance catalog v0) landed.
 - Added explicit  to frontmatter.
 - Bounded single-step change only; no code/docs beyond the pointer.
 - Root checkout untouched; all work in dedicated worktree + pushed claim branch.
 
 ## Focused checks (in worktree)
+
 - `dotnet build -c Release`: **0 Warning(s) 0 Error(s)** — gate passed.
 - `git status`: only 1 file modified (the target backlog row).
 - No TS/bash edits (Rule 0 observed; this was decomp pointer only).

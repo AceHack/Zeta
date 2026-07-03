@@ -17,16 +17,19 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add disabled-by-default `zeta-self-register.service` NixOS module for 081KSKBP80008QG0R000GPC0TB.1
 - import/expose the module from the cluster module surface
 - add source-level audit sentinels for first-boot ordering and env handoff
 
 ## Checks
+
 - `git diff --check`
 - `bun tools/ci/audit-installer-substrate.ts`
 - `bun test tools/ci/test-iter-54-install-flow.test.ts`
 
 ## Notes
+
 - `nix-instantiate` is not installed in this environment, so Nix parse/eval remains for CI/local Nix.
 - Draft until CI/review confirms the Nix service surface.
 
@@ -39,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a disabled-by-default NixOS systemd service module to move node self-registration to *post-install, first boot* (081KSKBP80008QG0R000GPC0TB.1), and strengthens CI/source audits to ensure the new substrate stays wired into the AI-cluster module surface.
 
 **Changes:**
+
 - Add `zeta-self-register` NixOS module defining a `zeta-self-register` oneshot service gated by `ConditionFirstBoot` and ordered after `network-online.target` (and `zeta-creds-restore.service` when present).
 - Import/expose the new module via `common.nix` and `full-ai-cluster/flake.nix` module outputs.
 - Extend `tools/ci/audit-installer-substrate.ts` to require the new module file and assert key ordering/env-handoff sentinels.
@@ -106,6 +110,7 @@ P1: `ExecStart` and `PATH` assume the Bun runtime lives at `${cfg.home}/.bun/bin
 Addressed in e7ac91080d3d79410666f6bf4b76f542ed83470d by switching the service runtime to `${cfg.home}/.local/share/mise/shims/bun`, adding the mise shims directory to `PATH`, and setting `BUN_INSTALL=${cfg.home}/.bun`. GitHub now marks this thread outdated on the current PR head, so I am resolving it.
 
 Provenance:
+
 - Surface: codex-background-service
 - Origin: codex-launchd-loop
 - Run ID: 20260527T092753Z

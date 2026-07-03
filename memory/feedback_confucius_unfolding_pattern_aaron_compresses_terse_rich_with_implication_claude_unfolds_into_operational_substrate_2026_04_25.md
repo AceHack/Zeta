@@ -128,6 +128,7 @@ for the next reader. Specifically:
   defining memory file.
 
 NOT necessary to confucius-unfold:
+
 - Established factory glossary terms with their own memory
   file or `docs/GLOSSARY.md` entry — pointer is sufficient.
 - Project-anchored names (Aurora, Glass Halo, Maji) — one-

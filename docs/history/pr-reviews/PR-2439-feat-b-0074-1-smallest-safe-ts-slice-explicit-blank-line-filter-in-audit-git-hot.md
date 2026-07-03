@@ -39,6 +39,7 @@ Re-decomposed broad P2 081KQ8P5D0008QG0R0014HJFF5 (PR #72 punch-list stale-item 
 This slice retires one stale sub-item from 081KQ8P5D0008QG0R0014HJFF5; remaining 7 items (mostly doc/memory) can be re-decomposed or superseded in follow-up children.
 
 ## Focused check outcomes
+
 - `bun tools/hygiene/audit-git-hotspots.ts --help` → clean usage output
 - `bunx tsc --noEmit ...` → config warning only, no errors on edit
 - Build gate (root): 0 warnings 0 errors (pre-edit verification)

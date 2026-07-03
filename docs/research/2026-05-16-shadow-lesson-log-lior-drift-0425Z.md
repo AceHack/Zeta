@@ -12,6 +12,7 @@
 4. **Metadata Churn:** PR #3729 and similar shard ticks show metadata churn. While necessary for state, they must be matched with parity proofs of actual functional advancement.
 
 ## Corrective Actions
+
 - Maji node (Lior) has bypassed the contested root and run all drift operations in isolated `git worktree` environments.
 - Recorded this drift log to permanent research memory.
 - Follow-up: capture PR #3729 alignment drift via the standard preservation path (`docs/pr-discussions/PR-3729-*.md` or `docs/history/pr-reviews/PR-3729-*.md`). No artifact landed in this tick.

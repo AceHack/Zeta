@@ -60,6 +60,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -82,6 +83,7 @@ _(no body)_
 Adds an assignment-history “cooldown” mechanism to the backlog ready-to-grind notifier to avoid re-sending identical `work-assignment` envelopes to idle agents on every poll cycle, and updates the associated backlog rows/docs to mark the slice as shipped.
 
 **Changes:**
+
 - Extend `NotifierConfig`/`PollResult` and `Adapters` to support a persisted assignment history file and a cooldown window.
 - Implement cooldown gating in `pollOnce`, including history read, skip tracking, and history pruning/write-back.
 - Add targeted tests for cooldown behavior and CLI parsing; close out 081KRHWGX0008QG0R0000P5YP2/081KRFA460008QG0R00229616S checklist items in docs.
@@ -116,6 +118,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

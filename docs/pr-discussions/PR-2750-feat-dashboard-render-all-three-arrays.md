@@ -27,6 +27,7 @@ Added tabs for Agent Array, Human Anchor Array, and External Reviewers, renderin
 Adds a tabbed navigation to the static WOW dashboard so it can render the Agent Array, Human Anchor Array, and External Reviewers as separate views, alongside documenting the Human Anchor Array and archiving several recent PR discussions.
 
 **Changes:**
+
 - Introduces nav tabs + two new tab panels (“Human Anchors”, “External Reviewers”) and renders static anchor/reviewer lists in `demo/index.html`.
 - Adds a new `docs/HUMAN-ANCHOR-ARRAY.md` document describing the Human Anchor Array and the “Three Arrays”.
 - Adds new PR discussion archive entries under `docs/pr-discussions/` and appends new catch logs in the shadow lesson log memory file.
@@ -54,6 +55,7 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 9 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **demo/index.html:842**
+
 * P0 (operational_implications): `loadDashboard()` makes 3 unauthenticated GitHub API requests per refresh (`commits`, `pulls?state=open`, `pulls?state=closed`). With the current auto-refresh behavior elsewhere in this file, this will exceed GitHub’s 60-requests/hour unauthenticated limit and cause frequent 403/rate-limit failures. Consider increasing the interval, adding an auth token, and/or implementing rate-limit-aware backoff/caching (ideally consuming a pre-generated `demo/metrics.json` instead of hitting the API directly).
 ```
         async function loadDashboard() {

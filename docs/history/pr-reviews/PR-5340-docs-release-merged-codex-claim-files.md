@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - remove five stale Codex claim files whose implementation PRs are already merged
 - verified each corresponding remote claim branch is gone before deletion
 
 ## Checks
+
 - file-absence check for all five claim files
 - git diff --check
 - codex-loop-health.ts severity ok after the background gate cleared
 
 ## Evidence
+
 - PR #2109 merged for factory-trajectory-autonomous-backlog-pickup
 - PR #2046 merged for fix-trajectory-none-child-candidate
 - PR #2113 merged for task-b0058-candidate-failure-log

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add readable `QubitIso.phaseS` / `QubitIso.phaseT` gates
 - add allocation-free `QubitIso.Raw.phaseS` / `QubitIso.Raw.phaseT` kernels
 - pin readable and raw S/T behavior to the existing Q# golden matrices
 - include S/T in the readable-vs-raw QubitIso benchmark sweeps
 
 ## Verification
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter 'FullyQualifiedName~QubitIsoTests|FullyQualifiedName~QSharpOracleTests'` (18 passed)\n- `dotnet build -c Release` (0 warnings, 0 errors)\n- `dotnet test Zeta.sln -c Release` (3,272 passed, 1 skipped)\n- `dotnet format --verify-no-changes --include src/Core/QubitIso.fs tests/Tests.FSharp/QubitIso.Tests.fs tests/Tests.FSharp/QSharpOracle.Tests.fs bench/Benchmarks/QuantumOracleBench.fs`\n- `dotnet run -c Release --project bench/Benchmarks/Benchmarks.fsproj -- --filter '*QuantumOracleOps.QubitIso*GateSweep*' --job Dry --warmupCount 1 --iterationCount 1`\n\nNote: full-workspace `dotnet format --verify-no-changes` is currently red on unrelated C# formatting/analyzer debt already present on `origin/main`; this PR only touches the F# Q# oracle lane.
 
 ## Outcome

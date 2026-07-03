@@ -38,6 +38,7 @@ The tamper-evident hash for the git-replacement store, behind the `IContentHashe
 `dotnet test … --filter Blake3Hasher` → **2 passed**, incl. a **known-answer** (`BLAKE3("")` → `49c9dc36ea4d40a0a6a1f9f5b94913af`) locking the 128-bit truncation convention for all four oracles.
 
 ## Sources
+
 - [Blake3.NET (xoofx)](https://github.com/xoofx/Blake3.NET) · [NuGet Blake3 2.2.1](https://www.nuget.org/packages/Blake3)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

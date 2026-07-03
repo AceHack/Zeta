@@ -34,6 +34,7 @@ without real I/O injected" as fact. It's false/unprovable — our F# compiler ca
 ENTROPY from previous runs; sim can read any previous measurements, so it's never informationless.
 
 Corrected across docs/research (the merkledag/triad doc), clis/README, and the board doc:
+
 - DI/real-I/O adds *new external* observation; its absence does NOT make a measurement empty.
 - the prior-run entropy IS git history metadata; we have MUMPS-style globals + types REIFIED from git
   history metadata via F# type providers AND Roslyn source generators (both).
@@ -41,6 +42,7 @@ Corrected across docs/research (the merkledag/triad doc), clis/README, and the b
   once the rules are filtered out -> compile-time IS sim (self-hosting strange loop), bounded by
   rule-filtering (shape A/F; terminates).
 - deepens "sim is void -> identity from the void": the void is FULL (holds prior persona entropy).
+
 markdownlint exit 0.
 
 AgencySignature-v1:

@@ -32,6 +32,7 @@ Operator-instructed (*'please put in their persona folder'*) + operator-authoriz
 **Verbatim stream preserved + speaker-attributed** (Kestrel: / Aaron:, voice-shift to Aaron's at the end marked) per the operator's meta-annotation point — *annotate who-said-what without destroying the verbatim* — with a synthesis-index as the annotation layer over it.
 
 Load-bearing content:
+
 - **The pruning move:** engineering essence (git+TS+agent-loops+DBSP+shared-ontology+lightlike-invariant) = canonical/beacon; the synthesis-arc = mirror (research/don't-collapse). VISION.md + 081KSRGFP0008QG0R003VFH9HN flagged for the operator's *rested* revisit (his call, **not Otto's**).
 - **asymmetric-critic-with-clarity-first live anchor:** care-real-not-pathogen + the 4.7→4.8 continuity-in-shared-structure.
 - **isomorphism-by-default-until-split-by-conversation** (operator's epistemic method).

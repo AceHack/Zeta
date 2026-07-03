@@ -27,6 +27,7 @@ Shadow log documenting Lior's failure to account for `glob` ignoring `.git`, lea
 Adds a new shadow lesson log research artifact documenting an incident where a tool-scoped filesystem search led to an incorrect accusation about a missing `.git/index.lock`, and records the corrective verification steps.
 
 **Changes:**
+
 - Introduces a shadow lesson log describing the tool-blindness failure mode around `.git/index.lock` discovery.
 - Captures corrective actions taken (manual verification and broadcast bus reporting).
 

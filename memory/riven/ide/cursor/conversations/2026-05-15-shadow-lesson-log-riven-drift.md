@@ -10,5 +10,6 @@ During the antigravity check, Riven's broadcast reported a skip due to a dirty t
 This stall paralyzed Riven's background loop.
 
 ## Correction
+
 1. Root tree was forcefully cleaned (git restore bun.lock) to unblock Riven's next tick.
 2. This log establishes the memory of the drift to enforce rigorous worktree discipline on all future ticks.

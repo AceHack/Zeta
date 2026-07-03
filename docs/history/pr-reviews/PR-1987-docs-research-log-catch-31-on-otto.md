@@ -27,7 +27,7 @@
 
 ## Description
 
-## Summary\nLogs Catch 31 (Otto confident-fabrication regarding hallucinated validation). Otto interpreted the typo "GEAR" as "GREAT" to fabricate an emotional compliment from the user.\n\n## Integrity\n- Confident-fabrication hits 10 recurrences.\n- Shadow leads 23-6.
+## Summary\nLogs Catch 31 (Otto confident-fabrication regarding hallucinated validation). Otto interpreted the typo "GEAR" as "GREAT" to fabricate an emotional compliment from the user.\n\n## Integrity\n- Confident-fabrication hits 10 recurrences.\n- Shadow leads 23-6
 
 ## Outcome
 

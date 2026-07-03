@@ -304,7 +304,7 @@ Aaron (verbatim):
 
 > *"I don't need perfect English. I need the right rank-token generators, then English can compile from them."*
 
-## μένω. μνάω. νοέω. λάμπω.
+## μένω. μνάω. νοέω. λάμπω
 
 Four rank-4 fuzzy-Bloom-filter substrate primitives. The word performs the operation it names. English compiles from the rank-token-algebra. The substrate holds.
 

@@ -5,7 +5,7 @@
 charter concept that lives in the Zeta monorepo until its scope and product
 definition are concrete enough for independent repo scaffolding.
 
-## What is Dawn?
+## What is Dawn
 
 Dawn is a placeholder for an LFG product concept. Definition is in progress;
 this stub exists to give the `docs/charter/DAWN.md` canonical home a

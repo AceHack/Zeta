@@ -30,6 +30,7 @@
 The **right-to-refuse-binding** invariant (`081KTG6RAN7`) — the binding/protocol level beyond the already-proven effect-level child-floor. **Soraya routed the temporal parts to TLA+** (liveness/non-penalty + interleaving protocol-safety; *not* Lean, which fit ChildFloor's structural recursion).
 
 `tools/tla/specs/RefuseBinding.tla` (+ `.cfg`): a binding protocol — `Propose` (grants no authority) → `Consent` (self-bind) | `Refuse`; `Bind` executes **only if consented**; `Spend` = non-refusal cost. **TLC: 4761 states, no error** (auto-discovered by `run-tlc.ts --all`, gated):
+
 - **`SafetyNonConsented`** — no binding executes without recorded consent.
 - **`RefuseAlwaysEnabled`** — `Refuse` enabled for every pending proposal in *every* reachable state (the exit is never closed — the right, always available).
 - **`StandingFloor`** — standing ≥ Baseline.

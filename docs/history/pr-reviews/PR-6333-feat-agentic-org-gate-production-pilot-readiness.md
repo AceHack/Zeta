@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - add a deterministic Phase 2.10 pilot-readiness evaluator
 - gate replay, soak, controls, capabilities, SLOs, disaster drills, and incidents before pilot launch
 - generate measured improvement backlog items from SLO misses, failed drills, and pilot incidents
 - record the Phase 2.10 checkpoint in the production autonomy CA
 
 ## Review
+
 - Subagent review attempted but blocked by platform thread limit: `collab spawn failed: agent thread limit reached`.
 - Local review covered the readiness gate, SLO/drill blockers, measured backlog generation, export surface, and focused regression tests.
 
 ## Verification
+
 - `node --experimental-strip-types --test packages/application/test/pilot-readiness.test.ts packages/application/test/restore-drill.test.ts packages/application/test/telemetry-improvement-optimizer.test.ts`
 - `npm run typecheck`
 - `npm test`

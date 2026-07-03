@@ -31,11 +31,13 @@
 Smallest safe slice of 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker): added "check-types" to nounsToCheck in `check-counts.ts` as one bounded increment. Re-decomposed 081KQNJ500008QG0R003SCWBDV during build (frontmatter claimed "atomic" but per task rule we assume decomposition mistakes and re-decompose; this extends coverage for emerging claims in memos).
 
 ## One bounded step only
+
 - No root checkout touched (dedicated worktree + fresh claim branch).
 - TS change only (Rule 0 / prefer code).
 - Exactly one edit.
 
 ## Focused checks (included per task rule)
+
 - `bun test tools/substrate-claim-checker/check-counts.test.ts`: 16 pass, 0 fail, 38 expects.
 - `dotnet build -c Release` (root pre-edit): 0 Warning(s) 0 Error(s).
 - Worktree dotnet build note: fresh clone needs restore (assets.json missing); non-blocking since TS-only change, root gate passed.

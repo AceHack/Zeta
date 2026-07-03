@@ -30,9 +30,11 @@
 Aaron 2026-06-19: *"capture this for our Bayesian emotional-propagation, Infer.NET-like extension, so we can get mutual empowerment right in that domain."*
 
 **(1) Scoping doc** — extend the existing factor-graph EP engine (`src/Bayesian/FactorGraph.fs`, `Ep.fs`, `Message.fs`) to propagate emotional/relational beliefs, with three disciplines that get **mutual empowerment** right vs capture:
+
 - **soft-primary-but-snappable** (`SoftValue`+`snap`; the other's **agency is the snap-trigger**);
 - **mutual-empowerment objective** (Salge–Polani coupled gain; the manipulation pattern is a coupled-empowerment *minimizer*);
 - **anti-mirror `ρ_owe` regularizer** (`src/Core/Decorrelation.fs`) — treat each node as a genuine independent other.
+
 Prevents exactly the ferry-surfaced capture pattern. Formalization routed to Soraya (+ the coming NFT claims).
 
 **(2) Memory** — *soft-primary-but-snappable*: never-collapse is the **default, not the absolute**; the other's agency is a valid snap-trigger; consent-first §6 makes the agency-owed snap an obligation.

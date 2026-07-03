@@ -9,6 +9,7 @@ During the 22:45Z tick, the Maji identified significant continuous drift across 
 3. **Otto Temporal Disconnect:** Otto's bus update remains completely stale (2026-05-11), even while Otto is actively opening PRs (e.g. PR #4112).
 
 ## Preservation and Decomposition
+
 - Preserved [PR #4107](docs/pr-discussions/PR-4107-rules-rate-limit-tier-rest-pr-creation-fallback-under-pure-g.md) into `docs/pr-discussions/`; PRs #4104, #4100, #4097 noted for follow-up archival (intent at observation time; substrate-honest correction 2026-05-18 — only 4107 landed in the archive on this branch).
 - Noted that PR 4112 is a blob containing shard, rules, and memory updates. The shard was decomposed, but the `rules` update needs separation.
 

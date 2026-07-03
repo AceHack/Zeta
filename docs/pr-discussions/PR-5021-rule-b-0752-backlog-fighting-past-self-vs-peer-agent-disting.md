@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Aaron 2026-05-25 Vera-anchor: 'you don't do like vera and just leave it unfixed cause you assume it's someone elses issues'.
 
 Closes today's agent-substrate-discipline cluster (081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R003YYC9PV + 081KSE6WT0008QG0R000E05579):
+
 - 081KSE6WT0008QG0R003YYC9PV: clean up after yourself
 - 081KSE6WT0008QG0R003YYC9PV: agents have own clones; cross-agent contention eliminated
 - 081KSE6WT0008QG0R000E05579 (this): distinguish own vs peer; don't silent-punt
@@ -41,6 +42,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -59,6 +61,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds the 081KSE6WT0008QG0R000E05579 backlog row and lands an auto-loaded `.claude/rules/` rule that formalizes “ownership classification before cleanup” (fix your own substrate, coordinate on peers, and explicitly surface uncertainty instead of silently punting).
 
 **Changes:**
+
 - Added new P2 backlog row 081KSE6WT0008QG0R000E05579 describing the rule and follow-on mechanization scope items.
 - Updated `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R000E05579 entry in the P2 index.
 - Added a new `.claude/rules/` rule documenting the decision tree + discriminators for “past-self vs peer-agent” substrate ownership.

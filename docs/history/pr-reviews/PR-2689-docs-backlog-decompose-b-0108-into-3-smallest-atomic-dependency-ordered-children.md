@@ -38,6 +38,7 @@ Decomposed 081KQDTYV0008QG0R003N15ZW2 (P2 immune system upgrades research absorb
 Used dedicated worktree + pushed claim branch; root checkout untouched. TS tools only for checks (Rule 0). Exactly one bounded step.
 
 ## Focused checks (included per rules)
+
 - `dotnet build -c Release`: 0 warnings, 0 errors (gate passed pre-work).
 - `bun tools/github/refresh-worldview.ts`: current state captured (no conflicting claims).
 - `bun tools/backlog/generate-index.ts --check`: ok, index matches.
@@ -46,6 +47,7 @@ Used dedicated worktree + pushed claim branch; root checkout untouched. TS tools
 - Claim branch pushed, no root writes.
 
 ## Evidence
+
 - Parent: docs/backlog/P2/081KQDTYV0008QG0R003N15ZW2-...
 - Children: 081KRA5AR0008QG0R003BSHKWV, 081KRA5AR0008QG0R000GZPV7N, 081KRA5AR0008QG0R0018WXP1H
 - Trajectory: autonomous-backlog-pickup + factory-trajectory-surface

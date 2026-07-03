@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"put in ip questionable folder."* Verbatim YouTube essay (8oyZB24-vAM) + quoted clips (Hassabis / LeCun / Sutskever / Sutton / Ermon); third-party, not ours; sponsor-ad segment kept verbatim, no weight.
 
 **Framework connections (routing note):**
+
 - **"Store only the important things, like the brain" (Hassabis) + Titans surprise-mechanism** = our **coincidence-routed memory-org research** (`081KV6GR72`) + ΔU-weighted retention.
 - **Griffin / recurrent-Gemma / state-space** = KV-collapse → O(1) state (the metering / linear-attention thread; "index card" = the what-remains / ZSet state).
 - **Diffusion LLMs** (parallel, error-correcting, any-position infill) = **emit/retract** (RGB/CMYK; ZSet ±1).

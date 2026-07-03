@@ -88,6 +88,7 @@ want to do something new i just can, distributed fair
 governance."
 
 Invariants the north-star demands:
+
 1. **No friction to act** — any agent can pick up any
    ready work without approval.
 2. **No idle-on-blocker** — if blocker exists, remove it or

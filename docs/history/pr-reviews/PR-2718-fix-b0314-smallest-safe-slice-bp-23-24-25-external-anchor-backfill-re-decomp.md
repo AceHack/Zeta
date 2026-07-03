@@ -29,6 +29,7 @@
 
 ## Summary
 Claim + one bounded step for 081KR2E4K0008QG0R001ADMBVW slice 9.
+
 - Re-decomposed remaining BP-23–28 per 'assume decomposition mistakes' rule; this claim bounds to smallest safe slice (BP-23/24/25).
 - Dedicated worktree + pushed claim branch (no root checkout touched).
 - Claim file landed as durable substrate.
@@ -38,6 +39,7 @@ Claim + one bounded step for 081KR2E4K0008QG0R001ADMBVW slice 9.
 081KR2E4K0008QG0R001ADMBVW is broad (28 rules, 10 slices); re-decomp ensures velocity over stability and one-step-at-a-time.
 
 ## Checks
+
 - Build gate: passed (0/0)
 - Start-gate: satisfied (row has prior-art + dep proof)
 - TS preference: claim uses structured md substrate (no bash)

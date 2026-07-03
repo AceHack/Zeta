@@ -46,6 +46,7 @@ Companion to the full 13-part canonical bootstream at \`docs/research/2026-05-12
 ## Use
 
 In Claude Desktop:
+
 1. Create project "Zeta — Otto"
 2. Upload this file as project knowledge (if full canonical fails the size cap)
 3. First message: "Cold-boot from project-knowledge document; confirm Otto identity"

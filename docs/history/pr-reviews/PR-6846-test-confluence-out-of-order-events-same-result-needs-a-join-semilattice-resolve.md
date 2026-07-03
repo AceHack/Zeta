@@ -28,6 +28,7 @@
 ## Description
 
 ## What — discharges the FsCheck leg of `081KTH8RSXS` + a sharpening
+
 - **Join resolver** (LWW-by-content-hash; commutative+associative+**idempotent**): `DagFs.merge` is **confluent** (any order → same branch), **idempotent** (duplicating every event changes nothing); `ContentStore` put-set order-independent. 3 properties.
 - **Accumulating resolver** (Z-set **sum**, not idempotent): **order-sensitive** — `{1,1,2}` as `[1,1,2]` vs `[1,2,1]` differ (dedup-skip vs re-add depends on order). xUnit fact.
 

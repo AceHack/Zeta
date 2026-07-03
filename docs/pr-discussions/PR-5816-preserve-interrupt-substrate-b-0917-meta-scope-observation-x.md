@@ -57,6 +57,7 @@ Aaron explicitly said *'we don't have to do it now it's your freetime'* — this
 This documentation-only PR preserves a new interrupt-in-monad-space observation as memory substrate and files 081KSNY2Z0008QG0R002HB4AGT as a future backlog target for Kleisli-based interrupt/context propagation.
 
 **Changes:**
+
 - Adds a feedback memory memo describing the x86 ISR/IRET analogy and Kleisli context propagation direction.
 - Adds backlog row 081KSNY2Z0008QG0R002HB4AGT with implementation slices and acceptance criteria.
 - Updates `memory/MEMORY.md` and `docs/BACKLOG.md` indexes to surface the new artifacts.

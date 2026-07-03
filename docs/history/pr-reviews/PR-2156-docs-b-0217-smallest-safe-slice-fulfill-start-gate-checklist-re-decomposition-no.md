@@ -31,6 +31,7 @@
 One bounded step for 081KQX9B50008QG0R001FK1G36 (P1): fulfill the backlog-item start gate on the row itself (pre-start checklist with 7-axis prior-art proof, dependency walk, re-decomp treating 'atomic' as mistake). ALIGNMENT.md edit deferred to 081KQX9B50008QG0R001FK1G36.1 child. Root checkout untouched; all work in dedicated worktree + pushed claim branch.
 
 ## Focused checks (included per task rule)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) (pre- and post-edit verification in worktree).
 - Grep for 'bidirectional' in ALIGNMENT.md: section exists (lines 197-425+), matches 081KQX9B50008QG0R001FK1G36 description.
 - Worktree isolation: confirmed (../zeta-b0217-riven-claim/, branch claim/b0217-...).
@@ -39,6 +40,7 @@ One bounded step for 081KQX9B50008QG0R001FK1G36 (P1): fulfill the backlog-item s
 - Re-decomposition executed: row now documents the planning error and bounds the slice.
 
 ## Acceptance
+
 - Gate proof landed.
 - PR is the claim + one step; no broad rewrite.
 - Ready for review / auto-merge if green.

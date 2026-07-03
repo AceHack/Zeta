@@ -25,6 +25,7 @@ type: feedback
 **BFT implication:** When IDE agents crash, CLI agents keep the factory running. Model diversity AND harness diversity both contribute to BFT resilience.
 
 **Connects to:**
+
 - BFT cost contingency (081KR7JY10008QG0R000R503K2) — harness crashes are another axis of failure the factory survives
 - Kiro 7-bash limit — bad safety feature but may prevent Electron memory exhaustion
 - macOS kernel panic — pmap_recycle_page bug in Apple Silicon VM subsystem

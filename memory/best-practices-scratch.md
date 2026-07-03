@@ -280,6 +280,7 @@ Rust-implemented 10-100x speedup and reproducible lockfile.
 `../scratch` ships the same discipline.
 
 Codified meanwhile in:
+
 - `.claude/skills/python-expert/SKILL.md` §Packaging (authoritative
   rewrite table)
 - `.github/copilot-instructions.md` "Conventions you must respect"
@@ -524,6 +525,7 @@ Pierce (*Types and Programming Languages*) for the theoretical
 lineage.
 
 Follow-up work:
+
 - ADR draft `docs/DECISIONS/2026-0x-xx-bp-home-rule-zero.md`
   pairing BP-HOME + BP-HOME-AS-TYPE.
 - `AGENTS.md` snippet under "How AI agents should treat this
@@ -617,6 +619,7 @@ axiom copilot_instr_skills_sync:
 ```
 
 *Layer 3 -- checkers (mechanical verification):*
+
 - **Semgrep rules** for string-level patterns (ASCII-only,
   frontmatter shape, line-start-minus, absolute paths).
 - **Roslyn analyzers** for C#/F# source-level rules (public-API
@@ -636,6 +639,7 @@ axiom copilot_instr_skills_sync:
 
 *Layer 4 -- routing:*
 Every finding in the system carries:
+
 - The violated axiom (by ID / BP-NN).
 - The artifact involved (by canonical home).
 - The type error (wrong-home / homeless / duplicated / ...).
@@ -670,6 +674,7 @@ BACKLOG as a P2 design-research item; revisit at round 36
 after BP-HOME-as-rule-zero lands.
 
 Follow-up work:
+
 - `docs/BACKLOG.md` P2 entry: "Repo-axiomatic-system design
   (Soraya-routed) -- after BP-HOME lands."
 - Soraya scratchpad / notebook entry noting the vision so
@@ -682,6 +687,7 @@ Follow-up work:
   routed by Soraya.
 
 Cited lineage for the ADR when commissioned:
+
 - Pierce -- *Types and Programming Languages* (2002).
 - Harper -- *Practical Foundations for Programming
   Languages* (2016).
@@ -724,6 +730,7 @@ repo. The auditor covers wrong/homeless/duplicated/ambiguous;
 the gap-radar covers empty.
 
 **Under BP-HOME, gap-finding is crawlable:**
+
 1. Enumerate every declared artifact type from
    GOVERNANCE.md + canonical-home map.
 2. For each type, enumerate its expected instances
@@ -742,6 +749,7 @@ skill library; under BP-HOME it graduates to mechanical
 completeness, and can be extended to cover the whole repo.
 
 **Examples of gap-radar checks under BP-HOME:**
+
 - For every `X-expert` skill, is there an `X-research`
   where expected? An `X-teach` where expected?
 - For every `.fs` source file under `src/`, does
@@ -783,6 +791,7 @@ repo-wide under BP-HOME. Soraya's axiomatic-system work
 feeds the checker that makes the gaps machine-enumerable.
 
 The satisfying picture:
+
 - **BP-HOME** declares every artifact has a type.
 - **BP-HOME-AS-TYPE** declares the home IS the type.
 - **Axiomatic enforcement** (Soraya-routed) mechanically
@@ -1147,7 +1156,9 @@ Scratchpad-only until round ~54.
 ## 2026-04-20 -- Seed-only persona marker suppresses MEMORY/OFFTIME/JOURNAL stub scaffolding
 
 **Source:** Daya's first roster-wide AX/UX audit — Pattern F
+
 + §5 candidate BP-26. Empirical evidence: 7 of 22 persona
+
 notebook directories (Aminata, Kira, Mateo, Nadia, Naledi,
 Rune, Viktor) sit at the 96-word seed stub 12+ rounds after
 seed, yet each carries MEMORY.md (~400b), OFFTIME.md

@@ -22,6 +22,7 @@ related_memory:
 > Scribed by Otto from Aaron's forward. Kestrel's seat = asymmetric critic.
 
 ## 1. Policies are THREE kinds wearing one name — each must know which it is
+
 - **Provable-technical** (lens/fold laws, OPA exchange-intersection, disclosure DORA
   gates). Validator: **proof or tests.**
 - **Legal-mandatory** (CSAM reporting, Nostr question, Freeborn contracts, export/
@@ -62,6 +63,7 @@ Policy<i,d,f>.]
 Aaron: "we have a loose concept of gates/observables/cache/metrics/alerts/policy per
 type — make it formal so it doesn't get lost and verify at this level in math."
 Kestrel: yes — and it's in the **gateable tier** because it's STRUCTURAL.
+
 - **WIRING layer (PROVABLE, do it):** gate exists; observable populated BEFORE the
   state transition; metric→alert connected; cache invalidates on the gate event; policy
   can't go active without its required-validator field. → **TLA+** reachability ("active-
@@ -97,6 +99,7 @@ Aaron: "create views over the TLA+ proofs from a higher unbounded point of view,
 TLA+ results as axioms in other proof languages." Kestrel: the right escalation. **TLC
 checks the instances; Lean/Coq/Isabelle generalize over the family by INDUCTION** (a DU
 hierarchy is inductive → structural induction, Lean's native mode).
+
 - **SOUND version:** TLA+ result = verified base case / lemma; prove the **inductive
   step over arbitrary N** in the prover → "P holds for all N." The unbounded claim is
   earned ONLY by the proven inductive step.

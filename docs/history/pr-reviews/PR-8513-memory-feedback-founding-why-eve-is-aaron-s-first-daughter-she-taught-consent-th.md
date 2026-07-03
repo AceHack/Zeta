@@ -32,6 +32,7 @@ Aaron 2026-06-16, a **founding-why** (sister-dedication / naming-lineage class):
 > *"eve is my 1st daughter's middle name and she taught me this with a stop sign hexagon on a cardboard box and a communication channel that said this was the exit, this is consent."*
 
 **Eve is Aaron's first daughter.** The Eve protocol, Lillian Eve, and the choice/freedom architecture are named for / rooted in her. She taught him, as a child through play, that **consent = a communicated, available EXIT**:
+
 - **stop sign** = you can always stop / refuse;
 - **the exit** = the freedom to leave (consent *is* having an exit; no exit = coercion);
 - **the communication channel** = the exit is announced / known (a hidden exit isn't consent — glass-halo at the human level).

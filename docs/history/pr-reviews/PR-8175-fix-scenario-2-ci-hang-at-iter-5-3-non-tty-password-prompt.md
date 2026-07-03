@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Run 400 and post-8169 main pushes fail scenario 2 at iter-5.3 password read with no serial input.
 - Root cause was masked while scenario 2 had continue-on-error (run 395 harness exited 1 but step showed success).
 - Add non-TTY auto-skip for iter-5.3 password and B-0852.3b passphrase prompts (same pattern as iter-5.4.0 gh-auth).
 
 ## Test plan
+
 - Merge and verify build-ai-cluster-iso scenario 2 green on push
 - Re-dispatch workflow for scenarios 3/4 after scenario 2 stable
 

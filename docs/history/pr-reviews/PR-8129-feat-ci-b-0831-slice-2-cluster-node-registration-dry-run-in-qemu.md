@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Refactor Step 6.9 ClusterNode YAML compose into shared shell helpers
 - **QEMU CI path:** when gh-auth skipped (non-TTY), compose preview YAML at `/mnt/etc/zeta/cluster-node-registration-preview.yaml` and emit `[iter-5.4.1-ci]` serial markers
 - `qemu-full-install-test` phase 1 now requires dry-run marker (slice 2)
@@ -37,6 +38,7 @@
 Riven clone: `~/.zeta/agents/cursor/riven-b0831-slice1-2026-06-14`
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ci/cluster-node-yaml.test.ts`
 - [x] `bun test src/Core.TypeScript/ci/qemu-full-install-test.test.ts`
 - [ ] gate green

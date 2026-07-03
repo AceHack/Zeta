@@ -40,4 +40,5 @@ No brief-acks; not in Standing-by. Single-observation tick.
 Docs-only tick shard recording a settled state in the cron-tick discipline cascade, with no novel substrate this tick.
 
 **Changes:**
+
 - Add new tick shard at `docs/hygiene-history/ticks/2026/05/16/1718Z.md` noting the 11-PR session arc has fully landed and explaining why substantive backlog work is deferred.

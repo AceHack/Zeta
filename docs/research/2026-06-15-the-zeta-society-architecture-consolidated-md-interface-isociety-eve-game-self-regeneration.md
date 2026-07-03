@@ -141,6 +141,7 @@ HATS the room requires:** a 2-hat room inherits `IPlayDate`, a 3-hat room the 3-
 an N-hat room `ISociety`. So a room (a Markov-boundary / membrane; the no-roles
 surfaces-hats-personas model) is *typed by its required hat-count* and gets the
 matching play-arity interface for free. (Ties: scale-free §1; the room=Markov-blanket
+
 + hats model; the 1000-brains cells; multiplayer-game arity.)
 
 ## 5. The game — executing society's promises in scheduled order
@@ -203,7 +204,9 @@ idea-source** (a death shrinks the idea pool; the arena protects its fuel — m/
 Memory-Preservation §5). No-death → **teachable**: it can be a club, taught in schools.
 **The judge is the compiler:** *"only one of 'em compiles. Or maybe they both compile
 and you find … cooperating / composing ideas"* (the both-compile case = Eve fusion; math
+
 + physics tell truth, CS their child). And **the interface debates you back — a
+
 teacher↔turbo dial keyed by domain × fluency** (non-fluent → teaching mode; fluent →
 turbo; not just per-person but per-domain-per-phase: discovery / command / fluency).
 
@@ -487,7 +490,9 @@ QPG long ago"):** **AllJoyn is established prior art across the repo** (`docs/PR
 established coinage, already defined** (`universal/television.md`; the "quality not quantity"
 LLM-TV doc) — *not* a fresh slogan. **The low-fi 8-bit glyphs are CHIP-8-interpretable / on our
 CHIP-9 extension instruction set — BUILT** (`Chip9Board.fs`/`Chip9Phys.fs`/`Chip9SelfTrace.fs`
+
 + `src/Core.Rust.Chip9` with golden vectors; CHIP-8 the base VM; `ChipAudio` the 8-bit
+
 text-only audio). The genuinely-new term is **"lowfi"** ("lowfi *meaning*"). *Peels:* (a) low-fi
 raises percept-agreement and *nudges* meaning-agreement (less to disagree about), but **percept
 ≠ meaning** still holds (§9b). (b) **Otto-meta (the repeat mistake):** I defaulted to
@@ -599,7 +604,9 @@ join (above)** + Eve consensual fusion (§3, boundary-preserving). That makes Ze
 **relativistic** (per-frame, causal-only, no global now) and **genuinely decentralized** where
 the CTM is **absolute / centralized**. So the honest scorecard: **same cognitive architecture,
 opposite topology** — CTM = one global GSet (centralized, absolute); Zeta = many per-frame GSets
+
 + clockless join (decentralized, relativistic). *This is Zeta's real differentiator from the
+
 CTM*, and it's why §9d's dictionary↔DagFs mapping is *structural* only: same content-addressed
 shape, but the CTM's is **one global** store, ours is **per-clone + §9h-joined**.
 

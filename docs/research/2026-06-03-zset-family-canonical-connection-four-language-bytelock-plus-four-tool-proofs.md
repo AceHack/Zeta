@@ -42,6 +42,7 @@ over the abelian group `G`).
 ## The disconnection the search caught (the concrete one)
 
 **`D ∘ I = id` was proven THREE times, independently, by different parties:**
+
 - **Lean** `chain_rule_id_corollary : D (I s) = s` — already on main (general over `G`, machine-checked).
 - **C13** (this session) re-proved it via **FsCheck** (real Circuit) + **Z3** (telescoping over reals) — *without knowing the Lean proof existed.*
 

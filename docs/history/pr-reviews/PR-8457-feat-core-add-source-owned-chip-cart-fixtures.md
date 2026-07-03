@@ -34,6 +34,7 @@ Add CartFixtures as a source-owned library of tiny hand-authored CHIP-8 and CHIP
 The CHIP-9 fixtures exercise the emulator extension path directly: Fn01 selects a color plane and DRW lights color through Chip8Cow, with no host-injected capability required. MetaCart now verifies it can launch that source-owned CHIP-9 child through the existing host-assisted cart boundary.
 
 Verification:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter 'FullyQualifiedName~CartFixtures|FullyQualifiedName~MetaCart|FullyQualifiedName~Chip8Arcade|FullyQualifiedName~Chip9Planes'
 - dotnet build -c Release
 - dotnet test Zeta.sln -c Release --no-build

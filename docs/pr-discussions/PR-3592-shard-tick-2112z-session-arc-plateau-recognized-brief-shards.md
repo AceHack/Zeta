@@ -37,6 +37,7 @@ Tick 2112Z. Substrate-honest plateau-recognition shard. 28-tick arc has reached 
 Adds a new hygiene-history tick shard (2112Z) documenting that the current session arc has plateaued and that subsequent ticks should be brief “wait-state” acknowledgements until specific triggering conditions occur.
 
 **Changes:**
+
 - Introduces a new tick entry describing plateau recognition and the intended shorter shard format going forward.
 - Records explicit criteria for when to resume substantive tick shards.
 - Adds cross-references to the relevant memory file and `.claude/rules` guidance that motivates the change.

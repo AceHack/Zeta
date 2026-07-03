@@ -81,6 +81,7 @@ Dev workflow becomes:
 ## Why sync-waves now
 
 ArgoCD reconciles App-of-Apps children in parallel by default. That breaks for:
+
 - Workloads referencing Vault secrets that ESO hasn't synced yet
 - Resources using OPA Gatekeeper constraints that haven't installed
 - HatBindings created before the hat-system CRDs exist

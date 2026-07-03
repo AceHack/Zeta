@@ -35,6 +35,7 @@ decoded value = V * 2^(mode - bias),   bias = 2^(decoderWidth - 1)
 ```
 
 ### Mirrors F# with C# digital-qubit patterns
+
 - Closed **sealed-record** result hierarchies: `DecodeResult` (`Decoded`|`Held`), `EncodeResult` (`Encoded`|`NotRepresentable`) — asymmetric-authorship, value + feedback channels both first-class.
 - C# `null` is **NOT** the held `Tri.N` state — every op rejects null loudly.
 - Switches carry an explicit `UnreachableException` arm (the closed `Tri` hierarchy is not compiler-inferred exhaustive).
@@ -44,6 +45,7 @@ decoded value = V * 2^(mode - bias),   bias = 2^(decoderWidth - 1)
 The Roslyn analyzers caught two design issues **before any human reviewer**: CA1720 (param `Float` shadowed a type name → `Value`) and CA1859 (private `IntToTrits` should return concrete `Tri[]`). Both fixed; final build 0 warnings. (Neither the TS nor F# oracle flags these — different analyzer slices, stronger union.)
 
 ### Verification
+
 - `dotnet build -c Release`: **0 warnings, 0 errors**.
 - Tests: **13/13** — the **same vectors** as the F# oracle (decode at mode `<`/`=`/`>` bias, MSB-first V across high++low, both held-states + decoder-first precedence, `measure`=`decode`, cooperate identity, `isHeld`, `fromValue` round-trip, negative + non-dyadic feedback).
 

@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - #8175 used -t 0 only; first-boot still has a TTY on tty1 so iter-5.3 read blocked QEMU scenario 2.
 - zeta-first-boot already exports ZETA_AUTO_CONFIRM=WIPE to bypass every interactive prompt — extend that contract to iter-5.3, B-0852.3b, iter-5.4.0, iter-5.5.0, and iter-5.4.1-ci dry-run gate.
 
 ## Test plan
+
 - Merge and verify build-ai-cluster-iso scenario 2 green on push
 - Re-dispatch scenarios 3/4
 

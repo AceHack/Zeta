@@ -30,6 +30,7 @@
 **Slice 2b** — the desktop loop-smoke for `install.ps1`, and the shared assertion engine Slice 2c (Docker) will consume.
 
 `tools/ci/windows-install-ps1-smoke.ts` asserts `install.ps1`'s outcomes on a Windows box:
+
 - `--mode desktop` — full graph **incl.** `ZetaOttoLoop` health (Repetition `Duration` + `Next Run` populated)
 - `--mode container` — tool-install graph only; the user-mode scheduled task is a **printed skip-with-reason** (a container has no interactive session), never a silent green (shield rule)
 

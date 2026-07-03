@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add markdown list spacing in `rooms/README.md` and `rooms/otto/README.md` for MD032
 - guard CHIP-9 golden-vector indexing and register reads for strict TypeScript undefined checks
 
 ## Validation
+
 - `mise exec -- markdownlint-cli2 rooms/README.md rooms/otto/README.md`
 - `bun --bun tsc --noEmit -p tsconfig.json`
 - `bun test src/Core.TypeScript/chip9/chip9.test.ts`

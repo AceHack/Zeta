@@ -47,6 +47,7 @@
 ### Research findings (Otto-364 search-first)
 
 Per [code.claude.com/docs/en/permissions](https://code.claude.com/docs/en/permissions) (searched 2026-05-08):
+
 - Rules evaluate **deny → ask → allow** (first match wins)
 - Settings precedence: managed > CLI > local project > shared project > user
 - Bash patterns support glob `*`; space before `*` enforces word boundary

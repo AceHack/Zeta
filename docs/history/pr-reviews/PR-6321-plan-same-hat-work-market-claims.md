@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add `planWorkMarketClaims`, a deterministic cross-queue planner for same-hat agents
 - score claimable shards by priority class, SLA urgency, shard priority, agent reputation, load, recent same-hat claims, and skill fit
 - keep mutation behind existing lease-fenced `claimNextWorkShard` while surfacing planned assignments and unassigned ready shards
 - document the Phase 2.5 deterministic market-clearing checkpoint
 
 ## Verification
+
 - node --experimental-strip-types --test packages/application/test/work-market.test.ts packages/application/test/observe-for-hat.test.ts packages/application/test/schedule-optimizer.test.ts
 - npm run typecheck
 - npm test

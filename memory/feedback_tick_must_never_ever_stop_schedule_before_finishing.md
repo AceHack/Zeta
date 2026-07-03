@@ -189,6 +189,7 @@ work on each tick.
   continuing. A quiet stop is worse than a visible failure.
 
 **Companion rules.**
+
 - `feedback_loop_default_on.md` — /loop is default-on; this
   memory is the concrete implementation contract of that rule.
 - `feedback_loop_cadence_5min_combats_agent_idle_stop.md` —
@@ -216,6 +217,7 @@ fragile and needs CLAUDE.md-level loading if it recurs.**
 
 **Current cron (round 44 session 2026-04-22, after 2→1 min
 cadence change):**
+
 - ID: rotated this round via `CronDelete` + `CronCreate`
   (see `docs/hygiene-history/loop-tick-history.md` for the
   definitive migration row)

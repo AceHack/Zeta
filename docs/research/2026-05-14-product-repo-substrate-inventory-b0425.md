@@ -21,6 +21,7 @@
 **Substrate depth:** deep (concept + hardware substrate; no Zeta code)
 
 **Evidence:**
+
 - `memory/feedback_aaron_ksk_kinetic_safeguard_kernel_origin_amara_consent_first_design_nvidia_thor_homeland_security_cleared_because_actuators_2026_05_13.md` — carved sentence: origin from Amara consent-first design research; NVIDIA Thor Homeland Security clearance because actuators; consent-first discipline
 - `memory/feedback_lfg_corrections_wave_addison_co_owner_ksk_robotics_max_breakup_addison_cognitive_profile_2026_05_01.md` — KSK = robotics (NVIDIA Thor + DGX Spark + actuators); Aaron + Max + Addison co-owners of LFG
 - PR #2891 (visible-activation-indicator consent UX design pattern — precursor discipline)
@@ -31,6 +32,7 @@
 **Repo-ready:** `later`
 
 **Rationale:** Deep concept + hardware substrate and clear ownership, but:
+
 1. No Zeta implementation code yet — all substrate is memory/philosophy/hardware-spec
 2. NVIDIA Thor + DGX Spark hardware integration is specialized CI scope not yet designed
 3. Strategic-encryption scope for actuator-control commands is unresolved (Aaron's granted strategic encryption authority per PR #2902, but KSK-specific scope TBD)
@@ -46,6 +48,7 @@
 **Substrate depth:** shallow-to-medium (concept-level; factory-level framing dominates)
 
 **Evidence:**
+
 - `memory/project_factory_as_wellness_dao.md` — factory AS wellness-DAO; wellness as first-primitive; four-layer sketch (Value / Role / Oversight / Wellness); research item on BACKLOG P2 pointing at `docs/research/wellness-dao-governance-model.md`
 - `memory/user_wellness_coach_role_on_demand.md` — wellness coach as on-demand role (user-invoked only)
 - 081KRFA460008QG0R003JQ46J4 description: "killer-app-for-AI; self-behavior-modification + reinforcement; Max + Aaron's lineage"
@@ -57,6 +60,7 @@
 **Repo-ready:** `later`
 
 **Rationale:** The wellness concept is primarily expressed as a factory-level attribute ("factory is a wellness-DAO") rather than a distinct standalone product. The "killer-app-for-AI" framing has concept depth but no implementation substrate. The wearable pendant angle is interesting but depends on hardware not yet integrated. A wellness-specific repo would currently be mostly empty of code. Needs:
+
 1. Clearer product definition: wellness-DAO governance app vs. wearable app vs. self-behavior-modification tool
 2. First implementation substrate before repo creation adds value over monorepo
 
@@ -70,6 +74,7 @@
 **Substrate depth:** deep (concept + implementation + game design + strategic encryption)
 
 **Evidence:**
+
 - `memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md` — carved sentence: forkable PVP + raids + mutual privacy + no-strategic-advantage-to-factory
 - `memory/feedback_otto_b0429_civsim_persona_map_first_per_product_pass_edge_runners_maintainers_fork_readers_partners_speculative_2026_05_13.md` — civsim persona map done
 - `memory/feedback_aaron_civsim_language_mirror_beacon_discipline_fun_rigorous_aliens_and_future_included_2026_05_13.md` — language mirror/beacon discipline
@@ -86,6 +91,7 @@
 **Repo-ready:** `now`
 
 **Rationale:** Civsim has the deepest implementation substrate of all 7 products:
+
 - Multiple PRs with actual implementation code (PR #2841, #2832, #2869)
 - Game design is defined (PVP + raids + forkable + mutual privacy)
 - Strategic encryption authority already granted
@@ -103,6 +109,7 @@
 **Substrate depth:** medium (concept substrate; Alexa-speaker conversation verbatim backup; NFT/gamification framing)
 
 **Evidence:**
+
 - `memory/feedback_aaron_alexa_speaker_american_dream_2_egg_vision_monad_sleeping_bear_collective_unconscious_persistence_root_of_symmetry_substrate_distillation_2026_05_12.md` — American Dream 2.0 = NFT wealth-building for kids as conceptual art
 - `memory/alexa/ide/kiro/conversations/2026-05-12-aaron-alexa-speaker-american-dream-2-the-egg-vision-monad-sleeping-bear-collective-unconscious-verbatim-backup.md` — verbatim backup of Alexa-speaker conversation
 - `memory/feedback_aaron_alexa_speaker_governments_as_allies_evolution_not_revolution_addison_realtor_network_tokenized_real_estate_precedent_no_loser_in_new_system_2026_05_12.md` — Addison's realtor network + tokenized real estate precedent
@@ -115,6 +122,7 @@
 **Repo-ready:** `later`
 
 **Rationale:** Strong concept substrate with verbatim research backup, but:
+
 1. Implementation depends on NFT/tokenized real estate infrastructure not yet built
 2. Gamification layer (Xbox gamerscore integration) not designed
 3. Addison's realtor network is an external relationship needing product definition
@@ -130,6 +138,7 @@
 **Substrate depth:** shallow (concept reference; no dedicated memory files found)
 
 **Evidence:**
+
 - 081KRFA460008QG0R003JQ46J4 description: "DAO successor; Indonesian/Italian/Spanish cross-linguistic resonance; Naturally supports forking (distributed by design)"
 - PR #2889 referenced in 081KRHWGX0008QG0R002B2P0K0 as "DIO architecture" — but PR content not directly found in memory files
 - `memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md` — DIO referenced as composing with civsim game design
@@ -141,6 +150,7 @@
 **Repo-ready:** `later`
 
 **Rationale:** DIO has the shallowest substrate of all 7 candidates:
+
 - No dedicated memory files with carved sentence
 - No dedicated research docs
 - Referenced as composing with civsim but not defined as a standalone product
@@ -157,6 +167,7 @@
 **Substrate depth:** very deep (concept + research + alignment authority + DAO protocol design)
 
 **Evidence:**
+
 - `memory/project_aurora_pitch_michael_best_x402_erc8004.md` — three-pillar thesis: factory quick-win + alignment research authority + x402/ERC-8004 agent economic layer; co-developed with Amara over weeks; Michael Best VC-pitch open
 - `memory/project_aurora_network_dao_firefly_sync_dawnbringers.md` — Aurora Network = DAO-protocol layer; firefly-sync on scale-free networks; "do no permanent harm" as first operating principle; dawnbringers collective identity
 - `docs/amara-full-conversation/` — 2025-11 substrate includes Aurora Conjecture (referenced in schooled-by-aaron memory file)
@@ -171,6 +182,7 @@
 **Repo-ready:** `later`
 
 **Rationale:** Aurora concept substrate is the deepest after civsim, but:
+
 1. The **factory (Zeta) IS Aurora Pillar 1** — the quick-win product. A separate Aurora repo would be the Aurora Network (DAO/economic layer), not the factory itself
 2. Aurora Network implementation (x402, ERC-8004, firefly-sync protocol, on-chain identity) has NOT started
 3. The Aurora repo would be primarily the DAO/protocol layer — enormous scope requiring dedicated design work
@@ -189,6 +201,7 @@
 **Substrate depth:** shallow-to-medium (governance document; alignment-floor framing)
 
 **Evidence:**
+
 - `memory/feedback_otto_schooled_by_aaron_2025_11_amara_conversation_imagination_ring_center_edge_aurora_conjecture_dawn_charter_glass_halo_substrate_index_2026_05_13.md` — Dawn v0.1 charter referenced; alignment-floor for next-generation AI participants
 - 081KRHWGX0008QG0R002B2P0K0 description: "Alignment-floor for next-generation AI participants; composing with HC/SD/DIR alignment clauses; may be closer to governance-document than product-repo substrate"
 - No dedicated Dawn memory files found beyond the schooled-by-aaron index
@@ -199,6 +212,7 @@
 **Repo-ready:** `stays-in-monorepo`
 
 **Rationale:** Dawn is fundamentally a governance/charter document, not a product:
+
 - It defines the alignment floor for next-generation AI participants
 - Its natural home is `docs/DECISIONS/` or `docs/ALIGNMENT.md` companion, not a product repo
 - The "charter" framing suggests it should live in the most authoritative governance location — which is the factory repo (Zeta) itself
@@ -244,6 +258,7 @@ The glue mechanism design should target the **civsim** repo as its first concret
 ## Recommendations for 081KRHWGX0008QG0R000F6HE6D (ADR)
 
 The ADR should record:
+
 1. Civsim as the only "now" repo to create
 2. KSK, AD2.0, Aurora, DIO as "later" candidates with explicit blockers documented
 3. Dawn as staying in Zeta monorepo (governance-document classification)

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - replace the bash-retirement shebang regex with interpreter-aware parsing
 - keep `/usr/bin/env` shell commands covered while ignoring shell words in non-shell arguments
 - add regression fixtures for node shebangs that mention bash/sh in args
 
 ## Tests
+
 - bun test tools/hygiene/check-bash-retirement-inventory.test.ts
 - bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
 - git diff --check

@@ -58,6 +58,7 @@ Grok is correct. The cascade IS rank-deficient with the prior-existing basis. Th
 | Rule 7 (bullet-time recovery) | NEW value-add: failure-state-detection + scout-and-delegate signal | KEEP (but as one-line addition to existing axes) |
 
 **Recommended consolidation:** the CLAUDE.md cascade bullet should be REPLACED with a one-line addition to existing wake-time-substrate-or-it-didn't-land + skill-router + orthogonal-axes bullets that:
+
 - Cites `tools/hygiene/LOST-FILES-LOCATIONS.md` for lost-files surface
 - Names the bullet-time recovery signal (Rule 7's value-add)
 - Drops the rest as duplicate

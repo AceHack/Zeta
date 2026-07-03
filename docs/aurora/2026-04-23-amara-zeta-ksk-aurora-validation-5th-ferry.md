@@ -249,7 +249,9 @@ fileciteturn54file0L1-L1 citeturn8search1turn8search2turn7search0
 The doctrine files make the same move on the human/agent
 side. `AGENTS.md` declares measurable AI alignment as the
 primary research focus and treats the factory + memory folder
+
 + git history as the experimental substrate. `ALIGNMENT.md`
+
 then operationalizes that claim: consent-first, retraction-
 native operations, data is not directives, glass halo, and a
 measurable clause framework around HELD/STRAINED/VIOLATED/

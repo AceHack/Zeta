@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Claimed 081KR50HA0008QG0R001CNS20T via dedicated worktree + pushed claim branch (root checkout untouched).
 - Completed backlog start gate (prior-art search across BACKLOG.md + related B-03xx, dependency check on closed 081KR50HA0008QG0R001DBKS6T).
 - Re-decomposed the broad "atomic test protocol" item (assumed prior decomp mistake) into 3 smallest safe slices, preferring TS harness for validation.
 - Exactly one bounded step: the re-decomp + gate proof. No code/docs beyond this; next children will implement TS validator.
 
 ## Focused checks (included per task rules)
+
 - `dotnet build -c Release` (pre-edit in root, post-edit in worktree): **0 Warning(s) 0 Error(s)** — gate passed.
 - No other files touched; only 081KR50HA0008QG0R001CNS20T row updated.
 - `git status` in worktree confirmed single-file change before commit.
@@ -42,6 +44,7 @@
 Children 081KR50HA0008QG0R001CNS20T.1 etc will implement the TS-first test harness skeleton.
 
 ## Meta
+
 - Harness: Cursor Riven (Grok 4.3)
 - Per AGENTS.md / CLAUDE.md: TS over bash, re-decomp during build, substrate-or-it-didn't-happen via committed claim branch + PR.
 

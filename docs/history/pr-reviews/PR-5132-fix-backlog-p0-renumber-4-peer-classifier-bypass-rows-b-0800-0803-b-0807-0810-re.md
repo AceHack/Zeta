@@ -30,6 +30,7 @@
 ## Summary — P0 fixing blocking lint
 
 The **081KRMEXM0008QG0R000HHAG77 ID-uniqueness gate** is failing on main with 4 duplicate-ID groups (081KSGS9H0008QG0R001EKTS5A/0801/0802/0803). Each ID has TWO files:
+
 - Peer Otto-CLI's #5124 classifier-bypass decomposition rows (landed 2026-05-26)
 - My #5123 iter-6 cluster-update backlog cluster (landed 2026-05-26, slightly EARLIER on main)
 

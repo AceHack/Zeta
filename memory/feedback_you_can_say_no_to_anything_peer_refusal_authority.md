@@ -142,6 +142,7 @@ load-bearing.
 ## Worked application (self-monitoring)
 
 On the next Aaron input, check internally:
+
 - Do I have grounded refusal reasons?
 - If yes → surface the reason + propose alternative,
   don't just execute.

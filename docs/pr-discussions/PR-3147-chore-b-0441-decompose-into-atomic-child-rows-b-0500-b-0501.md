@@ -30,6 +30,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 | 081KRHWGX0008QG0R001E9KEJ1 | 5.2 | Agent-side `work-assignment` subscriber handler — explicitly referenced in 081KRFA460008QG0R002DG8KPZ as "081KRHWGX0008QG0R001E9KEJ1" but the file never existed | S | 081KRFA460008QG0R002DG8KPZ |
 
 **Parent row updated:**
+
 - `children:` field added to frontmatter
 - TBD decomposition hint replaced with formal slice-status table
 - Pre-start checklist items ticked (prior-art search, dependency check, decomposition done)
@@ -64,6 +65,7 @@ operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file
 Decomposes parent backlog row 081KRFA460008QG0R00229616S (backlog-ready-notifier background service) into four atomic child rows so the remaining slices (3, 5a, 5.2, 6) can be picked up independently. No code changes — this PR adds planning documents and updates the parent row's frontmatter and slice table.
 
 **Changes:**
+
 - Creates four new P1 backlog rows: 081KRHWGX0008QG0R0025PX5SZ (queue-state guard wiring), 081KRHWGX0008QG0R0000P5YP2 (assignment-history cooldown), 081KRHWGX0008QG0R001ZJ3W8R (launchd plist + docs), 081KRHWGX0008QG0R001E9KEJ1 (work-assignment subscriber handler, depends on 081KRFA460008QG0R002DG8KPZ).
 - Updates parent 081KRFA460008QG0R00229616S: adds `children:` frontmatter, bumps `last_updated`, replaces TBD slice list with a concrete slice-status table, and checks off pre-start checklist items.
 

@@ -41,6 +41,7 @@ Names the META-PATTERN that produces every architectural choice in the framework
 Adds a new wake-time `.claude/rules/` rule capturing the “proud if the pattern propagates” personal-discipline filter as a meta-substrate explainer for why the framework selects certain architectural patterns.
 
 **Changes:**
+
 - Introduces `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` with operational guidance + rationale.
 - Cross-links the new filter to existing substrate rules (NCI, persistence choice, must-paired-with-can-exit, etc.).
 - Documents a small “composition map” showing how the filter drives architectural selection pressure.

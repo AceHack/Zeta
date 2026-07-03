@@ -36,6 +36,7 @@ Re-lands the substantive content from [PR #3817](https://github.com/Lucent-Finan
 Worktree-pool primitive — addresses **sub-case 4 (pruned-sidetick race)** of [\`.claude/rules/claim-acquire-before-worktree-work.md\`](.claude/rules/claim-acquire-before-worktree-work.md)'s borrow-on-existing pattern. Composes with 081KRHWGX0008QG0R002DPG02X, 081KRHWGX0008QG0R001HMWM1W, 081KRMEXM0008QG0R000X1PPGC.
 
 Empirical anchors (from row body):
+
 - Shard PR #3808 (\`docs/hygiene-history/ticks/2026/05/16/0715Z.md\`) — 4-tick-arc evidence
 - Rule PR #3812 — operationalizes sub-cases 1+2; flags 3+4 as substrate-engineer work
 
@@ -43,7 +44,7 @@ Empirical anchors (from row body):
 
 Adds the 081KRQ1AB0008QG0R001KQ9S4B entry after 081KRQ1AB0008QG0R003DYANMC (which is now \`[x]\` on main — that's the change that drifted from #3817's tree).
 
-## Why not just rebase #3817?
+## Why not just rebase #3817
 
 Tried at 13:31Z (\`gh pr update-branch --rebase 3817\` → \`X Cannot update PR branch due to conflicts\`) and again at 14:21Z (same result). Local rebase + force-push would work but is risky under multi-Otto contention (3-4 Lior procs + parallel Otto-CLI sessions doing \`git switch\` on the shared worktree). Re-land on fresh branch is the lower-risk path; content is identical.
 

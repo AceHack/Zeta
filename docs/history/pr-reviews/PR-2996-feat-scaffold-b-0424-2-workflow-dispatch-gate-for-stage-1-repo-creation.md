@@ -83,6 +83,7 @@ ace: DRY RUN — 12 operations planned for Lucent-Financial-Group/ace
 5. Click **Run workflow**.
 
 Manual steps after the workflow completes (printed in step 7):
+
 - Upload SVG social-preview PNG (GitHub requires rasterized PNG)
 - Enable merge queue via GitHub UI (no REST API)
 - Wire OpenSSF Scorecard workflow (copy from Zeta's `.github/workflows/scorecard.yml`)

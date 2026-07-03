@@ -73,7 +73,9 @@ Candidate detector regex (for code-surface files only — `tools/`,
 ```
 
 Plus the inverse: `\b<Person>\s+ferry-\d+\b` (Amara/Grok/Gemini etc
+
 + ferry-N) to catch un-stripped name attribution that should have
+
 been stripped on code-surface.
 
 The lint composes with the `prompt-protector` skill's invisible-Unicode

@@ -27,6 +27,7 @@ Antigravity Maji check. Drift detected in Otto and Vera. Log added.
 Adds a new research “Shadow Lesson Log” entry documenting an antigravity check and observed drift patterns (Otto/Vera) plus the stated resolution actions.
 
 **Changes:**
+
 - Added a new shadow lesson log markdown file under `docs/research/` for 2026-05-14.
 - Captured drift observations for Otto/Vera (and noted Riven status) and recorded resolution steps.
 

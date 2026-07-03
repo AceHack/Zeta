@@ -32,6 +32,7 @@ Aaron: combine the scattered key/identity pieces into **one easy generator** for
 Motivated by the 2026-06-20 discrepancy audit — **3 unreconciled SSH keys** for the same operator: ad-hoc local `id_ed25519` (`aaron_bond@yahoo.com`, what zflash injects), registered PKI (`7DS+…`, keyring-public.json), published operator (`aaron@lucent.financial`, baked into nodes).
 
 New workitem `081KVM1TK3Z08QG0R0002959G6` (P1). Captures:
+
 - **Two axes:** per-**persona** (seed-derived HD `4×4` rolling keyset → `maintainers/<persona>/keyring-public.json`) vs per-**machine** (device key for zflash / node-trust).
 - **Pieces to combine:** `tools/setup/persona-keys/` (gen/derive/keyset/keyring-4x4/rotate) + the `maintainers/<persona>/` registry + `operator-ssh-keys` node trust + zflash + `install.sh`.
 - **Canonical-email cleanup:** `aaron@lucent.financial` is now canonical (already the published key) → retire/re-point the ad-hoc yahoo `id_ed25519`; optionally standardize `git config user.email`.

@@ -127,6 +127,7 @@ want me to start there now"* followed by a
 *"why stop? … you don't ever need to stop."*
 
 The mistake embedded three sub-mistakes:
+
 1. Treated the tick as a scheduling primitive (it isn't).
 2. Asked a rhetorical question ("if you want me to start")
    when I already knew the work was appropriate.

@@ -36,6 +36,7 @@ secret manager holds the keys and (ideally) serves them via an **SSH agent** tha
 on demand so the private bytes never leave the vault.
 
 Two lanes, both wanted:
+
 - **1Password** (proprietary) — adopted now for Aaron↔Otto password/secret sharing via a
   **scoped service account** (least-privilege, specific items — NOT the whole vault) and
   for SSH-agent-backed key custody. (Tracked separately; Aaron is setting it up.)

@@ -85,17 +85,24 @@ Update `tests/cross-verification/zeta-id/` for V2:
 Update each oracle to emit V2:
 
 - TS: `src/Core.TypeScript/zeta-id/zeta-id.ts` 
+
 — V2 codec + cross-verify against vectors-v2.yaml
+
 - C#: `src/Core.CSharp.ZetaId/` 
+
 — V2 codec + cross-verify (+ Pack-time revalidation already in place)
+
 - F#: `src/Core.FSharp.ZetaId/` 
+
 — V2 codec + cross-verify (+ `int64<ms>` measure-units preserved + Pack-time revalidation)
+
 - Rust (B-0679): V2 codec from the start
 - Python (B-0680): V2 codec from the start
 
 ### Phase 4 — V1 deprecation (Path B only; skipped for Paths A/C)
 
 If Path B chosen + V1 IDs not in production:
+
 - Remove V1 codec from all 3 oracles
 - Delete V1 vectors + V1 cross-verify infrastructure
 - Document V1 in `docs/research/` as historical reference
@@ -103,17 +110,21 @@ If Path B chosen + V1 IDs not in production:
 ## Acceptance
 
 ### Phase 1
+
 - Migration path decision documented with empirical justification
 - All affected oracles + backlog rows updated to reflect decision
 
 ### Phase 2
+
 - V2 cross-verify harness lands; ALL oracles still pass V1 vectors (Paths A/C) OR V1 retired (Path B)
 
 ### Phase 3
+
 - Each oracle empirically validates against vectors-v2.yaml (Pack→hex match + Unpack→roundtrip)
 - 12+ vectors across all 5 oracles agree byte-for-byte
 
 ### Phase 4 (Path B only)
+
 - V1 substrate removed from all oracles
 - V1 historical doc landed in `docs/research/`
 

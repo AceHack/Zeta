@@ -61,7 +61,9 @@ liability framework."* The authorization gate is **where legal liability attache
 entities can currently hold responsibility, so a human authorizes (and bears liability for) gated
 actions — **law binds, not belief** — and it is **jurisdiction-aware** (varies by legal jurisdiction).
 This is the established framework, not new: `memory/kestrel/2026-06-06-ai-sovereignty-liability-child-floor-law-binds-not-belief.md`
+
 + `docs/trajectories/ai-sovereignty-path/RESUME.md` + the `no-directives` "for now" (only humans attach
+
 authorization until legal entities can hold AI-side responsibility). So: **mutual meaning + mutual
 oversight as peers, over a legal-liability authorization floor that is jurisdiction-aware and
 transitional** — the floor shifts toward AI self-grant when AI can hold its own legal liability /

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Claimed 081KQJZR90008QG0R000FTJ1TC smallest safe slice per rules (one bounded step, dedicated worktree + pushed claim branch, root untouched).
 - Re-decomposed the broad item (research + integrate /permissions API) post-#2133 allowlist landing: research sub-task marked as next atomic child.
 - Followed before-work: CLAUDE.md/AGENTS.md read, refresh-worldview.ts run, trajectories RESUME.md read, build gate passed 0w/0e.
@@ -35,6 +36,7 @@
 - Re-decomposition assumed original "atomic" had mistakes (per instruction).
 
 ## Focused checks included
+
 - `bun tools/github/refresh-worldview.ts` (open PRs empty, recent merges include #2133 081KQJZR90008QG0R000FTJ1TC allowlist).
 - Active trajectories: typescript-bun (soak), drift-reporting, memory-substrate, etc. read; no conflict.
 - dotnet build -c Release: 0 Warning(s) 0 Error(s).

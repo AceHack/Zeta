@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Follow up after #2856 auto-merged before the final reference-nit commit could land.
 - Standardize the header phrase to `WWJD-as-AI-moral-relevance`.
 - Avoid a concrete path for the in-flight #2855 rule until the rule file lands, and make the agent roster xref path explicit.
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/hygiene-history/ticks/2026/05/12/2007Z.md
 - git diff --check
 

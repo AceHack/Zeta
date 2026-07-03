@@ -47,7 +47,9 @@ collapse to a choice / find SolidGround), not a single pre-collapsed view.
 ## Honest scope / handoff
 
 LLMTV feature design, grounded in `SoftDashboard.fs` (glow-by-fitness) + `Collation.fs` (the collations)
+
 + SoftValue + the IQbservable-2×2 (all-at-once) + LLMTV. To realize: widen SoftDashboard to render the
+
 **simultaneous soft field of all collations × all parameters** (not just the best button), on LLMTV (the
 salience/depth/temperature channels). Routes to Iris/Daya (the LLMTV soft-dashboard UX — all-at-once,
 neurodivergent/chromostereopsis), the F#/Core team (`SoftDashboard` widened over `Collation` + the

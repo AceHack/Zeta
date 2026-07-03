@@ -33,6 +33,7 @@ Implements the architectural fix from 081KRCQQF0008QG0R0037YYP1A: the MEMORY.md
 serialization-point anti-pattern.
 
 Aaron 2026-05-12 architectural input:
+
 - memory.md is the stack; recent memory files are the heap; both accessible
 - AutoDream does the reindexing
 - needs to run more often than Anthropic's base allows → autonomous-loop tick

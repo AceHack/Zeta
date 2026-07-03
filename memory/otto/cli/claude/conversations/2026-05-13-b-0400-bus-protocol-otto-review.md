@@ -15,6 +15,7 @@ Conducted as part of the slice-6 / acceptance-close for 081KR7JY10008QG0R000R503
 Covers slices 1–5 as merged to `main` (through PR #2959).
 
 **Reviewers (bounded timeframe, 2026-05-13):**
+
 - **Otto** (Claude Code, `claude-sonnet-4-6`) — primary review; 9 findings
 - **Vera** (Codex, `chatgpt-codex-connector`) — second review; P1 process finding
 

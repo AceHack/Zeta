@@ -33,6 +33,7 @@ Fixes schema drift in 081KR2E4K0008QG0R003DS2XHJ doc flagged by Copilot reviewer
 
 ### Changes
  `conceptClass` (the field has always been `conceptClass` in the implementation; the schema snippet was stale from before the rename)
+
 - Added optional `anchor?` field (landed in PR #2316 / 081KR50HA0008QG0R001G4QHQF slice)
 - Added `summary` object to the example (present in `Registry` output but missing from snippet)
 

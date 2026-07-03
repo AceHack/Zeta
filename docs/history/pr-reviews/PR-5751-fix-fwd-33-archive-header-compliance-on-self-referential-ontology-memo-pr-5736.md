@@ -32,6 +32,7 @@
 Fix-fwd for §33 archive header lint failure on `docs/research/2026-05-28-aaron-self-referential-ontology-cross-substrate-rhyming-over-connect-at-substrate-engineering-time-hebbian-repeated-neuron-activation-analog.md` (landed via PR #5736).
 
 The memo used bold-styled labels (`**Scope**:` etc.) where `tools/hygiene/check-archive-header-section33.ts` requires literal-form labels. Additionally:
+
 - "Operational status:" required enum-strict value (`research-grade` or `operational`)
 - "Non-fusion disclaimer:" label was missing entirely
 

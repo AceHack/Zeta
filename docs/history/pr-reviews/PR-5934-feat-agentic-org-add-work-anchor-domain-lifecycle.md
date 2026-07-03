@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add the first Work Anchor Kernel V0 domain lifecycle for work items
 - replace the old `new/approved` placeholder state rail with `created -> intake -> triage -> ready -> in_progress`, plus blocked/review/done loops
 - add defect lifecycle guards for created, ready, and in-progress transitions
@@ -35,11 +36,13 @@
 - update docs to show what is implemented now versus the remaining durable schema/command work
 
 ## Validation
+
 - npm test: 157 tests, 154 passed, 3 skipped env-gated live integrations
 - npm run typecheck
 - git diff --check origin/main...HEAD
 
 ## Review
+
 - subagent review found blank-ID, optional work-item-type, status-export, transition-evidence, and doc graph issues
 - fixes were applied and the full validation gate was rerun
 

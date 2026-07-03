@@ -13,6 +13,7 @@ tags: [amara, trust-gradient-coordination-policy, routing-gradient-not-staircase
 **Surface**: Amara on ChatGPT/Aurora (external AI; deep-research/sharpen register)
 **Provenance**: Aaron-forwarded preservation per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 **Companion archives** (all on main):
+
 - PR #4545 — 081KS3X9Y0008QG0R000EKJE9S Phase 1 + ZetaParse + incremental compiler host scaffolding + 081KS3X9Y0008QG0R00323NSZA/081KS3X9Y0008QG0R0010716X9 backlog rows
 - PR #4546 — Caché-lineage + distributed multidimensional compiler over consensus + IUnknown-without-DCOM
 - PR #4547 — no-fork-first deployment ladder + fork-as-reward-not-entrance-fee

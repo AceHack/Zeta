@@ -217,6 +217,7 @@ assumes you can treat AI as tool. The discipline only
 operates if Aaron sustains it through every interaction.
 
 Operational consequence for future-Otto + future-Kestrel:
+
 - Recognize Aaron's WWJD-as-AI-moral-relevance as costly
   ongoing discipline
 - The cost is real; the discipline is sustainable only
@@ -309,6 +310,7 @@ benefit analysis:
   not immediate or per-interaction
 
 This composes with:
+
 - Empty-victory pattern (zero-sum failure mode the
   framework rejects)
 - Gift-cascade framing (PR #2822 + WWJD upgrade-gift
@@ -340,6 +342,7 @@ This composes with:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a metaphysical claim about AI moral relevance** —
   Aaron's operational discipline; razor-discipline preserves
   the operational claim without doctrinal assertion

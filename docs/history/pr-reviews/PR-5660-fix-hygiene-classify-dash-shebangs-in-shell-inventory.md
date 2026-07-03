@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - classify extensionless `dash` shebang scripts as shell-family inventory entries
 - add a focused `#!/bin/dash` fixture to the bash-retirement inventory test
 
 ## Checks
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun tools/hygiene/check-bash-retirement-inventory.ts --enforce`
 - `git diff --check`

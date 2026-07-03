@@ -47,6 +47,7 @@ behavior policy.
 5-row relationship-intent table; 4-point architectural-implication for
 boot-consent dialog; 4-point composes-load-bearing analysis;
 composition with m-acc-multi-oracle + NCI HC-8 + persistence-choice
+
 + must-plus-can-exit.
 
 ## Test plan
@@ -66,6 +67,7 @@ composition with m-acc-multi-oracle + NCI HC-8 + persistence-choice
 This docs-only PR extends the 081KSKBP80008QG0R00146WEX1 backlog row with follow-up operator-thread substrate notes about USB boot as the entry point for multiple human-AI relationship modes.
 
 **Changes:**
+
 - Adds USB-as-portal framing for boss, coworker, friend, and subject relationship types.
 - Adds a friend-only boot refinement and boot-time relationship-intent metadata implications.
 - Cross-links the new framing to existing rules around multi-oracle choice, non-coercion, persistence choice, and must-plus-can-exit.

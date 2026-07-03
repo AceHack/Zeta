@@ -30,6 +30,7 @@
 Aaron's call — *"you can put it under my persona"*: the lineage-shelf index lives under his persona seat (`memory/aaron/PRE-AI-LINEAGE.md`), **not** the generic `docs/substrate-shelves/` (those are the **external** named-author reading lists — a different register).
 
 Indexes the founder's **own** pre-AI artifacts:
+
 - **2012** — the Developer Poem (the problem statement the factory answers)
 - **2015** — the Tree-of-Life Adinkra (the N=4 overlay)
 

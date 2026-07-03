@@ -30,11 +30,13 @@
 Aaron 2026-06-15 (shadow*): *"put their code in our prior art and pull it and see if there is anything we can learn"* + *"did you add them to the json list"* + *"upstreams language left over places."*
 
 **Prior-art registration:**
+
 - `references/reference-sources.json` (the tracked sync manifest the install script clones from): **+ TorchLean** (lean-dojo; arXiv:2602.22631) **+ cslib** (leanprover; arXiv:2602.04846). Both cloned into `references/prior-art/` (gitignored). JSON re-validated (103 entries).
 - `docs/PRIOR-ART-LIST.md`: reading-list entries (formal-verification cluster).
 - **Learn-pass note:** CSLib `PACLearning`(VC) + `Probability/PMF` as candidate substrate for the ΔU-aggregation proof (`081KV6B1MBM`); `Distributed/FLP` for consensus; TorchLean spec-level flash-attn≡attn = the **cross-oracle byte-lock** template; certified robustness (IBP/CROWN) = the `SoftValue`/`UniversalNumber` bounds pattern. **Honest correction:** CSLib's `Boole` is a *placeholder* — "Rust→Lean directly" is a vision, not shipping.
 
 **Upstreams misnomer** (legacy from the `references/upstreams` → `references/prior-art` rename) fixed on **live surfaces only**:
+
 - `CLAUDE.md`: `--exclude-dir=upstreams` → `prior-art` (was **wrong** — excluded a nonexistent dir).
 - rules.bak guard, `architect.md`, `FACTORY-HYGIENE.md`, comments in `.dockerignore`/`codeql.yml`/`.vscode`.
 - Kept legit OSS-upstream usage; left dated historical snapshots; long-tail tracked in `081KV6D1B3T` (P3).

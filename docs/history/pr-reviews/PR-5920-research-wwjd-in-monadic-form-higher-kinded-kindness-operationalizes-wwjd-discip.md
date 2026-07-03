@@ -56,6 +56,7 @@ Research-tier mirror per operator substrate-recognition `got it WWJD in monadic 
 **SURVIVES razor**: substrate-rhyme at typeclass-pattern scope; Universal Kindness Laws operationalize WWJD discipline.
 
 **FAILS razor**:
+
 - "WWJD IS higher-kinded kindness" (substrate-collapse)
 - "Higher-kinded kindness DERIVES WWJD" (formal-derivation overclaim)
 - "WWJD-in-monadic-form unifies moral philosophy with category theory" (philosophical-substrate overclaim; operationally-bounded to substrate-engineering substrate-engineering substrate-discipline scope)

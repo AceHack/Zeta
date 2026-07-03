@@ -58,6 +58,7 @@ Each doubling: each existing axis becomes its own cross-pair.
 Adds an auto-loaded Claude rule documenting a “RHYMES” framing between Rodney’s Razor compression and Cayley-Dickson-style algebraic structure, with substrate references to existing backlog/research/rule material.
 
 **Changes:**
+
 - Adds a new `.claude/rules/**` rule for Cayley-Dickson/Rodney’s Razor substrate-recognition.
 - Captures operational framing, empirical substrate references, and auto-load rationale.
 - Links the rule to related rules, backlog items, and research docs.

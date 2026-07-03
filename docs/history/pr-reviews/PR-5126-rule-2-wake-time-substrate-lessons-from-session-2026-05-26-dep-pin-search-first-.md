@@ -38,6 +38,7 @@ Both auto-load at cold-boot so future-Otto inherits them before next authoring d
 081KSGS9H0008QG0R002BC2ZR7 sub-target 3 landing. Extends `.claude/rules/search-first-authority.md` (Otto-364) into dep-pin + substrate-path-assertion scope. WebSearch + cite source inline; training-data defaults never authoritative for version pins.
 
 Empirical anchors landed in rule body:
+
 - NixOS 24.11 pinned past EOL (081KSGS9H0008QG0R001EKTS5A)
 - Cascade #4 ISO audit asserted wrong NixOS layout (PR #5125 fix)
 

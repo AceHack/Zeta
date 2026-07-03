@@ -17,6 +17,7 @@ architect's job is:
    move.
 
 This is the pattern that landed several times already:
+
 - Round 24, Mateo/Naledi retirement reversed same round
   after Aaron's "overlap is fine" correction. §16 "Overlap
   is expected, not redundancy" clause landed same turn.
@@ -36,6 +37,7 @@ correction crisp — and writing the rule at the same
 time keeps the next similar decision from re-litigating.
 
 **How to apply:**
+
 - When a maintainer flags a mistake, **accept it without
   counter-argument** unless there is a factual error in
   the correction itself (which is vanishingly rare).

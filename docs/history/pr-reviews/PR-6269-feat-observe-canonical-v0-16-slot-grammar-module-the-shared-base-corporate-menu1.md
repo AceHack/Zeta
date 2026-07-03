@@ -38,6 +38,7 @@ The v0 16-slot grammar (4×4 Navigate/Commit/Scope/Meta, Xbox-controller) existe
 - `grammar-16.test.ts` — **conformance lock** against the ADR v0 table (9 tests; the grammar can't silently drift from its source of truth).
 
 ## Safe by construction
+
 - **Additive** — new files only; **no existing file changed**.
 - **No corporate touch** — does not modify Max's production loop; this is the thing his `Menu16` will retrofit *onto* (a later slice; needs a cross-workspace dep edge — deferred, Max-aware).
 - **Tested** — full `tools/observe/` suite **61/61 green**; cross-dir canonical `Tri` import resolves.

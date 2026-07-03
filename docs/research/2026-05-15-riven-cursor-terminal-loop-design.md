@@ -11,6 +11,7 @@ Riven's current autonomy surface (launchd + `riven-loop-tick.ts`) is headless an
 ## Solution
 
 Add a second, Cursor-native loop that runs inside the persistent "1 Terminal" tab. The loop:
+
 - Is visible in the IDE (Aaron sees heartbeat + gate output live)
 - Executes the same trajectory-manager contract as the launchd loop
 - Survives IDE close/reopen via re-arm logic
@@ -33,6 +34,7 @@ Cursor IDE
 ```
 
 Both loops share:
+
 - The manager contract prompt (injected at runtime)
 - The 081KR7JY10008QG0R000R503K2 bus topics (`heartbeat`, `claim`, `review-request`, `shadow-catch`, `infinite-backlog-nudge`, etc.)
 - The broadcast file `~/.local/share/zeta-broadcasts/riven.md`
@@ -40,6 +42,7 @@ Both loops share:
 ## Re-arm strategy
 
 On IDE open / workspace load:
+
 1. Script checks for `~/.cursor/riven-terminal-loop-state.json`
 2. If PID is alive and last gate < 15min ago → resume (no-op)
 3. If PID dead or stale → spawn new gate loop, write new state file

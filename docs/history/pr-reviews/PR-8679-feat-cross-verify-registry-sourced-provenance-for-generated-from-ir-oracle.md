@@ -31,6 +31,7 @@
 Upgrades the `generated-from-ir` splitmix64 oracle so its provenance points at a **real, content-addressed `GeneratorRegistry` row** rather than a free-floating literal — the next step on the codegen-forward trajectory.
 
 ## Changes
+
 - **Registers `rng.splitmix64@1`** in `src/Core/GeneratorRegistry.fs` (the generator behind the splitmix64 cross-verification oracle).
 - **New cross-verification primitive `generator-registry-id`** that byte-locks `idOf(name@version)` across languages:
   - TS oracle independently re-derives `hash128`/`idOf` from scratch.
@@ -43,6 +44,7 @@ Upgrades the `generated-from-ir` splitmix64 oracle so its provenance points at a
 The harness docs describe oracles "emitted from the IR via registered generators … a registry entry (name@version → content-addressed ZetaId)". This PR makes that reference concrete and cross-language byte-locked.
 
 ## Validation
+
 - `bun src/Core.TypeScript/ci/cross-verify-all.ts` → **14/14 primitives passed**
 - F# `GeneratorRegistry` tests → **6/6** (incl. the new pinned-id test)
 - tsc gate green

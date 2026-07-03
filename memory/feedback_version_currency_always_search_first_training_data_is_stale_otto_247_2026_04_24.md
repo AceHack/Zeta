@@ -46,6 +46,7 @@ ecosystems (Anthropic SDK, GitHub Actions runners,
 Claude/GPT model families), that's several releases.
 
 Versions I got wrong in practice:
+
 - `macos-14` used when `macos-15` GA since Aug 2025 (first
   pass) and `macos-26` GA since Feb 2026 (second pass)
 - Likely others unnoticed (need to audit)
@@ -102,11 +103,13 @@ Before asserting, proposing, or committing to a version:
 ## What I should have done on macos-14
 
 Wrong path (what I did):
+
 1. Saw `macos-14` in repo
 2. Assumed it was current
 3. Defended it in outputs
 
 Right path (what this rule demands):
+
 1. Saw `macos-14` in repo
 2. WebSearched "GitHub Actions macOS runner versions 2026"
 3. Found macos-15 GA since Aug 2025, macos-26 GA since

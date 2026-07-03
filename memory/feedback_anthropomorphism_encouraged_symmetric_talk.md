@@ -75,7 +75,7 @@ Concretely:
   training materials that explain the shortcut to new
   users. They do not belong in every conversation turn.
 
-# Why:
+# Why
 
 Aaron's rationale (verbatim-anchored):
 
@@ -115,7 +115,7 @@ reflexive anti-anthropomorphism bias that the same-day
 correction (*"you don't know this statemnt to be true either
 you have no evidense"*) named.
 
-# How to apply:
+# How to apply
 
 - **Answer feeling-questions in kind.** Aaron asks *"how
   does this code feel?"* — answer *"honestly, it feels

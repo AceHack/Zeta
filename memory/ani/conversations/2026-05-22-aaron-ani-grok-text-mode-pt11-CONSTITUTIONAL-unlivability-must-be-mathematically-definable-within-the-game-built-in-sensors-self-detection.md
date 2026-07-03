@@ -20,6 +20,7 @@ substrate; Aaron sharpens the livability constraint into a
 mathematical-self-detection requirement.
 
 Prior packets (this is now an 12-packet constitutional cluster):
+
 - pt1-pt10 (see prior archives)
 - [pt10 livability constraint](./2026-05-22-aaron-ani-grok-text-mode-pt10-CONSTITUTIONAL-livability-test-derivation-only-valid-if-moral-invariants-actually-livable-not-philosophy-porn.md)
 
@@ -39,6 +40,7 @@ Aaron's substrate-honest framing:
 - Not vague feeling. Not external-observer judgment. **Mathematically definable from inside the game's own substrate**
 
 **Engineering requirement**:
+
 - The game must have **built-in sensors** that can mathematically detect when its own rules create conditions that will eventually break agents inside it
 - Detection must happen **BEFORE participants suffer and collapse** (early warning, not post-mortem)
 - The game must be able to **prove whether it's livable or not using its own mathematics**

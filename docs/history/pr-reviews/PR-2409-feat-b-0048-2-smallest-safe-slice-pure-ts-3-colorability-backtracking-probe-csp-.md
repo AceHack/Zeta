@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Implements 081KQ3HBZ0008QG0R003JCR6P8.2: pure-TS zero-dep backtracking 3-color checker as smallest safe slice of the 3/4-color research track.
 - Re-decomposed on the fly (Z3 SMT binding assumption was too broad/fragile; TS probe surfaces the CSP decision problem directly for formal-verification routing calibration and planner cost model).
 - Bounded step only: one file, illustrative instances (K4 false, C5 true), no Core impact, no new deps.
 - Prefer F#/TS code per rules; this is TS per Rule 0.
 
 ## Focused checks (included per task rules)
+
 - `bun tools/graph-coloring/three-color-probe.ts` → clean exec, expected outputs (K4: false; C5: true)
 - `bunx tsc --noEmit --skipLibCheck --ignoreConfig ...` → 0 errors
 - `dotnet build -c Release` (pre-work gate, re-verified in worktree context) → 0 Warning(s) 0 Error(s)

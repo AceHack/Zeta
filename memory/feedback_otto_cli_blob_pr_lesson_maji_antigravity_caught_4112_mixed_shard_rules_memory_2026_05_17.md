@@ -48,6 +48,7 @@ Some narrowly-scoped cases where one PR with multiple artifact types is substrat
 The bar for "atomic" is: would splitting cause one PR to reference a target that doesn't exist on the other PR's branch? If yes, keep together. If no, split.
 
 PR #4112's three primary commits failed this bar:
+
 - The shard could have shipped alone (no rule reference needed to be atomic)
 - The rule edit could have shipped alone (the shard cited it via path; the cite would have been a pending-PR forward-reference that resolves on merge — same shape as the 2129Z cascade)
 - The memory shadow-catch could have shipped alone (independent observation, no atomicity dependency on either)

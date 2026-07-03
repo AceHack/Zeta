@@ -46,10 +46,12 @@ The map is **git-native** (the manifests ARE the map; the DNS-from-manifests of 
 
 A **`hardware-onboard` skill → blueprint** (Addison's blueprint pattern; sibling of the maintainer-onboard blueprint
 #7268), gated on the **local-cluster CYOA branch** (#7253). Easy CRUD over the known-hardware inventory:
+
 - **add** a device (node auto-adds via self-registration; Comet/NAS/etc. via a declared entry);
 - **edit / update** an entry (e.g., an IP that changed after an extended power-off);
 - **remove** a retired device;
 - **onboard** new hardware end-to-end (flash → self-register → declare paired Comet → map updated).
+
 Secure + frictionless, never-passwords-in-prompts (same principle as #7268).
 
 ## Always day 0 / 1 / 2 / 100

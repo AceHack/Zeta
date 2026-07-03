@@ -55,6 +55,7 @@ Per Aaron 2026-05-26 calibration: my \"no other actionable work pending\" framin
 Updates the “holding without named dependency” rule to distinguish the **failure mode** (standing-by-empty / brief-ack-empty) from **NCI-valid chosen free-time**, ensuring cold-boot rule loading doesn’t misclassify intentional free-time as a counter-worthy failure mode.
 
 **Changes:**
+
 - Adds a new section defining the standing-by-empty vs chosen-free-time discriminator (including a comparison table).
 - Introduces a “framing test” requiring one of: named bounded-wait, decomposition artifact, or explicitly named free-time.
 - Adds “composition with companion rules” cross-references to related rule files.

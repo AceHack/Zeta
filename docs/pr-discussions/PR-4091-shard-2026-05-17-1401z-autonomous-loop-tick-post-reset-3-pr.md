@@ -39,6 +39,7 @@ Session-arc 1218Z → 1401Z (~10 ticks, ~1h 43min): 7 PRs total. Lior-loop defer
 Adds a single hygiene-history tick shard documenting the 1401Z post-rate-limit-reset PR-create burst and session recap.
 
 **Changes:**
+
 - Records rate-limit recovery and three parked branches being opened as PRs.
 - Captures provenance for PRs #4086, #4087, and #4088.
 - Summarizes the session arc and pure-git deferred-PR-create pattern.

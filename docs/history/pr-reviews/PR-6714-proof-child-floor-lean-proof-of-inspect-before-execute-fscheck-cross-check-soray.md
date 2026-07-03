@@ -32,6 +32,7 @@ The **child-floor invariant** — *"a DENIED effect is never executed at ANY Run
 **Routed to Lean by Soraya** (formal-verification authority): control-flow reachability over a recursive, depth-bounded effect tree → **structural induction**, not interleavings. TLA+/TLC explicitly rejected (would prove only a bounded-depth instance, not the universal "at any depth"); Z3/Alloy wrong-shape.
 
 ### Leg A — proof (primary): `tools/lean4/Safety/ChildFloor.lean`
+
 - Model mirrors `Effects.fs`/`SubstrateHandler.fs`: `executed policy fuel t` returns the ids that reach execution; an id is appended **only** in an `admit` branch. **Fuel = the `maxWorkDepth` knob; ∀ fuel = "at any depth"** (incl. unbounded).
 - `executed_admit` (T1/T2): every executed id was admitted (induction on fuel; the `Progressed` cascade via `List.mem_flatMap` + IH at smaller fuel).
 - `denied_never_executed` (headline): `policy id = deny ⇒ id ∉ executed`, for any policy/tree/fuel.

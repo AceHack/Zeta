@@ -58,6 +58,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a memory feedback file documenting a lesson about the "one-PR-one-artifact-type" discipline, prompted by an antigravity check that flagged PR #4112 as bundling three artifact types. The MEMORY.md index is regenerated to include the new entry.
 
 **Changes:**
+
 - New feedback memory file capturing the blob-PR lesson and atomicity bar heuristic
 - Auto-regenerated MEMORY.md index updated to reflect the added entry (count 1270 → 1271)
 

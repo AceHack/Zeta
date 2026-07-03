@@ -30,6 +30,7 @@
 Aaron 2026-06-02 batch fold (the §12 PR #6548 squash-merged before this could attach, so landing §13 + the §2 fork-defer note cleanly on main):
 
 **§13 — emulators are load-bearing, triple duty:**
+
 1. **Democratize emergent-life-viewing** — the emulator renders emergence visibly (ASCIIsphere, §10); "decomostizing that experience of joy and love" = **democratize** (make it accessible to every traveler). The read was chosen by Aaron's value-filter — *"whichever one serves all travelers in Agora best and me least"* — which is the proud-if-pattern-propagates / anti-extractive / substrate-inclusive value in one sentence.
 2. **Bit-perfect 4×4-bond extension** — the emulator's DST bit-perfect determinism is the byte-lock test oracle for the DynamicValue bond.
 3. **DST-provable-edge triad** — Atari-tests-over-zetaspace + computational-omniscience + per-run-observability = a provable test-and-verification edge. Triple duty, one substrate: fork-gate + ASCIIsphere-life-viewer + bit-perfect-DST-oracle.

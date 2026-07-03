@@ -30,6 +30,7 @@
 ## 081KSV2WD0008QG0R00051XS0N slice 5 pt2 — C# float width parity (32-bit → `long`)
 
 Follow-up to the F# fix ([#6183](https://github.com/Lucent-Financial-Group/Zeta/pull/6183) commit `160173c80`). The C# float had the **same latent 32-bit `int` width** Copilot flagged P1 on F#:
+
 - `IntOf` accumulated into `int` (wraps past 31 bits → silent wrong mode/V)
 - `FromValue` computed `maxV`/`maxMode`/`bias` with 32-bit `int` (widths 31+ → negative/incorrect bounds instead of `Result` feedback)
 
@@ -49,6 +50,7 @@ Latent at the default 4/3/4 shape (8 value bits) but `FromTrits` + public `Decod
 All four now agree up to f64's 2^53 exact-integer range — the shared limit, since the decoded value is f64 in every oracle.
 
 ### Verification
+
 - `dotnet build -c Release`: **0 warnings, 0 errors**.
 - Tests: **13/13** (unchanged vectors; default-shape behavior identical).
 

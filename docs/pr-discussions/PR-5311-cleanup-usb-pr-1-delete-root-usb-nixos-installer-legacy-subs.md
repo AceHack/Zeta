@@ -31,6 +31,7 @@ The root-level \`usb-nixos-installer/\` was the first installer substrate in the
 ## Why this path is retired
 
 The canonical AI-cluster substrate at \`full-ai-cluster/usb-nixos-installer/\` supersedes it. The canonical version has the SAME content PLUS:
+
 - \`zeta-install.sh\` (zero-typing install helper)
 - \`zeta-first-boot.sh\` (first-boot service substrate per 081KSGS9H0008QG0R002T3BJ2R)
 - \`flake.lock\` (reproducible build pin)
@@ -94,6 +95,7 @@ Per Aaron's destructive-git-on-isolated-copies authorization: \"you ahve destruc
 Removes the legacy root-level `usb-nixos-installer/` substrate now that the canonical installer substrate lives under `full-ai-cluster/usb-nixos-installer/`.
 
 **Changes:**
+
 - Deletes `usb-nixos-installer/README.md` (legacy USB bootstrap docs).
 - Deletes `usb-nixos-installer/nixos/installer/configuration.nix` (legacy installer ISO config).
 - Deletes `usb-nixos-installer/flake.nix` (legacy flake entrypoint).
@@ -113,7 +115,9 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated no 
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **usb-nixos-installer/README.md:1**
+
 * P1: Deleting this legacy directory makes several existing cross-references inaccurate (they describe `full-ai-cluster/usb-nixos-installer/` as a copy of `../usb-nixos-installer/`, or list `usb-nixos-installer/` as an active scaffold dir). Confirmed occurrences: `full-ai-cluster/README.md`, `full-ai-cluster/flake.nix` (comment), `agentic-organization/docs/AI_CLUSTER_SCAFFOLD_CONTEXT.md`, and `agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md`. Please update those references in the same PR so current-state docs/comments don’t point at a path that no longer exists.
+
 </details>
 
 ## General comments

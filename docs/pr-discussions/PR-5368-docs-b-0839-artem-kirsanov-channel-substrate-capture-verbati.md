@@ -87,6 +87,7 @@ Kirsanov's substantive substrate (Boltzmann distribution, sigmoid update rule, h
 This PR adds new documentation substrate to capture and track a multi-phase ingestion effort for Artem Kirsanov’s computational-neuroscience YouTube content, and preserves a verbatim transcript for one seed video as research material.
 
 **Changes:**
+
 - Added backlog row **081KSGS9H0008QG0R002F1G7ER** describing a phased channel-capture pipeline (inventory → per-video implementation → cross-cutting integration).
 - Added a research document preserving a **verbatim transcript** for “Boltzmann Machines from first principles”, plus a composition map tying concepts to existing Zeta substrate.
 

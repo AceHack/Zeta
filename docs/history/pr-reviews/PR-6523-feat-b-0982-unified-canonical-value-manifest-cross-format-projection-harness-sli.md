@@ -33,6 +33,7 @@ First slice of **081KT07NV0008QG0R0032MCYER** (multi-format seeds; *nothing is s
 The two existing seeds are **independently authored** — only 12 of 31 (JSON) / 42 (CBOR) values are shared, with different naming (`string-*` vs `str-*`, `int-42` vs `int-1000`) and 2 same-named vectors that legitimately differ (CBOR's `array-mixed`/`array-nested` carry Float/Bytes that JSON can't). So there was no shared canonical value set — just two trusted files.
 
 ## This slice (zero merged-seed churn)
+
 - **`golden-vectors-values.json`** — the single source for WHICH canonical `DynamicValue`s exist: **61 distinct values** (the value-keyed union; 12 shared, 19 JSON-only, 30 CBOR-only), each tagged with the per-format seeds that express it. Value-keyed matching sidesteps the naming divergence + the 2 drifts entirely.
 - **`golden-vectors-manifest.test.ts`** — proves the existing CBOR + JSON seeds are faithful **projections**:
   1. no seed value drifts from the manifest (every seed value is listed, its format flagged) + each encoding decodes back to its manifest value (via the merged CBOR/JSON decoders);

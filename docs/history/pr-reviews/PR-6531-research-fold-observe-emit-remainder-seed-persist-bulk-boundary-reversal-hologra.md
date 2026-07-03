@@ -30,6 +30,7 @@
 Operator: *fold it once it lands* + *observe/emit remainder/seed linked = bulk/boundary reversal* + *uno* + the DIO/DID clarification.
 
 Folds into the canonical-form synthesis note:
+
 - **observe/emit ↔ remainder/seed = Persist**: observe/emit are the base OPLE primitives; remainder/seed is the derived bridge they fold into across time (Persist = Emit-now + future-Observe; DBSP ∂/∫ reversal; Fix(e) fixed point) — 081KSNY2Z0008QG0R002SZZ5Y0.
 - **= bulk/boundary reversal** (the holographic read): observe/emit = boundary I/O; remainder/seed = bulk; emit/observe = encode/decode = I(D(x))=x = holographic (081KRW63S0008QG0R001SAHYKV). Chunk 1's 'it's just holographic theory' lands on the exact pair. bulk/boundary = another two-word pair.
 - **uno**: the chain collapses to one.

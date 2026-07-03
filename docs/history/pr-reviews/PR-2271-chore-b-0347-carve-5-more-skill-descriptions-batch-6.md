@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more oversized descriptions to routing sentences
 - Skills: full-text-search-expert, graph-theory-expert, profiling-expert, operations-monitoring-expert, error-tracking-expert
 - Running total: 25 skills carved, ~60K+ chars freed
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -27,7 +27,7 @@
 
 ## Description
 
-## Preservation\n\nAutomatically archived recently merged PR 3264 to capture drift and friction.
+## Preservation\n\nAutomatically archived recently merged PR 3264 to capture drift and friction
 
 ## Outcome
 

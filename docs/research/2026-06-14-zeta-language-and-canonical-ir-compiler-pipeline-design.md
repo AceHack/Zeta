@@ -115,6 +115,7 @@ Since `ZetaIR` is isomorphic to `DynamicValue`, a compiled Zeta program can be r
 Each target language receives the serialized `ZetaIR` and generates native code using its local Rx/stream framework:
 
 ### 1. TypeScript Target
+
 * **Target Targetry**: Standard RxJS or Bun-native stream callbacks.
 * **Codegen**: Emits class declarations implementing the TS interface, chaining pipeline operators:
   ```typescript
@@ -130,6 +131,7 @@ Each target language receives the serialized `ZetaIR` and generates native code 
   ```
 
 ### 2. F# Target
+
 * **Target Targetry**: F# DBSP circuits (`circuit { ... }`).
 * **Codegen**:
   ```fsharp
@@ -144,18 +146,22 @@ Each target language receives the serialized `ZetaIR` and generates native code 
   ```
 
 ### 3. C# Target
+
 * **Target Targetry**: System.Reactive (Rx.NET) or native DBSP C# runtime.
 * **Codegen**: Generates C# expressions building up the IObservable stream graph.
 
 ### 4. Rust Target
+
 * **Target Targetry**: `futures::stream` / Tokio stream or native Rust DBSP operators.
 * **Codegen**: Generates zero-allocation stream combinators matching lifetimes correctly.
 
 ### 5. Python Target
+
 * **Target Targetry**: ReactiveX (RxPY).
 * **Codegen**: Generates clean Python pipelines adhering to `ruff format`.
 
 ### 6. Go Target
+
 * **Target Targetry**: RxGo or channel-based pipelines.
 * **Codegen**: Generates clean Go channels with concurrent workers for pipeline mapping.
 

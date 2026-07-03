@@ -30,11 +30,13 @@
 **Seed-first / grow-code-from-the-seed** (Aaron 2026-06-01: _"we are growing code from the seeds"_). The seed is the canonical **DATA** — language-neutral golden vectors at `src/Core.TypeScript/dynamic-value/golden-vectors.json` (31 vectors) — and every oracle GROWS code that AGREES on it, not a port of one language's type. It is the **root of DST**: each oracle is a deterministic replay of the seed; the byte-lock is the determinism guarantee (the future/seed makes the past/code verifiable — the three-clocks rule).
 
 ## What's here
+
 - **`golden-vectors.json`** — the SEED: each vector pins a language-neutral `value` (tagged form; Int as exact decimal string, Object as ordered pairs) + its canonical JSON `json` (the byte-lock target).
 - **`golden-vectors.test.ts`** — the **TS encode-oracle grown from the seed** (32 green): `encode(value) === json` + canonical-JSON validity for every vector.
 - **`PRIMITIVE-REGISTRY.md`** — DynamicValue byte-lock clause updated to "seed landed".
 
 ## Scope / decisions (review surface)
+
 - **v1 LOCKS six cases**: null/bool/int/string/array/object.
 - **Float DEFERRED** (JSON number is ambiguous Int-vs-Float on decode + no canonical shortest-float in plain JSON) and **Bytes DEFERRED** (no native JSON byte type; base64-in-string indistinguishable from String without a tag) — both lock cleanly under **CBOR** (native int/float + §4.2 shortest-float + byte-strings) or a tagged-JSON convention.
 - **Canonical encoding is ORDER-PRESERVING** (Object is order-significant per #6492 → key-sorting JCS/RFC-8785/CBOR-§4.2 would be lossy / non-bijective). ⚠️ This **contradicts the `DynamicValue.fs` doc comment** that says the wire encoder "sorts keys when byte-locking" — that comment is leftover map-thinking and should be corrected (tracked for the F# re-ground slice).

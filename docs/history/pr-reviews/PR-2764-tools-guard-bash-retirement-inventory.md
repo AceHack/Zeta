@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Add a Bun hygiene check for the retained non-Lean `.sh` setup/bootstrap allowlist.
 - Refresh the TypeScript/Bun trajectory with the current 13-file retained bash surface and the new guard command.
 
 ## Checks
+
 - `git diff --check`
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun tools/hygiene/check-bash-retirement-inventory.ts --enforce`
 - `bunx prettier --check tools/hygiene/check-bash-retirement-inventory.ts tools/hygiene/check-bash-retirement-inventory.test.ts`
 
 ## Coordination
+
 - Claim branch: `claim/task-ts-bun-bash-retirement-check-20260512`
 - Root checkout stayed read-only; all edits were made in the dedicated Codex claim worktree.
 - Draft until CI/review confirms the new hygiene gate shape.

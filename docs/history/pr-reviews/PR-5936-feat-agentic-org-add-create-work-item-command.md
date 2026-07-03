@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - Add `create_work_item` command handling for agentic-organization application workflows.
 - Emit work-anchor effects, audit evidence, outbox event metadata, and persist work-item effects in the in-memory store.
 - Add focused handler coverage for accepted work-item creation and blank-title rejection.
 
 ## Verification
+
 - `node --experimental-strip-types --test packages/application/test/create-work-item.test.ts`
 - `npx --yes -p typescript@6.0.3 tsc --ignoreConfig --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --noImplicitOverride --noUncheckedIndexedAccess --noUnusedLocals --noUnusedParameters --exactOptionalPropertyTypes --verbatimModuleSyntax --allowImportingTsExtensions --isolatedModules --moduleDetection force --skipLibCheck packages/application/src/handlers/create-work-item.ts packages/application/src/index.ts packages/application/src/command-pipeline.ts packages/application/src/ports.ts packages/application/src/command-result.ts packages/domain/src/event-envelope.ts packages/state/src/in-memory-organization-store.ts`
 
 ## Known Typecheck Blocker
+
 - Full `npm run typecheck` in `agentic-organization` remains blocked by missing `@nats-io/jetstream` and `@nats-io/transport-node` packages in worker adapter tests; this predates and is unrelated to this patch.
 
 

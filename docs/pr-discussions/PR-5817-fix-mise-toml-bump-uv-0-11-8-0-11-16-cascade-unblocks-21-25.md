@@ -46,10 +46,12 @@ Bump is 8 patch releases (semver-disciplined; no breaking changes expected). uv 
 ## Root-cause hypothesis (whichever is actual, fix is same)
 
 Either:
+
 1. **Aqua release-cache pruned** `0.11.8` (released 2026-04-27, 7 weeks ago) between the original pin and today's CI run
 2. **Anonymous GitHub API rate limit** on the CI runner converted into 404 from aqua's perspective
 
 Bumping to current latest stable fixes both:
+
 - (a) Fresh asset cache upstream
 - (b) Most-recent release least likely to have been pruned
 
@@ -76,6 +78,7 @@ Bumping to current latest stable fixes both:
 Bumps the root `.mise.toml` `uv` pin from `0.11.8` to `0.11.16` to unblock CI lint cascade failures across 21 of 25 open PRs. The `0.11.8` pin was returning `404 Not Found` from `aqua:astral-sh/uv@0.11.8`, causing `mise install` to exit 1 before any lint job (including the required `lint (semgrep)`) could run. `0.11.16` is the current upstream stable per `gh api repos/astral-sh/uv/releases/latest` and WebSearch (2026-05-21), satisfying `.claude/rules/dep-pin-search-first-authority.md`.
 
 **Changes:**
+
 - Bump `uv` from `0.11.8` to `0.11.16` in root `.mise.toml`
 - Add inline comment documenting the empirical failure, the cited authoritative sources, and a release URL
 

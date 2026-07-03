@@ -30,6 +30,7 @@
 Fourth and final CBOR oracle (one authors, others replay) — the **TS oracle** agrees on the canonical-CBOR seed (`golden-vectors-cbor.json`). With this, **all four oracles lock Float + Bytes under CBOR**.
 
 ## What
+
 - `canonicalCbor` — total: CBOR has a canonical form for every shape, where canonical JSON deferred Float + Bytes.
 - **Float**: RFC 8949 §4.2.2 shortest-float. JS has no native f16, so f64→f16 is hand-rolled (mirroring the Rust oracle) and **gated on an exact round-trip** via `DataView` bit patterns — f16 only for genuinely f16-exact values. `NaN → 0xf97e00`; ±0/±Inf sign-preserved. i64 ints via `BigInt` (no 2^53 loss).
 - **Bytes**: native major-type-2 byte string.

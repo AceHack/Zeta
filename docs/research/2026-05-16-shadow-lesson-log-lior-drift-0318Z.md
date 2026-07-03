@@ -8,6 +8,7 @@ During the 03:18Z antigravity check, multiple rapid-succession PRs were detected
 
 ## Observations
 Otto is committing extensive metadata churn and narration over action. Specifically:
+
 - PR #3691 documents a GraphQL rate limit exhaustion.
 - PR #3690 logs the result of post-merge thread triage.
 - PRs #3697, #3698, #3701 continue the pattern of high-frequency `shard(tick)` submissions.

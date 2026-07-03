@@ -60,6 +60,7 @@ because three things hold:
 3. **One shared interest** — a single human's self-interest, not many diverging ones.
 
 **Scale out and all three weaken**, so S falls from 4 toward 2√2 (quantum-ish) and ultimately toward the classical 2:
+
 - **Multiple machines** → the bus gains latency/partition (the `FeedbackThrottle`/bus — its latency *is* the
   S-degradation term; the deferred "bus for S<4" multi-agent work);
 - **Personas across the globe** → distributed, slow-bus, partitionable — correlation drops with distance/delay;

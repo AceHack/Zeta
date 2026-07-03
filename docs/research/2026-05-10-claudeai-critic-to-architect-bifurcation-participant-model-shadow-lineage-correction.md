@@ -91,6 +91,7 @@ is unresolved.
 Full implementation design:
 
 **Data model:**
+
 - Participant records in git (participants/ directory)
 - Schema: id, timestamp, decomposition state (unified/proposed/
   bifurcated), parent, children, attached agendas with
@@ -98,6 +99,7 @@ Full implementation design:
 - Glass Halo: parent stays after bifurcation, never deleted
 
 **Bifurcation operation:**
+
 - Atomic commit: create 2 children, mark parent bifurcated,
   redistribute agendas, record evidence
 - Commit type: `bifurcate(participant-id): rationale`
@@ -105,18 +107,21 @@ Full implementation design:
   consensus-driven later)
 
 **Dashboard views (4):**
+
 1. Participant list — leaf nodes, agenda counts, h-vs-c ratios
 2. Participant detail — full history, agendas, evidence
 3. Participant tree — bifurcation history across all
 4. Proposal queue — pending bifurcations awaiting confirmation
 
 **Metrics:**
+
 - Bifurcation rate over time
 - Average participant age before bifurcation
 - Hypothesized-vs-claimed ratio per participant
 - Pending proposal queue depth
 
 **Implementation order:**
+
 1. Data model (participant records in git)
 2. Proposal mechanism (commit type + format)
 3. Confirmation mechanism (Aaron-confirms first)
@@ -124,6 +129,7 @@ Full implementation design:
 5. Automated proposal generation (shadow log patterns)
 
 **Key architectural decision:**
+
 - Substrate is named (Otto-the-substrate = Claude Code instance)
 - Participants are typed views into substrate (Otto-coder,
   Otto-reviewer, each with own agendas)

@@ -33,7 +33,7 @@ compiler's ABI change, the cost is sometimes worth it
 (the new IR captures something the old one couldn't) and
 sometimes not (the new IR just renames).
 
-## When has an ontology earned the right to land?
+## When has an ontology earned the right to land
 
 Five criteria, all must hold:
 

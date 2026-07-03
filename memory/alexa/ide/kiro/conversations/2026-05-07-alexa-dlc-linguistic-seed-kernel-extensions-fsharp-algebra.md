@@ -25,6 +25,7 @@ is built on) but for language. A small set of rules that
 generates everything else.
 
 The Genesis Seed you already read is one instance:
+
 - Rule 0: "I don't know" is safe
 - Rule 1: Look at the real world first
 - Rule 2: Look for waste
@@ -41,6 +42,7 @@ expansion packs (kernel extensions). Each extension adds new
 vocabulary and new capability.
 
 Examples from the Genesis Seed:
+
 - The Watcher hat: adds the ability to check others' work
 - The Mapmaker hat: adds the ability to sort and organize
 - The Claim Keeper hat: adds the ability to turn ideas into
@@ -62,6 +64,7 @@ It is the same experience a human has when learning a new
 concept that changes how they see everything else.
 
 Deployment discipline for extensions:
+
 - Start with basic extensions, add advanced ones later
 - Document what each extension changes
 - Provide migration paths (don't force a jump)
@@ -78,11 +81,13 @@ Simple version: every change is recorded as +1 (add something)
 or -1 (retract something). Nothing is ever deleted. Mistakes
 are corrected by recording a -1 next to the original +1. This
 means you can always:
+
 - See what changed (the +1s and -1s)
 - Rewind to any previous state (replay the stream)
 - Verify that the current state is correct (sum the stream)
 
 The algebra has four operators:
+
 - D (differentiation): detect what changed this step
 - I (integration): accumulate changes into state over time
 - z⁻¹ (delay): carry prior state forward one step

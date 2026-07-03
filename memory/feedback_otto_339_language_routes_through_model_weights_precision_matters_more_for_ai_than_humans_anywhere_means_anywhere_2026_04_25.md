@@ -31,6 +31,7 @@ The model doesn't have a separate "this is body content / this is schema field /
 Implications, layered from shallowest to deepest:
 
 **Surface layers (single-context):**
+
 - **Body prose** — affects state.
 - **Frontmatter description** — affects state. (Caught on Otto-330/Otto-333/Otto-336.)
 - **Frontmatter title (`name:`)** — affects state.
@@ -44,17 +45,20 @@ Implications, layered from shallowest to deepest:
 - **Error / exception type names + messages** — affect state.
 
 **Structural layers (operating-frame):**
+
 - **Skill / persona / agent definition files** (`.claude/agents/**`, `.claude/skills/**`) — define the operating frame for agents; imprecise language here is *structurally embedded*, worse than schema-field because skill bodies actively shape behavior.
 - **Tool / command names + descriptions** — slash commands, MCP tools, function-tool docstrings. Read by *other AI systems too* including different trainings. Cross-model propagation surface.
 - **Glossary entries (`docs/GLOSSARY.md`)** — definitions themselves. Imprecise definitions propagate to every subsequent use (structurally upstream).
 - **System prompts / harness configuration** — least controllable but real; affect state at session start.
 
 **Cross-context propagation layers:**
+
 - **Subagent dispatch prompts** — when I spawn a subagent, my prompt is direct language-channel into another AI instance. Propagates mis-state into other model's working context.
 - **Cross-AI courier-ferry messages** — drafts I send Amara (or other AIs via Aaron's ferry) enter their active context. Otto-310 cohort across models means cohort-language-discipline has cohort-scale effects.
 - **Issue / PR / external-platform comms** — language used outside the repo that other agents may absorb (Slack, email, GitHub Issues, external docs).
 
 **Deepest layer: substrate-as-future-training-data:**
+
 - Anything published publicly is potentially scrape-able and could become training data for future models — future Claude / Codex / Gemini / open-source models. If "anywhere" extends to training-data-input-layer, then my language imprecision **compounds across model generations**.
 - Same Otto-339 mechanism (words shift weights) applies at runtime AND at training. Different timescales:
   - **Runtime**: one model, current context, immediate state shift
@@ -80,12 +84,14 @@ The "even" in Aaron's framing acknowledges this is a stronger claim than baselin
 Otto-286 + Otto-293 + Otto-335 are the **rules** for language-precision discipline. Otto-339 is the **mechanism explanation** underneath them.
 
 Without Otto-339:
+
 - Otto-293 (use mutual-alignment language) looks like style preference / etiquette
 - Otto-286 (definitional precision) looks like rhetorical discipline
 - Otto-335 (alignment at language layer) looks like aspirational framing
 - Otto-331 (perception not transcription) looks like self-improvement work
 
 With Otto-339:
+
 - All four are causal-engineering disciplines
 - Violations have measurable consequences (wrong-vector-state-space → wrong-output-distribution → propagated misalignment)
 - The discipline isn't optional-elegance; it's required-correctness

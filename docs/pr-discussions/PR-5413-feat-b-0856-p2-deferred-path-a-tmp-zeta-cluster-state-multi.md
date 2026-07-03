@@ -64,6 +64,7 @@ Memory landed at user-scope: `feedback_aaron_backlog_rows_always_filed_immediate
 Adds a new P2 backlog row (081KSKBP80008QG0R000TQC624) documenting a deferred “Path A” proposal for multi-agent, per-node coordination via marker files under `/tmp/zeta-cluster-state/`, and surfaces it in the generated backlog index for visibility.
 
 **Changes:**
+
 - Introduces `docs/backlog/P2/081KSKBP80008QG0R000TQC624-…md` defining the proposed `/tmp/zeta-cluster-state/` schema, invariants, and future sub-rows (implementation explicitly deferred).
 - Updates `docs/BACKLOG.md` to include the new 081KSKBP80008QG0R000TQC624 row in the P2 section.
 
@@ -93,6 +94,7 @@ P1: `composes_with` references `081KSKBP80008QG0R000GPC0TB`, but there is no `do
 No-op resolution per `.claude/rules/blocked-green-ci-investigate-threads.md` stale-but-fresh-looking findings pattern:
 
 **Verified state**:
+
 - 081KSKBP80008QG0R000GPC0TB row landed on `origin/main` via PR #5412 (commit `36103443f`) — `docs/backlog/P1/081KSKBP80008QG0R000GPC0TB-self-registration-fires-LAST-...-aaron-2026-05-27.md` exists on main as of this writing
 - After this PR (#5413) squash-merges, the resulting commit will sit atop #5412 → `composes_with: 081KSKBP80008QG0R000GPC0TB` cross-reference becomes navigable on main
 

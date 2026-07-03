@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Remove `continue-on-error: true` from scenarios 3 (retention) and 4 (path-fork) in `build-ai-cluster-iso.yml`.
 - Evidence: [workflow_dispatch run 27854227014](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27854227014) — all four harness scenarios `passed: 1`.
 
 ## Test plan
+
 - [x] Dispatch run 27854227014 scenarios 1–4 green
 - [ ] Merge; next `workflow_dispatch` fails workflow if 3 or 4 regress
 

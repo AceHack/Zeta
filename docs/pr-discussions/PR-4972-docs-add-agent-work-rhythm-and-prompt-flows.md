@@ -36,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new documentation surface describing hat-bound work schedules (“work rhythm”) and deterministic MCP-driven prompt flows, then threads those concepts through existing runtime, UI/observability, knowledge-graph, and implementation planning docs so the Organization layer treats time-blocks and flow execution as first-class governed artifacts.
 
 **Changes:**
+
 - Introduces `AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md` defining schedule blocks, review/reflection/free-time expectations, and prompt-flow lifecycle/registry concepts.
 - Extends multiple architecture/plan docs to include schedule blocks + prompt flows in signals, UI views, runtime context, services, schema, and readiness checks.
 - Updates tool inventory and orchestration runtime notes to account for schedule/prompt-flow operations.

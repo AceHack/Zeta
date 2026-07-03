@@ -34,6 +34,7 @@ Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the 081KRHWGX00
 ## Personas defined
 
 **Primary (3)**:
+
 - `ksk-agent-developer` — engineers integrating "am I allowed to do this?" checks into AI agents
 - `ksk-robotics-designer` — consent-first robotics / actuator system designers (NVIDIA Thor Homeland-Security clearance lineage)
 - `ksk-security-engineer` — engineers building KSK itself in `Lucent-Financial-Group/lucent-ksk`
@@ -43,6 +44,7 @@ Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the 081KRHWGX00
 **Adjacent (1)**: `ksk-compliance-auditor` — SOC 2 / HIPAA / ISO 27001 auditors consuming KSK signed receipts
 
 **Refused (2 — HARD LIMITS)**:
+
 - `ksk-refused-weapons-control` — autonomous-weapons / kill-chain designers using KSK as a "consent UI" wrapper. Per `methodology-hard-limits.md` HARD LIMITS #1 + #3: laundered consent + violates consent-first design intent (PR #2892).
 - `ksk-refused-apt-operator` — nation-state APT operators using KSK as a privilege oracle (receipt-replay, authorization enumeration, "stealth mode" feature requests). Per `mechanical-authorization-check.md`: not in the authorization-source list.
 

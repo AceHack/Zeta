@@ -43,6 +43,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard (0414Z) documenting the latest cron tick state: prior PR merges, the still-live 081KRHWGX0008QG0R0015EE8VE dual-allocation collision advisory republish, bus cleanup, and a newly observed worktree-pruning race plus the recovery technique used to land the shard.
 
 **Changes:**
+
 - Record merges of PR #3339 and PR #3349 onto `origin/main`.
 - Document ongoing 081KRHWGX0008QG0R0015EE8VE dual-allocation collision status and shadow-catch advisory republish.
 - Capture a new operational failure mode (worktree-pruning race) and the recovery/workaround procedure used.
@@ -61,6 +62,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -83,6 +85,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/15/0414Z.md:72**
+
 * Step 2’s parenthetical “untracked file … survives the switch” reads as unconditional. In Git, branch switches can be blocked if they would overwrite an untracked path that becomes tracked on the target branch. Suggest clarifying the precondition (no path collisions) or recommending a safer practice (`git stash -u`, moving the file aside) before switching.
 ```
 1. `cd` into the sibling worktree, save original branch name
@@ -102,6 +105,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **docs/hygiene-history/ticks/2026/05/15/0414Z.md:66**
+
 * P1: Broken xref for `.claude/rules/claim-acquire-before-worktree-work.md` (and same prefix elsewhere). `../../../../../.claude/...` points at `docs/.claude/...` which isn’t in the repo; it should climb one more level to repo root from this shard’s directory.
 ```
 **Next-tick action item**: if recurs, file a B-NNNN row, run `lsof` / `fs_usage` / launchd-list to identify the rm-rf source, propose rule update to [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../../../.claude/rules/claim-acquire-before-worktree-work.md).
@@ -111,11 +115,13 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 Primary worktree (`/Users/acehack/Documents/src/repos/Zeta`) is STILL on detached HEAD `65c7865` from Lior's rebase at 0230Z. HEAD didn't move in ~2h. The `.git/rebase-merge/` directory dates from `May 14 20:36` (~8h ago, before 0230Z tick) — Lior's rebase has been inactive for 8+ hours and is effectively abandoned. Per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../../../.claude/rules/claim-acquire-before-worktree-work.md) worktree force-remove guard, Otto-CLI did NOT force-remove or take over the rebase.
 ```
 **docs/hygiene-history/ticks/2026/05/15/0414Z.md:81**
+
 * P1: This link uses `../../../../../.claude/...`, which resolves to `docs/.claude/...` (nonexistent) from this file location. Adjust the relative path so it points at the repo-root `.claude/rules/...` file.
 ```
 The pattern composes with [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../../../.claude/rules/claim-acquire-before-worktree-work.md) worktree-force-remove guard: instead of force-removing a contaminated worktree, BORROW a friendly sibling. Adds an entry in the existing rule's "How to apply" matrix.
 ```
 **docs/hygiene-history/ticks/2026/05/15/0414Z.md:111**
+
 * P1: Same broken relative link prefix here (`../../../../../.claude/...` points under `docs/` instead of repo root). Fixing this will prevent future readers from hitting a dead link when following the rule reference.
 ```
 5. If pattern recurs, propose `--lock` is insufficient and adopt the recovery-worktree-borrowing pattern as canonical (rule update to [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../../../.claude/rules/claim-acquire-before-worktree-work.md))
@@ -165,6 +171,7 @@ This issue also appears on line 70 of the same file.
 P1: These `.claude/...` relative links are off by one directory. From `docs/hygiene-history/ticks/2026/05/15/0414Z.md`, `../../../../../.claude/...` resolves to `docs/.claude/...` (which doesn’t exist), so the links are broken. Update them to go up to repo root (e.g., `../../../../../../.claude/...`) and apply consistently in this file.
 
 This issue also appears in the following locations of the same file:
+
 - line 62
 - line 81
 - line 111

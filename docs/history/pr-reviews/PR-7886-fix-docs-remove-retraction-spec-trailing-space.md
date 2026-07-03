@@ -28,9 +28,11 @@
 ## Description
 
 ## Summary
+
 - Remove the single trailing space in `openspec/specs/retraction-native/spec.md` that broke the markdownlint gate on the current main tip.
 
 ## Verification
+
 - `mise exec -- markdownlint-cli2 openspec/specs/retraction-native/spec.md`
 - `git diff --check`
 

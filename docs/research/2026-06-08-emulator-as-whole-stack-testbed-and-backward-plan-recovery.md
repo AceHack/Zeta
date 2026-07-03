@@ -28,6 +28,7 @@ got there, and work backwards to the button sequence?"* — yes. This is standar
 reconstruction**, and it's the tractable-omniscient solve flagged at #7088.
 
 **Forward** (`SoftEmu` fork; input is the only branching — RND is seed-deterministic):
+
 - build the reachable-state **DAG**; at each node record the reaching edge `(parent, input)`.
 - content-address states (the empowerment/CAS key) so reconverging paths dedup → bounded DAG.
 

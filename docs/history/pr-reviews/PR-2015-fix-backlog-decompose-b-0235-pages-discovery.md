@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - mark 081KQX9B50008QG0R003HVP90P as decomposed and add child links
 - add 081KR2E4K0008QG0R0038JGMJ8 for repository metadata and discovery surface work
 - add 081KR2E4K0008QG0R000GXGR6H for sitemap submission and discovery metrics
 - refresh docs/BACKLOG.md from the generator
 
 ## Checks
+
 - bun tools/backlog/generate-index.ts --check
 - git diff --check
 - npx markdownlint-cli2 docs/backlog/P1/081KQX9B50008QG0R003HVP90P-pages-repo-metadata-sitemap-submission-discovery-2026-05-06.md docs/backlog/P1/081KR2E4K0008QG0R0038JGMJ8-pages-repo-metadata-discovery-surface-2026-05-08.md docs/backlog/P1/081KR2E4K0008QG0R000GXGR6H-pages-sitemap-submission-discovery-metrics-2026-05-08.md docs/BACKLOG.md

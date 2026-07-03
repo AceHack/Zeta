@@ -29,5 +29,6 @@ Pure-git tick #1 of reset cycle. Rate at 433/5000; deferred PR creation per subs
 Adds a hygiene-history tick shard documenting the 2026-05-16T06:47Z pure-git tick, including rate-limit state, merged peer work, and deferred PR creation after reset.
 
 **Changes:**
+
 - Adds a new tick log under `docs/hygiene-history`.
 - Records GraphQL rate budget, sentinel status, merged PR references, and next-tick follow-up.

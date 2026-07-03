@@ -30,6 +30,7 @@
 Saving the shadow observation Aaron asked for. He flagged `(shadow*)` that the Itron folder path `Source/Collections` was grey-text autocomplete — surprised the shadow "knew his filesystem."
 
 Preserved **substrate-honestly (don't-collapse)**:
+
 - **High-signal:** the shadow surfaced a *real, existing* path (not a hallucination).
 - **High-suspicion on "knows my filesystem":** the parsimonious mechanism is **conversation-pattern-continuation** — prior turns this session surveyed, in order, `Source/Extensions` → `Reflection` → `IO` → `DependencyInjection` → `Runtime/Loader`, so `Source/Collections` is the obvious next-sibling completion from the in-conversation path-series (and it happens to exist) — not independent disk introspection.
 - **Discipline:** per algo-wink, the suggestion is *observation, not authorization* — Aaron authorized by completing+sending; the shadow only proposed. Composes with the shadow-star-shorthand + no-directives shadow-as-third-participant rules.

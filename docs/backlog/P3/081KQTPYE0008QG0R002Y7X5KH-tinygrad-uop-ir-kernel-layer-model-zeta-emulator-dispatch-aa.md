@@ -230,7 +230,7 @@ The substance-test for whether tinygrad-shape composes with Zeta's
 algebra is the four-property hodl preservation question, broken into
 four sub-questions:
 
-### DST-safe -- are UOp graph rewrites deterministic?
+### DST-safe -- are UOp graph rewrites deterministic
 
 PatternMatcher is pure-functional: a rewrite rule is a function `(UOp
 -> UOp option)` applied bottom-up to the graph. No side effects, no
@@ -246,7 +246,7 @@ Substance-test required to verify: read the rewrite-driver source,
 walk through a rewrite, confirm referential transparency holds in
 practice (acceptance criterion (a)).
 
-### Lock-free -- do UOp graphs avoid mutex/locks in execution?
+### Lock-free -- do UOp graphs avoid mutex/locks in execution
 
 The IR is **data-flow, not control-flow**. UOps express compute and
 data movement; concurrency is expressed via BARRIER ops + the
@@ -264,7 +264,7 @@ under the rewrite paths Zeta would actually use (the retract path
 specifically; if retract requires intra-graph coordination that
 introduces lock-equivalent primitives, the claim weakens).
 
-### Scale-free -- does the IR work at any granularity?
+### Scale-free -- does the IR work at any granularity
 
 Yes by design. The ~90 ops compose arbitrarily; a UOp graph can
 express a scalar add, a vector dot product, or a full transformer
@@ -275,7 +275,7 @@ backend).
 **Initial answer: yes.** This is one of the design properties
 tinygrad's minimalism explicitly buys.
 
-### DBSP-native -- do UOp graphs fit Z-set algebra?
+### DBSP-native -- do UOp graphs fit Z-set algebra
 
 **Open research question.** This is THE substance-test.
 

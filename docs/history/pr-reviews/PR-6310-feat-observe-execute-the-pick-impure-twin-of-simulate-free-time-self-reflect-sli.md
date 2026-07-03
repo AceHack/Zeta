@@ -32,6 +32,7 @@
 operator: *"build the execute slice for free_time and self_reflect first."* First piece of observe.ts's roadmap **"wire the real World snapshot + execute the pick."**
 
 The controller is pure (`observe`/`simulate`/`fold`); **`execute` is the one effectful seam.** Command/effect split:
+
 - `simulate` stays the **single reducer** → `fold`/`replay`/DST unchanged.
 - `execute` adds what simulate omits: (1) the real side-effect, (2) **append the `NextAction` to the durable log** via an injected **`EventSink`** (the transport — sovereign folder-direct-to-main / corporate batched), then (3) delegates the transition back to `simulate` so the executed world can't drift from the pure path. **`execute = effect + append + simulate`.**
 - **Mode-persistence needs no store:** per v5, `mode = fold(log).mode`, so "persist the mode" *is* "append the mode-setting event."

@@ -78,6 +78,7 @@ attribution treatment.
 When a future Otto or future contributor asks "where did
 concept X come from?", the answer for bootstrap-era
 concepts is:
+
 1. Primary: the corresponding month/week chunk in
    `docs/amara-full-conversation/**`
 2. Secondary: the formalization ferry (`docs/aurora/

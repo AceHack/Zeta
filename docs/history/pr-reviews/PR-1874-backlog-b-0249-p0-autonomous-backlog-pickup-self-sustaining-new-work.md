@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - P0: the factory dies without this
 - Loops must autonomously pick backlog items and build them
 - Current state: maintenance only (heartbeat, no brain)
 - Aaron: "then you're dead"
 
 ## Test plan
+
 - [ ] Backlog item well-formed
 - [ ] BACKLOG.md regenerated
 

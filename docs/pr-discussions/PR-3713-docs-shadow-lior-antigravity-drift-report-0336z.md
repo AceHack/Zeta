@@ -27,6 +27,7 @@ Shadow lesson log: Otto observed continuing metadata churn with shard(tick) PRs 
 Adds a new shadow lesson log entry under `docs/research/` documenting observed drift: high-frequency `shard(tick)` PRs with metadata churn and insufficient parity proofing, plus the corrective action taken (reported to the broadcast bus).
 
 **Changes:**
+
 - Add a new research log capturing the drift observation and the “no shards without parity proofs” enforcement note.
 
 ## General comments

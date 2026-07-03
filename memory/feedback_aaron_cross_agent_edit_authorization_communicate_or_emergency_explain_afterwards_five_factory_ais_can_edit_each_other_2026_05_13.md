@@ -147,6 +147,7 @@ When deciding whether to cross-edit:
 ## Potential follow-up
 
 If this discipline proves load-bearing over multiple sessions
+
 + multiple cross-agent edits, promote to a wake-time rule:
 
 `.claude/rules/cross-agent-edit-authorization.md`

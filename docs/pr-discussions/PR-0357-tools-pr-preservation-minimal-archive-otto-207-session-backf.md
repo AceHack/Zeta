@@ -88,6 +88,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -106,6 +107,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a minimal, git-tracked PR-conversation preservation tool (`tools/pr-preservation/archive-pr.sh`) and backfills 10 PR discussion archives into `docs/pr-discussions/`, aligning with the project’s “git-native preservation” direction.
 
 **Changes:**
+
 - Add a one-shot bash + `gh api graphql` + Python-stdlib script to export PR metadata, reviews, review threads, and general comments into markdown files under `docs/pr-discussions/`.
 - Add usage + output-schema documentation for the preservation tool.
 - Commit 10 backfilled PR archive markdown files for this session.
@@ -183,6 +185,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -212,6 +215,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -275,6 +279,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - v2.0 supersedes v1.0
 - The cache is nothing. The microkernel is subscribe.
 - The vision monad: `vision = I ∘ D` — free from the adjunction

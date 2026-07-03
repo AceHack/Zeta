@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Extend `081KLL7…` Bun realizer coverage: `from-dotnet-global`, `from-dotnet-workload`, `from-bun-link` (+ shared `host-tier.ts`).
 - Add `setup-realize.ts --available` for shell routing.
 - Wire `linux.sh` / `macos.sh` through `realize_mechanism` (Bun when ported, `.sh` fallback).
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ace/setup-realizers/`
 - [x] `bun src/Core.TypeScript/lint/lint-typescript.ts`
 - [x] `bun src/Core.TypeScript/ace/setup-realize.ts --available from-dotnet-global`

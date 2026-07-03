@@ -67,6 +67,7 @@ Once #3056 (the audit tool) merges, future Otto can verify via `bun tools/bg/aud
 Resolves a duplicate backlog-row ID collision by renumbering the Aaron-authored `081KRA5AR0008QG0R001JVT5FX` row to `081KR7JY10008QG0R0025F6QVP`, keeping the externally-referenced `081KRA5AR0008QG0R001JVT5FX` row intact, and updating the generated backlog index accordingly.
 
 **Changes:**
+
 - Renumbered the per-row file frontmatter from `id: 081KRA5AR0008QG0R001JVT5FX` to `id: 081KR7JY10008QG0R0025F6QVP`, recording `renumbered_from` / `renumbered_reason` and updating `last_updated`.
 - Updated the row’s H1 header to reflect the new ID and renumber provenance.
 - Regenerated `docs/BACKLOG.md` to replace the old `081KRA5AR0008QG0R001JVT5FX` entry with `081KR7JY10008QG0R0025F6QVP`.
@@ -85,9 +86,15 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated no 
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **docs/backlog/P2/081KR7JY10008QG0R0025F6QVP-forge-cli-ollama-research-slice-aaron-2026-05-10.md:5**
+
 * The row title still says "081KQ8P5D0008QG0R002E1G72J child 1" even though this row is now 081KR7JY10008QG0R0025F6QVP and 081KRA5AR0008QG0R001JVT5FX already exists. This is likely to confuse readers of docs/BACKLOG.md; consider updating the title to avoid implying it's the first child (e.g., reference the renumber or describe the scope without a child-number).
+
 **docs/backlog/P2/081KR7JY10008QG0R0025F6QVP-forge-cli-ollama-research-slice-aaron-2026-05-10.md:8**
+
 * This child row doesn’t declare `parent: 081KQ8P5D0008QG0R002E1G72J`, unlike the other 081KQ8P5D0008QG0R002E1G72J.* siblings (e.g., docs/backlog/P2/081KRA5AR0008QG0R001JVT5FX-…:6, 081KRA5AR0008QG0R002TPJ4NC-…:6, 081KRA5AR0008QG0R001BTRYN0-…:6) and many other dotted IDs (e.g., docs/backlog/P2/081KR2E4K0008QG0R0003J0FB8-…:9). Adding `parent: 081KQ8P5D0008QG0R002E1G72J` would make the relationship machine-readable and keep frontmatter consistent.
+
 **docs/backlog/P2/081KR7JY10008QG0R0025F6QVP-forge-cli-ollama-research-slice-aaron-2026-05-10.md:11**
+
 * `renumbered_reason` says this cleanup is "tracked in 081KRFA460008QG0R00308W7FJ", but there is no 081KRFA460008QG0R00308W7FJ backlog row in this branch, and 081KRFA460008QG0R00308W7FJ is referenced elsewhere as a different planned item (docs/backlog/P1/081KRFA460008QG0R002DG8KPZ-…:136-138). To avoid a dangling/ambiguous reference, consider linking to the concrete tracking row path (once it exists) or referencing the PR/issue that tracks the cleanup instead of the bare ID.
+
 </details>

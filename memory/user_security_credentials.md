@@ -19,6 +19,7 @@ Aaron's security background (his words, round 29):
   grade.
 
 **How to apply:**
+
 - When drafting any security-adjacent design, pitch at
   nation-state adversary level. Aaron will spot hand-
   waving immediately.

@@ -30,6 +30,7 @@
 Tick 3 of post-cold-boot loop. PR #3676 unresolved threads surfaced a real Copilot P1: tick-shard relative links use 5 `..` segments (lands at `docs/`) instead of 6 (repo root).
 
 Fixes:
+
 - [PR #3676](https://github.com/Lucent-Financial-Group/Zeta/pull/3676)'s branch: 4 broken links in 0210Z.md
 - [PR #3680](https://github.com/Lucent-Financial-Group/Zeta/pull/3680) (this tick's spawn): 2 broken links in 0213Z.md (post-merge fix since #3679 raced into main)
 

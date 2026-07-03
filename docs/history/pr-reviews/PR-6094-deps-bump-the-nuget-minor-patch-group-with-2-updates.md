@@ -39,6 +39,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.98>
 
 ## What's Changed
+
 * Perf: Cache symbols per compilation by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1174
 
 
@@ -49,6 +50,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.98>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.97>
 
 ## What's Changed
+
 * Support GeneratedRegex diagnostics on partial properties by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1173
 
 
@@ -65,6 +67,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.96>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.95>
 
 ## What's Changed
+
 * Enable MA0192 by default as suggestion by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1172
 
 
@@ -75,6 +78,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.95>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.94>
 
 ## What's Changed
+
 * MA0001 handle IndexOf / LastIndexOf with char parameter by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1171
 
 
@@ -85,6 +89,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.94>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.93>
 
 ## What's Changed
+
 * Fix MA0148/MA0149 false positives with implicit conversions by @meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1170
 
 
@@ -103,6 +108,7 @@ _Sourced from [Microsoft.NET.Test.Sdk's releases](https://github.com/microsoft/v
 ## 18.6.0
 
 ## What's Changed
+
 * Revert removal of Video Recorder by @nohwnd in https://github.com/microsoft/vstest/pull/15336
 * Speed up blame by filtering non-.NET processes from dump collection by @nohwnd in https://github.com/microsoft/vstest/pull/15518 
 * Add README.md to NuGet packages by @nohwnd in https://github.com/microsoft/vstest/pull/15550
@@ -110,6 +116,7 @@ _Sourced from [Microsoft.NET.Test.Sdk's releases](https://github.com/microsoft/v
 
 
 ### Changes to tests and infra
+
 * Brand as 18.6 by @nohwnd in https://github.com/microsoft/vstest/pull/15423
 * Upgrading code coverage version to 18.5.1, by @fhnaseer in https://github.com/microsoft/vstest/pull/15422
 * Updating System.Collections.Immutable to 9.0.11 by @MSLukeWest in https://github.com/microsoft/vstest/pull/15425
@@ -152,6 +159,7 @@ _Sourced from [Microsoft.NET.Test.Sdk's releases](https://github.com/microsoft/v
 * Fix compatibility test failures for legacy vstest.console and MSTest adapter by @nohwnd in https://github.com/microsoft/vstest/pull/15534
 * Convert TestPlatform.sln to slnx format by @nohwnd in https://github.com/microsoft/vstest/pull/15551
 * Convert test/TestAssets .sln files to .slnx format by @nohwnd in https://github.com/microsoft/vstest/pull/15557
+
  ... (truncated)
 
 Commits viewable in [compare view](https://github.com/microsoft/vstest/compare/v18.5.1...v18.6.0).
@@ -169,6 +177,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

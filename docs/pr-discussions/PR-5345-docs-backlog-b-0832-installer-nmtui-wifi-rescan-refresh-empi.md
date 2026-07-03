@@ -57,6 +57,7 @@ This row IS what 081KSGS9H0008QG0R0011BC7T2 predicted: physical hardware-support
 Adds a new backlog row (081KSGS9H0008QG0R001Q2DH2H) capturing empirical operator feedback from a physical hardware-support test: dense WiFi environments can cause `nmtui` to miss the target SSID on initial scan, and the installer needs a visible rescan/refresh path.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/081KSGS9H0008QG0R001Q2DH2H...md` describing the issue and outlining three mitigation approaches (A banner, B rescan/relaunch loop, C `nmcli` flow).
 - Regenerates/updates `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R001Q2DH2H entry.
 

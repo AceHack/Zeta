@@ -59,6 +59,7 @@ Comprehensive 0608Z-0631Z autonomous-loop session arc shard consolidating 8 tick
 Adds a canonical tick-shard document capturing the 0608Z–0631Z Otto-CLI session arc (Maji critique response, canary discriminator refinement, and GraphQL tier traversal) to the hygiene-history ledger under `docs/hygiene-history/ticks/`.
 
 **Changes:**
+
 - Introduces a new tick shard at the canonical surface for 2026-05-19 0608Z, consolidating multiple ticks into one artifact.
 - Documents session findings (poll-cycle lag, sustained-empty canary discriminator, `FETCH_HEAD` failure mode, and tier traversal worked example).
 - Cross-links relevant `.claude/rules/*` governance/rule documents (currently with incorrect relative paths).

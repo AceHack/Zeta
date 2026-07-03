@@ -295,7 +295,9 @@ If the cross-AI review chain (this writeup's audience among others)
 ever produces a state where all reviewers agree on a wrong claim that
 no one can detect from inside, the substrate has failed at the
 multi-frame-resilience level. The Beacon/Mirror governance discipline
+
 + the ALIGNMENT.md SD-9 (truth-confirmation-from-agreement) clause +
+
 the Otto-275-FOREVER discipline are the mitigations; their failure
 is a falsifier.
 

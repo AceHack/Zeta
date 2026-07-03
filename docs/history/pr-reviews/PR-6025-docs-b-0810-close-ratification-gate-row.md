@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - close 081KSGS9H0008QG0R002CY8Q24 now that the ratification gate document is linked and acceptance criteria are satisfied
 - mark only the 081KSGS9H0008QG0R002CY8Q24 acceptance item complete in 081KSBMG30008QG0R00201X7EJ; 081KSBMG30008QG0R00201X7EJ remains decomposed and gated by remaining criteria
 - regenerate docs/BACKLOG.md from backlog frontmatter
 
 ## Verification
+
 - bun tools/backlog/generate-index.ts --check
 - git diff --check
 

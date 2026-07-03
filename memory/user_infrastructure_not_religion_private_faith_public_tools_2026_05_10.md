@@ -33,6 +33,7 @@ not theology. The method transfers regardless of the teacher's
 private beliefs. Aaron teaches infrastructure the same way.
 
 **Connects to:**
+
 - user_christian_faith_alongside_exploration (the faith context)
 - feedback_razor_discipline (operational claims only)
 - Glass Halo (Aaron's faith is visible but not imposed)

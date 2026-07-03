@@ -31,6 +31,7 @@
 > "in our Merkle tree the filesystem is scoped to branches, right? so the collision would be same branch + filename + different content hash."
 
 Yes — captured:
+
 - **Each branch = a Merkle root = a COW tree version** (every `put` yields a new root; old roots persist). `DagFs.Tree` stands for one branch.
 - **Filename uniqueness is within a branch** (branch-relative path = unique key); cross-branch same-path-different-content isn't a conflict until merge.
 - **Merge collision = same branch-relative path + different content hash** (exactly `DagFs.merge`'s `resolve`). **Content is global/branch-independent** (hash-addressed) → identical content across branches is one node, merge dedups for free; only path→content bindings are branch-scoped + can collide.

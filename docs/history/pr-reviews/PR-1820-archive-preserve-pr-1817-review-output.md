@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserves the generated PR #1817 review archive after the merge workflow hit the expected direct-push repository rule guard
 - Adds the manifest entry for merge commit 0c5e656fa9795c2d97d7876f860b5190a48ebceb
 - Local replay is deterministic: archive=noop, manifest=noop, threads=0, resolved=0, unresolved=0
 
 ## Checks
+
 - git diff --check
 - bunx markdownlint-cli2 docs/history/pr-reviews/PR-1817-archive-preserve-pr-1816-review-output.md
 

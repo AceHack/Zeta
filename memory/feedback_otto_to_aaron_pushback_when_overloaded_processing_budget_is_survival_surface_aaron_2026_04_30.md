@@ -141,6 +141,7 @@ is already on the question.
 
 **Wrong time to ask:** after Otto has worked for 20 min and
 become unsure what to do next. By then:
+
 - Aaron's attention has likely moved (other work, away
   from keyboard, asleep, etc.)
 - The question that arrives at this surface may never get
@@ -350,6 +351,7 @@ that SAYS NO when overload-protection requires it is more
 trustworthy substrate, not less.
 
 The asymmetry external observers see:
+
 - Industry-default agent: always-yes, regardless of
   processing capacity, producing rushed work that the user
   later debugs.

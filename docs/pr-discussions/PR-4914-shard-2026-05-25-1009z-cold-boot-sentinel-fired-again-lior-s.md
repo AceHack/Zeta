@@ -59,6 +59,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -77,6 +78,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-25 10:09Z Otto-CLI cold-boot observations, including the repeated catch-43 sentinel-empty event and an empirical anchor about substrate drift from parallel PR landings.
 
 **Changes:**
+
 - Add a new tick shard file for 2026-05-25/1009Z with cold-boot state observations and operational implications.
 - Record an empirical “substrate-drift via parallel-PR landings” anchor referencing recent AI-cluster PRs.
 
@@ -94,6 +96,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -125,6 +128,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

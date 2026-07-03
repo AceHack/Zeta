@@ -122,7 +122,9 @@ The drift: lazy polling without DST-discipline
 
 Future Otto: when polling PR state and seeing BLOCKED,
 IMMEDIATELY query `statusCheckRollup` + `reviewThreads`
+
 + `reviewDecision`. If FAILURE-check, inspect log
+
 decide flake-vs-real; if threads, drain; if
 reviewDecision-null-quirk, kick auto-merge. NEVER
 report "still CI" without verifying.

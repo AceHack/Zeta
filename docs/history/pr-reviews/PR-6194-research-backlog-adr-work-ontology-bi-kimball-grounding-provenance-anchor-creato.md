@@ -32,6 +32,7 @@
 Per Aaron 2026-05-31 on the observe.ts ADR: resolve the **Aaron↔Max label conflicts** (trajectories / agendas / projects / backlog-rows vs work-items / projects / initiatives) by grounding in external lineage (**BI/Kimball** chosen), land a **provenance/lineage anchor**, and enable **paying creators by attribution, not DRM** — extended to a **multi-attribution contribution graph** and **pay by attention × quality-of-attention**.
 
 ### What lands (all marked PROPOSED — pending Aaron + Max ratification)
+
 - **`docs/research/2026-05-31-work-ontology-…ratification.md`** —
   - **Diagnosis:** the mashup conflates a *work-breakdown hierarchy* with *cross-cutting dimensions*; both vocabularies mix them.
   - **Grounding:** Kimball dimensional (semantics) + DV2.0 hub/link/satellite (storage). The reconciliation table maps both label-sets to one model. Killer mappings: **`agenda` = conformed dimension** (the BI cross-team-alignment mechanism = "cooperative alignment between travelers"); **`trajectory` = accumulating-snapshot fact**.
@@ -43,6 +44,7 @@ Per Aaron 2026-05-31 on the observe.ts ADR: resolve the **Aaron↔Max label conf
 - **observe.ts ADR:** new "Work ontology (PROPOSED)" section pointing at the research doc.
 
 ### Ratification needed
+
 - [ ] **Aaron** — BI/Kimball grounding + reconciliation table + agenda=conformed-dimension.
 - [ ] **Max** — his work-item/project/initiative map to the ladder (R1); trajectory/agenda as dimensions (R2); no forced relabeling. Open: is agenda a conformed-dimension or an initiative/charter to him?
 

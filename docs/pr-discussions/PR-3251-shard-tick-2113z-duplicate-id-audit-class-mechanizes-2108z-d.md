@@ -68,6 +68,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR adds a single hygiene-history tick note documenting the 21:13Z shard and its relationship to the duplicate backlog-ID audit work in PR #3250.
 
 **Changes:**
+
 - Adds the 2113Z tick log under `docs/hygiene-history`.
 - Records verification, visibility, and running-tally details for the shard.
 - Documents the review catch → fix → audit mechanization pattern.

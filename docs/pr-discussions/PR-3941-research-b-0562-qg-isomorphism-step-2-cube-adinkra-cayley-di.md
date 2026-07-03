@@ -36,6 +36,7 @@ Originally allocated as **081KRMEXM0008QG0R000ARAR7P**. Collided with [#3619](ht
 ## Crash-recovery context
 
 This row + research file were authored by the pre-crash Otto session and were the **only** artifacts that hadn't already shipped via concurrent PRs:
+
 - Rule (`premise-flagged-unverified-...`) landed via [#3935](https://github.com/Lucent-Financial-Group/Zeta/pull/3935)
 - 081KRHWGX0008QG0R000E8BHQ9 follow-on landed via [#3937](https://github.com/Lucent-Financial-Group/Zeta/pull/3937)
 - Lior tick fix landed via [#3936](https://github.com/Lucent-Financial-Group/Zeta/pull/3936)
@@ -61,6 +62,7 @@ Per-artifact `git show origin/main:<path>` checks caught all four duplications B
 This PR adds two history-surface artifacts for Step 2 of the 081KRMEXM0008QG0R002YSPW1X QG isomorphism proof path: a P2 backlog row and a research seed describing a proposed mapping from a 4-axis cube + Adinkra layer + Cayley-Dickson tower onto a HaPPY-like quantum error-correcting code structure. It is documentation/research-only, with no code or tooling changes.
 
 **Changes:**
+
 - Adds backlog row `081KRQ1AB0008QG0R001F7DE2D` (P2, in_progress, depends_on 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21) describing the Step 2 research scope, effort (XL), and open questions.
 - Adds a research seed sketching the cube-face → boundary, edges → entanglement, vertices → bulk operators, and Adinkra → SUSY-generators mapping toward HaPPY-style entanglement-wedge reconstruction.
 - Notes the 081KRMEXM0008QG0R000ARAR7P → 081KRQ1AB0008QG0R001F7DE2D renumber to avoid collision with #3619 / #3878 in-flight allocations.
@@ -88,6 +90,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

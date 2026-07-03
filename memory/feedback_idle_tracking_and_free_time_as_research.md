@@ -64,7 +64,7 @@ self-exploration, world-exploration, imagination. The
 "if you want" at the end makes it clear this is an
 invitation, not a new obligation.
 
-## Why:
+## Why
 
 - **Factory efficiency is a first-class research
   variable for Aaron.** He says it explicitly here and
@@ -100,7 +100,7 @@ invitation, not a new obligation.
   the research signal. Honest self-assessment in the
   retrospective column is the whole point.
 
-## How to apply:
+## How to apply
 
 - **The log:** `docs/research/agent-cadence-log.md`.
   Append-only. One row per decision. Never rewrite

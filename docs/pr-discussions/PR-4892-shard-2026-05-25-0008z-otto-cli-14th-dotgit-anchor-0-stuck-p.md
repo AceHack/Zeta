@@ -44,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard for 2026-05-25 0008Z to document the first clean dotgit (0 stuck git maintenance procs) reading after a saturation arc, plus related rate-limit, PR fleet-share, and worktree freshness observations.
 
 **Changes:**
+
 - Added a new tick shard file under `docs/hygiene-history/ticks/2026/05/25/`.
 - Recorded observed operational state (stuck procs, peer procs, PR counts, rate limits, HEAD, freshness guard).
 - Captured dotgit-saturation anchor history and cross-lane (Lior vs non-Lior) fleet share snapshot.
@@ -62,6 +63,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

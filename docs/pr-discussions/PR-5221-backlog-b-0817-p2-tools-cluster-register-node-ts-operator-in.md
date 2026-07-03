@@ -27,6 +27,7 @@ Symmetric counterpart to PR #5216 deregister tool. Two modes (compose / --from-y
 Adds a new P2 backlog row (081KSGS9H0008QG0R002QQNA79) describing a proposed `tools/cluster/register-node.ts` operator tool (manual register/re-register counterpart to `deregister-node.ts`), and wires it into the main backlog index.
 
 **Changes:**
+
 - Add backlog row **081KSGS9H0008QG0R002QQNA79** documenting goals, sub-targets, and acceptance for a manual cluster node registration tool.
 - Update `docs/BACKLOG.md` to include **081KSGS9H0008QG0R002QQNA79** under P2.
 

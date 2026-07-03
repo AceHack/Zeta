@@ -33,12 +33,14 @@ Step 5 of the consolidate complexity spike (Otto-invoked formal-verification rol
 `src/Core.Lean4/Lean4/CostRecurrence.lean` — sorry-free, Mathlib-backed.
 
 ### Theorem 1 — the universal recurrence (the induction Z3 cannot do)
+
 - `consolidateEqCount`: `T(0)=0, T(n+1)=T(n)+n` (the #8949 cost-counter witness).
 - `eqCount_closed_form`: `T(n) = n(n-1)/2` for **all** n, via Mathlib `Finset.sum_range_id`. The #8952 Z3 proof only discharges the *ground envelope*; this is the induction it structurally cannot reach.
 - `eqCount_two_mul`: `2·T(n) = n·(n-1)` — mirrors the `.smt2`'s multiply-by-2 integer-division dodge exactly.
 - `eqCount_le_sq`: `T(n) ≤ n²` — re-derives Z3's envelope **universally** as a corollary. Cross-oracle agreement (BP-16): Lean induction and Z3 ground refutation confirm the same bound.
 
 ### Theorem 2 — cost map is lax-monoidal over the (min,+) tropical semiring
+
 - `cost_lax_of_subadd`: subadditivity `cost(f∘g) ≤ cost(f)+cost(g)` **is** the lax-monoidal coherence cell `trop(cost(f∘g)) ≤ trop(cost f) * trop(cost g)`, since tropical `×` is base `+` (`untrop_mul`). The `≤` is the laxness.
 - Sequential composition (trace append) = tropical `×`: cost exactly additive (tight/strict special case).
 - Shared composition (reuse cheaper sub-result) = tropical `+` (min): `sharedCost_strictly_lax` exhibits `min 2 3 = 2 < 5`, so the functor is genuinely **lax**, not strict.
@@ -48,6 +50,7 @@ Anchor note: handoff cited `Algebra.Order.Tropical`; corrected to the real modul
 Scope honesty (drift-auditor BP-08): theorem 2 states/witnesses the coherence cell, not a fully-constructed `CategoryTheory` monoidal-functor object — and says so in-file.
 
 ## Verification (executed locally, verify-before-record)
+
 - `lake env lean Lean4/CostRecurrence.lean`: 0 errors, 0 `sorry` warnings.
 - `#print axioms` on all 8 theorems: only `[propext, Classical.choice, Quot.sound]` — **no `sorryAx`**.
 - Wired into `Lean4.lean` root + `lean-proof.yml` (per-file type-check + sorryAx axiom guard), matching the GenGenFixpoint/CanonicalizerCorrect CI pattern.

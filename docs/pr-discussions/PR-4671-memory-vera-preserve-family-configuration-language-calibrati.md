@@ -17,10 +17,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add Vera persona memory for Aaron's family-configuration and child-AI language calibration context
 - refresh memory/MEMORY.md via the repo reindex script
 
 ## Checks
+
 - bun tools/memory/reindex-memory-md.ts
 - git diff --check
 - git diff --cached --check
@@ -35,6 +37,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR adds a new Vera persona conversation archive and regenerates the `memory/MEMORY.md` auto-index so the memory stack view reflects the latest committed memory heap.
 
 **Changes:**
+
 - Add a new Vera conversation file capturing family-configuration context and child-safe language calibration guidance.
 - Re-run `tools/memory/reindex-memory-md.ts` to refresh the `memory/MEMORY.md` auto-index.
 

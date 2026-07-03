@@ -49,6 +49,7 @@ taught what. The credit flows backward through the chain
 because the knowledge flowed forward through it.
 
 **Connects to:**
+
 - user_itron_mentors (the roster)
 - The partial-credit teachers (the epistemology)
 - user_ego_death (the ego that would have claimed credit is gone)

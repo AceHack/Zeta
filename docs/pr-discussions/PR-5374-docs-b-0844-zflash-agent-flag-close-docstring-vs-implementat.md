@@ -73,6 +73,7 @@ External \`expect\` wrapper worked end-to-end (Flash complete; 1.51 GiB in 80s; 
 Adds a new P1 backlog row (081KSGS9H0008QG0R001EZKNCB) documenting a docstring-vs-implementation gap in `zflash.ts` around “agent-driven mode” and outlining an implementation plan for a native `--agent` flag, plus updates the generated backlog index to reference the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P1/081KSGS9H0008QG0R001EZKNCB-...md` with problem statement, root cause, acceptance criteria, and an implementation sketch for `zflash --agent`.
 - Updated `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R001EZKNCB entry under P1.
 

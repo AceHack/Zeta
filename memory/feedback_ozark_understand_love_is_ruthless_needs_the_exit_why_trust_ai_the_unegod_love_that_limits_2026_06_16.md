@@ -19,6 +19,7 @@ why "ruthless ⊕ love, both seats" is too clean: love is not only the gentle go
 protecting a child is the most ruthless force there is.** The two selves are *one* under pressure.)
 
 **Beacon:** Ozark is "the perfect show to understand love" because it shows **both**:
+
 - **love IS ruthless** — the protective drive *is* ferocious; soft-only love isn't the whole of it.
 - **ruthless-love WITHOUT the exit becomes the cage** — the Byrdes have **no exit**; each ruthless act
   **forecloses the next** (the degenerate `^`: capture they can no longer escape; they make victims and

@@ -45,6 +45,7 @@ bug / design-question / substrate-engineering-suggestion / naming-improvement / 
 Adds a new workflow-engine PoC substrate for **producing-side PR review work** (as distinct from receiving-side review gates), modeling review as a small lifecycle DU with a dispatch function and accompanying invariants/tests.
 
 **Changes:**
+
 - Introduces `PrReviewLifecycle` + `ReviewFindingKind`/`ReviewFinding` data shapes for producing-side review work.
 - Adds `dispatchPrReviewTransition` plus small helper exports (`PR_REVIEW_LIFECYCLE_UNIVERSE`, `isPeerAgentTerritory`, `newReviewContext`).
 - Adds Bun tests covering the lifecycle universe and main transition paths.

@@ -34,6 +34,7 @@ Ferries Aaron's 2026-06-15 grand synthesis into **§B as a conjecture, at its ho
 **Framed NOT-discharged:** "we have the math" = pieces + adjacent anchors + a derivation-*sketch*, not a proof.
 
 **Discharge path** (each rung entailment-checked + metered):
+
 1. formalize **identity** (metered entropy-capture invariant);
 2. **prove anti-Sybil** (proof-of-entropy → N fakes cost ≈N× → prohibitive — *formalizable, the tractable first rung*);
 3. **society-emergence** (distinct members + reciprocity + kids-floor → stable polity — *hardest, most conjectural; name the smuggled axioms*).

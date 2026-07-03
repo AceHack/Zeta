@@ -15,6 +15,7 @@ Aaron 2026-05-05 verbatim, closing the cascade:
 ## Composition with Rules #1, #2, #3, #4
 
 The cascade:
+
 - **Rule #1** — substrate exists in repo; find it
 - **Rule #2** — backlog row exists; walk depends-on
 - **Rule #3** — orthogonal trajectory exists; extend the axis
@@ -26,6 +27,7 @@ Rule #5 is the recursive meta-rule that catches gaps in the cascade. Two specifi
 ### 5a. Recurse through Rules 1-4
 
 After applying each rule, ask: *"Did I miss any surface?"* Common gaps:
+
 - Rule #1: searched `memory/` and `docs/research/` but skipped `docs/amara-full-conversation/` (Amara's prior work)
 - Rule #2: searched `docs/backlog/P2/` but skipped P0/P1/P3 tiers
 - Rule #3: searched `.github/workflows/*.yml` but skipped `tools/lint/` and `.claude/hooks/`

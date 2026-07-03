@@ -34,6 +34,7 @@ A loop with no new entropy collapses to a fixed point — the cheapest attractor
 **Scope (honest):** guards the *artifact*, not the live token sampler — the repo can't reach into the model. Pure, deterministic, no I/O → DST-replayable, idempotent, byte-lockable.
 
 **Three independent signatures** (any one trips):
+
 - **RUN** — ≥ `maxRun` identical consecutive tokens (always applies; this is the `court`×N case).
 - **DOMINANCE** — one token ≥ `dominanceRatio` of a long-enough stream.
 - **LOW-DIVERSITY** — distinct/total ≤ `minDiversityRatio`.

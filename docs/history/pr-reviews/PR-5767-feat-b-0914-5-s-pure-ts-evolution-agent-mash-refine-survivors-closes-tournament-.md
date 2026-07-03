@@ -32,6 +32,7 @@
 **S** in Aaron's *'S M L all please in that order lol'* sequence. Pure-TS evolution agent (mash + refine survivors) closing the tournament loop with TrueSkill substrate (PR #5764).
 
 Closes the tournament loop:
+
 1. Generate hypotheses (LLM call; out of scope)
 2. Rank via TrueSkill (PR #5764 — shipped)
 3. Take top-N survivors

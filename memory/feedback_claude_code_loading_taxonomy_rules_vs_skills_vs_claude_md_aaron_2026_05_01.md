@@ -377,6 +377,7 @@ the **harness-portable** discovery layer, pointed at from
 both CLAUDE.md and AGENTS.md (and any other harness bootstrap
 doc). Native routers are first-tier discovery where they
 exist; the factory tool is second-tier (always available)
+
 + cross-substrate (covers what the native router misses).
 
 Iterative improvement angle: the human maintainer 2026-05-01:

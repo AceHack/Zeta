@@ -11,7 +11,9 @@ future Python / .NET / Lean / etc.) — not just F#.
 **Why:** Aaron 2026-04-30, immediately after slice 1 of the TS/Bun
 migration merged: *"Make sure bun uses DST deterministic simulation
 just like F# too that is a best practice"* + *"for every language"*
+
 + *"we will want code coverage all all that too i like ../SQLSharp
+
 already has that too"*. The framing generalises Otto-272 (DST
 everywhere), Otto-281 (DST-exempt is a deferred bug, not
 containment), and Otto-273 (seed-lock policy) — those were

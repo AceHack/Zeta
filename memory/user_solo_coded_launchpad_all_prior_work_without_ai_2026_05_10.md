@@ -36,6 +36,7 @@ AI assistance. The prior work IS the infrastructure the factory
 uses. Solo-coded → factory-amplified → society-expanded.
 
 **Connects to:**
+
 - reference_alephz_ai_full_repo_map (the repos)
 - user_itron_mentors (who taught Aaron the skills)
 - project_flux_capacitor_antifragile (solo-coded at Itron)

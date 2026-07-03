@@ -77,6 +77,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -95,6 +96,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a one-shot Bun/TypeScript hygiene tool to backfill validator-compatible pipe-row headers onto tick-history shard files while keeping existing rich Markdown bodies intact.
 
 **Changes:**
+
 - Adds shard path parsing and timestamp-derived header construction.
 - Supports dry-run by default, `--write` mutation mode, and optional `--files` restriction.
 - Emits per-file actions plus aggregate scan/write counts.
@@ -104,6 +106,7 @@ Adds a one-shot Bun/TypeScript hygiene tool to backfill validator-compatible pip
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/add-pipe-row-header.ts:246**
+
 * P1: Filtering `--files` inputs here silently drops typos, missing files, and out-of-scope paths, then exits successfully with `scanned 0`. For a write-capable backfill tool, invalid operands should be reported as argument errors so a requested retrofit cannot appear to succeed while doing nothing.
 ```
     shards = files
@@ -129,6 +132,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -154,6 +158,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

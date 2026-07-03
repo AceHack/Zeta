@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - One bounded step on 081KR2E4K0008QG0R00009QQJM (re-decomposed per "assume mistakes"): isolated the F# types + N-of-M threshold check into `Zeta.Core.Consent.KskAuthorization` (Signer, KskConfig, request, Result<KskCheckResult,string>).
 - No docs changes; pure F# code per "prefer F#/TS over docs" and "TS over bash".
 - Uses dedicated worktree + pushed claim branch; root checkout untouched.
 - Start gate satisfied in trajectory (prior-art: no existing KSK in src/; dependency 081KR2E4K0008QG0R003CPCM4V closed).
 
 ## Focused checks (included per rules)
+
 - `dotnet build src/Core/Core.fsproj -c Release` → **0 Warning(s), 0 Error(s)** (TreatWarningsAsErrors on).
 - Full repo build also clean.
 
 ## Next
+
 - Follow-up atomic child for tests (N-of-M falsifying cases) + integration with consent gate (081KR2E4K0008QG0R003MJ4JK0/081KQZVQW0008QG0R002Q58F6Z).
 
 Co-Authored-By: Grok <noreply@x.ai>

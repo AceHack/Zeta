@@ -44,6 +44,7 @@ works standalone in an existing harness.
 reference it).
 
 **Examples**:
+
 - `skill-creator` skill — for building new skills
 - `claude-md-steward` skill — for CLAUDE.md hygiene
 - `.claude/agents/harsh-critic.md` — a review agent
@@ -60,6 +61,7 @@ work together for one discipline.
 reference in settings).
 
 **Examples**:
+
 - Review-disciplines bundle: harsh-critic +
   spec-zealot + code-reviewer + threat-model-critic
 - Build-discipline bundle: verify-audit +
@@ -79,6 +81,7 @@ CLAUDE.md template with role-refs ready to fill in.
 adopter's context; wire into their repo).
 
 **Examples**:
+
 - Factory-governance template: GOVERNANCE.md
   section-header template + AGENTS.md + CLAUDE.md
   + hygiene-history + round-history structure

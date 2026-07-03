@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add the agenda-composition guard to docs/AGENDA.md
 - encode agenda fusion / unique-direction invariants in tools/Z3Verify
 - add formal xUnit coverage for the agenda autonomy lemmas
 
 ## Verification
+
 - dotnet run --project tools/Z3Verify/Z3Verify.fsproj -c Release
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~Z3LawsTests"
 - dotnet format --verify-no-changes --include tools/Z3Verify/Program.fs tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs

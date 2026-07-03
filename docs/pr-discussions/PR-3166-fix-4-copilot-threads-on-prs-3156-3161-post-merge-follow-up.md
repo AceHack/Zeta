@@ -56,6 +56,7 @@ The 4 threads on the merged PRs will be resolved via GraphQL \`resolveReviewThre
 Small follow-up that addresses 4 Copilot review findings on the already-merged PRs #3156 and #3161, applied directly on main.
 
 **Changes:**
+
 - Fix 081KRHWGX0008QG0R002DPG02X frontmatter `type` from `feature` to `chore` and expand bare rule filenames to full `.claude/rules/` paths in the Composes-with list.
 - Correct "~17/47" to "8/47 (~17%)" for internal consistency and fix a "per per-tick" grammar nit in the 1822Z tick shard.
 

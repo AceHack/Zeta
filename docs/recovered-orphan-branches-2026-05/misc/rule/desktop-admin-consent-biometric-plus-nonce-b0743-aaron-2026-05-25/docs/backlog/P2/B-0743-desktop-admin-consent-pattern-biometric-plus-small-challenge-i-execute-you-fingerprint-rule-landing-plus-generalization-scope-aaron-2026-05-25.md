@@ -51,6 +51,7 @@ Names the 4 composing elements:
 4. Provenance chain (B-0732 Layer 1)
 
 Documents:
+
 - The pattern + when it applies + when it doesn't
 - Desktop vs server design-space distinction table
 - Why each element matters (what biometric alone misses; what challenge alone misses)

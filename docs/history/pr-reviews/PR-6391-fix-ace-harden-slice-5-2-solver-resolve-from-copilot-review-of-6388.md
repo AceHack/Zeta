@@ -31,6 +31,7 @@ Follow-up to #6388 (slice 5.2 — semver + solver, merged `a7263f2d2`). Auto-mer
 
 ### P0 robustness — untrusted-JSON crash → clean refusal
 Dependency edges are untrusted JSON. Both edge kinds read `edge.version` (`registry` → `parseRange`, `inline` → `satisfies`/pin), so a non-string `version` (number/null) threw instead of refusing.
+
 - **solver.ts** — `typeof edge.name/edge.version === "string"` guard right after the kind-check → `invalid-package`.
 - **resolve.ts** — registry branch now parses `edge.version` with `parseRange` (guards non-string **and** malformed-string range) before the `satisfies` re-check; inline branch adds the `edge.version` string guard.
 
@@ -38,6 +39,7 @@ Dependency edges are untrusted JSON. Both edge kinds read `edge.version` (`regis
 `resolve()`'s `ResolveReason` listed `"bad-range"` but never emitted it. The `parseRange` path above now emits it legitimately (non-string / malformed registry range) — defense-in-depth, since `resolve()` must not assume `solve()` ran.
 
 ### P0 lint + P2 cleanups
+
 - **solver.z3.test.ts** — `eslint-disable sonarjs/no-os-command-from-path` on the `spawnSync("node",…)` with rationale (matches the `tools/agent-bus/publish.ts` idiom); full `.claude/rules/…` path on the assert-dont-skip xref.
 - **solver.ts `ingest`** — skip `retractSource` for `"root"` (honors the documented "never call with root" invariant; root is seeded once → behavior-identical).
 - **semver.ts** — replace the stale "Task 2 extends this" comment (`^`/`~` already handled).

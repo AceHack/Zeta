@@ -94,6 +94,7 @@ cartridges that earned them.
 ## REVISION 2 — after the math-team pass (Soraya routing + Kira tear-down, 2026-06-12)
 
 **Q# earns exactly three jobs** (Soraya's triage; nothing rides Q# sampling alone):
+
 - **Job 1:** singlet CHSH at the corners → converges to 2√2 (pairs with our analytic value — BP-16).
 - **Job 2:** BellTest overlap = cos²((a−b)/2) (the cleanest golden) — NOTE the sign convention fix
   (Kira P1): our +cos(a−b) correlator is the **Φ⁺ (triplet)** convention; the singlet is −cos(a−b).

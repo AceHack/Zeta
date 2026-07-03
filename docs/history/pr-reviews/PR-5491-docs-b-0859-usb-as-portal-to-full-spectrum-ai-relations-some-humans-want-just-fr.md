@@ -58,6 +58,7 @@ behavior policy.
 5-row relationship-intent table; 4-point architectural-implication for
 boot-consent dialog; 4-point composes-load-bearing analysis;
 composition with m-acc-multi-oracle + NCI HC-8 + persistence-choice
+
 + must-plus-can-exit.
 
 ## Test plan

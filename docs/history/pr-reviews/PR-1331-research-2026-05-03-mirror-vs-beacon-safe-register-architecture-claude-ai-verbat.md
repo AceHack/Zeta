@@ -48,6 +48,7 @@ Aaron's same-tick observation: *\"memeories are not very reliable until we get a
 ### Composition
 
 Two backpressures, one architecture:
+
 - **Publication boundary** = mirror → beacon-safe conversion (Claude.ai)
 - **Retrieval boundary** = beacon-safe → in-the-moment-active (Aaron)
 

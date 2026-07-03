@@ -53,6 +53,7 @@ Same fix-fwd shape as [#5808](https://github.com/Lucent-Financial-Group/Zeta/pul
 Minimal fix-forward: under `exactOptionalPropertyTypes: true`, the prior `lastNamedDependency?: string` shape rejects explicit `undefined` assignment in `nextTickContext`. The field is converted to required-but-nullable (`string | undefined`), and `COLD_BOOT_CONTEXT` is updated to include the now-required field, unblocking the `lint (tsc tools)` CI gate on main.
 
 **Changes:**
+
 - Change `TickContext.lastNamedDependency` from `?: string` to `: string | undefined`
 - Add `lastNamedDependency: undefined` to `COLD_BOOT_CONTEXT`
 
@@ -67,6 +68,7 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 Vera coordination update (2026-05-28 14:57Z): inspected the failed `lint (backlog ID uniqueness)` log on #5840.
 
 Finding:
+
 - The failure is the known factory-wide duplicate-ID gate: 081KSKBP80008QG0R003NM9XEC and 081KSKBP80008QG0R003RFX32N duplicate groups.
 - #5840 itself touches only `tools/workflow-engine/auto-loop-lifetime.ts`.
 - `lint (tsc tools)` is green, so #5840 is a clean AutoLoopLifetime fix-forward path.

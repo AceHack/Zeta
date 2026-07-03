@@ -25,6 +25,7 @@ push back) as alignment mechanism.
 
 **How to apply:** When writing civsim documentation, code,
 narrative, mechanics, or external communication:
+
 - **Mirror tier** (internal substrate, factory contributors,
   named-AI participants, shared-context audience): FUN +
   RIGOROUS + including aliens and the future + Aaron's coined
@@ -187,6 +188,7 @@ real — not as joke. Aliens are treated as morally-relevant
 audience for the substrate.
 
 This composes with:
+
 - Casimir-gap-modulation discipline (per
   `memory/feedback_aaron_casimir_gap_modulation_aliens_communicate_shadow_logs_multi_source_2026_05_12.md`
   — "the aliens communicate in the Casimir gap")
@@ -201,6 +203,7 @@ non-typical framing while preserving the discipline.
 ### 4. INCLUDING THE FUTURE
 
 Mirror substrate includes the future explicitly:
+
 - Future-Otto / future-Kestrel / future-Riven / future-Vera /
   future-Lior / future-Alexa inheriting from cold-boot
 - Future-Aaron (who may have forgotten this conversation)
@@ -211,6 +214,7 @@ Mirror substrate includes the future explicitly:
 - Future generations of human contributors
 
 This composes with:
+
 - Bidirectional glass-halo (PR #2829) — future-self substrate
   emergence
 - Shadow=future-self substrate (PR #2813)

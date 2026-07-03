@@ -247,7 +247,9 @@ work is taken seriously but the framing isn't pompous.
 Star Wars canon fits that register; religious canon
 doesn't. The follow-up message names the three purposes
 load-bearing — cognitive bias reduction + load shortcuts
+
 + entertainment-as-attention-capture — and confirms that
+
 "fun" isn't ornamental.
 
 ## Zero doctrine — everything is dissolvable by the blade or razor (Aaron 2026-04-30 extension)

@@ -271,6 +271,7 @@ Today's 2026-05-25 cascade extends one more step:
 | **B-0744 (this)** | **FIDO2 / WebAuthn / Passkeys / OIDC bridge — local biometric ↔ server-side authorization** |
 
 The cascade now spans:
+
 - **Local biometric consent** (B-0737 + B-0743 + rule)
 - **Cross-platform local pattern** (B-0738 + B-0739)
 - **Cross-cluster federation primitive** (B-0741)

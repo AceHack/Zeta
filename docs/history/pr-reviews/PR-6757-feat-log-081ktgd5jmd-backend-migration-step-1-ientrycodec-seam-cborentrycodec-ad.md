@@ -28,6 +28,7 @@
 ## Description
 
 Seam-first start of the backend migration off System.Text.Json onto the canonical codec (Aaron-greenlit). Additive, zero ripple:
+
 - `IEntryCodec<'K>` — whole-entry (Seq+Delta+Captured) codec seam the backends adopt (distinct from ZSet-only `IDeltaCodec`).
 - `CborEntryCodec<'K>` — rides the proven `DeltaLogEntryCodec` (byte-identical across 4 langs).
 - Test: byte-faithful to `DeltaLogEntryCodec.encodeCbor` + round-trips (6/6 green).

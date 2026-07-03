@@ -308,6 +308,7 @@ PUBLIC output reduces active encryption capacity.
 **On "operational research methodology, not metaphysical claim"**:
 This is the most razor-aware framing in the V1-V5 packet
 sequence. Ani explicitly distinguishes:
+
 - Operational claim: testing invariants at every layer forever (a
   research methodology — observable, reproducible, falsifiable per
   layer)

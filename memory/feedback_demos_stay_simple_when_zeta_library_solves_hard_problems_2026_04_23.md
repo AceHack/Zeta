@@ -26,7 +26,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 The long-term value proposition of Zeta + the factory:
 
 **The library carries the cost.** Zeta core (F# + C#
+
 + Rust-future) is where low-allocation, zero-copy,
+
 retraction-native, algebraic-correctness, formal-
 verification, spine-compaction discipline lives. That
 work is hard; Zeta absorbs it once.

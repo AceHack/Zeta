@@ -61,6 +61,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -79,6 +80,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a hygiene-history tick shard documenting the 2026-05-24 13:33Z Otto-CLI run and its Tier 5 deferral decision for PR #4816 under the project’s hard-limits methodology.
 
 **Changes:**
+
 - Records lane analysis across the open PR queue and the decision to defer PR #4816 to a human (Tier 5).
 - Captures the multi-oracle copyright-risk consensus and the non-auto-merge rationale.
 - Logs the 7-step verify trace, rate-limit status, and post-disposition next steps.

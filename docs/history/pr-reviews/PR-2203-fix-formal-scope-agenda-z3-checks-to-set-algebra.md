@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - retract the overclaim that the agenda Z3 scripts prove autonomy/freedom
 - keep the existing agenda checks as scoped set-algebra sanity checks
 - add a SAT witness for the sharper guard: shared trajectory does not imply collapsed persona
 - document the future proof target around private state, agenda deltas, policies, and membrane rules
 
 ## Checks
+
 - dotnet run --project tools/Z3Verify/Z3Verify.fsproj -c Release
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~Z3LawsTests
 - git diff --check

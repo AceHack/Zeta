@@ -34,6 +34,7 @@ Files **081KSXN940008QG0R002528JS9** — makes the good-citizen / not-take-only 
 This is the concrete companion to the **falsifiable good-citizen test** both reviewers flagged on the VISION proposal (#6260): the anti-extractive posture is asserted but not measured. 081KSXN940008QG0R002528JS9 turns it into DORA-style metrics + a small-first contribution strategy.
 
 ## Candidate metrics (product team picks/prunes)
+
 - **Not-take-only ratio** — harvested-from projects that received ≥1 contribution back (headline metric)
 - External PRs merged / period · time-to-first-contribution per harvested dependency · relationship breadth
 

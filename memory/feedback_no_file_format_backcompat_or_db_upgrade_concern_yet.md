@@ -33,7 +33,7 @@ Scope:
 > think about db upgrade scnaros yet, not until we are much
 > much much more mature
 
-## Why:
+## Why
 
 - **Pre-v1 status is load-bearing.** `AGENTS.md` declares Zeta
   pre-v1 with explicit permission to break APIs. On-disk
@@ -58,7 +58,7 @@ Scope:
   burden). The exception gate is **Aaron's explicit maturity
   declaration**, not any reviewer's judgement call.
 
-## How to apply:
+## How to apply
 
 - **New spec work.** When drafting `openspec/specs/**/spec.md`
   capabilities that touch persistent formats (durability-modes

@@ -50,6 +50,7 @@ Two slices documented:
 Adds a new P3 backlog row decomposing 081KRMEXM0008QG0R002HBY56V’s later CI-wiring recommendation for the tick-shard schema validator.
 
 **Changes:**
+
 - Adds 081KRSKQ20008QG0R0019RXMSD with frontmatter and context tying the work to 081KRMEXM0008QG0R002HBY56V.
 - Defines acceptance criteria for advisory CI wiring and future required-check promotion.
 - Cross-links the validator, retrofit tool, target workflow, and shard schema docs.

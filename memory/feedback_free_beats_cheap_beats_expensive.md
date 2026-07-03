@@ -43,7 +43,7 @@ pluggable-factory rationale ("pull in extra things that
 really help or explicitly are wanted to get into an
 existing eco system").
 
-## Why:
+## Why
 
 - **Solo-dev / small-team adoption** — the factory is
   designed to run cheaply enough that a solo developer
@@ -68,7 +68,7 @@ existing eco system").
   `project_git_is_factory_persistence.md`. Two angles
   on the same design stance.
 
-## How to apply:
+## How to apply
 
 - **When evaluating a new tool / service / vendor** for
   any factory role:

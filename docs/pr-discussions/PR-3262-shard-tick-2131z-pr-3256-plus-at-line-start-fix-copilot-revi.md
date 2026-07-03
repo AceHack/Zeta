@@ -60,5 +60,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR adds a single tick-shard markdown file documenting work performed in tick 2026-05-14T21:31Z: addressing a Copilot review finding on PR #3256 about a wrapped continuation line starting with `+` inside a `-` bullet (markdownlint hazard), plus a proactive sweep using the repo's dedicated audit tool.
 
 **Changes:**
+
 - New hygiene-history tick shard recording the `+`-at-line-start fix and resolution of the Copilot thread on PR #3256.
 - Documents the dual-audit pattern (`audit-md032-plus-linestart.ts` + `markdownlint-cli2`) for future shard authoring.

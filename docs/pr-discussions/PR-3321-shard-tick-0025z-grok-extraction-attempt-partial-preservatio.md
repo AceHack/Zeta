@@ -39,6 +39,7 @@ NOT standing-by failure mode: named dependencies present throughout the window (
 This PR adds a single hygiene-history tick file documenting an 11-minute consolidation window (0014Z-0025Z) covering a Grok extraction attempt, partial substrate preservation to user-scope memory, deferred §33 archive, and a fix to the user-scope MEMORY.md fast-path that was directing future-Otto to stale pre-migration CURRENT-*.md copies.
 
 **Changes:**
+
 - Adds new tick history record for 0025Z documenting Grok extraction technical findings (rid-anchor blocks lazy-load) and deferred public-repo archive of personal content.
 - Records substrate-quality bug fix where user-scope MEMORY.md fast-path was redirecting to stale CURRENT files instead of in-repo canonical paths.
 - Notes multi-Otto convergence signal with PR #3312.

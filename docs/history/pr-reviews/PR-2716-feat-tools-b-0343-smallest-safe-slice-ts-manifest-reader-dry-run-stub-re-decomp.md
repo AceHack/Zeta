@@ -29,12 +29,14 @@
 
 ## Summary
 One bounded step for 081KR2E4K0008QG0R002JW751Y (P1, parent 081KQTPYE0008QG0R00392KABJ): minimal TS stub at `tools/bootstrap-razor/seed-test-repo.ts`.
+
 - Implements manifest reader + `--dry-run` + `--help` only (no gh api, no repo create, no mutation).
 - Re-decomposed per "assume original decomp mistakes" + start-gate note in row.
 - Rule 0: TS, no bash.
 - Does not touch root checkout (dedicated worktree + pushed claim branch).
 
 ## Focused checks (included per rules)
+
 - `bun ... --dry-run`: PASS (prints seed plan from SEED-MANIFEST.md, ~47 files, provenance note)
 - `--help`: PASS
 - Execution: 0 errors, clean output.

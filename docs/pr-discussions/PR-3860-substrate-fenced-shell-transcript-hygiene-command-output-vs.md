@@ -41,6 +41,7 @@ Single finding so far. Per the suspect-by-default Copilot finding-classes thresh
 [PR #3856 thread on line 32](https://github.com/Lucent-Financial-Group/Zeta/pull/3856) — flagged `0 + 0 = 0 corrected-tag annotations` as manual summary inside a `grep -c` transcript. Substrate-honest replacement forms documented in the memory file.
 
 ## Test plan
+
 - [ ] CI green (docs-only PR; gate checks only)
 - [ ] CodeQL "source code seen" canary verified (per [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md): commit tree count should match origin/main ± a few entries)
 
@@ -55,6 +56,7 @@ Single finding so far. Per the suspect-by-default Copilot finding-classes thresh
 Adds durable substrate guidance clarifying how to write reproducible fenced shell transcripts by separating literal command output from any derived/manual summary, and records a brief tick shard noting no new action needed post-session-close.
 
 **Changes:**
+
 - Added a new `memory/feedback_*.md` entry defining the fenced shell transcript hygiene rule and anchoring it to PR #3856’s example.
 - Added a new tick shard file for 2026-05-16T10:43Z capturing post-session-close state and peer activity.
 

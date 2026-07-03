@@ -47,6 +47,7 @@ Originally allocated as **081KRMEXM0008QG0R000ARAR7P**. Collided with [#3619](ht
 ## Crash-recovery context
 
 This row + research file were authored by the pre-crash Otto session and were the **only** artifacts that hadn't already shipped via concurrent PRs:
+
 - Rule (`premise-flagged-unverified-...`) landed via [#3935](https://github.com/Lucent-Financial-Group/Zeta/pull/3935)
 - 081KRHWGX0008QG0R000E8BHQ9 follow-on landed via [#3937](https://github.com/Lucent-Financial-Group/Zeta/pull/3937)
 - Lior tick fix landed via [#3936](https://github.com/Lucent-Financial-Group/Zeta/pull/3936)

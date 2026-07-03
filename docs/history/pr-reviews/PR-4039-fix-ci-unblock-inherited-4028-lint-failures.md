@@ -30,19 +30,23 @@
 Unblocks inherited CI failures currently visible on #4028, without widening #4028's tally-fix scope.
 
 What changed:
+
 - Fix `docs/hygiene-history/ticks/2026/05/17/0221Z.md` .claude/rules relative links from 5-up to 6-up so they resolve to repo root.
 - Update `tools/inventory/amazon-orders-extract.ts` to use a typed runtime-only Playwright import loader and strict `dedup` fallback for `noUncheckedIndexedAccess`.
 
 Verification:
+
 - `/opt/homebrew/bin/bun tools/hygiene/audit-tick-shard-relative-paths.ts --enforce --baseline tools/hygiene/audit-tick-shard-relative-paths.baseline.json`
 - `/opt/homebrew/bin/bun install --frozen-lockfile`
 - `/opt/homebrew/bin/bun --bun tsc --noEmit -p tsconfig.json`
 
 Related:
+
 - #4028
 - Inherited blocker note: https://github.com/Lucent-Financial-Group/Zeta/pull/4028#issuecomment-4468988846
 
 Claim lifecycle:
+
 - Claim and release commits are both on this branch; net diff is only the two CI-unblock files.
 
 ## Outcome

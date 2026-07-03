@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add structured broadcast blocker envelope ingestion to the factory health monitor
 - convert only fresh explicit blocker records into coincidence events
 - add focused health-monitor coverage and a 081KQZVQW0008QG0R001FG05RZ coordination receipt
 
 ## Verification
+
 - bun test tools/health/factory-health-monitor.test.ts --timeout 30000
 - git diff --check
 

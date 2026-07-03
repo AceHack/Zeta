@@ -53,6 +53,7 @@ Aaron + I converged independently on the same generalization within ~12 minutes 
 Adds PR #4478 as an additional empirical anchor in the orphaned-branch triage discriminator documentation within `.claude/rules/backlog-item-start-gate.md`, strengthening the evidence trail for the “full-file verification” outcome.
 
 **Changes:**
+
 - Add PR #4478 link and explanatory parenthetical to the “Empirical anchors” list.
 
 ## Review threads

@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"we can learn from this; we want fair empowerment — she's not going for empowerment but it's similar, no central authority and fairer; her gist is like our traveler frame over zsets"* + *"her gist is like our cross-reference heartbeats … health alerts and mutual identity amplification via pairing."*
 
 Maps the CTM **chunk ⟨addr,t,gist,weight,aux⟩**:
+
 - **gist ≈ traveler frame over ZSets** (BUILT: `TravelerFrame.fs`/`FrameDelta`/`ITravelerFrame`; §B-frame = proof target) **AND ≈ a cross-reference heartbeat** (broadcast = **health-alerts** + **mutual identity amplification via pairing** — cross-attestation, coupled-empowerment at the identity layer, anti-Sybil-adjacent)
 - **weight** (valenced confidence) ≈ **SoftValue** (confidence = contained value, not routing key)
 

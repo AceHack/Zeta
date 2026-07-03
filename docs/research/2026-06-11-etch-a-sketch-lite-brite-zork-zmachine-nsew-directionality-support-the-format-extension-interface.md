@@ -36,6 +36,7 @@ tiny, well-specified VM as the universal portable substrate (CHIP-8's sibling â€
 games/graphics 1977, Z-machine for narrative/rooms 1979; the same era, the same move).
 
 Support path (capability-honest, additive):
+
 1. **Direction vocabulary first** (cheap): adopt Zork's compass as the treaty vocabulary for room
    navigation crossings (`go:north` etc.) â€” the metaspace doors + MeshPong NSEW already speak it in
    spirit; ratify the words.

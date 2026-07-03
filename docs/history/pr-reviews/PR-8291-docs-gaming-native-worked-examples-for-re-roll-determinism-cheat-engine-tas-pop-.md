@@ -30,6 +30,7 @@
 Folds the worked examples in (Aaron: *"yeah fold it in"*), all gaming-native (pass the "a Gen-Z gets it" test). markdownlint EXIT=0.
 
 **No-re-roll/determinism section — worked examples:**
+
 - **Cheat engine** = re-roll death: sanctioned-as-play *in the game*, unsanctioned = cheating *in reality* ("unsanctioned" is the tell). Gacha/loot-box re-roll = extraction shape (understanding ≠ immunity).
 - **TAS** = re-roll + determinism + sanctioned-disclosure + LUPI in one: re-roll-to-optimal save-states, deterministic input-log replay (= cart/DST), sanctioned *because labeled* (TAS-as-human = fraud), LUPI (teacher cheats-to-discover, student deploys restricted). Seams: spec-specific optimum, label must be verified, only human-reachable transfer.
 - **Sanctioned reversibility blurs the line** — Prince of Persia: Sands of Time (rewind death as a built-in *non-wall-clock* mechanic) + **ZSet retraction (+1/−1 = the substrate version)**. The line blurs where the substrate makes reversibility first-class. *Seam:* it blurs, doesn't erase — Sands run out / the external real-stakes commit stays irreversible (you can −1 a row, not un-pay an indemnity). Bounded resource, not infinite.

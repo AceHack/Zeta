@@ -49,6 +49,7 @@ generated with Codex
 Adds durable, queryable storage for denied policy decision observations in the Agentic Organization runtime, backed by a first CockroachDB adapter, and projects those observations into workflow visibility for UI/agent weak-point review. This extends the policy-decision tracing work introduced in #5081 by making denied observations persistent and queryable while keeping vendor details behind generic ports.
 
 **Changes:**
+
 - Introduces generic policy observation persistence/query contracts (`PolicyDecisionObservationStore`/`Reader`) and a CockroachDB adapter with duplicate-vs-conflict detection via an observation hash.
 - Extends Cockroach schema/migration and adds tests covering policy observation storage and scoped queries.
 - Projects policy-denial observations into workflow visibility records and propagates `idempotencyKey` through authorization/observation traces; updates architecture/OpenSpec/docs accordingly.
@@ -131,6 +132,7 @@ Credits must be used to enable repository wide code reviews.
 Durable worker composition slice is now pushed on top of the latest policy-observation fixes.
 
 What changed:
+
 - Added a generic Cockroach SQL executor seam plus durable state adapter factory in `@agentic-org/state-cockroach`.
 - Added a migration runner contract behind the same generic executor.
 - Added `apps/workers` durable composition that wires Cockroach-backed outbox/event-ingestion ports into the worker host without leaking DB/client construction into reusable packages.
@@ -138,6 +140,7 @@ What changed:
 - Updated package docs, runtime docs, full-ai-cluster integration notes, observability notes, and OpenSpec scenarios.
 
 Review/validation:
+
 - Subagent architecture/SOLID review: no blockers.
 - Subagent correctness/TDD review: no blockers.
 - Subagent north-star/docs review: caught untracked implementation files and env-contract doc drift; both fixed before push.

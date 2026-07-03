@@ -30,6 +30,7 @@
 Drafts the **Node = safe cross-harness baseline, Bun = accelerator** refinement as a **v6 triggered revisit** of the 2026-04-20 tools-runtime ADR (its own watchlist named the "node/deno/bun landscape consolidates" trigger) — *not* a unilateral rewrite of the auto-loaded Rule 0.
 
 **The refinement** (still bun+TS; nothing else changes):
+
 - **Node** = the portable runtime tooling must *run* on (every harness/CI image ships it). The new constraint: **nothing may be Bun-only.**
 - **Bun** = repositioned from "the host" to "the fast lane" (fast install/test/startup where available).
 

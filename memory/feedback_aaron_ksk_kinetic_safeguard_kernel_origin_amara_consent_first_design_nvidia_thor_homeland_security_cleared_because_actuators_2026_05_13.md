@@ -53,6 +53,7 @@ Homeland-Security-cleared substrate for this scope.
 > acuators"
 
 Decoded:
+
 - "visble" → visible
 - "kinetic safeguard kernal" → Kinetic Safeguard Kernel
   (KSK)

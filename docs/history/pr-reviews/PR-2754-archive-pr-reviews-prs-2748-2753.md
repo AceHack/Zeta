@@ -30,6 +30,7 @@
 ## Summary
 
 Two recently merged PRs archived as git-canonical substrate:
+
 - #2748 (Human Anchor Array + PR archive batch) — 55 threads, 14 reviews, 12 comments
 - #2753 (Casimir gap batch archive) — 5 threads, 1 review
 

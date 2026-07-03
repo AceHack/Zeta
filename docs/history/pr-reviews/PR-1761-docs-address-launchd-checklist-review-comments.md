@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Addresses the archived PR #1758 review comments on the launchd hot-swap checklist.
 - Rewrites current-state prose to role-refs while preserving technical service identifiers.
 - Replaces hard-coded home paths with `$HOME` / `ZETA_RIVEN_LOOP_*` variables, uses `launchctl print` for live argument inspection, and swaps stop/start fallback for domain-scoped `bootout` / `bootstrap` / `kickstart`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/operations/riven-tier1-launchd-hot-swap-checklist.md docs/claims/launchd-checklist-review-followup.md`
 - `npx markdownlint-cli2 docs/operations/riven-tier1-launchd-hot-swap-checklist.md`
 - `git diff --check origin/main...HEAD`

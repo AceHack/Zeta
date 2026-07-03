@@ -26,6 +26,7 @@ trust** — that key, *if checked in* to `maintainers/<them>/`, is **already in 
 trust-root step.
 
 **Does flash-time still need to capture/write anything? — only three things, none of them trust roots:**
+
 1. **Secrets** — the encrypted creds blob (wifi + gh token), which can't be in a public ISO.
 2. **Per-USB binding** — the stable hardware key the creds KDF binds to (the iSerial rebind).
 3. **Fallback only:** an operator key that **isn't** checked in (a one-off contributor who hasn't added their

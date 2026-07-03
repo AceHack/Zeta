@@ -27,6 +27,7 @@ Implements backlog row **081KRHWGX0008QG0R0025PX5SZ** (Slice 3 of the 081KRFA460
 This PR completes Slice 3 of the 081KRFA460008QG0R00229616S backlog-ready notifier by wiring the `isAgentQueueEmpty` queue-state guard into `pollOnce`. When the target agent's queue is non-empty (recent commits or open PRs by that agent), the poll iteration returns early with `queueBusy: true` and publishes no work-assignment envelopes, preventing assignment pile-up on busy agents.
 
 **Changes:**
+
 - Add `targetAgent` field to `NotifierConfig` and a `queueBusy` field to `PollResult`; populate via `isAgentQueueEmpty(config.targetAgent, adapters)` at the top of `pollOnce`.
 - Thread `adapters` through `runOnce`/`runDaemon` and add a `--target-agent <agent>` CLI flag.
 - Add two new tests (queue-busy → no publish; queue-empty → publishes) and update backlog rows 081KRHWGX0008QG0R0025PX5SZ/081KRFA460008QG0R00229616S to closed/shipped.

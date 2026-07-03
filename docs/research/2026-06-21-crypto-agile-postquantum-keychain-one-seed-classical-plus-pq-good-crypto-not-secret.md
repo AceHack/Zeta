@@ -109,7 +109,9 @@ composes with the identity+crypto unify build 081KVNXBR4S0 + the rotation + hexa
 
 NIST PQC: FIPS 203 (ML-KEM), 204 (ML-DSA), 205 (SLH-DSA). X-Wing hybrid KEM (Barbosa et al. 2024).
 NTRU Prime, FrodoKEM, Saber (NIST round alternates — lattice variety). BIP-39/32/44 (the HD seed
+
 + sub-seed bridge). Kerckhoffs's principle (security from key secrecy + good open crypto, not
+
 algorithm secrecy). Human anchor: the maintainer's Itron power-grid security substrate (open,
 audited, deployed). In-repo: `better-git-crypt`, `derive.ts`, PRIMITIVE-REGISTRY (PQ codec, QRNG),
 081KSNY2Z0008QG0R002ZAVMEK (multi-cipher PQ), the hexagonal + rotation decisions (2026-06-21).

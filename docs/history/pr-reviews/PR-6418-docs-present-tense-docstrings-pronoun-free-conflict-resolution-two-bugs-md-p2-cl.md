@@ -48,6 +48,7 @@ Closes the BUGS.md P2 *"Round-N fix historical voice survivors in docstrings"* e
 - BUGS.md entry **amended** (not deleted) — only the pronoun half is done; roster reconciliation (registry has names, CONFLICT-RESOLUTION lists bare role-titles) remains open.
 
 ## Notes
+
 - ROUND-HISTORY.md not touched — no active round section to slot into without fabricating round-context; resolution narrative lives in commit messages.
 - Authored from a phone-driven cloud session; tight diffs by design.
 

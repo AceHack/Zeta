@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - keep Stryker.NET in project mode by running from `tests/Core.CSharp.Tests`
 - make the root `stryker-config.json` paths match that C# test-project working directory
 - keep Stryker reports uploaded from the repository-root `StrykerOutput/` path
@@ -40,6 +41,7 @@ PR #8151 reached main, but the Stryker workflow failed before mutation testing b
 Running Stryker from the C# test project avoids solution-wide F# test discovery and still targets the intended `Core.CSharp.csproj` mutation surface.
 
 ## Verification
+
 - `dotnet stryker --config-file ../../stryker-config.json --configuration Release --output ../../StrykerOutput` from `tests/Core.CSharp.Tests` exits 0
 - `actionlint .github/workflows/stryker-mutation.yml`
 - `dotnet format --verify-no-changes`

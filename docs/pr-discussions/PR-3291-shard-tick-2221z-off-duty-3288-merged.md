@@ -31,6 +31,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the 2221Z hygiene-history tick entry documenting the current off-duty status and the merge / wait-ci state of recent shard PRs, continuing the ongoing tick log under `docs/hygiene-history/ticks/`.
 
 **Changes:**
+
 - Create tick log entry for `2026-05-14T22:21Z` with off-duty status.
 - Record shard PR status: #3288 merged, #3289 and #3290 wait-ci, plus current merged/wait-ci totals.
 

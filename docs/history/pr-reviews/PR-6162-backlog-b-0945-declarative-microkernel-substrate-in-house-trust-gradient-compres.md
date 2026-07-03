@@ -30,6 +30,7 @@
 Closes a **verified gap** — Aaron believed microkernel was on backlog; a broad search found it was discussed but **never landed** (weather). Files the full vision he just gave:
 
 A **declarative microkernel substrate** = NixOS-grade declarative reproducibility on a **microkernel TCB** (capability-based, minimal attack surface), **built in-house**, with the three layers NixOS lacks:
+
 1. **Stanford Sequoia memory model** (hierarchy-aware);
 2. **over the trust gradient** (081KS3X9Y0008QG0R00218150M / trust-gradient-coordination-policy);
 3. running the **V8-polymorphic-bayesian-compression engine** (081KSV2WD0008QG0R00051XS0N tri-boolean / wonder-compression) **natively**.

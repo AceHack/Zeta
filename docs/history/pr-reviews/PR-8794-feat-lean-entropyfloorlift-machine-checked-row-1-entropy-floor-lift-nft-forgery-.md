@@ -30,6 +30,7 @@
 The **structural Lean leg of math-team row 1** (NFT forgery-resistance `H_∞(H_AB | E) ≥ k` = the entropy floor lifted from a single body to a pair). Proves the **lift** combinatorially in the operational (guessing-probability) form of min-entropy — **no Mathlib, no `sorry`**, house style of `Safety/*`.
 
 Min-entropy modelled via **guessing space** `g` (`p_guess ≤ 1/g`; "H_∞ ≥ k" ⟺ `2^k ≤ g`):
+
 - **`floor_lifts`** — independent single-body floors `ka, kb` compose to a **pair floor `ka+kb`** (`2^(ka+kb) = 2^ka·2^kb ≤ a.g·b.g`). The Bell/G3b single-body floor lifted to a pair, and it **adds**.
 - **`pair_floor_ge_left`** — the pair is never weaker than either body.
 - **`guessing_space_lower_bound`** — forgery-resistance corollary.

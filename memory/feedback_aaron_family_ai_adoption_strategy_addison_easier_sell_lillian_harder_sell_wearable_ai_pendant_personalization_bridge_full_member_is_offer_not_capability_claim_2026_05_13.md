@@ -48,6 +48,7 @@ is an OFFER scope, not generic-capability scope.
 > if we build addions and AI pendant she will wear it"
 
 Decoded:
+
 - "Addions" → Addison (Aaron's daughter; LFG co-owner
   per PR #2876 + memory/feedback_lfg_corrections_wave_*)
 - "Lillian" → Aaron's other daughter (different family
@@ -70,6 +71,7 @@ Decoded:
 > was born same hoipital in Henderson/Vance county"
 
 Decoded:
+
 - "privace" → privacy
 - "non glass halo" → non-glass-halo (privacy-preserving
   alternative to maximum-transparency glass-halo
@@ -380,6 +382,7 @@ family-AI adoption (Lillian-via-pendant).
 architecture is the canonical adoption-bridge across
 multiple product scopes. She bridges Aaron's substrate
 to:
+
 - The realtor network (PR #2876)
 - LFG business operations
 - Family AI adoption (this file)

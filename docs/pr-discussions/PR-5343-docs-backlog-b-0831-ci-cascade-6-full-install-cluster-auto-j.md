@@ -54,6 +54,7 @@ Each slice ships independently. Overall acceptance: human physical-USB-test is n
 Adds a new P1 backlog row (081KSGS9H0008QG0R0011BC7T2) capturing the planned CI “cascade #6” work to validate a full installer run in QEMU plus post-boot cluster auto-join, with the goal of eliminating routine physical USB testing as the substrate gate.
 
 **Changes:**
+
 - Adds new backlog row **081KSGS9H0008QG0R0011BC7T2** describing a 3-slice CI verification plan (full install, mock join verification, optional ArgoCD reconciliation verification).
 - Updates `docs/BACKLOG.md` index to include **081KSGS9H0008QG0R0011BC7T2**.
 

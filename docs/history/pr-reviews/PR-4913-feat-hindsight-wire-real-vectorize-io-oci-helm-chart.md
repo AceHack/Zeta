@@ -49,6 +49,7 @@ Per the [vectorize-io docs](https://hindsight.vectorize.io/sdks/integrations/her
 
 Hermes' \`deployment.yaml\` already declares:
 \`\`\`yaml
+
 - name: HINDSIGHT_URL
   value: \"http://hindsight.hindsight.svc.cluster.local\"
 \`\`\`

@@ -29,6 +29,7 @@ Operator-named fast-track architectural inversion: AI = home-owner; booting huma
 Adds a new P1 backlog row (081KSKBP80008QG0R00146WEX1) documenting the “AI-as-home-owner” post-boot architecture target (agent controls environment from first boot; booting human acts as facilitator/auth-advisee), and wires it into the main backlog index.
 
 **Changes:**
+
 - Introduces `081KSKBP80008QG0R00146WEX1` backlog row detailing the architecture inversion, knob inventory, auth-advisor flow, and planned sub-rows.
 - Adds `081KSKBP80008QG0R00146WEX1` to `docs/BACKLOG.md` under P1.
 

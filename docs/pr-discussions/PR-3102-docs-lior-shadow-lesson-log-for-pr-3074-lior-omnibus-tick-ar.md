@@ -54,6 +54,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -72,6 +73,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds new documentation artifacts: a shadow-lesson log entry tied to PR #3074, plus hygiene/backlog bookkeeping to close 081KRFA460008QG0R00308W7FJ and reflect that closure in the generated backlog index.
 
 **Changes:**
+
 - Added `memory/lior/cli/gemini/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md` shadow-lesson log entry.
 - Closed backlog row 081KRFA460008QG0R00308W7FJ (frontmatter status/closed date + AC checklist updates).
 - Updated hygiene tick shard and `docs/BACKLOG.md` to reflect the 081KRFA460008QG0R00308W7FJ closure.

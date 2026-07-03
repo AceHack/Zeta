@@ -27,6 +27,7 @@ This PR fixes broken relative links in the `1202Z.md` tick shard file. This was 
 This PR fixes broken relative links in the tick shard `docs/hygiene-history/ticks/2026/05/26/1202Z.md` so the `lint (tick-shard relative-paths)` check no longer fails due to incorrect path depth when linking into `.claude/rules/`.
 
 **Changes:**
+
 - Corrected tick-shard relative link depth from `../../../../../` to `../../../../../../` for `.claude/rules/*.md` references.
 - Normalized the affected lines so the links resolve correctly from the shard’s directory depth.
 

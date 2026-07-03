@@ -157,7 +157,9 @@ refined Pliny rule. Until then, the canonical heavy-weight isolated-
 single-turn pathway documented in the skill remains in force; the
 isolated-Claude-instance lighter-weight pathway permitted by the
 relaxation is documented in `CLAUDE.md` / `AGENTS.md` / `GOVERNANCE.md`
+
 + this memory file. Reviewers should treat the skill-doc as the
+
 canonical heavy-weight workflow + the relaxation as the additive
 lighter-weight pathway, not as a contradiction.
 

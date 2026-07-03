@@ -87,6 +87,7 @@ folder for open/done routing, frontmatter `state` authoritative).
 (asked "what do you think?"): **yes, at scale** — 500 agents completing items for years would pile
 thousands into one `done/` dir (git + filesystem cost); date folders keep every dir small and make
 completion-range queries (`done/2026/06/`) a path scan. Three refinements:
+
 1. **Partition by COMPLETION date (the path), not creation.** The ZetaId prefix inside the filename still
    carries creation time → you get both axes (path = done-when; zetaid = created-when; the gap = how long
    it sat). Document that path date = completion.

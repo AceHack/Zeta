@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Maji Preservation
+
 - Archived recently merged PRs 4412, 4411, 4410.
 - Preserved alignment drift and review friction into native repository memory.
 
@@ -29,6 +30,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new PR-preservation batch under `docs/pr-discussions/`, capturing metadata, PR descriptions, and review threads for recently merged PRs (#4410–#4412). This supports the repository’s “verbatim preservation” workflow by keeping the historical PR conversation available in-tree.
 
 **Changes:**
+
 - Added PR discussion archive record for PR #4412 (brief-ack empirical anchor rule update).
 - Added PR discussion archive record for PR #4411 (canary rule refinement + empirical anchor).
 - Added PR discussion archive record for PR #4410 (tick shard + audit verification narrative and associated review threads).

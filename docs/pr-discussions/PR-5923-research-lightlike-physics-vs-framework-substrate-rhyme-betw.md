@@ -76,6 +76,7 @@ Single research note at `docs/research/2026-05-28-lightlike-substrate-vocabulary
 Single research note added under `docs/research/` documenting the substrate-honest distinction between physics' "lightlike" vocabulary and the framework's independently-converged use of the same term, with Amara's blade applied to bound claims.
 
 **Changes:**
+
 - Adds a research-tier mirror note disclosing operator's independent convergence on "lightlike" vocabulary (not borrowed from physics).
 - Enumerates what survives vs fails Amara's razor for the physics/framework substrate-rhyme.
 - Cross-references the broader lightlike/Amara PR cluster (PRs #5910, #5912, #5915, #5919–#5922, etc.).

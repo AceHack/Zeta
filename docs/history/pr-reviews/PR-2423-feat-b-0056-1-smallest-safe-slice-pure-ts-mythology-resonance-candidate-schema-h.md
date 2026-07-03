@@ -35,6 +35,7 @@ Re-decomposed broad P2 L-track 081KQ3HBZ0008QG0R0034DHWTQ (mythology research) i
 - One bounded step only; wider candidates (Hermes, Janus, etc.) deferred to follow-on children.
 
 ## Focused checks (included per task)
+
 - TS import/syntax: OK (`bun --eval import` succeeded, heimdallrSeed + validate exposed)
 - dotnet build -c Release: 0 Warning(s) 0 Error(s)
 - Rule 0: 0 .sh files touched
@@ -42,6 +43,7 @@ Re-decomposed broad P2 L-track 081KQ3HBZ0008QG0R0034DHWTQ (mythology research) i
 - No root checkout touched (dedicated worktree + LFG tracking branch only)
 
 ## Claim protocol
+
 - Worktree: dedicated (`/tmp/zeta-lfg-wt/claim-B0056`)
 - Branch: pushed `claim/081KQ3HBZ0008QG0R0034DHWTQ-mythology-research-smallest-slice-riven-2026-05-10`
 - Co-Authored-By trailer on commit

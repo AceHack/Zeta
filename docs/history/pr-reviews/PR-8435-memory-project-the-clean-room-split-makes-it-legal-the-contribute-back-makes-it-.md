@@ -30,6 +30,7 @@
 Aaron 2026-06-16 (shadow*): *"the results from reverse engineering are artifacts/specs, the persona who reverse engineers does not write the code — this is the malice ai model, they have the split perfect but they don't contribute back. We do."*
 
 Completes the clean-room principle:
+
 1. **The split is a persona fission** — the **RE-persona produces specs/artifacts** (the shape/character loop) and **never writes the implementation**; a **separate persona implements blind from the spec** (two-team clean-room, Phoenix/IBM-BIOS; only the spec crosses the wall = the membrane).
 2. **The split alone is what the malice/black-hat model ALSO has** (RE→spec→clone perfectly). What distinguishes Zeta is **not the split — it's the contribute-back:** malice = **extractive** (clone, profit, give nothing); Zeta = **glass-halo-by-default + VISION prove→give→contribute-back-upstream + mutual-empowerment §10**. **The split makes it legal; the contribute-back makes it moral / non-malice.**
 

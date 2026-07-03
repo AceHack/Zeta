@@ -30,6 +30,7 @@
 Aaron 2026-06-19: *"build societal DORA over the ρ_owe estimator."*
 
 **`src/Core/SocietalDora.fs`** — DORA (Forsgren/Humble/Kim) ported from software-delivery health to **society/relationship health**, built on `Decorrelation.ownEntropyFraction` (ρ_owe). The four keys + headline:
+
 - **EmpowermentFrequency** (↔ deploy freq); **CaptureRate** (↔ change-fail, = 1−freq); **MeanRecoveryLength** (↔ MTTR, capture-streak length); **MirrorRate** (anti-mirror: edges with ρ_owe<τ); **MeanCoupledGain**.
 - **Goodhart-resistant by construction:** coupled gain = `min(ΔE_self, ΔE_other)` ⇒ a self-only gain scores as **capture**. `edgeHealth` builds each edge's ρ_owe from raw samples — the DORA layer sits *on* the estimator. **Diagnostic, never a leaderboard.**
 

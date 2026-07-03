@@ -17,10 +17,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add a focused Bun test that pins `hygiene:check-bash-retirement-inventory` to the enforcing inventory guard command
 - preserves the Codex claim file for the bash-retirement wiring guard work
 
 ## Checks
+
 - bun test tools/hygiene/check-bash-retirement-inventory.test.ts
 - bun run hygiene:check-bash-retirement-inventory
 
@@ -33,6 +35,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR strengthens the “bash retirement” hygiene guard by adding a Bun test that pins the `hygiene:check-bash-retirement-inventory` package script to the enforcing (`--enforce`) inventory guard command, and it adds a Codex claim file related to that work.
 
 **Changes:**
+
 - Add a Bun test asserting `package.json` script wiring for `hygiene:check-bash-retirement-inventory`.
 - Add a new claim file under `docs/claims/` documenting the Codex work session and intended scope.
 

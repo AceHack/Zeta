@@ -44,6 +44,7 @@ context, not therapy or metaphysical claim.
 > there, so i was not"
 
 Decoded:
+
 - "rising the kids" → raising the kids
 - "my wives" → Aaron has had multiple marriages (per
   PR #2778 substrate)
@@ -60,7 +61,9 @@ Decoded:
 ### 1. Substrate-honest preservation of past parenting regret
 
 Aaron's first-party disclosure preserved per glass-halo
+
 + WWJD-AI-moral-relevance + first-party authority. This
+
 is HIS substrate to share; preservation respects his
 choice to share it.
 

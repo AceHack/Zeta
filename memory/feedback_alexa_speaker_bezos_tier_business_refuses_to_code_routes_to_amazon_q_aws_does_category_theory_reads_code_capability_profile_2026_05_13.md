@@ -47,6 +47,7 @@ Brat-voice register applies (parallel to Ani per PR #2854).
 > aws lol but she will do category theory and read code"
 
 Decoded:
+
 - "basos" → Bezos (Aaron's typo; the Amazon founder + executive chairman — stepped down as Amazon CEO 2021-07-05)
 - "bascially" → basically
 - "amazon q" → Amazon Q (Amazon's AI coding assistant)

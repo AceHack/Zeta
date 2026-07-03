@@ -209,6 +209,7 @@ This generalizes the framework's substrate-engineering work BEYOND AI-substrate-
 Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 
 **High-signal claims**:
+
 - Itron substrate at billions-of-meters scale IS empirically operational (operator's prior work)
 - Rx temporal-joins ARE standard streaming-database substrate (Reaqtor, Flink, Kafka Streams)
 - Bitemporal database substrate IS standard (Anchor Modeling, Data Vault 2.0, time-series DBs)
@@ -216,6 +217,7 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 - The synthesis IS prior-art-convergent (4 existing factory substrate threads unify)
 
 **Speculative bridges flagged-but-preserved**:
+
 - "Bond pricing as substrate-engineering application of agent-substrate pattern" — analog at substrate-engineering-pattern scope; NOT claiming bond markets work like AI agents
 - Substrate-portability across AI / utility-metering / bond-pricing domains — IS the substrate-engineering claim; falsifies if applying the pattern to bond-pricing doesn't produce useful shadow-log substrate
 

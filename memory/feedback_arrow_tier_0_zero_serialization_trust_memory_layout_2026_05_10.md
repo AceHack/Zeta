@@ -34,6 +34,7 @@ Z-set weights live in Arrow arrays. No serialization between operators. Data sta
 Tier 0 → 1 → 2 → 3 is a gradient from absolute trust (shared memory, zero cost) to no trust (observe-first, full cost). The factory routes traffic to the cheapest tier that's appropriate for the trust relationship. Hot paths stay at 0. Bus messages at 2. Shadow and external input at 3.
 
 **Connects to:**
+
 - feedback_eve_protocol_serialization_three_tiers (tiers 1-3)
 - columnar-storage-expert skill (Arrow internals)
 - vectorised-execution-expert skill (Arrow in-memory format)

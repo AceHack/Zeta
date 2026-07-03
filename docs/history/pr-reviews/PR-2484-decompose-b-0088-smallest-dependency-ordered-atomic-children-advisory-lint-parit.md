@@ -30,6 +30,7 @@
 ## Bounded step complete: 081KQ8P5D0008QG0R002FSTGXP decomposition (Riven background worker)
 
 **Pre-work (all done before any write/push):**
+
 1. Read CLAUDE.md + AGENTS.md (repo conventions, Rule 0 TS>bash, substrate-or-it-didnt-happen, etc.)
 2. `bun tools/github/refresh-worldview.ts` (0 open PRs, 451 backlog, current LFG state)
 3. Read 7 active trajectories/*/RESUME.md (memory, autonomous-loop, TS-migration, factory-surface, backlog-pickup, alignment, drift-reporting)

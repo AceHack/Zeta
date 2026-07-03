@@ -30,6 +30,7 @@
 Operator 2026-05-30: **"a whistle blower / disclosure bond system that pays victims not the whistle blower... they get economic opportunity for other things not the data itself."**
 
 Adds the 4th floor-enforcement layer (follows #6152). A disclosure-bond:
+
 1. Pays the **victims** the disclosure surfaces (restitution).
 2. Pays the discloser **nothing for the data** (consistent with refuse-to-pay-for-data).
 3. The discloser earns opportunity through their **other** legitimate participation — not zero incentive, just not a data-bounty.

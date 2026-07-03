@@ -40,6 +40,7 @@ mapping is exact, and several Zeta concepts fall out of it:
 | **antiparticle = particle backward in time** | a **Z-set retraction (−1) = a +1 traveling backward** to cancel — retraction-native substrate is Feynman's positron |
 
 Consequences already in the corpus, now seen as one picture:
+
 - **"Git IS special relativity applied to commits"** (the prelude) — Lamport's *Time, Clocks, and the
   Ordering of Events* (1978) is explicitly relativistic; commits are events in a causal partial order =
   the same light-cone structure as a Feynman diagram. The Reticulum / light-cone / causal-loop work is

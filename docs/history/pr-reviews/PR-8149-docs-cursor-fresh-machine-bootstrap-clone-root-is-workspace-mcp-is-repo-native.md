@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a Fresh machine section to `CURSOR.md` clarifying that the clone root is the workspace root
 - document that MCP configuration is repo-native and tracked in this repository
 - include quick bootstrap prerequisites and parallel branch workflow guidance
 
 ## Test plan
+
 - docs-only change; no runtime behavior changes
 
 Made with [Cursor](https://cursor.com)

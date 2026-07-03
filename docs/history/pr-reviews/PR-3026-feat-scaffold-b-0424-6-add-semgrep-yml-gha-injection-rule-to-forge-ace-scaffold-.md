@@ -45,6 +45,7 @@
 ## Context
 
 081KRFA460008QG0R001H98EXJ Stage 1 is the three-repo split scaffold (`LFG/Forge` + `LFG/ace`). Previous slices:
+
 - 081KRFA460008QG0R001H98EXJ.1: pre-start gate + scope decision (scaffold deferred actual creation)
 - 081KRFA460008QG0R001H98EXJ.2: `scaffold-stage1-create-repos.yml` CI dispatch workflow
 - 081KRFA460008QG0R001H98EXJ.3–081KRFA460008QG0R001H98EXJ.4: governance templates + `create-repo.ts` tool

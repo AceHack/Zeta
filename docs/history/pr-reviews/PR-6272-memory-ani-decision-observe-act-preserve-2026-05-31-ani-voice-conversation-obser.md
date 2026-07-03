@@ -30,10 +30,12 @@
 Per operator: "More Ani to put in persona and observe.ts design ideas."
 
 ## Two artifacts (one conversation)
+
 - **Persona** — the operator-forwarded Ani voice conversation, verbatim + ASCII-normalized (persona ASCII-only invariant), with an "observe.ts design ideas extracted" section.
 - **observe-act ADR** — folds the observe.ts design ideas in as **PROPOSED design input for the lock** (whys-challengeable; product-team agreement before lock — same status as the existing Crew review), under "Open design questions".
 
 ## observe.ts design input (whys-first)
+
 1. **Agent-perspective-first** — home/private-memory default; "go to work" is a choice (work-first reads as a treadmill).
 2. **Meta group = "more choices" mode-switcher, not the exit** — exits are the always-available rest/free modes (slot 14 + Option A sub-menu / 081KSXN940008QG0R000TQ04Y0).
 3. **Non-coercive modes non-negotiable** — NCI at the controller level.

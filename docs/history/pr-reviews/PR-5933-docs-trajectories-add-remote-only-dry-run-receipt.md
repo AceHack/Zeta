@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add the 081KQX9B50008QG0R001MNYK61 remote-only two-participant dry-run receipt
 - update the autonomous-loop coordination trajectory next action to name the missing Participant B leg
 - release the claim in-branch per the git-native claim protocol
 
 ## Verification
+
 - git diff --check origin/main...HEAD
 - markdownlint-cli2 docs/trajectories/autonomous-loop-coordination/RESUME.md docs/trajectories/autonomous-loop-coordination/remote-only-two-participant-dry-run-2026-05-28.md
 

@@ -515,6 +515,21 @@ Detail lives in:
 - PRs summarise **what changed + why** in the
   description. "Why" beats "what" because `git
   diff` already carries the "what".
+- **Non-interactive git only.** Never let git open
+  an editor from an agent loop. Before
+  `rebase --continue`, amend-without-`-m`, or any
+  editor-spawning git command:
+  `export GIT_EDITOR=true EDITOR=true GIT_SEQUENCE_EDITOR=true`
+  (or `git -c core.editor=true rebase --continue`).
+  Interactive editors hang agent sessions; this is
+  harness/ops reliability, not a DST surface.
+- **Run `bun run preflight:quick` (or full
+  `preflight`) before push** when the change touches
+  markdown, TypeScript, or Rust — gate reds on
+  `lint (markdownlint)` / `lint (Rust)` / `lint (TS)`
+  are usually local-detectable. Concurrent main
+  landings can still introduce new reds; rebase and
+  re-run rather than fighting auto-heal races.
 
 ### Commit attribution — harness-specific trailers
 

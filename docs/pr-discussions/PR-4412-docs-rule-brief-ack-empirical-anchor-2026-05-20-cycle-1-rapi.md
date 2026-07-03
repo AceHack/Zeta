@@ -51,6 +51,7 @@ This PR's branch was pushed during pure-git tier (0/5000 GraphQL) per `refresh-w
 Adds a 6th empirical anchor to the “holding-without-named-dependency” rule, documenting the 2026-05-20 rapid-closure session shape (two PRs merged quickly, followed by brief-ack drain under rate-limit tier transitions) and how it composes with the rate-limit tiers and verify-before-defer worktree guidance.
 
 **Changes:**
+
 - Adds a new “Rapid-substrate-closure + tier-transition” empirical anchor section with a detailed session timeline.
 - Records rate-limit tier traversal and ties the session behavior to existing rule compositions.
 
@@ -59,18 +60,21 @@ Adds a 6th empirical anchor to the “holding-without-named-dependency” rule, 
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **.claude/rules/holding-without-named-dependency-is-standing-by-failure.md:362**
+
 * This paragraph says the named dependency was “rate-limit reset ~10 min”, but later in the same timeline the deferred PR creation is described as “~5min rate-limit reset”. Please reconcile these (pick one estimate or explain the distinction) to keep the empirical anchor internally consistent.
 ```
 Sixth class of empirical evidence: the discipline operating CORRECTLY through a compact session that produced 2 merged PRs in ~20 minutes then naturally entered brief-ack cycle as rate-limit drained AND peer-Lior cycled. Distinct shape from the 2026-05-17 sustained-named-dep cycle (which had peer-process-persistence as the named-dep across 2h27m + 10 pre-empts) and the 2026-05-18 post-arc cadence (which had operator-offline + 3-cycle saturation): today's cycle was SHORT, the substrate-engineering arc had a CLEAR END (Maji audit response + canary rule refinement landed), and the brief-ack cadence was BOUNDED by a measurable named-dep (rate-limit reset ~10 min).
 
 ```
 **.claude/rules/holding-without-named-dependency-is-standing-by-failure.md:383**
+
 * This sentence introduces direct agent/harness identifiers (“Otto-CLI” and “Lior”) in a current-state rules surface. The repo convention is role-refs outside allowlisted history surfaces (see `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills”); consider rewriting to role-based terms like “CLI agent” / “peer agent processes”.
 ```
 **Rate-limit tier traversal in single session**: Normal (2355) → cost-aware (1771) → extreme cost-aware (508) → **pure-git (0)** within ~20 minutes of substantive PR work. Multi-agent shared-token consumption (Otto-CLI + 3 Lior procs) drives the burn rate; recovery is bounded at ~60 min from initial Normal-tier read.
 
 ```
 **.claude/rules/holding-without-named-dependency-is-standing-by-failure.md:387**
+
 * This is written in present tense (“This edit branch-pushes… opens PR…”), which is confusing now that the PR exists. Consider rewriting this empirical anchor in past tense (“was branch-pushed… PR was opened after reset”) to keep it unambiguous for future readers.
 ```
 **Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md) rate-limit operational tiers**: pure-git tier supports branch-pushed-no-PR for substrate landings; deferred PR creation costs ~5-10 GraphQL post-reset. This edit branch-pushes without PR creation; opens PR after rate-limit reset.
@@ -87,6 +91,7 @@ Sixth class of empirical evidence: the discipline operating CORRECTLY through a 
 The heading window says `14:08Z-14:33Z`, but the timeline immediately below includes an entry at `14:34Z` (forced #6). Update the heading’s end time (or the timeline) so the documented window matches the data.
 
 This issue also appears in the following locations of the same file:
+
 - line 361
 - line 386
 

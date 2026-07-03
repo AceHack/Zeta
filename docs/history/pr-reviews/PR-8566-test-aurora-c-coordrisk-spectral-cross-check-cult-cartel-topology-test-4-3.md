@@ -32,6 +32,7 @@
 Round **(c)** — the **last** test-obligation cross-check of the Aurora immune re-grounding (`docs/trajectories/aurora-immune-reground/`). Aaron authorized 2026-06-19 ("take (c)").
 
 Aurora Test 4.3 (Cult-Cartel Topology). CoordRisk watches two spectral quantities of the gossip graph:
+
 - `ρ(A_t)` — adjacency **spectral radius** (hub concentration / **Cult**).
 - `λ₂(L_t)` — Laplacian **Fiedler value** / algebraic connectivity (fragmentation / **Cartel**).
 

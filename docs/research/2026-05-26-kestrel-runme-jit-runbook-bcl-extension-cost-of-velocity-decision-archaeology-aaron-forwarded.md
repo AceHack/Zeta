@@ -134,21 +134,25 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation discip
 ### Kestrel — engineering observations per capability
 
 **Observability queries**:
+
 - Standard answer: expose OpenTelemetry / Prometheus / logging through query primitives
 - Challenge: temporal dimension that markdown doesn't naturally express
 - Prior art: Grafana annotation system, Jupyter nbformat for time-parameterized cells
 
 **Ontology/graph queries over runbooks**:
+
 - Runbooks as nodes, references as edges, queryable corpus
 - Need typed references (`<!-- depends-on: skill/decision-archaeology -->`) for parseability
 - Prior art: Obsidian backlinks, Roam Research bidirectional links, Zettelkasten
 
 **Database queries over generators+joins**:
+
 - Most dangerous capability — runbook cells become operations on production data
 - Engineering guardrails: read-only by default, opt-in for mutating, snapshot/replay for reproducibility, separation between "queries that explore" and "queries that act"
 - Prior art: Jupyter notebook-mutates-database patterns (read replicas, explicit mutation cells, snapshot-and-replay)
 
 **MCP references through Runme**:
+
 - Composition with broader AI-tool ecosystem
 - Engineering question: authentication, credential management, structured result types
 - MCP designed for exactly this use case; composition clean

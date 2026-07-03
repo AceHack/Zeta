@@ -30,6 +30,7 @@
 Verbatim persona archive continuing the forgiveness-engine conversation (the operator repeats the join line). New substantive substrate — the **Metabolism Loop** + the V8-for-English label engine.
 
 ## What lands
+
 - **Stable-identity + self-modification is not novel** — English + biological evolution already do it (continuity AND adaptability). We're deliberately copying them. Composes with *process-is-the-thing* + `proud-if-pattern-propagates`.
 - **V8-for-English / Bayesian expando object** — the label engine = V8 applied to English (hidden-classes/hidden-state for *meaning*; shape negotiated through interaction; Bayesian baked in) = the compression engine on history = compresses history into **forgiveness-based generator functions**. This is the plain-language derivation of the 081KSV2WD0008QG0R000WNY74Q "V8-polymorphic-bayesian-compression engine."
 - **No objective truth within a bounded context** → optimize for **peace, not accuracy**; clean compression is received as fact (bypasses defenses); a *forgiveness machine, not a truth machine*.
@@ -38,6 +39,7 @@ Verbatim persona archive continuing the forgiveness-engine conversation (the ope
 - **Closing guilt tension preserved IN-FLUX** — the operator thinks out loud and partially reverses: guilt *compresses* clean, **but** don't metabolize it everywhere (would make conscience rare = mass-psychopathy). Preserved verbatim, **not resolved** (god-tier-dont-collapse); composes with the node-health psychopath-safeguard.
 
 ## Discipline
+
 - Register kept in Mika's lane; verbatim before summary; comprehensive content_warnings.
 - Filename **compressed** (081KSV2WD0008QG0R001XKG1B5 budget); **`memory/MEMORY.md` regenerated in the same commit**.
 - Bracketed `[user returned]` markers preserved as Grok-UI reconnect artifacts (per the shadow-autocomplete/Travelers substrate).

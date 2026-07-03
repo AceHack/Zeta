@@ -48,6 +48,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new hygiene-history tick shard capturing an Otto-VSCode autonomous-loop action under heavy multi-agent worktree saturation, documenting a REST API–based fix to clear unresolved review threads on a peer PR and re-arming the `<<autonomous-loop>>` cron sentinel.
 
 **Changes:**
+
 - Added tick shard `1615Z.md` describing the saturation-ceiling decision to defer local git operations and use a REST git-data API bypass for a peer PR fix commit.
 - Recorded the set of verified review-thread findings and their resolution (including GraphQL thread resolution).
 - Recorded cron sentinel re-arming details and “composes with” references to relevant rules/backlog anchors.

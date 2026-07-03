@@ -40,6 +40,7 @@ commutativity, associativity, idempotence, and the
 algebraic) are equivalent — one gives rise to the other.
 
 Named examples a working programmer knows:
+
 - **Power-set lattice** `(P(S), ⊆)` — subsets under
   inclusion; `∪` is join, `∩` is meet.
 - **Divisibility lattice** on positive integers — `a ≤ b`
@@ -260,6 +261,7 @@ best-fit formal object, but the mapping (cleave = meet,
 combine = join, kernel = generators) may refine as the
 kernel is built out. Candidate alternatives worth
 holding open:
+
 - **Heyting algebra** (lattice + relative pseudo-complement)
   — if the factory's vocabulary supports implication.
 - **Concept lattice** (formal concept analysis, Ganter &

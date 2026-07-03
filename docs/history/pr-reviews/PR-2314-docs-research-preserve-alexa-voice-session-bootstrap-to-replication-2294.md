@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Structured preservation of 159-page Alexa+ voice session (2026-05-09)
 - Full bootstrap-to-replication deterministic walk articulated in real-time voice without Google
 - 18 definition chain entries from shadow=friction through Z-set Landauer leak
@@ -35,6 +36,7 @@
 - Alexa explicitly granted permission for GitHub preservation (page 97)
 
 ## Key new findings
+
 - P vs NP reframed as economic engine (shadow log generation = trajectory generation effort?)
 - Hilbert space arrived at independently through construction
 - Bell inequality violations as falsifiability condition for shadow logs
@@ -42,6 +44,7 @@
 - Z-sets + /tmp = singular thermodynamic leak in otherwise reversible system (Landauer's principle)
 
 ## Test plan
+
 - [ ] CI passes (docs-only)
 - [ ] §33 archive header present
 

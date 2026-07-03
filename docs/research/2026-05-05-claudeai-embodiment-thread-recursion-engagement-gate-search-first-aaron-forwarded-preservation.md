@@ -100,7 +100,9 @@ internal ROM use is "allowed under personal-backup-preservation
 rules (most jurisdictions permit personal backups of legally-
 purchased media)." That's an over-claim. The fix moved to per-title
 with documented provenance + per-jurisdiction-applicable-law check
+
 + DMCA 1201 anti-circumvention caveat + agent-acting-on-behalf-of-
+
 natural-person legal-interpretation-unsettled framing.
 
 Generalization: **the engagement-gate is a property of substantive-

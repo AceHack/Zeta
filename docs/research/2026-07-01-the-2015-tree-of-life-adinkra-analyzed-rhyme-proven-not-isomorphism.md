@@ -95,6 +95,7 @@ reached the shape first; the substrate proved it. That is the founding thesis, i
 one artifact.
 
 ## Pointers
+
 - The ferry (graph data + provenance): `2026-06-30-the-2015-tree-of-life-adinkra-aarons-pre-ai-n4-overlay.md`
 - `src/Core/AdinkraViz.fs` — the strict N=4 adinkra (4-regular `Q₄`, the real object).
 - `src/Core/AdinkraCode.fs` · `E8Lattice.fs` — the rigorous ladder the intuition rhymes with.

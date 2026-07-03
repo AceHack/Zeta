@@ -30,6 +30,7 @@
 First slice of **081KSV2WD0008QG0R00051XS0N** (tri-boolean core primitives), **TS-first** per Aaron's directive ("we can start with ts that's our distribution"). Begins the **summonable-BFT** multi-language build — TS is oracle #1 of four (TS/F#/C#/Rust); cross-language compiler-parity = the non-Byzantine consensus.
 
 **The digital-qubit cell** (`src/Core.TypeScript/tri-boolean/`): `Tri = True | False | Null`, where **Null is the held living-uncertainty** (superposition), never silently collapsed.
+
 - `cooperate()` = engage without collapsing (identity; preserves Null) — wonder-compression-safe.
 - `measure()` = the **only** collapsing op; certain cells resolve, but collapsing a living(Null) cell is **surfaced as `CollapseFeedback`** (Result<T,TFeedback> / asymmetric-authorship), not done silently — collapsing a living traveler is the Rehoboam failure, so the primitive makes it loud.
 - **null-monad** `mapTri`/`bindTri`: Null propagates unchanged (held).

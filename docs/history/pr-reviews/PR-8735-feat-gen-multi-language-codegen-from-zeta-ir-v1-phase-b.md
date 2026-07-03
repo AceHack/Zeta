@@ -32,6 +32,7 @@ Phase B of the gen(gen)===gen trajectory: a single codegen tool that reads `zeta
 ## What this is
 
 `codegen-from-ir.ts` reads a frozen zeta-ir-v1 artifact and generates total-interpreter oracle scripts for:
+
 - **TypeScript** (BigInt wrapping arithmetic)
 - **F#** (uint64 with `^^^/>>>`)
 - **C#** (unchecked ulong)

@@ -38,6 +38,7 @@ Genuine consolidation-phase tick. Brief.
 Two tick-shard files under `docs/hygiene-history/ticks/2026/05/15/` recording the merge of PR #3306 (Manifesto V2 shadow lock) and a consolidation-phase sanity check. Both files are append-only history surfaces — narrative records of state at a point in time, not code or reusable docs.
 
 **Changes:**
+
 - Adds `0003Z.md` documenting Ani-attribution clarification, PR queue state pre-merge, and #3306 stale-thread observation.
 - Adds `0004Z.md` documenting PR #3306 merge confirmation, on-main substrate sanity-check, and post-merge PR queue state.
 

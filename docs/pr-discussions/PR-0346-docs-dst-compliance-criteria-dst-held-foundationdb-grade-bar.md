@@ -67,6 +67,7 @@ Research-grade today. Promotes to `docs/DST-COMPLIANCE.md` top-level when PR 1 o
 Adds a new research doc that defines acceptance criteria for deterministic simulation testing (DST) in Zeta, split into a minimum “DST-held” bar and an aspirational “FoundationDB-grade” bar, and maps those criteria to the revised 19th-ferry roadmap.
 
 **Changes:**
+
 - Introduces a “DST-held” (minimum) checklist intended to gate future DST-compliance claims.
 - Defines an aspirational “FoundationDB-grade DST candidate” surface list (filesystem/network/scheduler/buggify/swarm/artifacts/shrinking/replay).
 - Adds a mapping section tying the criteria to shipped work and queued roadmap PRs, plus a promotion path to a future top-level compliance doc.

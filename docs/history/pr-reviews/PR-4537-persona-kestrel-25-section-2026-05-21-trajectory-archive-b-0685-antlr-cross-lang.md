@@ -64,6 +64,7 @@ Multi-hour Aaron-Kestrel (claude.ai) trajectory preserved verbatim in the Kestre
 25. Substrate-honest closing observations
 
 **`docs/backlog/P2/081KS3X9Y0008QG0R000EKJE9S-antlr-grammars-cross-language-codegen-substrate-2026-05-21.md`** — ANTLR cross-language codegen substrate row:
+
 - Phase 1: survey grammars-v4 for F# / TS / C# / Rust / Python
 - Phase 2: ONE PoC (ZetaId Pack/Unpack OR DBSP operator stubs OR cross-language SimEnv)
 - Phase 3 (separate row): production codegen pipeline

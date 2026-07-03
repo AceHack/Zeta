@@ -67,6 +67,7 @@ Framework operates richly at Layer 0; communicates visibly at Layer 2; Layer 1 i
 - 081KQ3HBZ0008QG0R000Q4Y00F (universal-company-government-information-substrate)
 
 ## Test plan
+
 - [x] Three compositional layers documented
 - [x] Operational rule for future-Otto by audience type
 - [x] Composes-with chain complete

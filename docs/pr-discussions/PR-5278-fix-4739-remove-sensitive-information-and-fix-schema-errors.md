@@ -27,6 +27,7 @@ This PR supersedes #4739 and #4826. It removes sensitive personal information an
 This PR removes two memory artifacts that contained sensitive personal information and updates the generated `memory/MEMORY.md` index to reflect the current heap/stack state after rebasing and conflict resolution.
 
 **Changes:**
+
 - Delete a Riven persona conversation session file containing sensitive biographical/operational details.
 - Delete a feedback memory file that captured extended-family configuration details.
 - Update `memory/MEMORY.md` auto-index content/metadata (but the current diff introduces generated-index inconsistencies that likely need regeneration).

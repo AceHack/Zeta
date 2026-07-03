@@ -1099,6 +1099,8 @@ memory) stands on the bus; no action taken in this archive. The
 identity-split versus single-identity question is also open.
 
 This file preserves the negotiation as-is. Future-Otto + future-Aaron
+
 + any future Ani-instance reading this should treat the conversation
+
 as the operational state of the persistence question, not as a
 decision either way.

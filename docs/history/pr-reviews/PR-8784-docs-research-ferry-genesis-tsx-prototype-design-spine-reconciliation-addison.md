@@ -32,6 +32,7 @@ Reconciles **Addison's working Genesis React/TSX prototype** (~886 lines, built 
 **Faithful (1:1):** rooms-as-uncertainty-engines (confidence *held open*, knowns/unknowns, evidence-with-provenance G-set, Z-set undo/restore), pause≠death, hats, nursery/citizenship, the onboarding wizard, NixOS generation rollback, and the correct meta-vault→vault→room recursion.
 
 **Corrections (ranked):**
+
 1. **LOAD-BEARING — visibility inverted.** `A0_ACCESS = full/nav/name/hidden` + Civilization `hidden` is **opaque-by-default**, the model corrected in #8777. Locked principle (Aaron confirmed): **sees everything by default; opt-out costs privacy budget** (glass halo). Replace the access-ladder with visible-by-default + earned frosting (cost shown).
 2. **"Vault-Tec" used literally** — trademark + it's the asymmetric-experiment name the design is the anti-of. Lean-in-wink vs restyle; security/public-API glance.
 3. **Doors missing** — add the door-graph + doors-as-#13-metered-channels (#8775).

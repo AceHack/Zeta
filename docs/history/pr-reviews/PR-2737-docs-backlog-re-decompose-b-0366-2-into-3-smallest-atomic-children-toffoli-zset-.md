@@ -29,6 +29,7 @@
 
 ## Summary
 Re-decomposed 081KR50HA0008QG0R0002PGV1N (Toffoli circuit for Z-set join — formal gate-network model) into 3 smallest atomic children:
+
 - 081KRA5AR0008QG0R002X77BEB ToffoliCircuit type + wire-map (S)
 - 081KRA5AR0008QG0R001GQSVWE join weight multiplication encoding (S)
 - 081KRA5AR0008QG0R000CYY9ZN reversibility laws + FsCheck properties (S)
@@ -36,6 +37,7 @@ Re-decomposed 081KR50HA0008QG0R0002PGV1N (Toffoli circuit for Z-set join — for
 All F#-first per "prefer F#/TS code over docs", one bounded step, claim branch + dedicated worktree (root checkout untouched). Original marked atomic but M-effort was too broad; re-decomposed per rule "always re-decompose items during the build — assume decomposition has mistakes" and "if the item is too broad, decompose before implementation".
 
 ## Task compliance
+
 - Used dedicated worktree + pushed claim branch before any write.
 - Exactly one bounded step (decomp only).
 - Focused check included below.
@@ -49,6 +51,7 @@ dotnet build -c Release
 Clean (docs-only change in worktree).
 
 ## Evidence
+
 - Parent: 081KR50HA0008QG0R003T5MZAC (FPGA Toffoli Z-set)
 - Depends on landed 081KR50HA0008QG0R0021B5J87
 - Claim branch: claim/b0366.2-toffoli-zset-join-redecomp-smallest-slice-riven-2026-05-11

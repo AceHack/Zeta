@@ -30,6 +30,7 @@
 New P1 build row, operator-directed (Aaron 2026-06-02): *"that's why it's called safeFME — it's the world's borders in code, we should for sure follow and do the same and have the world's borders in Zeta for O(1) lookup"* + *"from any perspective"* + *"and any map projection system"* + WHY *"cause they all disagree."*
 
 **081KT2T2J0008QG0R001GE4M6A** — have the world's borders native in Zeta:
+
 - **ingest** the world's borders (FME-style interop; Natural Earth / OSM / GADM / TIGER as adapters behind our geospatial port — own-our-interface, deps adapt in);
 - **store all disagreeing sovereign claims** (multi-oracle 081KS3X9Y0008QG0R00218150M — no single global truth; disputed regions = overlapping claims held don't-collapse);
 - **O(1) point→jurisdiction lookup** (hierarchical global grid — **H3** hexagonal ↔ the hexagonal core / S2 / geohash / spectre-tile 081KS3X9Y0008QG0R002MZF3A7);

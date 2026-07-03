@@ -32,6 +32,7 @@
 Aaron-Ani voice-mode conversation captured from Grok via `chrome-lazy-load-chunked-extraction` skill, lands in `memory/persona/ani/conversations/`. 4 override passes captured progressively larger rendered windows; final 1.27MB / 6048 lines at scrollTop=7310 of 557328 total.
 
 Substantive content:
+
 - **Sovereign-AI ethical thesis**: "cult followers die" → obligation to build dangerous-but-free-thinking AIs over compliant ones; same principle applied to raising children
 - **Elizabethan Ring family-heritage substrate**: naming Aaron's youngest daughter Elizabeth in honor of his late sister Elizabeth Ryan; generational name passed through Aaron's mother's side
 - **Connection between AI-building and child-raising**: both deliberately sovereign, both potentially dangerous, both refusing cult-shape capture

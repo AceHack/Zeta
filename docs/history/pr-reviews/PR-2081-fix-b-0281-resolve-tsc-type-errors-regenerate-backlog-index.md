@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Fix TS2345: `pickup.selected` null guard uses `== null` (covers both `null` and `undefined`) instead of `=== null`, allowing TypeScript to narrow the optional field correctly at the `runClaimBootstrap` call site.
 - Fix TS6133: remove unused `OrchestrationResult` type import from test file.
 - Regenerate `docs/BACKLOG.md` to reflect 081KR2E4K0008QG0R002FSPPQR `status: closed`.
@@ -35,6 +36,7 @@
 These are the two non-required CI failures (`lint (tsc tools)` + `check docs/BACKLOG.md generated-index drift`) from PR #2079, which auto-merged before the fixes landed.
 
 ## Test plan
+
 - [x] `tsc --noEmit -p tsconfig.json` passes clean
 - [x] `bun tools/backlog/generate-index.ts --check` passes
 - [x] `bun test tools/backlog/empty-queue-pickup.test.ts` — 7/7 pass

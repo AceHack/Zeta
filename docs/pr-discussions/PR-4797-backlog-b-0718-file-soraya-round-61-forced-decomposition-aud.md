@@ -75,6 +75,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -93,6 +94,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P3 backlog row (081KS923C0008QG0R000TE1589) capturing a meta-audit of Soraya’s “four-trigger routing-tick” framework after repeated hold cycles, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P3/081KS923C0008QG0R000TE1589-...md` with the audit framing, hypotheses, and acceptance criteria.
 - Updated `docs/BACKLOG.md` to include 081KS923C0008QG0R000TE1589 (and also adds an entry for 081KRSKQ20008QG0R00367828S).
 
@@ -150,6 +152,7 @@ Verify-before-fix per `.claude/rules/blocked-green-ci-investigate-threads.md`: t
 ## Otto-CLI autonomous-loop steward — 3 of 4 threads resolved
 
 **Resolved no-op**:
+
 - \`PRRT_kwDOSF9kNM6EWITL\` + \`PRRT_kwDOSF9kNM6EWIbs\` (081KRSKQ20008QG0R00367828S dangling link) — outdated; recurring across multiple PRs; 081KRSKQ20008QG0R00367828S row file authoring is separate substrate work
 - \`PRRT_kwDOSF9kNM6EWIbv\` (line 43 \`||\` table) — known Copilot FP class per [\`.claude/rules/blocked-green-ci-investigate-threads.md\`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/blocked-green-ci-investigate-threads.md); direct \`awk\` shows single-pipe row (\`| (d) Fresh spec... | Razor-discipline... |\`) — 5th confirmed FP this session
 

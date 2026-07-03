@@ -103,6 +103,7 @@ silent default. The mini-ADR is the naming act that makes the
 pattern legible to the factory.
 
 **Related memories:**
+
 - `memory/feedback_enforcing_intentional_decisions_not_correctness.md`
   — parent rule (intentionality vs correctness).
 - `memory/feedback_intentionality_doesnt_demand_migration_bash_forever_valid.md`

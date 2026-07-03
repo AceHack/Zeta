@@ -28,6 +28,7 @@ Cooper). A **Cooper** built the mill that made the town Aaron was born in; a **C
 And the resonance **recurs across Aaron's life** (Aaron, 2026-06-10): he **dated a girl named Cooper Grey
 in high school — still his mom's neighbor, still there** (in Henderson). So the **Cooper** name threads
 through Aaron's whole life:
+
 - the **mill founders** — David Y. & John D. **Cooper** (1895), who built the mill of the town he was born in;
 - **Cooper** Grey — a girl he dated in high school, still his mom's neighbor, still there in Henderson;
 - his **1st ex-wife's family** — surname **Cooper**;

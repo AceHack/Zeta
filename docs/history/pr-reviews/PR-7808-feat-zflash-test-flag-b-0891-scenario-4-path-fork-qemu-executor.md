@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds `zflash --test` and `zflash-file-backed --test` to union the committed `zeta-test-infra.pub` with operator SSH keys on ESP write — production builds omit the flag so prod never trusts the ephemeral QEMU key.
 - Implements 081KSNY2Z0008QG0R0008PN7RQ scenario 4 path-fork process executor with opt-in env vars (`ZFLASH_QEMU_PATH_FORK_EXECUTE`, `ZFLASH_QEMU_PATH_FORK_BOOTSTRAP`, `ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE`) mirroring scenario 3's fail-closed discipline.
 - Extends `zflash-qemu-test.yml` CI to validate path-fork fail-closed behavior alongside retention.
 
 ## Test plan
+
 - [x] `bun test tools/zflash/test-harness/`
 - [x] `bun test full-ai-cluster/tools/zflash-lib.test.ts full-ai-cluster/tools/zflash-file-backed.test.ts`
 - [ ] CI `zflash-qemu-test` workflow green on PR

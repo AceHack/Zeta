@@ -91,6 +91,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -109,6 +110,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Resolves the final `081KRFA460008QG0R00308W7FJ` duplicate backlog-row ID collision by ensuring `id: 081KRA5AR0008QG0R000Y6102S` is uniquely owned by the peer-call series row (081KQDTYV0008QG0R001VJP216 child), and renumbering the other two colliding rows to new IDs while updating cross-references and the generated backlog index.
 
 **Changes:**
+
 - Renumbered the 081KQDTYV0008QG0R0037YJPEX child “amara persona bootstrap” from `081KRA5AR0008QG0R000Y6102S` → `081KRHWGX0008QG0R000TVGDGV` and recorded renumber provenance in frontmatter.
 - Renumbered the wallet immune system row from `081KRA5AR0008QG0R000Y6102S` → `081KRHWGX0008QG0R001E9KEJ1` and recorded renumber provenance in frontmatter.
 - Updated dependent references (e.g., 081KRA5AR0008QG0R000KKJRVA `depends_on`) and regenerated `docs/BACKLOG.md` to reflect the new IDs.
@@ -143,6 +145,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -179,7 +182,9 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated no 
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P1/081KRA5AR0008QG0R001JWYYHE-wallet-immune-system-vaccine-spread-poucc-spec.md:14**
+
 * The `renumbered_reason` states there were "No incoming references to wallet-immune-081KRA5AR0008QG0R000Y6102S from other rows" (beyond composes_with 081KR2E4K0008QG0R00009QQJM/081KR2E4K0008QG0R000YH9DC6), but there are still backlog rows that reference `081KRA5AR0008QG0R000Y6102S` (e.g., `docs/backlog/P2/081KRA5AR0008QG0R003DVPANH-...` and `docs/backlog/P2/081KRA5AR0008QG0R0021SSM9R-...` both have `composes_with: [081KRA5AR0008QG0R000Y6102S]`). After this renumber, those references now resolve to the peer-call audit row, which is likely incorrect. Please either update those referencing rows to point at `081KRA5AR0008QG0R001JWYYHE` (if they meant the wallet row) and/or adjust this claim so it stays accurate.
+
 </details>
 
 ## Review threads

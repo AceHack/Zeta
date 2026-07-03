@@ -29,6 +29,7 @@
 
 ## What — Aaron 2026-06-07 (merging two ZetaFS)
 Content-addressing makes filesystem merge nearly free:
+
 - **`ContentStore.merge`** — conflict-free content union (identical content = identical hash = one node, auto-dedup).
 - **`DagFs.merge resolve a b`** — content union + path resolution; the only conflict is **same path → different content** (handed to `resolve`).
 

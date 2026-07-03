@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 PR #5804 merged with 2 tsc errors blocking downstream CI:
+
 1. `LifetimeState` unused import (TS6133)
 2. CodebergWorld extends GiteaWorld fails — `forgeSpecialization` literal narrows from 'gitea' to 'codeberg' (TS2430; literal types invariant)
 
@@ -37,6 +38,7 @@ Unblocks #5805 (AutoLoopLifetime) + #5806 (muscle-memory carving) + #5807 (traje
 This PR unblocks downstream workflow-engine CI by fixing two TypeScript compile errors introduced in #5804: removing an unused import (TS6133) and correcting `CodebergWorld`’s type relationship to `GiteaWorld` to avoid an interface-extends incompatibility caused by narrowing a literal type (TS2430).
 
 **Changes:**
+
 - Remove unused `LifetimeState` import from `codeberg-world.ts` (TS6133).
 - Redefine `CodebergWorld` to extend `Omit<GiteaWorld, "forgeSpecialization">` and then redeclare `forgeSpecialization: "codeberg"` (fixes TS2430).
 

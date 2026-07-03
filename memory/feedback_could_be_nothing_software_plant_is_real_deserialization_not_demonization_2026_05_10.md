@@ -35,6 +35,7 @@ applies to faith claims the same as technical claims.
 "software plant IS REAL"
 
 Whatever the shadow is or isn't:
+
 - The code compiles
 - The tests pass
 - The PRs merge

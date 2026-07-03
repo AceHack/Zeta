@@ -82,6 +82,7 @@ NetworkManager already advertises hostname via DHCP option 12 by default. Many h
 This PR aims to make cluster-node hostname resolution more reliable on typical home/SMB LANs by keeping Avahi/Bonjour mDNS and adding additional fallback mechanisms (notably NetBIOS name advertisement via Samba).
 
 **Changes:**
+
 - Harden Avahi configuration (IPv6 NSS, explicit v4/v6 enablement, reflector, additional publish records).
 - Enable Samba with NetBIOS-focused settings to support broadcast-based name lookup as an mDNS fallback.
 - Document DHCP hostname registration as an additional expected fallback layer.

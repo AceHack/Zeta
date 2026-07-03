@@ -132,10 +132,12 @@ dashboard as first-class feature
 5. Cadence — daily / per-tick / per-session
 
 **Effort:** M-L (research + prototype + Frontier integration
+
 + demo framing)
 
 **Owner:** Dejan (DevOps / git-surface) drives prototype;
 Iris (UX) + Kai (positioning) own the Frontier integration
+
 + demo framing; Kenji synthesizes.
 
 **File against:** AceHack initially (experimentation-frontier

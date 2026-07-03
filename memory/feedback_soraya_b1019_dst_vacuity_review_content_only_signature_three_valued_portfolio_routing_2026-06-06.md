@@ -38,6 +38,7 @@ strictly growing across the whole budget = EVIDENCE of novel growth (not proof).
 index's own memory growth isn't confused with state growth.
 
 ## Tool routing (BP-16 portfolio — no single tool carries the P2-proof evidence)
+
 - **Rung-1 contrast mechanism** (NCI-persists vs coercion-collapses; bounded N; replayable): **F# DST**,
   this harness. Correct tool. It can only ever show "didn't cycle within budget," never "never cycles."
 - **No-limit-cycle as a property** over the transition relation: **TLA+/TLC** on a small abstracted model
@@ -47,6 +48,7 @@ index's own memory growth isn't confused with state growth.
   is the honest DST↔proof boundary.
 
 ## Honest predicate
+
 - PASS (DST evidence-FOR): no halt ∧ no content-signature repeat within budget ∧ distinct
   belief-configuration count strictly increasing — reported as *evidence consistent with* unbounded novel
   growth, NEVER "proven."

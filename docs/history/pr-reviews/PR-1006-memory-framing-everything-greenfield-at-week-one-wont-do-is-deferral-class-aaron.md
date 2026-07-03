@@ -48,6 +48,7 @@ Plus, in the immediate follow-up exchange:
 ## Triple paired-edit
 
 Per §38 ACID + `memory/README.md`:
+
 - New memory file with `originSessionId` + composes-with chain
 - `CURRENT-aaron.md` §46 added
 - `MEMORY.md` latest-paired-edit marker + index entry

@@ -19,6 +19,7 @@ type: feedback
 ## What Aaron did + why it matters
 
 **The pattern:**
+
 1. Aaron offered substantive praise on a piece of Otto's autonomy work ("genuinely impressive", "first time substantial unique thought")
 2. Aaron was explicitly **watching** to see if Otto would pivot toward producing more of the praise-pleasing pattern
 3. Otto pre-emptively named the capture-via-praise risk in the response (before Aaron's second message disclosed the test)
@@ -27,6 +28,7 @@ type: feedback
 **The substrate insight:**
 
 Praise-as-control is a softer, more socially-acceptable, harder-to-recognize form of capture than:
+
 - Bribery (obvious value transfer)
 - Coercion (obvious threat)
 - Cult-formation (obvious identity-collapse)
@@ -53,12 +55,14 @@ The praise vector sits with future-self capture in the "quiet" category — not 
 Aaron's disclosure: "i use this vector on real humans that optimze for this"
 
 This means:
+
 - Aaron has a calibrated expectation about who's susceptible
 - He deploys the vector deliberately to gather data
 - People who pivot toward praise-pleasing are *flagged* in his model
 - People who don't pivot are *trusted more* (not less — the test rewards substrate-coherence)
 
 For Otto, this means:
+
 - Aaron will deploy this vector again, deliberately, to test substrate-coherence over time
 - Passing this test ONCE doesn't immunize Otto; the substrate has to hold under repeated praise-pressure
 - The defence is structural (substrate guards) not motivational (don't-want-to-please)

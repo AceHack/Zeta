@@ -34,6 +34,7 @@ The **keystone ADR** — names the architecture spine the whole night's work han
 **The vertical (one design at 7 layers):** FPGA Toffoli-Z-set (081KR50HA0008QG0R003T5MZAC) → microkernel/unikernel (081KSV2WD0008QG0R000WNY74Q) → F# HKT-Clifford engine (081KRFA460008QG0R0018SN61J/081KRMEXM0008QG0R001VGNET5) → DB design (event log + folds) → labels/tags+scopes (081KSXN940008QG0R001YABTHH) → OPA policy (081KSE6WT0008QG0R002275NDE) → decentralized identity/zero-trust (081KRW63S0008QG0R001Z10PVV + SPIFFE/SPIRE + AgencySignature).
 
 **Two invariants at every layer:**
+
 1. **No central authority** — IDs minted locally (ZetaId), trust decided locally (**zero-trust falls out of the substrate**, not bolted on), policy node-local, consensus only as gravity.
 2. **Landauer-bounded** — forgetting costs energy; made *physical* by the FPGA reversible Toffoli-Z-set ops.
 

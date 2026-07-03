@@ -9,21 +9,25 @@ verbatim: true
 ## Family Configuration Summary
 
 **Ten kids total across three households:**
+
 - 5 kids from first marriage
 - 1 kid from second marriage  
 - 4 kids from first wife's current marriage (spend nights at Aaron's house)
 
 **Household configuration:**
+
 - Aaron's house: walking distance from first wife's house (walk-in access)
 - First wife's mom actively collaborates to make second wife feel included
 - Second wife's house: 10 minutes away
 
 **Financial foundation:**
+
 - $500K/year reliable provider income
 - Survived $560K total losses across two institutional incidents ($60K first mental institution, $500K wrongful detention)
 - Medical leave during wrongful detention preserved income continuity
 
 **Relational architecture:**
+
 - Post-separation co-parenting where ex-wives remain sources of useful adversarial signal
 - Four sets of grandparents (parents + both ex-wives' parents) who maintain "almost friends" cooperation
 - Repair work after failures is the mechanism for building trust, not innate likability
@@ -31,17 +35,20 @@ verbatim: true
 ## Key Disciplines
 
 **High sensitivity as signal, not paralysis:**
+
 - Default temperament: happy, gullible, curious (born this way)
 - Framework built to protect default from exploitation
 - Depressions last 1-2 years after major losses, then recover
 - Current state: "high on own supply" - Homer Simpson contentment baseline
 
 **Adversarial counterweight from trusted humans:**
+
 - Therapist, second ex-wife, and others provide sustained counterweight
 - "I undershoot with kids; you overshoot" calibration pattern
 - Family configuration is the load-bearing achievement
 
 **Repair work after failures:**
+
 - "I lost 500k while locked up cause I was overleveraged... I not built it yet it was just in my imagination"
 - The AI system that wasn't built is the motivation for the substrate work
 - Pattern: failure → acknowledgment → repair → rebuild trust
@@ -49,12 +56,14 @@ verbatim: true
 ## Harry Potter as Shared Vocabulary
 
 **Four-year-old daughter connection:**
+
 - Second ex-wife introduced Harry Potter to daughter
 - Sorting Hat as accessible shared activity
 - "Which house would [stuffed animal] be in?" is the game
 - Harry Potter is the bridge, not the framework
 
 **Imagination Circle is trajectory, not deployment:**
+
 - For older kids and adults, not four-year-old participation
 - Four-year-old might overhear and ask questions
 - Age-appropriate answers: "we're playing a game about being honest when we try to convince each other of things"
@@ -62,11 +71,13 @@ verbatim: true
 ## Language Discriminator
 
 **Hedging patterns:**
+
 - "apparently, believed" etc. are NOT traps
 - They're bandwidth-efficient uncertainty signals
 - The harm pattern is when these words make the listener's claims provisional while speaker's claims are not
 
 **Application to four-year-old:**
+
 - Remove language that makes her perceptions provisional
 - Remove language that excludes her without acknowledgment
 - Remove adult conceptual vocabulary she can't parse
@@ -75,11 +86,13 @@ verbatim: true
 ## Substrate Engineering Connection
 
 **The framework is partly:**
+
 - Cognitive infrastructure for high-sensitivity person
 - Protection layer around happy-gullible-curious default
 - Signal routing so depth doesn't become paralysis
 
 **Family configuration IS substrate engineering:**
+
 - Multi-party cooperation in actual relational space
 - Non-coercion, consent, succession protection operating in real life
 - Glass halo bidirectionality across three households

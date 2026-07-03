@@ -32,6 +32,7 @@
 **Fix:** non-null assertions on **provably-present** values — `toks[0]!` (under `if (toks.length)`), `m[1]!`/`m[2]!` (regex has 2 capture groups, present on match), `sbTag[1]!` (1 group, narrowed under `if (sbTag)`). **Zero logic change.** Verified `bun src/Core.TypeScript/lint/lint-typescript.ts` → all green.
 
 **Separate reds, flagged not fixed:**
+
 - `lint (bash retirement)` — same #8807 auto-vivify root cause (markdown stubs at `.sh` paths) flagged in #8814/#8817.
 - `build-and-test` ZetaIrV4 "byte-for-byte golden" — **failed in CI but passes locally 7/7** on this commit (no byte-diff in log) → suspected flake/CI-env; re-run enqueued, golden **not** touched (it's correct locally).
 

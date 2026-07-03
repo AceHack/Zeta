@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add `--root PATH` to `audit-stale-worktrees` so callers can inspect a control clone without changing cwd
 - route list/prune through `git -C <root>` and cover argument parsing
 - handle `spawnSync` launch errors explicitly in `audit()` + `runPrune()` (per Copilot review on this PR)
@@ -25,6 +26,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - claim was released per AGENT-CLAIM-PROTOCOL.md §TL;DR step 5 (no claim file shipped with this PR; coordination artifact deleted on landing)
 
 ## Checks
+
 - `bun test tools/hygiene/audit-stale-worktrees.test.ts` (12 pass)
 - `bun tools/hygiene/audit-stale-worktrees.ts --root /Users/acehack/.local/share/zeta-codex-loop/Zeta`
 - `bun tools/hygiene/audit-stale-worktrees.ts --root /tmp/__nonexistent` → exit 128 with clean error
@@ -42,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a `--root PATH` option to the stale worktree audit tool so callers can audit a specific repo without changing the current working directory, routing `list`/`prune` through `git -C <root>` and adding argument-parsing tests.
 
 **Changes:**
+
 - Add `--root PATH` CLI flag and thread it through `git worktree list/prune` via `git -C`.
 - Export and test `parseArgs` to cover the new flag and combinations with `--report`/`--prune`.
 - Add a new claim file for the work.
@@ -61,6 +64,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/audit-stale-worktrees.ts:84**
+
 * P1: `--root`/`--report` consume the next token as a path even when the next token is another flag (e.g. `--root --prune`), which silently mis-parses the CLI and can cause `git -C --prune ...` failures. Treat known flags as missing-value errors to keep behavior predictable.
 ```
     if (a === "--root") {

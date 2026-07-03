@@ -30,10 +30,12 @@
 Operator-authorized 2026-05-31 ("register batch=4 now and reframe the supersession"). Context: *"we don't have to worry about batch yet, i want to get sovereign clean and reliable first, corporate leash mode can wait for max."*
 
 **Batch is not moot — it's the corporate/branch-mode transport.** Per operator: corps allow branches-without-protection but not direct-to-main, so **both transports live forever** for the same conflict-free ZetaId-folder substrate:
+
 - **Folder mode** (sovereign / Agora): folders directly on main, no coordinator. **Near-term priority.**
 - **Branch mode** (corporate leash): the same ZetaId-folders on a branch + the **081KSNY2Z0008QG0R0017JSTGD coordinator** batch-merges branch → main as one PR. Folders make the branch conflict-free by construction → clean merge.
 
 **Changes:**
+
 - Register **Batch=4** across all four parity surfaces (`registry/categories.yaml` + TS/F#/C#). Slot reserved; **impl deferred to Max** (corporate mode can wait). Registry now contiguous 0-8: `Observation · Emission · Workflow · Heartbeat · Batch · FrictionTelemetry · Bus · Spawn · WorkItem`.
 - **081KSNY2Z0008QG0R000E5KTPX row**: mode-scope the "vestigial coordinator" claim — sovereign-mode-scoped, not absolute; the coordinator is the corporate-mode transport. Original 2026-05-28 sovereign reasoning preserved (retraction-native); refinement appended.
 

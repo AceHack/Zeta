@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: numerical-analysis-and-floating-point-expert, probability-and-bayesian-inference-expert, ethical-hacker, grey-hat-hacker, semgrep-expert
 - **Milestone: 65 skills carved, ~102K+ chars freed**
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

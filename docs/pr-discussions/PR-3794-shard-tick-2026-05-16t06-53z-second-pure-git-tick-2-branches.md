@@ -29,4 +29,5 @@ Pure-git tick #2 of reset cycle. Rate at 0/5000; batch-amortization pattern.
 Adds a single hygiene-history tick log documenting the second consecutive pure-git tick during a rate-limit reset window, with two branches deferred to a post-reset batch PR-creation pass.
 
 **Changes:**
+
 - New tick log under `docs/hygiene-history/ticks/2026/05/16/0653Z.md` recording state, rationale for deferral, and visibility signals.

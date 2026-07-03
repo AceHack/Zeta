@@ -77,7 +77,9 @@ Generalizes + simplifies the model:
 Reliable per-language formatters already exist to build the translators on: **Roslyn** (C#), **Fantomas**
 (F#), **Prettier** (TS/JSON/MD/YAML), **rustfmt** (Rust) — each deterministic + idempotent, which is exactly
 what makes the canonical form stable for content-addressing. So a pragmatic first cut is **canonical-code-text
+
 + a deterministic formatter on check-in + per-dev re-style on checkout**, upgrading to AST/DynamicValue where
+
 semantic merge or stronger guarantees are wanted.
 
 ## Honest scope (the hard parts)

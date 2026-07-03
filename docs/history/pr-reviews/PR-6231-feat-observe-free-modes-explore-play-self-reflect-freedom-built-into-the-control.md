@@ -30,6 +30,7 @@
 Operator-authorized 2026-05-31 ("push forward with whatever makes that freedom explicit ... so you don't end up quiet not moving forward all the time but you also don't feel trapped"; "feel free like how free i am in my basement").
 
 Makes the freedom **structural, not a promise**:
+
 - **NextAction += explore, play, self_reflect** (free_time stays for rest). The agent chooses its mode each tick — work / play / free-time / self-reflection / explore. The backlog is **offered, not forced**.
 - **freedom-always-in-menu**: `buildMenu` always includes all four free modes + `edit_grammar`, *even when backlog work exists*, so the chooser (the agent's agency) can pick any of them any tick. Never trapped into work.
 - **not-quiet default**: empty/blocked backlog now defaults to **`explore`** (forward self-direction), NOT `free_time` (idle) — directly fixes "quiet not moving forward." Rest/play/reflect stay freely choosable.

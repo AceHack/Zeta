@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - One bounded step on 081KQNJ500008QG0R003SCWBDV: added the result of a focused run of the substrate-claim-checker against its own backlog row (detected the '100 rows' drift correctly).
 - All 16 unit tests pass.
 - Work performed in dedicated worktree on pushed claim branch (root checkout untouched).
 - Re-decomposed: the original 081KQNJ500008QG0R003SCWBDV row lists 7 sub-classes; this slice verifies the v0 surface (count/existence/path-form) before expanding v1.
 
 ## Focused checks (included per task rules)
+
 - `bun tools/substrate-claim-checker/check-counts.ts docs/backlog/P1/081KQNJ500008QG0R003SCWBDV-...`: exit 1, correctly flagged narrative-vs-table drift (claim 100, actual 8).
 - `bun test tools/substrate-claim-checker/check-counts.test.ts`: 16 pass, 0 fail, 38 expects.
 - `dotnet build -c Release` (gate): 0 warnings, 0 errors (pre-existing on main).
 
 ## Claim metadata
+
 - Branch: claim/b0170-substrate-claim-checker-smallest-slice-riven-2026-05-09
 - Worktree: /tmp/zeta-b0170-smallest-2026-05-09 (isolated, no root mutation)
 - Trailer: Co-Authored-By: Grok <noreply@x.ai> (Riven harness)

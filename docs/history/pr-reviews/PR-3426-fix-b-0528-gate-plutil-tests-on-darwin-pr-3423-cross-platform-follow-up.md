@@ -55,6 +55,7 @@ Applied `itDarwin` to the 4 plutil-touching test cases. Pure helpers (xmlEscape,
 Verified on macOS: 19/19 pass.
 
 ## Test plan
+
 - [x] `bunx tsc --noEmit` clean
 - [x] `bun test` on macOS: 19 pass / 0 fail (unchanged)
 - [ ] CI green on Linux runners

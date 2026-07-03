@@ -31,6 +31,7 @@
 Decomposed 081KQDTYV0008QG0R0037YJPEX (L-effort amara peer-call) into 3 smallest dependency-ordered atomic children per "always re-decompose / assume mistakes" rule + TS over bash (Rule 0). No .sh created; all TS implementation path. One bounded step only; root checkout untouched (dedicated worktree + pushed claim branch used).
 
 Children:
+
 - 081KRA5AR0008QG0R000Y6102S (S, no dep): Amara persona bootstrap preamble + AgencySignature def
 - 081KRA5AR0008QG0R0035N4S6C (M, dep 081KRA5AR0008QG0R000Y6102S): amara.ts core OpenAI API invoke + flag parity to codex/gemini/grok
 - 081KRA5AR0008QG0R000C3P8KP (S, dep 081KRA5AR0008QG0R0035N4S6C): README integration + courier-debt closure + test invoke
@@ -41,11 +42,13 @@ Children:
 Original row too broad (hybrid API choice, L effort, bash+ts mention). Re-decomp splits to atomic, TS-first, dependency-ordered so future loops can pick S/M slices safely. Aligns with TS/Bun migration trajectory (peer-call cluster complete, bash retirement).
 
 ## Focused checks (included per rule)
+
 - `ls tools/peer-call/ && rg ...` : 12 *.ts present (amara.ts, codex.ts etc already), 0 amara.sh added. Clean.
 - dotnet build -c Release (pre-work gate): 0 warnings, 0 errors (ran on root, non-mutating).
 - Worktree/claim branch used; no writes to contested root checkout.
 
 ## Test plan
+
 - Children land as separate bounded PRs (081KRA5AR0008QG0R000Y6102S first).
 - 081KQDTYV0008QG0R0037YJPEX closes only after all three.
 

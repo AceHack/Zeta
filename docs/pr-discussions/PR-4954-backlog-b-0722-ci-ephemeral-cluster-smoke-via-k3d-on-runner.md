@@ -23,6 +23,7 @@ Files Aaron's *"tests should be able to use kind/k3d to do ephemeral clusters on
 Builds on PR #4953's dev-cluster substrate. Phase 1 = k3d-on-runner workflow (immediate ask); Phase 2 = vcluster-on-shared-host when persistent dev cluster exists.
 
 PR contents:
+
 - New: `docs/backlog/P2/081KSE6WT0008QG0R002RFEC0S-ci-ephemeral-cluster-smoke-via-k3d-on-runner-evolve-to-vcluster-2026-05-25.md` (the backlog row — substrate only, no implementation)
 - Updated: `docs/BACKLOG.md` (regenerated index after main-merge to clear MD012 + drift on the generated index)
 - New: `docs/hygiene-history/ticks/2026/05/25/2208Z.md` (Otto-CLI cold-boot tick shard documenting the CI-fix work)
@@ -52,6 +53,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -70,6 +72,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog row (081KSE6WT0008QG0R002RFEC0S) capturing a plan to run an ephemeral Kubernetes cluster smoke test in CI for AI-cluster PRs (k3d-on-runner now, with a future evolution to vcluster-on-shared-host).
 
 **Changes:**
+
 - Introduces `docs/backlog/P2/081KSE6WT0008QG0R002RFEC0S-*.md` with frontmatter + detailed Phase 1/Phase 2 implementation plan.
 - Documents workflow triggering, artifact capture, teardown behavior, and acceptance criteria for the future CI smoke workflow.
 
@@ -93,6 +96,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -124,6 +128,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

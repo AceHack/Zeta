@@ -22,6 +22,7 @@ layered on top of Anthropic's upstream flow.
 
 **Manual edits to a SKILL.md are allowed**, but each manual
 edit MUST leave a **justification-log entry** naming:
+
 - which skill was edited,
 - what was changed,
 - why skill-creator was bypassed (e.g., mechanical rename,
@@ -43,6 +44,7 @@ as GOVERNANCE.md §24 for the install script: our entry point,
 their substrate.
 
 **How to apply:**
+
 - Default: run the skill-creator workflow for any non-trivial
   SKILL.md edit (new skill, reworked section, frontmatter
   change, retirement).
@@ -74,6 +76,7 @@ something actively prunes drift; ad-hoc invocation has let
 drift accumulate between notice-and-fix rounds.
 
 **How to apply:**
+
 - At round-open (or round-close, factory's choice — pick one
   and keep it), invoke `skill-tune-up` and log the top-5
   rankings in the round-close ledger.

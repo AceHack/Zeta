@@ -46,6 +46,7 @@ Operator 2026-05-27 reminder pointed at existing substrate I wasn't using: ZetaI
 Adds a new P1 backlog row (081KSKBP80008QG0R001KK9WV6) proposing an `docs/agent-heartbeats/` substrate that uses ZetaID-based filenames and a path-scoped branch-protection carve-out to enable low-friction, direct-to-main heartbeat commits, then indexes the row in `docs/BACKLOG.md`.
 
 **Changes:**
+
 - Introduces backlog row **081KSKBP80008QG0R001KK9WV6** specifying folder layout, heartbeat schema, and planned sub-rows for tooling + enforcement.
 - Documents how the proposal composes with existing ZetaID and AgencySignature substrates.
 - Adds **081KSKBP80008QG0R001KK9WV6** to the P1 section of `docs/BACKLOG.md`.

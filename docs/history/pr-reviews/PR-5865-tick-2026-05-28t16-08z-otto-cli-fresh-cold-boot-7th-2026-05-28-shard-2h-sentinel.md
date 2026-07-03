@@ -41,6 +41,7 @@ Visibility-only tick shard for the 2026-05-28T16:08Z Otto-CLI fresh cold-boot. 7
 - `docs/hygiene-history/ticks/2026/05/28/1608Z.md` — visibility-only tick shard following the canonical 7-step format
 
 ## Test plan
+
 - [x] Branch-guard test (`git branch --show-current` matched `ZETA_EXPECTED_BRANCH` discipline equivalent before commit)
 - [x] Post-commit canary: parent_tree=62 / this_tree=62 (no corruption)
 - [x] Isolated worktree pattern (off `origin/main` HEAD `c280f6870`)

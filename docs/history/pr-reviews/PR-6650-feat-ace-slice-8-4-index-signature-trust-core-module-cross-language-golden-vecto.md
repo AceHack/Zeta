@@ -34,12 +34,14 @@ Fifth step of the cross-language Ace trust core (after slice 8 SHA-256, 8.1 cano
 Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.4-index-signature-design.md` (in this PR).
 
 ### T1 — extract + sweep (move-only, behaviour-preserving)
+
 - **NEW `tools/ace/index-signature.ts`** — the four index symbols (`IndexSignableContent`, `canonicalIndexBytes`, `signIndex`, `verifyIndexSignature`). One-way dep on `signing.ts` (shared `keyId`/`AceSignature`/`VerifyResult`/`TrustEntry`/`RevocationMap`) + `canonical.ts` (`canonicalBytes`) + `store.ts` (`RegistryEntry`). **No import cycle.**
 - **NEW `tools/ace/index-signature.test.ts`** — index unit tests relocated from `signing.test.ts`: round-trip + 4 reason rejections (tampered-content / tampered-sig / untrusted-key / unsupported-algo).
 - `signing.ts` — four index symbols removed (manifest sign/verify + shared primitives stay); dropped now-unused `RegistryEntry` import.
 - Swept every import site (`ace.ts` / `registry-publish.ts` / `registry-remote.ts` / `registry-revoke.ts` + their `.test.ts` + `signing.test.ts`) to `./index-signature.ts`; split imports where a file used both.
 
 ### T2 — golden-vector fixture (`tests/cross-verification/index-signature/`)
+
 - `vectors.json` — **canonical[3]** (minimal / with-packages / with-revoked+quarantined, each with `expected_canonical_json`) · **envelope[1]** (fixed PEM → `expected_key_id=ed25519:0dbe5a2385bc2af4` + `expected_sig`) · **invalid[4]** (tampered-content + tampered-sig → `bad-signature`; untrusted-key; unsupported-algo).
 - `cross-verify.ts` — TS oracle asserts every vector, writes `ts-output.json`, exits non-zero on mismatch. **Auto-discovered by `tools/ci/cross-verify-all.ts` (now 6/6)** — byte-lock CI-enforced the moment this lands.
 - Envelope `sig` + `key_id` + canonical bytes **independently re-derived via Python `cryptography`** at fixture-creation (non-tautological, assert-don't-skip).
@@ -48,6 +50,7 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.4-index-signature-
 Per the canonical-primitive gate (proof **and** 4-language byte-lock): index-signature stays **TS-only + proof-owed → NOT canonical yet**. The golden vectors are the *data the eventual 4-language byte-lock + proof run on*; the proof half lives in the formal-coverage / lean-proof lane.
 
 ### Gates (all green locally)
+
 - `bun --bun tsc --noEmit -p tsconfig.json` → exit 0
 - `bun test tools/ace/` → **372 pass / 14 files**
 - `bun tools/ci/cross-verify-all.ts` → **6/6 primitives** (incl. the new `index-signature` dir)

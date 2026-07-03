@@ -25,6 +25,7 @@ round-trip (decode∘encode=id), injectivity, canonicality (fixed-point check), 
 agreement matrix, never-collapse (distinct empties), lens get-put + LossReport-completeness.
 
 ## PROVABLE classes to ADD (proof reaches these)
+
 1. **Decode TOTALITY** — decode terminates + returns Result on EVERY input (incl hostile
    garbage), never throws / never hangs. The malformed-input-DoS class (parser crashes or
    hangs on crafted input). **Lean termination/structural-recursion proves it.** Distinct
@@ -54,6 +55,7 @@ garbage" half that round-trip-on-valid-data doesn't touch.
 Distinction: FsCheck generates STRUCTURED valid-ish inputs + checks properties; fuzzing
 generates UNSTRUCTURED/hostile bytes + checks doesn't-crash/hang/misbehave. Fuzzing's home
 = the "safe on hostile input" gap above (same gap). Sorted by value:
+
 1. **The `from*` decode boundary on RAW BYTES** — heaviest, coverage-guided (cargo-fuzz/
    libFuzzer for Rust, AFL.NET/SharpFuzz for .NET): feed millions of garbage/malformed/
    adversarial byte sequences, assert **no-crash, no-hang (timeout=bug), no-OOM (bomb),

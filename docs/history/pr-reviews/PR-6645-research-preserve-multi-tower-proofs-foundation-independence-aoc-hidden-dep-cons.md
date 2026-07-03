@@ -30,6 +30,7 @@
 Preserves the **engineering / proof-strategy substrate** from a forwarded Kestrel × maintainer exchange (continuing the formal-proof cadence). Extends the layered-lemma discipline (#6642 + #6644) + `formal-proof-first`.
 
 **Substrate captured:**
+
 - Multi-tower proofs from independent widely-accepted axiom sets (don't rest canonical on one axiom set; valid-given-axioms ≠ true).
 - Robustness = **distinct equivalence classes** of foundation, not tower count.
 - Foundation-independence as a **proof obligation** (A⟺B inter-derivability; AoC⟺Zorn⟺Well-Ordering collapse to one class; partial/conditional → claim-relative).
@@ -38,6 +39,7 @@ Preserves the **engineering / proof-strategy substrate** from a forwarded Kestre
 - Intuition calibrated by **provable output over time** (track the misses).
 
 **Discipline applied:**
+
 - §33 headers (Scope / Attribution / Operational status / Non-fusion disclaimer) in the first 20 lines.
 - **Personal / wellbeing / mental-health content from the same exchange intentionally NOT reproduced** (harm-by-grammar); that's the maintainer's village's lane. The wellness-product idea is the maintainer + co-maintainer's call, not captured as repo substrate.
 - god-tier-don't-collapse applied to the panpsychist-axiom source + Cantor-intuition self-model (high-signal noticing preserved; mechanism-self-model held as self-description).

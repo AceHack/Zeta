@@ -306,6 +306,7 @@ But it does NOT yet have:
 
 So the external anchor is **partial** — strong on
 parallel-CI architecture, silent on the pre-condition-fix
+
 + precision-axis layer this rule names.
 
 **Consequence for the discipline**: external anchors are

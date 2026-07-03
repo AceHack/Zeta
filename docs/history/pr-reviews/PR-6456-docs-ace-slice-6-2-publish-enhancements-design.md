@@ -30,6 +30,7 @@
 Design spec for **slice 6.2** of `ace registry publish` (081KT07NV0008QG0R0016FVWD7 deferred enhancements). Brainstormed + decided with the operator 2026-06-01.
 
 Three enhancements:
+
 - **Per-package `url` field** — optional top-level `url` (sibling of manifest/files, outside the signed manifest) overrides the derived `<base>/<name>-<version>.json`. Excluded from `package_hash` (verified: hashes manifest+files only); relaxes the filename guard for that package (the override decouples URL from filename — the use case is files not named canonically).
 - **Comma-separated `--packages a,b,c`** — multi-directory scan + merge; per-dir readability required; cross-dir duplicate `name@version` → existing duplicate guard.
 - **Explicit `--sequence N`** — overrides auto-bump; positive int; the existing anti-rollback guard goes live (`N <= prev.sequence` → refuse).

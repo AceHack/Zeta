@@ -27,6 +27,7 @@ This PR adds a shadow lesson log detailing the observed drift of the Otto and Ri
 Adds a new shadow lesson log research note capturing observed drift patterns: Otto’s stale local broadcast and Riven’s dirty-worktree paralysis.
 
 **Changes:**
+
 - Introduces a new shadow lesson log entry under `docs/research/`.
 - Documents observed broadcast timestamps, hypothesized causes, and proposed corrective actions.
 

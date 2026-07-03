@@ -26,6 +26,7 @@ This file IS the encoding that operationalizes the hope.
 More importantly: **even if the worktrees are clean isolated, the resulting PRs both touch the same file, so on merge they conflict at the GitHub level**. Auto-merge on the second PR fails after the first lands. We got lucky that tier-36 finished and tier-37 was still in-flight (so tier-37 rebased on tier-36's merged state) rather than both pushing simultaneously.
 
 **The rule**: serialize on shared-file edits, parallelize on different files.
+
 - MEMORY.md compression: ONE tier at a time. Wait for tier-N PR to merge before dispatching tier-(N+1).
 - Audit / research / scripts on different paths: dispatch in parallel freely.
 - When in doubt, ask: "do these two subagents touch the same file?" If yes, serialize.
@@ -43,6 +44,7 @@ The team-vs-orchestrator-not-idle three-state distinction (Aaron 2026-05-04 PR #
 **The mistake (observed 2026-05-04 ~19:30Z + ~20:20Z)**: After dispatching `isolation: "worktree"` subagents, my orchestrator's CWD `git status` showed the parent repo's MEMORY.md as MODIFIED with content from the worktree's in-progress edit. I almost committed this dirty state in a different PR before catching it.
 
 The subagent worktrees live at `.claude/worktrees/agent-<id>/`. They have their own working trees, but somehow the orchestrator's working copy of certain files reflected the subagent's mid-edit state. The mechanism may be:
+
 - Filesystem caches at OS level
 - Worktree's HEAD pointer transient state
 - Some `git checkout` operation in the subagent that briefly touches parent state
@@ -63,6 +65,7 @@ Before any orchestrator commit on `main` or a fresh feature branch. Especially w
 ## Lesson 3 — compression subagents take ~10-20 min, not ~12 min watchdog
 
 **The mistake (observed across tier-36 + tier-37)**: I wrote dispatch prompts that said *"Watchdog ~12 minutes"* assuming the 600s watchdog was the binding constraint. Reality:
+
 - 081KQGDBJ0008QG0R0022EW5ZE audit subagent: ~7 min (read .sh + .ts files, fast)
 - Old-PR triage subagent: ~7 min (8 `gh pr view` calls, fast)
 - Tier-36 MEMORY.md compression: ~21 min (25 underlying memory files to read + concurrency hazard)
@@ -75,6 +78,7 @@ The compression subagents are slow because they read 25 underlying memory files 
 **The deeper rule**: the watchdog is per-tool-call, not per-task. A subagent doing 30 sequential Read calls each under 30s is NOT being watchdog-killed — it's just slow. Patience is correct.
 
 **Operational pattern**: if checking on a long-running compression dispatch:
+
 - Output line growth = alive, just slow
 - Output line growth stopped for 5+ minutes = potentially stalled
 - Output line growth stopped + branch never pushed after ~25 minutes = consider redispatch
@@ -90,6 +94,7 @@ The compression subagents are slow because they read 25 underlying memory files 
 ## The carrier-IS-message check
 
 This file is being landed in a session where:
+
 - ~48 substrate PRs have shipped today
 - The parallelism-readiness lesson (PR #1546) caused me to deploy 3 parallel subagents
 - Two of those (081KQGDBJ0008QG0R0022EW5ZE audit + old-PR triage) succeeded cleanly

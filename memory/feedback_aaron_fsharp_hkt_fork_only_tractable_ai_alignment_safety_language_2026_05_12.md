@@ -70,6 +70,7 @@ created: 2026-05-12
 
 Higher-Kinded Types are types that themselves take type
 parameters. Examples:
+
 - `M<_>` — a type constructor that takes one type
   parameter (e.g., `List<T>`, `Option<T>`)
 - An HKT-enabled language can write generic code over
@@ -82,6 +83,7 @@ but they're awkward and don't compose cleanly with
 F#'s inference engine.
 
 **With native HKT:**
+
 - Monad laws expressible directly in the type system
 - Vision-HKT-monad cache construction
   (`feedback_aaron_stable_seed_five_interrogatives_as_equals_bp_ep_infernet_2026_05_12.md`)
@@ -127,6 +129,7 @@ choice. Implicit comparison:
 | **Coq / Lean** | Proof-assistant grade, but heavyweight; alignment-checking should be lighter |
 
 **F# with HKT is the unique intersection** of:
+
 - Industrial ecosystem (.NET, Infer.NET)
 - Sound functional type system (ML lineage)
 - Human-readable (vs. Haskell density)
@@ -201,6 +204,7 @@ Infer.NET for BP/EP message passing.
 
 **F# is the .NET language with the type-system depth
 Infer.NET deserves**:
+
 - C# can call Infer.NET but doesn't express the
   underlying type structure as naturally
 - F# with HKT would let Infer.NET's factor-graph

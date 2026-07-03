@@ -14,6 +14,7 @@ The `[seam] verb noun [dependson …]` grammar (#6957/#6971), resolved by topo-o
 (#6984), is **universal** — *"very similar to everything else."* Three more domains collapse into it:
 
 ### 1. Sims: emulators + ROMs — and **sim is a special form of `test`** (#6958)
+
 - `test run emulator dependson cpu`, `test load rom:atari-2600/<title> dependson emulator` — emulators and ROMs
   are **nodes** with `dependson` edges (a ROM depends on its emulator; the emulator on its CPU/host). DarkHall
   (#6986) = the cell hosting them; ROMs (#6987) = signature-keyed pointer nouns. They aren't special — `seam
@@ -33,6 +34,7 @@ The `[seam] verb noun [dependson …]` grammar (#6957/#6971), resolved by topo-o
     is the plane; "sim" is its omniscient-DST mode.
 
 ### 2. Knowledge / curriculum = the same grammar (Khan-Academy-style)
+
 - **Prior-art entries are ZetaIds** (each reference a content-addressed node; the `reference-sources.json`
   entries, #6989).
 - **Human intellectual lineages are `dependson` edges** — who built on whom (Codd→…; the

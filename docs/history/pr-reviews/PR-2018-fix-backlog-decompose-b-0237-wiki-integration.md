@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - mark 081KQX9B50008QG0R003ZBBJT7 as decomposed and add child links
 - add 081KR2E4K0008QG0R00286HGNK for Wiki seed pages and Pages/Wiki boundaries
 - add 081KR2E4K0008QG0R002MFK6AW for Wiki sync mode and indexing validation
 - refresh docs/BACKLOG.md from the generator
 
 ## Checks
+
 - bun tools/backlog/generate-index.ts --check
 - git diff --check
 - npx markdownlint-cli2 docs/backlog/P1/081KQX9B50008QG0R003ZBBJT7-github-wiki-first-class-integration-2026-05-06.md docs/backlog/P1/081KR2E4K0008QG0R00286HGNK-github-wiki-seed-pages-and-boundaries-2026-05-08.md docs/backlog/P1/081KR2E4K0008QG0R002MFK6AW-github-wiki-sync-mode-and-indexing-validation-2026-05-08.md docs/BACKLOG.md

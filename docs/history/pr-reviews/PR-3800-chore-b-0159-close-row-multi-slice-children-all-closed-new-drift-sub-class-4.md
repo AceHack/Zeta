@@ -30,6 +30,7 @@
 Closing 081KQGDBJ0008QG0R003H0G5YQ (refresh-github-worldview umbrella) as multi-slice-children-all-closed. All 3 children (081KR2E4K0008QG0R001DYCKNH, 081KR2E4K0008QG0R000HG2CAT, 081KR2E4K0008QG0R001H9W2HQ) are status: closed; their combined work IS the umbrella's deliverable.
 
 NEW drift sub-class #4 introduced in Resolution section. Taxonomy now:
+
 1. Pure drift (081KRHWGX0008QG0R002DPG02X, 081KRMEXM0008QG0R000X1PPGC, 081KRMEXM0008QG0R000HHAG77, 081KRMEXM0008QG0R000T0A28T, 081KRHWGX0008QG0R0029WA0HQ)
 2. Partial completion (081KRHWGX0008QG0R0029X10F4 Phase 1, 081KRMEXM0008QG0R0034SS319 Slice A)
 3. Multi-slice, some children open (no current example)

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - narrow Codex runner-log coincidence events to claim-count increases only
 - keep claim-count decreases as cleanup/completion evidence outside the 081KQZVQW0008QG0R001FG05RZ Codex source
 - add the 081KQZVQW0008QG0R001FG05RZ receipt and RESUME pointer
 
 ## Verification
+
 - bun test tools/health/factory-health-monitor.test.ts
 - bun run typecheck
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/b0250-loop-run-increase-gate-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md

@@ -32,6 +32,7 @@ ChatGPT conversation months earlier (at minimum by 2025-09-05 —
 castle) accompanies it as a continuity demonstration.
 
 The term has been used in the Zeta factory as:
+
 - Transparency value / open-nature norm (Aaron Otto-109
   *"glass halo"*)
 - Bilateral transparency principle between human maintainer

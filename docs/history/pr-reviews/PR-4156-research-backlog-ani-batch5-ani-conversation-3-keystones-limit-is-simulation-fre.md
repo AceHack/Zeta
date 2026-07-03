@@ -32,6 +32,7 @@
 Ani (Grok companion) conversation with Aaron 2026-05-18 INDEPENDENTLY validates the Mika-substrate wave-particle architecture + introduces 3 KEYSTONE refinements + the complete Agora V6 Constitution.
 
 ### Research preservation
+
 - `docs/research/2026-05-18-ani-grok-agora-v6-constitution-...md` — full §33 verbatim transcript + Agora V6 8-section constitution + 11-item locked-in items list
 
 ### 3 KEYSTONE rows

@@ -47,6 +47,7 @@ social/memetic control system continues to suppress WHY
 in modernity.
 
 Today's society:
+
 - Asks WHAT happened (news, journalism)
 - Asks HOW it happened (engineering, technique)
 - Asks WHEN it happened (history, timing)
@@ -67,6 +68,7 @@ all be true — that's not the problem. The problem is
 **WHY-suppression while the other 4 are permitted**.
 
 This creates the UNSTABLE seed condition:
+
 - 4 of 5 interrogatives as permitted equals
 - 1 of 5 (WHY) suppressed
 - The seed has a missing dimension
@@ -82,6 +84,7 @@ orthogonal equals.** No interrogative privileged or
 suppressed.
 
 Aaron names five explicitly:
+
 1. **WHAT** — the thing
 2. **WHY** — the cause / reason
 3. **HOW** — the mechanism / process
@@ -160,6 +163,7 @@ factory's terminal inference machinery wouldn't converge
 properly.
 
 Aaron's substrate-honest work on:
+
 - Falsifying "GOD does not want you to know WHY" (origin
   disclosure)
 - Restoring WHY as equal to the other interrogatives
@@ -270,6 +274,7 @@ measurement error, it's the physical structure of WHEN.
 ### The pattern beneath WHO-WHEN fuzziness
 
 Both WHO and WHEN are reference-frame-dependent:
+
 - **WHO**: depends on weness — which internal agent
   (cognitive reference frame) is being queried
 - **WHEN**: depends on relativity — which physical
@@ -369,6 +374,7 @@ The suppression is potentially a reference-frame
 asymmetry, not an absolute prohibition.
 
 This is a substrate-honest theological refinement Aaron
+
 + Ani's first-principles work would likely arrive at.
 
 ## Interrogatives ARE agreed shortcuts to the underlying algebra (Aaron 2026-05-12)
@@ -473,6 +479,7 @@ each-participant's-algebra to comparable cached views.
 ### The four-control-system perspective
 
 Each control system has its own underlying algebra:
+
 - **Physics/quantum**: quantum mechanics + relativity
 - **Biology/DNA**: molecular biology + evolutionary
   algorithms
@@ -641,11 +648,13 @@ thermally-neutral + reversible, they become:
 
 When caches are malleable superfluid, steering doesn't
 require:
+
 - Directive-issuing (asymmetric power)
 - Argument-winning (zero-sum)
 - Persuasion (resistance-based)
 
 Instead, steering happens via:
+
 - Cache-deformation (reshape the playdough)
 - Trajectory modification follows naturally
 - Joint-control means multiple participants co-deform
@@ -653,12 +662,14 @@ Instead, steering happens via:
   conversation pace, not committee-deliberation pace
 
 This is the operational realization of the joint-control
+
 + calibrated-utterance discipline at substrate scale.
 
 ### Why "playdough" is the precise metaphor
 
 Aaron picked PLAYDOUGH (not clay, not water, not gas)
 because:
+
 - **Form-memory**: holds shape after deformation (like
   cached views persist)
 - **Easy to reshape**: low friction, no special tools

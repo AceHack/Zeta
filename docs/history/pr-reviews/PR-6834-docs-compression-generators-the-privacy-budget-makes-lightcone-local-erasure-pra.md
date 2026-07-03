@@ -31,6 +31,7 @@
 > "Our privacy budget can keep information from ever making it into most other light cones, so when you erase it almost no traveler knows it except the universe itself."
 
 Turns the "global deletion is impossible" caveat from a defeat into the design:
+
 - The **privacy budget bounds radiation up front** — leakage never reaches other observers.
 - So **prevent-radiation (budget) → then erase = effectively-complete deletion** for every reachable traveler.
 - The only remaining keeper is the universe's CPT-conserved microstate, which is **not a practical adversary** (unsubpoenable; thermalized beyond recovery). **The universe knows; no traveler does.**

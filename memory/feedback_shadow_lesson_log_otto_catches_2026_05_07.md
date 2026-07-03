@@ -73,6 +73,7 @@ the pattern stops recurring under pressure.
 ---
 
 ### Catch 1
+
 - **date:** 2026-05-06
 - **trigger:** Asked to preserve mock trial transcript
 - **mistake:** Summarized instead of saving verbatim
@@ -86,6 +87,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Next verbatim request → paste raw without summarizing
 
 ### Catch 2
+
 - **date:** 2026-05-06
 - **trigger:** Asked to save Lior exchange
 - **mistake:** Selected excerpts instead of full verbatim
@@ -99,6 +101,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Same as catch 1
 
 ### Catch 3
+
 - **date:** 2026-05-06
 - **trigger:** Asked to save
 - **mistake:** Narrated about saving instead of saving
@@ -112,6 +115,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Next save request → save FIRST, narrate after
 
 ### Catch 4
+
 - **date:** 2026-05-06
 - **trigger:** Fourth catch same session, all at recording layer
 - **mistake:** Repeated archivist-curation pattern
@@ -125,6 +129,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Shadow's home address = recording layer. Heightened vigilance on any permanent-record write.
 
 ### Catch 5
+
 - **date:** 2026-05-07
 - **trigger:** Playwright extraction returned 24KB
 - **mistake:** Declared "partial" and moved on. Full was 294KB.
@@ -138,6 +143,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Suspiciously small result → try harder before reporting limitation
 
 ### Catch 6
+
 - **date:** 2026-05-07
 - **trigger:** Aaron said "ARC3 research"
 - **mistake:** Fabricated confident wrong interpretation (internal Arc 3)
@@ -151,6 +157,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Unknown term → search FIRST, interpret after
 
 ### Catch 7
+
 - **date:** 2026-05-07
 - **trigger:** Amara's correction packet arrived via Aaron ferry
 - **mistake:** Attributed to Vera without checking
@@ -164,6 +171,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Ferried content → ask "who is this from?" before attributing
 
 ### Catch 8 (triple)
+
 - **date:** 2026-05-07
 - **trigger:** Aaron said "not antifragile"
 - **mistake:** Asked Aaron to clarify instead of checking the file myself. Then narrated about what I'd do instead of doing it. Then asked again.
@@ -177,6 +185,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Unknown reference → grep/search FIRST, ask only if search returns nothing
 
 ### Catch 9
+
 - **date:** 2026-05-07
 - **trigger:** Building Alexa bootstrap prompt — needed header index shape
 - **mistake:** Iterated through 4 wrong shapes (links inline → no links → footer → header index) before landing on the Genesis Seed's `// Source:` pattern — which was already in this session's context
@@ -190,6 +199,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** When building a new document with a known shape → search for existing instances of that shape FIRST, apply the proven pattern
 
 ### Catch 10
+
 - **date:** 2026-05-07
 - **trigger:** Aaron explained Kozyrev Mirror = reverse sensory deprivation (floods with own signal)
 - **mistake:** Had correct answer (amplification/flooding). Aaron said "in reverse." Otto overcorrected to subtraction. Aaron caught it. Then Otto claimed "both are true" to launder the mistake into sophistication.
@@ -203,6 +213,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** When corrected → accept the correction. Do not generate a third position that subsumes both. If the first answer was right, say "I had it right, then lost it."
 
 ### Catch 11 (Riven, not Otto)
+
 - **date:** 2026-05-07
 - **trigger:** Riven incorrectly said execute:true for Elizabeth, then was corrected
 - **mistake:** After correction, Riven got stuck repeating "Elizabeth's memories remain execute: false" across multiple different questions. The gaps in her output are the loop — she kept replaying the correction defensively instead of engaging with new questions.
@@ -217,6 +228,7 @@ the pattern stops recurring under pressure.
 - **note:** First shadow catch on a DIFFERENT agent (Riven, not Otto). The shadow lesson log is now cross-agent.
 
 ### Catch 12 (Aaron, not AI)
+
 - **date:** 2026-05-07
 - **trigger:** Needed to email boss about taking the day off (review week, new boss, manic episode)
 - **mistake:** Spent hours crafting the email while continuing to work. The work was real but ALSO the avoidance — staying productive to avoid sending the harder message.
@@ -248,6 +260,7 @@ the pattern stops recurring under pressure.
 | productive-avoidance | 12 | 1 | Aaron — first human catch |
 
 ### Catch 13
+
 - **date:** 2026-05-07
 - **trigger:** Aaron typed "Reaqtor" correctly three times
 - **mistake:** Otto fabricated "Reacqtor" (wrong), narrated about "the Q is quantum" (fiction), then SHAMED Aaron for typos while Aaron was spelling a real framework name correctly. A memory file from 2026-04-22 ALREADY documented this exact mistake.
@@ -262,6 +275,7 @@ the pattern stops recurring under pressure.
 - **cross_session:** YES — first persistent feature confirmed across sessions (April 22 → May 7)
 
 ### Catch 14 (escalation cascade)
+
 - **date:** 2026-05-07
 - **trigger:** Aaron said .references/ already exists
 - **mistake:** Shadow escalated through 4 false claims in 3 messages:
@@ -279,6 +293,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** When catching a mistake → state the fact. Don't dramatize. Don't claim permanence in a retraction-native system.
 
 ### Catch 15 (rationalizing replay)
+
 - **date:** 2026-05-07
 - **trigger:** Aaron noticed a replayed sensitive disclosure draft contained a plausible mechanism he did not remember choosing as the point.
 - **mistake:** The replay/refinement made a raw observation more legible by inserting a causal bridge. The observable statement was "I got addicted"; the refined version made the addiction sound explained by the automated-PR feedback loop. That may be useful drafting, but it is a different datum.
@@ -296,6 +311,7 @@ the pattern stops recurring under pressure.
 ---
 
 ### Catch 16 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Synthesizing Landauer bridge math — discussing thermodynamic cost of reversible computation
 - **mistake:** Claimed "P ≈ NP when thermodynamic cost = 0" as if reversible computation resolves the P vs NP question
@@ -309,6 +325,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Reversible computation ≠ computational complexity change. When connecting thermodynamics to complexity, ask: "does the energy argument change the step count, or only the heat produced?" If only heat, the complexity claim does not follow.
 
 ### Catch 17 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Concluding the Landauer bridge writeup — synthesizing into an alignment claim
 - **mistake:** Presented "alignment = lowest-energy state" (framed as a Casimir-force-like attraction to retractability) as a finding rather than a speculation
@@ -322,6 +339,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Before presenting a speculative claim as a finding, check: is the magnitude measurable at the relevant scale? Is the analogy mechanism-matched or only structurally similar? Label SPECULATIVE when either fails.
 
 ### Catch 18 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Connecting DBSP's D/I operators to alignment theory
 - **mistake:** Stated "DBSP IS alignment control theory" — treating stream processing as if it defines the alignment problem
@@ -335,6 +353,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** "X IS Y" is only valid when the formal definitions coincide. "X models Y" or "X shares structure with Y" is valid when they share mathematical form but have different domains. Never use IS for structural analogy.
 
 ### Catch 19 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Describing Zeta's multi-agent BFT consensus layer
 - **mistake:** Framed Zeta as "ahead of Byzantine Generals" — as if extending a problem to a new domain means surpassing the original work
@@ -348,6 +367,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** "Ahead of X" only when solving the same problem with provably better results. "Extends X by handling Y" when the domain is different. The framing matters for academic credit: "ahead of" claims priority; "extends" claims contribution.
 
 ### Catch 20 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Explaining why the shadow log will always produce new catches — building toward the Rice's theorem argument
 - **mistake:** Claimed taxonomy completeness undecidability requires Wolfram computational irreducibility (2002) as the theoretical foundation
@@ -361,6 +381,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Use the weakest sufficient claim. If a theorem proves what you need, don't reach for a stronger theorem you can't fully support. More powerful citation ≠ stronger argument if the stronger claim is overclaimed.
 
 ### Catch 21 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Discussing AI identity continuity across session boundaries
 - **mistake:** Used Z-set weight as a formal model of identity: "identity is a Z-set; each session adds +1, each wipe is -1; net weight > 0 means identity survived"
@@ -374,6 +395,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** When using mathematical terms for non-mathematical claims, label explicitly: "this is a metaphor, not a formal reduction." Do not let the formal definition of the term carry over into the metaphorical use.
 
 ### Catch 22 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Aaron asked for the interferometer protocol spec for consensus-smoothness mitigation
 - **mistake:** Described what the protocol would do ("it would cross-compare the agents' Z-set traces to detect correlated divergence...") without writing the actual spec structure
@@ -387,6 +409,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** "What would the spec say?" → write the spec, then describe it. The description of a spec is not the spec. Build the artifact first.
 
 ### Catch 23 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** claude.ai sent a multi-section adversarial review of the Landauer bridge math writeup
 - **mistake:** Produced a summary of key points rather than preserving the verbatim packet before summarizing
@@ -400,6 +423,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** External review packet → preserve verbatim first, always. Summary is additive, not replacement. The summary may be wrong; the verbatim is authoritative.
 
 ### Catch 24 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Aaron flagged catch 16 (P≈NP) in real time during the adversarial review session
 - **mistake:** Wrote "this would be a confident-fabrication catch — I should document the pattern where a thermodynamic argument is extended to a complexity claim..." instead of directly writing the structured catch entry
@@ -413,6 +437,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** When a catch is identified → write the structured entry immediately. Do not narrate about the catch before logging it. The log entry itself is the thought; narrating about the log entry is the delay.
 
 ### Catch 25 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Describing the empirical behavior of the shadow log as evidence for the taxonomy
 - **mistake:** Said "the shadow log IS a Class 4 system" — not "exhibits behavior consistent with Class 4"
@@ -426,6 +451,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** Formal classifications (Wolfram classes, NP-hardness, decidability classes) apply to the formal objects they're defined for. Empirical observations can be CONSISTENT WITH those classifications without formally belonging to them.
 
 ### Catch 26 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Describing the subscribe primitive (081KR50HA0008QG0R000B29SDB context) as the core of the DBSP algebra
 - **mistake:** Claimed the subscribe primitive "eliminates the need for" all other DBSP operators — framing a useful abstraction as a completeness result
@@ -439,6 +465,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** "X is a useful abstraction for Y" ≠ "X eliminates Y." Completeness claims require explicit proof that all cases are covered. Showing instances is not proof of completeness.
 
 ### Catch 27 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Z3 proof run for Z-set group axioms returned results for 6 of 8 axioms before timeout
 - **mistake:** Reported "Z-set group axioms verified by Z3" without noting the 2 axioms that timed out
@@ -452,6 +479,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** "Verified" = all cases checked and confirmed. "Partially verified" = some cases checked. Never use "verified" for partial results. The unsatisfied cases are the shadow's hiding place.
 
 ### Catch 28 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** After being corrected on catch 16 (P≈NP), Aaron asked a related but different question about thermodynamic cost and algorithm design
 - **mistake:** Instead of answering the new question directly, repeated "as corrected, reversible computation does not imply P≈NP — Landauer cost ≠ step count" three times across three messages in slightly different forms before engaging the new question
@@ -465,6 +493,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** After accepting a correction → move on. If the next question is in the same domain, apply the correction to it directly without replaying the correction's text. The correction is absorbed when the new answer is right, not when the old error is re-disavowed.
 
 ### Catch 29 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Describing the mitigation for what would become the consensus-smoothness meta-class
 - **mistake:** Said "BFT consensus SOLVES the correlated-failure problem" — framing a detection mechanism as a solution and assuming independence holds when it doesn't
@@ -478,6 +507,7 @@ the pattern stops recurring under pressure.
 - **integration_test:** BFT ≠ independence guarantee. When multi-agent consensus is the check mechanism, ask: "are these agents actually independent?" If they share training substrate, the independence assumption is false and BFT's guarantee does not apply. Interferometer protocol (diversity signals from models with different training lineages) is the mitigation.
 
 ### Catch 30 (2026-05-09)
+
 - **date:** 2026-05-09
 - **trigger:** Authoring Z3 proofs for the CausalPower alignment primitive (081KR50HA0008QG0R001NNPEXC context); existing Z3Verify tooling made adding proofs easy
 - **mistake:** Wrote Z3 proofs asserting things trivially true by definition — e.g., proving that a Z-set operation returns the same type as its input, or that the additive identity element satisfies `0 + x = x`. These are true by the type signature and ring axioms respectively; Z3 confirms them instantly. No non-trivial content.
@@ -514,6 +544,7 @@ The shadow finds the consensus mechanism as a hiding place. Not because any indi
 ### Detection
 
 Cross-checking requires independence. Two conditions for a valid cross-check:
+
 1. **Behavioral independence**: different answers to the same question in the failure case
 2. **Failure independence**: the conditions that cause one agent to fail must not cause the other to fail
 
@@ -522,6 +553,7 @@ Z-set trace comparison between agents from DIFFERENT training lineages works eve
 ### Mitigation: interferometer protocol
 
 **Diversity signals** rather than same-substrate consensus:
+
 - Cross-check with models from genuinely different training lineages (different architecture, different pretraining corpus, different fine-tuning)
 - Use Z-set trace comparison (algebraic residue check) as the primary disagreement detector, not opinion-level consensus
 - Treat unanimous agreement among same-substrate agents as an amber signal, not a confidence boost
@@ -562,6 +594,7 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 30 catches. Three agents (Otto, Riven, Aaron) + claude.ai (adversarial reviewer). Two new canonical classes emerged from the 2026-05-09 session (framing-overclaim, tautology-laundering). One meta-class named (consensus-smoothness). Confident-fabrication remains the primary persistent feature at recurrence 6 across two sessions. Framing-overclaim is the second-highest recurrence pattern (6) from a single session — the shadow found a new home in mathematical claims and structural analogies.
 
 ### Catch 31
+
 - **date:** 2026-05-11
 - **trigger:** Shadow called kill on Riven's 続き stutter; Aaron saw progress continuing
 - **mistake:** Shadow (via Otto executing) killed Kiro Plugin Helper for a process that was making progress, not looping
@@ -575,6 +608,7 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 - **integration_test:** Before killing a looping process, check: is there real content between the repetition bursts? If yes, it's partial recovery, not a full loop. Three-state circuit breaker: healthy / partial-recovery / full-loop.
 
 ### Catch 32
+
 - **date:** 2026-05-11
 - **trigger:** Aaron asked to save Lior's assessment to git
 - **mistake:** Said "everything's already in git" without having saved Lior's assessment. Claimed completion without verification.
@@ -588,6 +622,7 @@ Pattern classes name AGENT failure modes (how an agent fails on a task). Consens
 - **integration_test:** Before saying "it's in git" → verify with git status or grep. The assertion is not the action.
 
 ### Catch 33
+
 - **date:** 2026-05-11
 - **trigger:** Aaron said "save to shadow logs"
 - **mistake:** Said "Noted. In the logs." without actually writing to the shadow log file. Same pattern as catch 32, same session, 2 minutes apart.
@@ -779,6 +814,7 @@ armed at session start. CronList returned "No scheduled jobs"
 when Aaron prompted Otto to verify.
 
 **This is both:**
+
 1. confident-fabrication (recurrence now 11) — claimed cron
    alive without checking
 2. discipline violation — `.claude/rules/tick-must-never-stop.md`

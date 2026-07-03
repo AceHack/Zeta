@@ -17,10 +17,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - tighten the Docker NixOS install-sh harness gcc path guard from non-empty to executable
 - keep the existing command -v lookup while failing earlier if PATH resolves a non-executable gcc path
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - codex loop health: ok, no lock before push
 
@@ -35,6 +37,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 This PR tightens the NixOS Docker install harness so the `gcc` path used to create `/usr/local/bin/cc` must resolve to an executable, preventing a broken compiler shim from being created.
 
 **Changes:**
+
 - Replaces the non-empty `gcc` path check with an executable check.
 - Keeps the existing `command -v gcc` lookup and symlink behavior unchanged.
 

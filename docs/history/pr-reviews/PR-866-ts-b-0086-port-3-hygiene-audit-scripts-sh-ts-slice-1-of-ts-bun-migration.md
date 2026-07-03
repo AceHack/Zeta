@@ -32,6 +32,7 @@
 Lane B slice 1 of the TypeScript/Bun migration — three same-shape audit scripts ported from bash to TS on Bun.
 
 **Files**:
+
 - `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`
 - `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`
 - `tools/hygiene/audit-memory-references.{sh→ts}`

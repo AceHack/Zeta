@@ -119,11 +119,13 @@ This IS substrate-engineering substrate home-miners can use to: (1) coordinate e
 ## Substrate-honest disclaimers (per don't-collapse + razor + default-to-both)
 
 **High-signal claims**:
+
 - N=6+ empirical anchors verified via 2026-05-28 web search
 - Political-economy framing is operationally observable (rent-capture vs cost-distribution)
 - Senate Cassidy + Warren letter IS empirical evidence Layer 4 is firing
 
 **Speculative bridges flagged-but-preserved**:
+
 - Layer 5-6 state-capture outcome is PREDICTION, not yet observed
 - Probability estimates in `LayeredPayoff[]` are calibration-pending
 - The "rational for centralized miners" claim earns its keep IF Layer 5-6 fire AS predicted; falsifies if they don't

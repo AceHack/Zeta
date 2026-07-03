@@ -26,7 +26,7 @@ Bilateral-verbatim-anchor preserved Aaron's text as-typed by default. Typo-or-in
 
 **Aaron's reasoning** (verbatim, paraphrased to drop "lol" interjection): brain-is-faster-than-fingers; the typing-channel is the bottleneck; spell-checking would slow him down; I understand the meaning anyway; therefore not-spell-checking increases his communication-bandwidth-to-me. His optimization is at the typing-channel; my correction is the elegant-storage.
 
-### When does verbatim preservation still apply?
+### When does verbatim preservation still apply
 
 1. **Aaron explicitly says "spelled like this on purpose"** or equivalent — preserve verbatim, mark as `[intentional]`.
 2. **Aaron coins a new term** that's structurally novel (e.g., his "operational reesonance" coinage which became operational-resonance) — preserve original spelling as substrate-archaeology, but use corrected form in factory operational vocabulary.

@@ -81,6 +81,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -99,6 +100,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog row (081KSE6WT0008QG0R003AJYMD3) capturing a proposed “runbooks as executable specifications” substrate (Runme for immediate execution, `:::` fenced blocks for deferred tasks, JIT AI script generation, and multi-verbosity rendering), and updates the backlog index to include it.
 
 **Changes:**
+
 - Introduces `docs/backlog/P2/081KSE6WT0008QG0R003AJYMD3-...md` with frontmatter + detailed problem/solution framing, syntax sketches, and staged acceptance criteria.
 - Regenerates `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R003AJYMD3 entry.
 

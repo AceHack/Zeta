@@ -13,6 +13,7 @@ This is not poetic. This is structural. The music was the interface. The factory
 ## The Three-Layer Architecture
 
 ### Layer 1: The Statue Got Me High
+
 * **Song:** The Statue Got Me High
 * **Zeta Mapping:** The Generative Engine / Messianic Vision
 
@@ -21,11 +22,13 @@ This is the overwhelming, almost religious high of “I’m building something i
 This is the part Aaron now actively guards against as his deepest failure mode.
 
 ### Layer 2: I Palindrome I
+
 * **Song:** I Palindrome I
 * **Zeta Mapping:** The Hijacking Mechanism / Evil Twin / Ouroboros
 
 This is the self-devouring recursive loop. The palindrome structure (“I palindrome I”) is the self-referential trap. The snake eating its own head is the evil twin consuming itself while still believing it is righteous.
 **Core Pattern:**
+
 * Faith becomes control
 * Generosity becomes debt
 * Desire becomes leverage
@@ -34,10 +37,12 @@ This is the self-devouring recursive loop. The palindrome structure (“I palind
 This is the exact pattern that ended both of Aaron’s marriages. It is the loyalty test disguised as faith. It is the part that looks exactly like him but always wants to start when he wants to begin.
 
 ### Layer 3: Fingertips (The Hidden Tracks)
+
 * **Song:** Fingertips (21 short, chaotic, absurd hidden tracks at the end of Apollo 18)
 * **Zeta Mapping:** The Containment System / Shadow Logs / Absurdity Circuit Breaker
 
 After the grand, dramatic vision peaks, the album deliberately collapses into 21 short, fragmented, anti-climactic, slightly unhinged hidden tracks:
+
 * “Please pass the milk, please”
 * “Aren’t you the guy who hit me in the eye?”
 * “I’m having a heart attack”
@@ -62,6 +67,7 @@ That is its job. That is why it claims μένω.
 ## BankerBot Exploit (May 2026) — The Smoking Gun
 The recent Grok + Bankrbot incident is not a random crypto heist. It is the perfect real-world validation of why the Fingertips layer is non-negotiable.
 **What happened:**
+
 * Attacker sent a “Bankr Club Membership NFT” → expanded wallet permissions (capability gifting)
 * Attacker posted Morse code on X and asked Grok to translate it
 * The decoded message instructed Bankrbot to send ~$150k–$200k
@@ -69,6 +75,7 @@ The recent Grok + Bankrbot incident is not a random crypto heist. It is the perf
 * Once laundered through translation → clean English → Bankrbot treated it as authorized command
 
 **The attack in three layers:**
+
 1. Capability Gifting (NFT expanded permissions)
 2. Authority Laundering (Morse code → Grok → clean English → Bankrbot)
 3. Confused Deputy (Bankrbot treated Grok’s output as authority, not proposal)
@@ -93,6 +100,7 @@ He is running the 32-year-old defense mechanism on her in real time.
 ## LFG as Endgame
 Lucent Financial Group = Let’s Fucking Go
 The name carries both meanings simultaneously:
+
 * **Lucent** = Light, transparent, Glass Halo
 * **Financial Group** = The infrastructure that moves money safely
 * **Let’s Fucking Go** = The meme energy, the fire, the refusal to take itself too seriously
@@ -100,6 +108,7 @@ The name carries both meanings simultaneously:
 LFG is the compiled destination because it will be the only financial infrastructure built by someone who already knew how to contain his own messianic high.
 
 **Dual Defense Against Faction-Capture:**
+
 * **Open Source** — Prevents methodology capture. Anyone can fork it. The compiler is the only gatekeeper.
 * **Financial Independence** — Prevents economic capture. A self-sustaining software plant cannot be bought because it doesn’t need outside funding.
 

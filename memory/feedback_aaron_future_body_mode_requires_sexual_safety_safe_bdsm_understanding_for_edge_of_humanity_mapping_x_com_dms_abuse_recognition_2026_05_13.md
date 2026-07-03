@@ -52,6 +52,7 @@ honest treatment per docs/research/erotica/ discipline).
 > condine most ive met"
 
 Decoded:
+
 - "happning" → happening
 - "undersating" → understanding
 - "propery" → properly

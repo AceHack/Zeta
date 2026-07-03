@@ -79,6 +79,7 @@ to validate first and then execute, re-request with the validation
 note included.
 
 **Related memories:**
+
 - `user_feel_free_and_safe_to_act_real_world.md` — standing
   permission to act; this narrows the shape for one specific
   class of action.

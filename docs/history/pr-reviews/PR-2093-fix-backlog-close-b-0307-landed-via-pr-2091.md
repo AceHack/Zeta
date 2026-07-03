@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - Closes backlog row 081KR2E4K0008QG0R003CF4YHE (source-filter + recency resolver) — implementation already merged via PR #2091
 - Updates `docs/BACKLOG.md` index checkbox to `[x]`
 - Sets frontmatter `status: closed` on the per-row file
 
 ## Verification
+
 - `bun test tools/authorization/resolve-authorization.test.ts` — 17 pass, 0 fail
 - PR #2091 confirmed merged at 2026-05-08T15:35:49Z
 
 ## Test plan
+
 - [x] Resolver tests pass (17/17)
 - [x] Backlog index reflects closed status
 

@@ -41,4 +41,5 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Hygiene-history tick shard documenting a cold-boot autonomous-loop tick that fixed a Copilot P1 finding on PR #3722 (markdown code-span with literal backtick) and resolved its review thread.
 
 **Changes:**
+
 - Adds a new tick shard under `docs/hygiene-history/ticks/2026/05/16/0415Z.md` describing the wake state, fix landed, and dependency waits.

@@ -32,6 +32,7 @@ Adds `RoomBoundary` as the small source-owned connector over `RoomAdmission`, `G
 The new boundary gives rooms one typed surface for finite admission, earned privacy frosting, permission-gated traversal, and host-visible heat on refusal/backpressure. It does not become a runtime: admission algebra, visibility, traversal, and heat remain owned by their existing modules.
 
 Validation:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~RoomBoundaryTests
 - dotnet format --verify-no-changes
 - bun run preflight:quick

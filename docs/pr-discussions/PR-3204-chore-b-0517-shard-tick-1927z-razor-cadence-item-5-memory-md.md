@@ -33,6 +33,7 @@ Razor-cadence item 5 investigation: user-scope MEMORY.md is 242 lines / 66KB / 2
 This PR records a razor-cadence investigation into user-scope `MEMORY.md` index bloat and files 081KRHWGX0008QG0R0029X10F4 to track cleanup plus future mechanized auditing.
 
 **Changes:**
+
 - Adds a 1927Z hygiene tick shard documenting the investigation and findings.
 - Adds backlog row 081KRHWGX0008QG0R0029X10F4 for cleanup and audit-tool follow-up.
 
@@ -50,6 +51,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/081KRHWGX0008QG0R0029X10F4-memory-md-index-bloat-cleanup-cadence-2026-05-14.md:62**
+
 * P1 correctness: the proposed audit would miss the documented 25KB truncation mode if it only computes lines past 200. The existing loading-taxonomy memory says MEMORY.md loads the first 200 lines OR 25KB, whichever comes first, so the tool needs to report byte-cap risk as well as line-cap risk to avoid false negatives on large one-line entries.
 ```
 - Computes truncation risk (lines past 200)

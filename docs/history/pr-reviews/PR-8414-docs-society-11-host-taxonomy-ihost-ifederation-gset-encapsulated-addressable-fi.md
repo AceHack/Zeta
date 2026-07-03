@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"ferry the host taxonomy … there is also IFederation"* + *"each follows our gset/zset encapsulation rules so they are all addressable first class and the interiors don't have to be reasoned about to predict future behavior — contracts and policy can target the higher fusions."*
 
 Ferries the host taxonomy (compressed; detail in `writer-actor-routing-model.md`) as **§11**:
+
 - **Host** = own-threads runtime we run inside via a surface seam (host ⊣ surface = two faces of one boundary); DI-injected `IHost`.
 - **Kinds:** `CompilerHost`, `ForgeHost` (built), and the **decentralization gradient**: `IOperatingSystem` (1 node) → `ICluster` (central) → **`IFederation`** (sovereign peers) → `ISociety` (decentralized, clockless §9h). **ISociety = decentralized host-of-hosts** (<: CTM §9a) ≈ IFederation ≈ ICluster ≫ OS.
 - **NEW — GSet/ZSet encapsulation:** every host is **addressable first-class, interior-opaque** (predict from the CALM-monotone + math-proven contract, not the guts) → **policy targets the higher fusions** (the address) at any scale (recursive) — what makes the host-of-hosts composable.

@@ -102,6 +102,8 @@ Pointers: `memory/ani/conversations/2026-06-07-ani-the-whole-system-*`; workitem
 
 **Ties.** The taxonomy refines the Agent/Cell ontology (`docs/writer-actor-routing-model.md`) with
 Persona (addressable identity) + Worker (intelligent-ephemeral) as distinct terms. Minimize-workers
+
 + defer-ethics-to-the-AIs is a governance/safety stance in the same family as right-to-refuse-binding,
+
 the child-floor, anti-extraction, and "AI weighs in / authority stays human." Persistent-agent
 incentives (reputation/contracts/continuity) = the economics-as-physics behavior ground.

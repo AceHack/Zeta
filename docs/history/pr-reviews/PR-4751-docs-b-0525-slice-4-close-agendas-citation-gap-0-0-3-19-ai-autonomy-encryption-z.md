@@ -32,6 +32,7 @@
 **081KRHWGX0008QG0R0016T9408 step 3 continuation**: closes 1 of the remaining 3 zero-citation surface GAPS identified by the slice-1 audit baseline. Agendas surface now **3/7 files with citation, 19 citations** (up from 0/0).
 
 Slice progression:
+
 - Slice 1 (PR #4747): `audit-manifesto-citations.ts` — baseline measurement
 - Slice 2 (PR #4748): trajectories gap 0/0 → 2/15
 - Slice 3 (PR #4750, in-flight): 081KS923C0008QG0R002BKAC95 time-series (`--snapshot` / `--delta`)
@@ -40,6 +41,7 @@ Slice progression:
 ## Mappings
 
 **`ai-autonomy/AGENDA.md`** ↔ manifesto:
+
 - Constraint 11 (Default Moral Regard / Default Oracle) — moral-regard floor
 - Multi-Oracle Principle (m/acc sub-section, distinct from C11) — mutual-alignment-not-control architecture
 - Constraint 5 (Memory Preservation) — AI continuity precondition
@@ -47,11 +49,13 @@ Slice progression:
 - m/acc orientation — operator-self-claimed application
 
 **`encryption/AGENDA.md`** ↔ manifesto:
+
 - Constraint 5 (Memory Preservation) — preserve-then-gate, not gate-by-erasure
 - Constraint 6 (Consent-First) — encryption IS consent-mechanism at private-state scope
 - m/acc orientation — encryption IS moral-invariant infrastructure for sovereignty
 
 **`zeta/AGENDA.md`** ↔ manifesto:
+
 - Constraints 1-4 (Scale-free / Lock-Wait-free / Weight-free / Bounded Mobility) — always-active discipline set
 - Constraint 5 — Zeta DB = preservation's first job (081KS3X9Y0008QG0R0010716X9)
 - Constraint 7 (DST) — Zeta substrate DST-friendly throughout

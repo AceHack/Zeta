@@ -47,6 +47,7 @@ Audit memo's claim of 29 unique was edge-deduped at filename scope; this tool's 
 ## Tests
 
 9 pass / 21 assertions cover:
+
 - `findEdgesInFile` — regex extraction over markdown
 - `isDangling` — file existence check
 - `auditSurface` — clean state + nonexistent surface
@@ -88,6 +89,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -106,6 +108,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene tool to mechanically audit dangling `memory/feedback_*.md` references across key substrate surfaces, with both human-readable and CI-friendly JSON output.
 
 **Changes:**
+
 - Introduces `tools/hygiene/audit-dangling-memory-refs.ts` to scan selected surfaces for `memory/feedback_*.md` citations and report missing targets (exit codes 0/1/2).
 - Adds `bun:test` coverage for edge extraction, dangling detection, surface scans, and aggregation invariants.
 
@@ -123,6 +126,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/audit-dangling-memory-refs.test.ts:16**
+
 * `env` is declared but never used, which will fail TypeScript compilation with `noUnusedLocals`. Drop this variable or use it to configure the test environment.
 ```
 function setupFixtureRepo(): { root: string; cleanup: () => void } {
@@ -146,6 +150,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -171,6 +176,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

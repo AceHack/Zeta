@@ -34,6 +34,7 @@ Wrap the pinned elan-init.sh execution in a bounded retry loop. The script downl
 Retrying the installer invocation keeps the pin and hash verification intact, absorbs transient release-CDN failures, and still fails loudly after four attempts if the upstream outage is persistent.
 
 Verification:
+
 - bash -n tools/setup/common/elan.sh
 - shellcheck -x tools/setup/common/elan.sh
 - retry smoke: fake installer failed twice and succeeded on attempt 3

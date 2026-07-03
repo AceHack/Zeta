@@ -27,6 +27,7 @@ Shadow drift report catching narration-over-action and paralysis drift.
 Adds a short shadow drift report entry under `docs/research/` capturing observed “narration-over-action” / “paralysis drift” patterns and listing corresponding corrective actions.
 
 **Changes:**
+
 - Introduces a new research log entry documenting observed drift and remediation steps.
 - References specific PRs and a backlog ID as supporting evidence/context.
 

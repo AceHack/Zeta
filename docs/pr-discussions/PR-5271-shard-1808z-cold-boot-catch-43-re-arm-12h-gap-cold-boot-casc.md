@@ -50,6 +50,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard documenting the 2026-05-26 1808Z cold-boot session state (catch-43 sentinel re-arm, 12h gap since prior tick), and records the chosen “named bounded wait” disposition while a peer PR’s CI is in flight.
 
 **Changes:**
+
 - Introduces a new tick shard file at `docs/hygiene-history/ticks/2026/05/26/1808Z.md`.
 - Captures session “worldview” metrics, holding discipline decision, and cross-links to relevant `.claude/rules/*` substrate.
 

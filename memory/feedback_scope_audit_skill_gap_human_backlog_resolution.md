@@ -31,7 +31,7 @@ does **not** silently pick one. It either:
    Synchronous ask is fine when the human is in conversation;
    HUMAN-BACKLOG is the durable form when the answer can wait.
 
-# Why:
+# Why
 
 Aaron's three-message thread (2026-04-20), verbatim-anchored:
 
@@ -69,7 +69,7 @@ cleanly separated. He caught it. The memory now splits them
 explicitly. A scope-audit skill would have flagged that
 phrasing on write.
 
-# How to apply:
+# How to apply
 
 - **Factory-default bias (corrected same round).** Per
   `feedback_factory_default_scope_unless_db_specific.md`, the

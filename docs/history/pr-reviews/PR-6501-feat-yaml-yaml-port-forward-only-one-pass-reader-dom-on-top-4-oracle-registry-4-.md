@@ -38,6 +38,7 @@ A YAML reader owned across all four languages (TS/F#/C#/Rust), per the `bcl-inte
 - **Boundary** — hand-rolled default in all four; YamlDotNet (F#/C#) + `Bun.YAML` (TS) wrapped as a **differential oracle** (our reader's events vs the vendor's event parser agree); Rust hand-rolled-only (`serde_yaml` unmaintained).
 
 ## Verification (Tier-1)
+
 - **4/4 byte-identical** on 10 golden vectors (`tests/cross-verification/yaml`): TS≡F#≡C#≡Rust, all == fixture `expected` (independently deep-equal-checked). Fixture is JSON (bootstrap-avoidance — don't parse YAML to test YAML).
 - YamlDotNet differential **FULL** pass (F#/C#) — our forward-only reader matches the mature vendor's event stream on every vector.
 - Per-lang unit tests: TS 28, Rust 24, F# (Yaml) + C# (Yaml) facts; full suites green (F# 1127, C# 125), 0 regressions; `dotnet build -c Release` 0-warn; `cargo test` 0-warn.

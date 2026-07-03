@@ -29,6 +29,7 @@
 
 ## Summary
 Smallest safe slice of 081KR2E4K0008QG0R000Q45WMQ: `tools/playwright/github-ui/billing-reader.ts`
+
 - Reuses `withGitHubSession` from 081KR2E4K0008QG0R0031QR36N/081KR2E4K0008QG0R003RVDX91 auth+ snapshot pattern (no duplication).
 - Extracts Actions minutes used/limit (primary), best-effort storage/packages.
 - Explicit error paths: insufficient-permissions, page-not-found, parse guard.
@@ -38,6 +39,7 @@ Smallest safe slice of 081KR2E4K0008QG0R000Q45WMQ: `tools/playwright/github-ui/b
 The original 081KR2E4K0008QG0R000Q45WMQ spec was already S but contained implicit "full extraction" assumption. Re-decomposed to core Actions focus + error model as the atomic first step. Further children (storage extractors, test matrix, integration with cost-parity) deferred.
 
 ## Focused checks (worktree only, root untouched)
+
 - `bunx tsc --noEmit --ignoreConfig .../billing-reader.ts`: new code clean (errors only from pre-existing sibling auth.ts missing @types/node in isolated shell — matches pattern of other github-ui/*.ts).
 - `git status`: only the new file.
 - Build gate on root (pre-work): 0 warnings 0 errors.

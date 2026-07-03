@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - Add the missing newest-first memory/MEMORY.md pointer for the #2872 GPU-grain coordination memory file.
 
 ## Checks
+
 - bun tools/hygiene/audit-memory-references.ts --enforce
 - bun tools/hygiene/audit-memory-index-duplicates.ts --enforce
 - bunx markdownlint-cli2 memory/MEMORY.md
 - git diff --check
 
 ## Notes
+
 - Follow-up for #2872's merged non-required paired-memory warning.
 - Root checkout was not used for writes.
 

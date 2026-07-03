@@ -47,6 +47,7 @@ Co-Authored-By: Codex <noreply@openai.com>
 Adds a new architecture/documentation set under `docs/agentic-organization/` describing the “Agentic Organization” platform (runtime/orchestration model, hats/departments/tools, UI + observability concepts, and TS package strategy), and links it from `docs/README.md` for discoverability.
 
 **Changes:**
+
 - Introduces the Agentic Organization design document set (runtime layers, Work OS/release flow, always-on orchestration, UI/observability, cluster substrate, and build plan).
 - Documents integration boundaries across Oz (run orchestration), OpenZiti (transport), NATS, Temporal TS, Dapr Actors, Orleans, Hindsight, and an MCP gateway/policy layer.
 - Adds a new “Agentic Organization builder” entry to the docs audience index.
@@ -90,9 +91,13 @@ Copilot reviewed 14 out of 18 changed files in this pull request and generated n
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **agentic-organization/docs/AI_CLUSTER_SCAFFOLD_CONTEXT.md:42**
+
 * P1 (xref): This table calls `full-ai-cluster/k8s/applications/hat-system/operator-ts/` an "Important concrete" directory, but that path does not exist in the repo today (the hat-system tree currently has `operator/` only). Either remove it from the concrete-directory list or reword it as a planned/future location so readers don’t go looking for a non-existent path.
+
 **agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md:68**
+
 * P1 (xref): This mentions placing the app under `agentic-team/packages`, but there is no `agentic-team/` directory in this repository. If this is only a hypothetical option, consider rewording to “a new workspace under <path to be created>” or referencing an existing root location to avoid sending implementers to a nonexistent path.
+
 </details>
 
 ## General comments
@@ -124,6 +129,7 @@ Done in commit 2a025b3b: I merged latest `origin/main`, resolved the `docs/READM
 Updated in `be6baa330298b65d690cc7ae224a15b2120d6170` after reviewing PR #4960 with two focused subagent passes.
 
 What changed:
+
 - Made TypeScript a first-class consumer of the hat-system CRD substrate through shared typed CRD clients, watches, HatSwap codecs, and projection clients.
 - Added the polyglot operator contract: CRD YAML is canonical; Go remains the reference/reliability baseline; a future `operator-ts` is additive and must use the same CRDs.
 - Added the correctness guardrail: Go and TypeScript operators must share the same leader-election Lease or have an ADR-backed disjoint ownership partition. Two active writers on the same `HatBinding` lifecycle are a bug, not redundancy.
@@ -148,6 +154,7 @@ Validation: `git grep` finds no remaining `hermes-org` / `@hermes-org`; `docs/ag
 Updated in `7d6bbe015098472085c50cf1665b00430394e1e9`: added a canonical `agentic-organization/docs/AGENT_NATIVE_KNOWLEDGE_GRAPH.md` spec and wired it through the Organization docs.
 
 What this adds:
+
 - Graph/retrieval layer over task management, discussions, one-on-ones, team chats, meetings, decisions, docs, artifacts, runs, traces, skills, and memories.
 - Typed graph schema: `GraphNode`, `GraphEdge`, node/edge kinds, provenance/access/source/indexing envelopes.
 - Retrieval and context-pack contracts, including omissions, citations, policy basis, freshness, confidence, and graph query recipes.

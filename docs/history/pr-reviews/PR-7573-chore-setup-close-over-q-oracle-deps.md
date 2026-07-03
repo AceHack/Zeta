@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - wires `tools/setup/manifests/quantum` into macOS/Linux `install.sh` through opt-in `tools/setup/common/quantum.sh`
 - pins the Q# reference-oracle Python set: `qdk[azure]==1.29.1`, `qsharp==1.29.1`, `azure-quantum==3.10.0`
 - adds an Ace package + bundled registry entry for the same Q# oracle dependency surface, with hash/manifest sync tests
 - updates `docs/INSTALLED.md` with the opt-in quantum install path
 
 ## Verification
+
 - `bash -n tools/setup/common/quantum.sh tools/setup/macos.sh tools/setup/linux.sh`
 - `ZETA_INSTALL_QUANTUM=0 bash tools/setup/common/quantum.sh`
 - `ZETA_INSTALL_QUANTUM=1 mise exec -- bash tools/setup/common/quantum.sh`
@@ -44,6 +46,7 @@
 - `bunx prettier --check docs/INSTALLED.md tools/ace/registry.json tools/ace/packages/qsharp-reference-oracle-0.1.0.json tools/ace/qsharp-reference-oracle-package.test.ts`
 
 ## Note
+
 - `dotnet format --verify-no-changes` still reports pre-existing C# formatting/analyzer drift in unrelated files (for example `src/Core.Abstractions/*`, `src/Core.CSharp.DynamicValue/DynamicValues.cs`, `src/Core.CSharp.Yaml/YamlReader.cs`, and `tests/Tests.CSharp/Yaml/*`). I left that drift out of this installer PR.
 
 ## Outcome

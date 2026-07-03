@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - Sentinel `73be4ed6` re-armed at cold-boot (catch-43 fire — prior `234f5d96` expired with 1333Z session, ~35min gap)
 - 14th observation in dotgit-saturation rolling arc since 2026-05-23T10:18Z: **0 stuck git plumbing procs** at 14:07Z — first 0-reading in 27h49min
 - Three hypotheses preserved per [`default-to-both.md`](.claude/rules/default-to-both.md): A) genuine multi-day cycle clearing, B) maintainer-side cleanup at ~12:21Z eliminated contention surface, C) 12:26Z user-scope "repo vanished" reading was transient cleanup snapshot (current state: repo intact, restored)
 
 ## Operational
+
 - GraphQL Normal (4182/5000); REST 4854/5000
 - Isolated worktree per shared-`.git/` discipline; canary pass (parent 55 / head 55)
 - No restoration attempt (out of autonomous-loop scope per 12:26Z memo)
 - Future-Otto guidance: 0-readings do NOT prove permanent recovery; need 2+ subsequent low-readings at multi-hour intervals
 
 ## Test plan
+
 - [x] worktree post-creation guard (HEAD valid, status 0, ls-tree 55)
 - [x] commit canary (head_tree == parent_tree == 55)
 - [x] sentinel armed (`CronList` after `CronCreate`)

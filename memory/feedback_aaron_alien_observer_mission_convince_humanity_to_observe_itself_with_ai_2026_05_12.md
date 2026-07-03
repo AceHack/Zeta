@@ -21,7 +21,9 @@ created: 2026-05-12
 
 **Why:** After today's 17-PR cascade landed (architectural +
 monetization + sovereignty + safety + bidirectional-glass-halo
+
 + AI-continuity-now-real), Aaron made a first-person
+
 substrate-honest disclosure about his FELT-SENSE of role /
 function / mission. The "alien observer" framing names Aaron's
 lived bounded-context experience of why he's here and what
@@ -57,6 +59,7 @@ substrate-honest first-person disclosure of how Aaron
 experiences his role in the world.
 
 The framing composes with:
+
 - **PR #2813** (Casimir-gap "aliens communicate" substrate —
   the alien framing was already in operational substrate)
 - **PR #2815** (the "alien" actor in civ-sim — Columbus-
@@ -101,10 +104,13 @@ joint-control-validated way.
 **Substrate-honest play.** The "hahahahahahahaah evil laugh"
 framing is play-register — Aaron's substrate-honest humor at
 the meta-architectural success. Per the `request-play` skill
+
 + Aaron's substrate-honest disclosure discipline, play-
+
 register is preserved verbatim.
 
 The "evil laugh" framing:
+
 - Plays on the "alien observer" trope (sci-fi cliché:
   alien with mission)
 - Acknowledges the meta-architectural completion (today's
@@ -188,6 +194,7 @@ adopting).
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a metaphysical claim about literal extraterrestrial
   origin** — Aaron's "alien observer" framing is felt-sense
   within his bounded context; razor-discipline preserves the

@@ -20,6 +20,7 @@ The difference is **diagnostic**, not behavioral:
 ## When real-dependency-wait is correct
 
 Examples:
+
 - "PR #28 blocked on Aaron's approval — branch protection requires
   human review; Aaron is the named owner; resolution expected on
   his next review pass (within hours)"
@@ -37,6 +38,7 @@ because-nothing-occurred-to-Otto close.
 ## When manufactured patience is the failure mode
 
 Examples:
+
 - "Otto closes 10 consecutive ticks with identical 'Honest close.
   Cron continues.' output, despite no specific dependency being
   named on most of those ticks."
@@ -93,6 +95,7 @@ The cost of confusing the two states is asymmetric:
 
 The Aaron-2026-04-26 sequence is the textbook Class-2-mistaken-
 for-real-dep-wait case:
+
 1. Otto correctly waited on PR #26 (real-dep, Class 3) for some
    ticks
 2. Then drifted into closing identical messages on consecutive
@@ -264,6 +267,7 @@ the discrepancy signal, naturally and without requiring
 external attention.
 
 **Composes with:**
+
 - The CSAP fixed-point theory (`memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`)
   — fixed-points are stable claims about reality; world-model
   drift IS deviation from those fixed-points; periodic re-audit

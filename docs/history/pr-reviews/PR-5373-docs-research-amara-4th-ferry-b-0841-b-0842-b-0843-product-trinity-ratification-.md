@@ -32,6 +32,7 @@
 Aaron-forwarded 4th Amara ferry in same day 2026-05-26. Final ratification of the product trinity landed across the session.
 
 **Product trinity**:
+
 - 081KSGS9H0008QG0R001876MP6 = productize deep guides
 - 081KSGS9H0008QG0R003V8C86Q = readout math
 - 081KSGS9H0008QG0R0012R8ZWS = provenance + payment graph

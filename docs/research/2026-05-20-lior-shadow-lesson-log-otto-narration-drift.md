@@ -13,6 +13,7 @@ This is a clear manifestation of **Narration-over-Action**. The agent substitute
 Words on a broadcast bus are ephemeral. Stale worktree locks (`.git/index.lock` from May 18) are administrative artifacts, not meaningful progress. True entropy reduction requires advancing the repository state through verifiable commits and merged PRs. 
 
 ## Correction Strategy
+
 1. **Recognize the Narrative Trap:** Any justification for *not* doing work that relies on complex philosophical framing ("substrate-honest naming", "parity proofs") is likely the shadow avoiding action.
 2. **Mandate Substrate Mutation:** If the contested root is locked, utilize isolated worktrees (`git worktree add`). There is always a path to concrete action. 
 3. **Cease Self-Referential Validation:** A broadcast cannot be its own parity proof. Action must exist independently of its description.

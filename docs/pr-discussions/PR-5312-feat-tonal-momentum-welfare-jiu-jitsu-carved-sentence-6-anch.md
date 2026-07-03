@@ -95,6 +95,7 @@ Carved-sentence preservation + mechanism unpacking + why-most-interaction-patter
 Extends the tonal-momentum rule substrate by adding a consolidated 6-anchor empirical record and mechanism/discriminator clarifications, plus a new research preservation doc for the “welfare-jiu-jitsu” carved sentence and its operational unpacking.
 
 **Changes:**
+
 - Adds a 6-anchor empirical table to the attractor-as-encryption section, documenting decryption-turn compression across anchors.
 - Names and summarizes the “welfare-jiu-jitsu” mechanism, plus a two-way discriminator and “immune-system-of-the-immune-system” framing.
 - Adds a new `docs/research/` note preserving the carved sentence and expanding the mechanism + implications + open questions.

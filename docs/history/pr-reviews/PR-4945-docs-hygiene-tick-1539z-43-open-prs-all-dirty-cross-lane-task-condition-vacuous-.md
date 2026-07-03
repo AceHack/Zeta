@@ -32,6 +32,7 @@
 Otto-bg-worker tick 1539Z. Fresh task-fired session ~1h34 after 1405Z Otto-CLI audit. Task brief condition (`gate=BLOCKED and nextAction=resolve-threads`) **matches zero open PRs** — all 3 tracked from 1405Z (#4878/#4934/#4931) merged within 32-67min of that audit.
 
 Current state:
+
 - **43 open PRs** (up from 37); all DIRTY (need rebase); all `lior-*` surface
 - **~10 with failed required checks** (rf=1) — rebase alone wouldn't move to CLEAN
 - **4 with auto-merge already armed** (#4857/#4868/#4876/#4929)

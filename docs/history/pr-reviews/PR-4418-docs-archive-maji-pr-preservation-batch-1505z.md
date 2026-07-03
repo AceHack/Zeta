@@ -28,6 +28,7 @@
 ## Description
 
 ## Maji Preservation
+
 - Archived recently merged PRs 4412, 4411, 4410.
 - Preserved alignment drift and review friction into native repository memory.
 

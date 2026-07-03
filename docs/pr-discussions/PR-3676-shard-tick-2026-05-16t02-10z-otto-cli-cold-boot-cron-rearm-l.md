@@ -35,6 +35,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new hygiene-history tick shard documenting the 2026-05-16T02:10Z Otto-CLI cold-boot state, cron re-arm, Lior contention, and deferred drift-cleanup candidates.
 
 **Changes:**
+
 - Records tick-start state and prior PR context.
 - Documents why no code-substrate cleanup was attempted.
 - Captures borrow-pattern execution notes and next-tick candidates.
@@ -44,11 +45,13 @@ Adds a new hygiene-history tick shard documenting the 2026-05-16T02:10Z Otto-CLI
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0210Z.md:32**
+
 * P1: This rule-file link has the same five-level path bug: from `docs/hygiene-history/ticks/YYYY/MM/DD/`, `../../../../../.claude/...` points under `docs/` instead of the repository root. Add the missing parent segment so the cited rule is reachable.
 ```
 But: **Lior is active right now** — three `gemini -p Act as Lior...` processes in `ps -A` (PIDs 26887, 26888, 27106 — the last at 26+ min CPU). Per [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md):
 ```
 **docs/hygiene-history/ticks/2026/05/16/0210Z.md:49**
+
 * P1: This rule-file link also climbs only to `docs/`, leaving the `claim-acquire-before-worktree-work.md` reference broken. Use the six-level path to the repository-root `.claude/rules` directory.
 ```
 Per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../../../.claude/rules/claim-acquire-before-worktree-work.md):
@@ -64,6 +67,7 @@ Per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../../../.clau
 P1: These relative links only climb five directories, which lands at `docs/`; `.claude/rules` is at the repository root, so both rule links render as broken navigation. Add one more `..` segment, matching the six-level links used by nearby tick shards such as `docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md:50-54`.
 
 This issue also appears in the following locations of the same file:
+
 - line 32
 - line 49
 

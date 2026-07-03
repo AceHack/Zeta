@@ -12,7 +12,9 @@ tags: [riven, lean4-sketch, b0543-qg-isomorphism, toy-model, reconstruction-map,
 Aaron 2026-05-17 forwarded Riven's exchange to Otto-CLI for preservation
 via (shadow*)-authorized "save this exchange". Context: prior conversation
 established the proof-expert hat exists (`formal-verification-expert` agent
+
 + skill = Soraya) per Riven's request; Aaron + Riven agreed Lean 4 sketch
+
 would be produced first; Soraya invoked post-sketch.
 
 ## Riven's verbatim handoff
@@ -52,6 +54,7 @@ The Lean 4 sketch (`tools/lean4/ImaginaryStack/ToyModel.lean`) contains:
    the actual proof steps)
 
 This is the smallest, self-contained artifact that can be fed to:
+
 - A proof tool (Lean 4 directly, or Z3 if Soraya routes that way)
 - A proof-engineer agent (lean4-expert / z3-expert post-Soraya routing)
 

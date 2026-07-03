@@ -48,6 +48,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a reusable hygiene-audit lifecycle template for turning recurring repository hygiene defects into scanner-backed CI gates.
 
 **Changes:**
+
 - Documents the 7-step audit pattern from discovery through maintenance.
 - Adds worked examples for §33 migration xrefs and tick-shard relative-path audits.
 - Captures guidance on baseline strategy, scanner-quality pitfalls, and schema validation.

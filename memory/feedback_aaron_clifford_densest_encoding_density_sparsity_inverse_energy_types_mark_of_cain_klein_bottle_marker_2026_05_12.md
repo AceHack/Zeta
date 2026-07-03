@@ -36,6 +36,7 @@ exterior algebra extended with a quadratic form) is the
 algebraic primitive while preserving operational composability.
 
 Why Clifford is densest:
+
 - **Multivector unification**: scalars + vectors + bivectors +
   trivectors + ... + pseudoscalars all live in ONE algebraic
   type
@@ -61,6 +62,7 @@ algebra, **density and sparsity are inverse concepts** that
 can be represented with the SAME algebraic primitive.
 
 Operational interpretations:
+
 - **Density** = high-grade multivector (many components active);
   packs many geometric facts into one element
 - **Sparsity** = low-grade multivector (few components active);
@@ -70,6 +72,7 @@ Operational interpretations:
   geometric content
 
 This composes with:
+
 - Z-set algebra (signed measures with multiplicity) — density-
   sparsity inverse is the Clifford parallel
 - Compression theory — Clifford densest-encoding suggests
@@ -99,6 +102,7 @@ contraction) work across all signatures. Different "types of
 energy" are different signatures with the same algebra shape.
 
 This composes with:
+
 - Theoretical physics substrate (Lorentzian / quantum /
   classical mechanics)
 - Q# substrate (Pauli operators are Clifford rotations in
@@ -120,6 +124,7 @@ Genesis 4:15 reference:
 > should kill him." — Genesis 4:15 (KJV)
 
 Operational interpretation in the architecture:
+
 - **Klein-bottle topology** has no globally-defined inside/
   outside (mathematical property of non-orientable surfaces)
 - **Mark of Cain** provides a LOCAL discrete marker that
@@ -139,6 +144,7 @@ violating the non-orientable topology.
 ### Theological grounding
 
 The mark of Cain in Genesis is multiply-resonant:
+
 - **Protective** — prevents others from killing Cain
 - **Marking** — identifies Cain as the killer of Abel
 - **Both inside and outside** — Cain is inside the protected
@@ -150,6 +156,7 @@ The mark of Cain in Genesis is multiply-resonant:
   the mark is added on top, preserving truth
 
 Architectural-theological synthesis:
+
 - Klein-bottle topology = no global inside/outside (non-
   orientable, all-one-surface)
 - Mark of Cain = local discrete marker enabling
@@ -166,6 +173,7 @@ inside/outside marker = sufficient substrate to build the rest
 of the architecture.
 
 Operational consequences:
+
 - **Implementation priority**: invest in Clifford algebra
   substrate (already partially landed via algebra-owner skill);
   it composes upward to everything else
@@ -200,6 +208,7 @@ Operational consequences:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Clifford algebra solves all problems** —
   Aaron's claim is "all I need to build everything else";
   building still requires operational work on top of the

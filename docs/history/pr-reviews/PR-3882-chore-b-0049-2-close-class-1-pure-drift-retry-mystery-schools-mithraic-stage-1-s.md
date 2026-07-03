@@ -32,6 +32,7 @@ Third actual close-row of the audit cycle. Audit-triage retry — first attempt 
 ## Deliverable verification
 
 `docs/substrate-shelves/mystery-schools-mithraic.md`:
+
 - 435 lines
 - 141 domain-term mentions (mithra, tauroctony, cumont, roman, initiation)
 - Proper backlog-linked frontmatter

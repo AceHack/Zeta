@@ -71,6 +71,7 @@ Per Claude.ai's exact framing:
 This file IS that bucket landing.
 
 **The hypothesis is NOT promoted to seed-layer canon.** It is:
+
 - Filed under `docs/research/` (the candidate-bucket per the architecture)
 - Marked CANDIDATE explicitly
 - Available for tomorrow's discussion when Aaron is rested

@@ -79,6 +79,7 @@ Covers: arg parsing edge cases (= in value, missing =, empty id/source) + value-
 Adds a new pure-TS credential “bake” handler pipeline for 081KSKBP80008QG0R003AX2A69.10, covering CLI arg parsing (`<id>=<source>`), value-source resolution (literal / `@file` / `env:VAR`), and per-credential validation, with an accompanying acceptance test suite.
 
 **Changes:**
+
 - Introduces `parseBakeCredArg`, `resolveValueSource`, and `resolveBakeCred` plus a default per-cred handler registry (PAT / JSON / SSH pubkey / deferred host keys).
 - Adds 60 Bun tests covering parsing edge cases, source resolution, per-type validation, and end-to-end pipeline behavior.
 

@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - add post-rollout telemetry improvement outcome evaluation
 - emit durable reputation_outcome_observed evidence for the proposing optimizer agent/hat
 - record the Phase 2.9 telemetry optimizer learning-loop checkpoint in the production autonomy CA
 
 ## Review
+
 - Subagent review attempted but blocked by platform thread limit: `collab spawn failed: agent thread limit reached`.
 - Local review covered the telemetry improvement optimizer, reputation event substrate, export surface, and focused regression tests.
 
 ## Verification
+
 - `node --experimental-strip-types --test packages/application/test/telemetry-improvement-optimizer.test.ts packages/application/test/reputation-posterior.test.ts`
 - `npm run typecheck`
 - `npm test`

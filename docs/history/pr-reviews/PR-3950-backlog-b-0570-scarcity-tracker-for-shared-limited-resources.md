@@ -38,6 +38,7 @@ The 2026-05-16 session demonstrated the failure mode in real time: thread resolu
 ## Mitigation axes (sibling rows)
 
 The row's mitigation-axes table identifies 3 orthogonal axes; sibling rows file follow-on work:
+
 - **081KRQ1AB0008QG0R0038VQJZ0** — GitHub App for factory automation (separate rate-limit pool; primary mitigation)
 - **081KRQ1AB0008QG0R000GZEMCR** — LFG GitHub tier audit (XS effort; Enterprise = 3× per-user headroom for free if already paid)
 - Per-user-account partition (e.g., Addison's account) — discretionary, no row

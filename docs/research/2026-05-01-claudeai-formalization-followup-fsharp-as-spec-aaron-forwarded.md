@@ -250,6 +250,7 @@ Per the second letter, the order to pursue formal-verification work going forwar
 ### The pirate-not-priest discipline applied to language choice
 
 F# doesn't get a pass for being the spec; it has to *earn* spec-status by being the language with the right combination of:
+
 - Type system (Hindley-Milner, ADTs, pattern matching) → translates cleanly to Lean
 - Community formal-verification ecosystem (Lean compatibility) → spec verifies mechanically
 - .NET ecosystem (C# port natural) → spec lowers to C#

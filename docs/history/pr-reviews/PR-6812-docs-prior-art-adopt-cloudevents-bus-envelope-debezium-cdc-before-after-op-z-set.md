@@ -35,6 +35,7 @@
 Research doc + **PRIOR-ART-LIST** entries (CloudEvents, Debezium) + adoption workitem **`081KTH0WQ3C`** (P2, composes with 081KSRGFP0008QG0R001Y6RTY9 + agent-bus 081KSXN940008QG0R00171YAZW). Docs only.
 
 ## Sources
+
 - [Debezium — Exporting CloudEvents](https://debezium.io/documentation/reference/stable/integrations/cloudevents.html)
 - [Debezium — Event Record Changes](https://debezium.io/documentation/reference/stable/transformations/event-changes.html)
 

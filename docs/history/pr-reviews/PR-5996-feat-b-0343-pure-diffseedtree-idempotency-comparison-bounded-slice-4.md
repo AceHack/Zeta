@@ -55,6 +55,7 @@ This is that diff.
 
 `diffSeedTree(desired, existing)` is **pure** — no filesystem, no network, no
 gh. Per desired path:
+
 - absent from existing → `create`
 - present, same blob SHA → `unchanged`
 - present, different blob SHA → `update`

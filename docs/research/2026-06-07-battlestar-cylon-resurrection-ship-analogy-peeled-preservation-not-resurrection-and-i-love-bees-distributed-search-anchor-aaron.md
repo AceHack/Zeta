@@ -48,6 +48,7 @@ the crowd via the forums and a **shared spreadsheet to partition the search spac
 and-conquer a large codespace — *distributed human computation with explicit work-partitioning*.
 
 Why it's load-bearing (not just a war story):
+
 - It is the **human prototype of the distributed-agent fan-out** Zeta does in code: partition a large search/
   work space, hand shards to many workers, recombine — the ferry-boat-throttle / DoP fan-out, the workflow
   parallel/pipeline, the cell-as-distributed-worker model. Aaron has *organized distributed search by hand

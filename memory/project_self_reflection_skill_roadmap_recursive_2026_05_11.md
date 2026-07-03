@@ -38,6 +38,7 @@ type: project
 **The recursive property:**
 
 The self-reflection skill applies to itself. Each pass:
+
 - Reflects on effectiveness of previous improvements
 - Discovers new improvement axes
 - Adds them to the skill

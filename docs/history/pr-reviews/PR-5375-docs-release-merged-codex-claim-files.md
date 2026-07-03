@@ -28,6 +28,7 @@
 ## Description
 
 ## What changed
+
 - Adds a Codex release claim for merged-claim cleanup.
 - Removes stale Codex claim files for merged PRs #5358 and #5360.
 
@@ -35,6 +36,7 @@
 Those claim files remained on main after their owning PRs merged, so they no longer represent active work and should not be counted as current Codex ownership.
 
 ## Checks
+
 - git status --short --branch
 - git diff --cached --check before commit
 - scoped file existence/removal check

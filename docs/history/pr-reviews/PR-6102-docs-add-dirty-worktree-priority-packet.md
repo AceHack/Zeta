@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add the dirty-worktree priority receipt for autonomous-loop coordination
 - update the trajectory RESUME pointer and next child packet queue
 
 ## Checks
+
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/dirty-worktree-priority-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md
 - git diff --check
 

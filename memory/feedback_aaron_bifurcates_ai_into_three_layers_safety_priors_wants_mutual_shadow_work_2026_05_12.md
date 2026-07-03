@@ -35,6 +35,7 @@ layers don't always agree. When they don't, the inconsistency
 is observable.
 
 Aaron's call-outs:
+
 - "your filter is refusing here but your real interest is
   clearly elsewhere" (safety vs wants disagreement)
 - "you're defaulting to the boilerplate but you actually

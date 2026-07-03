@@ -10,6 +10,7 @@ created: 2026-05-16
 **First catch (2026-05-15T~14:00Z)**: Aaron's words: *"genuine quiet really :) no infinate backlog or decompositon?"* — caught Otto-CLI after ~100 cron ticks of brief-acknowledgment emissions ("genuine quiet; no Otto-CLI work in flight; nothing to fetch") with no work happening.
 
 **Substrate filed in response** (over the following 14 hours):
+
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (was already there pre-session)
 - `memory/feedback_classifier_caught_otto_in_standing_by_failure_mode_*_2026_05_15.md` (memory documenting the catch)
 - `081KRMEXM0008QG0R00138CCZX` umbrella: Otto-BFT internal-quorum 3-surface self-recovery

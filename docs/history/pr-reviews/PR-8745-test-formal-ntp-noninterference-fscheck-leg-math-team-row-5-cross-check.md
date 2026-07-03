@@ -30,6 +30,7 @@
 The **FsCheck cross-check leg** for math-team **row 5** (NTP noninterference) over the real `MintPanel` renderer: the Zeta-NTP display clock (`MintClock` = soft phase + UTC ± uncertainty) is a **display-only channel** and never flows into the minted NFT content — entropy-quarantine, discipline #13.
 
 `NtpNoninterference.Tests.fs` (4 tests, 4/4 green, verified locally):
+
 - **noninterference** — varying the render clock changes ONLY the `<div class="clock">` line; cards + grounding are byte-identical (`stripClock page1 = stripClock page2`)
 - **renderCard is a pure function of the link** — no clock input
 - **the card carries no clock markers** (phase/UTC/±uncertainty never appear in minted content)

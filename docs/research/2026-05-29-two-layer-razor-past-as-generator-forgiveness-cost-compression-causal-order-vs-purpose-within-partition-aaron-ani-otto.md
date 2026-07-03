@@ -84,6 +84,7 @@ generator-fold).
 The tempting overclaim — *"this is how the universe never runs out of space: it
 stores history as generators, not data"* — is a **god-tier unification claim**
 about physical reality and is **razored OUT** (per `.claude/rules/razor-discipline.md`
+
 + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`).
 
 **What survives the razor** (the operational claim): *we are designing a system in

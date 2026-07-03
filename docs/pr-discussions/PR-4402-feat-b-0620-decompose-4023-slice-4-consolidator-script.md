@@ -34,6 +34,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -52,6 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new per-row backlog file for 081KRQ1AB0008QG0R0000AMJ5S slice 4, capturing the intended scope and acceptance criteria for an inventory consolidator script as part of decomposing the larger 081KRQ1AB0008QG0R0000AMJ5S / PR #4023 effort.
 
 **Changes:**
+
 - Introduces a new backlog slice row describing `tools/inventory/consolidate.ts` responsibilities.
 - Adds initial acceptance checklist items (adapter enumeration, dedupe, unified output shape).
 
@@ -69,6 +71,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

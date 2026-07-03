@@ -30,6 +30,7 @@
 ## Why
 
 We need to promote the hierarchical planning algorithm and the homoiconic expression reification framework from proof-of-concept tests to production-wired execution and compile-time checked theorems. This fulfills targets §B #8467 and B-0170/B-0171:
+
 1. **Production Hierarchical Planning**: Migrates the 2-level planner from block grids to actual CHIP-8 ROM execution state space, validating that emergent co-empowered block navigation explores fewer states than flat search.
 2. **Bonsai Expression Verification**: Formalizes and proves the identity round-trip `apply(reify x) = x` in Lean 4, backed by randomized FsCheck tests, providing a mathematically verified foundation for our homoiconic state representation.
 3. **Formal Specs Integration**: Integrates all outstanding TLA+ specs into the TLC runner test suite.
@@ -37,6 +38,7 @@ We need to promote the hierarchical planning algorithm and the homoiconic expres
 ## What
 
 ### 1. Hierarchical Planning on CHIP-8 ROM
+
 - Custom 44-byte navigation ROM implementing a $4 \times 4$ coordinate space.
 - Homoiconic gist-unpacking using `DynamicValue` translated to executable predicates.
 - Emergent level selection via `leastActionSelect` based on description cost estimation.
@@ -44,14 +46,17 @@ We need to promote the hierarchical planning algorithm and the homoiconic expres
 - Explicit propagation of budget starvation uncertainty.
 
 ### 2. Lean 4 & F# Bonsai expression isomorphism
+
 - Inductive types and verified theorems in `Bonsai.lean` under `lake build`.
 - Mirror oracle implementations `reify` and `apply` in `Bonsai.fs`.
 - Bounded-depth random property-based tests in `Bonsai.Property.Tests.fs` using FsCheck.
 
 ### 3. TLA+ Spec Integration
+
 - Added all outstanding TLA+ specifications (consensus, harm horizons) into TLC runner tests.
 
 ### 4. Verification
+
 - All 10 preflight gate checks passed (`bun run preflight`).
 - Lean 4 proof verification completed with zero warnings/errors (`lake build`).
 

@@ -83,7 +83,9 @@ Aaron preserved the canonical insight:
 > *"this is something background services should walk"*
 
 Translation: the disciplines I keep canonizing as memory files
+
 + rules need to become MECHANIZED. Per
+
 `.claude/rules/encoding-rules-without-mechanizing.md`:
 
 > "Encoding rules without mechanizing them produces a memory of

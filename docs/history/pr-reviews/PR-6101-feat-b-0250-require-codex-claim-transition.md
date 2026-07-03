@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - require a Codex claim-count transition before runner-log forward-gate completions emit 081KQZVQW0008QG0R001FG05RZ Codex coincidence events
 - keep open-PR-only churn visible in runner logs/lane-runway health without treating it as Codex source evidence
 - add regression coverage and a trajectory receipt for the claim-gate slice
 
 ## Focused checks
+
 - `bun test tools/health/factory-health-monitor.test.ts`
 - `bun run typecheck`
 - `bun run lint:markdown docs/trajectories/autonomous-loop-coordination/b0250-loop-run-claim-gate-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md`

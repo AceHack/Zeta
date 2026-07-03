@@ -12,10 +12,12 @@
 # (the principle: no single job holds BOTH privilege AND untrusted execution; the
 # artifact is the trust boundary — this job emits DATA, the apply job consumes DATA).
 #
-# Mechanical only (no intelligence): markdownlint-cli2 --fix (the markdownlint
-# required gate; cleanly autofixable), at the same mise-pinned version as gate.yml
-# (via install.sh) for version parity. prettier --write is deferred to a follow-up
-# (see the step comment below) — not a required gate, and needs proper scoping.
+# Mechanical only (no intelligence): the repo's safe MD032/MD026 fixer
+# (`src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts`). Full
+# `markdownlint-cli2 --fix` is intentionally NOT used — MD018 turns line-leading
+# `#4 (item ref)` into an ATX heading, and MD037 mangles math/star prose
+# (`ρ* and` → `ρ*and`). Those rules stay as gate *checks*; only blank-line and
+# heading-punctuation heals are applied. prettier --write remains deferred.
 
 name: lint-autofix
 
@@ -81,15 +83,25 @@ jobs:
             sleep "$backoff"
           done
 
-      - name: markdownlint --fix (mechanical)
-        run: mise exec -- markdownlint-cli2 --fix "**/*.md" || true
+      - name: Safe mechanical markdown heal (MD032/MD026 only)
+        # Full `markdownlint-cli2 --fix` is UNSAFE here (MD018/MD037 false fixes).
+        # Heal only blank-lines-around-lists + heading trailing-punctuation via the
+        # idempotent repo fixer. Gate still enforces the full rule set on check.
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(git ls-files '*.md')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No markdown files tracked."
+            exit 0
+          fi
+          bun src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts "${files[@]}"
 
       # prettier --write (TS/JSON auto-format) is DEFERRED to a follow-up: it is
       # not a required gate, and doing it correctly needs a deliberate pass on
       # scope + a .prettierignore + running from the repo ROOT (package.json /
       # bun.lock live at the root, NOT src/Core.TypeScript — Copilot review of
-      # #6393, 2026-06-01). V1 ships the required-gate autofix (markdownlint --fix)
-      # only; prettier-format joins once its scoping is designed.
+      # #6393, 2026-06-01). Safe MD032/MD026 heal ships here; prettier joins once
+      # its scoping is designed.
 
       - name: Compute heal patch
         id: patch

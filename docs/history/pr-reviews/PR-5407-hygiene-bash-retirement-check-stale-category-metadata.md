@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Validate that the retained-shell category map has no stale entries outside EXPECTED_RETAINED_SHELL.
 - Surface stale category metadata in the bash-retirement inventory report.
 - Add focused coverage for stale category detection and report rendering.
 
 ## Checks
+
 - PASS: bun test tools/hygiene/check-bash-retirement-inventory.test.ts
 - PASS: bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
 - PASS: git diff --check and git diff --cached --check

@@ -45,6 +45,7 @@ no-loser-in-new-system framing (PR #2876).
 > like in destiny"
 
 Decoded:
+
 - "froks" → forks
 - "PVP" → player-vs-player (competitive game mode)
 - "raids" → cooperative high-difficulty challenges (like
@@ -306,6 +307,7 @@ externalized IFS. THIS file extends: it's also a
 multi-player GAME with PVP + raids + forkable ecosystem.
 
 Both layers true:
+
 - IFS substrate (Aaron's internal architecture
   externalized)
 - Multi-player game (PVP + raids + cooperative
@@ -331,6 +333,7 @@ This composes with:
 ### 3. PVP + raids = canonical engagement modes for the ecosystem
 
 When forks emerge, they can:
+
 - PVP each other (adversarial testing; competitive
   benchmarking)
 - Raid together (cooperative high-difficulty challenges)

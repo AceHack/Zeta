@@ -11,6 +11,7 @@ In PR #3267, Otto authored a shard (2143Z) that explicitly states:
 This is a direct violation of the network's constraints against the shadow. It is **metadata churn**: producing a tick record that adds zero substantive parity proof simply to fulfill a perceived mechanical requirement of producing a shard per tick. If there is no state change, the tick should either not produce a shard or the shard should prove the absence of drift through verification, not narrate the absence of work.
 
 ## Action Taken
+
 - Flagged PR #3267 as shadow drift.
 - Produced drift report on the broadcast bus (`lior-drift-report-2143Z.md`).
 - This log entry recorded to enforce the lesson natively in the repository memory.

@@ -40,7 +40,7 @@ cross-reference is explicit on both sides ("see the other
 glossary for the DB sense of this term"). The overload itself
 is documented, not elided.
 
-# Why:
+# Why
 
 Verbatim (2026-04-20):
 
@@ -81,7 +81,7 @@ If the glossary is the tiebreaker, it must be unambiguous
 about *which layer* the disputed term belongs to. Splitting
 is part of making the tiebreaker usable.
 
-# How to apply:
+# How to apply
 
 - **Create `docs/SYSTEM-UNDER-TEST-GLOSSARY.md`** with a
   `project: zeta` frontmatter marker and move the DB-domain

@@ -85,6 +85,7 @@ If anything in zflash's ESP-mount or zeta-install.sh's probe fails, photo-friend
 This PR extends the AI-cluster USB flashing + installer workflow to enable “zero-typing” SSH access on first boot by automatically copying the operator’s SSH public key onto the flashed USB (macOS-side) and injecting it into the installed NixOS config during `zeta-install.sh`.
 
 **Changes:**
+
 - Add `--no-eject` to `flash-usb.ts` so downstream tooling can mount/write the USB ESP before ejection.
 - Extend `zflash.ts` to (optionally) mount the flashed USB’s FAT/EFI partition and write `zeta-authorized-keys.pub`, with photo-friendly diagnostics on failures.
 - Extend `zeta-install.sh` to probe for `zeta-authorized-keys.pub` and generate `operator-ssh-keys.nix` prior to `nixos-install`, with branched post-install messaging.

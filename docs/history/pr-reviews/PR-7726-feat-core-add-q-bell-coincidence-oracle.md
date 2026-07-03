@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Add Q# Bell analyzer oracle operations for PhiPlus and singlet conventions.
 - Extend qsharp-golden.json with bellCoincidence observable vectors for PhiPlus same-outcome and singlet opposite-outcome probabilities.
 - Add BellTest.coincidenceProbability and F#/TS tests that lock the phasor overlap to the Q# observable treaty.
 - Anchor QSharpOracle.Tests golden lookup to __SOURCE_DIRECTORY__ so test runner cwd no longer matters.
 
 ## Verification
+
 - ./.venv/bin/python tools/qsharp-oracle/generate-qsharp-golden.py
 - bun test tools/qsharp-oracle/qsharp-golden.test.ts
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter 'FullyQualifiedName~QSharpOracleTests|FullyQualifiedName~BellTestTests'

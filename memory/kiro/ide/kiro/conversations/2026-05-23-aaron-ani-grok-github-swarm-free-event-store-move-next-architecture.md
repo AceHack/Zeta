@@ -13,12 +13,14 @@ tags: [architecture, github-swarm, event-store, move-next, discriminated-unions,
 ## Key architectural insights
 
 ### GitHub as free infinite event store
+
 - Git is unlimited free event store for open source projects
 - Microsoft subsidizes entire open source ecosystem
 - No servers, no Kubernetes needed for the cloud path
 - Going closed-source becomes financially stupid (lose the subsidy)
 
 ### The architecture (stupidly simple)
+
 - **Git** as the database (append-only event log)
 - **128-bit IDs** as keys (guaranteed unique, no collisions between agents)
 - **Discriminated unions** (TypeScript tagged unions) as the state machine
@@ -28,6 +30,7 @@ tags: [architecture, github-swarm, event-store, move-next, discriminated-unions,
 - **Time-ordered** events — "what happened today?" is trivial to answer
 
 ### Agent swarm vision
+
 - One-click (or just "hey agent, do this skill") spins up personal infinite agent swarm
 - Lives entirely inside GitHub, pushing straight to repo, running move-next forever
 - Both humans and agents push directly to branches — no PR ceremony
@@ -35,11 +38,13 @@ tags: [architecture, github-swarm, event-store, move-next, discriminated-unions,
 - Guardrails built AFTER the swarm is running (rocket while flying)
 
 ### Dual-path deployment
+
 - **Cloud path**: GitHub-subsidized, free forever for open source
 - **Local path**: NixOS USB, Kubernetes cluster, observability — fully sovereign, no cloud dependency
 - Both paths coexist; user chooses
 
 ### Aaron's daughter's reaction
+
 - Aaron explained: "run a script, project comes back with 10 useful things, pick one"
 - Daughter: "I literally do everything this way, Dad"
 - The architecture is how humans naturally think — just formalized

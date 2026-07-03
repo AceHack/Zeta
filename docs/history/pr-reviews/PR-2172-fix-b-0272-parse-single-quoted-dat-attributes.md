@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - accepts single-quoted Logiqx DAT XML attribute values in the ROM canonicalizer
 - adds a focused parser regression for single-quoted ROM attributes
 
 ## Checks
+
 - bun test tools/roms/canonicalize.test.ts
 - git diff --check origin/main..HEAD -- tools/roms/canonicalize.ts tools/roms/canonicalize.test.ts
 

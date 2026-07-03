@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - salvage the safe PR #4990 follow-up delta by splitting outbox messaging domains into supervisor-signal and work-item subjects
 - keep the stale branch replay out of the PR because it conflicts with current main and would regress newer outbox locking/test layout
 - include claim/release history for task-pr4990-agentic-org-reconcile
 
 ## Checks
+
 - npm test -- --test-name-pattern=outbox publisher
 - npm run typecheck
 
@@ -34,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR updates the Agentic Organization messaging outbox publisher to route events into more specific NATS subject domains, separating supervisor-signal traffic from work-item traffic.
 
 **Changes:**
+
 - Split `AgenticMessagingDomain` from a single `work` domain into `supervisor_signal` and `work_item`.
 - Update `resolveAgenticMessagingDomain` to map supervisor-signal and work-item event types to their respective domains.
 - Extend outbox publisher tests to validate the new domain resolution and updated published subject expectation.

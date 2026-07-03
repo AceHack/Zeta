@@ -122,6 +122,7 @@ When CI fails on a transient external-dependency download:
 ## Worked example: 2026-04-29 elan-toolchain 502
 
 Sequence:
+
 1. Autonomous-loop tick CI hit a 502 from
    `raw.githubusercontent.com/leanprover/elan/...elan-init.sh`.
 2. I ran `gh run rerun --failed`. 2nd build passed (transient

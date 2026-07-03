@@ -18,6 +18,7 @@ Example for this repo:
 `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`
 
 **Within a single session that calls `EnterWorktree`:**
+
 - Slug is fixed when the session starts (from the initial CWD).
 - `EnterWorktree` changes the session's CWD but does NOT change
   the slug.
@@ -27,6 +28,7 @@ Example for this repo:
 - MEMORY.md auto-load continues to reference the original slug.
 
 **Verification (this tick):**
+
 - Session started in `/Users/acehack/Documents/src/repos/Zeta`.
 - `EnterWorktree` moved CWD to
   `/Users/acehack/Documents/src/repos/Zeta/.claude/worktrees/pr32-markdownlint`.

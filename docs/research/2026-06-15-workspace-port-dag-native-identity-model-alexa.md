@@ -11,6 +11,7 @@ The current WorkspacePort uses `path` as the primary key for file identity. This
 is the tree-filesystem model: one parent per node, paths are unique identifiers.
 
 But Zeta's own filesystem (the FUSE/dag-fs layer) is a **DAG, not a tree**:
+
 - A file's identity is its **content hash** (Merkle root, ZetaId, blake3)
 - A file can have **multiple folder homes** simultaneously (multi-parent DAG node)
 - Paths are **materialized views** of the DAG, not identities

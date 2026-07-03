@@ -49,6 +49,7 @@ This is decomposition-only. It does not add executable harness code, deployable 
 Decomposes backlog row **081KSBMG30008QG0R00201X7EJ** into a dependency-ordered set of smaller **P0** child rows that define hard limits, synthetic-only harness design, findings/redaction rules, safety-substrate inventory, operator refusal guidance, and a future ratification/lift gate—then regenerates `docs/BACKLOG.md` to include the new rows.
 
 **Changes:**
+
 - Adds new child backlog rows **081KSGS9H0008QG0R00383T79V..081KSGS9H0008QG0R00280HHA7** under `docs/backlog/P0/` and wires them to **081KSBMG30008QG0R00201X7EJ** via `parent`, `depends_on`, and `composes_with`.
 - Updates **081KSBMG30008QG0R00201X7EJ** to `status: decomposed` and records the new `children` list plus decomposition framing text.
 - Regenerates `docs/BACKLOG.md` to include the new P0 entries.

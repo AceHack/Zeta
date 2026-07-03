@@ -27,6 +27,7 @@ Preserve discussion from PR #5275.
 Adds a PR-preservation archive entry for PR #5275 under `docs/pr-discussions/`, capturing the PR body plus review/comment thread content for later reference.
 
 **Changes:**
+
 - Adds a new `docs/pr-discussions/PR-5275-…md` archive file with YAML frontmatter and preserved PR discussion content.
 
 ## Review threads

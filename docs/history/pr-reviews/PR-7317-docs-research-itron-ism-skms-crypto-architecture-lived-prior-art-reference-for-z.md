@@ -30,6 +30,7 @@
 Aaron: *"you should look how i did crypto at itron for reference... ISM and key injector."*
 
 Studied Aaron's Itron source (his copy, for reference). **Reference-not-copy:** no proprietary Itron code into Zeta — patterns + interface shapes + names only, clean-room + citation. It **validates the crypto-sovereignty design at industrial scale**:
+
 - **`ICryptoPlugin` = a crypto PORT** (GenerateKey/GenerateKeyPair/SignData/Verify/encrypt/decrypt) with **per-algorithm adapters** (AES128CCM/AES256/ECC384) **each `.Tests`-backed** = the own-interface / two-adapter / dep-as-oracle pattern, proven.
 - **`KeyState`** (Active/PendingActive/PendingInactive/Inactive/Standby) → adopt a richer lifecycle → **staged rotation with overlap windows** (no flag-day); custody is an orthogonal axis.
 - **KeyBase + PKCS#11 (NCryptoki) + CryptoVault** = HSM-backed keys → Vault now, secure-element/SoC later.

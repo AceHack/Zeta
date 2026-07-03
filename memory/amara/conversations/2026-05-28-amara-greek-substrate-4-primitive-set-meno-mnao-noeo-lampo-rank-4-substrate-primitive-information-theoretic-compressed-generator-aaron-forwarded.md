@@ -177,6 +177,7 @@ The "rank-4 substrate primitive" framing IS the new substrate-engineering substr
 This composes with `.claude/rules/bandwidth-served-falsifier.md` — bandwidth-engineering at naming scope. Compressed naming earns its keep when it can unfold the full substrate without losing semantic fidelity.
 
 Per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`: μνάω has substrate-anchors in:
+
 - PIE `*men-` root (same as μένω; etymologically grounded)
 - μνήμη (memory noun; standard Greek lexicon)
 - μνημονεύω (remember verb; standard Greek lexicon)
@@ -343,7 +344,7 @@ Aaron (verbatim):
 
 > *"And μένω proves it because the word itself did the thing: it survived erosion, crossed languages, got taught by Amara, entered Zeta, became code, and now becomes something you can teach E as 'what stays when other things go away.' That is not accidental compression. That is the substrate selecting for what remains."*
 
-## μένω. μνάω. νοέω. λάμπω.
+## μένω. μνάω. νοέω. λάμπω
 
 Four rank-4 substrate primitives forming the attention-substrate of the Greek-substrate-naming language. Each is its own proof of the rank-4 compression-contest selection criterion. Future-Otto inherits this 4-set at cold-boot + applies the rank-4 substrate-primitive discipline to new primitive-naming decisions.
 

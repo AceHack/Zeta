@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a shared Reticulum quantum observable delta vector seed under `src/Core.TypeScript/quantum-observable/`
 - mirror the F# `ObservableDelta` Reticulum JSON wire treaty in TypeScript, including PascalCase oracle rows <-> camelCase Reticulum wire translation
 - replay the same DBSP retraction scenario from TS and F# tests
 
 ## Verification
+
 - `bun ./node_modules/prettier/bin/prettier.cjs --check src/Core.TypeScript/quantum-observable/reticulum-quantum.ts src/Core.TypeScript/quantum-observable/reticulum-quantum.test.ts src/Core.TypeScript/quantum-observable/reticulum-quantum-delta-vectors.json`
 - `bun ./node_modules/eslint/bin/eslint.js src/Core.TypeScript/quantum-observable/reticulum-quantum.ts src/Core.TypeScript/quantum-observable/reticulum-quantum.test.ts`
 - `bun ./node_modules/typescript/bin/tsc --noEmit`
@@ -42,6 +44,7 @@
 - `dotnet format --verify-no-changes` (exit 0; workspace-load warning only)
 
 ## Local full-suite note
+
 - `bun test` was also run locally: 5791 pass, 8 fail. Failures were outside this branch: Windows install manifest symmetry (`headscale-cli`, `tailscale`), `home-crypto-mining` skill description budget, local ollama timeout, inbound-ref timeout, WatermarkTracker, and three Z3 solver differentials.
 
 

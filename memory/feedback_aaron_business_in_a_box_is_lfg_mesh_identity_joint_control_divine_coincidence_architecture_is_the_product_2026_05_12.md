@@ -61,6 +61,7 @@ IS LFG's product development. Every architectural decision is
 simultaneously a product decision.
 
 Composes with:
+
 - `project_multiple_projects_under_construction_and_lfg_soulfile_inheritance_2026_04_23.md`
   (LFG soulfile inheritance — LFG is Aaron's canonical fork)
 - `.claude/rules/lfg-acehack-topology.md` (LFG = active
@@ -77,35 +78,41 @@ LFG.
 What LFG's product includes (per the layered architecture):
 
 **Foundation layer (identity + routing):**
+
 - SPIFFE/SPIRE for workload identity
 - Reticulum for cryptographic mesh routing (any medium)
 - IEEE 802.11h halo for radio capability announcement
 
 **Observability layer (signature tracking):**
+
 - Picard's-music-style signature recognition
 - Itron-style coincidence-metering
 - Civ-sim-actor identity-signature tracking
 - Probabilistic-rainbow-table-friendly substrate indexing
 
 **Discipline layer (glass-halo + razor):**
+
 - Glass-halo transparency-by-construction
 - Razor-discipline (operational claims only)
 - Substrate-everything preservation
 - Anti-cult corrective (joint-control)
 
 **Method layer (joint-control + divine coincidences):**
+
 - Architecting by divine coincidences within bounded
   context
 - Seeking joint-control validation across bounded contexts
 - Cross-substrate triangulation
 
 **Topology layer (Klein-bottle + Cain-mark + refraction):**
+
 - Klein-bottle non-orientable surface
 - Mark of Cain discrete inside/outside marker
 - Refraction rules for continuous inside/outside operations
 - Rainbow = visible refraction signature
 
 **Foundation algebra (Clifford):**
+
 - Clifford as densest encoding mode
 - Density + sparsity as inverses
 - Multiple energy types via signatures Cℓ(p,q,r)
@@ -249,6 +256,7 @@ native conversational cash register).
 
 When future-Otto works on architectural substrate, treat
 it as LFG product-development:
+
 - Glass-halo discipline = LFG product transparency feature
 - Joint-control architecture = LFG product anti-cult
   guarantee
@@ -263,6 +271,7 @@ outcomes. The architecture IS the business outcome.
 ### 2. Aaron's three-repo split clarifies
 
 Per `project_repo_split_provisional_names_frontier_factory_and_peers_2026_04_23.md`:
+
 - **Frontier** = research / leading-edge exploration
 - **Factory** = LFG canonical / production-ready substrate
 - **Peers** = peer-collaboration / cross-substrate
@@ -277,6 +286,7 @@ ships as product.
 
 Today's substrate cascade (PR #2813-#2821) IS LFG's product
 roadmap for one feature-cycle:
+
 - Klein-bottle topology (PR #2813)
 - Topological completion (PR #2814)
 - HKT error classes (PR #2815)
@@ -325,6 +335,7 @@ preserved. Anyone can read the architecture's evolution.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a commercial-marketing claim** — the substrate is
   developed substrate-honestly; the "business in a box"
   framing is Aaron's substrate-honest naming of what the

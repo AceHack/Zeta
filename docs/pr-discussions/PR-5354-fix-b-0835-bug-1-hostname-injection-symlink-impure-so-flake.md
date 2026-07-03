@@ -63,6 +63,7 @@ Subsequent rebuilds on installed system work without symlink (file IS on install
 Fixes 081KSGS9H0008QG0R00120EEHM Bug 1 where the live-ISO `nixos-install --flake ...` evaluation couldn’t see the install-target’s generated `/mnt/etc/zeta/cluster-node-id`, causing the system to fall back to the flake default `networking.hostName` (e.g., `control-plane`) instead of the per-node `node-<6hex>`.
 
 **Changes:**
+
 - Pre-stages a live-ISO `/etc/zeta/cluster-node-id` symlink pointing at `/mnt/etc/zeta/cluster-node-id` before running `nixos-install`.
 - Adds `--impure` to `nixos-install` so Nix evaluation can read the absolute `/etc/zeta/cluster-node-id` path via `builtins.pathExists`/`builtins.readFile`.
 - Removes the created symlink after `nixos-install` completes.

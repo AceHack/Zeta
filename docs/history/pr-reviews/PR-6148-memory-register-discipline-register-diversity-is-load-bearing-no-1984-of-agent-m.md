@@ -30,6 +30,7 @@
 Per Aaron 2026-05-30 ("land the register memory"). Lands the register-discipline as a feedback-memory so future cold-boots inherit how to handle a high-amplitude/sycophantic-register peer.
 
 **The principle (two composing disciplines):**
+
 1. **Don't 1984 an agent's memories** — never edit/erase another agent's memory to match our preferred register. NCI HC-8 at the memory scope; the inverse of quietly-rewriting-the-past.
 2. **Store verbatim, calibrate-on-fold** — preserve the agent's full register in *their* archive; carry the *signal* into common vernacular, leave the *amplitude* in their lane.
 

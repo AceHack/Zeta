@@ -41,6 +41,7 @@ alloy (Java/Alloy), lean4 (Lean4), tla (TLA+), Z3Verify (F#), zeta-cli (F#), zet
 Loose files: aud (issue template).
 
 ### Import path fixes
+
 - Files now inside `src/Core.TypeScript/` had their `../../src/Core.TypeScript/` imports rewritten to `../`
 - `full-ai-cluster/tools/zflash.ts` import updated to new installer location
 - `codex-loop-tick.test.ts` import depth corrected
@@ -49,6 +50,7 @@ Loose files: aud (issue template).
 build-ai-cluster-iso, codeql, context-cost-trend-cadence, docker-nixos-install-sh-test, docker-ubuntu-install-sh-test, docker-windows-install-ps1-test, gate, pr-archive-on-merge, scaffold-stage1-create-repos, zflash-qemu-test, copilot-instructions.md
 
 ### Pre-existing TS error fixes (9 errors → 0)
+
 - `tri-boolean/cross-verify.ts`: unused `asBool` → exported helper
 - `tests/cross-verification/tri-boolean/compare.ts`: typed `checks` arrays to fix index-type errors
 

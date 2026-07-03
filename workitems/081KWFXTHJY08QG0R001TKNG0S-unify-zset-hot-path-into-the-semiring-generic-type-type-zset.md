@@ -53,6 +53,7 @@ captures it as real, scoped work.
 ## The idea (the only thing that makes a polymorphic ZSet non-redundant)
 
 Today there are TWO representations:
+
 - `ZSet<'K>` — int64-fixed, **sorted `ImmutableArray<ZEntry>`** hot-path (specialised
   for perf: no virtual `ISemiring` call per op, cache-friendly linear merges).
 - `WeightedSet<'K,'W>` — semiring-generic but **`Map<'K,'W>`** storage.
@@ -69,9 +70,11 @@ case — removes a whole parallel substrate.
 `ZSet = ZSetW<_,int64>` reintroduces a virtual `ISemiring<int64>.Add` call per
 weight op, which at per-tick / at-scale is exactly the cost the specialisation
 avoids. The unification MUST preserve the int64 hot-path perf — via one of:
+
   - SRTP / `inline` + statically-resolved ring so int64 devirtualises at the call site;
   - a struct `IntegerRing` the JIT can devirtualise;
   - keep `ZSet` as a thin specialised façade over a shared `ZSetW` core.
+
 Requires a benchmark gate (Naledi): the unified int64 path must match current
 `ZSet` throughput/alloc on the DBSP hot loop, or the unification does not land.
 

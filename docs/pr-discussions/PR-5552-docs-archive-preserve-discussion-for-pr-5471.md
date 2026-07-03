@@ -27,6 +27,7 @@ Automated archival of PR #5471.
 Archives and preserves the GitHub discussion/review content for PR #5471 under `docs/pr-discussions/`, keeping a git-native record of PR metadata plus review threads.
 
 **Changes:**
+
 - Added a new PR discussion archive markdown file for PR #5471 (frontmatter + preserved PR description and review threads).
 
 ## Review threads

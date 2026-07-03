@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add the first table-shape draft for trajectory drift reports
 - define inputs, columns, drift classes, report rules, and focused manual checks
 - release the temporary claim in-branch per the claim protocol
 
 ## Checks
+
 - git diff --check
 - bunx markdownlint-cli2 docs/claims/task-trajectory-drift-report-table-shape-20260528.md docs/trajectories/trajectory-drift-reporting/first-report-table-shape-2026-05-28.md
 

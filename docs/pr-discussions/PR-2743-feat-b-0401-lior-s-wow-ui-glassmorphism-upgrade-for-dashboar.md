@@ -27,6 +27,7 @@ Implements the requested Glassmorphism UI for the Zeta static dashboard, utilizi
 This PR upgrades the `demo/index.html` static dashboard UI to a glassmorphism-style layout with animated background elements, updated typography (Google “Outfit” font), and refreshed card/list styling, while also adjusting the client-side rendering of agents, PR queue, and timeline.
 
 **Changes:**
+
 - Replaces the previous dark dashboard styling with a glassmorphism design (panels, gradients, animations, icons).
 - Restructures the dashboard layout (header/status badge, new grid composition, updated list/timeline presentation).
 - Updates the dashboard JS (agent mapping tweaks, value animations, reworked HTML rendering, faster refresh interval).

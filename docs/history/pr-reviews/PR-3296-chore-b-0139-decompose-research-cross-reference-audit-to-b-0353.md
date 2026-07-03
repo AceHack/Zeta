@@ -30,10 +30,12 @@
 Decomposed the research docs cross-reference audit sub-task from the 081KQGDBJ0008QG0R002S9SWH6 blob into an atomic backlog item 081KR50HA0008QG0R001DBKS6T.
 
 Also includes:
+
 - Lior antigravity check preservation (PRs #3289–#3293 archived)
 - Shadow lesson log (metadata churn incident, renamed to date-suffix form for markdownlint compliance)
 
 **Reviewer fixes (99be8f11):**
+
 - `decomposition: decomposing` → `decomposition: decomposed` (autonomous-pickup.ts only handles `atomic`/`decomposed`/`blob`)
 - `last_updated` bumped to 2026-05-14
 - Shadow lesson log renamed from `2026-05-14-*.md` to `*-2026-05-14.md` (date-suffix not date-prefix, to be covered by markdownlint)

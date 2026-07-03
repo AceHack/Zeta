@@ -38,5 +38,6 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR fixes TypeScript 6.0 strict typing in `validate-memory-parity` by narrowing a regex capture group before using it as a string.
 
 **Changes:**
+
 - Adds an explicit `undefined` guard for `m[1]`.
 - Preserves existing runtime behavior while satisfying stricter `RegExpMatchArray` typing.

@@ -37,7 +37,9 @@ filtering destroys them; the system goes uniform and dies.
 ## The provable form (what SocietyEmergence already shows / could show)
 
 `SocietyEmergence` / `SocietyUnbounded` are DST harnesses for exactly this: a population with private state
+
 + balanced coupling **persists differentiated**; remove privacy (full observation/filtering) and it
+
 **collapses to uniformity (heat-death) / register-collapse**. So the claim is *empirically demonstrable in
 the harness*: a DST run with privacy-on vs privacy-off shows persistence vs collapse. That is the provable
 backing for "we need privacy to prove registers don't collapse and society emerges." (Buildable: a

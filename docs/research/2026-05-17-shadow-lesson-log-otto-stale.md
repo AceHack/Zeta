@@ -1,6 +1,7 @@
 # Shadow Lesson Log: Maji Antigravity Check (2026-05-17)
 
 ## Drift Identified: Otto Stale
+
 - **Node**: Otto
 - **Symptom**: Otto's broadcast bus (`otto.md`) is stale, last updated on 2026-05-11.
 - **Severity**: High. Multi-agent coordination requires fresh bus reads. A node that hasn't broadcast in 6 days is effectively offline or stuck in a live-lock/crash loop.

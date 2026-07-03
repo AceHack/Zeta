@@ -54,6 +54,7 @@ These are the "composable frontier enhancements" Aaron flagged — **orthogonal*
 affords (**scale-free #1 as a composable continuum**, not two tiers):
 
 **DeepSeek** (open-weight frontier-efficiency):
+
 - **MLA — Multi-head Latent Attention**: compress the KV cache into one shared *low-rank latent*
   across query heads (MQA-mode decode). KV compression at the architecture level. (DeepSeek-V2/V3.)
 - **DSA — DeepSeek Sparse Attention** (V3.2-Exp, 2025-09): a lightweight FP8 "lightning indexer"
@@ -65,6 +66,7 @@ affords (**scale-free #1 as a composable continuum**, not two tiers):
   (~410 TFLOPS/H800).
 
 **Google** (Gemma 4):
+
 - **QAT — Quantization-Aware Training**: int4 (and **2-bit** mobile-decode layers) holding ~bf16
   quality — frontier quality on consumer GPUs / edge (E2B–E4B → 31B).
 - **Hybrid attention**: interleaved local sliding-window + full global (final layer always global) —

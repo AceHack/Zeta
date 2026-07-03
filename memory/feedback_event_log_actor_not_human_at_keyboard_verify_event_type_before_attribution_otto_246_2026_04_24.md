@@ -128,6 +128,8 @@ the label.
 
 Future Otto: before stating "Aaron closed X" or "you did Y",
 check the event log structure. Actor + timestamp + event type
+
 + sibling events tell the full story. A bare actor field
+
 tells you who authenticated the API call, not who made the
 decision.

@@ -32,6 +32,7 @@ Aaron 2026-06-15 (shadow*): *"he can do this cause his agents are behind PR gate
 Otto's first peel (#8326/#8327) wrongly called *"dangerously skip permissions"* the **opposite** of our least-privilege discipline. **Correction:** it's the **same model** — run free inside the sandbox, nothing **lands** except via a reviewed **PR + CI gate** (= our clone → PR → markdownlint → CI → auto-merge-when-green). Orthwein just preached speed, never named the gate as the safety.
 
 Two boundaries kept distinct:
+
 1. **What LANDS** → the PR gate (he has it; don't over-gate reversible local edits).
 2. **What the agent DOES while running** (secrets, outward/irreversible side-effects) → §13 metered-channels + gated-classes — least-privilege scoped **here**, not to local edits.
 

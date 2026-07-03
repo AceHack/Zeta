@@ -47,6 +47,7 @@ root_hex|leaf_key_hex:leaf_weight|<R|L>sibling_hex,...
 Both produce **byte-identical** proof strings for all 7 vectors.
 
 ### Two checks in `compare.ts`, neither sufficient alone
+
 1. **N-way agreement** on the canonical proof string (the byte-lock).
 2. **verify-against-root** — each agreed proof is independently re-folded *inside the comparator* and must recompute its embedded root. A unanimous-but-wrong proof (shared-bug Sybil) **still fails** — demonstrated in local testing.
 
@@ -59,6 +60,7 @@ Both produce **byte-identical** proof strings for all 7 vectors.
 Structure + cross-language byte-portability are **proven**. Digest collision-resistance remains the **named crypto premise** (XxHash128 is non-cryptographic; swap to BLAKE3 for Byzantine integrity) — identical scope to the sibling root primitive.
 
 ### Gate
+
 - compare.ts N-way sweep: **10/10** primitives (9 prior + new `zset-merkle-proof`)
 - `bun test` proof fidelity: **6/6**
 - F# ZSetMerkle + MerkleInclusion suite: **19/19**

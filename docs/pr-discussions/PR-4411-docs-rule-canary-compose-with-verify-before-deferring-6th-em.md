@@ -66,6 +66,7 @@ Closes the loop on the refinement candidate documented in [PR #4410](https://git
 Updates the CodeQL docs-only canary rule to better describe a “verify-before-defer” refinement for worktree creation under concurrent agent activity, and records an additional empirical data point (2026-05-20T14:13Z) supporting that refinement.
 
 **Changes:**
+
 - Refines the pre-worktree guard section wording to describe a verify-before-defer composition approach.
 - Adds a new “Empirical anchor (2026-05-20T14:13Z)” section capturing the 6th worktree-creation datapoint.
 

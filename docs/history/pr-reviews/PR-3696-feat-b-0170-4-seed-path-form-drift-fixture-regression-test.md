@@ -38,6 +38,7 @@ Adds the **third eval-set fixture** for 081KQNJ500008QG0R003SCWBDV.4 (substrate-
 ## Why this slice
 
 Re-decomp check against 081KQNJ500008QG0R003SCWBDV's listed children:
+
 - **081KSNY2Z0008QG0R002CK42QK (semantic-equivalence-drift)**: in-flight branch `otto-cli/b0170-1-semantic-equiv-checker-2026-05-15` already exists; touching it risks duplicate-work split-brain.
 - **081KQNJ500008QG0R003SCWBDV.2 / .3**: brand-new sub-class checkers — bigger slice than "smallest safe."
 - **081KQNJ500008QG0R003SCWBDV.4 (eval-set coverage)**: 2 of 5 shipped checkers fixturedso far (count, existence); 3 still lack regression coverage (path-form, convention, cross-surface). Each additional fixture is genuinely independent, has zero merge-conflict risk, and closes one more line of the parent row's done-criteria #4.

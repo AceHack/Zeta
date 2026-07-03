@@ -89,6 +89,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -107,6 +108,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Phase 1a scaffolding for splitting the monolithic `docs/BACKLOG.md` into per-row markdown files under `docs/backlog/`, with a generator to produce a compact index.
 
 **Changes:**
+
 - Adds `tools/backlog/generate-index.sh` to generate/check/print the `docs/BACKLOG.md` index from per-row files, including a Phase-1a overwrite guard.
 - Adds schema + usage documentation for per-row backlog files (`tools/backlog/README.md`, `docs/backlog/README.md`).
 - Adds an example per-row backlog entry to exercise the schema and generator (`docs/backlog/P2/081KPYCJH0008QG0R003MDS51N-...`).
@@ -184,6 +186,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

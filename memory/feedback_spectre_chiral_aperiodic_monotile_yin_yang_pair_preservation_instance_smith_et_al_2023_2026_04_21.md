@@ -101,6 +101,7 @@ corrected. False-binary declined.
 ### Third option to the AI-Overview's false-binary
 
 AI-Overview's closing question offered:
+
 - **Option A.** Lock the Spectre into the collection as
   the ultimate pure instance of persistence.
 - **Option B.** Explore the Soft Cells found in nature

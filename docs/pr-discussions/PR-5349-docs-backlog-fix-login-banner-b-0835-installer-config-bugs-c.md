@@ -66,6 +66,7 @@ What this PR does NOT land (needs follow-up):
 This PR documents the 081KSGS9H0008QG0R00120EEHM installer configuration bug cluster from a physical hardware-support test and makes a small NixOS login-banner change to stop displaying a default password on running systems.
 
 **Changes:**
+
 - Adds a new P1 backlog row for installer hostname, gh-auth, password, and self-registration failures.
 - Adds 081KSGS9H0008QG0R00120EEHM to the generated backlog index.
 - Updates the NixOS getty login banner to avoid showing `zeta-change-me`.

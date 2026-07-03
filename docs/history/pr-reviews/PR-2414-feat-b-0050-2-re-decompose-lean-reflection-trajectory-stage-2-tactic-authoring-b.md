@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KQ3HBZ0008QG0R000H8K8CC per 'assume decomposition has mistakes' + 'if too broad, decompose' rules (Riven background worker, dedicated worktree).
 - Stage 1 (read-only competence + scouting note) landed in #2412.
 - Bounded step: added re-decomp note + updated timestamp in backlog row. Prepares for Stage 2 (tactic authoring) as standalone atomic child.
 - One change only; root checkout untouched; TS preference followed (no .sh).
 
 ## Focused checks (included per rules)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — gate passed before/after.
 - Worktree: dedicated (/tmp/zeta-B0050.2-riven-2026-05-10), branch claim/081KQ3HBZ0008QG0R000H8K8CC.2-...
 - No write to contested root checkout.
@@ -41,6 +43,7 @@
 - Active trajectories read; refresh-worldview run; CLAUDE.md/AGENTS.md read.
 
 ## Next (out of scope for this PR)
+
 - 081KQ3HBZ0008QG0R000H8K8CC.2 implementation (tactic authoring skill slice) in follow-up claim.
 
 Co-Authored-By: Grok <noreply@x.ai>

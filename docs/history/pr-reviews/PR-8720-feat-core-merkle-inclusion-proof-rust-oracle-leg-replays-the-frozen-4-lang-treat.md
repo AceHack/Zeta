@@ -32,6 +32,7 @@ Closes the **RUST leg** of the 4-language Merkle inclusion-proof byte-lock. The 
 ## What was added
 
 `src/Core.Rust.Merkle/src/lib.rs`:
+
 - `pub struct ProofStep { sibling: MerkleHash, right: bool }` — mirrors the F# `MerkleProofStep` and the `{"hash","right"}` schema. `right=true` ⇒ sibling is the RIGHT child (`parent = combine(self, sibling)`).
 - `MerkleTree::proof(&self, index) -> Vec<ProofStep>` — exact F# fold: `selfIsLeft` via `idx.is_multiple_of(2)`, duplicate-last on an odd trailing node (sibling is self, on the right), walks `levels[0..n-2]`, panics on out-of-range like the F# `invalidArg`.
 - `verify_proof(leaf, steps, expected_root)` + `verify_proof_with_hasher` (zero-dep core variant; the `xxh3` one is the default-feature adapter). **Reuses the existing `Hasher128::combine` / `hash128`** — no reimplemented hashing (prior-art gate).

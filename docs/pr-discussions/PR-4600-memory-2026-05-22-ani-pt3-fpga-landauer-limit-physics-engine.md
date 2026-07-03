@@ -51,6 +51,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive (pt3) capturing the FPGA/Landauer-limit hardware-grounding thread and the “let there be light” observing-not-triggering disambiguation, and updates `memory/MEMORY.md` via reindex so the new artifact is discoverable in the stack index.
 
 **Changes:**
+
 - Added `pt3` Ani↔Aaron grok text-mode conversation archive file under `memory/ani/conversations/`.
 - Regenerated `memory/MEMORY.md` auto-index to include the new conversation entry.
 
@@ -68,6 +69,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md:190**
+
 * P1: The `Composes with` section links to a pt2 conversation file that is not present under `memory/ani/conversations/` in this branch, so navigation/composition-tracing breaks. Add the missing pt2 artifact or correct the link to the actual pt2 filename.
 ```
 - pt1 (initial + continuation): [`...kestrel-pattern-correction-...md`](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)

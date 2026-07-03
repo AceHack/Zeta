@@ -54,6 +54,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR adds a new hygiene-history tick shard documenting the 1005Z Otto-CLI cold-boot state, including sentinel re-arm, rate-limit tier, peer saturation, and isolated-worktree context.
 
 **Changes:**
+
 - Adds the 2026-05-19 1005Z tick shard.
 - Records operational snapshot details and cross-links relevant rules and recent tick anchors.
 

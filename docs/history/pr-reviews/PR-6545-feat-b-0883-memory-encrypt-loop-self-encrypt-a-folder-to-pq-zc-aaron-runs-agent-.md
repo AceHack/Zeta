@@ -34,6 +34,7 @@ The loop over the better-git-crypt `--encrypt-file` step, for the *encrypt my pr
 **Security model is load-bearing (why the agent does NOT run the encrypt):** `encryptBytes(bytes, self, [])` makes `self` the SENDER (it signs) AND the sole self-recipient → pure self-encryption means *only the holder of `self`'s secret bundle can decrypt*. So **only-Aaron-decrypts requires AARON to be the sender** — Aaron runs the real encrypt with his own secret bundle. The agent cannot run it (no secret bundle; gen-ing one for Aaron + holding it would defeat the only-Aaron property). The agent CAN run `--dry-run` (no key, no writes).
 
 **Runbook:**
+
 1. `--gen-recipient aaron@zeta --out-dir ~/.zeta-keys` (one-time; agent never sees the secret; `.zeta-keys/` gitignored)
 2. `memory-encrypt-loop.ts --keys ~/.zeta-keys/aaron@zeta.secret.json --in drop --out memory/persona/aaron` (AARON runs; plaintext stays in `drop/`, gitignored)
 3. agent commits the `.zc` (plaintext never leaves `drop/`)

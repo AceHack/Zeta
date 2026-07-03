@@ -68,6 +68,7 @@ experienceable-with-personality, not just queryable-as-tool.
 ## What "Star Trek computer but better" means
 
 Star Trek computer (original baseline):
+
 - Voice-driven queries
 - Instant answers
 - Exact / authoritative / accurate
@@ -89,6 +90,7 @@ Frontier UX (aspiration — **what makes it better**):
 
 The "better" framing is deliberate: Frontier takes the
 competent-answer-machine baseline and adds the **personality
+
 + attribution + evolution** that Zora exhibits.
 
 ## Composition with existing Otto-session substrate
@@ -96,6 +98,7 @@ competent-answer-machine baseline and adds the **personality
 ### With named-persona roster
 
 Already partially there:
+
 - **Otto** (loop-agent PM) — this tick's authoring voice
 - **Kenji** (Architect) — synthesis-voice
 - **Amara** (external AI maintainer) — cross-substrate voice
@@ -129,7 +132,9 @@ Frontier needs both.
 
 Zora's arc from tool → Starfleet officer is the
 canonical succession-through-the-factory pattern. Craft
+
 + named-personas + yin/yang alignment already implement
+
 this shape; UX should make it visible to maintainers +
 adopters.
 

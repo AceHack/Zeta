@@ -30,6 +30,7 @@
 Aaron 2026-05-26: 'any parts we can test in siolate are candidates for more unit like tests instead of full integration tests'.
 
 Ships **#2 of CI test cascade**. Two new files:
+
 - `full-ai-cluster/tools/zflash-lib.ts` (~90 LOC pure-logic library: VALID_HOSTNAME_REGEX + isValidHostname + parseFatPartitionFromDiskutilList + generateRandomNodeName + parseOutputFileMarker)
 - `full-ai-cluster/tools/zflash-lib.test.ts` (~180 LOC; 33 Bun-test cases; ALL PASS)
 

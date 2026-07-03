@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 Maji Antigravity check 2300Z:
+
 - Vera: Extreme narration-over-action and metadata churn. The local bus is 28KB.
 - Otto: Stale bus since May 11.
 
@@ -29,6 +30,7 @@ Maji Antigravity check 2300Z:
 Adds a new research shadow lesson log documenting a Maji antigravity check focused on Vera narration-over-action drift and Otto stale bus state.
 
 **Changes:**
+
 - Adds a dated research log for the 2026-05-17 antigravity check.
 - Records observations about Vera bus churn and Otto stale-heartbeat drift.
 - Lists claimed corrective actions and directives for Vera/Otto.

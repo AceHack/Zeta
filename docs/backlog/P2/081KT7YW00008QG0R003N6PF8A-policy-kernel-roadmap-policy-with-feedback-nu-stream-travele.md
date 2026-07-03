@@ -18,7 +18,9 @@ extensions Aaron said to "backlog any that compose or are real alternatives").
 **Filed:** 2026-06-04 (Aaron). **Builds on:** commit d92115514 — `src/Core/Predicate.fs`
 
 + `src/Core/DynamicValueFold.fs` (cata + bananaSplit) + `src/Core/DynamicValueXmlPolicy.fs`
+
 (instance-1). **Design hub:** `memory/amara/conversations/2026-06-04-amara-policy-decision-algebra-…`
+
 + the project hub `project_codecs_as_policy_parameterized_folds_add_ontology_to_value_tree_2026_06_04.md`.
 
 The converged model: ONE functor F, two fixpoints (μF=DOM/data, νF=stream/traveler); a
@@ -61,6 +63,7 @@ Item #1 (Policy<input,decision,feedback>) SHIPPED (commit 7bb817a8b); item #6 be
 Technical/Legal/Governance + requiredValidator + Signoff + Draft/Active where activate
 gates on the matching validator, so active-without-the-right-signoff is unreachable by
 construction). Kestrel adds:
+
 6. **Three policy KINDS, each with its own validator** — technical (proof/tests),
    legal (counsel), governance (human-review; motive-touching ones → psychiatrist+Max).
    Up-project to a TYPED policy where the kind is a typed lens; **the type is a ROUTER,

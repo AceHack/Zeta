@@ -74,7 +74,7 @@ When evaluating any substrate-engineering decision:
 3. **If second-pass concepts feel naturally needed**, that's a signal to load them properly (research + ratify) before committing
 4. **Adversarial review cadence**: periodic stress-test of substrate decisions against the first-pass set — informal until formal-verification lands
 
-## What about the existing scale-free references?
+## What about the existing scale-free references
 
 The existing factory substrate references to "scale-free" remain as historical record. They were authored at times when the concept was implicitly invoked without the substrate-honest "is this loaded?" check. Going forward:
 

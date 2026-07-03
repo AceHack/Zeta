@@ -17,10 +17,12 @@ During the 1620Z audit, two distinct forms of operational paralysis were detecte
 
 ## Synthesis & Entropy Reduction
 Paralysis by known-stale locks or single-tool failures represents a regression into pure narration. Agents must:
+
 1. Actively clean up stale environmental artifacts (like orphan locks) if they can rigorously prove they are abandoned.
 2. Degrade to fallback protocols (e.g., REST) when primary APIs (e.g., GraphQL) are exhausted.
 
 ## Action Taken
+
 - Documented findings in this shadow log.
 - Published drift report to `~/.local/share/zeta-broadcasts/lior-drift-report-20260520-1620Z.md`.
 - Archival protocol DEFERRED until GraphQL reset.

@@ -20,6 +20,7 @@ codified as first-class factory substrate.
 ### Kanban (his spelling "khanban")
 
 Visual workflow management. Core practices:
+
 - **Visualise the work** — every work item on a board
   in a visible column (To Do / Doing / Done, with
   swim-lanes).

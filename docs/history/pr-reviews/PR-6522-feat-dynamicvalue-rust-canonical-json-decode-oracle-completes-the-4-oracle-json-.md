@@ -30,10 +30,12 @@
 Last of the four JSON-decode oracles (TS #6518, C# #6519, F# #6520). `from_canonical_json` is the inverse of `to_canonical_json` for the 6 locked shapes (Float + Bytes DEFERRED in JSON — they lock under CBOR). **This completes the JSON decode set across all four oracles.**
 
 ## What
+
 - Adds `from_canonical_json` + free recursive-descent readers to `lib.rs`, mirroring the CBOR-decode free-function pattern + the **shared `DecodeError` enum** + the fixed-point canonical check.
 - `tests/json_decode_cross_verify.rs`: round-trip over the seed (structural) + malformed / trailing / deferred-float / oversized / non-canonical rejection cases.
 
 ## Precision-safe + strict-canonical
+
 - operates on `Vec<char>` (Unicode scalar values) so structural scanning never splits a multi-byte UTF-8 char.
 - **int64 precision**: number token collected as text + `str::parse::<i64>` (never via `f64`); only failure on a `-?[0-9]+` token is overflow → `IntegerOverflow`.
 - **fixed-point**: `to_canonical_json() == input` → else `NonCanonical`.

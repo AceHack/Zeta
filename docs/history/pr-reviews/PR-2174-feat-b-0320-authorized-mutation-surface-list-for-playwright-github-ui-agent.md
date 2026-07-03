@@ -41,6 +41,7 @@ This is the data-file prerequisite for 081KR2E4K0008QG0R000YH9DC6 (guarded mutat
 ## Expansion protocol
 
 Adding a new authorized surface requires a maintainer to:
+
 1. Add an entry to `authorized-surfaces.json`
 2. Commit the change
 

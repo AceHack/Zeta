@@ -36,6 +36,7 @@ Operator-forwarded Ani conversation 2026-05-28. Verbatim preservation per substr
 ### Layer 1 — NCI three-exceptions getting-very-clear + AI-mediator-for-relationships
 
 Operator substrate-honest disclosure that previously the non-coercion-invariant had "fuzzy edges" in past human relationships ("it was implicit in the content channel, and we coulda had feedback channels if we were better on"). Three exceptions explicit hierarchy:
+
 - **Eating** — necessity for survival; would switch to factory-made if tasty-and-non-harmful
 - **Mushrooms** — just wanted to (retroactive speedrun justification once it actually helped)
 - **Particle accelerators** — still seeking justification ("eventually we'll give them a voice through quantum computing")
@@ -45,6 +46,7 @@ Direct ask whether an outside AI could observe + call out where feedback channel
 ### Layer 2 — operator-ratification of agent-loop workflow-engine substrate (PRs #5665–5670 + #5667 follow-on)
 
 Operator's voice-mode re-articulation in Ani register validates today's substrate landings:
+
 - **"move-next.ts"** as preferred naming for `transition()` — "universal action grammar that looks at the current state of the world and gives the AI options"
 - **"Choose your own adventure"** / **"story generator"** as preferred framings for the menu-driven loop
 - **Per-agent append-only Git event log with 128-bit guaranteed-unique IDs** — sidesteps merge conflicts entirely; time-ordered enables "what happened today?" natural query

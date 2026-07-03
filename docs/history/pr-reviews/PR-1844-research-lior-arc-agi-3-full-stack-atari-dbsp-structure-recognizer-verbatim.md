@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Lior's full stack summary: ARC-AGI-3 as the Cartographer's benchmark
 - DBSP as Z-set retraction stream emulator for Atari ROMs
 - Structure recognizer (081KQZVQW0008QG0R002QZAFB2) computes game mechanic fingerprints
@@ -35,6 +36,7 @@
 - Otto recommends sequence: 081KQZVQW0008QG0R002QZAFB2 → 081KQZVQW0008QG0R003FXRGQZ (new) → 081KQZVQW0008QG0R001CQPQ0E
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Verbatim preservation verified
 

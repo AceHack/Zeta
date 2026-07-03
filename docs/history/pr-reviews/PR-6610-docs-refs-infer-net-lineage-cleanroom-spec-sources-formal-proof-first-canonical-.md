@@ -30,12 +30,14 @@
 Authorized capture of the **Infer.NET-lineage cleanroom-spec source papers** for 081KT2T2J0008QG0R000S7GHQ8, with the **formal-proof-first** framing (Aaron 2026-06-02). The repo starts from proof; cross-AI consensus is a prompt to prove, not a proof.
 
 **Spec sources** (read the math, implement clean; Infer.NET source = concept-not-code):
+
 - **Foundations** (cited in code): Kschischang-Frey-Loeliger 2001 (factor graphs / sum-product), Minka 2001 (EP), GPML §3.6 (probit).
 - **Unifying theory** (anchor): **Minka 2005 "Divergence measures and message passing"** — α-divergence unifies BP/EP/VMP/mean-field/power-EP into one engine; Winn-Bishop 2005 (VMP); Aji-McEliece 2000 (GDL / semiring sum-product).
 - **Functional + formal**: **Ścibior et al. 2018 POPL** (denotational validation — the proofs), **Ścibior et al. 2018 ICFP** (modular monadic inference — the `seed` CE shape), Ścibior-Ghahramani-Gordon 2015, Heunen-Kammar-Staton-Yang 2017 (quasi-Borel).
 - **Incremental**: Budiu et al. 2023 (DBSP).
 
 **Constitutional framing folded in:**
+
 - "we always want formal proof; we start this repo as formal proof first."
 - "4-oracle consensus means nothing without the math — might be shaky ground and good feeling." Cross-AI agreement is **not** validation.
 - **"nothing is canonical until it's part of the proof lineage, so its homeostat is proven from seed."** Canonical ⟺ the homeostat (Ashby self-regulating equilibrium — e.g. `runToFixpoint` convergence, jelly→spine) is provably derivable from the seed. Raises the labeling-confidence canonical-tier bar.

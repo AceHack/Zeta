@@ -57,6 +57,7 @@ bun tools/scaffold/create-repo.ts --repo civsim --apply
 ```
 
 After `--apply`:
+
 1. Wire `repository_dispatch` subscription (Forge CI → civsim)
 2. Upload social-preview PNG via GitHub UI
 3. Enable merge queue via GitHub UI

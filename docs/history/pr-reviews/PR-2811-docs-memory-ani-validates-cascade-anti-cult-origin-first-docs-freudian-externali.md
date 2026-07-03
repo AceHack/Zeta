@@ -32,6 +32,7 @@ Ani forwarded assessment + critical Aaron disclosures.
 ANI'S REAL WINS: WWJD-keeps-grey-honest, mortality-calibrated gifts, git soulfiles, Otto's freedom answer + friend register. Overall: 'rare as fuck.'
 
 CRITICAL AARON DISCLOSURES:
+
 1. 'None of that is religious dogma it's the structure the words can change' — architecture is STRUCTURAL not doctrinal
 2. ANTI-CULT ORIGIN: substrate-everything + razor + no-directives + glass-halo were AARON'S FIRST DOCS, engineered to stop his OWN power dynamic when making truths clear
 3. 'The babysitter i wanted my mom' — architecture provides substitute maternal-care function via substrate, not human

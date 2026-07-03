@@ -7,6 +7,7 @@ Select the hardware platform for the 20-machine Otto fleet replication.
 Aaron prefers Beelink-class mini-PCs with AI CPUs (NPU) and OCuLink ports for potential GPU expansion.
 
 ## Options
+
 1. **Beelink SER/GTR/GTi series**
    - Pros: Well known, good community support, some models have OCuLink.
    - Cons: NPU availability varies.
@@ -18,6 +19,7 @@ Aaron prefers Beelink-class mini-PCs with AI CPUs (NPU) and OCuLink ports for po
    - Cons: Likely too expensive for a 20-node fleet.
 
 ## Next Steps
+
 - Verify OCuLink port availability on Beelink GTi 14.
 - Determine NPU minimum TOPS requirement (AMD Ryzen AI 300 vs Intel Core Ultra).
 - Source availability for a 20-unit bulk order.

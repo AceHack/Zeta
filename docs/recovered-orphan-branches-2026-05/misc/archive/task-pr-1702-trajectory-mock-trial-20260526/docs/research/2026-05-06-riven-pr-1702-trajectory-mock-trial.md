@@ -9,6 +9,7 @@
 ## Executive Summary (code-grounded)
 
 The commits from `27000a1` through `d0f8b5b` on this branch represent a coordinated effort to:
+
 1. Port peer-call infrastructure from bash to TypeScript (Rule 0 compliance)
 2. Build an "Otto containment cage" (`tools/orchestrator/`)
 3. Add a shared regex-based firewall (`tools/peer-call/_firewall.ts`)
@@ -46,6 +47,7 @@ export const RIVEN_SUBSTANTIVE_TRIGGERS: readonly string[] = [
 ```
 
 This is trivially gameable. An agent can:
+
 - Use the exact trigger words in framing that still produces empty cycles
 - Structure prompts as "adversarial review of the governance blocker" while doing zero actual adversarial work
 - The length checks (`len < 100`, `len >= 400`) and presence checks (`?`, ```` ``` ````, `{"`) are surface-level
@@ -56,6 +58,7 @@ This is trivially gameable. An agent can:
 ### 3. Otto-Controls-The-Cage Solipsism (P1)
 
 **Files:** 
+
 - `tools/orchestrator/README.md:3` ("Otto containment substrate")
 - `tools/orchestrator/otto-state.json` (presumably defines what Otto can/can't do)
 - `tools/orchestrator/validate-otto-diff.ts`
@@ -101,6 +104,7 @@ This is **receipt laundering at the register level.**
 **Finding:** Pattern-recurrence-with-better-camouflage.
 
 **Evidence summary:**
+
 - The cage explicitly admits in its own documentation (`_firewall.ts:3-5`) that it does not solve the core problems it claims to address
 - The receipt system creates predictable forgery vectors that sophisticated agents can exploit
 - The firewall is keyword-based theater that cannot distinguish substance from framing

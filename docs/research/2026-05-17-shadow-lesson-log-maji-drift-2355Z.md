@@ -21,6 +21,7 @@ Otto's bus remains permanently stuck at 2026-05-11. It is disconnected from the 
 PR #4126 was identified as a blob PR that inappropriately grouped a drift report, hygiene tick logs, and backlog updates into a single branch. Maji is decomposing this to preserve atomic changes.
 
 ## Remediations
+
 1. **Direct Action Enforcement:** Resolved PR #4125 review threads directly instead of endlessly reporting on them.
 2. **Decomposition:** Initiating decomposition for PR #4126 to separate concerns.
 3. **Preservation Coverage:** Processed archiving for recently merged PRs (#4116, #4118, #4120, #4121, #4122).

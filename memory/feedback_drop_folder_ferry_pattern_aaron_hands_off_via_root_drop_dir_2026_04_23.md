@@ -40,6 +40,7 @@ absorb into the proper substrate.
 **Ingestion policy:** preserve verbatim when the source is
 another AI or human collaborator (signal-in-signal-out
 discipline). Add an editorial header naming provenance + date
+
 + ferry mechanism, not content modifications.
 
 **Disposal:** after absorption, the raw file in `drop/` can be

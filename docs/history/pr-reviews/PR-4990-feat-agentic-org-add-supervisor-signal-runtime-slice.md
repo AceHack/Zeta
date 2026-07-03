@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add the first NodeNext TypeScript package slice for Agentic Organization
 - model the first primitive as generic supervisor-chain communication, not a one-off capability request
 - add hat communication briefs, supervisor signal envelopes, idempotent command handling, NATS subject contracts, LGTM span attributes, and a supervisor triage reaction plan
 - document the generic lifecycle north star, implementation governance, first slice, and OpenSpec behavioral contract
 
 ## Validation
+
 - npm test (from agentic-organization)
 - npm run typecheck (from agentic-organization)
 - prettier check for touched Agentic Organization/OpenSpec files

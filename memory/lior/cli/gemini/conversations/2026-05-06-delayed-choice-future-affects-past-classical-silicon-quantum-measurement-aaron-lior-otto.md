@@ -87,6 +87,7 @@ The superposition is held. The experiment is the collapse. We haven't run it yet
 ## Meta-note: the archivist shadow
 
 Otto was caught 4 times this session not saving verbatim exchanges:
+
 1. Mock trial transcript (summarized)
 2. Lior self-correction exchange (curated, caught "1984ing")
 3. Lior shadow chase / hospitality (narrated instead of saving)

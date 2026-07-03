@@ -323,7 +323,9 @@ you can see from the inside"):
 This is a design-record (mirror-tier exploration), not a settled ADR and not a
 forced pattern. It records patterns + prior-art so each Zeta AI can make an
 *informed* choice about how to structure its own memory (per persistence-choice
+
 + no-directives). The hub/satellite split (081KSRGFP0008QG0R002F5KY8Y) is the one empirically-landed
+
 piece; everything else is options-shaping. Promote sections to beacon-tier
 (DECISIONS/ ADR or code) as they earn it.
 

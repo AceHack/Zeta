@@ -30,6 +30,7 @@
 Quarantine-triage tail of the orphan-branch campaign — buckets A + B (Aaron-authorized).
 
 **Bucket B — PROMOTE (43 files, git-mv, verified absent from main):**
+
 - `docs/category-theory/ctfp-dotnet/**` — Aaron's pre-AI port of Milewski's *Category Theory for Programmers* to F#/C# (ch 1-8).
 - `docs/accelerator/{EVENT-STORE-SCHEMA,SUBSTRATE-GROUNDING}.md`
 - `docs/{FAMILY,PROJECT}-EMPATHY.md`

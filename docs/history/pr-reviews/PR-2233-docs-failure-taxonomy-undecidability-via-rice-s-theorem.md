@@ -32,6 +32,7 @@
 One-page proof sketch: for Turing-complete agents, failure-mode taxonomy completeness is undecidable (Rice's theorem). New shadow classes are mathematically inexhaustible over arbitrary task specifications.
 
 Separates three claims clearly:
+
 - Rice's theorem → taxonomy can't be proven complete (PROVEN)
 - Class 4 → recurring patterns + long tail (EMPIRICAL)
 - Wolfram irreducibility → no shortcut exists (NOT CLAIMED)

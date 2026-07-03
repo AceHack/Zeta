@@ -52,7 +52,7 @@ Two competing pulls:
 
 Ship file-only memo (THIS file) as forced-#6 substrate. Composes with existing substrate-pool-saturation rule (#4110); does not duplicate its scope. Counter resets via concrete artifact. Post-rate-reset (4 min) handles the decompose-PR work.
 
-### Is the rule mis-tuned?
+### Is the rule mis-tuned
 
 Question for accumulating empirical evidence (NOT a recommendation this memo makes):
 

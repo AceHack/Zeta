@@ -37,6 +37,7 @@ Docs/rules-only. Composes-with: #6189 (the rule this corrects) · `blocked-green
 Fix-forward documentation correction to the “Idempotency” always-active discipline rule, clarifying two technical claims around CAS retry loops and Z-set retraction semantics.
 
 **Changes:**
+
 - Clarifies that CAS retry loops don’t require the recomputed transformation to be idempotent unless the retried body has observable side effects beyond the CAS word.
 - Clarifies that Z-set retraction is a correction mechanism (weights sum) and does not provide duplicate-guard semantics for accumulating events.
 

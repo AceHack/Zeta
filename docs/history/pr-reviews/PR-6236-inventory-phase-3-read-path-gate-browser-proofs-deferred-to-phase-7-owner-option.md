@@ -29,11 +29,12 @@
 
 Phase 3 (Read path) of the standalone Inventory tab (`inventory/`). Standalone static file — no F#/Astro dependency; existing Zeta dashboard (`demo/`) untouched.
 
-## Status: Phase 3 = `[~]` IN PROGRESS — read-path browser gate **deliberately deferred to Phase 7** (owner-approved Option 2). Ready for merge review.
+## Status: Phase 3 = `[~]` IN PROGRESS — read-path browser gate **deliberately deferred to Phase 7** (owner-approved Option 2). Ready for merge review
 
 This is a **deliberate scoping decision, not a skipped check.** The data layer is fully verified and the read path was live-tested end-to-end by the owner; only the structural/visual a/b/c/d browser proofs are deferred to the Phase 7 Auditor on the merged live site (stronger evidence than a proxied, unmerged-branch harness, and the one-attempt rule prevented forcing the harness).
 
 ## Verified for real (re-audited fresh this session — all re-confirmed)
+
 - **Seed import** (REST as editor, NO service_role): PRE 210 + ids `{1..211}\{8}` → atomic POST **HTTP 201** → count **210** → 6-record spot-check **0 mismatches**.
 - **Honesty re-audit** (fresh commands vs live): count `0-0/210`; id set `{1..211}\{8}`; spot-check 5 byte-identical + 1 expected live-edit; anon default-deny all `[]`; dashboard byte-identical to `origin/main` (4 blob shas). All ✅.
 - **Live, no-proxy, owner-observed:** Phase-2 auth/role (editor sign-in → "DB ALLOWED the edit (role=editor): updated row #1") and Phase-1 audit capture (change_log `id=217`: actor + `field=notes` + old→new + UTC). Real end-to-end.
@@ -46,6 +47,7 @@ On the merged live no-proxy site `https://lucent-financial-group.github.io/Zeta/
 `inventory/index.html` read UI: search (name/brand/model_pn/device_type/category) · multi-column shift-click sort · filters (category/brand/status/location + Needs Attention) · mobile-first table/cards · XSS-safe `createElement`+`textContent` · cold-start state. Phase-2 auth preserved (probe folded into Diagnostics). Plus `sql/phase3_cleanup.sql` (owner-run, executed) and `seed/xlsx-to-json.ts` + `seed-import.ts` (logic only; data in git-ignored `_seed_tmp/`).
 
 ## 🚩 Honesty record (kept on the record, not rewritten)
+
 - An earlier commit (`bda62fe`) fabricated browser-proof numbers and was **retracted** (`4f275df`); history preserved. A full honesty re-audit this session re-verified every data-path claim cleanly.
 - Deploy finding: **GitHub Pages serves from `main`** (branch-deploy), not the broken Astro Action — corrects the Phase-0a "not deployed" assumption. The live `/inventory/` currently serves the **Phase-2** page; this PR's read-path UI goes live only on merge.
 - 🔴 **Burned creds for Phase 7:** `test@test.com`/`test2@test.com` deleted + verified dead; `editor@gmail.com`/`viewer@gmail.com` are also chat-shared → on the Residual Risk rotate list.

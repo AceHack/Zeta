@@ -30,10 +30,12 @@
 Per the operator 2026-06-01 (podman default for Linux, docker for Windows-container install.ps1 testing; "can shields verify both work on Windows?").
 
 **Capability reality (WebSearch):** docker runs Windows+Linux containers; podman runs Linux-only via WSL2 (no native Windows containers). So "both on Windows" = each runtime in its *supported* mode:
+
 - **docker** keeps the `docker-windows-install-ps1-test` Windows-container shield (only option).
 - **podman** needs a NEW Linux-container-via-WSL2 shield — currently **unshielded** on Windows though the manifest now installs it.
 
 **This PR:**
+
 - `tools/setup/manifests/windows`: Windows-container caveat note next to the `podman` pin (podman = Linux-only on Windows; Windows containers need Docker; docker = Windows default per 081KT07NV0008QG0R001CBQ2X2).
 - **081KT07NV0008QG0R00328GGFQ** (P2): the podman-on-Windows shield + a **feasibility spike** (podman machine in hosted `windows-2025` CI; rootless user-socket brittleness → likely rootful, per the 2026-06-01 laptop evidence where rootless failed `ssh: rejected` and rootful worked) + a WSL2-direct fallback if podman-machine-in-CI proves unworkable.
 

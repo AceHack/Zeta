@@ -22,6 +22,7 @@ The Axis-3 structure categorizes substrate into two primary tiers:
 2. **English Tier:** Content whose primary purpose is discursive, philosophical, or narrative (research documents, memory files, persona notebooks).
 
 **The Engineering-Docs Exception:** The following documents are explicitly bound to the Code Tier because their versioning must march in lockstep with the code they describe:
+
 - `README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`
 - Architecture Decision Records (ADRs) (`docs/DECISIONS/`)
 - API documentation, Code of Conduct, security policies.
@@ -55,6 +56,7 @@ Formal verification artifacts are categorized per property class:
 ## Decision: Ruleset-divergence smell test operationalization
 
 The Github Ruleset divergence audit confirmed that "ruleset divergence is the smell test for repo splits."
+
 - Divergent required status checks (F# vs Markdownlint) justify the Code/English split.
 - Divergent execution timeouts justify the Formal Verification split.
 
@@ -67,6 +69,7 @@ The Github Ruleset divergence audit confirmed that "ruleset divergence is the sm
 - **Ruleset Design:** New repos will map their GitHub Rulesets precisely to their Axis-3 classification (e.g., English repos will NOT run `build-and-test`).
 
 ## Composes with
+
 - `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
 - `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md`
 - `docs/research/2026-05-14-axis3-prior-art-audit-b0475.md`

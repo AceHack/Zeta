@@ -1239,7 +1239,9 @@ use case. One library, two Zeta surfaces.
 F# and C# native, maintained by Microsoft Research. Authored
 originally to support the MSR Bayesian-inference work
 (TrueSkill, Bing relevance, clinical trials); open-sourced in
+
 2018. Supports factor-graph compilation, exact inference on
+
 tree-structured graphs, loopy belief propagation on general
 graphs, and a model-compilation phase that generates .NET IL.
 Zeta references: `docs/ROADMAP.md:80` (Zeta.Bayesian P2);

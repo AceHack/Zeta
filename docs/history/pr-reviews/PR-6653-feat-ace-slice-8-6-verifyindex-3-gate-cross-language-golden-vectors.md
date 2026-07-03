@@ -43,6 +43,7 @@ pinned-key (`signature.key_id == remote.key_id`) → signature (`verifyIndexSign
 A non-TS Ace words messages differently, so the contract is the **verdict** + **which gate fired**. `expected_gate ∈ {ok, pinned-key, signature:{unsupported-algo|untrusted-key|bad-signature}, rollback, future-skew, stale}`; the oracle maps `verifyIndex`'s free-text `reason` → class via documented substrings.
 
 ### Fixture (`tests/cross-verification/verify-index-gate/`)
+
 - `vectors.json` — **cases[12]** (`doc` + `remote` + `trust` + `cache_sequence_high_water` + `now` + `offline` → `expected_ok` + `expected_gate`): happy-path; each gate firing (pinned-key-mismatch · sig-untrusted-key · sig-bad-signature · sig-unsupported-algo · rollback · future-skew · stale-default · stale-custom · offline-skips-staleness); **two ordering cases** (`order-pinned-key-beats-bad-sig`, `order-rollback-beats-stale` — both conditions true, assert the earlier gate wins).
 - `cross-verify.ts` — TS oracle runs the real `verifyIndex`, maps reason→gate-class, asserts verdict + gate; writes `ts-output.json`; exits non-zero on mismatch. **Auto-discovered by `cross-verify-all.ts` → 8/8.**
 
@@ -53,6 +54,7 @@ A **Python five-check re-implementation** (key_id compare · ed25519 verify via 
 Stays **TS-only + proof-owed → not canonical yet**.
 
 ### Gates (all green locally)
+
 - `bun --bun tsc --noEmit -p tsconfig.json` → exit 0
 - `bun test tools/ace/` → **372 pass** (no code change)
 - `bun tools/ci/cross-verify-all.ts` → **8/8 primitives** (incl. the new `verify-index-gate` dir)

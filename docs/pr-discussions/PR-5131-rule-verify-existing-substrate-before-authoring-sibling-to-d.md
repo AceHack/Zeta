@@ -29,6 +29,7 @@ Empirically grounded in **3 same-root-cause failures from session 2026-05-26**:
 ## Same root cause class, different surface
 
 All 3 anchors are "Otto-defaults-to-plausible-but-unverified" — at different surfaces:
+
 - Version pins / path assertions → covered by `dep-pin-search-first-authority.md`
 - NEW substrate authoring (backlog rows, rules, skills, agenda entries, architectural framings) → covered by THIS rule
 - Existing-rule citation as alibi for action → covered by `fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`
@@ -38,6 +39,7 @@ Together the 3 rules cover the surfaces today's empirical evidence shows are vul
 ## Operational discipline (per the rule body)
 
 4-step pass before authoring new substrate:
+
 1. Grep across substrate surfaces (agendas + trajectories + backlog + rules + memory + research)
 2. READ THE TOP HITS (not just list them)
 3. Decide: existing-covers / partial / no-existing
@@ -62,6 +64,7 @@ Auto-loads at cold-boot per wake-time-substrate.
 Adds a new `.claude/rules/` wake-time substrate rule that formalizes a “search and read existing substrate before authoring new substrate” discipline, positioned as the substrate-authoring counterpart to `dep-pin-search-first-authority.md`.
 
 **Changes:**
+
 - Introduces `verify-existing-substrate-before-authoring.md` with a required pre-authoring inventory/search process and an inline checklist template.
 - Captures three empirical anchors from 2026-05-26 to justify the rule and keep the motivating evidence present at cold-boot.
 - Cross-references existing related rules to clarify composition across surfaces (dep pins, rule-citation failures, substrate authoring).

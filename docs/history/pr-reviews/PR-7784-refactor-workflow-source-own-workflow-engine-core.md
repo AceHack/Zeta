@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - move `tools/workflow-engine/` into `src/Core.TypeScript/workflow-engine/` so the workflow/agent-loop primitives live in source rather than dev-machine tooling
 - update active source, backlog, research, and reference pointers to the new source-owned path
 - repair `tools/observe` to import `FourCornerOwnership` from the source-owned workflow-engine path
 
 ## Verification
+
 - `bun run typecheck`
 - `bun test src/Core.TypeScript/workflow-engine/`
 - `bun test tools/observe/observe.test.ts`
@@ -42,6 +44,7 @@
 - `dotnet build -c Release`
 
 ## Notes
+
 - active `tools/workflow-engine` references were removed from source/docs/backlog/research/reference notes; historical trajectory/history/PR archive surfaces were intentionally left alone
 
 ## Outcome

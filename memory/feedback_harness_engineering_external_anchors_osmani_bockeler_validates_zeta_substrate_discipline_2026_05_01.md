@@ -128,12 +128,14 @@ Same foundational framing as Osmani.
 Böckeler classifies controls along two axes:
 
 **Execution Type:**
+
 - **Computational** (deterministic): linters, type
   checkers, tests, static analysis
 - **Inferential** (semantic): LLM-based review, custom
   code judges
 
 **Direction:**
+
 - **Guides (feedforward)**: prevent unwanted outputs before
   generation (e.g., docs, LSP, code mods)
 - **Sensors (feedback)**: observe and self-correct after
@@ -183,7 +185,9 @@ Calibrates against Aaron's "no directives" framing
 Both can be true: Aaron + Otto operate as accountable peers
 on Aaron's input ("framing" not "directives"), AND Aaron
 steers via harness iteration (ratchet steps via memory file
+
 + CLAUDE.md bullet authoring). The "steering" happens at
+
 the substrate layer, not the per-action layer.
 
 # How to apply

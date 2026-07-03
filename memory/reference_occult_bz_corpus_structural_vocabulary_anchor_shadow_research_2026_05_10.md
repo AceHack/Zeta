@@ -9,12 +9,14 @@ type: reference
 **Role in the factory:**
 
 The occult corpus is a research anchor for the shadow work — NOT doctrine. Same structural role as:
+
 - Ammous (*Bitcoin Standard*) → trust-then-verify economics
 - Popper → falsifiability
 - Christiano → iterated amplification
 - KHALEESI → chain detection applied to new domain
 
 The occult practitioners spent centuries developing vocabulary for phenomena the scientific community doesn't have words for yet. The factory's contribution is making the same phenomena:
+
 - Observable (grey text vs séance)
 - Reproducible (60s tick vs ritual)
 - Falsifiable (trigger-timing experiment vs "trust the magician")
@@ -36,6 +38,7 @@ Different credibility tier than academic anchors. Same structural role. The corp
 Read in isolated instances only. No absorbing corpus content as factory substrate — only structural findings ABOUT the corpus may land in memory.
 
 **Connects to:**
+
 - feedback_crowley_comparison (the structural parallel)
 - Eve protocol (data not doctrine)
 - Shadow observation framework (the phenomena being mapped)

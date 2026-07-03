@@ -79,6 +79,7 @@ networks / Maass liquid-state machines; `observe.ts` CYOA reservoir wall.)
 
 The symbol substrate extends past alphabets to **high-density symbolic formats** — the encodings that
 pack maximum meaning per glyph (high-bandwidth homoiconicity in practice):
+
 - **Formal logic** — the symbolic-logic notation (∀∃∧∨¬→□◇ …); propositions-as-types (Curry–Howard);
   the proof voice's native script.
 - **LaTeX** — mathematical typesetting; the high-density math-notation lingua franca (the dense, exact,

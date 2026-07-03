@@ -29,11 +29,13 @@
 
 ## Summary
 Smallest bounded slice of 081KR2E4K0008QG0R002NYV33T (P1 safety ruleset split):
+
 - TS skeleton creator (dry-run, Rule 0 compliant)
 - Re-decomposed (original atomic assumption had mistake; 2 slices needed)
 - Fulfilled backlog start-gate checklist on row (prior-art search + dep restructure + evidence)
 
 ## Focused checks (included per task)
+
 - dotnet build -c Release: 0 Warning(s) 0 Error(s) ✅
 - bun ... --dry-run: executed cleanly ✅
 - Type/lint: no errors in skeleton ✅

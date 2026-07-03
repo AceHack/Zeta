@@ -46,6 +46,7 @@ SPIFFE concept + BFT issuance + Arrow IPC + F# types = zero trust without ops ni
 The types encode the trust policy. The compiler enforces it. The kernel routes on trust tier. No config files because the config IS the code. `erasableSyntaxOnly` at TS layer ensures same property.
 
 **Connects to:**
+
 - project_trust_migration_path_aaron_to_zero_trust (the migration phases)
 - project_microkernel_trust_tier_router (kernel routes on trust level)
 - feedback_arrow_tier_0 (Arrow replaces mTLS at Tier 0)
@@ -72,6 +73,7 @@ server in hot path.
 | Config | YAML/Rego | F# type system (compiler enforces) |
 
 **Sources:**
+
 - [SPIFFE Federation](https://spiffe.io/docs/latest/spiffe-specs/spiffe_federation/)
 - [Nested SPIRE](https://spiffe.io/docs/latest/planning/scaling_spire/)
 - [OPA](https://www.openpolicyagent.org/)

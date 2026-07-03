@@ -30,6 +30,7 @@
 Spec for the **YAML port** on the serializer roster (registry `⬜ YAML`).
 
 Own a YAML reader interface across all 4 langs (TS/F#/C#/Rust):
+
 - **Layer 1 — `YamlReader`**: forward-only single-pass pull reader emitting a flat `YamlEvent` stream (`Mapping/Sequence Start/End`, `Scalar{raw,kind,style}`). Never materializes a tree (indent/context stack only). `Utf8JsonReader`-style.
 - **Layer 2 — `YamlValue` DOM**: thin builder folding the event stream into a value tree, on top of L1.
 - **Boundary** (per `bcl-interface-boundary` + registry doctrine): hand-rolled default; vendor wrapped as differential-oracle adapter (YamlDotNet F#/C#, `Bun.YAML` TS); Rust hand-rolled-only (`serde_yaml` unmaintained).

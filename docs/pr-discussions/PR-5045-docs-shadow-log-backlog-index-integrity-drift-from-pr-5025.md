@@ -27,6 +27,7 @@ Documents a process drift event where the 'backlog' agent failed to update the m
 Documents a shadow/process-drift lesson (backlog index integrity drift in PR #5025) and adds a batch of PR-discussion preservation archives under `docs/pr-discussions/` for durable provenance.
 
 **Changes:**
+
 - Added a new `docs/research/` shadow lesson log capturing the backlog-index-integrity drift from PR #5025.
 - Added multiple new PR discussion archive files under `docs/pr-discussions/` (PR #4965 through PR #5034) as preserved conversation/provenance artifacts.
 

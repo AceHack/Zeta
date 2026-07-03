@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - `generate-index.ts` only marks items `[x]` when `status: closed` — not `status: done`
 - 29 backlog rows were using `status: done`, showing as open `[ ]` in the generated index despite being completed work
 - Bulk-normalized all 29 to `status: closed`, then regenerated `docs/BACKLOG.md`
 
 ## Checks
+
 - `bun tools/backlog/generate-index.ts --check` → ok
 - `dotnet build -c Release` → Build succeeded
 

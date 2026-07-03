@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add a source-owned `IHeatBoardStateStore` boundary and in-memory reference implementation
 - add save/load helpers so a heat-board continuation can load its saved `ScheduledRoomState` and run the next bounded SimLoop link
 - keep missing snapshots, bad tokens, foreign loop ids, bad namespaces, and resume tick overflow on `HeatBoardContinuationFeedback`
 - tighten resume admission so the full next lap fits in `int` tick space before offsetting the host interrupt source
 
 ## Validation
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~DarkHallSchedulerTests
 - dotnet format --verify-no-changes
 - dotnet build -c Release

@@ -30,6 +30,7 @@
 Cold-boot Otto-CLI cron firing on autonomous-loop sentinel. Sustained Lior-gemini cycling continuing from yesterday's 70+ tick saturation arc (per [`feedback_21min_lior_stable_saturation_session_arc_counter_discipline_intact_5_anchors_otto_cli_2026_05_21.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/CURRENT-otto.md)); Lior actively pushing branch `lior/shadow-drift-base-branch` mid-refresh.
 
 ## Refresh state
+
 - Gap from prior shard (0603Z): 139 min
 - main HEAD `72ef4894`
 - Rate limit: `{graphql: 2170, reset_in_min: 18}` → Normal tier
@@ -37,16 +38,19 @@ Cold-boot Otto-CLI cron firing on autonomous-loop sentinel. Sustained Lior-gemin
 - Lior process: 3 procs active (`lior-loop-tick` + `gemini.*--yolo` runtime); matches refined detection regex `lior|gemini.*--yolo`
 
 ## Substrate-honest deferrals
+
 - 12 BLOCKED-with-green-CI Lior shadow/preservation PRs — peer-overreach risk under saturation
 - PR #4517 (ZetaId V1 128-bit contract) — 20 unresolved P0/P1 threads; multi-tick code-change work; investigation only
 - Working-tree contamination on stale `otto/2012z-...` branch — already triaged in PR #4490
 
 ## Concrete artifacts this tick
+
 1. Sentinel `0e3430cc` armed (catch-43 defense)
 2. This shard
 3. Saturation-arc state captured for future cold-boots
 
 ## Composes-with
+
 - `holding-without-named-dependency` — counter-reset condition #3 satisfied
 - `codeql-no-source-on-docs-only-pr-is-broken-commit-canary` — pre-commit ls-tree verification (53→53; new file in existing top-level dir is expected)
 - `zeta-expected-branch` race-window-caveat — isolated worktree

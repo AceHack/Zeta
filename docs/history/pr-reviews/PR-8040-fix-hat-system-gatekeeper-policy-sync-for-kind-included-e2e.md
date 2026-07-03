@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Re-enable `policies/**` in the hat-system Application (removed kind/CI exclude).
 - Add wave-2 ArgoCD Sync hook Job that waits for Gatekeeper to register hat constraint CRDs before constraints (wave 3) apply.
 - Document hat-system internal sync waves in `full-ai-cluster/dev-cluster/SYNC-WAVES.md`.
@@ -35,6 +36,7 @@
 Toward **Kubernetes E2E on main**: included-scope proof (`live-kind-included`) should now reconcile hat-system with all seven Gatekeeper constraints on a cold kind cluster.
 
 ## Test plan
+
 - [ ] `bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts`
 - [ ] Local: `bun src/Core.TypeScript/cluster/argocd-health-test.ts --run --provider kind --scope included --runtime docker --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml --cluster-name zeta-local-included --git-ref riven/k8s-e2e-hat-system-gatekeeper`
 - [ ] CI `live-kind-included` green on PR

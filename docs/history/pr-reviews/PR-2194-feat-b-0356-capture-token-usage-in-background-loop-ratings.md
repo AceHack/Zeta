@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds `--output-format json` to claude CLI invocations in the background loop tick script
 - Parses token counts (input, output, cache_read, cache_creation) and cost_usd from each run
 - Enriches `model-ratings.jsonl` with token atoms — cost derived at query time, never stored
@@ -35,6 +36,7 @@
 - Fixes build-error/test-failure detection to check parsed result text rather than raw JSON
 
 ## Test plan
+
 - [ ] Verify `bun build .claude/bin/claude-loop-tick.ts --no-bundle` compiles clean
 - [ ] Run a manual tick with `ZETA_CLAUDE_LOOP_RUN_CLAUDE=1` and verify `model-ratings.jsonl` entries contain token fields
 - [ ] Verify `ticks.log` shows token metadata in headers

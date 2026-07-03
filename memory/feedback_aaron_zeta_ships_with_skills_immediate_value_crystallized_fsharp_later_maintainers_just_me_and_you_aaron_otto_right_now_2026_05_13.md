@@ -95,6 +95,7 @@ scale — Aaron + Otto have rich local toolkit; future end users
 get Zeta + skills.
 
 This composes with:
+
 - `.claude/rules/agent-roster-reference-card.md` (factory
   agents: Otto, Alexa, Riven, Vera, Lior — but operational
   current substrate-engineering is Aaron + Otto)
@@ -109,6 +110,7 @@ This composes with:
 ### For Zeta packaging
 
 Zeta installer/distribution includes:
+
 - Zeta runtime (F# substrate + dotnet)
 - Skill catalog (`.claude/skills/` from factory)
 - Memory substrate (`memory/<persona>/*/canonical/` curated)
@@ -120,12 +122,14 @@ Zeta is just runtime; with skills, Zeta is operational.
 ### For end-user onboarding
 
 End users get:
+
 - Zeta installation
 - Skill catalog accessible at session-start
 - Memory substrate they can extend
 - Their own substrate work via the framework
 
 They DON'T need:
+
 - SQL Server Docker (maintainer-only)
 - Postgres / DuckDB / RocksDB / etc. (maintainer-only)
 - R / Python / Java (maintainer-only for prototyping)
@@ -133,6 +137,7 @@ They DON'T need:
 ### For skill authoring discipline
 
 Per Aaron's "skills as we map them for our use":
+
 - Skills MUST map to operational use (not aspirational)
 - Skills MUST work in Zeta runtime
 - Skills CAN compose with maintainer-toolkit (prototyping)
@@ -148,6 +153,7 @@ gated; not blocking immediate skill value.
 
 When new maintainers join (human contributors, additional AI
 agents):
+
 - Toolkit access extends (any local DB/bus permitted)
 - Skill authoring rights extend
 - F# crystallization participation extends

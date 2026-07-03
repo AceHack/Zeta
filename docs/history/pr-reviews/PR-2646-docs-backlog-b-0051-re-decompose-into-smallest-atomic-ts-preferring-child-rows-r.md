@@ -31,6 +31,7 @@
 Re-decomposed 081KQ3HBZ0008QG0R002SM3G49 (P2 isomorphism/homomorphism catalog) into the smallest dependency-ordered atomic child backlog rows. Assumed prior decomp (in-row 081KQ3HBZ0008QG0R002SM3G49.1..4) had mistakes: too coarse, prose-heavy, L-effort not sliced small enough. New children are atomic (S/M), strictly dep-ordered, and prefer TS code over hand-written docs (md becomes generated output).
 
 **New atomic children:**
+
 - 081KQ3HBZ0008QG0R002SM3G49.1 (root, buildable): TS interfaces for claims + IF filters (`tools/category-theory/claims.ts`)
 - 081KQ3HBZ0008QG0R002SM3G49.2 (on .1): TS/Bun inventory extractor (scans for existing claims)
 - 081KQ3HBZ0008QG0R002SM3G49.3 (on .1): TS renderer (emits the catalog md from typed data)
@@ -40,11 +41,13 @@ Re-decomposed 081KQ3HBZ0008QG0R002SM3G49 (P2 isomorphism/homomorphism catalog) i
 This is the single bounded step per instructions; no implementation, only the re-decomp substrate.
 
 ## Why
+
 - Follows "always re-decompose... assume mistakes", "TS over bash (Rule 0)", "Prefer F#/TS code over docs"
 - Uses dedicated worktree + pushed claim branch; root checkout untouched
 - Completes backlog start gate (prior-art + deps already in row; re-verified)
 
 ## Focused checks (included per rules)
+
 - `dotnet build -c Release`: succeeded, **0 Warning(s) 0 Error(s)** (gate clean before/after)
 - `rg "Re-decomposition.*Riven" docs/backlog/P2/081KQ3HBZ0008QG0R002SM3G49-*.md`: match present, new decomp section landed
 - Branch: claim/081KQ3HBZ0008QG0R002SM3G49.2-isomorphism-catalog-smallest-ts-slice (pushed from worktree)

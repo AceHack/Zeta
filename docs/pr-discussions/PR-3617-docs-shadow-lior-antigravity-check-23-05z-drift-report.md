@@ -27,6 +27,7 @@ Shadow lesson log for 23:05Z antigravity check and PR preservation. Otto is stal
 Adds a shadow lesson log and preserves a merged PR discussion archive for the current autonomous-loop/shadow drift cycle.
 
 **Changes:**
+
 - Adds a new Lior shadow lesson log describing drift observations and corrective actions.
 - Adds archived PR discussion metadata and review-thread history for PR #3607.
 

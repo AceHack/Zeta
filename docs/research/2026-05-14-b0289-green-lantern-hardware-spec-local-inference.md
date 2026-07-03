@@ -160,6 +160,7 @@ recommended for sustained inference.
 ### Reticulum mesh integration
 
 Reticulum on RPi 5 over:
+
 - WiFi (built-in): ad-hoc or infrastructure AP mode
 - LoRa: RFM95 HAT via SPI (Reticulum `RNodeInterface`) — 433/868/915 MHz,
   up to 5 km line-of-sight
@@ -220,6 +221,7 @@ acceptable latency. It is the **ring MCU layer**, not the inference layer.
 ### On-ring functions (design boundary)
 
 The ESP32-S3 handles:
+
 - BLE 5.0 central/peripheral (ring-to-gateway pairing)
 - IEEE 802.11 b/g/n (WiFi fallback)
 - Ed25519 receipt signing (hardware-accelerated via ESP-IDF mbedTLS)
@@ -238,6 +240,7 @@ The ESP32-S3 handles:
 | Active MCU (no radio) | ~30 mA | ~99 mW |
 
 A 300 mAh LiPo (a ring-viable size) yields:
+
 - ~30 h standby with BLE connected
 - ~12 h active use with occasional WiFi tx
 
@@ -273,6 +276,7 @@ architectural split for the Green Lantern form factor.
 ## Recommended initial configuration
 
 **Ring (tier 1):** ESP32-S3-WROOM-1 module (8 MB PSRAM, 8 MB flash)
+
 - BLE 5.0 to gateway
 - SPI-attached RFM95W LoRa for Reticulum mesh
 - Capacitive three-dial consent UI
@@ -280,6 +284,7 @@ architectural split for the Green Lantern form factor.
 - Policy cache in encrypted SPI flash
 
 **Gateway (tier 2):** Raspberry Pi 5 8GB
+
 - llama.cpp server (REST endpoint) running Llama 3.2 3B Q4_K_M
 - Reticulum LoRa HAT (SPI)
 - Genesis Seed loaded as system prompt at startup

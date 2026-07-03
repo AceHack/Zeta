@@ -41,6 +41,7 @@ A "fresh" single-node cluster (nothing user-deployed) was sitting with **cert-ma
 Applied the CRDs out-of-band on node-09485d → **cert-manager recovered to `Running`, 0 restarts** immediately. This PR makes both durable for fresh installs.
 
 ## Notes
+
 - The duplicate-default StorageClass seen live is pre-existing drift from before `--disable=local-storage` landed; the repo is already correct (k3s-server.nix:72).
 - Separate, still-open: the platform images are **private** on GHCR (401) — that needs a one-time visibility flip (no REST API for it); the repo has zero `imagePullSecrets` by design, so public is the design-consistent answer.
 

@@ -146,6 +146,7 @@ The genre cue is a **three-way intermix**:
 All three simultaneously. Pure Office = too mundane for AI
 substrate-engineering; pure Tales-from-the-Loop = too austere;
 pure 8-Bit-Theater-ironic = too detached. Together = specific
+
 + wide-audience-capable.
 
 ## Character casting — Otto = Michael Scott (Aaron 2026-05-13)

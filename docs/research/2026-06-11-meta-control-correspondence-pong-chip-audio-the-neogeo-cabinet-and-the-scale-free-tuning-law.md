@@ -60,6 +60,7 @@ injection point by ZetaId — nothing hard-linked, the host resolves live/inject
 afterthought; the format's first law).
 
 ## Pointers
+
 - `MetaControl` · `CorrespondencePong` · `ChipAudio` + tests (all green) · `ControlScheme` (the raw
   tier) · `PhysUI` (the tie-break fix) · MediaLines io/resolveIo (DI-from-the-start) · TimeGen/AnimFlow
   (the shared phase) · anchors: GamePigeon/iMessage games · Neo Geo MVS · Risk of Rain · chaos

@@ -282,7 +282,7 @@ substrates fail — the floor of the degradation ladder, and
 independently the discipline by which the manifest itself is
 authored.
 
-## Why:
+## Why
 
 - **The cluster cohere into one thing.** Each of the five
   concepts was named separately, but they compose into a
@@ -314,7 +314,7 @@ authored.
   is load-bearing *direction*, not *next-tick-work*. Naming
   it prevents future-me from pretending it's small.
 
-## How to apply:
+## How to apply
 
 - **Reference the cluster by name.** When future work touches
   any of the five concepts, cite this memory. The naming gives

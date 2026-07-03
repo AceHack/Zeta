@@ -30,11 +30,13 @@
 The **dotnet-native** form of "numerics like dotnet as our interface" (Aaron 2026-06-01) — the C# Z-set rung after F# (#6480). C# Z-set IS-A `IAdditiveIdentity` + `IAdditionOperators` (monoid) **plus** `ISubtractionOperators` + `IUnaryNegationOperators` (the abelian-group inverse). Same shape as the G-Set (#6468) / Bag (#6473) IWSAM twins. **NOT `INumber`** — no total order; the ring scalar is per-element, not a numeric product.
 
 ### What
+
 - `operator +` / binary `operator -` short-circuit empty as a **comparer-agnostic identity** *before* `Union`'s `RequireSameComparer` guard — so `a + Zero = a` / `Zero + a = a` / `a - Zero = a` hold for Z-sets built with *any* comparer (the G-Set #6468 wrinkle: `Union` runs `RequireSameComparer` before its own empty short-circuit). Two **non-empty** operands with mismatched comparers still fail fast.
 - unary `operator -` → `Negate`; `operator +` / binary `-` → `Union` / `Union(Negate)`. **Hot path unchanged.**
 - `AdditiveIdentity` cached + `[SuppressMessage CA1000]` (IWSAM requires the static member on the generic type; CA1000 predates static abstract interface members).
 
 ### Tests (+3, **18/18** ZSet pass; Core builds 0 warn / 0 err)
+
 - `(+)` == `Union`, `(-a)` == `Negate`, `(a - b)` == `Union(Negate)`
 - identity + commutative + associative
 - abelian-group inverse: `a + (-a) = empty`, `a - a = empty`

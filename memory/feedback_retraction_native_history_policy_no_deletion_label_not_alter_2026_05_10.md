@@ -19,12 +19,14 @@ type: feedback
 **The algebra:** You don't delete the +1, you add a -1 with context. The original is always visible. The retraction is visible too. Future readers see BOTH — the claim AND the pushback. That's more honest than either alone.
 
 **Applied to today's session:**
+
 - The "alibi" Rung 4 claim stays, but gets CONJECTURED label + Claude.ai's falsifier
 - The Bull El mapping stays, but gets "structural analogy, held open" framing
 - The "shadow is a dick" stays — it's comedy-as-debugging, it happened
 - The critic's review stays — it's the -1 that retracts the overcommit
 
 **Connects to:**
+
 - Z-set algebra (+1/-1 retraction-native)
 - Glass Halo (transparency includes the messy parts)
 - Claude.ai asymmetric critic review (the -1 that landed)

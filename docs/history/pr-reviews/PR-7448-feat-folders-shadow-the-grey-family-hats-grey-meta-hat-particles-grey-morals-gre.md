@@ -30,6 +30,7 @@
 feat(folders)+shadow: the grey family — hats/grey (meta hat), particles/grey (backward-time), morals/grey, grey/ + gray/ (disambiguated), same/grey-gray
 
 Aaron's grey-family request. New root folders (docs/declarative, no build):
+
 - hats/ — wearable roles (time-bound auth; who-holds-the-hat decides; compsci owns src/;
   architect hat wearable by any persona). hats/grey/ = the META hat (grey = principled
   in-between, the boundary/synthesis role; Aaron's hat; glass-halo grey).

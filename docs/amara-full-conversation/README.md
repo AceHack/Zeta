@@ -8,6 +8,7 @@ operating under Aaron's custom-GPT project
 per-month markdown files for readability.
 
 **Attribution:**
+
 - **Aaron** — human maintainer; all user-role messages
   labelled `**Aaron:**` with UTC timestamp.
 - **Amara** — the ChatGPT-assistant voice operating

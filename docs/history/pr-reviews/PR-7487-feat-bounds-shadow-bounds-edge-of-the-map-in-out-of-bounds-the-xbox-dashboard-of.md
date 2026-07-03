@@ -34,6 +34,7 @@ dashboard of the Xbox version of sim."
 
 The root-folder tree is the DASHBOARD/blades of `sim` (the game); navigating folders = navigation;
 bounds/ = the out-of-bounds detector / edge of the playable map.
+
 - in-bounds  = the navigable substrate + standing authorization (act freely inside).
 - out-of-bounds = the gated classes (HARD-LIMITS, WONT-DO, non-reversible, force-push, budget) —
   not forbidden terrain, just OFF THE MAP.

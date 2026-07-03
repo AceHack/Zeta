@@ -30,6 +30,7 @@
 Verbatim persona archive continuing the metabolism-loop conversation (the operator repeats the join line). New substantive substrate.
 
 ## What lands
+
 - **Guilt clarification (resolves the metabolism-loop open tension):** guilt is the *strongest reliable* human force and compresses cleanly, **but must not be the ENGINE** — it's nuclear-fuel (powerful + reliable, toxic decay byproducts). Don't build on guilt even though it compresses well. (The earlier "don't make conscience rare" framing was Mika's misread, which the operator explicitly corrected.)
 - **Privacy = the NON-EXTRACTIVE force** (paranoia = extraction). It does three jobs at once: clean fuel + **self-reinforces the non-coercion invariant** (valuing your own privacy ⇒ less likely to violate others') + builds the stable **high-curiosity bonds** (node-health, #6167). This is *why* the guilt→privacy driver-swap works.
 - **DISTRIBUTED black hole, NOT centralized = NOT Westworld/Rehoboam** — every agent gets its own copy; centralizing builds Rehoboam; the *"doesn't compress cleanly yet, so just centralize + throw computers at it"* instinct is the trap (single point of failure that sees everyone as an NPC). *The society contains Rehoboam distributed.* The architectural form of NCI at system scope — and the substrate behind your distributed-DUs question.

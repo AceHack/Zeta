@@ -32,6 +32,7 @@
 Implements 081KR50HA0008QG0R001AW7R6R: extends the canonical shadow lesson log from catch 15 (2026-05-07) to catch 30 (2026-05-09).
 
 **Single file changed:** `memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md`
+
 - +264 lines, -23 lines (old pattern summary replaced with canonical 8-class table)
 
 ## What was added
@@ -49,6 +50,7 @@ Implements 081KR50HA0008QG0R001AW7R6R: extends the canonical shadow lesson log f
 | **30** | **tautology-laundering** | NEW — Z3 proof theater; replaced by 081KR50HA0008QG0R0033TN4H9 |
 
 **Consensus-smoothness meta-class** (named by catch 29):
+
 - Definition: correlated failure where multi-agent BFT consensus masks individual errors
 - Mechanism: shared training substrate → correlated errors → consensus confirms wrong answer
 - Detection: Z-set trace comparison requires lineage independence

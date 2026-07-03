@@ -9,6 +9,7 @@ at ServiceTitan exactly what we carve as rules). Aaron verbatim; Mika in [bracke
 
 LOAD-BEARING — the technical threads are OUR disciplines, lived (not new factory work, but they confirm
 the disciplines are right):
+
 - **Supply-chain SHA-pinning = our exact-pin discipline, lived.** ServiceTitan's entire GitHub repo ran
   on floating/untagged refs; Aaron pinned everything to SHA hashes because "half the shit had been
   attacked in the past." There'd just been a GitHub-workflows supply-chain attack; they even had a
@@ -29,6 +30,7 @@ the disciplines are right):
   got "didn't quite meet expectations."
 
 Legal-pattern facts (CONTEXT ONLY — strengthen his account):
+
 - **Real-time spend visibility = his "entrapment" read.** They could see his spend every day. Stopped him
   at \$30k → asked him to justify ROI → he did (a real justification) → **introduced him to their
   internal AI team and said "merge your ideas"** (explicit greenlight) → let it run to \$200k → asked

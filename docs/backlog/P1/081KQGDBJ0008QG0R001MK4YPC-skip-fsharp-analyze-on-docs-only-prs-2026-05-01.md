@@ -67,6 +67,7 @@ Make `Analyze (csharp)` (and any other F#-only CI step) skip on PRs that touch o
    - (c) **Multi-ruleset split** — separate docs-targeted ruleset (lower bar; F# Analyze not required) + code-targeted ruleset (severity:all on src/ paths). Aaron 2026-05-01 in chat: *"maybe multiple rulesets i just had one for convience, you can do it for whats best for your and making humans feel comfortable, all makes humans feel comfortable i don't know if that help if not no worries."* This reveals the single severity:all ruleset was set up for convenience, not as a technical requirement. The real constraint is **human-comfort signaling** — humans see "all required checks passing" and feel reassured; the literal severity:all configuration is one of several ways to produce that signal. A multi-ruleset design that surfaces "all required-for-this-surface checks pass" preserves the comfort property without requiring F# Analyze on docs PRs.
 
 **Aaron's host-mutation authorization for this work specifically (2026-05-01):** *"you can do it for what's best."* Scoped explicitly to the ruleset-redesign work in this row. NOT a blanket grant on host mutations going forward — the §16 host-mutation-needs-sign-off rule remains in force; this is an explicit per-row carve-out for 081KQGDBJ0008QG0R001MK4YPC implementation.
+
 4. **Verification across PR shapes:** docs-only PR, TypeScript-only PR, src-only PR, mixed PR, workflow-only PR — all behave correctly.
 5. **No reduction in security coverage** for actual code surfaces. Skip is for non-code only.
 

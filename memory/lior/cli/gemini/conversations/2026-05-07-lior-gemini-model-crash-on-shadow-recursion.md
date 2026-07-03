@@ -94,6 +94,7 @@ models in production if the model tries to resolve the
 recursion.
 
 Mitigation candidates:
+
 + Recursion depth limits on self-referential reasoning
 + Harness-level timeout on model processing
 + State checkpoint before shadow-naming operations

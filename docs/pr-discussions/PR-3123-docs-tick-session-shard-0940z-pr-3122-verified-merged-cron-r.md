@@ -42,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR adds a new hygiene-history tick shard documenting the 2026-05-14 09:40Z session state: cron re-arming, build gate results, and that PR #3122 had already merged at session start.
 
 **Changes:**
+
 - Add tick shard `0940Z.md` with a verify trace (CronList/build gate/PR gate poll results).
 - Record that PR #3122 merged cleanly before any work was needed this session.
 - Capture the “Two-Layer Print” observation about worldview snapshot lag vs direct PR gate polling.
@@ -60,6 +61,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

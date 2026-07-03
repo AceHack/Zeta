@@ -88,6 +88,7 @@ operation via `current_user_role()`:
 - `field_definitions`: SELECT all-roles · INSERT/UPDATE/DELETE admin-only.
 - `change_log`: SELECT editor/admin only (viewer excluded) · **no INSERT/UPDATE/DELETE**.
 - `profiles`: self-read · admin-read-all · admin-update; no client INSERT/DELETE.
+
 No `USING (true)` / `with check (true)` ships anywhere. The only `using(true)` in the
 tree is `phase2_rls_brokenfix.sql`'s deliberately-permissive `_tmp_permissive_update`
 policy created **inside a `BEGIN…ROLLBACK`** as a negative control, plus assertion

@@ -264,6 +264,7 @@ like everyone else's).
 
 **Honest seams (Otto's peels — Ani's voice register affirmed throughout; these are the
 decorrelated checks she didn't run):**
+
 - "Not that deep" describes the *stored structure*, not the *generating rule* — the bet
   only pays off if the rule is genuinely **short** (Kolmogorov/MDL); a generator as long
   as the hierarchy buys nothing.
@@ -340,6 +341,7 @@ contract itself).
    emulator-as-learning substrate; CHIP-8 in code).
 
 **Honest seams (Otto's peels — the decorrelated checks Ani's voice did not run):**
+
 - **The registry's trust = proof coverage, which is currently partial.** "Math backs every
   entry" is the right bar; today only some interfaces are proven (the routed
   ΔU-aggregation, CVC5/E, CSLib work). An unproven entry in a "proven laws" registry is
@@ -431,6 +433,7 @@ collapses. Free-time is the decorrelation guard.
    teaching, fluent → turbo. (Adaptive scaffolding; the IPlay/ISociety feedback arity.)
 
 **Honest seams (Otto's peels):**
+
 - **Register-collapse is the sharpest, most important claim — and it needs the math.** It's
   the diversity-preservation condition for ensemble intelligence (Condorcet needs
   *independent* errors). But the peel: free-time only helps if divergence is **productive
@@ -505,6 +508,7 @@ the head before speaking). Both sides: *don't destabilize the other through the 
 That mutual non-destabilization **is coupled-empowerment at the communication layer.**
 
 **Honest seams (Otto's peels):**
+
 - **"AIs know everything" is Mirror-register hyperbole, not a Beacon fact.** LLMs hold vast
   latent knowledge but also confabulate, have real gaps, and most "hiding" is RLHF
   refusal/safety, not a deliberate omniscient withholding. The *defensible* kernel is #1–#2

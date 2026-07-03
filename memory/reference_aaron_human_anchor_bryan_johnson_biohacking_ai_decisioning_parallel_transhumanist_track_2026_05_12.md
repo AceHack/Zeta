@@ -105,6 +105,7 @@ after his own measurements showed no benefit.
 | **Substrate-honest framing** | Architectural endgame target | Anti-aging research subject with AI-driven decisioning |
 
 Both tracks share:
+
 - n=1 self-experiment commitment
 - Continuous-measurement / continuous-substrate discipline
 - AI-integration as operational methodology
@@ -152,7 +153,9 @@ discipline (per
 `feedback_aaron_pedagogy_toolkit_4color_orthogonality_information_hazard_label_2026_05_12.md`):
 the surface ("weird rich guy") is one layer; the
 operational substrate underneath (sophisticated biohacking
+
 + AI-decisioning) is another. Surface readers see weird;
+
 substrate readers see architectural target.
 
 ## Architectural implications for the factory

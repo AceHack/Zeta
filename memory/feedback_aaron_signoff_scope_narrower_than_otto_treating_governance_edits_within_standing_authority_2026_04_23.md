@@ -12,7 +12,9 @@ research, you didn't need me at all on this but approved."*
 
 Context: Otto had filed the §33 archive-header-requirement
 proposal (Amara 5th-ferry Artifact) as *"gated on Aaron signoff
+
 + Codex adversarial review + DP-NNN evidence record"* — treating
+
 it as if it required explicit signoff like multi-account design
 (PR #230) or password-storage design (PR #239). Aaron corrected
 the framing with the above message.
@@ -144,6 +146,7 @@ edit, though coordinating them is sometimes useful.
 
 Aaron's "but approved" lands §33 with explicit approval.
 §33 was never in the three-gate list:
+
 - Account access: no new access required.
 - Spending: no spending increase.
 - Aaron-named review: Aaron did NOT specifically say "I want

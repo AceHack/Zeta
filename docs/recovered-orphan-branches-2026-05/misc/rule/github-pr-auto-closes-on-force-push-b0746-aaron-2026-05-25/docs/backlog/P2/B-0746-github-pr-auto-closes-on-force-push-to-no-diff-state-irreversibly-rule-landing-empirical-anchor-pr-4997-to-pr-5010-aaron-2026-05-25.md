@@ -36,6 +36,7 @@ Aaron 2026-05-25, after I hit the trap on PR #4997:
 ### Empirical anchor preserved in rule body
 
 The 2026-05-25 PR #4997 → #5010 trajectory:
+
 1. PR #4997 had 7 review threads + needed squash
 2. Squash worktree created on `origin/main`
 3. Cumulative diff copied + index regen'd
@@ -91,6 +92,7 @@ P2 priority — industry-wide trap with empirical anchors in both Zeta + Service
 ## Why this matters beyond Zeta
 
 Aaron's disclosure: *"it's bit us too at ServiceTitan"* anchors this as not-Zeta-specific. Any team that:
+
 - Uses GitHub for PRs
 - Occasionally squashes branches via force-push
 - Has automation that could silently fail at the commit step (e.g., agent-driven workflows; CI rebasers; auto-squash-on-merge tooling)

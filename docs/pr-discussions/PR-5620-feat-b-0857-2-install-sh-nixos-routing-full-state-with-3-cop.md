@@ -86,6 +86,7 @@ Per autonomous-loop force-push discipline: force-push requires explicit operator
 Adds NixOS-aware environment routing to `tools/setup/install.sh`, distinguishing macOS, non-NixOS Linux, NixOS installed, NixOS docker test harness, and NixOS live-USB. Live-USB now exits 2 with a guidance message pointing to the existing `zeta-install.sh`. Supersedes #5606 with three Copilot findings addressed (exit-code contract, name attribution, absolute paths).
 
 **Changes:**
+
 - New `detect_linux_flavor` helper with 4-step discriminator (NIXOS marker → docker → live-USB markers → installed default).
 - Linux case dispatches by flavor; live-USB prints an absolute-path-rooted message and exits 2.
 - Header documents 3 exit codes and the 081KSKBP80008QG0R002J03WGA.2 routing matrix.

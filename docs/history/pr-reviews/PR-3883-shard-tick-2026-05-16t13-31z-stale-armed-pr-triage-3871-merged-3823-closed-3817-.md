@@ -38,6 +38,7 @@ Continuing the [`blocked-green-ci-investigate-threads`](.claude/rules/blocked-gr
 ## Substrate observation
 
 Investigation discipline + small-countable-blocker hypothesis (per the rule) continues to pay off. Of 3 stale-armed PRs:
+
 - 1 self-resolved
 - 1 was redundant (closeable in seconds)
 - 1 needs real follow-up

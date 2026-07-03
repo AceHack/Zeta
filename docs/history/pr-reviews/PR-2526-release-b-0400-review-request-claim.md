@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - releases the completed 081KR7JY10008QG0R000R503K2 review-request claim after PR #2524 merged in 1ec1254b
 - removes only docs/claims/backlog-0400-review-request-vera-20260510.md
 
 ## Verification
+
 - git diff --check
 - bun run lint:markdown -- docs/claims/README.md docs/research/2026-05-10-b0400-inter-agent-bus-bounded-review-request.md
 

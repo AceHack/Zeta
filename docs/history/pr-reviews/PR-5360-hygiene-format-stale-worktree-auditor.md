@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - normalize `audit-stale-worktrees` and its focused test to the repository Prettier style
 - add a Codex claim record for the bounded formatting slice
 - leave stale-worktree audit behavior unchanged
 
 ## Checks
+
 - `bun test tools/hygiene/audit-stale-worktrees.test.ts`
 - `node_modules/.bin/prettier --check tools/hygiene/audit-stale-worktrees.ts tools/hygiene/audit-stale-worktrees.test.ts`
 - `node_modules/.bin/tsc --noEmit -p tsconfig.json`

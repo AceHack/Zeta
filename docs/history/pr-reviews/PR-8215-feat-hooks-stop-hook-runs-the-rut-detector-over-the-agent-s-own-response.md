@@ -30,6 +30,7 @@
 Aaron (shadow*): "wire my response text through the detector too."
 
 Completes the rut-guard trilogy at the layer closest to the sampler the repo can reach:
+
 - #8213 — the detector.
 - #8214 — guard the **artifact** (tick-history append).
 - **this PR** — guard the **response**, the instant a turn ends.

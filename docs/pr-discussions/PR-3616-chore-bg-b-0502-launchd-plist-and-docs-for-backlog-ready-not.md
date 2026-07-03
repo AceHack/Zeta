@@ -27,6 +27,7 @@ Implements backlog row **081KRHWGX0008QG0R001ZJ3W8R** (Slice 6 of 081KRFA460008Q
 Wires up slice 6 of 081KRFA460008QG0R00229616S (launchd plist + AUTONOMOUS-LOOP.md update for the backlog-ready-notifier background service) and brings backlog row status tables in line with what has now shipped (slices 3, 5a, and 6).
 
 **Changes:**
+
 - Adjust the maintainer comment in the new `com.zeta.backlog-ready-notifier.plist` to drop a reference to a non-existent `install-launchd-services.sh` and replace with manual path-update instructions.
 - Update `tools/bg/README.md` "Current services" table to reflect newly-live slices for the backlog-ready notifier.
 - Mark 081KRHWGX0008QG0R001ZJ3W8R as shipped (acceptance criteria boxes + frontmatter) and update 081KRFA460008QG0R00229616S's slice-status table to reflect 5a and 6 shipped.
@@ -56,6 +57,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

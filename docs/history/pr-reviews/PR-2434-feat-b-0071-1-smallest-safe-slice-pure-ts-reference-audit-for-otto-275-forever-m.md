@@ -52,11 +52,13 @@ This is the bounded first step: reference audit only (no rename, no frontmatter 
 4 substantive cross-refs; self-hits in new script + backlog doc expected.
 
 ## Focused Checks (included per task rule)
+
 - bun run audit-otto275-memory-misnomer.ts: ✅ executed, 10 hits reported
 - dotnet build -c Release (worktree): restore required on fresh worktree (expected, no .NET changes); root checkout gate passed 0w/0e pre-worktree
 - No syntax/lint issues on new TS (imports clean, no any, typed)
 
 ## Rules Compliance
+
 - Dedicated worktree + pushed claim branch (this PR)
 - Root checkout untouched
 - Exactly one bounded step

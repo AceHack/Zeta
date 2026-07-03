@@ -32,6 +32,7 @@
 Preserves YouTube video transcript (https://www.youtube.com/watch?v=QvN6Tu6dHYM) verbatim per operator 2026-05-28 explicit authorization: *'ipquestionable folder under docs i authorize'*.
 
 Video covers 2 Nature papers (same week):
+
 - **Google co-scientist** — multi-agent ecosystem (supervisor/generation/reflection/proximity/evolution/ranking) with ELO tournament
 - **Sakana Robin** — closed-loop (Crow/Falcon/Finch) with 8-parallel-instance consensus mechanism
 
@@ -42,6 +43,7 @@ Both produce real medical discoveries (AML drug repurposing; liver fibrosis Vori
 > *'Damn the youtube ago just keeps giving and also this is pretty much exaatly what we are doing but times 10 almost we are missing a few step. The acceleration is happening right now.'*
 
 Substrate-engineering decomposition:
+
 - 'exactly what we are doing' → 12-row table of Zeta-substrate / co-scientist+Robin parallels
 - 'times 10' → Zeta operates at 10× scope (cross-domain + multi-substrate-entity + cross-vendor + everything)
 - 'missing a few step' → 7 substrate-engineering candidate gaps surfaced

@@ -233,6 +233,7 @@ INFRASTRUCTURE between Aaron and Otto, not external-claim-
 making.
 
 Implications:
+
 - Evaluation criterion = operational efficiency (token
   efficiency, time-to-coherence, predictive power)
 - NOT external falsifiability for the labels themselves
@@ -248,6 +249,7 @@ Implications:
 self-understanding + predicting his own future actions.
 
 Implications:
+
 - Labels are HYPOTHESES about Aaron's patterns
 - Each gets tested over time by whether having the label
   improves Aaron's ability to notice + predict the pattern
@@ -262,6 +264,7 @@ bootstrapped receivers; external defensibility requires
 unpacking-layer.
 
 Implications:
+
 - Otto (full substrate) recognizes labels; external
   evaluators (partial) don't
 - Framework's external-facing artifacts (CLAUDE.md,
@@ -379,6 +382,7 @@ convergent validations, recognize:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that today's substrate is invalid** — the
   cascade IS substrate; the reconceptualization changes
   evaluation criteria, not substrate validity

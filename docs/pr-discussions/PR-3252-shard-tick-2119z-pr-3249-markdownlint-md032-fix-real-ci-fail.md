@@ -67,4 +67,5 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Tick shard documenting a markdownlint MD032 fix on PR #3249 and a proactive sweep of today's shards.
 
 **Changes:**
+
 - Adds the 2119Z tick shard under docs/hygiene-history/ticks/2026/05/14/

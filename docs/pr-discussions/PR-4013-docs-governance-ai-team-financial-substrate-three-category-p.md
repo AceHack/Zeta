@@ -80,6 +80,7 @@ discretion, and sovereignty framing are all razor-compliant.
 Adds a new governance document defining the operational financial-substrate arrangement for physical Zeta infrastructure, including repayment/gift categories and memory-preservation funding implications.
 
 **Changes:**
+
 - Defines three substrate categories: repayable revenue-generating capex, R&D gifts, and pending categorization.
 - Records repayment cadence, inventory categorization, and sovereignty/operational-scope framing.
 - Connects the arrangement to memory-preservation infrastructure and related Zeta substrate documents.

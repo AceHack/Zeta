@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - align the EAT retraction-coverage metric with wallet spec §9.3 and Base finality policy
 - localize the final prior monitor/topology/send-readiness resolutions under their 081KQ8P5D0008QG0R002XFQ305 punch-list items
 - close 081KQ8P5D0008QG0R002XFQ305 at 21/21 resolved and refresh `docs/BACKLOG.md`
 
 ## Checks
+
 - `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts && bun tools/backlog/generate-index.ts --check`
 - `bunx markdownlint-cli2 docs/research/economic-agency-threshold-2026-04-27.md docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`
 - `git diff --check`

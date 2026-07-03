@@ -142,6 +142,7 @@ Each manifest entry has structured fields (name, version, download-URL-or-path, 
 This is the same pattern as Nix's declarative-everything but for the Mac-side reality where some installs are GUI-only or OAuth-flow-only. Substrate-engineering equivalence: **operators can READ the spec to know what they need to do; automation can READ the spec to do as much as it can; the gap between human-touch and machine-touch is just "which automation surface owns this entry"**.
 
 Skill candidates:
+
 - `.claude/skills/dmg-manifest-authoring/SKILL.md` — how to add a new DMG entry (verification command shape, sha256 update workflow, escape-hatch documentation)
 - `.claude/skills/onboarding-doc-generator/SKILL.md` — how the doc regenerates from manifests
 

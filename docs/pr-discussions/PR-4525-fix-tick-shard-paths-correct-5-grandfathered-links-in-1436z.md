@@ -54,6 +54,7 @@ Local audit: `scanned 1137 tick shards; 14 broken relative-path links (14 grandf
 This PR continues the post-#4524 tick-shard path-audit cleanup by fixing incorrect relative link depths in a deep tick shard (`docs/hygiene-history/ticks/2026/05/15/1436Z.md`) and trimming the corresponding grandfathered entries from the relative-path audit baseline.
 
 **Changes:**
+
 - Correct `docs/backlog/**` relative links in `1436Z.md` from 4× `..` to 5× `..` (properly reaching `docs/` before `backlog/`).
 - Correct the `.claude/rules/**` relative link in `1436Z.md` from 5× `..` to 6× `..` (properly reaching repo root before `.claude/`).
 - Remove the 5 now-fixed findings for `1436Z.md` from `tools/hygiene/audit-tick-shard-relative-paths.baseline.json`.

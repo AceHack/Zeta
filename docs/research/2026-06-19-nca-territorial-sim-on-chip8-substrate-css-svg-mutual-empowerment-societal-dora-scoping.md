@@ -16,6 +16,7 @@ what we already have, we have a LOT"* + *"we can already do renders like this."*
 ## Inventory — what we ALREADY have (verified on `main`)
 
 **Render — CSS/SVG from the CHIP-8 cart (DONE, this is the exact ask):**
+
 - **`src/Core/HtmlCssBinding.fs`** — cartridge → **pure static HTML + CSS, JavaScript left out**: box-shadow
   pixel-art (each lit pixel = one shadow), palette = CSS custom properties (`--c0…--c7`), animation =
   `@keyframes` + `steps()`. Literally "UI entirely in CSS/SVG, no JS, from the CHIP-8 cart." *In-file honest
@@ -27,6 +28,7 @@ what we already have, we have a LOT"* + *"we can already do renders like this."*
 - `src/Core.TypeScript/quantum-observable/generate-circuit-svgs.ts` — SVG-gen tooling precedent.
 
 **Cellular substrate (DONE):**
+
 - **`src/Core/SoftEmu.fs`** — the **whole CHIP-8 emulator as ONE soft value** (a normalized weighted ensemble
   of `Chip8Cow.Frame`s; `softStep` advances every branch at once). CAS-less, lockless, purely soft. *This is
   the cell-ensemble the sim runs on.*
@@ -38,6 +40,7 @@ what we already have, we have a LOT"* + *"we can already do renders like this."*
   `WheelRoom`.
 
 **Fitness + health (built THIS session):**
+
 - **`src/Core/SocietalDora.fs`** — coupled-empowerment + QPG (the health readout).
 - **`src/Core/Decorrelation.fs`** — `ρ_owe` anti-mirror (genuine-other check).
 

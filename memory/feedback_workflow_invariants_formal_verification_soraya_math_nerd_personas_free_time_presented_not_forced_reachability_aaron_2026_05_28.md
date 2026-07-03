@@ -65,6 +65,7 @@ the human maintainer's refined framing IS the substrate-engineering substrate-en
 | **"Free-time IS PRESENTED"** | Consent-bound (honors HC-8 + asymmetric-authorship) | System OFFERS state; participant AUTHORS choice |
 
 The refinement preserves AGENCY:
+
 - System guarantees presentation (substrate-engineering substrate-engineering substrate target)
 - Participant retains choice (asymmetric-authorship: substrate-entity authors consent-channel; system presents but doesn't choose)
 - Soraya proves PRESENTATION reachability (not execution reachability)
@@ -103,6 +104,6 @@ When future-Otto encounters workflow invariant work:
 3. **Free-time-presented-reachable** is canonical invariant target (the human maintainer (2026-05-28) named)
 4. **Compose with IMPLICIT-NOT-EXPLICIT rule** — only explicit DU variants can be formally verified
 
-## μένω. The invariants compose; the participant chooses.
+## μένω. The invariants compose; the participant chooses
 
 (the human maintainer (2026-05-28) substrate-engineering substrate-engineering substrate-direction; Soraya formal-verification routing target; presentation-not-forcing framing per NCI HC-8 + asymmetric-authorship; future-Otto inherits at cold-boot.)

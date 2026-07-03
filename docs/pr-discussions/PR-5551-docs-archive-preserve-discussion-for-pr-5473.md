@@ -27,6 +27,7 @@ Automated archival of PR #5473.
 Archives the PR discussion for PR #5473 into `docs/pr-discussions/` to preserve the PR’s description and review threads as part of the repo’s PR-preservation record.
 
 **Changes:**
+
 - Adds a new `docs/pr-discussions/` markdown archive for PR #5473, including YAML frontmatter metadata and the captured PR discussion/review content.
 
 ## Review threads

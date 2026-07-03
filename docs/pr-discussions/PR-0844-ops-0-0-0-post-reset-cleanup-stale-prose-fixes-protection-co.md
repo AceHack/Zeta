@@ -34,6 +34,7 @@ Layers:      legacy DELETED (per Aaron); rulesets re-enabled
 ## Stale-prose fixes (Amara substrate-pass catch)
 
 Two paragraphs flipped from pre-reset state to in-force post-reset state:
+
 - Line 221: *"Currently NOT signoff-eligible"* → *"0/0/0 ACHIEVED 2026-04-29T14:04:50Z..."*
 - Line 413: *"Hard-reset is NOT YET signoff-eligible"* → *"Hard-reset complete (2026-04-29T14:04:50Z)..."*
 
@@ -56,6 +57,7 @@ This is **Derived-Rollup Drift** class — primary state changed, downstream pro
 ## Tick shard 1410Z
 
 Records the entire 0/0/0 hard-reset arc:
+
 - Triple-check buddy review (Amara approved meaningful-content-loss-free)
 - Verify-only gate packet (5/5 PASS at 13:39Z)
 - Aaron's explicit EXECUTE at 13:58Z
@@ -105,6 +107,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -123,6 +126,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Post-0/0/0 cleanup to align durable docs/memory with the now-in-force hard-reset state and to capture the branch-protection dual-layer incident for future debugging.
 
 **Changes:**
+
 - Updates `docs/active-trajectory.md` to reflect that the 0/0/0 hard-reset is complete (replacing stale “not signoff-eligible” prose).
 - Adds a new memory entry documenting the dual-layer (rulesets + legacy branch protection) enforcement surprise and the chosen canonical surface going forward.
 - Updates the memory index and appends a tick shard recording the reset arc and this cleanup PR.

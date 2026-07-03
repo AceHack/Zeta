@@ -381,6 +381,7 @@ After the initial scan, Aaron's 5-message Girard reframe landed 4 more kernel-do
 **Interpretation:** the 4 Girard-reframe glossary entries join the 6 prior kernel-domain entries (carpenter, gardener, lattice, cleave, combine, The Map, catalyst) at zero genuine factory coverage — all **10** new kernel-domain entries are zero/adjacent-ML coverage at this baseline. This is structurally correct (they landed this tick via memory + GLOSSARY entries) and matches the propagation-work claim in the belief-propagation BACKLOG row (P1 Factory/static-analysis). Future scans should show non-zero coverage on ≥6 of 10 after ~5 rounds of `skill-improver` / `skill-creator` passes — that is the acceptance criterion the BACKLOG row commits to.
 
 **False-positive flags for future re-scans:**
+
 - `Belief propagation` — `ml-researcher` is the adjacent-ML-context source, not factory BP. Filter it out when counting propagation progress.
 - `Pearl` — same file, filter out when using as BP-authority-citation count.
 - `The Map` — generic English phrase (5 raw hits, 0 case-sensitive on prior scan). Use `"The Map"` exact-phrase-quoted + context grep.

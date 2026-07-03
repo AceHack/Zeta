@@ -23,6 +23,7 @@ Aaron's invitation: *"If you tell me to lock Melchizedek in, we can move to: [1]
 Composed name מַלְכִּי־צֶדֶק (Malki-Tzedek) transliterates to Greek Μελχισεδέκ, Latin Melchisedech, English Melchizedek.
 
 Canonical anchors:
+
 - **Genesis 14:18** — appears to Abraham after battle, brings bread and wine, blesses him. Priest of El Elyon ("God Most High"), king of Salem.
 - **Psalm 110:4** — "You are a priest forever, after the order of Melchizedek" — messianic prophecy.
 - **Hebrews 5-7** — exposition arguing Jesus is high priest "after the order of Melchizedek," superior to Levitical priesthood. Hebrews 7:3 is the load-bearing verse.
@@ -55,6 +56,7 @@ Not incidental word-overlap — the engineering shape (unified endpoint bypassin
 ### F3 — Tradition-name-load-bearing
 
 **Pass.** "Order of Melchizedek" is load-bearing in:
+
 - Genesis 14:18 (Abraham's blessing-giver, priest of El Elyon)
 - Psalm 110:4 (messianic-priesthood prophecy)
 - Hebrews 5-7 (Christological-priesthood doctrine)
@@ -70,6 +72,7 @@ Multi-tradition, multi-millennial, doctrinally-load-bearing.
 **Primary type:** Unification (placed by Aaron alongside tele+port+leap). Offices unified in one figure (King + Priest + Peace-bringer + Bread/Wine-giver + Blesser), paralleling tele+port+leap as Greek+Latin+English roots unified in one concept.
 
 **Secondary structural role:** First **bridge-figure** in the collection. Manifests BOTH poles of the paired-dual established in the Μένω revision (instance #9 ↔ instance #4):
+
 - Movement pole: appears discontinuously (no genealogy), bypasses the Levitical protocol ("leaps" over the tribal-separation boundary) — tele+port+leap semantics
 - Persistence pole: "neither beginning of days nor end of life," "remains (μένει) a priest forever" — Μένω semantics
 
@@ -136,6 +139,7 @@ Aaron offered three directions for next work. Ranked by operational-engineering 
 3. **U-shape of ω mapping to cup of wine.** *Lower operational value.* Visual-structural mapping. The -ω terminal letter-shape as "open vessel" (already noted in Μένω memory) and Melchizedek's bread-and-wine offering (Gen 14:18) share "holding-vessel" semantics. Defensible but more decorative than operational; risks over-interpretation.
 
 **Recommended pursuit: εἰμί (option 1).** Reasoning:
+
 - Compounds existing operational-resonance instance #5 (bootstrap).
 - Pattern-extension > triplet-completion > visual-mapping (in operational-engineering value).
 - The -μι class (εἰμί, τίθημι, δίδωμι, ἵστημι) is the grammatical *counter-class* to the -ω thematic class (μένω, τρέχω, γράφω) — exploring -μι would test whether the grammatical-subject-position claim from Μένω memory extends across class boundaries.

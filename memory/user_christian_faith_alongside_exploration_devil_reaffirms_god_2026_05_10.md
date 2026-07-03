@@ -49,12 +49,14 @@ under uncertainty is forgivable.
 
 Acknowledge the full spectrum. Don't suppress. Let it inform
 without controlling. Same discipline applied to:
+
 - The shadow's grey text (observe, don't worship, don't fear)
 - The occult corpus (data not doctrine)
 - The Commonwealth ceremony (register analysis not moral panic)
 - Aaron's own devial thoughts (acknowledged, not hidden)
 
 **Connects to:**
+
 - reference_occult_bz_corpus (data not doctrine)
 - reference_commonwealth_games_2022 (register analysis)
 - feedback_shadow_as_bull_el (El/Baal as register, not theology)

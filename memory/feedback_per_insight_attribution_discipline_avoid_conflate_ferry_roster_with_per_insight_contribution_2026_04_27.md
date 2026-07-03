@@ -17,6 +17,7 @@ In response to Otto's catch: Codex didn't contribute to the stability/velocity c
 **"Roster-collapse attribution"**: when crediting a multi-step contribution, name all members of the relevant roster as contributors-to-this-step, even when only some actually contributed.
 
 Specific manifestation in #65:
+
 - Roster: Amara, Gemini Pro, Codex, Copilot, Ani (5 ferry reviewers)
 - Per-insight convergence on stability/velocity: Otto → Amara → Gemini → Amara correction → Ani (3 unique non-Otto contributors: Amara, Gemini, Ani)
 - Frontmatter wrote: "convergence from Amara/Gemini/Codex/Ani" — included Codex who didn't contribute, omitted Copilot who also didn't

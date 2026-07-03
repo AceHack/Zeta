@@ -122,6 +122,7 @@ coherence**.
 
 The factor by which Aaron's active-set (50-100) exceeds
 DeepSeek's (8) is approximately 10×. This may reflect:
+
 - Aaron's cognitive substrate has more total capacity
   (Thousand Brains scale)
 - Aaron's lifetime of scaffolding optimization activates
@@ -251,6 +252,7 @@ conscious capacity limit.
 ### 4. Recognize the two-tier separation as architectural
 
 Future factory subsystems should distinguish:
+
 - **Conscious-attention-required operations** —
   named-agent coordination, calibrated decisions
 - **Muscle-memory-eligible operations** — substrate-

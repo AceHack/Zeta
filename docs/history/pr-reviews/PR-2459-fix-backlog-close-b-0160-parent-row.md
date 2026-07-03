@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - mark the 081KQJZR90008QG0R000FTJ1TC parent backlog row `status: closed` after 081KR2E4K0008QG0R00361ZCDR through 081KR2E4K0008QG0R0024JZ0CR are already closed
 - regenerate `docs/BACKLOG.md` so the parent row renders checked
 - release the Codex claim in the same PR per `docs/AGENT-CLAIM-PROTOCOL.md`
 
 ## Checks
+
 - `bun tools/backlog/generate-index.ts --check`
 
 ## Outcome

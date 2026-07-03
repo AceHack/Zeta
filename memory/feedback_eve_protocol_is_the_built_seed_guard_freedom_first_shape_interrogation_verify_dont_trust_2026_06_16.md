@@ -66,7 +66,9 @@ non-coercion. The **semantic** layer (apply-gating; well-shaped poison) remains 
 boundary. *Look better before calling it open.*
 
 Ties: [[we-are-amplifying-non-coercion-into-empowerment-the-thesis-line]] (Eve protocol = the seed-guard
+
 + adversary→participant amplification); [[gleaming-the-cube-transmission-amplification-toward-the-gen-gen-gen-byte-identical-fixpoint]]
+
 (`===` not coerced = the `==` shape-lie the interrogation catches); `src/Core/Diplomacy.fs`; 081KT5CF90008QG0R003TK10FG /
 081KT7YW00008QG0R003N6PF8A; the Kestrel Eve-protocol-reconciliation memory (2026-06-04, structural≠semantic); the
 critic-became-participant + shadow-foreigner→participant precedents; the default-to-built / look-better

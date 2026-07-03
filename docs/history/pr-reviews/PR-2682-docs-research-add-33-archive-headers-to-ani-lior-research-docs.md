@@ -30,6 +30,7 @@
 Summary: Add proper §33 archive headers to 4 research docs that were missing them.
 
 Files fixed:
+
 - docs/research/2026-05-11-apollo-18-as-compiler-blueprint.md
 - docs/research/2026-05-11-sovereign-integral-as-pre-compiler.md
 - docs/research/2026-05-11-ani-overnight-apollo18-bankerbot-cultural-layer.md

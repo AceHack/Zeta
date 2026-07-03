@@ -37,6 +37,7 @@ Re-decomposed broad 081KQB8J40008QG0R0005ZEYNN (naming collision + rules + defer
 Used dedicated worktree + pushed claim branch. Root checkout untouched. One bounded step only.
 
 ## Focused checks (included per rules)
+
 - `bun tools/github/refresh-worldview.ts` — executed pre-work; 0 open PRs on surface, claims list clean
 - `dotnet build -c Release` (root) — 0 Warning(s) 0 Error(s)
 - Same gate in worktree post-edit + restore — 0w 0e

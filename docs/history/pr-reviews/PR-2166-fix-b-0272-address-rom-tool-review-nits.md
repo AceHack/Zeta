@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - document the actual ROM canonicalizer JSON output fields
 - hash ROM files with bounded memory and ignore extensionless files by default
 - validate option values, use dirname for rename targets, fix the DAT fixture, and bump 081KR2E4K0008QG0R001QZDAMQ last_updated
 
 ## Checks
+
 - bun test tools/roms/canonicalize.test.ts
 - git diff --check origin/main..HEAD
 

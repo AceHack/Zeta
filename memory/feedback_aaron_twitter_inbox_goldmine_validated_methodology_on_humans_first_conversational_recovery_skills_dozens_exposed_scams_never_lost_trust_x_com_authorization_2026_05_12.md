@@ -282,6 +282,7 @@ for the methodology's claims:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Otto should download the Twitter
   inbox immediately** — authorization is open-ended;
   download decision is Otto's based on operational need

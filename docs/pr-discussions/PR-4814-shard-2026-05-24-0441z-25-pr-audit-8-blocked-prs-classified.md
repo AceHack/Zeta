@@ -65,6 +65,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -83,6 +84,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard capturing the 2026-05-24 04:41Z Otto-CLI background-worker audit of open PR gates/threads, including a classification of blocked PR thread findings and related operational notes.
 
 **Changes:**
+
 - Add `0441Z` tick shard documenting a 25-PR gate poll and classification of 8 BLOCKED PRs’ unresolved threads.
 - Record summarized failure classes, risk surface (auto-merge armed PRs), and links to relevant rules/tools used during the audit.
 
@@ -100,6 +102,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -135,6 +138,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -199,6 +203,7 @@ Useful? React with 👍 / 👎.
 Fixed in [54678dab](https://github.com/Lucent-Financial-Group/Zeta/commit/54678dab2c32119d44dbdaa698631531cbc31191).
 
 Substrate-honest fix per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix:
+
 - Direct line inspection at PR head @ `9a79fe11`: line 59 said `Affected: #4733, #4737`; line 112 triage table classified #4739 as `A + B + C`. Contradiction confirmed.
 - Commit updates Class C heading to "(3 PRs)" + affected list to `#4733, #4737, #4739` — alignment with table.
 
@@ -231,6 +236,7 @@ Useful? React with 👍 / 👎.
 Fixed in 58d3490c9.
 
 Substrate-honest fix per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix:
+
 - Direct line inspection at remote tip after the 3 prior fix commits (`4b14e2169`, `54678dab2`, `9a79fe115`): line-30 count was corrected (38+→65, 5→6) but the line-1 parenthetical still enumerated only 5 classes
 - Class headings at lines 32/45/57/63/83/98 confirm 6 classes (A-F)
 - Fix appends `, broken backlog link` to the line-1 parenthetical so the list matches the claimed count

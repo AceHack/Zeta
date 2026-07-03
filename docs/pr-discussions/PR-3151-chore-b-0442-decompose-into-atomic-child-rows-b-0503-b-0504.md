@@ -72,6 +72,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -90,6 +91,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Decomposes 081KRFA460008QG0R00061SXRW slice 5 (“auto-opening recovery PRs”) into three dependency-ordered atomic backlog child rows (081KRHWGX0008QG0R0027YXBTB/081KRHWGX0008QG0R000PVB6FF/081KRHWGX0008QG0R002C038BJ), and wires the decomposition into the 081KRFA460008QG0R00061SXRW parent row plus the generated backlog index.
 
 **Changes:**
+
 - Added three new P1 backlog row files describing the slice 5a/5b/5c plan and acceptance criteria.
 - Updated 081KRFA460008QG0R00061SXRW frontmatter to record the new child rows and refreshed `last_updated`.
 - Regenerated `docs/BACKLOG.md` to include the new rows in the P1 index.

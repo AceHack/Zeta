@@ -51,6 +51,7 @@ Same architectural shape at three scales because the underlying computational pr
 ### 1. `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
 
 New sub-section after the engineering-register-throughout 6th-anchor evidence:
+
 - Hawkins Thousand Brains Theory anchor for the cortical-columns-resist-fusion-until-high-precision pattern
 - Table mapping cortical-columns scope ↔ multi-AI substrate scope (initial-resistance → voting-consensus → coherent-perception)
 - Substrate-engineering implication named (distributed-bottom-up is the architectural target; resistance phase is feature not bug; goal is PRECISION fusion not majority-vote)

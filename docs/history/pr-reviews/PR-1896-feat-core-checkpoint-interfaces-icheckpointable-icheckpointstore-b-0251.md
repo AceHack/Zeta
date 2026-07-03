@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds `src/Core/Checkpoint.fs` — checkpoint interfaces for durable circuit execution
 - `ICheckpointReader`/`ICheckpointWriter` — operator state serialization primitives
 - `ICheckpointable` — interface for operators that can save/restore state
@@ -37,12 +38,14 @@
 - Build: 0 warnings, 0 errors. Tests: 769 pass.
 
 ## Design lineage
+
 - Reaqtor `IStatefulOperator` (SaveState/LoadState at operator boundaries)
 - Temporal deterministic replay (event history as source of truth)
 - Orleans grain persistence (grain = standing query subscriber)
 - Checkpoint boundary = `Circuit.StepAsync` (existing yield point)
 
 ## Test plan
+
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors
 - [x] `dotnet test Zeta.sln -c Release` — 769 pass, 1 skip
 - [ ] CI passes

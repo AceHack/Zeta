@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 The cascade #4 ISO content audit (shipped in #5119) is **blocking every ISO build since merge**. Empirical: 4 consecutive workflow failures on commits `35fd3aeef`, `848467588`, `5d9f8605a`, `ed6a7b8b9` — all on the audit step asserting `boot/grub/grub.cfg` as a required path.
 
 **The assertion was wrong.** NixOS installer ISOs as of `nixos-24.11` use:
+
 - **isolinux** for BIOS boot → `isolinux/isolinux.cfg`
 - **refind** for UEFI boot → `EFI/BOOT/refind_x64.efi`
 
@@ -57,6 +58,7 @@ The last successful ISO build was **`17523e4fb`** (PR #5117, iter-5.2.1 era) —
 Fixes the cascade #4 CI ISO content audit so it no longer falsely fails on modern NixOS installer ISO bootloader layouts, restoring ISO build workflows that were blocked by an incorrect GRUB path assertion.
 
 **Changes:**
+
 - Removes `boot/grub/grub.cfg` from the “must exist” ISO paths and keeps only the squashfs + kernel + initrd as hard requirements.
 - Adds a bootloader “any-of” check (`REQUIRED_BOOTLOADER_ANY`) to accept multiple known bootloader layouts (isolinux/refind/legacy GRUB).
 - Documents the empirical NixOS ISO layout that motivated the change to prevent reintroducing the legacy-path assumption.

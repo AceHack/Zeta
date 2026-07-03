@@ -40,6 +40,7 @@ target branch in tick summaries so Aaron can see CI-risk at
 a glance.
 
 Continue in free-time mode until one of:
+
 - The build finishes AND Aaron signals continuation.
 - The cartographer / parallel-worktree research delivers a
   structural fix that removes the push-kicks-CI live-loop
@@ -59,6 +60,7 @@ running**. Free-time is a valid tick-mode per memory
 research counts as productive use of the cadence.
 
 Aaron's preference order:
+
 1. Free-time mode while build running — simplest, no
    structural changes required.
 2. Sibling non-PR branch for commits — works but adds
@@ -80,6 +82,7 @@ Non-empty output → free-time mode. Empty output → normal
 tick work.
 
 **Free-time mode activities (allowed):**
+
 - Read factory docs, audit for gaps, propose in memory.
 - Draft research docs (on non-PR branches → wait to
   commit OR commit on round-N-speculative which has no
@@ -89,6 +92,7 @@ tick work.
 - Sweep `docs/BACKLOG.md` for rows that need refinement.
 
 **Free-time mode activities (not allowed):**
+
 - Commit to any branch that might get pushed while build
   is running.
 - Push any branch that would kick CI.

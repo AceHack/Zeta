@@ -37,7 +37,7 @@ deploy-rs is the right choice IF:
 - Want auto-rollback on workload-health failure (not just rebuild-failure)
 - Want centralized control over per-node ordering (canary → fleet rollout)
 
-## Decision: which one?
+## Decision: which one
 
 **Pick one. Don't deploy both.** They both run `nixos-rebuild switch`; running both creates race conditions.
 

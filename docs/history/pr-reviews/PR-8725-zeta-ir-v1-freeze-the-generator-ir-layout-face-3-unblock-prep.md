@@ -51,6 +51,7 @@ Canonical envelope, frozen key order:
 - **No stored `zetaId`.** Identity is the **derived** content-address `idOf(generator, version)` — the homoiconic invariant (*"derived from name@version, never minted"*). The validator **rejects** a stored `zetaId`. And `idOf("rng.splitmix64",1)` reproduces the legacy id `129c1fac3a48075b481c0f10f30deb06` exactly, so dropping the field loses **no** information.
 
 ### The gate
+
 - `ZetaIrV1.validate` is a **total validator** that names every deviation: missing/wrong `schema`, stored `zetaId`, missing `width`, op outside the `mul | xorshr` grammar.
 - `tests/cross-verification/zeta-ir-v1/zeta-ir-v1.golden.json` **byte-locks** the canonical-JSON of the known IRs. Any shape drift changes those bytes and fails CI.
 - `docs/specs/zeta-ir-v1.md` records the layout + **evolution contract** (tag is the version; freeze-then-grow; identity stays derived; the golden is the gate).
@@ -59,10 +60,12 @@ Canonical envelope, frozen key order:
 The two `*.ir.json` artifacts are **grandfathered pre-v1** and are **not** rewritten here — their existing byte-locks stand. The `ops` pipeline is identical (asserted against the live `GeneratorIrRegistry` row), so v1 is a re-enveloping, not a semantic change.
 
 ### Honest scope
+
 - **PROVEN:** one frozen, golden-vectored layout; a total validator; the two known generators under v1; derived-id equivalence with the legacy stored id.
 - **NOT claimed:** the Face-3 Lean/Z3 `gen(gen)=gen` theorem itself (math team's), nor that v1 is the final layout. This only makes the **substrate stable** so the proof has a fixed artifact to point at.
 
 ### Gate run
+
 - F# `ZetaIrV1 + GeneratorIrRegistry + GeneratorRegistry`: **31/31**
 - `ZetaIrV1.Tests`: **11/11** (conformance, round-trip, 5 rejection cases, derived-id, frozen golden byte-lock)
 - `bunx tsc --noEmit`: clean (exit 0)

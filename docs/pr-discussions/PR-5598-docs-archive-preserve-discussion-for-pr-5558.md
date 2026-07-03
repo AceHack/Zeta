@@ -27,6 +27,7 @@ Automated archival of PR #5558 by Lior.
 Adds an archived PR-discussion record for PR #5558 under `docs/pr-discussions/`, preserving the original PR title/metadata, description summary, and captured thread content as part of the repo’s PR preservation workflow (`tools/pr-preservation/archive-pr.ts`).
 
 **Changes:**
+
 - Adds a new PR discussion archive Markdown file for PR #5558.
 - Includes YAML frontmatter matching the archive tool’s emitted schema (pr_number/title/author/state/timestamps/refs/tool).
 - Preserves the PR’s description content and a captured general comment thread entry.

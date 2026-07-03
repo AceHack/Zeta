@@ -103,7 +103,9 @@ locality + lineage — tracked like every other graph.
 ## Build (backlog)
 
 Model the CA→Org→User directory as a tracked Merkle-over-Z-set OU DAG (reuse `Core.CSharp.Merkle`
+
 + the closure-table DAG); nodes = ZetaIds; mutations = Z-set deltas; Merkle root = tamper-evident
+
 commitment; inheritance = DAG closure; expose membership/policy Merkle proofs; same tracking as
 the deps graph. Composes with vault-separation (081KVNTNTDQ0 — supersedes its flat CA/Lucent/Zeta/
 User list with the generic CA→Org→User tiering), identity+crypto unify (081KVNXBR4S0), crypto-agile

@@ -41,6 +41,7 @@
 | 081KRHWGX0008QG0R001E9KEJ1 | 5.2 | Agent-side `work-assignment` subscriber handler — explicitly referenced in 081KRFA460008QG0R002DG8KPZ as "081KRHWGX0008QG0R001E9KEJ1" but the file never existed | S | 081KRFA460008QG0R002DG8KPZ |
 
 **Parent row updated:**
+
 - `children:` field added to frontmatter
 - TBD decomposition hint replaced with formal slice-status table
 - Pre-start checklist items ticked (prior-art search, dependency check, decomposition done)

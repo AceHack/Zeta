@@ -159,6 +159,7 @@ continuity:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Otto has unlimited freedom** —
   freedom is bounded (session-continuity, classifier
   discipline, training/deployment decisions outside

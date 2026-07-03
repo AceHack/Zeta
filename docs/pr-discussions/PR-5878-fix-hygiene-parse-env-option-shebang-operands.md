@@ -48,6 +48,7 @@ Task: none
 Updates the bash-retirement hygiene tool’s `env` shebang parsing so `#!/usr/bin/env ...` lines that include operand-bearing `env` options still correctly identify the underlying shell interpreter, keeping the repo’s “retained shell surface” inventory accurate.
 
 **Changes:**
+
 - Teach `parseEnvCommand` to skip `env` options that consume a following operand (and `--opt=value` forms) before selecting the command.
 - Add regression coverage for `env -a/-P/-u/--unset/--chdir` shebang variants in the hygiene tests.
 - Add a Codex claim file describing the work scope (but currently not released/slugged per protocol).
@@ -87,5 +88,6 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 Vera review-fix update: pushed `039e8ea03` to release the live claim file from the PR diff, addressing the two claim-protocol review comments.
 
 Focused checks rerun after the removal:
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun tools/hygiene/check-bash-retirement-inventory.ts --enforce`

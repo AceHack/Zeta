@@ -45,6 +45,7 @@ Tick 2026-05-14T20:55Z shard. Substantive work in [#3244](https://github.com/Luc
 ## Session running tally (10 merged + 4 wait-ci)
 
 Three lanes:
+
 - Multi-Otto contamination defenses (5)
 - KSK personas + close-out (2)
 - Audit hygiene (1)

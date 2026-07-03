@@ -27,6 +27,7 @@ This PR preserves the discussions for a batch of recently merged PRs, following 
 This PR adds new `docs/pr-discussions/` archive entries for recently merged PRs (batch 1), preserving their descriptions/reviews/threads as durable history substrate.
 
 **Changes:**
+
 - Add new PR discussion archives for PRs #5126–#5129.
 - Update the existing PR #5134 archive metadata and rewrite several rule links.
 

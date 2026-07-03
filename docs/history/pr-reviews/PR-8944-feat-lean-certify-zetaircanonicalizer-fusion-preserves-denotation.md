@@ -45,6 +45,7 @@ Elevates the **ZetaIrCanonicalizer**'s algebraic-fusion guarantee from F# proper
 The `AffineZ2W` ring proofs use the native `UInt64` ring lemmas — exactly the ring law that `SymbolicAlgebra.AffineZ2W.Compose` implements in F#. The `PolyF2Rot` (XRotXor) fusion is verified on a concrete instance with `bv_decide`, keeping the proof sorry-free without importing Mathlib bitvector-rotation theory.
 
 ## Verification
+
 - `lake build` green (full `Lean4` lib, 2200 jobs); `CanonicalizerCorrect` imported from `Lean4.lean` so the existing lean-proof CI lane walks it transitively.
 - Axiom audit: every theorem depends only on `[propext, Quot.sound]` — **no `sorryAx`**.
 

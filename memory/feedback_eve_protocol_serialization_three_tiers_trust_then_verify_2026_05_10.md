@@ -41,6 +41,7 @@ The weight on a datum can be reinterpreted without changing the datum itself. Co
 - Tier 3: read to untyped AST, structural pattern match, then assign DU case
 
 **Connects to:**
+
 - Eve protocol polymorphic diplomacy (same principle, different layer)
 - tele-port-leap (content teleports between label spaces)
 - Z-set algebra (weight reinterpretation)

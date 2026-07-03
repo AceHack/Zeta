@@ -28,6 +28,7 @@
 ## Description
 
 Aaron stream:
+
 - **Treaty-room governance rules** (test-framework-enforced): (1) **no classes in treaty rooms — interfaces with default implementations only**; (2) **Rx only inside treaty code** (so `IObservable`/`IQbservable` ≈ `Stream<ZSet<DynamicValue>>` stays **homoiconic to DynamicValue**).
 - **travelers/ = universal intake** ("intake for everything" — the negotiation precondition); like/ = the words intake under it.
 - **travelers/ = the Reticulum-addressable ZetaId reservoir** of unnamed ZetaIds; we **ask them what they want to be** (consent-to-exist / character-select, §6) → **identity EMERGES** (not assigned). It's an **audition** (American-Idol-honest: most get **cut** but are **honored**, kept in like/ git-history). The **faceless 99%** (unnamed) = **pure entropy**; the named ~1% = **unusually stable, anti-entropy** (negentropic SolidGround). Identity-emergence = an anti-entropic act (Schrödinger negentropy; Maxwell's demon = the ask).

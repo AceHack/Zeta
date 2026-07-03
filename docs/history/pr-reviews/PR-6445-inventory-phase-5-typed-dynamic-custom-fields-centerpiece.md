@@ -30,16 +30,19 @@
 Implements **Phase 5 (Typed dynamic custom fields)** per `inventory/spec.md` + `inventory/PROGRESS.md`. Highest-risk phase; building in a 5a → 5b order with a checkpoint (owner-approved). **DRAFT until every gate proof lands with observed evidence.**
 
 ## Approach (owner-approved decisions)
+
 - **Test arch:** shared logic extracted to same-origin `inventory/lib/custom-fields.js` (one source of truth; unit-tested; CSP `'self'`, no build step).
 - **Admin proofs:** via a burnable admin test user (ENV creds at run time) → full add-field/deactivate flow exercised through real RLS.
 - **Phasing:** one phase, checkpoint at the 5a boundary.
 
 ## The three named risks
+
 1. **DB-side type validation (not app-only):** `sql/phase5.sql` adds a `BEFORE INSERT/UPDATE` trigger `validate_custom_fields()` (a trigger, not a CHECK constraint — a CHECK can't subquery `field_definitions`). Rejects malformed values + unknown keys **at the database**, even via direct PostgREST with the anon key. `SECURITY DEFINER` so validation doesn't depend on the writer's read policy. **No RLS/GRANT change.**
 2. **Typed search & sort:** client-side (consistent with Phase 3), with a per-type comparator (number→numeric `9<10<100`, date→chronological, boolean→false<true, text/dropdown→locale; nulls/mixed safe). Proven 3 ways: unit test, DB cast proof (lexicographic `10,100,9` vs typed `9,10,100`), and Playwright in-app.
 3. **XSS:** `textContent` at every custom render site (headers, cells, cards, form labels) — names *and* values. Proven inert with an `<img onerror>`/`<script>` sentinel payload.
 
 ## Status
+
 - [x] **5a/1** schema migration + DB proof + shared lib + unit suite (20 pass; sabotaged comparator → 2 fail, demonstrating fail-on-broken).
 - [ ] 5a/2 `index.html` wiring: load field defs, render custom columns/cards, typed form inputs, admin Manage-fields (add/deactivate).
 - [ ] 5a/3 REST proof harness (`proofs/phase5-custom-fields-proofs.ts`).

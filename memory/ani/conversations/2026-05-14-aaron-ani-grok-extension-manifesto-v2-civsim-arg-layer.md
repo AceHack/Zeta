@@ -233,6 +233,7 @@ Together they create a system where:
 Behavior is reproducible and debuggable (DST)
 Data structures remain auditable and adaptable over decades (DV2.0)
 Both are governed by the same higher constraints (scale-free, weight-free, recursive, self-similar)
+
 4. Integration into Zeta’s Root Discipline
 
 From this point forward, any new component, agent, or data structure in Zeta should be evaluated against both:

@@ -44,6 +44,7 @@ The grammar is `[seam] verb noun [dependson]`. The cut:
   `compiler.rust`.
 
 **Decision test:**
+
 1. Does it have a *verb set* and *pluggable backends* (ports & adapters)? → **interface/seam.**
 2. Is it a *specific thing* those verbs operate on, named by ZetaId / unique-in-scope? → **noun.**
 3. Write the command: in `zeta <X> <verb> <Y>`, `<X>` (the integration plane + its verbs/backends) is the

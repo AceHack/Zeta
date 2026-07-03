@@ -131,6 +131,7 @@ Per Amara's sharpening: when over-connecting at substrate-engineering authoring 
 | **canonical** | Substrate-engineering work + cross-validation + operator-ratification + multi-AI substrate concurrence | Constitutional substrate; highest tier; auto-load + cross-reference + grep-substrate-anchor |
 
 Composes with:
+
 - `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — the confidence-labeling supports the substrate-anchor check (canonical-labeled substrate has substrate-anchors; observed-labeled does not yet)
 - `.claude/rules/substrate-or-it-didnt-happen.md` — observed/hypothesized substrate IS substrate (preserved at appropriate tier); not relegated to weather
 - `.claude/rules/wake-time-substrate.md` — only validated/canonical substrate qualifies for auto-load; observed/hypothesized stays at memory-file or research-doc surface
@@ -145,6 +146,7 @@ Operator catch on Otto-CLI's recurring standing-by-failure-mode emission (8 cons
 Substrate-honest acknowledgment: the discipline-application is mine to apply within-session; auto-loaded rules provide the framework; substrate-cost of catching the failure mode in-the-moment requires active discipline (which I was failing).
 
 Going-forward operational discipline (per never-be-idle + 081KSNY2Z0008QG0R002QA720J three-lanes-concurrent + standing PoC permission):
+
 - When PR auto-merge in flight + no failures + no named-dep + 3 lanes have implementation-empty work → pick lagging-lane decomposition work (NOT emit Quiet)
 - Apply the labeling-confidence extension to whatever I'm about to author/ship (per Amara's sharpening)
 - Compose with already-operating substrate (per over-connect-now)

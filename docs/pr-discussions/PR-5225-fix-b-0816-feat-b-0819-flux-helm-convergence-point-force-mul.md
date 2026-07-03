@@ -43,6 +43,7 @@ Cross-cluster portability principle clarified: K8s manifests are engine-agnostic
 Updates backlog row **081KSGS9H0008QG0R003A37Z65** to add an empirical/historical anchor for the ArgoCD-over-Flux architectural principle, plus clarifies the 2026-state nuance that Flux can compose with progressive-delivery controllers (e.g., Argo Rollouts) even when ArgoCD isn’t used.
 
 **Changes:**
+
 - Adds an “empirical prior-art anchor” section describing the operational lineage and constraints motivating ArgoCD selection.
 - Documents the historical ArgoCD-vs-Flux decision drivers and the present-day Flux + Rollouts/Flagger composition nuance.
 - Clarifies the “cross-cluster portability” framing as manifest-portable with engine-specific glue differences.

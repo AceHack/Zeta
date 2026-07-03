@@ -32,6 +32,7 @@ Files the **Git-V2-handshake** thesis the operator asked for (*"file the Git-V2 
 **Your instinct was right** — the git-native substrate is **scattered** (081KSV2WD0008QG0R0021XJ94E co-dominant-mirrors/CRDT · 081KSXN940008QG0R000R76H45 indexes/Hindsight · 081KSE6WT0008QG0R0008483B2 event-store · 081KR50HA0008QG0R00125PA8G inverted-index · 081KSNY2Z0008QG0R002A785QR per-host-adapters) but the **handshake protocol thesis was nowhere stated**. Substrate-inventory: `git handshake / git v2 / agent-coordination-speed / git-protocol-upgrade` → **zero backlog rows**. So this row **lays it out + consolidates** (not a parallel-mint), composing with all the neighbors.
 
 ## The thesis (laid out)
+
 - The problem: make git work at **agent-coordination speed**, not human-speed; don't become a vendor-lock specialized-git-client like GitHub.
 - F# handshake that **looks like git** but **negotiates up to a DBSP/retraction-algebra "Git V2"** (take-it-or-leave-it for maintainers).
 - **Same objects in both views** (git-view + DBSP-stream-view), not two copies.

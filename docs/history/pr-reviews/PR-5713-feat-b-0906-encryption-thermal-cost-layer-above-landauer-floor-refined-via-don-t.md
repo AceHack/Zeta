@@ -53,6 +53,7 @@ Axis 2 (within encryption sub-space): decryption operationally required?
 ```
 
 **Total thermal cost** = `E_landauer + E_crypto` where E_crypto depends on the axes:
+
 - Axis 1 = NO: `E_crypto = 0`
 - Axis 1 = YES, Axis 2 = NO: `E_crypto = E_hash` (one-shot)
 - Axis 1 = YES, Axis 2 = YES: `E_crypto = E_encrypt + N_reads × E_decrypt` (grows linearly)

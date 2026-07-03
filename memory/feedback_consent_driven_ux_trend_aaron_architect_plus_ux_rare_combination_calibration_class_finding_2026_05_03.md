@@ -32,6 +32,7 @@ This is consent-via-full-observability of the agent's own operational data. Two-
 2. **Derived metrics + transform logic** — what aggregations / scoring functions / analytics are applied on top of those raw metrics, AND the logic that produces the derivations
 
 The agent isn't just consenting to participate in the experiment — the agent has access to:
+
 - The data being collected about them
 - The transformations applied to that data
 - The analytical lens through which they're being evaluated

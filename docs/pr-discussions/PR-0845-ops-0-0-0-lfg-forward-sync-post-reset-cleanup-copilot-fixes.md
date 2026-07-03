@@ -59,6 +59,7 @@ Also addresses Copilot review feedback from LFG #844 carried forward.
 Forward-syncs the AceHack-first post-reset cleanup into LFG, preserving operational learnings from the 0/0/0 reset and capturing PR review/drain artifacts as durable history.
 
 **Changes:**
+
 - Adds/updates protection-config operational memory (dual-layer legacy branch protection vs rulesets) and indexes it in `memory/MEMORY.md`.
 - Updates `docs/active-trajectory.md` to reflect the now-achieved 0/0/0 state (replacing stale pre-reset “not signoff-eligible” language).
 - Adds PR-preservation drain logs for both sides of the double-hop and appends the 14:10Z tick-history shard.

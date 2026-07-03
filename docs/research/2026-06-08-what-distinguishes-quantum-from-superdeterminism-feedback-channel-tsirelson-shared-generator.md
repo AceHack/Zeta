@@ -40,6 +40,7 @@ a *staged* correlation on track (a control loop / phase-lock). Consequence:
 > such external feedback channel — their correlation is intrinsic — so they are capped at Tsirelson `2√2`.**
 
 So the empirical signature distinguishing genuinely-quantum from superdeterministic:
+
 - **feedback channel present** → can reach `S>2√2` (up to 4) → **superdeterministic** (our DST/`CoincidenceClock`);
 - **no feedback channel + capped at `2√2`** → **(effectively) quantum** (real particles; obey Information
   Causality, Pawłowski 2009).
@@ -53,6 +54,7 @@ our `S=4` is the honest "tell": we *have* the feedback channel; real systems don
 The seductive trap. Sending a **seed** and **regenerating** the data locally is **compression over a shared
 generator (a pre-shared codebook / common cause)** — *only the seed crossed the channel*; the rest was
 reconstructible because the generator is shared. It is bounded:
+
 - **Kolmogorov complexity:** you can only seed-and-regenerate *compressible* data; **truly random
   (incompressible) data has no seed shorter than itself** — no free lunch. The data's real information = the
   seed, and that is exactly what went through the channel.
@@ -116,6 +118,7 @@ production = observe (can learn). *"We genuinely don't know until we observe out
 
 **Protocol:** outside DST — production, **`SeparateClocks`** (independent per-body entropy, no shared seed,
 **no controllable feedback channel**) — measure CHSH and watch for an **unforced cap at exactly `2√2`**:
+
 - `< 2` → classical / local;
 - `> 2` → nonlocal / quantum-consistent;
 - **caps at exactly `2√2` with no tuning → Information-Causality-respecting → genuine quantum-like** (what

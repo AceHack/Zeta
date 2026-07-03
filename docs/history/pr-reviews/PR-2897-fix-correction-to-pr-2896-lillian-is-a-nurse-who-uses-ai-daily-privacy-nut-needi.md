@@ -30,6 +30,7 @@
 Aaron caught Otto's substrate error: Lillian's role was partly backwards. She's not AI-resistant — she's a NURSE using AI daily but is a PRIVACY NUT who needs non-glass-halo integration with HIPAA constraints. Aaron has former Technical HIPAA Officer credentials at Maria Parham Medical Center (his birth hospital).
 
 Key corrections + new substrate:
+
 - Non-glass-halo integration mode as factory capability
 - Mirror visibility (PR #2893) canonical for HIPAA scope
 - Aaron's multi-clearance profile (HIPAA + Homeland Security + Series 7) maps to factory multi-scope substrate-engineering

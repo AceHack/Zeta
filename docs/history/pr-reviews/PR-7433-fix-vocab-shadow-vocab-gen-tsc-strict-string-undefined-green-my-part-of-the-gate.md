@@ -30,8 +30,10 @@
 fix(vocab)+shadow: vocab/gen tsc strict — string|undefined under noUncheckedIndexedAccess
 
 The `lint (tsc tools)` gate was red on main. Two vocab/gen errors were mine:
+
 - MasterIndex.ts:59 — `e.rel.split("/")[0]` is string|undefined; `?? ""`.
 - MasterIndex.test.ts:18 — regex captures string|undefined; destructure + guard.
+
 `tsc --noEmit -p tsconfig.json` now reports vocab/gen CLEAN.
 
 NOTE (not mine, flagged for the #7432 author): the gate's remaining tsc

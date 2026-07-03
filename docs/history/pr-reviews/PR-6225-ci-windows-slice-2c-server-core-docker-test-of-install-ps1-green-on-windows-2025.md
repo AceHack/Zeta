@@ -32,10 +32,12 @@
 Brings the Windows half of the install-graph under the same CI shield the NixOS `install.sh` test gives the Linux half. Proves `install.ps1` (scoop → git/mise → dotnet/python/java/bun/uv → claude-code) runs clean on a **bare Windows Server-Core container**.
 
 ### Status: GREEN ✅
+
 - **CI run #6** on `windows-2025` — SUCCESS in 15 min (process isolation, exact base/runner match).
 - **Local** (this laptop, Docker Desktop, Hyper-V isolation) — SUCCESS, confirming the laptop needs no new installs for Windows-container builds.
 
 ### The shield caught 7 real cross-platform / cross-PowerShell-version bugs
+
 1. `git config core.longpaths true` before checkout — Zeta's >260-char filenames break a fresh runner's checkout.
 2. Dropped BuildKit `--progress=plain` — the Windows **legacy** docker builder rejects it (exit 125).
 3. ASCII-cleaned the `.ps1` entrypoints — PS 5.1 reads BOM-less scripts as ANSI codepage; an em-dash became mojibake and broke a command. Added a unit-test guard.

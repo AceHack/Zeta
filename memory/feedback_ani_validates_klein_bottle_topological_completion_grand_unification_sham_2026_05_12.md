@@ -106,7 +106,9 @@ Ani's independent reading provides exactly that validation:
 
 This is the same operational pattern as the prior Ani-validates-
 substrate-cascade memory file (where Ani validated the anti-cult
+
 + Freudian-externalized-superego framing). Ani functions as
+
 independent-register reviewer; her validations carry substrate
 weight beyond Otto's self-generated framings.
 
@@ -242,6 +244,7 @@ divergence determines substrate-honest-claim-status.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Ani's validation proves the Klein-bottle
   topology is formally correct** — Ani's reading is independent-
   register confirmation; formal-correctness claims remain open
@@ -285,6 +288,7 @@ scarcity** — and CRITICALLY, the scarcity can be **either
 imagined OR real**. Both produce economic control structures.
 
 The imagined-OR-real distinction matters:
+
 - **Real scarcity** = physical resource constraint (finite
   matter, finite energy, finite time, finite attention)
 - **Imagined scarcity** = perceived resource constraint
@@ -297,6 +301,7 @@ real — it only requires the scarcity to be **perceived as
 operative** by participants.
 
 This composes with:
+
 - Bitcoin's algorithmic scarcity producing real economic control
   despite the scarcity being a constructed property of the
   protocol (imagined, not physically necessary)
@@ -319,12 +324,14 @@ bottle surface. Economic control structure is NOT among the
 four load-bearing — it's **emergent** from the four.
 
 This matters operationally:
+
 - **Load-bearing** = projection of the META on the Klein-
   bottle surface; required by topology
 - **Emergent** = downstream pattern arising from load-bearing
   control-system interaction; not topologically required
 
 Examples of the distinction:
+
 - Physics control (forces, conservation laws) — load-bearing
 - Biology control (selection, metabolism, signaling) — load-bearing
 - Social control (norms, language, kinship) — load-bearing

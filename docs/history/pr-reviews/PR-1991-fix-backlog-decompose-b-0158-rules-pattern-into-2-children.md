@@ -30,6 +30,7 @@
 ## Summary
 
 081KQGDBJ0008QG0R003YPS5GB (207 lines, blob) → decomposed:
+
 - 081KR2E4K0008QG0R003DDAFJD: canary test verification (buildable now)
 - 081KR2E4K0008QG0R002FYNDT1: extract carved sentences (blocked on canary)
 

@@ -30,6 +30,7 @@
 Operator-authorized 2026-05-31: "build the backlog reader."
 
 ## What this does
+
 1. **Backlog reader** (`tools/observe/backlog-reader.ts`) — observe.ts now reads the **real backlog**. It **reuses** `tools/backlog/autonomous-pickup.ts` (`readBacklogItems` + `selectNextBacklogItem` — priority-ranked, dep-aware, claim-aware, decompose-vs-claim) and **maps** its `PickupSelection` onto the observe `NextAction` DU (claim→`do_item`, decompose-first→`decompose`, empty→`free_time`). It does **not** reimplement selection — `selectNextBacklogItem` already existed (verify-existing-substrate caught the near-parallel-mint). Demo picks a real row (081KR2E4K0008QG0R000Q45WMQ).
 2. **Migration seam documented** (operator 2026-05-31): backlog-item is a **sub-type of a general WORK-ITEM** (bugs etc.); **ZetaId gets a new `WorkItem` category after `Bus`**; `B-xxxxx` → 128-bit ZetaId WorkItem ids (B-xxxxx collides at scale). The reader is the single seam for that migration.
 

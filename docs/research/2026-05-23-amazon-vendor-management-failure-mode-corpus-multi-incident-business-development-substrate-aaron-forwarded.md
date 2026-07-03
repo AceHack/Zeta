@@ -35,6 +35,7 @@ Operational uses for future Zeta vendor-management AI substrate:
 **Volume**: 9 miners across 4 orders, $10K+ total
 **Seller**: third-party `A2SSEBT1UDQHSBI` ([https://www.amazon.com/sp?seller=A2SSEBT1UDQHSBI](https://www.amazon.com/sp?seller=A2SSEBT1UDQHSBI))
 **Orders**:
+
 - `114-5023219-5153023`
 - `114-8373817-0065026`
 - `114-0361812-2719453` (marked "delivered to mailbox" — physically impossible: 4 large PCs would not fit in residential mailbox)
@@ -265,6 +266,7 @@ Vendor-management AI should preserve this as the BENCHMARK and treat anything be
 ### Pattern F — Idle-time-pressure as structural root cause
 
 The 2-minute-idle-timeout policy is mentioned in EVERY chat opening + Manimod re-cites it under stress. The policy structurally drives:
+
 - Premature transfers (agents transfer rather than wait for state-confirmation)
 - Stock-phrase usage ("Please stay connected" "I'm working on this" buy idle-time)
 - Context loss across transfers (no time to handoff state)
@@ -531,6 +533,7 @@ Pattern R is **conditional on customer-bandwidth-to-drive-balancing**. The resol
 | **Bandwidth + give-up disposition (mid-resolution)** | Customer keeps duplicates + abandons originals; vendor's confusion-state persists | Customer-favorable (net +4 working devices, vendor over-shipped) |
 
 The framework-aligned outcome (Pattern R, vendor-neutral) requires both:
+
 1. **Customer bandwidth** for the balancing labor
 2. **Customer discipline** to apply substrate-honest accounting rather than zero-sum framing
 

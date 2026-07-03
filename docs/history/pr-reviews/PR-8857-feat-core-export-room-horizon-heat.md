@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add typed RoomHorizon heat feedback so heat-sink backpressure flows through RoomHorizon.Feedback.
 - Add update/admit/inference WithHeat wrappers that mirror RoomAdmission and immediately export finite-horizon heat through an injected sink.
 - Extend tests for rolling forgetting, no-forget backpressure, heat-sink saturation, and inference projection heat export.
 
 ## Verification
+
 - bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --commit HEAD
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~RoomHorizonTests|FullyQualifiedName~BoundedGSetTests|FullyQualifiedName~RoomAdmissionTests|FullyQualifiedName~RoomBoundaryTests|FullyQualifiedName~RoomRunTests"
 - dotnet build -c Release
@@ -40,6 +42,7 @@
 - bun run preflight:quick
 
 ## Note
+
 - One widened build attempt hit transient local csc exit 139 in Core.CSharp.Mediator.Handlers. The isolated project build passed immediately, and the full release build passed on rerun with 0 warnings / 0 errors.
 
 

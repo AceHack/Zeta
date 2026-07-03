@@ -44,6 +44,7 @@
 ## How it works
 
 The hook fires on all Bash tool calls (matcher: "Bash") but filters internally:
+
 1. If `ZETA_EXPECTED_BRANCH` is unset → exit 0 immediately (no stdin read, no child process)
 2. If command is not `git commit*` → exit 0 after parsing stdin
 3. If branch matches expected → exit 0 from verify-branch.ts

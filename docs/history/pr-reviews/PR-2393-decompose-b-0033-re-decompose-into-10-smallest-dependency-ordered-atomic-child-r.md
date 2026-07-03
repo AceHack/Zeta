@@ -31,12 +31,14 @@
 Re-decomposed broad P2 081KQ3HBZ0008QG0R0008RYCSX (Otto-discipline hooks system, L effort) into 10 smallest dependency-ordered atomic child rows per "decompose before implementation" + "always re-decompose" + "one bounded step" rules. Children are S/M, TS-preferring (Claude Code hooks harness), each verifiable in isolation. Parent updated with `status: decomposed` + `decomposed_into` list + re-decomp record. Two child stubs created; remaining follow in separate bounded PRs. Dedicated worktree + pushed claim branch used; root checkout untouched.
 
 ## Focused checks (included per rule)
+
 - `dotnet build -c Release` in root: 0 Warning(s) 0 Error(s)
 - `dotnet build -c Release` in worktree (post-edit): 0 Warning(s) 0 Error(s)
 - `git status` clean except intended changes
 - No bash files touched (Rule 0)
 
 ## Evidence
+
 - Worktree: /tmp/zeta-riven-b0033
 - Branch: claim/b0033-otto-discipline-hooks-decompose-smallest-atomic-children-riven-2026-05-09
 - This is Riven background worker one-bounded-step execution on LFG.

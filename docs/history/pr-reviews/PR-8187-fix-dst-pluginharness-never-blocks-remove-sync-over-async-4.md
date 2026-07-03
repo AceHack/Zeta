@@ -32,6 +32,7 @@ Fourth increment of the accidental-`Wait()` / DST cleanup (after #8184/#8185/#81
 The harness drove each tick with `vt.AsTask().GetAwaiter().GetResult()` on the slow path (×4) — a silent sync-over-async block (DST-hostile; deadlocks the DoP=1 pump).
 
 Replaced with a `requireSync` helper:
+
 - completed-successfully → no-op
 - completed-faulted/cancelled → `GetResult()` rethrows **synchronously** (already complete, no block) — faults still surface
 - **genuinely pending** → `invalidOp`: the harness is synchronous-only by design, never blocks

@@ -37,6 +37,7 @@ Follow-up: close #5060 with substrate-recoverable cross-link.
 Re-lands backlog item **081KSE6WT0008QG0R0008483B2** describing the “cluster as digital twin” framing (git-native + event-store-native + AI-native) as the unifying conceptual layer for the 081KSE6WT0008QG0R003WMG4XV observable/controllable cluster fabric, and regenerates the generated backlog index to include it.
 
 **Changes:**
+
 - Adds new per-row backlog file for **081KSE6WT0008QG0R0008483B2** under `docs/backlog/P1/`.
 - Updates `docs/BACKLOG.md` to include the new **081KSE6WT0008QG0R0008483B2** entry.
 

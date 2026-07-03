@@ -42,6 +42,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -60,6 +61,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds new documentation surfaces to capture an external synthesis, formalize an “agendas vs trajectories” split, and draft an Ace package-format v2 research spec that extends the prior v1 format.
 
 **Changes:**
+
 - Appends an “Amara synthesis ratification” section to the Ace package-manager trajectory resume.
 - Introduces `docs/agendas/` (README + 4 agenda files) to separate claim-status/scope from trajectory motion-state.
 - Adds a research-draft “Ace package format spec v2” describing polyglot artifacts, hat/governance metadata, verification, and revocation/quarantine concepts.

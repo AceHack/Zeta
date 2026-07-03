@@ -29,5 +29,6 @@ Minimum-viable per-tick substrate at session close. Names real-dependency-wait o
 Adds a single tick-history shard documenting a minimal session-close tick that names PR #3217 as a real dependency and articulates the "minimal-shard pattern" for valid small ticks at session close.
 
 **Changes:**
+
 - New tick file under `docs/hygiene-history/ticks/2026/05/14/` recording rate-limit, holding discipline, and minimal-scope rationale.
 - Documents the minimal-shard pattern as a valid tick shape distinct from Standing-by-failure-mode.

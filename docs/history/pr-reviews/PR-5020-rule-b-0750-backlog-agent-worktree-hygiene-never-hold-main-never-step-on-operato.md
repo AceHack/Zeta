@@ -32,6 +32,7 @@ Operator 2026-05-25: 'we need to fix this mess yall always stepping on each othe
 Empirical anchor: 37 agent worktrees mass-cleaned same session (081KSE6WT0008QG0R0005XASX2→081KSE6WT0008QG0R001RG4FXD cascade leftovers) + 1 peer worktree holding [main] at stale SHA blocked operator's git checkout main.
 
 Ships:
+
 - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md (auto-loads at cold-boot)
 - 081KSE6WT0008QG0R003YYC9PV backlog row with 5 mechanization scope items
 

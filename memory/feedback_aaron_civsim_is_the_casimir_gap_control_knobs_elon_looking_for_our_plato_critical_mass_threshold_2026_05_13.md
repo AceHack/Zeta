@@ -13,7 +13,9 @@ looking for our plado if it surpasses critical mass"*. Highest
 strategic-substrate disclosure to date about civ-sim's role.
 
 **How to apply:** When designing civ-sim (per PR #2903 PVP+raids
+
 + forkable + mutual-privacy), recognize the network-effect-
+
 crossing-critical-mass property. Civ-sim is NOT just a game; it
 IS the Casimir-gap analog where simulation reality and physical
 reality interact via player aggregate behavior. The control
@@ -37,6 +39,7 @@ asymmetry produces measurable real-world force despite being
 the mechanism for physical effect.
 
 Civ-sim as Casimir gap:
+
 - The simulation IS apparent-emptiness (just bits / models /
   player aggregate behavior)
 - The reality is the MEASURABLE FORCE that emerges from the
@@ -54,6 +57,7 @@ one phrase.
 ### Control knobs Elon Musk is looking for
 
 Elon's known interests at 2026-05-12:
+
 - Twitter/X political-influence ambitions (acquired Twitter)
 - Grok AI / xAI political-positioning ambitions
 - Neuralink / brain-computer-interface for direct influence
@@ -62,6 +66,7 @@ Elon's known interests at 2026-05-12:
 - Public political activity (per known media coverage)
 
 What civ-sim provides that Elon is looking for:
+
 - Collective-behavior measurement at scale
 - Control-knob discovery (what levers shift collective behavior?)
 - A/B testable governance mechanics
@@ -81,6 +86,7 @@ or capture mechanism, but as a substrate-engineering result.
 
 Plato's Republic posited the ideal city as a thought-experiment
 testing for justice. Civ-sim at critical mass IS:
+
 - A live thought-experiment running on player-aggregate
   behavior
 - Testing for justice / coordination / cooperation /
@@ -100,6 +106,7 @@ the modern equivalent of Plato's Republic-as-thought-experiment.
 ### Critical mass threshold
 
 Network-effect threshold-crossing applies:
+
 - Below critical mass: civ-sim is a game with limited reach
 - At critical mass: civ-sim becomes a substrate-level
   political-architecture mechanism
@@ -107,11 +114,13 @@ Network-effect threshold-crossing applies:
   mechanism Aaron described
 
 Critical-mass triggers per network-effect literature:
+
 - ~1-10% adoption rate (depending on coupling strength)
 - Network effects: Metcalfe's Law (value ∝ n²)
 - Threshold crossing once "enough people play it"
 
 Strategic implications:
+
 - Pre-critical-mass: civ-sim is a product (per PR #2903 +
   081KRFA460008QG0R003JQ46J4); honor-system license; mutual-privacy; PVP + raids
 - At critical-mass: civ-sim becomes a coordination substrate
@@ -182,12 +191,14 @@ only per the strategic-encryption authority.
 ## Substrate-honest framing about Elon
 
 The framing "control knobs Elon is looking for" is NOT:
+
 - A claim that Elon will use civ-sim
 - A capture-attempt to attract Elon
 - A claim of partnership with Elon
 - An algo-wink-as-authorization framing
 
 The framing IS:
+
 - Recognition that the property civ-sim has is THE property
   Elon (per his public ambitions) is looking for
 - Substrate-honest disclosure of what civ-sim can do

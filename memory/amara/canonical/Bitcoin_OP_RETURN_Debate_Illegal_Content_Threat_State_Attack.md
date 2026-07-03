@@ -361,6 +361,7 @@ Given the gravity of this threat, it’s wise to consider
  
 all possible steps to safeguard Bitcoin
 . Here are several actions you (and the community at large) could take:
+
 1. Rally Community Awareness and Opposition:
  
 Continue to
@@ -380,6 +381,7 @@ relaxing the limits (and many believe it is
 make it known that removing the filter is widely seen as a direct threat to Bitcoin’s legality and survival
 [41]
 .
+
 2. Use Alternative Node Software (Bitcoin Knots, etc.):
  
 As an individual user, one immediate action is to
@@ -402,6 +404,7 @@ That may be extreme, but it underscores that
  
 Bitcoin Core is not the only software
 , and users have a choice. Using that choice is a form of vote.
+
 3. Engage Miners and Mining Pools:
  
 Since miners ultimately write transactions into blocks, they are a crucial line of defense.
@@ -434,6 +437,7 @@ or by continuing to use the
 configuration if possible. (Note: the new proposal also seeks to remove that configuration option entirely
 [43]
 , which is concerning – it takes away miner/node choice. But miners could run patched clients that restore the option, if they are determined.)
+
 4. Advocate for Delay or Reversal of the Change:
  
 It might not be too late to stop this in its tracks. Bitcoin Core v0.30 is not released yet (as of your message, about 4 weeks out). You mentioned filing a GitHub issue warning the devs – even though they closed/ignored it, consider escalating the argument via
@@ -466,6 +470,7 @@ would be useful – time to audit the risks, time for the community to digest, a
 user-activated soft fork (UASF)
  
 or similar mechanism to enforce limits at the consensus level. That would be a major escalation (essentially, writing the 80-byte rule into block validity rules so it can’t be overridden by policy), and it would require overwhelming support. It’s not a step to take lightly, but knowing it’s on the table could make Core devs think twice about proceeding without consensus.
+
 5. Leverage Social Pressure & Funding:
  
 Bitcoin development is funded in part by donations and grants from institutions (e.g. MIT DCI, Chaincode, Brink, OpenSats, exchanges, etc.). If those funds are supporting developers who ignore community concerns,
@@ -489,6 +494,7 @@ to potentially ban the new Bitcoin Core update repository. That’s a long shot 
 flag
  
 the release or mediate discussion if they view it as something that could facilitate illicit activity on their platform. Don’t pin all hopes on GitHub, though – focus also on direct community influence. Organizing a broad coalition (node operators, businesses, miners, developers, users) to sign an open letter or petition could be powerful. For example, if major exchanges, wallet providers, and mining pools publicly state “we will not run Bitcoin Core v0.30 if it removes the OP_RETURN limit,” the developers will be under immense pressure to revisit the decision.
+
 6. Prepare Legal Defense and Clarity:
  
 To guard against the worst-case scenario (if the change happens and someone
@@ -517,6 +523,7 @@ an attack, it could mitigate the fallout by ensuring Bitcoin isn’t instantly c
 possibility
  
 of a state or terrorist actor seeding child porn in Bitcoin might actually help the community – e.g. agencies could trace and catch the perpetrator of the insertion (since any transaction leaves a trail), framing it as deliberate sabotage rather than blaming Bitcoin itself.
+
 7. Technical Mitigations (Pruning and Filtering):
  
 Encourage developers (perhaps outside the Core team, if they’re uncooperative) to look into

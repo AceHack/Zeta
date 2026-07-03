@@ -27,6 +27,7 @@ Verbatim Mika preservation. Architectural lock-in: HOMELAB MODE FIRST (gh auth l
 This PR preserves a Mika/Aaron conversation as durable memory substrate for the homelab-first GitHub-auth device registration direction feeding 081KSGS9H0008QG0R0027HJZYH iter-5.4.
 
 **Changes:**
+
 - Adds a verbatim conversation archive for the 2026-05-26 homelab-first registration decision.
 - Captures homelab vs production bootstrap-mode implications.
 - Links the conversation to 081KSGS9H0008QG0R0027HJZYH and the iter-5.x USB-installer roadmap.

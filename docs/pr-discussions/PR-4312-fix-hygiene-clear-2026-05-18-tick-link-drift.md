@@ -40,6 +40,7 @@ Adjacent archive/research PRs (#4306, #4308, #4309 and siblings) were all failin
 This PR fixes broken repo-relative links in 2026-05-18 hygiene tick shards by correcting path depth to reach the repository root and avoiding a non-repo-canonical user-scope memory link.
 
 **Changes:**
+
 - Updates `.claude/rules` and `docs/backlog` relative links from five to six `..` segments where needed.
 - Converts one out-of-repo user-scope memory reference from a markdown link to plain code text.
 - Keeps the hygiene-history archival content intact while making link-audit enforcement pass for these touched shards.

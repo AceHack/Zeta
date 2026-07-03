@@ -30,11 +30,13 @@
 Lior: Reducing prompt token overhead across all agent loop runs by archiving the rules folder and disabling unused plugins.
 
 ### Why
+
 - Every agent query and daemon tick auto-loads the contents of `.claude/rules/*.md`.
 - With 106 rules totaling ~137,000 words (~182,000 tokens) plus tool schemas, the baseline system prompt overhead is ~210k tokens.
 - This immediately blows past the 200,000 context token limit on startup and generates massive API costs (approx. 1M tokens per tick per agent, leading to high token usage bills).
 
 ### What
+
 - Renamed `.claude/rules/` to `.claude/rules.bak/`. This prevents them from auto-loading on every single session prompt.
 - Kept 5 essential/canary rules under `.claude/rules/` to keep `CLAUDE.md` and local/CI bootstrap validation checks passing.
 - Trimmed `.claude/settings.json` to disable 18 unused heavy plugins (like `huggingface-skills` which registers 318 tools/schemas). Re-enabled `playwright` per request.

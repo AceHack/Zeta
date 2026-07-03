@@ -87,6 +87,7 @@ populated harness. See
 `memory/feedback_claude_surface_cadence_research.md`
 
 + `memory/feedback_multi_harness_support_each_tests_own_integration.md`
+
 and FACTORY-HYGIENE row 38.
 
 **Primary feature-comparison axis —

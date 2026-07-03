@@ -448,11 +448,13 @@ Prior CLAUDE.md framing (still on main as of this commit):
 > *"Double-hop workflow = work lands AceHack first → forward-sync to LFG → AceHack absorbs LFG's squash-SHA. Force-push to AceHack main is part of the protocol; force-push to LFG main is forbidden."*
 
 What stays:
+
 - LFG main is canonical; force-push to LFG main is still forbidden.
 - Force-push to AceHack main is still allowed (the prior doctrine already said so).
 - The 0-divergence invariant at round-close still holds (`AceHack main = LFG main`).
 
 What changes:
+
 - **Double-hop ceremony becomes optional, not required**, while AceHack is inactive. Active work can land on LFG directly; AceHack mirrors via force-sync (preferably `--force-with-lease`).
 - The double-hop is reserved for the case when AceHack becomes an active collaboration surface again. Until then, it's amnesia-with-extra-steps.
 - The directionality flips: while inactive, sync is `LFG → AceHack`, not `AceHack → LFG`.

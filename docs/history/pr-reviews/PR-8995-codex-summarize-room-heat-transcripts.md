@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add `HeatTranscriptSummary` over Dark Hall heat boundary rows, with helpers for scheduled and boundary room states
 - carry heat transcript summaries on `RoomRun` outputs while keeping raw CHIP-9 heat-board rows intact
 - add the missing non-secret `db/feedback_*` substrate row referenced by the vault-separation workitem so auto-vivify stays green
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~DarkHallSchedulerTests|FullyQualifiedName~RoomRunTests"`
 - `dotnet format --verify-no-changes`
 - `dotnet build -c Release`

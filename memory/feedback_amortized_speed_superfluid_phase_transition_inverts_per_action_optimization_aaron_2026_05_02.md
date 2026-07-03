@@ -205,6 +205,7 @@ VISION.md (terminal purpose: intellectual backup of earth)
 ```
 
 When picking action shapes, score against this stack:
+
 - Does this advance the intellectual-backup-of-earth purpose?
 - Does this contribute to the friction-reduction rate
   (Superfluid phase transition gradient)?

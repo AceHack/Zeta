@@ -45,6 +45,7 @@ The macOS path's own changelog records the trap: *"USB came out bootable but WIT
 ## ESP mount on Windows (the one Windows-fiddly bit)
 
 EFI System Partitions are often hidden (no auto drive-letter). Mount ladder, most-reliable first:
+
 1. partition already has a drive letter (removable FAT auto-mount);
 2. `diskpart assign letter=` — works on `System`-type partitions where the Storage cmdlets refuse;
 3. `Add-PartitionAccessPath -AssignDriveLetter` (last resort).

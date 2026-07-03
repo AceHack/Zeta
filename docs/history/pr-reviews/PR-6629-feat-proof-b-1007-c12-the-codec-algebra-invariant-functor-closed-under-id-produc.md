@@ -32,6 +32,7 @@
 Makes 081KT2T2J0008QG0R0008TFHJT's **asserted-in-prose** "the codec axis is an algebra" claim **true**, and proves it. 081KT2T2J0008QG0R0008TFHJT §122-126 commits to: *a codec is an **invariant functor** with the round-trip law `Deserialize ∘ Serialize = id`, closed under identity, product, and sum*. Only the bare `ICodec` port existed — 081KT2T2J0008QG0R000YZ3NMY flags C12 asserted-in-prose, "writing these IS the work." This adds the combinators **and** the proof.
 
 ### `src/Core/Codec.fs` — the codec algebra over the existing port (hexagonal, Result-typed)
+
 - `identity<'T> : ICodec<'T,'T,'F>` — the algebra's identity element (`Codec<unit>`)
 - `imap fwd bwd` — the **invariant-functor map**, re-target `'A→'B` via a bijection
 - `product ca cb : ICodec<'A*'B, 'WA*'WB, 'F>` — pair; declines if either component does
@@ -40,6 +41,7 @@ Makes 081KT2T2J0008QG0R0008TFHJT's **asserted-in-prose** "the codec axis is an a
 Prior art: scodec `xmap`/`~`/`|+|`, Haskell `codec`, profunctor-optics.
 
 ### `tests/Tests.FSharp/Core/Codec.Tests.fs` (C12) — FsCheck proofs
+
 - **round-trip closure** — `identity` / `imap` (inverse bijection) / `product` / `sum` / a nested `product∘sum∘imap` composite each preserve `decode∘encode = id`
 - **invariant-functor laws** — `imap id id = id`; the composition law `imap g g' ∘ imap f f' = imap (g∘f) (f'∘g')` (structural — holds for any maps, not a round-trip claim, so no bijectivity needed)
 - **partiality is honest** — a declining component surfaces `Error` through `product` (no silent corruption that would let a bad value masquerade as good); the accepted domain still round-trips

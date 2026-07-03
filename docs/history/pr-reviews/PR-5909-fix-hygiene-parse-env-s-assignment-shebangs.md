@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - harden the bash-retirement inventory shebang parser for `env -S` split strings with leading `NAME=value` assignments
 - reuse the env-command parser for split-string operands so assignments do not hide `bash`/`zsh` interpreters
 - add a focused tracked-inventory regression fixture
 
 ## Checks
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun tools/hygiene/check-bash-retirement-inventory.ts --enforce`
 
 ## Coordination
+
 - Claim branch: `claim/codex-loop-bash-retirement-env-s-assignment-20260528`
 - Scope: `tools/hygiene/check-bash-retirement-inventory.*`
 - Root checkout was not used as a write surface.

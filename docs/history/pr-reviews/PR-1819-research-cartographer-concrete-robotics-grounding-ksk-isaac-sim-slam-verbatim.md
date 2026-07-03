@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Critical provenance correction: the abstract Cartographer role DERIVED FROM concrete robotics
 - KSK = real safety kernel for NVIDIA Thor + actuators (no guns constraint)
 - Cartographer = SLAM mapping inside Isaac Sim (robotics simulator)
@@ -37,6 +38,7 @@
 - Companion to PR #1818 (abstract math lineage)
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] Verbatim preservation verified
 

@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Files 081KQZVQW0008QG0R003FXRGQZ: skill for extracting content from authenticated browser sessions
 - Pattern: kill Playwright Chrome → osascript → JS execution in real Chrome tabs
 - Prevents the 20-minute Playwright fight from recurring
 - Aaron: "maybe skill this"
 
 ## Test plan
+
 - [ ] Backlog item well-formed
 - [ ] BACKLOG.md index regenerated
 

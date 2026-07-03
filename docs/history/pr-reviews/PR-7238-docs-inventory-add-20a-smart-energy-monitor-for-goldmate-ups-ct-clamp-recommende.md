@@ -30,6 +30,7 @@
 Aaron (2026-06-09): add a 20A smart energy monitor for the **Goldmate UPS** — metering the 2nd k8s cluster's draw (cluster now booted off the zflash USB).
 
 New **section 3** + quick-decision line. Key guidance:
+
 - Most smart plugs are **15A — under-rated** for a 20A feed.
 - **Recommended: CT-clamp circuit monitor** (**Shelly EM** local API, or **Emporia Vue**) on the UPS **input** — sidesteps the plug-rating limit, gives local telemetry for cluster dashboards.
 - Or a **true 20A-rated inline** (Legrand radiant 20A / Tuya 20A via LocalTuya).

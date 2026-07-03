@@ -28,18 +28,22 @@
 ## Description
 
 ## Summary
+
 - Add action-scoped backlog-ref tracking to trajectory packets.
 - Block packet selection when every backlog ref in next-action/child-candidate text resolves to a closed backlog row.
 - Add focused tests for stale closed-row blocking and closed-row detection.
 
 ## Checks
+
 - bun test tools/trajectories/autonomous-pickup.test.ts
 - git diff --check
 
 ## Local limitation
+
 - bun run typecheck could not run locally because tsc is not installed in this worktree.
 
 ## Coordination
+
 - Claim: docs/claims/codex-loop-trajectory-closed-backlog-skip-20260527.md
 - Root checkout was read-only; all edits were made in the dedicated claim worktree.
 

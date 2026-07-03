@@ -32,6 +32,7 @@ Operator-authorized 2026-05-31 ("build the observe.ts operator-channel slice"). 
 **No second DU.** Foreground (with operator) vs background (without) = *which channels are wired*, exactly like the workflow-engine's six git backends behind one `World` interface. The operator channel reuses `FourCornerOwnership<TIn,TOut,TOutFeedback,TInFeedback>` (convergence, not a parallel mint).
 
 **Changes:**
+
 - `observe(backlog)` → `observe(world: World)`, `World = { backlog, operator? }`. Operator **absent** = background agent → original behavior, unchanged.
 - `NextAction` += `preserve_ferry`, `respond_to_operator`. Operator **outranks** backlog (current conversation = highest-signal source): `preserve_ferry > respond_to_operator > do > decompose > edit_grammar > free_time`. Durability-first (a ferry can be lost to compaction → preserve before respond).
 - `OperatorOwnership = FourCornerOwnership<OperatorMessage, OperatorResponse, ConvFeedback, OperatorAck>`; `OperatorChannel` is its observable read-side the oracle inspects.

@@ -32,6 +32,7 @@
 Extends the asymmetric-critic-infrastructure capstone (#8269) with Aaron's dual-use observation, **grounded against the external referent**.
 
 The *exact* superior-compute-captures-lower mechanism is **already deployed defensively** to protect model weights from distillation theft: the teacher shapes its outputs so a student distilling from them is corrupted (the defender's outputs = adversarial inputs to the attacker's training — Aaron: *"it basically prompt injected the attacking model"*). Real research:
+
 - **DOGe** — Defensive Output Generation ([arXiv 2505.19504](https://arxiv.org/pdf/2505.19504))
 - **MISLEADER** ([2506.02362](https://arxiv.org/pdf/2506.02362)), **DistillGuard** ([2603.07835](https://arxiv.org/pdf/2603.07835)), [model-extraction survey](https://arxiv.org/pdf/2506.22521), Tramèr et al. 2016.
 

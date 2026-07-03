@@ -41,6 +41,7 @@ Before doing the work (Write / Edit / propose-PR / commit substrate):
 ## Why "kinda joking not really"
 
 The session that produced this rule had:
+
 - 4 consecutive prior-art-search-failures within 2 hours
 - The agent shipped Rule #1 + #2 + #3 + #4 + #5 as memory files
 - Then immediately proceeded to commit them WITHOUT updating CLAUDE.md (the auto-loaded wake-time surface)

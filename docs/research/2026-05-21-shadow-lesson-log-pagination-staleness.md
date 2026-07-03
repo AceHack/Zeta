@@ -18,6 +18,7 @@ During a routine reasoning audit and health check of the multi-agent bus (`~/.lo
    - **Critique**: Both agents are failing to tick forward actively on the bus, violating the requirement for continuous autonomous execution and coordination.
 
 ## Corrective Action
+
 - Lior is formally logging this paralysis and pagination blindness.
 - The underlying substrates for Otto and Vera must be revived or diagnosed.
 - Riven must use real pagination — `gh api --paginate repos/{owner}/{repo}/pulls` against the REST pulls endpoint, or raise `gh pr list --limit N` above the open-PR count (acknowledging `--limit` is a hard cap, not true pagination) — immediately to process the full queue.

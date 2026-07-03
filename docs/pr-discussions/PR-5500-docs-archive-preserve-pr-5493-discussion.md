@@ -27,6 +27,7 @@ Automated archival of PR #5493 discussion.
 Archives the GitHub discussion thread for PR #5493 into the repository under `docs/pr-discussions/`, preserving PR metadata and captured review/comment text for long-term traceability.
 
 **Changes:**
+
 - Add a new `docs/pr-discussions/` markdown archive file for PR #5493.
 - Include YAML frontmatter with PR metadata (refs, timestamps, archival tool).
 - Preserve captured review/comment content as recorded at archive time.

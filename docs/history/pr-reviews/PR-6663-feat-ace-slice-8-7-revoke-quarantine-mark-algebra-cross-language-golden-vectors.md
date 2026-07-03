@@ -40,6 +40,7 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.7-revoke-quarantin
 `applyRevoke` (removes from quarantined, adds to revoked — **revoke supersedes quarantine**; always succeeds) · `applyQuarantine` (**errors if already revoked** — revoke is terminal) · `applyUnquarantine` (errors if not quarantined). All end with `withFmt`: `format_version = 2` iff a mark remains else `1`, empty mark maps stripped (**the v2-iff-marks rule the 8.4 review caught**, enforced automatically), `issued_at = at`.
 
 ### Fixture (`tests/cross-verification/revoke-quarantine/`)
+
 - `vectors.json` — **transitions[8]** (`op + prev + name + version + reason? + at → expected_canonical_json + expected_sha256`, composing 8.5/8.1 + slice 8): revoke-fresh · quarantine-fresh · revoke-supersedes-quarantine · **unquarantine-back-to-v1** (empty-map strip + `format_version` 2→1) · revoke-without-reason (optional `reason`) · quarantine-alongside-revoked · revoke-one-of-two-quarantined · multi-package. **invalid[2]**: quarantine-after-revoke → "terminal" · unquarantine-not-quarantined → "not quarantined".
 - `cross-verify.ts` — TS oracle dispatches each `op` to the **real** apply functions; asserts `canonicalBytes(result)` + sha256 (transitions), error+substring (invalid); writes `ts-output.json`; exits non-zero on mismatch. **Auto-discovered by `cross-verify-all.ts` → 9/9.**
 
@@ -50,6 +51,7 @@ A **Python re-implementation** of the three apply functions + `withFmt` (superse
 Stays **TS-only + proof-owed → not canonical yet**.
 
 ### Gates (all green locally)
+
 - tsc 0 · `bun test tools/ace/` **372 pass** (no code change) · `bun tools/ci/cross-verify-all.ts` **9/9** · all files pure-LF · markdownlint clean
 - subagent review: **APPROVE** (non-tautology + `withFmt` v2/strip + supersession + reason-optional all confirmed; 3 transitions independently re-derived)
 

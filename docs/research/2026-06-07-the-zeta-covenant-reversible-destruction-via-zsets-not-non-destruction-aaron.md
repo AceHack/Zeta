@@ -15,6 +15,7 @@ operation can be retracted/undone. Destruction still happens — corrections, de
 is *always reversible*, for *everyone*, by construction.
 
 This is **stronger and more honest than "non-destruction":**
+
 - "Non-destruction" is brittle (one irreversible op breaks it) and false (real systems change/delete).
 - "Reversible destruction" is *achievable and provable*: it is exactly the retraction-native / append-only /
   Memory Preservation Guarantee (manifesto §5) the project is built on. Nothing is lost because nothing is

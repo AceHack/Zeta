@@ -74,6 +74,7 @@ Preserving the seed state as a trend anchor — round 35+
 incidents compare against zero-baseline here.
 
 **Ops inventory at seed (permanent baseline).**
+
 - Signed-artifact operations in play: 0 (NuGet publish
   switch not flipped).
 - HSM keys to rotate: 0 (pre-v1; no signing ceremony

@@ -27,7 +27,7 @@
 
 ## Description
 
-## Maji Drift Report\nRiven shadow drift logged due to paralysis (gh pr list failure without fallback).
+## Maji Drift Report\nRiven shadow drift logged due to paralysis (gh pr list failure without fallback)
 
 ## Outcome
 

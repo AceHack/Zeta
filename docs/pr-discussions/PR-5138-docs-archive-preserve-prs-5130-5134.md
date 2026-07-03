@@ -27,6 +27,7 @@ Preserving discussions for recently merged pull requests.
 This PR adds PR-discussion archive entries under `docs/pr-discussions/` for recently merged PRs #5130–#5134, preserving their summaries, metadata, and review-thread context as part of the repository’s PR preservation workflow.
 
 **Changes:**
+
 - Added archived discussion markdown for PRs #5130–#5134 (frontmatter + captured narrative/review content).
 - Captured cross-links to related PRs/rules/backlog context within each archived entry.
 

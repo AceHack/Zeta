@@ -34,15 +34,18 @@ PR #5643 (passphrase env-exposure supersede) went DIRTY when #5644 (blob-path fi
 ## What this PR does
 
 **Step 6.56 (NEW)**:
+
 - Operator-typed passphrase captured into NON-EXPORTED shell variable \`ZETA_CREDS_PASSPHRASE_VAL\`
 - Bash shell vars without \`export\` are NOT in \`/proc/<pid>/environ\` — child processes can't read
 
 **Step 6.95-picker (modified)**:
+
 - Gate keys on \`ZETA_CREDS_PASSPHRASE_VAL\` (non-exported var)
 - sudo invocation uses inline env-set: \`ZETA_CREDS_PASSPHRASE=\"\$ZETA_CREDS_PASSPHRASE_VAL\" sudo --preserve-env=ZETA_CREDS_PASSPHRASE ...\` — exports only into sudo subprocess
 - \`unset ZETA_CREDS_PASSPHRASE_VAL\` moved OUTSIDE if/else → fires in BOTH picker-ran AND picker-skipped branches
 
 **Preserves #5644 substrate**:
+
 - Picker \`--output /mnt/boot/zeta-creds.enc\` and the mount-path comment block intact
 - This commit touches only env-var lifecycle, not path lifecycle
 

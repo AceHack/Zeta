@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:43:05Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5098: backlog(081KSE6WT0008QG0R002275NDE P1): re-land simplest-first plugin sequence — Redis KV first, then NATS / CockroachDB / Temporal / Orleans / OPA, etc.
+# PR #5098: backlog(081KSE6WT0008QG0R002275NDE P1): re-land simplest-first plugin sequence — Redis KV first, then NATS / CockroachDB / Temporal / Orleans / OPA, etc
 
 ## PR description
 
@@ -37,6 +37,7 @@ Follow-up: close #5062 with substrate-recoverable cross-link.
 Re-lands backlog row **081KSE6WT0008QG0R002275NDE** describing a “simplest-first” sequence for wrapping already-deployed cluster substrate components as Zeta plugin interfaces (starting with Redis KV), and regenerates the root backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P1/081KSE6WT0008QG0R002275NDE-...md` (new P1 backlog row capturing the proposed plugin sequencing and Rank 1 acceptance scope).
 - Updates `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R002275NDE entry in the generated index.
 

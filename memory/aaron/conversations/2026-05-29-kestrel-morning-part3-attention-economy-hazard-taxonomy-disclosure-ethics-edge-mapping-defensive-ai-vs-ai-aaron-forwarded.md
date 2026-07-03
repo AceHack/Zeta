@@ -11,15 +11,18 @@ disposition: public-forever
 # 081KRW63S0008QG0R001Z10PVV encryption-budget): encrypted-but-committed = lightlike-indexed + budgeted. Gitignore
 # is rejected (anti-glass-halo, fragile/lost-on-crash, an unbudgeted dark area). Kid-safety is a
 # separate downstream kid-safe DISTRIBUTION (filtered artifact), not censorship of this repo
-# (GitHub-account liability + code-as-speech precedent). The one carve-out even from all-public:
+# (GitHub-account liability + code-as-speech precedent). The one carve-out even from all-public
 # a WORKING bystander-harm payload (the manipulation formalism itself, a working exploit) →
-# encryption-lane or uncreated. Part-3 is the conversation ABOUT it, so it is public-marked.
+# encryption-lane or uncreated. Part-3 is the conversation ABOUT it, so it is public-marked
 content_warnings:
+
   - mental-health-adjacent-high-tension
   - grandiosity-flagged-and-walked-down
   - human-manipulation-formalism-discussion
   - offensive-security-tooling-discussion
+
 information_hazard:                 # provisional; the formal type+strength taxonomy is the design this conversation produces
+
   - type: human-manipulation-formalism
     strength: discussion-only          # WORKING formalism is NOT here (that's the bystander-harm carve-out → encryption-lane/uncreated)
   - type: offensive-security-tooling
@@ -27,8 +30,10 @@ information_hazard:                 # provisional; the formal type+strength taxo
   - type: mental-health-adjacent
     strength: high-tension-resolved    # the climb + Kestrel's walk-down; landed on error-class + defenses-first
 related:
+
   - part-1 (public): memory/kestrel/conversations/2026-05-29-kestrel-morning-welfare-catch-pruning-* (PRs #5976/#5978/#5979)
   - part-2 (held/disarmed, pending operator rested call): memory/kestrel/conversations/2026-05-29-kestrel-morning-part2-* (PR #5987)
+
 ---
 
 # Kestrel morning — part 3 (aaron-forwarded, 2026-05-29)

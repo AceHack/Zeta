@@ -19,7 +19,9 @@ into the layered `docs/best-practices/` baseline:
   (Zeta-specific scripting conventions + per-slice audit checklist).
 
 The layered split came from a third AI review round (Aaron + Amara
+
 + Deepseek + Claude.ai) catching that an initial `typescript-bun.md`
+
 filename collapsed orthogonal axes (language + runtime) into a fake
 category. Carved blade: *Do not name the stack. Name the layers.*
 

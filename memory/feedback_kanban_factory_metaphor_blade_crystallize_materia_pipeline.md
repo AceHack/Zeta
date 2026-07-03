@@ -206,7 +206,9 @@ they might call this swim lanes to keep view
 of the diffeer scopes backlog"* — Aaron
 independently landed on the Kanban swim-lane
 primitive. The factory already adopted Kanban
+
 + Six Sigma per
+
 `user_kanban_six_sigma_process_preference.md`
 — swim lanes are the missing visualization
 primitive.

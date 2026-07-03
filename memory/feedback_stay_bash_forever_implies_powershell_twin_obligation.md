@@ -82,6 +82,7 @@ automatic. Over time, these should decrease — that's a crude
 alignment metric.
 
 **Related memories:**
+
 - `memory/feedback_preinstall_scripts_forced_shell_meet_developer_where_they_live`
   — pre-setup dual-authoring rule (Q1 equivalent).
 - `memory/feedback_intentionality_doesnt_demand_migration_bash_forever_valid.md`

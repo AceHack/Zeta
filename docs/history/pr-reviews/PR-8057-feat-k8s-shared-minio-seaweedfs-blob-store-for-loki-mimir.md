@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add shared in-cluster S3 via `minio/` (default consumer target) and `seaweedfs/` (A/B alternative) in the `object-store` namespace — both auto-sync so we can compare backends without tearing either down.
 - Repoint Loki and Mimir off bundled chart MinIO to `blob-store.object-store.svc:9000` with a documented bucket + credential contract.
 - Document swap/A/B procedure and MinIO vs SeaweedFS tradeoffs in `k8s/object-store/BLOB-STORE-CONTRACT.md`.
 
 ## Test plan
+
 - [ ] `helm template` renders for minio, seaweedfs, loki, mimir Application values
 - [ ] `bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts` green
 - [ ] `live kind included` — minio + seaweedfs + loki Synced+Healthy (adds ~2 apps to included proof)

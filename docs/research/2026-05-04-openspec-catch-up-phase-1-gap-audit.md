@@ -90,7 +90,9 @@ capabilities are spec'd today" line and has no `profiles/` dir).
 capabilities are spec'd today") undercounts by 3 (the actual count
 is 6 today including `circuit-recursion`, `lsm-spine-family`, and
 `repo-automation`). Phase 2 work should update the README's count
+
 + planned-capabilities list as part of any spec-authoring PR that
+
 adds a new capability.
 
 ---

@@ -50,6 +50,7 @@ edge INTO canonical.** Because symlinks **only** resolve into a canonical home (
 **real (non-symlink) file** (no symlink→symlink chains — the new DAG check) and never canonical→symlink,
 there are **no back-edges and no cycles** → the cyclic reference graph becomes a **DAG** (views = sources,
 canonical homes = the sink layer). `Uniqueness.ts` now proves this (resolves + into-canonical + no-chains
+
 + realpath-no-ELOOP).
 
 ## Homoiconic? isomorphic? viewable as dagfs in our globals? — honest status

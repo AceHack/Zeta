@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1761 review archive that the post-merge workflow generated but could not push directly to `main` because repository rules require PRs.
 - Adds the PR #1761 manifest entry with the merge commit SHA `8adfbfaa2679a1a598fdd93540b6972d9f7ec1f1`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1761-docs-address-launchd-checklist-review-comments.md`
 - `git diff --check origin/main...HEAD`
 

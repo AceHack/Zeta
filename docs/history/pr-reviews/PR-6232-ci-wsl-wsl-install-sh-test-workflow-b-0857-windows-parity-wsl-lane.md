@@ -30,6 +30,7 @@
 ## WSL install.sh test — the fourth install shield (081KSKBP80008QG0R002J03WGA Windows parity, WSL lane)
 
 Runs `tools/setup/install.sh` inside a **real WSL2 `Ubuntu-24.04` on a `windows-2025` host** via `Vampire/setup-wsl` (the hosted-WSL pattern proven in the SQLSharp repo). Complements:
+
 - `docker-ubuntu-install-sh-test` (install.sh on bare Ubuntu, Docker)
 - `docker-nixos-install-sh-test` (install.sh on NixOS userspace, Docker)
 - `docker-windows-install-ps1-test` (install.ps1 on Server Core, Docker)
@@ -40,6 +41,7 @@ Exercises what the Docker-Linux lane **can't**: real WSL kernel, `/mnt` interop,
 A clean-room `Ubuntu-24.04` distro ran the **full graph end-to-end** on 2026-05-31: routing → `linux.sh` → apt → mise + all runtimes (dotnet 10.0.203 / python 3.14.5 / java 26.0.1 / bun 1.3.14 / uv / node / actionlint / shellcheck / semgrep) → uv tools (ruff) → elan/Lean → dotnet-stryker + fsharp-analyzers → TLA+/Alloy jars → ollama + `qwen2.5:0.5b` → "Install complete". Runs the FULL install.sh incl. the local-LLM primitive (matches `docker-ubuntu-install-sh-test`).
 
 ### Design notes
+
 - **Native clone into the WSL fs** (not running from `/mnt`): git restores the committed `+x` bit so `install.sh` can exec `linux.sh`, and ext4 avoids the 9p perf hit. This was the reliable path in the local run.
 - **Pins** (dep-pin-search-first, GitHub API 2026-05-31): `Vampire/setup-wsl` **v7.0.0** is the current latest (published 2026-04-11); SHA `d1da7f2c…` verified vs the v7.0.0 tag + matches SQLSharp's pin. `actions/checkout` v6.0.2. `windows-2025` (not `-latest`).
 - **Paths-gated** (`tools/setup/**`, `.mise.toml`, this workflow) → fires only on install-substrate PRs.

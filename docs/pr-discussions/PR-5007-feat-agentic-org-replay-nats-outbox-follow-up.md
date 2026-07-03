@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - replays the post-#4990 NATS outbox publisher and replaceable state-adapter commits onto current main
 - keeps stale-base governance/backlog deletions out of the branch
 - includes claim and release commits for task-pr-4990-nats-outbox-replay per the git-native claim protocol
 
 ## Validation
+
 - npm --prefix agentic-organization test
 - npm --prefix agentic-organization run typecheck
 
@@ -34,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Replays and extends the Agentic Organization “outbox → publisher → NATS adapter” slice by introducing generic outbox publishing ports, a Cockroach-backed outbox event source, and a JetStream event publisher adapter, while updating OpenSpec + docs to reinforce replaceable durable-adapter boundaries.
 
 **Changes:**
+
 - Add `OutboxEventSource` port (state) plus a Cockroach-backed implementation for reading/publishing outbox rows.
 - Add a generic outbox publisher (messaging) and a JetStream `EventPublisher` adapter (messaging-nats).
 - Expand governance dependency-boundary checks and update OpenSpec/docs to reflect durable-adapter replaceability and outbox publication semantics.
@@ -129,6 +132,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Resolved the five Copilot review threads after verifying current head `779720fb5934d3724d9bf3ac2fdf6cadfbfcc2e4`.
 
 Evidence:
+
 - `claimUnpublishedOutboxEvents` now uses an atomic `UPDATE ... FOR UPDATE SKIP LOCKED ... RETURNING` claim with lease columns.
 - `markOutboxEventPublished` now guards `AND published_at IS NULL`, uses `RETURNING`, and rejects duplicate or stale publish marks.
 - Supervisor-signal outbox subjects now use the broader `work` domain, avoiding duplicated subject segments.

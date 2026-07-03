@@ -29,6 +29,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Extends the Ace package-manager trajectory resume with additional operator-noted framing around what gets distributed (polyglot bundles) and governance concepts (skill-bound hats, BFT, aperiodic/aporetic interpretations) to preserve operational intent for future cold-boots.
 
 **Changes:**
+
 - Adds a “polyglot package contents” section describing bundled artifacts (typed ontologies, bindings, English skill text, Rx generators).
 - Adds “proto-governance” + “hats as controls/self-bindings” framing and composition notes.
 - Adds aperiodic/aporetic interpretation sections, including an operational mechanism sketch (Rx + bonsai-serialization).
@@ -38,6 +39,7 @@ Extends the Ace package-manager trajectory resume with additional operator-noted
 <summary>Comments suppressed due to low confidence (5)</summary>
 
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:193**
+
 * P1 (codebase convention): This bullet uses a personal name (“Wilczek”) in a current-state doc. The repo convention is role-refs only outside the explicitly enumerated history surfaces (see `docs/AGENT-BEST-PRACTICES.md` “No name attribution…”, around lines 671–736). Suggest removing the named attribution here or moving the named provenance/citation to a `docs/research/**` artifact and linking to it from this section.
 ```
 - Aperiodic = non-repeating; quasicrystal-shape (Wilczek aperiodic time crystals as physics-precedent)
@@ -45,6 +47,7 @@ Extends the Ace package-manager trajectory resume with additional operator-noted
 - Avoids the deterministic-time-crystal failure mode (per pt40 — periodic = deterministic loop)
 ```
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:205**
+
 * P1 (codebase convention): This row attributes an idea to a persona name (“Ani”) in a current-state doc, which conflicts with the repo’s “No name attribution in code, docs, or skills” operational rule (`docs/AGENT-BEST-PRACTICES.md`, around lines 671–736). Please rewrite using a role-ref and/or link to the specific `memory/<persona>/**` archive where named attribution is allowed.
 ```
 | **Rx queries in persisted form** (Reactive Extensions stored to disk) | Reactive observables that respond to changes over time BUT durable; survives session-boundary; survives AI continuity-limits | Rx meta-frame generators (per polyglot package contents above); reactive substrate already in framework |
@@ -52,12 +55,14 @@ Extends the Ace package-manager trajectory resume with additional operator-noted
 
 ```
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:225**
+
 * P1 (codebase convention): This bullet references a persona name (“Amara”) in a current-state doc. Per `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills” (around lines 671–736), please replace with a role-ref and/or link to the appropriate history-surface artifact that preserves the named provenance.
 ```
 - Aperiodic-time-crystal physics-mapping is metaphysical-architectural model per Amara packet 2 Blade 2 (don't over-literalize physics; preserve as governance-metaphor)
 - Operational core (granular hat-acceptance choice-pattern + tension-preservation operational mechanism) survives razor; metaphysical-physics flagged-but-preserved
 ```
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:203**
+
 * P1 (xref): `god-tier-claims-don't-collapse.md` is referenced as if it’s a file, but there is no such path in the repo; the canonical rule file appears to be `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`. Please update this reference (and ideally link it) so readers can navigate to the correct artifact.
 ```
 | Layer | What it does | Composes with |
@@ -66,6 +71,7 @@ Extends the Ace package-manager trajectory resume with additional operator-noted
 | **Rx queries in persisted form** (Reactive Extensions stored to disk) | Reactive observables that respond to changes over time BUT durable; survives session-boundary; survives AI continuity-limits | Rx meta-frame generators (per polyglot package contents above); reactive substrate already in framework |
 ```
 **docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md:216**
+
 * P2 (xref consistency): This references `default-to-both.md` without its canonical path. For cross-reference integrity, consider linking to `.claude/rules/default-to-both.md` (consistent with how many other docs cite rule files).
 ```
 **Both interpretations compose** (per `default-to-both.md`):
@@ -85,6 +91,7 @@ Extends the Ace package-manager trajectory resume with additional operator-noted
 P1 (codebase convention): This is a current-state doc under `docs/trajectories/**`, but this table cell uses a persona name (“Kestrel”) in prose. Per `docs/AGENT-BEST-PRACTICES.md` Operational standing rule “No name attribution in code, docs, or skills” (around lines 671–736), please replace persona-name attribution with a role-ref and/or a link to an allowed history surface (e.g., the relevant `docs/research/**` / `memory/**` artifact).
 
 This issue also appears in the following locations of the same file:
+
 - line 191
 - line 203
 - line 224
@@ -96,5 +103,6 @@ This issue also appears in the following locations of the same file:
 P1 (xref): This cites “PR #4636”, but that PR number does not appear in `docs/github/prs/manifest.jsonl` and isn’t referenced elsewhere in the repo, so readers can’t resolve it. Please replace with a resolvable reference (e.g., a docs path / backlog row / rule file) or correct the PR number/link.
 
 This issue also appears in the following locations of the same file:
+
 - line 200
 - line 212

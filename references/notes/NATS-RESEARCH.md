@@ -83,6 +83,7 @@ for fan-out across circuit replicas.
 **JetStream as durability substrate.** Secondary. `AckExplicit
 
 + R=3` maps loosely to `StableStorage`. JetStream acks a
+
 *consumer cursor*, not a transactional commit — reference, not
 a plan.
 

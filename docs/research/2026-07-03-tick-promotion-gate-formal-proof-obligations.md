@@ -47,6 +47,7 @@ encoding of a tick value. The tick is a `uint64` (versionstamp-aligned); the
 canonical encoding is 8-byte big-endian (consistent with the versionstamp codec).
 
 **What is needed:**
+
 - A golden-vector file `tests/golden/tick-codec-golden-vectors.json` with
   at least 16 tick values (0, 1, max, representative midpoints) and their
   8-byte big-endian hex encodings.
@@ -69,6 +70,7 @@ i.e. the `D`/`I`/`z⁻¹` operators can be applied to the belief stream and the
 operator identities (Gate T1) hold on the belief stream, not just on `ZSet<int>`.
 
 **What is needed:**
+
 - A FsCheck property in `SoftMode.Tests.fs` (or a new `TickBelief.Tests.fs`)
   that constructs a `Stream<Gaussian>` (a sequence of Gaussian messages indexed
   by tick), applies `D∘I` and `I∘D`, and verifies the round-trip identity holds
@@ -91,6 +93,7 @@ integration is algebraically sound.
 
 The aesthetics gate for Tick is: **the Tick algebra has no redundant operations**.
 Specifically:
+
 - `z⁻¹` (delay), `D` (differentiate), `I` (integrate) are the three primitives.
 - `D = 1 − z⁻¹` and `I = (1−z⁻¹)⁻¹` are derived (not primitives).
 - The monoid `(ℕ,+,0)` is the index structure, not an operator.

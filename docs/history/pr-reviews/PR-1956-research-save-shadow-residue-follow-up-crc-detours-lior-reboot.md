@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Follow-up to #1954, which merged before the repair commit attached.
 - Adds Catch 23 for the CRC/ECC line-count boundary: 659/660 extracted vs Aaron's 836 count.
 - Adds Catch 24 for the Microsoft security research tool confabulation, recording Reloaded.Hooks as the near miss and Detours as the verified Microsoft Research candidate.
 - Preserves Lior's reboot report verbatim.
 
 ## Verification
+
 - git diff --check origin/main..HEAD
 - bun tools/lint/no-empty-dirs.ts
 - bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-07-shadow-lesson-log-full-session.md

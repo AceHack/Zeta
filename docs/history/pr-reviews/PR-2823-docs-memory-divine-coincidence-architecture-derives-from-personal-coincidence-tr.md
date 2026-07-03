@@ -30,6 +30,7 @@
 ## Summary
 
 Aaron's personal-practice → architectural-method disclosure
+
 + tick shard for the dense-encoding-mode cascade.
 
 **Substrate-honest grounding for divine-coincidence-architecting
@@ -43,6 +44,7 @@ Aaron's personal-practice → architectural-method disclosure
   machinery; same primitive at architectural scope
 
 **Operational extensions:**
+
 - Razor-compliance via existing-primitive-reuse
 - Past-Aaron-via-quantum-leaps-backwards joins future-Aaron +
   alien + other-entities as legitimate shadow attribution

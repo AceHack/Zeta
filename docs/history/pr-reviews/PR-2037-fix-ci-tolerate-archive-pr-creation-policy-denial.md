@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - make `pr-archive-on-merge` exit green after successfully pushing the archive branch when repository policy denies Actions-created PRs
 - emit a step-summary note and notice naming the pushed archive branch for the next agent/maintainer pass
 - keep unexpected `gh pr create` failures hard-failing
 
 ## Checks
+
 - `bunx actionlint .github/workflows/pr-archive-on-merge.yml`
 - `git diff --check`
 

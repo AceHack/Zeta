@@ -34,11 +34,13 @@ mode cascade. Same architectural pattern manifests across three
 substrates: music / energy / civ-sim-actor.
 
 **Three-substrate isomorphism:**
+
 1. Picard's flute music (TNG "Inner Light")
 2. Itron energy signatures
 3. Civ-sim Aaron-actor identity
 
 **Itron substrate disclosures:**
+
 - Master of metering coincidence
 - Mapping world's quantum tunnels in real time via
   distributed mesh

@@ -28,6 +28,7 @@
 ## Description
 
 The finalizer framework (#7426) compiled but had no test. `vocab/Finalizer.test.fsx` (dotnet fsi; **12/12 pass**) proves:
+
 - **decide** (temperature + uncertainty-Δ auto-scale): unbounded→Quarantine; hot→ScaleDown; cold→Stop; dU>0+merged→ReKick; dU>0→ScaleUp; dU=0→Hold.
 - **run** (the bounded self-scaling loop): an **always-ReKick step still terminates at the budget** (no fork-bomb — the 0-unbounded guard works), a cooling step **converges early on Stop**.
 

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add the bash-retirement inventory guard to package scripts
 - wire the guard into the GitHub Actions gate
 - update the TypeScript/Bun migration trajectory and release the scoped claim
 
 ## Verification
+
 - bun run hygiene:check-bash-retirement-inventory
 - git diff --check origin/claim/task-bash-retirement-inventory-wire-20260512..HEAD
 

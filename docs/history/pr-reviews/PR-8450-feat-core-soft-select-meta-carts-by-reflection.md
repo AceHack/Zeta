@@ -34,6 +34,7 @@ Teach MetaCart to reuse the existing CHIP-8 arcade reflection policy when a pare
 Missing reflected children still emit meta-cart heat, while an empty child library remains a cold no-selection refusal.
 
 Verification:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter 'FullyQualifiedName~MetaCart|FullyQualifiedName~Cart|FullyQualifiedName~Chip8Arcade'
 - dotnet build -c Release
 - dotnet test Zeta.sln -c Release --no-build

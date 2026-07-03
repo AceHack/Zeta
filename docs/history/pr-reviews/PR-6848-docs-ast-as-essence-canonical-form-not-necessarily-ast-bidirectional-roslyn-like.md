@@ -31,6 +31,7 @@
 > "every formatting/style rule saved in a canonical form — a Zeta style per language; Roslyn-like translators render the dev's chosen style on checkout/edit and convert to Zeta canonical on check-in — in the AST, or even just in the code if reliable, or DynamicValue."
 
 Generalizes + simplifies the AST-as-essence model:
+
 - **Stored form is always Zeta-canonical** (one canonical style per language, arbitrary-but-fixed) → content-addressable/confluent.
 - **Bidirectional translators** = `gofmt`-on-checkin made **bidirectional**: checkout/edit → dev's chosen style; check-in → Zeta canonical (adds the per-dev re-style that plain format-on-checkin lacks).
 - **Storage flexible by reliability:** **canonical code-text** (simplest; **preserves comments naturally** vs naive AST; needs a deterministic+idempotent formatter — Roslyn/Fantomas/Prettier/rustfmt) | **AST** (best for semantic merge) | **DynamicValue** (universal). Pragmatic first cut = canonical-code-text + formatter-on-checkin + per-dev-restyle-on-checkout.

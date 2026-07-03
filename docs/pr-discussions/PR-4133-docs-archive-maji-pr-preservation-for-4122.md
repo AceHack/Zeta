@@ -27,6 +27,7 @@ Automated preservation of PR 4122 discussion.
 Archives PR #4122 discussion into the `docs/pr-discussions/` history surface via the standard preservation tool.
 
 **Changes:**
+
 - Adds a new PR preservation file for PR #4122 containing frontmatter, description, reviews, and review threads.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T23:57:07Z)
@@ -43,6 +44,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

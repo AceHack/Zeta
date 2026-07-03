@@ -58,6 +58,7 @@ Aaron 2026-05-25: 'i would rather do it right so it's not ambigious for future m
 This PR updates the AI-cluster USB NixOS installer script to avoid calling `partprobe` without arguments (which probes every block device, including the live-boot USB), and instead refreshes the kernel partition table only for the disks that were just partitioned.
 
 **Changes:**
+
 - Replace blanket `sudo partprobe` with per-device `partprobe` calls for `BOOT_DISK` and each `DATA_DISKS` entry.
 - Add inline rationale documenting why blanket probing is unsafe in this installer context.
 

@@ -47,6 +47,7 @@ The shared-cause channel `U` is modelled by its **partition** of joint outcomes 
 This is the **operational / combinatorial heart** of DPI: post-processing the conditioning side merges cells, and merging provably cannot grow support and conserves mass. The full **measure-theoretic** DPI — real Shannon `I(A;U|C) ≥ I(A;f(U)|C)` over honest distributions (hence `ρ_owe(U) ≤ ρ_owe(f(U))`) — needs the log-sum / Jensen / concavity machinery of Mathlib's information theory and **stays the math team's primary** (Tariq's `H_∞` inequality + FsCheck #8715 cross-check it). The partition-coarsening the measure-theoretic proof reduces to is proven here; the convexity step over real entropies is named, not faked. **`ρ_owe` is evidence, not the lemma.**
 
 ### Gate
+
 - `lean src/Core.Lean4/Lean4/DecorrelationDpi.lean` — standalone typecheck ✅ (0 errors)
 - `lake build Lean4.DecorrelationDpi` — ✅ `Built Lean4.DecorrelationDpi (954ms)`; file imports nothing from Mathlib
 - 0 `sorry` (the only "sorry" token is the literal word in the doc comment); `#print axioms` clean

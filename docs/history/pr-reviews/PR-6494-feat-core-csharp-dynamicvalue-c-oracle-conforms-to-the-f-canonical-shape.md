@@ -32,11 +32,13 @@ The **C# oracle** (#3 of TS/F#/C#/Rust) for the universal dynamic / self-describ
 New project `src/Core.CSharp.DynamicValue/` (per-primitive-project convention like `Core.CSharp.RangeSet`), zero external deps, namespace `Zeta.Core.CSharp` (assembly `…DynamicValue`, so namespace ≠ typename).
 
 ## Shape conformance to the F# canonical
+
 - Closed abstract-record hierarchy of the 8 self-describing-core shapes `Null | Bool | Int | Float | String | Bytes | Array | Object` + the `DynamicValueType` tag (same vocabulary as the F# DU). `Int` split from `Float`; native `Bytes`.
 - `Type` = the runtime **QueryInterface** tag (abstract property each record overrides — exhaustive by construction). Lazy-bind `Try*` accessors (strict, no widening). `TryField` / `TryItem` + `Get("a.b[3].c")` — null on miss / out-of-range / type-mismatch / malformed; empty path = identity; **index uses `int.TryParse`** so an overflowing index is malformed→null, not an `OverflowException` (the same fix as the F# side's Codex finding).
 - **Hand-written structural equality** — records compare `ImmutableArray` by reference, so `Bytes` compares contents, `Array` recurses, `Object` is explicit order-sensitive pairwise (ordinal keys, recursive values); `GetHashCode` consistent.
 
 ## Notes
+
 - CA1720/CA1716 suppressed at project scope (the case/tag names are the canonical JSON/CBOR data-model vocabulary shared with the F# shape — renaming would diverge the oracle; documented in the csproj).
 - 13 tests mirroring the F# suite. Build 0-warning.
 - Registry status update + Rust/TS oracles + wire codecs (JSON/CBOR/msgpack/Arrow adapters) + canonical-encoding golden vectors are follow-ups. Registry edit deferred until #6492 lands (avoids a one-line merge conflict on the shared line).

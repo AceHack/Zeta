@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: sql-binder-expert, postgresql-expert, entity-framework-expert, hardware-intrinsics-expert, f-star-expert
 - **Milestone: 50 skills carved, ~89K+ chars freed**
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

@@ -30,6 +30,7 @@
 feat(clis)+boards: ben(chmark) verb (cut mea ben sim) + RGB=cut·mea·sim combinations & pairings (CMYK = committed complement + K=key)
 
 Aaron 2026-06-10:
+
 - "cut mea ben(chmark) sim for benchmarks": ben = the perf sibling of mea — instruments sim for
   timing/allocs/throughput (-> bench/), distinct from mea's ΔU. The benchmark loop is `cut mea ben sim`.
   Added IBenVerb + IBenchmark stubs to clis/Verbs.fs (pure interfaces) and the verb-family table/README

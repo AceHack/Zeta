@@ -51,6 +51,7 @@ Closes [081KRHWGX0008QG0R002C038BJ](https://github.com/Lucent-Financial-Group/Ze
 After this merges, 081KRFA460008QG0R00061SXRW itself can be marked `status: closed`.
 
 ## Test plan
+
 - [x] Markdownlint clean on all 3 edited files
 - [x] `bun test missed-substrate-detector.test.ts` — 31 pass (unchanged; no code touched)
 - [x] `bun test missed-substrate-recovery.test.ts` — 17 pass (unchanged)

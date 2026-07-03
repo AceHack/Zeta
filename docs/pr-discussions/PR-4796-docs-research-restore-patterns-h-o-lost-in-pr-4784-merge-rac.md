@@ -47,6 +47,7 @@ The wear-down design's customer-side outcome (Pattern P over-fulfillment) gets s
 
 1-2. Order placed + partial delivery
 3-4. Customer applies wear-down-resistance + parallel-channel-redundancy
+
 5. Vendor over-replaces (chat-side wrong-target + phone-side correct-target)
 6. Vendor's over-replacement detection flags originals as "duplicates"
 7. **Vendor remote-deactivates MAC addresses** → customer logs out → hardware bricked
@@ -58,6 +59,7 @@ Every cloud-attached IoT device has structurally identical Pattern Q exposure. A
 ### Vendor-management AI principle (most stringent)
 
 Future Zeta vendor-management AI should:
+
 - Treat cloud-attached IoT as **partial-ownership** (physical possession ≠ full ownership when vendor retains service-side CRUD)
 - Monitor for post-delivery vendor-side CRUD activity
 - Maintain alarm threshold for hardware-bricking events
@@ -83,6 +85,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -101,6 +104,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This documentation-only PR extends the Amazon vendor-management research corpus by restoring the missing Patterns H–O and adding Pattern Q for post-delivery vendor-side device deactivation.
 
 **Changes:**
+
 - Adds Patterns H–O covering transfer escape valves, incomplete state observation, wrong-target replacement, verification-anchor gaps, script fallback, emotional commitment withdrawal, and wear-down design.
 - Adds Pattern Q describing cloud-attached IoT remote-deactivation as a severe post-delivery ownership/control failure mode.
 - Extends the Pattern D operator-tactic catalog with May 2026 incident tactics.

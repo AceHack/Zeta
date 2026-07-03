@@ -32,6 +32,7 @@
 Adds `fileReviewThreadDisagreement` to `tools/hygiene/divergence-shard.ts` — the **detect→file composing function** that operationalizes 081KR7JY10008QG0R000MH7PJT **AC #2** ("a divergence shard is filed whenever conclusions differ") as a single call.
 
 Prior slices landed the three pieces but not the seam:
+
 - `detectReviewThreadDisagreement` (pure detector, #6067) returns a `DivergenceInput` *or* a `no-disagreement` reason.
 - `writeDivergenceShard` (fail-closed-OR-idempotent writer).
 - `divergence-reconcile.ts` (morning-reconciliation reader, #6066, AC #4).

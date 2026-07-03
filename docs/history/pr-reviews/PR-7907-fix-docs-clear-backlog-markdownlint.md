@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Remove the extra blank line in the closed 081KSGS9H0008QG0R00367G209 backlog row that caused markdownlint MD012 on latest `main`.
 
 ## Root cause
 PR #7906 advanced `main`, and the main gate failed only on `lint (markdownlint)` because `docs/backlog/P1/081KSGS9H0008QG0R00367G209-zeta-as-dependency-graph-and-variable-passing-layer-on-top-o.md` had two consecutive blank lines before the TL;DR heading.
 
 ## Validation
+
 - `mise exec -- markdownlint-cli2 "**/*.md"`
 
 Agency-Signature-Version: 1

@@ -603,11 +603,13 @@ Co-authored-by: Claude Opus 4.7 <noreply@anthropic.com>
 `Agency-Signature-Version:` integer (start at 1; bump on canonical convention change)
 
 `Human-Review:`
+
 - `explicit` — independent human-generated evidence (must pair with `Human-Review-Evidence: <source>`)
 - `not-implied-by-credential` — DEFAULT; credential acted, credential ≠ approval
 - `none` — known zero-review operations
 
 `Human-Review-Evidence:`
+
 - `chat` — chat log evidence
 - `pr-review` — human-authored PR review
 - `pr-comment` — human-authored PR comment
@@ -615,12 +617,14 @@ Co-authored-by: Claude Opus 4.7 <noreply@anthropic.com>
 - `none` — when `Human-Review: not-implied-by-credential` or `none`
 
 `Credential-Mode:`
+
 - `shared` — multiple identities authenticated under one credential (today: Otto + Aaron both as AceHack)
 - `dedicated-agent` — agent has its own credential (post-task-#295)
 - `human-only` — human-authored commit without agent trailer
 - `unknown` — legacy commit without `Agent:` trailer at all
 
 `Action-Mode:`
+
 - `autonomous-fail-open` — greenfield/low-stakes agent action
 - `human-directed` — human commanded the specific implementation
 - `supervised` — human watched the execution trace
@@ -1130,17 +1134,20 @@ Co-authored-by: Claude Opus 4.7 <noreply@anthropic.com>
 `Agency-Signature-Version:` integer (start at 1; bump on schema change)
 
 `Credential-Mode:`
+
 - `shared`
 - `dedicated-agent`
 - `human-only`
 - `unknown`
 
 `Human-Review:`
+
 - `explicit` (must pair with `Human-Review-Evidence: <source>`)
 - `not-implied-by-credential` (DEFAULT)
 - `none`
 
 `Human-Review-Evidence:`
+
 - `chat`
 - `pr-review`
 - `pr-comment`
@@ -1148,11 +1155,13 @@ Co-authored-by: Claude Opus 4.7 <noreply@anthropic.com>
 - `none` (must be used if Human-Review is not 'explicit')
 
 `Action-Mode:`
+
 - `autonomous-fail-open`
 - `human-directed`
 - `supervised`
 
 `Task:`
+
 - `<ticket-id>` (e.g., `Otto-295`)
 - `none` (when no task is associated; agents must not invent fake IDs)
 

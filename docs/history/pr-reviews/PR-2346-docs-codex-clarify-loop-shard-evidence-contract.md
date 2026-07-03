@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - clarify that the Codex launchd heartbeat proves host liveness but is not itself a repo tick shard
 - point the current harness mechanism at docs/CODEX-HARNESS-NOTES.md without editing the host-owned runner or harness-notes path
 - record that substantive Codex gates must land shard evidence or report why no repo shard was produced
 
 ## Checks
+
 - npx markdownlint-cli2 docs/CODEX-LOOP-HANDOFF.md
 - git diff --check origin/main...HEAD
 

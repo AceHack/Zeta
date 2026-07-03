@@ -37,6 +37,7 @@ Tick 1731Z. While waiting on PR #3525 CI, audited my own recent persona MEMORY.m
 This PR adds the 1731Z hygiene tick shard documenting a parallel audit that found and filed fixes for off-by-one PR citations in persona memory indexes.
 
 **Changes:**
+
 - Adds a new tick-history markdown shard for 2026-05-15 1731Z.
 - Records the verified Vera/Riven citation corrections and related PR references.
 - Links the tick to existing discipline/rule documents and related backlog work.

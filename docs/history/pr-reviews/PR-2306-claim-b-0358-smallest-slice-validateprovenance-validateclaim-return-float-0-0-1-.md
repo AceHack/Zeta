@@ -34,6 +34,7 @@ Claimed + one bounded step for 081KR50HA0008QG0R00224DXPP (P1): re-decomposed th
 Backlog listed "decomposition: atomic" but per "always re-decompose... assume mistakes" we sliced to this verifiable first step (epistemic shift only).
 
 ## Checks performed (included per rules)
+
 - Read CLAUDE.md, AGENTS.md, 081KR50HA0008QG0R00224DXPP backlog, active trajectories (alignment-measurement/RESUME.md, factory-trajectory-surface/RESUME.md) before any work.
 - `bun tools/github/refresh-worldview.ts`: 0 open PRs, 5 recent merges, clean state.
 - `dotnet build -c Release` (twice, root + worktree): 0 Warning(s) 0 Error(s) — gate green.

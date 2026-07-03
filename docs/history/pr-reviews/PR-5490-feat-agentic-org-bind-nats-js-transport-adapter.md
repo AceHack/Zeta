@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - add an app-local `@nats-io` JetStream transport adapter behind the existing generic worker NATS connection factory seam
 - cover connect, publish, fetch, readiness, close, and partial-startup cleanup paths with fake-driven tests
 - update agentic-organization worker and architecture docs to mark this as adapter proof, with live JetStream proof still next
 
 ## Validation
+
 - `npm test` (`114/114`)
 - `npm run typecheck`
 - `git diff --check`
 
 ## Review notes
+
 - Subagent review caught a partial-startup connection leak; fixed with red-green coverage before push.
 - Final subagent pass found no blockers.
 

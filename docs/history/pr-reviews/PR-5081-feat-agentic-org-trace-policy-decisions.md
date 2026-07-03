@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds policy decision visibility to the agentic organization command pipeline: denied commands are observed through a generic `PolicyDecisionObservationPort` before any business effects, idempotency lookup, or persistence.
 - Projects allowed policy decision evidence onto audit events and outbox event envelopes, then persists audit policy evidence through the Cockroach adapter without leaking database details into application code.
 - Extends LGTM-friendly observability/workflow visibility with policy decision ID/version and updates package/docs/OpenSpec boundaries for the denied-observation vs allowed-evidence split.
 
 ## Validation
+
 - TDD: added failing regression tests for denied policy observation context, observation failure behavior, allowed policy evidence projection, Cockroach audit policy persistence/null normalization, schema columns, and observability projections before implementing fixes.
 - `npm test`
 - `npm run typecheck`

@@ -37,6 +37,7 @@ These compose in layers. Data-cleaning runs FIRST (clean substrate); git-native 
 Aaron cites the depends_on backfill cycle as a worked example: *"would take a human a month to do."*
 
 What happened:
+
 - Otto (across multiple ticks) filled the `depends_on:` field on backlog rows by searching the backlog for prerequisites at file-time + at-pickup-time
 - The discipline (per `memory/feedback_depends_on_backlog_search_discipline_at_creation_and_at_pickup_aaron_2026_05_02.md`) pushed the analysis to natural decision points
 - The result: a real dependency hierarchy across 165+ rows, not just empty fields

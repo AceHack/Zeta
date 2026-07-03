@@ -28,6 +28,7 @@
 ## Description
 
 Incorporate Aaron's synthesis regarding the generalized memory and scheduler interfaces:
+
 - Refine the universal entry interface (Section 1) to define a general memory architecture (hindsight style) where memories contain action-based meta-tags that are directly executable by the society of agents.
 - Refine the scheduler interface reframe (Section 4) to abstract low-level execution mechanisms (spawn, scheduling, throttling) behind the `ISociety` interface, exposing `spawn` as a first-class mathematical mapping over GSets/ZSets/value trees.
 - Define `ISociety` as a bidirectional routing and scheduling contract (duplex port) that lets members schedule work to the society, and lets the society route work back to them based on hat/capability matching.

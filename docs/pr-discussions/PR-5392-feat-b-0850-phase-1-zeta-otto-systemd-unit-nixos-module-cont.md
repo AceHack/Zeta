@@ -62,6 +62,7 @@ systemctl disable zeta-otto     # stop auto-start (NCI HC-8 revocable)
 Adds a NixOS module to run “zeta-otto” as a persistent systemd service (outside Kubernetes) and enables it on the control-plane host, relying on the iter-5.5.0 install substrate for persisted `gh`/`claude` credentials and a pre-cloned repo.
 
 **Changes:**
+
 - Introduces `zeta.otto.*` NixOS module options and a `zeta-otto` systemd unit that loops `claude --print` on a tick interval.
 - Imports the new module into the shared cluster baseline.
 - Opts the control-plane host into running the service at boot.

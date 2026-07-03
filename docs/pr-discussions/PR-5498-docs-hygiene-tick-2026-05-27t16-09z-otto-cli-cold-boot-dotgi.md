@@ -60,6 +60,7 @@ No named bounded-wait; this shard IS the concrete artifact resetting the counter
 Adds the 2026-05-27 16:09Z hygiene-history tick shard documenting an Otto-CLI autonomous-loop cold-boot, including the dotgit-CLEAN empirical anchor and a discriminator pass over the (now-small) open PR queue.
 
 **Changes:**
+
 - Added a new tick shard markdown file under `docs/hygiene-history/ticks/2026/05/27/`.
 - Captured Step 1 refresh observations (rate limits, dotgit state, worktree canary) and Step 2–7 loop framing for the session.
 

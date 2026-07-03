@@ -41,6 +41,7 @@ Replace MultiplexedWebSocket's single-item `ActionBlock<Tuple<...>>` sendBlock w
 - Sam Whitfield: Throttled Processor (threading foundation)
 
 **Connects to:**
+
 - project_multiplexed_websockets_flux_capacitor (the composition)
 - project_flux_capacitor_antifragile (the batching mechanism)
 - project_ferry_protocol (send even if not full)

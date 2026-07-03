@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Ports 3 `smoke-test.sh` scripts to TypeScript (`smoke-test.ts`) for Rule 0 compliance (.sh is for install-graph only; TS is cross-platform DST)
 - Ported files: `samples/FactoryDemo.Api.CSharp/smoke-test.ts`, `samples/FactoryDemo.Api.FSharp/smoke-test.ts`, `samples/FactoryDemo.Db/smoke-test.ts`
 - Deleted the original `.sh` files
@@ -35,6 +36,7 @@
 - Uses Bun built-in `fetch` instead of `curl`, direct JSON property access instead of `jq`, and `spawnSync`/`spawn` from Bun instead of bash process management
 
 ## Test plan
+
 - [x] `dotnet build -c Release` passes with 0 warnings, 0 errors
 - [ ] Run `bun samples/FactoryDemo.Api.CSharp/smoke-test.ts` against a live API build
 - [ ] Run `bun samples/FactoryDemo.Api.FSharp/smoke-test.ts` against a live API build

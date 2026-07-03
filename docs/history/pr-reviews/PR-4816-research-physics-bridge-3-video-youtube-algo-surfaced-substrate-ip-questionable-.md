@@ -40,21 +40,26 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ### Substrate landed
 
 **Research substrate (6 files)**:
+
 - 3 framework-composition analyses at `docs/research/`
 - 3 verbatim transcripts at `docs/research/ip-questionable/`
 
 **IP-questionable folder convention** (new):
+
 - `docs/research/ip-questionable/README.md` — Rodney Aaron Stainback explicit personal-liability acceptance + folder convention documentation
 
 **Constitutional substrate** (auto-loaded rules):
+
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — refusal rule + standing operator-self-constraint
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — four-field `_*_acceptance` attribution pattern + Aaron's constitutional generalization (every AI-blameable risk area routed through named-human attribution; 3-stage progression: per-incident → per-class → corporate/non-profit structures)
 
 **Settings.json updates**:
+
 - `_ip_risk_acceptance` block with Rodney Aaron Stainback as named operator
 - Narrow permission rule for `docs/research/ip-questionable/` PUTs
 
 **Backlog substrate**:
+
 - `081KSBMG30008QG0R00201X7EJ` (P0) — classifier-bypass research + red-team scope + standing constraint
 - `081KSBMG30008QG0R002WAR0WH` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
 
@@ -78,6 +83,7 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ## Reviewer thread status
 
 ~50 threads from chatgpt-codex-connector + copilot-pull-request-reviewer addressed:
+
 - ~33 outdated/addressed: resolved
 - ~17 active: mix of substantive fixes-in-progress + defer-to-operator policy concerns
 - Defer-to-operator policy threads (settings.json operator name, permission rule redundancy, _ip_risk_acceptance enforcement claim) are intentionally left for Aaron's review — they touch the constitutional invariants built in this PR

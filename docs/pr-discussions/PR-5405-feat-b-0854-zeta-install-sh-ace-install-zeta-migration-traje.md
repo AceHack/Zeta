@@ -54,6 +54,7 @@ Per `.claude/rules/rule-0-no-sh-files.md`: install-graph carve-out preserved thr
 Adds a new P1 backlog row for migrating Zeta installation from `zeta-install.sh` toward a declarative Ace-managed `ace install zeta` flow, and updates the generated backlog index to include it.
 
 **Changes:**
+
 - Adds 081KSKBP80008QG0R002VRN56K with phased migration plan and Ace-cluster cross-references.
 - Updates `docs/BACKLOG.md` with the new P1 entry.
 

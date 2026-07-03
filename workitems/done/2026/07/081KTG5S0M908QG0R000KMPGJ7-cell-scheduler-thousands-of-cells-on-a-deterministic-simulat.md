@@ -29,6 +29,7 @@ cells. 5 slices scoped; slice 1 (CellScheduler at DoP=1) is next on Aaron's go.
 ## COMPLETE (2026-07-02, Otto — all 5 slices landed)
 
 All five slices merged to main under Aaron's 24h standing-autonomous authorization:
+
 - #9118 — slice 1: DoP=1 deterministic multiplexer (generic over the cell step)
 - #9120 — slice 2: DoP=N via FerryThrottler + the `run(1)==run(N)` scale-free law
 - #9121 — slice 3: fairness (structural round-robin) + parking observability (BEAM

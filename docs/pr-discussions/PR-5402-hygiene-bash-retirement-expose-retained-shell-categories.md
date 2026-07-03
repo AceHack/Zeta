@@ -36,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR strengthens the bash-retirement hygiene guard by adding explicit category metadata for each retained `.sh` allowlist entry, surfacing category counts in the report output, and enforcing that allowlist entries are categorized.
 
 **Changes:**
+
 - Add retained-shell category metadata and include category summaries in the inventory report (including JSON output).
 - Extend allowlist integrity checks to fail on uncategorized allowlist entries.
 - Add Bun tests covering category summary rendering and integrity enforcement.

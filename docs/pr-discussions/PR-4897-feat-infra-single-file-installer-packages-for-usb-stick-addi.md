@@ -91,6 +91,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -109,6 +110,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a NixOS installer ISO configuration (`nixosSystem` module) intended to be the single Git-tracked source of truth for what packages/tools are present on a bootable USB installer used to bootstrap the cluster.
 
 **Changes:**
+
 - Introduces a new NixOS installer configuration importing the upstream minimal install CD modules.
 - Defines a large `environment.systemPackages` set for install-time workflows (disk, network, secrets, k8s CLIs, etc.).
 - Adds ISO branding plus a baked `/etc/zeta/README.md` runbook.
@@ -127,6 +129,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

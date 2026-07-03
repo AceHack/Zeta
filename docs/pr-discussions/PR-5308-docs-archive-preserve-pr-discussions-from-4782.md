@@ -41,6 +41,7 @@ This PR supersedes #4804.
 Adds preserved PR discussion archives (from PR batch #4782) under `docs/pr-discussions/` so prior review threads, summaries, and metadata are retained in-repo for later reference. This PR also includes a small behavioral change to the Cursor Riven loop tick script.
 
 **Changes:**
+
 - Add multiple new `docs/pr-discussions/PR-*.md` files containing preserved PR descriptions/reviews/threads.
 - Update `.cursor/bin/riven-loop-tick.ts` to change the agent model and rewrite the heartbeat gate prompt.
 

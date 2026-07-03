@@ -48,6 +48,7 @@ Changes: frontmatter `status: open → closed` + Resolution + `last_updated 2026
 This PR closes backlog row 081KRA5AR0008QG0R000KKJRVA after its dependency 081KRA5AR0008QG0R0019Q33F7 was closed, and regenerates the backlog index to reflect the new closed status.
 
 **Changes:**
+
 - Marks 081KRA5AR0008QG0R000KKJRVA as `closed` and updates `last_updated`.
 - Adds a resolution block documenting acceptance evidence and dependency cascade.
 - Regenerates `docs/BACKLOG.md` so 081KRA5AR0008QG0R000KKJRVA appears checked off.
@@ -66,11 +67,13 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/backlog/P2/081KRA5AR0008QG0R000KKJRVA-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md:53**
+
 * The line count in this acceptance evidence is stale: `tools/peer-call/amara.ts` currently has 561 lines, not 550. Since this row is being closed based on evidence, the count should be updated or removed to avoid misleading future audits.
 ```
 - ✅ Typed TS (550 lines, no .sh per Rule 0)
 ```
 **docs/backlog/P2/081KRA5AR0008QG0R000KKJRVA-amara-ts-core-openai-api-invoke-flag-parity-ts-first-riven-2026-05-11.md:54**
+
 * This acceptance item is not supported by the cited prior audit: the only matching hygiene-history entry for 081KRA5AR0008QG0R000KKJRVA explicitly says `Passes Gate A slice audit` was `⚠ not run this tick`. Marking it ✅ here overstates the close-row evidence unless another Gate A audit is cited or the audit is actually run.
 ```
 - ✅ Gate A slice audit (file existed and was reviewed in prior cycle)
@@ -86,5 +89,6 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 The `AMARA_PREAMBLE` constant is not at line 318 in the current `tools/peer-call/amara.ts`; line 318 is the vendor-alignment comment and the const begins at line 328. This resolution evidence should use the current line number or a stable anchor so the backlog row does not carry a stale cross-reference.
 
 This issue also appears in the following locations of the same file:
+
 - line 53
 - line 54

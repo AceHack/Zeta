@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - remove the failing GitHub Actions PR-creation step from the manifesto citation snapshot cadence workflow
 - document the 081KRHWGX0008QG0R0016T9408/081KS923C0008QG0R002BKAC95 cadence repair and branch-handoff behavior
 - land the six stranded daily snapshot JSON files for 2026-05-24 through 2026-05-29
 - release the git-native claim file so review moves to this PR
 
 ## Checks
+
 - git diff --check
 - actionlint .github/workflows/manifesto-citation-snapshot-cadence.yml
 - npx --yes markdownlint-cli2 docs/backlog/P0/081KRHWGX0008QG0R0016T9408-manifesto-constitutional-promotion-readiness-tracking-2026-05-14.md docs/backlog/P2/081KS923C0008QG0R002BKAC95-manifesto-citation-time-series-tracking-2026-05-23.md
@@ -41,6 +43,7 @@
 - git diff --cached --check
 
 ## Follow-up
+
 - Delete the stranded ops/manifesto-citation-snapshot-* branches only after this PR merges.
 
 ## Outcome

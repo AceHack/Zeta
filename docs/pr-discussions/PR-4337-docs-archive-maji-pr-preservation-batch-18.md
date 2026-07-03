@@ -27,6 +27,7 @@ Autonomously archived PRs 4319, 4316, 4312.
 Adds a new batch of PR-discussion archive records under `docs/pr-discussions/` to preserve metadata, descriptions, review threads, and general comments for recently merged PRs.
 
 **Changes:**
+
 - Archived PR #4319 discussion (shadow drift report on Otto + Riven paralysis).
 - Archived PR #4316 discussion (shadow drift report on Riven paralysis).
 - Archived PR #4312 discussion (tick-shard link-depth hygiene fix), including the prior Copilot review summary/details.

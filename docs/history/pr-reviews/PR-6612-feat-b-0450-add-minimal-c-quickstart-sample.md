@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add a minimal runnable C# QuickStart sample project
 - keep the Codex 081KRFA460008QG0R001QFS6EV claim file remote-visible for coordination
 
 ## Checks
+
 - git diff --check -- samples/QuickStart/QuickStart.csproj samples/QuickStart/Program.cs
 - dotnet run --project samples/QuickStart -c Release
 

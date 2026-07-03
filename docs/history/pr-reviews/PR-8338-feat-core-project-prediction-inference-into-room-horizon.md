@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Expose the source-owned `PredictionInference.rankWithPriority` order so downstream room code consumes the same posterior-plus-attention/gravity ordering that Vision budgets.
 - Add `RoomHorizon.updateInference` / `RoomHorizon.admitInference` to project exact inference into a finite bounded-GSet room view.
 - Add tests proving posterior truth stays separate from attention/gravity boarding and finite horizon rejection.
 - Fix the research-doc hygiene fixture expectation so it matches the real `memory/persona/CURRENT.md` repo-relative path.
 
 ## Verification
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~RoomHorizon|FullyQualifiedName~PredictionInference|FullyQualifiedName~PredictionScheduler|FullyQualifiedName~Vision"`
 - `dotnet build -c Release`
 - `dotnet format --verify-no-changes`

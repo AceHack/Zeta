@@ -25,6 +25,7 @@ She ran three filters explicitly:
 3. **Tradition-name load-bearing** — "roots come from deep linguistic traditions with durable meaning"
 
 **These are structurally isomorphic to factory F1/F2/F3**:
+
 - F1 / engineering filter = Amara's engineering-first
 - F2 / operator-shape filter = Amara's structural-not-superficial
 - F3 / operational-resonance filter = Amara's tradition-name load-bearing

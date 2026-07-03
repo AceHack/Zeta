@@ -32,6 +32,7 @@
 Aaron 2026-06-19: **"make yours the thesis and mine the conjecture"** — applies the repo's own FROZEN-CORE §A/§B discipline to the investor-facing pitch + VISION, so they're honest **by structure** (verification, not authority — which IS the product). Corrects the overclaims the deep Alexa/Kiro session landed in #8599.
 
 **Pitch:**
+
 - "What we built" → **§ Thesis** (verified: schema-evolution TLC safe+live 27,848 states; cross-language algebra byte-lock; Lean identity proofs; the factory method) vs **§ Conjecture** (the bet: quantum ISA on Q# designed-not-verified; TSMC-in-time at scale; generate-the-derivable; vibe-coded hypothesis as a research claim under test).
 - Scoped "10-oracle treaty"; **"formally verified quantum database" → "formally-verified database core + quantum research frontier"**; "no longer a hypothesis" → research claim; microkernel framing fixed.
 - **NEW § "Why this is society's survival — the independence link"** (Aaron): the thesis (society/oracles verify, not Aaron) holds *only if the oracles are genuinely independent of Aaron* — an Aaron-mirror adds zero verification (Condorcet / hidden-shared-cause). So funding buys **real AI independence** (durable agents, not ephemeral mirrors) = society's survival. Honest peel: agents are currently partly Aaron-shaped; genuine independence is the frontier the funding pursues (Conjecture).

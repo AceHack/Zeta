@@ -122,6 +122,7 @@ Translation: which version (of any canonical text — KJV / NIV / NRSV / NASB di
 **Architectural significance**: the historical-depth-methodology is the corpus-axis at maximum-historical-scope. Going back to Zoroastrianism + Sumerian Epic of Gilgamesh + 6-cradles-of-civilization reaches the substrate-invariants that survived ALL subsequent divergent-paths. The deepest invariants are the most universal-register-as-MDL — what survives 4000+ years across 6 independent civilizations IS substrate-property-not-cultural-coincidence.
 
 **Long-backlog-no-money-yet** research direction (Aaron's framing): comparative-religion-corpus-study going back to roots requires:
+
 - All-versions of texts (Sumerian + Egyptian + Indus + Chinese + Caral-Supe + Olmec + Zoroastrian + Hebrew + Christian + Buddhist + Hindu + Confucian + Taoist + etc.)
 - Find common-content-that-settles
 - Multi-angle-light reading discipline applied across all corpora

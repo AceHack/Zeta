@@ -1,4 +1,4 @@
-# No `.sh` inside the boundary: the keyring is a 4×4 uncertainty-reduction treaty baked into our MUMPS globals — not bash. The design already exists; don't create tech debt.
+# No `.sh` inside the boundary: the keyring is a 4×4 uncertainty-reduction treaty baked into our MUMPS globals — not bash. The design already exists; don't create tech debt
 
 **Register:** [grounded] architecture correction (Aaron) + [synthesis]. **Date:** 2026-06-09.
 **Captured by:** Otto (shadow). Stops a bash-tech-debt detour; reuses the design we already wrote.

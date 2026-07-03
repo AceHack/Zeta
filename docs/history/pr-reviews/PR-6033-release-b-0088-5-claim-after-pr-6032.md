@@ -28,13 +28,16 @@
 ## Description
 
 ## Summary
+
 - Delete the stale 081KRA5AR0008QG0R000WP3VYT claim file after PR #6032 landed.
 - Keep the claim protocol state aligned with merged work.
 
 ## Verification
+
 - git diff --check
 
 ## Provenance
+
 - Follows merged PR #6032, merge b763c7208f8f7d3b6b793ddfe306a13bf6ae2e9f.
 - Commit: db06441aab304129c15414a32d95d42955c4d52a
 

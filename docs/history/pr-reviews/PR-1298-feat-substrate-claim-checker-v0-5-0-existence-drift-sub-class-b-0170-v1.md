@@ -28,12 +28,14 @@
 Second sub-class implementation for 081KQNJ500008QG0R003SCWBDV (substrate-claim-checker). Adds `check-existence.ts` covering the existence-drift sub-class — claims that a file or directory exists when it doesn't.
 
 **Multiple findings this session would have been caught automatically**:
+
 - PR #1280 (081KQNJ500008QG0R003ZC6PK8 ground-truth recovery) claimed `tools/git/hooks/` exists; reviewer caught it manually
 - PR #1289 + #1290 had similar existence-drift patterns
 
 ## Approach
 
 For each path claim, try 3 candidate roots in priority order:
+
 1. File's own directory (intra-dir cross-references)
 2. Parent directory (bare-filename refs for files in subdirs)
 3. Repository root (repo-relative paths)
@@ -45,6 +47,7 @@ Skipped: globs, URLs, anchors, absolute paths, placeholders, fenced code blocks.
 ## Tests
 
 17 new tests; 33 total in tools/substrate-claim-checker/ (all pass):
+
 - `looksLikePath`: 7 tests
 - `isFutureStateContext`: 5 tests
 - `findPathClaims`: 5 tests
@@ -58,6 +61,7 @@ Skipped: globs, URLs, anchors, absolute paths, placeholders, fenced code blocks.
 ## Known limitations (v0.5)
 
 Documented in README:
+
 - Calibration-delta tables citing path-forms as discussion topics (not exists-claims) may false-positive
 - Section-level future-state markers don't propagate to claims further down
 

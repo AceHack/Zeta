@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - One bounded step: implemented 081KR50HA0008QG0R000YTJE8Q as TS scanner in dedicated worktree/claim branch (no root touch).
 - Re-decomposed 081KQ0YZ80008QG0R002HWBHKJ (assumed prior 12-child decomp had mistakes per 'always re-decompose'); this is the smallest dependency-ordered atomic root action (pure inventory, read-only, no deps).
 - TS (Rule 0, prefer code over docs). Focused checks passed.
 
 ## Focused checks (included per rules)
+
 - dotnet build -c Release (pre-work in root): 0 warnings, 0 errors.
 - bun run tools/i18n/substrate-inventory.ts: succeeded, emitted valid JSON with docs/skills/memory/code counts.
 - No bash; no deps added; bounded walk (50 files cap on code scan).
 
 ## Next (after this PR)
+
 - 081KR50HA0008QG0R002TN3JX2 etc. follow in subsequent bounded slices.
 
 Co-Authored-By: Grok <noreply@x.ai>

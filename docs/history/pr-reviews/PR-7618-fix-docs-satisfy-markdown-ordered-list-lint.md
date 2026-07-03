@@ -28,9 +28,11 @@
 ## Description
 
 ## Summary
+
 - rewrite the inline Universal Kernel closure operation list so markdownlint does not parse the wrapped `4.` as an ordered-list prefix jump
 
 ## Validation
+
 - `mise exec -- markdownlint-cli2 universal/kernel.md`
 - `git diff --check`
 

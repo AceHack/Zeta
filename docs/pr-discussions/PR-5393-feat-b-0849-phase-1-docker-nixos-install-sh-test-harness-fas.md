@@ -77,6 +77,7 @@ _(no body)_
 Adds a fast-iteration Docker-based NixOS userspace harness intended to validate `tools/setup/install.sh`’s NixOS detection path (via `/etc/NIXOS`) plus key post-install tooling checks, providing a quicker feedback loop than the existing QEMU full-install test.
 
 **Changes:**
+
 - Introduces a `nixos/nix`-based Dockerfile that runs `tools/setup/install.sh` and validates bun + claude-code + gh availability.
 - Adds a Bun/TypeScript wrapper to run `docker build` with log capture, timeout, and optional image retention.
 

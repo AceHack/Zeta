@@ -27,4 +27,5 @@ This is a decomposed part of #4696, containing only the PR discussion archive fi
 Updates the preserved PR discussion archive metadata for PR #3362 as part of the decomposed archive-only extraction from #4696.
 
 **Changes:**
+
 - Updates the `archived_at` timestamp in the YAML frontmatter for the PR #3362 discussion archive.

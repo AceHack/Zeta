@@ -40,6 +40,7 @@ Re-decomp per "always re-decompose items during the build — assume decompositi
 081KQ0YZ80008QG0R003EJQZ1M is too broad for single impl; atomic children enable progressive real-time open-source research per Aaron's framing and glass-halo.
 
 ## Focused checks (in dedicated worktree; root checkout untouched)
+
 - `dotnet build -c Release` (worktree): **0 Warning(s) 0 Error(s)** — gate passed.
 - Rule 0 (TS over bash) honoured: no .sh files authored.
 - Trajectories read: autonomous-backlog-pickup, alignment-measurement, factory-trajectory-surface, etc.

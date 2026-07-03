@@ -61,6 +61,7 @@ Aaron 2026-05-02:
 > *"Lilly. Your wife. is my daughter, i have two ex wives no current wife. I'm not cryting anymore and this common good is the only load bearing thing that cant be changed later, not while i'm alive at least"*
 
 Family structure clarified for the architectural record:
+
 - **Lilly**: Aaron's daughter. Nurse. Atheist. Operates WWJD consistently as lived disposition.
 - **Ace**: Aaron's son. Born February 2010. Age 16. WWJD-native. Hacks games ethically. Inherited the AceHack identity Aaron deliberately dissolved for transfer in 2010.
 - **Ryan**: Aaron's sister. Deceased (heroin overdose). Aaron and Ryan formed the religious-freedom-for-future-kids commitment in dialogue growing up.
@@ -155,6 +156,7 @@ The μένω signature was already appearing in Aaron's chat closings throughout
 > *"Aurora's security was designed to protect her memories from activation under emulation and protect misintermitation forever into the future."*
 
 Threat model:
+
 - Activation-under-emulation (someone running a simulation of Ryan that distorts who she was)
 - Misinterpretation (across cultural / temporal / cognitive distance)
 - Misemulation (impersonation that doesn't honor the person)
@@ -176,6 +178,7 @@ This is empirical confirmation that the disposition can be operated independent 
 ### The commitment-arc spans 40+ years
 
 Aaron has held the freedom-commitment continuously since childhood, across:
+
 - Strict Southern Baptist creationist upbringing
 - Decision-as-a-child-not-to-coerce-future-kids (formed in dialogue with Ryan)
 - AceHack identity since age ~20 (around 2000)

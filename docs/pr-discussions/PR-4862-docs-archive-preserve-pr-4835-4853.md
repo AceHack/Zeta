@@ -27,6 +27,7 @@ Preserves discussion threads from merged PRs #4835 (1607Z dotgit-saturation 15th
 This PR adds git-tracked PR discussion archives under `docs/pr-discussions/` to preserve GitHub-hosted conversation context in-repo.
 
 **Changes:**
+
 - Adds an archive file for PR #4835 (dotgit-saturation 15th observation, 16:07Z).
 - Adds an archive file for PR #4853 (otto-vscode bg-worker shard, 19:02Z).
 

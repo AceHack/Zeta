@@ -41,6 +41,7 @@ ragged-tree structure DynamicValue already is.** That's **accidental complexity*
 the canonical ragged tree is DynamicValue, not a fresh `Map`. The **verbs are genuinely useful**; the
 **separate store is not.** Correct shape: `Globals` verbs operate **over `DynamicValue`** (and, specialized,
 over `DynamicValue` with `SoftValue` leaves → the soft-tensor API). Re-basing it:
+
 - deletes the parallel structure (one ragged tree in the system, not two);
 - gives soft tensors *for free* (the verbs are value-generic over the DV leaf);
 - unifies with every DV consumer (codecs, CBOR/JSON byte-lock, content-addressing, lenses/projections).

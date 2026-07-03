@@ -91,6 +91,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -109,6 +110,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog row (081KS3X9Y0008QG0R002MZF3A7) that specifies an operational protocol for “secret-message-over-Reticulum” using spectre-tile position/pressure as a decoding constraint (“no-copy by geometry”).
 
 **Changes:**
+
 - Introduces backlog row 081KS3X9Y0008QG0R002MZF3A7 with protocol description, threat model framing, and implementation slices.
 - Adds cross-references to related backlog rows and research substrate files.
 - Defines acceptance criteria and non-goals for future implementation work.
@@ -118,6 +120,7 @@ Adds a new P2 backlog row (081KS3X9Y0008QG0R002MZF3A7) that specifies an operati
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P2/081KS3X9Y0008QG0R002MZF3A7-secret-message-over-reticulum-via-spectre-tile-position-pressure-no-copy-by-geometry-aaron-2026-05-21.md:215**
+
 * P1: This bullet asserts local-neighborhood uniqueness “follows directly from aperiodicity,” but that implication is not generally valid. If neighborhood uniqueness is required for the security argument, call it out as a stronger assumption/property that needs its own justification or citation.
 ```
 - Local-neighborhood-uniqueness (follows directly from aperiodicity)
@@ -138,6 +141,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -163,6 +167,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

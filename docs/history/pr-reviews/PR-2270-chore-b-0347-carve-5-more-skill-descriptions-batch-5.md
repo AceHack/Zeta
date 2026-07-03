@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Carved next 5 longest skill descriptions (~2200-2465 chars each) to routing sentences
 - Skills: ontology-expert, solr-expert, search-relevance-expert, elasticsearch-expert, relational-database-expert
 - ~11,500 chars saved; running total ~50K+ chars freed across 5 batches
 
 ## Test plan
+
 - [ ] CI passes (SKILL.md frontmatter only)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

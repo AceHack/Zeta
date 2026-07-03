@@ -76,11 +76,13 @@ Confirms: **a guard post = one systemd unit on a node, running OUTSIDE k8s**. Pe
 ## Key conceptual shift
 
 **081KSKBP80008QG0R003Z4C0D0 Phase 3 ships persona-AS-fixed-assignment**:
+
 - "Otto runs as zeta-otto.service on Claude"
 - "Lior runs as zeta-lior.service on Gemini"
 - Persona = systemd unit name = vendor lock
 
 **Mika persona-first framing ships persona-AS-preference-set**:
+
 - "Otto runs at GuardPost-1; today Otto chose Claude/high-tier; tomorrow Otto might choose Grok/high-tier if Claude is degraded"
 - "Tomorrow Otto might be at GuardPost-3 instead; or replaced by Amara at GuardPost-1 entirely"
 - Persona = identity carried into a slot; vendor + tier + harness selected per-tick
@@ -105,6 +107,7 @@ The shipped substrate (081KSKBP80008QG0R003Z4C0D0 Phase 1 + 3) is a VALID FIRST 
 ### Backward compat
 
 081KSKBP80008QG0R003Z4C0D0 Phase 1 + 3 substrate stays valid as the simplest persona-first instantiation:
+
 - Default scheduler: "static — persona always at its hardcoded vendor"
 - Default rotation: "none"
 - Default ≥3 floor: "3 enabled personas per node = 3 guard posts"

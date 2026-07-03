@@ -34,6 +34,7 @@ LFG forward-sync of AceHack #103 (just merged 14:41:11Z). Step 2 of the canonica
 ## Lineage
 
 This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale base). v2:
+
 - Branched fresh from current LFG main `3785124`
 - Cherry-picked 3 of the 4 v1 commits (skipping `74af746`/`19f8f0b` which is already on LFG via #845)
 - Plus the memory-rename commit `5ba30cc` per Aaron's just-arrived fork-naming correction

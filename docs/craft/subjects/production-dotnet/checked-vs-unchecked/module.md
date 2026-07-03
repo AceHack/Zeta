@@ -397,7 +397,7 @@ grounds. That is the correct outcome.
 
 ---
 
-## Self-check — did this module work for you?
+## Self-check — did this module work for you
 
 After reading, a production-tier reader should be able to:
 

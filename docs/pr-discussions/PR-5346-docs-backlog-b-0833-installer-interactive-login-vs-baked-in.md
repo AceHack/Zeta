@@ -63,6 +63,7 @@ Likely landing: C first + A or B follow-up + D as residual.
 Adds a new P1 backlog row (081KSGS9H0008QG0R003JNSVR5) documenting the security vs CI-testability tension for installer GitHub authentication (interactive device-code login vs baked-in credentials), and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added backlog row 081KSGS9H0008QG0R003JNSVR5 describing four resolution approaches (mock endpoint, ephemeral GH App, layered tests with auth skip, and periodic manual auth testing) plus non-negotiable security limits.
 - Regenerated `docs/BACKLOG.md` to include 081KSGS9H0008QG0R003JNSVR5 in the P1 section.
 

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Save post-#8948 session resume and update backlog bookkeeping: migration umbrella progress on `081KSXN940008QG0R002FWR9B2`, re-open `081KLL7…` as P2 in-progress.
 - Mark the Lean cost-recurrence handoff complete (`CostRecurrence.lean` already on main).
 - Add first Bun setup realizers (`setup-realize.ts`) for `from-uv-tool` and `from-bun-global`; shell mechanisms remain authoritative until `linux.sh` cutover.
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ace/setup-realizers.test.ts`
 - [x] `bun src/Core.TypeScript/lint/lint-typescript.ts`
 - [x] `bun src/Core.TypeScript/ace/setup-realize.ts --list`

@@ -86,6 +86,7 @@ These are six surfaces of one primitive, not six separate patterns. The sixth (�
 **KSK = Kinetic Safety SDK.** Domain: kinetic-safety-critical systems (autonomous vehicles, robotics, drones, industrial actuators, cobots — anything where software controls motion that can hurt humans).
 
 Stack:
+
 - **Hardware substrate**: NVIDIA Thor-class SoCs (Drive Thor and successors) for AV/ADAS/robotics compute
 - **Software contract**: consent-first design
 - **Bond model**: operator posts bond before the actuator moves; bond sized by oracle's measurement of kinetic blast radius (energy × reach × failure mode)
@@ -101,6 +102,7 @@ The problem: an operator claims "I'm running on Thor" to earn the low-risk bond 
 Amara's solution: **statistical side-channel hardware fingerprinting**. Observable performance characteristics — timing distributions, cache miss patterns, memory-bandwidth signatures, tensor op throughput, thermal-signature correlations, instruction-mix under workload — are emergent from the microarchitecture. They cannot be faked without the actual hardware. Statistical signature comparison replaces TPM/HSM hardware attestation.
 
 Why it matters architecturally:
+
 - **Physics-rooted, not vendor-rooted.** TPM/HSM requires trusting the vendor's signing-authority chain. Statistical attestation requires only trusting that instruction timing is determined by microarchitecture. Ties the attestation back to the physics-watches-Zeta meta-governance claim (enforcement routes through physics).
 - **Admission-time, not adjudication-time.** Lie is caught when the claim is made, not after an incident. No ex parte seizure needed because the false claim never gets the low bond price to begin with.
 - **Attacker-asymmetric.** Faking the statistical signature requires building an actual Thor-equivalent microarchitecture. The cost of the lie exceeds the cost of running the real hardware.
@@ -152,6 +154,7 @@ The publication stance for the consent-first design cascade:
 Matches Aaron's bridge-builder faculty (`user_bridge_builder_faculty.md`) at scale.
 
 **License discipline still carries over**:
+
 - Architecture outputs → open under repo license
 - Amara's co-authorship → credited explicitly in publications
 - Deceased-family consent gate → still in force per `feedback_no_deceased_family_emulation_without_parental_consent.md`

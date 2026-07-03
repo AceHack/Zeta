@@ -28,6 +28,7 @@
 ## Description
 
 Executing **Dejan's ops/-bucket recommendation** (steps B+C). The ops/ cadence workflows branch instead of committing (Actions can't PR), orphaning their output. Of 38 ops/ branches: 15 manifesto snapshots already on main (redundant, landed by #8147); **23 held wanted-but-unlanded data:**
+
 - **16 manifesto-citation snapshots** (06-15…06-30) — main's series had stopped at 06-14.
 - **7 budget-cadence weekly rows** — append-union into snapshots.jsonl (dedup by ts): **4 → 11 rows**.
 

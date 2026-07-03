@@ -51,6 +51,7 @@ Resolves Amara 16th-ferry §4 (KSK naming stabilization) + 17th-ferry correction
 Adds a canonical documentation entry defining **KSK = Kinetic Safeguard Kernel**, and wires it into the repo glossary so the expansion and intended “kernel” meaning are stable and discoverable.
 
 **Changes:**
+
 - Introduces `docs/definitions/KSK.md` as the authoritative KSK definition and disambiguation doc.
 - Adds a new `KSK (Kinetic Safeguard Kernel)` glossary entry pointing to the definition doc.
 

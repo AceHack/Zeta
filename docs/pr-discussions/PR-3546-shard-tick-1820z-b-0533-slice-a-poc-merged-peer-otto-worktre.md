@@ -37,6 +37,7 @@ Tick 1820Z. PR #3544 (081KRMEXM0008QG0R000K25MXS Slice A POC) merged this tick. 
 This PR adds a tick log under `docs/hygiene-history/ticks/` documenting the 1820Z tick: the merge of 081KRMEXM0008QG0R000K25MXS Slice A POC (PR #3544) and the rescue of a concurrent Otto-CLI commit found on a borrowed worktree.
 
 **Changes:**
+
 - New tick log file recording merged PRs, refined dead-xref scan, and peer-Otto worktree-contention rescue.
 
 ## General comments

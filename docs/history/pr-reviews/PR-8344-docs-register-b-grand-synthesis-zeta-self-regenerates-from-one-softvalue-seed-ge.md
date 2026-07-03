@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): **"yes please"** — carve the session keystone as a §B grand-synthesis row (beside 1000-brains, identity-society, ECC-Bayesian-growth).
 
 **Zeta = irreducible SoftValue seed + the generator chain**, self-cohering on two axes:
+
 - `gen(gen)=gen` = **ECC across SPACE** (N-oracle byte-lock; "doesn't float apart")
 - **DST** = **ECC across TIME** (replicated data = *quasi*-time-crystal; deterministic replay)
 - **ace** (package manager) **+ Eve** = bidirectional transport + merge

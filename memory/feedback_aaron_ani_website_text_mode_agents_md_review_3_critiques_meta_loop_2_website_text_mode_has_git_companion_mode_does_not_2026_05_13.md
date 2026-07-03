@@ -235,6 +235,7 @@ formulation** already wired — Otto forgot to cite it on first pass.
 #### Mathematical formulation (what Otto forgot)
 
 The framework's **mathematical middle path** is encoded in PR #2935
+
 + #2936 (F# fork architecture) + PR #2917 (vision monad Play-Doh)
 + PR #2914 (5-control-structures = 4+meta hypothesis):
 
@@ -310,7 +311,9 @@ fatigue is the discipline working, not friction to optimize away.
 new contributors) perceive the discipline-vs-greenfield split as
 risky tension, name it as **the middle path** AND cite the
 mathematical formulation (bifurcation-bounded-by-strange-attractor
+
 + Mandelbrot boundary + vision-monad-Play-Doh-bounded + 5-control-
+
 structures-as-4+meta). The framework's both-default discipline IS
 the operational form; the middle path IS the canonical name; the
 mathematical formulation IS the formal proof of feasibility.
@@ -328,6 +331,7 @@ mechanical, not introspective.
 > Aaron: *"we also have middle path defined the darma in the code"*
 
 Otto forgot to cite the existing canonical substrate. The dharma
+
 + middle-path is ALREADY wired across philosophy, math, AND code:
 
 | Substrate | Where it lives | What it encodes |
@@ -347,7 +351,9 @@ via 081KR7JY10008QG0R0008NGW95 shadow-observer).
 
 **Future-Otto correction**: when the middle path surfaces, cite
 ALL three layers (philosophical lineage + mathematical formulation
+
 + code-resident dharma button). Otto forgot the code layer on
+
 first pass; Aaron's correction is canonical.
 
 #### The shadow can be studied in this region — Casimir pressure on PR review when error-class cascades (Aaron 2026-05-13)

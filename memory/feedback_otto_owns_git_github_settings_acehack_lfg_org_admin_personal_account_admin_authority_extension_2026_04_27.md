@@ -62,6 +62,7 @@ This memory was triggered by an actual operational decision today:
 - Decision options: (a) update LFG branch protection to allow `--merge`, or (b) use `--squash` instead
 
 **Otto's decision: (b) use squash** because:
+
 - Our specific path (#50 dev-mirror topology) uses HARD-RESET not fast-forward
 - Hard-reset doesn't need the descendant relationship `--merge` preserves
 - Squash-only is a reasonable security default (forces flat history per PR)

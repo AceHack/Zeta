@@ -31,6 +31,7 @@ PR #5422 went DIRTY post-#5421 merge (chain-PR rebase requirement). Force-pushin
 - \`tools/installer/zeta-creds-persist-restore.test.ts\` — 19 integration tests covering full round-trip + error paths
 
 All 14 Copilot review findings from #5422 already addressed in commit \`2a7371b3d\`:
+
 - P0: CodeQL clear-text-logging fix (omit env-var name from error strings)
 - P1: applyPlan double-decrypt eliminated (RestorePlan carries Buffer values)
 - 5 error-handling bugs (readFileSync/writeFileSync try/catch wrapping; new exit code 4)

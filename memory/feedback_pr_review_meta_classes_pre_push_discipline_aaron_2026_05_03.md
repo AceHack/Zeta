@@ -82,6 +82,7 @@ dev has to re-invoke with different args to triage.
 
 **The discipline:** failure UX is part of the contract. Print
 enough context for the consumer to act:
+
 - Which spec / file / step failed
 - Tail of stdout/stderr (last N lines)
 - Rerun command (e.g., `rerun with: bun ... <SpecName>`)
@@ -123,6 +124,7 @@ forces escaping at the boundary).
 ## Future-Otto reference
 
 Before push, run:
+
 1. `bun tsc --noEmit` (catches typing + unused imports)
 2. Read related sibling files (F# version when porting; existing
    workflow when adding new one; etc.)

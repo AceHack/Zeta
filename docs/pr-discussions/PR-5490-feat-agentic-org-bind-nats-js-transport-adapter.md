@@ -17,16 +17,19 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add an app-local `@nats-io` JetStream transport adapter behind the existing generic worker NATS connection factory seam
 - cover connect, publish, fetch, readiness, close, and partial-startup cleanup paths with fake-driven tests
 - update agentic-organization worker and architecture docs to mark this as adapter proof, with live JetStream proof still next
 
 ## Validation
+
 - `npm test` (`114/114`)
 - `npm run typecheck`
 - `git diff --check`
 
 ## Review notes
+
 - Subagent review caught a partial-startup connection leak; fixed with red-green coverage before push.
 - Final subagent pass found no blockers.
 
@@ -39,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR wires a concrete NATS JetStream client binding (`@nats-io/*`) behind the existing `apps/workers` transport-factory seam, while strengthening the outbox publish path with claim fencing + structured failure evidence that can be projected into runtime telemetry. It also updates the Cockroach outbox schema/migrations and refreshes architecture/phase docs to reflect the new adapter proof points.
 
 **Changes:**
+
 - Add app-local NATS worker connection adapters (including a concrete `@nats-io/transport-node` + `@nats-io/jetstream` transport factory) with fake-driven tests and readiness/shutdown ports.
 - Fence outbox publishing with `claimId` propagation and typed stale-claim publish-mark errors carrying structured evidence.
 - Project first failure evidence into worker-cycle telemetry attributes; add a JSON telemetry sink and readiness aggregation scaffolding.
@@ -105,6 +109,7 @@ Copilot reviewed 45 out of 46 changed files in this pull request and generated 2
 <summary>Files not reviewed (1)</summary>
 
 * **agentic-organization/package-lock.json**: Language not supported
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-27T16:24:12Z)
@@ -125,6 +130,7 @@ Copilot reviewed 46 out of 48 changed files in this pull request and generated 3
 <summary>Files not reviewed (1)</summary>
 
 * **agentic-organization/package-lock.json**: Language not supported
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-27T16:29:42Z)

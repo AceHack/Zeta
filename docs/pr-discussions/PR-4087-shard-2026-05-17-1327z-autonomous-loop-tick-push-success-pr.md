@@ -38,6 +38,7 @@ Captures the 1327Z autonomous-loop tick observation: peer-Otto-CLI surface (this
 Adds a single autonomous-loop tick shard documenting the 1327Z observation that PR #4078 had already been opened by a peer surface after the branch push landed.
 
 **Changes:**
+
 - Adds the 1327Z tick history shard.
 - Records PR #4078 state, two-surface PR-open race, and next-session deferrals.
 

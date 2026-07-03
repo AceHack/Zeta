@@ -36,6 +36,7 @@ Tick shard for 1436Z post-summary reentry. Captures:
 - Multi-Otto cadence observation: 3 peer PRs merged + branch rotations during my refresh window.
 
 ## Test plan
+
 - [x] Branch matches `ZETA_EXPECTED_BRANCH` via inline guard before commit
 - [x] Shard file at canonical path `docs/hygiene-history/ticks/2026/05/15/1436Z.md`
 - [x] Markdown lint passes (only standard headings, bullets, fenced code)

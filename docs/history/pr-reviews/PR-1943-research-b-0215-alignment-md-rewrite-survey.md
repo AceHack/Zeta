@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - 081KQX9B50008QG0R00327XC6Q complete: preserve/refine/add map for all 41 ALIGNMENT.md headings
 - Bidirectional alignment section ALREADY EXISTS (not blank)
 - 7 key findings for downstream 081KQX9B50008QG0R0039H39VC through 081KQX9B50008QG0R001510C9G

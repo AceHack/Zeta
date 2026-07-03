@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Adds `ensure_json()` helper to `tools/budget/snapshot-burn.sh` that validates JSON with `jq empty` before each `--argjson` site
 - Catches the case where `gh api` returns partial stdout + non-zero exit, producing invalid JSON that the `|| echo "{}"` fallback appends to rather than replaces
 - Applied to all 4 API call sites: copilot billing, workflow runs, per-run timing, and PR stats
 - Verified with `--dry-run` — script produces valid JSON output
 
 ## Test plan
+
 - [x] `bash tools/budget/snapshot-burn.sh --dry-run` produces valid JSON
 - [ ] Next Sunday cron fire (2026-05-10) confirms CI fix
 - [ ] Closes 081KQNJ500008QG0R000T4QGD7

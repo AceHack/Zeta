@@ -33,6 +33,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a tick-history shard documenting the 2026-05-16T03:10Z baseline-mechanism work around the tick-shard relative-path audit.
 
 **Changes:**
+
 - Adds a new 0310Z tick shard.
 - Records the intended `--baseline` audit behavior and lifecycle status.
 - Captures follow-up CI-gate wiring candidates.

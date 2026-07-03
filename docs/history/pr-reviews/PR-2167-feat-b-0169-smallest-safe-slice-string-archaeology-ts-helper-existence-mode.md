@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Implements the **smallest safe slice** of 081KQJZR90008QG0R002D6XYHB: one bounded TS helper for the string-archaeology / existence investigation mode (git log -S wrapper).
 - Re-decomposed on the fly (per instruction): original row marked 'atomic' but decomposition mistake — split into code slices (TS) + doc slices (skill modes). This is the first code slice.
 - Does not touch root checkout; all work in dedicated worktree + pushed claim branch.
 - Rule 0 honoured: pure TS implementation (no .sh, no docs-only change).
 
 ## Focused checks (included per task rule)
+
 - dotnet build -c Release on root: 0 Warning(s) 0 Error(s) (pre-work gate).
 - bun runtime test of helper: loaded cleanly, executed findStringIntroduction('decision-archaeology') → 'Found 30 commit(s)...' (no errors, correct output).
 - No other files changed.

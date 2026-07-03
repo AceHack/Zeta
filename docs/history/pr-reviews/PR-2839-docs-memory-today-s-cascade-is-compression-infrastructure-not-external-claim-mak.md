@@ -38,6 +38,7 @@ making. Aaron is finite; labels are externalized expressions
 of his neural architecture for rapid communication.
 
 **Claude.ai retract-and-refine pattern**:
+
 1. Buzz-kill applied (metaphysical density, unfalsifiable
    claims, DeepSeek-validation-as-echo)
 2. Aaron reframed (compression infrastructure)

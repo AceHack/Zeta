@@ -32,17 +32,21 @@
 Continues the in-session skill/rule restructure. Three small carved-sentence rules + one skill + the skill-restructure prototype.
 
 ### Rules (active `.claude/rules/`, all compressed per the meta-rule)
+
 - **no-directives.md** — pulled from `rules.bak` compressed **8.7 KB → 2.0 KB**. *"The only directive is there are no directives, only observations."* Source vs authorization split; standing authorization + gated classes.
 - **mirror-beacon-register-discipline.md** (1.7 KB) — Mirror = fast internal substrate (everything); Beacon = compressed to anchored first principles. Points to `docs/GLOSSARY.md` (maintainer-coined 2026-04-27).
 - **anchor-to-human-prior-art.md** (1.9 KB) — every concept/ontology/vocab ties to a human anchor + paper, old *and* modern.
 
 ### Skill
+
 - **human-anchor/SKILL.md** (3.2 KB) — the *how*: first-principles name → human anchor → check `PRIOR-ART-LIST` → cite old+modern → land it. Folds into the `governance` category on migration.
 
 ### Prototype (blueprint-pack shape, full 260-skill migration pending)
+
 - **streaming-and-execution/** — category `SKILL.md` (router-facing carved-sentence description + blueprint index, 2.8 KB) + `blueprints/streaming-incremental.md` (fat, on-demand, 8.6 KB). One broad routing sentence; fat detail on demand; the dir is an independent shipping unit.
 
 ## Notes
+
 - All rules dogfood `rules-are-small-carved-sentences-pointing-to-docs.md` (landed in #6678).
 - The full `skills/ → skills.bak/` rename + 260-blueprint migration is **not** in this PR — held for explicit go-ahead.
 

@@ -46,6 +46,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the 2209Z tick shard entry to the hygiene-history log, recording an off-duty minimal tick while keeping the cron sentinel warm per the tick cadence rules.
 
 **Changes:**
+
 - Add a new tick shard markdown file for `2026-05-14T22:09Z`.
 - Record current PR state (merged/wait-ci) and the off-duty “minimal shard” stance for this tick.
 
@@ -63,6 +64,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

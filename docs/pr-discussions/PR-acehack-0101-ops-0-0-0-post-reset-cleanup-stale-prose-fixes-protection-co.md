@@ -41,6 +41,7 @@ Layers:      legacy DELETED (per Aaron); rulesets canonical
 ## Stale-prose fixes (Amara substrate-pass catch)
 
 Two paragraphs flipped from pre-reset state to in-force post-reset state:
+
 - *"Currently NOT signoff-eligible"* → *"0/0/0 ACHIEVED 2026-04-29T14:04:50Z..."*
 - *"Hard-reset is NOT YET signoff-eligible"* → *"Hard-reset complete (2026-04-29T14:04:50Z)..."*
 
@@ -102,6 +103,7 @@ Unclear → stop, report exact uncertainty, propose one safe action
 Post-0/0/0 hard-reset cleanup PR that updates current-state docs/memory to reflect the achieved 0/0/0 status and captures a durable debugging note about GitHub’s dual-layer protection enforcement (legacy branch protection + rulesets) on AceHack/Zeta.
 
 **Changes:**
+
 - Add a new protection-config memory documenting GH013 vs GH006 and a `gh api` audit/diagnostic sequence.
 - Update `docs/active-trajectory.md` prose to reflect that the 0/0/0 hard-reset has completed.
 - Append a tick shard row and add a new `MEMORY.md` index entry pointing to the new memory.

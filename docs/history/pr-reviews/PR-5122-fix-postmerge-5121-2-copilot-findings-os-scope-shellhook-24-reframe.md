@@ -37,6 +37,7 @@ Addresses 2 Copilot post-merge findings on #5121.
 ### Behavioral change (substrate-honest update — earlier claim of "no behavior change" was incomplete)
 
 The shellHook IS now conditional on host OS, so user-facing output of `nix develop` changes:
+
 - macOS hosts: print the `Host setup (rare): bash tools/setup/install.sh` hint (unchanged behavior)
 - Debian/Ubuntu Linux hosts: same hint (unchanged behavior)
 - NixOS hosts: hint suppressed (new behavior — was previously a footgun pointing operators at a path that errors on `apt-get`)

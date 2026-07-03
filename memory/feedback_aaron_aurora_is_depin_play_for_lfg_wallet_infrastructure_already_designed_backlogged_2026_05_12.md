@@ -67,6 +67,7 @@ satisfied by the architecture. The factory's substrate
 cascade work IS DePIN product-development for LFG.
 
 Known DePIN benchmarks (for operational pattern references):
+
 - **Helium** — distributed wireless network; LoRaWAN hotspots
   paid in HNT tokens
 - **Filecoin** — distributed file storage; storage providers
@@ -79,6 +80,7 @@ Known DePIN benchmarks (for operational pattern references):
   paid in HONEY tokens
 
 Aurora differentiates from these via:
+
 - Quad-stream monetization (most DePINs are single-stream)
 - Data-intrinsic-coincidence-value as monetizable substrate
   (Itron-style)
@@ -113,6 +115,7 @@ disclosed in PR #2825.
 **Future-Otto: don't reinvent wallet infrastructure.** The
 substrate is already designed; the implementation follows the
 existing backlog rows. The DePIN positioning composes wallet
+
 + PoUW-CC + Aurora + Reticulum + SPIFFE.
 
 ## Full DePIN-LFG architecture
@@ -193,6 +196,7 @@ distinct characteristics from raw storage/compute:
   / algorithm / data-coincidence streams
 
 This composes with:
+
 - 081KRA5AR0008QG0R000Y6102S (wallet-immune-system + vaccine-spread + PoUW-CC
   spec — existing substrate; this disclosure adds the
   monetization framing)
@@ -238,6 +242,7 @@ Six PoUW-CC streams total:
 | 6 | **Wallet safety algorithms** | Defense substrate for wallet operations |
 
 Why wallet-safety is its own stream:
+
 - **Active protection** — wallet-safety is operational
   defense, not passive participation
 - **Universally needed** — every wallet operation requires
@@ -249,6 +254,7 @@ Why wallet-safety is its own stream:
   creation (substrate-honest positive-sum framing)
 
 This composes with:
+
 - 081KRA5AR0008QG0R000Y6102S (wallet-immune-system + vaccine-spread + PoUW-CC)
 - 081KQ8P5D0008QG0R002XFQ305 (wallet v0 build-out spec)
 - 081KQ8P5D0008QG0R0014HJFF5-series (wallet acceptance / bond ledger)
@@ -267,6 +273,7 @@ revenue stream.
 ### 1. DePIN positioning enables web3 ecosystem composition
 
 LFG can compose with existing DePIN tooling:
+
 - DePIN-compatible wallets / token standards
 - DePIN-aware crypto bridges
 - DePIN-specific compliance frameworks
@@ -282,6 +289,7 @@ The existing wallet backlog rows (especially 081KRA5AR0008QG0R000Y6102S wallet-
 immune-system + vaccine-spread + PoUW-CC) are the operational
 substrate for the quad-stream monetization disclosed in
 PR #2825. Future implementation work should:
+
 - Reference 081KRA5AR0008QG0R000Y6102S as the wallet-PoUW-CC spec
 - Use existing wallet spec (081KQ8P5D0008QG0R002XFQ305 + 081KQ8P5D0008QG0R0014HJFF5-series) as
   starting substrate
@@ -302,6 +310,7 @@ rather than reinventing.
 
 Today's cascade has now disclosed every layer of the LFG
 business-in-a-box DePIN product:
+
 - Architecture (Klein-bottle + Clifford + Maxwell-Einstein)
 - Method (divine-coincidence + joint-control + glass-halo)
 - Identity + routing + radio primitives
@@ -332,6 +341,7 @@ cascade.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that LFG has a token launched** — DePIN
   positioning names the architectural category; token
   launch is separate operational work

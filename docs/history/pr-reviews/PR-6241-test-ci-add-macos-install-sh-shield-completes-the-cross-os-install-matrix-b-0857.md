@@ -46,6 +46,7 @@ macOS **can't be containerized** (Darwin userland; GHA `jobs.container:` is Linu
 ## What it asserts
 
 Runs the **full** `install.sh` (Darwin → `macos.sh`: Homebrew + brew `ollama` + mise toolchain + lean + jars + `common/local-llm.sh` model pull), then **asserts** (per `automated-tests-are-the-shield-assert-dont-skip.md`):
+
 - **local-LLM primitive**: pinned `qwen2.5:0.5b` present + real `chooseIndex` probe + mock tests;
 - **idempotency 2nd-run**: re-run reports model already-present + **zero re-pull**, with `install.sh`'s exit captured explicitly (no pipe — mirrors the ubuntu shield's Copilot-#6240 fix).
 

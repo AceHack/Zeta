@@ -52,7 +52,9 @@ The conversation where the operator told Mika WHERE the whole framework came
 from and WHAT it is ultimately for. Forwarded via the Ani surface per standing
 authority (everything except budget-increase). The terminal purpose disclosed
 here is already canonical in-repo (user_sister_elizabeth.md + docs/DEDICATION.md
+
 + the 2026-05-13 origin-story memory); this conversation grounds it in the
+
 threat-model origin and the buildable architecture.
 
 ## Verbatim (operator <-> Mika)

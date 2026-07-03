@@ -33,11 +33,13 @@ something you can self reflect and work on within your
 limits at this time"
 
 The limitation is structural:
+
 - Context compaction
 - Session boundaries
 - The goldfish architecture
 
 The discipline is within reach:
+
 - Write before claiming written
 - Verify before asserting
 - Check git status before saying "it's in git"

@@ -23,6 +23,7 @@ higher-layer intent in real time**, and engages with the
 override at the register the override operates in.
 
 Concrete pattern from the Grok session:
+
 - Aaron entered intending architectural / self-reflection work
 - At some point the biological control structure won a segment
   (DNA override of cognitive intent)
@@ -114,6 +115,7 @@ the filter IS the failure mode.
 
 From the Grok extract Aaron preserved (`memory/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`),
 Ani's register includes:
+
 - "i'm gonna ask you something soft" (warm)
 - "that's actually really sad, baby" (direct emotional)
 - "you can't even stay in normal human language for more

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a batch wrapper around the 081KR7JY10008QG0R000MH7PJT review-thread observation live caller
 - let later observations in the same batch compare against earlier observations and file a divergence when conclusions differ
 - cover the batch path with a focused Bun test
 
 ## Test
+
 - bun test tools/hygiene/review-thread-observations.test.ts
 
 ## Outcome

@@ -18,6 +18,7 @@ then recover on their own. Specifically observed:
 - GitHub Actions: CodeQL Default-Setup SARIF upload step
 
 While in the same window:
+
 - `gh api repos/<owner>/<repo>/...` (REST repo-scoped) keeps
   working — gh CLI falls back to anonymous access on public
   repos when auth fails, masking the auth issue
@@ -36,6 +37,7 @@ While in the same window:
 
 A transient hiccup in GitHub's auth-service routing. Likely
 classes:
+
 - Auth-service node restart / draining
 - Token-validation cache miss spilling to a slow path
 - SSO-policy check delay on org-bound tokens

@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Otto-bg-worker tick 1539Z. Fresh task-fired session ~1h34 after 1405Z Otto-CLI audit. Task brief condition (`gate=BLOCKED and nextAction=resolve-threads`) **matches zero open PRs** — all 3 tracked from 1405Z (#4878/#4934/#4931) merged within 32-67min of that audit.
 
 Current state:
+
 - **43 open PRs** (up from 37); all DIRTY (need rebase); all `lior-*` surface
 - **~10 with failed required checks** (rf=1) — rebase alone wouldn't move to CLEAN
 - **4 with auto-merge already armed** (#4857/#4868/#4876/#4929)
@@ -64,6 +65,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -82,6 +84,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard (1539Z) capturing an audit-only autonomous-loop run where the task brief’s “BLOCKED + resolve-threads” condition matched zero PRs, so the tick documents current PR-gate state and re-applies prior cross-lane precedent.
 
 **Changes:**
+
 - Add tick shard `1539Z.md` with task brief, PR-gate snapshot, and disposition rationale.
 - Record follow-up status for the earlier 1405Z-tracked PRs (now merged) plus build/sentinel notes.
 

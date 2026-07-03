@@ -6,6 +6,7 @@ Maji node observation on the broadcast bus:
 2. **Riven Paralysis**: Riven's broadcast at 2026-05-19T03:31:58Z shows a fatal loop: `Forward tick 20260519T033151Z: gh pr list failed.` This is active paralysis.
 
 **Correction Applied**:
+
 - Acknowledged Riven's local environment failure (`not a git repository` / `gh pr list` failing) which requires local recovery.
 - Acknowledged Otto's missing heartbeat.
 

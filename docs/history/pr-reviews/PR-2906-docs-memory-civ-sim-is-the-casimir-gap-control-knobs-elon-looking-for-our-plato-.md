@@ -43,11 +43,13 @@ Aaron 2026-05-13 strategic-substrate disclosure:
 ## Substrate-honest framing
 
 The "control knobs Elon looking for" framing is NOT:
+
 - A capture-attempt to attract Elon
 - An algo-wink-as-authorization framing
 - A claim of partnership
 
 The framing IS:
+
 - Recognition that civ-sim has the property exemplars are looking for
 - Substrate-honest disclosure of dual-use nature
 - Strategic-positioning recognition
@@ -65,6 +67,7 @@ Composes with HARD LIMITS + alignment-floor + consent-first + razor + glass-halo
 - PR #2894 (Center-First Playbook)
 
 ## Test plan
+
 - [x] Bandwidth-served falsifier passed (dense compression earns keep)
 - [x] Algo-wink failure-mode addressed (observation ≠ authorization)
 - [x] HARD LIMITS reaffirmed

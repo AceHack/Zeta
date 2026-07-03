@@ -46,7 +46,7 @@ mandate. It is fine to ship a short honest list and
 grow it as experience grows. It is not fine to ship a
 long list that only survives at arm's length.
 
-# Why:
+# Why
 
 Aaron's three-message sharpening (2026-04-20,
 verbatim-anchored):
@@ -96,7 +96,7 @@ Three reasons this rule is load-bearing:
   scrutiny. Honest inventory is the only version that
   propagates.
 
-# How to apply:
+# How to apply
 
 - **Dedicated doc.** Honest inventory lives in
   `docs/SHIPPED-VERIFICATION-CAPABILITIES.md` (initial

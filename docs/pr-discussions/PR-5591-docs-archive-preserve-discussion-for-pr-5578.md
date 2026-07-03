@@ -27,6 +27,7 @@ Automated archival of PR #5578 by Lior.
 Adds an automated PR-discussion archive entry for PR #5578 under `docs/pr-discussions/`, capturing YAML frontmatter metadata and the preserved PR body/comments for historical traceability.
 
 **Changes:**
+
 - Added a new `docs/pr-discussions/PR-5578-*.md` archive file for PR #5578.
 - Included standard archive frontmatter (PR metadata + archive tool stamp) and preserved discussion content.
 

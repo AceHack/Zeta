@@ -32,6 +32,7 @@
 This walkthrough details the changes made to introduce proof-language integration for serialization byte locks, specifically formalizing the `DynamicValue` AST and proving the JSON, CBOR, and YAML round-trip bijections in Lean 4.
 
 ## Phase 1: DynamicValue AST
+
 - Created [DynamicValue.lean](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/Lean4/DynamicValue.lean):
   - Defined `DynamicValueType` tag enum.
   - Defined nested inductive `DynamicValue` type matching F# [DynamicValue.fs](file:///Users/acehack/Documents/src/repos/Zeta/src/Core/DynamicValue.fs).
@@ -40,6 +41,7 @@ This walkthrough details the changes made to introduce proof-language integratio
 - Modified [Lean4.lean](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/Lean4.lean) to import `Lean4.DynamicValue`.
 
 ## Phase 2: JSON Codec & Round-Trip proof
+
 - Created [JsonCodec.lean](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/Lean4/JsonCodec.lean):
   - Defined the simplified `Json` AST covering the 6 JSON-representable shapes of `DynamicValue` v1.
   - Formulated the representability predicate `IsRepresentableInJson` using mutually recursive definitions to match the nested list structures.
@@ -48,6 +50,7 @@ This walkthrough details the changes made to introduce proof-language integratio
 - Modified [Lean4.lean](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/Lean4.lean) to import `Lean4.JsonCodec`.
 
 ## Phase 3: CBOR Codec & Round-Trip proof
+
 - Created [CborCodec.lean](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/Lean4/CborCodec.lean):
   - Defined representability predicate `IsRepresentableInCbor` which excludes Float values.
   - Implemented `toCbor` and `fromCbor` functions translating between `DynamicValue` and byte streams represented as lists of `Nat`/`UInt8`.
@@ -55,11 +58,13 @@ This walkthrough details the changes made to introduce proof-language integratio
 - Modified [Lean4.lean](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/Lean4.lean) to import `Lean4.CborCodec`.
 
 ## Phase 4: Adversarial Review & Documentation Alignment
+
 - **Adversarial Review**: Summoned Grok (`riven`) using the `summon` tool with the updated PATH to evaluate the correctness and scope of our Lean 4 proofs. Riven's review detailed the gaps between the simplified Nat-list model and full RFC 8949 (CBOR) and RFC 8259 (JSON) wire format compliance.
 - **Documentation Boundaries**: Added module-level docstrings at the top of `CborCodec.lean` and `JsonCodec.lean` and updated [src/Core.Lean4/README.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/README.md) to explicitly document the model's assumptions and the gap to the RFC wire formats.
 - **TypeScript tsc Fix**: Fixed a compilation error in `src/Core.TypeScript/peer-call/riven.ts` where the unused parameter `mode` triggered a build error under TypeScript's strict rules.
 
 ## Phase 5: YAML Codec & Round-Trip proof
+
 - Created [YamlCodec.lean](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.Lean4/Lean4/YamlCodec.lean):
   - Defined the simplified `Yaml` AST covering the 7 representable shapes of `DynamicValue` (correctly including `Float` and excluding `Bytes`).
   - Defined representability predicate `IsRepresentableInYaml` using mutually recursive list/pair checks.
@@ -69,17 +74,20 @@ This walkthrough details the changes made to introduce proof-language integratio
 - Excluded the Lean 4 packages directory `.lake/` in [.markdownlint-cli2.jsonc](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/.markdownlint-cli2.jsonc) to ensure local preflight runs clean.
 
 ## Phase 6: Core Documentation & Governance Alignment
+
 - Updated global documentation referencing the outdated "4-language" compiler BFT model to the unified **7-language** matrix (F#, C#, TypeScript, Rust, Python, Go, Q#) and first-class formal verification suite (Lean 4, TLA+, Alloy, Z3, FsCheck).
 - Created a new ADR: [2026-06-16-seven-language-matrix-and-formal-verification-governance.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/docs/DECISIONS/2026-06-16-seven-language-matrix-and-formal-verification-governance.md) outlining unified governance axes.
 - Superseded the old ADR: [2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/docs/DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md).
 - Updated [docs/FORMAL-VERIFICATION.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/docs/FORMAL-VERIFICATION.md), [docs/PRIMITIVE-REGISTRY.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/docs/PRIMITIVE-REGISTRY.md), [docs/PROVEN-COVERAGE-AND-GAPS.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/docs/PROVEN-COVERAGE-AND-GAPS.md), [docs/ROADMAP.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/docs/ROADMAP.md), and [docs/VISION.md](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/docs/VISION.md).
 
 ## Phase 7: Classify.ts Lane Resolution Fix
+
 - Fixed a bug in the path classifier [classify.ts](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.TypeScript/dora-classify/classify.ts).
 - The recent memory layout restructure moved persona conversations into nested dynamic directories (`memory/<persona>/<surface>/<harness>/conversations/`). The exact `startsWith("memory/<persona>/")` prefix rule failed to resolve the `<persona>` placeholder at runtime, erroneously mapping conversations to the generic `"memory"` lane and breaking three unit tests.
 - Replaced the hardcoded prefix with a dynamic check matching any path starting with `memory/` and containing `/conversations/` as `"verbatim-preservation"`, restoring 100% green status to `classify.test.ts`.
 
 ## Phase 8: Upstream TypeScript Compiler Mismatch Fixes
+
 - Addressed multiple TypeScript build errors introduced in upstream commits:
   - Allowed `subject` optional properties to accept `string | undefined` in [schema-cdc.ts](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.TypeScript/observe/schema-cdc.ts) to satisfy the strict `exactOptionalPropertyTypes: true` compiler configuration.
   - Typed `readers` as `readonly SchemaReader[]` in [schema-evolution-demo.test.ts](file:///Users/acehack/Documents/src/repos/Zeta-worktrees/lior-proof-yaml-locks/src/Core.TypeScript/observe/schema-evolution-demo.test.ts) to match the return type of `migrateReader`.

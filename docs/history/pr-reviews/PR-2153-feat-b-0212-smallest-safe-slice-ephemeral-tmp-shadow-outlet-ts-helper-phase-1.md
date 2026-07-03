@@ -38,12 +38,14 @@ Smallest safe bounded slice of 081KQX9B50008QG0R00147GZX9 (P1 Shadow outlet arch
 - Re-decomposed: treated 081KQX9B50008QG0R00147GZX9 frontmatter "atomic" as starting point; this is the first executable TS atom.
 
 ## Rules followed
+
 - TS over bash (Rule 0)
 - Prefer F#/TS code over docs
 - One bounded step only
 - Claim/worktree before write
 
 ## Focused checks (included per task)
+
 - dotnet build -c Release (pre-work gate in root): 0 Warning(s) 0 Error(s)
 - Isolated `bun --bun tsc --noEmit` on new module: syntax + import validity clean (noEmit, node builtins only)
 - No new warnings introduced; no root files edited

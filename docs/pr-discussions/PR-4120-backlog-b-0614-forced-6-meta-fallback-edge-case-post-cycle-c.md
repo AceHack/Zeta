@@ -51,6 +51,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds backlog item 081KRSKQ20008QG0R0028VN0KR to track a forced-#6 meta-fallback edge case and updates the generated backlog index accordingly.
 
 **Changes:**
+
 - Adds a P3 backlog row documenting the empirical edge case and deferred acceptance criteria.
 - Adds 081KRSKQ20008QG0R0028VN0KR to the generated `docs/BACKLOG.md` P3 section.
 

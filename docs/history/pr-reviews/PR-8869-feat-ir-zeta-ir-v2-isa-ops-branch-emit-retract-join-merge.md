@@ -30,6 +30,7 @@
 Homoiconic IR extension: same schema, new ops. One interpreter handles arithmetic AND quantum/ZSet operations.
 
 Multiple lenses on one algebra:
+
 - Q#: quantum gates
 - Rx: reactive queries over ZSets
 - Clifford: geometric algebra

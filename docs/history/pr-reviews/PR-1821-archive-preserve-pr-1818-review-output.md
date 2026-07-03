@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserves the generated PR #1818 review archive after the merge workflow hit the expected direct-push repository rule guard
 - Adds the manifest entry for merge commit efda8c4e1dd2b95dfab6bcfbeefabe495725b224
 - Local replay is deterministic: archive=noop, manifest=noop, threads=6, resolved=6, unresolved=0, comments=7, fixCommits=3
 
 ## Checks
+
 - git diff --check
 - bunx markdownlint-cli2 docs/history/pr-reviews/PR-1818-research-cartographer-math-lineage-budget-through-harmonious-division-to-unified.md
 

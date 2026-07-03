@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Project `RoomHorizon.Report` into `DarkHallScheduler.HeatBoundaryRow` so finite-horizon forgetting and no-forget backpressure render on the existing CHIP-9 heat board.
 - Add tests that verify `room-horizon.forgotten` and `room-horizon.backpressure` drive the red/backpressure/kind lanes.
 - Clear fresh-main quick preflight fallout: markdownlint MD032 blank lines and an unused soft-mix branch placeholder, while preserving support-growth semantics.
 
 ## Verification
+
 - `PATH="/Users/acehack/.bun/bin:$PATH" bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts --max 2 --branch HEAD`
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~DarkHallSchedulerTests|FullyQualifiedName~RoomHorizonTests"`
 - `PATH="/Users/acehack/.bun/bin:$PATH" bun test src/Core.TypeScript/algebra/soft-mix.test.ts`
@@ -41,6 +43,7 @@
 - `dotnet test Zeta.sln -c Release`
 
 ## Notes
+
 - Local shell did not have `bun` on PATH, but `/Users/acehack/.bun/bin/bun` is installed. I ran Bun gates with that directory prepended to PATH so package scripts can resolve nested `bun` calls.
 - Local quick preflight still skips Go because the local Go toolchain is unavailable; CI covers it.
 

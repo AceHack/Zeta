@@ -67,6 +67,7 @@ For the dashboard amplification counter:
 - Successful CI runs that gate merges (each = 1 action)
 
 Optional weighted version:
+
 - Substrate-class action (memory file, BP-NN rule, doc) = 3x
 - Code-class action (src/, tools/) = 2x
 - Hygiene-class action (lint fix, rebase) = 1x

@@ -21,6 +21,7 @@ In an `.ace` file you name the **package** (the noun, e.g. `foo`) — the *what*
 
 So Ace resolution now has (at least) **three axes**, all bounded by the template graph (#6972) ∩ niches
 (#6974):
+
 1. **version** — which version (the lockfile, #6974);
 2. **source/ecosystem** — which PM/registry delivers it (this), per OS, by criteria;
 3. (both within) the **defined template** (#6972) — the closed universe resolution searches.

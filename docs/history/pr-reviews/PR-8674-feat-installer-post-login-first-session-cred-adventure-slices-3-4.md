@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - **Slice 3:** Post-login credential adventure on installed NixOS nodes via `profile.d` hook (`zeta-first-session.nix`), with interactive menu, gh auth executor, and serial markers for QEMU phase-3.
 - **Slice 4:** Optional `nodeSession` World channel in `observe.ts` — pending cred setup outranks backlog without expanding the nine-kind `NextAction` union; grammar-16 slot 4 renders the first-session sub-menu overlay.
 - **Tests:** 98 passing across first-session + observe suites (golden-vectors unchanged).
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/observe/first-session*.test.ts src/Core.TypeScript/observe/load-node-session.test.ts`
 - [x] `bun test src/Core.TypeScript/observe/observe.test.ts src/Core.TypeScript/observe/grammar-16-render.test.ts src/Core.TypeScript/observe/golden-vectors.test.ts`
 - [ ] S3 demo: `bun src/Core.TypeScript/observe/first-session-run.ts --demo --script setup-gh,complete --dry-run`

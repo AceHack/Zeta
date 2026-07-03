@@ -44,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard documenting the 18:04Z background-worker activity, including the merge of PR #4799 after resolving stale review threads and an audit summary of Lior-lane PR patterns (runtime-script special-case / scope-drift).
 
 **Changes:**
+
 - Adds tick shard `1804Z.md` with observations (open PR counts, lane distribution, merge commit) and supporting verification notes.
 - Records an FP-class resolution worked example for stale U+200B review threads on PR #4799.
 - Documents a runtime-script bulk-audit finding across representative Lior-lane PRs and clarifies intended bg-worker disposition boundaries.

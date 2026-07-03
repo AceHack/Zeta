@@ -413,6 +413,7 @@ enumeration), and **demonstrates it at toy scale** (081KSNY2Z0008QG0R001HA43GG/0
 in both directions: not god-tier, and not "we've done it."
 
 **Composes with:**
+
 - `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` (this doc is its rigorous backing)
 - `.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-physical-git-generator-time-amara-aaron-2026-05-28.md` (§6 generator-time)
 - `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-lightlike-vs-dark-architecture-design-rule-amara-aaron-2026-05-28.md` (append-only replayable trajectory = "lightlike" rays)

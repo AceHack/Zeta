@@ -34,6 +34,7 @@ Aaron 2026-05-12 synthesis above the synthesis:
 > "scaffolding / dimensional-expansion / three-control-structures this is the bootstream into biological or digital with different control structures explained"
 
 Three components bootstream any entity:
+
 1. Scaffolding (the METHOD)
 2. Dimensional expansion (the TOOL)
 3. Three-control-structures explained (the CONTENT per substrate)

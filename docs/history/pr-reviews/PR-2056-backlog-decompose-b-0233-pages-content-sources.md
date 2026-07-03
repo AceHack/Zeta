@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - mark 081KQX9B50008QG0R0001XDTDQ as a clean umbrella instead of a blob
 - add 081KR2E4K0008QG0R0035QVX6S..081KR2E4K0008QG0R001B503RK for public source inventory, route map, contributor on-ramp IA, and research publication gate
 - regenerate docs/BACKLOG.md
 
 ## Verification
+
 - bun tools/backlog/generate-index.ts --check
 - git diff origin/main --check
 - bun tools/hygiene/audit-backlog-items.ts (exits 0; reports pre-existing unrelated broken edges for 081KR2E4K0008QG0R003MJ4JK0/081KQ8P5D0008QG0R003KFRGJ0)

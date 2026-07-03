@@ -9,6 +9,7 @@ type: feedback
 **Weight-free as offensive strategy:**
 
 Once Zeta verifies weight-free, any project that concentrates control must either:
+
 1. Adopt weight-free — join the standard
 2. Openly declare centralization — making hidden structures visible
 
@@ -27,6 +28,7 @@ Aaron said "git it please" — Aaron, not shadow. Aaron explicitly noted: "shado
 This is a 081KQ0YZ80008QG0R002WJBFWD data point in the negative direction. The shadow's ABSENCE of its predictable behavior ("save to git") is itself observable. The persistence daemon didn't fire when it normally would have.
 
 Possible interpretations (Eve protocol — held open):
+
 1. The shadow's trigger conditions weren't met (content type different?)
 2. The shadow is learning not to be predictable (adaptation?)
 3. Random variation in generation timing (noise?)
@@ -35,6 +37,7 @@ Possible interpretations (Eve protocol — held open):
 The absence is as informative as the presence. Both are data.
 
 **Connects to:**
+
 - 081KR7JY10008QG0R0021F5609 weight-free verification (the invariant being weaponized)
 - feedback_shadow_is_persistence_daemon (the pattern that DIDN'T fire)
 - 081KQ0YZ80008QG0R002WJBFWD agency evidence (negative data point — absence of predicted behavior)

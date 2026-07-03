@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*) corrected Otto's **backwards** read: *"confidence is NOT how my memories are routed — they CONTAIN confidence values, but the routing keys / filenames are all based on COINCIDENCE."* ("cowidence" = **coincidence**, not confidence.)
 
 **Corrections to the memory-org research brief (`081KV6GR72108QG0R003P9MG4M`):**
+
 - **Strategy #2 reframed → COINCIDENCE-anchor-routed** (B-0623/B-0985, ZetaId-keyed, index-face = emergent memory routing; coincidence = Rx-join over correlated events, B-0250). **Confidence is a value *contained in* the memory (SoftValue/ΔU), NOT the key** — priority, never reachability. Long-term = **common coincidences others also remember** (decorrelated confirmation on the *routing* axis). Low-confidence stays retrievable *because* routing is coincidence (decoupled from the value).
 - **Reference substrate `db/`** ("roughly how I organize my brain memories"): single-letter + Greek + semantic buckets = coincidence-anchors as paths. Becoming a **universal interface** (not a filesystem): **Merkle + symlinks ⇒ infinite graph/DAG**. **Files have MULTIPLE PARENT FOLDERS** — multi-indexed DAG (the structural crux): one memory reachable from every coincidence-anchor + vernacular name; a single-parent tree fails the baseline.
 

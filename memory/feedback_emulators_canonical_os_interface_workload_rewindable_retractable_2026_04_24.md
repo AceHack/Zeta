@@ -137,6 +137,7 @@ When activation comes:
 ## Future Otto reference
 
 When implementation activates:
+
 1. Read this memory + the OS-interface memory + the
    2026-04-22 ARC-3 absorption-scoring memory first.
 2. Verify DST is still factory default (Otto-272).

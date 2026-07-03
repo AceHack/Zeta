@@ -32,11 +32,13 @@ feat(setup)+docs+shadow: quantum-language oracle — Q# toy-model validates F# r
 Aaron's rapid stream, captured + the one safe concrete artifact landed.
 
 CONCRETE (safe, declarative, UNWIRED so it can't brick install):
+
 - tools/setup/manifests/quantum — desired-state manifest for the quantum toolchain
   (Q# toy-validator + Qiskit/Cirq/PennyLane oracle roster), exact manifest convention,
   best-effort, unpinned-on-purpose (Dejan pins + wires).
 
 DESIGN/VISION (docs/research synthesis):
+
 - Q# = TOY model validating F# = REAL model physics claims (S=4 vs real CHSH 2sqrt2
   Tsirelson = the honest peel); keep toymodel/realmodel in sync; F# also grounded by
   formal verification (TLA+/Z3/Lean). Two independent groundings of each F# claim.

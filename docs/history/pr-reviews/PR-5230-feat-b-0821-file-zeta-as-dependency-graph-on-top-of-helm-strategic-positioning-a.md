@@ -36,6 +36,7 @@ Files [081KSGS9H0008QG0R00367G209](https://github.com/Lucent-Financial-Group/Zet
 **Empty-architectural-slot claim** above Helm + below sync engines (ArgoCD / Flux). Adjacent tools (Helmfile / Terraform Helm / Pulumi K8s / Helm \`Chart.yaml dependencies:\` / ArgoCD sync-waves / Flux \`dependsOn\`) touch parts of the slot but don't fill it GitOps-natively.
 
 **Composes with already-in-flight substrates**:
+
 - 081KSGS9H0008QG0R003A37Z65 Helm-as-convergence-point (positions Zeta at Helm's level)
 - 081KSGS9H0008QG0R00352WW0V Derivability asymmetry (named-dependency graph IS source-of-truth)
 - 081KSGS9H0008QG0R0005P83AP Ontology-based-not-tool-based (graph IS an ontology primitive)

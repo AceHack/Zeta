@@ -30,21 +30,25 @@
 feat(quantum-observable): implement reticulum quantum TS packet/golden-vector codec
 
 Why:
+
 - Mirror the source-owned observable row contract and Reticulum packet/golden-vector codec on the TypeScript side.
 - Keep TS symmetry without putting Q# in the DBSP runtime path as directed.
 
 What:
+
 - Created src/Core.TypeScript/quantum-observable/reticulum-quantum.ts implementing the Observable interface and packet encode/decode.
 - Created reticulum-quantum.test.ts validating symmetry and cross-checking against quantum-treaty-transcript.json.
 - Modified index.ts to export reticulum-quantum.
 - Updated watermark.ts to use safe integer bounds (MIN_SAFE_INTEGER/MAX_SAFE_INTEGER).
 
 Proof:
+
 - Verified with `bun test src/Core.TypeScript/quantum-observable/` (11 tests pass).
 - Verified with eslint (clean).
 - Verified with dotnet build -c Release (succeeded) and dotnet test Zeta.sln -c Release (all 3461 tests pass).
 
 Limits:
+
 - None.
 
 Agency-Signature-Version: 1

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - adds a focused regression test for HTML entity decoding in the GitHub UI auth helper
 - verifies escaped entities are decoded once, avoiding the CodeQL double-unescape class
 - carries and releases the git-native claim in the same PR branch
 
 ## Checks
+
 - bun test tools/playwright/github-ui/auth.test.ts
 - bun run typecheck
 - bunx eslint tools/playwright/github-ui/auth.test.ts

@@ -38,6 +38,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new P2 backlog row (081KRA5AR0008QG0R002TKYRW3) describing a “craft school” curriculum layer that maps human anchors to subjects and models prerequisites as a `depends_on` DAG.
 
 **Changes:**
+
 - Introduces backlog item 081KRA5AR0008QG0R002TKYRW3 with schema-compliant YAML frontmatter.
 - Defines the proposed “human anchors → subjects → depends_on” dependency-graph concept plus acceptance criteria.
 - Adds an example mapping and origin note for traceability.
@@ -56,6 +57,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

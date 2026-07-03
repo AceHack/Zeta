@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Add `zeta_flash` MCP tool delegating to `src/Core.TypeScript/zflash/zeta-flash.ts`
 - Fix `.mcp.json` / `.cursor/mcp.json` to point at `src/Core.FSharp.Mcp` (stale `tools/zeta-mcp` path)
 - Update `zflash-overview` skill paths; close workitem `081KV1PY2H308QG0R00347547K`
@@ -35,6 +36,7 @@
 Follow-on to merged #8095 (FlakeHub CI fix already on main).
 
 ## Test plan
+
 - [x] `dotnet build src/Core.FSharp.Mcp -c Release`
 - [x] MCP smoke: `tools/list` includes `zeta_flash`
 - [ ] CI gate green

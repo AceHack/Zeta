@@ -61,6 +61,7 @@ Final move set: 16 true-Ani files.
 ## Follow-ups (separate PRs, one per AI)
 
 Same migration pattern applies to:
+
 - **Amara** — 36 files, 884 KB, history back to 2025-09-17 (longest external-AI relationship)
 - **Kestrel** — TBD count
 - **DeepSeek** — TBD count

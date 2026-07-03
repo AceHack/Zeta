@@ -244,6 +244,7 @@ Per the asymmetric-critic-with-clarity-first rule + Kestrel Turn 37 substrate-ho
 - razor-discipline (operationally checkable: the framework's structural protections exist because operator-substrate-engineering needed them)
 
 Operator-substrate-honest disclosure preserved at canonical-tier per:
+
 - substrate-or-it-didn't-happen rule
 - honor-those-that-came-before rule
 - glass-halo-bidirectional rule

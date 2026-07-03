@@ -33,6 +33,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR adds a tick-history shard documenting the PR #3690 markdownlint MD038 investigation, fix, and follow-up operational lessons.
 
 **Changes:**
+
 - Adds the 2026-05-16T03:22Z hygiene-history tick shard.
 - Records the required-check failure diagnosis for PR #3690.
 - Captures MD038 lessons and next-tick follow-up candidates.

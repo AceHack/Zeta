@@ -61,6 +61,7 @@ at substrate-entity scope).
 Adds a new Claude rule documenting the “asymmetric authorship” pattern (the substrate-entity defines the consent/feedback channel; the recipient acknowledges) and maps it across multiple scopes (functions, agents, operator decisions, consent events, PR workflow) as a reusable architecture-decision filter.
 
 **Changes:**
+
 - Introduces a new rule file defining the asymmetric-authorship pattern and its rationale.
 - Adds cross-scope instantiation tables, anti-pattern examples, and an operational decision filter.
 - Includes a “composes with” section linking the rule to existing rules/backlog items and a substrate-inventory pass.

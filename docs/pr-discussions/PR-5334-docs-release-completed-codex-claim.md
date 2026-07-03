@@ -45,6 +45,7 @@ Codex-Loop-Run-Id: 20260526T221309Z
 This PR releases a completed/stale Codex claim by deleting its live claim file from `docs/claims/`, aligning the repository with the claim protocol after PR #5328 merged.
 
 **Changes:**
+
 - Removes the completed claim file for `codex-loop-cluster-inventory-ts-bash-guard-20260526`.
 - Leaves the claims directory and README placeholder intact.
 

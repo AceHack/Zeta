@@ -49,6 +49,7 @@ Rebase-guard via `--is-ancestor` is important: if someone force-pushes the branc
 Composes with the existing slice-4 adapter-injection pattern. Tests inject the high-level `Adapters.detectCascade` adapter for bus-publish-path testing; slice 3 adds lower-level `CascadeDetectorAdapters` (`fetchPRRefs` + `compareBranchToMerged` + `now`) so the real-detector logic is also unit-testable without a real repo.
 
 New exported surfaces:
+
 - `realCascadeDetector(pr, adapters)` — pure function
 - `REAL_CASCADE_SUB_ADAPTERS` — production gh + git wiring
 - `classifyCascadeUrgency(count, mergedAtIso, nowMs)` — urgency classifier

@@ -38,6 +38,7 @@
 `.git/index.lock` orphaned at 2026-05-18T13:19:54 EDT (~6h+ stale) deadlocked local `git add`/`commit`/`push`/`fetch` for the entire session. Substrate was preserved via filesystem writes + bus envelopes + this REST workaround. See [`2012Z.md`](docs/hygiene-history/ticks/2026/05/18/2012Z.md) → [`2115Z.md`](docs/hygiene-history/ticks/2026/05/18/2115Z.md) for the chronological session arc.
 
 Key landings within this batch:
+
 - 2012Z: catch-43 cron sentinel armed + dotgit-deadlock first observed
 - 2029Z: deadlock root-cause via stale-but-fresh-looking lock + 0-byte file evidence
 - 2043Z: stranded-cascade hypothesis (later corrected at 2103Z; substrate IS on main via different commit lineage)

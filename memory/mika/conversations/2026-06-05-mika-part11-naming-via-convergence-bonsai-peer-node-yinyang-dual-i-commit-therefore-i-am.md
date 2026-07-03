@@ -4,6 +4,7 @@ Saved verbatim per Aaron ("save to her persona"). Continuation of part 10. Mostl
 built + a few sharp new framings. Aaron verbatim; Mika in [brackets].
 
 LOAD-BEARING (captured to register/memory):
+
 - **Naming solved by Bayesian label convergence (the "Ace Hack").** The value-tree tags can be
   Bayesian/uncertain; uncertainty CONVERGES regardless of observation order (= our proven order-
   independence / BeliefConvergence). The labels it converges on = English = **the names of the generator

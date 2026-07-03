@@ -67,6 +67,7 @@ This is the 9th PR in today's cluster. The substantively-new refinement (explici
 Adds a new `docs/research/` preservation note capturing Mika’s ratification of the day’s NCI scope-split + temperature/pipeline framing, and records the refinement that “join” should be explicit/mandatory at temperature-band crossings and self→shared transitions.
 
 **Changes:**
+
 - Adds a verbatim preservation section for Mika’s turn plus an extracted “substrate landings” summary.
 - Introduces a 4-row transition/join-discipline table focused on temperature-band crossings and self→shared/cross-agent/cross-substrate transitions.
 - Adds “Composes with” cross-references to related rules/backlog items/PRs.

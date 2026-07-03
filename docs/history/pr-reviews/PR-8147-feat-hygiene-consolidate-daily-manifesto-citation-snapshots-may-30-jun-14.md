@@ -30,16 +30,19 @@
 feat(hygiene): consolidate daily manifesto-citation snapshots (May 30 - Jun 14)
 
 Why:
+
 - The daily GitHub Actions cron workflow generates manifesto citation count snapshots to track adoption trends (B-0707).
 - However, since GITHUB_TOKEN lacks PR creation permissions in this repository, the cadence workflow pushes these snapshots to isolated remote branches (`ops/manifesto-citation-snapshot-*`) instead of landing them directly.
 - Over time, these branches accumulate historical signals. Consolidating them into main makes the time-series history complete and durable.
 
 What:
+
 - Extracted and restored 15 daily JSON snapshots (May 30 to June 13) from their remote branches.
 - Ran the audit script locally to generate the current snapshot for today (June 14).
 - Added all 16 JSON files under `docs/hygiene-history/manifesto-citations/`.
 
 Proof:
+
 - Verified all files contain valid JSON formatted by the TypeScript audit tool.
 - Verified compilation and git cleanliness checks.
 

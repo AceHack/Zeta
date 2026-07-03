@@ -43,6 +43,7 @@ Closes 2 gaps surfaced by the 2026-05-26 empirical iter-4.2 test run. Per mainta
 When zflash runs from a checkout that's behind `origin/main` on install-substrate files, it executes the OLD code (which doesn't have the iter-4.2 inject step). USB comes out bootable but silently WITHOUT `operator-ssh-keys.txt` populated. Zero-typing target fails for non-obvious reason.
 
 **Fix**: `checkLocalCheckoutFreshness()` — at zflash start:
+
 - `git fetch origin main --quiet` (offline → warn + skip)
 - For each `INSTALL_SUBSTRATE_FILES` entry (zflash.ts, flash-usb.ts, zeta-install.sh, flake.nix, 3 nix modules + .txt), run `git diff --quiet HEAD origin/main -- <file>`
 - If any file stale → **bail loudly** with specific remediation (`git pull --rebase origin main` or `--skip-freshness-check` escape hatch)
@@ -52,6 +53,7 @@ When zflash runs from a checkout that's behind `origin/main` on install-substrat
 Contributor has to manually `gh run download` fresh CI ISO when the workflow regenerates. Today nobody does this until something breaks.
 
 **Fix**: `autoDownloadFreshIsoIfNeeded()` — after ISO discovery, before flash:
+
 - Queries `gh api .../workflows/build-ai-cluster-iso.yml/runs?branch=main&status=success&per_page=1`
 - If latest run's `updated_at` > local newest ISO's mtime, pulls via `gh run download` → walks artifact dir → copies to `~/Downloads/zeta-installer-24.11-ci<run-id>-<date>.iso`
 - Skipped when explicit ISO path passed OR `--skip-iso-pull` set

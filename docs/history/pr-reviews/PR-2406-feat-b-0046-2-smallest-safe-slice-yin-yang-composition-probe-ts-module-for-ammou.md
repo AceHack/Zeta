@@ -33,13 +33,16 @@ One bounded step on 081KQ3HBZ0008QG0R0001XKNWK (re-decomposed Stage 2): pure TS 
 **Re-decomposition note**: Assumed Stage 2 decomposition mistake; split to atomic code surface (probe fn) before impl. Prefer F#/TS over docs.
 
 ## Changes
+
 - New: `tools/economics/yin-yang-composition-probe.ts` (38 LOC pure fn + smoke)
 
 ## Focused checks (worktree)
+
 - `bun run tools/economics/yin-yang-composition-probe.ts` → green (asserts pass, Ammous correctly fails pending full division pole)
 - Prior root build gate: `dotnet build -c Release` → 0 Warning(s) 0 Error(s)
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch (no root checkout touch)
 - TS (Rule 0)
 - Exactly one bounded step; PR opened

@@ -30,6 +30,7 @@
 Marks **row 4 fully done** — the open 4-language proof byte-lock follow-up is closed.
 
 Generic raw-leaf `MerkleTree.Proof`/`verifyProof` is ported across all four oracles against one frozen `golden-vectors-merkle-proofs.json` (22 vectors, hex-in-JSON):
+
 - **F#** #8719 (treaty source) · **Rust** #8720 · **TS** #8721 · **C#** #8723
 
 Each verified on main reproducing every vector byte-for-byte — **zero divergence** across the three ports. Proofs are hex-in-JSON (no binary in the proof lineage).

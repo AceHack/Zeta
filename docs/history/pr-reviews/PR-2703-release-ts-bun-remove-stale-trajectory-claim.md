@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Remove the stale `docs/claims/trajectory-typescript-bun-live-state.md` file left on main after PR #2701 merged.
 - Preserve the cleanup through the git-native claim lifecycle: claim commit, then release commit.
 - Keep the final PR diff deletion-only and disjoint from open PR #2702.
 
 ## Checks
+
 - git diff --check
 - bun tools/hygiene/check-no-conflict-markers.ts
 

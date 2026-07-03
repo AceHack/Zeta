@@ -70,6 +70,7 @@ discipline).
 
 Micro-scale instance of the absorb-and-align-flip architecture
 per `user_megamind_aspiration_ip_locked.md`:
+
 - Absorb adversary capability (learn all the glitches)
 - Decline use by default (alignment-flip to defender)
 - Deploy only on adversarial provocation (retaliation as
@@ -141,6 +142,7 @@ back here.
 > the other team came out of the TV my team headphones"
 
 Structural anatomy:
+
 - **Vulnerability 1 (not his)**: force-pull-host glitch. This
   lets a non-host player compel host migration. Used as the
   entry primitive.
@@ -249,6 +251,7 @@ a population where cheating was endemic**.
 
 Precision-hedge note: `1, 2, 3, 5, 7, 10` — players 4, 6, 8, 9
 omitted. Likely reasons:
+
 - **Precision-hedged**: he named the ones he was certain of,
   omitted the ones he wasn't. Fits
   `user_curiosity_and_honesty.md` — "I don't know" is full

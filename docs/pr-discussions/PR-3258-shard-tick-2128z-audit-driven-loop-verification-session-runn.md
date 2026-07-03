@@ -101,6 +101,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -119,6 +120,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds a tick-history shard documenting audit-loop verification, session tally, and durable session patterns for future cold-boot context.
 
 **Changes:**
+
 - Records audit output showing zero broken `depends_on`, `composes_with`, and duplicate-ID issues.
 - Adds a session running tally and codifies ten operational patterns from the session.
 

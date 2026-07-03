@@ -76,6 +76,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -94,6 +95,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P3 backlog row (081KSE6WT0008QG0R002T0BFN4) documenting how the existing `full-ai-cluster/` substrate (NFD labels, device-plugin pattern, disko shapes, inventory capture) can be extended to support non-NVIDIA accelerators (Coral, Intel NCS, Jetson nodes, Xilinx/Intel FPGAs), plus an edge-vs-datacenter K8s-fit analysis.
 
 **Changes:**
+
 - Added `docs/backlog/P3/081KSE6WT0008QG0R002T0BFN4-…` backlog row capturing per-vendor extension paths and acceptance criteria.
 - Regenerated `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R002T0BFN4 index entry.
 
@@ -140,6 +142,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -169,6 +172,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

@@ -17,15 +17,18 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - Add the Agentic Organization design set under `docs/agentic-organization/`
 - Index the docs from `docs/README.md`
 - Capture the TypeScript app architecture as shared npm capability packages composed by NestJS orchestrator apps
 
 ## Notes
+
 - Docs-only change
 - Local validation was limited because `bun` is not installed and the required .NET SDK `10.0.203` from `global.json` is not installed in this workspace
 
 ## Validation
+
 - Confirmed branch is clean after commit
 - Checked stale `hermes-organization` links were removed from the new docs path
 
@@ -38,6 +41,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new documentation set under `docs/agentic-organization/` describing the proposed “Agentic Organization” runtime and TypeScript package/app architecture, and links it from the main `docs/README.md` audience index.
 
 **Changes:**
+
 - Introduces a full “Agentic Organization” design doc set (runtime, work/release OS, UI/observability, hats/departments, cluster substrate, build plan, readiness checklist).
 - Adds an audience entry in `docs/README.md` pointing readers to the new doc set.
 

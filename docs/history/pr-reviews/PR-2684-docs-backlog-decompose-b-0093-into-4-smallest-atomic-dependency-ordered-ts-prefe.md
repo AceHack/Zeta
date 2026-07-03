@@ -31,15 +31,18 @@
 Decomposed 081KQ8P5D0008QG0R003MY8246 (broad multi-AI synthesis enhancements) into 4 smallest dependency-ordered atomic child rows (081KDVJZK7008QG0R001379Y14–081KDVJZK7008QG0R0020PEAJG) per rules: use dedicated worktree+claim branch, TS over docs/bash (Rule 0), re-decomp assume mistakes, one bounded step, focused checks in PR.
 
 Children:
+
 - 081KDVJZK7008QG0R001379Y14: TS mechanical quarantine enforcer (base surface)
 - 081KDVJZK7008QG0R0023FS41G: TS scanner self-destruct prevention (depends .1)
 - 081KDVJZK7008QG0R001QH4W62: TS lucky-guess + unsolicited-inference firewall (depends .2)
 - 081KDVJZK7008QG0R0020PEAJG: TS trajectory owners table + recorder (depends .3)
+
 Lattice/bead/beacon research deferred to follow-up children.
 
 Updated 081KQ8P5D0008QG0R003MY8246 frontmatter + added decomp note (historical breakdown preserved).
 
 ## Focused checks outcome
+
 - git status (worktree): 4 new files + 1 mod, clean
 - dotnet build -c Release (root): 0 Warning(s) 0 Error(s) — gate passed (docs-only change; worktree build env note on missing restore artifacts for non-src paths)
 - No root checkout touched; all writes in /tmp/zeta-b0093-worktree on pushed claim branch

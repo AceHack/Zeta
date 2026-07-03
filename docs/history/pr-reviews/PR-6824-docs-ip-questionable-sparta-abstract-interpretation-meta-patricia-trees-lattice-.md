@@ -36,6 +36,7 @@
 ip-questionable capture (verbatim + analysis) + PRIOR-ART-LIST entry. **Docs only** — stays clear of Lior's in-flight trust-core lane.
 
 ## Source
+
 - [Sparta — Making Abstract Interpretation Easy](https://www.youtube.com/watch?v=_fA7vkVJhF8)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

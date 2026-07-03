@@ -35,6 +35,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 Updates the Gemini “Lior loop” launchd configuration to run from an isolated per-agent clone rather than the shared primary checkout, aligning the background loop runner with the isolated-workspace architecture described in 081KSE6WT0008QG0R003YYC9PV.
 
 **Changes:**
+
 - Point `ProgramArguments` at the tick script inside `~/.local/share/zeta-lior-loop/Zeta` instead of the primary checkout.
 - Add `WorkingDirectory` to the isolated clone root to ensure the job executes from that repo.
 - Add an explicit `PATH` environment variable for the launchd job.

@@ -56,6 +56,7 @@ version is the mountain it points at.
 > decide **which state belongs to which persona** in the game, and separate it **step by step**."
 
 Four moves, each landing on an existing organ:
+
 1. **Watch the crystal run** — the recovered structure (loops/attractors/branch graph) rendered on the
    LLMTV color channel while the game plays: the chronovisor showing not just pixels but the SHAPE the
    pixels come from (CHIP-9 planes give the channels: e.g. executed-path on R, data-flow on G,

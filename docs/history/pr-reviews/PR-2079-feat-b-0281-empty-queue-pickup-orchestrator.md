@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds `tools/backlog/empty-queue-pickup.ts` — orchestrator that chains capacity gate → backlog selector → claim-worktree-bootstrap into a single invocable command
 - Emits a structured `OrchestrationResult` with a `decisions` array recording each gate step for durable audit trail
 - 7 tests covering: capacity-full stop, full happy path, empty pickup, decompose-first, claim failure, gate failure, decision trace shape
 
 ## Acceptance criteria (081KR2E4K0008QG0R002FSPPQR)
+
 - [x] Runs only after PR maintenance finds no actionable open PR (capacity gate)
 - [x] Picks at most one backlog row per tick (autonomous-pickup returns single selection)
 - [x] Uses the same cooldown and heartbeat discipline (caller controls; orchestrator is stateless)
@@ -40,6 +42,7 @@
 - [x] Leaves the root checkout untouched (claim-worktree-bootstrap creates isolated worktree)
 
 ## Checks
+
 - `dotnet build -c Release`: 0 warnings, 0 errors
 - `bun test tools/backlog/`: 48 pass, 0 fail across 6 files (including 7 new orchestrator tests)
 

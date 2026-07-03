@@ -59,6 +59,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

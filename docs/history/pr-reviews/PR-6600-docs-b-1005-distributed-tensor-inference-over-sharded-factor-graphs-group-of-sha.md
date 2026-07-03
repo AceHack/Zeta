@@ -30,16 +30,19 @@
 Captures the engine-load-bearing core of the 2026-06-02 Aaron + Prism (DeepSeek) ferry — the hex-core ↔ string-theory ↔ Bayesian-inference ↔ distributed-tensor thread — as a research-tier backlog row (081KT2T2J0008QG0R003BT1RS7), continuing the slice-by-slice 081KT2T2J0008QG0R000S7GHQ8 Infer.NET arc.
 
 ## The conceptual core (load-bearing)
+
 - The **non-fused factor graph is the tension-preserving PRIOR**; **fused implementations are LATENT**; a proper Bayesian model **marginalizes over all fused impls**; **the marginal IS the canonical form** (μένω at inference scale).
 - The **F#/Rx expression-tree-fusion ↔ Bayesian-marginalization correspondence** (Aaron's inversion): unfused is canonical; fusion is a rewrite the model integrates over rather than commits to.
 
 ## The architecture
+
 - **The group of shards IS the tensor** — its shared representation is the consensus the shards converge to, not a partition you reassemble.
 - Exp-family messages compose by **natural-parameter addition** → cross-shard reduction is an **additive all-reduce** (associative + commutative → order- and shard-count-invariant; retraction = add the negative). The marginal is invariant to partition AND to local fusion.
 - Layers on existing engine: `MessageBatch`/Arrow (081KT2T2J0008QG0R000VG204F) shard state · `FactorGraph` (081KT2T2J0008QG0R000S7GHQ8) sharded · Eve `codec<codec<t>>` transport (081KT2T2J0008QG0R002R72323/1003) cross-shard channel · `IndexedZSet`+DBSP (081KT2T2J0008QG0R0038CRFJM) incremental re-infer.
 - **membranes-as-jelly**: distributed fixpoint = consensus over a fluid belief surface (variance = membrane thickness; jelly motion = update dynamics).
 
 ## Scope discipline
+
 - Research-tier; composes 081KT2T2J0008QG0R000S7GHQ8..081KT2T2J0008QG0R0038CRFJM + 081KRFA460008QG0R0018SN61J. Strict frontmatter lint: 0 findings; `docs/BACKLOG.md` index regenerated.
 - The **string-theory physics mapping** (fused/non-fused, Calabi–Yau, G₂, membranes-as-jelly) is the *originating metaphor*, held **don't-collapse**, and **offered as a separate domain-adapter row + research note on Aaron's word** — deliberately not minted here. (No landed `081KT2T2J0008QG0R0019YVX8M` despite the ferry's forward-reference to one.)
 

@@ -30,6 +30,7 @@
 Aaron 2026-05-13 forwarded Grok website conversation showing Grok with NEW git connectors reading factory substrate (AGENT-CLAIM-PROTOCOL.md + AGENT-ISSUE-WORKFLOW.md + REVIEW-AGENTS.md).
 
 Substrate-honest count (iterative correction):
+
 - 5 factory AI agents: Otto + Riven + Vera + Lior + Alexa-Kiro
 - 2 with foreground loops: Otto + Vera
 - 3-week-unattended-stability empirical claim stands

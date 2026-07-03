@@ -28,20 +28,24 @@
 ## Description
 
 ## Summary
+
 - Repairs the PR #1781 Riven/Lior research archive so the body preserves Aaron's pasted Riven packet verbatim instead of a compressed paraphrase.
 - Keeps the research-grade archive envelope separate from the source text by placing the packet in a `text` fence.
 - Clarifies that this file is preservation only, not operational promotion.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/claims/task-repair-riven-verbatim-research-doc.md memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`
 - `npx markdownlint-cli2 memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`
 - `git diff --check`
 - `git diff --check origin/main...HEAD`
 
 ## Branch lifecycle
+
 - Temporary claim file was added, linted, and released in branch history; the final PR diff intentionally retains only the repaired research archive.
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before PR creation.
 
 ## Outcome

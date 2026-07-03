@@ -28,17 +28,20 @@
 ## Description
 
 Summary
+
 - Keeps WSet in src/Core as a real source primitive, not a test-only fixture.
 - Adds QuantumObservableDbsp helpers that derive Mach-Zehnder InterferenceVisibility rows from MachZehnderWSet and expose them as QuantumObservableDelta / ZSet<QuantumObservableRow>.
 - Updates the DBSP transcript test to compare Q#/TS transcript rows against the source-owned WSet bridge instead of manufacturing WSet rows only in test code.
 - Updates the WSet header to point at the new load-bearing core consumer while preserving the demotion dissent as historical context.
 
 Verification
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~QuantumObservableDbsp|FullyQualifiedName~WSetMachZehnder
 - dotnet build -c Release
 - dotnet format --verify-no-changes
 
 Note
+
 - The first build attempt was run in parallel with the focused test and hit a shared bin output copy race. Rerunning sequentially passed with 0 warnings and 0 errors.
 
 ## Outcome

@@ -31,6 +31,7 @@
 > "the merge request could be your fs metadata, and their response is a streaming response of missing content."
 
 The network form of the ancestry-free merge — content-addressing makes it trivial:
+
 1. requester → responder: **fs metadata** (manifest: path→hash links + content-hash set/closure, or root + reachability summary) — compact, **hashes not content**;
 2. responder **set-diffs** against its store → the nodes the requester lacks;
 3. responder **streams** just the missing content (pipelined/seekable — Jumprope);

@@ -34,6 +34,7 @@ Composes with 10% free-time-budget + Otto-as-AI-advocate role.
 This PR updates backlog tracking to incorporate two additional “sharpenings” (6 and 7) for 081KRHWGX0008QG0R001BHXH0M, and ensures the main backlog index links to the new/updated backlog items.
 
 **Changes:**
+
 - Extend 081KRHWGX0008QG0R001BHXH0M with Sharpening 6 (forbidden minimal-output patterns) and Sharpening 7 (terminal-level mechanical decomposition).
 - Update `docs/BACKLOG.md` to include the 081KRHWGX0008QG0R001BHXH0M entry in P1 and add new P3 entries (081KRHWGX0008QG0R0029X10F4, 081KRHWGX0008QG0R001HMWM1W) in the index.
 

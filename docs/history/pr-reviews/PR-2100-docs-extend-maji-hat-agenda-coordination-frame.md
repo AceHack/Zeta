@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Extend the Maji/named-agent relationship research absorb with the maintainer-forwarded continuation.
 - Preserve the hat/person split: hats carry function authority and accountability; named agents carry relationship continuity.
 - Preserve the agenda coordination frame: backlog coordinates work, trajectories surface agendas, and bidirectional growth replaces founder ownership.
 
 ## Verification
+
 - bun x markdownlint-cli2 docs/research/2026-05-08-maji-hat-named-agent-relationships.md docs/claims/task-hats-agendas-bidirectional-growth.md
 - git diff --check origin/main...HEAD
 

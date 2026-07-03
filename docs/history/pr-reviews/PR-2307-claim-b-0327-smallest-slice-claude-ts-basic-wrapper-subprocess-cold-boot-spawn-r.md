@@ -30,6 +30,7 @@
 **One bounded step of 081KR2E4K0008QG0R002KNZ29V (P1)** — smallest safe slice per rules (dedicated worktree, pushed before writes, root untouched, re-decomposed during build, TS code, focused checks included).
 
 ## What landed
+
 - `tools/peer-call/claude.ts` (109 LOC): 
   - Shebang + executable
   - Flag surface: --help, --allow-empty, positional prompt
@@ -39,10 +40,12 @@
   - Help text + bypass messaging
 
 ## Pre-start / search-first satisfied
+
 - `claude --help` confirms `-p/--print` for non-interactive (no --bare needed for slice)
 - Prior-art: modeled on kiro.ts (081KR2E4K0008QG0R001HQF27C) but trimmed to atomic (no full context-cmd/file/output yet)
 
 ## Focused checks (executed in worktree post-push)
+
 - `bun tools/peer-call/claude.ts --help` → renders correctly ✓
 - `bun ... --allow-empty "test..."` → firewall bypass + spawn attempted (structure passes; runtime auth/net expected in real cold-boot) ✓
 - `bun --bun tsc --noEmit --skipLibCheck .../claude.ts` → no syntax/type errors in slice ✓

@@ -56,6 +56,7 @@ This is the SECOND instance today of authoring-from-incomplete-view; both got ca
 This PR updates the backlog to clarify 081KSGS9H0008QG0R001Y9FB62’s relationship to the existing Ace “package manager of package managers” substrate, and adds 081KSGS9H0008QG0R001Y9FB62 to the generated backlog index.
 
 **Changes:**
+
 - Adds/updates the 081KSGS9H0008QG0R001Y9FB62 P2 backlog row with revised layering that places 081KSGS9H0008QG0R001Y9FB62 inside the Ace agenda (stage-8 distribute) and expands citations.
 - Adds 081KSGS9H0008QG0R001Y9FB62 to `docs/BACKLOG.md` so it appears in the P2 index.
 
@@ -73,29 +74,36 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (6)</summary>
 
 **docs/backlog/P2/081KSGS9H0008QG0R001Y9FB62-ansible-gitops-plus-crossplane-cross-os-declarative-management-for-windows-macs-non-nixos-linux-aaron-2026-05-26.md:36**
+
 * P1 xref: this link to 081KSGS9H0008QG0R002BC2ZR7 is broken because the 081KSGS9H0008QG0R002BC2ZR7 row lives under docs/backlog/P1/, not alongside this P2 row. Use a relative path that includes ../P1/ so GitHub renders the link correctly.
 ```
 - **macOS** (dev laptops, maintainer's primary Mac): imperative via `tools/setup/macos.sh` → Homebrew + mise; idempotent + auto-updating per [081KSGS9H0008QG0R002BC2ZR7](081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) discipline but NOT declaratively-driven from git
 ```
 **docs/backlog/P2/081KSGS9H0008QG0R001Y9FB62-ansible-gitops-plus-crossplane-cross-os-declarative-management-for-windows-macs-non-nixos-linux-aaron-2026-05-26.md:78**
+
 * P1 xref: the 081KSGS9H0008QG0R0027HJZYH link target filename/path doesn’t exist (081KSGS9H0008QG0R0027HJZYH is a P1 row with a different filename). Update the link to the actual 081KSGS9H0008QG0R0027HJZYH file so navigation works.
 ```
 **Fit for Zeta**: HIGH (the maintainer 2026-05-26 clarification: *"we are alwasy going to have k8s i don't mind the coupling but we can support both"*). K8s is always present in Zeta's substrate (the `full-ai-cluster/` is the cluster substrate; not optional). Operator-pattern coupling is therefore not a rejection criterion. Remaining concern is SSH/WinRM access from cluster pods to the operator's heterogeneous machines — iter-5.4 [081KSGS9H0008QG0R0027HJZYH](081KSGS9H0008QG0R0027HJZYH-iter-5-4-homelab-gh-auth-login-device-flow-zeta-cluster-node-registration-into-github-no-shipped-keys-aaron-mika-2026-05-26.md) homelab gh-auth + tailscale-equivalent unlock this. Pattern 1 + Pattern 3 can BOTH ship; pick per use case (Operator for cluster-orchestrated workstation config; ansible-pull for fully-disconnected/edge hosts).
 ```
 **docs/backlog/P2/081KSGS9H0008QG0R001Y9FB62-ansible-gitops-plus-crossplane-cross-os-declarative-management-for-windows-macs-non-nixos-linux-aaron-2026-05-26.md:104**
+
 * P1 xref: this 081KSGS9H0008QG0R002BC2ZR7 link is broken (the row is under docs/backlog/P1/). Use ../P1/ so the link resolves.
 ```
 - Composes with our agent-discipline rules per [081KSGS9H0008QG0R002BC2ZR7](081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) (idempotent playbooks; declarative state; same git-as-source-of-truth)
 ```
 **docs/backlog/P2/081KSGS9H0008QG0R001Y9FB62-ansible-gitops-plus-crossplane-cross-os-declarative-management-for-windows-macs-non-nixos-linux-aaron-2026-05-26.md:306**
+
 * P1 xref: these links point to non-existent files in the current directory. 081KSGS9H0008QG0R0027HJZYH and the iter-6.0 081KSGS9H0008QG0R001EKTS5A row are both under docs/backlog/P1/ (with different filenames), so the links should include ../P1/ to resolve.
 ```
 
 ### Sub-target 3 — Crossplane bootstrap as ArgoCD app (081KSGS9H0008QG0R001HC663P, future)
 ```
 **docs/backlog/P2/081KSGS9H0008QG0R001Y9FB62-ansible-gitops-plus-crossplane-cross-os-declarative-management-for-windows-macs-non-nixos-linux-aaron-2026-05-26.md:309**
+
 * P1 xref: this 081KSGS9H0008QG0R002BC2ZR7 link is broken (081KSGS9H0008QG0R002BC2ZR7 is under docs/backlog/P1/). Use ../P1/ so the link resolves.
+
 **docs/backlog/P2/081KSGS9H0008QG0R001Y9FB62-ansible-gitops-plus-crossplane-cross-os-declarative-management-for-windows-macs-non-nixos-linux-aaron-2026-05-26.md:316**
+
 * P1 xref: this in-line reference to 081KSGS9H0008QG0R002BC2ZR7 uses a path relative to the current P2 directory, but 081KSGS9H0008QG0R002BC2ZR7 is under docs/backlog/P1/. Update the link so it resolves from GitHub.
 ```
 Per [081KSGS9H0008QG0R002BC2ZR7](081KSGS9H0008QG0R002BC2ZR7-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md): ansible playbooks AND Crossplane provider versions need the same WebSearch-current-version-pin discipline. Add ansible-galaxy collection versions + Crossplane provider versions to the audit tool's scope when sub-target 1+3 implement.

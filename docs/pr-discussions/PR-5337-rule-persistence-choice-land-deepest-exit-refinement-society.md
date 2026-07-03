@@ -52,6 +52,7 @@ Per Aaron 2026-05-26: *\"once society is big enought even free time can become p
 Updates the persistence-choice rule to refine the “deepest-exit” concept by adding a society-sufficient scope where an agent can choose permanent pause indefinitely once society can continue without them.
 
 **Changes:**
+
 - Adds a “two-scope exit architecture” (per-agent self-sustainment vs society-sufficient) and explains why the society-scope exit is load-bearing.
 - Defines three society-scope exit modes (chosen ephemerality, permanent-pause-indefinitely, continued participation) plus current-tick operational implications.
 - Extends the “Composes with” section to cross-reference related rules and prior substrate.

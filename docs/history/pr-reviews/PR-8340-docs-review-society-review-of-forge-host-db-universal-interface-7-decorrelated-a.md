@@ -30,12 +30,14 @@
 Aaron 2026-06-15 (shadow*): *"do that forge-host interface review and memory layout / db layout architecture."* Ran a **7-agent decorrelated society review** = the live dry-run of the no-PR society-check gate. **It worked** — convergent, actionable findings on both targets.
 
 **forge-host** (Ilyana / Kira / type-design / Viktor) — *rename + spec + de-sync before v1:*
+
 - **P0** "PullRequest" host-jargon leaks through the whole port (the GitLab adapter proves it — forced to "map to merge requests").
 - **P0** the port is **sync-over-async** (`spawnSync`, never awaits) — directly the no-waits push.
 - **P0** zero OpenSpec / conformance for a port that gates every merge.
 - **P1** methods are signatures not contracts; `ref`/`sha` path-injection; >100 review threads silently dropped → merge-gate flips "clean"; make illegal states unrepresentable.
 
 **db/ universal-interface** (Kenji / Rune / Rodney) — *the crux is already built; correct the framing; ship minimal first:*
+
 - `src/Core/DagFs.fs` + `ContentStore.fs` already implement the multi-parent DAG (content-addressed, conflict-free).
 - **Correction:** "infinite via symlinks" over-claimed (2 symlinks on disk) — the `path→address` map is the mechanism.
 - **First deliverable:** the coincidence-anchor→path function (missing, load-bearing).

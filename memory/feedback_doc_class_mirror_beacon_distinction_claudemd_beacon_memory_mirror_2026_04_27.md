@@ -23,6 +23,7 @@ Aaron's response: *"good insight"* + filing instruction.
 **Audience:** read by every wake / every contributor / every session — Otto, Claude Code instances, Amara, Gemini, Codex, Cursor, future human contributors, future AI contributors not yet on board.
 
 **Discipline:**
+
 - **Current-state only.** What IS the rule, not how-we-got-here.
 - **Role references, not personal names.** "The maintainer", "the agent", "every wake" — not "Aaron", "Otto", "this session".
 - **No session narrative.** Don't write "Aaron offered three options and Otto picked C because evidence from this session showed..." — that's lineage, belongs in the Mirror file.
@@ -37,6 +38,7 @@ Aaron's response: *"good insight"* + filing instruction.
 **Audience:** read by future-Otto / archeology-doing maintainers / lineage-tracing reviewers — anyone reconstructing *why* a decision landed, *who* said what, *when* the framing shifted.
 
 **Discipline:**
+
 - **Lineage-preserving.** Verbatim quotes, dated, attributed.
 - **Personal names allowed** (subject to consent rules — first-party-creator carve-out for Aaron, named-agent role-refs for Otto/Amara/etc., role-ref defaults for third parties per the "No name attribution in code, docs, or skills" rule in `docs/AGENT-BEST-PRACTICES.md` — rule lineage Otto-279 + follow-on maintainer clarification).
 - **Session narrative welcome.** "Aaron offered three options" / "Otto initially leaned A" / "evidence from this session" all belong here.

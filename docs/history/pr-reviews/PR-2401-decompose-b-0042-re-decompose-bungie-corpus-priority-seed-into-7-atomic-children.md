@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KQ3HBZ0008QG0R002GDRFS5 (broad P2 Bungie corpus priority seed) into 7 atomic children per "always re-decompose — assume mistakes" rule.
 - One bounded step only: decomposition substrate (no implementation code yet).
 - Dedicated worktree + pushed claim branch used; root checkout untouched.
 - TS/F# preference noted in child 7 (harness).
 
 ## Focused checks (included per task)
+
 - `dotnet build -c Release` in root: 0 Warning(s) 0 Error(s) (pre-work gate).
 - In worktree: source-equivalent (build requires restore on fresh tree but no diff); `rg 081KQ3HBZ0008QG0R002GDRFS5` confirms clean decomposition landing, no orphan references.
 - Pre-commit style: ASCII clean, imperative commit.
 
 ## Evidence
+
 - Backlog path: `docs/backlog/P2/081KQ3HBZ0008QG0R002GDRFS5-bungie-corpus-priority-seed.md`
 - Worktree: `/tmp/zeta-b0042-worktree`
 - Branch: `claim/081KQ3HBZ0008QG0R002GDRFS5-bungie-corpus-priority-seed-decompose-smallest-slice-riven-2026-05-09`
@@ -47,6 +50,7 @@
 This slice unblocks independent child claims. Next would be impl of e.g. 081KQ3HBZ0008QG0R002GDRFS5.7 TS seed harness.
 
 ## Test plan
+
 - [x] Build gate clean
 - [x] rg verification
 - [x] PR body includes checks outcome

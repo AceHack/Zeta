@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Handle `spawnSync` errors (ENOENT / spawn failures) by checking `result.error` before accessing stdout/stderr buffers — prevents silent swallowing of spawn failures
 - Fix exit code to also verify auto-merge armed when the plan requested it
 - Fix tsc lint: import `PublicationPlan` from `pr-publication-plan` where it's actually exported
 - Loop tick: integrate `autonomous-pickup.ts` for structured backlog selection, enrich prompts with refresh-worldview + build-gate preamble, reduce default Claude interval from 900s to 60s
 
 ## Test plan
+
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors
 - [x] `bun x tsc --noEmit` — clean
 - [x] `bun test tools/backlog/pr-publication-executor.test.ts` — 10/10 pass

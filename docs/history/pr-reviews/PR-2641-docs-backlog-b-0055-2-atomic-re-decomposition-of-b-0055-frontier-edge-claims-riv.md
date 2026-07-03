@@ -31,6 +31,7 @@
 One bounded step (per user directive + AGENTS.md): re-decompose the broad L-effort 081KQ3HBZ0008QG0R001K0EC2C (11 CTF flags + monolithic schema) into 6 smallest dependency-ordered atomic S-effort children (TS modules). Assumes 081KR7JY10008QG0R0035HP11K decomposition mistakes; preserves every falsifiable/retractible CTF property verbatim.
 
 **Children (buildable order):**
+
 1. 081KR7JY10008QG0R001JW71CT.1 — pure CtfFlag/FlagState types
 2. 081KR7JY10008QG0R001JW71CT.2 — state-machine predicates
 3. 081KR7JY10008QG0R001JW71CT.3 — seed flag data (verbatim)
@@ -44,6 +45,7 @@ TS-first (Rule 0), no docs bloat, no root checkout touched.
 081KQ3HBZ0008QG0R001K0EC2C is the frontier edge-claims research track (CTF-style flag planting on unclaimed territory). The prior .1 slice was one large file; re-decomp makes each subsequent slice atomic and reviewable while the factory plants more flags.
 
 ## Focused checks (outcome included)
+
 - `bun --check tools/research/edge-claims-catalog.ts` → clean (no type errors)
 - `dotnet build -c Release` (root, pre-worktree) → **0 Warning(s) 0 Error(s)** — gate passed
 - Dedicated worktree + pushed claim branch before any write

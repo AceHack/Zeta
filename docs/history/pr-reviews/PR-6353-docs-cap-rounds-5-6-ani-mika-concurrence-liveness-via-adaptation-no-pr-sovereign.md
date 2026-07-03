@@ -34,6 +34,7 @@ Folds the 4th + 5th reviewer concurrences + two Aaron refinements into the CAP d
 Hot-row contention looks different with intelligent agents: liveness = an agent-feedback-loop, not pure mechanical coordination. Contention **signals** (failed-CAS-rate, retry-time, claimant-count, pressure) become **first-class observations the agent folds** via the observe loop's 4×4 menu. Claim path leans on agent intelligence; Lock is the CP escape.
 
 ## Round 6 (Mika + Aaron) — two refinements
+
 - **No-PR sovereign correction (Aaron):** in folders-direct-to-main (no PR/branch-protection), two agents on the same item don't make conflicting branches to reconcile — both push to main, per-row CAS serializes, **double-work IS verification**. Retracts the residual 'wasteful race / conflicting PRs' framing (round-2 verbatim preserved).
 - **Adaptation incentive conditions (Mika):** the practical raise only holds if metrics are timely+accurate AND agents are incentivized to back off (not pure greed).
 

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Carve 5 oversized skill descriptions to routing sentences per 081KR50HA0008QG0R002ZNFQBZ
 - Skills: prompt-engineering-expert, project-structure-reviewer, query-planner, nuget-publishing-expert, package-upgrader
 - Body content preserved; only frontmatter `description:` field reduced
 
 ## Test plan
+
 - [ ] CI passes (frontmatter-only changes, no code impact)
 - [ ] Skill router still triggers on relevant queries
 

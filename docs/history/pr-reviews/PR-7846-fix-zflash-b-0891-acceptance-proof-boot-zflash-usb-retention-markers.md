@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Scenario 1 now QEMU-boots the zflash-prepared raw USB image (`qemu-boot-test --usb-image`) instead of the plain ISO, so CI proves the baked image is bootable.
 - Scenario 3 restart success requires installed-OS `zeta-creds-restore:` / `already-present` markers (not early USB ESP copy lines).
 - `mcopy` toolchain probe uses `-V` for GNU mtools compatibility.
 
 ## Test plan
+
 - [x] `bun test tools/zflash/test-harness/` (82 pass)
 - [ ] `build-ai-cluster-iso` scenario 1 on PR
 - [ ] `workflow_dispatch` scenarios 3–4 after merge

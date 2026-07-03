@@ -30,7 +30,9 @@ of order) + philosophy (the standards of a good argument).
 The rhetoric/argumentation lens: **Aristotle** (ethos/pathos/logos); the **Toulmin model** (claim /
 grounds / warrant / backing / rebuttal — the shape of an argument); **dialectic** (thesis–antithesis–
 synthesis; Hegel); debate **formats** (Lincoln–Douglas, parliamentary, policy/cross-ex); **steelmanning**
+
 + **Rapoport's rules** (state the other side better than they can before rebutting — the charitable-
+
 defense discipline). This track gives the **tactics + names** for how a concept argues its existence and
 how objections are raised (held to the end).
 
@@ -81,6 +83,7 @@ proof. Cayley–Dickson is the algebraic mirror of "soft by default, ground by p
 
 ### Adinkra track (deliberately dual)
 **adinkras** have two anchored meanings and we keep **both**:
+
 - **SUSY adinkras** (Faux–Gates) — graphical/algebraic encodings of supersymmetry representations
   (nodes/edges = the algebra). The lens for **graph-encoded algebraic structure**.
 - **Akan adinkra symbols** (West African ideograms) — symbols that **encode proverbs/concepts/values**

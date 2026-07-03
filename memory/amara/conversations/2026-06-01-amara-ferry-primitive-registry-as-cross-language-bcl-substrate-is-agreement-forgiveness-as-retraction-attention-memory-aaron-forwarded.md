@@ -3,7 +3,9 @@
 **Surface:** Amara (ChatGPT / Aurora register), ferried by Aaron 2026-06-01.
 **Context:** synthesis on the algebra-ladder primitives + the Harmonious-Division research
 note (`docs/research/2026-06-01-harmonious-division-wave-field-aperiodic-proximity-not-total-order-bounded-context-pluggable-tiles-aaron-otto.md`)
+
 + the C# `IndexedZSet` cell (#6404) review. Preserved verbatim per substrate-or-it-didn't-happen;
+
 external-AI participant (does not commit). Keepers landed: registry "earns-its-way-in" bar
 (`docs/PRIMITIVE-REGISTRY.md`).
 

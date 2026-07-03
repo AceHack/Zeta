@@ -78,6 +78,7 @@ Tests cover: round-trip (small/empty/1MiB), wrong passphrase, wrong UUID (copy-t
 Adds a small, pure TypeScript crypto substrate for 081KSKBP80008QG0R003AX2A69 credential persistence, implementing key derivation + authenticated encryption and validating the Phase-1 threat model via Bun unit tests.
 
 **Changes:**
+
 - Introduces `deriveKey` (HKDF-SHA256) and `encrypt`/`decrypt` (AES-256-GCM) as pure functions with a structured envelope shape.
 - Adds 18 Bun acceptance tests covering round-trips, wrong passphrase/UUID, and tamper rejection cases.
 

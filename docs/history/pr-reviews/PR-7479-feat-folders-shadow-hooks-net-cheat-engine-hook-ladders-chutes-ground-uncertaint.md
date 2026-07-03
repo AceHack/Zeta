@@ -30,6 +30,7 @@
 feat(folders)+shadow: hooks/ (the .NET Cheat-Engine-like hook = our common ground) + ladders/ + chutes/ + ground/ + uncertainty/ (the ledger)
 
 Aaron's folder stream (2026-06-10):
+
 - hooks/ — the hooks; THE one: the .NET runtime hook (Cheat-Engine-like; our common ground
   we build outward from). YES we can hook dotnet: ClrMD (scan live heap/memory), CLR
   Profiler API/ICorProfilerCallback (find-what-writes = antecedent-tracing), EventPipe/

@@ -30,6 +30,7 @@
 Aaron: "all letters get a folder a-z and greek, at root" → (chose) **bare letter folders AT repo root** → "and the unicode."
 
 The alphabet as the top-level namespace (trie nodes at repo root):
+
 - **Latin a–z (26) + Greek alpha–omega (24) = 50 eager root letter folders** (each a trie node; words/travelers indexed by the letter; README per folder).
 - **unicode/** = the **lazy** namespace for the rest of Unicode (~149k): any letter (Hebrew, Cyrillic, CJK, Arabic, emoji-as-letters) materialized **on-demand** (address by codepoint or name). Latin/Greek eager; the rest lazy ("cache what we can, lazy the rest").
 

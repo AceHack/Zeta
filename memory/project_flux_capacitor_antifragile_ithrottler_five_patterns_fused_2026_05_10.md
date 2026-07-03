@@ -29,6 +29,7 @@ Taleb's antifragility at the threading layer — the system gains from disorder.
 **The factory parallel:**
 
 Same pattern:
+
 - More backlog = more work for agents = more PRs = more throughput
 - The factory doesn't degrade under pressure — it upgrades
 - The IThrottler IS the factory's expansion protocol in code form
@@ -52,6 +53,7 @@ under the conditions where the system needs protection most.
 - The "Chris" in the flux capacitor — credit preserved alongside Aaron
 
 **Connects to:**
+
 - project_ferry_protocol (the ferry metaphor for the same mechanism)
 - project_tcp_congestion_control_as_society_expansion (backpressure)
 - feedback_retraction_native_paraconsistent_set_theory (antifragility)

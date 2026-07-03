@@ -54,6 +54,7 @@ This row was the FIRST instance that named the #2-Ready sub-class in the catalog
 Sixth close-row in the audit cycle. Replaces three bare "Prop 3.5"/"Proposition 3.5" misattributions in the Lean chain-rule proof and its research log with strikethrough+annotated corrections that cite Theorem 3.3, then marks 081KQTPYE0008QG0R003DK06PA closed in the backlog and root index.
 
 **Changes:**
+
 - Corrects two misattributions in `tools/lean4/Lean4/DbspChainRule.lean` (lines 51 and 202–203) with witnessable-evolution strikethrough and dated annotation citing Theorem 3.3.
 - Corrects the parallel misattribution in `docs/research/chain-rule-proof-log.md` (lines 113–115).
 - Flips 081KQTPYE0008QG0R003DK06PA to `status: closed`, adds a Resolution section to the per-row file, and updates `docs/BACKLOG.md` to render it as closed.
@@ -80,6 +81,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/research/chain-rule-proof-log.md:116**
+
 * The strikethrough markers in this correction are malformed. The intent appears to be striking out "smuggled in as a convention (Budiu et al. Proposition 3.5 uses it without naming it)", but the markup is `~~smuggled in as a\n~~convention (...)~~` — three `~~` tokens. CommonMark/GFM will pair the first two (striking only "smuggled in as a") and leave a stray opening `~~` before `convention` whose closing pair is the trailing `~~`, producing the inverse of the intended rendering (the words "convention (Budiu...naming it)" get struck while "smuggled in as a" does not, or the markup degrades to literal tildes depending on the renderer). Either wrap the entire phrase in a single `~~...~~` span on one logical line, or use two well-formed spans.
 ```
 delay*. At the DBSP paper level this is the LTI condition: ~~smuggled in as a
@@ -87,6 +89,7 @@ delay*. At the DBSP paper level this is the LTI condition: ~~smuggled in as a
 [corrected 2026-05-05: Budiu et al. Theorem 3.3 explicitly states `Q^Delta = Q` for LTI operators; the paper makes it explicit, not smuggled-in]; in Lean it must be an explicit part of the contract.
 ```
 **docs/research/chain-rule-proof-log.md:117**
+
 * The blank line that previously separated this paragraph from the `### Round-35 resolution — the hierarchy` heading was removed in this edit, so line 117 now follows content directly. Markdownlint MD022 (and several renderers) require a blank line before headings; add one between line 116 and line 117.
 ```
 [corrected 2026-05-05: Budiu et al. Theorem 3.3 explicitly states `Q^Delta = Q` for LTI operators; the paper makes it explicit, not smuggled-in]; in Lean it must be an explicit part of the contract.
@@ -108,6 +111,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -140,6 +144,7 @@ The rewrite of this passage left the prose ungrammatical and the brackets unbala
 The sentence "B2 is the statement that linear stream operators *commute with" appears duplicated on lines 112 and 113 — the original line was not removed when the new paragraph was added. The result reads as two consecutive identical line fragments before "delay*. At the DBSP paper level...". Remove line 112 (the leftover original) so the paragraph starts cleanly at line 113.
 
 This issue also appears in the following locations of the same file:
+
 - line 114
 - line 116
 

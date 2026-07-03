@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - add a git-only remote claim state helper for 081KQX9B50008QG0R001MNYK61
 - parse remote claim refs, claim-file durable targets, and intended path sets
 - cover parsing and command-runner behavior without reading local broadcast/heartbeat surfaces
 - release the task-b0209-remote-claim-state claim in the same branch
 
 ## Verification
+
 - bun test tools/claims/remote-only-state.test.ts
 - /Users/acehack/.local/share/zeta-codex-loop/Zeta/node_modules/.bin/tsc --ignoreConfig --noEmit --strict --target esnext --module Preserve --moduleResolution bundler --lib esnext --types bun --typeRoots /Users/acehack/.local/share/zeta-codex-loop/Zeta/node_modules/@types --verbatimModuleSyntax --rewriteRelativeImportExtensions --allowImportingTsExtensions --isolatedModules --erasableSyntaxOnly --noUncheckedIndexedAccess --exactOptionalPropertyTypes tools/claims/remote-only-state.ts tools/claims/remote-only-state.test.ts
 

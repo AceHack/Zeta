@@ -31,12 +31,14 @@
 
 ### b2 — `install.sh` git-bash arm DRIVES the Windows install
 Previously the `MINGW*|MSYS*|CYGWIN*` arm just printed "run `pwsh install.ps1`" and exited 2. Now it **execs `install.ps1`** via `pwsh` (or falls back to `powershell.exe`), with `cygpath` path conversion and a no-PowerShell fallback (message + exit 2). So `bash tools/setup/install.sh` from Git Bash installs Zeta on Windows in one shot — **parity with the Unix one-liner**.
+
 - `exec` replaces the shell so `install.ps1`'s exit code propagates.
 - Linux/macOS/NixOS routing unchanged; the Server-Core `install.ps1` CI test is unaffected (it runs `install.ps1` directly, not via the git-bash arm).
 - `bash -n` clean.
 
 ### Safe-search grep wrapper — `tools/search/grep.ts`
 Content-search wrapper with `references/upstreams` + `node_modules` + build-output excludes **baked in** — structural, not behavioral (per `architecture-is-safety-mechanism-not-discipline` + `references-upstreams-not-our-code-search-excludes`). Came from an operator catch: agents doing raw `Get-ChildItem -Recurse | Select-String` / `find | xargs grep` don't honor `.gitignore` and walk into the gigabytes of mirrored upstream repos.
+
 - **Zero-dep Bun-native walk** so the excludes hold even where `rg` isn't on PATH (this laptop has none).
 - Cross-repo aware (`--repo ../SQLSharp` still skips that repo's upstreams).
 - Distinct from the concept-index (`tools/search/concept-index.ts`); this is the raw ad-hoc grep made correct-by-construction.

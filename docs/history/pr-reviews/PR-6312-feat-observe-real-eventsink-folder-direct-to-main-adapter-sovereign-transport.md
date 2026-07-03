@@ -34,6 +34,7 @@ operator: *"build the real EventSink folder-direct-to-main adapter next."* The p
 `folderSink(opts)` writes the chosen action as a **ZetaId-named JSON file** into a git folder and commits it **direct to `main`, no-PR** (081KSNY2Z0008QG0R000E5KTPX folders-on-main; same mechanism as the agent-bus G-Set, 081KSXN940008QG0R00171YAZW). **Corporate batch-to-main (081KSNY2Z0008QG0R0017JSTGD) = same envelope, different `commit` fn.**
 
 **Honors Amara's review:**
+
 - **#2 stable identity + idempotency** — `EventEnvelope = { id, at, by, action }` is the durable **fact** ("at t, actor X recorded this action"); `id` = `mintObserveEventIdHex` → **`Category.WorkItem`** ZetaId; the filename IS the id, so EEXIST is a no-op (G-Set CRDT).
 - **#1 fact, not command** — logs the action as a fact with identity+actor+time (toward the richer executed-event envelope, the next refinement).
 - **#5/#6 conflict discipline** — mirrors the bus `gitPushEnvelope`: on-main guard + fetch + 0-ahead check + add only this file + `--no-verify` + `push HEAD:main` with rebase-retry (disjoint ZetaId files → G-Set union, never a real conflict).

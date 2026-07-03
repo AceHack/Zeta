@@ -87,6 +87,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -105,6 +106,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Enhances the macOS USB flashing workflow by expanding the pre-consent device/partition visibility in `flash-usb.ts`, and adds a new `.claude` skill documenting the end-to-end cluster ISO flashing flow (including operator-only vs agent-driven execution patterns).
 
 **Changes:**
+
 - Extend `flash-usb.ts` to print vendor/serial/writability/partition-table details and enumerate current partitions (filesystem/volume/mount/used-space best-effort) before the destructive consent prompt.
 - Add a new `flash-cluster-iso` skill capturing the operational procedure (including Touch ID + short nonce challenge and an `expect`-driven path).
 

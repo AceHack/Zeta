@@ -39,6 +39,7 @@ Privacy-first / decentralized / local-first design **is Zeta's manifesto stated 
 ip-questionable capture (verbatim + analysis) + PRIOR-ART-LIST entry + backlog. **Docs only** — clear of Lior's trust-core lane.
 
 ## Source
+
 - [Privacy-First Architecture (Strange Loop)](https://www.youtube.com/watch?v=5tkVW-BNLwA)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

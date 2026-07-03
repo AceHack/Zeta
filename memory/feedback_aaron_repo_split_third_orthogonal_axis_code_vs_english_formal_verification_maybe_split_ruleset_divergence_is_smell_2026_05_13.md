@@ -17,6 +17,7 @@ Adds THIRD orthogonal axis to repo-split design space.
 
 **How to apply:** When designing repo splits, classify each
 substrate file on THREE axes:
+
 - **Axis 1** — Factory / Product / Owner-only (per 081KRFA460008QG0R001H98EXJ +
   081KRFA460008QG0R003JQ46J4 + PR #2905)
 - **Axis 2** — Mirror / Beacon (per 081KRFA460008QG0R0007RWSN1 + PR #2910)

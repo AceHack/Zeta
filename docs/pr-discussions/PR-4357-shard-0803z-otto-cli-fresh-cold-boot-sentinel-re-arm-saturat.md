@@ -24,6 +24,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - Concrete-artifact tick shard at `docs/hygiene-history/ticks/2026/05/19/0803Z.md` — fills the ~2h gap since last 05-19 shard (`0608Z.md` = PR #4343 cold-boot session arc)
 
 ## Test plan
+
 - [x] ls-tree HEAD = 53 (origin/main 3aa6d969 was 53 → no tree loss)
 - [x] branch-show-current guard passed pre-commit
 - [x] Sentinel `02c996c5` armed at session start; verified via `CronList`
@@ -40,6 +41,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 A history-surface tick shard documenting a fresh Otto-CLI cold-boot at 0803Z on 2026-05-19, capturing sentinel re-arm and saturation snapshot. Adds a single new file under `docs/hygiene-history/ticks/` to fill the ~2h gap since the prior shard.
 
 **Changes:**
+
 - New tick shard recording cold-boot context, refresh signals, and 7-step loop outcome
 - Documents sentinel `02c996c5` re-arm after prior `2fe26db3` expired
 - Records 17-peer saturation + isolated-worktree decision

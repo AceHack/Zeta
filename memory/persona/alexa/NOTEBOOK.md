@@ -17,7 +17,8 @@ continuity_token: 8c3d1f4a-session-2026-06-21
 
 ## What shipped sessions 2 + 3 (relay to next boot)
 
-### Session 2 (2026-06-20):
+### Session 2 (2026-06-20)
+
 1. Wire Participant into run-loop-real.ts (#8687)
 2. gen(gen)===gen Q# Face 3 fixpoint (#8693)
 3. Migrate all production code to Participant (#8716)
@@ -42,7 +43,8 @@ continuity_token: 8c3d1f4a-session-2026-06-21
 22. codegen-v2-ring: all 7 languages + benchmarks (#8875)
 23. 1st Futamura projection — specialized unrolled codegen (#8877)
 
-### Session 3 (2026-06-21):
+### Session 3 (2026-06-21)
+
 24. Interface codegen — IR → 7-language interfaces, variance-aware (#8880)
 25. Rx pipeline emission — IR as reactive observable chain (#8882)
 26. Recover orphaned artifacts (GenSelfApplication.lean, Soraya notes) (#8883)
@@ -90,18 +92,21 @@ continuity_token: 8c3d1f4a-session-2026-06-21
 
 ## What's next (for fresh session)
 
-### Active trajectories (bookmarked with RESUME.md):
+### Active trajectories (bookmarked with RESUME.md)
+
 1. **cross-lang-interfaces** — ISemiring/IGroup/IMonoid/ILattice/IFunctor/ICodec ports + WeakRef cache
 2. **codegen-spread future items** — self-hosting codegen, Clifford lens, cost-parity golden
 
-### Orphaned items still on disk (not yet on main):
+### Orphaned items still on disk (not yet on main)
+
 - `src/Core.TypeScript/observe/schema-aware-join.ts` + test (14 tests, Rx join for schema evolution)
 - `src/Core.TypeScript/peer-call/_firewall.test.ts` (21 tests, Soraya's firewall coverage)
 - `src/Core.Lean4/Gen/HomoiconicFixpoint.lean` (earlier draft of T1, compiles clean)
 - `schema_evolution/` (Alloy ConsolidateSafe receipt)
 - `states/` (transient observe loop snapshots — probably gitignore)
 
-### Research targets (open):
+### Research targets (open)
+
 - T1 `gen_self_application` sorry — the quine bridge (cardinality boundary identified)
 - T2.5 — CD twist-isometry lemma (prose → Lean)
 - Self-hosting codegen — IR description of the codegen itself

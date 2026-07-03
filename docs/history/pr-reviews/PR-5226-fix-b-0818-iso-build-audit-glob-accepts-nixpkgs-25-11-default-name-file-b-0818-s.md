@@ -36,12 +36,14 @@ PR #5222 (glxinfo P0 fix-fwd) merged successfully, but the post-merge build-iso 
 ## Two-layer fix
 
 **This PR (fix-fwd, immediate unblock)**:
+
 - \`.github/workflows/build-ai-cluster-iso.yml\` audit glob accepts EITHER \`zeta-installer-*.iso\` OR \`nixos-minimal-*.iso\`
 - \`.github/workflows/build-installer-iso.yml\` same fix
 - Updated error messages cite 081KSGS9H0008QG0R00033DT02 for the substrate-layer fix
 - ISO content is correct; only filename pattern changed
 
 **081KSGS9H0008QG0R00033DT02 (substrate-layer follow-up)**:
+
 - Investigate which 25.11 option actually drives the ISO filename (\`image.baseName\` / \`system.nixosLabel\` / both)
 - Update \`configuration.nix\` with correct override
 - Optionally tighten the workflow glob back once landed

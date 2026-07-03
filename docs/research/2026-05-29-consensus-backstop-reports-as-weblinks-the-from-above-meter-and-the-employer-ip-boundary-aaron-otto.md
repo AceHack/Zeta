@@ -6,10 +6,12 @@ date: 2026-05-29
 disposition: public-forever
 # Design / governance architecture (the watcher-face), which by its own keystone must live in
 # the light. No charged-personal material, no working payloads, no employer internals — this is
-# the boundary-discipline ABOUT not-leaking internals, not internals.
+# the boundary-discipline ABOUT not-leaking internals, not internals
 related:
+
   - docs/research/2026-05-29-distrust-by-default-mechanized-...-1984-hides (#6010) — distrust-by-default, reflection-over-DUs, measure-govern-track, the meter-split, the recursion of where 1984 hides
   - memory/kestrel/conversations/2026-05-29-kestrel-morning-part5-engineering-half-... (#6012) — the both-axes architecture, the OTel agent-reliability observability standard, the firewall + staged tiers
+
 ---
 
 # Extending the both-axes protection architecture
@@ -84,7 +86,9 @@ modifying side — same substrate, two market shapes.
 
 **The 1984 watch-item (distrust-by-default):** the same architecture that protects is a
 surveillance/control tool if the safeguards aren't built in. Consensus-gating + metrics-on-people
+
 + escalation-routing is governance-and-accountability when it's consented, watcher-glass-halo'd,
+
 metric-trustworthy, and can-exit — and 1984-with-cute-governance-names when it isn't. That's the
 discriminator between "corporate likes the accountability" (the proud-if-pattern-propagates
 version) and "corporate likes the control" (the Moloch version, surveillance wearing a governance

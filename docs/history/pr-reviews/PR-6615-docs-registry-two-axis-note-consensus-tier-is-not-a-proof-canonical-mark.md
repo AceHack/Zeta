@@ -32,6 +32,7 @@
 Aaron 2026-06-02: **"yes add the two-axis note to the registry."** Adds a note right after the consensus-tiers legend in `docs/PRIMITIVE-REGISTRY.md` so a reader of ✅ doesn't read it as "proven."
 
 The two orthogonal axes:
+
 - **✅/⚠️/❌ = consensus tier** (cross-language *agreement*: golden-vector byte-consensus / compiler-parity). Even **Tier-1 byte-consensus proves only that the four impls agree byte-for-byte, not that they are correct w.r.t. the seed** — four implementations can agree on the same wrong behavior (the consensus≠validation trap).
 - **canonical = the separate proof axis** — proof-lineage edge to the seed (homeostat proven) + hex (Cl(1,3))/4×4 connection — tracked by **081KT2T2J0008QG0R000YZ3NMY** and the `formal-proof-first` rule (#6613).
 

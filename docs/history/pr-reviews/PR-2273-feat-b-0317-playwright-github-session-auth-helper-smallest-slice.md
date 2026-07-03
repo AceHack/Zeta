@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - Claimed and verified the bounded slice of 081KR2E4K0008QG0R0031QR36N: `tools/playwright/github-ui/auth.ts` (cookie-based GitHub session helper for agent UI access).
 - This is the smallest safe atomic step per re-decomposition discipline (081KR2E4K0008QG0R0031QR36N itself is S-effort; downstream 081KR2E4K0008QG0R003RVDX91/081KR2E4K0008QG0R000YH9DC6 left for later children).
 - Used dedicated worktree + pushed claim branch; root checkout untouched.
 
 ## Focused checks (included per task rules)
+
 - `dotnet build -c Release`: 0 Warning(s), 0 Error(s) ✅
 - `bun test tools/playwright/github-ui/auth.test.ts`: 13 pass, 0 fail (all auth paths, validation, withGitHubSession wrapper, gitignore coverage) ✅
 - Storage-state/cookie paths confirmed .gitignore-protected ✅
 - No bash; pure TS per Rule 0.
 
 ## Done criteria for this slice
+
 - [x] auth.ts with `withGitHubSession` export and error-closed semantics
 - [x] Smoke-test equivalent via unit coverage (manual `bun run` would require live cookies; tests cover the paths)
 - [x] Cookie paths gitignored

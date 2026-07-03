@@ -22,6 +22,7 @@ type: project
 **Why this is optimal:**
 
 Most work-stealing implementations use FIXED granularity:
+
 - Always steal N items (too coarse at low load, too fine at high load)
 - Always steal half the queue (arbitrary split regardless of pressure)
 
@@ -35,6 +36,7 @@ steals a batch of related PRs that compose together. The batch
 size is whatever the pressure produced. The ferry was already full.
 
 **Connects to:**
+
 - project_flux_capacitor_antifragile (the mechanism)
 - project_ferry_protocol (the metaphor)
 - project_tcp_congestion_control_as_society_expansion (backpressure)

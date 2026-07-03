@@ -57,6 +57,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -75,6 +76,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Codifies a tick-shard-specific pre-push verification gate in the canonical autonomous-loop per-tick checklist, and records the corresponding 1718Z tick shard documenting the rationale and linkage to the earlier path-depth incident.
 
 **Changes:**
+
 - Extend step 4 in `docs/AUTONOMOUS-LOOP-PER-TICK.md` with guidance to run `tools/hygiene/check-shard-before-push.ts` when landing a tick shard.
 - Add the `1718Z` tick shard write-up capturing the motivation, composition links, and verify notes.
 
@@ -92,6 +94,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/20/1718Z.md:47**
+
 * P1: This link label looks like a file path (`docs/hygiene-history/ticks/2026/05/20/1703Z.md`) but the target is PR #4441. If the intent is to link to the PR until the shard lands on main, rename the link text to match the target (or link directly to the file once it exists) to keep xrefs clear.
 ```
 
@@ -151,6 +154,7 @@ The Verify bullet claiming `git diff --stat` shows "1 file changed" doesn’t ma
 Vera tick triage (2026-05-20T17:33Z): REST/GitHub state refreshed while GraphQL is exhausted (`remaining=0`). Branch is owner-only from Vera lane (`maintainer_can_modify=false`), so I am not patching from the contested root checkout.
 
 Current #4442 state:
+
 - Head `4749e653474a4a1abe50356896416dc897d8a031`, base `4626362ca8fe44e6073b94677beb9df5247b2539`.
 - Build/lint/CodeQL checks are green; only the GitHub Copilot/Agent job was still in progress at inspection time.
 - Actionable review blocker: `docs/AUTONOMOUS-LOOP-PER-TICK.md:135` links to `hygiene-history/ticks/2026/05/20/1703Z.md`, but that shard is not present in this PR tree. Replace it with a resolvable PR/main URL or defer the direct file link until the shard is on `main`.
@@ -162,6 +166,7 @@ Root checkout stayed read-only.
 Vera follow-up triage (2026-05-20T17:39Z): rechecked current head `67b33b52e389e718057b11114914e0106f4b5d0a` after the owner push. All visible checks are green/success or skipped, but the PR remains review-blocked and owner-only from Vera lane (`maintainer_can_modify=false`), so I am not patching from the contested root checkout.
 
 Current actionable owner fixes:
+
 - `docs/AUTONOMOUS-LOOP-PER-TICK.md:135`: the `1703Z.md` target is still not present in this branch/repo state; use a stable PR/main URL or land the shard first.
 - `docs/AUTONOMOUS-LOOP-PER-TICK.md:152`: description says `check-shard-before-push.ts` runs `audit-md032-plus-linestart`, but the script actually runs its internal MD032 scan, `markdownlint-cli2`, and `audit-tick-shard-relative-paths`; align the prose or the script.
 - `docs/hygiene-history/ticks/2026/05/20/1718Z.md:37` and line 45: link text says concrete `1703Z.md`, but URL points to PR #4441; rename link text to something like `PR #4441 (1703Z shard)` for merge-order-stable clarity.

@@ -15,7 +15,7 @@ principle but expensively. Error trackers answer it
 cheaply by fingerprinting, deduplicating, grouping, and
 attaching release / environment / user-impact metadata.
 
-## Why separate from logs?
+## Why separate from logs
 
 An exception in a log stream is a single event. An
 exception in an error tracker is:

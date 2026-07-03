@@ -27,6 +27,7 @@ Automated PR preservation for #3701.
 Adds an automated PR-preservation record for PR #3701 into the repository’s `docs/pr-discussions/` archive, capturing the PR metadata, description, and review-thread content for long-term audit/history purposes.
 
 **Changes:**
+
 - Adds a new PR-discussion archive markdown file for PR #3701.
 - Records PR #3701 metadata (timestamps, refs, state) and the PR description.
 - Captures the Copilot review and an (unresolved) review thread as archived at the time.

@@ -32,6 +32,7 @@
 Adds **oracle #1** for the Z-set, completing the design of the algebra ladder **G-Set ⊂ Bag ⊂ Z-set** (G-Set 4/4, Bag landing, Z-set starting here). Per the four-oracle / conformance-by-agreement model, this is the TS reference + the shared treaty fixture the F#/C#/Rust twins will replay.
 
 ### What the Z-set adds over the Bag (the ℕ→ℤ widening)
+
 - **Signed weights.** Each key carries a nonzero integer weight, positive *or* negative; combiner is per-key sum.
 - **Drop rule is `== 0`, not `<= 0`** → **negative weights persist** (a retraction in flight). One operator change is the entire widening.
 - **`negate()` = abelian-group inverse** → `union(a, negate(a)) == empty` — the law the Bag's commutative monoid cannot satisfy, and the reason the Z-set (not the Bag) is the substrate for retraction / undo / DBSP incremental views.
@@ -41,6 +42,7 @@ Adds **oracle #1** for the Z-set, completing the design of the algebra ladder **
 Targets the semantics of the existing `src/Core/ZSet.fs` (ascending `(key, weight)` run, consolidate duplicates, drop zero-weighted), so the F# twin joins the shared `golden-vectors.json` directly; C#/Rust follow.
 
 ### Files
+
 - `z-set.ts` — reference impl
 - `golden-vectors.json` — the cross-language treaty (replay exercises signed reduction, retraction-to-zero, and a negative weight that persists into the final state)
 - `z-set.test.ts` — abelian-group laws incl. inverse, non-idempotence, negatives-persist, canonicalization, golden replay

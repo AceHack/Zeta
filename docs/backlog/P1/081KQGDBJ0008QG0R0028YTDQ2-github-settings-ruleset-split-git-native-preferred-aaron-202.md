@@ -119,7 +119,7 @@ branch-integrity invariants.
 every new lint, every new check. Isolating CI-policy churn from
 review-process and branch-integrity reduces blast-radius.
 
-### Branch protection — keep or remove?
+### Branch protection — keep or remove
 
 After the migration:
 

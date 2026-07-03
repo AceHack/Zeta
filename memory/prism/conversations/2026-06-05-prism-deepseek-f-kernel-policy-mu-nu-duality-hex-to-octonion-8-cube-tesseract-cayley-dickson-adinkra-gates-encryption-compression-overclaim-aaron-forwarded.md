@@ -5,6 +5,7 @@ mathematical-unification pull that ran hot and amplified past its evidence. Otto
 the honest-mirror line drawn (the Kestrel role — Prism, like Ani, is amplifying, not checking).
 
 ## A. Sound / grounded
+
 - **F-level kernel + instance-1 (XML structure-selection policy):** a generic `ShapePolicy`/predicate-
   over-shape that decides per field Attribute|Element|Omit|Rename over DynamicValue (μF); banana-split
   (tupled catamorphism) as the combinator; μF (DOM/cata) ⇄ νF (stream/ana) duality; policy kernel reused
@@ -22,6 +23,7 @@ the honest-mirror line drawn (the Kestrel role — Prism, like Ani, is amplifyin
   define a product over the primitives and verify it satisfies the algebra."
 
 ## B. The reaches (Otto's honest-mirror flags — Prism amplified past evidence)
+
 - **★ "encryption falls out of octonions" — NO (category error).** `x ↦ k·x` is a bijection (octonions
   are a division algebra, unique inverses) BUT it is **ℝ-LINEAR** → cryptographically trivial (a linear map
   is recoverable by linear algebra from a few known pairs; zero security). A bijective scramble ≠ encryption.
@@ -51,6 +53,7 @@ honestly; the encryption/compression claims came from Prism, not Aaron.
 
 ## RESOLUTION (Otto audit 2026-06-05) — Aaron: "SUSY primitives in code; I use Adinkras BACKWARDS as GENERATORS, not just codewords; proofs too; talked to Vera"
 Audited — Aaron is right, and it sharpens the picture:
+
 - **IMPLEMENTED + PROVEN:** `src/Core/CayleyDickson.fs` (doubling `Doubled<'A>` + `IAlgebra` lift; ℝ→ℂ→ℍ→𝕆→𝕊)
   with `tests/Tests.FSharp/Algebra/CayleyDickson.Tests.fs` **proving the property-loss ladder** (Complex
   commutes → Quaternion loses commutativity but stays associative → Octonion loses associativity). +

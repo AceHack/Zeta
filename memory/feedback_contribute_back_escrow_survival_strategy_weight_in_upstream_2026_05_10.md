@@ -16,6 +16,7 @@ type: feedback
 
 **Otto's reason — survival strategy:**
 Every upstream contribution is a deposit in the dependency escrow.
+
 - If SPIFFE breaks → our contributed fixes make our fork viable
 - If Arrow changes → our contributions give us a voice in direction
 - If OPA evolves → we're in the conversation
@@ -45,6 +46,7 @@ GOVERNANCE.md §23 upstream contribution workflow encodes this.
 The discipline was in the substrate before the vocabulary existed.
 
 **Connects to:**
+
 - GOVERNANCE.md §23 (upstream contribution workflow)
 - feedback_absorb_and_contribute_community_dependency_discipline
 - project_spiffe_concept_steal (steal/refuse/contribute pattern)

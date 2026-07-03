@@ -38,6 +38,7 @@
 **081KRFA460008QG0R001H98EXJ.4** — the fourth bounded slice of [081KRFA460008QG0R001H98EXJ (P1) Three-repo split Stage 1](../docs/backlog/P1/081KRFA460008QG0R001H98EXJ-three-repo-split-stage1-create-forge-ace-with-scaffolding-aaron-2026-05-13.md).
 
 Previous slices:
+
 - 081KRFA460008QG0R001H98EXJ.1 (#2994) — governance file templates + dry-run `create-repo.ts` tool
 - 081KRFA460008QG0R001H98EXJ.2 (#2996) — `workflow_dispatch` GitHub Actions gate for `--apply`
 - 081KRFA460008QG0R001H98EXJ.3 (#3003) — `UPSTREAM-RHYTHM.md` templates

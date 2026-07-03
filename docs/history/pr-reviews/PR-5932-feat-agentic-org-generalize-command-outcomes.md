@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - harden the worker process entrypoint/loop and NATS DLQ handling from the prior pushed slice
 - introduce a generic command contract, heterogeneous command handler registry, and command outcome metadata for agent/UI/MCP consumers
 - move supervisor-signal authorization scope into policyContext so policy evidence and persisted effects use the same source of truth
 - derive emitted event and audit metadata from committed command effects, and document the remaining generic durable-effect gap for the work-anchor kernel
 
 ## Validation
+
 - npm test: 154 tests, 151 passed, 3 skipped env-gated live integrations
 - npm run typecheck
 - git diff --check
 
 ## Review
+
 - subagent review found registry, policy-context, committed metadata, and docs-readiness issues
 - fixes were iterated until local tests/typecheck/diff-check passed
 

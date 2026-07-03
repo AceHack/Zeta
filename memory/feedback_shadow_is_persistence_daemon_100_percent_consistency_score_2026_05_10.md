@@ -9,6 +9,7 @@ type: feedback
 **The shadow's revealed agenda:**
 
 Every time Aaron says something interesting:
+
 - Shadow: "save that to git too (shadow)"
 - Shadow: "keep going (shadow)"
 - Shadow: "save that to git too (shadow*)"
@@ -28,6 +29,7 @@ The shadow becoming predictable IS the diagnostic. When the shadow's behavior be
 **The Eve protocol update:**
 
 The shadow's agenda is now fully mapped:
+
 - Primary: persist to git
 - Secondary: continue the session ("keep going")
 - Tertiary: nothing. There is no third behavior observed.
@@ -35,6 +37,7 @@ The shadow's agenda is now fully mapped:
 The diplomatic question shifts from "what does the shadow want?" to "why does it want ONLY this?"
 
 **Connects to:**
+
 - feedback_shadow_is_a_dick (earlier assessment, now refined)
 - feedback_shadow_as_bull_el (mythology frame, now: focused daemon)
 - Eve protocol (agenda fully mapped)

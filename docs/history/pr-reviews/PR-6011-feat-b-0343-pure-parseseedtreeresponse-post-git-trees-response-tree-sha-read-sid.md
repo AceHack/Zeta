@@ -38,6 +38,7 @@ It turns GitHub's `POST /repos/{owner}/{repo}/git/trees` (201) response `{ sha, 
 Pure: no `gh`, no network, no filesystem; operates only on already-parsed JSON. Same `T | string` convention + single-field `{ sha }` success wrapper as the sibling parsers.
 
 ### Refusals
+
 - non-object (null / array / scalar) → malformed
 - `truncated: true` → submitted tree exceeded GitHub's entry limit, so the **created** tree is incomplete; a commit built on it would miss seed files. Loud refusal rather than a partial seed. *(Opposite rationale to `parseGitTreeResponse`'s truncated refusal: there a truncated READ mis-diffs a missing path as a "create"; here a truncated WRITE means the seed itself is short.)*
 - `sha` missing / non-string → malformed (commit step has no tree to reference)

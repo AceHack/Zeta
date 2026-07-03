@@ -50,6 +50,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Substrate-honest follow-up to recover race-lost content from #4597 by appending the missing continuation to the 2026-05-22 Ani conversation archive and regenerating `memory/MEMORY.md` so the auto-index matches the current heap.
 
 **Changes:**
+
 - Appends the forwarded continuation (threads 8–11 + continuation verbatim excerpt) to the 2026-05-22 Ani conversation archive.
 - Regenerates `memory/MEMORY.md` auto-index to include the updated conversation file and updated heap count.
 

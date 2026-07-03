@@ -204,6 +204,7 @@ exposure to the most layperson-recognizable copyright drops sharply.
 
 **Honest seam (do not overstate):** "survives IP claims" is a **strong, intentional argument — not
 settled law.**
+
 - Fair-use / quotation for *interactive software excerpts* is **untested** and
   **jurisdiction-dependent**.
 - The kept ~10% is **executable machine code**, which is itself copyrightable (and arguably the

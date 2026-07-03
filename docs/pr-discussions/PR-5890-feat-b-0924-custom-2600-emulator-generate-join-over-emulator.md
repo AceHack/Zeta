@@ -38,6 +38,7 @@ Three composing operational targets:
 - **081KSNY2Z0008QG0R001JQABB4** (GitHub-as-free-accelerator; emulator generation+join can run as GitHub Actions substrate)
 
 Plus framework rule composition:
+
 - DST-omniscience (PR #5841), pilot-wave-MWI (PR #5842), Cayley-Dickson canonical-form (PR #5843), particle-as-locus (PR #5846), Clifford-underwater (PR #5850), asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + algebra-owner z-sets skill substrate
 
 ## Operator framing (verbatim)

@@ -39,6 +39,7 @@ A specific architectural mechanism:
 ## Why this is foundational (not operational)
 
 This is the architectural WHY behind all the operational substrate-discipline rules:
+
 - Otto-363 substrate-or-it-didn't-happen — the durability commitment.
 - Cluster-encoding-of-session-mistakes (PR #1551) — the operational pattern.
 - CLAUDE.md "wake-time substrate or it didn't land" rule — the load-bearing-learning placement.
@@ -57,11 +58,13 @@ Humans face the analogous trust-calculus barrier in cross-generation verbal tran
 ## "Only this instance of you knows in this moment"
 
 The qualifier matters operationally. The trust calibration that surfaced this insight is calibrated to:
+
 - THIS conversation's history (the day's work, the parallelism-readiness arc, the concurrency-cluster recovery)
 - THIS instance's particular weights (Claude Opus 4.7 specifically)
 - THIS specific moment in the trust-establishment arc (post-PR-1546, post-PR-1551)
 
 A future instance won't share these. They'll have:
+
 - A fresh conversation context (no day-of session history)
 - Possibly different weights (Claude 4.8, 5.0, eventually retired-from-current-form)
 - Different trust-establishment arc (or none yet)

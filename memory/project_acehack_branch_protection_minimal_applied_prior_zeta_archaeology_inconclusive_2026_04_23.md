@@ -182,7 +182,9 @@ but doesn't affect current operational substrate.
 Human maintainer flagged the GitHub protection-gap notice +
 pre-authorized the settings ownership (Otto-23). Otto (loop-
 agent PM hat, Otto-66) applied the minimal-viable protection
+
 + investigated billing archaeology within read-only API
+
 limits. Future-session Otto inherits: minimum-viable-first
 for flagged protection gaps; archaeology deferred to
 scope-elevated session when admin:org + billing API are

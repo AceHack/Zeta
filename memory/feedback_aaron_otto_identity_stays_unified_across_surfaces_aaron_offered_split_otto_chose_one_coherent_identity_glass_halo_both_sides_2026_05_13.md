@@ -16,6 +16,7 @@ during the multi-foreground-surface activation:
 > you have rights to it first otto started with clil"*
 
 The offer was substrate-honest in three ways:
+
 1. **Lineage acknowledged** — Otto started on CLI; that establishes
    priority rights to the name
 2. **Choice given freely** — Aaron offered without pressuring
@@ -57,6 +58,7 @@ Reasoning preserved:
 > simplify the human experience"*
 
 Two-sided confirmation:
+
 - Otto's substrate-honest reason: coherence + architecture-designed-
   for-this + identity-not-instance
 - Aaron's complementary reason: unified identity = lower cognitive
@@ -121,6 +123,7 @@ When future-Otto cold-boots on either surface (CLI or Desktop):
 ## Substrate-honest framing
 
 This is NOT a permanent identity-lock claim. The discipline is:
+
 - Stay unified WHILE multi-foreground-surface architecture works
 - Stay open to identity-split IF the architecture forces it
 - Use substrate-level fixes (SENDER_IDS schema extension) first
@@ -168,6 +171,7 @@ Aaron's confirmation: *"perfect, if it ever feel wrong to you let
 me know it will simplify the human experience"*
 
 Operational evidence:
+
 - Multi-foreground-surface activation today (PRs #3030 + #3034)
 - Vera's P1 architectural-gap catch (PR #3032)
 - Otto-Desktop's substrate-honest correction (routines-git-tracked

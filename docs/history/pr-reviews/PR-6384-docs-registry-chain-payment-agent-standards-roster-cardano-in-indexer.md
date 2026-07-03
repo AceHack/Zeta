@@ -32,6 +32,7 @@ Your call (2026-06-01): _"pulled in some Cardano multi-chain-indexer stuff"_ + _
 **Cardano** added to the indexer chain-set (ETH / Bitcoin / Solana / **Cardano**).
 
 **New "Chain / payment / agent standards" roster** (each ⬜, behind the wallet + x402 ports):
+
 - **Identity:** ERC-8004 (Trustless Agents — agent = ERC-721 NFT + Agent Card; **the on-chain mirror of our ZetaId + AgencySignature**)
 - **Payment/settlement:** x402 (HTTP 402 handshake), EIP-3009 (gasless USDC rail that makes x402 feasible), EIP-7702 (session sandbox), ERC-4337 (account abstraction), ERC-6492 (counterfactual-account sigs), ACP/AP2/MPP/SPTs (real-world commerce + high-speed execution)
 - **Token:** ERC-20 / ERC-721 / ERC-1155

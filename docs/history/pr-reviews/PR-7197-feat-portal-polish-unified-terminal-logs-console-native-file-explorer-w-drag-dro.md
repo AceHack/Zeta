@@ -45,6 +45,7 @@ Console and Logs are now **one tab**. The resource's log stream renders inline, 
 ## 3. Native file explorer
 
 Replaces the static table:
+
 - **Drag-and-drop upload** (full-pane drop target + overlay) **and** an Upload button (multi-file picker).
 - **Clickable breadcrumb** path nav + Home; double-click a folder to open.
 - Type-aware file icons (archive/code/config/text), dirs-first ordering, per-row **download + delete** on hover.

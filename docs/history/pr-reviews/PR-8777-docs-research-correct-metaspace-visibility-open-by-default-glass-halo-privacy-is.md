@@ -30,6 +30,7 @@
 Aaron caught an inversion in the prior visibility amendment: **walls should be OPEN by default — you ask (spend earned privacy budget) to CLOSE them.** Radical transparency / glass halo. Opaque-by-default contradicted Zeta's **privacy-as-earned** principle.
 
 Corrected model:
+
 - **See = open by default (glass halo).** "Seeing through walls" is the default, not a grant.
 - **Privacy = the EARNED, metered exception** — spend **privacy budget** to frost a wall.
 - **Enter = still gated** (door + right).

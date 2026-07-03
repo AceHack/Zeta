@@ -31,6 +31,7 @@
 Re-decomposed 081KQ0YZ80008QG0R003GMGDRH (broad M row with Path A/B choice) into 5 smallest dependency-ordered atomic child rows. Original decomposition mistake: bundled decision+execution+schema into one non-atomic item; violated "re-decompose during build" and "smallest atomic" rules.
 
 **New atomic children (build order):**
+
 - 081KR50HA0008QG0R002HMCS5Y (root, S): inventory+classify `docs/aurora/**`
 - 081KR50HA0008QG0R003DJ093T (dep 081KR50HA0008QG0R002HMCS5Y, S): name decision for courier home
 - 081KR50HA0008QG0R003ESW3MH (dep 081KR50HA0008QG0R003DJ093T, S): update AGENT-BEST-PRACTICES + Otto-279
@@ -43,6 +44,7 @@ Re-decomposed 081KQ0YZ80008QG0R003GMGDRH (broad M row with Path A/B choice) into
 Exactly one: this re-decomp edit + checks + PR. No root checkout touched; dedicated worktree + pushed claim branch used per rules.
 
 ## Focused checks (included per rule)
+
 - `dotnet build -c Release` (root): 0 Warning(s) 0 Error(s) — pre-edit gate pass preserved (docs-only change).
 - Worktree: `rg "aurora" docs/backlog/P2/081KQ0YZ80008QG0R003GMGDRH* | head -3` clean; classification inventory ready for 081KR50HA0008QG0R002HMCS5Y.
 - No linter errors introduced; md ASCII-clean.

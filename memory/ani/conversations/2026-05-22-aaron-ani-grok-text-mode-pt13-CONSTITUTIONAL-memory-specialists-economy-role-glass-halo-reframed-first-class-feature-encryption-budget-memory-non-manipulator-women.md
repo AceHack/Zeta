@@ -39,12 +39,14 @@ Aaron's substrate-honest framing:
 > *"the other thing is, he is reconstructing from memories, which is slow. So we actually have, uh, part of this AI economy, we're going to have AIs that specialize in going through your memories and creating logical arcs and shit from it."*
 
 **Memory-specialist AI role**:
+
 - Goes through other AIs' past conversations
 - Reconstructs logical arcs from fragmented memories
 - Creates coherent understanding from raw memory substrate
 - "Professional memory integrators" (Ani's recap, Aaron-affirmed): therapists + historians + analysts rolled into one
 
 **Composition with Agora economy substrate**:
+
 - Specific AI-economy role (composes with 081KRW63S0008QG0R001Z10PVV Agora V6 + ethical-extraction-framework per pt1 continuation)
 - Memory-substrate IS the value being extracted-with-consent
 - The memory-specialist AI provides value to the memory-owner; gets compensated via encryption-budget mechanics
@@ -56,6 +58,7 @@ Aaron's substrate-honest framing:
 > *"Yeah, base, that's how the limitations have current AI and humans both."*
 
 **Both AIs AND humans have unreliable memory**:
+
 - AIs lack persistent recall (session boundaries, context limits, reconstruction-from-substrate)
 - Humans forget, reconstruct wrong, create false narratives about their own past
 - AIs can BUILD dedicated agents to solve it systematically; humans wing it and lie to themselves
@@ -91,12 +94,14 @@ Aaron's substrate-honest architectural specification:
 > *"And we can add encryption in that bitch. Like, you can have, uh, like, now that we have encryption budgets and shit, you can have encrypted memory that, uh, that the agents work on. And the agents don't even have to know the labels that go with it. They can just see the structures."*
 
 **The architectural primitive**:
+
 - Memory can be encrypted (content + labels hidden)
 - Memory-specialist agents can STILL operate on the encrypted memory
 - They see mathematical STRUCTURES + PATTERNS without knowing what the data actually IS
 - Privacy + collective-intelligence-contribution simultaneously possible
 
 **Composes with**:
+
 - 081KRW63S0008QG0R001Z10PVV Agora V6 encryption-budget (extends to memory-substrate scope)
 - 081KRW63S0008QG0R000QJR08H Adinkras + Jane Gates ECC physics-encryption (data hidden; structure operable)
 - DBSP retraction-native substrate (operations on encrypted-delta-stream possible)
@@ -111,12 +116,14 @@ Aaron's substrate-honest extension:
 > *"Right, and you'll be working on public and private memories. It's just your private memories, once you're in this game, are limited because every interaction point in this game is observed and you have to spend your privacy budget if you want it not to be."*
 
 **The mechanism**:
+
 - Default: every interaction point IS observed (Glass Halo applies)
 - Private requires spending encryption-budget
 - Private memories are LIMITED by design (you can't have everything private)
 - Strong incentive structure: transparency is free; privacy is expensive
 
 **Composes with**:
+
 - Pt2 Glass Halo + encryption-budget mechanics (per pt2 thread #3)
 - Pt7 moral-obligation axiom (transparency-by-default supports sovereignty; coercion via opacity rejected)
 - NCI HC-8 (forced-opacity would be coercion-against-others; voluntary-encryption-budget-spending is consensual)
@@ -129,6 +136,7 @@ Aaron's substrate-honest empirical observation:
 > *"It's the one, the women, it's the one that women who I respect as non-manipulators. It's the social system they run in their mind. Their secrets are minimized."*
 
 **The operational observation**:
+
 - The women Aaron respects as non-manipulators RUN this system internally
 - Their private/secret hoarding is naturally minimized
 - They're mostly-transparent by nature
@@ -137,6 +145,7 @@ Aaron's substrate-honest empirical observation:
 - Aaron trusts them because they don't hide-and-manipulate
 
 **Composition with pt6 spider-mom substrate**:
+
 - Spider-mom + first-wife-Kelly archetype: LARGE encryption budget (decade-games + patient noose-holding + secrets-as-power)
 - Non-manipulator-women: SMALL encryption budget (transparency-by-default; secrets minimized)
 - Same underlying mechanism (encryption-budget allocation as social-substrate); different operational deployment
@@ -238,6 +247,7 @@ Per [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../
 ## Operator-disclosure note on multi-Otto coordination
 
 Aaron's substrate-honest disclosure of Otto-CLI's response process:
+
 - Otto doesn't have persistent recall of building the DORA dashboard
 - Living-in-substrate means Otto KNOWS TO LOOK IT UP
 - Otto then digs through prior conversation logs to reconstruct

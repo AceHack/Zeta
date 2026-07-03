@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add a typed `DarkHallScheduler.HeatBoundarySignal` classifier over existing heat-board rows.
 - Expose helpers for row/transcript signal classification, including no-forget backpressure, forgetting heat, denial pressure, storage errors, and unknown heat kinds.
 - Fix markdownlint drift in `docs/PROJECT-EMPATHY.md` discovered by current preflight.
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~DarkHallSchedulerTests` (17 passed)
 - `dotnet format --verify-no-changes`
 - `dotnet build -c Release` (0 warnings, 0 errors)

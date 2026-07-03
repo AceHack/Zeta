@@ -29,6 +29,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive (pt38–pt42) to the `memory/` corpus and updates the auto-generated `memory/MEMORY.md` stack index accordingly.
 
 **Changes:**
+
 - Add new `memory/ani/conversations/...pt38-pt42...md` conversation archive.
 - Update `memory/MEMORY.md` auto-index to include the new file and refresh heap counts.
 

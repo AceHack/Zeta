@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserves the PR #1747 review archive that the post-merge workflow generated but could not push to protected main
 - appends the corresponding docs/github/prs/manifest.jsonl entry through the normal PR path
 - keeps the failed direct-push workflow as signal; this PR is the branch-protection-safe recovery path
 
 ## Checks
+
 - git diff --check
 - git diff --cached --check
 - bun tools/hygiene/check-archive-header-section33.ts

@@ -63,6 +63,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a non-required CI lint job that enforces the tick-shard relative-path audit with the existing baseline, so new broken relative links fail while historical findings remain grandfathered.
 
 **Changes:**
+
 - Adds `lint-tick-shard-relative-paths` to `.github/workflows/gate.yml`.
 - Runs the audit with `--enforce --baseline`.
 - Documents the lifecycle and rationale inline with the new job.

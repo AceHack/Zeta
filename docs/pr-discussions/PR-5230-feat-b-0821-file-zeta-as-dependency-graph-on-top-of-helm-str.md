@@ -25,6 +25,7 @@ Files [081KSGS9H0008QG0R00367G209](https://github.com/Lucent-Financial-Group/Zet
 **Empty-architectural-slot claim** above Helm + below sync engines (ArgoCD / Flux). Adjacent tools (Helmfile / Terraform Helm / Pulumi K8s / Helm \`Chart.yaml dependencies:\` / ArgoCD sync-waves / Flux \`dependsOn\`) touch parts of the slot but don't fill it GitOps-natively.
 
 **Composes with already-in-flight substrates**:
+
 - 081KSGS9H0008QG0R003A37Z65 Helm-as-convergence-point (positions Zeta at Helm's level)
 - 081KSGS9H0008QG0R00352WW0V Derivability asymmetry (named-dependency graph IS source-of-truth)
 - 081KSGS9H0008QG0R0005P83AP Ontology-based-not-tool-based (graph IS an ontology primitive)
@@ -55,6 +56,7 @@ The "empty-slot" claim is operator-intuition; Aaron 2026-05-26 reasonably asked:
 Adds a new P1 backlog row (081KSGS9H0008QG0R00367G209) capturing a strategic positioning thesis: Zeta as an engine-agnostic dependency-graph and auto-variable-passing layer on top of Helm and above sync engines (ArgoCD/Flux), and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Introduces `docs/backlog/P1/081KSGS9H0008QG0R00367G209-...md` with frontmatter, problem statement, sub-targets, and acceptance criteria for the dependency-graph + variable-flow substrate.
 - Updates `docs/BACKLOG.md` to include 081KSGS9H0008QG0R00367G209 in the P1 list.
 

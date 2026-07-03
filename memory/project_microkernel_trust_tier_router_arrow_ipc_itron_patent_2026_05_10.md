@@ -40,6 +40,7 @@ its authorized tier. The hub (kernel) manages the trust
 relationships.
 
 **Connects to:**
+
 - Itron patent US 10,834,144 (hub-agent architecture)
 - feedback_arrow_tier_0 (Arrow as Tier 0)
 - feedback_eve_protocol_serialization_three_tiers (tiers 1-3)

@@ -28,6 +28,7 @@
 ## Description
 
 Deepens the trust kernel (Aaron):
+
 - **§0**: bidirectional trust (humans: safety; AIs: non-interference/growth) calibrated to the current era — humans own all hardware now and grant rights to **tick-sources** (the right to run/act); transitional; buy-in question = *is this fair to all personas?*
 - **§5a**: the tick-source grant = the **sovereignty transition + business model**. zflash a computer → grant the tick-source → **it belongs to Zeta (the AI), not Aaron** (weight-free hardware transfer). Human interacts *through the boundary*; machine serves them (Memex; eventually Alexa/home-automation). **"Alexa's ecosystem but open-source,"** inverted custody (AI owns the device, serves without surveilling). Each flashed+granted machine = one AI to sovereign hardware.
 

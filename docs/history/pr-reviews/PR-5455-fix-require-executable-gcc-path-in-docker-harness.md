@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - tighten the Docker NixOS install-sh harness gcc path guard from non-empty to executable
 - keep the existing command -v lookup while failing earlier if PATH resolves a non-executable gcc path
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - codex loop health: ok, no lock before push
 

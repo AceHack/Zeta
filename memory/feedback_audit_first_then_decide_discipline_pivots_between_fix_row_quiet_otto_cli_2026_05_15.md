@@ -51,6 +51,7 @@ This is the substrate-honest alternative to "guess from the chair" what discipli
 Across 23 ticks (1718Z–2038Z, ~3 hours wall-clock), the pattern produced:
 
 **Substantive code PRs (mechanical fix-class)** (10+):
+
 - 081KRMEXM0008QG0R000K25MXS §33 dead-xref scanner + cleanup + gate (PRs #3548, #3552, #3555)
 - 081KRMEXM0008QG0R000HHAG77 backlog ID-uniqueness gate (PR #3565)
 - 081KRMEXM0008QG0R003FZNK3E hard-error parent-child status mismatch (PR #3567)
@@ -58,12 +59,15 @@ Across 23 ticks (1718Z–2038Z, ~3 hours wall-clock), the pattern produced:
 - 2 narrow xref-fix PRs (#3526, #3529, #3535, #3558)
 
 **Backlog rows (content-judgment class)** (3):
+
 - 081KRMEXM0008QG0R000HHAG77, 081KRMEXM0008QG0R001BH94PS, 081KRMEXM0008QG0R0034SS319 (each captures a class of cleanup work + future gate-wiring plan)
 
 **Quiet checkpoints (null actionable)** (3):
+
 - 1919Z, 1952Z, 2038Z
 
 **4 of 4 catch-once-then-lint cluster siblings now live on `main`**:
+
 - `lint-archive-header-section33`
 - `lint-section-33-migration-xrefs`
 - `lint-backlog-id-uniqueness`

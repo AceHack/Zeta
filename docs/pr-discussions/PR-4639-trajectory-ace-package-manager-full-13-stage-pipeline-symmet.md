@@ -33,6 +33,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a more complete “Ace package manager” trajectory specification by expanding the pipeline to 13 stages and documenting a symmetric/decentralized framing (pipeline-as-pattern, deployment-as-instance) within the `docs/trajectories/` substrate.
 
 **Changes:**
+
 - Adds a “FULL Ace pipeline crystallization” section with a 10-stage base pipeline plus three additional user-side/reactive stages (discover/verify/revoke).
 - Adds a “SYMMETRIC / DECENTRALIZED FRAME” section clarifying that the Ace pipeline is a reusable pattern rather than a centralized service.
 - Extends operational implications guidance for future cold-boots (do-not-collapse constraints).

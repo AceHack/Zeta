@@ -36,6 +36,7 @@
 ## Resolver improvements
 
 5 new paths in `refExists()`:
+
 1. **Template placeholders** (`...` ellipsis, `YYYY` date) → healthy-FP
 2. **Command-snippet detection** — find embedded path in backtick'd shell command
 3. **Sibling-rule resolution** — bare `<name>.md` in `.claude/rules/` resolves via `.claude/rules/<name>`

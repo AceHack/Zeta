@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Maps all MCP services available to Otto
 - Each service = a grain in the Aurora poly-boundary
 - Gmail, Jira, Confluence, Figma, Calendar, Drive, Slack, Zoom, Playwright, Compass, MS Learn

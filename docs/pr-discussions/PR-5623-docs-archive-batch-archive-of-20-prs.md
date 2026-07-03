@@ -27,6 +27,7 @@ Automated batch archival of 20 PRs to preserve discussion and context, and to re
 This PR adds a batch of PR-discussion archive markdown files under `docs/pr-discussions/` to preserve recently merged PR descriptions, reviews, and threads and reduce PR queue noise.
 
 **Changes:**
+
 - Added 20 new PR archive files for PRs #5076–#5095 (YAML frontmatter + PR body + review excerpts).
 - Captured Copilot review summaries/threads as part of the preserved discussion history.
 - Standardized archive metadata fields (`pr_number`, `title`, `author`, timestamps, refs, `archive_tool`) across the batch.

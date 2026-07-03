@@ -47,6 +47,7 @@ PR #5091 auto-merged with required checks green; 4 substantive Copilot findings 
 Fix-forward for post-merge findings from #5091 to restore the intended safety guarantees in `zflash`’s iter-4.3 “freshness guard” and CI-ISO auto-download flow.
 
 **Changes:**
+
 - Makes the stale-checkout guard fail hard on unexpected `git diff` exit codes (instead of silently skipping errors).
 - Refines `git fetch` failure handling to distinguish “offline/network-ish” errors from other failures, and updates user-facing remediation text to match “differs from origin/main” semantics.
 - Replaces a stable `/tmp` download directory with a `mkdtempSync` temp dir plus `try/finally` cleanup to avoid reusing partial downloads and leaving clutter behind.

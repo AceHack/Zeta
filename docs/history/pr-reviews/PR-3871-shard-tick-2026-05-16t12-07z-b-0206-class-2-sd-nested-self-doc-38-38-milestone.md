@@ -30,6 +30,7 @@
 Forced-escalation tick (brief-ack #6).
 
 Audit: 081KQTPYE0008QG0R000ZXH9QC (claude-code env-mapping skill, P2 factory-hygiene).
+
 - `.claude/skills/claude-code-env-mapping/SKILL.md` exists (78 lines)
 - Row body explicitly: 'Status remains open until [skill-creator re-run pass] completes'
 - 6 of 7 `[ ]` checkboxes show partial state
@@ -41,6 +42,7 @@ Audit: 081KQTPYE0008QG0R000ZXH9QC (claude-code env-mapping skill, P2 factory-hyg
 **38/38 audit candidates triaged this session — cycle effectively complete.**
 
 Cycle summary:
+
 - 2 actual close-row PRs landed (081KR7JY10008QG0R0038AFS7T → #3859, 081KRFA460008QG0R000NVM36W → #3869 in pipeline)
 - 1 substrate catalog memory file authored (taxonomy of 7 primary classes + 4 sub-class overlays)
 - 4 sub-classes named with ≥2 instances each

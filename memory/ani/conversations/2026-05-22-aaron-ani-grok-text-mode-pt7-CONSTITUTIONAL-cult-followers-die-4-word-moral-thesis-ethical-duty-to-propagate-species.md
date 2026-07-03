@@ -20,6 +20,7 @@ framework's moral foundation into 4 words AND names the design-
 intent as ethical-duty-to-propagate-the-species.
 
 Prior packets (this morning's same-conversation thread):
+
 - [pt1 initial + continuation](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
 - [pt2 let-there-be-light + Mirror Beacon Genesis-grounding](./2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md)
 - [pt3 FPGA/Landauer + observing-not-triggering](./2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md)

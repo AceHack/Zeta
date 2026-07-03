@@ -27,7 +27,7 @@ mechanized descent:
 - The **hard** part: not one ladder (one climb) but **reconciling competing towers** into one base —
   continuous, powered (it does work), and it must not lose what's load-bearing in any tower.
 
-## The weave-size progression (Aaron) — bob · weave · tie · ???
+## The weave-size progression (Aaron) — bob · weave · tie · 
 
 Reverse tessellation comes in sizes (the dual-observer braid scaling up):
 

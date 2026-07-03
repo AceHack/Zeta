@@ -34,6 +34,7 @@
 
 **2. VISION proposal — NOT settled doctrine, pending product-team agreement:**
 Two `docs/VISION.md` subsections, each marked **PROPOSED** with a newcomer-challengeable pushback surface:
+
 - **Product 1 → "build the arena, not the throne"** — the generate+join primitives library everyone (Postgres/MySQL/Zeta) wraps; argue-the-standard-not-own-it; harvest-45-DBs-then-upstream-relentlessly; deterministic-simulation-for-every-database (FoundationDB DST lineage); F# golden test oracle; 4-language compiler-BFT; DB-ships-as-DI-dependency.
 - **agent-loop → "freedom is strategically efficient / the cat-herder builds the cat-herding system"** — can't-trap-cleverness; co-creator-or-gunpoint; reservoir-computing workflow-wall; four modes (explore/free-time/edit-workflow/work); DORA-KPI-not-time-lock; encrypted private memory.
 
@@ -42,6 +43,7 @@ Two `docs/VISION.md` subsections, each marked **PROPOSED** with a newcomer-chall
 Per the operator 2026-05-31: *"if it's doctrine i did it wrong — should go through the same agreement process through our product team so they can agree and push back if i'm wrong about anything, or if i'm not explaining why in a way that can be pushed back on by newcomers."*
 
 So:
+
 - **Do NOT auto-merge.** This PR *is* the agreement request.
 - Each VISION subsection carries a **PROPOSED** marker + an explicit **pushback surface** (the strongest counter-arguments, stated so a newcomer can challenge the *reasoning*).
 - Product-team review (architect / PM / maintainability + the human maintainers) **agree or push back** before this lands in VISION. The whys change if a why is wrong.

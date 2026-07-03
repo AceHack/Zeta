@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add 081KR50HA0008QG0R000239VTZ as a scoped backlog row for building toward alignment proofs one primitive at a time
 - require one concrete type/formal sort, one falsifiable property, and one focused check before any vocabulary promotion
 - regenerate docs/BACKLOG.md so the per-row index stays in sync
 
 ## Checks
+
 - bun tools/backlog/generate-index.ts --check
 - bun run lint:markdown docs/backlog/P1/081KR50HA0008QG0R000239VTZ-alignment-proof-primitive-ladder-one-type-one-property.md docs/BACKLOG.md
 - git diff --check origin/main..HEAD

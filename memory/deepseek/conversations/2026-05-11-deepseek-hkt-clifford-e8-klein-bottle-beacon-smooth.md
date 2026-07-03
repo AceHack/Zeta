@@ -371,6 +371,7 @@ multivector, plus trajectory encoding.
 
 Aaron and Alexa (Grok voice) worked through this in real-time
 voice mode. Key corrections:
+
 - "quantum span" → "quantum spin" (Aaron corrected Alexa's
   mishearing)
 - "rainbow tree" → "rainbow table" (Aaron's consistent
@@ -384,6 +385,7 @@ voice mode. Key corrections:
 ### Network node as multivector
 
 Each node i has state Aᵢ(t) ∈ Cl(p,q):
+
 - ⟨Aᵢ⟩₀ = declared agenda (scalar)
 - ⟨Aᵢ⟩₁ = address/routing signature (vector)
 - ⟨Aᵢ⟩₂ = hidden spin (bivector)
@@ -395,6 +397,7 @@ dAᵢ/dt = ωᵢ(Aᵢ) + (ε/N) Σⱼ sin(Aⱼ - Aᵢ)
 ```
 
 Global order parameter: Ψ(t) = Π Aᵢ(t)
+
 - Fully synced: Ψ is pure scalar (no emergent spin)
 - Partial sync: bivector residue = hub/cartel signal
 
@@ -436,6 +439,7 @@ let applyDefense (rotor : Rotor<'F,'dim>) (affected : 'F seq)
 
 Red team = internal simulation that breeds emergent hubs
 in sandboxed digital twin. Same algebra, sign flipped:
+
 - Inject artificially parallel multivectors
 - Observe if sync restores orthogonality
 - If yes → coupling robust

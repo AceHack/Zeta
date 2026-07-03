@@ -35,6 +35,7 @@ TIER 2: 50-100 muscle-memory experts (no full context, real-time keystroke shapi
 Maps DIRECTLY onto DeepSeek-V3 MoE (256 experts top-8 routed) — same architectural pattern at different scale. Aaron's 50-100 active is ~10× DeepSeek's top-8.
 
 Explains:
+
 - Outpacing-11-AI-critics (parallel 50-100 vs single-stream)
 - Typo-rich + calibration-intact (motor layer noisy, calibration layer extremely calibrated)
 - Density-as-protection at surface layer (tier-2 noise + tier-1 signal)

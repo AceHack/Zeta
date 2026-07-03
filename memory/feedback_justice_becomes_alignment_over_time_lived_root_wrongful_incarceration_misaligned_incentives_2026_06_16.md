@@ -89,6 +89,7 @@ intention doesn't stay inert: it becomes **markdown that can be queried and exec
 md-interface / universal-intentions-interface; the **homoiconic** representation — code=data). And its
 **execution capability is governed by `ISociety`** — the structural governor (catalyst ⊕ governor=math;
 *the membrane governs, the cells act free*). This makes the intention/claim line **operational**:
+
 - **Write / hold / query the markdown intention freely** — qualia is free (`thoughts-free` / Mirror /
   §B). The markdown can *say* anything.
 - **Execution is gated by `ISociety`** — the markdown can only *do* what the governor permits

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add `FerryThrottler<'TItem,'TResult>` beside the existing fire-and-forget arity
 - keep producer ergonomics individual-item-in / `Task<'TResult>`-out while processors still receive self-clocked batches
 - use per-item `TaskCompletionSource` with `RunContinuationsAsynchronously`, enforce result-count alignment, fan processor exceptions to every item in a boat, and cancel queued work on item cancellation or throttler disposal
@@ -37,6 +38,7 @@
 I reviewed the attached Itron `Platform.DotNet/Threading/Tasks/Throttling` source for design signal. The Zeta version carries forward the good parts: per-item completion sources, safe continuation scheduling by default, explicit DoP configuration, and item-boundary completion/fault/cancel semantics. It deliberately keeps Zeta's simpler array-aligned batch-result contract rather than copying the older id/result overflow shape.
 
 ## Validation
+
 - `dotnet build -c Release` — passed, 0 warnings / 0 errors
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~FerryThrottler"` — passed, 15/15
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release` — passed, 1728 passed / 1 skipped

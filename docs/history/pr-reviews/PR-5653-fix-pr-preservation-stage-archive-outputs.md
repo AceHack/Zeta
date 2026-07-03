@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - run explicit git add for archive-pr.ts output files after writes
 - also stage existing archive files when the tool skips a rewrite because only archived_at changed
 - add a subprocess test with a fake gh CLI proving the generated archive is staged
 
 ## Verification
+
 - bun test tools/pr-preservation/archive-pr.test.ts
 - git diff --check
 

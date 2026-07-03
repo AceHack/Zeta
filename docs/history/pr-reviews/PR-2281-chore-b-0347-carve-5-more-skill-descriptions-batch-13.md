@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: serialization-and-wire-format-expert, fork-pr-workflow, ontology-landing-expert, fscheck-expert, paced-ontology-landing
 - **Milestone: 60 skills carved, ~97K+ chars freed**
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

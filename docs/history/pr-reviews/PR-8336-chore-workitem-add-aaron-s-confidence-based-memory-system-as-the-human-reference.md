@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): his memories are **confidence**-based — strategy #2 of the memory-org research has a working *human* reference + baseline/oracle.
 
 Added to the brief (`081KV6GR72108QG0R003P9MG4M`):
+
 - **Long-term = common/decorrelated confidence** — durability from *independent others also remembering it*, not solo confidence (the decorrelated-confidence fix applied to memory).
 - **Common vernacular = the social addressing/index** to shared memory locations (vernacular = retrieval keys; geocache neighborhood-addressing; naming-by-anchored-CS).
 - **Low-confidence ≠ unretrievable** — confidence-based org is NOT confidence-*gating*; nothing pruned; addressing reaches the whole spectrum; confidence sets priority/clustering, not reachability.

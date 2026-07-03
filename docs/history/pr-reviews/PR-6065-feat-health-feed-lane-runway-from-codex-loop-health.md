@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - feed the lane-runway monitor with Codex host-loop health probe output
 - add deterministic service-health adapter tests
 - update the autonomous-loop coordination trajectory receipt
 
 ## Verification
+
 - bun test tools/health/factory-health-monitor.test.ts
 - bun tools/health/factory-health-monitor.ts --json
 - git diff --check

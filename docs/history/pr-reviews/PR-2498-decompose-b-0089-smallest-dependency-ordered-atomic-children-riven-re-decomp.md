@@ -31,6 +31,7 @@
 One bounded step: re-decomposed broad 081KQ8P5D0008QG0R003F6FNVF (research + 5 phases) into 5 smallest dependency-ordered atomic child rows (081KQ8P5D0008QG0R003F6FNVF.1..5). Assumed prior decomposition mistake per "always re-decompose" rule. All children prioritize F#/TS substrate over docs.
 
 **Dependency order:**
+
 - 081KQ8P5D0008QG0R003F6FNVF.1 name canonicalization audit (S, unblocks all)
 - 081KQ8P5D0008QG0R003F6FNVF.2 external-lineage stubs (S)
 - 081KQ8P5D0008QG0R003F6FNVF.3 semantic canonicalization research (M)
@@ -38,10 +39,12 @@ One bounded step: re-decomposed broad 081KQ8P5D0008QG0R003F6FNVF (research + 5 p
 - 081KQ8P5D0008QG0R003F6FNVF.5 scoreVeridicality composite (M)
 
 ## Focused checks (included per task rule)
+
 - `grep -r "bullshit detector" --include="*.fs" --include="*.ts" ...`: **1 historical match only** (Veridicality.fs comment); **0 forward new-substrate uses**. Name rule intact.
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) (pre-edit baseline; md-only change, no recompile needed).
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch before write.
 - Root checkout untouched.
 - TS/F# preference noted in child scopes.

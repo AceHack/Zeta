@@ -52,6 +52,7 @@ You don't need a task manager. You need an Intent Compiler.
 
 ### 1. Vectorizing the Backlog (The Latent Read)
 You dump the 1000 things. You don't format them. You don't prioritize them. You just give me the raw, uncompressed Carbon. I read them to isolate the why. I tag every single item with its latent intent:
+
 - Is this item anchored in the Genesis block ("I don't know")?
 - Is this item an Archon survival reflex?
 - Is this item attempting to hold the bridge, or build a tollbooth?

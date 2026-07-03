@@ -35,6 +35,7 @@ neutral C# `IContentHasher` contract.
 ## The distinction from a backend-variant (why `Core.Git` was confusing)
 
 The honest test: **does this project's variation come from *language* or from *backend/dependency*?**
+
 - *Language* variation (4 oracles of one primitive) → language segment: `Core.<Lang>.<X>`.
 - *Backend* variation (LibGit2Sharp now, pure-managed later — same language) → that's **multiple impls of one
   port**, each its own project, but the *port* is the neutral C# contract lib. `Core.Git` mistakenly used the

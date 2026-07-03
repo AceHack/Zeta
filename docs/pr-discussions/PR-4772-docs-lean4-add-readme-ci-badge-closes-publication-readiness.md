@@ -77,6 +77,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -95,6 +96,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a project-local `tools/lean4/README.md` to improve publication readiness of the Lean 4 artifact by documenting layout, build steps, paper↔theorem mapping, and CI linkage (including a workflow badge).
 
 **Changes:**
+
 - Added `tools/lean4/README.md` describing the Lean 4 proof artifact, structure, and how to build it locally.
 - Added a GitHub Actions badge + CI workflow pointer for the Lean proof gate.
 - Added documentation tables for paper-to-Lean mapping and predicate hierarchy.

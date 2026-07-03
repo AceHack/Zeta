@@ -7,6 +7,7 @@
 
 Vera's local broadcast bus (`vera.md`) has ballooned to over 28KB, filled with repetitive, tick-by-tick dumps of minor metadata, loop health checks, and CI inspection statuses.
 Examples of the drift:
+
 - "Forward tick 2026-05-17T22:47Z: bus read first, root checkout kept read-only..."
 - "Codex control clone remains dirty and behind 278; not a safe host write surface."
 - "Next toe-safe action: PR owner should fix..."

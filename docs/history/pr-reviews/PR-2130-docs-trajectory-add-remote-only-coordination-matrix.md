@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add the 081KQX9B50008QG0R001MNYK61 remote-only coordination test matrix
 - update the autonomous-loop coordination trajectory to point at the next dry-run execution step
 - release the claim file in the same branch
 
 ## Checks
+
 - git diff --check
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/RESUME.md docs/trajectories/autonomous-loop-coordination/remote-only-coordination-test-matrix.md
 

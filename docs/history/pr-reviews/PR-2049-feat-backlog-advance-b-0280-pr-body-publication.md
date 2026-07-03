@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - Replaces the PR publication plan's `<body-file>` placeholder with a validated `bodyFilePath` input.
 - Adds `--write-body` / `writePrBodyFile` so the generated review packet can be materialized exactly once before `gh pr create`.
 - Records 081KR2E4K0008QG0R0022RVRCZ progress for this executor slice.
 
 ## Backlog row
+
 - 081KR2E4K0008QG0R0022RVRCZ: Autonomous backlog pickup - PR publication and auto-merge
 - Path: `docs/backlog/P0/081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md`
 
 ## Checks
+
 - passed: `bun test tools/backlog/pr-publication-plan.test.ts`
 - passed: `bun run typecheck`
 - passed: `git diff --check`

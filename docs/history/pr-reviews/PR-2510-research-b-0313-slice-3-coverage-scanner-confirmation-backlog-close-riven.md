@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Smallest safe slice of 081KR2E4K0008QG0R00289GE8Z (post-slice-2): ran focused external-anchor coverage scanner (TS: `tools/alignment/audit_external_anchors.ts`) confirming 7/7 Otto-NN principles anchored.
 - Updated backlog row done-criteria; 081KR2E4K0008QG0R00289GE8Z now closed.
 - Re-decomposed in-flight: no further split needed; prior slices + this check complete the item.
@@ -47,6 +48,7 @@ Full scanner run captured in session; 7 Otto principles (247/275/279/341/351/352
 081KR2E4K0008QG0R00289GE8Z was broad (7 principles); sliced to 1+2+3. This is the terminal bounded step. No code changes, only closure + evidence.
 
 ## PR checklist
+
 - [x] Build gate: `dotnet build -c Release` → 0W 0E
 - [x] TS scanner (preferred over bash) executed
 - [x] Co-Authored-By: Grok trailer on commit

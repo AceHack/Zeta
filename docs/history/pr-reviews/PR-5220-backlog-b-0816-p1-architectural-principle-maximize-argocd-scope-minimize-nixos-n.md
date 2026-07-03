@@ -51,6 +51,7 @@ ArgoCD is used by ANYONE running Kubernetes (not just NixOS users); substrate-in
 ## Implication for 081KSE6WT0008QG0R003CMCX84 cluster-IS-DIO
 
 DIO lives in 4 layers, each with its own reconciler:
+
 1. Boot+OS = NixOS substrate (DIO via nixos-rebuild)
 2. K8s+workload = ArgoCD (DIO via ArgoCD sync)
 3. External-infra = Crossplane via ArgoCD (DIO via CR reconciliation)
@@ -59,6 +60,7 @@ DIO lives in 4 layers, each with its own reconciler:
 ## Implication for cross-distro adoption
 
 Operators on K3S-on-Ubuntu / Talos / RKE2 / EKS / GKE / AKS / OpenShift can adopt iter-5.4.x substrate by:
+
 1. Skip NixOS install.sh (use their own bootstrap)
 2. Adopt the `maintainers/<op>/cluster-nodes/<host>/` tree shape
 3. Point their ArgoCD at the tree

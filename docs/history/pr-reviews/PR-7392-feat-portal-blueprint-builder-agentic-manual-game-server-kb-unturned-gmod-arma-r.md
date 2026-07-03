@@ -48,6 +48,7 @@ Each with the usual knobs as variables + an SFTP sidecar. Generic recipes for da
 It **iterates on a draft**: "expose public", "give it more memory" / "set memory 12Gi", "add variable RCON", "add port 19999 udp", "rename to clan-reforger", add SFTP. Deterministic for the demo; **a real LLM slots in behind the same `build()` contract** — which is what makes it agentic *and automatable* (an agent task can call `/api/blueprints/build` then `/api/blueprints` to save unattended).
 
 ### Backend
+
 - BFF `POST /api/blueprints/build` (propose/iterate) + `POST /api/blueprints` (save). `createBlueprint`: demo upserts the in-memory catalog; **k8s SSA-applies the Blueprint CR**. Portal RBAC extended to write blueprints.
 - **Library:** added `unturned` + `arma-reforger` blueprints (real SteamCMD ids/ports) alongside `gmod` — deployable out of the box.
 

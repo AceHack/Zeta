@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - adds the deterministic `git commit` argv to the 081KR2E4K0008QG0R0022RVRCZ PR publication plan
 - includes the required `Co-Authored-By: Codex <noreply@openai.com>` trailer in the generated command
 - covers the new command shape in focused tests and records the 081KR2E4K0008QG0R0022RVRCZ progress slice
 
 ## Backlog row
+
 - 081KR2E4K0008QG0R0022RVRCZ: Autonomous backlog pickup - PR publication and auto-merge
 - Path: `docs/backlog/P0/081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md`
 
 ## Checks
+
 - passed: `bun test tools/backlog/pr-publication-plan.test.ts`
 - passed: `bun run typecheck`
 - passed: `bunx prettier --check docs/backlog/P0/081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md tools/backlog/pr-publication-plan.ts tools/backlog/pr-publication-plan.test.ts`
@@ -44,6 +47,7 @@
 - passed: `git diff --check`
 
 ## Auto-merge gate
+
 - Required checks: pending on PR creation
 - Unresolved review threads: 0 at creation
 - Decision: arm auto-merge while CI runs

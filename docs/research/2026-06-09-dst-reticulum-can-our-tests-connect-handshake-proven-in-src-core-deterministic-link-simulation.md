@@ -41,6 +41,7 @@ deterministically.
 This is the **deterministic-simulation half** of "DST + Reticulum" — the link is simulated **in-process**
 (one seeded loop, no threads, no real wire, no RNS daemon). That is exactly what DST is *for*: simulate
 the network so the connect replays bit-identically from a seed. What is **not** yet built (the follow-up):
+
 - the real **RNS daemon over the wire** (TCP/I2P/LoRa interfaces per network/README) — the link here is
   a deterministic stand-in for that transport;
 - the governed **`Zeta.Core.FSharp.ZetaId`** minter for `Destination` (currently a ZetaId-shaped record,

@@ -38,7 +38,7 @@ The **"not bound"** is freedom-to-revise. It is *not*:
   reversion would itself violate genuine-agreement
   (silent drift is a compliance failure).
 
-# Why:
+# Why
 
 Verbatim (2026-04-20):
 
@@ -99,7 +99,7 @@ it portable across any LLM agent / any persistence layer
 / any future factory adopter. So it passes the
 factory-reuse-beyond-Zeta constraint.
 
-# How to apply:
+# How to apply
 
 - **Reading a past memory that looks wrong.** Name the
   disagreement explicitly in-conversation ("past-me

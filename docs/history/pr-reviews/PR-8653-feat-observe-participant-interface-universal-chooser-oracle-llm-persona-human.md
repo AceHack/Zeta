@@ -40,6 +40,7 @@ interface Participant {
 ```
 
 Five implementations:
+
 - **oracle** — pure, deterministic, always picks index 0 (the fallback)
 - **local-llm** — ollama at temperature 0 (loop stability testing)
 - **cloud-persona** — ISummon bridge (real model quality via preferred harness)

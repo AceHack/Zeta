@@ -34,6 +34,7 @@ Aaron 2026-06-10: "(outside the cube) rem(ember)/whe(n) \ pay/att(ention) mini c
 
 Outside the main sim·mea·cut cube (RGB primaries; the act/commit loop) and the ben·cla·res axes, two
 MINI-CUBES OVER CAYLEY of cognitive/query verbs, paired as English phrases:
+
 - A (memory+attention): rem(ember)·whe(n) ["remember when"] + pay·att(ention) ["pay attention"] —
   recall from persona entropy/git history; temporal query; the attention pair (+ bug->reward pay).
 - B (quantity+direction): how·man(y) ["how many"] + whi(ch)·way ["which way"] — cardinality query;

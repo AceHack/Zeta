@@ -57,6 +57,7 @@ Via REST git-data API bypass (dotgit-saturation persists).
 This PR implements the 081KSBMG30008QG0R000WJ9FMP Option 1 landing: a per-round “Trigger Recognition Log” in Soraya’s persona NOTEBOOK, and updates the formal-verification skill’s reference patterns to point to that new canonical landing surface for trigger-fired-but-row-not-filed events.
 
 **Changes:**
+
 - Append a `## Trigger Recognition Log` section to `memory/soraya/NOTEBOOK.md` with backfilled rounds 59/66/69 entries.
 - Update `.claude/skills/formal-verification-expert/SKILL.md` to reference the new NOTEBOOK section as the canonical substrate for these events.
 

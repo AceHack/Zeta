@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"ferry the empowerment/society thesis collaboration-readiness note"* + *"Lukens Orthwein — we need to get in touch with this guy."*
 
 **Readiness substrate (NOT outreach).** Applies the society-is-the-AGI / coworker thesis *outward* (coupled empowerment, argued-not-forced, external anchors). Catalogs:
+
 1. **What we offer** — Lean proofs, 4-lang byte-lock, UniversalNumber/SoftValue/metering, DBSP+DST, OpenSpec, ΔU-aggregation.
 2. **Named doors** — CSLib/Barrett, George/lean-dojo (TorchLean+bridge), Tegmark/FLI, Clark Barrett (SMT), **Lukens Orthwein/channel AI**.
 3. **The Orthwein principle** Aaron aligns with (parallelize + automate-yourself-into-scripts) — with the honest peel that his *"dangerously skip permissions"* is the **opposite** of our least-privilege discipline (align on automation, not safety posture).

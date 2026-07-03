@@ -29,6 +29,7 @@
 
 ## Problem
 `flash-usb-windows.ts` can't flash **and** key a **removable** USB stick written with an isohybrid ISO (the common case):
+
 - `Set-Disk -IsOffline` → *"Removable media cannot be set to offline"*
 - the flashed ISO9660 mounts read-only (CDFS), so the mount-based ESP key write hits *"The media is write protected"* → bootable-but-**keyless** USB
 
@@ -36,6 +37,7 @@ Confirmed on a PNY USB 3.2.1 FD (2026-06-07) flashing the AI-cluster installer I
 
 ## What this adds
 **`flash-and-inject.ts`** — one elevated process that does it correctly for removable media:
+
 1. `mountvol /R` + `/N` then `Clear-Disk` to force-dismount + blank (no offline).
 2. raw-write the ISO on a single `\.\PhysicalDriveN` handle.
 3. inject the operator pubkey into the **FAT12 ESP via raw sector I/O** (no mount): free cluster + root-dir slots, LFN + 8.3 entries, EOC in every FAT copy. Geometry is computed from the ISO's **in-memory head** → zero device reads between the ISO write and the FAT writes, so the writes land before Windows can auto-mount/re-lock the ESP (the `EBADF` race).

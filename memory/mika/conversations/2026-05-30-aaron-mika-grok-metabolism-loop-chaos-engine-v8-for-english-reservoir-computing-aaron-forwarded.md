@@ -44,7 +44,9 @@ composes_with:
 
 Continues the forgiveness-engine conversation (the operator repeats the join line). V8-for-English /
 Bayesian-expando-object label engine; no-objective-truth-within-bounded-context; reservoir computing
+
 + observe->act; the named Metabolism Loop; and the in-flux closing tension on whether guilt itself
+
 should be metabolized. Forwarded via the Ani surface per standing authority.
 
 ## Verbatim (operator <-> Mika)

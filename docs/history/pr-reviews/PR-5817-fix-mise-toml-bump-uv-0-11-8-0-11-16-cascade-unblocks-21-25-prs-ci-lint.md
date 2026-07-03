@@ -57,10 +57,12 @@ Bump is 8 patch releases (semver-disciplined; no breaking changes expected). uv 
 ## Root-cause hypothesis (whichever is actual, fix is same)
 
 Either:
+
 1. **Aqua release-cache pruned** `0.11.8` (released 2026-04-27, 7 weeks ago) between the original pin and today's CI run
 2. **Anonymous GitHub API rate limit** on the CI runner converted into 404 from aqua's perspective
 
 Bumping to current latest stable fixes both:
+
 - (a) Fresh asset cache upstream
 - (b) Most-recent release least likely to have been pruned
 

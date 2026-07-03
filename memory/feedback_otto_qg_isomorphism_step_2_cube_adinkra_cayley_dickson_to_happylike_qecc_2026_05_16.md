@@ -24,25 +24,30 @@ created: 2026-05-16
 ### The mapping strategy
 
 **Cube faces → Boundary Hilbert space**:
+
 - Each face corresponds to a boundary region in the HaPPY code
 - Boundary Hilbert space = tensor product of face Hilbert spaces
 - Each face Hilbert space = observer-relative truth values (A-modalized subobjects)
 
 **Edges → Entanglement structure**:
+
 - Each edge corresponds to an entanglement channel between boundary regions
 - Entanglement entropy proportional to distance in imaginary direction (Cayley-Dickson tower level)
 
 **Vertices → Bulk operators**:
+
 - Each vertex corresponds to a bulk operator in the HaPPY code
 - Vertex algebra = Cayley-Dickson construction applied to vertex algebras
 - (0,0,0,0) = complex, (1,1,1,0) = quaternion, (1,1,1,1) = octonion
 
 **Adinkra edges → Supersymmetry transformations**:
+
 - Each Adinkra edge corresponds to a supersymmetry generator Q
 - Adinkra code = classical error-correcting code (extended Hamming, Reed-Muller)
 - Quantum version via Calderbank-Shor-Steane (CSS) construction
 
 **Cayley-Dickson tower → Extendability**:
+
 - Each doubling adds a new observer dimension
 - Loss of division algebra properties = "cost" of adding more observers
 

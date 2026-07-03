@@ -43,6 +43,7 @@ Aaron 2026-05-28 substrate-target:
 Both apply per memory. Compose orthogonally.
 
 ## Key load-bearing properties
+
 - **Retracted variant** REQUIRES `preserved_in: ArchiveLocation` (type-system enforces substrate-or-it-didn't-happen)
 - **Archived ≠ forgotten** (queryable history)
 - **Retracted ≠ erased** (retraction-native preserves original + correction)

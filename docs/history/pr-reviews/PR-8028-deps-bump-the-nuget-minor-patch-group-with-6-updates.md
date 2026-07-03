@@ -63,6 +63,7 @@ _Sourced from [Meziantou.Analyzer's releases](https://github.com/meziantou/Mezia
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.103>
 
 ## What's Changed
+
 * chore(config): migrate Renovate config by @​renovate[bot] in https://github.com/meziantou/Meziantou.Analyzer/pull/1180
 * chore(deps): update all dependencies by @​renovate[bot] in https://github.com/meziantou/Meziantou.Analyzer/pull/1181
 * Refactor symbol list and add new members by @​meziantou in https://github.com/meziantou/Meziantou.Analyzer/pull/1186
@@ -75,6 +76,7 @@ NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.103>
 NuGet package: <https://www.nuget.org/packages/Meziantou.Analyzer/3.0.102>
 
 ## What's Changed
+
 * chore(deps): pin dependencies by @​renovate[bot] in https://github.com/meziantou/Meziantou.Analyzer/pull/1179
 
 
@@ -131,6 +133,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency

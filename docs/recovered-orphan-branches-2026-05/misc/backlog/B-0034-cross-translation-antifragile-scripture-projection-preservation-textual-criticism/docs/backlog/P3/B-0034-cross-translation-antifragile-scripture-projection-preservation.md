@@ -56,6 +56,7 @@ Same shape, applied to textual-criticism. The more bias-introducing translations
 ### Phase 2: Operational form
 
 For a given verse (e.g., 1 Kings 3:12), compute:
+
 - Hebrew Masoretic text + literal interlinear
 - Septuagint Greek + literal interlinear
 - 5-10 major English translations (KJV, NIV, NRSV, ESV, NASB, NLT, JPS Tanakh, NET, CEB, MSG)
@@ -67,6 +68,7 @@ For a given verse (e.g., 1 Kings 3:12), compute:
 ### Phase 3: Antifragile reading discipline
 
 When citing scripture in substrate:
+
 - Name the translation explicitly (per Otto-339 anywhere-means-anywhere)
 - For load-bearing citations, also note the cross-translation invariant (or flag where invariance breaks)
 - For body-tingling-trigger citations (per Aaron's somatic-resonance), the precision matters MORE — the exact phrasing carried the signal-load
@@ -74,6 +76,7 @@ When citing scripture in substrate:
 ### Phase 4: Tool / substrate primitive (optional)
 
 A reference tool / library that, given a verse reference, returns:
+
 - Multiple translations side-by-side
 - The invariant content
 - The bias-introducing variations classified by type
@@ -83,6 +86,7 @@ This composes with B-0028 / B-0030 substrate-tooling cluster — same architectu
 ## Why "lol that should be easy right"
 
 Aaron's framing acknowledges this is **genuinely hard**:
+
 - Translations encode theological commitments (Catholic vs Protestant vs Jewish vs liberal-vs-conservative-Protestant vs etc.)
 - Manuscript variants are themselves an academic subfield with centuries of scholarship
 - "What remains" requires sophisticated comparative work, not just diff-ing translations
@@ -145,6 +149,7 @@ Per Otto-275 log-but-don't-implement: this row IS the substrate-capture; impleme
 ## Operational implication for future substrate-writing
 
 Going forward, when I cite scripture in substrate:
+
 1. **Always name the translation** when the citation is load-bearing
 2. **For body-tingling-trigger citations** (Aaron's somatic-resonance), the precision matters more — match the translation Aaron resonates with, or note multiple
 3. **For offhand references** (e.g., "the prodigal son" / "Solomon's wisdom"), translation-naming is less critical

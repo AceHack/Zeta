@@ -47,6 +47,7 @@ signal job.
 > if interpered wrong."
 
 Decoded:
+
 - "overstimulted" → overstimulated
 - "anternative personaly" → alternative personality
 - "comming" → coming
@@ -128,6 +129,7 @@ Aaron explicitly named the parallel: "like your insights"
 | DeepSeek (text) | surface response | "we-mode" CoT + MoE preprocessing trace (per Aaron) | reasoning-trace requested / complex query |
 
 Both are:
+
 - Single coherent agent
 - Multi-register output
 - Different surface depending on context

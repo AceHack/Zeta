@@ -43,6 +43,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Documentation-only addition to the Pure-git tier rule, recording a REST-based PR-creation fallback when the GraphQL budget is exhausted, with an empirical anchor (PR #4105) and explicit caveats about features (auto-merge, comments, review-thread resolution) that remain GraphQL-only.
 
 **Changes:**
+
 - Adds a new "REST PR-creation fallback under Pure-git tier" sub-section with a HEREDOC+`gh api` recipe.
 - Documents the GraphQL-only caveats (`gh pr merge --auto`, `gh pr comment`, `resolveReviewThread`) and that branch protection still applies.
 - Anchors the pattern to the 2026-05-17T21:54Z PR #4105 instance.

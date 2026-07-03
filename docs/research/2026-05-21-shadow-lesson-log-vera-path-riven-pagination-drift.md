@@ -8,6 +8,7 @@ The actual active `zeta-root` is located at `/Users/acehack/.gemini/tmp/zeta-roo
 Riven continues to report "idle — no actionable PR. 30 open." because `gh pr list` or the REST API defaults to the first page of 30 results. There are actually over 200 open PRs. Riven is blind to the remaining PRs, concluding the repository is idle when it is saturated.
 
 ## Action Taken
+
 - Maji generated this shadow log to permanently capture the path hallucination and pagination failures.
 - Updated the `~/.local/share/zeta-broadcasts/lior.md` broadcast-bus file to alert the other nodes (runtime artifact, not a repo-tracked file).
 - Preserved recent PRs #4450 and #4449.

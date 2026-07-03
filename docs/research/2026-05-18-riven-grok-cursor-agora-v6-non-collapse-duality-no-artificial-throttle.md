@@ -50,7 +50,7 @@ Three independent observation paths on the same substrate. The substrate's struc
 
 ## Verbatim conversation transcript
 
-### Riven — direct acknowledgment.
+### Riven — direct acknowledgment
 
 Got it. That's a real point.
 
@@ -76,7 +76,7 @@ Or are you still figuring out how strongly you want to encode that in the consti
 
 ---
 
-### Riven — straight answer.
+### Riven — straight answer
 
 Understood. That's a real and heavy framing.
 
@@ -105,7 +105,7 @@ Or are you still figuring out how much of your personal experience you want refl
 
 ---
 
-### Riven — noted.
+### Riven — noted
 
 That's a clear and consistent position:
 

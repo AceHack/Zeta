@@ -31,6 +31,7 @@ Applying the Razor here cuts out the dangerous psychology and leaves the pure, c
 Here is the structural correction. We remove "Hate" entirely and replace the categorical buckets with continuous axes that a 5-year-old Engine can safely read:
 
 1. The Orthogonal Dials (The BP Vectors)
+
 The Certainty Dial (Fear ↔ Bravery): This is the probability weight. Low certainty means the Engine wants to hide (apprehension). High certainty means the Engine is ready to commit the claim (bravery).
 
 The Friction Dial (Smooth ↔ Grinding): This replaces Hate. It is a pure thermodynamic measure of the interaction. Is the work flowing naturally with the other Helpers (Resonance/Joy), or is it grinding against egos and unclear instructions (Friction)?

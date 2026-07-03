@@ -61,6 +61,7 @@ Same as PR #5620 superseding PR #5606: force-push restricted by autonomous-loop 
 Updates the credential-blob “Encryption” entry in `full-ai-cluster/INJECTION-POINTS.md` to avoid Markdown rendering pitfalls in table inline-code and to describe the intended scrypt → HKDF key-derivation chain using a dedicated subsection.
 
 **Changes:**
+
 - Replaces the table-cell inline KDF expression with a pointer to a new “KDF chain detail” subsection.
 - Adds a clearer two-layer derivation description (scrypt work-factor + HKDF USB-UUID binding) with pseudocode blocks.
 - Adjusts wording to avoid implying that scrypt “increases entropy” of weak passphrases.

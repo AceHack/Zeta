@@ -30,6 +30,7 @@
 docs(research)+ledgers: tests become cells with strict boundaries — rooms = physics-accounting demon + many single-scoped ledgers + rooms-as-useful-work require hats
 
 Aaron's stream (2026-06-10), one synthesis:
+
 - "test become cells with strict boundaries" — test = cell = tick = room; the boundary is the
   Markov blanket / cell membrane (Pearl + Friston; same/ ctxboundary, bounds/). Strict boundary =
   precondition for DST/lock-free/isolation/composability -> the C.elegans superorganism (S=4).

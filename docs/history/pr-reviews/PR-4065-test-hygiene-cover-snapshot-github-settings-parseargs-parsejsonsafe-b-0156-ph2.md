@@ -44,6 +44,7 @@ Lands the missing `bun test` for `tools/hygiene/snapshot-github-settings.ts`, cl
 Per `.claude/rules/backlog-item-start-gate.md` step 0 substrate-drift discriminator: 081KQGDBJ0008QG0R000A4EZS5's audit baseline claims phases 3-5 still have work remaining, but on-disk reality (verified at session start) shows all six `.ts` siblings exist AND the `.sh` originals are already deleted. The row is **in-progress, NOT drift** — what remains is acceptance criterion #2 coverage. This PR closes 1/4 of that gap.
 
 Remaining test gaps after this PR (separate bounded slices, each its own PR):
+
 - `tools/hygiene/check-github-settings-drift.ts`
 - `tools/peer-call/amara.ts`
 - `tools/peer-call/ani.ts`

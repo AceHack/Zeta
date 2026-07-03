@@ -43,14 +43,17 @@ Moves all remaining code directories out of `tools/` into `src/`. Only shell scr
 | `tools/substrate-discovery/` | `src/Core.FSharp.SubstrateDiscovery/` | F# |
 
 ### What stays in tools/ (final state)
+
 - `setup/` — shell install scripts (.sh, .ps1)
 - `razor-cadence/` — GitHub issue body template (markdown)
 - `soraya-formal-coverage/` — GitHub issue body template (markdown)
 
 ### Bug fixes
+
 - **Zeta.Cli (14 pre-existing errors → 0):** Added missing `open Zeta.Core`. The types (`CborEntryCodec`, `DvKey`, `DbCommandResult`, etc.) were defined in `src/Core/` all along — just needed the import.
 
 ### Infrastructure updates
+
 - .fsproj ProjectReference paths: `..\\..\\src\\` → `..\\`
 - Zeta.sln: path + solution folder nesting updated
 - Alloy.Runner.Tests.fs: runtime paths fixed
@@ -58,6 +61,7 @@ Moves all remaining code directories out of `tools/` into `src/`. Only shell scr
 - 7 CI workflow files + codeql-config.yml updated
 
 ### Verification
+
 - `dotnet build Zeta.sln -c Release` → 0 Warning(s) 0 Error(s)
 - `npx tsc --noEmit --skipLibCheck` → 0 errors
 

@@ -32,6 +32,7 @@ Ferries + routes Aaron's keystone positioning (shadow*: *"ferry it and route it"
 **Thesis:** capability lives in the reconciling **decorrelated collective**, not a single dense mind. Optimize **coworker + society**, not **control + dense**; **don't cap any agent**; useful work = **ΔU**; **society > best individual iff decorrelated (ρ-low) AND competent.**
 
 **Three artifacts:**
+
 1. Research note — the unified thesis: distributed-cognition tradition (Hayek 1945 / Minsky / Hutchins / Ostrom); no cap; ΔU = useful work; the Condorcet conditional; **coupled/social empowerment** (Salge & Polani 2017 "Empowerment as Replacement for the Three Laws") = the society constraint = the coworker relation; **safety from the relation, not from capping capability**; the trade + peels.
 2. New **§B register row** → the note + the routed workitem.
 3. **Routed workitem `081KV6B1MBM08QG0R000RZK4WY`** (math-team / Soraya): formalize the generalized-Condorcet / **ΔU-aggregation theorem** — `E[useful-work(society)] > useful-work(best individual)` for ρ<ρ\* ∧ competence>c\*; prove the reversal; analytic jury-theorem generalization cross-checked vs an FsCheck DST society-sim sweep. Discharging it upgrades the decorrelated-selection §B row toward proof.

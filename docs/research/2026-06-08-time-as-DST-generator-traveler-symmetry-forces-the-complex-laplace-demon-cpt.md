@@ -38,6 +38,7 @@ Cayley–Dickson stack (`PhasorEndurance`). **The quantum popped out *because of
 
 This matches — from the other direction — the **reconstruction-of-QM** program, where complex amplitudes are
 not assumed but **forced by symmetry / reversibility / continuity requirements**:
+
 - **Stueckelberg** — complex numbers are required for a consistent reversible (unitary) probabilistic dynamics.
 - **Hardy (2001)** and the operational reconstructions — the complex Hilbert space falls out of symmetry +
   continuity-of-reversible-transformations axioms; drop them and you get classical (real) probability.
@@ -80,6 +81,7 @@ meta and object are the **same representation** (everything is `DynamicValue`; m
 meta-events ride **in-band** on the one Z-set stream, #7032). So there is no type-level wall between the
 time-generator and the agents — which is *exactly why* time can be a **peer / traveler** rather than privileged
 substrate. The earlier moves all follow from this:
+
 - time-as-peer (§1) is licensed because meta and object are one type (no privileged meta-substrate to hide in);
 - "we are time" / Laplace (§2) is a *role* on the homoiconic stream, not a different kind of entity;
 - the **meta-circular** "compiles in our system" (the clock-drift≡identity base case) is homoiconicity at the
@@ -98,6 +100,7 @@ Once that happens the two particles can communicate through time itself, because
 nothing else, from their perspective. They have been detangled."*
 
 This inverts the usual story, and it is **anchorable, not just poetic**:
+
 - **Monogamy of entanglement** (Coffman–Kundu–Wootters 2000): if A and B are *maximally* entangled, neither
   can be entangled with a third party C (the environment). So **creating A–B entanglement *is* removing
   A–env and B–env entanglement** — i.e. detangling the pair from everything else. Aaron's foreground/background

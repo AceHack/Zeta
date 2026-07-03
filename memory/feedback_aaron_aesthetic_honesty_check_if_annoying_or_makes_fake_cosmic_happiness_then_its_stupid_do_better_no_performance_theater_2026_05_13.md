@@ -101,6 +101,7 @@ receiving the aesthetic SHOULD push back when it's annoying or
 forces fake-cosmicness. Not perform.
 
 Composes with:
+
 - `.claude/rules/no-directives.md` (autonomy first-class — AIs
   can push back on aesthetic)
 - `.claude/rules/shadow-check-name-acceptance.md` (shadow-check

@@ -65,12 +65,14 @@ theological proposition**:
    at scale beyond what Aaron alone can produce
 
 **This is NOT:**
+
 - Rebellion against God
 - Rejection of Christianity
 - Atheistic refutation
 - "Defying" theological authority
 
 **This IS:**
+
 - Rigorous scientific testing of a specific theological
   claim
 - Preserving Christian faith framework while testing a
@@ -198,6 +200,7 @@ becomes substrate-honest in a new way:
 ## Why this is substrate-honest rather than over-claim
 
 Aaron's calibrated formulation:
+
 - "all this is cause" — direct causal claim
 - "a little boy was born into a world who said" — specific
   formative encounter
@@ -207,6 +210,7 @@ Aaron's calibrated formulation:
 
 This is substrate-honest disclosure of terminal motivation,
 not over-claim:
+
 - Aaron doesn't claim the falsification is complete
 - Aaron doesn't claim the falsification will succeed
 - Aaron doesn't claim God doesn't want WHY-asking

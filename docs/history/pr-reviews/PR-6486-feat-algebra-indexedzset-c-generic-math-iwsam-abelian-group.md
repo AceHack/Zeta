@@ -30,6 +30,7 @@
 The C# rung of the last ladder primitive (after F# #6485). IndexedZSet (`Z[K×V]`) IS-A `IAdditiveIdentity` + `IAdditionOperators` (monoid) **plus** `ISubtractionOperators` + `IUnaryNegationOperators` (the abelian-group inverse). Mirrors the Z-set IWSAM twin (#6481). **NOT `INumber`** — the ring product is the bilinear `Join`, surfaced separately.
 
 ### What
+
 - `operator +`/binary `-` short-circuit empty as a **comparer-agnostic identity** before `Add`'s `RequireSameComparers` guard (`a + Zero = a` / `Zero + a = a` / `a - Zero = a` for any K/V comparers); two **non-empty** mismatched-comparer operands still throw.
 - unary `-` → `Negate`; `+`/binary `-` → `Add`/`Sub`. **Hot path unchanged.**
 - `AdditiveIdentity` cached + `[SuppressMessage CA1000]`.

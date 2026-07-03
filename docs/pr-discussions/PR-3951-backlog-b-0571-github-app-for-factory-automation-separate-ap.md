@@ -56,6 +56,7 @@ Per the mitigation-axes table in 081KRQ1AB0008QG0R002422Z9Q: this is the substra
 Files a P2 backlog row designing a "Zeta-Factory" GitHub App installation to give automated agents a separate API rate-limit pool from human-user PATs, as a primary mitigation for the shared-bucket saturation surfaced in sibling row 081KRQ1AB0008QG0R002422Z9Q.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/081KRQ1AB0008QG0R0038VQJZ0-*.md` design row with acceptance criteria, 7-slice decomposition, design sketch, alternatives table, and open questions.
 - Updates `docs/BACKLOG.md` generated index with the new 081KRQ1AB0008QG0R0038VQJZ0 entry under P2.
 

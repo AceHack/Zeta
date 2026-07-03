@@ -18,6 +18,7 @@ is already in hand: the terminal-native, text-first, presence-in-a-session energ
 ## The lineage closes (every piece already anchored today, one root added)
 
 **D&D — Gygax & Arneson 1974** — is the ROOT of the whole tree we anchored today:
+
 - D&D (1974: rooms, a dungeon master narrating state, dice as the entropy source, the party as the
   swarm) →
 - Zork/Adventure (1976–80: the DM automated — the Z-machine) →

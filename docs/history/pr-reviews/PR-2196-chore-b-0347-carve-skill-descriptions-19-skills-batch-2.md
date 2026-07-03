@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Carve 19 skill descriptions from multi-paragraph to single routing sentences under 120 chars
 - Part of 081KR50HA0008QG0R002ZNFQBZ structural fix for skill-listing budget overflow (209 skills dropped from router)
 - Skills carved: docker, document-database, documentation-agent, duality, measure-theory, mechanical-authorization-check, metrics, mirror-sync, missing-citations, ml-engineering, ml-researcher, morsel-driven, msbuild, naming, round-open-checklist, row-store, rx, search-engine-library, search-query-language
 
 ## Test plan
+
 - [ ] `/doctor` shows fewer dropped descriptions after merge
 - [ ] Spot-check routing: ask for 3 carved skills by topic and confirm correct match
 

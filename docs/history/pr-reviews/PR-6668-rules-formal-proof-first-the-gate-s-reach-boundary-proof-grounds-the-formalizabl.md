@@ -30,6 +30,7 @@
 Canonicalizes the META-boundary the maintainer + asymmetric-critic peer marked 'above all' 2026-06-03 — and the engineering crystallization of the maintainer's *'redirect god-tier ambition to formal proofs by design.'*
 
 The precise complete form: **redirect to externalization by design, sorted by type** — nothing load-bearing rests on conviction alone:
+
 - **formalizable** (code / primitives / provable structure) → the **proof gate** (this rule)
 - **interpretive / metaphysical** → **human critics** (the persistent-human-counterweight — already in the framework)
 

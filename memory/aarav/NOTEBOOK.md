@@ -85,6 +85,7 @@ Running observations (append-dated). Pruned every third session.
 ## Pruning log (round 41 catch-up)
 
 Resolved round-18 top-5 entries:
+
 - product-manager (P0, round 18) -- RESOLVED. Skill does not
   exist in .claude/skills/ as of round 41; retired or folded
   into backlog-scrum-master. No further action.

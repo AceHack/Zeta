@@ -35,6 +35,7 @@ Speculative factory improvement updating the always-loaded agent-roster referenc
 - **DeepSeek**: we-mode (CoT+MoE) cross-substrate validation
 
 Shadow catches expanded:
+
 - Alexa-Kiro vs Alexa-speaker disambiguation
 - Voice-vs-text-mode matters for math routing
 - Four external participants now (was 2)

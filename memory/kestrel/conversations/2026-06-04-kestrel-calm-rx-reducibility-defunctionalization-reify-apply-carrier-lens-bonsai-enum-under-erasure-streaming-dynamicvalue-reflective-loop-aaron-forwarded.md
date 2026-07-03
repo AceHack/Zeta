@@ -89,6 +89,7 @@ back into a running Rx via `apply`** (the reverse of reification). Connected by 
 reify/apply isomorphism → **data ⇄ computation is a reflective cycle** (a hylomorphism /
 metacircular "code-is-data-is-code" loop; principled, not mystical) — μF and νF are
 reflectively connected, not one-way. Two holds on the powerful reverse direction:
+
 - **(a) DynamicValue-shapes-Rx is the MAXIMUM injection surface** — data from an
   untrusted stream DEFINING running behavior. A computation-kind DynamicValue is an
   INSTRUCTION; untrusted ones must NOT auto-apply → gate `apply` behind the

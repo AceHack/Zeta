@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add `.github/workflows/zflash-qemu-test.yml` as the 081KSNY2Z0008QG0R0008PN7RQ PR-time CI floor
 - validate the zflash QEMU test-harness with unit tests and dry-run planning only
 - keep stateful QEMU execution opt-in until scenarios 3-5 are fully runtime-wired
 
 ## Verification
+
 - `bun test tools/zflash/test-harness/`
 - `bun tools/zflash/test-harness/run.ts --dry-run`
 - `bun tools/zflash/test-harness/run.ts --dry-run --scenario reformat-with-retention`

@@ -80,6 +80,7 @@ Two distinct patterns visible:
 Adds a backlog-substrate hygiene audit that detects duplicate `id:` values across `docs/backlog/**/B-*.md` rows, after a manual sweep (triggered by the 081KRFA460008QG0R001SXP0C2 collision resolved in #3053) found 12 additional collision groups. The new tool exits non-zero when duplicates are found and is intended to be CI-wired in follow-up work; a P1 backlog row (081KRFA460008QG0R00308W7FJ) tracks the per-collision cleanup.
 
 **Changes:**
+
 - New TypeScript CLI + library `tools/bg/audit-duplicate-row-ids.ts` walking `git ls-files docs/backlog/` and grouping rows by frontmatter `id:`.
 - 14-test Bun test suite covering `extractId` (CRLF, sub-row IDs, missing fields), `findDuplicates` (sort determinism), and `auditRowFiles` (clean / pair / triple / no-id / unreadable cases).
 - Files 081KRFA460008QG0R00308W7FJ (P1) tracking the 12-collision cleanup; regenerated `docs/BACKLOG.md` to index the new row.
@@ -115,6 +116,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

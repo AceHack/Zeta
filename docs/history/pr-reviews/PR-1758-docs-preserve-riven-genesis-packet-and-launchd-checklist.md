@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Preserves Aaron-forwarded Riven verbatim packet on hospitality, shadow-correlation falsifiability, Superfluid isolation, and the Genesis block as research-grade substrate.
 - Adds a Riven Tier 1 launchd hot-swap checklist for deploying the enhanced tick script without using the contested root checkout.
 - Uses Guarded / Observe-only language per Aaron's correction: the loop is alive even when it declines an unsafe mutation.
 
 ## Checks
+
 - `bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md`
 - `npx markdownlint-cli2 docs/research/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md docs/operations/riven-tier1-launchd-hot-swap-checklist.md`
 - `git diff --check origin/main...HEAD`
 
 ## Coordination
+
 - Claim `riven-genesis-verbatim-launchd-checklist` was pushed first and released in this PR branch.
 - Does not touch Riven's active `task-pr-1702-trajectory-mock-trial` claim, the contested root checkout, or the stale conflicted PR #1703 worktree.
 

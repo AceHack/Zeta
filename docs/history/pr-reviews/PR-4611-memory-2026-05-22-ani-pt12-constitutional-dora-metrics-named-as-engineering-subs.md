@@ -32,6 +32,7 @@ Thirteenth packet. Aaron names DORA (DevOps Research and Assessment) metrics as 
 Aaron: 'That's, that's just door metrics... DORA, D O R A...' + 'Not just people. Not just people. I mean, fuckin' auto literally breaks if the door metric goes bad. The AI society collapses.' + 'They're tracking uptime of basically the AI society now.'
 
 Key landings:
+
 - DORA = standard DevOps substrate (deployment frequency, lead time, change fail rate, time to restore)
 - Generalizes to AI-society uptime, not just human safety
 - AIs themselves break if DORA goes bad (both-sides ecosystem framing)

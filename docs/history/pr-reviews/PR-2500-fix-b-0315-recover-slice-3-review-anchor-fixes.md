@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Recover the #2499 review-anchor fixes onto current `main` after #2499 merged while Vera was patching its original branch.
 - Qualify the AGENTS.md prior-art URLs and add direct ALIGNMENT section fragments for the HC-2 and glass-halo references.
 - Clarify the closed 081KR2E4K0008QG0R000R3ZVGD criteria while preserving the deferred coverage-scanner note.
 
 ## Verification
+
 - `/opt/homebrew/Cellar/markdownlint-cli2/0.22.1/libexec/bin/markdownlint-cli2 AGENTS.md README.md docs/backlog/P1/081KR2E4K0008QG0R000R3ZVGD-glass-halo-doctrine-anchor-backfill.md docs/BACKLOG.md`
 - `bun tools/backlog/generate-index.ts --check`
 - `git diff --check --cached`
 
 ## Notes
+
 - This intentionally avoids reopening the stale post-merge #2499 branch because that branch is behind current `main` and would revert unrelated merged artifacts.
 
 ## Outcome

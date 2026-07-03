@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - archive the untracked Codex claim record found in the stale merged task-trajectory-placeholder-filter worktree
 - store it under docs/history/claims so it does not reappear as an active docs/claims claim on main
 
 ## Checks
+
 - git diff --check
 - npx markdownlint-cli2 docs/history/claims/task-trajectory-placeholder-filter-2026-05-08.md
 

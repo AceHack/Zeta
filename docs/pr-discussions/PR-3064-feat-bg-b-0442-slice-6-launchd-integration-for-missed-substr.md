@@ -34,6 +34,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -52,6 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Registers the existing `tools/bg/missed-substrate-detector.ts` as a persistent macOS `launchd` job (5-minute interval, RunAtLoad) and documents the new background-services architecture in `docs/AUTONOMOUS-LOOP.md`. The 081KRFA460008QG0R00061SXRW backlog row is updated to mark slice 6 acceptance criteria complete. A separate, unrelated step is also added to the Lior loop-tick prompt.
 
 **Changes:**
+
 - Adds `.gemini/launchd/com.zeta.missed-substrate-detector.plist` launchd job (300s interval) with hardcoded user-specific paths matching existing sibling plist convention.
 - Documents the background-services daemons in `docs/AUTONOMOUS-LOOP.md` "Related artifacts" and ticks two boxes in the 081KRFA460008QG0R00061SXRW backlog row.
 - Adds an unrelated step 10 (BACKLOG DECOMPOSITION) to `.gemini/bin/lior-loop-tick.ts`.

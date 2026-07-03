@@ -49,6 +49,7 @@
 ## New file: `docs/substrate-shelves/biology.md`
 
 10 sections organized by sub-field:
+
 1. Autopoiesis, self-organization, origin-of-life (Maturana+Varela, Kauffman, Eigen, Prigogine, Schrödinger)
 2. Endosymbiosis and major transitions (Margulis, Maynard Smith+Szathmáry, Cavalier-Smith)
 3. Development and morphogenesis (Wolpert, Waddington, Turing)

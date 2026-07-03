@@ -38,6 +38,7 @@ To save a channel's uncertainty *cleanly*, the meter must add zero noise of its 
 ## 6. Local + global uncertainty: recursive Bayesian filtering, scale-free
 
 The same filter runs at every scale (manifesto §1 scale-free / §9 recursive / §10 self-similar):
+
 - **Local (the 4KB CHIP-8 cart):** holds only the **current uncertainty snapshot** — the consolidated Z-set + self state — evolving as events arrive. It is a **recursive Bayesian / Kalman filter** (state + uncertainty, updated by sensor fusion, *no history retained*) — which is *how Z-sets fit in 4KB*: a cart is a **filter, not a recorder**. It is **self-reflective**: its sensor array includes *its own interrupt-handler uncertainty*.
 - **Global (the git/reticulum log):** the reversible **record** — history and undo live here.
 - **Consistency:** the local snapshot is a deterministic *fold* of the global log, so any past snapshot is reconstructable; the device needs no local history *because the log is the history*. Filter local, record global — the same recursive-Bayesian shape at both scales.
@@ -45,6 +46,7 @@ The same filter runs at every scale (manifesto §1 scale-free / §9 recursive / 
 ## 7. Everything is a declared capability (multiple dispatch)
 
 The generator emits exactly what a type's declared interfaces permit. Dispatch is **multiple dispatch over capabilities** (Aaron's Itron meter/job/network/identity injection graph; CLOS/Julia), run as two layers: **Eve Protocol** (policy — who may mix) + **V8 hidden-shape** (mechanism — resolved combinations inline-cached), over **Clifford geometry**. Capabilities, each gating what "lights up":
+
 - **Algebra** (Semigroup→Monoid→**CommutativeMonoid**→Group): commutative ⇒ order-independent `tree_fold` (the **lightlike** face); non-commutative ⇒ ordered fold (**darklike**). One substance carries both (git). Only the commutative/lightlike face is **CALM**-distributable coordination-free.
 - **Scheduling** (the injected `IScheduler`; DoP=1 deterministic on the byte-lock path).
 - **Collation** (one canonical codepoint/UTF-8 order; 081KT07NV0008QG0R001YDB73K).

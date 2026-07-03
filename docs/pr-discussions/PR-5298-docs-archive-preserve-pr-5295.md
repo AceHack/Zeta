@@ -27,6 +27,7 @@ Preserve discussion from PR #5295.
 This PR adds an in-repo preservation archive for PR #5295 under `docs/pr-discussions/`, capturing the PR metadata and full discussion/review thread content for auditability outside GitHub.
 
 **Changes:**
+
 - Add a new PR discussion archive file for PR #5295, including YAML frontmatter metadata.
 - Preserve the PR description, review threads, and general comments as rendered in the archive format.
 

@@ -27,4 +27,5 @@ This PR preserves the discussion from PR #5505.
 Archives the discussion and metadata for merged PR #5505 into `docs/pr-discussions/` using the standard `tools/pr-preservation/archive-pr.ts` output shape. The file is a verbatim preservation artifact (frontmatter + PR body + reviews + threads + general comments), placed under a markdownlint-ignored path.
 
 **Changes:**
+
 - Adds one PR-preservation archive file for PR #5505 following the documented schema.

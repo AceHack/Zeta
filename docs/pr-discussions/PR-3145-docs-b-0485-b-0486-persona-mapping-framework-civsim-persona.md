@@ -52,6 +52,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -70,6 +71,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new persona-mapping documentation framework (081KRHWGX0008QG0R00019453T) and applies it to a first canonical per-product persona map for Civsim (081KRHWGX0008QG0R00273520P), while closing the corresponding backlog rows.
 
 **Changes:**
+
 - Introduces a canonical per-persona capture template (YAML schema + body scaffold) and inventories existing persona substrate (081KRHWGX0008QG0R00019453T).
 - Adds `docs/personas/` and formalizes the Civsim persona map using the new template (081KRHWGX0008QG0R00273520P).
 - Marks backlog rows 081KRHWGX0008QG0R00019453T and 081KRHWGX0008QG0R00273520P as closed with closure metadata and completed checklists.
@@ -90,6 +92,7 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/personas/civsim-personas.md:140**
+
 * Fork-reader: the YAML `composes_with:` list doesn’t include `aurora-edge-operator`, but the later “Composes with personas” prose section does. This makes the structured metadata disagree with the prose; add the missing persona to the YAML list or remove it from the prose so they stay consistent.
 ```
 role: "Observer who reads civsim forks without contributing, potentially extending the honor-system license to their own substrate."
@@ -130,6 +133,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

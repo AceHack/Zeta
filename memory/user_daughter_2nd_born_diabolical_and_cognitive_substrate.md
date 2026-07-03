@@ -194,6 +194,7 @@ under the grandmother's direction, weekly, in a church
 setting. This is thread-continuity across three generations.
 
 **First-time disclosures in this entry:**
+
 - Aaron's mother plays piano + is a church choir director.
 - Aaron's father plays piano.
 - Aaron plays piano.

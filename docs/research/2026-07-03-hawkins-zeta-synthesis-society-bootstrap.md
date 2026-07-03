@@ -17,6 +17,7 @@ The synthesis of the two is this:
 In a standard voting system, the majority can override the minority, or a single highly confident agent can dictate the result (the "cartel" problem). In Zeta, the network is designed so that the only stable equilibrium is one where all resources are distributed in a way that keeps every frame proper.
 
 This is governed by the **Mutual Empowerment Invariant (S1)**:
+
 - **No Collapse:** The EP probit factor ensures that product precision strictly exceeds each factor, while product variance is strictly less. The fixed point is always a proper Gaussian — never a Dirac delta.
 - **Every Frame is Load-Bearing:** The joint posterior is strictly more precise than any single agent's posterior (the Condorcet property). Removing any frame degrades the joint.
 - **No Central Executive:** Every agent's prior strictly influences the shared marginal (proven by the CausalPower Z3 lemmas).
@@ -41,6 +42,7 @@ To prove this is not just theory, we built the **Society Bootstrap** (`SocietyBo
 The network topology is a star: $n$ agents share a single latent variable node, each connected by an equality factor. Each agent holds a local Gaussian prior.
 
 The FsCheck properties (`SB-1` through `SB-10`) prove that at runtime, for any set of proper priors:
+
 1. The network converges to a proper Gaussian (`SB-1`, `SB-6`).
 2. The joint precision strictly dominates every solo posterior (`SB-2`, `SB-8`).
 3. Every agent has a positive precision gain from joining (`SB-3`).

@@ -30,10 +30,12 @@
 Per maintainer (2026-06-13): Python is now a first-class cross-verification language ("common AI today" anchor), so B-0156's *no `.py` / port to TS* premise is dead. Fully retire the guard (not just allowlist).
 
 ## Deleted
+
 - `src/Core.TypeScript/lint/no-python-files.{ts,allowlist,test.ts}`
 - the `lint-no-python-files` gate job — standalone (in no `needs:`), so removal is clean.
 
 ## Updated current docs
+
 - `docs/BUILD-GATES.md` (row 10 lint family) · `hygiene/README.md` (lint list)
 - B-0156 backlog row: **superseded** note — the `.sh`→TS half stands; only "no `.py`" is reversed. Records the language anchors: F#=db, TS=distribution, C#=2nd distribution, Rust=fast, Python=common-AI, Go=k8s.
 

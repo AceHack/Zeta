@@ -133,6 +133,7 @@ Reported each invocation:
 ## Round 41 — RecursiveSigned tool-coverage audit
 
 Targets:
+
 - `src/Core/RecursiveSigned.fs` (82 LOC skeleton, not in Core.fsproj)
 - `tools/tla/specs/RecursiveSignedSemiNaive.tla` (233 LOC, real Step)
 - `tools/tla/specs/RecursiveSignedSemiNaive.cfg` (PosOne baseline,
@@ -164,7 +165,7 @@ arithmetic axis TLC only samples. Effort: S (pointwise identity,
 add to `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`). S1/S3/S3'/
 SupportMonotone are P1 — single tool is fine.
 
-### Refinement mapping — FsCheck cross-trace wins.
+### Refinement mapping — FsCheck cross-trace wins
 
 Three candidates:
 
@@ -183,7 +184,7 @@ Three candidates:
    in `tests/Tests.FSharp/Formal/` next to existing cross-checks.
    Cites BP-16 (two independent tools on a P0-adjacent claim).
 
-### Readiness gate — TLA+ spec is ready to model-check.
+### Readiness gate — TLA+ spec is ready to model-check
 
 `.cfg` has `SPECIFICATION Spec`, `INVARIANT Safety`, concrete
 constants (`MaxKey=3 MaxIter=6 SeedWeight<-PosOne`). Safety bundles
@@ -198,12 +199,13 @@ EventuallyDone` to the .cfg to exercise the liveness claim
 (currently only Safety is in the invariant list). Optional, not a
 blocker.
 
-### Graduation verdict — CONDITIONAL PASS.
+### Graduation verdict — CONDITIONAL PASS
 
 `RecursiveSigned.fs` may graduate from skeleton to shipped in round
 42 subject to both:
 
 (a) **Tool-coverage prereqs landed in CI**, in priority order:
+
     1. Wire `RecursiveSignedSemiNaive.cfg` into the TLC CI job
        alongside the sibling counting spec (round-42 opener task).
     2. Add Z3 lemma for S2 (`total = Seed + Body(total)` at
@@ -255,6 +257,7 @@ the verification + close were done live in the view but the view is read-only �
 record on origin). All figures below were verified by EXECUTION, not source-reading (verify-before-record).
 
 **non-register-collapse** (workitem 081KTFFFQ1C, FROZEN-CORE §B → DISCHARGED) — full 3-leg BP-16:
+
 - Facet-1 TLA+ `tools/tla/specs/NonRegisterCollapse.tla` (no-capture `lastRaiser[t]=t`; consent-guarded
   `Capture` unreachable in the weight-free base; `SelfRaiseRightOpen`). TLC-green, gated. PR #6721.
 - Facet-2 Lean `tools/lean4/Safety/NonRegisterCollapse.lean` (axiom-free `non_collapse` etc.; corollary
@@ -271,7 +274,9 @@ commutative+idempotent-but-non-associative passes the old 2 properties yet diver
 Verified by execution: **5 properties green** (`Divvy.merge` is a lawful join). Sub-item closed.
 
 **Corrected ratios (supersede the earlier 0.75):**
+
 - Safety-floor BP-16-compliant (≥2 independent tools) = **4/4 = 1.00**.
 - Safety-floor full-3-leg = **4/4 = 1.00** (was mis-stated 3/4 from the stale bifurcation row).
+
 The four floors: child-floor, right-to-refuse-binding, bifurcation, non-register-collapse — each at all
 three legs. No open bifurcation routing item for Kenji (the Face-3 item is retired — it already existed).

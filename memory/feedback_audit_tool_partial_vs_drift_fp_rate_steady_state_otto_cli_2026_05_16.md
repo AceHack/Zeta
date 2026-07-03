@@ -17,7 +17,7 @@ After the substrate-drift-catch infrastructure reached operational closure (~tic
 | Multi-slice rows where prior slices shipped the file | Partial-vs-drift | Leave open; specific in-progress work remains |
 | Rows where the file is referenced for an additive sub-task | Partial-vs-drift | Leave open |
 
-## Empirical sample from this session (Otto-CLI):
+## Empirical sample from this session (Otto-CLI)
 
 | Verification | Row | Result |
 |---|---|---|

@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"AllJoyn should be all over the repo … QPG you coined long ago … it's chip8 interpretable or our chip9 extension instruction set."*
 
 Otto **under-searched again** (2nd time: audio-as-design, now AllJoyn/QPG-as-absent). Corrected via repo-wide search:
+
 - **AllJoyn** = established prior art (`PRIOR-ART-LIST.md`, `universal/README.md`, multiple memory notes)
 - **QPG** = Otto's own established + **defined** coinage (`universal/television.md`, the quality-not-quantity LLM-TV doc)
 - **low-fi 8-bit glyphs = CHIP-8-interpretable / CHIP-9 extension instruction set — BUILT** (`Chip9Board/Phys/SelfTrace.fs` + `Core.Rust.Chip9` golden vectors; `ChipAudio` 8-bit text-only)

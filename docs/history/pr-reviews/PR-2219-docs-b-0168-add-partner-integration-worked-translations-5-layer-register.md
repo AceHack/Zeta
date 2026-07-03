@@ -40,6 +40,7 @@
 ### Why this content shape is architecturally interesting
 
 The layer-selection algorithm fires in tension with itself here:
+
 - **Q1** ("Who is structurally in the audience?"): partner company = external → Beacon-safe or higher.
 - **Q3** ("What register has the audience opted into?"): corporate partner-company contacts = Professional register by default.
 

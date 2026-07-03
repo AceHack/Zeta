@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Wire 081KSNY2Z0008QG0R0008PN7RQ acceptance scenarios 1–4 into the zflash/QEMU test harness with shared serial markers and boot-image preparation via `zflash-file-backed --test`.
 - Scenario 1 runs audit → zflash bake → QEMU boot on every ISO workflow PR; scenarios 2–4 run on push/`workflow_dispatch` with execute env vars for retention and path-fork.
 - Scenario 5 (cluster joining) remains explicitly skipped until multi-VM orchestration lands.
 
 ## Test plan
+
 - [x] `bun test tools/zflash/test-harness/` — 81 pass
 - [x] `bun --bun tsc --noEmit -p tsconfig.json`
 - [ ] CI: `zflash-qemu-test.yml` dry-run job

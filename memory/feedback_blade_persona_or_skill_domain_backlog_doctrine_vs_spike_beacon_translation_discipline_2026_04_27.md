@@ -111,6 +111,7 @@ This rule is the structural protection against vocabulary drift — keeps the ma
 Amara recommended encoding the taxonomy in `docs/architecture/metaphor-taxonomy.md` plus short GLOSSARY.md entries pointing there. Rationale: GLOSSARY.md alone wouldn't carry the operational separation; a dedicated architecture doc gives the taxonomy load-bearing status.
 
 **Per protect-project mandate**, NOT creating that doc this session because:
+
 - It's a Beacon-class current-state architecture doc — needs careful long-term thought
 - Cross-AI feedback is fresh; let it season before encoding to permanent surface
 - Pre-0/0/0 priority is closing drift; new doc creation expands scope

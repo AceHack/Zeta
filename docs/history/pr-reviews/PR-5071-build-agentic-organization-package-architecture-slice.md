@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds the package-first Agentic Organization implementation slice on the Node/Nest-compatible TypeScript stack.
 - Wires command outcome persistence through generic ports with Cockroach as a replaceable adapter, including idempotency race handling.
 - Adds worker/event ingestion, NATS/Cockroach boundaries, observability contracts, OpenSpec scenarios, and docs aligned to the Agentic Organization north star.
 
 ## Validation
+
 - npm test
 - npm run typecheck
 - prettier check

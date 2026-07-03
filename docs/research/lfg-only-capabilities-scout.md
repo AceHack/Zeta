@@ -1,4 +1,4 @@
-# LFG-only capabilities scout — what can we do on Lucent-Financial-Group that we can't on AceHack?
+# LFG-only capabilities scout — what can we do on Lucent-Financial-Group that we can't on AceHack
 
 Scouting doc. Living inventory of capabilities available on
 `Lucent-Financial-Group/Zeta` (Copilot Business + Teams plan)

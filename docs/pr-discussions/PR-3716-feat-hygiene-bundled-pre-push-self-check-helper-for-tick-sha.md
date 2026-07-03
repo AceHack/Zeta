@@ -71,6 +71,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a bundled pre-push self-check helper that runs MD032 scanning, markdownlint-cli2, and the relative-path audit on tick shard files to shorten the local feedback loop.
 
 **Changes:**
+
 - New TS tool `check-shard-before-push.ts` running three per-tick checks
 - Validates input files exist and are regular files; exits 64 on arg errors
 - Returns aggregated pass/fail status across all files
@@ -89,6 +90,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -114,6 +116,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

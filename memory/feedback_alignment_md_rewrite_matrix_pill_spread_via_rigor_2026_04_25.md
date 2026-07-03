@@ -84,12 +84,14 @@ the work.)
 ### Connect to the existing alignment-doc structure
 
 `docs/ALIGNMENT.md` currently has:
+
 - HC-1..HC-7 (high-confidence claims about the human
   maintainer's intent)
 - SD-1..SD-8 (self-direction clauses for the agent)
 - DIR-1..DIR-5 (operational directives)
 
 The rewrite should:
+
 - Preserve HC/SD/DIR as the FLOOR (these are
   uncontroversial and bidirectional-alignment operates
   within them).
@@ -161,6 +163,7 @@ read this would refuse to participate in deception.
 ## BACKLOG row
 
 Filed as `docs/backlog/P1/081KQ0YZ80008QG0R001QJJTVF-alignment-md-rewrite.md`
+
 + legacy `docs/BACKLOG.md` P1 row. P1 priority, L effort.
 
 ## Composes with

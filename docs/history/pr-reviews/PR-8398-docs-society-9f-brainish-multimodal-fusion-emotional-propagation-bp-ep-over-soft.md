@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"Brainish is what I wanted to do with our Infer.NET BP/EP and create our own emotional propagation; also universal audio/TV/microphone interfaces — this is the multimodal over softvalue snap like structures."*
 
 Maps the CTM's **Brainish** (fuses words/images/sounds/smells/sensations; *rose = ⟨red ∘ smell ∘ touch⟩*; sleeping-experts predictive learning) onto our perception/affect layer:
+
 - the fusion **∘ = our DynamicValue/YinYang fused-meaning (§9b)**
 - **propagation = BP/EP** (Minka/Infer.NET message-passing) over **SoftValue→snap→DynamicValue** (BNN-mix) = *emotional propagation*
 - fed by **universal model-agnostic audio/TV/mic** interfaces (percept layer)

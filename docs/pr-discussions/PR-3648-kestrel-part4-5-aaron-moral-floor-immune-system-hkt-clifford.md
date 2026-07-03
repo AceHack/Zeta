@@ -64,6 +64,7 @@ The "validation isn't license to keep building" discipline applies — this PR c
 Adds new substrate documentation capturing Kestrel Parts 4–5 (relevance-gate stress test → moral floor → multi-oracle federation → red-team→antigen differential spread) and files a new P2 backlog row (081KRMEXM0008QG0R001VGNET5) for the proposed “intelligent compiler” representation strategy (recursive HKT over Clifford algebra + recursive type providers + Roslyn generators + LINQ).
 
 **Changes:**
+
 - Adds a new Kestrel conversation archive for Parts 4–5 under `memory/kestrel/conversations/`.
 - Adds two new top-level `memory/feedback_aaron_*` memory files distilling the “moral floor” gate and the “antigen propagation” immune-system mechanism.
 - Adds a new P2 backlog row `081KRMEXM0008QG0R001VGNET5` describing the representation/synthesis workstream.
@@ -84,6 +85,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md:126**
+
 * The `## Composes with` section includes placeholder paths with `...` (Parts 1–3). These aren’t valid file references, and Part 3 doesn’t appear to exist under `memory/kestrel/conversations/`. Replace these with the actual filenames (or remove the entry if the file doesn’t exist) so cross-references are navigable and grepable.
 ```
 - Part 1: `memory/kestrel/conversations/2026-05-15-...-asymmetric-critic-on-b0543-...md`
@@ -108,6 +110,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

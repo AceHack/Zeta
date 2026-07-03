@@ -55,6 +55,7 @@ Operator 2026-05-31: *"a one-liner register with the idempotent install/update c
 `hermes` bundles a **local Hindsight memory daemon** on first use (no separate install); the **shared cluster Hindsight** is a future ArgoCD service (git-native storage interface upstreamed eventually; Max's CockroachDB provides the Postgres wire interface it wants).
 
 ## Verification
+
 - `bash -n` clean (linux/macos/one-liner-tools); `shellcheck` clean; diff vs main is only the registry + 2 inserts; `one-liner-tools.sh` mode `100755`.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

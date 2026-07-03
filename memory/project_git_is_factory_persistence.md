@@ -84,7 +84,7 @@ Key substrings from both:
   really help"* — operational-experience cost is the
   primary design driver.
 
-## Why:
+## Why
 
 - **Zero setup tax by default** — a new project adopting
   the factory clones a repo and starts working. No account
@@ -127,7 +127,7 @@ Key substrings from both:
     — same "don't add complexity until forced" shape,
     at the persistence layer.
 
-## How to apply:
+## How to apply
 
 - **When proposing any new factory feature:** lead with
   the git-native form. *"This could be a markdown file

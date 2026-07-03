@@ -251,6 +251,7 @@ target. Same structural shape at the alignment layer.
 ### From: Craft as pedagogy repo
 
 Otto-17/21/22/23 framed Craft as:
+
 - Khan-style learning repo
 - All subjects + Zeta + 0-to-any-age
 - Tool-use pedagogy (hammer + calculator + code-abstraction)

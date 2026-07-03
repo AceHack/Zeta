@@ -43,6 +43,7 @@ Picks up math-team handoff ROW 6 (`docs/handoffs/2026-06-19-otto-to-math-team-nf
 Plus the **metric-layer tie** via `SocietalDora.compute`: capture-heavy inputs drive `CaptureRate = 1` / `MeanCoupledGain <= 0`; all-mutual inputs invert it.
 
 ### Notes
+
 - `NormalFloat` generators (finite, non-NaN deltas) — NaN broke an earlier SocietalDora property.
 - All properties hold on the real code, unweakened: **10 added tests green**; existing 17 SocietalDora tests unchanged (27 total green).
 - New fsproj entry placed next to `Formal/SocietalDora.Tests.fs` to avoid colliding with other agents editing different fsproj regions.

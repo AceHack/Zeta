@@ -21,10 +21,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Tick shard for 0816Z (Otto-CLI cycle-new after PR #4357 + #4356 merged). Pushed-but-un-PRed via Pure-git tier discipline; opening now post-reset.
 
 Documents:
+
 - Lint-frontier closure via PR #4358 (10 + 3 NEW findings on 0608Z.md + 0803Z.md fixed)
 - Auto-merge-race lesson: arming auto-merge with non-required-check failing + follow-up commit can race (PR #4357's `9c9c8e69` lint fix lost to the race; PR #4358 shipped the fix instead)
 
 ## Test plan
+
 - [x] Shard at canonical `docs/hygiene-history/ticks/2026/05/19/0816Z.md`
 - [x] Relative paths use 6-level `../` (correct depth)
 
@@ -39,6 +41,7 @@ Documents:
 Adds the 0816Z hygiene-history tick shard documenting the closure of the “tick-shard relative-path” lint frontier (handled in PR #4358) and capturing an operational lesson about auto-merge races when non-required checks are failing.
 
 **Changes:**
+
 - Introduces a new tick shard at `docs/hygiene-history/ticks/2026/05/19/0816Z.md`.
 - Records the lint-frontier context (0608Z/0803Z relative-path findings) and the auto-merge timing failure mode.
 

@@ -400,7 +400,7 @@ The `Multiplicity` field is the Z-set embedding. The
 current state of consent `(subject, scope)` is the sum
 of all multiplicities for that key.
 
-### Audit query — is consent currently in force?
+### Audit query — is consent currently in force
 
 ```fsharp
 let isConsentInForce (events: seq<ConsentEvent>) subject scope =

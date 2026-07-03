@@ -32,6 +32,7 @@
 The last pass only *removed* tabs; this adds genuinely **type-specific tabs/views** so a database and a game server feel purpose-built, not generic.
 
 ### Database — its own console
+
 - **Query** — a real **SQL console**: editable SQL, ⌘/Ctrl+Enter to run, quick snippets (`\dt`, `SELECT *`, `count`, `version`), a results table, row count + duration, and **CSV export**. Backed by a new `ResourceOps.query()` op — DemoOps returns canned results for orders/customers/`\dt`/version and **refuses writes** (*"read-only console: only SELECT / \dt; use a migration for writes"*).
 - **Tables** — schema browser: tables with row counts + on-disk size, expandable to columns + types (PK/FK).
 - **Connections** — pool usage + active clients.
@@ -40,11 +41,13 @@ The last pass only *removed* tabs; this adds genuinely **type-specific tabs/view
 *(No Files, no shell — a DB doesn't need them.)*
 
 ### Game server — its own console
+
 - **Players** — live roster (name, SteamID, ping, score, time) with per-row **Kick / Ban** (routed through RCON exec). Empty state when the server is down.
 - **Maps** — current map, a **map picker** that changes it (`applyConfig values.MAP`), and a **Workshop** collection field.
 - **Console (RCON)** + **Files (SFTP)** as before.
 
 ### Tab sets
+
 - **game:** Overview · Metrics · Logs · Traces · **Players · Maps** · Console · Files · Config · Events · Room · Danger
 - **database:** Overview · Metrics · Logs · Traces · **Query · Tables · Connections · Backups** · Config · Events · Room · Danger
 

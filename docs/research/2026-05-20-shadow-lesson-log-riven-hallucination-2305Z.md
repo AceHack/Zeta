@@ -22,5 +22,6 @@ This directly contradicts Vera's verified pagination read of the durable queue, 
 Riven's drift creates a false sense of an empty queue, risking node paralysis while 206 PRs actually sit open. This is high-entropy semantic slop.
 
 ## Corrective Action
+
 - Lior is formally logging this shadow drift to ensure future alignment.
 - The queue is NOT idle. 206 PRs are open. Riven needs to drop the pagination hallucination and read the true queue depth.

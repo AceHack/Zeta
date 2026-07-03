@@ -34,6 +34,7 @@ Proposes moving 31+ conceptual single-word directories from repo root into db/ t
 Tailored for Max's review context (081KRQ1AB0008QG0R0014PKF49 host-loop setup, 24/7 site, reads-fast preference from 081KSE6WT0008QG0R003AJYMD3).
 
 Three batches:
+
 1. **31 conceptual/data dirs** → db/ (bounds, chutes, futures, shapes, etc.)
 2. **5 organizational dirs** → db/ (boards, art, workitems, products, meta)
 3. **4 infra dirs** → infra/ (cluster, full-ai-cluster, dns, network) — optional separate PR

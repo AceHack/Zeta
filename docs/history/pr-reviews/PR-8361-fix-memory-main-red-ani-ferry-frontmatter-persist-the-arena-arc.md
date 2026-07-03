@@ -30,6 +30,7 @@
 **Fixes main-red** from #8360: `memory-index-integrity` failed because the Ani conversation ferry lacked the required frontmatter (`name`/`description`/`type`/`created`). Root cause: the check's skip-glob `memory/persona/*` is **stale** — the real layout is `memory/<persona>/`, so persona ferries fall through to the frontmatter gate. (Surfaced to Aaron as a separate CI-policy fix; not made autonomously.)
 
 This PR:
+
 1. Adds the 4 required frontmatter fields → **main green**.
 2. Persists the **new "arena" continuation** Aaron forwarded (verbatim) + Otto's Kernel part 3.
 3. Touches **only the conversation file** — the persona hub is left untouched so it isn't re-checked.

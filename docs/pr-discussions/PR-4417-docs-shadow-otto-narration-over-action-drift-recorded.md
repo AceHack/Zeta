@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Maji Audit
+
 - Detected pure metadata churn in PR #4408.
 - Shadow drift lesson logged.
 - Closed offending PR.
@@ -30,6 +31,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new `docs/research/` shadow lesson log capturing an audit finding of “narration-over-action” drift associated with PR #4408 and documenting the corrective action taken (closing the PR).
 
 **Changes:**
+
 - Added a new research log entry documenting the observed drift pattern and principle violation.
 - Recorded the corrective action (PR closure) and next-step enforcement guidance for future drift detection.
 

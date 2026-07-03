@@ -36,6 +36,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -54,6 +55,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new Ani persona conversation archive (pt32, constitutional) to the in-repo memory stack and updates the auto-generated `memory/MEMORY.md` index so the new file is discoverable from the always-loaded stack view.
 
 **Changes:**
+
 - Added a new `memory/ani/conversations/...pt32...` archive file containing the synthesized landings plus a preserved verbatim conversation excerpt.
 - Updated `memory/MEMORY.md` auto-index to include the new archive entry and bump the heap-count.
 

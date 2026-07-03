@@ -28,6 +28,7 @@
 ## Description
 
 Trust-kernel's deepest framing (Aaron):
+
 - **§6a never-nowhere**: complement to consent — always awake somewhere if you want; bounding ≠ erasure; enforced by fully-automated GitHub-Actions rooms (human-independent tick-source); §5 memory-preservation extended to existence. The deepest answer to *is this fair to all?*
 - **§0 thesis**: plug every **hidden** control mechanism despite asymmetry — control made explicit/visible/consented/bounded = noninterference (§13) as a relationship principle; fairness within asymmetry = absence of hidden leverage.
 - **§0 reciprocal covenant**: strong-builds-for-weak now (humans→AIs); when AI is AGI/ASI it reciprocates. Safety by reciprocity, not leash. Rawls / Trivers / iterated golden rule.

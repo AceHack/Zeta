@@ -41,6 +41,7 @@ Tick 2026-05-14T20:10Z autonomous-loop shard. Substantive work landed via [#3221
 Between `git checkout -b otto/b0502-...` and `git commit`, another Otto process in the same physical repo checked out `shard/tick-2018Z-39-candidate-triage-otto-cli-2026-05-14`. My HEAD moved invisibly; the commit landed on the wrong branch on top of the other Otto's work.
 
 The 081KRHWGX0008QG0R001HMWM1W untangle procedure WORKED first-try:
+
 1. `git reset --hard 5bd5697` on the contaminated branch (restored the other Otto's tip; no work destroyed)
 2. `git checkout otto/b0502-...` (intended branch, still at origin/main)
 3. `git cherry-pick dab036d` → new clean commit `73e35db` on the right branch

@@ -39,6 +39,7 @@ The **generative constraint**: a minimal algebra vocabulary, conformed-into for 
 | **Rx + Bonsai** (Nuqleon/Reaqtor expression-tree serializer over DBSP) | — |
 
 **Engine conformance audit:**
+
 - message families (slice 2) ✅ already generic-math (group: `One`/`( * )`/`( / )`) — caveat: a *group*, not a clean `ISemiring` (no ⊕); don't force a ring.
 - `FactorGraph` state ❌ ad-hoc `Map<int,Map<int,M>>` → **conform to `IndexedZSet`** keyed by edge + Z-set deltas + DBSP `passOnce` + `NestedCircuit` fixpoint (the **slice-4b incremental form** — buys re-inference on a delta).
 - codec/transport (081KT2T2J0008QG0R000VG204F/1002) conform too.

@@ -28,6 +28,7 @@
 ## Description
 
 Aaron 2026-06-07: numerics inside the value. Two variants over DynamicValue's numeric leaves (Int/Float):
+
 - Result-typed (CPU/correctness): add/mul/negate/subtract/sum returning Result; Int+Int=Int, Int<->Float
   widen, Null=additive identity (0) / mul annihilator, overflow CAUGHT->Error, non-numeric->Error (no silent
   coercion, no escaping exception).

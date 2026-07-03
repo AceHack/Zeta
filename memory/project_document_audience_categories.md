@@ -39,6 +39,7 @@ roster, authoring round-history.
 govern how I extend the factory?"*
 
 **Primary docs (today):**
+
 - `AGENTS.md` (universal onboarding)
 - `GOVERNANCE.md` (numbered repo-wide rules)
 - `docs/AGENT-BEST-PRACTICES.md` (stable BP-NN registry)
@@ -67,6 +68,7 @@ default — see
 up my own project on this factory?"*
 
 **Primary docs (today / needed):**
+
 - `AGENTS.md` (universal onboarding — shared with #1)
 - Hygiene rows tagged `project` or `both` in
   `docs/FACTORY-HYGIENE.md` (adopter-facing subset)
@@ -86,6 +88,7 @@ discipline.
 in what order, and what is non-negotiable?"*
 
 **Primary docs (today):**
+
 - `CLAUDE.md` (session bootstrap pointer tree)
 - `AGENTS.md` (universal handbook)
 - `docs/ALIGNMENT.md` (contract with Aaron)
@@ -109,6 +112,7 @@ code.
 what shape is its algebra, where do features land?"*
 
 **Primary docs (today):**
+
 - `docs/ARCHITECTURE.md`
 - `docs/ROADMAP.md`
 - `docs/BACKLOG.md`
@@ -141,6 +145,7 @@ samples.
 Zeta in five minutes?"*
 
 **Primary docs (today / needed):**
+
 - `README.md` (root — single most important surface)
 - API docs (rendered from XML-doc comments)
 - Sample projects (currently sparse — Iris UX
@@ -165,6 +170,7 @@ project claim, and where is the evidence?"*
 character, posture).
 
 **Primary docs (today):**
+
 - `docs/FACTORY-RESUME.md` (job-interview honesty)
 - `docs/ALIGNMENT.md`
 - `docs/DEDICATION.md`
@@ -193,6 +199,7 @@ true, is the proof sound, is the benchmark fair, is
 the scope honest).
 
 **Primary docs (today):**
+
 - `docs/research/` (memos, the primary research surface)
 - `docs/FORMAL-VERIFICATION.md` (what's shipped in
   Lean / TLA+ / Z3 / FsCheck)
@@ -207,6 +214,7 @@ the scope honest).
   scripts reviewers will want to read and run)
 
 **Gaps (today):**
+
 - No `docs/PAPER-DRAFTS/` directory. Drafts live in
   `docs/research/` ad-hoc today.
 - No `docs/RELATED-WORK.md` canonical survey — per-
@@ -238,7 +246,7 @@ do, but ask different questions of them (review
 vs extend). Same doc, two audience entries, two
 navigation hooks.
 
-# Why:
+# Why
 
 Verbatim Aaron:
 
@@ -276,7 +284,7 @@ Substantive commitments:
    factory primer is scope `factory` but serves three
    audiences.
 
-# How to apply:
+# How to apply
 
 ## Immediate next step (pending Aaron sign-off)
 

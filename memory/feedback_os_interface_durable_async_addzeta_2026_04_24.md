@@ -155,6 +155,7 @@ via `tools/setup/common/sync-upstreams.sh`. The mirror path
 `references/upstreams/reaqtor/` is **gitignored** and only
 present after the sync script runs; it is NOT committed to
 the repo. Reaqtor's `IQbservable`
+
 + expression-tree representation gives us:
 
 - **Serializable observable queries** (the durable state
@@ -178,7 +179,9 @@ mode"*.
 Phased OS work: build all microkernel-class subsystems
 in usermode first, with tests, then promote to
 kernel-mode when (a) testing has matured, (b) hardware
+
 + all-dotnet-F# direction lands. Composes with the FUSE
+
 user-mode filesystem driver row (#398 cluster).
 
 ### 8. Actor interface (secondary)
@@ -188,6 +191,7 @@ but that is harder to think about for beginners unless
 your problem directly maps"*.
 
 Two-tier UX:
+
 - **Beginner / default**: durable-async sequential-
   looking code (the OS-interface above).
 - **Advanced / problem-fits**: actor interface for
@@ -220,6 +224,7 @@ sort of distributed 'event' loop, guarentees here are
 good if we can mathematically provice them"*.
 
 Targets for formal proof (Lean / TLA+):
+
 - **Liveness**: every fired event eventually completes
   or is durably-failed.
 - **Safety**: no event-loop loop processes the same
@@ -235,12 +240,14 @@ Composes with `tla-expert`, `lean4-expert`,
 ### 11. Auto runtime optimization + stats
 
 The runtime keeps stats on every awaited operation:
+
 - Latency distribution per node
 - Hot continuation points
 - Durability cost per yield
 - Cross-node hop frequency
 
 Optimizer uses these to:
+
 - Place continuations on the node owning the data they
   read next
 - Inline short-await chains into single round-trips
@@ -248,6 +255,7 @@ Optimizer uses these to:
 - Migrate hot streams to faster nodes
 
 Composes with `query-optimizer-expert` + `metrics-expert`
+
 + `performance-engineer`.
 
 ## Composition with the 2026-04-24 cluster
@@ -337,6 +345,7 @@ landing.
 ## Future Otto reference
 
 When implementation starts:
+
 1. Read this memory + the Phase 0 research doc first.
 2. Verify DST is still factory default (Otto-272).
 3. Survey Reaqtor's current state via the upstream sync

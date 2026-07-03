@@ -39,5 +39,6 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard (0111Z) documenting the session pivot from the converged PR-thread remediation loop to cleaning up perpetual non-required-check drift, with a concrete anchor to PR #3666 clearing the §33 migration dead-xref lint failures.
 
 **Changes:**
+
 - Add tick log `2026-05-16/0111Z` capturing what landed, current PR state snapshot, and operational/triage notes.
 - Document the verified “pure-substitution” nature of the §33 xref cleanup and the remaining drift items queued for follow-up.

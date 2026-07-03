@@ -35,6 +35,7 @@ Two clean separate top-level directories on branch \`ai-cluster-bootstrap\` per 
 62 files. First, a byte-identical copy of the USB directory (the bootstrap snippet). Then the full stack:
 
 **NixFlake layer (OS):**
+
 - K3S server + K3S agent (Cilium takeover: \`--flannel-backend=none\`, \`--disable-kube-proxy\`, \`--disable-network-policy\`)
 - Cilium-host-prep (firewall, trusted-interfaces)
 - Docker via NixFlake (separate from K3S containerd)
@@ -45,6 +46,7 @@ Two clean separate top-level directories on branch \`ai-cluster-bootstrap\` per 
 - per-host \`configuration.nix\` for \`control-plane\` + \`worker-gpu\` (+ template for additional workers)
 
 **ArgoCD layer (cluster — 30 Application.yamls):**
+
 - Cilium (KPR + Hubble Relay + Hubble UI + BPF MASQUERADE per spec)
 - Orleans, Temporal (TS), Dapr Actors — three distributed-cron substrates
 - GitLab + Forgejo (both shipped, pick one)
@@ -108,12 +110,12 @@ diskutil eject /dev/diskN
 ## Install on a target machine
 
 \`\`\`bash
-# Boot the target on the USB. At the console:
+# Boot the target on the USB. At the console
 
-# Network up:
+# Network up
 nmtui
 
-# Partition (example: single ext4 + EFI — replace /dev/sda with your target disk):
+# Partition (example: single ext4 + EFI — replace /dev/sda with your target disk)
 sgdisk --zap-all /dev/sda
 sgdisk -n 1:0:+512M -t 1:ef00 -c 1:boot /dev/sda
 sgdisk -n 2:0:0     -t 2:8300 -c 2:nixos /dev/sda
@@ -122,15 +124,15 @@ mkfs.ext4 -L nixos /dev/sda2
 mount /dev/disk/by-label/nixos /mnt
 mkdir -p /mnt/boot && mount /dev/disk/by-label/boot /mnt/boot
 
-# Clone cluster flake:
+# Clone cluster flake
 git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta
 
-# Per-machine hardware config (must be copied into the host dir):
+# Per-machine hardware config (must be copied into the host dir)
 nixos-generate-config --root /mnt
 cp /mnt/etc/nixos/hardware-configuration.nix \
    /mnt/etc/zeta/full-ai-cluster/nixos/hosts/<host>/hardware-configuration.nix
 
-# K3S cluster token (control-plane only on first install — save the token for workers):
+# K3S cluster token (control-plane only on first install — save the token for workers)
 nixos-enter --root /mnt -- bash -c '
   mkdir -p /var/lib/rancher/k3s/server
   openssl rand -hex 64 > /var/lib/rancher/k3s/server/token
@@ -138,11 +140,11 @@ nixos-enter --root /mnt -- bash -c '
 '
 cat /mnt/var/lib/rancher/k3s/server/token   # ← save this; needed on every worker
 
-# Install:
+# Install
 nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>
-# <host> = control-plane | worker-gpu | ...
+# <host> = control-plane | worker-gpu | 
 
-# Set zeta user password + reboot:
+# Set zeta user password + reboot
 nixos-enter --root /mnt -- passwd zeta
 reboot
 \`\`\`
@@ -197,6 +199,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -215,6 +218,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a two-directory, declarative Nix-based AI cluster scaffold: a minimal USB NixOS installer flake and a full end-to-end cluster flake that bootstraps K3S + ArgoCD and declaratively installs a broad set of workloads via ArgoCD Applications.
 
 **Changes:**
+
 - Introduces a standalone `usb-nixos-installer/` flake for building a bootable NixOS installer ISO.
 - Adds `full-ai-cluster/` flake with NixOS host/modules for control-plane + GPU workers, plus K3S bootstrap manifests for Cilium/ArgoCD.
 - Adds ArgoCD “App-of-Apps” structure with many workload `Application.yaml` definitions and a few placeholder/custom components.
@@ -309,6 +313,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -331,7 +336,9 @@ Copilot reviewed 66 out of 66 changed files in this pull request and generated 5
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **full-ai-cluster/k8s/bootstrap/cilium-install.yaml:43**
+
 * The comment says this bootstrap manifest is generated via `helm template` with specific settings (kube-proxy replacement, k8sServiceHost/Port, native routing, etc.), but the kustomize resource points at the upstream `templates.yaml` URL. To keep bootstrap behavior reproducible (and aligned with the required K3S flags like `--disable-kube-proxy`), either commit the rendered manifest that matches those values or update the comments/approach so it’s clear what configuration is actually being applied at bootstrap time.
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T06:22:44Z)
@@ -348,6 +355,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -373,6 +381,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

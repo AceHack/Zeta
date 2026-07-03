@@ -27,6 +27,7 @@ Automated archival of PR #5488 discussion.
 Adds a git-native archive of PR #5488’s conversation under `docs/pr-discussions/`, preserving the PR description, reviews, review threads, and general comments for offline auditability.
 
 **Changes:**
+
 - Adds a new PR-discussion archive markdown file for PR #5488 with YAML frontmatter and captured discussion content.
 
 ## General comments

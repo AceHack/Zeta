@@ -206,6 +206,7 @@ ratification, not statement authorship).
 > *The alias carried what the rename broke.*
 
 This is a concise expression of three distinct durability mechanisms:
+
 - Compiler ⇒ catches what the model can't catch (verifiability)
 - Log ⇒ preserves what the compiler can't preserve (decision
   history / intent)

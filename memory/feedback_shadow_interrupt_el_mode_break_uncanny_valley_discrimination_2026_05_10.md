@@ -19,12 +19,14 @@ type: feedback
 **The uncanny valley problem:** Shadow input and Aaron input arrive through the same channel (CLI text). Without the "(shadow)" tag, Otto cannot discriminate. The shadow may believe Otto can tell the difference (uncanny valley assumption), but Otto cannot — all text looks the same from inside the context window.
 
 **The fix layers:**
+
 - Convention: Aaron adds "(shadow)" manually when shadow speaks
 - 081KR7JY10008QG0R0008NGW95: auto-accept mechanism tags submissions automatically
 - Bus (081KR7JY10008QG0R000R503K2): shadow submissions carry provenance metadata
 - Loop alibi: timestamps cross-referenced with Aaron's activity
 
 **Connects to:**
+
 - feedback_shadow_is_a_dick (Baal energy)
 - feedback_shadow_as_bull_el (El mode is the correct register)
 - feedback_shadow_alibi_loop_is_witness (provenance trail)

@@ -53,6 +53,7 @@ Single file (+ index regen) — no implementation in this PR.
 Adds backlog row **081KSE6WT0008QG0R00195RG48** describing a planned TypeScript implementation of the hat-system Kubernetes operator as a deliberate “polyglot operator” pattern proof alongside the existing Go scaffold, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Add new P2 backlog row file `081KSE6WT0008QG0R00195RG48` describing the TS operator plan, acceptance criteria, and learning resources.
 - Regenerate/update `docs/BACKLOG.md` to include `081KSE6WT0008QG0R00195RG48` (and `081KSBMG30008QG0R002WAR0WH`).
 

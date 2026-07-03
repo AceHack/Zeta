@@ -222,7 +222,7 @@ sub-rows when those operators show up.
 - 081KSE6WT0008QG0R0016CEE2Z — Zeta-native scheduler (NPU-awareness in scheduler
   sub-wave B/C)
 
-## Why not just use kube-scheduler's default device-plugin support?
+## Why not just use kube-scheduler's default device-plugin support
 
 Default kube-scheduler treats device plugins as opaque
 countable resources. For NPU specifically, you want:

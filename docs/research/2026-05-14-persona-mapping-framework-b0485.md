@@ -129,6 +129,7 @@ refused persona.
 | Granny + Milton | `memory/user_granny_and_milton_formative_grandparents.md` | Grandparents | Adjacent; historical substrate |
 
 **Key insight from `feedback_aaron_family_ai_adoption_strategy_*`:**
+
 - Addison: easier AI sell — more technically inclined
 - Lillian: harder sell — conservative
 - Wearable AI pendant as personalization bridge
@@ -230,6 +231,7 @@ Per `.claude/rules/agent-roster-reference-card.md`:
 The `memory/project_factory_as_wellness_dao.md` framing treats wellness as a *factory attribute* ("the factory IS a wellness-DAO"), not just a product. This creates a naming conflict with the Wellness App product.
 
 **Resolution:** In persona docs, distinguish:
+
 - **Factory wellness** — applies to all maintainer/contributor personas; factory-as-wellness-DAO is meta-context
 - **Wellness App product** — specific product with its own personas
 

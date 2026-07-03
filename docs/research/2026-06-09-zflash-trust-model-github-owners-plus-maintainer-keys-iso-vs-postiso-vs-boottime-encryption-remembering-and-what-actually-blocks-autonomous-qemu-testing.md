@@ -11,7 +11,9 @@ have GitHub workflows — what is blocking you? why do we need humans to figure 
 A node's `zeta` user should trust the **union** of:
 
 1. **Repo owners' GitHub keys (dynamic)** — whoever owns the repo the node belongs to: fetch `https://github.com/
+
 <owner>.keys` live. Ownership changes propagate **without reflash**.
+
 2. **Checked-in maintainer pubkeys (static)** — `maintainers/<account>/ssh-pubkeys.txt` → `operator-ssh-keys.txt`
    (already built: Aaron #7249, Addison #7250).
 

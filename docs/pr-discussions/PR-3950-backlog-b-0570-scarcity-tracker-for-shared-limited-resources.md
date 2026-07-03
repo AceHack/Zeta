@@ -27,6 +27,7 @@ The 2026-05-16 session demonstrated the failure mode in real time: thread resolu
 ## Mitigation axes (sibling rows)
 
 The row's mitigation-axes table identifies 3 orthogonal axes; sibling rows file follow-on work:
+
 - **081KRQ1AB0008QG0R0038VQJZ0** — GitHub App for factory automation (separate rate-limit pool; primary mitigation)
 - **081KRQ1AB0008QG0R000GZEMCR** — LFG GitHub tier audit (XS effort; Enterprise = 3× per-user headroom for free if already paid)
 - Per-user-account partition (e.g., Addison's account) — discretionary, no row
@@ -47,6 +48,7 @@ The row's mitigation-axes table identifies 3 orthogonal axes; sibling rows file 
 Adds a new P1 backlog row (081KRQ1AB0008QG0R002422Z9Q) designing a scarcity tracker for shared limited resources (GitHub API GraphQL/REST budgets, runner minutes, etc.), motivated by a real GraphQL rate-limit exhaustion observed in the 2026-05-16 session. The generated backlog index is updated accordingly.
 
 **Changes:**
+
 - New per-row file `081KRQ1AB0008QG0R002422Z9Q-...md` with origin, acceptance criteria, 6-slice decomposition, design sketch, and mitigation-axes table
 - Regenerated `docs/BACKLOG.md` index to include the new row
 

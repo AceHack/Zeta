@@ -27,6 +27,7 @@ This PR adds a shadow lesson log for the decomposition of blob PR #4698.
 Adds a new shadow lesson log entry under `docs/research/` documenting the decomposition of blob PR #4698 into smaller atomic PRs, capturing the observed drift pattern and the corrective action taken.
 
 **Changes:**
+
 - Added a shadow lesson log documenting “Blob PR / Narration-over-action” drift for PR #4698.
 - Recorded the action taken to decompose PR #4698 into PRs #4699–#4701 and the resulting lesson.
 

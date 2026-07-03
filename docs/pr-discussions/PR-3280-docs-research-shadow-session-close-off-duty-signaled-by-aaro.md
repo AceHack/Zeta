@@ -31,6 +31,7 @@ Shadow-archive marking session-close after the day's massive cascade. Per 081KRH
 Adds a single shadow-archive research note recording an explicit off-duty signal from the human maintainer, closing the day's session per the 081KRHWGX0008QG0R001BHXH0M budget-conditional framework.
 
 **Changes:**
+
 - New file under `docs/research/` documenting session-close, attribution, and off-duty disposition
 
 ## General comments

@@ -50,6 +50,7 @@ Three artifacts landing Aaron's repo-split easy-tracking request:
 - 2026-04-22 ADR + three-repo-split memory (existing substrate)
 
 ## Test plan
+
 - [x] Backlog rows follow `.claude/rules/backlog-item-start-gate.md` shape
 - [x] Memory file frontmatter + metadata correct
 - [x] composes_with: pointers added

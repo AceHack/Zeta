@@ -52,6 +52,7 @@ After `--apply`, six manual follow-ups remain (documented in the updated backlog
 Documentation-only backlog update for 081KRFA460008QG0R001H98EXJ, marking Stage 1 scaffold work as partially complete and documenting the remaining repo-creation execution step.
 
 **Changes:**
+
 - Updates 081KRFA460008QG0R001H98EXJ frontmatter metadata and status.
 - Adds a completed-slices table for 081KRFA460008QG0R001H98EXJ.1–081KRFA460008QG0R001H98EXJ.8.
 - Documents dry-run verification, `--apply` commands, and post-apply manual follow-ups.

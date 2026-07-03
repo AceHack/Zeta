@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Carve final 5 oversized skill descriptions to routing sentences per 081KR50HA0008QG0R002ZNFQBZ
 - Skills: tla-expert, streaming-window-expert, time-and-clocks-expert, linq-expert, volcano-iterator-expert
 - **081KR50HA0008QG0R002ZNFQBZ is now complete** — 0 skills remain above 150 chars (all 246 carved)
 
 ## Test plan
+
 - [ ] CI passes (frontmatter-only changes, no code impact)
 - [ ] `for f in .claude/skills/*/SKILL.md; do desc=$(sed -n '/^description:/p' "$f"); [ ${#desc} -gt 150 ] && echo "OVER: $f"; done` returns empty
 

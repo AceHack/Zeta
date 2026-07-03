@@ -34,21 +34,25 @@ The `DbspSpec.tla` file (`tools/tla/specs/DbspSpec.tla`) and the Lean proof (`to
 The following core capabilities were identified as load-bearing and were audited for existing implementations and specifications.
 
 ### Z-Set Algebra
+
 - **Implementations:** `src/Core/ZSet.fs`, `src/Core/IndexedZSet.fs`
 - **Specs:** **Already specced** — `openspec/specs/operator-algebra/spec.md` defines the Z-set abelian group, its signed-weight retraction semantics, and the four stream operators.
 - **Notes:** No new top-level spec needed. Any Phase 2 work here is refinement of the existing `operator-algebra` spec (e.g., `IndexedZSet`-specific operations if not yet covered), not greenfield authoring.
 
 ### Tick-History Schema
+
 - **Implementations:** A suite of tools under `tools/hygiene/` (e.g., `append-tick-history-row.ts`, `check-tick-history-order.ts`) operate on the tick history shards.
 - **Specs:** **None found** in `openspec/specs/` (verified — no existing spec references the tick-history schema).
 - **Notes:** The structure of the tick-history shards is a critical, cross-cutting concern. A formal spec would document the schema, frontmatter fields, and the invariants that the hygiene tools enforce. **This is the genuinely unspecced capability in this audit set.**
 
 ### DBSP Operators
+
 - **Implementations:** `src/Core/` operator surface; a Lean proof at `tools/lean4/Lean4/DbspChainRule.lean` proves the chain rule; multiple research documents reference DBSP.
 - **Specs:** **Already specced** — `openspec/specs/operator-algebra/spec.md` covers `z^-1` / `I` / `D` / distinct, and `openspec/specs/circuit-recursion/spec.md` pins the nested-circuit semantics for the DBSP §5-6 recursive-query pattern. A TLA+ spec also exists at `tools/tla/specs/DbspSpec.tla`.
 - **Notes:** No new OpenSpec authoring required. Phase 2 work here is reconciliation: confirm the `operator-algebra` + `circuit-recursion` specs, the TLA+ spec, and the Lean proof agree on the operator semantics; close any drift between them.
 
 ### Retraction-Native Semantics
+
 - **Implementations:** This concept is diffuse and appears in many places. The ADR `docs/DECISIONS/2026-04-24-graph-substrate-zset-backed-retraction-native.md` is a key document.
 - **Specs:** **Already specced** — the signed-weight retraction semantics are part of `openspec/specs/operator-algebra/spec.md`, and `openspec/specs/retraction-safe-recursion/spec.md` defines the retraction-safe least-fixed-point combinators.
 - **Notes:** The foundational principle is captured across `operator-algebra` and `retraction-safe-recursion`. Phase 2 work, if any, is consolidating a cross-cutting statement that references both, not authoring a new spec from the ADR alone.

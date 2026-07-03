@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - DeepSeek full conversation extract (66KB, 1237 lines)
 - Covers: Ace architecture, hole-puncher, Genesis Seed, KSK, ARC-AGI-3, shadow lesson log
 - Fourth cross-model conversation preserved this session (ChatGPT + Claude.ai + Gemini + DeepSeek)
 - §33 archive headers present
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Verbatim preservation verified
 

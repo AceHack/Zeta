@@ -47,6 +47,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -65,6 +66,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new “step 4b” to the autonomous loop checklist to ensure merged PR discussion threads are archived into the repo after tick work is committed, using the existing `tools/pr-preservation/archive-pr.ts` flow.
 
 **Changes:**
+
 - Document a new post-commit step to scan recent merged PRs and archive unarchived PR discussions.
 - Add a suggested `gh pr list` + `bun tools/pr-preservation/archive-pr.ts` snippet to automate the check.
 - Explain why PR discussion archives are treated as durable, git-native substrate.

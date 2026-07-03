@@ -30,7 +30,7 @@ honest retrospective cadence — is **factory-scope**. Aaron is
 encoding 20 years of software best practices into the factory
 substrate; those practices are not Zeta's.
 
-# Why:
+# Why
 
 Aaron's verbatim (2026-04-20):
 
@@ -78,7 +78,7 @@ First-hand evidence in this very round:
 - **HUMAN-BACKLOG / teaching-track / meta-wins / free-beats-
   cheap-beats-expensive / pluggability-first** — all factory.
 
-# How to apply:
+# How to apply
 
 - **At absorb-time, default to factory.** Unless the rule
   explicitly mentions the DB algebra or a Zeta-only data

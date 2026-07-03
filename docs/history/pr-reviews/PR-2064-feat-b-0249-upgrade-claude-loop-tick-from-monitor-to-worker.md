@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Replaces read-only `claude --print` heartbeat with actual work via `claude -p --permission-mode auto`
 - **pickup mode** (open_prs=0): picks buildable-now backlog item, prefers F#/TS code, creates PR
 - **drain mode** (open_prs>0): fixes review threads on blocked PRs, arms auto-merge
@@ -35,6 +36,7 @@
 - Supersedes #2063 (rebased clean)
 
 ## Test plan
+
 - [ ] Verify `runner.log` shows `claude work cycle start` on next gate fire
 - [ ] Verify it creates a PR or drains threads depending on mode
 

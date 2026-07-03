@@ -46,5 +46,6 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Fixes a failing tick-shard lint check by removing a broken relative-path Markdown link that pointed to an out-of-repo, user-scope memory directory, replacing it with inline prose that preserves the intended reference without creating an invalid link.
 
 **Changes:**
+
 - Replaced an out-of-repo relative Markdown link with inline explanatory text.
 - Preserved the “user-scope-only / not in repo” intent while eliminating the link target that breaks the `tick-shard relative-paths` audit.

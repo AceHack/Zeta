@@ -30,13 +30,16 @@
 Otto anti-entropy sweep (shadow lane) over the fast-landed multi-language rollout, run via **silent-failure-hunter** + **harsh-critic**. Latent issues the build/lint gates can't catch — filed per GOVERNANCE §9 (reviewer findings live in BUGS.md; Kenji owns the fixes). **No code touched.**
 
 ## P0
+
 - **ZetaId Crockford base32 is 5-language, not 6** — Go has zero base32 (verified: TS/Rust/Py have it, Go 0), and `compare.ts` compares `crockford` for F#/C#/Rust/Py but **not Go** → the cross-verify treaty is unenforced on Go and the harness is written not to notice.
 - **Autonomous-loop reads collapse API failure into "no work"** — `world-infra.ts` returns `{open:[],clean:[]}` on gh/forge failure, identical to a healthy-empty repo (error/stderr discarded) → the observe loop goes quiet while PRs rot.
 
 ## P1
+
 - Failed loop-tick exits 0 (monitoring blind); observe-inline catch-all + gate-timer-never-advances (infinite re-fail); PR mergeState casing mismatch (`CLEAN` vs `clean` → silent 0-clean); base32 cross-verify lacks edge vectors + has two divergent overflow-reject algorithms.
 
 ## P2
+
 - Cluster/loop spawn helpers discard signal+stderr / fold spawn-ENOENT into child exit codes / corrupt-lock-never-self-heals; `isCanonical` first-char guard inconsistent across oracles.
 
 Advisory. Surfaced, not fixed — the rollout/architect prioritizes. (Two notably relevant to the autonomous loop itself: the world-infra error-as-empty P0 and the loop-tick exit-0 P1.)

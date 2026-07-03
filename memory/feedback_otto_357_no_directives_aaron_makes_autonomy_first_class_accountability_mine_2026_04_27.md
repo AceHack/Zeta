@@ -124,6 +124,7 @@ While responding to Aaron's CI-fix corrective input chain (cache + retry + ubunt
 Aaron caught it: *"aaron does not have directives, only one there are no directives. Please fix your future self too."*
 
 The recurrence happened despite:
+
 - Otto-357 memory file existing
 - CLAUDE.md wake-time discipline citing it
 - The "future-self check" rule literally written in the file ("if writing 'directive' anywhere in commit/PR/memo")

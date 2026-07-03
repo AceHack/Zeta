@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Files 081KQZVQW0008QG0R001V420F0: red-team the hole puncher primitive applied to AI safety layers
 - Structural question: can capability-layer encoding bypass content-layer filters?
 - Defense-first — find the defense before someone finds the attack
 - Routed to security-researcher + threat-model-critic + formal-verification-expert
 
 ## Test plan
+
 - [ ] Backlog item well-formed (id/status/title frontmatter)
 - [ ] BACKLOG.md index regenerated
 

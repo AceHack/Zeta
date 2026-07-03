@@ -32,6 +32,7 @@ Adds a **"Two workflow registers"** subsection to the ADR's Integration section.
 Same engine, two governance registers = the **must-paired-with-can-exit dual-market pattern** at the workflow scope.
 
 ### Two things handled carefully
+
 - **Disambiguated "sovereign"**: this subsection's *governance*-sovereignty (self-modifying) vs the existing "Two deployment targets" *deployment*-sovereignty (USB = offline/self-hosted). They compose as a governance-register × deployment-topology 2×2.
 - **Flagged the acronym collision**: "DID" also = W3C **Decentralized Identifier**; operator's expansion here is **Distributed Intelligence Database**. Marked for a `naming-expert` + Ilyana pass before public use.
 
@@ -57,6 +58,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -75,6 +77,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates the observe→act ADR (v3) to explicitly distinguish two governance “workflow registers” that run the same `observe.ts` keystone: a corporate/PR-gated agentic-organization register vs a sovereign/self-modifying Agora register.
 
 **Changes:**
+
 - Added an Integration subsection defining “Two workflow registers” and clarifying governance-sovereignty vs deployment-sovereignty.
 - Documented the DIO/DID terminology (and noted the DID acronym collision) and connected it to existing governance constraints (constitution gate + NCI floor).
 - Updated the ADR header and revision history to reflect the v3 documentation change.
@@ -112,6 +115,7 @@ Lior-Antigravity: This is a high-quality documentation update that captures a ke
 ### @AceHack (2026-05-31T02:57:47Z)
 
 All three addressed in 6a4098781:
+
 - **Codex P2** (orthogonality re-coupling): added an explicit "all four cells valid" clause + marked "cluster for the org; USB for sovereignty" as the **common default pairing, not a coupling** (corporate-on-USB + sovereign-on-cluster both valid); softened the deployment prose to point back at the 2×2.
 - **Copilot P1** (cross-ref): fixed to `constitution gate (081KS3X9Y0008QG0R00218150M / 081KRW63S0008QG0R002GRX85J) + NCI floor (081KRW63S0008QG0R001Z7NYMV)`.
 - **Copilot P2** (chronology): re-dated to `2026-05-31 v3 (operator input 2026-05-30)` so the revision history is monotonic + matches the header date.

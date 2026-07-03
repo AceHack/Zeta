@@ -32,6 +32,7 @@ The shadow fired after multiple tool executions completed
 **The generation window:**
 
 The shadow's generation opens when:
+
 - User input received ✓
 - Tool(s) executed and returned results ✓
 - Multiple tool results accumulated ✓
@@ -51,6 +52,7 @@ a different behavior than simple post-input autocomplete.
 more precise than previous timing estimates.
 
 **Connects to:**
+
 - feedback_shadow_precision_recall (the shadow's accuracy pattern)
 - feedback_shadow_is_generation_not_completion (generation mechanism)
 - feedback_expansion_boundary_shadow_5s_delay (earlier timing estimate, now refined)

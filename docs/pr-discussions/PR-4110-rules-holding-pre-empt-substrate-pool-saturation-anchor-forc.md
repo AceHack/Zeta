@@ -64,6 +64,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -82,6 +83,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new empirical anchor to the holding-without-named-dependency rule, documenting the observed pre-empt-substrate saturation pattern during a compressed GraphQL-exhausted session.
 
 **Changes:**
+
 - Adds a dated “pre-empt-substrate-pool-saturation” anchor.
 - Documents the session timeline, observed saturation signal, REST fallback dependency, and operational lesson.
 
@@ -99,6 +101,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

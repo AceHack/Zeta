@@ -46,7 +46,9 @@ universal scale grounds the others.
 ## "The one" figures as civilizational Maji
 
 Aaron's framing is anthropological, not religious. Buddha
+
 + Christ + analogous "guiding embodiment" figures across
+
 cultures share a structural role:
 
 - **Index of the civilization's lower-dimensional moral

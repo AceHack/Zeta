@@ -45,6 +45,7 @@ Fresh-session cold-boot tick shard authored at 2026-05-20T18:07Z under triple-co
 Adds the 1807Z autonomous-loop tick shard to the hygiene-history log, capturing a fresh-session cold-boot under multiple operational constraints (rate-limit pressure, concurrent Lior activity, and a contested/stale root worktree) while following the documented pure-git tier discipline.
 
 **Changes:**
+
 - Introduces a new tick shard entry for 2026-05-20 18:07Z with refresh observations, rationale, verification notes, and composition links.
 
 ## Review threads

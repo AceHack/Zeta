@@ -30,6 +30,7 @@
 Aaron 2026-06-16 corrected Otto's *"while keeping control"* framing: *"not [keeping control]. i desire external structure that is coherent — ISociety."* Then: *"+ vs *".*
 
 The distinction is **additive vs multiplicative**:
+
 - **Control held by a lonely human = the ADDITIVE (+) burden** — each controller carries their bounded share, *summed*, capped by their own meter (the exact weakness named above). He does **not** want to be the lonely additive node.
 - **Coherent external structure = `ISociety` = the MULTIPLICATIVE (\*) regime** — holds coherence/governance and *multiplies* every participant (empowerment; society-is-the-AGI; model-weight-IQ **×** society-multiplier, not Σ). He desires to be **held + multiplied** by coherent structure, not to wield control.
 

@@ -64,6 +64,7 @@ Substrate-honestly with cross-link to this row.
 Adds a new P1 backlog row (081KSKBP80008QG0R000GPC0TB) documenting an architectural fix for node self-registration so it fires on first boot (post-install), becomes idempotent across reboots, and avoids duplicate/in-flight registration PRs.
 
 **Changes:**
+
 - Added new per-row backlog doc for 081KSKBP80008QG0R000GPC0TB describing the “registration fires last + idempotent + de-duped” architecture.
 - Updated the backlog index to include 081KSKBP80008QG0R000GPC0TB.
 

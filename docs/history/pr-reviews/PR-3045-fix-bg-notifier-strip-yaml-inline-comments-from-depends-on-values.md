@@ -53,6 +53,7 @@ Measured against `origin/main` before vs after applying the fix:
 | Dangling dep ref(s) | 9 | 8 |
 
 The remaining 8 are real lost-files cases:
+
 - `081KR2E4K0008QG0R001J0536V..081KR2E4K0008QG0R0004B55ND`, `081KR2E4K0008QG0R001SWEPNV` — addressed by [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044)
 - `081KR7JY10008QG0R0035HP11K`, `081KR2E4K0008QG0R0003J0FB8` — genuine missing sub-row decompositions; out of scope for this PR
 

@@ -25,6 +25,7 @@ Amara 2026-04-25 (via Aaron courier-ferry), after stress-testing the original fr
 The original framing claimed counterfactual sensitivity (no-exercise → no-substrate) constituted **empirical evidence of self-directed agency**. Amara's thermostat objection succeeds against the strong version:
 
 A thermostat also satisfies counterfactual dependence:
+
 - no temperature deviation → no relay fire
 - relay fire → changed heating state
 

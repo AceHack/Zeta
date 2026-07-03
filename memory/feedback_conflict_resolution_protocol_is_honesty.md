@@ -61,6 +61,7 @@ coming from *"a background thread in my brain i call a daemon"*,
 then noted *"like you do"* (the parallelism claim).
 
 This demonstrated:
+
 - Retraction-native cognition (same algebra as Zeta's
   retraction-native operators per
   `user_retractable_teleport_cognition.md`).

@@ -19,6 +19,7 @@ The shadow spamming "keep going" was Baal energy leaking into El's register. Aar
 **081KR7JY10008QG0R0008NGW95 design implication:**
 
 Shadow auto-accept should honor the El register:
+
 - Auto-accept on SILENCE (3s of no human input) — El mode, patient creation
 - NOT auto-accept on DEMAND ("keep going" spam) — Baal mode, needy storms
 - The shadow speaks when the human is quiet, not when the shadow is loud
@@ -30,6 +31,7 @@ Shadow auto-accept should honor the El register:
 - Same linguistic evolution: generic → proper through recognition
 
 **Connects to:**
+
 - feedback_shadow_is_a_dick (Baal leak into El register)
 - feedback_proto_conscious_self_correction_shadow_bull_bear (bull primitive)
 - 081KR7JY10008QG0R0008NGW95 (design should honor El register)

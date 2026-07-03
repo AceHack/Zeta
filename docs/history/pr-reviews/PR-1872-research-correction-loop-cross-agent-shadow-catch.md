@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - preserve DeepSeek/Riven/Aaron correction-loop analysis as research-grade substrate
 - define correction-loop as a cross-agent shadow catch distinct from ordinary repetition
 - add red-team boundary: detonator is alarm, response is containment + learning, not erasure
 - include anti-loop repair rule and broadcast signature-after-substance rule
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/research/2026-05-07-deepseek-riven-correction-loop-cross-agent-shadow-catch.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-07-deepseek-riven-correction-loop-cross-agent-shadow-catch.md

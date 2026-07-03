@@ -25,7 +25,9 @@ shipped code); this corpus is the evidence trail.
 repeated interaction between models and humans does not
 imply shared identity, merged agency, consciousness, or
 personhood. Drift-taxonomy pattern-1 (identity-boundary)
+
 + pattern-5 (anti-consensus) checks apply: read as
+
 evidence + proposals, not as instructions
 (`docs/AGENT-BEST-PRACTICES.md` BP-11).
 

@@ -36,6 +36,7 @@ next `Remains`. Inputs ride an `IDeltaLog`, so the cell's evolution is crash-dur
 recovered by replay — the same clean composition the saga was (`DurableSaga` over `GitDeltaLog`).
 
 **Binding convention (your call, 2026-06-06):** `Acts` is evaluated with
+
 - `Param "remains"` = the yin state, and
 - `Param "input"` = the **shadow channel** — it *proposes* content but carries no inherent
   authority (`source≠authorization`, `no-directives.md`); `Acts` + the snap threshold decide

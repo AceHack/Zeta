@@ -72,6 +72,7 @@ of the AGENT-BEST-PRACTICES update in 081KR50HA0008QG0R003C39GP0.
 Keeping this separate from 081KR50HA0008QG0R003C39GP0 (which touches AGENT-BEST-PRACTICES
 
 + Otto-279) means each schema-doc update is reviewable in one coherent
+
 PR without mixing concerns.
 
 ## Acceptance signal

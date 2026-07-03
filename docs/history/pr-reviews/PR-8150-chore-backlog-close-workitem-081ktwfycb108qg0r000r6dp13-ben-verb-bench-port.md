@@ -30,16 +30,19 @@
 chore(backlog): close workitem 081KTWFYCB108QG0R000R6DP13 (ben verb + bench port)
 
 Why:
+
 - The `ben` (benchmark) and `pro` (profile) verbs and their framework integrations have been fully implemented, tested, and merged.
 - The C# and F# oracles support deterministic and statistical benchmarking hexagonal interfaces (BenchmarkDotNet tests, GC alloc meters, EventPipe profiler attachments).
 - The cartridge `ben` line and ComplexityRegistry predictions are validated and lint-checked.
 - The workitem is complete and ready to be closed.
 
 What:
+
 - Move workitem 081KTWFYCB108QG0R000R6DP13 from active workitems/ to workitems/done/2026/06/.
 - Update done index in workitems/done/index.jsonl.
 
 Proof:
+
 - Verified all C# and F# test suites pass cleanly.
 - Discovered and validated complexity predictions against standard registers.
 

@@ -31,6 +31,7 @@ The simplest possible `observe.ts` — the autonomous loop as a few buttons, per
 
 ## What it is
 A pure function `observe(backlog) → NextAction` where `NextAction` is a 4-variant DU:
+
 - `do_item` — never-be-idle: pick ready work
 - `decompose` — decompose-to-dissolve-ambiguity
 - `free_time` — free-time-as-valid-mode (NCI); a first-class terminal, not a failure
@@ -45,6 +46,7 @@ The do/decompose/free-time grammar was only ever **prose** in `never-be-idle.md`
 7 tests = the decision table (priority `do > decompose > edit_grammar > free_time`). These become the **reference oracle** when the local-LLM chooser lands (declarative LLM testing: scenarios graded against this pure function).
 
 ## Next, little by little (not in this PR)
+
 1. thin backlog reader (status/`depends_on` from frontmatter → ready/ambiguous)
 2. LLM chooser — `observeWithLlm` via `tools/accelerator/local-llm.ts` `chooseIndex` (temp0+seed deterministic), with `edit_grammar` always in the menu
 3. declarative scenario tests (replay layer always-green + live ollama layer that asserts)

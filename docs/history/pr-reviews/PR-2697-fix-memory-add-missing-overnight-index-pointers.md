@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add newest-first memory/MEMORY.md pointers for the merged Amara corrections and mirror/beacon assessment memory files
 - keep the repair scoped to the index only, avoiding the stale broad fix-memory-reference-drift-pr1801 branch
 
 ## Checks
+
 - bun tools/hygiene/audit-memory-references.ts --enforce
 - git diff --check origin/main...HEAD
 

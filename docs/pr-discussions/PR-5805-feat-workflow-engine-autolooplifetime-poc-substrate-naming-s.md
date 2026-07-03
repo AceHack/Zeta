@@ -77,6 +77,7 @@ Operational risk low: PoC runs alongside ad-hoc handler; substrate-naming substr
 This PR adds a TypeScript PoC for modeling the foreground autonomous-loop tick handler as an `AutoLoopLifetime` state machine within `tools/workflow-engine/`.
 
 **Changes:**
+
 - Adds `AutoLoopLifetime`, `TickContext`, `TickOutcome`, feedback/result types, transition dispatch, and tick-cycle simulation helpers.
 - Adds constants for brief-ack threshold and refresh staleness.
 - Adds Bun tests covering state universe, transitions, bookkeeping, and end-to-end cycle simulation.

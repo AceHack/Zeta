@@ -31,6 +31,7 @@ After all 3 land + impl, full vision operational: zflash → boot → install �
 Adds a new P1 backlog row for iter-5.4.2 (081KSGS9H0008QG0R002K93MWX), describing the ArgoCD GitOps reconciliation slice that watches `maintainers/*/cluster-nodes/**` and converges cluster state on registration-PR merge, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P1/081KSGS9H0008QG0R002K93MWX-…md` defining iter-5.4.2 scope, sub-targets, and acceptance criteria.
 - Updates `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R002K93MWX index entry.
 

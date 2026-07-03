@@ -29,6 +29,7 @@
 
 ## One bounded step
 Decomposed 081KQ0YZ80008QG0R002HWBHKJ (broad P2 i18n/l10n of entire repo) into smallest atomic child rows per "re-decompose during build" and "if too broad, decompose first".
+
 - Used dedicated worktree + pushed claim branch (this PR).
 - Did not touch root checkout.
 - Ran required pre-work: read CLAUDE.md/AGENTS.md, bun tools/github/refresh-worldview.ts (worldview captured: 0 open PRs on LFG, recent merges, 368 backlog, claims list), read all active trajectories/*/RESUME.md via glob, dotnet build -c Release (0 warnings, 0 errors — gate passed).
@@ -36,6 +37,7 @@ Decomposed 081KQ0YZ80008QG0R002HWBHKJ (broad P2 i18n/l10n of entire repo) into s
 
 ## Atomic children (dependency-ordered)
 The decomposition (already landed in branch via prior slice commit) splits the broad "translate everything" into atomic, ordered, testable rows:
+
 - 081KR50HA0008QG0R000YTJE8Q: Translatable-surface inventory scanner (TS tool, per Rule 0)
 - 081KR50HA0008QG0R002TN3JX2: Glossary anchor extraction for precision terms (composes with 081KR50HA0008QG0R001G4QHQF)
 - etc. (see commit 7f4ad5de for the child row bodies added to backlog file)

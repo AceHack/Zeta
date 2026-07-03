@@ -79,5 +79,6 @@ Much stronger selection pressure toward convergence.
 Adds a new P2 backlog row (081KSGS9H0008QG0R002T3QMFD) capturing surfaced intel that Anthropic’s VSCode extension UI is converging on a standardized multi-harness ontology (Agents / Skills / Hooks / MCP Servers / Instructions / Plugins), and records implications for Zeta’s multi-harness substrate strategy.
 
 **Changes:**
+
 - Adds backlog row **081KSGS9H0008QG0R002T3QMFD** documenting the VSCode “Agents window” ontology convergence signal and its implications for Zeta.
 - Introduces an initial Anthropic→Zeta vocabulary mapping table and identifies follow-on work items (mapping doc + separate UX row).

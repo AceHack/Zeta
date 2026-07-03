@@ -27,6 +27,7 @@ This PR preserves the discussion from PR #4418.
 This PR adds an in-repository archive of PR #4418’s discussion, preserving the merged PR metadata, description, review summary, and general comments under the existing PR discussion archive area.
 
 **Changes:**
+
 - Adds frontmatter metadata for PR #4418.
 - Preserves the PR description, Copilot review overview, reviewed-file table, and follow-up comment content.
 

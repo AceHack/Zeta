@@ -32,17 +32,20 @@
 Extends the generic Blueprint -> Deployable render engine (`full-ai-cluster/platform-controller/src/blueprint.ts`, `renderDeployable`) so credentialed, production services can be deployed. **All additive and backward-compatible** — existing blueprints render byte-identically (verified programmatically: no new container keys, `longhorn` default preserved, plaintext `env` unchanged).
 
 ### New schema fields
+
 - **`envFrom: Array<{ name, secret, key }>`** (Blueprint **and** Deployable) — each renders a container env entry `{ name, valueFrom: { secretKeyRef: { name: <secret>, key: <key> } } }`, appended after the plaintext `env`. The instance may append its own (flows like `values`/`env`).
 - **`probe: { readiness?: Probe; liveness?: Probe }`** where `Probe = { httpGet?: {path,port}, tcpSocket?: {port}, exec?: {command}, initialDelaySeconds?, periodSeconds?, timeoutSeconds?, failureThreshold? }` — rendered onto the main container as `readinessProbe` / `livenessProbe`; omitted timing fields stay omitted; whole field omitted when absent.
 - **`storageClassName: string`** (Blueprint, default `"longhorn"`) — used for the StatefulSet `volumeClaimTemplate` and the stateless PVC, replacing the hardcoded literal at both sites.
 
 ### Supporting changes
+
 - **`k8s.ts`** — `Secret: "secrets"` and `ConfigMap: "configmaps"` added to `KIND_PLURAL`.
 - **`controller.yaml` RBAC** — `secrets` + `configmaps` with **read-only** `["get","list","watch"]` (the controller reads referenced secrets; it does NOT create them).
 - **`crd-blueprint.yaml` / `crd-deployable.yaml`** — the new fields added to the OpenAPI schema; `probe.readiness`/`probe.liveness` use `x-kubernetes-preserve-unknown-fields` so `kubectl apply` validates.
 
 ### Tests
 11 new cases in `blueprint.test.ts`:
+
 - (a) `envFrom` -> env entry with `secretKeyRef` (name + key); plaintext-before-secret ordering; instance-appended secret env.
 - (b) `probe.readiness.httpGet` -> `readinessProbe`; `liveness.tcpSocket` -> `livenessProbe`; `exec` command handler.
 - (c) `storageClassName: "zeta-local-path"` on both the StatefulSet volumeClaimTemplate and the stateless PVC.

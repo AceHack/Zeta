@@ -36,6 +36,7 @@ Starting **CSLib G1** (per Aaron's 1-3-2 order). Reconnaissance *before* mutatin
 **Why this is handled carefully:** our proof lineage is load-bearing — `NonRegisterCollapse` (the §A theorem the Aurora **(a)** leg *rides*), `ChildFloor`, `IdentityForcesPrivacy` — and there's a real `lean-proof.yml` CI gate. A bump that reds it blocks the fleet. So it's proof-lineage-risking → **surfaced, not done blind.**
 
 **Safe sequence (scoping doc §10):**
+
 1. Bump `v4.30.0-rc1 → v4.31.0` (Lean + mathlib) in isolation; confirm the three proofs still compile sorry-free + gate green (no cslib yet; also gets us off an RC).
 2. `require cslib` (pinned); confirm it resolves + builds.
 3. G1 (Byzantine-fault extension).

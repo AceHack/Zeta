@@ -35,7 +35,7 @@ candidate fix through our own verification loop.
 > expicitly denied but we don't want to spam other open source
 > projects."
 
-## Why:
+## Why
 
 - **Spam avoidance is the root concern.** Open source
   maintainers are donating time; a PR/issue that we can't
@@ -62,7 +62,7 @@ candidate fix through our own verification loop.
   Named, scoped, reversible — exactly the shape that policy
   memo describes.
 
-## How to apply:
+## How to apply
 
 - **When we find a bug in an upstream project:**
   1. Reproduce locally. Confirm it's really in upstream, not

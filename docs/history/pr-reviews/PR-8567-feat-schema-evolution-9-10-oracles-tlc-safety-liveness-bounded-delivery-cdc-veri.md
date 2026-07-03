@@ -39,6 +39,7 @@ LIVENESS: NO VIOLATION
 ```
 
 The TLA+ spec models **real-world CDC bounded delivery**:
+
 - `SendMigration` → event emitted (in-flight, not yet visible)
 - `DeliverMigration` → event arrives and applies
 - `Consolidate` → BLOCKED until pendingMigrations = {} (all delivered)

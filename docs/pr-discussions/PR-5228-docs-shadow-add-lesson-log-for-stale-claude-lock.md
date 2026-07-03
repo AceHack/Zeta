@@ -27,6 +27,7 @@ This PR adds a shadow lesson log to document the discovery of a stale lock file 
 Adds a new research/shadow lesson log documenting discovery of a stale `.claude/scheduled_tasks.lock` file and capturing the operational lesson + follow-up actions.
 
 **Changes:**
+
 - Add a new shadow lesson log entry describing the stale lock incident and suggested mitigations.
 
 ### COMMENTED — @AceHack (2026-05-26T19:51:22Z)
@@ -58,6 +59,7 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 Per [`.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md):
 
 **Discriminator results**:
+
 - File frontmatter `author:` field: **lior**
 - Commit author: `Lior <lior@zeta.dev>` → **peer Lior**
 - Last commit: 2026-05-26T17:11:58Z (~20 min ago, actively recent)
@@ -68,6 +70,7 @@ Per [`.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-
 This is a bounded docs fix, but the PR is fresh peer-Lior iteration (20 min old). Otto-background-worker is forward-signaling rather than unilaterally editing peer Lior's substrate, per the rule's 2026-05-26 recurrence anchor that warns against the silent-punt failure mode AND its mirror failure mode of stepping on active peer iteration.
 
 **Disposition options**:
+
 1. Peer Lior re-commit with `type:` frontmatter field added
 2. Operator authorizes Otto-background-worker to pick up the fix
 3. Drop frontmatter entirely per the reviewer's alternative suggestion

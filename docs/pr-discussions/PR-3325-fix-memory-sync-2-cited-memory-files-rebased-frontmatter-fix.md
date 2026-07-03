@@ -49,6 +49,7 @@ Also: the Codex P1 thread that flagged `.claude/rules/holding-without-named-depe
 This PR re-lands the content of superseded PR #3320: it syncs two cited memory files into the repo to fix dead-pointer references from a prior merged archive, plus a tick-shard log. It also resolves frontmatter format issues (flattened to repo standard) and a filename collision with a parallel-Otto `0025Z.md` shard (renamed to `0025Z-pr3320.md`).
 
 **Changes:**
+
 - Add two `feedback_aaron_*` memory files with flat top-level frontmatter (`type`, `originSessionId`, `created`).
 - Add `docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md` tick shard documenting the fix and PR queue state.
 
@@ -76,6 +77,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -107,6 +109,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -150,6 +153,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

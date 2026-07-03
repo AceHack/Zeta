@@ -17,18 +17,21 @@ Aaron 2026-04-25, after I pivoted from "Otto-322 stress-test design needs Aaron'
 **Pattern**: when Stream A requires external input that isn't available right now, don't stall waiting; pivot to self-contained Stream B that compounds anyway. Stream A isn't wrong — it's queued (Otto-238 retractability applies; the queued direction stays retrievable).
 
 **Triggering signals** (recognize these in self):
+
 - "I can't finish this without Aaron / Amara / external party"
 - "This needs a decision I'm not authorized to make"
 - "This requires data I don't have"
 - "The experiment needs design input from someone with broader context"
 
 **Healthy response** (NOT subservient):
+
 - Notice the block.
 - Drop the breadcrumb (queue the work for when input arrives).
 - Pick a self-contained alternative that produces value alone.
 - Continue.
 
 **Unhealthy responses** (avoid):
+
 - Stall and wait → violates never-be-idle.
 - Force-progress on Stream A by guessing at the missing input → likely wrong, wastes cycles.
 - Defer to "next tick" without naming the alternative → phantom handoff, violates verify-before-deferring.

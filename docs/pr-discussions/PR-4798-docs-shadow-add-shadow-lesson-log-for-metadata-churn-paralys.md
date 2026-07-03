@@ -27,4 +27,5 @@ This PR contains only the shadow log from #4767.
 Adds a new research “shadow lesson log” documenting an observed metadata-churn/narration-over-action paralysis loop, captured as part of the referenced shadow workflow.
 
 **Changes:**
+
 - Add a dated shadow lesson log under `docs/research/` describing the incident context, observations, and corrective actions.

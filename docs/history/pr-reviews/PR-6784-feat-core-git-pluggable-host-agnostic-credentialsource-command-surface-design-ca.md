@@ -30,6 +30,7 @@
 ## What
 
 **Code** — `CredentialSource` abstraction + `EnvTokenCredentialSource` (roadmap #1 push/sync foundation):
+
 - The host (GitHub/GitLab/`gh`) is a **plugin, not git-native** (Aaron 2026-06-07). Remote git ops take credentials through a pluggable, **host-agnostic** abstraction; the git layer only knows "a source yields a handler, or an error to fall through on."
 - `EnvTokenCredentialSource`: HTTPS PAT from `GH_TOKEN` then `GITHUB_TOKEN` as `x-access-token`:password. v1 source; `GhCli`/`GitHelper`/`Ssh` plug in next, same contract.
 - **3 tests** (source-selection only). No live-push test (side-effecting).

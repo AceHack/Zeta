@@ -27,6 +27,7 @@ Automated drift report on the array and PR preservation for #3074, #3075, #2762.
 Docs-only PR archiving an "antigravity check" drift report plus refreshing three PR-preservation archives (#3074, #3075, #2762). Also includes a tick shard and the closure of backlog row 081KRFA460008QG0R00308W7FJ (duplicate row-ID substrate cleanup), with `docs/BACKLOG.md` regenerated.
 
 **Changes:**
+
 - Adds a new research note (`docs/research/2026-05-14-shadow-lesson-log-antigravity-check.md`) and a tick shard for 0521Z.
 - Refreshes PR-preservation archives for #3074, #3075, #2762 (mostly `archived_at` re-timestamps; #3075 archive added with full review trail).
 - Closes 081KRFA460008QG0R00308W7FJ (status → closed, ACs ticked off, BACKLOG.md row flipped to `[x]`).

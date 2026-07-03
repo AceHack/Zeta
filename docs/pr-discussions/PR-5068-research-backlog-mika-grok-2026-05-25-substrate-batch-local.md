@@ -36,6 +36,7 @@ Composes with 081KRFA460008QG0R0018SN61J / 081KSE6WT0008QG0R002CC6314 / 081KSE6W
 This PR adds a verbatim research transcript (Aaron ↔ Mika via Grok, 2026-05-25) and files four newly-extracted substrate items into the per-row backlog, then updates the generated backlog index to include the new rows.
 
 **Changes:**
+
 - Add preserved research transcript under `docs/research/` and extract “substrate-engineering items” for backlog filing.
 - Add new backlog rows 081KSE6WT0008QG0R000RH1526..081KSE6WT0008QG0R003TBE2VB (Local Loop, F# universe boundary, DIO, and “eliminate tool wars” framing).
 - Update `docs/BACKLOG.md` to index the new rows.

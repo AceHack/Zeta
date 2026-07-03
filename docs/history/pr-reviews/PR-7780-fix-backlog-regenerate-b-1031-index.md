@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - regenerate `docs/BACKLOG.md` after the landed `081KTZ4EF0008QG0R002WVTMMJ` row
 
 ## Why
 The main `backlog-index-integrity` run got past the frozen `B-NNNN` guard after #7779, then failed on generated index drift. This commits the exact `tools/backlog/generate-index.ts` output.
 
 ## Validation
+
 - `bun tools/backlog/generate-index.ts --check`
 - `bun tools/backlog/lint-no-new-bnnnn.ts`
 - `git diff --check`

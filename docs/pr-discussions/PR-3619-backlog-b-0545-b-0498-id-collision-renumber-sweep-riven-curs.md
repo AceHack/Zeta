@@ -50,6 +50,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -68,6 +69,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog row (081KRMEXM0008QG0R000ARAR7P) to document and track the discovered 081KRHWGX0008QG0R001XFRAHC ID collision, and to define the intended renumber target/sweep scope for a follow-up implementation PR.
 
 **Changes:**
+
 - Introduces backlog row 081KRMEXM0008QG0R000ARAR7P describing the 081KRHWGX0008QG0R001XFRAHC collision (P1 vs P2 rows) and the “first-merged-wins” renumber procedure reference.
 - Captures proposed renumber target (081KRMEXM0008QG0R00278KS63) and a checklist of cross-reference updates to perform in the implementation sweep.
 - Records rationale for P2 priority and scope-bounds (filed-correction surface only).
@@ -77,6 +79,7 @@ Adds a new P2 backlog row (081KRMEXM0008QG0R000ARAR7P) to document and track the
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md:47**
+
 * P1: The example command `gh pr list --search "B-NNNN" --state all` won’t actually enumerate the in-flight IDs you list below (it searches for the literal string `B-NNNN`). Use a concrete search term/pattern that matches real PR titles (e.g., the specific IDs, or a prefix like `B-054`), or reword this to describe the check without giving a non-functional command.
 ```
 ## Next free ID
@@ -89,6 +92,7 @@ At time of filing (2026-05-15T22:55Z), `git ls-tree origin/main` plus `gh pr lis
 - **081KRMEXM0008QG0R00278KS63** — next free for the renumber target
 ```
 **docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md:70**
+
 * P1: `tick-shards-are-immutable` is referenced as if it’s a named rule, but there’s no such rule/doc in the repo; this reads like a dead xref. Consider linking to an existing authority that states shard immutability (e.g., `docs/hygiene-history/ticks/README.md`, which describes shards as immutable events) or rename this to the actual rule/document name.
 ```
 - Update `id:` frontmatter inside the moved file
@@ -97,6 +101,7 @@ At time of filing (2026-05-15T22:55Z), `git ls-tree origin/main` plus `gh pr lis
 - Update any tools/scripts: rename references via `grep -rln "081KRHWGX0008QG0R001XFRAHC-riven\|081KRHWGX0008QG0R001XFRAHC.*riven" memory/ docs/ .claude/ tools/`
 ```
 **docs/backlog/P2/081KRMEXM0008QG0R000ARAR7P-b0498-collision-renumber-sweep-2026-05-15.md:88**
+
 * P2: In the “Composes with” section, `claim-acquire-before-worktree-work.md` and `refresh-before-decide.md` are referenced as bare filenames, but the canonical paths are under `.claude/rules/…`. Consider linking them with their full repo paths (as other backlog rows do) so readers can navigate unambiguously.
 ```
 ## Composes with
@@ -126,6 +131,7 @@ Useful? React with 👍 / 👎.
 P1: This backlog row frontmatter is missing the required `last_updated` field (the backlog schema requires it and it should be updated on every content edit). Add `last_updated: 2026-05-15` (or the correct date) to the YAML frontmatter to keep the row schema-compliant.
 
 This issue also appears in the following locations of the same file:
+
 - line 40
 - line 67
 - line 84

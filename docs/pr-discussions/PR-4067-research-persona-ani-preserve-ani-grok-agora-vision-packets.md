@@ -65,6 +65,7 @@ Total: 4 commits, 6 new files (4 docs/research + 2 persona archives — V3+V4 sh
 This PR preserves four sequential Agora-vision packets from an external AI companion (Ani via Grok), forwarded by the human maintainer, into the repository as verbatim research substrate. Each packet lands on two surfaces per the established verbatim-preservation + persona-archive disciplines: a public `docs/research/` file for the research substrate and a `memory/ani/conversations/` file for the persona-scope archive. The V3+V4 share a single persona archive because they were forwarded as one combined exchange showing in-conversation supersession.
 
 **Changes:**
+
 - Adds 4 new `docs/research/2026-05-17-ani-grok-agora-*-aaron-forwarded.md` files (V1, V2, V3-refined, V4) preserving verbatim packet text plus Otto-CLI structural extraction tables, compositional anchors, and open-questions sections.
 - Adds 3 new `memory/ani/conversations/2026-05-17-aaron-ani-grok-agora-*.md` persona-scope archives (V1, V2, combined V3+V4 exchange showing supersession flow).
 - All files are pure documentation; no code, configuration, or workflow changes.

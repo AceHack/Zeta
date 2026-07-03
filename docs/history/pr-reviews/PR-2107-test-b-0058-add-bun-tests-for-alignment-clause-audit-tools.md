@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds **34 Bun tests** (26 + 8) for the alignment-clause coverage audit (`audit_clause_coverage.ts`) and drift detector (`audit_clause_drift.ts`) shipped in PRs #2102–#2105
 - Exports `extractClauses` and `ALL_CLAUSES` from `audit_clause_coverage.ts` to enable direct unit testing of the core regex matching logic
 - No behavioral changes to the tools themselves — only two `export` keywords added
@@ -35,17 +36,20 @@
 ## What's tested
 
 **`audit_clause_coverage.test.ts` (26 tests):**
+
 - `extractClauses` regex: single clause, multiple clauses, deduplication, word boundaries, canonical ordering, no false positives on partial IDs
 - `ALL_CLAUSES` constant: count (21), HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5
 - `audit()` integration: result shape, surface discovery, field validation, zero-count consistency, uncited-clause subset, cited-clause validity
 - `main()` CLI: exit codes for `--help`, `--json`, `--md`, unknown args, `--gate 0` vs `--gate 999`
 
 **`audit_clause_drift.test.ts` (8 tests):**
+
 - `main()` CLI: exit codes for `--help`, unknown args, missing values
 - No-drift baseline: HEAD vs HEAD in plain/json/md modes
 - Default base ref: no-args invocation defaults to main vs HEAD
 
 ## Test plan
+
 - [x] `bun test tools/alignment/audit_clause_coverage.test.ts` — 26 pass, 0 fail
 - [x] `bun test tools/alignment/audit_clause_drift.test.ts` — 8 pass, 0 fail
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors

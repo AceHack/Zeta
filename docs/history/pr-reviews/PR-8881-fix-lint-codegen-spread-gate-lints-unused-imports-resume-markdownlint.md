@@ -28,6 +28,7 @@
 ## Description
 
 The codegen-spread trajectory merged red on two non-required gate jobs. **Mechanical, no logic change:**
+
 - **lint(TS)** TS6133 unused imports: `codegen-specialize.ts` (`basename`), `codegen-v2-remaining.ts` (`writeFileSync`, `join`), `zset-isa-v2/isa-v2.test.ts` (`StarRing`). Removed.
 - **markdownlint**: `codegen-spread/RESUME.md` MD022 (auto-fixed) + MD024 (duplicate heading made unique).
 

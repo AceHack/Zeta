@@ -56,6 +56,7 @@ install.sh \"detect-first-install-else-update\" discipline.
 Adds `hermes-agent` to the macOS Homebrew manifest so `tools/setup/macos.sh` will install/upgrade it as part of the standard bootstrap flow, with inline provenance notes to distinguish it from the repo’s internal Hermes K8s runtime.
 
 **Changes:**
+
 - Add `hermes-agent` to `tools/setup/manifests/brew`.
 - Document provenance/intent in the manifest comments (including a distinction from `full-ai-cluster/k8s/applications/hermes/`).
 

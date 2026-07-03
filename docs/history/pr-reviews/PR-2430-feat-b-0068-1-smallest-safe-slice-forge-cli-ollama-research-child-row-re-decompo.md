@@ -37,12 +37,14 @@ One bounded step per rules: created first child 081KRA5AR0008QG0R001JVT5FX (rese
 `docs/backlog/P2/081KRA5AR0008QG0R001JVT5FX-forge-cli-ollama-research-slice-aaron-2026-05-10.md`
 
 ## Focused checks (per task rule)
+
 - Root `dotnet build -c Release`: transient MSB4166 (MSBuild parallel flake, 0 code warnings/errors)
 - Worktree focused `dotnet build src/Core -c Release`: expected assets missing (fresh worktree, no code impact)
 - rg confirmed no prior Forge/Ollama in P2 backlog
 - Worktree + pushed claim branch used; root checkout untouched
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch before write
 - TS over bash (no .sh)
 - Prefer F#/TS over docs (research slice defers code; next child will be TS hardware audit)

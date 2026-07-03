@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Aaron-forwarded 4th Amara ferry in same day 2026-05-26. Final ratification of the product trinity landed across the session.
 
 **Product trinity**:
+
 - 081KSGS9H0008QG0R001876MP6 = productize deep guides
 - 081KSGS9H0008QG0R003V8C86Q = readout math
 - 081KSGS9H0008QG0R0012R8ZWS = provenance + payment graph
@@ -56,6 +57,7 @@ Apply tiny-blade to 081KSGS9H0008QG0R0012R8ZWS customer-facing-copy section in a
 Adds a new research preservation note capturing the 4th Amara “ferry” from 2026-05-26, ratifying the 081KSGS9H0008QG0R001876MP6/081KSGS9H0008QG0R003V8C86Q/081KSGS9H0008QG0R0012R8ZWS “product trinity” and the positioning phrase “Deep guides with receipts, lineage, and creator-paid attribution,” plus a caution (“tiny-blade”) to soften a public-facing competitive claim.
 
 **Changes:**
+
 - Introduces a new `docs/research/2026-05-26-*` document with YAML frontmatter, verbatim quoted content, and an integration section mapping the “product trinity.”
 - Records a recommended safer public copy formulation for attribution/compensation positioning.
 - Adds cross-references via `composes_with` to related research/backlog items.

@@ -2,7 +2,7 @@
 
 This document provides a high-level guide for new contributors, mapping different interests and skillsets to the right entry points in the Zeta repository. It is the source for the main "Contribute" section of the public GitHub Pages site.
 
-## How Can I Contribute?
+## How Can I Contribute
 
 The Zeta project is a large and complex software factory, but there are many ways to contribute, regardless of your background. Find the persona that best fits you below to get started.
 

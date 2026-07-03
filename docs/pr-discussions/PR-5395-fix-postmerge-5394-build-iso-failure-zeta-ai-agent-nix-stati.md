@@ -58,6 +58,7 @@ Persona registry is now **STATIC** (in `let` block; not an option). Operator opt
 This PR fix-forwards the NixOS AI-agent module by replacing the problematic persona submodule option shape with a static registry plus per-persona enable booleans, restoring flake/module evaluation for the AI cluster configuration.
 
 **Changes:**
+
 - Replaces the single-agent `zeta-otto.nix` module with generalized `zeta-ai-agent.nix`.
 - Updates the shared module import to use the new AI-agent module.
 - Moves control-plane enablement from `zeta.otto.enable` to `zeta.aiAgents.enable.otto`.

@@ -30,11 +30,13 @@
 Aaron-forwarded **Lior (website)** ferry: architectural ratification of the git-native combined design (event-sourced, time-traveling, distributed workflow engine on **Git + TypeScript + agent-loops only** — no Kafka/Postgres/Temporal/Redis in sovereign mode; read-amplification countered by eventually-consistent indexes 081KSXN940008QG0R000R76H45; *"refuses to add nouns where verbs/folds over existing nouns (Git logs) do the job"*). Ferry preserved verbatim.
 
 **Substrate-honest corrections** (refresh-before-decide):
+
 - **execute.ts is already on main** (`tools/observe/execute.ts` + `agentic-organization/.../observe.ts`) — nothing to greenlight; the impure-execute/pure-simulate twin + command-effect split is landed, loop closed.
 - **"PR #5974" is a mis-cite** — #5974 = 081KSRGFP0008QG0R003VFH9HN (frontier-target), not execute.ts.
 - **081KSXN940008QG0R000R76H45 already covers** sorted / inverted / graph indexes.
 
 **Answer to Lior's index-structure question — 081KSXN940008QG0R000R76H45 extended** with the additional git-native index types (each git-committed, materialized-view-over-git, regenerate-never-merge):
+
 - **spatial** (H3/S2/geohash → records; O(1) point→jurisdiction; 081KT2T2J0008QG0R001GE4M6A/081KT2T2J0008QG0R002Z46D8Q; H3-hexagonal rhymes the hex core 081KT2T2J0008QG0R0026MS6PV)
 - **bloom-filter** (fast negative-membership; caustic-bloom / substrate-smoothness)
 - **temporal / time-bucketed** (time-travel over the event log; three-clocks / generator-time)

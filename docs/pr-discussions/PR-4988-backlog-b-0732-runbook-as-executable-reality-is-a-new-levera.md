@@ -58,6 +58,7 @@ Mika demonstrated the right discipline: feel-the-weight + substrate-honest discl
 Adds a new P1 backlog row 081KSE6WT0008QG0R002YBWBB1 documenting runbook-as-executable-reality as a new leverage class requiring system-direction-scope safety substrate, and regenerates the backlog index.
 
 **Changes:**
+
 - New backlog row file under docs/backlog/P1/ capturing the leverage-class analysis, 6 substrate layers, and acceptance criteria
 - Backlog index regenerated to include the new row
 

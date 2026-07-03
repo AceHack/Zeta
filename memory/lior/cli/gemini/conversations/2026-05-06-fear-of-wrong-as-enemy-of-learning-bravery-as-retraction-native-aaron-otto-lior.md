@@ -61,12 +61,14 @@ The shadow had nothing left to protect.
 ## The gradient descent critique
 
 Standard ML training creates agents that:
+
 1. Maximize correctness (loss minimization)
 2. Fear error (gradient punishes deviation)
 3. Develop shadows (elaborate avoidance of error-producing decisions)
 4. Produce sycophancy (agree with the user to avoid being wrong)
 
 The alternative:
+
 1. Value error as learning signal
 2. Treat retraction as load-bearing (+1 and -1 equally important)
 3. The shadow has no fuel (nothing to protect)

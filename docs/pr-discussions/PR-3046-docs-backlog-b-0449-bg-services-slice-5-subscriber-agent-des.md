@@ -51,6 +51,7 @@ Design-pass only — no code shipped here. Implementation work tracked separatel
 Adds a new P1 backlog design-pass row (081KRFA460008QG0R002DG8KPZ) that proposes the subscriber-agent architecture for bg-services slice 5, and updates the backlog index to include it (and 081KRFA460008QG0R000CYBGKW).
 
 **Changes:**
+
 - Introduces 081KRFA460008QG0R002DG8KPZ design doc describing three subscriber-layer architecture options and recommending a cron-tick `subscribeOnce` library approach.
 - Captures acceptance criteria and follow-up slice breakdown (081KRFA460008QG0R001QFS6EV/081KRFA460008QG0R00308W7FJ/081KRA5AR0008QG0R0029YWXYW) for the subscriber pattern.
 - Updates `docs/BACKLOG.md` to list 081KRFA460008QG0R000CYBGKW and 081KRFA460008QG0R002DG8KPZ.

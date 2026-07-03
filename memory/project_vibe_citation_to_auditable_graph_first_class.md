@@ -6,6 +6,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 Aaron 2026-04-20 (in order):
+
 1. *"also ../scratch parity"*
 2. *"first class feature of source or ace our package
    manager ../scratch parity converts the vibe-citation

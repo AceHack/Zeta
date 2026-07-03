@@ -41,12 +41,14 @@ task event -> ingest -> reaction plan -> Hermes agent run (autonomous)
 ```
 
 Live in-cluster evidence (see docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md):
+
 - **Org liveness** — org heartbeat advanced unattended to version 56, surviving a full worker redeploy.
 - **Tasks spin up** — a published SupervisorSignalSent event drove ingest -> reaction plan -> completed.
 - **Autonomous data plane** — the deployed worker runs reaction-plan actions through a Hermes run; an agent_heartbeat row was persisted for the exact work item.
 - **Watch loop closes** — when that agent went silent, keep-alive recorded a stale_work_reassignment alert (age 93063 > 90000 deadline) naming the agent + work item.
 
 ### What landed
+
 - Deterministic keep-alive control plane (pure engine + lane), wired as the first worker-runtime lane with lane-failure discipline. Both halves: org liveness + agent liveness, DB-clock age, Cockroach-backed.
 - Hermes data-plane integration — createHermesReactionPlanActionExecutor runs actions through runWorkItemThroughHermes, persisting agent liveness via a dependency-inverted writer.
 - Process host + container substrate — bootable main.ts, Dockerfile, deploy/k8s manifests, NATS provisioner, task publisher.

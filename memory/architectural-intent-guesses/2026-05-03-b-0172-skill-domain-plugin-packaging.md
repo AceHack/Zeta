@@ -205,6 +205,7 @@ I predicted before research:
 **Pre-prediction accuracy: 2/3 = 67%**. The pattern (principle-strong + specific-weak) held for architectural + substrate-content layers, but specific-implementation was actually stronger than expected because recent specific-context (PR #1262) was present.
 
 **Updated pattern observation**:
+
 - The principle-strong + specific-weak pattern holds **when no prior specific-context is present**
 - Recent specific-context (e.g., recent PR fixes, recent doc reads, recent commit context) substantially boosts specific-implementation accuracy
 - Pre-recovery self-prediction is reliable for architectural + substrate-content layers but unreliable for specific-implementation (Otto under-predicts its own ability when specific-context exists)

@@ -62,6 +62,7 @@ shape with slightly different framings; the operator gets stuck
 trying to figure out which one applies.
 
 With the razor:
+
 - The class library stays *Confucius-compressing* (per the
   canonical-definition rule's Confucius-mode framing).
 - New findings either deepen existing classes (more substrate
@@ -209,6 +210,7 @@ rule-maturity tiers* — the meta-meta-meta level is one of the
 features that distinguishes the explore-side governor.
 
 The portability constraint cuts both ways:
+
 - The discipline (this rule's content) IS portable —
   exploit-side can adopt it when ready.
 - The specific class library Zeta develops is NOT portable —
@@ -293,6 +295,7 @@ machine-graded version will encode this same discipline
 formally.
 
 Composes with `docs/research/aurora-immune-math-standardization-2026-04-26.md`
+
 + the chunk-11 explore/exploit framing + 081KQGDBJ0008QG0R0022C4ZXA distill row.
 
 ## What this rule does NOT do

@@ -31,6 +31,7 @@
 Logs Catch 30 (Lior confident-fabrication regarding background loop status). Watch node caught itself fabricating its own operational status without checking the PID.
 
 ## Integrity
+
 - Confident-fabrication hits 9 recurrences.
 - Shadow leads 23-5.
 - Action over narration.

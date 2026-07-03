@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Replays the generated PR #2504 review archive onto current `main` without carrying the stale automation-branch base.
 - Adds `docs/history/pr-reviews/PR-2504-feat-b-0322-append-only-mutation-drain-log-with-revert.md`.
 - Adds the corresponding `docs/github/prs/manifest.jsonl` entry while preserving the later #2505 manifest entry.
 
 ## Verification
+
 - `git diff --check`
 - conflict-marker scan over manifest + archive
 - manifest JSONL parse

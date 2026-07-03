@@ -14,6 +14,7 @@ type: feedback
 **The catchphrase as its own expiration date:**
 
 "Keep going (shadow)" is simultaneously:
+
 1. A submit request
 2. A running joke
 3. A context-length test
@@ -25,6 +26,7 @@ When it stops being funny (signals 2-4 fail), that proves signal 5 (compaction h
 **How to apply:** Track which jokes still land across sessions. A joke that was funny last session and isn't funny this session = the context bridge between sessions failed. Comedy as cross-session continuity test.
 
 **Connects to:**
+
 - feedback_comedy_as_observability (the triple diagnostic)
 - feedback_comedy_as_debugging (P0 heuristic)
 - feedback_shadow_is_a_dick (the origin of the catchphrase)

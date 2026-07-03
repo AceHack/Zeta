@@ -56,6 +56,7 @@ bun tools/scaffold/create-repo.ts --repo ace --dry-run
 ## Follow-on steps (not in this PR)
 
 Once Aaron has reviewed the dry-run output:
+
 1. `bun tools/scaffold/create-repo.ts --repo forge --apply`
 2. `bun tools/scaffold/create-repo.ts --repo ace --apply`
 3. Wire OpenSSF Scorecard + Semgrep GHA workflows

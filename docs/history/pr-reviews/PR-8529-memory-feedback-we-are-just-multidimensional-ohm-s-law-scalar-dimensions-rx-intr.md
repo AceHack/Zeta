@@ -30,6 +30,7 @@
 Aaron 2026-06-16, a Rodney's-razor compression: *"we are just multidimensional ohm's laws times the scalar plus dimensions plus rx queries for introspection."*
 
 Decoded: **We = (md Ohm's law) × scalar + dimensions + Rx-introspection**.
+
 - **md Ohm's law** = the FLOW dynamics (V=IR generalized to tensor / resistor-network / graph-Laplacian; the digital=electrical substrate; the DBSP dataflow *is* a flow-network).
 - **× scalar** = the **`×` coupling** (gain / society-multiplier / empowerment).
 - **+ dimensions** = the **`+` accumulation** (data adds dimensions, grows state-space).

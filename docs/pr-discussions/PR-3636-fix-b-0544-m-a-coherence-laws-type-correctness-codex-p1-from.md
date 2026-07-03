@@ -62,6 +62,7 @@ docs/backlog/P2/081KRMEXM0008QG0R003YWZC21-qg-isomorphism-step-1-formalize-remem
 This PR updates the 081KRMEXM0008QG0R003YWZC21 research substrate to acknowledge that the original memory/attention coherence laws were not type-correct under the stated `M` and `A` signatures, and reframes the work as provisional plus deferred Step 1.5 research.
 
 **Changes:**
+
 - Replaces the original coherence laws with resolution paths involving `Ã`, `θ`, or propositional restriction.
 - Adds provisional Law 1' and defers μ/η coherence to Step 1.5.
 - Updates the related memory and backlog row to reflect the Codex P1 follow-up.

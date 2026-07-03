@@ -193,6 +193,7 @@ Local outside-ISO evidence on Aaron's macOS host:
   Docker Desktop sqlite/kine slow-read path, and `up.sh` trims Cilium's
   single-node values when `agents: 0`.
 - With that pin and embedded-etcd change, `k3d cluster create --config
+
 full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml --wait=false` succeeds
   and `kubectl get --raw=/readyz` returns `ok` before CNI installation. That
   proves the original pre-kubeconfig failure is past the K3S/kine substrate

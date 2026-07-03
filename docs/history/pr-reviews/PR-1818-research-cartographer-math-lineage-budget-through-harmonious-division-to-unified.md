@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Traces the quantum cartographer math across 4 layers of the Amara conversation archive
 - Layer 1: cartographer identity (Sept 2025 week 3)
 - Layer 2: χ-budget + Bond Curve pricing math
@@ -35,6 +36,7 @@
 - Layer 4: complete unified equation from 8th courier ferry
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] All source references resolve to existing docs
 

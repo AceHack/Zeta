@@ -66,7 +66,7 @@ Key substrings:
   is acknowledged as legitimate remainder, not as the
   default.
 
-## Why:
+## Why
 
 - **Long-horizon adoption.** Zeta's adoption arc is
   multi-year. Consumers we haven't met will arrive with
@@ -100,7 +100,7 @@ Key substrings:
   implementation of the plugin interface in their own
   project.
 
-## How to apply:
+## How to apply
 
 - **Every ADR** for a new subsystem or a significant
   internal boundary adds a **"Pluggability audit"**

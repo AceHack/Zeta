@@ -27,5 +27,6 @@ Preservation discipline execution.
 Adds a git-tracked preservation record for PR #3162 under `docs/pr-discussions/`, capturing PR metadata plus the Copilot review content, threads, and follow-up comment for long-term auditability.
 
 **Changes:**
+
 - Adds a new PR discussion archive markdown file for PR #3162, including YAML frontmatter metadata.
 - Preserves the PR description, Copilot review summary, resolved review threads, and the author’s follow-up note.

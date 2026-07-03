@@ -41,5 +41,6 @@ Composes with [\`blocked-green-ci-investigate-threads.md\`](.claude/rules/blocke
 Adds an empirical “forced-escalation-finds-hidden-work” anchor to the standing-by-failure rule, documenting that brief-ack escalation (#6, and pre-emptive at #5) consistently surfaced substantive missed work during a single session window.
 
 **Changes:**
+
 - Adds a new empirical anchor subsection covering three concrete instances from 2026-05-16.
 - Documents the observed pattern and links the finding to the investigation discipline rule it composes with.

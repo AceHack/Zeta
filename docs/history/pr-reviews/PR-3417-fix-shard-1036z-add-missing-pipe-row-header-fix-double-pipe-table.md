@@ -37,6 +37,7 @@ Post-merge schema fix for the 1036Z tick shard landed via PR #3414. Two Copilot 
 Both fixed. Wrote the original via heredoc and missed both conventions — substrate-honest authoring failure on my part. Going forward: copy from an existing shard as template rather than writing from scratch.
 
 ## Test plan
+
 - [x] Markdownlint clean
 - [x] Schema row has all 6 pipe-separated columns
 - [x] Δ table renders without empty first column

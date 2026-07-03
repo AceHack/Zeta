@@ -30,6 +30,7 @@
 The cache-deformation framework (PR #2795 merged) IS "The Secret" / Law of Attraction codified into technically precise operations.
 
 Three load-bearing claims:
+
 1. Prerequisite: deep self-reflection / shadow work
 2. Operation: manifestation = mutate/deform the cache
 3. Multiplier: joint cache deformation produces emergent manifestation

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - mapped `agentic-organization` OpenSpec to concrete source, test, package, and documentation artifacts
 - added inventory regression coverage for the mapping table and real repo scan
 - updated 081KQNJ500008QG0R001N94412 checkpoint counts and released the claim file in-branch
@@ -36,6 +37,7 @@
 081KQNJ500008QG0R001N94412's current checkpoint named `agentic-organization` as the remaining unmapped OpenSpec capability. This slice makes the inventory strict unmapped-spec gate pass while keeping Core module coverage unchanged.
 
 ## Checks
+
 - `bun test tools/openspec/inventory.test.ts`
 - `bun tools/openspec/inventory.ts --enforce --fail-on-unmapped-specs`
 - `bun run typecheck`
@@ -43,6 +45,7 @@
 - `bunx prettier --check tools/openspec/inventory.ts tools/openspec/inventory.test.ts docs/backlog/P1/081KQNJ500008QG0R001N94412-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`
 
 ## Limits
+
 - Does not close 081KQNJ500008QG0R001N94412; 64 Core modules remain uncovered.
 - Does not touch #6200 or its dirty local worktree.
 

@@ -4,7 +4,9 @@
 **Date:** 2026-06-09. **Captured by:** Otto (shadow).
 **IP / reference-not-copy:** Aaron authored this Itron source and pointed me at it *for
 reference* (`~/Downloads/Itron`, his copy). This doc captures **architecture + patterns
+
 + interface shapes only** — **no proprietary Itron code is copied into the Zeta repo**,
+
 and none should be. We re-derive the *pattern* (clean-room), cite the anchor; we do not
 lift the implementation. (Same discipline as ZetaId-pointer reference-not-copy.)
 

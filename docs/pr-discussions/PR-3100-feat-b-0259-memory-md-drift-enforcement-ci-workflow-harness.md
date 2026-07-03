@@ -84,6 +84,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -102,6 +103,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds mechanical enforcement for `memory/MEMORY.md` drift by combining a CI gate with a Claude Code harness hook, then regenerates the memory index using the existing reindexer.
 
 **Changes:**
+
 - Adds a GitHub Actions workflow to run `bun tools/memory/reindex-memory-md.ts --check` on `memory/**` changes.
 - Adds a PostToolUse hook that reindexes `MEMORY.md` after qualifying memory heap file writes.
 - Closes 081KR2E4K0008QG0R000XCS9FT and updates `memory/MEMORY.md` to generated output.

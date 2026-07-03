@@ -54,17 +54,20 @@ Sinks are retraction-lossy by design — `BayesianRateOp` aggregates `BetaBernou
 ## Tests (9 new, all pass)
 
 **Positive** (sinks at terminus build normally):
+
 - Single sink at terminus
 - Sink consuming Map output (sink itself terminal)
 - Multiple independent sinks
 - Non-sink plugin feeding Map (rejection is sink-specific, not blanket)
 
 **Negative** (sink-feeding-op rejected):
+
 - Map ← sink
 - Filter ← sink
 - Plus ← sink (multi-input op case)
 
 **Error message contract**:
+
 - Names both operators + IDs
 - Cites `PluginApi.fs:ISinkOperator`
 - Explains \"retraction-lossy\" reason

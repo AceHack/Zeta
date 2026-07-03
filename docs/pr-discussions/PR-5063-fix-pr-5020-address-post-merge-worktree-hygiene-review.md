@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - remove the not-yet-main-visible 081KSE6WT0008QG0R003YYC9PV row from 081KSE6WT0008QG0R003YYC9PV frontmatter graph links while keeping PR #5019 as prose substrate
 - make the current-state worktree hygiene rule use role-reference prose for the empirical quote
 - align the main-branch detector comment with its OK-on-success command output
 
 ## Checks
+
 - git diff --check HEAD~1..HEAD
 - bun tools/backlog/generate-index.ts --check
 - bun x markdownlint-cli2 .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md docs/backlog/P2/081KSE6WT0008QG0R003YYC9PV-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md docs/BACKLOG.md
@@ -36,6 +38,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR tightens post-merge worktree hygiene documentation by keeping 081KSE6WT0008QG0R003YYC9PV’s graph links limited to main-visible backlog rows while preserving PR #5019 as prose context.
 
 **Changes:**
+
 - Removes 081KSE6WT0008QG0R003YYC9PV from 081KSE6WT0008QG0R003YYC9PV frontmatter `composes_with` while retaining PR #5019 references in prose.
 - Updates the generated backlog index title to match the 081KSE6WT0008QG0R003YYC9PV row title.
 - Aligns the worktree hygiene rule’s detector comments and empirical-anchor prose with current-state role-reference wording.

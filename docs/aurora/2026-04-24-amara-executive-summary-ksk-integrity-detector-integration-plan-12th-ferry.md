@@ -20,6 +20,7 @@ Aaron-review + Aminata threat-model pass first).
 - **Max** — implicit via KSK substrate (per Otto-77
   `lucent-ksk` repo attribution).
 - **Otto** — absorb only.
+
 **Operational status:** research-grade unless
 promoted by separate governed change. ~40% of the
 operationalisable content is already shipped (see

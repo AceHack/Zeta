@@ -46,6 +46,7 @@ setup."* Same rationale as SQLSharp's `.sh` / `.ps1`
 portability discipline.
 
 **How to apply:**
+
 - `tools/setup/**` — bash + PowerShell only, no
   exceptions. Never require a .NET/bun/Node/Python
   runtime to run a setup script.

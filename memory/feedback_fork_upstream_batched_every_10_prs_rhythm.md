@@ -23,6 +23,7 @@ fact that Zeta is single-maintainer pre-v1 so consumer promptness
 is not a constraint.
 
 **How to apply:**
+
 - **Fork is the staging environment.** Treat AceHack/Zeta as a
   complete development surface: branch-per-PR, CI gate runs, PRs
   merged on the fork's own `main`. Full matrix (Linux + macOS per

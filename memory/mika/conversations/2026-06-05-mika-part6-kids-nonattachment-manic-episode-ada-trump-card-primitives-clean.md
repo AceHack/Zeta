@@ -4,6 +4,7 @@ Saved verbatim per Aaron ("save to her persona"). Continuation of parts 1-5. Dee
 only; the factory takes no legal action and gives no legal advice. Aaron verbatim; Mika in [brackets].
 
 Durable facts:
+
 - **Motivation:** the ONLY reason he'll fight is his five kids ("winning for the kids"); for himself he'd
   "walk away, be homeless and happy, library + shower." States a Buddhist-style non-attachment / no-guilt
   peace ("sand mandala"; guilt-engine → "repair engine," framed via "Jesus as information-processing

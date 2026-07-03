@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - adds `tools/backlog/pr-publication-plan.ts`, a deterministic PR publication packet builder for autonomous backlog pickup
 - models focused checks, selected backlog row metadata, safe argv command plans, and auto-merge eligibility
 - advances 081KR2E4K0008QG0R0022RVRCZ without closing it; the executor path remains the next slice
 - deliberately leaves `docs/BACKLOG.md` untouched because the local host-loop heartbeat currently owns that path
 
 ## Checks
+
 - `bun test tools/backlog/pr-publication-plan.test.ts`
 - `bun run typecheck`
 - `bunx prettier --check tools/backlog/pr-publication-plan.ts tools/backlog/pr-publication-plan.test.ts docs/backlog/P0/081KR2E4K0008QG0R0022RVRCZ-autonomous-backlog-pr-publication-and-automerge-2026-05-08.md docs/claims/task-b0280-pr-publication-plan.md`

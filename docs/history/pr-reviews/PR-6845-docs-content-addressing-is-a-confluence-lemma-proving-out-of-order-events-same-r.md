@@ -31,6 +31,7 @@
 > the content-merge "dedups across strangers / ancestry-free" property "is going to come in handy on proof that proves out-of-order events end up with same results."
 
 Captured the **confluence / order-independence** proof scaffold. Content-addressing supplies **canonical idempotence**: the same datum reordered / duplicated / from any origin hashes to the same node → no double-count, no order-divergence. With:
+
 1. **join-semilattice merge** (commutative + associative + idempotent — CRDTs + Z-set, mostly proven),
 2. **content-addressed canonical idempotence** (ContentStore/DagFs.merge dedup; ancestry-free),
 3. **de Finetti exchangeability** (BeliefConvergence / 081KTAH8Q0008QG0R001YHSSA0),

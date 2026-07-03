@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*), on the CTM specs slide: *"they even have homeostats/gauges like us, input/output and bus processors, then pluripotent generic processors at T=0 — insane how similar; our own oracle things are homeostat chains."*
 
 Maps the CTM **T=0 processor types**:
+
 - **gauge/homeostat** (fuel gauge; Ashby ultrastability) ↔ **our oracles = homeostat chains**; the gauge→rising-weight→threshold→corrective-action loop **IS our ISR arrow** (`signalIfStarved` → grow budget/lower goal/book ΔU)
 - **input/output** ↔ observe/actuator surfaces; **bus** ↔ Reticulum/notification-router (bus-address ≠ identity)
 - **generic/pluripotent at T=0** ↔ our **stem-cell generic agents (§10)**; CTM's *"links emerge over time"* = **differentiation** = the root compression — independent convergent support for §10.

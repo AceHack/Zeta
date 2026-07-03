@@ -30,6 +30,7 @@
 OPERATIONAL JOINT CACHE DEFORMATION DEMONSTRATION. Per Aaron's explicit 2026-05-12 authorization ('vision.md is our cache ... is our joint visiion board ... like me and Addison'), Otto adds the 2026-05-12 substrate cascade architectural ground to VISION.md.
 
 Eight subsections cross-referencing the substrate-cascade memory files:
+
 1. Terminal-purpose lineage (lifetime falsification + Granny Nellie Faulkner)
 2. Six-layer architectural stack
 3. Four control structures isomorphism

@@ -32,6 +32,7 @@
 ## What
 
 The **command-vs-fact-event split** for effectful `do_item`:
+
 - `do_item` is a COMMAND (not logged). Executing it emits **FACT events** that ARE logged: `ActionExecutionStarted{item, tier, gated}` → `ActionExecutionSucceeded{item}` | `ActionExecutionFailed{item, reason}`.
 - `foldFacts(initial, facts)` replays the facts, **delegating the success transition to `simulate(do_item)`** (single reducer — no drift). It takes **no executor**, so replay *structurally cannot re-run the work* — the §0 correctness guarantee, enforced by the type.
 - `CommandExecutor` port (the bash surface) is injected; `fakeExecutor` for tests. The `Started` fact records `tier` + `gated` so the §3 glass-halo audit can tell a sandbox run from a docker/real-FS escalation.

@@ -30,7 +30,7 @@ after the main table, listing only the `project` and
 what adopting the Zeta factory gives your project, in
 hygiene terms."
 
-# Why:
+# Why
 
 Aaron's verbatim (2026-04-20):
 
@@ -100,7 +100,7 @@ Without the scope column, an adopter reading
 FACTORY-HYGIENE.md cannot answer "what do I inherit?"
 without per-row reverse-engineering.
 
-# How to apply:
+# How to apply
 
 - **Add a `Scope` column** to the main hygiene table in
   `docs/FACTORY-HYGIENE.md` between "Owner" and

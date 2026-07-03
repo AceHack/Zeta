@@ -45,6 +45,7 @@ methodology needs wake-time landing.
 - Types compose or they don't
 
 **Three epistemic states for substrate:**
+
 - F# anchored (operationally grounded; compiler validates)
 - F# referenced (documentation references existing F#
   constructs; grounded)
@@ -52,6 +53,7 @@ methodology needs wake-time landing.
   constructs not yet written; valid but speculative)
 
 **Operational discipline for future-Otto:**
+
 1. Recognize compression-infrastructure vs claim-making
 2. Ask for F# anchor when dense ontology arrives
 3. Apply three-epistemic-states tagging

@@ -42,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard documenting the 2026-05-23T08:02Z Otto-CLI cold-boot session, including sentinel re-arm details and an explicit “bounded-wait continuation” reference to the earlier 0008Z shard for PR #4668 disposition continuity.
 
 **Changes:**
+
 - Add tick shard `0802Z.md` with a compressed 7-step trace and sentinel-death-gap observation.
 - Record the unchanged named-dependency state for PR #4668 and the rationale for not re-authoring the 0008Z substrate.
 - Link this tick’s actions to the relevant `.claude/rules/*` discipline documents.

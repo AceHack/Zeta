@@ -32,11 +32,13 @@
 Implements 081KR7JY10008QG0R002PKC6B0: Aminata (`threat-model-critic`) adversarial review of the heartbeat-file integrity section added by 081KR7JY10008QG0R002DNV5WA (PR #2394). Ten findings (AH-1..AH-10) absorbed into `docs/security/THREAT-MODEL.md` and `tools/security/heartbeat-attack-vectors.ts`.
 
 **3 critical findings fixed:**
+
 - **AH-1** — insider-threat mitigation was circular: at bus-factor 1, the review gate = the maintainer = the potential insider. Added explicit T0/T1-only note; T2+ gap requires second reviewer.
 - **AH-2** — content-injection had no dedicated row: the section's *primary named threat* (cognition-poisoning via crafted natural language or invisible-Unicode payload) had no vector entry. Added as 6th vector in both the table and the TS taxonomy.
 - **AH-3** — AceHack mirror unmodelled: the backup mirror has weaker controls than LFG; any AI reading from AceHack faces every vector independently. Added scoping note.
 
 **6 important findings fixed:**
+
 - **AH-4** — cache-poison composition gap noted in supply-chain row (heartbeat-specific blast radius > general build cache)
 - **AH-5** — invisible-Unicode gate added to branch-protection requirements (visual review cannot catch Unicode smuggling)
 - **AH-6** — BouncyCastle described as design intent (Otto-346), not a shipped/operational control
@@ -45,6 +47,7 @@ Implements 081KR7JY10008QG0R002PKC6B0: Aminata (`threat-model-critic`) adversari
 - **AH-9** — pre-merge read path (worktrees on feature branches) stated as explicit out-of-scope assumption
 
 **1 watch finding acknowledged:**
+
 - **AH-10** — blast-radius claim (Otto-339/340 substrate absorption) drives severity ratings; calibration note added that empirical evidence is outstanding
 
 ## Files changed

@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Carved 5 more: factory-optimizer, paxos-expert, skill-documentation-standard, physics-expert, etymology-expert
 - Running total: 40 skills carved, ~79K+ chars freed
 
 ## Test plan
+
 - [ ] CI passes
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

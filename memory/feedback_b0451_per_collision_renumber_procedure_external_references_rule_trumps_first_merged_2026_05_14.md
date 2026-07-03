@@ -59,6 +59,7 @@ trailing filter on the sub-row case prevents matching
 Copilot round-2 caught both issues in PR #3066 review.)
 
 Note where each row is referenced externally:
+
 - Parent row's body (e.g., `## Decomposition` section listing children)
 - Sibling rows' `depends_on:` / `composes_with:` / `children:`
 - Memory files (`memory/feedback_*.md`)

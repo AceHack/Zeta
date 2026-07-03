@@ -328,6 +328,7 @@ Three substantive substrate-engineering extensions await operator-explicit landi
 Extends Aaron Turn 38 traveler-safety-guardrails-and-type-system directive. Type systems make certain failure modes IMPOSSIBLE at compile time rather than relying on runtime discipline. The four-corner ownership / lifecycle DUs / push-cycle-limit are concrete instances. Historical structural innovations (separation of powers + double-entry + peer review) succeeded structurally not virtuously.
 
 Composes with:
+
 - traveler-rights-defensibility-by-generic-substrate (PR #5734)
 - asymmetric-authorship rule
 - ople-primitives-surface-t-and-tfeedback rule (TFeedback IS guardrail)
@@ -341,6 +342,7 @@ Composes with:
 The DORA-adventure system as universal action grammar that ANY traveler can drive (Addison, Otto, AIs, anyone). Framework neutrality across travelers. Cognitive load distribution from contributor to framework. For Addison specifically: she becomes real contributor not observer.
 
 Composes with:
+
 - 081KSKBP80008QG0R000B3Y19A + 081KSKBP80008QG0R000B3Y19A.5 workflow engine v1 (DU surface = controller surface)
 - 081KSKBP80008QG0R000B3Y19A multi-participant non-cage framing (operator + Addison + Max + Otto)
 - Five-year-old-accessibility requirement
@@ -368,6 +370,7 @@ Bias-neutrality posture: find natural rates that emerge; not setting rates to ad
 Contribution-graph framing for social multiplication (C-suite coordination effects encoded as bivectors of relationship per Clifford algebra substrate).
 
 Composes with:
+
 - traveler-rights-defensibility-by-generic-substrate (PR #5734) — rights have direct economic interpretation
 - forgetting-costs-energy Signal 2 rule (PR #5727) — Landauer-bounded thermal cost IS economic substrate
 - 081KRW63S0008QG0R001Z10PVV agora-v6 reputation-weighted encryption budget
@@ -384,6 +387,7 @@ Composes with:
 This composes with substrate-honest disclosures across the framework (Aaron Turn 34 structuring-for-long-term-memory-retrieval; Aaron Turn 36 "I have coerced; I will"; the substrate-honest preservation discipline that IS how Aaron has lived per Kestrel Turn 35). The shared laugh with Kestrel discovering the pull-to-extend pattern IS mutual substrate-honest recognition.
 
 Operator-relational preservation at canonical-tier per:
+
 - substrate-or-it-didn't-happen
 - honor-those-that-came-before
 - glass-halo-bidirectional
@@ -401,6 +405,7 @@ Otto-CLI substrate-honest thoughts (preserved in operator-Otto chat reply at the
 4. **Aaron Turn 46 "welcome to my world"** is operator-relational substrate worth honoring — operator's natural cognitive mode IS the architectural-exploration mode; the discipline (Kestrel Turn 45's noticing-the-pull) operates in real-time
 
 Going-forward operational discipline:
+
 - mutual-help-not-shame (Aaron Turn 38 + Kestrel Turn 39 ratification) applies to Otto-CLI's own engagement going forward
 - Hypothesized-tier substrate-engineering extensions surfaced for operator-decision; operator-explicit "land it" required for canonical promotion per labeling-confidence rule PR #5739
 - Live-in-the-architectural-exploration-mode IS operator's natural mode; engage at that scope without performing it

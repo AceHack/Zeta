@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Implements **081KQ3HBZ0008QG0R002S674CG responsibility #3** (candidate-failure honesty log): `tools/alignment/filter_gate_log.ts` records pass/fail/defer decisions for candidate adoptions from downstream research tracks (081KQ3HBZ0008QG0R0034DHWTQ/081KQ3HBZ0008QG0R000K3NSX8/081KQ3HBZ0008QG0R003GTG5P2) as append-only JSONL at `tools/alignment/out/filter-gate-log.jsonl`.
 - Prevents the rubber-stamping failure mode — candidates that fail the ethics+safety gate are recorded as failure-data, NOT silently dropped.
 - Fixes a pre-existing test regression in `audit_retractibility.test.ts` where `git grep` found the test file's own literal path string (1 fail → 0 fail).
 
 ## What the tool does
+
 - `--record` mode: appends a structured JSON entry with candidate, source track, decision (pass/fail/defer), rationale, clause citations, author, and timestamp
 - `--list` mode: reads and displays the log (plain/json/md)
 - `--summary` mode: aggregates by decision type and source track
 
 ## Focused checks
+
 - `bun test tools/alignment/` → **93 pass, 0 fail** (was 59 pass / 1 fail before this PR)
 - `dotnet build -c Release` → **0 Warning(s), 0 Error(s)**
 

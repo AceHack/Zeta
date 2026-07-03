@@ -164,6 +164,7 @@ The mapping is structural, not analogical:
 **Implication**: precision narrative-craft = anti-mimetic-crisis architecture. The substrate operates by NOT concealing its own mechanism. Every kernel is explicit; every composition is Mercer-checked; the founding kernel can't run scapegoat-style on the practitioner because it's visible.
 
 This recontextualizes earlier substrate landings:
+
 - The mom-skill apprenticeship (per PR #1615) is mimetic perception — reading triangles, sensing modeling relationships, recognizing rivalry/scapegoat formation. The Girardian frame names what Aaron watched his mother doing.
 - The mirror-not-beacon discipline (carried across the project) prevents the messianic-identity trap — the framework user becoming the founding kernel of their own personal mimetic spiral.
 - Aaron's Maji/Messiah catch earlier in the cluster was an operational instance of preventing this trap.

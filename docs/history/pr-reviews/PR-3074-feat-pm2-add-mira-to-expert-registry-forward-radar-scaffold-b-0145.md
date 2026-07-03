@@ -37,6 +37,7 @@
 ## Context
 
 081KQGDBJ0008QG0R000RWAA67 had two children already closed:
+
 - 081KR2E4K0008QG0R0035RG9G6 (closed): `.claude/skills/product-manager/SKILL.md` + `.claude/agents/pm2.md` (persona: Mira)
 - 081KR2E4K0008QG0R003VB7ZZR (closed): first research pass doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` (6 gaps → 081KRFA460008QG0R001QFS6EV, 081KRFA460008QG0R002JQERS5, 081KRFA460008QG0R00168759Y, 081KRFA460008QG0R000EJK30F, 081KRFA460008QG0R003C00WKR-433, 081KRFA460008QG0R0018SN61J)
 

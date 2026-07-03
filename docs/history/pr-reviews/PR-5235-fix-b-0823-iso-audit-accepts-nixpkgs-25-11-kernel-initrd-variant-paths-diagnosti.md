@@ -34,11 +34,13 @@ Cascade #4 ISO audit failed on commit 75eff94d (post-#5226 merge) with 2 missing
 ## Two-layer fix
 
 **This PR (fix-fwd, immediate unblock)**:
+
 1. Kernel + initrd checks converted to \`REQUIRED_KERNEL_ANY\` + \`REQUIRED_INITRD_ANY\` any-of-family pattern (mirrors existing \`REQUIRED_BOOTLOADER_ANY\` discipline that survived the 24.11→25.11 channel bump cleanly)
 2. Candidate paths cover legacy (\`boot/bzImage\`) + per-arch (\`boot/x86_64-linux/bzImage\`) + generic-named (\`boot/kernel\`) + vmlinuz conventions
 3. Added \`dumpIsoEntriesForDiagnostic()\` helper — prints first 80 sorted ISO entries on audit failure so future regressions self-debug
 
 **081KSGS9H0008QG0R003SWZF9J (substrate-layer follow-up)**:
+
 - Investigate which 25.11 path actually drives kernel + initrd locations from the diagnostic dump
 - Optionally tighten the any-of families OR keep lenient as defense-in-depth (per 081KSGS9H0008QG0R00033DT02 precedent)
 

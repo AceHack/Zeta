@@ -31,11 +31,13 @@
 Smallest safe slice of 081KR2E4K0008QG0R001ZWARTN: implemented `tools/alignment/audit_external_anchors.ts` (TS) + tests. Re-decomposed during build (original S-effort item treated as broad; sliced to core scanner + classification + window extract + emit paths). 
 
 ## One bounded step
+
 - Full scanner per spec (load registry from 081KR2E4K0008QG0R003DS2XHJ, per-concept URL extract + classify, JSON/MD/human output, CLI flags).
 - No docs changes; all in F#/TS-preferred TS tool.
 - Dedicated worktree + pushed claim branch used; root checkout untouched.
 
 ## Focused checks (run in worktree)
+
 - `dotnet build -c Release`: 0 warnings, 0 errors (gate passed).
 - `bun test tools/alignment/audit_external_anchors.test.ts`: 31 pass, 0 fail.
 - `bun tools/alignment/audit_external_anchors.ts --md`: emits table; 63 concepts, **2 anchored**, 61 anchor-pending (only Otto-329/357 have claude.com anchors).
@@ -45,6 +47,7 @@ Smallest safe slice of 081KR2E4K0008QG0R001ZWARTN: implemented `tools/alignment/
 Outcome: scanner complete and green; surfaces the coverage gap (most alignment concepts lack external anchors — future slices can target specific concepts).
 
 ## Reviewers
+
 - spec-zealot (schema)
 - alignment-auditor (HC/SD/DIR signal)
 

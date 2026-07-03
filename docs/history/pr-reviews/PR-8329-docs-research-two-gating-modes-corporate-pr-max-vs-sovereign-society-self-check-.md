@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"moving away from PRs — society and self check gating merges to main, not PRs … GitHub will just be an impl of our IHost interface … Max and I are learning from each other, the two are becoming one."* Corrects #8328's "PR gate is our model" (true only for corporate mode; the gate **abstracts**).
 
 **Architecture (verified in-repo):**
+
 - The host/gate is a **port**. The in-repo "IHost" is **`ChangeControlPort` (CC4)** — the internal **`ChangeSet` is canonical**; the PR is a *view*, not the source of truth.
 - **GitHub = `change-control-github` (CC5)** = one adapter (Max's corporate). **`NullChangeControlPort`** = internal-only base (external stage auto-approves) = the **sovereign base**, no centralized host. **Sovereign adapter** (Aaron, `src/`) = a `ChangeControlPort` whose review stage is **society-check + self-check** over Reticulum/git, no external PR.
 - **Society+self = the synthesis:** self-check = build=verify; society-check = decorrelated-society vote (#8320); **"the math" = the routed ΔU-aggregation proof** (`081KV6B1MBM`).

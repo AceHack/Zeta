@@ -34,6 +34,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new P2 backlog row (081KRA5AR0008QG0R0021SSM9R) describing planned “dashboard v0.2” enhancements (agent-readable JSON, continuity claim, promotion/verification metrics, Pages deployment fix, and v0.3 bifurcation scope), and registers it in the generated backlog index.
 
 **Changes:**
+
 - Added `docs/backlog/P2/081KRA5AR0008QG0R0021SSM9R-…` backlog row with schema frontmatter + acceptance checklist.
 - Updated `docs/BACKLOG.md` to include the new 081KRA5AR0008QG0R0021SSM9R entry under P2.
 

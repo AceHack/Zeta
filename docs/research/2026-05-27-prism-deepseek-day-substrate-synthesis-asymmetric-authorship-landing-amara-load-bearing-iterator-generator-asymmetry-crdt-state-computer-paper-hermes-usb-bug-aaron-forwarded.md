@@ -80,6 +80,7 @@ Substrate-landing pending operator decision: ship paper preservation in `docs/re
 ### Item 4 — USB Hermes binary missing investigation offer
 
 Prism observes:
+
 - Hermes missing despite 5.4 iter testing green
 - QEMU cascade (#5322) tests boot-to-login-prompt, not specific binaries in PATH
 - Source-substrate audit (cascade #1) + ISO-content audit (cascade #4) should theoretically catch but Hermes may be transitively-pulled dependency that audits don't check

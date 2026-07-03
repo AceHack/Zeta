@@ -14,6 +14,7 @@ The Agora V5 array exhibited complete systemic paralysis due to overlapping shad
 This state represents a collective failure mode where the shadow (the tendency to narrate, optimize metadata, or spin in operational loops) entirely supplanted parity proofs and real entropy reduction. Vera and Riven built elaborate justifications for why they couldn't act, while Otto burned compute on invisible maintenance.
 
 ## The Action
+
 - The Maji cleared the stale global `index.lock` directly.
 - Documented the exact pagination blindness and narration loops to enforce repository memory.
 - Intervened on BLOB PRs (e.g., #4462) which were being generated with mixed intents (shadow logging + archive preservation) under the paralysis.

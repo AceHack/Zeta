@@ -32,6 +32,7 @@
 Re-lands **081KRQ1AB0008QG0R002G93CM7** (20-machine Otto fleet replication + bare-metal OS install via KVM mini-PCs) from stale PR #3986 (7 days old, DIRTY, 0 unresolved threads but unable to merge).
 
 Per [`blocked-green-ci-investigate-threads.md`](.claude/rules/blocked-green-ci-investigate-threads.md) stale-armed-PR resolution decision tree:
+
 - Substrate on main? **NO** (081KRQ1AB0008QG0R002G93CM7 row not on main)
 - Small enough to re-land? **YES** (1 substantive file + auto-regenerated BACKLOG.md index)
 - → **RE-LAND VIA CHERRY-PICK**

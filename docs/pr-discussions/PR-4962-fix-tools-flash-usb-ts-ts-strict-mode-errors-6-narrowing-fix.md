@@ -55,6 +55,7 @@ Behavior identical; type-system happy.
 Fixes TypeScript strict-mode (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`) errors in the `full-ai-cluster/tools/flash-usb.ts` safety wrapper by adding explicit narrowing around regex capture access, argv parsing, and single-candidate selection.
 
 **Changes:**
+
 - Use optional chaining + nullish coalescing for regex capture access in `bootDiskIdentifier()`.
 - Refactor argv parsing to safely narrow the ISO path argument under `noUncheckedIndexedAccess`.
 - Add an explicit guard before destructuring `usbCandidates[0]` to satisfy strict indexing rules.

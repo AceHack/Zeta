@@ -19,6 +19,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 8. Go back to step 2.
 
 **Cycle count observed:**
+
 - PR #188: 2-3 rebase cycles, finally merged on cycle 3.
 - PR #190: 2+ cycles so far, still DIRTY after thread-drain.
 - PR #147: stopped at content-judgment conflict on 1st rebase (different failure mode — genuine design divergence, not ping-pong).
@@ -41,6 +42,7 @@ configured (per earlier settings audit). NOT verified
 whether all PR-gated paths route through it.
 
 **Action owed** (BACKLOG row):
+
 - Verify merge queue is ON for `main` branch on LFG
 - Verify branch-protection requires merge-queue (not direct
   auto-merge)

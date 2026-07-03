@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - Validate that the retained-shell category map has no stale entries outside EXPECTED_RETAINED_SHELL.
 - Surface stale category metadata in the bash-retirement inventory report.
 - Add focused coverage for stale category detection and report rendering.
 
 ## Checks
+
 - PASS: bun test tools/hygiene/check-bash-retirement-inventory.test.ts
 - PASS: bun tools/hygiene/check-bash-retirement-inventory.ts --enforce
 - PASS: git diff --check and git diff --cached --check
@@ -37,6 +39,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds an integrity check to the bash-retirement inventory guard to detect stale entries in the retained-shell category map (category metadata that references files no longer in `EXPECTED_RETAINED_SHELL`), and surfaces these errors in both the rendered report and tests.
 
 **Changes:**
+
 - Extend allowlist integrity inspection to flag stale category-map entries.
 - Render stale category-map drift in the human-readable inventory report (including a new summary counter).
 - Add targeted tests covering stale category detection and report rendering.

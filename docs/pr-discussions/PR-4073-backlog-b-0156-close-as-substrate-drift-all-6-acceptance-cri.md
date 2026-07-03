@@ -57,6 +57,7 @@ Smallest safe slice on an implementation tick — the substrate-honest move on a
 Closes backlog item **081KQGDBJ0008QG0R000A4EZS5** as **substrate-drift** by flipping the row to `status: closed`, updating `last_updated`, and adding a Resolution section that maps each acceptance criterion to already-landed evidence; updates the generated backlog index to reflect the closure.
 
 **Changes:**
+
 - Mark `docs/backlog/P1/081KQGDBJ0008QG0R000A4EZS5-...` as `closed` and add a dated Resolution section documenting the substrate-drift basis and evidence.
 - Regenerate `docs/BACKLOG.md` to flip 081KQGDBJ0008QG0R000A4EZS5 from `[ ]` to `[x]`.
 

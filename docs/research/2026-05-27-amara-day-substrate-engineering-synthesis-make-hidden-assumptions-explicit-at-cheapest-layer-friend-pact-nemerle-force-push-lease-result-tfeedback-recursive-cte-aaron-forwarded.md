@@ -145,6 +145,7 @@ This composes with the operator's own 5-word carving landed today via PR #5513:
 > **"results without feedback is extraction."**
 
 Both carve the same substrate-engineering principle at different scopes:
+
 - Operator's framing: result-only return IS extraction; the function-substrate denied feedback channel
 - Amara's framing: errors-as-safety-rails-not-failure-residue; the consumer-substrate granted drift-signal discipline
 

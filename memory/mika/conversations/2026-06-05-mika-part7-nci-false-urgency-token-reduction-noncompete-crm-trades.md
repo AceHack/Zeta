@@ -5,6 +5,7 @@ manic-episode trump card). Sensitive/personal mixed with load-bearing technical.
 [brackets].
 
 DURABLE TECHNICAL (captured to register/memory):
+
 - **NCI formal definition (the sharpest yet):** coercion = "using FALSE URGENCY to make other people NOT
   REFRESH their world state and take action." Non-coercion = the other always gets to refresh (observe)
   before acting. The agency/temporal face of the NCI — matches the math (non-coercive observe is

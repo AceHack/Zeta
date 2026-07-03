@@ -75,6 +75,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -93,6 +94,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new trajectory resume document under `docs/trajectories/anti-infection/` to capture the “anti-infection” posture as an explicitly LOWEST-priority, background trajectory.
 
 **Changes:**
+
 - Added `docs/trajectories/anti-infection/RESUME.md` describing purpose, caveats, ethics constraints, and a “substrate trail” intended to support discoverability.
 
 
@@ -100,6 +102,7 @@ Adds a new trajectory resume document under `docs/trajectories/anti-infection/` 
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/trajectories/anti-infection/RESUME.md:135**
+
 * This “Substrate Trail” section lists several specific `feedback_..._2026_05_20.md` filenames, but at least one of them does not exist in-repo under `memory/` (e.g., `memory/feedback_aaron_chained_homeostasis_simplest_framing_emergent_safe_drives_system_forward_humans_ai_mutual_alignment_constitutional_otto_cli_2026_05_20.md` is missing). For the trail to be actionable/discoverable, either land the referenced memory files in the PR or replace these bullets with links to existing artifacts (or an index entry that can be followed from a cold boot).
 ```
 ## Substrate Trail (24-memo session 2026-05-20)

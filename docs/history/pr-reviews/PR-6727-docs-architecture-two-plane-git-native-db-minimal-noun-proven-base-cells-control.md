@@ -30,6 +30,7 @@
 Durable capture of Aaron's 2026-06-07 steering session + the buildable crystallization. Capture-only (docs); no code.
 
 ## The architecture
+
 - **Two planes**: data plane (storage + read/write over git, no agents/cells — standalone product) + control plane (YinYang **cells**, NOT agents yet). Seam already factored in code = `IDeltaLog`/`ISnapshotStore`; extraction is packaging, not surgery.
 - **Minimal nouns** (Rodney's Razor, source-grounded) — THREE data-plane nouns: `ZSet` ✅ 4/4, `DynamicValue` ✅ 4/4, **`Log` 🚧 the gap** (entry `(Seq, ZSet, Captured)` not yet 4-lang byte-locked). Data-plane proven base is ~2/3 done; the remaining slice is the Log noun's all-lang/all-ser byte-lock. 7 candidate nouns killed (Delta/Snapshot/Value/Manifest/Transaction/Index/Schema = verbs/views/coordinates/consumers).
 - **Definition of DONE (§2a, dogfooding)**: all persistence routes through the DB layer (git-native, ZetaIds first-class); **Otto stops using `git` CLI** — even backlog goes through the DB's generic commands. Done test = a full work-cycle with zero `git` calls.

@@ -34,11 +34,13 @@
 **Root cause:** the Phase-6 `<style>` block (`.record-grid` / `.qr-block` / `.label-sheet` / `@media print`) was never added to `index.html`. In the original PR my first CSS edit was hook-blocked, and when I pivoted to an anchored python patch that one block got dropped — while all the JS that *references* those classes shipped. So there was no `@media print` rule to hide the app while printing, and `.label-sheet { display:none }` was absent. Everything else (QR render, View, CSV/JSON export, label building) worked, which is why only printing misbehaved.
 
 **Fix (CSS-only, +33 lines, no JS/RLS/CSP/TS change):** add the missing block.
+
 - `@media print` hides every top-level node except `#label-sheet` (`body.printing-labels > *:not(#label-sheet){display:none}`), so only the labels print.
 - `#label-sheet` lays out as a 3-col Avery-5160 2.625"×1" grid; `.label-sheet` is `display:none` on screen.
 - `.record-grid`/`.qr-block` style the View modal.
 
 **Verified:**
+
 - CSSOM parse check — the `@media print` hide rule (`→ display:none`) and `#label-sheet` show rule (`→ display:grid`) are present and well-formed; `#label-sheet` is a direct child of `<body>` (so the app's `.container` sibling is hidden).
 - jsdom page-smoke still green (labels build, `printing-labels` class toggles, QR renders) — 0 regression.
 

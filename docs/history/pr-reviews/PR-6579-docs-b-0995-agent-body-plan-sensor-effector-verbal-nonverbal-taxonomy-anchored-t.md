@@ -30,12 +30,14 @@
 New P1 row (Aaron 2026-06-02, several messages) — the agent body-plan, anchored to widely-studied human signal-processing.
 
 **Taxonomy** (organ → role → channel):
+
 - **Ears** = failure detectors, mostly **verbal in** (acoustic / hear-failure-before-it-fails)
 - **Eyes** = threat + prey detectors, mostly **non-verbal in** (visual / threat-rings)
 - **Mouth** = diplomacy + weapon, mostly **verbal out** (Eve Protocol + info-suppression/KSK-weapon)
 - **Body** = defender · aggressor · love-maker/replicator · doer, mostly **non-verbal out** (KSK consent-first + replication + action)
 
 **Widely-studied anchor (search-first-verified, Aaron's ask "is there a human signal-processing map for a 4×4?"):**
+
 1. **Afferent / efferent** (sensory/motor) signal flow, unified by **active inference** (perception-action loop) = the input/output axis → the 4 organs ARE the **2×2 {afferent/efferent} × {verbal/non-verbal}**.
 2. The canonical **4-stage pipeline: transduction → transmission → modulation → perception** (efferent dual: intention → planning → modulation → execution) = the per-organ stages → **4 organs × 4 stages = the 4×4**. The "modulation" column is the home for the consent-first / attention gating.
    - `[established axes, hypothesized mapping]`; sources cited (afferent/efferent; active-inference PMC3637647/PMC8320263; nociception 4-stage LibreTexts/PMC11581984).

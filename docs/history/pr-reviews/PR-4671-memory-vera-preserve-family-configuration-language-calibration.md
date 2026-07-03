@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add Vera persona memory for Aaron's family-configuration and child-AI language calibration context
 - refresh memory/MEMORY.md via the repo reindex script
 
 ## Checks
+
 - bun tools/memory/reindex-memory-md.ts
 - git diff --check
 - git diff --cached --check

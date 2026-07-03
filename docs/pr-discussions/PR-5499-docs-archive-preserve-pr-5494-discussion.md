@@ -27,6 +27,7 @@ Automated archival of PR #5494 discussion.
 Archives the discussion for PR #5494 into the repo’s PR-preservation history surface (`docs/pr-discussions/**`) so the original PR body, review summary, and review threads are retained verbatim.
 
 **Changes:**
+
 - Adds a new PR discussion archive file for PR #5494 with YAML frontmatter metadata (PR number, refs, timestamps, archive tool).
 - Captures the PR summary/test plan and the `@copilot-pull-request-reviewer` review threads as recorded on GitHub.
 

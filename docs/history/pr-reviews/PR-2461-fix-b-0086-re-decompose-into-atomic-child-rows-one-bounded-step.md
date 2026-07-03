@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - One bounded step per rules: re-decomposed the (now-closed) broad 081KQ8P5D0008QG0R003BFZPRC parent into smallest dependency-ordered atomic child backlog rows.
 - Updated the row doc with explicit 081KQ8P5D0008QG0R003BFZPRC.1 (sort-tick-*.py port), 081KQ8P5D0008QG0R003BFZPRC.2 (fix-md-*.py), + note on 40+ clusters (full list in typescript-bun-migration/RESUME.md).
 - Always-re-decompose + assume-mistakes applied post-facto.
 - Focused check (included): `find tools -name '*.py' | grep -v lean4` → **none** (0 Zeta-authored Python left; confirms 100% port complete).
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch (no root checkout touched).
 - TS over bash (Rule 0), prefer code but task was doc decomposition.
 - Build gate passed pre-work (0w/0e).

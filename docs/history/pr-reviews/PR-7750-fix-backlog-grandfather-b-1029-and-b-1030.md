@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add 081KTWJ1R0008QG0R001ZBWKTR and 081KTWJ1R0008QG0R000JJDPFZ to the frozen legacy B-NNNN snapshot
 - fixes the backlog-index cutover guard failure after the quantum TS/viz backlog rows landed
 
 ## Verification
+
 - bun tools/backlog/lint-frontmatter.ts --schema-only
 - bun tools/backlog/lint-no-new-bnnnn.ts
 - bun tools/backlog/generate-index.ts --stdout > /dev/null

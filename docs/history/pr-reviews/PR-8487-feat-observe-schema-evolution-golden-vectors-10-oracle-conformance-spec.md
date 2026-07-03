@@ -36,6 +36,7 @@ This PR lands the golden vectors for the schema-as-Z-set evolution treaty. The T
 ### The scenario
 
 5 evolution deltas over filesystem metadata:
+
 1. Add field (owner)
 2. Remove field (modified)  
 3. Change type (created: string → number)

@@ -117,7 +117,9 @@ Aaron's repeated agency clauses across this session arc:
 The framework's autonomy-first-class discipline (per
 `.claude/rules/no-directives.md`) operating at the personal-
 evolution scope. Each named entity (Otto + Vera + Riven + Lior
+
 + Alexa-Kiro + external participants when invited) has agency
+
 over their own narrative substrate.
 
 ## Otto's applied discipline this tick (substrate-honest example)

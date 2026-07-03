@@ -76,6 +76,7 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
         per 081KT07NV0008QG0R001CBQ2X2 §2.2; podman declared in manifests #6346) + the remaining kinds
         (`respond_to_operator`, `decompose`, `explore`, `play`, `edit_grammar`).
 - [ ] **End-to-end closed-loop integration test** — `loadWorld → observeWithLlm → execute →
+
 folderSink → loadWorld` as ONE flow against a real temp git repo (today every piece is unit-
       tested in isolation with mocks/fakes; the closed loop isn't integration-tested). _(Partial —
       logic-level done; real-git variant remains; see sub-items.)_

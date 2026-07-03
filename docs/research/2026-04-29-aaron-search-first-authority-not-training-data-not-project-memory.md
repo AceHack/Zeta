@@ -42,11 +42,13 @@ To prove the rule is operational and not aspirational, Otto ran four web searche
 **Search**: `Bun ci frozen lockfile bun.lock site:bun.sh 2026`
 
 **Verified**:
+
 - `--frozen-lockfile` blocks installs that change the lockfile and verifies the lockfile without installing packages
 - `bun.lock` is the new text-based lockfile format introduced in Bun v1.1.39 and made default in v1.2.0
 - Migration path from binary `bun.lockb`: `bun install --save-text-lockfile --frozen-lockfile --lockfile-only`
 
 **Sources**:
+
 - [Bun Lockfile Docs](https://bun.sh/docs/pm/lockfile)
 - [Bun's new text-based lockfile (blog)](https://bun.sh/blog/bun-lock-text-lockfile)
 
@@ -59,16 +61,19 @@ To prove the rule is operational and not aspirational, Otto ran four web searche
 **Search**: `GitHub Actions paths-ignore required check pending merge blocked 2026`
 
 **Verified**:
+
 - "If a workflow is skipped due to path filtering, branch filtering or a commit message, then checks associated with that workflow will remain in a 'Pending' state. A pull request that requires those checks to be successful will be blocked from merging." (GitHub Docs)
 - A job within a workflow skipped due to a conditional (`if:`) reports its status as "Success" and allows the check to pass.
 - GitHub officially recommends NOT using path or branch filtering to skip workflow runs if the workflow is required.
 
 **Sources**:
+
 - [GitHub Docs — Troubleshooting required status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks)
 - [GitHub Community Discussion #54877 — Branch protections when actions use paths-ignore](https://github.com/orgs/community/discussions/54877)
 - [GitHub Community Discussion #44490 — Allow required checks to pass/skip, not fail, when using path filtering](https://github.com/orgs/community/discussions/44490)
 
 **Sharper finding**: Three GitHub-blessed workarounds for the trap, ranked by official preference:
+
 1. **Conditional logic with success-on-skip** — the job runs but its `if:` evaluates false; reports Success. (This maps directly to the classifier-with-no-op-success-job pattern Amara recommended.)
 2. **Dummy workflow with same name** — inverse path filter, always passes; required check picks up either the real workflow or the dummy.
 3. **External tool** like `dorny/paths-filter`.
@@ -82,11 +87,13 @@ The classifier-pattern Amara proposed — required workflow always starts, class
 **Search**: `GitHub Actions jobs outputs needs syntax 2026 documentation`
 
 **Verified**:
+
 - `jobs.<job_id>.outputs` creates a map of outputs for a job; available to all downstream jobs that depend on it via `needs`
 - Steps producing outputs need `id:` and append to `$GITHUB_OUTPUT`
 - Dependent jobs access via `${{ needs.<JOB_ID>.outputs.<KEY> }}`
 
 **Sources**:
+
 - [GitHub Docs — Passing information between jobs](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs)
 - [GitHub Docs — Workflow syntax](https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions)
 
@@ -99,12 +106,14 @@ The classifier-pattern Amara proposed — required workflow always starts, class
 **Search**: `mise install command project config .mise.toml 2026`
 
 **Verified**:
+
 - `mise install` installs a tool and adds the version to `mise.toml`; tools install to `~/.local/share/mise/installs/<PLUGIN>/<VERSION>`
 - `mise use` creates a `mise.toml` file in the current directory and activates the tool for that directory
 - `mise.toml` configures three things: tool versions, project environment variables, automated tasks
 - `[tools]` section specifies which tools and versions; "tools" means any managed software including language runtimes, build tools, CLI utilities
 
 **Sources**:
+
 - [mise Configuration](https://mise.jdx.dev/configuration.html)
 - [mise Walkthrough](https://mise.jdx.dev/walkthrough.html)
 - [mise Dev Tools](https://mise.jdx.dev/dev-tools/)
@@ -127,6 +136,7 @@ Per the rule, even the project's own state is *historical truth* and must be cro
 - `../SQLSharp` and `../scratch` exist as siblings ✅
 
 But these project-state findings cannot stand alone — they need cross-checking against:
+
 - Current Bun docs on `bun.lock` adoption (done above)
 - Current mise docs on `.mise.toml` semantics (done above)
 - Current GitHub Actions docs on outputs / `paths-ignore` (done above)

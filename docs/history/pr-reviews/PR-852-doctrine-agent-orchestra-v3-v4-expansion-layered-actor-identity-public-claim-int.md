@@ -28,6 +28,7 @@
 **Doctrine expansion. Protocol still NOT operational.** This PR lands two follow-up doctrine packets from Aaron + Amara 2026-04-29, captured immediately after #851 (the v2-corrected doctrine memory) merged. Same shape as #851: doctrine memory only, no implementation, every new surface marked `[planned]` and tracked under explicit follow-up tasks.
 
 This is the **fourth doctrine packet** in a 2-hour cluster:
+
 - #850 (merged): parallel-agent worktree isolation + best-practices evidence/lineage
 - #851 (merged): Zeta Agent Orchestra v1 + v2 review corrections
 - This PR: v3 expansion — layered actor identity + public claim intake
@@ -45,6 +46,7 @@ maintainer_id / host_id / harness_id / role_id / actor_id / session_id
 ```
 
 Examples:
+
 - `aaron-mac/claude-code/coordinator`
 - `aaron-windows/codex-cli/patch-peer`
 - `aaron-windows/gemini-cli/review-peer`
@@ -63,6 +65,7 @@ Active Claim  = "The project granted this actor a lane."
 ```
 
 External actors create requests; only maintainers / authorized automation promote requests to active claims. New surfaces (all `[planned]`):
+
 - `CONTRIBUTING.md`
 - `AGENTS.md` autonomous-agent intake block (10 rules)
 - `.github/ISSUE_TEMPLATE/claim_request.yml`

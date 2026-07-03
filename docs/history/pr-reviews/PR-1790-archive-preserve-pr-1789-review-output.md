@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1789 review archive after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1789 manifest entry with merge commit SHA `290c7f2620eba93bb9fee7aa0a038aadd99a99db`.
 - Keeps the claim marker lifecycle in branch history while the final PR diff retains only archive substrate plus the manifest row.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1789-research-lior-maji-protocol-intent-compiler-verbatim.md`
 - `git diff --check`
 - `git diff --check origin/main...HEAD`

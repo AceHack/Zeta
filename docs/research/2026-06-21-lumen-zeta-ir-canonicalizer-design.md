@@ -22,6 +22,7 @@ We do not need to build solver orchestration or relation semantics from scratch.
 
 ## 3. The Algebraic Rewrite System (The "Query Optimizer")
 The core-four ops split cleanly into two algebraic rings:
+
 - **Affine/Ring Ops ($\mathbb{Z}/2^W\mathbb{Z}$):** `mul k`, `add k`
 - **Linear Ops ($\mathbb{F}_2$):** `xshrxor ss`, `xrotxor rs`
 
@@ -29,12 +30,14 @@ To achieve canonicalization, we must define a strict ordering and fusion strateg
 
 ### Slice 1: Ring Fusion (Multiplication and Addition)
 Consecutive operations in the same ring must be fused.
+
 - **Mul-Mul Fusion:** `[Mul a, Mul b]` $\to$ `[Mul ((a * b) mod 2^W)]`
 - **Add-Add Fusion:** `[Add a, Add b]` $\to$ `[Add ((a + b) mod 2^W)]`
 - **Zero/Identity Elimination:** `Mul 1`, `Add 0`, `XShrXor []`, `XRotXor []` are removed.
 - **Zero Absorption:** `Mul 0` absorbs all preceding operations (since $f(x) \cdot 0 = 0$).
 
 ### Slice 2: F2 Linear Fusion (Rotates and Shifts)
+
 - **XRotXor Fusion:** `[XRotXor A, XRotXor B]` $\to$ `XRotXor (A \oplus B)` where $\oplus$ is the symmetric difference of the rotation amounts modulo $W$.
 - **XShrXor Fusion:** Similar symmetric difference for shifts.
 

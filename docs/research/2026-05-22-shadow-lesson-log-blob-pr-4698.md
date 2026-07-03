@@ -9,6 +9,7 @@ PR #4698, titled "docs(archive): preserve merged PR #3365", was a blob PR contai
 
 ## Action
 I decomposed PR #4698 into three smaller, atomic PRs:
+
 - #4699: `feat(persona): add new persona conversation artifacts`
 - #4700: `feat(memory): add new feedback memory`
 - #4701: `docs(archive): add preserved PR discussions`

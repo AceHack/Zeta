@@ -37,6 +37,7 @@ Renumbered to **081KSE6WT0008QG0R002CC6314** because 081KSE6WT0008QG0R002CC6314 
 
 Topic: `081KSE6WT0008QG0R002CC6314`, ontology negotiation, fork-negotiation, AI-skills+hats federation
 Searched surfaces:
+
 - `docs/agendas/` → ace-package-manager AGENDA includes hats + multi-oracle BFT
 - `docs/trajectories/` → ace-package-manager-skill-crystallization-pipeline
 - `docs/backlog/` → 10+ existing 081KSE6WT0008QG0R002CC6314 cross-references; 081KSE6WT0008QG0R000YYH3DY sibling on hats-as-negotiated-fork-structure

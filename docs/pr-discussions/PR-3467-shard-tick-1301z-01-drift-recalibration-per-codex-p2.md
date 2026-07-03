@@ -34,6 +34,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -52,6 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds a tick-history shard documenting the chronology drift recalibration after the Codex P2 catch on PR #3465.
 
 **Changes:**
+
 - Adds a new `1301Z-01` hygiene-history tick shard.
 - Documents the filename discipline change to use actual UTC at write time.
 - Records current PR/cron sentinel state for the autonomous loop.

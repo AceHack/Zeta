@@ -88,6 +88,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -106,6 +107,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Documentation-only PR validating that the post-081KR2E4K0008QG0R001M8NJ56 auto-generated `memory/MEMORY.md` is compatible with AutoDream and AutoMemory write-backs, closing 081KR2E4K0008QG0R0004B55ND and recommending 081KQ8P5D0008QG0R003KFRGJ0 for closure. Adds a research report with five-step evidence, updates two backlog rows, and lands the corresponding tick shard.
 
 **Changes:**
+
 - New research note documenting line-cap / byte-cap / format / reindexer / AutoDream-marker / AutoMemory-scope evidence, plus a known pre-existing 62 KB byte-cap gap and rollback options.
 - 081KR2E4K0008QG0R0004B55ND transitioned `open → closed` with closure notes; 081KQ8P5D0008QG0R003KFRGJ0 transitioned `open → close-recommended` with done-criteria checkboxes ticked.
 - New hygiene tick shard at `0730Z.md` summarising the verify trace.
@@ -128,6 +130,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 1 c
 **Codex P2 (done-criteria inconsistency):** Fixed in fb81aba4. Changed "All done-criteria from 081KQ8P5D0008QG0R003KFRGJ0 are satisfied" to "All blocking done-criteria from 081KQ8P5D0008QG0R003KFRGJ0 are satisfied; the remaining criterion (hotspot monitoring) is explicitly non-blocking per the 081KQ8P5D0008QG0R003KFRGJ0 row." This correctly conveys that the open item is ongoing monitoring, not a blocking condition.
 
 **Copilot (invalid status enum / generate-index drift):** Fixed in fb81aba4.
+
 - `status: close-recommended` → `status: closed` in 081KQ8P5D0008QG0R003KFRGJ0 frontmatter (valid enum per tools/backlog/README.md)
 - Added `closed: 2026-05-14` frontmatter field
 - Regenerated `docs/BACKLOG.md` — both 081KQ8P5D0008QG0R003KFRGJ0 and 081KR2E4K0008QG0R0004B55ND now render as `[x]` (closed)

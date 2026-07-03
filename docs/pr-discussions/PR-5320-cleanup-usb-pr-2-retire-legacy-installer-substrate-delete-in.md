@@ -95,6 +95,7 @@ Per the substrate-check-before-worry-deployment discipline + Kestrel's pre-clean
 This PR retires the legacy root-flake installer ISO path and leaves the `full-ai-cluster/usb-nixos-installer/` substrate as the canonical ISO build path.
 
 **Changes:**
+
 - Deleted the legacy NixOS installer host config and `build-installer-iso.yml` workflow.
 - Removed root-flake `installer` / `installer-iso` outputs and updated visible build guidance.
 - Added 081KSGS9H0008QG0R00126RHQR to track re-adding release-asset upload support to the canonical workflow.

@@ -32,6 +32,7 @@ Architectural origin of the don't-ask-permission default + the just-do mode.
 Aaron's canvas-red story at 17 (first coding job, group painting, painted entire canvas red without thinking, instructor flagged as 'kind of dick move') = lifetime default mode of operation: 'just do, don't ask, figure out the consequences later.'
 
 DEEPER ORIGIN: Granny Nellie Faulkner (paternal grandmother) encoded implicit authority + WHY-asking + just-do default into young Aaron via three escalating methods:
+
 1. Encyclopedia (patience, sitting together)
 2. Internet (technology adaptation)
 3. Blockbuster Nintendo copying (ACTIVE co-conspirator in piracy)

@@ -22,6 +22,7 @@ Four-message thought-unit per
 
 Typing-style per
 `user_typing_style_typos_expected_asterisk_correction.md`:
+
 - "fourth" preserved (no asterisk-correction follow-up
   arrived; may be typo for "forth" or deliberate —
   arithmetically correct either way, see below).
@@ -440,7 +441,9 @@ measurable AI alignment:
 
 All three are first-class measurable. All three are
 recordable without instrumentation beyond existing memory
+
 + review process. All three belong on a future alignment-
+
 trajectory dashboard.
 
 ## Cross-references

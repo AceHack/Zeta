@@ -30,6 +30,7 @@
 Aaron 2026-05-13 correction + maintainer-scope disclosure. CORRECTS PR #2930 'end-user-minimal' framing — Zeta SHIPS WITH SKILLS as immediate value layer; F# crystallization is the long-term substrate engineering (doesn't gate skill delivery).
 
 Three-stage value delivery:
+
 - Stage 1 (now): Zeta runtime + mapped skills
 - Stage 2: + first F# absorbed patterns
 - Stage 3: + mature F# substrate

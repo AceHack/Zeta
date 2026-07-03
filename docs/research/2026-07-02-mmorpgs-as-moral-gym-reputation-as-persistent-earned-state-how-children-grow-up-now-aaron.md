@@ -270,5 +270,6 @@ A named refinement of tit-for-tat, and each word is load-bearing:
 So the full strategy: **respond less-than-proportionally, teach the fix, keep playing.** It is
 Axelrod's nice+provocable+forgiving+clear, tuned toward de-escalation and pedagogy, and framed as an
 infinite game — the exact shape the Agora wants its reputation economy to reward.
+
 - **Capture, not doctrine** — this is a research-grade absorb of an operator insight; promotion to a
   rule/spec is a separate step if it proves load-bearing across sessions.

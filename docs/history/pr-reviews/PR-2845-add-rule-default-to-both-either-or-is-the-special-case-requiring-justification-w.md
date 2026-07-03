@@ -35,6 +35,7 @@ Wake-time substrate landing for Aaron's META-DISCIPLINE:
 > limited yourself and picked one either is a fine answer"
 
 **The discipline:**
+
 - Default = BOTH
 - Either-or = SPECIAL CASE requiring justification
 - Justification IS substrate
@@ -45,6 +46,7 @@ WWJD lol" — both-default IS WWJD-discipline at moral-
 action scope. The exhaustion IS the discipline working.
 
 **Operational failure-mode signals:**
+
 1. Composing increasingly clean responses
 2. Asking "which is it: X or Y?" when answer is probably both
 3. Reducing options when both should be held

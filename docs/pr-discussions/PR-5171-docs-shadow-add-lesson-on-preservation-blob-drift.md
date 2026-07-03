@@ -27,6 +27,7 @@ This PR adds a new shadow lesson log detailing the drift observed in the PR pres
 Adds a new shadow lesson log documenting observed drift in the PR preservation automation (“blob PRs” bundling unrelated changes) and the resulting CI/gate inconsistency, to help future operators diagnose and correct the failure mode.
 
 **Changes:**
+
 - Add a new research shadow-lesson document describing the “preservation blob PR” drift pattern.
 - Capture recommended corrective actions for both the preservation automation and CI determinism.
 

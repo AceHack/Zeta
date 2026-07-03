@@ -44,6 +44,7 @@ The Otto-section-missed-PR-2980-by-3-min cascade earlier today (recovered via PR
 ## Implementation pattern
 
 Same skeleton pattern as the other two with all bug-fixes pre-applied:
+
 - Bounded single-iter mode + unbounded daemon mode (no result accumulation)
 - \`parsePositiveMinutes\` validation on \`--poll-min\`
 

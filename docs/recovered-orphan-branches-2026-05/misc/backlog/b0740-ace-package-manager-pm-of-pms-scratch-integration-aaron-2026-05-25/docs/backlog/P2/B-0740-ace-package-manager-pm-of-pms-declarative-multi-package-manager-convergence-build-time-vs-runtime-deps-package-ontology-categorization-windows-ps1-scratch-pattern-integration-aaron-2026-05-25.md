@@ -317,6 +317,7 @@ This row PROPOSES the ACE PM substrate scope. It does NOT:
 - Bypass B-0732 leverage-class safety substrate (ACE PM dispatch is destructive at install time; inherits the contract)
 
 P2 priority — ACE PM is foundational ops substrate that:
+
 - Gates cleaner cross-platform onboarding (B-0738 + B-0739 depend on it for their full operator-onboarding scope)
 - Composes with the hat-ontology + agency-stack work (B-0731 + B-0733 + B-0735)
 - Surfaces Aaron's manual-DMG-install + Roslyn-build-time gaps as substrate-tracked items

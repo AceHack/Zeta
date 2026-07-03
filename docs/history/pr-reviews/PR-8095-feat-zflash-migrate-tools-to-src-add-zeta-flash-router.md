@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Migrate `fat12-lib`, `flash-and-inject`, and `fat-inspect` from `full-ai-cluster/tools/` to `src/Core.TypeScript/zflash/` with shared `fat12-lib`, `raw-fat-esp` pure helpers, and `AlignedBlockDevice` port adapter
 - Add `zeta-flash.ts` router and F# `zeta flash …` dispatch in `Program.fs` (`usb` / `inject` / `inspect` / mac passthrough)
 - Refactor `argocd-health-test` cluster bootstrap to call `bootstrapKindClusterInProcess` / `bootstrapK3dClusterInProcess` instead of spawning `kind-up.ts` / `k3d-up.ts`
@@ -35,6 +36,7 @@
 - CI path filters: `full-ai-cluster/tools/**` → `src/Core.TypeScript/zflash/**`
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/zflash/fat12-lib.test.ts` (12 pass)
 - [x] `dotnet build src/Core.FSharp.Cli/Zeta.Cli.fsproj -c Release`
 - [ ] `bun src/Core.TypeScript/zflash/zeta-flash.ts --help`

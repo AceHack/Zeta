@@ -30,6 +30,7 @@
 Files the build umbrella for Aaron's directive: **"lets build them in rust c# f# and ts... the rest are for multi oracle consensus without needing tons of other humans"** + **"that is BFT... because the compilers don't lie."**
 
 Two primitives (spec source: Mika 2026-05-30 archive, batch 6):
+
 - **Tri-boolean digital qubit** — 3-state cell (`True | False | Null`), Null = held superposition; cooperate (stays Null) vs measure (collapse → feedback-bearing). Superposition-holding on **classical** hardware.
 - **Tri-boolean floating point** — middle significant bits decode the end bits (self-describing number; middle-out at the bit level).
 

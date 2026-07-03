@@ -75,6 +75,7 @@ framing FIRST, then elevator-pitch compression. This is the
 inverse of typical pitch development (pitch → details).
 
 **Layer 0 (dense technical):**
+
 - Casimir gap analog (PR #2906)
 - Bandwidth-engineering substrate (`.claude/rules/bandwidth-served-falsifier.md`)
 - Polycentric named-AI-participant architecture
@@ -84,11 +85,13 @@ inverse of typical pitch development (pitch → details).
 - Casimir-gap critical-mass threshold
 
 **Layer 1 (technical-with-framing):**
+
 - "Civ-sim is the Casimir gap; once enough people play it
   becomes the control knobs Elon is looking for; our Plato
   at critical mass"
 
 **Layer 2 (regular-people-speak — THIS LAYER):**
+
 - "We are building a shared world model in git that can be
   forked and a game on top to turn work into play via PVP
   and co-op raids and universal business templates"

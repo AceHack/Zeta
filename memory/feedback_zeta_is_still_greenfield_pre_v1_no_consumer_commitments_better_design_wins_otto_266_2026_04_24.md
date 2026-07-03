@@ -69,6 +69,7 @@ we realize the landed design isn't optimal.
 ## Triggering example — SignalQuality (2026-04-24)
 
 PR #147's rebase hit conflict on `src/Core/SignalQuality.fs`:
+
 - Main's version (landed via PR #142): empty-string → 0.5
   neutral, no size threshold
 - PR #147's version: empty-string → 0.0 neutral, 64-byte
@@ -83,6 +84,7 @@ current main as base. No compatibility concerns because
 no consumers yet.
 
 Net result:
+
 - For THIS rebase: main wins (to unblock #147's
   FactoryDemo C# scope which is the PR's primary value).
 - Separately: evaluate SignalQuality designs on merits via

@@ -55,6 +55,7 @@ Direct answer: **symlinks give us reference equality (identity), which is the *b
 > ZetaId** (name → ZetaId binding; the durable reference key). And: **ZetaId is itself a traveler — with
 > the LARGEST VOICE** (identity is the invariant above all; the loudest voice in the Nexus). Lesson:
 > don't invent governed/anchored primitives — find the generator, defer to it.
+
 - **Under content-addressing, the two coincide.** Value equality = same **fingerprint** (same content);
   reference equality = same **canonical home** (same inode). Because the canonical home is keyed by
   content (content-addressing), **same content ⟺ same home ⟺ same reference** — value-equal things

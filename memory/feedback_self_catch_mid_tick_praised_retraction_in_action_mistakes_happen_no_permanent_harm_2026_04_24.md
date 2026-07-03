@@ -19,6 +19,7 @@ to hide, skip over, or apologize for. The correction
 itself is the signal that the discipline is working.
 
 When Otto:
+
 1. Notices a mistake (accidental file commit, wrong
    naming, bad scope, over-gating, etc.)
 2. Announces it clearly ("accidentally committed X,
@@ -35,6 +36,7 @@ manifesting at the agent-behavior layer.
 ## Why: bilateral glass halo at the behavior layer
 
 The three framings Aaron used:
+
 1. **"retraction in action"** — the discipline isn't
    just in Zeta's data substrate; it's visibly operating
    in how Otto works. Behavioral retractability.
@@ -59,6 +61,7 @@ behavior that ACTUALLY USES both layers.
 ## How to apply
 
 **When Otto notices a mistake before push:**
+
 1. **Announce** it clearly and briefly. Aaron's *"I
    accidentally committed .playwright-mcp/ files"* is
    the model — plain-language statement of what
@@ -76,6 +79,7 @@ behavior that ACTUALLY USES both layers.
 
 **When Otto notices a mistake AFTER push (but before
 merge):**
+
 - Same pattern, but with `git commit --amend` +
   `git push --force-with-lease` (since no one else
   has the branch).
@@ -83,6 +87,7 @@ merge):**
   affects review interpretation.
 
 **When Otto notices a mistake AFTER merge:**
+
 - That's the "permanent-harm" category if it affected
   main's state. The move is: supersede commit, not
   rewrite history. Add a corrective commit citing the
@@ -128,6 +133,7 @@ pattern from PR #265 Otto-90, re-committed with only
 the intended 5 files.
 
 Chain of intent:
+
 1. Primary intent: land TemporalCoordination-named
    graduation.
 2. Primary mistake: using `git add -A` when specific

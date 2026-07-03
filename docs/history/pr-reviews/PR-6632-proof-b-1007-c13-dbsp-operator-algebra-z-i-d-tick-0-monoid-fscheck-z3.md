@@ -32,6 +32,7 @@
 C13 cadence item — the **DBSP linear-operator algebra** over `Stream<ZSet>`. `Circuit.Tests.fs` proves these as fixed `[<Fact>]` examples; C13 **generalises** them to FsCheck over random delta-sequences and adds the operator-inverse identities in Z3 (BP-16: real Circuit ∧ ideal reals). Spec: DBSP (Budiu et al.) — `I = (1−z⁻¹)⁻¹`, `D = 1−z⁻¹`, `D∘I = I∘D = id`.
 
 ### `Operators/OperatorAlgebra.Tests.fs` (FsCheck, random `ZSet<int>` delta sequences via the Circuit harness, sync `Step()`)
+
 - **D∘I = id** and **I∘D = id** — each tick's delta is recovered
 - **z⁻¹ defining property** — `delay` emits the previous tick's input (empty at t=0)
 - **D = 1 − z⁻¹** — `DifferentiateZSet = input − DelayZSet` (via `Plus`/`Negate`)
@@ -39,6 +40,7 @@ C13 cadence item — the **DBSP linear-operator algebra** over `Stream<ZSet>`. `
 - **Tick `(ℕ,+,0)` monoid** — `int<tick>` assoc/identity/commut (the UoM is the tick/ms safety; the algebra is ℤ's commutative monoid)
 
 ### `Formal/Z3.Laws.Tests.fs` (QF_LRA, symbolic 3-tick scalar stream)
+
 - **D∘I = id** and **I∘D = id** — the telescoping operator-inverse identities (assert the violation ⇒ UNSAT ⇒ identity holds)
 
 ## Verification

@@ -61,6 +61,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Additive documentation update to the 081KRHWGX0008QG0R001HMWM1W RCA row, appending two newly-observed multi-Otto branch-state contamination patterns and the zero-code defenses that worked in field-test.
 
 **Changes:**
+
 - Adds Pattern 5 (HEAD detached at `origin/main` between `git push` and `gh pr create`) and Pattern 6 (HEAD on another Otto's branch between recovery checkout and `gh pr create`).
 - Documents new cheap defenses: `git branch --show-current` immediately before `git commit`, and `gh pr create --head <branch>` with explicit head ref.
 - Notes env-var `ZETA_EXPECTED_BRANCH` hook is defense-in-depth only (doesn't persist across Bash-tool calls), and links the 2010Z/2026Z field-test ticks.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Claimed + implemented smallest safe slice of 081KR2E4K0008QG0R002JW751Y (P1): TS entrypoint at tools/bootstrap-razor/seed-test-repo.ts supporting --dry-run + manifest read from docs/bootstrap-razor/SEED-MANIFEST.md (081KR2E4K0008QG0R002PHZR58).
 - Re-decomposed (original M full gh+seed too broad per rules; one bounded S step).
 - Completed backlog start-gate (prior-art on TS/gh patterns + dep check on 081KR2E4K0008QG0R002PHZR58 closed) + updated row.
@@ -35,6 +36,7 @@
 - Commit attribution per AGENTS.md.
 
 ## Focused checks (included per rules)
+
 - bun run ... --dry-run: success, parsed include globs correctly, output clean.
 - dotnet build -c Release (root): 0 warnings 0 errors (pre-change; TS change has zero dotnet impact).
 - No new deps, pure TS + fs per Rule 0.

@@ -62,12 +62,14 @@ TWICE:** μF interpreter = document/data generation; νF interpreter = stream/tr
 behavior.
 
 **Build-shape recommendation (Amara):**
+
 1. ShapePath / ShapeContext
 2. Predicate algebra: and/or/not/path/kind/key/value/meta
 3. PolicyResult: selected decision + typed feedback
 4. μF instance first: DynamicValue → policy → XML projection ✅ (shipped, d9211551)
 5. Backlog νF stream/traveler interpreter
 6. Backlog trust/retry/routing interpreters
+
 **Danger to avoid: overgeneralizing too early** — build the generic predicate kernel,
 prove it with ONE boring instance (XML attribute-vs-element: concrete, visible,
 reversible only under named conditions). ✅ that's exactly what shipped.

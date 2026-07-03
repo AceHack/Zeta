@@ -64,6 +64,7 @@ advanced runs yours), doubling compute and alert queue noise.
 
 **3. Migrate to default setup, delete advanced workflow.**
 Default setup provides the configuration the rule wants. Lose:
+
 - Path-gate short-circuit for docs-only PRs.
 - Three-way-parity install script integration
   (GOVERNANCE §24).

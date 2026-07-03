@@ -31,6 +31,7 @@
 Decomposed broad P2 081KQ8P5D0008QG0R0002TN22C (cadenced lost-substrate recovery audit across worktrees + orphans + closed-not-merged PRs + aged drafts) into 4 smallest dependency-ordered atomic child rows, all S-effort pure-TS survey modules (Rule 0 + prefer TS over docs).
 
 **Dependency order:**
+
 - 081KDVJT3E008QG0R003GV8BHV (root, no deps): TS worktree survey
 - 081KDVJT3E008QG0R00183ME0R (depends .1): TS orphan branch survey
 - 081KDVJT3E008QG0R000P3YGTX (depends .1): TS closed-not-merged PR survey
@@ -42,6 +43,7 @@ Each child is a single-file TS tool implementing the 3-bucket (ALREADY-COVERED/N
 Exactly as required: dedicated worktree + pushed claim branch (no root checkout touched), decomp only, PR opened. Re-decomp applied (assumed mistakes in original broad scope).
 
 ## Focused checks (included per rules)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) (verified pre-work + no .cs delta)
 - Worktree: /private/tmp/zeta-b0090-decompose-riven-2026-05-10 on claim/081KQ8P5D0008QG0R0002TN22C-...
 - 4 new atomic backlog rows created, 79 LOC, clean
@@ -49,6 +51,7 @@ Exactly as required: dedicated worktree + pushed claim branch (no root checkout 
 - No bash, no docs-only, TS-prefer enforced in child titles
 
 ## Evidence
+
 - 081KQ8P5D0008QG0R0002TN22C source: docs/backlog/P2/081KQ8P5D0008QG0R0002TN22C-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md
 - Composes with tools/hygiene/LOST-FILES-LOCATIONS.md (15 location classes)
 - Trajectory alignment: memory-substrate-engineering + autonomous-loop-coordination (cadence fits autonomous hygiene)

@@ -51,6 +51,7 @@ Plus the Windows seeding:
 ## Implementation
 
 `.github/workflows/gate.yml`:
+
 - New `matrix-setup` job emits dynamic OS list per `github.event_name`:
   - `pull_request` → `["ubuntu-24.04","ubuntu-24.04-arm"]`
   - all other events → `["ubuntu-24.04","ubuntu-24.04-arm","macos-26","windows-2025","windows-11-arm"]`
@@ -58,6 +59,7 @@ Plus the Windows seeding:
 - `continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}` makes Windows non-blocking.
 
 `.github/workflows/codeql.yml`:
+
 - `analyze` matrix gated with `if: github.event_name != 'pull_request' && needs.path-gate.outputs.code_changed == 'true'`.
 - `path-gate` keeps running on every event; its empty-SARIF baseline uploads satisfy the aggregate `CodeQL` check on PRs without running the slow matrix.
 

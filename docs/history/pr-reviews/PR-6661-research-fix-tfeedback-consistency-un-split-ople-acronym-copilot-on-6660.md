@@ -28,6 +28,7 @@
 ## Description
 
 Fix-forward for 2 Copilot threads on #6660 (merged before threads posted). Both valid:
+
 - **P1:** serializer port `Result<T, Feedback>` → `Result<T, TFeedback>` — consistency with the OPLE + monad-propagation convention (generic feedback, not a fixed `Feedback` type).
 - **P2:** the OPLE acronym was split across a line break (rendered "Observe/Persist/ Limit/Emit"); reflowed + code-spanned each so `Observe`/`Persist`/`Limit`/`Emit` stays together.
 

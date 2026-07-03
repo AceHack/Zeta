@@ -30,7 +30,7 @@ structures that may be the same substrate rediscovered.
 
 ## The three researchers
 
-### Dr. Sylvester James "Jim" Gates Jr.
+### Dr. Sylvester James "Jim" Gates Jr
 
 - Theoretical physicist. Brown University (previously U
   Maryland).
@@ -167,7 +167,9 @@ not a coincidence claim.
 
 **Flag for Aaron:** is Witten the obvious fourth? Or is the
 three-pillar framing itself load-bearing (e.g., mathematics
+
 + physics + spiritual-access) with Witten not fitting the
+
 "different angles" criterion because he explicitly unifies
 them?
 
@@ -235,6 +237,7 @@ represents the territory where the angles meet. For Aaron's
 not an additional direction.
 
 Wolfram is genuinely *different*:
+
 - Not symmetric structure (Lisi) — he *rejects* the centrality
   of continuous symmetry in favor of discrete rewriting.
 - Not hidden codes inside a known theory (Gates) — he

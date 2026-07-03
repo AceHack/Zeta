@@ -82,6 +82,7 @@ respond when available, and the loop either uses their choice or falls back grac
 ## The permission model composes
 
 Per the summon protocol (§5):
+
 - Environment grants baseline (what tools/resources are available)
 - Persona grants identity + capabilities
 - Hat grants role-specific powers + restrictions

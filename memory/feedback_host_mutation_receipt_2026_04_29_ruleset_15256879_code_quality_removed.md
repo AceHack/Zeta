@@ -13,12 +13,14 @@ type: feedback
 **Operation**: `PUT /repos/Lucent-Financial-Group/Zeta/rulesets/15256879`
 
 **Diff** (rules array):
+
 - BEFORE (6 rules): `deletion`, `non_fast_forward`, `copilot_code_review`, `pull_request`, `required_linear_history`, **`code_quality severity=all`**
 - AFTER (5 rules): `deletion`, `non_fast_forward`, `copilot_code_review`, `pull_request`, `required_linear_history`
 
 The `code_quality severity=all` rule was the *only* item removed.
 
 **Ruleset metadata after change**:
+
 - `id: 15256879`
 - `name: "Default"`
 - `target: branch`

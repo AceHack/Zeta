@@ -73,6 +73,7 @@ Two design options; substrate-honest choice deferred to design pass:
 Probably Option B for the wrapper (it's small) + Option A for `flash-usb` if the per-platform divergence grows (currently small enough to inline).
 
 Auto-discovery surface on Linux extends to:
+
 - `~/Downloads/zeta-installer-*.iso` (default; matches macOS)
 - `$XDG_DOWNLOAD_DIR/zeta-installer-*.iso` if set (XDG-compliant)
 - `~/Downloads` is the de-facto default but XDG users (some Linux distros set it differently) need the extra check

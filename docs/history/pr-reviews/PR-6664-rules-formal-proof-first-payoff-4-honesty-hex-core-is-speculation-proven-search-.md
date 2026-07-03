@@ -30,6 +30,7 @@
 Fix-forward for the maintainer's catch + Copilot P1 on #6662 (both landed after #6662 merged; this is clean off current main — the earlier in-flight branch was stale on a sibling note, so abandoned).
 
 Two honesty corrections to payoff #4:
+
 - **Hex core (the maintainer):** it's *a LOT of speculation* — NOT proven, not fully 4-language — so **firmly a suspect**, not excluded. Aspiration: **if** proven **from first principles** (its own intellectual tower, CS-encoded + math proofs) it becomes **its own proof tower** (genuinely-independent multi-tower foundation), and only then drops down the suspect surface. Don't pre-exclude it. (Removed the earlier 'the *proven* hexagonal core' overclaim.)
 - **Spec-vs-intent (Copilot P1):** 'proven components can't be the cause' overclaimed — a proof verifies **code-matches-spec, not spec-matches-intent**, so a wrong/incomplete spec can still harbor a bug (valid-given-axioms ≠ true, at debug scope). Reframed: proven = **search-LAST** (bottom of the suspect surface), not search-never.
 

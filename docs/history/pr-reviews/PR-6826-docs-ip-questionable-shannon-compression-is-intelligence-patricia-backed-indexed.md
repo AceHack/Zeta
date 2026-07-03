@@ -35,6 +35,7 @@
 **Docs only** — clear of Lior's trust-core lane.
 
 ## Source
+
 - [3Blue1Brown — Compression is intelligence](https://www.youtube.com/watch?v=l6DKRf-fAAM)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

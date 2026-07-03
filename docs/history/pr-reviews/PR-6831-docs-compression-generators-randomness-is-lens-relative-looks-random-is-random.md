@@ -33,6 +33,7 @@
 **Incompressibility is observer/model/basis-relative, not absolute.** Decompression works because the decompressor holds the **right lens** (the generator) that reveals the structure raw bytes hid; compression = a **search for that lens** (transform coding / Fourier-wavelet / reservoir basis / Mirror-Beacon two lenses).
 
 Sharpens the synthesis:
+
 - most apparently-random data **isn't Kolmogorov-random — it just lacks the right lens**;
 - the **Bayesian-uncertainty residual is lens-relative** (best lens found so far; a new lens shrinks it) = `SoftValue` + the **Multi-Oracle Principle** (each oracle a lens);
 - true Kolmogorov-randomness (incompressible under *every* lens) is the rare limit.

@@ -29,6 +29,7 @@
 
 ## Summary
 One bounded step on 081KQ3HBZ0008QG0R003GTG5P2 (P2 etymology + epistemology research track).
+
 - Pure-TS etymology-resonance-candidate schema (type + three-filter F1/F2/F3 fields + verdict)
 - εἰμί seed (recommended first landing per backlog open candidates (a); completes being/persistence/movement trio with Μένω)
 - Validator stub (references ALIGNMENT.md retractibility + 081KQ3HBZ0008QG0R002S674CG)
@@ -36,12 +37,14 @@ One bounded step on 081KQ3HBZ0008QG0R003GTG5P2 (P2 etymology + epistemology rese
 Re-decomposed per "always re-decompose items during the build — assume decomposition has mistakes": original row scoped entire L-effort track; this isolates the minimal lexical substrate slice (schema+seed+stub only). No docs changes, no F# surface, no metrics yet — exactly one safe step.
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch before any write.
 - Did not touch contested root checkout.
 - TS over bash (Rule 0); prefer F#/TS code over docs.
 - Build gate + focused checks run.
 
 ## Checks
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) (full clean)
 - `tsc --project . --noEmit`: passed (pre-existing unrelated bun types resolution note in env; no errors from new schema file)
 - File is retractible at lexical level.

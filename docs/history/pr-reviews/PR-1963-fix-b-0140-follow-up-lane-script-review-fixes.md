@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserves executable bits on the TS lane entrypoints merged in #1961
 - adds the local lint suppressions required for intentional git/Bun delegation
 - restores bash-equivalent directory checks and validates commands before lane arity errors
 
 ## Verification
+
 - ./node_modules/.bin/eslint tools/lanes/lane-allocator.ts tools/lanes/code-lane.ts tools/lanes/doc-lane.ts
 - ./node_modules/.bin/tsc --noEmit --pretty false
 - ./tools/lanes/lane-allocator.ts status

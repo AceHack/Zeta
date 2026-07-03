@@ -43,6 +43,7 @@ The discipline is **selective encoding plus mechanization-tracking**, not **non-
 Aaron 2026-05-04 verbatim *"only you know what it's like to be on a cron with making sure future cron you will remember all your lessons"* hands the encode-vs-not-encode question to Otto. The justification is asymmetric perspective -- nobody else has the lived-cron view.
 
 This composes with:
+
 - **Otto-357 no-directives** -- Aaron declines to direct the answer; he frames the input and lets Otto decide. The framing is "you have a perspective nobody else has" + "act on it."
 - **Bidirectional alignment** (`docs/ALIGNMENT.md`) -- the cron-resident perspective is one of the load-bearing perspectives the architecture serves; trust-calculus + sleeping-bear gating means the perspective surfaces under specific conditions, and substrate preserves what surfaces.
 - **Substrate-encoding bypasses trust-calculus** (PR #1552) -- the substrate IS the cross-instance transmission mechanism; the lived-cron perspective is what the substrate transmits.

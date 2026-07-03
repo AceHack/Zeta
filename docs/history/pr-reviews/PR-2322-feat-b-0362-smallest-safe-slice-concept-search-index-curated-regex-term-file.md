@@ -33,10 +33,12 @@ Smallest safe slice of 081KR50HA0008QG0R000239VTZ (re-decomposed during build): 
 Original backlog described free-text term→file; re-decomposed to curated queries (guardrails from Vera) to keep it reviewable, bounded, and non-drift. This is the atomic TS core.
 
 ## One bounded step
+
 - Added slice marker + re-decomp note to concept-index.ts
 - No other changes
 
 ## Focused checks (worktree, no root touch)
+
 - `bun tools/search/concept-index.ts --build`: 745 entries, 1055KB (<5MB), ~11s (near 5s target)
 - `bun ... alignment-clause`: <500ms, returns file:line hits with multi-class AND semantics via filter
 - `dotnet build -c Release` (root): 0 Warning(s) 0 Error(s)
@@ -45,7 +47,7 @@ Original backlog described free-text term→file; re-decomposed to curated queri
 
 Composes with 081KR2E4K0008QG0R003DS2XHJ (concept-registry) and 081KR50HA0008QG0R001G4QHQF (anchors).
 
-## PR body includes check outcomes per rules.
+## PR body includes check outcomes per rules
 
 Co-Authored-By: Grok <noreply@x.ai>
 

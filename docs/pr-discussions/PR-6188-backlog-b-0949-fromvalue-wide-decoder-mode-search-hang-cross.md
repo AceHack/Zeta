@@ -44,6 +44,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -62,6 +63,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a P3 backlog row tracking the Codex P2 finding from PR #6186: tri-boolean float `FromValue` linearly scans decoder modes `0..2^decoderWidth-1`, which becomes an effective hang for wide decoders (≥~20). The row documents the cross-language scope (TS/F#/C#/Rust must land the same fix) and lists two policy options (analytic mode-window vs. width-cap) plus a slice-6 conformance vector.
 
 **Changes:**
+
 - New backlog row `docs/backlog/P3/081KSV2WD0008QG0R002K85NP0-...md` with frontmatter and full write-up.
 - Regenerated `docs/BACKLOG.md` index entry.
 
@@ -88,6 +90,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

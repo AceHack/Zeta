@@ -55,7 +55,7 @@ pick one, don't ship the deferral as-is:
   target for this, so I'm stopping here" is more honest
   than a phantom handoff.
 
-# Why:
+# Why
 
 Verbatim (2026-04-20):
 
@@ -111,7 +111,7 @@ Related prior art:
 - `feedback_preserve_original_and_every_transformation.md`
   — preserve history; phantom references break history.
 
-# How to apply:
+# How to apply
 
 - **Quick audit at round-close.** Before writing a
   round-close message that includes a "next tick" /

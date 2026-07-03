@@ -59,6 +59,7 @@ Public repos and standard GitHub-hosted Actions runners are free, but several ad
 **Carved blade** (Amara): *"Public repo is the default cost-control surface. Paid feature enablement is still an authority boundary."*
 
 **Authority lifetime:**
+
 - Standing — no expiration, no per-tick re-confirmation needed.
 - Revocable — Aaron can rescind by saying so; revocation triggers cleanup tick (delete or transfer test repos appropriately).
 - Self-limiting — if hourly billing tracking shows resource consumption Aaron flags as too expensive, agent throttles or reverts test-repo creation cadence without escalation.
@@ -68,6 +69,7 @@ Public repos and standard GitHub-hosted Actions runners are free, but several ad
 The failure mode is **not "spending money."** The failure mode is **"spending money that goes unnoticed until Aaron has to come tell me to stop."** Aaron 2026-04-29: *"not noticing and stopping costs until we talk is the barrier."*
 
 Concretely:
+
 - **OK**: cost shows up in the next hourly audit, agent notices, agent decides whether to clean up / revert / keep going. No Aaron interrupt needed.
 - **OK**: a mistaken accidental spend (created a repo with too-expensive Actions, mis-configured a workflow, etc.) caught by the audit tick after the fact.
 - **NOT OK**: cost accumulating silently because the audit isn't running, isn't covering the new test repos, or isn't being read by the agent.
@@ -75,6 +77,7 @@ Concretely:
 This means **audit-coverage is more load-bearing than spend-zero**. Don't try to be perfect-zero-cost; do make sure every test repo created falls under the hourly billing surface from the moment of creation. If the audit is broken, fix the audit BEFORE creating new test repos.
 
 **Why** (per Aaron's framing):
+
 - "Public cause that's free" — the cost-control mechanism is GitHub's pricing model, not a per-creation gate.
 - "Full admin to change any settings or whatever" — without admin, half the git/GitHub features can't be tested (branch protection, rulesets, SARIF upload, code-scanning config, secret-scanning, etc. all require admin).
 - "Just track the billing every hour" — the safety latch is observability, not pre-approval. Aaron sees the cost, agent acts within the budget envelope.

@@ -69,6 +69,7 @@ The split is now stable and load-bearing.
 This PR adds a single tick-history shard documenting the 18:22Z razor-cadence composes-with audit batch for four `.claude/rules/` files.
 
 **Changes:**
+
 - Records the refresh/holding/speculative-work flow for the tick.
 - Summarizes the audited rule, memory, and backlog cross-reference counts.
 - Notes cumulative progress across batch 1 and batch 2.

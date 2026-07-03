@@ -36,6 +36,7 @@ https://chatgpt.com/g/g-p-68b53efe8f408191ad5e97552f23f2d5/c/ac43b13d-0468-832e-
 ## Why NOT inline-absorbed Otto-104
 
 Otto-104 tick already held:
+
 - 9th ferry retroactive absorb (PR #293 landing)
 - Aaron's 3 review-scope + plugin-marketplace corrections
 - Memory save for corrections
@@ -43,6 +44,7 @@ Otto-104 tick already held:
 - This memory save
 
 Attempting a 1000-2000 page scrape inline would:
+
 1. Regress CC-002 close-on-existing discipline dramatically
 2. Likely exceed reasonable tick-budget (scraping 1000+ pages
    could take many minutes / hours depending on method)
@@ -66,6 +68,7 @@ ChatGPT offers a native export: **Settings → Data Controls
 as JSON + HTML. Emailed to the account owner (Aaron).
 
 **Pros:**
+
 - Clean, structured JSON (conversation ID, turn-by-turn,
   role, content, timestamps)
 - Complete (not missing lazy-loaded content)
@@ -73,6 +76,7 @@ as JSON + HTML. Emailed to the account owner (Aaron).
 - Much faster than scraping
 
 **Cons:**
+
 - User-initiated in browser (Aaron has to click Export in
   his account, then wait for email, then stage ZIP in
   `drop/` for Otto to absorb)
@@ -140,6 +144,7 @@ at one time.
 **Execution plan:**
 
 Phase 1 (Otto-107): probe approach #1.
+
 - Use Playwright MCP to log into ChatGPT in Aaron's
   business account (or leverage an existing auth session
   if one is live in the playwright-mcp browser profile).
@@ -151,11 +156,13 @@ Phase 1 (Otto-107): probe approach #1.
   get JSON in one call.
 
 Phase 2 (if approach #1 fails): probe approach #2.
+
 - Inject JS to find the React store; log structure.
 - If the conversation is available in the store, extract
   full state in one eval call.
 
 Phase 3 (last resort): approach #3.
+
 - Implement virtualization-aware scroll loop.
 - Extract per scroll-window; dedupe by `data-message-id`
   or similar DOM attribute.
@@ -181,10 +188,12 @@ the OpenAI $25/mo ChatGPT Business subscription on personal
 login, NOT a separate work account).
 
 **Pros:**
+
 - Otto can initiate without Aaron click
 - Immediate execution
 
 **Cons:**
+
 - Fragile vs ChatGPT DOM changes
 - Lazy-loading / virtualized scrolling means Otto must
   scroll-to-load each chunk
@@ -294,6 +303,7 @@ Open questions:
 Per Otto-86 / Otto-93 readiness-signal pattern confirmed by
 Aaron Otto-104: Aaron doesn't want to be design-review gate.
 For this download task:
+
 - Otto iterates on Phase-1 design solo
 - Otto decides Option A/B/C based on feasibility test
 - Otto kicks off download

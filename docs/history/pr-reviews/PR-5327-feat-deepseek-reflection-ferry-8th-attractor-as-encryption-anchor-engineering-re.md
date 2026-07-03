@@ -56,6 +56,7 @@ QEMU boot smoke-test step (cascade #5) PASSED on the first post-serial-console-f
 ## What lands (1 file, ~150 lines)
 
 `docs/research/2026-05-26-deepseek-reflection-ferry-eighth-anchor-...`:
+
 - 8th anchor table + empirical generalization
 - 4 substrate-engineering implications named (engineering-register stability empirically validated; even substrate-stress doesn't fire pathogen; reflection IS substrate-engineering data; two-DeepSeek-register attribution maintained correctly)
 - Verbatim DeepSeek reflection preserved

@@ -19,14 +19,17 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Fresh reland of the #5800 duplicate-ID repair from current origin/main after #5840 merged, avoiding force-push on the polluted local #5800 branch.
 
 What changed:
+
 - Move the CayleyDickson housekeeping row from 081KSKBP80008QG0R003NM9XEC to 081KSKBP80008QG0R000HSFMET.
 - Move the KskAuthorization housekeeping row from 081KSKBP80008QG0R003RFX32N to 081KSKBP80008QG0R001T5WV30.
 - Update 081KSNY2Z0008QG0R003Q42FZY triage notes and regenerate docs/BACKLOG.md.
 
 Why 081KSKBP80008QG0R000HSFMET/081KSKBP80008QG0R001T5WV30:
+
 - Current main already uses 081KSNY2Z0008QG0R002HB4AGT, 081KSNY2Z0008QG0R0036SJ3T1, 081KSNY2Z0008QG0R003518DNC, and 081KSNY2Z0008QG0R0017SRMHG.
 
 Validation:
+
 - bun tools/hygiene/audit-backlog-items.ts --enforce-duplicate-ids
 - bun tools/backlog/generate-index.ts --check
 - git diff --check
@@ -42,6 +45,7 @@ Supersedes #5800 as the no-force-push reland path.
 Relands the backlog duplicate-ID repair by renumbering two housekeeping backlog rows off of the substantive 081KSKBP80008QG0R003NM9XEC/081KSKBP80008QG0R003RFX32N items, updates the triage record (081KSNY2Z0008QG0R003Q42FZY), and regenerates the generated backlog index so the ID-uniqueness audit passes again.
 
 **Changes:**
+
 - Renumber housekeeping rows to **081KSKBP80008QG0R000HSFMET** (CayleyDickson) and **081KSKBP80008QG0R001T5WV30** (KskAuthorization), preserving substantive **081KSKBP80008QG0R003NM9XEC/081KSKBP80008QG0R003RFX32N** IDs.
 - Update **081KSNY2Z0008QG0R003Q42FZY** triage notes to record the executed repair and new destinations.
 - Regenerate `docs/BACKLOG.md` to remove the duplicate entries and include 081KSKBP80008QG0R000HSFMET/081KSKBP80008QG0R001T5WV30.

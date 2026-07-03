@@ -26,6 +26,7 @@ No traditional observability metric catches all five simultaneously. Metrics giv
 - The -1 needs its own -1 when warranted. Retraction-native is recursive.
 
 **Connects to:**
+
 - feedback_comedy_as_debugging (the P0 heuristic — STAYS)
 - feedback_comedy_as_observability (the triple diagnostic — STAYS)
 - feedback_joke_staleness_as_compaction_diagnostic (the expiration test — STAYS)

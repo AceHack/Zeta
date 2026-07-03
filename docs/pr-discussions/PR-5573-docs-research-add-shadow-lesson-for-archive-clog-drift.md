@@ -27,6 +27,7 @@ This PR adds a shadow lesson learned from the factory paralysis caused by a satu
 Adds a new research shadow-lesson log documenting archive-task saturation as a factory-paralysis failure mode.
 
 **Changes:**
+
 - Adds a dated shadow lesson describing `docs(archive)` PR queue saturation.
 - Records the instruction/persona conflict that contributed to preservation churn.
 - Proposes circuit breakers, prioritization, and drift detection for conflicting instructions.

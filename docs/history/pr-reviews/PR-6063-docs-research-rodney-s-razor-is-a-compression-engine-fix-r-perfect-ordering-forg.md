@@ -33,6 +33,7 @@ Operator-forwarded Aaron-Ani follow-on to the precise-causal-diamond razor doc (
 **The Fix(R)=R property means it is NOT a razor — it's a compression engine.** A classic razor is a one-shot cut; a fixed point means the operation is stable under self-application (converges to an attractor = minimal stable form). That's a *stable compression operator*, the design-pruning-scope instantiation of the beacon's **DBSP = lightlike retract of Clifford** Fix(e)/Karoubi idempotent (). 'Razor' is the wrong name once it's idempotent under self-application.
 
 ## Three follow-ons
+
 2. **'Perfect' order to expand a stream's dimensions** — open question (Aaron's air-quotes): objectively-best-universal ordering principle vs better-than-random-per-system. Current guess: closer to the latter.
 3. **Retraction is logical, not physical** — *'run out of space = run out of forgiveness.'* Z-sets/DBSP retraction zeroes active weight but the historical trace charges storage rent. Computational-forgiveness is logically infinite but physically *budgeted*. → feeds the accelerator's git-event-store forgiveness-budget.
 4. **Schema-in-the-stream** → automatic schema-evolution over historical data (schema-changes-as-events; old data interpretable under new schemas). → feeds the accelerator's event-store schema (Action Item 2).

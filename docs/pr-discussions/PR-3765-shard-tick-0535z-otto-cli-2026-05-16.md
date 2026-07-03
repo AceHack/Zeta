@@ -29,6 +29,7 @@ Tick shard from this resume-session series. Auto-PR'd during post-rate-reset swe
 Adds a new hygiene-history tick shard documenting the 2026-05-16 05:35Z Otto-CLI session state (rate-limit constrained “pure git” mode) and the discovery that PR #3757 supersedes PR #3746, with a planned post-reset closure.
 
 **Changes:**
+
 - Added tick log `0535Z` capturing refresh status, rate-limit constraints, and planned PR actions.
 - Documented comparison between PR #3746 and merged PR #3757, and the intended superseded-close disposition.
 
@@ -37,6 +38,7 @@ Adds a new hygiene-history tick shard documenting the 2026-05-16 05:35Z Otto-CLI
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0535Z.md:30**
+
 * Same issue here: the comparison table starts rows with `||`, creating an unintended empty column. Use the standard markdown table format (`| Aspect | ... | ... |`) to avoid the extra column and keep rendering consistent.
 ```
 | Aspect | My PR #3746 (open) | Peer's PR #3757 (merged) |

@@ -116,5 +116,7 @@ cleanup.
 
 This memo completes the 081KRSKQ20008QG0R0014PPGZM audit-prep substrate. Future
 safe-window Otto starting cleanup can read the 4 per-slice memos
+
 + the parent backlog row to execute the work without re-running
+
 discovery.

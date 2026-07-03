@@ -97,6 +97,7 @@ Seven moving parts, each doing a distinct job:
 ### What's ahead
 
 Round 22 is a knockdown round by the GOVERNANCE.md §12 rule:
+
 - `docs/BUGS.md` has 5 open P0 + 12 P1 + 3 P2 (ratio ≥ 5 means
   ≥70% bug work).
 - Round 22's dispatches: 3-bug-fix sprint, Plan.fs HLL +

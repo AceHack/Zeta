@@ -233,7 +233,7 @@ mechanised proofs.
   layers: binary-format at SVF, visual-format at
   UI-DSL. Composition-pattern, not coincidence.
 
-## How to apply:
+## How to apply
 
 - **Memory-only landing.** Aaron explicitly tagged
   *"not directives just thoughts"* — the factory

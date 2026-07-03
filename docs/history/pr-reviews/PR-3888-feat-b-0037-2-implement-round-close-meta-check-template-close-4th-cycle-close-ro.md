@@ -34,14 +34,17 @@ Fourth actual close-row of the audit cycle. #2-Ready pickup: 081KR7JY10008QG0R00
 `docs/ROUND-HISTORY.md` appended `## Round-close meta-check template` section with **6 checkboxes** drawn from the 081KR7JY10008QG0R0038AFS7T taxonomy:
 
 **First-order** (recognition at boundaries):
+
 - [ ] `overclaim*` scan
 - [ ] `verify-before-deferring`
 
 **Second-order** (pair/policy audits):
+
 - [ ] `capture-everything-including-failure`
 - [ ] `yin-yang` pair-audit
 
 **Third-order** (substrate-honest landings):
+
 - [ ] Three-filter F1/F2/F3 discipline
 - [ ] `witnessable-self-directed-evolution`
 
@@ -61,6 +64,7 @@ Guards against meta-drift — the degenerate regime where audit-disciplines deca
 Required 4 attempts to land via SHA-push. Peer-Otto's worktree-switches interleaved with my edits multiple times: (1) initial branch creation succeeded but `git add` failed silently after peer switch; (2) commit landed on peer's branch label; (3) amend dropped accidentally-staged peer shard; (4) SHA-push delivered the commit-by-content to intended target. Composes with the multi-Otto contamination recovery patterns catalogued in [memory/feedback_audit_backlog_status_drift_sub_class_catalog_otto_cli_2026_05_16.md](../memory/feedback_audit_backlog_status_drift_sub_class_catalog_otto_cli_2026_05_16.md).
 
 Changes:
+
 - `docs/ROUND-HISTORY.md` — template section appended
 - 081KR7JY10008QG0R002D6VNNJ row — frontmatter `status: open` → `status: closed` + Resolution
 - `docs/BACKLOG.md` — regenerated index

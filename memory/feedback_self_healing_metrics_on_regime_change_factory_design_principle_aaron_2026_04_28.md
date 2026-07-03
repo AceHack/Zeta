@@ -31,6 +31,7 @@ A **self-healing metric** is one where:
 ## The example that named the rule
 
 **Scorecard SASTID 28/30** (2026-04-28):
+
 - Pre-path-gate commits in Scorecard's "recent 30 merged PRs"
   window had no SAST signal because the path-gate hadn't been
   active yet.

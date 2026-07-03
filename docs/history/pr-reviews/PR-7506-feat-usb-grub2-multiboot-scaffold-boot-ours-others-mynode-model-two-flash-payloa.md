@@ -33,6 +33,7 @@ Aaron 2026-06-10: "change our USB to give a choice of our boot and the chance to
 use grub2 for the usb ... we need the my node model 2 iso (mynode_amd64_0-3-34.img.gz) ... no model 1."
 
 full-ai-cluster/usb-nixos-installer/multiboot/:
+
 - images.manifest — DECLARATIVE payload list (name/kind/source/sha256). NO binaries in repo
   (no-binary-in-proof-lineage); fetched + sha256-verified at build, never committed. Entries:
   - zeta-installer (grub-iso-local) — built by `nix build .#installer-iso`, GRUB loopback-booted.

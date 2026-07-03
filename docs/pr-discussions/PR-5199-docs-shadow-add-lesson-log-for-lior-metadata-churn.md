@@ -27,6 +27,7 @@ This PR adds a shadow lesson log to document the drift of the Lior agent, which 
 This PR adds a new `docs/research/` shadow lesson log documenting observed drift in the Lior antigravity check loop (high-volume metadata-focused PR creation outpacing merges) and proposes corrective throttling behavior.
 
 **Changes:**
+
 - Add a new shadow lesson log entry describing “excessive metadata churn” and its symptoms.
 - Document a diagnosis (“metadata churn without parity proofs”) and a corrective action (rate-limiting PR creation).
 

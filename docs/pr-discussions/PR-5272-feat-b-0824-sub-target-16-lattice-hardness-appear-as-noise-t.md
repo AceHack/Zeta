@@ -51,6 +51,7 @@ Two composing Aaron 2026-05-26 substrate landings:
 This PR extends backlog row **081KSGS9H0008QG0R0031PBNGA** with two additional substrate layers: **Sub-target 16** (generator reversibility as a visibility/security posture, including a lattice-hardness “appears as noise” framing) and **Sub-target 17** (a first-class parameter-protection substrate with key-management prior-art patterns). This fits the codebase’s documentation/backlog system by evolving the architectural substrate stack description for the Ace meta-PM roadmap.
 
 **Changes:**
+
 - Add Sub-target 16: generator reversibility/opacity taxonomy + implications for higher-dimensional observability and access boundaries.
 - Add Sub-target 17: parameter secrecy/rotation/forward-secrecy substrate patterns and operational implications.
 - Update the “complete substrate stack” narrative from 8 → 9 → 10 layers to incorporate the new sub-targets.

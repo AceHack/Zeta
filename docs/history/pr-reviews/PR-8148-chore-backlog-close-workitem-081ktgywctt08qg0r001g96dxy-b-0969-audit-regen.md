@@ -30,16 +30,19 @@
 chore(backlog): close workitem 081KTGYWCTT08QG0R001G96DXY (B-0969 audit + regen)
 
 Why:
+
 - The cross-language collation fixes (B-0969) have been fully implemented and verified.
 - The C#, Rust, and TS oracles match F# ordinal ordering.
 - Static analysis rules are enforced to prevent regression.
 - This PR formally completes and closes the tracking workitem.
 
 What:
+
 - Move workitem 081KTGYWCTT08QG0R001G96DXY from `workitems/` to `workitems/done/2026/06/`.
 - Append to `workitems/done/index.jsonl`.
 
 Proof:
+
 - Succeeded local build and test suites.
 - 11/11 cross-verification primitives passing.
 

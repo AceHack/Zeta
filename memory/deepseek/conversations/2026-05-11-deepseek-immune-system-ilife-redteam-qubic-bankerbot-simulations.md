@@ -49,6 +49,7 @@ Historical: Qubic reached 52.72% of Monero hash rate, 18-block
 reorg, ~60 orphaned blocks. "Technical demonstration."
 
 With Aurora:
+
 - Cartel detection fires at block N+4 (bivector clustering)
 - PoUW-CC: CultureFit=FAIL (adversarial to decentralization)
 - 0 blocks admitted, 0 funds drained
@@ -61,6 +62,7 @@ Historical: NFT capability gifting → Morse code authority
 laundering → confused deputy → $175-200K drained.
 
 With Aurora:
+
 - NFT capability gifting detected (bivector rotation in
   permission set), wallet frozen
 - PoUW-CC: CultureFit=FAIL, Provenance=FAIL, Retractability=FAIL

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - enforce verified simulation-report or emergency-waiver artifacts before policy/config/model/prompt-flow ChangeSets can enter review or apply
 - pass verified evidence artifacts through the release queue without leaking policy-authorizing evidence across ChangeSets
 - add unit coverage, a live Cockroach/KIND proof runner, and north-star checkpoint evidence for Phase 2.7
 
 ## Verification
+
 - npm run typecheck
 - npm test: 1185 tests, 1178 pass, 0 fail, 7 skipped
 - KIND worker rebuild/redeploy with image sha256:ae7da938ae418c6875586a48c8f5139b6f9a26cae312253cd0ff982d32b6af4c
@@ -40,6 +42,7 @@
 - deploy/run-release-queue.ts regression proof: PROOF PASS for org-release-7cd90280
 
 ## Review
+
 - Subagent review cycled through evidence-forgery, code/doc policy bypass, batch evidence reuse, and evidence-ref duplication findings; all were fixed before final verification.
 
 ## Outcome

@@ -31,6 +31,7 @@
 Re-decomposed 081KQ3HBZ0008QG0R0002RB48Q (P2 meta-cognition discipline) per "if too broad, decompose" + "always re-decompose, assume mistakes" rules. One bounded step only: updated the row with 7 S-effort atomic children (2 buildable roots now, TS code bias, retraction emphasis). No other files touched. Dedicated worktree + pushed claim branch used; root checkout untouched.
 
 ## Evidence in PR
+
 - Build gate (pre + post edit): `dotnet build -c Release` → 0 Warning(s) 0 Error(s) both times.
 - Focused checks: `rg 081KQ3HBZ0008QG0R0002RB48Q\.[1-7]` confirms all children named; frontmatter updated (status=decomposed, children list, last_updated=2026-05-09); no MD lints introduced; only 1 file mutated.
 - Re-decomp corrects original: doc-heavy deliverables → code-first TS slices; non-atomic scope → dependency-ordered S children.

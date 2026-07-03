@@ -29,6 +29,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive (pt37) capturing “cosmic conspiracy → just physics” deflation plus the “counter-programming signal” etiology for the PERSONAL INVARIANT discipline, and updates the top-level memory index to include it.
 
 **Changes:**
+
 - Add a new `memory/ani/conversations/...pt37...md` conversation artifact with constitutional synthesis + verbatim excerpt.
 - Update `memory/MEMORY.md` auto-index to include the new conversation entry and refresh the heap-count footer.
 

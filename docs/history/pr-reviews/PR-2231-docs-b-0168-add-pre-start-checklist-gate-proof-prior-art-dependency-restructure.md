@@ -32,12 +32,14 @@
 Claimed via dedicated worktree + pushed claim branch (root checkout untouched per rules). Re-decomposed the backlog row (assumed "atomic" decomposition had the new start-gate gap) and implemented the single required gate step.
 
 ## What landed
+
 - Added "Pre-start checklist" section to `docs/backlog/P1/081KQJZR90008QG0R001M6ZBPN-*.md` with:
   - Prior-art search proof across all 7 required axes (wake-time-substrate, skill-router, orthogonal, Otto-364, PR#1701, decision-archaeology, lost-files).
   - Dependency-restructure proof (empty depends_on walked, reciprocal composes_with, supersession history, no broken pointers).
 - Row now satisfies the 2026-05-05 backlog-item start gate before any future implementation children (partner/regulator/audit translations or Ani-review).
 
 ## Focused checks (outcome)
+
 - **Build gate** (pre-edit baseline, worktree-isolated): `dotnet build -c Release` → **0 Warning(s) 0 Error(s)** (passed).
 - `rg 081KQJZR90008QG0R001M6ZBPN docs/backlog/P1/` → only this row + 5 prior merged PRs (no drift, no duplicate claims).
 - Worktree verification: `git worktree list` confirms isolated checkout; `git status` clean on root.

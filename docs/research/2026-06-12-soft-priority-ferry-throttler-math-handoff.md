@@ -15,6 +15,7 @@ pool and a drain scheduler (strict priority or Deficit Round Robin). Design doc 
 `.kiro/specs/ferry-throttler-priority-lanes/design.md`
 
 The existing `SoftThrottle.fs` already provides the soft half for the single-lane throttler:
+
 - Logistic admission gradient (sigmoid pressure → admission probability)
 - Flux tank (capacitor: charges idle, discharges on bursts, LC-tank resonance)
 - Deterministic soft decisions (SplitMix64-seeded, DST-replayable)

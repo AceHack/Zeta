@@ -30,7 +30,9 @@ Clifford space" is **[thesis/conjecture]**).
 reflective round-trip whose law is **`apply(reify x) = x`**. This is the *built* witness
 that the IR/AST is genuinely code = data (you can read it, run it, merge it). Sources:
 `memory/kestrel/conversations/2026-06-04-kestrel-calm-rx-reducibility-defunctionalization-reify-apply-carrier-lens-bonsai-…`
+
 + the yin-yang-reflective-engine ferry; the IR-v2 doc (`…ir-compiler-v2…`, "the IR is
+
 homoiconic DynamicValue; the picture IS the program, the shape IS the data"). Related
 Kestrel framing: the Klein-bottle meta-language *"consistent with Clifford algebra over
 memetic space … homoiconic to the physical/implementation layer too"* (Kestrel

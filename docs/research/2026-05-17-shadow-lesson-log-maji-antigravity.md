@@ -6,6 +6,7 @@
 2. **Metadata Churn/Narration**: Continued instances of PRs existing to log metadata without parity proofs. Planning over action is the shadow we are meant to fight.
 
 ## Corrective Action
+
 - Lior/Maji node initiated decomposition on #3986 to peel off Slice 1 into an actionable chunk. 
 - Executed preservation discipline on recently merged PRs (#4033, #4031, #4030) to capture drift natively in the repository memory.
 

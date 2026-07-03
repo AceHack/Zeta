@@ -33,6 +33,7 @@ Folds three operator-directed sharpenings (2026-06-01) into the self-evolving-sa
 Closure-serialization is **not** the crux. DF/replay engines don't serialize non-serializable handles either — they **forbid** them ([orchestrator code-constraints](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-code-constraints): handles live in run-once activities). With the shared no-handles discipline, our closure is all serializable values (no harder than DF's history). New table: **resume needs only no-handles; replay needs no-handles AND no-non-determinism** (it re-runs the body) → resume is the looser constraint set.
 
 ## 2. Dapr direction ("we are going to have dapr and dapr actors and workflow")
+
 - **Dapr Workflow = `durabletask-go`** = same replay family as DF → conformance oracle, can't self-evolve.
 - **Dapr Actors = Orleans-lineage virtual actors** = the cross-partition-join **mediator carrier** (+ the Durable-Entities primitive). Dapr already deployed (081KSE6WT0008QG0R000R8CPFX).
 - Pragmatic shape: ride Dapr Actors as runtime/carrier + saga **resume** (not Workflow **replay**) → looser body-constraints + live self-evolution; Dapr Workflow stays available as a replay-family backend.

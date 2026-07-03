@@ -46,6 +46,7 @@ Ships the **catalog** only. Does NOT ship a DAG-rewriter that auto-detects `Map(
 ## Tests (10 new, 20/20 fusion tests pass)
 
 For each new operator:
+
 - Basic correctness (specific inputs → expected outputs)
 - Compositional equivalence: fused output ≡ manual chain output
 - `IsLinear = true` capability verified

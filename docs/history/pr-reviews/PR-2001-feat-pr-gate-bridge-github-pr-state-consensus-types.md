@@ -30,6 +30,7 @@
 ## Summary
 
 Wire the BFT consensus algebra to real GitHub PR state:
+
 - `PrGateState` record (checks passed/failed/progress, threads, auto-merge)
 - `evaluateGate`: PR state → `MergeVerdict` (Merge | Block)
 - `prToVote`: each node evaluates the same PR independently

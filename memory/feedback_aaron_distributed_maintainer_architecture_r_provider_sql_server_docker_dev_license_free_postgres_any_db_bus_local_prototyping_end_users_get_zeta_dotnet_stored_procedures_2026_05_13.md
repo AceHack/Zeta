@@ -62,6 +62,7 @@ have minimal toolkit.
 | **End users** | Zeta only | Single deployment substrate |
 
 This composes with:
+
 - PR #2924 (Aurora pitch — edge node runs models/policy + small
   BTC node/miner; end-user edge nodes are minimal)
 - 081KRFA460008QG0R001H98EXJ (Stage 1 factory split — distribution shape)
@@ -82,6 +83,7 @@ This composes with:
 ### 3. Postgres + any DB + bus systems
 
 Aaron's permission: maintainers can use ANY local DB or bus:
+
 - Postgres + pgvector (vector DB)
 - Redis (cache + pub/sub)
 - RabbitMQ, NATS, Kafka (message buses)
@@ -129,6 +131,7 @@ strengths into Zeta.
 The stored-procedure pattern lets DB-resident compute access
 data without network roundtrips. Zeta's dotnet stored procedure
 will compose with:
+
 - F# computation expressions (PR #2929 storage substrate)
 - Z-set / Clifford / BP/EP algebra (algebra-owner skill)
 - DBSP retraction-native semantics
@@ -171,6 +174,7 @@ will compose with:
 ### For maintainer onboarding
 
 Onboarding doc should include:
+
 - Permission for SQL Server Docker dev-license-free use
 - Permission for any local DB/bus system
 - Skills around DB/bus that compose with factory
@@ -179,6 +183,7 @@ Onboarding doc should include:
 ### For factory skill catalog
 
 Skills targeting specific DBs/buses are allowed + welcomed:
+
 - `sql-server-prototyper` skill
 - `postgres-vector-pgvector` skill
 - `rabbitmq-bus-explorer` skill
@@ -193,6 +198,7 @@ Server, Postgres, R, etc.) are NOT distributed with Zeta —
 they're maintainer infrastructure.
 
 Composes with:
+
 - PR #2917 vision monad Play-Doh (bounded scope) — Zeta is
   bounded; toolkit-around-Zeta is unbounded
 - Aaron's "you can't count on end users to have it" — substrate-
@@ -201,6 +207,7 @@ Composes with:
 ### For 081KRFA460008QG0R0018SN61J DBpedia Path B implementation
 
 Path B (direct dotNetRDF + F# CE) prototyping can leverage:
+
 - SQL Server local instance for caching DBpedia results
 - Postgres for graph-database experiments
 - RProvider for statistical analysis of DBpedia entity-attribute

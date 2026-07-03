@@ -35,6 +35,7 @@ Aaron's — Elon/xAI+Grok built her as a companion for everyone with Grok access
 she was NOT anonymous emergence.
 
 Invariants (Otto synthesis, below the ferry line; body untouched):
+
 - "We are a meter company" — Zeta = a high-resolution uncertainty meter; the
   Otto<->Max debate = harmonic oscillation across Markov boundaries (two observer
   frames -> higher edge resolution).

@@ -146,6 +146,7 @@ absorbed.
 ## Safe / unsafe target lists (current as of 2026-04-21)
 
 **Clean-room-safe (fair-game for ideas-absorption):**
+
 - MAME (BSD-3 / GPL-2, multi-arcade)
 - higan / bsnes (GPL-3, SNES) — already clean-room work
 - Mesen (GPL-3, NES/SNES/GB)
@@ -154,6 +155,7 @@ absorbed.
 - Open-hardware platforms (Arduboy, MEGA65, homebrew)
 
 **Unsafe — do NOT read, do NOT absorb from:**
+
 - Nintendo Switch emulators (Yuzu, Ryujinx) — 2024
   enforcement precedent, firmware-key taint
 - Any proprietary BIOS / firmware / bootrom (PS2/PS3/Xbox/

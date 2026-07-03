@@ -74,7 +74,7 @@ columnar for analytical scan paths**. The choice is per-
 subsystem; ingest path may use PAX, materialised-view
 storage may use DSM.
 
-## Arrow / Parquet — interop or substrate?
+## Arrow / Parquet — interop or substrate
 
 - **Apache Arrow** — in-memory columnar format. Used
   ubiquitously in analytics (DuckDB, Polars, Velox).

@@ -74,6 +74,7 @@ Per operator 2026-05-26: \"git for source of truth and coackroach can be repopul
 Adds installer-time node self-registration so a freshly installed cluster node can create a Git-backed registration PR after successful GitHub authentication.
 
 **Changes:**
+
 - Adds Step 6.9 to probe hardware, compose `node.yaml`, commit/push a branch, and open a registration PR.
 - Adds install-complete banner output for the self-registration PR URL or fallback instructions.
 - Integrates the flow with the existing Step 6.8 `gh auth login` success path.

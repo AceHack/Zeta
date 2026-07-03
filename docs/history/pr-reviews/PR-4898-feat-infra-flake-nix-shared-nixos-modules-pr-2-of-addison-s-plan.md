@@ -32,9 +32,11 @@
 PR 2 of Addison's NixOS-AI-cluster bootstrap plan. Wires the installer config from #4897 into a buildable flake and seeds the shared modules every cluster host will import.
 
 Building on:
+
 - #4897 — installer USB package list (merged)
 
 Setting up:
+
 - PR 3 — per-host configs (control-plane + worker-gpu-*)
 - PR 4 — k8s bootstrap + ArgoCD Applications
 - PR 5 — helper scripts + infra README

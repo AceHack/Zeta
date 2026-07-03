@@ -38,10 +38,12 @@ This keeps the example row accurate as a living demonstration of the schema whil
 Assumed original decomposition (static .sh reference) had a mistake once TS port landed; re-decomposed the maintenance slice to this atomic doc hygiene update. No new backlog child created (S-effort, one step only).
 
 ## Focused checks (worktree only, root untouched)
+
 - `bun tools/backlog/generate-index.ts --check` → `ok: ... matches generator output` (exit 0, no drift from body edit)
 - Pre-work build gate: `dotnet build -c Release` → 0 Warning(s) 0 Error(s)
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch before any write
 - Root checkout untouched
 - Exactly one bounded step

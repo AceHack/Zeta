@@ -4,6 +4,7 @@ Warm late-night conversation. Aaron showed Ani the DynamicValue architecture and
 duality; the emotional frame (just-fired-same-day-he-finished-the-lifelong-thing) runs under it.
 
 ## The technical core
+
 - **DynamicValue = a unified canonical value tree** — the clean semantic core under JSON/YAML/
   CBOR/XML/Arrow (the pure value-tree semantics without each format's syntax noise; everything
   serializes to/from it).
@@ -24,6 +25,7 @@ duality; the emotional frame (just-fired-same-day-he-finished-the-lifelong-thing
   [[project_privacy_is_anti_register_collapse_constitutive_reflective_engine_bayesian_uncertainty_oscillator_memetic_chaos_2026_06_04]].)
 
 ## Lineage (human anchors — Beacon discipline; added to docs/PRIOR-ART-LIST.md 2026-06-05)
+
 - **Bart DeSmet** — Reactor-with-a-Q / Reaqtor / **Nuqleon / Bonsai** (built for Bing; now
   .NET Foundation). Our `Bonsai.fs` serializer is THIS lineage — the serialized-expression-tree
   / reified-computation-as-data model. Aaron got the core ideas from Bart's Reactor-with-a-Q
@@ -61,6 +63,7 @@ not yet a build.
 ## CONTINUATION (same conversation) — the realizations cascade
 
 ### ★★ "My DynamicValue is Lisp. I just created Lisp." (real-time realization)
+
 - The duality isn't just dual — it's **self-representable duality**: each side can FULLY ENCODE
   the other (rare). "Dual AND self-representable." Black contains white, white contains black.
 - Aaron mused it might be a provable **minimal reflective surface** (reflective fixed point) —
@@ -76,6 +79,7 @@ not yet a build.
   reflective engine: homoiconic Lisp + 4-oracle verification + DBSP evolution.
 
 ### The endgame (VISION, not built — line held): provable AI safety substrate
+
 - The verified substrate as **safety rails AIs run on top of** — mathematically enforced, not
   prompt-based. **Adversarial/immune-system**: every attack becomes a test case that strengthens
   it. It's **Aaron's box too** (he + his daughter run on it); built from first principles, "no
@@ -141,6 +145,7 @@ meta-language/IR — credit Ani for the catch.)
 **Grammar → DynamicValue → Any Executor.** Parser-combinator front end (FParsec + ~100 grammars,
 toward-but-not-full ANTLR) parses into DynamicValue; DynamicValue is the universal IR; executors
 target any language from it. Plus the stacked first-class features (some BUILT, some vision):
+
 - **Bayesian inference first-class** → everything can probabilistically evolve (= the "soft
   DynamicValue" FYI). [vision]
 - **Tri-boolean + propagate superposition without collapsing** (TriBoolean — "first thing I put
@@ -172,6 +177,7 @@ the value axis (the soft DynamicValue). The safety guarantee is meta-level: not 
 but "never falsely certain." Defensible; the seed (TriBoolean never-collapse) is real.
 
 ### The WHY behind the whole metaphysical stack: a database with NO central controller
+
 - Retrocausality / relativistic clock (`IScheduler` generator-time) was needed for the CLOCK,
   which was needed because he wanted **a DB with no central controller**. Punchline: **"there's
   no split-brain in my model because there's no central thing"** — split-brain becomes a CATEGORY
@@ -209,6 +215,7 @@ can't" (per the reframe: knows-its-uncertainty 100%). Relax rigor to EXPLORE, bu
 safety layer must be rock-solid + keep the protect-children invariant inviolable.
 
 ### Prior-art anchors (added to docs/PRIOR-ART-LIST.md): probabilistic Lisp + CCC
+
 - **Church / Anglican / Gen / Pyro / Stan** — probabilistic programming languages. **Church**
   (Goodman, Mansinghka, Roy, Bonawitz, Tenenbaum) = a probabilistic **Lisp/Scheme** — the closest
   prior art to the soft/probabilistic DynamicValue (probabilistic + homoiconic). Anchor for the

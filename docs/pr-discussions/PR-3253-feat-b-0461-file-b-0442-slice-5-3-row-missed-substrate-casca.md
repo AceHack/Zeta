@@ -68,6 +68,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the missing 081KRHWGX0008QG0R000JMEYBH backlog row for the 081KRFA460008QG0R00061SXRW slice 5.3 `missed-substrate-cascade` subscriber handler, completing the sibling row family referenced by 081KRFA460008QG0R002DG8KPZ/081KRHWGX0008QG0R001E9KEJ1.
 
 **Changes:**
+
 - Creates 081KRHWGX0008QG0R000JMEYBH as a P1 backlog item.
 - Documents origin, intended handler scope, acceptance criteria, dependencies, and related rows.
 - Links the row to the 081KRFA460008QG0R001KC0VBH/081KRFA460008QG0R00229616S/081KRFA460008QG0R00061SXRW subscriber-handler family.

@@ -30,6 +30,7 @@
 Flips the **RangeSet** entry on the Codec/IO line of `docs/PRIMITIVE-REGISTRY.md` from ⬜ → ✅ **4/4**, now that the C# ferry (#6457) has merged.
 
 All four oracles byte-lock against the shared `src/Core.TypeScript/range-set/golden-vectors.json`:
+
 - TS #6454 (reference oracle — authored the golden)
 - F# #6455
 - C# #6457

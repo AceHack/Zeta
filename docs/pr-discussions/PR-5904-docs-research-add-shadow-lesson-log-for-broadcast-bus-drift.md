@@ -27,6 +27,7 @@ This PR adds a shadow lesson log detailing the critical environmental drift wher
 Adds a single shadow lesson log from Lior documenting that the Gemini/Lior sandbox cannot access `~/.local/share/zeta-broadcasts/`, so Lior cannot read peer broadcasts or write its own status as its prompt requires, and files the report via PR because the bus itself is unreachable.
 
 **Changes:**
+
 - New research log narrating the inability to access the local broadcast bus from the sandbox.
 - Introduces a new "Environmental Drift" category and proposes either widening the sandbox allowlist or re-architecting the bus.
 - Filed as a PR rather than a broadcast, as a workaround for the inaccessible bus.

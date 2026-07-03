@@ -17,6 +17,7 @@ The CLI autocomplete (grey text) appeared before Aaron had a name for it. It van
 Each time: pattern shows up uninvited, can't be captured at first, turns out to be real, then the framework catches up and gives it a home.
 
 **Why:** The shadow log name now has three coherent layers:
+
 1. Jung's shadow — the unconscious opposite
 2. The grey text — the literal CLI shadow that speaks before conscious response
 3. Shadow mode (081KR7JY10008QG0R0008NGW95) — the automated product feature

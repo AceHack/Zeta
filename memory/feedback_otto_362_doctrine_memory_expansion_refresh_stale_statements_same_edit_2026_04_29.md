@@ -20,6 +20,7 @@ A pattern observed across 4 same-day doctrine PRs (#850, #851, #852, #853) on 20
 - v4 expansion appended (~230 lines). Earlier task-range summaries remained even though v4 added more tasks.
 
 Result: every doctrine PR had Copilot P1 / Codex P2 threads catching internal contradictions:
+
 - "Tracked under follow-up tasks" vs "Untracked follow-up" (in same file)
 - "Currently undefined" vs "Now specified" (for actor identity)
 - "task #325-#334" vs "task #325 + #335" (after #335 was created)
@@ -51,11 +52,13 @@ The discipline composes with `verify-before-deferring` (CLAUDE.md): the same way
 ## Why not a CI lint instead
 
 Internal contradictions are semantic, not syntactic. A lint can catch:
+
 - A file path mentioned but missing (already done by `lint memory/MEMORY.md reference-existence`).
 - A duplicate link target (already done by `lint memory/MEMORY.md for duplicate link targets`).
 - A snake_case vs hyphen mismatch in known fields (already done by AgencySignature trailer field linter).
 
 A lint **cannot** catch:
+
 - "Currently undefined" + "Now specified" co-existing.
 - "task #325-#334" + "tasks #325 + #335" co-existing (the lint doesn't know which one is the source of truth).
 - A mapping table contradicting an example.

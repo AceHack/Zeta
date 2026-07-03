@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - close 081KRA5AR0008QG0R001JKYFRJ with live GitHub ruleset evidence showing memory-index-duplicate-lint is advisory for PR merge gating
 - add 081KSRGFP0008QG0R001YC1WNP to track the required promote-or-weaken decision
 - regenerate docs/BACKLOG.md
 
 ## Evidence
+
 - workflow exists as memory-index-duplicate-lint and runs `bun tools/hygiene/audit-memory-index-duplicates.ts --enforce`
 - active CI Gate ruleset requires build/test plus generic lint contexts only; it does not require memory-index-duplicate-lint or the duplicate-link job name
 - legacy branch-protection required-status-checks endpoint reports required checks not enabled, confirming rulesets are the live enforcement surface
 
 ## Verification
+
 - `bun tools/backlog/generate-index.ts --check`
 - `git diff --check`
 

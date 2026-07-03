@@ -81,7 +81,7 @@ framing was too binary.
 | Live-off-the-land for harness-loaded surfaces | **Hypothesis pending research** | Maintainer said "maybe"; zero observed-behavior evidence; falsifiable via canary test + skill-persona behavioral observation |
 | Distribution feasibility (NativeAOT single-binary) | **Make-or-break risk per maintainer assertion** | Need cross-platform empirical test (linux-x64 / osx-arm64 / win-x64); known-unknown |
 
-### Push-back: what would establish the live-off-the-land hypothesis?
+### Push-back: what would establish the live-off-the-land hypothesis
 
 The current claim has zero evidence base. The maintainer's
 "maybe" is directional input, not data. Concrete falsifiable
@@ -327,7 +327,9 @@ guarantee means the index only re-evaluates the affected
 join branches, not the full re-scan.
 
 **Determinism contract:** per `tools/tla/specs/DbspSpec.tla`
+
 + the chain-rule Prop 3.2 verified in Lean, the Z-set
+
 algebra preserves determinism across replays. Rebuilding
 the index from scratch via `git ls-files | feed-into-zeta`
 must produce the identical Z-set state to the live IVM. This

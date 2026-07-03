@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - `signed → retracted` (agent cancels via retraction-scoped session key)
 - `signed → frozen` (monitor/Aaron freezes, unfreeze returns to signed)
 - Auth for cancellation resolved (same session key)

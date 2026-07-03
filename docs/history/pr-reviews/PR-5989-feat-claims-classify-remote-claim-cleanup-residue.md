@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add cleanup classification to `tools/claims/remote-only-state.ts` for active refs, merged claim residue, missing claim files, and unknown merge state
 - document the stale-claim cleanup rule in the autonomous-loop coordination trajectory
 - update the trajectory RESUME next action after landing the classifier packet
 
 ## Verification
+
 - `bun test tools/claims/remote-only-state.test.ts`
 - `bunx markdownlint-cli2 docs/claims/codex-loop-stale-claim-cleanup-rule-20260529.md docs/trajectories/autonomous-loop-coordination/stale-claim-cleanup-rule-2026-05-29.md docs/trajectories/autonomous-loop-coordination/RESUME.md`
 - `git diff --check`

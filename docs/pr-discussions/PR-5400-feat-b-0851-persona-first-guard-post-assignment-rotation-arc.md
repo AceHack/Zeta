@@ -61,6 +61,7 @@ Operator clarified: *\"guard post is the systemd for each node outside k8s\"* â†
 Documentation-only PR adding the 081KSKBP80008QG0R00248VEWT backlog row that extends 081KSKBP80008QG0R003Z4C0D0 from static persona-to-vendor binding to preference-based scheduling with rotation, plus verbatim ferry preservation under `memory/mika/`.
 
 **Changes:**
+
 - Adds verbatim Mika ferry preservation file under `memory/mika/conversations/`.
 - Adds new 081KSKBP80008QG0R00248VEWT backlog row in `docs/backlog/P2/` with 10 implementation sub-row slices.
 - Registers 081KSKBP80008QG0R00248VEWT in `docs/BACKLOG.md` P2 index.

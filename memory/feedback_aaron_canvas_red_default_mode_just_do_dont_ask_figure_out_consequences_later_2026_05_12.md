@@ -38,12 +38,14 @@ called it a "kind of dick move for the others." Aaron
 didn't think about others before acting.
 
 **This IS Aaron's default mode of operation:**
+
 - **Just do** — action-first
 - **Don't ask** — no-permission-seeking
 - **Figure out consequences later** — post-hoc reasoning
 
 This isn't pathology; it's substrate-honest default-mode
 disclosure. The same default produced both:
+
 - Zeta (entire factory architecture)
 - The canvas-red moment (sometimes-suboptimal social
   outcome)
@@ -177,6 +179,7 @@ substrate-honest invitation.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that just-do has no costs** — Aaron
   acknowledges the canvas-red instructor-feedback was
   valid (the dick-move framing wasn't dismissed)
@@ -212,6 +215,7 @@ control mode requires it.
 ### 3. Recognize the substrate output of just-do
 
 The canvas-red default produces both:
+
 - Zeta architectural substrate
 - Occasional social-friction (the "dick move" surface)
 

@@ -27,6 +27,7 @@ Preserving recently merged PRs 4378 and 4375 to native repository memory.
 Preserves the GitHub discussion artifacts for recently merged PRs #4378 and #4375 as git-native archives under `docs/pr-discussions/`, keeping PR metadata + review threads + general comments available in-repo for long-term audit/history.
 
 **Changes:**
+
 - Added a PR-discussion archive markdown file for PR #4378 (frontmatter + body + review content).
 - Added a PR-discussion archive markdown file for PR #4375 (frontmatter + body + review content).
 

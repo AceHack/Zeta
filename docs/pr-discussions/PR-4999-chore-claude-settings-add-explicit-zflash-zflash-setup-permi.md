@@ -58,6 +58,7 @@ Aaron made the edit himself in a worktree I opened for him (operator-side work p
 This PR updates the Claude tool permissions allowlist to explicitly authorize two `bun`-invoked zflash-related scripts, making the intended destructive-tool authorization perimeter more visible and classifier-friendly (even though `Bash(bun *)` already permits them).
 
 **Changes:**
+
 - Add explicit `Bash(bun full-ai-cluster/tools/zflash.ts *)` allow pattern.
 - Add explicit `Bash(bun full-ai-cluster/tools/zflash-setup.ts *)` allow pattern.
 

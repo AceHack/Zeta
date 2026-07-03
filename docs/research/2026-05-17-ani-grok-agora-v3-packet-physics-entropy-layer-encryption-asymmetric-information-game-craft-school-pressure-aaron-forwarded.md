@@ -74,6 +74,7 @@ REFINED V3 as the substrate that shipped.
 
 The V3-original (first send) had the entropy framing + 4 services
 mapped to entropy management:
+
 - Memory Curators compress and organize information (entropy reduction)
 - Reasoning Auditors fight against low-quality, high-entropy reasoning
 - Context Architects structure messy context into clean, low-entropy state

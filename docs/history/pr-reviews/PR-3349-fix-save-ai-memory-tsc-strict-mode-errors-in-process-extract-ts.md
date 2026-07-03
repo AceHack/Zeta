@@ -48,6 +48,7 @@ Previously `bun process-extract.ts --ai-name` (no value) would silently consume 
 | Runtime smoke (existing CLI shape) | works | works |
 
 ## Test plan
+
 - [x] `bunx tsc --noEmit` passes (verified locally)
 - [ ] CI green
 - [ ] No new warnings in `bun run`

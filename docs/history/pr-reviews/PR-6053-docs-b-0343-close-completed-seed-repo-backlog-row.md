@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - close 081KR2E4K0008QG0R002JW751Y now that the seed-test-repo implementation is merged on origin/main
 - regenerate docs/BACKLOG.md so 081KR2E4K0008QG0R002JW751Y is checked off and 081KR2E4K0008QG0R0035HNPG1 can become the next pickup candidate
 
 ## Checks
+
 - bun tools/backlog/generate-index.ts --check
 - git diff --check
 - bun tools/backlog/autonomous-pickup.ts --json (now selects 081KR2E4K0008QG0R0035HNPG1)

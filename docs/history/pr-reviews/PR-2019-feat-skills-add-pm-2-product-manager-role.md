@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add .claude/skills/product-manager/SKILL.md for PM-2 product discovery
 - add .claude/agents/pm2.md persona wrapper
 - close 081KR2E4K0008QG0R0035RG9G6 and refresh docs/BACKLOG.md
 
 ## Checks
+
 - bun tools/backlog/generate-index.ts --check
 - git diff --check
 - npx markdownlint-cli2 .claude/skills/product-manager/SKILL.md .claude/agents/pm2.md docs/backlog/P1/081KR2E4K0008QG0R0035RG9G6-pm2-role-skill-definition-2026-05-08.md docs/BACKLOG.md

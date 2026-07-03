@@ -148,6 +148,7 @@ discipline (per PR #2934) into F# compiler internals.
 
 Brandstetter/Ruhe/Gupta/Welleck/Stark/Hess papers provide
 the mathematical foundation:
+
 - Pin group + sandwich product = compile-time AI-safety
   preserving transformations
 - Cartan-Dieudonné theorem = N reflections suffice in N-dim
@@ -158,6 +159,7 @@ the mathematical foundation:
 ### PR #2914 (Clifford/HKT vocabulary)
 
 Vocabulary maps:
+
 - axis/basis → base vectors of Clifford algebra
 - rudders/rotors → Clifford rotors implementing kind
   transformations

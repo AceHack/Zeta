@@ -40,6 +40,7 @@ PR #6445 was recorded **merged** (head `5a5ea78`), but `main` was subsequently *
 ## Feature (unchanged from the merged-then-dropped version)
 
 The three named risks, all addressed:
+
 1. **DB-side type validation** — `sql/phase5.sql` `BEFORE INSERT/UPDATE` trigger `validate_custom_fields()` (a trigger, not a CHECK — a CHECK can't subquery `field_definitions`). Rejects malformed values + unknown keys **at the database**, even via direct PostgREST with the anon key. `SECURITY DEFINER`. **No RLS/GRANT change.**
 2. **Typed search & sort** — per-type comparator in the shared `lib/custom-fields.js` (number→numeric `9<10<100`, date→chronological, boolean, text/dropdown), client-side consistent with Phase 3.
 3. **XSS-safe render** — field names AND values via `textContent`, never `innerHTML` of raw input, at every render site.

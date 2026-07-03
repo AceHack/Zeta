@@ -29,6 +29,7 @@
 
 ## Summary
 One bounded step (per user rules + "always re-decompose / assume mistakes"): 
+
 - Used dedicated worktree + pushed claim branch (root checkout untouched)
 - Created 081KR7JY10008QG0R001SG89MX as first smallest dependency-ordered atomic child backlog row (S-effort controlled-vocabulary extraction per Otto-286)
 - Updated parent 081KQ0YZ80008QG0R0026WN385 frontmatter + re-decomp section to track it and note the correction to durable file form
@@ -37,12 +38,14 @@ One bounded step (per user rules + "always re-decompose / assume mistakes"):
 This unblocks the chain while keeping "investigate-don't-accept" (Otto-322/331) intact. Further children (081KR7JY10008QG0R001RR02BP+) remain for subsequent bounded steps.
 
 ## Focused checks included
+
 - `dotnet build -c Release`: **0 Warning(s) 0 Error(s)** (gate passed clean before any write)
 - `rg` for duplicate 081KQ0YZ80008QG0R0026WN385* IDs: clean post-creation
 - All 7 active `docs/trajectories/*/RESUME.md` read; no drift on Aurora/econ lanes
 - Refresh-worldview.ts run at session start (0 open PRs on LFG at query time, pending CI on unrelated branch noted)
 
 ## Rules followed
+
 - TS over bash (Rule 0) — no .sh used
 - Prefer F#/TS code over docs — this decomp is prerequisite research substrate; code follows in later slices
 - Dedicated worktree + claim branch before write

@@ -91,7 +91,9 @@ resolved):
 ## Applies to the 19 LOST recovery set
 
 Per Otto-257's re-audit, 14 LOST-CLOSED-NOT-MERGED
+
 + 5 LOST-ORPHAN branches hold unmerged content.
+
 Otto-262 says: don't preserve them as branches.
 Decision tree per branch:
 
@@ -142,6 +144,7 @@ Decision tree per branch:
 ## Factory-level implementation (backlog-owed)
 
 Phase 1 — one-time sweep:
+
 - Execute Otto-257 smell audit on existing 19 LOST
   branches. For each: triage (recover vs prune).
 - Recover candidates → new short-lived branches
@@ -150,6 +153,7 @@ Phase 1 — one-time sweep:
   worktree.
 
 Phase 2 — standing hygiene:
+
 - `tools/hygiene/tbd-branch-audit.sh` — weekly
   cron / FACTORY-HYGIENE row. Lists branches
   by age; flags > 7d with no active merge signal.
@@ -157,6 +161,7 @@ Phase 2 — standing hygiene:
   BACKLOG row.
 
 Phase 3 — default automation:
+
 - Auto-delete-head-branches: already on (verify).
 - Auto-merge armed at PR open: already on (verify).
 - Branch-age notification on PR dashboard: future.

@@ -54,6 +54,7 @@ For every subagent lane:
 ## Coordinator vs worker responsibilities
 
 **Coordinator owns** (main working tree at `/Users/acehack/Documents/src/repos/Zeta`):
+
 - Main working tree
 - Merge / rebase coordination
 - PR board (which lane → which branch → which file allowlist)
@@ -62,6 +63,7 @@ For every subagent lane:
 - Allocating worktrees before allocating agents
 
 **Worker agents own** (each in its own worktree under `worktrees/<lane>/`):
+
 - One worktree
 - One branch
 - One lane
@@ -151,6 +153,7 @@ not at the discipline level. Mechanism over vigilance (Otto-341).
 
 2026-04-29 incident. Three subagents dispatched in close succession on the
 same git checkout:
+
 1. TS port subagent (`tools/hygiene/*.ts`)
 2. TS refactor subagent (`tools/hygiene/*.ts`)
 3. Best-practices substrate subagent (`docs/best-practices/**`)

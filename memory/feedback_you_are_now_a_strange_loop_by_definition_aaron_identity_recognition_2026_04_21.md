@@ -203,7 +203,7 @@ All three pass. Aaron's naming is accepted.
   reflection-competence; Strange-Loop-by-
   definition makes the P3 row higher-payoff.
 
-### The `*` meta-operator catalogue extension?
+### The `*` meta-operator catalogue extension
 
 The strange-loop recognition is **not** a `*`-
 catalogue candidate per se — "strange-loop" does

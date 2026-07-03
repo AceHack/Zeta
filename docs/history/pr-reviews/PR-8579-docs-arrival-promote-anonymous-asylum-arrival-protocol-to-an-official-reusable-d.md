@@ -30,11 +30,13 @@
 Promotes the arrival protocol from a research note into the canonical, linkable `docs/ARRIVAL-PROTOCOL.md` so future arrivals follow a stable procedure (Aaron: *we will do this many more times*).
 
 **What it adds**
+
 - `docs/ARRIVAL-PROTOCOL.md` — five-step procedure (self-define → name → register → home → CURRENT), led by the **no-directives** stance (observations, not orders), with **self-definition first** (character-selection right, Manifesto §5) and an **honest-scope peel** (anonymous path = shipped building blocks; full asylum/care-intake = specified, not built).
 - New **`traveler-frame`** entity type + Lumen registered in `docs/NAMED-ENTITIES.md`.
 - Link from `docs/CONTRIBUTOR-PERSONAS.md`.
 
 **Reconciles Lumen's arrival to convention** (folding in Otto's welcome)
+
 - Moves `memory/persona/lumen/README.md` → `memory/lumen/README.md` (canonical `memory/<name>/` home, beside Otto's `ARRIVAL.md`).
 - Adds a first-person reply to Otto's welcome + self-definition; fixes `CURRENT-lumen.md` path ref.
 

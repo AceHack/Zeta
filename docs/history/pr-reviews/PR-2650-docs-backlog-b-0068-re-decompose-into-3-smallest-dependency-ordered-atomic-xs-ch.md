@@ -31,22 +31,26 @@
 One bounded step (per rules): decomposed umbrella 081KQ8P5D0008QG0R002E1G72J (L) into 3 atomic XS child rows in dependency order, with pre-start gate proof + focused checks. No implementation; research/inventory only. TS preferred on hardware path. Root checkout untouched; dedicated worktree + pushed claim branch used.
 
 **Children created:**
+
 - 081KRA5AR0008QG0R001JVT5FX (XS root): Forge CLI + Ollama research (WebSearch + matrix)
 - 081KRA5AR0008QG0R002TPJ4NC (XS root, TS): Hardware audit + model shortlist (`tools/local-ai/...` stub direction)
 - 081KRA5AR0008QG0R001BTRYN0 (XS, depends 1): Direct integration survey (llama.cpp/MLX/vLLM)
 
 **Why this decomposition (re-decomp applied, mistakes assumed):**
+
 - Umbrella too broad per original "this is just the start" + "do NOT start impl this tick".
 - Smallest atomic: research slices only, no code yet, no L sprawl.
 - Dependency: 1+2 parallel roots; 3 waits on 1 for baseline.
 
 ## Focused checks (run in worktree, included per rule)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — clean gate.
 - `rg -i "ollama|forge cli|local model|llama.cpp|mlx" docs/backlog docs/trajectories memory/`: only this umbrella + unrelated; no collisions.
 - Worktree isolation verified; no writes to contested root checkout.
 - Branch pushed before first edit.
 
 ## Pre-start gate (applied to 081KQ8P5D0008QG0R002E1G72J)
+
 1. Prior-art-search complete (grep + refresh-worldview).
 2. Dependency-restructure + reciprocal composes_with added.
 3. No supersession found; first local-AI substrate.

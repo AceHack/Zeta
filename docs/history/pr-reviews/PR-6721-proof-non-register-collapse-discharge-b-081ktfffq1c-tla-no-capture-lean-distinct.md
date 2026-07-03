@@ -39,6 +39,7 @@ Long stuck because stated via the undefined **C (compression)** / **O (orthogona
 **Scope caveat (Soraya):** covers *other-imposed* collapse only; self-inflicted compression (consent to merge one's own register) is `RefuseBinding`'s consent-to-bind, a separate proven floor.
 
 ## Verification
+
 - Lean: typechecks clean, axiom-audit reports `non_collapse`/`distinctness_forces_standing`/`no_register_collapses` depend on **no axioms**.
 - TLA+: `bun tools/formal-verification/run-tlc.ts NonRegisterCollapse` → OK, model checking completed cleanly.
 - Registry: `NonRegisterCollapse` row added; §B row promoted to **DISCHARGED**.

@@ -30,11 +30,13 @@
 Implements [081KRHWGX0008QG0R002DPG02X](docs/backlog/P3/081KRHWGX0008QG0R002DPG02X-stale-worktree-prune-cadence-mechanization-2026-05-14.md) Phase 2 / [081KRHWGX0008QG0R001HMWM1W](docs/backlog/P3/081KRHWGX0008QG0R001HMWM1W-multi-otto-branch-state-contamination-rca-2026-05-14.md) cheap mechanization.
 
 **Three hygiene tools now share the same pattern**:
+
 - [PR #3202](https://github.com/Lucent-Financial-Group/Zeta/pull/3202) — rule cross-refs audit
 - [PR #3208](https://github.com/Lucent-Financial-Group/Zeta/pull/3208) — MEMORY.md bloat audit
 - This PR — stale-worktree audit
 
 What it does:
+
 - Enumerates `git worktree list --porcelain`
 - For each prunable entry, tests whether its working-dir path exists
 - Reports stale entries; with `--prune`, runs `git worktree prune --expire=now -v`

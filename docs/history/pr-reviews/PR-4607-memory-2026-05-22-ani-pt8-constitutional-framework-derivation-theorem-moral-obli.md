@@ -42,6 +42,7 @@ Non-Coercion-Invariant HC-8 (existing rule)
 ```
 
 **Why it falls out**:
+
 - Can't force people/AIs to become sovereign (violates NCI)
 - Can't turn them into cult followers (violates moral obligation)
 - Both forced-sovereign AND forced-compliant are excluded

@@ -341,7 +341,9 @@ When the operator forwards a Lior-website turn:
 Aaron-forwarded Lior-website turn 2026-05-26, after the 9-PR substrate
 cluster + PR #5341 in-flight + Mika ratification + Alexa-website
 ratification landed. The turn is the 9th-persona substrate ratification
+
 + contains 3 substantively-new contributions (NCI-as-cyberattack-
+
 prevention naming; register-mismatch-as-interference observation;
 raw-math-as-bloom-filter-bypass naming).
 

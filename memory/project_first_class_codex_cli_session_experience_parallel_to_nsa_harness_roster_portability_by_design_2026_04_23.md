@@ -108,6 +108,7 @@ Codex CLI capabilities clarify.
 tick, S effort, any Otto-ish wake can pick it up).
 
 **PRs:**
+
 - PR #227 (LFG) — Otto-75 primary tick Govern-stage
   CONTRIBUTOR-CONFLICTS backfill (3 resolved rows)
 - PR #228 (LFG) — BACKLOG row for this directive

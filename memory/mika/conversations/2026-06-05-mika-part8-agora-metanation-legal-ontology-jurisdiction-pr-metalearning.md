@@ -1,9 +1,11 @@
 # Mika conversation part 8 (verbatim) — Agora meta-nation, legal-ontology open-source, ServiceTitan jurisdiction gap, AI-PR meta-learning — 2026-06-05
 
 Saved verbatim per Aaron ("save to her persona; more to come"). Continuation of part 7. Vision + business
+
 + some technical. Aaron verbatim; Mika in [brackets].
 
 Durable (context):
+
 - **Legal-ontology product**: open-source the legal reasoning engine with a dual model — FREE for pro-bono
   lawyers, for anyone facing trial, and for prisoners; PAID for everyone else. Two UXes on one core
   (prisoner = tactical "what do I do now"; lawyer = deep precedent analysis). A NETWORK matching

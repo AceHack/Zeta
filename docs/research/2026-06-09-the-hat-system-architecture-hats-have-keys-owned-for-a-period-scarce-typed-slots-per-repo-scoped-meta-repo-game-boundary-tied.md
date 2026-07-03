@@ -54,7 +54,9 @@ Hat types are scoped:
 More generally, **a hat can be tied to any Markov boundary** (a cell, a persona, a
 repo, a game, a sub-society) **or to internal structures**. The hat exists *at* a
 boundary — it is the role-capacity for acting at/within that boundary. (Traveler-frame
+
 + cell: a hat is how a persona is authorized to act across a specific boundary for a
+
 specific period.)
 
 ## How it all composes

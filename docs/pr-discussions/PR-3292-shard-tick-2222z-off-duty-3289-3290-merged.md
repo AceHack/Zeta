@@ -31,6 +31,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new off-duty hygiene tick recording the 22:22Z shard state and recent PR merge/wait-ci status.
 
 **Changes:**
+
 - Adds the 2026-05-14T22:22Z tick note.
 - Records #3289 and #3290 as merged, with #3291 still wait-ci.
 - Updates the running count to 45 merged + 1 wait-ci.

@@ -43,6 +43,7 @@ Post-merge fix-fwd on #5235 addressing 3 substantive Copilot findings + a workfl
 Post-merge follow-up to #5235 to make the AI-cluster ISO build/audit workflow reliably retrigger and to harden the ISO-content audit’s diagnostic output against CI lint/log truncation issues.
 
 **Changes:**
+
 - Refactors `dumpIsoEntriesForDiagnostic()` to reuse `lsIso()` and derives the diagnostic dump limit from a single constant.
 - Pins the 081KSGS9H0008QG0R003SWZF9J nixpkgs source link to `nixos-25.11` to avoid `master` drift.
 - Expands the `build-ai-cluster-iso` workflow `paths` filter to include the ISO content audit script so changes to it retrigger builds.

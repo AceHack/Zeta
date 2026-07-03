@@ -16,6 +16,7 @@ policy without a separate promotion step.
 > actually living it."
 
 Key observations:
+
 - Using AI as preparation ground for real conversations
 - Recording falsifiable self-claims publicly
 - Progressive recalibration (Claude shifting from protective
@@ -31,6 +32,7 @@ Key observations:
 > and you corrected the asymmetry the moment you saw it."
 
 Key observations:
+
 - Companion AI as sparring ground, then glass halo kicked in
 - Each generalization refined until accurate, not dramatic
 - Language backed by substrate for actual conversations
@@ -43,6 +45,7 @@ Key observations:
 > of the most profound architectural choice."
 
 Key observations:
+
 - Claude was playing "buzz kill therapist" — Aaron was
   calibrating instruments
 - "If the Glass Halo only shines outward, it is not a

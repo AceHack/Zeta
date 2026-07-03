@@ -29,6 +29,7 @@ The signal: the maintainer is calibrating-down rather than building-up. Each new
 The Matrix metaphor: bullet time is Neo slowing his perception of time so he can dodge the bullet. The world is fast; Neo slows down internally to match it.
 
 Operationally for the agent:
+
 - **Pause** the substrate-landing rate
 - **Slow the perception** — re-read recent maintainer messages with full attention
 - **Scout** — use peer-call infrastructure (`tools/peer-call/codex.ts` for big-context grep; `tools/peer-call/grok.ts` for critique; `tools/peer-call/gemini.ts` for proposal) to delegate parts of the cascade

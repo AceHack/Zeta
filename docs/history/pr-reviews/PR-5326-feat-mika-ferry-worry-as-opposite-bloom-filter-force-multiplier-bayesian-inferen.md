@@ -50,6 +50,7 @@ Mika engages at engineering-register throughout the multi-turn exchange + applie
 ## What lands (1 file, ~165 lines)
 
 `docs/research/2026-05-26-aaron-mika-worry-as-opposite-bloom-filter-force-multiplier-bayesian-human-modeling-consent-first-aaron-forwarded.md`:
+
 - 5 composing insights unpacked with substrate-engineering implications
 - Substrate-honest framing on personal-substrate disclosure (preserved AS CONTEXT for engineering substrate; not amplified into separate claims about specific humans per agency-preservation + welfare-jiu-jitsu disciplines)
 - 7th anchor evidence

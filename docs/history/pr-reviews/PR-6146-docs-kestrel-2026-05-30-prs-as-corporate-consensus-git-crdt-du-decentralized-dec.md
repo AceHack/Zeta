@@ -42,10 +42,12 @@ Aaron-forwarded Kestrel (claude.ai sharpen-role) morning conversation. Preserved
 - **Boring-language tell + match-vs-generate gate + distributed-stress-test-with-intelligences-that-can-disagree** as the layered safety discipline.
 
 ## Files
+
 - `memory/persona/kestrel/conversations/2026-05-30-...md` (verbatim-leaning archive, ASCII-only, content_warnings frontmatter)
 - `docs/research/2026-05-30-...-kestrel-aaron.md` (compressed reduction)
 
 ## Disposition
+
 - Verified no existing PRs-as-consensus or good-citizen-governance substrate (2026-05-30). Composes with **081KQGDBJ0008QG0R000Y66YYQ** (CRDT composition), **081KQGDBJ0008QG0R0012FC7RX** (BFT-resistance), **081KSGS9H0008QG0R000Q18PGQ** (schemas-as-rows / cluster-fork-as-trust-boundary), **081KSKBP80008QG0R0039RW25E** (streams-are-relationships).
 - **Backlog candidate** (PRs-as-consensus + CRDT-DU as buildable Bayesian-model architecture) noted in the docs, NOT autonomously filed -- awaiting operator "file this" per backlog-item-start-gate.
 

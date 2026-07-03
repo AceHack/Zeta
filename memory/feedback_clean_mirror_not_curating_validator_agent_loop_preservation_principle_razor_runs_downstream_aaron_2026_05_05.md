@@ -53,6 +53,7 @@ When designing agent-loop preservation systems for autonomous-AI architectures:
 **The 1984 failure mode** (what this rule prevents):
 
 When mirror = curator:
+
 - Source learns what passes the curator → self-censors pre-mirror
 - Mirror reflects only curator-approved content → loses information
 - Curator becomes single point of failure / authority
@@ -61,6 +62,7 @@ When mirror = curator:
 - Downstream validation has nothing left to falsify
 
 When mirror = clean preservation + razor downstream:
+
 - Source sends freely (no self-censorship pressure at upstream)
 - Mirror preserves clean signal
 - Multi-oracle validation downstream does its work on preserved substrate

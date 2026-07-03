@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Receipt schema tx block fields nullable when pre_flight_retracted = true
 - 081KQ8P5D0008QG0R002XFQ305 punch list: preflight retraction state machine item 4
 

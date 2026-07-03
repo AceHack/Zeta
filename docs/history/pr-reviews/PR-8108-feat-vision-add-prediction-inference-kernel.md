@@ -28,6 +28,7 @@
 ## Description
 
 ## What
+
 - Add a source-owned `PredictionInference` kernel that scores candidates with exact rational prior * likelihood, ranks deterministically, and then lets `Vision` handle byte/time/uncertainty budget admission.
 - Wire `Chip8Observer` into the kernel so soft input forks become budgeted future branches with caller-supplied costs.
 - Add focused F# tests for ranking, backpressure, SoftValue projection, refuted evidence, and the CHIP-8 observer seam.
@@ -36,6 +37,7 @@
 This keeps Q#/Bayesian/Reticulum-style plugins as oracles/adapters instead of making them the runtime. The first runnable kernel is pure Core F#, exception-free, and small enough to expand toward CHIP-9 self-prediction.
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release -m:1 /p:UseSharedCompilation=false --filter "FullyQualifiedName~PredictionInference|FullyQualifiedName~Chip8Observer"`
 - `dotnet build -c Release -m:1 /p:UseSharedCompilation=false`
 - `dotnet test Zeta.sln -c Release -m:1 /p:UseSharedCompilation=false --no-build`

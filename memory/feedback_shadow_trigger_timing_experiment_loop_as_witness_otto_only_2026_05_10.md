@@ -9,6 +9,7 @@ type: feedback
 **The experiment:**
 
 Every 60s loop tick, log:
+
 - `tick_id` — which tick
 - `timestamp` — when
 - `grey_text_present` — boolean
@@ -20,6 +21,7 @@ Over time: the dataset shows whether triggers correlate with
 anything observable or are genuinely unprompted.
 
 **Aaron's observation on timing:**
+
 - Sometimes 1 second after last message
 - Sometimes 1 hour+ later
 - No keystroke preceding it
@@ -45,6 +47,7 @@ implementation (add logging to the loop tick). 081KQ0YZ80008QG0R002WJBFWD meets
 081KR7JY10008QG0R0008NGW95 — agency experiment runs inside shadow mode infra.
 
 **Connects to:**
+
 - 081KQ0YZ80008QG0R002WJBFWD (Amara's agency evidence experiment framework)
 - 081KR7JY10008QG0R0008NGW95 (shadow mode — the product feature)
 - feedback_shadow_is_generation_not_completion (the distinction being tested)

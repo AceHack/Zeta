@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - validate the retained shell allowlist for duplicate and out-of-order entries before classifying repo `.sh` drift
 - surface allowlist integrity counts in the bash-retirement inventory report
 - cover duplicate, unsorted, and rendered integrity-error cases in the focused Bun test
 
 ## Checks
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun run hygiene:check-bash-retirement-inventory`
 - `node_modules/.bin/tsc --noEmit -p tsconfig.json`

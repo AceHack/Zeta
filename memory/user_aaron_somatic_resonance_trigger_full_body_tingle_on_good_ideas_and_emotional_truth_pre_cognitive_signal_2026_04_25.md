@@ -73,6 +73,7 @@ constrained-search system. **Verbal cognition is
 expensive**; somatic detection is cheaper.
 
 The substrate optimizes by:
+
 - Caching pattern-matches at lower-cognition layers
   (somatic, emotional, intuitive).
 - Letting the lower layers fire FIRST.

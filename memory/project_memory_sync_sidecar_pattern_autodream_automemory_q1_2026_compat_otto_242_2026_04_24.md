@@ -19,6 +19,7 @@ topics that all compose into a single memory-sync architecture:
 ## Quality assessment (my read)
 
 **HIGH** on:
+
 - `originSessionId` not native — matches prior research + my
   own harness knowledge
 - Sidecar pattern with SHA-256 hashing — standard engineering
@@ -30,6 +31,7 @@ topics that all compose into a single memory-sync architecture:
   also cited across sources
 
 **MEDIUM** on:
+
 - `tengu_onyx_plover` as AutoDream internal codename —
   Reddit-sourced only; plausible (Anthropic has used cute
   three-word codenames before) but I cannot verify from
@@ -40,6 +42,7 @@ topics that all compose into a single memory-sync architecture:
   implementation detail that could drift
 
 **LOW** / treat-carefully on:
+
 - Claim that AutoDream has "trouble with large directory
   refactors" — could be a Reddit anecdote; Otto-114 solver
   should test empirically before trusting

@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - add list-only `--json` output for `tools/hygiene/divergence-reconcile.ts`
 - expose deterministic `schemaVersion: 1` pending-shard payloads for autonomous-loop consumers
 - reject `--json` with reconciliation write-back arguments before mutation
 - update 081KR7JY10008QG0R000MH7PJT with the JSON list slice status
 
 ## Checks
+
 - `bun test tools/hygiene/divergence-reconcile.test.ts`
 - `git diff --check`
 
 ## Coordination
+
 - Advances Codex claim `claim/codex-loop-b0164-1-divergence-json-20260531`
 - Path set is disjoint from open PR #6200
 

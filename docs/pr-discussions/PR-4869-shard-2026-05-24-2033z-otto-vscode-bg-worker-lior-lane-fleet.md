@@ -64,6 +64,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -82,6 +83,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard capturing the 2026-05-24 2033Z bg-worker observation/state snapshot, continuing the documented lineage of sustained 100% Lior-lane PR fleet share and reaffirming the stated bg-worker scope discipline.
 
 **Changes:**
+
 - Added a new tick entry documenting observed PR fleet growth (41→53), main-head movement, and scope/lane discipline rationale.
 - Extended the tick lineage/cross-links to prior shards and relevant `.claude/rules/*` references.
 
@@ -103,6 +105,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

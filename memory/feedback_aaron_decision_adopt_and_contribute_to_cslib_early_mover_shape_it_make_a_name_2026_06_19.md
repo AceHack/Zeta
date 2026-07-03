@@ -23,6 +23,7 @@ ecosystem — being a *shaper* of the substrate, not just a consumer. This is th
 collaboration thesis made concrete on a real, external, open-governance target.
 
 **How to apply:**
+
 - **Adopt as a Lean dependency** (`lakefile.toml`: `require cslib, scope leanprover, rev main`) — a
   bounded engineering task; build it green; do **NOT** depend on the `Boole` placeholder (the
   Rust/C++→Lean auto-verification is a vision, not shipping — track only).

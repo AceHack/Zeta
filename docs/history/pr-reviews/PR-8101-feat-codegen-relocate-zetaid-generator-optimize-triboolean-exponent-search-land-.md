@@ -31,6 +31,7 @@
 Consolidates layout-driven generation under the TypeScript source directory (`src/Core.TypeScript/zeta-id/`) keeping `tools/` clean of language source files. Restructures the TriBoolean floating-point exponent search bounds with a logarithmic range limit to prevent hangs on wide decoders. Introduces native, allocation-invariant benchmarks for `ZetaId` the "Ben way" to establish performance baselines.
 
 ### What
+
 - **ZetaId Relocation & Codegen**:
   - Relocated `tools/codegen/zeta-id-generator.ts` to `src/Core.TypeScript/zeta-id/zeta-id-generator.ts`.
   - Added strict parsing error safety with the `valueAfterColon` parser utility to compile cleanly with `strictNullChecks` turned on.

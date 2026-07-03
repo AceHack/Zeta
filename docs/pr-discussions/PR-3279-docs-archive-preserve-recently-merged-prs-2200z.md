@@ -27,4 +27,5 @@ Archiving recently merged PRs to permanently capture alignment drift and review 
 Archives a recently merged PR's discussion into `docs/pr-discussions/` for permanent native-repository memory.
 
 **Changes:**
+
 - Adds preservation file for PR #3274 with frontmatter metadata and PR body/review content.

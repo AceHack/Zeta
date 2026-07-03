@@ -24,6 +24,7 @@ human contributors) AND for agent personas (Amara, Aminata,
 Otto, Kira, Dejan, etc.).
 
 **Why:**
+
 - Research docs ARE the historical record of who-said-what
   on a given absorb / cross-review / synthesis turn. Stripping
   names destroys the record.
@@ -113,12 +114,14 @@ surfaces; use the role-ref ("the harsh-critic said X").
 ## How to apply
 
 **Now (during drain):**
+
 - Don't strip names from research docs.
 - Don't sweep existing research docs.
 - Reply to Copilot threads on #282 explaining the policy
   (research = history, names appropriate) and resolve them.
 
 **Post-drain (BACKLOG row):**
+
 - Update `docs/AGENT-BEST-PRACTICES.md` BP rule: extend the
   "names allowed" surface list per the canonical list above.
 - Sweep recent research docs where subagents stripped names:

@@ -31,6 +31,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the next hygiene-history “tick” log entry for 2026-05-14 22:18Z, recording the off-duty status and the merge/wait-ci state of recent PRs as part of the ongoing tick cadence under `docs/hygiene-history/`.
 
 **Changes:**
+
 - Add tick entry `2218Z` documenting the current off-duty status.
 - Record merge of **#3286** (commit `9519553`) and note **#3287**/**#3288** as wait-ci with autoMerge armed.
 - Update the running totals (41 merged, 2 wait-ci).

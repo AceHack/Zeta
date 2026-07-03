@@ -429,6 +429,7 @@ precision-gain.
 ### Why precision matters for "quantum mirror" — additional structural reasons
 
 Without precision, the term:
+
 - Allows woo-woo claims to free-ride on physics
   vocabulary ("quantum" connotes mystery in popular
   usage, weakening its actual physical meaning).

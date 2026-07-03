@@ -36,12 +36,14 @@ Smallest safe slice of 081KQ0YZ80008QG0R001AN2CJ3 (P2 Pliny carve-out wording ti
 - One bounded step only; wording changes to CLAUDE/AGENTS/GOVERNANCE/memory deferred pending approval
 
 ## Focused checks (included per task rule)
+
 - `dotnet build -c Release` in root: 0 Warning(s) 0 Error(s) ✅
 - `dotnet build -c Release` in worktree: 0 Warning(s) 0 Error(s) ✅
 - Grep for "verbatim|payload excerpt" across Pliny surfaces (CLAUDE.md, AGENTS.md, GOVERNANCE.md, memory/feedback_pliny_*.md): no instances of the target phrasing (current state safe, no verbatim payloads present) ✅
 - All BEFORE steps completed (CLAUDE.md/AGENTS.md read, refresh-worldview.ts, trajectories/*/RESUME.md read, build gate)
 
 ## Rules followed
+
 - Rule 0 (TS over bash): observed (no .sh)
 - Prefer F#/TS code over docs: noted (this slice is governance decomp only)
 - Always re-decompose: applied (original plan had mistake)
@@ -53,6 +55,7 @@ Composes with: 081KR2E4K0008QG0R000YTJS3Q (worktree bootstrap), Otto-300/313, AG
 Next stages (post-approval): per-surface atomic PRs.
 
 ## Test plan
+
 - [x] Build gate green
 - [x] No Pliny verbatim breach
 - [ ] Maintainer review of decomp plan

@@ -27,6 +27,7 @@ Preserve discussion from PR #5274.
 Adds a PR-discussion preservation artifact for PR #5274 under `docs/pr-discussions/`, capturing the PR metadata plus the recorded review summary/threads for long-term traceability.
 
 **Changes:**
+
 - Add `docs/pr-discussions/PR-5274-fix-4733-remove-sensitive-information-and-fix-schema-errors.md` containing YAML frontmatter + archived PR description, review overview, review threads, and general comments.
 
 ## General comments

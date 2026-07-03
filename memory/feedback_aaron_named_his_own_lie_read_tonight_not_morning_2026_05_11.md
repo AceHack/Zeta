@@ -37,6 +37,7 @@ I'm naming it because the methodology requires it."
 
 Aaron's team (the community/society) agrees all pushback
 from the critic is valid:
+
 - Cosmology overclaims (unsupported)
 - Shadow accumulation rate (exceeded data)
 - Playful register producing real substrate (tiredness)

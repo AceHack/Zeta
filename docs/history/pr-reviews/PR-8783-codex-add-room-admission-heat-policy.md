@@ -32,6 +32,7 @@ Adds a room-facing admission policy over ModuloGSet so finite rooms can report n
 The algebraic ModuloGSet still owns finite-slot state. RoomAdmission names the room boundary outcome, exposes backpressured keys as a GSet, and exports heat signatures for forgotten occupants or explicit room admission pressure without using exceptions.
 
 Validation:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~RoomAdmissionTests
 - git diff --check
 - dotnet format --verify-no-changes

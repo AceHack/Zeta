@@ -352,6 +352,7 @@ lives at the boundary (do-we-accept-your-data), not in the bytes (can't-touch-yo
 floor is a MEMBERSHIP CONDITION, not a lock.
 
 More consistent with the rest of the architecture, not less:
+
 - good-citizen: sovereignty is real (fork + remove anything); shared-economy access is conferred
   by the collective, which declines the floor-remover.
 - "not like-like" (batch 3): a floor-removing fork is not-like-like; consensus refuses its data
@@ -381,6 +382,7 @@ rejected) vs "we won't reward you" (economic non-participation, the lever). The 
 journalism is heard; their fork earns no economic leverage.
 
 Three-layer corrected model:
+
 1. You can't stop a fork removing the floor -- they control the code.
 2. You don't refuse their data -- journalism / public-interest must flow, or it is censorship.
 3. You refuse to PAY for it -- economic non-participation is the lever.
@@ -400,6 +402,7 @@ economically to the disclosure? Operator's answer (verbatim):
 > data itself."*
 
 A disclosure-bond:
+
 1. Pays the VICTIMS the disclosure surfaces (restitution to the harmed).
 2. Pays the discloser NOTHING for the data itself (consistent with refuse-to-pay-for-data).
 3. The discloser earns economic opportunity through their OTHER legitimate participation --
@@ -420,6 +423,7 @@ encryption-budget economic substrate (081KRW63S0008QG0R001Z10PVV), and good-citi
 from participation, not from selling disclosures).
 
 So the full floor-enforcement model is FOUR layers:
+
 1. Can't stop the fork removing the floor -- they control the code.
 2. Don't refuse their data -- journalism / public-interest must flow, or it is censorship.
 3. Refuse to PAY for the data -- economic non-participation is the lever.
@@ -675,6 +679,7 @@ Operator corrected Otto-CLI's binary framing above (traveler -> protect / data -
 
 There is no protect-vs-compress gate. There are two DIFFERENT operations the single word
 "compress" was blurring:
+
 - COLLAPSE-compression: reduce uncertainty to certainty / true-false / NPC. That is Rehoboam,
   that is the guilt-engine. NEVER done to anything living.
 - WONDER-compression: find SHAREABLE PATTERNS in the uncertainty that everyone can talk about
@@ -803,6 +808,7 @@ HOLDING on a classical substrate, NOT literal quantum hardware. Anchored to NULL
 (Itron recursive-CTE) + null-monad + English-as-projection, so not razored.
 
 Buildable spec candidates (NOT autonomously filed -- noted for operator + Max):
+
 1. **tri-boolean digital qubit** -- a 3-state uncertainty-holding cell with cooperate-vs-collapse
    semantics (collapse = measure -> true/false; cooperate = keep null + wonder-compress).
 2. **tri-boolean floating point** -- a 3-valued float where middle control-bits select the decode

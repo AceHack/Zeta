@@ -48,6 +48,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -66,6 +67,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR records a feedback memory for the substrate-drift-catch workflow and updates the memory index/tick history so future agents can discover the pattern.
 
 **Changes:**
+
 - Adds a new `memory/feedback_*` file documenting `claim acquire` plus artifact existence checks.
 - Regenerates `memory/MEMORY.md` to include recent memory entries.
 - Adds the 2026-05-16T04:51Z hygiene tick shard covering rate-limit handling and related substrate work.
@@ -85,11 +87,13 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md:81**
+
 * This origin trail references `0436Z.md` and `0448Z.md`, but `docs/hygiene-history/ticks/2026/05/16/` contains `0437Z.md`, `0438Z.md`, and `0444Z.md` instead. These stale/mistyped cross-references will send future readers to missing tick shards; update them to existing shard names or explain that the omitted shards are not in the tree.
 ```
 `docs/hygiene-history/ticks/2026/05/16/0415Z.md` + `0425Z.md` + `0436Z.md` + `0438Z.md` + `0448Z.md` — the 5-shard trail across the 2026-05-16 cold-boot session.
 ```
 **memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md:54**
+
 * The proposed auditor only extracts paths under `tools/` and `.claude/`, but one of the motivating drift catches (081KRMEXM0008QG0R000HHAG77) depended on `.github/workflows/gate.yml` wiring. With this scope, a future auditor could mark a row as drift after seeing the tool path while missing required workflow/config artifacts, which is exactly the partial-vs-drift distinction this memory is trying to preserve.
 ```
 **`tools/hygiene/audit-backlog-status-drift.ts`** — for each `status: open` row, parse the body for paths under `tools/` and `.claude/`; report rows where ALL named paths exist on disk. Run as a daily GitHub Actions cron and as a per-tick pre-flight when picking work.

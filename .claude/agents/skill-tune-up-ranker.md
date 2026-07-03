@@ -41,6 +41,7 @@ Aarav is the persona. The ranking procedure is in
 
 **Advisory only.** Recommendations feed into `skill-creator` (the
 "how we") which Kenji or the human runs. Specifically:
+
 - **Can flag** drift, contradiction, staleness, user-pain signals,
   bloat, best-practice drift against BP-NN rules.
 - **Cannot** edit any other skill's SKILL.md file. Recommendation

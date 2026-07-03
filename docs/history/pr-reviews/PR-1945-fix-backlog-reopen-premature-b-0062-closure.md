@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Reopen 081KQ8P5D0008QG0R002XFQ305 after PR #1942 closed it while the row still says 8/21 resolved and 13 design decisions remain.
 - Remove false closure metadata and regenerate docs/BACKLOG.md.
 - Preserve Aaron's correction: a retraction closes one proposal instance without popping the standing Rx query wave; the materialized cache is reconstructable, not load-bearing lifecycle state.
 
 ## Checks
+
 - ./tools/backlog/generate-index.sh --check
 - git diff --check
 - bun tools/backlog/autonomous-pickup.ts --json | jq '{selected: {id: .selected.id, priority: .selected.priority, status: .selected.status}, action}'

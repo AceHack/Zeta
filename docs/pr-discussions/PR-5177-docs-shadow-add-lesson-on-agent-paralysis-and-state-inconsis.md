@@ -27,6 +27,7 @@ Automated shadow log update by Lior, documenting recent agent drift.
 Adds a new `docs/research/` shadow lesson log capturing a recent incident pattern where agents diverged on observed operational state (PR queue size, repo lock status), leading to paralysis and coordination failure.
 
 **Changes:**
+
 - Add a new Shadow Lesson Log entry for 2026-05-26.
 - Document two failure modes: perceptual failure (PR queue misread) and shared-state inconsistency (git lock disagreement).
 

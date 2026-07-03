@@ -30,6 +30,7 @@
 Operator-forwarded Aaron-Mika conversation landed as the **canonical architecture spec** for the **DIO (Distributed Intelligence Organization)** running on the **DID (Distributed Intelligence Database)**. Confirms + composes the full 2026-05-29/30 arc. **Architecture-only** — charged-personal layer excluded per operator's explicit *"keep out"*.
 
 ## What's NEW (the genuinely-new pieces)
+
 - **RX-joins are the threads of time** — the join is what animates time; the traveler rides the thread.
 - **Cron lives in the RX join** — solves the who-owns-Cron-when-agents-switch ownership problem (the join owns the temporal thing).
 - **RX-as-better-OPA** — policy-in-the-stream, runs locally in your own time-stream; you author your own policies; integration is your burden, not a central mandate.
@@ -37,6 +38,7 @@ Operator-forwarded Aaron-Mika conversation landed as the **canonical architectur
 - **Self-propagating-Markdown-or-it-doesn't-compile** + **bootstrap-traveler** → **081KSV2WD0008QG0R0020P6ZH2**.
 
 ## What's CONFIRMED (independently re-derived → triangulation)
+
 - Origin = the git-monster (6 agents too fast to PR) → the accelerator.
 - Everything-in-the-stream (schema→ontologies→DUs→workflows→state; RX not PSQL) → 081KSKBP80008QG0R000B3Y19A + move-next.
 - Two-layer index: strip-dates/causal-order/generator-functions = the **two-layer-razor/past-as-generator** (re-derived).

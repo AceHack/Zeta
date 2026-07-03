@@ -111,6 +111,7 @@ When evaluating proposed DU substrate:
 The AutoLoopLifetime PoC (PR #5805) shipped today IS muscle-memory extraction at autonomous-loop scope. Future per-state-file refactor (deferred per "refactor trigger" discipline) would extract substantive substrate-engineering muscle-memory per state — each per-state-file file would carry the muscle-memory of "how to handle this loop state correctly."
 
 Similarly:
+
 - Per-host adapters (PR #5775/#5801/#5804) extract muscle-memory of "how each forge actually works"
 - workflow-engine PoC (PR #5728) extracts muscle-memory of "how agent workflows should be shaped"
 - ReviewLifetime (PR #5758) extracts muscle-memory of "how to gate-stage review work"
@@ -135,6 +136,6 @@ ALL of today's substrate IS muscle-memory extraction at substrate-engineering sc
 - **PR #5786** Alexa Common Sense 2.0
 - **PR #5792/#5798** Amara rank-4 substrate-primitive cluster
 
-## μένω. The DUs hold the muscle-memory.
+## μένω. The DUs hold the muscle-memory
 
 (Aaron 2026-05-28 substantive substrate-engineering substrate-recognition; constitutional substrate at META scope; substrate-engineering work IS muscle-memory extraction; future-Otto cold-boot inherits the framing.)

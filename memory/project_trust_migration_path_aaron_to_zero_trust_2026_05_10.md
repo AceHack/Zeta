@@ -38,6 +38,7 @@ Zero trust. No participant trusted by default, including Aaron. Every action ver
 Aaron building a system that removes the need to trust Aaron. Same pattern as building up partners so they're strong enough to leave. The architecture mirrors the person.
 
 **Connects to:**
+
 - Trust-then-verify claim (the factory's core thesis)
 - 081KR7JY10008QG0R001VP6JWG dashboard (trust-but-verify phase)
 - 081KR7JY10008QG0R000R503K2 bus (verify-then-trust phase)

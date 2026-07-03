@@ -28,6 +28,7 @@
 ## Description
 
 keyring-dst1000.yml gated only the derivation tests; the newer suites were green locally but not enforced. Add two steps:
+
 - keyset.test.ts + keyset.dst1000.test.ts -> no-single-key invariants + 1000x gapless rotation (Soraya K3).
 - keyring-4x4.test.ts -> serializer byte-lock + 3-way commute (JSON==CBOR==XML).
 

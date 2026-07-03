@@ -36,6 +36,7 @@ Istio bundles Envoy + OPA + SPIFFE + mTLS. All four primitives present. But bund
 Four primitives, zero YAML, zero sidecars, zero control plane SPOF.
 
 **Connects to:**
+
 - project_spiffe_concept_steal (the full mapping)
 - project_microkernel_trust_tier_router (WHERE at kernel level)
 - project_trust_migration_path (the journey to zero trust)

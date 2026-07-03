@@ -29,6 +29,7 @@ Title updated per Copilot finding to reflect the actual batch scope rather than 
 This PR adds discussion-archive markdown files under `docs/pr-discussions/` to preserve the content of multiple recently merged pull request conversations for long-term provenance and auditability.
 
 **Changes:**
+
 - Add preserved PR discussion archives for PRs #4965–#5034 (including #5027) under `docs/pr-discussions/`.
 - Each archive includes a YAML frontmatter metadata block plus the captured PR description/reviews/threads content.
 

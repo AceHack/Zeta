@@ -32,6 +32,7 @@ Synthesis of four Aaron messages 2026-06-02:
 > *"ML app store over mesh — we are just AI custom app store over product decision lanes, same concept, decentralized and autonomous and attribution and contribution based not extractive"* + *"more like web3"* + *"self selecting attractive sum is more than parts economy because focused attention and memory multiply."*
 
 **081KT2T2J0008QG0R003872SGT** — Itron's **ML-app-store-over-mesh** (081KT2T2J0008QG0R002DFPSHX MPM precedent) is the *same concept* as Zeta's **AI/agent custom app store over the product-decision lanes** (081KSKBP80008QG0R000B3Y19A workflow engine + 081KT2T2J0008QG0R002Z46D8Q orthogonal lanes), distributed via **Ace**:
+
 - **decentralized + autonomous** (Agora; no central platform owner);
 - **attribution + contribution-based, NOT extractive** (value to contributors by attribution, not platform-capture — honor-those-that-came-before + attention-as-currency contribution-graph + must-paired-with-can-exit anti-extractive guarantee);
 - **"more like web3"** — decentralized ownership/attribution done right (non-speculative/non-extractive; 081KRW63S0008QG0R000QJR08H participation-economy; 081KT2T2J0008QG0R002Z46D8Q tiles-as-ownership);

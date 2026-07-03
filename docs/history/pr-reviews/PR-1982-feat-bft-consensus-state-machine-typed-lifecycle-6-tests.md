@@ -30,6 +30,7 @@
 ## Summary
 
 Extends Consensus.fs with:
+
 - `Phase` (Proposed → Voting → Decided)
 - `Message<'T>` (Propose | CastVote | Finalize)
 - `RoundState<'T>` (full round state)

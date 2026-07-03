@@ -35,6 +35,7 @@ Claude Code. Each is a port in the Aurora poly-boundary.
 ## The surface as architecture
 
 Each MCP service IS a grain in the Aurora membrane:
+
 - Gmail grain: email in/out
 - Jira grain: issue lifecycle
 - Confluence grain: knowledge base

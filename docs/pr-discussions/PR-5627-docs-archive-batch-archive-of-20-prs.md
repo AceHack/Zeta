@@ -27,6 +27,7 @@ Automated batch archival of 20 PRs to preserve discussion and context, and to re
 This PR adds generated GitHub PR discussion archives under `docs/pr-discussions/`, preserving PR bodies, reviews, and threads for historical traceability. The files match the repository’s PR-preservation archive shape and live in a markdownlint-ignored history surface intended for verbatim content.
 
 **Changes:**
+
 - Adds 20 generated archive files for merged PRs #4897–#4915 and #4930.
 - Preserves PR metadata, descriptions, reviews, review threads, and comments.
 - Uses `tools/pr-preservation/archive-pr.ts` as the recorded archive tool.

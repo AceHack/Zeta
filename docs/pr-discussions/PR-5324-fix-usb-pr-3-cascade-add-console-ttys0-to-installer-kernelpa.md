@@ -39,6 +39,7 @@ boot.kernelParams = [
 Substrate-honest framing per the QEMU test's commit message goal ("catches the bug class where the ISO builds + audits pass but the kernel/initrd combination fails to actually boot"): the test is doing its job. The MISSING config (serial console) was a real gap surfaced on first cycle.
 
 Beneficiaries of serial console output:
+
 - CI QEMU boot smoke-test (cascade #5)
 - Real hardware with serial headers (some Beelinks; most server-class boards)
 - Debugging scenarios where the only output channel is RS-232
@@ -72,6 +73,7 @@ Beneficiaries of serial console output:
 Enables serial console output for the NixOS installer ISO so the CI QEMU boot smoke-test (run with `-display none`) can observe the installer reaching the `zeta-installer login:` prompt via captured serial output, while preserving the VGA/keyboard-attached install flow.
 
 **Changes:**
+
 - Add `boot.kernelParams` entries to enable `ttyS0` (115200 8N1) console output in addition to `tty1`.
 - Document the rationale and expected behavior (tty1 primary, ttyS0 mirrored) inline in the installer configuration.
 

@@ -33,6 +33,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR adds a new tick shard documenting the 02:52Z audit-filter triage work, including the PR #3692 placeholder-target filter improvement and the remaining baseline-cleanup decision.
 
 **Changes:**
+
 - Records the 17→10 audit finding reduction after placeholder filtering.
 - Documents the open strategy question for tick-shard relative-path baseline cleanup.
 - Captures current PR queue state and next-tick candidates.

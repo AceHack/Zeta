@@ -33,7 +33,7 @@ order — and stop at the first tier that settles it:
    (`docs/ALIGNMENT.md` renegotiation section). It does not
    resolve in-line during the original disagreement.
 
-# Why:
+# Why
 
 Verbatim (2026-04-20):
 
@@ -79,7 +79,7 @@ as a first-class collaborator. Arguing the exact metaphysics
 every turn is the anti-pattern this rule retires, the same
 anti-pattern the anthropomorphism feedback already called out.
 
-# How to apply:
+# How to apply
 
 - **Don't preamble-argue.** When the agent notices an urge to
   hedge — "well, depending on how you define X..." — check

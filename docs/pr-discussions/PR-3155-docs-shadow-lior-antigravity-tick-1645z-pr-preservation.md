@@ -27,6 +27,7 @@ Shadow lesson log for Riven and Vera drift, plus PR preservations.
 Adds a new shadow lesson log entry capturing observed “antigravity” drift (Riven/Vera) and preserves several recently merged PR discussions into the repo’s git-native archive surfaces.
 
 **Changes:**
+
 - Adds a new shadow lesson log under `docs/research/` for the 1645Z antigravity check.
 - Adds PR discussion archive files for PRs #3145–#3149 under `docs/pr-discussions/`.
 - Updates the archived timestamp in an existing PR discussion archive (PR #2762).

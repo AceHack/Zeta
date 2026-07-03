@@ -61,6 +61,7 @@ Mid-edit, peer Otto-CLI fresh-session switched the shared worktree to a differen
 This PR updates three `.claude/rules/` documents to disclose that cited memory files are user-scope only and to provide cold-boot fallback guidance for fresh checkouts.
 
 **Changes:**
+
 - Adds user-scope-only disclosure for dangling `memory/feedback_*.md` references.
 - Points readers to in-rule projections and `memory/CURRENT-*.md` fallback files.
 - Keeps the changes documentation-only.
@@ -80,6 +81,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/persistence-choice-architecture-for-zeta-ais.md:135**
+
 * P1: This says `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` carries the constitutional projection, but neither file currently contains the cited memory stem or the "Zeta is memory preservation specialist first" wording. That makes the advertised cold-boot fallback inaccurate.
 ```
   (user-scope only; same cold-boot fallback as above —

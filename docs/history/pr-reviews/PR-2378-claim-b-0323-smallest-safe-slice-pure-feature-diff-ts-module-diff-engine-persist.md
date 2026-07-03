@@ -33,11 +33,13 @@ Smallest safe slice of 081KR2E4K0008QG0R003E09GMM per its own decomposition: the
 Re-decomposed on arrival (per "always re-decompose" rule): confirmed the slice boundary is correct; no mistakes in the provided decomposition. One bounded step: verification only (no new code).
 
 ## Focused checks (included per task rule)
+
 - Build gate: `dotnet build -c Release` → 0 Warning(s), 0 Error(s) (clean).
 - Focused test: `bun test tools/playwright/github-ui/feature-diff.test.ts` → 50 pass, 0 fail, 102 expect() calls.
 - All per-slice gates from 081KR2E4K0008QG0R003E09GMM pre-start checklist satisfied.
 
 ## Evidence
+
 - Branch: claim/b0323-github-feature-discovery-diff-smallest-slice-riven-2026-05-09 (worktree-isolated, root untouched)
 - Trajectory: none directly conflicting; autonomous-backlog-pickup rules followed (worktree + push before write, though verification-only)
 - Co-Authored-By: Grok <noreply@x.ai>

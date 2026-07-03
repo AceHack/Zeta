@@ -30,12 +30,14 @@
 Auto-**heals** mechanical lint on PRs — runs the deterministic `--fix` tools and commits the result back, so the required lint gate passes on the healed commit instead of blocking on a fixable nit. Auto-heal, **not a new gate** (per 2026-06-01: "mechanical fixes or auto format fixes ... it just being a workflow step makes sense") — the keep-remaining-gates-frictionless half of winding branch protection down.
 
 ### Mechanical only (zero intelligence)
+
 - `markdownlint-cli2 --fix` → heals the **markdownlint** required gate cleanly
 - `prettier --write` (TS/JSON) → format hygiene (not itself a gate)
 
 Same mise-pinned tool versions as `gate.yml` (via `install.sh`) → **version parity**, so the heal can't "fix" into a state the gate rejects.
 
 ### Safety
+
 - **same-repo PRs only** (forks excluded — no untrusted-ref checkout, no write-perms over untrusted code); `pull_request`, not `_target`.
 - **loop-guarded** (skips `github-actions[bot]` commits; heal is idempotent regardless).
 - `head.ref` via **env var + quoted** in `run:` (injection-safe per the GH Actions injection guide); `contents: write` scoped to the autofix job only (workflow level is `read`).

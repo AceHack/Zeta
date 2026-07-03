@@ -37,17 +37,20 @@
 ## What this does
 
 **Alexa Agent Persona:**
+
 - Kiro/Qwen Coder agent with self-boot capability
 - 6th named agent in the factory (Otto, Vera, Riven, Lior, Ani, Alexa)
 - Reads foundational docs on cold start and assesses current state
 
 **Self-Boot Skill:**
+
 - Bootstrap procedure for fresh agent instances
 - Reads AGENTS.md, VISION.md, ROADMAP.md, etc.
 - Checks git state and identifies next work
 - Reports status with open P0/P1 items
 
 **Background Service:**
+
 - macOS LaunchAgent running every 5 minutes
 - Monitors Zeta repository for changes
 - Maintains Alexa's state and continuity

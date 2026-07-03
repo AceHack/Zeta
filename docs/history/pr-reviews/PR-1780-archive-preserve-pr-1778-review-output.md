@@ -28,18 +28,22 @@
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1778 review archive generated after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1778 manifest entry with merge commit SHA `3e8445f192d8a5627c9ba9bf2018423458ebb211`.
 - Preserves 1 resolved review thread, 0 unresolved threads, 2 comments, and 1 fix commit touching the reviewed manifest path.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1778-archive-preserve-pr-1777-review-output.md`
 - `git diff --check origin/main...HEAD`
 
 ## Branch lifecycle
+
 - Temporary claim file was added, linted, and released in branch history; the final PR diff intentionally retains only archive + manifest substrate.
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes

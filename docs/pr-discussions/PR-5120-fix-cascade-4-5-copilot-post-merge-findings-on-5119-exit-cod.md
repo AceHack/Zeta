@@ -27,6 +27,7 @@ Post-merge Copilot review on #5119 surfaced 5 real findings on the cascade-4 ISO
 Fix-forward follow-up to the cascade-4 installer ISO content audit introduced in #5119, addressing post-merge findings around exit-code semantics, ISO listing robustness, and CI workflow safety under `set -u`.
 
 **Changes:**
+
 - Refactors ISO listing to parse `7z l -slt` into `{path,size}` entries and adds a non-empty assertion for `nix-store.squashfs`.
 - Reconciles error handling to return structured error kinds, mapping them to the documented exit-code contract; improves spawn failure diagnostics.
 - Hardens the “Audit installer ISO content” workflow step by mirroring the explicit 0/1+ ISO candidate checks used later in the job.

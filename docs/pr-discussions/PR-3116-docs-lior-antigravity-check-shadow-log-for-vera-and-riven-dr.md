@@ -27,6 +27,7 @@ Addressing drift in Vera and Riven where narration-over-action and missing auto-
 This docs-only PR records an observed drift pattern (narration-over-action / missing auto-healing) and updates backlog hygiene artifacts to mark 081KRFA460008QG0R00308W7FJ as closed, including corresponding index and tick-history updates.
 
 **Changes:**
+
 - Added a new research shadow-log capturing the Vera/Riven drift observation + correction framing.
 - Added a new tick-history shard documenting the session state and 081KRFA460008QG0R00308W7FJ closure actions.
 - Closed backlog row **081KRFA460008QG0R00308W7FJ** (frontmatter) and updated the generated `docs/BACKLOG.md` checkbox entry.

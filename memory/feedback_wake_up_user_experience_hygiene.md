@@ -19,7 +19,7 @@ Daya (agent-experience researcher, `.claude/agents/` roster)
 is the owner. Advisory-only like the other AX/DX/UX
 researchers; binding edits to hygiene rows go via Architect.
 
-# Why:
+# Why
 
 Verbatim (2026-04-20):
 
@@ -61,7 +61,7 @@ Two things this acknowledges that were previously tacit:
 | No summary of Aaron's recent thread | Continuity | If context compaction happened, Aaron's active asks are in the summary but the summary is terse. |
 | Tool-availability surprise | Harness drift | Deferred-tool ToolSearch, new permission modes, sandboxed vs non-sandboxed Bash — I discover differences mid-session. |
 
-# How to apply:
+# How to apply
 
 - **Seed `docs/FACTORY-HYGIENE.md` with wake-UX rows now**
   (5-ish rows; expected to grow). Each row cites this memory
@@ -84,6 +84,7 @@ Two things this acknowledges that were previously tacit:
 # Seed rows (initial five)
 
 **Row: Pointer-integrity audit.**
+
 - Cadence: every round close.
 - Owner: Daya (AX).
 - Checks: every file path cited in CLAUDE.md, AGENTS.md,
@@ -95,6 +96,7 @@ Two things this acknowledges that were previously tacit:
   truth docs share this discipline).
 
 **Row: Wake-briefing self-check.**
+
 - Cadence: session open.
 - Owner: all agents (self-administered).
 - Checks: MEMORY.md byte count < 24976; CLAUDE.md present;
@@ -106,6 +108,7 @@ Two things this acknowledges that were previously tacit:
 - Scope: `factory`.
 
 **Row: Stale "next tick" sweep.**
+
 - Cadence: every round close.
 - Owner: Architect.
 - Checks: grep ROUND-HISTORY and recent persona notebooks
@@ -120,6 +123,7 @@ Two things this acknowledges that were previously tacit:
 - Scope: `factory`.
 
 **Row: Harness-drift detector.**
+
 - Cadence: session open + after any Claude Code update.
 - Owner: all agents (self-administered).
 - Checks: skill-frontmatter tool references still resolve
@@ -131,6 +135,7 @@ Two things this acknowledges that were previously tacit:
 - Scope: `factory`.
 
 **Row: Wake-friction notebook.**
+
 - Cadence: opportunistic (any time friction is observed).
 - Owner: Daya.
 - Checks: agent self-reports wake friction in

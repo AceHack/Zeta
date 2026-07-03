@@ -34,6 +34,7 @@ Files 081KRQ1AB0008QG0R000522MPJ — Enterprise GitHub ruleset management work-s
 ## Why
 
 Two reframings:
+
 1. **Surface expansion** — was 2 layers (org/individual), now 3 (enterprise/org/individual). Cross-layer rule conflicts become a real failure mode without coherent governance
 2. **DV2.0 ruleset-divergence smell composes** per `dv2-data-split-discipline-activated.md` — the smell was known for repo-split (081KRFA460008QG0R000VKJF0H); Enterprise multiplies it
 

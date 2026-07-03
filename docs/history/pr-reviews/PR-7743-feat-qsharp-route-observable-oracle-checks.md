@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - add Q#-dumped singlet CHSH corner observables paired with the analytic S=2√2 value
 - expand the AmplitudeEmu Mach-Zehnder fixture into a phase grid derived from Q# dumped unitaries
 - add Q# Pauli anticommutation matrices for the hardware-side Clifford sign check
@@ -35,6 +36,7 @@
 - tighten the mod2 wording to the signed χ: B₃ → Z/2 formulation and warn against per-pair parity conflation
 
 ## Verification
+
 - ./.venv/bin/python tools/qsharp-oracle/generate-qsharp-golden.py
 - bun test tools/qsharp-oracle/qsharp-golden.test.ts
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter 'FullyQualifiedName~QSharpOracleTests|FullyQualifiedName~QubitIsoTests|FullyQualifiedName~Cl3Tests|FullyQualifiedName~AdinkraVizTests'

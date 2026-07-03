@@ -30,6 +30,7 @@
 Rust parity oracle for **Bag** (G-Set ⊂ Bag ⊂ Z-set), mirroring the TS reference (#6364) and cross-verifying byte-for-byte against the shared `src/Core.TypeScript/bag/golden-vectors.json`. Lands in `src/Core.Rust.Algebra` next to `gset.rs` — one crate, one ladder, exactly as `lib.rs` promised. **Bag is now 2/4** (TS + Rust; F#/C# next).
 
 ### What's here
+
 - `src/bag.rs` — `BagEntry { e, n: i64 }` + `Bag<T: Ord + Clone>`: empty/singleton/of_entries/of_iter, multiplicity (binary search) + contains, **union (per-key sum)**, add/add_n, to_entries/as_slice/distinct_count/total/is_empty. Combiner is a commutative **monoid, NOT idempotent** — `union(a,a)` doubles counts (11 unit tests incl. the law suite + the non-idempotence law).
 - `tests/bag_cross_verify.rs` — replays the shared fixture (add/addN/union), asserts every `expectedReplayState` + `expectedFinalState`.
 - `lib.rs` — `pub mod bag;`.

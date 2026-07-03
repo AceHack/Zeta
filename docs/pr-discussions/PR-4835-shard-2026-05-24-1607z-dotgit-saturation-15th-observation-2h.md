@@ -56,6 +56,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -74,6 +75,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds an in-repo tick shard documenting the 16:07Z (15th) dotgit-saturation observation, capturing a second consecutive 0-stuck-procs reading and related operational measurements for the ongoing hygiene-history arc.
 
 **Changes:**
+
 - Adds a new tick shard for 2026-05-24 16:07Z with observed-state measurements and an updated 15-anchor rolling table.
 - Records hypothesis status and next-tick observation candidates to guide the subsequent 18:07Z anchor.
 

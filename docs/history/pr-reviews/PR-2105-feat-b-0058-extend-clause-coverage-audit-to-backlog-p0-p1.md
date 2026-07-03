@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - Extends `tools/alignment/audit_clause_coverage.ts` to scan `docs/backlog/P0/*.md` and `docs/backlog/P1/*.md` as a third surface kind (`"backlog"`), fulfilling 081KQ3HBZ0008QG0R002S674CG responsibility #2's requirement for alignment-clause consistency checks on backlog rows.
 - Schema bumped from `alignment-clause-coverage-v1` to `v2`; `SurfaceKind` union widened to `"skill" | "agent" | "backlog"`.
 - The drift detector (`audit_clause_drift.ts`) gains backlog-row dependency tracking automatically via its existing `audit()` import — no changes needed.
 - README table updated to reflect the new surface scope.
 
 ## Verification
+
 - **Tool run**: 387 surfaces (260 skills, 53 agents, 74 backlog P0/P1); 4 backlog rows cite alignment clauses (081KQ0YZ80008QG0R001QJJTVF, 081KQ3HBZ0008QG0R002S674CG, 081KQ8P5D0008QG0R000N718AC, 081KQX9B50008QG0R001FK1G36).
 - **Drift detector**: still composes (`diffs=0` on main..HEAD).
 - **Build gate**: `dotnet build -c Release` → 0 Warning(s), 0 Error(s).
 
 ## Test plan
+
 - [ ] `bun tools/alignment/audit_clause_coverage.ts` shows backlog entries
 - [ ] `bun tools/alignment/audit_clause_coverage.ts --json` parses cleanly
 - [ ] `bun tools/alignment/audit_clause_drift.ts` still reports dependent surfaces including backlog kind

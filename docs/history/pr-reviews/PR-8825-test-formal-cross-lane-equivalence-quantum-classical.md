@@ -30,6 +30,7 @@
 Proves quantum and classical lanes are interchangeable on the same IR.
 
 Both lanes:
+
 - Read the SAME zeta-ir-v1 artifact (homoiconic)
 - Produce identical output on every input
 - Are self-sufficient (complete independence)

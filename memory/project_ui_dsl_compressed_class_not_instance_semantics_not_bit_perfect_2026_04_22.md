@@ -45,7 +45,7 @@ Three immediate corollaries:
    correctness assertion (unless the class-description
    specified it).
 
-## Why:
+## Why
 
 - **UI has high instance-level redundancy.** A "button
   labelled Submit" can render in dozens of visually-distinct
@@ -106,7 +106,7 @@ Three immediate corollaries:
   parse/re-parse/evaluate, but not the instance. The
   equivalence relation is class-membership, not identity.
 
-## How to apply:
+## How to apply
 
 - **Test harness for UI-DSL must be class-level.** When
   the factory writes tests for UI-DSL evaluator output,

@@ -88,6 +88,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -106,6 +107,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds **Pattern R** to the Amazon vendor-management research corpus, documenting the customer-driven balancing path that returns a Pattern P→Q over-fulfillment + deactivation cascade back to vendor-neutral accounting.
 
 **Changes:**
+
 - Introduces Pattern R with an empirical anchor and a phase-by-phase resolution ledger.
 - Adds a labor-cost / substrate-engineering analysis describing why vendor-neutral outcomes are bandwidth-dependent.
 - Extends the Pattern O–R lifecycle narrative and maps Pattern R into future Zeta vendor-management AI design implications.
@@ -138,6 +140,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

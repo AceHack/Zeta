@@ -31,6 +31,7 @@
 081KSXN940008QG0R00171YAZW's row said **"not started,"** but `tools/agent-bus/` already exists on main — caught while about to (re)build slice 1 (verify-existing-substrate; no duplicate landed). Corrects the stale status.
 
 ## Actual state
+
 - **Items 1–3 DONE** (#6283 Phase 1): `types.ts` / `publish.ts` / `subscribe.ts` — ZetaId-keyed G-Set CRDT, no-PR.
 - **Cross-machine G-Set merge view DONE** (#6327): `g-set-view.ts`.
 - **Item 4 (legacy-bus bridge) + Item 6 (GC/retention): LEFT.**

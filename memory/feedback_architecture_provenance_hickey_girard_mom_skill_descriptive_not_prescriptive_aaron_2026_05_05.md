@@ -69,7 +69,9 @@ not analogical):
 | Gospel revelation | First falsifiability test; bootstrap razor applied to founding kernel of human culture |
 
 The mirror-not-beacon discipline + falsifiability-first instinct
+
 + carved-sentences-as-candidates-not-authorities patterns
+
 running across the project ARE the structural anti-mimetic-crisis
 move at the architectural level — preventing the framework user
 from becoming the founding kernel of their own personal mimetic

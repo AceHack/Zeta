@@ -30,6 +30,7 @@
 Slice 6 of the Ace package manager — **remote registry** (081KT07NV0008QG0R000SJ34AK). Resolve `name@range` against a hosted **signed** index fetched over HTTP(S), merged **under** the local registry. Spec #6424 + fix-forward #6426; plan in this PR (`...slice6-implementation-plan.md`).
 
 ### What ships
+
 - **Signed index** (`tools/ace/signing.ts` + `registry-remote.ts`): `{ format_version, sequence, issued_at, packages, signature }`; ed25519 sign/verify reuse the existing manifest crypto + trust store.
 - **Three index-trust gates** (`verifyIndex`): (1) **signature** — must match the registry's **mandatory pinned** `key_id` AND be trusted (no any-trusted-key fallback — Codex #6424 P1); (2) **anti-rollback** — monotonic per-registry `sequence` high-water; (3) **two-sided freshness** — `issued_at` within 30-day past max-staleness AND 5-min future-skew (future-dated always refused, incl. offline — Codex #6424 P2).
 - **Caching** — content-addressed under `~/.ace/registry-cache/`, conditional GET (ETag/Last-Modified); **`--offline`** uses cache + cache-fallback on network error (skips only the past-staleness gate; sig + anti-rollback + future-skew stay enforced).
@@ -37,6 +38,7 @@ Slice 6 of the Ace package manager — **remote registry** (081KT07NV0008QG0R000
 - **Install/update** swap `loadRegistry()` → `await loadRegistries(...)`; `--offline` on both. **Solver / lockfile / install-graph unchanged** — the remote merge produces the same `Registry` map. `--frozen` untouched.
 
 ### Verification
+
 - **255 pass / 0 fail**, `tsc` 0, markdownlint clean, commit canary 67 throughout.
 - Built subagent-driven (10 TDD tasks). Security-module review + hardening (empty/wrong-prefix `key_id` dropped at config-read; `sequence_high_water` type-validated; adversarial tests: future-skew-through-cache, two-remote precedence). Final holistic review clean (zero P0; both handlers swapped; errors→hard-refusal-before-solve; local-only install regression-free); review P1 (doc overclaim on `--offline` "network-free") narrowed; `ace update --offline` integration test added.
 - Per-package hash-pin + signature gate **unchanged** — index trust is additive (defends availability + version-selection where the per-package pin can't).

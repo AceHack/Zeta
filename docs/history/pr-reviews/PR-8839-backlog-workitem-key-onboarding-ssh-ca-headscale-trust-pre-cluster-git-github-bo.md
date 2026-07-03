@@ -30,11 +30,13 @@
 Aaron: record the CA + Headscale resolution + answer "what before cluster with just git/GitHub — can we fake a CA?" Refines `081KVM1TK3Z08QG0R0002959G6`.
 
 **Trust distribution** (fixes the N×M "every node lists every dev machine" trap — confirmed current model = `authorizedKeys.keys` lists, no SSH CA):
+
 - **SSH CA** (auth plane): nodes trust **one** CA pubkey (`TrustedUserCAKeys`); per-machine keys signed into certs (`principal=aaron` + machine + validity). User-anchored trust **and** per-machine identity/revocation; `N`-trust-`1`. Persona PKI = the CA.
 - **Headscale** (network plane, already deployed): per-dev-machine enrollment **tagged by owner**; one ACL grants all your dev machines, no per-node edits; Tailscale-SSH can do user-auth too.
 - Retire per-node `authorizedKeys.keys` lists.
 
 **Pre-cluster bootstrap (just git/GitHub — not *faking*, real-but-minimal, forward-compatible):**
+
 - **Option A:** GitHub as IdP + key directory (`github.com/<user>.keys` + org membership; zero CA).
 - **Option B:** real SSH CA, **CA pubkey committed to git** → `TrustedUserCAKeys`, sign certs with `ssh-keygen -s` (private key never in git; git = distribution, not secret store).
 - Git-native attestation: ssh-signed commits + `allowed_signers` / `keyring-public.json`.

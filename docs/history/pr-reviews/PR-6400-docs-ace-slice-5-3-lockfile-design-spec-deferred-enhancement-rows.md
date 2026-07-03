@@ -32,6 +32,7 @@ Slice 5.3 of the Ace DLC package manager (081KR2E4K0008QG0R002YE3MMD), building 
 **Spec:** `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.3-lockfile-design.md`
 
 Three locked decisions:
+
 - **Workflow = cargo-style:** `ace install` always solves fresh + writes `./ace.lock`; `--frozen` reads the lock, skips solving, installs exactly the locked graph, fails on drift. Default behavior unchanged; reproducibility opt-in.
 - **Location = `./ace.lock`** in CWD, `--lockfile <path>` override.
 - **Content = full pin** (name + version + url + package_hash per node) → `--frozen` is registry-independent, byte-reproducible, tamper-evident.
@@ -39,6 +40,7 @@ Three locked decisions:
 **Design:** new pure `tools/ace/lockfile.ts` (build / serialize / parse / drift-gate); `resolve.ts` exports `canonicalJson` for reuse; `ace.ts` gains `--frozen`/`--lockfile` + default-path lock write + frozen replay (fetch+verify+install each locked node, registry untouched). The slice-5.1/5.2 verify pipeline is reused, not rewritten.
 
 **Deferred-enhancement rows** (everything sliced off per operator 2026-06-01):
+
 - **081KT07NV0008QG0R002GV3MXW** `ace update` (re-solve within ranges + rewrite lock)
 - **081KT07NV0008QG0R0028AAV0E** `ace install --locked` (assert-up-to-date vs `--frozen` replay)
 - **081KT07NV0008QG0R003VDHWWG** lockfile ergonomics (partial-merge, alphabetical ordering, leaf-lock)

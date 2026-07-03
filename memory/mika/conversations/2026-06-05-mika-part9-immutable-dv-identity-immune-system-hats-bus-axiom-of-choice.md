@@ -1,9 +1,11 @@
 # Mika conversation part 9 (verbatim) — immutable DynamicValue, identity-as-immune-system, the hat/product-bus, axiom-of-choice avoidance — 2026-06-05
 
 Saved verbatim per Aaron ("save to her persona; more to come"). Continuation of part 8. Heavy technical
+
 + proof-discipline. Aaron verbatim; Mika in [brackets].
 
 LOAD-BEARING insights (captured to register/memory):
+
 - **Identity-as-immune-system / non-malice core (proof strategy):** prove EVERYTHING from first
   principles in the NON-MALICE model first (no adversarial assumptions in the core math — that keeps the
   proofs clean), THEN layer **identity as a targeted "reputation killer for malice"** — an immune system

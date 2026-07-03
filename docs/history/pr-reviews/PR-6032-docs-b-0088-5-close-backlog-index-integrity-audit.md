@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - close 081KRA5AR0008QG0R000WP3VYT with live evidence that backlog-index-integrity is active but not required by the CI Gate ruleset
 - add 081KSRGFP0008QG0R001PXKZPQ for the promote-vs-weaken decision
 - regenerate docs/BACKLOG.md
 
 ## Verification
+
 - bun tools/backlog/generate-index.ts --check
 - git diff --check HEAD~1..HEAD
 - GitHub rulesets inspected: active CI Gate required checks exclude backlog-index-integrity

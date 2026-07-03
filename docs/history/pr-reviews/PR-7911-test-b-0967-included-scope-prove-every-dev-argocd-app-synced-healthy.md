@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds `--scope included` to `argocd-health-test.ts`: every non-excluded dev Application must be **Synced + Healthy** (16 charts), not just smoke anchors.
 - Adds CI job `live-kind-included` (kind, 40min timeout) as the automated proof lane.
 - Installs `zeta-local-path` StorageClass on kind bootstrap so forgejo PVCs bind in dev/CI.
@@ -38,6 +39,7 @@
 `alloy`, `argo-rollouts`, `argo-workflows`, `argocd`, `cert-manager`, `cilium-lb-ipam`, `dapr`, `external-secrets`, `forgejo`, `hat-system`, `headlamp`, `loki`, `node-feature-discovery`, `open-policy-agent`, `sealed-secrets`, `trust-manager`
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/cluster/argocd-health-test.test.ts`
 - [ ] CI `live-kind-included` green (harness truth)
 - [ ] CI `live-kind` smoke still green

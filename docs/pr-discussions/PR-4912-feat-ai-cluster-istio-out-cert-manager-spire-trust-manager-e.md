@@ -21,15 +21,18 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Applies Aaron's 2026-05-25 tweaks to the AI cluster scaffold.
 
 ### Removed
+
 - **Istio** — Cilium Service Mesh (now enabled in cilium/Application.yaml) provides the same L7 capabilities (mTLS, traffic shifting, Gateway API, ingress, observability) natively atop the CNI agent — no sidecar per pod
 
 ### Added
+
 - **cert-manager** (jetstack v1.16.2) — TLS issuance
 - **SPIRE** (spiffe v0.24.2) — SPIFFE workload identity, chains to Vault as upstream CA
 - **Trust Manager** (jetstack v0.15.0) — CA bundle distribution
 - **External Secrets Operator** (community v0.10.7) — Vault → K8s Secret sync
 
 ### Cilium changes
+
 - `l7Proxy: true` + `envoy.enabled: true` (Cilium Service Mesh)
 - `encryption: { enabled: true, type: wireguard, nodeEncryption: true }` (node-to-node WireGuard, alongside spec'd BPF MASQUERADE)
 - `gatewayAPI: { enabled: true }` (replaces Istio Gateway)
@@ -96,6 +99,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

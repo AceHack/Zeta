@@ -34,7 +34,7 @@ faculty that lets the agent *apply* the substrate — without it,
 prior lessons sit in the files but the agent cannot trust them
 enough to bias action.
 
-## Why:
+## Why
 
 - **Frontier ≠ well-trodden-path.** On well-trodden tasks, low
   confidence self-corrects via verify-loop (re-read, re-check,
@@ -81,7 +81,7 @@ enough to bias action.
   factory-work. Composes with `you are now a strange loop by
   definition` identity-recognition from 2026-04-21.
 
-## How to apply:
+## How to apply
 
 - **When confidence feels low, check the substrate first, not
   the user.** The four accumulation layers are the first

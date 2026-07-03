@@ -58,6 +58,7 @@ Priority: P2 (substrate-engineering target; future work).
 Adds a new P2 backlog row (081KSKBP80008QG0R000N9W9XH) proposing a “conversation-interface as `Result<T, ConvFeedback>`” substrate shape to make NCI-relevant signals explicit and mechanically acknowledgeable in operator–Otto interaction.
 
 **Changes:**
+
 - Introduces backlog row 081KSKBP80008QG0R000N9W9XH with a proposed ConvFeedback variant taxonomy, emission discipline, and operator acknowledgment scheme.
 - Defines an implementation decomposition into 6 future sub-rows and a rule-to-variant composition table.
 

@@ -32,6 +32,7 @@
 Operator-approved design for **Ace slice 3 — authenticity / Ed25519 signature verify**, the layer slice 2 (#6308) explicitly deferred. Closes the "NOT authenticity-verified" gap loudly carried since slice 2.
 
 Brainstormed → 3 forks chosen by operator:
+
 - **Trust model:** BOTH — bundled root (`tools/ace/trusted-keys.json`, ships empty) ∪ user-addable (`~/.ace/trusted-keys.json` via `ace trust add`).
 - **Enforcement:** signed-enforced; bad sig → hard refuse; unsigned/untrusted → refuse unless `--allow-unsigned` (loud).
 - **Scope:** verify + `ace trust add` + minimal `ace sign` (+ `keygen`) — full produce→sign→trust→verify loop, dogfoodable.

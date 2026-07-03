@@ -32,6 +32,7 @@ Full platform architecture & expansion plan, grounded in the stack we already ru
 One pattern throughout: **every provisionable thing is a CRD; the portal AND the agents drive the same CRs**; ArgoCD reconciles the platform.
 
 Sections (each with full architecture mapped to existing components):
+
 - **KubeVirt** — general VM compute, the un-appliance'd Harvester (NixOS+k3s+Longhorn+KubeVirt); CDI on Longhorn; VFIO GPU passthrough composes.
 - **Game hosting** — `GameServer` CRD; **GMod** (SteamCMD app 4020) as the base test; panel / FTP / AI-SSH / provision each mapped (SFTP sidecar, RCON↔WebSocket console, agent k8s-exec).
 - **Zeta Portal** — Azure-style top-down console; Headlamp now → bespoke later; resource graph over k8s built-ins + CRDs, Grafana metrics, embedded agent chat.

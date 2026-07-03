@@ -59,15 +59,15 @@ Bug fixed: today every \`--flake .#control-plane\` node gets hostname \"control-
 Empirical UX:
 
 \`\`\`
-# Single-node, zero-typing (today's path; UNCHANGED):
+# Single-node, zero-typing (today's path; UNCHANGED)
 zflash
 # → hostname stays 'control-plane'; ssh zeta@control-plane.local
 
-# Multi-node, one short flag per USB:
+# Multi-node, one short flag per USB
 zflash --host pikachu      # → ssh zeta@pikachu.local
 zflash --host charizard    # → ssh zeta@charizard.local
 zflash --host bulbasaur    # → ssh zeta@bulbasaur.local
-# All three install from .#control-plane role-stack;
+# All three install from .#control-plane role-stack
 # each gets unique hostname + mDNS announcement; zero flake explosion
 \`\`\`
 

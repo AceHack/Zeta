@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add a 081KSE6WT0008QG0R000C18G5D ADR recording OpenFeature as the feature-flags operator contract and Flipt as the first backend
 - link the ADR from the 081KSE6WT0008QG0R000C18G5D backlog row and mark the decision-substrate slice complete
 - release the git-native claim in this PR
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - bun run lint:markdown -- docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md docs/backlog/P2/081KSE6WT0008QG0R000C18G5D-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md
 
@@ -34,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a decision record (ADR) for the feature-flags substrate, anchoring 081KSE6WT0008QG0R000C18G5D on OpenFeature as the operator-facing contract and Flipt as the first backend, and links that ADR from the 081KSE6WT0008QG0R000C18G5D backlog row.
 
 **Changes:**
+
 - Added an ADR documenting the OpenFeature+Flipt feature-flags substrate decision shape.
 - Updated 081KSE6WT0008QG0R000C18G5D backlog row to link the ADR, update `last_updated`, and mark the decision-substrate acceptance item complete.
 

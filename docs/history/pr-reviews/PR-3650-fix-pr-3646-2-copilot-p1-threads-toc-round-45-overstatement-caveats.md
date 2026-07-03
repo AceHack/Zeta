@@ -32,16 +32,19 @@
 Addresses 2 unresolved P1 Copilot threads on now-merged [PR #3646](https://github.com/Lucent-Financial-Group/Zeta/pull/3646):
 
 **Thread 1** — TOC + current-summary navigation stale. Moving Round 45 to the top in #3646 didn't update the surrounding scaffolding:
+
 - Contents block (line 15) still started with Round 44 → added Round 45 entry above
 - Descriptive note (line 44) still said "Round 44 (current) is in-flight" → reworded to preserve both labels: "Round 45 is the most recent landed round; Round 44 remains in-flight per its own label..."
 
 **Thread 2** — Round 45 narrative overstates Step 1 result. The historical entry was written from PR #3614's original framing, before [PR #3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636) + [PR #3639](https://github.com/Lucent-Financial-Group/Zeta/pull/3639) established that:
+
 1. Original M/A coherence laws aren't well-typed under stated signatures
 2. Only provisional propositional Law 1' is type-correct
 3. Laws 2/3 deferred to a new Step 1.5
 4. `D ∘ Q ∘ I` is the incrementalization *identity*, not a monad (per [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626))
 
 Three sites in the Round 45 narrative reworded:
+
 - Line 87 (coherence-satisfied overstatement) → "is intended to satisfy" + full caveat paragraph linking PRs #3636 + #3639
 - Lines 89 + 91 (D∘Q∘I monad + monad-laws claims) → incrementalization-identity framing matching PR #3626 corrections elsewhere
 - Line 131 (Arc 5 open question — "DBSP incrementalization monad") → "DBSP I/D pair... incrementalization *identity*, not a monad"

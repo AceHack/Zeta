@@ -45,6 +45,7 @@ Auto-merge armed; threads resolved on #5210.
 This PR addresses the post-merge findings from #5210 by aligning installer UX copy with actual default behavior, fixing a referenced path in warnings, making the install-complete credential banner reflect the iter-5.3 password outcome, and ensuring operator key ingestion supports `sk-*` (FIDO/U2F) SSH key types.
 
 **Changes:**
+
 - Update `zeta-install.sh` prompts/comments to match `[Y/n]` default-YES behavior and correct the referenced configuration path.
 - Make the install-complete banner conditional on whether an operator-provided initial password hash was written.
 - Expand key-prefix filtering in the operator key ingestion module to include `sk-ssh-` and `sk-ecdsa-`.

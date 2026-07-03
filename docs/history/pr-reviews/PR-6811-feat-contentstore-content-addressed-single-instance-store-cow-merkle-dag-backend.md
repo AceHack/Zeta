@@ -29,6 +29,7 @@
 
 ## What — first non-dep slice of the COW store (`081KTGTJC1Q`)
 A value stored once, keyed by its content hash (the key IS the address):
+
 - **Single-instance / dedup** — `put` of already-present content is a no-op on the node set (idempotent).
 - **Copy-on-write** — `put` returns a **new** `Store` version; the prior is unchanged, so old roots persist as **cheap branches** (the fork-from-prod / experiment-timeline substrate). `ImmutableDictionary` (structural sharing; `MerkleHash` custom equality, no ordering needed).
 - **Hash-parameterized** — address from injected `hashOf`: XxHash128 (`ZSetMerkle.root`) today, **BLAKE3** for the git-replacement store (pending the dep add).

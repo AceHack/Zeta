@@ -30,6 +30,7 @@
 Two new P1 rows from Aaron 2026-06-02:
 
 **081KT2T2J0008QG0R002DFPSHX — local-cluster dev-experience.** *"At Itron we could see our billing of simulated meters on a real live database cluster with UI and multi node redundant on one dev laptop without breaking a sweat."* The DX floor: full production-shaped multi-node-redundant cluster + observable UI + deterministic simulation + real domain logic, **lightweight on one laptop**. Grounded in the **Mesh Performance Manager** proof-point:
+
 - **SQL Server Developer Edition** (free + full-featured) on dev machines = what made the real-live-DB-on-one-laptop real (full engine, not a mock); prod = purpose-built **appliances for distributed load + active redundancy, local AND cloud** → dev runs the *same shape* as prod.
 - The mesh it ran on: **nation-scale, wireless low-bandwidth, 128-bit ID, nation-state-resistant** → grounds **Reticulum** (transport; 081KSE6WT0008QG0R003C9KGQE/0984/0772), **Rainbow-Table 128-bit identity** (081KT2T2J0008QG0R002Z46D8Q), and nation-state-resistant security (**081KT2T2J0008QG0R001C2K4F2** threat-rings / **081KSNY2Z0008QG0R002JKH50A** PQ / **081KS3X9Y0008QG0R00218150M** BFT). Composes DST + emulators-as-DST (081KSNY2Z0008QG0R001HA43GG/0925) + `full-ai-cluster/`.
 

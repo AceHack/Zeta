@@ -43,6 +43,7 @@ plus meta-architectural method disclosure:
    cosmic-intent claim).
 
 **Layer composition:**
+
 - Identity primitive: SPIFFE/SPIRE
 - Routing: Reticulum
 - Radio capability: IEEE 802.11h halo

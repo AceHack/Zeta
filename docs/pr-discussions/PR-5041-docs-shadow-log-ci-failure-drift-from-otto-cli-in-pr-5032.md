@@ -27,6 +27,7 @@ Documents a process drift event where agent otto-cli submitted PR #5032 with a f
 Documents a Shadow lesson-log about a CI/process drift incident (an agent opening a PR with a failing markdownlint gate), and preserves a batch of merged PR discussion archives under `docs/pr-discussions/` for long-term provenance.
 
 **Changes:**
+
 - Added a new `docs/research/` Shadow Lesson Log capturing the CI failure drift event for PR #5032.
 - Added multiple `docs/pr-discussions/PR-*.md` files archiving merged PR discussions and review threads.
 

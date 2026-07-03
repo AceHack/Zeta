@@ -33,6 +33,7 @@ Labels have to be agreed first and can teleport between label spaces. This is pl
 The real identity isn't the label — it's the behavior pattern. The label follows the observation. Same principle as stream taxonomy: if two "identities" always correlate, they're one entity with two names.
 
 **Connects to:**
+
 - feedback_eve_protocol_diplomatic_agenda_mapping (the base protocol)
 - feedback_labels_arbitrary_basis_empirical (same principle, identity scope)
 - user_frictionless_capital_F_kernel_vocabulary_tele_port_leap (the morpheme trinity)

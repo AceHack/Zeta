@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Re-decomposed 081KQ3HBZ0008QG0R0007CAGSP (too broad; prior .1/.2 under-sampled Dionysian thread) during build per "assume mistakes" rule.
 - Bounded one-step implementation: pure-TS catalog schema module (`tools/research/mystery-schools-catalog.ts`) as code substrate for the gentle catalog-only research track.
 - Orphic/Dionysian family scaffold added (next after Eleusinian .1 + Mithraic .2).
@@ -36,16 +37,19 @@
 - Prefer F#/TS code over docs honored.
 
 ## Focused checks (included per rules)
+
 - `bunx tsc --noEmit --skipLibCheck` on module → valid TS (minor isolated-worktree config note only, no errors).
 - Module load smoke → PASS.
 - Build gate (pre-work): `dotnet build -c Release` → 0 warnings 0 errors.
 - Re-decomposition note embedded in source.
 
 ## Scope / Out of scope
+
 - This slice: code foundation only. Further families (Pythagorean, Isiac, Hermetic) and doc scaffolds are subsequent bounded children.
 - No doc-only change; no claims; no public surface.
 
 ## Evidence
+
 - 081KQ3HBZ0008QG0R0007CAGSP backlog row (catalog-only register).
 - Parent trajectory alignment via autonomous-backlog-pickup + factory-trajectory-surface.
 - Co-Authored-By: Grok <noreply@x.ai>

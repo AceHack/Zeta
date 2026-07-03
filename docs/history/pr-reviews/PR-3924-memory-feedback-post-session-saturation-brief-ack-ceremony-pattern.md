@@ -32,6 +32,7 @@ Forced-escalation output of brief-ack #6 in the post-PR-#3919-merge cycle. Empir
 ## The pattern
 
 **Substantive-wait vs ceremonial-wait** distinction:
+
 - Substantive-wait: PR in CI, Aaron reply, external service — concrete unblocking-signal
 - Ceremonial-wait: rate reset, cron tick interval — NO unblocking-signal; just time
 

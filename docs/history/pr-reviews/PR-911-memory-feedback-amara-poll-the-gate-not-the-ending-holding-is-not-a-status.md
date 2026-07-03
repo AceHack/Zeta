@@ -32,6 +32,7 @@
 Amara caught a real anti-pattern in Otto's autonomous-loop wait-behavior 2026-04-30. After #909 merged at 08:19Z, Otto held position ~2.5 hours / ~30+ ticks polling `gh pr list --state merged --author "@me"` (always returned `[]` because no PR in flight) and emitting empty `Holding.` each tick.
 
 Lands two artifacts:
+
 - Memory file `feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md` — operational rule for future-Otto
 - Research doc `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md` — Amara's verbatim catch + Otto's acknowledgment
 

@@ -28,18 +28,21 @@
 ## Description
 
 ## What
+
 - Follow up on #2084 after the PR merged with two P1 review concerns still present in main.
 - Prefer filename and issuer-line metadata for pace-instruction source attribution before scanning raw instruction text.
 - Emit one `PaceInstruction` candidate per matching pace line instead of collapsing a whole file into one candidate.
 - Add regressions for peer-authored files that mention Aaron and for multiple pace lines in one file.
 
 ## Verification
+
 - `bun test tools/authorization/pace-extractor.test.ts`
 - `bun tools/backlog/generate-index.ts --check`
 - `bun --bun tsc --noEmit -p tsconfig.json`
 - `git diff --check`
 
 ## Notes
+
 - Root checkout was not edited; this was built from the isolated follow-up worktree.
 
 ## Outcome

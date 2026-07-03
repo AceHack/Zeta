@@ -22,6 +22,7 @@ frontier** (the six-op ISA / `gen(gen)` self-hosting, §B). The path:
 > The log IS the primary state; everything else is derived.
 
 Applied maximally:
+
 - Schema is derived from the log (schema events before data events — self-describing streams)
 - Identity is derived from the log (ZetaId — captured irreducible entropy)
 - Agent state is derived from the log (observe fold)

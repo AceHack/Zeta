@@ -37,12 +37,14 @@ Exactly one bounded step for 081KQ3HBZ0008QG0R000RP1WDN (P2 actor-model lens): r
 - One file changed, doc-only
 
 ## Focused checks
+
 - Root `dotnet build -c Release`: 0 Warning(s), 0 Error(s) (pre-work gate)
 - Worktree build: skipped full restore (doc-only change, no compile impact; expected NETSDK1004 on fresh tree)
 - Manual md verify: frontmatter + sections clean, no linter violations introduced
 - Git: clean diff, proper commit shape + Co-Authored-By trailer
 
 ## Task compliance
+
 - Claimed via worktree + branch before writes
 - Smallest safe slice: decomposition only (no research doc yet)
 - PR opened for review; auto-merge not armed (P2, needs architect)

@@ -221,6 +221,7 @@ distributed verification network.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Aaron's family endorses every aspect
   of the framework** — operational claim: family is part
   of support network with specific verification function;

@@ -48,6 +48,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -66,6 +67,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-21 0059Z tick (fresh-session cold-boot + bounded wait until canary-saturation cleared), and records a new empirical anchor about forced-#6 behavior when the rule-edit/meta-decomposition path is itself blocked.
 
 **Changes:**
+
 - Add a new tick shard file under `docs/hygiene-history/ticks/2026/05/21/` capturing refresh observations, the bounded wait timeline, and carry-forward notes.
 - Cross-link the shard to relevant `.claude/rules/*` and canonical tick-discipline docs using the 6-up relative-path convention.
 

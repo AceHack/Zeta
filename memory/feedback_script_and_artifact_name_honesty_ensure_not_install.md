@@ -31,6 +31,7 @@ that precise language wins arguments
 (`feedback_precise_language_wins_arguments.md`).
 
 **How to apply:**
+
 - **Never adopt a new imperative name for a declarative
   artifact.** Examples:
   - idempotent install-or-upgrade → `ensure-*`
@@ -54,6 +55,7 @@ that precise language wins arguments
   artifacts.
 
 **Round-44 surface (initial backlog candidates):**
+
 - `tools/setup/install.sh` → `tools/setup/ensure.sh`
   (confirm by reading the script; any consumer of
   the old path must be updated in the same

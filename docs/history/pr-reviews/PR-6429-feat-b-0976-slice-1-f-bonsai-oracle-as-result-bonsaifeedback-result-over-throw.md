@@ -30,11 +30,13 @@
 F# oracle (#2 of TS/F#/C#/Rust) for the 081KT07NV0008QG0R003BE6MJ2 Bonsai-subset serializer, **as a pure-`Result` contract** (operator decision 2026-06-01: result over throw, "stay round not sharp"). Replays the shared `golden-vectors.json` byte-for-byte against the TS reference oracle (merged #6428).
 
 ## Error channel (hexagonal, prior-art-checked per ecosystem)
+
 - `serialize : Expr -> Result<string, BonsaiFeedback>` · `parse : string -> Result<Expr, BonsaiFeedback>` — **no exceptions cross the boundary.**
 - F# leans on the **BCL `FSharp.Core.Result`** (matches the existing `Result<_, DbspError>` Core convention — no `FsToolkit` dep). `BonsaiFeedback` is the shared cross-oracle payload contract (the `'TError`; Rust → `std::result::Result`, C#/TS → own a port + adapter to the widely-used lib).
 - Per the contract-vs-mechanism split, F# adapts System.Text.Json's throwing access API + a private typed signal into `Result` at the two boundaries; the wire contract is pure `Result`.
 
 ## Hardening folded in (Result-returning), credit to the four-oracle review
+
 - safe-integer range (`NonSafeInt`) + lone-surrogate escaping
 - canonical-only parse (`NonCanonical`) — the `serialize(parse s) = Ok s` fixed point
 - shared nesting cap `MaxDepth = 1024` (`TooDeep`) — round-trips past JSON depth 64

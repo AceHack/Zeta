@@ -34,6 +34,7 @@ The **final git-data write-chain link** for the bootstrap-razor seed flow, named
 Takes the commit SHA `POST /git/commits` returns and points the seed branch at it. Pure: no `gh`, no network, no filesystem — one more unit-tested transformation before any repo mutation exists, consistent with the established one-pure-function-per-slice pattern (slices 5/6/7: PRs #5997/#5998/#5999).
 
 ### What it adds
+
 - `GitRefUpdateRequest` discriminated union (`POST` create vs `PATCH` update).
 - `buildSeedRefUpdateRequest(owner, repo, branch, commitSha, refExists)` builder.
 
@@ -53,6 +54,7 @@ Getting the form wrong yields a 404 (`PATCH refs/heads/heads/...`) or a 422 (POS
 `parse → diff → buildTree → buildCommit → buildRef`. Future network slice = `POST /git/blobs` → `POST /git/trees` → `POST /git/commits` → this → done.
 
 ## Focused checks
+
 - `bun test tools/bootstrap-razor/seed-test-repo.test.ts` → **41 pass, 0 fail** (35 → 41; +6 new tests covering both endpoint shapes, the FULL/SHORT ref forms, `force:false`, and SHA passthrough).
 - `bun run typecheck` (`tsc --noEmit`, repo tsconfig) → **0 errors in `tools/bootstrap-razor/`**. (8 pre-existing errors remain, all in `agentic-organization/apps/workers/` — missing `@nats-io/*` packages from an unrelated foundation commit; not touched by this PR.)
 - `bun tools/bootstrap-razor/seed-test-repo.ts --dry-run` → still emits the manifest seed plan with no side effects.

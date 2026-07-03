@@ -32,6 +32,7 @@
 The cascade #4 ISO content audit (shipped in #5119) is **blocking every ISO build since merge**. Empirical: 4 consecutive workflow failures on commits `35fd3aeef`, `848467588`, `5d9f8605a`, `ed6a7b8b9` — all on the audit step asserting `boot/grub/grub.cfg` as a required path.
 
 **The assertion was wrong.** NixOS installer ISOs as of `nixos-24.11` use:
+
 - **isolinux** for BIOS boot → `isolinux/isolinux.cfg`
 - **refind** for UEFI boot → `EFI/BOOT/refind_x64.efi`
 

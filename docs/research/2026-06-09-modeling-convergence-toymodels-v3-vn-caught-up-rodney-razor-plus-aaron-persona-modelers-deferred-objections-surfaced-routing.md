@@ -52,9 +52,10 @@ Plus **Soraya's** formal-verification portfolio (C1–C15 + D1–D7 + K1–K3 + 
    scalar" → per-room-type units; "interfaces = PoW earning privacy budget" → decouple the three
    economies; "every fingerprintable item is a room" → "dependencies + explicitly-closed-over items."
 
-## Deferred objections — SURFACED (the end). Routed.
+## Deferred objections — SURFACED (the end). Routed
 
 ### → Aaron (decisions, not math)
+
 - **BLOCKER — executable-governance privilege escalation (A:OBJ4-1, B, Rodney:O-5).** When the test
   framework IS governance, **gated-class actions (budget, permanent WONT-DO, force-push, non-reversible)
   must retain a human authorization root inside C12** — or the swarm can self-authorize a gated action.
@@ -80,6 +81,7 @@ Plus **Soraya's** formal-verification portfolio (C1–C15 + D1–D7 + K1–K3 + 
   naming-expert before the toymodels code.
 
 ### → math team (Soraya/Sova)
+
 - **O-1 — the deepest crack (Rodney + A:OBJ3-3):** **"NCI derived from self-interest" is asserted, not
   derived, and may be false.** Self-interest in one's *own* non-collapse does **not** imply non-coercion
   of *others* (most of game theory). Needs a proof under stated conditions (reciprocity? diversity-floor?

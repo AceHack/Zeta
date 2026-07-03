@@ -231,6 +231,7 @@ combination — most multi-agent review papers are empirical only; the Rice's
 theorem spine gives this paper theoretical depth.
 
 **Pre-submission checklist:**
+
 - [ ] 081KR50HA0008QG0R003T5MZAC (FPGA Layer 5) lands and validates Landauer bridge empirically
 - [ ] Infer.NET BP/EP factor graph architecture review (internal)
 - [ ] Adversarial review of this synthesis by at least one external AI

@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - add windowed control-plane rate-limit evaluation with matched audit ids and observe/act enforcement
 - wire the production agent CLI to construct a default control-plane slot authorizer from parsed run context and active Cockroach flags
 - extend the Phase 2.8 KIND proof to cover rate-limit denial and production CLI no-bypass evidence
 
 ## Verification
+
 - `node --experimental-strip-types --test apps/agent-cli/test/agent-cli-main.test.ts packages/application/test/control-plane-guard.test.ts packages/application/test/observe.test.ts apps/agent-cli/test/agent-cli.test.ts`
 - `npm run typecheck`
 - `npm test` (1194 tests, 1187 pass, 0 fail, 7 skipped)
 - KIND: `COCKROACH_DATABASE_URL=postgresql://root@localhost:26263/defaultdb?sslmode=disable node --experimental-strip-types deploy/run-control-plane-secret-scopes.ts` => `PROOF: PASS` for `org-control-plane-secrets-a8650bdd`
 
 ## Notes
+
 - Prior PR #6268 was already merged; this PR carries the next Phase 2.8 checkpoint on top of current main.
 - Durable Cockroach-backed rate-limit storage remains a follow-up; this checkpoint lands evaluator, audit, production CLI authorization, and live proof wiring.
 

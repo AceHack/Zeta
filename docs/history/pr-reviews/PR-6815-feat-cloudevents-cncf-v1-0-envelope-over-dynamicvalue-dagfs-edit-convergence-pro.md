@@ -29,6 +29,7 @@
 
 ## What
 **CloudEvents** bus-envelope adoption (`081KTH0WQ3C`) — rides our DynamicValue codecs:
+
 - `CloudEvent` record: required `id`/`source`/`specversion`/`type` + optional `time`/`subject`/`datacontenttype`/`dataschema` + extension attributes + `data`.
 - `create` / `validate` / `toDynamic` / `ofDynamic` (unknown string keys → extensions). **4 tests** incl. round-trip.
 - Mapping: ZetaId→id/source, change kind→type, Debezium-shaped Z-set delta→`data` (matches Debezium's CloudEventsConverter).

@@ -411,6 +411,7 @@ The 10 corrections are absorbed into the Otto-363 memory file (`memory/feedback_
 ## Structured extraction
 
 **Key decisions**:
+
 - Substrate has a precise three-leg definition (committed + reachable + indexed)
 - Channel taxonomy is three-tier (ephemeral / host-durable-not-git-canonical / git-native)
 - Default preservation route when uncertain: `docs/research/` first
@@ -427,6 +428,7 @@ The 10 corrections are absorbed into the Otto-363 memory file (`memory/feedback_
 **Superseded by**: (empty)
 
 **Deferred questions**:
+
 - Pre-commit hook enforcement (post-#855 — not blocking)
 - Heavy automation (post-#855 — not blocking)
 - Interactive widgets / visualizations (rejected)

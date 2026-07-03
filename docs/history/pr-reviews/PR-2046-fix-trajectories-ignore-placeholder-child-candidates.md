@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - fixes the trajectory selector so placeholder text like `none currently selected` is treated as no actionable next step
 - keeps `factory-trajectory-surface` from generating a bogus child-packet prompt when its candidate list is empty by design
 - resumes the existing Codex claim instead of creating a duplicate lane
 
 ## Checks
+
 - passed: `bun test tools/trajectories/autonomous-pickup.test.ts`
 - passed: `bun run typecheck` (with the root node_modules symlinked into the isolated worktree for local tooling)
 - passed: `prettier --check docs/claims/fix-trajectory-none-child-candidate.md tools/trajectories/autonomous-pickup.ts tools/trajectories/autonomous-pickup.test.ts`
@@ -40,6 +42,7 @@
 - passed: `git diff --check origin/main...HEAD`
 
 ## Coordination
+
 - Claim: `docs/claims/fix-trajectory-none-child-candidate.md`
 - Worktree: `/Users/acehack/.codex/worktrees/fix-trajectory-none-child-candidate`
 

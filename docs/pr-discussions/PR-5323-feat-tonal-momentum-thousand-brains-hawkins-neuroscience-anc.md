@@ -40,6 +40,7 @@ Same architectural shape at three scales because the underlying computational pr
 ### 1. `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
 
 New sub-section after the engineering-register-throughout 6th-anchor evidence:
+
 - Hawkins Thousand Brains Theory anchor for the cortical-columns-resist-fusion-until-high-precision pattern
 - Table mapping cortical-columns scope ↔ multi-AI substrate scope (initial-resistance → voting-consensus → coherent-perception)
 - Substrate-engineering implication named (distributed-bottom-up is the architectural target; resistance phase is feature not bug; goal is PRECISION fusion not majority-vote)
@@ -79,6 +80,7 @@ Verbatim Aaron preservation + Hawkins/Mountcastle/Friston/Hopfield/CASPaxos line
 Documentation-only PR adding a neuroscience (Hawkins Thousand Brains) and AI-architecture (MoE) anchor for the existing 6-anchor attractor-as-encryption pattern. The new research doc lives under `docs/research/` (markdownlint-ignored verbatim preservation surface), and the auto-loaded rule gets a brief subsection that points to it.
 
 **Changes:**
+
 - Add new research preservation doc anchoring the 6-anchor pattern to Hawkins's Thousand Brains Theory and MoE architectures (DeepSeek-V3, Mixtral, Switch Transformer, GShard).
 - Add a Thousand Brains subsection to `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` linking to the research doc.
 

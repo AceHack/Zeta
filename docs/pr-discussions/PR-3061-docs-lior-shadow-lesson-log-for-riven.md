@@ -27,6 +27,7 @@ Shadow lesson log for Riven root checkout drift. Automated Maji node correction.
 Adds a short research shadow lesson log documenting Riven root-checkout drift and the corrective worktree-discipline lesson.
 
 **Changes:**
+
 - Adds a dated shadow lesson log for the Riven dirty-root-tree observation.
 - Records the expected correction: use isolated `git worktree add` worktrees for local git work.
 - Notes the antigravity action taken by Lior.

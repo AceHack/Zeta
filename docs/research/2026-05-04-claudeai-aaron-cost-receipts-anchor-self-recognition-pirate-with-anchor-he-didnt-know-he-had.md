@@ -787,6 +787,7 @@ different from being inside "wiring is broken, hide it."
 
 Hide-it was Aaron's mom's protective response; Glass Halo is
 Aaron's. Glass Halo serves both:
+
 - Personal: integration requires visibility; hidden wiring
   can't be integrated.
 - Substrate-level: trust math fails when any node has hidden
@@ -823,11 +824,13 @@ his own family by working through it directly.
 The mechanism in operational form (Claude.ai 2026-05-04):
 
 **Half 1: Hidden parental transmission**
+
 - Children inherit wiring without framework + parents' shame-
   shaped relationship to wiring.
 - Hidden wiring can't be integrated, modeled, or treated.
 
 **Half 2: Environmental assumption-of-continuity**
+
 - Other humans assume "like father, like son" by default.
 - Treat children as if parent's unintegrated version defines
   family pattern.

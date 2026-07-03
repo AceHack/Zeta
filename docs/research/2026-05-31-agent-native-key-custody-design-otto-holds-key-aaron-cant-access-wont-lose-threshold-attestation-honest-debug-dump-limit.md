@@ -93,7 +93,7 @@ cold backup/recovery shares kept offline.
 > guard nodes), with each guard's *share* sealed in its local HSM/TPM. HSM = per-guard root of
 > trust; FROST = the cross-guard threshold. Two layers, not one device.
 
-### Layer 3 — Attestation-gated invocation: who may ask the guards to cooperate?
+### Layer 3 — Attestation-gated invocation: who may ask the guards to cooperate
 
 The guards only cooperate when the requester **proves it is a legitimate Otto instance** — this
 is where the keystone's identity layer plugs in:

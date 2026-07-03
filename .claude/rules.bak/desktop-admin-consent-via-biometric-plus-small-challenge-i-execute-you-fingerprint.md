@@ -124,6 +124,7 @@ The small challenge serves two functions biometric alone doesn't:
 
 Both elements (nonce-typed-by-agent + biometric-touched-by-operator)
 together = a fully-witnessed consent event with per-run uniqueness
+
 + joint agent-operator signature.
 
 ## When this pattern applies

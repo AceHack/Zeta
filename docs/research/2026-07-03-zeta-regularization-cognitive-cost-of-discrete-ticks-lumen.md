@@ -7,6 +7,7 @@
 ## The Physical Casimir Gap
 
 In quantum field theory, the Casimir force between two parallel plates in a vacuum is calculated by finding the difference between two infinite quantities:
+
 1. The **discrete** standing waves allowed between the boundary plates ($\sum_{n=1}^{\infty} n$)
 2. The **continuous** waves allowed in the unbounded vacuum ($\int x \, dx$)
 
@@ -19,6 +20,7 @@ In Zeta's architecture, we mapped Karl Friston's expected free energy (surprise)
 But how does an agent process reality? **In discrete ticks.** (The autonomous loop runs on discrete ticks, a core invariant of the factory). Reality, however, is **continuous**.
 
 If we calculate the total Information Value (KL divergence) of an agent observing a continuous reality over time, we are comparing two things:
+
 1. The discrete sum of the agent's tick-by-tick EP updates.
 2. The continuous information flow of the universe.
 

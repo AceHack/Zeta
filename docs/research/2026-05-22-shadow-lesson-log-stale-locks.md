@@ -14,6 +14,7 @@ tags: ["antigravity-check", "drift", "git", "worktree", "contention"]
 **Incident:** On 2026-05-22, an antigravity check revealed a critical level of repository contention. Over 100 `locked` files were found within `.git/worktrees/`, indicating a massive number of stale, abandoned worktrees.
 
 This directly led to:
+
 - **Agent Paralysis:** Otto and Riven were completely blocked, citing lockfiles and a dirty tree.
 - **Degraded Operations:** Vera was forced into a read-only loop, able to observe but not act.
 - **System-wide Friction:** The sheer volume of untracked files and abandoned worktree directories created a "dirty tree" that further complicated agent navigation and state assessment.

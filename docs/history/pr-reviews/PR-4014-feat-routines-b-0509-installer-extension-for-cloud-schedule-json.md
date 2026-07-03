@@ -28,6 +28,7 @@
 ## Description
 
 Delivers 081KRHWGX0008QG0R0014D2T5E: Extend tools/routines/install.ts to detect + surface cloud-schedule.json
+
 - Exported readCloudSchedule with unit tests
 - Added cloudSchedule block to syncRoutine
 - Added registration guidance to main

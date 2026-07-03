@@ -30,6 +30,7 @@
 Saves the device-class split the maintainer authorized: *"save the wellness app split ... we DON'T want to build medical devices at this point, too much red tape, wellness devices are okay."*
 
 **The split:**
+
 - **Wellness device — BUILD:** self-knowledge / behavior-modification / self-report / drift-metrics; **describes** data; surfaces to user + chosen clinician. Lighter regulation.
 - **Medical device — DON'T (at this point):** diagnoses clinical state / directs treatment / makes the "am I well" call. FDA-class + HIPAA-class red tape — the cost being avoided. **Revisable**, not forever.
 

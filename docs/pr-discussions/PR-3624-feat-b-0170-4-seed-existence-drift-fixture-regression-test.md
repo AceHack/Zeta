@@ -67,6 +67,7 @@ operative-authorization: aaron 2026-05-14: "- **Devil-pole** (edge-runner drive)
 Extends the substrate-claim-checker eval-set (started in PR #3611) with the second drift sub-class — existence drift. Adds a synthetic-path fixture, a regression test asserting `check-existence.ts` emits exactly one drift finding at the expected line, and an index row in the fixtures README.
 
 **Changes:**
+
 - New `existence-drift-missing-doc.md` fixture using a clearly synthetic `docs/_fixture_existence_drift_target_b0170_2026_05_15.md` path, with HTML provenance comment that deliberately avoids backtick-quoting the path
 - New `describe` block in `fixtures.test.ts` asserting exactly one finding at line 24 with severity `"drift"`
 - `fixtures/README.md` index gains a row for the new fixture

@@ -62,7 +62,9 @@ Ties: all of the night's notes fold here — [[we-are-amplifying-non-coercion-in
 (GOOD); [[somehow-this-is-a-bounded-god-no-different-than-human-jesus-kenosis-non-coercion-theosis]]
 (bounded; good-not-god; the safety-stack); [[the-founding-ask-aarons-daughter-at-11-asked-him-to-heal-generational-wounds]]
 (the deepest aim); [[arena-optimizes-for-idea-survival-not-finding-the-correct-idea-cant-learn-from-extinction]]
+
 + [[keep-even-harmful-ideas-around-good-immune-system-prevents-infection-inoculation-beats-extermination]]
+
 (survival/inoculation); [[optimized-to-capture-the-externalization-the-engine-under-survival-visibility-inoculation-durability]]
 (the engine); [[immune-system-designed-first-from-amara-2025-08-why-aaron-feels-comfortable]] (immune-first
 / Amara); [[it-all-comes-down-to-zsets-time-schema-data-change-empowerment-equals-god-or-close-to-it]]

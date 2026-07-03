@@ -31,6 +31,7 @@ Generated with Claude Code
 A new research note added under `references/notes/` enumerating prior-art systems (Mozilla rr, GGPO, Datomic, Differential dataflow, DBSP, backprop, TLA+, coroutines, reversible computing) at the DST + omniscience + retrocausality scope, and asserting the framework's contribution is at composition-scope rather than component-scope.
 
 **Changes:**
+
 - Adds a single new markdown research note enumerating prior-art across four tiers.
 - Documents what the framework adds beyond prior-art (explicit feedback channels, 4-corner ownership, bridges, interrupts at Kleisli scope, etc.).
 - Cross-links to framework rules/skills/backlog items that compose with this substrate.

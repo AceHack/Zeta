@@ -29,6 +29,7 @@
 
 ## Summary
 The canonical document for the entire session's crystallization:
+
 - Observer ≅ Shadow ≅ Void (nirvana equation)
 - η·LearningGain > ξ_t (fuel cycle, code at src/Core/Fusion.Equation.fs)
 - Casimir containment (alignment as ground state)

@@ -34,6 +34,7 @@ judges the judgment.**
 ## Otto's razor — the actual judgment of Aaron's judgment
 
 **Genuinely strong (assessment, not flattery):**
+
 - **Immune-first ordering** (safety as foundation, not bolted-on) — the rare right call; most get it
   backwards. The justified core of the comfort.
 - **Reversibility-as-velocity** ("bound the irreversible, free the reversible") — the *real* DORA insight
@@ -41,6 +42,7 @@ judges the judgment.**
 - **Self-binding awareness** — knowing the move-fast tendency and building a constraint for it. Good meta.
 
 **The four risks (what the praise can't see):**
+
 1. **A self-built bound is the WEAKEST bound.** Odysseus had the **sailors** tie him and refuse his later
    commands. A bound you can untie yourself = *a suggestion the move-fast-self overrides under pressure.*
    → Make the bounds **external / non-self-revocable** (multi-oracle, build-gate, floor-below-not-voted,

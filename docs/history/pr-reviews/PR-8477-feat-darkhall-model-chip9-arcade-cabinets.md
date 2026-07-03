@@ -34,6 +34,7 @@ Make DarkHall the room-level owner of arcade cabinets and emulator machines. The
 Wire Arcade onto that room model. The play cabinet is now a multi-machine cabinet carrying the soft CHIP-8 scheduler, CHIP-9 color-plane machine, and host-assisted meta-cart machine. Arcade also exposes a playMetaCabinet entrance that routes through the capability-aware MetaCart path, so denied launch/color asks still return typed feedback and emit heat.
 
 Verification:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~ArcadeTests|FullyQualifiedName~DarkHallTests|FullyQualifiedName~MetaCartTests|FullyQualifiedName~Chip9CapabilitiesTests" --no-build
 - dotnet format --verify-no-changes
 - git diff --check

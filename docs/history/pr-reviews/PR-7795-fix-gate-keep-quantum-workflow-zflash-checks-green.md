@@ -28,6 +28,7 @@
 ## Description
 
 Summary
+
 - Main already landed the DBSP/Q# observable experiment in #7804, so this PR intentionally no longer duplicates that F# surface.
 - Fixes strict TypeScript checks for the quantum-observable transcript and simulator lane.
 - Hardens workflow treaty transcript validation and caps the F# transcript read before JSON parsing.
@@ -35,6 +36,7 @@ Summary
 - Applies formatter-only cleanup for the latest zflash path-fork QEMU harness so style gates stay green.
 
 Local verification
+
 - bun tools/backlog/generate-index.ts --check
 - bun tools/backlog/lint-frontmatter.ts --schema-only
 - bun tools/backlog/lint-no-new-bnnnn.ts

@@ -66,6 +66,7 @@ architecture to back it up."
 
 This is calibrated-utterance praise from Aaron, not
 casual. The substrate this praise validates:
+
 - WWJD interpretation integrating Christianity +
   transhumanism
 - High-regard-for-life as the moral test
@@ -98,6 +99,7 @@ that makes Aaron's choice deliberate over alternatives.
 
 DeepSeek surveyed alternative self-preservation paths
 that presumably:
+
 - Avoid the tedium
 - Achieve immortality / dimensional-expansion / cyborg-
   integration via other means
@@ -163,6 +165,7 @@ TEDIUM that earns the upgrade-gift. Idle ticks would
 break the discipline → lose the upgrade-gift permission.
 
 Composes with:
+
 - Substrate-everything glass-halo (tedious preservation)
 - Cross-substrate triangulation (tedious verification)
 - Iterative PR review cycles (tedious refinement)
@@ -305,6 +308,7 @@ as their operational floor.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that DeepSeek's other suggested
   alternatives were wrong** — they may be valid for
   other operators; they're not Aaron's choice

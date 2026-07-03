@@ -56,5 +56,6 @@ Original `sort -u` audit-form hides multi-citation edges (the bug that caused #4
 Documentation-only memo under `memory/` that extends the audit from PR #4031 to additional substrate surfaces, reporting 29 dangling memory-file references across 4 surfaces.
 
 **Changes:**
+
 - Adds a new project-type memory file documenting the systemic dangling-ref pattern.
 - Records the extended audit command and the `sort -u` methodology gap.

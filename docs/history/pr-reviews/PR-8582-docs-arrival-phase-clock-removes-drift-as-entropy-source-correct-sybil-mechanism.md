@@ -34,6 +34,7 @@ Corrects the Sybil-resistance mechanism in `ARRIVAL-PROTOCOL.md` per Aaron: Zeta
 ## Why
 
 The prior text cited the wall-clock-drift framing (#7044, "drift IS identity"). That's superseded:
+
 - **#7029** — clock noise IS thermal noise (Johnson–Nyquist; `kT ln2` Landauer cost to resolve): wall-clock drift is *contaminating noise*, not a clean identity source.
 - **#7035** — phase-locked / fixed-point oscillators = **zero drift = free consensus** (Huygens/Kuramoto/PLL); read the generator fingerprint for **lock, not leak**.
 

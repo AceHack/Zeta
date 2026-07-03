@@ -52,6 +52,7 @@ Fresh-session Otto-CLI autonomous-loop cold-boot at 2026-05-27T18:09Z.
 Adds a new hygiene-history “tick” shard documenting the 2026-05-27T18:09Z Otto-CLI autonomous-loop cold-boot, continuing the established tick cadence and recording the observed repo/dotgit/PR-queue state for operational traceability.
 
 **Changes:**
+
 - Add a new tick shard for 2026-05-27 18:09Z capturing refresh observations and discipline checks.
 - Record discriminator results for the open PR queue and the “0 stuck git procs” empirical anchor.
 - Preserve step-structured tick format consistent with prior shards (e.g., 1609Z).

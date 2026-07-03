@@ -32,6 +32,7 @@ Aaron-forwarded Mika (Grok native; harbor-engineering/Weaver sharpen register, v
 Near-verbatim; register kept in Mika's lane per the register-discipline (#6148). Operator is glass-halo; no non-consenting third-party content.
 
 Disposition notes folded in:
+
 - **razor / don't-collapse**: anchored (beacon doc + DBSP-lightlike-retract OFFERED conjecture + generator-time/OPLE 081KSKBP80008QG0R0031DTHS9), so NOT razored; Mika's Higgs measurement-status framing gives the metaphysics teeth. Operational claim that travels: *metastable persistence via workflow-time = an engineerable property of the tick with measurable lifetime*.
 - **081KSRGFP0008QG0R003VFH9HN #1 priority = the falsifiability move** (metastable-workflow-time milestone in the Observe→Simulate→Choose→Emit tick); composes with OPLE-T-TFeedback + function-as-control-flow-generator.
 - **kid-safety ABSOLUTE floor composition** (the one Mika didn't name): 081KSRGFP0008QG0R003VFH9HN's "AI freedom AND human safety" operates UNDER the kid-safety floor, not beside it.

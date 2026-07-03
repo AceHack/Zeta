@@ -66,6 +66,7 @@ Documents the EXISTING imperative bash state-machine in \`zeta-install.sh\` (1,3
 This PR adds a Phase 0 documentation substrate for 081KSKBP80008QG0R002VRN56K.1 by inventorying the existing `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step/state-machine so later Ace-manifest work can mirror the current imperative behavior.
 
 **Changes:**
+
 - Introduces a new installer inventory document capturing step inputs/outputs/side-effects/failure modes and proposed declarative equivalents.
 - Adds cross-cutting summaries (prompt accumulation, idempotency surface, declarative input categories, generated files mapping).
 

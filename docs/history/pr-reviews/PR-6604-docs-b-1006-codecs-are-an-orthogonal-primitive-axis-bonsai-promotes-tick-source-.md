@@ -37,6 +37,7 @@ Follow-up to merged #6601 (081KT2T2J0008QG0R0008TFHJT framework) + #6603 (audit)
 - **event-index + Rx still fold** (collection axis: keyed `IndexedZSet` / push-dual view) — the collection axis stays minimal.
 
 **Reviewer fixes (post-merge threads on #6603):**
+
 - **Copilot L118:** `Circuit.Op` → `Op` (top-level in `src/Core/Circuit.fs`).
 - **Copilot L152:** `IndexedZSet` is `KeyGroup<'K,'V>` whose `Values` is a `ZSet<'V>` — there is no `KeyGroup<'K, ZSet<'V>>` instantiation; precision fixed.
 

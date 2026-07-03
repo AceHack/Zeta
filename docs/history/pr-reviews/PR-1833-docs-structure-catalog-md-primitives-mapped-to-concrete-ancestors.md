@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - New `docs/STRUCTURE-CATALOG.md` — one-page reference mapping every named abstraction to its concrete engineering ancestor, math, and current instantiation
 - 12 primitives cataloged with provenance chain from 2016 patent to 2026 product
 - Includes hierarchy diagrams (Harmonious Division roles, Itron/KSK stack, Genesis Seed structure)
 - "The abstractions are not prior. The engineering is prior."
 
 ## Test plan
+
 - [ ] All named primitives have concrete ancestor, math, and instantiation columns filled
 - [ ] Provenance chain dates are accurate
 

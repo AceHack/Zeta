@@ -32,6 +32,7 @@
 Pure-git tier audit (zero GraphQL) found 5 in-repo `.claude/rules/*.md` files citing `memory/feedback_*.md` paths that exist only at user-scope (`~/.claude/projects/.../memory/`), not in-repo. Cold-boot agents on fresh checkouts (different machine, new contributor, CI agent without user-scope memory) follow these citations and find nothing.
 
 **The 5 dangling refs**:
+
 - `holding-without-named-dependency-is-standing-by-failure.md` → `feedback_classifier_caught_otto_in_standing_by_*_2026_05_15.md`
 - `persistence-choice-architecture-for-zeta-ais.md` → `feedback_aaron_zeta_is_memory_preservation_specialist_first_*_2026_05_15.md`
 - `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` → `feedback_codeql_no_source_seen_*_2026_05_15.md`
@@ -39,6 +40,7 @@ Pure-git tier audit (zero GraphQL) found 5 in-repo `.claude/rules/*.md` files ci
 - `premise-flagged-unverified-stays-unverified-downstream.md` → `feedback_aaron_we_are_the_ones_cooking_it_youtube_*_2026_05_16.md`
 
 **Two architectural options**:
+
 - **A** — promote user-scope memos to in-repo (constitutional memos warrant this; cost varies by size + PII)
 - **B** — citation-form disclosure ("user-scope only; see CURRENT-aaron.md for projection") (cheaper, honest about two-tier architecture)
 

@@ -15,6 +15,7 @@ for autonomous execution; loop-off is the exception that requires an
 explicit ask.
 
 **How to apply:**
+
 - At session open / round open, **call `CronList` first** to see
   whether the loop is already running (it usually is — a prior
   session may have armed it). Only take action if no autonomous /

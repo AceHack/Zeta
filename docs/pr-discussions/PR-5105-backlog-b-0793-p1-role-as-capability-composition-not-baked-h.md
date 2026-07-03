@@ -70,6 +70,7 @@ Default: \`--role control-plane\` (preserves zero-typing single-node UX).
 Adds a new P1 backlog row (081KSGS9H0008QG0R000EDNTY5) describing the next architectural refactor for NixOS role configuration: moving from baked per-host role stacks to composable “role-*” capability modules to support multi-role nodes (e.g., control-plane + GPU + storage on a single machine).
 
 **Changes:**
+
 - Adds `docs/backlog/P1/081KSGS9H0008QG0R000EDNTY5-...md` with the problem statement, target design, sub-targets, and acceptance criteria for role-as-capability composition.
 - Updates `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R000EDNTY5 entry.
 

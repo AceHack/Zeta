@@ -32,6 +32,7 @@ Closes the **TypeScript leg** of the cross-language Merkle inclusion-proof treat
 ## What was added
 
 `src/Core.TypeScript/merkle/merkle.ts` (extends the existing TS parity oracle — reuses `combine`/`ofBytes`/`toHex`, no reimplementation):
+
 - `export interface ProofStep { sibling; right }` — byte-identical to the F#/C#/Rust `ProofStep`.
 - `MerkleTree.proof(index)` — walks `levels[0..n-2]`, `selfIsLeft = idx % 2 === 0`, sibling = `idx+1` (or self, duplicate-last) when left else `idx-1`, pushes `{ sibling, right: selfIsLeft }`, `idx = floor(idx/2)`. Single-leaf tree → empty path.
 - `export function verifyProof(leaf, steps, root)` — `acc = ofBytes(leaf)`; per step `acc = right ? combine(acc, sibling) : combine(sibling, acc)`; `acc === root`. Touches only leaf + proof + root, never the tree.

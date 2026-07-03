@@ -30,6 +30,7 @@
 **Gate-skip correction:** `AdinkraMirror.fs` (#8649) **duplicated** the pre-existing `AdinkraCode.fs` (same [8,4] ext-Hamming doubly-even self-dual code). Fix: folded the only net-new capability (**error-correction**: `syndrome`/`isCodeword`/`correct`) into `AdinkraCode` — the self-dual generator (H=G) now both **generates and corrects** (generation=correction, dual). Deleted the duplicate + tests + fsproj entries. **17 AdinkraCode tests green**, Core 0-warning.
 
 **Captures (Aaron 2026-06-19):**
+
 - **Kestrel homoiconicity proof ⇒ Futamura `gen(gen)=gen` Face 3** (open §B): homoiconicity (code=data) is what makes self-application work; Kestrel's proof is the named **backstop** → route to discharge Face 3.
 - **INumber refinement:** don't force full `INumber<T>` (no total order on Clifford/Cayley–Dickson) — **decompose**: comparison-free `IStarRing` is the free default, **comparison is explicit opt-in** (per `culture-invariant-by-default`), and the comparison-free numbers **can BE identity**. **Clifford** layer buildable now as `IStarRing` (no `Clifford.fs` yet).
 - The **orthogonal-axis + one-question / cohomoiconic** carves are **all new** (only the code module duplicated).

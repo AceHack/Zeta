@@ -35,12 +35,14 @@ Claim + verify smallest safe slice of 081KR2E4K0008QG0R001ZZ5XXF (P1): local GPU
 Pre-start gate already satisfied in backlog row (prior-art + deps restructured + re-decomp note). Slice (recognizeStructure + StructurePattern typed stub in `tools/concordance/concordance.ts`, GPU-ready comment, pure CPU repetition detection) was present; this PR claims it via protocol.
 
 ## Scope (exactly this slice)
+
 - `recognizeStructure(index: ConcordanceIndex): StructurePattern[]` + `StructurePattern` type
 - Safe stub impl (top-10 repetition pattern, no deps, testable now)
 - Prepares for future local GPU (ONNX/ML.NET) without breaking surface
 - Out of scope: actual inference runtime, new packages, pipeline refactor
 
 ## Focused checks outcome (included per rules)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — gate passed in root + worktree (repeated post-claim)
 - `bun tools/concordance/concordance.ts --json <sample-files>`: executes cleanly, produces valid StructurePattern[] output
 - No claim collisions (refresh-worldview confirmed); no Pliny/verbatim issues; retraction-safe addition

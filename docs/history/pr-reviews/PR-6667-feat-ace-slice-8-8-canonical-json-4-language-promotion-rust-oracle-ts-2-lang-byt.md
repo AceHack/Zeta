@@ -37,15 +37,18 @@ Spec: `docs/agendas/ace-package-manager/2026-06-03-ace-slice8.8-canonical-json-4
 `compare.ts` is resilient to a missing language (try/catch → null). This slice lands **TS + Rust**; **F#/C# follow in 8.8.1 / 8.8.2** (their `<lang>-output.json` simply don't exist yet; the oracle skips them and still enforces TS↔Rust↔canonical).
 
 ### ⚠️ Precedent-setting decisions (first Ace→Rust promotion — please scrutinize)
+
 1. **New standalone crate `src/Core.Rust.AceCanonical`** (no Cargo workspace exists; siblings are standalone). Path-dep on `Core.Rust.DynamicValue` for the value type; **zero external crates** (production AND test). `ace_canonical_json(&DynamicValue) -> Result<String, AceCanonicalError>`: sort object keys every level (Rust `str` Ord = UTF-8 byte order = JS UTF-16 code-unit order on the BMP keys), arrays insertion-order, integers-only `|i|≤2^53−1` (reject float/unsafe/Bytes), minified raw-unicode, `escape_json_string` **exactly matching** the shared TS `encodeString` (verified line-by-line: 5 short-forms + `\u00XX` lowercase for other `<0x20` + raw otherwise).
 2. **Seam takes an already-parsed value** (like TS `canonicalBytes`). The cross-verify test carries a **hand-rolled lenient zero-dep JSON parser** (`DynamicValue::from_canonical_json` only accepts already-canonical input). `serde_json` deliberately **not** used — matches the sha256 test's internal-only-deps discipline.
 
 ### Oracle conversion
+
 - `src/Core.TypeScript/canonical-json/cross-verify.ts` (NEW, relocated TS generator) → flat `ts-output.json` keyed `canonical:<id>`/`invalid:<id>`; still asserts `canonical==expected` AND each invalid throws with its `expected_error_substring`.
 - `tests/cross-verification/canonical-json/compare.ts` (NEW, replaces `cross-verify.ts`): reads ts/rust(+fsharp/cs)-output.json + vectors.json; **requires TS + ≥1 non-TS oracle** (no vacuous pass); asserts every present language's result == expected per id + all agree; exits non-zero on mismatch.
 - `rust-output.json`: committed golden (cargo test, `UPDATE_GOLDEN` golden-file discipline).
 
 ### Review-found coverage added (P1/P2 from review)
+
 - **control-chars** vector — tab + LF (short-forms) + **U+0001** (the generic `\u00XX` path) — proves Rust `escape_json_string` matches TS `encodeString` byte-for-byte.
 - **lone-surrogate-bare** — top-level lone-surrogate reject path. `vectors.json` now canonical[9] + invalid[5].
 
@@ -56,6 +59,7 @@ Three-way agreement: **Python** authored the expected (8.5), **TS** reproduced i
 canonical-json is now **2-language byte-locked (TS+Rust)**; still proof-owed + F#/C#-owed → not canonical yet, but materially closer.
 
 ### Gates (all green locally)
+
 - `bun --bun tsc --noEmit` 0 · `bun test tools/ace/` **372 pass** · `cargo test` (AceCanonical) idempotent-pass, **zero external deps**, warning-clean · `bun tools/ci/cross-verify-all.ts` **9/9** (canonical-json via `compare.ts`, TS+Rust agree on 14) · all files LF/no-BOM · markdownlint clean
 - subagent reviews: Rust impl byte-exact (independently re-derived); full-slice review APPROVE after the P1/P2 coverage fix
 

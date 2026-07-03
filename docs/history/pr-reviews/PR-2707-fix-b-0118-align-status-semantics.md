@@ -28,16 +28,19 @@
 ## Description
 
 ## Summary
+
 - Align 081KQDTYV0008QG0R0037YJPEX frontmatter with its decomposition note by keeping the parent backlog item open while children 081KRA5AR0008QG0R000Y6102S..081KRA5AR0008QG0R000C3P8KP remain outstanding.
 - Tighten remaining Amara wrapper references to the TS-first `amara.ts` target.
 
 ## Checks
+
 - `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts`
 - `bun tools/backlog/generate-index.ts --check`
 - `bun run lint:markdown docs/backlog/P2/081KQDTYV0008QG0R0037YJPEX-amara-peer-call-headless-cli-bootstrap-end-courier-debt-2026-04-30.md docs/BACKLOG.md`
 - `git diff --check`
 
 ## Coordination
+
 - Opened from a fresh Codex/Vera claim worktree.
 - The completed PR #2704 worktree remains dirty and untouched because ownership is unclear.
 

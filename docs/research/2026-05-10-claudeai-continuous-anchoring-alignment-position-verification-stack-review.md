@@ -14,6 +14,7 @@ Without continuous mechanisms for including humans in the loop at AI-operation t
 2. **Human-anchoring drift** — without continuous grounding, AI vocabulary/behavior diverges from human-comprehensible baselines, divergence compounds
 
 Three anchoring dimensions:
+
 - **Language anchoring** — AI vocabulary tied to human terms (mirror/beacon discipline)
 - **Value anchoring** — AI decisions reviewed against stated values (shadow log, alignment auditor)
 - **Goal anchoring** — AI work products judged against human goals (backlog, trajectories)

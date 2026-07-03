@@ -41,6 +41,7 @@ Hits the **≥3 BFT floor** Aaron named earlier 2026-05-27 (*"we should have thr
 [PR #5397](https://github.com/Lucent-Financial-Group/Zeta/pull/5397) (Phase 3d Lior sibling) · PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (081KSKBP80008QG0R003Z4C0D0 Phase 1 + 3 refactor) · [081KSGS9H0008QG0R001JNKBFD](docs/backlog/P2/081KSGS9H0008QG0R001JNKBFD-...) · [081KSGS9H0008QG0R002T0XQ50](docs/backlog/P2/081KSGS9H0008QG0R002T0XQ50-...) · [081KS3X9Y0008QG0R00218150M multi-oracle BFT](docs/backlog/P*/081KS3X9Y0008QG0R00218150M-...)
 
 Sources:
+
 - [@openai/codex on npm](https://www.npmjs.com/package/@openai/codex)
 - [Codex authentication docs](https://developers.openai.com/codex/auth)
 
@@ -55,6 +56,7 @@ Sources:
 This PR extends the NixOS “AI agents as systemd services” substrate toward the **≥3 vendor** resilience target by adding **OpenAI Codex** install/login steps (and also including Gemini install/login changes) and enabling additional personas on the control-plane host.
 
 **Changes:**
+
 - Add installer steps to `bun install --global` the Codex CLI and run `codex login --device-auth` (plus Gemini install/login steps).
 - Remove the “not shipped yet” assertions for Vera/Codex and Lior/Gemini in the NixOS module.
 - Enable `lior` and `vera` agents by default on the control-plane host.
@@ -74,6 +76,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **full-ai-cluster/usb-nixos-installer/zeta-install.sh:1109**
+
 * P1 bug: `set -o pipefail` is being set inside the `bash -c` subshell, but the `| tail -5` pipeline is in the parent shell, so failures from `bun install` can be masked (the pipeline exit status will typically be `tail`'s). Move the `tail` into the same shell where `pipefail` is set so the `|| WARN` reliably triggers.
 ```
   sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
@@ -81,6 +84,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
       echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot via 'bun install --global @anthropic-ai/claude-code'"
 ```
 **full-ai-cluster/usb-nixos-installer/zeta-install.sh:1166**
+
 * P0 security: Gemini CLI credentials are documented (and appear to be stored) under `~/.gemini/` (e.g. `~/.gemini/oauth_creds.json`), but this script tells operators creds land in `~/.config/gemini/` and only tightens perms on that path. This likely leaves the real Gemini OAuth creds unprotected by the intended `chmod -R go-rwx`. Update both the messaging and the chmod/chown target to `~/.gemini/`.
 ```
   # 6.95b-gemini — interactive gemini auth login (mirror claude login).
@@ -90,6 +94,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
   GEMINI_BIN="$ZETA_HOME/.bun/bin/gemini"
 ```
 **full-ai-cluster/nixos/modules/zeta-ai-agent.nix:233**
+
 * P0 bug: the per-persona service loop still hardcodes `${persona.binary} --print ...` for all vendors, but Codex and Gemini don’t share Claude’s `--print` interface. Removing these assertions allows flake evaluation to succeed even though enabling `vera`/`lior` will create restart-looping services. Keep the assertions until `makeAgentService` is updated to call Codex via `codex exec ...` and Gemini via `gemini -p ...` (or equivalent non-interactive forms).
 ```
       # 081KSKBP80008QG0R003Z4C0D0.3c (Vera/Codex) shipped this PR — assertion removed.

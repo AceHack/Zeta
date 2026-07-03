@@ -48,6 +48,7 @@ Wave 2 of the forge-host-adapter spec. Implements the concrete GitHub adapter be
 38 tests pass. Error classification covers: auth, permission, not-found, rate-limit, network/5xx, internal.
 
 ### Next (Wave 3)
+
 - Task 4: Move `batch-resolve-pr-threads.ts` to `forge-host/github/`
 - Task 5: Extract `readPRState()` from `observe/world-infra.ts` behind ForgeHost
 - Task 7: Wire `poll-pr-gate-batch.ts` through the adapter

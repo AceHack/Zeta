@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add an autonomous backlog pickup trajectory RESUME packet grounded in 081KQZVQW0008QG0R000C35RNY and 081KR2E4K0008QG0R001GFXN05 through 081KR2E4K0008QG0R002FSPPQR
 - link the child packet from the factory trajectory surface
 - refresh the active Codex claim notes and ETA while keeping runner-core paths out of scope
 
 ## Checks
+
 - git diff --check
 - bunx prettier --check docs/claims/factory-trajectory-autonomous-backlog-pickup.md docs/trajectories/factory-trajectory-surface/RESUME.md docs/trajectories/autonomous-backlog-pickup/RESUME.md
 - bunx markdownlint-cli2 docs/claims/factory-trajectory-autonomous-backlog-pickup.md docs/trajectories/factory-trajectory-surface/RESUME.md docs/trajectories/autonomous-backlog-pickup/RESUME.md

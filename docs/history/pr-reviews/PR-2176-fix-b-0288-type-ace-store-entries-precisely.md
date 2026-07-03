@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - fix the Ace DLC store TypeScript gate by typing `readdirSync({ withFileTypes: true })` results as `Dirent<string>[]`
 - keep the repair scoped to `tools/ace/store.ts`
 
 ## Verification
+
 - `bun install --frozen-lockfile --offline`
 - `bun --bun tsc --noEmit -p tsconfig.json`
 - `bun test tools/ace/ace.test.ts`

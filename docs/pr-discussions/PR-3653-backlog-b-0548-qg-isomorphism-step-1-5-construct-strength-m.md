@@ -65,5 +65,6 @@ This row scopes the open Step 1.5 research with:
 Adds a new P2 backlog row (081KRQ1AB0008QG0R002DQBGZF) scoping the deferred Step 1.5 research from the PR #3614 chain: constructing a strength `θ:M(Ω)→Ω` and/or A-lifting `Ã:Zeta→Zeta` so the M/A coherence laws become type-correct.
 
 **Changes:**
+
 - New docs/backlog/P2 row file with frontmatter (id, P2, depends_on 081KRMEXM0008QG0R003YWZC21, composes_with 081KRMEXM0008QG0R002YSPW1X)
 - Documents 3 resolution paths, the closure-operator obstruction, acceptance criteria, prior art

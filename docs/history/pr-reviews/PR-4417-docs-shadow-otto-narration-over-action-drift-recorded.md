@@ -28,6 +28,7 @@
 ## Description
 
 ## Maji Audit
+
 - Detected pure metadata churn in PR #4408.
 - Shadow drift lesson logged.
 - Closed offending PR.

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - salvage the safe PR #4990 follow-up delta by splitting outbox messaging domains into supervisor-signal and work-item subjects
 - keep the stale branch replay out of the PR because it conflicts with current main and would regress newer outbox locking/test layout
 - include claim/release history for task-pr4990-agentic-org-reconcile
 
 ## Checks
+
 - npm test -- --test-name-pattern=outbox publisher
 - npm run typecheck
 

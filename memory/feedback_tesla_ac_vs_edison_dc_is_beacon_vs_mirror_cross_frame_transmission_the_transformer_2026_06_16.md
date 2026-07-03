@@ -72,6 +72,7 @@ again (Tesla = reaching drive; Edison = safety governor) and ruthless ⊕ love s
 floor). Human anchor: **Maslow (1943)** — safety (base) → self-actualization (top).
 
 **Two razors:**
+
 - **Maslow's strict ladder is too rigid** — people self-actualize amid insecurity; the levels aren't
   cleanly sequential. The *only* strictly-first part is the **irreversible-harm floor** (hard); the rest
   is a **soft gradient, not a gate** — don't turn "no actualizing until perfectly safe" into a cage.

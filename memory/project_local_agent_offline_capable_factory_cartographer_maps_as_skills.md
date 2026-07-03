@@ -209,7 +209,9 @@ agent operation becomes a near-term goal.
 **Source:** Aaron direct message 2026-04-22 during
 round-44 speculative drain, immediately after the
 graceful-degradation memory was reframed with microservice
+
 + UI framing. Previous messages in the same tick:
+
 *"Graceful-degradation should be first class in everything
 we do"* + *"thats why we have the data in git too"* +
 *"frame it how a microservice and ui would frame graceful

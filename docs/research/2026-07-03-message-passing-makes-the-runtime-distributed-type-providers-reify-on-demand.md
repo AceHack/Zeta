@@ -2,6 +2,7 @@
 
 **Date:** 2026-07-03
 **Provenance:** Aaron, extending the Shiva-GC / virtual-actor thread:
+
 1. *"the really cool thing is the message passing works to make the entire runtime distributed —
    kind of like Objective-C to the max, and other message-oriented languages."*
 2. *"in F# this is made real with reified typed providers, and also in C# we can simulate the same
@@ -31,6 +32,7 @@ miniature as `ShivaGc.deliver`: a message to a paused grain resumes it (the wake
 to a resident grain is a no-op, to an unknown grain is left to routing.
 
 **Prior art, exactly as Aaron named it ("Objective-C to the max"):**
+
 - **Alan Kay / Smalltalk** — *"The big idea is 'messaging'."* OOP was never about classes; it was
   about late-bound message sends. The unknown-selector hook `doesNotUnderstand:` is precisely the
   wake-on-message / forward-elsewhere primitive.

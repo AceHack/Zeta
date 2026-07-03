@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Fix `test-harness/run.ts` to call `src/Core.TypeScript/ci/*` instead of stale `tools/ci/*`
 - Update B-0891 scenario metadata + test invariant for new paths
 
 Fixes build-iso **B-0891 scenario 1** failure on main (harness not found after #7893 relocation).
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/zflash/test-harness/scenarios.test.ts`
 - [ ] build-iso green on PR
 

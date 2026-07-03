@@ -36,6 +36,7 @@ The onboarding round-trip harness (#9016) named the missing **rotate** corner of
 `tools/setup/persona-keys/rotate.ts` (+ `rotate-cli.ts` + `rotate.test.ts`) — a per-PORT rotate on the **overlap-window dual-key lifecycle** (Itron KeyState; the 2026-06-15 decision). Each port mints a new key as Standby, overlaps (old + new both valid), promotes Standby→Active, retires the old.
 
 Ports covered:
+
 - **machine key** — mint new as Standby, promote, park old retired, stage the updated registered pubkey (register/unregister staging — **never a real push**).
 - **device cert** — re-sign for the rotated key, **N+M preserved** (Key ID = machine-only, principal = user; the #8926 / #8969 invariant); old `-V` window overlaps the new.
 - **CA key** (the delicate one) — rotate **with overlap**: BOTH CA pubkeys stay in `TrustedUserCAKeys` during the window so existing certs still verify; the new CA signs going forward.

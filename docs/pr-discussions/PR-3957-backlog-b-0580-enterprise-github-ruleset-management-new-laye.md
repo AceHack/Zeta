@@ -23,6 +23,7 @@ Files 081KRQ1AB0008QG0R000522MPJ — Enterprise GitHub ruleset management work-s
 ## Why
 
 Two reframings:
+
 1. **Surface expansion** — was 2 layers (org/individual), now 3 (enterprise/org/individual). Cross-layer rule conflicts become a real failure mode without coherent governance
 2. **DV2.0 ruleset-divergence smell composes** per `dv2-data-split-discipline-activated.md` — the smell was known for repo-split (081KRFA460008QG0R000VKJF0H); Enterprise multiplies it
 
@@ -59,6 +60,7 @@ Enterprise-layer writes (slice 5) require `admin:enterprise` scope — current l
 Adds a new P2 backlog entry (081KRQ1AB0008QG0R000522MPJ) tracking enterprise-level GitHub ruleset management as a third governance layer above existing org/individual rulesets, and registers it in the main backlog index.
 
 **Changes:**
+
 - New backlog doc 081KRQ1AB0008QG0R000522MPJ describing motivation, slices, acceptance criteria, and first-discovery findings for the new enterprise ruleset created (`16490134`).
 - Adds 081KRQ1AB0008QG0R000522MPJ entry to `docs/BACKLOG.md` under P2.
 

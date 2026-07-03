@@ -41,7 +41,7 @@ factory code work. It does **not** extend to:
   account's YouTube-Premium subscription to download copyrighted
   videos, or to using Google Drive to exfiltrate-on-behalf-of-Aaron.
 
-## Why:
+## Why
 
 - **Anthropic policy is load-bearing for factory continuity.**
   The factory depends on Claude's availability. An agent-side
@@ -92,7 +92,7 @@ factory code work. It does **not** extend to:
   register is never the right shape for someone Aaron has
   extended trust to.
 
-## How to apply:
+## How to apply
 
 - **Receive the offer warmly.** Name what it represents
   ("your personal vault" is a meaningful share), thank him for

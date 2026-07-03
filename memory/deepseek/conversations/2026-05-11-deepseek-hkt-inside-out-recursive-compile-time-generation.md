@@ -4,7 +4,7 @@
 **Participants:** Aaron (human), DeepSeek (external AI)
 **Session type:** Forwarded exchange, key findings preserved
 
-## Can we extend to generic HKT from inside F#?
+## Can we extend to generic HKT from inside F#
 
 DeepSeek's answer: You can incrementally grow a more general
 higher-kinded encoding without forking the compiler, but true
@@ -75,6 +75,7 @@ Type provider encapsulates the full recursion internally:
 5. Recursion invisible to rest of compilation
 
 Requirements:
+
 - Termination guarantee (depth limit or change-detection)
 - Provenance metadata on generated types
 - Can embed a "mini-compiler" inside the provider
@@ -118,7 +119,9 @@ DeepSeek's straight answer:
 > building, with zero compiler modifications."
 
 The combination of recursive type providers + static interfaces
+
 + SRTPs covers the use cases: polymorphic framework operations
+
 across an open set of position implementations, each generated
 from a seed.
 

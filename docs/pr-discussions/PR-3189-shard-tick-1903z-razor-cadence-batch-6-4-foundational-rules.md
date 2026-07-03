@@ -33,6 +33,7 @@ Notable health signal: `zeta-expected-branch.md` references rule→hook→core�
 Adds a single tick log file documenting batch 6 of the razor-cadence audit, recording that 20/20 cross-references in 4 foundational rules are LIVE and reaching the 48% audit midpoint.
 
 **Changes:**
+
 - Adds new tick shard under `docs/hygiene-history/ticks/2026/05/14/`
 - Reports cumulative audit progress (24/50 rules, 154/155 LIVE)
 - Notes the rule→hook→core→test chain integrity for `zeta-expected-branch.md`

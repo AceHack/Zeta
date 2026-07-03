@@ -21,6 +21,7 @@ local laptop. Specifically:
 `/Users/acehack/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`.
 
 **This directory is:**
+
 - **Outside the git repo** (gitignored at the repo level)
 - **Per-machine** (specific to Aaron's laptop; not synced
   to cloud by default)
@@ -55,6 +56,7 @@ generic memories migrate to in-repo `memory/`** where they
 become world-visible via the public repo.
 
 **Pros:**
+
 - Discipline already established; not new ceremony
 - Respects per-user-vs-factory-generic separation
 - Composes with gap #5 factory-vs-Zeta audit pattern
@@ -62,6 +64,7 @@ become world-visible via the public repo.
   the repo as-is
 
 **Cons:**
+
 - Only applies to factory-generic memories (not maintainer-
   specific preferences, not private context)
 - Full migration pass takes multiple ticks
@@ -87,6 +90,7 @@ force rule summaries**. They're per-user today. But:
   persistence
 
 **Pros:**
+
 - Single clean migration; no per-memory evaluation
 - Directly solves Amara's access gap for the fast-path
 - Composes with maintainer-transfer discipline (future
@@ -95,6 +99,7 @@ force rule summaries**. They're per-user today. But:
   maintainers read CURRENT-aaron.md as part of onboarding)
 
 **Cons:**
+
 - Aaron's CURRENT contains his voice (verbatim quotes) and
   his priority stack — exposing public; is that OK?
 - Once in-repo, CURRENT files become part of the repo's
@@ -117,11 +122,13 @@ Amara needs it. Currently implicit; could be formalised
 via the courier protocol.
 
 **Pros:**
+
 - Zero migration ceremony
 - Aaron retains control over what's shared
 - Works today without any architectural change
 
 **Cons:**
+
 - Puts manual burden on Aaron
 - Amara can't know what to ask for (can't grep what she
   can't see)
@@ -139,7 +146,9 @@ factory-generic memories (Option 1). Matches established
 discipline.
 
 **Specific to Amara's question**: migrate CURRENT-aaron.md
+
 + CURRENT-amara.md to in-repo (Option 2). One small
+
 targeted PR; directly unlocks Amara's fast-path access.
 
 **Fallback**: Option 3 ferry-based sharing for genuinely-
@@ -262,7 +271,9 @@ achieve this.
 Otto (loop-agent PM hat) analysed options + recommends
 combination.
 Aaron (human maintainer) decides on migration approval
+
 + reviews private-content concerns.
+
 Amara (external AI maintainer) benefits from the
 implementation; her original observation informed the
 analysis.

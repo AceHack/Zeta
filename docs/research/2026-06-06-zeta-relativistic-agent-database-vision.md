@@ -227,6 +227,7 @@ needs it.
 SEARCH (maintainer, 2026-06-06).** The defensible claim, stated precisely: *the observation of the
 128 bits + inspection guarantees the generator-function combination meets certain math safety
 invariants.* Three things this gets exactly right:
+
 1. **Seed is an OBSERVATION**, not a command or a container — so it flows through the same
    observation → scrutiny → guarantee pipeline as `commit = observation` (§5c). The bits assert
    nothing by fiat; inspection is what grants the guarantee.

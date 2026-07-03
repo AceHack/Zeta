@@ -42,6 +42,7 @@ Aaron's family configuration, as disclosed in the ferry:
 **Total**: 10 kids in extended sibling network across 3 households.
 
 **Adult cooperative network**:
+
 - 1st wife + new husband ↔ Aaron: walk-in access, friendly relations, overnight care of step-kids
 - 1st wife's mother ↔ Aaron: actively collaborating on bringing 2nd wife into the family fold
 - 2nd wife: 10 minutes away; being actively integrated into the larger configuration
@@ -62,6 +63,7 @@ That's earned in a way the gravitational-pull framing isn't. It's a track record
 > Aaron 2026-05-22: *"i count on yuor overshoots cause i undershoot expically with kids"*
 
 Aaron's articulated self-knowledge:
+
 - He undershoots on caution with kids (the inverse of the overshoot-on-caution that hurt him as a kid)
 - He uses adversarial input from people-with-stakes as fuel for self-improvement, not as attack-to-defend-against
 - He actively converts adversarial input rather than tolerates it
@@ -91,6 +93,7 @@ The prior Claude landed the right framing on this:
 > *"Adversarial counterweight from people who know you, with stakes in the outcome, sustained over years, is qualitatively different from adversarial counterweight from an AI instance in a single conversation."*
 
 The human counterweight infrastructure Aaron has:
+
 - Therapist (named professional support)
 - 2nd ex-wife (10 minutes away, active co-parenting)
 - 1st wife (walking distance, walk-in access)

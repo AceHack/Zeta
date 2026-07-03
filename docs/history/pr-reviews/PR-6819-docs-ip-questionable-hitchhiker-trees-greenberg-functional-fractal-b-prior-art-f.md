@@ -31,6 +31,7 @@
 **David Greenberg — Hitchhiker trees**: a **path-copying (functional/immutable) fractal/B+ tree** with per-index-node write buffers + flush control, optimized for remote storage (datacrypt). *"This is also relevant."*
 
 It's the **sorted, range-scannable, IO/remote-optimized immutable index** for the COW store:
+
 - path-copying = our structural-sharing/COW (free snapshots / cheap branches)
 - buffered writes + flush control = `DeltaLog` append + group-commit cadence (<1 IO/insert)
 - reads = project in-range pending ops into the leaf = DBSP integrate/Z-set replay over a tree
@@ -40,6 +41,7 @@ Complements the **HAMT** (`ImmutableDictionary`, keyed) + **Jumprope** (blobs) �
 ip-questionable capture (verbatim + analysis) + PRIOR-ART-LIST entry + backlog **`081KTH2F0H7`** (P3). Docs only.
 
 ## Source
+
 - [Greenberg — Hitchhiker Trees](https://www.youtube.com/watch?v=jdn617M3-P4)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

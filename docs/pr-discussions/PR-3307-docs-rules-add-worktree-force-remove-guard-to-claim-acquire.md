@@ -62,6 +62,7 @@ The legitimate intent (review-thread resolution) was covered by the existing DOE
 Extends the claim-acquire rule with guidance for avoiding destructive takeover of another worktree when Git reports a branch is already in use.
 
 **Changes:**
+
 - Adds a “Worktree force-remove guard” section.
 - Recommends alternate worktree/API/bus-handoff approaches.
 - Links the guidance to a 2026-05-14 hygiene-history tick shard.

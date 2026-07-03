@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add focused Bun tests for the existing 081KR2E4K0008QG0R003DS2XHJ/081KR50HA0008QG0R001G4QHQF concept registry extractor on main.
 - Preserve the newer anchor-aware implementation from main during merge resolution.
 - Keep the claim file attached to the Codex claim branch.
 
 ## Checks
+
 - bun test tools/alignment/concept_registry.test.ts
 - bun tools/alignment/concept_registry.ts
 - dotnet build -c Release

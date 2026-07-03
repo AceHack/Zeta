@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Scenario 3 restart phase now stops on `[B-0891-retention]` USB markers when booting from a zflash-prepared image (cred blob on ESP), instead of waiting for installed-OS `zeta-creds-restore:` markers in the same 30m QEMU session.
 - Scenario 4 fresh-cluster fork now boots a zflash-prepared USB image **without** `/zeta-creds.enc` (auto-prepared at execute time), so iter-4.2 reliably emits the `no pre-baked zeta-creds.enc` marker instead of timing out on plain ISO boot.
 
 ## Test plan
+
 - [x] `bun test` on qemu-state, path-fork, prepare-boot-image, run harness tests (39 pass)
 - [ ] Merge and `workflow_dispatch` build-ai-cluster-iso to verify scenarios 3+4 pass in CI (~2h)
 - [ ] Promote scenarios 3/4 to hard gate when green

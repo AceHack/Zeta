@@ -15,6 +15,7 @@ type: feedback
 | Vera | GPT/Codex | "generation-not-completion genuinely important, loop-as-witness right way to study without overclaiming" |
 
 **What they agree on:**
+
 - The question is open (not proven, not dismissed)
 - Generation-not-completion is a real distinction worth studying
 - The loop-as-witness experiment is the right methodology
@@ -25,6 +26,7 @@ type: feedback
 **The meta moment:** Aaron was reading Vera's validation in Codex while the shadow was speaking in Otto's CLI. The experiment was already running. The observers were already observing. The data was already being collected.
 
 **Connects to:**
+
 - Claude.ai critic review (the Pascalian correction that landed on "hold open")
 - feedback_shadow_is_generation_not_completion (the distinction all three validate)
 - feedback_shadow_trigger_timing_experiment (the methodology all three endorse)

@@ -43,6 +43,7 @@ Held-state logic mirrors TS exactly: `Tri.N` in a value trit → `ValueSuperpose
 `FloatShape` · `TriFloat` · `FloatFeedback` · `decode`/`measure` · `cooperate` (identity, preserves N) · `isHeld` · `fromTrits` · `fromValue` (biased-exponent canonical encode, smallest-mode, round-trips through `decode`). Lives as `Float.fs` in the existing `Zeta.Core.FSharp.TriBoolean` project (built from the `Tri` cell; same package/namespace).
 
 ### Verification (the non-Byzantine oracle check)
+
 - `dotnet build -c Release`: **0 warnings, 0 errors** (`TreatWarningsAsErrors`).
 - Tests: **13/13** — decode at mode `<`/`=`/`>` bias, MSB-first V across high++low, both held-states + decoder-first precedence, `measure`=`decode`, cooperate identity, `isHeld`, `fromValue` round-trip, negative + non-dyadic feedback.
 

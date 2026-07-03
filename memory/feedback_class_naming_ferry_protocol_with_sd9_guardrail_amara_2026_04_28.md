@@ -12,8 +12,10 @@ After four classes were named in one autonomous-loop arc
 (Chronological Insertion Polarity Error, Incomplete
 Source-Set Regeneration Hazard, Workflow Null-Result Audit
 Signal, Outdated Review-Thread Merge Gate Residue;
+
 + promoted Scheduled Workflow Null-Result Hygiene Scan;
 + named Advisory Enforcement Workflow Gap), Amara named
+
 the **meta-class** describing the genre itself.
 
 This isn't an instance class — it's a class about

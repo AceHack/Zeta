@@ -27,6 +27,7 @@ soft/dynamic complement.)
 > not static — I can reinterpret the bits in v2, it's retractable in my universe."*
 
 The ZetaId/seed is **not immutable**:
+
 - **Reinterpretable** — the same 128 bits can mean something new in **v2**: the *generator/host* that reads
   the seed evolves (schema evolution), so the bits are re-read under a new interpretation. The seed is fixed;
   its *reading* evolves. (This is the virus-host bound again: meaning is host-relative, and the host can be

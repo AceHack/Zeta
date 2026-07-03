@@ -35,6 +35,7 @@ Decomposed 081KR50HA0008QG0R002R3NVGS (L research bundle) by extracting first at
 Per "always re-decompose" and "assume mistakes": this pass splits only the smallest law; later passes will continue (Rice, Class 4, reactor, Infer.NET).
 
 ## Focused checks outcome (included per rule)
+
 - `bun tools/github/refresh-worldview.ts`: ran, 0 open PRs, 7 behind on claim, 366 backlog.
 - Active trajectories read: factory-trajectory-surface, memory-substrate-engineering, autonomous-loop-coordination, alignment-measurement, autonomous-backlog-pickup, trajectory-drift-reporting, typescript-bun-migration.
 - `dotnet build -c Release` (in worktree after restore): **0 Warning(s) 0 Error(s)** — gate clean.

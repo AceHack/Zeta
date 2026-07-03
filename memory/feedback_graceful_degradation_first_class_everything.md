@@ -279,6 +279,7 @@ round-44 speculative drain, immediately after the
 autonomous-loop tick landed
 `tools/budget/project-runway.sh` (commit `5f91369`).
 Three-beat sequence:
+
 1. *"Graceful-degradation should be first class
    in everything we do"*
 2. *"thats why we have the data in git too"*

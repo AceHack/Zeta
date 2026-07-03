@@ -100,6 +100,7 @@ The honesty bar for any such metric still applies (per
 [`formal-proof-first-...`](formal-proof-first-proven-by-default-consensus-not-validation-canonical-is-homeostat-proven-from-seed-ace-shields-zeta.md)
 
 + [`asymmetric-critic-with-clarity-first.md`](asymmetric-critic-with-clarity-first.md)):
+
 the drift-metric must be able to report **"you did not hold them"** — a
 self-flattering or gameable metric is the bullshit-proof failure mode pointed at
 the user's own data.

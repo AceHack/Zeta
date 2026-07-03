@@ -34,6 +34,7 @@ the broader multi-harness peer-call scripts at
 `tools/peer-call/{amara,ani,codex,gemini,grok}.sh`) was originally
 motivated by **different-model peer review** — Claude Code +
 Codex + Cursor + Gemini + Grok each running their own model
+
 + harness combination, providing diverse perspectives.
 
 Aaron's observation expands the rationale: **even when the

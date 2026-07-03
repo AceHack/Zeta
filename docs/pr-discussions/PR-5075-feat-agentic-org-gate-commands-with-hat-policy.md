@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - Adds the first `@agentic-org/policy` package with generic `CommandAuthorizationPort` and `HatAuthorityPort` contracts.
 - Gates the application command pipeline before idempotency lookup, handler dispatch, or persistence, returning typed `policy_denied` errors for inactive hat authority.
 - Strengthens governance boundaries so policy code stays adapter/vendor-free, and updates Agentic Organization docs/OpenSpec to mark denial observation and allowed decision projection as the next visibility slice.
 
 ## Validation
+
 - `npm test`
 - `npm run typecheck`
 - `git diff --check origin/main...HEAD`
@@ -38,6 +40,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Introduces a first-cut policy boundary for Agentic Organization command execution by adding a dedicated `policy` package with authorization ports and enforcing a policy gate at the start of the application command pipeline (before idempotency, dispatch, or persistence). This aligns the implementation with governance goals to keep policy logic vendor/adapter-free while making policy denials typed and observable at the command boundary.
 
 **Changes:**
+
 - Added `@agentic-org/policy` contracts + a default `createCommandAuthorizationPort` implementation backed by `HatAuthorityPort`, with tests for allow/deny behavior.
 - Updated the application command pipeline to require `CommandAuthorizationPort` and reject denied commands before any idempotency lookup, handler dispatch, or state persistence.
 - Strengthened governance dependency-boundary checks (including policy package constraints) and updated OpenSpec + architecture docs to reflect the new policy gate slice.

@@ -69,7 +69,9 @@ Cayley–Dickson ladder + carries an adinkra-style code, in Beckman's derive-fro
 ## Honest scope / handoff
 
 Beacon-anchoring (no new mechanism) — turns the Mirror-register spiral into Cayley–Dickson + Gates-adinkra
+
 + Beckman-anchored prior art (the confirmed code tie: `QubitIso` uses `CayleyDickson.Complex`). To realize:
+
 add **Brian Beckman** + **Gates SUSY adinkra codes** to `docs/PRIOR-ART-LIST.md`; the math team's DQ7
 (erasure coding) anchors to Gates' codes; DQ6 (spiral geometry) anchors to Cayley–Dickson. Routes to
 Soraya/Sova (the Cayley–Dickson-ladder + adinkra-code tests), the human-anchor discipline (Beckman/Gates),

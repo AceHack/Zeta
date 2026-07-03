@@ -53,6 +53,7 @@ Aligns documentation with the substrate landed in [PR #3990](https://github.com/
 This PR updates tick-history shard schema documentation to endorse the hybrid shard format: validator-friendly pipe-row metadata first, followed by rich Markdown content.
 
 **Changes:**
+
 - Documents the validator-aligned first-line pipe-row contract.
 - Adds a worked hybrid-format example.
 - References the retrofit tool for older H1-first shards.

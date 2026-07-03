@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve the generated PR #1791 review archive after the post-merge workflow hit the repository-rule direct-push guard
 - append the PR #1791 manifest entry for merge commit daa6548f3e3e4d2834e6e65006280c13352a046b
 - release the git-native claim in the same branch
 
 ## Checks
+
 - npx markdownlint-cli2 docs/claims/archive-pr-1791-review-substrate.md
 - npx markdownlint-cli2 docs/history/pr-reviews/PR-1791-archive-preserve-pr-1790-review-output.md docs/claims/archive-pr-1791-review-substrate.md
 - GITHUB_SHA=daa6548f3e3e4d2834e6e65006280c13352a046b bun tools/archive/archive-pr-reviews.ts 1791

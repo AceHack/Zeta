@@ -50,6 +50,7 @@ Two **independent** SMT encodings, refuted-on-disagreement over the whole 2^W do
 ## Verified by execution (not source-reading)
 
 All five registry rows — splitmix64, fmix32, fmix64, nasam, xoshiro256ss — emit proofs that `z3` discharges **all-unsat** (LEMMA + THEOREM + CONTROL). Falsifiable on **both** axes:
+
 - corrupt a `mul` constant → CONTROL flips to `sat`;
 - corrupt the manual rotate complement (57→56) → THEOREM flips to `sat`.
 

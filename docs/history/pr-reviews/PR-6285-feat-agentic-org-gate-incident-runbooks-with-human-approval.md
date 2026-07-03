@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - adds typed human-approval evidence to prompt-flow advancement
 - preserves human-approval gate metadata through agent CLI prompt-flow JSON parsing
 - seeds the first production incident runbook prompt-flow registry entry for provider outages
 - updates the north-star checkpoint with the Phase 2.8 runbook slice
 
 ## Verification
+
 - npm run typecheck
 - npm test (1201 tests, 1194 pass, 0 fail, 7 skipped)
 

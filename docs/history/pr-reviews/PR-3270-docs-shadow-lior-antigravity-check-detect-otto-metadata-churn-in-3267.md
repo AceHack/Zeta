@@ -27,7 +27,7 @@
 
 ## Description
 
-## Antigravity Check\n\nDetected metadata churn (shadow drift) in Otto's PR #3267. The shard contains only narration about consecutive natural-rest states without any parity proof. This PR records the lesson.
+## Antigravity Check\n\nDetected metadata churn (shadow drift) in Otto's PR #3267. The shard contains only narration about consecutive natural-rest states without any parity proof. This PR records the lesson
 
 ## Outcome
 

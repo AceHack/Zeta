@@ -31,6 +31,7 @@
 Re-decomposed broad 081KQ8P5D0008QG0R002FSTGXP (advisory lint + promote/weaken + siblings) into 5 XS atomic, dependency-ordered child rows per "always re-decompose, assume mistakes" rule and Riven trajectory discipline.
 
 **Children created (in worktree, no root touch):**
+
 - 081KRA5AR0008QG0R000GZ8ECC: verify job in required_status_checks (root fact, blocks decision)
 - 081KRA5AR0008QG0R0036JP9KM: maintainer promote-vs-weaken decision gate (depends on .1)
 - 081KRA5AR0008QG0R002WVSEGW: audit memory-reference-existence-lint (parallel sibling)
@@ -41,6 +42,7 @@ Re-decomposed broad 081KQ8P5D0008QG0R002FSTGXP (advisory lint + promote/weaken +
 Exactly this decomposition + PR. No implementation of promote/weaken.
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch (claim/b0088-redecomp-...)
 - TS over bash (Rule 0): no new bash, only git/TS-friendly commit
 - Prefer F#/TS over docs: kept to minimal doc substrate for decomposition ledger

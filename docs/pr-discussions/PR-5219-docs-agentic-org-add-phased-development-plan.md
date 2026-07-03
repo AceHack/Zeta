@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a canonical phase-by-phase development roadmap for Agentic Organization so the next implementation step is explicit instead of rediscovered each turn.
 
 The new plan covers:
+
 - current executable state;
 - always-on work rules for TDD, SOLID, events, documentation, review, and validation;
 - Phase 0 orientation/maintenance plus Phases 1-25 implementation phases from process adapters through hardening/extraction;
@@ -44,6 +45,7 @@ Also links the roadmap from the Agentic Organization docs index and points the F
 Adds a canonical, phase-by-phase development roadmap for the Agentic Organization docs set, and updates existing docs to point at it as the single source of truth for “what’s next.”
 
 **Changes:**
+
 - Add `PHASED_DEVELOPMENT_PLAN.md` defining per-phase goals, steps, test expectations, doc updates, and exit criteria (plus an immediate 10‑PR sequence).
 - Link the new roadmap from the docs index.
 - Point “Next Slice” in `FIRST_IMPLEMENTATION_SLICE.md` at the canonical roadmap.
@@ -128,11 +130,13 @@ Credits must be used to enable repository wide code reviews.
 Iterated the roadmap with three review lanes and force-updated the branch.
 
 Review passes:
+
 - Architecture/efficiency: initially found that work anchors came too late, the usable command/query surface came too late, graph/context-pack retrieval was missing as its own phase, and reaction execution should precede MCP. Re-review: no blockers.
 - TDD/SOLID/correctness: initially found Phase 1 umbrella scope ambiguity, discussion/triage depending on missing Work OS state, and MCP tools listed before backing lifecycles existed. Re-review after patching: no blockers.
 - North-star/mission: initially found always-on runtime sequencing drift, cluster-contract proof too late, retrieval/memory dependency ordering issues, and UI visibility arriving too late. Re-review: no blockers.
 
 Key roadmap changes:
+
 - Phase 1 is now an explicit Worker Process Adapter Umbrella completed by process seams, Cockroach proof, and NATS proof PRs.
 - Added early full-ai-cluster contract checkpoint without deployment YAML.
 - Added Work Anchor Kernel V0 before Discussion Anchor and Supervisor Triage.
@@ -145,6 +149,7 @@ Key roadmap changes:
 - Made Hermes memory optional until Hindsight integration lands.
 
 Validation:
+
 - `git diff --check origin/main...HEAD` passed.
 - Docs-only change.
 
@@ -153,6 +158,7 @@ Validation:
 Added the deeper AI lifecycle/RMO model and re-ran subagent review.
 
 What changed:
+
 - Added an **AI Lifecycle Operating Model** covering scheduled agent time, schedule objects, work modes, scheduling authority by hat family, meeting lifecycle, review/QA lifecycle, work item participants, comments/mentions, gated state-transition authority, worktree/runtime allocation, pause/resume, missed slots, RMO responsibilities, and edge cases.
 - Updated **Schedule/RMO Core** so meetings, reviews, QA, implementation, free time, reflection, memory maintenance, runtime slots, worktrees, and credentials are explicit scheduled resources.
 - Moved Schedule/RMO before Reaction Executor so autonomous reactions cannot bypass time/resource allocation.
@@ -162,10 +168,12 @@ What changed:
 - Updated the north-star checkpoint to include scheduled agent time, gated work ownership, and the still-pending executable Schedule/RMO contract.
 
 Subagent final review:
+
 - North-star/mission: no blockers.
 - TDD/SOLID/executable plan: no blockers.
 - Architecture/lifecycle completeness: no blockers.
 
 Validation:
+
 - `git diff --check origin/main...HEAD` passed.
 - Docs-only change.

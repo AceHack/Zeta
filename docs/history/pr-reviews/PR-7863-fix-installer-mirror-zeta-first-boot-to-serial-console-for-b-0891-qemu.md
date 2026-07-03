@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - **`zeta-first-boot.sh`** tees stdout/stderr to `/dev/console` while preserving tty1 for the operator — QEMU serial now sees `[iter-5.1]` and retention markers when install runs on tty1.
 - **`configuration.nix`** documents the tty1 + serial dual-sink contract.
 - **`qemu-full-install-test.ts`** fail-fast after 2 min when serial shows idle `nixos@zeta-installer:~` without install progress (points at console mirror).
@@ -36,6 +37,7 @@
 Per Rodney's Razor: the install.sh / zeta-install.sh split stays; this fixes the accidental console-capture gap blocking 081KSNY2Z0008QG0R0008PN7RQ scenarios 2–4.
 
 ## Test plan
+
 - [ ] `bash -n full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh`
 - [ ] `bun test tools/zflash/test-harness/qemu-state.test.ts`
 - [ ] `build-ai-cluster-iso` scenario 2 + workflow_dispatch scenarios 3–4 after merge

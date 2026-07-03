@@ -17,6 +17,7 @@ Amara 2026-04-27 reviewed Ani's recommendations + Otto's synthesis and provided 
 Amara confirms Ani's recommendation: **"Aurora is the Immune Governance Layer"**.
 
 Rejects:
+
 - "Aurora is the Brain" (implies central command, executive control, personhood — drift)
 - "Aurora is the Runtime Oracle + Immune System" (accurate but too two-headed; better as canonical name + secondary description)
 

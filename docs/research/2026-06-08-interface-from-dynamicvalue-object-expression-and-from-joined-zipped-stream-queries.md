@@ -13,6 +13,7 @@ one interface** (hexagonal port, #7019), and the differential test (#7049) compa
 the *same* interface.
 
 Built (`src/Core/StoredProc.fs`, 6/6 tests green, 0-warning):
+
 - `ITableProc` — the port: `abstract Apply: Table -> Table`.
 - `nativeProc d` — native impl (`{ new ITableProc with Apply t = applyDelta t d }`).
 - `dynamicProc sp` — the **DynamicValue-backed** impl via object expression: validates the stored-proc once
@@ -113,7 +114,9 @@ Aaron asked. It's several converging, named results — and his coinage is almos
 - **Applicative functors** (McBride & Paterson) — `zip` is the applicative `⊛` combining independent queries.
 
 The cut: **banana-split law** (folds) + **fanout / product / pullback → a limit** (join/zip + intersection)
+
 + **coalgebra** (interface-as-observations). Well-trodden; Zeta's twist is running it over the *one DBSP
+
 Z-set stream* with `DynamicValue` stored-procs.
 
 ## Does anyone do it in F#/Scala, or with anonymous shapes? (#7055)

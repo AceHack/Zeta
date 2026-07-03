@@ -87,6 +87,7 @@ while processing" are the recalculation finishing —
 they're not confusion to fix.
 
 Concretely:
+
 - After capturing a substantial new substrate (Otto-NNN,
   research direction, kernel split), pause before
   proposing the next.
@@ -122,6 +123,7 @@ think" or "wait" — that is the recalculation. **Treat it
 as signal, not noise.**
 
 Specifically:
+
 - Don't fill the gap with my own elaboration; let his
   recalculation complete.
 - Don't ask "are you OK" performatively; the load is

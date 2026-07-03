@@ -30,11 +30,13 @@
 ## Summary
 
 Addresses Lior PR discussion archive issues:
+
 - **Spurious Timestamp-Only Diffs**: `tools/pr-preservation/archive-pr.ts` now reads any existing discussion archive for the PR first, and performs a normalization comparison where `archived_at` is masked. If no other metadata or thread changes exist, it skips writing entirely, preventing spurious timestamp-only diffs.
 - **CRLF/LF Line Endings Leakage**: Enforces all generated content to replace `\r\n` with `\n` prior to comparing or writing.
 - **Worldview Refresh Test Failure**: Fixed the prompt assertion test in `tools/codex-loop-tick.test.ts` to correctly expect the `refresh-worldview.ts` script without backticks, matching the timeout wrapper.
 
 ## Verification
+
 - Verified against local PR #5016 (safely outputs `skipped writing ... (only archived_at timestamp changed)`).
 - Full `bun test` test suite completed successfully (1422 passed, 0 failed).
 

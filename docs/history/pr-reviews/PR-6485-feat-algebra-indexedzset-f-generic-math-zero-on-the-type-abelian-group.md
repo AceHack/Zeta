@@ -30,6 +30,7 @@
 The **last algebra-ladder rung**. IndexedZSet (`Z[K×V]`, the join/aggregation rung) is an abelian **group** — same surface as the Z-set rung (#6480): `Zero` + `(+)` (additive monoid) **plus** `(~-)`/`(-)` (the inverse). Completes generic-math across the whole ladder (G-Set + Bag + Z-set + IndexedZSet).
 
 ### What
+
 - `static member Zero` / `(+)` / `(~-)` / `(-)` on `IndexedZSet<'K,'V>`.
 - The pooled key-group sorted-merge combiner (`add`, per-key delegating to `ZSet.add` on the value-`ZSet`s) and `negate` **relocate onto the type** so F# SRTP (`GenericZero`, `Seq.sum`, generic `+`/`-`/`~-`) resolves them (module is `ModuleSuffix`, defined after the type). Module `add`/`neg`/`sub` become thin delegators. **Hot path perf-neutral.**
 - The bilinear **`join`** (the DBSP product) is **not** the group op and is left untouched — the ring multiply is surfaced separately, not as a numeric default.

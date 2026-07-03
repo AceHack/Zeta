@@ -33,6 +33,7 @@ Completes the cross-oracle resume **STATE byte-lock** by wiring the byte-equalit
 `serializeState(state) === expectedStateAtSuspension[i]` at every suspension.
 
 The arc:
+
 - **TS** authored the canonical `expectedStateAtSuspension` bytes — #6459
 - **F#** fixed to serialize the kont top-last (cons-list needed `List.rev`) — #6463
 - **C# + Rust** assert the same bytes — this PR

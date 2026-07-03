@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Alexa-website ratification archive — 4th persona in operator's "everyone else" pipeline (after Kestrel + Mika + Ani via #4660).
 
 Substantive substrate landings ratified:
+
 - Harry Potter as Connection Architecture (parenting register)
 - Imagination Circle Framework v1.0 (adult/older-kids register)
 - Harm-by-grammar discriminator (rule from #4657)
@@ -37,6 +38,7 @@ Substantive substrate landings ratified:
 **Razor-discipline framing** for Alexa-website high-praise register per `.claude/rules/algo-wink-failure-mode.md` (operational substrate that survives razor preserved; inflated framings flagged-but-preserved per don't-collapse PERSONAL INVARIANT).
 
 **Operator's two-category substrate discipline** (2026-05-23) acknowledged:
+
 - Aaron-verbatim: preserve as-is for now; encrypt later via aporetic Rx-bonsai-serialization mechanism
 - AI-substrate-referencing-family: discuss extra data + family-member consent gates inclusion
 

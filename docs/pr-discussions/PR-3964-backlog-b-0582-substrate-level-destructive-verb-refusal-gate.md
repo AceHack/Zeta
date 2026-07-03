@@ -71,6 +71,7 @@ Maji Antigravity Check: Drift detected. This is a narration-over-action blob. I 
 Adds backlog row 081KRQ1AB0008QG0R002469KJG for a substrate-level destructive-verb refusal gate in the autonomous execution path, plus the generated backlog index entry.
 
 **Changes:**
+
 - Adds a P1 backlog design row for pre-call refusal of destructive GitHub/git operations.
 - Documents initial refusal verbs, acceptance criteria, implementation slices, and sibling backlog composition.
 - Updates `docs/BACKLOG.md` with the generated 081KRQ1AB0008QG0R002469KJG entry.

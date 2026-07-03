@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add `parseSeedRefUpdateResponse` for GitHub git-ref create/update responses
 - extract the full ref plus nested `object.sha`, matching the final `buildSeedRefUpdateRequest` write-chain step
 - add focused malformed-shape coverage and preserve the Codex claim file
 
 ## Checks
+
 - `bun test tools/bootstrap-razor/seed-test-repo.test.ts`
 - `/Users/acehack/.bun/bin/bun x markdownlint-cli2 docs/claims/codex-loop-b0343-parse-seed-ref-response-20260529.md`
 - `git diff --check`

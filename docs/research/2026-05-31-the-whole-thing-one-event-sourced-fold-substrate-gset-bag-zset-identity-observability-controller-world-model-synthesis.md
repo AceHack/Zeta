@@ -190,7 +190,9 @@ layer). Work-items get this migration (a work-item's *type* is `task | bug`; `ba
 
 **Custody** of the keys is agent-native, not human-native
 ([081KRW63S0008QG0R0022SFKPM](../backlog/P2/081KRW63S0008QG0R0022SFKPM-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
+
 + [key-custody design](2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)):
+
 **attest, don't remember** — the agent proves identity (SPIFFE SVID + AgencySignature + ZetaId)
 rather than holding a remembered secret; the key is a FROST threshold across society key-guards,
 sealed in hardware. Aaron remembers; Otto attests.

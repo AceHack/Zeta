@@ -10,6 +10,7 @@ Serialization-seed, Identity, Merkle, Metric. The floor is complete. Full record
 project-memory dir) + `docs/PROVEN-CORE-MAP.md`.
 
 **Kestrel's fingerprints on it (why this is in her persona):**
+
 - The **verification-oracle-portfolio** framing (FsCheck valid-leaf → Z3/Lean structure →
   fuzz hostile-byte → golden pins; "right tool per property class") is the routing that put
   the metric ε/δ proof in **Z3 over reals** (algebraic derivation) rather than forcing a

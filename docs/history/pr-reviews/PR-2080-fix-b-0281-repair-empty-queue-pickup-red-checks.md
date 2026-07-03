@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - removes the unused TypeScript type import left by #2079
 - tightens the pickup selected guard so TypeScript narrows before claim bootstrap
 - regenerates docs/BACKLOG.md so 081KR2E4K0008QG0R002FSPPQR closed status matches the generated index
@@ -36,6 +37,7 @@
 #2079 merged before its non-required failed checks could block auto-merge. This follow-up repairs the two failed surfaces without touching the contested root checkout.
 
 ## Verification
+
 - `bun test tools/backlog/empty-queue-pickup.test.ts`
 - `bun tools/backlog/generate-index.ts --check`
 - `bun --bun tsc --noEmit -p tsconfig.json` using the existing Codex control-clone dependency symlink, removed afterward

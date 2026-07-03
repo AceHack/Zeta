@@ -32,6 +32,7 @@ Design spec for Ace CLI **distribution + DX**, per your "write the spec." Synthe
 **Where it lives:** `docs/agendas/ace-package-manager/` (next to the agenda) — *not* the superpowers plugin's `docs/superpowers/specs/` (foreign plugin convention; the skill says your location preference wins).
 
 **Headlines:**
+
 - `tools/ace/ace.ts` already partly exists (081KR2E4K0008QG0R002YE3MMD) → question is *distribution*, not *is-it-TS*.
 - Skill-first (agents) + bunx/bootstrap (humans) + MCP fallback; compiled binary out of v1.
 - **Runtime resolved: Node-floor portable** (Node ≈ universal across harnesses; Codex/Rust = the no-JS exception) — repo now on Node 24 (#6290).

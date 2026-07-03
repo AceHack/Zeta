@@ -31,14 +31,14 @@
 
 Soraya's Lean 4 proof of the algebraic fixpoint property over the zeta-ir-v1 term algebra.
 
-## Proved (sorry-free, universal):
+## Proved (sorry-free, universal)
 
 - `gen_preserves_eval` — generation doesn't change denotation
 - `gen_idempotent` / `gen_gen_eq_gen` — **gen ∘ gen = gen**
 - `gen_has_fixpoint`, `gen_fixpoint_iff_image` — gen is a retraction; fixpoints = image
 - `lawvere_fixpoint` — constructive diagonal argument (Lawvere 1969 / Yanofsky 2003)
 
-## One honest sorry (research target):
+## One honest sorry (research target)
 
 - `gen_self_application` — the quine bridge (concrete IR term whose denotation IS gen). Existence follows from proved `lawvere_fixpoint`; constructing the diagonal over UInt64 encoding is the POPL/PLDI target.
 

@@ -11,12 +11,14 @@ Otto-102 scheduling-memory pattern and CC-002 discipline.
 ## Why NOT inline-absorbed Otto-104
 
 Otto-104 tick already held:
+
 - 9th ferry retroactive absorb (PR #293 landing)
 - Aaron's 3 review-scope + plugin-marketplace corrections
 - Memory save for the corrections (substantial; 2nd Otto-82-
   pattern correction in one session)
 
 Adding an 11th-ferry inline absorb would:
+
 - Regress CC-002 close-on-existing discipline
 - Truncate Otto's ability to do the overlap-analysis +
   Otto-notes + scope-limits that prior ferries got (PRs
@@ -376,6 +378,7 @@ for implementation.
 Scope reality-check: full implementation requires multi-
 node foundation Zeta doesn't have today. But the
 **foundational primitives** can ship incrementally:
+
 - Signal-model `E_i(t)` event-stream types (F# records)
 - Cross-correlation `C_{ij}(τ)` function (pure)
 - Phase-locking value (PLV) calculation (pure)
@@ -390,6 +393,7 @@ Zeta's ZSet substrate. Each is a graduation candidate.
 ## Otto-104 notes (compact; full notes at Otto-106 absorb)
 
 **Immediately notable:**
+
 - Amara's "drop that term" opener confirms Aaron asked
   Amara to drop "Firefly" branding; reframes as formal
   Temporal Coordination Detection Layer. No branding
@@ -418,6 +422,7 @@ routes back to Aaron at Otto-106 absorb.
 
 **Likely overlap with prior ferries (to be analysed
 fully at Otto-106):**
+
 - 5th ferry (PR #235): KSK=authorization-revocation
   membrane — §5 of this ferry ratifies with anti-cartel
   framing.
@@ -434,6 +439,7 @@ fully at Otto-106):**
   and gap #5 (provenance tooling).
 
 **NOT yet in existing ferries (genuine novelty):**
+
 - Temporal coordination detection (PLV / cross-correlation
   / burst alignment / MEV cartel timing)
 - Graph-theoretic cartel detection (modularity spikes /
@@ -446,6 +452,7 @@ fully at Otto-106):**
 - Cartel Cost Function (Cost_cartel > Expected Gain)
 
 **Composes with:**
+
 - PR #284 / Aminata 4th-pass adversarial-validity
   findings on bullshit-detector
 - Otto-102 drop/ cleanup trajectory
@@ -459,6 +466,7 @@ absorb time)
 
 Per `memory/feedback_phase_3_review_queue_narrower_than_
 otto_framing_*_2026_04_24.md` (just saved this tick):
+
 - Aaron's direction-lock-in ask at end of this ferry is
   Amara→Aaron; Otto routes back with recommendation, not
   unilateral decision.

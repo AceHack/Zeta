@@ -34,22 +34,28 @@ This PR changes two files: the 081KQDTYV0008QG0R003QD8YTE backlog row and the Cl
 
 ## Decomposition
 **Buildable now:**
+
 - 081KRA5AR0008QG0R000Y6102S — TS pre-push hook entrypoint
 - 081KRA5AR0008QG0R0035N4S6C — Memory path regex extractor + resolver
 
 **Blocked on 081KRA5AR0008QG0R000Y6102S:**
+
 - 081KRA5AR0008QG0R000C3P8KP — Integrate hygiene lints to pre-push TS
 
 **Blocked on 081KRA5AR0008QG0R0035N4S6C:**
+
 - 081KRA5AR0008QG0R000YZMXNM — Full memory-link checker CLI
 
 **Blocked on 081KRA5AR0008QG0R000Y6102S + 081KRA5AR0008QG0R0035N4S6C:**
+
 - 081KRA5AR0008QG0R003DVPANH — Batched thread resolver TS helper
 
 **Blocked on 081KRA5AR0008QG0R000Y6102S + 081KRA5AR0008QG0R000C3P8KP + 081KRA5AR0008QG0R000YZMXNM + 081KRA5AR0008QG0R003DVPANH:**
+
 - 081KRA5AR0008QG0R0021SSM9R — Setup + index update (meta close)
 
 ## Focused checks (passed)
+
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) (original gate)
 - `bun run lint:markdown docs/backlog/P2/081KQDTYV0008QG0R003QD8YTE-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30.md`
 - `bun tools/backlog/generate-index.ts --check`
@@ -57,6 +63,7 @@ This PR changes two files: the 081KQDTYV0008QG0R003QD8YTE backlog row and the Cl
 - `git diff --check`
 
 ## Rules followed
+
 - TS over bash (children target .ts)
 - Dedicated worktree + pushed claim before write
 - Exactly one bounded step (this PR)

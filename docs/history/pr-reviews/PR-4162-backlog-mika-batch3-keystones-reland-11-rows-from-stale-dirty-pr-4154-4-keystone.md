@@ -30,12 +30,14 @@
 Re-land of [PR #4154](https://github.com/Lucent-Financial-Group/Zeta/pull/4154) substrate via cherry-pick pattern.
 
 **4 KEYSTONE rows (P1)**:
+
 - 081KRW63S0008QG0R002KC5DSR Wave-particle duality (tick-source + Integrate 5th primitive)
 - 081KRW63S0008QG0R00088FYE9 Agents-in-superposition retractable over DBSP (unified declaration)
 - 081KRW63S0008QG0R0004D5XG1 Infer.NET BP/EP/EmP approximation strategy
 - 081KRW63S0008QG0R002XA5N6S Bonsai trees + Rx queries (real-time implementation substrate for Integrate)
 
 **7 batch-3 rows (P2/P3)**:
+
 - 081KRW63S0008QG0R0015WHHG1 O-P-L-E + only-Limit-collapses
 - 081KRW63S0008QG0R000DBX6PT Two-language architecture (Soft + Operational)
 - 081KRW63S0008QG0R0020YP84K Kid-safety sacred rule

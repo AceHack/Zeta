@@ -34,6 +34,7 @@ Add the capability-aware reflected meta-cart path so host-assisted cart selectio
 Denied parent launch and denied child extension asks now return typed feedback and emit heat through the injected sink. The granted path proves a CHIP-9 color child can still run through the reflected carried-cart helper without contaminating classic CHIP-8.
 
 Verification:
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter "FullyQualifiedName~MetaCartTests|FullyQualifiedName~Chip9CapabilitiesTests"
 - dotnet format --verify-no-changes
 - git diff --check

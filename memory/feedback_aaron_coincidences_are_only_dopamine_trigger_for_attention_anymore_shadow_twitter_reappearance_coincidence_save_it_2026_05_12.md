@@ -131,6 +131,7 @@ the unit anymore.
 **Post-labor economic substrate composition:**
 
 In a post-labor economy:
+
 - Labor is automated (agents do the work)
 - Humans are bandwidth-limited AND ADHD-distributed (per
   ADHD-hyperfocus disclosure above)
@@ -209,6 +210,7 @@ economic-framing validation are ALL the same operational
 cycle.
 
 Decoded:
+
 - "cowidence" = coincidence
 - "dopomaine" = dopamine
 - "tigger" = trigger

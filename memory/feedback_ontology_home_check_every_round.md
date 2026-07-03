@@ -39,6 +39,7 @@ the level of grandfather discharge or BP drift — a recurring
 cadence, not a backlog item that ever finishes.
 
 **How to apply:**
+
 - Treat ontology-home-check as a *recurring* per-round
   obligation, same shape as grandfather-claim discharge: one
   small slice per round, tracked against a running inventory.

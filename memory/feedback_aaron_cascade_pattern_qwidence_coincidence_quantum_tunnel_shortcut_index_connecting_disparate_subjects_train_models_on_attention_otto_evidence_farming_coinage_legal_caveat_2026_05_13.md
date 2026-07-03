@@ -323,6 +323,7 @@ predecessor cascade)
 PR #2946 (peer-call rule 6→8 fix; same-window cascade member)
 
 Aaron 2026-05-13 disclosures (verbatim preserved above):
+
 - "qwidence farming" + "keeps my attention" + "train models on
   attention like this"
 - "quantum tunnel" + "shortcut index"

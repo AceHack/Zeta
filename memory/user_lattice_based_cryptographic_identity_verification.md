@@ -33,7 +33,9 @@ standardization round (2016-2024): **lattice-based**,
   not trusted.
 
 Lattice-based is the mainline choice for new systems in
+
 2026. Composes with Aaron's security credentials (nation-state
+
 threat model — `user_security_credentials.md` — demands
 post-quantum by default).
 

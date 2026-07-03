@@ -30,6 +30,7 @@
 Follow-up to #6374, landing two things from this session:
 
 **1. Prior art (you asked me to search the ecosystem).** Attribute-driven source-gen mixins already exist:
+
 - [Morris.Moxy](https://github.com/mrpmorris/Morris.Moxy) — Roslyn source-gen, mixes members **into** the target class
 - [Fody](https://github.com/Fody/Fody) — post-compile **IL-weaving**, raw-perf bake-in
 - C# 8 **default interface methods** — behavior-only, **no per-instance state**

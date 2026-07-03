@@ -30,6 +30,7 @@
 The `lint (TS)` gate went **red on main** (commit 4b593a8b6): #8458/#8487 (observe schema-evolution Task 9) + a stray `service/` test landed **11 tsc errors** (unused imports/locals, a `readonly`→mutable assignment, an `exactOptionalPropertyTypes` mismatch). Main was sitting red — cleared it (CI-steward).
 
 **Minimal, behavior-preserving:**
+
 - `schema-cdc.ts`: `subject` is optional under `exactOptionalPropertyTypes` → conditional spread (TS2375).
 - `schema-evolution-demo.test.ts`: drop unused `consolidate`/`registerReader` imports (TS6133); the 2nd `readers` decl → `readonly SchemaReader[]` (TS4104).
 - `schema-golden-vectors.ts` / `schema-overlap.ts` / `schema-rx-join.test.ts` / `persona-health.test.ts`: remove unused imports.

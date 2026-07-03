@@ -73,6 +73,7 @@ When authoring new Greek-named substrate primitive in F#:
 5. **Zero runtime cost** (alias, not inheritance)
 
 Future Greek-named primitives ready to use this pattern:
+
 - **λάμπω** (lampō, "I shine") = Lase-as-bridge (081KSNY2Z0008QG0R00075C7CH Lampo.fsx Slice A) — companion to μένω
 - **νοέω** (noeō, "I perceive with mind") = potential Observe-as-bridge / Attention primitive
 - **μνάω** (mnaō, "I remember") = potential Memory primitive (PIE sibling of μένω; same root *men-)

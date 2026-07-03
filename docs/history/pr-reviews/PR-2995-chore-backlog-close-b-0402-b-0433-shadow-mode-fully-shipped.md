@@ -35,6 +35,7 @@
 All shadow-mode slices shipped across PRs #2973 (slice 1), #2975 (slice 2), #2983 (slice 3), #2985 (slices 4+5). No code changes — backlog hygiene only.
 
 ## Test plan
+
 - [ ] BACKLOG.md index reflects both rows as `[x]` closed
 - [ ] `bun test tools/shadow/smoke-test.test.ts` → 3 pass, 0 fail (already green on main)
 

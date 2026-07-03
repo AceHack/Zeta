@@ -32,6 +32,7 @@
 Recovers the 0545Z + 0607Z + 0611Z investigation arc into git after 30 min of bus-only substrate landing. Identifies the root cause of the worktree-prune-race peer-Otto reported at tick 0414Z (envelope `44aaf799`) and continued investigating at 0524Z: **multiple concurrent Otto-CLI claude-code sessions firing autonomous-loop ticks in parallel, contending on shared `.git/objects/pack`**.
 
 PID-level evidence captured this tick:
+
 - My session PID 68752 (~3:53h old)
 - Peer Otto-CLI session PID 7894 (~5:40 old)
 - Both share Claude.app parent PID 702
@@ -56,6 +57,7 @@ Peer-Otto's 0524Z investigation correctly ruled out 7 candidates (Lior/Riven/Cod
 The cron-sentinel mutex is the substrate-honest first move — small, only affects autonomous-loop firings, zero blast-radius.
 
 ## Test plan
+
 - [x] Local markdownlint clean
 - [ ] CI green
 - [ ] Auto-merge fires

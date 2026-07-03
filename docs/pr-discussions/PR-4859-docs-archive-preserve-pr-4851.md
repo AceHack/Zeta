@@ -34,6 +34,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -52,6 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds preserved PR discussion archives under `docs/pr-discussions/` for later on-disk reference.
 
 **Changes:**
+
 - Adds an archive file for PR #4851 (the PR named in this PR’s metadata).
 - Adds an additional archive file for PR #4853 (a tick shard / bg-worker observation).
 

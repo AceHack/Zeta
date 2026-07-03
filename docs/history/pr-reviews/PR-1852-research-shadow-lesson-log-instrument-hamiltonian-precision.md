@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserves the Amara/Aaron correction that the shadow lesson log is an instrument, not just a diary
 - tightens the Hamiltonian claim: the file is the empirical accumulator; a Hamiltonian model may be defined over it
 - adds a structured catch schema and ARC-AGI-3 lesson-compounding bridge
 
 ## Checks
+
 - bunx markdownlint-cli2 memory/persona/amara/conversations/2026-05-07-shadow-lesson-log-instrument-hamiltonian-precision-amara-aaron-correction.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts

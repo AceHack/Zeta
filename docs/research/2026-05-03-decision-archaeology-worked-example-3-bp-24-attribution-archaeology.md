@@ -109,7 +109,9 @@ correction (matches the maintainer-stamped commit signature).
 ### Layer 4 — String archaeology: `git log -S "consent-substitute"`
 
 The phrase *"maintainer is explicitly NOT the consent-substitute"*
+
 + *"parental AND-consent required"* are both unique to BP-24 + its
+
 referenced memo. `git log -S` confirms the phrases entered the
 substrate via the round-34 commit + have not been copied elsewhere
 (no propagation; the rule is canonically at one location).

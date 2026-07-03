@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - One bounded step on 081KQ3HBZ0008QG0R003JCR6P8 (P2 3/4-color research track): re-decomposed stage granularity assumption in existing TS probe (tools/graph-coloring/three-color-probe.ts)
 - Fixed malformed Petersen adj-matrix (now valid 10x10, still 3-colorable=true)
 - Explicit note on 081KQ3HBZ0008QG0R003JCR6P8 decomposition mistake (Z3 SMT Stage 2 over-assumed; pure-TS CSP safer zero-dep slice for formal-verif routing evidence)
@@ -37,6 +38,7 @@
 081KQ3HBZ0008QG0R003JCR6P8 too broad (L effort, 5 stages); always re-decompose during build. This is the smallest safe code slice (no docs edit).
 
 ## Focused checks (included per rule)
+
 - Pre-work: dotnet build -c Release → 0 Warning(s) 0 Error(s)
 - Post-edit: bun tools/graph-coloring/three-color-probe.ts → K4 false, C5 true, Petersen true (expected), "081KQ3HBZ0008QG0R003JCR6P8.2 TS probe complete"
 - Dedicated worktree + pushed claim branch used; root checkout untouched

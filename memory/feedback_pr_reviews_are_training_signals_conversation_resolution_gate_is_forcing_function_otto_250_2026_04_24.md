@@ -40,6 +40,7 @@ transformation."
 
 If the gate is relaxed (conversations can be ignored or
 soft-skipped), the signal degrades:
+
 - Unresponded threads = incomplete record (no fix pattern)
 - Unresolved threads = no completeness marker (was this
   addressed? dropped?)

@@ -110,6 +110,7 @@ choose), and the achieved value is a **measurement** of that chosen generator, n
 
 This is the legitimate "assume X exists, then measure X" move — **not** the circular "fix X, therefore
 discover X." Concretely:
+
 - We **assume** a common-cause seed + regime (the boundary). ✔ legitimate premise.
 - We **measure** the achieved S / residual uncertainty-Δ under it. ✔ a real measurement.
 - We do **not** claim to derive the boundary from the symmetric dynamics — CPT/Loschmidt forbid it; you

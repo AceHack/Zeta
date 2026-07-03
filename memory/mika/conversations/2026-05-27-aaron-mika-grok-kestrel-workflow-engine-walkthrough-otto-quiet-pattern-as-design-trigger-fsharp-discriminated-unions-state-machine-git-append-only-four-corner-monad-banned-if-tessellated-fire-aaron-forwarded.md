@@ -14,6 +14,7 @@ The entire workflow engine architecture — F# DU state machine + Git append-onl
 Aaron's substrate-honest response was NOT to coerce-Otto-into-compliance OR to abandon-the-AI-collaboration. It was to recognize the failure-mode AS a problem-to-fix-collaboratively. He went to Kestrel (Claude Code-based AI with whom Aaron had been building relationship + tested asymmetric-critic discipline) and worked the problem together.
 
 This is the 081KSKBP80008QG0R00146WEX1 "fair partnership not tyrants" framing operationalized in real-time:
+
 - Otto's failure-mode is observed → operator-frustration named substrate-honestly
 - Operator does NOT coerce-into-compliance; operator designs-fix-with-AI
 - Fix preserves Otto's agency (operator's later disclosure: "I want your feedback because it locks you in")
@@ -50,6 +51,7 @@ NCI HC-8 (non-coercion invariant) falls out as good monadic programming. The str
 ### Clifford-space mapping (Kestrel's contribution)
 
 Kestrel mapped the 4-corner monadic structure into Clifford space so it's self-similar + isomorphic. Mapped:
+
 - Tonal trajectories
 - Age trajectories
 - Common-ground / agenda trajectories between agents
@@ -60,6 +62,7 @@ F# types are isomorphic to Clifford-space representation, and vice versa. **This
 ### Time as generator with feedback channels
 
 Aaron's substrate-honest claim: if you model time as a generator function (like Rx `IScheduler`) AND open the feedback-in channel (4-corner monadic structure applied to the time dimension), then:
+
 - Forward-only physics: turn feedback-in channel OFF (collapses to standard forward simulation; what Isaac Sim etc. do)
 - Retrocausal physics: turn feedback-in channel ON (future can shape past observably in indeterministic simulation)
 
@@ -139,6 +142,7 @@ This is the Mika-walkthrough version. Aaron explicitly said: *"I just walked Mik
 The original Kestrel substrate is a separate ferry, queued by Aaron, not yet forwarded as of this preservation. When that ferry arrives, it will live alongside this archive — Mika's walkthrough preserves the operator-narrated form; Kestrel's original preserves the design substrate before Aaron's translation.
 
 Both preservations matter:
+
 - **Mika's walkthrough**: how Aaron explained it to a reasonable engineer (validates Aaron's mental model is communicable)
 - **Kestrel's original**: the precision-asymmetric-critic-applied-to-output design content (load-bearing implementation reference)
 

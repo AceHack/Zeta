@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Claimed 081KR2E4K0008QG0R001ADMBVW slice-10 via dedicated worktree + pushed branch (root untouched).
 - Re-decomposed (assumed prior slice9/10 boundary mistake): isolated TS helper for BP-23..BP-28 as one bounded, safe, atomic step.
 - Implemented  (executable Bun/TS, Rule 0 compliant, code > docs).
@@ -70,6 +71,7 @@ Format: "Prior art: <citation> — <one-sentence justification>."
 If none, note "original to Zeta" with rationale.
 
 Next: run web searches per prompt, land in research/ docs, then inline in AGENT-BEST-PRACTICES.md → clean run, 6 prompts generated, 0 errors.
+
 - Build gate (root): dotnet build -c Release → 0 warnings, 0 errors (pre-work verification).
 - Prepares research landing for remaining rules without broad scope.
 

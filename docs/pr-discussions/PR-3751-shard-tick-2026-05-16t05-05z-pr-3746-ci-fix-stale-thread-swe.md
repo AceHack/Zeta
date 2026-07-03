@@ -41,4 +41,5 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR adds a tick-history record documenting a session that fixed a markdownlint CI failure on PR #3746 and triaged review threads on bundled multi-author PR content.
 
 **Changes:**
+
 - New tick log under `docs/hygiene-history/ticks/2026/05/16/` capturing CI-fix sequence, thread triage, and the bundled-PR authorship-split pattern.

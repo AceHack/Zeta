@@ -32,6 +32,7 @@
 EP handles **non-conjugate** factors by **moment matching**. The structural win: **EP is not a new engine — it's a new FACTOR TYPE** that the existing `FactorGraph` + `runToFixpoint` (slice 4) drives.
 
 ### `src/Bayesian/Ep.fs`
+
 - **`Normal.erf/pdf/cdf`** — standard normal Φ/φ (erf via Abramowitz–Stegun 7.1.26, max abs err ≈1.5e-7; .NET has no built-in erf).
 - **`Ep.probitProject cavity`** — moment-match the tilted `N(m,v)·Φ(x)` back to a Gaussian (GPML eq 3.58): `z=m/√(1+v)`, `λ=φ(z)/Φ(z)`, `m̂=m+vλ/√(1+v)`, `v̂=v−v²λ(z+λ)/(1+v)`.
 - **`Ep.probitFactor variable`** — a soft observation "x>0" (likelihood Φ(x)) as a `Factor<Gaussian>`: `ComputeMessages = project(cavity·Φ) / cavity`, where the incoming var→factor message **is** the cavity (the sum-product variable rule). Improper/uniform cavity → flat message (no NaN).
@@ -39,6 +40,7 @@ EP handles **non-conjugate** factors by **moment matching**. The structural win:
 The EP cycle = **cavity (divide) → tilt (×factor) → project (moment-match) → divide** — cavity/divide are slice 2, project is the new bit, the loop is slice 4's `runToFixpoint`.
 
 ### Tests (`Ep.Tests.fs` — 4/4)
+
 - `Normal` cdf/pdf accurate
 - **probit projection matches NUMERICAL QUADRATURE** of `N(m,v)·Φ(x)` over 4 (m,v) cases — the formula is *verified*, not hardcoded
 - **EP probit factor in `runToFixpoint` converges to the moment-matched posterior** (≈`N(0.564,0.682)`, verified vs quadrature; mean shifts positive on "x>0")

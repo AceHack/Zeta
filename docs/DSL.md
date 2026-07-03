@@ -140,7 +140,7 @@ spine.Insert(ZSet.ofKeys [ 1 ; 2 ; 3 ])
 let full = spine.Consolidate ()
 ```
 
-## Why the CE?
+## Why the CE
 
 Without the CE, the same pipeline reads as a long chain of explicit
 `circuit.Map` / `circuit.Filter` calls threading the circuit instance.

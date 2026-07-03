@@ -33,6 +33,7 @@ Aaron 2026-06-10: "does mea and measure both work ... the 3 letter thing i got f
 "cut runs our test framework finalizer right?" (yes).
 
 src/Core/CliVerb.fs (pure module, no classes):
+
 - Verb = Simulate|Measure|Cut|Benchmark|Classify|Resolve; word/all helpers.
 - resolve(token): diskpart minimum-unique PREFIX — full word AND any unambiguous prefix resolve
   (measure==measu==mea; cut==cu; classify==cla==cl); ambiguous ("c" -> cut|classify) REJECTED not

@@ -31,10 +31,12 @@
 Claim + verification of 081KR2E4K0008QG0R002NYV33T smallest safe slice (slice 1 skeleton per re-decomp in backlog). Bounded one-step: claim branch + focused checks only. No live API, no root touch.
 
 ## Checks (in dedicated worktree)
+
 - `dotnet build -c Release`: Build succeeded. 0 Warning(s) 0 Error(s). (27s)
 - `bun tools/github/create-branch-safety-ruleset.ts --dry-run`: Success, prints expected rules + target. Payload skeleton ready.
 
 ## Rules followed
+
 - Dedicated worktree + pushed claim branch *before* any write (empty commit only).
 - Root checkout untouched.
 - TS (Rule 0), re-decomposed during (assumed original atomic mistaken).

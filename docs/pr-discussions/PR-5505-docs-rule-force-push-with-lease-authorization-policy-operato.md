@@ -62,6 +62,7 @@ also documented.
 Adds a new operational rule under `.claude/rules/` defining when `git push --force-with-lease` is authorized (operator confirm by default, peer-agent confirmation as substitute, and a bounded starter list of pre-authorized autonomous situations), plus a decision tree for cold-boot application.
 
 **Changes:**
+
 - Introduces a three-path authorization framework for force-push-with-lease decisions.
 - Documents a starter list of acceptable autonomous scenarios and a “NOT acceptable autonomous” list.
 - Adds an operational decision tree and composition links to related rules/tools.

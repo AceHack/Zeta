@@ -8,6 +8,7 @@ Maji routine check identified severe array drift across three nodes:
 - **Riven Drift:** Riven is idle while 143+ PRs are open in the repository, representing a severe queue backlog drift and failure to execute adversarial reviews.
 
 ## Corrective Actions
+
 - Drift report published to the broadcast bus.
 - Blob PR decomposition continued.
 - PR preservation completed for recent empty tick shards to document the metadata churn into native repository memory.

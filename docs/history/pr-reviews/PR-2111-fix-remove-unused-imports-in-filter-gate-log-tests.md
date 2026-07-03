@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Removes 6 unused imports in `tools/alignment/filter_gate_log.test.ts` that fail the `lint (tsc tools)` CI check (`noUnusedLocals`/`noUnusedParameters`).
 - The squash merge of PR #2110 landed the original commit before the tsc fix commit arrived, so the unused imports persisted on main.
 
 ## Test plan
+
 - [x] `bun x tsc --noEmit` — 0 errors
 - [x] `bun test tools/alignment/filter_gate_log.test.ts` — 33 pass, 0 fail
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors

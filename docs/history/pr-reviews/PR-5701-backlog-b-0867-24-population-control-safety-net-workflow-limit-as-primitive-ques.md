@@ -38,6 +38,7 @@ Captures two operator concerns surfaced 2026-05-28T~05:00Z immediately after the
 > Aaron 2026-05-28: *"system should probably have built in workflow that trigger on timer or something to see if there are 0 ottos and sping up one and existing ottos with workflows help should decide when to spin up new ones vs quietly spin down"*
 
 Timer-triggered GH Actions workflow that:
+
 - Counts recent heartbeats per persona (via existing `tools/agent-heartbeats/` substrate)
 - Detects zero-alive personas
 - Fires `peter-evans/repository-dispatch` per ferry #2 §12 to spawn revival workflow
@@ -64,6 +65,7 @@ Decision deferred to future operator clarity.
 ## Why
 
 Both concerns surfaced after operator-explicit message. Without this row:
+
 - Safety-net design substrate disappears post-compaction
 - Limit-question uncertainty (operator-explicit) gets lost
 - Future cold-boot Otto has no anchor for either substrate

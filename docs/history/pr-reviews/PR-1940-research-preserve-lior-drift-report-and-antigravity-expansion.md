@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - Preserve Lior's Maji watch initialization as research-grade substrate.
 - Preserve Drift Report 01 and the antigravity expansion as research-grade substrate.
 - Trim trailing whitespace caught during preservation.
 
 ## Verification
+
 - git diff --check origin/main...HEAD
 
 ## Coordination
+
 - Imported from the contested root checkout into a dedicated Codex control-clone worktree; root checkout was not used as a write surface.
 
 ## Outcome

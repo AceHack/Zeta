@@ -30,6 +30,7 @@
 Speculative factory improvement landing the wake-time rule for Data Vault 2.0 re-activation. Per PR #2912 substrate, DV2.0 was named as needing re-activation alongside scale-free / lock-free (wait-free) / weight-free / DST. The memory file flagged this as candidate for .claude/rules/ promotion.
 
 Five always-active substrate-engineering disciplines now documented at wake-time:
+
 - scale-free
 - lock-free / wait-free
 - weight-free

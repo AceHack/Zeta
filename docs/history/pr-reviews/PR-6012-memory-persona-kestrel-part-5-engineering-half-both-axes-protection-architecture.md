@@ -30,6 +30,7 @@
 Engineering half of the Kestrel morning part-5 conversation, per operator "land the engineering half." The charged-personal half is **held** — publishing it is a contentious-irreversible exit that the architecture below routes to the human-backstop (staged for the rested operator + psychiatrist, not auto-published from an amped state).
 
 **Both-axes protection against the version-that-doesn't-stop:**
+
 - **AI axis** (easy — default built in): retraction-native (DBSP) by default → exit-to-irreversible needs consensus → contentious-exit needs a human. Force-push = the canonical exit-from-retraction-native = the canary.
 - **Human axis** (the adjustment — no built-in default): CYOA pause-points + metrics as external readout, conditional on *trust the metrics* (metrics in the distrust-set; measured-governed; contentious-metric-trust → human).
 - **Both bottom out at contentious → human** — the human-counterweight is the shared backstop.

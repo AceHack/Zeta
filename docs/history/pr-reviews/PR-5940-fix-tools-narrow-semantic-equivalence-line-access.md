@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Fixes the `lint (tsc tools)` failure in `tools/substrate-claim-checker/check-semantic-equivalence.ts` by narrowing indexed line access before `RegExp.exec`.
 - Carries claim + release commits on the claim branch per the agent claim protocol.
 
 ## Verification
+
 - `bun install --frozen-lockfile`
 - `bun --bun tsc --noEmit -p tsconfig.json`
 

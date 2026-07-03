@@ -30,6 +30,7 @@
 **Pre-live-test bug** in the onboard orchestrator (caught while checking readiness for a real setup run): step 3 (machine-key) generated the device key `publish:false` (local only), but step 4 (publish) reads the pubkey from `maintainers/<user>/machines/<host>.pub` — never written. So a real end-to-end `onboard` run **always blocked at publish**.
 
 **Fix:**
+
 - Step 3 → `publish: true`: writes the PUBLIC device key to `maintainers/<user>/machines/<host>.pub` (the registry path, *and* where step 4 reads). Public-only; keygen stays biometric-gated.
 - Dry-run coherence: publish.ts checks key-exists before its dry-run branch, so a fresh-box dry-run showed publish "blocked"; onboard now relabels to "would-publish (after keygen)" since step 3 precedes it.
 

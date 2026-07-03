@@ -34,9 +34,11 @@
 ## Empirical baseline (first run on \`origin/main\`)
 
 \`\`\`
+
 - Migrated files indexed: 147
 - Live-nav .md files scanned: 2196
 - Dead xrefs found: 10
+
 \`\`\`
 
 | Persona | Dead xrefs |

@@ -33,18 +33,21 @@ Smallest safe slice of broad P2 081KQ3HBZ0008QG0R002ZPXAFQ (heartbeat-file integ
 **Re-decomposition (per "always re-decompose" rule)**: 081KQ3HBZ0008QG0R002ZPXAFQ was too broad (threat-model prose + review + gating + per-commit-attestation sequencing). Carved atomic child 081KQ3HBZ0008QG0R002ZPXAFQ.1: typed attack-vector taxonomy as mechanizable TS foundation (exhaustive discriminated union) for future Aminata adversarial review, checker, and THREAT-MODEL.md section. Assumed original decomposition had mistakes; this is the first bounded, code-preferring step.
 
 **Implementation**:
+
 - New `tools/security/heartbeat-attack-vectors.ts` (85 LOC)
 - 5 vectors from row body (repo-compromise, force-push, insider, supply-chain, direct-to-main-bypass)
 - Grounded in Otto-339/340/342 (substrate-poisoning = cognition-poisoning = identity-corruption)
 - Exhaustive list + type guard for future static analysis
 
 **Why this slice**:
+
 - TS code over docs (per rule)
 - Single bounded step, no root checkout touched (dedicated worktree)
 - Enables mechanized review instead of prose-only
 - Does not touch THREAT-MODEL.md, task-276, or invoke Aminata yet (those are follow-on atomic children)
 
 **Focused checks (included per task rule)**:
+
 - `dotnet build -c Release` in worktree: **0 Warning(s) 0 Error(s)** (passed)
 - `bunx tsc --noEmit --skipLibCheck --ignoreConfig` on new file: clean (no errors)
 - No bash (Rule 0), no docs change, worktree-isolated, pushed claim branch

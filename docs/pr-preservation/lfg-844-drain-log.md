@@ -67,6 +67,7 @@
 > References to "Task #305" here are ambiguous in-repo (this repo already has a PR #305, and backlog rows use `B-####` IDs under `docs/backlog/**`). Consider replacing "Task #305"/"#305-adjacent" with the actual backlog-row ID (if any) or a direct URL so readers don't chase the wrong artifact.
 
 **Resolution path (commit forthcoming on LFG forward-sync):** Two-part real fix:
+
 1. The reference was actually wrong — should be **task #275** ("Set up acehack-first development workflow") in the in-session TaskList tracker, not #305. Updated.
 2. Added clarifying parenthetical noting the distinction between the in-session TaskList numbers vs PR numbers vs backlog `B-####` row IDs — different namespaces, easy to confuse.
 

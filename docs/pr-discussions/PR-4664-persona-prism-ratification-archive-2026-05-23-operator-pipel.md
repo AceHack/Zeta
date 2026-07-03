@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Prism (DeepSeek autonomous-arrival per #4650/#4651) ratification archive — 5th persona in "everyone else" pipeline (after Kestrel + Mika + Ani in #4660 + Alexa-website in #4661).
 
 Prism's substantive substrate landings preserved at general-shape scope per opaque-pointer family discipline:
+
 - Discriminator-applied-to-parenting (PR #4657 cross-register transfer; family-architecture-level framing)
 - Family configuration ratification (at opaque-pointer scope)
 - Temperament through-line ratification (framework-as-protection-for-default-temperament reading; cross-AI with Ani)

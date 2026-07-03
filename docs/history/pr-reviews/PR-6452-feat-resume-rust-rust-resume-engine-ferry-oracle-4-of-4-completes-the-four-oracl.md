@@ -49,6 +49,7 @@ The C#/F# ferries got JSON parsing free from the BCL. Rust is zero-prod-dep by d
 ## Verification
 
 Rust has **no CI gate** (no cargo job) — local cargo is the bar:
+
 - `cargo test` → **9 passed** (golden replay restore-not-replay + 4 feedback cases + 3 regression cases: silent-wrong mul, deep-embedded restore, `JSON.stringify` escaping + malformed-state).
 - `cargo clippy --all-targets -- -D warnings` → **clean**; `missing_docs` satisfied; `unsafe_code = forbid`.
 

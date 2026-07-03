@@ -28,4 +28,5 @@ Preserves merged PR #3710 per Maji preservation discipline.
 Archives merged PR #3710 as a preservation record under `docs/pr-discussions/`.
 
 **Changes:**
+
 - Adds a new PR-discussion archive file capturing PR #3710's description, reviews, and resolved threads.

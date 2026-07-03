@@ -32,11 +32,13 @@
 **L** in Aaron's *'S M L all please in that order lol'* sequence. Closes the substrate-engineering ship-sequence with the wire-up that turns the tournament-loop substrate into a live closed-loop iteration system.
 
 **S/M/L sequence COMPLETE**:
+
 - S = PR #5767 (081KSNY2Z0008QG0R001YK61JQ.5 evolution mash-refine)
 - M = PR #5768 (081KSNY2Z0008QG0R001YK61JQ.4 pairing tracker)
 - L = THIS PR (081KSNY2Z0008QG0R001YK61JQ.2 closed-loop orchestrator)
 
 Tournament loop NOW STRUCTURALLY COMPLETE (modulo LLM-call generation substrate):
+
 1. Generate hypotheses
 2. **dispatchCi** → CiVerdict (THIS PR via callbacks)
 3. **recordVerification** (PR #5768 pairing)
@@ -58,6 +60,7 @@ Tournament loop NOW STRUCTURALLY COMPLETE (modulo LLM-call generation substrate)
 ## Design: injectable callbacks (separation-of-concerns)
 
 Orchestrator does NOT tightly couple to specific TrueSkill / evolution / pairing modules. Caller wires in:
+
 - `rate1v1` + `conservativeSkill` → `rankSurvivors` callback
 - `evolveTopN` → `evolveSurvivors` callback
 - CI substrate (e.g., `tools/ci/qemu-full-install-test.ts` per 081KSNY2Z0008QG0R0008PN7RQ) → `dispatchCi` callback

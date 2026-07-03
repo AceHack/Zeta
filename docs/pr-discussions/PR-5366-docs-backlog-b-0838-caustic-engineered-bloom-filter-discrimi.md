@@ -70,6 +70,7 @@ P2 priority. NOT immediately tractable as single-implementation work. Phase 1 is
 Adds backlog row **081KSGS9H0008QG0R002THJ2P1** to capture a phased approach for “caustic-engineered” multi-learned-bloom-filter discriminators for a remote-code trust layer, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/081KSGS9H0008QG0R002THJ2P1-...md` with frontmatter + problem/target/phases/acceptance/composition links.
 - Updates `docs/BACKLOG.md` to include the new 081KSGS9H0008QG0R002THJ2P1 entry in the P2 section.
 

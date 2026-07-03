@@ -80,6 +80,7 @@ routing). This refines `cells-as-geodes` and the existing geospatial workitem
 
 Mostly definitional/connective capture. (1) is a real correction (and a small `ITravelerFrame` doc refinement
 ships with it); (2) is captured-as-Aaron's-framing with the legal treatment explicitly deferred to threat-model
+
 + human sign-off; (3) refines an existing workitem. No build authorized beyond the doc-comment.
 
 ## Beacon anchors

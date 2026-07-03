@@ -62,6 +62,7 @@ And the follow-up clarification:
 **On PATH**: gh + claude + kubectl + helm + k9s + argocd + cilium-cli + hubble + nmblookup + smbclient + git + nodejs/npm + standard tools
 
 **In \$HOME**:
+
 - \`~/Zeta/\` (pre-cloned)
 - \`~/.config/gh/\` (iter-5.4.0 gh auth persisted)
 - \`~/.config/claude/\` (iter-5.5.0 claude login persisted)

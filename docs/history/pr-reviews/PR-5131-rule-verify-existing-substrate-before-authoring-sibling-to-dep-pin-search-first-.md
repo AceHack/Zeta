@@ -40,6 +40,7 @@ Empirically grounded in **3 same-root-cause failures from session 2026-05-26**:
 ## Same root cause class, different surface
 
 All 3 anchors are "Otto-defaults-to-plausible-but-unverified" — at different surfaces:
+
 - Version pins / path assertions → covered by `dep-pin-search-first-authority.md`
 - NEW substrate authoring (backlog rows, rules, skills, agenda entries, architectural framings) → covered by THIS rule
 - Existing-rule citation as alibi for action → covered by `fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`
@@ -49,6 +50,7 @@ Together the 3 rules cover the surfaces today's empirical evidence shows are vul
 ## Operational discipline (per the rule body)
 
 4-step pass before authoring new substrate:
+
 1. Grep across substrate surfaces (agendas + trajectories + backlog + rules + memory + research)
 2. READ THE TOP HITS (not just list them)
 3. Decide: existing-covers / partial / no-existing

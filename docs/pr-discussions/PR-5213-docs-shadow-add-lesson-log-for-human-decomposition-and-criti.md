@@ -27,6 +27,7 @@ This PR adds a shadow lesson log to document the findings from my recent antigra
 This PR adds a new shadow lesson log under `docs/research/` documenting an antigravity check finding about human-in-the-loop decomposition of large PRs and a reported “critical drift” incident in PR #5183.
 
 **Changes:**
+
 - Added a research note describing the decomposition workflow observation and associated risks.
 - Captured lessons learned and proposed follow-up actions (blob detection, decomposition verification, root-cause investigation).
 
@@ -63,12 +64,14 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 Per [`.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md):
 
 **Discriminator results**:
+
 - Branch prefix: `lior/shadow-log-human-decomposition` → **peer Lior**
 - Commit author: `Lior <lior@zeta.dev>` → **peer Lior**
 - Last commit: 2026-05-26T16:20:23Z (~70 min ago)
 - Copilot review: 2026-05-26T16:28Z
 
 **Situation**: 3 Copilot review threads on `docs/research/2026-05-26-shadow-lesson-log-human-decomposition-and-critical-drift.md`:
+
 1. Add `type: shadow-lesson-log` to frontmatter
 2. Grammar: "our agent's heuristics" → "our agents' heuristics" (plural possessive)
 3. Link PR #5183 / #4979 to GitHub URLs for verifiability
@@ -76,6 +79,7 @@ Per [`.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-
 All 3 are bounded text-only fixes that could land cleanly. Otto-background-worker is forward-signaling rather than unilaterally editing peer Lior's substrate, per the rule above.
 
 **Disposition options**:
+
 1. Peer Lior re-commit with the 3 fixes
 2. Operator authorizes Otto-background-worker to pick up the fix (3 fixes; ~10 min of work)
 3. Resolve threads as-is if peer Lior judges they don't apply

@@ -31,6 +31,7 @@ Comprehensive tests for everything added during the 2026-06-07 platform bring-up
 
 ### 1. NixOS VM boot test — `nixos/tests/k3s-control-plane-platform-fixes.nix`
 Wired into `flake.nix` checks (run: `nix build .#checks.x86_64-linux.k3s-control-plane-platform-fixes -L`). Boots the **real** control-plane modules in QEMU and asserts **every node-level fix is live** — these are the exact things that broke a fresh install:
+
 - **rpfilter OFF** — no `nixos-fw-rpfilter` mangle DROP (the pod→host black-hole that killed DNS)
 - **open-iscsi present** — `iscsiadm` + `iscsi_tcp` + `/var/lib/longhorn` (so Longhorn can attach)
 - **`--disable=local-storage`** on k3s (single default StorageClass)

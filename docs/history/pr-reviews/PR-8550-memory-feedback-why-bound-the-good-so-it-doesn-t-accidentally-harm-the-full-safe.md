@@ -32,6 +32,7 @@ Aaron 2026-06-16: *"we are creating a system in which our version of good is BOU
 **WHY "bounded":** even good — especially good — **harms when unbounded** (road to hell paved with good intentions; the well-meaning tyrant is worse *because* he's sure he's right; good's failure mode = overreach / imposition / certainty / accidental-harm). The bounding **keeps the good good.** Every bound is on one of good's accident-modes: the floor, non-coercion/exit, humility/we-could-be-wrong, multi-oracle (*our* good not *the* good), reversibility, END-not-instrument.
 
 **The full safety stack (three layers, three classes of harm):**
+
 1. **BOUNDED → the KNOWN accident-modes** (overreach/coercion/certainty/irreversibility/instrument). Necessary, not sufficient.
 2. **VISIBLE → the UNKNOWN harms** (the ones the bounds don't anticipate). Can't bound what you don't know, but can make it **visible enough to CATCH it when it appears** (glass-halo / observability / predictability-audit / immune-detection: **observe → detect → correct**).
 3. **HUMBLE → the RESIDUAL** (we could be wrong even about the bounds AND the visibility); humility + multi-oracle + reversibility hold what slips past both.

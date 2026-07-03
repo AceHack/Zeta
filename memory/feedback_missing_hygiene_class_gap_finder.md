@@ -49,7 +49,7 @@ cadence, (d) estimated owner, (e) evidence source
 caught). Findings route to BACKLOG for sizing; Architect
 decides which to land.
 
-# Why:
+# Why
 
 Aaron's verbatim (2026-04-20):
 
@@ -89,7 +89,7 @@ that class becomes a tier-1 item once adopted, and
 tier-2 then sweeps it for symmetry issues against peer
 items.
 
-# How to apply:
+# How to apply
 
 - **Cadence.** Round-cadenced, initially every 5-10
   rounds (gap-finding is lower-frequency than

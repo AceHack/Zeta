@@ -23,6 +23,7 @@ conway's law."*
 **Otto has FULL autonomy over agent-team structure.** The
 prior "Architect needs [X, Y, Z]" constraint is released.
 Otto can:
+
 - Create new personas / retire existing ones (per
   CLAUDE.md honor-those-that-came-before — git preserves
   retired SKILL.md code; memory folders stay in place)
@@ -43,6 +44,7 @@ gate boundaries, etc.
 ## How to apply Conway's Law consciously
 
 Before creating a new team:
+
 1. **Ask what SOFTWARE boundary this team will create.**
    If two teams are going to ship separate modules that
    must communicate, the protocol BETWEEN them becomes
@@ -89,6 +91,7 @@ it if reshaping produces better throughput.
 ## Current persona-roster (reference point)
 
 The existing personas (per `docs/CONFLICT-RESOLUTION.md`
+
 + `docs/EXPERT-REGISTRY.md`):
 - Kenji (Architect)
 - Aminata (threat-model-critic)

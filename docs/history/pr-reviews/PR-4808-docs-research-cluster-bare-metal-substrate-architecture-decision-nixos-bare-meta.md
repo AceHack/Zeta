@@ -60,6 +60,7 @@ Guix System / Ubuntu/Debian/Fedora / Fedora CoreOS / Flatcar / Bottlerocket / Pr
 ## Heterogeneous compute architecture
 
 Three node classes via NixOS per-node-class modules from one flake:
+
 - **GPU compute** nodes (k8s workers)
 - **Phone orchestrator** (Cellhasher management; NOT k8s worker — phones are workload-substrate)
 - **Pi cluster + AI hats** (k8s optional; direct hardware access for Hailo/Coral/Edge TPU)
@@ -67,6 +68,7 @@ Three node classes via NixOS per-node-class modules from one flake:
 ## Framework alignment
 
 Maps each architecture choice to specific framework disciplines:
+
 - DST → NixOS reproducibility
 - Substrate-or-it-didn't-happen → NixOS as full state
 - Glass-halo bidirectional → Argo CD GitOps + Cilium eBPF

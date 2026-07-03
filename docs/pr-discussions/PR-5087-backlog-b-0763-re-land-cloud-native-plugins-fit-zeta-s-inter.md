@@ -38,6 +38,7 @@ Follow-up: close #5049 with substrate-recoverable cross-link.
 Re-lands backlog row **081KSE6WT0008QG0R000WVYAJ2** describing the “Zeta-owned interfaces → vendor-swappable plugins” strategy, and updates the generated backlog index accordingly.
 
 **Changes:**
+
 - Adds new per-row backlog file for **081KSE6WT0008QG0R000WVYAJ2** under `docs/backlog/P2/`.
 - Regenerates `docs/BACKLOG.md` to include the new row link.
 

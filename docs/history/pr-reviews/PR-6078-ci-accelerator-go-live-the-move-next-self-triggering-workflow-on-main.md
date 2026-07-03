@@ -30,12 +30,14 @@
 **Operator-authorized go-live** (Aaron 2026-05-30: *"go-live the accelerator self-triggering action"*). `workflow_dispatch` is only dispatchable from the default branch, so go-live = put the workflow on **main**. It **runs on the accelerator branch** (checks out `accelerator/pr-less-git-monster`, runs the move-next harness, commits append-only events there); main holds the live definition.
 
 ## Reversible + cancelable (the key safety property)
+
 - **Kill-switch:** create `events/_HALT` on the accelerator branch → halts the loop + stops re-dispatch.
 - **Disable:** Actions UI → disable the workflow.
 - **Cancel:** cancel any running run mid-flight in the Actions UI.
 - **Remove:** follow-up PR deleting this file.
 
 ## Safety rails (all intact, actionlint-clean)
+
 - **workflow_dispatch ONLY** — adding this file does NOT auto-run anything; it only becomes dispatchable.
 - **concurrency=1** (no parallel spam) · **bounded recursion** (countdown + hard-cap 25 in workflow AND harness) · **events/_HALT kill-switch** · **append-only-no-force** · **GITHUB_TOKEN-only** (no PAT → controlled, counted recursion; GitHub's no-re-trigger default stays the floor) · **input-hardened** (env-vars + agent allow-list + numeric validation).
 - **Actions SHA-pinned** to the repo's trusted versions (per the dep-pin rule): `actions/checkout@de0fac2 # v6.0.2`, `oven-sh/setup-bun@0c5077e # v2.2.0`.

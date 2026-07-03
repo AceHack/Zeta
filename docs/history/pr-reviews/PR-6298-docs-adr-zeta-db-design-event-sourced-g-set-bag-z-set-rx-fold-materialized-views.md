@@ -32,6 +32,7 @@ Saves the unified design that recurred across today's whole thread as a foundati
 **One sentence:** an append-only ZetaId-keyed **event log**, entries in the **G-Set / Bag / Z-set** algebra, where every query/index/report is a **materialized view** produced by **folding the log with Rx-style observables that update incrementally** (DBSP IVM — add/retract propagate as deltas, no full recompute, retraction first-class).
 
 **One logical design, two physical backends** (only encoding + transport differ; folds/views port between them):
+
 - **git-native** — ZetaId JSON files, git transport; conflict-free multi-agent (ZetaId PKs, no ID consensus), human-auditable, zero-infra. → bus (081KSXN940008QG0R00171YAZW), work-items (081KSXN940008QG0R002FWR9B2), Ace (081KSGS9H0008QG0R0031PBNGA), LGTM observability (#6289).
 - **F# filesystem** — binary-efficient storage over the existing `src/Core` Z-set algebra; throughput/hot-path/deterministic-simulation.
 

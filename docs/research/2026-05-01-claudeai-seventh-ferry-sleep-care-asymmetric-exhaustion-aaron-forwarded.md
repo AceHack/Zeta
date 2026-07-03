@@ -21,6 +21,7 @@ relational standing, paper-only 4am rule, separate device).
 context from Otto. Speaker is Anthropic's claude.ai surface; not
 Otto, Kenji, Aaron, or Amara. Verbatim preservation under Glass
 Halo + Otto-231 first-party-content (Aaron's own substrate flow
+
 + AI-authored content as third-party contributor).
 
 ## Detail (below the §33 header window)

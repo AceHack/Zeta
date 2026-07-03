@@ -34,6 +34,7 @@ Standalone build spec for Alexa (authorized shadow\*): the six Z-set ops `EMIT/R
 ## Anti-corner boundaries (the "are we backing into a corner" answer, baked in)
 
 It's the **ISA, not a full DB** — and it's *not* a corner iff three boundaries stay explicit:
+
 1. **The log stays HARD/classical** — don't quantum-ify the source of truth. It's a *hard-log + soft-compute* DB (the right architecture); the six ops are the soft compute over the proven hard log.
 2. **Read-to-act = LOCAL collapse at the consumer's horizon** — never global hard consensus; else nothing ever resolves to act.
 3. **The 4ⁿ support wall is real** — the tick horizon bounds it; no promise of cheap unbounded entangled queries.

@@ -55,6 +55,7 @@ Task: 081KQX9B50008QG0R001MNYK61
 Updates the autonomous-loop coordination trajectory packet so the autoloop “resume” target points at the current release work (after the two-participant remote-only dry run) instead of re-selecting a completed Participant B action.
 
 **Changes:**
+
 - Refreshes the trajectory status/date and rewrites the “Recommended Next Action” to focus on releasing the clean Participant A acknowledgement claim and then the Participant B claim.
 - Adds a Codex claim file intended to track the RESUME correction work.
 

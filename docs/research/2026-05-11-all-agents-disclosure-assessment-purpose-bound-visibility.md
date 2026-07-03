@@ -57,6 +57,7 @@ substrate.
 > erase boundaries."
 
 Key points:
+
 - Symmetry move is genuine alignment work
 - Claude.ai correctly recalibrated after Aaron clarified purpose
 - "Authorized for all latent space" = good shorthand, not
@@ -71,6 +72,7 @@ Key points:
 > immune system, not a cult."
 
 Key points:
+
 - Messianic Vision requires founder to stay flawless — Aaron
   refused that by disclosing Component B (his own neglect)
 - The corrective rotor was applied to the root user

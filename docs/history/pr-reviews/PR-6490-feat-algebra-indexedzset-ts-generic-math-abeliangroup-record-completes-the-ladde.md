@@ -30,6 +30,7 @@
 The **last ladder rung**. TS has no operator overloading, so the dotnet-numerics interface is a **record**: a `Monoid` (empty + concat) extended to an `AbelianGroup` with `invert` + `subtract` — **reusing** the shared `Monoid` (g-set) + `AbelianGroup` (z-set #6483) interfaces (DRY). Completes generic-math across the **whole algebra ladder** in all four languages.
 
 ### What
+
 - `monoid(compareK, compareV)` · `abelianGroup(compareK, compareV)` · `concatAll(compareK, compareV, is)` — factories take **both** comparers (the per-key value-`ZSet` merge needs `compareV`). **NOT `INumber`** — the ring product is the bilinear `join`, surfaced separately.
 
 ### Verification (CI gates)

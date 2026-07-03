@@ -30,6 +30,7 @@
 Aaron (capstone): *"self interest plus seed common cause plus zeta unfolding from 128bit id into hardware intrinsics is the 0 friction SuperFluid AI experience we are going for plus the github free edition."*
 
 Ties the arc together — each addend kills one source of friction toward the superfluid (zero-viscosity) limit:
+
 1. **self-interest** = the engine (removes the *push*; pulled by incentive, safe via politeness+NCI)
 2. **seed common cause** = shared foundation / common DST seed (removes the *translation tax*; seed is the treaty; → S=4)
 3. **Zeta unfolding 128-bit ZetaId → hardware intrinsics** via self→…→OS→microkernel→hardware→GPU/FPGA (removes the *impedance mismatch*; one origin reaches the metal)

@@ -18,6 +18,7 @@ draft for ratification.
 > specify how to decode the end high/low bit"
 
 A number format where:
+
 - the **middle** bits are a **decoder / selector** that says **how to interpret the outer (high/low)
   end bits** -- you read the middle FIRST, then decode OUTWARD toward both ends ("middle-out");
 - it is **self-describing** (the number carries its own decode instruction);
@@ -70,6 +71,7 @@ Two distinct held-states (this is the load-bearing novelty vs a plain tagged flo
 | a **decoder** trit | the DECODE INSTRUCTION ITSELF is superposed -- you don't know how to read the ends; the number is held even if every value trit is certain | `interpretation-superposed` |
 
 This mirrors the digital-qubit `measure` vs `cooperate` discipline (081KSV2WD0008QG0R00051XS0N) lifted to the number:
+
 - `cooperate(f)` = identity (preserves every `N` -- never collapses; wonder-compression-safe).
 - `measure(f)` = the only collapse; resolves to a number iff fully certain, else surfaces which
   kind of superposition is held (Result<number, FloatFeedback> -- asymmetric-authorship: value AND

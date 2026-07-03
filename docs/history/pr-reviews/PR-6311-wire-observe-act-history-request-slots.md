@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - makes Menu16 slots 10/11 selectable `history.retract` and `history.redo` request controls
 - returns typed no-side-effect `history_retract_requested` and `history_redo_requested` outcomes from `act()`
 - updates CLI stable menu hashing, action formatting, and tests for history request selection
 - records the checkpoint in the Phase 2 CA plan
 
 ## Verification
+
 - node --experimental-strip-types --test packages/application/test/observe.test.ts apps/agent-cli/test/agent-cli.test.ts
 - npm run typecheck
 - npm test
@@ -42,6 +44,7 @@
 - dotnet build -c Release is blocked locally by existing SDK pin: global.json requests 10.0.203; installed SDKs are 9.0.100, 9.0.200, 10.0.101
 
 ## Review note
+
 - Requested subagent review could not be spawned because the agent thread limit is currently reached.
 
 

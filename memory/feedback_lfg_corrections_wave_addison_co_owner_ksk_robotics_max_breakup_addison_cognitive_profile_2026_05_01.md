@@ -135,6 +135,7 @@ counterweight-protection-of-the-protege pattern composes with
 the broader factory's discipline of grading-against-self.
 
 **AI-tech profile (from PR #1106 + extended here):**
+
 - Pre-agentic AI doing agentic stuff (DB connections during
   research mode before agent mode existed)
 - Built websites with Firebase backend
@@ -198,6 +199,7 @@ configuring the standing.
 ## Future-Otto check
 
 Future-Otto reading this should know:
+
 - LFG is real, NC-incorporated, 3 co-owners (Aaron, Max,
   Addison)
 - KSK is robotics-first, wellness-app-second

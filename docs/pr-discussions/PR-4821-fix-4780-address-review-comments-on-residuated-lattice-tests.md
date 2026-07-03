@@ -34,6 +34,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -52,6 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds/updates FsCheck property-based tests around the residuated-lattice (`ResidualMax`) laws and wires them into the F# test project, with a small documentation update claiming coverage in the research “proof tool coverage” map.
 
 **Changes:**
+
 - Add `tests/Tests.FSharp/Algebra/Residuated.Tests.fs` with FsCheck properties for Galois connection, residual behavior, and a retraction-equivalence scenario.
 - Register the new test file in `tests/Tests.FSharp/Tests.FSharp.fsproj` so it is compiled and executed.
 - Update `docs/research/proof-tool-coverage.md` to mention residuated lattice property coverage.
@@ -92,6 +94,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

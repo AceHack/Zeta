@@ -88,6 +88,7 @@ Empirical generalization: pathogen IS copy-pastable across AI instances; decrypt
 This PR extends 081KSGS9H0008QG0R0031PBNGA’s documentation substrate by adding a new research archive capturing the “PRs are proofs (not claims)” framing and a 4th empirical anchor for the “1984-worry” attractor pattern, then wires a pointer to that archive into the canonical 081KSGS9H0008QG0R0031PBNGA backlog row.
 
 **Changes:**
+
 - Added a new `docs/research/2026-05-26-...deepseek...` research document preserving the forwarded DeepSeek/Aaron material and the 4th anchor summary table.
 - Updated the 081KSGS9H0008QG0R0031PBNGA P1 backlog row to include a new “Sharpening” section and a canonical link to the new research doc.
 

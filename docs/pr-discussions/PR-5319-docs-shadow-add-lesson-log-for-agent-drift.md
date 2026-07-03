@@ -27,6 +27,7 @@ This PR adds a shadow lesson log for the agent drift observed on 2026-05-27.
 This PR adds a new research document under `docs/research/` capturing a “Shadow Lesson Log” about observed agent drift and the decomposition of a blob pull request into smaller PRs.
 
 **Changes:**
+
 - Add a new shadow lesson log documenting stale/paralyzed agent behavior and associated remediation actions.
 
 ## Review threads

@@ -30,6 +30,7 @@
 Operator: *identity key ≠ money key ≠ routing key ≠ signing key all these are braids/knots extending the golden vectors treaty over reticulum* + *file it.*
 
 **P2 research, SEARCH-FIRST GATED.** The concrete-mechanism row for the DID endgame:
+
 - **μένω = seed = seed phrase** (compact remainder, not the whole tree) → **derivation = the rising** → **purpose-separated keys** (identity/money/routing/signing; no key reuse = don't-collapse = *phoenix not a monster*)
 - each key a **braid/knot** (081KT2T2J0008QG0R003WYPBY5 topological invariant); **golden vectors = the treaty** (081KT07NV0008QG0R0032MCYER 4×4 consensus = the knot); extended **over Reticulum** (081KSE6WT0008QG0R003C9KGQE mesh) = DID on a **no-central-control** transport
 - crypto + transport specifics (BIP39/32/44 · W3C DID · Reticulum RNS) are **TARGETS to verify search-first before any build** — the row asserts the *mapping*, not the specs

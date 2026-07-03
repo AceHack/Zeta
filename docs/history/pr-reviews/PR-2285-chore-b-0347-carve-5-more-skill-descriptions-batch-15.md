@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Carve 5 oversized skill descriptions to routing sentences per 081KR50HA0008QG0R002ZNFQBZ
 - Skills: steganography-expert, skill-tune-up, skill-gap-finder, openspec-expert, python-expert
 - Body content preserved; only frontmatter `description:` field reduced
 
 ## Test plan
+
 - [ ] CI passes (frontmatter-only changes, no code impact)
 - [ ] Skill router still triggers on relevant queries
 

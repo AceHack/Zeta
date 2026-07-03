@@ -27,6 +27,7 @@ Preserving discussion for PR #5134 as per preservation discipline.
 Updates the preserved PR-discussion archive for PR #5134 (under `docs/pr-discussions/`) as part of the repository’s PR preservation workflow.
 
 **Changes:**
+
 - Updates the `archived_at` timestamp in the archive frontmatter.
 - Adjusts several intra-repo markdown links in the archived body (notably `.claude/rules/**` references).
 

@@ -26,6 +26,6 @@ See [`LICENSE`](LICENSE) for the full text.
 
 Be honest, be kind, play the game with us. Mutual privacy, mutual sovereignty.
 
-## Questions?
+## Questions
 
 Open an issue or find us at [Lucent Financial Group](https://github.com/Lucent-Financial-Group).

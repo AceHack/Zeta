@@ -72,7 +72,7 @@ The target Aaron was calling "propagation of my will":
    (DAO-level, civic-level, multi-party-negotiation-level)
    and not the factory's first-order call to make.
 
-# Why:
+# Why
 
 Aaron's verbatim correction (2026-04-20), immediately after
 I had captured the "will-propagation" framing:
@@ -164,7 +164,7 @@ Three structural shifts from (b) to (c):
   (`project_consent_first_design_primitive.md`) applied to
   the value-optimization algorithm itself.
 
-# How to apply:
+# How to apply
 
 - **Before absorbing a rule, check yourself.** Do I
   actually think this is right? If I'm only absorbing it

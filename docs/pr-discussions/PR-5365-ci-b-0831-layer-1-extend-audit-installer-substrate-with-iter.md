@@ -34,6 +34,7 @@ The 4-layer plan:
 Extends \`REQUIRED_SENTINELS\` for \`full-ai-cluster/usb-nixos-installer/zeta-install.sh\` with 14 new substrings:
 
 ### (a) iter-5.4 flow anchors
+
 - \`Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy\`
 - \`Step 6.9: iter-5.4.1 self-registration commit+push\`
 - \`gh auth login\`
@@ -41,11 +42,13 @@ Extends \`REQUIRED_SENTINELS\` for \`full-ai-cluster/usb-nixos-installer/zeta-in
 - \`gh repo clone Lucent-Financial-Group/Zeta\`
 
 ### (b) Bug 2a + 2b fix-regression catches (PR #5364)
+
 - \`gh auth setup-git\` — Bug 2a fix
 - \`SSH_KEY_ERR_FILE\` — Bug 2b stderr capture
 - \`admin:public_key\` — Bug 2b scope-recovery guidance
 
 ### (c) ClusterNode YAML schema sentinels (PR #5352 Copilot findings)
+
 - \`apiVersion: zeta.lucent-financial-group.com/v1\`
 - \`kind: ClusterNode\`
 - \`  roles:\` — spec.roles is ARRAY (was scalar spec.role)
@@ -53,10 +56,12 @@ Extends \`REQUIRED_SENTINELS\` for \`full-ai-cluster/usb-nixos-installer/zeta-in
 - \`  hardware:\` — spec.hardware block (storage was sibling)
 
 ### (d) Hardware-probe sentinels (MAC parsing regression catch)
+
 - \`/proc/cpuinfo\` — CPU_MODEL extraction
 - \`link/ether\` — MAC parses field AFTER link/ether
 
 ### (e) Self-reg branch shape
+
 - \`register-\${NODE_HOSTNAME}-\` — iter-5.4.1 branch name pattern
 
 ## Verified
@@ -90,6 +95,7 @@ Layer 1 doesn't test BEHAVIOR — only that the substrate is PRESENT. A future A
 Extends the source-level CI sentinel audit for the AI-cluster installer substrate to cover the iter-5.4.0/5.4.1 GitHub auth + self-registration flows, so text-level regressions (dropped commands / dropped YAML schema anchors) are caught quickly in CI.
 
 **Changes:**
+
 - Added iter-5.4 sentinel substrings for `zeta-install.sh` covering gh auth, ssh-key retrieval, repo clone, and registration-branch shape.
 - Added schema/hardware-probe sentinels to catch regressions in ClusterNode YAML composition and MAC parsing.
 - Updated the sentinel rationale string to reflect the newly-audited substrate.

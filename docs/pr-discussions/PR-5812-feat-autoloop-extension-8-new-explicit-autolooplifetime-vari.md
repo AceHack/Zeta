@@ -68,6 +68,7 @@ Aaron 2026-05-28: *'we can get the math nerds personas like sorya to start comin
 This PR extends the workflow-engine AutoLoopLifetime state machine with 8 new explicit lifetime variants (including `free-time`) and adds invariant-style Bun tests plus a new memory entry capturing the formal-verification direction memo.
 
 **Changes:**
+
 - Added `AutoLoopLifetime` DU extension states and updated dispatch/context bookkeeping helpers.
 - Added Bun tests covering the expanded state universe and key transition invariants.
 - Updated `memory/MEMORY.md` index and added a new `feedback_*.md` memory file for the workflow-invariants formal verification direction.

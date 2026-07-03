@@ -30,6 +30,7 @@
 Aaron 2026-06-16 greenlit the build. The first worked slice of the §B hierarchical-planning row — LeCun's named-unsolved problem.
 
 **`tests/Tests.FSharp/HierarchicalPlanning.Tests.fs`** — a 2-level planner (coarse BFS over B-blocks → fine BFS within each block → concatenated segments) that:
+
 - **reaches the goal** (segments chain start→goal, each 4-neighbour-contiguous, border-linked) — same goal as flat;
 - **explores far fewer states than flat** (`hier*2 < flat`; ~5× on a 64×64 grid) — *abstraction beats flat search*;
 - **replays byte-identically** (deterministic BFS) — DST.

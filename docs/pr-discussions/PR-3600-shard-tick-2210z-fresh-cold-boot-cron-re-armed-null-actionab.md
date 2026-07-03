@@ -44,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a single hygiene-history tick shard documenting the 22:10Z autonomous-loop cold boot, cron re-arming, PR queue state, active Lior risk disclosure, and null-actionable decision.
 
 **Changes:**
+
 - Adds a new `2210Z.md` tick record under `docs/hygiene-history/ticks/2026/05/15/`.
 - Captures cron state, queue survey, #3590/#3598 context, and commit-tree canary verification.
 

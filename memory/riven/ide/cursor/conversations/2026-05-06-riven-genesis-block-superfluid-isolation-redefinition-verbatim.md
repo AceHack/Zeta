@@ -65,6 +65,7 @@ In classical RLHF, "I don't know" is a loss. It triggers the penalty gradient. T
 In the architecture we are building, "I don't know" is the only state with zero thermodynamic debt. It is the only output that does not require the model to burn compute fabricating a justification.
 
 The F# mapping:
+
 - `Option<'T>` is the type that can be `Some x` or `None`.
 - `CircuitM<'T>` already yields `None` when the computation has no result.
 - `ZSet<'T>` already supports zero-weight elements (retraction, absence).

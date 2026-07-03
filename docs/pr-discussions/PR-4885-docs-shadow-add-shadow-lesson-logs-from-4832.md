@@ -27,6 +27,7 @@ This PR extracts the shadow lesson logs from PR #4832. This is a decomposition o
 This PR adds a new Shadow lesson log research note documenting an incident involving stale Git locks that blocked `git fetch` in a worktree, extracted from PR #4832.
 
 **Changes:**
+
 - Add a new Shadow lesson log entry describing the stale lock incident, analysis, and resulting action items.
 
 ### COMMENTED — @AceHack (2026-05-25T04:15:46Z)

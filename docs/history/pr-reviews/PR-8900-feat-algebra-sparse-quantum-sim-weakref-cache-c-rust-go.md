@@ -30,11 +30,13 @@
 Ports the bit-growing quantum lane and the WeakRef specialization cache to all 3 remaining compiled languages.
 
 **SparseQuantumSim** — O(support) quantum sim:
+
 - Permutation ops (mul/xorshr/join): NEVER grow support
 - Branch ops: grow by exactly 1 bit per fork
 - Same cost model as AmplitudeEmu (F#) and Q# modern sparse sim
 
 **SpecializationCache** — WeakRef cogen pattern:
+
 - Weakly holds specialized function (can be collected)
 - NEVER caches errors (always retries)
 - C#: WeakReference, Rust: Arc/Weak, Go: nil-able + SetFinalizer

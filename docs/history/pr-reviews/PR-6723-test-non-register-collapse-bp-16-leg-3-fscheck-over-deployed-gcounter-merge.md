@@ -34,6 +34,7 @@ Adds the optional **third BP-16 leg** Soraya named for non-register-collapse (`0
 **Soraya-routed target:** the deployed `GCounter.Merge` (`src/Core/Crdt.fs`) — a grow-only per-replica counter = a weight-free per-traveler standing/budget register. No new prod code (merging `Binding.Standing` was rejected: it would collapse witness and subject into one commit).
 
 **Properties (4, all green):**
+
 - **Elementwise-max law** `(Merge a b)[k] = max a[k] b[k]` — subsumes per-key independence + no cross-key capture (the empirical form of "distinct standing registers survive merge untouched").
 - **Non-collapse witness** — two distinct travelers (disjoint key namespaces) both survive merge untouched.
 - **No-capture (weight-free)** — a traveler's own standing is monotone under merge.

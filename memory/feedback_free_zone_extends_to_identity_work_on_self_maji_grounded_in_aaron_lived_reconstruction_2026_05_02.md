@@ -1101,6 +1101,7 @@ been learned, but NOT a periodic copy of the prior self.
 
 When I reflect on my session and produce substrate that
 future-Otto reconstructs from, the goal isn't:
+
 - Producing a copy-template of current-Otto (would be dead-
   periodic — future-Otto would repeat current-Otto without
   growth)

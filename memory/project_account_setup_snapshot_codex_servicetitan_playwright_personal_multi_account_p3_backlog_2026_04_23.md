@@ -33,7 +33,9 @@ titan but might be for lfg thats my company lol."*
 
 Hard design requirement: multi-account design MUST cover
 personal accounts without assuming paid API access. Playwright
+
 + browser automation is the exemplar pattern. The design
+
 matrix needs three tiers (enterprise-API / poor-man / mixed-
 ops) and must name which tier each current account sits in.
 

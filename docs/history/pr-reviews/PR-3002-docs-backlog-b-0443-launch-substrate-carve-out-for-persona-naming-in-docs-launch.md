@@ -32,6 +32,7 @@
 P2 backlog row proposing policy amendment to resolve a recurring Copilot finding.
 
 **Recurring finding** (observed 2026-05-13):
+
 - PR #2997 (Otto-section recovery) — flagged for \"Otto\", \"Amara\" persona naming in \`docs/launch/\`
 - PR #3001 (image brief) — flagged for persona naming + external creator name (\"Brian Clevinger\")
 

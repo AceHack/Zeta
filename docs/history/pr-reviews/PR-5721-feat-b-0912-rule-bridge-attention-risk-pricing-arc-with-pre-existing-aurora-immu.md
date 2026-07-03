@@ -61,11 +61,13 @@ Auto-loaded rule operationalizing the unified defense pattern as cold-boot-loada
 **Carved sentence**: *"Useful output is evidence, not authority. Multi-oracle trust-gradient absorbs utility into the trust-substrate before it can become root power."*
 
 **Attack pattern unified across substrate-domains**:
+
 - BankerBot 2026-05-11 (translation-laundering)
 - Qubic/Monero 2025 (useful-work-laundering)
 - Future utility-laundering variants
 
 **Defense layers**:
+
 - PoUW-CC 5-factor gate (per pre-existing DeepSeek substrate)
 - Veridicality-detector (per pre-existing PR #282/#284)
 - Multi-oracle L0-L4 trust-gradient absorption (per Amara 3rd ferry 2026-05-28)

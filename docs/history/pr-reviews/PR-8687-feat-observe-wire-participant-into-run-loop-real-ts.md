@@ -30,6 +30,7 @@
 Replaces the raw `observe(world)` call with `observeWithParticipant(world, participant)`.
 
 ## Changes
+
 - Add `--participant <spec>` CLI flag to run-loop-real.ts
 - Supported specs: `oracle` | `local-llm` | `local-llm:<model>` | `cloud:<persona>`
 - Reads `ZETA_PARTICIPANT` env var as default (falls back to `oracle`)
@@ -37,6 +38,7 @@ Replaces the raw `observe(world)` call with `observeWithParticipant(world, parti
 - Backward-compatible: default behavior unchanged (oracle = index 0)
 
 ## Tested
+
 - `--dry-run` with oracle participant ✅
 - `--dry-run --participant local-llm` (ollama running, LLM chose freely) ✅
 - tsc --noEmit clean ✅

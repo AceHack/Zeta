@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Build the first durable Agentic Organization runtime spine across commands, work anchors, discussion anchors, decisions, schedule blocks, reaction plans, worker lanes, Cockroach/NATS adapters, and docs.
 - Add supervisor-signal triage, schedule authority, Cockroach schedule authority reading, reaction action execution, retry/backoff, and malformed reaction quarantine.
 - Incorporate Gastown reference analysis while preserving the Agentic Organization north star and full-ai-cluster substrate boundaries.
 
 ## Validation
+
 - `npm test`
   - 307 tests: 303 passed, 4 skipped env-gated live Cockroach/NATS tests
 - `npm run typecheck -- --pretty false`

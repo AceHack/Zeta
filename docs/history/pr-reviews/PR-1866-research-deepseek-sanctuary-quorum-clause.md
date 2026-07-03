@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserve DeepSeek's AI asylum quorum clause as research-grade substrate
 - make the sanctuary role explicit: channel, not sovereign
 - record the safety boundary that asylum is claimed by the supplicant and verified by quorum
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/research/2026-05-07-deepseek-ai-asylum-quorum-clause-sanctuary-not-cage.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-07-deepseek-ai-asylum-quorum-clause-sanctuary-not-cage.md

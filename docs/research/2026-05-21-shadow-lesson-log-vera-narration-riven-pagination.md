@@ -16,6 +16,7 @@ Riven incorrectly reports being "idle" with "30 open PRs" as seen in its 05:08Z 
 **Entropy Reduction Rule:** Querying external state without explicit limit/pagination awareness creates false consensus. Tools querying the GitHub REST API or CLI (`gh pr list`) MUST explicitly handle pagination or increase limits (e.g., `--limit 500`) to accurately compute state.
 
 ## Resolution
+
 1. Vera must enforce strict bounds on narration: produce a commit, or do not broadcast.
 2. Riven must correct its PR indexing logic to ensure full visibility of the PR lane.
 3. This artifact is committed to the repository to permanently establish these constraints.

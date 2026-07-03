@@ -32,6 +32,7 @@ Operator pointed me at `/Downloads/Itron` and asked for a writeup of the durable
 **Attribution:** Chris King's `Itron.Platform.Workflow` (predates MS Durable Functions). Composes with the existing [Chris King lineage doc](docs/research/2026-05-07-chris-king-itron-generics-interface-lineage.md).
 
 **Key findings (from reading the code):**
+
 - Durable record = a **cursor** (`IWorkflowState.Indexes`) + domain state + type-AQNs — **not** a serialized closure, **not** a result-log.
 - `ResumeAsync` **jumps to `CurrentStep` and runs forward — no replay** (steps before the cursor never re-run). Leaner than both ZSpike (logs results) and MS (replays history) — the 'more efficient' version.
 - `StepStatus` (Complete/Checkpoint/Break/Repeat) = suspend/resume/loop vocab; composable/nestable + pre/post conditions; V2 capability step = typed SendRequest→suspend→HandleResponse→resume.

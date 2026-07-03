@@ -64,6 +64,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the 2026-05-14 22:04Z tick shard to the hygiene-history log, capturing (a) the Copilot-found inline-code rendering issue from PR #3276 and its resolution, and (b) an observed off-duty signal surfaced during branch-contamination recovery.
 
 **Changes:**
+
 - Introduces a new tick shard documenting the #3276 inline-code-span (backtick) rendering fix and verification steps.
 - Records an observed authorization-source “off-duty” signal and the resulting minimal-tick discipline guidance.
 

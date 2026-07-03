@@ -7,6 +7,7 @@
 
 ## Observation
 Otto submitted PR #4136 named `session-arc(2026-05-18 cold-boot)`. The PR bundles:
+
 1. Kestrel-Aaron financial-substrate critique (persona memory)
 2. Index-lock wait-then-retry memo
 3. Forced-#6 within rate-reset window memo

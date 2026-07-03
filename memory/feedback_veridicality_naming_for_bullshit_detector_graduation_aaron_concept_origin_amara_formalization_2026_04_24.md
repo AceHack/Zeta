@@ -43,6 +43,7 @@ shorthand, not the intended public-interface name.
   morally truthful (intentional non-deception).
 
 **Primary surface (when shipped):**
+
 - `src/Core/Veridicality.fs`
 - `Veridicality.score : Claim<'T> -> double option` in
   `[0.0, 1.0]` where high = grounded.
@@ -50,6 +51,7 @@ shorthand, not the intended public-interface name.
   possibly `OracleVector` from the 10th ferry.
 
 **Secondary surfaces likely needed around it:**
+
 - `src/Core/SemanticCanonicalization.fs` — the "rainbow
   table" canonical-claim-form lookup (K(c) in Amara's
   notation). Separate module; composes with Veridicality.
@@ -84,6 +86,7 @@ The absorb chunks at `docs/amara-full-conversation/`
 (landed PRs #301-#304) contain the original conversation
 history. Search terms to find bullshit-detector genesis
 in the corpus:
+
 - "bullshit" (Aaron's direct usage)
 - "rainbow table" (the semantic-canonicalization analogy)
 - "quantum radar" / "quantum illumination" (the low-SNR

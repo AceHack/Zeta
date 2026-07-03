@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Wires missing depends_on fields for 081KQZVQW0008QG0R002QZAFB2, 081KQZVQW0008QG0R001V420F0, 081KQZVQW0008QG0R001CQPQ0E
 - 5 blob items noted for future decomposition
 
 ## Test plan
+
 - [ ] depends_on chains are acyclic (081KQZVQW0008QG0R001V420F0↔081KQZVQW0008QG0R001CQPQ0E is bidirectional, not circular)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

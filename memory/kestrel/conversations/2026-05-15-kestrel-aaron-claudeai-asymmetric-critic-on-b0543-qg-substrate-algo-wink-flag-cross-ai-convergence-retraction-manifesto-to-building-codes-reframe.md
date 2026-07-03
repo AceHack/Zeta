@@ -144,6 +144,7 @@ Three substantive critiques the substrate must absorb:
 ## The infinite-poker structural framing Kestrel was missing
 
 Aaron's clarification: the two axioms (Remember-When + Pay-Attention) sit INSIDE a game-theoretic structure where:
+
 - Hands = encrypted entropy
 - Reveal-over-time = strategic play with bounded reward
 - Reward mechanism = PoUW-CC governance culture

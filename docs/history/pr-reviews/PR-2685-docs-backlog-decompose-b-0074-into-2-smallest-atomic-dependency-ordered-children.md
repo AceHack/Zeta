@@ -31,6 +31,7 @@
 Re-decomposed 081KQ8P5D0008QG0R0014HJFF5 (P2 PR#72 punch-list drift sweep) per "always re-decompose... assume mistakes" into 2 smallest atomic S-effort dependency-ordered children (TS-preferring). One bounded step only. Dedicated worktree + claim branch pushed *before* any write. Root checkout untouched. Focused checks included.
 
 **Children (parallel, no deps):**
+
 - 081KRA5AR0008QG0R002504RM1: EAT §504 / §21.e wallet-acceptance prose audit
 - 081KRA5AR0008QG0R0027YDY5C: wallet-v0 §377 / §8.1 bond-ledger vs INTENTIONAL-DEBT.md alignment
 
@@ -38,11 +39,13 @@ Re-decomposed 081KQ8P5D0008QG0R0014HJFF5 (P2 PR#72 punch-list drift sweep) per "
 Original remaining items (after 081KQ8P5D0008QG0R0014HJFF5.1) still touched multiple specs; split ensures atomic, reviewable, one-file max slices. Matches 081KQ3HBZ0008QG0R0008RYCSX/081KQ3HBZ0008QG0R001K0EC2C/081KQ8P5D0008QG0R002E1G72J/B-009x decomp pattern. TS preference noted for future verifier tooling.
 
 ## Changes (exactly 3 files)
+
 - Parent 081KQ8P5D0008QG0R0014HJFF5 updated: decomposed_into frontmatter, Progress/Acceptance/Composes sections, decomp record added
 - 081KRA5AR0008QG0R002504RM1 stub created (atomic doc audit)
 - 081KRA5AR0008QG0R0027YDY5C stub created (atomic schema alignment)
 
 ## Focused checks (worktree only)
+
 - `dotnet build -c Release` (in /tmp/zeta-b0074-decomp): **0 Warning(s) 0 Error(s)** — passed both before/after edits
 - No other files touched; no tests needed for pure-doc decomp step
 

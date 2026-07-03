@@ -30,6 +30,7 @@
 Aaron 2026-05-12 explicit project-settings authorization: 'can you put that in project settings in git and it apply or me instead of just this pc?'
 
 Adds four Bash permission patterns to `.claude/settings.json` allow-list:
+
 - `Bash(osascript *)` — Chrome AppleScript for browser-extraction
 - `Bash(kill *)` — Playwright-Chrome kill (skill step 1)
 - `Bash(pkill *)` — alternative kill pattern

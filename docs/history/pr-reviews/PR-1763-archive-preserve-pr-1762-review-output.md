@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1762 review archive generated from the active claim branch.
 - Adds the PR #1762 manifest entry with merge commit SHA `7ec1ab2d8674bdba3ac864d5442a439e1961af49`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1762-archive-preserve-pr-1761-review-output.md`
 - `git diff --check origin/main...HEAD`
 

@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - add checked row/element helpers for the Q# Pauli anticommutation matrix assertion
 - keep the existing assertion semantics while satisfying TypeScript strict indexed-access checks
 
 ## Verification
+
 - bun --bun tsc --noEmit -p tsconfig.json
 - bun test tools/qsharp-oracle/qsharp-golden.test.ts
 - git diff --check

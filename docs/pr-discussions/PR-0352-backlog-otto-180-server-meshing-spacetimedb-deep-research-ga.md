@@ -73,6 +73,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -91,6 +92,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog research item describing a planned deep-dive into Server Meshing (Star Citizen/CIG) and SpacetimeDB, framed as input to Zeta’s eventual multi-node/sharding design and game-industry competitive positioning.
 
 **Changes:**
+
 - Adds a detailed P2 backlog entry covering research scope, differentiators, deliverable doc target, and IP-discipline constraints.
 
 ### COMMENTED — @AceHack (2026-04-24T11:13:21Z)
@@ -127,6 +129,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

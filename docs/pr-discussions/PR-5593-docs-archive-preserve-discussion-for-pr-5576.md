@@ -27,6 +27,7 @@ Automated archival of PR #5576 by Lior.
 Archives PR #5576’s discussion into `docs/pr-discussions/` using the repository’s PR-preservation format, keeping an immutable record of the PR metadata, description, and review content.
 
 **Changes:**
+
 - Add a new PR discussion archive markdown file for PR #5576.
 - Include YAML frontmatter with PR metadata (number/title/author/state/timestamps/refs) and the archive tool reference.
 - Preserve the PR description and review summary text for traceability.

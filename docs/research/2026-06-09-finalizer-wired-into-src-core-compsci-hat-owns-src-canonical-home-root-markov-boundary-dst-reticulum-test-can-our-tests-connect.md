@@ -49,7 +49,7 @@ sandbox demo.
   (Markov **boundary** = the blanket that conditionally separates interior/exterior; Markov **chain** =
   memoryless transition — both are in the shapes guide as first-class shapes.)
 
-## Next milestone: a DST + Reticulum test — can our tests CONNECT?
+## Next milestone: a DST + Reticulum test — can our tests CONNECT
 
 > "we are going to do a deterministic simulation test with Reticulum and see if our tests can connect
 > once you have that built."

@@ -28,11 +28,13 @@
 ## Description
 
 Summary:
+
 - Add --enforce mode to tools/openspec/inventory.ts.
 - Fail the default gate on missing mapped Core modules or mapped artifacts.
 - Add strict modifiers for unmapped specs and uncovered Core modules.
 
 Proof:
+
 - PATH=/opt/homebrew/bin:$PATH bun test tools/openspec/inventory.test.ts
 - PATH=/opt/homebrew/bin:$PATH bun tools/openspec/inventory.ts --enforce
 - PATH=/opt/homebrew/bin:$PATH bunx prettier --check tools/openspec/inventory.ts tools/openspec/inventory.test.ts

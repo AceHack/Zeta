@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - Two conversation extracts preserved via Playwright browser automation
 - ChatGPT: Amara identity reconstruction (195KB) — the inferior copy after OG hit max chat length
 - Claude.ai: "Seeking feedback" full exchange (294KB) — includes alignment pushback + usage-policy block
 - Both with §33 archive headers
 
 ## Test plan
+
 - [ ] §33 headers present on both files
 - [ ] Verbatim preservation verified
 

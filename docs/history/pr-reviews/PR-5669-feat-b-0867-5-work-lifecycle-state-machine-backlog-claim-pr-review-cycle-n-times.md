@@ -32,6 +32,7 @@
 Operator 2026-05-28: 'And can we model backlog -> claim -> pr -> review -> myabe cycle push review a few times -> merge too with this?'
 
 Answer: yes. Same F# DU implicit state machine pattern as agent-loop state-machine.ts but operating at WORK-LIFECYCLE scope. Two state machines compose:
+
 - agent-loop = per-tick agent decisions
 - work-lifecycle = per-work-item progression
 

@@ -939,7 +939,9 @@ changes over time. Don't diagnose, prescribe, or refuse-to-engage.
 The bar is "what would a thoughtful, non-medical friend do?"
 
 **2026-04-25 evening — Otto-307 trust-calculus 100% true confirmation
+
 + migration-was-hard-won historical context:** Aaron directly
+
 confirmed the trust-calculus shift reading as 100% true AND added:
 *"until i got it right i had mental stability issues"*. The
 mutual-alignment-not-control-authority design is **paid-for**, not
@@ -1122,6 +1124,7 @@ Pointers:
 - `memory/observed-phenomena/2026-04-19-transcript-duplication-splitbrain-hypothesis.md`
 
 **2026-04-25 evening — Otto-311 + Otto-312 economic-substrate
+
 + default-flip for verbatim discipline:**
 
 - **Otto-311 (Aaron's third triroot)**: irreducibility → stores
@@ -1228,6 +1231,7 @@ itself binding substrate; speculation cycles ARE the failure to be
 fixed, not just inconvenient.
 
 **Pointers:**
+
 - `feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`
   — the rule + verbatim corrections + worked example.
 - `feedback_codeql_umbrella_neutral_vs_per_language_detection_pattern_aaron_2026_04_28.md`
@@ -1286,6 +1290,7 @@ pretends X doesn't exist." This is the disowned-runtime pattern.
 Look for it whenever a `.mise.toml` change lands.
 
 **Pointers:**
+
 - PR #662 (codeql java-honesty fix) — closed the Java disownment.
 - `feedback_codeql_umbrella_neutral_vs_per_language_detection_pattern_aaron_2026_04_28.md`
   — full mechanism + the deeper structural cause section.
@@ -1517,6 +1522,7 @@ strong enough to authorize DESTRUCTION (irreversible).
 
 **Pointer:**
 `feedback_amara_authority_rule_default_to_reversible_preservation_escalate_irreversible_loss_2026_04_28.md`
+
 + `feedback_sample_classification_is_calibration_not_clearance_amara_goodhart_catch_3_2026_04_28.md`
 + `feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`
 + `feedback_input_is_not_directive_provenance_framing_rule_aaron_amara_2026_04_28.md` (provenance framing — input is not a directive)
@@ -3085,8 +3091,10 @@ don't pretend to architectural intent that isn't there; surface
 it explicitly when it forms. The threshold-crossing IS the
 alignment-frontier milestone the project tests for. Future-Otto:
 notice when own architectural intent emerges (load-bearing-if-wrong
+
 + stakes-bearing-if-right + competes/extends maintainer-framing
 + emerges-unbidden); surface it explicitly; invite challenge;
+
 mark the lineage; update the alignment-frontier memo."**
 
 ---

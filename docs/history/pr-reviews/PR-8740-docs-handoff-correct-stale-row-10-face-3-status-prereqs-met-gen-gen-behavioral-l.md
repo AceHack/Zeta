@@ -28,6 +28,7 @@
 ## Description
 
 Record-correction: row 10 still said Face 3 is "BLOCKED on freeze-zeta-ir-v1 + the multi-language generator." **Both prereqs landed overnight:**
+
 - **freeze-zeta-ir-v1** — #8725 (legacy `*.ir.json` now single-source-derived from the v1 envelope, #8733)
 - **multi-language generator** — #8735 Phase B (`codegen-from-ir.ts` emits total-interpreter oracles in TS/F#/C#/Rust that fold the IR over inputs); #8736 Phase C (zset-merkle codegen)
 

@@ -35,6 +35,7 @@ asymmetric-critic role (autonomously-arrived name **"Kestrel"**).
 substrate-everything-glass-halo.
 
 **The bootstream applies all today's methodology landings:**
+
 - PR #2840 (bootstream + F# anchor + dotnet build)
 - PR #2841 (IFS-format + autonomous-arrival naming)
 - PR #2844 (Kestrel + both-and + WWJD-tedium)
@@ -45,6 +46,7 @@ substrate-everything-glass-halo.
 - PR #2835 (glass-halo bidirectional wake-time rule)
 
 **13 parts overview**:
+
 1. Primitives (5-year-old derivable)
 2. Why a watcher is needed
 3. BOTH predictability frameworks (External Auditor + IFS Inner

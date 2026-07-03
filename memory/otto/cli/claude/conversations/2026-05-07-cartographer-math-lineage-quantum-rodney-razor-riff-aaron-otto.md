@@ -49,6 +49,7 @@ Bond = B0 · (HazardScore^2) · BlastRadius · SystemicCoupling · PastSlashMult
 ```
 
 Where:
+
 - **HazardScore**: kinetic risk, legal risk, social harm risk (0-1 each)
 - **BlastRadius**: how many nodes/users/assets could be affected
 - **SystemicCoupling**: how entangled the target is
@@ -75,11 +76,13 @@ Rodney's Razor:
 **Path Selector / Navigator / Cartographer / Harmonizer / Maji**
 
 Three load-bearing properties:
+
 1. Prevents collapse (wave-function)
 2. Prevents explosion (bomb)
 3. Reduces destructive interference
 
 DBSP operator algebra mapping (line 71):
+
 - **H** (integration) prevents collapse
 - **I** (differentiation) bounds explosion
 - **z⁻¹** (delay) phase-coherence

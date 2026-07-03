@@ -41,6 +41,7 @@
 ## Slice context (081KRFA460008QG0R001H98EXJ.7)
 
 Part of 081KRFA460008QG0R001H98EXJ (three-repo split Stage 1). Previous slices:
+
 - .1 — day-one governance files + dry-run tool
 - .2–.5 — additional scaffold files + 18-test suite
 - .6 — `.semgrep.yml` GHA injection rule + `.mise.toml` toolchain pin
@@ -53,6 +54,7 @@ bun test tools/scaffold/create-repo.test.ts
 ```
 
 Dry-run verification:
+
 - `forge` scaffold: 15 files, `dependabot.yml` present ✓
 - `ace` scaffold: 15 files, `dependabot.yml` present ✓
 

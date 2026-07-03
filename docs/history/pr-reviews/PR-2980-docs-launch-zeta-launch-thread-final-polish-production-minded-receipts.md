@@ -30,6 +30,7 @@
 Final polished version of the Zeta launch thread.
 
 Changes:
+
 - Softened “production-grade” → “production-minded”
 - Added concrete 24h receipts (67 PRs/commits, 4 agents, 11-min lead time)
 - Clarified “multi-agent OS” meaning

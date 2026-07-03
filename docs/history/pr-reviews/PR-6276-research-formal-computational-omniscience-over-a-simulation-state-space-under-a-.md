@@ -30,6 +30,7 @@
 Operator-requested ("we need the formal analysis"). The rigorous backing for the DST-computational-omniscience rule, per the operator's corrections that it's a **real property achieved by others** (not god-tier), the framework **targets** it (not-yet-done-here), and it's **Bayesian/probabilistic, not binary search-space**.
 
 ## What it establishes
+
 - **Terminology hinge** — distinguishes from epistemic-logic **logical omniscience** (the infeasible idealization). A *deterministic simulator* makes a **bounded** omniscience **computationally feasible**: the state-space is a computable function of the seed.
 - **Formal definition (O1–O5)** — determinism, replayability, counterfactual reachability, incremental queryability (DBSP/Z-sets), bidirectional navigation.
 - **Achieved by others (prior art):** **Checkers/Chinook** (Schaeffer 2007 — every position's value, binary-exhaustive); **FoundationDB DST** (Flow + seeded determinism + BUGGIFY, trillion-CPU-hour state-space); **DBSP** (Budiu et al. PVLDB 2023 — retraction algebra over Z-sets).

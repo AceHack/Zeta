@@ -30,6 +30,7 @@
 The accumulate-mode slice (TS reference first), the applicative complement to the fail-fast `parse` — "see all the things that went wrong" for debugging a malformed tree / batch / model-validation.
 
 ## What it adds (additive over the same `BonsaiFeedback` payload)
+
 - **`parseAll : string -> Result<Expr, PathedFeedback[]>`** — collects **every** per-node decline keyed by its JSON-path instead of short-circuiting. Independent sub-trees accumulate (binary left+right, call args, lambda params, cond branches, each bad const); a fatal-structural node (not-object / missing-or-unknown kind / too-deep) is single for that node, but its siblings still accumulate.
 - **`PathedFeedback = { path, feedback }`** — each decline tagged with its JSON-path (the ProblemDetails key).
 - **`ProblemDetails` (RFC-9457) + `toProblemDetails`** — groups declines into the `errors: {path: messages[]}` map (the shape .NET ships as `ValidationProblemDetails`; useful well outside HTTP).

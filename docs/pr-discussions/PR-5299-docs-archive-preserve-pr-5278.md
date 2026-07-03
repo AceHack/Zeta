@@ -27,6 +27,7 @@ Preserve discussion from PR #5278.
 Adds a git-tracked preservation archive for PR #5278 under `docs/pr-discussions/`, capturing the PR metadata plus the recorded reviews, review threads, and general comments for long-term reference.
 
 **Changes:**
+
 - Add a new PR discussion archive markdown file for PR #5278, including YAML frontmatter metadata.
 - Preserve the review content and resolved review threads from PR #5278.
 

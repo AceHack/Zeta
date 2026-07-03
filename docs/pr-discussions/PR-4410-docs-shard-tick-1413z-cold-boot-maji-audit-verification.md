@@ -43,6 +43,7 @@ The canary rule (`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commi
 This tick documents the empirical anchor for that future refinement; the rule edit itself is deferred to a follow-up tick.
 
 ## Test plan
+
 - [x] `git ls-tree HEAD` = 53 post-commit (canary check passed)
 - [x] `git branch --show-current` guard before commit (race-window mitigation)
 - [x] Isolated worktree at `/private/tmp/zeta-otto-cli-cold-boot-1413z` (per saturation-ceiling guidance)
@@ -66,6 +67,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -84,6 +86,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-20 1413Z cold-boot session, including verification steps taken in response to the referenced Maji audit and empirical checks related to the canary/worktree guidance.
 
 **Changes:**
+
 - Added the 1413Z tick shard entry capturing cold-boot state, verification probes, and conclusions.
 - Recorded an empirical reconciliation between prior audited claims and current measurements (index/worktree locks, `ls-tree` count, worktree add result).
 - Documented intended (but deferred) refinement to the canary rule workflow via “verify-before-deferring” composition.

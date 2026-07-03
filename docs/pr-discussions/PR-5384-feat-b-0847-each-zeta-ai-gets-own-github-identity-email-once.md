@@ -61,6 +61,7 @@ Until per-AI identity ships:
 Files a new P2 backlog row (081KSGS9H0008QG0R002T0XQ50) capturing a future-target plan to give each Zeta AI its own GitHub identity + email once cluster infrastructure is operational, addressing the `gh enabledBy = token-owner ≠ actor` attribution gap. Updates the backlog index accordingly.
 
 **Changes:**
+
 - Adds new backlog row file under `docs/backlog/P2/` describing problem, 4-phase plan, composes-with links, and acceptance criteria.
 - Adds the row to `docs/BACKLOG.md` index in P2 section.
 

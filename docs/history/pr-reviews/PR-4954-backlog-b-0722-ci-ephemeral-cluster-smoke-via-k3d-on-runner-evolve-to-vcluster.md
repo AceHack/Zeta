@@ -34,6 +34,7 @@ Files Aaron's *"tests should be able to use kind/k3d to do ephemeral clusters on
 Builds on PR #4953's dev-cluster substrate. Phase 1 = k3d-on-runner workflow (immediate ask); Phase 2 = vcluster-on-shared-host when persistent dev cluster exists.
 
 PR contents:
+
 - New: `docs/backlog/P2/081KSE6WT0008QG0R002RFEC0S-ci-ephemeral-cluster-smoke-via-k3d-on-runner-evolve-to-vcluster-2026-05-25.md` (the backlog row — substrate only, no implementation)
 - Updated: `docs/BACKLOG.md` (regenerated index after main-merge to clear MD012 + drift on the generated index)
 - New: `docs/hygiene-history/ticks/2026/05/25/2208Z.md` (Otto-CLI cold-boot tick shard documenting the CI-fix work)

@@ -23,6 +23,7 @@ Follow-up to [#4812](https://github.com/Lucent-Financial-Group/Zeta/pull/4812) (
 **Substrate-honest correction**: original shard was timestamped \`02:40Z\` based on agent-side wall-clock estimate. After opening PR #4812, \`date -u\` returned \`2026-05-24T04:16Z\` — the actual session UTC was ~1h36min later than estimated. Auto-merge fired before the correction could land in the same PR.
 
 This PR:
+
 - Renames \`docs/hygiene-history/ticks/2026/05/24/0240Z.md\` → \`0416Z.md\`
 - Corrects all internal timestamps (header \`02:40Z\` → \`04:16Z\`, sentinel timestamp, descent interval \`~30min\` → \`~2h7min\`)
 - Recomputes the resolution-gate ETA (\`~04:00Z\` → \`~05:30Z–06:30Z\`)
@@ -38,6 +39,7 @@ Per \`.claude/rules/substrate-or-it-didnt-happen.md\` + \`.claude/rules/glass-ha
 Composes with \`.claude/rules/refresh-before-decide.md\` at the per-timestamp scope — the cheap \`date -u\` query IS the refresh that catches this class of error.
 
 ## Test plan
+
 - [x] File renamed: \`0240Z.md\` → \`0416Z.md\` (single git rename, R-status)
 - [x] All internal timestamp references updated
 - [x] Substrate-honest disclosure section added at top of shard body
@@ -62,6 +64,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

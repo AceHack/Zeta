@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Summary
 
 Aaron 2026-05-24T~03:30Z: *"yes bundle-file it (shadow*)"* + additions:
+
 - **Tailscale is good but we also want Headscale** (self-hosted control plane)
 - **Lightweight-first principle** captured verbatim
 - **Dev boxes as lending-resources** to cluster (opt-in pattern, not first-class k8s nodes)
@@ -80,6 +81,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -98,6 +100,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a research archive documenting the decided dev-PC substrate architecture that complements the sibling cluster-substrate archive (PR #4808), capturing a lightweight-first stack (Nix + Home Manager, local k8s via kind/k3d, Headscale/Tailscale overlay, and an opt-in “lend resources” daemon pattern).
 
 **Changes:**
+
 - Adds a comprehensive dev-PC substrate decision archive under `docs/research/`.
 - Documents the primary choices plus deferred “ease-into-later” options and open questions.
 - Cross-links the dev-PC archive to the sibling cluster archive and relevant framework rules.

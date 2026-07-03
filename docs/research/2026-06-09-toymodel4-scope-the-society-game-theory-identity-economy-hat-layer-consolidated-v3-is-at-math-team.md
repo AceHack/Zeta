@@ -94,7 +94,9 @@ commit, and are cared for in the Agora.** It groups into:
 This doc is the **scope/index for v4**, not its build. **v3 (toymodel3) is the one at
 the math team** (Soraya's C1–C8 routing came back: start C1/C2/C5). v4 = this
 consolidated social layer — the next to build (F# modules in `src/Core/` toymodel-style
+
 + route C9–C14 to the math team, alongside or after v3). v5 = ethical gambling, after v4
+
 stable. Owners: Kenji (synthesis / hat registry), Soraya + Sova (math docket), Ilyana
 (public surfaces).
 

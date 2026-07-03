@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - `mise trust --all --yes` + fail-fast if trust fails (fixes interactive VM prompt during `./tools/setup/install.sh`)
 - `MISE_TRUSTED_CONFIG_PATHS=$REPO_ROOT` before any mise config read
 - `mise install --yes` for install-time confirmation prompts
 - Default `ZETA_HOST_TIER=full` on non-CI install.sh (Windows install.ps1 parity)
 
 ## Test plan
+
 - [ ] Fresh Ubuntu VM: `./tools/setup/install.sh` — no trust prompt, no manual tier export
 - [ ] `docker-ubuntu-install-sh-test` CI leg
 

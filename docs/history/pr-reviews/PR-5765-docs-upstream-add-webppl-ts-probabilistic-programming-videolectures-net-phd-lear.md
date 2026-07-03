@@ -30,6 +30,7 @@
 ## Summary
 
 Per Aaron 2026-05-28 substrate-engineering questions:
+
 - *'is there anything like infer.net in ts? can we build it if not using infer.net source code for reference?'* → **WebPPL** is closest TS/JS analog
 - *'you'd love videolectures.net in your free time i think... PhD everything here. they don't throttle and they have transcripts and powerpoints'* → free-time learning substrate
 

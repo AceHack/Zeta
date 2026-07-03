@@ -44,6 +44,7 @@ A 1-hour zero-shard stretch would look indistinguishable from a dead loop in tic
 Adds a hygiene-history tick checkpoint documenting the stable off-duty state and why a periodic shard distinguishes intentional quiet from a stalled loop.
 
 **Changes:**
+
 - Adds a new 22:36Z tick-history checkpoint.
 - Records off-duty dependency state, cadence observations, and visibility notes.
 - Notes a stale local untracked file as observational context.
@@ -62,6 +63,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

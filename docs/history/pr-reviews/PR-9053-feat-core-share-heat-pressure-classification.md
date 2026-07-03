@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add shared `HeatSignature` helpers for pressure, denial, and forgetting heat-kind classification
 - route `DarkHallRoomLoop` and `DarkHallScheduler` through the shared classifier instead of duplicating string parsing
 - keep `DarkHallScheduler.HeatBoundarySignal` as the scheduler-facing typed view and add coverage proving the shared raw rules line up with it
 
 ## Validation
+
 - `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~DarkHallSchedulerTests`
 - `dotnet format --verify-no-changes`
 - `dotnet build -c Release`

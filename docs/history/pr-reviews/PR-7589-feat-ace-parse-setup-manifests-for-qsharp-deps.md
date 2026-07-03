@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add an Ace setup-manifest parser for declarative install dependency files
 - preserve Q# language tags while stripping real comments
 - make the Q# reference-oracle Ace package test derive the expected dependency pointer from tools/setup/manifests/quantum
 
 ## Verification
+
 - bun test tools/ace/setup-manifest.test.ts tools/ace/qsharp-reference-oracle-package.test.ts
 - bun test tools/ace/
 - bunx prettier --check tools/ace/setup-manifest.ts tools/ace/setup-manifest.test.ts tools/ace/qsharp-reference-oracle-package.test.ts

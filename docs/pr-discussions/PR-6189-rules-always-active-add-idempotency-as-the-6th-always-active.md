@@ -33,6 +33,7 @@ Extends the **always-active substrate-engineering discipline set** in its canoni
 | **Idempotency** *(new)* | **Effects / replay / merge** | **apply-N == apply-once: retry/replay/merge-safe** |
 
 ### Why it's load-bearing *with* the existing five
+
 - **DST sibling** — DST *requires* replay; idempotency makes replay *safe* (re-applying an event = no-op).
 - **lock-free** — CAS retry loops require idempotent ops.
 - **git-as-db** — the G-Set CRDT event-fold is idempotent by construction (the whole rebuild-the-index model).
@@ -60,6 +61,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -78,6 +80,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR updates the canonical always-active discipline set documentation to include **idempotency** as the sixth discipline, extending the existing DV2.0/DST/lock-free/weight-free/scale-free substrate-engineering checklist and adding explanatory guidance on retry/replay/merge safety.
 
 **Changes:**
+
 - Updates the “always-active disciplines” table and wording from five → six, adding an explicit Idempotency row.
 - Adds a new “Idempotency” section describing the concept, examples, and how it composes with DST / lock-free / git-as-db / tri-boolean / observe→act.
 - Extends the operational checklist with a new sixth question focused on idempotency and lists the failure modes it catches.
@@ -96,6 +99,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -192,6 +196,7 @@ Useful? React with 👍 / 👎.
 ### @AceHack (2026-05-31T03:05:20Z)
 
 All reviewer findings addressed in b08904221:
+
 - **Codex P2** (DST equivalence too strong): softened — a pure single deterministic replay is sound on its own (each event applied once, even non-idempotent ones like counter-increment); idempotency is what keeps **redelivery / retry-after-crash / partial-replay** safe. "DST requires replay; idempotency makes redelivery/partial replay safe."
 - **Copilot P1 ×3** (table row / "wrapper" / discriminator — "exactly-once" overpromise): tightened to **dedup-keyed exactly-once *effects* under at-least-once delivery (NOT exactly-once delivery)**, and named the mechanism (idempotency key + dedup window) explicitly at each spot.
 - **Copilot P1** (unresolvable cross-ref): added the concrete ADR path link for "the observe.ts ADR".
@@ -199,5 +204,6 @@ All reviewer findings addressed in b08904221:
 ### @AceHack (2026-05-31T03:08:20Z)
 
 Both Codex P2s addressed in the latest commit — real technical corrections:
+
 - **CAS bodies need not be idempotent**: a failed compare-exchange commits nothing; only the winning attempt takes effect, loser recomputations are discarded. Reframed to 'CAS makes a read-modify-write commit exactly once'; idempotency matters for lock-free only when the retried body has side effects beyond the CAS word.
 - **Z-set retraction ≠ duplicate-guard**: `ZSet.add` sums weights, so a duplicate `+1` becomes `+2`. Reframed as a *correction* mechanism (compensating `−1` after the fact), not a dedup; accumulating-event dedup still needs an idempotency key at ingest.

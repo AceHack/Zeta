@@ -68,7 +68,9 @@ does **not** edit the canonical core-shapes list (A–F live in the shapes regis
 review. To realize: add G to the shapes registry with the limit-cone + bifurcation definition; mark the
 hypercube room (and the graduation/launch gates) as shape-G points; let the math team formalize G (the
 limit's universal property + the bifurcation condition) as a proof-room. Routes to the core-shapes owner
+
 + Rodney (is G essential or does it collapse into E + a regime predicate? — the razor question), Soraya/
+
 Sova (formalize the limit + bifurcation), Aaron (accept/rename G).
 
 ## Anchors / ties (Beacon)

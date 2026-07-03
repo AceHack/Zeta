@@ -32,11 +32,13 @@ Captures Aaron's 2026-06-02 observation as a research-tier row (081KT2T2J0008QG0
 > *"Everything that does not have clean mapping / adapter on our core two dimensions plus zsets gsets bags indexes and event indexes should be treated as sus if it could just be a zset/gset+emit+rx+emit+zset/gset … what's the differences? rx bonsai and tick sources i think this is close[.] we should have connonical primitives list for ones that have been promoted through all gates the ones we really argue over correctness and aesthetics."*
 
 ## Two composing things
+
 - **The suspicion test** (earn-its-keep at *primitive* scope): a candidate special index/class is **suspect-by-default**; ask **"could this just be `zset/gset + emit + rx + zset/gset`? what's the difference?"** It earns primitive status only by a real, nameable difference — a distinct **algebra**, **complexity**, or **invariant** a composition can't enforce. "Convenience" is not a difference.
 - **The canonical primitives registry**: a maintained list of primitives **promoted through both gates** (correctness + aesthetics, argued-over). Two tiers — **promoted** (ZSet/GSet/Bag/IndexedZSet + the two core dims + generic-math) vs **candidate** ("close": event-index, Rx, Bonsai, tick-source).
 - **Promotion gate** = correctness (real distinct structure + laws + tests) + aesthetics (argued to be *the* canonical shape, not a redundant re-spelling) + a concrete what's-the-difference answer.
 
 ## Scope discipline
+
 - Research-tier; composes 081KT2T2J0008QG0R0038CRFJM (the vocabulary this gates), 081KT2T2J0008QG0R000S7GHQ8/081KT2T2J0008QG0R003BT1RS7 (the engine using the primitives), 081KRFA460008QG0R0018SN61J. The seed tiers are **proposals to argue, not a final list** (promotion is by correctness+aesthetics debate). The standalone registry-doc *location* is an aesthetics call **offered to Aaron**.
 - Strict frontmatter lint + markdownlint: 0 findings; `docs/BACKLOG.md` regenerated.
 

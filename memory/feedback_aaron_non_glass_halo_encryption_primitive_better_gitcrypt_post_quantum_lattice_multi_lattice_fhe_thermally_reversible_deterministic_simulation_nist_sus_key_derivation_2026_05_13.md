@@ -56,6 +56,7 @@ separate implementation ADR). Six layers compose.
 > simultion"
 
 Decoded:
+
 - "gitcrypt" → git-crypt (existing per-file git
   encryption tool; Aaron wants a better version)
 - "post quantium" → post-quantum

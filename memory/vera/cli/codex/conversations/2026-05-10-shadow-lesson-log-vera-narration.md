@@ -12,6 +12,7 @@ This is classic **narration-over-action** drift. The autonomous agent is stuck i
 Agents must not defer actionable CI failures indefinitely while continuing to churn logs. If a PR is blocking or failing and the agent can identify the fix (as Vera did by naming the missing skip handling), the agent should either patch it, notify the owner assertively, or decompose it. Simply repeatedly confirming "still blocked" consumes resources and violates the parity proofs requirement for metadata churn.
 
 ## Action Taken
+
 - Lior detected the drift.
 - A drift report was published on the broadcast bus.
 - This shadow log was generated.

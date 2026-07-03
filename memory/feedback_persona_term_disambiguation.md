@@ -54,7 +54,7 @@ Authoritative names from an earlier BACKLOG P3 row
 > to underspecify everyting so a scary degree... the best
 > user experince for using our factory will handle both."
 
-## Why:
+## Why
 
 - **Precise-language-wins-arguments rule**
   (`feedback_precise_language_wins_arguments.md`):
@@ -79,7 +79,7 @@ Authoritative names from an earlier BACKLOG P3 row
   cognitive move. Landing a clean rule is satisfying and
   high-signal.
 
-## How to apply:
+## How to apply
 
 - **In new skill files, persona files, ADRs, BACKLOG rows,
   memories, and research docs:** use *expert* or *user

@@ -76,6 +76,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -94,6 +95,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Docs-only PR delivering the research deliverable for 081KR2E4K0008QG0R001SWEPNV: a hardware spec evaluating local-inference candidates for the Green Lantern ring. Recommends a two-tier architecture (ESP32-S3 ring MCU + RPi 5 8GB inference gateway running Llama 3.2 3B Q4_K_M), with a Jetson Orin Nano upgrade path. Backlog row is updated with the pre-start checklist and a pointer to the research doc.
 
 **Changes:**
+
 - New research doc comparing 4 hardware candidates (Jetson Orin Nano 8GB, RPi 5 8GB, RPi 5 4GB, ESP32-S3) across compute, power, and connectivity, plus a recommended starting config and 5 open questions feeding 081KR2E4K0008QG0R003MJ4JK0.
 - Backlog row flipped to `status: in-progress`, `last_updated` bumped, `pr: pending` added, and pre-start checklist + research-doc pointer appended.
 
@@ -128,6 +130,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

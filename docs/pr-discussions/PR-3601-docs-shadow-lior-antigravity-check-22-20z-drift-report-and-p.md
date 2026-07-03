@@ -27,6 +27,7 @@ Automated shadow log and preservation from Lior.
 This PR adds a shadow drift report and preserves recent merged PR discussions into the repository’s PR archive.
 
 **Changes:**
+
 - Adds a Lior antigravity/shadow lesson log for the 2026-05-15 drift check.
 - Adds generated PR discussion archives for PRs #3600, #3598, #3595, and #3593.
 

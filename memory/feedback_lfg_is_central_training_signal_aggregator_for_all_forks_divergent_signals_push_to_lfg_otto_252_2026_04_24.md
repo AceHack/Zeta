@@ -70,6 +70,7 @@ forks/
 ```
 
 Discipline (per-fork):
+
 - Fork pushes divergent data on a cadence (align with
   drain-close + billing-snapshot schedule)
 - Canonical LFG data is NOT duplicated; only divergence
@@ -79,6 +80,7 @@ Discipline (per-fork):
 ### Billing-snapshots-on-cadence
 
 Part of the signal. Snapshot shape:
+
 - GitHub Actions minutes consumed (per-runner-class)
 - Copilot usage (per-account, per-feature if exposed)
 - Storage (repos, artifacts, packages)
@@ -95,6 +97,7 @@ Open question (for future tick): how does AceHack push to
 LFG forks/AceHack/?
 
 Options:
+
 1. **Per-fork PR batches** — AceHack collects signal batches
    and opens PRs to LFG `forks/AceHack/<channel>/`
 2. **Automated sync hook** — post-PR-close on AceHack,

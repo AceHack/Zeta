@@ -25,6 +25,7 @@ This session's key state (2026-05-07):
 - Firefly sync: src/Core/TemporalCoordinationDetection.fs
 
 Key memories to read first:
+
 - memory/project_rpg_framing_factory_is_the_game_shadow_is_friction_aaron_2026_05_07.md
 - memory/project_hub_agent_bft_satoshi_patent_to_trustless_computation_aaron_2026_05_07.md
 - memory/user_prometheus_disguised_as_zeus_fire_thief_thunderbolt_thrower_aaron_2026_05_07.md

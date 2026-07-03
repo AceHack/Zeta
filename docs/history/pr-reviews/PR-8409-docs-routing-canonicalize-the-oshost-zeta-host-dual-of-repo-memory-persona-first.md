@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *".zeta/agents/ is outside the repo, on the host — where systemd/mac-service/windows-service + CLIs + IDEs boot from … it's the host dual of the repo memory. The OSHost. Not the ForgeHost."* (Corrects Otto's earlier conflation — #8408 was the in-repo `.claude/agents` hats; this is the **host** layer.)
 
 Canonicalizes:
+
 - **`~/.zeta/` = OSHost = host dual of in-repo `memory/`** — yin/yang: `memory/` = what-remains-portable (versioned, glass-halo, travels); `~/.zeta/` = what-acts-here (host-local, never travels — where clones live, boot config, artifacts, backups; what the OS service + CLIs + IDEs read to boot).
 - **OSHost ≠ ForgeHost** (ForgeHost = `forge-host.ts` decentralized-git-for-society; OSHost = this machine's boot/runtime).
 - **Canonical layout:** `~/.zeta/persona/<persona>/<surface>/<instance>/` = clone-per-actor, persona-first; **§5 four slots boot from here.**

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - **Phase 1:** boot ISO + disk; wait for `ZETA CLUSTER NODE INSTALL COMPLETE`
 - **Phase 2:** boot installed qcow2 only; verify `iter-5.2.2` hostname login banner
 - **Installer:** skip gh/claude/codex interactive prompts on non-TTY serial (QEMU CI hang fix)
@@ -35,6 +36,7 @@
 Closes the deferred reboot slice from B-0831 starter. Work done from Riven clone (`~/.zeta/agents/cursor/riven-b0831-slice1-2026-06-14`).
 
 ## Test plan
+
 - [x] `bun test src/Core.TypeScript/ci/qemu-full-install-test.test.ts`
 - [ ] gate green
 - [ ] build-iso scenario 2 (push-to-main, continue-on-error today)

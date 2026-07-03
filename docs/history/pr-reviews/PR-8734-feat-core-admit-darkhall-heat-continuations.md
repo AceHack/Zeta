@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add a DarkHallScheduler admission gate for heat-board continuation tokens
 - refuse malformed tokens, foreign loop ids, wrong save namespaces, and resume tick overflow as typed feedback
 - expose the admitted resume base tick plus a source-offset helper for the host-owned interrupt source
 
 ## Validation
+
 - dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release --filter FullyQualifiedName~DarkHallSchedulerTests
 - dotnet format --verify-no-changes
 - dotnet build -c Release

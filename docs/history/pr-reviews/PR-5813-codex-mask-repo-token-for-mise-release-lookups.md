@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - mask the default GitHub Actions GITHUB_TOKEN only around mise install when no dedicated mise token is provided
 - document why the repo-scoped token causes cross-repo mise/aqua release lookups to return 404
 
@@ -35,6 +36,7 @@
 #5800 showed many lint jobs failing before their checks ran because mise/aqua used the workflow GITHUB_TOKEN against external release endpoints for uv, shellcheck, and actionlint. The release tags exist; the token scope is the problem.
 
 ## Validation
+
 - bash -n tools/setup/common/mise.sh
 - git diff --check
 - actionlint .github/workflows/gate.yml

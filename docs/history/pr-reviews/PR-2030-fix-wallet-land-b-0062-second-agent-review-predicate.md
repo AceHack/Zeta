@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - land the 081KQ8P5D0008QG0R002XFQ305 material-spend second-agent review predicate in wallet spec §7.2.1
 - require approval before broadcast when amount/counterparty/venue predicates fire
 - update 081KQ8P5D0008QG0R002XFQ305 progress from 15/21 to 16/21 resolved items
 
 ## Checks
+
 - BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts && bun tools/backlog/generate-index.ts --check
 - bunx markdownlint-cli2 docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md
 - git diff --check

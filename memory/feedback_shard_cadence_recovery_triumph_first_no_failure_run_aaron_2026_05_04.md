@@ -37,7 +37,9 @@ The prior failure mode was *silent no-op without shard-write* —
 chat-only "honest no-op tick" acknowledgments that produced no
 durable record. The shard-cadence-gap-as-load-bearing-signal
 class (encoded in `feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`
+
 + the 0240Z recovery shard) names the *failure*. This file
+
 names the *first sustained correction*.
 
 **Per substrate-or-it-didn't-happen (Otto-363)**: if the

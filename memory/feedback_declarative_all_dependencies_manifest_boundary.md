@@ -23,7 +23,9 @@ files**. A shell string like `pip install semgrep` or
 `npm install -g markdownlint-cli2@0.18.1` is a string the
 scanner cannot read — it's invisible to the declarative-update
 pipeline even when it pins an exact version. Worse, the SHA-pin
+
 + content-review policy from
+
 `docs/security/SUPPLY-CHAIN-SAFE-PATTERNS.md` cannot be applied
 to something that never enters a manifest because there is no
 pin surface to review in the first place.
@@ -112,6 +114,7 @@ shipped) precisely because the pip dep was invisible.
   residual-risk for this class.
 
 **Related memories.**
+
 - `feedback_download_scripts_validate_contents_before_executing`
   — the content-review half of the same posture. Review is the
   load-bearing step; manifests are where review lands.
@@ -127,6 +130,7 @@ shipped) precisely because the pip dep was invisible.
   — scope note; applies factory-wide.
 
 **Landed this round (evidence pin).** Round 44:
+
 - **Initial landing (reverted mid-round):** created
   `tools/ci/requirements.txt` (semgrep==1.160.0) + added a `pip`
   block to `.github/dependabot.yml` pointing at `/tools/ci`.

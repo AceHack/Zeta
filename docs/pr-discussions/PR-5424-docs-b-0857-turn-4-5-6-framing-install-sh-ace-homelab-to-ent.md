@@ -52,6 +52,7 @@ No implementation work; framing extensions only. 081KSKBP80008QG0R002J03WGA rema
 Updates backlog row **081KSKBP80008QG0R002J03WGA** with additional operator-framing “Turns 4/5/6” to clarify the relationship between `install.sh` and Ace, articulate a homelab→enterprise posture spectrum for “build-is-prod,” and scope the primary security concern (attack surface) as post-perimeter-breach.
 
 **Changes:**
+
 - Add **Turn 4** framing: `install.sh` and Ace as the same substrate at different naming scopes.
 - Add **Turn 5** framing: “build-is-prod” as a spectrum; start maximally unified and scale restrictions later.
 - Add **Turn 6** framing: temper attack-surface concerns by explicitly bounding the threat model to internal-access preconditions.

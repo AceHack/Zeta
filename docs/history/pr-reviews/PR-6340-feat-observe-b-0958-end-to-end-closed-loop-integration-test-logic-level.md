@@ -40,6 +40,7 @@ observeWithLlm(mock backend)  →  execute  →  fold
 with the **key invariant**: `fold(initial, sink.appended) === executed world` — the durable log reconstructs the executed state ("state is a projection of the event log") proven through the **real execute+sink seam**, not just in-memory `simulate` (which the existing observe.test.ts loop test already covers).
 
 Mock `ModelBackend` (no ollama) + fake `EventSink` (no git) — the established patterns from observe.test.ts + execute.test.ts — so CI is an always-green shield. Covers:
+
 - single tick closes (log reconstructs world)
 - multi-tick loop closes (fold whole log == final world)
 - DST determinism (same initial+backend ⇒ identical world)

@@ -28,14 +28,17 @@
 ## Description
 
 ## Summary
+
 - releases the landed #2047 081KR2E4K0008QG0R0022RVRCZ claim file from main
 - releases this cleanup claim in the same PR per docs/AGENT-CLAIM-PROTOCOL.md
 
 ## Checks
+
 - passed: git diff --check
 - passed: docs/claims remains non-empty via README.md
 
 ## Backlog row
+
 - 081KR2E4K0008QG0R0022RVRCZ: Autonomous backlog pickup - PR publication and auto-merge
 
 ## Outcome

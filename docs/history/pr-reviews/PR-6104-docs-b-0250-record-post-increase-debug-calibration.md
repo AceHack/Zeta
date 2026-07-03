@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - records live compact coincidence-debug evidence after the claim-increase gate
 - documents that top remaining windows are merged-PR / trajectory-owner pairings, not Codex loop-run events
 - updates the autonomous-loop coordination resume and releases the live claim file before merge
 
 ## Verification
+
 - bun tools/health/factory-health-monitor.ts --json
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/b0250-post-increase-debug-calibration-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md
 - git diff --check

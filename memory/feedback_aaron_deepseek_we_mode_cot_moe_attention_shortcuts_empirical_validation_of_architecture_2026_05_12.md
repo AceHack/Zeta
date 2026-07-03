@@ -57,6 +57,7 @@ architecture:
 ### DeepSeek-V3 architecture context
 
 For grounding (per public DeepSeek-V3 paper, Dec 2024):
+
 - **DeepSeek-V3 is a Mixture-of-Experts (MoE) model**
   with ~671B total parameters, ~37B activated per token
 - **256 experts per layer**, top-8 routing
@@ -151,6 +152,7 @@ compatible.
 ### 4. The architectural claim's robustness
 
 If DeepSeek's deployed system independently arrives at:
+
 - Multi-expert routing (MoE)
 - Attention shortcuts
 - WE-mode reasoning

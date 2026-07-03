@@ -27,12 +27,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Copilot was right: \`[iter-5.3]\` (zeta-install.sh:372) fires BEFORE the actual \`sudo nixos-install\` invocation (line 980). Test could pass without proving install completed.
 
 \`[iter-5.1]\` (Step 6.7 wifi persistence at line 527) correctly comes AFTER:
+
 - nixos-install
 - iter-4.2 SSH pubkey
 - iter-5.3 password (skipped gracefully in CI on empty stdin)
 - iter-5.2 hostname injection
 
 AND BEFORE:
+
 - iter-5.4.0 gh auth prompt (which would hang in CI without 081KSGS9H0008QG0R003JNSVR5 mock device-code endpoint)
 
 ### 2. Workspace-relative serial log path
@@ -46,6 +48,7 @@ AND BEFORE:
 ### 4. Workflow trigger paths
 
 Added missing trigger paths so PRs changing ONLY these helpers actually run the workflow:
+
 - \`tools/ci/qemu-boot-test.ts\`
 - \`tools/ci/qemu-full-install-test.ts\`
 - \`tools/ci/test-iter-54-install-flow.test.ts\`
@@ -69,6 +72,7 @@ Added missing trigger paths so PRs changing ONLY these helpers actually run the 
 Addresses 5 P1 Copilot findings from freshly-merged PR #5379 for the QEMU full-install CI test: corrects the success marker to one that actually fires after `nixos-install`, ensures serial logs survive for artifact upload, expands workflow trigger paths, and adds a QEMU early-exit race to avoid the 30-min timeout when QEMU dies before the marker can appear.
 
 **Changes:**
+
 - Switch `SUCCESS_MARKER` from `[iter-5.3]` (pre-install) to `[iter-5.1]` (post-install, before gh auth prompt that would hang in CI).
 - Make serial log path env-overridable (`SERIAL_LOG_OUT_PATH`) so the workflow can point it inside the workspace, and add an `actions/upload-artifact@v4.6.2` step (SHA-pinned, `if: always()`) plus extra trigger paths for the qemu helpers.
 - Race the marker-wait against QEMU's `exit` event so early QEMU termination produces an immediate, descriptive failure instead of timing out.

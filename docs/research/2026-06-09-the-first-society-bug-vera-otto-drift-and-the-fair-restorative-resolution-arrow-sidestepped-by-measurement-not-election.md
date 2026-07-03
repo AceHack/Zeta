@@ -55,6 +55,7 @@ Given `PrivacyEconomy` is **rewards-only, can't-lose, pressure-only-down** (#714
 ## The F# structures + proof layers (Soraya's routing)
 
 **Types (shape, not code):**
+
 - `Harm` — victim id, at-fault id, **measured magnitude** (auditor scalar, *not a vote*), DST seed.
 - `Verdict = Good | Unknown` — **make `Bad` unrepresentable** ⇒ no-punishment guaranteed *at the type level* (the
   strongest guarantee; #7149 `Good|Unknown` never `Bad`).
@@ -64,6 +65,7 @@ Given `PrivacyEconomy` is **rewards-only, can't-lose, pressure-only-down** (#714
   constructor.**
 
 **Proof layers (BP-16 — ≥2 independent witnesses):**
+
 - **Z3 lemma** — the **no-punishment / monotonicity invariant** (compensation never decreases any budget; pressure
   monotone-down). Pure G-Counter arithmetic; exact fit (not TLA+ — no temporal/concurrency property here).
 - **FsCheck property** — proportionality + weak-envy-freeness over generated `Harm`/`Compensation` populations.

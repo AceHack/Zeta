@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Follow-up to #7808 — extends `Qcow2RetentionExecutionStep` with path-fork restore/boot + bootstrap steps so `lint (tsc TypeScript)` passes under `erasableSyntaxOnly`.
 - Aligns `PathForkExecutionStep` as an `Extract<>` of the shared union and fixes the path-fork unit-test mock step typing.
 
 ## Test plan
+
 - [x] `bun test tools/zflash/test-harness/`
 - [ ] CI `lint (tsc TypeScript)` green
 

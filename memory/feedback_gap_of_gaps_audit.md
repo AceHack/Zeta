@@ -172,7 +172,7 @@ cover:
    because codification *itself* predicts future
    coverage.
 
-## Why:
+## Why
 
 - **Gaps are inevitable.** Aaron: *"gaps are gooing to
   happen."* Factory cannot pre-think every class of gap

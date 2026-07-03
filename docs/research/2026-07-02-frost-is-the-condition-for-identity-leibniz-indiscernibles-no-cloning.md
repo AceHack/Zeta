@@ -47,6 +47,7 @@ and a copyable identity is not an identity, it is a register dump.
 ## Why this completes the stack
 
 Every earlier piece now has its ground:
+
 - **Uncorrelated exchange needs entropy from OUTSIDE the shared seed** (the un-seeded-entropy
   prerequisite, ZetaIdol Q5) — frost is *where that un-shared entropy is kept private*.
 - **CHSH/Sybil detection** convicts sameness by correlation — frost is what a genuine

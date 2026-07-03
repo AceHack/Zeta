@@ -27,6 +27,7 @@ This PR preserves the discussion from PR #5502.
 Preserves the discussion content from PR #5502 by adding a verbatim PR-preservation markdown archive under `docs/pr-discussions/**`, consistent with the repository’s PR discussion archival workflow.
 
 **Changes:**
+
 - Add a new PR discussion archive file for PR #5502 with YAML frontmatter metadata.
 - Capture the PR body and general comment thread content in the archived markdown.
 

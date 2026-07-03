@@ -21,6 +21,7 @@ Operator 2026-05-25: 'we need to fix this mess yall always stepping on each othe
 Empirical anchor: 37 agent worktrees mass-cleaned same session (081KSE6WT0008QG0R0005XASX2→081KSE6WT0008QG0R001RG4FXD cascade leftovers) + 1 peer worktree holding [main] at stale SHA blocked operator's git checkout main.
 
 Ships:
+
 - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md (auto-loads at cold-boot)
 - 081KSE6WT0008QG0R003YYC9PV backlog row with 5 mechanization scope items
 
@@ -37,6 +38,7 @@ Composes with 081KRMEXM0008QG0R000X1PPGC cron-sentinel-mutex + 081KSE6WT0008QG0R
 This PR lands an operational rule under `.claude/rules/` to prevent multi-agent git worktree contention (especially blocking `main` and interfering with the operator’s primary checkout), and it records the follow-on mechanization targets as a new backlog row (081KSE6WT0008QG0R003YYC9PV) with an index entry in `docs/BACKLOG.md`.
 
 **Changes:**
+
 - Add a new auto-loaded rule: “Agent worktree hygiene — never hold `main`, never step on operator, clean up after PR merge”.
 - Add a new P2 backlog row (081KSE6WT0008QG0R003YYC9PV) describing mechanization scope items (cleanup tooling, worktree pool, PR-merge cleanup hook, etc.).
 - Add 081KSE6WT0008QG0R003YYC9PV to the main backlog index.

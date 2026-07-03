@@ -28,15 +28,18 @@
 ## Description
 
 ## Summary
+
 - add a direct tenant-isolation regression test for control-plane tenant freezes
 - record the Phase 2.8 hard-controls/no-bypass checkpoint in the production autonomy CA
 - update the production-hardening review note now that ESTOP, no-bypass guards, secret scopes, rate limits, restore checksums, and tenant isolation have executable coverage
 
 ## Review
+
 - Subagent review attempted but blocked by platform thread limit: `collab spawn failed: agent thread limit reached`.
 - Local review covered control-plane guard, agent CLI, org cadence, reaction-plan, optimizer, restore-drill, and prompt-flow runbook surfaces.
 
 ## Verification
+
 - `node --experimental-strip-types --test packages/application/test/control-plane-guard.test.ts`
 - hard-control focused `node --experimental-strip-types --test` suite covering guard, observe, CLI, cadence, reaction-plan, optimizer, restore-drill, Cockroach restore source, and prompt-flow compiler tests
 - `npm run typecheck`

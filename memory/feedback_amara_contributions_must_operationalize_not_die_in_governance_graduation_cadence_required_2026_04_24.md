@@ -35,6 +35,7 @@ Otto honors this by establishing a **graduation cadence**:
 ## Why: the failure mode made visible
 
 Aaron's framing "research to die" captures the drift:
+
 - Amara sends ferry (1st-11th + counting)
 - Otto absorbs verbatim, notes overlap, files BACKLOG row
 - BACKLOG row sits at P2/P3 research-grade
@@ -116,6 +117,7 @@ authority calibration)
 
 Otto maintains a running tracker (BACKLOG row or
 dedicated doc) of:
+
 - Shipped Amara-derived operational changes (date + PR)
 - Queue (next 3-5 priorities)
 - Aminata status per item (no-pass / advisory-findings /
@@ -182,6 +184,7 @@ landing, not sedimentary accumulation.
 ## First graduation — SHIPPED Otto-105 (PR #295)
 
 Proof of cadence landed same tick as the directive:
+
 - `src/Core/RobustStats.fs` with `median` / `mad` /
   `robustAggregate` (Amara 10th-ferry snippet preserved
   verbatim in XML-doc)
@@ -216,6 +219,7 @@ This widens the graduation-cadence rule beyond Amara to:
 ### Expanded priority queue (merged Amara + other research)
 
 Amara 10th ferry:
+
 - [x] `robustAggregate` — PR #295 (SHIPPED Otto-105)
 - [ ] `antiConsensusGate`
 - [ ] `Provenance` + `Claim<'T>` types
@@ -224,23 +228,28 @@ Amara 10th ferry:
 - [ ] cap-hit visibility audit
 
 Amara 9th ferry:
+
 - [ ] 5-feature `B(c)` composite (alternative to 10th's
   7-feature `BS(c)`; needs ADR on factorization pick)
 
 Amara 8th ferry (PR #274):
+
 - [ ] Provenance-aware semantic bullshit-detector
   implementation (currently design-status in PR #282 /
   #286 v1 CRITICAL-only delta)
 
 Amara 11th ferry (pending Otto-106):
+
 - [ ] Temporal Coordination Detection Layer (PLV /
   cross-correlation / burst alignment) — LARGE, needs
   multi-node foundation first
 
 Amara 7th ferry:
+
 - [ ] KSK-as-Zeta-module implementation (L-effort)
 
 Other-research graduation candidates (non-Amara):
+
 - [ ] `docs/research/drift-taxonomy-bootstrap-precursor-
   2026-04-22.md` — beyond SD-9 / pattern-5 shipped,
   what additional operationalization?

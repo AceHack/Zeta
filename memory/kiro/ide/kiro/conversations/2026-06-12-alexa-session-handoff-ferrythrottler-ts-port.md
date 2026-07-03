@@ -38,6 +38,7 @@ The F# implementation is at `src/Core/FerryThrottler.fs` (~300 lines).
 ## After the port
 
 Per Rodney's razor:
+
 1. Add priority lanes (or accept N instances with draining policy)
 2. Fold in `tools/github/poll-pr-gate-batch.ts` (genuine producer)
 3. Fold in `tools/shadow/shadow-observer.ts:608,634` (if they have producers)

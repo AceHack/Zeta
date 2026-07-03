@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - add the 081KQNJ500008QG0R003SCWBDV v0.9 convention-drift checker for ADR supersession claims
 - require superseded ADRs to carry a reciprocal top-of-file `Superseded by` marker naming the superseding ADR
 - add focused Bun tests and README wiring for the new checker
 
 ## Verification
+
 - `bun test tools/substrate-claim-checker/check-convention.test.ts`
 - `bun run typecheck`
 - `bunx eslint tools/substrate-claim-checker/check-convention.ts tools/substrate-claim-checker/check-convention.test.ts`

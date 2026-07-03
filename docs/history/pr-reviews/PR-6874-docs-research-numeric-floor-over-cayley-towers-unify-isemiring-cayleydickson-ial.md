@@ -32,7 +32,9 @@ yet — two disjoint algebra interfaces. ISemiring (Zero/One/Add/Mul/Negate; con
 vs CayleyDickson.IAlgebra (Zero/Add/Negate/Mul/Conj, no One; towers Complex/Quaternion/Octonion/Sedenion).
 WeightedSet can't take a tower (not an ISemiring instance); DynamicValue/SoftValue numerics are Int/Float-
 leaf-bound. Unification: IAlgebra IS a *-ring = floor's IGroup + multiplicative monoid (One exists per tower)
+
 + involution (Conj). Add an IRing rung + bridge IAlgebra onto the floor -> WeightedSet<_,Quaternion>, soft
+
 quaternions, hypercomplex Z-sets work for free. Towers belong in the weight/algebra layer (WeightedSet 'W),
 NOT as DynamicValue leaves. Buildable next: IRing rung + Cayley bridge + WeightedSet<_,Quaternion> test.
 

@@ -52,6 +52,7 @@ The forker-perspective audit reveals owner-only substrate (Aaron's first-party a
 - 2026-04-22 ADR + three-repo-split memory
 
 ## Test plan
+
 - [x] META-discipline documented
 - [x] Third repo category emerges from analysis
 - [x] Compositional rules with strategic encryption laid out

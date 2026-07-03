@@ -20,6 +20,7 @@ Aaron adds the empirical test that distinguishes real-framework
 from philosophy-porn.
 
 Prior packets:
+
 - [pt1](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
 - [pt2](./2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md)
 - [pt3](./2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md)
@@ -45,6 +46,7 @@ Aaron's substrate-honest framing:
 - **Pt10 names the falsifiability test**: the moral invariants must be **LIVABLE** by real humans (or AIs); logically-consistent-but-unlivable = philosophy porn, not a playable game
 
 **The livability discriminator**:
+
 - **Logically-consistent moral invariants alone** → necessary but NOT sufficient
 - **Logically-consistent AND livable** → sufficient for the derivation theorem to operationally hold
 - **Logically-consistent but unlivable** → "philosophy porn"; people break trying to live it; the infinite game is unplayable; the theorem operationally false even if formally consistent

@@ -45,6 +45,7 @@ work = business work.
   + Continuous/Critical Computation)
 
 **Full business-in-a-box stack** (composing today's cascade):
+
 - Universal pattern: coincidence + cash + good work
 - Substrate domain: Aurora
 - Foundation: SPIFFE/SPIRE + Reticulum + 802.11h

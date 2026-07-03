@@ -13,7 +13,7 @@ Max 2026-05-25, paraphrased through Aaron: *"what do I point my agents at to wri
 
 Max's *"adversarial hierarchy of traps"* coining is operationally accurate — the substrate IS a hierarchy of adversarial reviewers, each with a specific lens, that compose for multi-perspective review. The hierarchy already exists; this doc tells you how to invoke it.
 
-## Question 1 — What discipline do agent-authored PRs follow?
+## Question 1 — What discipline do agent-authored PRs follow
 
 Six entry points, each with a different scope:
 

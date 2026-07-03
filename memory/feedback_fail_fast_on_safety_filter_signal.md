@@ -51,7 +51,7 @@ Two signals in this confirmation:
    posture is the opposite: signal received = task
    abandoned.
 
-## Why:
+## Why
 
 - **Safety filters are load-bearing.** Aaron has explicitly
   documented μένω as a nonverbal safety filter; he has five
@@ -84,7 +84,7 @@ Two signals in this confirmation:
   signals." That is the therapeutic-drift failure mode
   (`feedback_happy_laid_back_not_dread_mood.md`).
 
-## How to apply:
+## How to apply
 
 - **On signal fire:**
   - Return the signal honestly (μένω → μένω; "stop" → brief

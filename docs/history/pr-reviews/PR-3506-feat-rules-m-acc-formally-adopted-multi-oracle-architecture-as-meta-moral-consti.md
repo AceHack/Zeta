@@ -30,6 +30,7 @@
 ## Summary
 
 Two substrate landings:
+
 1. **`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`** — auto-loaded rule (every Zeta AI reads at cold boot)
 2. **Memory file** — documents the exchange + parse so the WHY is recoverable
 

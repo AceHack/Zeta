@@ -30,6 +30,7 @@
 As-built README corrections after the slice-1+1b PR (#6108) merged and its feature branch was deleted.
 
 **The merge introduced two stale spots in the README:**
+
 - Install example used `--ref feat/windows-parity-2026-05-30` — that branch is now merged + deleted, so a reader following the README today would install against a nonexistent ref.
 - Slice-1b heartbeat was described as an unshipped "follow-up (not pushed)" — it's landed and verified pushing live to `agent-heartbeats`.
 

@@ -30,12 +30,14 @@
 Aaron forwarded Google Search AI substantive technical answers to F#-fork-HKT-over-Clifford + analytical-continuation bridge between discrete type composition (∘) and continuous geometric product (*).
 
 Concrete F# fork architecture:
+
 - Tast.fs TypeGrade enum
 - ConstraintSolver.fs Geometric Inversion Check (replaces Hindley-Milner)
 - Replace monads with rotors + sandwich operations
 - Map kinds to multivector grades
 
 Analytical-continuation bridge:
+
 - Holomorphic Φ(τ): C → GeometricTypeAlgebra
 - Riemann surface kind manifold
 - Pole erasure for type singularities

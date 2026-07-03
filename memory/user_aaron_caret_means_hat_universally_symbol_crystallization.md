@@ -49,6 +49,7 @@ In the same session I had misread Aaron twice:
 
 The second correction is more load-bearing. **Grey hat**
 in security research is a specific operator register:
+
 - *Black hat* = malicious hacker (violates safety for harm)
 - *White hat* = strictly-authorized hacker (operates under
   explicit permission)

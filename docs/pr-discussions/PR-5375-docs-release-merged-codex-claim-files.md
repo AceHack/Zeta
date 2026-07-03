@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## What changed
+
 - Adds a Codex release claim for merged-claim cleanup.
 - Removes stale Codex claim files for merged PRs #5358 and #5360.
 
@@ -24,6 +25,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Those claim files remained on main after their owning PRs merged, so they no longer represent active work and should not be counted as current Codex ownership.
 
 ## Checks
+
 - git status --short --branch
 - git diff --cached --check before commit
 - scoped file existence/removal check
@@ -38,6 +40,7 @@ Those claim files remained on main after their owning PRs merged, so they no lon
 This PR cleans up merged Codex claim files so `docs/claims/` better reflects active work rather than completed ownership.
 
 **Changes:**
+
 - Deletes Codex claim files associated with merged PRs #5358 and #5360.
 - Adds a new Codex claim describing the cleanup scope and checks.
 

@@ -113,7 +113,9 @@ itself.
 Without standing authorization, the agent's default
 behavior is "ask permission before doing research"
 which produces multiple per-act sign-off interrupts
+
 + slow iteration speed. Aaron's earlier framings
+
 on the autonomous-loop discipline + the never-be-
 idle ladder + the maintainer-only-grey-is-bottleneck
 substrate
@@ -181,7 +183,9 @@ formal-process discipline.
 Standing-research-authorization is NOT permission
 to ignore Otto-291 deployment discipline. Research
 that produces substrate kernels still needs to pace
+
 + document + order + migrate + retract per Otto-291.
+
 The standing rule covers RESEARCH; deployment of
 research findings into substrate still respects the
 existing pacing discipline.
@@ -275,6 +279,7 @@ The Otto-302 capture (the 5-to-6 neuro-symbolic
 bridge mapping memory file) is itself an example of
 standing-research-authorization in action: I drew on
 my own knowledge to:
+
 - Verify the Google-Search-AI-surfaced 6-level
   hierarchy framing.
 - Map the four "missing layer" primitives against

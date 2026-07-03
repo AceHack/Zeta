@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - fixes the 081KR2E4K0008QG0R0022RVRCZ PR publication planner to normalize branch refs before default-branch safety checks
 - blocks `refs/heads/main` and `origin/main` the same way as `main`
 - emits push and PR-create command argv with normalized short branch refs
 - addresses the post-merge review finding on PR #2043
 
 ## Checks
+
 - `bun test tools/backlog/pr-publication-plan.test.ts`
 - `bun run typecheck`
 - `bunx prettier --check tools/backlog/pr-publication-plan.ts tools/backlog/pr-publication-plan.test.ts docs/claims/task-b0280-branch-ref-normalization.md`

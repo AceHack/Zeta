@@ -54,6 +54,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -72,6 +73,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates `docs/AUTONOMOUS-LOOP.md` to accurately describe the current set of background-service scripts under `tools/bg/` and their macOS `launchd` wiring status.
 
 **Changes:**
+
 - Expands the “Background Services Architecture” bullet to enumerate all 4 `tools/bg/*.ts` service entrypoints.
 - Clarifies which service is `launchd`-registered vs. which are currently on-demand only.
 

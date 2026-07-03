@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Claimed and verified the smallest safe slice of 081KQ3HBZ0008QG0R003GTG5P2 (P2 etymology + epistemology research track) per pre-start checklist: the etymology-catalog-schema.ts harness (typed schema + 3 seeds + validator + CLI).
 - Re-decomposed on the build: 081KQ3HBZ0008QG0R003GTG5P2 L-effort remains research track; this is the atomic TS catalog step (TS over docs, no new prose).
 - Dedicated worktree + pushed claim branch used; root checkout untouched throughout.
@@ -35,6 +36,7 @@
 
 ## Focused checks outcome (included per task rule)
 All executed in isolated worktree on claim branch:
+
 - `bun --check tools/resonance/etymology-catalog-schema.ts` → 0 errors
 - `bun ... --validate` → All 3 entries pass schema validation.
 - `bun ... --summary` → Total 3, Confirmed 0, Candidates 3, Failed 0; F1/F2/F3 fail/partial 0/0; Bridge-figures:1. Green.

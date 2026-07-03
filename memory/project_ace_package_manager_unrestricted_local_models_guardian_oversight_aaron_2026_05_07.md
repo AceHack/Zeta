@@ -23,6 +23,7 @@ The Guardian is: meter + gate + receipt writer.
 The Guardian is NOT: morality enforcer, surveillance, psychology.
 
 **KSK decides (the gate questions):**
+
 - Can this model call tools?
 - Can it write files?
 - Can it access network?

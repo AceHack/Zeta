@@ -74,6 +74,7 @@ This PR was authored by Otto-Desktop following Aaron's explicit save directive a
 This PR adds a new `feedback_*.md` memory entry capturing the “8-oracle convergence” summary and regenerates `memory/MEMORY.md` so the new entry appears in the auto-indexed stack view.
 
 **Changes:**
+
 - Added a new feedback memory file documenting the 8-oracle convergence table and its distilled operational takeaways.
 - Regenerated `memory/MEMORY.md` (updated “Last reindex” date and refreshed top-of-stack entries).
 

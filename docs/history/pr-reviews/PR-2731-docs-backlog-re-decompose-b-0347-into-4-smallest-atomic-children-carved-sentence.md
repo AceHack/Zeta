@@ -31,10 +31,12 @@
 Re-decomposed broad 081KR50HA0008QG0R002ZNFQBZ (200+ skills, routing budget pressure from long descriptions) into 4 category-bounded atomic children. This is the smallest safe slice + re-decomp pass (assumes initial atomic label was mistaken per "always re-decompose" rule). No skill files touched; pure backlog hygiene. Dedicated worktree + pushed claim branch used; root checkout untouched.
 
 ## One bounded step
+
 - Only edited the 081KR50HA0008QG0R002ZNFQBZ backlog row to mark multi-child and list 4 children (infra, reviewer, data/AI, remaining).
 - Matches "take exactly one bounded step", "if too broad, decompose before implementation", "prefer F#/TS over docs" (future slices will introduce TS carving helper).
 
 ## Focused checks
+
 - `dotnet build -c Release` in worktree: 0 Warning(s) after `dotnet restore` (fresh worktree obj/ missing is env, not source). Confirmed clean.
 - `git status`: only the 1 file changed.
 - Branch pushed, claim protocol followed (no root edits).

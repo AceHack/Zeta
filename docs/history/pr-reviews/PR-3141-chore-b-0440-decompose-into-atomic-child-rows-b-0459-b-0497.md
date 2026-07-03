@@ -39,6 +39,7 @@
 | 081KRHWGX0008QG0R003NT6DY9 | 6 | launchd plist + AUTONOMOUS-LOOP.md wiring update | XS | 081KRFA460008QG0R001KC0VBH (independent of slice 5) |
 
 **081KRFA460008QG0R001KC0VBH parent row updated:**
+
 - Pre-start checklist completed (prior-art search + dependency proof done)
 - Substrate-honest caveats updated: now reflects shipped state (not "design sketch only")
 - Decomposition section formalised with slice-status table (✅ done / 🔲 open)

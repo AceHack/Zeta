@@ -37,7 +37,9 @@ Net:
 
 Major parallel findings still landed in the same conversation
 (TurboQuant + RotorQuant + DeepSeek V4 CSA+HCA + Symbolica + Gemma 4
+
 + source-set extension to Alex Ziskind + George Hotz / tinybox).
+
 Verbatim preserved per Otto-279 history-surface + Otto-363
 substrate-or-it-didn't-happen.
 
@@ -671,7 +673,9 @@ engineering claim survives: 081KQTPYE0008QG0R002Y7X5KH (tinygrad-as-kernel-layer
 Zeta's emulator dispatch) holds on its own merits, independent
 of paper-id resolution. TurboQuant (Google, arXiv:2504.19874,
 ICLR 2026) + RotorQuant (community Clifford-rotors derivative)
+
 + DeepSeek V4 with CSA+HCA attention (90% KV reduction + 73%
+
 FLOPs reduction, MIT-licensed) + Symbolica AI Categorical Deep
 Learning (ICML 2024) are major parallel findings. Source-set
 extends to Alex Ziskind + George Hotz / tinybox. CodeAct +

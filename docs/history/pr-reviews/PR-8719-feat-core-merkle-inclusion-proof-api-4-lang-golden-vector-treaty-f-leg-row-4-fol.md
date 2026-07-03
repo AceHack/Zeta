@@ -30,6 +30,7 @@
 Extends the row-4 inclusion proofs (which were F#-only on `ZSetMerkle`, #8713) to the **generic raw-leaf Merkle** — the unit already byte-locked across F#/C#/Rust/TS via `golden-vectors-merkle.json` — and freezes a **cross-language proof treaty** so all four oracles agree byte-for-byte on audit paths.
 
 ## F# leg (this PR — the treaty source)
+
 - **`Merkle.fs`**: `MerkleProofStep {Sibling; SiblingOnRight}` + `MerkleTree.Proof(index)` + `MerkleTree.verifyProof (leaf, steps, root)`. Replays the exact fold including duplicate-last odd-fan-in; verify touches only leaf+proof+root, never the tree.
 - **`golden-vectors-merkle-proofs.json`** (22 vectors, **hex-in-JSON** — no binary in the proof lineage): same leaf sets as the root treaty, proving representative indices (0 / mid / last) to exercise left, right, and duplicate-last paths. **Two byte-identical copies** (`TS merkle/`, `Rust tests/`) beside the root vectors.
 - **`MerkleProofGoldenVectors.Tests.fs`** (2 tests, 2/2 green, verified directly): F# reproduces every committed vector byte-for-byte; each proof verifies; a tampered leaf fails.

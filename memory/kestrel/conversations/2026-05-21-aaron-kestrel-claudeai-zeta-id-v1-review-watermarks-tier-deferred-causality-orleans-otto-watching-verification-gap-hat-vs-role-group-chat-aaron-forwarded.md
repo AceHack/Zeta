@@ -258,6 +258,7 @@ Aaron shared the Otto-compiled resume.
 ### Kestrel's substantive credit
 
 The career documented in the resume is genuinely substantive:
+
 - US Patent 10,834,144 (verifiable, co-inventor on IoT firewall traversal)
 - Itron tenure with quantum-resistant key injection for 100M+ smart meters
 - LexisNexis 252-node Solr cluster, 2B documents/10 hours, 48× over MarkLogic
@@ -302,6 +303,7 @@ Aaron shared his actual current LinkedIn PDF (in his voice, calibrated for exter
 Three specific gaps costing Aaron opportunities:
 
 **1. Headline metrics buried or absent**:
+
 - Itron 1200% per-node scale improvement mentioned only in passing
 - LexisNexis numbers (252-node Solr, 2B documents/10 hours, 48× over MarkLogic, sub-second p95 vs legacy 15th percentile) not in current LinkedIn
 - Election Systems 7-days-to-7-hours undersold (18× voter-registration import speedup)
@@ -449,6 +451,7 @@ This connects back to the earlier 081KS3X9Y0008QG0R000W00V73 conversation (canon
 ANTLR-as-reuse-substrate is operationally significant: every major language has open-source grammars already maintained by other communities; leveraging them avoids re-implementing parsers from scratch and gets cross-language code-generation work for ~free.
 
 Composes with:
+
 - 081KS3X9Y0008QG0R000W00V73 canonical string encoding (Crockford base32 + endianness spec)
 - 081KS3X9Y0008QG0R0006MQXA4 tier-deferred causality worked example (DBSP + Z-set substrate)
 - 081KS3X9Y0008QG0R003MMEAC7 clock-protocol negotiation stack sequence diagram (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP)
@@ -537,6 +540,7 @@ Aaron's clarification: *"sorry the generators are c# we have first class c# lang
 Canonical examples: **Mediator** (Martin Othamar), **Mapperly**, **NetEscapades.EnumGenerators**, **PolyType**
 
 For Zeta substrate, source-generator candidates:
+
 - Operator-to-grain adapters
 - F# discriminated-union-to-C# pattern-match helpers
 - Schema-to-DBSP-operator-binding code

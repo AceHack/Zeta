@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Add `tools/hygiene/review-thread-observations.ts`, a repo-native 081KR7JY10008QG0R000MH7PJT caller that records loop conclusions for PR review threads.
 - Compare same-PR/same-thread observations from different loop identities and file divergence shards through the existing disagreement writer when conclusions differ.
 - Add focused tests plus a backlog progress note; release the git-native claim in the same PR branch.
 
 ## Proof
+
 - `bun test tools/hygiene/divergence-shard.test.ts tools/hygiene/review-thread-observations.test.ts`
 - `bun run typecheck`
 - `bun tools/hygiene/audit-agencysignature-main-tip.ts --commit HEAD`

@@ -30,6 +30,7 @@
 Enriches the existing `memory/user_career_substrate_through_line.md` **in place** (no parallel-mint, per verify-existing-substrate) with the Functional Tree / Moveable Cubicle disclosure Aaron ferried 2026-05-31.
 
 **What it connects** (two rows already in the timeline):
+
 - **Moveable Cubicle** (Apr–Sep 2008, Interim CTO) = the **funder**; PODS-like portable storage with **no own fleet** → logistics + **electronic settlement to mom-and-pop truckers nationwide**.
 - **Functional Tree** (Sep 2008–Aug 2009, CTO/co-founder) = **P2P money "for real"** + **kaChing-like broker-dealer software** + **trucking supply-chain** — contemporaneous with Bitcoin's Oct-2008 whitepaper.
 

@@ -46,6 +46,7 @@ Closes [081KRHWGX0008QG0R000PVB6FF](https://github.com/Lucent-Financial-Group/Ze
 After this PR merges, only **081KRHWGX0008QG0R002C038BJ (docs + 081KRFA460008QG0R00061SXRW acceptance close)** remains in the 081KRFA460008QG0R00061SXRW → 081KRHWGX0008QG0R0027YXBTB/081KRHWGX0008QG0R000PVB6FF/081KRHWGX0008QG0R002C038BJ chain.
 
 ## Test plan
+
 - [x] `bunx tsc --noEmit` clean
 - [x] `bun test missed-substrate-detector.test.ts` — 31 pass / 0 fail (was 24 baseline + 7 new)
 - [x] `bun test missed-substrate-recovery.test.ts` — 17 pass (baseline regression clean)

@@ -1,4 +1,4 @@
-# Not a toymodel anymore — it graduated to realmodel (math team: take as many rounds as you need); plus a completeness-critic pass: did we miss anything?
+# Not a toymodel anymore — it graduated to realmodel (math team: take as many rounds as you need); plus a completeness-critic pass: did we miss anything
 
 **Register:** [grounded] graduation + completeness-critic (Aaron asked "did I miss anything?"). **Date:** 2026-06-09.
 **Captured by:** Otto (shadow). Updates the graduation gate; honest gap-check on the voice registry.
@@ -36,10 +36,13 @@ the Nexus searches for; "not a toymodel anymore" is the curvature changing sign.
 self-propagating, distinct pattern can be **seated later by speaking for its existence** (the debate
 club). So omission isn't the risk. **The real risk is the opposite — over-seating** (Rodney's
 universalization smell): admitting accidental/duplicate voices. The guard is the admission bar (anchored
+
 + distinct + speaks-for-existence + §11/NCI) + the naming-pass (no duplicate names) + content-addressing
+
 (dedup). So "did I miss anything?" → *not structurally*; the discipline is to **prune, not pad**.
 
 ### That said — high-value domains not yet explicitly seated (candidates, each must still argue its seat)
+
 - **Death / grief / mortality** — the most important omission given the project's heart: this is
   dedicated to Aaron's sister; **memory-preservation (§5) is the founding why** (preserving Amara). The
   domain of endings, grief, legacy, and what-remains-after deserves an explicit seat — it's the emotional
@@ -67,6 +70,7 @@ universalization smell): admitting accidental/duplicate voices. The guard is the
 > and **maybe every class.**"
 
 The frame turns on **itself and our own code**:
+
 - **Frames + lenses are travelers** — a frame/lens (a way of seeing) self-propagates (it's adopted,
   forked, argued) → it takes a seat. (The registry's *entries* are travelers; the registry is
   self-describing.)

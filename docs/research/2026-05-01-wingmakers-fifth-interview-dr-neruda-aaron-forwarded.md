@@ -203,7 +203,7 @@ pattern. Specifically:
   (CIA-sponsored Monroe-related research) is documented in
   declassified primary sources.
 
-## Selected verbatim quotes (from extracted text;
+## Selected verbatim quotes (from extracted text
    preservation-grade, NOT endorsement)
 
 > *"The Fifth Interview of Dr. Jamisson Neruda exposes a
@@ -241,6 +241,7 @@ under §33 archive convention. The full pdftotext-extracted
 text is saved alongside for searchability.
 
 Per Aaron's explicit framing:
+
 - *"it's not authoritive facts"* — the document is not
   ground-truth claims; preservation is for comparative-
   religion analysis
@@ -258,9 +259,13 @@ Per Aaron's explicit framing:
   esoteric traditions, hold without endorsing or rejecting
 
 The pause-class-discovery commitment from PRs #1096 + #1097
+
 + #1102 continues to hold. This preservation is a direct
+
 first-person operational instruction from Aaron ("save it")
+
 + third-party content captured under §33 archive convention,
+
 not a v2/v3 class addition or Insight-block-promotion.
 
 Aaron noted there are likely the **first 4 interviews of

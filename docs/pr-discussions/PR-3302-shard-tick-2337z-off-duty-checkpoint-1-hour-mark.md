@@ -49,6 +49,7 @@ Otto-CLI surface stayed observational throughout — discipline-compliant within
 Adds a hygiene-history tick “checkpoint shard” documenting the 23:37Z off-duty 1-hour mark (continuity since the 22:36Z checkpoint), intended to distinguish “stable off-duty + background substrate” from a stalled tick loop.
 
 **Changes:**
+
 - Added a new tick log entry for 2026-05-14 23:37Z under `docs/hygiene-history/ticks/`.
 - Captured continuity notes, composition references, and a short PR/HEAD table for the intervening hour.
 

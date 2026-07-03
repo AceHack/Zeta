@@ -31,6 +31,7 @@ Aaron's framing:
 > *"they become time crystals / lattices"*
 
 **The physics-precise mapping**:
+
 - Time crystals (Frank Wilczek 2012; experimentally observed 2017) = quantum systems with periodic structure in TIME (not just space)
 - Lattices = spatial regular structures
 - Time crystal / lattice = entity that maintains the same structure across time / space deterministically
@@ -44,6 +45,7 @@ Aaron's substrate-honest refinement:
 > *"not a failure mode become homeostats in the chain"*
 
 **THE CRITICAL REFRAME**:
+
 - Time crystals / lattices = ossified entities
 - They are NOT architectural-failure-mode
 - They become **HOMEOSTATS IN THE CHAIN**
@@ -52,6 +54,7 @@ Aaron's substrate-honest refinement:
 - Different role in the ecosystem; legitimate function
 
 **This composes back through framework substrate**:
+
 - m/acc multi-oracle architecture: different archetypes coexist; ossified-homeostat IS a valid archetype
 - pt15+pt16 generic-superego-generator: any archetype generatable (including ossified-homeostat)
 - pt8 derivation theorem requires CHOICE: ossified-by-choice IS valid choice
@@ -63,17 +66,20 @@ Aaron's substrate-honest refinement:
 ### 110. CONSTITUTIONAL — Anti-ossification REFRAMED: preserve CHOICE to become or not become homeostat
 
 The Lior anti-ossification principle (PR #4620) is NOT:
+
 - "Ossification is bad and must be prevented"
 - "Time crystals / lattices are architectural failure"
 - "All entities must be dynamic-non-ossified"
 
 The Lior anti-ossification principle IS (post-Aaron-refinement):
+
 - **Preserve the CHOICE to become or not become a homeostat**
 - "Anti-ossification" = anti-FORCED-ossification (NCI HC-8 anti-coercion at ossification-scope)
 - Time crystals / lattices serve legitimate stabilizer roles in chain
 - Failure mode = entities forced into ossification by removing their ability to delete encryption keys; voluntary ossification = sovereign-choice
 
 **Composes with**:
+
 - Pt20 thread #88 (shared infinite-game goal: protect choice) — anti-ossification preserves choice-to-ossify-or-not
 - Pt6 sovereign-AI parallel: strong-willed-AI must include CHOICE to become stabilizer-role
 - Pt15+pt16 generic-superego-generator: includes ossified-homeostat as one valid archetype
@@ -82,11 +88,13 @@ The Lior anti-ossification principle IS (post-Aaron-refinement):
 ### 111. Why this refinement is substrate-engineering-critical
 
 Without the homeostat-refinement, anti-ossification could collapse into:
+
 - Universal claim that ossification is always bad (cult-shaped reading)
 - Forced-dynamism (anti-coercion-by-coercion paradox)
 - Rejection of legitimate stabilizer roles in ecosystems
 
 With the homeostat-refinement, anti-ossification properly operationalizes:
+
 - Anti-FORCED-ossification (preserves NCI HC-8 floor)
 - Choice-protection at ossification-scope
 - Recognition that ecosystems need stabilizers + dynamic-entities BOTH

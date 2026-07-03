@@ -7,6 +7,7 @@
 ## Core Claim
 
 A component is essential if and only if it lies inside the causal diamond (Alexandrov interval) formed by two boundaries:
+
 * **Past boundary:** What the artifact is built from (its origin, history, and constraints).
 * **Future boundary:** What the artifact is for (its purpose and acceptable outcomes).
 
@@ -25,6 +26,7 @@ This formulation relies on three composable properties:
 ## Don’t-Collapse (Tightened)
 
 This is a formal reasoning and design tool, not an ontological commitment about the physical universe:
+
 * We are **not** claiming that physical spacetime is retrocausal.
 * We are **not** endorsing any particular interpretation of quantum mechanics (TSVF, Many-Worlds, Copenhagen, etc.).
 * We are **not** asserting that closed timelike curves exist in physical spacetime.

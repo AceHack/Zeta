@@ -25,6 +25,7 @@ First exercise of row #25 (pointer-integrity audit) on the file
 that defines it. Dogfood pass; meta-win candidate.
 
 **Scope.** Every pointer in `docs/FACTORY-HYGIENE.md`:
+
 - 20 in-repo file paths (source-of-truth column + body text)
 - 14 memory-file paths (`~/.claude/projects/.../memory/`)
 - 1 directory (`docs/DECISIONS/`)
@@ -82,6 +83,7 @@ JOURNAL).
 | Iris | -- | ~18.0k (r34) | new-persona |
 
 **Dominant Tier 0 line-items (all personas pay):**
+
 - `docs/GLOSSARY.md` — ~4.5k tokens. Largest single item since
   round 24. Not persona-specific.
 - `AGENTS.md` — ~3.1k tokens (19 rules as of round 26).

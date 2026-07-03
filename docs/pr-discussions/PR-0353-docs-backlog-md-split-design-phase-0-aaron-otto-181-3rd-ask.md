@@ -73,6 +73,7 @@ Break-even: current positional-conflict overhead is ~50% of one tick's capacity 
 Adds a research-grade design proposal for splitting `docs/BACKLOG.md` into per-row files with a generated index, aiming to eliminate frequent merge conflicts caused by concurrent tail-appends.
 
 **Changes:**
+
 - Introduces a Phase-0 design document proposing `docs/backlog/P<tier>/<id>-<slug>.md` per-row files with YAML frontmatter.
 - Proposes generating `docs/BACKLOG.md` as an index and enforcing drift via CI (modeled after memory-index workflows).
 - Captures a phased migration plan plus open sign-off questions for structure/tooling choices.

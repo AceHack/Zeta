@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - land the 081KQ8P5D0008QG0R002XFQ305 drawdown oracle decision in wallet spec §5.5
 - land the 081KQ8P5D0008QG0R002XFQ305 Tx N+1 monitor-signed classification signal in wallet spec §7.1
 - update 081KQ8P5D0008QG0R002XFQ305 progress from 8/21 to 10/21 resolved items
 
 ## Checks
+
 - BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts && bun tools/backlog/generate-index.ts --check
 - bun tools/backlog/generate-index.ts --check
 - bunx markdownlint-cli2 docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md docs/backlog/P0/081KQ8P5D0008QG0R002XFQ305-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md

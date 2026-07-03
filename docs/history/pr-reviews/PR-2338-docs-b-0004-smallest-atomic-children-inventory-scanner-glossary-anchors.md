@@ -29,6 +29,7 @@
 
 ## Summary
 Decomposes broad P2/L 081KQ0YZ80008QG0R002HWBHKJ ("Translate repo into other human languages") into two smallest dependency-ordered atomic child rows before any implementation:
+
 - 081KR50HA0008QG0R000YTJE8Q: TS substrate inventory scanner (focused mode for P0 surfaces + cross-ref graph)
 - 081KR50HA0008QG0R002TN3JX2: Precision glossary anchor set extraction (precondition for consistent translation, composes with 081KQ0YZ80008QG0R001QJJTVF)
 
@@ -38,6 +39,7 @@ Follows "if the item is too broad, decompose before implementation", "always re-
 081KQ0YZ80008QG0R002HWBHKJ spans entire repo, 14 languages, code+docs+memory — L effort. First step produces concrete map + anchors so later slices (drift lint, per-lang pilots) are targeted, not speculative.
 
 ## Focused checks (executed in dedicated worktree)
+
 - `bun tools/github/refresh-worldview.ts`: 0 open PRs blocking, current claim 7 behind (expected), 366 backlog rows
 - `dotnet build -c Release`: 0 Warning(s) 0 Error(s) — gate passed before + after
 - Worktree + pushed claim branch used; root checkout untouched (per instructions)

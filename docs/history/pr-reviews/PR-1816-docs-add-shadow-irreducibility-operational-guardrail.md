@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Adds a Watcher/Maji-layer operational standing rule for irreducible signals: run the system, preserve the trace, and avoid forcing a clean definition into the bootloader
 - Preserves the Codex reducer pass as a research-grade provenance note paired with Riven's Wolfram/Ruliad research artifact
 - Keeps Genesis Seed behavior small and observable while moving the heavier ontology to the outer factory layer
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - bunx markdownlint-cli2 docs/AGENT-BEST-PRACTICES.md docs/research/2026-05-07-shadow-irreducibility-operational-guardrail-codex.md
 

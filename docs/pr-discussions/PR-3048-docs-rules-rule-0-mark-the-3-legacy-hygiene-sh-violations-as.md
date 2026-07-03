@@ -55,6 +55,7 @@ Continuation of this session's substrate-hygiene sweep — alongside [#3043](htt
 Updates Rule 0 documentation to reflect that the previously listed `tools/hygiene/audit-*.sh` scripts have been ported to TypeScript and are no longer outstanding debt, while also recording an open question about `.gemini/service/*.sh` scripts that appear “install-graph by intent” but sit outside the currently allowed path.
 
 **Changes:**
+
 - Replace the “Legacy violations” callout with a “cleared 2026-05-13” statement for the three `tools/hygiene/audit-*.sh` ports.
 - Add a note documenting the remaining `.gemini/service/*.sh` ambiguity relative to the “only `tools/setup/`” rule wording.
 

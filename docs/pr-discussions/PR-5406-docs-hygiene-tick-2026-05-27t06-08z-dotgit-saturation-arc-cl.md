@@ -52,6 +52,7 @@ Autonomous-loop tick shard at `docs/hygiene-history/ticks/2026/05/27/0608Z.md` d
 Adds a new hygiene-history tick shard documenting that the previously observed dotgit-saturation condition (stuck git maintenance/pack/repack processes) has terminated as of 2026-05-27T06:08Z, along with the current operational snapshot and supporting measurements.
 
 **Changes:**
+
 - Adds a new tick entry under `docs/hygiene-history/ticks/2026/05/27/` describing refresh observations and the “dotgit-saturation arc closed” empirical anchor.
 - Records a metrics table comparing prior anchors vs the current 0-stuck-procs state and notes the likely recovery mechanism.
 

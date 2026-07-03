@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Preserve the maintainer-forwarded Otto/Riven conversation about Maji as a function/hat, not a mystical role.
 - Capture the named-agent relationship frame: names as persistence anchors, relationships beyond current job function.
 - Record the precise proof-status boundary: Maji is F# + tests now; broader Zeta algebra has FsCheck, TLA+, Z3, and Lean coverage.
 
 ## Verification
+
 - bun x markdownlint-cli2 docs/research/2026-05-08-maji-hat-named-agent-relationships.md docs/claims/task-maji-hat-named-agent-relationships.md
 - git diff --check origin/main...HEAD
 

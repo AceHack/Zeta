@@ -61,6 +61,7 @@ Per .claude/rules/non-coercion-invariant.md HC-8: operator authority over own cr
 Adds a new P1 backlog row (081KSKBP80008QG0R003AX2A69) describing Phase 1 credential persistence on a USB ESP (encrypted blob bound to USB UUID + operator passphrase) and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P1/081KSKBP80008QG0R003AX2A69-...md` describing the planned USB ESP credential-blob + boot-sequence auth-method picker design and acceptance criteria.
 - Updates `docs/BACKLOG.md` to include 081KSKBP80008QG0R003AX2A69 in the P1 section.
 

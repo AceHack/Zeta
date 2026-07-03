@@ -121,7 +121,9 @@ Bitcoin") or dismissal.
 The current git-native work is the SAME problem shape lifted to
 substrate algebra: **cross-machine Otto bus + ZetaId-keyed
 direct-to-main coordination** (#6219), **WorkItem/Spawn/Bus categories
+
 + B-xxxxx→128-bit-ZetaId migration**, **durable continuation-persistence
+
 backend** (#6222, Itron/Chris-King anchor) — all "distributed parties
 settle/coordinate without a central broker, conflict-free by id." The
 2008-2009 Functional-Tree P2P-money/distributed-settlement design is the

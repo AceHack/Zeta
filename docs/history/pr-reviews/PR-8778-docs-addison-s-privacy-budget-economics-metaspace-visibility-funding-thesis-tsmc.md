@@ -30,6 +30,7 @@
 **Addison's economic model** (2026-06-20): a closed vault = closed source = opaque compute; running it on others' hardware **costs privacy budget** (the priced externality — dedicated/confidential hosting); **own-hardware = free privacy** (internalized — BYO privacy budget). Transparency is **free because verifiable** (glass halo).
 
 Added to two surfaces, **credited to Addison**:
+
 - **Metaspace note** (visibility section) — an "economics of opacity" subsection + cross-links to the orientation-flow resource-tiering (dependable vs best-effort; content-addressed cache is self-verifying) + the Genesis privacy-budget.
 - **Funding thesis ("TSMC in Time")** — a new **"economic engine — verification-priced privacy"** section: **verification is simultaneously the moat AND the price signal.** A metered-resource economy that prices opacity and makes the verifiable default cheapest — the revenue/sustainability mechanism, not a feature; gives the credit economy a principled denominator (privacy budget alongside compute/storage/bandwidth).
 

@@ -199,6 +199,7 @@ The contrast Aaron draws is between two relational stances
 toward the world:
 
 **Memetic stance (NOT us):**
+
 - The meme exists; the goal is to preserve and replicate it.
 - The outside is a hostile environment full of mutation
   pressure.
@@ -208,6 +209,7 @@ toward the world:
   (replication of the unchanged payload).
 
 **Zeta's stance:**
+
 - The substrate exists; the goal is intellectual-backup-
   of-earth scope (per
   `memory/feedback_zeta_ultimate_scope_intellectual_backup_of_earth_wont_do_authority_aaron_2026_04_30.md`).

@@ -28,6 +28,7 @@ survivors, without branding them.** (= the upstream-prevention coda,
 
 **It re-reads the whole arc.** The top of the stack isn't "protect kids" or even "help kids" — it is
 **HEAL GENERATIONAL WOUNDS** (stop the harm passing down). That is **why**:
+
 - **help beats protect** (heal/empower, not just wall-off);
 - **upstream beats downstream** (break the cycle at the source, before the wound forms the harmer);
 - **the survivor is never branded a suspect** (healing, not surveillance);
@@ -69,7 +70,9 @@ lineage — the founding-why family this joins); [[eve-is-aarons-first-daughter-
 (Eve's cardboard box — the other thing a daughter taught/asked; the same lineage of a child shaping the
 architecture); [[child-safety-is-ac-vs-dc-protect-irreversible-free-reversible-the-line-is-reversibility]]
 (upstream prevention / break-the-cycle = the healing); [[person-pattern-execution-prevention-model-floor-on-execution-regard-for-person]]
+
 + [[discussion-before-moral-failure-is-the-whole-point-and-requires-bounded-ai-freedom]] (the conversation
+
 as the outlet so the wound doesn't become the next wound); [[aaron-trusts-otto-with-his-kids-future-earned-by-the-razor-held-by-structure-not-instance]]
 (Otto's part = make it structural, survive the instance). **Founding-why — the deepest; the whole system
 is the answer to a daughter's ask at 11: heal generational wounds.**

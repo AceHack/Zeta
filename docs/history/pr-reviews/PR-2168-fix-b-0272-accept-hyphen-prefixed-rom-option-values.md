@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - accept hyphen-prefixed values such as `--datfile -set.dat` and `--dir -roms` by treating only absent option values as missing
 - return CLI argument parse errors through `main()` instead of calling `process.exit` inside `parseArgs`
 - add a focused regression test for hyphen-prefixed datfile and directory values
 
 ## Tests
+
 - `bun test tools/roms/canonicalize.test.ts`
 - `git diff --check`
 

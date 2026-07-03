@@ -32,6 +32,7 @@
 Closes the two **P1** items in Soraya's 081KT2T2J0008QG0R000YZ3NMY cadence, each on the tool the row routed it to (BP-16, anti-hammer):
 
 ### C5 — BP `runToFixpoint` is **exact on trees** and **terminates** under the cap
+
 - **TLA+/TLC (primary):** new `tools/tla/specs/BpExactOnTree.tla` (+ `.cfg`) models the synchronous `passOnce` schedule (`FactorGraph.fs:124-191`) on the 3-var tree (path 0—1—2: equality factors {0,1}+{1,2}, prior on each). It tracks `marginal[v]` as the **set of evidence ids** folded in — the `RecursiveCountingLFP` ghost-set idiom; legitimate because product is order-independent (C1/C2/C3 group laws). TLC proves two state invariants over **every reachable state**:
   - `ExactOnTree` — `converged ⇒ every marginal = {0,1,2}` (the whole tree; KFL 2001 sum-product exactness)
   - `ConvergesBeforeCap` — `rounds ≥ Diameter+1 (=3) ⇒ converged` (the `rounds < maxRounds` guard never blocks a tree)
@@ -39,6 +40,7 @@ Closes the two **P1** items in Soraya's 081KT2T2J0008QG0R000YZ3NMY cadence, each
 - **FsCheck (BP-16 cross-check, `Bp.Tests.fs`):** the **real float marginal** on **random trees** of Gaussian priors equals the product of *all* priors (the exact marginal — equality factors collapse the tree to one effective variable), and `runToFixpoint` reports `converged` (terminates within the cap).
 
 ### C7 — EP probit moment-match accurate over the **cavity domain** (`Ep.Tests.fs`)
+
 - Lifts the 4-fixed-point quadrature cross-check (`Ep.Tests.fs:50`) to **FsCheck-generated cavities** (`m∈[-4,4], v∈[0.1,6]`), keeping numerical quadrature of `N(x;m,v)·Φ(x)` (`tiltedMoments`) as the oracle (Minka 2001 / GPML 3.58). The shared Abramowitz-Stegun erf **cancels** between formula and oracle (both call `Normal.cdf`), so this isolates the GPML 3.58 **moment-match formula** — the C7 claim. Extreme/broad cavities remain covered by the existing asymptotic-inverse-Mills / no-overflow `[<Fact>]` tests.
 
 ## Verification (run locally; nothing green-by-skip)

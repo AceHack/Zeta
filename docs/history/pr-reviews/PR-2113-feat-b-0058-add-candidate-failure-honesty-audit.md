@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - add a 081KQ3HBZ0008QG0R002S674CG raw-JSONL audit for filter-gate candidate decisions
 - flag malformed/missing reconstruction fields as violations and fail/defer entries without clause context as warnings
 - document the new audit surface in tools/alignment/README.md and update the claim substrate
 
 ## Checks
+
 - bun test tools/alignment/filter_gate_log.test.ts tools/alignment/audit_candidate_failures.test.ts
 - bunx prettier --check tools/alignment/audit_candidate_failures.ts tools/alignment/audit_candidate_failures.test.ts docs/claims/task-b0058-candidate-failure-log.md
 - bunx markdownlint-cli2 tools/alignment/README.md docs/claims/task-b0058-candidate-failure-log.md
 - git diff --check
 
 ## Note
+
 - `bunx tsc --noEmit -p tsconfig.json` is blocked in this worktree by TS2688: missing type definition file for `bun`.
 
 ## Outcome

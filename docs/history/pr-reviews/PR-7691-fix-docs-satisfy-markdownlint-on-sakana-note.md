@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Add required blank lines before two Markdown lists in the Sakana NCA research note.
 - Fix the MD032 markdownlint failure seen on the post-merge gate.
 
 ## Verification
+
 - mise exec -- markdownlint-cli2 docs/research/ip-questionable/2026-06-11-sakana-neural-cellular-automata-stable-borders-without-harming-entropy-loose-harden-relax.md
 - git diff --check
 

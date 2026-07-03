@@ -9,7 +9,9 @@
 **Scoping note:** Soraya reconstructed the model from the canonical sources (the two 2026-06-21
 ADRs `hexagonal-pki-…` + `multi-owner-machines-identity-vs-authorization-…`, `ca.ts`, the
 vault-separation workitem 081KVNTNTDQ0, and the G3 anti-Sybil lineage incl. `BftSybilConsensus.tla`
+
 + the landed G3a Z3 lemmas). Verdicts are scoped to that real model. (She noted the brief PR #9019
+
 wasn't visible in her checkout — view-only/not-pulled; verdicts stand on the ADRs.)
 
 ## Verdict per claim

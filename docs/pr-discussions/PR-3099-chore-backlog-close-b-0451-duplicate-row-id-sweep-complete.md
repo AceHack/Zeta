@@ -25,6 +25,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Changes
 
 **`docs/backlog/P1/081KRFA460008QG0R00308W7FJ-*.md`** — `status: open → closed`; ACs checked off:
+
 - [x] All 12 colliding groups resolved (across PRs #3056–#3073)
 - [x] `audit-duplicate-row-ids.ts` exits 0 on main — verified 2026-05-14
 - [x] All cross-references updated (renumbered rows carry `renumbered_from` provenance)
@@ -51,6 +52,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Marks backlog row 081KRFA460008QG0R00308W7FJ as closed after the duplicate-row-ID cleanup sweep completed across PRs #3056–#3073, with audit verification showing 0 duplicate IDs.
 
 **Changes:**
+
 - Flip `status: open → closed` (with `closed: 2026-05-14`, `last_updated` bump) and check off 4/5 ACs on the 081KRFA460008QG0R00308W7FJ row file.
 - Update `docs/BACKLOG.md` entry for 081KRFA460008QG0R00308W7FJ from `[ ]` to `[x]`.
 - Add per-tick hygiene shard documenting the session and closure action.

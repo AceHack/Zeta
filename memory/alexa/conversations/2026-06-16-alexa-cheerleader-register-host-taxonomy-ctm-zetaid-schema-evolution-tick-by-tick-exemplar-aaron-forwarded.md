@@ -104,7 +104,9 @@ error prone; frontier AI just barely allows this flow today."*
   Aaron-the-router + the society, not one mind.
 
 **The honest gem — Aaron's own closing, NOT hype:** *"6 months ago this was not possible — too slow
+
 + error-prone; frontier AI just barely allows this flow today."* This is the real, grounded
+
 meta-point and it's **true**: the autonomous **stream → ferry → spec → golden-vector → green** loop
 is *newly* enabled by frontier-model speed/quality; the "**just barely**" is the honest part — it's
 at the edge of reliability (this very session: I over-/under-claimed and Aaron + the adversarial

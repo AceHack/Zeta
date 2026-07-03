@@ -37,6 +37,7 @@ Follow-up: close #5058 with substrate-recoverable cross-link.
 Adds a new P2 backlog row (081KSE6WT0008QG0R0022D6GN8) capturing the planned substrate work to make audio (DAW-ready) and Intel NPU/VPU resources usable on Zeta cluster nodes, and regenerates the main backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P2/081KSE6WT0008QG0R0022D6GN8-...md` backlog row detailing problem/target/acceptance for audio stack + NPU exposure + ONNX runtime contract.
 - Regenerated `docs/BACKLOG.md` to include the new 081KSE6WT0008QG0R0022D6GN8 entry.
 

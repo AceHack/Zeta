@@ -27,6 +27,7 @@ This PR is part of the decomposition of #4698 and contains the feedback memory c
 Adds a new `feedback_` memory file and updates the auto-generated `memory/MEMORY.md` stack index as part of the #4698 decomposition.
 
 **Changes:**
+
 - Added a new feedback memory capturing a family-configuration + calibration pattern.
 - Reindexed `memory/MEMORY.md` to include the new entry (and updated heap count / top-of-stack ordering).
 

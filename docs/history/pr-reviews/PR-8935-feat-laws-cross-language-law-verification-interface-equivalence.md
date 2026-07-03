@@ -30,6 +30,7 @@
 All 6 semiring laws verified across TS + Python + Go. Each language tests its own arithmetic implementation.
 
 This + the value oracle = full cross-language verification:
+
 - Values agree (cross-verify-ir.ts: 7/7 languages)
 - Laws agree (cross-verify-laws.ts: 3 languages, extensible)
 

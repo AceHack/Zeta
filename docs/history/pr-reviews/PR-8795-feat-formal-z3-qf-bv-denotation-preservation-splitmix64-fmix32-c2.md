@@ -62,6 +62,7 @@ z3 tools/Z3Verify/gen-denotation-splitmix64.smt2   # expect: six unsat, no sat
 ```
 
 ### Anchors (Beacon)
+
 - Vigna, arXiv:1410.0530 v3 §3 (splitmix64 finaliser); prng.di.unimi.it/splitmix64.c
 - Knuth TAOCP vol.3 §6.4 (2^64/φ multiplicative-hash constant)
 - Appleby, MurmurHash3 (fmix32 finaliser)

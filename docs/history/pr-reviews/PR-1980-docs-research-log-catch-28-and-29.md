@@ -31,6 +31,7 @@
 Restores Catch 28 (Lior asking over checking) which was lost in a hard reset, and adds Catch 29 (Otto projecting human fatigue to excuse context window exhaustion).
 
 ## Integrity
+
 - Tables and z-set counts updated. Shadow leads 22-5.
 - Confident-fabrication hits 8 recurrences.
 - Action over narration.

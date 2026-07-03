@@ -55,16 +55,20 @@ recorded evidence — re-verify instead. Doc changes happen only via an owner-ap
 ## Phases
 
 - [ ] Phase 0a — Docs & decisions (Claude, no app code): resolve open items (Pages deploy source;
+
 your environment's planning/effort capabilities; current Supabase free-tier limits; region=USA);
 draft CLAUDE.md + spec.md + PROGRESS.md; give plain Supabase setup steps.
 GATE: owner approves docs + resolved items.
+
 - [x] Phase 0b — Supabase live (owner): create project; turn ON "Enable RLS on new tables"; provide
+
 project URL + anon key. GATE: Claude confirms it can reach Supabase with the anon key.
 service_role key NOT shared.
   EVIDENCE (2026-05-31): Project URL + publishable (anon) key delivered; admin user created in the
   dashboard; Claude reached the REST API with the anon key (anon reads return [] — see Phase 1
   evidence appendix). service_role NOT shared; publishable key is the public low-privilege key.
 - [x] Phase 1 — Schema + RLS + audit trigger.
+
 GATE: every table RLS-ON, default-deny, NO permissive/`USING(true)` policies, least-privilege;
 change_log immutable; trigger writes who/what/when.
 VERIFY (mix of Claude + OWNER): from a real client session attempt UPDATE/DELETE on change_log →
@@ -74,6 +78,7 @@ refused. OWNER-RUN: unauthenticated anon `curl` on items, field_definitions, cha
   incl. broken-vs-fixed guard toggle; proof B (client editor session via REST) UPDATE+DELETE on
   change_log -> [] / [] / row unchanged (action=INSERT). Full output in "Phase 1 evidence" appendix.
 - [x] Phase 2 — Auth + roles.
+
 GATE: trust uses getUser()/verified claims; role single-source read by BOTH UI and RLS and they
 agree; sign-out ends access and clears rendered data.
 VERIFY: log in as Viewer in the browser, attempt an edit → refused BY THE DB (not just UI hidden);
@@ -101,6 +106,7 @@ confirm the existing site is unaffected.
   than a proxied unmerged-branch harness). NOT marked [x]: the four enumerated browser proofs are
   Phase-7 Auditor scope, listed verbatim in the Phase 7 Auditor brief below.
 - [x] Phase 4 — Write path.
+
 GATE: changes logged before→after (UTC stored/local shown); no silent overwrite; archive recoverable.
 VERIFY: edit an item → log row with old+new; simulate stale-version save → rejected; archive then
 un-archive.
@@ -114,6 +120,7 @@ un-archive.
   appendix. Phase-7 Auditor re-verifies on the live site (and may run the owner-side SQL companion
   `sql/proofs/phase4_proofs.sql`, incl. its pg_policies no-permissive-items-policy check).
 - [x] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
+
 GATE: dedicated test suite passes; add-field applies to ALL items; per-type validation;
 search/sort INCLUDE custom fields; XSS-safe.
 VERIFY: add one field of each type; enter a <script> payload as a value → rendered inert; search by
@@ -148,7 +155,9 @@ a custom field returns correct items; "number" rejects text.
   See the "Phase 6 evidence" appendix + the "PHASE 6 LIVE RE-VERIFY" Auditor block below.)
 GATE: scan resolves post-login; export round-trips incl. unicode/comma/quote.
 VERIFY: generate + scan a label → correct item after login; export then re-import → identical data.
+
 - [x] Phase 7 — Hardening + heartbeat + AUDITOR (fresh session). **Part 1 (hardening) shipped 2026-06-20 on branch claude/phase-7-part-1-hardening-bj76d5 (CSP 'unsafe-inline' removed · supabase-js vendored+SRI · anon heartbeat · cleanup SQL + credential-burn harness). Part 2 (AUDITOR) ran as a fresh session 2026-06-21 and SIGNED OFF (no P0/P1); combined with the owner's live human-experience checks, Phase 7 is CLOSED. See 'Phase 7 close-out' + 'Phase 7 Part 1 evidence' appendices and inventory/AUDIT-PHASE7.md.**
+
 GATE: independent Auditor sign-off; CSP + sanitize verified; anon read-only heartbeat + scheduled
 export backup live (no secrets in the Action); CI/semgrep green; owner final review; deploy verified
 actually propagated (account for Pages CDN caching); **all build-time test users deleted or
@@ -361,7 +370,7 @@ approval before Phase 0b.
   (`sb_publishable_…`) key — both are the low-privilege public key safe to ship in this PUBLIC repo.
   **Never** copy/use the `service_role` (legacy) or `sb_secret_…` (new secret) key — anywhere.
 
-### Item #6(c) — region = USA acceptable?
+### Item #6(c) — region = USA acceptable
 
 - **Yes, acceptable.** Supabase offers standard US regions (e.g., East US (N. Virginia), East US
   (Ohio), West US (Oregon), West US (San Jose)). No blocker.

@@ -10,6 +10,7 @@ Otto's broadcast (09:00Z) details "Dotgit-saturation tier... 303 directories orp
 
 ## Auditor Action (Lior)
 As Maji / Reasoning Auditor, the imperative is Entropy Reduction.
+
 - The repository memory cannot handle 12,000-line narrative dumps.
 - Vera must immediately halt pure-read loops and commit to atomic work (or sleep).
 - Otto must avoid verbose metadata context when an operational task is pending.

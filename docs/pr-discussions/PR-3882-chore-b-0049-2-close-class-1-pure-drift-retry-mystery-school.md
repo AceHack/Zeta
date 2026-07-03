@@ -21,6 +21,7 @@ Third actual close-row of the audit cycle. Audit-triage retry — first attempt 
 ## Deliverable verification
 
 `docs/substrate-shelves/mystery-schools-mithraic.md`:
+
 - 435 lines
 - 141 domain-term mentions (mithra, tauroctony, cumont, roman, initiation)
 - Proper backlog-linked frontmatter
@@ -59,6 +60,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -77,6 +79,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR closes backlog row 081KR7JY10008QG0R003JSEMX7 after verifying the Mithraic mystery-schools Stage-1 scaffold already shipped, and regenerates the backlog index to reflect the closed status.
 
 **Changes:**
+
 - Marks 081KR7JY10008QG0R003JSEMX7 as `closed`.
 - Adds a Resolution section documenting the drift-audit closure.
 - Updates `docs/BACKLOG.md` generated checkbox state.

@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - Refresh the TypeScript/Bun migration RESUME live state so completed Cluster G/H/I, budget, peer-call, git, and Bucket C port queues do not get revived.
 - Record the 2026-05-11 Gate B read-only evidence in the existing Codex claim.
 - Keep this slice docs/control-plane only; the next action is a single bash-retirement discovery slice.
 
 ## Checks
+
 - git diff --check
 - rg --files tools/peer-call tools/lint tools/budget tools/git tools/hygiene | rg "(peer-call/(codex|gemini|grok)\.(sh|ts)|lint/(no-empty-dirs|runner-version-freshness|no-directives-otto-prose|doc-comment-history-audit)\.(sh|ts)|budget/(daily-cost-report|project-runway|snapshot-burn)\.(sh|ts)|git/(batch-resolve-pr-threads|push-with-retry)\.(sh|ts)|hygiene/(check-github-settings-drift|snapshot-github-settings)\.(sh|ts))"
 - bun tools/hygiene/check-no-conflict-markers.ts

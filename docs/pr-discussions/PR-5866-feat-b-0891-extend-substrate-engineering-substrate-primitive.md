@@ -57,6 +57,7 @@ SPECS the impl-design primitives. Runtime QEMU integration (actually persisting 
 This PR extends the 081KSNY2Z0008QG0R0008PN7RQ zflash QEMU test-harness PoC (PR #5724) with a separate design-spec status layer for the three scaffolded scenarios (3/4/5). It adds typed discriminated-union primitives describing the substrate shape each scenario will need (state preservation, path fork, multi-VM orchestration), wired into `run.ts --list` JSON output. The runtime scenario status remains `scaffolded` in `scenarios.ts`; no QEMU runtime behavior changes.
 
 **Changes:**
+
 - Add `extensions.ts` defining `PersistedKVSubstrate`, `PathForkSubstrate`, `MultiVMOrchestrationSubstrate`, `ImplDesignStatus`, `SCENARIO_IMPL_DESIGN`, and `computeImplDesignProgress`.
 - Surface `implDesignProgress` and per-scenario `implDesign` in `run.ts --list` JSON.
 - Add `extensions.test.ts` with 21 type/value-level tests for the new primitives.

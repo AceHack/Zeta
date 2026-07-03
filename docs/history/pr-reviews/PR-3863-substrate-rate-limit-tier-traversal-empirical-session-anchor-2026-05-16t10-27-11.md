@@ -48,6 +48,7 @@ Authoring this memory file triggered git ref-lock contention with peer Otto-CLI 
 Second counter-with-escalation forced #6 of the session per [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md). Borrow-on-existing pattern used (`git switch -c <new> origin/main`) per [`.claude/rules/claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md).
 
 ## Test plan
+
 - [ ] CI green (docs-only PR)
 - [ ] Broken-commit canary clear (tree count vs origin/main)
 

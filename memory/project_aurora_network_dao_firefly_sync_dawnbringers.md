@@ -46,6 +46,7 @@ are valid too), but Aurora's own operational
 contracts default to retractable where possible.
 
 Alignment chain:
+
 - Aaron → consent-first primitive → retractable
   contracts → Aurora's "do no permanent harm" →
   every Aurora action is reversible.

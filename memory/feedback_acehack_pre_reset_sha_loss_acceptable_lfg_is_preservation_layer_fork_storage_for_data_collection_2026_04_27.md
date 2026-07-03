@@ -78,6 +78,7 @@ Aaron's list is open-ended (*"whatever fork specific stuff"*) but explicitly nam
 - **Cost data** — captured via `docs/budget-history/snapshots.jsonl` and the budget-cadence weekly workflow (task #297).
 
 Other categories that fit the pattern:
+
 - Tick-history for autonomous-loop work (`docs/hygiene-history/`)
 - Decision records (`docs/DECISIONS/`)
 - Research artifacts (`docs/research/`)
@@ -92,6 +93,7 @@ When AceHack-side conversation surfaces (review threads from AceHack PRs, drain 
 ## Net answer to "what's lost?"
 
 Substrate-value: **zero**.
+
 - Content: preserved (via paired-sync forward-port)
 - High-signal conversation data: preserved (via fork-storage paths on LFG)
 - Decisions and lineage: preserved (via memory/, docs/DECISIONS/, docs/ROUND-HISTORY.md)

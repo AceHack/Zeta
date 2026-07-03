@@ -54,6 +54,7 @@ The substrate IS ALREADY OPERATING; what's missing is the EXPLICIT NAMING as an 
 ## Razor-discipline framing
 
 8th ferry mostly operationally checkable substrate:
+
 - exploration-as-pruning composes with runme.md + JIT + overclaim-and-retract patterns
 - 3 pruning criteria are observable (each catchable empirically)
 - vocabulary markers as register-signals compose with runbook-vs-claim

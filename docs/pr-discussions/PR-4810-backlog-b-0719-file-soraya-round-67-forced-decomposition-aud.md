@@ -71,6 +71,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -89,6 +90,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P3 backlog row (081KSBMG30008QG0R000WJ9FMP) to capture and audit the “recognition-without-row-filing” substrate gap in verification-routing decisions, and updates the generated backlog index.
 
 **Changes:**
+
 - Adds `docs/backlog/P3/081KSBMG30008QG0R000WJ9FMP-...md` backlog row describing the audit question, options, and acceptance criteria.
 - Updates `docs/BACKLOG.md` with an additional backlog index entry.
 

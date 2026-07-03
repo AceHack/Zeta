@@ -36,6 +36,7 @@
 These were pre-existing non-required `lint (tsc tools)` failures firing on every PR since the `exactOptionalPropertyTypes: true` tsconfig flag rejects `T | undefined` being passed to an optional `T?` parameter.
 
 ## Test plan
+
 - [x] `bun --bun tsc --noEmit -p tsconfig.json` → 0 errors (verified locally)
 - [x] `dotnet build -c Release` → 0 warnings, 0 errors (no .NET changes)
 

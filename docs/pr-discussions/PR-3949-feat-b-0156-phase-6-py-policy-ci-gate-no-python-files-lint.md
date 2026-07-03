@@ -64,6 +64,7 @@ Substrate-drift discriminator at session start confirmed Phases 1-5 = DONE (all 
 Adds a Bun/TypeScript CI lint gate for 081KQGDBJ0008QG0R000A4EZS5 Phase 6 to prevent first-party `.py` files outside approved exclusions/allowlist.
 
 **Changes:**
+
 - Adds `no-python-files` lint tool, allowlist, and Bun tests.
 - Wires the lint into `gate.yml`.
 - Updates backlog/tick documentation for the completed phase.
@@ -90,6 +91,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 6 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lint/no-python-files.ts:62**
+
 * This second `spawnSync("git", ...)` has the same SonarJS issue as the `repoRoot()` call: TypeScript tools in this repo suppress `sonarjs/no-os-command-from-path` with a short rationale when intentionally invoking `git` from PATH. Without that, the new tool is likely to break the TypeScript lint gate.
 ```
   const result = spawnSync("git", ["check-ignore", "--stdin"], {
@@ -110,6 +112,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

@@ -88,6 +88,7 @@ scrypt N=2^17 dominates timing per 081KSKBP80008QG0R003AX2A69.1 OWASP-recommende
 Adds the 081KSKBP80008QG0R003AX2A69.2a “envelope framing” layer for credential persistence by defining (1) a binary on-disk wire format for the encrypted envelope produced by `zeta-creds-crypto.ts`, and (2) a JSON plaintext schema (`CredBundle`) for the decrypted inner payload. This fits into the installer toolchain as the serialization boundary that future persist/restore CLIs will consume.
 
 **Changes:**
+
 - Introduces `serializeEnvelope` / `parseEnvelope` for a length-prefixed binary envelope format with a `ZCV1` header.
 - Introduces `CredBundle` + `encodeBundle` / `decodeBundle` for base64-in-JSON plaintext encoding.
 - Adds 17 unit tests covering round-trips and several framing/JSON error paths.

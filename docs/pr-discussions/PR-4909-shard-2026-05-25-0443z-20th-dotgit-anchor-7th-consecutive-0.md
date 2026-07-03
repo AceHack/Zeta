@@ -62,6 +62,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -80,6 +81,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds the 2026-05-25 04:43Z hygiene-history “tick shard” (20th dotgit-saturation anchor) documenting another clean (0 stuck git procs) reading and resumed cadence after the prior >1h gap.
 
 **Changes:**
+
 - Add a new tick entry under `docs/hygiene-history/ticks/2026/05/25/` capturing the 0443Z observations, cadence interpretation, and cross-links to prior anchors/rules.
 
 ## Review threads

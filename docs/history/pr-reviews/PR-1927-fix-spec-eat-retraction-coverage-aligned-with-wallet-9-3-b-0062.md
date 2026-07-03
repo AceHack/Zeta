@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - EAT retraction-coverage metric aligned with wallet spec §9.3
 - Dropped reorg-tolerance (Base Flashblocks makes it non-meaningful)
 

@@ -85,10 +85,12 @@ on the same args:
 ## Session arc — what failed, what landed
 
 **Failed**:
+
 - All 9 push attempts (different flags, timeouts 30s–120s)
 - PR #4136 remote ref stayed at `c40d3cd` for the entire session
 
 **Landed locally** (3 commits unpushed at session end):
+
 - `12085a2` — memory anchor: hung-push client-vs-server verification
 - `e3a2d7f` — Copilot finding fix: bump B-0613 last_updated 2026-05-17 → 2026-05-18
 - `01ca60a` — diagnostic anchor: --dry-run vs real push localization

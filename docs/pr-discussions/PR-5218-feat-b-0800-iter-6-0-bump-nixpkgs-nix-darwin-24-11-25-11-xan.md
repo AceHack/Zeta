@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 The maintainer 2026-05-26: *"24.11 is a 2 year old version you found a 25.11 when you searched latest we need to make sure we are on latest too"*.
 
 Per WebSearch (per `.claude/rules/dep-pin-search-first-authority.md` landed earlier today):
+
 - **NixOS 25.11 "Xantusia"** — current stable; released 2025-11-30; EOL 2026-06-30
 - Our `nixos-24.11` pin had been EOL since **2025-06-30** (~11 months out-of-support) — substantive supply-chain-security gap
 

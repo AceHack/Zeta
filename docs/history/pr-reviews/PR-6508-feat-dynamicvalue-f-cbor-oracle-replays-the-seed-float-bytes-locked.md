@@ -30,6 +30,7 @@
 Second of the four CBOR oracles (one authors, others replay) — the **F# oracle** agrees on the canonical-CBOR seed (`golden-vectors-cbor.json`, landed in #6506). Float + Bytes now locked in F# too.
 
 ## What
+
 - `DynamicValue.toCanonicalCbor : DynamicValue -> byte[]` — **total** (no `Result`/`EncodeError`): CBOR has a canonical form for every shape, where canonical JSON deferred Float + Bytes.
 - **Float**: RFC 8949 §4.2.2 shortest-float via `System.Half` (float16 if it round-trips exactly → float32 → float64; `NaN → 0xf97e00`; ±0/±Inf sign-preserved).
 - **Bytes**: native major-type-2 byte string.

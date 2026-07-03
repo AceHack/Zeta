@@ -32,6 +32,7 @@
 Cold-boot autonomous-loop tick. Catch-43 sentinel was empty (session-exit non-persistence); re-armed `88127e62` BEFORE any substantive work per `.claude/rules/tick-must-never-stop.md`.
 
 **Substrate landed**:
+
 - 15 stale agent worktrees under `/private/tmp/zeta-*` removed (substrate on main via 081KSGS9H0008QG0R002T0XQ50/081KSGS9H0008QG0R001JNKBFD/081KSKBP80008QG0R000E3RKPK/081KSKBP80008QG0R003Z4C0D0 cluster merges)
 - 15 stale local branch refs deleted
 - 2 worktrees preserved: PR #5398 active peer Otto-CLI + iter-550 just-merged (auto-delete pending)

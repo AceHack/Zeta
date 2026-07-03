@@ -56,6 +56,7 @@ Classic **\"control plane outside the control plane\"** — when k8s has issues,
 Adds a new P2 backlog row 081KSKBP80008QG0R003Z4C0D0 capturing the operator decision to run AI agents (starting with Otto) as systemd services outside k8s for out-of-band cluster repair, and registers it in the backlog index.
 
 **Changes:**
+
 - New per-row file under `docs/backlog/P2/` with frontmatter, phased plan, acceptance criteria, and composes-with references.
 - Adds the 081KSKBP80008QG0R003Z4C0D0 entry to `docs/BACKLOG.md` P2 open list.
 

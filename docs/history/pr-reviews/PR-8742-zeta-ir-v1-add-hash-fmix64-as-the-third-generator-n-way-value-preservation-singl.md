@@ -47,10 +47,12 @@ i.e. `XorShr 33 · Mul · XorShr 33 · Mul · XorShr 33` at **width 64**. Consta
 | Single-source byte-locks | both F# (`ZetaIrV1.Tests`) and bun (`legacy-source.test.ts`) derive `fmix64.ir.json` from the v1 envelope |
 
 ### Honest tiering
+
 - **PROVEN:** the frozen `mul`/`xorshr` v1 envelope expresses a third, independently-specified primitive; its IR is byte-locked across 6 language oracles + canonical; folding the v1 envelope is value-preserving against the committed golden; the legacy file is single-sourced from v1.
 - **NOT claimed:** the Face-3 `gen(gen)=gen` theorem itself (math team's). This widens the *evidence* that the envelope is a stable, general substrate — it is not the theorem.
 
 ### Gate
+
 - compare.ts N-way: **13/13** (fmix64 included; Phase-B oracle now 3 primitives)
 - F# ZetaIrV1 + GeneratorIrRegistry: **32/32** · bun `zeta-ir-v1-gen`: **10/10** · fmix64 `gen-ir.test.ts`: **5/5**
 - `bunx tsc --noEmit`: clean (exit 0)

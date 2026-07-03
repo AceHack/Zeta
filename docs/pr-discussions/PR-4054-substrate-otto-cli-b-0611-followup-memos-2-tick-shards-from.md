@@ -48,6 +48,7 @@ Branch authored from isolated worktree `/private/tmp/zeta-otto-cli-0904z-followu
 Adds a small follow-up batch of substrate artifacts for 081KRSKQ20008QG0R0014PPGZM audit prep and autonomous-loop hygiene history: three new `memory/feedback_*.md` memos (catalog + drift signal + shell authoring lesson) plus two new tick shards documenting the 0808Z–0825Z session arc.
 
 **Changes:**
+
 - Adds a dangling memory-ref catalog memo with file:line pairs for multi-surface audit addressability.
 - Adds a drift memo capturing a same-day change in dangling-ref counts and arguing for CI wiring as the durability mechanism.
 - Adds two tick-history shards capturing a cold-boot snapshot and an arc summary for the autonomous-loop session.
@@ -73,6 +74,7 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 6 c
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **memory/feedback_otto_cli_b0611_dangling_refs_count_drift_47_to_49_over_3_5_hours_audit_tool_in_ci_is_durability_mechanism_2026_05_17.md:55**
+
 * tools/hygiene/validate-memory-schema.ts expects `project` (and `feedback`) memory files to include the literal body markers `Why:` and `How to apply:`. This memo uses headings like “Why the drift matters” / “Implication…” but doesn’t contain those marker strings, so it will be reported as missing required markers. Add explicit `Why:` and `How to apply:` sections (can be brief) to satisfy the schema.
 ```
 ## Why the drift matters
@@ -96,6 +98,7 @@ strengthens the case: the audit tool from PR #4042 should ship as a
 **non-required CI check** that:
 ```
 **memory/feedback_otto_cli_dangling_refs_file_line_catalog_47_pairs_6_surfaces_2026_05_17.md:24**
+
 * tools/hygiene/validate-memory-schema.ts expects `project` (and `feedback`) memory files to include the literal body markers `Why:` and `How to apply:`. This catalog memo is mostly data, but it currently has neither marker string, so it will be flagged as missing required markers. Add short `Why:` and `How to apply:` sections (e.g., explaining what the catalog is for and how to use it) to match the standard format.
 ```
 > sites get hidden."*

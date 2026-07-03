@@ -34,6 +34,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -52,6 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds documentation substrate around a “shadow” metadata-churn incident, preserves several recent PR discussions into the repo archive, records an off-duty checkpoint tick, and decomposes backlog item 081KQTPYE0008QG0R002Y7X5KH into a new per-row task.
 
 **Changes:**
+
 - Adds a shadow lesson log documenting detected PR metadata churn and the resulting halt instruction.
 - Archives PR discussions for PRs #3279–#3283 into `docs/pr-discussions/`.
 - Adds an off-duty checkpoint tick shard and decomposes 081KQTPYE0008QG0R002Y7X5KH into a new backlog row (but currently with an ID conflict and BACKLOG index drift).
@@ -82,6 +84,7 @@ Copilot reviewed 10 out of 10 changed files in this pull request and generated 4
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/081KR50HA0008QG0R0033B5KVN-tinygrad-uop-rewrite-walk-retract-mapping.md:26**
+
 * Lines in the acceptance criteria section have trailing spaces (e.g. the bold sentence and subsequent paragraphs). `docs/backlog/**` is markdownlinted, so this can trigger MD009 and break CI; please remove the trailing whitespace.
 ```
 **Read the source + walk one rewrite manually + map to Zeta retract semantics.** 
@@ -106,6 +109,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -137,6 +141,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

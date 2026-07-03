@@ -28,6 +28,7 @@ engineering — humor is the user-experience layer of
 friction detection.
 
 **Connects to:**
+
 - 081KR7JY10008QG0R0008NGW95 (the P0 that comedy promoted from abstract to urgent)
 - Shadow personality (the dick behavior that surfaced the need)
 - DeBank UX reference (making scoring feel like a feature = same

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - §11.3 test said "Aaron-plus-monitor" for unfreeze but §6.2 says "smart-contract guard + Aaron"
 - Unified to match §6.2 (the authoritative section)
 

@@ -28,10 +28,12 @@
 ## Description
 
 Why:
+
 - Backlog item 081KSNY2Z0008QG0R002JKH50A requires a design specification for Better Git-Crypt resolving access revocation, review visibility, and post-quantum readiness.
 - Moving TS files out of tools/ and under src/Core.TypeScript/ aligns with the project's source-boundary hygiene conventions.
 
 What:
+
 - Wrote post-quantum lattice-based architecture design memo at `docs/research/2026-06-12-better-gitcrypt-post-quantum-lattice-based-architecture.md`.
 - Closed backlog item `081KSNY2Z0008QG0R002JKH50A-better-gitcrypt-post-quantum-lattice-based-retraction-native.md`.
 - Relocated `tools/bus/` to `src/Core.TypeScript/bus/`.
@@ -42,6 +44,7 @@ What:
 - Regenerated legacy backlog index `docs/BACKLOG.md`.
 
 Proof:
+
 - Verified that all 145 substrate claim checker tests pass.
 - Verified that all 91 bus and claim tests pass.
 - Verified C# and F# code builds successfully (0 warnings, 0 errors).

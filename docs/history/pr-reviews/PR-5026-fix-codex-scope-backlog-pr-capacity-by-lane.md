@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - scope Codex backlog runner PR capacity to Codex branch prefixes by default
 - preserve explicit global counting via `--capacity-head-prefixes all` / `CODEX_BACKLOG_RUNNER_CAPACITY_HEAD_PREFIXES=all`
 - report total open PR count separately so queue pressure remains visible
 
 ## Verification
+
 - `/opt/homebrew/bin/bun test tools/backlog/codex-backlog-runner.test.ts`
 - `/opt/homebrew/bin/bun .codex/bin/codex-backlog-runner.ts --max-open-prs 3 --capacity-head-prefixes all`
 

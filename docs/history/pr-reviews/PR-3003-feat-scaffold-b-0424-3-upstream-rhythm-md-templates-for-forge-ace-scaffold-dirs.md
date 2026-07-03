@@ -74,6 +74,7 @@ Both repos: **12 operations planned, 0 failures**.
 ## What's still left for 081KRFA460008QG0R001H98EXJ
 
 After this PR, the remaining items before triggering the `workflow_dispatch` are:
+
 1. `SCAFFOLD_STAGE1_PAT` secret created in LFG org settings (one-time Aaron action)
 2. Social preview SVG/PNG (post-creation manual step)
 3. OpenSSF Scorecard + Semgrep workflow copies (post-creation manual step)

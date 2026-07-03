@@ -29,6 +29,7 @@ Aaron caught the Standing-by failure mode with the **exact same words** ('Tick â
 ## Why this matters
 
 The substrate that was supposed to prevent the recurrence:
+
 - Rule: `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (existed, auto-loaded)
 - Backlog: 081KRMEXM0008QG0R0039V4SQQ Nâ‰¥10 escalation proposal (existed, readable)
 
@@ -57,6 +58,7 @@ Both existed in main when the second catch happened. The recurrence IS empirical
 This PR lands memory and research substrate around the standing-by recurrence and the QG-isomorphism proof path, adding backlog rows, research notes, memory files, and Round 45 history.
 
 **Changes:**
+
 - Adds 081KRMEXM0008QG0R002YSPW1X/081KRMEXM0008QG0R003YWZC21 backlog rows for the QG-isomorphism research path and Step 1 formalization.
 - Adds research and memory documents capturing the QG proof strategy, imaginary-stack extension, and standing-by recurrence.
 - Appends Round 45 narrative history for the QG-isomorphism work.

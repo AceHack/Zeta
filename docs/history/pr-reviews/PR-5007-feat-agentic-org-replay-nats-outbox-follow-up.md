@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - replays the post-#4990 NATS outbox publisher and replaceable state-adapter commits onto current main
 - keeps stale-base governance/backlog deletions out of the branch
 - includes claim and release commits for task-pr-4990-nats-outbox-replay per the git-native claim protocol
 
 ## Validation
+
 - npm --prefix agentic-organization test
 - npm --prefix agentic-organization run typecheck
 

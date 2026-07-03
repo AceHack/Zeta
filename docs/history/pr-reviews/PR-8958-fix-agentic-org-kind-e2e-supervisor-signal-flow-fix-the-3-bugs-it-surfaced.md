@@ -58,12 +58,14 @@ The earlier hypothesis ("supervisor hats can't write docs") was a false positive
 The keep-alive / org-cadence loops are started in `main()` **outside** the worker process, so their first tick raced the schema migration (which only ran inside the work loop's bootstrap phase) and threw, degrading the cold-start cadence until tick 2. Fix: run the migration bootstrap **explicitly once before any loop starts**; the worker process now takes no bootstrappers (migration is no longer duplicated).
 
 ## Tests
+
 - `organization-executor-composition.test.ts`: rewritten to prove the **self-grant path with no stub** (grant precedes the authorization read; granted row has the right hat/agent/scope) + mapping validity.
 - `cockroach-hat-assignment-authority-writer.test.ts` (new): UPSERT round-trips through the reader as `Active`; null team scope persists.
 - `main.test.ts`: when the migration bootstrap fails, the loops **never tick** (cold-start gate).
 - agentic-org typecheck clean; full unit suite **1535 pass / 0 fail / 7 skipped**.
 
 ## In-cluster verification (KIND, real `qwen2:0.5b`)
+
 - Reaction plan **succeeded**: `cycle.status="worked"`, `reaction_plan.succeeded_count=1`, `failed_count=0`.
 - Authority row granted: `hat-assignment-reaction-engineering_manager / engineering_manager / agent-reaction-engineering_manager / active`.
 - Org artifact created: `discussion-anchor-…` anchored to the driver's `work-item-<runId>`, created by the reaction actor (previously `hat_authority_missing`).

@@ -49,6 +49,7 @@ Cited in the rule body: arxiv [2504.09246](https://arxiv.org/abs/2504.09246) (M�
 Adds a new auto-loaded Claude rules file to prevent a specific failure mode: once a premise is explicitly flagged as unverified, downstream inferences that depend on it must remain flagged (verify explicitly or strip the inference), rather than “ratifying by adjacency”.
 
 **Changes:**
+
 - Introduces a new always-on rule defining the “flagged unverified stays unverified downstream” discipline.
 - Documents a canonical example and composes the rule with existing search/razor/substrate rules.
 - Adds cross-harness inheritance notes (via `GEMINI.md` referencing `.claude/rules/` as read-only context).

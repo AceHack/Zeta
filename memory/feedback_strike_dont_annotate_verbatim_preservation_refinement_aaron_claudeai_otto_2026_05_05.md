@@ -56,7 +56,7 @@ the right scope:
   the strike + replace; the trajectory is recoverable without
   polluting the surface text
 
-## Why:
+## Why
 
 - **Annotate-creates-contradictions failure mode**: The doc's
   surface text asserts both X and not-X; readers can't determine

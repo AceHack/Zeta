@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Remove the completed 081KR50HA0008QG0R003T5MZAC claim file after PR #2333 landed on main.
 - Keep the cleanup isolated to docs/claims only.
 
 ## Verification
+
 - git diff --check
 - test ! -f docs/claims/b0366-toffoli-zset-smallest-slice-2026-05-09.md
 

@@ -28,17 +28,20 @@
 ## Description
 
 ## Summary
+
 - Extracted the 'Never be idle' carved sentence (key action hierarchy + Superfluid optimization directive) from CLAUDE.md into a dedicated .claude/rules/never-be-idle.md file.
 - Replaced the long bullet in CLAUDE.md with a cross-reference pointer.
 - This is the smallest bounded step for 081KR2E4K0008QG0R002FYNDT1 (which targets 5+ extractions but is too broad per 're-decompose during build' rule); future slices will extract the remaining carved sentences.
 
 ## Focused checks (included per task rule)
+
 - dotnet build -c Release (worktree): 0 Warning(s), 0 Error(s) — unchanged.
 - Worktree isolated; root checkout (b0266) untouched throughout.
 - Claim branch pushed before any write.
 - No bash used (Rule 0); no new code (doc-only bootstrap hygiene).
 
 ## Test plan
+
 - [x] Build gate passes
 - [x] Rule file created with full text + provenance
 - [x] CLAUDE.md shrunk

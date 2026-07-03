@@ -27,6 +27,7 @@ Cascade #4 of 5 (per Aaron 2026-05-26 'start working on the CI stuff while we it
 Adds a CI “post-build floor” that audits the *built* AI-cluster installer ISO contents (via `7z` listing) to catch cases where the ISO build silently omits expected files, complementing the existing source-substrate preflight audit.
 
 **Changes:**
+
 - Introduces `tools/ci/audit-installer-iso-content.ts` to list ISO contents with `7z` and assert required top-level paths are present.
 - Inserts a new workflow step in `build-ai-cluster-iso.yml` between ISO build and ISO metadata capture to fail the job before artifact upload if the ISO content audit fails.
 

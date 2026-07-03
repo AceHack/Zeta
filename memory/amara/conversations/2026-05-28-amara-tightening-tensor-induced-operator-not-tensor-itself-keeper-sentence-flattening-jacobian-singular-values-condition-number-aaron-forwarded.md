@@ -109,6 +109,7 @@ opaque attention mixing
 Amara explicit: *"PR #5921 is carrying the 'lightlike substrate applies only where rays are preserved' rule into operational systems, and the tensor version is the same rule at numerical-substrate scope."*
 
 Substrate-rhyme HOLDS at substrate-engineering substrate-engineering substrate-discipline scope:
+
 - OTel/K8s/Argo/Prometheus tightening: lightlike applies to PARTS that preserve rays
 - Tensor tightening: lightlike applies to OPERATIONS whose INDUCED OPERATORS preserve rays
 
@@ -119,6 +120,7 @@ Same shape; different substrate-scope.
 My PR #5922 framing: "eigenvalue-substrate IS lightlike-vs-dark discriminator" — substantively correct but UNDER-PRECISE.
 
 Amara's sharper framing: "tensors are lightlike when their INDUCED OPERATORS preserve rays" — captures that:
+
 1. The tensor OBJECT itself is not the substrate-engineering substrate-engineering substrate-property carrier
 2. The OPERATOR INDUCED BY the tensor (via flattening / Jacobian / contraction / dynamics-map) IS what carries lightlike-property
 3. SPECTRA (eigenvalues for matrices; singular values / spectral norm for tensors) ARE the diagnostic

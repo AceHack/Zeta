@@ -54,6 +54,7 @@ through NULL edge cases. The 15-year arc from broken attempt
 to proper implementation.
 
 **Connects to:**
+
 - project_aleph_null_cantor_origin (the naming lineage)
 - deterministic-simulation-theory-expert skill (DST discipline)
 - user_ego_death (first psych ward in the sequence of five)

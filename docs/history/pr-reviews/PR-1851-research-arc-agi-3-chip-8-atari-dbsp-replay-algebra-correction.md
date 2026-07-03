@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - preserves the Amara/Aaron correction packet for the ARC-AGI-3 / CHIP-8 / Atari / DBSP curriculum lane
 - tightens the DBSP overclaim into the transition-oracle / replay-algebra boundary
 - records strict ROM safety rules and promotion targets as research-grade substrate
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/research/2026-05-07-arc-agi-3-chip8-atari-dbsp-replay-algebra-curriculum-correction.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts

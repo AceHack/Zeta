@@ -48,15 +48,15 @@ Bug fixed: today every \`--flake .#control-plane\` node gets hostname \"control-
 Empirical UX:
 
 \`\`\`
-# Single-node, zero-typing (today's path; UNCHANGED):
+# Single-node, zero-typing (today's path; UNCHANGED)
 zflash
 # → hostname stays 'control-plane'; ssh zeta@control-plane.local
 
-# Multi-node, one short flag per USB:
+# Multi-node, one short flag per USB
 zflash --host pikachu      # → ssh zeta@pikachu.local
 zflash --host charizard    # → ssh zeta@charizard.local
 zflash --host bulbasaur    # → ssh zeta@bulbasaur.local
-# All three install from .#control-plane role-stack;
+# All three install from .#control-plane role-stack
 # each gets unique hostname + mDNS announcement; zero flake explosion
 \`\`\`
 
@@ -88,6 +88,7 @@ The deeper architectural concern Aaron raised — \"role-as-capability compositi
 This PR improves first-boot operability for wifi-only cluster installs by persisting NetworkManager connection profiles from the live installer into the installed system, and by enabling Avahi mDNS publishing so hosts are reachable via `<hostname>.local` without manual IP discovery.
 
 **Changes:**
+
 - Copy `*.nmconnection` profiles from the live ISO (`/etc/NetworkManager/system-connections/`) into the target system (`/mnt/etc/NetworkManager/system-connections/`) before `nixos-install`.
 - Enable `services.avahi` with firewall opening and publishing settings in the shared NixOS `common.nix` module.
 

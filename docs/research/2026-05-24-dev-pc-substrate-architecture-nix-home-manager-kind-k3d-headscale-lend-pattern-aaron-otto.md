@@ -7,6 +7,7 @@ Hardware context: dev-PC tier alongside basement cluster (per sibling archive `2
 ## Archive scope (per GOVERNANCE §33)
 
 Scope: architecture-decision record for the **dev-PC substrate layer** — Aaron's + Addison's Windows/Mac workstations that need:
+
 1. Reproducible dev environment matching the cluster's DST discipline
 2. Local k8s testing capability (without touching production cluster)
 3. Opt-in workload contribution back to the cluster ("lending resources")

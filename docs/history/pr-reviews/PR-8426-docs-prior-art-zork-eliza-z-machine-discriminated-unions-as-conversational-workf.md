@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*): *"look at the source to zork and eliza … very similar to our universal action grammar 4x4 grid and runnable in chip8"* + *"our discriminated unions as conversational workflows for intelligence."*
 
 Adds a PRIOR-ART-LIST section anchoring the **universal action grammar** (`grammar-16` 4×4 / `ActionGrid` §A#9) + **conversation-as-workflow**:
+
 - **Zork** (Lebling/Blank/Anderson, MIT/Infocom) — parser + world-model + **the Z-machine** (minimal portable opcode-VM = exactly our **CHIP-8-runnable lowfi**; the standout anchor).
 - **ELIZA** (Weizenbaum 1966) — pattern→transform OG chatbot. *Peel:* shallow pattern-match, no world-model (the ELIZA effect — anchor the grammar-form, not intelligence).
 - **DUs-as-conversational-workflows:** conversation/action-grammar = a **discriminated union** (cases = verbs/states); intelligence = the **workflow navigating DU-cases**; Zork-parser / ELIZA-patterns / Z-machine-opcodes / our grammar-16 4×4 are all DUs-of-actions. Prior art: F#/TS DU "make illegal states unrepresentable" (Wlaschin), Erlang/Akka FSM, parser combinators. *Peel:* the DU is the **legible state-machine**; intelligence is the **policy** (soft-scheduler / §9 loop) choosing among cases, not the DU.

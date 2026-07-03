@@ -74,6 +74,7 @@ The agent reads the warning alongside the substrate. Closer-to-decision-time tha
 ## What's next (out of scope)
 
 This lands operational-enforcement candidate #1. Remaining candidates from the Tick-80 memo:
+
 - Candidate #2: 081KQJZR90008QG0R002PYCHFY deliberate-quiet-periods protocol (Aaron-side, requires human action)
 - Candidate #3: Multi-AI peer review at-decision-time (composes with 081KQJZR90008QG0R002GJAJ19 dual-loop BFT)
 - Candidate #4: Tick-history schema decision-shape column (separate substrate change)

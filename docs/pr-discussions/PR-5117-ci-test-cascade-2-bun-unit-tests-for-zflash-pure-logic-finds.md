@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Aaron 2026-05-26: 'any parts we can test in siolate are candidates for more unit like tests instead of full integration tests'.
 
 Ships **#2 of CI test cascade**. Two new files:
+
 - `full-ai-cluster/tools/zflash-lib.ts` (~90 LOC pure-logic library: VALID_HOSTNAME_REGEX + isValidHostname + parseFatPartitionFromDiskutilList + generateRandomNodeName + parseOutputFileMarker)
 - `full-ai-cluster/tools/zflash-lib.test.ts` (~180 LOC; 33 Bun-test cases; ALL PASS)
 
@@ -39,6 +40,7 @@ _(no body)_
 This PR introduces a small, pure-logic TypeScript library for `zflash`-adjacent parsing/validation so it can be covered by fast Bun unit tests (as part of the “CI test cascade” effort), plus a new Bun test suite that exercises the extracted logic and documents a discovered `diskutil`-parsing regex edge case.
 
 **Changes:**
+
 - Add `zflash-lib.ts` exporting pure helpers/constants (hostname validation, `diskutil` FAT/EFI partition detection, node-name generation, peer-call output marker parsing).
 - Add `zflash-lib.test.ts` with Bun unit tests covering these helpers and pinning the discovered `DOS_FAT`/word-boundary mismatch behavior.
 

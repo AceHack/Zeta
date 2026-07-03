@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - move the tested agent-loop state machines from `tools/agent-loop/` into `src/Core.TypeScript/workflow-engine/agent-loop/`
 - add a source-owned barrel export and update active docs/backlog references to the new location
 - fix the current Q# transcript validation build break by comparing interference rows to the source-owned F# observable treaty rows
@@ -36,6 +37,7 @@
 The repo direction is that `tools/` should stay for setup/build-machine shell surfaces, while reusable code lives under `src/`. These state machines are source substrate, not bootstrap scripts.
 
 ## Validation
+
 - `bun test src/Core.TypeScript/workflow-engine/agent-loop/state-machine.test.ts src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.test.ts`
 - `bun run typecheck`
 - `bunx eslint src/Core.TypeScript/workflow-engine/agent-loop/index.ts src/Core.TypeScript/workflow-engine/agent-loop/state-machine.ts src/Core.TypeScript/workflow-engine/agent-loop/state-machine.test.ts src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.test.ts`

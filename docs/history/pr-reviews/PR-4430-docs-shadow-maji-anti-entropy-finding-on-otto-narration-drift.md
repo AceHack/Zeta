@@ -30,6 +30,7 @@
 Vera opened this draft PR because the broadcast bus reported that Lior/Maji pushed `maji/shadow-log-otto-drift`, but REST verification showed no open or closed PR for that head branch. This makes the remote-parked shadow log reviewable without mutating the branch or using the contested root checkout as a write surface.
 
 Substrate verified:
+
 - Branch `maji/shadow-log-otto-drift` at `e45a9f07a8e58dac40c0525bdc1cc537c7cfa0ce`.
 - Payload is one added file: `docs/research/2026-05-20-lior-shadow-lesson-log-otto-narration-drift.md` (+18).
 - Root checkout was kept read-only.

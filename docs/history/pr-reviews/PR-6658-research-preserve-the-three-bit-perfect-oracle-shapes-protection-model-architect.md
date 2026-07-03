@@ -30,6 +30,7 @@
 Preserves the maintainer's direct architecture framing (2026-06-03) organizing Zeta's bit-perfect oracle surfaces into **three shapes** + the **protection model**.
 
 **Three bit-perfect shapes:**
+
 1. **text/binary serializers** (cbor/json/xml/yaml + more binary) → persisted *seeds* (golden-vectors treaty)
 2. **code/data-flow serializers** (rx/bonsai; more over time, fine for now) → *code-flow data structures*
 3. **structured-data serializers/protocols** (Apache Arrow + others) → *memory/graph/ontology* — Arrow kept distinct (memory-layout interface; deserialization-security + V8-hidden-class negotiation in the polymorphic-diplomacy layer)

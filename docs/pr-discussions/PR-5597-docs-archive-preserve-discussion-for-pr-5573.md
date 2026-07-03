@@ -27,6 +27,7 @@ Automated archival of PR #5573 by Lior.
 Automated archive of PR #5573 discussion under `docs/pr-discussions/`. This is a mechanically-generated preservation file with YAML frontmatter and verbatim PR conversation content.
 
 **Changes:**
+
 - New archive file capturing PR #5573 metadata, review threads, and general comments.
 
 ## General comments

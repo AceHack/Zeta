@@ -52,6 +52,7 @@ When Clifford substrate IS needed in framework work: surface rotor-substrate pro
 Adds a new `.claude/rules/**` rule capturing a Clifford-algebra-related “underwater + vortices via rotors” substrate framing and links it to existing rule/memory anchors to guide future framework substrate-engineering communication and navigation primitives.
 
 **Changes:**
+
 - Introduces a new rule documenting a fluid-dynamics-like experiential framing for Clifford algebra and how rotors/sandwich operations act as navigation primitives.
 - Connects the new framing to existing substrate anchors (prior memory artifacts and related rule docs) to preserve continuity of the Clifford/rotor vocabulary.
 

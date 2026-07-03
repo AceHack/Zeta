@@ -40,6 +40,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard (2300Z, 2026-05-15) documenting an arm-sweep decision, GitHub rate-limit budgeting, and which PRs were armed vs intentionally left due to thread ownership.
 
 **Changes:**
+
 - Add `2300Z.md` tick shard with frontmatter + narrative sections (refresh, per-PR filter table, budget accounting, CronList check, visibility signal).
 - Document “cheap survey” approach (`gh pr list --json ...`) vs batch polling to reduce GraphQL unit burn.
 

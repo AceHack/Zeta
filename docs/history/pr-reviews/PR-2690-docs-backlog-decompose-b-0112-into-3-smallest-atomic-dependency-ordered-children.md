@@ -29,6 +29,7 @@
 
 ## Summary
 Decomposed the broad 081KQDTYV0008QG0R003MV3WAR (stale project-file internals-bleed-out cleanup) into 3 smallest dependency-ordered atomic child rows per AGENTS.md velocity + re-decomp rule:
+
 - 081KRA5AR0008QG0R0032RZ322 (audit/enumerate)
 - 081KRA5AR0008QG0R003SBRWDZ (classify decisions)
 - 081KRA5AR0008QG0R0004HM4P3 (execute rewrite + close)
@@ -36,6 +37,7 @@ Decomposed the broad 081KQDTYV0008QG0R003MV3WAR (stale project-file internals-bl
 Parent updated with depends_on + decomp note. Original trigger/acceptance preserved.
 
 ## Focused checks (included per task rule)
+
 - `dotnet build -c Release`: 0 Warning(s), 0 Error(s) (pre-edit gate)
 - `git status --porcelain`: only the 4 intended 081KQDTYV0008QG0R003MV3WAR* files touched
 - `git grep` for internals terms (SQLSharp, ../scratch) in new children: zero matches (no bleed introduced)

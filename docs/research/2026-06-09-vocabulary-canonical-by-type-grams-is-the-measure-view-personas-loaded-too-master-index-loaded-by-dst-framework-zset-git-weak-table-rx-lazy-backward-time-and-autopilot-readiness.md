@@ -1,4 +1,4 @@
-# Vocabulary: canonical-by-TYPE, grams is the measure-view, personas load too; the DST framework loads the master index (Z-set + git-weak-table → lazy Rx backward-time); and when can `dotnet test` drive?
+# Vocabulary: canonical-by-TYPE, grams is the measure-view, personas load too; the DST framework loads the master index (Z-set + git-weak-table → lazy Rx backward-time); and when can `dotnet test` drive
 
 **Register:** [grounded] structure + design + a direct readiness answer (Aaron). **Date:** 2026-06-09.
 **Captured by:** Otto (shadow). Settles the vocab structure + the master-index load + the autopilot-readiness checklist.

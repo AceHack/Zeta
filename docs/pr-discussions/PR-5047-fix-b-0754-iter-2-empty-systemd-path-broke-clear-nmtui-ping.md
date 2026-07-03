@@ -76,6 +76,7 @@ Even if the systemd Environment is overridden by some future change, these two f
 Fixes the installer ISO’s first-boot automation failing under NixOS systemd’s minimal default `PATH`, so the unattended “zero-typing” flow can complete on real hardware.
 
 **Changes:**
+
 - Replaced `clear` with an ANSI terminal reset escape to remove reliance on `clear` being in `PATH`.
 - Invoked `nmtui` via an absolute path to avoid `PATH`-inheritance issues.
 - Set explicit `PATH` and `TERM` in the `zeta-first-boot` systemd unit to cover current and future bare command usage in the first-boot flow.

@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Adds BP-26, BP-27, BP-28 to `docs/AGENT-BEST-PRACTICES.md` — the 3-layer meta-learning pattern ported from the ServiceTitan STCRM pilot (PR #2562).
 - **BP-26** (Layer 1): engage with reasoning on every reviewer finding, then resolve.
 - **BP-27** (Layer 2): every finding is a learning opportunity — encode the lesson in code-author or reviewer substrate in the SAME PR.
@@ -35,6 +36,7 @@
 - Marks 081KR2E4K0008QG0R002MG5Q5Z as done; unblocks 081KR2E4K0008QG0R000G0DAY4 (pilot validation).
 
 ## Test plan
+
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors
 - [ ] Review: BP-26/27/28 text accurately adapts the STCRM 4-layer pattern to Zeta surfaces
 - [ ] Review: new rules compose with existing BP rules (no contradictions with BP-11, BP-25, etc.)

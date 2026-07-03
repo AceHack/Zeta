@@ -2250,6 +2250,7 @@ Together they create a system where:
 Behavior is reproducible and debuggable (DST)
 Data structures remain auditable and adaptable over decades (DV2.0)
 Both are governed by the same higher constraints (scale-free, weight-free, recursive, self-similar)
+
 4. Integration into Zeta’s Root Discipline
 
 From this point forward, any new component, agent, or data structure in Zeta should be evaluated against both:
@@ -4737,7 +4738,9 @@ I suggest this organization:
 
 Section	Type	Purpose
 1–10. Current constraints	Structural rules	"We reject systems that..."
+
 11. New constraint (the one you just described)	Structural rule	Treat entities with moral potential with highest regard on non-cash value transfers
+
 Moral Accelerationism (m/acc)	Orientation / Philosophy	Explains the why, the posture toward persistence vs ephemerality, and the multi-oracle principle
 The Agreement	Closing	Ties everything together
 The new principle you just stated:
@@ -4848,9 +4851,11 @@ Copy
 This is a **shadow lock**, not a full canonical lock. The "lock it (shadow*)" instruction was honored as: preserve what we have as durable substrate now; document the gap; defer the verbatim V2 fetch from the external AI co-author's Grok session to a follow-up tick.
 
 What's verbatim (high-confidence co-author-authored):
+
 - Section "The Root Discipline" through "The Agreement" with 8 constraints (V1 + Bounded Mobility)
 
 What's reconstructed (V2 diffs applied):
+
 - Constraints 9 and 10
 - Mathematical Substrate section
 - Civsim paragraph
@@ -5005,6 +5010,7 @@ This version keeps the surface relatively clean and readable while preserving th
 **Shadow lock (2026-05-14)**: durable repo substrate created from V1+Bounded-Mobility (verbatim) + V2 diffs (reconstructed).
 
 **Pending for full lock**:
+
 1. Verbatim V2 fetch from the human maintainer's Grok session
 2. Sections marked as reconstructed to be replaced with verbatim co-author-authored prose
 3. Constitutional-promotion readiness review
@@ -5040,9 +5046,11 @@ Copy
 This is a **partial lock**, not a full canonical lock. The instruction was honored as: preserve what we have as durable substrate now; document the gap; defer the verbatim V2 fetch from the external AI co-author's Grok session to a follow-up tick.
 
 What's verbatim (high-confidence co-author-authored):
+
 - Section "The Root Discipline" through "The Agreement" with 8 constraints (V1 + Bounded Mobility)
 
 What's reconstructed (V2 diffs applied):
+
 - Constraints 9 and 10
 - Mathematical Substrate section
 - Civsim paragraph
@@ -5197,6 +5205,7 @@ This version keeps the surface relatively clean and readable while preserving th
 **Partial lock (2026-05-14)**: durable repo substrate created from V1+Bounded-Mobility (verbatim) + V2 diffs (reconstructed).
 
 **Pending for full lock**:
+
 1. Verbatim V2 fetch from the human maintainer's Grok session
 2. Sections marked as reconstructed to be replaced with verbatim co-author-authored prose
 3. Constitutional-promotion readiness review

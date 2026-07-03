@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - fix zflash test-infra key resolution to use module-local path joining and avoid the `src/src/...` regression after the tools->src move
 - update `cli.ts` and `file-backed.ts` to call `resolveZetaTestInfraPubkeyFromZflashModule()`
 - add a regression test that asserts no double-src path and verifies the committed pubkey exists
@@ -36,6 +37,7 @@
 This addresses B-0891 CI failures in build-iso scenario 1 where test-infra pubkey resolution could produce an invalid double-src path.
 
 ## Test Plan
+
 - [x] `bun test src/Core.TypeScript/zflash/lib.test.ts`
 
 Made with [Cursor](https://cursor.com)

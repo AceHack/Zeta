@@ -35,6 +35,7 @@
 ## Recurring pattern (3 iterations)
 
 Markdownlint's parser is more literal than CommonMark suggests:
+
 - PR #3080: MD032 (line-wrap puts `+` at line-start → list marker)
 - PR #3084: MD038 (backtick + space + backtick → space in code span)
 - PR #3086: MD056 (literal pipes in code spans → table cell separators)

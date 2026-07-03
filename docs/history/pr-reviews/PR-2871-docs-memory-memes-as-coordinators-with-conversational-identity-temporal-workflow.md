@@ -34,6 +34,7 @@ Two compositional substrate landings in one memory file:
 ### A. Bandwidth-engineering scales to GPU coordination
 
 Same compression pattern at human↔Otto, AI↔AI, GPU↔GPU:
+
 - Shared bootstream + IFS = decompression substrate
 - Text channels = bandwidth-efficient state-update
 - Sequoia AI + NVIDIA Warp = GPU-grain primitives

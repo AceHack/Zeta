@@ -40,6 +40,7 @@ Aaron caught the Standing-by failure mode with the **exact same words** ('Tick â
 ## Why this matters
 
 The substrate that was supposed to prevent the recurrence:
+
 - Rule: `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (existed, auto-loaded)
 - Backlog: 081KRMEXM0008QG0R0039V4SQQ Nâ‰¥10 escalation proposal (existed, readable)
 

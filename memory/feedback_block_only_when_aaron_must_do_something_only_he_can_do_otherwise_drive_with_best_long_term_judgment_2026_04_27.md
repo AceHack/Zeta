@@ -65,6 +65,7 @@ Sequence:
 5. Aaron eventually intervened: "you didn't need to stop for this"
 
 The freeze was the failure mode. Otto had:
+
 - Authority (per the Otto-owns-git/GitHub-settings rule)
 - Information (the 7 alerts categorized + analyzed)
 - Multiple viable paths (a/b/c)
@@ -96,6 +97,7 @@ These are narrow. Most decisions don't qualify.
 ## Test cases (when block is the failure mode)
 
 Today's example: Scorecard alerts decision. Otto had:
+
 - Authority to dismiss (per code-scanning API permissions)
 - Authority to fix (commit + push + merge)
 - Authority to update settings (per the Otto-owns-git/GitHub-settings rule)

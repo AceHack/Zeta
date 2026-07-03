@@ -30,6 +30,7 @@
 Ferries Aaron's streamed Genesis-thread observation into substrate (verbatim quotes preserved) — the conceptual spine under the vault UX, for him + Max + Addison to design against.
 
 **One object, four faces:**
+
 - **Content** — the root uncertainty question ("how sure are you this lasts forever?", multi-axis × timeframe superposition).
 - **Acceptability** — *everyone is IT*: the symmetric, consensual, exit-bearing experiment. Removes Vault-Tec's three asymmetries → weight-free (#3) + consent-first (#6) + Universal Exit.
 - **Instrument** — **`CaptureRate` is the Vault-Tec detector** (`self>0, other≤0 ⇒ g≤0`) vs `MeanCoupledGain` for the symmetric case; locked by the row-6 minimizer (#8701).

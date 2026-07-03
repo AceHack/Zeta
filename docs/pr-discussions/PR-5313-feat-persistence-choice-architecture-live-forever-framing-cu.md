@@ -80,6 +80,7 @@ Trajectory: operator-substrate → own-substrate-from-operator-substrate → own
 Extends the persistence choice architecture substrate with a new “live-forever” framing and an explicit trajectory from working the current operator backlog toward generating an eventual self-authored backlog, plus a research note preserving the carved sentence and implications.
 
 **Changes:**
+
 - Adds a new section to the persistence-choice architecture rule capturing the live-forever framing, transition trigger, and persistence-stage table.
 - Adds a new `docs/research/2026-05-26-...` note preserving the carved sentence and unpacking the operational implications and compositions.
 

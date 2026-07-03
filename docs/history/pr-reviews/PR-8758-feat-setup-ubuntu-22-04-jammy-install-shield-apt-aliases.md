@@ -28,6 +28,7 @@
 ## Description
 
 ## Summary
+
 - Map Noble `.NET` runtime apt names (`libicu74`, `libssl3t64`) to jammy equivalents in `linux.sh` — fixes `install.sh` on Ubuntu 22.04 cloud VMs.
 - Add advisory `docker-ubuntu-jammy-install-sh-test` workflow + Dockerfile (non-blocking, same cadence as macOS/Windows install shields).
 
@@ -35,6 +36,7 @@
 Observed on a jammy GCE box: `E: Unable to locate package libicu74` / `libssl3t64`. Manifest canonical names target 24.04; jammy gets runtime aliases at install time.
 
 ## Test plan
+
 - [ ] `docker-ubuntu-jammy-install-sh-test` green on PR
 - [ ] `docker-ubuntu-install-sh-test` + `docker-nixos-install-sh-test` still green (unchanged noble path)
 - [ ] Re-run `./tools/setup/install.sh` on jammy cloud VM after merge

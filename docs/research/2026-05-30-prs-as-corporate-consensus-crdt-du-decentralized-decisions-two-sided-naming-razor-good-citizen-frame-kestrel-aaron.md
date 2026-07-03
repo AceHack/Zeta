@@ -56,6 +56,7 @@ The simplicity razor applied to language has **two edges**:
 **Target = the shortest handle the target audience already understands with no excess connotation.** An evocative term keeps its place ONLY when it is the most-compressed accurate handle (inline cache), NOT when a plainer equal-length one exists (latent variable over quantum hidden variable). Secondary heuristic: **the existing field term-of-art is usually razor-optimal** -- the field already ran the optimization. Literalism is not simplicity; compression-that-stays-accurate is.
 
 Two-layer safety, restated from the conversation:
+
 - **Boring-language tell** -- charged/occult drift is an early-warning sign you are sliding toward the generative/intentful framing.
 - **Match-vs-generate gate (the real test)** -- recognize-and-match (classifier / signature / fingerprint) is defensive; synthesize-and-emit (generator of novel manipulative output) is the contained thing, *however boring its name*. The language warns; the architecture decides.
 - **Distributed stress-test (the real safety test)** -- talk a concept out with other intelligences, weighted toward the ones that can and will disagree. Agreement from aligned intelligences is an echo, not a test. The friction is the feature.

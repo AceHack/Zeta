@@ -28,12 +28,14 @@
 ## Description
 
 ## Summary
+
 - New skill at `.claude/skills/mirror-sync/SKILL.md`
 - Mechanizes AceHack backup mirror sync via force-push-with-lease
 - Aaron added as bypass actor on AceHack ruleset (2026-05-07)
 - Triggers on "sync mirror", "update acehack", "backup mirror"
 
 ## Test plan
+
 - [x] Mirror sync executed successfully (1022 commits synced)
 - [x] Bypass actor confirmed working
 

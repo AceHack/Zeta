@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - regenerate docs/BACKLOG.md so 081KTSZN10008QG0R00349SM6P through 081KTSZN10008QG0R001BCCTXT match their per-row frontmatter
 - closes the generated-index drift left after the new legacy backlog rows landed
 
 ## Verification
+
 - bun tools/backlog/generate-index.ts --check
 - bun tools/backlog/lint-no-new-bnnnn.ts
 - git diff --check

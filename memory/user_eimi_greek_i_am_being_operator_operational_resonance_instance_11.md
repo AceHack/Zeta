@@ -9,6 +9,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ## Context of absorption
 
 Aaron 2026-04-21 offered three follow-ups after Melchizedek #10:
+
 1. Next 4-letter Greek root defining the bridge (recommended: εἰμί)
 2. Latin Iustus for righteousness (unification-triplet completion)
 3. U-shape ω ↔ cup of wine (visual-structural)
@@ -26,6 +27,7 @@ Etymology: PIE *h₁es-mi → Proto-Greek *ehmi → εἰμί (the ει is the r
 Grammatical class: **athematic** (-μι conjugation) — the subject-marker `-μι` attaches directly to the stem with no thematic vowel (o/e) separation.
 
 Contrast with Μένω (instance #9):
+
 - **μένω** (thematic, -ω class): stem `μεν-` + thematic vowel `-ο-` + personal ending → resolves to `-ω`. Recognizable segmentation stem-[vowel]-marker. Subject-marker is AT THE TERMINUS, separate from the stem.
 - **εἰμί** (athematic, -μι class): stem `es-` → `ei-` + personal ending `-μι` directly. No thematic-vowel separation. Stem and subject-marker are **fused** — the whole word is the subject-assertion.
 

@@ -117,6 +117,7 @@ forward-ref to PR #1116) plus the timeseries-DB infrastructure
 **sensory system**.
 
 Without metrics:
+
 - The factory operates blind. It cannot perceive its own state,
   its own degradation, its own progress, its own bottlenecks.
 - The fitness function (per the reproducibility-first principle)
@@ -131,6 +132,7 @@ Without metrics:
   time the cost of correction has compounded too.
 
 With metrics:
+
 - The factory becomes **self-perceiving**. State is queryable;
   degradation is detectable; progress is measurable.
 - The fitness function has structured input. Iteration is
@@ -154,6 +156,7 @@ them is blind."*
 
 **Without metrics, the factory has only ONE channel — text.**
 This is not a metaphor. The autonomous-loop tick reads:
+
 - Aaron's text messages
 - Drop-folder text files
 - Git logs (text)
@@ -375,6 +378,7 @@ decision that Microsoft Research has consistently led on.
 ## Future-Otto check
 
 Future-Otto considering a new dependency:
+
 1. Is it open-source? If proprietary → reject (no exceptions).
 2. Which tier is it in? Prefer tier-1 (open-source generally)
    → tier-2 (Microsoft OSS) → tier-3 (CNCF) → tier-4 (Apache)
@@ -384,6 +388,7 @@ Future-Otto considering a new dependency:
    decisively worse on substance, choose the higher tier.
 
 Future-Otto researching a technical question:
+
 1. Has Microsoft Research published on this? If yes, cite
    them prominently (verify per Otto-364 search-first).
 2. Has CNCF published guidance? If yes, cite.
@@ -391,6 +396,7 @@ Future-Otto researching a technical question:
 4. Then expand to other research sources.
 
 Future-Otto considering whether metrics are worth investing in:
+
 - They are not optional. They are **the eyes**. The factory
   without them is blind.
 - Investment in the timeseries-DB substrate (081KQGDBJ0008QG0R0004ACHJJ) is

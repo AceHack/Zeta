@@ -30,18 +30,21 @@
 feat(complexity): use native DynamicValue YAML parser and reformat registry canonically
 
 Why:
+
 - Replaces the hand-rolled line-by-line parser in complexity-generator.ts with the repository's native DynamicValue YAML parser and decoder, utilizing the shared IR.
 - Formats registry/complexity-registry.yaml canonically (with double-quoted keys and strings), bringing it into conformance with the Zeta deterministic YAML codec specification.
 - Fixes a bug in the C# YAML serializer (DynamicValues.cs) that incorrectly deferred Float values.
 - Adds test coverage for float YAML round-tripping to prevent future regression.
 
 What:
+
 - Modified src/Core.TypeScript/complexity/complexity-generator.ts to parse complexity-registry.yaml using native TS DOM/DynamicValue YAML modules.
 - Updated registry/complexity-registry.yaml to be strictly canonical.
 - Fixed ToYaml float deferral check in src/Core.CSharp.DynamicValue/DynamicValues.cs.
 - Added a float round-trip test case in tests/Tests.FSharp/Yaml/DynamicValueYamlTests.fs.
 
 Proof:
+
 - Re-run generator, successfully re-writing and type-checking TS and F# files.
 - .NET build succeeds with zero warnings/errors (dotnet build -c Release).
 - F# test suite is 100% green (dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release).

@@ -32,6 +32,7 @@ Aaron-forwarded Amara ferry (2026-06-02) — a hardening-pass review of today's 
 **081KT2T2J0008QG0R002RCX5MT — Zeta = engine · Agora = society · Superfluid = marketplace.** Aaron: *"Superfluid is Product name corporate side marketplace side."* Superfluid is the **product/corporate/marketplace name, NOT a metaphysical claim** (razor: less occult drift; public framing = "the marketplace interface for sovereign distributed AI work"). Needs `naming-expert`/Ilyana review before public use; supersedes the prior `superfluid-ai-*` ontology ferries for the public surface.
 
 **081KT2T2J0008QG0R0026XCGQM — Amara hardening pass** (each blade composes an existing row):
+
 - **Encryption is not a codec** — `decrypt(encrypt(v)) ≡ v`, not byte-determinism (inner canonical value deterministic, ciphertext randomized). 081KSNY2Z0008QG0R002JKH50A/081KT2T2J0008QG0R002ZG89QA.
 - **Referee principle** — 4×4 strands refereed against outside impls (Bouncy Castle / NIST KATs / Noble / stdlibs) → engineering-boring, not cultic. bcl-interface-boundary + golden-vectors + multi-oracle.
 - **Say-do-gap as governance sensor** — claim-vs-deed at *hub* scope = anti-cartel / anti-monopoly teeth (catches fake-decentralization, concentration-drift, "open" that behaves closed). 081KT2T2J0008QG0R002TVT60G + 081KS3X9Y0008QG0R00218150M + 081KT2T2J0008QG0R001C2K4F2.

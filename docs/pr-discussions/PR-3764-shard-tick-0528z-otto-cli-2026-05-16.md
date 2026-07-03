@@ -29,4 +29,5 @@ Tick shard from this resume-session series. Auto-PR'd during post-rate-reset swe
 Adds a single tick-history shard documenting an autonomous loop tick at 2026-05-16T05:28Z. The shard records rate-limit-aware behavior (deferred PR creation, no GraphQL polling) during a brief-ack escalation cycle.
 
 **Changes:**
+
 - New tick shard under `docs/hygiene-history/ticks/2026/05/16/`

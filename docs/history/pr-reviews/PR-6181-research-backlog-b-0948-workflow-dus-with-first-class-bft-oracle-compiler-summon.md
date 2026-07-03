@@ -30,6 +30,7 @@
 Per your 2026-05-31: *"workflow DUs should have BFT compiler summons and observe.ts first class somehow — this prob needs a bit of research to get clean and backlog."*
 
 **Research doc** maps the design space so the abstraction can be made clean before building:
+
 - **Two oracle classes** (must be typed distinctly): **compiler-summon** (non-Byzantine; structural/type/invariant validity — 081KSV2WD0008QG0R00051XS0N "compilers don't lie") vs **LLM-summon** (Byzantine-tolerant quorum; semantic/contextual validity — the self-recursive observe).
 - **Three attach layers**: transition (compiler-summon + deterministic rules) / option-availability (LLM-summon + BFT-join → `Tri` T/F/N) / constitution (the ≥3-agent gate).
 - **Four candidate first-class shapes**: typeclass `IWorkflowDU` / `Observable<DU>` wrapper / **OPLE-algebra primitives** / spec-to-code gen — likely OPLE-substrate + typeclass-surface + gen-for-the-ballot, but that's your + Max's design call.

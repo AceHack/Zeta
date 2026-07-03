@@ -60,6 +60,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -78,6 +79,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR updates the Claude rulebook to codify operational mitigations for the “borrow-on-existing” saturation ceiling, turning the empirical 4-sub-case taxonomy (from PR #3808) into a step-by-step discipline that a fresh cold-boot session can follow under multi-instance contention.
 
 **Changes:**
+
 - Adds a new “Saturation-ceiling — 4 failure sub-cases” section describing four distinct contention failures and which are mitigated today.
 - Documents concrete mitigations for sub-cases 1 and 2, and explicitly marks sub-cases 3 and 4 as currently unmitigated (pending 081KRMEXM0008QG0R000X1PPGC / a future worktree-pool primitive).
 - Adds a composite 7-step operational discipline for shipping under saturation.
@@ -87,6 +89,7 @@ This PR updates the Claude rulebook to codify operational mitigations for the �
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/claim-acquire-before-worktree-work.md:162**
+
 * P1: This rule file includes a specific person name (“Lior”) in explanatory prose. Outside the project’s history/archives surfaces, the docs convention is to use role references (e.g., “another peer session”) rather than named attribution. Please replace the name with a role-ref.
 ```
 multi-Otto saturation (4+ instances active in parallel: Otto-CLI primary
@@ -109,6 +112,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -131,6 +135,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/claim-acquire-before-worktree-work.md:182**
+
 * The proposed name pre-check `git rev-parse <candidate-name>` can succeed for many “commit-ish” names (tags, abbreviated SHAs, etc.) and isn’t scoped to “local branch exists”. To make the mitigation reliable, verify the branch ref explicitly (e.g., `refs/heads/<candidate-name>` / `git show-ref --verify`) before deciding the name is taken.
 ```
 ```bash
@@ -156,6 +161,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
@@ -197,6 +203,7 @@ Here are some automated review suggestions for this pull request.
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".

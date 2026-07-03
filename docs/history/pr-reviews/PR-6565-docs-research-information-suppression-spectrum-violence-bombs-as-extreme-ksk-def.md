@@ -32,6 +32,7 @@ Operator-direct synthesis (Aaron 2026-06-02) — *"our kinetic safeguard kernel 
 **Part 1 — information-suppression spectrum** (violence + bombs as the extreme): soft (algorithmic) → medium (deplatform/legal/economic) → hard (imprison/exile/seizure) → terminal (physical violence) → **terminal+ (bombs / infrastructure annihilation)**. Every propagation tech = liberation-tool + control-weapon; suppression = weaponization of communication control (printing-press/telegraph/radio-TV/internet/social-media dark-side, extends 081KT2T2J0008QG0R0026MS6PV).
 
 **Part 2 — the KSK (Kinetic Safeguard Kernel) defensive architecture:**
+
 - **opt-in bus lane (internal)** + **border protocol (external)** — graduated agent-chosen protection + boundary threat-escalation (081KT2T2J0008QG0R0026MS6PV bus-lanes; 081KRW63S0008QG0R003Z7QV2A detection)
 - **Faraday shields NOT cages** — protect-without-trap, variable strength per force = **must-paired-with-can-exit / NCI** (protection ≠ capture)
 - **concentric threat-level rings** — protection scales with actual risk

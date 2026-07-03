@@ -35,12 +35,14 @@ Fresh-session **independent security audit** of the merged live inventory system
 re-proven from scratch with fresh observed output — no prior recorded evidence trusted.
 
 ### What's in this PR
+
 - **`inventory/AUDIT-PHASE7.md`** — full audit report (verdict, gate re-verification table, 8 probes,
   structural/history check, owner-gated residuals, minor observations).
 - **`inventory/PROGRESS.md`** — Phase 7 close-out entry; Phases 3 / 6 / 7 marked `[x]` with combined
   evidence; stale "checkbox stays open" phrasing updated.
 
 ### Verdict: no P0/P1 defect
+
 - **Secrets:** none in any commit on any ref; only the public publishable anon key ships;
   `service_role` only in never-use comments/guards.
 - **RLS:** least-privilege, no `USING(true)` ships; unauthenticated anon reads on all 4 sensitive
@@ -59,6 +61,7 @@ name and value. These authenticated/live runs were the **owner's** (build-time c
 design); the audit covered the unauthenticated, structural, and static surface.
 
 ### Owner post-merge actions (queued, noted in close-out)
+
 - Delete temp audit users `audit-viewer@` / `audit-editor@` / `audit-admin@`.
 - Rotate/delete chat-burned `editor@gmail.com` / `viewer@gmail.com` + admin secret (verify with
   `phase7-credential-burn-verify.ts`).

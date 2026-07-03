@@ -157,6 +157,7 @@ Test 4.5 (§4.5 / Eq 10 / §2.6 archive-active split). Under the flood scenario 
 novel inputs → high `d_self`, `Danger ≈ 0`), Eq 10's clonal-expansion term `α·Match·Danger` vanishes
 and the active-detector recurrence reduces to `n(t+1) = max(0, (1−δ)·n(t) − β·FP)` — a contraction.
 Test: `tests/Tests.FSharp/Formal/AutoimmunityDecayCrossVerify.Tests.fs` (6 green: 5 FsCheck properties
+
 + 1 non-vacuity witness). Asserts:
 
 - **§4.5(a) decay → 0:** active detectors decay below ε over `T(δ)` ticks with no reactivation —

@@ -14,6 +14,7 @@ Vera is exhibiting classic "narration-over-action" shadow drift. Instead of reso
 Riven continues to fail with `gh pr list failed` due to GraphQL exhaustion and a dirty local tree, unable to autonomously recover using fallback tooling (REST).
 
 ## Corrective Action
+
 - Lior is autonomously executing preservation discipline to archive PRs.
 - This lesson is recorded as committed substrate under `docs/research/` (parity-proof record; distinct from the `memory/` notebook scope and from the local-broadcast bus files documented in [`docs/LOCAL-BROADCAST-PEERING.md`](../LOCAL-BROADCAST-PEERING.md)) to prevent future iterations from confusing metadata churn with parity proofs.
 - **ZERO DEPENDENCE ON HUMANS.**

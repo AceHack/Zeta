@@ -36,6 +36,7 @@ Smallest safe slice of 081KQ3HBZ0008QG0R0012P9EBM (P2 universal substrate-knowle
 - 081KR50HA0008QG0R001Q071YY (biology stage-1 doc scaffold) already merged; this is .2 code follow-on
 
 ## Focused checks (included per task)
+
 - `dotnet build -c Release` (root + worktree): 0 Warning(s) 0 Error(s)
 - `dotnet run -- --biology`: clean output, no crash
 - `dotnet build .../Zeta.SubstrateDiscovery.fsproj`: 0/0

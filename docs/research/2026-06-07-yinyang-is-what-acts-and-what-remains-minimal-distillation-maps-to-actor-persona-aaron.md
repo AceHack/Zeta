@@ -63,6 +63,7 @@ itself** (self-reference / fixed point / self-hosting — "ACE's first package i
 
 So across one conversation a person who knows **nothing** about computers reconstructed the architecture's core
 in three plain strokes:
+
 1. **boundary change, like tides** (#6951) — the engine of change as a moving boundary;
 2. **what acts / what remains** (above) — yin/yang = transform/persist (= actor/persona = the seed);
 3. **it points to itself and others** (here) — the closure (self- + other-reference).
@@ -82,6 +83,7 @@ holds **both halves together** — *what acts* (yang: behavior / control / code-
 (yin: state / memory / the seed). Not code in one place and state in another — **one file, both, readable.**
 
 Why it's substrate-real, not just a picture:
+
 - **It's the persisted closure (#6932) as a file.** A closure = code + captured environment; the YinYang file is
   that closure *serialized to disk* — the acting part and the remaining part co-saved. Save the closure, get a
   YinYang file.

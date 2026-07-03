@@ -166,6 +166,7 @@ The same package could be either auto-installed OR gated, depending on whether i
 ### Layer 6 — Same-pattern-different-scope: GitOps for machine substrate
 
 The substrate-engineering insight: GitOps semantics (declarative-desired-state + reconciler + audit-trail) apply identically to:
+
 - **k8s cluster state** (ArgoCD; already in reference stack per B-0742)
 - **Machine substrate state** (THIS row; ACE PM reconciler)
 
@@ -176,6 +177,7 @@ The pattern is the same; the scope differs. The reference k8s stack (B-0742) dem
 Aaron's specific phrasing: *"gitnative representation of installled or not per machine"*.
 
 Git-native means:
+
 - **Declared state** lives in git (auditable history; cross-fork shareable; signed via git commit signatures + GPG/sigstore)
 - **Observed state** can be git-tracked too (per-machine private state with operator consent) OR cache-only (gitignored)
 - **Diffs** are git diffs — `git diff machines/aaron-mac-2026.yml` shows declared-state changes; reconciler runs against the new declaration
@@ -336,6 +338,7 @@ Today's 2026-05-25 cascade established:
 5. **B-0747 (this)** — git-native per-machine state + biometric-gated GitOps reconciliation (GitOps for machine substrate state)
 
 The cascade now covers:
+
 - **Local biometric consent** (B-0737 + B-0743)
 - **Cross-cluster federation primitive** (B-0741)
 - **GitOps for cluster state** (B-0742)

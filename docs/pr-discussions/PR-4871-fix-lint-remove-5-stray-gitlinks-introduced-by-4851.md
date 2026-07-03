@@ -66,6 +66,7 @@ Reference failure: https://github.com/Lucent-Financial-Group/Zeta/actions/runs/2
 Removes five unintended mode-160000 gitlink (submodule) entries that were introduced at repo root without corresponding `.gitmodules` configuration, which has been breaking CI (submodule resolution) and the `lint (no empty dirs)` check.
 
 **Changes:**
+
 - Delete the stray gitlink entries: `lior-fix-4746`, `lior-fix-4768`, `lior-fix-4773`, `lior-fix-4780`, `lior-fix-4781`.
 - No `.gitmodules` changes (file does not exist in the repo root in the current tree).
 

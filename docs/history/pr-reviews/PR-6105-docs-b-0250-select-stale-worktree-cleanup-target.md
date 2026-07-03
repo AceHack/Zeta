@@ -28,11 +28,13 @@
 ## Description
 
 ## Summary
+
 - adds a 081KQZVQW0008QG0R001FG05RZ cleanup-selection packet for one clean local-only stale worktree
 - updates the autonomous-loop coordination resume to point the next slice at that bounded cleanup
 - releases the live Codex claim file in the same branch
 
 ## Verification
+
 - bun run lint:markdown docs/trajectories/autonomous-loop-coordination/b0250-stale-worktree-cleanup-selection-2026-05-30.md docs/trajectories/autonomous-loop-coordination/RESUME.md
 - git diff --check
 

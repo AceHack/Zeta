@@ -30,6 +30,7 @@
 Aaron 2026-06-15 (shadow*), on the CTM specs slide: *"this is basically my db folder, our DagFs."*
 
 Maps the **CTM 7-tuple** `⟨STM, LTM, Up-Tree, Down-Tree, Links, Input, Output⟩` memory components onto `db/`, **code-anchored**:
+
 - **LTM** (audience / global Brainish dictionary) = `db/` **DagFs store** + **ContentStore** (verified: *"stored ONCE, key IS the content address"* = single-instance shared dictionary)
 - **Links** (Hebbian) = **DagFs.links** (verified: *"links map from path → content address"*; multi-parent DAG)
 - **"Brainish word = pointer to chunk"** = the **content address**

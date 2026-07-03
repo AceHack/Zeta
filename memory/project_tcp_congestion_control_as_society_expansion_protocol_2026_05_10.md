@@ -47,6 +47,7 @@ Aaron has an alternative to the Nagle algorithm relevant to this
 model. Details pending — will update when found.
 
 **Connects to:**
+
 - feedback_expansion_boundary_pauli_both_directions (the boundary)
 - governance kernel formula (expand needs component)
 - 081KR7JY10008QG0R003H102F0 tick procurement (the expansion mechanism)

@@ -57,6 +57,7 @@ dial trading steady-state cost vs recovery time (the canonical command-log trade
 
 The fsync knob is independent of the tier. Three settings (Otto landed the disk path for
 these in `DiskAsyncBackingStore` / `createAsyncBackingStore`, 2026-06-06):
+
 - **async / OS-buffered** — fastest, bounded loss window.
 - **group-commit** — batch many delta-batches per fsync (VoltDB sync-with-batching); the
   recommended default for `durable`.  *(not yet built)*

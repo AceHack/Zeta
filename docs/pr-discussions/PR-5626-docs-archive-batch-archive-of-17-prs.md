@@ -27,6 +27,7 @@ Automated batch archival of 17 PRs to preserve discussion and context, and to re
 Automated archival of 17 merged pull-request discussions into `docs/pr-discussions/` to preserve review context and reduce active PR queue noise.
 
 **Changes:**
+
 - Added 17 new PR-discussion archive markdown files under `docs/pr-discussions/`.
 - Each archive includes YAML frontmatter (PR metadata + archive provenance) and the preserved PR conversation content.
 

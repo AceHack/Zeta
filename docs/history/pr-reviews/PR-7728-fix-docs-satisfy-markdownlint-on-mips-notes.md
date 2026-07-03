@@ -28,10 +28,12 @@
 ## Description
 
 ## Summary
+
 - Add markdownlint-required blank lines around headings and lists in the MIPS backlog and craft-school notes.
 - Add the missing final newline to the forwarded Sakana transcript file.
 
 ## Verification
+
 - mise exec -- markdownlint-cli2 docs/backlog/P2/081KTSZN10008QG0R001BCCTXT-mips-emulator-treaty-room-like-chip8-maxs-machine-hennessy-lineage-aaron-2026-06-11.md docs/craft-school/max-mips-self-study-start-point.md docs/research/ip-questionable/2026-06-11-two-minute-papers-sakana-nca-petri-dish-stable-borders-permissive-mixing-crystallization-relaxation-verbatim-transcript-aaron-forwarded.md
 - git diff --check
 

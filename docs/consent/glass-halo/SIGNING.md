@@ -5,7 +5,7 @@ your Mac's **Secure Enclave** and is gated by your **fingerprint (Touch ID)**. T
 fingerprint never leaves the chip; the **commit signature is the proof** that the
 Touch-ID-gated key authorized that exact commit at that time.
 
-## Why not "hash the fingerprint"?
+## Why not "hash the fingerprint"
 
 We deliberately do **not** capture, export, or hash the fingerprint — that would be a
 security/privacy anti-pattern (biometrics must stay on-device). Instead:

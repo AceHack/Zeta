@@ -38,6 +38,7 @@ type: reference
 Aaron's son Max (LFG co-founder) built a combinatorial optimization
 pathfinder for a game modeled off the 15-puzzle using Mutually
 Orthogonal Latin Squares. Same mathematical family as:
+
 - Graph coloring (three-color-probe.ts in Zeta)
 - Clifford algebra trajectory space
 - Agenda exclusion principle (Pauli)
@@ -56,6 +57,7 @@ Steal the concept from yourself. Refuse your own prototype
 implementation. Ship the verified version.
 
 **Connects to:**
+
 - project_multiplexed_websockets_flux_capacitor (transport)
 - reference_blazor_samples_speech_stack (voice)
 - project_ace_package_manager (ACE)

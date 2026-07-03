@@ -43,6 +43,7 @@ Three operative threads in Aaron's framing:
 ### 1. Deterministic simulation (DST-safe) — GREEN
 
 **What's mechanized today**:
+
 - Multi-seed property tests via FsCheck `[<Property>]` decorator (e.g. `tests/Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`)
 - TLA+ specs verify protocol-level determinism: `tools/tla/specs/ChaosEnvDeterminism.tla` (with companion .cfg file in the same directory) and `tools/tla/specs/DbspSpec.tla`
 - TLC runner wrapped: `tools/formal-verification/run-tlc.ts`
@@ -65,6 +66,7 @@ Three operative threads in Aaron's framing:
 ### 3. Lock-free (wait-free if fits) — YELLOW
 
 **What's mechanized today**:
+
 - TLA+ specs cover concurrent-thrash detection at protocol level (e.g. `tools/tla/specs/DictionaryStripedCAS.tla`)
 - Some FsCheck-style concurrent property tests exist in `tests/Tests.FSharp/Operators/` and `tests/Tests.FSharp/Storage/` directories
 - Stryker mutation testing (`.github/workflows/stryker-mutation.yml`) catches some concurrency-sensitive code paths
@@ -78,6 +80,7 @@ Three operative threads in Aaron's framing:
 ### 4. Low allocation — GREEN
 
 **What's mechanized today**:
+
 - `tests/Tests.FSharp/Runtime/Allocation.Tests.fs` uses `GC.GetAllocatedBytesForCurrentThread()` to assert byte-precise zero-allocation in steady state
 - BenchmarkDotNet `[<MemoryDiagnoser>]` decorators in F# files under `bench/Benchmarks/` and `bench/Feldera.Bench/` directories
 - Pattern documented and used widely
@@ -91,6 +94,7 @@ Three operative threads in Aaron's framing:
 ### 5. DBSP-native — YELLOW
 
 **What's mechanized today**:
+
 - TLA+ spec `tools/tla/specs/DbspSpec.tla` covers protocol-level DBSP semantics
 - F# type system enforces signed Z-set delta type for stream-incremental primitives
 - Lean4 proofs in `tools/lean4/` cover algebraic properties
@@ -114,6 +118,7 @@ Three operative threads in Aaron's framing:
 ### 7. ε-bounded with C(ε) — YELLOW
 
 **What's mechanized today**:
+
 - Z3 verifier under `tools/Z3Verify/` (F# project) handles ε-bounded retraction algebraic checks for some operators
 - TLA+ specs cover ε-bounded protocols
 - Multi-seed property tests cover boundary cases
@@ -125,6 +130,7 @@ Three operative threads in Aaron's framing:
 ### 8. BFT-resolvable (or explicitly conceded) — YELLOW
 
 **What's mechanized today**:
+
 - TLA+ BFT specs (multiple)
 - Property tests for consensus
 - Some Z3 verification of byzantine-fault tolerance algebraic properties
@@ -146,6 +152,7 @@ Three operative threads in Aaron's framing:
 ### 10. Retractable-blast-radius — YELLOW
 
 **What's mechanized today**:
+
 - Z3 verification of retraction algebraic properties (`tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`)
 - TLA+ specs for retraction protocols
 - Bloom filter tests, OR-set tests cover retraction in specific data structures
@@ -157,6 +164,7 @@ Three operative threads in Aaron's framing:
 ### 11. Glass-halo-open — GREEN (mostly)
 
 **What's mechanized today**:
+
 - The repo IS open on git (Lucent-Financial-Group/Zeta is publicly visible per maintainer)
 - `tools/hygiene/audit-machine-specific-content.ts` flags non-portable content
 - `tools/hygiene/check-archive-header-section33.ts` enforces archive-header for external-conversation absorbs
@@ -170,6 +178,7 @@ Three operative threads in Aaron's framing:
 ### 12. Anti-clandestine — GREEN
 
 **What's mechanized today**:
+
 - `tools/hygiene/audit-machine-specific-content.ts` (anti-clandestine machine-state)
 - `tools/hygiene/check-archive-header-section33.ts` (external-conversation provenance)
 - CodeQL workflow (`.github/workflows/codeql.yml`)

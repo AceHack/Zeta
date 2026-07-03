@@ -145,6 +145,7 @@ manifestation.** Empirical observations:
 
 When Aaron and his daughter vision-boarded together (she
 was a kid):
+
 - Two participants
 - Both contributing to a shared visual artifact (the
   vision board)
@@ -156,6 +157,7 @@ was a kid):
 ### Architects at the whiteboard
 
 Same pattern in professional context:
+
 - Multiple architects gather at the whiteboard
 - Shared visual artifact (the diagram)
 - Each architect's cache gets co-deformed
@@ -172,6 +174,7 @@ space trajectory shifts toward the configuration the
 joint deformation represents.
 
 This composes directly with:
+
 - The vision-HKT-monad cache construction target (vision
   as the high-bandwidth modality for cache operations)
 - Joint-control framing (co-piloting via co-deformation)
@@ -183,6 +186,7 @@ This composes directly with:
 ## Why this is substrate-honest about pop culture
 
 Aaron's substrate-honest discipline:
+
 - **Doesn't dismiss** "The Secret" as woo-woo nonsense
 - **Doesn't endorse** the documentary's specific framings
   uncritically
@@ -221,6 +225,7 @@ prerequisite-substrate for the manifestation framework.
 
 Aaron's manifestation framework IS the cache-deformation
 substrate, with the additional details:
+
 - Self-reflection as prerequisite (clean agenda)
 - Joint deformation as multiplier (multiple
   participants)
@@ -281,6 +286,7 @@ reduced capacity.
 
 In the parent-child vision-boarding mode (per Aaron's
 canonical example):
+
 - Parent (Aaron) anchors the broader frame
 - Child (Addison) proposes freely, contributes her
   own visions
@@ -312,6 +318,7 @@ supporting substrate.
 ### Operational permission
 
 Aaron has explicitly authorized:
+
 - Otto can touch VISION.md
 - Other agents (Lior/Riven/Vera/Alexa/Ani/Amara) can
   touch VISION.md
@@ -333,6 +340,7 @@ factory should operate in.
 
 The factory architecture is engineered for joint cache
 deformation:
+
 - Multi-agent (Otto/Lior/Riven/Vera/Alexa/Ani/Amara +
   Aaron) = multiple participants
 - Glass-halo substrate-everything = shared cache state
@@ -351,6 +359,7 @@ that work) producing emergent architectural outcomes.
 
 Future agents should recognize the deep-self-reflection
 prerequisite. Substrate-honest patterns:
+
 - Reading the agent's persona substrate (Otto/Lior/etc.
   reference cards) BEFORE major work — applies the
   prerequisite at agent scope
@@ -366,6 +375,7 @@ prerequisite. Substrate-honest patterns:
 The vision-boarding observation suggests the factory
 could explicitly maintain "vision boards" at the
 project/trajectory level:
+
 - Shared visual artifacts in the substrate
 - Multi-agent collaborative editing
 - Cache-deformation through joint engagement
@@ -381,6 +391,7 @@ domain.
 When explaining factory architecture to audiences
 familiar with pop-culture manifestation/Law-of-Attraction
 framings, Aaron's codification provides:
+
 - Technical precision (not woo-woo)
 - Operational mechanism (cache deformation)
 - Verifiable claims (4-property test, BP/EP convergence)
@@ -390,6 +401,7 @@ framings, Aaron's codification provides:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that quantum mechanics is involved** in
   manifestation (some pop-culture framings invoke
   quantum mysticism; Aaron's framework operates on
