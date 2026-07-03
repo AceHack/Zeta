@@ -106,6 +106,18 @@ A named refinement of tit-for-tat, and each word is load-bearing:
   **generous tit-for-tat** (Nowak & Sigmund 1992): responding under-proportionally *damps* the echo
   where strict eye-for-an-eye *spirals*, and it provably outcompetes strict TFT in noisy populations
   (a misread move doesn't ignite a feud). De-escalation as the winning move, not the soft one.
+
+  **The load-bearing reason (Aaron 2026-07-02):** *"if I retaliate with all I have, I end the game."*
+  Full retaliation is the one **non-retractable** move — it drives both players into the mutual-defect
+  lock-state (the DD absorbing state of the iterated game), from which the play cannot recover. In an
+  **infinite game** the single unforgivable act is not losing a round, it is *ending the play*. So
+  lesser-tat is not mercy, it is the **only retaliation that preserves the board**: respond with
+  everything and you "win" the round by killing the game; respond with less and the game survives to
+  be won across a thousand rounds. This is Zeta's own floor stated as strategy — **"do no permanent
+  harm"** (AGENTS.md velocity-over-stability) + **retraction-native** (every action bounded, reversible):
+  ending the game is exactly the non-reversible action the substrate is built to refuse. (Anchors:
+  Schelling, *The Strategy of Conflict* 1960 — deterrence and the logic of not-escalating-to-the-end;
+  the DD absorbing state of the iterated Prisoner's Dilemma.)
 - **teach** — after you respond, *raise the other player*: disclose what you learned, show the fix,
   make the exploit legible. This is the indirect-reciprocity / pedagogy leg (Nowak & Sigmund 2005) —
   you are not just declining to spiral, you are actively lifting the counterpart toward cooperation.
