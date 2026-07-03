@@ -65,3 +65,46 @@ let ``BRIDGE TO THE ISA: the gate adder computes exactly what Isa ADD does (byte
             | Ok outs -> Netlist.intOf "s" 8 outs
             | Error _ -> -2
         Assert.Equal(viaIsa, viaGates)
+
+// ── COLUMN B, RUNG 2 — ISA → circuit synthesis: a whole straight-line program becomes ONE circuit ──
+
+let private regsEq (a: Map<int, int>) (b: Map<int, int>) =
+    [ 0..15 ]
+    |> List.forall (fun r -> (Map.tryFind r a |> Option.defaultValue 0) = (Map.tryFind r b |> Option.defaultValue 0))
+
+[<Fact>]
+let ``SYNTHESIS = INTERPRETER: a synthesized circuit computes exactly what Isa.eval does (all registers)`` () =
+    let cases: (DynamicValue * Map<int, int>) list =
+        [ Isa.prog [ Isa.set 0 10; Isa.set 1 5; Isa.addr 2 0; Isa.addr 2 1 ], Map.empty // V2 = 15
+          Isa.prog [ Isa.set 0 200; Isa.add 0 100 ], Map.empty // V0 = 44 (wrap)
+          Isa.prog [ Isa.mov 3 5; Isa.add 3 1 ], Map.ofList [ 5, 7 ] // V3 = 8 from input V5
+          Isa.prog [ Isa.set 0 250; Isa.set 1 250; Isa.addr 0 1 ], Map.empty // 244 (wrap)
+          Isa.prog [ Isa.add 0 3; Isa.addr 1 0; Isa.addr 1 0 ], Map.ofList [ 0, 10; 1, 1 ] ] // pass-through + arith
+    for (p, regs) in cases do
+        match Netlist.synthesize p with
+        | Ok(c, outMap) ->
+            match Netlist.eval c (Netlist.regInputs regs) with
+            | Ok wires ->
+                let viaGates = Netlist.regOutputs outMap wires
+                let viaIsa =
+                    match Isa.eval p regs with
+                    | Ok r -> r
+                    | Error e -> failwithf "isa eval failed: %s" e
+                Assert.True(regsEq viaGates viaIsa, "the synthesized circuit must match the interpreter on every register")
+            | Error e -> Assert.Fail(sprintf "circuit eval failed: %s" e)
+        | Error e -> Assert.Fail(sprintf "synthesize failed: %s" e)
+
+[<Fact>]
+let ``SYNTHESIS produces ONE byte-lockable circuit (rides the codec stack)`` () =
+    match Netlist.synthesize (Isa.prog [ Isa.set 0 10; Isa.addr 1 0; Isa.add 1 5 ]) with
+    | Ok(c, _) -> Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] c)
+    | Error e -> Assert.Fail(sprintf "synthesize failed: %s" e)
+
+[<Fact>]
+let ``SYNTHESIS rejects control flow (needs sequential logic — a later rung)`` () =
+    Assert.True(
+        (match Netlist.synthesize (Isa.prog [ Isa.set 0 1; Isa.jp 0 ]) with
+         | Error _ -> true
+         | Ok _ -> false),
+        "JP must be rejected by combinational synthesis"
+    )

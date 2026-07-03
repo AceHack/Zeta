@@ -165,3 +165,110 @@ module Netlist =
             match Map.tryFind (sprintf "%s%d" prefix i) outs with
             | Some 1 -> 1 <<< i
             | _ -> 0)
+
+    // ── ISA → circuit synthesis (Column B: a whole straight-line program becomes ONE circuit) ──
+    //
+    // The residual-target knob, fully turned. `synthesize` threads a *symbolic register file* (each
+    // of the 16 registers = 8 wires) through a straight-line program, instantiating a sub-circuit
+    // per instruction: SET wires to constants, ADD/ADDR to an adder instance, MOV a rewire. The
+    // result is a single combinational circuit from the 16 initial register values (inputs) to the
+    // 16 final ones (outputs) — the same computation `Isa.eval` does, as gates. Straight-line only
+    // (SET/ADD/MOV/ADDR/HALT); control flow (SE/JP) needs sequential logic (a later rung).
+
+    /// Synthesize a straight-line ISA program into one combinational circuit. Returns the circuit and
+    /// the per-register output-wire names (`reg → its 8 wires`, LSB first). Inputs are `v{r}_{i}` for
+    /// all 16 registers; `eval` on the bit-decomposed initial registers yields the final registers.
+    let synthesize (program: DynamicValue) : Result<DynamicValue * Map<int, string list>, string> =
+        match program with
+        | DynamicValue.Array instrs ->
+            let inputWire r i = sprintf "v%d_%d" r i
+            let regfile = System.Collections.Generic.Dictionary<int, string list>()
+            for r in 0..15 do
+                regfile.[r] <- [ for i in 0..7 -> inputWire r i ]
+            let gates = System.Collections.Generic.List<DynamicValue>()
+            // constants derived from an input wire (no special inputs): const0 = v0_0 XOR v0_0 = 0.
+            gates.Add(xorG "const0" (inputWire 0 0) (inputWire 0 0))
+            gates.Add(notG "const1" "const0")
+            let constBit b = if b = 1 then "const1" else "const0"
+            let constWires (nn: int) = [ for i in 0..7 -> constBit ((nn >>> i) &&& 1) ]
+            let mutable uid = 0
+            // instantiate an 8-bit adder over the given wire lists; returns the 8 sum-wire names.
+            let emitAdder (aw: string list) (bw: string list) : string list =
+                let p = sprintf "add%d_" uid
+                uid <- uid + 1
+                let a = List.toArray aw
+                let b = List.toArray bw
+                let s i = sprintf "%ss%d" p i
+                let carry i = sprintf "%sc%d" p i
+                let axb i = sprintf "%saxb%d" p i
+                let aab i = sprintf "%saab%d" p i
+                let cnd i = sprintf "%scnd%d" p i
+                for i in 0..7 do
+                    if i = 0 then
+                        gates.Add(xorG (s 0) a.[0] b.[0])
+                        gates.Add(andG (carry 1) a.[0] b.[0])
+                    else
+                        gates.Add(xorG (axb i) a.[i] b.[i])
+                        gates.Add(xorG (s i) (axb i) (carry i))
+                        gates.Add(andG (aab i) a.[i] b.[i])
+                        gates.Add(andG (cnd i) (carry i) (axb i))
+                        gates.Add(orG (carry (i + 1)) (aab i) (cnd i))
+                [ for i in 0..7 -> s i ]
+            let field k ins =
+                match DynamicValue.get k ins with
+                | Some(DynamicValue.Int n) -> Some(int n)
+                | _ -> None
+            let mutable err = None
+            for ins in instrs do
+                if err.IsNone then
+                    let opN =
+                        match DynamicValue.get "op" ins with
+                        | Some(DynamicValue.String s) -> s
+                        | _ -> "?"
+                    match opN with
+                    | "SET" ->
+                        match field "x" ins, field "nn" ins with
+                        | Some x, Some nn -> regfile.[x] <- constWires nn
+                        | _ -> err <- Some "synthesize: SET operands"
+                    | "MOV" ->
+                        match field "x" ins, field "y" ins with
+                        | Some x, Some y -> regfile.[x] <- regfile.[y]
+                        | _ -> err <- Some "synthesize: MOV operands"
+                    | "ADD" ->
+                        match field "x" ins, field "nn" ins with
+                        | Some x, Some nn -> regfile.[x] <- emitAdder regfile.[x] (constWires nn)
+                        | _ -> err <- Some "synthesize: ADD operands"
+                    | "ADDR" ->
+                        match field "x" ins, field "y" ins with
+                        | Some x, Some y -> regfile.[x] <- emitAdder regfile.[x] regfile.[y]
+                        | _ -> err <- Some "synthesize: ADDR operands"
+                    | "HALT" -> ()
+                    | other -> err <- Some(sprintf "synthesize: op '%s' not in the straight-line fragment (needs sequential logic)" other)
+            match err with
+            | Some e -> Error e
+            | None ->
+                let inputs = [ for r in 0..15 do for i in 0..7 -> inputWire r i ]
+                let outMap = [ for r in 0..15 -> r, regfile.[r] ] |> Map.ofList
+                let outputs = [ for r in 0..15 do yield! regfile.[r] ]
+                Ok(circuit inputs outputs (List.ofSeq gates), outMap)
+        | _ -> Error "synthesize: program must be an array of instructions"
+
+    /// Input-wire assignment for `synthesize`: bit-decompose the initial register map into the 128
+    /// `v{r}_{i}` input wires (absent registers default 0).
+    let regInputs (regs: Map<int, int>) : Map<string, int> =
+        [ for r in 0..15 do
+              let v = Map.tryFind r regs |> Option.defaultValue 0
+              for i in 0..7 -> sprintf "v%d_%d" r i, (v >>> i) &&& 1 ]
+        |> Map.ofList
+
+    /// Read the final register map from a synthesized circuit's eval result, given its output-wire map.
+    let regOutputs (outMap: Map<int, string list>) (wires: Map<string, int>) : Map<int, int> =
+        [ for KeyValue(r, ws) in outMap ->
+              r,
+              (ws
+               |> List.mapi (fun i w -> i, w)
+               |> List.sumBy (fun (i, w) ->
+                   match Map.tryFind w wires with
+                   | Some 1 -> 1 <<< i
+                   | _ -> 0)) ]
+        |> Map.ofList
