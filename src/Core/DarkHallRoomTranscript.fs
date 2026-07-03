@@ -21,6 +21,10 @@ module DarkHallRoomTranscript =
 
     let QSharpHeatSignalSource = Zeta.Core.HeatReadout.QSharpSignalSource
 
+    let TemperatureReadoutSchema = Zeta.Core.HeatReadout.TemperatureSchema
+
+    let BlackBodyReadoutSchema = Zeta.Core.HeatReadout.BlackBodySchema
+
     type ControllerCell =
         { [<JsonPropertyName("cell")>]
           Cell: int
@@ -77,6 +81,36 @@ module DarkHallRoomTranscript =
           [<JsonPropertyName("reasons")>]
           Reasons: string list }
 
+    type TranscriptTemperatureReadout =
+        { [<JsonPropertyName("schema")>]
+          Schema: string
+          [<JsonPropertyName("source")>]
+          Source: string
+          [<JsonPropertyName("temperaturePpm")>]
+          TemperaturePpm: int
+          [<JsonPropertyName("band")>]
+          Band: string
+          [<JsonPropertyName("heatPpm")>]
+          HeatPpm: int
+          [<JsonPropertyName("uncertaintyPpm")>]
+          UncertaintyPpm: int
+          [<JsonPropertyName("pressurePpm")>]
+          PressurePpm: int
+          [<JsonPropertyName("attentionPpm")>]
+          AttentionPpm: int }
+
+    type TranscriptBlackBodyReadout =
+        { [<JsonPropertyName("schema")>]
+          Schema: string
+          [<JsonPropertyName("source")>]
+          Source: string
+          [<JsonPropertyName("temperaturePpm")>]
+          TemperaturePpm: int
+          [<JsonPropertyName("radiancePpm")>]
+          RadiancePpm: int
+          [<JsonPropertyName("peakFrequencyPpm")>]
+          PeakFrequencyPpm: int }
+
     type TranscriptTick =
         { [<JsonPropertyName("tick")>]
           Tick: int
@@ -106,6 +140,10 @@ module DarkHallRoomTranscript =
           Ticks: TranscriptTick list
           [<JsonPropertyName("heatReadout")>]
           HeatReadout: HeatReadout
+          [<JsonPropertyName("temperatureReadout")>]
+          TemperatureReadout: TranscriptTemperatureReadout
+          [<JsonPropertyName("blackBodyReadout")>]
+          BlackBodyReadout: TranscriptBlackBodyReadout
           [<JsonPropertyName("heatRows")>]
           HeatRows: HeatRow list
           [<JsonPropertyName("generatedBy")>]
@@ -187,6 +225,48 @@ module DarkHallRoomTranscript =
           HeatKinds = rows |> List.collect _.HeatKinds |> distinctOrdinal
           Signals = rows |> List.collect _.Signals |> distinctOrdinal
           Reasons = rows |> List.collect _.Reasons }
+
+    let private heatLaneMax = 16
+
+    let private countPpm count =
+        count
+        |> max 0
+        |> min heatLaneMax
+        |> fun value -> value * (TemperatureReadout.MaxPpm / heatLaneMax)
+
+    let temperatureReadout (rows: HeatRow list) : TranscriptTemperatureReadout =
+        let source =
+            rows
+            |> List.tryHead
+            |> Option.map _.RoomName
+            |> Option.defaultValue "darkhall-room-transcript"
+
+        let readout =
+            Zeta.Core.TemperatureReadout.ofPpm
+                source
+                (rows |> List.sumBy _.HeatRejected |> countPpm)
+                (rows |> List.sumBy _.StorageErrors |> countPpm)
+                (rows |> List.sumBy _.Backpressured |> countPpm)
+                0
+
+        { Schema = readout.Schema
+          Source = readout.Source
+          TemperaturePpm = readout.TemperaturePpm
+          Band = readout.Band
+          HeatPpm = readout.HeatPpm
+          UncertaintyPpm = readout.UncertaintyPpm
+          PressurePpm = readout.PressurePpm
+          AttentionPpm = readout.AttentionPpm }
+
+    let blackBodyReadout (temperature: TranscriptTemperatureReadout) : TranscriptBlackBodyReadout =
+        let readout =
+            Zeta.Core.BlackBodyReadout.ofTemperaturePpm temperature.Source temperature.TemperaturePpm
+
+        { Schema = readout.Schema
+          Source = readout.Source
+          TemperaturePpm = readout.TemperaturePpm
+          RadiancePpm = readout.RadiancePpm
+          PeakFrequencyPpm = readout.PeakFrequencyPpm }
 
     let private heatRowOfReadout (tick: int) (roomName: string) (heat: RoomLoop.HeatReadout) : HeatRow =
         heatRow
@@ -288,6 +368,7 @@ module DarkHallRoomTranscript =
             run.Final.LastReadout
             |> Option.defaultWith (fun () -> Runtime.observe run.Final.Room)
         let heatRows = run.Ticks |> List.mapi (fun index tick -> heatRowOfReadout (index + 1) tick.Readout.RoomName tick.Heat)
+        let temperature = temperatureReadout heatRows
 
         { Schema = Schema
           RoomName = roomName
@@ -300,6 +381,8 @@ module DarkHallRoomTranscript =
               |> Option.defaultWith (fun () -> controllerCells None readout)
           Ticks = run.Ticks |> List.mapi (fun index tick -> tickOfOutcome (index + 1) tick)
           HeatReadout = heatReadout heatRows
+          TemperatureReadout = temperature
+          BlackBodyReadout = blackBodyReadout temperature
           HeatRows = heatRows }
 
     let ofBoundaryState seed generatedBy (state: Scheduler.BoundaryScheduledRoomState<'K>) : Transcript =
@@ -307,6 +390,7 @@ module DarkHallRoomTranscript =
         let readout =
             state.Loop.LastReadout
             |> Option.defaultWith (fun () -> Runtime.observe state.Loop.Room)
+        let temperature = temperatureReadout rows
 
         { Schema = Schema
           RoomName = state.Loop.Room.Name
@@ -321,6 +405,8 @@ module DarkHallRoomTranscript =
               |> Option.map (fun tick -> [ tickOfBoundaryOutcome state.CompletedTicks tick ])
               |> Option.defaultValue []
           HeatReadout = heatReadout rows
+          TemperatureReadout = temperature
+          BlackBodyReadout = blackBodyReadout temperature
           HeatRows = rows }
 
     let ofUnifiedHeatRun seed generatedBy (run: RoomRun.UnifiedHeatRun<'K>) : Transcript =
@@ -337,6 +423,7 @@ module DarkHallRoomTranscript =
 
         let heatTicks = run.HeatRows |> List.mapi (fun index row -> measureTick (index + 1) row)
         let heatRows = run.HeatRows |> List.map heatRow
+        let temperature = temperatureReadout heatRows
 
         { Schema = Schema
           RoomName = run.Room.Loop.Room.Name
@@ -348,6 +435,8 @@ module DarkHallRoomTranscript =
               |> Option.defaultWith (fun () -> controllerCells None readout)
           Ticks = tickRows @ heatTicks
           HeatReadout = heatReadout heatRows
+          TemperatureReadout = temperature
+          BlackBodyReadout = blackBodyReadout temperature
           HeatRows = heatRows }
 
     let ofUnifiedHorizonRun seed generatedBy (run: RoomRun.UnifiedHorizonRun<'K, 'S>) : Transcript =

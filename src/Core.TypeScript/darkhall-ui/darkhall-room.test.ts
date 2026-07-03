@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  BLACK_BODY_READOUT_SCHEMA,
   classifyHeatKind,
   HEAT_FSHARP_SURFACE,
   coordinationBandwidth,
@@ -10,6 +11,9 @@ import {
   HEAT_SIGNAL_TREATY_PATH,
   TEMPERATURE_READOUT_SCHEMA,
   sLaneVerdict,
+  blackBodyPeakFrequencyPpm,
+  blackBodyRadiancePpm,
+  blackBodyReadout,
   heatSignals,
   normalizeHeatSignals,
   normalizeControllerCells,
@@ -31,6 +35,7 @@ const heatTreaty = JSON.parse(
   readonly schema: string;
   readonly readoutSchema: string;
   readonly temperatureReadoutSchema: string;
+  readonly blackBodyReadoutSchema: string;
   readonly qsharpSource: string;
   readonly fsharpSurface: string;
   readonly signals: readonly { readonly token: string; readonly public: boolean }[];
@@ -42,6 +47,12 @@ const heatTreaty = JSON.parse(
     readonly attentionPpm: number;
     readonly temperaturePpm: number;
     readonly band: "cold" | "warm" | "hot" | "critical";
+  }[];
+  readonly blackBodyCases: readonly {
+    readonly id: string;
+    readonly temperaturePpm: number;
+    readonly radiancePpm: number;
+    readonly peakFrequencyPpm: number;
   }[];
 };
 
@@ -81,6 +92,19 @@ const heatReadout: HeatReadout = {
   signals: ["denied", "forgotten", "storage-error"],
   reasons: ["darkhall -> glass refused", "bounded horizon forgot materialized keys", "sink storage failed"],
 };
+
+const transcriptTemperatureReadout = temperatureReadout({
+  source: "darkhall",
+  heatPpm: 187_500,
+  uncertaintyPpm: 62_500,
+  pressurePpm: 62_500,
+  attentionPpm: 0,
+});
+
+const transcriptBlackBodyReadout = blackBodyReadout({
+  source: transcriptTemperatureReadout.source,
+  temperaturePpm: transcriptTemperatureReadout.temperaturePpm,
+});
 
 const transcript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
@@ -124,6 +148,8 @@ const transcript: RoomRunTranscript = {
   ],
   heatRows,
   heatReadout,
+  temperatureReadout: transcriptTemperatureReadout,
+  blackBodyReadout: transcriptBlackBodyReadout,
 };
 
 describe("Dark Hall CSS room UI", () => {
@@ -269,6 +295,7 @@ describe("Dark Hall CSS room UI", () => {
     expect(heatTreaty.schema).toBe("zeta.qsharp.heat-signals.v1");
     expect(heatTreaty.readoutSchema).toBe(HEAT_READOUT_SCHEMA);
     expect(heatTreaty.temperatureReadoutSchema).toBe(TEMPERATURE_READOUT_SCHEMA);
+    expect(heatTreaty.blackBodyReadoutSchema).toBe(BLACK_BODY_READOUT_SCHEMA);
     expect(heatTreaty.qsharpSource).toBe(HEAT_SIGNAL_QSHARP_SOURCE);
     expect(heatTreaty.fsharpSurface).toBe(HEAT_FSHARP_SURFACE);
     expect(heatReadout.qsharpTreaty).toBe(HEAT_SIGNAL_TREATY_PATH);
@@ -302,9 +329,30 @@ describe("Dark Hall CSS room UI", () => {
     expect(attended?.temperaturePpm).toBe(125_000);
   });
 
+  it("projects black-body radiance as a finite information-temperature law", () => {
+    for (const vector of heatTreaty.blackBodyCases) {
+      expect(blackBodyRadiancePpm(vector.temperaturePpm)).toBe(vector.radiancePpm);
+      expect(blackBodyPeakFrequencyPpm(vector.temperaturePpm)).toBe(vector.peakFrequencyPpm);
+      expect(blackBodyReadout({ source: vector.id, temperaturePpm: vector.temperaturePpm })).toEqual({
+        schema: BLACK_BODY_READOUT_SCHEMA,
+        source: vector.id,
+        temperaturePpm: vector.temperaturePpm,
+        radiancePpm: vector.radiancePpm,
+        peakFrequencyPpm: vector.peakFrequencyPpm,
+      });
+    }
+
+    expect(blackBodyRadiancePpm(500_000)).toBe(62_500);
+    expect(blackBodyRadiancePpm(1_000_000)).toBe(1_000_000);
+  });
+
   it("renders a no-script document; CSS owns geometry and state projection", () => {
     const doc = renderDarkHallRoomDocument(transcript);
 
+    expect(doc).toContain('data-temperature-readout="zeta.temperature.readout.v1"');
+    expect(doc).toContain('data-temperature-band="warm"');
+    expect(doc).toContain('data-black-body-readout="zeta.blackbody.readout.v1"');
+    expect(doc).toContain(`data-black-body-radiance="${transcriptBlackBodyReadout.radiancePpm.toString()}"`);
     expect(doc).toContain('<link rel="stylesheet" href="./darkhall-room.css">');
     expect(doc).not.toContain("<script");
     expect(doc).not.toMatch(/setInterval|requestAnimationFrame|performance\.now|Date\./);

@@ -129,4 +129,24 @@ namespace Zeta.Heat {
         }
         return TemperatureBandCritical();
     }
+
+    /// Dimensionless information-radiance analogue. This is not SI Kelvin and
+    /// not a Q# runtime effect: it is the normalized Stefan-Boltzmann shape
+    /// radiance = T^4 over the same parts-per-million temperature lane.
+    function BlackBodyRadiancePpm(temperaturePpm : Int) : Int {
+        let temperature = ClampPpm(temperaturePpm);
+        let square = (temperature * temperature) / 1000000;
+        return (square * square) / 1000000;
+    }
+
+    /// Wien-style peak frequency lane in normalized ppm coordinates. Frequency
+    /// rises with temperature; the inverse wavelength view is intentionally not
+    /// encoded here so cold remains a finite zero, not a division boundary.
+    function BlackBodyPeakFrequencyPpm(temperaturePpm : Int) : Int {
+        return ClampPpm(temperaturePpm);
+    }
+
+    function BlackBodyRadianceFromThermalPpm(heatPpm : Int, uncertaintyPpm : Int, pressurePpm : Int) : Int {
+        return BlackBodyRadiancePpm(ThermalPpm(heatPpm, uncertaintyPpm, pressurePpm));
+    }
 }

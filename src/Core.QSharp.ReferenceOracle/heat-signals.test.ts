@@ -23,6 +23,7 @@ interface HeatSignalsTreaty {
   readonly schema: string;
   readonly readoutSchema: string;
   readonly temperatureReadoutSchema: string;
+  readonly blackBodyReadoutSchema: string;
   readonly qsharpSource: string;
   readonly fsharpSurface: string;
   readonly signals: readonly HeatSignalVector[];
@@ -41,6 +42,12 @@ interface HeatSignalsTreaty {
     readonly temperaturePpm: number;
     readonly band: string;
     readonly code: number;
+  }[];
+  readonly blackBodyCases: readonly {
+    readonly id: string;
+    readonly temperaturePpm: number;
+    readonly radiancePpm: number;
+    readonly peakFrequencyPpm: number;
   }[];
   readonly kindCases: readonly { readonly kind: string; readonly token: string }[];
   readonly qsharpCounterCases: readonly HeatCase[];
@@ -91,6 +98,7 @@ describe("Q# heat-signal reference treaty", () => {
     expect(treaty.schema).toBe("zeta.qsharp.heat-signals.v1");
     expect(treaty.readoutSchema).toBe("zeta.heat.readout.v1");
     expect(treaty.temperatureReadoutSchema).toBe("zeta.temperature.readout.v1");
+    expect(treaty.blackBodyReadoutSchema).toBe("zeta.blackbody.readout.v1");
     expect(treaty.qsharpSource).toBe("src/Core.QSharp.ReferenceOracle/HeatSignals.qs");
     expect(treaty.fsharpSurface).toBe("src/Core/Heat.fs");
 
@@ -152,6 +160,38 @@ describe("Q# heat-signal reference treaty", () => {
       "hot",
       "critical",
       "warm",
+    ]);
+  });
+
+  test("pins Q# black-body information-radiance helpers to treaty vectors", () => {
+    const radiance = functionBody("BlackBodyRadiancePpm");
+    expect(radiance).toContain("ClampPpm(temperaturePpm)");
+    expect(radiance).toContain("temperature * temperature");
+    expect(radiance).toContain("square * square");
+
+    const peak = functionBody("BlackBodyPeakFrequencyPpm");
+    expect(peak).toContain("ClampPpm(temperaturePpm)");
+
+    const fromThermal = functionBody("BlackBodyRadianceFromThermalPpm");
+    expect(fromThermal).toContain("ThermalPpm(heatPpm, uncertaintyPpm, pressurePpm)");
+    expect(fromThermal).not.toContain("attention");
+
+    expect(treaty.blackBodyCases.map((item) => item.id)).toEqual([
+      "cold",
+      "uncertainty-warm",
+      "pressure-hot-attended",
+      "heat-critical",
+      "attention-does-not-heat-cost",
+      "saturation",
+    ]);
+    expect(treaty.blackBodyCases.map((item) => item.radiancePpm)).toEqual([0, 3906, 62500, 656100, 244, 1000000]);
+    expect(treaty.blackBodyCases.map((item) => item.peakFrequencyPpm)).toEqual([
+      0,
+      250000,
+      500000,
+      900000,
+      125000,
+      1000000,
     ]);
   });
 

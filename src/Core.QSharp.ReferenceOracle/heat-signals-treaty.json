@@ -2,6 +2,7 @@
   "schema": "zeta.qsharp.heat-signals.v1",
   "readoutSchema": "zeta.heat.readout.v1",
   "temperatureReadoutSchema": "zeta.temperature.readout.v1",
+  "blackBodyReadoutSchema": "zeta.blackbody.readout.v1",
   "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
   "fsharpSurface": "src/Core/Heat.fs",
   "description": "Finite heat-signal alphabet shared by host heat signatures, Dark Hall transcripts, CSS/LLMTV readouts, and Q# reference-oracle labels. Cold is an oracle boundary state, not emitted heat.",
@@ -137,6 +138,44 @@
       "temperaturePpm": 125000,
       "band": "warm",
       "code": 1
+    }
+  ],
+  "blackBodyCases": [
+    {
+      "id": "cold",
+      "temperaturePpm": 0,
+      "radiancePpm": 0,
+      "peakFrequencyPpm": 0
+    },
+    {
+      "id": "uncertainty-warm",
+      "temperaturePpm": 250000,
+      "radiancePpm": 3906,
+      "peakFrequencyPpm": 250000
+    },
+    {
+      "id": "pressure-hot-attended",
+      "temperaturePpm": 500000,
+      "radiancePpm": 62500,
+      "peakFrequencyPpm": 500000
+    },
+    {
+      "id": "heat-critical",
+      "temperaturePpm": 900000,
+      "radiancePpm": 656100,
+      "peakFrequencyPpm": 900000
+    },
+    {
+      "id": "attention-does-not-heat-cost",
+      "temperaturePpm": 125000,
+      "radiancePpm": 244,
+      "peakFrequencyPpm": 125000
+    },
+    {
+      "id": "saturation",
+      "temperaturePpm": 1000000,
+      "radiancePpm": 1000000,
+      "peakFrequencyPpm": 1000000
     }
   ],
   "kindCases": [

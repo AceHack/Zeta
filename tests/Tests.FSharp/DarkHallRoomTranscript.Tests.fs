@@ -38,6 +38,12 @@ let private mustOk =
 let private rejectSlots slots : ModuloGSetConfig =
     ModuloGSetConfig.rejectCollision slots
 
+let private countPpm count =
+    count
+    |> max 0
+    |> min 16
+    |> fun value -> value * (TemperatureReadout.MaxPpm / 16)
+
 let private emptyBoundary source room budget =
     ModuloGSet.empty<string> (rejectSlots 4)
     |> mustOk
@@ -115,10 +121,16 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Equal(HeatReadout.Schema, Transcript.HeatReadoutSchema)
     Assert.Equal(HeatReadout.SignalTreaty, Transcript.HeatSignalTreaty)
     Assert.Equal(HeatReadout.QSharpSignalSource, Transcript.QSharpHeatSignalSource)
+    Assert.Equal(HeatReadout.TemperatureSchema, Transcript.TemperatureReadoutSchema)
+    Assert.Equal(HeatReadout.BlackBodySchema, Transcript.BlackBodyReadoutSchema)
     Assert.Equal(Transcript.HeatReadoutSchema, transcript.HeatReadout.Schema)
     Assert.Equal(Transcript.HeatSignalTreaty, transcript.HeatReadout.QSharpTreaty)
     Assert.Equal(Transcript.QSharpHeatSignalSource, transcript.HeatReadout.QSharpSource)
     Assert.Equal(transcript.HeatRows.Length, transcript.HeatReadout.Rows)
+    Assert.Equal(Transcript.TemperatureReadoutSchema, transcript.TemperatureReadout.Schema)
+    Assert.Equal(Transcript.BlackBodyReadoutSchema, transcript.BlackBodyReadout.Schema)
+    Assert.Equal(transcript.TemperatureReadout.TemperaturePpm, transcript.BlackBodyReadout.TemperaturePpm)
+    Assert.Equal(BlackBodyReadout.radiancePpm transcript.TemperatureReadout.TemperaturePpm, transcript.BlackBodyReadout.RadiancePpm)
     Assert.Equal("execute", transcript.Ticks.Head.Phase)
     Assert.Equal("ok", transcript.Ticks.Head.Outcome)
 
@@ -126,6 +138,8 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
 
     Assert.Contains("\"schema\": \"zeta.darkhall.room-ui.v1\"", json)
     Assert.Contains("\"heatReadout\"", json)
+    Assert.Contains("\"temperatureReadout\"", json)
+    Assert.Contains("\"blackBodyReadout\"", json)
     Assert.Contains("\"qsharpTreaty\": \"src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json\"", json)
     Assert.Contains("\"controller\"", json)
     Assert.Contains("\"heatRows\"", json)
@@ -170,6 +184,10 @@ let ``unified room run transcript preserves boundary and soft heat rows`` () =
         Assert.Equal(run.HeatRows.Length, transcript.HeatReadout.Rows)
         Assert.Equal(heatRejected, transcript.HeatReadout.HeatRejected)
         Assert.Equal(backpressured, transcript.HeatReadout.Backpressured)
+        Assert.Equal(countPpm heatRejected, transcript.TemperatureReadout.HeatPpm)
+        Assert.Equal(countPpm backpressured, transcript.TemperatureReadout.PressurePpm)
+        Assert.Equal(transcript.TemperatureReadout.TemperaturePpm, transcript.BlackBodyReadout.TemperaturePpm)
+        Assert.Equal(BlackBodyReadout.radiancePpm transcript.TemperatureReadout.TemperaturePpm, transcript.BlackBodyReadout.RadiancePpm)
         Assert.Equal<string list>([ "denied"; "forgotten" ], transcript.HeatReadout.Signals)
         Assert.Contains("room-boundary.door-denied", heatKinds)
         Assert.Contains("soft-emu.prune", heatKinds)

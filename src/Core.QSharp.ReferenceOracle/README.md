@@ -8,7 +8,9 @@ Files:
 
 - `ZetaReferenceOracle.qs` defines the Q# operations.
 - `HeatSignals.qs` mirrors the finite heat-signal alphabet as pure reference
-  functions; it is not a runtime heat sink.
+  functions; it is not a runtime heat sink. Its temperature helpers also expose
+  a dimensionless black-body lane: normalized information radiance follows
+  `T^4`, while peak frequency follows `T`.
 - `heat-signals-treaty.json` pins the heat token/code vocabulary shared by the
   Q# oracle labels and the F# `HeatSignal` projection.
 - `DarkHallRoomTranscript.fs` emits `heatReadout` rows that point back to this
@@ -36,3 +38,7 @@ surface for finite-resolution rooms.
 Heat follows the same boundary rule: Q# may label oracle readout loss with the
 shared signal vocabulary, but host/runtime heat emission stays behind Zeta-owned
 interfaces.
+
+The black-body lane follows that rule too. It is a treaty over emitted
+information heat, not a claim that Q# is simulating SI-temperature radiation or
+thermal quantum field dynamics.

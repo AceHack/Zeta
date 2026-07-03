@@ -154,6 +154,9 @@ module HeatReadout =
     let TemperatureSchema = "zeta.temperature.readout.v1"
 
     [<Literal>]
+    let BlackBodySchema = "zeta.blackbody.readout.v1"
+
+    [<Literal>]
     let SignalTreaty = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json"
 
     [<Literal>]
@@ -201,6 +204,14 @@ type TemperatureReadout =
       UncertaintyPpm: int
       PressurePpm: int
       AttentionPpm: int }
+
+
+type BlackBodyReadout =
+    { Schema: string
+      Source: string
+      TemperaturePpm: int
+      RadiancePpm: int
+      PeakFrequencyPpm: int }
 
 
 [<RequireQualifiedAccess>]
@@ -266,6 +277,35 @@ module TemperatureReadout =
                 0
 
         ofPpm signature.Source (int (min (int64 MaxPpm) signature.MassPpm)) 0 pressure 0
+
+
+/// Dimensionless black-body reference readout for the information-temperature
+/// lane. The mapping intentionally uses normalized ppm values, not SI Kelvin:
+/// emitted radiance follows the Stefan-Boltzmann fourth-power shape, while the
+/// frequency peak follows a Wien-style linear temperature lane.
+[<RequireQualifiedAccess>]
+module BlackBodyReadout =
+
+    let radiancePpm (temperaturePpm: int) : int =
+        let t = TemperatureReadout.clampPpm temperaturePpm |> int64
+        let maxPpm = int64 TemperatureReadout.MaxPpm
+        let square = (t * t) / maxPpm
+        int ((square * square) / maxPpm)
+
+    let peakFrequencyPpm (temperaturePpm: int) : int =
+        TemperatureReadout.clampPpm temperaturePpm
+
+    let ofTemperaturePpm (source: string) (temperaturePpm: int) : BlackBodyReadout =
+        let temperature = TemperatureReadout.clampPpm temperaturePpm
+
+        { Schema = HeatReadout.BlackBodySchema
+          Source = source
+          TemperaturePpm = temperature
+          RadiancePpm = radiancePpm temperature
+          PeakFrequencyPpm = peakFrequencyPpm temperature }
+
+    let ofTemperatureReadout (readout: TemperatureReadout) : BlackBodyReadout =
+        ofTemperaturePpm readout.Source readout.TemperaturePpm
 
 
 /// Feedback from the injected heat sink. Heat is diagnostic output, but the

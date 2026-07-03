@@ -10,6 +10,7 @@ export type HeatSignal =
 
 export const HEAT_READOUT_SCHEMA = "zeta.heat.readout.v1";
 export const TEMPERATURE_READOUT_SCHEMA = "zeta.temperature.readout.v1";
+export const BLACK_BODY_READOUT_SCHEMA = "zeta.blackbody.readout.v1";
 export const HEAT_SIGNAL_TREATY_PATH = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json";
 export const HEAT_SIGNAL_QSHARP_SOURCE = "src/Core.QSharp.ReferenceOracle/HeatSignals.qs";
 export const HEAT_FSHARP_SURFACE = "src/Core/Heat.fs";
@@ -55,6 +56,14 @@ export interface TemperatureReadout {
   readonly uncertaintyPpm: number;
   readonly pressurePpm: number;
   readonly attentionPpm: number;
+}
+
+export interface BlackBodyReadout {
+  readonly schema: typeof BLACK_BODY_READOUT_SCHEMA;
+  readonly source: string;
+  readonly temperaturePpm: number;
+  readonly radiancePpm: number;
+  readonly peakFrequencyPpm: number;
 }
 
 function distinct<T>(values: readonly T[]): readonly T[] {
@@ -198,5 +207,27 @@ export function temperatureReadout(input: {
     uncertaintyPpm,
     pressurePpm,
     attentionPpm,
+  };
+}
+
+export function blackBodyRadiancePpm(temperaturePpm: number): number {
+  const temperature = clampTemperaturePpm(temperaturePpm);
+  const square = Math.floor((temperature * temperature) / MAX_TEMPERATURE_PPM);
+  return Math.floor((square * square) / MAX_TEMPERATURE_PPM);
+}
+
+export function blackBodyPeakFrequencyPpm(temperaturePpm: number): number {
+  return clampTemperaturePpm(temperaturePpm);
+}
+
+export function blackBodyReadout(input: { readonly source: string; readonly temperaturePpm: number }): BlackBodyReadout {
+  const temperaturePpm = clampTemperaturePpm(input.temperaturePpm);
+
+  return {
+    schema: BLACK_BODY_READOUT_SCHEMA,
+    source: input.source,
+    temperaturePpm,
+    radiancePpm: blackBodyRadiancePpm(temperaturePpm),
+    peakFrequencyPpm: blackBodyPeakFrequencyPpm(temperaturePpm),
   };
 }

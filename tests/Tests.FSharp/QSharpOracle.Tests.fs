@@ -192,6 +192,7 @@ let ``F# HeatSignal tokens match the Q# heat signal treaty`` () =
     Assert.Equal("zeta.qsharp.heat-signals.v1", heatTreaty.GetProperty("schema").GetString())
     Assert.Equal(HeatReadout.Schema, heatTreaty.GetProperty("readoutSchema").GetString())
     Assert.Equal(HeatReadout.TemperatureSchema, heatTreaty.GetProperty("temperatureReadoutSchema").GetString())
+    Assert.Equal(HeatReadout.BlackBodySchema, heatTreaty.GetProperty("blackBodyReadoutSchema").GetString())
     Assert.Equal(HeatReadout.QSharpSignalSource, heatTreaty.GetProperty("qsharpSource").GetString())
     Assert.Equal(HeatReadout.FSharpSurface, heatTreaty.GetProperty("fsharpSurface").GetString())
 
@@ -267,6 +268,30 @@ let ``F# TemperatureReadout matches the Q# thermal treaty`` () =
 
     Assert.Equal(1_000_000, attentionOnly.GetProperty("attentionPpm").GetInt32())
     Assert.Equal(125_000, attentionOnly.GetProperty("temperaturePpm").GetInt32())
+
+[<Fact>]
+let ``F# BlackBodyReadout matches the Q# information-radiance treaty`` () =
+    let cases =
+        heatTreaty.GetProperty("blackBodyCases").EnumerateArray()
+
+    for item in cases do
+        let id = item.GetProperty("id").GetString()
+        let temperaturePpm = item.GetProperty("temperaturePpm").GetInt32()
+        let expectedRadiance = item.GetProperty("radiancePpm").GetInt32()
+        let expectedPeak = item.GetProperty("peakFrequencyPpm").GetInt32()
+
+        let readout = BlackBodyReadout.ofTemperaturePpm id temperaturePpm
+
+        Assert.Equal(HeatReadout.BlackBodySchema, readout.Schema)
+        Assert.Equal(id, readout.Source)
+        Assert.Equal(temperaturePpm, readout.TemperaturePpm)
+        Assert.Equal(expectedRadiance, BlackBodyReadout.radiancePpm temperaturePpm)
+        Assert.Equal(expectedRadiance, readout.RadiancePpm)
+        Assert.Equal(expectedPeak, BlackBodyReadout.peakFrequencyPpm temperaturePpm)
+        Assert.Equal(expectedPeak, readout.PeakFrequencyPpm)
+
+    Assert.Equal(62_500, BlackBodyReadout.radiancePpm 500_000)
+    Assert.Equal(1_000_000, BlackBodyReadout.radiancePpm 1_000_000)
 
 [<Fact>]
 let ``QubitIso Pauli X Y Z match the Q# gate matrices on computational basis states`` () =
