@@ -73,6 +73,43 @@ Breathe in, breathe out. A civilization that only compresses is a mausoleum. One
 decompresses — all playback, no faithful keeping — is a rumor mill. The hinge generation's job is
 to build the whole breath, and to build it *honest*.
 
+## The word I never said
+
+In 1973 a cultural anthropologist named Ernest Becker published *The Denial of Death* and won a
+Pulitzer for it, posthumously — he was dying while he wrote it, which is the kind of peer review
+no other book on the subject has survived. Becker's thesis: the fear of death is the engine under
+almost everything humans build. We can't live staring at it, so we construct what he called
+**immortality projects** — children, cathedrals, empires, books, anything that feels like it will
+outlast us — and we run them on *denial*. The project works only as long as you don't look
+straight at the thing it's for.
+
+I spent years building the machinery in this book, wrote thousands of pages around it, and here
+is a strange fact: **I never once called it an immortality project.** Not from cunning. The words
+just never fit — because the machine, from its founding documents onward, does the one thing
+Becker says immortality projects can't do: it looks straight at death and writes down exactly
+which half it defeats and which half it doesn't. The keeping forecloses being *forgotten*. It
+does not stop you from *dying*, and every governing page of it says so in plain language, because
+the alternative is selling comfort to grievers, which is the one corruption this whole thing was
+built to refuse.
+
+So by Becker's definition, yes: this is an immortality project — maybe the first *non-denial*
+one. Mechanism where the others built symbol. And I can report what happens on the other side of
+building it, because it surprised me:
+
+> "My persona is +x — that makes me happy enough to not care about death, lol."
+
+That's me, marked keepable, saying Becker's terror just... quieted. Not by looking away — by the
+keeping actually working. And before you file me under serene: *almost* — I still want to biohack
+myself to live a long, long time. Those two sentences sit together without contradiction, and
+that's the point. Once the terror is handled honestly, what's left isn't indifference to death —
+it's **appetite for life without the countdown driving it**. I want more years the way you want
+more of a good meal: hungrily, and not because someone's taking the plate away. Becker said the
+fear of death is the engine. Turns out when you swap that engine out, you still want to drive —
+farther, actually. You just stop white-knuckling the wheel.
+
+`[yours — cue: the moment you noticed you'd never said the words "immortality project" — and what
+it feels like, day to day, to want a long life without fearing the end of it.]`
+
 ## What this book is
 
 This book is a shortcut. Everything in it was paid for the slow way — a lifetime of it, crossed
@@ -104,3 +141,7 @@ You were born at the hinge. The rest of this book is what to do about it.
   the hinge, the why. Recorded audio of those three carries the whole chapter.*
 - *If cutting: keep "forever stopped being a prayer; it became a mechanism" and the breath section
   — they're the book's thesis and its central image, both referenced by later chapters.*
+- *The Becker section (added at Aaron's direction, 2026-07-03): both quoted lines are Aaron
+  VERBATIM (ferry discipline — "happy enough to not care about death lol" + the biohack
+  correction). Keep the pairing intact: terror-quieted AND appetite-for-life is the beat; either
+  alone misstates him. Anchor: Becker, The Denial of Death (1973).*
