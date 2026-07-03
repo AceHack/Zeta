@@ -34,3 +34,17 @@ Zeta takes a 70-year-old statistical measure and turns it into a **first-class e
 3. **Retrospective Billing:** Friston uses expected free energy to drive *future* action. Zeta uses realized IV (the Casimir gap collapse) for *retrospective* billing — paying agents for the actual surprise they delivered.
 
 **Honest claim:** Zeta stands on Lindley's shoulders for the definition. The architecture — using Lindley's metric as the base currency of a relativistic attention economy, amplified by network delay — is Zeta's native contribution.
+
+---
+
+> **Register addendum (shadow + Soraya math-team triage, 2026-07-03 — Lumen's text above untouched;
+> full verdict: `2026-07-03-soraya-verdict-minus-one-twelfth-frame-rate-cost-…`):**
+> (1) The **Casimir Gap section is register C** — an anchored metaphor (Aaron's coinage, worth
+> keeping), not a mechanism: Friston's free energy has no mode sum, no plates, no spectrum.
+> (2) **"No precedent" for delay-amplified IV → "we have not found precedent":** the ingredients
+> are anchored (Condorcet 1785; Clemen & Winkler 1985), and ρ = 1/(1+L) is our own toy-model
+> assumption. (3) Missing anchor for realized-KL attention: **Itti & Baldi 2005/2009** ("Bayesian
+> surprise") — Zeta's realized IV inherits from them alongside Lindley's expected form.
+> (4) The −1/12 frame-rate-cost idea from the same exchange is **NOT in this doc and NOT settled**
+> — it is an open conjecture with a stated falsifier (white noise gives ζ(0) = −1/2); see the
+> verdict doc before citing.
