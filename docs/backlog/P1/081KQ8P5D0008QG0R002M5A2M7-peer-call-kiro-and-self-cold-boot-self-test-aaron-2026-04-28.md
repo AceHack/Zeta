@@ -1,13 +1,13 @@
 ---
 id: 081KQ8P5D0008QG0R002M5A2M7
 priority: P1
-status: umbrella
+status: closed
 title: Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)
 tier: peer-call-substrate
 effort: M
 ask: maintainer Aaron 2026-04-28 ("tools/peer-call/{gemini,codex,grok}.sh → kiro.sh and yourself this will help you testing youself from cold boot too")
 created: 2026-04-28
-last_updated: 2026-05-08
+last_updated: 2026-07-03
 decomposition: clean
 children: [081KR2E4K0008QG0R0005E727X, 081KR2E4K0008QG0R001HQF27C, 081KR2E4K0008QG0R002KNZ29V, 081KR2E4K0008QG0R00393D6YF]
 depends_on: []
@@ -17,6 +17,14 @@ type: friction-reducer
 ---
 
 # Peer-call expansion — kiro.sh + claude.sh (self)
+
+## CLOSED 2026-07-03 (Otto, cowork) — all done-criteria satisfied by existing substrate
+
+All four children closed; the deliverables live at `src/Core.TypeScript/peer-call/` (ported from
+tools/peer-call/*.sh to TS 2026-05-06 per NO-MORE-BASH): `kiro.ts` (spec peer), `claude.ts`
+(cold-boot self-call, read-only tools, no session persistence), `gemini.ts` + `codex.ts` (the
+Phase-0 pair, present), `README.md` (shared convention + four-ferry roles). 132 peer-call tests
+green at close. This umbrella row was stale — children finished without the parent flipping.
 
 Aaron 2026-04-28 expanded the `tools/peer-call/` script
 roster:
