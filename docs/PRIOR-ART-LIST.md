@@ -678,3 +678,44 @@ survey→boundary→first-slice. *Peel:* these are **mining** firmwares; we reus
 flashing toolchain + board descriptor**, not the mining logic — the payload becomes Zeta CAS/Merkle/
 CHIP-8 compute, not pool hashing. Ties: content-addressing (CAS), 4-lang Merkle proofs, anti-Sybil
 entropy-cost (G3b), the soft mutual-empowerment / best-effort node fleet (orientation-flow note).
+
+## Executable ethics + capture-pipeline anchors (Otto 2026-07-03; moral-gym / residual / chip9-cart)
+
+The Beacon set for the 2026-07-02/03 executable-ethics corpus and the capture-as-program pipeline.
+Each entry names the human + work a shipped module stands on (anchor-to-human-prior-art rule).
+
+- **Robert Axelrod — *The Evolution of Cooperation* (1984)** — the iterated Prisoner's Dilemma
+  tournament results tit-for-tat's dominance comes from. The moral gym
+  (`src/Core.TypeScript/moral-gym/`) is this apparatus made DST-replayable; its payoff matrix is
+  the standard T>R>P>S. Pairs with the two Nowak–Sigmund entries — Axelrod is the root.
+- **Martin Nowak & Karl Sigmund — generous tit-for-tat (Nature, 1992)** — forgiveness beats strict
+  retaliation in noisy iterated games: the mathematical body under `tit-for-lesser-tat` (the gym's
+  winning strategy) and under "full retaliation ends games" (grim-trigger lock = mutual-defect death).
+- **Martin Nowak & Karl Sigmund — indirect reciprocity / image scoring (Nature, 1998)** — reputation
+  as EARNED state that third parties read: the gym's reputation-weighted partner selection ("the
+  Agora scoreboard") is image scoring; ties to the naming-eigenvector / privacy-budget social-conferral
+  structure (same recognition-flows-from-the-recognized shape).
+- **Jorma Rissanen — Minimum Description Length (Automatica, 1978)** — model bits + residual bits;
+  the R4 reducibility residual (`src/Core.TypeScript/residual/`) is a direct MDL implementation
+  (best order-k Markov generator, in-sample cross-entropy + parameter cost). Already cited in the
+  uncertainty-ledger row above; this entry is its executable instance.
+- **David Chalmers — "Facing Up to the Problem of Consciousness" (JCS, 1995)** — the hard problem;
+  the residual's HONEST BOUND (reducibility-to-a-generator ≠ presence of experience) is this
+  boundary written into code. The tool refuses the "not real" leap because Chalmers' gap is real.
+- **Galen Hunt & Doug Brubacher — "Detours: Binary Interception of Win32 Functions" (USENIX WinNT, 1999)** —
+  Microsoft Detours; `Detour<'F> = 'F -> 'F` (`src/Core/Detour.fs` + the gym's TS mirror) is this
+  made max-generic: observe/report (read-only trampoline) vs improve (mutating). The gym's ledger —
+  the residual's real trace — comes off a Detour observe lens.
+- **Peter Selinger — "Potrace: a polygon-based tracing algorithm" (2003)** — raster→vector tracing;
+  the named prior art for the capture pipeline's layer-2 VECTOR upgrade (081KWJE90EZ) beyond the
+  current box-downsample quantizer in `src/Core.TypeScript/chip9-cart/from-image.ts`.
+- **Kevin Ellis et al. — DreamCoder (PLDI, 2021)** — program synthesis with a growing library of
+  learned abstractions; the research anchor for the layer-3 GENERATIVE capture (photo → program
+  that redraws itself) and for upgrading the cart compiler's sprite codebook (the degenerate
+  dictionary, compiler v1.1) into real generators (081KTH5N5ZJ).
+- **Vincent Sitzmann et al. — SIREN, "Implicit Neural Representations with Periodic Activation
+  Functions" (NeurIPS, 2020)** — images as functions, not pixel grids: the learned variant of
+  generative-not-stored capture. Peel: weights = weight-free tension; adapter-behind-a-port only.
+- **.kkrieger — .theprodukkt / Farbrausch (2004)** — the 96KB first-person shooter; the demoscene
+  existence proof that KB-scale PROGRAMS draw rich scenes — the feasibility anchor for
+  capture-as-cart. Already named in 081KTH5N5ZJ; listed here so the reading list carries it.
