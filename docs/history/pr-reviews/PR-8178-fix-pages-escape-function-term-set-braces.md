@@ -33,7 +33,7 @@ GitHub Pages is red on `origin/main` because Jekyll/Liquid parses the literal Ku
 
 - failing file: `docs/linguistic-seed/terms/function.md`
 - failing construct: literal double braces in the set encoding
-- CI symptom: `Liquid syntax error ... Variable '{{a}' was not properly terminated`
+- CI symptom: `Liquid syntax error ... Variable '{% raw %}{{a}{% endraw %}' was not properly terminated`
 
 This wraps only those math snippets in Liquid `{% raw %}` blocks so the rendered docs keep the set notation while Pages stops interpreting it as a template.
 
