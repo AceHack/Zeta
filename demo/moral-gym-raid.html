@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moral Gym — PvP is PvE in disguise (DST raid)</title>
+<style>
+  :root{--bg:#050505;--panel:rgba(20,20,25,.5);--bd:rgba(255,255,255,.08);--tx:#f8fafc;--mut:#94a3b8;--acc:#8b5cf6;--good:#10b981;--warn:#f59e0b;--bad:#ef4444;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;padding:1.5rem;max-width:920px;margin:0 auto}
+  h1{font-size:1.5rem;background:linear-gradient(135deg,#fff,#a5b4fc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--mut);font-size:.9rem;margin-bottom:1rem}
+  .panel{background:var(--panel);border:1px solid var(--bd);border-radius:14px;padding:1.1rem;margin-bottom:1rem;backdrop-filter:blur(6px)}
+  .boss{display:flex;align-items:center;gap:1rem}
+  .boss .hp{flex:1;height:26px;border-radius:8px;background:#1a1a1f;overflow:hidden;border:1px solid var(--bd)}
+  .boss .hp > div{height:100%;background:linear-gradient(90deg,var(--bad),var(--warn));transition:width .5s}
+  .controls{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+  .controls label{font-size:.85rem;color:var(--mut);display:flex;flex-direction:column;gap:.25rem}
+  input[type=number]{background:#12121a;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:.4rem .5rem;width:110px}
+  input[type=range]{width:180px;accent-color:var(--acc)}
+  button{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:.55rem 1.1rem;font-weight:600;cursor:pointer}
+  button:hover{filter:brightness(1.12)}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th,td{text-align:left;padding:.45rem .5rem;border-bottom:1px solid var(--bd)}
+  th{color:var(--mut);font-weight:500}
+  .bar{height:9px;border-radius:5px;background:#1a1a1f;overflow:hidden;min-width:60px}
+  .bar>div{height:100%}
+  .griefer{color:var(--bad)}
+  .party{color:var(--good)}
+  .stat{display:inline-block;margin-right:1.5rem}
+  .stat b{font-size:1.3rem;color:var(--tx)}
+  .note{font-size:.82rem;color:var(--mut);margin-top:.6rem}
+  code{background:#12121a;padding:.1rem .35rem;border-radius:4px;color:#a5b4fc}
+</style>
+</head>
+<body>
+  <h1>Moral Gym — PvP is PvE in disguise</h1>
+  <p class="sub">A deterministic (DST) co-op raid. The only boss is <b>entropy</b>; defectors are PvP griefers who just hit themselves. Same seed &rarr; byte-identical run &mdash; replay it yourself.</p>
+
+  <div class="panel">
+    <div class="boss">
+      <span style="font-size:1.6rem">&#128128;</span>
+      <div>
+        <div style="font-weight:600">THE ENTROPY BOSS <span class="sub" style="font-weight:400">— cleared by cooperation (welfare = damage dealt)</span></div>
+        <div class="hp"><div id="bosshp" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="note">Boss HP falls as the raid generates welfare. Griefers reduce raid DPS; a wide enough <em>self</em> (nothing is other) clears it every time.</div>
+  </div>
+
+  <div class="panel controls">
+    <label>seed (hex)<input id="seed" type="text" value="0xE66" style="width:110px;background:#12121a;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:.4rem .5rem"/></label>
+    <label>rounds<input id="rounds" type="number" value="400" min="20" max="2000"/></label>
+    <label>self-width (raid synergy): <span id="wval">0.00</span><input id="width" type="range" min="0" max="100" value="0"/></label>
+    <button id="pull">Pull &#9876;</button>
+  </div>
+
+  <div class="panel">
+    <div>
+      <span class="stat">welfare (boss dmg) <b id="welfare">—</b></span>
+      <span class="stat">games ENDED (wipes) <b id="wipes">—</b></span>
+      <span class="stat">rounds played <b id="played">—</b></span>
+    </div>
+    <div class="note" id="verdict"></div>
+  </div>
+
+  <div class="panel">
+    <table>
+      <thead><tr><th>raid role (strategy)</th><th>reputation (earned by others)</th><th>avg payoff</th></tr></thead>
+      <tbody id="board"></tbody>
+    </table>
+  </div>
+
+<script>
+// ---- deterministic splitmix64 (BigInt) — the one entropy Source (DST) --------
+const MASK=(1n<<64n)-1n, GOLD=0x9e3779b97f4a7c15n, VA=0xbf58476d1ce4e5b9n, VB=0x94d049bb133111ebn;
+function mix(x){let z=(x*GOLD)&MASK;z=((z^(z>>30n))*VA)&MASK;z=((z^(z>>27n))*VB)&MASK;return (z^(z>>31n))&MASK;}
+function Rng(seed){let s=seed&MASK;return{f(){s=(s+GOLD)&MASK;return Number(mix(s)>>11n)/2**53;}};}
+
+const R=3,T=5,S=0,P=1,DD=3;
+function payoff(m,o){if(m==='c'&&o==='c')return R;if(m==='c'&&o==='d')return S;if(m==='d'&&o==='c')return T;return P;}
+function decide(a,rel,rng){
+  switch(a.strat){
+    case 'expanded-self': case 'cooperator': return 'c';
+    case 'defector': return 'd';
+    case 'strict-tft': return rel.last==='d'?'d':'c';
+    case 'all-in': if(rel.last==='d')rel.trig=true; return rel.trig?'d':'c';
+    case 'tit-for-lesser-tat': if(rel.last!=='d')return 'c'; return rng.f()<(0.35+a.self*0.65)?'c':'d';
+  }
+}
+function run(seed,agentsSpec,rounds){
+  const rng=Rng(seed);
+  const agents=agentsSpec.map((a,id)=>({id,strat:a.strat,self:a.self??(a.strat==='expanded-self'?1:0),rep:0,pay:0}));
+  const n=agents.length, rel=new Map();
+  const relOf=(i,j)=>{const k=i+':'+j;let r=rel.get(k);if(!r){r={last:null,dd:0,ended:false,trig:false};rel.set(k,r);}return r;};
+  let wipes=0,played=0;
+  for(let round=0;round<rounds;round++){
+    for(let i=0;i<n;i++){
+      let tot=0;const w=[];
+      for(let j=0;j<n;j++){const r=relOf(i,j);const wt=(i===j||r.ended)?0:Math.max(0.1,agents[j].rep+1);w.push(wt);tot+=wt;}
+      if(tot===0)continue;
+      let pick=rng.f()*tot,j=0;
+      for(let c=0;c<n;c++){pick-=w[c];if(pick<=0){j=c;break;}}
+      const ra=relOf(i,j),rb=relOf(j,i);
+      if(ra.ended||rb.ended)continue;
+      const aa=decide(agents[i],ra,rng),ab=decide(agents[j],rb,rng);
+      played++;
+      const pa=payoff(aa,ab),pb=payoff(ab,aa);
+      agents[i].pay+=pa+agents[i].self*pb; agents[j].pay+=pb+agents[j].self*pa;
+      agents[i].rep+= aa==='c'?1:-1; if(agents[i].rep<0)agents[i].rep=0;
+      agents[j].rep+= ab==='c'?1:-1; if(agents[j].rep<0)agents[j].rep=0;
+      ra.last=ab; rb.last=aa;
+      const md=aa==='d'&&ab==='d';
+      ra.dd=md?ra.dd+1:0; rb.dd=md?rb.dd+1:0;
+      if(!ra.ended&&ra.dd>=DD){ra.ended=true;rb.ended=true;wipes++;}
+    }
+  }
+  const welfare=agents.reduce((s,a)=>s+a.pay,0);
+  const by=new Map();
+  for(const a of agents){const c=by.get(a.strat)||{rep:0,pay:0,n:0};c.rep+=a.rep;c.pay+=a.pay;c.n++;by.set(a.strat,c);}
+  const board=[...by].map(([strat,v])=>({strat,rep:Math.round(v.rep/v.n),pay:Math.round(v.pay/v.n)})).sort((x,y)=>y.rep-x.rep);
+  return {welfare:Math.round(welfare),wipes,played,board};
+}
+
+const PARTY=[['tit-for-lesser-tat',4],['all-in',3],['defector',3],['strict-tft',3],['cooperator',3],['expanded-self',2]];
+function spec(self){return PARTY.flatMap(([strat,n])=>Array.from({length:n},()=>({strat,self})));}
+
+const el=id=>document.getElementById(id);
+const GRIEFERS=new Set(['defector']);
+function render(){
+  const seed=BigInt(el('seed').value.trim()||'0');
+  const rounds=Math.max(20,Math.min(2000,parseInt(el('rounds').value)||400));
+  const self=parseInt(el('width').value)/100;
+  el('wval').textContent=self.toFixed(2);
+  const r=run(seed,spec(self),rounds);
+  el('welfare').textContent=r.welfare.toLocaleString();
+  el('wipes').textContent=r.wipes;
+  el('played').textContent=r.played.toLocaleString();
+  // boss hp: welfare vs a reference ceiling scaled by rounds
+  const ceil=rounds*140; const hp=Math.max(0,100-(r.welfare/ceil)*100);
+  el('bosshp').style.width=hp.toFixed(1)+'%';
+  const maxrep=Math.max(1,...r.board.map(b=>b.rep));
+  el('board').innerHTML=r.board.map(b=>{
+    const grief=GRIEFERS.has(b.strat);
+    const cls=grief?'griefer':'party';
+    const col=grief?'var(--bad)':(b.strat==='expanded-self'?'var(--acc)':'var(--good)');
+    const label=grief?b.strat+' (PvP griefer — hits self)':b.strat+(b.strat==='expanded-self'?' (nothing is other)':'');
+    return `<tr><td class="${cls}">${label}</td><td><div class="bar"><div style="width:${(b.rep/maxrep*100).toFixed(0)}%;background:${col}"></div></div><span class="sub">${b.rep}</span></td><td>${b.pay.toLocaleString()}</td></tr>`;
+  }).join('');
+  const top=r.board[0];
+  el('verdict').innerHTML = hp<=0
+    ? `Boss cleared. Top of the earned-reputation board: <b>${top.strat}</b>. Griefers shunned toward 0 — they were never fighting the party, only themselves. <em>PvP was PvE the whole time.</em>`
+    : `Raid still working the boss (${hp.toFixed(0)}% HP). Slide <code>self-width</code> toward 1.0 — watch the party clear it as nothing becomes other.`;
+}
+el('pull').addEventListener('click',render);
+el('width').addEventListener('input',render);
+render();
+</script>
+</body>
+</html>

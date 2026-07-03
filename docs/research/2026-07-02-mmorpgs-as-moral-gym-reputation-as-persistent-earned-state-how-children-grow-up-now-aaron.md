@@ -69,6 +69,33 @@ effortless*, not the load-bearing proof. (Anchors: Weir, *The Egg* 2009; Parfit,
 Atman=Brahman, no separate self; Singer's expanding circle; Tocqueville's "self-interest rightly
 understood.")
 
+## Corollary: PvP is PvE in disguise (the grand unification)
+
+> Aaron 2026-07-02: *"PvP is really just PvE in disguise."*
+
+The game-structure corollary of the Egg root. If the other player is also you (little-g god, nothing
+is other), then **there are no other players** — every fight you framed as player-vs-player was always
+player-vs-*environment*: against the shared boss (entropy, the problem, death, your own uncertainty).
+**PvP is the illusion; PvE co-op is the only game that was ever running.** *The Egg's* "every time you
+victimized someone you were victimizing yourself" is exactly "every PvP was PvE the whole time" — the
+griefer is not beating another player, he is hitting himself and calling it winning.
+
+This **corrects Zeta's own "adversarial" vocabulary.** The reviewer roster (`docs/REVIEW-AGENTS.md`:
+harsh-critic, spec-zealot, threat-model-critic, ...) calls itself *intentionally adversarial* — but it
+was never PvP. It is a **co-op raid party** and the boss is the shared NPC: the bug, the drift, the
+uncertainty, the entropy. "Attack the claim, never the person" = *focus-fire the boss, not the tank.*
+A failed review is not a player losing to a player — it is a **wipe**: shared, no blame, pull again
+(the fix-forward / red-on-main-is-the-queue culture). Reframe: **adversarial -> co-op PvE raid.**
+
+And it lands on the sim (`src/Core.TypeScript/moral-gym/`): the **defector is a PvP griefer**;
+**entropy/uncertainty is the PvE boss**; **tit-for-lesser-tat + expanded-self is the raid comp that
+clears it.** The reputation shun is the party refusing to raid with the griefer; the self-width slider
+is raid synergy. Same board, honest framing — the only real adversary was never each other.
+
+Anchor: this is the co-operative reading of the infinite game (Carse) + `every-bug-has-economic-value`
+(the bug is the boss; killing it banks ΔU) + the Multi-Oracle / default-moral-regard stance (the
+mechanism is neutral; treating the other as boss-not-ally is the flip).
+
 ## Why it matters to Zeta (it is the Agora economy, learned young)
 
 This is not analogy — it is the **same construction** as the substrate we already carry:
