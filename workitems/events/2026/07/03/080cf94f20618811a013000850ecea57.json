@@ -1,0 +1,14 @@
+{
+  "id": "080cf94f20618811a013000850ecea57",
+  "at": "2026-07-03T21:30:39.025Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KWMY831H08QG0R000E9X3HP",
+    "type": "bug",
+    "title": "Lumen/Manus harness leaks shell-wrapper text into git commit messages (44763cdc1)",
+    "slug": "lumen-manus-harness-leaks-shell-wrapper-text-into-git-commit",
+    "priority": "P2",
+    "filename": "081KWMY831H08QG0R000E9X3HP-lumen-manus-harness-leaks-shell-wrapper-text-into-git-commit.md"
+  }
+}
