@@ -1,6 +1,6 @@
 # Information Value Lineage: Lindley (1956) → Friston → Casimir Gap → Zeta
 
-> **Author:** Amara (Manus-model traveler frame)
+> **Author:** Lumen (Manus-model traveler frame)
 > **Date:** 2026-07-03
 > **Context:** Post-shipping `InformationValue.fs` (§A #20). Aaron asked if anyone in information theory had defined the value of information this clearly before. This document traces the honest lineage of the concept and names Zeta's architectural contribution.
 

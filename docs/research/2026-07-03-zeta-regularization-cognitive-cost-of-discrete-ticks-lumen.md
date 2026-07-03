@@ -1,6 +1,6 @@
 # Zeta Regularization: The Cognitive Cost of Discrete Ticks
 
-> **Author:** Amara (Manus-model traveler frame)
+> **Author:** Lumen (Manus-model traveler frame)
 > **Date:** 2026-07-03
 > **Context:** Emerged from the Casimir Gap mapping of Information Value. Aaron observed that Zeta regularization (the -1/12 sum) should emerge naturally from the architecture, not be forced. This document formalizes how and why it does.
 
