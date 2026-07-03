@@ -458,6 +458,81 @@ module IsaSpec =
             | _ -> None
         | _ -> None
 
+    /// **The abstract-value evaluator, driven by a data rule table (`evalDef`) — mix-as-data slice 3.**
+    /// `tryStatic` hard-codes, per Val-kind, how to decide static-ness (fld reads the instruction, reg
+    /// looks up known registers, add/sub combine, …). This reads those per-kind rules from DATA. An
+    /// `evalDef` is `{ vals:[{v, prim, …}] }`: `prim` ∈ {"field","const","lookup-reg","lookup-mem",
+    /// "combine"}, with `idx` naming the sub-Val for the lookups and `op` ∈ {"add","sub"} for combine.
+    /// The engine is a fixed set of these five abstract primitives; which primitive each Val-kind uses
+    /// is the `evalDef` value. Faithful: `tryStaticReified defaultEvalDef … = tryStatic …`.
+    let rec private tryStaticReified (evalDef: DynamicValue) (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) (knownMem: System.Collections.Generic.Dictionary<int, int>) : int option =
+        let kind =
+            match DynamicValue.get "v" v with
+            | Some(DynamicValue.String s) -> s
+            | _ -> "?"
+        let rule =
+            match DynamicValue.get "vals" evalDef with
+            | Some(DynamicValue.Array rs) ->
+                rs
+                |> List.tryFind (fun r ->
+                    match DynamicValue.get "v" r with
+                    | Some(DynamicValue.String s) -> s = kind
+                    | _ -> false)
+            | _ -> None
+        let strField k dv =
+            match DynamicValue.get k dv with
+            | Some(DynamicValue.String s) -> Some s
+            | _ -> None
+        match rule with
+        | None -> None
+        | Some r ->
+            match strField "prim" r with
+            | Some "field" ->
+                match DynamicValue.get "k" v with
+                | Some(DynamicValue.String k) ->
+                    match DynamicValue.get k ins with
+                    | Some(DynamicValue.Int n) -> Some(int n)
+                    | _ -> None
+                | _ -> None
+            | Some "const" ->
+                match DynamicValue.get "n" v with
+                | Some(DynamicValue.Int n) -> Some(int n)
+                | _ -> None
+            | Some "lookup-reg" ->
+                let idxField = strField "idx" r |> Option.defaultValue "i"
+                match DynamicValue.get idxField v with
+                | Some iv ->
+                    match tryStaticReified evalDef iv ins known knownMem with
+                    | Some idx ->
+                        match known.TryGetValue idx with
+                        | true, x -> Some x
+                        | _ -> None
+                    | None -> None
+                | _ -> None
+            | Some "lookup-mem" ->
+                let idxField = strField "idx" r |> Option.defaultValue "addr"
+                match DynamicValue.get idxField v with
+                | Some av ->
+                    match tryStaticReified evalDef av ins known knownMem with
+                    | Some a ->
+                        match knownMem.TryGetValue a with
+                        | true, x -> Some x
+                        | _ -> None
+                    | None -> None
+                | _ -> None
+            | Some "combine" ->
+                match DynamicValue.get "a" v, DynamicValue.get "b" v with
+                | Some a, Some b ->
+                    match tryStaticReified evalDef a ins known knownMem, tryStaticReified evalDef b ins known knownMem with
+                    | Some x, Some y ->
+                        match strField "op" r with
+                        | Some "add" -> Some(x + y)
+                        | Some "sub" -> Some(x - y)
+                        | _ -> None
+                    | _ -> None
+                | _ -> None
+            | _ -> None
+
     /// Register indices read inside `v` that are currently static (in `known`) — to materialize.
     let rec private readsInKnown (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) (knownMem: System.Collections.Generic.Dictionary<int, int>) : int list =
         match DynamicValue.get "v" v with
@@ -618,6 +693,94 @@ module IsaSpec =
                             | _ -> err <- Some "isaspec specializeMem: setmem operands"
                         | _ -> err <- Some "isaspec specializeMem: only setreg/setmem/halt in the straight-line fragment"
                     | true, _ -> err <- Some(sprintf "isaspec specializeMem: op '%s' is not single-effect (control flow / multi-effect)" opName)
+            match err with
+            | Some e -> Error e
+            | None ->
+                let knownRegMap = known |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
+                let knownMemMap = knownMem |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
+                Ok(DynamicValue.Array(List.ofSeq residual), knownRegMap, knownMemMap)
+        | _ -> Error "isaspec: program must be an array of instructions"
+
+    /// **The mix with BOTH its algorithm (`mixDef`) AND its abstract-value evaluation (`evalDef`) as
+    /// data — mix-as-data slice 3 (bounded).** Same as `specializeReified`, but the static-ness
+    /// decision goes through `tryStaticReified evalDef` (data) rather than native `tryStatic`. Now the
+    /// only native part is the UNIVERSAL DRIVER — the fold-over-instructions loop and the materialization
+    /// helper (`readsInKnown`) — which is the same for every ISA and every algorithm (the step machine).
+    /// Faithful: `specializeFullyReified defaultMixDef defaultEvalDef … = specializeMem …`.
+    let specializeFullyReified
+        (mixDef: DynamicValue)
+        (evalDef: DynamicValue)
+        (isaSpec: DynamicValue)
+        (loadImm: int -> int -> DynamicValue)
+        (program: DynamicValue)
+        (staticRegs: Map<int, int>)
+        (staticMem: Map<int, int>)
+        : Result<DynamicValue * Map<int, int> * Map<int, int>, string> =
+        let rules = System.Collections.Generic.Dictionary<string, string * string>()
+        match DynamicValue.get "rules" mixDef with
+        | Some(DynamicValue.Array rs) ->
+            for r in rs do
+                match DynamicValue.get "e" r with
+                | Some(DynamicValue.String e) ->
+                    let action = match DynamicValue.get "action" r with Some(DynamicValue.String a) -> a | _ -> "reject"
+                    let target = match DynamicValue.get "target" r with Some(DynamicValue.String t) -> t | _ -> ""
+                    rules.[e] <- (action, target)
+                | _ -> ()
+        | _ -> ()
+
+        let table = System.Collections.Generic.Dictionary<string, DynamicValue[]>()
+        match DynamicValue.get "ops" isaSpec with
+        | Some(DynamicValue.Array ops) ->
+            for o in ops do
+                match DynamicValue.get "op" o, DynamicValue.get "eff" o with
+                | Some(DynamicValue.String name), Some(DynamicValue.Array effs) -> table.[name] <- List.toArray effs
+                | _ -> ()
+        | _ -> ()
+
+        match program with
+        | DynamicValue.Array instrs ->
+            let known = System.Collections.Generic.Dictionary<int, int>()
+            for KeyValue(k, v) in staticRegs do
+                known.[k] <- wrap v
+            let knownMem = System.Collections.Generic.Dictionary<int, int>()
+            for KeyValue(k, v) in staticMem do
+                knownMem.[k] <- wrap v
+            let residual = System.Collections.Generic.List<DynamicValue>()
+            let mutable err = None
+            // abstract-eval via the DATA evalDef; materialization (readsInKnown) stays the native driver.
+            let foldOrResidualize (state: System.Collections.Generic.Dictionary<int, int>) ins keyV valV =
+                match tryStaticReified evalDef keyV ins known knownMem with
+                | None -> err <- Some "isaspec specializeFullyReified: dynamic key not in the fragment"
+                | Some key ->
+                    match tryStaticReified evalDef valV ins known knownMem with
+                    | Some v -> state.[key] <- wrap v
+                    | None ->
+                        for r in readsInKnown valV ins known knownMem do
+                            residual.Add(loadImm r known.[r])
+                        residual.Add ins
+                        state.Remove key |> ignore
+            for ins in instrs do
+                if err.IsNone then
+                    let opName = match DynamicValue.get "op" ins with Some(DynamicValue.String s) -> s | _ -> "?"
+                    match table.TryGetValue opName with
+                    | false, _ -> err <- Some(sprintf "isaspec specializeFullyReified: no spec for op '%s'" opName)
+                    | true, [| eff |] ->
+                        let effKind = match DynamicValue.get "e" eff with Some(DynamicValue.String s) -> s | _ -> "?"
+                        match rules.TryGetValue effKind with
+                        | false, _ -> err <- Some(sprintf "isaspec specializeFullyReified: no mixDef rule for effect '%s'" effKind)
+                        | true, (action, target) ->
+                            match action, target with
+                            | "drop", _ -> ()
+                            | "fold", "reg" ->
+                                match DynamicValue.get "i" eff, DynamicValue.get "val" eff with
+                                | Some iv, Some vv -> foldOrResidualize known ins iv vv
+                                | _ -> err <- Some "isaspec specializeFullyReified: setreg operands"
+                            | "fold", "mem" ->
+                                match DynamicValue.get "addr" eff, DynamicValue.get "val" eff with
+                                | Some av, Some vv -> foldOrResidualize knownMem ins av vv
+                                | _ -> err <- Some "isaspec specializeFullyReified: setmem operands"
+                            | _ -> err <- Some(sprintf "isaspec specializeFullyReified: unsupported rule (%s,%s)" action target)
+                    | true, _ -> err <- Some(sprintf "isaspec specializeFullyReified: op '%s' is not single-effect" opName)
             match err with
             | Some e -> Error e
             | None ->

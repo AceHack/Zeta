@@ -109,3 +109,34 @@ let ``ONE ALGORITHM, EVERY ISA: the same mixDef value drives CHIP-8 and the 6502
 [<Fact>]
 let ``THE ALGORITHM IS BYTE-LOCKABLE DATA: defaultMixDef rides the codec stack`` () =
     Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] MixIr.defaultMixDef)
+
+// ── slice 3 (bounded): the abstract-value evaluator as data (shadow*, Aaron 2026-07-03 "bounded reify
+// — make abstract-eval data, leave the universal driver native … this is basically our Shiva Garbage
+// Collector"). tryStatic's per-Val-kind static-ness logic is now a data evalDef; only the universal
+// step-driver stays native. Proofs:
+//   8. FULLY-REIFIED FAITHFUL: specializeFullyReified defaultMixDef defaultEvalDef = specializeMem,
+//      byte-for-byte (CHIP-8 + 6502) — algorithm AND abstract-eval both data now.
+//   9. THE EVALDEF IS BYTE-LOCKABLE DATA (collectible — the Shiva-GC seed).
+
+let private fullyReifiedResidual spec load p statics =
+    match MixIr.runFullyReifiedMix MixIr.defaultMixDef MixIr.defaultEvalDef spec load p statics Map.empty with
+    | Ok(res, _, _) -> res
+    | Error e -> failwithf "runFullyReifiedMix failed: %s" e
+
+[<Fact>]
+let ``FULLY-REIFIED FAITHFUL: mixDef + evalDef both data reproduce native specializeMem (both ISAs)`` () =
+    let chip8P = Isa.prog [ Isa.set 0 5; Isa.add 0 3; Isa.addr 1 0; Isa.mov 2 1; Isa.halt ]
+    Assert.Equal<DynamicValue>(
+        nativeMemResidual IsaSpec.chip8 Isa.set chip8P Map.empty,
+        fullyReifiedResidual IsaSpec.chip8 MixIr.chip8Load chip8P Map.empty
+    )
+    let m6502P =
+        DynamicValue.Array [ IsaSpec.staZp 10; IsaSpec.ldaZp 10; IsaSpec.adcImm 5; IsaSpec.staZp 11; IsaSpec.adcZp 20; IsaSpec.staZp 12; IsaSpec.brk ]
+    Assert.Equal<DynamicValue>(
+        nativeMemResidual IsaSpec.mos6502 IsaSpec.load6502 m6502P (Map.ofList [ 0, 7 ]),
+        fullyReifiedResidual IsaSpec.mos6502 MixIr.mos6502Load m6502P (Map.ofList [ 0, 7 ])
+    )
+
+[<Fact>]
+let ``THE EVALDEF IS BYTE-LOCKABLE DATA (the Shiva-GC seed — reify makes it collectible)`` () =
+    Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] MixIr.defaultEvalDef)

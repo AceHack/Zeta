@@ -167,3 +167,41 @@ module MixIr =
         (staticMem: Map<int, int>)
         : Result<DynamicValue * Map<int, int> * Map<int, int>, string> =
         IsaSpec.specializeReified mixDef spec (fun r v -> buildLoad loadDesc r v) program staticRegs staticMem
+
+    // ── slice 3 (bounded): the abstract-value evaluator as data ──
+
+    /// The abstract-value evaluator, reified as a data rule table (`evalDef`). Per Val-kind, which of
+    /// the five fixed abstract primitives to use: `fld`→field, `const`→const, `reg`→lookup-reg (index
+    /// in sub-Val `i`), `mem`→lookup-mem (address in `addr`), `add`/`sub`→combine. With slice 2's
+    /// `defaultMixDef`, this leaves ONLY the universal driver (the fold-over-instructions loop +
+    /// materialization) native — the step machine that is the same for every ISA and every algorithm.
+    ///
+    /// **The Shiva-GC seed (Aaron 2026-07-03).** These reified tables (`evalDef`, `mixDef`, the spec,
+    /// the load descriptor) are all data — weak-reference-shaped: because the mix's rules are values,
+    /// not baked code, the parts of the substrate not currently referenced can be *collected*. Slice-3
+    /// reification is what makes a garbage collector possible over the mix itself: the generator emits
+    /// these tables; the collector (Shiva) reclaims the ones nothing points at. Reify → collectible.
+    let defaultEvalDef: DynamicValue =
+        DynamicValue.Object
+            [ "vals",
+              DynamicValue.Array
+                  [ DynamicValue.Object [ "v", DynamicValue.String "fld"; "prim", DynamicValue.String "field" ]
+                    DynamicValue.Object [ "v", DynamicValue.String "const"; "prim", DynamicValue.String "const" ]
+                    DynamicValue.Object [ "v", DynamicValue.String "reg"; "prim", DynamicValue.String "lookup-reg"; "idx", DynamicValue.String "i" ]
+                    DynamicValue.Object [ "v", DynamicValue.String "mem"; "prim", DynamicValue.String "lookup-mem"; "idx", DynamicValue.String "addr" ]
+                    DynamicValue.Object [ "v", DynamicValue.String "add"; "prim", DynamicValue.String "combine"; "op", DynamicValue.String "add" ]
+                    DynamicValue.Object [ "v", DynamicValue.String "sub"; "prim", DynamicValue.String "combine"; "op", DynamicValue.String "sub" ] ] ]
+
+    /// Run the mix with its algorithm (`mixDef`), abstract-eval (`evalDef`), AND materialization
+    /// strategy (`loadDesc`) ALL as data — only the universal step-driver is native. The maximal
+    /// bounded reification: everything ISA- or algorithm-specific is a value.
+    let runFullyReifiedMix
+        (mixDef: DynamicValue)
+        (evalDef: DynamicValue)
+        (spec: DynamicValue)
+        (loadDesc: DynamicValue)
+        (program: DynamicValue)
+        (staticRegs: Map<int, int>)
+        (staticMem: Map<int, int>)
+        : Result<DynamicValue * Map<int, int> * Map<int, int>, string> =
+        IsaSpec.specializeFullyReified mixDef evalDef spec (fun r v -> buildLoad loadDesc r v) program staticRegs staticMem
