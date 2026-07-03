@@ -34,7 +34,7 @@ describe("PROVEN (exhaustive sweep over all integer milli-S in [0, 5000])", () =
     }
   });
 
-  it("classify is order-preserving into the poset local(0) ≤ quantum(1) ≤ signaling(2)", () => {
+  it("classify is order-preserving into the poset local(0) ≤ quantum(1) ≤ superquantum(2)", () => {
     let prevRank = classRank(classify(0));
     for (let s = 1; s <= SWEEP_MAX; s++) {
       const rank = classRank(classify(s));
@@ -43,11 +43,11 @@ describe("PROVEN (exhaustive sweep over all integer milli-S in [0, 5000])", () =
     }
   });
 
-  it("class boundaries land exactly on the bounds (≤2000 local, ≤2828 quantum, else signaling)", () => {
+  it("class boundaries land exactly on the bounds (≤2000 local, ≤2828 quantum, else superquantum)", () => {
     const expectedAt = (s: number): CorrelationClass => {
       if (s <= LOCAL_BOUND_MILLI) return "local";
       if (s <= TSIRELSON_MILLI) return "quantum";
-      return "signaling";
+      return "superquantum";
     };
     for (let s = 0; s <= SWEEP_MAX; s++) {
       expect(classify(s)).toBe(expectedAt(s));

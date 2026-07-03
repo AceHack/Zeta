@@ -78,10 +78,10 @@ describe("PROVEN: the shape of S(delay) — plateau, cliff, floor (exhaustive ov
     }
   });
 
-  it("classification along the curve: signaling inside the cone, never above quantum outside it", () => {
+  it("classification along the curve: superquantum inside the cone, never above quantum outside it", () => {
     const checkPoint = (d: number, j: number, f: Fallback): void => {
       const c = classify(sOfDelay(d, j, TAU, f));
-      if (d + j <= TAU) expect(c).toBe("signaling"); // timelike: S=4, the enmeshment warning
+      if (d + j <= TAU) expect(c).toBe("superquantum"); // timelike: S=4, the enmeshment warning
       // spacelike: the super-quantum zone is UNREACHABLE — the honest ceiling holds
       if (d - j > TAU) expect(c).toBe(f === "shared" ? "quantum" : "local");
     };

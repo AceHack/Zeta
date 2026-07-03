@@ -40,7 +40,7 @@ Three regimes, all proven exhaustively (16.6M assertions, deterministic, no rand
    ramp of width 2j; (a heavier-tailed bus would trace its own sigmoid).
 3. **Floor (d − j > τ, spacelike):** the super-quantum zone is *unreachable*. What remains is
    exactly what the two honestly share: 2√2 with genuine shared state, 2 without. `classify` reads
-   `signaling` on the plateau and can never read `signaling` past the cone — proven.
+   `superquantum` on the plateau and can never read it past the cone — proven.
 
 ## Why this is a light cone
 

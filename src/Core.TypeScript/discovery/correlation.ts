@@ -21,7 +21,7 @@
 // produce-not-extract keep coordination on the healthy side of that line.
 //
 //   metric  ──(classify)──►  category (a relational reading, NOT a ranking)
-//   S ∈ [2,4]                {autonomous(local) → related(quantum) → enmeshed(signaling)}
+//   S ∈ [2,4]                {autonomous(local) → related(quantum) → enmeshed(superquantum)}
 //
 // `distanceOf` = the metric on the S-line; `classify` = the order-preserving map. Mirrors the F#
 // `CoordinationSpectrum`; ties to `AntiSybil.chshS`. Human anchors (the ESSENTIAL antecedents; the
@@ -30,8 +30,8 @@
 // attachment theory. The readout formalizes what a life coach already does; it did not invent it.
 
 /// The CHSH class categories — the equivalence classes of a correlation state, as a poset
-/// (local ≤ quantum ≤ signaling). These are the "class categories" the distance corresponds to.
-export type CorrelationClass = "local" | "quantum" | "signaling";
+/// (local ≤ quantum ≤ superquantum). These are the "class categories" the distance corresponds to.
+export type CorrelationClass = "local" | "quantum" | "superquantum";
 
 /// CHSH bounds (integer milli — no floats in the readout). S in milli: 2000 / 2√2·1000 / 4000.
 /// NOTE (Aaron 2026-07-02): "2√2 is accidental — the life coach is the antecedent ... the life coach
@@ -46,9 +46,11 @@ export type CorrelationClass = "local" | "quantum" | "signaling";
 /// **2√2 = the maximum correlation two intact selves can honestly reach.** Above it, the readout is
 /// evidence of scripting/fusion/capture — one process wearing two faces (`AntiSybil`'s reading) —
 /// which is why the human register calls that zone control/enmeshment. So 2√2 is the LIFE COACH
-/// ceiling: deep connection, still two free selves; the class name `signaling` is the human-register
-/// warning label for the super-quantum zone, not a physics claim. Treat the exact number as a soft
-/// guide, but the boundary it marks (as-close-as-two-honest-selves-get) as essential.
+/// ceiling: deep connection, still two free selves. The class name `superquantum` is the physics-
+/// honest term (Popescu–Rohrlich zone); its human reading is ENMESHMENT — the warning, never a
+/// goal. (Renamed from `signaling` 2026-07-03 — nothing signals at any S; Aaron: greenfield,
+/// rename to be accurate.) Treat the exact number as a soft guide, but the boundary it marks
+/// (as-close-as-two-honest-selves-get) as essential.
 export const LOCAL_BOUND_MILLI = 2000; // S = 2 — being your own self (the essential ground state)
 export const TSIRELSON_MILLI = 2828; // S = 2√2 — the LIFE-COACH ceiling: max intimacy that stays non-signaling (both free)
 export const PR_BOX_MILLI = 4000; // S = 4 — the enmeshment extreme (fully fused)
@@ -62,16 +64,16 @@ export function distanceOf(sMilli: number): number {
 
 /// CLASSIFY — the correspondence: map the correlation distance to its class category. Order-
 /// preserving (a functor to the poset): S at or below the local bound is `local` (the S=2 ground
-/// state — independent); above it up to Tsirelson is `quantum`; beyond Tsirelson is `signaling`
+/// state — independent); above it up to Tsirelson is `quantum`; beyond Tsirelson is `superquantum`
 /// (super-quantum coordination, toward the PR-box). More S never yields a lower class.
 export function classify(sMilli: number): CorrelationClass {
   const s = Math.round(sMilli);
   if (s <= LOCAL_BOUND_MILLI) return "local";
   if (s <= TSIRELSON_MILLI) return "quantum";
-  return "signaling";
+  return "superquantum";
 }
 
-/// The poset order of a class — local(0) ≤ quantum(1) ≤ signaling(2). Lets callers compare classes
+/// The poset order of a class — local(0) ≤ quantum(1) ≤ superquantum(2). Lets callers compare classes
 /// without matching strings, and makes the order-preservation of `classify` checkable.
 export function classRank(c: CorrelationClass): number {
   if (c === "local") return 0;

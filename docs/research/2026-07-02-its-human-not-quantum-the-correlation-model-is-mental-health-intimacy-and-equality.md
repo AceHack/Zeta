@@ -93,7 +93,7 @@ The living node is not a metaphor for this; it *is* this, mechanically:
 
 - `sReadout()` / `distanceToCorrelation()` — the relational distance from autonomous self.
 - `correlationClass()` — the reading: autonomous → related → enmeshed (a relational reading, **not**
-  a ranking — `signaling` is a warning, not a trophy).
+  a ranking — `superquantum` (renamed from `signaling` 2026-07-03 — nothing signals at any S) is a warning, not a trophy).
 - **The protective floors:** guaranteed **exit-to-S=2** (`unlinkRegion`, never deniable) so no
   bond becomes a cage; the **bounded mental-health pause** so exhaustion never forces collapse;
   **NCI** so no one overwrites your self; **produce-not-extract** so the relationships nourish

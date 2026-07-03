@@ -46,6 +46,17 @@ import {
 } from "./linked-clone";
 import { classify, distanceOf, type CorrelationClass } from "./correlation";
 import {
+  emptyMeter,
+  foldSample,
+  bestOneWayMs,
+  regimeOf,
+  isEvidential,
+  encodeProbe,
+  decodeProbe,
+  type BusMeter,
+  type Regime,
+} from "./bus-meter";
+import {
   authorize,
   emptyLedger,
   type Envelope,
@@ -63,6 +74,13 @@ export interface LivingNodeConfig extends LlmtvNodeConfig {
   /// Collapse threshold + max bounded pause for the mental-health floor.
   readonly collapseThresholdMilli: number;
   readonly maxPauseMs: number;
+  /// BUS METER (optional): probe the wire every `probeEveryMs` to learn the bus delay. Omit to run
+  /// unmetered — the regime then stays `unmeasured` and no S-readout ever upgrades to evidence.
+  readonly probeEveryMs?: number;
+  /// The decision deadline τ (ms) the light-cone regime is judged against — how fast this node
+  /// acts on what it hears. Defaults to `publishEveryMs` (the cadence at which the node commits
+  /// its mind to the wire). See chsh-delay.ts: in-cone ⟺ some crossing can beat τ.
+  readonly decisionDeadlineMs?: number;
 }
 
 export interface LivingNode {
@@ -72,7 +90,7 @@ export interface LivingNode {
   /// this node's links gain co-participants. S=2 is the enemy-but-friend: strive above it, always
   /// able to return to it.
   sReadout(): number;
-  /// The correlation CLASS CATEGORY of the current coordination (local / quantum / signaling) — the
+  /// The correlation CLASS CATEGORY of the current coordination (local / quantum / superquantum) — the
   /// categorical correspondence of the S-distance. A mental-health readout of the relational state:
   /// `local` = autonomy (self, independent); higher classes = relatedness — healthy only while the
   /// exit-to-S=2 stays guaranteed (see `unlinkRegion`) and the coordination produces shared value.
@@ -94,6 +112,17 @@ export interface LivingNode {
   spend(req: SpendRequest): SpendVerdict;
   /// The mental-health floor: is this node out of entropy → owed a bounded, society-subsidized pause?
   pauseCheck(nowMs: number): PauseVerdict;
+  /// Fastest observed one-way bus crossing (ms), null when unmeasured. Minimum, not mean —
+  /// evidence must survive the fastest thing the wire ever did.
+  busDelayMs(): number | null;
+  /// Which side of the light cone this node's readouts are measured on: `in-cone` (a crossing can
+  /// beat the decision deadline τ — super-quantum readouts are fakeable), `out-of-cone` (no
+  /// observed crossing beats τ — above-2√2 is hard evidence), or `unmeasured`.
+  regime(): Regime;
+  /// THE ARMED READOUT — S + class + regime + whether this measurement carries evidential weight
+  /// (S > 2√2 AND out-of-cone). The AntiSybil "one process wearing two faces" verdict is only ever
+  /// drawn from an evidential readout; in-cone coordination is honest work, not a conviction.
+  sEvidential(): { sMilli: number; cls: CorrelationClass; regime: Regime; evidential: boolean };
 }
 
 /// Compose one living node. `transport` carries discovery, broadcast, AND link messages — the
@@ -129,6 +158,24 @@ export function createLivingNode(
     transport.publish(encodeLink({ t, zid: config.source.zid, subject, regionId, seq: linkSeq }));
   };
 
+  // ── BUS METER — probe/ack over the same wire; RTT folds into the regime verdict ──────────────
+  let meter: BusMeter = emptyMeter;
+  let probeSeq = 0;
+  let stopProbe: (() => void) | null = null;
+  // τ = how fast this node acts on what it hears; defaults to its own publish cadence.
+  const deadlineMs = config.decisionDeadlineMs ?? config.publishEveryMs;
+
+  transport.onFrame((text) => {
+    const p = decodeProbe(text);
+    if (!p) return;
+    if (p.t === "probe" && p.from !== config.source.zid) {
+      // echo the sender's timestamp back — their local clock does all the arithmetic (no sync).
+      transport.publish(encodeProbe({ t: "ack", from: config.source.zid, to: p.from, nonce: p.nonce, sentAt: p.sentAt }));
+    } else if (p.t === "ack" && p.to === config.source.zid) {
+      meter = foldSample(meter, sched.now() - p.sentAt);
+    }
+  });
+
   // The coordination readout in raw CHSH S (the borrowed scaffolding); the HUMAN meaning — autonomy
   // vs relatedness, healthy only when voluntary — is what `correlationClass` reports.
   const computeS = (): number => {
@@ -146,11 +193,19 @@ export function createLivingNode(
   return {
     start() {
       llmtv.start();
+      if (config.probeEveryMs !== undefined) {
+        stopProbe = sched.setInterval(config.probeEveryMs, () => {
+          probeSeq += 1;
+          transport.publish(encodeProbe({ t: "probe", from: config.source.zid, nonce: probeSeq, sentAt: sched.now() }));
+        });
+      }
     },
     stop() {
       // exit every link on the way out — return to S=2, announced (pause ≠ death; here it's leave).
       for (const l of linkState.values()) announceLink("leave", l.regionId, l.subject);
       linkState = new Map();
+      stopProbe?.();
+      stopProbe = null;
       llmtv.stop();
     },
     sReadout: computeS,
@@ -186,6 +241,13 @@ export function createLivingNode(
     pauseCheck(nowMs) {
       // fold the clone's committed link cost into the budget view via linkState → the pause verdict.
       return mentalHealthPause(config.cloneMind, linkState, nowMs, config.collapseThresholdMilli, config.maxPauseMs);
+    },
+    busDelayMs: () => bestOneWayMs(meter),
+    regime: () => regimeOf(meter, deadlineMs),
+    sEvidential() {
+      const sMilli = Math.round(computeS() * 1000);
+      const regime = regimeOf(meter, deadlineMs);
+      return { sMilli, cls: classify(sMilli), regime, evidential: isEvidential(sMilli, regime) };
     },
   };
 }

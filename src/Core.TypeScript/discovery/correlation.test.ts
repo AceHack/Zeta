@@ -24,21 +24,24 @@ describe("classify — the human relational reading (autonomy → relatedness �
     expect(classify(LOCAL_BOUND_MILLI)).toBe("local"); // S=2 boundary → autonomous
     expect(classify(2500)).toBe("quantum"); // relatedness
     expect(classify(TSIRELSON_MILLI)).toBe("quantum"); // Tsirelson boundary
-    expect(classify(3500)).toBe("signaling"); // enmeshment ("S=4 shit")
-    expect(classify(PR_BOX_MILLI)).toBe("signaling");
+    expect(classify(3500)).toBe("superquantum"); // enmeshment ("S=4 shit")
+    expect(classify(PR_BOX_MILLI)).toBe("superquantum");
   });
 
   it("is order-preserving — more distance never lowers the class (a poset, not a ranking)", () => {
     const samples = [1000, 2000, 2500, 2828, 3000, 4000];
-    for (let i = 1; i < samples.length; i++) {
-      expect(classRank(classify(samples[i]!))).toBeGreaterThanOrEqual(classRank(classify(samples[i - 1]!)));
+    let prevRank = classRank(classify(1000));
+    for (const s of samples) {
+      const rank = classRank(classify(s));
+      expect(rank).toBeGreaterThanOrEqual(prevRank);
+      prevRank = rank;
     }
   });
 
-  it("high S is NOT health — signaling is the enmeshment WARNING, not the goal", () => {
+  it("high S is NOT health — superquantum is the enmeshment WARNING, not the goal", () => {
     // asserted at the values level: classRank rises toward enmeshment, and the healthy state is
     // isIndependent-reachable (exit), never a fixed high pole.
-    expect(classRank("signaling")).toBeGreaterThan(classRank("local"));
+    expect(classRank("superquantum")).toBeGreaterThan(classRank("local"));
     expect(isIndependent(PR_BOX_MILLI)).toBe(false); // fully fused = no autonomy left
     expect(isIndependent(LOCAL_BOUND_MILLI)).toBe(true); // the self you can always return to
   });
