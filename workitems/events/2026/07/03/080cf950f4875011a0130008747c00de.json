@@ -1,0 +1,14 @@
+{
+  "id": "080cf950f4875011a0130008747c00de",
+  "at": "2026-07-03T22:34:34.090Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KWN1X47908QG0R000HTKNWS",
+    "type": "task",
+    "title": "Pin InformationValue.compute KL direction (doc says P=posterior, code computes KL(prior||posterior)) then land P-IV-1..3 properties",
+    "slug": "pin-informationvalue-compute-kl-direction-doc-says-p-posteri",
+    "priority": "P2",
+    "filename": "081KWN1X47908QG0R000HTKNWS-pin-informationvalue-compute-kl-direction-doc-says-p-posteri.md"
+  }
+}
