@@ -272,3 +272,63 @@ module Netlist =
                    | Some 1 -> 1 <<< i
                    | _ -> 0)) ]
         |> Map.ofList
+
+    // ── ALU completion: the rest of the combinational gate library (SUB, bitwise, compare) ──
+
+    /// An `n`-bit subtractor: `(a - b) mod 2^n` by two's complement — `a + (¬b) + 1`. Full adders on
+    /// every bit with carry-in 1 (`c0`) and `b` inverted; the final borrow is dropped (wrap). Inputs
+    /// `a0..`, `b0..`; outputs `s0..`.
+    let subtractor (n: int) : DynamicValue =
+        let a i = sprintf "a%d" i
+        let b i = sprintf "b%d" i
+        let s i = sprintf "s%d" i
+        let carry i = if i = 0 then "c0" else sprintf "c%d" i
+        let nb i = sprintf "nb%d" i
+        let axnb i = sprintf "axnb%d" i
+        let aab i = sprintf "aab%d" i
+        let cnd i = sprintf "cnd%d" i
+        let gates = System.Collections.Generic.List<DynamicValue>()
+        // c0 = 1 (two's-complement +1), derived from an input: const0 = a0 XOR a0 = 0 ; c0 = NOT const0
+        gates.Add(xorG "const0" (a 0) (a 0))
+        gates.Add(notG "c0" "const0")
+        for i in 0 .. n - 1 do
+            gates.Add(notG (nb i) (b i))
+            gates.Add(xorG (axnb i) (a i) (nb i))
+            gates.Add(xorG (s i) (axnb i) (carry i))
+            gates.Add(andG (aab i) (a i) (nb i))
+            gates.Add(andG (cnd i) (carry i) (axnb i))
+            gates.Add(orG (carry (i + 1)) (aab i) (cnd i))
+        circuit ([ for i in 0 .. n - 1 -> a i ] @ [ for i in 0 .. n - 1 -> b i ]) [ for i in 0 .. n - 1 -> s i ] (List.ofSeq gates)
+
+    /// An `n`-bit bitwise op (`op` ∈ {"and","or","xor"}): `s_i = op(a_i, b_i)`. Inputs `a0..`,
+    /// `b0..`; outputs `s0..`.
+    let bitwise (op: string) (n: int) : DynamicValue =
+        let a i = sprintf "a%d" i
+        let b i = sprintf "b%d" i
+        let s i = sprintf "s%d" i
+        let gates = [ for i in 0 .. n - 1 -> gate op (s i) [ a i; b i ] ]
+        circuit ([ for i in 0 .. n - 1 -> a i ] @ [ for i in 0 .. n - 1 -> b i ]) [ for i in 0 .. n - 1 -> s i ] gates
+
+    /// An `n`-bit equality comparator: single output wire `eq` = 1 iff `a == b`. Per-bit XNOR
+    /// (`¬(a_i ⊕ b_i)`) AND-reduced. Inputs `a0..`, `b0..`; output `eq`.
+    let equal (n: int) : DynamicValue =
+        let a i = sprintf "a%d" i
+        let b i = sprintf "b%d" i
+        let gates = System.Collections.Generic.List<DynamicValue>()
+        // per-bit XNOR → e_i
+        for i in 0 .. n - 1 do
+            gates.Add(xorG (sprintf "axb%d" i) (a i) (b i))
+            gates.Add(notG (sprintf "e%d" i) (sprintf "axb%d" i))
+        // AND-reduce e_0..e_{n-1} → eq
+        if n = 0 then
+            gates.Add(xorG "const0" (a 0) (a 0))
+            gates.Add(notG "eq" "const0") // vacuously equal
+        elif n = 1 then
+            gates.Add(orG "eq" "e0" "e0") // buffer e0 → eq
+        else
+            let mutable acc = "e0"
+            for i in 1 .. n - 1 do
+                let next = if i = n - 1 then "eq" else sprintf "eqacc%d" i
+                gates.Add(andG next acc (sprintf "e%d" i))
+                acc <- next
+        circuit ([ for i in 0 .. n - 1 -> a i ] @ [ for i in 0 .. n - 1 -> b i ]) [ "eq" ] (List.ofSeq gates)

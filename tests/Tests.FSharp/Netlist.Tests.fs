@@ -108,3 +108,40 @@ let ``SYNTHESIS rejects control flow (needs sequential logic — a later rung)``
          | Ok _ -> false),
         "JP must be rejected by combinational synthesis"
     )
+
+// ── ALU completion: SUB / bitwise / compare, each proven exhaustively ──
+
+let private runAB (c: DynamicValue) (a: int) (b: int) =
+    Netlist.eval c (merge (Netlist.bitsOf "a" 8 a) (Netlist.bitsOf "b" 8 b))
+
+[<Fact>]
+let ``SUBTRACTOR = SUBTRACTION (EXHAUSTIVE): the 8-bit gate subtractor equals (a-b) mod 256 for all pairs`` () =
+    let sub8 = Netlist.subtractor 8
+    for a in 0..255 do
+        for b in 0..255 do
+            match runAB sub8 a b with
+            | Ok outs -> Assert.Equal((((a - b) % 256) + 256) % 256, Netlist.intOf "s" 8 outs)
+            | Error e -> Assert.Fail(sprintf "sub eval failed at a=%d b=%d: %s" a b e)
+
+[<Fact>]
+let ``BITWISE = BITWISE (EXHAUSTIVE): and/or/xor gate circuits equal the byte operations`` () =
+    let andC = Netlist.bitwise "and" 8
+    let orC = Netlist.bitwise "or" 8
+    let xorC = Netlist.bitwise "xor" 8
+    for a in 0..255 do
+        for b in 0..255 do
+            match runAB andC a b, runAB orC a b, runAB xorC a b with
+            | Ok oa, Ok oo, Ok ox ->
+                Assert.Equal(a &&& b, Netlist.intOf "s" 8 oa)
+                Assert.Equal(a ||| b, Netlist.intOf "s" 8 oo)
+                Assert.Equal(a ^^^ b, Netlist.intOf "s" 8 ox)
+            | _ -> Assert.Fail(sprintf "bitwise eval failed at a=%d b=%d" a b)
+
+[<Fact>]
+let ``COMPARATOR = EQUALITY (EXHAUSTIVE): eq = 1 iff a == b for all byte pairs`` () =
+    let eqC = Netlist.equal 8
+    for a in 0..255 do
+        for b in 0..255 do
+            match runAB eqC a b with
+            | Ok outs -> Assert.Equal((if a = b then 1 else 0), Map.tryFind "eq" outs |> Option.defaultValue -1)
+            | Error e -> Assert.Fail(sprintf "eq eval failed at a=%d b=%d: %s" a b e)
