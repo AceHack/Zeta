@@ -434,3 +434,157 @@ module Slr =
         match parse t tokens with
         | Ok _ -> true
         | Error _ -> false
+
+    // ── Residual serialization — the SECOND Futamura projection, in our substrate ──
+    //
+    // `build : Grammar → Tables` is the FIRST projection: the LR-table generator is a partial
+    // evaluator of the LR interpreter w.r.t. the grammar, so `Tables` is a parser SPECIALIZED to
+    // one grammar (the residual). Because our residual is DATA, not compiled code, serializing it
+    // to `DynamicValue` makes that specialized parser a first-class, SHIPPABLE object: byte-locked,
+    // DST-replayable, and version/rollable like everything else on the ladder. `build` composed
+    // with `toDynamicValue` is thus the 2nd projection (grammar → a standalone specialized-parser
+    // program); `parseFromIr` runs it. Anchors: Futamura (1971, the projections); Jones/Gomard/
+    // Sestoft (1993, partial evaluation). Maps are emitted as key-SORTED arrays so the encoding is
+    // canonical (`Map.toList` yields ascending key order) — same DST/byte-lock discipline as the
+    // grammar IR, and the symbol shape `{k;n}` is shared with `GrammarIr.toDynamicValue`.
+
+    let private symToDv (s: Sym) : DynamicValue =
+        match s with
+        | GrammarIr.Term n -> DynamicValue.Object [ "k", DynamicValue.String "t"; "n", DynamicValue.String n ]
+        | GrammarIr.NonTerm n -> DynamicValue.Object [ "k", DynamicValue.String "n"; "n", DynamicValue.String n ]
+
+    let private actionToDv (a: Action) : DynamicValue =
+        match a with
+        | Shift s -> DynamicValue.Object [ "a", DynamicValue.String "s"; "v", DynamicValue.Int(int64 s) ]
+        | Reduce p -> DynamicValue.Object [ "a", DynamicValue.String "r"; "v", DynamicValue.Int(int64 p) ]
+        | Accept -> DynamicValue.Object [ "a", DynamicValue.String "acc" ]
+
+    /// Serialize a built table to `DynamicValue` — the specialized parser as canonical, byte-locked IR.
+    let toDynamicValue (t: Tables) : DynamicValue =
+        let prods =
+            t.Prods
+            |> Array.toList
+            |> List.map (fun (lhs, rhs) ->
+                DynamicValue.Object
+                    [ "lhs", DynamicValue.String lhs
+                      "rhs", DynamicValue.Array(rhs |> List.map symToDv) ])
+        let action =
+            t.Action
+            |> Map.toList // ascending key order ⇒ canonical
+            |> List.map (fun ((st, sym), a) ->
+                DynamicValue.Object
+                    [ "s", DynamicValue.Int(int64 st); "x", DynamicValue.String sym; "act", actionToDv a ])
+        let goto =
+            t.Goto
+            |> Map.toList
+            |> List.map (fun ((st, sym), n) ->
+                DynamicValue.Object
+                    [ "s", DynamicValue.Int(int64 st); "x", DynamicValue.String sym; "g", DynamicValue.Int(int64 n) ])
+        DynamicValue.Object
+            [ "kind", DynamicValue.String "slr-tables"
+              "prods", DynamicValue.Array prods
+              "action", DynamicValue.Array action
+              "goto", DynamicValue.Array goto
+              "start", DynamicValue.Int(int64 t.Start)
+              "conflicts", DynamicValue.Array(t.Conflicts |> List.map DynamicValue.String) ]
+
+    let private reqField (k: string) (dv: DynamicValue) : Result<DynamicValue, string> =
+        match DynamicValue.tryField k dv with
+        | Some v -> Ok v
+        | None -> Error(sprintf "slr residual: missing field '%s'" k)
+
+    let private asStr =
+        function
+        | DynamicValue.String s -> Ok s
+        | _ -> Error "slr residual: expected string"
+
+    let private asInt =
+        function
+        | DynamicValue.Int i -> Ok(int i)
+        | _ -> Error "slr residual: expected int"
+
+    let private asArr =
+        function
+        | DynamicValue.Array xs -> Ok xs
+        | _ -> Error "slr residual: expected array"
+
+    let private mapR (f: 'a -> Result<'b, string>) (xs: 'a list) : Result<'b list, string> =
+        (Ok [], xs)
+        ||> List.fold (fun acc x -> acc |> Result.bind (fun ys -> f x |> Result.map (fun y -> y :: ys)))
+        |> Result.map List.rev
+
+    let private dvToSym (dv: DynamicValue) : Result<Sym, string> =
+        reqField "k" dv
+        |> Result.bind asStr
+        |> Result.bind (fun k ->
+            reqField "n" dv
+            |> Result.bind asStr
+            |> Result.bind (fun n ->
+                match k with
+                | "t" -> Ok(GrammarIr.Term n)
+                | "n" -> Ok(GrammarIr.NonTerm n)
+                | other -> Error(sprintf "slr residual: bad symbol kind '%s'" other)))
+
+    let private dvToAction (dv: DynamicValue) : Result<Action, string> =
+        reqField "a" dv
+        |> Result.bind asStr
+        |> Result.bind (fun a ->
+            match a with
+            | "s" -> reqField "v" dv |> Result.bind asInt |> Result.map Shift
+            | "r" -> reqField "v" dv |> Result.bind asInt |> Result.map Reduce
+            | "acc" -> Ok Accept
+            | other -> Error(sprintf "slr residual: bad action '%s'" other))
+
+    /// Deserialize the residual IR back into a runnable `Tables` (inverse of `toDynamicValue`).
+    let ofDynamicValue (dv: DynamicValue) : Result<Tables, string> =
+        let prodOf p =
+            reqField "lhs" p
+            |> Result.bind asStr
+            |> Result.bind (fun lhs ->
+                reqField "rhs" p
+                |> Result.bind asArr
+                |> Result.bind (mapR dvToSym)
+                |> Result.map (fun rhs -> lhs, rhs))
+        let actionOf e =
+            reqField "s" e
+            |> Result.bind asInt
+            |> Result.bind (fun st ->
+                reqField "x" e
+                |> Result.bind asStr
+                |> Result.bind (fun x -> reqField "act" e |> Result.bind dvToAction |> Result.map (fun a -> (st, x), a)))
+        let gotoOf e =
+            reqField "s" e
+            |> Result.bind asInt
+            |> Result.bind (fun st ->
+                reqField "x" e
+                |> Result.bind asStr
+                |> Result.bind (fun x -> reqField "g" e |> Result.bind asInt |> Result.map (fun n -> (st, x), n)))
+        reqField "prods" dv
+        |> Result.bind asArr
+        |> Result.bind (mapR prodOf)
+        |> Result.bind (fun prods ->
+            reqField "action" dv
+            |> Result.bind asArr
+            |> Result.bind (mapR actionOf)
+            |> Result.bind (fun action ->
+                reqField "goto" dv
+                |> Result.bind asArr
+                |> Result.bind (mapR gotoOf)
+                |> Result.bind (fun goto ->
+                    reqField "start" dv
+                    |> Result.bind asInt
+                    |> Result.bind (fun start ->
+                        reqField "conflicts" dv
+                        |> Result.bind asArr
+                        |> Result.bind (mapR asStr)
+                        |> Result.map (fun conflicts ->
+                            { Prods = Array.ofList prods
+                              Action = Map.ofList action
+                              Goto = Map.ofList goto
+                              Start = start
+                              Conflicts = conflicts })))))
+
+    /// Run the specialized parser straight from its serialized residual IR (deserialize, then parse).
+    /// `build g |> Result.map toDynamicValue` then `parseFromIr ir tokens` == `parse (build g) tokens`.
+    let parseFromIr (ir: DynamicValue) (tokens: string list) : Result<int list, string> =
+        ofDynamicValue ir |> Result.bind (fun t -> parse t tokens)

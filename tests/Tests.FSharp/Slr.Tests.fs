@@ -188,3 +188,43 @@ let ``GLR FOREST: an unambiguous grammar yields exactly one tree`` () =
     match Slr.buildGlr exprGrammar with
     | Ok t -> Assert.Equal(1, List.length (Slr.glrForest t 16 [ "id"; "+"; "id"; "*"; "id" ]))
     | Error e -> Assert.Fail(sprintf "glr build failed: %s" e)
+
+// RESIDUAL IR — the 2nd Futamura projection in our substrate (Aaron 2026-07-02: "how is our futamara
+// projection lvl 3?"). `build` (1st projection) specializes the LR interpreter to the grammar ⇒
+// `Tables` is the residual parser; because the residual is DATA, `toDynamicValue` makes it a
+// SHIPPABLE, byte-locked object, and `parseFromIr` runs the specialized parser straight from IR.
+[<Fact>]
+let ``RESIDUAL IR (2nd Futamura projection): serialize the specialized parser, run it from IR, faithful round-trip`` () =
+    match Slr.build exprGrammar with
+    | Ok t ->
+        let ir = Slr.toDynamicValue t
+        // the residual IS a DynamicValue ⇒ rides the whole codec stack, byte-locked (json‖ + cbor)
+        Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] ir)
+        // round-trip: deserialize the residual back into runnable tables, fields identical
+        match Slr.ofDynamicValue ir with
+        | Ok t2 ->
+            Assert.Equal<Map<int * string, Slr.Action>>(t.Action, t2.Action)
+            Assert.Equal<Map<int * string, int>>(t.Goto, t2.Goto)
+            Assert.Equal(t.Start, t2.Start)
+            Assert.Equal<string list>(t.Conflicts, t2.Conflicts)
+        | Error e -> Assert.Fail(sprintf "ofDynamicValue failed: %s" e)
+        // parsing straight FROM the serialized residual == parsing from the in-memory tables
+        for toks in
+            [ [ "id" ]
+              [ "id"; "+"; "id"; "*"; "id" ]
+              [ "("; "id"; "+"; "id"; ")"; "*"; "id" ]
+              [ "id"; "+" ]
+              [ "+"; "id" ]
+              [] ] do
+            let fromIr =
+                match Slr.parseFromIr ir toks with
+                | Ok _ -> true
+                | Error _ -> false
+            Assert.Equal(Slr.accepts t toks, fromIr)
+    | Error e -> Assert.Fail(sprintf "build failed: %s" e)
+
+[<Fact>]
+let ``RESIDUAL IR: serialization is deterministic (byte-lock/DST) — same grammar, identical IR`` () =
+    match Slr.build exprGrammar, Slr.build exprGrammar with
+    | Ok a, Ok b -> Assert.Equal<DynamicValue>(Slr.toDynamicValue a, Slr.toDynamicValue b)
+    | _ -> Assert.Fail "build should succeed twice"
