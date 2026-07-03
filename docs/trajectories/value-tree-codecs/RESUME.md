@@ -100,8 +100,16 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    passing) + custom emotional propagation** → a `SoftValue` over parses (the forest IS a factor
    graph; inside–outside = BP on it). Full: `docs/research/2026-07-02-ambiguous-parse-forest-as-
    factor-graph-ep-bp-vmp-emotional-propagation-soft-superposition-over-isa.md`.
-   **← resume: the inference rung** — weighted forest → BP/inside–outside → SoftValue over parses
-   (Zeta.Bayesian); then EP/VMP + emotional propagation (math-team formalize); parses → ISA.
+9. ✅ **Parse forest → `SoftValue`** — LANDED (`src/Core/ParseSoft.fs`): `glrSoft` turns the forest
+   into a `SoftValue` superposition over parse trees (uniform v1); `ofWeightedForest` takes explicit
+   per-parse potentials (the shape BP/EP produces) → MAP-resolvable. First inference-rung step,
+   reusing `SoftValue` (don't reinvent).
+   **DISCOVERY (don't reinvent):** `Zeta.Bayesian` ALREADY has `FactorGraph.fs` / `Ep.fs` /
+   `Message.fs` / `MessageBatch.fs` / `InferNetTopology.fs` / `QuantumFusion.fs` — the EP /
+   message-passing / factor-graph infra. So the EP/BP/VMP weighting rung BUILDS ON that.
+   **← resume: weight the forest** — map the parse forest onto `Zeta.Bayesian.FactorGraph`, run
+   `Ep`/BP (inside–outside), feed potentials to `ParseSoft.ofWeightedForest`. Then the custom
+   emotional-propagation schedule (math-team formalize); parses → ISA lowering.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
 8. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
