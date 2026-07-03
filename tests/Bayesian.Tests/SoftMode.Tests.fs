@@ -301,3 +301,110 @@ let ``SM-4: damped runToFixpoint also yields a proper fixed point (damping canno
         Gaussian.isProper marginal |> should equal true
         Gaussian.variance marginal |> should be (greaterThan 0.0)
         Gaussian.variance marginal |> should be (lessThan priorVar)
+
+// ═══════════════════════════════════════════════════════════════════
+// SM-5: S1 + S2 Integration — Schema Evolution Preserves Belief Properness
+//
+// Invariant S2 (Uptime Stability) states that schema evolution is an
+// algebra over DynamicValue that preserves structural invariants across
+// version boundaries. Invariant S1 (Topological Soft-Mode Stability)
+// states that the factor graph topology prevents belief collapse.
+//
+// The integration claim is: a schema migration that adds or renames a
+// field does NOT affect the properness of any Gaussian belief that was
+// computed BEFORE the migration. The migration operates on the
+// DynamicValue envelope (the schema layer), not on the Gaussian
+// natural parameters (the belief layer). These two layers are
+// orthogonal: a proper Gaussian stays proper across a schema migration.
+//
+// This is the concrete form of "0-downtime means beliefs survive schema
+// evolution" — the in-flight beliefs are not collapsed by the migration.
+//
+// Anchor: SchemaEvolution.Tests.fs (S2 computational evidence);
+//   SoftMode.Tests.fs SM-1 to SM-4 (S1 computational evidence);
+//   FROZEN-CORE §A #12 (S1) and §A #13 (S2).
+// ═══════════════════════════════════════════════════════════════════
+
+open Zeta.Core
+
+[<Fact>]
+let ``SM-5a: schema addField does not affect a Gaussian belief stored in a different field`` () =
+    // Simulate: agent A has a belief (Gaussian) stored as a DynamicValue.
+    // A schema migration adds a new field "version" with a default.
+    // The belief field is preserved exactly — the Gaussian is still proper.
+    let belief = Gaussian.ofMeanVariance 1.5 0.8
+    let tau = 1.0 / Gaussian.variance belief
+    let nu  = Gaussian.mean belief * tau
+    // Store the belief as a DynamicValue (natural parameters)
+    let stored = DynamicValue.Object [ "tau", DynamicValue.Float tau; "nu", DynamicValue.Float nu ]
+    // Schema migration: add a "version" field (the new schema version)
+    let migrated = SchemaEvolution.addField "version" (DynamicValue.Int 2L) stored
+    // The belief fields are preserved exactly
+    match migrated with
+    | DynamicValue.Object kvs ->
+        let tau' = kvs |> List.find (fun (k, _) -> k = "tau") |> snd
+        let nu'  = kvs |> List.find (fun (k, _) -> k = "nu")  |> snd
+        match tau', nu' with
+        | DynamicValue.Float t, DynamicValue.Float n ->
+            // Reconstruct the Gaussian — it must still be proper
+            let belief' = { Gaussian.PrecisionMean = n; Gaussian.Precision = t }
+            Gaussian.isProper belief' |> should equal true
+            Gaussian.mean belief'     |> should (equalWithin 1e-12) (Gaussian.mean belief)
+            Gaussian.variance belief' |> should (equalWithin 1e-12) (Gaussian.variance belief)
+        | _ -> failwith "expected Float fields"
+    | _ -> failwith "expected Object"
+
+[<Property>]
+let ``SM-5b: schema addField preserves Gaussian properness for any proper prior (FsCheck)``
+    (meanRaw: float) (logVarRaw: float) =
+    // Guard against infinity/NaN from FsCheck
+    if System.Double.IsInfinity(meanRaw) || System.Double.IsNaN(meanRaw) ||
+       System.Double.IsInfinity(logVarRaw) || System.Double.IsNaN(logVarRaw) then true
+    else
+    // Generate a proper Gaussian: mean in [-10,10], variance in [0.01, 10]
+    let mean = (meanRaw % 10.0 + 10.0) % 20.0 - 10.0
+    let var  = exp (logVarRaw % 2.3) * 0.01  // in [0.01, ~10]
+    let belief = Gaussian.ofMeanVariance mean var
+    if not (Gaussian.isProper belief) then true  // skip degenerate inputs
+    else
+        let tau = 1.0 / Gaussian.variance belief
+        let nu  = Gaussian.mean belief * tau
+        let stored   = DynamicValue.Object [ "tau", DynamicValue.Float tau; "nu", DynamicValue.Float nu ]
+        let migrated = SchemaEvolution.addField "version" (DynamicValue.Int 2L) stored
+        match migrated with
+        | DynamicValue.Object kvs ->
+            match kvs |> List.tryFind (fun (k,_) -> k = "tau"),
+                  kvs |> List.tryFind (fun (k,_) -> k = "nu") with
+            | Some (_, DynamicValue.Float t), Some (_, DynamicValue.Float n) ->
+                let belief' = { Gaussian.PrecisionMean = n; Gaussian.Precision = t }
+                Gaussian.isProper belief'
+            | _ -> false
+        | _ -> false
+
+[<Property>]
+let ``SM-5c: schema renameField preserves Gaussian properness (lossless rename = 0-downtime)``
+    (meanRaw: float) (logVarRaw: float) =
+    // Guard against infinity/NaN from FsCheck
+    if System.Double.IsInfinity(meanRaw) || System.Double.IsNaN(meanRaw) ||
+       System.Double.IsInfinity(logVarRaw) || System.Double.IsNaN(logVarRaw) then true
+    else
+    // Rename "tau" -> "precision" (a schema evolution that renames a field)
+    let mean = (meanRaw % 10.0 + 10.0) % 20.0 - 10.0
+    let var  = exp (logVarRaw % 2.3) * 0.01
+    let belief = Gaussian.ofMeanVariance mean var
+    if not (Gaussian.isProper belief) then true
+    else
+        let tau = 1.0 / Gaussian.variance belief
+        let nu  = Gaussian.mean belief * tau
+        let stored   = DynamicValue.Object [ "tau", DynamicValue.Float tau; "nu", DynamicValue.Float nu ]
+        // Rename: "tau" -> "precision"
+        let migrated = SchemaEvolution.renameField "tau" "precision" stored
+        match migrated with
+        | DynamicValue.Object kvs ->
+            match kvs |> List.tryFind (fun (k,_) -> k = "precision"),
+                  kvs |> List.tryFind (fun (k,_) -> k = "nu") with
+            | Some (_, DynamicValue.Float t), Some (_, DynamicValue.Float n) ->
+                let belief' = { Gaussian.PrecisionMean = n; Gaussian.Precision = t }
+                Gaussian.isProper belief'
+            | _ -> false
+        | _ -> false
