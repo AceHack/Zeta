@@ -159,3 +159,32 @@ module ShivaGc =
     /// `partition (rootsFromTraffic messages) heap`, named for what it means.
     let deactivateIdle (messages: DynamicValue list) (h: DynamicValue) : DynamicValue * DynamicValue =
         partition (rootsFromTraffic messages) h
+
+    // ── message-passing makes the runtime distributed: residency-transparent delivery ──
+    //
+    // Aaron 2026-07-03: "the really cool thing is the message passing works to make the entire runtime
+    // distributed — kind of like Objective-C to the max, and other message-oriented languages." The
+    // point: if the ONLY way to touch a grain is to send it a message, then WHERE the grain is — and
+    // whether it is even resident right now — is invisible to the sender. A message to a PAUSED grain
+    // REACTIVATES it and is delivered; a message to a resident grain is delivered directly; a message
+    // to a grain on another silo routes over Reticulum. Same call, three fulfilments — location AND
+    // residency transparency. This is the exact hook Smalltalk exposes as `doesNotUnderstand:`,
+    // Objective-C as `forwardInvocation:` / NSProxy (and shipped as *Distributed Objects* —
+    // NSConnection / NSDistantObject), and Erlang as the location-transparent `!` send. Alan Kay:
+    // "the big idea is messaging" — the runtime distributes BECAUSE messaging is the only verb.
+
+    /// Deliver a message to its target grain across the resident/paused boundary — residency-
+    /// transparent. If the target is paused, it is resumed first (the message reactivates it), then
+    /// present in the returned resident heap; if already resident, unchanged; if unknown to both,
+    /// the resident heap is returned as-is (the target lives on another silo — routing, not our call).
+    /// Returns the (possibly grown) resident heap. The sender never learns which case occurred — that
+    /// obliviousness IS the distribution transparency.
+    let deliver (msg: DynamicValue) (resident: DynamicValue) (paused: DynamicValue) : DynamicValue =
+        match DynamicValue.get "to" msg with
+        | Some(DynamicValue.String target) ->
+            let isResident = objects resident |> List.exists (fun o -> objId o = Some target)
+            if isResident then resident
+            else
+                let toRevive = objects paused |> List.filter (fun o -> objId o = Some target)
+                resume (DynamicValue.Array toRevive) resident // reactivate from what remained (no-op if truly absent)
+        | _ -> resident

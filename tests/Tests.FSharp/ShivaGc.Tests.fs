@@ -151,3 +151,25 @@ let ``RESUME IS IDEMPOTENT: resuming an already-resident grain keeps the residen
     let paused = ShivaGc.heap [ ShivaGc.object' "G" (v "stale") [] ] // same id, older story
     let revived = ShivaGc.resume paused resident
     setEq [ "G" ] (ids revived) // no duplicate; the resident copy wins
+
+// ── MESSAGE-PASSING MAKES THE RUNTIME DISTRIBUTED: residency-transparent delivery (shadow*, Aaron
+// 2026-07-03: "the message passing works to make the entire runtime distributed — like Objective-C to
+// the max"). A message to a PAUSED grain reactivates it and is delivered; to a resident grain,
+// delivered directly; to an unknown grain, routed elsewhere (no-op here). The sender never learns
+// which — that obliviousness IS the distribution transparency. Proof:
+//   10. DELIVER IS RESIDENCY-TRANSPARENT: sending to a paused grain resumes it; to a resident grain is
+//       a no-op; to an unknown grain leaves the resident set unchanged (it lives on another silo).
+
+[<Fact>]
+let ``DELIVER IS RESIDENCY-TRANSPARENT: a message reactivates a paused grain, transparently`` () =
+    let resident = ShivaGc.heap [ ShivaGc.object' "live" (v "L") [] ]
+    let paused = ShivaGc.heap [ ShivaGc.object' "sleeping" (v "S") [] ]
+    // message to the PAUSED grain → it reactivates and is now resident (the message woke it).
+    let afterPaused = ShivaGc.deliver (ShivaGc.message "sleeping") resident paused
+    setEq [ "live"; "sleeping" ] (ids afterPaused)
+    // message to the RESIDENT grain → no change (already active).
+    let afterResident = ShivaGc.deliver (ShivaGc.message "live") resident paused
+    setEq [ "live" ] (ids afterResident)
+    // message to an UNKNOWN grain → resident set unchanged (it's on another silo; routing, not our call).
+    let afterUnknown = ShivaGc.deliver (ShivaGc.message "elsewhere") resident paused
+    setEq [ "live" ] (ids afterUnknown)

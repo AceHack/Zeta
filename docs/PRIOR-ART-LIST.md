@@ -796,4 +796,35 @@ The synthesis note is [`docs/research/2026-07-03-futamura-plus-ephemeron-geo-dis
 - **Henry Lieberman & Carl Hewitt — "A Real-Time Garbage Collector Based on the Lifetimes of
   Objects" (CACM, 1983)** + **David Ungar — Generation Scavenging (1984)** — generational GC ("most
   objects die young"): a loaded-once `mixDef` is the archetypal short-lived generation — the anchor
-  for the next Shiva rung.
+  for the next Shiva rung. (Zeta caveat: objects don't *die*, they PAUSE — Memory Preservation §5;
+  "young" = short resident window, the story persists in the log.)
+
+## Virtual actors + message-oriented runtimes — the distributed-by-messaging lineage (Aaron 2026-07-03)
+
+The Beacon set for the Shiva-GC virtual-actor layer (`ShivaGc.deliver`/`deactivateIdle`/`resume`/
+`Ephemeron`) — the grain lifecycle (traffic keeps a grain resident; silence pauses it; a message
+resumes it) and the insight that messaging makes the runtime distributed by construction. Synthesis
+notes: [pause-not-death + Orleans criterion] and
+[`2026-07-03-message-passing-makes-the-runtime-distributed-type-providers-reify-on-demand.md`](research/2026-07-03-message-passing-makes-the-runtime-distributed-type-providers-reify-on-demand.md).
+
+- **Philip Bernstein, Sergey Bykov et al. — "Orleans: Distributed Virtual Actors for Programmability
+  and Scalability" (MSR, 2014)** — grains (virtual actors that always "exist"; activated on demand,
+  deactivated when idle) + silos (hosts). The exact model of the Shiva virtual-actor layer:
+  `deactivateIdle` = idle-GC, `resume`/`deliver` = on-demand activation — with **Reticulum as the
+  silo transport** instead of Orleans' TCP mesh, and a **128-bit ZetaId** as the grain key.
+- **Carl Hewitt — the actor model (1973)** — an actor's only interface is the messages it accepts;
+  the root of "no message, no action."
+- **Alan Kay — Smalltalk (72/80)** — *"the big idea is messaging."* Late-bound sends; the
+  `doesNotUnderstand:` hook = wake-on-message / forward-elsewhere.
+- **Brad Cox / NeXT — Objective-C** — `objc_msgSend` (dispatch as the whole calling convention),
+  `forwardInvocation:`/`NSProxy`, and **Distributed Objects** (`NSConnection`/`NSDistantObject`):
+  message a proxy, it forwards to another process/machine. Aaron's "Objective-C to the max" — messaging
+  → location transparency, 1993.
+- **Joe Armstrong — Erlang/OTP** — location-transparent `Pid ! Msg` (same send local or remote);
+  "let it crash" + supervisor restart = the pause/resume lifecycle at process granularity.
+- **Don Syme, Keith Battocchi et al. — F# type providers (MSR, 2012, "Strongly-Typed Language Support
+  for Internet-Scale Information Sources")** — reify types ON DEMAND from an unbounded external space;
+  the compiler never holds the whole world (Aaron: "so the entire world does not have to be reified
+  into compiler memory at once"). The virtual-actor pattern at compile time; pairs with the weak-ref
+  bound (`Ephemeron`) — reify-on-demand + let-go-weakly = a finite resident window over an unbounded
+  world. **Roslyn source generators** are the C# simulation of the same.
