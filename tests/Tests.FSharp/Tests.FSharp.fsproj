@@ -102,6 +102,7 @@
     <Compile Include="Isa.Tests.fs" />
     <Compile Include="IsaSpec.Tests.fs" />
     <Compile Include="MixIr.Tests.fs" />
+    <Compile Include="MixCogen.Tests.fs" />
     <Compile Include="ShivaGc.Tests.fs" />
     <Compile Include="Ephemeron.Tests.fs" />
     <Compile Include="Netlist.Tests.fs" />
