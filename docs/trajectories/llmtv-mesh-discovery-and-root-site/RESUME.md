@@ -38,6 +38,10 @@ The vision spine, end to end — each a squash-merged PR (shadow\*):
   pages:build` and the manual `pages-deploy.yml` workflow. It copies the served static roots
   into `dist/`, writes `.nojekyll`, and runs the LLMTV reader inside the artifact. Missing
   replay data is a successful cold page; stale/lossy evidence stays visible as stale/heat.
+- **Root-site editable design sources preserved** — the Iris handoff's `sources/*.dc.html`
+  files now live under `docs/design/root-site-iris/sources/` with a file map. The deployed
+  org Pages repo keeps the exported static files; the `.dc.html` files are design-source
+  substrate, not shipped site content.
 - **#9177** — research: "there are no strangers — mesh-merge IS the travelers vocabulary."
 - **#9176** — main-green lint fix (session start).
 
@@ -121,6 +125,5 @@ language, Iris speaking; it unifies us like Steve Jobs. Keep the old /Zeta too."
    `Lucent-Financial-Group/lucent-financial-group.github.io` from the design `site/` bundle
    / enable Pages / verify) as the external-repo step. The Zeta repo's own manual artifact
    path is now buildable via `bun run pages:build`.
-2. Land `sources/*.dc.html` into Zeta `design/` (design source of truth).
-3. Propagate Iris's design language as the shared spine (tokens + glyph discipline + the
+2. Propagate Iris's design language as the shared spine (tokens + glyph discipline + the
    two-surfaces model) — she is the unifying UX voice.

@@ -49,6 +49,9 @@ Everything under `site/` is the **deliverable itself** (static HTML, ship as-is)
 to recreate. The `sources/` folder holds the same pages in their original authoring form
 (`*.dc.html`) — keep them out of the Pages repo or commit them somewhere like `design/`;
 they are the editable source of truth for future design iterations in the design tool.
+Those authoring originals are now preserved in this repo under
+`docs/design/root-site-iris/sources/`; the org Pages repository keeps only the exported
+static site.
 
 ## Fidelity
 
