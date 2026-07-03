@@ -49,6 +49,25 @@ program-matter. (Composes: DST §7 · noninterference §13 (all entropy via the 
 only-the-irreducible-is-primitive (gen(gen)==gen — regenerating IS verifying) · the R4
 observation-log-as-generator residual split.)
 
+## Status — layer-4 first slice landed (Otto 2026-07-03, cowork)
+
+`src/Core.TypeScript/chip9-cart/` — the cart END of the pipeline, working: `compile` takes a
+hex color grid (0-7, the 3-plane gamut) and emits a **self-verifying chip9 cartridge** — a
+straight-line blit program the treaty VM executes to redraw the capture exactly. The cart is
+TEXT (hex-in-JSON shape; no-binary-in-proof-lineage) and carries its own golden render;
+`verify` re-executes the ROM and byte-compares — **regenerating IS the check** (gen(gen)==gen).
+6 tests: round-trip byte-lock (every pixel), worst-case seeded-random 64x32 full grid fits the
+NNN ceiling, content-proportional size (empty tiles emit nothing; sparse cart <10% of dense),
+tamper-detection both directions (ROM flip and golden-row flip caught), determinism, honest
+bounds. Demo: `bun src/Core.TypeScript/chip9-cart/run-demo.ts`.
+
+Honest peels: (a) v1's generator is the DEGENERATE one — a blit list, the identity generator;
+it redraws itself but does not predict itself. 081KTH5N5ZJ is the upgrade that replaces blits
+with smaller real generators. (b) For tiny dense images the program overhead loses to raw
+pixels (47-byte cart vs 21-byte raw for the 8x7 demo glyph); content-proportionality wins on
+sparse/structured captures, which is what paper sheets are. (c) The photo->grid front end
+(layers 1-3) is untouched by this slice; input is already-digitized grid text.
+
 ## Layered scope (razored)
 
 1. **Semantic layer (already real, $0):** vision-model transcription photo -> structured text

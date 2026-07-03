@@ -48,8 +48,8 @@ answers "is this behavior compressible by a generator, for an observer with/with
 - The "not real" leap is refused in code + docs: the report exposes `reducibility`, never a
   `conscious`/`real` verdict; the observer-relative demo is the standing proof that replayability != realness.
 - Apply it to a real agent trace (moral-gym strategy logs / a Detour-observed run) and report the
-  residual spectrum; keep the honest bound. [DONE 2026-07-03 — `residual/gym-trace.ts` +
-  `run-gym-trace.ts` + 4 tests; spectrum table below. Acceptance is now fully closed; the item
+  residual spectrum; keep the honest bound. [DONE 2026-07-03 — `src/Core.TypeScript/residual/gym-trace.ts` +
+  `src/Core.TypeScript/residual/run-gym-trace.ts` + 4 tests; spectrum table below. Acceptance is now fully closed; the item
   stays open only for the DEFERRED wonder-compression layer.]
 
 ## Measured — residual spectrum over a REAL gym run (seed 0xE66, 400 rounds, 7200 played; DST-stable)
