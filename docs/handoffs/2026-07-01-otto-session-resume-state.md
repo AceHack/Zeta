@@ -10,14 +10,9 @@ Main at save: post **#9212** + **#9214** merge.
 ## 081KSXN… — work-item event G-Set
 
 - **Slice 1 (#9214):** `WorkItemCreated` on mint; events at `{dir}/events/`
-- **Slice 2 (in branch `feat/081KSXN-workitem-event-gset-slice-2`):**
-  - `state-changed` / `closed` publishers + lifecycle CLIs
-  - `complete-workitem` emits `state-changed → done`
-  - `set-workitem-state` for backlog ↔ in-progress and `--close`
-  - `open-backlog.ts` folds events → open Z-set view
-  - `--push` on lifecycle CLIs → direct-to-main event publish (agent-bus pattern)
+- **Slice 2 (#9263):** lifecycle events, open-backlog fold, `--push` direct-to-main
+- **Slice 3 (in branch):** DORA Bag-folds — `dora-fold.ts` + `dora-metrics.ts` CLI
 
 ## Next resume targets
 
-- **081KSXN** — DORA Bag-folds
-- **081KVP2M1…** — lifecycle triad (KRL revocation)
+- **081KSXN** — retire `otto-channels` ID allocation for work-items
