@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-language="sovereign">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,18 +8,24 @@
 <meta property="og:title" content="Zeta — LLMTV" />
 <meta property="og:url" content="https://lucent-financial-group.github.io/Zeta/hall/tv/" />
 <style>
+    /* BASE — the shared spine every language inherits (state-color DU + type). Meaning, never
+       chrome. See docs/design/design-language-base-corporate-sovereign.md. */
     :root {
-      --ground:#0b0f19; --hall:#0c0c10; --panel:#12131a; --scan:#141821;
-      --line:#232a3d; --line2:#2f3850;
       --txt:#e8ecf6; --txt2:#8b96b4; --txt3:#565f7d;
-      --c-hot:#9a8ce6;     /* violet: high salience / hot attention (vocab: LLMTV hot end) */
-      --c-warm:#e8b566;    /* amber: rising */
-      --c-cool:#5ec8c2;    /* teal: settled */
-      --c-ok:#5dbf9a; --c-warn:#e0a24a; --c-bad:#e0746a;
+      --c-hot:#9a8ce6;     /* violet: high salience / hot / sealed (state DU) */
+      --c-warm:#e8b566;    /* amber: working / rising */
+      --c-cool:#5ec8c2;    /* teal: settled / active */
+      --c-ok:#5dbf9a; --c-warn:#e0a24a; --c-bad:#e0746a;  /* red = attention/live */
       --mono:'Space Mono',ui-monospace,'SF Mono',Menlo,monospace;
       --disp:'Space Grotesk',system-ui,sans-serif;
       --body:'Inter',system-ui,sans-serif;
       color-scheme:dark;
+    }
+    /* SOVEREIGN — the liminal language's chrome (a mind governing itself). LLMTV is a Sovereign
+       surface. Swapped by one attribute; the case IS the attribute. */
+    [data-language="sovereign"] {
+      --ground:#0b0f19; --hall:#0c0c10; --panel:#12131a; --scan:#141821;
+      --line:#232a3d; --line2:#2f3850;
     }
     * { box-sizing:border-box; }
     body { margin:0; font-family:var(--body); color:var(--txt); background:var(--hall);
