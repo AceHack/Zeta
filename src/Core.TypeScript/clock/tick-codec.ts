@@ -28,7 +28,7 @@ export function decodeVersionstamp(buf: Uint8Array): bigint {
   if (buf.length < 8) throw new Error("decodeVersionstamp: buffer too short");
   let u = 0n;
   for (let i = 0; i < 8; i++) {
-    u = (u << 8n) | BigInt(buf[i]);
+    u = (u << 8n) | BigInt(buf[i]!);
   }
   // Reinterpret as int64 (two's complement)
   if (u >= 0x8000000000000000n) {

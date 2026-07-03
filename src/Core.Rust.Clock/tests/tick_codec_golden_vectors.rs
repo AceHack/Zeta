@@ -46,7 +46,7 @@ fn encode_matches_golden_vectors() {
     assert!(!vecs.is_empty());
     for entry in vecs {
         let name    = entry["name"].as_str().unwrap();
-        let version = entry["version"].as_i64().unwrap();
+        let version = entry["version"].as_str().unwrap().parse::<i64>().unwrap();
         let hex     = entry["hex"].as_str().unwrap();
         let vstamp  = Versionstamp::of_int(version);
         let encoded = vstamp.encode();
@@ -61,7 +61,7 @@ fn decode_matches_golden_vectors() {
     let vecs = v["vectors"].as_array().expect("vectors is an array");
     for entry in vecs {
         let name    = entry["name"].as_str().unwrap();
-        let version = entry["version"].as_i64().unwrap();
+        let version = entry["version"].as_str().unwrap().parse::<i64>().unwrap();
         let hex     = entry["hex"].as_str().unwrap();
         let buf     = from_hex(hex);
         let decoded = Versionstamp::decode(buf);
@@ -74,7 +74,7 @@ fn round_trip_golden_vectors() {
     let v = vectors();
     let vecs = v["vectors"].as_array().expect("vectors is an array");
     for entry in vecs {
-        let version = entry["version"].as_i64().unwrap();
+        let version = entry["version"].as_str().unwrap().parse::<i64>().unwrap();
         let vstamp  = Versionstamp::of_int(version);
         let rt      = Versionstamp::decode(vstamp.encode());
         assert_eq!(rt.version, version, "Gate T2 round-trip version={version}");

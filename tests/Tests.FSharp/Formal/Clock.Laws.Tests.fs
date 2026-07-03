@@ -174,7 +174,7 @@ let ``Gate T2 Versionstamp encode matches golden vectors`` () =
     let mutable n = 0
     for v in doc.RootElement.GetProperty("vectors").EnumerateArray() do
         let name    = v.GetProperty("name").GetString()
-        let version = v.GetProperty("version").GetInt64()
+        let version = v.GetProperty("version").GetString() |> fun s -> System.Int64.Parse(s, System.Globalization.CultureInfo.InvariantCulture)
         let hex     = v.GetProperty("hex").GetString()
         let encoded = Versionstamp.encode (Versionstamp.ofInt64 version)
         let actual  = encoded |> Array.map (fun b -> sprintf "%02x" b) |> String.concat ""
@@ -191,7 +191,7 @@ let ``Gate T2 Versionstamp decode matches golden vectors`` () =
     let mutable n = 0
     for v in doc.RootElement.GetProperty("vectors").EnumerateArray() do
         let name    = v.GetProperty("name").GetString()
-        let version = v.GetProperty("version").GetInt64()
+        let version = v.GetProperty("version").GetString() |> fun s -> System.Int64.Parse(s, System.Globalization.CultureInfo.InvariantCulture)
         let hex     = v.GetProperty("hex").GetString()
         let buf     = hex |> Seq.chunkBySize 2 |> Seq.map (fun c -> System.Convert.ToByte(System.String(c), 16)) |> Seq.toArray
         let decoded = Versionstamp.decode buf
@@ -207,7 +207,7 @@ let ``Gate T2 Versionstamp encode-decode round-trip`` () =
     use doc = JsonDocument.Parse(File.ReadAllText path)
     let mutable n = 0
     for v in doc.RootElement.GetProperty("vectors").EnumerateArray() do
-        let version = v.GetProperty("version").GetInt64()
+        let version = v.GetProperty("version").GetString() |> fun s -> System.Int64.Parse(s, System.Globalization.CultureInfo.InvariantCulture)
         let vstamp  = Versionstamp.ofInt64 version
         let rt      = Versionstamp.decode (Versionstamp.encode vstamp)
         if rt.Version <> version then

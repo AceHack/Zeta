@@ -1,4 +1,5 @@
 // tick-codec.golden-vectors.test.ts — Gate T2 byte-lock cross-verify (TypeScript oracle).
+import { describe, expect, test } from "bun:test";
 import { encodeVersionstamp, decodeVersionstamp, toHex } from "./tick-codec";
 import vectors from "./tick-codec-golden-vectors.json";
 
