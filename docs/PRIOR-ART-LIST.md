@@ -757,3 +757,43 @@ Each entry names the human + work a shipped module stands on (anchor-to-human-pr
 - **.kkrieger — .theprodukkt / Farbrausch (2004)** — the 96KB first-person shooter; the demoscene
   existence proof that KB-scale PROGRAMS draw rich scenes — the feasibility anchor for
   capture-as-cart. Already named in 081KTH5N5ZJ; listed here so the reading list carries it.
+
+## Partial evaluation + garbage collection — the mix-as-data / Shiva-GC lineage (Aaron 2026-07-03)
+
+The Beacon set for the Futamura ladder (`Isa`/`IsaSpec`/`Cogen`/`MixIr`) and the Shiva GC
+(`ShivaGc`/`Ephemeron`). Aaron 2026-07-03: *"we should link to this prior art too … we are
+basically combining these two into a geo-distributed relativistic database of intelligence."*
+The synthesis note is [`docs/research/2026-07-03-futamura-plus-ephemeron-geo-distributed-relativistic-database-of-intelligence.md`](research/2026-07-03-futamura-plus-ephemeron-geo-distributed-relativistic-database-of-intelligence.md).
+
+- **Yoshihiko Futamura — "Partial Evaluation of Computation Process" (1971; reprinted *Higher-Order
+  and Symbolic Computation*, 1999)** — the THREE PROJECTIONS. 1st: `mix(interpreter, program)` =
+  compiled program (a dynarec). 2nd: `mix(mix, interpreter)` = a compiler. 3rd: `mix(mix, mix)` =
+  a compiler-generator (cogen). The exact spine of the two-column build: `Slr.build` (1st),
+  `build >> toDynamicValue` (2nd), `Cogen`/`MixIr` (3rd). Our `Isa.specialize` is `mix`; `IsaSpec`
+  makes the interpreter data so one `mix` specializes ANY ISA; `MixIr` reifies `mix` itself.
+- **Neil D. Jones, Carsten Gomard & Peter Sestoft — *Partial Evaluation and Automatic Program
+  Generation* (1993, the "PEBook", free online)** — the canonical text: online vs offline PE,
+  binding-time analysis, the mix equation, the Futamura projections worked in full. Our
+  online-PE (`specialize` folds static / residualizes dynamic, no separate BTA pass) is straight
+  from here; the S-m-n correctness law we machine-check is their mix equation.
+- **Stephen Cole Kleene — the S-m-n theorem (1938; *Introduction to Metamathematics*, 1952)** — a
+  general, effective specializer provably exists. `mix` is S-m-n made practical; the residual law
+  `eval(specialize p s) d ⊕ known = eval p (s∪d)` is S-m-n stated for our interpreter.
+- **Andrei Ershov — "Mixed Computation" (1977–82)** — the independent Soviet lineage of partial
+  evaluation ("mixed computation" = the mix). The word `mix` is his.
+- **Barry Hayes — "Ephemerons: A New Finalization Mechanism" (OOPSLA, 1997)** — the real name for
+  the weak-value table in `Ephemeron.fs`. An ephemeron's VALUE is reachable only THROUGH its KEY,
+  so key→value cycles collect (where weak refs / strong refs leak). Our `reachable` fixpoint is
+  exactly Hayes' marking; the cycle-collapse test is the property that distinguishes it. Kin: Java
+  `WeakHashMap`, .NET `ConditionalWeakTable` (the productionized weak-value tables).
+- **John McCarthy — "Recursive Functions of Symbolic Expressions" (CACM, 1960)** — LISP: garbage
+  collection was INVENTED alongside code-as-data (S-expressions). The exact parallel Shiva rests
+  on — GC became possible *because* programs became data; reifying `mix` (mix-as-data) repeats the
+  move one level up, and the collector falls out (`ShivaGc`).
+- **Dijkstra, Lamport, Martin, Scholten & Steffens — "On-the-Fly Garbage Collection" (CACM, 1978)** —
+  the mutator/collector split. In Shiva: the universal step-driver is the mutator, the reified
+  tables are the heap.
+- **Henry Lieberman & Carl Hewitt — "A Real-Time Garbage Collector Based on the Lifetimes of
+  Objects" (CACM, 1983)** + **David Ungar — Generation Scavenging (1984)** — generational GC ("most
+  objects die young"): a loaded-once `mixDef` is the archetypal short-lived generation — the anchor
+  for the next Shiva rung.
