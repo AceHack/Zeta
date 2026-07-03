@@ -62,8 +62,8 @@ High-fidelity. Colors, type, spacing and copy are final unless Aaron says otherw
    the picture IS the computation. LLMTV Channel 0 is the zetascheduler chip8/9 meta-cart
    playing a 4K game in soft mode: the screen shows the **current superposition of the play**
    (ghost paddles, ball probability cloud, Bayesian next-input predictions).
-They must feel like different rooms of one building; the shared spine is the glyph discipline
-below.
+   They must feel like different rooms of one building; the shared spine is the glyph discipline
+   below.
 
 ## Design tokens
 
@@ -86,11 +86,33 @@ GraphQL, no tokens, no rate limits — Pages is the CDN.
   `data/metrics-history.json` → `frames[]`, refresh `data/metrics.json` (latest frame +
   roster), set `provenance.mock=false`, commit to main. Append-only; the file IS the ledger.
 - **Frame shape:** `{ t: "YYYY-MM-DD", prs_merged_24h, avg_lead_time_minutes, commits_24h,
-  active_agents, open_prs }` — see the mock files for a working example.
+active_agents, open_prs }` — see the mock files for a working example.
 - **Page behavior (already wired):** fetch success → charts render from the file and the
   header chip reads `live · data/ same-origin` (or `(mock frames)` while `provenance.mock`
   is true). Fetch failure/offline → embedded 2026-05-26 fallback frame renders and the chip
   says `offline · embedded frame`. The page never pretends.
+
+## LLMTV live readout contract
+
+`llmtv.html` links its standing view to `hall/tv/index.html`. The live mesh runner should
+write that page plus its replay ledger as plain same-origin files:
+
+```text
+data/llmtv-live.replay.json → zeta.llmtv.replay.v1 ledger
+hall/tv/index.html          → zero-JS LLMTV page rendered from that ledger
+```
+
+Use `src/Core.TypeScript/discovery/llmtv-root-site-readout.ts` for the canonical path
+contract, or run the UDP smoke directly against a Pages checkout:
+
+```bash
+bun src/Core.TypeScript/discovery/llmtv-node.demo.ts 6 --root-site /path/to/lucent-financial-group.github.io
+```
+
+The browser does not poll GitHub, GraphQL, or a forge-host API in its frame loop. The live
+mesh, Reticulum/UDP transport, and scheduler write static artifacts; the website reads the
+latest committed or locally generated files. Missing or stale files should be presented as
+honest cold/offline state, not fake live status.
 
 ## Offline / PWA
 

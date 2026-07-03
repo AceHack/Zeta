@@ -2,26 +2,49 @@
 // itself and broadcasting its LLMTV mind; every node folds the others into a live society
 // grid that drains to replay JSON + zero-JS HTML on a readout cadence (shadow*).
 //
-// Run:  bun src/Core.TypeScript/discovery/llmtv-node.demo.ts [seconds] [out.html] [out.replay.json]
+// Run:
+//   bun src/Core.TypeScript/discovery/llmtv-node.demo.ts [seconds] [out.html] [out.replay.json]
+//   bun src/Core.TypeScript/discovery/llmtv-node.demo.ts [seconds] --root-site <dir>
 //
 // This is the physical proof of "the whole society broadcasts at once, over the mesh":
 // three independent sources, one socket group, no central broadcaster — the tiles populate
 // from packets on the wire. Reticulum is the next transport into the same port; UDP
 // multicast is the first. Nothing is committed by this script; it writes to the path you
 // give (default: a scratch file it prints).
-import { writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 import type { LlmtvNodeConfig } from "./llmtv-node";
 import { createUdpMeshTransport, systemScheduler } from "./udp-transport";
 import type { SourceMind } from "./llmtv-broadcast";
 import { createLlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import { createLlmtvLiveReadout } from "./llmtv-live-readout";
+import { createRootSiteLlmtvLiveReadout, rootSiteLlmtvPaths } from "./llmtv-root-site-readout";
 
 const GROUP = "239.255.42.99";
 const PORT = 42099;
 
-const seconds = Number(process.argv[2] ?? "6");
-const outPath = process.argv[3] ?? "/tmp/llmtv-live.html";
-const replayPath = process.argv[4] ?? `${outPath}.replay.json`;
+function takeRootSiteArg(argv: string[]): string | undefined {
+  const index = argv.indexOf("--root-site");
+  if (index < 0) return undefined;
+  const value = argv[index + 1];
+  if (value === undefined || value.startsWith("-")) {
+    throw new Error("--root-site requires a directory");
+  }
+  argv.splice(index, 2);
+  return value;
+}
+
+function writeText(path: string, text: string): void {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, text, "utf-8");
+}
+
+const args = process.argv.slice(2);
+const rootSiteDir = takeRootSiteArg(args);
+const rootSitePaths = rootSiteDir === undefined ? undefined : rootSiteLlmtvPaths(rootSiteDir);
+const seconds = Number(args[0] ?? "6");
+const outPath = rootSitePaths?.htmlPath ?? args[1] ?? "/tmp/llmtv-live.html";
+const replayPath = rootSitePaths?.replayPath ?? args[2] ?? `${outPath}.replay.json`;
 
 const minds: Record<string, () => SourceMind> = {
   alexa: () => ({
@@ -81,18 +104,31 @@ const nodes = Object.keys(minds).map((name) => {
 // Any node's live grid is the whole society; drain node[0]'s captured wires on a cadence
 // into replay JSON, then render that artifact to the zero-JS page.
 const watcher = nodes[0]!;
-const readout = createLlmtvLiveReadout(
-  watcher.bridge,
-  sched,
-  { writeText: (path, text) => writeFileSync(path, text, "utf-8") },
-  {
-    seed: "S4",
-    readoutEveryMs: 1_000,
-    replayPath,
-    htmlPath: outPath,
-    title: "Zeta — LLMTV (LIVE over the mesh)",
-  },
-);
+const readout =
+  rootSiteDir === undefined
+    ? createLlmtvLiveReadout(
+        watcher.bridge,
+        sched,
+        { writeText },
+        {
+          seed: "S4",
+          readoutEveryMs: 1_000,
+          replayPath,
+          htmlPath: outPath,
+          title: "Zeta — LLMTV (LIVE over the mesh)",
+        },
+      )
+    : createRootSiteLlmtvLiveReadout(
+        watcher.bridge,
+        sched,
+        { writeText },
+        {
+          rootDir: rootSiteDir,
+          seed: "S4",
+          readoutEveryMs: 1_000,
+          title: "Zeta — LLMTV (LIVE over the mesh)",
+        },
+      );
 
 for (const n of nodes) n.bridge.node.start();
 readout.start();

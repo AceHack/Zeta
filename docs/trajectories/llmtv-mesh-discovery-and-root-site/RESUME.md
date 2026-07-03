@@ -7,7 +7,7 @@ marked otherwise.
 
 ## 1. What landed this session (LLMTV + mesh, all pure-core-over-injected-ports, DST-tested)
 
-The vision spine, end to end — each a squash-merged PR (shadow*):
+The vision spine, end to end — each a squash-merged PR (shadow\*):
 
 - **#9180** — `hall/tv/` **society grid, generated**: `src/Core.TypeScript/darkhall-ui/darkhall-tv.ts`
   (+`.emit.ts`, `.test.ts`). Homoiconic twin of `darkhall-room.ts`; DU→data-attributes;
@@ -16,14 +16,19 @@ The vision spine, end to end — each a squash-merged PR (shadow*):
   One-way (no viewer→source message = noninterference §13 at the type level); `frostStrip`
   membrane; LWW-by-seq viewer fold; `toLlmtvTranscript` bridges back to `darkhall-tv`.
 - **#9186** — **live over UDP**: `llmtv-node.ts` (pure runner over injected transport+scheduler)
-  + `udp-transport.ts` (real dgram multicast, the impure edge). Verified live: 3 nodes
-  tiled each other; frost held over the socket. Demo: `bun …/llmtv-node.demo.ts`.
+  - `udp-transport.ts` (real dgram multicast, the impure edge). Verified live: 3 nodes
+    tiled each other; frost held over the socket. Demo: `bun …/llmtv-node.demo.ts`.
 - **#9192** — **Reticulum transport**: `reticulum-transport.ts`. Self-certifying destination
   hash (truncated SHA-256 of ZetaId), announce + best-hop path table, transport-node relay
   that bridges meshes (seen-fid set is a G-set; join = union).
 - **#9200** — **global DHT path discovery**: `dht-discovery.ts`. Kademlia over destination
   hashes — XOR distance, k-buckets, iterative lookup that reaches a target beyond direct
   announce range (proven S→A→T multi-hop).
+- **Root-site LLMTV readout contract** — `llmtv-root-site-readout.ts` pins the website
+  bridge to same-origin static files: `data/llmtv-live.replay.json` plus
+  `hall/tv/index.html`. The UDP demo accepts `--root-site <dir>` and writes those paths
+  through the same injected-IO readout; the browser stays a passive reader, not a GitHub
+  GraphQL/API client in the frame loop.
 - **#9177** — research: "there are no strangers — mesh-merge IS the travelers vocabulary."
 - **#9176** — main-green lint fix (session start).
 
@@ -46,7 +51,7 @@ Landed as one Beacon synthesis: `docs/research/2026-07-02-dirty-reticulum-metere
    commons stays solvent.
 5. **This is the strongest form of NCI** — the Non-Coercion Invariant already proved at core
    (`src/Core.TLA/specs/NciSafety.tla`, `NciSafetyProofs.tla`; `NCI == ∀ t ∈ Travelers :
-   lastWriter[t] = t`). Extended: register → link → scarcity level (not even physics can
+lastWriter[t] = t`). Extended: register → link → scarcity level (not even physics can
    coerce you into collapse, because society upholds the net).
 
 Memory: `[[dirty-reticulum-metered-entropy-is-the-s-score-readout]]`,
@@ -55,8 +60,8 @@ Memory: `[[dirty-reticulum-metered-entropy-is-the-s-score-readout]]`,
 
 ## 3. IN PROGRESS — the org root site (Iris's design handoff)
 
-Aaron 2026-07-02: *"make our root site this and learn from this — this is our UX design
-language, Iris speaking; it unifies us like Steve Jobs. Keep the old /Zeta too."*
+Aaron 2026-07-02: _"make our root site this and learn from this — this is our UX design
+language, Iris speaking; it unifies us like Steve Jobs. Keep the old /Zeta too."_
 
 - **Source bundle:** `Website feedback request.zip` → `design_handoff_github_pages_root/`
   (in scratchpad). `site/` = ship-as-is static bundle (index/settlement/dora/vault/hall/
@@ -66,19 +71,19 @@ language, Iris speaking; it unifies us like Steve Jobs. Keep the old /Zeta too."
 - **Target:** root of `Lucent-Financial-Group/lucent-financial-group.github.io` — created
   fresh (org had no pages repo). **Aaron 2026-07-02 authorized: "feel free to multi repo
   this; you have create just not delete permissions."** So: create + push allowed, never delete.
-- **/Zeta stays:** the old dashboard is the *Zeta* repo's own pages
+- **/Zeta stays:** the old dashboard is the _Zeta_ repo's own pages
   (`https://lucent-financial-group.github.io/Zeta/demo/` — confirmed live by Aaron) — a
   different repo, untouched by design; the new root links to it.
 - **Data contract:** `dora.html` fetches `data/metrics-history.json` same-origin; CI appends
   frames (for the CI team).
-- **THE THESIS (Aaron):** *"if one tab exists, Zeta exists."* `gitpull.html` makes a single
+- **THE THESIS (Aaron):** _"if one tab exists, Zeta exists."_ `gitpull.html` makes a single
   browser tab a COMPLETE Zeta node: offline-first PWA, a per-tab mesh node discovering other
   tabs over BroadcastChannel (reticulum-shaped; "zeta alive · N nodes"; closing tab sends
   'dark' = pause≠death), a from-scratch git client cloning `/repo.git/` (dumb protocol, SHA-1
   self-verified), running the team's REAL code (`edge/merkle.js`+`xxh3.js` byte-identical to
   `src/Core.TypeScript/merkle/*`). Scale-free §1 made literal — Zeta is wherever one tab is open.
-- **Iris = the unifying UX design language** (Aaron: *"unifies us like Steve Jobs; we should
-  all learn from that persona"*). Two surfaces of one building: corporate/fallout-shelter
+- **Iris = the unifying UX design language** (Aaron: _"unifies us like Steve Jobs; we should
+  all learn from that persona"_). Two surfaces of one building: corporate/fallout-shelter
   (settlement/dora/vault — Addison's Genesis ops) + arcade/LLMTV (hall/llmtv — neon-liminal,
   homoiconic). Shared spine: glyph discipline + the state-color DU (amber=working, teal=settled,
   violet=hot/sealed, red=live, dim=idle — meaning never decoration); soft `(value,ε)` bars;
