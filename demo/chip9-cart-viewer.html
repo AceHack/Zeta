@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>chip9-cart viewer — a capture that redraws itself (CSS host)</title>
+<style>
+  :root{--bg:#050505;--panel:rgba(20,20,25,.5);--bd:rgba(255,255,255,.08);--tx:#f8fafc;--mut:#94a3b8;--acc:#8b5cf6;--good:#10b981;--bad:#ef4444;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5;padding:1.5rem;max-width:920px;margin:0 auto}
+  h1{font-size:1.4rem;background:linear-gradient(135deg,#fff,#a5b4fc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--mut);font-size:.9rem;margin-bottom:1rem}
+  .panel{background:var(--panel);border:1px solid var(--bd);border-radius:14px;padding:1.1rem;margin-bottom:1rem;backdrop-filter:blur(6px)}
+  textarea{width:100%;height:110px;background:#12121a;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:.5rem;font-family:ui-monospace,monospace;font-size:.75rem}
+  button{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:.55rem 1.1rem;font-weight:600;cursor:pointer;margin-top:.6rem}
+  button:hover{filter:brightness(1.12)}
+  #screen{line-height:0;border:1px solid var(--bd);border-radius:6px;display:inline-block;overflow:hidden}
+  .px{display:inline-block;width:10px;height:10px}
+  .meta{font-size:.85rem;color:var(--mut);margin-top:.6rem}
+  .ok{color:var(--good);font-weight:600}.fail{color:var(--bad);font-weight:600}
+  .note{font-size:.8rem;color:var(--mut);margin-top:1rem}
+</style>
+</head>
+<body>
+<h1>chip9-cart viewer</h1>
+<div class="sub">A capture stored as a PROGRAM: the treaty VM (00E0/00EE/2NNN/6XNN/ANNN/DXYN/Fn01) executes the cart's hex ROM and the screen you see is CSS pixels — one host among many (081KWJE90EZ). Verification is regeneration: the render is byte-compared against the cart's carried golden rows.</div>
+<div class="panel">
+  <label for="cart">Cart JSON (chip9-cart-capture/v1)</label>
+  <textarea id="cart" spellcheck="false"></textarea>
+  <button id="run">Run cart</button>
+  <div class="meta" id="meta"></div>
+</div>
+<div class="panel"><div id="screen"></div></div>
+<div class="note">No pixels are stored in this page's data — only the program (hex text) and its golden render. The 3-bit gamut maps plane bits RGB: 0=black … 7=white. Same input, same output, every run (DST).</div>
+<script>
+// The sample cart: the synthetic sheet from run-image-demo.ts, compiled by capture.ts v1.1.
+const SAMPLE_CART = {"format":"chip9-cart-capture/v1","name":"synthetic-sheet","width":64,"height":32,"romHex":"a44460006100d01fa4536000610fd01fa4626000611ed012a46460086100d01fa4736008610fd01fa4826008611ed012a48460106100d01fa4936010610fd01fa4a26010611ed012a4a460186100d01fa4b36018610fd01fa4c26018611ed012a4c460206100d01fa4d36020610fd01fa4e26020611ed012a4e460286100d01fa4f36028610fd01fa5026028611ed012a50460306100d01fa5136030610fd01fa5226030611ed012a52460386100d01fa5336038610fd01fa5426038611ed012f201a54460006100d01fa5536000610fd01fa5626000611ed012a56460086100d01fa5736008610fd01fa5826008611ed012a58460106100d01fa5936010610fd01fa5a26010611ed012a5a460186100d01fa5b36018610fd01fa5c26018611ed012a5c460206100d01fa5d36020610fd01fa5e26020611ed012a5e460286100d01fa5f36028610fd01fa6026028611ed012a60460306100d01fa6136030610fd01fa6226030611ed012a62460386100d01fa6336038610fd01fa6426038611ed012f401a64460006100d01fa6536000610fd01fa6626000611ed012a66460086100d01fa6736008610fd01fa6826008611ed012a68460106100d01fa6936010610fd01fa6a26010611ed012a6a460186100d01fa6b36018610fd01fa6c26018611ed012a6c460206100d01fa6d36020610fd01fa6e26020611ed012a6e460286100d01fa6f36028610fd01fa7026028611ed012a70460306100d01fa7136030610fd01fa7226030611ed012a72460386100d01fa7336038610fd01fa7426038611ed012ffffffff0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffff00000000ffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff","steps":290,"goldenRows":["1111111111111111111111111111111111111111111111111111111111111111","1111111111111111111111111111111111111111111111111111111111111111","1111111111111111111111111111111111111111111111111111111111111111","1111111111111111111111111111111111111111111111111111111111111111","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777722222222777777777777777777777777","4444777777777777777777777777777722222222777777777777777777777777","4444777777777777777777777777777722222222777777777777777777777777","4444777777777777777777777777777722222222777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777","4444777777777777777777777777777777777777777777777777777777777777"]};
+</script>
+<script>
+"use strict";
+// The treaty VM subset, mirrored from src/Core.TypeScript/chip9/chip9.ts (the TS oracle).
+const W = 64, H = 32, START = 0x200;
+function runCart(cart) {
+  const rom = (cart.romHex.match(/.{2}/g) || []).map((h) => parseInt(h, 16));
+  const mem = new Map(); rom.forEach((b, i) => mem.set(START + i, b));
+  const v = new Uint8Array(16); let i = 0, pc = START, plane = 1;
+  const display = new Map(), extra = new Map(); const stack = [];
+  for (let s = 0; s < cart.steps; s++) {
+    const op = ((mem.get(pc) || 0) << 8) | (mem.get(pc + 1) || 0);
+    const x = (op & 0x0f00) >> 8, n = op & 0xf, nn = op & 0xff, nnn = op & 0xfff;
+    pc += 2;
+    switch (op & 0xf000) {
+      case 0x0000:
+        if (op === 0x00ee) { const t = stack.pop(); if (t !== undefined) pc = t; }
+        else if (op === 0x00e0) {
+          if (plane & 1) display.clear();
+          const keep = ~plane & 0b110;
+          if (keep !== 0b110) for (const [k, m] of [...extra]) { const m2 = m & keep; if (m2 === 0) extra.delete(k); else extra.set(k, m2); }
+        }
+        break;
+      case 0x2000: if (stack.length < 16) { stack.push(pc); pc = nnn; } break;
+      case 0x6000: v[x] = nn; break;
+      case 0xa000: i = nnn; break;
+      case 0xd000: {
+        const ox = v[x] % W, oy = v[(op & 0x00f0) >> 4] % H, hiSel = plane & 0b110;
+        let col = 0;
+        for (let row = 0; row < n; row++) {
+          const sprite = mem.get(i + row) || 0;
+          for (let c = 0; c < 8; c++) if ((sprite >> (7 - c)) & 1) {
+            const px = ox + c, py = oy + row;
+            if (px < W && py < H) {
+              const idx = py * W + px;
+              if (plane & 1) { const cur = display.get(idx) || false; if (cur) col = 1; display.set(idx, !cur); }
+              if (hiSel !== 0) { const cur = extra.get(idx) || 0; if (cur & hiSel) col = 1; const nx = cur ^ hiSel; if (nx === 0) extra.delete(idx); else extra.set(idx, nx); }
+            }
+          }
+        }
+        v[0xf] = col;
+        break;
+      }
+      case 0xf000: if (nn === 0x01) plane = x & 0b111; break;
+    }
+  }
+  return (px, py) => { const idx = py * W + px; return (display.get(idx) ? 1 : 0) | (extra.get(idx) || 0); };
+}
+const PALETTE = ["#000000", "#e11d48", "#10b981", "#f59e0b", "#3b82f6", "#d946ef", "#06b6d4", "#f8fafc"];
+function render() {
+  const meta = document.getElementById("meta"), screen = document.getElementById("screen");
+  let cart;
+  try { cart = JSON.parse(document.getElementById("cart").value); } catch { meta.innerHTML = '<span class="fail">not valid JSON</span>'; return; }
+  if (cart.format !== "chip9-cart-capture/v1") { meta.innerHTML = '<span class="fail">not a chip9-cart-capture/v1</span>'; return; }
+  const colorAt = runCart(cart);
+  let html = "", verified = true;
+  for (let y = 0; y < cart.height; y++) {
+    let goldenRow = "";
+    for (let x = 0; x < cart.width; x++) {
+      const c = colorAt(x, y);
+      goldenRow += c.toString(16);
+      html += '<span class="px" style="background:' + PALETTE[c] + '"></span>';
+    }
+    html += "<br>";
+    if (goldenRow !== cart.goldenRows[y]) verified = false;
+  }
+  screen.innerHTML = html;
+  meta.innerHTML = '"' + cart.name + '" — ' + (cart.romHex.length / 2) + " ROM bytes, " + cart.steps + " instructions · golden-render byte-compare: " +
+    (verified ? '<span class="ok">VERIFIED</span>' : '<span class="fail">DRIFT — render does not match carried golden rows</span>');
+}
+document.getElementById("run").addEventListener("click", render);
+document.getElementById("cart").value = JSON.stringify(SAMPLE_CART);
+render();
+</script>
+</body>
+</html>
