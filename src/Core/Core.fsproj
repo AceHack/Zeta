@@ -71,6 +71,7 @@
     <Compile Include="Cogen.fs" />
     <Compile Include="Isa.fs" />
     <Compile Include="IsaSpec.fs" />
+    <Compile Include="MixIr.fs" />
     <Compile Include="Netlist.fs" />
     <Compile Include="Sequential.fs" />
     <Compile Include="Cpu.fs" />
