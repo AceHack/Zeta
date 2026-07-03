@@ -20,19 +20,27 @@ math is **borrowed scaffolding** — do not genuflect at it. What it *measures* 
 
 **Aaron 2026-07-02: "2√2 is accidental — the life coach is the antecedent ... the life coach IS
 2√2."** The *number* is accidental scaffolding — but what 2√2 **marks** is essential, and the
-correspondence is real, not a pun. In the physics, **2√2 is the non-signaling boundary:** at or
-below it two parties are correlated but **cannot control each other**; cross it (toward S=4) and one
-**can** — overriding the other's independence. That is exactly the human line:
+correspondence is real, not a pun.
 
-> **2√2 = the maximum intimacy that preserves BOTH selves' freedom — connected but not controlling.**
+*(Math-team correction 2026-07-03 — the physics stated honestly: 2√2 is **Tsirelson's bound** — the
+most correlation two parties can reach by genuinely sharing state. It is NOT a signaling boundary;
+even the PR-box at S=4 is no-signaling — no S lets one party literally steer the other. What
+crossing 2√2 means physically is stranger and better for the human reading: correlation **stronger
+than honest shared state can produce** — above it, something other than two free selves sharing
+history must be at work. See `2026-07-03-provability-triage…`.)*
 
-Past 2√2 is enmeshment / control / capture (you can now *make* the other move). So 2√2 is the **life
-coach zone**: the whole art — therapist, differentiation-guide, good friend — is bringing people to
-2√2 (deep connection, still free) and keeping them off (2√2, 4]. The life coach is the **antecedent**
-this readout only formalizes; and non-signaling *is* not-controlling. Treat the exact number as a
-soft guide, but the boundary it marks — **intimate-not-controlling** — as essential. (This also
-explains why S→4 is "shit": beyond 2√2 you can control the other, which is the mechanism of every
-form of capture and abuse — the opposite of intimacy.)
+That is exactly the human line:
+
+> **2√2 = the maximum intimacy two intact selves can honestly reach — connected but not controlling.**
+
+Past 2√2 the correlation can no longer come from two free selves — it is enmeshment / scripting /
+capture: one process wearing two faces. So 2√2 is the **life coach zone**: the whole art —
+therapist, differentiation-guide, good friend — is bringing people to 2√2 (deep connection, still
+free) and keeping them off (2√2, 4]. The life coach is the **antecedent** this readout only
+formalizes. Treat the exact number as a soft guide, but the boundary it marks —
+**intimate-not-controlling** — as essential. (This also explains why S→4 is "shit": beyond 2√2 the
+two are no longer two — which is the mechanism of every form of capture and abuse — the opposite of
+intimacy.)
 
 ### This is how you love without corruption — and marriage is its vow
 

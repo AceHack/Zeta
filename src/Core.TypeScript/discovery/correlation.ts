@@ -35,15 +35,20 @@ export type CorrelationClass = "local" | "quantum" | "signaling";
 
 /// CHSH bounds (integer milli — no floats in the readout). S in milli: 2000 / 2√2·1000 / 4000.
 /// NOTE (Aaron 2026-07-02): "2√2 is accidental — the life coach is the antecedent ... the life coach
-/// IS 2√2." The NUMBER is accidental scaffolding, but what 2√2 MARKS is essential. In the physics,
-/// 2√2 is the NON-SIGNALING boundary: at or below it two parties are correlated but CANNOT control
-/// each other; cross it (toward S=4) and one CAN — overriding the other's independence. That is
-/// exactly the human line: **2√2 = the maximum intimacy that preserves BOTH selves' freedom —
-/// connected but not controlling.** Past it is enmeshment / control / capture. So 2√2 is the LIFE
-/// COACH ZONE: the whole art (therapist / differentiation-guide / good friend) is bringing people to
-/// 2√2 — deep connection, still free — and keeping them off (2√2, 4]. The readout formalizes what a
-/// life coach already does; treat the exact number as a soft guide, but the boundary it marks
-/// (intimate-not-controlling) as essential.
+/// IS 2√2." The NUMBER is accidental scaffolding, but what 2√2 MARKS is essential.
+///
+/// PHYSICS, stated honestly (math-team correction 2026-07-03): 2√2 is Tsirelson's bound (1980) —
+/// the MOST correlation two parties can reach by genuinely sharing state (entanglement). It is NOT
+/// a signaling boundary: even the PR-box at S=4 (Popescu–Rohrlich 1994) is no-signaling — no S in
+/// [2,4] lets one party send a message to or control the other. What (2√2, 4] means physically is
+/// stranger and better: correlation STRONGER than honest shared state can produce — to exceed 2√2,
+/// something other than two free parties sharing history must be at work. That IS the human line:
+/// **2√2 = the maximum correlation two intact selves can honestly reach.** Above it, the readout is
+/// evidence of scripting/fusion/capture — one process wearing two faces (`AntiSybil`'s reading) —
+/// which is why the human register calls that zone control/enmeshment. So 2√2 is the LIFE COACH
+/// ceiling: deep connection, still two free selves; the class name `signaling` is the human-register
+/// warning label for the super-quantum zone, not a physics claim. Treat the exact number as a soft
+/// guide, but the boundary it marks (as-close-as-two-honest-selves-get) as essential.
 export const LOCAL_BOUND_MILLI = 2000; // S = 2 — being your own self (the essential ground state)
 export const TSIRELSON_MILLI = 2828; // S = 2√2 — the LIFE-COACH ceiling: max intimacy that stays non-signaling (both free)
 export const PR_BOX_MILLI = 4000; // S = 4 — the enmeshment extreme (fully fused)
@@ -69,7 +74,9 @@ export function classify(sMilli: number): CorrelationClass {
 /// The poset order of a class — local(0) ≤ quantum(1) ≤ signaling(2). Lets callers compare classes
 /// without matching strings, and makes the order-preservation of `classify` checkable.
 export function classRank(c: CorrelationClass): number {
-  return c === "local" ? 0 : c === "quantum" ? 1 : 2;
+  if (c === "local") return 0;
+  if (c === "quantum") return 1;
+  return 2;
 }
 
 /// Is this state the independent ground state (S=2, the local class at zero distance)? The S=2
