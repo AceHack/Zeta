@@ -73,6 +73,7 @@
     <Compile Include="IsaSpec.fs" />
     <Compile Include="Netlist.fs" />
     <Compile Include="Sequential.fs" />
+    <Compile Include="Cpu.fs" />
     <Compile Include="Sppf.fs" />
     <Compile Include="PcfgEm.fs" />
     <Compile Include="Indentation.fs" />
