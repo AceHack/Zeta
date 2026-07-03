@@ -78,6 +78,42 @@ const SCHEMA_KEYS = new Set([
     "record_source", "load_datetime", "bp_rules_cited",
 ]);
 
+const ZETA_ID_PREFIX = "[0-9][0-9A-HJKMNP-TV-Z]{25}";
+const LEGACY_B_ID_PREFIX = "B-\\d{4}(?:\\.\\d+)?";
+const ROW_ID_PREFIX = `(?:${ZETA_ID_PREFIX}|${LEGACY_B_ID_PREFIX})`;
+const ROW_ID = new RegExp(`^${ROW_ID_PREFIX}$`);
+const ROW_ID_LIST_ITEM = new RegExp(`^\\s+-\\s+(${ROW_ID_PREFIX})\\s*$`);
+const BODY_ROW_LINK = new RegExp(`\\[(${ROW_ID_PREFIX})\\]\\(([^)]+)\\)`, "g");
+const BACKLOG_ROW_FILE = new RegExp(`^${ROW_ID_PREFIX}-[^/]+\\.md$`);
+const SAME_DIR_ROW_HREF = new RegExp(`^${ROW_ID_PREFIX}-[^/]+\\.md$`);
+const FRONTMATTER_KEY = /^[A-Za-z_]\w*$/;
+const SORT_ORDINAL = (a: string, b: string) => a.localeCompare(b);
+
+function requireArg(argv: string[], index: number, flag: string): string {
+    const value = argv[index + 1];
+    if (value !== undefined) return value;
+    process.stderr.write(`missing value for ${flag}\n`);
+    process.exit(2);
+}
+
+function parseCheckSet(raw: string): Set<number> {
+    return new Set(raw.split(",").map(Number).filter(n => n >= 1 && n <= 5));
+}
+
+function printHelpAndExit(): never {
+    process.stdout.write(
+        "Usage: bun src/Core.TypeScript/backlog/lint-frontmatter.ts [--file PATH] [--strict] [--check 1,2,3,4,5]\n" +
+        "       --schema-only   CI gate: only the index-poisoning checks (missing frontmatter +\n" +
+        "                       required id/status/title + id-matches-filename); ALWAYS exits 1 on findings.\n",
+    );
+    process.exit(0);
+}
+
+function failUnknownArg(arg: string): never {
+    process.stderr.write(`unknown arg: ${arg}\n`);
+    process.exit(2);
+}
+
 function parseArgs(argv: string[]): Args {
     const args: Args = {
         files: [],
@@ -88,26 +124,52 @@ function parseArgs(argv: string[]): Args {
     };
     for (let i = 0; i < argv.length; i++) {
         const a = argv[i];
-        const next = argv[i + 1];
-        if (a === "--file" && next) { args.files.push(next); i++; }
+        if (a === "--file") { args.files.push(requireArg(argv, i, a)); i++; }
         else if (a === "--strict") { args.strict = true; }
         else if (a === "--schema-only") { args.schemaOnly = true; }
-        else if (a === "--check" && next) {
-            args.checks = new Set(next.split(",").map(Number).filter(n => n >= 1 && n <= 5));
+        else if (a === "--check") {
+            args.checks = parseCheckSet(requireArg(argv, i, a));
             i++;
         }
-        else if (a === "--base-dir" && next) { args.baseDir = next; i++; }
-        else if (a === "--help" || a === "-h") {
-            process.stdout.write(
-                "Usage: bun src/Core.TypeScript/backlog/lint-frontmatter.ts [--file PATH] [--strict] [--check 1,2,3,4,5]\n" +
-                "       --schema-only   CI gate: only the index-poisoning checks (missing frontmatter +\n" +
-                "                       required id/status/title + id-matches-filename); ALWAYS exits 1 on findings.\n",
-            );
-            process.exit(0);
-        }
-        else { process.stderr.write("unknown arg: " + a + "\n"); process.exit(2); }
+        else if (a === "--base-dir") { args.baseDir = requireArg(argv, i, a); i++; }
+        else if (a === "--help" || a === "-h") printHelpAndExit();
+        else failUnknownArg(a ?? "(missing)");
     }
     return args;
+}
+
+function parseFrontmatterLine(line: string): [string, string] | null {
+    const colon = line.indexOf(":");
+    if (colon <= 0) return null;
+
+    const key = line.slice(0, colon);
+    if (!FRONTMATTER_KEY.test(key)) return null;
+
+    return [key, line.slice(colon + 1).trim()];
+}
+
+function applyFrontmatterField(fm: Frontmatter, key: string, value: string, lines: string[], lineIndex: number, endIdx: number): void {
+    fm.keys.add(key);
+    switch (key) {
+        case "id":
+            fm.id = value.replace(/^["']|["']$/g, "");
+            break;
+        case "priority":
+            fm.priority = value;
+            break;
+        case "status":
+            fm.status = value;
+            break;
+        case "title":
+            fm.title = value;
+            break;
+        case "depends_on":
+            fm.depends_on = parseBList(value, lines, lineIndex, endIdx);
+            break;
+        case "composes_with":
+            fm.composes_with = parseBList(value, lines, lineIndex, endIdx);
+            break;
+    }
 }
 
 function parseFrontmatter(path: string): Frontmatter | null {
@@ -131,63 +193,74 @@ function parseFrontmatter(path: string): Frontmatter | null {
     for (let i = 1; i < endIdx; i++) {
         const line = lines[i];
         if (line === undefined) continue;
-        const m = /^([a-zA-Z_][a-zA-Z0-9_]*):\s*(.*)$/.exec(line);
-        if (!m) continue;
-        const key = m[1]!;
-        const value = m[2]!.trim();
-        fm.keys.add(key);
-        if (key === "id") fm.id = value.replace(/^["']|["']$/g, "");
-        else if (key === "priority") fm.priority = value;
-        else if (key === "status") fm.status = value;
-        else if (key === "title") fm.title = value;
-        else if (key === "depends_on") fm.depends_on = parseBList(value, lines, i, endIdx);
-        else if (key === "composes_with") fm.composes_with = parseBList(value, lines, i, endIdx);
+        const parsed = parseFrontmatterLine(line);
+        if (parsed === null) continue;
+        const [key, value] = parsed;
+        applyFrontmatterField(fm, key, value, lines, i, endIdx);
     }
     return fm;
 }
 
-function parseBList(value: string, allLines?: string[], startIdx?: number, endIdx?: number): string[] {
+function parseInlineRowIdList(value: string): string[] | null {
     // Inline form: `[081KPYCJH0008QG0R003MDS51N, 081KQ0YZ80008QG0R002T6TM7Z, 081KQNJ500008QG0R003SCWBDV.4]`
     const inline = /^\[(.*)\]$/.exec(value);
-    if (inline) {
-        return inline[1]!
-            .split(",")
-            .map(s => s.trim())
-            .filter(s => /^B-\d{4}(\.\d+)?$/.test(s));
+    if (!inline) return null;
+    const body = inline[1] ?? "";
+    return body.split(",").map(s => s.trim()).filter(s => ROW_ID.test(s));
+}
+
+function parseBlockRowIdList(allLines: string[], startIdx: number, endIdx: number): string[] {
+    const ids: string[] = [];
+    for (let j = startIdx + 1; j < endIdx; j++) {
+        const next = allLines[j];
+        if (next === undefined) continue;
+
+        const itemMatch = ROW_ID_LIST_ITEM.exec(next);
+        const id = itemMatch?.[1];
+        if (id !== undefined) {
+            ids.push(id);
+            continue;
+        }
+
+        if (next.trim() !== "" && /^[A-Za-z_]/.test(next)) break;
     }
+    return ids;
+}
+
+function parseBList(value: string, allLines?: string[], startIdx?: number, endIdx?: number): string[] {
+    const inline = parseInlineRowIdList(value);
+    if (inline !== null) return inline;
+
     // Empty inline `[]` (no IDs)
     if (value === "[]") return [];
     // Block form: subsequent lines `  - B-XXXX` until next non-indented key or frontmatter end
     if ((value === "" || value === ">") && allLines && startIdx !== undefined && endIdx !== undefined) {
-        const ids: string[] = [];
-        for (let j = startIdx + 1; j < endIdx; j++) {
-            const next = allLines[j];
-            if (next === undefined) continue;
-            // Block-list item: `  - B-XXXX` (any indent)
-            const itemMatch = /^\s+-\s+(B-\d{4}(?:\.\d+)?)\s*$/.exec(next);
-            if (itemMatch) {
-                ids.push(itemMatch[1]!);
-                continue;
-            }
-            // Non-list, non-empty line at the same or lower indent ends the block
-            if (next.trim() !== "" && /^[a-zA-Z_]/.test(next)) break;
-        }
-        return ids;
+        return parseBlockRowIdList(allLines, startIdx, endIdx);
     }
     return [];
 }
 
-function extractBodyBLinks(path: string, headerEnd: number): Array<{ id: string; href: string; line: number; col: number }> {
+interface BodyRef {
+    id: string;
+    href: string;
+    line: number;
+    col: number;
+}
+
+function extractBodyBLinks(path: string, headerEnd: number): BodyRef[] {
     const content = readFileSync(path, "utf8");
     const lines = content.split("\n");
-    const refs: Array<{ id: string; href: string; line: number; col: number }> = [];
-    const re = /\[(B-\d{4}(?:\.\d+)?)\]\(([^)]+)\)/g;
+    const refs: BodyRef[] = [];
     for (let i = headerEnd + 1; i < lines.length; i++) {
         const line = lines[i];
         if (line === undefined) continue;
         let m: RegExpExecArray | null;
-        while ((m = re.exec(line)) !== null) {
-            refs.push({ id: m[1]!, href: m[2]!, line: i + 1, col: m.index + 1 });
+        while ((m = BODY_ROW_LINK.exec(line)) !== null) {
+            const id = m[1];
+            const href = m[2];
+            if (id !== undefined && href !== undefined) {
+                refs.push({ id, href, line: i + 1, col: m.index + 1 });
+            }
         }
     }
     return refs;
@@ -195,15 +268,13 @@ function extractBodyBLinks(path: string, headerEnd: number): Array<{ id: string;
 
 function fileDir(path: string): string | null {
     const m = /docs\/backlog\/(P[0-3])\//.exec(path);
-    return m ? m[1]! : null;
+    return m?.[1] ?? null;
 }
 
 function pathDirForRef(href: string): string | null {
-    if (/^\.\.\/(P[0-3])\//.test(href)) {
-        const m = /^\.\.\/(P[0-3])\//.exec(href);
-        return m ? m[1]! : null;
-    }
-    if (/^B-\d{4}(\.\d+)?-[^/]+\.md$/.test(href)) return "SAME";
+    const parentDir = /^\.\.\/(P[0-3])\//.exec(href)?.[1];
+    if (parentDir !== undefined) return parentDir;
+    if (SAME_DIR_ROW_HREF.test(href)) return "SAME";
     return null;
 }
 
@@ -242,13 +313,14 @@ function check2_composesCompleteness(path: string, fm: Frontmatter, refs: Return
     }
     const missing = [...bodyIds].filter(id => !composesSet.has(id));
     if (missing.length > 0) {
+        const sortedMissing = missing.toSorted(SORT_ORDINAL);
         findings.push({
             file: path,
             line: fm.headerEnd + 1,
             col: 1,
             priority: "P2",
             check: 2,
-            message: "composes_with omits " + missing.length + " ID(s) cited in body: " + missing.sort().join(", "),
+            message: `composes_with omits ${missing.length.toString()} ID(s) cited in body: ${sortedMissing.join(", ")}`,
         });
     }
     return findings;
@@ -277,6 +349,7 @@ function check4_redundantEdges(path: string, fm: Frontmatter): Finding[] {
     const dependsSet = new Set(fm.depends_on);
     const redundant = fm.composes_with.filter(id => dependsSet.has(id));
     if (redundant.length > 0) {
+        const sortedRedundant = redundant.toSorted(SORT_ORDINAL);
         const lineIdx = fm.rawLines.findIndex(l => l.startsWith("composes_with:"));
         findings.push({
             file: path,
@@ -284,7 +357,7 @@ function check4_redundantEdges(path: string, fm: Frontmatter): Finding[] {
             col: 1,
             priority: "P2",
             check: 4,
-            message: "Redundant composes_with entries (already in depends_on; depends_on is stronger): " + redundant.sort().join(", "),
+            message: `Redundant composes_with entries (already in depends_on; depends_on is stronger): ${sortedRedundant.join(", ")}`,
         });
     }
     return findings;
@@ -315,65 +388,83 @@ function walkBacklog(baseDir: string): string[] {
             const p = join(dir, entry);
             const st = statSync(p);
             if (st.isDirectory()) recurse(p);
-            // Match both B-NNNN-... and dotted B-NNNN.M-... (subdecimal rows per tools/backlog/README.md)
-            else if (entry.endsWith(".md") && /^B-\d{4}(\.\d+)?-/.test(entry)) out.push(p);
+            // Match current ZetaId rows plus legacy B-NNNN rows during cleanup.
+            else if (BACKLOG_ROW_FILE.test(entry)) out.push(p);
         }
     }
     try {
         if (statSync(baseDir).isDirectory()) recurse(baseDir);
-    } catch (e) {
-        process.stderr.write("error: --base-dir '" + baseDir + "' not found or not a directory\n");
+    } catch {
+        process.stderr.write(`error: --base-dir '${baseDir}' not found or not a directory\n`);
         process.exit(2);
     }
     return out;
 }
 
+function addFinding(byFile: Map<string, Finding[]>, finding: Finding): void {
+    const existing = byFile.get(finding.file);
+    if (existing !== undefined) existing.push(finding);
+    else byFile.set(finding.file, [finding]);
+}
+
+function missingFrontmatterFinding(path: string): Finding {
+    return {
+        file: path, line: 1, col: 1, priority: "P0", check: 0,
+        message: "Failed to parse frontmatter (missing --- delimiters?)",
+    };
+}
+
+function lintParsedFile(path: string, fm: Frontmatter, args: Args): Finding[] {
+    if (args.schemaOnly) {
+        // CI recurrence-guard mode: ONLY the index-poisoning checks (0 above + 5).
+        return check5_requiredFields(path, fm);
+    }
+
+    const refs = extractBodyBLinks(path, fm.headerEnd);
+    const findings: Finding[] = [];
+    if (args.checks.has(1)) findings.push(...check1_pathPrefix(path, fm, refs));
+    if (args.checks.has(2)) findings.push(...check2_composesCompleteness(path, fm, refs));
+    if (args.checks.has(3)) findings.push(...check3_nonSchemaKeys(path, fm));
+    if (args.checks.has(4)) findings.push(...check4_redundantEdges(path, fm));
+    if (args.checks.has(5)) findings.push(...check5_requiredFields(path, fm));
+    return findings;
+}
+
+function collectFindings(files: string[], args: Args): Finding[] {
+    return files.flatMap(path => {
+        const fm = parseFrontmatter(path);
+        return fm === null ? [missingFrontmatterFinding(path)] : lintParsedFile(path, fm, args);
+    });
+}
+
+function groupFindings(allFindings: Finding[]): Map<string, Finding[]> {
+    const byFile = new Map<string, Finding[]>();
+    for (const f of allFindings) addFinding(byFile, f);
+    return byFile;
+}
+
+function printFindings(allFindings: Finding[], files: string[]): void {
+    const byFile = groupFindings(allFindings);
+    for (const [file, findings] of byFile) {
+        process.stdout.write(`\n${file}:\n`);
+        for (const f of findings) {
+            process.stdout.write(`  ${f.line.toString()}:${f.col.toString()} [${f.priority}] check ${f.check.toString()}: ${f.message}\n`);
+        }
+    }
+    process.stdout.write(`\nTotal: ${allFindings.length.toString()} finding(s) across ${byFile.size.toString()} file(s) (of ${files.length.toString()} scanned)\n`);
+}
+
 function main(): void {
     const args = parseArgs(process.argv.slice(2));
     const files = args.files.length > 0 ? args.files : walkBacklog(args.baseDir);
-
-    const allFindings: Finding[] = [];
-
-    for (const path of files) {
-        const fm = parseFrontmatter(path);
-        if (!fm) {
-            allFindings.push({
-                file: path, line: 1, col: 1, priority: "P0", check: 0,
-                message: "Failed to parse frontmatter (missing --- delimiters?)",
-            });
-            continue;
-        }
-        if (args.schemaOnly) {
-            // CI recurrence-guard mode: ONLY the index-poisoning checks (0 above + 5).
-            allFindings.push(...check5_requiredFields(path, fm));
-            continue;
-        }
-        const refs = extractBodyBLinks(path, fm.headerEnd);
-        if (args.checks.has(1)) allFindings.push(...check1_pathPrefix(path, fm, refs));
-        if (args.checks.has(2)) allFindings.push(...check2_composesCompleteness(path, fm, refs));
-        if (args.checks.has(3)) allFindings.push(...check3_nonSchemaKeys(path, fm));
-        if (args.checks.has(4)) allFindings.push(...check4_redundantEdges(path, fm));
-        if (args.checks.has(5)) allFindings.push(...check5_requiredFields(path, fm));
-    }
+    const allFindings = collectFindings(files, args);
 
     if (allFindings.length === 0) {
-        process.stdout.write("OK: 0 findings across " + files.length + " files\n");
+        process.stdout.write(`OK: 0 findings across ${files.length.toString()} files\n`);
         process.exit(0);
     }
 
-    const byFile = new Map<string, Finding[]>();
-    for (const f of allFindings) {
-        if (!byFile.has(f.file)) byFile.set(f.file, []);
-        byFile.get(f.file)!.push(f);
-    }
-
-    for (const [file, findings] of byFile) {
-        process.stdout.write("\n" + file + ":\n");
-        for (const f of findings) {
-            process.stdout.write("  " + f.line + ":" + f.col + " [" + f.priority + "] check " + f.check + ": " + f.message + "\n");
-        }
-    }
-    process.stdout.write("\nTotal: " + allFindings.length + " finding(s) across " + byFile.size + " file(s) (of " + files.length + " scanned)\n");
+    printFindings(allFindings, files);
 
     // --schema-only is a CI gate: the index-poisoning checks are ALWAYS fatal.
     if (args.strict || args.schemaOnly) process.exit(1);

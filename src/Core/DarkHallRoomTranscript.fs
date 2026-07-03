@@ -15,6 +15,15 @@ module DarkHallRoomTranscript =
     [<Literal>]
     let Schema = "zeta.darkhall.room-ui.v1"
 
+    [<Literal>]
+    let HeatReadoutSchema = "zeta.darkhall.heat-readout.v1"
+
+    [<Literal>]
+    let HeatSignalTreaty = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json"
+
+    [<Literal>]
+    let QSharpHeatSignalSource = "src/Core.QSharp.ReferenceOracle/HeatSignals.qs"
+
     type ControllerCell =
         { [<JsonPropertyName("cell")>]
           Cell: int
@@ -36,6 +45,28 @@ module DarkHallRoomTranscript =
           Tick: int
           [<JsonPropertyName("roomName")>]
           RoomName: string
+          [<JsonPropertyName("heatRejected")>]
+          HeatRejected: int
+          [<JsonPropertyName("backpressured")>]
+          Backpressured: int
+          [<JsonPropertyName("storageErrors")>]
+          StorageErrors: int
+          [<JsonPropertyName("heatKinds")>]
+          HeatKinds: string list
+          [<JsonPropertyName("signals")>]
+          Signals: string list
+          [<JsonPropertyName("reasons")>]
+          Reasons: string list }
+
+    type HeatReadout =
+        { [<JsonPropertyName("schema")>]
+          Schema: string
+          [<JsonPropertyName("qsharpTreaty")>]
+          QSharpTreaty: string
+          [<JsonPropertyName("qsharpSource")>]
+          QSharpSource: string
+          [<JsonPropertyName("rows")>]
+          Rows: int
           [<JsonPropertyName("heatRejected")>]
           HeatRejected: int
           [<JsonPropertyName("backpressured")>]
@@ -76,6 +107,8 @@ module DarkHallRoomTranscript =
           Controller: ControllerCell list
           [<JsonPropertyName("ticks")>]
           Ticks: TranscriptTick list
+          [<JsonPropertyName("heatReadout")>]
+          HeatReadout: HeatReadout
           [<JsonPropertyName("heatRows")>]
           HeatRows: HeatRow list
           [<JsonPropertyName("generatedBy")>]
@@ -139,6 +172,24 @@ module DarkHallRoomTranscript =
           HeatKinds = row.HeatKinds
           Signals = Scheduler.heatBoundarySignalTokens row
           Reasons = row.Reasons }
+
+    let private distinctOrdinal (values: string list) : string list =
+        let seen = System.Collections.Generic.HashSet<string>(System.StringComparer.Ordinal)
+
+        values
+        |> List.filter (fun value -> seen.Add value)
+
+    let heatReadout (rows: HeatRow list) : HeatReadout =
+        { Schema = HeatReadoutSchema
+          QSharpTreaty = HeatSignalTreaty
+          QSharpSource = QSharpHeatSignalSource
+          Rows = rows.Length
+          HeatRejected = rows |> List.sumBy _.HeatRejected
+          Backpressured = rows |> List.sumBy _.Backpressured
+          StorageErrors = rows |> List.sumBy _.StorageErrors
+          HeatKinds = rows |> List.collect _.HeatKinds |> distinctOrdinal
+          Signals = rows |> List.collect _.Signals |> distinctOrdinal
+          Reasons = rows |> List.collect _.Reasons }
 
     let private heatRowOfReadout (tick: int) (roomName: string) (heat: RoomLoop.HeatReadout) : HeatRow =
         heatRow
@@ -239,6 +290,7 @@ module DarkHallRoomTranscript =
         let readout =
             run.Final.LastReadout
             |> Option.defaultWith (fun () -> Runtime.observe run.Final.Room)
+        let heatRows = run.Ticks |> List.mapi (fun index tick -> heatRowOfReadout (index + 1) tick.Readout.RoomName tick.Heat)
 
         { Schema = Schema
           RoomName = roomName
@@ -250,7 +302,8 @@ module DarkHallRoomTranscript =
               |> Option.map (fun tick -> controllerCells (Some tick.Choice.Cell) tick.Readout)
               |> Option.defaultWith (fun () -> controllerCells None readout)
           Ticks = run.Ticks |> List.mapi (fun index tick -> tickOfOutcome (index + 1) tick)
-          HeatRows = run.Ticks |> List.mapi (fun index tick -> heatRowOfReadout (index + 1) tick.Readout.RoomName tick.Heat) }
+          HeatReadout = heatReadout heatRows
+          HeatRows = heatRows }
 
     let ofBoundaryState seed generatedBy (state: Scheduler.BoundaryScheduledRoomState<'K>) : Transcript =
         let rows = state |> Scheduler.boundaryHeatRows |> List.map heatRow
@@ -270,6 +323,7 @@ module DarkHallRoomTranscript =
               state.LastTick
               |> Option.map (fun tick -> [ tickOfBoundaryOutcome state.CompletedTicks tick ])
               |> Option.defaultValue []
+          HeatReadout = heatReadout rows
           HeatRows = rows }
 
     let ofUnifiedHeatRun seed generatedBy (run: RoomRun.UnifiedHeatRun<'K>) : Transcript =
@@ -285,6 +339,7 @@ module DarkHallRoomTranscript =
             |> Option.defaultValue []
 
         let heatTicks = run.HeatRows |> List.mapi (fun index row -> measureTick (index + 1) row)
+        let heatRows = run.HeatRows |> List.map heatRow
 
         { Schema = Schema
           RoomName = run.Room.Loop.Room.Name
@@ -295,7 +350,8 @@ module DarkHallRoomTranscript =
               |> Option.map (fun tick -> controllerCells (Some tick.Choice.Cell) tick.Readout)
               |> Option.defaultWith (fun () -> controllerCells None readout)
           Ticks = tickRows @ heatTicks
-          HeatRows = run.HeatRows |> List.map heatRow }
+          HeatReadout = heatReadout heatRows
+          HeatRows = heatRows }
 
     let ofUnifiedHorizonRun seed generatedBy (run: RoomRun.UnifiedHorizonRun<'K, 'S>) : Transcript =
         let baseRun: RoomRun.UnifiedHeatRun<'K> =

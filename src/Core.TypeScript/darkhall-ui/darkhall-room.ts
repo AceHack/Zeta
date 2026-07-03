@@ -1,11 +1,15 @@
-import { heatSignals, summarizeHeatRows, type HeatRow } from "./heat";
+import { heatSignals, summarizeHeatRows, type HeatReadout, type HeatRow } from "./heat";
 
 export {
   classifyHeatKind,
+  HEAT_READOUT_SCHEMA,
+  HEAT_SIGNAL_QSHARP_SOURCE,
+  HEAT_SIGNAL_TREATY_PATH,
   heatSignals,
   heatSignalsFromKinds,
   normalizeHeatSignals,
   summarizeHeatRows,
+  type HeatReadout,
   type HeatRow,
   type HeatSignal,
   type HeatSummary,
@@ -63,6 +67,7 @@ export interface RoomRunTranscript {
   readonly controller: readonly ControllerCell[];
   readonly ticks: readonly RoomTranscriptTick[];
   readonly heatRows: readonly HeatRow[];
+  readonly heatReadout?: HeatReadout;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -108,7 +113,9 @@ export function normalizeControllerCells(cells: readonly ControllerCell[]): read
 
 function renderControllerCell(cell: ControllerCell): string {
   const enabled = cell.enabled ?? cell.label.length > 0;
-  const state = cell.selected ? "selected" : enabled ? "ready" : "empty";
+  let state = "empty";
+  if (enabled) state = "ready";
+  if (cell.selected) state = "selected";
   const label = cell.label.length > 0 ? escapeHtml(cell.label) : "&nbsp;";
   const actionId = cell.actionId ?? "";
 
@@ -143,7 +150,7 @@ function renderHeatRow(row: HeatRow): string {
     attr("data-signals", signals),
     attr("style", style),
     ">",
-    `<span class="zeta-heat-row-tick">${row.tick}</span>`,
+    `<span class="zeta-heat-row-tick">${row.tick.toString()}</span>`,
     `<span class="zeta-heat-row-lane zeta-heat-row-lane-rejected"></span>`,
     `<span class="zeta-heat-row-lane zeta-heat-row-lane-backpressure"></span>`,
     `<span class="zeta-heat-row-lane zeta-heat-row-lane-storage"></span>`,
@@ -184,7 +191,7 @@ function renderTick(tick: RoomTranscriptTick): string {
     attr("data-choice-cell", tick.choiceCell),
     attr("data-heat-signals", heatSignalsText),
     ">",
-    `<span class="zeta-room-tick-index">${tick.tick}</span>`,
+    `<span class="zeta-room-tick-index">${tick.tick.toString()}</span>`,
     `<span class="zeta-room-tick-phase">${escapeHtml(tick.phase)}</span>`,
     `<span class="zeta-room-tick-event">${escapeHtml(tick.event)}</span>`,
     continuation,
@@ -194,7 +201,7 @@ function renderTick(tick: RoomTranscriptTick): string {
 
 export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const cells = normalizeControllerCells(transcript.controller);
-  const heat = summarizeHeatRows(transcript.heatRows);
+  const heat = transcript.heatReadout ?? summarizeHeatRows(transcript.heatRows);
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
   return [
@@ -202,14 +209,17 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-schema", transcript.schema),
     attr("data-room", transcript.roomName),
     attr("data-heat", heat.heatRejected > 0 ? "hot" : "cold"),
+    attr("data-heat-readout", transcript.heatReadout?.schema),
+    attr("data-heat-treaty", transcript.heatReadout?.qsharpTreaty),
+    attr("data-qsharp-source", transcript.heatReadout?.qsharpSource),
     ">",
     '<header class="zeta-room-header">',
     `<h1>${escapeHtml(transcript.roomName)}</h1>`,
     `<p>${escapeHtml(generatedBy)} · seed ${escapeHtml(transcript.seed)}</p>`,
     '<dl class="zeta-room-summary">',
-    `<div><dt>ticks</dt><dd>${transcript.ticks.length}</dd></div>`,
-    `<div><dt>heat</dt><dd>${heat.heatRejected}</dd></div>`,
-    `<div><dt>pressure</dt><dd>${heat.backpressured}</dd></div>`,
+    `<div><dt>ticks</dt><dd>${transcript.ticks.length.toString()}</dd></div>`,
+    `<div><dt>heat</dt><dd>${heat.heatRejected.toString()}</dd></div>`,
+    `<div><dt>pressure</dt><dd>${heat.backpressured.toString()}</dd></div>`,
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
     "</dl>",
     "</header>",

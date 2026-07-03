@@ -11,6 +11,9 @@ Files:
   functions; it is not a runtime heat sink.
 - `heat-signals-treaty.json` pins the heat token/code vocabulary shared by the
   Q# oracle labels and the F# `HeatSignal` projection.
+- `DarkHallRoomTranscript.fs` emits `heatReadout` rows that point back to this
+  treaty, so CSS/LLMTV room frames and Q# labels agree on the finite meaning of
+  heat without putting Q# in the runtime loop.
 - `generate-qsharp-golden.py` loads those operations through Microsoft QDK and
   emits observable golden vectors.
 - `qsharp-golden.json` is the committed reference fixture ordinary CI checks.

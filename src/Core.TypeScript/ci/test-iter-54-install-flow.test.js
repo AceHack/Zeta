@@ -171,7 +171,7 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
         expect(ITER_595_BLOCK).toContain("BUN_INSTALL=\"$ZETA_HOME/.bun\"");
     });
     test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
-        expect(ITER_595_BLOCK).toContain("tools/setup/manifests/agent-clis");
+        expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-bun-global");
         expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-installer");
         expect(ITER_595_BLOCK).not.toContain("bun install --global @anthropic-ai/claude-code");
         expect(ITER_595_BLOCK).not.toContain("bun install --global @google/gemini-cli");

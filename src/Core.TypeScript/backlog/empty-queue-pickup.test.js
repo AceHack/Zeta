@@ -41,7 +41,7 @@ const PICKUP_DECOMPOSE = JSON.stringify({
     blocked: [],
     activeClaims: [],
 });
-const PICKUP_DOTTED_ID = JSON.stringify({
+const PICKUP_ZETA_ID = JSON.stringify({
     status: "selected",
     selected: { id: "081KR7JY10008QG0R000MH7PJT", priority: "P1", title: "Dotted item", relativePath: "docs/backlog/P1/081KR7JY10008QG0R000MH7PJT-dotted.md" },
     action: "claim-and-implement",
@@ -50,22 +50,25 @@ const PICKUP_DOTTED_ID = JSON.stringify({
     blocked: [],
     activeClaims: [],
 });
+const TEST_REPO_ROOT = "test-repo";
+const TEST_WORKTREE = "test-worktrees/backlog-0300";
+const TEST_ZETA_WORKTREE = "test-worktrees/backlog-081kr7jy10008qg0r000mh7pjt";
 const CLAIM_OK = JSON.stringify({
     branch: "claim/backlog-0300",
-    worktreePath: "/tmp/test-worktrees/backlog-0300",
+    worktreePath: TEST_WORKTREE,
     claimRelativePath: "docs/claims/backlog-0300.md",
 });
-const CLAIM_DOTTED_OK = JSON.stringify({
-    branch: "claim/backlog-0164-1",
-    worktreePath: "/tmp/test-worktrees/backlog-0164-1",
-    claimRelativePath: "docs/claims/backlog-0164-1.md",
+const CLAIM_ZETA_OK = JSON.stringify({
+    branch: "claim/backlog-081kr7jy10008qg0r000mh7pjt",
+    worktreePath: TEST_ZETA_WORKTREE,
+    claimRelativePath: "docs/claims/backlog-081kr7jy10008qg0r000mh7pjt.md",
 });
 describe("orchestrate", () => {
     test("stops at capacity gate when PR slots are full", () => {
         const runner = fakeRunner(new Map([
             ["gh", { status: 0, stdout: PR_LIST_FULL, stderr: "" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         expect(result.status).toBe("wait-pr-capacity");
         expect(result.decisions).toHaveLength(1);
         expect(result.decisions[0]?.step).toBe("capacity-gate");
@@ -76,32 +79,32 @@ describe("orchestrate", () => {
             ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
             ["claim-worktree-bootstrap", { status: 0, stdout: CLAIM_OK, stderr: "" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         expect(result.status).toBe("claimed");
         expect(result.backlogId).toBe("081KR2E4K0008QG0R002MFK6AW");
         expect(result.branch).toBe("claim/backlog-0300");
-        expect(result.worktreePath).toBe("/tmp/test-worktrees/backlog-0300");
+        expect(result.worktreePath).toBe(TEST_WORKTREE);
         expect(result.decisions).toHaveLength(3);
         expect(result.executionPrompt).toContain("081KR2E4K0008QG0R002MFK6AW");
     });
-    test("normalizes dotted backlog IDs into claim-safe slugs", () => {
+    test("normalizes ZetaId backlog IDs into claim-safe slugs", () => {
         const runner = fakeRunner(new Map([
             ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
-            ["autonomous-pickup", { status: 0, stdout: PICKUP_DOTTED_ID, stderr: "" }],
-            ["--slug backlog-0164-1", { status: 0, stdout: CLAIM_DOTTED_OK, stderr: "" }],
+            ["autonomous-pickup", { status: 0, stdout: PICKUP_ZETA_ID, stderr: "" }],
+            ["--slug backlog-081kr7jy10008qg0r000mh7pjt", { status: 0, stdout: CLAIM_ZETA_OK, stderr: "" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         expect(result.status).toBe("claimed");
         expect(result.backlogId).toBe("081KR7JY10008QG0R000MH7PJT");
-        expect(result.branch).toBe("claim/backlog-0164-1");
-        expect(result.worktreePath).toBe("/tmp/test-worktrees/backlog-0164-1");
+        expect(result.branch).toBe("claim/backlog-081kr7jy10008qg0r000mh7pjt");
+        expect(result.worktreePath).toBe(TEST_ZETA_WORKTREE);
     });
     test("returns no-selection when picker finds nothing", () => {
         const runner = fakeRunner(new Map([
             ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
             ["autonomous-pickup", { status: 0, stdout: PICKUP_EMPTY, stderr: "" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         expect(result.status).toBe("no-selection");
         expect(result.decisions).toHaveLength(2);
         expect(result.backlogId).toBeNull();
@@ -111,7 +114,7 @@ describe("orchestrate", () => {
             ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
             ["autonomous-pickup", { status: 0, stdout: PICKUP_DECOMPOSE, stderr: "" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         expect(result.status).toBe("decompose-first");
         expect(result.backlogId).toBe("081KR2E4K0008QG0R0035QVX6S");
         expect(result.executionPrompt).toContain("Decompose");
@@ -123,7 +126,7 @@ describe("orchestrate", () => {
             ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
             ["claim-worktree-bootstrap", { status: 1, stdout: "{}", stderr: "claim branch already exists" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         expect(result.error).toContain("claim-worktree-bootstrap failed");
         expect(result.decisions).toHaveLength(3);
     });
@@ -131,7 +134,7 @@ describe("orchestrate", () => {
         const runner = fakeRunner(new Map([
             ["gh", { status: 1, stdout: "", stderr: "auth required" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         expect(result.error).toContain("capacity gate failed");
         expect(result.status).toBe("wait-pr-capacity");
     });
@@ -141,7 +144,7 @@ describe("orchestrate", () => {
             ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
             ["claim-worktree-bootstrap", { status: 0, stdout: CLAIM_OK, stderr: "" }],
         ]));
-        const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+        const result = orchestrate({ repoRoot: TEST_REPO_ROOT, maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
         const steps = result.decisions.map(d => d.step);
         expect(steps).toEqual(["capacity-gate", "pickup", "claim-worktree"]);
     });

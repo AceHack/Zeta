@@ -20,9 +20,10 @@ function parseManifest(name: string): string[] {
   }
   return raw
     .split(/\r?\n/)
-    .map((l) => l.replace(/#.*$/, "").trim())
+    .map((l) => (l.split("#")[0] ?? "").trim())
     .filter((l) => l.length > 0)
-    .map((l) => l.split(/\s+/)[0]!); // first token = the package id
+    .map((l) => l.split(/\s+/)[0])
+    .filter((token): token is string => token !== undefined && token.length > 0); // first token = the package id
 }
 
 function expectMiseTool(name: string, version: string): void {
@@ -96,9 +97,13 @@ test("git is present in manifests/windows (loop clone + repo-ops prerequisite)",
 });
 
 test("USB/QEMU and cluster integration tools are declared in install substrate", () => {
-  expect(parseManifest("apt")).toEqual(expect.arrayContaining(["qemu-system-x86", "qemu-utils", "mtools"]));
-  expect(parseManifest("brew")).toEqual(expect.arrayContaining(["qemu", "mtools"]));
-  expect(parseManifest("windows")).toContain("qemu");
+  const apt = parseManifest("apt");
+  const brew = parseManifest("brew");
+  const windows = parseManifest("windows");
+
+  for (const tool of ["qemu-system-x86", "qemu-utils", "mtools"]) expect(apt).toContain(tool);
+  for (const tool of ["qemu", "mtools"]) expect(brew).toContain(tool);
+  expect(windows).toContain("qemu");
 
   expectMiseTool("k3d", "5.8.3");
   expectMiseTool("kind", "0.31.0");
@@ -131,16 +136,19 @@ test("Windows agent CLI install consumes the shared from-bun-global manifest", (
 
 test("Codex CLI setup migrates the deprecated service_tier default value", () => {
   const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
-  const agentClisSh = readFileSync(join(setupDir, "mechanisms", "from-bun-global.sh"), "utf8");
+  const agentClisTs = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ace", "setup-realizers", "from-bun-global.ts"),
+    "utf8",
+  );
 
-  for (const installer of [installPs1, agentClisSh]) {
+  for (const installer of [installPs1, agentClisTs]) {
     expect(installer).toContain("service_tier");
     expect(installer).toContain('"default"');
     expect(installer).toContain("flex");
   }
 
   expect(installPs1).toContain("Repair-CodexConfigServiceTier");
-  expect(agentClisSh).toContain("repair_codex_service_tier_config");
+  expect(agentClisTs).toContain("repairCodexServiceTierConfig");
 });
 
 test("NixOS install shield validates from-bun-global manifest, not one hardcoded CLI", () => {
@@ -157,13 +165,16 @@ test("NixOS install shield validates from-bun-global manifest, not one hardcoded
 });
 
 test("from-ollama install defaults to skip outside interactive/full install contexts", () => {
-  const localLlm = readFileSync(join(setupDir, "mechanisms", "from-ollama.sh"), "utf8");
+  const localLlm = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ace", "setup-realizers", "from-ollama.ts"),
+    "utf8",
+  );
   const ubuntuDockerfile = readFileSync(
     join(repoRoot, "src", "Core.TypeScript", "ci", "dockerfiles", "ubuntu-install-sh-test", "Dockerfile"),
     "utf8",
   );
 
-  expect(localLlm).toContain('[ ! -t 0 ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]');
+  expect(localLlm).toContain('!process.stdin.isTTY && process.env.ZETA_INSTALL_FULL !== "1"');
   expect(localLlm).toContain("local-llm: skipping Ollama/model install");
 
   // The install shields are the explicit non-interactive opt-in path that asserts real Ollama.

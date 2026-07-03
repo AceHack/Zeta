@@ -112,12 +112,18 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Contains(transcript.Controller, fun cell -> cell.Selected && cell.ActionId = "darkhall.play.soft-chip8")
     Assert.Single(transcript.Ticks) |> ignore
     Assert.Single(transcript.HeatRows) |> ignore
+    Assert.Equal(Transcript.HeatReadoutSchema, transcript.HeatReadout.Schema)
+    Assert.Equal(Transcript.HeatSignalTreaty, transcript.HeatReadout.QSharpTreaty)
+    Assert.Equal(Transcript.QSharpHeatSignalSource, transcript.HeatReadout.QSharpSource)
+    Assert.Equal(transcript.HeatRows.Length, transcript.HeatReadout.Rows)
     Assert.Equal("execute", transcript.Ticks.Head.Phase)
     Assert.Equal("ok", transcript.Ticks.Head.Outcome)
 
     let json = Transcript.toJson transcript
 
     Assert.Contains("\"schema\": \"zeta.darkhall.room-ui.v1\"", json)
+    Assert.Contains("\"heatReadout\"", json)
+    Assert.Contains("\"qsharpTreaty\": \"src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json\"", json)
     Assert.Contains("\"controller\"", json)
     Assert.Contains("\"heatRows\"", json)
     Assert.Contains("\"signals\"", json)
@@ -125,48 +131,53 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
 
 [<Fact>]
 let ``unified room run transcript preserves boundary and soft heat rows`` () =
-    task {
-        let boundary = emptyBoundary "room-transcript-boundary" "darkhall" 5
-        let vault = sampleVault ()
+    let boundary = emptyBoundary "room-transcript-boundary" "darkhall" 5
+    let vault = sampleVault ()
 
-        let plan =
-            boundaryPlan
-                "room-transcript-boundary"
-                (fun action ->
-                    if action.Id = "darkhall.edit-grammar" then
-                        Some(RoomLoop.BoundaryCommand.Traverse(Set.empty, "glass", vault))
-                    else
-                        None)
-                (chooseById "darkhall.edit-grammar")
+    let plan =
+        boundaryPlan
+            "room-transcript-boundary"
+            (fun action ->
+                if action.Id = "darkhall.edit-grammar" then
+                    Some(RoomLoop.BoundaryCommand.Traverse(Set.empty, "glass", vault))
+                else
+                    None)
+            (chooseById "darkhall.edit-grammar")
 
-        let! result =
-            RoomRun.boundaryTickThenSoftDrive
-                (NullHeatSink() :> IHeatSink)
-                plan
-                (softPlan "room-transcript-soft" inputAfterOne 1)
-                (boundaryState boundary)
+    let result =
+        RoomRun.boundaryTickThenSoftDrive
+            (NullHeatSink() :> IHeatSink)
+            plan
+            (softPlan "room-transcript-soft" inputAfterOne 1)
+            (boundaryState boundary)
+        |> wait
 
-        match result with
-        | Error feedback -> Assert.Fail(sprintf "expected unified room run to complete, got %A" feedback)
-        | Ok run ->
-            let transcript = Transcript.ofUnifiedHeatRun "0x2a" "fsharp-unified-room-run" run
-            let heatKinds = transcript.HeatRows |> List.collect _.HeatKinds
-            let signals = transcript.HeatRows |> List.collect _.Signals |> List.distinct
+    match result with
+    | Error feedback -> Assert.Fail(sprintf "expected unified room run to complete, got %A" feedback)
+    | Ok run ->
+        let transcript = Transcript.ofUnifiedHeatRun "0x2a" "fsharp-unified-room-run" run
+        let heatKinds = transcript.HeatRows |> List.collect (fun row -> row.HeatKinds)
+        let signals = transcript.HeatRows |> List.collect (fun row -> row.Signals) |> List.distinct
+        let heatRejected = transcript.HeatRows |> List.sumBy (fun row -> row.HeatRejected)
+        let backpressured = transcript.HeatRows |> List.sumBy (fun row -> row.Backpressured)
 
-            Assert.Equal(16, transcript.Controller.Length)
-            Assert.Contains(transcript.Controller, fun cell -> cell.Selected && cell.ActionId = "darkhall.edit-grammar")
-            Assert.Equal(run.HeatRows.Length, transcript.HeatRows.Length)
-            Assert.Contains("room-boundary.door-denied", heatKinds)
-            Assert.Contains("soft-emu.prune", heatKinds)
-            Assert.Equal<string list>([ "denied"; "forgotten" ], signals)
-            Assert.Contains(transcript.Ticks, fun tick -> tick.Phase = "measure" && tick.Outcome = "backpressure")
+        Assert.Equal(16, transcript.Controller.Length)
+        Assert.Contains(transcript.Controller, fun cell -> cell.Selected && cell.ActionId = "darkhall.edit-grammar")
+        Assert.Equal(run.HeatRows.Length, transcript.HeatRows.Length)
+        Assert.Equal(run.HeatRows.Length, transcript.HeatReadout.Rows)
+        Assert.Equal(heatRejected, transcript.HeatReadout.HeatRejected)
+        Assert.Equal(backpressured, transcript.HeatReadout.Backpressured)
+        Assert.Equal<string list>([ "denied"; "forgotten" ], transcript.HeatReadout.Signals)
+        Assert.Contains("room-boundary.door-denied", heatKinds)
+        Assert.Contains("soft-emu.prune", heatKinds)
+        Assert.Equal<string list>([ "denied"; "forgotten" ], signals)
+        Assert.Contains(transcript.Ticks, fun tick -> tick.Phase = "measure" && tick.Outcome = "backpressure")
 
-            let json = Transcript.toJson transcript
+        let json = Transcript.toJson transcript
 
-            Assert.Contains("\"generatedBy\": \"fsharp-unified-room-run\"", json)
-            Assert.Contains("\"room-boundary.door-denied\"", json)
-            Assert.Contains("\"soft-emu.prune\"", json)
-            Assert.Contains("\"signals\"", json)
-            Assert.Contains("\"denied\"", json)
-            Assert.Contains("\"forgotten\"", json)
-    }
+        Assert.Contains("\"generatedBy\": \"fsharp-unified-room-run\"", json)
+        Assert.Contains("\"room-boundary.door-denied\"", json)
+        Assert.Contains("\"soft-emu.prune\"", json)
+        Assert.Contains("\"signals\"", json)
+        Assert.Contains("\"denied\"", json)
+        Assert.Contains("\"forgotten\"", json)

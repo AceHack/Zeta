@@ -8,6 +8,10 @@ export type HeatSignal =
   | "stale"
   | "other";
 
+export const HEAT_READOUT_SCHEMA = "zeta.darkhall.heat-readout.v1";
+export const HEAT_SIGNAL_TREATY_PATH = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json";
+export const HEAT_SIGNAL_QSHARP_SOURCE = "src/Core.QSharp.ReferenceOracle/HeatSignals.qs";
+
 export interface HeatRow {
   readonly tick: number;
   readonly roomName: string;
@@ -26,6 +30,13 @@ export interface HeatSummary {
   readonly storageErrors: number;
   readonly heatKinds: readonly string[];
   readonly signals: readonly HeatSignal[];
+}
+
+export interface HeatReadout extends HeatSummary {
+  readonly schema: typeof HEAT_READOUT_SCHEMA;
+  readonly qsharpTreaty: typeof HEAT_SIGNAL_TREATY_PATH;
+  readonly qsharpSource: typeof HEAT_SIGNAL_QSHARP_SOURCE;
+  readonly reasons: readonly string[];
 }
 
 function distinct<T>(values: readonly T[]): readonly T[] {

@@ -66,8 +66,10 @@ const DEFAULT_REPO = "Lucent-Financial-Group/Zeta";
 const DEFAULT_BRANCHES = new Set(["main", "master", "trunk"]);
 const REMOTE_SHORTHAND_NAMES = new Set(["origin", "upstream"]);
 const REMOTE_REF_PREFIX = /^refs\/remotes\/[^/]+\//;
-const FORBIDDEN_REF_CHARS = /[\x00-\x20~^:?*[\\\x7f]/;
+const FORBIDDEN_REF_CHARACTERS = new Set(["~", "^", ":", "?", "*", "[", "\\"]);
 const CODEX_COMMIT_TRAILER = "Co-Authored-By: Codex <noreply@openai.com>";
+const ZETA_ID_PATTERN = /^\d[\dA-HJKMNP-TV-Z]{25}$/;
+const LEGACY_BACKLOG_ID_PATTERN = /^B-\d+(?:\.\d+)*$/;
 
 function usage(): string {
   return [
@@ -88,7 +90,7 @@ function requireValue(flag: string, value: string | undefined): string {
 function parseArgs(argv: readonly string[]): Args {
   const args: Args = { inputPath: null, json: false, writeBody: false };
   for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
+    const arg = argv[i] ?? "";
     if (arg === "--input") {
       args.inputPath = requireValue(arg, argv[++i]);
     } else if (arg === "--json") {
@@ -157,6 +159,17 @@ export function normalizeBranchRef(branch: string): string {
   return normalized;
 }
 
+function hasForbiddenRefChar(value: string): boolean {
+  for (let i = 0; i < value.length; i++) {
+    const char = value[i] ?? "";
+    const code = value.charCodeAt(i);
+    if (code <= 0x20 || code === 0x7f || FORBIDDEN_REF_CHARACTERS.has(char)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function validateNormalizedBranchRef(label: string, branch: string): string {
   const normalized = normalizeBranchRef(branch);
   const invalid =
@@ -170,7 +183,7 @@ function validateNormalizedBranchRef(label: string, branch: string): string {
     normalized.includes("..") ||
     normalized.includes("@{") ||
     normalized === "@" ||
-    FORBIDDEN_REF_CHARS.test(normalized) ||
+    hasForbiddenRefChar(normalized) ||
     normalized.split("/").some((part) => part.startsWith(".") || part.endsWith(".lock"));
 
   if (invalid) {
@@ -184,7 +197,7 @@ function isDefaultBranchRef(branch: string): boolean {
 }
 
 export function validatePublicationInput(input: PublicationInput): void {
-  if (!/^B-[0-9]+$/.test(input.backlogId)) {
+  if (!ZETA_ID_PATTERN.test(input.backlogId) && !LEGACY_BACKLOG_ID_PATTERN.test(input.backlogId)) {
     throw new Error(`invalid backlog id: ${input.backlogId}`);
   }
   assertNonEmpty("backlogTitle", input.backlogTitle);
@@ -213,13 +226,13 @@ export function decideAutoMerge(input: PublicationInput): AutoMergeDecision {
   if (input.unresolvedReviewThreads > 0) {
     return {
       allowed: false,
-      reason: `${input.unresolvedReviewThreads} unresolved review thread(s)`,
+      reason: `${String(input.unresolvedReviewThreads)} unresolved review thread(s)`,
     };
   }
   if (input.requiredChecks.failed > 0) {
     return {
       allowed: false,
-      reason: `${input.requiredChecks.failed} required check(s) failed`,
+      reason: `${String(input.requiredChecks.failed)} required check(s) failed`,
     };
   }
   return {
@@ -245,7 +258,7 @@ function formatCheck(check: FocusedCheck): string {
 }
 
 function requiredCheckSummary(counts: RequiredCheckCounts): string {
-  return `${counts.ok} ok, ${counts.inProgress} in progress, ${counts.pending} pending, ${counts.failed} failed`;
+  return `${String(counts.ok)} ok, ${String(counts.inProgress)} in progress, ${String(counts.pending)} pending, ${String(counts.failed)} failed`;
 }
 
 export function buildPrBody(input: PublicationInput): string {
@@ -263,7 +276,7 @@ export function buildPrBody(input: PublicationInput): string {
     "",
     "## Auto-merge gate",
     `- Required checks: ${requiredCheckSummary(input.requiredChecks)}`,
-    `- Unresolved review threads: ${input.unresolvedReviewThreads}`,
+    `- Unresolved review threads: ${String(input.unresolvedReviewThreads)}`,
     `- Decision: ${autoMerge.allowed ? "arm auto-merge" : "do not arm auto-merge"} (${autoMerge.reason})`,
     "",
   ].join("\n");

@@ -61,9 +61,71 @@ interface CliArgs {
   dryRun: boolean;
 }
 
+interface ParseState {
+  request: BootstrapRequest;
+  json: boolean;
+  dryRun: boolean;
+}
+
+type ValueOptionHandler = (state: ParseState, value: string) => void;
+type FlagOptionHandler = (state: ParseState) => void;
+
 const GIT_BIN = "/usr/bin/git";
 const CLAIM_PREFIX = "claim/";
-const HEARTBEAT_NAME_PATTERN = /^[A-Za-z0-9._/-]+$/;
+const HEARTBEAT_NAME_PATTERN = /^[A-Za-z\d._/-]+$/;
+const ZETA_ID_PATTERN = /^\d[\dA-HJKMNP-TV-Z]{25}$/;
+const LEGACY_BACKLOG_ID_PATTERN = /^B-\d+(?:\.\d+)*$/;
+const BACKLOG_SLUG_PATTERN = /^backlog-\d+(?:-\d+)*$/;
+const BUG_SLUG_PATTERN = /^bug-\d+$/;
+const ISSUE_SLUG_PATTERN = /^issue-[A-Za-z\d._-]+$/;
+const TASK_SLUG_PATTERN = /^task-[a-z\d][a-z\d-]*$/;
+const CLAIM_SLUG_PATTERNS = [BACKLOG_SLUG_PATTERN, BUG_SLUG_PATTERN, ISSUE_SLUG_PATTERN, TASK_SLUG_PATTERN];
+
+const VALUE_OPTION_HANDLERS: Record<string, ValueOptionHandler> = {
+  "--repo-root": (state, value) => {
+    state.request.repoRoot = resolve(value);
+    state.request.worktreeRoot = defaultWorktreeRoot(state.request.repoRoot);
+  },
+  "--worktree-root": (state, value) => {
+    state.request.worktreeRoot = resolve(value);
+  },
+  "--slug": (state, value) => {
+    state.request.slug = value;
+  },
+  "--backlog-id": (state, value) => {
+    state.request.backlogId = value;
+  },
+  "--scope": (state, value) => {
+    state.request.scope = value;
+  },
+  "--durable-target": (state, value) => {
+    state.request.durableTarget = value;
+  },
+  "--path": (state, value) => {
+    state.request.paths.push(value);
+  },
+  "--session-id": (state, value) => {
+    state.request.sessionId = value;
+  },
+  "--claimed-at": (state, value) => {
+    state.request.claimedAt = value;
+  },
+  "--eta": (state, value) => {
+    state.request.eta = value;
+  },
+  "--platform-mirror": (state, value) => {
+    state.request.platformMirror = value;
+  },
+};
+
+const FLAG_OPTION_HANDLERS: Record<string, FlagOptionHandler> = {
+  "--json": (state) => {
+    state.json = true;
+  },
+  "--dry-run": (state) => {
+    state.dryRun = true;
+  },
+};
 
 function usage(): string {
   return [
@@ -107,52 +169,33 @@ function defaultWorktreeRoot(repoRoot: string): string {
 
 function parseArgs(argv: readonly string[], now = new Date()): CliArgs {
   const repoRoot = resolve(process.cwd());
-  const request: BootstrapRequest = {
-    repoRoot,
-    slug: "",
-    backlogId: "",
-    scope: "",
-    durableTarget: "",
-    paths: [],
-    sessionId: "",
-    harness: "codex",
-    claimedAt: now.toISOString(),
-    eta: plusMinutes(now, 45).toISOString(),
-    worktreeRoot: defaultWorktreeRoot(repoRoot),
-    platformMirror: "GitHub PR pending",
+  const state: ParseState = {
+    request: {
+      repoRoot,
+      slug: "",
+      backlogId: "",
+      scope: "",
+      durableTarget: "",
+      paths: [],
+      sessionId: "",
+      harness: "codex",
+      claimedAt: now.toISOString(),
+      eta: plusMinutes(now, 45).toISOString(),
+      worktreeRoot: defaultWorktreeRoot(repoRoot),
+      platformMirror: "GitHub PR pending",
+    },
+    json: false,
+    dryRun: false,
   };
-  let json = false;
-  let dryRun = false;
 
   for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (arg === "--repo-root") {
-      request.repoRoot = resolve(requireValue(arg, argv[++i]));
-      request.worktreeRoot = defaultWorktreeRoot(request.repoRoot);
-    } else if (arg === "--worktree-root") {
-      request.worktreeRoot = resolve(requireValue(arg, argv[++i]));
-    } else if (arg === "--slug") {
-      request.slug = requireValue(arg, argv[++i]);
-    } else if (arg === "--backlog-id") {
-      request.backlogId = requireValue(arg, argv[++i]);
-    } else if (arg === "--scope") {
-      request.scope = requireValue(arg, argv[++i]);
-    } else if (arg === "--durable-target") {
-      request.durableTarget = requireValue(arg, argv[++i]);
-    } else if (arg === "--path") {
-      request.paths.push(requireValue(arg, argv[++i]));
-    } else if (arg === "--session-id") {
-      request.sessionId = requireValue(arg, argv[++i]);
-    } else if (arg === "--claimed-at") {
-      request.claimedAt = requireValue(arg, argv[++i]);
-    } else if (arg === "--eta") {
-      request.eta = requireValue(arg, argv[++i]);
-    } else if (arg === "--platform-mirror") {
-      request.platformMirror = requireValue(arg, argv[++i]);
-    } else if (arg === "--json") {
-      json = true;
-    } else if (arg === "--dry-run") {
-      dryRun = true;
+    const arg = argv[i] ?? "";
+    const valueHandler = VALUE_OPTION_HANDLERS[arg];
+    if (valueHandler !== undefined) {
+      valueHandler(state, requireValue(arg, argv[i + 1]));
+      i++;
+    } else if (FLAG_OPTION_HANDLERS[arg] !== undefined) {
+      FLAG_OPTION_HANDLERS[arg](state);
     } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(`${usage()}\n`);
       process.exit(0);
@@ -161,16 +204,16 @@ function parseArgs(argv: readonly string[], now = new Date()): CliArgs {
     }
   }
 
-  if (request.sessionId.length === 0 && request.slug.length > 0) {
-    request.sessionId = `codex/${timestampId(now)}-${request.slug}`;
+  if (state.request.sessionId.length === 0 && state.request.slug.length > 0) {
+    state.request.sessionId = `codex/${timestampId(now)}-${state.request.slug}`;
   }
 
-  validateRequest(request);
-  return { request, json, dryRun };
+  validateRequest(state.request);
+  return state;
 }
 
 function validateSlug(slug: string): void {
-  if (!/^(backlog-[0-9]+(?:-[0-9]+)*|bug-[0-9]+|issue-[A-Za-z0-9._-]+|task-[a-z0-9][a-z0-9-]*)$/.test(slug)) {
+  if (!CLAIM_SLUG_PATTERNS.some((pattern) => pattern.test(slug))) {
     throw new Error(`invalid claim slug: ${slug}`);
   }
 }
@@ -178,7 +221,11 @@ function validateSlug(slug: string): void {
 function normalizeRepoPath(path: string): string {
   const noBackslash = path.replace(/\\/g, "/");
   const withoutDot = noBackslash.replace(/^\.\//, "");
-  return withoutDot.replace(/\/+$/g, "");
+  let end = withoutDot.length;
+  while (end > 0 && withoutDot.charCodeAt(end - 1) === 47) {
+    end--;
+  }
+  return withoutDot.slice(0, end);
 }
 
 function validateRepoPath(path: string): void {
@@ -198,7 +245,7 @@ function validateRepoPath(path: string): void {
 
 function validateRequest(request: BootstrapRequest): void {
   validateSlug(request.slug);
-  if (!/^B-[0-9]+(\.[0-9]+)*$/.test(request.backlogId)) {
+  if (!ZETA_ID_PATTERN.test(request.backlogId) && !LEGACY_BACKLOG_ID_PATTERN.test(request.backlogId)) {
     throw new Error(`invalid backlog id: ${request.backlogId}`);
   }
   if (request.scope.trim().length === 0) {
@@ -308,8 +355,8 @@ function spawnRunner(): CommandRunner {
       });
       return {
         status: result.status ?? 1,
-        stdout: result.stdout ?? "",
-        stderr: result.stderr ?? String(result.error ?? ""),
+        stdout: result.stdout,
+        stderr: result.stderr.length > 0 ? result.stderr : String(result.error ?? ""),
       };
     },
   };

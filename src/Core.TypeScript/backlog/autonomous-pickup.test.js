@@ -69,12 +69,12 @@ describe("selectNextBacklogItem", () => {
     });
     test("skips claimed matching rows", () => {
         const selection = selectNextBacklogItem([
-            item({ id: "081KTEST00000001", legacyId: "081KQ8P5D0008QG0R002XFQ305", priority: "P0", title: "claimed" }),
-            item({ id: "081KTEST00000002", legacyId: "081KQDTYV0008QG0R002H74QXZ", priority: "P0", title: "fallback" }),
-        ], ["claim/backlog-0062-wallet"]);
+            item({ id: "081KQ8P5D0008QG0R002XFQ305", priority: "P0", title: "claimed" }),
+            item({ id: "081KQDTYV0008QG0R002H74QXZ", priority: "P0", title: "fallback" }),
+        ], ["claim/backlog-081KQ8P5D0008QG0R002XFQ305-wallet"]);
         expect(selection.status).toBe("selected");
-        expect(selection.selected?.id).toBe("081KTEST00000002");
-        expect(selection.blocked[0]?.reason).toContain("claim/backlog-0062-wallet");
+        expect(selection.selected?.id).toBe("081KQDTYV0008QG0R002H74QXZ");
+        expect(selection.blocked[0]?.reason).toContain("claim/backlog-081KQ8P5D0008QG0R002XFQ305-wallet");
     });
     test("orders equal-priority candidates by creation age before item number", () => {
         const selection = selectNextBacklogItem([

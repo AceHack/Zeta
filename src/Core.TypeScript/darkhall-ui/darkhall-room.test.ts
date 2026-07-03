@@ -4,6 +4,9 @@ import { join } from "node:path";
 import {
   classifyHeatKind,
   coordinationBandwidth,
+  HEAT_READOUT_SCHEMA,
+  HEAT_SIGNAL_QSHARP_SOURCE,
+  HEAT_SIGNAL_TREATY_PATH,
   sLaneVerdict,
   heatSignals,
   normalizeHeatSignals,
@@ -11,11 +14,19 @@ import {
   renderDarkHallRoomDocument,
   renderDarkHallRoomHtml,
   summarizeHeatRows,
+  type HeatReadout,
   type HeatRow,
   type RoomRunTranscript,
 } from "./darkhall-room";
 
 const css = readFileSync(join(import.meta.dir, "darkhall-room.css"), "utf-8");
+const heatTreaty = JSON.parse(
+  readFileSync(join(import.meta.dir, "..", "..", "Core.QSharp.ReferenceOracle", "heat-signals-treaty.json"), "utf-8"),
+) as {
+  readonly schema: string;
+  readonly qsharpSource: string;
+  readonly signals: readonly { readonly token: string; readonly public: boolean }[];
+};
 
 const doorDeniedHeat: HeatRow = {
   tick: 1,
@@ -40,6 +51,19 @@ const horizonHeat: HeatRow = {
 };
 
 const heatRows: readonly HeatRow[] = [doorDeniedHeat, horizonHeat];
+
+const heatReadout: HeatReadout = {
+  schema: HEAT_READOUT_SCHEMA,
+  qsharpTreaty: HEAT_SIGNAL_TREATY_PATH,
+  qsharpSource: HEAT_SIGNAL_QSHARP_SOURCE,
+  rows: 2,
+  heatRejected: 3,
+  backpressured: 1,
+  storageErrors: 1,
+  heatKinds: ["room-boundary.door-denied", "room-horizon.forgotten", "custom.storage"],
+  signals: ["denied", "forgotten", "storage-error"],
+  reasons: ["darkhall -> glass refused", "bounded horizon forgot materialized keys", "sink storage failed"],
+};
 
 const transcript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
@@ -82,6 +106,7 @@ const transcript: RoomRunTranscript = {
     },
   ],
   heatRows,
+  heatReadout,
 };
 
 describe("Dark Hall CSS room UI", () => {
@@ -145,11 +170,15 @@ describe("Dark Hall CSS room UI", () => {
     };
 
     expect(heatSignals(sourceTagged)).toEqual(["backpressure"]);
+    const firstTick = transcript.ticks[0];
+    if (firstTick === undefined) {
+      throw new Error("test transcript must have a first tick");
+    }
     expect(
       renderDarkHallRoomHtml({
         ...transcript,
         heatRows: [sourceTagged],
-        ticks: [{ ...transcript.ticks[0]!, heat: sourceTagged }],
+        ticks: [{ ...firstTick, heat: sourceTagged }],
       }),
     ).toContain('data-signals="backpressure"');
   });
@@ -181,6 +210,18 @@ describe("Dark Hall CSS room UI", () => {
           "continuation": ""
         }
       ],
+      "heatReadout": {
+        "schema": "zeta.darkhall.heat-readout.v1",
+        "qsharpTreaty": "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json",
+        "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
+        "rows": 1,
+        "heatRejected": 1,
+        "backpressured": 1,
+        "storageErrors": 0,
+        "heatKinds": ["room-boundary.door-denied"],
+        "signals": ["denied"],
+        "reasons": ["darkhall -> glass refused"]
+      },
       "heatRows": [
         {
           "tick": 1,
@@ -197,9 +238,21 @@ describe("Dark Hall CSS room UI", () => {
 
     const html = renderDarkHallRoomHtml(fromFsharp);
 
+    expect(html).toContain('data-heat-readout="zeta.darkhall.heat-readout.v1"');
+    expect(html).toContain(`data-heat-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(html).toContain(`data-qsharp-source="${HEAT_SIGNAL_QSHARP_SOURCE}"`);
     expect(html).toContain('data-signals="denied"');
     expect(html).toContain('data-heat-signals="denied"');
     expect(html).toContain("<dd>denied</dd>");
+  });
+
+  it("keeps the room heat readout aligned with the Q# signal treaty", () => {
+    const publicTokens = heatTreaty.signals.filter((signal) => signal.public).map((signal) => signal.token);
+
+    expect(heatTreaty.schema).toBe("zeta.qsharp.heat-signals.v1");
+    expect(heatTreaty.qsharpSource).toBe(HEAT_SIGNAL_QSHARP_SOURCE);
+    expect(heatReadout.qsharpTreaty).toBe(HEAT_SIGNAL_TREATY_PATH);
+    expect(heatReadout.signals.every((signal) => publicTokens.includes(signal))).toBe(true);
   });
 
   it("renders a no-script document; CSS owns geometry and state projection", () => {
@@ -272,7 +325,14 @@ describe("s-lanes", () => {
   });
 
   it("is schema-additive: a transcript without sLanes renders no coordination board", () => {
-    const { sLanes: _omitSLanes, ...bare } = withLanes; // omit, not set-undefined (exactOptionalPropertyTypes)
+    const bare: RoomRunTranscript = {
+      schema: withLanes.schema,
+      roomName: withLanes.roomName,
+      seed: withLanes.seed,
+      controller: withLanes.controller,
+      ticks: withLanes.ticks,
+      heatRows: withLanes.heatRows,
+    };
     expect(renderDarkHallRoomHtml(bare)).not.toContain("zeta-room-coordination");
     const empty: RoomRunTranscript = { ...withLanes, sLanes: [] };
     expect(renderDarkHallRoomHtml(empty)).not.toContain("zeta-room-coordination");
