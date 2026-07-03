@@ -21,19 +21,31 @@ type HeatSignature =
 module HeatSignature =
 
     let private kindContains (needle: string) (kind: string) : bool =
-        not (String.IsNullOrEmpty kind) && kind.Contains(needle, StringComparison.Ordinal)
+        not (String.IsNullOrEmpty kind) && kind.Contains(needle, StringComparison.OrdinalIgnoreCase)
 
     let isBackpressureKind (kind: string) : bool =
         kindContains "backpressure" kind
 
     let isDeniedKind (kind: string) : bool =
-        kindContains "denied" kind
+        kindContains "denied" kind || kindContains "reject" kind
 
     let isPressureKind (kind: string) : bool =
         isBackpressureKind kind || isDeniedKind kind
 
     let isForgettingKind (kind: string) : bool =
-        kindContains "forgotten" kind || kindContains "prune" kind
+        kindContains "forgotten" kind || kindContains "forget" kind || kindContains "prune" kind
+
+    let isStorageErrorKind (kind: string) : bool =
+        kindContains "storage" kind
+
+    let isInvalidKind (kind: string) : bool =
+        kindContains "invalid" kind || kindContains "decode" kind || kindContains "parse" kind
+
+    let isExpiredKind (kind: string) : bool =
+        kindContains "expired" kind || kindContains "expire" kind || kindContains "ttl" kind
+
+    let isStaleKind (kind: string) : bool =
+        kindContains "stale" kind
 
     let ofMass (source: string) (kind: string) (units: int) (mass: double) (detail: string) : HeatSignature =
         let ppm =

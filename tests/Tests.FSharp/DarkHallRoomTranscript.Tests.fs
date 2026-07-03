@@ -120,6 +120,7 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Contains("\"schema\": \"zeta.darkhall.room-ui.v1\"", json)
     Assert.Contains("\"controller\"", json)
     Assert.Contains("\"heatRows\"", json)
+    Assert.Contains("\"signals\"", json)
     Assert.DoesNotContain("UnionCase", json)
 
 [<Fact>]
@@ -150,12 +151,14 @@ let ``unified room run transcript preserves boundary and soft heat rows`` () =
         | Ok run ->
             let transcript = Transcript.ofUnifiedHeatRun "0x2a" "fsharp-unified-room-run" run
             let heatKinds = transcript.HeatRows |> List.collect _.HeatKinds
+            let signals = transcript.HeatRows |> List.collect _.Signals |> List.distinct
 
             Assert.Equal(16, transcript.Controller.Length)
             Assert.Contains(transcript.Controller, fun cell -> cell.Selected && cell.ActionId = "darkhall.edit-grammar")
             Assert.Equal(run.HeatRows.Length, transcript.HeatRows.Length)
             Assert.Contains("room-boundary.door-denied", heatKinds)
             Assert.Contains("soft-emu.prune", heatKinds)
+            Assert.Equal<string list>([ "denied"; "forgotten" ], signals)
             Assert.Contains(transcript.Ticks, fun tick -> tick.Phase = "measure" && tick.Outcome = "backpressure")
 
             let json = Transcript.toJson transcript
@@ -163,4 +166,7 @@ let ``unified room run transcript preserves boundary and soft heat rows`` () =
             Assert.Contains("\"generatedBy\": \"fsharp-unified-room-run\"", json)
             Assert.Contains("\"room-boundary.door-denied\"", json)
             Assert.Contains("\"soft-emu.prune\"", json)
+            Assert.Contains("\"signals\"", json)
+            Assert.Contains("\"denied\"", json)
+            Assert.Contains("\"forgotten\"", json)
     }

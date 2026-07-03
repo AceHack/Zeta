@@ -66,6 +66,20 @@ module RoomRun =
         | HorizonFeedback of run: UnifiedHeatRun<'K> * feedback: RoomHorizon.Feedback
         | HorizonHeatFeedback of run: UnifiedHorizonRun<'K, 'S> * feedback: RoomHorizon.Feedback
 
+    /// Export the complete room-run heat transcript through a caller-injected
+    /// host boundary. The run itself may already have emitted live heat; this is
+    /// for replay/readout ports that need to ship the banked transcript outward.
+    let emitUnifiedHeat (sink: IHeatSink) (source: string) (run: UnifiedHeatRun<'K>) : Result<unit, HeatSinkFeedback> =
+        Scheduler.emitHeatRows sink source run.HeatRows
+
+    /// Export boundary + soft + horizon heat rows through the same host boundary.
+    let emitUnifiedHorizonHeat
+        (sink: IHeatSink)
+        (source: string)
+        (run: UnifiedHorizonRun<'K, 'S>)
+        : Result<unit, HeatSinkFeedback> =
+        Scheduler.emitHeatRows sink source run.HeatRows
+
     /// Run one boundary-aware scheduler tick and then one soft-drive window
     /// through the same heat sink. If the soft lookahead cannot export heat,
     /// the room state already produced by the boundary tick is returned with

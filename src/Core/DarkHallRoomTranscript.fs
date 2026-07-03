@@ -44,6 +44,8 @@ module DarkHallRoomTranscript =
           StorageErrors: int
           [<JsonPropertyName("heatKinds")>]
           HeatKinds: string list
+          [<JsonPropertyName("signals")>]
+          Signals: string list
           [<JsonPropertyName("reasons")>]
           Reasons: string list }
 
@@ -135,16 +137,18 @@ module DarkHallRoomTranscript =
           Backpressured = row.Backpressured
           StorageErrors = row.StorageErrors
           HeatKinds = row.HeatKinds
+          Signals = Scheduler.heatBoundarySignalTokens row
           Reasons = row.Reasons }
 
     let private heatRowOfReadout (tick: int) (roomName: string) (heat: RoomLoop.HeatReadout) : HeatRow =
-        { Tick = tick
-          RoomName = roomName
-          HeatRejected = heat.HeatRejected
-          Backpressured = heat.Backpressured
-          StorageErrors = heat.StorageErrors
-          HeatKinds = heat.HeatKinds
-          Reasons = heat.Reasons }
+        heatRow
+            { Tick = tick
+              RoomName = roomName
+              HeatRejected = heat.HeatRejected
+              Backpressured = heat.Backpressured
+              StorageErrors = heat.StorageErrors
+              HeatKinds = heat.HeatKinds
+              Reasons = heat.Reasons }
 
     let private outcomeOfHeatAndResult (heat: RoomLoop.HeatReadout) result =
         match result with
@@ -213,6 +217,7 @@ module DarkHallRoomTranscript =
           Backpressured = 0
           StorageErrors = 0
           HeatKinds = []
+          Signals = []
           Reasons = [] }
 
     let private measureTick (index: int) (row: Scheduler.HeatBoundaryRow) : TranscriptTick =

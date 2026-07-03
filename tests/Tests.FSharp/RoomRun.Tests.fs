@@ -100,6 +100,7 @@ let private assertBoundaryAndSoftHeat (sink: RecordingHeatSink) (run: RoomRun.Un
         [ "room-boundary.door-denied"; "soft-emu.prune" ],
         run.HeatTranscript.HeatKinds
     )
+    Assert.Equal<string list>([ "denied"; "forgotten" ], run.HeatTranscript.Signals)
     Assert.True(Scheduler.transcriptHasHeat run.HeatTranscript)
     Assert.Equal<string list>(
         [ "room-boundary.door-denied"; "soft-emu.prune" ],
@@ -112,6 +113,16 @@ let private assertBoundaryAndSoftHeat (sink: RecordingHeatSink) (run: RoomRun.Un
     Assert.Contains("soft-emu.prune", kinds)
     Assert.True(kinds |> List.exists ((=) "room-boundary.door-denied"))
     Assert.True(kinds |> List.exists ((=) "soft-emu.prune"))
+
+    let hostSink = RecordingHeatSink()
+
+    RoomRun.emitUnifiedHeat (hostSink :> IHeatSink) "room-run-host" run |> mustOk
+
+    Assert.Equal<string list>(
+        [ "room-boundary.door-denied"; "soft-emu.prune" ],
+        hostSink.Signatures |> Seq.map _.Kind |> Seq.toList
+    )
+    Assert.All(hostSink.Signatures, fun signature -> Assert.Equal("room-run-host", signature.Source))
 
 let private horizonConfig capacity policy : BoundedGSetConfig =
     { Capacity = capacity
@@ -132,6 +143,32 @@ let private horizonCandidate key label state bytes : RH.Candidate<string, string
       Priority =
         { Attention = PS.one
           Gravity = PS.one } }
+
+let private assertHorizonHeatRun (sink: RecordingHeatSink) (run: RoomRun.UnifiedHorizonRun<string, string>) =
+    Assert.Equal(1, run.Room.CompletedTicks)
+    Assert.Equal<string list>([ "old-b"; "zz-new" ], run.HorizonReport.HorizonAfter |> BoundedGSet.toList)
+    Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatRows |> List.collect _.HeatKinds)
+    Assert.Empty(run.SoftHeatReport.HeatSignatures)
+    Assert.Equal(2, run.HeatTranscript.Rows)
+    Assert.Equal(1, run.HeatTranscript.HeatRejected)
+    Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatTranscript.HeatKinds)
+    Assert.Equal<string list>([ "forgotten" ], run.HeatTranscript.Signals)
+    Assert.Equal<string list>([ "room-horizon.forgotten" ], sink.Signatures |> Seq.map _.Kind |> Seq.toList)
+
+    let hostSink = RecordingHeatSink()
+
+    RoomRun.emitUnifiedHorizonHeat (hostSink :> IHeatSink) "room-run-host" run |> mustOk
+
+    Assert.Equal<string list>(
+        [ "room-horizon.forgotten" ],
+        hostSink.Signatures |> Seq.map _.Kind |> Seq.toList
+    )
+
+    let frame = Scheduler.heatBoardFrame 99UL run.HeatRows
+
+    Assert.Equal(0uy, Chip8Cow.colorAt 0 0 frame)
+    Assert.Equal(1uy, Chip8Cow.colorAt 0 1 frame)
+    Assert.Equal(4uy, Chip8Cow.colorAt 48 1 frame)
 
 [<Fact>]
 let ``room run exports boundary denial and soft prune heat through one sink`` () =
@@ -275,21 +312,7 @@ let ``room run appends finite horizon heat to the host visible transcript`` () =
 
         match result with
         | Error feedback -> Assert.Fail(sprintf "expected horizon room run to complete, got %A" feedback)
-        | Ok run ->
-            Assert.Equal(1, run.Room.CompletedTicks)
-            Assert.Equal<string list>([ "old-b"; "zz-new" ], run.HorizonReport.HorizonAfter |> BoundedGSet.toList)
-            Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatRows |> List.collect _.HeatKinds)
-            Assert.Empty(run.SoftHeatReport.HeatSignatures)
-            Assert.Equal(2, run.HeatTranscript.Rows)
-            Assert.Equal(1, run.HeatTranscript.HeatRejected)
-            Assert.Equal<string list>([ "room-horizon.forgotten" ], run.HeatTranscript.HeatKinds)
-            Assert.Equal<string list>([ "room-horizon.forgotten" ], sink.Signatures |> Seq.map _.Kind |> Seq.toList)
-
-            let frame = Scheduler.heatBoardFrame 99UL run.HeatRows
-
-            Assert.Equal(0uy, Chip8Cow.colorAt 0 0 frame)
-            Assert.Equal(1uy, Chip8Cow.colorAt 0 1 frame)
-            Assert.Equal(4uy, Chip8Cow.colorAt 48 1 frame)
+        | Ok run -> assertHorizonHeatRun sink run
     }
 
 [<Fact>]

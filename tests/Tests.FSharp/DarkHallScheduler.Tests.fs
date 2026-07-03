@@ -146,6 +146,7 @@ let ``heat transcript summary folds rows without losing distinct heat kinds`` ()
         [ "room-boundary.door-denied"; "soft-emu.prune" ],
         summary.HeatKinds
     )
+    Assert.Equal<string list>([ "denied"; "forgotten"; "storage-error" ], summary.Signals)
     Assert.Equal<string list>(
         [ "permission denied"; "capacity=1"; "pruned branch" ],
         summary.Reasons
@@ -190,6 +191,33 @@ let ``heat boundary signals classify scheduler rows without caller string parsin
           HeatKinds = [ "custom.heat" ]
           Reasons = [ "bounded sink saturated" ] }
 
+    let invalid: Scheduler.HeatBoundaryRow =
+        { Tick = 5
+          RoomName = "darkhall"
+          HeatRejected = 1
+          Backpressured = 0
+          StorageErrors = 0
+          HeatKinds = [ "llmtv.replay.invalid" ]
+          Reasons = [ "artifact decode failed" ] }
+
+    let expired: Scheduler.HeatBoundaryRow =
+        { Tick = 6
+          RoomName = "darkhall"
+          HeatRejected = 1
+          Backpressured = 0
+          StorageErrors = 0
+          HeatKinds = [ "llmtv.replay.expired" ]
+          Reasons = [ "ttl elapsed" ] }
+
+    let stale: Scheduler.HeatBoundaryRow =
+        { Tick = 7
+          RoomName = "darkhall"
+          HeatRejected = 1
+          Backpressured = 0
+          StorageErrors = 0
+          HeatKinds = [ "llmtv.replay.stale" ]
+          Reasons = [ "frame too old" ] }
+
     Assert.Equal<Scheduler.HeatBoundarySignal list>(
         [ Scheduler.HeatBoundarySignal.Forgotten ],
         Scheduler.heatBoundarySignals forgotten
@@ -212,6 +240,25 @@ let ``heat boundary signals classify scheduler rows without caller string parsin
         Scheduler.heatBoundarySignals countOnly
     )
 
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Invalid ],
+        Scheduler.heatBoundarySignals invalid
+    )
+
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Expired ],
+        Scheduler.heatBoundarySignals expired
+    )
+
+    Assert.Equal<Scheduler.HeatBoundarySignal list>(
+        [ Scheduler.HeatBoundarySignal.Stale ],
+        Scheduler.heatBoundarySignals stale
+    )
+
+    Assert.Equal<string list>([ "invalid" ], Scheduler.heatBoundarySignalTokens invalid)
+    Assert.Equal<string list>([ "expired" ], Scheduler.heatBoundarySignalTokens expired)
+    Assert.Equal<string list>([ "stale" ], Scheduler.heatBoundarySignalTokens stale)
+
     Assert.True(Scheduler.rowHasForgettingSignal forgotten)
     Assert.True(Scheduler.rowHasBackpressureSignal noForgetBackpressure)
     Assert.True(Scheduler.rowHasBackpressureSignal denied)
@@ -226,6 +273,11 @@ let ``heat boundary signals classify scheduler rows without caller string parsin
         Scheduler.heatTranscriptSignals [ forgotten; noForgetBackpressure; denied; countOnly ]
     )
 
+    Assert.Equal<string list>(
+        [ "forgotten"; "backpressure"; "denied"; "other"; "storage-error"; "invalid"; "expired"; "stale" ],
+        Scheduler.heatTranscriptSignalTokens [ forgotten; noForgetBackpressure; denied; countOnly; invalid; expired; stale ]
+    )
+
 [<Fact>]
 let ``heat signature classifier is the shared pressure and forgetting rule`` () =
     let nullKind: string = null
@@ -234,13 +286,22 @@ let ``heat signature classifier is the shared pressure and forgetting rule`` () 
     Assert.False(HeatSignature.isDeniedKind nullKind)
     Assert.False(HeatSignature.isPressureKind nullKind)
     Assert.False(HeatSignature.isForgettingKind nullKind)
+    Assert.False(HeatSignature.isInvalidKind nullKind)
+    Assert.False(HeatSignature.isExpiredKind nullKind)
+    Assert.False(HeatSignature.isStaleKind nullKind)
     Assert.True(HeatSignature.isBackpressureKind "room-admission.backpressure")
+    Assert.True(HeatSignature.isBackpressureKind "ROOM-ADMISSION.BACKPRESSURE")
     Assert.False(HeatSignature.isBackpressureKind "room-boundary.door-denied")
     Assert.True(HeatSignature.isDeniedKind "room-boundary.door-denied")
+    Assert.True(HeatSignature.isDeniedKind "llmtv.replay.rejected")
     Assert.True(HeatSignature.isPressureKind "room-boundary.door-denied")
     Assert.True(HeatSignature.isPressureKind "meta-cart.policy-backpressure")
     Assert.True(HeatSignature.isForgettingKind "room-horizon.forgotten")
     Assert.True(HeatSignature.isForgettingKind "soft-emu.prune")
+    Assert.True(HeatSignature.isStorageErrorKind "bounded.storage-error")
+    Assert.True(HeatSignature.isInvalidKind "llmtv.replay.invalid")
+    Assert.True(HeatSignature.isExpiredKind "llmtv.replay.expired")
+    Assert.True(HeatSignature.isStaleKind "llmtv.replay.stale")
     Assert.False(HeatSignature.isPressureKind "soft-emu.prune")
 
     Assert.Equal(
@@ -263,6 +324,38 @@ let ``heat signature classifier is the shared pressure and forgetting rule`` () 
         | Scheduler.HeatBoundarySignal.Other value -> isNull value
         | _ -> false
     )
+
+[<Fact>]
+let ``heat rows export through an injected host heat sink`` () =
+    let rows: Scheduler.HeatBoundaryRow list =
+        [ { Tick = 1
+            RoomName = "darkhall"
+            HeatRejected = 2
+            Backpressured = 1
+            StorageErrors = 0
+            HeatKinds = [ "room-boundary.door-denied"; "soft-emu.prune" ]
+            Reasons = [ "permission denied"; "branch pruned" ] }
+          { Tick = 2
+            RoomName = "darkhall"
+            HeatRejected = 1
+            Backpressured = 0
+            StorageErrors = 1
+            HeatKinds = []
+            Reasons = [ "heat sink storage failed" ] } ]
+
+    let sink = RecordingHeatSink()
+
+    Scheduler.emitHeatRows (sink :> IHeatSink) "darkhall-host" rows |> mustOk
+
+    let signatures = sink.Signatures |> Seq.toList
+
+    Assert.Equal<string list>(
+        [ "room-boundary.door-denied"; "soft-emu.prune"; "darkhall.storage-error" ],
+        signatures |> List.map _.Kind
+    )
+    Assert.All(signatures, fun signature -> Assert.Equal("darkhall-host", signature.Source))
+    Assert.Contains("room=darkhall tick=1", signatures.[0].Detail)
+    Assert.Contains("room=darkhall tick=2", signatures.[2].Detail)
 
 [<Fact>]
 let ``room horizon forgetting renders on the DarkHall heat board`` () =

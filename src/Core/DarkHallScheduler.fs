@@ -29,6 +29,7 @@ module DarkHallScheduler =
           Backpressured: int
           StorageErrors: int
           HeatKinds: string list
+          Signals: string list
           Reasons: string list }
 
     [<RequireQualifiedAccess>]
@@ -37,6 +38,9 @@ module DarkHallScheduler =
         | Backpressure
         | Denied
         | StorageError
+        | Invalid
+        | Expired
+        | Stale
         | Other of string
 
     type ScheduledRoomState =
@@ -142,14 +146,33 @@ module DarkHallScheduler =
         |> List.filter (fun value -> seen.Add value)
 
     let heatBoundarySignalOfKind (kind: string) : HeatBoundarySignal =
-        if HeatSignature.isBackpressureKind kind then
+        if HeatSignature.isForgettingKind kind then
+            HeatBoundarySignal.Forgotten
+        elif HeatSignature.isBackpressureKind kind then
             HeatBoundarySignal.Backpressure
         elif HeatSignature.isDeniedKind kind then
             HeatBoundarySignal.Denied
-        elif HeatSignature.isForgettingKind kind then
-            HeatBoundarySignal.Forgotten
+        elif HeatSignature.isStorageErrorKind kind then
+            HeatBoundarySignal.StorageError
+        elif HeatSignature.isInvalidKind kind then
+            HeatBoundarySignal.Invalid
+        elif HeatSignature.isExpiredKind kind then
+            HeatBoundarySignal.Expired
+        elif HeatSignature.isStaleKind kind then
+            HeatBoundarySignal.Stale
         else
             HeatBoundarySignal.Other kind
+
+    let heatBoundarySignalToken =
+        function
+        | HeatBoundarySignal.Forgotten -> "forgotten"
+        | HeatBoundarySignal.Backpressure -> "backpressure"
+        | HeatBoundarySignal.Denied -> "denied"
+        | HeatBoundarySignal.StorageError -> "storage-error"
+        | HeatBoundarySignal.Invalid -> "invalid"
+        | HeatBoundarySignal.Expired -> "expired"
+        | HeatBoundarySignal.Stale -> "stale"
+        | HeatBoundarySignal.Other _ -> "other"
 
     let private isPressureSignal =
         function
@@ -157,6 +180,9 @@ module DarkHallScheduler =
         | HeatBoundarySignal.Denied -> true
         | HeatBoundarySignal.Forgotten
         | HeatBoundarySignal.StorageError
+        | HeatBoundarySignal.Invalid
+        | HeatBoundarySignal.Expired
+        | HeatBoundarySignal.Stale
         | HeatBoundarySignal.Other _ -> false
 
     /// Typed view over the existing host-visible heat row. This is the public
@@ -178,6 +204,12 @@ module DarkHallScheduler =
     let heatTranscriptSignals (rows: HeatBoundaryRow list) : HeatBoundarySignal list =
         rows |> List.collect heatBoundarySignals |> List.distinct
 
+    let heatBoundarySignalTokens (row: HeatBoundaryRow) : string list =
+        row |> heatBoundarySignals |> List.map heatBoundarySignalToken |> distinctOrdinal
+
+    let heatTranscriptSignalTokens (rows: HeatBoundaryRow list) : string list =
+        rows |> List.collect heatBoundarySignalTokens |> distinctOrdinal
+
     let rowHasBackpressureSignal (row: HeatBoundaryRow) : bool =
         row.Backpressured > 0 || (row |> heatBoundarySignals |> List.exists isPressureSignal)
 
@@ -193,6 +225,7 @@ module DarkHallScheduler =
           Backpressured = rows |> List.sumBy _.Backpressured
           StorageErrors = rows |> List.sumBy _.StorageErrors
           HeatKinds = rows |> List.collect _.HeatKinds |> distinctOrdinal
+          Signals = rows |> heatTranscriptSignalTokens
           Reasons = rows |> List.collect _.Reasons }
 
     let heatTranscript (state: ScheduledRoomState) : HeatTranscriptSummary =
@@ -276,6 +309,68 @@ module DarkHallScheduler =
           StorageErrors = heat.StorageErrors
           HeatKinds = heat.HeatKinds
           Reasons = heat.Reasons }
+
+    let private heatRowDetail (row: HeatBoundaryRow) : string =
+        let reasons =
+            match row.Reasons with
+            | [] -> "no detail"
+            | values -> System.String.Join("; ", values)
+
+        sprintf "room=%s tick=%d %s" row.RoomName row.Tick reasons
+
+    /// Reconstruct host-facing heat signatures from a banked scheduler row.
+    ///
+    /// The original lossy event may already have crossed an `IHeatSink`; this
+    /// projection is for host/CHIP room boundaries that need to export the
+    /// complete row transcript to another injected port. Empty rows stay cold.
+    let heatSignaturesOfRow (source: string) (row: HeatBoundaryRow) : HeatSignature list =
+        let detail = heatRowDetail row
+        let distinctKinds = row.HeatKinds |> distinctOrdinal
+
+        [ yield!
+              distinctKinds
+              |> List.map (fun kind ->
+                  let units =
+                      row.HeatKinds
+                      |> List.filter ((=) kind)
+                      |> List.length
+                      |> max 1
+
+                  HeatSignature.ofMass source kind units (float units) detail)
+
+          if row.Backpressured > 0 && not (row.HeatKinds |> List.exists HeatSignature.isPressureKind) then
+              HeatSignature.ofMass
+                  source
+                  "darkhall.backpressure"
+                  row.Backpressured
+                  (float row.Backpressured)
+                  detail
+
+          if row.StorageErrors > 0 && not (row.HeatKinds |> List.exists HeatSignature.isStorageErrorKind) then
+              HeatSignature.ofMass
+                  source
+                  "darkhall.storage-error"
+                  row.StorageErrors
+                  (float row.StorageErrors)
+                  detail
+
+          if row.HeatRejected > 0 && List.isEmpty distinctKinds && row.Backpressured = 0 && row.StorageErrors = 0 then
+              HeatSignature.ofMass source "darkhall.heat" row.HeatRejected (float row.HeatRejected) detail ]
+
+    /// Export scheduler heat rows through an injected host IO boundary. This is
+    /// intentionally opt-in so test/prod hosts decide whether replaying a
+    /// transcript should also spend external heat-channel capacity.
+    let emitHeatRows (sink: IHeatSink) (source: string) (rows: HeatBoundaryRow list) : Result<unit, HeatSinkFeedback> =
+        let rec loop signatures =
+            result {
+                match signatures with
+                | [] -> return ()
+                | signature :: tail ->
+                    do! sink.Emit signature
+                    return! loop tail
+            }
+
+        rows |> List.collect (heatSignaturesOfRow source) |> loop
 
     /// Project a finite prediction horizon into the same host-visible heat row
     /// used by Dark Hall/CHIP room execution. The horizon is not a runtime:
