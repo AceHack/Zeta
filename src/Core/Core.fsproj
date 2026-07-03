@@ -69,6 +69,7 @@
     <Compile Include="Slr.fs" />
     <Compile Include="MetaGrammar.fs" />
     <Compile Include="Cogen.fs" />
+    <Compile Include="Isa.fs" />
     <Compile Include="Sppf.fs" />
     <Compile Include="PcfgEm.fs" />
     <Compile Include="Indentation.fs" />

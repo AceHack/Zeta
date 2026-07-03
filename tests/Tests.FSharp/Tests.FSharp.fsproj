@@ -98,6 +98,7 @@
     <Compile Include="Slr.Tests.fs" />
     <Compile Include="MetaGrammar.Tests.fs" />
     <Compile Include="Cogen.Tests.fs" />
+    <Compile Include="Isa.Tests.fs" />
     <Compile Include="Sppf.Tests.fs" />
     <Compile Include="PcfgEm.Tests.fs" />
     <Compile Include="GrammarLadder.Tests.fs" />
