@@ -140,6 +140,9 @@ export interface GymResult {
   readonly totalWelfare: number;
   /** observe->report ledger size (rounds actually played, DD-locked pairs excluded). */
   readonly roundsPlayed: number;
+  /** the observe->report ledger itself — every resolved round, in play order (the real trace
+   *  the residual measure lenses; 081KTF7Q3TT). */
+  readonly ledger: readonly RoundRecord[];
   /** per-strategy rollup for the scoreboard. */
   readonly board: readonly {
     strategy: StrategyName;
@@ -264,6 +267,7 @@ export function runGym(cfg: GymConfig): GymResult {
     gamesEnded,
     totalWelfare: Math.round(totalWelfare * 100) / 100,
     roundsPlayed: ledger.length,
+    ledger,
     board,
   };
 }

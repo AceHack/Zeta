@@ -47,8 +47,28 @@ answers "is this behavior compressible by a generator, for an observer with/with
   numbers). [DONE — `residual.ts`, 3 tests incl. the observer-relative one.]
 - The "not real" leap is refused in code + docs: the report exposes `reducibility`, never a
   `conscious`/`real` verdict; the observer-relative demo is the standing proof that replayability != realness.
-- (Open) apply it to a real agent trace (moral-gym strategy logs / a Detour-observed run) and report the
-  residual spectrum; keep the honest bound.
+- Apply it to a real agent trace (moral-gym strategy logs / a Detour-observed run) and report the
+  residual spectrum; keep the honest bound. [DONE 2026-07-03 — `residual/gym-trace.ts` +
+  `run-gym-trace.ts` + 4 tests; spectrum table below. Acceptance is now fully closed; the item
+  stays open only for the DEFERRED wonder-compression layer.]
+
+## Measured — residual spectrum over a REAL gym run (seed 0xE66, 400 rounds, 7200 played; DST-stable)
+
+| strategy | agents | symbols | residual b/sym | reducibility |
+|---|---|---|---|---|
+| cooperator | 3 | 3084 | 0.001 | 0.999 |
+| expanded-self | 2 | 2193 | 0.001 | 0.999 |
+| defector | 3 | 1212 | 0.004 | 0.996 |
+| strict-tft | 3 | 2371 | 0.090 | 0.910 |
+| all-in | 3 | 2261 | 0.094 | 0.906 |
+| tit-for-lesser-tat | 4 | 3279 | 0.113 | 0.887 |
+| **DST replay (observer has the seed)** | all | 7200 | **0.000** | **1.000** |
+
+Honest peel on the spectrum's middle band: strict-tft / all-in are fully deterministic GIVEN the
+partner's per-relationship history — their residual is **lens poverty** (the own-stream observer
+can't see that context), while lesser-tat's residual is **genuinely injected splitmix64 entropy**
+(the forgiveness draw). Different causes, same seedless verdict; both collapse identically for the
+seed-holder. Reducibility stays a lens property even in its failure modes.
 
 ## Ties
 
