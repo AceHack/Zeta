@@ -103,6 +103,63 @@ module IntegrationTests =
         Assert.True(receiptOpt.IsNone, "Market should not clear for Sybil clones with 0 adjusted value")
 
     [<Fact>]
+    let ``E2E-1: Full stack integration (Telemetry -> Settlement)`` () =
+        // 1. PHYSICAL LAYER: Reticulum Telemetry
+        let telemetry = { ReticulumTransport.RttSeconds = 2.0; ReticulumTransport.Snr = 10.0; ReticulumTransport.Rssi = -50.0; ReticulumTransport.CapacityBps = 1000.0 }
+        let snapshot = { 
+            ReticulumTransport.MeshSnapshot.LocalNodeId = "Buyer"
+            ReticulumTransport.MeshSnapshot.ActiveLinks = Map.ofList [ ("Seller", telemetry) ] 
+        }
+        
+        // 2. TRANSPORT: Convert telemetry to latency map
+        let latencyMap = ReticulumTransport.buildLatencyMap snapshot
+        Assert.Equal(2.0, Map.find ("Buyer", "Seller") latencyMap)
+        
+        // 3. COGNITION: Agents have beliefs — need multi-point histories for correlation
+        let prior = makeBelief 0.0
+        let sellerBelief = makeBelief 5.0
+        
+        // Buyer's history tracks the seller closely (correlated)
+        let buyerBeliefs = [ makeBelief 1.0; makeBelief 2.0; makeBelief 3.0; makeBelief 4.0; makeBelief 5.0 ]
+        // Society has both the buyer and a reference agent with the same trajectory
+        let buyerHistory = { AntiSybil.StreamHistory.AgentId = "Buyer"; AntiSybil.StreamHistory.Beliefs = buyerBeliefs }
+        let sellerHistory = { AntiSybil.StreamHistory.AgentId = "Seller"; AntiSybil.StreamHistory.Beliefs = [ makeBelief 1.0; makeBelief 2.0; makeBelief 3.0; makeBelief 4.0; makeBelief 5.0 ] }
+        let societyHistories = [ buyerHistory; sellerHistory ]
+        
+        // 4. DENOMINATION & MONETARY POLICY: Compute IV and apply AntiSybil
+        let baseIv = InformationValue.compute prior sellerBelief
+        
+        // Buyer tracks seller perfectly (ρ=1), so uniqueness discount = 0 → adjusted IV = 0
+        let adjustedIv = AntiSybil.priceAgainstSociety prior sellerBelief buyerBeliefs societyHistories
+        // Perfect correlation with seller history → zero IV (the hard money cap in action)
+        Assert.Equal(0.0, float adjustedIv)
+        
+        // 5. MARKET: Ask and Bids
+        let ask = { AskBidClearing.AskId = "ask1"; AskBidClearing.SellerId = "Seller"; AskBidClearing.MinPrice = 0.5; AskBidClearing.Resource = "attention" }
+        // Memory graph bounds the market (Seller remembers Buyer)
+        let memoryGraph = Map.ofList [ ("Seller", ["Buyer"]) ]
+        
+        // Buyer bids high, but will be capped by AntiSybil true value
+        let rawBids = [ { AskBidClearing.BidId = "b1"; AskBidClearing.BuyerId = "Buyer"; AskBidClearing.MaxPrice = 100.0 } ]
+        
+        // 6. SETTLEMENT: Execute the full cycle
+        // Because the buyer is perfectly correlated with the seller, their bid gets capped to 0.
+        // This means the market FAILS TO CLEAR (0.0 < MinPrice of 0.5).
+        // This is the hard-money cap in action: clones cannot buy attention.
+        let initialLedger: Web3Settlement.Ledger = 
+            Map.ofList [ ("Buyer", { Web3Settlement.AgentId = "Buyer"; Web3Settlement.BalanceIV = 10.0; Web3Settlement.ReputationScore = 0.0 }) ]
+            
+        let (newLedger, receiptOpt) = 
+            Web3Settlement.executeFullMarketCycle initialLedger ask rawBids memoryGraph societyHistories prior sellerBelief DateTime.UtcNow
+            
+        // 7. VERIFY: Market does NOT clear because clone's adjusted bid = 0 < MinPrice
+        Assert.True(receiptOpt.IsNone, "Market should NOT clear for a perfectly correlated buyer (clone)")
+        
+        // Ledger unchanged — no money moved
+        let buyerWallet = Map.find "Buyer" newLedger
+        Assert.Equal(10.0, buyerWallet.BalanceIV)
+
+    [<Fact>]
     let ``W3-3: NoClearing result leaves ledger unchanged`` () =
         let initialLedger: Web3Settlement.Ledger = 
             Map.ofList [
