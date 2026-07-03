@@ -72,6 +72,17 @@ let routingWeight
     let weight    = infoValue * (1.0 + alignment) / 2.0
     { From = fromId; To = toId; Weight = max 0.0 weight }
 
+/// Computes the delay-adjusted routing weight, applying the Condorcet bonus
+/// derived from the network latency.
+let reticulumRoutingWeight
+    (fromId: string) (fromBelief: Gaussian) (fromTraj: BeliefTrajectory)
+    (toId:   string) (toBelief:   Gaussian) (toTraj:   BeliefTrajectory)
+    (latency: float)
+    : RoutingWeight =
+    let baseRw = routingWeight fromId fromBelief fromTraj toId toBelief toTraj
+    let adjusted = Zeta.Core.DelayDecorrelation.adjustedWeight baseRw.Weight latency
+    { baseRw with Weight = adjusted }
+
 // ---------------------------------------------------------------------------
 // RoutingMatrix: the full n×n routing weight matrix for a society.
 // ---------------------------------------------------------------------------
@@ -88,6 +99,20 @@ let routingMatrix (agents: AgentState list) : RoutingWeight list =
             if a.Id <> b.Id then
                 yield routingWeight a.Id a.Belief a.Trajectory
                                     b.Id b.Belief b.Trajectory ]
+
+/// Compute the full routing matrix for a set of agents, incorporating Reticulum network delay.
+/// The latencyMap provides the delay (in ticks) for each (fromId, toId) pair.
+let reticulumRoutingMatrix (agents: AgentState list) (latencyMap: Map<string * string, float>) : RoutingWeight list =
+    [ for a in agents do
+        for b in agents do
+            if a.Id <> b.Id then
+                let latency =
+                    match Map.tryFind (a.Id, b.Id) latencyMap with
+                    | Some l -> l
+                    | None   -> 0.0 // Default to instant/fully correlated if no delay info
+                yield reticulumRoutingWeight a.Id a.Belief a.Trajectory
+                                             b.Id b.Belief b.Trajectory
+                                             latency ]
 
 /// Normalize the routing weights so that each agent's outgoing weights sum to 1.
 /// This ensures no agent "floods" the network — the total influence budget is fixed.
@@ -169,6 +194,29 @@ let route
     (agents: AgentState list)
     : RoutingDecision list =
     let raw = routingMatrix agents
+    let weights =
+        if config.NormalizeOutgoing then normalizeOutgoing raw
+        else raw
+    let agentMap = agents |> List.map (fun a -> a.Id, a) |> Map.ofList
+    [ for w in weights do
+        let sender   = agentMap.[w.From]
+        let receiver = agentMap.[w.To]
+        let decision = nciDecision
+                           config.PropagationThreshold
+                           config.MaxPrecisionGainFactor
+                           w
+                           sender.Belief
+                           receiver.Belief
+        yield { Weight = w; Decision = decision } ]
+
+/// Compute the full routing decisions for a society, given the current agent states
+/// and the Reticulum network delay map.
+let routeWithReticulum
+    (config: AttentionRouterConfig)
+    (agents: AgentState list)
+    (latencyMap: Map<string * string, float>)
+    : RoutingDecision list =
+    let raw = reticulumRoutingMatrix agents latencyMap
     let weights =
         if config.NormalizeOutgoing then normalizeOutgoing raw
         else raw

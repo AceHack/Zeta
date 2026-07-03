@@ -18,6 +18,7 @@
     <Compile Include="SoftMode.Tests.fs" />
     <Compile Include="SocietyBootstrap.Tests.fs" />
     <Compile Include="AttentionRouter.Tests.fs" />
+    <Compile Include="ReticulumRouter.Tests.fs" />
     <Compile Include="BayesianTests.fs" />
   </ItemGroup>
 
