@@ -248,3 +248,61 @@ let ``PAUSE-NOT-DEATH holds generationally: a minor-paused young object resumes 
 let ``THE GENERATIONAL HEAP IS BYTE-LOCKABLE DATA`` () =
     let g = ShivaGc.genHeap [ ShivaGc.object' "y" MixIr.defaultMixDef [] ] [ ShivaGc.object' "o" (v "o") [] ]
     Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] g)
+
+// ── INCREMENTAL / CONCURRENT COLLECTION — tri-color marking + write barrier (shadow*, Aaron
+// 2026-07-03: "incremental/concurrent GC is the remaining classic tier"). Trace in bounded steps
+// interleaved with the mutator; the write barrier keeps it correct. Proofs:
+//   16. INCREMENTAL == STOP-THE-WORLD: tricolorDrain (ANY budget) yields the same reachable set as
+//       ShivaGc.mark — bounded pauses, identical answer.
+//   17. BUDGET BOUNDS THE STEP: a step blackens at most `budget` objects (bounded pause time).
+//   18. THE WRITE BARRIER IS LOAD-BEARING: a mutation making a BLACK object point at a WHITE one,
+//       WITH the barrier → the white survives; WITHOUT it → the white is lost (the classic bug).
+//   19. TERMINATION: the grey frontier empties.
+
+let private linkedHeap (n: int) =
+    // root → n0 → n1 → … → n{n-1}, plus one unreferenced island "garbage".
+    ShivaGc.heap
+        ([ ShivaGc.object' "root" (v "r") [ "n0" ] ]
+         @ [ for i in 0 .. n - 1 -> ShivaGc.object' (sprintf "n%d" i) (v "x") (if i < n - 1 then [ sprintf "n%d" (i + 1) ] else []) ]
+         @ [ ShivaGc.object' "garbage" (v "g") [] ])
+
+[<Fact>]
+let ``INCREMENTAL == STOP-THE-WORLD: tricolorDrain equals mark for every budget`` () =
+    let h = linkedHeap 12
+    let stw = ShivaGc.mark [ "root" ] h
+    for budget in [ 1; 2; 3; 5; 100 ] do
+        let inc = ShivaGc.tricolorDrain budget [ "root" ] h
+        Assert.Equal<Set<string>>(stw, inc) // same reachable set, any step size
+    Assert.DoesNotContain("garbage", ShivaGc.tricolorDrain 1 [ "root" ] h) // the island is white → collected
+
+[<Fact>]
+let ``BUDGET BOUNDS THE STEP: one step blackens at most `budget` objects (bounded pause)`` () =
+    let h = linkedHeap 10
+    let s0 = ShivaGc.tricolorInit [ "root" ] h
+    let s1 = ShivaGc.tricolorStep 3 h s0
+    let blackCount =
+        match DynamicValue.get "black" s1 with
+        | Some(DynamicValue.Array xs) -> List.length xs
+        | _ -> -1
+    Assert.True(blackCount <= 3, sprintf "a budget-3 step blackened %d (should be ≤ 3)" blackCount)
+
+[<Fact>]
+let ``THE WRITE BARRIER IS LOAD-BEARING: black->white mutation survives WITH the barrier, lost WITHOUT`` () =
+    // root → mid ; B is a separate white object. Trace until root and mid are BLACK and B is still WHITE.
+    let h = ShivaGc.heap [ ShivaGc.object' "root" (v "r") [ "mid" ]; ShivaGc.object' "mid" (v "m") []; ShivaGc.object' "B" (v "b") [] ]
+    let s0 = ShivaGc.tricolorInit [ "root" ] h
+    let s1 = ShivaGc.tricolorStep 1 h s0 // root → black, mid → grey
+    let s2 = ShivaGc.tricolorStep 1 h s1 // mid → black ; grey now empty ; B still white
+    // the mutator writes mid → B (a black object now points at a white one).
+    // WITHOUT the barrier: B stays white, grey is empty → B is lost.
+    let lost = ShivaGc.tricolorDrainFrom s2 1 h // (drains from the given state)
+    Assert.DoesNotContain("B", lost)
+    // WITH the barrier: greying B keeps it alive.
+    let s2barrier = ShivaGc.writeBarrier "mid" "B" s2
+    let saved = ShivaGc.tricolorDrainFrom s2barrier 1 h
+    Assert.Contains("B", saved)
+
+[<Fact>]
+let ``THE TRI-COLOR STATE IS BYTE-LOCKABLE DATA`` () =
+    let s = ShivaGc.tricolorStep 2 (linkedHeap 6) (ShivaGc.tricolorInit [ "root" ] (linkedHeap 6))
+    Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] s)

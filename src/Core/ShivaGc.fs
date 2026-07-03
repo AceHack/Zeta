@@ -260,3 +260,87 @@ module ShivaGc =
         let survivorIds = objects resident |> List.choose objId |> Set.ofList
         let keep (xs: DynamicValue list) = xs |> List.filter (fun o -> objId o |> Option.map (fun id -> Set.contains id survivorIds) |> Option.defaultValue false)
         genHeap (keep young) (keep old), paused
+
+    // ── incremental / concurrent collection: tri-color marking + the write barrier (Dijkstra 1978) ──
+    //
+    // Aaron 2026-07-03: "incremental/concurrent GC is the remaining classic tier." The stop-the-world
+    // `mark` pauses everything while it traces; a concurrent collector traces in BOUNDED STEPS
+    // interleaved with the mutator, so pauses stay short. The tri-color abstraction (Dijkstra–Lamport
+    // et al.): every object is WHITE (candidate garbage), GREY (reached, children not yet scanned), or
+    // BLACK (reached, children scanned). A step moves ≤ `budget` greys to black, grey-ing their white
+    // children. When no grey remains, BLACK = reachable, WHITE = paused — the same answer as
+    // stop-the-world, computed incrementally. The catch is the mutator running mid-trace: if it makes a
+    // BLACK object point at a WHITE one, that white could be wrongly collected (black is already
+    // scanned). The WRITE BARRIER fixes it — greying the target on such a write (the strong tri-color
+    // invariant: no black→white edge) — and is provably load-bearing (the without-barrier lost-object
+    // is a test below). State is `{white,grey,black}` (sorted id arrays), byte-lockable + DST.
+
+    let private colorSet (k: string) (state: DynamicValue) : Set<string> =
+        match DynamicValue.get k state with
+        | Some(DynamicValue.Array xs) -> xs |> List.choose (function DynamicValue.String s -> Some s | _ -> None) |> Set.ofList
+        | _ -> Set.empty
+
+    let private colorState (white: Set<string>) (grey: string list) (black: Set<string>) : DynamicValue =
+        DynamicValue.Object
+            [ "white", DynamicValue.Array(white |> Set.toList |> List.map DynamicValue.String)
+              "grey", DynamicValue.Array(grey |> List.map DynamicValue.String)
+              "black", DynamicValue.Array(black |> Set.toList |> List.map DynamicValue.String) ]
+
+    /// Initialize tri-color marking: roots are GREY (the frontier), every other heap id is WHITE, none
+    /// BLACK. Deterministic (sorted).
+    let tricolorInit (roots: string list) (h: DynamicValue) : DynamicValue =
+        let all = objects h |> List.choose objId |> Set.ofList
+        let rootFrontier = roots |> List.distinct |> List.sort
+        let rootSet = Set.ofList rootFrontier
+        let white = Set.difference all rootSet
+        colorState white rootFrontier Set.empty
+
+    /// Grey queue non-empty? (is there marking work left).
+    let tricolorPending (state: DynamicValue) : bool =
+        match DynamicValue.get "grey" state with
+        | Some(DynamicValue.Array xs) -> not (List.isEmpty xs)
+        | _ -> false
+
+    /// One incremental step: move up to `budget` grey objects to black, greying their white children.
+    /// Bounded work = bounded pause. Deterministic.
+    let tricolorStep (budget: int) (h: DynamicValue) (state: DynamicValue) : DynamicValue =
+        let refsOf = objects h |> List.choose (fun o -> objId o |> Option.map (fun id -> id, objRefs o)) |> Map.ofList
+        let grey0 = match DynamicValue.get "grey" state with Some(DynamicValue.Array xs) -> xs |> List.choose (function DynamicValue.String s -> Some s | _ -> None) | _ -> []
+        let rec go n (white: Set<string>) (grey: string list) (black: Set<string>) =
+            if n <= 0 then white, grey, black
+            else
+                match grey with
+                | [] -> white, grey, black
+                | id :: rest ->
+                    let children = Map.tryFind id refsOf |> Option.defaultValue []
+                    let newlyGrey = children |> List.filter (fun c -> Set.contains c white)
+                    let white' = List.fold (fun w c -> Set.remove c w) white newlyGrey
+                    go (n - 1) white' (rest @ newlyGrey) (Set.add id black)
+        let white, grey, black = go (max 0 budget) (colorSet "white" state) grey0 (colorSet "black" state)
+        colorState white grey black
+
+    /// The Dijkstra write barrier: the mutator wrote a `src`→`tgt` reference mid-trace. If `src` is
+    /// BLACK and `tgt` is WHITE, grey `tgt` (restore the no-black→white invariant) so it is not wrongly
+    /// collected. Any other combination is already safe and unchanged.
+    let writeBarrier (src: string) (tgt: string) (state: DynamicValue) : DynamicValue =
+        let white = colorSet "white" state
+        let black = colorSet "black" state
+        if Set.contains src black && Set.contains tgt white then
+            let grey = (match DynamicValue.get "grey" state with Some(DynamicValue.Array xs) -> xs |> List.choose (function DynamicValue.String s -> Some s | _ -> None) | _ -> [])
+            colorState (Set.remove tgt white) (grey @ [ tgt ]) black
+        else state
+
+    /// Drain the incremental marker from an EXISTING state to completion; returns the final BLACK set.
+    /// (Lets a caller advance partway, mutate + barrier, then finish — the concurrent scenario.)
+    let tricolorDrainFrom (state0: DynamicValue) (budget: int) (h: DynamicValue) : Set<string> =
+        let mutable state = state0
+        let mutable guard = 0
+        while tricolorPending state && guard < 1_000_000 do
+            state <- tricolorStep (max 1 budget) h state
+            guard <- guard + 1
+        colorSet "black" state
+
+    /// Drain the incremental marker to completion with a fixed `budget` per step; returns the final
+    /// BLACK set (the reachable objects). Equal to the stop-the-world `mark` for any budget ≥ 1.
+    let tricolorDrain (budget: int) (roots: string list) (h: DynamicValue) : Set<string> =
+        tricolorDrainFrom (tricolorInit roots h) budget h
