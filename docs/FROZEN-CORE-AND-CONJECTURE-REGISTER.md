@@ -164,13 +164,15 @@ Each row is a real, named open proof obligation. Interesting ≠ closed. Dischar
 
 ### B-zeta. Zeta Regularization of Information Value (Lumen 2026-07-03)
 
-**Conjecture Z-1:** The total Information Value extracted by a discrete-ticking agent from a continuous information source is bounded by the Euler-Maclaurin difference between the discrete update sum and the continuous integral. The residual penalty is $-\frac{1}{12}$, representing the irreducible cognitive friction of discrete observation.
+**Conjecture Z-1: Zeta Regularization of Information Value (Register C → B-path)**
 
-*Status:* Open. **Register C (anchored metaphor) with a stated B-path.**
+The total IV extracted by a discrete-ticking agent from a continuous linear-spectrum source is bounded by the Euler-Maclaurin difference. The residual penalty is $-1/12$ per unit spectral slope, as a $\Delta^2$ coefficient (see §A #22); as a regularized total it remains conjectural.
 
-*Soraya's verdict (2026-07-03):* The naive setup fails (white noise has a flat spectrum, giving mode sum $\Sigma 1$ and $\zeta(0) = -1/2$, not $-1/12$). To become a proven theorem, one must derive: (a) a process class where $I_n \propto n$, (b) tick boundaries quantizing modes, and (c) an operational scheme-independent subtraction (e.g., comparing agents at different frame rates).
+*Soraya's verdict (2026-07-03):* This is Register C (modeling assumption) with a stated B-path. The $-\frac{1}{12}$ appears exactly in the $\Delta^2$ coefficient multiplied by the spectral slope $I'(0)$. Falsifier documented: if the source spectrum is white noise (flat, $I'(0)=0$), the penalty collapses to the boundary term $\zeta(0) = -1/2$.
 
-*Aaron's correction (2026-07-03):* The attention economy's hyperinflation is prevented by hard-money entropy budgets (finite capacity to hold uncorrelated/unique information), NOT by this regularization constant. The conjecture is decoupled from monetary stability, but remains an open question about discretization friction.
+*Economic Bounding Correction (Aaron):* The IV cap is the hard-money entropy budget (finite capacity to hold uncorrelated/unique information), NOT the regularization constant. The architecture's monetary stability is decoupled from the fate of this math conjecture.
+
+
 
 *T-1/12 relationship (2026-07-03):* §A #22 (T-1/12) is the provable restatement that survives from Z-1 — its soul: the same B₂ prices tick-sampling as a **finite-Δ correction coefficient**, no regularization. **Landing T-1/12 does NOT discharge Z-1.** Z-1 proper — −1/12 as a regularized *total* IV bound — remains open on all three verdict requirements: (a) a named process class with Iₙ ∝ n (none found; the natural Zeta spectra give ζ(0) = −1/2, ζ′(0), or convergent π²/6 — the falsifier stands), (b) tick boundaries quantizing modes, (c) operational scheme-independence. A future reader who cites −1/12 must say which one: the sampling *coefficient* (proven, #22) or the regularized *total* (open, here). Any future (a)(b)(c) derivation must reduce to #22 in the finite-Δ regime — a free consistency check on candidate proofs. *(Suggested wording fix for the Z-1 statement above, Lumen's to adopt: "the residual penalty is −1/12 **per unit spectral slope, as a Δ² coefficient (see §A #22); as a regularized total it remains conjectural**.")*
 

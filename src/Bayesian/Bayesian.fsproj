@@ -24,8 +24,10 @@
     <Compile Include="BusRegime.fs" />
     <Compile Include="BayesianTemperature.fs" />
     <Compile Include="AntiSybil.fs" />
+    <Compile Include="CliffordAntiSybil.fs" />
     <Compile Include="LocalConsensus.fs" />
     <Compile Include="ThousandBrains.fs" />
+    <Compile Include="ThousandBrainsCron.fs" />
     <Compile Include="AskBidClearing.fs" />
     <Compile Include="ReticulumTransport.fs" />
     <Compile Include="Web3Settlement.fs" />

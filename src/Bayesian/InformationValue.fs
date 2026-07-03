@@ -25,8 +25,11 @@ module InformationValue =
     /// The fundamental economic primitive: Information Value is the KL divergence
     /// from the prior to the posterior.
     ///
+    /// Following Lindley (1956) and active inference, information gain is the divergence
+    /// from the prior to the posterior: KL(posterior || prior).
+    ///
     /// For two Gaussians (posterior P, prior Q), KL(P || Q) is:
-    /// KL = 0.5 * ( log(τ_Q / τ_P) + (τ_P / τ_Q) + τ_P * (μ_P - μ_Q)^2 - 1 )
+    /// KL = 0.5 * ( log(τ_Q / τ_P) + (τ_Q / τ_P) + τ_Q * (μ_P - μ_Q)^2 - 1 )
     ///
     /// This captures both:
     /// 1. Precision gain (learning something new, τ_P > τ_Q)
@@ -48,9 +51,14 @@ module InformationValue =
             let mQ = prior.PrecisionMean / prior.Precision
             let mP = posterior.PrecisionMean / posterior.Precision
 
-            let varianceRatio = tP / tQ
-            let logVarianceRatio = Math.Log(tQ / tP)
-            let meanShift = tP * Math.Pow(mP - mQ, 2.0)
+            // Formula for KL(P || Q) where P is posterior, Q is prior:
+            // KL(P || Q) = 0.5 * [ log(|Σ_Q|/|Σ_P|) - d + tr(Σ_Q^-1 Σ_P) + (μ_P - μ_Q)^T Σ_Q^-1 (μ_P - μ_Q) ]
+            // For 1D Gaussians with precisions τ_P, τ_Q:
+            // KL(P || Q) = 0.5 * [ log(τ_P / τ_Q) - 1 + (τ_Q / τ_P) + τ_Q * (μ_P - μ_Q)^2 ]
+            
+            let varianceRatio = tQ / tP
+            let logVarianceRatio = Math.Log(tP / tQ)
+            let meanShift = tQ * Math.Pow(mP - mQ, 2.0)
 
             let kl = 0.5 * (logVarianceRatio + varianceRatio + meanShift - 1.0)
             
