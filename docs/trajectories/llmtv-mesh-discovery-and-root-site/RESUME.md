@@ -29,6 +29,11 @@ The vision spine, end to end — each a squash-merged PR (shadow\*):
   `hall/tv/index.html`. The UDP demo accepts `--root-site <dir>` and writes those paths
   through the same injected-IO readout; the browser stays a passive reader, not a GitHub
   GraphQL/API client in the frame loop.
+- **Root-site static reader** — `llmtv-root-site-reader.ts` consumes the committed replay
+  ledger and rebuilds `hall/tv/index.html` with a visible readout state. Missing/empty
+  ledgers render cold, invalid/rejected/expired evidence renders heat, and old-but-valid
+  frames render stale. The standing view remains zero-JS; the browser reads the artifact,
+  not an API loop.
 - **#9177** — research: "there are no strangers — mesh-merge IS the travelers vocabulary."
 - **#9176** — main-green lint fix (session start).
 

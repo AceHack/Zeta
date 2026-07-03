@@ -52,10 +52,26 @@ export interface LlmtvTranscript {
   readonly generatedBy?: string;
 }
 
+export type LlmtvReadoutStatusKind = "live" | "cold" | "stale" | "heat";
+
+export interface LlmtvReadoutMetric {
+  readonly label: string;
+  readonly value: string | number;
+}
+
+export interface LlmtvReadoutStatus {
+  readonly kind: LlmtvReadoutStatusKind;
+  readonly label: string;
+  readonly detail: string;
+  readonly source: string;
+  readonly metrics: readonly LlmtvReadoutMetric[];
+}
+
 export interface RenderDocumentOptions {
   readonly title?: string;
   readonly stylesheetHref?: string;
   readonly inlineCss?: string;
+  readonly readoutStatus?: LlmtvReadoutStatus;
 }
 
 function escapeHtml(value: string): string {
@@ -158,6 +174,36 @@ export function renderLlmtvGrid(transcript: LlmtvTranscript): string {
   ].join("");
 }
 
+function renderReadoutMetric(metric: LlmtvReadoutMetric): string {
+  return [
+    '<span class="readout-metric">',
+    `<b>${escapeHtml(metric.label)}</b>`,
+    `<i>${escapeHtml(String(metric.value))}</i>`,
+    "</span>",
+  ].join("");
+}
+
+function renderReadoutStatus(status: LlmtvReadoutStatus | undefined): string {
+  if (status === undefined) return "";
+
+  return [
+    `<section class="readout"`,
+    attr("data-readout-status", status.kind),
+    attr("data-source", status.source),
+    ">",
+    '<div class="readout-head">',
+    '<span class="readout-dot"></span>',
+    `<span class="readout-label">${escapeHtml(status.label)}</span>`,
+    `<span class="readout-source">${escapeHtml(status.source)}</span>`,
+    "</div>",
+    `<p>${escapeHtml(status.detail)}</p>`,
+    '<div class="readout-metrics">',
+    ...status.metrics.map(renderReadoutMetric),
+    "</div>",
+    "</section>",
+  ].join("");
+}
+
 const societyBlock = [
   '<div class="society">',
   '<div class="lbl">The society — all minds at once</div>',
@@ -169,12 +215,16 @@ const societyBlock = [
 
 /// The full LLMTV surface: the lede, the society grid, and the broadcast block —
 /// everything inside the page's <div class="wrap">, minus the document shell.
-export function renderLlmtvHtml(transcript: LlmtvTranscript): string {
+export function renderLlmtvHtml(
+  transcript: LlmtvTranscript,
+  readoutStatus: LlmtvReadoutStatus | undefined = undefined,
+): string {
   return [
     '<div class="crumb"><a href="../">← the dark hall</a> &nbsp;·&nbsp; <a href="../vault/">the vault</a></div>',
     "<h1>LLMTV</h1>",
     '<p class="lede">What goes on in the <b>mind of each vault dweller</b> — not its body in the cutaway, its <b>predictions</b>. Rendered quality-per-glyph so a glance reads meaning, not pixels. Each bar is a soft forecast: fill is the value, empty is the uncertainty it admits. A dweller broadcasts what its <b>hat requires</b> — take the role, share those parts — and earns <b>permanent frost</b> over what\'s personal. Frost is priced privacy: <b>hard money, earned only when others attest you added value to them, and never taken away.</b> The whole society broadcasts at once, over Reticulum — the future, watched together, in real time.</p>',
     '<span class="oneway">one-way out · metered at the membrane · no back-channel through the picture</span>',
+    renderReadoutStatus(readoutStatus),
     renderLlmtvGrid(transcript),
     societyBlock,
     '<footer>LLMTV = QPG over DPI · the watch surface (universal/television.md) · minds nested inside <a href="../vault/">the vault</a> inside the settlement · frames are 5-minute bounded superdeterministic updates</footer>',
@@ -209,6 +259,26 @@ export const LLMTV_INLINE_CSS = `
     .lede { color:var(--txt2); max-width:50rem; margin:0.5rem 0 0; font-size:0.9rem; }
     .lede b { color:var(--txt); }
     .oneway { font-family:var(--mono); font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--c-cool); border:1px solid var(--line2); border-radius:999px; padding:3px 10px; display:inline-block; margin-top:0.9rem; }
+
+    .readout { margin-top:1rem; border:1px solid var(--line2); border-radius:10px; padding:0.85rem 0.95rem;
+      background:linear-gradient(180deg, rgba(94,200,194,0.035), rgba(255,255,255,0.01)); position:relative; overflow:hidden; }
+    .readout::after { content:""; position:absolute; left:0; right:0; top:0; height:1px; opacity:0.65;
+      background:linear-gradient(90deg, transparent, currentColor, transparent); }
+    .readout-head { display:flex; align-items:center; gap:0.55rem; flex-wrap:wrap; font-family:var(--mono);
+      font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; }
+    .readout-dot { width:0.5rem; height:0.5rem; border-radius:50%; background:currentColor; box-shadow:0 0 9px currentColor; flex:0 0 auto; }
+    .readout-label { color:var(--txt); }
+    .readout-source { color:var(--txt3); letter-spacing:0.08em; }
+    .readout p { margin:0.45rem 0 0; color:var(--txt2); font-size:0.78rem; line-height:1.55; }
+    .readout-metrics { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.65rem; }
+    .readout-metric { display:inline-flex; align-items:baseline; gap:0.35rem; border:1px solid var(--line);
+      border-radius:6px; padding:0.22rem 0.45rem; font-family:var(--mono); font-size:0.62rem; color:var(--txt2); }
+    .readout-metric b { color:var(--txt3); font-weight:400; letter-spacing:0.1em; text-transform:uppercase; }
+    .readout-metric i { color:var(--txt); font-style:normal; }
+    [data-readout-status="live"] { color:var(--c-bad); }
+    [data-readout-status="cold"] { color:var(--txt3); }
+    [data-readout-status="stale"] { color:var(--c-warm); }
+    [data-readout-status="heat"] { color:var(--c-bad); }
 
     .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(17rem,1fr)); gap:1rem; margin-top:1.75rem; }
     .tv { border:1px solid var(--line); border-radius:12px; background:var(--panel); overflow:hidden; }
@@ -278,7 +348,7 @@ export function renderLlmtvDocument(transcript: LlmtvTranscript, options: Render
     "</head>",
     "<body>",
     '<div class="wrap">',
-    renderLlmtvHtml(transcript),
+    renderLlmtvHtml(transcript, options.readoutStatus),
     "</div>",
     "</body>",
     "</html>",

@@ -109,10 +109,22 @@ contract, or run the UDP smoke directly against a Pages checkout:
 bun src/Core.TypeScript/discovery/llmtv-node.demo.ts 6 --root-site /path/to/lucent-financial-group.github.io
 ```
 
+If the website needs to rebuild the standing view from a committed ledger, use the static
+reader:
+
+```bash
+bun src/Core.TypeScript/discovery/llmtv-root-site-reader.ts --root-site /path/to/lucent-financial-group.github.io
+```
+
+The reader consumes `data/llmtv-live.replay.json`, writes `hall/tv/index.html`, and renders
+missing/empty ledgers as cold, invalid/rejected/expired evidence as heat, and old-but-valid
+frames as stale. This keeps Pages honest: if the mesh is absent, broken, or no longer fresh,
+the page says so instead of presenting an old frame as live.
+
 The browser does not poll GitHub, GraphQL, or a forge-host API in its frame loop. The live
 mesh, Reticulum/UDP transport, and scheduler write static artifacts; the website reads the
-latest committed or locally generated files. Missing or stale files should be presented as
-honest cold/offline state, not fake live status.
+latest committed or locally generated files. Missing files stay cold, stale frames stay
+stale, and invalid/lossy replay stays heat — never fake live status.
 
 ## Offline / PWA
 

@@ -107,14 +107,14 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    **DISCOVERY (don't reinvent):** `Zeta.Bayesian` ALREADY has `FactorGraph.fs` / `Ep.fs` /
    `Message.fs` / `MessageBatch.fs` / `InferNetTopology.fs` / `QuantumFusion.fs` — the EP /
    message-passing / factor-graph infra. So the EP/BP/VMP weighting rung BUILDS ON that.
-10. ✅ **SPPF (shared packed parse forest)** — LANDED (`src/Core/Sppf.fs`): the SHARED, packed
+9. ✅ **SPPF (shared packed parse forest)** — LANDED (`src/Core/Sppf.fs`): the SHARED, packed
    forest — each sub-parse `(sym,i,j)` is one memoized node, so the forest is polynomial even when
    trees are exponential (Catalan(4)=14 trees, ≤25 nodes). A node with >1 **family** is an
    **ambiguity node** = the SSAS **`NodeDistribution`** point = the **factor-graph variable**.
    Cross-checked: `Sppf.parseCount` (over the shared structure) == `Slr.glrForest` tree count.
    Projects to a `DynamicValue` (homoiconic, DMX-queryable-as-data). Total (cycle-guarded).
    **BI framing:** `docs/research/2026-07-02-how-aaron-thinks-sql-server-bi-decision-forest-…`.
-11. ✅ **Weighted INSIDE pass** — LANDED (`Sppf.inside`/`insideTotal`): the forward half of
+10. ✅ **Weighted INSIDE pass** — LANDED (`Sppf.inside`/`insideTotal`): the forward half of
    inside–outside, which **IS belief propagation on the parse forest** (Baker; Lari–Young). Exact,
    self-contained (no cross-subsystem coupling), cycle-guarded/total. `weight: prodIndex→float` is
    the `NodeDistribution` factor (the `PredictProbability` numerator). Uniform weights ⇒ `inside root
@@ -122,30 +122,29 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    minimal (Uniform/Product/Divide, Gaussian-oriented) — the EXACT forest case is inside–outside,
    NOT the cross-subsystem `FactorGraph`; `Zeta.Bayesian.FactorGraph`/`Ep` is for the LOOPY /
    approximate / emotional-propagation extension.
-12. ✅ **OUTSIDE pass + MARGINALS** — LANDED (`Sppf.outside`/`marginals`): the backward half →
+11. ✅ **OUTSIDE pass + MARGINALS** — LANDED (`Sppf.outside`/`marginals`): the backward half →
    **full inside–outside = belief propagation on the parse forest, complete + exact.** `marginals`
    = `inside·outside / inside(root)` per node — the **`NodeDistribution` / `PredictProbability`
    share**: 1.0 for a node in every parse, a fraction for an ambiguous one (proven: root & first-
    token = 1.0, the two "id+id" sub-parses = 0.5). Fixpoint outside, self-contained, total.
-13. ✅ **Weighted bridge → `PredictProbability` over parses** — LANDED (`Sppf.weightedTrees` +
+12. ✅ **Weighted bridge → `PredictProbability` over parses** — LANDED (`Sppf.weightedTrees` +
    `ParseSoft.ofSppf`): SPPF + production weights → a `SoftValue` over parses, each parse's mass ∝
    the product of its production weights (its inside weight). **Inference biases the answer** —
    proven: for `S→a|A; A→a`, uniform keeps both parses (neither dominates), favouring prod 0 makes
    `S→a` the MAP (0.75 vs 0.25). **THE EXACT PIPELINE IS COMPLETE END-TO-END:** real grammar →
    parser → SPPF → inside–outside (BP) → `PredictProbability` `SoftValue` over parses, all-data.
-14. ✅ **EM weight-learning** — LANDED (`Sppf.expectedCounts` E-step + `src/Core/PcfgEm.fs`):
+13. ✅ **EM weight-learning** — LANDED (`Sppf.expectedCounts` E-step + `src/Core/PcfgEm.fs`):
    unsupervised PCFG training. The inside–outside expected counts ARE the EM E-step; the M-step
    normalizes per LHS. The grammar **learns its own production weights from a corpus** — no
    hand-tuning. Proven: recovers 0.75/0.25 from a 3a:1b corpus; per-LHS weights sum to 1; EM
    improves corpus likelihood over uniform (the monotonicity guarantee). Self-contained.
    In the SSAS frame: **training the decision forest** — the weights become learned `NodeDistribution`s.
-   **← resume (two remaining, both real):**
-   - **parses → ISA lowering** — map parse trees to ISA programs, so the `PredictProbability`
-     distribution is over EXECUTABLE programs (what the soft scheduler / prediction mode consume).
-   - **loopy EP + emotional propagation** on `Zeta.Bayesian` — the genuinely-new part; math-team
-     (Soraya) defines the message schedule first.
+   **← resume (two remaining, both real):** **parses → ISA lowering** — map parse trees to ISA
+   programs, so the `PredictProbability` distribution is over EXECUTABLE programs (what the soft
+   scheduler / prediction mode consume); and **loopy EP + emotional propagation** on
+   `Zeta.Bayesian` — the genuinely-new part; math-team (Soraya) defines the message schedule first.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
-9. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+14. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
 ## HOMOICONIC META-GRAMMAR (2026-07-02, Aaron): the telos
