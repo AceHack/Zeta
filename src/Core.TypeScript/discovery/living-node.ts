@@ -44,6 +44,7 @@ import {
   type SubjectMembers,
   type PauseVerdict,
 } from "./linked-clone";
+import { classify, distanceOf, type CorrelationClass } from "./correlation";
 import {
   authorize,
   emptyLedger,
@@ -71,6 +72,13 @@ export interface LivingNode {
   /// this node's links gain co-participants. S=2 is the enemy-but-friend: strive above it, always
   /// able to return to it.
   sReadout(): number;
+  /// The correlation CLASS CATEGORY of the current coordination (local / quantum / signaling) — the
+  /// categorical correspondence of the S-distance. A mental-health readout of the relational state:
+  /// `local` = autonomy (self, independent); higher classes = relatedness — healthy only while the
+  /// exit-to-S=2 stays guaranteed (see `unlinkRegion`) and the coordination produces shared value.
+  correlationClass(): CorrelationClass;
+  /// Distance above the independent ground state (S=2), in milli — 0 when autonomous.
+  distanceToCorrelation(): number;
   peers(): PeerTable;
   society(seed: string): LlmtvTranscript;
   links(): LinkState;
@@ -121,6 +129,20 @@ export function createLivingNode(
     transport.publish(encodeLink({ t, zid: config.source.zid, subject, regionId, seq: linkSeq }));
   };
 
+  // The coordination readout in raw CHSH S (the borrowed scaffolding); the HUMAN meaning — autonomy
+  // vs relatedness, healthy only when voluntary — is what `correlationClass` reports.
+  const computeS = (): number => {
+    const myLinks = [...linkState.values()];
+    if (myLinks.length === 0) return 2; // independent — self, the ground state you can always return to
+    let coordinated = 0;
+    for (const l of myLinks) {
+      const others = [...membersOf(l.subject).values()].filter((m) => m.zid !== config.source.zid).length;
+      if (others > 0) coordinated += 1; // connection that is actually reciprocated (related, not just declared)
+    }
+    const f = config.cloneMind.regions.length > 0 ? coordinated / config.cloneMind.regions.length : 0;
+    return 2 + 2 * Math.min(1, f);
+  };
+
   return {
     start() {
       llmtv.start();
@@ -131,17 +153,12 @@ export function createLivingNode(
       linkState = new Map();
       llmtv.stop();
     },
-    sReadout() {
-      const myLinks = [...linkState.values()];
-      if (myLinks.length === 0) return 2; // fully independent — the S=2 ground state
-      // fraction of this node's regions that are linked onto a subject with ≥1 OTHER participant.
-      let coordinated = 0;
-      for (const l of myLinks) {
-        const others = [...membersOf(l.subject).values()].filter((m) => m.zid !== config.source.zid).length;
-        if (others > 0) coordinated += 1;
-      }
-      const f = config.cloneMind.regions.length > 0 ? coordinated / config.cloneMind.regions.length : 0;
-      return 2 + 2 * Math.min(1, f);
+    sReadout: computeS,
+    correlationClass(): CorrelationClass {
+      return classify(Math.round(computeS() * 1000));
+    },
+    distanceToCorrelation() {
+      return distanceOf(Math.round(computeS() * 1000));
     },
     peers: () => llmtv.peers(),
     society: (seed) => llmtv.society(seed),
