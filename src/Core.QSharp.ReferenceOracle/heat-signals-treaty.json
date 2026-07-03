@@ -1,5 +1,6 @@
 {
   "schema": "zeta.qsharp.heat-signals.v1",
+  "readoutSchema": "zeta.heat.readout.v1",
   "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
   "fsharpSurface": "src/Core/Heat.fs",
   "description": "Finite heat-signal alphabet shared by host heat signatures, Dark Hall transcripts, CSS/LLMTV readouts, and Q# reference-oracle labels. Cold is an oracle boundary state, not emitted heat.",

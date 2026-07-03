@@ -2,6 +2,7 @@ import { heatSignals, summarizeHeatRows, type HeatReadout, type HeatRow } from "
 
 export {
   classifyHeatKind,
+  HEAT_FSHARP_SURFACE,
   HEAT_READOUT_SCHEMA,
   HEAT_SIGNAL_QSHARP_SOURCE,
   HEAT_SIGNAL_TREATY_PATH,

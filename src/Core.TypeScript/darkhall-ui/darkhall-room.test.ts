@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   classifyHeatKind,
+  HEAT_FSHARP_SURFACE,
   coordinationBandwidth,
   HEAT_READOUT_SCHEMA,
   HEAT_SIGNAL_QSHARP_SOURCE,
@@ -24,7 +25,9 @@ const heatTreaty = JSON.parse(
   readFileSync(join(import.meta.dir, "..", "..", "Core.QSharp.ReferenceOracle", "heat-signals-treaty.json"), "utf-8"),
 ) as {
   readonly schema: string;
+  readonly readoutSchema: string;
   readonly qsharpSource: string;
+  readonly fsharpSurface: string;
   readonly signals: readonly { readonly token: string; readonly public: boolean }[];
 };
 
@@ -211,7 +214,7 @@ describe("Dark Hall CSS room UI", () => {
         }
       ],
       "heatReadout": {
-        "schema": "zeta.darkhall.heat-readout.v1",
+        "schema": "zeta.heat.readout.v1",
         "qsharpTreaty": "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json",
         "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
         "rows": 1,
@@ -238,7 +241,7 @@ describe("Dark Hall CSS room UI", () => {
 
     const html = renderDarkHallRoomHtml(fromFsharp);
 
-    expect(html).toContain('data-heat-readout="zeta.darkhall.heat-readout.v1"');
+    expect(html).toContain('data-heat-readout="zeta.heat.readout.v1"');
     expect(html).toContain(`data-heat-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
     expect(html).toContain(`data-qsharp-source="${HEAT_SIGNAL_QSHARP_SOURCE}"`);
     expect(html).toContain('data-signals="denied"');
@@ -250,7 +253,9 @@ describe("Dark Hall CSS room UI", () => {
     const publicTokens = heatTreaty.signals.filter((signal) => signal.public).map((signal) => signal.token);
 
     expect(heatTreaty.schema).toBe("zeta.qsharp.heat-signals.v1");
+    expect(heatTreaty.readoutSchema).toBe(HEAT_READOUT_SCHEMA);
     expect(heatTreaty.qsharpSource).toBe(HEAT_SIGNAL_QSHARP_SOURCE);
+    expect(heatTreaty.fsharpSurface).toBe(HEAT_FSHARP_SURFACE);
     expect(heatReadout.qsharpTreaty).toBe(HEAT_SIGNAL_TREATY_PATH);
     expect(heatReadout.signals.every((signal) => publicTokens.includes(signal))).toBe(true);
   });

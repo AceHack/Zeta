@@ -21,6 +21,7 @@ interface HeatCase {
 
 interface HeatSignalsTreaty {
   readonly schema: string;
+  readonly readoutSchema: string;
   readonly qsharpSource: string;
   readonly fsharpSurface: string;
   readonly signals: readonly HeatSignalVector[];
@@ -71,6 +72,7 @@ describe("Q# heat-signal reference treaty", () => {
   test("declares the same finite heat alphabet used by F# and TypeScript", () => {
     expect(source).toContain("namespace Zeta.Heat");
     expect(treaty.schema).toBe("zeta.qsharp.heat-signals.v1");
+    expect(treaty.readoutSchema).toBe("zeta.heat.readout.v1");
     expect(treaty.qsharpSource).toBe("src/Core.QSharp.ReferenceOracle/HeatSignals.qs");
     expect(treaty.fsharpSurface).toBe("src/Core/Heat.fs");
 

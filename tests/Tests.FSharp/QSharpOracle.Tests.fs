@@ -182,8 +182,9 @@ let ``F# reads the committed Q# observable treaty without depending on QDK at te
 [<Fact>]
 let ``F# HeatSignal tokens match the Q# heat signal treaty`` () =
     Assert.Equal("zeta.qsharp.heat-signals.v1", heatTreaty.GetProperty("schema").GetString())
-    Assert.Equal("src/Core.QSharp.ReferenceOracle/HeatSignals.qs", heatTreaty.GetProperty("qsharpSource").GetString())
-    Assert.Equal("src/Core/Heat.fs", heatTreaty.GetProperty("fsharpSurface").GetString())
+    Assert.Equal(HeatReadout.Schema, heatTreaty.GetProperty("readoutSchema").GetString())
+    Assert.Equal(HeatReadout.QSharpSignalSource, heatTreaty.GetProperty("qsharpSource").GetString())
+    Assert.Equal(HeatReadout.FSharpSurface, heatTreaty.GetProperty("fsharpSurface").GetString())
 
     let expected =
         [ "forgotten", HeatSignal.Forgotten

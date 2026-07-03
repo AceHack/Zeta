@@ -15,14 +15,11 @@ module DarkHallRoomTranscript =
     [<Literal>]
     let Schema = "zeta.darkhall.room-ui.v1"
 
-    [<Literal>]
-    let HeatReadoutSchema = "zeta.darkhall.heat-readout.v1"
+    let HeatReadoutSchema = Zeta.Core.HeatReadout.Schema
 
-    [<Literal>]
-    let HeatSignalTreaty = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json"
+    let HeatSignalTreaty = Zeta.Core.HeatReadout.SignalTreaty
 
-    [<Literal>]
-    let QSharpHeatSignalSource = "src/Core.QSharp.ReferenceOracle/HeatSignals.qs"
+    let QSharpHeatSignalSource = Zeta.Core.HeatReadout.QSharpSignalSource
 
     type ControllerCell =
         { [<JsonPropertyName("cell")>]

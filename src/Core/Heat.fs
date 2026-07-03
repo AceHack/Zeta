@@ -141,6 +141,25 @@ module HeatSignal =
         |> List.distinct
 
 
+/// Source-owned treaty anchors for heat readouts. Runtime rooms emit heat
+/// through injected ports; Q# and other model plugins only mirror this finite
+/// vocabulary as an oracle/reference surface.
+[<RequireQualifiedAccess>]
+module HeatReadout =
+
+    [<Literal>]
+    let Schema = "zeta.heat.readout.v1"
+
+    [<Literal>]
+    let SignalTreaty = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json"
+
+    [<Literal>]
+    let QSharpSignalSource = "src/Core.QSharp.ReferenceOracle/HeatSignals.qs"
+
+    [<Literal>]
+    let FSharpSurface = "src/Core/Heat.fs"
+
+
 /// Feedback from the injected heat sink. Heat is diagnostic output, but the
 /// sink still has a budget; if even the heat cannot fit, report backpressure
 /// rather than recursively losing the loss signal.

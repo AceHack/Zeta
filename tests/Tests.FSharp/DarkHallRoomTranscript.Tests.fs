@@ -112,6 +112,9 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Contains(transcript.Controller, fun cell -> cell.Selected && cell.ActionId = "darkhall.play.soft-chip8")
     Assert.Single(transcript.Ticks) |> ignore
     Assert.Single(transcript.HeatRows) |> ignore
+    Assert.Equal(HeatReadout.Schema, Transcript.HeatReadoutSchema)
+    Assert.Equal(HeatReadout.SignalTreaty, Transcript.HeatSignalTreaty)
+    Assert.Equal(HeatReadout.QSharpSignalSource, Transcript.QSharpHeatSignalSource)
     Assert.Equal(Transcript.HeatReadoutSchema, transcript.HeatReadout.Schema)
     Assert.Equal(Transcript.HeatSignalTreaty, transcript.HeatReadout.QSharpTreaty)
     Assert.Equal(Transcript.QSharpHeatSignalSource, transcript.HeatReadout.QSharpSource)
