@@ -19,6 +19,8 @@
     <Compile Include="EngineAdapter.fs" />
     <Compile Include="InferNetTopology.fs" />
     <Compile Include="SocietyBootstrap.fs" />
+    <Compile Include="AttentionRouter.fs" />
+    <Compile Include="SparseSocietyNetwork.fs" />
   </ItemGroup>
 
   <ItemGroup>

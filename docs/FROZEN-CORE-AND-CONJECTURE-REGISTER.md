@@ -83,6 +83,8 @@ non-coercive AND decorrelation-preserving**; the CTM's global axiom is *non-phys
 conjecture — it explains why several §B rows (relativistic society, self-regen, root-compression,
 terraform-into-cell) can assume no-global without an axiom.* Detail: consolidated society note §9h.
 
+| 16 | **Invariant S3: Routing Economics (Attention & NCI Boundary)** | Sparse routing based on shared momentum (KL divergence × trajectory alignment) strictly preserves the mutual empowerment invariant. The Non-Coercive Influence (NCI) boundary acts as a structural propagation rule: messages propagate if and only if they are proper, consented to (weight > threshold), and bounded in coercion (max precision gain factor). **✅ PROVEN (FsCheck), 2026-07-03**: 13 FsCheck properties (`AR-1` through `AR-13`) in `AttentionRouter.Tests.fs`. `AR-9` proves that sparse routing preserves mutual empowerment (joint > solo). `AR-6` and `AR-8` prove the structural rejection of improper and coercive messages. | `AttentionRouter.Tests.fs` |
+
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
