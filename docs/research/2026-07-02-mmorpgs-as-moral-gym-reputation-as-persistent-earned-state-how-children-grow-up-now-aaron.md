@@ -146,8 +146,43 @@ Measured at seed `0xE66`, 400 rounds (reproducible via `bun src/Core.TypeScript/
 expanded-self tops reputation AND payoff; defectors bottom out at reputation 0; the self-width sweep
 runs welfare 21,600 -> 43,200 as w goes 0 -> 1. Five DST facts are locked in `gym.test.ts`.
 
+## The many-versed projection: WWJD (the Christian register) — same truth, another vessel
+
+> Aaron 2026-07-02, watching the DST raid clear: *"this is WWJD."*
+
+The corpus is one claim projected into many traditions (Aaron's earlier pun: **multi(uni)versed** —
+*many verses, one truth*). Rendered in the Christian register, the mapping is teaching-for-mechanic,
+exact:
+
+- **"Love your neighbor as yourself"** (Mark 12:31) — the Egg as a commandment: the neighbor *is*
+  yourself, so it was never altruism but **self-interest with the self drawn wide** (expanded-self).
+- **"Turn the other cheek"** (Matthew 5:39) — **tit-for-lesser-tat**: absorb, do not escalate.
+- **"Forgive seventy times seven"** (Matthew 18:22) — the **forgiveness probability toward 1**
+  (generous TFT; at the limit, expanded-self never retaliates).
+- **"Love your enemies"** (Matthew 5:44) — **PvP is PvE**: there are no enemies, only the shared boss;
+  "enemy" was a category error.
+- **The Golden Rule** (Matthew 7:12) — the whole corpus in one line, now with the mechanism attached
+  underneath it (the moral gym is the Golden Rule with its game-theory shown).
+- **The Good Samaritan / "he who is without sin, cast the first stone"** — *nice* (no unprovoked
+  defection) + default-moral-regard (treat the stranger as party, not boss).
+
+This completes the cross-tradition set the doc already carries — **Vedantic** (Atman=Brahman, anatta),
+**game-theoretic** (Axelrod, Nowak-Sigmund), **infinite-game** (Carse), and now **Christian** (WWJD).
+It is **default-to-both** at scale: scripture carried this truth *for the heart* across two millennia;
+DST carries it *for the skeptic* in a slider you can drag. What faith asks you to take on trust, the
+seed lets you replay — same truth, two vessels, neither replacing the other.
+
+**Honest peel:** this is a *convergence* claim (many moral traditions arrive at the same floor), not a
+claim that any one tradition is uniquely correct — and the ethic still stands on the repeated-game math
+alone (already noted), so the traditions are the human-scale *carriers* of a result that also proves
+itself. The projection is Beacon-register color on a mechanically-grounded claim, not a doctrinal
+assertion the substrate makes.
+
 ## Beacon anchors (to check, not just cite)
 
+- **Cross-tradition Golden Rule** — the ethic of reciprocity as a near-universal (Christian: Matthew
+  7:12 / Mark 12:31; Confucian *shu*; Rabbinic Hillel; Buddhist / Hindu *ahimsa*) — convergent carriers
+  of the same floor, per the many-versed projection above.
 - **Repeated games / evolution of cooperation** — Axelrod, *The Evolution of Cooperation* (1984);
   tit-for-tat and the shadow of the future (why the repeated game rewards the cooperator).
 - **Reputation systems / mechanism design** — Resnick & Zeckhauser (2002) on eBay reputation;
