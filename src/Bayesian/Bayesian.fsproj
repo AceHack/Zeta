@@ -20,6 +20,8 @@
     <Compile Include="InferNetTopology.fs" />
     <Compile Include="SocietyBootstrap.fs" />
     <Compile Include="AttentionRouter.fs" />
+    <Compile Include="LocalConsensus.fs" />
+    <Compile Include="AskBidClearing.fs" />
     <Compile Include="SparseSocietyNetwork.fs" />
   </ItemGroup>
 
