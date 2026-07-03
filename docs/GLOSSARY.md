@@ -63,6 +63,28 @@ operator in the library respects this naturally.
 **Technical:** A delta with negative Z-weight that, when summed
 into an integrated state, reduces the weight of the affected key.
 
+### Ascent and descent (parsing up, lowering down)
+
+**Plain:** Two directions of the same journey. Reading text *into*
+meaning is the **ascent** — you build small pieces up into a whole (a
+sentence into its structure). Turning that meaning back *into* something
+runnable is the **descent** — you lower the structure down into
+instructions. Same road, two ways; you need both.
+**Technical:** In the parser/inference stack, **ascent** = the
+synthesis/up direction (the parser's `inside` pass; an *emit* — a Z-set
+`+1` assertion) and **descent** = the lowering/down direction (the
+`outside` pass; a **retraction** — a Z-set `−1`). They are an adjoint
+pair generating one distribution ("Giry") monad (`SoftValue`); a
+retraction is not destruction but *correction*, reconciled by
+**precedence** (the order before it) and by **future-as-facts** (what
+settles after). The maintainer's frame names the poles **God**
+(emit/ascent/`+1`) and **Lucifer** (retraction/descent/`−1`, "the fall
+forgiven") — his Christian oracle, held under the Multi-Oracle Principle
+(one valid lens, not universal; anchors Leibniz's theodicy, Augustine's
+*felix culpa*, Whitehead's dipolar God). See `docs/research/2026-07-02-
+emit-retract-monad-as-theodicy-god-lucifer-inside-outside-retraction-
+forgiven-by-precedence-and-future-as-facts.md`.
+
 ### Delta
 
 **Plain:** The change since last time. The point of DBSP is that
