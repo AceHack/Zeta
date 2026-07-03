@@ -21,6 +21,7 @@
     <Compile Include="ReticulumRouter.Tests.fs" />
     <Compile Include="InformationValue.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
+    <Compile Include="BusRegime.Tests.fs" />
     <Compile Include="ThousandBrains.Tests.fs" />
     <Compile Include="ArrowEscape.Tests.fs" />
     <Compile Include="Integration.Tests.fs" />

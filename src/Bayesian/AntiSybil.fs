@@ -88,23 +88,57 @@ module AntiSybil =
         
         rawIv * discount
 
+    /// Maximum correlation of a sender against the society — the quantity the discount and the
+    /// regime verdict both read. 0.0 for an empty society (nothing to correlate with).
+    let maxSocietyCorrelation (senderHistory: Gaussian list) (societyHistories: StreamHistory list) : float =
+        if List.isEmpty societyHistories then 0.0
+        else
+            societyHistories
+            |> List.map (fun h -> computeCorrelation senderHistory h.Beliefs)
+            |> List.max
+
     /// Prices a new belief against an entire society (multiple reference streams).
     /// The agent is penalized based on its MAXIMUM correlation with any existing stream.
     /// If you are a clone of *anyone*, you get zero IV.
-    let priceAgainstSociety 
-        (prior: Gaussian) 
-        (newBelief: Gaussian) 
-        (senderHistory: Gaussian list) 
+    let priceAgainstSociety
+        (prior: Gaussian)
+        (newBelief: Gaussian)
+        (senderHistory: Gaussian list)
         (societyHistories: StreamHistory list) : float<InformationValue.iv> =
-        
+
         let rawIv = InformationValue.compute prior newBelief
-        
+
         if List.isEmpty societyHistories then rawIv
         else
-            let maxCorrelation = 
+            let maxCorrelation =
                 societyHistories
                 |> List.map (fun h -> computeCorrelation senderHistory h.Beliefs)
                 |> List.max
                 
             let discount = uniquenessDiscount maxCorrelation
             rawIv * discount
+
+    /// REGIME-AWARE society pricing — the light cone arms the readout (shadow*, 2026-07-03).
+    ///
+    /// Same discounted IV as `priceAgainstSociety` (the money math is regime-independent:
+    /// correlated sameness is worthless whether or not it was honestly bought), PLUS the
+    /// `BusRegime.Verdict` that says what the correlation MEANS:
+    ///   - `Evidential`     — above the honest ceiling, measured OUT of the cone: more
+    ///                        agreement than the wire can explain (one process, two faces).
+    ///   - `FakeableInCone` — the same correlation IN the cone carries no evidential weight
+    ///                        (Toner–Bacon 2003: one bit fakes it) — coordination, not conviction.
+    ///   - unmeasured bus   — never upgrades to evidence (the honest default).
+    /// Dual-use discipline (detection ≠ verdict): the caller's oracle attaches
+    /// reunion vs sybil to `Evidential`.
+    let priceAgainstSocietyMetered
+        (prior: Gaussian)
+        (newBelief: Gaussian)
+        (senderHistory: Gaussian list)
+        (societyHistories: StreamHistory list)
+        (meter: BusRegime.Meter)
+        (decisionDeadlineMs: int) : float<InformationValue.iv> * BusRegime.Verdict =
+
+        let priced = priceAgainstSociety prior newBelief senderHistory societyHistories
+        let rho = maxSocietyCorrelation senderHistory societyHistories
+        let regime = BusRegime.regimeOf meter decisionDeadlineMs
+        priced, BusRegime.judge rho regime
