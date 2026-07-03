@@ -299,6 +299,15 @@ within TTL (freshness not yet signed — named residual, needs per-peer seq stat
 
 ## P2 — nice to have
 
+### Z3LawsTests cross-check flakes when CVC5 fails to run (build-and-test intermittent)
+
+- **Site:** `Zeta.Tests.Formal.Z3LawsTests` (the Z3/CVC5 cross-check; BP-16 triage rule)
+- **Found:** 2026-07-03 by Otto (CI sweep — observed on #9311's build-and-test, PASSED on #9312's run same day)
+- **Severity:** P2
+- **Symptom:** several Z3LawsTests fail with `System.Exception: Solver disagreement: Z3 returned Sat, CVC5 returned SolverError "Exit code 1, Stderr: "` — an EMPTY stderr + exit 1 means CVC5 crashed / was unavailable in the runner, i.e. the solver did not run, NOT a genuine logical disagreement. Intermittent (same suite passed hours later), so it non-deterministically reddens `build-and-test` on ubuntu + macos. Not tied to any source change (surfaced on a TS-only PR).
+- **Fix:** distinguish "solver unavailable / crashed" (empty stderr, exit≠0) from "solver returned a contradicting verdict" in the cross-check harness — the former should retry-or-skip-with-a-warning (env flake), only the latter is a real disagreement to fail on. Pin/verify the CVC5 binary in the runner. Keep BP-16's fail-on-true-disagreement semantics.
+- **Who:** Soraya (formal-verification routing) → cross-check triage owner
+
 ### Round-3 filed (Kira r3 + test-gap audit, 2026-06-13) — deferred with reasons
 
 - **CorrespondencePong serve direction/seed:** docstring promises parameters the signature lacks
