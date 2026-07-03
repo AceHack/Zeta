@@ -1,0 +1,14 @@
+{
+  "id": "080cf9504a72e011a0130008ef8d1b98",
+  "at": "2026-07-03T22:11:20.796Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KWN0JKJV08QG0R003Z2Z2N5",
+    "type": "task",
+    "title": "Track commit-msg hook in repo + NixOS flake symlink for persistence across clones",
+    "slug": "track-commit-msg-hook-in-repo-nixos-flake-symlink-for-persis",
+    "priority": "P3",
+    "filename": "081KWN0JKJV08QG0R003Z2Z2N5-track-commit-msg-hook-in-repo-nixos-flake-symlink-for-persis.md"
+  }
+}
