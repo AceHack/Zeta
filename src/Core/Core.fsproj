@@ -71,6 +71,7 @@
     <Compile Include="Cogen.fs" />
     <Compile Include="Isa.fs" />
     <Compile Include="IsaSpec.fs" />
+    <Compile Include="Netlist.fs" />
     <Compile Include="Sppf.fs" />
     <Compile Include="PcfgEm.fs" />
     <Compile Include="Indentation.fs" />
