@@ -241,3 +241,40 @@ let ``THE 6502 MIX reduces: an all-static program folds to an empty residual`` (
         Assert.Equal(10, Map.tryFind 5 knownMem |> Option.defaultValue 0) // mem[5] = 10
         Assert.Equal(13, Map.tryFind 6 knownMem |> Option.defaultValue 0) // mem[6] = 13
     | Error e -> Assert.Fail(sprintf "specializeMem failed: %s" e)
+
+// ── the 6502 STATUS REGISTER — real N/Z flags + real flag-based branches (shadow*, Aaron 2026-07-03
+// "i love to see it becoming real and not a toy over time"). The SKE compare-skip stand-in is replaced
+// by an actual status register, so the IDIOMATIC 6502 loop runs. Proofs:
+//   10. THE IDIOMATIC COUNTDOWN LOOP: `LDX #N; loop: INY; DEX; BNE loop; BRK` runs N times (Y=N, X=0)
+//       — real DEX-sets-Z, BNE-branches-on-Z control flow, no substitute.
+//   11. BEQ IS TAKEN when the result is zero (a forward branch skips the poisoned instruction).
+//   12. THE FLAG-BEARING 6502 SPEC IS BYTE-LOCKABLE DATA.
+
+[<Fact>]
+let ``THE IDIOMATIC 6502 LOOP runs: LDX #N; INY; DEX; BNE loop — real N/Z flag control flow`` () =
+    // @0 LDX #N ; @1 LDY #0 ; @2 INY ; @3 DEX ; @4 BNE 2 ; @5 BRK   → Y = N, X = 0
+    let program (n: int) =
+        DynamicValue.Array
+            [ IsaSpec.ldxImm n; IsaSpec.ldyImm 0; IsaSpec.iny; IsaSpec.dex; IsaSpec.bne 2; IsaSpec.brk ]
+    for n in [ 1; 3; 5; 10; 50 ] do
+        match IsaSpec.evalSpecFull IsaSpec.mos6502nz (program n) Map.empty Map.empty with
+        | Ok(regs, _) ->
+            Assert.Equal(n, Map.tryFind 2 regs |> Option.defaultValue 0) // Y counted to N
+            Assert.Equal(0, Map.tryFind 1 regs |> Option.defaultValue 0) // X decremented to 0
+        | Error e -> Assert.Fail(sprintf "6502 DEX/BNE loop failed at n=%d: %s" n e)
+
+[<Fact>]
+let ``BEQ is TAKEN when the result is zero (forward branch skips the poisoned instruction)`` () =
+    // @0 LDA #0 (Z=1) ; @1 BEQ 3 (taken) ; @2 LDA #99 (SKIPPED) ; @3 STA 5 ; @4 BRK
+    let p =
+        DynamicValue.Array
+            [ IsaSpec.ldaImm 0; IsaSpec.beq 3; IsaSpec.ldaImm 99; IsaSpec.staZp 5; IsaSpec.brk ]
+    match IsaSpec.evalSpecFull IsaSpec.mos6502nz p Map.empty Map.empty with
+    | Ok(regs, mem) ->
+        Assert.Equal(0, Map.tryFind 0 regs |> Option.defaultValue 0) // A still 0 — the LDA #99 was skipped
+        Assert.Equal(0, Map.tryFind 5 mem |> Option.defaultValue 0) // mem[5] = 0, not 99
+    | Error e -> Assert.Fail(sprintf "BEQ test failed: %s" e)
+
+[<Fact>]
+let ``THE FLAG-BEARING 6502 SPEC IS BYTE-LOCKABLE DATA`` () =
+    Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] IsaSpec.mos6502nz)

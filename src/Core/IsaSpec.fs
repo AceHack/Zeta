@@ -62,6 +62,14 @@ module IsaSpec =
 
     let halt = DynamicValue.Object [ "e", DynamicValue.String "halt" ]
 
+    /// Set the N/Z status flags from a result value (`from` a Val). The 6502 side effect of loads,
+    /// transfers, and arithmetic. Z = (value == 0), N = (bit 7 set).
+    let setFlags (from: DynamicValue) = DynamicValue.Object [ "e", DynamicValue.String "setflags"; "from", from ]
+
+    /// A real flag-based branch: if flag `f` (∈ {"Z","N"}) equals `want` (0/1), pc ← `to` (a Val).
+    let branchIf (f: string) (want: int) (target: DynamicValue) =
+        DynamicValue.Object [ "e", DynamicValue.String "branch"; "flag", DynamicValue.String f; "want", DynamicValue.Int(int64 want); "to", target ]
+
     let op (name: string) (effects: DynamicValue list) =
         DynamicValue.Object [ "op", DynamicValue.String name; "eff", DynamicValue.Array effects ]
 
@@ -150,6 +158,10 @@ module IsaSpec =
             let mutable steps = 0
             let mutable halted = false
             let mutable err = None
+            // Processor status flags (the 6502's status register, minimal N/Z subset). Set by `setflags`
+            // from a result value; read by `branch`. Unused by register-only specs (chip8/mos6502).
+            let mutable flagZ = false // zero flag: last result was 0
+            let mutable flagN = false // negative flag: bit 7 of the last result
             while not halted && pc >= 0 && pc < code.Length && err.IsNone do
                 steps <- steps + 1
                 if steps > stepBudget then
@@ -203,6 +215,39 @@ module IsaSpec =
                                     | Error m, _
                                     | _, Error m -> err <- Some m
                                 | _ -> err <- Some "isaspec: ifeqskip operands"
+                            // set the N/Z status flags from a result value (the 6502 side effect of a load/
+                            // transfer/arithmetic op). Effects run in listing order, so `setflags (reg A)`
+                            // after `setreg A …` reads the just-written result.
+                            | Some(DynamicValue.String "setflags") ->
+                                match DynamicValue.get "from" e with
+                                | Some fv ->
+                                    match evalVal fv ins regs mem with
+                                    | Ok v ->
+                                        let w = wrap v
+                                        flagZ <- (w = 0)
+                                        flagN <- (w &&& 128 <> 0)
+                                    | Error m -> err <- Some m
+                                | _ -> err <- Some "isaspec: setflags operand"
+                            // real flag-based branch: if the named flag equals `want`, pc ← to; else fall through.
+                            | Some(DynamicValue.String "branch") ->
+                                match DynamicValue.get "flag" e, DynamicValue.get "want" e, DynamicValue.get "to" e with
+                                | Some(DynamicValue.String f), Some(DynamicValue.Int w), Some tv ->
+                                    let cur =
+                                        match f with
+                                        | "Z" -> (if flagZ then 1 else 0)
+                                        | "N" -> (if flagN then 1 else 0)
+                                        | _ -> -1
+                                    if cur = -1 then
+                                        err <- Some(sprintf "isaspec: unknown flag '%s'" f)
+                                    elif cur = int w then
+                                        match evalVal tv ins regs mem with
+                                        | Ok p ->
+                                            pc <- p
+                                            pcSet <- true
+                                        | Error m -> err <- Some m
+                                    else
+                                        () // not taken: fall through (pc advances via the not-pcSet path)
+                                | _ -> err <- Some "isaspec: branch operands"
                             | Some(DynamicValue.String "halt") ->
                                 halted <- true
                                 pcSet <- true
@@ -303,6 +348,53 @@ module IsaSpec =
     let ske nn = DynamicValue.Object [ "op", DynamicValue.String "SKE"; "imm", DynamicValue.Int(int64 nn) ]
     let jmp addr = DynamicValue.Object [ "op", DynamicValue.String "JMP"; "addr", DynamicValue.Int(int64 addr) ]
     let brk = DynamicValue.Object [ "op", DynamicValue.String "BRK" ]
+
+    // ── the 6502 with its STATUS REGISTER (N/Z) + REAL flag-based branches — the toy becomes real ──
+    //
+    // Aaron 2026-07-03 "i love to see it becoming real and not a toy over time … toys that turn into
+    // trusted execution." `mos6502` above uses a `SKE` compare-skip as a stand-in for control flow.
+    // This variant models the processor status flags (the minimal N/Z subset) and the REAL flag-based
+    // branches — so the *idiomatic* 6502 loop (`DEX; BNE loop`) runs, not a substitute. Result-
+    // producing ops carry a trailing `setflags (reg …)` (reading the just-written result), which makes
+    // them MULTI-EFFECT — so this spec runs under `evalSpecFull` (which loops over effects) but is NOT
+    // yet mix-able (the mix's straight-line fragment is single-effect; the multi-effect + flag-aware
+    // mix is the next rung). HONEST SCOPE: N/Z only — carry (C) and overflow (V), and therefore
+    // BCC/BCS/BVC/BVS and real ADC-with-carry, are the further flags rung.
+    let mos6502nz: DynamicValue =
+        let a = cst 0
+        let x = cst 1
+        let y = cst 2
+        let withNZ effs resultReg = effs @ [ setFlags (reg resultReg) ] // append the N/Z side effect
+        isa
+            [ op "LDA_IMM" (withNZ [ setReg a (fld "imm") ] a)
+              op "LDX_IMM" (withNZ [ setReg x (fld "imm") ] x)
+              op "LDY_IMM" (withNZ [ setReg y (fld "imm") ] y)
+              op "LDA_ZP" (withNZ [ setReg a (memRead (fld "addr")) ] a)
+              op "STA_ZP" [ setMem (fld "addr") (reg a) ] // stores do NOT affect flags on the 6502
+              op "TAX" (withNZ [ setReg x (reg a) ] x)
+              op "TAY" (withNZ [ setReg y (reg a) ] y)
+              op "TXA" (withNZ [ setReg a (reg x) ] a)
+              op "TYA" (withNZ [ setReg a (reg y) ] a)
+              op "INX" (withNZ [ setReg x (addV (reg x) (cst 1)) ] x)
+              op "INY" (withNZ [ setReg y (addV (reg y) (cst 1)) ] y)
+              op "DEX" (withNZ [ setReg x (subV (reg x) (cst 1)) ] x)
+              op "DEY" (withNZ [ setReg y (subV (reg y) (cst 1)) ] y)
+              op "ADC_IMM" (withNZ [ setReg a (addV (reg a) (fld "imm")) ] a)
+              op "ADC_ZP" (withNZ [ setReg a (addV (reg a) (memRead (fld "addr"))) ] a)
+              op "JMP" [ setPc (fld "addr") ]
+              op "BNE" [ branchIf "Z" 0 (fld "addr") ] // D0 — branch if Z clear (result was nonzero)
+              op "BEQ" [ branchIf "Z" 1 (fld "addr") ] // F0 — branch if Z set (result was zero)
+              op "BPL" [ branchIf "N" 0 (fld "addr") ] // 10 — branch if N clear (result was >= 0)
+              op "BMI" [ branchIf "N" 1 (fld "addr") ] // 30 — branch if N set (bit 7)
+              op "NOP" []
+              op "BRK" [ halt ] ]
+
+    // faithful-6502 constructors (the extras beyond the mix-core set above).
+    let iny = DynamicValue.Object [ "op", DynamicValue.String "INY" ]
+    let dex = DynamicValue.Object [ "op", DynamicValue.String "DEX" ]
+    let dey = DynamicValue.Object [ "op", DynamicValue.String "DEY" ]
+    let bne addr = DynamicValue.Object [ "op", DynamicValue.String "BNE"; "addr", DynamicValue.Int(int64 addr) ]
+    let beq addr = DynamicValue.Object [ "op", DynamicValue.String "BEQ"; "addr", DynamicValue.Int(int64 addr) ]
 
     // ── spec-driven `mix`: partial evaluation over ANY ISA-as-data (the dynarec, generalized) ──
     //
