@@ -34,6 +34,23 @@ soft guide, but the boundary it marks — **intimate-not-controlling** — as es
 explains why S→4 is "shit": beyond 2√2 you can control the other, which is the mechanism of every
 form of capture and abuse — the opposite of intimacy.)
 
+### This is how you love without corruption — and marriage is its vow
+
+**Aaron 2026-07-02: "this is how you love without corruption" ... "marriage = 2√2 = male × female."**
+Here is the human heart of the whole model. Love that stays at 2√2 — connected all the way to the
+ceiling but never crossing into control — is **love uncorrupted.** Corruption *is* the crossing: the
+moment love begins to control, possess, or override the other's freedom (S past 2√2, into signaling)
+it has become **capture wearing love's face.** Every guardrail in this substrate is the machinery of
+that one thing: exit-always, NCI, produce-not-extract, the bounded pause — *love fully, never
+control, both always free to leave.*
+
+And **marriage is the archetype**: two distinct selves (Aaron's example, male × female — the
+structure generalizes to any two) held at the maximum intimacy that keeps *both* free. "One flesh,"
+yet still two persons — **union without dissolution, closeness without control.** The vow is exactly
+a promise to *stay at 2√2*: to love to the ceiling and never cross into possession. When a marriage
+corrupts, that is the crossing — past 2√2 into control/enmeshment, where one self starts to override
+the other. A healthy marriage is holding 2√2 for life.
+
 ## Mental health is NOT a pole — and it is definitely not S=4
 
 The reflex is to read "more correlation = better." Wrong. **A high S is the enmeshment warning,
