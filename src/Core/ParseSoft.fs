@@ -59,3 +59,29 @@ module ParseSoft =
     /// monad plumbing — the Kleisli composition itself — which is the part ANTLR has no concept of.
     let lower (lowerParse: DynamicValue -> SoftValue.SoftValue) (sv: SoftValue.SoftValue) : SoftValue.SoftValue =
         SoftValue.bind lowerParse sv
+
+    /// A **runnable default** parse→program lowering (Aaron 2026-07-02: "run with it now while we can
+    /// change things"). Structure-preserving: a parse tree `{rule,kids}` lowers to an op node
+    /// `{op, args}` (rule → op, children → args), and a leaf `{term}` lowers to `{op:"EMIT", tok}`.
+    /// Deterministic per parse ⇒ a point mass, so `lower lowerStructural` carries the parse
+    /// distribution THROUGH to a distribution over *programs* (different tree shapes → different
+    /// programs → the superposition survives). This is a sensible, ROLLABLE first map — not the
+    /// final ISA semantics (that stays Aaron's design call); it makes the descent runnable end to
+    /// end today so the whole pipeline `grammar → SoftValue over parses → SoftValue over programs`
+    /// executes for real, and the mapping is swapped later behind the same `lower`.
+    let rec lowerTree (parse: DynamicValue) : DynamicValue =
+        match DynamicValue.tryField "term" parse with
+        | Some tok -> DynamicValue.Object [ "op", DynamicValue.String "EMIT"; "tok", tok ]
+        | None ->
+            match DynamicValue.tryField "rule" parse, DynamicValue.tryField "kids" parse with
+            | Some(DynamicValue.String rule), Some(DynamicValue.Array kids) ->
+                DynamicValue.Object [ "op", DynamicValue.String rule; "args", DynamicValue.Array(kids |> List.map lowerTree) ]
+            | _ -> parse
+
+    /// The default lowering as a Kleisli arrow (point mass per parse).
+    let lowerStructural (parse: DynamicValue) : SoftValue.SoftValue = SoftValue.certain (lowerTree parse)
+
+    /// Run the full descent with the default map: a `SoftValue` over parses → a `SoftValue` over
+    /// programs (structure-preserving; superposition preserved). Swap `lowerStructural` for the real
+    /// ISA map behind `lower` when it's defined.
+    let lowerDefault (sv: SoftValue.SoftValue) : SoftValue.SoftValue = lower lowerStructural sv

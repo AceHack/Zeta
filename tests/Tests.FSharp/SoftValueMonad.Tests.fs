@@ -74,3 +74,29 @@ let ``KLEISLI DESCENT: the identity lowering (certain) leaves the distribution u
     // lowering every parse to itself as a point mass = the identity Kleisli arrow ⇒ no change.
     let parses = w [ s "p1", 0.7; s "p2", 0.3 ]
     Assert.True(approx (ParseSoft.lower SV.certain parses) parses)
+
+// The RUNNABLE default (Aaron 2026-07-02 "run with it now while we can change things"): the whole
+// pipeline `SoftValue over parses → SoftValue over programs` executes end-to-end with a real,
+// structure-preserving map — no injected semantics needed to prove the descent runs.
+let private obj xs = DynamicValue.Object xs
+let private leaf t = obj [ "term", s t ]
+let private node r kids = obj [ "rule", s r; "kids", DynamicValue.Array kids ]
+
+[<Fact>]
+let ``KLEISLI DESCENT: the default structural lowering runs end to end, preserving the parse superposition`` () =
+    // two parses of differing SHAPE (a leaf vs. a nested rule in the same slot)…
+    let tree1 = node "S" [ leaf "a"; leaf "b" ]
+    let tree2 = node "S" [ node "T" [ leaf "a" ]; leaf "b" ]
+    let parses = w [ tree1, 0.6; tree2, 0.4 ]
+    // …descend with the default map (no semantics injected)…
+    let programs = ParseSoft.lowerDefault parses
+    // structure-preserving ⇒ distinct programs, weights carried through, nothing collapsed
+    Assert.Equal(2, List.length programs.Candidates)
+    Assert.True(approx programs (w [ ParseSoft.lowerTree tree1, 0.6; ParseSoft.lowerTree tree2, 0.4 ]))
+    // the lowering really transformed the tree: `{rule:"S",…}` became an op node `{op:"S", args:…}`,
+    // and each leaf became an EMIT — so it is a genuine descent, not the identity.
+    let prog1 = ParseSoft.lowerTree tree1
+    Assert.NotEqual<DynamicValue>(tree1, prog1)
+    match prog1 with
+    | DynamicValue.Object fields -> Assert.Contains(("op", s "S"), fields)
+    | _ -> Assert.True(false, "expected an op node")
