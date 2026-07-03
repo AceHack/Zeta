@@ -81,31 +81,79 @@ export function compile(name: string, grid: number[][]): CaptureCart {
     }
   }
 
-  // Assemble: plane selects only on change; per draw ANNN,60NN,61NN,D01n; sprites after the code.
+  // Sprite CODEBOOK (compiler v1.1, the 081KTH5N5ZJ executable-codebook idea at its most
+  // degenerate): identical sprite blobs are content-addressed and stored ONCE; every draw of the
+  // same tile shares one data address. Dense uniform grounds (white paper) collapse to a handful
+  // of distinct sprites. Plus peephole: skip re-setting I/V0/V1 when the register already holds
+  // the value (straight-line program, so register state is statically known).
+  const codebook = new Map<string, number>(); // sprite bytes -> ordinal
+  const spriteOf = (d: Draw): number => {
+    const key = d.sprite.join(",");
+    let ord = codebook.get(key);
+    if (ord === undefined) {
+      ord = codebook.size;
+      codebook.set(key, ord);
+    }
+    return ord;
+  };
+  const drawPlan = draws.map((d) => ({ d, ord: spriteOf(d) }));
+  const blobs: number[][] = [...codebook.keys()].map((k) => k.split(",").map(Number));
+
+  // Two-pass sizing: count instructions with peephole knowledge, then place the codebook after code.
+  const plan = (): number => {
+    let count = 0;
+    let plane = 1;
+    let iOrd = -1;
+    let v0 = -1;
+    let v1 = -1;
+    for (const { d, ord } of drawPlan) {
+      if (d.plane !== plane) { count += 1; plane = d.plane; }
+      if (ord !== iOrd) { count += 1; iOrd = ord; }
+      if (d.x !== v0) { count += 1; v0 = d.x; }
+      if (d.y !== v1) { count += 1; v1 = d.y; }
+      count += 1; // DRW
+    }
+    return count;
+  };
+  const instrCount = plan();
+  const codeEnd = PROGRAM_START + instrCount * 2;
+  const blobAddr: number[] = [];
+  {
+    let at = codeEnd;
+    for (const blob of blobs) { blobAddr.push(at); at += blob.length; }
+  }
+
   const ops: number[] = [];
   let steps = 0;
   let currentPlane = 1; // VM boot default
-  const instrCount =
-    draws.length * 4 +
-    draws.reduce((acc, d, i) => acc + (d.plane !== (i === 0 ? 1 : draws[i - 1]!.plane) ? 1 : 0), 0);
-  let spriteAddr = PROGRAM_START + instrCount * 2;
-  const spriteBytes: number[] = [];
+  let currentI = -1;
+  let currentV0 = -1;
+  let currentV1 = -1;
   const emit = (op: number): void => {
     ops.push((op >> 8) & 0xff, op & 0xff);
     steps += 1;
   };
-  for (const d of draws) {
+  for (const { d, ord } of drawPlan) {
     if (d.plane !== currentPlane) {
       emit(0xf001 | (d.plane << 8)); // F{plane}01 plane select
       currentPlane = d.plane;
     }
-    emit(0xa000 | spriteAddr); // I := sprite
-    emit(0x6000 | d.x); // V0 := x
-    emit(0x6100 | d.y); // V1 := y
+    if (ord !== currentI) {
+      emit(0xa000 | blobAddr[ord]!); // I := shared sprite
+      currentI = ord;
+    }
+    if (d.x !== currentV0) {
+      emit(0x6000 | d.x); // V0 := x
+      currentV0 = d.x;
+    }
+    if (d.y !== currentV1) {
+      emit(0x6100 | d.y); // V1 := y
+      currentV1 = d.y;
+    }
     emit(0xd010 | d.sprite.length); // DRW V0,V1,n
-    spriteBytes.push(...d.sprite);
-    spriteAddr += d.sprite.length;
   }
+  const spriteBytes: number[] = blobs.flat();
+  const spriteAddr = codeEnd + spriteBytes.length;
   if (steps !== instrCount) throw new Error(`assembler drift: planned ${instrCount} instructions, emitted ${steps}`);
   if (spriteAddr > MEM_END) {
     throw new Error(`capture too complex for one cart: needs ${spriteAddr - PROGRAM_START} bytes, ceiling ${MEM_END - PROGRAM_START}`);

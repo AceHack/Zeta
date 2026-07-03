@@ -38,6 +38,18 @@ content-verified substrate. Full synthesis:
   decompress = run the generator under DST + verify the hash.
 - Self-bootstrapping compiler/runner = Ace/Nucleus; DST = same seed -> bit-identical output.
 
+## Status — first executable-codebook slice, TS cart context (Otto 2026-07-03, cowork)
+
+`src/Core.TypeScript/chip9-cart/capture.ts` compiler v1.1: identical sprite blobs are
+content-addressed into a shared CODEBOOK (stored once, every draw references the shared address)
+plus peephole register reuse. This is this item's "shared library of common generator functions"
+at its most degenerate — a dictionary, not yet a generator — but it already shows the honest
+split the acceptance wants: structured content compresses (dense uniform 64x32: ~1350 -> 453
+bytes; synthetic sheet: 1348 -> 566, now smaller than its 1180-byte source PNG), while seeded
+noise barely moves (1252 bytes) — incompressible stays incompressible, no false economy. Verify
+stays regenerate-and-byte-compare. The real slice (Generative-vs-Materialized node, SoftValue
+residual, ContentHash256, pick-smaller) remains open — F#-side, needs dotnet (CI-side from Cowork).
+
 ## Acceptance
 
 A node round-trips through the generative path (generator+seed -> regenerate -> hashes to the same

@@ -76,3 +76,23 @@ describe("chip9-cart capture format v1 (081KWJE90EZ)", () => {
     expect(() => parseGrid(Array.from({ length: 33 }, () => "7").join("\n"))).toThrow();
   });
 });
+
+describe("sprite codebook (compiler v1.1 — the 081KTH5N5ZJ executable-codebook idea, degenerate form)", () => {
+  it("CODEBOOK: uniform ground collapses to shared sprites; noise stays incompressible (the honest split)", () => {
+    const dense = Array.from({ length: 32 }, () => Array.from({ length: 64 }, () => 7));
+    let s = 0xE66n;
+    const MASK = (1n << 64n) - 1n;
+    const noise = Array.from({ length: 32 }, () =>
+      Array.from({ length: 64 }, () => {
+        s = (s + GOLDEN_RATIO) & MASK;
+        return Number(mix(s) & 7n);
+      }),
+    );
+    const denseCart = compile("dense", dense);
+    const noiseCart = compile("noise", noise);
+    expect(denseCart.romHex.length / 2).toBeLessThan(500); // v1.0 was ~1350: structure compresses
+    expect(noiseCart.romHex.length / 2).toBeGreaterThan(1200); // noise does NOT (no false economy)
+    expect(roundTrips(dense, denseCart)).toBe(true); // and both still replay EXACTLY
+    expect(roundTrips(noise, noiseCart)).toBe(true);
+  });
+});

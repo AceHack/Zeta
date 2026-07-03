@@ -80,10 +80,7 @@ under every filter, plane mapping, end-to-end PNG->cart verify, determinism, lou
 moment one lands.
 
 Honest peels: (a) LOSSY BY DESIGN — 8 colors at <=64x32 is the cart-fidelity view; "no stored
-photos" still requires the semantic layer to carry load-bearing content. (b) Dense grounds are the
-blit encoder's worst case: white paper = all 3 planes drawn everywhere (synthetic sheet: 1348-byte
-cart vs 1180-byte PNG). Sparse/ink-on-dark wins; the real fix is 081KTH5N5ZJ generators, not blit
-tweaks. (c) Tested on SYNTHETIC images only (Aaron authorized synthetic 2026-07-03); real-photo
+photos" still requires the semantic layer to carry load-bearing content. (b) Dense grounds WERE the blit encoder's worst case (synthetic sheet: 1348-byte cart vs 1180-byte PNG); compiler v1.1's content-addressed sprite codebook (2026-07-03) cut that to 566 — the cart now beats its source PNG on structured captures; true noise stays ~1252 (honest: incompressible is incompressible). Full 081KTH5N5ZJ generators remain the deeper fix. (c) Tested on SYNTHETIC images only (Aaron authorized synthetic 2026-07-03); real-photo
 noise (shadows, skew, JPEG) is untouched — quantizer thresholding will need revisiting then.
 
 ## Layered scope (razored)
