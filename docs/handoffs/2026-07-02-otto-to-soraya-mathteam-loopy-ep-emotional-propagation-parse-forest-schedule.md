@@ -18,6 +18,7 @@ part with no classical analogue, and it is yours to specify before anyone wires 
 
 > Define a **message-passing schedule** over the parse-forest-as-factor-graph
 > (`Sppf.ambiguities` = the variables; families = the factors) that composes:
+>
 > 1. **BP / EP / VMP** (the Infer.NET trio) for the loopy / non-conjugate / variational parts —
 >    building on `Zeta.Bayesian.FactorGraph` / `Ep` / `Message` / `InferNetTopology` (already
 >    exists — reuse, don't reinvent); and
