@@ -44,3 +44,18 @@ module ParseSoft =
     /// is no parse. (`weight` comes from set potentials or EM-learned inside–outside expected counts.)
     let ofSppf (weight: int -> float) (maxTrees: int) (f: Sppf.Forest) : SoftValue.SoftValue option =
         ofWeightedForest (Sppf.weightedTrees weight maxTrees f)
+
+    /// **Lowering as the Kleisli descent** (Aaron 2026-07-02: "build lowering as the kleisli
+    /// descent"). Given a **semantic map** `lowerParse : parse-tree → SoftValue<lowered>` — a
+    /// Kleisli arrow taking one parse to a *distribution* over its lowered forms (e.g. ISA
+    /// programs) — lower a whole `SoftValue` over parses into a `SoftValue` over lowered forms by
+    /// monadic **`bind`**. The distribution carries THROUGH: the parse superposition becomes a
+    /// superposition over lowered programs, **never collapsed early** (only `SoftValue.resolve`
+    /// snaps it, when the future forces a value). Lowering is the *descent* (Lucifer) dual of the
+    /// parse's *ascent* (God) — the same monad, both poles.
+    ///
+    /// The specific parse→ISA *semantic* mapping is the **injected** `lowerParse` — deliberately
+    /// not fixed here (that is a design decision, not something to guess). What this provides is the
+    /// monad plumbing — the Kleisli composition itself — which is the part ANTLR has no concept of.
+    let lower (lowerParse: DynamicValue -> SoftValue.SoftValue) (sv: SoftValue.SoftValue) : SoftValue.SoftValue =
+        SoftValue.bind lowerParse sv

@@ -101,6 +101,7 @@
     <Compile Include="GrammarLadder.Tests.fs" />
     <Compile Include="Indentation.Tests.fs" />
     <Compile Include="ParseSoft.Tests.fs" />
+    <Compile Include="SoftValueMonad.Tests.fs" />
     <Compile Include="DynamicValue.Arrow.Tests.fs" />
     <Compile Include="Predicate.Tests.fs" />
     <Compile Include="Policy.Tests.fs" />

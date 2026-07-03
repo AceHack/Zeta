@@ -61,6 +61,24 @@ module SoftValue =
     /// Build from weighted candidates (merged + normalized). `None` if no positive weight.
     let ofWeighted (xs: (DynamicValue * float) list) : SoftValue option = build xs
 
+    /// **Functor map** — relabel each candidate by `f`, merging collisions; weights preserved.
+    /// `SoftValue` is the finite-support distribution (Giry) monad; `certain` is its unit.
+    let map (f: DynamicValue -> DynamicValue) (sv: SoftValue) : SoftValue =
+        build [ for d, p in sv.Candidates -> f d, p ] |> Option.defaultValue sv
+
+    /// **Monad bind** — the distribution-monad `>>=`: each candidate `(d, p)` maps to a
+    /// distribution `f d`; the result mixes them as `(w, p·q)`, merged + normalized. With
+    /// `certain` as unit this satisfies the monad laws (left/right identity, associativity — see
+    /// the tests). This is what makes a **Kleisli arrow** `DynamicValue → SoftValue` composable:
+    /// e.g. lowering a distribution over parses into a distribution over lowered programs, the
+    /// superposition carried through, never collapsed early.
+    let bind (f: DynamicValue -> SoftValue) (sv: SoftValue) : SoftValue =
+        build
+            [ for d, p in sv.Candidates do
+                  for w, q in (f d).Candidates do
+                      yield w, p * q ]
+        |> Option.defaultValue sv
+
     /// The candidate distribution (normalized, sums to 1).
     let candidates (sv: SoftValue) : (DynamicValue * float) list = sv.Candidates
 

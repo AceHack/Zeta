@@ -139,10 +139,18 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    hand-tuning. Proven: recovers 0.75/0.25 from a 3a:1b corpus; per-LHS weights sum to 1; EM
    improves corpus likelihood over uniform (the monotonicity guarantee). Self-contained.
    In the SSAS frame: **training the decision forest** — the weights become learned `NodeDistribution`s.
-   **← resume (two remaining, both real):** **parses → ISA lowering** — map parse trees to ISA
-   programs, so the `PredictProbability` distribution is over EXECUTABLE programs (what the soft
-   scheduler / prediction mode consume); and **loopy EP + emotional propagation** on
-   `Zeta.Bayesian` — the genuinely-new part; math-team (Soraya) defines the message schedule first.
+15. ✅ **Lowering as the Kleisli descent** — LANDED (`SoftValue.map`/`bind` + `ParseSoft.lower`):
+   `SoftValue` is now the finite-distribution (Giry) **monad** (`certain` = unit, `bind` = `>>=`,
+   monad laws proven). `ParseSoft.lower lowerParse sv = bind lowerParse sv` — lower a distribution
+   over parses into a distribution over lowered forms; **the superposition carries THROUGH, never
+   collapsed early** (only `resolve` snaps it). The descent (Lucifer) dual of the parse's ascent.
+   The parse→ISA *semantic* map is the **injected** `lowerParse` (a design call, not guessed — the
+   one place I ask rather than assert); the monad plumbing (ANTLR has no concept of it) is done.
+16. 🔀 **ROUTED to math team** — loopy EP + **emotional propagation** on `Zeta.Bayesian` (the
+   genuinely-new part): handoff `docs/handoffs/2026-07-02-otto-to-soraya-mathteam-loopy-ep-emotional-
+   propagation-parse-forest-schedule.md` (Soraya defines the message schedule + convergence + the
+   composability law: reduces to exact inside–outside when affect is off).
+   **← resume: the parse→ISA `lowerParse` semantic map (Aaron's design call)**; or a full regex lexer.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
 14. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
