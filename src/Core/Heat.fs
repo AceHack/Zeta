@@ -61,6 +61,86 @@ module HeatSignature =
           Detail = detail }
 
 
+/// Shared, typed signal vocabulary for heat emitted through host IO and
+/// projected into room/UI transcripts.
+[<RequireQualifiedAccess>]
+type HeatSignal =
+    | Forgotten
+    | Backpressure
+    | Denied
+    | StorageError
+    | Invalid
+    | Expired
+    | Stale
+    | Other of kind: string
+
+
+[<RequireQualifiedAccess>]
+module HeatSignal =
+
+    let ofKind (kind: string) : HeatSignal =
+        if HeatSignature.isForgettingKind kind then
+            HeatSignal.Forgotten
+        elif HeatSignature.isBackpressureKind kind then
+            HeatSignal.Backpressure
+        elif HeatSignature.isDeniedKind kind then
+            HeatSignal.Denied
+        elif HeatSignature.isStorageErrorKind kind then
+            HeatSignal.StorageError
+        elif HeatSignature.isInvalidKind kind then
+            HeatSignal.Invalid
+        elif HeatSignature.isExpiredKind kind then
+            HeatSignal.Expired
+        elif HeatSignature.isStaleKind kind then
+            HeatSignal.Stale
+        else
+            HeatSignal.Other kind
+
+    let token =
+        function
+        | HeatSignal.Forgotten -> "forgotten"
+        | HeatSignal.Backpressure -> "backpressure"
+        | HeatSignal.Denied -> "denied"
+        | HeatSignal.StorageError -> "storage-error"
+        | HeatSignal.Invalid -> "invalid"
+        | HeatSignal.Expired -> "expired"
+        | HeatSignal.Stale -> "stale"
+        | HeatSignal.Other _ -> "other"
+
+    let isPressure =
+        function
+        | HeatSignal.Backpressure
+        | HeatSignal.Denied -> true
+        | HeatSignal.Forgotten
+        | HeatSignal.StorageError
+        | HeatSignal.Invalid
+        | HeatSignal.Expired
+        | HeatSignal.Stale
+        | HeatSignal.Other _ -> false
+
+    let ofSignature (signature: HeatSignature) : HeatSignal =
+        ofKind signature.Kind
+
+    let tokenOfKind (kind: string) : string =
+        kind |> ofKind |> token
+
+    let tokenOfSignature (signature: HeatSignature) : string =
+        signature |> ofSignature |> token
+
+    let ofCounts (heatKinds: string list) (backpressured: int) (storageErrors: int) : HeatSignal list =
+        let fromKinds = heatKinds |> List.map ofKind
+        let hasPressureKind = fromKinds |> List.exists isPressure
+
+        [ yield! fromKinds
+
+          if backpressured > 0 && not hasPressureKind then
+              HeatSignal.Backpressure
+
+          if storageErrors > 0 then
+              HeatSignal.StorageError ]
+        |> List.distinct
+
+
 /// Feedback from the injected heat sink. Heat is diagnostic output, but the
 /// sink still has a budget; if even the heat cannot fit, report backpressure
 /// rather than recursively losing the loss signal.

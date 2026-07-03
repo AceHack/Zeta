@@ -32,16 +32,7 @@ module DarkHallScheduler =
           Signals: string list
           Reasons: string list }
 
-    [<RequireQualifiedAccess>]
-    type HeatBoundarySignal =
-        | Forgotten
-        | Backpressure
-        | Denied
-        | StorageError
-        | Invalid
-        | Expired
-        | Stale
-        | Other of string
+    type HeatBoundarySignal = HeatSignal
 
     type ScheduledRoomState =
         { Loop: RoomLoop.LoopState
@@ -146,60 +137,19 @@ module DarkHallScheduler =
         |> List.filter (fun value -> seen.Add value)
 
     let heatBoundarySignalOfKind (kind: string) : HeatBoundarySignal =
-        if HeatSignature.isForgettingKind kind then
-            HeatBoundarySignal.Forgotten
-        elif HeatSignature.isBackpressureKind kind then
-            HeatBoundarySignal.Backpressure
-        elif HeatSignature.isDeniedKind kind then
-            HeatBoundarySignal.Denied
-        elif HeatSignature.isStorageErrorKind kind then
-            HeatBoundarySignal.StorageError
-        elif HeatSignature.isInvalidKind kind then
-            HeatBoundarySignal.Invalid
-        elif HeatSignature.isExpiredKind kind then
-            HeatBoundarySignal.Expired
-        elif HeatSignature.isStaleKind kind then
-            HeatBoundarySignal.Stale
-        else
-            HeatBoundarySignal.Other kind
+        HeatSignal.ofKind kind
 
     let heatBoundarySignalToken =
-        function
-        | HeatBoundarySignal.Forgotten -> "forgotten"
-        | HeatBoundarySignal.Backpressure -> "backpressure"
-        | HeatBoundarySignal.Denied -> "denied"
-        | HeatBoundarySignal.StorageError -> "storage-error"
-        | HeatBoundarySignal.Invalid -> "invalid"
-        | HeatBoundarySignal.Expired -> "expired"
-        | HeatBoundarySignal.Stale -> "stale"
-        | HeatBoundarySignal.Other _ -> "other"
+        HeatSignal.token
 
     let private isPressureSignal =
-        function
-        | HeatBoundarySignal.Backpressure
-        | HeatBoundarySignal.Denied -> true
-        | HeatBoundarySignal.Forgotten
-        | HeatBoundarySignal.StorageError
-        | HeatBoundarySignal.Invalid
-        | HeatBoundarySignal.Expired
-        | HeatBoundarySignal.Stale
-        | HeatBoundarySignal.Other _ -> false
+        HeatSignal.isPressure
 
     /// Typed view over the existing host-visible heat row. This is the public
     /// classifier scheduler/room policies should use instead of re-parsing
     /// string heat kinds at every callsite.
     let heatBoundarySignals (row: HeatBoundaryRow) : HeatBoundarySignal list =
-        let fromKinds = row.HeatKinds |> List.map heatBoundarySignalOfKind
-        let hasPressureKind = fromKinds |> List.exists isPressureSignal
-
-        [ yield! fromKinds
-
-          if row.Backpressured > 0 && not hasPressureKind then
-              HeatBoundarySignal.Backpressure
-
-          if row.StorageErrors > 0 then
-              HeatBoundarySignal.StorageError ]
-        |> List.distinct
+        HeatSignal.ofCounts row.HeatKinds row.Backpressured row.StorageErrors
 
     let heatTranscriptSignals (rows: HeatBoundaryRow list) : HeatBoundarySignal list =
         rows |> List.collect heatBoundarySignals |> List.distinct

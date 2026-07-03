@@ -304,6 +304,20 @@ let ``heat signature classifier is the shared pressure and forgetting rule`` () 
     Assert.True(HeatSignature.isStaleKind "llmtv.replay.stale")
     Assert.False(HeatSignature.isPressureKind "soft-emu.prune")
 
+    Assert.Equal(HeatSignal.Backpressure, HeatSignal.ofKind "meta-cart.policy-backpressure")
+    Assert.Equal(HeatSignal.Denied, HeatSignal.ofKind "room-boundary.door-denied")
+    Assert.Equal(HeatSignal.Forgotten, HeatSignal.ofKind "soft-emu.prune")
+    Assert.Equal(HeatSignal.StorageError, HeatSignal.ofKind "bounded.storage-error")
+    Assert.Equal(HeatSignal.Invalid, HeatSignal.ofKind "llmtv.replay.invalid")
+    Assert.Equal(HeatSignal.Expired, HeatSignal.ofKind "llmtv.replay.expired")
+    Assert.Equal(HeatSignal.Stale, HeatSignal.ofKind "llmtv.replay.stale")
+    Assert.Equal("backpressure", HeatSignal.tokenOfKind "meta-cart.policy-backpressure")
+
+    let signature = HeatSignature.ofMass "darkhall-host" "room-horizon.forgotten" 1 1.0 "forgot branch"
+
+    Assert.Equal(HeatSignal.Forgotten, HeatSignal.ofSignature signature)
+    Assert.Equal("forgotten", HeatSignal.tokenOfSignature signature)
+
     Assert.Equal(
         Scheduler.HeatBoundarySignal.Backpressure,
         Scheduler.heatBoundarySignalOfKind "meta-cart.policy-backpressure"
@@ -352,6 +366,10 @@ let ``heat rows export through an injected host heat sink`` () =
     Assert.Equal<string list>(
         [ "room-boundary.door-denied"; "soft-emu.prune"; "darkhall.storage-error" ],
         signatures |> List.map _.Kind
+    )
+    Assert.Equal<string list>(
+        [ "denied"; "forgotten"; "storage-error" ],
+        signatures |> List.map HeatSignal.tokenOfSignature
     )
     Assert.All(signatures, fun signature -> Assert.Equal("darkhall-host", signature.Source))
     Assert.Contains("room=darkhall tick=1", signatures.[0].Detail)
