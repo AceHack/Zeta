@@ -88,6 +88,47 @@ terraform-into-cell) can assume no-global without an axiom.* Detail: consolidate
 | 18 | **Delay-Decorrelation Theorem (Reticulum Condorcet Bonus)** | Network delay enforces decorrelation; the S-value hierarchy maps directly to the Condorcet ρ regime. Reticulum delay is the physical mechanism of mutual empowerment, as delay grants a Condorcet bonus that amplifies routing weights for independent paths. **✅ PROVEN (FsCheck), 2026-07-03**: `DelayDecorrelation.Tests.fs` DD-1 through DD-9 prove boundary conditions, monotonicity, and Condorcet threshold mappings. `ReticulumRouter.Tests.fs` proves high-delay connections receive amplified routing weights compared to low-delay connections with identical KL divergence. | `DelayDecorrelation.Tests.fs`, `ReticulumRouter.Tests.fs` |
 | 19 | **Arrow-Escape Governance Architecture** | Governance escapes Arrow's Impossibility Theorem by replacing global social welfare functions with local market clearing. Resource allocation (asks/bids) clears via cardinal price mechanisms bounded by the memory graph (Sybil resistance). Binary decisions resolve locally via posterior convergence within entangled subgraphs, explicitly violating unrestricted domain and avoiding global voting. **✅ PROVEN (FsCheck), 2026-07-03**: `ArrowEscape.Tests.fs` AE-1 to AE-7 prove IIA triviality for cardinal clearing, order-independence of local consensus, and the structural impossibility of Sybil market manipulation outside the memory graph. | `ArrowEscape.Tests.fs`, `LocalConsensus.fs`, `AskBidClearing.fs` |
 
+---
+
+### A-method note — Arrow traded for the opinion-pooling tradeoff space, costs named (Otto 2026-07-03)
+
+A worked instance of honest scope-claiming. Escaping Arrow’s Impossibility Theorem does **not** mean
+escaping all impossibility. Cardinal/Bayesian pooling has its own no-free-lunch results. Zeta’s
+position is a **real, defensible choice with named costs**, not a dissolution of impossibility.
+
+**The primary escape (type signature):** Arrow is a theorem about mapping ordinal rankings → a
+collective ranking. Zeta maps Gaussian beliefs → a joint posterior (product of Gaussians / EP).
+Different type signature; Arrow’s hypotheses (universal domain over ordinal profiles, IIA on
+rankings) never bind. **Lead with this.** Locality is the second, reinforcing fact — if the
+within-cluster mechanism were ordinal voting, locality alone wouldn’t save you (Arrow bites any
+subset with ≥3 alternatives too).
+
+**The tradeoff space Zeta enters instead:**
+
+| Result | What it constrains | Zeta’s choice | Named cost |
+|--------|-------------------|---------------|------------|
+| **Genest & Zidek (1986)** — “Combining Probability Distributions” | Log-linear pool (product of Gaussians) is externally Bayesian and preserves independence, but violates the **marginalization property** (marginals of the joint ≠ pooled marginals) | Zeta uses the log-linear pool | Acceptable: the system never needs to marginalize over subsets — each agent queries the full joint. The cost is real but non-load-bearing for the architecture. |
+| **McConway (1981)** — marginalization ⇒ linear pool | If you want marginalization to commute with pooling, you **must** use a linear pool (weighted average of distributions) | Zeta **explicitly rejects** the linear pool | The linear pool destroys independence (averaging beliefs is coercive — it overwrites rather than multiplies). The NCI boundary forbids it. This is a **feature**, not a cost. |
+| **Gibbard–Satterthwaite** — strategy-proofness impossibility | If agents can misreport preferences/beliefs, no mechanism is strategy-proof in general | The NCI / de Finetti conditional-independence boundary carries the load | If an agent misreports (sends a belief that is state-dependent on the receiver’s state), it violates the NCI boundary and is **structurally rejected** by the attention router (AR-6, AR-8). Strategy-proofness is not assumed — it is **enforced** by the propagation rule. The cost: an agent can still lie *within* the NCI boundary (send a proper but inaccurate Gaussian). The defense: lying within the boundary is self-limiting — an inaccurate belief degrades the liar’s own posterior in subsequent rounds (the Condorcet competence condition punishes incompetence, including deliberate incompetence). |
+
+**The honest framing (Otto, 2026-07-03):** Zeta trades Arrow’s impossibility for the
+opinion-pooling tradeoff space, and picks the log-linear pool — a real, defensible choice with
+named costs, not a dissolution of impossibility. The costs are:
+1. Marginalization doesn’t commute with pooling (non-load-bearing for the architecture).
+2. Lying within the NCI boundary is possible but self-punishing (Condorcet competence).
+3. The log-linear pool requires proper Gaussians (§A #12, Soft-Mode Stability, guarantees this).
+
+**Why this is already built (not new scaffolding):**
+- `AttentionRouter.fs` (KL × alignment × Condorcet bonus) = the routing-weights line of the table.
+- `DelayDecorrelation.fs` = consensus propagates at Reticulum delay.
+- NCI boundary (AR-6, AR-8) = the de Finetti conditional-independence condition.
+- `SoftMode.Tests.fs` (§A #12) = the properness guarantee the log-linear pool requires.
+- Thousand Brains lattice (writer-actor-routing model) = cells voting = local consensus.
+
+The math isn’t new scaffolding — it’s the proof layer over pieces that already shipped.
+
+---
+
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
