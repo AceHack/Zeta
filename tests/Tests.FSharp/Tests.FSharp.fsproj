@@ -103,6 +103,7 @@
     <Compile Include="IsaSpec.Tests.fs" />
     <Compile Include="MixIr.Tests.fs" />
     <Compile Include="ShivaGc.Tests.fs" />
+    <Compile Include="Ephemeron.Tests.fs" />
     <Compile Include="Netlist.Tests.fs" />
     <Compile Include="Sequential.Tests.fs" />
     <Compile Include="Cpu.Tests.fs" />

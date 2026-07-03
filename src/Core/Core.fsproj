@@ -73,6 +73,7 @@
     <Compile Include="IsaSpec.fs" />
     <Compile Include="MixIr.fs" />
     <Compile Include="ShivaGc.fs" />
+    <Compile Include="Ephemeron.fs" />
     <Compile Include="Netlist.fs" />
     <Compile Include="Sequential.fs" />
     <Compile Include="Cpu.fs" />
