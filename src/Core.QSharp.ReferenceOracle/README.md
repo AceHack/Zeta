@@ -7,6 +7,8 @@ standard continuous-amplitude Q# model here.
 Files:
 
 - `ZetaReferenceOracle.qs` defines the Q# operations.
+- `HeatSignals.qs` mirrors the finite heat-signal alphabet as pure reference
+  functions; it is not a runtime heat sink.
 - `generate-qsharp-golden.py` loads those operations through Microsoft QDK and
   emits observable golden vectors.
 - `qsharp-golden.json` is the committed reference fixture ordinary CI checks.
@@ -25,3 +27,7 @@ ZETA_INSTALL_QUANTUM=1 tools/setup/install.sh
 The contract is observable-first: compare probabilities, CHSH correlators, and
 interference visibility. Do not compare raw state vectors as the acceptance
 surface for finite-resolution rooms.
+
+Heat follows the same boundary rule: Q# may label oracle readout loss with the
+shared signal vocabulary, but host/runtime heat emission stays behind Zeta-owned
+interfaces.

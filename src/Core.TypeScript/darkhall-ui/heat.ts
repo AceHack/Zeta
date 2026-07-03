@@ -15,6 +15,7 @@ export interface HeatRow {
   readonly backpressured: number;
   readonly storageErrors: number;
   readonly heatKinds: readonly string[];
+  readonly signals?: readonly string[];
   readonly reasons: readonly string[];
 }
 
@@ -79,7 +80,32 @@ export function heatSignalsFromKinds(kinds: readonly string[]): readonly HeatSig
   return distinct(kinds.map(classifyHeatKind));
 }
 
+function normalizeHeatSignal(signal: string): HeatSignal {
+  switch (signal) {
+    case "forgotten":
+    case "backpressure":
+    case "denied":
+    case "storage-error":
+    case "invalid":
+    case "expired":
+    case "stale":
+    case "other":
+      return signal;
+    default:
+      return "other";
+  }
+}
+
+export function normalizeHeatSignals(signals: readonly string[] | undefined): readonly HeatSignal[] | undefined {
+  return signals === undefined ? undefined : distinct(signals.map(normalizeHeatSignal));
+}
+
 export function heatSignals(row: HeatRow): readonly HeatSignal[] {
+  const supplied = normalizeHeatSignals(row.signals);
+  if (supplied !== undefined) {
+    return supplied;
+  }
+
   const inferred: HeatSignal[] = [...heatSignalsFromKinds(row.heatKinds)];
 
   if (row.backpressured > 0 && !inferred.includes("backpressure") && !inferred.includes("denied")) {

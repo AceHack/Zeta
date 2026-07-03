@@ -6,6 +6,7 @@ import {
   coordinationBandwidth,
   sLaneVerdict,
   heatSignals,
+  normalizeHeatSignals,
   normalizeControllerCells,
   renderDarkHallRoomDocument,
   renderDarkHallRoomHtml,
@@ -23,6 +24,7 @@ const doorDeniedHeat: HeatRow = {
   backpressured: 1,
   storageErrors: 0,
   heatKinds: ["room-boundary.door-denied"],
+  signals: ["denied"],
   reasons: ["darkhall -> glass refused"],
 };
 
@@ -33,6 +35,7 @@ const horizonHeat: HeatRow = {
   backpressured: 0,
   storageErrors: 1,
   heatKinds: ["room-horizon.forgotten", "custom.storage"],
+  signals: ["forgotten", "storage-error"],
   reasons: ["bounded horizon forgot materialized keys", "sink storage failed"],
 };
 
@@ -114,6 +117,7 @@ describe("Dark Hall CSS room UI", () => {
     expect(classifyHeatKind("llmtv.replay.invalid")).toBe("invalid");
     expect(classifyHeatKind("llmtv.replay.expired")).toBe("expired");
     expect(classifyHeatKind("llmtv.replay.stale")).toBe("stale");
+    expect(normalizeHeatSignals(["backpressure", "future-signal"])).toEqual(["backpressure", "other"]);
 
     expect(heatSignals(doorDeniedHeat)).toEqual(["denied"]);
     expect(heatSignals(horizonHeat)).toEqual(["forgotten", "storage-error"]);
@@ -126,6 +130,76 @@ describe("Dark Hall CSS room UI", () => {
       heatKinds: ["room-boundary.door-denied", "room-horizon.forgotten", "custom.storage"],
       signals: ["denied", "forgotten", "storage-error"],
     });
+  });
+
+  it("trusts F# transcript heat signals without reparsing heatKinds", () => {
+    const sourceTagged: HeatRow = {
+      tick: 3,
+      roomName: "darkhall",
+      heatRejected: 1,
+      backpressured: 1,
+      storageErrors: 0,
+      heatKinds: ["room-boundary.door-denied"],
+      signals: ["backpressure"],
+      reasons: ["explicit F# scheduler signal wins"],
+    };
+
+    expect(heatSignals(sourceTagged)).toEqual(["backpressure"]);
+    expect(
+      renderDarkHallRoomHtml({
+        ...transcript,
+        heatRows: [sourceTagged],
+        ticks: [{ ...transcript.ticks[0]!, heat: sourceTagged }],
+      }),
+    ).toContain('data-signals="backpressure"');
+  });
+
+  it("renders an F# DarkHallRoomTranscript JSON fixture with source-owned heat signals", () => {
+    const fromFsharp = JSON.parse(`{
+      "schema": "zeta.darkhall.room-ui.v1",
+      "roomName": "darkhall",
+      "seed": "S4",
+      "generatedBy": "DarkHallRoomTranscript.fs",
+      "controller": [],
+      "ticks": [
+        {
+          "tick": 1,
+          "phase": "measure",
+          "event": "heat-row:1",
+          "choiceCell": -1,
+          "outcome": "backpressure",
+          "heat": {
+            "tick": 1,
+            "roomName": "darkhall",
+            "heatRejected": 1,
+            "backpressured": 1,
+            "storageErrors": 0,
+            "heatKinds": ["room-boundary.door-denied"],
+            "signals": ["denied"],
+            "reasons": ["darkhall -> glass refused"]
+          },
+          "continuation": ""
+        }
+      ],
+      "heatRows": [
+        {
+          "tick": 1,
+          "roomName": "darkhall",
+          "heatRejected": 1,
+          "backpressured": 1,
+          "storageErrors": 0,
+          "heatKinds": ["room-boundary.door-denied"],
+          "signals": ["denied"],
+          "reasons": ["darkhall -> glass refused"]
+        }
+      ]
+    }`) as RoomRunTranscript;
+
+    const html = renderDarkHallRoomHtml(fromFsharp);
+
+    expect(html).toContain('data-signals="denied"');
+    expect(html).toContain('data-heat-signals="denied"');
+    expect(html).toContain("<dd>denied</dd>");
   });
 
   it("renders a no-script document; CSS owns geometry and state projection", () => {

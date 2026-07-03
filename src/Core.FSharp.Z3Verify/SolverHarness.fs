@@ -146,9 +146,15 @@ module SolverHarness =
 
     // --- Solver parsers ---
 
+    let private containsSmtDiagnostic (text: string) =
+        text.Contains("(error", StringComparison.Ordinal)
+        || text.Contains("unsupported", StringComparison.OrdinalIgnoreCase)
+
     let private parseSmtOutput (stdout: string) (stderr: string) (exitCode: int option) =
         match exitCode with
         | None -> SolverTimeout
+        | _ when containsSmtDiagnostic stdout || containsSmtDiagnostic stderr ->
+            SolverError (sprintf "SMT diagnostic. Stdout: %s, Stderr: %s" stdout stderr)
         | Some code when code <> 0 && not (stdout.Contains("sat") || stdout.Contains("unsat")) ->
             SolverError (sprintf "Exit code %d, Stderr: %s" code stderr)
         | _ ->

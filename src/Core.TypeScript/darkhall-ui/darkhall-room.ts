@@ -4,6 +4,7 @@ export {
   classifyHeatKind,
   heatSignals,
   heatSignalsFromKinds,
+  normalizeHeatSignals,
   summarizeHeatRows,
   type HeatRow,
   type HeatSignal,
