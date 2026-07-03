@@ -1,18 +1,21 @@
-# Otto session resume — 2026-07-02 (081KLL7 + 081KSXN slice 1 complete)
+# Otto session resume — 2026-07-03 (081KSXN event G-Set complete)
 
-Main at save: post **#9212** + **#9214** merge.
+Main at save: post **#9291** merge (`73b14be9f`).
 
 ## 081KLL7… — complete (#9203 + #9212)
 
 - **14/14** Bun realizers; shell `.sh` realizers retired; bun-only `realize_mechanisms --all`
-- Bookkeeping: backlog row **done**, stale `.sh` refs fixed
 
-## 081KSXN… — work-item event G-Set
+## 081KSXN… — work-item event G-Set (umbrella acceptance met)
 
-- **Slice 1 (#9214):** `WorkItemCreated` on mint; events at `{dir}/events/`
-- **Slice 2 (#9263):** lifecycle events, open-backlog fold, `--push` direct-to-main
-- **Slice 3 (in branch):** DORA Bag-folds — `dora-fold.ts` + `dora-metrics.ts` CLI
+| Slice | PR | Delivers |
+|-------|-----|----------|
+| 1 | #9214 | `WorkItemCreated` on mint |
+| 2 | #9263 | lifecycle events, open-backlog fold, `--push` |
+| 3 | #9291 | DORA Bag-folds (`dora-fold.ts`, `dora-metrics.ts`) |
+| 4 | (in branch) | Retire `otto-channels` B-NNNN allocation for work-items |
 
 ## Next resume targets
 
-- **081KSXN** — retire `otto-channels` ID allocation for work-items
+- **081KVP2M1…** — KRL / `RevokedKeys` revocation primitive (rotate + cluster teardown done)
+- **081KSXN follow-on** — wire `dora-metrics` into dashboard / #6289 LGTM layer (optional)

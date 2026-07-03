@@ -88,6 +88,11 @@ tags: [game-industry, sharding, multi-node]
 
 ## Adding new work
 
+**Retired (2026-07):** the `otto-channels` B-NNNN ID-allocation discipline
+does **not** apply to new work-items. Do not add
+`docs/backlog/P*/B-NNNN-*.md` files and do not scan `origin/main` for the
+next sequential id.
+
 Do not add a new `docs/backlog/P*/B-NNNN-*.md` file for new
 work. B-NNNN allocation is sequential and requires cross-agent
 consensus, so it is kept only for the grandfathered legacy stockpile.

@@ -319,6 +319,13 @@ These apply to any AI harness.
 - When an agent installs a tool, update
   `docs/INSTALLED.md` with version, rationale, and
   install method.
+- **New work-items use ZetaId mint, not B-NNNN allocation.**
+  Do not scan `origin/main` or in-flight PRs for the next
+  `B-NNNN` when filing work. Mint locally:
+  `bun src/Core.TypeScript/backlog/new-workitem.ts --type task|bug --title "..."`
+  → `workitems/<zetaid>-<slug>.md`. CI rejects new `B-*` files
+  (`lint-no-new-bnnnn.ts`). See
+  `.claude/rules/workitems-mint-with-zetaid.md`.
 - When an agent proposes a significant
   architectural change, route through the ADR
   workflow at `docs/DECISIONS/YYYY-MM-DD-*.md`
