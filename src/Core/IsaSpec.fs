@@ -193,3 +193,133 @@ module IsaSpec =
               op "SE" [ ifEqSkip (reg (fld "x")) (fld "nn") ]
               op "JP" [ setPc (fld "addr") ]
               op "HALT" [ halt ] ]
+
+    // ── spec-driven `mix`: partial evaluation over ANY ISA-as-data (the dynarec, generalized) ──
+    //
+    // `Isa.specialize` hard-coded CHIP-8's opcodes; this specializes the *effects* generically, so
+    // `mix` works for any ISA given only its spec. Straight-line, single-`setreg`-effect fragment
+    // (like `Isa.specialize`): control flow / multi-effect ops are rejected. An instruction whose
+    // value is fully static FOLDS into `known`; a dynamic one is residualized as-is, its static
+    // register reads MATERIALIZED first via the ISA's load-immediate builder (passed in — CHIP-8's
+    // is `Isa.set`), and its written register goes dynamic. The generic residual is correct but not
+    // peephole-optimal (e.g. it materializes then emits `ADDR` rather than folding to `ADD`
+    // immediate); the S-m-n law holds regardless, which is what the test checks.
+
+    /// Is value `v` fully static under `known` (reads only known registers; indices resolvable)?
+    let rec private tryStatic (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) : int option =
+        match DynamicValue.get "v" v with
+        | Some(DynamicValue.String "fld") ->
+            match DynamicValue.get "k" v with
+            | Some(DynamicValue.String k) ->
+                match DynamicValue.get k ins with
+                | Some(DynamicValue.Int n) -> Some(int n)
+                | _ -> None
+            | _ -> None
+        | Some(DynamicValue.String "const") ->
+            match DynamicValue.get "n" v with
+            | Some(DynamicValue.Int n) -> Some(int n)
+            | _ -> None
+        | Some(DynamicValue.String "reg") ->
+            match DynamicValue.get "i" v with
+            | Some iv ->
+                match tryStatic iv ins known with
+                | Some idx ->
+                    match known.TryGetValue idx with
+                    | true, x -> Some x
+                    | _ -> None
+                | None -> None
+            | _ -> None
+        | Some(DynamicValue.String "add") ->
+            match DynamicValue.get "a" v, DynamicValue.get "b" v with
+            | Some a, Some b ->
+                match tryStatic a ins known, tryStatic b ins known with
+                | Some x, Some y -> Some(x + y)
+                | _ -> None
+            | _ -> None
+        | Some(DynamicValue.String "sub") ->
+            match DynamicValue.get "a" v, DynamicValue.get "b" v with
+            | Some a, Some b ->
+                match tryStatic a ins known, tryStatic b ins known with
+                | Some x, Some y -> Some(x - y)
+                | _ -> None
+            | _ -> None
+        | _ -> None
+
+    /// Register indices read inside `v` that are currently static (in `known`) — to materialize.
+    let rec private readsInKnown (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) : int list =
+        match DynamicValue.get "v" v with
+        | Some(DynamicValue.String "reg") ->
+            match DynamicValue.get "i" v with
+            | Some iv ->
+                let deeper = readsInKnown iv ins known
+                match tryStatic iv ins known with
+                | Some idx when known.ContainsKey idx -> idx :: deeper
+                | _ -> deeper
+            | None -> []
+        | Some(DynamicValue.String "add")
+        | Some(DynamicValue.String "sub") ->
+            let a = DynamicValue.get "a" v |> Option.map (fun x -> readsInKnown x ins known) |> Option.defaultValue []
+            let b = DynamicValue.get "b" v |> Option.map (fun x -> readsInKnown x ins known) |> Option.defaultValue []
+            a @ b
+        | _ -> []
+
+    /// Partial-evaluate a straight-line program w.r.t. static registers, over ANY ISA given its
+    /// `spec` and a `loadImm` builder (`reg → value → instruction`, e.g. `Isa.set` for CHIP-8).
+    /// Returns the residual program and the folded static registers. The S-m-n law holds:
+    /// `evalSpec spec (residual) dynamic ⊕ known = evalSpec spec p (static ∪ dynamic)`.
+    let specialize
+        (isaSpec: DynamicValue)
+        (loadImm: int -> int -> DynamicValue)
+        (program: DynamicValue)
+        (statics: Map<int, int>)
+        : Result<DynamicValue * Map<int, int>, string> =
+        let table = System.Collections.Generic.Dictionary<string, DynamicValue[]>()
+        match DynamicValue.get "ops" isaSpec with
+        | Some(DynamicValue.Array ops) ->
+            for o in ops do
+                match DynamicValue.get "op" o, DynamicValue.get "eff" o with
+                | Some(DynamicValue.String name), Some(DynamicValue.Array effs) -> table.[name] <- List.toArray effs
+                | _ -> ()
+        | _ -> ()
+
+        match program with
+        | DynamicValue.Array instrs ->
+            let known = System.Collections.Generic.Dictionary<int, int>()
+            for KeyValue(k, v) in statics do
+                known.[k] <- wrap v
+            let residual = System.Collections.Generic.List<DynamicValue>()
+            let mutable err = None
+            for ins in instrs do
+                if err.IsNone then
+                    let opName =
+                        match DynamicValue.get "op" ins with
+                        | Some(DynamicValue.String s) -> s
+                        | _ -> "?"
+                    match table.TryGetValue opName with
+                    | false, _ -> err <- Some(sprintf "isaspec specialize: no spec for op '%s'" opName)
+                    | true, [| eff |] ->
+                        match DynamicValue.get "e" eff with
+                        | Some(DynamicValue.String "halt") -> () // straight-line: no residual effect
+                        | Some(DynamicValue.String "setreg") ->
+                            match DynamicValue.get "i" eff, DynamicValue.get "val" eff with
+                            | Some iv, Some vv ->
+                                match tryStatic iv ins known with
+                                | None -> err <- Some "isaspec specialize: dynamic write index not supported"
+                                | Some idx ->
+                                    match tryStatic vv ins known with
+                                    | Some v -> known.[idx] <- wrap v // fold
+                                    | None ->
+                                        // dynamic: materialize static reads, emit the op as-is, write goes dynamic
+                                        for r in readsInKnown vv ins known do
+                                            residual.Add(loadImm r known.[r])
+                                        residual.Add ins
+                                        known.Remove idx |> ignore
+                            | _ -> err <- Some "isaspec specialize: setreg operands"
+                        | _ -> err <- Some "isaspec specialize: only setreg/halt in the straight-line fragment"
+                    | true, _ -> err <- Some(sprintf "isaspec specialize: op '%s' is not single-effect (control flow / multi-effect)" opName)
+            match err with
+            | Some e -> Error e
+            | None ->
+                let knownMap = known |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
+                Ok(DynamicValue.Array(List.ofSeq residual), knownMap)
+        | _ -> Error "isaspec: program must be an array of instructions"
