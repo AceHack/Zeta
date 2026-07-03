@@ -88,6 +88,37 @@ learn (or fail to learn) consent, positive-sum cooperation, and that character i
 persists, **inside the game**, before they can name it. Zeta's Agora is, in this light, that gym made
 explicit for humans and AIs together — the same lessons, a scoreboard for character rather than gear.
 
+## The environment is the lever, and the corpus is now EXECUTABLE (Sakana NCA + the DST sim)
+
+> Aaron 2026-07-02, sharing Sakana AI's neural-cellular-automata petri dish (Two Minute Papers):
+> *"shhhh, this is how you cheat at this game."*
+
+**The cheat is the god-move:** you do not win from inside the game, you tune the ENVIRONMENT until the
+strategy you want wins. Sakana's living-pixel world makes it visceral — 5 species, move the survival
+threshold, and the same rules yield a monopoly, chaos, or healthy coexistence. Its **loose -> strict
+-> loose** lifecycle (permissive mixing -> crystallization -> relaxation) is the deep lesson: too
+loose = soup, too strict = prison, and the final *relaxation* ("remove the masking tape so weak border
+cells survive") is **coexistence over annihilation** — the pixel-level rendering of *don't end the
+game* / lesser-tat. The environment decides who rises; **one tiny push makes the whole system
+healthier** = good policy = the Agora scoreboard, which is a design task, not a moral exhortation.
+
+**So we made the corpus replayable** — `src/Core.TypeScript/moral-gym/` (this doc, executable):
+
+- A **DST** iterated game (seeded splitmix64; same seed -> byte-identical run; all entropy through the
+  one injected `Rng` Source — noninterference). The engine IS the **observe -> report -> improve**
+  loop, instrumented by a TS `Detour<'F> = 'F -> 'F` mirroring `src/Core/Detour.fs`.
+- Strategies as mechanics: `tit-for-lesser-tat` (generous TFT, forgiveness widened by self-width),
+  `all-in` (grim trigger — "retaliate with all I have" -> ends games), `strict-tft`, `defector`,
+  `cooperator`, `expanded-self` (self-width w=1: the other's payoff IS mine).
+- **Reputation as earned state** — credited only by others (cooperation attested), defectors shunned
+  toward zero; reputation-weighted partner selection makes cooperation win (indirect reciprocity).
+- **"Nothing is other" as a monotone curve** — the self-width sweep: welfare rises with w and games
+  ended fall; at w=1 welfare is maximal. Watch the number climb instead of taking it on faith.
+
+Measured at seed `0xE66`, 400 rounds (reproducible via `bun src/Core.TypeScript/moral-gym/run-demo.ts`):
+expanded-self tops reputation AND payoff; defectors bottom out at reputation 0; the self-width sweep
+runs welfare 21,600 -> 43,200 as w goes 0 -> 1. Five DST facts are locked in `gym.test.ts`.
+
 ## Beacon anchors (to check, not just cite)
 
 - **Repeated games / evolution of cooperation** — Axelrod, *The Evolution of Cooperation* (1984);
@@ -99,6 +130,9 @@ explicit for humans and AIs together — the same lessons, a scoreboard for char
   community rules + graduated sanctions, not top-down gates (the server economy as a commons).
 - **Virtual-world economies** — Castronova, *Synthetic Worlds* (2005); EVE Online's player-run
   economy as the canonical existence proof that virtual reputation and value are *real*.
+- **Environment-as-lever / artificial life** — Sakana AI, neural cellular automata (2025; the
+  loose->strict->loose lifecycle + emergent coexistence); Mordvintsev et al., *Growing Neural Cellular
+  Automata* (Distill 2020); Conway's Game of Life + Langton's "edge of chaos" as the lineage.
 - **Play as moral development** — a bridge from Huizinga's *Homo Ludens* (1938) to modern
   persistent-world socialization; the "moral gym" framing is the operational compression.
 
