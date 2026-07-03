@@ -250,6 +250,7 @@
     <Compile Include="SignalQuality.fs" />
     <Compile Include="Maji.fs" />
     <Compile Include="AgentIntegrate.fs" />
+    <Compile Include="OrleansCronAdapter.fs" />
     <Compile Include="ZetaCli.fs" />
     <Compile Include="ZetaGraph.fs" />
     <Compile Include="Db.fs" />

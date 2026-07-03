@@ -1,8 +1,6 @@
 using System;
 using System.Threading.Tasks;
-
 namespace Zeta.Core.Abstractions;
-
 /// <summary>
 /// The hexagonal port (interface) that any distributed actor runtime must implement.
 /// In Zeta, a "tick source" is something that naturally attracts attention with no
@@ -16,25 +14,23 @@ public interface IDistributedCronRuntime
     /// Returns a unique identifier for the actor.
     /// </summary>
     public Task RegisterTickSource(string id, CronConfig config);
-
     /// <summary>
     /// Retrieves the current state of a distributed tick source.
     /// </summary>
     public Task<CronState> GetState(string id);
-
     /// <summary>
     /// Suspends a ticking actor (stops the cron).
     /// </summary>
     public Task Suspend(string id, string reason);
-
     /// <summary>
     /// Resumes a suspended actor.
     /// </summary>
     public Task ResumeCron(string id);
-
     /// <summary>
     /// Binds a callback to the tick event. When the distributed runtime fires,
-    /// this callback is executed.
+    /// this callback is executed. The callback must return the Information Value (IV)
+    /// gained from the tick, which feeds back into the AdaptiveTick mechanism.
+    /// This enforces Four-Corner Closure and Uncertainty Propagation.
     /// </summary>
-    public Task OnTick(string id, Func<DateTime, Task> callback);
+    public Task OnTick(string id, Func<DateTime, Task<double>> callback);
 }
