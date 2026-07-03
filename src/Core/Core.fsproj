@@ -67,6 +67,7 @@
     <Compile Include="GrammarIr.fs" />
     <Compile Include="Antlr4Import.fs" />
     <Compile Include="Slr.fs" />
+    <Compile Include="MetaGrammar.fs" />
     <Compile Include="Sppf.fs" />
     <Compile Include="PcfgEm.fs" />
     <Compile Include="Indentation.fs" />
