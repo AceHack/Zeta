@@ -49,6 +49,7 @@ export type CompletionOutcome =
 /// transport error is a rejected promise the adapter catches.
 export interface HttpTransport {
   post(url: string, headers: Readonly<Record<string, string>>, body: string): Promise<{ status: number; body: string }>;
+  get(url: string, headers: Readonly<Record<string, string>>): Promise<{ status: number; body: string }>;
 }
 
 /// Backend config: where + which model. `apiKey` is read from `op`/Keychain at the edge and passed in —

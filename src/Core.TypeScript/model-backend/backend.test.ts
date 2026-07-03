@@ -15,11 +15,15 @@ import { openAiCompatBackend, manusBackend, type HttpTransport, type CompletionO
 /// A fake transport that records the last call and returns a canned response — no socket, no key leak.
 function fakeTransport(response: { status: number; body: string } | (() => Promise<never>)) {
   const calls: { url: string; headers: Record<string, string>; body: string }[] = [];
+  const respond = () => (typeof response === "function" ? response() : Promise.resolve(response));
   const transport: HttpTransport = {
     post(url, headers, body) {
       calls.push({ url, headers: { ...headers }, body });
-      if (typeof response === "function") return response();
-      return Promise.resolve(response);
+      return respond();
+    },
+    get(url, headers) {
+      calls.push({ url, headers: { ...headers }, body: "" });
+      return respond();
     },
   };
   return { transport, calls };

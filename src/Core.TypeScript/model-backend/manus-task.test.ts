@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { HttpTransport } from "./backend.ts";
-import { createTask } from "./manus-task.ts";
+import { createTask, listMessages, latestAssistantContent, isComplete } from "./manus-task.ts";
 
 // THE REAL MANUS ADAPTER — the task API (shadow*, Aaron 2026-07-03 gave the key + "research their
 // API"). Native Manus is task-based (v2/task.create → poll), NOT chat-completions. All tests run
@@ -12,10 +12,15 @@ import { createTask } from "./manus-task.ts";
 
 function fakeTransport(response: { status: number; body: string } | (() => Promise<never>)) {
   const calls: { url: string; headers: Record<string, string>; body: string }[] = [];
+  const respond = () => (typeof response === "function" ? response() : Promise.resolve(response));
   const transport: HttpTransport = {
     post(url, headers, body) {
       calls.push({ url, headers: { ...headers }, body });
-      return typeof response === "function" ? response() : Promise.resolve(response);
+      return respond();
+    },
+    get(url, headers) {
+      calls.push({ url, headers: { ...headers }, body: "" });
+      return respond();
     },
   };
   return { transport, calls };
@@ -66,5 +71,55 @@ describe("Manus task adapter — createTask", () => {
     const { transport } = fakeTransport(() => Promise.reject(new Error("dns failure")));
     const out = await createTask({ apiKey: "k" }, transport, { text: "hi" });
     expect(out).toEqual({ ok: false, error: "transport error: dns failure" });
+  });
+});
+
+// The REAL listMessages response shape — captured live from task e8ZYTRDZGqhy6oYaGwy3mW (the smoke
+// test; Manus actually replied "pong"). The docs page 404s, so this canned body IS the source of truth.
+const liveMessagesBody = JSON.stringify({
+  ok: true,
+  has_more: false,
+  task_id: "e8ZYTRDZGqhy6oYaGwy3mW",
+  request_id: "r",
+  messages: [
+    { id: "a", type: "status_update", status_update: { agent_status: "stopped", brief: "Manus finished working", description: "done" }, timestamp: "3" },
+    { id: "b", type: "assistant_message", assistant_message: { content: "pong" }, timestamp: "2" },
+    { id: "c", type: "status_update", status_update: { agent_status: "running", brief: "Manus is running" }, timestamp: "1" },
+    { id: "d", type: "user_message", user_message: { content: "…smoke test…", message_type: "text" }, timestamp: "0" },
+  ],
+});
+
+describe("Manus task adapter — listMessages (result retrieval)", () => {
+  test("REQUEST SHAPE: GET v2/task.listMessages?task_id with x-manus-api-key", async () => {
+    const { transport, calls } = fakeTransport({ status: 200, body: liveMessagesBody });
+    await listMessages({ apiKey: "K" }, transport, "task_abc");
+    expect(calls[0].url).toBe("https://api.manus.ai/v2/task.listMessages?task_id=task_abc");
+    expect(calls[0].headers["x-manus-api-key"]).toBe("K");
+  });
+
+  test("PARSES the live shape; latestAssistantContent = the agent answer; isComplete = true on 'stopped'", async () => {
+    const { transport } = fakeTransport({ status: 200, body: liveMessagesBody });
+    const out = await listMessages({ apiKey: "k" }, transport, "t");
+    expect(out.ok).toBe(true);
+    if (out.ok) {
+      expect(latestAssistantContent(out.data.messages)).toBe("pong"); // the real round-trip answer
+      expect(isComplete(out.data.messages)).toBe(true); // 'stopped' → done
+    }
+  });
+
+  test("isComplete is false while only 'running'; no answer yet → null", () => {
+    const running = [
+      { type: "status_update", status_update: { agent_status: "running" } },
+      { type: "user_message", user_message: { content: "hi" } },
+    ];
+    expect(isComplete(running)).toBe(false);
+    expect(latestAssistantContent(running)).toBeNull();
+  });
+
+  test("non-200 / missing messages → clean error (never throws)", async () => {
+    const { transport: t1 } = fakeTransport({ status: 404, body: "nope" });
+    expect(await listMessages({ apiKey: "k" }, t1, "t")).toEqual({ ok: false, error: "http 404: nope" });
+    const { transport: t2 } = fakeTransport({ status: 200, body: JSON.stringify({ ok: true }) });
+    expect(await listMessages({ apiKey: "k" }, t2, "t")).toEqual({ ok: false, error: "malformed response: no messages array" });
   });
 });

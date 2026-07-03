@@ -97,3 +97,63 @@ export async function createTask(config: ManusConfig, transport: HttpTransport, 
     },
   };
 }
+
+// ── result retrieval: task.listMessages (shape CONFIRMED live, not from the docs) ──
+//
+// `GET https://api.manus.ai/v2/task.listMessages?task_id=<id>` (GET; POST is 405). Response:
+//   { ok, has_more, task_id, request_id, messages: [ … ] }  — messages NEWEST-FIRST, each `type`-tagged:
+//     { type:"assistant_message", assistant_message:{ content } }  — the agent's answer
+//     { type:"status_update",     status_update:{ agent_status:"running"|"stopped", brief, description } }
+//     { type:"user_message",      user_message:{ content, message_type } }
+// Completion = a status_update with agent_status "stopped". The result = the latest assistant_message
+// content. (Discovered by probing the live API on a real task — the docs page 404s.)
+
+export interface TaskMessages {
+  readonly messages: readonly unknown[];
+  readonly hasMore: boolean;
+}
+
+export type ListMessagesOutcome =
+  | { readonly ok: true; readonly data: TaskMessages }
+  | { readonly ok: false; readonly error: string };
+
+/// Fetch a task's messages. Never throws.
+export async function listMessages(config: ManusConfig, transport: HttpTransport, taskId: string): Promise<ListMessagesOutcome> {
+  let base = config.baseUrl ?? "https://api.manus.ai";
+  while (base.endsWith("/")) base = base.slice(0, -1);
+  const url = `${base}/v2/task.listMessages?task_id=${encodeURIComponent(taskId)}`;
+  const headers = { "x-manus-api-key": config.apiKey };
+  let res: { status: number; body: string };
+  try {
+    res = await transport.get(url, headers);
+  } catch (e) {
+    return { ok: false, error: `transport error: ${e instanceof Error ? e.message : String(e)}` };
+  }
+  if (res.status < 200 || res.status >= 300) return { ok: false, error: `http ${String(res.status)}: ${res.body.slice(0, 500)}` };
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(res.body);
+  } catch {
+    return { ok: false, error: "malformed response: not JSON" };
+  }
+  const messages = (parsed as { messages?: unknown }).messages;
+  if (!Array.isArray(messages)) return { ok: false, error: "malformed response: no messages array" };
+  return { ok: true, data: { messages, hasMore: (parsed as { has_more?: boolean }).has_more === true } };
+}
+
+/// The agent's answer: the latest `assistant_message` content (messages are newest-first, so the first
+/// assistant_message is the most recent). Null if none yet.
+export function latestAssistantContent(messages: readonly unknown[]): string | null {
+  for (const m of messages) {
+    if (typeof m !== "object" || m === null) continue;
+    if ((m as { type?: unknown }).type !== "assistant_message") continue;
+    const content = (m as { assistant_message?: { content?: unknown } }).assistant_message?.content;
+    if (typeof content === "string") return content;
+  }
+  return null;
+}
+
+/// Has the agent finished? True iff any `status_update` reports agent_status "stopped".
+export function isComplete(messages: readonly unknown[]): boolean {
+  return messages.some((m) => typeof m === "object" && m !== null && (m as { type?: unknown }).type === "status_update" && (m as { status_update?: { agent_status?: unknown } }).status_update?.agent_status === "stopped");
+}
