@@ -68,6 +68,24 @@ pixels (47-byte cart vs 21-byte raw for the 8x7 demo glyph); content-proportiona
 sparse/structured captures, which is what paper sheets are. (c) The photo->grid front end
 (layers 1-3) is untouched by this slice; input is already-digitized grid text.
 
+## Status 2 — layer-2 mechanical front end landed (Otto 2026-07-03, cowork, synthetic-only)
+
+`src/Core.TypeScript/chip9-cart/from-image.ts` — PNG bytes -> quantized 3-plane grid -> cart, zero
+new dependencies: minimal PNG codec (8-bit RGB/RGBA, non-interlaced, all five row filters, CRC
+checked; narrow by design, fails loudly outside it) over node:zlib + IEEE CRC-32 (PNG's polynomial
+— NOT the repo's crc32c/Castagnoli), box-downsample aspect-preserved into 64x32, per-channel
+threshold to the 3-bit gamut. 9 tests, all DST (seeded images, no ambient entropy): codec lossless
+under every filter, plane mapping, end-to-end PNG->cart verify, determinism, loud bounds. Demo:
+`bun src/Core.TypeScript/chip9-cart/run-image-demo.ts [photo.png]` — ready for a REAL photo the
+moment one lands.
+
+Honest peels: (a) LOSSY BY DESIGN — 8 colors at <=64x32 is the cart-fidelity view; "no stored
+photos" still requires the semantic layer to carry load-bearing content. (b) Dense grounds are the
+blit encoder's worst case: white paper = all 3 planes drawn everywhere (synthetic sheet: 1348-byte
+cart vs 1180-byte PNG). Sparse/ink-on-dark wins; the real fix is 081KTH5N5ZJ generators, not blit
+tweaks. (c) Tested on SYNTHETIC images only (Aaron authorized synthetic 2026-07-03); real-photo
+noise (shadows, skew, JPEG) is untouched — quantizer thresholding will need revisiting then.
+
 ## Layered scope (razored)
 
 1. **Semantic layer (already real, $0):** vision-model transcription photo -> structured text
