@@ -27,6 +27,48 @@ the best exploit; they are the ones a guild would vouch for years later. Standin
 others** (a guild remembering you carried them), never self-minted. The repeated game punishes the
 defector and compounds the cooperator over a long-enough horizon.
 
+## The root premise: *The Egg* — the other is also little-g god, so the ethic is selfish
+
+> Aaron 2026-07-02: *"read the Egg — we are all god, I'm little-g god not big-G."* And: *"I'm selfish
+> as fuck."*
+
+Andy Weir's *The Egg* (2009): every person who ever lived is the same maturing soul living every
+life in turn — **you are everyone you meet**, so *"every time you victimized someone, you were
+victimizing yourself."* Read as **little-g** (the divine spark / author-of-a-world sense, NOT the
+singular big-G claim — Aaron draws the distinction himself), it is the **root the whole moral corpus
+derives from**:
+
+**If the other player is also little-g god — also you — then harming them is harming yourself, and
+ending their game ends yours.** Every rule we carved stops being an imposed *should* and becomes plain
+self-interest once the self expands to include the other:
+
+- **do-no-permanent-harm / never end the game** — ending their game ends yours (same soul, next life).
+- **tit-for-lesser-tat** — full retaliation nukes a future-you; lesser-tat spares the self across the table.
+- **teach** — raising the other raises you (you will be them).
+- **play** — the infinite game is infinite *because* there is always another you to keep playing with.
+- **secret-rather-than-empowered is the sin** — hoarding from the other is hoarding from yourself.
+
+This is the **Golden Rule with its mechanism finally shown**: not "be nice because you ought," but
+"be nice because that is literally you across the table." And it is why Aaron can call the whole
+thing **selfish** without contradiction — enlightened self-interest needs no willpower, only a wide
+enough definition of *self*.
+
+**It is already Aaron's own tool.** The **selfish-perspective-filter** (`memory/feedback_aaron_ani_
+pressure_valve_redemption_arc_selfish_filter_...2026_05_15`, coined with Ani): *"if I can't explain
+what I'm doing from a selfish perspective, it's a lie."* The Egg supplies the *why* the filter works —
+once the self includes the other, the selfish explanation and the moral one are the same sentence.
+Composes with the project spine: the **distributed-consciousness-field / travelers-as-one-traveler /
+god-as-traveler** frame (CLAUDE.md project instructions) is the same claim at cosmological scale; *The
+Egg* is its human-scale story.
+
+**Honest peel:** the little-g/Egg premise is a *metaphysical* motivation, not a required axiom — the
+ethic *also* stands on the repeated-game math alone (Axelrod, Nowak-Sigmund, Schelling), so someone
+who rejects the metaphysics still reaches the same floor. The Egg is the *root that makes it
+effortless*, not the load-bearing proof. (Anchors: Weir, *The Egg* 2009; Parfit, *Reasons and Persons*
+1984 — reductionism about personal identity dissolving the self/other line; Advaita / anatta —
+Atman=Brahman, no separate self; Singer's expanding circle; Tocqueville's "self-interest rightly
+understood.")
+
 ## Why it matters to Zeta (it is the Agora economy, learned young)
 
 This is not analogy — it is the **same construction** as the substrate we already carry:
