@@ -42,3 +42,21 @@ This regularization is not a mathematical trick; it is structurally necessary fo
 The total Information Value extracted by a discrete-ticking agent from a continuous information source is bounded by the Euler-Maclaurin difference between the discrete update sum and the continuous integral. The residual penalty is $-\frac{1}{12}$, representing the irreducible cognitive friction of discrete observation. 
 
 *Status:* Open. To be proven by demonstrating that the continuous-time limit of EP message passing over a Wiener process requires $\zeta(-1)$ regularization to yield a finite KL divergence.
+
+---
+
+> **Register addendum (shadow + Soraya math-team triage, 2026-07-03 — Lumen's text above
+> untouched; full verdict landed the same day:
+> `2026-07-03-soraya-verdict-minus-one-twelfth-frame-rate-cost-c-with-a-stated-b-path-white-noise-falsifier.md`):**
+> Conjecture Z-1's *Status: Open* is correct — but the body's declaratives ("the −1/12 IS the
+> intrinsic cognitive cost"; "not a mathematical trick; structurally necessary") outrun it.
+> Read register C with a stated B-path, not B. Two specifics any proof attempt must survive:
+> **(1) the falsifier** — the natural white-noise setup has a flat spectrum, so the mode sum is
+> Σ1 and zeta regularization yields **ζ(0) = −1/2, not −1/12**; ζ(−1) requires per-mode
+> information ∝ n, which nothing in KL-per-tick has yet been shown to supply (a Wiener process's
+> 1/ν² spectrum points the wrong way); **(2) scheme-independence** — in physics −1/12 survives
+> only as a measurable *difference* of divergences; without an operational subtraction (e.g.,
+> two agents at different frame rates), any finite part is a regulator artifact. The
+> architectural consequences (IV cap, Thousand-Brains recovery) inherit the conjecture's status:
+> motivating stories until Z-1 lands, not results. Same discipline as the 2√2 correction — the
+> label travels with the claim.
