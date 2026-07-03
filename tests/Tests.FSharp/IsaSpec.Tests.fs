@@ -128,3 +128,59 @@ let ``SPEC-DRIVEN MIX: rejects control flow (straight-line fragment only)`` () =
          | Ok _ -> false),
         "JP (control flow) must be rejected"
     )
+
+// ── MEMORY EXTENSION + THE 6502 (a real, memory-bearing ISA as data) — shadow*, Aaron 2026-07-03
+// "build whatever you like". The register-only core got an addressable store (mem/setmem); a real
+// console CPU (6502 register + zero-page subset) is now expressible as data and runs under the SAME
+// interpreter. Proofs:
+//   4. BACKWARD-COMPAT — the memory extension did not disturb register-only ISAs (chip8 still = Isa.eval).
+//   5. MEMORY ROUND-TRIP — a value stored to zero page and loaded back survives (store→load through mem).
+//   6. THE 6502 RUNS A REAL PROGRAM WITH A LOOP THROUGH MEMORY — count a zero-page cell up to N.
+//   7. THE 6502 SPEC IS BYTE-LOCKABLE DATA — a second ISA rides the codec stack.
+
+[<Fact>]
+let ``BACKWARD-COMPAT: the memory extension leaves register-only ISAs unchanged (chip8 = Isa.eval)`` () =
+    let programs =
+        [ Isa.prog [ Isa.set 0 5; Isa.add 0 200; Isa.addr 1 0; Isa.mov 2 1; Isa.halt ]
+          Isa.prog [ Isa.set 3 10; Isa.se 3 10; Isa.set 3 99; Isa.halt ] ]
+    for p in programs do
+        match Isa.eval p Map.empty, IsaSpec.evalSpec IsaSpec.chip8 p Map.empty with
+        | Ok r, Ok s -> Assert.True(regsEq r s, "chip8 spec diverged from Isa.eval after the memory extension")
+        | _ -> Assert.Fail "eval/evalSpec disagreed"
+
+[<Fact>]
+let ``MEMORY ROUND-TRIP: a value stored to zero page and loaded back survives`` () =
+    // A=42 ; mem[16]=A ; A=0 ; A=mem[16] ; X=A ; BRK  → A=42, X=42, mem[16]=42
+    let p =
+        DynamicValue.Array
+            [ IsaSpec.ldaImm 42; IsaSpec.staZp 16; IsaSpec.ldaImm 0; IsaSpec.ldaZp 16; IsaSpec.tax; IsaSpec.brk ]
+    match IsaSpec.evalSpecFull IsaSpec.mos6502 p Map.empty Map.empty with
+    | Ok(regs, mem) ->
+        Assert.Equal(42, Map.tryFind 0 regs |> Option.defaultValue 0) // A
+        Assert.Equal(42, Map.tryFind 1 regs |> Option.defaultValue 0) // X
+        Assert.Equal(42, Map.tryFind 16 mem |> Option.defaultValue 0) // mem[16]
+    | Error e -> Assert.Fail(sprintf "6502 round-trip failed: %s" e)
+
+[<Fact>]
+let ``THE 6502 RUNS A REAL LOOP THROUGH MEMORY: count a zero-page cell up to N`` () =
+    // mem[0]=0 ; loop@2: A=mem[0] ; A=A+1 ; mem[0]=A ; SKE A,target (skip JMP to exit) ; JMP loop ; BRK
+    let program (target: int) =
+        DynamicValue.Array
+            [ IsaSpec.ldaImm 0 // @0: A = 0
+              IsaSpec.staZp 0 // @1: mem[0] = 0
+              IsaSpec.ldaZp 0 // @2: A = mem[0]      (loop head)
+              IsaSpec.adcImm 1 // @3: A = A + 1
+              IsaSpec.staZp 0 // @4: mem[0] = A
+              IsaSpec.ske target // @5: if A == target, skip the JMP (exit)
+              IsaSpec.jmp 2 // @6: else loop
+              IsaSpec.brk ] // @7: stop
+    for target in [ 1; 3; 10; 200 ] do
+        match IsaSpec.evalSpecFull IsaSpec.mos6502 (program target) Map.empty Map.empty with
+        | Ok(regs, mem) ->
+            Assert.Equal(target, Map.tryFind 0 mem |> Option.defaultValue 0) // mem[0] counted up to target
+            Assert.Equal(target, Map.tryFind 0 regs |> Option.defaultValue 0) // A holds the final count
+        | Error e -> Assert.Fail(sprintf "6502 loop failed at target=%d: %s" target e)
+
+[<Fact>]
+let ``THE 6502 SPEC IS BYTE-LOCKABLE DATA: a second real ISA rides the codec stack`` () =
+    Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] IsaSpec.mos6502)
