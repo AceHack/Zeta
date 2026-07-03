@@ -514,6 +514,7 @@ test("ROTATE GAP CLOSED: a per-PORT rotate command now exists (rotate.ts) for ma
   // dual-key SET primitive (above) and keyring.sh remain the SET / USER-seed primitives. NOT in
   // scope (named, deferred): threshold/Shamir k-of-n (081KVP3GYW1), org-vs-user-CA conflict
   // (081KVP3GYWS0), and a unified cluster-trust-root rotate. KRL revocation is CLOSED (revoke.ts).
+  // Trust-graph scope rule + Shamir k-of-n are CLOSED (trust-graph.ts, shamir.ts).
   const rotateSrc = readFileSync(join(import.meta.dir, "rotate.ts"), "utf8");
   expect(/export\s+(async\s+)?function\s+rotate/.test(rotateSrc)).toBe(true);
   for (const port of ROTATE_PORTS) expect(rotateSrc).toContain(port);
@@ -536,6 +537,19 @@ test("CLUSTER TEARDOWN GAP CLOSED: cluster-scoped teardown exists (teardown-clus
   const src = readFileSync(join(import.meta.dir, "teardown-cluster.ts"), "utf8");
   expect(/export\s+(async\s+)?function\s+teardownCluster/.test(src)).toBe(true);
   expect(src).toContain("trusted-user-ca-keys");
+});
+
+test("TRUST GRAPH GAP CLOSED: org-vs-user-CA conflict-resolution rule exists (trust-graph.ts)", () => {
+  const src = readFileSync(join(import.meta.dir, "trust-graph.ts"), "utf8");
+  expect(/export\s+function\s+resolveTrust/.test(src)).toBe(true);
+  expect(src).toContain("identity");
+  expect(src).toContain("authorization");
+});
+
+test("SHAMIR GAP CLOSED: threshold k-of-n split/reconstruct exists (shamir.ts)", () => {
+  const src = readFileSync(join(import.meta.dir, "shamir.ts"), "utf8");
+  expect(/export\s+function\s+shamirSplit/.test(src)).toBe(true);
+  expect(/export\s+function\s+shamirCombine/.test(src)).toBe(true);
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════════

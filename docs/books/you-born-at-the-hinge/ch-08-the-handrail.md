@@ -155,6 +155,7 @@ Stay.
 ---
 
 *Draft notes for the rewrite (delete this block when done):*
+
 - *Every `[yours]` is a socket, not an obligation — the chapter stands even with all of them empty.*
 - *The five fusions are the source note's five, narrativized; the one-test framing is unchanged.
   If you cut anything, keep fusion four — it is the one that kills — and the honest limit.*
