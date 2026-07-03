@@ -68,6 +68,7 @@
     <Compile Include="Antlr4Import.fs" />
     <Compile Include="Slr.fs" />
     <Compile Include="Sppf.fs" />
+    <Compile Include="PcfgEm.fs" />
     <Compile Include="Indentation.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />

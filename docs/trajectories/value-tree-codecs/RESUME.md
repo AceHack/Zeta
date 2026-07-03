@@ -133,10 +133,17 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    proven: for `S→a|A; A→a`, uniform keeps both parses (neither dominates), favouring prod 0 makes
    `S→a` the MAP (0.75 vs 0.25). **THE EXACT PIPELINE IS COMPLETE END-TO-END:** real grammar →
    parser → SPPF → inside–outside (BP) → `PredictProbability` `SoftValue` over parses, all-data.
-   **← resume: the production-weight SOURCE** — **EM** (the inside–outside expected counts I compute
-   are the E-step → unsupervised PCFG weight learning from a corpus), or set weights. Then the
-   loopy/EP + **emotional-propagation** rung on `Zeta.Bayesian` (math-team — the genuinely-new part);
-   and parses → ISA lowering.
+14. ✅ **EM weight-learning** — LANDED (`Sppf.expectedCounts` E-step + `src/Core/PcfgEm.fs`):
+   unsupervised PCFG training. The inside–outside expected counts ARE the EM E-step; the M-step
+   normalizes per LHS. The grammar **learns its own production weights from a corpus** — no
+   hand-tuning. Proven: recovers 0.75/0.25 from a 3a:1b corpus; per-LHS weights sum to 1; EM
+   improves corpus likelihood over uniform (the monotonicity guarantee). Self-contained.
+   In the SSAS frame: **training the decision forest** — the weights become learned `NodeDistribution`s.
+   **← resume (two remaining, both real):**
+   - **parses → ISA lowering** — map parse trees to ISA programs, so the `PredictProbability`
+     distribution is over EXECUTABLE programs (what the soft scheduler / prediction mode consume).
+   - **loopy EP + emotional propagation** on `Zeta.Bayesian` — the genuinely-new part; math-team
+     (Soraya) defines the message schedule first.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
 9. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.

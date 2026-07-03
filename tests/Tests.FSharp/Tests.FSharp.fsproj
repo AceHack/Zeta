@@ -97,6 +97,7 @@
     <Compile Include="Antlr4Import.Tests.fs" />
     <Compile Include="Slr.Tests.fs" />
     <Compile Include="Sppf.Tests.fs" />
+    <Compile Include="PcfgEm.Tests.fs" />
     <Compile Include="GrammarLadder.Tests.fs" />
     <Compile Include="Indentation.Tests.fs" />
     <Compile Include="ParseSoft.Tests.fs" />

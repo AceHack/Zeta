@@ -223,6 +223,30 @@ module Sppf =
                 let o = Map.tryFind node out |> Option.defaultValue 0.0
                 i * o / z)
 
+    /// **Expected production counts** (the EM E-step): for each production, the expected number of
+    /// times it is used across all parses of this input, under `weight`. Computed from
+    /// inside–outside: a family's posterior = `weight(prod) · Π inside(kids) · outside(node) /
+    /// inside(root)`; the expected count of a production is the sum of its families' posteriors over
+    /// the whole forest (Baker 1979; Lari–Young 1990). This is exactly the E-step of PCFG EM.
+    /// Returns `Map<prodIndex, expectedCount>`; empty if the input has no parse.
+    let expectedCounts (weight: int -> float) (f: Forest) : Map<int, float> =
+        let ins = inside weight f
+        let out = outside weight f
+        let z = Map.tryFind f.Root ins |> Option.defaultValue 0.0
+        if z <= 0.0 then
+            Map.empty
+        else
+            let mutable acc = Map.empty
+            for (node, fams) in Map.toList f.Nodes do
+                let o = Map.tryFind node out |> Option.defaultValue 0.0
+                for fam in fams do
+                    if fam.Prod >= 0 then
+                        let kidsInside =
+                            fam.Kids |> List.fold (fun a k -> a * (Map.tryFind k ins |> Option.defaultValue 0.0)) 1.0
+                        let posterior = weight fam.Prod * kidsInside * o / z
+                        acc <- Map.add fam.Prod ((Map.tryFind fam.Prod acc |> Option.defaultValue 0.0) + posterior) acc
+            acc
+
     /// Enumerate the parse trees WITH their weights — each tree a `DynamicValue` (leaf `{term}`,
     /// internal `{rule,kids}`, matching `Slr.parseTree`), weight = product of the production
     /// weights along it (its inside weight). Feeds `ParseSoft.ofWeightedForest` → a `SoftValue`
