@@ -100,7 +100,7 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    passing) + custom emotional propagation** → a `SoftValue` over parses (the forest IS a factor
    graph; inside–outside = BP on it). Full: `docs/research/2026-07-02-ambiguous-parse-forest-as-
    factor-graph-ep-bp-vmp-emotional-propagation-soft-superposition-over-isa.md`.
-9. ✅ **Parse forest → `SoftValue`** — LANDED (`src/Core/ParseSoft.fs`): `glrSoft` turns the forest
+8. ✅ **Parse forest → `SoftValue`** — LANDED (`src/Core/ParseSoft.fs`): `glrSoft` turns the forest
    into a `SoftValue` superposition over parse trees (uniform v1); `ofWeightedForest` takes explicit
    per-parse potentials (the shape BP/EP produces) → MAP-resolvable. First inference-rung step,
    reusing `SoftValue` (don't reinvent).
@@ -138,7 +138,7 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    loopy/EP + **emotional-propagation** rung on `Zeta.Bayesian` (math-team — the genuinely-new part);
    and parses → ISA lowering.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
-8. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
+9. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
 
 ## HOMOICONIC META-GRAMMAR (2026-07-02, Aaron): the telos

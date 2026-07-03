@@ -33,6 +33,8 @@ import { join } from "node:path";
 import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
 import { Category, Chromosome, Firefly, type ZetaObservation } from "../zeta-id/types";
+import { makeCreatedEvent, mintWorkItemEventIdHex } from "../work-items/types";
+import { writeEvent, type WriteResult } from "../work-items/publish";
 
 export type WorkItemType = "task" | "bug";
 
@@ -144,6 +146,36 @@ composes_with: ${yamlList(spec.composesWith ?? [])}
   return { zetaid, filename, slug, content };
 }
 
+/** Event G-Set root co-located with the work-item markdown tree. */
+export function workItemEventsRoot(workItemsDir: string): string {
+  return join(workItemsDir, "events");
+}
+
+/** Append a WorkItemCreated fact to the event G-Set (081KSXN940008QG0R002FWR9B2). */
+export function publishCreatedEvent(
+  minted: MintedWorkItem,
+  spec: NewWorkItemSpec,
+  env: WorkItemEnv,
+  by: string,
+  eventsRoot?: string,
+): WriteResult {
+  const atMs = env.nowMs();
+  const event = makeCreatedEvent(
+    {
+      workItemId: minted.zetaid,
+      type: spec.type,
+      title: spec.title.trim(),
+      slug: minted.slug,
+      priority: spec.priority ?? "P2",
+      filename: minted.filename,
+    },
+    by,
+    atMs,
+    (ms) => mintWorkItemEventIdHex(env, ms),
+  );
+  return writeEvent(event, eventsRoot);
+}
+
 // ── CLI ──────────────────────────────────────────────────────────────────────
 
 function parseArgs(argv: readonly string[]): Record<string, string> {
@@ -182,10 +214,11 @@ function main(argv: readonly string[]): number {
   const splitList = (s?: string) => (s ? s.split(",").map((x) => x.trim()).filter(Boolean) : []);
 
   let minted: MintedWorkItem;
+  let spec: NewWorkItemSpec;
   try {
     // Build the spec omitting absent optionals (exactOptionalPropertyTypes: do not
     // pass explicit `undefined` to optional fields).
-    const spec: NewWorkItemSpec = {
+    spec = {
       title,
       type,
       dependsOn: splitList(args["depends-on"]),
@@ -217,7 +250,13 @@ function main(argv: readonly string[]): number {
     return 2;
   }
   writeFileSync(path, minted.content, "utf8");
-  process.stdout.write(`created ${path}\n  zetaid: ${minted.zetaid}\n`);
+  const actor = process.env.ZETA_WORKITEM_ACTOR ?? "otto-cli";
+  const eventResult = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor, workItemEventsRoot(dir));
+  if (eventResult.kind === "collision") {
+    process.stderr.write(`new-workitem: event collision at ${eventResult.path}\n`);
+    return 1;
+  }
+  process.stdout.write(`created ${path}\n  zetaid: ${minted.zetaid}\n  event: ${eventResult.path}\n`);
   return 0;
 }
 

@@ -1,7 +1,10 @@
 import { test, expect } from "bun:test";
-import { mintWorkItem, slugify, type WorkItemEnv } from "./new-workitem";
+import { mintWorkItem, publishCreatedEvent, slugify, workItemEventsRoot, type WorkItemEnv } from "./new-workitem";
 import { parse, isCanonical, ZETAID_BASE32_LEN } from "../zeta-id/encoding";
 import { DEFAULT_ENV } from "../zeta-id/zeta-id";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 
 const FIXED_MS = Date.UTC(2026, 5, 6); // 2026-06-06T00:00:00Z — fixed for deterministic ids
 
@@ -75,4 +78,40 @@ test("slugify is filename-safe, lowercase, hyphenated, bounded", () => {
   expect(slugify("!!!")).toBe("untitled");
   expect(slugify("a".repeat(100)).length).toBeLessThanOrEqual(60);
   expect(/^[a-z0-9-]+$/.test(slugify("Ünïcödé and spaces 123"))).toBe(true);
+});
+
+test("publishCreatedEvent writes a WorkItemCreated G-Set file", () => {
+  const workItemsDir = mkdtempSync(join(tmpdir(), "wi-smoke-"));
+  const eventsRoot = workItemEventsRoot(workItemsDir);
+  try {
+    const env: WorkItemEnv = detEnv();
+    const spec = { title: "Event slice", type: "task" as const };
+    const minted = mintWorkItem(spec, env);
+    const result = publishCreatedEvent(minted, spec, env, "test-agent", eventsRoot);
+    expect(result.kind).toBe("created");
+    expect(result.path.startsWith(eventsRoot)).toBe(true);
+    const body = JSON.parse(readFileSync(result.path, "utf-8"));
+    expect(body.kind).toBe("created");
+    expect(body.by).toBe("test-agent");
+    expect(body.payload.workItemId).toBe(minted.zetaid);
+    expect(body.payload.type).toBe("task");
+  } finally {
+    rmSync(workItemsDir, { recursive: true, force: true });
+  }
+});
+
+test("publishCreatedEvent is deterministic given the same WorkItemEnv", () => {
+  const eventsRoot = mkdtempSync(join(tmpdir(), "wi-events-"));
+  try {
+    const env: WorkItemEnv = detEnv();
+    const spec = { title: "Replay", type: "task" as const };
+    const minted = mintWorkItem(spec, env);
+    const a = publishCreatedEvent(minted, spec, env, "test-agent", eventsRoot);
+    const b = publishCreatedEvent(minted, spec, env, "test-agent", eventsRoot);
+    expect(a.path).toBe(b.path);
+    expect(a.kind).toBe("created");
+    expect(b.kind).toBe("exists-identical");
+  } finally {
+    rmSync(eventsRoot, { recursive: true, force: true });
+  }
 });
