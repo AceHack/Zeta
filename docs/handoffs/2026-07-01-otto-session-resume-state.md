@@ -1,12 +1,12 @@
 # Otto session resume — 2026-07-03 (081KSXN + 081KVP2M1 complete)
 
-Main at save: post **#9296** merge; next PR lands KRL revoke + DORA dashboard wiring.
+Main at save: post **#9300** merge (`3782fbd95`).
 
 ## 081KLL7… — complete (#9203 + #9212)
 
 - **14/14** Bun realizers; shell `.sh` realizers retired; bun-only `realize_mechanisms --all`
 
-## 081KSXN… — **complete** (#8948 + #9214–#9296)
+## 081KSXN… — **complete** (#8948 + #9214–#9300)
 
 | Slice | PR | Delivers |
 |-------|-----|----------|
@@ -14,12 +14,12 @@ Main at save: post **#9296** merge; next PR lands KRL revoke + DORA dashboard wi
 | 2 | #9263 | lifecycle events, open-backlog fold, `--push` |
 | 3 | #9291 | DORA Bag-folds (`dora-fold.ts`, `dora-metrics.ts`) |
 | 4 | #9296 | Retire `otto-channels` B-NNNN allocation; umbrella **closed** |
-| 5 | (pending) | Wire `dora-metrics` → `generate-metrics.ts` (`work_items_dora`, schema 0.2.0) |
+| 5 | #9300 | Wire `dora-metrics` → `generate-metrics.ts` (`work_items_dora`, schema 0.2.0) |
 
-## 081KVP2M1… — **complete** (pending PR)
+## 081KVP2M1… — **complete** (#9300)
 
 - **✅ rotate** (#9022), **✅ cluster teardown** (`teardown-cluster.ts`), **✅ KRL revoke** (`revoke.ts`)
-- Round-trip harness asserts all three gaps closed
+- Round-trip harness asserts all three gaps closed; work item **closed**
 
 ## Next resume targets
 
