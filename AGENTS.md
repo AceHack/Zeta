@@ -384,6 +384,10 @@ These apply to any AI harness.
   It is weather. Substrate or it didn't happen."*
   Full reasoning:
   `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`.
+- **Cowork maintenance tick — `docs/COWORK-MAINTENANCE-TICK.md`.** A reproducible,
+  everyone-can-run recipe for a lightweight autonomous `main`-health tick (sync + preflight + fix-forward
+  any red via PR/auto-merge, or report green). Runs the autonomous-loop discipline at Cowork's cadence
+  under the no-gates model; each contributor sets up their own scheduled task + device-flow auth. Cross-harness.
 - **Dependency-status surface — `docs/dependency-status.md`.**
   First-class factory surface (081KQDTYV0008QG0R002H74QXZ). The factory's
   hot path runs through GitHub today; any GitHub
