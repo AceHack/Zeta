@@ -101,6 +101,7 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     expect(missing.summary.status).toBe("cold");
     expect(missing.summary.reason).toBe("ENOENT");
     expect(missing.html).toContain('data-readout-status="cold"');
+    expect(missing.html).toContain('data-heat-signals="cold"');
     expect(missing.html).toContain("offline · replay missing");
 
     const empty = renderRootSiteLlmtvReadout(
@@ -117,6 +118,7 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     expect(invalid.summary.status).toBe("heat");
     expect(invalid.summary.reason).toBe("invalid-artifact");
     expect(invalid.html).toContain("heat · invalid replay");
+    expect(invalid.html).toContain('data-heat-signals="invalid"');
 
     const rejectedArtifact: ReplayArtifact = {
       ...artifact(),
@@ -129,6 +131,7 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     expect(rejected.summary.status).toBe("heat");
     expect(rejected.summary.stats.rejected).toBe(1);
     expect(rejected.html).toContain('data-live="false"');
+    expect(rejected.html).toContain('data-heat-signals="denied"');
 
     const expired = renderRootSiteLlmtvReadout(
       {
@@ -143,6 +146,7 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     expect(expired.summary.status).toBe("heat");
     expect(expired.summary.stats.expired).toBe(2);
     expect(expired.html).toContain("heat · replay loss");
+    expect(expired.html).toContain('data-heat-signals="expired"');
   });
 
   it("demotes old-but-valid rows to stale instead of pretending they are live", () => {
@@ -155,14 +159,13 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     expect(rendered.summary.reason).toBe("stale");
     expect(rendered.summary.lastFrameAgeMs).toBe(9_000);
     expect(rendered.html).toContain('data-readout-status="stale"');
+    expect(rendered.html).toContain('data-heat-signals="stale"');
     expect(rendered.html).toContain('data-live="false"');
   });
 
   it("runs as an injected-IO root-site CLI and writes hall/tv/index.html", () => {
     const paths = rootSiteLlmtvPaths(rootDir);
-    const { io, writes, stdout, stderr } = memoryIo(
-      new Map([[paths.replayPath, encodeReplayArtifact(artifact())]]),
-    );
+    const { io, writes, stdout, stderr } = memoryIo(new Map([[paths.replayPath, encodeReplayArtifact(artifact())]]));
 
     const code = runRootSiteLlmtvReaderCli(["--root-site", rootDir, "--now-ms", String(nowMs)], io);
 

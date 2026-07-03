@@ -1,8 +1,18 @@
+import { heatSignals, summarizeHeatRows, type HeatRow } from "./heat";
+
+export {
+  classifyHeatKind,
+  heatSignals,
+  heatSignalsFromKinds,
+  summarizeHeatRows,
+  type HeatRow,
+  type HeatSignal,
+  type HeatSummary,
+} from "./heat";
+
 export type RoomPhase = "observe" | "choose" | "execute" | "measure" | "continue";
 
 export type TickOutcome = "ok" | "refused" | "backpressure" | "continued";
-
-export type HeatSignal = "forgotten" | "backpressure" | "denied" | "storage-error" | "other";
 
 /// One CHSH S-lane between two claimed identities (the coordination meter —
 /// AntiSybil.chshS on the F# side). S travels as INTEGER MILLI (no floats in
@@ -35,16 +45,6 @@ export interface ControllerCell {
   readonly enabled?: boolean;
 }
 
-export interface HeatRow {
-  readonly tick: number;
-  readonly roomName: string;
-  readonly heatRejected: number;
-  readonly backpressured: number;
-  readonly storageErrors: number;
-  readonly heatKinds: readonly string[];
-  readonly reasons: readonly string[];
-}
-
 export interface RoomTranscriptTick {
   readonly tick: number;
   readonly phase: RoomPhase;
@@ -66,15 +66,6 @@ export interface RoomRunTranscript {
   readonly generatedBy?: string;
 }
 
-export interface HeatSummary {
-  readonly rows: number;
-  readonly heatRejected: number;
-  readonly backpressured: number;
-  readonly storageErrors: number;
-  readonly heatKinds: readonly string[];
-  readonly signals: readonly HeatSignal[];
-}
-
 export interface RenderDocumentOptions {
   readonly title?: string;
   readonly stylesheetHref?: string;
@@ -93,20 +84,6 @@ function attr(name: string, value: string | number | boolean | undefined): strin
   return ` ${name}="${escapeHtml(String(value))}"`;
 }
 
-function distinct<T>(values: readonly T[]): readonly T[] {
-  const seen = new Set<T>();
-  const result: T[] = [];
-
-  for (const value of values) {
-    if (!seen.has(value)) {
-      seen.add(value);
-      result.push(value);
-    }
-  }
-
-  return result;
-}
-
 function clampHeat(value: number): number {
   if (!Number.isFinite(value) || value <= 0) return 0;
   return Math.min(heatLaneMax, Math.trunc(value));
@@ -114,52 +91,6 @@ function clampHeat(value: number): number {
 
 function heatRatio(value: number): string {
   return (clampHeat(value) / heatLaneMax).toFixed(4);
-}
-
-export function classifyHeatKind(kind: string): HeatSignal {
-  if (kind.includes("forgotten") || kind.includes("forget") || kind.includes("prune")) {
-    return "forgotten";
-  }
-
-  if (kind.includes("backpressure")) {
-    return "backpressure";
-  }
-
-  if (kind.includes("denied")) {
-    return "denied";
-  }
-
-  if (kind.includes("storage")) {
-    return "storage-error";
-  }
-
-  return "other";
-}
-
-export function heatSignals(row: HeatRow): readonly HeatSignal[] {
-  const fromKinds = row.heatKinds.map(classifyHeatKind);
-  const inferred: HeatSignal[] = [...fromKinds];
-
-  if (row.backpressured > 0 && !inferred.includes("backpressure") && !inferred.includes("denied")) {
-    inferred.push("backpressure");
-  }
-
-  if (row.storageErrors > 0 && !inferred.includes("storage-error")) {
-    inferred.push("storage-error");
-  }
-
-  return distinct(inferred);
-}
-
-export function summarizeHeatRows(rows: readonly HeatRow[]): HeatSummary {
-  return {
-    rows: rows.length,
-    heatRejected: rows.reduce((sum, row) => sum + row.heatRejected, 0),
-    backpressured: rows.reduce((sum, row) => sum + row.backpressured, 0),
-    storageErrors: rows.reduce((sum, row) => sum + row.storageErrors, 0),
-    heatKinds: distinct(rows.flatMap((row) => row.heatKinds)),
-    signals: distinct(rows.flatMap(heatSignals)),
-  };
 }
 
 export function normalizeControllerCells(cells: readonly ControllerCell[]): readonly ControllerCell[] {

@@ -57,6 +57,7 @@
     [data-readout-status="cold"] { color:var(--txt3); }
     [data-readout-status="stale"] { color:var(--c-warm); }
     [data-readout-status="heat"] { color:var(--c-bad); }
+    .readout[data-heat-signals]:not([data-heat-signals="cold"]) { box-shadow:0 0 0 1px color-mix(in srgb, currentColor 35%, transparent); }
 
     .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(17rem,1fr)); gap:1rem; margin-top:1.75rem; }
     .tv { border:1px solid var(--line); border-radius:12px; background:var(--panel); overflow:hidden; }

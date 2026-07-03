@@ -11,6 +11,8 @@
 // the generator renders only its public veil label (blurred), NEVER its contents.
 // Consent-first (§6): the substrate cannot emit what was frosted.
 
+import type { HeatSignal } from "./heat";
+
 /// Attention temperature — where a prediction sits on the LLMTV salience axis.
 /// hot = high-salience / rising attention, cool = settled. A DU, not a hand-coded
 /// class: it renders to `data-temp`, and the CSS colors the bar off that attribute.
@@ -65,6 +67,7 @@ export interface LlmtvReadoutStatus {
   readonly detail: string;
   readonly source: string;
   readonly metrics: readonly LlmtvReadoutMetric[];
+  readonly heatSignals?: readonly HeatSignal[];
 }
 
 export interface RenderDocumentOptions {
@@ -75,11 +78,7 @@ export interface RenderDocumentOptions {
 }
 
 function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 }
 
 function attr(name: string, value: string | number | boolean | undefined): string {
@@ -186,9 +185,12 @@ function renderReadoutMetric(metric: LlmtvReadoutMetric): string {
 function renderReadoutStatus(status: LlmtvReadoutStatus | undefined): string {
   if (status === undefined) return "";
 
+  const heatSignals = status.heatSignals && status.heatSignals.length > 0 ? status.heatSignals.join(" ") : "cold";
+
   return [
     `<section class="readout"`,
     attr("data-readout-status", status.kind),
+    attr("data-heat-signals", heatSignals),
     attr("data-source", status.source),
     ">",
     '<div class="readout-head">',
@@ -285,6 +287,7 @@ export const LLMTV_INLINE_CSS = `
     [data-readout-status="cold"] { color:var(--txt3); }
     [data-readout-status="stale"] { color:var(--c-warm); }
     [data-readout-status="heat"] { color:var(--c-bad); }
+    .readout[data-heat-signals]:not([data-heat-signals="cold"]) { box-shadow:0 0 0 1px color-mix(in srgb, currentColor 35%, transparent); }
 
     .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(17rem,1fr)); gap:1rem; margin-top:1.75rem; }
     .tv { border:1px solid var(--line); border-radius:12px; background:var(--panel); overflow:hidden; }

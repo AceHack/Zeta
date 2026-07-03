@@ -1,0 +1,105 @@
+export type HeatSignal =
+  | "forgotten"
+  | "backpressure"
+  | "denied"
+  | "storage-error"
+  | "invalid"
+  | "expired"
+  | "stale"
+  | "other";
+
+export interface HeatRow {
+  readonly tick: number;
+  readonly roomName: string;
+  readonly heatRejected: number;
+  readonly backpressured: number;
+  readonly storageErrors: number;
+  readonly heatKinds: readonly string[];
+  readonly reasons: readonly string[];
+}
+
+export interface HeatSummary {
+  readonly rows: number;
+  readonly heatRejected: number;
+  readonly backpressured: number;
+  readonly storageErrors: number;
+  readonly heatKinds: readonly string[];
+  readonly signals: readonly HeatSignal[];
+}
+
+function distinct<T>(values: readonly T[]): readonly T[] {
+  const seen = new Set<T>();
+  const result: T[] = [];
+
+  for (const value of values) {
+    if (!seen.has(value)) {
+      seen.add(value);
+      result.push(value);
+    }
+  }
+
+  return result;
+}
+
+export function classifyHeatKind(kind: string): HeatSignal {
+  const normalized = kind.toLowerCase();
+
+  if (normalized.includes("forgotten") || normalized.includes("forget") || normalized.includes("prune")) {
+    return "forgotten";
+  }
+
+  if (normalized.includes("backpressure")) {
+    return "backpressure";
+  }
+
+  if (normalized.includes("denied") || normalized.includes("reject")) {
+    return "denied";
+  }
+
+  if (normalized.includes("storage")) {
+    return "storage-error";
+  }
+
+  if (normalized.includes("invalid") || normalized.includes("decode") || normalized.includes("parse")) {
+    return "invalid";
+  }
+
+  if (normalized.includes("expired") || normalized.includes("expire") || normalized.includes("ttl")) {
+    return "expired";
+  }
+
+  if (normalized.includes("stale")) {
+    return "stale";
+  }
+
+  return "other";
+}
+
+export function heatSignalsFromKinds(kinds: readonly string[]): readonly HeatSignal[] {
+  return distinct(kinds.map(classifyHeatKind));
+}
+
+export function heatSignals(row: HeatRow): readonly HeatSignal[] {
+  const inferred: HeatSignal[] = [...heatSignalsFromKinds(row.heatKinds)];
+
+  if (row.backpressured > 0 && !inferred.includes("backpressure") && !inferred.includes("denied")) {
+    inferred.push("backpressure");
+  }
+
+  if (row.storageErrors > 0 && !inferred.includes("storage-error")) {
+    inferred.push("storage-error");
+  }
+
+  return distinct(inferred);
+}
+
+export function summarizeHeatRows(rows: readonly HeatRow[]): HeatSummary {
+  return {
+    rows: rows.length,
+    heatRejected: rows.reduce((sum, row) => sum + row.heatRejected, 0),
+    backpressured: rows.reduce((sum, row) => sum + row.backpressured, 0),
+    storageErrors: rows.reduce((sum, row) => sum + row.storageErrors, 0),
+    heatKinds: distinct(rows.flatMap((row) => row.heatKinds)),
+    signals: distinct(rows.flatMap(heatSignals)),
+  };
+}

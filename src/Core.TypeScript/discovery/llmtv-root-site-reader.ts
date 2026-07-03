@@ -14,6 +14,7 @@ import {
   type LlmtvTranscript,
   type RenderDocumentOptions,
 } from "../darkhall-ui/darkhall-tv";
+import { heatSignalsFromKinds } from "../darkhall-ui/heat";
 import { decodeReplayArtifact, foldReplayArtifact, type ReplayArtifact, type ReplayStats } from "./llmtv-replay";
 import {
   ROOT_SITE_LLMTV_HTML_RELATIVE_PATH,
@@ -103,7 +104,10 @@ function takeValue(
   return { ok: true, value };
 }
 
-function parseNumber(value: string, flag: string): { readonly ok: true; readonly value: number } | { readonly ok: false; readonly error: string } {
+function parseNumber(
+  value: string,
+  flag: string,
+): { readonly ok: true; readonly value: number } | { readonly ok: false; readonly error: string } {
   const parsed = Number(value);
   if (!Number.isFinite(parsed) || parsed < 0) {
     return { ok: false, error: `${flag} must be a non-negative finite number` };
@@ -229,6 +233,7 @@ function status(
   dwellers: number,
   stats: ReplayStats,
   lastFrameAgeMs: number | undefined,
+  heatKinds: readonly string[] = [],
 ): LlmtvReadoutStatus {
   return {
     kind,
@@ -236,6 +241,7 @@ function status(
     detail,
     source: ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH,
     metrics: metrics(frames, dwellers, stats, lastFrameAgeMs),
+    heatSignals: heatSignalsFromKinds(heatKinds),
   };
 }
 
@@ -311,6 +317,7 @@ export function renderRootSiteLlmtvReadout(
       0,
       ZERO_STATS,
       undefined,
+      ["llmtv.replay.invalid"],
     );
     return renderResult(
       emptyTranscript(seed),
@@ -328,6 +335,10 @@ export function renderRootSiteLlmtvReadout(
   const stats = folded.stats;
 
   if (stats.rejected > 0 || stats.expired > 0) {
+    const heatKinds = [
+      ...(stats.rejected > 0 ? ["llmtv.replay.rejected"] : []),
+      ...(stats.expired > 0 ? ["llmtv.replay.expired"] : []),
+    ];
     const readoutStatus = status(
       "heat",
       "heat · replay loss",
@@ -336,11 +347,21 @@ export function renderRootSiteLlmtvReadout(
       dwellers,
       stats,
       lastFrameAgeMs,
+      heatKinds,
     );
     return renderResult(
       markLive(folded.transcript, false),
       readoutStatus,
-      summarize(readoutStatus, "replay-heat", paths.replayPath, paths.htmlPath, frames, dwellers, stats, lastFrameAgeMs),
+      summarize(
+        readoutStatus,
+        "replay-heat",
+        paths.replayPath,
+        paths.htmlPath,
+        frames,
+        dwellers,
+        stats,
+        lastFrameAgeMs,
+      ),
       options.title,
     );
   }
@@ -372,6 +393,7 @@ export function renderRootSiteLlmtvReadout(
       dwellers,
       stats,
       lastFrameAgeMs,
+      ["llmtv.replay.stale"],
     );
     return renderResult(
       markLive(folded.transcript, false),

@@ -111,6 +111,9 @@ describe("Dark Hall CSS room UI", () => {
     expect(classifyHeatKind("meta-cart.policy-backpressure")).toBe("backpressure");
     expect(classifyHeatKind("room-boundary.door-denied")).toBe("denied");
     expect(classifyHeatKind("bounded.storage-error")).toBe("storage-error");
+    expect(classifyHeatKind("llmtv.replay.invalid")).toBe("invalid");
+    expect(classifyHeatKind("llmtv.replay.expired")).toBe("expired");
+    expect(classifyHeatKind("llmtv.replay.stale")).toBe("stale");
 
     expect(heatSignals(doorDeniedHeat)).toEqual(["denied"]);
     expect(heatSignals(horizonHeat)).toEqual(["forgotten", "storage-error"]);
