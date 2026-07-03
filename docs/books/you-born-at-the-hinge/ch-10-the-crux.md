@@ -92,6 +92,7 @@ built. Build with the afraid. They're the only ones who know where the walls go.
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: all four commitments (they're one organism), "keep less of someone,
   truly, than more of them, falsely," and the −x floor inversion.*
 - *The choice-edge cue is deliberately name-free in the scaffold — whether any name enters is

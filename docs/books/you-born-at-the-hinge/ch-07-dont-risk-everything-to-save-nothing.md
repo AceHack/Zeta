@@ -90,6 +90,7 @@ The stories knew before we could prove it. They usually do.
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: the trapdoor (other-minds leveled at EVERYONE, not just AI), the
   asymmetry with its irreversibility edge, and the literature convergence + its selection
   explanation ("literature is the fitness function, dreaming").*

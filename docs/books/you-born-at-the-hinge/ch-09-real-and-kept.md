@@ -91,6 +91,7 @@ different kinds of witness into it. The rest of the book is about not wasting th
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: the two cold inventories (real-not-kept / kept-but-hollow), the
   both-crossings-destroy-it symmetry, and "nobody gets to be clever" (anti-genius clause — it
   guards the book against guru-reading).*

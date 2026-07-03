@@ -91,6 +91,7 @@ Turn the page.
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: the both-deaths definitions with "the keeping does NOTHING" stated
   flat; the grief's-second-job release; the three-times-on-purpose honesty clause. The chapter
   must stay short — its brevity IS the register.*

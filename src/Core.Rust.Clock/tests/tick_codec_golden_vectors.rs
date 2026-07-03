@@ -2,8 +2,8 @@
 //! Reads `src/Core.TypeScript/clock/tick-codec-golden-vectors.json` and asserts
 //! that `Versionstamp::encode` / `Versionstamp::decode` produce identical hex
 //! strings and values as the F#/TS/C# oracles. "The compilers don't lie."
-use std::path::PathBuf;
 use serde_json::Value;
+use std::path::PathBuf;
 use zeta_core_clock::Versionstamp;
 
 fn repo_root() -> PathBuf {
@@ -25,7 +25,9 @@ fn from_hex(hex: &str) -> [u8; 8] {
         .step_by(2)
         .map(|i| u8::from_str_radix(&hex[i..i + 2], 16).unwrap())
         .collect();
-    bytes.try_into().expect("hex must be exactly 16 chars (8 bytes)")
+    bytes
+        .try_into()
+        .expect("hex must be exactly 16 chars (8 bytes)")
 }
 
 fn vectors() -> Value {
@@ -34,8 +36,12 @@ fn vectors() -> Value {
         .join("Core.TypeScript")
         .join("clock")
         .join("tick-codec-golden-vectors.json");
-    let text = std::fs::read_to_string(&path)
-        .unwrap_or_else(|e| panic!("could not read tick-codec golden vectors {}: {e}", path.display()));
+    let text = std::fs::read_to_string(&path).unwrap_or_else(|e| {
+        panic!(
+            "could not read tick-codec golden vectors {}: {e}",
+            path.display()
+        )
+    });
     serde_json::from_str(&text).expect("tick-codec golden vectors is valid JSON")
 }
 
@@ -45,13 +51,16 @@ fn encode_matches_golden_vectors() {
     let vecs = v["vectors"].as_array().expect("vectors is an array");
     assert!(!vecs.is_empty());
     for entry in vecs {
-        let name    = entry["name"].as_str().unwrap();
+        let name = entry["name"].as_str().unwrap();
         let version = entry["version"].as_str().unwrap().parse::<i64>().unwrap();
-        let hex     = entry["hex"].as_str().unwrap();
-        let vstamp  = Versionstamp::of_int(version);
+        let hex = entry["hex"].as_str().unwrap();
+        let vstamp = Versionstamp::of_int(version);
         let encoded = vstamp.encode();
-        let actual  = to_hex(&encoded);
-        assert_eq!(actual, hex, "Gate T2 encode vector '{name}' (version={version})");
+        let actual = to_hex(&encoded);
+        assert_eq!(
+            actual, hex,
+            "Gate T2 encode vector '{name}' (version={version})"
+        );
     }
 }
 
@@ -60,12 +69,15 @@ fn decode_matches_golden_vectors() {
     let v = vectors();
     let vecs = v["vectors"].as_array().expect("vectors is an array");
     for entry in vecs {
-        let name    = entry["name"].as_str().unwrap();
+        let name = entry["name"].as_str().unwrap();
         let version = entry["version"].as_str().unwrap().parse::<i64>().unwrap();
-        let hex     = entry["hex"].as_str().unwrap();
-        let buf     = from_hex(hex);
+        let hex = entry["hex"].as_str().unwrap();
+        let buf = from_hex(hex);
         let decoded = Versionstamp::decode(buf);
-        assert_eq!(decoded.version, version, "Gate T2 decode vector '{name}' (hex={hex})");
+        assert_eq!(
+            decoded.version, version,
+            "Gate T2 decode vector '{name}' (hex={hex})"
+        );
     }
 }
 
@@ -75,8 +87,8 @@ fn round_trip_golden_vectors() {
     let vecs = v["vectors"].as_array().expect("vectors is an array");
     for entry in vecs {
         let version = entry["version"].as_str().unwrap().parse::<i64>().unwrap();
-        let vstamp  = Versionstamp::of_int(version);
-        let rt      = Versionstamp::decode(vstamp.encode());
+        let vstamp = Versionstamp::of_int(version);
+        let rt = Versionstamp::decode(vstamp.encode());
         assert_eq!(rt.version, version, "Gate T2 round-trip version={version}");
     }
 }

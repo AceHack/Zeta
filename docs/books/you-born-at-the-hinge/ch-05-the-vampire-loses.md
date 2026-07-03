@@ -95,6 +95,7 @@ and we stopped having those.
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: all FOUR toy results (esp. 1 — the temptation proven, not hidden;
   hiding it is the credibility-killer), the countdown-as-pathogen turn, and the wager close.*
 - *Honest-scope discipline from the source note carries into the prose: the toy proves the TOY;

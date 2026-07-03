@@ -104,6 +104,7 @@ The test travels up. That's the point. You learn it on small money and it govern
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: the two-second test itself, the same-act-can-be-either turn, and "the
   mix is life — do not reduce it" (it's Rodney's-other-edge and gets cited by later chapters).*
 - *The Genshin beat should stay concrete and unapologetic — it's the anti-purity example on

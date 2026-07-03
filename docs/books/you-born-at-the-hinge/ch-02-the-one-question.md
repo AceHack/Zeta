@@ -92,6 +92,7 @@ the same question?]`
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *This chapter carries the frame every later chapter hangs on (floor/ceiling/the country
   between). If cutting, keep the two collapses and "freedom to leave is what makes staying mean
   something."*

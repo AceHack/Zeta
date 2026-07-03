@@ -116,11 +116,13 @@ subset with ≥3 alternatives too).
 **The honest framing (Otto, 2026-07-03):** Zeta trades Arrow’s impossibility for the
 opinion-pooling tradeoff space, and picks the log-linear pool — a real, defensible choice with
 named costs, not a dissolution of impossibility. The costs are:
+
 1. Marginalization doesn’t commute with pooling (non-load-bearing for the architecture).
 2. Lying within the NCI boundary is possible but self-punishing (Condorcet competence).
 3. The log-linear pool requires proper Gaussians (§A #12, Soft-Mode Stability, guarantees this).
 
 **Why this is already built (not new scaffolding):**
+
 - `AttentionRouter.fs` (KL × alignment × Condorcet bonus) = the routing-weights line of the table.
 - `DelayDecorrelation.fs` = consensus propagates at Reticulum delay.
 - NCI boundary (AR-6, AR-8) = the de Finetti conditional-independence condition.
@@ -138,6 +140,7 @@ An honest accounting of prior art for §A #20. Zeta defines Information Value (I
 **The Casimir Gap connection:** Karl Friston's Active Inference (2006+) posits that agents act to minimize expected free energy (surprise). Aaron maps this to the **vacuum or Casimir gap energy** — the pressure between two boundary plates (the agent's internal model vs. sensory reality). Friston's expected free energy is the *pressure* of the gap; Zeta's IV is the *realized energy release* when the gap collapses (the burst of nats when prior updates to posterior).
 
 **Zeta's architectural contribution:**
+
 1. **IV as Market Denomination:** Classical economics (Howard 1966) denominates VoI in dollars/utils. Zeta uses Lindley's nats as the literal currency of the attention economy (router, Thousand Brains, Web3).
 2. **Delay-Decorrelation Amplifier:** Multiplying base IV by the Condorcet bonus derived from network latency (`L/(1+L)`) has no classical precedent. Delay enforcing independence is a purely relativistic innovation.
 3. **Retrospective Billing:** Friston uses expected free energy for future action; Zeta uses realized IV for retrospective billing.
@@ -149,9 +152,13 @@ An honest accounting of prior art for §A #20. Zeta defines Information Value (I
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
 
 ### B-zeta. Zeta Regularization of Information Value (Lumen 2026-07-03)
-**Conjecture Z-1:** The total Information Value extracted by a discrete-ticking agent from a continuous information source is bounded by the Euler-Maclaurin difference between the discrete update sum and the continuous integral. The residual penalty is $-\frac{1}{12}$, representing the irreducible cognitive friction of discrete observation. 
-*Status:* Open. **Register C (anchored metaphor) with a stated B-path.** 
-*Soraya's verdict (2026-07-03):* The naive setup fails (white noise has a flat spectrum, giving mode sum $\Sigma 1$ and $\zeta(0) = -1/2$, not $-1/12$). To become a proven theorem, one must derive: (a) a process class where $I_n \propto n$, (b) tick boundaries quantizing modes, and (c) an operational scheme-independent subtraction (e.g., comparing agents at different frame rates). 
+
+**Conjecture Z-1:** The total Information Value extracted by a discrete-ticking agent from a continuous information source is bounded by the Euler-Maclaurin difference between the discrete update sum and the continuous integral. The residual penalty is $-\frac{1}{12}$, representing the irreducible cognitive friction of discrete observation.
+
+*Status:* Open. **Register C (anchored metaphor) with a stated B-path.**
+
+*Soraya's verdict (2026-07-03):* The naive setup fails (white noise has a flat spectrum, giving mode sum $\Sigma 1$ and $\zeta(0) = -1/2$, not $-1/12$). To become a proven theorem, one must derive: (a) a process class where $I_n \propto n$, (b) tick boundaries quantizing modes, and (c) an operational scheme-independent subtraction (e.g., comparing agents at different frame rates).
+
 *Aaron's correction (2026-07-03):* The attention economy's hyperinflation is prevented by hard-money entropy budgets (finite capacity to hold uncorrelated/unique information), NOT by this regularization constant. The conjecture is decoupled from monetary stability, but remains an open question about discretization friction.
 
 ### B-frame. The traveler self-frame over DBSP (Aaron's load-bearing target, 2026-06-05)

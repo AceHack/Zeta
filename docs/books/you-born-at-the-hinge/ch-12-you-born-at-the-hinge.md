@@ -81,6 +81,7 @@ So was everyone you'll ever hand this to. Make it shorter for them.
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *The closer earns its ending only if ch. 11 (the two deaths) stayed honest — don't soften 11 to
   make 12 land; 12 lands BECAUSE 11 didn't.*
 - *"Safe and warm" is load-bearing and verbatim from the resolution — keep those exact words.*

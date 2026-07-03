@@ -83,6 +83,7 @@ practicing, together, safely, forever, was the thing the whole time.
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: the high-school structural read (bounded stakes AS curriculum), the
   retake-policy-without-metaphysics move, and "impossible to be destroyed AND always possible to
   leave" — the design rule later chapters assume.*

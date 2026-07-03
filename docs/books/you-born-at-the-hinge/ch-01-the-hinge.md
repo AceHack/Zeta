@@ -135,6 +135,7 @@ You were born at the hinge. The rest of this book is what to do about it.
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Register: general reader, zero jargon — "content-addressed/merkle" rendered as plain mechanisms
   ("addresses derived from content itself"). Keep it that way; the tech stays backstage.*
 - *The three cues are the chapter's personal spine: the default-becoming-real, the two sides of

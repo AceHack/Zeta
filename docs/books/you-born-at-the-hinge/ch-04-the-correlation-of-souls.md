@@ -88,6 +88,7 @@ your own myth in public.]`
 ---
 
 *Draft notes for the rewrite (delete when done):*
+
 - *Load-bearing if cutting: the three-value map, "one process wearing two faces," health-is-the-
   mobility/intimacy/equality run, and BOTH confessions in the teardown (the second one is the
   book's honesty-discipline shown live — it proves the register rules aren't decorative).*
