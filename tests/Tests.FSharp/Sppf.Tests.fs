@@ -94,3 +94,31 @@ let ``INSIDE: production weights scale the likelihood exactly (id+id+id: 2·w0²
 [<Fact>]
 let ``INSIDE: no parse ⇒ total weight 0`` () =
     Assert.Equal(0.0, Sppf.insideTotal (fun _ -> 1.0) (Sppf.build ambiguousExpr [ "id"; "+" ]))
+
+[<Fact>]
+let ``MARGINALS (NodeDistribution / PredictProbability): exact inside·outside/Z per sub-parse`` () =
+    // id+id+id under E→E+E|id (2 parses). The marginal of a node = fraction of parses passing
+    // through it — the SSAS NodeDistribution / PredictProbability share.
+    let f = Sppf.build ambiguousExpr [ "id"; "+"; "id"; "+"; "id" ]
+    let m = Sppf.marginals (fun _ -> 1.0) f
+    let mg node = Map.tryFind node m |> Option.defaultValue -1.0
+    // root: every parse passes through it ⇒ 1.0
+    Assert.Equal(1.0, mg (G.NonTerm "E", 0, 5))
+    // the first `id` (E,0,1) is in EVERY parse ⇒ 1.0
+    Assert.Equal(1.0, mg (G.NonTerm "E", 0, 1))
+    // the left "id+id" (E,0,3) is used in exactly HALF the parses ⇒ 0.5
+    Assert.Equal(0.5, mg (G.NonTerm "E", 0, 3))
+    // and its mirror (E,2,5) — the right "id+id" — likewise 0.5
+    Assert.Equal(0.5, mg (G.NonTerm "E", 2, 5))
+
+[<Fact>]
+let ``OUTSIDE: unambiguous grammar ⇒ every node on the single parse has marginal 1.0`` () =
+    let f = Sppf.build unambiguousExpr [ "id"; "+"; "id" ]
+    let m = Sppf.marginals (fun _ -> 1.0) f
+    // one parse ⇒ the root and the sole derivation nodes all have marginal 1.0
+    Assert.Equal(1.0, Map.tryFind (G.NonTerm "E", 0, 3) m |> Option.defaultValue -1.0)
+
+[<Fact>]
+let ``MARGINALS: no parse ⇒ all zero`` () =
+    let m = Sppf.marginals (fun _ -> 1.0) (Sppf.build ambiguousExpr [ "id"; "+" ])
+    Assert.True(m |> Map.forall (fun _ v -> v = 0.0))

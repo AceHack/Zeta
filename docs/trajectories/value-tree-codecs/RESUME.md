@@ -122,10 +122,15 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    minimal (Uniform/Product/Divide, Gaussian-oriented) — the EXACT forest case is inside–outside,
    NOT the cross-subsystem `FactorGraph`; `Zeta.Bayesian.FactorGraph`/`Ep` is for the LOOPY /
    approximate / emotional-propagation extension.
-   **← resume: the OUTSIDE pass + marginals** — `outside` over the SPPF → per-family posterior =
-   `inside·outside·weight / inside(root)` = the `NodeDistribution` / `PredictProbability`; feed
-   `ParseSoft.ofWeightedForest`. Then production-weight source (learned/set), and the loopy/EP +
-   emotional-propagation rung on `Zeta.Bayesian` (math-team); parses → ISA.
+12. ✅ **OUTSIDE pass + MARGINALS** — LANDED (`Sppf.outside`/`marginals`): the backward half →
+   **full inside–outside = belief propagation on the parse forest, complete + exact.** `marginals`
+   = `inside·outside / inside(root)` per node — the **`NodeDistribution` / `PredictProbability`
+   share**: 1.0 for a node in every parse, a fraction for an ambiguous one (proven: root & first-
+   token = 1.0, the two "id+id" sub-parses = 0.5). Fixpoint outside, self-contained, total.
+   **← resume: bridge marginals → `ParseSoft`** (a weighted-tree enumeration for the SoftValue-
+   over-parses = `PredictProbability`), and the **production-weight source** (learned via EM — the
+   inside–outside expected counts are already computable — or set). Then the loopy/EP + emotional-
+   propagation rung on `Zeta.Bayesian` (math-team); parses → ISA.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
 8. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.

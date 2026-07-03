@@ -159,6 +159,70 @@ module Sppf =
     let insideTotal (weight: int -> float) (f: Forest) : float =
         inside weight f |> Map.tryFind f.Root |> Option.defaultValue 0.0
 
+    /// **Weighted OUTSIDE pass** — the backward half of inside–outside (Baker; Lari–Young).
+    /// `outside(root) = 1`; each node accumulates, from every parent-family it appears in,
+    /// `outside(parent) × production-weight × Π inside(sibling children)`. Computed to a fixpoint
+    /// (a DAG; damped by a round cap for same-span unit chains). Together with `inside`, this is
+    /// full belief propagation on the parse forest — no cross-subsystem coupling.
+    let outside (weight: int -> float) (f: Forest) : Map<Node, float> =
+        let ins = inside weight f
+        let insideOf (n: Node) = Map.tryFind n ins |> Option.defaultValue 0.0
+        // contributions.[child] = (parent, coefficient) for every place child appears; coefficient
+        // = production-weight × Π inside(other siblings) (the child's own inside is excluded).
+        let contributions = System.Collections.Generic.Dictionary<Node, ResizeArray<Node * float>>(HashIdentity.Structural)
+        let add (child: Node) (parent: Node) (coef: float) =
+            match contributions.TryGetValue child with
+            | true, lst -> lst.Add((parent, coef))
+            | _ ->
+                let lst = ResizeArray<Node * float>()
+                lst.Add((parent, coef))
+                contributions.[child] <- lst
+        for KeyValue(parent, fams) in (f.Nodes |> Map.toSeq |> dict) do
+            for fam in fams do
+                let w = if fam.Prod < 0 then 1.0 else weight fam.Prod
+                let kids = List.toArray fam.Kids
+                for i in 0 .. kids.Length - 1 do
+                    let siblingProduct =
+                        kids
+                        |> Array.mapi (fun j k -> if j = i then 1.0 else insideOf k)
+                        |> Array.fold (*) 1.0
+                    add kids.[i] parent (w * siblingProduct)
+        // fixpoint iteration: root fixed at 1, others = Σ over parents of outside(parent)·coef.
+        let out = System.Collections.Generic.Dictionary<Node, float>(HashIdentity.Structural)
+        for KeyValue(n, _) in (f.Nodes |> Map.toSeq |> dict) do
+            out.[n] <- 0.0
+        out.[f.Root] <- 1.0
+        let maxRounds = f.Nodes.Count + 2
+        let mutable round = 0
+        let mutable changed = true
+        while changed && round < maxRounds do
+            round <- round + 1
+            changed <- false
+            let snapshot = System.Collections.Generic.Dictionary<Node, float>(out)
+            for KeyValue(child, contribs) in contributions do
+                if child <> f.Root then
+                    let s = contribs |> Seq.sumBy (fun (p, coef) -> (match snapshot.TryGetValue p with | true, v -> v | _ -> 0.0) * coef)
+                    if abs (s - out.[child]) > 1e-12 then changed <- true
+                    out.[child] <- s
+        out |> Seq.map (fun kv -> kv.Key, kv.Value) |> Map.ofSeq
+
+    /// The **marginal** probability mass passing through a sub-parse node — `inside(node) ×
+    /// outside(node) / inside(root)`. This is the node's `NodeDistribution` weight (SSAS) / its
+    /// `PredictProbability` share: 1.0 for a node in every parse, a fraction for an ambiguous one.
+    /// `inside(root) = 0` (no parse) ⇒ 0.
+    let marginals (weight: int -> float) (f: Forest) : Map<Node, float> =
+        let ins = inside weight f
+        let out = outside weight f
+        let z = Map.tryFind f.Root ins |> Option.defaultValue 0.0
+        if z = 0.0 then
+            f.Nodes |> Map.map (fun _ _ -> 0.0)
+        else
+            f.Nodes
+            |> Map.map (fun node _ ->
+                let i = Map.tryFind node ins |> Option.defaultValue 0.0
+                let o = Map.tryFind node out |> Option.defaultValue 0.0
+                i * o / z)
+
     /// Project the forest to a `DynamicValue` — homoiconic, byte-lockable, queryable as data.
     let toDynamicValue (f: Forest) : DynamicValue =
         let symName (s: Sym) =
