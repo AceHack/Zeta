@@ -1,5 +1,5 @@
 # Mechanism: from-opam-git — opam source-build from a pinned git commit.
-# Realizer: tools/setup/mechanisms/from-opam-git.sh
+# Realizer: src/Core.TypeScript/ace/setup-realizers/from-opam-git.ts
 # Gated: ZETA_INSTALL_FULL=1 (heavy OCaml build; skipped on minimal/CI install).
 #
 # Format:

@@ -1,5 +1,5 @@
 # Mechanism: from-uv-venv — PyPI libraries into repo .venv via uv pip install.
-# Realizer: tools/setup/mechanisms/from-uv-venv.sh
+# Realizer: src/Core.TypeScript/ace/setup-realizers/from-uv-venv.ts
 #
 # Importable libraries (not uv tool CLIs). Opt in: ZETA_INSTALL_QUANTUM=1 or ZETA_INSTALL_FULL=1.
 #

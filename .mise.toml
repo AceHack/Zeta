@@ -11,7 +11,7 @@
 #
 # Lean stays outside mise until a mise plugin exists (candidate
 # OSS contribution target per GOVERNANCE.md §23) — installed via
-# `tools/setup/mechanisms/from-elan.sh`.
+# `src/Core.TypeScript/ace/setup-realizers/from-elan.ts`.
 #
 # Consumed by `tools/setup/common/mise.sh` which runs
 # `mise install` from this directory. See

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { packageHash } from "./package-hash.ts";
 import { contentHash, type AcePackage } from "./store.ts";
 import { pointerFromSetupManifest } from "./setup-manifest.ts";
+import { bunMechanismRealizer } from "./setup-mechanism-pointers.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const packagePath = join(here, "packages", "qsharp-reference-oracle-0.1.0.json");
@@ -42,7 +43,7 @@ describe("qsharp-reference-oracle Ace package", () => {
       text: readFileSync(quantumManifestPath, "utf8"),
       ecosystem: "pypi",
       purpose: "QDK/Q# reference oracle for finite-resolution qubits observable golden vectors",
-      realizer: "tools/setup/mechanisms/from-uv-venv.sh",
+      realizer: bunMechanismRealizer("from-uv-venv"),
       manifest: "tools/setup/manifests/from-uv-venv",
       optIn: ["ZETA_INSTALL_QUANTUM=1", "ZETA_INSTALL_FULL=1"],
     });

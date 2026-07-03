@@ -3,7 +3,7 @@
 # macOS install.sh shield (081KSKBP80008QG0R002J03WGA cross-OS install parity — the macOS lane).
 # Runs tools/setup/install.sh on a real macOS runner, which dispatches to
 # macos.sh (Homebrew + brew ollama + mise toolchain + lean + jars + the
-# local-LLM model pull via mechanisms/from-ollama.sh). Completes the install-shield
+# local-LLM model pull via setup-realizers/from-ollama.ts). Completes the install-shield
 # matrix — we already cover ubuntu/nixos/windows/wsl; this closes the mac gap:
 #   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu 24.04, Docker)
 #   - docker-ubuntu-jammy-install-sh-test (install.sh on bare Ubuntu 22.04, Docker)

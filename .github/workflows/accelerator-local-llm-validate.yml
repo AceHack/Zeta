@@ -18,7 +18,7 @@ on:
     branches: [accelerator/pr-less-git-monster]
     paths:
       - "tools/setup/manifests/from-ollama"
-      - "tools/setup/mechanisms/from-ollama.sh"
+      - "src/Core.TypeScript/ace/setup-realizers/from-ollama.ts"
       - "tools/setup/linux.sh"
       - "tools/setup/macos.sh"
       - "tools/setup/manifests/brew"

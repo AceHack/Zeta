@@ -1,5 +1,5 @@
 # Mechanism: from-elan — pinned elan-init.sh (Lean 4 toolchain manager).
-# Realizer: tools/setup/mechanisms/from-elan.sh
+# Realizer: src/Core.TypeScript/ace/setup-realizers/from-elan.ts
 #
 # Format:
 #   elan  <elan-init-url>  sha256=<hex>  [commit=<git-sha>]

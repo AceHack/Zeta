@@ -1,12 +1,14 @@
 ---
 id: 081KLL7PPSUMF84HN7WN96ZEQ1P77U
 priority: P2
-status: in-progress
+status: done
 title: Ace setup-manifest realizers — Bun realizers post-mechanism consolidation (Aaron 2026-06-21)
 effort: L
 ask: Aaron 2026-06-21
 created: 2026-06-21
 last_updated: 2026-07-02
+closed: 2026-07-02
+closed_by: "#9203"
 unblocked: 2026-06-21
 decomposition: leaf
 depends_on:
@@ -22,18 +24,17 @@ type: chore
 
 # 081KLL7PPSUMF84HN7WN96ZEQ1P77U — Ace setup-manifest realizers
 
+## Status 2026-07-02 (complete — #9203)
+
+Track **done**. All acceptance criteria satisfied:
+
+- **14/14** Bun realizers under `src/Core.TypeScript/ace/setup-realizers/`
+- **Cutover (#9195):** `linux.sh` / `macos.sh` call `ace-realize` (install-graph order)
+- **Shell retirement (#9203):** deleted all `tools/setup/mechanisms/*.sh`; no shell fallback
+- **Ace pointers (#9203):** `setup-mechanism-pointers.ts` → Bun realizer modules
+- **Bash retirement inventory:** 15 mechanism `.sh` entries removed from allowlist
+
 ## Status 2026-07-02 (cutover complete)
-
-Prerequisites satisfied. Row **P2 / in-progress** — install-script cutover landed;
-shell fallback retirement is the remaining hygiene step.
-
-- **Slices 1–4 (#8984, #8992, #9075, #9188):** 14 / 14 Bun realizers.
-- **Cutover (#9195):** `linux.sh` / `macos.sh` call `ace-realize --pre-mise` +
-  `--post-mise` (install-graph order); shell `.sh` fallback preserved.
-- **Next:** retire `tools/setup/mechanisms/*.sh` from bash-retirement inventory after
-  soak; update Ace mechanism pointers to Bun realizers.
-
-## Status 2026-07-02 (slice 4 complete)
 
 ## Status 2026-07-02 (slice 3)
 

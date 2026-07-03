@@ -1,5 +1,5 @@
 # Mechanism: from-uv-tool — Python CLI tools via uv tool install.
-# Realizer: tools/setup/mechanisms/from-uv-tool.sh
+# Realizer: src/Core.TypeScript/ace/setup-realizers/from-uv-tool.ts
 # non-empty line; optional `==X.Y.Z` version qualifier per line.
 #
 # Zeta scope (today): ruff for Python linting of any Python helper

@@ -36,7 +36,7 @@ tools/lean4/
     └── packages/mathlib    # ~6.8 GB of .olean files; never commit
 ```
 
-Installed via `tools/setup/mechanisms/from-elan.sh` (`manifests/from-elan`). `lake build`
+Installed via `src/Core.TypeScript/ace/setup-realizers/from-elan.ts` (`manifests/from-elan`). `lake build`
 is CI gate Phase 2 (daily cadence per `docs/research/ci-
 gate-inventory.md`).
 
@@ -202,7 +202,7 @@ but tractable. Open when someone has the time.
   proof
 - `tools/lean4/lakefile.toml` + `lake-manifest.json` +
   `lean-toolchain` — load-bearing project scaffolding
-- `tools/setup/mechanisms/from-elan.sh` — toolchain installer
+- `src/Core.TypeScript/ace/setup-realizers/from-elan.ts` — toolchain installer
 - `memory/tariq/NOTEBOOK.md` — round-by-round sorry-count
   and proof progress
 - `docs/research/mathlib-progress.md` — historical
