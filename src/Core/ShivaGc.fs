@@ -188,3 +188,75 @@ module ShivaGc =
                 let toRevive = objects paused |> List.filter (fun o -> objId o = Some target)
                 resume (DynamicValue.Array toRevive) resident // reactivate from what remained (no-op if truly absent)
         | _ -> resident
+
+    // ── generational collection: most objects die young (Lieberman–Hewitt 1983 / Ungar 1984) ──
+    //
+    // Aaron 2026-07-03: "generational collection — the die-young tier next." The empirical law GC
+    // rests on: MOST OBJECTS DIE YOUNG (here: PAUSE young — a loaded-once mixDef is used for one
+    // specialization and then goes idle). So split the heap into a YOUNG generation and an OLD one; a
+    // MINOR collection scans ONLY the young generation (cheap, frequent), pausing the short-lived and
+    // TENURING (promoting) the survivors to old once they have lived long enough. Old objects are not
+    // scanned by a minor GC at all — that scoping is the entire speed win. A MAJOR collection scans
+    // both (rare). Inter-generational pointers (an old object referencing a young one) are handled by
+    // a REMEMBERED SET: old→young refs are added as roots for the young scan, so a young object an old
+    // one still points at is not wrongly paused (the write-barrier correctness, computed here directly;
+    // a real incremental barrier maintains it as writes happen — named scope). Pause-not-death holds
+    // throughout: a "collected" young object is returned paused (resumable), never destroyed.
+
+    let private objValue (o: DynamicValue) : DynamicValue = DynamicValue.get "value" o |> Option.defaultValue DynamicValue.Null
+    let private ageOf (o: DynamicValue) : int = match DynamicValue.get "age" o with Some(DynamicValue.Int n) -> int n | _ -> 0
+    /// Re-stamp a young object with an age (preserving id/value/refs).
+    let private reStamp (age: int) (o: DynamicValue) : DynamicValue =
+        DynamicValue.Object
+            [ "id", DynamicValue.String(objId o |> Option.defaultValue "")
+              "value", objValue o
+              "refs", DynamicValue.Array(objRefs o |> List.map DynamicValue.String)
+              "age", DynamicValue.Int(int64 age) ]
+    /// Promote a young object to old (strip the age — old objects are plain heap objects).
+    let private toOld (o: DynamicValue) : DynamicValue = object' (objId o |> Option.defaultValue "") (objValue o) (objRefs o)
+
+    let private genYoung (g: DynamicValue) : DynamicValue list = match DynamicValue.get "young" g with Some(DynamicValue.Array xs) -> xs | _ -> []
+    let private genOld (g: DynamicValue) : DynamicValue list = match DynamicValue.get "old" g with Some(DynamicValue.Array xs) -> xs | _ -> []
+
+    /// A generational heap: a young generation and an old (tenured) one.
+    let genHeap (young: DynamicValue list) (old: DynamicValue list) : DynamicValue =
+        DynamicValue.Object [ "young", DynamicValue.Array young; "old", DynamicValue.Array old ]
+
+    /// The young / old generations as heaps (for inspection + reuse of the mark/partition surface).
+    let youngGen (g: DynamicValue) : DynamicValue = DynamicValue.Array(genYoung g)
+    let oldGen (g: DynamicValue) : DynamicValue = DynamicValue.Array(genOld g)
+
+    /// Allocate a fresh object into the young generation (age 0).
+    let allocate (obj: DynamicValue) (g: DynamicValue) : DynamicValue =
+        genHeap (genYoung g @ [ reStamp 0 obj ]) (genOld g)
+
+    /// A MINOR collection: scan ONLY the young generation. Young objects reachable from `roots` (plus
+    /// the remembered set: young ids referenced by old objects) survive and age by one; a survivor
+    /// whose age reaches `tenureAge` is promoted to old. Unreachable young objects are PAUSED (returned,
+    /// resumable). The old generation is left untouched — the scoping that makes a minor GC cheap.
+    /// Returns the new generational heap AND the paused young objects.
+    let minorGc (roots: string list) (tenureAge: int) (g: DynamicValue) : DynamicValue * DynamicValue =
+        let young = genYoung g
+        let old = genOld g
+        let combined = DynamicValue.Array(young @ old)
+        let youngIds = young |> List.choose objId |> Set.ofList
+        let remembered = old |> List.collect objRefs |> List.filter (fun r -> Set.contains r youngIds) // old→young (write barrier)
+        let effectiveRoots = (roots @ remembered) |> List.distinct
+        let reachable = mark effectiveRoots combined
+        let isLive o = objId o |> Option.map (fun id -> Set.contains id reachable) |> Option.defaultValue false
+        let survivors = young |> List.filter isLive |> List.map (fun o -> reStamp (ageOf o + 1) o)
+        let paused = young |> List.filter (isLive >> not)
+        let promoted = survivors |> List.filter (fun o -> ageOf o >= tenureAge) |> List.map toOld
+        let stayYoung = survivors |> List.filter (fun o -> ageOf o < tenureAge)
+        genHeap stayYoung (old @ promoted), DynamicValue.Array paused
+
+    /// A MAJOR collection: scan BOTH generations (rare, thorough). Survivors keep their generation
+    /// membership; the rest are paused (resumable). This is the full `partition` over young ∪ old —
+    /// the only path that reclaims OLD garbage.
+    let majorGc (roots: string list) (g: DynamicValue) : DynamicValue * DynamicValue =
+        let young = genYoung g
+        let old = genOld g
+        let resident, paused = partition roots (DynamicValue.Array(young @ old))
+        let survivorIds = objects resident |> List.choose objId |> Set.ofList
+        let keep (xs: DynamicValue list) = xs |> List.filter (fun o -> objId o |> Option.map (fun id -> Set.contains id survivorIds) |> Option.defaultValue false)
+        genHeap (keep young) (keep old), paused

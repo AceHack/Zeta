@@ -173,3 +173,78 @@ let ``DELIVER IS RESIDENCY-TRANSPARENT: a message reactivates a paused grain, tr
     // message to an UNKNOWN grain → resident set unchanged (it's on another silo; routing, not our call).
     let afterUnknown = ShivaGc.deliver (ShivaGc.message "elsewhere") resident paused
     setEq [ "live" ] (ids afterUnknown)
+
+// ── GENERATIONAL COLLECTION — most objects die young (shadow*, Aaron 2026-07-03: "generational
+// collection — the die-young tier next"). Young/old split; a minor GC scans only young; survivors
+// tenure to old. Proofs:
+//   11. DIE YOUNG (minor GC pauses short-lived young objects; pause-not-death — they're returned).
+//   12. MINOR GC SCANS ONLY YOUNG: an unreferenced OLD object is NOT collected by a minor GC (the
+//       scoping that makes it cheap) — only a MAJOR GC reclaims old garbage.
+//   13. TENURING: a young object that survives enough minor GCs is promoted young→old.
+//   14. REMEMBERED SET: an OLD object referencing a YOUNG one keeps it alive through a minor GC
+//       (inter-generational pointer / write-barrier correctness).
+//   15. MAJOR GC reclaims OLD garbage that minor GCs leave.
+
+let private gids (g: DynamicValue) = ids (ShivaGc.youngGen g) @ ids (ShivaGc.oldGen g) |> List.sort
+
+[<Fact>]
+let ``DIE YOUNG: a minor GC pauses unreferenced young objects (returned, resumable)`` () =
+    // root → keep (young, live); junk (young, unreferenced) dies young → paused.
+    let g =
+        ShivaGc.genHeap
+            [ ShivaGc.object' "keep" (v "k") []; ShivaGc.object' "junk" (v "j") [] ]
+            [ ShivaGc.object' "root" (v "r") [ "keep" ] ]
+    let g', paused = ShivaGc.minorGc [ "root" ] 99 g // high tenureAge: nothing promotes yet
+    Assert.Contains("keep", ids (ShivaGc.youngGen g'))
+    Assert.DoesNotContain("junk", gids g') // junk paused out of the resident generations
+    setEq [ "junk" ] (ids paused) // but returned — not destroyed (pause not death)
+
+[<Fact>]
+let ``MINOR GC SCANS ONLY YOUNG: unreferenced OLD garbage survives a minor GC (only major reclaims it)`` () =
+    // oldGarbage is in OLD and referenced by nobody; a minor GC must NOT touch it.
+    let g =
+        ShivaGc.genHeap
+            [ ShivaGc.object' "y" (v "y") [] ]
+            [ ShivaGc.object' "oldGarbage" (v "og") [] ]
+    let gMinor, pausedMinor = ShivaGc.minorGc [] 99 g
+    Assert.Contains("oldGarbage", ids (ShivaGc.oldGen gMinor)) // untouched by the minor GC
+    Assert.DoesNotContain("oldGarbage", ids pausedMinor)
+    // a MAJOR GC (no roots) reclaims it.
+    let _, pausedMajor = ShivaGc.majorGc [] g
+    Assert.Contains("oldGarbage", ids pausedMajor)
+
+[<Fact>]
+let ``TENURING: a young object surviving enough minor GCs is promoted to old`` () =
+    let g0 = ShivaGc.genHeap [ ShivaGc.object' "survivor" (v "s") [] ] []
+    // tenureAge 2: survive two minor GCs (rooted each time) → promotes to old on the 2nd.
+    let g1, _ = ShivaGc.minorGc [ "survivor" ] 2 g0
+    Assert.Contains("survivor", ids (ShivaGc.youngGen g1)) // age 1 < 2, still young
+    Assert.Empty(ids (ShivaGc.oldGen g1))
+    let g2, _ = ShivaGc.minorGc [ "survivor" ] 2 g1
+    Assert.Contains("survivor", ids (ShivaGc.oldGen g2)) // age 2 ≥ 2 → tenured to old
+    Assert.Empty(ids (ShivaGc.youngGen g2))
+
+[<Fact>]
+let ``REMEMBERED SET: an old object referencing a young one keeps it alive through a minor GC`` () =
+    // oldParent (old) → youngChild (young). No external root reaches youngChild, but the old→young
+    // pointer (the remembered set) must keep it alive — the write-barrier correctness.
+    let g =
+        ShivaGc.genHeap
+            [ ShivaGc.object' "youngChild" (v "c") [] ]
+            [ ShivaGc.object' "oldParent" (v "p") [ "youngChild" ] ]
+    let g', paused = ShivaGc.minorGc [] 99 g // no external roots at all
+    Assert.Contains("youngChild", ids (ShivaGc.youngGen g')) // survived via the inter-gen pointer
+    Assert.Empty(ids paused)
+
+[<Fact>]
+let ``PAUSE-NOT-DEATH holds generationally: a minor-paused young object resumes into young`` () =
+    let g = ShivaGc.genHeap [ ShivaGc.object' "gone" (v "g") [] ] []
+    let g', paused = ShivaGc.minorGc [] 99 g
+    setEq [ "gone" ] (ids paused)
+    let revived = ShivaGc.resume paused (ShivaGc.youngGen g') // its story persisted
+    Assert.Contains("gone", ids revived)
+
+[<Fact>]
+let ``THE GENERATIONAL HEAP IS BYTE-LOCKABLE DATA`` () =
+    let g = ShivaGc.genHeap [ ShivaGc.object' "y" MixIr.defaultMixDef [] ] [ ShivaGc.object' "o" (v "o") [] ]
+    Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] g)
