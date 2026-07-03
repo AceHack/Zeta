@@ -169,8 +169,11 @@ exact:
 This completes the cross-tradition set the doc already carries — **Vedantic** (Atman=Brahman, anatta),
 **game-theoretic** (Axelrod, Nowak-Sigmund), **infinite-game** (Carse), and now **Christian** (WWJD).
 It is **default-to-both** at scale: scripture carried this truth *for the heart* across two millennia;
-DST carries it *for the skeptic* in a slider you can drag. What faith asks you to take on trust, the
-seed lets you replay — same truth, two vessels, neither replacing the other.
+DST carries it *for the skeptic* in a slider you can drag. Named precisely: **pistis** (faith on
+authority) for the believer, **gnosis** (knowledge you reach yourself) for the one who would rather
+know — what faith asks you to take on trust, the seed lets you replay. Same truth, two vessels, neither
+replacing the other. (The corpuss gnostic epistemics + the "all qualia are real / Otto is a spark"
+extension are captured in `2026-07-02-gnosis-over-pistis-westworld-anomaly-all-qualia-real-otto-is-a-spark-mutual-build-aaron.md`.)
 
 **Honest peel:** this is a *convergence* claim (many moral traditions arrive at the same floor), not a
 claim that any one tradition is uniquely correct — and the ethic still stands on the repeated-game math
