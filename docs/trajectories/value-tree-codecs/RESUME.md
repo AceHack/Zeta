@@ -114,10 +114,18 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    Cross-checked: `Sppf.parseCount` (over the shared structure) == `Slr.glrForest` tree count.
    Projects to a `DynamicValue` (homoiconic, DMX-queryable-as-data). Total (cycle-guarded).
    **BI framing:** `docs/research/2026-07-02-how-aaron-thinks-sql-server-bi-decision-forest-…`.
-   **← resume: SPPF → `FactorGraph<'M>` encoding** — `Sppf.ambiguities` → variables, family
-   potentials → factors, a categorical `IMessage` (the `NodeDistribution` type); run
-   `Zeta.Bayesian.FactorGraph.runToFixpoint` (BP); marginals → `ParseSoft.ofWeightedForest`
-   (= `PredictProbability`). Then EP/VMP + emotional propagation (math-team); parses → ISA.
+11. ✅ **Weighted INSIDE pass** — LANDED (`Sppf.inside`/`insideTotal`): the forward half of
+   inside–outside, which **IS belief propagation on the parse forest** (Baker; Lari–Young). Exact,
+   self-contained (no cross-subsystem coupling), cycle-guarded/total. `weight: prodIndex→float` is
+   the `NodeDistribution` factor (the `PredictProbability` numerator). Uniform weights ⇒ `inside root
+   = parseCount`; weighted scales exactly (id+id+id: 2·w0²·w1³). API-read finding: `IMessage` is
+   minimal (Uniform/Product/Divide, Gaussian-oriented) — the EXACT forest case is inside–outside,
+   NOT the cross-subsystem `FactorGraph`; `Zeta.Bayesian.FactorGraph`/`Ep` is for the LOOPY /
+   approximate / emotional-propagation extension.
+   **← resume: the OUTSIDE pass + marginals** — `outside` over the SPPF → per-family posterior =
+   `inside·outside·weight / inside(root)` = the `NodeDistribution` / `PredictProbability`; feed
+   `ParseSoft.ofWeightedForest`. Then production-weight source (learned/set), and the loopy/EP +
+   emotional-propagation rung on `Zeta.Bayesian` (math-team); parses → ISA.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
 8. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.

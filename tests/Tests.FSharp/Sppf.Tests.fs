@@ -75,3 +75,22 @@ let ``TOTAL: no parse ⇒ accepts false, parseCount 0`` () =
     let sppf = Sppf.build ambiguousExpr [ "id"; "+" ]
     Assert.False(Sppf.accepts sppf)
     Assert.Equal(0, Sppf.parseCount sppf)
+
+[<Fact>]
+let ``INSIDE: uniform weights ⇒ inside(root) = parseCount (BP forward pass agrees with the count)`` () =
+    // inside–outside = BP on the forest; the uniform inside is the unweighted tree count.
+    let sppf = Sppf.build ambiguousExpr [ "id"; "+"; "id"; "+"; "id" ]
+    Assert.Equal(float (Sppf.parseCount sppf), Sppf.insideTotal (fun _ -> 1.0) sppf)
+
+[<Fact>]
+let ``INSIDE: production weights scale the likelihood exactly (id+id+id: 2·w0²·w1³)`` () =
+    // Prod 0 = E→E+E (used twice per tree), Prod 1 = E→id (thrice); 2 trees.
+    let sppf = Sppf.build ambiguousExpr [ "id"; "+"; "id"; "+"; "id" ]
+    // w0=2, w1=1 ⇒ 2·(2²·1³) = 8
+    Assert.Equal(8.0, Sppf.insideTotal (fun p -> if p = 0 then 2.0 else 1.0) sppf)
+    // w0=1, w1=3 ⇒ 2·(1²·3³) = 54
+    Assert.Equal(54.0, Sppf.insideTotal (fun p -> if p = 1 then 3.0 else 1.0) sppf)
+
+[<Fact>]
+let ``INSIDE: no parse ⇒ total weight 0`` () =
+    Assert.Equal(0.0, Sppf.insideTotal (fun _ -> 1.0) (Sppf.build ambiguousExpr [ "id"; "+" ]))

@@ -121,6 +121,44 @@ module Sppf =
     /// Does the forest contain at least one parse of the whole input?
     let accepts (f: Forest) : bool = parseCount f > 0
 
+    /// **Weighted INSIDE pass** — the forward half of inside–outside, which IS belief propagation
+    /// on the parse forest (Baker 1979; Lari–Young 1990). `inside node` = Σ over families of
+    /// [ production-weight × Π over children of `inside child` ]; a terminal leaf = 1. `weight`
+    /// maps a production index → its potential (a `NodeDistribution` factor); the SSAS
+    /// `PredictProbability` numerator lives here. With uniform weights (`fun _ -> 1.0`),
+    /// `inside root = parseCount` (each tree weighs 1). Self-contained, exact, cycle-guarded ⇒
+    /// total; the loopy / EP / emotional-propagation extension is the `Zeta.Bayesian.FactorGraph`
+    /// rung. Returns the inside value of every node; `insideOf f.Root` is the total weight (the
+    /// grammar's likelihood of the input under the weights).
+    let inside (weight: int -> float) (f: Forest) : Map<Node, float> =
+        let memo = System.Collections.Generic.Dictionary<Node, float>(HashIdentity.Structural)
+        let inProg = System.Collections.Generic.HashSet<Node>(HashIdentity.Structural)
+        let rec ins (node: Node) : float =
+            match memo.TryGetValue node with
+            | true, v -> v
+            | _ ->
+                if inProg.Contains node then
+                    0.0
+                else
+                    inProg.Add node |> ignore
+                    let total =
+                        familiesOf node f
+                        |> List.sumBy (fun fam ->
+                            let childProduct = fam.Kids |> List.fold (fun acc k -> acc * ins k) 1.0
+                            // Prod = -1 is a terminal leaf (weight 1); otherwise the production potential.
+                            let w = if fam.Prod < 0 then 1.0 else weight fam.Prod
+                            w * childProduct)
+                    inProg.Remove node |> ignore
+                    memo.[node] <- total
+                    total
+        ins f.Root |> ignore
+        memo |> Seq.map (fun kv -> kv.Key, kv.Value) |> Map.ofSeq
+
+    /// The total inside weight of the forest under `weight` (the input's likelihood). Uniform
+    /// weights ⇒ this equals `parseCount`.
+    let insideTotal (weight: int -> float) (f: Forest) : float =
+        inside weight f |> Map.tryFind f.Root |> Option.defaultValue 0.0
+
     /// Project the forest to a `DynamicValue` — homoiconic, byte-lockable, queryable as data.
     let toDynamicValue (f: Forest) : DynamicValue =
         let symName (s: Sym) =
