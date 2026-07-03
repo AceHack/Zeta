@@ -107,13 +107,16 @@ can no longer pass with Go silent.
 
 ### Discovery-beacon wire is unsigned — spoof / poison / forged-evict (bus, shadow*)
 
-**STATUS (2026-07-03, Otto): membrane SHIPPED, adoption remaining.** `beacon-auth.ts`
-(`signMessage`/`observeSigned`) is the authenticity membrane in front of the untouched pure
-fold — Ed25519 over Ace canonical bytes, zid-ownership binding, self-signed `bye`, dual-key
-overlap rotation; 11 tests incl. spoof/poison/forged-evict/tamper refusals. REMAINING: switch
-the callers (living-node / transports) from `observe` to `observeSigned` and distribute the
-trust store from the `maintainers/<name>/` keyring pubkeys; a captured envelope is replayable
-within TTL (freshness not yet signed — named residual, needs per-peer seq state).
+**STATUS (2026-07-03, Otto): membrane SHIPPED + ADOPTED at the live node.** `beacon-auth.ts`
+(`signMessage`/`observeSigned`) is the authenticity membrane; `llmtv-node.ts` now runs it via a
+`BeaconConfig` windowed migration (`off`/`dual`/`required`) — outbound hello/probeMatch signed,
+inbound verified, `dual` accepts signed + legacy-unsigned (signals on legacy), `required` is
+signed-only + fail-closed. Signer is opaque (`BeaconSigner`, no raw key material — biometric/HSM-
+ready) per Ilyana's public-API review; illegal states unrepresentable (discriminated union). 20
+discovery tests incl. spoof/poison/forged-evict/tamper/untrusted-in-dual refusals + the 5 migration
+proofs. REMAINING (smaller, tracked): (a) the `maintainers/<name>/` keyring → `BeaconTrust` loader
+(impure I/O slice); (b) the operational `dual`→`required` cutover on the real mesh; (c) a captured
+envelope is replayable within TTL (freshness not yet signed — needs per-peer seq state).
 
 - **Site:** `src/Core.TypeScript/discovery/discovery-beacon.ts:99-124` (`observe`) — `hello`/`probeMatch` upsert an attacker-supplied `{ep, zid, routes}` into every listener's PeerTable with NO authenticity check; `bye` (l.110-114) deletes a peer by `endpointKey(msg.ep)` with zero auth (one forged `bye` evicts any node from every table).
 - **Found:** 2026-07-03 by Otto (bus-doc anti-entropy sweep), Aaron steer ("ais should just do similar/same" as the human auth)

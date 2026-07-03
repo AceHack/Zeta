@@ -84,6 +84,12 @@ export function signMessage(msg: DiscoveryMessage, privatePem: string): string {
   return JSON.stringify(envelope);
 }
 
+/// An opaque signer: turns a discovery message into its signed wire text. This is the ONLY
+/// signing authority a node needs — it never sees raw key material, so the key can live behind a
+/// biometric prompt / Keychain / Secure Enclave / HSM (Aaron: "nothing operator-run, only
+/// operator-approved"). The trivial default is `(msg) => signMessage(msg, privatePem)`.
+export type BeaconSigner = (msg: DiscoveryMessage) => string;
+
 /// Why a signed observation was refused. `refused` never throws and never mutates —
 /// a hostile wire gets a verdict, not a crash and not a table write.
 export type RefuseReason =
@@ -134,6 +140,16 @@ function verifyEnvelope(env: SignedEnvelope, trust: BeaconTrust): BeaconVerdict 
   return { ok: true, key_id: env.key_id, zid: entry.zid };
 }
 
+/// The result of an authenticated fold. `accepted` is the verified inner message — present
+/// ONLY when `verdict.ok` — so a caller can act on it (e.g. answer a verified `probe`) without
+/// re-decoding or trusting an unverified message.
+export interface SignedObservation {
+  readonly table: PeerTable;
+  readonly replies: readonly DiscoveryMessage[];
+  readonly verdict: BeaconVerdict;
+  readonly accepted?: DiscoveryMessage;
+}
+
 /// The authenticated discovery step: decode the signed envelope, verify it, THEN fold
 /// via the untouched pure core. A refused message leaves the table byte-identical and
 /// reports why. `bye` additionally requires self-signature: the signer's zid must be
@@ -144,8 +160,8 @@ export function observeSigned(
   text: string,
   nowMs: number,
   trust: BeaconTrust,
-): { table: PeerTable; replies: readonly DiscoveryMessage[]; verdict: BeaconVerdict } {
-  const refuse = (reason: RefuseReason) => ({ table, replies: [], verdict: { ok: false as const, reason } });
+): SignedObservation {
+  const refuse = (reason: RefuseReason): SignedObservation => ({ table, replies: [], verdict: { ok: false as const, reason } });
   const env = decodeEnvelope(text);
   if (!env) return refuse("not-signed-envelope");
   // Re-run the inner message through the beacon's own guarded decode so only the
@@ -160,5 +176,5 @@ export function observeSigned(
     if (peer.zid !== verdict.zid) return refuse("bye-not-self-signed");
   }
   const r = observe(self, table, inner, nowMs);
-  return { table: r.table, replies: r.replies, verdict };
+  return { table: r.table, replies: r.replies, verdict, accepted: inner };
 }

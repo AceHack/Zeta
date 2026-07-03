@@ -25,7 +25,9 @@ import {
   type RouteHint,
   type PeerTable,
   type DiscoveryTransport,
+  type DiscoveryMessage,
 } from "./discovery-beacon";
+import { observeSigned, type BeaconTrust, type BeaconSigner } from "./beacon-auth";
 import {
   publishFrame,
   observeBroadcast,
@@ -59,7 +61,31 @@ export interface LlmtvNodeConfig {
   readonly ttlMs: number;
   readonly helloEveryMs: number;
   readonly publishEveryMs: number;
+
+  /// Beacon authenticity for the discovery wire (BUGS.md P1 #9304 adoption). Absent ⇒ `"off"`
+  /// (backward compatible; no behavior change for existing callers). See `BeaconConfig`.
+  readonly beacon?: BeaconConfig;
 }
+
+/// The windowed-migration control for the signed discovery wire, as a discriminated union so
+/// illegal states are unrepresentable (Ilyana, public-API review 2026-07-03): `"required"`
+/// STRUCTURALLY requires a signer + trust; `"off"` carries no auth cruft; the unsigned-migration
+/// signal exists only in `"dual"` where it can fire. The signer is opaque (`BeaconSigner`) — a node
+/// never holds raw key material, so signing can sit behind a biometric prompt / Keychain / HSM.
+export type BeaconConfig =
+  /// Legacy: send unsigned, accept unsigned (the pre-migration steady state).
+  | { readonly mode: "off" }
+  /// The overlap window: sign outbound (if a `signer` is set) and accept BOTH signed and
+  /// legacy-unsigned inbound. A legacy-unsigned message fires `onUnsigned`; a signed-but-INVALID
+  /// message (bad sig / untrusted / zid-mismatch / forged bye) is REJECTED — never downgraded.
+  | {
+      readonly mode: "dual"
+      readonly signer?: BeaconSigner
+      readonly trust: BeaconTrust
+      readonly onUnsigned?: (msg: DiscoveryMessage) => void
+    }
+  /// Post-cutover: sign outbound and accept ONLY valid signed messages (signer + trust required).
+  | { readonly mode: "required"; readonly signer: BeaconSigner; readonly trust: BeaconTrust }
 
 export interface LlmtvNodeHandle {
   start(): void;
@@ -84,23 +110,65 @@ export function createLlmtvNode(
   let peers: PeerTable = new Map();
   let channels: ChannelTable = new Map();
   let tick = 0; // monotonic seq/frame counter for this node's own frames
-  const cancels: Array<() => void> = [];
-  const updateHandlers: Array<() => void> = [];
+  const cancels: (() => void)[] = [];
+  const updateHandlers: (() => void)[] = [];
   const fireUpdate = (): void => {
     for (const h of updateHandlers) h();
   };
 
-  // Inbound discovery: fold peers, answer a probe that matches us.
-  disco.onMessage((text) => {
-    const msg = decodeDiscovery(text);
-    if (!msg) return; // not a discovery packet (or garbage) — ignore
-    const result = observe(config.self, peers, msg, sched.now());
-    peers = result.table;
+  const beacon: BeaconConfig = config.beacon ?? { mode: "off" };
+  const signer: BeaconSigner | undefined = beacon.mode === "off" ? undefined : beacon.signer;
+  const trust: BeaconTrust = beacon.mode === "off" ? new Map() : beacon.trust;
+  // JS-boundary backstop (TS makes this unreachable — the union requires a signer for "required").
+  // Without it a plain-JS caller could pass {mode:"required"} with no signer and silently emit
+  // UNSIGNED while believing it required signatures — a silent downgrade on a security surface.
+  if (beacon.mode === "required" && !signer) {
+    throw new Error("llmtv-node: beacon mode 'required' needs a signer (fail-closed)");
+  }
+
+  /// Encode an OUTBOUND discovery message: signed when a signer is present, legacy-unsigned
+  /// otherwise. So a "dual"/"required" node's own hello/probeMatch are signed.
+  const emitDiscovery = (msg: DiscoveryMessage): string => (signer ? signer(msg) : encodeDiscovery(msg));
+
+  /// Answer a matching probe (signed via emitDiscovery) and re-broadcast any core replies.
+  const answer = (msg: DiscoveryMessage, replies: readonly DiscoveryMessage[]): void => {
     if (msg.t === "probe") {
       const reply = probeMatchReply(config.self, config.zid, config.routes, msg);
-      if (reply) disco.broadcast(encodeDiscovery(reply));
+      if (reply) disco.broadcast(emitDiscovery(reply));
     }
-    for (const r of result.replies) disco.broadcast(encodeDiscovery(r));
+    for (const r of replies) disco.broadcast(emitDiscovery(r));
+  };
+
+  /// Fold a legacy-UNSIGNED discovery message (the "off" path, and the "dual" fallback). `onLegacy`
+  /// receives the DECODED message (the actionable "which peer is still unsigned" signal).
+  const foldUnsigned = (text: string, onLegacy?: (msg: DiscoveryMessage) => void): void => {
+    const msg = decodeDiscovery(text);
+    if (!msg) return; // not a discovery packet (or garbage) — ignore
+    onLegacy?.(msg);
+    const result = observe(config.self, peers, msg, sched.now());
+    peers = result.table;
+    answer(msg, result.replies);
+  };
+
+  // Inbound discovery: fold peers, answer a probe that matches us — authenticity per beacon.mode.
+  disco.onMessage((text) => {
+    if (beacon.mode === "off") {
+      foldUnsigned(text);
+      return;
+    }
+    // "dual"/"required": verify first.
+    const signed = observeSigned(config.self, peers, text, sched.now(), trust);
+    if (signed.verdict.ok) {
+      peers = signed.table;
+      if (signed.accepted) answer(signed.accepted, signed.replies);
+      return;
+    }
+    // A message that isn't a signed envelope at all MAY be legacy traffic — accepted only during
+    // the "dual" window, and flagged. A signed-but-invalid message (bad sig / untrusted / forged
+    // bye / zid-mismatch) is dropped: it is NEVER downgraded to the unsigned path.
+    if (beacon.mode === "dual" && signed.verdict.reason === "not-signed-envelope") {
+      foldUnsigned(text, beacon.onUnsigned);
+    }
   });
 
   // Inbound frames: fold into the channel table (LWW-by-seq); ignore our own loopback echo.
@@ -116,7 +184,7 @@ export function createLlmtvNode(
   });
 
   const announce = (): void => {
-    disco.broadcast(encodeDiscovery({ t: "hello", ep: config.self, zid: config.zid, routes: config.routes, seq: tick }));
+    disco.broadcast(emitDiscovery({ t: "hello", ep: config.self, zid: config.zid, routes: config.routes, seq: tick }));
   };
 
   const publish = (): void => {
