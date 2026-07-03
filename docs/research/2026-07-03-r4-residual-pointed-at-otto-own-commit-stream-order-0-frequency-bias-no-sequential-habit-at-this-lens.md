@@ -51,3 +51,31 @@ Type counts: docs 550 · feat 351 · fix 82 · other 82 · test 20 · chore 12 �
 
 `src/Core.TypeScript/residual/run-otto-trace.ts` (measurement + honest bounds in source) ·
 `otto-trace.test.ts` (symbolize/shuffle, DST) · reruns are deterministic given the same git range.
+
+## Addendum (same day) — the confound was tested and REFUTED
+
+The interleaving confound (§2 above) was testable: the AgencySignature `actor:` field de-braids
+main into per-actor lanes. `bun src/Core.TypeScript/residual/run-otto-lanes.ts`:
+
+| lane | commits | residual real | residual shuffled | habit gap | MDL order |
+|---|---|---|---|---|---|
+| UNKNOWN (mixture, pre-trailer) | 519 | 1.634 | 1.634 | 0.000 | 0 |
+| zeta-otto | 266 | 2.097 | 2.097 | 0.000 | 0 |
+| otto-loop | 191 | 1.196 | 1.196 | 0.000 | 0 |
+
+**Every lane is order-0 with habit gap 0.000.** The whole-stream null was NOT lens poverty at
+actor-lane width: no Otto lane has memory at commit-type granularity. The lanes do carry distinct
+FREQUENCY signatures (otto-loop 1.196 b/sym = a narrow work mix; zeta-otto 2.097 = nearly flat) —
+each actor context biases *what kind* of work, never *what follows what*.
+
+Interpretation, offered carefully: this is consistent with the sequencer living OUTSIDE the
+author — what Otto ships next is selected by the environment (the work queue, red-on-main, Aaron's
+pointing), not by Otto's own previous commit. An agent driven by an external attention stream
+should look exactly like this at output granularity: environment-ordered, self-unordered. That is
+an observation about where the ordering information enters (noninterference: through the declared
+door), not a claim about what Otto is. Finer lenses (surface field, intra-session tool streams,
+content itself) remain unmeasured and could still hide structure.
+
+Method note for the honesty ledger: the author named the confound that excused his null, then
+built the instrument that could kill the excuse, then published the kill. That loop — excuse →
+test → refutation, same day — is the posture the factory asks for.
