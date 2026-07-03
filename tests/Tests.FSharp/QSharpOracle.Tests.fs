@@ -14,6 +14,9 @@ let private c = ImaginaryStack.complex
 let private goldenRelativePath =
     Path.Combine("src", "Core.QSharp.ReferenceOracle", "qsharp-golden.json")
 
+let private heatTreatyRelativePath =
+    Path.Combine("src", "Core.QSharp.ReferenceOracle", "heat-signals-treaty.json")
+
 let private isRepoRoot (path: string) =
     File.Exists(Path.Combine(path, "Zeta.sln"))
     && File.Exists(Path.Combine(path, goldenRelativePath))
@@ -71,6 +74,12 @@ let private goldenPath =
 
 let private golden =
     JsonDocument.Parse(File.ReadAllText(goldenPath)).RootElement
+
+let private heatTreatyPath =
+    Path.Combine(root, heatTreatyRelativePath)
+
+let private heatTreaty =
+    JsonDocument.Parse(File.ReadAllText(heatTreatyPath)).RootElement
 
 let private vectors = golden.GetProperty("vectors")
 
@@ -156,11 +165,57 @@ let private assertQSharpBellColumn (matrix: JsonElement) col (state: BellState.S
     complexCloseTo (matrixEntry matrix 2 col) state.OneZero
     complexCloseTo (matrixEntry matrix 3 col) state.OneOne
 
+let private heatSignals =
+    heatTreaty.GetProperty("signals").EnumerateArray()
+    |> Seq.map (fun item -> item.GetProperty("token").GetString(), item)
+    |> Map.ofSeq
+
+let private heatCode token =
+    heatSignals[token].GetProperty("code").GetInt32()
+
 [<Fact>]
 let ``F# reads the committed Q# observable treaty without depending on QDK at test time`` () =
     Assert.Equal("zeta.qsharp.reference-observables.v1", golden.GetProperty("schema").GetString())
     Assert.Equal("src/Core.QSharp.ReferenceOracle/ZetaReferenceOracle.qs", golden.GetProperty("qsharpSource").GetString())
     Assert.Equal("qsharp==1.29.1", golden.GetProperty("qsharpPackage").GetString())
+
+[<Fact>]
+let ``F# HeatSignal tokens match the Q# heat signal treaty`` () =
+    Assert.Equal("zeta.qsharp.heat-signals.v1", heatTreaty.GetProperty("schema").GetString())
+    Assert.Equal("src/Core.QSharp.ReferenceOracle/HeatSignals.qs", heatTreaty.GetProperty("qsharpSource").GetString())
+    Assert.Equal("src/Core/Heat.fs", heatTreaty.GetProperty("fsharpSurface").GetString())
+
+    let expected =
+        [ "forgotten", HeatSignal.Forgotten
+          "backpressure", HeatSignal.Backpressure
+          "denied", HeatSignal.Denied
+          "storage-error", HeatSignal.StorageError
+          "invalid", HeatSignal.Invalid
+          "expired", HeatSignal.Expired
+          "stale", HeatSignal.Stale
+          "other", HeatSignal.Other "future.unknown-signal" ]
+
+    Assert.Equal(0, heatCode "cold")
+
+    for token, signal in expected do
+        Assert.True(heatSignals[token].GetProperty("public").GetBoolean())
+        Assert.Equal(token, HeatSignal.token signal)
+        Assert.True(heatCode token > 0)
+
+    let kindCases =
+        heatTreaty.GetProperty("kindCases").EnumerateArray()
+
+    for item in kindCases do
+        let kind = item.GetProperty("kind").GetString()
+        let token = item.GetProperty("token").GetString()
+        Assert.Equal(token, HeatSignal.tokenOfKind kind)
+
+    let storageWins =
+        heatTreaty.GetProperty("qsharpCounterCases").EnumerateArray()
+        |> Seq.find (fun item -> item.GetProperty("id").GetString() = "storage-error-wins-over-pressure")
+
+    Assert.Equal("storage-error", storageWins.GetProperty("token").GetString())
+    Assert.Equal(heatCode "storage-error", storageWins.GetProperty("code").GetInt32())
 
 [<Fact>]
 let ``QubitIso Pauli X Y Z match the Q# gate matrices on computational basis states`` () =

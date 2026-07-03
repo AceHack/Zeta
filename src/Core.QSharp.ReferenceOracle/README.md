@@ -9,6 +9,8 @@ Files:
 - `ZetaReferenceOracle.qs` defines the Q# operations.
 - `HeatSignals.qs` mirrors the finite heat-signal alphabet as pure reference
   functions; it is not a runtime heat sink.
+- `heat-signals-treaty.json` pins the heat token/code vocabulary shared by the
+  Q# oracle labels and the F# `HeatSignal` projection.
 - `generate-qsharp-golden.py` loads those operations through Microsoft QDK and
   emits observable golden vectors.
 - `qsharp-golden.json` is the committed reference fixture ordinary CI checks.

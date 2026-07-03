@@ -1,0 +1,172 @@
+{
+  "schema": "zeta.qsharp.heat-signals.v1",
+  "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
+  "fsharpSurface": "src/Core/Heat.fs",
+  "description": "Finite heat-signal alphabet shared by host heat signatures, Dark Hall transcripts, CSS/LLMTV readouts, and Q# reference-oracle labels. Cold is an oracle boundary state, not emitted heat.",
+  "signals": [
+    {
+      "token": "cold",
+      "qsharpFunction": "HeatSignalCold",
+      "code": 0,
+      "public": false
+    },
+    {
+      "token": "forgotten",
+      "qsharpFunction": "HeatSignalForgotten",
+      "code": 1,
+      "public": true
+    },
+    {
+      "token": "backpressure",
+      "qsharpFunction": "HeatSignalBackpressure",
+      "code": 2,
+      "public": true
+    },
+    {
+      "token": "denied",
+      "qsharpFunction": "HeatSignalDenied",
+      "code": 3,
+      "public": true
+    },
+    {
+      "token": "storage-error",
+      "qsharpFunction": "HeatSignalStorageError",
+      "code": 4,
+      "public": true
+    },
+    {
+      "token": "invalid",
+      "qsharpFunction": "HeatSignalInvalid",
+      "code": 5,
+      "public": true
+    },
+    {
+      "token": "expired",
+      "qsharpFunction": "HeatSignalExpired",
+      "code": 6,
+      "public": true
+    },
+    {
+      "token": "stale",
+      "qsharpFunction": "HeatSignalStale",
+      "code": 7,
+      "public": true
+    },
+    {
+      "token": "other",
+      "qsharpFunction": "HeatSignalOther",
+      "code": 8,
+      "public": true
+    }
+  ],
+  "kindCases": [
+    {
+      "kind": "room-horizon.forgotten",
+      "token": "forgotten"
+    },
+    {
+      "kind": "soft-emu.prune",
+      "token": "forgotten"
+    },
+    {
+      "kind": "meta-cart.policy-backpressure",
+      "token": "backpressure"
+    },
+    {
+      "kind": "room-boundary.door-denied",
+      "token": "denied"
+    },
+    {
+      "kind": "bounded.storage-error",
+      "token": "storage-error"
+    },
+    {
+      "kind": "llmtv.replay.invalid",
+      "token": "invalid"
+    },
+    {
+      "kind": "llmtv.replay.expired",
+      "token": "expired"
+    },
+    {
+      "kind": "llmtv.replay.ttl",
+      "token": "expired"
+    },
+    {
+      "kind": "llmtv.replay.stale",
+      "token": "stale"
+    },
+    {
+      "kind": "future.unknown-signal",
+      "token": "other"
+    }
+  ],
+  "qsharpCounterCases": [
+    {
+      "id": "cold",
+      "heatRejected": 0,
+      "backpressured": 0,
+      "storageErrors": 0,
+      "token": "cold",
+      "code": 0
+    },
+    {
+      "id": "denied",
+      "heatRejected": 1,
+      "backpressured": 0,
+      "storageErrors": 0,
+      "token": "denied",
+      "code": 3
+    },
+    {
+      "id": "backpressure-wins-over-denied",
+      "heatRejected": 1,
+      "backpressured": 1,
+      "storageErrors": 0,
+      "token": "backpressure",
+      "code": 2
+    },
+    {
+      "id": "storage-error-wins-over-pressure",
+      "heatRejected": 1,
+      "backpressured": 1,
+      "storageErrors": 1,
+      "token": "storage-error",
+      "code": 4
+    }
+  ],
+  "qsharpReadoutLossCases": [
+    {
+      "id": "cold",
+      "rejectedFrames": 0,
+      "expiredFrames": 0,
+      "staleFrames": 0,
+      "token": "cold",
+      "code": 0
+    },
+    {
+      "id": "invalid-rejected-readout",
+      "rejectedFrames": 1,
+      "expiredFrames": 0,
+      "staleFrames": 0,
+      "token": "invalid",
+      "code": 5
+    },
+    {
+      "id": "expired-readout",
+      "rejectedFrames": 0,
+      "expiredFrames": 1,
+      "staleFrames": 0,
+      "token": "expired",
+      "code": 6
+    },
+    {
+      "id": "stale-readout",
+      "rejectedFrames": 0,
+      "expiredFrames": 0,
+      "staleFrames": 1,
+      "token": "stale",
+      "code": 7
+    }
+  ]
+}
