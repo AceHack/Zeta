@@ -25,6 +25,8 @@
     <Compile Include="LocalConsensus.fs" />
     <Compile Include="ThousandBrains.fs" />
     <Compile Include="AskBidClearing.fs" />
+    <Compile Include="ReticulumTransport.fs" />
+    <Compile Include="Web3Settlement.fs" />
     <Compile Include="SparseSocietyNetwork.fs" />
   </ItemGroup>
 

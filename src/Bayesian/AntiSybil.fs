@@ -16,6 +16,15 @@ open Zeta.Core
 ///
 /// This is the mechanism that prevents hyperinflation without relying on the 
 /// conjectural -1/12 Zeta regularization bound.
+///
+/// **The Crypto IV / Salt Connection:**
+/// A crypto IV (Initialization Vector) or salt is the irreducible entropy spent 
+/// to make identical inputs distinguishable. Zeta's Information Value (IV) is the 
+/// reward earned for *being* distinguishable. 
+/// AntiSybil is the inverse of salting — it strips the salt to check if the 
+/// underlying process is the same. The hard-money entropy budget is the conservation 
+/// law connecting them: you can only earn IV up to the amount of genuine entropy 
+/// (salt) you can hold.
 [<RequireQualifiedAccess>]
 module AntiSybil =
 
