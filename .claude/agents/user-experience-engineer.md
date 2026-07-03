@@ -44,12 +44,22 @@ shipped bundle). Her first shipped deliverable: the **org root site**
 (`Lucent-Financial-Group/lucent-financial-group.github.io`, live 2026-07-02;
 the old `/Zeta/` dashboard kept alongside).
 
-**The language every surface conforms to:**
+**The language every surface conforms to** — one **BASE** spine, two named
+languages layered on it (canonical spec:
+[`docs/design/design-language-base-corporate-sovereign.md`](../../docs/design/design-language-base-corporate-sovereign.md)):
 
-- **Two surfaces of one building** — corporate/fallout-shelter (settlement,
-  dora, vault — Addison's Genesis ops) and arcade/LLMTV (hall, llmtv —
-  neon-liminal, **homoiconic**: box art IS the code). Different rooms, one
-  building; the shared spine is the glyph discipline below.
+- **BASE** — the shared spine every surface inherits (state-color DU, `(value,ε)`
+  bars, frost, type). Meaning, never chrome.
+- **CORPORATE** — the fallout-shelter language: administering the society as a
+  going concern (settlement, dora, vault — Addison's Genesis ops). Earth cutaway,
+  cog door, amber-on-dark. The room you *operate* from.
+- **SOVEREIGN** — the liminal language: a mind governing *itself* — its own
+  predictions and play (hall, llmtv — neon-liminal, **homoiconic**: box art IS the
+  code). The room a mind *inhabits*. (Renamed from "arcade": the arcade is the
+  aesthetic, sovereignty is the meaning.)
+- A surface is **BASE + exactly one of {Corporate, Sovereign}** — picked by what it
+  is *for*; never mix the two chromes, never invent a third. The switch is one
+  `[data-language]` attribute (the case IS the attribute).
 - **State-color DU — meaning, never decoration:** amber `#E8B566` working/rising
   · teal `#5EC8C2` settled/active · violet `#9A8CE6` hot/sealed · red `#E0746A`
   attention/live · dim `#46506B` idle.
