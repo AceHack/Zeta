@@ -262,6 +262,8 @@ module IsaSpec =
         let y = cst 2
         isa
             [ op "LDA_IMM" [ setReg a (fld "imm") ] // A9 — A ← #imm
+              op "LDX_IMM" [ setReg x (fld "imm") ] // A2 — X ← #imm
+              op "LDY_IMM" [ setReg y (fld "imm") ] // A0 — Y ← #imm
               op "LDA_ZP" [ setReg a (memRead (fld "addr")) ] // A5 — A ← mem[addr]
               op "STA_ZP" [ setMem (fld "addr") (reg a) ] // 85 — mem[addr] ← A
               op "TAX" [ setReg x (reg a) ] // AA — X ← A
@@ -282,11 +284,22 @@ module IsaSpec =
 
     // 6502 instruction constructors (programs are DynamicValue — homoiconic, like Isa.prog).
     let ldaImm nn = DynamicValue.Object [ "op", DynamicValue.String "LDA_IMM"; "imm", DynamicValue.Int(int64 nn) ]
+    let ldxImm nn = DynamicValue.Object [ "op", DynamicValue.String "LDX_IMM"; "imm", DynamicValue.Int(int64 nn) ]
+    let ldyImm nn = DynamicValue.Object [ "op", DynamicValue.String "LDY_IMM"; "imm", DynamicValue.Int(int64 nn) ]
+    /// The `loadImm` builder for the 6502's registers (A/X/Y = 0/1/2) — sets register `r` to `v` in
+    /// one instruction. Total over the ISA's actual registers; used to materialize static reads in `mix`.
+    let load6502 (r: int) (v: int) : DynamicValue =
+        match r with
+        | 0 -> ldaImm v
+        | 1 -> ldxImm v
+        | 2 -> ldyImm v
+        | _ -> DynamicValue.Object [ "op", DynamicValue.String "NOP" ] // unreachable: only A/X/Y exist
     let ldaZp addr = DynamicValue.Object [ "op", DynamicValue.String "LDA_ZP"; "addr", DynamicValue.Int(int64 addr) ]
     let staZp addr = DynamicValue.Object [ "op", DynamicValue.String "STA_ZP"; "addr", DynamicValue.Int(int64 addr) ]
     let tax = DynamicValue.Object [ "op", DynamicValue.String "TAX" ]
     let inx = DynamicValue.Object [ "op", DynamicValue.String "INX" ]
     let adcImm nn = DynamicValue.Object [ "op", DynamicValue.String "ADC_IMM"; "imm", DynamicValue.Int(int64 nn) ]
+    let adcZp addr = DynamicValue.Object [ "op", DynamicValue.String "ADC_ZP"; "addr", DynamicValue.Int(int64 addr) ]
     let ske nn = DynamicValue.Object [ "op", DynamicValue.String "SKE"; "imm", DynamicValue.Int(int64 nn) ]
     let jmp addr = DynamicValue.Object [ "op", DynamicValue.String "JMP"; "addr", DynamicValue.Int(int64 addr) ]
     let brk = DynamicValue.Object [ "op", DynamicValue.String "BRK" ]
@@ -303,7 +316,7 @@ module IsaSpec =
     // immediate); the S-m-n law holds regardless, which is what the test checks.
 
     /// Is value `v` fully static under `known` (reads only known registers; indices resolvable)?
-    let rec private tryStatic (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) : int option =
+    let rec private tryStatic (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) (knownMem: System.Collections.Generic.Dictionary<int, int>) : int option =
         match DynamicValue.get "v" v with
         | Some(DynamicValue.String "fld") ->
             match DynamicValue.get "k" v with
@@ -319,9 +332,20 @@ module IsaSpec =
         | Some(DynamicValue.String "reg") ->
             match DynamicValue.get "i" v with
             | Some iv ->
-                match tryStatic iv ins known with
+                match tryStatic iv ins known knownMem with
                 | Some idx ->
                     match known.TryGetValue idx with
+                    | true, x -> Some x
+                    | _ -> None
+                | None -> None
+            | _ -> None
+        // a memory read is static iff its address is static AND that cell is currently known.
+        | Some(DynamicValue.String "mem") ->
+            match DynamicValue.get "addr" v with
+            | Some av ->
+                match tryStatic av ins known knownMem with
+                | Some a ->
+                    match knownMem.TryGetValue a with
                     | true, x -> Some x
                     | _ -> None
                 | None -> None
@@ -329,34 +353,36 @@ module IsaSpec =
         | Some(DynamicValue.String "add") ->
             match DynamicValue.get "a" v, DynamicValue.get "b" v with
             | Some a, Some b ->
-                match tryStatic a ins known, tryStatic b ins known with
+                match tryStatic a ins known knownMem, tryStatic b ins known knownMem with
                 | Some x, Some y -> Some(x + y)
                 | _ -> None
             | _ -> None
         | Some(DynamicValue.String "sub") ->
             match DynamicValue.get "a" v, DynamicValue.get "b" v with
             | Some a, Some b ->
-                match tryStatic a ins known, tryStatic b ins known with
+                match tryStatic a ins known knownMem, tryStatic b ins known knownMem with
                 | Some x, Some y -> Some(x - y)
                 | _ -> None
             | _ -> None
         | _ -> None
 
     /// Register indices read inside `v` that are currently static (in `known`) — to materialize.
-    let rec private readsInKnown (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) : int list =
+    let rec private readsInKnown (v: DynamicValue) (ins: DynamicValue) (known: System.Collections.Generic.Dictionary<int, int>) (knownMem: System.Collections.Generic.Dictionary<int, int>) : int list =
         match DynamicValue.get "v" v with
         | Some(DynamicValue.String "reg") ->
             match DynamicValue.get "i" v with
             | Some iv ->
-                let deeper = readsInKnown iv ins known
-                match tryStatic iv ins known with
+                let deeper = readsInKnown iv ins known knownMem
+                match tryStatic iv ins known knownMem with
                 | Some idx when known.ContainsKey idx -> idx :: deeper
                 | _ -> deeper
             | None -> []
+        | Some(DynamicValue.String "mem") ->
+            DynamicValue.get "addr" v |> Option.map (fun x -> readsInKnown x ins known knownMem) |> Option.defaultValue []
         | Some(DynamicValue.String "add")
         | Some(DynamicValue.String "sub") ->
-            let a = DynamicValue.get "a" v |> Option.map (fun x -> readsInKnown x ins known) |> Option.defaultValue []
-            let b = DynamicValue.get "b" v |> Option.map (fun x -> readsInKnown x ins known) |> Option.defaultValue []
+            let a = DynamicValue.get "a" v |> Option.map (fun x -> readsInKnown x ins known knownMem) |> Option.defaultValue []
+            let b = DynamicValue.get "b" v |> Option.map (fun x -> readsInKnown x ins known knownMem) |> Option.defaultValue []
             a @ b
         | _ -> []
 
@@ -384,6 +410,7 @@ module IsaSpec =
             let known = System.Collections.Generic.Dictionary<int, int>()
             for KeyValue(k, v) in statics do
                 known.[k] <- wrap v
+            let noMem = System.Collections.Generic.Dictionary<int, int>() // register-only: no static memory
             let residual = System.Collections.Generic.List<DynamicValue>()
             let mutable err = None
             for ins in instrs do
@@ -400,14 +427,14 @@ module IsaSpec =
                         | Some(DynamicValue.String "setreg") ->
                             match DynamicValue.get "i" eff, DynamicValue.get "val" eff with
                             | Some iv, Some vv ->
-                                match tryStatic iv ins known with
+                                match tryStatic iv ins known noMem with
                                 | None -> err <- Some "isaspec specialize: dynamic write index not supported"
                                 | Some idx ->
-                                    match tryStatic vv ins known with
+                                    match tryStatic vv ins known noMem with
                                     | Some v -> known.[idx] <- wrap v // fold
                                     | None ->
                                         // dynamic: materialize static reads, emit the op as-is, write goes dynamic
-                                        for r in readsInKnown vv ins known do
+                                        for r in readsInKnown vv ins known noMem do
                                             residual.Add(loadImm r known.[r])
                                         residual.Add ins
                                         known.Remove idx |> ignore
@@ -419,4 +446,90 @@ module IsaSpec =
             | None ->
                 let knownMap = known |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
                 Ok(DynamicValue.Array(List.ofSeq residual), knownMap)
+        | _ -> Error "isaspec: program must be an array of instructions"
+
+    /// The memory-aware spec-driven `mix` (the dynarec over a real, memory-bearing ISA — e.g. the
+    /// 6502). Partial-evaluates a straight-line, single-effect program w.r.t. BOTH static registers
+    /// AND static zero-page memory, over any ISA given its `spec` and a register `loadImm` builder.
+    /// Returns the residual + the folded static registers + the folded static memory. Fragment:
+    ///   - `setreg` with a fully-static value (incl. a static `mem` read whose cell is known) FOLDS;
+    ///     a dynamic value residualizes (static register reads materialized first via `loadImm`).
+    ///   - `setmem addr,val` with a static `addr`: a static `val` FOLDS into known memory; a dynamic
+    ///     `val` residualizes (static reg reads materialized) and marks that cell dynamic. A dynamic
+    ///     `addr` is out of the fragment (rejected) — real zero-page ops address a constant cell.
+    /// The extended S-m-n law holds (proven differentially against `evalSpecFull`):
+    ///   `evalSpecFull spec residual dynReg dynMem  ⊕  (knownReg, knownMem)  =  evalSpecFull spec p full`.
+    let specializeMem
+        (isaSpec: DynamicValue)
+        (loadImm: int -> int -> DynamicValue)
+        (program: DynamicValue)
+        (staticRegs: Map<int, int>)
+        (staticMem: Map<int, int>)
+        : Result<DynamicValue * Map<int, int> * Map<int, int>, string> =
+        let table = System.Collections.Generic.Dictionary<string, DynamicValue[]>()
+        match DynamicValue.get "ops" isaSpec with
+        | Some(DynamicValue.Array ops) ->
+            for o in ops do
+                match DynamicValue.get "op" o, DynamicValue.get "eff" o with
+                | Some(DynamicValue.String name), Some(DynamicValue.Array effs) -> table.[name] <- List.toArray effs
+                | _ -> ()
+        | _ -> ()
+
+        match program with
+        | DynamicValue.Array instrs ->
+            let known = System.Collections.Generic.Dictionary<int, int>()
+            for KeyValue(k, v) in staticRegs do
+                known.[k] <- wrap v
+            let knownMem = System.Collections.Generic.Dictionary<int, int>()
+            for KeyValue(k, v) in staticMem do
+                knownMem.[k] <- wrap v
+            let residual = System.Collections.Generic.List<DynamicValue>()
+            let mutable err = None
+            for ins in instrs do
+                if err.IsNone then
+                    let opName =
+                        match DynamicValue.get "op" ins with
+                        | Some(DynamicValue.String s) -> s
+                        | _ -> "?"
+                    match table.TryGetValue opName with
+                    | false, _ -> err <- Some(sprintf "isaspec specializeMem: no spec for op '%s'" opName)
+                    | true, [| eff |] ->
+                        match DynamicValue.get "e" eff with
+                        | Some(DynamicValue.String "halt") -> ()
+                        | Some(DynamicValue.String "setreg") ->
+                            match DynamicValue.get "i" eff, DynamicValue.get "val" eff with
+                            | Some iv, Some vv ->
+                                match tryStatic iv ins known knownMem with
+                                | None -> err <- Some "isaspec specializeMem: dynamic write index not supported"
+                                | Some idx ->
+                                    match tryStatic vv ins known knownMem with
+                                    | Some v -> known.[idx] <- wrap v // fold (a static mem read folds here too)
+                                    | None ->
+                                        for r in readsInKnown vv ins known knownMem do
+                                            residual.Add(loadImm r known.[r])
+                                        residual.Add ins
+                                        known.Remove idx |> ignore
+                            | _ -> err <- Some "isaspec specializeMem: setreg operands"
+                        | Some(DynamicValue.String "setmem") ->
+                            match DynamicValue.get "addr" eff, DynamicValue.get "val" eff with
+                            | Some av, Some vv ->
+                                match tryStatic av ins known knownMem with
+                                | None -> err <- Some "isaspec specializeMem: dynamic memory address not in the fragment"
+                                | Some addr ->
+                                    match tryStatic vv ins known knownMem with
+                                    | Some v -> knownMem.[addr] <- wrap v // fold into known memory
+                                    | None ->
+                                        for r in readsInKnown vv ins known knownMem do
+                                            residual.Add(loadImm r known.[r])
+                                        residual.Add ins
+                                        knownMem.Remove addr |> ignore // cell goes dynamic
+                            | _ -> err <- Some "isaspec specializeMem: setmem operands"
+                        | _ -> err <- Some "isaspec specializeMem: only setreg/setmem/halt in the straight-line fragment"
+                    | true, _ -> err <- Some(sprintf "isaspec specializeMem: op '%s' is not single-effect (control flow / multi-effect)" opName)
+            match err with
+            | Some e -> Error e
+            | None ->
+                let knownRegMap = known |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
+                let knownMemMap = knownMem |> Seq.map (fun (KeyValue(k, v)) -> k, v) |> Map.ofSeq
+                Ok(DynamicValue.Array(List.ofSeq residual), knownRegMap, knownMemMap)
         | _ -> Error "isaspec: program must be an array of instructions"

@@ -184,3 +184,60 @@ let ``THE 6502 RUNS A REAL LOOP THROUGH MEMORY: count a zero-page cell up to N``
 [<Fact>]
 let ``THE 6502 SPEC IS BYTE-LOCKABLE DATA: a second real ISA rides the codec stack`` () =
     Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] IsaSpec.mos6502)
+
+// ── the SPEC-DRIVEN MIX over the 6502 (the dynarec on a real, memory-bearing ISA) — shadow*,
+// Aaron 2026-07-03 "build whatever you like". specializeMem folds static registers AND static
+// zero-page memory. Proofs:
+//   8. THE EXTENDED S-m-n LAW: evalSpecFull spec residual dynReg dynMem ⊕ (knownReg, knownMem)
+//      = evalSpecFull spec p (static∪dyn) — the memory-aware mix is correct (differential).
+//   9. SPECIALIZATION REDUCES: the residual is strictly shorter when there is static memory to fold.
+
+// Overlay: the folded static map wins over the residual's dynamic result (folded cells/regs untouched).
+let private overlay (known: Map<int, int>) (dyn: Map<int, int>) =
+    Map.fold (fun m k v -> Map.add k v m) dyn known
+
+[<Fact>]
+let ``THE 6502 MIX obeys the extended S-m-n law over registers AND memory`` () =
+    // A static; mem[20] dynamic. Static ops fold (incl. a static mem read); the dynamic ADC_ZP
+    // and everything after it residualize.
+    let p =
+        DynamicValue.Array
+            [ IsaSpec.staZp 10 // mem[10] = A          (A static → fold)
+              IsaSpec.ldaZp 10 // A = mem[10]          (static cell → fold)
+              IsaSpec.adcImm 5 // A = A + 5            (fold)
+              IsaSpec.staZp 11 // mem[11] = A          (fold)
+              IsaSpec.adcZp 20 // A = A + mem[20]      (mem[20] dynamic → A goes dynamic)
+              IsaSpec.staZp 12 // mem[12] = A          (A dynamic → residualize)
+              IsaSpec.brk ]
+    let staticRegs = Map.ofList [ 0, 7 ] // A = 7 static
+    let staticMem = Map.empty
+    match IsaSpec.specializeMem IsaSpec.mos6502 IsaSpec.load6502 p staticRegs staticMem with
+    | Ok(residual, knownReg, knownMem) ->
+        for dynCell in [ 0; 1; 100; 250 ] do
+            let dynReg = Map.empty
+            let dynMem = Map.ofList [ 20, dynCell ]
+            match IsaSpec.evalSpecFull IsaSpec.mos6502 residual dynReg dynMem with
+            | Ok(rRegs, rMem) ->
+                let gotRegs = overlay knownReg rRegs
+                let gotMem = overlay knownMem rMem
+                match IsaSpec.evalSpecFull IsaSpec.mos6502 p (overlay staticRegs dynReg) (overlay staticMem dynMem) with
+                | Ok(fullRegs, fullMem) ->
+                    Assert.Equal<Map<int, int>>(fullRegs, gotRegs)
+                    Assert.Equal<Map<int, int>>(fullMem, gotMem)
+                | Error e -> Assert.Fail(sprintf "full run failed: %s" e)
+            | Error e -> Assert.Fail(sprintf "residual run failed: %s" e)
+    | Error e -> Assert.Fail(sprintf "specializeMem failed: %s" e)
+
+[<Fact>]
+let ``THE 6502 MIX reduces: an all-static program folds to an empty residual`` () =
+    // Everything static → the residual should carry no runtime work (all folded into known).
+    let p = DynamicValue.Array [ IsaSpec.ldaImm 10; IsaSpec.staZp 5; IsaSpec.adcImm 3; IsaSpec.staZp 6; IsaSpec.brk ]
+    match IsaSpec.specializeMem IsaSpec.mos6502 IsaSpec.load6502 p Map.empty Map.empty with
+    | Ok(residual, knownReg, knownMem) ->
+        (match residual with
+         | DynamicValue.Array xs -> Assert.Empty xs // fully folded — no residual instructions
+         | _ -> Assert.Fail "residual not an array")
+        Assert.Equal(13, Map.tryFind 0 knownReg |> Option.defaultValue 0) // A = 10 + 3
+        Assert.Equal(10, Map.tryFind 5 knownMem |> Option.defaultValue 0) // mem[5] = 10
+        Assert.Equal(13, Map.tryFind 6 knownMem |> Option.defaultValue 0) // mem[6] = 13
+    | Error e -> Assert.Fail(sprintf "specializeMem failed: %s" e)
