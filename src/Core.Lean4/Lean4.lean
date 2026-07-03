@@ -22,3 +22,4 @@ import Lean4.JsonCodec
 import Lean4.CborCodec
 import Lean4.YamlCodec
 import Lean4.Bonsai
+import Lean4.AdjCtlOrthogonality
