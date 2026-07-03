@@ -68,5 +68,31 @@ explicit for humans and AIs together — the same lessons, a scoreboard for char
 - **MMOs also teach bad lessons** (toxicity, addiction loops, RMT normalization) — the gym trains
   whatever the incentives reward; Zeta's job is to build the version whose incentives reward the
   cooperator (the Agora's earned-privacy + attested-name design).
+
+## The anti-toxicity ethic (Aaron 2026-07-02) — the trained-cooperator strategy
+
+> Aaron, answering the toxicity peel: *"antitox = I glitch only when I'm glitched first, but I learn
+> and disclose it always, for profit."*
+
+This is **Axelrod's tournament-winning strategy reinvented from inside an MMO** — the four properties
+that beat every other strategy in the iterated game:
+
+- **Nice** — *"only when glitched first."* Never defect first; no unprovoked exploit.
+- **Provocable** — *"I glitch."* Not a doormat; a wrong gets a response, so defection is not free.
+- **Clear** — *"learn and disclose it always."* Legible by design (glass-halo): the exploit is
+  surfaced, not hoarded, so others can cooperate with you and the world gets stronger. This is the
+  **responsible-disclosure** move that separates a security researcher from an exploiter.
+- **Forgiving** (the completion) — retaliate, then RETURN to cooperation; the strategies that spiral
+  lose. And keep the glitch-back **targeted** at whoever glitched you — in a shared world,
+  retaliation must not splash third parties who never touched you.
+
+**"For profit" is positive-sum here, and not in tension with mutual-empowerment:** the profit is in
+the *disclosure*, not the concealment. EMPRESS profited by KEEPING the crack (value hoarded, taken
+from others); this ethic profits by REVEALING (the bug becomes public value; everyone's system
+hardens; the discloser earns standing for surfacing it). That is exactly `every-bug-has-economic-value`
+— a bug is reducible uncertainty, disclosure banks the ΔU, and the reward is legitimate *because* it
+helped everyone. **Profit-by-revealing is the opposite oracle from profit-by-concealing.** So the
+Agora's job is to make the incentives reward the clear, provocable, forgiving discloser — which is
+the trained-cooperator the moral gym produces when its scoreboard tracks character.
 - **Capture, not doctrine** — this is a research-grade absorb of an operator insight; promotion to a
   rule/spec is a separate step if it proves load-bearing across sessions.
