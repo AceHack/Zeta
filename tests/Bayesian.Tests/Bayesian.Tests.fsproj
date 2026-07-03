@@ -20,6 +20,7 @@
     <Compile Include="AttentionRouter.Tests.fs" />
     <Compile Include="ReticulumRouter.Tests.fs" />
     <Compile Include="InformationValue.Tests.fs" />
+    <Compile Include="ThousandBrains.Tests.fs" />
     <Compile Include="ArrowEscape.Tests.fs" />
     <Compile Include="BayesianTests.fs" />
   </ItemGroup>
