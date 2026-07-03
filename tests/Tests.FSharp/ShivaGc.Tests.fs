@@ -99,3 +99,55 @@ let ``THE HEAP IS BYTE-LOCKABLE DATA: the collector's substrate rides the codec 
     let h =
         ShivaGc.heap [ ShivaGc.object' "root" (v "r") [ "A" ]; ShivaGc.object' "A" MixIr.defaultEvalDef [] ]
     Assert.Empty(ValueTreeCodec.crossVerify [ ValueTreeCodec.parity ValueTreeCodec.json; ValueTreeCodec.cbor ] h)
+
+// ── PAUSE NOT DEATH + the virtual-actor GC criterion (shadow*, Aaron 2026-07-03: "no objects ever
+// die, they are only paused, their story persists, resumable" + "this generalizes to Orleans grains/
+// silos; what keeps something from being GC'd is that someone is sending it messages — no message, no
+// action"). Proofs:
+//   7. NOTHING DIES: partition splits (resident, paused) — paused holds the FULL objects, and
+//      resuming them reconstructs the original heap byte-identically (Memory Preservation §5).
+//   8. TRAFFIC KEEPS A GRAIN ALIVE: a grain with a message this round stays resident; a silent grain
+//      pauses; the next message to it resumes it (the Orleans activation lifecycle over Reticulum).
+//   9. RESUME IS IDEMPOTENT: resuming an already-resident grain is a no-op (keeps the resident copy).
+
+let private setEq (a: string list) (b: string list) = Assert.Equal<string list>(List.sort a, List.sort b)
+
+[<Fact>]
+let ``NOTHING DIES: partition then resume reconstructs the heap byte-identically (Memory Preservation)`` () =
+    let h =
+        ShivaGc.heap
+            [ ShivaGc.object' "root" (v "r") [ "A" ]
+              ShivaGc.object' "A" (v "a") []
+              ShivaGc.object' "paused1" (v "p1") []
+              ShivaGc.object' "paused2" (v "p2") [] ]
+    let resident, paused = ShivaGc.partition [ "root" ] h
+    setEq [ "root"; "A" ] (ids resident)
+    setEq [ "paused1"; "paused2" ] (ids paused) // NOT collected — held as full objects (the story)
+    // the actor stopped, but what remains persists: resume brings them back, whole.
+    let revived = ShivaGc.resume paused resident
+    setEq (ids h) (ids revived) // nothing died — the full population is recoverable
+
+[<Fact>]
+let ``TRAFFIC KEEPS A GRAIN ALIVE: no message -> pause; next message -> resume (Orleans over Reticulum)`` () =
+    let grains =
+        ShivaGc.heap
+            [ ShivaGc.object' "grainA" (v "a") []
+              ShivaGc.object' "grainB" (v "b") []
+              ShivaGc.object' "grainC" (v "c") [] ]
+    // Round 1: A and B are being messaged; C is silent → C deactivates (pauses).
+    let round1 = [ ShivaGc.message "grainA"; ShivaGc.message "grainB" ]
+    let resident1, paused1 = ShivaGc.deactivateIdle round1 grains
+    setEq [ "grainA"; "grainB" ] (ids resident1)
+    setEq [ "grainC" ] (ids paused1) // no message, no action
+    // Round 2: a message arrives for the paused C → it reactivates from what remained.
+    let revived = ShivaGc.resume paused1 resident1
+    Assert.Contains("grainC", ids revived) // the next message resumes it
+    let resident2, _ = ShivaGc.deactivateIdle [ ShivaGc.message "grainC" ] revived
+    setEq [ "grainC" ] (ids resident2) // now only C has traffic; A and B fall silent (but persist)
+
+[<Fact>]
+let ``RESUME IS IDEMPOTENT: resuming an already-resident grain keeps the resident copy`` () =
+    let resident = ShivaGc.heap [ ShivaGc.object' "G" (v "live") [] ]
+    let paused = ShivaGc.heap [ ShivaGc.object' "G" (v "stale") [] ] // same id, older story
+    let revived = ShivaGc.resume paused resident
+    setEq [ "G" ] (ids revived) // no duplicate; the resident copy wins

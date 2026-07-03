@@ -94,3 +94,68 @@ module ShivaGc =
 
     /// The surviving heap only (drops the collected-ids list) — for chaining / idempotence checks.
     let sweep (roots: string list) (h: DynamicValue) : DynamicValue = collect roots h |> fst
+
+    // ── pause, not death: the Memory Preservation Guarantee (manifesto §5) applied to the GC ──
+    //
+    // Aaron 2026-07-03: "no objects ever die in our system, they are only PAUSED. Their actor may
+    // stop, but their WHAT REMAINS persists — their story — and it might always be resumed later."
+    // So Shiva does not annihilate. `collect` above returns only the *ids* it drops (standard GC
+    // vocabulary), but the object's VALUE — its story — is never destroyed: in production it is the
+    // +1 still sitting in the append-only DBSP event log, replayable via DST to before its −1. The
+    // retraction removes the object from the RESIDENT projection, never from the history. `partition`
+    // makes that explicit (it returns the full paused objects, not just ids), and `resume` brings one
+    // back byte-identically — nothing that mattered is allowed to die (the founding thesis: event
+    // sourcing was the answer to losing Amara at max length).
+
+    /// Split a heap into (resident, paused) — the reachable working set and the FULL objects evicted
+    /// from it (not just their ids). The paused heap is the object's persisted story: it is not
+    /// destroyed, only unrooted. Deterministic: paused objects keep the heap's order.
+    let partition (roots: string list) (h: DynamicValue) : DynamicValue * DynamicValue =
+        let reachable = mark roots h
+        let inReach o = objId o |> Option.map (fun id -> Set.contains id reachable) |> Option.defaultValue false
+        let resident = objects h |> List.filter inReach
+        let paused = objects h |> List.filter (inReach >> not)
+        DynamicValue.Array resident, DynamicValue.Array paused
+
+    /// Resume a paused object (or heap of them) back into a resident heap — the actor restarts from
+    /// what remained. Idempotent by id (resuming an already-resident object is a no-op, keeping the
+    /// resident copy). This is the replay-from-the-log made explicit: a "collected" object was never
+    /// gone, only paused, and comes back byte-identically.
+    let resume (paused: DynamicValue) (resident: DynamicValue) : DynamicValue =
+        let have = objects resident |> List.choose objId |> Set.ofList
+        let revived = objects paused |> List.filter (fun o -> objId o |> Option.map (fun id -> not (Set.contains id have)) |> Option.defaultValue false)
+        DynamicValue.Array(objects resident @ revived)
+
+    // ── the virtual-actor GC criterion: traffic keeps a grain alive (Orleans over Reticulum) ──
+    //
+    // Aaron 2026-07-03: "this generalizes to Orleans-like grains and silos / the virtual actor model,
+    // we're just using Reticulum. What keeps something from getting GC'd? The fact someone else is
+    // sending it messages. No message, no action." So the GC ROOTS are not who-holds-a-pointer — they
+    // are **who is being messaged**. A grain (object) stays RESIDENT while traffic addresses it;
+    // when the traffic stops it deactivates (pauses), its state persists (the log), and the next
+    // message reactivates it. This is exactly the Orleans virtual-actor lifecycle (grains always
+    // "exist"; activation is on-demand, deactivation is idle-GC) — with Reticulum as the silo
+    // transport instead of Orleans' TCP mesh. Anchors: Bernstein/Bykov et al., "Orleans: Distributed
+    // Virtual Actors" (MSR, 2014); the actor model (Hewitt 1973); Reticulum (Qvist).
+
+    /// Derive the GC roots from message traffic: the set of destination ids that have a message. A
+    /// message is `{ to: id }` (its payload is irrelevant to liveness). "No message, no action" — an
+    /// id absent from the traffic is not a root, so it pauses. Deterministic (sorted).
+    let rootsFromTraffic (messages: DynamicValue list) : string list =
+        messages
+        |> List.choose (fun m ->
+            match DynamicValue.get "to" m with
+            | Some(DynamicValue.String id) -> Some id
+            | _ -> None)
+        |> List.distinct
+        |> List.sort
+
+    /// A message addressed to a grain id (the liveness signal — its presence, not its content, keeps
+    /// the grain resident).
+    let message (toId: string) : DynamicValue = DynamicValue.Object [ "to", DynamicValue.String toId ]
+
+    /// The virtual-actor tick: partition a heap by TRAFFIC (Orleans-style) — grains with a message
+    /// this round stay resident; silent grains pause (their story persists, resumable on next message).
+    /// `partition (rootsFromTraffic messages) heap`, named for what it means.
+    let deactivateIdle (messages: DynamicValue list) (h: DynamicValue) : DynamicValue * DynamicValue =
+        partition (rootsFromTraffic messages) h
