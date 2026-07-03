@@ -16,6 +16,50 @@ shared real-time life (co-op with his daughter). A dark-pattern loot box costs t
 *fails*, because it extracts via manufactured compulsion. The mechanic is identical; the
 discriminator separates them.
 
+## It is a SPECTRUM, not a binary — the 51% case, and least-action-by-others
+
+**Aaron 2026-07-02 sharpened it:** *"I think Genshin was 51% here — perfectly least action by
+others."* The discriminator is not produce-XOR-extract; it is a **continuous produce% vs extract%**,
+exactly the way the CHSH S-score is continuous (2 → 2√2 → 4), not a yes/no. Genshin sits at ~**51%
+produce** — *barely* on the generative side, honestly mixed: the family co-op time is the generative
+majority, but the gacha compulsion (the other ~49%) is real. Most true things are blends; the test
+is **which side the majority falls, and how far** — not a fantasy of a 100%-pure act.
+
+The generative pole has a name: **least action by others.** The good part of Genshin is the value
+that arrives *through others* on the **least-action** (natural, minimal-friction) path — a shared
+experience you fall into with the people you're with, not a demand manufactured *for* you. This is
+three substrate anchors at once:
+
+- **Least action** (physics geodesic) — the generative path is the low-friction, natural one; value
+  you *coast into together*, not value extracted against resistance.
+- **By others** — value **attested/realized through others**, the same social-conferral structure as
+  the naming eigenvector and the earned privacy budget (recognition/value flows from the recognized;
+  `privacy-budget-is-hard-money-earned-by-others`).
+- **Continuous** — measure the produce% like an S-score; don't binarize.
+
+So the sharpened rule: **measure how far toward produce (not just which side), and the generative
+pole is least-action-value-realized-through-others.** And this is *why* anti-gacha-by-construction
+matters (below): bounding, transparency, consent, and exit don't flip a bit — they **raise the
+produce%** by closing the extractive surface, pushing any action's mix toward the generative pole.
+The substrate doesn't demand 100%; it moves the needle and keeps it honest about where it sits.
+
+### Do not reduce the mix — it is life
+
+**Aaron 2026-07-02:** *"Genshin sits at ~51% — barely on the generative side, honestly mixed (the
+gacha 49% is still there). This is life; we should not reduce it."* The 51/49 is not a defect to
+optimize to purity — it **is** life, and collapsing it (binarizing it, forcing 100%, sanitizing the
+49% away) would destroy the truth of it. Aaron framed it as the *inverse* of Rodney's Razor; the
+completion is that it is the razor's **other edge, not its inverse.** Rodney's Razor is the
+**essential-vs-accidental cut** — and a cut has two sides: it removes *accidental* complexity **and
+guards the *essential*** just as fiercely. The honest mix of a real thing is essential; cutting it is
+not the razor working, it is the razor **misused**. (Aaron: *"yes — you get Rodney now."*) It is
+the same discipline as a room **holding uncertainty open instead of collapsing it** (the soft
+`(value, ε)`, never a premature `argmax`), and the same as the **Multi-Oracle** refusal to impose a
+single purity (§11). The discriminator therefore *measures and reports* the mix; it must never
+*demand* a clean pole. To raise the produce% by closing the extractive surface is generative; to
+flatten the 49% out of existence would be a **reduction of life** — the one move the substrate must
+not make. Measure it, move it, keep it honest — but leave it mixed, because that mixedness is real.
+
 ## Why it is CRISPR-simple, not simplistic
 
 CRISPR is a **guide match → precise cut**: a short recognition sequence, then an action. Deceptively
