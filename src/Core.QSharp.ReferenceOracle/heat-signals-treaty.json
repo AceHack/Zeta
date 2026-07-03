@@ -1,6 +1,7 @@
 {
   "schema": "zeta.qsharp.heat-signals.v1",
   "readoutSchema": "zeta.heat.readout.v1",
+  "temperatureReadoutSchema": "zeta.temperature.readout.v1",
   "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
   "fsharpSurface": "src/Core/Heat.fs",
   "description": "Finite heat-signal alphabet shared by host heat signatures, Dark Hall transcripts, CSS/LLMTV readouts, and Q# reference-oracle labels. Cold is an oracle boundary state, not emitted heat.",
@@ -58,6 +59,84 @@
       "qsharpFunction": "HeatSignalOther",
       "code": 8,
       "public": true
+    }
+  ],
+  "temperatureBands": [
+    {
+      "token": "cold",
+      "qsharpFunction": "TemperatureBandCold",
+      "code": 0,
+      "maxPpm": 0
+    },
+    {
+      "token": "warm",
+      "qsharpFunction": "TemperatureBandWarm",
+      "code": 1,
+      "maxPpm": 333333
+    },
+    {
+      "token": "hot",
+      "qsharpFunction": "TemperatureBandHot",
+      "code": 2,
+      "maxPpm": 666666
+    },
+    {
+      "token": "critical",
+      "qsharpFunction": "TemperatureBandCritical",
+      "code": 3,
+      "maxPpm": 1000000
+    }
+  ],
+  "temperatureCases": [
+    {
+      "id": "cold",
+      "heatPpm": 0,
+      "uncertaintyPpm": 0,
+      "pressurePpm": 0,
+      "attentionPpm": 0,
+      "temperaturePpm": 0,
+      "band": "cold",
+      "code": 0
+    },
+    {
+      "id": "uncertainty-warm",
+      "heatPpm": 0,
+      "uncertaintyPpm": 250000,
+      "pressurePpm": 0,
+      "attentionPpm": 0,
+      "temperaturePpm": 250000,
+      "band": "warm",
+      "code": 1
+    },
+    {
+      "id": "pressure-hot-attended",
+      "heatPpm": 100000,
+      "uncertaintyPpm": 200000,
+      "pressurePpm": 500000,
+      "attentionPpm": 900000,
+      "temperaturePpm": 500000,
+      "band": "hot",
+      "code": 2
+    },
+    {
+      "id": "heat-critical",
+      "heatPpm": 900000,
+      "uncertaintyPpm": 100000,
+      "pressurePpm": 0,
+      "attentionPpm": 0,
+      "temperaturePpm": 900000,
+      "band": "critical",
+      "code": 3
+    },
+    {
+      "id": "attention-does-not-heat-cost",
+      "heatPpm": 125000,
+      "uncertaintyPpm": 125000,
+      "pressurePpm": 0,
+      "attentionPpm": 1000000,
+      "temperaturePpm": 125000,
+      "band": "warm",
+      "code": 1
     }
   ],
   "kindCases": [

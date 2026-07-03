@@ -151,6 +151,9 @@ module HeatReadout =
     let Schema = "zeta.heat.readout.v1"
 
     [<Literal>]
+    let TemperatureSchema = "zeta.temperature.readout.v1"
+
+    [<Literal>]
     let SignalTreaty = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json"
 
     [<Literal>]
@@ -158,6 +161,111 @@ module HeatReadout =
 
     [<Literal>]
     let FSharpSurface = "src/Core/Heat.fs"
+
+
+/// A bounded scalar readout for uncertainty/pressure heat. The fixed-point
+/// parts-per-million scale lets F#, TS, Q#, and Bayesian plugin code compare
+/// the same values without float formatting becoming part of the treaty.
+[<RequireQualifiedAccess>]
+type TemperatureBand =
+    | Cold
+    | Warm
+    | Hot
+    | Critical
+
+
+[<RequireQualifiedAccess>]
+module TemperatureBand =
+
+    let token =
+        function
+        | TemperatureBand.Cold -> "cold"
+        | TemperatureBand.Warm -> "warm"
+        | TemperatureBand.Hot -> "hot"
+        | TemperatureBand.Critical -> "critical"
+
+    let code =
+        function
+        | TemperatureBand.Cold -> 0
+        | TemperatureBand.Warm -> 1
+        | TemperatureBand.Hot -> 2
+        | TemperatureBand.Critical -> 3
+
+
+type TemperatureReadout =
+    { Schema: string
+      Source: string
+      TemperaturePpm: int
+      Band: string
+      HeatPpm: int
+      UncertaintyPpm: int
+      PressurePpm: int
+      AttentionPpm: int }
+
+
+[<RequireQualifiedAccess>]
+module TemperatureReadout =
+
+    [<Literal>]
+    let MaxPpm = 1_000_000
+
+    [<Literal>]
+    let WarmMaxPpm = 333_333
+
+    [<Literal>]
+    let HotMaxPpm = 666_666
+
+    let clampPpm (value: int) : int =
+        value |> max 0 |> min MaxPpm
+
+    let bandOfPpm (value: int) : TemperatureBand =
+        let ppm = clampPpm value
+
+        if ppm = 0 then
+            TemperatureBand.Cold
+        elif ppm <= WarmMaxPpm then
+            TemperatureBand.Warm
+        elif ppm <= HotMaxPpm then
+            TemperatureBand.Hot
+        else
+            TemperatureBand.Critical
+
+    let thermalPpm (heatPpm: int) (uncertaintyPpm: int) (pressurePpm: int) : int =
+        [ heatPpm; uncertaintyPpm; pressurePpm ]
+        |> List.map clampPpm
+        |> List.max
+
+    let ofPpm
+        (source: string)
+        (heatPpm: int)
+        (uncertaintyPpm: int)
+        (pressurePpm: int)
+        (attentionPpm: int)
+        : TemperatureReadout =
+        let heat = clampPpm heatPpm
+        let uncertainty = clampPpm uncertaintyPpm
+        let pressure = clampPpm pressurePpm
+        let attention = clampPpm attentionPpm
+        let temperature = thermalPpm heat uncertainty pressure
+        let band = bandOfPpm temperature
+
+        { Schema = HeatReadout.TemperatureSchema
+          Source = source
+          TemperaturePpm = temperature
+          Band = TemperatureBand.token band
+          HeatPpm = heat
+          UncertaintyPpm = uncertainty
+          PressurePpm = pressure
+          AttentionPpm = attention }
+
+    let ofHeatSignature (signature: HeatSignature) : TemperatureReadout =
+        let pressure =
+            if HeatSignal.ofSignature signature |> HeatSignal.isPressure then
+                MaxPpm
+            else
+                0
+
+        ofPpm signature.Source (int (min (int64 MaxPpm) signature.MassPpm)) 0 pressure 0
 
 
 /// Feedback from the injected heat sink. Heat is diagnostic output, but the

@@ -20,6 +20,7 @@
     <Compile Include="AttentionRouter.Tests.fs" />
     <Compile Include="ReticulumRouter.Tests.fs" />
     <Compile Include="InformationValue.Tests.fs" />
+    <Compile Include="BayesianTemperature.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
     <Compile Include="BusRegime.Tests.fs" />
     <Compile Include="ThousandBrains.Tests.fs" />

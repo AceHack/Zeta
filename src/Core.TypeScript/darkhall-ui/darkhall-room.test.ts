@@ -8,6 +8,7 @@ import {
   HEAT_READOUT_SCHEMA,
   HEAT_SIGNAL_QSHARP_SOURCE,
   HEAT_SIGNAL_TREATY_PATH,
+  TEMPERATURE_READOUT_SCHEMA,
   sLaneVerdict,
   heatSignals,
   normalizeHeatSignals,
@@ -15,6 +16,9 @@ import {
   renderDarkHallRoomDocument,
   renderDarkHallRoomHtml,
   summarizeHeatRows,
+  temperatureBand,
+  temperatureReadout,
+  thermalPpm,
   type HeatReadout,
   type HeatRow,
   type RoomRunTranscript,
@@ -26,9 +30,19 @@ const heatTreaty = JSON.parse(
 ) as {
   readonly schema: string;
   readonly readoutSchema: string;
+  readonly temperatureReadoutSchema: string;
   readonly qsharpSource: string;
   readonly fsharpSurface: string;
   readonly signals: readonly { readonly token: string; readonly public: boolean }[];
+  readonly temperatureCases: readonly {
+    readonly id: string;
+    readonly heatPpm: number;
+    readonly uncertaintyPpm: number;
+    readonly pressurePpm: number;
+    readonly attentionPpm: number;
+    readonly temperaturePpm: number;
+    readonly band: "cold" | "warm" | "hot" | "critical";
+  }[];
 };
 
 const doorDeniedHeat: HeatRow = {
@@ -254,10 +268,38 @@ describe("Dark Hall CSS room UI", () => {
 
     expect(heatTreaty.schema).toBe("zeta.qsharp.heat-signals.v1");
     expect(heatTreaty.readoutSchema).toBe(HEAT_READOUT_SCHEMA);
+    expect(heatTreaty.temperatureReadoutSchema).toBe(TEMPERATURE_READOUT_SCHEMA);
     expect(heatTreaty.qsharpSource).toBe(HEAT_SIGNAL_QSHARP_SOURCE);
     expect(heatTreaty.fsharpSurface).toBe(HEAT_FSHARP_SURFACE);
     expect(heatReadout.qsharpTreaty).toBe(HEAT_SIGNAL_TREATY_PATH);
     expect(heatReadout.signals.every((signal) => publicTokens.includes(signal))).toBe(true);
+  });
+
+  it("keeps temperature as a scalar uncertainty/pressure treaty while attention only records ordering pressure", () => {
+    for (const vector of heatTreaty.temperatureCases) {
+      expect(thermalPpm(vector.heatPpm, vector.uncertaintyPpm, vector.pressurePpm)).toBe(vector.temperaturePpm);
+      expect(temperatureBand(vector.temperaturePpm)).toBe(vector.band);
+      expect(
+        temperatureReadout({
+          source: vector.id,
+          heatPpm: vector.heatPpm,
+          uncertaintyPpm: vector.uncertaintyPpm,
+          pressurePpm: vector.pressurePpm,
+          attentionPpm: vector.attentionPpm,
+        }),
+      ).toMatchObject({
+        schema: TEMPERATURE_READOUT_SCHEMA,
+        source: vector.id,
+        temperaturePpm: vector.temperaturePpm,
+        band: vector.band,
+        attentionPpm: vector.attentionPpm,
+      });
+    }
+
+    const attended = heatTreaty.temperatureCases.find((vector) => vector.id === "attention-does-not-heat-cost");
+    expect(attended).toBeDefined();
+    expect(attended?.attentionPpm).toBe(1_000_000);
+    expect(attended?.temperaturePpm).toBe(125_000);
   });
 
   it("renders a no-script document; CSS owns geometry and state projection", () => {

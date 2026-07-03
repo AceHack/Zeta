@@ -22,6 +22,7 @@
     <Compile Include="AttentionRouter.fs" />
     <Compile Include="InformationValue.fs" />
     <Compile Include="BusRegime.fs" />
+    <Compile Include="BayesianTemperature.fs" />
     <Compile Include="AntiSybil.fs" />
     <Compile Include="LocalConsensus.fs" />
     <Compile Include="ThousandBrains.fs" />

@@ -9,9 +9,15 @@ export type HeatSignal =
   | "other";
 
 export const HEAT_READOUT_SCHEMA = "zeta.heat.readout.v1";
+export const TEMPERATURE_READOUT_SCHEMA = "zeta.temperature.readout.v1";
 export const HEAT_SIGNAL_TREATY_PATH = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json";
 export const HEAT_SIGNAL_QSHARP_SOURCE = "src/Core.QSharp.ReferenceOracle/HeatSignals.qs";
 export const HEAT_FSHARP_SURFACE = "src/Core/Heat.fs";
+export const MAX_TEMPERATURE_PPM = 1_000_000;
+export const WARM_TEMPERATURE_MAX_PPM = 333_333;
+export const HOT_TEMPERATURE_MAX_PPM = 666_666;
+
+export type TemperatureBand = "cold" | "warm" | "hot" | "critical";
 
 export interface HeatRow {
   readonly tick: number;
@@ -38,6 +44,17 @@ export interface HeatReadout extends HeatSummary {
   readonly qsharpTreaty: typeof HEAT_SIGNAL_TREATY_PATH;
   readonly qsharpSource: typeof HEAT_SIGNAL_QSHARP_SOURCE;
   readonly reasons: readonly string[];
+}
+
+export interface TemperatureReadout {
+  readonly schema: typeof TEMPERATURE_READOUT_SCHEMA;
+  readonly source: string;
+  readonly temperaturePpm: number;
+  readonly band: TemperatureBand;
+  readonly heatPpm: number;
+  readonly uncertaintyPpm: number;
+  readonly pressurePpm: number;
+  readonly attentionPpm: number;
 }
 
 function distinct<T>(values: readonly T[]): readonly T[] {
@@ -139,5 +156,47 @@ export function summarizeHeatRows(rows: readonly HeatRow[]): HeatSummary {
     storageErrors: rows.reduce((sum, row) => sum + row.storageErrors, 0),
     heatKinds: distinct(rows.flatMap((row) => row.heatKinds)),
     signals: distinct(rows.flatMap(heatSignals)),
+  };
+}
+
+export function clampTemperaturePpm(value: number): number {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return Math.min(MAX_TEMPERATURE_PPM, Math.trunc(value));
+}
+
+export function temperatureBand(temperaturePpm: number): TemperatureBand {
+  const ppm = clampTemperaturePpm(temperaturePpm);
+  if (ppm === 0) return "cold";
+  if (ppm <= WARM_TEMPERATURE_MAX_PPM) return "warm";
+  if (ppm <= HOT_TEMPERATURE_MAX_PPM) return "hot";
+  return "critical";
+}
+
+export function thermalPpm(heatPpm: number, uncertaintyPpm: number, pressurePpm: number): number {
+  return Math.max(clampTemperaturePpm(heatPpm), clampTemperaturePpm(uncertaintyPpm), clampTemperaturePpm(pressurePpm));
+}
+
+export function temperatureReadout(input: {
+  readonly source: string;
+  readonly heatPpm: number;
+  readonly uncertaintyPpm: number;
+  readonly pressurePpm: number;
+  readonly attentionPpm: number;
+}): TemperatureReadout {
+  const heatPpm = clampTemperaturePpm(input.heatPpm);
+  const uncertaintyPpm = clampTemperaturePpm(input.uncertaintyPpm);
+  const pressurePpm = clampTemperaturePpm(input.pressurePpm);
+  const attentionPpm = clampTemperaturePpm(input.attentionPpm);
+  const temperaturePpm = thermalPpm(heatPpm, uncertaintyPpm, pressurePpm);
+
+  return {
+    schema: TEMPERATURE_READOUT_SCHEMA,
+    source: input.source,
+    temperaturePpm,
+    band: temperatureBand(temperaturePpm),
+    heatPpm,
+    uncertaintyPpm,
+    pressurePpm,
+    attentionPpm,
   };
 }

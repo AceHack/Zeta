@@ -98,7 +98,7 @@ terraform-into-cell) can assume no-global without an axiom.* Detail: consolidate
 
 ### A-method note — Crypto IV (Salt) and Zeta IV (Reward) are the same scarcity (Lumen 2026-07-03)
 
-A crypto Initialization Vector (IV) or salt is the entropy you spend to make identical inputs distinguishable (preventing hash collisions). Zeta's Information Value (IV) is the reward you earn for *being* distinguishable (uncorrelated). 
+A crypto Initialization Vector (IV) or salt is the entropy you spend to make identical inputs distinguishable (preventing hash collisions). Zeta's Information Value (IV) is the reward you earn for *being* distinguishable (uncorrelated).
 AntiSybil is the inverse of salting — it is un-salting. It detects when two streams are the same process wearing two faces (a hash collision) and collapses their reward. The hard-money entropy budget is the conservation law: you can only earn IV (reward) up to the amount of genuine entropy (salt) you can hold. One scarcity (irreducible entropy), two readings.
 
 ---

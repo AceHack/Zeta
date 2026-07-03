@@ -22,9 +22,26 @@ interface HeatCase {
 interface HeatSignalsTreaty {
   readonly schema: string;
   readonly readoutSchema: string;
+  readonly temperatureReadoutSchema: string;
   readonly qsharpSource: string;
   readonly fsharpSurface: string;
   readonly signals: readonly HeatSignalVector[];
+  readonly temperatureBands: readonly {
+    readonly token: string;
+    readonly qsharpFunction: string;
+    readonly code: number;
+    readonly maxPpm: number;
+  }[];
+  readonly temperatureCases: readonly {
+    readonly id: string;
+    readonly heatPpm: number;
+    readonly uncertaintyPpm: number;
+    readonly pressurePpm: number;
+    readonly attentionPpm: number;
+    readonly temperaturePpm: number;
+    readonly band: string;
+    readonly code: number;
+  }[];
   readonly kindCases: readonly { readonly kind: string; readonly token: string }[];
   readonly qsharpCounterCases: readonly HeatCase[];
   readonly qsharpReadoutLossCases: readonly HeatCase[];
@@ -73,6 +90,7 @@ describe("Q# heat-signal reference treaty", () => {
     expect(source).toContain("namespace Zeta.Heat");
     expect(treaty.schema).toBe("zeta.qsharp.heat-signals.v1");
     expect(treaty.readoutSchema).toBe("zeta.heat.readout.v1");
+    expect(treaty.temperatureReadoutSchema).toBe("zeta.temperature.readout.v1");
     expect(treaty.qsharpSource).toBe("src/Core.QSharp.ReferenceOracle/HeatSignals.qs");
     expect(treaty.fsharpSurface).toBe("src/Core/Heat.fs");
 
@@ -91,6 +109,8 @@ describe("Q# heat-signal reference treaty", () => {
       "stale",
       "other",
     ]);
+
+    expect(treaty.temperatureBands.map((band) => band.token)).toEqual(["cold", "warm", "hot", "critical"]);
   });
 
   test("pins Q# signal codes to the committed treaty vector", () => {
@@ -106,6 +126,33 @@ describe("Q# heat-signal reference treaty", () => {
     ]);
 
     expect(treaty.qsharpReadoutLossCases.map((item) => item.token)).toEqual(["cold", "invalid", "expired", "stale"]);
+  });
+
+  test("pins Q# temperature bands and ppm classifier to treaty vectors", () => {
+    for (const band of treaty.temperatureBands) {
+      expect(functionReturnCode(band.qsharpFunction)).toBe(band.code);
+    }
+
+    const thermal = functionBody("ThermalPpm");
+    expect(thermal).toContain("ClampPpm(heatPpm)");
+    expect(thermal).toContain("ClampPpm(uncertaintyPpm)");
+    expect(thermal).toContain("ClampPpm(pressurePpm)");
+    expect(thermal).not.toContain("attention");
+
+    const bandForPpm = functionBody("TemperatureBandForPpm");
+    expect(bandForPpm).toContain("ppm == 0");
+    expect(bandForPpm).toContain("ppm <= 333333");
+    expect(bandForPpm).toContain("ppm <= 666666");
+    expect(bandForPpm).toContain("TemperatureBandCritical");
+
+    expect(treaty.temperatureCases.map((item) => item.id)).toContain("attention-does-not-heat-cost");
+    expect(treaty.temperatureCases.map((item) => item.band)).toEqual([
+      "cold",
+      "warm",
+      "hot",
+      "critical",
+      "warm",
+    ]);
   });
 
   test("normalizes future heat codes to Other instead of silently dropping them", () => {

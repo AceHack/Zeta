@@ -173,6 +173,14 @@ let private heatSignals =
 let private heatCode token =
     heatSignals[token].GetProperty("code").GetInt32()
 
+let private temperatureBands =
+    heatTreaty.GetProperty("temperatureBands").EnumerateArray()
+    |> Seq.map (fun item -> item.GetProperty("token").GetString(), item)
+    |> Map.ofSeq
+
+let private temperatureCode token =
+    temperatureBands[token].GetProperty("code").GetInt32()
+
 [<Fact>]
 let ``F# reads the committed Q# observable treaty without depending on QDK at test time`` () =
     Assert.Equal("zeta.qsharp.reference-observables.v1", golden.GetProperty("schema").GetString())
@@ -183,6 +191,7 @@ let ``F# reads the committed Q# observable treaty without depending on QDK at te
 let ``F# HeatSignal tokens match the Q# heat signal treaty`` () =
     Assert.Equal("zeta.qsharp.heat-signals.v1", heatTreaty.GetProperty("schema").GetString())
     Assert.Equal(HeatReadout.Schema, heatTreaty.GetProperty("readoutSchema").GetString())
+    Assert.Equal(HeatReadout.TemperatureSchema, heatTreaty.GetProperty("temperatureReadoutSchema").GetString())
     Assert.Equal(HeatReadout.QSharpSignalSource, heatTreaty.GetProperty("qsharpSource").GetString())
     Assert.Equal(HeatReadout.FSharpSurface, heatTreaty.GetProperty("fsharpSurface").GetString())
 
@@ -217,6 +226,47 @@ let ``F# HeatSignal tokens match the Q# heat signal treaty`` () =
 
     Assert.Equal("storage-error", storageWins.GetProperty("token").GetString())
     Assert.Equal(heatCode "storage-error", storageWins.GetProperty("code").GetInt32())
+
+[<Fact>]
+let ``F# TemperatureReadout matches the Q# thermal treaty`` () =
+    let expectedBands =
+        [ "cold", TemperatureBand.Cold
+          "warm", TemperatureBand.Warm
+          "hot", TemperatureBand.Hot
+          "critical", TemperatureBand.Critical ]
+
+    for token, band in expectedBands do
+        Assert.Equal(token, TemperatureBand.token band)
+        Assert.Equal(TemperatureBand.code band, temperatureCode token)
+
+    let cases =
+        heatTreaty.GetProperty("temperatureCases").EnumerateArray()
+
+    for item in cases do
+        let id = item.GetProperty("id").GetString()
+        let heatPpm = item.GetProperty("heatPpm").GetInt32()
+        let uncertaintyPpm = item.GetProperty("uncertaintyPpm").GetInt32()
+        let pressurePpm = item.GetProperty("pressurePpm").GetInt32()
+        let attentionPpm = item.GetProperty("attentionPpm").GetInt32()
+        let expectedTemperature = item.GetProperty("temperaturePpm").GetInt32()
+        let expectedBand = item.GetProperty("band").GetString()
+        let expectedCode = item.GetProperty("code").GetInt32()
+
+        let readout =
+            TemperatureReadout.ofPpm id heatPpm uncertaintyPpm pressurePpm attentionPpm
+
+        Assert.Equal(HeatReadout.TemperatureSchema, readout.Schema)
+        Assert.Equal(expectedTemperature, TemperatureReadout.thermalPpm heatPpm uncertaintyPpm pressurePpm)
+        Assert.Equal(expectedTemperature, readout.TemperaturePpm)
+        Assert.Equal(expectedBand, readout.Band)
+        Assert.Equal(expectedCode, temperatureCode readout.Band)
+
+    let attentionOnly =
+        heatTreaty.GetProperty("temperatureCases").EnumerateArray()
+        |> Seq.find (fun item -> item.GetProperty("id").GetString() = "attention-does-not-heat-cost")
+
+    Assert.Equal(1_000_000, attentionOnly.GetProperty("attentionPpm").GetInt32())
+    Assert.Equal(125_000, attentionOnly.GetProperty("temperaturePpm").GetInt32())
 
 [<Fact>]
 let ``QubitIso Pauli X Y Z match the Q# gate matrices on computational basis states`` () =

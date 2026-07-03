@@ -19,6 +19,11 @@ namespace Zeta.Heat {
     function HeatSignalStale() : Int { return 7; }
     function HeatSignalOther() : Int { return 8; }
 
+    function TemperatureBandCold() : Int { return 0; }
+    function TemperatureBandWarm() : Int { return 1; }
+    function TemperatureBandHot() : Int { return 2; }
+    function TemperatureBandCritical() : Int { return 3; }
+
     /// Normalize a committed heat-signal code. Unknown/future codes remain visible
     /// as Other rather than being dropped or silently treated as Cold.
     function HeatSignalFromKindCode(kindCode : Int) : Int {
@@ -81,5 +86,47 @@ namespace Zeta.Heat {
 
     function HeatRowIsCold(heatRejected : Int, backpressured : Int, storageErrors : Int) : Bool {
         return heatRejected == 0 and backpressured == 0 and storageErrors == 0;
+    }
+
+    function ClampPpm(value : Int) : Int {
+        if value < 0 {
+            return 0;
+        }
+        if value > 1000000 {
+            return 1000000;
+        }
+        return value;
+    }
+
+    /// Temperature is the honest scalar pressure lane: heat, uncertainty, and
+    /// backpressure can raise it. Attention is intentionally not an input here;
+    /// attention changes ordering, not the thermal cost itself.
+    function ThermalPpm(heatPpm : Int, uncertaintyPpm : Int, pressurePpm : Int) : Int {
+        let heat = ClampPpm(heatPpm);
+        let uncertainty = ClampPpm(uncertaintyPpm);
+        let pressure = ClampPpm(pressurePpm);
+
+        if heat >= uncertainty and heat >= pressure {
+            return heat;
+        }
+        if uncertainty >= pressure {
+            return uncertainty;
+        }
+        return pressure;
+    }
+
+    function TemperatureBandForPpm(temperaturePpm : Int) : Int {
+        let ppm = ClampPpm(temperaturePpm);
+
+        if ppm == 0 {
+            return TemperatureBandCold();
+        }
+        if ppm <= 333333 {
+            return TemperatureBandWarm();
+        }
+        if ppm <= 666666 {
+            return TemperatureBandHot();
+        }
+        return TemperatureBandCritical();
     }
 }
