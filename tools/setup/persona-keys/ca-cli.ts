@@ -12,6 +12,7 @@
 //   bun ca-cli.ts ca   --ca aaron --dry-run                       # generates NOTHING
 //   bun ca-cli.ts ca   --ca aaron                                 # generate local CA key
 //   bun ca-cli.ts ca   --ca aaron --commit-pub                    # + write CA pubkey to repo (no commit)
+//   bun ca-cli.ts ca   --ca aaron --shamir 2-of-3                  # generate + split private key into shares (one fingerprint)
 //   bun ca-cli.ts cert --user aaron --machine mymac --dry-run     # signs NOTHING (single owner)
 //   bun ca-cli.ts cert --user aaron --machine mymac               # sign that machine's pubkey -> cert
 //   bun ca-cli.ts cert --users aaron,addison --machine d --dry-run # multi-owner plan (NOTHING signed)
@@ -19,7 +20,12 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureCa, signMachineCert, realEffects, DEFAULT_CERT_VALIDITY } from "./ca.ts";
 import { machinePubPath, sanitizeHostname } from "./machine.ts";
-import { realBiometric } from "./biometric.ts";
+import { realBiometric, sessionBiometric } from "./biometric.ts";
+import {
+  formatSplitCaShamir,
+  realEffects as shamirRealFx,
+  splitCaToShares,
+} from "./ca-shamir-custody.ts";
 
 const args = process.argv.slice(2);
 const mode = args[0];
@@ -33,9 +39,10 @@ const opt = (n: string) => {
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = opt("--repo-root") ?? resolve(here, "..", "..", "..");
 const fx = realEffects();
-// AGENT-RUN, OPERATOR-APPROVED: the shared biometric gate is the operator's authorization
-// for the real keygen/sign path (fail-closed). Dry-run never invokes it.
-const biometricAuth = realBiometric();
+const shamirSpec = opt("--shamir");
+// When splitting shares after generation, one fingerprint covers CA gen + Shamir split.
+const biometricSession = shamirSpec !== undefined ? sessionBiometric(realBiometric()) : undefined;
+const biometricAuth = biometricSession?.door ?? realBiometric();
 
 async function main(): Promise<number> {
   if (mode === "ca") {
@@ -58,6 +65,16 @@ async function main(): Promise<number> {
     console.log(`action=${r.action} ca=${ca}`);
     console.log(`CA private key (local only): ${r.caPrivatePath}`);
     if (r.committedPub) console.log(`wrote CA PUBLIC key -> ${r.caPublicPath} (NOT committed; you commit it)`);
+    if (shamirSpec !== undefined && (r.action === "generated" || r.action === "exists")) {
+      const sr = await splitCaToShares(shamirRealFx(), {
+        ca,
+        shamir: shamirSpec,
+        confirm: true,
+        biometricAuth,
+      });
+      console.log(formatSplitCaShamir(sr));
+      if (sr.action === "skipped-biometric" || sr.action === "no-ca" || sr.action === "failed") return 1;
+    }
     // Printing the CA PUBLIC key is safe (it is the git-distributed trust root).
     if (r.caPublicKey !== undefined) console.log(r.caPublicKey);
     return 0;
@@ -109,7 +126,7 @@ async function main(): Promise<number> {
 
   console.error(
     "usage:\n" +
-      "  bun ca-cli.ts ca   --ca <name> [--dry-run] [--commit-pub]\n" +
+      "  bun ca-cli.ts ca   --ca <name> [--dry-run] [--commit-pub] [--shamir <k-of-n>]\n" +
       "  bun ca-cli.ts cert (--user <name> | --users a,b) --machine <host> [--validity +52w] [--dry-run]",
   );
   return 2;

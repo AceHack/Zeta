@@ -17,6 +17,7 @@
 // Usage:
 //   bun rotate-cli.ts --user aaron --ca aaron                         # DRY RUN (default — nothing touched)
 //   bun rotate-cli.ts --user aaron --ca aaron --confirm               # REAL rotate, all ports (one fingerprint)
+//   bun rotate-cli.ts --user aaron --ca aaron --confirm --shamir 2-of-3  # + split new active CA key into shares
 //   bun rotate-cli.ts --user aaron --ca aaron --ports machine-key,device-cert --confirm
 //   bun rotate-cli.ts --user aaron --ca aaron --host mymac --confirm  # explicit hostname
 //
@@ -35,6 +36,11 @@ import {
   type RotateOptions,
   type RotatePort,
 } from "./rotate.ts";
+import {
+  formatSplitCaShamir,
+  realEffects as shamirRealFx,
+  splitCaToShares,
+} from "./ca-shamir-custody.ts";
 
 const args = process.argv.slice(2);
 const flag = (n: string): boolean => args.includes(n);
@@ -52,6 +58,7 @@ const home = opt("--home") ?? homedir();
 const certValidity = opt("--validity");
 const confirm = flag("--confirm");
 const dryRun = !confirm; // DEFAULT-safe: only an explicit --confirm makes it a real run
+const shamirSpec = opt("--shamir");
 
 const portsArg = opt("--ports");
 const ports: readonly RotatePort[] =
@@ -62,7 +69,7 @@ const ports: readonly RotatePort[] =
 function usage(): void {
   process.stderr.write(
     "usage: bun rotate-cli.ts --user <name> [--ca <name>] [--host <name>] [--home <path>] " +
-      "[--ports <a,b,c>] [--validity <+52w>] [--confirm] [--repo-root <path>]\n" +
+      "[--ports <a,b,c>] [--validity <+52w>] [--confirm] [--shamir <k-of-n>] [--repo-root <path>]\n" +
       "  DEFAULT-SAFE: no --confirm => DRY RUN (reports what WOULD rotate; nothing touched, no prompt).\n" +
       `  --ports => any of: ${ROTATE_PORTS.join(", ")} (default: all).\n` +
       "  --confirm => REAL rotate on the overlap-window lifecycle: mint standby → promote → retire old,\n" +
@@ -103,6 +110,27 @@ async function main(): Promise<number> {
 
   const res = await rotate(realEffects(), opts);
   process.stdout.write(formatRotate(res) + "\n");
+
+  if (
+    shamirSpec !== undefined &&
+    confirm &&
+    !dryRun &&
+    ports.includes("ca-key") &&
+    res.rotations.some((r) => r.port === "ca-key" && r.action === "rotated")
+  ) {
+    const sr = await splitCaToShares(shamirRealFx(), {
+      ca: ca ?? user,
+      home,
+      shamir: shamirSpec,
+      confirm: true,
+      label: "active-post-rotate",
+      biometricAuth: session.door,
+    });
+    process.stdout.write(formatSplitCaShamir(sr) + "\n");
+    if (sr.action === "skipped-biometric" || sr.action === "no-ca" || sr.action === "failed") {
+      return 1;
+    }
+  }
 
   // Hard block iff a confirmed run was refused at the biometric gate (nothing was rotated).
   const declined = res.confirmed && !res.dryRun && res.biometric !== undefined && !res.biometric.ok;
