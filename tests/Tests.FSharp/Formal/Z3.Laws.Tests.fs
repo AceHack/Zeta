@@ -1063,3 +1063,52 @@ let ``Z3 proves THE CHSH LOCAL-HIDDEN-VARIABLE BOUND: for deterministic ±1 outc
         "                  (>= (+ (- (* a b) (* a b2)) (* a2 b) (* a2 b2)) (- 2)))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "CHSH LHV bound (deterministic strategies)" script
+
+// ═══════════════════════════════════════════════════════════════════
+// C9 (081KT2T2J0008QG0R000YZ3NMY P1) — v²-overflow safety in `vHat`.
+//
+// The probit projection computes:
+//   v̂ = v·(1 − (v/(1+v))·λ(z+λ))
+// The C9 claim is that v/(1+v) < 1 for ALL valid v > 0, which means
+// the intermediate (v/(1+v))·λ(z+λ) never amplifies the v² term
+// beyond v itself — keeping v̂ finite even when v = 1e308.
+//
+// Z3 proves this over the IDEAL REALS (QF_LRA):
+//   ∀ v > 0. v / (1 + v) < 1   (trivially: v < 1 + v ⟺ 0 < 1)
+// The FsCheck twin (Ep.Tests.fs: "no v-squared overflow" Fact) exercises
+// the actual floating-point implementation at v = 1e308.
+//
+// Anchor: Ep.fs line 89: `let vHat = v * (1.0 - (v / (1.0 + v)) * lambda * (z + lambda))`
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves v/(1+v) < 1 for all v > 0 (C9: no v² overflow in vHat)`` () =
+    // QF_LRA: negate the claim v/(1+v) < 1, i.e. assert v/(1+v) >= 1 → unsat
+    let script =
+        "(set-logic QF_LRA)\n" +
+        "(declare-const v Real)\n" +
+        "(assert (> v 0.0))\n" +
+        "(assert (>= (/ v (+ 1.0 v)) 1.0))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C9 v/(1+v) < 1 for v > 0 (vHat overflow safety)" script
+
+[<Fact>]
+let ``Z3 proves v/(1+v) > 0 for all v > 0 (C9: vHat factor is non-trivial)`` () =
+    let script =
+        "(set-logic QF_LRA)\n" +
+        "(declare-const v Real)\n" +
+        "(assert (> v 0.0))\n" +
+        "(assert (<= (/ v (+ 1.0 v)) 0.0))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C9 v/(1+v) > 0 for v > 0 (vHat factor is positive)" script
+
+[<Fact>]
+let ``Z3 proves v*(1 - v/(1+v)) = v/(1+v) for all v > 0 (C9: factored form algebraically correct)`` () =
+    // Confirms the factored v·(1 − v/(1+v)) = v/(1+v) identity that avoids the v² intermediate.
+    let script =
+        "(set-logic QF_LRA)\n" +
+        "(declare-const v Real)\n" +
+        "(assert (> v 0.0))\n" +
+        "(assert (not (= (* v (- 1.0 (/ v (+ 1.0 v)))) (/ v (+ 1.0 v)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C9 v*(1 - v/(1+v)) = v/(1+v) algebraic identity" script

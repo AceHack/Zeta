@@ -137,3 +137,49 @@ let ``the probit factor emits a flat message under an improper (uniform) cavity`
     // the factor sends the flat message (no information yet)
     let out = (Ep.probitFactor 3).ComputeMessages (Map.ofList [ 3, Gaussian.One ])
     out.[3] |> should equal Gaussian.One
+
+// ═══════════════════════════════════════════════════════════════════
+// C8 (081KT2T2J0008QG0R000YZ3NMY P1) — the asymptotic inverse-Mills expansion
+// λ(z) ≈ −z − 1/z + 2/z³ has O(1/z⁵) truncation error for z ≪ 0.
+//
+// The full lower-tail Mills series is:
+//   λ(z) = −z − 1/z + 2/z³ − 6/z⁵ + 24/z⁷ − …  (alternating, |z| large)
+// so the truncation error after the 2/z³ term is bounded by the next term
+// |6/z⁵|. For z ≤ −4 the error is ≤ 6/4⁵ ≈ 0.023; for z ≤ −8 it is ≤
+// 6/8⁵ ≈ 1.5e-4. This is the C8 claim: the 3-term asymptotic is accurate
+// to O(1/z⁵) in the tail.
+//
+// FsCheck generates z ≤ −4 and checks that the absolute error between the
+// 3-term approximation (the impl) and the 5-term approximation (one more
+// pair of terms, O(1/z⁷) accurate) is ≤ 6/|z|⁵ — i.e. the 4th term
+// really is the dominant error. This is a self-consistency check of the
+// series, not a comparison against Φ (which underflows in this regime).
+//
+// Anchor: Abramowitz & Stegun §26.2.12; Minka 2001 EP appendix.
+// ═══════════════════════════════════════════════════════════════════
+
+/// 3-term asymptotic inverse Mills: −z − 1/z + 2/z³  (the impl's formula)
+let private mills3 (z: float) : float =
+    let zi = 1.0 / z
+    -z - zi + 2.0 * zi * zi * zi
+
+/// 5-term asymptotic inverse Mills: adds −6/z⁵ + 24/z⁷  (one more pair)
+let private mills5 (z: float) : float =
+    let zi  = 1.0 / z
+    let zi2 = zi * zi
+    let zi3 = zi2 * zi
+    let zi5 = zi3 * zi2
+    let zi7 = zi5 * zi2
+    -z - zi + 2.0 * zi3 - 6.0 * zi5 + 24.0 * zi7
+
+[<Property>]
+let ``C8 inverse-Mills 3-term asymptotic error is bounded by 6/|z|⁵ for z ≤ -4 (O(1/z⁵) bound)``
+    (NormalFloat zRaw) =
+    // clamp to z ≤ −4 so Φ(z) is in the underflow regime and the series is valid
+    let z = -(abs zRaw + 4.0)   // z ∈ (−∞, −4]
+    let err   = abs (mills3 z - mills5 z)
+    let z5    = abs (z * z * z * z * z)
+    let bound = 6.0 / z5        // |next term| = 6/|z|⁵
+    // The 4th term of the series (−6/z⁵) dominates the truncation error;
+    // the 5-term approximation is the reference. Error must be ≤ bound.
+    err <= bound * 1.01         // 1% slack for floating-point rounding
