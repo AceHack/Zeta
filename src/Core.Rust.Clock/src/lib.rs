@@ -44,6 +44,21 @@ impl Versionstamp {
     pub const fn is_before(self, other: Versionstamp) -> bool {
         self.version < other.version
     }
+
+    /// Canonical 8-byte big-endian encoding (versionstamp wire format, Gate T2).
+    /// The i64 is treated as unsigned 64-bit in network byte order.
+    #[must_use]
+    pub fn encode(self) -> [u8; 8] {
+        (self.version as u64).to_be_bytes()
+    }
+
+    /// Decode an 8-byte big-endian buffer back to a Versionstamp.
+    #[must_use]
+    pub fn decode(buf: [u8; 8]) -> Versionstamp {
+        Versionstamp {
+            version: u64::from_be_bytes(buf) as i64,
+        }
+    }
 }
 
 /// An injectable deterministic scheduler (Rx `IScheduler` shape). Seeded -> replays

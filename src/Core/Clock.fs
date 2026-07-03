@@ -53,6 +53,23 @@ module Versionstamp =
     /// Strict happens-before (total order, single-writer): a precedes b.
     let isBefore (a: Versionstamp) (b: Versionstamp) : bool = a.Version < b.Version
 
+    /// Canonical 8-byte big-endian encoding (versionstamp wire format, Gate T2).
+    /// Treats the int64 as an unsigned 64-bit value in network byte order.
+    let encode (v: Versionstamp) : byte[] =
+        let u = uint64 v.Version
+        [| byte (u >>> 56); byte (u >>> 48); byte (u >>> 40); byte (u >>> 32)
+           byte (u >>> 24); byte (u >>> 16); byte (u >>> 8);  byte u |]
+
+    /// Decode an 8-byte big-endian buffer back to a Versionstamp.
+    let decode (b: byte[]) : Versionstamp =
+        if b.Length < 8 then failwith "Versionstamp.decode: buffer too short"
+        let u =
+            (uint64 b.[0] <<< 56) ||| (uint64 b.[1] <<< 48) |||
+            (uint64 b.[2] <<< 40) ||| (uint64 b.[3] <<< 32) |||
+            (uint64 b.[4] <<< 24) ||| (uint64 b.[5] <<< 16) |||
+            (uint64 b.[6] <<< 8)  |||  uint64 b.[7]
+        { Version = int64 u }
+
 
 /// An injectable deterministic scheduler (Rx `IScheduler` shape). `Now` is the
 /// current logical time; `step` advances it one tick. Seeded → replays identically.
