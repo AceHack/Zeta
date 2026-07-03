@@ -363,6 +363,44 @@ citation.
   with never-be-idle + agent-qol free-time-as-valid-mode
   substrate.
 
+### Bernoulli/zeta bridges + Brownian-expert ensembles (added 2026-07-03 per Aaron: "we should save this prior art i didn't know about the connections here")
+
+- **Neal 1996 — *Bayesian Learning for Neural Networks*** ⭐ — the theorem that an
+  infinite-width BNN **IS a Gaussian process**. The anchor under Aaron's practice of
+  treating local BNNs/LLMs as stochastic processes: not a metaphor, the
+  infinite-width limit. (Modern frontier: NNGP/NTK — Lee et al. 2018, Jacot et al.
+  2018.)
+- **Einstein 1905 / Wiener 1923** ⭐ — Brownian motion made physics, then rigorous
+  measure theory (the Wiener process). The 1/ν² spectrum whose zoo row is
+  **convergent (π²/6, Euler 1734)** — the no-regularization class; the martingale
+  property = the no-arbitrage prior for an unmeasured expert (can't be pumped for
+  information it hasn't accumulated).
+- **Matérn family (Matérn 1960; Stein 1999, *Interpolation of Spatial Data*)** —
+  the tunable smoothness dial between rough-Brownian and smooth experts. A
+  smoother-than-Brownian claim about an expert is a *calibration debt*, not a
+  default.
+- **Euler 1738 / Maclaurin 1742; Hardy, *Divergent Series* (1949)** ⭐ — the
+  Euler–Maclaurin formula: the B₂ = 1/6 → **1/12** correction between discrete
+  sums and continuous integrals (trapezoid error −(h²/12)f″). The elementary,
+  honest form of "the cost of a frame rate" — same Bernoulli as Casimir, no
+  renormalization. Casimir 1948 is the physics; the real 3-D plate constant is
+  ζ(−3) = **+1/120**, not −1/12.
+- **Ray–Singer 1971; Seeley 1967** — spectral zeta functions define functional
+  determinants (det A = exp(−ζ′_A(0))): where zeta regularization *genuinely*
+  enters Gaussian-process information (log-dets), carrying ζ(0) = −1/2 and
+  ζ′(0) = −½log 2π — not the celebrity constant.
+- **de Moivre / Stirling 1730 (Whittaker–Watson)** ⭐ — Stirling's series for
+  log Γ: coefficients B₂ₙ/(2n(2n−1)) ⇒ **Bernoulli numbers verbatim in every
+  conjugate Bayesian log-evidence** (leading correction 1/12N — the terms BIC
+  truncates). The most concrete Bernoulli-in-our-actual-code crossing.
+- **Itti & Baldi 2005/2009 — "Bayesian surprise attracts human attention"** ⭐ —
+  realized KL(posterior‖prior) as the attention-ranking quantity; the direct
+  ancestor of Zeta's *realized* IV (Lindley 1956 owns the *expected* form).
+- Full derivations + sympy-verified constants:
+  `docs/research/2026-07-03-bernoulli-bridge-map-where-the-minus-one-twelfth-connection-is-really-there.md`
+  (+ `docs/research/scripts/`) · zoo reference
+  `2026-07-03-the-constants-zoo-spectrum-classes-and-brownian-llm-ensembles-aaron.md`.
+
 ### Retrieval + embeddings
 
 - **Malkov & Yashunin, *Efficient and robust approximate
