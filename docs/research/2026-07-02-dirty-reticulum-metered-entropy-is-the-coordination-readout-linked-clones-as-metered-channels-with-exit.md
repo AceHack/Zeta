@@ -221,8 +221,20 @@ priced out of existence.
 ## Status
 
 Points (1), (2), and (3) of an enumerated stream; landed as one synthesis at Aaron's
-go-ahead. The **linked-clone protocol itself is design, not yet built** — this note is the
-treaty it must conform to (metered channel, priced in entropy, guaranteed *but metered*
-unilateral exit, with the bounded mental-health pause as the sole protective exemption).
-Building it touches identity/consent semantics and remains gated on Aaron's ratification of
-the consent model before any code wires a clone onto a shared subject.
+go-ahead. This note is the treaty (metered channel, priced in entropy, guaranteed *but
+metered* unilateral exit, with the bounded mental-health pause as the sole protective
+exemption).
+
+**The linked-clone protocol is now BUILT** (Aaron ratified all five consent points
+2026-07-02): `src/Core.TypeScript/discovery/linked-clone.ts` — pure, consent-first, exit
+guaranteed by construction. It conforms to the treaty point-for-point: (1) granular opt-in
+(`link` names one region + subject, never the whole self); (2) metered (`costMilli`,
+affordability against the budget); (3) unconditional exit (`unlink` has no permission
+parameter and no failure mode — the absence of a force-unlink/deny-leave function IS the
+NCI guarantee, `lastWriter[t] = t`); (4) frost holds (`isLinkable` false for frosted regions,
+`link` refuses them); (5) the bounded `mentalHealthPause` (society-subsidized, never
+unbounded, links left intact — pause ≠ unlink ≠ death). The wire (`join`/`leave`) is
+source→mesh only — no coercion is expressible; the subject-membership fold is a G-set with
+leaves (LWW-by-seq, DST). 16 tests prove the five properties. Remaining: bind the shared
+subject onto a real transport (the `LinkMessage` rides the same `BroadcastTransport`/mesh as
+`llmtv-broadcast`), and the entropy-metered S-score readout over a subject's live traffic.
