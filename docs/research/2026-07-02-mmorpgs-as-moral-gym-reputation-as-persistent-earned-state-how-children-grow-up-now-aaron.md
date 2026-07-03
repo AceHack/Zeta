@@ -87,12 +87,35 @@ that beat every other strategy in the iterated game:
   retaliation must not splash third parties who never touched you.
 
 **"For profit" is positive-sum here, and not in tension with mutual-empowerment:** the profit is in
-the *disclosure*, not the concealment. EMPRESS profited by KEEPING the crack (value hoarded, taken
-from others); this ethic profits by REVEALING (the bug becomes public value; everyone's system
+the *disclosure*, not the concealment. EMPRESS profited by KEEPING the crack — **secret rather than
+empowered** (Aaron's one-line crux: the flip is not the crack, it is the *withholding*); this ethic
+profits by REVEALING (the bug becomes public value; everyone's system
 hardens; the discloser earns standing for surfacing it). That is exactly `every-bug-has-economic-value`
 — a bug is reducible uncertainty, disclosure banks the ΔU, and the reward is legitimate *because* it
 helped everyone. **Profit-by-revealing is the opposite oracle from profit-by-concealing.** So the
 Agora's job is to make the incentives reward the clear, provocable, forgiving discloser — which is
 the trained-cooperator the moral gym produces when its scoreboard tracks character.
+
+### Aaron's coinage: **tit-for-lesser-tat, teach, play**
+
+> Aaron 2026-07-02: *"this is what I call tit for lesser tat, teach, play."*
+
+A named refinement of tit-for-tat, and each word is load-bearing:
+
+- **tit-for-LESSER-tat** — retaliate with *less* than you received, not an equal blow. This is
+  **generous tit-for-tat** (Nowak & Sigmund 1992): responding under-proportionally *damps* the echo
+  where strict eye-for-an-eye *spirals*, and it provably outcompetes strict TFT in noisy populations
+  (a misread move doesn't ignite a feud). De-escalation as the winning move, not the soft one.
+- **teach** — after you respond, *raise the other player*: disclose what you learned, show the fix,
+  make the exploit legible. This is the indirect-reciprocity / pedagogy leg (Nowak & Sigmund 2005) —
+  you are not just declining to spiral, you are actively lifting the counterpart toward cooperation.
+  The security-researcher move: the disclosure teaches the whole ecosystem.
+- **play** — keep it an **infinite game** (Carse 1986): the aim is to continue the play with more
+  players, not to win and end it. Retaliation, teaching, forgiveness all serve *keeping the game
+  going* — the opposite of the finite-game "defect, extract, exit" that secrecy-for-profit plays.
+
+So the full strategy: **respond less-than-proportionally, teach the fix, keep playing.** It is
+Axelrod's nice+provocable+forgiving+clear, tuned toward de-escalation and pedagogy, and framed as an
+infinite game — the exact shape the Agora wants its reputation economy to reward.
 - **Capture, not doctrine** — this is a research-grade absorb of an operator insight; promotion to a
   rule/spec is a separate step if it proves load-bearing across sessions.
