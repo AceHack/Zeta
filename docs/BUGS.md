@@ -107,6 +107,14 @@ can no longer pass with Go silent.
 
 ### Discovery-beacon wire is unsigned — spoof / poison / forged-evict (bus, shadow*)
 
+**STATUS (2026-07-03, Otto): membrane SHIPPED, adoption remaining.** `beacon-auth.ts`
+(`signMessage`/`observeSigned`) is the authenticity membrane in front of the untouched pure
+fold — Ed25519 over Ace canonical bytes, zid-ownership binding, self-signed `bye`, dual-key
+overlap rotation; 11 tests incl. spoof/poison/forged-evict/tamper refusals. REMAINING: switch
+the callers (living-node / transports) from `observe` to `observeSigned` and distribute the
+trust store from the `maintainers/<name>/` keyring pubkeys; a captured envelope is replayable
+within TTL (freshness not yet signed — named residual, needs per-peer seq state).
+
 - **Site:** `src/Core.TypeScript/discovery/discovery-beacon.ts:99-124` (`observe`) — `hello`/`probeMatch` upsert an attacker-supplied `{ep, zid, routes}` into every listener's PeerTable with NO authenticity check; `bye` (l.110-114) deletes a peer by `endpointKey(msg.ep)` with zero auth (one forged `bye` evicts any node from every table).
 - **Found:** 2026-07-03 by Otto (bus-doc anti-entropy sweep), Aaron steer ("ais should just do similar/same" as the human auth)
 - **Severity:** P1
