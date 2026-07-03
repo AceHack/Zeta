@@ -18,6 +18,7 @@
     <Compile Include="BayesianAggregate.fs" />
     <Compile Include="EngineAdapter.fs" />
     <Compile Include="InferNetTopology.fs" />
+    <Compile Include="SocietyBootstrap.fs" />
   </ItemGroup>
 
   <ItemGroup>
