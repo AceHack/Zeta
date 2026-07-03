@@ -34,8 +34,13 @@ print("zeta(0)   =", sp.zeta(0))
 print("zeta(-1)  =", sp.zeta(-1))
 print("zeta(-3)  =", sp.zeta(-3))
 print("zeta(2)   =", sp.zeta(2))
-zp0 = sp.diff(sp.zeta(s), s).subs(s, 0)
-print("zeta'(0)  =", sp.simplify(zp0), "=", sp.nsimplify(sp.N(sp.zeta(s).diff(s).subs(s,0), 30), [sp.log(2*sp.pi)]))
+# zeta'(0) = -log(2*pi)/2. Assert numerically (nsimplify on this hits a sympy
+# RecursionError on some versions — replay-fragile, so we check the value instead).
+import mpmath as _mp
+zp0_num = _mp.diff(lambda t: _mp.zeta(t), 0)
+zp0_expected = -_mp.log(2 * _mp.pi) / 2
+assert abs(zp0_num - zp0_expected) < 1e-12, (zp0_num, zp0_expected)
+print("zeta'(0)  =", _mp.nstr(zp0_num, 15), "= -log(2*pi)/2 (asserted)")
 print("B2 =", sp.bernoulli(2), " B4 =", sp.bernoulli(4))
 
 print()
