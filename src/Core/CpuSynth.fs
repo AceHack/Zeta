@@ -192,8 +192,9 @@ module CpuSynth =
                 Ok(Sequential.seqCircuit core feedback init)
         | _ -> Error "cpusynth: program must be an array of instructions"
 
-    /// Read the final register map (16 registers) from a run's latched state.
-    let private regsOf (state: Map<string, int>) : Map<int, int> =
+    /// Read the final register map (16 registers) from a run's latched state. Public so a caller
+    /// that clocks a synthesized circuit itself (e.g. the unified `Residual` runner) can decode it.
+    let readRegs (state: Map<string, int>) : Map<int, int> =
         [ for k in 0..15 ->
               k,
               ([ 0..7 ]
@@ -211,5 +212,5 @@ module CpuSynth =
         | Error e -> Error e
         | Ok seqc ->
             match Sequential.run seqc Map.empty cycles with
-            | Ok state -> Ok(regsOf state)
+            | Ok state -> Ok(readRegs state)
             | Error e -> Error e

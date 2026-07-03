@@ -105,6 +105,7 @@
     <Compile Include="Sequential.Tests.fs" />
     <Compile Include="Cpu.Tests.fs" />
     <Compile Include="CpuSynth.Tests.fs" />
+    <Compile Include="Residual.Tests.fs" />
     <Compile Include="Sppf.Tests.fs" />
     <Compile Include="PcfgEm.Tests.fs" />
     <Compile Include="GrammarLadder.Tests.fs" />
