@@ -1238,9 +1238,8 @@ use case. One library, two Zeta surfaces.
 **Technical:** `github.com/dotnet/infer` — MIT-licensed,
 F# and C# native, maintained by Microsoft Research. Authored
 originally to support the MSR Bayesian-inference work
-(TrueSkill, Bing relevance, clinical trials); open-sourced in
-
-2018. Supports factor-graph compilation, exact inference on
+(TrueSkill, Bing relevance, clinical trials); open-sourced in 2018.
+Supports factor-graph compilation, exact inference on
 
 tree-structured graphs, loopy belief propagation on general
 graphs, and a model-compilation phase that generates .NET IL.
