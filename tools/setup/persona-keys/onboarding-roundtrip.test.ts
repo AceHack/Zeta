@@ -513,8 +513,9 @@ test("ROTATE GAP CLOSED: a per-PORT rotate command now exists (rotate.ts) for ma
   // and CA key (exercised end-to-end in the leg below + in rotate.test.ts). The keyset.rotate
   // dual-key SET primitive (above) and keyring.sh remain the SET / USER-seed primitives. NOT in
   // scope (named, deferred): threshold/Shamir k-of-n (081KVP3GYW1), org-vs-user-CA conflict
-  // (081KVP3GYWS0), and a unified cluster-trust-root rotate. KRL revocation is CLOSED (revoke.ts).
-  // Trust-graph scope rule + Shamir k-of-n are CLOSED (trust-graph.ts, shamir.ts).
+  // (081KVP3GYWS0). KRL revocation is CLOSED (revoke.ts). Trust-graph scope rule + Shamir k-of-n
+  // are CLOSED (trust-graph.ts, shamir.ts, ca-shamir-custody.ts). Cluster-trust-root rotate is
+  // CLOSED (rotate-cluster.ts — peer-preserving CA overlap + machine ports).
   const rotateSrc = readFileSync(join(import.meta.dir, "rotate.ts"), "utf8");
   expect(/export\s+(async\s+)?function\s+rotate/.test(rotateSrc)).toBe(true);
   for (const port of ROTATE_PORTS) expect(rotateSrc).toContain(port);
@@ -556,6 +557,14 @@ test("SHAMIR CUSTODY GAP CLOSED: CA private key split/combine wiring exists (ca-
   const src = readFileSync(join(import.meta.dir, "ca-shamir-custody.ts"), "utf8");
   expect(/export\s+async\s+function\s+splitCaToShares/.test(src)).toBe(true);
   expect(/export\s+async\s+function\s+combineSharesToCa/.test(src)).toBe(true);
+});
+
+test("CLUSTER TRUST-ROOT ROTATE GAP CLOSED: peer-preserving rotate-cluster exists", () => {
+  const src = readFileSync(join(import.meta.dir, "rotate-cluster.ts"), "utf8");
+  expect(/export\s+async\s+function\s+rotateCluster/.test(src)).toBe(true);
+  expect(src).toContain("peersPreserved");
+  const setupSrc = readFileSync(join(import.meta.dir, "setup-cluster.ts"), "utf8");
+  expect(/export\s+function\s+parseTrustSetPeers/.test(setupSrc)).toBe(true);
 });
 
 // ══════════════════════════════════════════════════════════════════════════════════════════════

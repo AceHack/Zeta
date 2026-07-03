@@ -112,6 +112,35 @@ export function trustedUserCaKeysPath(repoRoot: string, ca: string): string {
   return `${dir}/trusted-user-ca-keys.pub`;
 }
 
+/**
+ * Parse PEER cluster CA entries from an existing trust-set file (PUBLIC text only).
+ * Recognises setup-cluster's `# <source> cluster CA` markers; ignores `self` and rotate's
+ * `# CA '<name>' #N` self-overlap markers. Used so CA rotation preserves cross-cluster trust.
+ */
+export function parseTrustSetPeers(trustSetText: string): PeerCa[] {
+  const peers: PeerCa[] = [];
+  let pendingSource: string | undefined;
+  for (const raw of trustSetText.split("\n")) {
+    const line = raw.trim();
+    const sourceMark = /^#\s+(\S+)\s+cluster CA\s*$/.exec(line);
+    if (sourceMark) {
+      pendingSource = sourceMark[1];
+      continue;
+    }
+    // Rotate-format self markers (`# CA 'foo' #1`) — not peers.
+    if (/^#\s+CA\s+'/.test(line)) {
+      pendingSource = undefined;
+      continue;
+    }
+    if (line.startsWith("#") || line.length === 0) continue;
+    if (pendingSource !== undefined && pendingSource !== "self" && looksLikePublicKey(line)) {
+      peers.push({ name: pendingSource, publicKey: line });
+    }
+    pendingSource = undefined;
+  }
+  return peers;
+}
+
 /** True iff the text looks like an SSH PUBLIC key line (ssh-ed25519 / ssh-rsa / ecdsa-…). */
 export function looksLikePublicKey(text: string): boolean {
   return /^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp\d+|sk-ssh-ed25519@openssh\.com|sk-ecdsa-sha2-nistp\d+@openssh\.com)\s+\S+/m.test(
@@ -127,10 +156,13 @@ export function looksLikePrivateKey(text: string): boolean {
 }
 
 /**
- * RENDER the node-side multi-CA trust set: this cluster's CA public key first, then each PEER
+ * RENDER the node-side multi-CA trust set: this cluster's CA public key(s) first, then each PEER
  * cluster's CA public key — the value sshd's `TrustedUserCAKeys` points at. PURE: no IO, no
  * keygen — just text. Rejects any peer input that does not look like an SSH PUBLIC key, or that
  * looks PRIVATE (fail-closed; a private key must never enter the trust set).
+ *
+ * `selfCaPublicKey` may be a single pubkey or an array (overlap-window CA rotation lists BOTH
+ * old and new self pubs so existing certs still verify). De-duplicates while preserving order.
  *
  * The resulting file (one CA pubkey per line) is exactly what sshd reads: a cert signed by ANY
  * listed CA is accepted → clusters trust each other.
@@ -138,12 +170,19 @@ export function looksLikePrivateKey(text: string): boolean {
 export function renderTrustSet(
   repoRoot: string,
   ca: string,
-  selfCaPublicKey: string,
+  selfCaPublicKey: string | readonly string[],
   peers: readonly PeerCa[],
 ): RenderedTrustSet {
   const lines: TrustedCaLine[] = [];
-  const self = selfCaPublicKey.trim();
-  if (self.length > 0) lines.push({ source: "self", publicKey: self });
+  const selfKeys = (typeof selfCaPublicKey === "string" ? [selfCaPublicKey] : selfCaPublicKey)
+    .map((k) => k.trim())
+    .filter((k) => k.length > 0);
+  const seenSelf = new Set<string>();
+  for (const self of selfKeys) {
+    if (seenSelf.has(self)) continue;
+    seenSelf.add(self);
+    lines.push({ source: "self", publicKey: self });
+  }
   for (const peer of peers) {
     const pk = peer.publicKey.trim();
     if (looksLikePrivateKey(pk)) {

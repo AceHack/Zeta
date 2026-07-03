@@ -54,6 +54,11 @@ Lifecycle-triad + reconciler doc (2026-06-21). Blast-radius no-orphan proof
 
 ## Deferred (named, not in scope)
 
-- Threshold/Shamir k-of-n (081KVP3GYW1)
-- Org-vs-user-CA conflict (081KVP3GYWS0)
-- Unified cluster-trust-root rotate (single command spanning cluster + machine scopes)
+- Threshold/Shamir k-of-n (081KVP3GYW1) — reference oracle + CA custody wiring landed separately
+- Org-vs-user-CA conflict (081KVP3GYWS0) — landed separately (`trust-graph.ts`)
+
+## Closed follow-on
+
+- **✅ Unified cluster-trust-root rotate** — `rotate-cluster.ts` / `rotate-cluster-cli.ts`: one
+  command spanning cluster CA + machine ports; preserves peer CAs in `TrustedUserCAKeys` across
+  CA overlap (fixes peer-drop in bare `rotate --ports ca-key`).

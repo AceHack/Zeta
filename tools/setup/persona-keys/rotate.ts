@@ -72,7 +72,11 @@ import {
   sanitizeHostname,
   realEffects as machineRealEffects,
 } from "./machine.ts";
-import { trustedUserCaKeysPath } from "./setup-cluster.ts";
+import {
+  parseTrustSetPeers,
+  renderTrustSet,
+  trustedUserCaKeysPath,
+} from "./setup-cluster.ts";
 import { requireBiometric, sessionBiometric, type BiometricAuth, type BiometricResult } from "./biometric.ts";
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
@@ -547,12 +551,15 @@ async function rotateCaKey(fx: RotateEffects, opts: RotateOptions): Promise<Port
   }
   const newCaPub = fx.readText(standby + ".pub").trim();
 
-  // TRUST SET = OLD + NEW (the overlap). sshd accepts a cert signed by EITHER CA → existing certs
-  // (signed by the OLD CA) STILL verify, while the NEW CA signs going forward. Both pubkeys stay in
-  // the file for the whole window; the old line is removed only AFTER the window (a later teardown /
+  // TRUST SET = OLD + NEW self CAs (the overlap) + PRESERVED PEER CAs. sshd accepts a cert signed
+  // by ANY listed CA → existing certs (signed by the OLD CA) STILL verify, while the NEW CA signs
+  // going forward, and cross-cluster trust is not silently dropped. Both self pubkeys stay in the
+  // file for the whole window; the old line is removed only AFTER the window (a later teardown /
   // a follow-up `rotate --finalize`, out of scope here — we keep BOTH, never drop the old early).
   const trustPath = trustedUserCaKeysPath(opts.repoRoot, opts.ca);
-  const trustFile = renderCaTrustSet(opts.ca, [oldCaPub, newCaPub]);
+  const peers = fx.exists(trustPath) ? parseTrustSetPeers(fx.readText(trustPath)) : [];
+  const trustFile = renderTrustSet(opts.repoRoot, opts.ca, [oldCaPub, newCaPub], peers)
+    .trustedUserCaKeysFile;
   fx.mkdirp(dirOf(trustPath));
   fx.writeText(trustPath, trustFile);
   if (fx.stageRepoWrite(opts.repoRoot, relUnder(opts.repoRoot, trustPath))) {
@@ -584,26 +591,6 @@ async function rotateCaKey(fx: RotateEffects, opts: RotateOptions): Promise<Port
       ? "resumed an in-progress CA overlap (standby CA already staged — not re-minted; both pubkeys still trusted)"
       : "minted new CA, kept BOTH CA pubkeys in TrustedUserCAKeys (overlap → existing certs still verify), promoted new CA signer",
   };
-}
-
-/** Render a `TrustedUserCAKeys` file body holding MANY CA pubkeys (one per line) — the multi-CA
- *  trust set sshd reads. Mirrors setup-cluster.ts renderTrustSet's shape; kept local so a CA rotate
- *  does not depend on that module's peer-validation path. PUBLIC keys only (de-duplicated, ordinal). */
-export function renderCaTrustSet(ca: string, caPublicKeys: readonly string[]): string {
-  const header =
-    "# Zeta TrustedUserCAKeys — overlap-window CA rotation trust set (one CA public key per line).\n" +
-    `# sshd accepts a device cert signed by ANY CA listed here. During a CA rotation BOTH the old\n` +
-    `# and new CA pubkeys for '${ca}' are listed → every existing cert still verifies (∅-blast-radius).\n`;
-  // De-duplicate while preserving order (old first, new second) — idempotent re-apply is a no-op.
-  const seen = new Set<string>();
-  const lines: string[] = [];
-  caPublicKeys.forEach((k, i) => {
-    const pk = k.trim();
-    if (pk.length === 0 || seen.has(pk)) return;
-    seen.add(pk);
-    lines.push(`# CA '${ca}' #${i + 1}\n${pk}`);
-  });
-  return header + lines.join("\n") + (lines.length > 0 ? "\n" : "");
 }
 
 // ── small helpers ────────────────────────────────────────────────────────────────────────────────
