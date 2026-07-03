@@ -223,6 +223,53 @@ module Sppf =
                 let o = Map.tryFind node out |> Option.defaultValue 0.0
                 i * o / z)
 
+    /// Enumerate the parse trees WITH their weights — each tree a `DynamicValue` (leaf `{term}`,
+    /// internal `{rule,kids}`, matching `Slr.parseTree`), weight = product of the production
+    /// weights along it (its inside weight). Feeds `ParseSoft.ofWeightedForest` → a `SoftValue`
+    /// = `PredictProbability` over parses. Capped at `maxTrees` (enumeration is exponential;
+    /// the polynomial marginals are `marginals`). Cycle-guarded ⇒ total.
+    let weightedTrees (weight: int -> float) (maxTrees: int) (f: Forest) : (DynamicValue * float) list =
+        let symName (s: Sym) =
+            match s with
+            | GrammarIr.Term n
+            | GrammarIr.NonTerm n -> n
+        let memo = System.Collections.Generic.Dictionary<Node, (DynamicValue * float) list>(HashIdentity.Structural)
+        let inProg = System.Collections.Generic.HashSet<Node>(HashIdentity.Structural)
+        let rec enum (node: Node) : (DynamicValue * float) list =
+            match memo.TryGetValue node with
+            | true, v -> v
+            | _ ->
+                if inProg.Contains node then
+                    []
+                else
+                    inProg.Add node |> ignore
+                    let (sym, _, _) = node
+                    let result =
+                        familiesOf node f
+                        |> List.collect (fun fam ->
+                            if fam.Prod < 0 then
+                                [ DynamicValue.Object [ "term", DynamicValue.String(symName sym) ], 1.0 ]
+                            else
+                                // cartesian product of the children's (tree, weight) enumerations
+                                let combos =
+                                    fam.Kids
+                                    |> List.fold
+                                        (fun acc kid ->
+                                            [ for (kidsSoFar, wAcc) in acc do
+                                                  for (t, w) in enum kid do
+                                                      yield (kidsSoFar @ [ t ], wAcc * w) ])
+                                        [ ([], 1.0) ]
+                                [ for (kids, wKids) in combos ->
+                                      DynamicValue.Object
+                                          [ "rule", DynamicValue.String(symName sym)
+                                            "kids", DynamicValue.Array kids ],
+                                      weight fam.Prod * wKids ])
+                        |> List.truncate maxTrees
+                    inProg.Remove node |> ignore
+                    memo.[node] <- result
+                    result
+        enum f.Root |> List.truncate maxTrees
+
     /// Project the forest to a `DynamicValue` — homoiconic, byte-lockable, queryable as data.
     let toDynamicValue (f: Forest) : DynamicValue =
         let symName (s: Sym) =

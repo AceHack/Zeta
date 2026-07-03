@@ -127,10 +127,16 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    = `inside·outside / inside(root)` per node — the **`NodeDistribution` / `PredictProbability`
    share**: 1.0 for a node in every parse, a fraction for an ambiguous one (proven: root & first-
    token = 1.0, the two "id+id" sub-parses = 0.5). Fixpoint outside, self-contained, total.
-   **← resume: bridge marginals → `ParseSoft`** (a weighted-tree enumeration for the SoftValue-
-   over-parses = `PredictProbability`), and the **production-weight source** (learned via EM — the
-   inside–outside expected counts are already computable — or set). Then the loopy/EP + emotional-
-   propagation rung on `Zeta.Bayesian` (math-team); parses → ISA.
+13. ✅ **Weighted bridge → `PredictProbability` over parses** — LANDED (`Sppf.weightedTrees` +
+   `ParseSoft.ofSppf`): SPPF + production weights → a `SoftValue` over parses, each parse's mass ∝
+   the product of its production weights (its inside weight). **Inference biases the answer** —
+   proven: for `S→a|A; A→a`, uniform keeps both parses (neither dominates), favouring prod 0 makes
+   `S→a` the MAP (0.75 vs 0.25). **THE EXACT PIPELINE IS COMPLETE END-TO-END:** real grammar →
+   parser → SPPF → inside–outside (BP) → `PredictProbability` `SoftValue` over parses, all-data.
+   **← resume: the production-weight SOURCE** — **EM** (the inside–outside expected counts I compute
+   are the E-step → unsupervised PCFG weight learning from a corpus), or set weights. Then the
+   loopy/EP + **emotional-propagation** rung on `Zeta.Bayesian` (math-team — the genuinely-new part);
+   and parses → ISA lowering.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
 8. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.

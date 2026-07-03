@@ -65,3 +65,34 @@ let ``WEIGHTED → explicit per-parse potentials (the shape BP/EP produces) pick
     match ParseSoft.ofWeightedForest [ a, 0.8; b, 0.2 ] with
     | Some sv -> Assert.Equal(Some a, SoftValue.resolve 0.6 sv)
     | None -> Assert.Fail "weighted forest should yield a SoftValue"
+
+/// Two parses of "a" that use DIFFERENT productions: S → a (prod 0) | A (prod 1); A → a (prod 2).
+let private twoWay: G.Grammar =
+    { Id = "two"
+      Terminals = [ { Name = "a"; Pattern = "a" } ]
+      NonTerminals = [ { Name = "S" }; { Name = "A" } ]
+      Productions =
+        [ { Lhs = "S"; Rhs = [ G.Term "a" ] } // prod 0
+          { Lhs = "S"; Rhs = [ G.NonTerm "A" ] } // prod 1
+          { Lhs = "A"; Rhs = [ G.Term "a" ] } ] // prod 2
+      Start = "S" }
+
+[<Fact>]
+let ``PREDICTPROBABILITY: ofSppf weights the parse superposition by production weights (inference-weighted)`` () =
+    let f = Sppf.build twoWay [ "a" ]
+    // two distinct parses: P1 = S→a ; P2 = S→A→a
+    let p1 = DynamicValue.Object [ "rule", DynamicValue.String "S"; "kids", DynamicValue.Array [ DynamicValue.Object [ "term", DynamicValue.String "a" ] ] ]
+    // uniform ⇒ both present, neither dominates
+    match ParseSoft.ofSppf (fun _ -> 1.0) 16 f with
+    | Some sv ->
+        Assert.Equal(2, List.length sv.Candidates)
+        Assert.True(SoftValue.confidence sv < 1.0)
+    | None -> Assert.Fail "uniform ofSppf should yield a SoftValue"
+    // favour prod 0 (S→a) ⇒ P1 becomes the MAP parse (0.75 vs 0.25) — inference biases the answer
+    match ParseSoft.ofSppf (fun p -> if p = 0 then 3.0 else 1.0) 16 f with
+    | Some sv -> Assert.Equal(Some p1, SoftValue.resolve 0.6 sv)
+    | None -> Assert.Fail "weighted ofSppf should yield a SoftValue"
+
+[<Fact>]
+let ``ofSppf: no parse ⇒ None`` () =
+    Assert.True((ParseSoft.ofSppf (fun _ -> 1.0) 16 (Sppf.build twoWay [ "a"; "a" ])).IsNone)

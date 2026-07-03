@@ -37,3 +37,10 @@ module ParseSoft =
     /// `None` if there is no parse.
     let glrSoft (t: Slr.GlrTables) (maxTrees: int) (tokens: string list) : SoftValue.SoftValue option =
         ofForest (Slr.glrForest t maxTrees tokens)
+
+    /// The weighted bridge: an SPPF + production weights → a `SoftValue` over parses, each parse's
+    /// mass ∝ the product of its production weights (its inside weight). This is `PredictProbability`
+    /// over the decision forest — the inference-weighted superposition, not uniform. `None` if there
+    /// is no parse. (`weight` comes from set potentials or EM-learned inside–outside expected counts.)
+    let ofSppf (weight: int -> float) (maxTrees: int) (f: Sppf.Forest) : SoftValue.SoftValue option =
+        ofWeightedForest (Sppf.weightedTrees weight maxTrees f)
