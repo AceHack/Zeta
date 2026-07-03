@@ -130,6 +130,19 @@ The math isn’t new scaffolding — it’s the proof layer over pieces that alr
 
 ---
 
+### A-method note — Information Value lineage: Lindley, Friston, and the Casimir Gap (Amara 2026-07-03)
+
+An honest accounting of prior art for §A #20. Zeta defines Information Value (IV) as the KL divergence from prior to posterior. This definition is not novel — it was proposed by **Dennis Lindley (1956)** as the expected information gain of a Bayesian experiment. We stand on his shoulders for the math.
+
+**The Casimir Gap connection:** Karl Friston's Active Inference (2006+) posits that agents act to minimize expected free energy (surprise). Aaron maps this to the **vacuum or Casimir gap energy** — the pressure between two boundary plates (the agent's internal model vs. sensory reality). Friston's expected free energy is the *pressure* of the gap; Zeta's IV is the *realized energy release* when the gap collapses (the burst of nats when prior updates to posterior).
+
+**Zeta's architectural contribution:**
+1. **IV as Market Denomination:** Classical economics (Howard 1966) denominates VoI in dollars/utils. Zeta uses Lindley's nats as the literal currency of the attention economy (router, Thousand Brains, Web3).
+2. **Delay-Decorrelation Amplifier:** Multiplying base IV by the Condorcet bonus derived from network latency (`L/(1+L)`) has no classical precedent. Delay enforcing independence is a purely relativistic innovation.
+3. **Retrospective Billing:** Friston uses expected free energy for future action; Zeta uses realized IV for retrospective billing.
+
+---
+
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
