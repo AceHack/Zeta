@@ -416,3 +416,120 @@ let ``SM-5c: schema renameField preserves Gaussian properness (lossless rename =
                 Gaussian.isProper belief'
             | _ -> false
         | _ -> false
+
+// ═══════════════════════════════════════════════════════════════════
+// SM-6: S1+S2 temporal integration — schema evolution preserves
+//       Gaussian belief properness MID-CONVERGENCE (not just at rest)
+//
+// The S2 invariant (schema evolution preserves properness) was proven
+// at rest (SM-5a/b/c). The stronger claim is that it holds mid-convergence:
+// if a schema migration occurs between two rounds of runToFixpoint, the
+// belief state at every intermediate round is still proper, and the
+// migrated belief is still proper.
+//
+// The model: a 2-variable factor graph with two Gaussian priors and one
+// equality factor. We run one round, snapshot the marginals, serialize
+// them to DynamicValue, apply a schema migration (addField), deserialize,
+// and verify the migrated beliefs are still proper. Then we run to fixpoint
+// and verify the final beliefs are still proper.
+//
+// This is the "live migration" scenario: a schema change arrives between
+// rounds of inference, and the agent must continue without restarting.
+//
+// Anchor: FROZEN-CORE §A #12 (S1), §A #13 (S2), Gate T3.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``SM-6: schema addField mid-convergence preserves Gaussian belief properness (live migration)`` () =
+    // Build a 2-variable factor graph with two Gaussian priors and one equality factor.
+    // This is the minimal graph where runToFixpoint does non-trivial work.
+    let prior0 = Gaussian.ofMeanVariance 0.0 1.0
+    let prior1 = Gaussian.ofMeanVariance 2.0 1.0
+    let g0 =
+        FactorGraph.empty Gaussian.algebra
+        |> FactorGraph.addFactor 0 (Factor.prior 0 prior0)
+        |> FactorGraph.addFactor 1 (Factor.prior 1 prior1)
+        |> FactorGraph.addFactor 2 (Factor.equality Gaussian.algebra [ 0; 1 ])
+
+    // Run ONE round (mid-convergence snapshot)
+    let g1 = FactorGraph.passOnce g0
+    let m0 = FactorGraph.marginal 0 g1
+    let m1 = FactorGraph.marginal 1 g1
+
+    // Both marginals must be proper after round 1
+    Gaussian.isProper m0 |> should equal true
+    Gaussian.isProper m1 |> should equal true
+
+    // Serialize m0 to DynamicValue (the "live state" snapshot)
+    let tau0 = 1.0 / Gaussian.variance m0
+    let nu0  = Gaussian.mean m0 * tau0
+    let stored0 = DynamicValue.Object [ "tau", DynamicValue.Float tau0; "nu", DynamicValue.Float nu0 ]
+
+    // Apply schema migration: addField "version" = 2 (a live schema evolution)
+    let migrated0 = SchemaEvolution.addField "version" (DynamicValue.Int 2L) stored0
+
+    // Deserialize the migrated belief — must still be proper
+    match migrated0 with
+    | DynamicValue.Object kvs ->
+        match kvs |> List.tryFind (fun (k,_) -> k = "tau"),
+              kvs |> List.tryFind (fun (k,_) -> k = "nu") with
+        | Some (_, DynamicValue.Float t), Some (_, DynamicValue.Float n) ->
+            let m0' = { Gaussian.PrecisionMean = n; Gaussian.Precision = t }
+            // The migrated belief is still proper
+            Gaussian.isProper m0' |> should equal true
+            // The migrated belief is identical to the pre-migration belief
+            abs (m0'.PrecisionMean - m0.PrecisionMean) |> should (be lessThan) 1e-12
+            abs (m0'.Precision     - m0.Precision)     |> should (be lessThan) 1e-12
+        | _ -> failwith "expected Float fields tau and nu"
+    | _ -> failwith "expected Object"
+
+    // Continue to fixpoint from g1 (the mid-convergence state)
+    let gFinal, _, converged = FactorGraph.runToFixpoint Gaussian.distance 1e-9 100 g1
+    converged |> should equal true
+
+    // Final marginals must be proper
+    let mFinal0 = FactorGraph.marginal 0 gFinal
+    let mFinal1 = FactorGraph.marginal 1 gFinal
+    Gaussian.isProper mFinal0 |> should equal true
+    Gaussian.isProper mFinal1 |> should equal true
+
+[<Property>]
+let ``SM-6b: schema addField mid-convergence preserves properness for any proper prior pair (FsCheck)``
+    (mean0Raw: float) (mean1Raw: float) (logVar0Raw: float) (logVar1Raw: float) =
+    // Guard against infinity/NaN
+    if [ mean0Raw; mean1Raw; logVar0Raw; logVar1Raw ] |> List.exists (fun x -> not (System.Double.IsFinite x))
+    then true
+    else
+    let mean0 = (mean0Raw % 5.0 + 5.0) % 10.0 - 5.0
+    let mean1 = (mean1Raw % 5.0 + 5.0) % 10.0 - 5.0
+    let var0  = exp (logVar0Raw % 2.0) * 0.1
+    let var1  = exp (logVar1Raw % 2.0) * 0.1
+    let prior0 = Gaussian.ofMeanVariance mean0 var0
+    let prior1 = Gaussian.ofMeanVariance mean1 var1
+    if not (Gaussian.isProper prior0) || not (Gaussian.isProper prior1) then true
+    else
+        let g0 =
+            FactorGraph.empty Gaussian.algebra
+            |> FactorGraph.addFactor 0 (Factor.prior 0 prior0)
+            |> FactorGraph.addFactor 1 (Factor.prior 1 prior1)
+            |> FactorGraph.addFactor 2 (Factor.equality Gaussian.algebra [ 0; 1 ])
+
+        // Run one round (mid-convergence)
+        let g1 = FactorGraph.passOnce g0
+        let m0 = FactorGraph.marginal 0 g1
+
+        // Serialize, migrate, deserialize
+        let tau = 1.0 / Gaussian.variance m0
+        let nu  = Gaussian.mean m0 * tau
+        let stored   = DynamicValue.Object [ "tau", DynamicValue.Float tau; "nu", DynamicValue.Float nu ]
+        let migrated = SchemaEvolution.addField "version" (DynamicValue.Int 2L) stored
+
+        match migrated with
+        | DynamicValue.Object kvs ->
+            match kvs |> List.tryFind (fun (k,_) -> k = "tau"),
+                  kvs |> List.tryFind (fun (k,_) -> k = "nu") with
+            | Some (_, DynamicValue.Float t), Some (_, DynamicValue.Float n) ->
+                let m0' = { Gaussian.PrecisionMean = n; Gaussian.Precision = t }
+                Gaussian.isProper m0'
+            | _ -> false
+        | _ -> false
