@@ -107,9 +107,17 @@ existing ANTLR grammars is fine."* The value-tree codecs are **rung 2** of one l
    **DISCOVERY (don't reinvent):** `Zeta.Bayesian` ALREADY has `FactorGraph.fs` / `Ep.fs` /
    `Message.fs` / `MessageBatch.fs` / `InferNetTopology.fs` / `QuantumFusion.fs` — the EP /
    message-passing / factor-graph infra. So the EP/BP/VMP weighting rung BUILDS ON that.
-   **← resume: weight the forest** — map the parse forest onto `Zeta.Bayesian.FactorGraph`, run
-   `Ep`/BP (inside–outside), feed potentials to `ParseSoft.ofWeightedForest`. Then the custom
-   emotional-propagation schedule (math-team formalize); parses → ISA lowering.
+10. ✅ **SPPF (shared packed parse forest)** — LANDED (`src/Core/Sppf.fs`): the SHARED, packed
+   forest — each sub-parse `(sym,i,j)` is one memoized node, so the forest is polynomial even when
+   trees are exponential (Catalan(4)=14 trees, ≤25 nodes). A node with >1 **family** is an
+   **ambiguity node** = the SSAS **`NodeDistribution`** point = the **factor-graph variable**.
+   Cross-checked: `Sppf.parseCount` (over the shared structure) == `Slr.glrForest` tree count.
+   Projects to a `DynamicValue` (homoiconic, DMX-queryable-as-data). Total (cycle-guarded).
+   **BI framing:** `docs/research/2026-07-02-how-aaron-thinks-sql-server-bi-decision-forest-…`.
+   **← resume: SPPF → `FactorGraph<'M>` encoding** — `Sppf.ambiguities` → variables, family
+   potentials → factors, a categorical `IMessage` (the `NodeDistribution` type); run
+   `Zeta.Bayesian.FactorGraph.runToFixpoint` (BP); marginals → `ParseSoft.ofWeightedForest`
+   (= `PredictProbability`). Then EP/VMP + emotional propagation (math-team); parses → ISA.
    (Alt: a full regex lexer — word → terminal — so raw text feeds the parser.)
 8. Parity categories needing a core `DynamicValue` shape first (Decimal / SoftValue / Kleene) —
    each needs a DU decision, do NOT add unilaterally. HDF5 / DOT remain on the codec ledger.
