@@ -63,6 +63,7 @@ import {
   type Salon,
   type SalonGossiper,
 } from "./gossip-salon";
+import { judgeCorrelation, readClaims, judge, type IdentityReading } from "./kept-claim-oracle";
 import {
   authorize,
   emptyLedger,
@@ -142,6 +143,14 @@ export interface LivingNode {
   pairRegime(a: string, b: string): Regime;
   /// Kept-claims heard about a node: [kept, relayer][] — neutral readout for the caller's oracle.
   keptClaims(node: string): [boolean, string][];
+  /// THE WHOLE STACK IN ONE CALL — judge a peer under the REFERENCE oracle (one policy among
+  /// many, §11): regime = this node's own bus meter combined with everything the salon heard
+  /// about the (self, peer) pair (any fast crossing anywhere forces in-cone — sound); claims =
+  /// the salon's kept/unkept gossip weighed consent-first; `correlation` is the caller's
+  /// measured |ρ| against the peer (from AntiSybil-style stream comparison). Returns the
+  /// crux-table reading: welcome-back-offer / decline-respected / escalate-to-attestation /
+  /// priced-as-one-no-verdict / honest-coordination / nothing-to-judge.
+  judgePeer(peerZid: string, correlation: number): IdentityReading;
 }
 
 /// Compose one living node. `transport` carries discovery, broadcast, AND link messages — the
@@ -283,6 +292,17 @@ export function createLivingNode(
     },
     keptClaims(node) {
       return gossiper ? claimsAbout(gossiper.salon(), node) : [];
+    },
+    judgePeer(peerZid, correlation) {
+      // combine own live meter with the salon's view of the (self, peer) pair — in-cone from
+      // either source wins (monotone toward in-cone); unmeasured only if both are silent.
+      const local = regimeOf(meter, deadlineMs);
+      const gossiped = gossiper ? regimeOfPair(gossiper.salon(), config.source.zid, peerZid, deadlineMs) : "unmeasured";
+      let regime: Regime = "unmeasured";
+      if (local === "in-cone" || gossiped === "in-cone") regime = "in-cone";
+      else if (local === "out-of-cone" || gossiped === "out-of-cone") regime = "out-of-cone";
+      const claims = readClaims(peerZid, gossiper ? claimsAbout(gossiper.salon(), peerZid) : []);
+      return judge(judgeCorrelation(correlation, regime), claims);
     },
   };
 }
