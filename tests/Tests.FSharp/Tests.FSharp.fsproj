@@ -283,6 +283,7 @@
     <Compile Include="BraidCatalogIhara.Tests.fs" />
     <Compile Include="BraidCatalogWeightedZeta.Tests.fs" />
     <Compile Include="BraidIsaZetaConsistency.Tests.fs" />
+    <Compile Include="BraidRepYangBaxter.Tests.fs" />
     <Compile Include="SpectralPivot.Tests.fs" />
     <Compile Include="OttoAvatar.Tests.fs" />
     <Compile Include="Chip9Treaty.Tests.fs" />

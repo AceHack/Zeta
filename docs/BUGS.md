@@ -105,6 +105,23 @@ can no longer pass with Go silent.
 
 ## P1 — serious
 
+### Egg bus-delay simulation not reproducible — rhoCount/rhoPost have no in-repo implementation
+
+- **Site:** `docs/research/the-egg-bus-delay-and-distributed-consciousness.md` (headline numbers)
+- **Found:** 2026-07-04 by Soraya (formal-verification, background round 2)
+- **Severity:** P1
+- **Symptom:** The Egg doc's headline results (rhoPost ≈ 0.63 delay-invariant; rhoCount = 1.0 at zero
+  delay) come from a "bus-delay simulation" that exists nowhere in `src/`, `tests/`, or `clis/`
+  (`rg rhoCount` hits only docs) — a ρ_T operating point is proposed for a metric with no code and no
+  DST-replayable provenance (violates the no-binary-in-proof-lineage *spirit*: results with no replayable
+  lineage), and it blocks the Egg Q1/Q2 cross-checks (count-CV vs precision-CV; the Var≈σ²|nᵢ−nₖ|/n² link).
+- **Fix:** implement rhoCount/rhoPost + the bus-delay simulation as seeded, DST-replayable F# (Soraya's
+  routing: Tariq derivation + Adaeze/FsCheck cross-check as the BP-16 pair) before wiring any reseed
+  threshold to rhoCount; the Egg doc's reseed section should cite the standing ρ_T design-choice flag.
+- **Who:** architect (Kenji); Soraya's round-2 report has the derivation sketch and metric recommendation
+  (accumulated-precision CV over count-CV for the heteroscedastic case).
+
+
 ### Discovery-beacon wire is unsigned — spoof / poison / forged-evict (bus, shadow*)
 
 **STATUS (2026-07-03, Otto): membrane SHIPPED + ADOPTED at the live node.** `beacon-auth.ts`
