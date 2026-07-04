@@ -52,6 +52,21 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 
 ---
 
+### A-method note — Four-Corner = Traced Monoidal Category = ZSet Retraction = Weyl Reflection
+
+The standard monadic interface (`Result<T, Error>`) only puts feedback on the output channel. The four-corner interface (`Input<T, TFeedback>`) puts feedback on the **input** channel too. 
+
+This allows the future to affect the past: feedback flows backward, updating the generator function, which reinterprets past data and emits retractions (ZSet weight -1). 
+- In category theory, this is the **trace operator** in a traced monoidal category (bending an output arrow back to the input).
+- In DBSP, this is the **retraction** (weight -1) that un-emits a past event.
+- In Clifford algebra, this is the **grade involution / reverse** that undoes a rotation.
+- In E8, this is the **Weyl reflection** that generates the 240 roots.
+- In Maji, this is the `Retractions` list in the `IdentitySubstrate`.
+
+All are the exact same shape. The four-corner interface is not just elegant API design; it is the physical mechanism for multi-iterated games where stable identity (μένω) is maintained even as the past is constantly retracted and reinterpreted.
+
+---
+
 ### A-method note — avoid an axiom by standing on a §A theorem (CALM dispenses with the CTM's "global" axiom; Aaron 2026-06-15)
 
 A worked instance of the whole §A/§B discipline (keep the floor small; minimize *asserted* posits).
@@ -93,6 +108,8 @@ terraform-into-cell) can assume no-global without an axiom.* Detail: consolidate
 | 23 | **Anti-Sybil Hard-Money Entropy Budget** | Prevents attention economy hyperinflation by collapsing IV rewards for correlated streams. IV pays only for the uncorrelated and unique; correlated fast-ticking clones are priced as one process, driving marginal IV to zero. The IV cap is the finite irreducible entropy an agent can hold unique. **✅ PROVEN (FsCheck), 2026-07-03**: `AntiSybil.Tests.fs` AS-1 to AS-5 prove identical streams yield correlation 1.0, clones yield zero IV, uncorrelated streams yield full IV, and society pricing correctly penalizes the maximum correlation. | `AntiSybil.fs`, `AntiSybil.Tests.fs` |
 | 24 | **Reticulum Transport Integration** | Bridges the abstract `AttentionRouter` and `DelayDecorrelation` with the physical reality of a Reticulum mesh network. Converts physical telemetry (RTT) into the latency map required to grant the Condorcet bonus, ensuring slower, independent paths are rewarded. **✅ PROVEN (FsCheck), 2026-07-03**: `Integration.Tests.fs` RT-1 to RT-2 prove higher RTT yields higher latency and symmetric mapping. | `ReticulumTransport.fs`, `Integration.Tests.fs` |
 | 25 | **Web3 Settlement Token Layer** | Connects pure Information Value and AntiSybil pricing to a concrete settlement ledger. Tokens are pegged 1:1 to IV. Takes the output of `AskBidClearing` and executes the token transfer. Enforces the hard-money entropy budget by capping bids based on the bidder's uniqueness discount. **✅ PROVEN (FsCheck), 2026-07-03**: `Integration.Tests.fs` W3-1 to W3-3 prove ledger updates, reputation bumps, and strict enforcement of the AntiSybil cap causing clone bids to fail clearing. | `Web3Settlement.fs`, `Integration.Tests.fs` |
+| 26 | **PrivacyPreservingIdentity (Adinkra ↔ E8)** | Connects the BitAdinkra [8,4] doubly-even code to the E8 lattice via the CliffordE8Bridge. Proves agent identity continuity (I am the same agent) using Cl(3,0) rotor consistency without leaking the underlying belief trajectory. The E8 lattice provides maximal separation for error-correcting identity, while the mod-2 structure guarantees privacy. **✅ PROVEN (FsCheck), 2026-07-04**: `PrivacyAndMeno.Tests.fs` PI-1 to PI-4 prove identity token round-tripping, continuity verification, and rotor extraction. | `PrivacyPreservingIdentity.fs` |
+| 27 | **Meno (Categorical Persistence)** | The categorical bridge (μένω) that maps geometric identity into a functional workflow. Implemented as an Arrow over ZSets (`ZSet<'a> -> ZSet<'b>`) in a traced monoidal category. Connects to the Maji identity-preserving lift to maintain stable identity even as the future retracts and reinterprets the past. **✅ PROVEN (FsCheck), 2026-07-04**: `PrivacyAndMeno.Tests.fs` M-1 to M-3 prove the Arrow laws (Identity, Composition, Tensor) hold over ZSet representations. | `Meno.fs` |
 
 ---
 

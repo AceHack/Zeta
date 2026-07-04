@@ -274,6 +274,8 @@
     <Compile Include="PhasorEndurance.fs" />
     <Compile Include="CoincidenceClock.fs" />
     <Compile Include="BitAdinkra.fs" />
+    <Compile Include="PrivacyPreservingIdentity.fs" />
+    <Compile Include="Meno.fs" />
     <Compile Include="ForwardMomentum.fs" />
     <Compile Include="QubitIso.fs" />
     <Compile Include="BellTest.fs" />

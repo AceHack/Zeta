@@ -45,7 +45,9 @@ let private allowlist =
       "Environment.fs", "DateTimeOffset.UtcNow", 1, "the ambient implementation of IEnvironment.Now — the fenced door"
       "Injection.fs", "DateTimeOffset.UtcNow", 2, "wall-time instrumentation at the injection edge — observability only"
       // timing instrumentation at the injection boundary (observability, not logic)
-      "Injection.fs", "Stopwatch.StartNew", 1, "wall-time instrumentation at the injection edge — observability only" ]
+      "Injection.fs", "Stopwatch.StartNew", 1, "wall-time instrumentation at the injection edge — observability only"
+      // the cron adapter IS the wall-clock tick source; reads UtcNow once per tick and passes it to the callback
+      "OrleansCronAdapter.fs", "DateTime.UtcNow", 1, "tick source reads wall clock once per tick — this IS the ambient-time boundary for the distributed cron runtime" ]
 
 [<Fact>]
 let ``THE DETERMINISM LINT: no ambient entropy in src/Core outside the named, justified edges`` () =
