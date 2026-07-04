@@ -19,6 +19,8 @@ import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import { SENDER_IDS } from "./types.ts";
 import type { AgentId, SenderAgentId, MessageEnvelope } from "./types.ts";
+import { parse as parseActorRef } from "../identity/actor-ref.ts";
+import type { ActorRef } from "../identity/actor-ref.ts";
 
 // Stale lock threshold — age floor before a lock is a candidate for reclamation.
 // Used together with a PID liveness check: only reclaim if the holder process is
@@ -79,6 +81,7 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
 export type ClaimRecord = {
   id: string;
   from: SenderAgentId;
+  sender?: ActorRef;
   itemId: string;
   branch?: string;
   /** Absolute path of the worktree this claim originated from (081KRFA460008QG0R001SXP0C2). */
@@ -133,11 +136,12 @@ export function activeClaims(itemId: string): ClaimRecord[] {
 
   const records: ClaimRecord[] = [];
   for (const { envelope: m } of byKey.values()) {
-    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string; shareableWithinPersona?: boolean };
     if (p.action !== "claim") continue; // release means no active claim
     records.push({
       id: m.id,
       from: m.from,
+      sender: m.sender || parseActorRef(m.from),
       itemId: p.itemId,
       ...(p.branch !== undefined && { branch: p.branch }),
       ...(p.worktree !== undefined && { worktree: p.worktree }),
@@ -182,11 +186,12 @@ export function allActiveClaims(): ClaimRecord[] {
 
   const records: ClaimRecord[] = [];
   for (const { envelope: m } of byKey.values()) {
-    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string };
+    const p = m.payload as { action: string; itemId: string; branch?: string; worktree?: string; shareableWithinPersona?: boolean };
     if (p.action !== "claim") continue;
     records.push({
       id: m.id,
       from: m.from,
+      sender: m.sender || parseActorRef(m.from),
       itemId: p.itemId,
       ...(p.branch !== undefined && { branch: p.branch }),
       ...(p.worktree !== undefined && { worktree: p.worktree }),
@@ -242,7 +247,8 @@ function usage(): void {
 Agents: ${SENDER_IDS.join(" | ")}
 
 --worktree is optional (081KRFA460008QG0R001SXP0C2); when set, the value is recorded on the
-  claim envelope for observability. Omit to leave the field absent.`);
+  claim envelope for observability. Omit to leave the field absent.
+--shareable allows sharing within the same persona across different cells.`);
 }
 
 function main(): void {
@@ -308,12 +314,45 @@ function main(): void {
       let claimedByOthers: string[] = [];
       let messageId: string | undefined;
 
+      const shareable = flags.shareable === true || flags.shareable === "true";
+
       try {
         ({ acquired, claimedByOthers, messageId } = withAcquireLock(itemId, () => {
-          const existing = activeClaims(itemId).filter((c) => c.from !== sender);
-          if (existing.length > 0) {
-            return { acquired: false, claimedByOthers: existing.map((c) => c.from as string), messageId: undefined };
+          const incomingActor = parseActorRef(sender);
+          const existing = activeClaims(itemId);
+          const rawClaims = list({ topic: "claim" });
+
+          let conflict = false;
+          const conflictingSenders: string[] = [];
+
+          for (const c of existing) {
+            if (c.from === sender) continue;
+
+            const existingActor = c.sender || parseActorRef(c.from);
+            if (existingActor.persona !== incomingActor.persona) {
+              conflict = true;
+              conflictingSenders.push(c.from);
+            } else {
+              const isDifferentCell =
+                existingActor.cell.surface !== incomingActor.cell.surface ||
+                existingActor.cell.instance !== incomingActor.cell.instance ||
+                existingActor.cell.node !== incomingActor.cell.node;
+
+              if (isDifferentCell) {
+                const matchingMsg = rawClaims.find((m) => m.id === c.id);
+                const isExistingShareable = !!(matchingMsg?.payload as { shareableWithinPersona?: boolean })?.shareableWithinPersona;
+                if (!isExistingShareable || !shareable) {
+                  conflict = true;
+                  conflictingSenders.push(`${c.from} (exclusive)`);
+                }
+              }
+            }
           }
+
+          if (conflict) {
+            return { acquired: false, claimedByOthers: conflictingSenders, messageId: undefined };
+          }
+
           const env = publish(sender, "*" as AgentId, {
             topic: "claim",
             payload: {
@@ -321,6 +360,7 @@ function main(): void {
               itemId,
               ...(branch ? { branch } : {}),
               ...(worktree ? { worktree } : {}),
+              ...(shareable ? { shareableWithinPersona: true } : {}),
             },
           });
           return { acquired: true, claimedByOthers: [] as string[], messageId: env.id };

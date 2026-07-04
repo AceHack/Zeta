@@ -13,6 +13,7 @@ import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, st
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.js";
+import { parse as parseActorRef } from "../identity/actor-ref.js";
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
 export function ensureDir() {
     if (existsSync(BUS_DIR)) {
@@ -46,6 +47,7 @@ export function publish(from, to, message, ttlOverrideMs) {
         ...message,
         id: randomUUID(),
         from,
+        sender: parseActorRef(from),
         to,
         timestamp: now.toISOString(),
         expiresAt: new Date(now.getTime() + ttl).toISOString(),
@@ -73,6 +75,12 @@ export function list(opts) {
                 continue;
             if (opts.to && env.to !== opts.to && env.to !== "*")
                 continue;
+            if (!env.sender && env.from) {
+                try {
+                    env.sender = parseActorRef(env.from);
+                }
+                catch (e) {}
+            }
             results.push(env);
         }
         catch {
@@ -87,7 +95,14 @@ export function readMessage(id) {
         const p = envelopePath(id);
         if (!existsSync(p))
             return null;
-        return JSON.parse(readFileSync(p, "utf-8"));
+        const env = JSON.parse(readFileSync(p, "utf-8"));
+        if (env && !env.sender && env.from) {
+            try {
+                env.sender = parseActorRef(env.from);
+            }
+            catch (e) {}
+        }
+        return env;
     }
     catch {
         return null;

@@ -15,6 +15,7 @@ import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage, HeartbeatPayload, ClaimPayload, ReviewRequestPayload } from "./types.ts";
 import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.ts";
+import { parse as parseActorRef } from "../identity/actor-ref.ts";
 
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
 
@@ -53,6 +54,7 @@ export function publish(
     ...message,
     id: randomUUID(),
     from,
+    sender: parseActorRef(from),
     to,
     timestamp: now.toISOString(),
     expiresAt: new Date(now.getTime() + ttl).toISOString(),
@@ -80,6 +82,11 @@ export function list(opts: { topic?: Topic; to?: AgentId; includeExpired?: boole
       if (!opts.includeExpired && new Date(env.expiresAt) < now) continue;
       if (opts.topic && env.topic !== opts.topic) continue;
       if (opts.to && env.to !== opts.to && env.to !== "*") continue;
+      if (!env.sender && env.from) {
+        try {
+          env.sender = parseActorRef(env.from);
+        } catch {}
+      }
       results.push(env);
     } catch {
       // corrupted entry — skip
@@ -94,7 +101,13 @@ export function readMessage(id: string): MessageEnvelope | null {
   try {
     const p = envelopePath(id);
     if (!existsSync(p)) return null;
-    return JSON.parse(readFileSync(p, "utf-8")) as MessageEnvelope;
+    const env = JSON.parse(readFileSync(p, "utf-8")) as MessageEnvelope;
+    if (env && !env.sender && env.from) {
+      try {
+        env.sender = parseActorRef(env.from);
+      } catch {}
+    }
+    return env;
   } catch {
     return null;
   }

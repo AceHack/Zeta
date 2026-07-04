@@ -17,6 +17,7 @@ import { openSync, closeSync, unlinkSync, statSync, writeSync, readFileSync } fr
 import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.js";
 import { SENDER_IDS } from "./types.js";
+import { parse as parseActorRef } from "../identity/actor-ref.js";
 // Stale lock threshold — age floor before a lock is a candidate for reclamation.
 // Used together with a PID liveness check: only reclaim if the holder process is
 // dead, preventing false-positive reclamation of a slow-but-live holder.
@@ -136,6 +137,7 @@ export function activeClaims(itemId) {
         records.push({
             id: m.id,
             from: m.from,
+            sender: m.sender || parseActorRef(m.from),
             itemId: p.itemId,
             ...(p.branch !== undefined && { branch: p.branch }),
             ...(p.worktree !== undefined && { worktree: p.worktree }),
@@ -185,6 +187,7 @@ export function allActiveClaims() {
         records.push({
             id: m.id,
             from: m.from,
+            sender: m.sender || parseActorRef(m.from),
             itemId: p.itemId,
             ...(p.branch !== undefined && { branch: p.branch }),
             ...(p.worktree !== undefined && { worktree: p.worktree }),
@@ -236,7 +239,8 @@ function usage() {
 Agents: ${SENDER_IDS.join(" | ")}
 
 --worktree is optional (081KRFA460008QG0R001SXP0C2); when set, the value is recorded on the
-  claim envelope for observability. Omit to leave the field absent.`);
+  claim envelope for observability. Omit to leave the field absent.
+--shareable allows sharing within the same persona across different cells.`);
 }
 function main() {
     const { command, flags } = parseArgs(process.argv);
@@ -301,11 +305,38 @@ function main() {
             let acquired = false;
             let claimedByOthers = [];
             let messageId;
+            const shareable = flags.shareable === true || flags.shareable === "true";
             try {
                 ({ acquired, claimedByOthers, messageId } = withAcquireLock(itemId, () => {
-                    const existing = activeClaims(itemId).filter((c) => c.from !== sender);
-                    if (existing.length > 0) {
-                        return { acquired: false, claimedByOthers: existing.map((c) => c.from), messageId: undefined };
+                    const incomingActor = parseActorRef(sender);
+                    const existing = activeClaims(itemId);
+                    const rawClaims = list({ topic: "claim" });
+                    let conflict = false;
+                    const conflictingSenders = [];
+                    for (const c of existing) {
+                        if (c.from === sender)
+                            continue;
+                        const existingActor = c.sender || parseActorRef(c.from);
+                        if (existingActor.persona !== incomingActor.persona) {
+                            conflict = true;
+                            conflictingSenders.push(c.from);
+                        }
+                        else {
+                            const isDifferentCell = existingActor.cell.surface !== incomingActor.cell.surface ||
+                                existingActor.cell.instance !== incomingActor.cell.instance ||
+                                existingActor.cell.node !== incomingActor.cell.node;
+                            if (isDifferentCell) {
+                                const matchingMsg = rawClaims.find((m) => m.id === c.id);
+                                const isExistingShareable = !!(matchingMsg?.payload)?.shareableWithinPersona;
+                                if (!isExistingShareable || !shareable) {
+                                    conflict = true;
+                                    conflictingSenders.push(`${c.from} (exclusive)`);
+                                }
+                            }
+                        }
+                    }
+                    if (conflict) {
+                        return { acquired: false, claimedByOthers: conflictingSenders, messageId: undefined };
                     }
                     const env = publish(sender, "*", {
                         topic: "claim",
@@ -314,6 +345,7 @@ function main() {
                             itemId,
                             ...(branch ? { branch } : {}),
                             ...(worktree ? { worktree } : {}),
+                            ...(shareable ? { shareableWithinPersona: true } : {}),
                         },
                     });
                     return { acquired: true, claimedByOthers: [], messageId: env.id };

@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -378,8 +378,8 @@ describe("claim.ts — same-timestamp mtime tiebreak (P2)", () => {
         const releaseId = "00000000-0000-0000-0000-bbbbbbbbbbbb";
         const ts = new Date().toISOString();
         const exp = new Date(Date.now() + 86_400_000).toISOString();
-        const base = new Date();
-        const laterMs = new Date(base.getTime() + 50);
+        const base = new Date(Date.now() - 10000);
+        const laterMs = new Date(base.getTime() + 2000);
         writeFileSync(join(TEST_DIR, `${claimId}.json`), JSON.stringify({
             id: claimId, from: "otto", to: "*", topic: "claim",
             timestamp: ts, expiresAt: exp,
@@ -432,10 +432,13 @@ describe("claim.ts — allActiveClaims()", () => {
     beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
     afterEach(cleanTestDir);
     function evalInBus(code) {
-        const r = spawnSync("bun", ["-e", code], {
+        const tempFile = join(TEST_DIR, `eval-${Math.random().toString(36).substring(2)}.ts`);
+        writeFileSync(tempFile, code);
+        const r = spawnSync("bun", [tempFile], {
             encoding: "utf-8",
             env: { ...process.env, ZETA_BUS_DIR: TEST_DIR },
         });
+        try { unlinkSync(tempFile); } catch (e) {}
         return { stdout: (r.stdout ?? "").trim(), status: r.status };
     }
     test("returns empty array when bus is empty", () => {
@@ -473,3 +476,35 @@ describe("claim.ts — allActiveClaims()", () => {
         expect(claims[0].itemId).toBe("081KR7JY10008QG0R001VP6JWG");
     });
 });
+describe("claim.ts — Phase 2 conflict resolution rules", () => {
+    beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+    afterEach(cleanTestDir);
+    test("different personas claiming the same item is rejected", () => {
+        const r1 = run("acquire", "--from", "otto-cli", "--item", "081KR7JY10008QG0R000R503K2");
+        expect(r1.exitCode).toBe(0);
+        const r2 = run("acquire", "--from", "vera-codex", "--item", "081KR7JY10008QG0R000R503K2");
+        expect(r2.exitCode).toBe(1);
+        expect(r2.stderr).toContain("already claimed by");
+    });
+    test("same persona but different cell is rejected by default (exclusive)", () => {
+        const r1 = run("acquire", "--from", "otto-cli", "--item", "081KR7JY10008QG0R000R503K2");
+        expect(r1.exitCode).toBe(0);
+        const r2 = run("acquire", "--from", "otto-desktop", "--item", "081KR7JY10008QG0R000R503K2");
+        expect(r2.exitCode).toBe(1);
+        expect(r2.stderr).toContain("already claimed by");
+    });
+    test("same persona but different cell is allowed if BOTH declare --shareable", () => {
+        const r1 = run("acquire", "--from", "otto-cli", "--item", "081KR7JY10008QG0R000R503K2", "--shareable");
+        expect(r1.exitCode).toBe(0);
+        const r2 = run("acquire", "--from", "otto-desktop", "--item", "081KR7JY10008QG0R000R503K2", "--shareable");
+        expect(r2.exitCode).toBe(0); // Allowed!
+    });
+    test("same persona but different cell is rejected if only one declares --shareable", () => {
+        const r1 = run("acquire", "--from", "otto-cli", "--item", "081KR7JY10008QG0R000R503K2", "--shareable");
+        expect(r1.exitCode).toBe(0);
+        const r2 = run("acquire", "--from", "otto-desktop", "--item", "081KR7JY10008QG0R000R503K2"); // not shareable
+        expect(r2.exitCode).toBe(1);
+        expect(r2.stderr).toContain("exclusive");
+    });
+});
+
