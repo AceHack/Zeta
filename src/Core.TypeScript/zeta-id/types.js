@@ -15,6 +15,8 @@ export const Category = {
     Spawn: 7, // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
     WorkItem: 8, // planning umbrella (tasks + bugs; B-xxxxx → ZetaId migration)
     ContentAddress: 9, // internal content address (truncated BLAKE3 payload)
+    InventoryAsset: 10, // physical asset register (git-as-database inventory, inventory/items/)
+    Channel: 11, // multiplexed four-corner duplex channel over one transport (ZetaId-keyed; Aaron 2026-07-04)
     Extended: 15, // reserved escape marker for wider extension categories
 };
 export const Firefly = { NoDirective: 1 };

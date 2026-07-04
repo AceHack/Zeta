@@ -28,7 +28,7 @@ entries:
     name: InventoryAsset
   # Channel — a multiplexed four-corner duplex channel over one physical transport (ZetaId-keyed, not GUID);
   # the "little program" self-describing channel key so the far side decodes it as a channel. Aaron 2026-07-04.
-  # NOTE: C#/F# oracles lag (also missing InventoryAsset=10) — backfill both into Core.CSharp/FSharp.ZetaId
-  # + regenerate golden vectors is a tracked follow-up (byte-lock completion across all four oracles).
+  # Byte-lock CLOSED 2026-07-04: Channel=11 + InventoryAsset=10 backfilled into Core.CSharp.ZetaId,
+  # Core.FSharp.ZetaId, and the compiled types.js — all oracles now carry the same category set.
   - id: 11
     name: Channel

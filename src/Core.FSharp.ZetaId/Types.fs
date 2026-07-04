@@ -35,6 +35,8 @@ type Category =
     | Spawn = 7uy      // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
     | WorkItem = 8uy   // planning umbrella (tasks + bugs; B-xxxxx -> ZetaId migration)
     | ContentAddress = 9uy // internal content address (truncated BLAKE3 payload)
+    | InventoryAsset = 10uy // physical asset register (git-as-database inventory, inventory/items/) — backfill 2026-07-04, was TS/registry-only
+    | Channel = 11uy   // multiplexed four-corner duplex channel over one transport (ZetaId-keyed; Aaron 2026-07-04)
     | Extended = 15uy   // reserved escape marker for wider extension categories
 
 /// Firefly bit — 1 bit. Mirrors `src/Core.CSharp.ZetaId/Firefly.cs`.
