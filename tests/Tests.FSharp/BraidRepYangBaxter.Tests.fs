@@ -3,15 +3,22 @@ module Zeta.Tests.BraidRepYangBaxterTests
 // SORAYA'S LEG-2A DECISIVE ARTIFACT (background round 2, 2026-07-04; spec verified numerically by her
 // before landing — a deviation from the expected table below is a FINDING, not a test bug; shadow* landed).
 //
-// VERDICT ENCODED: every generator image the shipped ISA carries (SWAP, JOIN=CNOT, the BRANCH-dressed
-// swap, strand-local Ry) is either involutive (σ² = id) or NOT a Yang–Baxter solution — so the exhibited
-// categorical home of `AmplitudeEmu.fs` is **traced symmetric dagger-compact Mat(ℂ)**, and "free braided
-// monoid" should be read as "free monoid with dagger involution" until a Kauffman–Lomonaco-class R-matrix
-// ships in the ISA itself. The braid structure in `BraidIsaZetaConsistency.Tests.fs` lives in the WORDS
-// (the free monoid / Ihara level), not in the amplitude images. The positive control (fact 4) proves the
-// instrument can distinguish symmetric from properly braided — the negative results are not vacuous.
+// VERDICT (round 2, YB-1..6): every generator IMAGE the shipped ISA carries (SWAP, JOIN=CNOT, the
+// BRANCH-dressed swap, strand-local Ry) is either involutive (σ² = id) or NOT a Yang–Baxter solution.
+// VERDICT UPGRADED (round 3, YB-7..8): the braided monoidal structure is EARNED AS A DERIVED WORD —
+// R_KL is an EXACT (machine-precision) composition over the shipped ops, needing only EMIT/RETRACT/JOIN:
+//   R_KL = (Ry(π/2)⊗I) · CNOT · (I⊗Ry(−π/2)) · CNOT · (Ry(−π/2)⊗I)
+// (= exp((π/4)·i(X⊗Y)); two JOINs optimal by determinant parity — det(CNOT)=−1, det(R_KL)=+1). So the
+// braiding lives in the WORDS at the amplitude level too, not only at the Ihara/free-monoid level; the
+// six-op VM stays minimal (Soraya round 3: the strict irreducible core is {EMIT(θ), JOIN} — even H is a
+// derived word at n≥2; ⟨H,CNOT⟩ alone is the finite real Clifford group, order 2304, so EMIT is essential;
+// the six ops generate the full real orthogonal fragment EXACTLY — Jurdjevic–Sussmann finite-word
+// reachability — and real amplitudes lose nothing: Rudolph–Grover/Shi/Aharonov). YB-1..6 remain correct as
+// stated: they test generator images; YB-7..8 test generated words. A deviation from the expected numbers
+// is a FINDING (BP-16 third leg: her closed form + her numpy run + this F# run over ImaginaryStack.complex).
 // Anchors: Joyal–Street (braided monoidal); Selinger (dagger-compact); Kauffman–Lomonaco, "Braiding
-// operators are universal quantum gates", New J. Phys. 6 (2004) 134; Freedman–Kitaev–Larsen–Wang.
+// operators are universal quantum gates", New J. Phys. 6 (2004) 134; Vatan–Williams PRA 69 032315 (2004);
+// Brylinski–Brylinski (exact universality); Jurdjevic–Sussmann 1972; Freedman–Kitaev–Larsen–Wang.
 
 open global.Xunit
 open FsCheck
@@ -115,3 +122,33 @@ let ``YB-6: strand-local EMIT = Ry(theta) FAILS the braid relation for every non
     let s1 = kron (ry theta) I2
     let s2 = kron I2 (ry theta)
     maxDev (matMul (matMul s1 s2) s1) (matMul (matMul s2 s1) s2) >= TOL_FAIL_THETA
+
+/// The derived braiding word (Soraya round 3): RETRACT(π/2)@1 · JOIN · RETRACT(π/2)@2 · JOIN · EMIT(π/2)@1.
+let private RWORD : M =
+    [ kron (ry (System.Math.PI / 2.0)) I2
+      CNOT
+      kron I2 (ry (-System.Math.PI / 2.0))
+      CNOT
+      kron (ry (-System.Math.PI / 2.0)) I2 ]
+    |> List.reduce matMul
+
+[<Fact>]
+let ``YB-7: Kauffman–Lomonaco R is an EXACT word over the shipped ISA — braiding earned by composition, primitives unchanged`` () =
+    Assert.True(maxDev RWORD RKL <= TOL_PASS) // expect ~1.3e-16
+    Assert.True(ybDev RWORD <= TOL_PASS) // expect ~1.1e-16
+    Assert.True(invDev RWORD >= TOL_FAIL) // expect exactly 1.0
+    let r2 = matMul RWORD RWORD
+    let r4 = matMul r2 r2
+    Assert.True(maxDev (matMul r4 r4) (eye 4) <= TOL_PASS) // order-8, matching YB-4
+
+[<Property>]
+let ``YB-8: the braiding angle is ISOLATED — the same word shape with a generic inner angle FAILS Yang–Baxter`` (NormalFloat t) =
+    let theta = 1.9 + (abs t % 1.1) // clamp to [1.9, 3.0]; the braid point |theta| = pi/2 is excluded
+    let w =
+        [ kron (ry (System.Math.PI / 2.0)) I2
+          CNOT
+          kron I2 (ry theta)
+          CNOT
+          kron (ry (-System.Math.PI / 2.0)) I2 ]
+        |> List.reduce matMul
+    ybDev w >= 0.2 // grid-swept minimum on the clamp's image is 0.263 (Soraya round 3)

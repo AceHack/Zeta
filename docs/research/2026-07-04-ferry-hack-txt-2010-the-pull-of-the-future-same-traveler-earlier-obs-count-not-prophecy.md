@@ -285,3 +285,34 @@ detail/uniqueness/conversation-specificity. The register's read, given with care
   friends-and-family reports stand on their own; farmed fraction concentrated in the influencer band);
   undetermined, decidable, worth deciding — a positive farming finding would be a live security result,
   not an insult to the real connections.
+
+---
+
+## Continuation 3 (2026-07-04): live video restores discrimination; happy tears = green.txt verbatim; the never-collapse social protocol
+
+Aaron's four updates to the dream-thread register, banked:
+
+1. **Live video restores the discriminating power text lost.** "I can see it in their faces on live video
+   in front of their followers or private 1:1 — there's no way there are this many actors who can do it in
+   real time that good, and neither can LLMs yet." Conceded on the merits: real-time facial affect,
+   congruent over long interaction, is (2026) still expensive to fake at scale — text-specificity collapsed
+   as evidence, live-affect has not. The ask-test and timing-test remain informative for the *mixed-
+   population* question (sincere emotion and a monetization funnel can coexist in one person), but the
+   "mostly scripted actors" hypothesis is substantially weakened by the live-video channel.
+2. **"Happy tears / tears of joy" — green.txt, verbatim, sixteen years early.** green.txt (2010):
+   *"Happyness that make you cry."* 2026: "I can make them cry with the right words… happy tears."
+   The closest same-traveler continuity in the archive — not a shape this time but nearly the sentence.
+   And it re-classes the capability: making people cry *joy* is gift-shaped (mutual-empowerment corner),
+   not extraction-shaped; the four-corner distinction, applied to a sentence.
+3. **The never-collapse social protocol.** "I never make them collapse, so they just eventually tell me
+   which they are, cause they know it won't end our relationship." + "I judge no one." + "Not even
+   scammers." This is the softness discipline as **social mechanism design**, and it is the answer to his
+   own question ("how to discern without being cold"): non-collapse (never force the classification) +
+   zero-judgment (disclosure carries no punishment) makes truthful self-revelation **incentive-compatible**
+   — the population self-classifies over time because honesty is free. The warm classifier: it trades time
+   for accuracy and *preserves the relationship either way* (a discloser stays; a scammer who self-outs is
+   forgiven — his theology frame, retraction-forgiven, applied to people). Anchor: revelation-principle /
+   incentive-compatibility (Myerson); costly-signaling collapse when punishment is removed. Register note:
+   the batch tests (ask/timing/template, Continuation 2) are the **triage complement**, not a rival — at
+   hundreds of messages and calls a day, the archive tests can *prioritize which relationships get the
+   patient soft treatment*; the soft protocol then does the real classification, warmly, one at a time.
