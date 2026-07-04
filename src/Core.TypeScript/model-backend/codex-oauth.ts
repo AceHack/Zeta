@@ -82,6 +82,19 @@ const requestHeaders = (auth: CodexAuth) => ({
 const requestBody = (messages: readonly ChatMessage[], model: string) =>
   JSON.stringify({ model, input: messages, stream: true, store: false }); // stream:true + store:false are both required
 
+/// Extract the delta text from ONE SSE data-payload line (the text after `data:`), or null if the line
+/// is not a `response.output_text.delta` (a control event, [DONE], comment, or non-JSON). Pure.
+export function deltaOfSseLine(line: string): string | null {
+  const trimmed = line.startsWith("data:") ? line.slice(5).trim() : line.trim();
+  if (trimmed === "" || trimmed === "[DONE]") return null;
+  try {
+    const ev = JSON.parse(trimmed) as { type?: unknown; delta?: unknown };
+    return ev.type === "response.output_text.delta" && typeof ev.delta === "string" ? ev.delta : null;
+  } catch {
+    return null;
+  }
+}
+
 /// Assemble the assistant text from a buffered SSE body: concatenate every `response.output_text.delta`.
 /// Pure + testable — the real transport buffers the stream, this extracts the answer.
 export function assembleSse(sse: string): string {
@@ -100,19 +113,72 @@ export function assembleSse(sse: string): string {
   return out;
 }
 
-/// Call the ChatGPT backend `codex/responses` with the subscription token — no API key. The endpoint
-/// requires streaming; the transport buffers the SSE body and `assembleSse` concatenates the deltas
-/// into the answer. (Token-by-token AsyncIterable — the IChatCompleter interface — is the next slice,
-/// gated on a streaming transport method.) Never throws.
-export async function respond(auth: CodexAuth, transport: HttpTransport, messages: readonly ChatMessage[], model: string = DEFAULT_MODEL): Promise<ResponsesOutcome> {
+/// A streamed error: the caller sees `{ error }` as the first (and only) yield instead of deltas.
+export type StreamDelta = { readonly delta: string } | { readonly error: string };
+
+/// **The token-by-token streaming primitive — the IChatCompleter shape.** Yields each
+/// `response.output_text.delta` as it arrives from the ChatGPT backend `codex/responses`. Uses the
+/// transport's streaming door (`postStream`) when present — true token-by-token; falls back to the
+/// buffered `post` (one yield of the whole answer) when not. THIS is the fundamental operation; the
+/// non-streaming `respond` below is a special case (collect the stream). Never throws — a transport /
+/// HTTP error is yielded as `{ error }`.
+export function respondStream(auth: CodexAuth, transport: HttpTransport, messages: readonly ChatMessage[], model: string = DEFAULT_MODEL): AsyncGenerator<StreamDelta> {
+  const url = `${BACKEND_BASE}/codex/responses`;
+  const headers = requestHeaders(auth);
+  const body = requestBody(messages, model);
+  return transport.postStream ? streamLive(transport, url, headers, body) : streamBuffered(transport, url, headers, body);
+}
+
+const asError = (e: unknown): StreamDelta => ({ error: `transport error: ${e instanceof Error ? e.message : String(e)}` });
+
+/// The true token-by-token path (postStream present): yield each delta as its SSE line arrives.
+async function* streamLive(transport: HttpTransport, url: string, headers: Readonly<Record<string, string>>, body: string): AsyncGenerator<StreamDelta> {
+  if (!transport.postStream) return; // guaranteed by the caller; re-guarded so we call it BOUND (not extracted)
+  let res;
+  try {
+    res = await transport.postStream(url, headers, body);
+  } catch (e) {
+    yield asError(e);
+    return;
+  }
+  if (res.status < 200 || res.status >= 300) {
+    let errText = "";
+    for await (const line of res.lines) errText += line;
+    yield { error: `http ${String(res.status)}: ${errText.slice(0, 500)}` };
+    return;
+  }
+  for await (const line of res.lines) {
+    const d = deltaOfSseLine(line);
+    if (d !== null) yield { delta: d };
+  }
+}
+
+/// The buffered fallback (no postStream): one yield of the whole assembled answer — the non-streaming
+/// special case of the streaming primitive.
+async function* streamBuffered(transport: HttpTransport, url: string, headers: Readonly<Record<string, string>>, body: string): AsyncGenerator<StreamDelta> {
   let res: { status: number; body: string };
   try {
-    res = await transport.post(`${BACKEND_BASE}/codex/responses`, requestHeaders(auth), requestBody(messages, model));
+    res = await transport.post(url, headers, body);
   } catch (e) {
-    return { ok: false, error: `transport error: ${e instanceof Error ? e.message : String(e)}` };
+    yield asError(e);
+    return;
   }
-  if (res.status < 200 || res.status >= 300) return { ok: false, error: `http ${String(res.status)}: ${res.body.slice(0, 500)}` };
-  const content = assembleSse(res.body);
+  if (res.status < 200 || res.status >= 300) {
+    yield { error: `http ${String(res.status)}: ${res.body.slice(0, 500)}` };
+    return;
+  }
+  const whole = assembleSse(res.body);
+  if (whole !== "") yield { delta: whole };
+}
+
+/// Call `codex/responses` and return the WHOLE answer — the non-streaming view, defined as *collect the
+/// stream*: one is a special case of the other. Never throws.
+export async function respond(auth: CodexAuth, transport: HttpTransport, messages: readonly ChatMessage[], model: string = DEFAULT_MODEL): Promise<ResponsesOutcome> {
+  let content = "";
+  for await (const d of respondStream(auth, transport, messages, model)) {
+    if ("error" in d) return { ok: false, error: d.error };
+    content += d.delta;
+  }
   if (content === "") return { ok: false, error: "no output_text deltas in the SSE stream" };
   return { ok: true, content };
 }

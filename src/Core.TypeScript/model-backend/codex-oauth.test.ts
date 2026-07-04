@@ -87,3 +87,50 @@ describe("codex-oauth — the ChatGPT-subscription backend", () => {
     expect(await respond(a, t3, [{ role: "user", content: "hi" }])).toEqual({ ok: false, error: "transport error: offline" });
   });
 });
+
+// TRUE STREAMING — token-by-token via postStream (shadow*, Aaron 2026-07-03: "lets do it … IQbservable
+// too … one is a special case of the other"). respondStream yields deltas AS THEY ARRIVE; respond is
+// just collect(respondStream). Proofs:
+//   - respondStream over a streaming transport yields each delta incrementally ("po" then "ng").
+//   - a non-200 stream → a single { error } yield (never throws).
+//   - respond (collect) still works over the streaming transport → "pong".
+
+import { respondStream } from "./codex-oauth.ts";
+import type { StreamResponse } from "./backend.ts";
+
+// a streaming fake: postStream yields the given SSE lines one at a time (true async iterable).
+function streamTransport(status: number, sseLines: string[]): HttpTransport {
+  async function* gen() { await Promise.resolve(); for (const l of sseLines) yield l; }
+  return {
+    post: () => Promise.resolve({ status, body: sseLines.join("\n") }),
+    get: () => Promise.resolve({ status: 404, body: "" }),
+    postStream: (): Promise<StreamResponse> => Promise.resolve({ status, lines: gen() }),
+  };
+}
+
+describe("respondStream — true token-by-token", () => {
+  test("yields each output_text.delta incrementally", async () => {
+    const lines = ['data: {"type":"response.created"}', 'data: {"type":"response.output_text.delta","delta":"po"}', 'data: {"type":"response.output_text.delta","delta":"ng"}', "data: [DONE]"];
+    const t = streamTransport(200, lines);
+    const got: string[] = [];
+    for await (const d of respondStream(auth(), t, [{ role: "user", content: "hi" }])) {
+      if ("delta" in d) got.push(d.delta);
+      else throw new Error(d.error);
+    }
+    expect(got).toEqual(["po", "ng"]); // token-by-token, not one blob
+  });
+
+  test("a non-200 stream yields a single { error } (never throws)", async () => {
+    const t = streamTransport(401, ["unauthorized"]);
+    const out: { delta: string } | { error: string } | undefined = await (async () => {
+      for await (const d of respondStream(auth(), t, [{ role: "user", content: "hi" }])) return d;
+      return undefined;
+    })();
+    expect(out).toEqual({ error: "http 401: unauthorized" });
+  });
+
+  test("respond (collect the stream) over the streaming transport → the whole answer", async () => {
+    const lines = ['data: {"type":"response.output_text.delta","delta":"po"}', 'data: {"type":"response.output_text.delta","delta":"ng"}', "data: [DONE]"];
+    expect(await respond(auth(), streamTransport(200, lines), [{ role: "user", content: "hi" }])).toEqual({ ok: true, content: "pong" });
+  });
+});

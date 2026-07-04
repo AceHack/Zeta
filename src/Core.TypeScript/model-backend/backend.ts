@@ -44,12 +44,25 @@ export type CompletionOutcome =
   | { readonly ok: true; readonly result: CompletionResult }
   | { readonly ok: false; readonly error: string };
 
+/// A streamed HTTP response: the status, plus the body as an async iterable of TEXT LINES (an SSE
+/// stream yields its `data:`/event lines here as they arrive). The pull-observable dual of a stream —
+/// an `AsyncIterable` IS an `IObservable` you pull (Rx / `IEnumerable ⇄ IObservable ⇄ IQbservable`
+/// duality); the queryable `IQbservable` form is the expression-tree version we compose over the bus
+/// later. Non-streaming is the degenerate case: one line, the whole body.
+export interface StreamResponse {
+  readonly status: number;
+  readonly lines: AsyncIterable<string>;
+}
+
 /// The injected HTTP door — the ONLY channel to the network (noninterference §13). A real impl wraps
 /// `fetch`; the fake in tests returns canned responses (no socket, no key). Never throws upward: a
-/// transport error is a rejected promise the adapter catches.
+/// transport error is a rejected promise the adapter catches. `postStream` is OPTIONAL — an adapter
+/// that wants true token-by-token uses it when present and falls back to buffered `post` otherwise
+/// (streaming and non-streaming are one code path; one is a special case of the other).
 export interface HttpTransport {
   post(url: string, headers: Readonly<Record<string, string>>, body: string): Promise<{ status: number; body: string }>;
   get(url: string, headers: Readonly<Record<string, string>>): Promise<{ status: number; body: string }>;
+  postStream?(url: string, headers: Readonly<Record<string, string>>, body: string): Promise<StreamResponse>;
 }
 
 /// Backend config: where + which model. `apiKey` is read from `op`/Keychain at the edge and passed in —
