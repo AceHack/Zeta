@@ -31,6 +31,7 @@
     <Compile Include="ThousandBrainsCron.fs" />
     <Compile Include="YinYangEnsemble.fs" />
     <Compile Include="MutualFalsification.fs" />
+    <Compile Include="CondorcetBoundary.fs" />
     <Compile Include="AskBidClearing.fs" />
     <Compile Include="ReticulumTransport.fs" />
     <Compile Include="ReticulumBusMeter.fs" />

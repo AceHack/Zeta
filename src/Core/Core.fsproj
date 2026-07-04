@@ -104,6 +104,7 @@
     <Compile Include="Curve.fs" />
     <Compile Include="BeliefConvergence.fs" />
     <Compile Include="PontryaginDuality.fs" />
+    <Compile Include="OrbitEquivariance.fs" />
     <Compile Include="Evolution.fs" />
     <Compile Include="MarkdownTreaty.fs" />
     <Compile Include="YinYang.fs" />
