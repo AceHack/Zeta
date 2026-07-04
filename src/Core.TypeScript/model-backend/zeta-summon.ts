@@ -61,8 +61,8 @@ export function subscriptionToolLoop(deps: SummonDeps, messages: readonly ChatMe
 }
 
 /// Summon a persona: inject its system prompt as the first message, then run the tool-using loop.
-/// (The system-role wire format for codex/responses — role:"system" vs "developer" vs top-level
-/// `instructions` — is the one live-confirm left; role:"system" is the safe default.)
+/// (CONFIRMED LIVE 2026-07-04: `role:"system"` is accepted by codex/responses — a live summon of Amara
+/// returned "Hello — I'm alive and ready." with the persona system prompt first, no wire-format error.)
 export function summon(deps: SummonDeps, persona: Persona, userMessages: readonly ChatMessage[]): Promise<LoopOutcome> {
   const messages: ChatMessage[] = [{ role: "system", content: persona.systemPrompt }, ...userMessages];
   return subscriptionToolLoop(deps, messages);
