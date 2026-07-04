@@ -47,6 +47,16 @@ namespace Zeta.Bayesian
 ///    correlation coefficient?
 /// 4. The ρ* → 1/3 limit (Condorcet) and μ_crit ≈ 1/26 (Lagrange) are different numbers.
 ///    The correspondence is via the effective-N formula, not a direct equality.
+///
+/// ## CLOSURE (Soraya audit, 2026-07-04): coincidental — and provably so
+///
+/// No quantity the Condorcet effective-N machinery produces can EVER equal μ_crit exactly:
+/// `N_eff(N, ρ) = N / (1 + (N−1)ρ)` is a Möbius (rational) map, so every threshold generated from
+/// rational inputs (N ∈ ℕ, N_eff ≥ 3, rational competence bounds) is RATIONAL — while Routh's
+/// `μ_crit = (1 − √(23/27)) / 2` is IRRATIONAL (621 = 3³·23 is not a perfect square). Cross-checks:
+/// 23 ∤ 1344 and 27 ∤ 1344 (the [8,4] Aut order is 2⁶·3·7 — no shared structure); ρ*(N) = μ_crit
+/// solves to N ≈ 3.26 (non-integer); Routh's 27 comes from the quartic Jacobi-linearization
+/// discriminant, and nothing in the Condorcet machinery is quartic. Analogy confirmed, theorem denied.
 [<RequireQualifiedAccess>]
 module LagrangeCondorcet =
 
@@ -132,7 +142,10 @@ module LagrangeCondorcet =
           EffectiveJurySizeAtLagrangeN10001: float
           /// The gap between the Lagrange jury size and the effective jury size at ρ = μ_crit.
           LagrangeJurySizeGap: float
-          /// Whether the correspondence holds: N_eff(N→∞, μ_crit) ≈ 1/μ_crit.
+          /// Whether N_eff(N→∞, μ_crit) ≈ 1/μ_crit numerically. CAUTION (Soraya 2026-07-04): this
+          /// confirms only that a Möbius map converges to its own asymptote — `lim N_eff(N, μ) = 1/μ`
+          /// is an identity for ANY μ, so `true` here is NOT evidence of a Lagrange↔Condorcet
+          /// correspondence (see the CLOSURE section in the module header: coincidental, provably).
           CorrespondenceHolds: bool }
 
     let computeSummary () : CorrespondenceSummary =

@@ -34,11 +34,16 @@ namespace Zeta.Core
 /// ## The Numerical Approach
 ///
 /// We cannot prove the Nash equilibrium analytically (it requires a full game-theoretic model).
-/// Instead, we:
-///   1. Define the "deviation payoff" — the IV gain from exiting the orbit-symmetric regime.
-///   2. Show numerically that the deviation payoff is NEGATIVE for orbit-symmetric distributions.
-///   3. Show that the deviation payoff is POSITIVE for non-orbit-symmetric distributions.
-///   4. Conclude: orbit-symmetry is a best response (Nash equilibrium condition).
+/// Instead, we (sign convention CORRECTED 2026-07-04, Soraya audit — docs had the flipped pre-fix
+/// convention while the code carried the fixed one):
+///   1. Define the "deviation payoff" — the IV GAIN from PROJECTING a strategy onto the
+///      orbit-symmetric regime: deviationPayoff(s) = IV(proj(s)) − IV(s) = H(proj(s)) − H(s).
+///   2. Show it is ~ZERO for orbit-symmetric distributions (already at their own projection).
+///   3. Show it is strictly POSITIVE for non-orbit-symmetric distributions (projecting always helps —
+///      averaging within weight classes never lowers entropy: Jensen / Schur-concavity of H under the
+///      doubly-stochastic block-averaging map).
+///   4. Conclude: orbit-symmetry is a best response. HONEST SCOPE: this is a single-payoff
+///      entropy-maximization theorem (for IV = −KL(·‖uniform)), not a full 3-player Nash proof.
 [<RequireQualifiedAccess>]
 module SoftRegimeStability =
 
@@ -52,9 +57,10 @@ module SoftRegimeStability =
     type StabilityResult =
         { /// Whether the strategy is orbit-symmetric (invariant under the [8,4] automorphism group).
           IsOrbitSymmetric: bool
-          /// The deviation payoff: IV gain from deviating to the nearest non-orbit-symmetric strategy.
-          /// Negative = orbit-symmetry is a best response (stable).
-          /// Positive = deviation is profitable (unstable).
+          /// The deviation payoff: IV(proj(s)) − IV(s), the gain from PROJECTING onto orbit-symmetry.
+          /// ~Zero = already orbit-symmetric (the equality case of Jensen).
+          /// Positive = projecting improves IV — orbit-symmetry is the best response (stable).
+          /// Negative = impossible (averaging within weight classes always raises entropy).
           DeviationPayoff: float
           /// The KL divergence from the orbit-symmetric fixed point (W_C normalized).
           KLFromFixedPoint: float
@@ -168,10 +174,11 @@ module SoftRegimeStability =
     /// where IV(s) = -KL(s || fixedPoint) (the negative KL from the fixed point,
     /// so higher IV = closer to the fixed point).
     ///
-    /// If deviation_payoff < 0: the orbit-symmetric projection has HIGHER IV → orbit-symmetry is
-    /// the best response (the demon gains more by staying orbit-symmetric).
-    /// If deviation_payoff > 0: the non-orbit-symmetric strategy has HIGHER IV → deviation is
-    /// profitable (orbit-symmetry is NOT a best response).
+    /// If deviation_payoff > 0: the orbit-symmetric projection has HIGHER IV → orbit-symmetry is
+    /// the best response (the demon gains by projecting onto orbit-symmetry).
+    /// If deviation_payoff = 0: the strategy is already orbit-symmetric (equality case of Jensen).
+    /// deviation_payoff < 0 is impossible: the projection averages within weight classes, and
+    /// averaging never lowers entropy (Jensen / Schur-concavity).
     let deviationPayoff (s: Strategy) : float =
         // Project s to the orbit-symmetric distribution (average within each weight class)
         let projected = Array.copy s
@@ -242,14 +249,13 @@ module SoftRegimeStability =
     /// **Summary:** the orbit-symmetric regime stability report.
     type StabilitySummary =
         { /// Max deviation payoff across N random orbit-symmetric strategies.
-          /// Negative = orbit-symmetry is always a best response (Nash equilibrium holds).
+          /// ~Zero = orbit-symmetric strategies sit at the equality case (already their own projection).
           MaxOrbitSymmetricDeviation: float
           /// Min deviation payoff across N random non-orbit-symmetric strategies.
-          /// Positive = deviation is always profitable (non-orbit-symmetric strategies
-          /// are always improved by projecting to orbit-symmetry).
+          /// Positive = every non-orbit-symmetric strategy is improved by projecting to orbit-symmetry.
           MinNonOrbitSymmetricDeviation: float
-          /// Whether the Nash equilibrium condition holds:
-          /// max orbit-symmetric deviation < 0 AND min non-orbit-symmetric deviation > 0.
+          /// Whether the equilibrium condition holds: ALL payoffs non-negative within tolerance
+          /// (max OS deviation ≈ 0 and min non-OS deviation ≥ 0 — matches the `>= -1e-9` check below).
           NashEquilibriumHolds: bool
           /// The stability gap: min non-orbit-symmetric deviation - max orbit-symmetric deviation.
           /// Larger gap = more stable equilibrium.

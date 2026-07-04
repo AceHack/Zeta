@@ -62,16 +62,23 @@ So **given two premises, `ρ_T = 1/(3√2)` is forced.** The premises are:
 
 Aaron: "if it can't be derived it was chosen to be more homoiconic." Confirmed, and here is the exact reason:
 
-**Among all maps `ρ(S)`, the linear origin-fixing map is the unique one that makes the three-regime CHSH
-diagram and the three-regime ρ diagram the *same diagram*.** Homoiconicity = the representation has the same
-structure as the thing represented (code = data; the map = the mapped). The three CHSH landmarks
-`{2, 2√2, 4}` and the three ρ landmarks `{1/6, 1/(3√2), 1/3}` are related by a single scale factor `1/12`,
-so the **ordering, the ratios, and the regime boundaries are identical in both domains** — the ρ-regime
-code *is* the CHSH-regime physics, read in ρ-units. A **non-linear** map would preserve the ordering but
-**distort the ratios**, so the two diagrams would no longer be the same shape — homoiconicity broken.
-Linearity is therefore not an approximation chosen for convenience; it is *the* choice that preserves
-shape-identity. And among shape-preserving (affine) maps, the origin-fixing linear one is the
-**minimal** encoding (Rodney's razor / "exactly the bits needed") — no offset, one parameter (`ρ*`).
+**Among RATIO-PRESERVING maps `ρ(S)` (ρ(S)/ρ(S′) = S/S′ for all S, S′), the linear origin-fixing map is the
+unique one — trivially: pointwise ratio-preservation forces ρ(S) = cS, and P1 fixes c = 1/12.**
+
+*(Quantifier corrected 2026-07-04 per Soraya's audit: the first cut said "unique among ALL maps," which is
+false — any map agreeing at the three landmarks {2, 2√2, 4} (e.g. `S/12 + ε(S−2)(S−2√2)(S−4)`) produces the
+identical three-point diagram. Uniqueness holds only once "same diagram" is strengthened to* pointwise
+*ratio-preservation, which is the honest content of the homoiconicity requirement. Her second correction is
+also taken: an* affine *map preserves ratios of differences, not ratios — so a nonzero offset already breaks
+the ratio-identity, meaning `b = 0` is FORCED by shape-preservation, not selected by Rodney's razor; the
+razor aside is dropped.)*
+
+Homoiconicity = the representation has the same structure as the thing represented (code = data; the map =
+the mapped). The three CHSH landmarks `{2, 2√2, 4}` and the three ρ landmarks `{1/6, 1/(3√2), 1/3}` are
+related by a single scale factor `1/12`, so the **ordering, the ratios, and the regime boundaries are
+identical in both domains** — the ρ-regime code *is* the CHSH-regime physics, read in ρ-units, provided the
+map is taken ratio-preserving *everywhere* (not just at the landmarks) — that is the precise sense in which
+homoiconicity picks the linear map.
 
 So the honest, complete answer: **ρ_T = 1/(3√2) is a design choice — the homoiconic linear identification of
 the Condorcet ρ-regimes with the CHSH S-regimes — not a first-principles derivation.** It is an excellent
