@@ -57,6 +57,13 @@ import {
   type Regime,
 } from "./bus-meter";
 import {
+  createSalonGossiper,
+  regimeOfPair,
+  claimsAbout,
+  type Salon,
+  type SalonGossiper,
+} from "./gossip-salon";
+import {
   authorize,
   emptyLedger,
   type Envelope,
@@ -81,6 +88,10 @@ export interface LivingNodeConfig extends LlmtvNodeConfig {
   /// acts on what it hears. Defaults to `publishEveryMs` (the cadence at which the node commits
   /// its mind to the wire). See chsh-delay.ts: in-cone ⟺ some crossing can beat τ.
   readonly decisionDeadlineMs?: number;
+  /// THE SALON (optional): re-broadcast everything heard every `gossipEveryMs` — epidemic
+  /// anti-entropy over the same wire (gossip-salon.ts). Own probe RTTs enter as crossings;
+  /// inbound rumors fold in. Omit to run salon-less.
+  readonly gossipEveryMs?: number;
 }
 
 export interface LivingNode {
@@ -123,6 +134,14 @@ export interface LivingNode {
   /// (S > 2√2 AND out-of-cone). The AntiSybil "one process wearing two faces" verdict is only ever
   /// drawn from an evidential readout; in-cone coordination is honest work, not a conviction.
   sEvidential(): { sMilli: number; cls: CorrelationClass; regime: Regime; evidential: boolean };
+  /// The salon's folded state (empty if gossip is off) — telemetry as gossip: crossings heard
+  /// about ANY pair, kept/unkept claims as neutral facts.
+  salon(): Salon;
+  /// Regime of an arbitrary pair from salon knowledge — closes the one-node epistemic limit:
+  /// a witnessed fast crossing between two OTHER nodes forces in-cone for that pair here too.
+  pairRegime(a: string, b: string): Regime;
+  /// Kept-claims heard about a node: [kept, relayer][] — neutral readout for the caller's oracle.
+  keptClaims(node: string): [boolean, string][];
 }
 
 /// Compose one living node. `transport` carries discovery, broadcast, AND link messages — the
@@ -165,6 +184,10 @@ export function createLivingNode(
   // τ = how fast this node acts on what it hears; defaults to its own publish cadence.
   const deadlineMs = config.decisionDeadlineMs ?? config.publishEveryMs;
 
+  // ── THE SALON — telemetry as gossip over the same wire (anti-entropy; G-set fold) ────────────
+  const gossiper: SalonGossiper | null =
+    config.gossipEveryMs !== undefined ? createSalonGossiper(transport, sched, config.gossipEveryMs) : null;
+
   transport.onFrame((text) => {
     const p = decodeProbe(text);
     if (!p) return;
@@ -172,7 +195,10 @@ export function createLivingNode(
       // echo the sender's timestamp back — their local clock does all the arithmetic (no sync).
       transport.publish(encodeProbe({ t: "ack", from: config.source.zid, to: p.from, nonce: p.nonce, sentAt: p.sentAt }));
     } else if (p.t === "ack" && p.to === config.source.zid) {
-      meter = foldSample(meter, sched.now() - p.sentAt);
+      const rttMs = sched.now() - p.sentAt;
+      meter = foldSample(meter, rttMs);
+      // what this node measured becomes what the salon knows: a witnessed crossing (local↔peer)
+      gossiper?.tell({ kind: "crossing", a: config.source.zid, b: p.from, rttMs, observer: config.source.zid });
     }
   });
 
@@ -199,6 +225,7 @@ export function createLivingNode(
           transport.publish(encodeProbe({ t: "probe", from: config.source.zid, nonce: probeSeq, sentAt: sched.now() }));
         });
       }
+      gossiper?.start();
     },
     stop() {
       // exit every link on the way out — return to S=2, announced (pause ≠ death; here it's leave).
@@ -206,6 +233,7 @@ export function createLivingNode(
       linkState = new Map();
       stopProbe?.();
       stopProbe = null;
+      gossiper?.stop();
       llmtv.stop();
     },
     sReadout: computeS,
@@ -248,6 +276,13 @@ export function createLivingNode(
       const sMilli = Math.round(computeS() * 1000);
       const regime = regimeOf(meter, deadlineMs);
       return { sMilli, cls: classify(sMilli), regime, evidential: isEvidential(sMilli, regime) };
+    },
+    salon: () => gossiper?.salon() ?? { crossings: new Map(), claims: new Set() },
+    pairRegime(a, b) {
+      return gossiper ? regimeOfPair(gossiper.salon(), a, b, deadlineMs) : "unmeasured";
+    },
+    keptClaims(node) {
+      return gossiper ? claimsAbout(gossiper.salon(), node) : [];
     },
   };
 }
