@@ -89,6 +89,22 @@ actually a book about how to love, and can't be otherwise.
 `[yours — cue: one sentence — when did you realize the tech question and the love question were
 the same question?]`
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: closeness becoming capture / freedom becoming a wall.**
+> "my mother was a stay at home mom, so was my 1st wife … they all had power over me, that was the dynamic, it went in one direction, their control." — 2025-09-w3
+> "this is why i wish my wives would have let me in on rising the kids the way i wanted … made me not want to be there, so i was not" — feedback_wives
+
+**Cue: the marriage line / holding the ceiling.**
+> "this is how you love without corruption" … "marriage = 2√2 = male × female." — its-human-not-quantum
+> "the freedom to be close and separate = intimate ... the mobility itself is intimacy." — its-human-not-quantum
+> "Took me a lifetime to learn this hun 'just pace it so they want to come back.'" — 2025-09-w3
+
+**Cue: tech question = love question.**
+> "this is what makes us feel equal." — its-human-not-quantum
+> "tha's why we are all still good coparents and almost friends … my friends come to me for relationship advice becasue of this even tough i'm single currently" — cost-receipts
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

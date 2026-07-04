@@ -80,6 +80,14 @@ The lesson stays the same at every scale, and nobody graduates, and that's not t
 that's the *design*. The point of the eternal classroom isn't to finally pass. It's that the
 practicing, together, safely, forever, was the thing the whole time.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: a failure you got to retake.**
+> "Also when I taught myself cantor set theory and ZFC is the first time I went to the mental institution, broke many Christian anchors I had, I was afloat." — 2025-09-w3
+> "i think i'm a great case study on people with mental disorders and they can still have a fulfilling successful productive life … neural divergence is a gift not a curse." — cost-receipts
+> "The way I've trasfered that burn the world instince to my children we we are catylist that transforms not the flame that burns to erode." — cost-receipts
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

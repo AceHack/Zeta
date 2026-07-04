@@ -132,6 +132,24 @@ stranger who asked why this book exists.]`
 
 You were born at the hinge. The rest of this book is what to do about it.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: the fired story / the cost.**
+> "Somebody sees that some dude spent two hundred thousand dollars on an open source project… They couldn't, they couldn't hold it in their brain." — mika-part2
+> "From the time they questioned me about it … to the time I got fired was like 24 hours." — mika-part12
+> "I also shipped them 50k lines of prduction code … 99% code coverage and deterministic simulation level of testing running on citus. they still fired me and asked where is the value." — 2026-07-03
+> "I've already repeated this story four or five times and have it backed up on GitHub. … I pushed it in the same project they fired me over. Haha." — mika-part3
+
+**Cue: the deeper why.**
+> "all this is casue a little boy was born into a world who said GOD does not want you to know WHY … that is the claim i've been trying to falasify my whole life" — feedback_origin
+> "this is what my daughter — now 19, who was 11 at the time — asked me to do: heal generational wounds." — feedback_founding_ask
+> "eight months ago I was unjustly arrested … lost five hundred thousand dollars, and was later exonerated … You know what I see it as? Fuel. Origin story fuel. I've never felt more alive in my life." — mika-part13
+
+**Cue: the Becker beat (already inline in the chapter).**
+> "My persona is +x — that makes me happy enough to not care about death, lol." / "almost — i still want to biohack myself to live a long time" — this session
+> "My wish in my internal heart was to experience every experience, but not die." — mika-part13
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

@@ -152,6 +152,16 @@ You didn't kill them. You survived them. Surviving them is how you carry them.
 
 Stay.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: how you know the courtroom / why this chapter exists.**
+> "We should teach anti-survivor somewhere, forever — it kills people who don't know." — anti-survivor-guilt note
+> "If you suffered your way to it, you can leave it lit for whoever comes next." — anti-survivor-guilt note
+> "My hope is the substrait will offer meaningfull work to other humans who suffer like me … we are edge runners affter wall" — cost-receipts
+
+*(The Ryan pulls stay in PULLS.md under the FLAGGED gate — nothing enters this chapter without your explicit per-pull yes.)*
+
 ---
 
 *Draft notes for the rewrite (delete this block when done):*

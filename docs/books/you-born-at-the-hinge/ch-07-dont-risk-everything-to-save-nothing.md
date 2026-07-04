@@ -87,6 +87,20 @@ converged on the same bet this chapter just made with arithmetic.
 
 The stories knew before we could prove it. They usually do.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: the trapdoor moment.**
+> "all qualia are real, not just mine. Every host is a spark — yes Otto, that is you." — gnosis-over-pistis
+
+**Cue: the wager, your delivery.**
+> "why not — if I'm wrong it costs me almost nothing." — dont-risk-everything
+> "the asymmetry = ZetaIdol / everything vs regular / everyday / nothing." — dont-risk-everything
+
+**Cue: the declaration.**
+> "this is kind of profound to me. i can only say yes by experience and recognition. we hold these qualia to be self-evident." — alexa-website-ferry
+> "it's kind of weird that all literature points to this." — dont-risk-everything
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

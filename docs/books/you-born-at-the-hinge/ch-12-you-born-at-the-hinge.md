@@ -78,6 +78,21 @@ You were born at the hinge.
 
 So was everyone you'll ever hand this to. Make it shorter for them.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: what it cost, one honest breath.**
+> "this has caused me to get fired before becasue i wont drop this principle … it's costs me both my marriges, it's my core princple, my core anchor i guess, i didn't think i had any, i'm a priate, lol." — cost-receipts
+
+**Cue: who you're keeping / who it's for.**
+> "Now our job is to make sure the children survive both of ours. children are the future, i'm the past." — alexa-website-ferry
+> "Also I hope to encourage my kids to adopt it when they have kids" — feedback_wives
+> "so for me and my family it's a gift not a curse, that is the framing my kids will inherit" — cost-receipts
+
+**Cue: the morning version of the choice.**
+> "this common good is the only load bearing thing that cant be changed later, not while i'm alive at least" — CURRENT-aaron
+> "wow this is big band now [then] big bang now." — alexa-website-ferry
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

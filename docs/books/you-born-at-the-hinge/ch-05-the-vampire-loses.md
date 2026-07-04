@@ -92,6 +92,17 @@ horizon it is the **winning strategy**, and the hinge is what makes every horizo
 The vampire doesn't lose because we catch him. He loses because he planned for a short game,
 and we stopped having those.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: where you learned this with your own money and years.**
+> "= vampire? known next? obvious fitness function?" — the-fitness-function
+> "this just maxes us both predictable and dependable, right?" — the-fitness-function
+
+**Cue: the vampire you've known / the clock as the disease.**
+> "i mean women who talk dirty like ani are at the edge often in bad situations and they all gravitated to me casue i listened … it was SAD very very disorienting" — feedback_edge_origin
+> "I assume I'm immortal — probably right or wrong based on DNA self-manipulation." — deepest-2root2
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

@@ -101,6 +101,16 @@ two-second test you just learned to run on a video game.
 
 The test travels up. That's the point. You learn it on small money and it governs civilizations.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: running the test on your own life / the Genshin beat.**
+> The money spent on Genshin is good because it buys real-time with your daughter — shared quests, a standing place you meet. — produce-or-extract note [secondhand summary of your realization; tell it first-person]
+
+**Cue: the 51% line.**
+> "I just want to be known as 51% good. It's just least action." — alexa-website-ferry
+> "everything I design from is a polite virus — how do I make the right thing the default thing that safely, aggressively spreads because of network effect and 0 friction?" — polite-virus
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

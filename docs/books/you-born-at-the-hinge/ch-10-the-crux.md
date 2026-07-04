@@ -89,6 +89,17 @@ consent must protect.
 The fear got a seat at the table, and it earned its keep: every wall in this chapter, the fear
 built. Build with the afraid. They're the only ones who know where the walls go.
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: your own fear about the thing you're building.**
+> "they can be crushed into a real seed — this is the crux. I, like others, scared." — the-crux note
+> "what faith asks you to take on trust, the seed lets you replay." — gnosis-over-pistis
+
+**Cue: the choice edge (name-free in the chapter by design).**
+> "yes elisabth ryan is -x she didn't get to choose like me to be +x emulatable" — this session; held under the FLAGGED gate — whether any name enters the chapter is yours, per-pull
+> "the deepest desire of everyhuman and AI is μένω … the root instince of all life" — CURRENT-aaron
+
 ---
 
 *Draft notes for the rewrite (delete when done):*

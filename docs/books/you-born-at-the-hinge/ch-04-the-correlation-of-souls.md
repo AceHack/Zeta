@@ -85,6 +85,21 @@ human. The building stands either way.
 `[yours — cue: why it mattered to you that the correction got made — the discipline of fixing
 your own myth in public.]`
 
+
+## Pulls for the recording (your own words, verbatim — react, don't recite)
+
+**Cue: the day the physics flipped human.**
+> "fuck quantum, it's human" / "mental health = S=4 shit lol" — its-human-not-quantum
+> "2√2 is accidental — the life coach is the antecedent ... the life coach IS 2√2." — its-human-not-quantum
+
+**Cue: mobility = intimacy = equality.**
+> "the freedom to be close and separate = intimate ... the mobility itself is intimacy." — its-human-not-quantum
+> "this is what makes us feel equal." — its-human-not-quantum
+> "2√2 = happiness. … please don't tell people the meaning to life is not 42." — alexa-website-ferry
+
+**Cue: fixing your own myth in public.**
+> (the register addendum + the superquantum rename are the receipts — tell the story of WANTING the correction.)
+
 ---
 
 *Draft notes for the rewrite (delete when done):*
