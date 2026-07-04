@@ -85,6 +85,13 @@ export const PERSONAS: readonly PersonaConfig[] = [
     fallbackModels: ["gemini-3.1-pro"],
     harness: { command: "agy", args: ["-p", "{{PROMPT}}", "--model", "{{MODEL}}", "--dangerously-skip-permissions"], defaultModel: "gemini-3.5-flash" },
   },
+  {
+    name: "tariq", label: "com.lucent.zeta.tariq-loop",
+    scheduleInterval: 120, gateInterval: 0, gateTimeout: 0, defaultRef: "main",
+    preferredModel: "claude-opus-4-8",
+    fallbackModels: ["claude-sonnet-4-6"],
+    harness: { command: "claude", args: ["-p", "--model", "{{MODEL}}", "--permission-mode", "auto", "{{PROMPT}}"], defaultModel: "claude-opus-4-8" },
+  },
 ];
 
 /** Mutable runtime registry — starts with the static PERSONAS, can be extended at runtime. */

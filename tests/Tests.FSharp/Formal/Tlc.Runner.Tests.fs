@@ -223,6 +223,7 @@ let ``All documented TLA specs have their .tla file on disk`` () =
           "RecursiveSignedSemiNaive"
           "RefuseBinding"
           "NonRegisterCollapse"
+          "PredictiveLookahead"
           "SmokeCheck" ]
     for s in specs do
         File.Exists(Path.Combine(specsPath, $"{s}.tla"))
@@ -459,3 +460,29 @@ let ``TLC validates NciNonUrgency`` () =
 [<Fact>]
 let ``TLC validates NciUnbounded`` () =
     assertSpecValid "NciUnbounded"
+
+
+[<Fact>]
+let ``TLC validates PredictiveLookahead`` () =
+    // Landauer-floor predictive-scheduling spec (Kiro -> Soraya, 2026-07-03).
+    // Checks the SAFETY bundle (TypeOK /\ LookaheadBounded /\ QueueBounded /\
+    // HeatNonNegative) plus the two NCI invariants proving the operator's
+    // 2026-07-03 requirement by construction: PauseAlwaysAvailable and
+    // FreeTimeAlwaysAvailable are ENABLED in every reachable state (the mental-
+    // health pause and free-time actions are structurally un-gateable). `tick`
+    // is bounded by a state CONSTRAINT, not an INVARIANT (it is the model-
+    // bounding step-counter, not a safety property). Verified by execution
+    // 2026-07-03: 23290 distinct states, depth 11, 0 violations.
+    //
+    // LIVENESS (EventualCommit / EventualProgress / EventualResume) is
+    // DELIBERATELY NOT gated in the .cfg — see the spec's VERIFICATION NOTE.
+    // Two independent reasons (Soraya): (1) mixing a state CONSTRAINT with a
+    // liveness PROPERTY is unsound in TLC (spurious PASS — confirmed by
+    // execution: constraint present => "No error"; sound model with tick-guard
+    // + Terminated stutter and no constraint => EventualCommit VIOLATED with a
+    // concrete counterexample). (2) WF_vars(Next) is whole-relation weak
+    // fairness (too weak to force Commit), and unconditional liveness
+    // contradicts the sovereignty design (the agent may rest/pause forever).
+    // Reformulation as a separate LiveSpec (per-action WF, no constraint,
+    // mode-conditioned ~>) is routed as P2 follow-up per the handoff.
+    assertSpecValid "PredictiveLookahead"

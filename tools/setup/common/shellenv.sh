@@ -109,6 +109,13 @@ mkdir -p "$ZETA_ENV_DIR"
   # run) so the secret-fetch survives. Sourced here so every shell that gets shellenv also
   # gets the agent's scoped secrets. Absent ⇒ inert (the -f guard).
   echo "[ -f \"\$HOME/.config/zeta/secrets-env.sh\" ] && . \"\$HOME/.config/zeta/secrets-env.sh\""
+
+  # ZETA_FIRST_SESSION_MARKER — the observe loop checks this to know whether the
+  # first-session credential adventure is complete. Points at a stable user-level
+  # path ($HOME/.config/zeta/first-session-complete) so it survives across repo
+  # checkouts + agent reboots. load-node-session.ts: if the file exists, nodeSession
+  # channel is unwired (adventure done). install.sh provisions the file on success.
+  echo "export ZETA_FIRST_SESSION_MARKER=\"\$HOME/.config/zeta/first-session-complete\""
 } > "$ZETA_ENV_FILE"
 
 echo "✓ shellenv at $ZETA_ENV_FILE"

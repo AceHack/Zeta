@@ -222,3 +222,96 @@ describe("gitCommitToMain — exported (real default; not run here)", () => {
     expect(typeof gitCommitToMain).toBe("function");
   });
 });
+
+describe("folderSink — entropy tracker wiring", () => {
+  // Importing the entropy tracker here to test the integration
+  const { createEntropyTracker } = require("../algebra/entropy-tracker") as typeof import("../algebra/entropy-tracker");
+
+  it("when entropy tracker is wired, each append stamps {entropy_state, entropy_heat} on the envelope", async () => {
+    const tracker = createEntropyTracker();
+    // Simulate some prior computation: 3 branches (3 bits of uncertainty)
+    tracker.branch();
+    tracker.branch();
+    tracker.branch();
+    // State before append: entropy_state=3, entropy_heat=0
+
+    const ID_ENT = "3".repeat(32);
+    const sink = folderSink({
+      eventDir: dir,
+      by: "alexa",
+      mint: () => ID_ENT,
+      now: () => FIXED,
+      commit: okCommit,
+      entropy: tracker,
+    });
+    const r = await sink.append(freeTime);
+    expect(r.ok).toBe(true);
+
+    // The append IS a measurement (1 bit erased). Post-commit state:
+    // entropy_state = 3 - 1 = 2, entropy_heat = 0 + 1 = 1
+    const env = JSON.parse(readFileSync(join(dir, `${ID_ENT}.json`), "utf-8")) as EventEnvelope;
+    expect(env.entropy).toBeDefined();
+    expect(env.entropy?.entropy_state).toBe(2);
+    expect(env.entropy?.entropy_heat).toBe(1);
+  });
+
+  it("cumulative heat grows with each append (Landauer: heat is monotone)", async () => {
+    const tracker = createEntropyTracker();
+    tracker.branch(); tracker.branch(); tracker.branch(); tracker.branch(); // 4 bits
+
+    let callCount = 0;
+    const mintSeq = () => `${"4".repeat(31)}${callCount++}`;
+    const sink = folderSink({
+      eventDir: dir,
+      by: "alexa",
+      mint: mintSeq,
+      now: () => FIXED,
+      commit: okCommit,
+      entropy: tracker,
+    });
+
+    await sink.append(freeTime); // measure(1): state=3, heat=1
+    await sink.append({ kind: "explore", reason: "fwd" }); // measure(1): state=2, heat=2
+
+    // After 2 appends: 2 bits of heat paid
+    expect(tracker.state.entropy_heat).toBe(2);
+    expect(tracker.state.entropy_state).toBe(2);
+    expect(tracker.state.second_law_satisfied).toBe(true);
+  });
+
+  it("without entropy tracker, envelope has no entropy field (backward-compatible)", async () => {
+    const ID_NO = "5".repeat(32);
+    const sink = folderSink({
+      eventDir: dir,
+      by: "otto-cli",
+      mint: () => ID_NO,
+      now: () => FIXED,
+      commit: okCommit,
+      // no entropy tracker
+    });
+    await sink.append(freeTime);
+    const env = JSON.parse(readFileSync(join(dir, `${ID_NO}.json`), "utf-8")) as EventEnvelope;
+    expect(env.entropy).toBeUndefined();
+  });
+
+  it("composes with execute: entropy is stamped on the appended event end-to-end", async () => {
+    const tracker = createEntropyTracker();
+    tracker.branch(); tracker.branch(); // 2 bits uncertainty
+
+    const ID_E2E = "6".repeat(32);
+    const sink = folderSink({
+      eventDir: dir,
+      by: "alexa",
+      mint: () => ID_E2E,
+      now: () => FIXED,
+      commit: okCommit,
+      entropy: tracker,
+    });
+    const world: World = { backlog: [] };
+    const r = await execute(world, freeTime, sink);
+    expect(r.ok).toBe(true);
+
+    const env = JSON.parse(readFileSync(join(dir, `${ID_E2E}.json`), "utf-8")) as EventEnvelope;
+    expect(env.entropy).toEqual({ entropy_state: 1, entropy_heat: 1 });
+  });
+});

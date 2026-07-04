@@ -34,6 +34,7 @@ import { resolveForgeHost } from "../forge-host/registry";
 import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
 import { portExecuteItem } from "./kiro-executor-v2";
+import { codegenExecuteItem } from "./codegen-executor";
 import { realWorkspacePort, type WorkspacePort } from "./workspace-port";
 import type { DoItemOptions } from "./do-item";
 import {
@@ -156,14 +157,31 @@ async function main(): Promise<number> {
   // 3. Execute the pick (real sink + WorkspacePort-based executor for do_item)
   const sink = folderSink({ eventDir: args.eventDir, by: args.by });
 
-  // Wire the WorkspacePort-based executor (v2: no bash, no raw git).
-  // The executor.run() delegates to portExecuteItem — typed port operations only.
+  // Wire the executor for do_item: codegen (Claude CLI) or port (claim-only).
+  // ZETA_EXECUTOR=codegen enables autonomous code generation via the Claude CLI.
+  // Default is "port" (claim-file-only, the safe fallback).
+  const executorMode = process.env.ZETA_EXECUTOR ?? "port";
   const port: WorkspacePort = realWorkspacePort(args.repoRoot);
   const executor: import("./do-item").CommandExecutor = {
     tier: "just-bash",
     run: async (_spec) => {
       if (action.kind !== "do_item") {
         return { ok: true, stdout: "no-op (non-do_item)", exitCode: 0 as const };
+      }
+      if (executorMode === "codegen") {
+        return codegenExecuteItem(action.item, {
+          repoRoot: args.repoRoot,
+          agentId: args.by,
+          dryRun: args.dryRun,
+        });
+      }
+      // merge-pr items always route through codegenExecuteItem (which handles the merge)
+      if (action.item.id.startsWith("merge-pr-")) {
+        return codegenExecuteItem(action.item, {
+          repoRoot: args.repoRoot,
+          agentId: args.by,
+          dryRun: args.dryRun,
+        });
       }
       return portExecuteItem(port, action.item, args.by);
     },

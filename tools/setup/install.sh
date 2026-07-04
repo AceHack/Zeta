@@ -287,5 +287,23 @@ if [ -f "$REPO_ROOT/scripts/hooks/install-git-hooks.sh" ]; then
 fi
 
 echo "=== Install complete ==="
+
+# --- Provision ZETA_FIRST_SESSION_MARKER (permanent) ---
+# The first-session credential adventure writes `.first-session-complete` in the repo root
+# on success. Promote it to the stable user-level path so every future shell + observe loop
+# sees the adventure as done — survives repo re-clones, worktree switches, agent reboots.
+MARKER_STABLE="$HOME/.config/zeta/first-session-complete"
+MARKER_REPO="$REPO_ROOT/.first-session-complete"
+if [ ! -f "$MARKER_STABLE" ]; then
+  if [ -f "$MARKER_REPO" ]; then
+    cp "$MARKER_REPO" "$MARKER_STABLE"
+    echo "✓ first-session marker promoted to $MARKER_STABLE"
+  else
+    # Fresh install — no adventure completed yet. The observe loop's nodeSession channel
+    # will fire the credential adventure on next tick. Marker gets created when it finishes.
+    :
+  fi
+fi
+
 echo "If this is your first run, open a new shell or source"
 echo "\$HOME/.config/zeta/shellenv.sh to pick up PATH changes."

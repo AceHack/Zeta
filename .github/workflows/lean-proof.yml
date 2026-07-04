@@ -217,6 +217,16 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake env lean Lean4/CostRecurrence.lean
 
+      - name: Type-check Lean4/LandauerFloor.lean
+        # Landauer floor as a metered cost contract (Kiro -> Soraya, 2026-07-03):
+        # the two-ledger (state/heat) model formalizing entropy-tracker.ts —
+        # second law (total non-decreasing), Landauer floor (heat grows by
+        # exactly k per measure), Bennett reversibility (Adj-only = zero heat),
+        # and the predictive advantage (larger erasure window => less excess).
+        # Core-only (no Mathlib import), Nat arithmetic. sorry-free.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/LandauerFloor.lean
+
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
@@ -247,6 +257,8 @@ jobs:
             | cat Lean4/CanonicalizerCorrect.lean - > /tmp/canonicalizer_axiom_audit.lean
           printf '#print axioms Zeta.CostRecurrence.eqCount_eq_sum\n#print axioms Zeta.CostRecurrence.eqCount_closed_form\n#print axioms Zeta.CostRecurrence.eqCount_two_mul\n#print axioms Zeta.CostRecurrence.eqCount_le_sq\n#print axioms Zeta.CostRecurrence.cost_lax_of_subadd\n#print axioms Zeta.CostRecurrence.seqCost_lax_monoidal\n#print axioms Zeta.CostRecurrence.sharedCost_lax_monoidal\n#print axioms Zeta.CostRecurrence.sharedCost_strictly_lax\n' \
             | cat Lean4/CostRecurrence.lean - > /tmp/costrec_axiom_audit.lean
+          printf '#print axioms Zeta.LandauerFloor.measure_preserves_total\n#print axioms Zeta.LandauerFloor.measure_heat_grows\n#print axioms Zeta.LandauerFloor.measure_heat_monotone\n#print axioms Zeta.LandauerFloor.branches_zero_heat\n#print axioms Zeta.LandauerFloor.adj_only_zero_heat\n#print axioms Zeta.LandauerFloor.larger_window_less_excess\n#print axioms Zeta.LandauerFloor.quasistatic_limit\n#print axioms Zeta.LandauerFloor.n_appends_from_n_branches\n' \
+            | cat Lean4/LandauerFloor.lean - > /tmp/landauer_axiom_audit.lean
 
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
@@ -294,6 +306,10 @@ jobs:
           fi
           if lake env lean /tmp/costrec_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::CostRecurrence depends on sorryAx — the cost recurrence / lax-monoidal proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/landauer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."

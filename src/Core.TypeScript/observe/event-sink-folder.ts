@@ -60,6 +60,7 @@ import {
 } from "../zeta-id/types";
 import type { AppendOutcome, EventSink } from "./execute";
 import type { NextAction } from "./observe";
+import type { EntropyTracker } from "../algebra/entropy-tracker";
 
 /**
  * Mint a WorkItem-category ZetaId as 32-hex — the observe-event identity.
@@ -87,12 +88,19 @@ export function isCanonicalEventId(id: string): boolean {
   return /^[0-9a-f]{32}$/.test(id);
 }
 
+/** Entropy snapshot carried per event (the thermodynamic cost-of-commit accounting). */
+export interface EntropySnapshot {
+  readonly entropy_state: number; // Ledger A: bits of uncertainty remaining in state
+  readonly entropy_heat: number;  // Ledger B: cumulative bits discharged (Landauer cost)
+}
+
 /** The durable FACT: a recorded action with stable identity + actor + time. */
 export interface EventEnvelope {
   readonly id: string; // ZetaId hex — stable identity; the filename; G-Set dedup key
   readonly at: string; // canonical ISO-8601 ms timestamp
   readonly by: string; // acting agent id (the actor trail)
   readonly action: NextAction; // the chosen action this event records
+  readonly entropy?: EntropySnapshot; // the thermodynamic accounting at this commit (absent = tracker not wired)
 }
 
 /** Outcome of committing the event file (sync; mirrors the bus's git pattern). */
@@ -109,6 +117,8 @@ export interface FolderSinkOptions {
   readonly now?: () => number;
   /** Commit the written file (default: gitCommitToMain). Inject a fake in tests. */
   readonly commit?: (filePath: string, envelope: EventEnvelope) => CommitOutcome;
+  /** Entropy tracker (injected effect). When present, each append stamps {entropy_state, entropy_heat}. */
+  readonly entropy?: EntropyTracker;
 }
 
 /**
@@ -303,6 +313,7 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
   const mint = opts.mint ?? (() => mintObserveEventIdHex());
   const now = opts.now ?? (() => Date.now());
   const commit = opts.commit ?? gitCommitToMain;
+  const entropy = opts.entropy;
   return {
     append: (action: NextAction): Promise<AppendOutcome> => {
       // `ourFile` is set ONLY to a file WE created this append — so failure-cleanup removes our own
@@ -321,7 +332,22 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
           return Promise.resolve({ ok: false, reason: `non-canonical event id (expected 32 lowercase hex): '${id}'` });
         }
         const at = new Date(now()).toISOString();
-        const envelope: EventEnvelope = { id, at, by: opts.by, action };
+
+        // ── Entropy accounting: each append IS a measurement (non-Adj, irreversible) ──
+        // Record the measurement on the tracker BEFORE stamping the snapshot,
+        // so the envelope carries the POST-commit entropy state (the cost has been paid).
+        let entropySnapshot: EntropySnapshot | undefined;
+        if (entropy) {
+          // Each commit erases 1 bit of decision-uncertainty from the possibility space.
+          // (The decision has collapsed from N possibilities → 1 chosen action.)
+          entropy.measure(1);
+          entropySnapshot = {
+            entropy_state: entropy.state.entropy_state,
+            entropy_heat: entropy.state.entropy_heat,
+          };
+        }
+
+        const envelope: EventEnvelope = { id, at, by: opts.by, action, ...(entropySnapshot ? { entropy: entropySnapshot } : {}) };
         const written = writeEventFile(envelope, opts.eventDir);
         if (!written.ok) return Promise.resolve({ ok: false, reason: written.reason });
         if (written.created) ourFile = written.path; // only OUR new file is ours to clean up

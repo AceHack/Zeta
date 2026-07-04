@@ -36,7 +36,7 @@ import {
   type ShellRunner,
 } from "./first-session-executor";
 
-export const DEFAULT_MARKER_PATH = "/var/lib/zeta-first-session/complete.marker";
+export const DEFAULT_MARKER_PATH = `${process.env.HOME ?? "/home/zeta"}/.config/zeta/first-session-complete`;
 
 /** Mirror serial markers to ttyS0 when ZETA_FIRST_SESSION_TEE_CONSOLE=1 (QEMU phase-3). */
 export function logSerial(line: string): void {

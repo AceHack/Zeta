@@ -1506,3 +1506,55 @@ jobs:
                 }]
               }"
           fi
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Merge Gate Roll-up — the ONE required status check for branch protection
+  # ═══════════════════════════════════════════════════════════════════
+  #
+  # Branch protection requires a SINGLE status check name that always reports
+  # (never skipped). This job collects the results of all blocking jobs and
+  # reports pass/fail. Conditional jobs (full-verify, build-and-test) may be
+  # skipped on docs-only PRs — that's fine (skipped = success here). But if
+  # they RAN and FAILED, this job fails too, blocking merge.
+  #
+  # To enable: Repository Settings → Branches → main → Require status checks
+  # → add "gate (required)" as the sole required check.
+  gate-required:
+    name: gate (required)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    if: always()
+    needs:
+      - build-and-test
+      - lint
+      - lint-shell
+      - lint-bash-retirement-inventory
+      - lint-workflows
+      - lint-tick-history-order
+      - lint-no-conflict-markers
+      - lint-archive-header-section33
+      - lint-section-33-migration-xrefs
+      - lint-tick-shard-relative-paths
+      - lint-structural-hygiene
+      - lint-no-empty-dirs
+      - lint-markdown
+      - lint-typescript
+      - lint-fsharp
+      - lint-csharp
+      - lint-go
+      - lint-python
+      - lint-rust
+      - cross-verify
+      - full-verify
+    steps:
+      - name: Check all gate jobs
+        run: |
+          # A job result is one of: success, failure, cancelled, skipped.
+          # Skipped is acceptable (path-filter gated); failure/cancelled are not.
+          results='${{ toJSON(needs.*.result) }}'
+          echo "Job results: $results"
+          if echo "$results" | grep -qE '"(failure|cancelled)"'; then
+            echo "::error::One or more gate jobs failed or were cancelled."
+            exit 1
+          fi
+          echo "All gate jobs passed or were skipped (docs-only). ✓"

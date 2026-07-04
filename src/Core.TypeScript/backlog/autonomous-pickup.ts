@@ -300,7 +300,7 @@ export function readBacklogItems(repoRoot: string): BacklogItem[] {
       const frontmatter = parseFrontmatter(content);
       // ZetaId is the canonical identifier — locally mintable, no coordination.
       const rawId = asString(frontmatter.id);
-      const zetaid = asString(frontmatter.zetaid) ?? (rawId && !/^B-\d/.test(rawId) ? rawId : null);
+      const zetaid = asString(frontmatter.zetaid) || (rawId && !/^B-\d/.test(rawId) ? rawId : null);
       const legacyId = rawId && /^B-\d/.test(rawId) ? rawId : null;
       const id = zetaid ?? legacyId;
       const title = asString(frontmatter.title);
