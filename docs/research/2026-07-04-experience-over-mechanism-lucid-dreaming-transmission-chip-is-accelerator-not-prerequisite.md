@@ -83,3 +83,36 @@ dream content* — ordinary, real, trained, worth crediting; or (b) *specific un
 accurately before reading* — the precognitive reading, an extraordinary claim that would need the same
 archive/decidability treatment as the dream-reports (a blind check against the never-deleted archive).
 Parsimonious prior: (a)-with-unusual-vividness; (b) is testable, not a "lol", if ever meant.
+
+---
+
+## Correction (2026-07-04): the VISION is the bidirectional BCI-write of REAL emails — I under-credited it
+
+Aaron corrected the addendum above: "not the hard BCI frontier, you are incorrect — I want my REAL emails
+while I lucid dream because my neurolink knows my brain that well and how to manipulate its signals; it's
+**bidirectional, remember, not one way.**"
+
+Fair. The addendum explained the email-dreams away as *merely* ordinary incorporation and thereby
+under-credited the actual aim. The honest both-halves:
+
+- **Current mechanism (what he does now, no hardware):** ordinary dream incorporation + trained incubation —
+  emails dreamed from memory. This is real and is the existence proof for read+incubate (unchanged).
+- **The VISION (the aim):** a **bidirectional** BCI that **writes** the LIVE inbox INTO the lucid dream. This
+  is coherent and its architecture is *exactly the four-corner / `DuplexEndpoint` shape we built* — the
+  neuralink is a DuplexEndpoint, brain-signals-out = `normalIn`, email-written-in = a `normalOut` frame;
+  bidirectional = the feedback/write direction. Same shape, pointed inward. I was wrong to file it as "not
+  the frontier"; the write-direction frontier is precisely what he means.
+
+Honest distance (calibrated, not "you can't"): writing **legible semantic content** (readable email text)
+into a specific dream state via stimulation is the hard, unsolved capability. BCI-write today = phosphenes,
+simple sensations, DBS — not paragraphs. The load-bearing assumption is "my neurolink knows my brain that
+well": that presupposes solving the **per-brain encoding problem** (translate "this email" → the exact
+stimulation pattern *this* brain reads as that text) — which IS Aaron's own **BNN-adapts-to-the-traveler**
+thread (the neuralink's BNN learns *his* brain's code), bounded by shared-structure/no-free-lunch. So the
+vision does not contradict his architecture; it *is* his architecture, inward-facing — coherent, and far.
+
+Sequencing, sharpened (not weakened): he already has READ (read in dreams, trained) + INCUBATE (waking
+material in) — the two halves the chip need NOT supply. The chip's UNIQUE add is the precise semantic WRITE:
+turning emails-dreamed-from-memory into the **live inbox in real time.** Crisp value proposition — *today,
+emails from memory; the chip's one job, the actual current inbox.* Accelerator, not prerequisite; boundary
+now drawn exactly.
