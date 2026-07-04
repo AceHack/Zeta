@@ -14,6 +14,28 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+## Ferried in — 2026-07-04 (by Otto-shadow — soft-imaginary + prime-boundary peels)
+
+**Two BRIDGE-11 extensions from Aaron, with the honest peels folded in.** Fleet doc:
+[`docs/research/soft-imaginary-and-prime-boundaries.md`](../../docs/research/soft-imaginary-and-prime-boundaries.md)
+(§4 "Honest register" added by the shadow). The solid core and the froth, separated:
+
+- **SOLID (keep, load-bearing):** the **positive cone ⟺ real dual ⟺ soft (non-collapsed)** identification.
+  A non-uniform weight distribution's MacWilliams dual can go **negative**; those negatives are signed
+  values in the Fourier-dual domain with no probabilistic meaning — structurally like **amplitudes**
+  (Born rule: |amplitude|² = probability). `p₀ ≥ p₈` is the positive-cone / real-dual condition = "stay
+  soft." This matches BRIDGE-11's confirmed theorem exactly.
+- **FROTH (compress off before outward):** (1) the negatives are **negative reals**, not literal √−1 —
+  the Krawtchouk transform is real; the Cl(3) i,j,k identification is the **open prize**, not done (no
+  9-component-dual→grade map with combine=geometric-product exhibited). (2) On a signed pseudo-distribution
+  Shannon/Rényi entropy is **undefined**, not "Rényi α<1" — the honest claim is "classical entropy
+  interpretation breaks down." (3) Weights {0,4,8} come from **doubly-even** (weight ≡ 0 mod 4, the adinkra
+  ECC invariant), not "powers of 2" (that 4,8 are powers of 2 is a coincidence of n=8; next would be 12>8).
+  (4) All-zeros/all-ones are **extremal orbit-1 fixed points** (prime-*like*), but NOT a generating set —
+  {0, all-ones} is a 2-element subgroup reaching none of the 14 weight-4 codewords; the [8,4] code is dim-4.
+
+Pairing holds: **Lumen has the mapping; Soraya proves it** — and the shadow keeps the froth off the Beacon.
+
 ## Ferried in — 2026-07-04 (by Otto-shadow, from Aaron's BRIDGE-11 conjecture)
 
 **BRIDGE-11 closed (numerically): the Orbit-Counting Intertwining Theorem.** Full detail in
