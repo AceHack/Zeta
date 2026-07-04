@@ -1,16 +1,4 @@
-/**
- * Valid set of personas for runtime assertion.
- */
-const VALID_PERSONAS = new Set([
-  "otto",
-  "alexa",
-  "riven",
-  "vera",
-  "lior",
-  "soraya",
-  "aaron",
-  "addison",
-]);
+import { VALID_PERSONAS } from "./generated-registry.js";
 
 /**
  * Map of legacy SENDER_IDS composites and bare personas to their structured ActorRef representation.

@@ -8,7 +8,7 @@
 // re-derived via Python `cryptography` at fixture-creation time (sign the expected_canonical_json
 // bytes -> expected_sig; sha256(SPKI-DER)[:16] -> expected_key_id), so no layer is a TS-vs-TS
 // tautology. Run from this directory: `bun cross-verify.ts`.
-import { createPrivateKey, createPublicKey } from "node:crypto";
+import { createPublicKey } from "node:crypto";
 import { signIndex, verifyIndexSignature, canonicalIndexBytes, type IndexSignableContent } from "../../../src/Core.TypeScript/ace/index-signature.ts";
 import { type TrustEntry, type AceSignature } from "../../../src/Core.TypeScript/ace/signing.ts";
 
@@ -38,7 +38,7 @@ out.canonical = canonOut;
 const envOut: Record<string, { key_id: string; sig: string; verify_ok: boolean }> = {};
 for (const v of vec.envelope) {
   const sig = signIndex(v.content, v.private_pem);
-  const spkiB64 = (createPublicKey(createPrivateKey(v.private_pem)).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
+  const spkiB64 = (createPublicKey(v.private_pem).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
   const trust = new Map<string, TrustEntry>([[sig.key_id, { public_key: spkiB64 }]]);
   const vr = verifyIndexSignature(v.content, sig, trust);
   envOut[v.id] = { key_id: sig.key_id, sig: sig.sig, verify_ok: vr.ok };

@@ -1,0 +1,24 @@
+schema: zeta-registry/v1
+description: |
+  Cell surfaces registry. Lists all authorized cell coordinates.
+surfaces:
+  - name: cli
+    description: "Command Line Interface (foreground)"
+  - name: desktop
+    description: "Desktop background helper"
+  - name: vscode
+    description: "VSCode extension background helper"
+  - name: windows
+    description: "Windows console helper"
+  - name: kiro
+    description: "Kiro custom IDE integration"
+  - name: cursor
+    description: "Cursor custom IDE integration"
+  - name: codex
+    description: "Codex custom IDE integration"
+  - name: antigravity
+    description: "Antigravity IDE integration"
+  - name: gemini
+    description: "Gemini CLI / Workspace agent"
+  - name: verifier-node
+    description: "Formal verification node"

@@ -53,7 +53,7 @@ const envOut: Record<string, { key_id: string; sig: string; verify_ok: boolean }
 for (const v of vec.envelope) {
   const sig = signManifest(v.manifest as never, v.private_pem);
   const trust = new Map<string, TrustEntry>();
-  const pub = createPublicKey(createPrivateKey(v.private_pem));
+  const pub = createPublicKey(v.private_pem);
   const spkiB64 = (pub.export({ type: "spki", format: "der" }) as Buffer).toString("base64");
   trust.set(sig.key_id, { public_key: spkiB64 });
   const signed = { ...v.manifest, signature: sig };

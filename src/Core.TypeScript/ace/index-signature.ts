@@ -29,7 +29,7 @@ export function signIndex(content: IndexSignableContent, privatePem: string): Ac
   const bytes = canonicalIndexBytes(content);
   const priv = createPrivateKey(privatePem);
   const sig = (nodeSign(null, bytes, priv) as Buffer).toString("base64");
-  const spkiB64 = (createPublicKey(priv).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
+  const spkiB64 = (createPublicKey(priv as any).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
   return { algo: "ed25519", key_id: keyId(spkiB64), sig };
 }
 

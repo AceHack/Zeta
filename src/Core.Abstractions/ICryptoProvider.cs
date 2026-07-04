@@ -2,6 +2,6 @@ namespace Zeta.Core.Abstractions;
 
 public interface ICryptoProvider
 {
-    byte[] Encrypt(byte[] plaintext);
-    byte[] Decrypt(byte[] ciphertext);
+    public byte[] Encrypt(byte[] plaintext);
+    public byte[] Decrypt(byte[] ciphertext);
 }

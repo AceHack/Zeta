@@ -1,15 +1,4 @@
-/**
- * PersonaId - Closed, registry-backed enum of identities (the hubs).
- */
-export type PersonaId =
-  | "otto"
-  | "alexa"
-  | "riven"
-  | "vera"
-  | "lior"
-  | "soraya"
-  | "aaron"
-  | "addison";
+import { VALID_PERSONAS, type PersonaId } from "./generated-registry.ts";
 
 /**
  * CellRef - Open-ended execution coordinate hanging off the hub (the satellite).
@@ -27,20 +16,6 @@ export interface ActorRef {
   persona: PersonaId;
   cell: CellRef;
 }
-
-/**
- * Valid set of personas for runtime assertion.
- */
-const VALID_PERSONAS = new Set<string>([
-  "otto",
-  "alexa",
-  "riven",
-  "vera",
-  "lior",
-  "soraya",
-  "aaron",
-  "addison",
-]);
 
 /**
  * Map of legacy SENDER_IDS composites and bare personas to their structured ActorRef representation.

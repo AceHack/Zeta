@@ -2,17 +2,53 @@ schema: zeta-registry/v1
 total_slots: 256
 description: |
   Persona-role registry (256 slots for the agent roster).
-  Per docs/AGENT-BEST-PRACTICES.md "No name attribution in code, docs, or
-  skills": this registry uses neutral role-refs, not personal names. The
-  enumerated history surfaces (docs/hygiene-history/, memory/) and
-  the roster carve-outs (.claude/rules/agent-roster-reference-card.md) are
-  where named attribution lives.
+  Defines factory agents and roles explicitly to enable dynamic onboarding and compile-time codegen.
 entries:
   - id: 1
-    name: HumanMaintainer
-    description: "Maintainer role; sole authorization source per .claude/rules/mechanical-authorization-check.md"
+    name: aaron
+    role: HumanMaintainer
+    description: "Aaron - Human Maintainer and sole authorization source"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPHumanMaintainerKey"
+    allowed_surfaces: []
   - id: 2
-    name: FireflyCoherence
-    description: "Coherence role — tracks Firefly heartbeats and trajectory anchors"
-  # TODO: more role-refs as the roster grows. Use neutral role identifiers,
-  # not personal names (per AGENT-BEST-PRACTICES).
+    name: otto
+    role: Operator
+    description: "Otto - Foreground operator, background loop runner, VSCode and Windows surface"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOttoKey"
+    allowed_surfaces: ["cli", "desktop", "vscode", "windows"]
+  - id: 3
+    name: alexa
+    role: Builder
+    description: "Alexa - IDE and CLI dual-surface builder (Kiro)"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPAlexaKey"
+    allowed_surfaces: ["cli", "kiro"]
+  - id: 4
+    name: riven
+    role: Builder
+    description: "Riven - IDE and CLI dual-surface builder (Cursor)"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPRivenKey"
+    allowed_surfaces: ["cli", "cursor"]
+  - id: 5
+    name: vera
+    role: Builder
+    description: "Vera - IDE and CLI dual-surface builder (Codex)"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPVeraKey"
+    allowed_surfaces: ["cli", "codex"]
+  - id: 6
+    name: lior
+    role: Compiler
+    description: "Lior - IDE and CLI dual-surface compiler (Antigravity/Gemini)"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPLiorKey"
+    allowed_surfaces: ["cli", "antigravity", "gemini"]
+  - id: 7
+    name: soraya
+    role: Verifier
+    description: "Soraya - Formal verification expert"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPSorayaKey"
+    allowed_surfaces: ["verifier-node"]
+  - id: 8
+    name: addison
+    role: Designer
+    description: "Addison - Design persona"
+    public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPAddisonKey"
+    allowed_surfaces: []

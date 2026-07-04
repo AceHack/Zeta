@@ -1,38 +1,6 @@
 namespace Zeta.Core
 
-/// PersonaId - Closed, registry-backed enum of identities (the hubs).
-type PersonaId =
-    | Otto
-    | Alexa
-    | Riven
-    | Vera
-    | Lior
-    | Soraya
-    | Aaron
-    | Addison
 
-[<RequireQualifiedAccess>]
-module PersonaId =
-    let toString = function
-        | Otto -> "otto"
-        | Alexa -> "alexa"
-        | Riven -> "riven"
-        | Vera -> "vera"
-        | Lior -> "lior"
-        | Soraya -> "soraya"
-        | Aaron -> "aaron"
-        | Addison -> "addison"
-
-    let parse = function
-        | "otto" -> Some Otto
-        | "alexa" -> Some Alexa
-        | "riven" -> Some Riven
-        | "vera" -> Some Vera
-        | "lior" -> Some Lior
-        | "soraya" -> Some Soraya
-        | "aaron" -> Some Aaron
-        | "addison" -> Some Addison
-        | _ -> None
 
 /// CellRef - Open-ended execution coordinate hanging off the hub (the satellite).
 type CellRef =
