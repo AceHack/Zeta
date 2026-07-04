@@ -48,7 +48,7 @@ interface AllowlistIntegrity {
   readonly staleCategoryEntries: readonly string[];
 }
 
-export type RetainedShellCategory = "host-service wrappers" | "nixos installer" | "setup/bootstrap";
+export type RetainedShellCategory = "git hooks" | "host-service wrappers" | "nixos installer" | "setup/bootstrap";
 
 export interface RetainedShellCategorySummary {
   readonly category: RetainedShellCategory;
@@ -78,6 +78,8 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+  "scripts/hooks/commit-msg",
+  "scripts/hooks/install-git-hooks.sh",
   "tools/installer/zeta-self-register.sh",
   "tools/setup/common/curl-fetch.sh",
   "tools/setup/common/host-tier.sh",
@@ -101,6 +103,7 @@ export const EXPECTED_RETAINED_BASH = EXPECTED_RETAINED_SHELL;
 
 const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
   "setup/bootstrap",
+  "git hooks",
   "host-service wrappers",
   "nixos installer",
 ];
@@ -110,6 +113,10 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   ".gemini/service/lior-loop.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
+  // 081KWN0JKJV retained Git-hook shell edge: installs/refuses commit-message
+  // wrapper leaks before TypeScript can own the Git hook invocation boundary.
+  "scripts/hooks/commit-msg": "git hooks",
+  "scripts/hooks/install-git-hooks.sh": "git hooks",
   // 081KSKBP80008QG0R000GPC0TB.2 post-boot self-registration: a first-boot systemd oneshot (invoked
   // by nixos/modules/zeta-self-register.nix) that probes /proc + runs gh/git at
   // the OS boot edge — retained shell "where the script runs at the OS edge".

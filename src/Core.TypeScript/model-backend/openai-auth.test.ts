@@ -47,8 +47,8 @@ describe("OpenAI provider — device-code flow", () => {
   test("startDeviceFlow: POST /api/accounts/deviceauth/usercode {client_id}; parses the start", async () => {
     const { transport, calls } = fakeTransport({ status: 200, body: JSON.stringify({ device_auth_id: "dev-1", user_code: "WXYZ-1234", interval: 5, verification_uri: "https://auth.openai.com/codex/device" }) });
     const r = await P.startDeviceFlow(transport);
-    expect(calls[0].url).toBe("https://auth.openai.com/api/accounts/deviceauth/usercode"); // under /api/accounts (confirmed live)
-    expect(JSON.parse(calls[0].body)).toEqual({ client_id: "app_EMoamEEZ73f0CkXaXp7hrann" });
+    expect(calls[0]!.url).toBe("https://auth.openai.com/api/accounts/deviceauth/usercode"); // under /api/accounts (confirmed live)
+    expect(JSON.parse(calls[0]!.body)).toEqual({ client_id: "app_EMoamEEZ73f0CkXaXp7hrann" });
     expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.value.deviceAuthId).toBe("dev-1");
@@ -71,15 +71,15 @@ describe("OpenAI provider — device-code flow", () => {
     const seq: HttpTransport = {
       post: (url, _h, body) => {
         calls.push({ url, body });
-        return Promise.resolve(responses[i++]);
+        return Promise.resolve(responses[i++]!);
       },
       get: () => Promise.resolve({ status: 404, body: "" }),
     };
     const done = await P.pollDevice(seq, start);
-    expect(calls[0].url).toBe("https://auth.openai.com/api/accounts/deviceauth/token"); // 1) poll
-    expect(JSON.parse(calls[0].body)).toEqual({ device_auth_id: "d", user_code: "u" });
-    expect(calls[1].url).toBe("https://auth.openai.com/oauth/token"); // 2) exchange the auth code
-    const form = new URLSearchParams(calls[1].body);
+    expect(calls[0]!.url).toBe("https://auth.openai.com/api/accounts/deviceauth/token"); // 1) poll
+    expect(JSON.parse(calls[0]!.body)).toEqual({ device_auth_id: "d", user_code: "u" });
+    expect(calls[1]!.url).toBe("https://auth.openai.com/oauth/token"); // 2) exchange the auth code
+    const form = new URLSearchParams(calls[1]!.body);
     expect(form.get("grant_type")).toBe("authorization_code");
     expect(form.get("code")).toBe("AUTHCODE");
     expect(form.get("code_verifier")).toBe("VERIFIER");
@@ -103,9 +103,9 @@ describe("OpenAI provider — PKCE browser flow", () => {
   test("exchangeCode: form-encoded POST /oauth/token → tokens", async () => {
     const { transport, calls } = fakeTransport({ status: 200, body: tokenBody });
     const r = await P.exchangeCode(transport, "the-code", "the-verifier", "http://127.0.0.1:1455/callback");
-    expect(calls[0].url).toBe("https://auth.openai.com/oauth/token");
-    expect(calls[0].headers["Content-Type"]).toBe("application/x-www-form-urlencoded");
-    const form = new URLSearchParams(calls[0].body);
+    expect(calls[0]!.url).toBe("https://auth.openai.com/oauth/token");
+    expect(calls[0]!.headers["Content-Type"]).toBe("application/x-www-form-urlencoded");
+    const form = new URLSearchParams(calls[0]!.body);
     expect(form.get("grant_type")).toBe("authorization_code");
     expect(form.get("code")).toBe("the-code");
     expect(form.get("code_verifier")).toBe("the-verifier");
@@ -117,7 +117,7 @@ describe("OpenAI provider — refresh + errors", () => {
   test("refresh: form POST grant_type=refresh_token → tokens", async () => {
     const { transport, calls } = fakeTransport({ status: 200, body: tokenBody });
     const r = await P.refresh(transport, "my-refresh");
-    const form = new URLSearchParams(calls[0].body);
+    const form = new URLSearchParams(calls[0]!.body);
     expect(form.get("grant_type")).toBe("refresh_token");
     expect(form.get("refresh_token")).toBe("my-refresh");
     expect(r.ok).toBe(true);

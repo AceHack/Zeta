@@ -71,7 +71,8 @@ function tokensOf(parsed: unknown): OAuthTokens | null {
   const p = parsed as { access_token?: unknown; refresh_token?: unknown; account_id?: unknown; id_token?: unknown };
   if (typeof p.access_token !== "string" || typeof p.refresh_token !== "string") return null;
   const accountId = typeof p.account_id === "string" ? p.account_id : accountIdFromIdToken(p.id_token);
-  return { accessToken: p.access_token, refreshToken: p.refresh_token, accountId };
+  const tokens: OAuthTokens = { accessToken: p.access_token, refreshToken: p.refresh_token };
+  return accountId === undefined ? tokens : { ...tokens, accountId };
 }
 
 export const openAiCodexProvider: AuthProvider = {

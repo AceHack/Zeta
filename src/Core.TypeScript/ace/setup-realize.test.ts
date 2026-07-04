@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { listSetupRealizerInstallOrder } from "./setup-realizers/index.ts";
 
 const SETUP_REALIZE = join(import.meta.dir, "setup-realize.ts");
 
@@ -10,7 +11,7 @@ describe("setup-realize CLI", () => {
     expect(out.status).toBe(0);
     const lines = (out.stdout ?? "").trim().split("\n");
     expect(lines[0]).toBe("from-deb");
-    expect(lines).toHaveLength(14);
+    expect(lines).toEqual([...listSetupRealizerInstallOrder()]);
   });
 
   test("--available accepts registered id", () => {

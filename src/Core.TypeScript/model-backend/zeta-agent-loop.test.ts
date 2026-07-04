@@ -32,8 +32,8 @@ describe("runToolLoop", () => {
 
     // the 2nd turn's input carries the function_call + its output
     const secondInput = seenInputs[1];
-    expect(secondInput.some((i) => "type" in i && i.type === "function_call" && i.call_id === "c1")).toBe(true);
-    expect(secondInput.some((i) => "type" in i && i.type === "function_call_output" && i.call_id === "c1")).toBe(true);
+    expect(secondInput!.some((i) => "type" in i && i.type === "function_call" && i.call_id === "c1")).toBe(true);
+    expect(secondInput!.some((i) => "type" in i && i.type === "function_call_output" && i.call_id === "c1")).toBe(true);
   });
 
   test("no tools → returns the text in one turn", async () => {
@@ -86,7 +86,7 @@ describe("codexToolTurn", () => {
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.calls).toEqual([{ name: "fs_resolve", callId: "call_1", arguments: { path: "README.md" } }]);
     // the request declared the closed tools + the required stream/store flags
-    const sent = JSON.parse(calls[0].body) as { tools: { name: string }[]; stream: boolean; store: boolean; tool_choice: string };
+    const sent = JSON.parse(calls[0]!.body) as { tools: { name: string }[]; stream: boolean; store: boolean; tool_choice: string };
     expect(sent.tools.map((x) => x.name)).toContain("fs_resolve");
     expect(sent.stream).toBe(true);
     expect(sent.store).toBe(false);

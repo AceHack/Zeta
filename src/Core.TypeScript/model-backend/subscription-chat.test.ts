@@ -35,7 +35,7 @@ function seqTransport(responses: { status: number; body: string }[]) {
   const t: HttpTransport = {
     post: (url, headers) => {
       calls.push({ url, headers: { ...headers } });
-      return Promise.resolve(responses[Math.min(i++, responses.length - 1)]);
+      return Promise.resolve(responses[Math.min(i++, responses.length - 1)]!);
     },
     get: () => Promise.resolve({ status: 404, body: "" }),
   };
@@ -56,7 +56,7 @@ describe("subscription chat", () => {
     const store = await storeWith("STORED");
     const out = await chat(deps({ transport, store, provider: provider() }), [{ role: "user", content: "ping" }]);
     expect(out).toEqual({ ok: true, content: "pong" });
-    expect(calls[0].headers.Authorization).toBe("Bearer STORED"); // used the stored token
+    expect(calls[0]!.headers.Authorization).toBe("Bearer STORED"); // used the stored token
   });
 
   test("AUTO-REFRESH: 401 → refresh → persist → retry → answer (used the FRESH token)", async () => {
@@ -64,8 +64,8 @@ describe("subscription chat", () => {
     const store = await storeWith("STALE");
     const out = await chat(deps({ transport, store, provider: provider() }), [{ role: "user", content: "ping" }]);
     expect(out).toEqual({ ok: true, content: "pong" });
-    expect(calls[0].headers.Authorization).toBe("Bearer STALE"); // 1st: stale
-    expect(calls[1].headers.Authorization).toBe("Bearer FRESH"); // 2nd: refreshed
+    expect(calls[0]!.headers.Authorization).toBe("Bearer STALE"); // 1st: stale
+    expect(calls[1]!.headers.Authorization).toBe("Bearer FRESH"); // 2nd: refreshed
     expect((await store.load("openai"))?.tokens.accessToken).toBe("FRESH"); // rotation persisted
   });
 

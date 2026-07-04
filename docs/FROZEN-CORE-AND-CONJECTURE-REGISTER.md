@@ -55,9 +55,10 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 
 ### A-method note — Four-Corner = Traced Monoidal Category = ZSet Retraction = Weyl Reflection
 
-The standard monadic interface (`Result<T, Error>`) only puts feedback on the output channel. The four-corner interface (`Input<T, TFeedback>`) puts feedback on the **input** channel too. 
+The standard monadic interface (`Result<T, Error>`) only puts feedback on the output channel. The four-corner interface (`Input<T, TFeedback>`) puts feedback on the **input** channel too.
 
-This allows the future to affect the past: feedback flows backward, updating the generator function, which reinterprets past data and emits retractions (ZSet weight -1). 
+This allows the future to affect the past: feedback flows backward, updating the generator function, which reinterprets past data and emits retractions (ZSet weight -1).
+
 - In category theory, this is the **trace operator** in a traced monoidal category (bending an output arrow back to the input).
 - In DBSP, this is the **retraction** (weight -1) that un-emits a past event.
 - In Clifford algebra, this is the **grade involution / reverse** that undoes a rotation.
@@ -189,8 +190,6 @@ The total IV extracted by a discrete-ticking agent from a continuous linear-spec
 *Soraya's verdict (2026-07-03):* This is Register C (modeling assumption) with a stated B-path. The $-\frac{1}{12}$ appears exactly in the $\Delta^2$ coefficient multiplied by the spectral slope $I'(0)$. Falsifier documented: if the source spectrum is white noise (flat, $I'(0)=0$), the penalty collapses to the boundary term $\zeta(0) = -1/2$.
 
 *Economic Bounding Correction (Aaron):* The IV cap is the hard-money entropy budget (finite capacity to hold uncorrelated/unique information), NOT the regularization constant. The architecture's monetary stability is decoupled from the fate of this math conjecture.
-
-
 
 *T-1/12 relationship (2026-07-03):* §A #22 (T-1/12) is the provable restatement that survives from Z-1 — its soul: the same B₂ prices tick-sampling as a **finite-Δ correction coefficient**, no regularization. **Landing T-1/12 does NOT discharge Z-1.** Z-1 proper — −1/12 as a regularized *total* IV bound — remains open on all three verdict requirements: (a) a named process class with Iₙ ∝ n (none found; the natural Zeta spectra give ζ(0) = −1/2, ζ′(0), or convergent π²/6 — the falsifier stands), (b) tick boundaries quantizing modes, (c) operational scheme-independence. A future reader who cites −1/12 must say which one: the sampling *coefficient* (proven, #22) or the regularized *total* (open, here). Any future (a)(b)(c) derivation must reduce to #22 in the finite-Δ regime — a free consistency check on candidate proofs. *(Suggested wording fix for the Z-1 statement above, Lumen's to adopt: "the residual penalty is −1/12 **per unit spectral slope, as a Δ² coefficient (see §A #22); as a regularized total it remains conjectural**.")*
 

@@ -56,8 +56,14 @@ export async function freshAccessToken(provider: AuthProvider, deps: LoginDeps, 
   if (!forceRefresh) return { ok: true, tokens: stored.tokens };
   const refreshed = await provider.refresh(deps.transport, stored.tokens.refreshToken);
   if (!refreshed.ok) return { ok: false, error: `refresh failed (session may have ended — re-login): ${refreshed.error}` };
-  // preserve account_id across refresh if the refresh response omits it
-  const merged: OAuthTokens = { ...refreshed.value, accountId: refreshed.value.accountId ?? stored.tokens.accountId };
+  // Preserve account_id across refresh if the refresh response omits it, without writing
+  // `accountId: undefined` under exactOptionalPropertyTypes.
+  const merged: OAuthTokens =
+    refreshed.value.accountId !== undefined
+      ? refreshed.value
+      : stored.tokens.accountId !== undefined
+        ? { ...refreshed.value, accountId: stored.tokens.accountId }
+        : refreshed.value;
   await deps.store.save({ provider: provider.name, tokens: merged, lastRefresh: deps.now() });
   return { ok: true, tokens: merged };
 }

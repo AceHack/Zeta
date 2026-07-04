@@ -44,11 +44,11 @@ const deps = (over: Partial<LoginDeps>): LoginDeps => ({
 
 describe("deviceLogin", () => {
   test("start → onCode fires → poll through pending → tokens persisted", async () => {
-    let shown: { uri: string; code: string } | null = null;
+    const shown: { uri: string; code: string }[] = [];
     const store = memoryTokenStore();
-    const d = deps({ store, onCode: (uri, code) => (shown = { uri, code }) });
+    const d = deps({ store, onCode: (uri, code) => shown.push({ uri, code }) });
     const out = await deviceLogin(fakeProvider(2), d);
-    expect(shown).toEqual({ uri: "https://chatgpt.com/activate", code: "CODE-1234" }); // the one human step
+    expect(shown).toEqual([{ uri: "https://chatgpt.com/activate", code: "CODE-1234" }]); // the one human step
     expect(out.ok).toBe(true);
     const saved = await store.load("openai");
     expect(saved?.tokens.accessToken).toBe("AT");

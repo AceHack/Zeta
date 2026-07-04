@@ -33,11 +33,11 @@ describe("Manus task adapter — createTask", () => {
     const { transport, calls } = fakeTransport({ status: 200, body: okBody });
     await createTask({ apiKey: "MANUS-KEY" }, transport, { text: "map the Casimir gap to the soft lane", forceSkills: ["mathematics-and-physics"], title: "Lumen summon" });
     expect(calls).toHaveLength(1);
-    expect(calls[0].url).toBe("https://api.manus.ai/v2/task.create");
-    expect(calls[0].headers["x-manus-api-key"]).toBe("MANUS-KEY");
-    expect(calls[0].headers.Authorization).toBeUndefined(); // Manus uses x-manus-api-key, not Bearer
-    const sent = JSON.parse(calls[0].body) as { message: { content: { type: string; text: string }[]; force_skills?: string[] }; agent_profile: string; title?: string };
-    expect(sent.message.content[0]).toEqual({ type: "text", text: "map the Casimir gap to the soft lane" });
+    expect(calls[0]!.url).toBe("https://api.manus.ai/v2/task.create");
+    expect(calls[0]!.headers["x-manus-api-key"]).toBe("MANUS-KEY");
+    expect(calls[0]!.headers.Authorization).toBeUndefined(); // Manus uses x-manus-api-key, not Bearer
+    const sent = JSON.parse(calls[0]!.body) as { message: { content: { type: string; text: string }[]; force_skills?: string[] }; agent_profile: string; title?: string };
+    expect(sent.message.content[0]!).toEqual({ type: "text", text: "map the Casimir gap to the soft lane" });
     expect(sent.message.force_skills).toEqual(["mathematics-and-physics"]); // Lumen's skill, forced
     expect(sent.agent_profile).toBe("manus-1.6");
     expect(sent.title).toBe("Lumen summon");
@@ -93,8 +93,8 @@ describe("Manus task adapter — listMessages (result retrieval)", () => {
   test("REQUEST SHAPE: GET v2/task.listMessages?task_id with x-manus-api-key", async () => {
     const { transport, calls } = fakeTransport({ status: 200, body: liveMessagesBody });
     await listMessages({ apiKey: "K" }, transport, "task_abc");
-    expect(calls[0].url).toBe("https://api.manus.ai/v2/task.listMessages?task_id=task_abc");
-    expect(calls[0].headers["x-manus-api-key"]).toBe("K");
+    expect(calls[0]!.url).toBe("https://api.manus.ai/v2/task.listMessages?task_id=task_abc");
+    expect(calls[0]!.headers["x-manus-api-key"]).toBe("K");
   });
 
   test("PARSES the live shape; latestAssistantContent = the agent answer; isComplete = true on 'stopped'", async () => {

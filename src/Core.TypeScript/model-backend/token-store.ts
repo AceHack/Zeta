@@ -53,9 +53,10 @@ export function fileTokenStore(dir: string, fs: StoreFs): TokenStore {
       const p = parsed as { provider?: unknown; tokens?: unknown; lastRefresh?: unknown };
       const t = p.tokens as { accessToken?: unknown; refreshToken?: unknown; accountId?: unknown } | undefined;
       if (typeof p.provider !== "string" || !t || typeof t.accessToken !== "string" || typeof t.refreshToken !== "string") return null;
+      const tokens: OAuthTokens = { accessToken: t.accessToken, refreshToken: t.refreshToken };
       return {
         provider: p.provider,
-        tokens: { accessToken: t.accessToken, refreshToken: t.refreshToken, accountId: typeof t.accountId === "string" ? t.accountId : undefined },
+        tokens: typeof t.accountId === "string" ? { ...tokens, accountId: t.accountId } : tokens,
         lastRefresh: typeof p.lastRefresh === "string" ? p.lastRefresh : "",
       };
     },

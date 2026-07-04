@@ -136,7 +136,9 @@ def test_wiener_logdet_correction_free_vs_ou_todd_kernel() -> None:
     series = sp.series(ou_correction, u, 0, 7).removeO()
     poly = sp.Poly(sp.expand(series), u)
     assert poly.coeff_monomial(u) == sp.Rational(-1, 2)
-    assert poly.coeff_monomial(u**2) == sp.Rational(1, 24)  # B₂/(2·2!)... the Todd kernel
+    assert poly.coeff_monomial(u**2) == sp.Rational(
+        1, 24
+    )  # B₂/(2·2!)... the Todd kernel
     assert poly.coeff_monomial(u**4) == sp.Rational(-1, 2880)
     assert poly.coeff_monomial(u**6) == sp.Rational(1, 181440)
     # Wiener has no such series: det Σ = (σ²Δ)^N exactly (previous test) ⇒ correction ≡ 0.
@@ -147,7 +149,9 @@ def test_ou_same_diffusion_kl_limit_is_finite_and_exact() -> None:
     mp.mp.dps = 20
     theta1, theta2, sigma, T = mp.mpf(1), mp.mpf(2), mp.mpf(1), mp.mpf(3)
     v1, v2 = sigma**2 / (2 * theta1), sigma**2 / (2 * theta2)
-    expected = T * (theta2 - theta1) ** 2 / (4 * theta1) + (v1 / v2 - 1 + mp.log(v2 / v1)) / 2
+    expected = (
+        T * (theta2 - theta1) ** 2 / (4 * theta1) + (v1 / v2 - 1 + mp.log(v2 / v1)) / 2
+    )
 
     def kl_discrete(delta: mp.mpf) -> mp.mpf:
         n = int(T / delta)

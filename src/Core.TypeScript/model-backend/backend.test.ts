@@ -37,10 +37,10 @@ describe("openAiCompatBackend — the standards-based port", () => {
     const backend = openAiCompatBackend({ baseUrl: "https://example.test/", apiKey: "SECRET-KEY", model: "m-1" }, transport);
     await backend.complete({ messages: [{ role: "user", content: "hi" }] });
     expect(calls).toHaveLength(1);
-    expect(calls[0].url).toBe("https://example.test/v1/chat/completions"); // trailing slash normalized
-    expect(calls[0].headers.Authorization).toBe("Bearer SECRET-KEY");
-    expect(calls[0].headers["Content-Type"]).toBe("application/json");
-    expect(JSON.parse(calls[0].body)).toEqual({ model: "m-1", messages: [{ role: "user", content: "hi" }] });
+    expect(calls[0]!.url).toBe("https://example.test/v1/chat/completions"); // trailing slash normalized
+    expect(calls[0]!.headers.Authorization).toBe("Bearer SECRET-KEY");
+    expect(calls[0]!.headers["Content-Type"]).toBe("application/json");
+    expect(JSON.parse(calls[0]!.body)).toEqual({ model: "m-1", messages: [{ role: "user", content: "hi" }] });
   });
 
   test("200 RESPONSE parses to choices[0].message.content", async () => {
@@ -58,7 +58,7 @@ describe("openAiCompatBackend — the standards-based port", () => {
     const { transport, calls } = fakeTransport(okResponse);
     const backend = openAiCompatBackend({ baseUrl: "https://x.test", apiKey: "k", model: "default" }, transport);
     await backend.complete({ messages: [{ role: "user", content: "hi" }], model: "override" });
-    const sent = JSON.parse(calls[0].body) as { model: string };
+    const sent = JSON.parse(calls[0]!.body) as { model: string };
     expect(sent.model).toBe("override");
   });
 
@@ -89,7 +89,7 @@ describe("manusBackend — the first adapter (same port)", () => {
     const { transport, calls } = fakeTransport(okResponse);
     const backend = manusBackend("MANUS-KEY", "manus-1.6", transport);
     await backend.complete({ messages: [{ role: "user", content: "summon Lumen" }] });
-    expect(calls[0].url).toBe("https://api.manus.ai/v1/chat/completions");
-    expect(calls[0].headers.Authorization).toBe("Bearer MANUS-KEY");
+    expect(calls[0]!.url).toBe("https://api.manus.ai/v1/chat/completions");
+    expect(calls[0]!.headers.Authorization).toBe("Bearer MANUS-KEY");
   });
 });

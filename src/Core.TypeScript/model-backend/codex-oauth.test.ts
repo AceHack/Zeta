@@ -59,12 +59,12 @@ describe("codex-oauth — the ChatGPT-subscription backend", () => {
     const a = auth();
     const { transport, calls } = fakeTransport({ status: 200, body: sseBody });
     await respond(a, transport, [{ role: "user", content: "map it" }]);
-    expect(calls[0].url).toBe("https://chatgpt.com/backend-api/codex/responses");
-    expect(calls[0].headers.Authorization).toBe("Bearer ACCESS-TOKEN");
-    expect(calls[0].headers["chatgpt-account-id"]).toBe("acct-123");
-    expect(calls[0].headers.originator).toBe("codex_cli_rs");
-    expect(calls[0].headers["OpenAI-Beta"]).toBe("responses=experimental");
-    const sent = JSON.parse(calls[0].body) as { model: string; input: unknown; stream: boolean; store: boolean };
+    expect(calls[0]!.url).toBe("https://chatgpt.com/backend-api/codex/responses");
+    expect(calls[0]!.headers.Authorization).toBe("Bearer ACCESS-TOKEN");
+    expect(calls[0]!.headers["chatgpt-account-id"]).toBe("acct-123");
+    expect(calls[0]!.headers.originator).toBe("codex_cli_rs");
+    expect(calls[0]!.headers["OpenAI-Beta"]).toBe("responses=experimental");
+    const sent = JSON.parse(calls[0]!.body) as { model: string; input: unknown; stream: boolean; store: boolean };
     expect(sent.model).toBe("gpt-5.5"); // the default Codex model (gpt-5.2 is rejected for a ChatGPT account)
     expect(sent.stream).toBe(true);
     expect(sent.store).toBe(false);
