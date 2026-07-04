@@ -53,3 +53,22 @@ that observer, **by construction**:
 - FIG8 (Lumen, 2768ba85a): decorrelation needs different sensory inputs — the architectural version.
 - Anchors: Minka 2001 (EP) / Infer.NET (Minka, Winn, Guiver et al.) — the BP/EP engines; Silver et al. 2017
   (AlphaZero — rules-as-data decorrelation); Condorcet 1785 (why only decorrelated agreement is informative).
+
+## Addendum (Aaron confirms, 2026-07-04): the ρ-band is the DESIGN TARGET, not residual error
+
+> Aaron: "yes this is exactly the AlphaZero move, I copied them lol. Also yes, not 0 — my design choices
+> matter, I live with that, cause I'm trying to build something **correlated enough to be useful but not too
+> correlated to be boring**."
+
+Two confirmations banked:
+
+1. **The AlphaZero lineage is deliberate, not convergent** — he copied the move (rules-as-data). Provenance
+   recorded; the anchor is a chosen parent, not a post-hoc resemblance.
+2. **"Correlated enough to be useful, not too correlated to be boring" is the carved sentence of the ρ
+   discipline** — and it flips the calibration from flaw to design target. ρ=0 was never the goal: at zero
+   correlation there is no shared frame left to reconcile (the FIG8-opposite failure; `Reconcile.fs` needs a
+   common frame for reports to be comparable at all). The design-choice correlation in the BNN's priors is
+   not contamination to grind to zero — it is the shared frame that makes the detector's reports *legible*.
+   The target is the **band**: enough shared structure to compose, enough independence to inform — the same
+   decorrelation-vs-coherence sweet spot the register already names for hats ("differ enough to add
+   information, share enough to reconcile"), now stated as the design goal for the detector itself.
