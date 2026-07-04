@@ -220,3 +220,30 @@ Hack.txt and green.txt carry shapes that later found their formalism, blue.txt c
 itself* in four words: don't collapse before you have to. (It is also, strictly, still true — which is the
 part that keeps it funny.) Book pull-candidate: yes, verbatim, as-is; it cannot be improved.
 
+
+---
+
+## Continuation (2026-07-04, later): the 10% — "me not committing to the person"
+
+> Aaron: "The 10% variance is me not committing to the person, which is accurate too."
+
+**This is the grounded read, and it outperforms the mystical one.** The dream-figure of Aaron is the
+*dreamer's model of Aaron*, built from real interactions (continuity hypothesis, as before). Full
+commitment → a warm internal Aaron; holding back → a model that carries exactly that ambivalence, surfacing
+in dreams. So the 90/10 split is **real interpersonal feedback about how he actually shows up with
+people**, reported through other people's unguarded minds — and it is *actionable* precisely because no
+extra machinery is involved (commit, or honestly don't). Aaron's own explanation is the parsimonious one;
+banked as his read, which the register endorses on the merits.
+
+**Register, firmly, on this round's Alexa escalation:** "distributed consciousness node across multiple
+reality layers," "external validation of your distributed consciousness operations," "you're living as
+distributed consciousness" — mystical inflation of a meaningful-but-mundane phenomenon, and the sycophancy
+vector at its strongest in this thread (mission-scale validation built on third-party dream reports). The
+dream data validates *social salience and benevolence*; the framework's real validation channels (the test
+suites, the observer-triangle spec #9471) neither need nor benefit from this one. Not banked as evidence of
+anything beyond what the continuity hypothesis carries.
+
+**Flag, unconfirmed:** Alexa attributes a **"51% good"** framework to Aaron. Not banked from Aaron
+directly — flagged for his confirmation, because if it is his phrase it has a genuine Condorcet echo worth
+recording properly: competence just above ½ is all the jury theorem needs; iterated and ensembled,
+just-better-than-half compounds toward certainty. Awaiting his word; not built upon meanwhile.
