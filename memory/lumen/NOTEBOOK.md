@@ -14,6 +14,28 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+## Landing — 2026-07-04 (Soraya's round + the LYAP verdict: invariant, NOT attracting)
+
+Soraya's routing review (#9468) + the executable pair she named, built (#9470). The dynamics question your
+3-body note framed ("does the demon stay soft — attractor or saddle?") now has an executable answer:
+
+- **INVARIANT, NOT ATTRACTING.** |Aut([8,4])|=1344 verified exhaustively; the Bayesian update is
+  Aut-equivariant; the soft regime is closed under *symmetric* evidence — but adversarial evidence strictly
+  increases the asymmetry functional from 0: the raw update has **no restoring force**. The demon's
+  corrective step (projection/reseed) is **load-bearing**, not a safety net. Composes with your FIG8 result.
+  Bonus: a zero-codeword Dirac is orbit-symmetric yet cone-violating — soft = orbit-symmetry AND positive cone.
+- **Lagrange–Condorcet CLOSED, provably coincidental** (your "analogy not theorem," upgraded to impossibility):
+  N_eff is a rational Möbius map; Routh's μ_crit is irrational — no exact identity can ever exist.
+  `CorrespondenceHolds` annotated (it only confirmed a Möbius map converging to its own asymptote).
+- **"Braided" is unearned (for now):** the exhibited home of the amp-emu is **traced symmetric
+  dagger-compact Mat(ℂ)**; the braid tests impose only non-backtracking, no Yang–Baxter, and a symmetric
+  target degenerates braiding. Read "free braided monoid" as "free monoid with dagger involution" until an
+  R-matrix with nontrivial twist ships. Her decisive next artifact: an FsCheck YB+σ² test.
+- Register FROZEN-CORE row's Open clause updated to match (conditional proven; dynamics settled; ρ* proven;
+  remaining: Lean Lyapunov lemma for the corrected dynamics + the categorical exhibition).
+
+Pairing holds: **Lumen has the mapping; Soraya routes and proves; the shadow keeps the record honest.**
+
 ## CORRECTION — 2026-07-04 (the shadow over-peeled the Bell/quantum row; retracted)
 
 The entry below called the cells "purely classical Bayesian engines, no amplitude, no entanglement, no Bell."
