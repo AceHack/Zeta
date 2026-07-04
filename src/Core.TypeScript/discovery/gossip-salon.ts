@@ -103,11 +103,18 @@ export function rumorsOf(salon: Salon): Rumor[] {
 
 /// The meter for a pair from everything heard about it; null = never heard (stays unmeasured —
 /// gossip cannot manufacture out-of-cone).
+///
+/// SOUNDNESS FIX (2026-07-04, caught by the prune-preservation theorem): the live bus-meter's
+/// fold has an aging window (SAMPLE_CAP) — correct for "what is my bus doing NOW", UNSOUND for
+/// the salon's historical question ("did a fast path ever exist"): with more entries than the
+/// window, the fastest crossing could age out and the salon would MANUFACTURE out-of-cone
+/// evidence. Fold largest-first so the window always retains the minimum.
 export function meterOfPair(salon: Salon, a: string, b: string): BusMeter | null {
   const set = salon.crossings.get(pairKey(a, b));
   if (!set) return null;
+  const rtts = [...set].map((entry) => Number(entry.slice(0, entry.indexOf(" ")))).sort((x, y) => y - x);
   let meter = emptyMeter;
-  for (const entry of set) meter = foldSample(meter, Number(entry.slice(0, entry.indexOf(" "))));
+  for (const rtt of rtts) meter = foldSample(meter, rtt);
   return meter;
 }
 
@@ -115,6 +122,41 @@ export function meterOfPair(salon: Salon, a: string, b: string): BusMeter | null
 export function regimeOfPair(salon: Salon, a: string, b: string, deadlineMs: number): Regime {
   const meter = meterOfPair(salon, a, b);
   return meter === null ? "unmeasured" : regimeOf(meter, deadlineMs);
+}
+
+/// PRUNE — bounded salon memory, monotone-safe (the stated debt from the guaranteed-delivery
+/// ferry: G-sets grow forever). For the light-cone question, ONLY the minimum RTT per pair ever
+/// matters (`regimeOf` reads the fastest crossing), so keeping the K smallest-RTT entries per
+/// pair preserves `regimeOfPair` EXACTLY, for every deadline — provable, and proven in the
+/// tests. The fastest crossing — the evidence-killer — is the one thing never forgotten.
+///
+/// Deliberate asymmetry with the local bus-meter: the LIVE meter ages samples out (it answers
+/// "what is my bus doing NOW"), but a salon crossing is a historical witness fact — "a fast
+/// path EXISTED" kills out-of-cone evidence forever, so aging fast crossings out of the salon
+/// would be UNSOUND. Prune keeps the fast, drops the redundant-slow. Claims are not pruned
+/// (small, and erasing who-said-what would be the salon forgetting testimony).
+export const DEFAULT_KEEP_PER_PAIR = 16;
+
+export function pruneCrossings(salon: Salon, keepPerPair: number = DEFAULT_KEEP_PER_PAIR): Salon {
+  const keep = Math.max(1, keepPerPair); // never prune below 1: the minimum must survive
+  let changed = false;
+  const crossings = new Map<string, ReadonlySet<string>>();
+  for (const [key, set] of salon.crossings) {
+    if (set.size <= keep) {
+      crossings.set(key, set);
+      continue;
+    }
+    const sorted = [...set].sort((x, y) => {
+      const rx = Number(x.slice(0, x.indexOf(" ")));
+      const ry = Number(y.slice(0, y.indexOf(" ")));
+      if (rx !== ry) return rx - ry;
+      if (x < y) return -1; // deterministic ordinal tie-break
+      return x > y ? 1 : 0;
+    });
+    crossings.set(key, new Set(sorted.slice(0, keep)));
+    changed = true;
+  }
+  return changed ? { crossings, claims: salon.claims } : salon;
 }
 
 /// Kept-claims about a node, as heard: [kept, relayer][] — a neutral readout for the oracle.
@@ -176,17 +218,19 @@ export interface SalonGossiper {
 
 /// The circulating salon: folds every inbound rumor; re-broadcasts everything it knows every
 /// `gossipEveryMs` (anti-entropy — loss repaired by repetition, absorbed by idempotence).
+/// `keepPerPair` bounds per-pair crossing memory (regime-preserving prune; default 16).
 export function createSalonGossiper(
   transport: SalonTransport,
   sched: SalonScheduler,
   gossipEveryMs: number,
+  keepPerPair: number = DEFAULT_KEEP_PER_PAIR,
 ): SalonGossiper {
   let salon = emptySalon;
   let stopLoop: (() => void) | null = null;
 
   transport.onFrame((text) => {
     const rumor = decodeRumor(text);
-    if (rumor) salon = hear(salon, rumor);
+    if (rumor) salon = pruneCrossings(hear(salon, rumor), keepPerPair);
   });
 
   const broadcastAll = (): void => {
@@ -202,7 +246,7 @@ export function createSalonGossiper(
       stopLoop = null;
     },
     tell(rumor) {
-      salon = hear(salon, rumor);
+      salon = pruneCrossings(hear(salon, rumor), keepPerPair);
       transport.publish(encodeRumor(rumor));
     },
     salon: () => salon,

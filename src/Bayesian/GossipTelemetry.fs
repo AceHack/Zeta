@@ -88,11 +88,21 @@ module GossipTelemetry =
 
     /// The meter for a pair, from everything the salon has heard about it. None = never heard —
     /// stays `Unmeasured` downstream (gossip cannot manufacture out-of-cone).
+    ///
+    /// SOUNDNESS FIX (2026-07-04, caught by the prune-preservation theorem): the live meter's
+    /// fold has an aging window (SampleCap) — correct for "what is my bus doing NOW", UNSOUND
+    /// for the salon's historical question ("did a fast path ever exist"): with more entries
+    /// than the window the fastest crossing could age out, MANUFACTURING out-of-cone evidence.
+    /// Fold largest-first so the window always retains the minimum.
     let meterOfPair (salon: Salon) (a: string) (b: string) : BusRegime.Meter option =
         salon.Crossings
         |> Map.tryFind (pairKey a b)
         |> Option.map (fun set ->
-            set |> Set.toList |> List.map fst |> List.fold BusRegime.foldSample BusRegime.empty)
+            set
+            |> Set.toList
+            |> List.map fst
+            |> List.sortDescending
+            |> List.fold BusRegime.foldSample BusRegime.empty)
 
     /// Regime of a pair from the salon's knowledge. Unheard pairs are `Unmeasured` — honest.
     let regimeOfPair (salon: Salon) (a: string) (b: string) (deadlineMs: int) : BusRegime.Regime =
@@ -115,6 +125,24 @@ module GossipTelemetry =
             | Some gossiped ->
                 gossiped.RttSamplesMs |> List.fold BusRegime.foldSample localMeter
         BusRegime.regimeOf combined deadlineMs
+
+    /// PRUNE — bounded salon memory, monotone-safe. Only the minimum RTT per pair ever affects
+    /// `regimeOfPair` (min rules), so keeping the K smallest-RTT entries per pair preserves the
+    /// regime EXACTLY for every deadline. The fastest crossing — the evidence-killer — is never
+    /// forgotten. Deliberate asymmetry with live meters: a salon crossing is a historical
+    /// witness fact ("a fast path EXISTED" kills evidence forever), so aging fast crossings out
+    /// would be unsound; prune keeps the fast, drops the redundant-slow. Claims are not pruned.
+    [<Literal>]
+    let DefaultKeepPerPair = 16
+
+    let pruneCrossings (keepPerPair: int) (salon: Salon) : Salon =
+        let keep = max 1 keepPerPair // never below 1: the minimum must survive
+        { salon with
+            Crossings =
+                salon.Crossings
+                |> Map.map (fun _ set ->
+                    if Set.count set <= keep then set
+                    else set |> Set.toList |> List.sort |> List.take keep |> Set.ofList) }
 
     /// The kept-claims about a node, as the salon heard them — a neutral readout for the
     /// caller's oracle (attestation, privacy-budget accrual, reunion-vs-sybil… not decided here).

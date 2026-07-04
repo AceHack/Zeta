@@ -74,3 +74,34 @@ module GossipTelemetryTests =
         // both claims present, attributed — no verdict, no last-writer-wins erasure
         Assert.Equal<(bool * string) list>([ (false, "rumor-mill"); (true, "ryn") ], claims)
         Assert.Empty(GossipTelemetry.claimsAbout salon "nobody")
+
+    [<Fact>]
+    let ``GT-7: prune preserves the regime exactly for every deadline; bound holds; idempotent`` () =
+        // 60 crossings on one pair, varied RTTs — more than any window
+        let big =
+            [ for i in 0 .. 59 -> crossing "a" "b" (100 + (i * 137) % 900) (sprintf "w%d" i) ]
+            |> hearAll
+        let pruned = GossipTelemetry.pruneCrossings 4 big
+        for deadline in 0 .. 600 do
+            Assert.Equal(
+                GossipTelemetry.regimeOfPair big "a" "b" deadline,
+                GossipTelemetry.regimeOfPair pruned "a" "b" deadline)
+        for KeyValue(_, set) in pruned.Crossings do
+            Assert.True(Set.count set <= 4)
+        Assert.Equal<GossipTelemetry.Salon>(pruned, GossipTelemetry.pruneCrossings 4 pruned)
+        // floor clamps to 1 — the evidence-killer always survives
+        let one = GossipTelemetry.pruneCrossings 0 big
+        for deadline in 0 .. 600 do
+            Assert.Equal(
+                GossipTelemetry.regimeOfPair big "a" "b" deadline,
+                GossipTelemetry.regimeOfPair one "a" "b" deadline)
+
+    [<Fact>]
+    let ``GT-8: soundness — with more crossings than the meter window, the fastest still rules`` () =
+        // regression for the bug the prune theorem caught: 60 entries, the single fastest (60ms)
+        // buried among slow ones — the salon must NOT lose it to window aging.
+        let salon =
+            [ for i in 0 .. 58 -> crossing "a" "b" (500 + i) (sprintf "slow%d" i) ]
+            @ [ crossing "a" "b" 60 "fast-witness" ]
+            |> hearAll
+        Assert.Equal(BusRegime.InCone, GossipTelemetry.regimeOfPair salon "a" "b" 100)

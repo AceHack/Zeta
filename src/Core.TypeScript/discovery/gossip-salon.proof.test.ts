@@ -12,6 +12,9 @@ import {
   claimsAbout,
   encodeRumor,
   decodeRumor,
+  pruneCrossings,
+  createSalonGossiper,
+  pairKey,
   type Rumor,
   type Salon,
 } from "./gossip-salon";
@@ -241,5 +244,61 @@ describe("integration: the salon circulates over a lossy, duplicating wire", () 
     expect(c.keptClaims("zid-aria")).toEqual([[true, "zid-aria"]]);
     a.stop();
     c.stop();
+  });
+});
+
+// ── pruning: bounded memory, regime preserved EXACTLY (the monotone-safe theorem) ──────────────
+
+describe("PROVEN: pruneCrossings preserves the regime exactly, for every deadline", () => {
+  // a salon with many crossings per pair, varied RTTs (deterministic construction)
+  const buildBig = (): Salon => {
+    let s = emptySalon;
+    for (let i = 0; i < 60; i++) {
+      s = hear(s, crossing("a", "b", 100 + ((i * 137) % 900), `w${String(i)}`));
+      s = hear(s, crossing("a", "c", 50 + ((i * 61) % 400), `w${String(i)}`));
+    }
+    return s;
+  };
+
+  it("regime identical before/after prune across the whole deadline sweep (0..600, both pairs)", () => {
+    const big = buildBig();
+    const pruned = pruneCrossings(big, 4);
+    for (let deadline = 0; deadline <= 600; deadline++) {
+      expect(regimeOfPair(pruned, "a", "b", deadline)).toBe(regimeOfPair(big, "a", "b", deadline));
+      expect(regimeOfPair(pruned, "a", "c", deadline)).toBe(regimeOfPair(big, "a", "c", deadline));
+    }
+    // unheard pairs unaffected
+    expect(regimeOfPair(pruned, "a", "z", 100)).toBe("unmeasured");
+  });
+
+  it("bound holds, prune is idempotent, floor of 1 keeps the minimum, claims untouched", () => {
+    const big = hear(buildBig(), kept("x", true, "x"));
+    const pruned = pruneCrossings(big, 4);
+    for (const [, set] of pruned.crossings) expect(set.size).toBeLessThanOrEqual(4);
+    expect(pruneCrossings(pruned, 4)).toEqual(pruned);
+    // keepPerPair below 1 clamps to 1 — the evidence-killer always survives
+    const one = pruneCrossings(big, 0);
+    for (let deadline = 0; deadline <= 600; deadline++) {
+      expect(regimeOfPair(one, "a", "b", deadline)).toBe(regimeOfPair(big, "a", "b", deadline));
+    }
+    expect(pruned.claims.has("x 1 x")).toBe(true);
+  });
+
+  it("the gossiper stays bounded under a flood of crossings", () => {
+    let published = 0;
+    const transport = {
+      publish: (): void => {
+        published += 1;
+      },
+      onFrame: (): void => undefined,
+    };
+    const sched = { setInterval: (): (() => void) => () => undefined };
+    const g = createSalonGossiper(transport, sched, 1000, 4);
+    for (let i = 0; i < 200; i++) g.tell(crossing("a", "b", 100 + i, `w${String(i)}`));
+    const set = g.salon().crossings.get(pairKey("a", "b"));
+    expect(set?.size).toBe(4);
+    // and the minimum survived: 100 is still the fastest known crossing
+    expect([...(set ?? [])].some((e) => e.startsWith("100 "))).toBe(true);
+    expect(published).toBe(200); // every tell was rumor-mongered even while pruned
   });
 });
