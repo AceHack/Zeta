@@ -8,9 +8,11 @@ open Zeta.Core.Abstractions
 /// <summary>
 /// A lightweight in-memory adapter that implements IDistributedCronRuntime.
 /// In a real deployment, this would be backed by Orleans IGrain timers.
-/// Here, we use System.Threading.Timer to simulate the distributed actor.
+/// Here, we use System.Threading.Timer to simulate the distributed actor,
+/// but time is drawn from the injected ISimulationEnvironment (the logical
+/// scheduler / braided monoidal time), not the ambient wall clock.
 /// </summary>
-type OrleansCronAdapter() =
+type OrleansCronAdapter(env: Zeta.Core.ISimulationEnvironment) =
     let actors = ConcurrentDictionary<string, CronState>()
     let configs = ConcurrentDictionary<string, CronConfig>()
     let callbacks = ConcurrentDictionary<string, Func<DateTime, Task<double>>>()
@@ -22,7 +24,9 @@ type OrleansCronAdapter() =
             | true, cb ->
                 try
                     // Four-corner closure: execute and get IV back
-                    let! iv = cb.Invoke(DateTime.UtcNow) |> Async.AwaitTask
+                    // Time is drawn from the injected ISimulationEnvironment (logical time),
+                    // not the ambient wall clock, honouring the relativistic structure.
+                    let! iv = cb.Invoke(env.UtcNow().UtcDateTime) |> Async.AwaitTask
                     
                     // Adaptive tick mechanism
                     match configs.TryGetValue(id) with
