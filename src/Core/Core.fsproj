@@ -161,6 +161,7 @@
     <Compile Include="DynamicValueNumeric.fs" />
     <Compile Include="SoftValueNumeric.fs" />
     <Compile Include="SoftValueInfo.fs" />
+    <Compile Include="ComputeReceipt.fs" />
     <Compile Include="DvKey.fs" />
     <Compile Include="DebeziumCdc.fs" />
     <Compile Include="CloudEvents.fs" />

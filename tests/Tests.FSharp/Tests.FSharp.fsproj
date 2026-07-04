@@ -149,6 +149,7 @@
     <Compile Include="DynamicValueNumeric.Tests.fs" />
     <Compile Include="SoftValueNumeric.Tests.fs" />
     <Compile Include="SoftValueInfo.Tests.fs" />
+    <Compile Include="ComputeReceipt.Tests.fs" />
     <Compile Include="WeightedSet.Tests.fs" />
     <Compile Include="BagSpineEquivalence.Tests.fs" />
     <Compile Include="CayleyWeightedSet.Tests.fs" />
