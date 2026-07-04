@@ -6,7 +6,8 @@
 // should prefer FROST/threshold-MPC above HSMs (see agent-native-key-custody design doc).
 //
 // Field: GF(257) (prime > 255) — each byte of the secret is an independent Shamir polynomial.
-// Prove-with: bun property tests (reconstruction); Z3/FsCheck cross-check deferred to formal slice.
+// Prove-with: bun property tests + golden seed (shamir-golden-vectors.json); BP-16 leg in
+// tests/Tests.FSharp/Formal/Shamir.CrossVerify.Tests.fs (Z3 k=2/k=3 Lagrange + FsCheck + F# peer).
 //
 // SECURITY: shares are ALL required to be protected at rest; ANY k shares reconstruct the secret.
 // Never log share bytes. This module is pure math — no filesystem/network doors.

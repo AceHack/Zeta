@@ -549,6 +549,7 @@
     <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />
     <Compile Include="Formal/Clock.Laws.Tests.fs" />
+    <Compile Include="Formal/Shamir.CrossVerify.Tests.fs" />
     <Compile Include="Formal/Crdt.Laws.Tests.fs" />
     <Compile Include="DeltaLogEntryCodec.Tests.fs" />
     <Compile Include="Command.Tests.fs" />

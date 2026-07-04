@@ -553,6 +553,25 @@ test("SHAMIR GAP CLOSED: threshold k-of-n split/reconstruct exists (shamir.ts)",
   expect(/export\s+function\s+shamirCombine/.test(src)).toBe(true);
 });
 
+test("SHAMIR BP-16 GAP CLOSED: golden seed + F# formal cross-check exist", () => {
+  const golden = join(import.meta.dir, "shamir-golden-vectors.json");
+  expect(existsSync(golden)).toBe(true);
+  const formal = join(
+    import.meta.dir,
+    "..",
+    "..",
+    "..",
+    "tests",
+    "Tests.FSharp",
+    "Formal",
+    "Shamir.CrossVerify.Tests.fs",
+  );
+  expect(existsSync(formal)).toBe(true);
+  const fs = readFileSync(formal, "utf8");
+  expect(fs).toContain("Z3 proves k=2");
+  expect(fs).toContain("FsCheck");
+});
+
 test("SHAMIR CUSTODY GAP CLOSED: CA private key split/combine wiring exists (ca-shamir-custody.ts)", () => {
   const src = readFileSync(join(import.meta.dir, "ca-shamir-custody.ts"), "utf8");
   expect(/export\s+async\s+function\s+splitCaToShares/.test(src)).toBe(true);

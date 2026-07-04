@@ -25,11 +25,11 @@ composes_with: ["081KVNXBR4S08QG0R0015DHBBN", "081KVNTNTDQ08QG0R0017NBBWB"]
 - **✅ `shamir.test.ts`** — round-trip, subset reconstruction, property trials
 - **✅ Harness gap-closed assertion** in `onboarding-roundtrip.test.ts`
 - **✅ `ca-shamir-custody.ts` + `ca-shamir-cli.ts`** — split/combine LOCAL CA private key into k-of-n shares; wired from `ca-cli.ts` (`--shamir`) and `rotate-cli.ts` (`--confirm --shamir`)
+- **✅ BP-16 formal leg** — `src/Core/Shamir.fs` + `Shamir.CrossVerify.Tests.fs` (Z3 k=2/k=3 Lagrange unsat, FsCheck round-trip + field inverses, golden seed shared with TS)
 
 ## Deferred (follow-on slices)
 
 - FROST/threshold-MPC for live signing without reassembly (agent-native-key-custody design)
-- Z3/FsCheck formal cross-check leg (BP-16 ≥2 tools) — spec routed, not yet in CI
 - Alloy `IdentityReissuable` path-existence model with shares
 
 ## Anchors

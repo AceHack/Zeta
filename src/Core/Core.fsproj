@@ -80,6 +80,7 @@
     <Compile Include="Cpu.fs" />
     <Compile Include="CpuSynth.fs" />
     <Compile Include="Residual.fs" />
+    <Compile Include="Shamir.fs" />
     <Compile Include="Sppf.fs" />
     <Compile Include="PcfgEm.fs" />
     <Compile Include="Indentation.fs" />
