@@ -1,35 +1,22 @@
 ---
 id: 081KWN0JKJV08QG0R003Z2Z2N5
 type: task
-state: backlog
+state: closed
 priority: P3
 slug: track-commit-msg-hook-in-repo-nixos-flake-symlink-for-persis
 title: "Track commit-msg hook in repo + NixOS flake symlink for persistence across clones"
 created: 2026-07-03T22:11:20.795Z
 depends_on: []
-composes_with: []
+composes_with: ["081KWMY831H08QG0R000E9X3HP"]
 ---
 
 # Track commit-msg hook in repo + NixOS flake symlink for persistence across clones
 
-<!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
-     STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
-     Identity is the zetaid prefix — resolve cross-refs by `081KWN0JKJV08QG0R003Z2Z2N5-*.md` glob. -->
+## Done
 
-## Context
+1. **✅ Tracked hook** — `scripts/hooks/commit-msg` strips / refuses Manus–Lumen wrapper leaks
+2. **✅ install.sh + flake** — `scripts/hooks/install-git-hooks.sh` linked from `tools/setup/install.sh` and root `flake.nix` `devShells.default.shellHook`
+3. **✅ ACE** — `from-git-hooks` Bun realizer (post-mise, best-effort) + Ace pointer
+4. **✅ CI** — `lint-no-manus-commit-leak.ts` on structural hygiene (PR commits vs base)
 
-The Manus sandbox shell has a `PROMPT_COMMAND`/trap wrapper that captures exit codes
-and PWD via an `>&3` fd trick. This occasionally bleeds into git commit subject lines
-when messages are composed inline.
-
-## Current mitigation
-
-A `.git/hooks/commit-msg` hook strips `__manus_ec`, `__manus_pwd`, and `>&3` patterns.
-This lives only in the local `.git/hooks/` directory (not tracked by git).
-
-## Desired state
-
-1. Track the hook as `scripts/hooks/commit-msg` in the repo
-2. NixOS flake or `install.sh` symlinks it into `.git/hooks/` on clone/setup
-3. ACE package manager support for the same
-4. Works automatically on any fresh clone — no manual setup required
+See `scripts/hooks/README.md`. Closes the prevention half of 081KWMY831H.

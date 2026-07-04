@@ -274,6 +274,18 @@ if [ "${CI:-}" != "true" ] && [ "${ZETA_SKIP_CELLS:-0}" != "1" ]; then
   fi
 fi
 
+# --- Tracked git hooks (081KWN0JKJV / 081KWMY831H) ---
+# Symlink scripts/hooks/commit-msg into this clone's .git/hooks so Manus/Lumen
+# shell-wrapper leaks cannot land in commit subjects. Best-effort: skip when
+# not a git work tree (tarball extracts, some CI layouts).
+if [ -f "$REPO_ROOT/scripts/hooks/install-git-hooks.sh" ]; then
+  echo ""
+  echo "=== Installing tracked git hooks (081KWN0JKJV) ==="
+  bash "$REPO_ROOT/scripts/hooks/install-git-hooks.sh" || {
+    echo "Warning: git-hooks install failed (non-fatal)."
+  }
+fi
+
 echo "=== Install complete ==="
 echo "If this is your first run, open a new shell or source"
 echo "\$HOME/.config/zeta/shellenv.sh to pick up PATH changes."

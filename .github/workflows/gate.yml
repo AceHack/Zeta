@@ -952,6 +952,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # Need merge-base history for manus commit-message leak scan.
+          fetch-depth: 0
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
@@ -966,6 +969,10 @@ jobs:
       # tokens (fs/process/network/clock/entropy/Task.Run); falsifiers waive per-line, visibly.
       - name: Run audit-sealed-rooms (081KTSZN10008QG0R002J0GE0Z Reticulum-only lint half)
         run: bun src/Core.TypeScript/hygiene/audit-sealed-rooms.ts
+
+      # 081KWMY831H — Manus/Lumen shell-wrapper must not leak into commit subjects.
+      - name: Run lint-no-manus-commit-leak (081KWMY831H)
+        run: bun src/Core.TypeScript/hygiene/lint-no-manus-commit-leak.ts
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a

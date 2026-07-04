@@ -283,5 +283,18 @@
     "opt_in": [
       "ZETA_INSTALL_FULL=1"
     ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Symlink tracked scripts/hooks/commit-msg into .git/hooks (Manus wrapper leak guard, 081KWN0JKJV)",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-git-hooks.ts",
+    "manifest": "scripts/hooks/commit-msg",
+    "dependencies": [
+      {
+        "ecosystem": "git-hooks",
+        "spec": "scripts/hooks/commit-msg",
+        "update": "pinned"
+      }
+    ]
   }
 ]

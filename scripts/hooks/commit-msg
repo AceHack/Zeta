@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# commit-msg — strip / refuse Manus–Lumen shell-wrapper leaks in commit messages
+# (081KWN0JKJV / 081KWMY831H). Observed leak on 44763cdc1:
+#   __manus_ec=$?; trap '' PIPE; printf ... >&3; trap - PIPEfeat: ...
+#
+# Installed by scripts/hooks/install-git-hooks.sh (install.sh, nix develop,
+# ACE from-git-hooks realizer). Do not edit .git/hooks/commit-msg directly.
+set -euo pipefail
+
+msg_file="${1:?commit-msg hook requires the message file path}"
+
+# Portable in-place edit via temp file (macOS/BSD sed -i differs from GNU).
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+
+# Strip the known Manus PROMPT_COMMAND epilogue (glued or spaced before subject).
+# Keep the pattern tight to the observed form so we never eat real prose.
+sed -E \
+  -e 's/__manus_ec=\$\?;[[:space:]]*trap[[:space:]]+'\'''\''[[:space:]]+PIPE;[[:space:]]*printf[[:space:]]+"%d:%s\\n"[[:space:]]+\$__manus_ec[[:space:]]+"\$PWD"[[:space:]]+2>\/dev\/null[[:space:]]+>&3;[[:space:]]*trap[[:space:]]+-[[:space:]]+PIPE//' \
+  "$msg_file" >"$tmp"
+
+# Fail-closed on the SUBJECT only (first line). Bodies may document the tokens
+# (e.g. this commit's message) without being a live leak.
+subject="$(head -n 1 "$tmp")"
+if echo "$subject" | grep -qE '__manus_ec|trap '\'''\'' PIPE'; then
+  echo "commit-msg: refused — Manus/Lumen shell-wrapper text still present in the commit subject." >&2
+  echo "  Remove __manus_ec / trap '' PIPE plumbing from the subject and retry." >&2
+  exit 1
+fi
+
+# Refuse an empty subject after sanitize (wrapper-only message).
+first="$(head -n 1 "$tmp" | tr -d '[:space:]')"
+if [ -z "$first" ]; then
+  echo "commit-msg: refused — commit subject empty after sanitizing wrapper leak." >&2
+  exit 1
+fi
+
+cat "$tmp" >"$msg_file"
+exit 0

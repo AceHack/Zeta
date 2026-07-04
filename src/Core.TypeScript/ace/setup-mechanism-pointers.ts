@@ -142,6 +142,20 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       optIn: ["ZETA_INSTALL_FULL=1"],
       defaultUpdate: "pinned",
     }),
+    {
+      schema: "zeta.ace.package-manager-pointers.v1",
+      purpose:
+        "Symlink tracked scripts/hooks/commit-msg into .git/hooks (Manus wrapper leak guard, 081KWN0JKJV)",
+      realizer: bunMechanismRealizer("from-git-hooks"),
+      manifest: "scripts/hooks/commit-msg",
+      dependencies: [
+        {
+          ecosystem: "git-hooks",
+          spec: "scripts/hooks/commit-msg",
+          update: "pinned",
+        },
+      ],
+    },
   ] as const;
 }
 

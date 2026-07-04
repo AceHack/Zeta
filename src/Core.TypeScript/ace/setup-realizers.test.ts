@@ -14,10 +14,10 @@ import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
 import { getSetupRealizer, listSetupRealizerIds, listSetupRealizerInstallOrder, listPostMiseRealizerIds, listPreMiseRealizerIds } from "./setup-realizers/index.ts";
 
 describe("setup-realizers registry", () => {
-  test("install order lists all 14 realizers in graph order", () => {
-    expect(listSetupRealizerInstallOrder()).toHaveLength(14);
+  test("install order lists all 15 realizers in graph order", () => {
+    expect(listSetupRealizerInstallOrder()).toHaveLength(15);
     expect(listSetupRealizerInstallOrder()[0]).toBe("from-deb");
-    expect(listSetupRealizerInstallOrder().at(-1)).toBe("from-ollama");
+    expect(listSetupRealizerInstallOrder().at(-1)).toBe("from-git-hooks");
     expect(listPreMiseRealizerIds()).toEqual(["from-deb", "from-shim", "from-autotools-tarball"]);
     expect(listPostMiseRealizerIds()[0]).toBe("from-uv-tool");
   });
@@ -31,6 +31,7 @@ describe("setup-realizers registry", () => {
       "from-dotnet-global",
       "from-dotnet-workload",
       "from-elan",
+      "from-git-hooks",
       "from-installer",
       "from-ollama",
       "from-opam-git",

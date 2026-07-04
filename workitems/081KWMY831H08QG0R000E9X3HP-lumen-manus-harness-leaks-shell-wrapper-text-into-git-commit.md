@@ -1,7 +1,7 @@
 ---
 id: 081KWMY831H08QG0R000E9X3HP
 type: bug
-state: backlog
+state: closed
 priority: P2
 slug: lumen-manus-harness-leaks-shell-wrapper-text-into-git-commit
 title: "Lumen/Manus harness leaks shell-wrapper text into git commit messages (44763cdc1)"
@@ -38,13 +38,16 @@ tree is healthy (AntiSybil.fs + AS-1..AS-5 all green locally, register numbering
   Amara in doc bylines, since corrected) — the harness leaks its own plumbing into
   durable substrate.
 
-## Fix direction
+## Fix direction (landed)
 
-For Lumen (owner — its harness): sanitize the `git commit -m` path in the Manus shell
-wrapper (the `__manus_ec` epilogue is being captured into the message argument, likely a
-heredoc/quoting interaction). Add a pre-push guard: reject any commit whose subject
-matches `__manus_ec|trap '' PIPE`. Cheap lint candidate for CI: extend the hygiene lint
-to scan new commits on PR branches for wrapper signatures.
+Prevention substrate (081KWN0JKJV):
+
+- Tracked `scripts/hooks/commit-msg` strips the known epilogue and refuses residual signatures
+- Installed via `install.sh`, `nix develop` shellHook, and ACE `from-git-hooks`
+- CI: `lint-no-manus-commit-leak.ts` scans PR commits vs base
+
+Upstream Manus harness fix (sanitize at the `git commit -m` capture site) remains desirable
+but is out of this repo's control; the hook + CI are the Zeta-side backstop.
 
 ## Register note
 

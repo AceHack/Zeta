@@ -201,6 +201,10 @@
             echo "  Build installer ISO:    cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso"
             echo "  Build host system:      nixos-rebuild build --flake .#<host>"
             echo "  Talk to cluster:        kubectl / k9s / argocd / helm"
+            # 081KWN0JKJV — tracked commit-msg hook (Manus wrapper leak guard).
+            if [ -f "$PWD/scripts/hooks/install-git-hooks.sh" ]; then
+              bash "$PWD/scripts/hooks/install-git-hooks.sh" || true
+            fi
           '';
         };
 

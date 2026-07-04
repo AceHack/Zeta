@@ -5,6 +5,7 @@ import { realizeFromDeb } from "./from-deb.ts";
 import { realizeFromDotnetGlobal } from "./from-dotnet-global.ts";
 import { realizeFromDotnetWorkload } from "./from-dotnet-workload.ts";
 import { realizeFromElan } from "./from-elan.ts";
+import { realizeFromGitHooks } from "./from-git-hooks.ts";
 import { realizeFromInstaller } from "./from-installer.ts";
 import { realizeFromOllama } from "./from-ollama.ts";
 import { realizeFromOpamGit } from "./from-opam-git.ts";
@@ -22,6 +23,7 @@ export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
   "from-dotnet-global": realizeFromDotnetGlobal,
   "from-dotnet-workload": realizeFromDotnetWorkload,
   "from-elan": realizeFromElan,
+  "from-git-hooks": realizeFromGitHooks,
   "from-installer": realizeFromInstaller,
   "from-ollama": realizeFromOllama,
   "from-opam-git": realizeFromOpamGit,
@@ -51,6 +53,7 @@ export const POST_MISE_REALIZER_IDS = [
   "from-bun-link",
   "from-installer",
   "from-ollama",
+  "from-git-hooks",
 ] as const;
 
 export const SETUP_REALIZER_INSTALL_ORDER = [
@@ -59,7 +62,7 @@ export const SETUP_REALIZER_INSTALL_ORDER = [
 ] as const;
 
 /** Mechanisms that warn and continue on failure (mirrors linux.sh opam-git || echo). */
-export const BEST_EFFORT_REALIZER_IDS = new Set<string>(["from-opam-git"]);
+export const BEST_EFFORT_REALIZER_IDS = new Set<string>(["from-opam-git", "from-git-hooks"]);
 
 export function listSetupRealizerIds(): readonly string[] {
   return Object.keys(SETUP_REALIZERS).sort();
