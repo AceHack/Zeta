@@ -393,6 +393,7 @@
     <Compile Include="Curve.Serializer.Tests.fs" />
     <Compile Include="BeliefConvergence.Tests.fs" />
     <Compile Include="SoftRegimeStability.Tests.fs" />
+    <Compile Include="SoftRegimeEquivariance.Tests.fs" />
     <Compile Include="AdinkraCode.Tests.fs" />
     <Compile Include="AdinkraIdentity.Tests.fs" />
     <Compile Include="AdinkraOrbits.Tests.fs" />
