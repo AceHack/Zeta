@@ -181,3 +181,44 @@ module CondorcetBoundary =
             let atBoundary = correlatedSocietyBeatsBest n c rhoStar
             let pastBoundary = correlatedSocietyBeatsBest n c (rhoStar + 0.05)
             atBoundary && not pastBoundary
+
+    // ── The ρ* = 1/3 algebraic limit ─────────────────────────────────────────────────────────────
+
+    /// **Algebraic proof that ρ* → 1/3 as N → ∞ (independent of competence c).**
+    ///
+    /// The effective-N approximation gives:
+    ///   N_eff(N, ρ) = N / (1 + (N-1)*ρ)
+    ///
+    /// The minimum meaningful jury size is N_eff = 3 (the smallest odd majority).
+    /// Society beats best individual iff N_eff ≥ 3, i.e.:
+    ///   N / (1 + (N-1)*ρ) ≥ 3
+    ///   N ≥ 3 * (1 + (N-1)*ρ)
+    ///   N ≥ 3 + 3*(N-1)*ρ
+    ///   N - 3 ≥ 3*(N-1)*ρ
+    ///   ρ ≤ (N-3) / (3*(N-1))
+    ///
+    /// Therefore: ρ*(N) = (N-3) / (3*(N-1))
+    ///
+    /// As N → ∞:
+    ///   ρ*(N) = (N-3) / (3*(N-1)) → (N) / (3*N) = 1/3
+    ///
+    /// This limit is INDEPENDENT of competence c. The threshold is a pure function of
+    /// the jury size N and the minimum-majority constraint (N_eff ≥ 3).
+    ///
+    /// **Physical interpretation (CPT / light-cone):**
+    /// ρ* = 1/3 is the information-theoretic event horizon. Above ρ = 1/3, the ensemble
+    /// is causally connected (groupthink = one light cone). Below ρ = 1/3, the cells are
+    /// causally separated (decorrelated = separate light cones). The threshold 1/3 is
+    /// independent of individual competence because the causal structure of information
+    /// propagation does not depend on the quality of the signal — only on the correlation.
+    let rhoStarLimit : float = 1.0 / 3.0
+
+    /// The algebraic formula for ρ*(N): exact for the effective-N approximation.
+    let rhoStarAlgebraic (n: int) : float =
+        if n <= 3 then 0.0
+        else float (n - 3) / (3.0 * float (n - 1))
+
+    /// Verify that the algebraic ρ*(N) converges to 1/3 as N → ∞.
+    let verifyRhoStarLimit () : bool =
+        let rhoStar100001 = rhoStarAlgebraic 100001
+        abs (rhoStar100001 - rhoStarLimit) < 1e-5

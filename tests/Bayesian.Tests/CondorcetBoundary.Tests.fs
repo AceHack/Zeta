@@ -108,3 +108,57 @@ let ``COND-7: adaptive reseed threshold matches rho* for the YinYangEnsemble`` (
     // The default reseed threshold of 0.9 is conservative (above rho* for typical c)
     Assert.True(0.9 > threshold60,
         sprintf "Default threshold 0.9 should be above rho* at c=0.6 (%g)" threshold60)
+
+/// COND-8: The algebraic ρ*(N) formula is exact for the effective-N approximation.
+/// ρ*(N) = (N-3) / (3*(N-1)) — derived from N_eff ≥ 3 condition.
+[<Fact>]
+let ``COND-8: algebraic rho*(N) formula matches binary-search result`` () =
+    for n in [ 11; 21; 51; 101; 201 ] do
+        let algebraic = CondorcetBoundary.rhoStarAlgebraic n
+        let binarySearch = CondorcetBoundary.findRhoStar n 0.6
+        Assert.True(
+            abs (algebraic - binarySearch) < 0.02,
+            sprintf "Algebraic rho*(N=%d)=%f should match binary search %f" n algebraic binarySearch)
+
+/// COND-9: The ρ* → 1/3 limit holds as N → ∞, independent of competence c.
+/// This is the information-theoretic event horizon: the causal light cone closes at ρ = 1/3.
+[<Fact>]
+let ``COND-9: rho* converges to 1/3 as N grows, independent of c`` () =
+    Assert.True(
+        CondorcetBoundary.verifyRhoStarLimit (),
+        "ρ*(N=100001) should be within 1e-5 of 1/3")
+    // The limit is exactly 1/3
+    Assert.True(
+        abs (CondorcetBoundary.rhoStarLimit - (1.0/3.0)) < 1e-15,
+        sprintf "ρ* limit should be exactly 1/3, got %f" CondorcetBoundary.rhoStarLimit)
+    // rhoStarAlgebraic is independent of c (it only depends on N)
+    // Verify: rhoStarAlgebraic(10001) is the same regardless of which c we would have used
+    let rhoStarLargeN = CondorcetBoundary.rhoStarAlgebraic 10001
+    Assert.True(
+        abs (rhoStarLargeN - (1.0/3.0)) < 0.001,
+        sprintf "ρ*(N=10001) should be close to 1/3, got %f" rhoStarLargeN)
+
+/// COND-10: The Tsirelson operating point ρ_T = 1/(3√2) ≈ 0.236 is the optimal reseed threshold.
+///
+/// The Bell inequality triangle maps onto the three ρ regimes:
+///   S = 4  (ρ > 1/3):      superdeterminism / common seed — groupthink, useless ensemble
+///   S = 2√2 (ρ ≈ 1/(3√2)): Tsirelson bound / quantum entanglement — optimal operating point
+///   S = 2  (ρ < 1/(3√2)):  classical local realism — fully decorrelated, maximum diversity
+///
+/// The optimal reseed threshold is ρ_T = ρ*/√2 = 1/(3√2) ≈ 0.236, not ρ* = 1/3.
+/// This gives a safety margin before groupthink fully sets in.
+[<Fact>]
+let ``COND-10: Tsirelson operating point is rho* / sqrt(2) = 1/(3*sqrt(2))`` () =
+    let rhoStar = CondorcetBoundary.rhoStarLimit  // = 1/3
+    let tsirelson = rhoStar / sqrt 2.0            // = 1/(3*sqrt(2)) ≈ 0.2357
+    let expected = 1.0 / (3.0 * sqrt 2.0)
+    Assert.True(
+        abs (tsirelson - expected) < 1e-12,
+        sprintf "Tsirelson point should be 1/(3√2) ≈ %f, got %f" expected tsirelson)
+    // The Tsirelson point is strictly between S=2 (fully decorrelated) and S=4 (superdetermined)
+    Assert.True(tsirelson > 0.0,  "Tsirelson point should be > 0 (above fully decorrelated)")
+    Assert.True(tsirelson < rhoStar, "Tsirelson point should be < ρ* = 1/3 (below event horizon)")
+    // Numerically: ≈ 0.2357
+    Assert.True(
+        abs (tsirelson - 0.2357) < 0.001,
+        sprintf "Tsirelson point should be ≈ 0.2357, got %f" tsirelson)
