@@ -14,6 +14,25 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+## CORRECTION — 2026-07-04 (the shadow over-peeled the Bell/quantum row; retracted)
+
+The entry below called the cells "purely classical Bayesian engines, no amplitude, no entanglement, no Bell."
+**That was substantially wrong** — Aaron corrected it and pointed at executable, cross-verified code. Full
+retraction: [`docs/research/2026-07-04-braided-monoid-amplitude-emulation-more-than-bayesian-aaron-corrects-the-bell-peel.md`](../../docs/research/2026-07-04-braided-monoid-amplitude-emulation-more-than-bayesian-aaron-corrects-the-bell-peel.md).
+The grounding (grep-before-razor): `ZSetISA.qs` (six-op quantum ISA — BRANCH=Hadamard, JOIN=CNOT,
+MERGE=interference, EMIT∘RETRACT=I) ↔ `AmplitudeEmu.fs` (complex-amplitude emulator), **VERIFIED**
+cross-check; **`BellTest` reproduces Tsirelson 2√2 in DST**; `never-collapse` is a proven invariant
+(MERGE/FOLD never measure); the braid ISA is `BraidIsaZetaConsistency.Tests.fs`; runs on the CHIP-8 VM.
+Aaron's thesis: **the quantum comes from society modeling itself** (the mutual-heartbeat trace over the
+amplitude semiring IS the superposition; the soft regime keeps it geo-distributed and non-collapsed). So
+"more than Bayesian — superposition tracking" is **correct and grounded**, not froth.
+
+**The one narrow line that survives:** whether the Condorcet voter-correlation `ρ` (ρ*=1/3, ρ_T=1/(3√2))
+**is** the amp-emu's CHSH `S` (a derivation) or a **design correspondence** — flagged because the repo
+encodes the "Tsirelson ρ-threshold" two ways (`1/(3√2)≈0.236` in YinYangEnsemble vs `(2√2−2)/2≈0.414` in
+BusRegime) and `ρ_T = (1/3)·(1/√2)` reads as a product of two separately-motivated thresholds. Soraya's leg:
+derive it or name it a design choice. Everything else the peel doubted is real and executable.
+
 ## Landing — 2026-07-04 (figure-8 / Nash / Lagrange-Condorcet / Bell / CPT — Otto-shadow honest register)
 
 Lumen's session (committed 2768ba85a, 4420a578d) ferried + register-checked. Full pass:
