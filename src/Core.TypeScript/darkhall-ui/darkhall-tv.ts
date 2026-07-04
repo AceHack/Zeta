@@ -11,7 +11,7 @@
 // the generator renders only its public veil label (blurred), NEVER its contents.
 // Consent-first (§6): the substrate cannot emit what was frosted.
 
-import type { HeatSignal } from "./heat";
+import type { HeatSignal, TemperatureTreatyBundle } from "./heat";
 
 /// Attention temperature — where a prediction sits on the LLMTV salience axis.
 /// hot = high-salience / rising attention, cool = settled. A DU, not a hand-coded
@@ -45,6 +45,7 @@ export interface DwellerMind {
   readonly live?: boolean;
   readonly frost?: FrostRegion;
   readonly frame?: number; // transcript-tick id (the still frame's number)
+  readonly temperatureTreaty?: TemperatureTreatyBundle;
 }
 
 export interface LlmtvTranscript {
@@ -139,12 +140,28 @@ function renderFrost(frost: FrostRegion): string {
 export function renderDweller(mind: DwellerMind, seed: string): string {
   const frame = mind.frame;
   const live = mind.live ?? true;
+  const temperatureTreaty = mind.temperatureTreaty;
+  const temperature = temperatureTreaty?.temperature;
+  const blackBody = temperatureTreaty?.blackBody;
+  const temperatureFeedback =
+    temperatureTreaty === undefined || temperatureTreaty.referenceFeedback.length === 0
+      ? undefined
+      : temperatureTreaty.referenceFeedback.join(" ");
 
   return [
     `<div class="tv"`,
     attr("data-dweller", mind.name),
     attr("data-live", live ? "true" : "false"),
     attr("data-frosted", mind.frost ? "true" : "false"),
+    attr("data-temperature-treaty", temperatureTreaty?.qsharpTreaty),
+    attr("data-temperature-qsharp-source", temperatureTreaty?.qsharpSource),
+    attr("data-temperature-oracle", temperatureTreaty?.referenceOracle),
+    attr("data-temperature-feedback", temperatureFeedback),
+    attr("data-temperature-ppm", temperature?.temperaturePpm),
+    attr("data-temperature-band", temperature?.band),
+    attr("data-black-body-readout", blackBody?.schema),
+    attr("data-black-body-radiance", blackBody?.radiancePpm),
+    attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
     ">",
     `<div class="tv-head">`,
     `<div class="who">${escapeHtml(mind.name)} <small>${escapeHtml(mind.role)}</small></div>`,

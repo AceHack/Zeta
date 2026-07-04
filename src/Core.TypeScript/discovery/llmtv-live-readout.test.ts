@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { HEAT_SIGNAL_TREATY_PATH, temperatureReadout, temperatureTreatyBundle } from "../darkhall-ui/heat";
 import { decodeReplayArtifact, foldReplayArtifact } from "./llmtv-replay";
 import { createLlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import { createLlmtvLiveReadout, type LlmtvLiveReadoutIo } from "./llmtv-live-readout";
@@ -113,6 +114,23 @@ function mind(label: string): () => SourceMind {
   });
 }
 
+function mindWithTemperatureTreaty(label: string): () => SourceMind {
+  return () => ({
+    role: "prediction",
+    hat: `${label} hat`,
+    temperatureTreaty: temperatureTreatyBundle({
+      temperature: temperatureReadout({
+        source: `live/${label}`,
+        heatPpm: 135_000,
+        uncertaintyPpm: 246_000,
+        pressurePpm: 357_000,
+        attentionPpm: 468_000,
+      }),
+    }),
+    required: [{ label, temp: "hot", valueMilli: 800, epsilonMilli: 100 }],
+  });
+}
+
 function config(name: string, publishEveryMs = 1_000): LlmtvNodeConfig {
   return {
     self: { persona: name, surface: "llmtv", instance: "0", node: "test" },
@@ -123,6 +141,13 @@ function config(name: string, publishEveryMs = 1_000): LlmtvNodeConfig {
     ttlMs: 10_000,
     helloEveryMs: 1_000,
     publishEveryMs,
+  };
+}
+
+function configWithTemperatureTreaty(name: string, publishEveryMs = 1_000): LlmtvNodeConfig {
+  return {
+    ...config(name, publishEveryMs),
+    mind: mindWithTemperatureTreaty(name),
   };
 }
 
@@ -189,6 +214,42 @@ describe("LLMTV live readout cadence", () => {
     expect(foldReplayArtifact(replay!).transcript.dwellers.map((dweller) => dweller.name)).toEqual(["alexa", "soraya"]);
     expect(writes.get("/tmp/live.html")).toContain('data-dweller="soraya"');
     expect(readout.lastSummary()).toMatchObject({ dwellers: 2 });
+  });
+
+  it("publishes temperature treaty frames through replay JSON and zero-JS HTML", () => {
+    const mesh = createFakeMesh();
+    const scheduler = mesh.scheduler();
+    const alexaPort = mesh.attach("alexa");
+    const sorayaPort = mesh.attach("soraya");
+    const alexa = createLlmtvLiveReplayBridge(config("alexa"), alexaPort, alexaPort, scheduler);
+    const soraya = createLlmtvLiveReplayBridge(
+      configWithTemperatureTreaty("soraya"),
+      sorayaPort,
+      sorayaPort,
+      scheduler,
+    );
+    const { io, writes } = memoryIo();
+    const readout = createLlmtvLiveReadout(alexa, scheduler, io, {
+      seed: "S4",
+      readoutEveryMs: 1_000,
+      replayPath: "/tmp/live.replay.json",
+      htmlPath: "/tmp/live.html",
+      title: "Live LLMTV",
+    });
+
+    alexa.node.start();
+    soraya.node.start();
+    readout.start();
+    mesh.advance(1_500);
+
+    const replay = decodeReplayArtifact(writes.get("/tmp/live.replay.json")!);
+    expect(replay).not.toBeNull();
+    const folded = foldReplayArtifact(replay!);
+    const sorayaDweller = folded.transcript.dwellers.find((dweller) => dweller.name === "soraya");
+    expect(sorayaDweller?.temperatureTreaty?.qsharpTreaty).toBe(HEAT_SIGNAL_TREATY_PATH);
+    expect(sorayaDweller?.temperatureTreaty?.temperature.temperaturePpm).toBe(357_000);
+    expect(writes.get("/tmp/live.html")).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(writes.get("/tmp/live.html")).toContain('data-temperature-ppm="357000"');
   });
 
   it("skips empty ticks by default so the last rendered page is not erased", () => {

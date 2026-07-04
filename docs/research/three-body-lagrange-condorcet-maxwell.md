@@ -104,6 +104,7 @@ states). The infinite game is: the environment tries to push the demon out of th
 regime (orbit-symmetric positive cone); the demon resists.
 
 **The 3-body equilibrium:** The stable configuration is:
+
 - The demon stays orbit-symmetric (the referee plays fair)
 - Player A (agent) can specialize locally (break orbit-symmetry within its frame)
 - Player B (environment) applies selection pressure (tries to push the demon out)

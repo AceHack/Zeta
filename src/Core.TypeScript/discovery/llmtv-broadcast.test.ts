@@ -13,13 +13,30 @@ import {
   type BroadcastSource,
 } from "./llmtv-broadcast";
 import { renderLlmtvGrid } from "../darkhall-ui/darkhall-tv";
+import {
+  HEAT_SIGNAL_TREATY_PATH,
+  TEMPERATURE_REFERENCE_ORACLE,
+  temperatureReadout,
+  temperatureTreatyBundle,
+} from "../darkhall-ui/heat";
 
 const alexa: BroadcastSource = { zid: "zid-alexa-0001", name: "alexa" };
 const soraya: BroadcastSource = { zid: "zid-soraya-0002", name: "soraya" };
 
+const alexaTemperatureTreaty = temperatureTreatyBundle({
+  temperature: temperatureReadout({
+    source: "darkhall/alexa",
+    heatPpm: 123_000,
+    uncertaintyPpm: 456_000,
+    pressurePpm: 234_000,
+    attentionPpm: 789_000,
+  }),
+});
+
 const alexaMind: SourceMind = {
   role: "coding · qwen3-coder",
   hat: "coder hat",
+  temperatureTreaty: alexaTemperatureTreaty,
   required: [{ label: "next tick lands green", temp: "hot", valueMilli: 820, epsilonMilli: 120 }],
   personal: {
     frosted: true,
@@ -67,7 +84,17 @@ describe("publishFrame — the only way to a frame message is through the membra
     const wire = encode(msg);
     expect(wire).not.toContain("SECRET private hope");
     expect(wire).toContain("what it is really hoping for");
+    expect(wire).toContain(HEAT_SIGNAL_TREATY_PATH);
     expect(decode(wire)).toEqual(msg);
+  });
+
+  it("carries the source-owned temperature treaty as an explicit public observable", () => {
+    const decoded = decode(encode(publishFrame(alexa, 1, 3341, alexaMind)));
+
+    expect(decoded?.t).toBe("frame");
+    const frame = decoded as Extract<BroadcastMessage, { readonly t: "frame" }>;
+    expect(frame.mind.temperatureTreaty).toEqual(alexaTemperatureTreaty);
+    expect(frame.mind.temperatureTreaty?.referenceOracle).toBe(TEMPERATURE_REFERENCE_ORACLE);
   });
 });
 
@@ -99,6 +126,25 @@ describe("noninterference (§13) — the wire is one-way; no viewer→source mes
               role: "coding",
               hat: "coder hat",
               predictions: [{ label: "bad temp", temp: "plasma", valueMilli: 500, epsilonMilli: 20 }],
+            },
+          },
+        }),
+      ),
+    ).toBeNull();
+    expect(
+      decode(
+        JSON.stringify({
+          schema: "zeta.llmtv.broadcast.v1",
+          msg: {
+            t: "frame",
+            source: alexa,
+            seq: 1,
+            frameNo: 1,
+            mind: {
+              role: "coding",
+              hat: "coder hat",
+              predictions: [{ label: "ok", temp: "hot", valueMilli: 500, epsilonMilli: 20 }],
+              temperatureTreaty: { ...alexaTemperatureTreaty, referenceFeedback: "not-an-array" },
             },
           },
         }),
@@ -172,6 +218,7 @@ describe("toLlmtvTranscript — the live feed reuses the still-frame generator",
     // sorted by zid: alexa (0001) before soraya (0002)
     expect(transcript.dwellers.map((d) => d.name)).toEqual(["alexa", "soraya"]);
     expect(transcript.dwellers[0]!.frost?.veilLabel).toBe("what it is really hoping for");
+    expect(transcript.dwellers[0]!.temperatureTreaty).toEqual(alexaTemperatureTreaty);
     expect(transcript.dwellers[1]!.frost).toBeUndefined();
   });
 
@@ -179,6 +226,10 @@ describe("toLlmtvTranscript — the live feed reuses the still-frame generator",
     const t = observeBroadcast(new Map(), publishFrame(alexa, 1, 1, alexaMind), 1000);
     const html = renderLlmtvGrid(toLlmtvTranscript(t, "S4"));
     expect(html).toContain('data-dweller="alexa"');
+    expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(html).toContain('data-temperature-oracle="fsharp-blackbody-reference"');
+    expect(html).toContain('data-temperature-ppm="456000"');
+    expect(html).toContain("data-black-body-radiance=");
     expect(html).toContain("what it is really hoping for"); // the public veil label
     expect(html).not.toContain("SECRET private hope"); // the frosted content
   });

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { renderLlmtvGrid } from "../darkhall-ui/darkhall-tv";
+import { HEAT_SIGNAL_TREATY_PATH, temperatureReadout, temperatureTreatyBundle } from "../darkhall-ui/heat";
 import { publishFrame, type BroadcastSource, type SourceMind } from "./llmtv-broadcast";
 import {
   REPLAY_SCHEMA,
@@ -15,9 +16,20 @@ import {
 const alexa: BroadcastSource = { zid: "zid-alexa-0001", name: "alexa" };
 const soraya: BroadcastSource = { zid: "zid-soraya-0002", name: "soraya" };
 
+const alexaTemperatureTreaty = temperatureTreatyBundle({
+  temperature: temperatureReadout({
+    source: "replay/alexa",
+    heatPpm: 111_000,
+    uncertaintyPpm: 222_000,
+    pressurePpm: 333_000,
+    attentionPpm: 444_000,
+  }),
+});
+
 const alexaMind: SourceMind = {
   role: "coding",
   hat: "coder hat",
+  temperatureTreaty: alexaTemperatureTreaty,
   required: [{ label: "next tick lands green", temp: "hot", valueMilli: 820, epsilonMilli: 120 }],
   personal: {
     frosted: true,
@@ -46,9 +58,11 @@ describe("LLMTV replay source -- pure fold from wire frames to transcript", () =
     expect(result.transcript.generatedBy).toBe("llmtv-replay");
     expect(result.transcript.dwellers.map((dweller) => dweller.name)).toEqual(["alexa", "soraya"]);
     expect(result.transcript.dwellers[0]?.frost?.veilLabel).toBe("private hope");
+    expect(result.transcript.dwellers[0]?.temperatureTreaty).toEqual(alexaTemperatureTreaty);
 
     const html = renderLlmtvGrid(result.transcript);
     expect(html).toContain('data-dweller="alexa"');
+    expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
     expect(html).toContain("private hope");
     expect(html).not.toContain("SECRET private hope");
   });
@@ -117,6 +131,7 @@ describe("LLMTV replay source -- pure fold from wire frames to transcript", () =
     const doc = renderReplayDocument(artifact);
     expect(doc).toContain('data-schema="zeta.darkhall.llmtv.v1"');
     expect(doc).toContain('data-dweller="alexa"');
+    expect(doc).toContain('data-temperature-ppm="333000"');
     expect(doc).not.toContain("<script");
     expect(doc).not.toContain("SECRET private hope");
   });

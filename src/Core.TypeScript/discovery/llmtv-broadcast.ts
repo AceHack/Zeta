@@ -23,6 +23,16 @@
 // DST-replayable §7); scale-free (1 source and N fold on the same path §1).
 
 import type { MindTemp, DwellerMind, LlmtvTranscript } from "../darkhall-ui/darkhall-tv";
+import {
+  BLACK_BODY_READOUT_SCHEMA,
+  HEAT_FSHARP_SURFACE,
+  HEAT_READOUT_SCHEMA,
+  HEAT_SIGNAL_QSHARP_SOURCE,
+  HEAT_SIGNAL_TREATY_PATH,
+  TEMPERATURE_READOUT_SCHEMA,
+  type TemperatureBand,
+  type TemperatureTreatyBundle,
+} from "../darkhall-ui/heat";
 
 /// A broadcasting source — self-certifying: it carries its own ZetaId, so a frame needs
 /// no central broadcaster to vouch for it (the zid IS the certificate; a name is a label).
@@ -47,6 +57,7 @@ export interface BroadcastMind {
   readonly hat: string;
   readonly predictions: readonly BroadcastPrediction[];
   readonly frostMarker?: { readonly veilLabel: string };
+  readonly temperatureTreaty?: TemperatureTreatyBundle;
 }
 
 /// The SOURCE-side mind — the private form, before the membrane. `required` always
@@ -56,6 +67,7 @@ export interface SourceMind {
   readonly role: string;
   readonly hat: string;
   readonly required: readonly BroadcastPrediction[];
+  readonly temperatureTreaty?: TemperatureTreatyBundle;
   readonly personal?: {
     readonly frosted: boolean;
     readonly veilLabel: string;
@@ -69,13 +81,17 @@ export interface SourceMind {
 /// only door mind-state crosses to the mesh; everything published went through it.
 export function frostStrip(mind: SourceMind): BroadcastMind {
   const predictions: BroadcastPrediction[] = [...mind.required];
+  const base =
+    mind.temperatureTreaty === undefined
+      ? { role: mind.role, hat: mind.hat, predictions }
+      : { role: mind.role, hat: mind.hat, predictions, temperatureTreaty: mind.temperatureTreaty };
   if (mind.personal && !mind.personal.frosted) {
     predictions.push(...mind.personal.predictions);
   }
   if (mind.personal && mind.personal.frosted) {
-    return { role: mind.role, hat: mind.hat, predictions, frostMarker: { veilLabel: mind.personal.veilLabel } };
+    return { ...base, frostMarker: { veilLabel: mind.personal.veilLabel } };
   }
-  return { role: mind.role, hat: mind.hat, predictions };
+  return base;
 }
 
 /// The broadcast wire vocabulary. TWO messages, both source→mesh. There is deliberately
@@ -148,6 +164,47 @@ function isBroadcastPrediction(value: unknown): value is BroadcastPrediction {
   );
 }
 
+function isStringArray(value: unknown): value is readonly string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
+function isTemperatureBand(value: unknown): value is TemperatureBand {
+  return value === "cold" || value === "warm" || value === "hot" || value === "critical";
+}
+
+function isTemperatureTreatyBundle(value: unknown): value is TemperatureTreatyBundle {
+  const record = asRecord(value);
+  const temperature = asRecord(record?.temperature);
+  const blackBody = asRecord(record?.blackBody);
+
+  return (
+    record !== null &&
+    temperature !== null &&
+    blackBody !== null &&
+    record.heatReadoutSchema === HEAT_READOUT_SCHEMA &&
+    record.temperatureReadoutSchema === TEMPERATURE_READOUT_SCHEMA &&
+    record.blackBodyReadoutSchema === BLACK_BODY_READOUT_SCHEMA &&
+    record.qsharpTreaty === HEAT_SIGNAL_TREATY_PATH &&
+    record.qsharpSource === HEAT_SIGNAL_QSHARP_SOURCE &&
+    record.fsharpSurface === HEAT_FSHARP_SURFACE &&
+    typeof record.referenceOracle === "string" &&
+    isStringArray(record.referenceFeedback) &&
+    temperature.schema === TEMPERATURE_READOUT_SCHEMA &&
+    typeof temperature.source === "string" &&
+    isFiniteNumber(temperature.temperaturePpm) &&
+    isTemperatureBand(temperature.band) &&
+    isFiniteNumber(temperature.heatPpm) &&
+    isFiniteNumber(temperature.uncertaintyPpm) &&
+    isFiniteNumber(temperature.pressurePpm) &&
+    isFiniteNumber(temperature.attentionPpm) &&
+    blackBody.schema === BLACK_BODY_READOUT_SCHEMA &&
+    typeof blackBody.source === "string" &&
+    isFiniteNumber(blackBody.temperaturePpm) &&
+    isFiniteNumber(blackBody.radiancePpm) &&
+    isFiniteNumber(blackBody.peakFrequencyPpm)
+  );
+}
+
 function isBroadcastMind(value: unknown): value is BroadcastMind {
   const record = asRecord(value);
   if (
@@ -161,11 +218,15 @@ function isBroadcastMind(value: unknown): value is BroadcastMind {
   }
 
   if (record.frostMarker === undefined) {
-    return true;
+    return record.temperatureTreaty === undefined || isTemperatureTreatyBundle(record.temperatureTreaty);
   }
 
   const frostMarker = asRecord(record.frostMarker);
-  return frostMarker !== null && typeof frostMarker.veilLabel === "string";
+  return (
+    frostMarker !== null &&
+    typeof frostMarker.veilLabel === "string" &&
+    (record.temperatureTreaty === undefined || isTemperatureTreatyBundle(record.temperatureTreaty))
+  );
 }
 
 function isBroadcastMessage(value: unknown): value is BroadcastMessage {
@@ -254,7 +315,9 @@ export function toLlmtvTranscript(table: ChannelTable, seed: string): LlmtvTrans
         live: true,
         frame: c.frameNo,
       };
-      return c.mind.frostMarker ? { ...base, frost: { veilLabel: c.mind.frostMarker.veilLabel } } : base;
+      const withTreaty =
+        c.mind.temperatureTreaty === undefined ? base : { ...base, temperatureTreaty: c.mind.temperatureTreaty };
+      return c.mind.frostMarker ? { ...withTreaty, frost: { veilLabel: c.mind.frostMarker.veilLabel } } : withTreaty;
     });
   return { schema: "zeta.darkhall.llmtv.v1", seed, generatedBy: "llmtv-broadcast", dwellers };
 }
