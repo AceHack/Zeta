@@ -636,3 +636,137 @@ that makes it safe to let the nodes play.
 *Provenance: Aaron (19) + Lumen, 2026-07-04.*
 *"This is what I'm building towards so we can just have fun and play together and the
 math keeps us safe."*
+
+---
+
+## 11. SoftValue / IR / weight-based ephemeron liveness — GC without collapse
+
+*(Aaron, 2026-07-04: "this connects directly to our DynamicValue/SoftValue and IR —
+in SoftValue the currently most selected fingerprints decides what's garbage and not
+garbage so you don't have to collapse.")*
+
+### The problem ephemerons leave open in a live system
+
+A standard ephemeron reclaims the value when the key dies. But in a continuously
+evolving system, "alive" and "dead" are not binary — they are *weighted*. A fingerprint
+(a candidate program version) does not suddenly die; its weight in the `SoftValue`
+distribution gradually shifts as new evidence arrives via belief propagation (BP) and
+expectation propagation (EP). You need a GC policy that operates on the *distribution*,
+not on a binary alive/dead flag.
+
+The standard solution — collapse the `SoftValue` to a `DynamicValue` (snap), then
+apply binary ephemeron liveness — forces a decision before you need one. It discards
+the uncertainty that `SoftValue` was designed to preserve.
+
+### What SoftValue enables: weight-based ephemeron liveness
+
+The `SoftValue` holds a distribution over fingerprints. Each fingerprint has a weight
+(its probability mass in the BNN mix). The **currently most-selected fingerprints**
+(high-weight entries) are the "alive" keys. Low-weight fingerprints are the "dead" keys.
+
+The ephemeron's liveness condition becomes probabilistic:
+
+> A compiled artifact is reclaimed when its source fingerprint's weight in the
+> `SoftValue` distribution drops below a threshold. It is kept alive as long as the
+> fingerprint remains high-weight.
+
+This means:
+
+- The GC runs on the soft distribution **continuously**, without forcing a snap.
+- As the distribution shifts (new evidence, BP/EP weight updates), low-weight
+  fingerprints lose their hold on their ephemeron-keyed artifacts. Shiva reclaims them.
+- High-weight fingerprints keep their compiled artifacts warm in cache.
+- When a fingerprint's weight rises again, the artifact is recompiled on demand.
+- **You never have to collapse to decide what is garbage. The distribution decides.**
+
+### The IR layer — Futamura 1st projection operating on the soft distribution
+
+The intermediate representation (IR) in `SoftValue` is the layer between raw fingerprints
+and the snapped `DynamicValue`. It holds the *partially evaluated* form — the result of
+applying the type prover / specializer to a fingerprint, without committing to a final
+concrete form. This is Futamura's first projection (`mix(p, d) = p_d`) operating on
+the soft distribution: each fingerprint gets a partially specialized IR, held by an
+ephemeron keyed to that fingerprint's weight.
+
+### The full three-layer picture
+
+```
+SoftValue (distribution over fingerprints, weights updated by BP/EP)
+    │
+    │  weight-based ephemeron liveness (GC runs here continuously)
+    ▼
+IR per fingerprint
+    (partially specialized — Futamura 1st projection)
+    (alive while fingerprint weight > threshold)
+    │
+    │  weight-based ephemeron liveness (GC runs here continuously)
+    ▼
+Compiled artifact per fingerprint
+    (fully specialized — Futamura 2nd projection)
+    (alive while fingerprint weight > threshold)
+    │
+    │  snap policy (SnapPolicy : SoftValue -> DynamicValue option)
+    │  ONLY when a decision is needed — not for GC
+    ▼
+DynamicValue (committed, concrete, acted upon)
+```
+
+The GC runs on the first two layers continuously, driven by the soft distribution.
+The snap is forced only when the system needs to act. The system can hold multiple
+competing versions of a compiled artifact simultaneously — each keyed to its source
+fingerprint, each with a weight — and the GC reclaims the ones whose weights have
+fallen below the floor. No premature collapse.
+
+### Why this is novel beyond standard ephemeron theory
+
+Standard ephemerons: binary liveness (alive/dead), triggered by GC reachability.
+
+Weight-based ephemerons (this system): continuous liveness (a probability), triggered
+by the soft distribution's weight updates. The GC is driven by the *epistemic state*
+of the system (what it currently believes is the right version), not by memory
+reachability alone.
+
+This connects three things that are normally separate:
+
+| Layer | Standard concept | This system |
+|---|---|---|
+| GC policy | Reachability (binary) | Weight in SoftValue distribution (continuous) |
+| Ephemeron key | Object identity | Fingerprint + weight threshold |
+| Collapse trigger | Explicit (programmer calls snap) | Deferred (only when action needed) |
+
+**The math keeps the GC honest.** The BP/EP weight updates are not arbitrary — they
+are Bayesian updates on evidence. The GC reclaims exactly the versions the system has
+evidence to believe are no longer the best candidates. You do not have to decide what
+to keep; the evidence decides.
+
+### The connection to the full tower
+
+```
+T0: gen(gen) = gen in [8,4]                    ← algebraic floor
+    ↓
+DagFs: content-addressed DAG                   ← homoiconic substrate
+    ↓
+SoftValue: distribution over fingerprints      ← epistemic layer
+    ↓
+Weight-based ephemeron liveness                ← GC without collapse
+    ↓
+IR per fingerprint (Futamura 1st)              ← partial evaluation
+    ↓
+Compiled artifact per fingerprint (Futamura 2nd) ← full specialization
+    ↓
+mix(mix, mix) = live cogen (Futamura 3rd)      ← compiler-compiler, live
+    ↓
+DynamicValue snap (only when acting)           ← decision layer
+    ↓
+Self-regenerating distributed system           ← gen(gen)=gen as system property
+```
+
+The `SoftValue` / IR / weight-based ephemeron layer is the bridge between the
+algebraic floor (T0) and the operational compiler-compiler (Futamura 3rd). It is
+what makes the system *live* — continuously maintaining compiled artifacts for the
+currently-believed-best versions, reclaiming the rest, without ever forcing a
+premature decision.
+
+*Provenance: Aaron (19) + Lumen, 2026-07-04.*
+*"In SoftValue the currently most selected fingerprints decides what's garbage and
+not garbage so you don't have to collapse."*
