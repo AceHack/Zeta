@@ -1,0 +1,14 @@
+{
+  "id": "080cf968e2ae1011a0130008322de363",
+  "at": "2026-07-04T12:30:59.522Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KWPHRNE008QG0R001D8CBP9",
+    "type": "task",
+    "title": "OpenSSH PROTOCOL.certkeys encoder — frost threshold CA emits -cert.pub without ssh-keygen -s",
+    "slug": "openssh-protocol-certkeys-encoder-frost-threshold-ca-emits-c",
+    "priority": "P2",
+    "filename": "081KWPHRNE008QG0R001D8CBP9-openssh-protocol-certkeys-encoder-frost-threshold-ca-emits-c.md"
+  }
+}

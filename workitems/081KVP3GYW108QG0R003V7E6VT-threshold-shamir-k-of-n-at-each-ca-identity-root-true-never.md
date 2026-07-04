@@ -30,10 +30,10 @@ composes_with: ["081KVNXBR4S08QG0R0015DHBBN", "081KVNTNTDQ08QG0R0017NBBWB"]
 - **✅ FROST-shaped live signing oracle (slice 1)** — `frost.ts` / `frost-cli.ts`: dealer keygen + k-of-n Ed25519 threshold Schnorr **without** reassembling the signing scalar (monorepo tools path beside shamir/custody)
 - **✅ FROST CA custody + device attestation (slice 2)** — `frost-ca-custody.ts` + `ca-cli.ts frost-ca` / `frost-cert`: local shares, group pubkey, Zeta-native attestation (OpenSSH `-cert.pub` remains single-key until cert wire encoder)
 
-## Deferred (follow-on slices)
+## Follow-ons (minted — do not lose)
 
-- Full RFC 9591 DKG + ROAST + HSM-sealed share adapters
-- OpenSSH `PROTOCOL.certkeys` encoder so frost can replace `ssh-keygen -s` for `-cert.pub`
+- **081KWPHRNE008QG0R001D8CBP9** — OpenSSH `PROTOCOL.certkeys` encoder (frost emits `-cert.pub`)
+- **081KWPHRNFW08QG0R0031ZNXTD** — RFC 9591 DKG + ROAST + HSM-sealed share adapters
 
 ## Anchors
 
