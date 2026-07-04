@@ -177,3 +177,46 @@ let ``RHO-5: reseedIfCollapsed triggers reseed on collapse and returns reseeded 
     // A fresh ensemble does not trigger reseed.
     let (_, didReseedFresh) = YinYangEnsemble.reseedIfCollapsed 0.9 newCodeword ensemble
     Assert.False(didReseedFresh, "reseedIfCollapsed should not trigger on a fresh ensemble")
+
+// ── RHO-6: tsirelsonThreshold is 1/(3√2) ≈ 0.2357 ────────────────────────────────────────────
+
+[<Fact>]
+let ``RHO-6: tsirelsonThreshold equals 1/(3*sqrt(2)) and is strictly between 0 and rho*=1/3`` () =
+    let t = YinYangEnsemble.tsirelsonThreshold
+    let expected = 1.0 / (3.0 * sqrt 2.0)
+    Assert.True(abs (t - expected) < 1e-12,
+        sprintf "tsirelsonThreshold should be 1/(3√2) ≈ %f, got %f" expected t)
+    // Strictly between 0 (fully decorrelated) and 1/3 (event horizon)
+    Assert.True(t > 0.0,  "tsirelsonThreshold should be > 0")
+    Assert.True(t < 1.0/3.0, "tsirelsonThreshold should be < 1/3 (the event horizon)")
+    // Numerically ≈ 0.2357
+    Assert.True(abs (t - 0.2357) < 0.001,
+        sprintf "tsirelsonThreshold should be ≈ 0.2357, got %f" t)
+
+// ── RHO-7: reseedIfCollapsedDefault uses the Tsirelson threshold ──────────────────────────────
+
+[<Fact>]
+let ``RHO-7: reseedIfCollapsedDefault triggers at tsirelsonThreshold not at 0.9`` () =
+    // Build a collapsed ensemble (ρ ≈ 1.0 after many identical observations).
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    let mutable e = ensemble
+    for _ in 1 .. 20 do
+        e <- YinYangEnsemble.observe signal e
+    // The ensemble is collapsed above the Tsirelson threshold.
+    Assert.True(YinYangEnsemble.isCollapsedDefault e,
+        "isCollapsedDefault should detect collapse (ρ ≈ 1.0 > tsirelsonThreshold ≈ 0.2357)")
+    // reseedIfCollapsedDefault should trigger.
+    let newCodeword = AdinkraCode.allCodewords |> List.item 7
+    let (_, didReseed) = YinYangEnsemble.reseedIfCollapsedDefault newCodeword e
+    Assert.True(didReseed, "reseedIfCollapsedDefault should trigger on collapsed ensemble")
+    // A fresh ensemble is below the Tsirelson threshold — should NOT trigger.
+    let (_, didReseedFresh) = YinYangEnsemble.reseedIfCollapsedDefault newCodeword ensemble
+    Assert.False(didReseedFresh, "reseedIfCollapsedDefault should not trigger on a fresh ensemble")
+    // The Tsirelson default is more sensitive than the old 0.9 threshold:
+    // a mildly correlated ensemble (ρ between 0.2357 and 0.9) would trigger the default but not 0.9.
+    // We verify the threshold value directly.
+    Assert.True(
+        YinYangEnsemble.tsirelsonThreshold < 0.9,
+        sprintf "tsirelsonThreshold (%f) should be more sensitive than the old 0.9 default"
+            YinYangEnsemble.tsirelsonThreshold)

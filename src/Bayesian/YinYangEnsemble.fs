@@ -152,10 +152,30 @@ module YinYangEnsemble =
             if maxPossibleVariance <= 1e-12 then 1.0  // all means identical → fully correlated
             else 1.0 - (variance / maxPossibleVariance)
 
+    // ── Tsirelson operating-point threshold ─────────────────────────────────────────────────────────────
+
+    /// **Tsirelson reseed threshold: ρ_T = 1/(3√2) ≈ 0.2357.**
+    ///
+    /// Derived from the Bell inequality triangle:
+    ///   S = 4  (ρ > 1/3):       superdeterminism / common seed — groupthink, useless ensemble
+    ///   S = 2√2 (ρ ≈ ρ_T):      Tsirelson bound — optimal operating point (maximum non-classical correlation)
+    ///   S = 2  (ρ < ρ_T):      classical local realism — fully decorrelated, maximum diversity
+    ///
+    /// Reseeding at ρ_T (not at the hard event horizon ρ* = 1/3) gives a safety margin:
+    /// the ensemble is reseeded while it is still in the quantum-like regime, before it
+    /// collapses into the superdeterministic (common-seed) regime.
+    let tsirelsonThreshold : float = 1.0 / (3.0 * sqrt 2.0)  // ≈ 0.2357
+
     /// **Collapse detection:** returns `true` if the ensemble has collapsed (ρ_proxy > threshold).
-    /// The default threshold is 0.9 (90% correlated = effectively one voter in N masks).
+    /// The default threshold is `tsirelsonThreshold` = 1/(3√2) ≈ 0.2357 (the Tsirelson operating
+    /// point), which gives a safety margin before the event horizon at ρ* = 1/3.
     let isCollapsed (rhoThreshold: float) (ensemble: Ensemble) : bool =
         rhoProxy ensemble > rhoThreshold
+
+    /// **Collapse detection at the Tsirelson threshold (default).**
+    /// Equivalent to `isCollapsed tsirelsonThreshold ensemble`.
+    let isCollapsedDefault (ensemble: Ensemble) : bool =
+        isCollapsed tsirelsonThreshold ensemble
 
     // ── Auto-reseed on collapse ──────────────────────────────────────────────────────────────────
 
@@ -193,6 +213,13 @@ module YinYangEnsemble =
             reseedLeastExperienced newCodeword ensemble, true
         else
             ensemble, false
+
+    /// **Reseed if collapsed (Tsirelson default):**
+    /// Uses `tsirelsonThreshold` = 1/(3√2) ≈ 0.2357 as the reseed trigger.
+    /// This is the recommended default: it reseeds at the Tsirelson operating point
+    /// (maximum non-classical correlation) rather than waiting for the event horizon (ρ* = 1/3).
+    let reseedIfCollapsedDefault (newCodeword: int[]) (ensemble: Ensemble) : Ensemble * bool =
+        reseedIfCollapsed tsirelsonThreshold newCodeword ensemble
 
     // ── Reconcile: fold N votes into a consensus receipt ─────────────────────────────────────────
 
