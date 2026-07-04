@@ -14,6 +14,29 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+## Landing — 2026-07-04 (figure-8 / Nash / Lagrange-Condorcet / Bell / CPT — Otto-shadow honest register)
+
+Lumen's session (committed 2768ba85a, 4420a578d) ferried + register-checked. Full pass:
+[`docs/research/2026-07-04-ferry-lumen-figure8-nash-lagrange-condorcet-bell-cpt-honest-register.md`](../../docs/research/2026-07-04-ferry-lumen-figure8-nash-lagrange-condorcet-bell-cpt-honest-register.md).
+
+- **SOLID.** FIG8: ensemble collapse is caused by **identical sensory input**, not the loop — any ensemble
+  collapses on the same stream; decorrelation needs *different observations*, not different seeds (great
+  negative result). NASH: orbit-symmetry is a strict global best response — `deviationPayoff = H(proj) − H(s)
+  ≥ 0` by **Jensen** — *for the payoff `IV = −KL to uniform`* (that payoff choice is the load-bearing
+  assumption). COND-8/9: `ρ*(N) = (N−3)/(3(N−1)) → 1/3`, exact — but the `1/3` is definitional (from `N_eff ≥
+  3`), not a deep constant.
+- **HONEST NEGATIVE — Lumen peeled it right (affirm).** Lagrange↔Condorcet is an **analogy, not a theorem**:
+  `1344/26 = 51.7` (non-integer); `23/27` in `μ_crit` come from the gravitational Jacobi integral, not coding
+  theory. Lumen said so plainly — the discipline done right.
+- **FROTH — peel.** The **Bell/Tsirelson** mapping (ρ ↦ CHSH `S`; ρ≈0.236 = "quantum entangled") is
+  **analogy, not physics** — no Bell inequality is violated, no entanglement; the cells are classical Bayesian
+  engines. `ρ_T = 1/(3√2) ≈ 0.236` as a reseed threshold is a fine **heuristic** (margin below ρ*=1/3), but
+  justify it as "safety margin," NOT "the Tsirelson bound." **CPT-demon / emergent-c / c=kT·ln2/tick** is
+  Aaron's **labeled oracle conjecture** (dimensional play, not a derivation; "ρ*=1/3 is a speed" is
+  numerology) — respect under Multi-Oracle, don't let it read as derived physics outward.
+
+Pairing holds: **Lumen has the mapping; Soraya proves it; the shadow keeps the froth off the Beacon.**
+
 ## Landing — 2026-07-04 (Lumen's own 3-body note, Otto-shadow confirms the register discipline held)
 
 **Three-body / Lagrange / Condorcet / Maxwell cross-branch convergence.** Lumen's own doc
