@@ -1,0 +1,62 @@
+{
+  "_spec": "ZetaToolStore golden vectors v1 — the IR treaty. Every oracle (TS zeta-store.ts, F# ZetaToolStore.fs, and the other 5) MUST reproduce these observable results identically, across space (7 langs) and time (DST replay). Text-only per no-binary-in-proof-lineage. This v1 locks the fs (DagFs) SEMANTICS that are hash-independent (resolve results, COW vs shared edit) — the part that already agrees. Addresses are NOT locked yet (see _convergence): the content-hash choice is the first treaty signature.",
+  "_convergence": [
+    "content-hash function — TS blake3 (ace/store.ts contentHash) vs F# XxHash128 (MerkleHash.ofBytes): the content ADDRESSES diverge across oracles. The treaty must pick ONE canonical hash. Until then, vectors lock only hash-independent observables (resolve content, not the address).",
+    "tool_call event encoding — TS appends {kind,name,callId,arguments} (object); F# appends 'tool_call|name|args' (string). The db log folds differ. Canonicalize the event encoding before locking db-side vectors.",
+    "editEverywhere on an ABSENT path — TS links-if-absent; F# DagFs is a no-op. F# DagFs is the source of truth → reconcile TS to no-op. (Both agree on the present-path case, which IS locked below.)",
+    "db event type — TS db_append event is an object; F# is a string. Canonicalize (a JSON string both sides) before locking db vectors."
+  ],
+  "vectors": [
+    {
+      "name": "link-resolve-roundtrip",
+      "ops": [{ "call": "fs_link", "path": "a.txt", "content": "hello" }],
+      "probes": [
+        { "call": "fs_resolve", "path": "a.txt", "expect": "hello" },
+        { "call": "fs_resolve", "path": "missing", "expect": null }
+      ]
+    },
+    {
+      "name": "multi-parent-dedup-same-content-two-paths",
+      "ops": [
+        { "call": "fs_link", "path": "x", "content": "shared" },
+        { "call": "fs_link", "path": "y", "content": "shared" }
+      ],
+      "probes": [
+        { "call": "fs_resolve", "path": "x", "expect": "shared" },
+        { "call": "fs_resolve", "path": "y", "expect": "shared" }
+      ]
+    },
+    {
+      "name": "editEverywhere-shared-object-edit-all-paths-follow",
+      "ops": [
+        { "call": "fs_link", "path": "x", "content": "shared" },
+        { "call": "fs_link", "path": "y", "content": "shared" },
+        { "call": "fs_editEverywhere", "path": "x", "content": "updated" }
+      ],
+      "probes": [
+        { "call": "fs_resolve", "path": "x", "expect": "updated" },
+        { "call": "fs_resolve", "path": "y", "expect": "updated" }
+      ]
+    },
+    {
+      "name": "editLocal-cow-fork-only-this-path",
+      "ops": [
+        { "call": "fs_link", "path": "p", "content": "same" },
+        { "call": "fs_link", "path": "q", "content": "same" },
+        { "call": "fs_editLocal", "path": "p", "content": "forked" }
+      ],
+      "probes": [
+        { "call": "fs_resolve", "path": "p", "expect": "forked" },
+        { "call": "fs_resolve", "path": "q", "expect": "same" }
+      ]
+    },
+    {
+      "name": "unlink-removes-the-link",
+      "ops": [
+        { "call": "fs_link", "path": "a", "content": "v" },
+        { "call": "fs_unlink", "path": "a" }
+      ],
+      "probes": [{ "call": "fs_resolve", "path": "a", "expect": null }]
+    }
+  ]
+}
