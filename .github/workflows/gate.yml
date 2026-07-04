@@ -1438,6 +1438,10 @@ jobs:
       - name: QDK venv setup (uv sync)
         run: uv sync --project src/Core.Python
 
+      - name: Python tests (Core.Python — incl. T-1/12 + Brownian-experts lemma gate)
+        run: uv run --project src/Core.Python pytest src/Core.Python/tests -q
+        timeout-minutes: 5
+
       - name: Smoke check (all 7 toolchains functional)
         run: CI=true ./tools/setup/common/smoke-7-toolchains.sh
 
