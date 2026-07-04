@@ -44,6 +44,32 @@ guarantee" framing overclaims on two counts the doc does not surface:
    9s" claim the scheduler might then trust. Discharge target: bound the shared-bias fraction and show
    the residual independent-error component still clears the Condorcet threshold.
 
+### Peel 1 resolution (Aaron 2026-07-04): the network delay is the un-fakeable honesty — and it resolves the two axes unevenly
+
+> Aaron: "yes the network delay is what makes it honest over reticulum — i can't fake it."
+
+Correct, and it's sharper than the peel above. The Reticulum delay is **physical** (the finite bus
+speed / propagation limit) so it is a **proof-of-distance**: you cannot *counterfeit* being a
+decorrelated independent node — faking independence would mean faking distance, and physics forbids it.
+This is the un-fakeable, scarce thing you pay real physics for — **delay is hard money for
+independence** (and literally the anti-Sybil guarantee: you can't be N decorrelated nodes from one
+location). But the two axes of the peel resolve unevenly:
+
+1. **Un-fakeable independence (adversarial axis): fully resolved.** Physics can't be spoofed — no fake
+   Condorcet bonus.
+2. **Statistical error-independence (shared-S=4 bias): partly resolved.** Delay decorrelates the
+   **input-driven** error (different nodes observe different slices of reality at different times, so
+   errors that come from *what they observe* genuinely decorrelate). It does NOT touch the
+   **prior-driven** error: same weights from S=4 → agents wrong the same way on the shared-model
+   component, which does not come from their (decorrelated) observations.
+
+**Complete honest statement:** delay makes independence un-fakeable AND decorrelates the input-dominated
+errors; the residual is the **prior-dominated shared-bias fraction**. The Condorcet "many 9s" holds to
+the extent the agents are **input-dominated** (reacting to their observed slice) rather than
+**prior-dominated** (reciting the shared seed) — which is *why the CHIP-8 AIs work*: cheap + reactive =
+mostly input-driven error, which the delay decorrelates. Sharpened discharge target: **bound the
+prior-dominated error fraction, show the residual clears the Condorcet threshold.**
+
 *(This is not "the Condorcet insight is wrong" — it's "the guarantee is conditional, and one of its
 conditions is in tension with S=4." The many-cheap-beats-one-expensive intuition is sound for the
 independent-error part; the peel is against "always / many 9s / structural.")*
