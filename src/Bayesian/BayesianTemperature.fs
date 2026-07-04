@@ -44,3 +44,16 @@ module BayesianTemperature =
             (uncertaintyPpm belief)
             pressurePpm
             (ppmFromUnitInterval attention)
+
+    /// Project a belief into the universal black-body information-radiance
+    /// lane. This deliberately composes through `ofBelief` so Bayesian heat,
+    /// pressure, and attention follow the same treaty as Dark Hall and Q#.
+    let blackBodyOfBelief
+        (source: string)
+        (belief: Gaussian)
+        (heatPpm: int)
+        (pressurePpm: int)
+        (attention: float)
+        : BlackBodyReadout =
+        ofBelief source belief heatPpm pressurePpm attention
+        |> BlackBodyReadout.ofTemperatureReadout
