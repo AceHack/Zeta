@@ -65,7 +65,9 @@ export async function freshAccessToken(provider: AuthProvider, deps: LoginDeps, 
 /// The default path Zeta stores its tokens under (per-provider file lives here). Distinct from
 /// ~/.codex — this is OURS, so a dead Codex session can't touch it.
 export function defaultStoreDir(home: string): string {
-  return `${home.replace(/\/+$/g, "")}/.config/zeta/auth`;
+  let base = home;
+  while (base.endsWith("/")) base = base.slice(0, -1); // strip trailing slashes (no backtracking regex)
+  return `${base}/.config/zeta/auth`;
 }
 
 // re-export the fs port type so a caller wiring the real fs has one import site.

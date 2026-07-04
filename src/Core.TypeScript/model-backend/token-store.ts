@@ -32,7 +32,9 @@ export interface StoreFs {
 /// A file-backed token store: one JSON file per provider under `dir`. `readFile` rejecting (missing
 /// file) yields `null` from `load` — an absent store is not an error.
 export function fileTokenStore(dir: string, fs: StoreFs): TokenStore {
-  const pathFor = (provider: string) => `${dir.replace(/\/+$/g, "")}/${provider}.json`;
+  let base = dir;
+  while (base.endsWith("/")) base = base.slice(0, -1); // strip trailing slashes (no backtracking regex)
+  const pathFor = (provider: string) => `${base}/${provider}.json`;
   return {
     async load(provider: string): Promise<StoredTokens | null> {
       let raw: string;

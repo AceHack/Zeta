@@ -28,7 +28,7 @@ function fakeProvider(pendingCount: number): AuthProvider {
     },
     authorizeUrl: () => "https://auth.openai.com/oauth/authorize",
     exchangeCode: () => Promise.resolve({ ok: true, value: { accessToken: "AT", refreshToken: "RT" } }),
-    refresh: (_t, _rt): Promise<{ ok: true; value: OAuthTokens } | { ok: false; error: string }> => Promise.resolve({ ok: true, value: { accessToken: "AT2", refreshToken: "RT2" } }),
+    refresh: (): Promise<{ ok: true; value: OAuthTokens } | { ok: false; error: string }> => Promise.resolve({ ok: true, value: { accessToken: "AT2", refreshToken: "RT2" } }),
   };
 }
 
@@ -92,7 +92,10 @@ describe("fileTokenStore + defaultStoreDir", () => {
   test("save then load round-trips over an injected fs; missing file → null", async () => {
     const files = new Map<string, string>();
     const fs: StoreFs = {
-      readFile: (p) => (files.has(p) ? Promise.resolve(files.get(p)!) : Promise.reject(new Error("ENOENT"))),
+      readFile: (p) => {
+        const v = files.get(p);
+        return v === undefined ? Promise.reject(new Error("ENOENT")) : Promise.resolve(v);
+      },
       writeFile: (p, c) => {
         files.set(p, c);
         return Promise.resolve();
