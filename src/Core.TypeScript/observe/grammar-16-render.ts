@@ -127,6 +127,7 @@ export function leadSlot(world: World): number | null {
   switch (lead.kind) {
     case "do_item":
     case "decompose":
+    case "self_claim":
       return SLOT.ACCEPT;
     case "edit_grammar":
       return SLOT.EDIT_GRAMMAR;

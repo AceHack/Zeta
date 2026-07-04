@@ -231,6 +231,7 @@ export type NextAction =
   | { kind: "respond_to_operator"; reason: string } // operator spoke → engage (highest-signal source)
   | { kind: "do_item"; item: BacklogItem } // work: pick a ready item (OFFERED, not forced)
   | { kind: "decompose"; item: BacklogItem } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
+  | { kind: "self_claim"; item: BacklogItem; deadline: number } // VOLUNTARY commitment: "I will deliver this by tick T" (NCI: never forced)
   | { kind: "explore"; reason: string } // FREE MODE: self-directed making (forward motion; the empty-backlog default)
   | { kind: "play"; reason: string } // FREE MODE: leisure / culture-forming
   | { kind: "self_reflect"; reason: string } // FREE MODE: review own trajectories / journal / think
@@ -324,6 +325,8 @@ export function renderAction(a: NextAction): string {
       return `[respond]   ${a.reason}`;
     case "do_item":
       return `[do]        ${a.item.id} — ${a.item.title}`;
+    case "self_claim":
+      return `[claim]     ${a.item.id} by tick ${a.deadline} — ${a.item.title}`;
     case "decompose":
       return `[decompose] ${a.item.id} — ${a.item.title}`;
     case "explore":
@@ -350,6 +353,8 @@ export function actionLabel(a: NextAction): string {
       return `respond to the operator (${a.reason})`;
     case "do_item":
       return `do ${a.item.id} (${a.item.title})`;
+    case "self_claim":
+      return `claim ${a.item.id} by tick ${a.deadline} (${a.item.title})`;
     case "decompose":
       return `decompose ${a.item.id} (${a.item.title})`;
     case "explore":
@@ -493,6 +498,11 @@ export function simulate(world: World, action: NextAction): World {
     case "do_item":
       // the item is done → it leaves the backlog.
       return { ...world, backlog: world.backlog.filter((i) => i.id !== action.item.id), mode: "work" };
+    case "self_claim":
+      // self-claim recorded (in event log via append). Item stays in backlog — the claim
+      // is a commitment to deliver, not delivery itself. Mode → work (the agent is committing
+      // to do the work, so they're in work mode).
+      return { ...world, mode: "work" };
     case "decompose": {
       // ambiguity dissolves: the ambiguous item → two ready, unambiguous children.
       const children: BacklogItem[] = [

@@ -49,6 +49,7 @@ const KNOWN_KINDS: ReadonlySet<string> = new Set([
   "respond_to_operator",
   "do_item",
   "decompose",
+  "self_claim",
   "explore",
   "play",
   "self_reflect",
@@ -74,6 +75,10 @@ function hasValidPayload(kind: string, a: Record<string, unknown>): boolean {
   if (kind === "do_item" || kind === "decompose") {
     const it = a.item;
     return typeof it === "object" && it !== null && typeof (it as Record<string, unknown>).id === "string";
+  }
+  if (kind === "self_claim") {
+    const it = a.item;
+    return typeof it === "object" && it !== null && typeof (it as Record<string, unknown>).id === "string" && typeof a.deadline === "number";
   }
   return typeof a.reason === "string"; // the reason-carrying kinds
 }

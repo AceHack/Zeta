@@ -90,7 +90,7 @@ export function fakeOperatorPort(): OperatorPort & { preserved: string[]; respon
 }
 
 /** The action kinds this slice can execute (zero external side-effect: mode-set + append). */
-const ZERO_EFFECT_KINDS = ["free_time", "self_reflect", "explore", "play", "decompose", "edit_grammar"] as const;
+const ZERO_EFFECT_KINDS = ["free_time", "self_reflect", "explore", "play", "decompose", "edit_grammar", "self_claim"] as const;
 type ZeroEffectKind = (typeof ZERO_EFFECT_KINDS)[number];
 
 function isZeroEffectKind(kind: NextAction["kind"]): kind is ZeroEffectKind {
