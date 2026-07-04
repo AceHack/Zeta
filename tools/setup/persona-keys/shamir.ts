@@ -3,7 +3,7 @@
 // Per-user CA alone RELOCATES the identity SPOF to N single keys (math team #9020); k-of-n
 // removes the single forging key at each root. This is the reference split/reconstruct oracle
 // for CA private material / derivation seeds — cold-backup / recovery shares; live signing
-// should prefer FROST/threshold-MPC above HSMs (see agent-native-key-custody design doc).
+// should prefer frost.ts (threshold Schnorr) above HSMs (agent-native-key-custody design).
 //
 // Field: GF(257) (prime > 255) — each byte of the secret is an independent Shamir polynomial.
 // Prove-with: bun property tests + golden seed (shamir-golden-vectors.json); BP-16 leg in

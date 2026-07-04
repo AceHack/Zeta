@@ -26,11 +26,12 @@ composes_with: ["081KVNXBR4S08QG0R0015DHBBN", "081KVNTNTDQ08QG0R0017NBBWB"]
 - **✅ Harness gap-closed assertion** in `onboarding-roundtrip.test.ts`
 - **✅ `ca-shamir-custody.ts` + `ca-shamir-cli.ts`** — split/combine LOCAL CA private key into k-of-n shares; wired from `ca-cli.ts` (`--shamir`) and `rotate-cli.ts` (`--confirm --shamir`)
 - **✅ BP-16 formal leg** — `src/Core/Shamir.fs` + `Shamir.CrossVerify.Tests.fs` (Z3 k=2/k=3 Lagrange unsat, FsCheck round-trip + field inverses, golden seed shared with TS)
-- **✅ Alloy `IdentityReissuable`** — `src/Core.Alloy/specs/IdentityReissuable.als` (single-key orphan `run`, threshold recovery `run`, shares/live-key imply reissuable `check`); wired into `Alloy.Runner.Tests.fs` with `TrustGraph.als`
+- **✅ Alloy `IdentityReissuable`** — `src/Core.Alloy/specs/IdentityReissuable.als` (single-key orphan `run`, threshold recovery `run`, shares/live-key imply reissuable `check`); wired into `Alloy.Runner.Tests.fs`
+- **✅ FROST-shaped live signing oracle (slice 1)** — `frost.ts` / `frost-cli.ts`: dealer keygen + k-of-n Ed25519 threshold Schnorr **without** reassembling the signing scalar (monorepo tools path beside shamir/custody)
 
 ## Deferred (follow-on slices)
 
-- FROST/threshold-MPC for live signing without reassembly (agent-native-key-custody design)
+- Full RFC 9591 DKG + ROAST + HSM-sealed share adapters; wire frost into `ca.ts` cert signing path (replace ssh-keygen -s single-key for threshold CAs)
 
 ## Anchors
 

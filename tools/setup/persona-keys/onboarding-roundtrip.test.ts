@@ -553,6 +553,14 @@ test("SHAMIR GAP CLOSED: threshold k-of-n split/reconstruct exists (shamir.ts)",
   expect(/export\s+function\s+shamirCombine/.test(src)).toBe(true);
 });
 
+test("FROST LIVE-SIGN GAP CLOSED: threshold Schnorr without reassembly exists (frost.ts)", () => {
+  const src = readFileSync(join(import.meta.dir, "frost.ts"), "utf8");
+  expect(/export\s+function\s+frostKeygen/.test(src)).toBe(true);
+  expect(/export\s+function\s+frostPartialSign/.test(src)).toBe(true);
+  expect(/export\s+function\s+frostCombine/.test(src)).toBe(true);
+  expect(src).toContain("never summed");
+});
+
 test("SHAMIR BP-16 GAP CLOSED: golden seed + F# formal cross-check exist", () => {
   const golden = join(import.meta.dir, "shamir-golden-vectors.json");
   expect(existsSync(golden)).toBe(true);

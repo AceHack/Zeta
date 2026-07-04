@@ -198,7 +198,7 @@ export async function splitCaToShares(
   const warnings: string[] = [
     "ANY k shares reconstruct the full CA private key — protect each share like the key itself.",
     "Shares are LOCAL cold-backup only; distribute copies to distinct custodians out-of-band.",
-    "Live signing without reassembly requires FROST/threshold-MPC (not this slice).",
+    "Live signing without reassembly: use frost.ts (threshold Schnorr oracle) — not Shamir reassembly.",
   ];
 
   const base: SplitCaShamirResult = {

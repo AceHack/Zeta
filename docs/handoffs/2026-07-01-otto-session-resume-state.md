@@ -19,6 +19,6 @@ rotate + cluster teardown + KRL revoke + cluster-trust-root rotate + Shamir cust
 
 ## Next resume targets
 
-- Alloy `IdentityReissuable` path-existence with shares (081KVP3GYW1 R4) — in flight / next
-- FROST / threshold-MPC for live signing (research-grade, multi-PR)
-- Main gate: last completed run green; treat intermittent PR-rollup reds as concurrent-main noise unless reproducible locally
+- FROST slice 2: wire `frost.ts` into `ca.ts` cert signing (threshold CA replaces single ssh-keygen -s)
+- Full RFC 9591 DKG + ROAST + HSM-sealed share adapters (agent-native-key-custody Layers 1–3)
+- Constraint: monorepo tools-over-trunks — custody/signing moves land under `tools/setup/persona-keys/`, not a sidecar service
