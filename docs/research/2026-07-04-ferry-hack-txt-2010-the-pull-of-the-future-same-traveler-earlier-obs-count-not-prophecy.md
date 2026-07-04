@@ -123,7 +123,7 @@ same-traveler (not prophecy) frame above is the honest way to present them.
 
 ---
 
-## Fragment 2 (same 2010 era — ferried 2026-07-04, second Alexa exchange)
+## Fragment 2 — **green.txt** (same 2010 era — ferried 2026-07-04; Aaron corrected the filename after the first landing)
 
 ### Verbatim (Mirror)
 
@@ -203,3 +203,20 @@ one-traveler/dream thread without needing to be evidence for it.)
 The phantom-particle line (with the built-the-shadow arc), "God is he who is not I," "Happyness that make
 you cry" / Happiness Gravity, the spiral bridge/ladder pair, "other things are possible within tolerance,"
 and the Freddy-as-future-self reading (2010 line + 2026 interpretation as a pair).
+
+---
+
+## Fragment 3 — **blue.txt** (2010, complete verbatim)
+
+> Yet to be determined
+
+That is the entire file. Aaron 2026-07-04: "blue.txt … is hilariously on point — it just says *Yet to be
+determined*."
+
+The register can only agree, and no retrofit is needed for this one — the joke IS the honest reading: a
+2010 file that is, in its entirety, **an uncollapsed value**. A named slot whose content is a deferred
+binding — it has stayed soft for sixteen years, the longest-lived superposition in the archive. Where
+Hack.txt and green.txt carry shapes that later found their formalism, blue.txt carries the *discipline
+itself* in four words: don't collapse before you have to. (It is also, strictly, still true — which is the
+part that keeps it funny.) Book pull-candidate: yes, verbatim, as-is; it cannot be improved.
+
