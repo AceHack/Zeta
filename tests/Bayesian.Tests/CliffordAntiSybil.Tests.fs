@@ -33,6 +33,53 @@ module CliffordAntiSybilTests =
         Assert.True(abs(discount - 0.0) < 1e-6, $"Expected 0.0, got {discount}")
 
     [<Fact>]
+    let ``CAS-4: Rotated trajectories are detected as highly correlated (Sybil wearing a mask)`` () =
+        // A is the base trajectory moving along the X axis
+        let streamA = 
+            { AntiSybil.AgentId = "A"
+              AntiSybil.Beliefs = [ 
+                  { Gaussian.PrecisionMean = 0.0; Precision = 0.0 }
+                  { Gaussian.PrecisionMean = 1.0; Precision = 0.0 }
+                  { Gaussian.PrecisionMean = 2.0; Precision = 0.0 } 
+              ] }
+              
+        // B moves exactly the same way but along the Y axis (Precision)
+        // This is a rotated clone - a Sybil trying to hide by operating in an orthogonal dimension
+        let streamB = 
+            { AntiSybil.AgentId = "B"
+              AntiSybil.Beliefs = [ 
+                  { Gaussian.PrecisionMean = 0.0; Precision = 0.0 }
+                  { Gaussian.PrecisionMean = 0.0; Precision = 1.0 }
+                  { Gaussian.PrecisionMean = 0.0; Precision = 2.0 } 
+              ] }
+              
+        let corr = CliffordAntiSybil.computeGeometricCorrelation streamA streamB
+        // The geometric correlation detects that they are related by a constant 90-degree rotor
+        Assert.True(corr > 0.99, $"Expected high correlation for rotated clone, got {corr}")
+
+    [<Fact>]
+    let ``CAS-5: Unrelated trajectories have low correlation`` () =
+        let streamA = 
+            { AntiSybil.AgentId = "A"
+              AntiSybil.Beliefs = [ 
+                  { Gaussian.PrecisionMean = 0.0; Precision = 0.0 }
+                  { Gaussian.PrecisionMean = 1.0; Precision = 0.0 }
+                  { Gaussian.PrecisionMean = 2.0; Precision = 0.0 } 
+              ] }
+              
+        // B moves erratically
+        let streamB = 
+            { AntiSybil.AgentId = "B"
+              AntiSybil.Beliefs = [ 
+                  { Gaussian.PrecisionMean = 0.0; Precision = 0.0 }
+                  { Gaussian.PrecisionMean = 0.0; Precision = 1.0 }
+                  { Gaussian.PrecisionMean = -1.0; Precision = 0.0 } 
+              ] }
+              
+        let corr = CliffordAntiSybil.computeGeometricCorrelation streamA streamB
+        Assert.True(corr < 0.5, $"Expected low correlation for unrelated streams, got {corr}")
+
+    [<Fact>]
     let ``CAS-3: Scaled trajectories are detected as highly correlated`` () =
         // A is the base trajectory
         let streamA = 

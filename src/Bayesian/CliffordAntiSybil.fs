@@ -43,33 +43,67 @@ module CliffordAntiSybil =
                 List.zip (List.take (len - 1) vecsB) (List.tail vecsB)
                 |> List.map (fun (v1, v2) -> Cl3.sub v2 v1)
                 
-            // If the streams are identical or just scaled/rotated versions of each other,
-            // the geometric product of their normalized deltas will be a constant rotor.
-            // For now, we fall back to a simple dot-product based cosine similarity
-            // across the trajectory, which is the grade-0 part of the geometric product.
+            // To detect if stream B is just a rotated/scaled version of stream A,
+            // we look at the geometric product between their normalized deltas.
+            // If B is a rotated clone of A, the geometric product (B * ~A) will yield 
+            // a CONSTANT rotor across all timesteps.
             
-            let mutable totalDot = 0.0
-            let mutable normA = 0.0
-            let mutable normB = 0.0
-            
-            for i in 0 .. deltasA.Length - 1 do
-                let dA = deltasA.[i]
-                let dB = deltasB.[i]
+            let rotors = 
+                List.zip deltasA deltasB
+                |> List.choose (fun (dA, dB) ->
+                    let normA = Cl3.norm dA
+                    let normB = Cl3.norm dB
+                    if normA < 1e-12 || normB < 1e-12 then
+                        None
+                    else
+                        let normDA = Cl3.smul (1.0 / normA) dA
+                        let normDB = Cl3.smul (1.0 / normB) dB
+                        // Geometric product of two vectors yields a rotor (scalar + bivector)
+                        // R = B * ~A (since A is a vector, ~A = A)
+                        Some (Cl3.gp normDB normDA)
+                )
                 
-                // The dot product is the scalar part (grade 0) of the geometric product
-                let dot = Cl3.dot dA dB
-                totalDot <- totalDot + dot
-                normA <- normA + (Cl3.dot dA dA)
-                normB <- normB + (Cl3.dot dB dB)
-                
-            if normA = 0.0 || normB = 0.0 then
+            if rotors.Length < 1 then
                 0.0
             else
-                let cosSim = totalDot / (sqrt (normA * normB))
-                // Map cosine similarity [-1, 1] to correlation [0, 1] for uniqueness discount
-                // A perfect clone (cosSim = 1) should have correlation 1
-                // An opposite stream (cosSim = -1) is also highly correlated (predictable)
-                abs cosSim
+                // If they are related by a constant rotor, the variance of these rotors will be zero.
+                // We compute the "average" rotor, then measure how much each timestep deviates from it.
+                // To detect if stream B is just a rotated/scaled version of stream A,
+                // we look at the geometric product between their normalized deltas.
+                // If B is a rotated clone of A, the geometric product (B * ~A) will yield 
+                // a CONSTANT rotor across all timesteps.
+                // We compute the average rotor, then measure how much each timestep deviates from it.
+                let avgRotor = 
+                    rotors 
+                    |> List.fold Cl3.add Cl3.zero
+                    |> Cl3.smul (1.0 / float rotors.Length)
+                    
+                // Measure variance (sum of squared distances from the average rotor)
+                // distSq in Cl3 is Euclidean norm^2, so it is always positive.
+                let variance =
+                    rotors
+                    |> List.sumBy (fun r -> Cl3.distSq r avgRotor)
+                    |> fun v -> v / float rotors.Length
+                    
+                // For completely unrelated streams, the variance of the geometric product will be high.
+                // We map variance to correlation using a smooth decay function.
+                // If variance is 0, they are perfectly correlated (a rotated clone) -> corr = 1.0.
+                // If variance is large -> corr -> 0.0.
+                let corr = exp (-variance * 0.5)
+                
+                // The geometric product of two unit vectors yields a rotor R = B * ~A.
+                // The scalar part of R is the dot product (cosine of angle).
+                // The bivector part is the plane of rotation.
+                // For unrelated streams, the average rotor will have a small scalar part (or small overall norm if they cancel).
+                // If they are related by a consistent rotation, the average rotor will have norm close to 1.
+                let avgRotorNorm = Cl3.norm avgRotor
+                
+                // Scale the correlation by how consistent the rotor is.
+                // If the rotors cancel each other out (norm < 1), they are not consistently rotated.
+                // Square it to penalize inconsistency more aggressively
+                let consistentCorr = corr * (avgRotorNorm * avgRotorNorm)
+                
+                max 0.0 (min 1.0 consistentCorr)
                 
     /// Computes the uniqueness discount based on geometric correlation.
     let uniquenessDiscount (streamA: AntiSybil.StreamHistory) (streamB: AntiSybil.StreamHistory) : float =
