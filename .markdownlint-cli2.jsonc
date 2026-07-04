@@ -198,6 +198,6 @@
     // an ATX-close sigil. This is the unambiguous fix AND renders
     // the language name as code, which is the canonical style.
     // MD003 pinned to atx so the parser never prefers closed-atx.
-    "MD003": { "style": "atx" }
-  }
+    "MD003": { "style": "atx" },
+  },
 }

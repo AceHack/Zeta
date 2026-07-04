@@ -39,6 +39,7 @@ Pin the two named points and assume the map `ρ(S)` is **linear through the orig
 ```
 
 Then:
+
 - `S = 4  → ρ = 1/3   = ρ*`     ✓ (groupthink boundary)
 - `S = 2√2 → ρ = 2√2/12 = √2/6 = 1/(3√2) ≈ 0.2357 = ρ_T`   ✓
 - `S = 2  → ρ = 1/6 ≈ 0.167`   (consistent with "ρ < ρ_T")

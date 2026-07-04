@@ -36,44 +36,47 @@ open Apache.Arrow.Types
 open Zeta.Core
 
 // kind tags — keep in sync with the schema doc above.
-    [<Literal>]
-    let private KindNull = 0y
-    [<Literal>]
-    let private KindBool = 1y
-    [<Literal>]
-    let private KindInt = 2y
-    [<Literal>]
-    let private KindFloat = 3y
-    [<Literal>]
-    let private KindString = 4y
-    [<Literal>]
-    let private KindBytes = 5y
-    [<Literal>]
-    let private KindArray = 6y
-    [<Literal>]
-    let private KindObject = 7y
+[<Literal>]
+let private KindNull = 0y
+[<Literal>]
+let private KindBool = 1y
+[<Literal>]
+let private KindInt = 2y
+[<Literal>]
+let private KindFloat = 3y
+[<Literal>]
+let private KindString = 4y
+[<Literal>]
+let private KindBytes = 5y
+[<Literal>]
+let private KindArray = 6y
+[<Literal>]
+let private KindObject = 7y
 
-    /// The fixed node-table schema (8 columns; `kind`/`parent` non-null, the rest nullable).
-    let private schema =
-        let fields =
-            [| Field("kind", Int8Type.Default, nullable = false)
-               Field("parent", Int32Type.Default, nullable = false)
-               Field("key", StringType.Default, nullable = true)
-               Field("b", BooleanType.Default, nullable = true)
-               Field("i", Int64Type.Default, nullable = true)
-               Field("f", DoubleType.Default, nullable = true)
-               Field("s", StringType.Default, nullable = true)
-               Field("by", BinaryType.Default, nullable = true) |]
+/// The fixed node-table schema (8 columns; `kind`/`parent` non-null, the rest nullable).
+let private schema =
+    let fields =
+        [| Field("kind", Int8Type.Default, nullable = false)
+           Field("parent", Int32Type.Default, nullable = false)
+           Field("key", StringType.Default, nullable = true)
+           Field("b", BooleanType.Default, nullable = true)
+           Field("i", Int64Type.Default, nullable = true)
+           Field("f", DoubleType.Default, nullable = true)
+           Field("s", StringType.Default, nullable = true)
+           Field("by", BinaryType.Default, nullable = true) |]
 
-        Schema(fields, null)
+    Schema(fields, null)
 
-    // ── ENCODE ──────────────────────────────────────────────────────────────
+// ── ENCODE ──────────────────────────────────────────────────────────────
 
-    /// Serialize a `DynamicValue` to Arrow IPC stream bytes (one RecordBatch over
-    /// the node table). DFS pre-order: the root is row 0 (parent -1, key null); an
-    /// Array recurses its children in order (key null); an Object recurses each
-    /// value child in order with its key set. Container nodes carry no scalar payload.
-    let toArrow (value: DynamicValue) : Result<byte[], EncodeError> =
+let private lockObj = obj()
+
+/// Serialize a `DynamicValue` to Arrow IPC stream bytes (one RecordBatch over
+/// the node table). DFS pre-order: the root is row 0 (parent -1, key null); an
+/// Array recurses its children in order (key null); an Object recurses each
+/// value child in order with its key set. Container nodes carry no scalar payload.
+let toArrow (value: DynamicValue) : Result<byte[], EncodeError> =
+    lock lockObj (fun () ->
         let kindB = Int8Array.Builder()
         let parentB = Int32Array.Builder()
         let keyB = StringArray.Builder()
@@ -208,23 +211,25 @@ open Zeta.Core
             writer.WriteRecordBatch batch
             writer.WriteEnd()
             Ok(ms.ToArray())
+    )
 
-    /// Exposes a way to cleanly unwrap the Arrow encode result for low-depth invariants in calling/test code.
-    let toArrowOk (value: DynamicValue) : byte[] =
-        match toArrow value with
-        | Ok bytes -> bytes
-        | Error e -> failwithf "toArrow failed on low-depth invariant: %A" e
+/// Exposes a way to cleanly unwrap the Arrow encode result for low-depth invariants in calling/test code.
+let toArrowOk (value: DynamicValue) : byte[] =
+    match toArrow value with
+    | Ok bytes -> bytes
+    | Error e -> failwithf "toArrow failed on low-depth invariant: %A" e
 
-    // ── DECODE ──────────────────────────────────────────────────────────────
+// ── DECODE ──────────────────────────────────────────────────────────────
 
-    /// Deserialize Arrow IPC stream bytes back into a `DynamicValue` — the inverse
-    /// of `toArrow`. Reads the single RecordBatch, reconstructs each node from
-    /// kind+payload, and attaches children to their parent in row order (which
-    /// preserves sibling order; Object children carry their `key`). Validates
-    /// structure (parent in range / forms a tree rooted at row 0, kind valid,
-    /// payload present for the kind) → `DecodeError.MalformedArrow` otherwise.
-    /// Never throws: any Apache.Arrow read failure is caught and surfaced as data.
-    let fromArrow (bytes: byte[]) : Result<DynamicValue, DecodeError> =
+/// Deserialize Arrow IPC stream bytes back into a `DynamicValue` — the inverse
+/// of `toArrow`. Reads the single RecordBatch, reconstructs each node from
+/// kind+payload, and attaches children to their parent in row order (which
+/// preserves sibling order; Object children carry their `key`). Validates
+/// structure (parent in range / forms a tree rooted at row 0, kind valid,
+/// payload present for the kind) → `DecodeError.MalformedArrow` otherwise.
+/// Never throws: any Apache.Arrow read failure is caught and surfaced as data.
+let fromArrow (bytes: byte[]) : Result<DynamicValue, DecodeError> =
+    lock lockObj (fun () ->
         try
             use ms = new MemoryStream(bytes)
             use reader = new ArrowStreamReader(ms)
@@ -352,3 +357,4 @@ open Zeta.Core
                 | _ -> Error DecodeError.MalformedArrow
         with _ ->
             Error DecodeError.MalformedArrow
+    )

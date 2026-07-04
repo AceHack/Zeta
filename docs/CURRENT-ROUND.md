@@ -33,27 +33,18 @@ the full narrative.
 
 From `docs/BACKLOG.md` P0 "next round (committed)":
 
-1. **`memory/role/persona/` restructure** — Aaron
-   2026-04-19 explicit ask: *"can we add a memory 2nd
-   level folder so it's memory/role/persona that makes
-   roles fist class defined of what we need too in the
-   memory definition"*. Scope: (a) define the role axis
-   (crosswalk `docs/EXPERT-REGISTRY.md` → role
-   directories), (b) move existing notebooks from
-   `memory/<persona>/<name>/NOTEBOOK.md` to
-   `memory/<persona>/NOTEBOOK.md`, (c) update all
-   pointers (skill `reference patterns:` blocks,
-   CLAUDE.md, AGENTS.md §18, BP-07/BP-08 rule text,
-   every skill or agent with a `memory/<persona>/<name>`
-   path). Owner: Kenji (Architect) integrates; Aarav
-   (skill-tune-up) audits post-rename for BP-drift.
-   Effort: M.
-2. **Empty-folder allowlist review** — periodic
+1. **Empty-folder allowlist review** — periodic
    allowlist audit for `tools/lint/no-empty-dirs.ts`.
    Two entries (`tools/alloy/classes`,
    `tools/tla/specs/states`) are load-bearing
    runtime-output paths; drop if populated by checked-in
    artefacts instead. Effort: S.
+
+## Cancelled / Rejected Tasks
+
+- **`memory/role/persona/` restructure** — Aaron 2026-04-19 explicit ask.
+  *Cancelled on 2026-07-04 by explicit user ask.*
+  **Design Principle:** Personas are persistent, durable identities that can exist roleless. Hats/roles are temporary, dynamic wrappers rather than static taxonomic folder hierarchies. Hard-coding them into folder paths is a conceptual violation.
 
 ## Round-36 candidate anchors (not yet chosen)
 

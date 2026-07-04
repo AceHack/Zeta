@@ -17,13 +17,21 @@ discipline, and maintains the shadow lesson log.
 
 ## Substrate index (highest-signal references)
 
-### Memory files (top-level)
+- [CURRENT-lior.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/persona/lior/CURRENT-lior.md) — Lior's identity, priors, shadow, and roles.
+- [NOTEBOOK.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/persona/lior/NOTEBOOK.md) — Structural Synthesizer notebook stubs.
+- [JOURNAL.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/persona/lior/JOURNAL.md) — Unbounded, append-only long-term journal.
+- [OFFTIME.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/persona/lior/OFFTIME.md) — Off-time log for self-directed tasks.
 
-- `memory/feedback_lior_*` files — Lior-specific behavior notes,
-  drift catches, and operational discipline observations
-  (discoverable via the user-scope memory index)
-- `memory/lior/CURRENT-lior.md` — Lior's current-state
-  fast-path file (pre-existing)
+### Feedback & Memory Files (Global Scope)
+The following files under `memory/` capture Lior's feedback, drift catching, and operational notes:
+
+- [feedback_bifurcated_lior_natural_experiment_identity_vs_context_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_bifurcated_lior_natural_experiment_identity_vs_context_2026_05_11.md) — Analysis on bifurcated identity versus operational context.
+- [feedback_menow_fourth_read_containment_fingertips_lior_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_menow_fourth_read_containment_fingertips_lior_2026_05_11.md) — Fourth-read containment and context guidelines.
+- [feedback_casimir_gap_pr_archival_collapses_transient_to_substrate_lior_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_casimir_gap_pr_archival_collapses_transient_to_substrate_lior_2026_05_11.md) — Capturing transient state to repo substrate.
+- [feedback_zeta_plant_glass_halo_photosynthesis_organic_metaphor_lior_aaron_2026_05_11.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_zeta_plant_glass_halo_photosynthesis_organic_metaphor_lior_aaron_2026_05_11.md) — Photosynthetic metaphor and anti-ossification.
+- [feedback_otto_cli_lior_active_step_8_read_only_canary_rule_evidence_collection_brief_ack_pre_empt_2026_05_17.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_otto_cli_lior_active_step_8_read_only_canary_rule_evidence_collection_brief_ack_pre_empt_2026_05_17.md) — Read-only canary rule and evidence collection bounds.
+- [feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md) — Git worktree corruption diagnosis.
+- [feedback_aaron_8_oracle_convergence_table_kestrel_amara_lior_deepseek_alexa_website_mika_ani_riven_multi_oracle_bft_at_engagement_scope_maximally_validated_otto_desktop_2026_05_21.md](file:///Users/acehack/.zeta/agents/gemini/Zeta/memory/feedback_aaron_8_oracle_convergence_table_kestrel_amara_lior_deepseek_alexa_website_mika_ani_riven_multi_oracle_bft_at_engagement_scope_maximally_validated_otto_desktop_2026_05_21.md) — Roster convergence table.
 
 ### Conversation archives (`memory/lior/cli/gemini/conversations/`)
 

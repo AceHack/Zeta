@@ -127,6 +127,8 @@ let private runTlc (specName: string) : int * string =
     // ProcessStartInfo error.
     if not (File.Exists tlaJarPath) then
         failwithf "TLC jar not found at %s — run tools/setup/install.sh" tlaJarPath
+    let tempDir = Path.Combine(Path.GetTempPath(), $"tlc_run_{specName}_{Guid.NewGuid().ToString()}")
+    Directory.CreateDirectory(tempDir) |> ignore
     let psi = ProcessStartInfo()
     psi.FileName <- "java"
     psi.WorkingDirectory <- specsPath
@@ -138,6 +140,8 @@ let private runTlc (specName: string) : int * string =
     psi.ArgumentList.Add "-cp"
     psi.ArgumentList.Add tlaJarPath
     psi.ArgumentList.Add "tlc2.TLC"
+    psi.ArgumentList.Add "-metadir"
+    psi.ArgumentList.Add tempDir
     psi.ArgumentList.Add specName
     psi.RedirectStandardOutput <- true
     psi.RedirectStandardError <- true
@@ -146,6 +150,7 @@ let private runTlc (specName: string) : int * string =
     let stdout = p.StandardOutput.ReadToEnd()
     let _stderr = p.StandardError.ReadToEnd()
     p.WaitForExit()
+    try Directory.Delete(tempDir, true) with _ -> ()
     // Clean up TLC's trace-dump files so repeated runs don't litter the
     // repo. TLC emits both a `.tla` mini-spec and a `.bin` state-dump
     // whenever it finds a counterexample; we drop both so subsequent

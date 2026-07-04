@@ -58,7 +58,7 @@ in base62 is 22 chars.
 **Pick Crockford base32** (https://www.crockford.com/base32.html):
 
 - Case-insensitive (matters on case-insensitive filesystems like
-  default macOS/Windows)
+
 - URL-safe (no `/` or `+`)
 - 26 chars for 128 bits (compact for filenames)
 - ULID uses Crockford base32 for exactly this reason
@@ -94,17 +94,15 @@ flip.
 Add to `tests/cross-verification/zeta-id/`:
 
 - `vectors.yaml` — extend with `expected_crockford` field alongside
-  `expected_hex` for each vector
+
 - Each per-language harness writes both `*-output.json` (hex) AND
-  the Crockford string for verification
 
 ## Acceptance
 
 - `docs/zeta-id-canonical-string-encoding.md` spec written
 - TS + C# implementations + tests output canonical Crockford strings
-  matching `expected_crockford` in vectors.yaml
+
 - 5-way cross-verify (TS + C# + F# + Rust + Python) agrees on both
-  hex AND Crockford strings on all 12 vectors
 
 ## Composes with
 

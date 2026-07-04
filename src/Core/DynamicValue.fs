@@ -1528,3 +1528,299 @@ module DynamicValue =
             | Ok canonicalYaml when canonicalYaml = yaml -> Ok decoded
             | _ -> Error DecodeError.NonCanonical)
 
+
+    /// Encode a DynamicValue to its canonical MessagePack representation.
+    let toCanonicalMsgpack (value: DynamicValue) : byte[] =
+        let buf = System.Collections.Generic.List<byte>()
+
+        let writeHead (major: byte) (arg: uint64) =
+            if arg <= 15UL && (major = 0x90uy || major = 0x80uy) then
+                buf.Add(major ||| byte arg)
+            elif arg <= 31UL && major = 0xa0uy then
+                buf.Add(major ||| byte arg)
+            elif arg <= 255UL && (major = 0xc4uy || major = 0xd9uy) then
+                buf.Add(major)
+                buf.Add(byte arg)
+            elif arg <= 65535UL && (major = 0xc4uy || major = 0xc5uy || major = 0xd9uy || major = 0xdauy || major = 0xdcuy || major = 0xdeuy) then
+                let tag = 
+                    match major with
+                    | 0xc4uy -> 0xc5uy
+                    | 0xd9uy -> 0xdauy
+                    | _ -> major
+                buf.Add(tag)
+                buf.Add(byte (arg >>> 8))
+                buf.Add(byte arg)
+            else
+                let tag =
+                    match major with
+                    | 0xc4uy -> 0xc6uy
+                    | 0xd9uy -> 0xdbuy
+                    | 0xdcuy -> 0xdduy
+                    | 0xdeuy -> 0xdfuy
+                    | _ -> major
+                buf.Add(tag)
+                buf.Add(byte (arg >>> 24))
+                buf.Add(byte (arg >>> 16))
+                buf.Add(byte (arg >>> 8))
+                buf.Add(byte arg)
+
+        let writeInt (v: int64) =
+            if v >= 0L then
+                if v <= 127L then
+                    buf.Add(byte v)
+                elif v <= 255L then
+                    buf.Add(0xccuy)
+                    buf.Add(byte v)
+                elif v <= 65535L then
+                    buf.Add(0xcduy)
+                    buf.Add(byte (v >>> 8))
+                    buf.Add(byte v)
+                elif v <= 4294967295L then
+                    buf.Add(0xceuy)
+                    buf.Add(byte (v >>> 24))
+                    buf.Add(byte (v >>> 16))
+                    buf.Add(byte (v >>> 8))
+                    buf.Add(byte v)
+                else
+                    buf.Add(0xcfuy)
+                    for shift in [ 56; 48; 40; 32; 24; 16; 8; 0 ] do
+                        buf.Add(byte (v >>> shift))
+            else
+                if v >= -32L then
+                    buf.Add(byte (0xe0L ||| (v &&& 0x1fL)))
+                elif v >= -128L then
+                    buf.Add(0xd0uy)
+                    buf.Add(byte v)
+                elif v >= -32768L then
+                    buf.Add(0xd1uy)
+                    buf.Add(byte (v >>> 8))
+                    buf.Add(byte v)
+                elif v >= -2147483648L then
+                    buf.Add(0xd2uy)
+                    buf.Add(byte (v >>> 24))
+                    buf.Add(byte (v >>> 16))
+                    buf.Add(byte (v >>> 8))
+                    buf.Add(byte v)
+                else
+                    buf.Add(0xd3uy)
+                    for shift in [ 56; 48; 40; 32; 24; 16; 8; 0 ] do
+                        buf.Add(byte (v >>> shift))
+
+        let writeText (s: string) =
+            let utf8 = System.Text.Encoding.UTF8.GetBytes(if System.Object.ReferenceEquals(s, null) then "" else s)
+            writeHead 0xa0uy (uint64 utf8.Length)
+            buf.AddRange(utf8)
+
+        let writeFloat (v: float) =
+            buf.Add(0xcbuy)
+            let bits = System.BitConverter.DoubleToUInt64Bits(v)
+            for shift in [ 56; 48; 40; 32; 24; 16; 8; 0 ] do
+                buf.Add(byte (bits >>> shift))
+
+        let rec write (valObj: DynamicValue) =
+            match valObj with
+            | DynamicValue.Null -> buf.Add(0xc0uy)
+            | DynamicValue.Bool b -> buf.Add(if b then 0xc3uy else 0xc2uy)
+            | DynamicValue.Int i -> writeInt i
+            | DynamicValue.Float f -> writeFloat f
+            | DynamicValue.String s -> writeText s
+            | DynamicValue.Bytes bytes ->
+                let b = if bytes.IsDefault then ImmutableArray.Empty else bytes
+                writeHead 0xc4uy (uint64 b.Length)
+                buf.AddRange(b)
+            | DynamicValue.Array items ->
+                writeHead 0x90uy (uint64 (List.length items))
+                for item in items do
+                    write item
+            | DynamicValue.Object pairs ->
+                writeHead 0x80uy (uint64 (List.length pairs))
+                for (k, value) in pairs do
+                    writeText k
+                    write value
+
+        write value
+        buf.ToArray()
+
+    /// Decode canonical MessagePack bytes back into a DynamicValue.
+    let fromCanonicalMsgpack (bytes: byte[]) : Result<DynamicValue, DecodeError> =
+        let mutable pos = 0
+
+        let readBE (n: int) : uint64 =
+            let mutable v = 0UL
+            for i in 0 .. n - 1 do
+                v <- (v <<< 8) ||| uint64 bytes.[pos + i]
+            pos <- pos + n
+            v
+
+        let readArg (ai: int) (n8: int) (n16: int) (n32: int) : Result<uint64, DecodeError> =
+            let n =
+                if ai = n8 then 1
+                elif ai = n16 then 2
+                elif ai = n32 then 4
+                else -1
+            if n < 0 then Error DecodeError.Unsupported
+            elif pos + n > bytes.Length then Error DecodeError.UnexpectedEnd
+            else Ok (readBE n)
+
+        let rec readValue () : Result<DynamicValue, DecodeError> =
+            if pos >= bytes.Length then
+                Error DecodeError.UnexpectedEnd
+            else
+                let initial = int bytes.[pos]
+                pos <- pos + 1
+                if initial <= 0x7f then
+                    Ok (DynamicValue.Int (int64 initial))
+                elif initial >= 0x80 && initial <= 0x8f then
+                    readMap (initial &&& 0x0f)
+                elif initial >= 0x90 && initial <= 0x9f then
+                    readArray (initial &&& 0x0f)
+                elif initial >= 0xa0 && initial <= 0xbf then
+                    readTextString (uint64 (initial &&& 0x1f))
+                elif initial >= 0xe0 then
+                    Ok (DynamicValue.Int (int64 (initial - 256)))
+                else
+                    match initial with
+                    | 0xc0 -> Ok DynamicValue.Null
+                    | 0xc2 -> Ok (DynamicValue.Bool false)
+                    | 0xc3 -> Ok (DynamicValue.Bool true)
+                    | 0xc4 ->
+                        match readArg 0xc4 0xc4 -1 -1 with
+                        | Ok len -> readByteString len
+                        | Error e -> Error e
+                    | 0xc5 ->
+                        if pos + 2 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readByteString (readBE 2)
+                    | 0xc6 ->
+                        if pos + 4 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readByteString (readBE 4)
+                    | 0xca ->
+                        if pos + 4 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else
+                            let bits = uint32 (readBE 4)
+                            let f = System.BitConverter.UInt32BitsToSingle(bits)
+                            Ok (DynamicValue.Float (float f))
+                    | 0xcb ->
+                        if pos + 8 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else
+                            let bits = readBE 8
+                            let f = System.BitConverter.UInt64BitsToDouble(bits)
+                            Ok (DynamicValue.Float f)
+                    | 0xcc ->
+                        if pos + 1 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else Ok (DynamicValue.Int (int64 (readBE 1)))
+                    | 0xcd ->
+                        if pos + 2 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else Ok (DynamicValue.Int (int64 (readBE 2)))
+                    | 0xce ->
+                        if pos + 4 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else Ok (DynamicValue.Int (int64 (readBE 4)))
+                    | 0xcf ->
+                        if pos + 8 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else
+                            let bits = readBE 8
+                            if bits > uint64 System.Int64.MaxValue then Error DecodeError.IntegerOverflow
+                            else Ok (DynamicValue.Int (int64 bits))
+                    | 0xd0 ->
+                        if pos + 1 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else
+                            let mutable val8 = int64 (readBE 1)
+                            if val8 >= 128L then val8 <- val8 - 256L
+                            Ok (DynamicValue.Int val8)
+                    | 0xd1 ->
+                        if pos + 2 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else
+                            let mutable val16 = int64 (readBE 2)
+                            if val16 >= 32768L then val16 <- val16 - 65536L
+                            Ok (DynamicValue.Int val16)
+                    | 0xd2 ->
+                        if pos + 4 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else
+                            let mutable val32 = int64 (readBE 4)
+                            if val32 >= 2147483648L then val32 <- val32 - 4294967296L
+                            Ok (DynamicValue.Int val32)
+                    | 0xd3 ->
+                        if pos + 8 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else
+                            let bits = readBE 8
+                            Ok (DynamicValue.Int (int64 bits))
+                    | 0xd9 ->
+                        if pos + 1 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readTextString (readBE 1)
+                    | 0xda ->
+                        if pos + 2 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readTextString (readBE 2)
+                    | 0xdb ->
+                        if pos + 4 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readTextString (readBE 4)
+                    | 0xdc ->
+                        if pos + 2 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readArray (int (readBE 2))
+                    | 0xdd ->
+                        if pos + 4 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readArray (int (readBE 4))
+                    | 0xde ->
+                        if pos + 2 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readMap (int (readBE 2))
+                    | 0xdf ->
+                        if pos + 4 > bytes.Length then Error DecodeError.UnexpectedEnd
+                        else readMap (int (readBE 4))
+                    | _ -> Error DecodeError.Unsupported
+
+        and readByteString (len: uint64) : Result<DynamicValue, DecodeError> =
+            if len > uint64 (bytes.Length - pos) then
+                Error DecodeError.UnexpectedEnd
+            else
+                let n = int len
+                let slice = Array.sub bytes pos n
+                pos <- pos + n
+                Ok (DynamicValue.Bytes (ImmutableArray.Create<byte>(slice)))
+
+        and readTextString (len: uint64) : Result<DynamicValue, DecodeError> =
+            if len > uint64 (bytes.Length - pos) then
+                Error DecodeError.UnexpectedEnd
+            else
+                let n = int len
+                let s = System.Text.Encoding.UTF8.GetString(bytes, pos, n)
+                pos <- pos + n
+                Ok (DynamicValue.String s)
+
+        and readArray (len: int) : Result<DynamicValue, DecodeError> =
+            if len > bytes.Length - pos then
+                Error DecodeError.UnexpectedEnd
+            else
+                let rec loop i acc =
+                    if i >= len then
+                        Ok (DynamicValue.Array (List.rev acc))
+                    else
+                        match readValue () with
+                        | Error e -> Error e
+                        | Ok item -> loop (i + 1) (item :: acc)
+                loop 0 []
+
+        and readMap (len: int) : Result<DynamicValue, DecodeError> =
+            if len > (bytes.Length - pos) / 2 then
+                Error DecodeError.UnexpectedEnd
+            else
+                let rec loop i acc =
+                    if i >= len then
+                        Ok (DynamicValue.Object (List.rev acc))
+                    else
+                        match readValue () with
+                        | Error e -> Error e
+                        | Ok (DynamicValue.String k) ->
+                            match readValue () with
+                            | Error e -> Error e
+                            | Ok v -> loop (i + 1) ((k, v) :: acc)
+                        | Ok _ -> Error DecodeError.NonTextKey
+                loop 0 []
+
+        match readValue () with
+        | Error e -> Error e
+        | Ok value ->
+            if pos <> bytes.Length then
+                Error DecodeError.TrailingData
+            elif toCanonicalMsgpack value <> bytes then
+                Error DecodeError.NonCanonical
+            else
+                Ok value
+

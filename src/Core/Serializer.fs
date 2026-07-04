@@ -184,6 +184,38 @@ type FsPicklerSerializer<'K when 'K : comparison>() =
                     else ZSet(Pool.Freeze entries)
 
 
+/// **Tier 3 — MessagePack serializer.** Fast, compact, AOT-friendly,
+/// cross-language. Best default for non-blittable records, tuples,
+/// and strings.
+[<Sealed>]
+type MessagePackSerializer<'K when 'K : comparison>() =
+    static let options =
+        MessagePack.MessagePackSerializerOptions.Standard
+            .WithResolver(MessagePack.Resolvers.ContractlessStandardResolver.Instance)
+
+    interface ISerializer<'K> with
+        member _.Name = "msgpack"
+        member _.Write(writer, zset) =
+            let span = zset.AsSpan()
+            let entries = Array.zeroCreate<'K * int64> span.Length
+            for i in 0 .. span.Length - 1 do
+                entries.[i] <- (span.[i].Key, span.[i].Weight)
+            MessagePack.MessagePackSerializer.Serialize(writer, entries, options)
+
+        member _.Read(bytes) =
+            if bytes.Length = 0 then ZSet<'K>.Empty
+            else
+                let arrBytes = bytes.ToArray()
+                let entries = MessagePack.MessagePackSerializer.Deserialize<('K * int64) array>(arrBytes, options)
+                let count = entries.Length
+                let arr = Array.zeroCreate<ZEntry<'K>> count
+                for i in 0 .. count - 1 do
+                    let (k, w) = entries.[i]
+                    arr.[i] <- ZEntry(k, w)
+                ZSet(Pool.Freeze arr)
+
+
+
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Serializer =

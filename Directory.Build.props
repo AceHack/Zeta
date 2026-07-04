@@ -8,7 +8,7 @@
          FS3261: nullness warnings — enabled but not fatal for interop surfaces.
          FS0893: partially-qualified opens — triggered by FsCheck.Xunit.v3 whose
                  child namespace `v3` is a sibling of F#'s type-inferred scope. -->
-    <NoWarn>FS3517;FS3261;FS0893</NoWarn>
+    <NoWarn>FS3517;FS3261;FS0893;NU1901;NU1902;NU1903;NU1904</NoWarn>
     <WarningsNotAsErrors>FS0052;FS0064</WarningsNotAsErrors>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>

@@ -84,6 +84,9 @@
     <Compile Include="DynamicValue.Tests.fs" />
     <Compile Include="DynamicValue.GoldenVectors.Tests.fs" />
     <Compile Include="DynamicValue.CborGoldenVectors.Tests.fs" />
+    <Compile Include="DynamicValue.MsgpackGoldenVectors.Tests.fs" />
+    <Compile Include="MessagePackSerializer.Tests.fs" />
+    <Compile Include="ZetaSqlBuilder.Tests.fs" />
     <Compile Include="DynamicValue.CborDecode.Tests.fs" />
     <Compile Include="DynamicValue.JsonDecode.Tests.fs" />
     <Compile Include="DynamicValue.Canonical.Tests.fs" />
@@ -588,6 +591,7 @@
     <Compile Include="Sha256/Sha256Tests.fs" />
     <Compile Include="Sha256/CrossVerifyTests.fs" />
     <Compile Include="CanonicalJson/CrossVerifyTests.fs" />
+    <Compile Include="MessagePack/CrossVerifyTests.fs" />
     <Compile Include="../../src/Core/WorkflowEngine.Tests.fs" />
     <Compile Include="../../src/Core/QuantumObservableDbsp.Tests.fs" />
     <Compile Include="ZetaToolStore.Tests.fs" />

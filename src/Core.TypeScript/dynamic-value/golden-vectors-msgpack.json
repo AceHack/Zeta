@@ -1,360 +1,282 @@
 {
   "primitive": "DynamicValue",
-  "description": "Unified canonical value manifest (081KT07NV0008QG0R0032MCYER): the single source for WHICH canonical DynamicValues exist. The per-format seeds (golden-vectors.json, golden-vectors-cbor.json, + future yaml/xml) are PROJECTIONS — each expresses the subset its format can carry. golden-vectors-manifest.test.ts cross-validates that no per-format seed drifts from this set (every seed value is here) and that each format projection is complete + decodes back to the listed value. Nothing is single source of truth for ENCODINGS (each is cross-checked by decode round-trip + the RFC-8949 Appendix-A anchor); this manifest is the single source for VALUE DEFINITIONS. value = the language-neutral tagged form ({t,v}); formats = the per-format seeds that currently express it.",
-  "formats": {
-    "json": "6 shapes — Float + Bytes DEFERRED (a JSON number is ambiguous Int-vs-Float; JSON has no native byte type; they lock under CBOR)",
-    "cbor": "8 shapes — total (Float via RFC 8949 §4.2.2 shortest-float; Bytes via major-type-2)"
-  },
-  "values": [
+  "format": "canonical-msgpack",
+  "spec": "MessagePack, preferred/shortest int+length, Float 64 for float",
+  "note": "Canonical MessagePack byte-lock for all eight DynamicValue shapes.",
+  "vectors": [
     {
+      "name": "null-0",
       "value": {
         "t": "null"
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "c0"
     },
     {
+      "name": "bool-false",
       "value": {
         "t": "bool",
         "v": false
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "c2"
     },
     {
+      "name": "bool-true",
       "value": {
         "t": "bool",
         "v": true
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "c3"
     },
     {
+      "name": "int-0",
       "value": {
         "t": "int",
         "v": "0"
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "00"
     },
     {
+      "name": "int-23",
       "value": {
         "t": "int",
         "v": "23"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "17"
     },
     {
+      "name": "int-24",
       "value": {
         "t": "int",
         "v": "24"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "18"
     },
     {
+      "name": "int-1000",
       "value": {
         "t": "int",
         "v": "1000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cd03e8"
     },
     {
+      "name": "int-1000000",
       "value": {
         "t": "int",
         "v": "1000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "ce000f4240"
     },
     {
+      "name": "int-9223372036854775807",
       "value": {
         "t": "int",
         "v": "9223372036854775807"
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "cf7fffffffffffffff"
     },
     {
+      "name": "int--1",
       "value": {
         "t": "int",
         "v": "-1"
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "ff"
     },
     {
+      "name": "int--1000",
       "value": {
         "t": "int",
         "v": "-1000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "d1fc18"
     },
     {
+      "name": "int--9223372036854775808",
       "value": {
         "t": "int",
         "v": "-9223372036854775808"
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "d38000000000000000"
     },
     {
+      "name": "str-empty",
       "value": {
         "t": "str",
         "v": ""
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a0"
     },
     {
+      "name": "str-a",
       "value": {
         "t": "str",
         "v": "a"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "a161"
     },
     {
+      "name": "str-IETF",
       "value": {
         "t": "str",
         "v": "IETF"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "a449455446"
     },
     {
+      "name": "str-a水b",
       "value": {
         "t": "str",
         "v": "a水b"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "a561e6b0b462"
     },
     {
+      "name": "float-0000000000000000",
       "value": {
         "t": "float",
         "v": "0000000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb0000000000000000"
     },
     {
+      "name": "float-8000000000000000",
       "value": {
         "t": "float",
         "v": "8000000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb8000000000000000"
     },
     {
+      "name": "float-3ff0000000000000",
       "value": {
         "t": "float",
         "v": "3ff0000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb3ff0000000000000"
     },
     {
+      "name": "float-3ff8000000000000",
       "value": {
         "t": "float",
         "v": "3ff8000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb3ff8000000000000"
     },
     {
+      "name": "float-40effc0000000000",
       "value": {
         "t": "float",
         "v": "40effc0000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb40effc0000000000"
     },
     {
+      "name": "float-40f86a0000000000",
       "value": {
         "t": "float",
         "v": "40f86a0000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb40f86a0000000000"
     },
     {
+      "name": "float-47efffffe0000000",
       "value": {
         "t": "float",
         "v": "47efffffe0000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb47efffffe0000000"
     },
     {
+      "name": "float-7e37e43c8800759c",
       "value": {
         "t": "float",
         "v": "7e37e43c8800759c"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb7e37e43c8800759c"
     },
     {
+      "name": "float-3e70000000000000",
       "value": {
         "t": "float",
         "v": "3e70000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb3e70000000000000"
     },
     {
+      "name": "float-3f10000000000000",
       "value": {
         "t": "float",
         "v": "3f10000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb3f10000000000000"
     },
     {
+      "name": "float-c010000000000000",
       "value": {
         "t": "float",
         "v": "c010000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cbc010000000000000"
     },
     {
+      "name": "float-c010666666666666",
       "value": {
         "t": "float",
         "v": "c010666666666666"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cbc010666666666666"
     },
     {
+      "name": "float-7ff0000000000000",
       "value": {
         "t": "float",
         "v": "7ff0000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb7ff0000000000000"
     },
     {
+      "name": "float-fff0000000000000",
       "value": {
         "t": "float",
         "v": "fff0000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cbfff0000000000000"
     },
     {
+      "name": "float-7ff8000000000000",
       "value": {
         "t": "float",
         "v": "7ff8000000000000"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "cb7ff8000000000000"
     },
     {
+      "name": "bytes-empty",
       "value": {
         "t": "bytes",
         "v": ""
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "c400"
     },
     {
+      "name": "bytes-01020304",
       "value": {
         "t": "bytes",
         "v": "01020304"
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "c40401020304"
     },
     {
+      "name": "arr-33",
       "value": {
         "t": "arr",
         "v": []
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "90"
     },
     {
+      "name": "arr-34",
       "value": {
         "t": "arr",
         "v": [
@@ -372,13 +294,10 @@
           }
         ]
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "93010203"
     },
     {
+      "name": "arr-35",
       "value": {
         "t": "arr",
         "v": [
@@ -399,12 +318,10 @@
           }
         ]
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "9401cb3ff8000000000000c401ffc0"
     },
     {
+      "name": "arr-36",
       "value": {
         "t": "arr",
         "v": [
@@ -427,23 +344,18 @@
           }
         ]
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "9201920203"
     },
     {
+      "name": "obj-37",
       "value": {
         "t": "obj",
         "v": []
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "80"
     },
     {
+      "name": "obj-38",
       "value": {
         "t": "obj",
         "v": [
@@ -456,13 +368,10 @@
           ]
         ]
       },
-      "formats": [
-        "cbor",
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "81a16101"
     },
     {
+      "name": "obj-39",
       "value": {
         "t": "obj",
         "v": [
@@ -491,12 +400,10 @@
           ]
         ]
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "82a16101a162920203"
     },
     {
+      "name": "obj-40",
       "value": {
         "t": "obj",
         "v": [
@@ -516,12 +423,10 @@
           ]
         ]
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "82a16201a16102"
     },
     {
+      "name": "obj-41",
       "value": {
         "t": "obj",
         "v": [
@@ -541,132 +446,106 @@
           ]
         ]
       },
-      "formats": [
-        "cbor",
-        "msgpack"
-      ]
+      "msgpack": "82a27069cb400c000000000000a3726177c402dead"
     },
     {
+      "name": "int-1",
       "value": {
         "t": "int",
         "v": "1"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "01"
     },
     {
+      "name": "int-42",
       "value": {
         "t": "int",
         "v": "42"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "2a"
     },
     {
+      "name": "int--42",
       "value": {
         "t": "int",
         "v": "-42"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "d0d6"
     },
     {
+      "name": "str-hello",
       "value": {
         "t": "str",
         "v": "hello"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a568656c6c6f"
     },
     {
+      "name": "str-a b c",
       "value": {
         "t": "str",
         "v": "a b c"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a56120622063"
     },
     {
+      "name": "str-a\"b",
       "value": {
         "t": "str",
         "v": "a\"b"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a3612262"
     },
     {
+      "name": "str-a\\b",
       "value": {
         "t": "str",
         "v": "a\\b"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a3615c62"
     },
     {
+      "name": "str-a/b",
       "value": {
         "t": "str",
         "v": "a/b"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a3612f62"
     },
     {
+      "name": "str-x\ny\tz",
       "value": {
         "t": "str",
         "v": "x\ny\tz"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a5780a79097a"
     },
     {
+      "name": "str-\u0001",
       "value": {
         "t": "str",
         "v": "\u0001"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a101"
     },
     {
+      "name": "str-héllo→世",
       "value": {
         "t": "str",
         "v": "héllo→世"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "ac68c3a96c6c6fe28692e4b896"
     },
     {
+      "name": "str-😀",
       "value": {
         "t": "str",
         "v": "😀"
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "a4f09f9880"
     },
     {
+      "name": "arr-54",
       "value": {
         "t": "arr",
         "v": [
@@ -687,12 +566,10 @@
           }
         ]
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "9401c3c0a178"
     },
     {
+      "name": "arr-55",
       "value": {
         "t": "arr",
         "v": [
@@ -711,12 +588,10 @@
           }
         ]
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "92910190"
     },
     {
+      "name": "obj-56",
       "value": {
         "t": "obj",
         "v": [
@@ -736,12 +611,10 @@
           ]
         ]
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "82a16202a16101"
     },
     {
+      "name": "obj-57",
       "value": {
         "t": "obj",
         "v": [
@@ -767,12 +640,10 @@
           ]
         ]
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "83a26f6ec3a46e616d65a47a657461a36e696cc0"
     },
     {
+      "name": "obj-58",
       "value": {
         "t": "obj",
         "v": [
@@ -785,12 +656,10 @@
           ]
         ]
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "81a361226201"
     },
     {
+      "name": "obj-59",
       "value": {
         "t": "obj",
         "v": [
@@ -811,12 +680,10 @@
           ]
         ]
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "81a56f7574657281a5696e6e6572c3"
     },
     {
+      "name": "obj-60",
       "value": {
         "t": "obj",
         "v": [
@@ -847,10 +714,7 @@
           ]
         ]
       },
-      "formats": [
-        "json",
-        "msgpack"
-      ]
+      "msgpack": "81a1619181a1629101"
     }
   ]
 }

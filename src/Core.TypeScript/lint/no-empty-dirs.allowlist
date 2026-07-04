@@ -10,10 +10,3 @@
 # DON'T. The lint exists to catch forgotten artefacts. Populate the
 # directory with its real contents, or delete it.
 
-# Alloy compile output. Created by `install.sh` when Alloy first runs;
-# stays empty in a fresh checkout until you run a spec.
-tools/alloy/classes
-
-# TLC model-checker state output. Created by `install.sh`; populated by
-# `tools/tla/*.sh` runs. Empty on a fresh checkout.
-tools/tla/specs/states

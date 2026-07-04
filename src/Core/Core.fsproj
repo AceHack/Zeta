@@ -250,6 +250,7 @@
     <Compile Include="Rx.fs" />
     <Compile Include="StreamPolicy.fs" />
     <Compile Include="Serializer.fs" />
+    <Compile Include="ZetaSqlBuilder.fs" />
     <Compile Include="ArrowSerializer.fs" />
     <Compile Include="DynamicValueArrow.fs" />
     <Compile Include="DeltaCrdt.fs" />
@@ -444,6 +445,7 @@
     <PackageReference Include="System.Reactive" />
     <PackageReference Include="System.Numerics.Tensors" />
     <PackageReference Include="FsPickler" />
+    <PackageReference Include="MessagePack" />
     <PackageReference Include="Apache.Arrow" />
   </ItemGroup>
 
