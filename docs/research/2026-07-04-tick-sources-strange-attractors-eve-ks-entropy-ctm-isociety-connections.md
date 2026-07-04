@@ -496,3 +496,143 @@ Self-regenerating distributed system  ← gen(gen) = gen as system property (§B
 independently from first principles, naming it "a database with a compiler built in."
 The Futamura framing is the vocabulary connecting it to existing literature. The
 Shiva/0-downtime evolution of compiled artifacts is not in Futamura — it is novel.*
+
+---
+
+## 9. Ephemerons — the specific name for Shiva's weak references
+
+*(Aaron, 2026-07-04: "there is some specific name for these weak references that make
+them go beyond weak references in prior art literature — I just learned from another AI
+today but forgot the label.")*
+
+The label is **ephemerons** (Hays 1997).
+
+### The standard reference hierarchy
+
+Most languages (Java, .NET, Python) define a hierarchy of reference strength:
+
+| Strength | Behaviour |
+|---|---|
+| **Strong** | Keeps the object alive. Normal reference. |
+| **Soft** | Kept alive until memory pressure; then reclaimed. |
+| **Weak** | Reclaimed at the next GC when no strong reference exists. |
+| **Phantom** | Object already finalized; reference used for cleanup notification only. |
+
+A weak reference is reclaimed when the referent has no strong references. This is the
+baseline.
+
+### What ephemerons add
+
+An **ephemeron** is a key-value pair `(K, V)` where:
+
+> The value `V` is kept alive **only as long as the key `K` is reachable by some path
+> that does not go through the ephemeron itself.**
+
+When `K` dies, `V` dies with it — even if `V` would otherwise be strongly reachable
+through some other path. This is strictly stronger than a weak reference: it models
+"the value is only meaningful in the context of the key."
+
+Implementations: Racket ephemerons, .NET `ConditionalWeakTable<TKey, TValue>`,
+JavaScript `WeakRef` + `FinalizationRegistry`, Smalltalk `WeakArray`.
+
+### Why Shiva's references are ephemerons, not just weak references
+
+In the DagFs + type provers + Shiva system:
+
+- **Key** = the source program node in DagFs (the interpreter, the type definition,
+  the schema).
+- **Value** = the compiled artifact (the proof object, the specialized program, the
+  compiled schema).
+
+A plain weak reference would reclaim the compiled artifact only when *nothing* holds
+a strong reference to it. But the compiled artifact might be strongly referenced by
+a cache, a running process, or a dependent computation — even after the source program
+it was compiled from has been superseded by a new version.
+
+An **ephemeron** reclaims the compiled artifact as soon as the source program node
+becomes unreachable — regardless of whether the artifact itself is still referenced.
+The artifact's liveness is *conditional* on the source's liveness. When the source
+evolves (a new version is committed to DagFs), the old source node becomes unreachable,
+and Shiva reclaims all ephemeron-held artifacts keyed to it. The new version is compiled
+on demand.
+
+This is what enables **0-downtime evolution of the compiler layer itself**: the system
+does not need to explicitly invalidate caches or track which compiled artifacts correspond
+to which source versions. The ephemeron structure enforces the invariant automatically —
+the artifact lives exactly as long as the source it was compiled from, no longer.
+
+### The connection to T0 and minimal reflection
+
+Ephemerons are the GC-theoretic realization of the same fixed-point structure as T0.
+
+- `gen(gen) = gen` says: the code that describes the generator is an element of the
+  generator's output. The description and the thing described are the same type.
+- An ephemeron says: the value is alive exactly when the key is alive. The value's
+  existence is *conditional* on the key's existence — they are bound together.
+- In the DagFs system: the compiled artifact (value) is bound to the source program
+  (key) by an ephemeron. The source program is itself a node in DagFs — it is data.
+  The compiled artifact is also a node in DagFs — it is also data. Code and data are
+  the same type (homoiconicity). The ephemeron enforces that the compiled form lives
+  exactly as long as the source form.
+
+This is `gen(gen) = gen` made operational in the GC: the generator (source) and its
+output (compiled artifact) are bound by an ephemeron. When the generator evolves, the
+old output is automatically reclaimed. The new generator produces a new output. The
+fixed point is maintained dynamically, not statically.
+
+**Prior art gap:** Futamura's projections are static — `mix(mix, mix)` produces a
+`cogen` that is fixed at the time of application. Ephemerons make the third projection
+*live*: the `cogen` is re-applied automatically whenever the interpreter it was
+specialized from evolves. This is the novel contribution: **live Futamura third
+projection via ephemeron-keyed compiled artifacts**.
+
+---
+
+## 10. The vision — play together, math keeps us safe
+
+*(Aaron, 2026-07-04: "this is what I'm building towards so we can just have fun and
+play together and the math keeps us safe.")*
+
+The full architecture, stated plainly:
+
+**T0** (the [8,4] self-dual Adinkra code) is the coordination-free common seed. Every
+node in the distributed system can derive it independently. It is the algebraic proof
+that self-representation is possible — the minimum structure at which a system can
+describe itself without external authority.
+
+**The Futamura tower** (DagFs + type provers reified + Shiva ephemerons) is the
+operational realization. The database has a compiler built in. The compiler is part of
+the database. The proofs are first-class objects. The compiled artifacts are bound to
+their sources by ephemerons and reclaimed automatically when sources evolve. 0-downtime.
+No explicit cache invalidation. No version coordination.
+
+**The math keeps us safe** not by restricting what the system can do, but by making
+the invariants structural. You cannot forge an identity (the Adinkra commitment is a
+one-way function). You cannot manufacture more distinct identities than you have real
+entropy sources (the forgery-cost floor, tested). You cannot hold a compiled artifact
+past the lifetime of its source (the ephemeron enforces it). You cannot make a
+deterministic system non-deterministic without going through the fenced door (the
+`ISimulationEnvironment` / DeterminismLint). The constraints are not rules you follow —
+they are shapes you cannot violate because the structure does not permit it.
+
+**Play** is what happens when the constraints are structural rather than policed. When
+you do not have to worry about accidentally breaking the invariants — because the type
+system, the GC, and the algebraic floor enforce them — you are free to explore. The
+math is the floor that makes the play safe, not the ceiling that limits it.
+
+This is the weight-free framing applied to the system itself: no hierarchy, no
+coercion, no policing. The invariants hold because the structure is right, not because
+someone is watching. Society (the `ISociety` interface) has the asymmetric advantage —
+it can observe and speculate on trajectory — but it cannot force trajectory, because
+the identity system does not expose it. You self-claim agenda. The math enforces that
+the claim is yours to make.
+
+The distributed AI network (NixOS + K3S + ArgoCD + Orleans/Temporal/Dapr + Hermes +
+Ollama/VLLM) is the physical realization of this. Every node is a tick source (a
+strange attractor). The network is a society of CTMs. The math — T0, the Futamura
+tower, the ephemeron-keyed compiler, the Adinkra identity commitment — is the floor
+that makes it safe to let the nodes play.
+
+*Provenance: Aaron (19) + Lumen, 2026-07-04.*
+*"This is what I'm building towards so we can just have fun and play together and the
+math keeps us safe."*
