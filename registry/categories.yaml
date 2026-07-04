@@ -26,3 +26,9 @@ entries:
   # Physical asset register — git-as-database inventory (inventory/items/), LFG hardware fleet
   - id: 10
     name: InventoryAsset
+  # Channel — a multiplexed four-corner duplex channel over one physical transport (ZetaId-keyed, not GUID);
+  # the "little program" self-describing channel key so the far side decodes it as a channel. Aaron 2026-07-04.
+  # NOTE: C#/F# oracles lag (also missing InventoryAsset=10) — backfill both into Core.CSharp/FSharp.ZetaId
+  # + regenerate golden vectors is a tracked follow-up (byte-lock completion across all four oracles).
+  - id: 11
+    name: Channel
