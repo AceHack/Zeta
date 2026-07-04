@@ -78,3 +78,14 @@ describe("ActorRef Identity Parser and Projector", () => {
     expect(() => parseSpiffe("spiffe://zeta/persona/otto/cell/cli/fg/extra")).toThrow(/too many segments/);
   });
 });
+
+import { INVALID_VECTORS, parse as parseRef } from "./actor-ref.ts";
+import { describe as d2, expect as e2, test as t2 } from "bun:test";
+
+d2("invalid vectors — byte-lock floor rejection class", () => {
+  for (const bad of INVALID_VECTORS) {
+    t2(`rejects ${bad}`, () => {
+      e2(() => parseRef(bad)).toThrow();
+    });
+  }
+});

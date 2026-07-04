@@ -1,7 +1,9 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  hasAgencySignature,
   hasAgencySignatureV1,
+  hasAgencySignatureV2,
   hasAgentCoauthorSignal,
   hasAgentCoauthorTrailer,
 } from "./audit-agencysignature-main-tip";
@@ -63,5 +65,36 @@ AgencySignature-v1:
 `;
 
     expect(hasAgentCoauthorSignal(parsedTrailers, message)).toBe(true);
+  });
+});
+
+describe("hasAgencySignatureV2 (ADR phase 4 — Cell trailer)", () => {
+  const v2Message = `feat(identity): wire cell trailer (#9999)
+
+Agency-Signature-Version: 2
+Agent: otto
+Persona: otto
+Cell: cowork/main@machine-a
+Task: none
+`;
+
+  test("detects a v2 block", () => {
+    expect(hasAgencySignatureV2(v2Message)).toBe(true);
+    expect(hasAgencySignature(v2Message)).toBe(true);
+  });
+
+  test("v2 block is NOT v1 (version share must be observable for the phase-8 contract)", () => {
+    expect(hasAgencySignatureV1(v2Message)).toBe(false);
+  });
+
+  test("v1 block is not v2", () => {
+    const v1 = "Agency-Signature-Version: 1\nAgent: Vera\n";
+    expect(hasAgencySignatureV2(v1)).toBe(false);
+    expect(hasAgencySignature(v1)).toBe(true);
+  });
+
+  test("version 12 or 21 does not false-positive either matcher (word boundary)", () => {
+    expect(hasAgencySignatureV1("Agency-Signature-Version: 12\n")).toBe(false);
+    expect(hasAgencySignatureV2("Agency-Signature-Version: 21\n")).toBe(false);
   });
 });

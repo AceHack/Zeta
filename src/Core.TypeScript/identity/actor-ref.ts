@@ -47,6 +47,17 @@ const LEGACY_MAP: Record<string, ActorRef> = {
  * Supports legacy composites (e.g. "otto-cli") and new canonical grammar:
  * `<persona>/<surface>[/<instance>][@<node>]`
  */
+// Segment charset: lowercase alnum start, then alnum/dot/underscore/dash.
+// Culture-invariant, byte-stable; excludes "/" and "@" (grammar chars) and
+// uppercase. The invalid-vector class of the treaty byte-lock floor.
+const SEGMENT_RE = /^[a-z0-9][a-z0-9._-]*$/;
+
+function assertSegment(kind: string, value: string, source: string): void {
+  if (!SEGMENT_RE.test(value)) {
+    throw new Error(`Invalid ${kind} segment "${value}" in actor ref "${source}" (must match ${String(SEGMENT_RE)})`);
+  }
+}
+
 export function parse(str: string): ActorRef {
   if (!str) {
     throw new Error("Cannot parse empty actor reference string.");
@@ -64,11 +75,15 @@ export function parse(str: string): ActorRef {
   let remaining = str;
   let node: string | undefined = undefined;
 
-  // Extract optional @node suffix
+  // Extract optional @node suffix (exactly zero or one "@")
   const atIdx = remaining.indexOf("@");
   if (atIdx !== -1) {
+    if (remaining.indexOf("@", atIdx + 1) !== -1) {
+      throw new Error(`Invalid canonical actor ref (multiple "@"): "${str}"`);
+    }
     node = remaining.substring(atIdx + 1);
     remaining = remaining.substring(0, atIdx);
+    assertSegment("node", node, str);
   }
 
   // Split remainder into persona, surface, instance
@@ -82,20 +97,27 @@ export function parse(str: string): ActorRef {
   const cell: CellRef = {};
   if (parts.length > 1) {
     const s = parts[1];
-    if (s !== undefined) {
-      cell.surface = s;
+    if (s === undefined || s === "") {
+      throw new Error(`Invalid canonical actor ref (empty surface segment): "${str}"`);
     }
+    assertSegment("surface", s, str);
+    cell.surface = s;
   }
   if (parts.length > 2) {
     const inst = parts[2];
-    if (inst !== undefined) {
-      cell.instance = inst;
+    if (inst === undefined || inst === "") {
+      throw new Error(`Invalid canonical actor ref (empty instance segment): "${str}"`);
     }
+    assertSegment("instance", inst, str);
+    cell.instance = inst;
   }
   if (parts.length > 3) {
     throw new Error(`Invalid canonical actor ref (too many segments): "${str}"`);
   }
   if (node !== undefined) {
+    if (cell.surface === undefined) {
+      throw new Error(`Invalid canonical actor ref (node requires a surface): "${str}"`);
+    }
     cell.node = node;
   }
 
@@ -289,8 +311,27 @@ export const GOLDEN_VECTORS: GoldenVector[] = [
     actorRef: { persona: "aaron", cell: { surface: "desktop", node: "machine-b" } },
   },
   {
-    stringProj: "soraya@verifier-node",
-    spiffeUri: "spiffe://zeta/persona/soraya@verifier-node",
-    actorRef: { persona: "soraya", cell: { node: "verifier-node" } },
+    // verifier-node is a SURFACE (registry/cell-surfaces.yaml), not a node —
+    // vector corrected 2026-07-04 (Otto phase 4); node-without-surface is in
+    // INVALID_VECTORS ("otto@machine-a").
+    stringProj: "soraya/verifier-node",
+    spiffeUri: "spiffe://zeta/persona/soraya/cell/verifier-node",
+    actorRef: { persona: "soraya", cell: { surface: "verifier-node" } },
   },
+];
+
+/**
+ * Invalid-vector class of the treaty byte-lock floor: every oracle port
+ * (F# ActorRef.fs, future langs) MUST reject each of these. Paired with
+ * GOLDEN_VECTORS the same way vectors.yaml pairs valid/invalid in
+ * tests/cross-verification/.
+ */
+export const INVALID_VECTORS: readonly string[] = [
+  "otto/COWORK",        // uppercase segment
+  "otto//fg",           // empty surface
+  "otto/cli@a@b",       // multiple @
+  "otto@machine-a",     // node without surface
+  "kenji/cli",          // unknown persona
+  "otto/cli/fg/extra",  // too many segments
+  "otto-cowork",        // fused composite — the treaty's core prohibition
 ];

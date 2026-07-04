@@ -22,340 +22,328 @@
 //   2 — tooling / input error
 import { spawnSync } from "node:child_process";
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
-const SPEC_DOC = "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
+const SPEC_DOC =
+  "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
 const POSITIVE_INT_RE = /^[1-9]\d*$/;
-const V1_TRAILER_RE = /^(?:Agency-Signature-Version:\s*1|AgencySignature-v1:)/im;
-const AGENT_COAUTHOR_RE = /^Co-authored-by:\s*(?:(?:Claude|Codex|Grok|Gemini|Kiro)\b|.*<noreply@(?:anthropic\.com|openai\.com|x\.ai|google\.com|kiro\.dev)>)/im;
+const V1_TRAILER_RE = /^(?:Agency-Signature-Version:\s*1\b|AgencySignature-v1:)/im;
+// v2 adds the Cell trailer (ADR docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md
+// phase 4). Dual-accept until phase-8 contract; version share reported in the summary.
+const V2_TRAILER_RE = /^Agency-Signature-Version:\s*2\b/im;
+const AGENT_COAUTHOR_RE =
+  /^Co-authored-by:\s*(?:(?:Claude|Codex|Grok|Gemini|Kiro)\b|.*<noreply@(?:anthropic\.com|openai\.com|x\.ai|google\.com|kiro\.dev)>)/im;
 export function hasAgentCoauthorTrailer(trailers) {
-    return AGENT_COAUTHOR_RE.test(trailers);
+  return AGENT_COAUTHOR_RE.test(trailers);
 }
 export function hasAgencySignatureV1(text) {
-    return V1_TRAILER_RE.test(text);
+  return V1_TRAILER_RE.test(text);
+}
+export function hasAgencySignatureV2(text) {
+  return V2_TRAILER_RE.test(text);
+}
+/** Any accepted signature version (v1 | v2) — the dual-accept window. */
+export function hasAgencySignature(text) {
+  return hasAgencySignatureV1(text) || hasAgencySignatureV2(text);
 }
 export function hasAgentCoauthorSignal(trailers, message) {
-    return hasAgentCoauthorTrailer(trailers) || hasAgentCoauthorTrailer(message);
+  return hasAgentCoauthorTrailer(trailers) || hasAgentCoauthorTrailer(message);
 }
 function gitOutput(args) {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
-    const result = spawnSync("git", args, {
-        encoding: "utf8",
-        maxBuffer: SPAWN_MAX_BUFFER,
-    });
-    return {
-        status: result.status ?? 1,
-        stdout: result.stdout,
-        stderr: result.stderr,
-    };
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("git", args, {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
+  return {
+    status: result.status ?? 1,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  };
 }
 function gitAvailable() {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
-    const result = spawnSync("git", ["--version"], {
-        encoding: "utf8",
-        maxBuffer: SPAWN_MAX_BUFFER,
-    });
-    return result.status === 0;
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("git", ["--version"], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
+  return result.status === 0;
 }
 function classifyArg(arg, next) {
-    const requiresNext = {
-        "--commit": { key: "commitSha", setMode: "commit", missing: "error: --commit requires SHA" },
-        "--max": { key: "maxN", setMode: "max", missing: "error: --max requires N" },
-        "--since": { key: "sinceDate", setMode: "since", missing: "error: --since requires DATE (YYYY-MM-DD)" },
-        "--branch": { key: "branch", setMode: null, missing: "error: --branch requires NAME" },
-        "--v1-ship-date": { key: "v1ShipDate", setMode: null, missing: "error: --v1-ship-date requires DATE" },
-    };
-    const spec = requiresNext[arg];
-    if (spec !== undefined) {
-        if (next === undefined)
-            return { kind: "error", message: spec.missing };
-        return { kind: "ok", key: spec.key, value: next, setMode: spec.setMode, skip: 1 };
-    }
-    if (arg === "-h" || arg === "--help")
-        return { kind: "help" };
-    return { kind: "error", message: `error: unknown arg: ${arg}` };
+  const requiresNext = {
+    "--commit": { key: "commitSha", setMode: "commit", missing: "error: --commit requires SHA" },
+    "--max": { key: "maxN", setMode: "max", missing: "error: --max requires N" },
+    "--since": { key: "sinceDate", setMode: "since", missing: "error: --since requires DATE (YYYY-MM-DD)" },
+    "--branch": { key: "branch", setMode: null, missing: "error: --branch requires NAME" },
+    "--v1-ship-date": { key: "v1ShipDate", setMode: null, missing: "error: --v1-ship-date requires DATE" },
+  };
+  const spec = requiresNext[arg];
+  if (spec !== undefined) {
+    if (next === undefined) return { kind: "error", message: spec.missing };
+    return { kind: "ok", key: spec.key, value: next, setMode: spec.setMode, skip: 1 };
+  }
+  if (arg === "-h" || arg === "--help") return { kind: "help" };
+  return { kind: "error", message: `error: unknown arg: ${arg}` };
 }
 function parseArgs(argv) {
-    const args = {
-        mode: "head",
-        commitSha: "",
-        maxN: "",
-        sinceDate: "",
-        branch: "",
-        v1ShipDate: "",
-    };
-    for (let i = 0; i < argv.length; i++) {
-        const arg = argv[i] ?? "";
-        const step = classifyArg(arg, argv[i + 1]);
-        if (step.kind === "help")
-            return { ok: null, errorMessage: "__HELP__" };
-        if (step.kind === "error")
-            return { ok: null, errorMessage: step.message };
-        args[step.key] = step.value;
-        if (step.setMode !== null)
-            args.mode = step.setMode;
-        i += step.skip;
-    }
-    return { ok: { ...args }, errorMessage: "" };
+  const args = {
+    mode: "head",
+    commitSha: "",
+    maxN: "",
+    sinceDate: "",
+    branch: "",
+    v1ShipDate: "",
+  };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i] ?? "";
+    const step = classifyArg(arg, argv[i + 1]);
+    if (step.kind === "help") return { ok: null, errorMessage: "__HELP__" };
+    if (step.kind === "error") return { ok: null, errorMessage: step.message };
+    args[step.key] = step.value;
+    if (step.setMode !== null) args.mode = step.setMode;
+    i += step.skip;
+  }
+  return { ok: { ...args }, errorMessage: "" };
 }
 function commitTrailers(sha) {
-    return gitOutput(["log", "-1", "--pretty=%(trailers)", sha]).stdout;
+  return gitOutput(["log", "-1", "--pretty=%(trailers)", sha]).stdout;
 }
 function commitMessage(sha) {
-    return gitOutput(["log", "-1", "--pretty=%B", sha]).stdout;
+  return gitOutput(["log", "-1", "--pretty=%B", sha]).stdout;
 }
 function detectV1Ship(targetRev) {
-    // Iterate commits oldest-first; return first one whose parsed
-    // trailers contain Agency-Signature-Version: 1.
-    const out = gitOutput([
-        "log",
-        "--reverse",
-        "--max-count=5000",
-        "--pretty=%H %cI",
-        targetRev,
-    ]);
-    const lines = out.stdout.split("\n").filter((s) => s.length > 0);
-    for (const line of lines) {
-        const sp = line.indexOf(" ");
-        if (sp < 0)
-            continue;
-        const sha = line.slice(0, sp);
-        const cdate = line.slice(sp + 1);
-        if (hasAgencySignatureV1(commitTrailers(sha))) {
-            return { sha, date: cdate };
-        }
+  // Iterate commits oldest-first; return first one whose parsed
+  // trailers contain Agency-Signature-Version: 1.
+  const out = gitOutput(["log", "--reverse", "--max-count=5000", "--pretty=%H %cI", targetRev]);
+  const lines = out.stdout.split("\n").filter((s) => s.length > 0);
+  for (const line of lines) {
+    const sp = line.indexOf(" ");
+    if (sp < 0) continue;
+    const sha = line.slice(0, sp);
+    const cdate = line.slice(sp + 1);
+    if (hasAgencySignatureV1(commitTrailers(sha))) {
+      return { sha, date: cdate };
     }
-    return null;
+  }
+  return null;
 }
 function parseShipDate(date) {
-    // Try Date.parse — handles ISO-8601 with TZ, plain YYYY-MM-DD,
-    // and YYYY-MM-DDTHH:MM:SSZ. Returns Unix timestamp seconds, or null.
-    const ms = Date.parse(date);
-    if (!Number.isNaN(ms))
-        return Math.floor(ms / 1000);
-    return null;
+  // Try Date.parse — handles ISO-8601 with TZ, plain YYYY-MM-DD,
+  // and YYYY-MM-DDTHH:MM:SSZ. Returns Unix timestamp seconds, or null.
+  const ms = Date.parse(date);
+  if (!Number.isNaN(ms)) return Math.floor(ms / 1000);
+  return null;
 }
 function commitTimestamp(sha) {
-    const out = gitOutput(["log", "-1", "--pretty=%ct", sha]);
-    return Number.parseInt(out.stdout.trim(), 10);
+  const out = gitOutput(["log", "-1", "--pretty=%ct", sha]);
+  return Number.parseInt(out.stdout.trim(), 10);
 }
 function commitIsoDate(sha) {
-    return gitOutput(["log", "-1", "--pretty=%cI", sha]).stdout.trim();
+  return gitOutput(["log", "-1", "--pretty=%cI", sha]).stdout.trim();
 }
 function commitSubject(sha) {
-    return gitOutput(["log", "-1", "--pretty=%s", sha]).stdout.trim();
+  return gitOutput(["log", "-1", "--pretty=%s", sha]).stdout.trim();
 }
 function classifyCommit(sha, ship) {
-    const trailers = commitTrailers(sha);
-    const hasV1Trailer = hasAgencySignatureV1(trailers);
-    const message = commitMessage(sha);
-    const hasV1Message = hasV1Trailer || hasAgencySignatureV1(message);
-    const hasCoauthor = hasAgentCoauthorSignal(trailers, message);
-    if (ship === null) {
-        return { status: "LEGACY", reason: "v1 not yet shipped on this branch" };
+  const trailers = commitTrailers(sha);
+  const message = commitMessage(sha);
+  const hasV2 = hasAgencySignatureV2(trailers) || hasAgencySignatureV2(message);
+  const hasV1Trailer = hasAgencySignature(trailers);
+  const hasV1Message = hasV1Trailer || hasAgencySignature(message);
+  const hasCoauthor = hasAgentCoauthorSignal(trailers, message);
+  if (ship === null) {
+    return { status: "LEGACY", reason: "v1 not yet shipped on this branch" };
+  }
+  let shipTs;
+  if (ship.tsCache !== null) {
+    shipTs = ship.tsCache;
+  } else {
+    const parsed = parseShipDate(ship.date);
+    if (parsed === null) {
+      process.stderr.write(`error: cannot parse v1-ship-date as timestamp: ${ship.date}\n`);
+      return null;
     }
-    let shipTs;
-    if (ship.tsCache !== null) {
-        shipTs = ship.tsCache;
-    }
-    else {
-        const parsed = parseShipDate(ship.date);
-        if (parsed === null) {
-            process.stderr.write(`error: cannot parse v1-ship-date as timestamp: ${ship.date}\n`);
-            return null;
-        }
-        shipTs = parsed;
-    }
-    const commitTs = commitTimestamp(sha);
-    if (commitTs < shipTs) {
-        return {
-            status: "LEGACY",
-            reason: `pre-v1-ship-date (${commitIsoDate(sha)} < ${ship.date})`,
-        };
-    }
-    if (hasV1Trailer)
-        return { status: "CORRECT", reason: "trailer present" };
-    if (hasV1Message) {
-        return {
-            status: "CORRECT",
-            reason: "AgencySignature block present in commit message",
-        };
-    }
-    if (hasCoauthor) {
-        return {
-            status: "REGRESSION",
-            reason: "agent commit (Co-authored-by present) missing AgencySignature",
-        };
-    }
+    shipTs = parsed;
+  }
+  const commitTs = commitTimestamp(sha);
+  if (commitTs < shipTs) {
     return {
-        status: "HUMAN-AUTHORED-EXEMPT",
-        reason: "no Co-authored-by signal; assuming human-authored",
+      status: "LEGACY",
+      reason: `pre-v1-ship-date (${commitIsoDate(sha)} < ${ship.date})`,
     };
+  }
+  if (hasV1Trailer) return { status: "CORRECT", reason: hasV2 ? "trailer present (v2)" : "trailer present (v1)" };
+  if (hasV1Message) {
+    return {
+      status: "CORRECT",
+      reason: hasV2
+        ? "AgencySignature v2 block present in commit message"
+        : "AgencySignature block present in commit message",
+    };
+  }
+  if (hasCoauthor) {
+    return {
+      status: "REGRESSION",
+      reason: "agent commit (Co-authored-by present) missing AgencySignature",
+    };
+  }
+  return {
+    status: "HUMAN-AUTHORED-EXEMPT",
+    reason: "no Co-authored-by signal; assuming human-authored",
+  };
 }
 function buildCommitList(args, targetRev) {
-    if (args.mode === "head" || args.mode === "commit") {
-        const ref = args.mode === "head" ? targetRev : args.commitSha;
-        const out = gitOutput(["rev-parse", ref]);
-        if (out.status !== 0)
-            return null;
-        return [out.stdout.trim()];
+  if (args.mode === "head" || args.mode === "commit") {
+    const ref = args.mode === "head" ? targetRev : args.commitSha;
+    const out = gitOutput(["rev-parse", ref]);
+    if (out.status !== 0) return null;
+    return [out.stdout.trim()];
+  }
+  if (args.mode === "max") {
+    if (!POSITIVE_INT_RE.test(args.maxN)) {
+      process.stderr.write("error: --max value must be a positive integer\n");
+      return null;
     }
-    if (args.mode === "max") {
-        if (!POSITIVE_INT_RE.test(args.maxN)) {
-            process.stderr.write("error: --max value must be a positive integer\n");
-            return null;
-        }
-        const out = gitOutput([
-            "log",
-            `--max-count=${args.maxN}`,
-            "--pretty=%H",
-            targetRev,
-        ]);
-        return out.stdout.split("\n").filter((s) => s.length > 0);
-    }
-    // since
-    if (parseShipDate(args.sinceDate) === null) {
-        process.stderr.write(`error: --since value is not a valid date: ${args.sinceDate}\n`);
-        return null;
-    }
-    const out = gitOutput([
-        "log",
-        `--since=${args.sinceDate}`,
-        "--pretty=%H",
-        targetRev,
-    ]);
+    const out = gitOutput(["log", `--max-count=${args.maxN}`, "--pretty=%H", targetRev]);
     return out.stdout.split("\n").filter((s) => s.length > 0);
+  }
+  // since
+  if (parseShipDate(args.sinceDate) === null) {
+    process.stderr.write(`error: --since value is not a valid date: ${args.sinceDate}\n`);
+    return null;
+  }
+  const out = gitOutput(["log", `--since=${args.sinceDate}`, "--pretty=%H", targetRev]);
+  return out.stdout.split("\n").filter((s) => s.length > 0);
 }
 function emitHelp() {
-    process.stdout.write("audit-agencysignature-main-tip.ts — post-merge AgencySignature auditor.\n");
-    process.stdout.write("\nUsage:\n");
-    process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts                   # audit HEAD\n");
-    process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --commit <SHA>    # audit specific\n");
-    process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --max 10          # last N\n");
-    process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --since DATE      # since DATE\n");
-    process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --branch NAME     # branch tip\n");
-    process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date DATE\n");
-    return 0;
+  process.stdout.write("audit-agencysignature-main-tip.ts — post-merge AgencySignature auditor.\n");
+  process.stdout.write("\nUsage:\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts                   # audit HEAD\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --commit <SHA>    # audit specific\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --max 10          # last N\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --since DATE      # since DATE\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --branch NAME     # branch tip\n");
+  process.stdout.write("  bun tools/hygiene/audit-agencysignature-main-tip.ts --v1-ship-date DATE\n");
+  return 0;
 }
 function emitHeader(args, targetRev, ship) {
-    const sha = gitOutput(["rev-parse", targetRev]).stdout.trim();
-    process.stdout.write("AgencySignature v1 main-tip audit\n");
-    process.stdout.write(`  target_rev:    ${targetRev} (${sha})\n`);
-    if (ship !== null) {
-        process.stdout.write(`  v1-ship-date:  ${ship.date}`);
-        if (ship.sha !== "") {
-            process.stdout.write(` (commit ${ship.sha.slice(0, 12)})`);
-        }
-        process.stdout.write("\n");
+  const sha = gitOutput(["rev-parse", targetRev]).stdout.trim();
+  process.stdout.write("AgencySignature v1 main-tip audit\n");
+  process.stdout.write(`  target_rev:    ${targetRev} (${sha})\n`);
+  if (ship !== null) {
+    process.stdout.write(`  v1-ship-date:  ${ship.date}`);
+    if (ship.sha !== "") {
+      process.stdout.write(` (commit ${ship.sha.slice(0, 12)})`);
     }
-    else {
-        process.stdout.write("  v1-ship-date:  not yet shipped on this branch (all commits LEGACY)\n");
-    }
-    process.stdout.write(`  mode:          ${args.mode}\n`);
     process.stdout.write("\n");
+  } else {
+    process.stdout.write("  v1-ship-date:  not yet shipped on this branch (all commits LEGACY)\n");
+  }
+  process.stdout.write(`  mode:          ${args.mode}\n`);
+  process.stdout.write("\n");
 }
-function tallyCommit(status, short, counts) {
-    if (status === "CORRECT")
-        counts.correct++;
-    else if (status === "LEGACY")
-        counts.legacy++;
-    else if (status === "HUMAN-AUTHORED-EXEMPT")
-        counts.human++;
-    else {
-        counts.regression++;
-        counts.regressions.push(short);
-    }
+function tallyCommit(status, short, counts, isV2 = false) {
+  if (status === "CORRECT") {
+    counts.correct++;
+    if (isV2) counts.correctV2++;
+  } else if (status === "LEGACY") counts.legacy++;
+  else if (status === "HUMAN-AUTHORED-EXEMPT") counts.human++;
+  else {
+    counts.regression++;
+    counts.regressions.push(short);
+  }
 }
 function emitCommitRow(status, short, subject, reason) {
-    process.stdout.write(`  [${status.padEnd(22, " ")}] ${short} — ${subject}\n`);
-    process.stdout.write(`    ${reason}\n`);
+  process.stdout.write(`  [${status.padEnd(22, " ")}] ${short} — ${subject}\n`);
+  process.stdout.write(`    ${reason}\n`);
 }
 function auditCommits(commits, ship) {
-    const counts = {
-        correct: 0,
-        legacy: 0,
-        human: 0,
-        regression: 0,
-        regressions: [],
-    };
-    let cachedShipTs = ship?.tsCache ?? null;
-    for (const sha of commits) {
-        if (sha === "")
-            continue;
-        const shipState = ship === null ? null : { ...ship, tsCache: cachedShipTs };
-        const result = classifyCommit(sha, shipState);
-        if (result === null)
-            return { counts, toolingError: true };
-        if (ship !== null && cachedShipTs === null) {
-            cachedShipTs = parseShipDate(ship.date);
-        }
-        const short = sha.slice(0, 12);
-        emitCommitRow(result.status, short, commitSubject(sha), result.reason);
-        tallyCommit(result.status, short, counts);
+  const counts = {
+    correct: 0,
+    correctV2: 0,
+    legacy: 0,
+    human: 0,
+    regression: 0,
+    regressions: [],
+  };
+  let cachedShipTs = ship?.tsCache ?? null;
+  for (const sha of commits) {
+    if (sha === "") continue;
+    const shipState = ship === null ? null : { ...ship, tsCache: cachedShipTs };
+    const result = classifyCommit(sha, shipState);
+    if (result === null) return { counts, toolingError: true };
+    if (ship !== null && cachedShipTs === null) {
+      cachedShipTs = parseShipDate(ship.date);
     }
-    return { counts, toolingError: false };
+    const short = sha.slice(0, 12);
+    emitCommitRow(result.status, short, commitSubject(sha), result.reason);
+    tallyCommit(result.status, short, counts, result.reason.includes("(v2)") || result.reason.includes("v2 block"));
+  }
+  return { counts, toolingError: false };
 }
 function emitSummary(counts) {
-    process.stdout.write("\nSummary:\n");
-    process.stdout.write(`  CORRECT:                ${String(counts.correct)}\n`);
-    process.stdout.write(`  LEGACY:                 ${String(counts.legacy)}\n`);
-    process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}\n`);
-    process.stdout.write(`  REGRESSION:             ${String(counts.regression)}\n`);
-    if (counts.regression === 0) {
-        process.stdout.write("\nPASS: no regressions detected\n");
-        return 0;
-    }
-    const regressionList = counts.regressions.map((s) => ` ${s}`).join("");
-    process.stdout.write(`\nFAIL: ${String(counts.regression)} regression(s) found:${regressionList}\n`);
-    process.stdout.write("  Cause: agent-authored commits (Co-authored-by present) on or after v1\n");
-    process.stdout.write("         ship date are missing the Agency-Signature-Version: 1 trailer\n");
-    process.stdout.write("         block, indicating squash-merge stripped the trailers OR the PR\n");
-    process.stdout.write("         body did not carry the trailer block at the bottom.\n");
-    process.stdout.write("  Fix:   re-attach AgencySignature trailers to the next commit; ensure\n");
-    process.stdout.write("         future PR bodies include the trailer block at the body bottom\n");
-    process.stdout.write("         per the Squash-Merge Invariant rule (ferry-6/7).\n");
-    process.stdout.write(`  Spec:  ${SPEC_DOC} Section 7.5 + Section 10\n`);
-    return 1;
+  process.stdout.write("\nSummary:\n");
+  process.stdout.write(`  CORRECT:                ${String(counts.correct)}\n`);
+  process.stdout.write(`  LEGACY:                 ${String(counts.legacy)}\n`);
+  process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}\n`);
+  process.stdout.write(`  REGRESSION:             ${String(counts.regression)}\n`);
+  if (counts.correct > 0) {
+    const v1 = counts.correct - counts.correctV2;
+    process.stdout.write(
+      `  version share:          v1: ${String(v1)}  v2: ${String(counts.correctV2)}  (phase-8 contract wants v1 -> 0)\n`,
+    );
+  }
+  if (counts.regression === 0) {
+    process.stdout.write("\nPASS: no regressions detected\n");
+    return 0;
+  }
+  const regressionList = counts.regressions.map((s) => ` ${s}`).join("");
+  process.stdout.write(`\nFAIL: ${String(counts.regression)} regression(s) found:${regressionList}\n`);
+  process.stdout.write("  Cause: agent-authored commits (Co-authored-by present) on or after v1\n");
+  process.stdout.write("         ship date are missing the Agency-Signature-Version: 1 trailer\n");
+  process.stdout.write("         block, indicating squash-merge stripped the trailers OR the PR\n");
+  process.stdout.write("         body did not carry the trailer block at the bottom.\n");
+  process.stdout.write("  Fix:   re-attach AgencySignature trailers to the next commit; ensure\n");
+  process.stdout.write("         future PR bodies include the trailer block at the body bottom\n");
+  process.stdout.write("         per the Squash-Merge Invariant rule (ferry-6/7).\n");
+  process.stdout.write(`  Spec:  ${SPEC_DOC} Section 7.5 + Section 10\n`);
+  return 1;
 }
 function determineShip(args, targetRev) {
-    if (args.v1ShipDate !== "") {
-        return { date: args.v1ShipDate, sha: "", tsCache: null };
-    }
-    const detected = detectV1Ship(targetRev);
-    if (detected === null)
-        return null;
-    return { date: detected.date, sha: detected.sha, tsCache: null };
+  if (args.v1ShipDate !== "") {
+    return { date: args.v1ShipDate, sha: "", tsCache: null };
+  }
+  const detected = detectV1Ship(targetRev);
+  if (detected === null) return null;
+  return { date: detected.date, sha: detected.sha, tsCache: null };
 }
 export function main(argv) {
-    if (!gitAvailable()) {
-        process.stderr.write("error: git not found on PATH\n");
-        return 2;
-    }
-    const parsed = parseArgs(argv);
-    if (parsed.ok === null) {
-        if (parsed.errorMessage === "__HELP__")
-            return emitHelp();
-        process.stderr.write(`${parsed.errorMessage}\n`);
-        return 2;
-    }
-    const args = parsed.ok;
-    const targetRev = args.branch !== "" ? args.branch : "HEAD";
-    if (gitOutput(["rev-parse", "--verify", targetRev]).status !== 0) {
-        process.stderr.write(`error: cannot resolve target rev: ${targetRev}\n`);
-        return 2;
-    }
-    const ship = determineShip(args, targetRev);
-    const commits = buildCommitList(args, targetRev);
-    if (commits === null)
-        return 2;
-    if (commits.length === 0 && args.mode === "since") {
-        process.stdout.write(`no commits since ${args.sinceDate} on ${targetRev} — nothing to audit\n`);
-        return 0;
-    }
-    emitHeader(args, targetRev, ship);
-    const { counts, toolingError } = auditCommits(commits, ship);
-    if (toolingError)
-        return 2;
-    return emitSummary(counts);
+  if (!gitAvailable()) {
+    process.stderr.write("error: git not found on PATH\n");
+    return 2;
+  }
+  const parsed = parseArgs(argv);
+  if (parsed.ok === null) {
+    if (parsed.errorMessage === "__HELP__") return emitHelp();
+    process.stderr.write(`${parsed.errorMessage}\n`);
+    return 2;
+  }
+  const args = parsed.ok;
+  const targetRev = args.branch !== "" ? args.branch : "HEAD";
+  if (gitOutput(["rev-parse", "--verify", targetRev]).status !== 0) {
+    process.stderr.write(`error: cannot resolve target rev: ${targetRev}\n`);
+    return 2;
+  }
+  const ship = determineShip(args, targetRev);
+  const commits = buildCommitList(args, targetRev);
+  if (commits === null) return 2;
+  if (commits.length === 0 && args.mode === "since") {
+    process.stdout.write(`no commits since ${args.sinceDate} on ${targetRev} — nothing to audit\n`);
+    return 0;
+  }
+  emitHeader(args, targetRev, ship);
+  const { counts, toolingError } = auditCommits(commits, ship);
+  if (toolingError) return 2;
+  return emitSummary(counts);
 }
 if (import.meta.main) {
-    process.exit(main(process.argv.slice(2)));
+  process.exit(main(process.argv.slice(2)));
 }
