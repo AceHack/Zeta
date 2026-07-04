@@ -586,6 +586,7 @@
     <Compile Include="CanonicalJson/CrossVerifyTests.fs" />
     <Compile Include="../../src/Core/WorkflowEngine.Tests.fs" />
     <Compile Include="../../src/Core/QuantumObservableDbsp.Tests.fs" />
+    <Compile Include="ZetaToolStore.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

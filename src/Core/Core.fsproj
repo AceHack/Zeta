@@ -428,7 +428,8 @@
     <Compile Include="DevRoom.fs" />
     <Compile Include="HendersonTextileMill.fs" />
     <Compile Include="Consent/KskAuthorization.fs" />
-  
+    <Compile Include="ZetaToolStore.fs" />
+
   </ItemGroup>
 
   <ItemGroup>
