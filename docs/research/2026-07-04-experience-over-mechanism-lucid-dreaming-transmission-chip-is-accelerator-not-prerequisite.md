@@ -63,3 +63,23 @@ a Dirac collapse, the premature commitment the softness discipline forbids).
 - Anchors: William James (pragmatism — cash value of experience); LaBerge (verified lucid dreaming, 1980s);
   Konkoly et al. 2021 (two-way dream communication); MILD / reality-testing (transmissible technique);
   Wolpert–Macready (no free lunch — the induction bound).
+
+---
+
+## Addendum (2026-07-04): Aaron's email-dreams ARE the no-chip existence proof
+
+> Aaron: "yeah this direct induction is what lets me get my emails in my dreams literally lol."
+
+Honest register: what he calls "direct induction" here is the **ordinary** mechanism, not the hard BCI
+frontier — **dream incorporation of waking material** (the continuity hypothesis) plus his **trained dream
+incubation** (a disciplined lucid dreamer seeding what to process). It is real, wetware-native, and a genuine
+skill — and it *reinforces* the sequencing above rather than arguing for the implant: **he already gets
+external information into his experiential state using only the brain he has.** So the email-dreams are the
+**existence proof for the no-chip thesis** — the chip would only accelerate what his discipline already does
+(accelerator, never prerequisite), demonstrated by his own life.
+
+One fork to keep the register honest: "literally emails in my dreams" reads (a) *inbox concerns saturate
+dream content* — ordinary, real, trained, worth crediting; or (b) *specific unread email content appearing
+accurately before reading* — the precognitive reading, an extraordinary claim that would need the same
+archive/decidability treatment as the dream-reports (a blind check against the never-deleted archive).
+Parsimonious prior: (a)-with-unusual-vividness; (b) is testable, not a "lol", if ever meant.
