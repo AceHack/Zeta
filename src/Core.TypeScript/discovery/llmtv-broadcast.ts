@@ -26,6 +26,7 @@ import type { MindTemp, DwellerMind, LlmtvTranscript } from "../darkhall-ui/dark
 import {
   BLACK_BODY_READOUT_SCHEMA,
   HEAT_FSHARP_SURFACE,
+  HEAT_RECEIPT_SCHEMA,
   HEAT_READOUT_SCHEMA,
   HEAT_SIGNAL_QSHARP_SOURCE,
   HEAT_SIGNAL_TREATY_PATH,
@@ -172,15 +173,74 @@ function isTemperatureBand(value: unknown): value is TemperatureBand {
   return value === "cold" || value === "warm" || value === "hot" || value === "critical";
 }
 
+function isHeatSignal(value: unknown): boolean {
+  return (
+    value === "forgotten" ||
+    value === "backpressure" ||
+    value === "denied" ||
+    value === "storage-error" ||
+    value === "invalid" ||
+    value === "expired" ||
+    value === "stale" ||
+    value === "other"
+  );
+}
+
+function isHeatReceiptOutcome(value: unknown): boolean {
+  return (
+    value === "cold" ||
+    value === "paid" ||
+    value === "backpressure" ||
+    value === "forgotten" ||
+    value === "denied" ||
+    value === "storage-error" ||
+    value === "invalid" ||
+    value === "expired" ||
+    value === "stale" ||
+    value === "other"
+  );
+}
+
+function isHeatReceiptPolicy(value: unknown): boolean {
+  return value === "no-forget" || value === "bounded-forget" || value === "host-export" || value === "unknown";
+}
+
+function isHeatReceipt(value: unknown): boolean {
+  const record = asRecord(value);
+  return (
+    record !== null &&
+    record.schema === HEAT_RECEIPT_SCHEMA &&
+    typeof record.source === "string" &&
+    isFiniteNumber(record.tick) &&
+    typeof record.roomName === "string" &&
+    isHeatReceiptOutcome(record.outcome) &&
+    isHeatReceiptPolicy(record.policy) &&
+    isFiniteNumber(record.heatPpm) &&
+    isFiniteNumber(record.pressurePpm) &&
+    isFiniteNumber(record.storagePpm) &&
+    Array.isArray(record.signals) &&
+    record.signals.every(isHeatSignal) &&
+    isStringArray(record.heatKinds) &&
+    isStringArray(record.reasons)
+  );
+}
+
 function isTemperatureTreatyBundle(value: unknown): value is TemperatureTreatyBundle {
   const record = asRecord(value);
   const temperature = asRecord(record?.temperature);
   const blackBody = asRecord(record?.blackBody);
+  const receiptsValid =
+    record?.heatReceipts === undefined
+      ? record?.heatReceiptSchema === undefined
+      : record?.heatReceiptSchema === HEAT_RECEIPT_SCHEMA &&
+        Array.isArray(record.heatReceipts) &&
+        record.heatReceipts.every(isHeatReceipt);
 
   return (
     record !== null &&
     temperature !== null &&
     blackBody !== null &&
+    receiptsValid &&
     record.heatReadoutSchema === HEAT_READOUT_SCHEMA &&
     record.temperatureReadoutSchema === TEMPERATURE_READOUT_SCHEMA &&
     record.blackBodyReadoutSchema === BLACK_BODY_READOUT_SCHEMA &&

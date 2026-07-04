@@ -5,7 +5,30 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { renderLlmtvDocument, type LlmtvTranscript } from "./darkhall-tv";
-import { temperatureReadout, temperatureTreatyBundle } from "./heat";
+import { heatReceiptsFromRows, temperatureReadout, temperatureTreatyBundle, type HeatRow } from "./heat";
+
+const alexaHeatRows: readonly HeatRow[] = [
+  {
+    tick: 1,
+    roomName: "darkhall",
+    heatRejected: 1,
+    backpressured: 1,
+    storageErrors: 0,
+    heatKinds: ["room-boundary.door-denied"],
+    signals: ["denied"],
+    reasons: ["darkhall -> glass refused"],
+  },
+  {
+    tick: 2,
+    roomName: "darkhall",
+    heatRejected: 2,
+    backpressured: 0,
+    storageErrors: 1,
+    heatKinds: ["soft-emu.prune", "host.storage-error"],
+    signals: ["forgotten", "storage-error"],
+    reasons: ["horizon pruned futures", "host heat sink saturated"],
+  },
+];
 
 /// The seeded society — a still frame of the settlement's minds at frame 3341,
 /// seed S4. Required-for-role predictions broadcast; personal regions are frosted
@@ -33,6 +56,7 @@ export const societyFrame: LlmtvTranscript = {
           pressurePpm: 234_000,
           attentionPpm: 789_000,
         }),
+        heatReceipts: heatReceiptsFromRows(alexaHeatRows, { source: "llmtv/alexa" }),
       }),
       frost: { veilLabel: "what it is really hoping for" },
     },

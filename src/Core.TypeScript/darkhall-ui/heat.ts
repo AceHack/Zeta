@@ -9,6 +9,7 @@ export type HeatSignal =
   | "other";
 
 export const HEAT_READOUT_SCHEMA = "zeta.heat.readout.v1";
+export const HEAT_RECEIPT_SCHEMA = "zeta.heat.receipt.v1";
 export const TEMPERATURE_READOUT_SCHEMA = "zeta.temperature.readout.v1";
 export const BLACK_BODY_READOUT_SCHEMA = "zeta.blackbody.readout.v1";
 export const HEAT_SIGNAL_TREATY_PATH = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json";
@@ -20,6 +21,20 @@ export const WARM_TEMPERATURE_MAX_PPM = 333_333;
 export const HOT_TEMPERATURE_MAX_PPM = 666_666;
 
 export type TemperatureBand = "cold" | "warm" | "hot" | "critical";
+
+export type HeatReceiptOutcome =
+  | "cold"
+  | "paid"
+  | "backpressure"
+  | "forgotten"
+  | "denied"
+  | "storage-error"
+  | "invalid"
+  | "expired"
+  | "stale"
+  | "other";
+
+export type HeatReceiptPolicy = "no-forget" | "bounded-forget" | "host-export" | "unknown";
 
 export interface HeatRow {
   readonly tick: number;
@@ -48,6 +63,21 @@ export interface HeatReadout extends HeatSummary {
   readonly reasons: readonly string[];
 }
 
+export interface HeatReceipt {
+  readonly schema: typeof HEAT_RECEIPT_SCHEMA;
+  readonly source: string;
+  readonly tick: number;
+  readonly roomName: string;
+  readonly outcome: HeatReceiptOutcome;
+  readonly policy: HeatReceiptPolicy;
+  readonly heatPpm: number;
+  readonly pressurePpm: number;
+  readonly storagePpm: number;
+  readonly signals: readonly HeatSignal[];
+  readonly heatKinds: readonly string[];
+  readonly reasons: readonly string[];
+}
+
 export interface TemperatureReadout {
   readonly schema: typeof TEMPERATURE_READOUT_SCHEMA;
   readonly source: string;
@@ -69,6 +99,7 @@ export interface BlackBodyReadout {
 
 export interface TemperatureTreatyBundle {
   readonly heatReadoutSchema: typeof HEAT_READOUT_SCHEMA;
+  readonly heatReceiptSchema?: typeof HEAT_RECEIPT_SCHEMA;
   readonly temperatureReadoutSchema: typeof TEMPERATURE_READOUT_SCHEMA;
   readonly blackBodyReadoutSchema: typeof BLACK_BODY_READOUT_SCHEMA;
   readonly qsharpTreaty: typeof HEAT_SIGNAL_TREATY_PATH;
@@ -78,6 +109,7 @@ export interface TemperatureTreatyBundle {
   readonly referenceFeedback: readonly string[];
   readonly temperature: TemperatureReadout;
   readonly blackBody: BlackBodyReadout;
+  readonly heatReceipts?: readonly HeatReceipt[];
 }
 
 function distinct<T>(values: readonly T[]): readonly T[] {
@@ -182,6 +214,62 @@ export function summarizeHeatRows(rows: readonly HeatRow[]): HeatSummary {
   };
 }
 
+function receiptOutcome(signals: readonly HeatSignal[], row: HeatRow): HeatReceiptOutcome {
+  if (signals.includes("storage-error")) return "storage-error";
+  if (signals.includes("denied")) return "denied";
+  if (signals.includes("backpressure")) return "backpressure";
+  if (signals.includes("forgotten")) return "forgotten";
+  if (signals.includes("invalid")) return "invalid";
+  if (signals.includes("expired")) return "expired";
+  if (signals.includes("stale")) return "stale";
+  if (signals.includes("other")) return "other";
+  if (row.heatRejected > 0) return "paid";
+  return "cold";
+}
+
+function receiptPolicy(signals: readonly HeatSignal[]): HeatReceiptPolicy {
+  if (signals.includes("storage-error")) return "host-export";
+  if (signals.includes("forgotten")) return "bounded-forget";
+  if (signals.includes("backpressure") || signals.includes("denied")) return "no-forget";
+  return "unknown";
+}
+
+export function heatReceiptPpm(units: number, maxUnits = 16): number {
+  if (!Number.isFinite(units) || units <= 0 || !Number.isFinite(maxUnits) || maxUnits <= 0) return 0;
+  const cappedUnits = Math.trunc(units);
+  const cappedMaxUnits = Math.max(1, Math.trunc(maxUnits));
+  return clampTemperaturePpm(cappedUnits * Math.floor(MAX_TEMPERATURE_PPM / cappedMaxUnits));
+}
+
+export function heatReceiptFromRow(
+  row: HeatRow,
+  options: { readonly source?: string; readonly maxUnits?: number } = {},
+): HeatReceipt {
+  const signals = heatSignals(row);
+
+  return {
+    schema: HEAT_RECEIPT_SCHEMA,
+    source: options.source ?? row.roomName,
+    tick: row.tick,
+    roomName: row.roomName,
+    outcome: receiptOutcome(signals, row),
+    policy: receiptPolicy(signals),
+    heatPpm: heatReceiptPpm(row.heatRejected, options.maxUnits),
+    pressurePpm: heatReceiptPpm(row.backpressured, options.maxUnits),
+    storagePpm: heatReceiptPpm(row.storageErrors, options.maxUnits),
+    signals,
+    heatKinds: row.heatKinds,
+    reasons: row.reasons,
+  };
+}
+
+export function heatReceiptsFromRows(
+  rows: readonly HeatRow[],
+  options: { readonly source?: string; readonly maxUnits?: number } = {},
+): readonly HeatReceipt[] {
+  return rows.map((row) => heatReceiptFromRow(row, options));
+}
+
 export function clampTemperaturePpm(value: number): number {
   if (!Number.isFinite(value) || value <= 0) return 0;
   return Math.min(MAX_TEMPERATURE_PPM, Math.trunc(value));
@@ -251,12 +339,14 @@ export function temperatureTreatyBundle(input: {
   readonly blackBody?: BlackBodyReadout;
   readonly referenceOracle?: string;
   readonly referenceFeedback?: readonly string[];
+  readonly heatReceipts?: readonly HeatReceipt[];
 }): TemperatureTreatyBundle {
   const blackBody =
     input.blackBody ?? blackBodyReadout({ source: input.temperature.source, temperaturePpm: input.temperature.temperaturePpm });
 
   return {
     heatReadoutSchema: HEAT_READOUT_SCHEMA,
+    ...(input.heatReceipts === undefined ? {} : { heatReceiptSchema: HEAT_RECEIPT_SCHEMA, heatReceipts: input.heatReceipts }),
     temperatureReadoutSchema: TEMPERATURE_READOUT_SCHEMA,
     blackBodyReadoutSchema: BLACK_BODY_READOUT_SCHEMA,
     qsharpTreaty: HEAT_SIGNAL_TREATY_PATH,

@@ -131,6 +131,11 @@ describe("renderIndex", () => {
     expect(output.indexOf(PREAMBLE_MARKER)).toBeLessThan(output.indexOf(PREAMBLE_END));
   });
 
+  test("keeps a blank line between auto-index marker and list", () => {
+    const output = renderIndex([makeEntry("x", "desc", "2026-05-01")]);
+    expect(output).toContain(`${PREAMBLE_MARKER}\n\n- [**x**](x.md)`);
+  });
+
   test("includes last reindex date matching today", () => {
     const today = new Date().toISOString().slice(0, 10);
     const output = renderIndex([makeEntry("x", "desc", "2026-05-01")]);

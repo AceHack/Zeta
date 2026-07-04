@@ -5,6 +5,7 @@ import {
   BLACK_BODY_READOUT_SCHEMA,
   classifyHeatKind,
   HEAT_FSHARP_SURFACE,
+  HEAT_RECEIPT_SCHEMA,
   coordinationBandwidth,
   HEAT_READOUT_SCHEMA,
   HEAT_SIGNAL_QSHARP_SOURCE,
@@ -15,6 +16,9 @@ import {
   blackBodyPeakFrequencyPpm,
   blackBodyRadiancePpm,
   blackBodyReadout,
+  heatReceiptFromRow,
+  heatReceiptPpm,
+  heatReceiptsFromRows,
   heatSignals,
   normalizeHeatSignals,
   normalizeControllerCells,
@@ -234,6 +238,31 @@ describe("Dark Hall CSS room UI", () => {
         ticks: [{ ...firstTick, heat: sourceTagged }],
       }),
     ).toContain('data-signals="backpressure"');
+  });
+
+  it("projects heat rows into compact provenance receipts without changing the heat summary", () => {
+    expect(heatReceiptPpm(1)).toBe(62_500);
+    expect(heatReceiptPpm(99)).toBe(1_000_000);
+
+    const receipts = heatReceiptsFromRows(heatRows, { source: "darkhall/room" });
+
+    expect(receipts).toHaveLength(2);
+    expect(receipts[0]).toEqual({
+      schema: HEAT_RECEIPT_SCHEMA,
+      source: "darkhall/room",
+      tick: 1,
+      roomName: "darkhall",
+      outcome: "denied",
+      policy: "no-forget",
+      heatPpm: 62_500,
+      pressurePpm: 62_500,
+      storagePpm: 0,
+      signals: ["denied"],
+      heatKinds: ["room-boundary.door-denied"],
+      reasons: ["darkhall -> glass refused"],
+    });
+    expect(heatReceiptFromRow(horizonHeat).outcome).toBe("storage-error");
+    expect(heatReceiptFromRow(horizonHeat).policy).toBe("host-export");
   });
 
   it("renders an F# DarkHallRoomTranscript JSON fixture with source-owned heat signals", () => {

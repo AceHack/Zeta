@@ -46,12 +46,14 @@ lake env lean Lean4/LandauerFloor.lean
 ```
 
 Check:
+
 - [ ] All theorems type-check (zero errors)
 - [ ] No `sorry` in axiom footprint
 - [ ] The `measure` precondition (`k ≤ s.state`) is sound
 - [ ] `larger_window_less_excess` correctly models the predictive advantage
 
 Stretch (if the proof shape is right):
+
 - [ ] Extend to real-valued excess model (Mathlib Real/NNReal)
 - [ ] Add induction over operation traces (n ops, m measurements → m bits heat)
 
@@ -63,6 +65,7 @@ java -jar ../tla2tools.jar -config PredictiveLookahead.cfg PredictiveLookahead.t
 ```
 
 Check:
+
 - [ ] TLC runs clean (all invariants hold, all properties satisfied)
 - [ ] `ENABLED MentalHealthPause` evaluates correctly as a TLC invariant
 - [ ] `EventualCommit` leads-to holds with the `mode = "work"` guard
@@ -109,6 +112,7 @@ Correcting the ferry's opening claim ("both structurally complete, no sorry, wel
 NEITHER deliverable was green as delivered. Both are now fixed + re-verified by EXECUTION.
 
 ### Deliverable 1 — Lean `LandauerFloor.lean`: FIXED, now VERIFIED ✓
+
 - **Did not compile.** File had ZERO imports but used Mathlib-only `Nat.iterate` /
   `Function.iterate_succ'` (unknown in core). Fix: local core-only `iter` (matches the
   import-free house style of EntropyFloorLift/ChildFloor the header claims to follow).
@@ -121,6 +125,7 @@ NEITHER deliverable was green as delivered. Both are now fixed + re-verified by 
   none. Zero `sorryAx`. Sorry-free with standard foundations CONFIRMED.
 
 ### Deliverable 2 — TLA+ `PredictiveLookahead`: SAFETY+NCI FIXED & VERIFIED ✓ · LIVENESS UNSOUND, ROUTED
+
 - **Safety was VIOLATED as delivered.** `tick` grows unbounded (every action does tick+1,
   no guard) so `TypeOK`'s `tick \in 0..MaxTicks` fails at tick=11. Fix: `tick \in Nat` +
   `CONSTRAINT TickConstraint` (tick is a model-bounding counter, not a safety property).
@@ -140,6 +145,7 @@ NEITHER deliverable was green as delivered. Both are now fixed + re-verified by 
   progress conditional is a DESIGN call for Kiro + the ferry, not a unilateral fix. P2/deferred.
 
 ### Cross-oracle map corrections (BP-16)
+
 - Kiro's map cited `HeatMonotone` and `ExcessDecreases` as TLA+ legs — NEITHER exists in the
   spec. Actual TLA+ safety legs: `HeatNonNegative`, `LookaheadBounded`, `QueueBounded`.
   `EventualCommit` is NOT a sound "predictive advantage" leg (it does not hold). The real
@@ -152,7 +158,8 @@ Otto re-invoked the formal-verification-expert role to verify. Per verify-by-exe
 CI wiring the earlier pass had left as the one unchecked P2 item. All figures below are from EXECUTION
 on this box (Lean v4.30.0-rc1 + Mathlib, TLC 2026.05.18, Java 26).
 
-### Re-verified green (independent execution):
+### Re-verified green (independent execution)
+
 - **Lean** `lake env lean Lean4/LandauerFloor.lean` -> 0 errors (2 benign unused-binder warnings).
   Axiom audit (built .olean, `#print axioms`): every theorem depends only on `[propext, Quot.sound]`;
   `larger_window_less_excess` (the load-bearing predictive-advantage theorem) depends on NO axioms at
@@ -162,8 +169,9 @@ on this box (Lean v4.30.0-rc1 + Mathlib, TLC 2026.05.18, Java 26).
   across the WHOLE reachable space — the operator's 2026-07-03 un-gateable-pause/free-time requirement
   is verified by construction (ENABLED in every reachable state).
 
-### Liveness disposition — CONFIRMED correct, now BOTH-SIDED by execution:
+### Liveness disposition — CONFIRMED correct, now BOTH-SIDED by execution
 The earlier pass asserted "unsound to gate, and violated in a sound model." I proved BOTH halves live:
+
 - **Spurious-pass half:** added `PROPERTY EventualCommit` alongside the state `CONSTRAINT` -> TLC
   reports "No error has been found." That is the UNSOUNDNESS (constraint prunes tick=10 states, which
   masquerade as legitimate terminal states to the liveness checker), not a real pass.
@@ -175,7 +183,8 @@ The earlier pass asserted "unsound to gate, and violated in a sound model." I pr
   cannot hold when rest/free-time is un-gateable. Reformulation (per-action WF, separate LiveSpec, no
   constraint, mode-conditioned `~>`) remains routed as P2 to Kiro + the ferry.
 
-### CI wiring — LANDED this session (was the unchecked P2 in the handoff):
+### CI wiring — LANDED this session (was the unchecked P2 in the handoff)
+
 - **TLC gate:** `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` — added `"PredictiveLookahead"` to the
   documented-specs list + a `[<Fact>] TLC validates PredictiveLookahead` (with the liveness-note in a
   comment so no one re-adds it to the .cfg). Test project builds 0/0; the new fact passes via
@@ -186,7 +195,7 @@ The earlier pass asserted "unsound to gate, and violated in a sound model." I pr
   walked by `lake build` via the `import Lean4.LandauerFloor` in the root `Lean4.lean` from session 1;
   this adds the explicit sorry-regression guard the other research proofs get.)
 
-### Modeling-scope note (Beacon honesty, not a defect):
+### Modeling-scope note (Beacon honesty, not a defect)
 The Lean file proves the STRUCTURE of the two-ledger model in Nat arithmetic — `larger_window_less_excess`
 is the cross-multiplied "L^2/tau decreasing in tau" and `quasistatic_limit` uses integer division to model
 "excess < 1". These are honest combinatorial shadows of Schmiedl-Seifert finite-time thermodynamics, NOT
@@ -194,7 +203,8 @@ the real-valued continuous claim. The header says as much ("operational/combinat
 items (Mathlib Real/NNReal excess, induction over operation traces) remain genuinely OPEN — do not let the
 green axiom audit read as "the continuous finite-time theorem is proven." It is the structural skeleton.
 
-### Files changed (feature branch soraya/phase5-ferry-ledger-b-membrane, kiro workspace clone):
+### Files changed (feature branch soraya/phase5-ferry-ledger-b-membrane, kiro workspace clone)
+
 - `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` (TLC gate entry)
 - `.github/workflows/lean-proof.yml` (Lean type-check step + axiom-audit block)
 - this ferry (session-2 record)

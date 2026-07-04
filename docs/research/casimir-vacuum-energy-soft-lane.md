@@ -197,7 +197,7 @@ one that fits our commit-boundary picture exactly.
 
 ---
 
-## 6. Does the potential create pressure toward commit?
+## 6. Does the potential create pressure toward commit
 
 Yes — but the sign of `V(τ)` shows the pressure does **not** come from `V` itself.
 

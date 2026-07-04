@@ -74,6 +74,7 @@ energy:
 ## Deliverable Expected
 
 A design note at `docs/research/casimir-vacuum-energy-soft-lane.md` with:
+
 - The formal mapping (or a rejection with reasons if the analogy doesn't hold)
 - The functional form V(τ) with derivation
 - Whether/how to implement it in the entropy tracker (a new field? a computed property?)

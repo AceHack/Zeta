@@ -11,7 +11,7 @@
 // the generator renders only its public veil label (blurred), NEVER its contents.
 // Consent-first (§6): the substrate cannot emit what was frosted.
 
-import { MAX_TEMPERATURE_PPM, type HeatSignal, type TemperatureTreatyBundle } from "./heat";
+import { MAX_TEMPERATURE_PPM, type HeatReceipt, type HeatSignal, type TemperatureTreatyBundle } from "./heat";
 
 /// Attention temperature — where a prediction sits on the LLMTV salience axis.
 /// hot = high-salience / rising attention, cool = settled. A DU, not a hand-coded
@@ -160,6 +160,58 @@ function renderTemperatureMetric(label: string, kind: string, ppm: number): stri
   ].join("");
 }
 
+function compactText(values: readonly string[], fallback: string): string {
+  return values.length === 0 ? fallback : values.join(", ");
+}
+
+function renderHeatReceipt(receipt: HeatReceipt): string {
+  const reason = compactText(receipt.reasons, compactText(receipt.heatKinds, "no detail"));
+
+  return [
+    `<span class="heat-receipt"`,
+    attr("data-heat-receipt-schema", receipt.schema),
+    attr("data-outcome", receipt.outcome),
+    attr("data-policy", receipt.policy),
+    attr("data-source", receipt.source),
+    attr("data-room", receipt.roomName),
+    attr("data-tick", receipt.tick),
+    attr("data-signals", compactText(receipt.signals, "cold")),
+    attr(
+      "style",
+      `--heat:${ppmRatio(receipt.heatPpm)};--pressure:${ppmRatio(receipt.pressurePpm)};--storage:${ppmRatio(receipt.storagePpm)}`,
+    ),
+    ">",
+    `<b>${escapeHtml(receipt.outcome)}</b>`,
+    '<span class="receipt-rails"><i></i><i></i><i></i></span>',
+    `<em>${escapeHtml(receipt.policy)}</em>`,
+    `<small>${escapeHtml(reason)}</small>`,
+    "</span>",
+  ].join("");
+}
+
+function renderHeatReceipts(receipts: readonly HeatReceipt[] | undefined): string {
+  if (receipts === undefined || receipts.length === 0) return "";
+
+  const outcomes = compactText(
+    receipts.map((receipt) => receipt.outcome),
+    "cold",
+  );
+  const policies = compactText(
+    receipts.map((receipt) => receipt.policy),
+    "unknown",
+  );
+
+  return [
+    `<div class="heat-receipts"`,
+    attr("data-heat-receipts", receipts.length),
+    attr("data-outcomes", outcomes),
+    attr("data-policies", policies),
+    ">",
+    ...receipts.map(renderHeatReceipt),
+    "</div>",
+  ].join("");
+}
+
 function renderTemperatureLane(treaty: TemperatureTreatyBundle): string {
   const temperature = treaty.temperature;
   const blackBody = treaty.blackBody;
@@ -184,6 +236,7 @@ function renderTemperatureLane(treaty: TemperatureTreatyBundle): string {
     `<span><b>src</b><i>${escapeHtml(temperature.source)}</i></span>`,
     `<span><b>oracle</b><i>${escapeHtml(treaty.referenceOracle)}</i></span>`,
     "</div>",
+    renderHeatReceipts(treaty.heatReceipts),
     "</div>",
   ].join("");
 }
@@ -194,6 +247,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
   const temperatureTreaty = mind.temperatureTreaty;
   const temperature = temperatureTreaty?.temperature;
   const blackBody = temperatureTreaty?.blackBody;
+  const heatReceipts = temperatureTreaty?.heatReceipts;
   const temperatureFeedback =
     temperatureTreaty === undefined || temperatureTreaty.referenceFeedback.length === 0
       ? undefined
@@ -213,6 +267,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     attr("data-black-body-readout", blackBody?.schema),
     attr("data-black-body-radiance", blackBody?.radiancePpm),
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
+    attr("data-heat-receipts", heatReceipts === undefined ? undefined : heatReceipts.length),
     ">",
     `<div class="tv-head">`,
     `<div class="who">${escapeHtml(mind.name)} <small>${escapeHtml(mind.role)}</small></div>`,
@@ -404,6 +459,19 @@ export const LLMTV_INLINE_CSS = `
     .temp-meta span { min-width:0; display:inline-flex; gap:0.28rem; align-items:baseline; }
     .temp-meta b { font-weight:400; letter-spacing:0.12em; text-transform:uppercase; }
     .temp-meta i { font-style:normal; color:var(--txt2); overflow-wrap:anywhere; }
+    .heat-receipts { display:grid; gap:0.35rem; margin-top:0.55rem; }
+    .heat-receipt { display:grid; grid-template-columns:minmax(4rem,0.65fr) minmax(3.2rem,0.55fr) minmax(4.6rem,0.75fr) minmax(0,1.35fr);
+      gap:0.35rem; align-items:center; min-width:0; border:1px solid color-mix(in srgb, currentColor 28%, var(--line));
+      border-radius:6px; padding:0.32rem 0.38rem; background:rgba(255,255,255,0.018); font-family:var(--mono); }
+    .heat-receipt b { min-width:0; color:var(--txt); font-size:0.55rem; font-weight:400; letter-spacing:0.1em; text-transform:uppercase; overflow-wrap:anywhere; }
+    .receipt-rails { display:grid; gap:0.1rem; }
+    .receipt-rails i { height:0.17rem; border-radius:99px; background:var(--line2); position:relative; overflow:hidden; }
+    .receipt-rails i::before { content:""; position:absolute; inset:0; width:0; background:currentColor; }
+    .receipt-rails i:nth-child(1)::before { width:calc(var(--heat) * 100%); }
+    .receipt-rails i:nth-child(2)::before { width:calc(var(--pressure) * 100%); opacity:0.76; }
+    .receipt-rails i:nth-child(3)::before { width:calc(var(--storage) * 100%); opacity:0.54; }
+    .heat-receipt em { min-width:0; font-style:normal; color:var(--txt3); font-size:0.53rem; overflow-wrap:anywhere; }
+    .heat-receipt small { min-width:0; color:var(--txt2); font-size:0.53rem; line-height:1.25; overflow-wrap:anywhere; }
     /* FROST: personal mind-parts a dweller earned permanent privacy over — priced privacy,
        never decoration; the blur means content withheld, its permanence = earned + inviolable */
     .frost { position:relative; margin:0.2rem 0; border:1px solid var(--line2); border-radius:6px; overflow:hidden;

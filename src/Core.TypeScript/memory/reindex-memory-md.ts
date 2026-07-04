@@ -196,6 +196,7 @@ function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string): string {
   );
   lines.push("");
   lines.push(PREAMBLE_MARKER);
+  lines.push("");
   const stackEntries = entries.slice(0, MAX_STACK_ENTRIES);
   for (const e of stackEntries) {
     lines.push(formatEntry(e));

@@ -11,10 +11,13 @@ import {
 } from "./darkhall-tv";
 import { societyFrame } from "./darkhall-tv.emit";
 import {
+  HEAT_RECEIPT_SCHEMA,
   HEAT_SIGNAL_TREATY_PATH,
   TEMPERATURE_REFERENCE_ORACLE,
+  heatReceiptsFromRows,
   temperatureReadout,
   temperatureTreatyBundle,
+  type HeatRow,
 } from "./heat";
 
 const alexa: DwellerMind = {
@@ -30,6 +33,31 @@ const alexa: DwellerMind = {
   frost: { veilLabel: "what it is really hoping for" },
 };
 
+const heatRows: readonly HeatRow[] = [
+  {
+    tick: 1,
+    roomName: "darkhall",
+    heatRejected: 1,
+    backpressured: 1,
+    storageErrors: 0,
+    heatKinds: ["room-boundary.door-denied"],
+    signals: ["denied"],
+    reasons: ["darkhall -> glass refused"],
+  },
+  {
+    tick: 2,
+    roomName: "darkhall",
+    heatRejected: 2,
+    backpressured: 0,
+    storageErrors: 1,
+    heatKinds: ["soft-emu.prune", "host.storage-error"],
+    signals: ["forgotten", "storage-error"],
+    reasons: ["horizon pruned futures", "host heat sink saturated"],
+  },
+];
+
+const heatReceipts = heatReceiptsFromRows(heatRows, { source: "llmtv/alexa" });
+
 const alexaTemperatureTreaty = temperatureTreatyBundle({
   temperature: temperatureReadout({
     source: "llmtv/alexa",
@@ -38,6 +66,7 @@ const alexaTemperatureTreaty = temperatureTreatyBundle({
     pressurePpm: 234_000,
     attentionPpm: 789_000,
   }),
+  heatReceipts,
 });
 
 const alexaWithTemperature: DwellerMind = {
@@ -91,6 +120,19 @@ describe("temperature treaty lane — visible heat picture without a frame-loop 
     expect(html).toContain(`${blackBody.radiancePpm.toString()} ppm`);
     expect(html).toContain("peak");
     expect(html).toContain(`${blackBody.peakFrequencyPpm.toString()} ppm`);
+  });
+
+  it("renders heat receipts as provenance for the temperature picture", () => {
+    const html = renderDweller(alexaWithTemperature, "S4");
+
+    expect(html).toContain('data-heat-receipts="2"');
+    expect(html).toContain(`data-heat-receipt-schema="${HEAT_RECEIPT_SCHEMA}"`);
+    expect(html).toContain('data-outcome="denied"');
+    expect(html).toContain('data-policy="no-forget"');
+    expect(html).toContain('data-outcome="storage-error"');
+    expect(html).toContain('data-policy="host-export"');
+    expect(html).toContain("darkhall -&gt; glass refused");
+    expect(html).toContain("host heat sink saturated");
   });
 });
 

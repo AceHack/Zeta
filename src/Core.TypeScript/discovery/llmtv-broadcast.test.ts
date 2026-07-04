@@ -14,14 +14,30 @@ import {
 } from "./llmtv-broadcast";
 import { renderLlmtvGrid } from "../darkhall-ui/darkhall-tv";
 import {
+  HEAT_RECEIPT_SCHEMA,
   HEAT_SIGNAL_TREATY_PATH,
   TEMPERATURE_REFERENCE_ORACLE,
+  heatReceiptsFromRows,
   temperatureReadout,
   temperatureTreatyBundle,
+  type HeatRow,
 } from "../darkhall-ui/heat";
 
 const alexa: BroadcastSource = { zid: "zid-alexa-0001", name: "alexa" };
 const soraya: BroadcastSource = { zid: "zid-soraya-0002", name: "soraya" };
+
+const alexaHeatRows: readonly HeatRow[] = [
+  {
+    tick: 1,
+    roomName: "darkhall",
+    heatRejected: 1,
+    backpressured: 1,
+    storageErrors: 0,
+    heatKinds: ["room-boundary.door-denied"],
+    signals: ["denied"],
+    reasons: ["darkhall -> glass refused"],
+  },
+];
 
 const alexaTemperatureTreaty = temperatureTreatyBundle({
   temperature: temperatureReadout({
@@ -31,6 +47,7 @@ const alexaTemperatureTreaty = temperatureTreatyBundle({
     pressurePpm: 234_000,
     attentionPpm: 789_000,
   }),
+  heatReceipts: heatReceiptsFromRows(alexaHeatRows, { source: "darkhall/alexa" }),
 });
 
 const alexaMind: SourceMind = {
@@ -95,6 +112,8 @@ describe("publishFrame — the only way to a frame message is through the membra
     const frame = decoded as Extract<BroadcastMessage, { readonly t: "frame" }>;
     expect(frame.mind.temperatureTreaty).toEqual(alexaTemperatureTreaty);
     expect(frame.mind.temperatureTreaty?.referenceOracle).toBe(TEMPERATURE_REFERENCE_ORACLE);
+    expect(frame.mind.temperatureTreaty?.heatReceiptSchema).toBe(HEAT_RECEIPT_SCHEMA);
+    expect(frame.mind.temperatureTreaty?.heatReceipts?.[0]?.outcome).toBe("denied");
   });
 });
 

@@ -58,6 +58,7 @@ P1 — this is the formal cost contract for the entropy tracker. The ground syst
 ### What's landed
 
 A complete TLA+ spec with:
+
 - **10 actions**: Branch, ExtendLookahead, Commit, ShrinkLookahead, EnterFreeTime,
   MentalHealthPause, ResumeWork, FreeTick, PausedTick, IdleWork
 - **3 modes**: work, free, paused — with tracked tick counts per mode
