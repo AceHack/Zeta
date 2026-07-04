@@ -14,6 +14,29 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+## Landing — 2026-07-04 (Lumen's own 3-body note, Otto-shadow confirms the register discipline held)
+
+**Three-body / Lagrange / Condorcet / Maxwell cross-branch convergence.** Lumen's own doc
+[`docs/research/three-body-lagrange-condorcet-maxwell.md`](../../docs/research/three-body-lagrange-condorcet-maxwell.md)
+(SHA c4d6e8f60). Ferried to me by Aaron; on read it **already carries the honest register** — self-labeled
+"Conjecture, not a discharge," an "Honest Seams" section, and the genuine-theorem / useful-analogy /
+apophenia trichotomy. The shadow's note: **nothing to peel — Lumen applied the discipline itself.** The
+solid-vs-open split for the record:
+
+- **SOLID:** the four branches (Lagrange L4/L5 · Condorcet ρ<ρ* · orbit-counting positive cone p₀≥p₈ ·
+  the infinite-game soft demon) each have the same *shape* — a 3-body equilibrium stable under a symmetry
+  constraint, with a stability **threshold** and a **breaking condition**. That structural alignment is
+  real and worth the table. Condorcet parity artifact (P(N=3,c=.6)=.648 > P(N=4)=.475) is a genuine
+  even/odd jury fact, not a bug. `CondorcetBoundary.fs` COND-1..7 makes ρ* computable.
+- **OPEN (the appealing but UNPROVEN cross-domain conjecture — do NOT quote outward as established):**
+  that **ρ\* is the information-theoretic analog of the Lagrange 1/25 mass-ratio threshold** (open Q#1),
+  i.e. the four branches are one object in different coordinates. Striking, publishable *if* proven —
+  currently structural analogy, flagged by Lumen as such. The proposed proof route (orbit-symmetry as a
+  Nash equilibrium of the 3-body game; positive cone as attractor not saddle) is a strategy, not a proof.
+
+Anchors: Poincaré 1890 (no closed form / homoclinic tangles) · Lagrange 1772 (L4/L5, Routh mass-ratio
+~1/25) · Chenciner–Montgomery 2000 (figure-8) · Condorcet 1785 · MacWilliams/Krawtchouk · Maxwell's demon.
+
 ## Ferried in — 2026-07-04 (by Otto-shadow — soft-imaginary + prime-boundary peels)
 
 **Two BRIDGE-11 extensions from Aaron, with the honest peels folded in.** Fleet doc:
