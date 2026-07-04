@@ -11,8 +11,8 @@
 # physics lives in the cite.
 meta	name	shape-kitaev-chain
 meta	catalog	shapes
-meta	shape-zetaid	c5ab366fcb7614df473c97092f18236e
-gen	panels	c5ab366fcb7614df473c97092f18236e	1	7	sites:8;phases:trivial,topological
+meta	shape-zetaid	c5ab366fcb7614dff6516e7e4ee78da4
+gen	panels	c5ab366fcb7614dff6516e7e4ee78da4	1	7	sites:8;phases:trivial,topological
 constant	sites	8	chain length (fermionic sites)	long enough to SEE the pairing pattern repeat; short enough to fit two panels on one court
 constant	modes	16	Majorana modes (two per site)	the doubling IS the trick: 2 * sites — every site splits into a left and a right mode
 constant	trivial-pairs	8	pairings in the trivial phase (intra-site)	each site pairs its own two modes: sites pairs, ZERO left over — tidy and unprotected

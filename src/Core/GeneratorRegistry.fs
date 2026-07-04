@@ -17,22 +17,13 @@ module GeneratorRegistry =
     type Entry =
         { Name: string
           Version: int
-          ZetaId: string
-          ZetaIdV2: string }
+          ZetaId: string }
 
-    // deterministic content-address: FNV-1a-ish 128-bit fold over name@version (no wall, no random —
+    // deterministic content-address: FNV-1a 128-bit fold over name@version (no wall, no random —
     // the id is a pure function of identity, so it is the SAME everywhere, forever).
+    // The second lane (h2) uses non-linear bitwise rotation and a different prime to ensure
+    // full 128-bit entropy (decorrelated lanes).
     let private hash128 (s: string) : string =
-        let mutable h1 = 0xcbf29ce484222325UL
-        let mutable h2 = 0x84222325cbf29ce4UL
-        for ch in s do
-            h1 <- (h1 ^^^ uint64 (int ch)) * 0x100000001b3UL
-            h2 <- (h2 ^^^ uint64 (int ch * 31)) * 0x100000001b3UL
-        sprintf "%016x%016x" h1 h2
-
-    // Decorrelated V2 hash: uses non-linear bit rotation and different prime for the second lane
-    // to provide full 128-bit entropy and remove correlation between the two lanes.
-    let private hash128V2 (s: string) : string =
         let mutable h1 = 0xcbf29ce484222325UL
         let mutable h2 = 0x84222325cbf29ce4UL
         for ch in s do
@@ -45,14 +36,12 @@ module GeneratorRegistry =
     /// Mint the stable ZetaId for a generator name@version (deterministic; the same input always yields
     /// the same id — that is the point).
     let idOf (name: string) (version: int) : string = hash128 (sprintf "%s@%d" name version)
-    let idOfV2 (name: string) (version: int) : string = hash128V2 (sprintf "%s@%d" name version)
 
     /// Register (declare) a generator — returns its entry. Registration is just naming; the id follows.
     let register (name: string) (version: int) : Entry =
         { Name = name
           Version = version
-          ZetaId = idOf name version
-          ZetaIdV2 = idOfV2 name version }
+          ZetaId = idOf name version }
 
     /// The stable generators known today — the BoundaryLight family + the kernel + the verbs that have
     /// earned a fixed identity. Adding a generator = adding a line; bumping a version = a new id (so a
@@ -130,15 +119,13 @@ module GeneratorRegistry =
     /// names sharing one ZetaId on the shelf = a collision the first-match byId would silently
     /// shadow — this surfaces it as a checkable fact (the suite asserts it stays empty).
     let collisions () : (string * string list) list =
-        let allPairs = 
-            known |> List.collect (fun e -> [ e.ZetaId, e.Name; e.ZetaIdV2, e.Name ])
-        allPairs
-        |> List.groupBy fst
-        |> List.filter (fun (_, gps) -> (gps |> List.map snd |> List.distinct |> List.length) > 1)
-        |> List.map (fun (zid, gps) -> zid, gps |> List.map snd |> List.distinct)
+        known
+        |> List.groupBy (fun e -> e.ZetaId)
+        |> List.filter (fun (_, es) -> (es |> List.map (fun e -> e.Name) |> List.distinct |> List.length) > 1)
+        |> List.map (fun (zid, es) -> zid, es |> List.map (fun e -> e.Name))
 
     let byId (zetaId: string) : Entry option =
-        known |> List.tryFind (fun e -> e.ZetaId = zetaId || e.ZetaIdV2 = zetaId)
+        known |> List.tryFind (fun e -> e.ZetaId = zetaId)
 
     /// Look up by name (newest version wins).
     let byName (name: string) : Entry option =

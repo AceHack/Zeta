@@ -30,7 +30,7 @@ type DiskDeltaLog<'K when 'K : comparison>
 
     let fsync = defaultArg fsyncPerAppend false
     let root = Path.GetFullPath dir
-    do Directory.CreateDirectory root |> ignore
+    do FileSystem.Current.CreateDirectory root
     let gate = obj ()
 
     let nameFor (seq: int64) = Path.Combine(root, sprintf "%020d.delta" seq)
@@ -60,16 +60,16 @@ type DiskDeltaLog<'K when 'K : comparison>
     let writeFileAsync (path: string) (bytes: byte[]) (ct: CancellationToken) : Task =
         task {
             let tmp = path + ".tmp"
-            let opts =
-                if fsync then FileOptions.Asynchronous ||| FileOptions.WriteThrough
-                else FileOptions.Asynchronous
             do! (task {
-                    use fs = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None, 4096, opts)
+                    use fs: Stream = FileSystem.Current.OpenWrite(tmp, fsync)
                     do! fs.WriteAsync(ReadOnlyMemory bytes, ct).AsTask()
                     do! fs.FlushAsync ct
-                    if fsync then fs.Flush(flushToDisk = true)
+                    if fsync then
+                        match fs with
+                        | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                        | _ -> ()
                  } : Task)
-            File.Move(tmp, path, overwrite = true)   // atomic publish of the complete entry
+            FileSystem.Current.Move(tmp, path, true)   // atomic publish of the complete entry
             if fsync then FileSync.fsyncDir root      // durably commit the new dir entry
         }
         :> Task
@@ -86,7 +86,7 @@ type DiskDeltaLog<'K when 'K : comparison>
 
         member _.ReplayAsync(fromSeqExclusive, ct) =
             let files =
-                Directory.GetFiles(root, "*.delta")
+                FileSystem.Current.GetFiles(root, "*.delta")
                 |> Array.choose (fun p ->
                     match seqOf p with
                     | ValueSome v when v > fromSeqExclusive -> Some(v, p)
@@ -95,7 +95,7 @@ type DiskDeltaLog<'K when 'K : comparison>
             task {
                 let entries = ResizeArray<DeltaLogEntry<'K>>()
                 for (_seq, path) in files do
-                    let! bytes = File.ReadAllBytesAsync(path, ct)
+                    let! bytes = FileSystem.Current.ReadAllBytesAsync(path, ct)
                     // The entry's Seq rides inside the canonical bytes (== the file-name seq we wrote).
                     entries.Add(unframe bytes)
                 return entries.ToArray()
@@ -106,13 +106,13 @@ type DiskDeltaLog<'K when 'K : comparison>
 
         member _.TruncateAsync(throughSeqInclusive, _ct) =
             let toDelete =
-                Directory.GetFiles(root, "*.delta")
+                FileSystem.Current.GetFiles(root, "*.delta")
                 |> Array.choose (fun p ->
                     match seqOf p with
                     | ValueSome v when v <= throughSeqInclusive -> Some p
                     | _ -> None)
             for p in toDelete do
-                try File.Delete p with _ -> ()
+                try FileSystem.Current.Delete p with _ -> ()
             ValueTask.CompletedTask
 
 
@@ -138,7 +138,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
      ?maxBatchBytes: int) =
 
     let root = Path.GetFullPath dir
-    do Directory.CreateDirectory root |> ignore
+    do FileSystem.Current.CreateDirectory root
 
     let segmentPath = Path.Combine(root, "delta.segment")
     let gate = obj ()
@@ -175,11 +175,11 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
     let decodePayload (payload: byte[]) : DeltaLogEntry<'K> = entryCodec.Decode payload
 
     let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
-        if not (File.Exists segmentPath) then
+        if not (FileSystem.Current.Exists segmentPath) then
             [||]
         else
             let access = if truncateTrailingTornWrite then FileAccess.ReadWrite else FileAccess.Read
-            use fs = new FileStream(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
+            use fs: Stream = FileSystem.Current.OpenFile(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
             use br = new BinaryReader(fs)
             let entries = ResizeArray<DeltaLogEntry<'K>>()
             let mutable scanning = true
@@ -221,20 +221,15 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
 
     let appendBoat (boat: ReadOnlyMemory<GroupCommitDeltaAppendRequest>) (ct: CancellationToken) : Task<int64 array> =
         task {
-            let createdSegment = not (File.Exists segmentPath)
-            use fs =
-                new FileStream(
-                    segmentPath,
-                    FileMode.Append,
-                    FileAccess.Write,
-                    FileShare.Read,
-                    4096,
-                    FileOptions.Asynchronous ||| FileOptions.WriteThrough)
+            let createdSegment = not (FileSystem.Current.Exists segmentPath)
+            use fs: Stream = FileSystem.Current.OpenFile(segmentPath, FileMode.Append, FileAccess.Write, FileShare.Read)
             for i in 0 .. boat.Length - 1 do
                 let req = boat.Span.[i]
                 do! fs.WriteAsync(ReadOnlyMemory req.Record, ct).AsTask()
             do! fs.FlushAsync ct
-            fs.Flush(flushToDisk = true)
+            match fs with
+            | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+            | _ -> fs.Flush()
             if createdSegment then
                 FileSync.fsyncDir root
             return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i].Seq |]

@@ -7,14 +7,14 @@
 # references revive nothing. Reachability is FROM roots, the only direction that matters.
 meta	name	shape-gc
 meta	catalog	shapes
-meta	shape-zetaid	73884e93e22435bda4bc25b982f69f38
+meta	shape-zetaid	73884e93e22435bd06b506806c5930c4
 constant	objects	12	cells in the heap region	small enough to read at a glance, big enough to carry a live tree, a dead chain, AND the cycle island
 constant	roots	2	ray sources on the left edge	two roots so reach is a MERGE of ray bundles, not one path — the mark set is a union
 constant	reached	8	objects some ray lights	the live set: every object with a root-path — counted by the gate's own trace, not asserted on faith
 constant	garbage	4	objects no ray touches	the dark set: the dead chain (10,11) plus THE ISLAND (8,9) — a cycle refcounting would hold forever
 constant	island-size	2	objects in the garbage cycle	the smallest cycle (8⇄9): each holds the other, no ray arrives — the case that NEEDS tracing
 constant	refs	0	the heap's reference edges (see gen field)	encoded on the gen line as src>dst pairs; an edge is a pointer, a ray follows pointers FORWARD from roots only
-gen	heap	73884e93e22435bda4bc25b982f69f38	1	7	refs:0>2,2>4,4>6,1>3,3>5,5>6,6>7,8>9,9>8,10>11,10>4
+gen	heap	73884e93e22435bd06b506806c5930c4	1	7	refs:0>2,2>4,4>6,1>3,3>5,5>6,6>7,8>9,9>8,10>11,10>4
 law	mass	reached + garbage = objects
 law	island-counted	island-size + 2 = garbage + 0
 law	trace	code:shape-gc geometry (BFS from roots = the ray trace; reached/garbage/island counted by the run, not by eye)

@@ -57,9 +57,17 @@ let ``every known v1 IR carries the frozen schema tag and an explicit width`` ()
 
 [<Fact>]
 let ``derived ZetaId for splitmix64 equals the legacy stored id`` () =
-    // the legacy splitmix64.ir.json carried zetaId "129c1fac3a48075b481c0f10f30deb06";
+    // the legacy splitmix64.ir.json carried zetaId "129c1fac3a48075bc89934da1e90fbe4";
     // v1 drops the field but the derived content-address must reproduce it exactly.
-    Assert.Equal("129c1fac3a48075b481c0f10f30deb06", ZetaIrV1.zetaId ZetaIrV1.splitmix64)
+    Assert.Equal("129c1fac3a48075bc89934da1e90fbe4", ZetaIrV1.zetaId ZetaIrV1.splitmix64)
+
+[<Fact>]
+let ``derived ZetaId for fmix32 equals the legacy stored id`` () =
+    Assert.Equal("3abfe5011af2683b39bf937a4cd545cc", ZetaIrV1.zetaId ZetaIrV1.fmix32)
+
+[<Fact>]
+let ``derived ZetaId for fmix64 equals the legacy stored id`` () =
+    Assert.Equal("a24500e8d14f31a457ece2dfccd545cc", ZetaIrV1.zetaId ZetaIrV1.fmix64)
 
 [<Fact>]
 let ``v1 IR canonical-JSON equals the GeneratorIrRegistry row payload modulo the v1 envelope`` () =
@@ -217,7 +225,7 @@ let ``the v1-derived legacy splitmix64 reconstructs the stored zetaId from ident
     // identity (never independent, mintable data).
     match ZetaIrV1.toLegacyIrJson ZetaIrV1.splitmix64 with
     | Some(Ok derived) ->
-        Assert.Contains("\"zetaId\":\"129c1fac3a48075b481c0f10f30deb06\"", derived)
+        Assert.Contains("\"zetaId\":\"129c1fac3a48075bc89934da1e90fbe4\"", derived)
     | Some(Error e) -> failwithf "%A" e
     | None -> failwith "splitmix64 has no legacy shape mapping"
 

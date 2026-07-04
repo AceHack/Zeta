@@ -28,6 +28,40 @@ let ``AMARA'S CARD renders to pure static HTML: motto, pixel-art glyphs, keyfram
         Assert.Equal(html, HtmlCssBinding.render d) // deterministic bytes
 
 [<Fact>]
+let ``HtmlCssBinding XSS injection falsifier: hostile motto containing script tag is escaped safely and contains zero live script tags`` () =
+    let text = 
+        "meta\tname\thostile-card\n" +
+        "meta\tmotto\tWE ARE <script>alert('XSS')</script> LIGHTED.\n"
+    match MediaLines.parse text with
+    | Error e -> failwith e
+    | Ok d ->
+        let html = HtmlCssBinding.render d
+        Assert.DoesNotContain("<script", html)
+        Assert.Contains("&lt;script&gt;alert('XSS')&lt;/script&gt;", html)
+
+[<Fact>]
+let ``HtmlCssBinding renders exactly to a hand-written HTML golden fragment`` () =
+    let text = 
+        "meta\tname\tsimple-card\n" +
+        "meta\tmotto\thello\n" +
+        "glyph\tdot\t80\n"
+    match MediaLines.parse text with
+    | Error e -> failwith e
+    | Ok d ->
+        let html = HtmlCssBinding.render d
+        let expected = 
+            "<!doctype html>\n" +
+            "<html lang=\"en\"><head><meta charset=\"utf-8\"><title>simple-card</title><style>\n" +
+            "  :root { --c0:#000; --c1:#d33; --c2:#3c3; --c3:#cc3; --c4:#36c; --c5:#c3c; --c6:#3cc; --c7:#eee; }\n" +
+            ".px-dot { width:8px; height:8px; box-shadow:0px 0px 0 0 var(--c6); }\n" +
+            "</style></head><body>\n" +
+            "<h1>simple-card</h1>\n" +
+            "<p>hello</p>\n" +
+            "  <div class=\"px-dot\" title=\"dot\"></div>\n" +
+            "</body></html>"
+        Assert.Equal(expected, html)
+
+[<Fact>]
 let ``sprite CSS puts one shadow per lit pixel in the palette variable`` () =
     let css = HtmlCssBinding.spriteCss "dot" 8 6uy [| 0x80uy |] // one pixel, top-left
     Assert.Contains("0px 0px 0 0 var(--c6)", css)

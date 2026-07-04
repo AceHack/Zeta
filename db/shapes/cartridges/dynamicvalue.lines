@@ -9,8 +9,8 @@
 # contiguous tiling, X+W = next X exactly.)
 meta	name	shape-dynamicvalue
 meta	catalog	shapes
-meta	shape-zetaid	ba175ad86dfff6c94440a5b8c8695470
-gen	treemap	ba175ad86dfff6c94440a5b8c8695470	1	7	children:3;weights:5,3,2
+meta	shape-zetaid	ba175ad86dfff6c9892cd7f44ee78da4
+gen	treemap	ba175ad86dfff6c9892cd7f44ee78da4	1	7	children:3;weights:5,3,2
 constant	weight-a	5	first child's weight	the biggest slice — half the tree's mass
 constant	weight-b	3	second child's weight	with 5 and 2: three DISTINCT slice widths, so a swapped tile is visible at a glance
 constant	weight-c	2	third child's weight	the smallest — still wide enough to read on the court

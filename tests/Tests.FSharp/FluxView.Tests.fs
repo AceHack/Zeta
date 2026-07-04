@@ -56,11 +56,9 @@ let ``the interrupt grid shows the switchboard: who matched, who passed, when it
     let grid = FluxView.interruptGrid handlers source 4
     Assert.Equal(2, List.length grid)
     Assert.Contains("chip8-input", grid.[0])
-    // r3-final: audited as "half-pinned" (test-gap #7) — FALSE POSITIVE: cells are single-char,
-    // so this 4-char suffix IS all four ticks: passed(·), silent( ), matched(■), silent( ).
-    // The passed glyph was always pinned. Documented so the next audit doesn't re-flag it.
-    Assert.True(grid.[0].EndsWith "· ■ ", "input handler: passed, silent, matched, silent")
-    Assert.True(grid.[1].EndsWith "■ ■ ", "timer handler: matched, silent, matched, silent")
+    // r3-final: audited as "half-pinned" (test-gap #7) — now fully pinned to prevent silent migration
+    Assert.Equal("chip8-input      · ■ ", grid.[0])
+    Assert.Equal("chip8-60hz       ■ ■ ", grid.[1])
 
 [<Fact>]
 let ``the views are registered, cost-declared, and the budget lint still holds shelf-wide`` () =

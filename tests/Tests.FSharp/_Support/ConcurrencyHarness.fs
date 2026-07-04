@@ -4,6 +4,7 @@ open System
 open System.Diagnostics
 open System.Threading
 open System.Threading.Tasks
+open Zeta.Core
 
 
 /// Stress-test harness for concurrent code. Each helper here spawns
@@ -90,55 +91,4 @@ let fuzz (budget: TimeSpan) (attempt: unit -> bool) : bool =
     found
 
 
-/// Rx-inspired **virtual-time scheduler** — wall clock is replaced
-/// by a manual counter you advance explicitly. Lets tests that depend
-/// on timing (windowed joins, watermarks, delays) run **deterministic
-/// and fast** because no real sleeps happen.
-///
-/// The Rx `TestScheduler` is the inspiration; Bart De Smet's
-/// "Marble diagrams" turn these into diagrammatic assertions. This
-/// is the minimum-viable subset: schedule an action at virtual
-/// timestamp `t`; advance to `t'`; fire every action in between.
-[<Sealed>]
-type VirtualTimeScheduler() =
-    let queue = System.Collections.Generic.PriorityQueue<Action, int64>()
-    let mutable now = 0L
 
-    /// Current virtual timestamp (ticks, arbitrary unit).
-    member _.Now = now
-
-    /// Schedule `action` to run at virtual time `at`.
-    member _.ScheduleAt(at: int64, action: Action) =
-        if at < now then invalidArg (nameof at) "cannot schedule in the past"
-        queue.Enqueue(action, at)
-
-    /// Schedule `action` to run after `delay` ticks.
-    member this.ScheduleAfter(delay: int64, action: Action) =
-        this.ScheduleAt(now + delay, action)
-
-    /// Advance virtual time by `ticks`, firing every scheduled action
-    /// whose timestamp ≤ the new `now`.
-    member _.AdvanceBy(ticks: int64) =
-        let target = now + ticks
-        let mutable run = true
-        while run do
-            if queue.Count = 0 then run <- false
-            else
-                let mutable nextAt = 0L
-                let mutable nextAction = Unchecked.defaultof<Action>
-                if queue.TryPeek(&nextAction, &nextAt) && nextAt <= target then
-                    let action = queue.Dequeue()
-                    now <- nextAt
-                    action.Invoke ()
-                else run <- false
-        now <- target
-
-    /// Drain every remaining action regardless of timestamp.
-    member this.AdvanceToEnd() =
-        while queue.Count > 0 do
-            let mutable nextAt = 0L
-            let mutable nextAction = Unchecked.defaultof<Action>
-            queue.TryPeek(&nextAction, &nextAt) |> ignore
-            this.AdvanceBy(nextAt - now)
-
-    member _.PendingCount = queue.Count

@@ -11,8 +11,8 @@
 meta	name	shape-exchange-worldlines
 meta	catalog	shapes
 meta	name-status	provisional — candidates: exchange-worldlines / anyon-picture (cites above; Aaron decides)
-meta	shape-zetaid	50d299b64231ec1c3db8d5f4f7ad81a1
-gen	figure	50d299b64231ec1c3db8d5f4f7ad81a1	1	7	from:shape-braid;cones:per-exchange
+meta	shape-zetaid	50d299b64231ec1cb31095eb529349ac
+gen	figure	50d299b64231ec1cb31095eb529349ac	1	7	from:shape-braid;cones:per-exchange
 constant	word	1,-2,1,-2,1,-2	the exchange sequence (the locked plait — the Borromean candidate)	the SAME word as shape-braid: one source of truth for which exchanges happen; this figure adds WHERE-IN-SPACETIME they happen
 constant	rows	21	time rows the worldlines span (time runs UP this court)	matches shape-braid's court so the two figures are the same object in two registers (diagram vs spacetime)
 constant	cone-slope	1/1	the causal slope at exchange events	c = 1 court cell per tick (the lightcone cartridge's constant, reused) — an exchange can only influence what its future cone reaches

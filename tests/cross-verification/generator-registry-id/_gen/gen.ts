@@ -18,23 +18,10 @@ import { join, dirname } from "node:path";
 const MASK = (1n << 64n) - 1n;
 const u64 = (x: bigint): bigint => x & MASK;
 const PRIME = 0x100000001b3n;
-
-/** Mirror of GeneratorRegistry.hash128: two FNV-1a-ish u64 lanes over the string. */
-function hash128(s: string): string {
-  let h1 = 0xcbf29ce484222325n;
-  let h2 = 0x84222325cbf29ce4n;
-  for (const ch of s) {
-    const c = BigInt(ch.codePointAt(0) ?? 0);
-    h1 = u64((h1 ^ u64(c)) * PRIME);
-    h2 = u64((h2 ^ u64(c * 31n)) * PRIME);
-  }
-  return h1.toString(16).padStart(16, "0") + h2.toString(16).padStart(16, "0");
-}
-
 const PRIME2 = 0x1000000021bn;
 
-/** Mirror of GeneratorRegistry.hash128V2. */
-function hash128V2(s: string): string {
+/** Mirror of GeneratorRegistry.hash128: two FNV-1a-ish u64 lanes over the string (decorrelated). */
+function hash128(s: string): string {
   let h1 = 0xcbf29ce484222325n;
   let h2 = 0x84222325cbf29ce4n;
   for (const ch of s) {
@@ -51,11 +38,6 @@ function idOf(name: string, version: number): string {
   return hash128(`${name}@${version}`);
 }
 
-/** Mirror of GeneratorRegistry.idOfV2. */
-function idOfV2(name: string, version: number): string {
-  return hash128V2(`${name}@${version}`);
-}
-
 // (name, version) inputs — keyed by the canonical id `name@version`.
 const inputs: { id: string; name: string; version: number }[] = [
   { id: "rng.splitmix64@1", name: "rng.splitmix64", version: 1 },
@@ -65,12 +47,9 @@ const inputs: { id: string; name: string; version: number }[] = [
   { id: "zetaid.glyph@1", name: "zetaid.glyph", version: 1 },
 ];
 
-const out: Record<string, { v1: string; v2: string } | string> = { _source: "generated-from-ir" };
+const out: Record<string, string> = { _source: "generated-from-ir" };
 for (const { id, name, version } of inputs) {
-  out[id] = {
-    v1: idOf(name, version),
-    v2: idOfV2(name, version),
-  };
+  out[id] = idOf(name, version);
 }
 
 const target = join(dirname(import.meta.dir), "ts-output.json");

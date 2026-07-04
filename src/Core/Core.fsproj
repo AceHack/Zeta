@@ -62,8 +62,13 @@
     <Compile Include="Resume.fs" />
     <Compile Include="RangeSet.fs" />
     <Compile Include="ByteCost.fs" />
+    <Compile Include="FileSystem.fs" />
     <Compile Include="Clock.fs" />
+    <Compile Include="TimeWarpDbsp.fs" />
     <Compile Include="ReticulumLink.fs" />
+    <Compile Include="ReticulumChaos.fs" />
+    <Compile Include="NetworkSimulator.fs" />
+    <Compile Include="VirtualTimeScheduler.fs" />
     <Compile Include="FinalizerRuntime.fs" />
     <Compile Include="FinalizerRuntimeLive.fs" />
     <Compile Include="Sim.fs" />
@@ -172,9 +177,9 @@
     <Compile Include="SagaBuilder.fs" />
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />
+    <Compile Include="FileSync.fs" />
     <Compile Include="DiskSpine.fs" />
     <Compile Include="DiskSpineAsync.fs" />
-    <Compile Include="FileSync.fs" />
     <Compile Include="DeltaLog.fs" />
     <Compile Include="Command.fs" />
     <Compile Include="DeltaCodec.fs" />
@@ -222,6 +227,7 @@
     <Compile Include="Db.fs" />
     <Compile Include="KeyStore.fs" />
     <Compile Include="Crypto.fs" />
+    <Compile Include="AesGcmCryptoProvider.fs" />
     <Compile Include="File.fs" />
     <Compile Include="TableStream.fs" />
     <Compile Include="Catalog.fs" />
@@ -321,6 +327,7 @@
     <Compile Include="SolidGround.fs" />
     <Compile Include="Hat.fs" />
     <Compile Include="Persona.fs" />
+    <Compile Include="ActorRef.fs" />
     <Compile Include="Diversity.fs" />
     <Compile Include="Decorrelation.fs" />
     <Compile Include="SocietalDora.fs" />

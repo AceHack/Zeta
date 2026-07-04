@@ -8,7 +8,7 @@
    paper); it's a check that our *wrapping* code doesn't lose keys
    or double-move them across rebalance events. *)
 
-EXTENDS Integers, FiniteSets, TLC
+EXTENDS Integers, FiniteSets, Sequences, TLC
 
 CONSTANTS Keys, MaxBuckets
 VARIABLES
@@ -27,6 +27,14 @@ TypeOK ==
 \* concrete impl (Jump/Memento) satisfies: ≤ 1/n keys change on +1.
 CONSTANT Hash
 ASSUME Hash \in [Keys \X (1..MaxBuckets) -> Int]
+
+MyHash == [kb \in Keys \X (1..MaxBuckets) |->
+  IF kb[2] = 1 THEN 0
+  ELSE IF kb[2] = 2 THEN (IF kb[1] = "k1" THEN 0 ELSE 1)
+  ELSE IF kb[2] = 3 THEN (IF kb[1] = "k1" THEN 2 ELSE 1)
+  ELSE 0
+]
+
 
 Init ==
   /\ bucketCount = 1
@@ -58,6 +66,6 @@ TotalCoverage == \A k \in Keys: assignment[k] \in 0..(bucketCount - 1)
 \* to = new assign.
 \* (Spec-skeleton; tighten when porting to real TLC run.)
 
-Safety == [](TypeOK /\ TotalCoverage)
-THEOREM Spec => Safety
+Safety == TypeOK /\ TotalCoverage
+THEOREM Spec => []Safety
 ====

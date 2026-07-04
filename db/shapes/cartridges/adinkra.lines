@@ -8,8 +8,8 @@
 # the SUBSET and says so.
 meta	name	shape-adinkra
 meta	catalog	shapes
-meta	shape-zetaid	8225cea77ae1fc8d1cab7d4f9fe995aa
-gen	graph	8225cea77ae1fc8d1cab7d4f9fe995aa	1	7	grid:4x4;dashing:standard
+meta	shape-zetaid	8225cea77ae1fc8d21eb7ee9dbf5d1ec
+gen	graph	8225cea77ae1fc8d21eb7ee9dbf5d1ec	1	7	grid:4x4;dashing:standard
 constant	nodes	16	vertex count (4-bit hypercube)	N=4 supersymmetry: 2^4 states, boson/fermion checkerboard by popcount parity
 constant	colors	4	edge colors (one per generator bit)	the four SUSY generators; channel masks 1,2,4,6 on our planes
 constant	edges-total	32	edges of the full hypercube	each vertex meets 4 edges: 16 * 4 / 2 — the handshake law below checks it

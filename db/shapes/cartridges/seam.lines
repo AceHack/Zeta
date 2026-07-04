@@ -4,8 +4,8 @@
 # discipline drawn: WeaveFold's commuting fold IS a seam (residue kept as candidate sets, never LWW).
 meta	name	shape-seam
 meta	catalog	shapes
-meta	shape-zetaid	239dddd609bd82f193f0c1a4da985784
-gen	join	239dddd609bd82f193f0c1a4da985784	1	7	left:0,0,28,32;right:36,0,28,32;stitch:over-under;pitch:4
+meta	shape-zetaid	239dddd609bd82f1e3ac054ced9e8e24
+gen	join	239dddd609bd82f1e3ac054ced9e8e24	1	7	left:0,0,28,32;right:36,0,28,32;stitch:over-under;pitch:4
 constant	pitch	4	rows between stitches along the seam	close enough that the join reads as ONE structure, open enough to SEE each stitch cross — the lesson is the alternation, not a solid bar
 constant	stitch	over-under	the alternation law at the boundary	over-under is what makes a seam hold from BOTH sides (one-sided stitching is a flap, not a join) — the commuting-fold property drawn as cloth
 anim	draw	join

@@ -6,6 +6,7 @@ open System.IO
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Core.Abstractions
 open Zeta.Tests.Support
 
 
@@ -143,3 +144,38 @@ let ``DiskBackingStore spill path lives under root`` () =
         store.Release handle
     finally
         if Directory.Exists dir then Directory.Delete(dir, true)
+
+
+type XorCryptoProvider(key: byte) =
+    interface ICryptoProvider with
+        member _.Encrypt(plaintext) =
+            plaintext |> Array.map (fun b -> b ^^^ key)
+        member _.Decrypt(ciphertext) =
+            ciphertext |> Array.map (fun b -> b ^^^ key)
+
+
+[<Fact>]
+let ``DiskBackingStore with ICryptoProvider encrypts on-disk files`` () =
+    let tmp = DeterministicTestPath.nextDir "dbsp-crypto-test"
+    try
+        let crypto = XorCryptoProvider(0xAAuy)
+        // 0 quota forces spilling immediately to disk
+        let store = DiskBackingStore<int>(tmp, inMemoryQuotaBytes = 0L, cryptoProvider = crypto) :> IBackingStore<int>
+        let batch = ZSet.ofKeys [ 1 ; 2 ; 3 ]
+        let handle = store.Save(0, batch)
+        
+        // Load should successfully decrypt and match
+        let loaded = store.Load handle
+        loaded |> should equal batch
+        
+        // Now let's inspect the files in the directory to verify they are actually encrypted/modified!
+        let files = Directory.GetFiles(tmp, "spine-*.data")
+        files.Length |> should equal 1
+        
+        // Loading the file with a store that does NOT have the crypto provider should fail to parse
+        let storeNoCrypto = DiskBackingStore<int>(tmp, inMemoryQuotaBytes = 0L) :> IBackingStore<int>
+        (fun () -> storeNoCrypto.Load handle |> ignore) |> should throw typeof<Exception>
+        
+        store.Release handle
+    finally
+        try Directory.Delete(tmp, recursive = true) with _ -> ()

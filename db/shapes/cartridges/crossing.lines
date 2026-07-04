@@ -8,8 +8,8 @@
 # DOWN: prove facts here, compose them up (Artin 1925 — the generators-and-relations move itself).
 meta	name	shape-crossing
 meta	catalog	shapes
-meta	shape-zetaid	73bfa00fc16e308bdcbba97481fe8d8e
-gen	atom	73bfa00fc16e308bdcbba97481fe8d8e	1	7	strands:2;word:1
+meta	shape-zetaid	73bfa00fc16e308bdd0950511e90fbe4
+gen	atom	73bfa00fc16e308bdd0950511e90fbe4	1	7	strands:2;word:1
 constant	strands	2	the minimum that can cross	one strand cannot exchange; two is the atom's arity
 constant	word	1	the single positive crossing (left over right)	sigma itself — the generator; its inverse is -1, and that sign is the entire over/under register
 law	not-identity	code:shape-crossing geometry (sigma != 1 — the strands really exchange)

@@ -14,6 +14,39 @@ let ``pack/unpack: the three fields coexist without bleeding (13-bit payload, 16
     Assert.Equal(4242, PixelLens.uncertainty.Get c)
 
 [<Fact>]
+let ``tryPack: valid inputs succeed, invalid inputs return descriptive errors`` () =
+    // valid packing
+    match PixelLens.tryPack 6uy 0x1ABC 4242 with
+    | Ok c ->
+        Assert.Equal(6uy, PixelLens.color.Get c)
+        Assert.Equal(0x1ABC, PixelLens.payload.Get c)
+        Assert.Equal(4242, PixelLens.uncertainty.Get c)
+    | Error e -> failwith e
+
+    // invalid color
+    match PixelLens.tryPack 8uy 100 100 with
+    | Error msg -> Assert.Contains("color", msg)
+    | Ok _ -> failwith "should have failed color bounds check"
+
+    // invalid payload
+    match PixelLens.tryPack 3uy -1 100 with
+    | Error msg -> Assert.Contains("payload", msg)
+    | Ok _ -> failwith "should have failed payload bounds check"
+
+    match PixelLens.tryPack 3uy 8192 100 with
+    | Error msg -> Assert.Contains("payload", msg)
+    | Ok _ -> failwith "should have failed payload bounds check"
+
+    // invalid uncertainty
+    match PixelLens.tryPack 3uy 100 -1 with
+    | Error msg -> Assert.Contains("uncertainty", msg)
+    | Ok _ -> failwith "should have failed uncertainty bounds check"
+
+    match PixelLens.tryPack 3uy 100 65536 with
+    | Error msg -> Assert.Contains("uncertainty", msg)
+    | Ok _ -> failwith "should have failed uncertainty bounds check"
+
+[<Fact>]
 let ``the lenses are LAWFUL: get-put and put-get hold on every field`` () =
     let c = PixelLens.pack 3uy 999 100
     // get-put: Set (Get w) w = w

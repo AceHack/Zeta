@@ -11,8 +11,8 @@
 meta	name	shape-buckyball
 meta	catalog	shapes
 meta	definition-by	Addison
-meta	shape-zetaid	90fa4ddbd8ed229089921cf25b6ad0f5
-gen	views	90fa4ddbd8ed229089921cf25b6ad0f5	1	7	inside:16,16;outside:48,16;faces:32
+meta	shape-zetaid	90fa4ddbd8ed2290734f7433db42590c
+gen	views	90fa4ddbd8ed2290734f7433db42590c	1	7	inside:16,16;outside:48,16;faces:32
 constant	vertices	60	corner count of the truncated icosahedron	C60 — the carbon-count of buckminsterfullerene; fixed by the solid, not chosen
 constant	edges	90	edge count	3 edges meet at every vertex: 3*60/2 = 90 — derivable, so the cartridge can be CHECKED, not trusted
 constant	faces	32	face count: 12 pentagons + 20 hexagons	each face is a ROOM (Addison); 12*5 + 20*6 = 180 = 2*90 — the double-count law closes

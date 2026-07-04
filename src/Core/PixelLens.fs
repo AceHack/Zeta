@@ -37,6 +37,13 @@ module PixelLens =
         ||| ((uint32 payload &&& 0x1FFFu) <<< 3)
         ||| ((uint32 uncertaintyMilli &&& 0xFFFFu) <<< 16)
 
+    /// Try to pack (color, payload, uncertainty) without loss. Returns Error if any input is out of range.
+    let tryPack (color: byte) (payload: int) (uncertaintyMilli: int) : Result<Cell, string> =
+        if color > 7uy then Error "color out of 3-bit range (0..7)"
+        elif payload < 0 || payload > 8191 then Error "payload out of 13-bit range (0..8191)"
+        elif uncertaintyMilli < 0 || uncertaintyMilli > 65535 then Error "uncertainty out of 16-bit range (0..65535)"
+        else Ok (pack color payload uncertaintyMilli)
+
     /// The color lens — what the DISPLAY sees (the projection; bits 3+ invisible: the zero case).
     let color: ILens<Cell, byte> =
         { new ILens<Cell, byte> with

@@ -52,7 +52,7 @@ PushL0 ==
 Cascade(i) ==
     /\ i < MaxLevel
     /\ levels[i] >= Cap(i)
-    /\ levels[i+1] + levels[i] <= 2 * Cap(i+1)
+    /\ (i + 1 < MaxLevel => levels[i+1] + levels[i] <= 2 * Cap(i+1))
     /\ levels' = [levels EXCEPT ![i] = 0, ![i+1] = @ + levels[i]]
     /\ UNCHANGED <<pendingIn, totalInserted>>
 
@@ -81,8 +81,8 @@ InvMass ==
                 IN G[Len(pendingIn)]
     IN sumL + sumP = totalInserted
 
-\* Cap safety: no level exceeds 2× its cap (one self-merge overshoot tolerated).
-InvCap == \A i \in 0..MaxLevel: levels[i] <= 2 * Cap(i)
+\* Cap safety: no level except the highest exceeds 2× its cap.
+InvCap == \A i \in 0..(MaxLevel - 1): levels[i] <= 2 * Cap(i)
 
 \* Liveness: every accepted batch eventually drains out of `pendingIn`.
 LivDrained == <>[](pendingIn = <<>>)

@@ -3,7 +3,7 @@
    each keyed to one of K stripes, never lose a write and never see
    a torn value. Target: DiskBackingStore once refactored to per-
    stripe ConcurrentDictionary + Interlocked heapBytes. *)
-EXTENDS Integers, FiniteSets, TLC
+EXTENDS Integers, FiniteSets, Sequences, TLC
 
 CONSTANTS Stripes, Keys, Writers
 VARIABLES stripe, inflight, committed
@@ -55,5 +55,8 @@ CommittedConsistent ==
 \* Liveness: every writer eventually clears its in-flight ticket.
 EventuallyClear == \A w \in Writers: <>(inflight[w] = <<>>)
 
-Safety == [](TypeOK /\ CommittedConsistent)
+VersionBound == \A s \in 0..Stripes-1: stripe[s].version <= 2
+
+Safety == TypeOK /\ CommittedConsistent
+THEOREM Spec => []Safety
 ====

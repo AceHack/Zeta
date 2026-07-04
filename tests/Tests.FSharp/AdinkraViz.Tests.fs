@@ -38,6 +38,10 @@ let ``THE SHINE: selecting a generator brightens its edges and DIMS the other th
     let shone = AdinkraViz.render (Some 2) |> String.concat "\n"
     Assert.Contains("[34m", shone) // bit 2's color (blue, 4) still bright
     Assert.Contains("[2m", shone) // and dimming exists — the unselected generators recede
+    // the unselected generator colors are NOT bright (they are dimmed, so their bright color codes do not appear)
+    Assert.DoesNotContain("[31m", shone)
+    Assert.DoesNotContain("[32m", shone)
+    Assert.DoesNotContain("[36m", shone)
     let unshone = AdinkraViz.render None |> String.concat "\n"
     Assert.DoesNotContain("[2m", unshone) // no shine: nothing dimmed, all four live together
 

@@ -24,7 +24,7 @@
 ;                interpreter's per-op denotation (mul = wrapping bvmul, xorshr =
 ;                z ^ (z >> s), mask = the BV width). The IR rows are:
 ;                  tests/cross-verification/splitmix64/_gen/splitmix64.ir.json
-;                    rng.splitmix64@1  zetaId 129c1fac3a48075b481c0f10f30deb06
+;                    rng.splitmix64@1  zetaId 129c1fac3a48075bc89934da1e90fbe4
 ;                  tests/cross-verification/fmix32/_gen/fmix32.ir.json
 ;                    hash.fmix32@1
 ;                The splitmix64 multiplier constants are taken in their STORED

@@ -5,8 +5,8 @@
 meta	name	shape-braid
 meta	name-status	provisional — Aaron 2026-06-12: ALGEBRAS named right (braid group B3 / pure braid P3, Artin; Brunnian link, Brunn; Borromean rings), MEMORY naming in Microsoft's register (majorana-memory — we test against their Q#, should be a close match); leading candidate unchanged: BORROMEAN BRAID. Prior-art naming under discussion (Aaron 2026-06-12); leading candidate: BORROMEAN BRAID — (s1*s2^-1)^3 is the standard braid word whose closure is the Borromean rings (three loops, pairwise unlinked, collectively inseparable: remove ANY one and the rest fall apart — Brunnian property, Brunn 1892; the Borromeo crest; Aravind 1997 ties Borromean topology to GHZ entanglement)
 meta	catalog	shapes
-meta	shape-zetaid	de84b57aa8bcdd1534c617f0fed3a2e2
-gen	weave	de84b57aa8bcdd1534c617f0fed3a2e2	1	7	strands:3;word:1,-2,1,-2,1,-2;rows:21
+meta	shape-zetaid	de84b57aa8bcdd15c3537e984cd545cc
+gen	weave	de84b57aa8bcdd15c3537e984cd545cc	1	7	strands:3;word:1,-2,1,-2,1,-2;rows:21
 constant	strands	3	how many strands the figure weaves	three is the smallest braid group with a NON-trivial Artin relation (B2 is just twisting) — the first place the hairdresser's move means something
 constant	word	1,-2,1,-2,1,-2	the crossing sequence (positive = left over right; negative reverses)	THE LOCKED PLAIT: the plait move (1,-2) repeated three times is ONE PERIOD of a real hair braid — the permutation returns to identity, so every strand starts AND ends in its own column (Aaron: "is there any way to lock them in place?" — yes: braid until they come home). Alternating signs keep each strand taking turns on top (his earlier correction); the Artin overlay (1,2,1 = 2,1,2) stays the in-code law
 constant	lock-period	6	crossings until the strands return to their own columns	((01)(12))^3 = identity — the plait's period; fewer crossings leave the ends scrambled, which is what "blue messes up" looks like

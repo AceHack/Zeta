@@ -4,8 +4,8 @@
 # the emit/retract duality drawn as physics.
 meta	name	shape-worldline
 meta	catalog	shapes
-meta	shape-zetaid	1f918b32526543614aeb52ad3adc070a
-gen	path	1f918b32526543614aeb52ad3adc070a	1	7	start:8,30;drift:1;rows:28;retract-at:0
+meta	shape-zetaid	1f918b3252654361c4e61fcd5b42590c
+gen	path	1f918b3252654361c4e61fcd5b42590c	1	7	start:8,30;drift:1;rows:28;retract-at:0
 constant	drift	1	horizontal cells moved per time row	slower than light on this court (the lightcone cartridge marks slope 1) — a worldline must stay INSIDE its cone or the story is wrong
 constant	rows	28	time rows the history spans	the court is 32 tall; 28 leaves margin to SEE the line begin and end — histories are bounded, retraction is how they unwind
 constant	retract-at	0	row at which the path retracts (0 = never)	the zero case is structural: the default worldline only emits; set a row and the antiparticle walks the same cells backward (Z-set -1, the correction register)
