@@ -30,6 +30,7 @@
     <Compile Include="ThousandBrainsCron.fs" />
     <Compile Include="AskBidClearing.fs" />
     <Compile Include="ReticulumTransport.fs" />
+    <Compile Include="ReticulumBusMeter.fs" />
     <Compile Include="Web3Settlement.fs" />
     <Compile Include="SparseSocietyNetwork.fs" />
   </ItemGroup>
