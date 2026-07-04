@@ -44,28 +44,45 @@ describe("PKCE", () => {
 });
 
 describe("OpenAI provider — device-code flow", () => {
-  test("startDeviceFlow: POST deviceauth/usercode {client_id}; parses the start", async () => {
-    const { transport, calls } = fakeTransport({ status: 200, body: JSON.stringify({ device_auth_id: "dev-1", user_code: "WXYZ-1234", interval: 5, verification_uri: "https://chatgpt.com/activate" }) });
+  test("startDeviceFlow: POST /api/accounts/deviceauth/usercode {client_id}; parses the start", async () => {
+    const { transport, calls } = fakeTransport({ status: 200, body: JSON.stringify({ device_auth_id: "dev-1", user_code: "WXYZ-1234", interval: 5, verification_uri: "https://auth.openai.com/codex/device" }) });
     const r = await P.startDeviceFlow(transport);
-    expect(calls[0].url).toBe("https://auth.openai.com/deviceauth/usercode");
+    expect(calls[0].url).toBe("https://auth.openai.com/api/accounts/deviceauth/usercode"); // under /api/accounts (confirmed live)
     expect(JSON.parse(calls[0].body)).toEqual({ client_id: "app_EMoamEEZ73f0CkXaXp7hrann" });
     expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.value.deviceAuthId).toBe("dev-1");
       expect(r.value.userCode).toBe("WXYZ-1234");
-      expect(r.value.verificationUri).toBe("https://chatgpt.com/activate");
       expect(r.value.intervalSec).toBe(5);
     }
   });
 
-  test("pollDevice: 403/404 → pending; a token body → tokens", async () => {
+  // CONFIRMED LIVE: pollDevice on 200 gets { status, authorization_code, code_verifier } and EXCHANGES it
+  // for tokens (a second POST /oauth/token). A sequenced fake returns the device-success then the tokens.
+  test("pollDevice: 403 → pending; a success → exchanges the code for tokens", async () => {
     const start: DeviceFlowStart = { deviceAuthId: "d", userCode: "u", verificationUri: "v", intervalSec: 5 };
     const { transport: t403 } = fakeTransport({ status: 403, body: "" });
     expect(await P.pollDevice(t403, start)).toEqual({ ok: true, pending: true });
-    const { transport: tOk, calls } = fakeTransport({ status: 200, body: tokenBody });
-    const done = await P.pollDevice(tOk, start);
-    expect(calls[0].url).toBe("https://auth.openai.com/deviceauth/token");
+
+    const deviceSuccess = JSON.stringify({ status: "success", authorization_code: "AUTHCODE", code_verifier: "VERIFIER" });
+    const responses = [{ status: 200, body: deviceSuccess }, { status: 200, body: tokenBody }];
+    let i = 0;
+    const calls: { url: string; body: string }[] = [];
+    const seq: HttpTransport = {
+      post: (url, _h, body) => {
+        calls.push({ url, body });
+        return Promise.resolve(responses[i++]);
+      },
+      get: () => Promise.resolve({ status: 404, body: "" }),
+    };
+    const done = await P.pollDevice(seq, start);
+    expect(calls[0].url).toBe("https://auth.openai.com/api/accounts/deviceauth/token"); // 1) poll
     expect(JSON.parse(calls[0].body)).toEqual({ device_auth_id: "d", user_code: "u" });
+    expect(calls[1].url).toBe("https://auth.openai.com/oauth/token"); // 2) exchange the auth code
+    const form = new URLSearchParams(calls[1].body);
+    expect(form.get("grant_type")).toBe("authorization_code");
+    expect(form.get("code")).toBe("AUTHCODE");
+    expect(form.get("code_verifier")).toBe("VERIFIER");
     expect(done).toEqual({ ok: true, tokens: { accessToken: "AT", refreshToken: "RT", accountId: "acct-1" } });
   });
 });

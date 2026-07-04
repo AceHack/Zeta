@@ -52,35 +52,38 @@ describe("codex-oauth — the ChatGPT-subscription backend", () => {
     expect(readCodexAuth(JSON.stringify({ auth_mode: "apikey", OPENAI_API_KEY: "sk-x" }))).toBeNull();
   });
 
-  test("REQUEST SHAPE: POST backend-api/responses, Bearer token + chatgpt-account-id, NO api key", async () => {
+  // CONFIRMED LIVE (a real "pong"): POST /codex/responses, streaming SSE, the required headers + body.
+  const sseBody = ['data: {"type":"response.created"}', 'data: {"type":"response.output_text.delta","delta":"po"}', 'data: {"type":"response.output_text.delta","delta":"ng"}', "data: [DONE]"].join("\n");
+
+  test("REQUEST SHAPE: POST /codex/responses, Bearer + account-id + originator + beta, stream:true store:false", async () => {
     const a = auth();
-    const okBody = JSON.stringify({ output_text: "the Casimir gap is a boundary condition" });
-    const { transport, calls } = fakeTransport({ status: 200, body: okBody });
-    await respond(a, transport, [{ role: "user", content: "map it" }], "gpt-5.2");
-    expect(calls[0].url).toBe("https://chatgpt.com/backend-api/responses");
+    const { transport, calls } = fakeTransport({ status: 200, body: sseBody });
+    await respond(a, transport, [{ role: "user", content: "map it" }]);
+    expect(calls[0].url).toBe("https://chatgpt.com/backend-api/codex/responses");
     expect(calls[0].headers.Authorization).toBe("Bearer ACCESS-TOKEN");
     expect(calls[0].headers["chatgpt-account-id"]).toBe("acct-123");
-    const sent = JSON.parse(calls[0].body) as { model: string; input: unknown; stream: boolean };
-    expect(sent.model).toBe("gpt-5.2");
+    expect(calls[0].headers.originator).toBe("codex_cli_rs");
+    expect(calls[0].headers["OpenAI-Beta"]).toBe("responses=experimental");
+    const sent = JSON.parse(calls[0].body) as { model: string; input: unknown; stream: boolean; store: boolean };
+    expect(sent.model).toBe("gpt-5.5"); // the default Codex model (gpt-5.2 is rejected for a ChatGPT account)
+    expect(sent.stream).toBe(true);
+    expect(sent.store).toBe(false);
     expect(sent.input).toEqual([{ role: "user", content: "map it" }]);
   });
 
-  test("RESPONSE PARSE: output_text (and the output[].content[].text fallback)", async () => {
+  test("SSE PARSE: response.output_text.delta events concatenate into the answer", async () => {
     const a = auth();
-    const { transport: t1 } = fakeTransport({ status: 200, body: JSON.stringify({ output_text: "pong" }) });
-    expect(await respond(a, t1, [{ role: "user", content: "hi" }], "m")).toEqual({ ok: true, content: "pong" });
-    const nested = JSON.stringify({ output: [{ type: "message", role: "assistant", content: [{ type: "output_text", text: "nested pong" }] }] });
-    const { transport: t2 } = fakeTransport({ status: 200, body: nested });
-    expect(await respond(a, t2, [{ role: "user", content: "hi" }], "m")).toEqual({ ok: true, content: "nested pong" });
+    const { transport } = fakeTransport({ status: 200, body: sseBody });
+    expect(await respond(a, transport, [{ role: "user", content: "hi" }])).toEqual({ ok: true, content: "pong" });
   });
 
-  test("ERRORS ARE CLEAN: non-200, malformed, transport throw → verdict, never throws", async () => {
+  test("ERRORS ARE CLEAN: non-200, no-deltas, transport throw → verdict, never throws", async () => {
     const a = auth();
     const { transport: t1 } = fakeTransport({ status: 401, body: "unauthorized" });
-    expect(await respond(a, t1, [{ role: "user", content: "hi" }], "m")).toEqual({ ok: false, error: "http 401: unauthorized" });
-    const { transport: t2 } = fakeTransport({ status: 200, body: "not json{" });
-    expect(await respond(a, t2, [{ role: "user", content: "hi" }], "m")).toEqual({ ok: false, error: "malformed response: not JSON" });
+    expect(await respond(a, t1, [{ role: "user", content: "hi" }])).toEqual({ ok: false, error: "http 401: unauthorized" });
+    const { transport: t2 } = fakeTransport({ status: 200, body: 'data: {"type":"response.created"}\ndata: [DONE]' }); // no deltas
+    expect(await respond(a, t2, [{ role: "user", content: "hi" }])).toEqual({ ok: false, error: "no output_text deltas in the SSE stream" });
     const { transport: t3 } = fakeTransport(() => Promise.reject(new Error("offline")));
-    expect(await respond(a, t3, [{ role: "user", content: "hi" }], "m")).toEqual({ ok: false, error: "transport error: offline" });
+    expect(await respond(a, t3, [{ role: "user", content: "hi" }])).toEqual({ ok: false, error: "transport error: offline" });
   });
 });

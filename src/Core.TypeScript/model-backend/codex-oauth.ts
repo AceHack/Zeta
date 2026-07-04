@@ -63,52 +63,56 @@ export type ResponsesOutcome =
   | { readonly ok: false; readonly error: string };
 
 const BACKEND_BASE = "https://chatgpt.com/backend-api";
+const DEFAULT_MODEL = "gpt-5.5"; // CONFIRMED LIVE: the model Codex sends; gpt-5.2 etc. are rejected for a ChatGPT account.
 
-/// Extract the assistant text from a (non-streaming) Responses payload. The Responses API exposes a
-/// convenience `output_text`; failing that, walk `output[].content[]` for an `output_text` item.
-function extractResponsesText(parsed: unknown): string | null {
-  if (typeof parsed !== "object" || parsed === null) return null;
-  const direct = (parsed as { output_text?: unknown }).output_text;
-  if (typeof direct === "string") return direct;
-  const output = (parsed as { output?: unknown }).output;
-  if (!Array.isArray(output)) return null;
-  for (const item of output) {
-    if (typeof item !== "object" || item === null) continue;
-    const content = (item as { content?: unknown }).content;
-    if (!Array.isArray(content)) continue;
-    for (const c of content) {
-      if (typeof c === "object" && c !== null && typeof (c as { text?: unknown }).text === "string") {
-        return (c as { text: string }).text;
-      }
+/// The request recipe CONFIRMED LIVE against chatgpt.com/backend-api/codex/responses (a real "pong"):
+///   POST /codex/responses  headers: Authorization, chatgpt-account-id, originator:"codex_cli_rs",
+///     OpenAI-Beta:"responses=experimental", Accept:"text/event-stream"
+///   body: { model:"gpt-5.5", input:[{role,content}], stream:TRUE, store:FALSE }  ← both required
+///   response: an SSE stream of Responses events; the answer = concatenated response.output_text.delta.
+const requestHeaders = (auth: CodexAuth) => ({
+  Authorization: `Bearer ${auth.accessToken}`,
+  "chatgpt-account-id": auth.accountId,
+  originator: "codex_cli_rs",
+  "OpenAI-Beta": "responses=experimental",
+  "Content-Type": "application/json",
+  Accept: "text/event-stream",
+});
+
+const requestBody = (messages: readonly ChatMessage[], model: string) =>
+  JSON.stringify({ model, input: messages, stream: true, store: false }); // stream:true + store:false are both required
+
+/// Assemble the assistant text from a buffered SSE body: concatenate every `response.output_text.delta`.
+/// Pure + testable — the real transport buffers the stream, this extracts the answer.
+export function assembleSse(sse: string): string {
+  let out = "";
+  for (const line of sse.split("\n")) {
+    if (!line.startsWith("data:")) continue;
+    const data = line.slice(5).trim();
+    if (data === "[DONE]" || data === "") continue;
+    try {
+      const ev = JSON.parse(data) as { type?: unknown; delta?: unknown };
+      if (ev.type === "response.output_text.delta" && typeof ev.delta === "string") out += ev.delta;
+    } catch {
+      // non-JSON SSE line (comment / keep-alive) — skip
     }
   }
-  return null;
+  return out;
 }
 
-/// Call the ChatGPT backend Responses API with the subscription token — no API key. Non-streaming.
-/// Never throws: a filesystem/transport/HTTP error is a clean verdict.
-export async function respond(auth: CodexAuth, transport: HttpTransport, messages: readonly ChatMessage[], model: string): Promise<ResponsesOutcome> {
-  const url = `${BACKEND_BASE}/responses`;
-  const headers = {
-    Authorization: `Bearer ${auth.accessToken}`,
-    "chatgpt-account-id": auth.accountId,
-    "Content-Type": "application/json",
-  };
-  const body = JSON.stringify({ model, input: messages, stream: false });
+/// Call the ChatGPT backend `codex/responses` with the subscription token — no API key. The endpoint
+/// requires streaming; the transport buffers the SSE body and `assembleSse` concatenates the deltas
+/// into the answer. (Token-by-token AsyncIterable — the IChatCompleter interface — is the next slice,
+/// gated on a streaming transport method.) Never throws.
+export async function respond(auth: CodexAuth, transport: HttpTransport, messages: readonly ChatMessage[], model: string = DEFAULT_MODEL): Promise<ResponsesOutcome> {
   let res: { status: number; body: string };
   try {
-    res = await transport.post(url, headers, body);
+    res = await transport.post(`${BACKEND_BASE}/codex/responses`, requestHeaders(auth), requestBody(messages, model));
   } catch (e) {
     return { ok: false, error: `transport error: ${e instanceof Error ? e.message : String(e)}` };
   }
   if (res.status < 200 || res.status >= 300) return { ok: false, error: `http ${String(res.status)}: ${res.body.slice(0, 500)}` };
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(res.body);
-  } catch {
-    return { ok: false, error: "malformed response: not JSON" };
-  }
-  const text = extractResponsesText(parsed);
-  if (text === null) return { ok: false, error: "malformed response: no output text (confirm the live Responses shape)" };
-  return { ok: true, content: text };
+  const content = assembleSse(res.body);
+  if (content === "") return { ok: false, error: "no output_text deltas in the SSE stream" };
+  return { ok: true, content };
 }

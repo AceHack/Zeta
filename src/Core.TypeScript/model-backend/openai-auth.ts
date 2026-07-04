@@ -22,8 +22,14 @@ import type { HttpTransport } from "./backend.ts";
 import type { AuthProvider, AuthResult, DeviceFlowStart, OAuthTokens, PkceChallenge, PollResult } from "./auth-provider.ts";
 
 const AUTH_BASE = "https://auth.openai.com";
+// the deviceauth endpoints live under /api/accounts (confirmed live — a 405 HTML page at the bare
+// /deviceauth path revealed the real host is API_BASE = AUTH_BASE + /api/accounts).
+const API_BASE = `${AUTH_BASE}/api/accounts`;
 const CLIENT_ID = "app_EMoamEEZ73f0CkXaXp7hrann";
-const DEFAULT_VERIFICATION_URI = "https://chatgpt.com/settings/security";
+// where the user enters the device code (auth.openai.com/codex/device), NOT the settings page.
+const DEFAULT_VERIFICATION_URI = "https://auth.openai.com/codex/device";
+// the redirect_uri the device-flow code was minted against (must match on exchange).
+const DEVICE_REDIRECT_URI = "https://auth.openai.com/deviceauth/callback";
 
 const jsonHeaders = { "Content-Type": "application/json", "User-Agent": "zeta-auth/1.0" };
 const formHeaders = { "Content-Type": "application/x-www-form-urlencoded", "User-Agent": "zeta-auth/1.0" };
@@ -43,12 +49,29 @@ function parseJson(body: string): unknown {
   }
 }
 
-/// Pull { access_token, refresh_token, account_id? } out of an OAuth token response.
+/// The chatgpt account id lives in the id_token JWT under the `https://api.openai.com/auth` claim
+/// (`chatgpt_account_id`). Decode the middle segment; return undefined if anything is off (never throws).
+function accountIdFromIdToken(idToken: unknown): string | undefined {
+  if (typeof idToken !== "string") return undefined;
+  const seg = idToken.split(".")[1];
+  if (!seg) return undefined;
+  try {
+    const claims = JSON.parse(Buffer.from(seg, "base64").toString("utf8")) as Record<string, unknown>;
+    const auth = claims["https://api.openai.com/auth"] as { chatgpt_account_id?: unknown } | undefined;
+    return typeof auth?.chatgpt_account_id === "string" ? auth.chatgpt_account_id : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/// Pull { access_token, refresh_token, account_id } out of an OAuth token response. `account_id` comes
+/// from the top-level field if present, else the id_token JWT claim (CONFIRMED LIVE: it's in id_token).
 function tokensOf(parsed: unknown): OAuthTokens | null {
   if (typeof parsed !== "object" || parsed === null) return null;
-  const p = parsed as { access_token?: unknown; refresh_token?: unknown; account_id?: unknown };
+  const p = parsed as { access_token?: unknown; refresh_token?: unknown; account_id?: unknown; id_token?: unknown };
   if (typeof p.access_token !== "string" || typeof p.refresh_token !== "string") return null;
-  return { accessToken: p.access_token, refreshToken: p.refresh_token, accountId: typeof p.account_id === "string" ? p.account_id : undefined };
+  const accountId = typeof p.account_id === "string" ? p.account_id : accountIdFromIdToken(p.id_token);
+  return { accessToken: p.access_token, refreshToken: p.refresh_token, accountId };
 }
 
 export const openAiCodexProvider: AuthProvider = {
@@ -57,7 +80,7 @@ export const openAiCodexProvider: AuthProvider = {
   async startDeviceFlow(transport: HttpTransport): Promise<AuthResult<DeviceFlowStart>> {
     let res: { status: number; body: string };
     try {
-      res = await transport.post(`${AUTH_BASE}/deviceauth/usercode`, jsonHeaders, JSON.stringify({ client_id: CLIENT_ID }));
+      res = await transport.post(`${API_BASE}/deviceauth/usercode`, jsonHeaders, JSON.stringify({ client_id: CLIENT_ID }));
     } catch (e) {
       return { ok: false, error: `transport error: ${e instanceof Error ? e.message : String(e)}` };
     }
@@ -79,16 +102,23 @@ export const openAiCodexProvider: AuthProvider = {
   async pollDevice(transport: HttpTransport, start: DeviceFlowStart): Promise<PollResult> {
     let res: { status: number; body: string };
     try {
-      res = await transport.post(`${AUTH_BASE}/deviceauth/token`, jsonHeaders, JSON.stringify({ device_auth_id: start.deviceAuthId, user_code: start.userCode }));
+      res = await transport.post(`${API_BASE}/deviceauth/token`, jsonHeaders, JSON.stringify({ device_auth_id: start.deviceAuthId, user_code: start.userCode }));
     } catch (e) {
       return { ok: false, error: `transport error: ${e instanceof Error ? e.message : String(e)}` };
     }
-    // 403 / 404 = not authorized yet (keep polling) — the documented pending signal.
+    // 403 / 404 = not authorized yet (keep polling) — the pending signal.
     if (res.status === 403 || res.status === 404) return { ok: true, pending: true };
     if (res.status < 200 || res.status >= 300) return { ok: false, error: `http ${String(res.status)}: ${res.body.slice(0, 300)}` };
-    const tokens = tokensOf(parseJson(res.body));
-    if (!tokens) return { ok: false, error: "malformed device token response (confirm live shape)" };
-    return { ok: true, tokens };
+    // CONFIRMED LIVE: a 200 is NOT tokens — it's { status:"success", authorization_code, code_verifier }
+    // (the device flow's PKCE is server-generated). Exchange the code for tokens (grant_type=authorization_code).
+    const p = parseJson(res.body) as { status?: unknown; authorization_code?: unknown; code_verifier?: unknown } | null;
+    if (!p) return { ok: false, error: "malformed device token response (not JSON)" };
+    if (p.status !== "success" || typeof p.authorization_code !== "string" || typeof p.code_verifier !== "string") {
+      return { ok: false, error: "malformed device token response (expected status/authorization_code/code_verifier)" };
+    }
+    const exchanged = await this.exchangeCode(transport, p.authorization_code, p.code_verifier, DEVICE_REDIRECT_URI);
+    if (!exchanged.ok) return { ok: false, error: `code exchange: ${exchanged.error}` };
+    return { ok: true, tokens: exchanged.value };
   },
 
   authorizeUrl(pkce: PkceChallenge, redirectUri: string, state: string): string {
