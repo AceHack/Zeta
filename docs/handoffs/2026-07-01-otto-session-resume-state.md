@@ -1,30 +1,24 @@
-# Otto session resume — 2026-07-03 (081KVP3GY* complete)
+# Otto / Riven session resume — 2026-07-04 (identity/keys track closed)
 
-Main at save: post **#9308** merge (`1632a7357`).
+Main at save: post Shamir BP-16 + commit-msg hook landings.
 
-## 081KLL7… — complete (#9203 + #9212)
-
-- **14/14** Bun realizers; shell `.sh` realizers retired; bun-only `realize_mechanisms --all`
-
-## 081KSXN… — **complete** (#8948 + #9214–#9300)
+## Closed this arc
 
 | Slice | PR | Delivers |
 |-------|-----|----------|
-| 1–5 | #9214–#9300 | Event G-Set, DORA folds, dashboard wiring |
+| Trust-graph + Shamir oracle | #9308 | `trust-graph.ts`, `shamir.ts`, `TrustGraph.als` |
+| Shamir CA custody | #9339 | `ca-shamir-custody.ts`, CLI hooks |
+| Cluster-trust-root rotate | #9371 | peer-preserving `rotate-cluster` |
+| Safe markdown auto-heal | #9365 | MD032/MD026-only heal (no MD018/MD037 mangling) |
+| Manus commit-msg guard | #9415 | tracked hook + install/flake/ACE + CI |
+| Shamir BP-16 formal | #9416 | `Shamir.fs`, Z3 + FsCheck + golden seed |
 
-## 081KVP2M1… — **complete** (#9300)
+## Lifecycle triad (081KVP2M1) — complete
 
-- rotate + cluster teardown + KRL revoke; lifecycle triad closed
-
-## 081KVP3GYW1 + 081KVP3GYWS0 — **complete** (#9308)
-
-- **trust-graph.ts** — SDSI/SPKI scope rule (identity vs authorization); KRL closure
-- **shamir.ts** — GF(257) k-of-n split/combine reference oracle
-- **TrustGraph.als** — structural confluence model
-- Harness gap-closed assertions; work items **closed**
+rotate + cluster teardown + KRL revoke + cluster-trust-root rotate + Shamir custody.
 
 ## Next resume targets
 
-- Wire Shamir into CA generation/rotate custody path
-- Unified cluster-trust-root rotate (deferred — no work item yet)
-- Z3/FsCheck formal cross-check for Shamir (BP-16 leg)
+- Alloy `IdentityReissuable` path-existence with shares (081KVP3GYW1 R4) — in flight / next
+- FROST / threshold-MPC for live signing (research-grade, multi-PR)
+- Main gate: last completed run green; treat intermittent PR-rollup reds as concurrent-main noise unless reproducible locally
