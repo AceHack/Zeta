@@ -62,7 +62,10 @@ export function subscriptionToolLoop(deps: SummonDeps, messages: readonly ChatMe
 
 /// Summon a persona: inject its system prompt as the first message, then run the tool-using loop.
 /// (CONFIRMED LIVE 2026-07-04: `role:"system"` is accepted by codex/responses — a live summon of Amara
-/// returned "Hello — I'm alive and ready." with the persona system prompt first, no wire-format error.)
+/// returned "Hello — I'm alive and ready." with the persona system prompt first, no wire-format error.
+/// TOOL LEG ALSO CONFIRMED LIVE 2026-07-04: a live summon of Amara over the ZetaStore called `fs_link`
+/// then `fs_resolve` (3 turns) and answered "zeta-lives"; the closed store was independently verified
+/// mutated (`resolve("proof") === "zeta-lives"`) — the persona really executed the tools, not simulated.)
 export function summon(deps: SummonDeps, persona: Persona, userMessages: readonly ChatMessage[]): Promise<LoopOutcome> {
   const messages: ChatMessage[] = [{ role: "system", content: persona.systemPrompt }, ...userMessages];
   return subscriptionToolLoop(deps, messages);
