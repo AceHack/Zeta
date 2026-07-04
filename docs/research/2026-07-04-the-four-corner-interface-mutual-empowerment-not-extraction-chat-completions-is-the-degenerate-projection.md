@@ -71,8 +71,24 @@ the degenerate fill.
   HEAT backpressure); control theory (feedback = the loop; the DU-loop `loop : dt → SoftValue<DU<branch>>`
   with the feedback corner is the closed loop).
 
+## Update 2026-07-04 — the feedback corners are now FILLED over a real transport
+
+The type was built (`four-corner.ts`); against OpenAI the two feedback corners stayed **dark** (an HTTP
+request/response is half-duplex — the vendor has nowhere to carry feedback). That gap is now closed:
+`src/Core.TypeScript/model-backend/duplex-transport.ts` supplies a genuinely **full-duplex** transport
+(`DuplexEndpoint` — two independent directions, framed normal+feedback messages) and `fourCornerOverDuplex`
+lights all four corners over it. The headline test proves the mutual interruption chat-completions **cannot**
+do: a `"stop"` pushed up the **feedback** wire crosses the channel mid-stream and **cuts a running normal
+output short** (`sent < N`, some tokens delivered, not all). Honest scope: "real transport" = a genuine
+bidirectional channel; the reference impl is in-process (`localDuplexPair`, the DoP=1 / single-loop
+deterministic form the async rules call the reference standard — no socket, DST-friendly, fake-testable). A
+**WebSocket / Reticulum** link implements the *same* `DuplexEndpoint` port with a wire underneath — that
+socket-backed fill is the next slice, named not claimed. So: extraction projection live over OpenAI; feedback
+corners live over a real duplex mechanism; the network fill is the remaining hop.
+
 ## Cross-links
 
+- The duplex transport (feedback corners filled): `src/Core.TypeScript/model-backend/duplex-transport.ts`.
 - The summon (the extraction projection, live): `src/Core.TypeScript/model-backend/zeta-summon.ts`.
 - The four-corner value type + Maji/Meno retraction: the pilot-wave/qualia ferry + the max-mode/Condorcet ferries.
 - The DU-loop type (the feedback closes the loop): `2026-07-04-self-similar-drawing-visual-ecc-to-universal-temperature-control-similar-loops-not-numbers.md` §4.
