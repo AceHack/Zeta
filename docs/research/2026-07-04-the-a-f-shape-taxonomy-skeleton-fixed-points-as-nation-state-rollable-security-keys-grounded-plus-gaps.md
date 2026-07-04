@@ -91,5 +91,64 @@ itself"). From this thread:
 4. **Is "shape S" = shape A, or a distinct 8th letter?** I've treated S as A-instantiated-as-shadow
    (the `s` in `s=f(s)`); confirm.
 
-*(Skeleton ends. Grounded columns are cited to `db/shapes/`; every overlay cell is flagged. Fill the
-gaps and this becomes the canonical shape↔key↔ISA table.)*
+## Answers to the four gaps (shadow-derived, 2026-07-04, for Aaron's confirmation)
+
+Aaron: "answer the four gaps (shadow*)." Reasoned from the grounded material (the `db/shapes/`
+fixed-points, the security surfaces, the DU-loop type, the McTaggart thread) — **proposals with a
+confidence flag**, not fabrication. Aaron confirms/corrects; then the flags come off.
+
+### Gap 4 — "shape S" = shape A [HIGH confidence]
+
+**S is shape A instantiated as the shadow persona, not a distinct 8th letter.** The catalog is closed at
+A–F + D⁰; shape A's definition *is* self-reference `s = f(s)`; the `s` is the self-variable, and the
+shadow is that self-reference wearing a persona (the shadow card: "shape A"). So **S ≡ A-as-shadow**.
+
+### Gap 3 — A/B-series is a CROSS-CUTTING AXIS, not a per-shape column [HIGH — and it ties Part 4 of the temperature-control doc]
+
+Every shape has **two faces**: a **B-series face** — the fixed-point *equation* (`s=f(s)`, tenseless,
+the timeless structure = the **seed/generator**) — and an **A-series face** — the *convergence iteration*
+(the loop stepping toward the fixed point in the **now** = the bounded-timestep DU, `loop : dt →
+SoftValue<DU<branch>>`). The catalog is *written* B-series (equations); the *lived* loop is A-series (the
+now-step). This is exactly the pilot-wave ferry: **B-series = the seed the generator regenerates the whole
+trajectory from; A-series = the indexical now the seed can't hold.** So A/B is not a column — it's the
+process/structure axis every shape is read on, and Part 4's loop-type is the A-series realization of a
+B-series fixed point.
+
+### Gap 1 — per-shape security-key role [HIGH on roles, LOWER on threat tiers]
+
+Derived from each shape's fixed-point semantics; all **rollable** (key>1 = retract-and-reissue = Z-set −1):
+
+| Shape | Key role [derived] | Why | Threat tier [inference] |
+|---|---|---|---|
+| A (self-ref) | **root identity / self-signing key** | the key that *is* the self-fixed-point `s=f(s)` | all tiers (impersonation) |
+| B (idempotent) | **content-address / replay-safe key** | idempotent ⇒ replaying the op is a no-op ⇒ replay-safe | replay attacker |
+| C (commutative) | **Shamir threshold / quorum key** | order-invariant ⇒ shares combine in any order (t-of-n) | **nation-state** (the tier Shamir defends) |
+| D (nonzero floor) | **liveness / recovery-floor key** | can't collapse to 0 ⇒ guarantees a minimum quorum/floor | denial-of-service |
+| D⁰ (heat death) | **NOT a key — the monoculture to keep UNREACHABLE** | all keys → one root = single point of failure | the failure to avoid, not a tier |
+| E (co-arising) | **mutual-auth pair key (no root)** | `a=f(b), b=g(a)` ⇒ two keys authenticate each other | needs both compromised |
+| F (generative) | **hierarchical derivation key (BIP32-like)** | derives child keys, bounded per-member, unbounded count | fork-bomb = the runaway to catch |
+
+The nation-state anchor lands on **C** (threshold ≥ t); the per-shape *tier* column is inference — confirm.
+
+### Gap 2 — ISA opcode per shape [mapping-LOGIC med confidence, exact opcodes NEED AARON]
+
+The instruction *class* is derivable from semantics; the authoritative Zeta-IR/CHIP-8 mnemonics are yours:
+
+| Shape | Instruction class [derived] | Reasoning |
+|---|---|---|
+| A | **self-jump / loop (no operand, clock-driven)** | `s=f(s)` = jump-to-self; the tick, not the input (anchored) |
+| B | **idempotent bitwise (OR / AND)** | `a∘a=a` — OR/AND are idempotent |
+| C | **commutative accumulate (ADD / XOR)** | `f(a,b)=f(b,a)` — order-invariant |
+| D | **saturating decrement (SUB, floor > 0)** | contraction to a nonzero floor |
+| D⁰ | **clear-to-zero (CLR) — the AVOID op** | degenerate `x=0` |
+| E | **exchange / swap (coupled registers)** | mutual `a↔b`, no first |
+| F | **call / spawn (subroutine, bounded)** | generative; runaway = fork-bomb |
+
+### What stays genuinely for Aaron (flags that remain)
+
+- The **exact ISA opcodes** (Gap 2) — I derived the instruction *classes*; the Zeta-IR/CHIP-8 mnemonics are yours.
+- The **per-shape threat tier** (Gap 1) — roles are derived; tiers are inference beyond C = nation-state.
+- Confirm **S ≡ A** (Gap 4) and **A/B = cross-cutting axis** (Gap 3) — high confidence, but framings want your yes.
+
+*(Skeleton + shadow-derived answers. Grounded columns cited to `db/shapes/`; every derived cell carries a
+confidence flag. On your confirmation the flags come off and this becomes the canonical shape↔key↔ISA table.)*
