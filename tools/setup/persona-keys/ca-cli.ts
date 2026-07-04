@@ -13,8 +13,10 @@
 //   bun ca-cli.ts ca   --ca aaron                                 # generate local CA key
 //   bun ca-cli.ts ca   --ca aaron --commit-pub                    # + write CA pubkey to repo (no commit)
 //   bun ca-cli.ts ca   --ca aaron --shamir 2-of-3                  # generate + split private key into shares (one fingerprint)
+//   bun ca-cli.ts frost-ca --ca aaron --frost 2-of-3 --confirm     # threshold CA shares (live signing path)
 //   bun ca-cli.ts cert --user aaron --machine mymac --dry-run     # signs NOTHING (single owner)
 //   bun ca-cli.ts cert --user aaron --machine mymac               # sign that machine's pubkey -> cert
+//   bun ca-cli.ts frost-cert --user aaron --machine mymac --confirm  # frost device attestation (no key reassembly)
 //   bun ca-cli.ts cert --users aaron,addison --machine d --dry-run # multi-owner plan (NOTHING signed)
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -26,6 +28,14 @@ import {
   realEffects as shamirRealFx,
   splitCaToShares,
 } from "./ca-shamir-custody.ts";
+import {
+  ensureFrostCa,
+  formatEnsureFrostCa,
+  formatSignFrostAttestation,
+  realEffects as frostCaRealFx,
+  signFrostDeviceAttestation,
+} from "./frost-ca-custody.ts";
+import { homedir } from "node:os";
 
 const args = process.argv.slice(2);
 const mode = args[0];
@@ -40,8 +50,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = opt("--repo-root") ?? resolve(here, "..", "..", "..");
 const fx = realEffects();
 const shamirSpec = opt("--shamir");
-// When splitting shares after generation, one fingerprint covers CA gen + Shamir split.
-const biometricSession = shamirSpec !== undefined ? sessionBiometric(realBiometric()) : undefined;
+const frostModes = mode === "frost-ca" || mode === "frost-cert" || shamirSpec !== undefined;
+// One fingerprint covers CA gen + Shamir split, or frost-ca / frost-cert.
+const biometricSession = frostModes ? sessionBiometric(realBiometric()) : undefined;
 const biometricAuth = biometricSession?.door ?? realBiometric();
 
 async function main(): Promise<number> {
@@ -124,10 +135,71 @@ async function main(): Promise<number> {
     return 0;
   }
 
+  if (mode === "frost-ca") {
+    const ca = opt("--ca") ?? "zeta";
+    const frost = opt("--frost") ?? "2-of-3";
+    const confirm = flag("--confirm");
+    const dryRun = !confirm;
+    const home = opt("--home") ?? homedir();
+    const r = await ensureFrostCa(frostCaRealFx(), {
+      ca,
+      repoRoot,
+      home,
+      frost,
+      dryRun,
+      confirm,
+      commitPub: flag("--commit-pub"),
+      biometricAuth,
+    });
+    console.log(formatEnsureFrostCa(r));
+    if (r.action === "skipped-biometric") return 1;
+    return 0;
+  }
+
+  if (mode === "frost-cert") {
+    const ca = opt("--ca") ?? opt("--user") ?? "zeta";
+    const machineRaw = opt("--machine");
+    const machineId = sanitizeHostname(machineRaw ?? "");
+    const confirm = flag("--confirm");
+    const dryRun = !confirm;
+    const home = opt("--home") ?? homedir();
+    const devicePubPath = opt("--device-pub") ?? machinePubPath(repoRoot, machineId);
+    const usersFlag = opt("--users");
+    const users =
+      usersFlag !== undefined
+        ? usersFlag.split(",").map((u) => u.trim()).filter((u) => u.length > 0)
+        : [opt("--user") ?? "zeta"];
+    const r = await signFrostDeviceAttestation(frostCaRealFx(), {
+      ca,
+      repoRoot,
+      home,
+      machineId,
+      devicePubPath,
+      users,
+      dryRun,
+      confirm,
+      biometricAuth,
+      ...(opt("--validity") !== undefined ? { validity: opt("--validity") } : {}),
+    });
+    console.log(formatSignFrostAttestation(r));
+    if (
+      r.action === "no-frost-ca" ||
+      r.action === "no-device-key" ||
+      r.action === "skipped-biometric" ||
+      r.action === "failed" ||
+      r.action === "insufficient-shares"
+    ) {
+      return 1;
+    }
+    return 0;
+  }
+
   console.error(
     "usage:\n" +
       "  bun ca-cli.ts ca   --ca <name> [--dry-run] [--commit-pub] [--shamir <k-of-n>]\n" +
-      "  bun ca-cli.ts cert (--user <name> | --users a,b) --machine <host> [--validity +52w] [--dry-run]",
+      "  bun ca-cli.ts frost-ca --ca <name> --frost <k-of-n> [--confirm] [--commit-pub]\n" +
+      "  bun ca-cli.ts cert (--user <name> | --users a,b) --machine <host> [--validity +52w] [--dry-run]\n" +
+      "  bun ca-cli.ts frost-cert (--user <name> | --users a,b) --machine <host> [--confirm]",
   );
   return 2;
 }

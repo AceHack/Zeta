@@ -19,6 +19,6 @@ rotate + cluster teardown + KRL revoke + cluster-trust-root rotate + Shamir cust
 
 ## Next resume targets
 
-- FROST slice 2: wire `frost.ts` into `ca.ts` cert signing (threshold CA replaces single ssh-keygen -s)
+- OpenSSH `PROTOCOL.certkeys` encoder so frost can emit `-cert.pub` (replace ssh-keygen -s)
 - Full RFC 9591 DKG + ROAST + HSM-sealed share adapters (agent-native-key-custody Layers 1–3)
 - Constraint: monorepo tools-over-trunks — custody/signing moves land under `tools/setup/persona-keys/`, not a sidecar service

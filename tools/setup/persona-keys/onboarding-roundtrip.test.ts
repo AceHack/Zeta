@@ -561,6 +561,15 @@ test("FROST LIVE-SIGN GAP CLOSED: threshold Schnorr without reassembly exists (f
   expect(src).toContain("never summed");
 });
 
+test("FROST CA CUSTODY GAP CLOSED: frost-ca + device attestation wiring exists", () => {
+  const src = readFileSync(join(import.meta.dir, "frost-ca-custody.ts"), "utf8");
+  expect(/export\s+async\s+function\s+ensureFrostCa/.test(src)).toBe(true);
+  expect(/export\s+async\s+function\s+signFrostDeviceAttestation/.test(src)).toBe(true);
+  const cli = readFileSync(join(import.meta.dir, "ca-cli.ts"), "utf8");
+  expect(cli).toContain("frost-ca");
+  expect(cli).toContain("frost-cert");
+});
+
 test("SHAMIR BP-16 GAP CLOSED: golden seed + F# formal cross-check exist", () => {
   const golden = join(import.meta.dir, "shamir-golden-vectors.json");
   expect(existsSync(golden)).toBe(true);
