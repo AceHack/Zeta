@@ -15,6 +15,12 @@
 // abort; a fetch-abort fill is a later slice). So "mid-conversation interruption" is real (multi-turn tool
 // loops stop early, the wire answer says so); "mid-token cancellation" is not claimed. Noninterference §13:
 // everything injected (turn, store, channel) — fake-testable, NO network, NO secret in tests.
+//
+// CONFIRMED LIVE 2026-07-04 (Aaron: "lets live test the persona transport over my subscription"): the FULL
+// stack ran against the real subscription — client → mux channel (ZetaId decoded Category.Channel=11 on the
+// wire) → serveSubscriptionPersona → refreshing codex turn → Amara called fs_link then fs_resolve (3 turns)
+// against the ZetaStore → answer frame back over the wire: "It says: persona-transport-lives." — and the
+// store was independently verified mutated (resolve("wire-proof") === "persona-transport-lives").
 
 import type { ChatMessage } from "./backend.ts";
 import type { ModelTurn, LoopOutcome } from "./zeta-agent-loop.ts";
