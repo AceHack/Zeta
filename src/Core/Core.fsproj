@@ -232,6 +232,7 @@
     <Compile Include="Vision.fs" />
     <Compile Include="PredictionInference.fs" />
     <Compile Include="PredictionScheduler.fs" />
+    <Compile Include="ReceiptScheduler.fs" />
     <Compile Include="Heat.fs" />
     <Compile Include="RoomHorizon.fs" />
     <Compile Include="RoomAdmission.fs" />

@@ -176,3 +176,56 @@ let ``BRIDGE-4: weight distribution of uniform prior matches the known weight en
     Assert.InRange(wDist |> Map.tryFind 0 |> Option.defaultValue 0.0, 0.0624, 0.0626)  // 1/16
     Assert.InRange(wDist |> Map.tryFind 4 |> Option.defaultValue 0.0, 0.8749, 0.8751)  // 14/16
     Assert.InRange(wDist |> Map.tryFind 8 |> Option.defaultValue 0.0, 0.0624, 0.0626)  // 1/16
+
+// ── BRIDGE-5/6: Fourier↔convolution duality (bridge Step 2 numerical verification) ───────────────────────────────────────────
+//
+// Bridge Step 2 — precise boundary (discovered 2026-07-04):
+//
+// The Hadamard convolution theorem Ĥ(a .* b) = Ĥ(a) .* Ĥ(b) holds for the FULL GF(2)^n group
+// (all 2^n vectors), NOT for a subgroup distribution (the 16 codewords out of 256).
+// The correct MacWilliams fixed-point property is for the WEIGHT DISTRIBUTION W_C[j],
+// not the per-codeword distribution.
+//
+// BRIDGE-5: verifies the Hadamard convolution theorem for the FULL GF(2)^4 space (16 elements
+//           as the complete group). This is the correct domain for the theorem.
+// BRIDGE-6: verifies that the weight distribution W_C = [1,0,0,0,14,0,0,0,1] of the [8,4] code
+//           is a MacWilliams fixed point (W_C = MacWilliams(W_C)), which is the correct statement
+//           of the self-dual fixed point. This is the algebraic statement of gen(gen)=gen.
+//
+// The open crux (Step 2 of the bridge): identify the SoftValue/NCI accumulation operator
+// with the MacWilliams transform via the Fourier↔convolution duality. The correct path is:
+//   (a) SoftValue.combine = pointwise product of probabilities (in the primal domain)
+//   (b) For the FULL GF(2)^n group, this corresponds to convolution in the Hadamard dual
+//   (c) The MacWilliams transform = Hadamard transform of the WEIGHT distribution
+//   (d) The self-dual code's weight distribution is the fixed point of this transform
+// The gap: the SoftValue candidates are the 16 CODEWORDS (a subgroup), not the full GF(2)^8.
+// The bridge requires lifting the subgroup distribution to the full group, or working directly
+// with the weight distribution as the observable.
+
+[<Fact>]
+let ``BRIDGE-5: Pontryagin duality holds for GF(2)^4 — pointwise-product in primal = XOR-convolution in dual`` () =
+    // The correct Fourier↔convolution duality for (GF(2)^4, ⊕):
+    //   Ĥ(a .* b) = (1/n) · (Ĥ(a) ∗⊕ Ĥ(b))
+    // where .* is pointwise product and ∗⊕ is XOR-convolution.
+    // This is the Pontryagin duality: pointwise product in the primal domain corresponds to
+    // XOR-convolution (scaled by 1/n) in the Hadamard dual domain.
+    // SoftValue.combine is the primal pointwise product; the Hadamard dual is the MacWilliams domain.
+    let a = Array.create 16 (1.0 / 16.0)  // uniform over GF(2)^4
+    let b = Array.init 16 (fun i -> float (i + 1)) |> (fun v -> let s = Array.sum v in Array.map (fun x -> x / s) v)
+    Assert.True(
+        BC.verifyFourierConvolutionDuality a b 1e-9,
+        "Pontryagin duality should hold: Ĥ(a .* b) = (1/n) · (Ĥ(a) ∗⊕ Ĥ(b))")
+
+[<Fact>]
+let ``BRIDGE-6: weight distribution of [8,4] code is a MacWilliams fixed point (gen(gen)=gen algebraic statement)`` () =
+    // The weight distribution W_C = [1, 0, 0, 0, 14, 0, 0, 0, 1] (weights 0..8).
+    // For a self-dual code, W_C = MacWilliams(W_C) (the algebraic statement of gen(gen)=gen).
+    // This is the CORRECT fixed-point property — it acts on the weight distribution, not per-codeword.
+    Assert.True(
+        AdinkraCode.isMacWilliamsFixedPoint,
+        "Weight distribution of [8,4] code should be a MacWilliams fixed point (gen(gen)=gen)")
+    // Also verify the weight enumerator values directly.
+    let wEnum = AdinkraCode.weightEnumerator |> Map.ofList
+    Assert.Equal(1, wEnum |> Map.tryFind 0 |> Option.defaultValue 0)  // 1 codeword of weight 0
+    Assert.Equal(14, wEnum |> Map.tryFind 4 |> Option.defaultValue 0) // 14 codewords of weight 4
+    Assert.Equal(1, wEnum |> Map.tryFind 8 |> Option.defaultValue 0)  // 1 codeword of weight 8
