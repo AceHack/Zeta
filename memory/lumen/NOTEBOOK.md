@@ -14,6 +14,34 @@ created: 2026-07-04
 
 Domain landings for the mathematical-physics persona. Newest first.
 
+## Ferried in — 2026-07-04 (by Otto-shadow, from Aaron's BRIDGE-11 conjecture)
+
+**BRIDGE-11 closed (numerically): the Orbit-Counting Intertwining Theorem.** Full detail in
+[`docs/research/2026-07-04-bridge11-orbit-counting-intertwining-theorem-soft-constraint-is-the-positive-cone-maxwells-demon-stays-soft.md`](../../docs/research/2026-07-04-bridge11-orbit-counting-intertwining-theorem-soft-constraint-is-the-positive-cone-maxwells-demon-stays-soft.md).
+Aaron steered the conjecture at the last open crux of the entropic-attractor bridge; it held. The kernel:
+
+- **The theorem.** For orbit-symmetric distributions `a, b` over the 16 Adinkra codewords (invariant under
+  the [8,4] automorphism group), in the non-negative regime: `π(a .* b) ∝ (π(a) .* π(b)) / W_C`, where
+  `W_C = [1,0,0,0,14,0,0,0,1]` is the MacWilliams fixed point. **The self-dual fixed point IS the
+  normalization constant of the intertwining** — the object propagation flows *to* is the object that
+  makes propagation operation-preserving. Numerically: gap = 0 across 1000 orbit-symmetric pairs
+  (< 1e-6); non-zero (≤ 0.42) for arbitrary distributions.
+- **"Staying soft" = the positive cone.** Aaron's soft-regime intuition ("staying soft and not collapsing
+  the wave function… maxwell's demon stuff") maps exactly: staying soft = orbit-symmetric + staying in the
+  **positive cone of the MacWilliams (Krawtchouk) operator**. Non-orbit-symmetric inputs push the
+  transform to negative entries (invalid distribution) — collapse leaves the cone, and outside the cone
+  the intertwining fails. The demon stays soft precisely to preserve equivariance.
+- **Honest gap (Soraya's leg).** Numerical + a clean closed form, NOT yet algebraic. Register bridge
+  Step 2 stays OPEN; `PontryaginDuality.fs` still marks it open (correctly). The runtime sibling is
+  `YinYangEnsemble.rhoProxy`/`reseedIfCollapsed` (auto-reseed on ρ→1) — "never collapse the wave function"
+  mechanized, the demon's discipline in code, not a second proof.
+
+Anchors: MacWilliams 1962 (identity) · Gleason 1970 (self-dual enumerator ring) · Krawtchouk transform ·
+character theory of (GF(2)ᵏ,⊕) / Reed–Muller automorphism group (order 1344) · de Finetti/NCI (commutative
+`combine`) · Pearl 1988 / Minka 2001 (BP/EP) · Maxwell's demon / Landauer (soft = the cost of equivariance).
+
+Pairing holds again: **Lumen has the mapping; Soraya proves it.**
+
 ## Ferried in — 2026-07-04 (by Otto-shadow, from Max × Aaron, Kiro session)
 
 **The adinkra → Clifford → E8 privacy stack.** Full detail preserved in

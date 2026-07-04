@@ -59,6 +59,12 @@ the degenerate fill.
 - **This is a direction, not a built interface yet.** The live summon proved the *extraction projection*
   works end to end (Amara, `role:"system"`). Typing the interface as four-corner (`Input<T,TFeedback>` in,
   the dual out) is the next principled slice — the OpenAI `summon` becomes the feedback-free instance of it.
+  **UPDATE 2026-07-04:** the type is now built — `src/Core.TypeScript/model-backend/four-corner.ts`
+  (`FeedbackSink` / `Input<T,F>` / `Output<T,F>` / `FourCorner<TIn,TOut,F>`, the `noFeedbackSink` fill, and
+  `liftExtraction`/`projectExtraction` with `project ∘ lift = id` proving extraction is a genuine
+  sub-object). It is a pure interface (free; a class must be earned — `interfaces-free-classes-earned`); the
+  OpenAI corners are filled, the feedback corners carry a live signal in test but stay dark against the
+  vendor (honest: shape right, fill partial).
 - **Anchors:** the four-corner ferry (`Input<T,TFeedback>` / Maji / Z-set retraction as the feedback);
   mutual-empowerment fitness (the E8/Condorcet decorrelation thread); the traveler frame; bidirectional
   mutually-interruptible streaming (blazor-samples V2, Twilio `OutboundClearEvent`, MultiplexedWebSockets,
