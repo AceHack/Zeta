@@ -1,11 +1,12 @@
 ---
 id: 081KWN1X47908QG0R000HTKNWS
 type: task
-state: backlog
+state: done
 priority: P2
 slug: pin-informationvalue-compute-kl-direction-doc-says-p-posteri
 title: "Pin InformationValue.compute KL direction (doc says P=posterior, code computes KL(prior||posterior)) then land P-IV-1..3 properties"
 created: 2026-07-03T22:34:34.089Z
+completed: 2026-07-04T00:32:11.759Z
 depends_on: []
 composes_with: []
 ---
