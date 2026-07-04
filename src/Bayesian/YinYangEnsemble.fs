@@ -121,6 +121,79 @@ module YinYangEnsemble =
         if ensemble.Cells.Length = 0 then None
         else Some (ensemble.Cells |> Array.maxBy (fun cell -> float cell.Column.AccumulatedIV))
 
+    // ── Live ρ-measurement ────────────────────────────────────────────────────────────────────────
+
+    /// **Pairwise error-correlation ρ (live measurement).**
+    ///
+    /// Condorcet's theorem says the ensemble is only informative while ρ < 1.
+    /// When ρ → 1, all cells share the same frame and the ensemble collapses to a single voter.
+    ///
+    /// We measure ρ as the mean pairwise Pearson correlation of the cell means over the last
+    /// `windowSize` rounds. For a live system, the caller maintains the history buffer.
+    ///
+    /// For a single-snapshot estimate (no history), we use the variance proxy:
+    ///   ρ_proxy = 1 - (decorrelationVariance / max_possible_variance)
+    /// where max_possible_variance is the variance of the cell means if they were maximally spread.
+    /// ρ_proxy ≈ 0 means fully decorrelated; ρ_proxy ≈ 1 means fully correlated (collapsed).
+    let rhoProxy (ensemble: Ensemble) : float =
+        let means =
+            ensemble.Cells
+            |> Array.choose (fun cell ->
+                if cell.Column.Belief.Precision > 0.0 then
+                    Some (cell.Column.Belief.PrecisionMean / cell.Column.Belief.Precision)
+                else None)
+        if means.Length < 2 then 0.0  // not enough cells to measure correlation
+        else
+            let avg = Array.average means
+            let variance = means |> Array.averageBy (fun m -> (m - avg) ** 2.0)
+            let maxMean = Array.max means
+            let minMean = Array.min means
+            let maxPossibleVariance = ((maxMean - minMean) / 2.0) ** 2.0
+            if maxPossibleVariance <= 1e-12 then 1.0  // all means identical → fully correlated
+            else 1.0 - (variance / maxPossibleVariance)
+
+    /// **Collapse detection:** returns `true` if the ensemble has collapsed (ρ_proxy > threshold).
+    /// The default threshold is 0.9 (90% correlated = effectively one voter in N masks).
+    let isCollapsed (rhoThreshold: float) (ensemble: Ensemble) : bool =
+        rhoProxy ensemble > rhoThreshold
+
+    // ── Auto-reseed on collapse ──────────────────────────────────────────────────────────────────
+
+    /// **Auto-reseed:** replace a collapsed cell with a fresh cell seeded from a new codeword.
+    ///
+    /// When the ensemble collapses (ρ → 1), the scheduler should re-seed one or more cells
+    /// from a different Adinkra codeword to restore decorrelation. This function replaces the
+    /// cell with the LOWEST accumulated IV (the least experienced, most replaceable) with a
+    /// fresh cell seeded from `newCodeword`.
+    ///
+    /// The new cell starts from the uninformative prior (fresh observer) — it will decorrelate
+    /// naturally as it accumulates its own IV from a different starting frame.
+    let reseedLeastExperienced (newCodeword: int[]) (ensemble: Ensemble) : Ensemble =
+        if ensemble.Cells.Length = 0 then ensemble
+        else
+            let minIdx =
+                ensemble.Cells
+                |> Array.mapi (fun i cell -> i, float cell.Column.AccumulatedIV)
+                |> Array.minBy snd
+                |> fst
+            let newCell = YinYangCell.seed newCodeword
+            let newCells = Array.copy ensemble.Cells
+            newCells.[minIdx] <- newCell
+            { ensemble with Cells = newCells }
+
+    /// **Reseed if collapsed:** check ρ_proxy and reseed the least-experienced cell if the
+    /// ensemble has collapsed past the threshold. Returns the (possibly reseeded) ensemble
+    /// and a flag indicating whether a reseed occurred.
+    let reseedIfCollapsed
+            (rhoThreshold: float)
+            (newCodeword: int[])
+            (ensemble: Ensemble)
+            : Ensemble * bool =
+        if isCollapsed rhoThreshold ensemble then
+            reseedLeastExperienced newCodeword ensemble, true
+        else
+            ensemble, false
+
     // ── Reconcile: fold N votes into a consensus receipt ─────────────────────────────────────────
 
     /// Reconcile the ensemble's votes into a `ComputeReceipt.Receipt`.

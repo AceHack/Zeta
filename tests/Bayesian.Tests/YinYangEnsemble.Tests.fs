@@ -97,3 +97,83 @@ let ``ENS-6: reconcileToReceipt emits a receipt with correct DeltaJ = N`` () =
     // Just verify it's finite.
     Assert.False(System.Double.IsNaN(receipt.LandauerRatio))
     Assert.False(System.Double.IsInfinity(receipt.LandauerRatio))
+
+// ── RHO-1: rhoProxy is 1.0 for identical cells (fully collapsed) ──────────────────────────────
+
+[<Fact>]
+let ``RHO-1: rhoProxy is 1.0 when all cells have identical beliefs (fully collapsed)`` () =
+    // Create a 4-cell ensemble and observe the same signal many times.
+    // After many identical observations, all cells converge to the same belief → ρ = 1.
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    let mutable e = ensemble
+    for _ in 1 .. 20 do
+        e <- YinYangEnsemble.observe signal e
+    // All cells see the same signal → identical beliefs → ρ_proxy = 1.0 (fully correlated).
+    let rho = YinYangEnsemble.rhoProxy e
+    Assert.InRange(rho, 0.99, 1.01)
+
+// ── RHO-2: rhoProxy is 0.0 for fresh uninformative cells ─────────────────────────────────────
+
+[<Fact>]
+let ``RHO-2: rhoProxy is 0.0 for a fresh ensemble (all cells uninformative)`` () =
+    // A fresh ensemble has Precision = 0 for all cells → rhoProxy returns 0.0.
+    let ensemble = YinYangEnsemble.createFull ()
+    let rho = YinYangEnsemble.rhoProxy ensemble
+    Assert.Equal(0.0, rho)
+
+// ── RHO-3: isCollapsed detects collapse above threshold ───────────────────────────────────────
+
+[<Fact>]
+let ``RHO-3: isCollapsed returns true when ensemble has converged to identical beliefs`` () =
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    let mutable e = ensemble
+    for _ in 1 .. 20 do
+        e <- YinYangEnsemble.observe signal e
+    // With ρ ≈ 1.0, isCollapsed(0.9) should return true.
+    Assert.True(YinYangEnsemble.isCollapsed 0.9 e)
+    // A fresh ensemble is not collapsed.
+    Assert.False(YinYangEnsemble.isCollapsed 0.9 ensemble)
+
+// ── RHO-4: reseedLeastExperienced replaces the cell with lowest IV ────────────────────────────
+
+[<Fact>]
+let ``RHO-4: reseedLeastExperienced replaces the cell with lowest accumulated IV`` () =
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    // Observe once — all cells have the same IV after one round.
+    let updated = YinYangEnsemble.observe signal ensemble
+    // Reseed with the 5th Adinkra codeword.
+    let newCodeword = AdinkraCode.allCodewords |> List.item 4
+    let reseeded = YinYangEnsemble.reseedLeastExperienced newCodeword updated
+    // The ensemble still has 4 cells.
+    Assert.Equal(4, reseeded.Cells.Length)
+    // One cell has the new codeword.
+    let hasNew = reseeded.Cells |> Array.exists (fun c -> c.Codeword = newCodeword)
+    Assert.True(hasNew, "Reseeded ensemble should contain the new codeword")
+    // The new cell has zero accumulated IV (fresh observer).
+    let newCell = reseeded.Cells |> Array.find (fun c -> c.Codeword = newCodeword)
+    Assert.Equal(0.0, float newCell.Column.AccumulatedIV)
+
+// ── RHO-5: reseedIfCollapsed triggers reseed and restores decorrelation ───────────────────────
+
+[<Fact>]
+let ``RHO-5: reseedIfCollapsed triggers reseed on collapse and returns reseeded flag`` () =
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    let mutable e = ensemble
+    for _ in 1 .. 20 do
+        e <- YinYangEnsemble.observe signal e
+    // Ensemble is collapsed (ρ ≈ 1.0).
+    Assert.True(YinYangEnsemble.isCollapsed 0.9 e)
+    // Reseed with a new codeword.
+    let newCodeword = AdinkraCode.allCodewords |> List.item 5
+    let (reseeded, didReseed) = YinYangEnsemble.reseedIfCollapsed 0.9 newCodeword e
+    Assert.True(didReseed, "reseedIfCollapsed should trigger reseed on collapsed ensemble")
+    // The reseeded ensemble has one fresh cell (zero IV).
+    let freshCells = reseeded.Cells |> Array.filter (fun c -> float c.Column.AccumulatedIV = 0.0)
+    Assert.True(freshCells.Length >= 1, "Reseeded ensemble should have at least one fresh cell")
+    // A fresh ensemble does not trigger reseed.
+    let (_, didReseedFresh) = YinYangEnsemble.reseedIfCollapsed 0.9 newCodeword ensemble
+    Assert.False(didReseedFresh, "reseedIfCollapsed should not trigger on a fresh ensemble")

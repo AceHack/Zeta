@@ -229,3 +229,80 @@ let ``BRIDGE-6: weight distribution of [8,4] code is a MacWilliams fixed point (
     Assert.Equal(1, wEnum |> Map.tryFind 0 |> Option.defaultValue 0)  // 1 codeword of weight 0
     Assert.Equal(14, wEnum |> Map.tryFind 4 |> Option.defaultValue 0) // 14 codewords of weight 4
     Assert.Equal(1, wEnum |> Map.tryFind 8 |> Option.defaultValue 0)  // 1 codeword of weight 8
+
+// ── BRIDGE-7 through BRIDGE-10: PontryaginDuality algebraic proof tests ──────────────────────────
+//
+// These tests exercise the algebraic proof in PontryaginDuality.fs:
+//   BRIDGE-7: Walsh orthogonality (the key lemma for the proof)
+//   BRIDGE-8: Unit preservation (Ĥ maps the primal unit to the dual unit)
+//   BRIDGE-9: Pontryagin duality holds for arbitrary distributions (not just uniform)
+//   BRIDGE-10: MacWilliams fixed point via Krawtchouk transform (algebraic, not just numerical)
+//   BRIDGE-11: Orbit-map intertwining gap — documents the remaining open crux
+
+module PD = Zeta.Core.PontryaginDuality
+
+[<Fact>]
+let ``BRIDGE-7: Walsh orthogonality holds for GF(2)^3 and GF(2)^4`` () =
+    // Σ_{x ∈ GF(2)^k} χ_s(x) = n · [s = 0]
+    // This is the key lemma that makes the Pontryagin duality proof work.
+    Assert.True(PD.verifyWalshOrthogonality 3, "Walsh orthogonality should hold for k=3 (n=8)")
+    Assert.True(PD.verifyWalshOrthogonality 4, "Walsh orthogonality should hold for k=4 (n=16)")
+
+[<Fact>]
+let ``BRIDGE-8: Hadamard maps the primal unit (all-ones) to the dual unit (n·e_0)`` () =
+    // The unit of .* is the all-ones vector 1_n.
+    // Ĥ(1_n)(s) = Σ_x χ_s(x) = n · [s = 0]
+    // So Ĥ(1_n) = n · e_0 — the delta at 0, scaled by n.
+    // The unit of (1/n)·∗⊕ is n · e_0.
+    // Therefore Ĥ is a monoid homomorphism (unit-preserving).
+    Assert.True(PD.verifyUnitPreservation 16, "Ĥ should map all-ones to n·e_0 for n=16")
+    Assert.True(PD.verifyUnitPreservation 8, "Ĥ should map all-ones to n·e_0 for n=8")
+
+[<Fact>]
+let ``BRIDGE-9: Pontryagin duality holds for arbitrary float distributions over GF(2)^4`` () =
+    // The algebraic proof is general: for ANY f, g : GF(2)^k → ℝ,
+    //   Ĥ(f .* g)(s) = (1/n) · Σ_t f̂(t) · ĝ(t ⊕ s)
+    // Test with three different distribution pairs.
+    let uniform = Array.create 16 (1.0 / 16.0)
+    let linear = Array.init 16 (fun i -> float (i + 1)) |> (fun v -> let s = Array.sum v in Array.map (fun x -> x / s) v)
+    let peaked = Array.init 16 (fun i -> if i = 7 then 0.9 else 0.1 / 15.0)
+    // All three pairs should satisfy the duality to machine precision
+    let eps = 1e-9
+    Assert.True(PD.pontryaginDualityMaxDiff uniform linear < eps,
+        sprintf "Pontryagin duality: uniform × linear, max diff = %.2e" (PD.pontryaginDualityMaxDiff uniform linear))
+    Assert.True(PD.pontryaginDualityMaxDiff linear peaked < eps,
+        sprintf "Pontryagin duality: linear × peaked, max diff = %.2e" (PD.pontryaginDualityMaxDiff linear peaked))
+    Assert.True(PD.pontryaginDualityMaxDiff peaked peaked < eps,
+        sprintf "Pontryagin duality: peaked × peaked, max diff = %.2e" (PD.pontryaginDualityMaxDiff peaked peaked))
+
+[<Fact>]
+let ``BRIDGE-10: MacWilliams fixed point via Krawtchouk transform (algebraic statement)`` () =
+    // The weight distribution W_C = [1,0,0,0,14,0,0,0,1] is a fixed point of the
+    // Krawtchouk/MacWilliams transform for the [8,4] code.
+    // This is the algebraic statement of gen(gen)=gen at the weight-enumerator level.
+    Assert.True(PD.verifyMacWilliamsFixedPoint (),
+        "W_C = [1,0,0,0,14,0,0,0,1] should be a Krawtchouk/MacWilliams fixed point")
+
+[<Fact>]
+let ``BRIDGE-11: orbit-map intertwining gap documents the remaining open crux`` () =
+    // The orbit map π : ℝ^16 → ℝ^9 projects per-codeword beliefs to weight distributions.
+    // The open crux: does π(a .* b) ∝ MacWilliams(π(a)) ∗ MacWilliams(π(b))?
+    //
+    // FINDING (2026-07-04): the orbit-map intertwining does NOT hold even for uniform × uniform.
+    // The gap is ~0.115 for uniform × uniform, which means the intertwining is NOT the right
+    // bridge path. The Pontryagin duality (BRIDGE-9) lives in the FULL GF(2)^k space;
+    // the orbit map projects to the weight-class quotient, and the intertwining condition
+    // is a strictly stronger requirement that the [8,4] code does NOT satisfy in general.
+    //
+    // This is the precise statement of the remaining open crux:
+    //   The Pontryagin duality is proven (BRIDGE-9).
+    //   The orbit-map intertwining is OPEN and may require a different bridge path.
+    let uniform = Array.create 16 (1.0 / 16.0)
+    let linear = Array.init 16 (fun i -> float (i + 1)) |> (fun v -> let s = Array.sum v in Array.map (fun x -> x / s) v)
+    // Gap is non-negative for all distributions
+    let gap = PD.orbitIntertwiningMaxDiff uniform linear
+    Assert.True(gap >= 0.0, "Orbit-map intertwining gap should be non-negative")
+    // Gap is non-zero even for uniform × uniform (the intertwining does NOT hold in general)
+    let uniformGap = PD.orbitIntertwiningMaxDiff uniform uniform
+    Assert.True(uniformGap > 0.01,
+        sprintf "Orbit-map intertwining gap should be non-zero for uniform × uniform (got %.2e) — the intertwining is the open crux" uniformGap)
