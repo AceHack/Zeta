@@ -2,10 +2,12 @@ import {
   blackBodyReadout,
   heatSignals,
   summarizeHeatRows,
+  temperatureTreatyBundle,
   type BlackBodyReadout,
   type HeatReadout,
   type HeatRow,
   type TemperatureReadout,
+  type TemperatureTreatyBundle,
 } from "./heat";
 
 export {
@@ -18,6 +20,7 @@ export {
   HOT_TEMPERATURE_MAX_PPM,
   MAX_TEMPERATURE_PPM,
   TEMPERATURE_READOUT_SCHEMA,
+  TEMPERATURE_REFERENCE_ORACLE,
   WARM_TEMPERATURE_MAX_PPM,
   blackBodyPeakFrequencyPpm,
   blackBodyRadiancePpm,
@@ -29,6 +32,7 @@ export {
   summarizeHeatRows,
   temperatureBand,
   temperatureReadout,
+  temperatureTreatyBundle,
   thermalPpm,
   type HeatReadout,
   type HeatRow,
@@ -37,6 +41,7 @@ export {
   type BlackBodyReadout,
   type TemperatureBand,
   type TemperatureReadout,
+  type TemperatureTreatyBundle,
 } from "./heat";
 
 export type RoomPhase = "observe" | "choose" | "execute" | "measure" | "continue";
@@ -94,6 +99,7 @@ export interface RoomRunTranscript {
   readonly heatReadout?: HeatReadout;
   readonly temperatureReadout?: TemperatureReadout;
   readonly blackBodyReadout?: BlackBodyReadout;
+  readonly temperatureTreaty?: TemperatureTreatyBundle;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -225,15 +231,41 @@ function renderTick(tick: RoomTranscriptTick): string {
   ].join("");
 }
 
+function treatyFromReadouts(
+  temperature: TemperatureReadout,
+  blackBody: BlackBodyReadout | undefined,
+): TemperatureTreatyBundle {
+  if (blackBody === undefined) {
+    return temperatureTreatyBundle({ temperature });
+  }
+
+  return temperatureTreatyBundle({ temperature, blackBody });
+}
+
 export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const cells = normalizeControllerCells(transcript.controller);
   const heat = transcript.heatReadout ?? summarizeHeatRows(transcript.heatRows);
-  const temperature = transcript.temperatureReadout;
+  const sourceTemperature = transcript.temperatureTreaty?.temperature ?? transcript.temperatureReadout;
+  const sourceBlackBody = transcript.temperatureTreaty?.blackBody ?? transcript.blackBodyReadout;
+  const inferredBlackBody =
+    sourceBlackBody ??
+    (sourceTemperature === undefined
+      ? undefined
+      : blackBodyReadout({ source: sourceTemperature.source, temperaturePpm: sourceTemperature.temperaturePpm }));
+  const temperatureTreaty =
+    transcript.temperatureTreaty ??
+    (sourceTemperature === undefined ? undefined : treatyFromReadouts(sourceTemperature, inferredBlackBody));
+  const temperature = temperatureTreaty?.temperature ?? sourceTemperature;
   const blackBody =
-    transcript.blackBodyReadout ??
+    temperatureTreaty?.blackBody ??
+    inferredBlackBody ??
     (temperature === undefined
       ? undefined
       : blackBodyReadout({ source: temperature.source, temperaturePpm: temperature.temperaturePpm }));
+  const temperatureFeedback =
+    temperatureTreaty === undefined || temperatureTreaty.referenceFeedback.length === 0
+      ? undefined
+      : temperatureTreaty.referenceFeedback.join(" ");
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
   return [
@@ -245,6 +277,10 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-heat-treaty", transcript.heatReadout?.qsharpTreaty),
     attr("data-qsharp-source", transcript.heatReadout?.qsharpSource),
     attr("data-temperature-readout", temperature?.schema),
+    attr("data-temperature-treaty", temperatureTreaty?.qsharpTreaty),
+    attr("data-temperature-qsharp-source", temperatureTreaty?.qsharpSource),
+    attr("data-temperature-oracle", temperatureTreaty?.referenceOracle),
+    attr("data-temperature-feedback", temperatureFeedback),
     attr("data-temperature-ppm", temperature?.temperaturePpm),
     attr("data-temperature-band", temperature?.band),
     attr("data-black-body-readout", blackBody?.schema),

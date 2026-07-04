@@ -10,6 +10,7 @@ import {
   HEAT_SIGNAL_QSHARP_SOURCE,
   HEAT_SIGNAL_TREATY_PATH,
   TEMPERATURE_READOUT_SCHEMA,
+  TEMPERATURE_REFERENCE_ORACLE,
   sLaneVerdict,
   blackBodyPeakFrequencyPpm,
   blackBodyRadiancePpm,
@@ -22,6 +23,7 @@ import {
   summarizeHeatRows,
   temperatureBand,
   temperatureReadout,
+  temperatureTreatyBundle,
   thermalPpm,
   type HeatReadout,
   type HeatRow,
@@ -106,6 +108,11 @@ const transcriptBlackBodyReadout = blackBodyReadout({
   temperaturePpm: transcriptTemperatureReadout.temperaturePpm,
 });
 
+const transcriptTemperatureTreaty = temperatureTreatyBundle({
+  temperature: transcriptTemperatureReadout,
+  blackBody: transcriptBlackBodyReadout,
+});
+
 const transcript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "darkhall",
@@ -150,6 +157,7 @@ const transcript: RoomRunTranscript = {
   heatReadout,
   temperatureReadout: transcriptTemperatureReadout,
   blackBodyReadout: transcriptBlackBodyReadout,
+  temperatureTreaty: transcriptTemperatureTreaty,
 };
 
 describe("Dark Hall CSS room UI", () => {
@@ -161,6 +169,8 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain('data-cell="13"');
     expect(html).toContain("darkhall.play.meta-cart-host");
     expect(html).toContain("spawn:darkhall-heat-board");
+    expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(html).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);
   });
 
   it("normalizes sparse controller cells without letting callers resize the grid", () => {
@@ -289,6 +299,94 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain("<dd>denied</dd>");
   });
 
+  it("renders an F# DarkHallRoomTranscript JSON fixture with the temperature treaty bundle", () => {
+    const fromFsharp = JSON.parse(`{
+      "schema": "zeta.darkhall.room-ui.v1",
+      "roomName": "darkhall",
+      "seed": "S4",
+      "generatedBy": "DarkHallRoomTranscript.fs",
+      "controller": [],
+      "ticks": [],
+      "heatReadout": {
+        "schema": "zeta.heat.readout.v1",
+        "qsharpTreaty": "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json",
+        "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
+        "rows": 1,
+        "heatRejected": 1,
+        "backpressured": 1,
+        "storageErrors": 0,
+        "heatKinds": ["room-boundary.door-denied"],
+        "signals": ["denied"],
+        "reasons": ["darkhall -> glass refused"]
+      },
+      "temperatureReadout": {
+        "schema": "zeta.temperature.readout.v1",
+        "source": "darkhall",
+        "temperaturePpm": 62500,
+        "band": "warm",
+        "heatPpm": 62500,
+        "uncertaintyPpm": 0,
+        "pressurePpm": 62500,
+        "attentionPpm": 0
+      },
+      "blackBodyReadout": {
+        "schema": "zeta.blackbody.readout.v1",
+        "source": "darkhall",
+        "temperaturePpm": 62500,
+        "radiancePpm": 15,
+        "peakFrequencyPpm": 62500
+      },
+      "temperatureTreaty": {
+        "heatReadoutSchema": "zeta.heat.readout.v1",
+        "temperatureReadoutSchema": "zeta.temperature.readout.v1",
+        "blackBodyReadoutSchema": "zeta.blackbody.readout.v1",
+        "qsharpTreaty": "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json",
+        "qsharpSource": "src/Core.QSharp.ReferenceOracle/HeatSignals.qs",
+        "fsharpSurface": "src/Core/Heat.fs",
+        "referenceOracle": "fsharp-blackbody-reference",
+        "referenceFeedback": [],
+        "temperature": {
+          "schema": "zeta.temperature.readout.v1",
+          "source": "darkhall",
+          "temperaturePpm": 62500,
+          "band": "warm",
+          "heatPpm": 62500,
+          "uncertaintyPpm": 0,
+          "pressurePpm": 62500,
+          "attentionPpm": 0
+        },
+        "blackBody": {
+          "schema": "zeta.blackbody.readout.v1",
+          "source": "darkhall",
+          "temperaturePpm": 62500,
+          "radiancePpm": 15,
+          "peakFrequencyPpm": 62500
+        }
+      },
+      "heatRows": [
+        {
+          "tick": 1,
+          "roomName": "darkhall",
+          "heatRejected": 1,
+          "backpressured": 1,
+          "storageErrors": 0,
+          "heatKinds": ["room-boundary.door-denied"],
+          "signals": ["denied"],
+          "reasons": ["darkhall -> glass refused"]
+        }
+      ]
+    }`) as RoomRunTranscript;
+
+    const html = renderDarkHallRoomHtml(fromFsharp);
+
+    expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(html).toContain(`data-temperature-qsharp-source="${HEAT_SIGNAL_QSHARP_SOURCE}"`);
+    expect(html).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);
+    expect(html).toContain('data-temperature-readout="zeta.temperature.readout.v1"');
+    expect(html).toContain('data-black-body-radiance="15"');
+    expect(html).not.toContain("data-temperature-feedback=");
+  });
+
   it("keeps the room heat readout aligned with the Q# signal treaty", () => {
     const publicTokens = heatTreaty.signals.filter((signal) => signal.public).map((signal) => signal.token);
 
@@ -300,6 +398,39 @@ describe("Dark Hall CSS room UI", () => {
     expect(heatTreaty.fsharpSurface).toBe(HEAT_FSHARP_SURFACE);
     expect(heatReadout.qsharpTreaty).toBe(HEAT_SIGNAL_TREATY_PATH);
     expect(heatReadout.signals.every((signal) => publicTokens.includes(signal))).toBe(true);
+  });
+
+  it("carries the room temperature lane as one treaty bundle for LLMTV readouts", () => {
+    expect(transcriptTemperatureTreaty).toEqual({
+      heatReadoutSchema: HEAT_READOUT_SCHEMA,
+      temperatureReadoutSchema: TEMPERATURE_READOUT_SCHEMA,
+      blackBodyReadoutSchema: BLACK_BODY_READOUT_SCHEMA,
+      qsharpTreaty: HEAT_SIGNAL_TREATY_PATH,
+      qsharpSource: HEAT_SIGNAL_QSHARP_SOURCE,
+      fsharpSurface: HEAT_FSHARP_SURFACE,
+      referenceOracle: TEMPERATURE_REFERENCE_ORACLE,
+      referenceFeedback: [],
+      temperature: transcriptTemperatureReadout,
+      blackBody: transcriptBlackBodyReadout,
+    });
+
+    const withoutTreaty: RoomRunTranscript = {
+      schema: "zeta.darkhall.room-ui.v1",
+      roomName: "darkhall",
+      seed: "0x2a",
+      generatedBy: "DarkHallScheduler heat-board sim loop",
+      controller: transcript.controller,
+      ticks: transcript.ticks,
+      heatRows,
+      heatReadout,
+      temperatureReadout: transcriptTemperatureReadout,
+      blackBodyReadout: transcriptBlackBodyReadout,
+    };
+    const html = renderDarkHallRoomHtml(withoutTreaty);
+
+    expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(html).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);
+    expect(html).toContain(`data-black-body-radiance="${transcriptBlackBodyReadout.radiancePpm.toString()}"`);
   });
 
   it("keeps temperature as a scalar uncertainty/pressure treaty while attention only records ordering pressure", () => {
@@ -350,6 +481,8 @@ describe("Dark Hall CSS room UI", () => {
     const doc = renderDarkHallRoomDocument(transcript);
 
     expect(doc).toContain('data-temperature-readout="zeta.temperature.readout.v1"');
+    expect(doc).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(doc).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);
     expect(doc).toContain('data-temperature-band="warm"');
     expect(doc).toContain('data-black-body-readout="zeta.blackbody.readout.v1"');
     expect(doc).toContain(`data-black-body-radiance="${transcriptBlackBodyReadout.radiancePpm.toString()}"`);

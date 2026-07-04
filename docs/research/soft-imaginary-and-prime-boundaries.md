@@ -35,6 +35,7 @@ probabilistic interpretation.
 ### Connection to Clifford algebra
 
 In the Zeta `CayleyDickson.fs` / `Cl3.fs` framework:
+
 - The **real part** of a Clifford-valued belief is the positive-cone component (the classical probability)
 - The **imaginary parts** (i, j, k) are the negative-cone components (the "soft imaginary" amplitudes)
 - The `SoftValue.combine` operator preserves the real part (stays in the positive cone) iff both inputs are in the positive cone
@@ -48,6 +49,7 @@ orbit-counting intertwining identity.
 ## 2. Prime Boundaries: The All-Zeros and All-Ones Codewords
 
 The weight spectrum of the [8,4] code is `[1, 0, 0, 0, 14, 0, 0, 0, 1]`:
+
 - Weight 0: 1 codeword (all-zeros `00000000`)
 - Weight 4: 14 codewords (the "bulk")
 - Weight 8: 1 codeword (all-ones `11111111`)
@@ -55,12 +57,14 @@ The weight spectrum of the [8,4] code is `[1, 0, 0, 0, 14, 0, 0, 0, 1]`:
 ### The boundary codewords as fixed points / primes
 
 The all-zeros and all-ones codewords are:
+
 1. **Fixed points** of the [8,4] automorphism group (order 1344)
 2. **Identity elements**: all-zeros is the additive identity; all-ones is the complement
 3. **Extremal**: they are the boundary of the weight spectrum (weight 0 and weight 8)
 4. **Irreducible**: they cannot be decomposed as XOR of other non-trivial codewords
 
 In number-theoretic terms, these are the **primes** of the code:
+
 - The 14 weight-4 codewords are "composite" (reachable by XOR-combining boundary codewords)
 - The boundary codewords are the generators that cannot be further factored
 - The orbit sizes `[1, 14, 1]` reflect this: the primes have orbit size 1 (fixed), the composites have orbit size 14
@@ -68,6 +72,7 @@ In number-theoretic terms, these are the **primes** of the code:
 ### Connection to prime-based tick sources
 
 The boundary codewords are the **tick sources** of the [8,4] code:
+
 - They are fixed points of the automorphism group → they naturally attract attention
 - They are the identity elements → they are the "zero energy" states
 - The balance condition `p₀ ≥ p₈` keeps the two primes in equilibrium
@@ -81,6 +86,7 @@ attracts attention.
 ### The weight positions as powers of 2
 
 The non-zero weight positions are `0, 4, 8 = 0, 2², 2³`. This is not coincidental:
+
 - The [8,4] code has minimum distance 4 = 2²
 - The code length is 8 = 2³
 - The weight positions are exactly the powers of 2 that divide the code parameters

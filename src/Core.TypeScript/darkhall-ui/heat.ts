@@ -14,6 +14,7 @@ export const BLACK_BODY_READOUT_SCHEMA = "zeta.blackbody.readout.v1";
 export const HEAT_SIGNAL_TREATY_PATH = "src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json";
 export const HEAT_SIGNAL_QSHARP_SOURCE = "src/Core.QSharp.ReferenceOracle/HeatSignals.qs";
 export const HEAT_FSHARP_SURFACE = "src/Core/Heat.fs";
+export const TEMPERATURE_REFERENCE_ORACLE = "fsharp-blackbody-reference";
 export const MAX_TEMPERATURE_PPM = 1_000_000;
 export const WARM_TEMPERATURE_MAX_PPM = 333_333;
 export const HOT_TEMPERATURE_MAX_PPM = 666_666;
@@ -64,6 +65,19 @@ export interface BlackBodyReadout {
   readonly temperaturePpm: number;
   readonly radiancePpm: number;
   readonly peakFrequencyPpm: number;
+}
+
+export interface TemperatureTreatyBundle {
+  readonly heatReadoutSchema: typeof HEAT_READOUT_SCHEMA;
+  readonly temperatureReadoutSchema: typeof TEMPERATURE_READOUT_SCHEMA;
+  readonly blackBodyReadoutSchema: typeof BLACK_BODY_READOUT_SCHEMA;
+  readonly qsharpTreaty: typeof HEAT_SIGNAL_TREATY_PATH;
+  readonly qsharpSource: typeof HEAT_SIGNAL_QSHARP_SOURCE;
+  readonly fsharpSurface: typeof HEAT_FSHARP_SURFACE;
+  readonly referenceOracle: string;
+  readonly referenceFeedback: readonly string[];
+  readonly temperature: TemperatureReadout;
+  readonly blackBody: BlackBodyReadout;
 }
 
 function distinct<T>(values: readonly T[]): readonly T[] {
@@ -229,5 +243,28 @@ export function blackBodyReadout(input: { readonly source: string; readonly temp
     temperaturePpm,
     radiancePpm: blackBodyRadiancePpm(temperaturePpm),
     peakFrequencyPpm: blackBodyPeakFrequencyPpm(temperaturePpm),
+  };
+}
+
+export function temperatureTreatyBundle(input: {
+  readonly temperature: TemperatureReadout;
+  readonly blackBody?: BlackBodyReadout;
+  readonly referenceOracle?: string;
+  readonly referenceFeedback?: readonly string[];
+}): TemperatureTreatyBundle {
+  const blackBody =
+    input.blackBody ?? blackBodyReadout({ source: input.temperature.source, temperaturePpm: input.temperature.temperaturePpm });
+
+  return {
+    heatReadoutSchema: HEAT_READOUT_SCHEMA,
+    temperatureReadoutSchema: TEMPERATURE_READOUT_SCHEMA,
+    blackBodyReadoutSchema: BLACK_BODY_READOUT_SCHEMA,
+    qsharpTreaty: HEAT_SIGNAL_TREATY_PATH,
+    qsharpSource: HEAT_SIGNAL_QSHARP_SOURCE,
+    fsharpSurface: HEAT_FSHARP_SURFACE,
+    referenceOracle: input.referenceOracle ?? TEMPERATURE_REFERENCE_ORACLE,
+    referenceFeedback: input.referenceFeedback ?? [],
+    temperature: input.temperature,
+    blackBody,
   };
 }
