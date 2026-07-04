@@ -46,3 +46,39 @@ type ThousandBrainsCron(runtime: IDistributedCronRuntime) =
             Task.FromResult(float ivGained)
         )
         runtime.OnTick(column.Id, callback)
+
+    /// Binds a YinYangCell's observation cycle to the tick.
+    /// The yin (Adinkra codeword) is the T0 identity anchor — invariant across ticks.
+    /// The yang (ThousandBrains.Column) evolves on every tick.
+    /// A ComputeReceipt is emitted per tick via the onReceipt callback.
+    member this.BindYinYangCell(
+            cell: Zeta.Bayesian.YinYangCell.Cell,
+            observationFn: unit -> Gaussian,
+            onReceipt: Zeta.Core.ComputeReceipt.Receipt -> unit) =
+        let mutable currentCell = cell
+        let callback = Func<DateTime, Task<double>>(fun _time ->
+            // 1. Observe reality
+            let observation = observationFn ()
+            // 2. Update the yang (column belief); yin (codeword) is invariant
+            let updatedCell = Zeta.Bayesian.YinYangCell.observe observation currentCell
+            // 3. Compute IV (KL divergence from prior to posterior)
+            let ivGained = InformationValue.compute currentCell.Column.Belief updatedCell.Column.Belief
+            // 4. Compute posterior entropy: H(G) = 0.5 * ln(2πe/τ) for Gaussian with precision τ
+            let posteriorEntropy =
+                let tau = updatedCell.Column.Belief.Precision
+                if tau <= 0.0 then 0.0
+                else 0.5 * log (2.0 * System.Math.PI * System.Math.E / tau)
+            // 5. Emit a ComputeReceipt for this tick.
+            // DeltaJ = 1.0 abstract joule per tick (real measurement comes from IScheduler).
+            let receipt = Zeta.Core.ComputeReceipt.fromIV (float ivGained) 1.0 posteriorEntropy
+            onReceipt receipt
+            // 6. Persist the updated cell state
+            currentCell <- updatedCell
+            // 7. Return IV to drive the adaptive tick rate
+            Task.FromResult(float ivGained)
+        )
+        runtime.OnTick(cell.Column.Id, callback)
+
+    /// Registers a YinYangCell as a distributed tick source.
+    member this.RegisterYinYangCell(cell: Zeta.Bayesian.YinYangCell.Cell, baseInterval: System.TimeSpan) =
+        this.RegisterColumn(cell.Column.Id, baseInterval)

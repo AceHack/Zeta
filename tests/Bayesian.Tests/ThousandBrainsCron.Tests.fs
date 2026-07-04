@@ -61,3 +61,58 @@ module ThousandBrainsCronTests =
         runtime.SimulateTick().Wait()
         Assert.Equal(2, runtime.Ticks)
         Assert.True(runtime.LastIv < firstIv, $"Repeated observation IV ({runtime.LastIv}) should be less than first IV ({firstIv})")
+
+module YinYangCellCronTests =
+
+    [<Fact>]
+    let ``CRON-3: BindYinYangCell emits a ComputeReceipt per tick`` () =
+        let runtime = MockCronRuntime()
+        let cron = ThousandBrainsCron(runtime)
+        let codeword = AdinkraCode.allCodewords.[1]
+        let cell = YinYangCell.seed codeword
+        let receipts = System.Collections.Generic.List<Zeta.Core.ComputeReceipt.Receipt>()
+        let reality () = { PrecisionMean = 10.0; Precision = 5.0 }
+        cron.RegisterYinYangCell(cell, System.TimeSpan.FromSeconds(1.0)) |> ignore
+        cron.BindYinYangCell(cell, reality, receipts.Add) |> ignore
+        runtime.SimulateTick().Wait()
+        Assert.Equal(1, receipts.Count)
+        let r = receipts.[0]
+        Assert.True(r.IV > 0.0, "First tick should yield positive IV")
+        Assert.Equal(1.0, r.DeltaJ)
+        Assert.True(r.Entropy >= 0.0, "Entropy should be non-negative")
+
+    [<Fact>]
+    let ``CRON-4: BindYinYangCell yin (codeword) is invariant across ticks`` () =
+        let runtime = MockCronRuntime()
+        let cron = ThousandBrainsCron(runtime)
+        let codeword = AdinkraCode.allCodewords.[3]
+        let cell = YinYangCell.seed codeword
+        let receipts = System.Collections.Generic.List<Zeta.Core.ComputeReceipt.Receipt>()
+        let reality () = { PrecisionMean = 5.0; Precision = 2.0 }
+        cron.RegisterYinYangCell(cell, System.TimeSpan.FromSeconds(1.0)) |> ignore
+        cron.BindYinYangCell(cell, reality, receipts.Add) |> ignore
+        for _ in 1 .. 5 do
+            runtime.SimulateTick().Wait()
+        Assert.Equal(5, receipts.Count)
+        Assert.True(YinYangCell.isValidSeed cell, "Cell yin (codeword) must remain a valid Adinkra codeword")
+        for r in receipts do
+            Assert.Equal(1.0, r.DeltaJ)
+
+    [<Fact>]
+    let ``CRON-5: fromIV builds a receipt with correct DeltaU and LandauerRatio`` () =
+        let r = Zeta.Core.ComputeReceipt.fromIV 2.0 1.0 0.5
+        Assert.Equal(2.0, r.IV)
+        Assert.Equal(1.0, r.DeltaJ)
+        Assert.Equal(1.0, r.DeltaU)
+        Assert.Equal(0.0, r.Heat)
+        Assert.Equal(0.5, r.Entropy)
+        Assert.Equal(0.5, r.LandauerRatio)
+
+    [<Fact>]
+    let ``CRON-6: fromIV marks waste as heat when IV is near zero`` () =
+        let r = Zeta.Core.ComputeReceipt.fromIV 0.0 1.0 2.0
+        Assert.Equal(0.0, r.IV)
+        Assert.Equal(1.0, r.DeltaJ)
+        Assert.Equal(-1.0, r.DeltaU)
+        Assert.Equal(1.0, r.Heat)
+        Assert.True(r.LandauerRatio > 1.0, "LandauerRatio > 1 means operating above the Landauer limit (wasteful)")

@@ -119,3 +119,19 @@ module ComputeReceipt =
                   MeanEntropy = rs |> List.averageBy _.Entropy
                   MeanLandauerRatio = rs |> List.averageBy _.LandauerRatio
                   Count = n }
+
+    /// Build a receipt directly from pre-computed values.
+    /// Use this when the prior/posterior are not SoftValues (e.g., Gaussian beliefs in ThousandBrains).
+    /// `iv` — information value in nats (KL divergence, pre-computed by the caller).
+    /// `dj` — abstract joules spent (ticks × bytesPerTick, or 1.0 per tick as a unit).
+    /// `entropy` — remaining uncertainty H(posterior) in nats (pre-computed by the caller).
+    let fromIV (iv: float) (dj: float) (entropy: float) : Receipt =
+        let du = iv - dj
+        let heat = if iv < EPS then dj else 0.0
+        let ratio = dj / (max iv EPS)
+        { IV = iv
+          DeltaJ = dj
+          DeltaU = du
+          Heat = heat
+          Entropy = entropy
+          LandauerRatio = ratio }
