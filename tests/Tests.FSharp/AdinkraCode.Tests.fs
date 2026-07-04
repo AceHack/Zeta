@@ -121,3 +121,40 @@ let ``single-error correction recovers every codeword (generation = correction)`
             Assert.Equal<int[]>(c, (AK.correct e).Value)
     // a clean codeword corrects to itself
     Assert.Equal<int[]>(AK.allCodewords.[3], (AK.correct AK.allCodewords.[3]).Value)
+
+// ── MacWilliams fixed-point: gen(gen)=gen at the weight-enumerator level ─────────────────────────
+// The MacWilliams transform maps W_C to W_{C⊥}. For a self-dual code (C = C⊥), the transform is
+// a fixed point: W_C = MacWilliams(W_C). This is the algebraic statement of gen(gen)=gen at the
+// weight-enumerator level — the code's self-duality guarantees the Hadamard/Krawtchouk transform
+// of the weight distribution is the weight distribution itself.
+
+[<Fact>]
+let ``weight enumerator has the correct distribution: 1 at weight 0, 14 at weight 4, 1 at weight 8`` () =
+    let we = AK.weightEnumerator
+    Assert.Equal(3, we.Length)  // only three non-zero weight classes
+    let weMap = we |> Map.ofList
+    Assert.Equal(1,  weMap.[0])   // 1 codeword of weight 0 (the zero codeword)
+    Assert.Equal(14, weMap.[4])   // 14 codewords of weight 4
+    Assert.Equal(1,  weMap.[8])   // 1 codeword of weight 8 (the all-ones codeword)
+
+[<Fact>]
+let ``MacWilliams transform is a fixed point for the self-dual code (gen(gen)=gen at weight-enumerator level)`` () =
+    Assert.True(AK.isMacWilliamsFixedPoint,
+        "MacWilliams(W_C) should equal W_C for a self-dual code — the weight enumerator is its own dual")
+
+[<Fact>]
+let ``MacWilliams transform of weight enumerator matches the known formula x^8 + 14x^4y^4 + y^8`` () =
+    // The [8,4] doubly-even self-dual code has the unique weight enumerator:
+    // W(x,y) = x^8 + 14·x^4·y^4 + y^8 (the Hamming/Golay weight enumerator at n=8).
+    // Applying MacWilliams should return the same polynomial.
+    let transformed = AK.macWilliamsTransform AK.weightEnumerator |> Map.ofList
+    // Coefficient of y^0 (weight 0) = 1.0
+    Assert.InRange(transformed |> Map.tryFind 0 |> Option.defaultValue 0.0, 0.9999, 1.0001)
+    // Coefficient of y^4 (weight 4) = 14.0
+    Assert.InRange(transformed |> Map.tryFind 4 |> Option.defaultValue 0.0, 13.9999, 14.0001)
+    // Coefficient of y^8 (weight 8) = 1.0
+    Assert.InRange(transformed |> Map.tryFind 8 |> Option.defaultValue 0.0, 0.9999, 1.0001)
+    // All other weight classes should be zero (or absent)
+    for w in [1;2;3;5;6;7] do
+        let c = transformed |> Map.tryFind w |> Option.defaultValue 0.0
+        Assert.InRange(c, -1e-6, 1e-6)

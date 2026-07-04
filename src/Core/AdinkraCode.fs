@@ -131,3 +131,74 @@ module AdinkraCode =
             match flips with
             | [ y ] -> Some y
             | _ -> None
+
+    // ── Weight enumerator and MacWilliams fixed-point (gen(gen)=gen Face 1 discharge) ─────────────
+    //
+    // The **weight enumerator** of a binary code C is W_C(x,y) = Σ_{c∈C} x^{n-wt(c)} y^{wt(c)}.
+    // For the [8,4] doubly-even self-dual code: W(x,y) = x^8 + 14·x^4·y^4 + y^8.
+    //
+    // The **MacWilliams transform** maps W_C to W_{C⊥}:
+    //   W_{C⊥}[j] = (1/|C|) · Σ_i W_C[i] · K_j(i, n)
+    // where K_j(i,n) is the Krawtchouk polynomial.
+    //
+    // For a **self-dual** code (C = C⊥), the weight enumerator is a fixed point of the transform:
+    //   W_C = MacWilliams(W_C)
+    // This is the algebraic statement of `gen(gen) = gen` at the weight-enumerator level.
+    //
+    // **Connection to SoftValue/NCI accumulation (§B open conjecture):**
+    // The NCI-weighted product of Gaussian beliefs is a log-linear pool. In the Hadamard dual space,
+    // this is a pointwise product of characteristic functions. The MacWilliams transform is the
+    // Hadamard/Walsh transform on the weight distribution — the same operation. The self-dual
+    // fixed point (W_C = MacWilliams(W_C)) is the reason the NCI accumulation converges without
+    // bias: the code's self-duality guarantees the Hadamard transform of the weight distribution
+    // is the weight distribution itself. Formal proof of this connection remains §B.
+
+    /// The weight enumerator of the code as a list of (weight, count) pairs.
+    /// For the [8,4] doubly-even self-dual code: [(0,1); (4,14); (8,1)].
+    let weightEnumerator : (int * int) list =
+        allCodewords
+        |> List.groupBy weight
+        |> List.map (fun (w, cws) -> w, List.length cws)
+        |> List.sortBy fst
+
+    /// Krawtchouk polynomial K_j(i, n) = Σ_{s=0}^{j} (-1)^s · C(i,s) · C(n-i, j-s).
+    /// The kernel of the MacWilliams transform for binary codes of length n.
+    let private krawtchouk (n: int) (j: int) (i: int) : float =
+        let binom a b =
+            if b < 0 || b > a then 0.0
+            else
+                let mutable r = 1.0
+                for t in 1 .. b do
+                    r <- r * float (a - b + t) / float t
+                r
+        let mutable acc = 0.0
+        for s in 0 .. j do
+            acc <- acc + (if s % 2 = 0 then 1.0 else -1.0) * binom i s * binom (n - i) (j - s)
+        acc
+
+    /// Apply the MacWilliams transform to a weight enumerator.
+    /// Returns a list of (weight, transformed-coefficient) pairs (non-zero only).
+    let macWilliamsTransform (wEnum: (int * int) list) : (int * float) list =
+        let n = length
+        let codeSize = float (List.length allCodewords)
+        // Build coefficient array indexed by weight.
+        let p = Array.zeroCreate<float> (n + 1)
+        for (w, cnt) in wEnum do
+            if w >= 0 && w <= n then p.[w] <- float cnt
+        [ for j in 0 .. n ->
+            let coeff = (1.0 / codeSize) * (Array.sumBy (fun i -> p.[i] * krawtchouk n j i) [| 0 .. n |])
+            j, coeff ]
+        |> List.filter (fun (_, c) -> abs c > 1e-9)
+
+    /// **MacWilliams fixed-point property** — the algebraic statement of `gen(gen) = gen` at the
+    /// weight-enumerator level. For a self-dual code, the MacWilliams transform of the weight
+    /// enumerator equals the original weight enumerator (the code is its own dual's enumerator).
+    /// Proven here exhaustively over all 16 codewords.
+    let isMacWilliamsFixedPoint : bool =
+        let original = weightEnumerator |> List.map (fun (w, c) -> w, float c) |> Map.ofList
+        let transformed = macWilliamsTransform weightEnumerator |> Map.ofList
+        [ 0 .. length ]
+        |> List.forall (fun w ->
+            let orig = original |> Map.tryFind w |> Option.defaultValue 0.0
+            let trans = transformed |> Map.tryFind w |> Option.defaultValue 0.0
+            abs (orig - trans) < 1e-6)

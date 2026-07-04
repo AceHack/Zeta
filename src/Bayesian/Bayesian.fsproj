@@ -28,6 +28,7 @@
     <Compile Include="LocalConsensus.fs" />
     <Compile Include="ThousandBrains.fs" />
     <Compile Include="ThousandBrainsCron.fs" />
+    <Compile Include="YinYangCell.fs" />
     <Compile Include="AskBidClearing.fs" />
     <Compile Include="ReticulumTransport.fs" />
     <Compile Include="ReticulumBusMeter.fs" />

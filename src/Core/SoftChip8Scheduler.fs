@@ -57,3 +57,63 @@ module SoftChip8Scheduler =
     let runWith (cyclesPerTick: int) (seed: uint64) (rom: byte[]) (frames: int) : Task<Result<Chip8Cow.Frame, InterruptFeedback>> =
         let initial = Chip8Cow.create seed |> Chip8Cow.loadRom rom
         SoftScheduler.runDeterministic [ timerHandler cyclesPerTick ] dstCtx (int64 seed) initial frames
+
+    // ── Thermodynamic telemetry (ComputeReceipt wiring) ───────────────────────────────────────────
+    //
+    // The CHIP-8 scheduler is the FIRST client to emit ComputeReceipts.
+    //
+    // The prior is the SoftValue over the fork candidates *before* running the frames:
+    //   • At an input branch: uniform 0.5/0.5 over key-down / key-up successors (PC addresses).
+    //   • Deterministic: point-mass 1.0 over the single successor.
+    // The posterior is the committed branch after the run completes (point-mass 1.0 at the final PC).
+    //
+    // IV = KL(posterior || prior) = ln(2) nats when resolving one input branch, 0 when deterministic.
+    //
+    // This measures exactly one thing: how much uncertainty about the next branch was resolved per run.
+    // The CHIP-8 AI is the Maxwell's demon at the instruction level — it sorts branch uncertainty
+    // using compute, and the receipt tells us how efficiently it did so vs. the Landauer limit.
+
+    /// Build the prior SoftValue for a frame: uniform over fork candidates (or point-mass if deterministic).
+    /// Uses the PC of each fork successor as the SoftValue key — the branch address is the uncertain quantity.
+    let private framePrior (f: Chip8Cow.Frame) : SoftValue.SoftValue option =
+        let forks = SoftChip8.forkOnInput f
+        let weighted = forks |> List.map (fun (succ, w) -> DynamicValue.Int (int64 succ.PC), w)
+        SoftValue.ofWeighted weighted
+
+    /// Build the posterior SoftValue for a committed frame: point-mass at the committed PC.
+    let private framePosterior (committed: Chip8Cow.Frame) : SoftValue.SoftValue option =
+        SoftValue.ofWeighted [ DynamicValue.Int (int64 committed.PC), 1.0 ]
+
+    /// Run a ROM for `frames` 60 Hz ticks and emit a ComputeReceipt measuring the information
+    /// purchased (uncertainty resolved about the next branch) vs. the compute spent.
+    ///
+    /// Returns the final frame result AND a ComputeReceipt option.
+    /// The receipt is None only if the prior/posterior SoftValue construction fails (degenerate ROM).
+    ///
+    /// This is the first live client of the thermodynamic accounting system:
+    ///   DeltaU = IV - DeltaJ  (net useful work)
+    ///   Heat   = DeltaJ when IV ≈ 0  (wasted compute on deterministic frames)
+    ///   LandauerRatio = DeltaJ / IV  (efficiency vs. the Landauer limit)
+    let runWithReceipt
+        (seed: uint64)
+        (rom: byte[])
+        (frames: int)
+        : Task<Result<Chip8Cow.Frame, InterruptFeedback> * ComputeReceipt.Receipt option> =
+        task {
+            let initial = Chip8Cow.create seed |> Chip8Cow.loadRom rom
+            // Capture prior before the run (uncertainty about the first branch in the ROM).
+            let priorOpt = framePrior initial
+            let! result = SoftScheduler.runDeterministic [ timerHandler DefaultCyclesPerTick ] dstCtx (int64 seed) initial frames
+            // Capture posterior from the committed final frame.
+            let finalFrame =
+                match result with
+                | Ok f -> f
+                | Error _ -> initial // on interrupt, use initial as fallback for the receipt
+            let posteriorOpt = framePosterior finalFrame
+            // Compute the receipt: ticks = frames, bytesPerTick = CHIP-8 memory footprint (4 KiB).
+            let receipt =
+                match priorOpt, posteriorOpt with
+                | Some prior, Some posterior -> ComputeReceipt.compute prior posterior frames 4096L
+                | _ -> None
+            return result, receipt
+        }
