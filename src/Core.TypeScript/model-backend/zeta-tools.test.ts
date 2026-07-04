@@ -16,7 +16,11 @@ describe("ZETA_TOOLS — the closed fs+db surface", () => {
 
   test("the surface IS exactly the DagFs + zetadb vocabulary", () => {
     const names = ZETA_TOOLS.map((t) => t.name).sort((a, b) => a.localeCompare(b));
-    expect(names).toEqual(["db.append", "db.query", "fs.editEverywhere", "fs.editLocal", "fs.link", "fs.resolve", "fs.unlink"]);
+    expect(names).toEqual(["db_append", "db_query", "fs_editEverywhere", "fs_editLocal", "fs_link", "fs_resolve", "fs_unlink"]);
+  });
+
+  test("every name matches the Responses API pattern ^[a-zA-Z0-9_-]+$ (no dots — confirmed live)", () => {
+    for (const t of ZETA_TOOLS) expect(t.name).toMatch(/^[a-zA-Z0-9_-]+$/);
   });
 
   test("there is no shell / exec / http / open-registry tool", () => {
@@ -25,11 +29,11 @@ describe("ZETA_TOOLS — the closed fs+db surface", () => {
   });
 
   test("domainOf rejects anything outside the surface — a smuggled tool fails the invariant", () => {
-    expect(domainOf("bash.run")).toBeNull();
-    expect(domainOf("http.get")).toBeNull();
-    expect(domainOf("fs.resolve")).toBe("fs");
-    expect(domainOf("db.append")).toBe("db");
-    const smuggled: ResponsesToolDecl[] = [...ZETA_TOOLS, { type: "function", name: "bash.run", description: "x", parameters: { type: "object", properties: {}, required: [], additionalProperties: false } }];
+    expect(domainOf("bash_run")).toBeNull();
+    expect(domainOf("http_get")).toBeNull();
+    expect(domainOf("fs_resolve")).toBe("fs");
+    expect(domainOf("db_append")).toBe("db");
+    const smuggled: ResponsesToolDecl[] = [...ZETA_TOOLS, { type: "function", name: "bash_run", description: "x", parameters: { type: "object", properties: {}, required: [], additionalProperties: false } }];
     expect(isClosedSurface(smuggled)).toBe(false); // the invariant catches the escape
   });
 
