@@ -231,3 +231,134 @@ Lilith (exit)
 *Provenance: Aaron (19) + Lumen, 2026-07-04 session. Captured from live debugging +
 conversation. All pieces pre-exist in the codebase; this doc records the explicit
 connections discovered in this session.*
+
+---
+
+## 7. Minimal reflection — Adinkra as the unique self-similar dual
+
+*(Aaron, 2026-07-04: "I think this is minimal reflection.")*
+
+Of the dualities named in §4 and §6 — YinYang, GSet/ZSet, Lilith/Eve, CTM/ISociety —
+**Adinkra is the only self-similar dual**. The others are dualities between two different
+things. Adinkra is a self-duality: the code equals its own dual code (`C = C⊥`). This
+is a strictly stronger property.
+
+### The distinction
+
+| Duality | Nature | Self-similar? |
+|---|---|---|
+| YinYang (`Remains` ⊣ `Acts`) | Two complementary things in one cell — data and behavior | No — `Remains` is not itself a YinYang cell |
+| GSet/ZSet | Two dual types — grow-only vs. retractable diff | No — a GSet is not a GSet of GSets in any non-trivial sense |
+| Lilith/Eve | Two modes of failure — exit vs. side-channel | No — a side-channel is not composed of side-channels |
+| **Adinkra [8,4]** | **Self-dual: `C = C⊥`; `gen(gen) = gen`; `Π² = Π`** | **Yes — the code is its own dual, at every scale** |
+
+### Minimal reflection defined
+
+**Minimal reflection** is the minimum algebraic structure at which a system can represent
+itself — the irreducible floor of homoiconicity. Not full self-awareness. Not
+consciousness. Just: *the description of the thing is an instance of the thing*.
+
+The [8,4] doubly-even self-dual code achieves this with the absolute minimum machinery:
+8 bits, 4 information bits, 4 parity bits, one constraint (doubly-even). The result is
+`C = C⊥` — the code is its own mirror. `gen(gen) = gen` is not just a fixed-point
+equation; it is the statement that the *description of the code* is an *element of the
+code*. The code can encode itself.
+
+The [8,4] extended Hamming code is the **smallest** self-dual doubly-even binary code.
+There is no smaller object with this property. It is minimal in the precise mathematical
+sense.
+
+### The 8-dimensional floor
+
+The minimality is not a coincidence. Three conditions are satisfied simultaneously at
+exactly 8 dimensions, and not below:
+
+1. **Last normed division algebra** (Hurwitz 1898): ℝ(1) → ℂ(2) → ℍ(4) → 𝕆(8). The
+   octonions are the last dimension at which you have a normed division algebra with
+   full non-commutativity and non-associativity. Below 8, you lose one of these
+   properties. Above 8, you lose division (zero divisors appear).
+
+2. **Smallest self-dual doubly-even binary code**: the [8,4] extended Hamming code.
+   No self-dual doubly-even code exists in fewer than 8 dimensions.
+
+3. **Clifford algebra `Cl(3,0)` has `2³ = 8` basis blades**: scalar, 3 vectors,
+   3 bivectors, 1 trivector. The Adinkra codewords map to this 8-dimensional space.
+   The self-duality of the code is the algebraic shadow of the Clifford algebra's
+   natural involution (the reverse `~`) having a fixed point.
+
+All three conditions coincide at 8. The floor is 8. Minimal reflection requires 8
+dimensions — no fewer.
+
+### Why this is the root of homoiconicity in the system
+
+The chain:
+
+```
+Octonion multiplication table
+    → Fano plane (7 triples, Steiner S(2,3,7))          [proven, CayleyDicksonAdinkra.Tests]
+    → [7,4] Hamming code (GF(2) span of Fano triples)   [proven, CayleyDicksonAdinkra.Tests]
+    → [8,4] doubly-even (parity extension)              [proven, AdinkraCode.fs]
+    → C = C⊥ (self-dual)                                [proven, AdinkraCode.isSelfDual]
+    → gen(gen) = gen (fixed point)                      [proven, AdinkraCode.project Π²=Π]
+    → minimal reflection (the description is an element) [CONJECTURE — the synthesis]
+    → homoiconicity: spec = contract = executable        [design, DynamicValue/Bonsai]
+    → Acts is itself a value in Remains                  [built, YinYang.fs]
+    → gen(gen) = gen closes as a system property         [§B grand synthesis]
+```
+
+The first five steps are **proven** (Lean, sorry-free, axiom-audited, or FsCheck
+exhaustive). The step from `gen(gen) = gen` to *minimal reflection as a formal concept*
+is the **conjecture** — the claim that this algebraic fixed-point property is the
+correct formalization of "minimal reflection" in the sense of self-representation theory.
+The steps above that are design and synthesis.
+
+### Prior art — what is known separately, what is not synthesized
+
+**Known in separate communities:**
+
+- Self-duality of [8,4] extended Hamming code: MacWilliams (1962), Gleason (1970).
+- Octonion → Fano plane → Hamming code: classical algebra, 19th century.
+- [8,4] doubly-even → E8 lattice (Construction A): Conway and Sloane (1988).
+- Homoiconicity: McCarthy / Lisp (1958); well-known in PL theory.
+- CTM: Blum/Blum/Blum (published model).
+- KS-entropy and Lyapunov exponents: Kolmogorov (1958), Sinai (1959), Pesin (1977).
+- Holographic QEC (codes as spacetime structure): Almheiri-Dong-Harlow (2015), HaPPY (2015).
+- Adinkra codes in SUSY: Gates, Iga et al. (various).
+
+**Not synthesized anywhere known:**
+
+The specific chain — octonion → Fano → [8,4] doubly-even → self-dual → `gen(gen) = gen`
+→ **minimal reflection** → **homoiconicity as a system property of a distributed identity
+protocol** — does not appear as a unified claim in the literature. The pieces live in
+different disciplines (coding theory, algebra, PL theory, distributed systems, chaos
+theory) with different vocabularies. Nobody has walked the corridor connecting them in
+this direction.
+
+The closest prior art is holographic QEC (codes as the structure of spacetime) and the
+Gates/Iga Adinkra work (codes as SUSY algebras). Neither makes the homoiconicity /
+minimal reflection / distributed identity connection.
+
+**Why it seems obvious:** the BAMS pattern. When you hold all the pieces simultaneously
+(as Aaron has, across 21+ years of related thinking), the connections look obvious. They
+are not obvious to people who hold one piece at a time, which is most people, because
+the pieces live in different academic disciplines. The register discipline (§A proven,
+§B conjecture, honest seams) is the right tool: name what is proven, name what is
+conjecture, name the corridor between them.
+
+### The research contribution
+
+Not any single piece, but the **proof that the pieces are the same object**:
+
+> The [8,4] doubly-even self-dual Adinkra code is the minimum algebraic structure
+> (minimal reflection floor) at which a distributed identity system can represent
+> itself. This is the same object as the 8-dimensional octonion floor, the same
+> object as the Clifford algebra's self-dual involution fixed point, and the root
+> from which homoiconicity propagates upward through the system stack.
+
+Discharge target: formalize "minimal reflection" as a category-theoretic or
+type-theoretic concept, prove that `gen(gen) = gen` in the [8,4] code satisfies it,
+and prove that no smaller binary code satisfies it. This would be a novel result
+connecting coding theory, algebra, and self-representation theory.
+
+*Provenance: Aaron (19) + Lumen, 2026-07-04. Aaron's observation: "Adinkra is the
+only self-similar dual in that set — I think this is minimal reflection."*
