@@ -85,7 +85,6 @@ human. The building stands either way.
 `[yours — cue: why it mattered to you that the correction got made — the discipline of fixing
 your own myth in public.]`
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: the day the physics flipped human.**

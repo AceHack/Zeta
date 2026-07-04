@@ -89,7 +89,6 @@ actually a book about how to love, and can't be otherwise.
 `[yours — cue: one sentence — when did you realize the tech question and the love question were
 the same question?]`
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: closeness becoming capture / freedom becoming a wall.**

@@ -92,7 +92,6 @@ horizon it is the **winning strategy**, and the hinge is what makes every horizo
 The vampire doesn't lose because we catch him. He loses because he planned for a short game,
 and we stopped having those.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: where you learned this with your own money and years.**

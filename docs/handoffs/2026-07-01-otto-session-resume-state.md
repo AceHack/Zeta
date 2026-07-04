@@ -59,7 +59,6 @@ bun tools/setup/persona-keys/ca-cli.ts frost-cert --user <u> --machine <host> --
 # Put maintainers/<ca>/frost-ca.pub in TrustedUserCAKeys (OpenSSH line).
 ```
 
-
 ### Reliability notes (outside-world, not DST)
 
 - Full `markdownlint --fix` mangled math/item refs → heal is MD032/MD026-only

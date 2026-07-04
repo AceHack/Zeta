@@ -308,6 +308,80 @@ module BlackBodyReadout =
         ofTemperaturePpm readout.Source readout.TemperaturePpm
 
 
+/// Feedback from a temperature reference oracle. The runtime owns the
+/// temperature lane; Q# and other plugins must conform to this interface
+/// instead of pulling their implementation into the room runtime.
+[<RequireQualifiedAccess>]
+type TemperatureReferenceFeedback =
+    | EmptyOracleName
+    | TemperatureSchemaMismatch of expected: string * actual: string
+
+
+/// Source-owned port for external temperature/black-body reference oracles.
+/// Q# can plug in here as an oracle; it is not the runtime that emits heat.
+type ITemperatureReferenceOracle =
+    abstract Name: string
+    abstract Project: readout: TemperatureReadout -> Result<BlackBodyReadout, TemperatureReferenceFeedback>
+
+
+[<RequireQualifiedAccess>]
+module TemperatureReferenceOracle =
+
+    let localBlackBody : ITemperatureReferenceOracle =
+        { new ITemperatureReferenceOracle with
+            member _.Name = "fsharp-blackbody-reference"
+
+            member _.Project readout =
+                if readout.Schema <> HeatReadout.TemperatureSchema then
+                    Error(TemperatureReferenceFeedback.TemperatureSchemaMismatch(HeatReadout.TemperatureSchema, readout.Schema))
+                else
+                    Ok(BlackBodyReadout.ofTemperatureReadout readout) }
+
+    let project (oracle: ITemperatureReferenceOracle) (readout: TemperatureReadout)
+        : Result<BlackBodyReadout, TemperatureReferenceFeedback> =
+        if Object.ReferenceEquals(oracle, null) || String.IsNullOrWhiteSpace oracle.Name then
+            Error TemperatureReferenceFeedback.EmptyOracleName
+        else
+            oracle.Project readout
+
+
+/// A compact source-owned treaty bundle that lets room transcripts, Bayesian
+/// plugins, and Q# reference code talk about the same finite temperature lane.
+type TemperatureTreatyBundle =
+    { HeatReadoutSchema: string
+      TemperatureReadoutSchema: string
+      BlackBodyReadoutSchema: string
+      QSharpTreaty: string
+      QSharpSource: string
+      FSharpSurface: string
+      ReferenceOracle: string
+      Temperature: TemperatureReadout
+      BlackBody: BlackBodyReadout }
+
+
+[<RequireQualifiedAccess>]
+module TemperatureTreatyBundle =
+
+    let ofTemperatureReadout
+        (oracle: ITemperatureReferenceOracle)
+        (temperature: TemperatureReadout)
+        : Result<TemperatureTreatyBundle, TemperatureReferenceFeedback> =
+        result {
+            let! blackBody = TemperatureReferenceOracle.project oracle temperature
+
+            return
+                { HeatReadoutSchema = HeatReadout.Schema
+                  TemperatureReadoutSchema = HeatReadout.TemperatureSchema
+                  BlackBodyReadoutSchema = HeatReadout.BlackBodySchema
+                  QSharpTreaty = HeatReadout.SignalTreaty
+                  QSharpSource = HeatReadout.QSharpSignalSource
+                  FSharpSurface = HeatReadout.FSharpSurface
+                  ReferenceOracle = oracle.Name
+                  Temperature = temperature
+                  BlackBody = blackBody }
+        }
+
+
 /// Feedback from the injected heat sink. Heat is diagnostic output, but the
 /// sink still has a budget; if even the heat cannot fit, report backpressure
 /// rather than recursively losing the loss signal.

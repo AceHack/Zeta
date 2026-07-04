@@ -1,8 +1,34 @@
 module Zeta.Bayesian.Tests.BayesianTemperatureTests
 
+open System.IO
+open System.Reflection
+open System.Text.Json
 open Xunit
 open Zeta.Bayesian
 open Zeta.Core
+
+let private mustOk =
+    function
+    | Ok value -> value
+    | Error feedback -> failwithf "expected Ok, got %A" feedback
+
+let private repoRoot () =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then failwith "Could not locate repo root (Zeta.sln)." else dir.FullName
+
+let private heatTreaty () =
+    Path.Join(repoRoot (), "src", "Core.QSharp.ReferenceOracle", "heat-signals-treaty.json")
+    |> File.ReadAllText
+    |> JsonDocument.Parse
+
+let private treatyCase (property: string) (id: string) =
+    use doc = heatTreaty ()
+
+    doc.RootElement.GetProperty(property).EnumerateArray()
+    |> Seq.find (fun item -> item.GetProperty("id").GetString() = id)
+    |> fun item -> item.Clone()
 
 [<Fact>]
 let ``Gaussian precision cools the universal temperature readout`` () =
@@ -85,3 +111,44 @@ let ``pressure and heat can raise temperature while attention stays a side lane`
 
     Assert.Equal(readout.TemperaturePpm, radiance.TemperaturePpm)
     Assert.Equal(BlackBodyReadout.radiancePpm readout.TemperaturePpm, radiance.RadiancePpm)
+
+[<Fact>]
+let ``Bayesian treaty bundle matches the QSharp heat temperature vector`` () =
+    let belief = { Gaussian.PrecisionMean = 0.0; Precision = 7.0 }
+    let bundle =
+        BayesianTemperature.treatyOfBelief "attention-does-not-heat-cost" belief 125_000 0 1.0
+        |> mustOk
+
+    let temperatureCase = treatyCase "temperatureCases" "attention-does-not-heat-cost"
+    let blackBodyCase = treatyCase "blackBodyCases" "attention-does-not-heat-cost"
+
+    Assert.Equal(HeatReadout.Schema, bundle.HeatReadoutSchema)
+    Assert.Equal(HeatReadout.TemperatureSchema, bundle.TemperatureReadoutSchema)
+    Assert.Equal(HeatReadout.BlackBodySchema, bundle.BlackBodyReadoutSchema)
+    Assert.Equal(HeatReadout.SignalTreaty, bundle.QSharpTreaty)
+    Assert.Equal(HeatReadout.QSharpSignalSource, bundle.QSharpSource)
+    Assert.Equal(HeatReadout.FSharpSurface, bundle.FSharpSurface)
+    Assert.Equal("fsharp-blackbody-reference", bundle.ReferenceOracle)
+
+    Assert.Equal(temperatureCase.GetProperty("heatPpm").GetInt32(), bundle.Temperature.HeatPpm)
+    Assert.Equal(temperatureCase.GetProperty("uncertaintyPpm").GetInt32(), bundle.Temperature.UncertaintyPpm)
+    Assert.Equal(temperatureCase.GetProperty("pressurePpm").GetInt32(), bundle.Temperature.PressurePpm)
+    Assert.Equal(temperatureCase.GetProperty("attentionPpm").GetInt32(), bundle.Temperature.AttentionPpm)
+    Assert.Equal(temperatureCase.GetProperty("temperaturePpm").GetInt32(), bundle.Temperature.TemperaturePpm)
+    Assert.Equal(temperatureCase.GetProperty("band").GetString(), bundle.Temperature.Band)
+
+    Assert.Equal(blackBodyCase.GetProperty("temperaturePpm").GetInt32(), bundle.BlackBody.TemperaturePpm)
+    Assert.Equal(blackBodyCase.GetProperty("radiancePpm").GetInt32(), bundle.BlackBody.RadiancePpm)
+    Assert.Equal(blackBodyCase.GetProperty("peakFrequencyPpm").GetInt32(), bundle.BlackBody.PeakFrequencyPpm)
+
+[<Fact>]
+let ``temperature reference oracle refuses schema drift as typed feedback`` () =
+    let readout =
+        { TemperatureReadout.ofPpm "bad-schema" 0 0 0 0 with
+            Schema = "zeta.temperature.readout.future" }
+
+    match TemperatureTreatyBundle.ofTemperatureReadout TemperatureReferenceOracle.localBlackBody readout with
+    | Error(TemperatureReferenceFeedback.TemperatureSchemaMismatch(expected, actual)) ->
+        Assert.Equal(HeatReadout.TemperatureSchema, expected)
+        Assert.Equal("zeta.temperature.readout.future", actual)
+    | other -> Assert.Fail(sprintf "expected TemperatureSchemaMismatch, got %A" other)

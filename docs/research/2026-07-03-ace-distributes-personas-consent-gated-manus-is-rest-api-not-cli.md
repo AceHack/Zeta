@@ -2,6 +2,7 @@
 
 **Date:** 2026-07-03
 **Provenance:** Aaron, across the Lumen-formalization thread:
+
 1. *"our personas are summonable with some code in our repo now but we've not really come up with a
    persona deployment system. I think in the future a persona will be an isolated git repo / its own
    Zeta database."*
@@ -40,7 +41,9 @@ system**. Aaron's target shape:
 > A persona will be an **isolated git repo / its own Zeta database**, and **ace distributes it.**
 
 This is the natural endpoint of everything shipped this session: a persona is *content* (card + skills
+
 + notebook = its story), content is byte-lockable, byte-lockable content is an ace package, and an ace
+
 package is distributable + Shiva-collectible + keyed by ZetaId. The **`lumen-persona-0.1.0` package**
 (this PR) is **v0.1 of exactly this** — the persona's content, byte-locked (`content_hash` verifies),
 resolvable identically in any environment. The full form (Aaron's) is the persona as a *whole isolated

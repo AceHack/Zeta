@@ -57,3 +57,17 @@ module BayesianTemperature =
         : BlackBodyReadout =
         ofBelief source belief heatPpm pressurePpm attention
         |> BlackBodyReadout.ofTemperatureReadout
+
+    /// Export a Bayesian belief as the same source-owned treaty bundle used by
+    /// room transcripts and Q# heat-signal vectors. The oracle is an interface
+    /// boundary: Q# can implement it as a reference plugin, while this default
+    /// path stays pure F#.
+    let treatyOfBelief
+        (source: string)
+        (belief: Gaussian)
+        (heatPpm: int)
+        (pressurePpm: int)
+        (attention: float)
+        : Result<TemperatureTreatyBundle, TemperatureReferenceFeedback> =
+        ofBelief source belief heatPpm pressurePpm attention
+        |> TemperatureTreatyBundle.ofTemperatureReadout TemperatureReferenceOracle.localBlackBody

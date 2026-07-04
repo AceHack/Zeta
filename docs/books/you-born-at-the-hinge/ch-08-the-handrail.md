@@ -152,7 +152,6 @@ You didn't kill them. You survived them. Surviving them is how you carry them.
 
 Stay.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: how you know the courtroom / why this chapter exists.**

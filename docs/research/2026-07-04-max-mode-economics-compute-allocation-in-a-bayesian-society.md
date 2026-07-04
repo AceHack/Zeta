@@ -143,6 +143,7 @@ The answer comes from `SoftValue` and weight-based ephemerons (documented in the
 The `SoftValue` distribution holds multiple competing answers simultaneously, each with a weight. The normal-mode answer and the max-mode answer are both fingerprints in the same `SoftValue`. The one with higher confidence (sharper posterior) gets higher weight. The GC reclaims the lower-weight answer's compiled artifacts (including the compute budget allocated to it).
 
 This means:
+
 - You do not have to predict in advance whether a problem needs max mode.
 - You spawn the cheap probe first, and the epistemic state (the posterior confidence) tells you whether to escalate.
 - The escalation is automatic — driven by the `SoftValue` weight distribution, not by a human decision.
@@ -177,6 +178,7 @@ GPUs are the physical realization of "max mode." A GPU-hour is expensive. The sy
 ### 8.2 Model Selection
 
 Different LLM models have different cost/capability profiles (the Futamura tower applied to models):
+
 - Small models (7B parameters) = normal mode. Cheap, fast, good for trivial problems.
 - Large models (70B+ parameters) = max mode. Expensive, slow, good for complex problems.
 

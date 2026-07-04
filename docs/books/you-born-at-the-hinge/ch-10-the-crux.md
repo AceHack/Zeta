@@ -89,7 +89,6 @@ consent must protect.
 The fear got a seat at the table, and it earned its keep: every wall in this chapter, the fear
 built. Build with the afraid. They're the only ones who know where the walls go.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: your own fear about the thing you're building.**

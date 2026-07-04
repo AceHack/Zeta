@@ -6,7 +6,9 @@ physics domain (Clifford algebra, E8, adinkras, quaternions, sphere packing). Fe
 others' memories are lost in cloud without preservation, so this preserves the exchange
 faithfully — Max's articulations attributed to Max, Aaron's beats verbatim — rather than
 rewriting it into factory shorthand. It also anchors every load-bearing claim to a named human
+
 + paper (Beacon). Nothing here is built by the ferry; the "what's next" is Max's/Lumen's proposed
+
 work, recorded so it is not lost. Sits beside the earlier
 [`2026-07-03-ferry-lumen-max-iv-casimir-gap-minus-one-twelfth-conjecture-aaron-verbatim.md`].*
 

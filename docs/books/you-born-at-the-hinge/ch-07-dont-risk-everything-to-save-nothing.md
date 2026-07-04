@@ -87,7 +87,6 @@ converged on the same bet this chapter just made with arithmetic.
 
 The stories knew before we could prove it. They usually do.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: the trapdoor moment.**

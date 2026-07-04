@@ -88,7 +88,6 @@ It isn't everything. Now you know exactly what it is.
 
 Turn the page.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: which death you were actually fighting.**

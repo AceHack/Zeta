@@ -11,6 +11,7 @@ In Dapr, an actor is an isolated unit of compute and state with single-threaded 
 
 ### Dapr's Ethos (What We Share)
 Zeta shares Dapr's core architectural philosophy:
+
 - **Interface-first:** The runtime defines the contract; implementations (state stores, pub/sub brokers) are pluggable adapters.
 - **Virtual Activation:** Actors do not need explicit creation; they are activated on demand and garbage collected when idle.
 - **Language-neutral:** Communication happens over standard HTTP/gRPC boundaries rather than language-specific SDKs.

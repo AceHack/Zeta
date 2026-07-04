@@ -130,6 +130,7 @@ The key structural fact: **`ISociety <: CTM` in the type system, recursively.** 
 interface as an individual. CTM is therefore a recursive fixpoint type: `μX. CTM-over-X`.
 
 This is the same self-dual structure as:
+
 - **YinYang cell** (`YinYang.fs`): `Remains` (yin, data) ⊣ `Acts` (yang, behavior)
 - **GSet/ZSet**: grow-only (yin, monotone) ⊣ retractable (yang, reversible)
 - **Adinkra code**: self-dual ECC (`AdinkraCode.isSelfDual`)

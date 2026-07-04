@@ -24,10 +24,12 @@ These are not two different problems. They are the same problem, solved by the s
 How do you allocate a scarce resource across a population such that coverage is maximized and redundancy is minimized?
 
 The answer is **sphere packing**.
+
 - If spheres overlap, you have redundancy (wasted gear / wasted IV on clones).
 - If there are gaps between spheres, you have poor coverage (un-equipped soldiers / un-identified agents).
 
 The E8 lattice is the mathematically proven optimal sphere packing in 8 dimensions. By mapping agent identity trajectories into E8 via the `CliffordE8Bridge`, Zeta ensures that:
+
 1. Every agent is maximally separated from every other agent.
 2. Maximum separation = maximum decorrelation.
 3. Maximum decorrelation = maximum Condorcet bonus.

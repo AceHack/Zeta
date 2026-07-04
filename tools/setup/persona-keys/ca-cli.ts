@@ -164,6 +164,7 @@ async function main(): Promise<number> {
     const dryRun = !confirm;
     const home = opt("--home") ?? homedir();
     const devicePubPath = opt("--device-pub") ?? machinePubPath(repoRoot, machineId);
+    const validity = opt("--validity");
     const usersFlag = opt("--users");
     const users =
       usersFlag !== undefined
@@ -179,7 +180,7 @@ async function main(): Promise<number> {
       dryRun,
       confirm,
       biometricAuth,
-      ...(opt("--validity") !== undefined ? { validity: opt("--validity") } : {}),
+      ...(validity !== undefined ? { validity } : {}),
     });
     console.log(formatSignFrostAttestation(r));
     if (

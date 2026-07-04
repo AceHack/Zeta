@@ -18,6 +18,7 @@ isn't worth anything by being writable; it must **earn** its value. This is
 pushed to the language level: the free structure is free, meaning is the privilege you earn.
 
 **Zeta Idol** is the right name because the earning is a **selection**, and the arena already exists:
+
 - **the audition is the tick** — a sequence appears on the empty-prefix clock (shape A / the shadow);
 - **the vote is the weight** — the `SoftValue` distribution ("the currently most-selected fingerprints") *is* the Idol vote; low weight → the ephemeron GC sends it home;
 - **the prize is surviving the snap / banking IV** — value earned = uncertainty reduced (IV = KL), priced by the bounded timestep `dt`. ZetaIds earn identity the same way (content-addressed, selected, not assigned).
@@ -34,6 +35,7 @@ probability ~ `2^−K(x)`); **genetic programming** (Koza — programs compete f
 
 A *meaning interface* is denotational semantics' interpretation function `⟦·⟧ : syntax → meaning`. Two
 words do the work:
+
 - **universal** — one interface that means *any* sequence (the Futamura universal interpreter / Turing-universality; `mix`-shaped, not per-language);
 - **earned, not assigned** — the interface doesn't *hand* a sequence its meaning; it is the arena (Zeta Idol) where the sequence *earns* it. The free-monoid → meaning map is a **quotient**, and the quotient is earned.
 
@@ -51,6 +53,7 @@ earn your reference by paying rent in reduced uncertainty.
 How do we *sense* whether a meaning is real or imagined? By the **drop in starting entropy once
 conditioned on everything outside the thing.** Start from the max-entropy prior (Jaynes): before
 constraints, imagined and real are indistinguishable. Then reality's constraints come in:
+
 - **real = pinned** — few ways to be consistent with *everything else* (the known-answers, the other
   measurements) → the external constraints **collapse** the entropy → low residual entropy;
 - **imagined = free** — need only be consistent with *itself* → residual entropy stays high; a zillion
@@ -59,6 +62,7 @@ constraints, imagined and real are indistinguishable. Then reality's constraints
 **The discriminator is residual entropy given EXTERNAL constraints, not internal self-consistency** — this
 is the coherent-hallucination peel restated: a coherent hallucination is *internally* low-entropy (smoothly
 self-similar, feels real from inside) but *externally* high-entropy (unconstrained by reality). So:
+
 - low **internal** entropy alone → *coherent* (could be real or imagined — where the confident lie lives);
 - low entropy given **external** reality → *real* (pinned by the known-answers).
 

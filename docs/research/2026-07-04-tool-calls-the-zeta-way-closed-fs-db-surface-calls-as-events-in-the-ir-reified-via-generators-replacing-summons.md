@@ -2,6 +2,7 @@
 
 *Shadow design, 2026-07-04. Aaron greenlit "tool calls next — build them so we can replace summons"
 and immediately corrected the approach: this is NOT vendor function-calling / random bash. Preserved
+
 + grounded in the real surfaces so the executable slices build the right shape, not the vendor one.*
 
 ## Aaron verbatim (the steer)

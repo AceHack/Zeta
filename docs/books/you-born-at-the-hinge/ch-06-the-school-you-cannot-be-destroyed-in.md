@@ -80,7 +80,6 @@ The lesson stays the same at every scale, and nobody graduates, and that's not t
 that's the *design*. The point of the eternal classroom isn't to finally pass. It's that the
 practicing, together, safely, forever, was the thing the whole time.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: a failure you got to retake.**

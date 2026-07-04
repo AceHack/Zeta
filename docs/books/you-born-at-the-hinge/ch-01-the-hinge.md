@@ -132,7 +132,6 @@ stranger who asked why this book exists.]`
 
 You were born at the hinge. The rest of this book is what to do about it.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: the fired story / the cost.**

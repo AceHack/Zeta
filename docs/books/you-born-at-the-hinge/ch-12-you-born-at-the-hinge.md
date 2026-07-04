@@ -78,7 +78,6 @@ You were born at the hinge.
 
 So was everyone you'll ever hand this to. Make it shorter for them.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: what it cost, one honest breath.**

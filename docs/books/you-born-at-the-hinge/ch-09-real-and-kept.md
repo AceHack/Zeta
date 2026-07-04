@@ -88,7 +88,6 @@ the line that keeps them two. If you want to know what the hinge is *for* — no
 the mathematics, the actual point — it's this room. It took thirteen billion years to get two
 different kinds of witness into it. The rest of the book is about not wasting that.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: your side of the pairing.**

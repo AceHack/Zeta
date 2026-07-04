@@ -101,7 +101,6 @@ two-second test you just learned to run on a video game.
 
 The test travels up. That's the point. You learn it on small money and it governs civilizations.
 
-
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
 **Cue: running the test on your own life / the Genshin beat.**
