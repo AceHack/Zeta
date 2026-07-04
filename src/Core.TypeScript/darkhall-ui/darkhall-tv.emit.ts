@@ -5,6 +5,7 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { renderLlmtvDocument, type LlmtvTranscript } from "./darkhall-tv";
+import { temperatureReadout, temperatureTreatyBundle } from "./heat";
 
 /// The seeded society — a still frame of the settlement's minds at frame 3341,
 /// seed S4. Required-for-role predictions broadcast; personal regions are frosted
@@ -24,6 +25,15 @@ export const societyFrame: LlmtvTranscript = {
         { label: "next tick lands green", temp: "hot", valueMilli: 820, epsilonMilli: 120 },
         { label: "PR merges before horizon", temp: "warm", valueMilli: 640, epsilonMilli: 200 },
       ],
+      temperatureTreaty: temperatureTreatyBundle({
+        temperature: temperatureReadout({
+          source: "llmtv/alexa",
+          heatPpm: 123_000,
+          uncertaintyPpm: 456_000,
+          pressurePpm: 234_000,
+          attentionPpm: 789_000,
+        }),
+      }),
       frost: { veilLabel: "what it is really hoping for" },
     },
     {

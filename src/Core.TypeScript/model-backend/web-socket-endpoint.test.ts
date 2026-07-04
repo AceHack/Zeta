@@ -81,7 +81,7 @@ describe("web-socket-endpoint — codec + fake socket", () => {
 
 // ── REAL ws:// loopback: a genuine Bun WebSocket server + client. The peer replies to a normal frame with a
 // feedback frame; we assert it crosses a real socket and surfaces on the client's feedbackIn. ──────────────
-const server = Bun.serve<undefined, Record<string, never>>({
+const server = Bun.serve<undefined>({
   port: 0, // ephemeral
   fetch(req, srv) {
     if (srv.upgrade(req)) return undefined;

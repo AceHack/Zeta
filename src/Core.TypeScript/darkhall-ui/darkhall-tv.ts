@@ -11,7 +11,7 @@
 // the generator renders only its public veil label (blurred), NEVER its contents.
 // Consent-first (§6): the substrate cannot emit what was frosted.
 
-import type { HeatSignal, TemperatureTreatyBundle } from "./heat";
+import { MAX_TEMPERATURE_PPM, type HeatSignal, type TemperatureTreatyBundle } from "./heat";
 
 /// Attention temperature — where a prediction sits on the LLMTV salience axis.
 /// hot = high-salience / rising attention, cool = settled. A DU, not a hand-coded
@@ -104,6 +104,16 @@ export function softText(valueMilli: number, epsilonMilli: number): string {
   return `${dot2(valueMilli)} ± ${dot2(epsilonMilli)}`;
 }
 
+function ppmText(value: number): string {
+  if (!Number.isFinite(value) || value <= 0) return "0 ppm";
+  return `${Math.min(MAX_TEMPERATURE_PPM, Math.trunc(value)).toString()} ppm`;
+}
+
+function ppmRatio(value: number): string {
+  if (!Number.isFinite(value) || value <= 0) return "0.000000";
+  return (Math.min(MAX_TEMPERATURE_PPM, Math.trunc(value)) / MAX_TEMPERATURE_PPM).toFixed(6);
+}
+
 const lockSvg =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">' +
   '<rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
@@ -133,6 +143,47 @@ function renderFrost(frost: FrostRegion): string {
     `<div class="frost" data-frost="earned">`,
     `<div class="veil">${escapeHtml(frost.veilLabel)}</div>`,
     `<div class="lock">${lockSvg}&nbsp;earned · permanent</div>`,
+    "</div>",
+  ].join("");
+}
+
+function renderTemperatureMetric(label: string, kind: string, ppm: number): string {
+  return [
+    `<span class="temp-metric"`,
+    attr("data-kind", kind),
+    attr("style", `--ppm:${ppmRatio(ppm)}`),
+    ">",
+    `<b>${escapeHtml(label)}</b>`,
+    '<span class="rail"><i></i></span>',
+    `<em>${escapeHtml(ppmText(ppm))}</em>`,
+    "</span>",
+  ].join("");
+}
+
+function renderTemperatureLane(treaty: TemperatureTreatyBundle): string {
+  const temperature = treaty.temperature;
+  const blackBody = treaty.blackBody;
+
+  return [
+    `<div class="temp-lane"`,
+    attr("data-temperature-lane", "present"),
+    attr("data-temperature-band", temperature.band),
+    attr("data-temperature-source", temperature.source),
+    attr("data-temperature-oracle", treaty.referenceOracle),
+    ">",
+    '<div class="temp-band">',
+    `<span>black-body · ${escapeHtml(temperature.band)}</span>`,
+    "<i></i>",
+    "</div>",
+    '<div class="temp-stack">',
+    renderTemperatureMetric("temp", "temperature", temperature.temperaturePpm),
+    renderTemperatureMetric("rad", "radiance", blackBody.radiancePpm),
+    renderTemperatureMetric("peak", "peak-frequency", blackBody.peakFrequencyPpm),
+    "</div>",
+    '<div class="temp-meta">',
+    `<span><b>src</b><i>${escapeHtml(temperature.source)}</i></span>`,
+    `<span><b>oracle</b><i>${escapeHtml(treaty.referenceOracle)}</i></span>`,
+    "</div>",
     "</div>",
   ].join("");
 }
@@ -170,6 +221,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     `<div class="mind">`,
     renderRequiredBand(mind.hat),
     ...mind.predictions.map(renderPrediction),
+    temperatureTreaty === undefined ? "" : renderTemperatureLane(temperatureTreaty),
     mind.frost ? renderFrost(mind.frost) : "",
     "</div>",
     `<div class="tv-foot"><span>seed ${escapeHtml(seed)}</span>${frame === undefined ? "" : `<span>frame ${frame}</span>`}</div>`,
@@ -333,6 +385,25 @@ export const LLMTV_INLINE_CSS = `
     .band .k { font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--txt3); }
     .band .k.req { color:var(--c-warm); } .band .k.pers { color:var(--c-cool); }
     .band .hr { flex:1; height:1px; background:var(--line); }
+    /* temperature treaty: information-temperature and black-body reference readout, visible from attrs */
+    .temp-lane { --thermal:var(--c-cool); margin:0.7rem -0.85rem 0; padding:0.62rem 0.85rem 0; border-top:1px solid var(--line); color:var(--thermal); }
+    .temp-lane[data-temperature-band="cold"] { --thermal:var(--txt3); }
+    .temp-lane[data-temperature-band="warm"] { --thermal:var(--c-warm); }
+    .temp-lane[data-temperature-band="hot"] { --thermal:var(--c-hot); }
+    .temp-lane[data-temperature-band="critical"] { --thermal:var(--c-bad); }
+    .temp-band { display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; }
+    .temp-band span { color:currentColor; white-space:nowrap; }
+    .temp-band i { flex:1; height:1px; background:linear-gradient(90deg, currentColor, transparent); opacity:0.55; }
+    .temp-stack { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0.35rem; margin-top:0.48rem; }
+    .temp-metric { min-width:0; display:grid; gap:0.16rem; font-family:var(--mono); }
+    .temp-metric b { font-size:0.54rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--txt3); font-weight:400; }
+    .temp-metric .rail { height:0.38rem; border:1px solid var(--line2); border-radius:3px; overflow:hidden; position:relative; background:rgba(255,255,255,0.018); }
+    .temp-metric .rail i { position:absolute; inset:0; width:calc(var(--ppm) * 100%); background:currentColor; display:block; }
+    .temp-metric em { font-style:normal; font-size:0.56rem; color:var(--txt2); overflow-wrap:anywhere; line-height:1.25; }
+    .temp-meta { display:flex; flex-wrap:wrap; gap:0.25rem 0.65rem; margin-top:0.5rem; font-family:var(--mono); font-size:0.55rem; color:var(--txt3); }
+    .temp-meta span { min-width:0; display:inline-flex; gap:0.28rem; align-items:baseline; }
+    .temp-meta b { font-weight:400; letter-spacing:0.12em; text-transform:uppercase; }
+    .temp-meta i { font-style:normal; color:var(--txt2); overflow-wrap:anywhere; }
     /* FROST: personal mind-parts a dweller earned permanent privacy over — priced privacy,
        never decoration; the blur means content withheld, its permanence = earned + inviolable */
     .frost { position:relative; margin:0.2rem 0; border:1px solid var(--line2); border-radius:6px; overflow:hidden;

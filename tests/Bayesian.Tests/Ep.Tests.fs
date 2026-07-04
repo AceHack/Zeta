@@ -101,6 +101,18 @@ let ``probit projection stays finite and proper for an extreme negative cavity``
         Gaussian.mean proj |> should be (greaterThan m)
 
 [<Fact>]
+let ``probit projection tail switch covers the ARM FsCheck shrunk cavity`` () =
+    // On arm64 the A-S erf approximation can return a tiny positive but
+    // relative-inaccurate Φ(z) before underflow. Use the Mills tail by z-band,
+    // not only after cdf = 0, so the projected variance stays proper.
+    let m, v = -10.0, 0.4581573742
+    let proj = Ep.probitProject (Gaussian.ofMeanVariance m v)
+    Gaussian.isProper proj |> should equal true
+    Double.IsFinite(Gaussian.mean proj) |> should equal true
+    Double.IsFinite(Gaussian.variance proj) |> should equal true
+    Gaussian.variance proj |> should be (lessThanOrEqualTo v)
+
+[<Fact>]
 let ``probit projection stays finite for an extremely broad cavity (no v-squared overflow)`` () =
     // v = 1e308 is finite + positive → accepted by the public constructor, so
     // probitProject must handle it. The naive v² intermediate would overflow to

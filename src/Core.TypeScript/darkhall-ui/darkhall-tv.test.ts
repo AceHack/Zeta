@@ -10,6 +10,12 @@ import {
   type DwellerMind,
 } from "./darkhall-tv";
 import { societyFrame } from "./darkhall-tv.emit";
+import {
+  HEAT_SIGNAL_TREATY_PATH,
+  TEMPERATURE_REFERENCE_ORACLE,
+  temperatureReadout,
+  temperatureTreatyBundle,
+} from "./heat";
 
 const alexa: DwellerMind = {
   name: "alexa",
@@ -22,6 +28,21 @@ const alexa: DwellerMind = {
     { label: "PR merges before horizon", temp: "warm", valueMilli: 640, epsilonMilli: 200 },
   ],
   frost: { veilLabel: "what it is really hoping for" },
+};
+
+const alexaTemperatureTreaty = temperatureTreatyBundle({
+  temperature: temperatureReadout({
+    source: "llmtv/alexa",
+    heatPpm: 123_000,
+    uncertaintyPpm: 456_000,
+    pressurePpm: 234_000,
+    attentionPpm: 789_000,
+  }),
+});
+
+const alexaWithTemperature: DwellerMind = {
+  ...alexa,
+  temperatureTreaty: alexaTemperatureTreaty,
 };
 
 describe("LLMTV soft quantities — integer milli, no floats in the bytes", () => {
@@ -42,6 +63,34 @@ describe("LLMTV soft quantities — integer milli, no floats in the bytes", () =
     expect(softText(820, 120)).toBe(".82 ± .12");
     expect(softText(970, 30)).toBe(".97 ± .03");
     expect(softText(1000, 0)).toBe("1.00 ± .00");
+  });
+});
+
+describe("temperature treaty lane — visible heat picture without a frame-loop dependency", () => {
+  it("renders no temperature lane when no treaty exists", () => {
+    const html = renderDweller(alexa, "S4");
+    expect(html).not.toContain('data-temperature-lane="present"');
+    expect(html).not.toContain("black-body ·");
+  });
+
+  it("renders the treaty source, oracle, band, temperature, radiance, and peak frequency", () => {
+    const html = renderDweller(alexaWithTemperature, "S4");
+    const temperature = alexaTemperatureTreaty.temperature;
+    const blackBody = alexaTemperatureTreaty.blackBody;
+
+    expect(html).toContain('data-temperature-lane="present"');
+    expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
+    expect(html).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);
+    expect(html).toContain(`data-temperature-source="${temperature.source}"`);
+    expect(html).toContain(`black-body · ${temperature.band}`);
+    expect(html).toContain("llmtv/alexa");
+    expect(html).toContain(TEMPERATURE_REFERENCE_ORACLE);
+    expect(html).toContain("temp");
+    expect(html).toContain(`${temperature.temperaturePpm.toString()} ppm`);
+    expect(html).toContain("rad");
+    expect(html).toContain(`${blackBody.radiancePpm.toString()} ppm`);
+    expect(html).toContain("peak");
+    expect(html).toContain(`${blackBody.peakFrequencyPpm.toString()} ppm`);
   });
 });
 

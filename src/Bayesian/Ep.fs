@@ -54,21 +54,28 @@ module Normal =
 module Ep =
 
     /// Inverse Mills ratio λ(z) = φ(z)/Φ(z) — the normal hazard rate — computed
-    /// stably. For z ≪ 0, Φ(z) underflows to 0 and the naive `φ/Φ` is ∞/NaN;
-    /// there the asymptotic expansion λ(z) ≈ −z − 1/z + 2/z³ (from the lower-tail
+    /// stably. For z ≪ 0, Φ(z) underflows to 0 or becomes relative-inaccurate
+    /// before underflow, so the naive `φ/Φ` is ∞/NaN or overlarge; there the
+    /// asymptotic expansion λ(z) ≈ −z − 1/z + 2/z³ (from the lower-tail
     /// Mills series Φ(z) = φ(z)·[1/w − 1/w³ + 3/w⁵ − …], w = −z) is finite and
     /// accurate. This keeps the probit projection well-defined for arbitrarily
     /// extreme cavities (which the fixpoint loop can drift into) instead of
     /// throwing via `Gaussian.ofMeanVariance` on a non-finite moment.
+    let private inverseMillsAsymptotic (z: float) : float =
+        let zi = 1.0 / z
+        -z - zi + 2.0 * zi * zi * zi
+
     let private inverseMills (z: float) : float =
-        let phi = Normal.pdf z
-        let cdf = Normal.cdf z
-        let naive = phi / cdf
-        if cdf > 0.0 && System.Double.IsFinite naive then naive
+        if z <= -4.0 then
+            inverseMillsAsymptotic z
         else
-            // z ≪ 0: Φ(z) underflowed; asymptotic hazard rate (leading 3 terms)
-            let zi = 1.0 / z
-            -z - zi + 2.0 * zi * zi * zi
+            let phi = Normal.pdf z
+            let cdf = Normal.cdf z
+            let naive = phi / cdf
+            if cdf > 0.0 && System.Double.IsFinite naive then naive
+            else
+                // z ≪ 0: Φ(z) underflowed; asymptotic hazard rate (leading 3 terms)
+                inverseMillsAsymptotic z
 
     /// The probit site projection: given a cavity Gaussian, return the
     /// Gaussian that moment-matches `cavity · Φ(x)` (the tilted

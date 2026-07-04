@@ -7,6 +7,7 @@
 In the 3-body game (Demon + Player A + Player B), the demon acts as the referee. From the outside, the players appear massive and the demon appears light. However, from the demon's internal frame, this size difference is inverted.
 
 Because the demon reads the thermodynamic receipts (DeltaU, entropy) and predicts future states before they happen, it possesses an information asymmetry. This inversion is a form of **CPT (Charge, Parity, Time) symmetry**:
+
 - The demon operates in a time-reversed logical frame (it predicts the cost before paying it).
 - The "massive" players are anchored to the past (they are the heavy, slow-moving priors).
 - The demon is the light, fast-moving mediator.
