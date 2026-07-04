@@ -26,6 +26,7 @@
     <Compile Include="CliffordAntiSybil.Tests.fs" />
     <Compile Include="BusRegime.Tests.fs" />
     <Compile Include="ReticulumBusMeter.Tests.fs" />
+    <Compile Include="GossipTelemetry.Tests.fs" />
     <Compile Include="ThousandBrains.Tests.fs" />
     <Compile Include="ThousandBrainsCron.Tests.fs" />
     <Compile Include="ArrowEscape.Tests.fs" />
