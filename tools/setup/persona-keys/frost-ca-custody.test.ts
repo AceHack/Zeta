@@ -1,9 +1,11 @@
-// frost-ca-custody.ts — threshold CA + device attestation (slice 2).
+// frost-ca-custody.ts — threshold CA + OpenSSH cert (081KWPHRNE).
 // Sandbox-only. Run: bun test frost-ca-custody.test.ts
 import { test, expect } from "bun:test";
+import { spawnSync } from "node:child_process";
 import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { certPath } from "./ca.ts";
 import type { BiometricAuth, BiometricResult } from "./biometric.ts";
 import {
   attestationMessage,
@@ -100,9 +102,14 @@ test("frost-ca confirm: writes shares + optional public key; attest verifies", a
     expect(existsSync(frostSharePath(sb))).toBe(true);
     expect(existsSync(frostCaPublicKeyPath(sb.repoRoot, CA))).toBe(true);
 
+    const deviceKey = join(sb.home, "device");
+    const keygen = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", HOST], {
+      encoding: "utf8",
+    });
+    expect(keygen.status).toBe(0);
     const devicePubPath = join(sb.repoRoot, "machines", `${HOST}.pub`);
     mkdirSync(dirname(devicePubPath), { recursive: true });
-    writeFileSync(devicePubPath, "ssh-ed25519 AAAATESTDEVICE frost-host\n");
+    writeFileSync(devicePubPath, readFileSync(deviceKey + ".pub"));
 
     const attPrompts: string[] = [];
     const att = await signFrostDeviceAttestation(fx(), {
@@ -118,6 +125,14 @@ test("frost-ca confirm: writes shares + optional public key; attest verifies", a
     });
     expect(att.action).toBe("signed");
     expect(attPrompts.length).toBe(1);
+    expect(existsSync(certPath(devicePubPath))).toBe(true);
+    const listed = spawnSync("ssh-keygen", ["-L", "-f", certPath(devicePubPath)], {
+      encoding: "utf8",
+    });
+    expect(listed.status).toBe(0);
+    expect(listed.stdout).toContain("alice");
+    expect(listed.stdout).toContain(HOST);
+
     const path = frostAttestationPath(sb.repoRoot, HOST);
     expect(existsSync(path)).toBe(true);
     const body = JSON.parse(readFileSync(path, "utf8")) as FrostDeviceAttestationV1;

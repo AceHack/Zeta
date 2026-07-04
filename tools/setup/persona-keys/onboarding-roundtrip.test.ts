@@ -570,6 +570,15 @@ test("FROST CA CUSTODY GAP CLOSED: frost-ca + device attestation wiring exists",
   expect(cli).toContain("frost-cert");
 });
 
+test("OPENSSH CERTKEYS GAP CLOSED: frost emits PROTOCOL.certkeys -cert.pub (openssh-cert.ts)", () => {
+  const src = readFileSync(join(import.meta.dir, "openssh-cert.ts"), "utf8");
+  expect(/export\s+function\s+buildEd25519UserCertSignable/.test(src)).toBe(true);
+  expect(/export\s+function\s+finalizeEd25519UserCert/.test(src)).toBe(true);
+  const custody = readFileSync(join(import.meta.dir, "frost-ca-custody.ts"), "utf8");
+  expect(custody).toContain("buildEd25519UserCertSignable");
+  expect(custody).toContain("frostThresholdSign");
+});
+
 test("SHAMIR BP-16 GAP CLOSED: golden seed + F# formal cross-check exist", () => {
   const golden = join(import.meta.dir, "shamir-golden-vectors.json");
   expect(existsSync(golden)).toBe(true);

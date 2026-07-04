@@ -21,6 +21,7 @@ Main tip at last capture: includes #9432 (frost CA custody).
 | Alloy IdentityReissuable | #9425 | `IdentityReissuable.als` — single-key orphan vs ≥k shares |
 | FROST oracle (slice 1) | #9429 | `frost.ts` — threshold Schnorr, no scalar reassembly |
 | FROST CA custody (slice 2) | #9432 | `frost-ca-custody.ts`, `ca-cli frost-ca` / `frost-cert` |
+| OpenSSH certkeys encoder | (next PR) | `openssh-cert.ts` — frost emits real `-cert.pub` (`ssh-keygen -L` ok) |
 
 ### Lifecycle triad (081KVP2M1) — complete
 
@@ -37,8 +38,8 @@ Only deferred items promoted to **minted** follow-ons (below).
 
 | ZetaId | Priority | Title |
 |--------|----------|--------|
-| **081KWPHRNE008QG0R001D8CBP9** | P1 | OpenSSH `PROTOCOL.certkeys` encoder — frost emits `-cert.pub` without `ssh-keygen -s` |
-| **081KWPHRNFW08QG0R0031ZNXTD** | P2 | RFC 9591 DKG + ROAST + HSM-sealed share adapters (depends on certkeys encoder) |
+| **081KWPHRNE008QG0R001D8CBP9** | P1 | ✅ OpenSSH certkeys encoder (closed this PR) |
+| **081KWPHRNFW08QG0R0031ZNXTD** | P2 | RFC 9591 DKG + ROAST + HSM-sealed share adapters |
 
 Files:
 
@@ -54,8 +55,10 @@ bun tools/setup/persona-keys/ca-shamir-cli.ts split --ca <ca> --shamir 2-of-3 --
 # Live threshold CA (FROST) — never reassembles signing scalar
 bun tools/setup/persona-keys/ca-cli.ts frost-ca --ca <ca> --frost 2-of-3 --confirm --commit-pub
 bun tools/setup/persona-keys/ca-cli.ts frost-cert --user <u> --machine <host> --confirm
-# → machines/<host>-frost-attestation.json (Zeta-native; not yet OpenSSH -cert.pub)
+# → machines/<host>-cert.pub (OpenSSH, frost-signed) + machines/<host>-frost-attestation.json
+# Put maintainers/<ca>/frost-ca.pub in TrustedUserCAKeys (OpenSSH line).
 ```
+
 
 ### Reliability notes (outside-world, not DST)
 
@@ -67,5 +70,4 @@ bun tools/setup/persona-keys/ca-cli.ts frost-cert --user <u> --machine <host> --
 
 ## Resume order
 
-1. **081KWPHRNE** — OpenSSH certkeys encoder + frost sign of cert blob (closes live OpenSSH path)
-2. **081KWPHRNFW** — DKG / ROAST / HSM adapters (hardens keygen after live path works)
+1. **081KWPHRNFW** — DKG / ROAST / HSM adapters (hardens keygen; live OpenSSH path already works)

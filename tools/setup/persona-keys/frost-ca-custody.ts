@@ -19,6 +19,15 @@ import {
   type FrostKeyShare,
 } from "./frost.ts";
 import { parseShamirSpec } from "./ca-shamir-custody.ts";
+import { certPath } from "./ca.ts";
+import {
+  buildEd25519UserCertSignable,
+  finalizeEd25519UserCert,
+  formatSshEd25519CertLine,
+  formatSshEd25519PublicKeyLine,
+  parseSshEd25519PublicKeyLine,
+  parseValidityWindow,
+} from "./openssh-cert.ts";
 
 export type { BiometricAuth, BiometricResult } from "./biometric.ts";
 
@@ -147,8 +156,12 @@ export interface SignFrostAttestationResult {
     | "skipped-biometric"
     | "failed";
   readonly attestationPath: string;
+  /** OpenSSH `-cert.pub` path (PROTOCOL.certkeys, frost-signed). */
+  readonly certPath: string;
   readonly groupPublicKeyHex?: string;
   readonly attestation?: FrostDeviceAttestationV1;
+  /** OpenSSH cert line text when signed. */
+  readonly certText?: string;
   readonly biometric?: BiometricResult;
   readonly warnings: readonly string[];
 }
@@ -262,10 +275,14 @@ export async function ensureFrostCa(
   let committedPub = false;
   if (opts.commitPub === true) {
     fx.mkdirp(dirname(groupPublicKeyPath));
-    // PUBLIC: hex group key + comment (not an OpenSSH key line — frost attestation verifier).
+    // PUBLIC OpenSSH line for TrustedUserCAKeys + hex comment for frost tooling.
+    const sshLine = formatSshEd25519PublicKeyLine(
+      kg.groupPublicKey,
+      `zeta-frost-ca ${opts.ca} ${String(threshold)}-of-${String(totalShares)}`,
+    );
     fx.writeText(
       groupPublicKeyPath,
-      `# zeta-frost-ca-v1 ca=${opts.ca} threshold=${String(threshold)}-of-${String(totalShares)}\n${groupPublicKeyHex}\n`,
+      `# zeta-frost-ca-v1 ca=${opts.ca} threshold=${String(threshold)}-of-${String(totalShares)} hex=${groupPublicKeyHex}\n${sshLine}`,
       0o644,
     );
     committedPub = true;
@@ -291,8 +308,9 @@ export async function signFrostDeviceAttestation(
   const home = opts.home ?? homedir();
   const sharesDir = frostCaSharesDir(home, opts.ca);
   const attestationPath = frostAttestationPath(opts.repoRoot, opts.machineId);
+  const openSshCertPath = certPath(opts.devicePubPath);
   const warnings: string[] = [
-    "Frost attestation is Zeta-native (not an OpenSSH -cert.pub). sshd still needs OpenSSH certs or a verifier that checks this file.",
+    "OpenSSH -cert.pub is frost-signed (no CA private key file). Put frost-ca.pub in TrustedUserCAKeys.",
   ];
 
   const meta = loadMeta(fx, sharesDir);
@@ -301,6 +319,7 @@ export async function signFrostDeviceAttestation(
     confirmed,
     action: dryRun ? "would-sign" : "signed",
     attestationPath,
+    certPath: openSshCertPath,
     warnings,
   };
 
@@ -328,7 +347,7 @@ export async function signFrostDeviceAttestation(
 
   const biometric = await requireBiometric(
     opts.biometricAuth,
-    `Approve: frost-attest machine ${opts.machineId} (principals=${opts.users.join(",")})`,
+    `Approve: frost-sign OpenSSH cert for machine ${opts.machineId} (principals=${opts.users.join(",")})`,
   );
   if (!biometric.ok) {
     return { ...base, dryRun: false, action: "skipped-biometric", biometric };
@@ -342,30 +361,55 @@ export async function signFrostDeviceAttestation(
     return { ...base, dryRun: false, action: "failed", warnings };
   }
 
-  const devicePub = fx.readText(opts.devicePubPath).trim();
+  const devicePubLine = fx.readText(opts.devicePubPath).trim();
+  let devicePublicKey: Uint8Array;
+  try {
+    devicePublicKey = parseSshEd25519PublicKeyLine(devicePubLine);
+  } catch (e) {
+    warnings.push(e instanceof Error ? e.message : String(e));
+    return { ...base, dryRun: false, action: "failed", warnings };
+  }
+
   const issuedAt = opts.issuedAt ?? new Date().toISOString();
   const validity = opts.validity ?? "+52w";
+  const groupPublicKey = hexToBytes(meta.groupPublicKeyHex);
+  const window = parseValidityWindow(validity);
+
+  // OpenSSH PROTOCOL.certkeys — signable prefix, frost partials, finalize.
+  const { signable } = buildEd25519UserCertSignable({
+    devicePublicKey,
+    caPublicKey: groupPublicKey,
+    keyId: opts.machineId,
+    principals: opts.users,
+    validAfter: window.validAfter,
+    validBefore: window.validBefore,
+  });
+  const certSig = frostThresholdSign(groupPublicKey, shares, signable, undefined, meta.threshold);
+  if (!frostVerify(groupPublicKey, signable, certSig)) {
+    warnings.push("frost OpenSSH cert signature failed self-verify");
+    return { ...base, dryRun: false, action: "failed", warnings };
+  }
+  const certBlob = finalizeEd25519UserCert(signable, certSig);
+  const certText = formatSshEd25519CertLine(certBlob, opts.machineId);
+  fx.mkdirp(dirname(openSshCertPath));
+  fx.writeText(openSshCertPath, certText, 0o644);
+
+  // Zeta-native attestation (audit / non-sshd consumers) — same principals binding.
   const unsigned: Omit<FrostDeviceAttestationV1, "signatureHex"> = {
     schema: FROST_ATTESTATION_SCHEMA,
     ca: opts.ca,
     machineId: opts.machineId,
     principals: opts.users,
-    devicePub,
+    devicePub: devicePubLine,
     validity,
     issuedAt,
     groupPublicKeyHex: meta.groupPublicKeyHex,
   };
-  const msg = attestationMessage(unsigned);
-  const groupPublicKey = hexToBytes(meta.groupPublicKeyHex);
-  const signature = frostThresholdSign(groupPublicKey, shares, msg, undefined, meta.threshold);
-  if (!frostVerify(groupPublicKey, msg, signature)) {
-    warnings.push("frost signature failed self-verify");
-    return { ...base, dryRun: false, action: "failed", warnings };
-  }
-
+  const attMsg = attestationMessage(unsigned);
+  const attSig = frostThresholdSign(groupPublicKey, shares, attMsg, undefined, meta.threshold);
   const attestation: FrostDeviceAttestationV1 = {
     ...unsigned,
-    signatureHex: bytesToHex(signature),
+    signatureHex: bytesToHex(attSig),
   };
   fx.mkdirp(dirname(attestationPath));
   fx.writeText(attestationPath, JSON.stringify(attestation, null, 2) + "\n", 0o644);
@@ -376,6 +420,7 @@ export async function signFrostDeviceAttestation(
     action: "signed",
     groupPublicKeyHex: meta.groupPublicKeyHex,
     attestation,
+    certText,
     biometric,
     warnings,
   };
@@ -398,7 +443,11 @@ export function formatEnsureFrostCa(res: EnsureFrostCaResult): string {
 }
 
 export function formatSignFrostAttestation(res: SignFrostAttestationResult): string {
-  const lines = [`action=${res.action}`, `attestationPath=${res.attestationPath}`];
+  const lines = [
+    `action=${res.action}`,
+    `certPath=${res.certPath}`,
+    `attestationPath=${res.attestationPath}`,
+  ];
   if (res.groupPublicKeyHex !== undefined) {
     lines.push(`groupPublicKeyHex=${res.groupPublicKeyHex}`);
   }
