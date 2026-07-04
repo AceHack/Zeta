@@ -15,6 +15,8 @@ import {
   pruneCrossings,
   createSalonGossiper,
   pairKey,
+  plausibilityOf,
+  type Crossing,
   type Rumor,
   type Salon,
 } from "./gossip-salon";
@@ -300,5 +302,26 @@ describe("PROVEN: pruneCrossings preserves the regime exactly, for every deadlin
     // and the minimum survived: 100 is still the fastest known crossing
     expect([...(set ?? [])].some((e) => e.startsWith("100 "))).toBe(true);
     expect(published).toBe(200); // every tell was rumor-mongered even while pruned
+  });
+});
+
+// ── proof of distance: the plausibility floor ──────────────────────────────────────────────────
+
+describe("proof of distance: geometry tags claims — detection, never rejection", () => {
+  const geometry = hearAll([crossing("witness", "a", 500, "witness"), crossing("witness", "b", 100, "witness")]);
+  const claim = (rttMs: number, observer = "witness"): Crossing => ({ kind: "crossing", a: "a", b: "b", rttMs, observer });
+
+  it("self-witness / consistent / implausibly-fast / unverifiable — the four tags", () => {
+    expect(plausibilityOf(geometry, claim(10, "a"))).toBe("self-witnessed");
+    // reverse-triangle bound |500−100| = 400: a 10ms third-party claim is physically suspect
+    expect(plausibilityOf(geometry, claim(10))).toBe("implausibly-fast");
+    expect(plausibilityOf(geometry, claim(380))).toBe("consistent");
+    expect(plausibilityOf(geometry, claim(10, "stranger"))).toBe("unverifiable");
+  });
+
+  it("the implausible claim still lands in the salon — the tag is a fact for the oracle", () => {
+    const withSuspect = hear(geometry, claim(10));
+    expect(regimeOfPair(withSuspect, "a", "b", 100)).toBe("in-cone"); // kept, still evidence-killing
+    expect(plausibilityOf(withSuspect, claim(10))).toBe("implausibly-fast"); // and tagged
   });
 });

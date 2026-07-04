@@ -144,6 +144,35 @@ module GossipTelemetry =
                     if Set.count set <= keep then set
                     else set |> Set.toList |> List.sort |> List.take keep |> Set.ofList) }
 
+    /// PROOF OF DISTANCE — the plausibility floor (Aaron: "network delay is the un-fakeable
+    /// honesty"). Reverse triangle inequality: d(a,b) ≥ |d(o,a) − d(o,b)| — an observer cannot
+    /// honestly witness a crossing faster than the gap between its own distances to the
+    /// endpoints. Register, honestly: the inequality is A-grade; applying it over measured
+    /// minima is a C-grade heuristic (min RTT ≥ true delay; congestion inflates unevenly) — so
+    /// this is a SMELL DETECTOR, never a rejector. The salon keeps every claim; the tag is a
+    /// neutral fact and the meaning (liar / clock bug / asymmetric route) is the oracle's.
+    type Plausibility =
+        | SelfWitnessed
+        | Consistent
+        | ImplausiblyFast
+        | Unverifiable
+
+    let private minRttOf (salon: Salon) (a: string) (b: string) : int option =
+        salon.Crossings
+        |> Map.tryFind (pairKey a b)
+        |> Option.map (fun set -> set |> Set.toList |> List.map fst |> List.min)
+
+    /// Judge a crossing claim against the geometry the salon already knows. `slackMs` absorbs
+    /// jitter/asymmetry before calling anything implausible.
+    let plausibilityOf (salon: Salon) (claim: Crossing) (slackMs: int) : Plausibility =
+        if claim.Observer = claim.NodeA || claim.Observer = claim.NodeB then SelfWitnessed
+        else
+            match minRttOf salon claim.Observer claim.NodeA, minRttOf salon claim.Observer claim.NodeB with
+            | Some toA, Some toB ->
+                let bound = abs (toA - toB) // reverse triangle inequality on RTTs
+                if claim.RttMs + slackMs < bound then ImplausiblyFast else Consistent
+            | _ -> Unverifiable
+
     /// The kept-claims about a node, as the salon heard them — a neutral readout for the
     /// caller's oracle (attestation, privacy-budget accrual, reunion-vs-sybil… not decided here).
     let claimsAbout (salon: Salon) (node: string) : (bool * string) list =

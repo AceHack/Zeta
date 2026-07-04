@@ -105,3 +105,45 @@ module GossipTelemetryTests =
             @ [ crossing "a" "b" 60 "fast-witness" ]
             |> hearAll
         Assert.Equal(BusRegime.InCone, GossipTelemetry.regimeOfPair salon "a" "b" 100)
+
+    [<Fact>]
+    let ``GT-9: proof of distance — self-witness, consistency, the triangle bound, unverifiable`` () =
+        // salon knows: witness↔a at 500ms, witness↔b at 100ms → reverse-triangle bound = 400ms
+        let salon =
+            hearAll
+                [ crossing "witness" "a" 500 "witness"
+                  crossing "witness" "b" 100 "witness" ]
+        let claim rtt =
+            { GossipTelemetry.Crossing.NodeA = "a"
+              GossipTelemetry.Crossing.NodeB = "b"
+              GossipTelemetry.Crossing.RttMs = rtt
+              GossipTelemetry.Crossing.Observer = "witness" }
+        // an endpoint measuring its own bus is the credible base case
+        Assert.Equal(
+            GossipTelemetry.SelfWitnessed,
+            GossipTelemetry.plausibilityOf salon { claim 10 with Observer = "a" } 50)
+        // 10ms claim: 10 + 50 < 400 → physically suspect (kept, tagged — never rejected)
+        Assert.Equal(GossipTelemetry.ImplausiblyFast, GossipTelemetry.plausibilityOf salon (claim 10) 50)
+        // 380ms claim: within slack of the bound → consistent
+        Assert.Equal(GossipTelemetry.Consistent, GossipTelemetry.plausibilityOf salon (claim 380) 50)
+        // unknown witness geometry → unverifiable, honestly
+        Assert.Equal(
+            GossipTelemetry.Unverifiable,
+            GossipTelemetry.plausibilityOf salon { claim 10 with Observer = "stranger" } 50)
+
+    [<Fact>]
+    let ``GT-10: the implausible claim still lands in the salon — detection is not rejection`` () =
+        let salon =
+            hearAll
+                [ crossing "witness" "a" 500 "witness"
+                  crossing "witness" "b" 100 "witness"
+                  crossing "a" "b" 10 "witness" ] // the suspect claim, heard anyway
+        // the salon keeps it (dual-use: the fact is preserved for the oracle)…
+        Assert.Equal(BusRegime.InCone, GossipTelemetry.regimeOfPair salon "a" "b" 100)
+        // …and the tag says what the geometry thinks of it
+        let suspect =
+            { GossipTelemetry.Crossing.NodeA = "a"
+              GossipTelemetry.Crossing.NodeB = "b"
+              GossipTelemetry.Crossing.RttMs = 10
+              GossipTelemetry.Crossing.Observer = "witness" }
+        Assert.Equal(GossipTelemetry.ImplausiblyFast, GossipTelemetry.plausibilityOf salon suspect 50)

@@ -252,3 +252,48 @@ export function createSalonGossiper(
     salon: () => salon,
   };
 }
+
+// ── proof of distance: the plausibility floor (Aaron: "network delay is the un-fakeable
+//    honesty") ────────────────────────────────────────────────────────────────────────────────
+//
+// A witness's RTT claim about a pair is bounded by physics: if the wire's delays are metric,
+// the reverse triangle inequality gives d(a,b) ≥ |d(o,a) − d(o,b)| — an observer 500ms from one
+// endpoint and 20ms from the other cannot honestly witness a 10ms crossing between them.
+//
+// REGISTER, honestly: the triangle inequality itself is A-grade; applying it over MEASURED
+// minima is a C-grade heuristic (observed min RTT ≥ true propagation delay, so the computed
+// bound can drift either way — congestion inflates unevenly). Therefore this is a SMELL
+// DETECTOR, never a rejector: the salon keeps every claim (dual-use: detection ≠ verdict) and
+// `plausibilityOf` tags what the geometry says. What a physically-implausible witness MEANS —
+// liar, clock bug, asymmetric route — is the caller's oracle.
+
+export type Plausibility =
+  /// The observer was an endpoint — measured its own bus (the living node's normal case).
+  | "self-witnessed"
+  /// Third-party claim consistent with the geometry the salon knows.
+  | "consistent"
+  /// Third-party claim faster than the reverse-triangle bound derived from the observer's own
+  /// known distances to both endpoints — physically suspect. Fact, not verdict.
+  | "implausibly-fast"
+  /// The salon lacks the observer's distances to both endpoints — nothing to check against.
+  | "unverifiable";
+
+/// Fastest known RTT between two nodes, from the salon (null if unheard).
+function minRttOf(salon: Salon, a: string, b: string): number | null {
+  const set = salon.crossings.get(pairKey(a, b));
+  if (!set) return null;
+  let min = Infinity;
+  for (const entry of set) min = Math.min(min, Number(entry.slice(0, entry.indexOf(" "))));
+  return min === Infinity ? null : min;
+}
+
+/// Judge a crossing claim against the geometry the salon already knows. `slackMs` absorbs
+/// jitter/asymmetry before calling anything implausible (default generous: 50ms).
+export function plausibilityOf(salon: Salon, claim: Crossing, slackMs = 50): Plausibility {
+  if (claim.observer === claim.a || claim.observer === claim.b) return "self-witnessed";
+  const toA = minRttOf(salon, claim.observer, claim.a);
+  const toB = minRttOf(salon, claim.observer, claim.b);
+  if (toA === null || toB === null) return "unverifiable";
+  const bound = Math.abs(toA - toB); // reverse triangle inequality on RTTs
+  return claim.rttMs + slackMs < bound ? "implausibly-fast" : "consistent";
+}
