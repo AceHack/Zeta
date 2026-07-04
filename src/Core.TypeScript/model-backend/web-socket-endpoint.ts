@@ -20,8 +20,11 @@
 // envelope (version byte v1, 32-byte header, `MessageType` Request=1/Response=2, max 0xFFFF). The send path
 // is a DoP=1 ferry-throttle — `ActionBlock { MaxDegreeOfParallelism = 1, BoundedCapacity = 1 }` over
 // `System.IO.Pipelines` — the exact "beautiful on one thread, scale to N" pattern the async-all-the-way
-// rules cite. Measured ~16x over HttpClient (115,309 vs 7,075 req/s) precisely because it multiplexes
-// instead of paying per-request HTTP overhead. Lineage: this `DuplexEndpoint`/`Frame` is the SINGLE-channel
+// rules cite; that DoP=1 Pipelines throttle was code-reviewed by David Fowler (Microsoft — author of
+// `System.IO.Pipelines` and SignalR), i.e. reviewed by the creator of the very infra it builds on (per the
+// maintainer, discussed on Fowler's social media when it was written). Measured ~16x over HttpClient
+// (115,309 vs 7,075 req/s) precisely because it multiplexes instead of paying per-request HTTP overhead.
+// Lineage: this `DuplexEndpoint`/`Frame` is the SINGLE-channel
 // case; the Guid-correlated multiplexing is the MULTI-channel generalization over one socket; and the
 // four-corner feedback corners ADD to that envelope's Request/Response the return channel it lacks
 // (extraction Request/Response → mutual-empowerment four-corner). A future `MultiplexedDuplexTransport`
