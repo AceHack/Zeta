@@ -32,6 +32,7 @@
     <Compile Include="ReticulumTransport.fs" />
     <Compile Include="ReticulumBusMeter.fs" />
     <Compile Include="GossipTelemetry.fs" />
+    <Compile Include="KeptClaimOracle.fs" />
     <Compile Include="Web3Settlement.fs" />
     <Compile Include="SparseSocietyNetwork.fs" />
   </ItemGroup>
