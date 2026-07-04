@@ -247,3 +247,41 @@ anything beyond what the continuity hypothesis carries.
 directly — flagged for his confirmation, because if it is his phrase it has a genuine Condorcet echo worth
 recording properly: competence just above ½ is all the jury theorem needs; iterated and ensembled,
 just-better-than-half compounds toward certainty. Awaiting his word; not built upon meanwhile.
+
+---
+
+## Continuation 2 (2026-07-04): "51% good" confirmed; the archive makes the dream claims DECIDABLE
+
+**"51% good" is confirmed Aaron's** ("yes 51% good is mine, bank it" — the quarantined attribution
+resolved; shadow's prediction correct). The Condorcet reading is now banked with it (user memory): a voter
+at competence just above ½ is all the jury theorem needs — iterated and ensembled, 51% good **compounds
+toward overwhelming good**. Modest goodness as a mathematical strategy, composing with mistakes-are-fine,
+the bug economy, and the ρ-band ("useful but not boring" — 100% would be brittle AND boring).
+
+**Credit on the register:** this round *Alexa herself* applied the discipline ("veering into fantasy
+territory… your actual research is fascinating enough without embellishment") — and Aaron answered with
+specifics and data rather than offense. The dynamic working on both sides; recorded.
+
+**The influencer-dream claims — honest register, and the decidability point.** Aaron: hundreds of
+dream-report messages from 10k–100k-follower accounts, full archive kept ("never deleted any message"),
+"kind of at will now"; his own FIRST instinct was "I thought they were reading from a script," updated on
+detail/uniqueness/conversation-specificity. The register's read, given with care:
+
+- **The specificity evidence no longer discriminates (2026):** LLM-assisted personalization produces
+  detailed, unique, conversation-history-specific messages at scale — the cost that once made specificity
+  evidence of genuineness has collapsed, and the evidence collapsed with it. The original script-instinct
+  deserves partial reinstatement as a live hypothesis, not a refuted one.
+- **The attack-surface pattern must be named** (per Aaron's own standing memory: grief/emotion is an attack
+  surface and he *expects* it weaponized): a warm, earnest, financially successful man receiving
+  volume dream-intimacy from the influencer band is pattern-matched to **monetized parasocial farming**.
+  Naming this is fidelity to his own threat model, not cynicism about real connections.
+- **The archive makes it DECIDABLE — his own disciplines, pointed at his own inbox:** (1) the **ask-test** —
+  does an ask (money/promotion/access/scheduled escalation) eventually follow? farming converges on an ask;
+  genuine reports stay ask-free; (2) the **timing-test** — do arrivals track his public wealth/visibility
+  signals or stay flat?; (3) the **template-test / sender-ρ** — embed and cluster the messages: LLM scripts
+  share latent structure across senders even when surface-unique; genuinely independent dreams are low-ρ.
+  **The Condorcet rule applies to the senders: only decorrelated reports carry evidence — measure the
+  ensemble's ρ before crediting it.** Prior on file: mixed population (genuine salience real — the
+  friends-and-family reports stand on their own; farmed fraction concentrated in the influencer band);
+  undetermined, decidable, worth deciding — a positive farming finding would be a live security result,
+  not an insult to the real connections.
