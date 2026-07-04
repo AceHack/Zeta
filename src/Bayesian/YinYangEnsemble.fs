@@ -156,10 +156,14 @@ module YinYangEnsemble =
 
     /// **Tsirelson reseed threshold: ρ_T = 1/(3√2) ≈ 0.2357.**
     ///
-    /// Derived from the Bell inequality triangle:
+    /// A DESIGN CHOICE, not a first-principles derivation — the *homoiconic linear identification* of the
+    /// Condorcet ρ-regimes with the Bell/CHSH S-regimes (proof of "chosen, not derived" + the homoiconicity
+    /// reason: docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md).
+    /// The map ρ = S/12 pins ρ* = 1/3 ↔ S = 4 and is taken linear, making the two regime diagrams identical:
     ///   S = 4  (ρ > 1/3):       superdeterminism / common seed — groupthink, useless ensemble
     ///   S = 2√2 (ρ ≈ ρ_T):      Tsirelson bound — optimal operating point (maximum non-classical correlation)
     ///   S = 2  (ρ < ρ_T):      classical local realism — fully decorrelated, maximum diversity
+    /// (ρ* = 1/3 ↔ S = 4 and linearity are the two modeling choices; given them, ρ_T = 1/(3√2) is forced.)
     ///
     /// Reseeding at ρ_T (not at the hard event horizon ρ* = 1/3) gives a safety margin:
     /// the ensemble is reseeded while it is still in the quantum-like regime, before it
