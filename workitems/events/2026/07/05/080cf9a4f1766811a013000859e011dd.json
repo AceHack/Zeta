@@ -1,0 +1,14 @@
+{
+  "id": "080cf9a4f1766811a013000859e011dd",
+  "at": "2026-07-05T23:30:09.741Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KWT9WBPD08QG0R003H94RFE",
+    "type": "task",
+    "title": "Formalize self-audit-over-ledger as physics: pick the load-bearing rhyme (Lumen maps, Soraya proves)",
+    "slug": "formalize-self-audit-over-ledger-as-physics-pick-the-load-be",
+    "priority": "P2",
+    "filename": "081KWT9WBPD08QG0R003H94RFE-formalize-self-audit-over-ledger-as-physics-pick-the-load-be.md"
+  }
+}
