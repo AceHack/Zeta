@@ -24,6 +24,7 @@
     <Compile Include="BayesianTemperature.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
     <Compile Include="CliffordAntiSybil.Tests.fs" />
+    <Compile Include="CloneDetectionBenchmark.Tests.fs" />
     <Compile Include="BusRegime.Tests.fs" />
     <Compile Include="ReticulumBusMeter.Tests.fs" />
     <Compile Include="KeptClaimOracle.Tests.fs" />

@@ -1,0 +1,14 @@
+{
+  "id": "080cf97c82b0d011a01300088d59cf12",
+  "at": "2026-07-04T23:56:56.218Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KWQS0NGS08QG0R0000TBB4D",
+    "type": "task",
+    "title": "CliffordAntiSybil clone-detection AUC benchmark vs Pearson and Procrustes baselines",
+    "slug": "cliffordantisybil-clone-detection-auc-benchmark-vs-pearson-a",
+    "priority": "P2",
+    "filename": "081KWQS0NGS08QG0R0000TBB4D-cliffordantisybil-clone-detection-auc-benchmark-vs-pearson-a.md"
+  }
+}

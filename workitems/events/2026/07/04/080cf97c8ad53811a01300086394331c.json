@@ -1,0 +1,14 @@
+{
+  "id": "080cf97c8ad53811a01300086394331c",
+  "at": "2026-07-04T23:58:02.919Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KWQS2PN608QG0R002CXSBG0",
+    "type": "task",
+    "title": "Minimal BNN — one factor-graph inference cell with measurable IV task (not doc vocabulary)",
+    "slug": "minimal-bnn-one-factor-graph-inference-cell-with-measurable",
+    "priority": "P2",
+    "filename": "081KWQS2PN608QG0R002CXSBG0-minimal-bnn-one-factor-graph-inference-cell-with-measurable.md"
+  }
+}

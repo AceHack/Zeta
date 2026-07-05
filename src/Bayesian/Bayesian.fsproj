@@ -25,6 +25,7 @@
     <Compile Include="BayesianTemperature.fs" />
     <Compile Include="AntiSybil.fs" />
     <Compile Include="CliffordAntiSybil.fs" />
+    <Compile Include="CloneDetectionBenchmark.fs" />
     <Compile Include="LocalConsensus.fs" />
     <Compile Include="ThousandBrains.fs" />
     <Compile Include="YinYangCell.fs" />
