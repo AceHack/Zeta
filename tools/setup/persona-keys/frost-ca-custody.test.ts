@@ -98,6 +98,7 @@ test("frost-ca confirm: writes shares + optional public key; attest verifies", a
       biometricAuth: fakeBiometric(true, prompts),
     });
     expect(gen.action).toBe("generated");
+    expect(gen.keygenMode).toBe("dealer");
     expect(prompts.length).toBe(1);
     expect(existsSync(frostSharePath(sb))).toBe(true);
     expect(existsSync(frostCaPublicKeyPath(sb.repoRoot, CA))).toBe(true);
@@ -142,6 +143,26 @@ test("frost-ca confirm: writes shares + optional public key; attest verifies", a
     expect(
       frostVerify(hexToBytes(body.groupPublicKeyHex), msg, hexToBytes(signatureHex)),
     ).toBe(true);
+  } finally {
+    sb.cleanup();
+  }
+});
+
+test("frost-ca --dkg: distributed keygen writes shares and signs", async () => {
+  const sb = makeSandbox();
+  try {
+    const gen = await ensureFrostCa(fx(), {
+      ca: CA,
+      repoRoot: sb.repoRoot,
+      home: sb.home,
+      frost: "2-of-2",
+      confirm: true,
+      useDkg: true,
+      biometricAuth: fakeBiometric(true),
+    });
+    expect(gen.action).toBe("generated");
+    expect(gen.keygenMode).toBe("dkg");
+    expect(existsSync(frostSharePath(sb))).toBe(true);
   } finally {
     sb.cleanup();
   }

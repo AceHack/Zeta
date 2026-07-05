@@ -149,6 +149,7 @@ async function main(): Promise<number> {
       dryRun,
       confirm,
       commitPub: flag("--commit-pub"),
+      useDkg: flag("--dkg"),
       biometricAuth,
     });
     console.log(formatEnsureFrostCa(r));
@@ -198,7 +199,7 @@ async function main(): Promise<number> {
   console.error(
     "usage:\n" +
       "  bun ca-cli.ts ca   --ca <name> [--dry-run] [--commit-pub] [--shamir <k-of-n>]\n" +
-      "  bun ca-cli.ts frost-ca --ca <name> --frost <k-of-n> [--confirm] [--commit-pub]\n" +
+      "  bun ca-cli.ts frost-ca --ca <name> --frost <k-of-n> [--confirm] [--commit-pub] [--dkg]\n" +
       "  bun ca-cli.ts cert (--user <name> | --users a,b) --machine <host> [--validity +52w] [--dry-run]\n" +
       "  bun ca-cli.ts frost-cert (--user <name> | --users a,b) --machine <host> [--confirm]",
   );

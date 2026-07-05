@@ -1,7 +1,7 @@
 ---
 id: 081KWPHRNFW08QG0R0031ZNXTD
 type: task
-state: backlog
+state: in_progress
 priority: P2
 slug: frost-rfc-9591-dkg-roast-hsm-sealed-share-adapters-agent-nat
 title: "FROST RFC 9591 DKG + ROAST + HSM-sealed share adapters (agent-native-key-custody Layers 1-3)"
@@ -26,10 +26,10 @@ HSM adapters seal shares so host RAM never sees share bytes during partial sign.
 
 ## Done when
 
-1. Distributed keygen (no single party holds full scalar post-ceremony)
-2. ROAST (or documented subset) for concurrent/robust signing sessions
-3. Share adapter interface: software file (today) | HSM/TPM seal (pluggable)
-4. Still monorepo tools-over-trunks (`tools/setup/persona-keys/` + effects injection)
+1. Distributed keygen (no single party holds full scalar post-ceremony) — **slice 1 landed** (`frost-dkg.ts`, `ca-cli frost-ca --dkg`)
+2. ROAST (or documented subset) for concurrent/robust signing sessions — **open**
+3. Share adapter interface: software file (today) | HSM/TPM seal (pluggable) — **slice 1 landed** (`frost-share-adapter.ts`; HSM stub honest)
+4. Still monorepo tools-over-trunks (`tools/setup/persona-keys/` + effects injection) — **yes**
 
 ## Depends on
 

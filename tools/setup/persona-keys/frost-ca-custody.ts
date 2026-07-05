@@ -18,6 +18,8 @@ import {
   frostVerify,
   type FrostKeyShare,
 } from "./frost.ts";
+import { frostDkgKeygen } from "./frost-dkg.ts";
+import { createSoftwareFileShareAdapter } from "./frost-share-adapter.ts";
 import { parseShamirSpec } from "./ca-shamir-custody.ts";
 import { certPath } from "./ca.ts";
 import {
@@ -105,6 +107,8 @@ export interface EnsureFrostCaOptions {
   readonly confirm?: boolean;
   readonly biometricAuth?: BiometricAuth;
   readonly commitPub?: boolean;
+  /** Use RFC 9591-style distributed keygen (no trusted dealer). Default: dealer keygen. */
+  readonly useDkg?: boolean;
 }
 
 export interface EnsureFrostCaResult {
@@ -124,6 +128,7 @@ export interface EnsureFrostCaResult {
   readonly groupPublicKeyPath: string;
   readonly groupPublicKeyHex?: string;
   readonly committedPub: boolean;
+  readonly keygenMode: "dealer" | "dkg";
   readonly biometric?: BiometricResult;
 }
 
@@ -222,6 +227,8 @@ export async function ensureFrostCa(
   const groupPublicKeyPath = frostCaPublicKeyPath(opts.repoRoot, opts.ca);
   const existing = loadMeta(fx, sharesDir);
 
+  const keygenMode = opts.useDkg === true ? "dkg" : "dealer";
+
   const base: EnsureFrostCaResult = {
     dryRun,
     confirmed,
@@ -233,6 +240,7 @@ export async function ensureFrostCa(
     sharePaths,
     groupPublicKeyPath,
     committedPub: false,
+    keygenMode,
   };
 
   if (existing) {
@@ -250,26 +258,27 @@ export async function ensureFrostCa(
 
   const biometric = await requireBiometric(
     opts.biometricAuth,
-    `Approve: generate frost CA (${opts.frost}) for ${opts.ca}`,
+    `Approve: generate frost CA (${opts.frost}, ${keygenMode}) for ${opts.ca}`,
   );
   if (!biometric.ok) {
     return { ...base, dryRun: false, action: "skipped-biometric", biometric };
   }
 
-  const kg = frostKeygen(threshold, totalShares);
+  const kg = keygenMode === "dkg" ? frostDkgKeygen(threshold, totalShares) : frostKeygen(threshold, totalShares);
   const groupPublicKeyHex = bytesToHex(kg.groupPublicKey);
   fx.mkdirp(sharesDir);
+  const shareAdapter = createSoftwareFileShareAdapter(fx, sharesDir, opts.ca);
   for (const s of kg.shares) {
-    const body: FrostShareFileV1 = {
-      schema: FROST_SHARE_SCHEMA,
-      ca: opts.ca,
-      threshold,
-      totalShares,
-      groupPublicKeyHex,
-      x: s.x,
-      secretShare: s.secretShare.toString(10),
-    };
-    fx.writeText(frostSharePath(sharesDir, s.x), JSON.stringify(body, null, 2) + "\n", 0o600);
+    shareAdapter.storeShare(
+      {
+        x: s.x,
+        secretShare: s.secretShare,
+        threshold,
+        totalShares,
+        groupPublicKeyHex,
+      },
+      opts.ca,
+    );
   }
 
   let committedPub = false;
@@ -428,7 +437,7 @@ export async function signFrostDeviceAttestation(
 
 export function formatEnsureFrostCa(res: EnsureFrostCaResult): string {
   const lines = [
-    `action=${res.action} ca=${res.ca} frost=${res.threshold}-of-${res.totalShares}`,
+    `action=${res.action} ca=${res.ca} frost=${res.threshold}-of-${res.totalShares} keygen=${res.keygenMode}`,
     `sharesDir=${res.sharesDir}`,
     `groupPublicKeyPath=${res.groupPublicKeyPath}`,
   ];
