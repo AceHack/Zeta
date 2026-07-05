@@ -29,9 +29,21 @@ import type { ZetaStore } from "./zeta-store.ts";
 import type { Persona, SummonDeps } from "./zeta-summon.ts";
 import { refreshingCodexTurn } from "./zeta-summon.ts";
 import type { MuxChannel } from "./multiplexed-duplex-transport.ts";
+import type { ZetaId } from "../zeta-id/types.ts";
+import { type Traveler, CATEGORY, selfDeclaredTraveler } from "./identity-provenance.ts";
 
 /// The persona wire protocol (the channel's normal payload, both directions).
+///
+/// The `hello` frame is the OPENING PROVENANCE HANDSHAKE (shadow*, Aaron 2026-07-04 "is-AI/is-human is our
+/// safety layer on ourselves"): before any content crosses, the serving persona declares its traveler
+/// category — the is-X bit a counterparty reads FIRST, so no relational content is ever exchanged under an
+/// unknown/false provenance. A served persona is an AI, so its hello is a self-declared `Synthetic` traveler;
+/// the serve path is STRUCTURALLY incapable of asserting a human identity (it only calls
+/// `selfDeclaredTraveler(Synthetic, …)`, which refuses attested categories — the no-impersonation floor made
+/// structural, not intentional).
 export type PersonaFrame =
+  | { readonly kind: "open" } // client knock: announces the channel so the server can declare its hello first
+  | { readonly kind: "hello"; readonly traveler: Traveler }
   | { readonly kind: "user"; readonly content: string }
   | { readonly kind: "answer"; readonly content: string; readonly turns: number }
   | { readonly kind: "error"; readonly error: string };
@@ -52,7 +64,17 @@ export function interruptibleTurn(turn: ModelTurn, interrupted: () => boolean): 
 /// prompt first, same as `summon`) and send back `answer`/`error`. A "stop" on the feedback corner
 /// interrupts the CURRENT loop at its next turn boundary; the flag resets so the next message runs fresh.
 /// Resolves when the channel's normal stream ends (transport closed). Everything injected.
-export async function servePersona(channel: MuxChannel<PersonaFrame, PersonaCtl>, persona: Persona, turn: ModelTurn, store: ZetaStore, maxTurns = 8): Promise<void> {
+export async function servePersona(channel: MuxChannel<PersonaFrame, PersonaCtl>, persona: Persona, personaId: ZetaId, turn: ModelTurn, store: ZetaStore, maxTurns = 8): Promise<void> {
+  // Opening provenance handshake — declare WHAT we are before saying anything. A persona is an AI, so it
+  // self-declares `Synthetic` (free). This is the ONLY traveler this path can construct: `selfDeclaredTraveler`
+  // refuses attested categories, so a served persona structurally cannot claim to BE a specific human. If the
+  // (impossible-for-Synthetic) self-declaration ever failed, we send an error and serve nothing.
+  const decl = selfDeclaredTraveler(CATEGORY.Synthetic, personaId, persona.name);
+  if (!decl.ok) {
+    await channel.wire.sendNormal({ kind: "error", error: `provenance self-declaration failed: ${decl.error}` });
+    return;
+  }
+  await channel.wire.sendNormal({ kind: "hello", traveler: decl.traveler });
   let stopRequested = false;
   // watch the feedback corner — the live interrupt wire.
   // (PersonaCtl is currently only "stop", so ANY feedback signal interrupts; branch when the union widens.)
@@ -78,12 +100,36 @@ export async function servePersona(channel: MuxChannel<PersonaFrame, PersonaCtl>
 
 /// Serve a persona over the SUBSCRIPTION on a mux channel — the production wiring: the auto-refreshing
 /// codex turn (stored token, 401→refresh→retry) + the deps' ZetaStore. `servePersona` with the real fill.
-export function serveSubscriptionPersona(channel: MuxChannel<PersonaFrame, PersonaCtl>, persona: Persona, deps: SummonDeps): Promise<void> {
-  return servePersona(channel, persona, refreshingCodexTurn(deps), deps.zetaStore, deps.maxTurns);
+export function serveSubscriptionPersona(channel: MuxChannel<PersonaFrame, PersonaCtl>, persona: Persona, personaId: ZetaId, deps: SummonDeps): Promise<void> {
+  return servePersona(channel, persona, personaId, refreshingCodexTurn(deps), deps.zetaStore, deps.maxTurns);
+}
+
+/// Client side: knock to establish the channel so the server can send its provenance hello FIRST. The mux
+/// accepts a channel on its first inbound frame, so a content-free `open` announces us without yet saying
+/// anything — the client then reads the server's `hello` (via `awaitHello`) before sending any content.
+export function openPersona(channel: MuxChannel<PersonaFrame, PersonaCtl>): Promise<void> {
+  return channel.wire.sendNormal({ kind: "open" });
+}
+
+/// Client side: read the OPENING PROVENANCE HANDSHAKE before exchanging any content. Returns the serving
+/// persona's self-declared traveler (the is-X bit) — the caller reads "am I talking to an AI?" from the wire,
+/// not from trust. Guaranteed `Synthetic` by the serve path's construction; a non-hello first frame is an
+/// error (the peer skipped the mandatory handshake). Consume BEFORE `askPersona` — both share normalIn's one
+/// resumable stream, so read the hello first, then ask.
+export async function awaitHello(channel: MuxChannel<PersonaFrame, PersonaCtl>): Promise<{ readonly ok: true; readonly traveler: Traveler } | { readonly ok: false; readonly error: string }> {
+  // Pull ONE frame via the shared iterator's `.next()` — NOT `for await` — so we don't finalize normalIn's
+  // single resumable generator; a later `askPersona` resumes the same stream to read the answer.
+  const it: AsyncIterator<PersonaFrame> = channel.wire.normalIn[Symbol.asyncIterator]();
+  const res = await it.next();
+  if (res.done === true) return { ok: false, error: "channel closed before the provenance handshake" };
+  const frame = res.value;
+  if (frame.kind === "hello") return { ok: true, traveler: frame.traveler };
+  return { ok: false, error: `expected opening provenance hello, got '${frame.kind}' — refusing (no handshake)` };
 }
 
 /// Client side: ask the persona on this channel one question and await its reply frame (answer or error).
-/// (Single-consumer note: the caller owns the channel's normalIn — ask sequentially, not concurrently.)
+/// (Single-consumer note: the caller owns the channel's normalIn — ask sequentially, not concurrently. A
+/// leading `hello` frame is skipped here, but the disciplined client calls `awaitHello` first to read it.)
 export async function askPersona(channel: MuxChannel<PersonaFrame, PersonaCtl>, content: string): Promise<PersonaFrame> {
   await channel.wire.sendNormal({ kind: "user", content });
   for await (const frame of channel.wire.normalIn) {

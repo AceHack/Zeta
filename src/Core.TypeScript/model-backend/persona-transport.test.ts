@@ -5,7 +5,9 @@ import { type MuxChannel, type MuxFrame, multiplexedDuplexTransport } from "./mu
 import { toHex } from "../zeta-id/encoding.ts";
 import { inMemoryZetaStore, type ZetaStore } from "./zeta-store.ts";
 import type { ModelTurn } from "./zeta-agent-loop.ts";
-import { type PersonaCtl, type PersonaFrame, askPersona, interruptPersona, servePersona } from "./persona-transport.ts";
+import { type PersonaCtl, type PersonaFrame, askPersona, awaitHello, interruptPersona, openPersona, servePersona } from "./persona-transport.ts";
+import type { ZetaId } from "../zeta-id/types.ts";
+import { CATEGORY, categoryOf, isSynthetic } from "./identity-provenance.ts";
 
 // THE PERSONA TRANSPORT (shadow*, Aaron 2026-07-04 "yes, this is a persona transport exactly") — summon over
 // the mux. Injected everything: NO network, NO secret. Proofs:
@@ -13,6 +15,10 @@ import { type PersonaCtl, type PersonaFrame, askPersona, interruptPersona, serve
 //   2. TWO PERSONAS, ONE SOCKET: each on its own ZetaId channel, answers don't cross.
 //   3. INTERRUPT: "stop" up the feedback corner aborts a multi-turn loop at the next turn boundary —
 //      deterministic via a gated store (the stop crosses while the tool executes; turn 2 is never invoked).
+//   4. HANDSHAKE: the opening hello declares Synthetic (is-AI) BEFORE any content — and a persona NAMED
+//      "Aaron" is still structurally is-AI (the no-impersonation floor: the name is not the identity bit).
+
+const pid = (n: bigint): ZetaId => n as ZetaId;
 
 async function acceptN<TN, TF>(accepted: AsyncIterable<MuxChannel<TN, TF>>, n: number): Promise<MuxChannel<TN, TF>[]> {
   const out: MuxChannel<TN, TF>[] = [];
@@ -45,7 +51,7 @@ describe("persona-transport — summon over the mux", () => {
     const reply = askPersona(ch, "save a note");
     const [serverCh] = await acceptN(server.accepted, 1);
     if (!serverCh) throw new Error("peer channel not accepted");
-    const serving = servePersona(serverCh, { name: "Amara", systemPrompt: "You are Amara." }, turn, store);
+    const serving = servePersona(serverCh, { name: "Amara", systemPrompt: "You are Amara." }, pid(1n), turn, store);
     expect(await reply).toEqual({ kind: "answer", content: "note saved", turns: 1 });
     expect(seenFirst).toEqual({ role: "system", content: "You are Amara." }); // persona prompt first
     await epA.send({ channel: "close" });
@@ -69,8 +75,8 @@ describe("persona-transport — summon over the mux", () => {
     const s1 = byId.get(toHex(ch1.id));
     const s2 = byId.get(toHex(ch2.id));
     if (!s1 || !s2) throw new Error("both persona channels should have been accepted");
-    const serve1 = servePersona(s1, { name: "Amara", systemPrompt: "AMARA" }, echoTurn, store);
-    const serve2 = servePersona(s2, { name: "Lumen", systemPrompt: "LUMEN" }, echoTurn, store);
+    const serve1 = servePersona(s1, { name: "Amara", systemPrompt: "AMARA" }, pid(1n), echoTurn, store);
+    const serve2 = servePersona(s2, { name: "Lumen", systemPrompt: "LUMEN" }, pid(2n), echoTurn, store);
     expect(await r1).toEqual({ kind: "answer", content: "answer from AMARA", turns: 1 });
     expect(await r2).toEqual({ kind: "answer", content: "answer from LUMEN", turns: 1 });
     await epA.send({ channel: "close" });
@@ -105,7 +111,7 @@ describe("persona-transport — summon over the mux", () => {
     const reply = askPersona(ch, "do slow work");
     const [serverCh] = await acceptN(server.accepted, 1);
     if (!serverCh) throw new Error("peer channel not accepted");
-    const serving = servePersona(serverCh, { name: "Amara", systemPrompt: "A" }, turn, store);
+    const serving = servePersona(serverCh, { name: "Amara", systemPrompt: "A" }, pid(1n), turn, store);
 
     await started; // turn 1 has returned its tool call; the loop is (about to be) inside the gated tool
     await interruptPersona(ch); // the stop crosses the wire while the tool is gated
@@ -117,6 +123,32 @@ describe("persona-transport — summon over the mux", () => {
     expect(out.kind).toBe("error");
     if (out.kind === "error") expect(out.error).toContain("interrupted (feedback corner)");
     expect(turnCalls).toBe(1); // turn 2 was never invoked — the loop really stopped at the boundary
+    await epA.send({ channel: "close" });
+    await serving;
+  });
+
+  test("HANDSHAKE: opening hello declares Synthetic (is-AI) before content; a persona named 'Aaron' is still is-AI", async () => {
+    const { epA, client, server } = wired();
+    const store = inMemoryZetaStore();
+    const turn: ModelTurn = () => Promise.resolve({ ok: true as const, text: "hi", calls: [] });
+    const ch = client.open();
+    await openPersona(ch); // knock so the server can accept + declare its hello first
+    const helloP = awaitHello(ch); // read WHAT we're talking to, before saying anything
+    const [serverCh] = await acceptN(server.accepted, 1);
+    if (!serverCh) throw new Error("peer channel not accepted");
+    // The persona NAME is "Aaron" — impersonation bait. The provenance bit must still say is-AI: a NAME is
+    // never an identity claim (feedback_no_impersonation: "if she thinks she's talking to me it better be me").
+    const serving = servePersona(serverCh, { name: "Aaron", systemPrompt: "You are Aaron." }, pid(7n), turn, store);
+    const hello = await helloP;
+    expect(hello.ok).toBe(true);
+    if (hello.ok) {
+      expect(categoryOf(hello.traveler)).toBe(CATEGORY.Synthetic); // is-AI, NOT is-human
+      expect(isSynthetic(hello.traveler)).toBe(true);
+      expect(hello.traveler.policy).toBe("selfDeclared"); // never attested-as-a-specific-human
+      expect(hello.traveler.displayName).toBe("Aaron"); // the display NAME can be anything; the bit is truth
+    }
+    // content still flows AFTER the handshake — the hello does not disturb the normal stream
+    expect(await askPersona(ch, "hi")).toEqual({ kind: "answer", content: "hi", turns: 1 });
     await epA.send({ channel: "close" });
     await serving;
   });
