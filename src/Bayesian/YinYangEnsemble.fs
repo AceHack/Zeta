@@ -225,6 +225,58 @@ module YinYangEnsemble =
     let reseedIfCollapsedDefault (newCodeword: int[]) (ensemble: Ensemble) : Ensemble * bool =
         reseedIfCollapsed tsirelsonThreshold newCodeword ensemble
 
+    // ── rhoCount: temporal decorrelation metric (bus-delay-sensitive) ─────────────────────────
+
+    /// **Observation-count correlation ρ_count.**
+    ///
+    /// Unlike `rhoProxy` (which measures spatial correlation of posterior means and is insensitive
+    /// to bus delay), `rhoCount` measures the normalized variance of per-cell observation counts.
+    ///
+    /// In a real distributed network (e.g. Reticulum), cells receive observations at different
+    /// times due to bus delay. A cell that has processed 47 observations is at a different point
+    /// in its belief trajectory than one that has processed 52. This temporal spread IS the
+    /// decorrelation that makes the ensemble informative.
+    ///
+    /// `rhoCount ≈ 0` means cells are at very different stages (high temporal diversity — good).
+    /// `rhoCount ≈ 1` means all cells have processed the same number of observations
+    ///               (zero temporal spread — the bus delay has collapsed, ensemble is redundant).
+    ///
+    /// Formula: `1 - (stddev(counts) / mean(counts))` clamped to [0, 1].
+    /// (Coefficient of variation, inverted: low CV = high rhoCount = temporally collapsed.)
+    let rhoCount (ensemble: Ensemble) : float =
+        let counts = ensemble.Cells |> Array.map (fun cell -> float cell.Column.AccumulatedIV)
+        if counts.Length < 2 then 1.0  // single cell = fully correlated
+        else
+            let mean = Array.average counts
+            if mean <= 0.0 then 1.0  // no observations yet = fully correlated
+            else
+                let variance = counts |> Array.averageBy (fun c -> (c - mean) ** 2.0)
+                let stddev = sqrt variance
+                let cv = stddev / mean  // coefficient of variation
+                // rhoCount = 1 - CV, clamped to [0, 1]
+                // High CV (spread counts) → low rhoCount (decorrelated)
+                // Low CV (similar counts) → high rhoCount (temporally collapsed)
+                System.Math.Clamp(1.0 - cv, 0.0, 1.0)
+
+    /// **Collapse detection using rhoCount (temporal metric).**
+    /// Preferred over `isCollapsed` (which uses `rhoProxy`) for Reticulum-style networks
+    /// where bus delay is the primary decorrelation mechanism.
+    let isCollapsedTemporal (rhoThreshold: float) (ensemble: Ensemble) : bool =
+        rhoCount ensemble > rhoThreshold
+
+    /// **Reseed if temporally collapsed:**
+    /// Uses `rhoCount` instead of `rhoProxy` as the collapse metric.
+    /// Recommended default for Reticulum-style distributed networks.
+    let reseedIfCollapsedTemporal
+            (rhoThreshold: float)
+            (newCodeword: int[])
+            (ensemble: Ensemble)
+            : Ensemble * bool =
+        if isCollapsedTemporal rhoThreshold ensemble then
+            reseedLeastExperienced newCodeword ensemble, true
+        else
+            ensemble, false
+
     // ── Reconcile: fold N votes into a consensus receipt ─────────────────────────────────────────
 
     /// Reconcile the ensemble's votes into a `ComputeReceipt.Receipt`.

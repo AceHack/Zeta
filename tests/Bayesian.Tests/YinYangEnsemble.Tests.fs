@@ -220,3 +220,87 @@ let ``RHO-7: reseedIfCollapsedDefault triggers at tsirelsonThreshold not at 0.9`
         YinYangEnsemble.tsirelsonThreshold < 0.9,
         sprintf "tsirelsonThreshold (%f) should be more sensitive than the old 0.9 default"
             YinYangEnsemble.tsirelsonThreshold)
+
+// ── RHO-8: rhoCount is 1.0 when all cells have identical AccumulatedIV ───────────────────────
+
+[<Fact>]
+let ``RHO-8: rhoCount is 1.0 when all cells have the same AccumulatedIV (zero temporal spread)`` () =
+    // After N identical observations broadcast to all cells simultaneously, every cell has
+    // processed exactly the same number of observations → CV = 0 → rhoCount = 1.0.
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    let mutable e = ensemble
+    for _ in 1 .. 10 do
+        e <- YinYangEnsemble.observe signal e
+    // All cells have been observed 10 times (AccumulatedIV = 10 each).
+    let counts = e.Cells |> Array.map (fun c -> c.Column.AccumulatedIV)
+    Assert.True(counts |> Array.forall (fun iv -> iv = counts.[0]),
+        "All cells should have the same AccumulatedIV after synchronized observations")
+    // rhoCount should be 1.0 (zero temporal spread = temporally collapsed).
+    let rho = YinYangEnsemble.rhoCount e
+    Assert.InRange(rho, 0.99, 1.01)
+
+// ── RHO-9: rhoCount < 1.0 when cells have different AccumulatedIV ────────────────────────────
+
+[<Fact>]
+let ``RHO-9: rhoCount < 1.0 when cells have different AccumulatedIV (temporal diversity)`` () =
+    // Simulate bus delay by manually constructing an ensemble where cells have different
+    // AccumulatedIV values. We do this by observing a 4-cell ensemble, then replacing one
+    // cell with a fresh cell (zero IV) — the fresh cell has a different count from the rest.
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    let mutable e = ensemble
+    for _ in 1 .. 10 do
+        e <- YinYangEnsemble.observe signal e
+    // All cells now have IV = 10. Replace one with a fresh cell (IV = 0).
+    let freshCodeword = AdinkraCode.allCodewords |> List.item 5
+    let reseeded = YinYangEnsemble.reseedLeastExperienced freshCodeword e
+    // Now counts are [10, 10, 10, 0] (approximately — one cell was replaced).
+    let counts = reseeded.Cells |> Array.map (fun c -> float c.Column.AccumulatedIV)
+    let hasVariety = counts |> Array.exists (fun iv -> iv < 5.0)
+    Assert.True(hasVariety, "Reseeded ensemble should have at least one cell with low AccumulatedIV")
+    // rhoCount should be < 1.0 (temporal diversity present).
+    let rho = YinYangEnsemble.rhoCount reseeded
+    Assert.True(rho < 1.0,
+        sprintf "rhoCount should be < 1.0 when cells have different AccumulatedIV, got %f" rho)
+    // rhoCount should be ≥ 0.0 (clamped).
+    Assert.True(rho >= 0.0,
+        sprintf "rhoCount should be ≥ 0.0, got %f" rho)
+
+// ── RHO-10: isCollapsedTemporal and reseedIfCollapsedTemporal fire at Tsirelson threshold ──────
+
+[<Fact>]
+let ``RHO-10: isCollapsedTemporal fires when rhoCount > tsirelsonThreshold; reseedIfCollapsedTemporal reseeds`` () =
+    // Build a temporally collapsed ensemble: all cells have the same AccumulatedIV.
+    let ensemble = YinYangEnsemble.createN 4
+    let signal = { Gaussian.PrecisionMean = 5.0; Precision = 5.0 }
+    let mutable e = ensemble
+    for _ in 1 .. 10 do
+        e <- YinYangEnsemble.observe signal e
+    // rhoCount ≈ 1.0 (all cells synchronized) → well above tsirelsonThreshold ≈ 0.2357.
+    let rho = YinYangEnsemble.rhoCount e
+    Assert.True(rho > YinYangEnsemble.tsirelsonThreshold,
+        sprintf "rhoCount (%f) should be > tsirelsonThreshold (%f) for synchronized ensemble"
+            rho YinYangEnsemble.tsirelsonThreshold)
+    // isCollapsedTemporal should return true at the Tsirelson threshold.
+    Assert.True(
+        YinYangEnsemble.isCollapsedTemporal YinYangEnsemble.tsirelsonThreshold e,
+        "isCollapsedTemporal should fire for a synchronized ensemble")
+    // reseedIfCollapsedTemporal should trigger reseed.
+    let newCodeword = AdinkraCode.allCodewords |> List.item 6
+    let (reseeded, didReseed) =
+        YinYangEnsemble.reseedIfCollapsedTemporal YinYangEnsemble.tsirelsonThreshold newCodeword e
+    Assert.True(didReseed, "reseedIfCollapsedTemporal should trigger on a temporally collapsed ensemble")
+    // After reseed, rhoCount should be lower (one cell now has IV = 0).
+    let rhoAfter = YinYangEnsemble.rhoCount reseeded
+    Assert.True(rhoAfter < rho,
+        sprintf "rhoCount after reseed (%f) should be lower than before (%f)" rhoAfter rho)
+    // A fresh ensemble (all IV = 0) has rhoCount = 1.0 (mean = 0 → returns 1.0 by convention).
+    // But a fresh ensemble with no observations should NOT trigger if we use a high threshold.
+    let freshEnsemble = YinYangEnsemble.createN 4
+    // rhoCount of fresh ensemble = 1.0 (mean = 0 → fully correlated by convention).
+    // isCollapsedTemporal at tsirelsonThreshold should still fire (1.0 > 0.2357).
+    // This is correct: a fresh ensemble with zero observations is "temporally collapsed"
+    // (no bus delay has occurred yet — all cells are at the same starting point).
+    let rhoFresh = YinYangEnsemble.rhoCount freshEnsemble
+    Assert.InRange(rhoFresh, 0.99, 1.01)
