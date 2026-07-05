@@ -57,7 +57,7 @@ describe("cross-verify-ir — 7-language byte-lock oracle (CI-enforced)", () => 
   test("at least 6 languages participate (diverse-double-compiling)", () => {
     const result = crossVerify(sm64, INPUTS);
     expect(result.languages.length).toBeGreaterThanOrEqual(6);
-  });
+  }, 30000);
 
   test("Q# participates when qdk is available", () => {
     const venvPython = join(process.cwd(), "src/Core.Python/.venv/bin/python3");

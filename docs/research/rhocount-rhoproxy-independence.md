@@ -88,6 +88,7 @@ distribution.
 
 Is there a regime where rhoProxy and rhoCount are correlated? The sweep suggests moderate
 correlation (r ≈ 0.49) at low delay spreads in heterogeneous environments. This is because:
+
 - Low delay spread → cells are nearly synchronized → rhoCount ≈ 1 → cells have similar counts
 - Similar counts → cells have processed similar amounts of each signal → similar beliefs
 - Similar beliefs → rhoProxy ≈ 1 (cells agree)

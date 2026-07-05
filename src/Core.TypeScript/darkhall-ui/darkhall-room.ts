@@ -1,7 +1,10 @@
 import {
   blackBodyReadout,
+  heatReceiptPpm,
+  heatReceiptsFromRows,
   heatSignals,
   summarizeHeatRows,
+  temperatureReadout,
   temperatureTreatyBundle,
   type BlackBodyReadout,
   type HeatReadout,
@@ -9,6 +12,7 @@ import {
   type TemperatureReadout,
   type TemperatureTreatyBundle,
 } from "./heat";
+import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp } from "./darkhall-tv";
 
 export {
   BLACK_BODY_READOUT_SCHEMA,
@@ -115,6 +119,14 @@ export interface RenderDocumentOptions {
   readonly title?: string;
   readonly stylesheetHref?: string;
   readonly inlineCss?: string;
+}
+
+export interface RoomTranscriptLlmtvOptions {
+  readonly name?: string;
+  readonly role?: string;
+  readonly hat?: string;
+  readonly live?: boolean;
+  readonly generatedBy?: string;
 }
 
 const controllerSize = 16;
@@ -247,6 +259,120 @@ function treatyFromReadouts(
   }
 
   return temperatureTreatyBundle({ temperature, blackBody });
+}
+
+function countMilli(value: number): number {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return Math.min(1000, Math.trunc(value) * Math.floor(1000 / heatLaneMax));
+}
+
+function tempFromBand(band: TemperatureReadout["band"] | undefined): MindTemp {
+  switch (band) {
+    case "critical":
+    case "hot":
+      return "hot";
+    case "warm":
+      return "warm";
+    case "cold":
+    default:
+      return "cool";
+  }
+}
+
+function lastTick(transcript: RoomRunTranscript): number | undefined {
+  const last = transcript.ticks[transcript.ticks.length - 1];
+  return last === undefined ? undefined : last.tick;
+}
+
+function selectedControllerCells(transcript: RoomRunTranscript): number {
+  return normalizeControllerCells(transcript.controller).filter((cell) => cell.selected === true).length;
+}
+
+function roomTemperatureTreaty(
+  transcript: RoomRunTranscript,
+  heat: HeatReadout | ReturnType<typeof summarizeHeatRows>,
+) {
+  const sourceTemperature =
+    transcript.temperatureTreaty?.temperature ??
+    transcript.temperatureReadout ??
+    temperatureReadout({
+      source: transcript.roomName,
+      heatPpm: heatReceiptPpm(heat.heatRejected),
+      uncertaintyPpm: heatReceiptPpm(heat.storageErrors),
+      pressurePpm: heatReceiptPpm(heat.backpressured),
+      attentionPpm: heatReceiptPpm(selectedControllerCells(transcript)),
+    });
+  const sourceBlackBody = transcript.temperatureTreaty?.blackBody ?? transcript.blackBodyReadout;
+
+  return temperatureTreatyBundle({
+    temperature: sourceTemperature,
+    blackBody:
+      sourceBlackBody ??
+      blackBodyReadout({ source: sourceTemperature.source, temperaturePpm: sourceTemperature.temperaturePpm }),
+    ...(transcript.temperatureTreaty?.referenceOracle === undefined
+      ? {}
+      : { referenceOracle: transcript.temperatureTreaty.referenceOracle }),
+    ...(transcript.temperatureTreaty?.referenceFeedback === undefined
+      ? {}
+      : { referenceFeedback: transcript.temperatureTreaty.referenceFeedback }),
+    heatReceipts: heatReceiptsFromRows(transcript.heatRows, { source: transcript.roomName }),
+  });
+}
+
+function roomPredictions(
+  transcript: RoomRunTranscript,
+  heat: HeatReadout | ReturnType<typeof summarizeHeatRows>,
+  temperature: TemperatureReadout,
+): readonly MindPrediction[] {
+  const temp = tempFromBand(temperature.band);
+  const backpressureTicks = transcript.ticks.filter((tick) => tick.outcome === "backpressure").length;
+  const refusedTicks = transcript.ticks.filter((tick) => tick.outcome === "refused").length;
+
+  return [
+    {
+      label: "heat receipts",
+      temp,
+      valueMilli: countMilli(heat.heatRejected),
+      epsilonMilli: countMilli(heat.storageErrors),
+    },
+    {
+      label: "backpressure",
+      temp: heat.backpressured > 0 ? "hot" : "cool",
+      valueMilli: countMilli(heat.backpressured),
+      epsilonMilli: countMilli(backpressureTicks),
+    },
+    {
+      label: "room progress",
+      temp: refusedTicks > 0 ? "warm" : "cool",
+      valueMilli: countMilli(transcript.ticks.length),
+      epsilonMilli: countMilli(refusedTicks),
+    },
+  ];
+}
+
+export function roomTranscriptToLlmtv(
+  transcript: RoomRunTranscript,
+  options: RoomTranscriptLlmtvOptions = {},
+): LlmtvTranscript {
+  const heat = transcript.heatReadout ?? summarizeHeatRows(transcript.heatRows);
+  const temperatureTreaty = roomTemperatureTreaty(transcript, heat);
+  const frame = lastTick(transcript);
+  const baseMind: DwellerMind = {
+    name: options.name ?? transcript.roomName,
+    role: options.role ?? "room runtime",
+    hat: options.hat ?? "room readout",
+    live: options.live ?? true,
+    predictions: roomPredictions(transcript, heat, temperatureTreaty.temperature),
+    temperatureTreaty,
+  };
+  const mind = frame === undefined ? baseMind : { ...baseMind, frame };
+
+  return {
+    schema: "zeta.darkhall.llmtv.v1",
+    seed: transcript.seed,
+    dwellers: [mind],
+    generatedBy: options.generatedBy ?? `${transcript.generatedBy ?? "RoomRunTranscript"} -> llmtv`,
+  };
 }
 
 export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {

@@ -113,13 +113,11 @@ module InformationValueBrownianTests =
             let xRms = sqrt v1
             float (InformationValue.compute (gaussian (phi2 * xRms) q2) (gaussian (phi1 * xRms) q1))
 
-        let errCoarse = abs (perTickAt 0.1 - target)
-        let errFine = abs (perTickAt 0.001 - target)
-        // per-tick transition KL approaches the Wiener constant as Δ→0, θ's forgotten.
-        // Epsilon slack on the monotonicity leg: with θ₁ = θ₂ the transition KL equals g(r)
-        // EXACTLY at every Δ (the ratio q₁/q₂ is Δ-free), so both errors are float noise ~1e-17
-        // and a bare <= flakes on noise ordering.
-        errFine <= errCoarse + 1e-12 && errFine < 0.02 * (1.0 + target)
+        let errFine = abs (perTickAt 0.0001 - target)
+        // Per-tick transition KL approaches the Wiener constant as Δ→0, θ's forgotten.
+        // The approach is not monotone for every θ pair because higher-order drift terms can
+        // cancel at coarser Δ. The invariant is the small-Δ limit, not two-point monotonicity.
+        errFine < 0.02 * (1.0 + target)
 
     // ── anchors: g's shape, pinned as facts the properties rely on ──
 

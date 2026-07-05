@@ -24,6 +24,7 @@ import {
   normalizeControllerCells,
   renderDarkHallRoomDocument,
   renderDarkHallRoomHtml,
+  roomTranscriptToLlmtv,
   summarizeHeatRows,
   temperatureBand,
   temperatureReadout,
@@ -33,6 +34,7 @@ import {
   type HeatRow,
   type RoomRunTranscript,
 } from "./darkhall-room";
+import { renderLlmtvDocument } from "./darkhall-tv";
 
 const css = readFileSync(join(import.meta.dir, "darkhall-room.css"), "utf-8");
 const heatTreaty = JSON.parse(
@@ -522,6 +524,48 @@ describe("Dark Hall CSS room UI", () => {
     expect(css).toContain("transform: scaleX(var(--heat-rejected));");
     expect(css).not.toContain("@keyframes");
     expect(css).not.toMatch(/\banimation\b/);
+  });
+
+  it("projects the same room transcript into an LLMTV dweller frame", () => {
+    const llmtv = roomTranscriptToLlmtv(transcript, {
+      name: "darkhall-room",
+      role: "room loop",
+      hat: "runtime readout",
+      generatedBy: "test-projector",
+    });
+    const dweller = llmtv.dwellers[0];
+    if (dweller === undefined) {
+      throw new Error("room transcript projection should create one dweller");
+    }
+
+    expect(llmtv.schema).toBe("zeta.darkhall.llmtv.v1");
+    expect(llmtv.seed).toBe(transcript.seed);
+    expect(llmtv.generatedBy).toBe("test-projector");
+    expect(llmtv.dwellers).toHaveLength(1);
+    expect(dweller.name).toBe("darkhall-room");
+    expect(dweller.role).toBe("room loop");
+    expect(dweller.hat).toBe("runtime readout");
+    expect(dweller.frame).toBe(2);
+    expect(dweller.predictions.map((prediction) => prediction.label)).toEqual([
+      "heat receipts",
+      "backpressure",
+      "room progress",
+    ]);
+    expect(dweller.predictions[0]?.valueMilli).toBeGreaterThan(0);
+    expect(dweller.temperatureTreaty?.referenceOracle).toBe(TEMPERATURE_REFERENCE_ORACLE);
+    expect(dweller.temperatureTreaty?.temperature).toEqual(transcriptTemperatureTreaty.temperature);
+    expect(dweller.temperatureTreaty?.blackBody).toEqual(transcriptTemperatureTreaty.blackBody);
+    expect(dweller.temperatureTreaty?.heatReceiptSchema).toBe(HEAT_RECEIPT_SCHEMA);
+    expect(dweller.temperatureTreaty?.heatReceipts).toHaveLength(2);
+    expect(dweller.temperatureTreaty?.heatReceipts?.[0]?.outcome).toBe("denied");
+    expect(dweller.temperatureTreaty?.heatReceipts?.[1]?.outcome).toBe("storage-error");
+
+    const doc = renderLlmtvDocument(llmtv);
+
+    expect(doc).toContain('data-schema="zeta.darkhall.llmtv.v1"');
+    expect(doc).toContain('data-dweller="darkhall-room"');
+    expect(doc).toContain('data-heat-receipts="2"');
+    expect(doc).not.toContain("<script");
   });
 
   it("escapes transcript text before it reaches the room surface", () => {
