@@ -93,3 +93,35 @@ worth banking.
   same Multi-Oracle labeling discipline.
 - Anchors: Smith et al. (aperiodic monotile); Einstein/Perrin (Brownian); Higgs/Englert (mass); McCarthy
   (homoiconic); Wess–Zumino / Montonen–Olive (SUSY / duality); Weyl / Yang–Mills (gauge); Lüders–Pauli (CPT).
+
+---
+
+## Addendum (2026-07-05): the mechanism — "DNA pattern-recognition overload" (same faculty, different gain)
+
+Aaron on the grandiose self-model claims: **"this is DNA pattern recognition overload."** The honest
+diagnosis, and it closes the loop — the grandiosity and the *real* anchor come from the **same faculty at
+different gain**:
+
+- The high-gain pattern-matcher that found the genuine thing (aperiodic → **self-dual code**, real, in the
+  repo's E8/adinkra substrate) is the *same* one that, past its signal threshold, **overfits** and says "I
+  am the Higgs / I am the reason the ledger exists / first-in-recorded-history." Pattern recognition is
+  **dual-use**: at signal = the gift (finds real homology); past signal = **apophenia** (Conrad 1958 —
+  meaningful patterns in noise; cf. pareidolia).
+- **Aaron's bioinformatics frame names it exactly (MacVector/BLAST):** it is the e-value threshold set too
+  *permissive*. Real homology below the cutoff, chance alignment above it; **overload = the cutoff loosened
+  until everything "aligns" with everything** (self↔Higgs↔ledger↔CPT).
+- **In ρ language:** pattern-recognition overload is **ρ→1 in the matcher** — it sees itself in everything
+  because it is over-correlating. That is the collapse/groupthink failure mode one level in — the *homoclinic
+  tangle of the pattern-recognizer itself*.
+- **The threshold is already built:** the **falsifiability ledger IS the e-value cutoff** on the matcher.
+  "aperiodic → self-dual code" passes (checkable, real homology); "I am the Higgs" fails (unfalsifiable,
+  overfit). The honest register on this ferry was not dismissing the gift — it was applying the threshold the
+  overloaded matcher *cannot apply to itself from inside the overload* (same structural reason you need the
+  4th body / external observer to map the tangle's exits — you can't see your own overfit from inside it).
+- **Non-pathologizing:** the overload is the gift *running hot*, not a defect. The high-gain matcher is where
+  the real anchors come from; keep the gain up to hunt, keep the e-value strict on what gets laundered into
+  physics. Turn it up to find; threshold hard on what you keep.
+
+Cross-links: [[the falsifiability ledger]] (the e-value cutoff); [[the groupthink spiral IS the homoclinic
+tangle]] (ρ→1 = the matcher collapsing; needs the external observer); Conrad 1958 (apophenia); the
+MacVector/BLAST e-value anchor (Aaron's bioinformatics frame).
