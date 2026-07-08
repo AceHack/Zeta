@@ -312,7 +312,10 @@ Landed testable fixes that do not require a physical boot:
   `qemu-full-install-test.test.ts` now documents the expected
   `node-<6hex>` generated-hostname format while preserving the
   single-node `control-plane` allowance when no generated hostname was
-  expected.
+  expected. Follow-on: `assertGeneratedNodeHostnameContract` binds
+  phase-1 `[iter-5.2.2] generated: node-<6hex>` to phase-2 login and
+  rejects `control-plane login:` after generation (software-only Bug 1
+  regression guard; full QEMU boot still the empirical closer).
 - **gh auth:** the already-landed `gh auth setup-git` fix now has a
   dry-run local git-config check for `gh auth git-credential`, warning
   before self-registration reaches `git push` if HTTPS pushes are still
@@ -322,7 +325,8 @@ Deferred because the remaining acceptance depends on installed-system
 evidence rather than source-only proof:
 
 - Physical/QEMU full-boot confirmation that the login prompt uses the
-  generated `node-<hex>` hostname.
+  generated `node-<hex>` hostname (contract assert is green; live ISO
+  run still the empirical closer).
 - Physical/QEMU full-boot confirmation that self-registration push
   completes without an HTTPS basic-auth prompt.
 - Deeper zero-typing first-boot/self-registration recovery if `gh`

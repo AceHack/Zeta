@@ -5,8 +5,10 @@ import {
   detectInstalledLoginPrompt,
   detectPhase2Success,
   detectUnexpectedControlPlaneLogin,
+  assertGeneratedNodeHostnameContract,
   extractGeneratedHostname,
   mergeFullInstallSerialLogs,
+  NODE_HEX_HOSTNAME_RE,
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR,
 } from "./qemu-full-install-test.ts";
@@ -99,6 +101,41 @@ describe("qemu-full-install-test 081KSGS9H0008QG0R00120EEHM hostname regression 
   it("allows control-plane when no generated hostname was expected", () => {
     expect(detectUnexpectedControlPlaneLogin("control-plane login:", null)).toBeNull();
     expect(detectUnexpectedControlPlaneLogin("control-plane login:", "control-plane")).toBeNull();
+  });
+
+  it("assertGeneratedNodeHostnameContract accepts node-<6hex> install + matching login", () => {
+    const phase1 = [
+      "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ...",
+      "[iter-5.2.2]   generated: node-a3f9c2",
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const phase2 = "node-a3f9c2 login:\n";
+    const result = assertGeneratedNodeHostnameContract(phase1, phase2);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.hostname).toMatch(NODE_HEX_HOSTNAME_RE);
+      expect(result.hostname).toBe("node-a3f9c2");
+    }
+  });
+
+  it("assertGeneratedNodeHostnameContract rejects control-plane login after node generation", () => {
+    const phase1 = "[iter-5.2.2]   generated: node-dead01\n";
+    const phase2 = "control-plane login:\n";
+    const result = assertGeneratedNodeHostnameContract(phase1, phase2);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("081KSGS9H0008QG0R00120EEHM Bug 1 regression");
+    }
+  });
+
+  it("assertGeneratedNodeHostnameContract rejects non-node generated shapes", () => {
+    const phase1 = "[iter-5.2.2]   generated: zeta-a1b2c3\n";
+    const phase2 = "zeta-a1b2c3 login:\n";
+    const result = assertGeneratedNodeHostnameContract(phase1, phase2);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("node-<6hex>");
+    }
   });
 });
 

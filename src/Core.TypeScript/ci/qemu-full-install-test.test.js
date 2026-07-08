@@ -5,8 +5,10 @@ import {
   detectInstalledLoginPrompt,
   detectPhase2Success,
   detectUnexpectedControlPlaneLogin,
+  assertGeneratedNodeHostnameContract,
   extractGeneratedHostname,
   mergeFullInstallSerialLogs,
+  NODE_HEX_HOSTNAME_RE,
   OVMF_FIRMWARE_CANDIDATES,
   PHASE2_SERIAL_SEPARATOR
 } from "./qemu-full-install-test.ts";
@@ -26,6 +28,15 @@ describe("qemu-full-install-test hostname extraction", () => {
     ].join(`
 `);
     expect(extractGeneratedHostname(serial)).toBe("zeta-a1b2c3");
+  });
+  it("documents install-time node-<6hex> hostname format", () => {
+    const serial = [
+      "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ...",
+      "[iter-5.2.2]   generated: node-a3f9c2"
+    ].join(`
+`), hostname = extractGeneratedHostname(serial);
+    expect(hostname).toBe("node-a3f9c2");
+    expect(hostname).toMatch(/^node-[0-9a-f]{6}$/);
   });
   it("returns null when marker absent", () => {
     expect(extractGeneratedHostname("zeta-installer login:")).toBeNull();
@@ -69,6 +80,36 @@ control-plane login:`, "zeta-a1b2c3");
   it("allows control-plane when no generated hostname was expected", () => {
     expect(detectUnexpectedControlPlaneLogin("control-plane login:", null)).toBeNull();
     expect(detectUnexpectedControlPlaneLogin("control-plane login:", "control-plane")).toBeNull();
+  });
+  it("assertGeneratedNodeHostnameContract accepts node-<6hex> install + matching login", () => {
+    const phase1 = [
+      "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ...",
+      "[iter-5.2.2]   generated: node-a3f9c2",
+      "ZETA CLUSTER NODE INSTALL COMPLETE"
+    ].join(`
+`), result = assertGeneratedNodeHostnameContract(phase1, `node-a3f9c2 login:
+`);
+    expect(result.ok).toBe(!0);
+    if (result.ok) {
+      expect(result.hostname).toMatch(NODE_HEX_HOSTNAME_RE);
+      expect(result.hostname).toBe("node-a3f9c2");
+    }
+  });
+  it("assertGeneratedNodeHostnameContract rejects control-plane login after node generation", () => {
+    const result = assertGeneratedNodeHostnameContract(`[iter-5.2.2]   generated: node-dead01
+`, `control-plane login:
+`);
+    expect(result.ok).toBe(!1);
+    if (!result.ok)
+      expect(result.reason).toContain("081KSGS9H0008QG0R00120EEHM Bug 1 regression");
+  });
+  it("assertGeneratedNodeHostnameContract rejects non-node generated shapes", () => {
+    const result = assertGeneratedNodeHostnameContract(`[iter-5.2.2]   generated: zeta-a1b2c3
+`, `zeta-a1b2c3 login:
+`);
+    expect(result.ok).toBe(!1);
+    if (!result.ok)
+      expect(result.reason).toContain("node-<6hex>");
   });
 });
 describe("qemu-full-install-test phase 3 first-session markers", () => {

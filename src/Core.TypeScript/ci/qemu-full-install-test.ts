@@ -99,6 +99,42 @@ export function extractGeneratedHostname(serialOutput: string): string | null {
   return match?.[1] ?? null;
 }
 
+/** Canonical on-node unique hostname shape from zeta-install.sh iter-5.2.2. */
+export const NODE_HEX_HOSTNAME_RE = /^node-[0-9a-f]{6}$/;
+
+/**
+ * Software-only uniqueness contract for Bug 1 (081KSGS9H0008QG0R00120EEHM):
+ * when install serial shows a generated `node-<6hex>`, phase-2 login must use
+ * that hostname — never the flake default `control-plane`.
+ */
+export function assertGeneratedNodeHostnameContract(
+  phase1Serial: string,
+  phase2Serial: string,
+): { readonly ok: true; readonly hostname: string } | { readonly ok: false; readonly reason: string } {
+  const generated = extractGeneratedHostname(phase1Serial);
+  if (!generated) {
+    return { ok: false, reason: "phase 1 serial missing [iter-5.2.2] generated hostname" };
+  }
+  if (!NODE_HEX_HOSTNAME_RE.test(generated)) {
+    return {
+      ok: false,
+      reason: `generated hostname "${generated}" is not node-<6hex> (expected /^node-[0-9a-f]{6}$/)`,
+    };
+  }
+  const unexpected = detectUnexpectedControlPlaneLogin(phase2Serial, generated);
+  if (unexpected) {
+    return { ok: false, reason: unexpected };
+  }
+  const login = detectInstalledLoginPrompt(phase2Serial, generated);
+  if (!login.ok) {
+    return {
+      ok: false,
+      reason: `phase 2 serial missing login prompt for generated hostname "${generated}"`,
+    };
+  }
+  return { ok: true, hostname: generated };
+}
+
 /** Exported for unit tests. */
 export function detectUnexpectedControlPlaneLogin(
   serialOutput: string,
