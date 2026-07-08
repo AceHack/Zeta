@@ -7,16 +7,40 @@ import {
 } from "./qemu-first-session-phase3";
 
 describe("qemu-first-session-phase3", () => {
-  it("firstSessionMarkersSatisfied passes for setup-gh local-only happy path", () => {
-    const serial = [
-      "zeta-first-session: begin",
-      "zeta-first-session: choice kind=setup_credential vendor=gh",
-      "zeta-first-session: choice kind=use_local_llm_only",
-      "zeta-first-session: complete canSelfRegister=true",
-    ].join("\n");
+  it("firstSessionMarkersSatisfied rejects dry-run-only happy path by default", () => {
+    const prev = process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
+    delete process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
+    try {
+      const serial = [
+        "zeta-first-session: begin",
+        "zeta-first-session: choice kind=setup_credential vendor=gh",
+        "zeta-first-session: choice kind=use_local_llm_only",
+        "zeta-first-session: complete canSelfRegister=true",
+      ].join("\n");
 
-    expect(firstSessionMarkersSatisfied(serial)).toBe(true);
-    expect("ok" in assertHappyPathFirstSessionSerial(serial)).toBe(true);
+      expect(firstSessionMarkersSatisfied(serial)).toBe(false);
+      expect("ok" in assertHappyPathFirstSessionSerial(serial)).toBe(true);
+    } finally {
+      if (prev === undefined) delete process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
+      else process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH = prev;
+    }
+  });
+
+  it("firstSessionMarkersSatisfied allows dry-run happy path with escape hatch", () => {
+    const prev = process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
+    process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH = "1";
+    try {
+      const serial = [
+        "zeta-first-session: begin",
+        "zeta-first-session: choice kind=setup_credential vendor=gh",
+        "zeta-first-session: choice kind=use_local_llm_only",
+        "zeta-first-session: complete canSelfRegister=true",
+      ].join("\n");
+      expect(firstSessionMarkersSatisfied(serial)).toBe(true);
+    } finally {
+      if (prev === undefined) delete process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
+      else process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH = prev;
+    }
   });
 
   it("firstSessionMarkersSatisfied passes for mock identity-auth coverage path", () => {

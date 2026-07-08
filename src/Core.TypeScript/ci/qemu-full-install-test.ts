@@ -620,7 +620,9 @@ async function main(): Promise<never> {
 
   const requireFirstSession = firstSessionPhase3Enabled();
   if (requireFirstSession) {
-    console.log("[qemu-full-install-test] phase 3 enabled (QEMU_FIRST_SESSION_PHASE3=1) — will assert first-session serial markers");
+    console.log(
+      "[qemu-full-install-test] phase 3 enabled (QEMU_FIRST_SESSION_PHASE3=1) — will assert first-session + mock/skip identity-auth markers",
+    );
   }
 
   const phase2 = await runQemuUntil(
@@ -630,7 +632,29 @@ async function main(): Promise<never> {
     requireFirstSession ? "phase 2+3 (disk boot + first-session)" : "phase 2 (disk boot)",
   );
 
-  writeArtifactSerialLog(phase1Serial, readSerial(phase2SerialLogPath));
+  const phase2Serial = readSerial(phase2SerialLogPath);
+  writeArtifactSerialLog(phase1Serial, phase2Serial);
+
+  // Cascade #6 deepen: when install generated node-<6hex>, bind phase-1 → phase-2
+  // login and reject control-plane regression (081KSGS9H0008QG0R00120EEHM Bug 1).
+  if (phase2.exitCode === 0 && hostname && NODE_HEX_HOSTNAME_RE.test(hostname)) {
+    const contract = assertGeneratedNodeHostnameContract(phase1Serial, phase2Serial);
+    if (!contract.ok) {
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `hostname uniqueness contract failed — ${contract.reason}`,
+          serialLogTail: phase2Serial.slice(-2000),
+          ...(phase2.elapsedSeconds !== undefined
+            ? { elapsedSeconds: phase2.elapsedSeconds }
+            : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log(`[qemu-full-install-test] hostname uniqueness contract ok (${contract.hostname})`);
+  }
+
   reportResult(phase2, artifactSerialLogPath);
 }
 

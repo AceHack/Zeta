@@ -146,10 +146,12 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
     expect(detectPhase2Success(serial, "node-abc123", true).ok).toBe(false);
   });
 
-  it("detectPhase2Success passes when login and first-session markers present", () => {
+  it("detectPhase2Success passes when login and mock identity-auth markers present", () => {
     const serial = [
       "zeta-first-session: begin",
       "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: identity-auth-mock-begin",
+      "zeta-first-session: identity-auth-mock-ok",
       "zeta-first-session: choice kind=use_local_llm_only",
       "zeta-first-session: complete canSelfRegister=true",
       "node-abc123 login:",
@@ -159,6 +161,17 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
     if (result.ok) {
       expect(result.reason).toContain("first-session markers");
     }
+  });
+
+  it("detectPhase2Success rejects dry-run-only first-session when phase3 required", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true",
+      "node-abc123 login:",
+    ].join("\n");
+    expect(detectPhase2Success(serial, "node-abc123", true).ok).toBe(false);
   });
 
   it("detectInstalledLoginPrompt finds generated hostname login line", () => {

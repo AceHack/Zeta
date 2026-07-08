@@ -16,6 +16,15 @@ composes_with:
 tags: [ci, qemu, cluster-bringup, auto-install, cluster-join, eliminates-human-physical-test, cascade-6]
 ---
 
+## Progress (2026-07-08 cascade deepen)
+
+- Phase-3 first-session gate now requires **mock identity-auth** markers
+  (`identity-auth-mock-*`) or explicit skip coverage — dry-run-only happy
+  path no longer counts unless `ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH=1`.
+- Live `qemu-full-install-test` runs `assertGeneratedNodeHostnameContract`
+  after phase 2 when install generated `node-<6hex>` (Bug 1 regression
+  guard wired into the ISO path, not unit-only).
+
 ## Progress (2026-06-14)
 
 - **Slice 1** landed #8126 — full-install-in-QEMU (081KSNY2Z0008QG0R0008PN7RQ scenario 2 step)
