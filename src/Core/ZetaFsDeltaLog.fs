@@ -18,6 +18,15 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     let objectsDir = Path.Combine(root, "objects")
     let refsDir = Path.Combine(root, "refs", "heads")
     let headFile = Path.Combine(root, "HEAD")
+
+    // refs/HEAD files are tiny (a hex hash or one "ref: …" line); cap reads so a
+    // poisoned file cannot exhaust the heap (semgrep file-read-without-size-cap).
+    let maxRefFileBytes = 4096L
+
+    let readSmallFile (path: string) : string =
+        if FileInfo(path).Length > maxRefFileBytes then
+            invalidOp (sprintf "ref file exceeds %d bytes: %s" maxRefFileBytes path)
+        File.ReadAllText path
     let gate = obj ()
 
     do 
@@ -79,7 +88,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     let readRef (refName: string) : MerkleHash option =
         let path = getRefPath refName
         if File.Exists path then
-            let txt = File.ReadAllText(path).Trim()
+            let txt = (readSmallFile path).Trim()
             if txt.Length = 32 then Some(ofHex txt) else None
         else
             None
@@ -93,7 +102,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
 
     let getActiveRefName () =
         if File.Exists headFile then
-            let txt = File.ReadAllText(headFile).Trim()
+            let txt = (readSmallFile headFile).Trim()
             if txt.StartsWith "ref: " then txt.Substring(5) else "refs/heads/main"
         else
             "refs/heads/main"

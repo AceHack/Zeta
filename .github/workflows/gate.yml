@@ -519,9 +519,17 @@ jobs:
         # Application etc.) rather than false-fail; -strict: reject unknown fields
         # on the manifests we DO have schemas for. find-pipe so it recurses
         # explicitly (portable across kubeconform versions).
+        # -skip Deployable,Policy: OUR platform CRDs (platform/v1alpha1) — never in
+        # the upstream schema registry. And retry with backoff: rate-limited schema
+        # downloads (even core kinds like persistentvolumeclaim-v1) count as ERRORS,
+        # not missing-schemas (2026-07-08: 15 errors, gate red repo-wide).
         run: |
-          find full-ai-cluster/k8s -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
-            | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default
+          kc() {
+            find full-ai-cluster/k8s -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
+              | xargs -0 kubeconform -strict -ignore-missing-schemas -skip Deployable,Policy -summary -schema-location default
+          }
+          kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \
+             || { echo "[yaml/k8s] retry in 90s"; sleep 90; kc; }
 
   lint-shell:
     # Shellcheck on every bash script under tools/setup/ + tools/.
