@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { realizeFromAgdaCubical } from "./setup-realizers/from-agda-cubical.ts";
 import { realizeFromElan } from "./setup-realizers/from-elan.ts";
 import { realizeFromInstaller } from "./setup-realizers/from-installer.ts";
 import { realizeFromOllama } from "./setup-realizers/from-ollama.ts";
@@ -14,8 +15,8 @@ import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
 import { getSetupRealizer, listSetupRealizerIds, listSetupRealizerInstallOrder, listPostMiseRealizerIds, listPreMiseRealizerIds } from "./setup-realizers/index.ts";
 
 describe("setup-realizers registry", () => {
-  test("install order lists all 15 realizers in graph order", () => {
-    expect(listSetupRealizerInstallOrder()).toHaveLength(15);
+  test("install order lists all 16 realizers in graph order", () => {
+    expect(listSetupRealizerInstallOrder()).toHaveLength(16);
     expect(listSetupRealizerInstallOrder()[0]).toBe("from-deb");
     expect(listSetupRealizerInstallOrder().at(-1)).toBe("from-git-hooks");
     expect(listPreMiseRealizerIds()).toEqual(["from-deb", "from-shim", "from-autotools-tarball"]);
@@ -24,6 +25,7 @@ describe("setup-realizers registry", () => {
 
   test("lists Bun realizer ids in stable order", () => {
     expect(listSetupRealizerIds()).toEqual([
+      "from-agda-cubical",
       "from-autotools-tarball",
       "from-bun-global",
       "from-bun-link",
@@ -170,6 +172,36 @@ describe("realizeFromInstaller dry-run", () => {
     const result = await realizeFromInstaller(ctx);
     Object.defineProperty(process.stdin, "isTTY", { value: stdinTTY, configurable: true });
     expect(result.skipped).toBe(true);
+  });
+});
+
+describe("realizeFromAgdaCubical dry-run", () => {
+  test("skips when manifest missing", async () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-agda-"));
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromAgdaCubical(ctx);
+    expect(result.skipped).toBe(true);
+    expect(result.mechanism).toBe("from-agda-cubical");
+  });
+
+  test("with manifest present, either skips (no agda on host) or records the script action", async () => {
+    // The realizer is a thin adapter over tools/setup/common/agda-cubical.sh and
+    // gates on the HOST's agda; both branches are legitimate depending on the
+    // machine running this test (slim hosts have no agda by design).
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-agda-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      join(manifestDir, "from-agda-cubical"),
+      "cubical https://github.com/agda/cubical.git v0.9 agda=2.8 commit=abc\n",
+    );
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromAgdaCubical(ctx);
+    if (result.skipped) {
+      expect(result.actions).toEqual([]);
+    } else {
+      expect(result.actions.some((a) => a.includes("agda-cubical.sh"))).toBe(true);
+    }
   });
 });
 

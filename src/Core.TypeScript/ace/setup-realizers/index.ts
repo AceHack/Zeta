@@ -1,3 +1,4 @@
+import { realizeFromAgdaCubical } from "./from-agda-cubical.ts";
 import { realizeFromAutotoolsTarball } from "./from-autotools-tarball.ts";
 import { realizeFromBunGlobal, repairCodexServiceTierConfig } from "./from-bun-global.ts";
 import { realizeFromBunLink } from "./from-bun-link.ts";
@@ -16,6 +17,7 @@ import { realizeFromUvVenv } from "./from-uv-venv.ts";
 import type { SetupRealizer } from "./shared.ts";
 
 export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
+  "from-agda-cubical": realizeFromAgdaCubical,
   "from-autotools-tarball": realizeFromAutotoolsTarball,
   "from-bun-global": realizeFromBunGlobal,
   "from-bun-link": realizeFromBunLink,
@@ -49,6 +51,7 @@ export const POST_MISE_REALIZER_IDS = [
   "from-dotnet-workload",
   "from-url",
   "from-opam-git",
+  "from-agda-cubical",
   "from-bun-global",
   "from-bun-link",
   "from-installer",
@@ -62,7 +65,11 @@ export const SETUP_REALIZER_INSTALL_ORDER = [
 ] as const;
 
 /** Mechanisms that warn and continue on failure (mirrors linux.sh opam-git || echo). */
-export const BEST_EFFORT_REALIZER_IDS = new Set<string>(["from-opam-git", "from-git-hooks"]);
+export const BEST_EFFORT_REALIZER_IDS = new Set<string>([
+  "from-opam-git",
+  "from-agda-cubical",
+  "from-git-hooks",
+]);
 
 export function listSetupRealizerIds(): readonly string[] {
   return Object.keys(SETUP_REALIZERS).sort();

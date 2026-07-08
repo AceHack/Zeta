@@ -1,0 +1,35 @@
+# Mechanism: from-agda-cubical — pinned agda/cubical library clone, registered
+# in the Agda user libraries file. The cubical Agda proof lane (provided-view
+# univalence obligation — docs/letters/from-soraya-univalence-lane-routing.md,
+# workitem 081KX1VE4G808QG0R003DCK3GV).
+# Realizer: src/Core.TypeScript/ace/setup-realizers/from-agda-cubical.ts
+#   (delegates to tools/setup/common/agda-cubical.sh — single implementation).
+#
+# The Agda BINARY comes from the system package manifests (manifests/brew
+# `agda`, manifests/apt `agda`) — bottled/binary installs, NOT the ghcup+cabal
+# source build Soraya's spec offered as the heavy fallback (her §4 lighter-path
+# clause taken: system packages exist on both OSes, so no 30-90 min GHC build).
+#
+# Format:
+#   cubical  <git-repo-url>  <release-tag>  agda=<agda-version-prefix>  commit=<tag-commit-sha>
+#
+# PIN-PAIR DISCIPLINE (Soraya's spec, adapted): each row is a content-pin pair
+# — a cubical release tag bound to the Agda version line it supports (from the
+# upstream release notes, https://github.com/agda/cubical/releases: each release
+# names its exact compatible Agda). agda-cubical.sh selects the row whose
+# agda= prefix matches the INSTALLED `agda --version`, then asserts the cloned
+# tag's HEAD equals commit= (supply-chain assert; fail loudly on mismatch).
+#
+# NAMED DEBT (soft pin): the Agda binary version is whatever brew/apt ship
+# (brew 2026-07-08: 2.8.0; Ubuntu noble apt: 2.6.3; plucky/questing: 2.6.4.3;
+# resolute+: 2.8.0). If a distro drifts to an Agda with no row below, the
+# install WARNS and skips the lane (it does not fail the install) — the fix is
+# to add/bump a row here from the matching upstream cubical release. Bump
+# procedure: pick the cubical release whose notes name the new Agda version,
+# update tag= + commit= together (commit is the tag's commit sha, via
+# `git ls-remote https://github.com/agda/cubical.git refs/tags/<tag>`).
+
+cubical  https://github.com/agda/cubical.git  v0.9  agda=2.8    commit=b150186d2544e7efeddd31e5d14a8b9ecbb100f7  role=formal-verifier
+cubical  https://github.com/agda/cubical.git  v0.8  agda=2.7    commit=3291fc1d8cae1409cc54d4f9cca7366158b573d7  role=formal-verifier
+cubical  https://github.com/agda/cubical.git  v0.7  agda=2.6.4  commit=d69d74c8da03c70325718f96d578d51b622e1dbf  role=formal-verifier
+cubical  https://github.com/agda/cubical.git  v0.5  agda=2.6.3  commit=132a2a3197b490c571356f0399a2a6fbfab40f2a  role=formal-verifier

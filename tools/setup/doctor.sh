@@ -113,6 +113,28 @@ else
 fi
 echo
 
+# ── 3c. Cubical Agda proof lane — optional, pin-paired library clone ─
+# Provided-view univalence obligation lane (081KX1VE4G808QG0R003DCK3GV).
+# The agda binary comes from manifests/{brew,apt} (brew gates it at
+# tier=standard), and common/agda-cubical.sh registers the pinned
+# agda/cubical release in the Agda user libraries file. Both are optional:
+# a slim host legitimately lacks them, so absence is a WARN, never a FAIL.
+echo "[3c/6] Cubical Agda proof lane — optional formal-verification"
+if command -v agda >/dev/null 2>&1; then
+  pass "agda: $(agda --version 2>&1 | head -n1)"
+  AGDA_APP_DIR="$(agda --print-agda-app-dir 2>/dev/null | head -n1 || true)"
+  [ -z "$AGDA_APP_DIR" ] && AGDA_APP_DIR="$HOME/.agda"
+  if [ -f "$AGDA_APP_DIR/libraries" ] \
+     && grep -q "cubical\.agda-lib$" "$AGDA_APP_DIR/libraries" 2>/dev/null; then
+    pass "cubical registered: $(grep "cubical\.agda-lib$" "$AGDA_APP_DIR/libraries" | head -n1)"
+  else
+    warn "cubical library not registered in $AGDA_APP_DIR/libraries — run tools/setup/common/agda-cubical.sh (or tools/setup/install.sh)"
+  fi
+else
+  warn "agda not found — optional; installed by tools/setup/install.sh via manifests/{brew,apt} (brew: tier=standard hosts)"
+fi
+echo
+
 # ── 4. Mise runtimes match .mise.toml ───────────────────────────────
 echo "[4/6] mise runtimes match .mise.toml"
 if command -v mise >/dev/null 2>&1 && [ -f .mise.toml ]; then

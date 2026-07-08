@@ -97,3 +97,16 @@ tailscale  # the client/daemon (tailscaled) — joins the Headscale-controlled m
 # E prover -- first-order ATP for the formal-verification portfolio (rung-3)
 eprover
 
+# Agda — dependently-typed proof assistant; the cubical proof lane's binary
+# (provided-view univalence obligation, 081KX1VE4G808QG0R003DCK3GV; routing:
+# docs/letters/from-soraya-univalence-lane-routing.md). BOTTLED (no GHC source
+# build — the ghcup+cabal heavy path in Soraya's spec is NOT needed on macOS;
+# verified 2026-07-08: brew agda 2.8.0-r3, bottled arm64+x86_64, deps ghc@9.12/
+# gmp/icu4c pulled by brew). SOFT PIN (named debt): brew tracks upstream Agda;
+# the cubical LIBRARY release is pin-paired to the installed Agda version by
+# common/agda-cubical.sh via manifests/from-agda-cubical — if brew's Agda
+# drifts past the pin-pair table, that script warns + skips and the fix is a
+# new manifest row (bump tag+commit together). tier=standard (pulls a full GHC
+# ~1.5 GB; slim hosts skip, and agda-cubical.sh skips gracefully without it).
+agda tier=standard
+

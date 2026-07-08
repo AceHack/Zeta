@@ -103,6 +103,15 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       optIn: ["ZETA_INSTALL_FULL=1"],
       defaultUpdate: "pinned",
     }),
+    pointerFromMechanismManifest({
+      mechanism: "from-agda-cubical",
+      text: readManifest("from-agda-cubical"),
+      purpose:
+        "Cubical Agda proof lane — pinned agda/cubical release clone (pin-pair vs installed Agda) + user-library registration (081KX1VE4G808QG0R003DCK3GV)",
+      realizer: bunMechanismRealizer("from-agda-cubical"),
+      manifest: "tools/setup/manifests/from-agda-cubical",
+      defaultUpdate: "pinned",
+    }),
     pointerFromSetupManifest({
       text: readManifest("from-bun-global"),
       ecosystem: "bun-global",
