@@ -1,7 +1,7 @@
 ---
 id: 081KTGPC2XP08QG0R000X8X1M9
 type: task
-state: backlog
+state: closed
 priority: P1
 slug: git-reach-punch-list-data-plane-command-spec-requirements-fo
 title: "git-reach punch-list → data-plane command spec (requirements for the no-git-CLI command surface, roadmap #1)"
