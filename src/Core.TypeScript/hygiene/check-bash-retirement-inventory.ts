@@ -81,6 +81,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "scripts/hooks/commit-msg",
   "scripts/hooks/install-git-hooks.sh",
   "tools/installer/zeta-self-register.sh",
+  "tools/setup/common/agda-cubical.sh",
   "tools/setup/common/curl-fetch.sh",
   "tools/setup/common/host-tier.sh",
   "tools/setup/common/mise.sh",
@@ -122,6 +123,10 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // by nixos/modules/zeta-self-register.nix) that probes /proc + runs gh/git at
   // the OS boot edge — retained shell "where the script runs at the OS edge".
   "tools/installer/zeta-self-register.sh": "nixos installer",
+  // Cubical Agda proof lane (081KX1VE4G808QG0R003DCK3GV): pinned agda/cubical
+  // clone + Agda user-library registration + verify typecheck. Same low-level
+  // installer surface as tlaps.sh (invoked via the from-agda-cubical realizer).
+  "tools/setup/common/agda-cubical.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
   "tools/setup/common/host-tier.sh": "setup/bootstrap",
   "tools/setup/common/mise.sh": "setup/bootstrap",

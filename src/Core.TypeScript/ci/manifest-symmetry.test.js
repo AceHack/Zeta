@@ -69,6 +69,7 @@ const WINDOWS_EXCEPTIONS = {
     "headscale-cli": "headscale SERVER-side CLI — mesh coordination ops run on Linux/macOS hosts; Windows dev boxes join the mesh as tailscale clients (manifests/windows tailscale line).",
     "r-base": "R statistical runtime (charting/grammar-of-graphics lens-finder); covered on Windows by the `r` manifest line (scoop r / winget RProject.R / choco R.Project). apt names the package r-base; brew + scoop name it r.",
     tailscale: "mesh VPN client; on Windows, Tailscale installs natively via MSI/installer or winget (Tailscale.Tailscale).",
+    agda: "cubical Agda proof lane is Unix-only for now (081KX1VE4G808QG0R003DCK3GV named debt, tlaps/Isabelle precedent); Windows disposition (choco agda / ghcup) deferred until the lane needs a Windows leg.",
 };
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
     const unixTools = new Set([...parseManifest("apt"), ...parseManifest("brew")]);
