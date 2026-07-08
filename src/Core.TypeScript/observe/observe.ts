@@ -399,6 +399,11 @@ export function buildMenu(world: World): NextAction[] {
   const toDecompose = world.backlog.find((i) => i.ambiguous);
   if (toDecompose) candidates.push({ kind: "decompose", item: toDecompose });
 
+  // SELF-CLAIM — voluntary commitment. Available when there's a doable item.
+  // The agent can CLAIM it (promise to deliver by a deadline) instead of doing it now.
+  // This is the inter-agent coordination primitive: "I'll handle this, you don't need to."
+  if (doable) candidates.push({ kind: "self_claim", item: doable, deadline: 0 }); // deadline filled by chooser
+
   const needs = world.backlog.find((i) => i.needsNewAction);
   candidates.push(
     needs
