@@ -1015,10 +1015,17 @@ if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
       # 'https://acehack@github.com':" despite gh auth login succeeding
       # as AceHack moments earlier. `gh auth setup-git` writes a
       # credential.helper entry that delegates to `gh auth git-credential`
-      # so git push picks up the gh token automatically.
+      # so git push picks up the gh token automatically. The follow-up
+      # git-config check is a dry-run guard: no network, no push, just
+      # enough evidence to warn before self-registration reaches git push.
       echo "[iter-5.4.0]   wiring git credential helper to use gh token..."
       if gh auth setup-git 2>&1 | tail -3; then
         echo "[iter-5.4.0]   git credential helper: configured"
+        if git config --global --get-all credential.https://github.com.helper 2>/dev/null | grep -q "gh auth git-credential"; then
+          echo "[iter-5.4.0]   git credential helper dry-run check: gh auth git-credential present"
+        else
+          echo "[iter-5.4.0]   WARN: credential helper check did not find 'gh auth git-credential'; subsequent git push may prompt for password"
+        fi
       else
         echo "[iter-5.4.0]   WARN: 'gh auth setup-git' failed; subsequent git push may prompt for password"
       fi
@@ -1745,18 +1752,8 @@ echo
 echo "  Initial login credentials:"
 echo
 echo "    user:     zeta"
-# Banner must reflect iter-5.3's actual outcome (Copilot P1 finding on
-# #5210 fix-fwd): if operator set a custom password via Step 6.55, the
-# old hard-coded "password: zeta-change-me" line lied to them. Print
-# the truth per the captured state.
-if [ -f /mnt/etc/zeta/initial-hashedpassword ]; then
-  echo "    password: (the value you set during iter-5.3 prompt;"
-  echo "               iter-4.x default 'zeta-change-me' is NOT in effect)"
-else
-  echo "    password: zeta-change-me   (iter-4.x default; iter-5.3 prompt"
-  echo "                                was skipped or unavailable)"
-  echo "                rotate via 'passwd zeta' after first login"
-fi
+echo "    password: documented at install-time only; not shown"
+echo "              here (security + UX)"
 echo
 if [ "$GH_AUTH_OK" = 1 ] && [ "$GH_KEY_COUNT" != "0" ]; then
   echo "  iter-5.4.0 GH-AUTH + OPERATOR-PUBKEY INJECTION: SUCCESS ($GH_KEY_COUNT keys)"

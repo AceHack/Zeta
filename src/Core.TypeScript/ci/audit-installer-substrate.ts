@@ -109,6 +109,7 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "Step 6.9: iter-5.4.1 self-registration commit+push", // iter-5.4.1 self-reg anchor
       "gh auth login", // device-flow auth invocation
       "gh auth setup-git", // 081KSGS9H0008QG0R00120EEHM Bug 2a fix — wires git credential helper to gh token
+      "gh auth git-credential", // Bug 2a dry-run check — verifies git config delegates HTTPS pushes to gh
       "gh ssh-key list", // iter-5.4.0 operator-authorized-keys path
       "SSH_KEY_ERR_FILE", // 081KSGS9H0008QG0R00120EEHM Bug 2b fix — stderr capture for discrimination
       "admin:public_key", // 081KSGS9H0008QG0R00120EEHM Bug 2b fix — scope-error recovery guidance

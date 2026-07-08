@@ -6,7 +6,7 @@ title: installer config-bugs cluster — hostname not unique (shows control-plan
 effort: S
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-07-08
 depends_on:
   - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
@@ -296,6 +296,37 @@ journalctl -u zeta-first-boot --boot=-1   # service log
 
 Output determines whether the auth step ran + completed; fix depends
 on the failure mode.
+
+## 2026-07-08 QEMU/unit-testable slice
+
+Landed testable fixes that do not require a physical boot:
+
+- **Password disclosure:** `zeta-install.sh` final install-complete
+  banner no longer prints `zeta-change-me`, a custom password, or
+  outcome-specific password text. It now matches the login-banner
+  policy: `password: documented at install-time only; not shown`.
+- **Regression guard:** `src/Core.TypeScript/ci/install-complete-banner.test.ts`
+  extracts the final install-complete banner from `zeta-install.sh`
+  and rejects default-password or concrete-password disclosure fixtures.
+- **Hostname:** the existing generate-on-node path remains in place;
+  `qemu-full-install-test.test.ts` now documents the expected
+  `node-<6hex>` generated-hostname format while preserving the
+  single-node `control-plane` allowance when no generated hostname was
+  expected.
+- **gh auth:** the already-landed `gh auth setup-git` fix now has a
+  dry-run local git-config check for `gh auth git-credential`, warning
+  before self-registration reaches `git push` if HTTPS pushes are still
+  likely to prompt.
+
+Deferred because the remaining acceptance depends on installed-system
+evidence rather than source-only proof:
+
+- Physical/QEMU full-boot confirmation that the login prompt uses the
+  generated `node-<hex>` hostname.
+- Physical/QEMU full-boot confirmation that self-registration push
+  completes without an HTTPS basic-auth prompt.
+- Deeper zero-typing first-boot/self-registration recovery if `gh`
+  credentials are absent after reboot.
 
 ## Acceptance
 

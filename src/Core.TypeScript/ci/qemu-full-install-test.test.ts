@@ -30,6 +30,17 @@ describe("qemu-full-install-test hostname extraction", () => {
     expect(extractGeneratedHostname(serial)).toBe("zeta-a1b2c3");
   });
 
+  it("documents install-time node-<6hex> hostname format", () => {
+    const serial = [
+      "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ...",
+      "[iter-5.2.2]   generated: node-a3f9c2",
+    ].join("\n");
+
+    const hostname = extractGeneratedHostname(serial);
+    expect(hostname).toBe("node-a3f9c2");
+    expect(hostname).toMatch(/^node-[0-9a-f]{6}$/);
+  });
+
   it("returns null when marker absent", () => {
     expect(extractGeneratedHostname("zeta-installer login:")).toBeNull();
   });
