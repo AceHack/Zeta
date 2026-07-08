@@ -1,11 +1,12 @@
 ---
 id: 081KWT9WBPD08QG0R003H94RFE
 type: task
-state: backlog
+state: done
 priority: P2
 slug: formalize-self-audit-over-ledger-as-physics-pick-the-load-be
 title: "Formalize self-audit-over-ledger as physics: pick the load-bearing rhyme (Lumen maps, Soraya proves)"
 created: 2026-07-05T23:30:09.741Z
+completed: 2026-07-08T21:24:11.537Z
 depends_on: []
 composes_with: []
 ---
