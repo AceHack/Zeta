@@ -97,5 +97,5 @@ third leg. The lane discharges (1) and (3) the day it lands; the infra spec is r
 ## Cross-links
 
 `docs/letters/to-soraya-provided-view-univalence-obligation.md` (the obligation) · `tools/setup/manifests/from-elan`
-+ `tools/setup/common/tlaps.sh` (the two install patterns mirrored) · `tools/setup/ace-mechanism-pointers.json`
+· `tools/setup/common/tlaps.sh` (the two install patterns mirrored) · `tools/setup/ace-mechanism-pointers.json`
 (new entry home, opt-in gate) · `src/Core/Cl3.fs` (the concrete rotor instance item (2) descopes to).

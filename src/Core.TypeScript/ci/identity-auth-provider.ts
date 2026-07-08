@@ -130,7 +130,7 @@ export function serialLinesForIdentityAuth(result: IdentityAuthResult): readonly
     return [IDENTITY_AUTH_SERIAL.begin, IDENTITY_AUTH_SERIAL.skip];
   }
   if (result.mode === "mock") {
-    const lines = [IDENTITY_AUTH_SERIAL.begin, IDENTITY_AUTH_SERIAL.mockBegin];
+    const lines: string[] = [IDENTITY_AUTH_SERIAL.begin, IDENTITY_AUTH_SERIAL.mockBegin];
     if (result.userCode) {
       lines.push(`${IDENTITY_AUTH_SERIAL.mockUserCode} ${result.userCode}`);
     }

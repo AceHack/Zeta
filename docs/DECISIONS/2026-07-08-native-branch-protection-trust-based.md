@@ -31,6 +31,7 @@ Our system already has all the primitives to replace it natively:
 ### Sovereign (Direct-to-Main)
 
 For data that is structurally conflict-free:
+
 - **Heartbeat events** (ZetaId-named JSON files — disjoint by construction)
 - **Observe events** (same — each event has a unique 128-bit id as filename)
 - **Bus messages** (the agent-bus G-Set, same pattern)
@@ -49,12 +50,14 @@ invertible/safe lane).
 ### Corporate (Branch → Review → Merge)
 
 For changes that could conflict or break:
+
 - **Code** (new features, bug fixes, refactors)
 - **Configuration** (CI workflows, infrastructure)
 - **Decisions** (ADRs, governance, alignment)
 - **Schema changes** (anything that affects other consumers)
 
 These go through the corporate discipline:
+
 1. Agent creates a **claim branch** from main
 2. Agent does work (codegen, decomposition, docs)
 3. **CI gate** (`gate-required`) verifies the branch is green
@@ -101,6 +104,7 @@ when CI passes). This is where we are today.
 
 Phase 2 (EARNED): Once the heartbeat runs reliably for days and the reliability
 scores accumulate, relax GitHub's branch protection for the sovereign paths:
+
 - Allow `alexa[bot]` to push to `docs/observe-events/**` directly
 - Allow `github-actions[bot]` to push metrics data directly
 - Keep branch protection for `src/**`, `tools/**`, `.github/**`
