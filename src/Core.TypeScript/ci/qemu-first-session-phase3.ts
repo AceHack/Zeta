@@ -16,6 +16,7 @@ import {
   assertSkipGhFirstSessionSerial,
   FIRST_SESSION_SKIP_IDENTITY_AUTH_MARKERS,
 } from "../zflash/test-harness/serial-markers";
+import { postBootSelfRegMarkersSatisfied } from "./self-reg-serial.ts";
 
 export {
   assertHappyPathFirstSessionSerial,
@@ -25,6 +26,16 @@ export {
 
 export function firstSessionPhase3Enabled(): boolean {
   return process.env.QEMU_FIRST_SESSION_PHASE3 === "1";
+}
+
+/**
+ * When true (default under QEMU_FIRST_SESSION_PHASE3=1), also require post-boot
+ * zeta-self-register CI dry-run markers. Escape hatch for older ISOs:
+ * QEMU_SELF_REGISTER_ALLOW_MISSING=1.
+ */
+export function postBootSelfRegPhase3Required(): boolean {
+  if (!firstSessionPhase3Enabled()) return false;
+  return process.env.QEMU_SELF_REGISTER_ALLOW_MISSING !== "1";
 }
 
 /** True when serial shows explicit CI skip of live identity auth. */
@@ -52,4 +63,14 @@ export function firstSessionMarkersSatisfied(serialOutput: string): boolean {
     return "ok" in assertHappyPathFirstSessionSerial(serialOutput);
   }
   return false;
+}
+
+/**
+ * Full phase-3 success: first-session auth markers AND (unless escaped)
+ * post-boot self-register CI dry-run markers.
+ */
+export function phase3BootMarkersSatisfied(serialOutput: string): boolean {
+  if (!firstSessionMarkersSatisfied(serialOutput)) return false;
+  if (!postBootSelfRegPhase3Required()) return true;
+  return postBootSelfRegMarkersSatisfied(serialOutput);
 }

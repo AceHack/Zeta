@@ -1,7 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import {
   expectedClusterNodeTreePath,
+  parsePostBootSelfRegCiSerial,
   parseSelfRegCiSerial,
+  postBootSelfRegMarkersSatisfied,
+  validatePostBootSelfRegCiCoherent,
 } from "./self-reg-serial.ts";
 
 describe("parseSelfRegCiSerial", () => {
@@ -24,6 +27,41 @@ ZETA CLUSTER NODE INSTALL COMPLETE
     const serial =
       "[iter-5.4.1-ci] composed ClusterNode maintainer=qemu-ci node=zeta-a1b2c3\n";
     expect(parseSelfRegCiSerial(serial)).toBeNull();
+  });
+});
+
+describe("post-boot zeta-self-register CI dry-run serial", () => {
+  const happy = [
+    "zeta-self-register: begin",
+    "zeta-self-register: ci-dry-run",
+    "zeta-self-register: composed maintainer=qemu-ci node=node-a3f9c2",
+    "zeta-self-register: tree-path=maintainers/qemu-ci/cluster-nodes/node-a3f9c2/node.yaml",
+    "zeta-self-register: preview=/var/lib/zeta-self-register/cluster-node-registration-preview.yaml",
+    "zeta-self-register: complete",
+  ].join("\n");
+
+  it("parses composed + tree-path lines", () => {
+    expect(parsePostBootSelfRegCiSerial(happy)).toEqual({
+      maintainer: "qemu-ci",
+      nodeHostname: "node-a3f9c2",
+      treePath: "maintainers/qemu-ci/cluster-nodes/node-a3f9c2/node.yaml",
+      previewPath: "/var/lib/zeta-self-register/cluster-node-registration-preview.yaml",
+    });
+  });
+
+  it("validatePostBootSelfRegCiCoherent accepts coherent dry-run", () => {
+    const result = validatePostBootSelfRegCiCoherent(happy);
+    expect(result.ok).toBe(true);
+    expect(postBootSelfRegMarkersSatisfied(happy)).toBe(true);
+  });
+
+  it("rejects missing begin/complete markers", () => {
+    const serial = "zeta-self-register: ci-dry-run\n";
+    const result = validatePostBootSelfRegCiCoherent(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("missing post-boot self-register markers");
+    }
   });
 });
 

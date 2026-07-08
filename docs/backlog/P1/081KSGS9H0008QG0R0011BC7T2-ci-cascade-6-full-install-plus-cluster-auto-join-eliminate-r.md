@@ -24,6 +24,10 @@ tags: [ci, qemu, cluster-bringup, auto-install, cluster-join, eliminates-human-p
 - Live `qemu-full-install-test` runs `assertGeneratedNodeHostnameContract`
   after phase 2 when install generated `node-<6hex>` (Bug 1 regression
   guard wired into the ISO path, not unit-only).
+- Post-boot `zeta-self-register` CI dry-run (`ZETA_SELF_REGISTER_MODE=ci-dry-run`
+  + `/etc/zeta/qemu-self-register-ci`): phase-3 also requires
+  `zeta-self-register: begin|ci-dry-run|complete` + coherent tree-path
+  (escape: `QEMU_SELF_REGISTER_ALLOW_MISSING=1` for older ISOs).
 
 ## Progress (2026-06-14)
 

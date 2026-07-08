@@ -42,7 +42,7 @@ import {
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   firstSessionPhase3Enabled,
-  firstSessionMarkersSatisfied,
+  phase3BootMarkersSatisfied,
 } from "./qemu-first-session-phase3.ts";
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -243,7 +243,7 @@ export function detectInstalledLoginPrompt(
   return { ok: false };
 }
 
-/** Exported for unit tests. Phase 2 (+ optional phase-3 first-session markers). */
+/** Exported for unit tests. Phase 2 (+ optional phase-3 first-session + self-register markers). */
 export function detectPhase2Success(
   serialOutput: string,
   expectedHostname: string | null,
@@ -251,10 +251,12 @@ export function detectPhase2Success(
 ): { readonly ok: true; readonly reason: string; readonly hostname?: string } | { readonly ok: false } {
   const login = detectInstalledLoginPrompt(serialOutput, expectedHostname);
   if (!login.ok) return { ok: false };
-  if (requireFirstSession && !firstSessionMarkersSatisfied(serialOutput)) {
+  if (requireFirstSession && !phase3BootMarkersSatisfied(serialOutput)) {
     return { ok: false };
   }
-  const phase3Suffix = requireFirstSession ? " + first-session markers" : "";
+  const phase3Suffix = requireFirstSession
+    ? " + first-session + post-boot self-register markers"
+    : "";
   return {
     ok: true,
     reason: `phase 2 SUCCESS — ${login.reason}${phase3Suffix}`,
@@ -566,8 +568,8 @@ async function waitForInstalledLogin(
       : content.includes("EFI stub: Loaded initrd") && !content.includes("login:")
         ? " (serial stopped after EFI initrd — likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)"
         : "";
-  const phase3Hint = requireFirstSession && !firstSessionMarkersSatisfied(content)
-    ? " (login may be present but zeta-first-session: begin|complete markers missing — check zeta-first-session-ci.service)"
+  const phase3Hint = requireFirstSession && !phase3BootMarkersSatisfied(content)
+    ? " (login may be present but phase-3 markers missing — check zeta-first-session-ci + zeta-self-register-ci; escape: QEMU_SELF_REGISTER_ALLOW_MISSING=1)"
     : "";
   return {
     exitCode: 1,

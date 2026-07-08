@@ -90,9 +90,12 @@ const ROOT = resolve(import.meta.dir, "../../.."), REQUIRED_FILES = [
       'default = "/var/lib/zeta-self-register/self-registered.marker";',
       "tools/installer/zeta-self-register.sh",
       'StateDirectory = "zeta-self-register"',
-      "ZETA_SELF_REGISTER_MARKER"
+      "ZETA_SELF_REGISTER_MARKER",
+      "systemd.services.zeta-self-register-ci",
+      "ZETA_SELF_REGISTER_MODE=ci-dry-run",
+      "/etc/zeta/qemu-self-register-ci"
     ],
-    rationale: "081KSKBP80008QG0R000GPC0TB.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces"
+    rationale: "081KSKBP80008QG0R000GPC0TB.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces; QEMU CI dry-run sibling proves compose without live GitHub"
   },
   {
     path: "full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix",

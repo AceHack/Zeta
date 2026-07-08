@@ -11,8 +11,8 @@ WiFi association remain metal-gated.
 Next concrete action: **minimize metal** — keep deepening QEMU/CI
 (cascade #6 full-install asserting mock-auth + `node-<6hex>` login;
 opt-in `QEMU_WIFI_ESP_PHASE1=1` ESP→NM acceptance on workflow_dispatch;
-scenarios 3/4 must dispatch to retention/path-fork runtimes — not
-generic full-install). **Physical boot** only when ready
+scenarios 3/4 dispatch to retention/path-fork runtimes; post-boot
+self-register CI dry-run on phase-3). **Physical boot** only when ready
 for residual hardware (S6 feel, radio associate, Touch ID). Paper/mock
 S6 flow accepted 2026-07-08 (GitHub → local → done; skip-gh continue
 later via local/SSH). Longer-term (not blocking S6): desktop app UI

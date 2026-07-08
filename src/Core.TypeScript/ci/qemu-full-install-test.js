@@ -16,7 +16,7 @@ import {
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   firstSessionPhase3Enabled,
-  firstSessionMarkersSatisfied
+  phase3BootMarkersSatisfied
 } from "./qemu-first-session-phase3.ts";
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../.."), TEST_INFRA_PUBKEY = resolve(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub"), INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE", SELF_REG_CI_MARKER = "[iter-5.4.1-ci] composed ClusterNode", NIXOS_INSTALL_PROGRESS_MARKER = "[iter-5.1]", FAILURE_MARKERS = [
   "panic",
@@ -116,9 +116,9 @@ export function detectPhase2Success(serialOutput, expectedHostname, requireFirst
   const login = detectInstalledLoginPrompt(serialOutput, expectedHostname);
   if (!login.ok)
     return { ok: !1 };
-  if (requireFirstSession && !firstSessionMarkersSatisfied(serialOutput))
+  if (requireFirstSession && !phase3BootMarkersSatisfied(serialOutput))
     return { ok: !1 };
-  const phase3Suffix = requireFirstSession ? " + first-session markers" : "";
+  const phase3Suffix = requireFirstSession ? " + first-session + post-boot self-register markers" : "";
   return {
     ok: !0,
     reason: `phase 2 SUCCESS \u2014 ${login.reason}${phase3Suffix}`,
@@ -341,7 +341,7 @@ async function waitForInstalledLogin(serialLogPath, expectedHostname, requireFir
       };
     await Bun.sleep(POLL_INTERVAL_MS);
   }
-  const content = readSerial(serialLogPath), emptySerialHint = content.trim().length === 0 ? " (serial log empty \u2014 installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)" : content.includes("EFI stub: Loaded initrd") && !content.includes("login:") ? " (serial stopped after EFI initrd \u2014 likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)" : "", phase3Hint = requireFirstSession && !firstSessionMarkersSatisfied(content) ? " (login may be present but zeta-first-session: begin|complete markers missing \u2014 check zeta-first-session-ci.service)" : "";
+  const content = readSerial(serialLogPath), emptySerialHint = content.trim().length === 0 ? " (serial log empty \u2014 installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)" : content.includes("EFI stub: Loaded initrd") && !content.includes("login:") ? " (serial stopped after EFI initrd \u2014 likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)" : "", phase3Hint = requireFirstSession && !phase3BootMarkersSatisfied(content) ? " (login may be present but phase-3 markers missing \u2014 check zeta-first-session-ci + zeta-self-register-ci; escape: QEMU_SELF_REGISTER_ALLOW_MISSING=1)" : "";
   return {
     exitCode: 1,
     reason: loginNeedle ? `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for "${loginNeedle}"${phase3Hint}${emptySerialHint}` : `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for installed-system login prompt${phase3Hint}${emptySerialHint}`,

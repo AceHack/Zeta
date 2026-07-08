@@ -175,8 +175,11 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "tools/installer/zeta-self-register.sh", // delegates implementation to the 081KSKBP80008QG0R000GPC0TB.2 bash script
       'StateDirectory = "zeta-self-register"', // marker dir owned by the service user (cred-restore leaves ~/.config root-owned)
       "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
+      "systemd.services.zeta-self-register-ci", // QEMU CI dry-run sibling oneshot
+      "ZETA_SELF_REGISTER_MODE=ci-dry-run", // hermetic compose; no live gh push
+      "/etc/zeta/qemu-self-register-ci", // install-time WIPE marker gates CI service
     ],
-    rationale: "081KSKBP80008QG0R000GPC0TB.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces",
+    rationale: "081KSKBP80008QG0R000GPC0TB.2 service must be a post-install marker-gated oneshot (bash impl) ordered after network and credential restore surfaces; QEMU CI dry-run sibling proves compose without live GitHub",
   },
   {
     path: "full-ai-cluster/nixos/hosts/control-plane/hardware-configuration.nix",

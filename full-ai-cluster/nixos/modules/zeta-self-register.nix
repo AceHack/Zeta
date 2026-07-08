@@ -8,9 +8,13 @@
 # maintainers/<gh-user>/cluster-nodes/<host>/node.yaml PR, then writes a marker so
 # subsequent boots no-op (idempotent; also no-ops if already on main).
 #
+# QEMU CI: when /etc/zeta/qemu-self-register-ci exists (written by zeta-install
+# WIPE path), a sibling oneshot runs ZETA_SELF_REGISTER_MODE=ci-dry-run and tees
+# zeta-self-register:* markers to ttyS0 — hermetic compose proof without live gh.
+#
 # Enabled cluster-wide in common.nix. Per-host opt-out: zeta.selfRegister.enable = false;
 
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   cfg = config.zeta.selfRegister;
@@ -67,9 +71,11 @@ in
       ];
 
       # Skip cleanly once the marker exists, and never fire without the script present.
+      # Also skip when QEMU CI dry-run marker is present — that path uses the sibling service.
       unitConfig = {
         ConditionPathExists = [
           "!${cfg.markerPath}"
+          "!/etc/zeta/qemu-self-register-ci"
           cfg.scriptPath
         ];
       };
@@ -91,6 +97,58 @@ in
         # gh auth may arrive a beat after boot; retry a few times rather than fail hard.
         Restart = "on-failure";
         RestartSec = "30s";
+      };
+    };
+
+    # QEMU CI dry-run: compose ClusterNode preview + serial markers; no live gh/git push.
+    # Mirrors zeta-first-session-ci tee-to-ttyS0 pattern.
+    systemd.services.zeta-self-register-ci = {
+      description = "QEMU CI post-boot self-register dry-run (cascade #6)";
+      wantedBy = [ "multi-user.target" ];
+      after = [
+        "local-fs.target"
+        "zeta-first-session-ci.service"
+      ];
+      unitConfig = {
+        ConditionPathExists = [
+          "/etc/zeta/qemu-self-register-ci"
+          "!${cfg.markerPath}"
+          cfg.scriptPath
+        ];
+      };
+      serviceConfig = {
+        Type = "oneshot";
+        StateDirectory = "zeta-self-register";
+        WorkingDirectory = cfg.home;
+        ExecStart = pkgs.writeShellScript "zeta-self-register-ci-start" ''
+          set -euo pipefail
+          _serial=""
+          for _dev in /dev/ttyS0 /dev/ttyAMA0; do
+            if [ -e "$_dev" ]; then
+              _serial="$_dev"
+              break
+            fi
+          done
+          run_dry() {
+            # StateDirectory is root-owned on this oneshot (tee needs root for ttyS0);
+            # ensure the zeta user can write the marker + preview under it.
+            ${pkgs.coreutils}/bin/mkdir -p /var/lib/zeta-self-register
+            ${pkgs.coreutils}/bin/chown ${cfg.user}:${cfg.group} /var/lib/zeta-self-register
+            ${pkgs.util-linux}/bin/runuser -u ${cfg.user} -- \
+              env HOME=${cfg.home} \
+              ZETA_SELF_REGISTER_MARKER=${cfg.markerPath} \
+              ZETA_SELF_REGISTER_MODE=ci-dry-run \
+              ZETA_SELF_REGISTER_CI_MAINTAINER=qemu-ci \
+              PATH=/run/current-system/sw/bin:${cfg.home}/.nix-profile/bin \
+              /run/current-system/sw/bin/bash ${cfg.scriptPath}
+          }
+          if [ -n "$_serial" ]; then
+            exec 3>&1
+            run_dry 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial" >&3
+          else
+            run_dry
+          fi
+        '';
       };
     };
   };

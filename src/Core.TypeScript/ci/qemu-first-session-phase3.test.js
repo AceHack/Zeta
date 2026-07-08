@@ -3,7 +3,8 @@ import {
   assertHappyPathFirstSessionSerial,
   assertMockIdentityAuthFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
-  firstSessionMarkersSatisfied
+  firstSessionMarkersSatisfied,
+  phase3BootMarkersSatisfied
 } from "./qemu-first-session-phase3";
 describe("qemu-first-session-phase3", () => {
   it("firstSessionMarkersSatisfied rejects dry-run-only happy path by default", () => {
@@ -80,5 +81,42 @@ describe("qemu-first-session-phase3", () => {
     const serial = ["zeta-first-session: begin", "zeta-first-session: complete"].join(`
 `);
     expect(firstSessionMarkersSatisfied(serial)).toBe(!1);
+  });
+  it("phase3BootMarkersSatisfied requires post-boot self-register when phase3 on", () => {
+    const prevPhase3 = process.env.QEMU_FIRST_SESSION_PHASE3, prevMissing = process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+    process.env.QEMU_FIRST_SESSION_PHASE3 = "1";
+    delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+    try {
+      const firstSessionOnly = [
+        "zeta-first-session: begin",
+        "zeta-first-session: choice kind=setup_credential vendor=gh",
+        "zeta-first-session: identity-auth-mock-begin",
+        "zeta-first-session: identity-auth-mock-ok",
+        "zeta-first-session: choice kind=use_local_llm_only",
+        "zeta-first-session: complete canSelfRegister=true"
+      ].join(`
+`);
+      expect(firstSessionMarkersSatisfied(firstSessionOnly)).toBe(!0);
+      expect(phase3BootMarkersSatisfied(firstSessionOnly)).toBe(!1);
+      const withSelfReg = [
+        firstSessionOnly,
+        "zeta-self-register: begin",
+        "zeta-self-register: ci-dry-run",
+        "zeta-self-register: composed maintainer=qemu-ci node=node-dead01",
+        "zeta-self-register: tree-path=maintainers/qemu-ci/cluster-nodes/node-dead01/node.yaml",
+        "zeta-self-register: complete"
+      ].join(`
+`);
+      expect(phase3BootMarkersSatisfied(withSelfReg)).toBe(!0);
+    } finally {
+      if (prevPhase3 === void 0)
+        delete process.env.QEMU_FIRST_SESSION_PHASE3;
+      else
+        process.env.QEMU_FIRST_SESSION_PHASE3 = prevPhase3;
+      if (prevMissing === void 0)
+        delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+      else
+        process.env.QEMU_SELF_REGISTER_ALLOW_MISSING = prevMissing;
+    }
   });
 });

@@ -157,20 +157,66 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
     expect(detectPhase2Success(serial, "node-abc123", !1).ok).toBe(!0);
     expect(detectPhase2Success(serial, "node-abc123", !0).ok).toBe(!1);
   });
-  it("detectPhase2Success passes when login and mock identity-auth markers present", () => {
-    const serial = [
-      "zeta-first-session: begin",
-      "zeta-first-session: choice kind=setup_credential vendor=gh",
-      "zeta-first-session: identity-auth-mock-begin",
-      "zeta-first-session: identity-auth-mock-ok",
-      "zeta-first-session: choice kind=use_local_llm_only",
-      "zeta-first-session: complete canSelfRegister=true",
-      "node-abc123 login:"
-    ].join(`
+  it("detectPhase2Success passes when login, mock identity-auth, and post-boot self-register markers present", () => {
+    const prevMissing = process.env.QEMU_SELF_REGISTER_ALLOW_MISSING, prevPhase3 = process.env.QEMU_FIRST_SESSION_PHASE3;
+    process.env.QEMU_FIRST_SESSION_PHASE3 = "1";
+    delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+    try {
+      const serial = [
+        "zeta-first-session: begin",
+        "zeta-first-session: choice kind=setup_credential vendor=gh",
+        "zeta-first-session: identity-auth-mock-begin",
+        "zeta-first-session: identity-auth-mock-ok",
+        "zeta-first-session: choice kind=use_local_llm_only",
+        "zeta-first-session: complete canSelfRegister=true",
+        "zeta-self-register: begin",
+        "zeta-self-register: ci-dry-run",
+        "zeta-self-register: composed maintainer=qemu-ci node=node-abc123",
+        "zeta-self-register: tree-path=maintainers/qemu-ci/cluster-nodes/node-abc123/node.yaml",
+        "zeta-self-register: complete",
+        "node-abc123 login:"
+      ].join(`
 `), result = detectPhase2Success(serial, "node-abc123", !0);
-    expect(result.ok).toBe(!0);
-    if (result.ok)
-      expect(result.reason).toContain("first-session markers");
+      expect(result.ok).toBe(!0);
+      if (result.ok)
+        expect(result.reason).toContain("first-session + post-boot self-register markers");
+    } finally {
+      if (prevMissing === void 0)
+        delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+      else
+        process.env.QEMU_SELF_REGISTER_ALLOW_MISSING = prevMissing;
+      if (prevPhase3 === void 0)
+        delete process.env.QEMU_FIRST_SESSION_PHASE3;
+      else
+        process.env.QEMU_FIRST_SESSION_PHASE3 = prevPhase3;
+    }
+  });
+  it("detectPhase2Success rejects mock-auth without post-boot self-register when phase3 required", () => {
+    const prevMissing = process.env.QEMU_SELF_REGISTER_ALLOW_MISSING, prevPhase3 = process.env.QEMU_FIRST_SESSION_PHASE3;
+    process.env.QEMU_FIRST_SESSION_PHASE3 = "1";
+    delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+    try {
+      const serial = [
+        "zeta-first-session: begin",
+        "zeta-first-session: choice kind=setup_credential vendor=gh",
+        "zeta-first-session: identity-auth-mock-begin",
+        "zeta-first-session: identity-auth-mock-ok",
+        "zeta-first-session: choice kind=use_local_llm_only",
+        "zeta-first-session: complete canSelfRegister=true",
+        "node-abc123 login:"
+      ].join(`
+`);
+      expect(detectPhase2Success(serial, "node-abc123", !0).ok).toBe(!1);
+    } finally {
+      if (prevMissing === void 0)
+        delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+      else
+        process.env.QEMU_SELF_REGISTER_ALLOW_MISSING = prevMissing;
+      if (prevPhase3 === void 0)
+        delete process.env.QEMU_FIRST_SESSION_PHASE3;
+      else
+        process.env.QEMU_FIRST_SESSION_PHASE3 = prevPhase3;
+    }
   });
   it("detectPhase2Success rejects dry-run-only first-session when phase3 required", () => {
     const serial = [

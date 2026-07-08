@@ -1410,11 +1410,15 @@ maybe_symlink /mnt/etc/zeta/operator-authorized-keys /etc/zeta/operator-authoriz
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
+# Cascade #6 deepen: also enable post-boot self-register CI dry-run (compose-only; no live gh).
 if [[ "${ZETA_AUTO_CONFIRM:-}" == "WIPE" ]]; then
   sudo mkdir -p /mnt/etc/zeta
   echo "setup-gh,local-only" | sudo tee /mnt/etc/zeta/qemu-first-session-ci >/dev/null
   sudo chmod 0644 /mnt/etc/zeta/qemu-first-session-ci
   echo "[081KSNY2Z0008QG0R0008PN7RQ]   wrote /mnt/etc/zeta/qemu-first-session-ci (QEMU phase-3 boot demo)"
+  echo "ci-dry-run" | sudo tee /mnt/etc/zeta/qemu-self-register-ci >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/qemu-self-register-ci
+  echo "[081KSGS9H0008QG0R0011BC7T2]   wrote /mnt/etc/zeta/qemu-self-register-ci (QEMU post-boot self-register dry-run)"
 fi
 
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
