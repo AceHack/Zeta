@@ -863,6 +863,30 @@ else
 fi
 echo
 
+# ── Step 6.6: iter-5 wifi ESP payload detection (QEMU-testable plumbing only) ─────────
+#
+# zflash file-backed/QEMU flows may bake wifi credentials onto the boot USB ESP
+# as zeta-wifi-credentials.json. This step intentionally only detects the file
+# and emits a serial marker; real NetworkManager profile creation/activation is
+# physical-hardware gated because QEMU does not prove wifi association.
+echo
+echo "[iter-5-wifi] ── probing boot USB for wifi credentials payload ──"
+WIFI_CREDS_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  WIFI_CREDS_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-wifi-credentials.json" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$WIFI_CREDS_FILE" ] && [ -f "$PROBE_MOUNT/zeta-wifi-credentials.json" ]; then
+  WIFI_CREDS_FILE="$PROBE_MOUNT/zeta-wifi-credentials.json"
+fi
+if [ -n "$WIFI_CREDS_FILE" ]; then
+  echo "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP"
+  echo "[iter-5-wifi] TODO: write NetworkManager profile after physical wifi validation"
+else
+  echo "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection"
+fi
+echo
+
 # ── Step 6.7: iter-5.1 wifi persistence (081KSGS9H0008QG0R003V23XNZ) ────────────────
 #
 # By the time this step runs, the live installer is already on the

@@ -19,6 +19,10 @@ describe("parseFileBackedZflashArgs", () => {
       "pikachu",
       "--credential-blob",
       "artifacts/zeta-creds.enc",
+      "--wifi-ssid",
+      "Homelab",
+      "--wifi-password",
+      "super-secret",
     ]);
 
     expect(parsed).toEqual({
@@ -30,6 +34,8 @@ describe("parseFileBackedZflashArgs", () => {
         isoPath: "artifacts/zeta-installer.iso",
         outputImagePath: "artifacts/zflash-baked.img",
         pubkeyPath: "fixtures/id_ed25519.pub",
+        wifiPassword: "super-secret",
+        wifiSsid: "Homelab",
       },
     });
   });
@@ -57,6 +63,8 @@ describe("runFileBackedZflashCli", () => {
         isoPath: "artifacts/zeta-installer.iso",
         outputImagePath: "artifacts/zflash-baked.img",
         pubkeyPath: "fixtures/id_ed25519.pub",
+        wifiPassword: "super-secret",
+        wifiSsid: "Homelab",
       },
       {
         createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
@@ -80,6 +88,8 @@ describe("runFileBackedZflashCli", () => {
       "write /private/tmp/zflash-inline-abc123/zeta-hostname.txt /zeta-hostname.txt pikachu\n",
       "mcopy -o -i artifacts/zflash-baked.img@@1048576 /private/tmp/zflash-inline-abc123/zeta-hostname.txt ::/zeta-hostname.txt",
       "mcopy -o -i artifacts/zflash-baked.img@@1048576 artifacts/zeta-creds.enc ::/zeta-creds.enc",
+      "write /private/tmp/zflash-inline-abc123/zeta-wifi-credentials.json /zeta-wifi-credentials.json {\"ssid\":\"Homelab\",\"password\":\"super-secret\"}\n",
+      "mcopy -o -i artifacts/zflash-baked.img@@1048576 /private/tmp/zflash-inline-abc123/zeta-wifi-credentials.json ::/zeta-wifi-credentials.json",
     ]);
     expect(result.value.retentionBootImageEnvironment).toEqual({
       ZFLASH_QEMU_RETENTION_BOOT_IMAGE: "artifacts/zflash-baked.img",
@@ -109,5 +119,36 @@ describe("runFileBackedZflashCli", () => {
       error: "command failed (qemu-img convert -f raw -O raw artifacts/zeta-installer.iso artifacts/zflash-baked.img) with exit 17: convert failed",
       ok: false,
     });
+  });
+
+  test("rejects malformed wifi flags without printing the password", () => {
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+        wifiPassword: "super-secret",
+        wifiSsid: "",
+      },
+      {
+        executor: {
+          runCommand: () => {
+            throw new Error("unexpected command");
+          },
+          writeFile: () => {
+            throw new Error("unexpected inline write");
+          },
+        },
+      },
+    );
+
+    expect(result).toEqual({
+      error: "wifi credentials ssid is required",
+      ok: false,
+    });
+    if (!result.ok) {
+      expect(result.error).not.toContain("super-secret");
+    }
   });
 });

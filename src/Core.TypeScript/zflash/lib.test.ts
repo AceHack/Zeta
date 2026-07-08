@@ -19,6 +19,7 @@ import { existsSync } from "node:fs";
 import { describe, expect, test } from "bun:test";
 import {
   composeAuthorizedKeysFileContent,
+  composeWifiCredentialsFileContent,
   detectIsohybridEspOffsetBytes,
   executeFileBackedZflashImageExecutionPlan,
   generateRandomNodeName,
@@ -295,6 +296,27 @@ describe("composeAuthorizedKeysFileContent", () => {
   });
 });
 
+describe("composeWifiCredentialsFileContent", () => {
+  test("normalizes wifi credentials JSON for ESP write", () => {
+    expect(composeWifiCredentialsFileContent({ ssid: "Homelab", password: "super-secret" })).toEqual({
+      ok: true,
+      value: "{\"ssid\":\"Homelab\",\"password\":\"super-secret\"}\n",
+    });
+  });
+
+  test("rejects missing ssid without printing the password", () => {
+    const result = composeWifiCredentialsFileContent({ password: "super-secret" });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "wifi credentials ssid is required",
+    });
+    if (!result.ok) {
+      expect(result.error).not.toContain("super-secret");
+    }
+  });
+});
+
 function syntheticIsoHeadWithEspAtLba(lba: number): Buffer {
   const offset = lba * 512;
   const head = Buffer.alloc(offset + 512);
@@ -372,6 +394,41 @@ describe("planFileBackedZflashImage", () => {
         sourcePath: "artifacts/zeta-creds.enc",
       },
     ]);
+  });
+
+  test("plans wifi credentials JSON as an ESP write", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      wifiCredentials: { ssid: "Homelab", password: "super-secret" },
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.espWrites).toEqual([
+      {
+        content: "{\"ssid\":\"Homelab\",\"password\":\"super-secret\"}\n",
+        destination: "/zeta-wifi-credentials.json",
+      },
+    ]);
+  });
+
+  test("rejects wifi credentials missing ssid without printing the password", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      wifiCredentials: { ssid: "", password: "super-secret" },
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "wifi credentials ssid is required",
+    });
+    if (!result.ok) {
+      expect(result.error).not.toContain("super-secret");
+    }
   });
 
   test("refuses physical device output paths", () => {

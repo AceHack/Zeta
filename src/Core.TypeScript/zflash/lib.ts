@@ -49,6 +49,15 @@ export type AuthorizedKeysComposeResult =
   | { readonly ok: true; readonly value: string }
   | { readonly ok: false; readonly error: string };
 
+export interface WifiCredentials {
+  readonly ssid: string;
+  readonly password: string;
+}
+
+export type WifiCredentialsComposeResult =
+  | { readonly ok: true; readonly value: string }
+  | { readonly ok: false; readonly error: string };
+
 /** Validate + normalize one-or-more OpenSSH pubkey lines for ESP write. */
 export function composeAuthorizedKeysFileContent(lines: readonly string[]): AuthorizedKeysComposeResult {
   const normalized = lines
@@ -64,6 +73,26 @@ export function composeAuthorizedKeysFileContent(lines: readonly string[]): Auth
     }
   }
   return { ok: true, value: `${normalized.join("\n")}\n` };
+}
+
+function isStringRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** Validate + normalize wifi credentials for ESP write without echoing secrets in errors. */
+export function composeWifiCredentialsFileContent(credentials: unknown): WifiCredentialsComposeResult {
+  if (!isStringRecord(credentials)) {
+    return { ok: false, error: "wifi credentials must be a JSON object with ssid and password strings" };
+  }
+  const ssid = credentials["ssid"];
+  if (typeof ssid !== "string" || ssid.trim().length === 0) {
+    return { ok: false, error: "wifi credentials ssid is required" };
+  }
+  const password = credentials["password"];
+  if (typeof password !== "string") {
+    return { ok: false, error: "wifi credentials password is required" };
+  }
+  return { ok: true, value: `${JSON.stringify({ ssid, password })}\n` };
 }
 
 /** Convenience wrapper around the regex. */
@@ -135,7 +164,11 @@ export interface CommandPlan {
 }
 
 export interface FileBackedEspWrite {
-  readonly destination: "/zeta-authorized-keys.pub" | "/zeta-hostname.txt" | "/zeta-creds.enc";
+  readonly destination:
+    | "/zeta-authorized-keys.pub"
+    | "/zeta-hostname.txt"
+    | "/zeta-creds.enc"
+    | "/zeta-wifi-credentials.json";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -161,6 +194,7 @@ export interface FileBackedZflashImagePlanInput {
   readonly authorizedKeysContent?: string;
   readonly hostname?: string;
   readonly credentialBlobPath?: string;
+  readonly wifiCredentials?: WifiCredentials;
 }
 
 export interface FileBackedInlineFile {
@@ -340,6 +374,16 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
     espWrites.push({
       destination: "/zeta-creds.enc",
       sourcePath: credentialBlobPath,
+    });
+  }
+  if (input.wifiCredentials !== undefined) {
+    const wifiCredentials = composeWifiCredentialsFileContent(input.wifiCredentials);
+    if (!wifiCredentials.ok) {
+      return { ok: false, error: wifiCredentials.error };
+    }
+    espWrites.push({
+      content: wifiCredentials.value,
+      destination: "/zeta-wifi-credentials.json",
     });
   }
   if (espWrites.length === 0) {
