@@ -6,12 +6,13 @@ title: installer interactive-login vs baked-in-keys CI-test tension — resolve 
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-07-08
 depends_on:
   - 081KSGS9H0008QG0R0027HJZYH
 composes_with:
   - 081KSGS9H0008QG0R0011BC7T2
-tags: [installer, ci, gh-auth, security, interactive-vs-headless-test, credential-handling, substrate-engineering-tension]
+tags:
+  [installer, ci, gh-auth, security, interactive-vs-headless-test, credential-handling, substrate-engineering-tension]
 ---
 
 ## Problem
@@ -26,10 +27,10 @@ progress as 081KSGS9H0008QG0R001Q2DH2H's nmtui empirical anchor was being filed)
 
 The tension is between two installer authentication modes:
 
-| Mode | What it does | Security property | Testability property |
-|---|---|---|---|
+| Mode                  | What it does                                                                                               | Security property                                                                          | Testability property                                                               |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
 | **Interactive login** | Operator runs `gh auth login` at install time; device-code flow opens browser; types code; OAuth completes | NO credentials ship on ISO; aligned with 081KSGS9H0008QG0R0027HJZYH homelab-mode framework | **Hard to test in CI**: requires human typing code OR mock GH device-code endpoint |
-| **Baked-in keys** | SSH key / PAT pre-staged on ISO at build time | **Violates**: ISO is publicly downloadable; baked credentials = secret leakage | Easy to test (no auth flow needed) |
+| **Baked-in keys**     | SSH key / PAT pre-staged on ISO at build time                                                              | **Violates**: ISO is publicly downloadable; baked credentials = secret leakage             | Easy to test (no auth flow needed)                                                 |
 
 The CI cascade #6 substrate (per 081KSGS9H0008QG0R0011BC7T2) currently has NO path to test
 the interactive-login flow end-to-end without either:
@@ -37,6 +38,19 @@ the interactive-login flow end-to-end without either:
 1. Compromising security (bake test credentials on ISO)
 2. Requiring human typing (defeats the cascade #6 0-human-test purpose)
 3. Skipping auth entirely (leaves a coverage gap in the install flow)
+
+## Progress (2026-07-08)
+
+Decision recorded in
+`docs/DECISIONS/2026-07-08-installer-ci-auth-mock-gh-device-code.md`:
+choose Approach A. The initial in-memory device-code stub landed at
+`src/Core.TypeScript/ci/mock-gh-device-code.ts` with a Bun test proving fixed
+`user_code` issuance and stub-token polling.
+
+Row stays **open** for the remaining integration: wire QEMU/first-session
+installer auth coverage to the mock endpoint, or emit an explicit marker when a
+QEMU slice intentionally skips live `gh auth login`. Production ISO behavior
+must continue to ship zero baked GitHub secrets.
 
 ## Proposed resolution paths
 
@@ -111,9 +125,9 @@ Properties:
 
 ### Approach E — AI agent drives real GitHub OAuth via Playwright (dedicated AI GH accounts)
 
-Operator's contribution 2026-05-26: *"to have it fully tested by ai
+Operator's contribution 2026-05-26: _"to have it fully tested by ai
 likely going to have to preform the step and use paywrite to login
-into github likely going to need its own accounts and such"*.
+into github likely going to need its own accounts and such"_.
 
 AI agent uses Playwright (browser automation) to drive the real GH
 device-code flow end-to-end:

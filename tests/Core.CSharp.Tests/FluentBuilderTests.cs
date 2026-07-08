@@ -30,7 +30,7 @@ public class FluentBuilderTests
             .Build();
 
         input.Send(ZSetModule.ofKeys(FilterMapInputKeys));
-        await c.StepAsync();
+        await c.StepAsync().ConfigureAwait(true);
 
         Assert.Equal(0L, output.Current[10]);
         Assert.Equal(1L, output.Current[20]);
@@ -48,7 +48,7 @@ public class FluentBuilderTests
             .Build();
 
         input.Send(ZSetModule.ofPairs(new[] { (1, 5L), (2, 1L), (3, -2L) }));
-        await c.StepAsync();
+        await c.StepAsync().ConfigureAwait(true);
 
         Assert.Equal(1L, output.Current[1]);
         Assert.Equal(1L, output.Current[2]);
@@ -66,11 +66,11 @@ public class FluentBuilderTests
             .Build();
 
         input.Send(ZSetModule.singleton(7, 1L));
-        await c.StepAsync();
+        await c.StepAsync().ConfigureAwait(true);
         Assert.Equal(1L, output.Current[7]);
 
         input.Send(ZSetModule.singleton(7, 1L));
-        await c.StepAsync();
+        await c.StepAsync().ConfigureAwait(true);
         Assert.Equal(2L, output.Current[7]);
     }
 
@@ -85,7 +85,7 @@ public class FluentBuilderTests
             .Build();
 
         input.Send(ZSetModule.ofKeys(GroupBySumRows));
-        await c.StepAsync();
+        await c.StepAsync().ConfigureAwait(true);
 
         // GroupBySumOp emits one entry per group with weight 1L; the key IS
         // (group, sum), so we verify the expected sum landed in the ZSet.
@@ -114,7 +114,7 @@ public class FluentBuilderTests
 
         left.Send(ZSetModule.ofKeys(JoinLeftKeys));
         right.Send(ZSetModule.ofKeys(JoinRightKeys));
-        await c.StepAsync();
+        await c.StepAsync().ConfigureAwait(true);
 
         Assert.Equal(1L, output.Current[("Alice", 95)]);
         Assert.Equal(1L, output.Current[("Bob", 80)]);

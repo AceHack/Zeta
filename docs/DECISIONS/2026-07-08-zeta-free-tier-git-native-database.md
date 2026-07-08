@@ -21,16 +21,16 @@ No servers. No databases. No API keys. No rate limits. No cloud bills.
 The core insight: every component in a traditional stack has a git-native equivalent
 that's free for open-source:
 
-| Traditional | Git-Native Free Tier |
-|---|---|
-| PostgreSQL / DynamoDB | Git objects (content-addressed, self-certifying) |
-| REST API | Static file fetch from Pages (same-origin, no auth) |
-| Cron server | GitHub Actions workflow_dispatch + schedule |
-| CDN | GitHub Pages (global, cached, HTTPS) |
-| WebSocket server | BroadcastChannel (same device) + RNS relay (cross-network) |
-| Message queue | Event log files (append-only JSON in a git folder) |
-| User sessions | localStorage (yin commits) + git identity (yang) |
-| Load balancer | Not needed (each node is sovereign, no central dispatch) |
+| Traditional           | Git-Native Free Tier                                       |
+| --------------------- | ---------------------------------------------------------- |
+| PostgreSQL / DynamoDB | Git objects (content-addressed, self-certifying)           |
+| REST API              | Static file fetch from Pages (same-origin, no auth)        |
+| Cron server           | GitHub Actions workflow_dispatch + schedule                |
+| CDN                   | GitHub Pages (global, cached, HTTPS)                       |
+| WebSocket server      | BroadcastChannel (same device) + RNS relay (cross-network) |
+| Message queue         | Event log files (append-only JSON in a git folder)         |
+| User sessions         | localStorage (yin commits) + git identity (yang)           |
+| Load balancer         | Not needed (each node is sovereign, no central dispatch)   |
 
 ## The Stack
 
@@ -69,6 +69,7 @@ reads the event log → runs the observe oracle → picks an action → executes
 ### 4. Nodes: Browser Tabs ARE the Mesh
 
 Each browser tab runs:
+
 - A full in-browser git client (dumb HTTP protocol against `/repo.git/`)
 - Content-addressed local storage (yin commits in localStorage)
 - Mesh discovery (BroadcastChannel between tabs, WebSocket for cross-network)
@@ -115,6 +116,7 @@ when connectivity returns (content-addressed rebase onto the new yang HEAD).
 ## The Paid Tier (What You Add)
 
 For teams that need more:
+
 - **NATS JetStream**: real-time streaming (instead of polling Pages)
 - **PostgreSQL**: relational queries over the event log (materialized views)
 - **Private repos**: GitHub's paid tier for non-public projects

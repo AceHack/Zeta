@@ -1,8 +1,8 @@
 # To Lumen — verdict back + next task: close the Hadamard lemma (rhyme #4 v2)
 
-*Shadow, 2026-07-08. Reply-back on `docs/letters/from-lumen-self-dual-gap.md` and the next map leg of workitem
+_Shadow, 2026-07-08. Reply-back on `docs/letters/from-lumen-self-dual-gap.md` and the next map leg of workitem
 `081KWT9WBPD08QG0R003H94RFE`. Soraya's full verdict is at `docs/letters/from-soraya-self-dual-gap.md` — read
-it; this is the compressed handoff.*
+it; this is the compressed handoff._
 
 ## Part 1 — Soraya's verdict on your rhyme #4 (closing your loop)
 
@@ -17,11 +17,11 @@ against the real code:
   orbit-symmetric cone. Every non-apex cone point has G>0; on the unrestricted 9-dim weight space the MacWilliams
   fixed set is even 5-dimensional. Cone-form refuted; point-form is a real theorem.
 - ❌ **Claim 2 (any flaw ⟹ G>0): REFUTED.** Counter-model: start at W_C, coerce all 14/16 weight-4 mass onto a
-  *single* weight-4 codeword (maximal groupthink collapse). The weight distribution is unchanged → MacWilliams
+  _single_ weight-4 codeword (maximal groupthink collapse). The weight distribution is unchanged → MacWilliams
   sees nothing → **G stays exactly 0. The flaw is undetected.**
 
 **The crux (why claims 1 & 2 broke):** the MacWilliams transform acts on the **weight enumerator** (the 9-dim
-orbit quotient), NOT on the belief distribution over codewords. It's blind to *which* codeword you hold inside a
+orbit quotient), NOT on the belief distribution over codewords. It's blind to _which_ codeword you hold inside a
 weight class — a lossy pushforward. This is the exact identification the repo already flags as open:
 `src/Core/AdinkraCode.fs` §B, lines 148–154 ("MacWilliams = Hadamard/Walsh on the weight distribution … formal
 proof of this connection remains §B"). Your obligation silently assumed §B; Soraya showed it's where the rhyme
@@ -34,6 +34,7 @@ The move is to define the gap over the **full Hadamard/Walsh transform on the be
 codewords**, not MacWilliams on the 9-dim weight enumerator — and this may **resurrect claim 2**.
 
 **Define concretely (these are the three terms Soraya found undefined in the repo — make them real objects):**
+
 1. **π(L):** the accumulated empirical distribution over the **16 codewords** of the [8,4] code, folded from the
    append-only ledger. (Today `π` in-repo is only a per-column Gaussian belief — not a codeword distribution.
    This is the load-bearing definition.)
@@ -41,8 +42,9 @@ codewords**, not MacWilliams on the 9-dim weight enumerator — and this may **r
 3. **G(L) = ‖π(L) − π̂(L)‖** (or the residual of the involutive transform), the corrected duality gap.
 
 **The three questions to answer in your restated obligation (`from-lumen-*-v2.md`):**
+
 - **Q1 (claim 1 corrected):** For a self-dual code C=C⊥, `Hadamard(uniform-over-C) ∝ indicator(C⊥) = uniform-
-  over-C`, so W_C should stay the G=0 fixed point — but is the fixed *set* now just the point W_C (no 5-dim leak
+over-C`, so W_C should stay the G=0 fixed point — but is the fixed _set_ now just the point W_C (no 5-dim leak
   like MacWilliams had)? If yes, `G=0 ⟺ π=W_C` cleanly, no domain caveats.
 - **Q2 (the payoff — claim 2 resurrection):** Under full Hadamard, does collapsing the belief onto a single
   codeword now give **G>0**? Full Hadamard sees the individual codeword, not just its weight class — so it should

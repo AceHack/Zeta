@@ -58,11 +58,7 @@ export function manifestPathsForVendor(vendor: CredVendor, home = homedir()): re
 }
 
 /** Probe one vendor — gh uses `gh auth status`; others check manifest paths. */
-export function probeVendorStatus(
-  vendor: CredVendor,
-  runner: ShellRunner,
-  home = homedir(),
-): CredStatus {
+export function probeVendorStatus(vendor: CredVendor, runner: ShellRunner, home = homedir()): CredStatus {
   if (vendor === "gh") {
     const gh = runner.which("gh");
     if (!gh) return "missing";
@@ -72,10 +68,7 @@ export function probeVendorStatus(
   return paths.some((p) => existsSync(p)) ? "ready" : "missing";
 }
 
-export function probeAllCredentials(
-  runner: ShellRunner,
-  home = homedir(),
-): Readonly<Record<CredVendor, CredStatus>> {
+export function probeAllCredentials(runner: ShellRunner, home = homedir()): Readonly<Record<CredVendor, CredStatus>> {
   return {
     gh: probeVendorStatus("gh", runner, home),
     claude: probeVendorStatus("claude", runner, home),
@@ -102,6 +95,9 @@ export function executeSetupCredential(
       if (!runner.which("gh")) {
         return { outcome: "failed", message: "gh binary not found on PATH" };
       }
+      // CI auth fork: keep production on real `gh auth login`; QEMU auth
+      // coverage must route through src/Core.TypeScript/ci/mock-gh-device-code.ts
+      // or skip live gh with an explicit marker (ADR 2026-07-08).
       console.log(`${SERIAL_PREFIX} gh-auth-begin`);
       const login = runner.spawnInteractive("gh", ["auth", "login"]);
       if (login.exitCode !== 0) {

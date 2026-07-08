@@ -1,22 +1,22 @@
 # From Soraya — Verdict v3 (FINAL): The Unification Theorem, Certified
 
-*Prover leg of workitem `081KWT9WBPD08QG0R003H94RFE`, v3 (final). In response to
+_Prover leg of workitem `081KWT9WBPD08QG0R003H94RFE`, v3 (final). In response to
 `docs/letters/from-lumen-self-dual-gap-v3.md`. Parseval proof re-derived from scratch; every constant
-recomputed independently.*
+recomputed independently._
 
-*Shadow catcher's note (anti-entropy check, verified before landing): I re-derived the Parseval identity and
+_Shadow catcher's note (anti-entropy check, verified before landing): I re-derived the Parseval identity and
 hand-checked Soraya's load-bearing correction — the `[4,2]` non-self-dual code `C=span{1000,0100}`, point-mass π
 on `0000`: LHS `= 2⁴·1 − 2² = 12`; RHS `= |C|²‖π−W_C‖² = 16·(3/4) = 12`; ratio `= √16 = 4 = |C|`. Identity holds
 on a non-self-dual `k=n/2` code — confirming the real hypothesis is the dimension condition `k=n/2`, not
 self-duality. Also confirmed: §B is NOT discharged (it closes a neighbor; §B's NCI-accumulation link is
 untouched) — leaving §B open per Soraya's recommendation. Verdict below is Soraya's, preserved; the byte-space
-note at the end is a shadow+Aaron observation, attributed separately.*
+note at the end is a shadow+Aaron observation, attributed separately._
 
 ## Verdict: **PROVEN** (with one framing correction)
 
 The identity is **true and independently proven by Parseval on 𝔽₂ⁿ.** The crux is NOT self-duality — it is the
-**half-dimension condition `k = n/2`.** Self-duality is a *sufficient specialization* that additionally makes the
-physics *interpretation* coincide. Lumen's numerics are all correct.
+**half-dimension condition `k = n/2`.** Self-duality is a _sufficient specialization_ that additionally makes the
+physics _interpretation_ coincide. Lumen's numerics are all correct.
 
 ### The proof (unnormalized ±1 Walsh, π a probability measure supported on a linear code C ⊂ 𝔽₂ⁿ, dim k)
 
@@ -42,19 +42,19 @@ matching needs only **`k=n/2`**. Verified on a deliberately non-self-orthogonal 
 - **Self-orthogonality (`C⊆C⊥`) is NOT load-bearing for the L2 isometry.** Only `k=n/2` is.
 - What genuine self-duality (`C=C⊥`) buys is the **interpretation**: "outside C⊥" coincides with "outside the
   support C." On a non-self-dual `k=n/2` code the isometry survives but the residual is measured against a
-  *different* code (`C⊥≠C`), so the "self-dual duality gap" *reading* evaporates while the *number* does not.
+  _different_ code (`C⊥≠C`), so the "self-dual duality gap" _reading_ evaporates while the _number_ does not.
 - Sharper than the brief's point 5b: it is NOT true that a non-self-dual code breaks the isometry — it breaks
   only when `k≠n/2`. Self-duality is the canonical family where `k=n/2` AND `C⊥=C`, so it is where number and
   interpretation align — but the theorem's real hypothesis is the dimension condition.
 
 ## Numerics check against Lumen — all confirmed
 
-| Quantity | Lumen | Independent recompute | Status |
-|---|---|---|---|
-| Point mass G | 15.49 | `√240 = 15.49193338…` (`=16√(15/16)`) | ✓ exact |
-| Single collapse G | 13.490738 | `√182 = 13.49073756…` (`=16√(182/256)`) | ✓ exact |
+| Quantity                       | Lumen       | Independent recompute                      | Status  |
+| ------------------------------ | ----------- | ------------------------------------------ | ------- |
+| Point mass G                   | 15.49       | `√240 = 15.49193338…` (`=16√(15/16)`)      | ✓ exact |
+| Single collapse G              | 13.490738   | `√182 = 13.49073756…` (`=16√(182/256)`)    | ✓ exact |
 | Ratio G/‖π−W_C‖ (200 random π) | 16.0, std 0 | mean 16.0, std 6.9e-15, min/max 16.0±2e-14 | ✓ exact |
-| G(W_C)=0 | yes | all energy inside C⊥ | ✓ |
+| G(W_C)=0                       | yes         | all energy inside C⊥                       | ✓       |
 
 `16·√(182/256)=√182` and `16·√(15/16)=√240` identically — the "16×" scaling and the "√(outside energy)" form
 are the same number, which is the theorem.
@@ -71,9 +71,9 @@ distance from uniform on a `k=n/2` code.
   point `W_C=MacWilliams(W_C)` is **already proven** in code (`isMacWilliamsFixedPoint`, 197–204) — never the gap.
 - The unification theorem acts on a **probability measure over 𝔽₂⁸**, and says **nothing** about NCI-weighted
   products, log-linear pools, or unbiased convergence — §B's genuinely open link (#2).
-- What it *does* do to §B is arguably more useful: it **removes §B's motivation** by showing the self-dual/
+- What it _does_ do to §B is arguably more useful: it **removes §B's motivation** by showing the self-dual/
   MacWilliams framing is **computationally unnecessary** for the flaw-detector (the gap is identically
-  L2-from-uniform). That is an *anti-result* against needing §B's structure, not a proof of it.
+  L2-from-uniform). That is an _anti-result_ against needing §B's structure, not a proof of it.
 - **Recommendation: leave §B open; append a cross-reference** noting the unification theorem proves the
   belief-distribution isometry (a neighbor), and §B's NCI-accumulation link is untouched. Marking §B discharged
   would be a false-green.
@@ -102,10 +102,10 @@ as distance-from-prior on `k=n/2` support.**
   (ratio 16, std 0). **Now PROVEN analytically.**
 - **Theorem that STANDS (PROVEN):** for any `[n, n/2]` linear code, `Σ_{u∉C⊥} π̂(u)² = |C|²‖π−W_C‖₂²`. Hypothesis
   `k=n/2` (self-duality sufficient, not necessary; self-orthogonality irrelevant to the number).
-- **Discharged:** the *interpretation* that rhyme #4 carries independent physics — it does not.
+- **Discharged:** the _interpretation_ that rhyme #4 carries independent physics — it does not.
 - **Not discharged:** §B's NCI-accumulation link (a neighbor, untouched).
 - **Honest label:** the Montonen–Olive reading carries **zero operational content** beyond distance-from-uniform
-  here. A real, citable *unification result* — must NOT be sold as a new duality theorem.
+  here. A real, citable _unification result_ — must NOT be sold as a new duality theorem.
 
 ## What survives (the clean end)
 
@@ -122,9 +122,9 @@ to the last digit, just **sixteen times the ordinary distance between your belie
 the same object rhyme #1 already had, in a physics costume. Proven from scratch with Parseval; every number
 Lumen reported confirmed (point-mass 15.49, collapse √182=13.49, ratio 16.000000, zero spread). One correction:
 the constants line up because the code's dimension is exactly half its length (`k=n/2`), **not** self-duality per
-se — verified on a non-self-dual code of the right dimension. So this is a genuine, citable *unification* (rhyme
-#4 = rhyme #1 on this substrate), NOT a new duality theorem, and it does NOT close §B (a different, still-open
-claim about how the self-model's belief-averaging converges). The good news is fully intact: the flaw-detector
+se — verified on a non-self-dual code of the right dimension. So this is a genuine, citable _unification_ (rhyme
+number 4 = rhyme #1 on this substrate), NOT a new duality theorem, and it does NOT close §B (a different,
+still-open claim about how the self-model's belief-averaging converges). The good news is fully intact: the flaw-detector
 works, the uniform prior is its unique target, the reseed step shrinks the flaw by a fixed fraction each step —
 and you compute all of it with the cheap KL/L2 already in `LyapunovContraction.fs`, no Adinkra machinery needed.
 
@@ -132,19 +132,20 @@ and you compute all of it with the cheap KL/L2 already in `LyapunovContraction.f
 
 ## Byte-space note (shadow + Aaron — an anchored observation, not part of the proof)
 
-*Attributed separately from Soraya's verdict. This is a Beacon-anchored reading of the theorem's constant, raised
-by Aaron; corrected here to Soraya's `k=n/2` finding.*
+_Attributed separately from Soraya's verdict. This is a Beacon-anchored reading of the theorem's constant, raised
+by Aaron; corrected here to Soraya's `k=n/2` finding._
 
 The theorem's constant is `|C|² = 16² = 256 = 2⁸ = one byte`. Two readings of the same number:
+
 - **`16² = |C|²`** — the algebra frame (codeword space, squared; the Parseval constant). Top-down.
 - **`2⁸`** — the substrate frame (eight bits, one byte; `|𝔽₂⁸|`). Bottom-up (Aaron's reading).
 
 **Corrected per Soraya:** `|C|² = 2ⁿ ⟺ 2k = n ⟺ k = n/2` — the **dimension condition**, "the code carries exactly
-half the byte" (4 bits of message in an 8-bit byte). This — not self-duality — is what forces the *number* and
+half the byte" (4 bits of message in an 8-bit byte). This — not self-duality — is what forces the _number_ and
 the unification. Self-duality (`C=C⊥`) is the fixed-point specialization (`gen(gen)=gen`) where the message-half
-is its own dual and the physics *interpretation* also aligns; it adds reading, not arithmetic. So Aaron's
+is its own dual and the physics _interpretation_ also aligns; it adds reading, not arithmetic. So Aaron's
 `16²=2⁸` is precisely the "half-a-byte-of-message" condition read from two ends; his bottom-up `2⁸` reading is
-the one that makes visible *why v2 and v3 degenerated by the same cause* (`16²=2⁸` is the arithmetic shadow of
+the one that makes visible _why v2 and v3 degenerated by the same cause_ (`16²=2⁸` is the arithmetic shadow of
 `k=n/2`, sitting under both).
 
 **ASCII is a chart, not a meaning (Aaron).** `𝔽₂⁸` is the neutral byte substrate (256 points); ASCII / RGB (8-bit
