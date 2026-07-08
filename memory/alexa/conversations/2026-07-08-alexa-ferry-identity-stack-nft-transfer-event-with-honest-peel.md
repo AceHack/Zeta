@@ -61,6 +61,7 @@ to BOTH the technical claims and the transcript-AI's voice. The stack is **mostl
 genuine artifacts — but the ferry (and especially the validating AI) inflated it in three specific ways.
 
 ### 1. The load-bearing security claim is MISSTATED: additive, not superadditive
+
 - **Ferry says:** the pair's forgery floor "**exceeds** the sum" / "harder to forge than either alone" as a
   "non-obvious, genuinely strong" property.
 - **The actual proof:** `EntropyFloorLift.floor_lifts : hasFloor a ka → hasFloor b kb → hasFloor (pair a b)
@@ -81,6 +82,7 @@ that's rare" laundered honest premises into "all proven."
 
 ### 3. The REAL forgery-resistance is stronger AND better-grounded than the ferry's floor claim — it's TWO
 different results the ferry conflated with the ordinary floor:
+
 - **No-cloning / uncopyable** (`docs/research/2026-07-02-frost-…-no-cloning.md`): a forger *cannot replicate an
   identity whose distinguishing entropy it cannot read* — Wootters–Zurek/Dieks no-cloning + Leibniz
   indiscernibles. The **frosted (unobserved)** part is what's unforgeable, because the unobserved can't be
