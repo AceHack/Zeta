@@ -13,11 +13,10 @@
  *   5. Cluster joining (new node)
  *
  * PoC scope: declarative scenario definitions + dispatcher contract +
- * status field for partial implementation. Scenarios 1 + 2 can compose
- * with existing `src/Core.TypeScript/ci/qemu-full-install-test.ts` (081KSGS9H0008QG0R0011BC7T2 Slice 1)
- * substrate today; scenarios 3-5 require state-preservation between QEMU
- * boots which the existing harness does not have — marked as
- * "scaffolded" pending implementation.
+ * status field for partial implementation. Scenarios 1–4 are
+ * `composes-with-existing` (1→boot audit, 2→qemu-full-install-test,
+ * 3→retention runtime, 4→path-fork runtime). Scenario 5 remains
+ * scaffolded pending multi-VM orchestration.
  *
  * Composes with:
  *   - src/Core.TypeScript/ci/qemu-full-install-test.ts (existing QEMU full-install starter)

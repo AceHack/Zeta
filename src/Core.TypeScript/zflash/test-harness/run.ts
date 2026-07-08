@@ -15,16 +15,14 @@
  *   --dry-run   Validate scenarios + report dispatcher plan without
  *               executing QEMU. Exit 0 on valid plan, non-zero on
  *               misconfiguration.
- *   --scenario  Run one scenario by id. For composes-with-existing
- *               scenarios, delegates to tools/ci/qemu-full-install-test.ts
- *               or tools/ci/qemu-boot-test.ts. For scenario 3, emits the
- *               QEMU snapshot/restart plan but still fails closed until
- *               the real process runner is connected to the execution
- *               contract. Scenario 4 emits the path-fork runtime plan
- *               and fails closed until the executor + identity comparison
- *               proof lands. Other scaffolded scenarios report "not yet
- *               implemented" with the implementation substrate path
- *               documented.
+ *   --scenario  Run one scenario by id.
+ *               - initial-format → audit + zflash bake + qemu-boot-test
+ *               - boot-cluster-up → qemu-full-install-test.ts
+ *               - reformat-with-retention → runRetentionRuntime
+ *                 (ZFLASH_QEMU_RETENTION_EXECUTE=1 to execute)
+ *               - reformat-from-scratch → runPathForkRuntime
+ *                 (ZFLASH_QEMU_PATH_FORK_EXECUTE=1 to execute)
+ *               - cluster-joining → skipped (multi-VM pending)
  *   --all       Run all 5 scenarios in orderIndex order; gate failures
  *               skip dependent scenarios.
  *
@@ -229,14 +227,19 @@ function dryRunPlanMessage(scenario: Scenario): string {
   if (scenario.id === "initial-format") {
     return "would run audit-installer-iso-content.ts + zflash-file-backed --test bake + qemu-boot-test.ts --usb-image <zflash-boot.img>";
   }
-  if (scenario.status === "composes-with-existing") {
-    return `would delegate to existing tools/ci/ substrate: ${scenario.composesWith[0]}`;
-  }
+  // Scenario-specific plans must win over the generic composes-with-existing
+  // delegate message — otherwise retention/path-fork look like full-install.
   if (scenario.id === "reformat-with-retention") {
     return "would generate QEMU snapshot/restart retention plan; auto-prepare zflash boot image when execute opt-in is set";
   }
   if (scenario.id === "reformat-from-scratch") {
     return "would generate QEMU path-fork plan for migrate-existing-creds + fresh-cluster; auto-prepare zflash boot image when execute opt-in is set";
+  }
+  if (scenario.id === "boot-cluster-up") {
+    return `would delegate to existing tools/ci/ substrate: ${scenario.composesWith[0]}`;
+  }
+  if (scenario.status === "composes-with-existing") {
+    return `would delegate to existing tools/ci/ substrate: ${scenario.composesWith[0]}`;
   }
   return `would report scaffolded — implementation pending; composes-with: ${scenario.composesWith.join(", ")}`;
 }
@@ -311,9 +314,46 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
   };
 }
 
+function retentionRuntimeOptionsFromEnv(): RetentionRuntimeOptions {
+  const timeoutMs = retentionTimeoutMsFromEnv();
+  return timeoutMs === undefined
+    ? { execute: retentionExecutionEnabledFromEnv() }
+    : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
+}
+
+function pathForkRuntimeOptionsFromEnv(): PathForkRuntimeOptions {
+  const timeoutMs = pathForkTimeoutMsFromEnv();
+  return timeoutMs === undefined
+    ? {
+        execute: pathForkExecutionEnabledFromEnv(),
+        bootstrap: pathForkBootstrapEnabledFromEnv(),
+      }
+    : {
+        execute: pathForkExecutionEnabledFromEnv(),
+        bootstrap: pathForkBootstrapEnabledFromEnv(),
+        timeoutMs,
+      };
+}
+
 function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResult {
   if (scenario.id === "initial-format") {
     return runInitialFormatScenario(isoPath);
+  }
+  // Scenarios 3/4 were promoted to composes-with-existing but keep dedicated
+  // runtimes — do NOT fall through to qemu-full-install-test (CI workflow_dispatch
+  // sets ZFLASH_QEMU_*_EXECUTE=1 for these paths).
+  if (scenario.id === "reformat-with-retention") {
+    return runRetentionRuntime(isoPath, retentionRuntimeOptionsFromEnv());
+  }
+  if (scenario.id === "reformat-from-scratch") {
+    return runPathForkRuntime(isoPath, pathForkRuntimeOptionsFromEnv());
+  }
+  if (scenario.id !== "boot-cluster-up") {
+    return {
+      id: scenario.id,
+      status: "failed",
+      message: `composes-with-existing scenario "${scenario.id}" has no dedicated harness mapping`,
+    };
   }
   const harnessPath = QEMU_FULL_INSTALL_TEST;
   const absHarnessPath = resolve(REPO_ROOT, harnessPath);
@@ -753,29 +793,6 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
     case "composes-with-existing":
       return runComposingScenario(scenario, isoPath);
     case "scaffolded":
-      if (scenario.id === "reformat-with-retention") {
-        const timeoutMs = retentionTimeoutMsFromEnv();
-        const options =
-          timeoutMs === undefined
-            ? { execute: retentionExecutionEnabledFromEnv() }
-            : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
-        return runRetentionRuntime(isoPath, options);
-      }
-      if (scenario.id === "reformat-from-scratch") {
-        const timeoutMs = pathForkTimeoutMsFromEnv();
-        const pathForkOptions =
-          timeoutMs === undefined
-            ? {
-                execute: pathForkExecutionEnabledFromEnv(),
-                bootstrap: pathForkBootstrapEnabledFromEnv(),
-              }
-            : {
-                execute: pathForkExecutionEnabledFromEnv(),
-                bootstrap: pathForkBootstrapEnabledFromEnv(),
-                timeoutMs,
-              };
-        return runPathForkRuntime(isoPath, pathForkOptions);
-      }
       if (scenario.id === "cluster-joining") {
         return {
           id: "cluster-joining",
