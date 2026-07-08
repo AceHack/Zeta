@@ -52,9 +52,12 @@ let goldenVectors =
         { StringProj = "aaron/desktop@machine-b"
           SpiffeUri = "spiffe://zeta/persona/aaron/cell/desktop@machine-b"
           ExpectedActor = { Persona = PersonaId.Aaron; Cell = { Surface = Some "desktop"; Instance = None; Node = Some "machine-b" } } }
-        { StringProj = "soraya@verifier-node"
-          SpiffeUri = "spiffe://zeta/persona/soraya@verifier-node"
-          ExpectedActor = { Persona = PersonaId.Soraya; Cell = { Surface = None; Instance = None; Node = Some "verifier-node" } } }
+        // verifier-node is a SURFACE (registry/cell-surfaces.yaml), not a node —
+        // vector corrected to match the TS oracle (phase 4, 2026-07-04);
+        // node-without-surface moved to the invalid class below.
+        { StringProj = "soraya/verifier-node"
+          SpiffeUri = "spiffe://zeta/persona/soraya/cell/verifier-node"
+          ExpectedActor = { Persona = PersonaId.Soraya; Cell = { Surface = Some "verifier-node"; Instance = None; Node = None } } }
     ]
 
 [<Fact>]
@@ -110,3 +113,25 @@ let ``Invalid SPIFFE URI formats return None`` () =
     Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/invalid/cli" = None)
     Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell" = None)
     Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/cli/fg/extra" = None)
+
+[<Fact>]
+let ``Invalid vectors — byte-lock floor rejection class (TS oracle parity)`` () =
+    // Mirrors INVALID_VECTORS in src/Core.TypeScript/identity/actor-ref.ts.
+    // Every oracle port MUST reject each of these.
+    let invalidVectors =
+        [ "otto/COWORK"       // uppercase segment
+          "otto//fg"          // empty surface
+          "otto/cli@a@b"      // multiple @
+          "otto@machine-a"    // node without surface
+          "kenji/cli"         // unknown persona
+          "otto/cli/fg/extra" // too many segments
+          "otto-cowork" ]     // fused composite — the treaty's core prohibition
+    for bad in invalidVectors do
+        Assert.True(ActorRef.parse bad = None, sprintf "expected parse to reject %s" bad)
+
+[<Fact>]
+let ``Invalid SPIFFE vectors — same rejection class through the URI port`` () =
+    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/soraya@verifier-node" = None)
+    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/cli@a@b" = None)
+    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/COWORK" = None)
+    Assert.True(ActorRef.parseSpiffe "spiffe://zeta/persona/otto/cell/cli/fg@UPPER" = None)
