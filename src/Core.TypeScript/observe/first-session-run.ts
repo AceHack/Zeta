@@ -3,7 +3,7 @@
  * first-session-run.ts — post-login choose-your-own-adventure conductor.
  *
  * Invoked from NixOS profile.d on first interactive zeta login (slice 3).
- * Presents a numbered menu; optional --llm uses local Ollama chooser.
+ * Presents a numbered menu; optional --llm uses the local Ollama chooser.
  *
  * Usage:
  *   bun src/Core.TypeScript/observe/first-session-run.ts
@@ -148,7 +148,8 @@ function printMenu(session: NodeSessionState): void {
   const menu = buildFirstSessionMenu(session);
   console.log("");
   console.log("  ╔══════════════════════════════════════════════════════════╗");
-  console.log("  ║  Zeta first session — choose your credential adventure   ║");
+  console.log("  ║  Zeta first login — choose what to set up                ║");
+  console.log("  ║  GitHub is load-bearing; cloud helpers are optional      ║");
   console.log("  ╚══════════════════════════════════════════════════════════╝");
   console.log("");
   for (let i = 0; i < menu.length; i++) {
@@ -175,7 +176,7 @@ async function pickAction(
   printMenu(session);
   const rl = createInterface({ input, output });
   try {
-    const answer = await rl.question("  Pick a number (or Enter for recommended): ");
+    const answer = await rl.question("  Press Enter for recommended, or pick a number: ");
     const menu = buildFirstSessionMenu(session);
     if (answer.trim() === "") {
       return firstSessionOracle(session);

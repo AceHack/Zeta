@@ -37,14 +37,21 @@ const VENDORS: readonly CredVendor[] = ["gh", "claude", "codex", "gemini"];
 
 const OPTIONAL_VENDORS: readonly CredVendor[] = ["claude", "codex", "gemini"];
 
+const VENDOR_LABELS: Readonly<Record<CredVendor, string>> = {
+  gh: "GitHub sign-in (gh)",
+  claude: "Claude Code cloud helper (claude)",
+  codex: "OpenAI Codex cloud helper (codex)",
+  gemini: "Google Gemini cloud helper (gemini)",
+};
+
 export const GH_REGISTER_REASON =
-  "GitHub login registers this node in the cluster catalog (load-bearing for self-register)";
+  "load-bearing for node self-register in the cluster catalog";
 
 export const OPTIONAL_CRED_REASON: Readonly<Record<CredVendor, string>> = {
   gh: GH_REGISTER_REASON,
-  claude: "Optional — cloud assistant (Anthropic Claude Code)",
-  codex: "Optional — cloud assistant (OpenAI Codex)",
-  gemini: "Optional — cloud assistant (Google Gemini)",
+  claude: "optional cloud helper; skip safely and add later",
+  codex: "optional cloud helper; skip safely and add later",
+  gemini: "optional cloud helper; skip safely and add later",
 };
 
 export function defaultNodeSession(): NodeSessionState {
@@ -103,7 +110,7 @@ export function buildFirstSessionMenu(session: NodeSessionState): FirstSessionAc
       candidates.push({
         kind: "skip_credential",
         vendor,
-        reason: `Skip ${vendor} for now — stay on local LLM / add later`,
+        reason: `skip ${VENDOR_LABELS[vendor]} for now; stay local and add later`,
       });
     }
   }
@@ -112,24 +119,24 @@ export function buildFirstSessionMenu(session: NodeSessionState): FirstSessionAc
     candidates.push({
       kind: "skip_credential",
       vendor: "gh",
-      reason: "Skip GitHub for now — node self-register will wait until gh is ready",
+      reason: "node self-register will wait until GitHub sign-in is ready",
     });
   }
 
   if (optionalStillMissing(session).length > 0) {
     candidates.push({
       kind: "skip_optional_credentials",
-      reason: "Skip all optional cloud assistants — local LLM + observe only",
+      reason: "Skip optional cloud helpers; local LLM + observe only",
     });
     candidates.push({
       kind: "use_local_llm_only",
-      reason: "Use local LLM only (Ollama) — no cloud vendor logins this session",
+      reason: "Use local LLM only (Ollama); no cloud helper sign-ins this session",
     });
   }
 
   candidates.push({
     kind: "complete_first_session",
-    reason: "Done with setup — drop to normal observe loop",
+    reason: "Finish first login; drop to the normal observe loop",
   });
 
   const sameLead = (a: FirstSessionAction): boolean =>
@@ -143,9 +150,9 @@ export function buildFirstSessionMenu(session: NodeSessionState): FirstSessionAc
 export function firstSessionLabel(action: FirstSessionAction): string {
   switch (action.kind) {
     case "setup_credential":
-      return `Set up ${action.vendor} (${action.reason})`;
+      return `Set up ${VENDOR_LABELS[action.vendor]} (${action.reason})`;
     case "skip_credential":
-      return `Skip ${action.vendor} (${action.reason})`;
+      return `Skip ${VENDOR_LABELS[action.vendor]} (${action.reason})`;
     case "skip_optional_credentials":
       return action.reason;
     case "use_local_llm_only":
@@ -204,8 +211,9 @@ export function canSelfRegister(session: NodeSessionState): boolean {
 
 const FIRST_SESSION_CHOOSER_INSTRUCTION =
   "You are the local LLM conductor on a fresh Zeta cluster node. The operator chooses " +
-  "which credentials to set up — nothing is forced. GitHub (gh) is needed for cluster " +
-  "self-register; claude/codex/gemini are optional. Local LLM-only is always valid.";
+  "which credentials to set up; nothing is forced. GitHub sign-in (gh) is load-bearing " +
+  "for cluster self-register. Claude/Codex/Gemini are optional cloud helpers; local " +
+  "LLM-only is always valid.";
 
 /** Context string for chooseIndex — mirrors describeWorld in observe.ts. */
 export function describeFirstSession(session: NodeSessionState): string {

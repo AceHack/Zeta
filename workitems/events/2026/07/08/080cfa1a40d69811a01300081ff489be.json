@@ -1,0 +1,14 @@
+{
+  "id": "080cfa1a40d69811a01300081ff489be",
+  "at": "2026-07-08T19:50:26.771Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX1MG6PK08QG0R0014X6T3J",
+    "type": "task",
+    "title": "USB S6 first-login UX co-design draft (menu copy + first-session string alignment)",
+    "slug": "usb-s6-first-login-ux-co-design-draft-menu-copy-first-sessio",
+    "priority": "P2",
+    "filename": "081KX1MG6PK08QG0R0014X6T3J-usb-s6-first-login-ux-co-design-draft-menu-copy-first-sessio.md"
+  }
+}
