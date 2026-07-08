@@ -5,12 +5,12 @@ Last refreshed: 2026-07-08
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none for QEMU phase-3 (S4 green); physical S6 UX + WiFi (081KSGS9H0008QG0R003V23XNZ) out-of-band.
-Next concrete action: paper/mock-terminal review of S6 copy (Aaron decisions
-2026-07-08 recorded in [S6-UX-PLACEHOLDER.md](./S6-UX-PLACEHOLDER.md): plain
-wording OK to iterate; local default after gh; cloud only after ask; regular-person
-audience; gh = first target not forever). Then physical boot before clearing S6;
-slice 5 CODEOWNERS when teams confirmed; system mise pinned via Nix overlay
-(same release as `tools/setup/linux.sh`).
+Next concrete action: **physical boot** when ready (paper/mock review accepted
+2026-07-08 — flow GitHub → local → done; skip-gh must explain continue-later via
+local or SSH). Longer-term (not blocking S6): desktop app UI over NixOS, then
+microkernel UI. See [S6-UX-PLACEHOLDER.md](./S6-UX-PLACEHOLDER.md). Slice 5
+CODEOWNERS when teams confirmed; system mise pinned via Nix overlay (same
+release as `tools/setup/linux.sh`).
 
 ## Why This Exists
 

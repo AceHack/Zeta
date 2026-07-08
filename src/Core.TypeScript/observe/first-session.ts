@@ -52,6 +52,10 @@ const VENDOR_LABELS: Readonly<Record<CredVendor, string>> = {
 export const GH_REGISTER_REASON =
   "needed so this computer can join the cluster (first target today; more providers later)";
 
+/** Shown when the operator skips GitHub — how to finish later without being stuck. */
+export const GH_SKIP_CONTINUE_LATER =
+  "you can finish GitHub later on this computer (local console) or over SSH, then join the cluster";
+
 export const OPTIONAL_CRED_REASON: Readonly<Record<CredVendor, string>> = {
   gh: GH_REGISTER_REASON,
   claude: "optional cloud helper — only if you asked for cloud setup",
@@ -121,7 +125,7 @@ export function buildFirstSessionMenu(session: NodeSessionState): FirstSessionAc
     candidates.push({
       kind: "skip_credential",
       vendor: "gh",
-      reason: "this computer will wait to join the cluster until GitHub sign-in is ready",
+      reason: GH_SKIP_CONTINUE_LATER,
     });
   }
 

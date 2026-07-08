@@ -22,8 +22,9 @@ composes_with: []
 - Cloud helpers: only after operator asks; local is default after gh.
 - Audience: regular-person / non-tech (often neurodivergent) AI-capable minds.
 - gh: first-target required provider today; not the only future provider.
+- Paper/mock flow **accepted**; skip-gh must explain continue-later (local or SSH).
+- Longer-term (not S6 gate): desktop app UI over NixOS, then microkernel UI.
 
 ## Still open (human-gated)
 
-- Paper/mock-terminal review
-- Physical boot on one cluster node
+- Physical boot on one cluster node (operator: not ready yet)

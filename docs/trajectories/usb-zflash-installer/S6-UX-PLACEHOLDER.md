@@ -1,7 +1,7 @@
 # S6 — first-login UX co-design draft
 
-Status: draft / co-design — Aaron decisions recorded 2026-07-08; still not
-signed off for physical boot (S6 remains human-gated)
+Status: paper/mock review **accepted** (Aaron 2026-07-08) — still not signed off
+for physical boot (S6 remains human-gated)
 Last refreshed: 2026-07-08
 Parent: [FIRST-SESSION.md](./FIRST-SESSION.md)
 
@@ -42,6 +42,13 @@ operator-facing tone.
    self-register. It is **not** the only future provider: other clouds and a
    true local-only path are planned; do not hard-code "GitHub forever" into the
    product story — only into today's first-boot path.
+5. **Paper/mock flow accepted** (Aaron 2026-07-08 evening): GitHub → local → done
+   is the happy path; cloud only after ask. One small add: if they **skip GitHub**,
+   tell them how to continue later (local console or SSH) so they are not stuck.
+6. **Longer-term surface (not S6 exit criteria):** eventually boot into our own
+   UI/UX, not just the command line — **desktop app first** (over NixOS), then
+   eventually our **microkernel** for everything. CLI first-login is the current
+   substrate; the interaction contract should stay portable to that UI later.
 
 ## Draft interaction contract
 
@@ -53,7 +60,7 @@ plain language; short tool names stay secondary.
 | When | Action | Primary label |
 |------|--------|---------------|
 | Start | Set up GitHub | Set up GitHub sign-in — needed so this computer can join the cluster |
-| Start | Skip GitHub | Skip GitHub for now — joining the cluster waits |
+| Start | Skip GitHub | Skip GitHub for now — finish later on this computer (local) or over SSH |
 | After GitHub | Stay local (default) | Stay on this computer (local) — recommended |
 | After GitHub | Ask for cloud | Show optional cloud helpers |
 | After GitHub | Finish | Finish first login |
@@ -67,6 +74,16 @@ plain language; short tool names stay secondary.
 3. Done.
 
 Cloud helpers are a deliberate second beat, not part of the happy path.
+
+### Skip-GitHub continue-later (required copy)
+
+If the operator skips GitHub, the menu reason **and** a short post-choice note
+must say they can finish later:
+
+- on this computer (local console / re-run first-login helper), or
+- over SSH, then join the cluster once GitHub is ready.
+
+Do not leave "skipped" as a dead end with no next step.
 
 ### Tone (on-screen)
 
@@ -87,16 +104,23 @@ model failure falls back to the oracle recommendation.
 ## Exit criteria (before signing off S6)
 
 - [x] Open questions answered by operator (2026-07-08)
-- [ ] Copy reviewed on paper / mock terminal with operator + co-designer
-- [ ] `first-session-run.ts` strings match signed-off copy after paper pass
-- [ ] Physical boot on one cluster node — no QEMU-only proof
-- [ ] Paper review notes incorporated or explicitly rejected
-- [ ] RESUME.md blocker cleared
+- [x] Copy reviewed on paper / mock terminal with operator (flow accepted; skip-gh
+  continue-later added)
+- [ ] Physical boot on one cluster node — no QEMU-only proof (operator: not ready yet)
+- [ ] Paper review notes incorporated or explicitly rejected (skip-gh note landed;
+  further tweaks welcome)
+- [ ] RESUME.md blocker cleared (after physical boot)
+
+## Longer-term (out of S6 scope — track, do not block)
+
+1. Desktop app UI/UX over NixOS (first non-CLI surface).
+2. Eventually microkernel-native UI for everything.
+3. Keep first-login **interaction contract** (gh-first today, local default, cloud
+   after ask, skip-with-continue-later) portable across CLI → desktop → microkernel.
 
 ## Society validation
 
 S6 remains **tier S6** in [FIRST-SESSION.md](./FIRST-SESSION.md) — human gate,
 not a PR block. CI keeps phase-3 serial markers on scenario 2 push.
 
-This draft records binding co-design decisions and wires the local-default /
-ask-for-cloud menu. Physical boot plus paper review remain exit criteria.
+Paper/mock review accepted the flow. Physical boot remains the remaining S6 gate.

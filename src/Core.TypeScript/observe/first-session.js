@@ -5,7 +5,7 @@ const VENDORS = ["gh", "claude", "codex", "gemini"], OPTIONAL_VENDORS = ["claude
   codex: "Codex (cloud)",
   gemini: "Gemini (cloud)"
 };
-export const GH_REGISTER_REASON = "needed so this computer can join the cluster (first target today; more providers later)", OPTIONAL_CRED_REASON = {
+export const GH_REGISTER_REASON = "needed so this computer can join the cluster (first target today; more providers later)", GH_SKIP_CONTINUE_LATER = "you can finish GitHub later on this computer (local console) or over SSH, then join the cluster", OPTIONAL_CRED_REASON = {
   gh: GH_REGISTER_REASON,
   claude: "optional cloud helper \u2014 only if you asked for cloud setup",
   codex: "optional cloud helper \u2014 only if you asked for cloud setup",
@@ -59,7 +59,7 @@ export function buildFirstSessionMenu(session) {
     candidates.push({
       kind: "skip_credential",
       vendor: "gh",
-      reason: "this computer will wait to join the cluster until GitHub sign-in is ready"
+      reason: GH_SKIP_CONTINUE_LATER
     });
   }
   if (session.credentials.gh !== "missing" && !session.cloudHelpersOffered) {

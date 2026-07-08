@@ -43,9 +43,11 @@ describe("first-session \u2014 credential setup oracle", () => {
   });
 });
 describe("first-session \u2014 setup menu", () => {
-  it("includes skip gh with register warning while gh missing", () => {
-    const menu = buildFirstSessionMenu(defaultNodeSession()), kinds = menu.map((a) => a.kind === "skip_credential" && a.vendor === "gh" ? "skip-gh" : a.kind);
-    expect(kinds).toContain("skip-gh");
+  it("includes skip gh with continue-later guidance while gh missing", () => {
+    const menu = buildFirstSessionMenu(defaultNodeSession()), skipGh = menu.find((a) => a.kind === "skip_credential" && a.vendor === "gh");
+    expect(skipGh).toBeDefined();
+    expect(skipGh?.reason).toContain("local console");
+    expect(skipGh?.reason).toContain("SSH");
     expect(menu[0]?.kind).toBe("setup_credential");
     if (menu[0]?.kind === "setup_credential")
       expect(menu[0].vendor).toBe("gh");

@@ -9,6 +9,7 @@ import {
   firstSessionLabel,
   firstSessionOracle,
   firstSessionWithLlm,
+  GH_SKIP_CONTINUE_LATER,
   simulateFirstSession
 } from "./first-session.js";
 import {
@@ -141,7 +142,15 @@ async function applyAction(session, action, opts) {
   }
   if (opts.dryRun)
     logSerial(`${SERIAL_PREFIX} dry-run ${action.kind}`);
-  return simulateFirstSession(session, action);
+  const next = simulateFirstSession(session, action);
+  if (action.kind === "skip_credential" && action.vendor === "gh") {
+    console.log("");
+    console.log("  Skipped GitHub for now.");
+    console.log(`  Continue later: ${GH_SKIP_CONTINUE_LATER}.`);
+    console.log("  Tip: on this machine run the first-login helper again, or SSH in and set up GitHub there.");
+    console.log("");
+  }
+  return next;
 }
 export async function runFirstSession(opts) {
   if (existsSync(opts.markerPath) && !opts.demo && !opts.dryRun) {
