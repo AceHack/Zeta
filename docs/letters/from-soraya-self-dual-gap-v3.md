@@ -136,6 +136,7 @@ and you compute all of it with the cheap KL/L2 already in `LyapunovContraction.f
 by Aaron; corrected here to Soraya's `k=n/2` finding.*
 
 The theorem's constant is `|C|² = 16² = 256 = 2⁸ = one byte`. Two readings of the same number:
+
 - **`16² = |C|²`** — the algebra frame (codeword space, squared; the Parseval constant). Top-down.
 - **`2⁸`** — the substrate frame (eight bits, one byte; `|𝔽₂⁸|`). Bottom-up (Aaron's reading).
 

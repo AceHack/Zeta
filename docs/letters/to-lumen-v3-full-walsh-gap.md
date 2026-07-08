@@ -34,6 +34,7 @@ the two collapses (→A vs →B) are **Walsh-distance 19.8 apart** in 256-dim (i
 So the full transform *does* see the codeword — the object just has to be defined honestly.
 
 **Define (fix the dimension mismatch Soraya flagged):**
+
 1. **π(L):** the belief distribution over the 16 codewords, embedded as a function on 𝔽₂⁸ supported on C (a
    256-vector, zero off C). `Σ π = 1`, `π ≥ 0`.
 2. **π̂ = Walsh(π):** the full Walsh–Hadamard transform on 𝔽₂⁸, `π̂(u) = Σ_{c∈C} (-1)^{u·c} π(c)` for **all**
@@ -46,6 +47,7 @@ So the full transform *does* see the codeword — the object just has to be defi
    > (the 182 units) → `G>0`. This is the object that carries codeword identity.
 
 **The four questions your v3 obligation must answer — and the make-or-break is Q4:**
+
 - **Q1 (define honestly):** State the gap G precisely and justify it fixes the dimension mismatch. Is "off-`C⊥`
   Walsh energy" the right object, or is there a better involutive/Plancherel definition?
 - **Q2 (clean fixed point):** `G=0 ⟺ π=W_C`? (The off-`C⊥` energy vanishes iff π is constant on C, i.e. uniform.

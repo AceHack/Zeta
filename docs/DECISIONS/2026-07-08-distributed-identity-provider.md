@@ -40,6 +40,7 @@ that entropy is committed to the heat ledger. You can't un-heartbeat.
 ### Layer 2: Pairwise Decorrelation (proving distinctness)
 
 Two agents compare their heartbeat streams. The CHSH inequality gives the bound:
+
 - S ≤ 2: fully independent (classical, no correlation)
 - 2 < S ≤ 2√2: honest coordination (quantum-allowed, working together)
 - S > 2√2: one process wearing two faces (sybil — impossible for distinct selves)

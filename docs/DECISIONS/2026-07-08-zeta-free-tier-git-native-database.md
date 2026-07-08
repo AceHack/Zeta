@@ -69,6 +69,7 @@ reads the event log → runs the observe oracle → picks an action → executes
 ### 4. Nodes: Browser Tabs ARE the Mesh
 
 Each browser tab runs:
+
 - A full in-browser git client (dumb HTTP protocol against `/repo.git/`)
 - Content-addressed local storage (yin commits in localStorage)
 - Mesh discovery (BroadcastChannel between tabs, WebSocket for cross-network)
@@ -115,6 +116,7 @@ when connectivity returns (content-addressed rebase onto the new yang HEAD).
 ## The Paid Tier (What You Add)
 
 For teams that need more:
+
 - **NATS JetStream**: real-time streaming (instead of polling Pages)
 - **PostgreSQL**: relational queries over the event log (materialized views)
 - **Private repos**: GitHub's paid tier for non-public projects
