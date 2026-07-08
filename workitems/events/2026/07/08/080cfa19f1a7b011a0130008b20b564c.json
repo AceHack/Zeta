@@ -1,0 +1,14 @@
+{
+  "id": "080cfa19f1a7b011a0130008b20b564c",
+  "at": "2026-07-08T19:39:38.102Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX1KWD7N08QG0R003BPE84B",
+    "type": "task",
+    "title": "Smart cascading teardown: warn + blast-radius + owner-consent gates on extra-care nodes",
+    "slug": "smart-cascading-teardown-warn-blast-radius-owner-consent-gat",
+    "priority": "P2",
+    "filename": "081KX1KWD7N08QG0R003BPE84B-smart-cascading-teardown-warn-blast-radius-owner-consent-gat.md"
+  }
+}
