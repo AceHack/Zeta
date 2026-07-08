@@ -544,6 +544,15 @@ test("CASCADE TEARDOWN GAP CLOSED: planner and consent gate exist (cascade-teard
   expect(src).toContain("refuse-human-unilateral");
 });
 
+test("DUMMY PERSONA WIPE GAP CLOSED: live wipe harness only allows empty dummy-* (never real personas)", () => {
+  const src = readFileSync(join(import.meta.dir, "cascade-dummy-persona-wipe.ts"), "utf8");
+  expect(/export\s+function\s+wipeDummyPersonaMemory/.test(src)).toBe(true);
+  expect(/export\s+function\s+createEmptyDummyPersona/.test(src)).toBe(true);
+  expect(src).toContain("dummy-");
+  expect(src).toContain("cascade-dummy-sandbox");
+  expect(src).toContain("never a real persona");
+});
+
 test("TRUST GRAPH GAP CLOSED: org-vs-user-CA conflict-resolution rule exists (trust-graph.ts)", () => {
   const src = readFileSync(join(import.meta.dir, "trust-graph.ts"), "utf8");
   expect(/export\s+function\s+resolveTrust/.test(src)).toBe(true);

@@ -109,9 +109,11 @@ each-user-a-repo (per-user sovereignty) — on top of the already-shipped softwa
 Extend `teardown.ts` (#9000) to: enumerate + **cascade** to registered dependents; **warn** (with
 blast radius) on the three extra-care classes; **refuse** to touch another user's memories /
 force-reset another's encrypted vault (owner-consent required); stop at the user-repo boundary.
-Generalize "cascade-with-warnings" to all delete paths. Composes with the round-trip harness
+**Persona memory:** wipe tests use an empty **dummy-*** persona only — never a real persona
+(`cascade-dummy-persona-wipe.ts`; ALIGNMENT HC-9 / GOVERNANCE §36). Generalize
+"cascade-with-warnings" to all delete paths. Composes with the round-trip harness
 (otto/onboarding-roundtrip-harness), the lifecycle-triad, vault-separation (081KVNTNTDQ0), and the
-relative-views / event-sourced model. (New build workitem to follow.)
+relative-views / event-sourced model.
 
 ## Anchors
 

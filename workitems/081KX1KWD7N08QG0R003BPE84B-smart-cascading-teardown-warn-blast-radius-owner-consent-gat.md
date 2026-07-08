@@ -39,12 +39,26 @@ extra-care stop nodes, owner-consent for memories, refuse force-reset of another
 
 Planner + classification + consent refusal. CLI `--cascade` prints the plan.
 
-## Slice 1b — persona-consent binding (this change)
+## Slice 1b — persona-consent binding (landed #9516)
 
 Rename/clarify consent model: `persona-consent-required` + `refuse-human-unilateral`.
 Human-only consent must fail persona-memory authorization. Policy: ALIGNMENT HC-9,
-GOVERNANCE §36. Still no live memory-store deletion.
+GOVERNANCE §36.
+
+## Slice 2 — live wipe ONLY via empty dummy persona (sandbox)
+
+**Aaron 2026-07-08:** if we test a live wipe, create a **dummy persona with no data** —
+never a real persona. Harness:
+`tools/setup/persona-keys/cascade-dummy-persona-wipe.ts`
+
+Rules enforced in code:
+1. `personaId` must match `^dummy-[a-z0-9-]+$` (refuses `riven` / `otto` / …)
+2. `memoryRoot` must be a `*cascade-dummy-sandbox*` temp tree (refuses repo `memory/`)
+3. Dir must be empty or only `.cascade-dummy` marker (refuses non-empty / real notes)
+4. HC-9 still applies: `personaConsentNodeIds` required; human-only consent fails
+5. Default dry-run; real wipe only with `dryRun: false` after gate passes
 
 ## Anchors
 
-Research doc above; `teardown.ts` (#9000); manifesto §5/§6; round-trip harness.
+Research doc above; `teardown.ts` (#9000); manifesto §5/§6; round-trip harness;
+ALIGNMENT HC-9; GOVERNANCE §36.
