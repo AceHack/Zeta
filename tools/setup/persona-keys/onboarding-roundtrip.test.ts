@@ -70,12 +70,7 @@ import type { OnboardEffects } from "./onboard.ts";
 import type { GithubTrustEffects } from "./github-trust.ts";
 import type { TeardownEffects } from "./teardown.ts";
 import { freshKeyringSet, rotate, assertWellFormed, publicSet } from "./keyset.ts";
-import {
-  rotate as rotatePorts,
-  ROTATE_PORTS,
-  type RotateEffects,
-  type RotateResult,
-} from "./rotate.ts";
+import { rotate as rotatePorts, ROTATE_PORTS, type RotateEffects, type RotateResult } from "./rotate.ts";
 
 // The private-key marker, assembled at runtime so NO key-shaped literal is in this file.
 const PRIV_MARKER = "PRIVATE" + " " + "KEY";
@@ -538,6 +533,14 @@ test("CLUSTER TEARDOWN GAP CLOSED: cluster-scoped teardown exists (teardown-clus
   const src = readFileSync(join(import.meta.dir, "teardown-cluster.ts"), "utf8");
   expect(/export\s+(async\s+)?function\s+teardownCluster/.test(src)).toBe(true);
   expect(src).toContain("trusted-user-ca-keys");
+});
+
+test("CASCADE TEARDOWN GAP CLOSED: planner and consent gate exist (cascade-teardown.ts)", () => {
+  const src = readFileSync(join(import.meta.dir, "cascade-teardown.ts"), "utf8");
+  expect(/export\s+function\s+planCascadeTeardown/.test(src)).toBe(true);
+  expect(/export\s+function\s+assertCascadeAllowed/.test(src)).toBe(true);
+  expect(src).toContain("refuse-cross-user");
+  expect(src).toContain("owner-consent-required");
 });
 
 test("TRUST GRAPH GAP CLOSED: org-vs-user-CA conflict-resolution rule exists (trust-graph.ts)", () => {
