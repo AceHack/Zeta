@@ -1,7 +1,7 @@
 ---
 id: 081KWQS2PN608QG0R002CXSBG0
 type: task
-state: backlog
+state: done
 priority: P2
 slug: minimal-bnn-one-factor-graph-inference-cell-with-measurable
 title: "Minimal BNN — one factor-graph inference cell with measurable IV task (not doc vocabulary)"
@@ -41,6 +41,14 @@ true weight-bearing network lands.
 3. Doc comment or ADR stub stating honest scope: "minimal BNN v0 = factor-graph cell with
    measurable IV; not a transformer; not gradient-trained weights."
 4. Tests green; no new doc-only "BNN" claims without this code path cited.
+
+## Landed
+
+- `src/Bayesian/MinimalBnn.fs` implements one Gaussian latent variable, Gaussian likelihood
+  observations, explicit state/update/objective, factor-graph posterior materialization, and
+  cumulative IV via `InformationValue.compute`.
+- `tests/Bayesian.Tests/MinimalBnn.Tests.fs` asserts deterministic fixture replay, cumulative
+  IV > 0 nats after N informative observations, and posterior precision growth versus prior.
 
 ## Suggested v0 shape (smallest honest slice)
 
