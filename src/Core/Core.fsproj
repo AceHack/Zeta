@@ -105,6 +105,7 @@
     <Compile Include="BeliefConvergence.fs" />
     <Compile Include="PontryaginDuality.fs" />
     <Compile Include="OrbitEquivariance.fs" />
+    <Compile Include="LyapunovContraction.fs" />
     <Compile Include="SoftRegimeStability.fs" />
     <Compile Include="Evolution.fs" />
     <Compile Include="MarkdownTreaty.fs" />

@@ -34,7 +34,9 @@
     <Compile Include="YinYangCell.Tests.fs" />
     <Compile Include="YinYangEnsemble.Tests.fs" />
     <Compile Include="SequentialEnsemble.Tests.fs" />
+    <Compile Include="WeaviateMemory.Tests.fs" />
     <Compile Include="BusDelayTick.Tests.fs" />
+    <Compile Include="LyapunovContraction.Tests.fs" />
     <Compile Include="MutualFalsification.Tests.fs" />
     <Compile Include="CondorcetBoundary.Tests.fs" />
     <Compile Include="FigureEightEnsemble.Tests.fs" />

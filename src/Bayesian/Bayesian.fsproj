@@ -32,6 +32,7 @@
     <Compile Include="ThousandBrainsCron.fs" />
     <Compile Include="YinYangEnsemble.fs" />
     <Compile Include="SequentialEnsemble.fs" />
+    <Compile Include="WeaviateMemory.fs" />
     <Compile Include="BusDelayTick.fs" />
     <Compile Include="MutualFalsification.fs" />
     <Compile Include="CondorcetBoundary.fs" />
