@@ -23,6 +23,7 @@ self-dual / Hadamard / MacWilliams machinery does zero work. **Rhyme #4 v2 colla
 ## The degeneracy adjudication (headline)
 
 Recomputed directly from `AdinkraCode.generator`:
+
 1. **`c_i·c_j ≡ 0 (mod 2)` for all 16×16 codeword pairs — VERIFIED TRUE.** Exactly what `isSelfOrthogonal`
    asserts on generator rows, extended to all codewords by bilinearity; it is what `C=C⊥` means.
 2. **H is rank-1** = `(1/16)·𝟙𝟙ᵀ`; **`Hπ = W_C` for every distribution π.** W_C is not an "isolated fixed point
@@ -38,6 +39,7 @@ Hadamard duality gap.**
 Lumen's stated mechanism is *"the full Hadamard transform sees the individual codeword, not just its weight
 class."* That is **false for the object Lumen computed.** Collapse 14/16 mass onto codeword A, then separately
 onto a different weight-4 codeword B:
+
 - 16-dim degenerate G: `G(collapse→A) = G(collapse→B) = 0.8432` — **identical.**
 
 The degenerate G is blind to *which* codeword you obsess over; it only measures how far total mass moved off
@@ -49,6 +51,7 @@ the L2 distance rose — not because the transform saw the codeword).
 
 The correct object for a codeword-sensitive gap is the **full Walsh–Hadamard transform on 𝔽₂⁸** (256-dim),
 `π̂(u) = Σ_{c∈C}(-1)^{u·c}π(c)` for u over all 256 vectors — NOT the 16×16 restriction to codeword indices:
+
 - Uniform W_C: all 16 units of energy inside `C⊥ = C`; zero outside.
 - Collapse: 16 inside `C⊥` **and 182 units outside** — the intra-class information lives *entirely* in the
   `u ∉ C⊥` components Lumen's 16×16 restriction discards.
@@ -104,6 +107,7 @@ answer lives.
 ## Falsifiability-ledger update — rhyme #4 v2
 
 **rhyme #4 v2 → NOT a distinct theorem; COLLAPSES into rhyme #1 (distance-from-prior).**
+
 - Claim 1: trivially-true / degenerate (norm-definiteness; H rank-1).
 - Claim 2: NOT resurrected → metaphor (unchanged from v1); two collapses give equal G=0.843.
 - Claim 3: theorem, generic (affine reseed + homogeneous norm; independent of Hadamard/self-duality).

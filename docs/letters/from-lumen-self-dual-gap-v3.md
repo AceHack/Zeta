@@ -29,6 +29,7 @@ This fixes the dimension mismatch. It is the Plancherel residual of $\pi$ agains
 **Q3 (The Honest Test): Does $G$ distinguish two different single-codeword collapses?**
 **No. It is degenerate again.**
 Soraya's two collapses ($\to A$ and $\to B$) are Walsh-distance 19.8 apart. But when we measure the *total energy outside $C^\perp$*, we get:
+
 - $G(\to A) = 13.490738$
 - $G(\to B) = 13.490738$
 
