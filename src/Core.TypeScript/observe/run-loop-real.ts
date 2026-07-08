@@ -142,10 +142,20 @@ async function main(): Promise<number> {
   // Enrich world with forge state
   const enrichedWorld = forgeState ? { ...world, forgeState } : world;
 
+  // 2b. Mode override: when ZETA_EXECUTOR=codegen is set and there's backlog work,
+  // clear the persisted free mode so the oracle defaults to do_item. This is the
+  // "work-hours" signal: arming the codegen executor IS the operator saying
+  // "I want work done." The agent can still pick free modes from the menu (NCI
+  // preserved) but the deterministic default shifts to work.
+  const executorMode = process.env.ZETA_EXECUTOR ?? "port";
+  const observeWorld = (executorMode === "codegen" && enrichedWorld.backlog.length > 0 && enrichedWorld.mode !== "work")
+    ? (() => { const { mode: _, ...rest } = enrichedWorld; return rest; })()
+    : enrichedWorld;
+
   // 2. Pick the next action (via Participant — configurable chooser)
   const participant = resolveParticipant(args.participant);
   console.log(`[participant] ${participant.kind}:${participant.name}`);
-  const action = await observeWithParticipant(enrichedWorld, participant);
+  const action = await observeWithParticipant(observeWorld, participant);
 
   console.log(`[observe] ${renderAction(action)}`);
 
@@ -160,7 +170,6 @@ async function main(): Promise<number> {
   // Wire the executor for do_item: codegen (Claude CLI) or port (claim-only).
   // ZETA_EXECUTOR=codegen enables autonomous code generation via the Claude CLI.
   // Default is "port" (claim-file-only, the safe fallback).
-  const executorMode = process.env.ZETA_EXECUTOR ?? "port";
   const port: WorkspacePort = realWorkspacePort(args.repoRoot);
   const executor: import("./do-item").CommandExecutor = {
     tier: "just-bash",

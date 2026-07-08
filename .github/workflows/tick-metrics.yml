@@ -1,0 +1,58 @@
+# Tick metrics writer — appends observe loop metrics to the Pages-served ledger.
+#
+# Runs on every push to main (each merge = a potential tick event landing)
+# and on a 15-minute schedule (catch ticks that landed via direct push).
+#
+# Reads: docs/observe-events/*.json (the durable event log)
+# Writes: data/tick-history.json (the append-only metrics ledger)
+# Served by: GitHub Pages at /data/tick-history.json (same-origin fetch)
+#
+# The data contract (from the design handoff):
+#   Frame shape: { t, action, mode, agent, entropy_state, entropy_heat, duration_ms }
+#   The file IS the ledger. Append-only. CI never deletes frames.
+#   Pages auto-deploys on push → readers see fresh data on next fetch.
+
+name: tick-metrics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/observe-events/**'
+  schedule:
+    - cron: '*/15 * * * *'  # every 15 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write  # needs write to commit the metrics frame
+
+jobs:
+  append-metrics:
+    name: append tick metrics
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0  # full history for accurate event counting
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Compute and append metrics frame
+        run: bun src/Core.TypeScript/observe/tick-metrics-writer.ts
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/tick-history.json data/tick-latest.json
+          if git diff --cached --quiet; then
+            echo "No new metrics to commit."
+          else
+            git commit -m "metrics: append tick frame [skip ci]"
+            git push
+          fi

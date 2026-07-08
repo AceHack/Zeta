@@ -338,7 +338,21 @@ async function runObserveInline(): Promise<string> {
     // 3. Execute the action (append to event log + side effects)
     // No-commit sink: observe events are local per-agent state, not shared substrate (yet).
     const sink = folderSink({ eventDir, by: personaName, commit: () => ({ ok: true as const }) });
-    const execResult = await execute(world, result.action, sink);
+
+    // Wire codegen executor when ZETA_EXECUTOR=codegen and action is do_item.
+    let executor: import("../observe/do-item").CommandExecutor | undefined;
+    let doItemOpts: import("../observe/do-item").DoItemOptions | undefined;
+    if (process.env["ZETA_EXECUTOR"] === "codegen" && result.action.kind === "do_item") {
+      const { codegenExecuteItem } = await import("../observe/codegen-executor");
+      const item = result.action.item;
+      executor = {
+        tier: "just-bash" as import("../observe/do-item").ExecutorTier,
+        run: async (_spec) => codegenExecuteItem(item, { repoRoot: worktree, agentId: personaName }),
+      };
+      doItemOpts = { spec: { script: "# codegen-executor", cwd: worktree }, gated: false };
+    }
+
+    const execResult = await execute(world, result.action, sink, executor, doItemOpts);
 
     const status = execResult.ok ? 0 : 1;
     const execNote = execResult.ok

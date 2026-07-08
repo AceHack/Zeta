@@ -25,6 +25,8 @@
     <string>{{REF}}</string>
     <key>ZETA_LOOP_OBSERVE_INLINE</key>
     <string>1</string>
+    <key>ZETA_EXECUTOR</key>
+    <string>codegen</string>
     <key>PATH</key>
     <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{{HOME}}/.bun/bin</string>
   </dict>

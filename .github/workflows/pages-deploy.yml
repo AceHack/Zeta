@@ -1,9 +1,8 @@
 name: Deploy to GitHub Pages
 
-# Manual-dispatch static deploy. The auto-trigger on `push: main` stays omitted
-# because the repository also has a classic Pages source; this workflow is the
-# explicit artifact path for the static site and LLMTV root-site readout.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
