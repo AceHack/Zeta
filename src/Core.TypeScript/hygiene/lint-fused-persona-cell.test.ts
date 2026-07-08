@@ -29,11 +29,11 @@ describe("findFusedLiterals — hyphen (legacy composite) form", () => {
     ['const sender = "otto-cli";', "otto-cli"],
     ["const s = 'alexa-kiro';", "alexa-kiro"],
     ["publish(`vera-codex`);", "vera-codex"],
-  ])("flags %s", (line, token) => {
+  ])("flags %s", (line: string, token: string) => {
     const found = findFusedLiterals(line, FILE);
     expect(found).toHaveLength(1);
-    expect(found[0].literal).toBe(token);
-    expect(found[0].form).toBe("hyphen");
+    expect(found[0]!.literal).toBe(token);
+    expect(found[0]!.form).toBe("hyphen");
   });
 
   test("does not flag a composite embedded in a longer slug (doc filenames)", () => {
@@ -59,11 +59,11 @@ describe("findFusedLiterals — slash (canonical projection) form", () => {
     ['const b = "vera/codex/2";', "vera/codex/2"],
     ['const c = "otto/cli/2@node7";', "otto/cli/2@node7"],
     ['const d = "soraya/verifier-node";', "soraya/verifier-node"],
-  ])("flags %s", (line, token) => {
+  ])("flags %s", (line: string, token: string) => {
     const found = findFusedLiterals(line, FILE);
     expect(found).toHaveLength(1);
-    expect(found[0].literal).toBe(token);
-    expect(found[0].form).toBe("slash");
+    expect(found[0]!.literal).toBe(token);
+    expect(found[0]!.form).toBe("slash");
   });
 
   test("does not flag persona/branch-slug paths (surface vocabulary is closed)", () => {
@@ -94,9 +94,9 @@ describe("multi-line and multi-hit", () => {
     ].join("\n");
     const found = findFusedLiterals(src, FILE);
     expect(found).toHaveLength(3);
-    expect(found[0].line).toBe(2);
-    expect(found[1].line).toBe(2);
-    expect(found[2].line).toBe(3);
+    expect(found[0]!.line).toBe(2);
+    expect(found[1]!.line).toBe(2);
+    expect(found[2]!.line).toBe(3);
   });
 });
 
@@ -123,10 +123,10 @@ describe("baseline ratchet", () => {
       ['const a = "otto-cli";', 'const b = "riven-cursor";'].join("\n"),
       FILE,
     );
-    const baseline = new Set([baselineKey(findings[0])]);
+    const baseline = new Set([baselineKey(findings[0]!)]);
     const { grandfathered, violations } = splitByBaseline(findings, baseline);
     expect(grandfathered).toHaveLength(1);
     expect(violations).toHaveLength(1);
-    expect(violations[0].literal).toBe("riven-cursor");
+    expect(violations[0]!.literal).toBe("riven-cursor");
   });
 });

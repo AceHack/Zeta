@@ -79,7 +79,7 @@ export function findFusedLiterals(source, filePath, personas = [...VALID_PERSONA
     const findings = [];
     const lines = source.split("\n");
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+        const line = lines[i] ?? "";
         if (line.includes(EXEMPT_MARKER))
             continue;
         LITERAL_RE.lastIndex = 0;
@@ -93,7 +93,8 @@ export function findFusedLiterals(source, filePath, personas = [...VALID_PERSONA
                 re.lastIndex = 0;
                 let m = re.exec(content);
                 while (m !== null) {
-                    const token = m[0].startsWith(m[1]) ? m[0].slice(m[1].length) : m[0];
+                    const lead = m[1] ?? "";
+                    const token = m[0].startsWith(lead) ? m[0].slice(lead.length) : m[0];
                     findings.push({ file: filePath, line: i + 1, literal: token, form });
                     m = re.exec(content);
                 }
