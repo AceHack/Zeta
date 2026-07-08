@@ -38,6 +38,18 @@ identity.** Canonical numbered rule: `GOVERNANCE.md §35`. Full model:
 (clone-per-writer). Claude-specific surface of the same rule:
 `.claude/rules/shared-checkout-is-view-only.md`.
 
+### Self-check pre-push hook for clones
+
+Every writer's own clone should configure the self-check pre-push hooks to verify code hygiene before pushing to `origin/main`. Configure this in your clone via:
+```bash
+git config core.hooksPath githooks
+```
+This runs `bun run preflight:quick` before pushing. If there is an emergency or an environment issue, you can skip the checks using:
+```bash
+ZETA_SKIP_PREFLIGHT=1 git push
+```
+Or by running git commands with `--no-verify`.
+
 ## Persona memory — humans cannot unilaterally wipe agents
 
 When Zeta is distributed to other humans: a human operator must **not** delete a

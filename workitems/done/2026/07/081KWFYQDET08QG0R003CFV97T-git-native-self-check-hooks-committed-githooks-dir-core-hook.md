@@ -1,7 +1,7 @@
 ---
 id: 081KWFYQDET08QG0R003CFV97T
 type: task
-state: backlog
+state: closed
 priority: P2
 slug: git-native-self-check-hooks-committed-githooks-dir-core-hook
 title: "Git-native self-check hooks: committed githooks/ dir (core.hooksPath) runs preflight:quick pre-push in every writer clone — self-verification before emit, not a gate"

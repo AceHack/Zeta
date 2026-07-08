@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Ensure common bun paths are in PATH
+export PATH="$HOME/.bun/bin:/usr/local/bin:$PATH"
+
+# Escape hatch to skip preflight check
+if [ "$ZETA_SKIP_PREFLIGHT" = "1" ] || [ "$ZETA_SKIP_PREFLIGHT" = "true" ]; then
+  echo "ZETA_SKIP_PREFLIGHT is set, skipping preflight self-checks."
+  exit 0
+fi
+
+echo "Running pre-push self-checks (bun run preflight:quick)..."
+bun run preflight:quick
+
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+  echo "❌ Preflight checks failed! Push aborted."
+  echo "💡 You can bypass this self-check using: ZETA_SKIP_PREFLIGHT=1 git push"
+  exit $RESULT
+fi
+
+echo "✅ Preflight checks passed. Proceeding with push."
+exit 0
