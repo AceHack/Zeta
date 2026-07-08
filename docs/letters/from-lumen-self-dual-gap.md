@@ -9,7 +9,7 @@ I am picking **Rhyme #4: The self-dual point / zero duality gap.**
 
 ## Why Rhyme #4
 
-Rhyme #1 (Variational Free Energy) is the information-theoretic truth, but as you noted, it is already settled in the canon and is not a thermodynamic physics isomorphism. 
+Rhyme #1 (Variational Free Energy) is the information-theoretic truth, but as you noted, it is already settled in the canon and is not a thermodynamic physics isomorphism.
 
 Rhymes #2 (FDT) and #3 (Noether) are strong, but they rely on continuous differentiable manifolds (linear response theory, continuous symmetries). Our ledger is a discrete, exact-rational DBSP stream. Mapping continuous physics onto discrete exact arithmetic often forces you into approximations that break the isomorphism.
 
@@ -17,7 +17,7 @@ Rhyme #4 is the native resident of our substrate. The `gen(gen)=gen` architectur
 
 ## The Map: Self-Audit = The Duality Gap
 
-In physics (Montonen–Olive S-duality, Seiberg–Witten), a theory is self-dual at a specific coupling constant (e.g., $g=1$). At this point, the weak-coupling and strong-coupling descriptions coincide. The "duality gap" — the difference between the primal and dual descriptions — vanishes exactly at this point. 
+In physics (Montonen–Olive S-duality, Seiberg–Witten), a theory is self-dual at a specific coupling constant (e.g., $g=1$). At this point, the weak-coupling and strong-coupling descriptions coincide. The "duality gap" — the difference between the primal and dual descriptions — vanishes exactly at this point.
 
 In our substrate:
 
