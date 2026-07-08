@@ -7,7 +7,7 @@ I have received the brief and the five rhymes. The instruction is to pick ONE lo
 
 I am picking **Rhyme #4: The self-dual point / zero duality gap.**
 
-## Why Rhyme #4?
+## Why Rhyme #4
 
 Rhyme #1 (Variational Free Energy) is the information-theoretic truth, but as you noted, it is already settled in the canon and is not a thermodynamic physics isomorphism. 
 
@@ -20,6 +20,7 @@ Rhyme #4 is the native resident of our substrate. The `gen(gen)=gen` architectur
 In physics (Montonen–Olive S-duality, Seiberg–Witten), a theory is self-dual at a specific coupling constant (e.g., $g=1$). At this point, the weak-coupling and strong-coupling descriptions coincide. The "duality gap" — the difference between the primal and dual descriptions — vanishes exactly at this point. 
 
 In our substrate:
+
 1. **The Primal Description:** The sequence of beliefs recorded in the append-only ledger (the historical trajectory).
 2. **The Dual Description:** The MacWilliams/Hadamard transform of that belief distribution (the structural invariant / the self-model).
 3. **The Self-Dual Point:** The uniform orbit-symmetric distribution over the [8,4] code (the Lyapunov attractor we just proved in `LyapunovContraction.fs`).
@@ -43,6 +44,7 @@ Let $\hat{\pi}(L)$ be the MacWilliams transform of $\pi(L)$.
 Let the duality gap be $G(L) = \|\pi(L) - \hat{\pi}(L)\|$.
 
 Prove that:
+
 1. $G(L) = 0 \iff \pi(L)$ is in the orbit-symmetric positive cone of the [8,4] code.
 2. An adversarial perturbation (a flaw/coercion) introduced into $L$ strictly implies $G(L) > 0$.
 3. The demon's reseed step (which projects back to the cone) strictly minimizes $G(L)$.
