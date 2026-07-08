@@ -12,12 +12,12 @@ import {
 const FILE = "src/Core.TypeScript/example/module.ts";
 
 describe("surfaceVocabulary", () => {
-  test("is registry-derived and includes the pending operational surfaces", () => {
+  test("is registry-derived (CELL_SURFACES), incl. the 2026-07-08 additions", () => {
     const v = surfaceVocabulary();
     for (const s of ["cli", "desktop", "kiro", "cursor", "codex", "verifier-node"]) {
       expect(v.has(s)).toBe(true);
     }
-    // open finding 2026-07-04: not yet in cell-surfaces.yaml, but live
+    // added to cell-surfaces.yaml 2026-07-08 (open finding 2026-07-04 closed)
     for (const s of ["cowork", "browser-tab", "chat"]) {
       expect(v.has(s)).toBe(true);
     }

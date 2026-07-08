@@ -3,6 +3,13 @@ total_slots: 256
 description: |
   Persona-role registry (256 slots for the agent roster).
   Defines factory agents and roles explicitly to enable dynamic onboarding and compile-time codegen.
+  allowed_surfaces is ADVISORY (P1 finding 2026-07-04): it describes the
+  surfaces a persona is KNOWN to operate, for vocabulary and dashboards.
+  It does not close the open cell set and MUST NOT be used to reject a
+  persona⊕cell pairing — enforcement is per-resource policy predicates
+  over ActorRef fields (ADR 2026-07-03 §3). The role field is under
+  proposed treaty amendment A1 (would become optional/move to a hats
+  registry) — unchanged pending signer re-consent.
 entries:
   - id: 1
     name: aaron
@@ -15,7 +22,7 @@ entries:
     role: Operator
     description: "Otto - Foreground operator, background loop runner, VSCode and Windows surface"
     public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOttoKey"
-    allowed_surfaces: ["cli", "desktop", "vscode", "windows"]
+    allowed_surfaces: ["cli", "desktop", "vscode", "windows", "cowork"]
   - id: 3
     name: alexa
     role: Builder

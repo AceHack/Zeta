@@ -27,7 +27,7 @@ export const PERSONA_REGISTRY = [
     role: "Operator",
     description: "Otto - Foreground operator, background loop runner, VSCode and Windows surface",
     publicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOttoKey",
-    allowedSurfaces: ["cli", "desktop", "vscode", "windows"]
+    allowedSurfaces: ["cli", "desktop", "vscode", "windows", "cowork"]
   },
   {
     id: 3,
@@ -81,8 +81,11 @@ export const PERSONA_REGISTRY = [
 
 export const CELL_SURFACES = new Set([
   "antigravity",
+  "browser-tab",
+  "chat",
   "cli",
   "codex",
+  "cowork",
   "cursor",
   "desktop",
   "gemini",

@@ -1,6 +1,12 @@
 schema: zeta-registry/v1
 description: |
-  Cell surfaces registry. Lists all authorized cell coordinates.
+  Cell surfaces registry — descriptive vocabulary of KNOWN surfaces.
+  NOT a closure of the open cell set (treaty Art. 1: cells are open,
+  self-describing satellite data; new surfaces appear without treaty
+  or schema ceremony). Consumers may use this list for vocabulary
+  (codegen, lint, dashboards) but MUST NOT reject an unlisted surface
+  on identity grounds — authorization is per-resource policy over
+  ActorRef fields (ADR §3), never registry closure.
 surfaces:
   - name: cli
     description: "Command Line Interface (foreground)"
@@ -22,3 +28,9 @@ surfaces:
     description: "Gemini CLI / Workspace agent"
   - name: verifier-node
     description: "Formal verification node"
+  - name: cowork
+    description: "Claude desktop Cowork mode (foreground, Otto-Desktop lane)"
+  - name: browser-tab
+    description: "Browser tab cell (Claude in Chrome / web surfaces)"
+  - name: chat
+    description: "Chat conversation surface (claude.ai / design registers)"

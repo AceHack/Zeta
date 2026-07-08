@@ -52,8 +52,11 @@ module IdentityRegistry =
     let validSurfaces =
         [
             "antigravity";
+            "browser-tab";
+            "chat";
             "cli";
             "codex";
+            "cowork";
             "cursor";
             "desktop";
             "gemini";

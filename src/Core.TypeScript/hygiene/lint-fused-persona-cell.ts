@@ -43,11 +43,12 @@ import { CELL_SURFACES, VALID_PERSONAS } from "../identity/generated-registry.ts
 // ---------------------------------------------------------------------------
 
 /**
- * Surfaces that exist operationally but are not yet in cell-surfaces.yaml
- * (open finding, 2026-07-04 treaty review). Remove entries here as the
- * registry catches up — the registry is the source of truth.
+ * Surfaces that exist operationally but are not yet in cell-surfaces.yaml.
+ * Empty since the 2026-07-08 registry catch-up (cowork/browser-tab/chat
+ * added — open finding 2026-07-04 closed). Add here only as a stopgap
+ * while a registry PR is in flight — the registry is the source of truth.
  */
-export const PENDING_REGISTRY_SURFACES: readonly string[] = ["cowork", "browser-tab", "chat"];
+export const PENDING_REGISTRY_SURFACES: readonly string[] = [];
 
 export function surfaceVocabulary(): Set<string> {
   const s = new Set<string>(CELL_SURFACES);
