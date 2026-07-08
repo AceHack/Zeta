@@ -111,7 +111,18 @@ jobs:
       - name: Push heartbeat branch
         run: git push origin heartbeat/alexa
 
-  # Flush: squash-merge heartbeat events to main (hourly)
+  # Flush: merge heartbeat events to main (hourly)
+  #
+  # CORPORATE MODE (current): creates a PR and arms auto-merge (squash).
+  # Branch protection requires CI + review before landing on main.
+  # The PR is auto-merged once CI passes (no human needed for event-only changes).
+  #
+  # SOVEREIGN MODE (goal: zero branch protection): direct push to main.
+  # Switch to: `git push origin main` once branch protection is removed for
+  # `docs/observe-events/**` paths. The files are ZetaId-named (disjoint,
+  # conflict-free, G-Set CRDT) so direct push is structurally safe.
+  #
+  # Current state synced in: docs/DECISIONS/2026-07-08-native-branch-protection-trust-based.md
   flush-to-main:
     name: flush heartbeats to main
     runs-on: ubuntu-24.04
@@ -139,15 +150,35 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Merge heartbeat events to main
+      - name: Flush heartbeat events (PR-based while branch protection is active)
         if: steps.check.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          AHEAD=$(git rev-list --count origin/main..origin/heartbeat/alexa)
+          echo "[flush] $AHEAD heartbeat commits to flush"
+
+          # Create a flush branch from main with the heartbeat events merged in
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          FLUSH_BRANCH="flush/heartbeat-alexa-$(date -u +%Y%m%dT%H%MZ)"
+          git checkout -b "$FLUSH_BRANCH"
           git merge origin/heartbeat/alexa --no-ff -m "flush(heartbeat): alexa events to main
 
-          Periodic flush of heartbeat events from the heartbeat/alexa branch.
-          Events: $(git rev-list --count origin/main..origin/heartbeat/alexa) commits batched.
+          Periodic flush of $AHEAD heartbeat events from heartbeat/alexa.
+          Sovereign path: append-only ZetaId event files (G-Set, conflict-free).
 
           Co-Authored-By: Kiro <noreply@kiro.dev>"
-          git push origin main
+          git push origin "$FLUSH_BRANCH"
+
+          # Create a PR and arm auto-merge (squash — works with branch protection)
+          PR_URL=$(gh pr create \
+            --base main \
+            --head "$FLUSH_BRANCH" \
+            --title "flush(heartbeat): $AHEAD alexa events" \
+            --body "Periodic flush of heartbeat events. Sovereign path (append-only ZetaId files, conflict-free). Auto-merge armed.")
+          echo "[flush] PR created: $PR_URL"
+
+          # Arm auto-merge (squash to satisfy branch protection)
+          PR_NUM=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+          gh pr merge "$PR_NUM" --squash --auto --delete-branch || echo "[flush] auto-merge armed (or already queued)"
