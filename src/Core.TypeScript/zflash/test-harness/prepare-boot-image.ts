@@ -13,7 +13,8 @@
  *     --output <zflash-boot.img> \
  *     [--with-credential-blob] \
  *     [--fresh] \
- *     [--hostname node-qemu-test]
+ *     [--hostname node-qemu-test] \
+ *     [--with-wifi-credentials]
  *
  * Exit 0 prints JSON with outputImagePath (+ credentialBlobPath when baked).
  */
@@ -36,8 +37,17 @@ export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";
 export const DEFAULT_ESP_OFFSET_BYTES = ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES;
 export const DEFAULT_QEMU_HOSTNAME = "node-qemu-test";
 
+/** Deterministic QEMU-only wifi ESP blob (never a real network secret). */
+export const DEFAULT_QEMU_WIFI_SSID = "zeta-qemu-homelab";
+export const DEFAULT_QEMU_WIFI_PASSWORD = "qemu-wifi-test-psk";
+
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
 const TEST_INFRA_PUBKEY = join(REPO_ROOT, "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub");
+
+export interface PrepareBootImageWifiCredentials {
+  readonly ssid: string;
+  readonly password: string;
+}
 
 export interface PrepareBootImageInput {
   readonly isoPath: string;
@@ -47,12 +57,14 @@ export interface PrepareBootImageInput {
   readonly hostname: string;
   readonly espOffsetBytes: number;
   readonly pubkeyPath: string;
+  readonly wifiCredentials?: PrepareBootImageWifiCredentials;
 }
 
 export interface PrepareBootImageResult {
   readonly outputImagePath: string;
   readonly credentialBlobPath?: string;
   readonly bootImageEnv: "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" | "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
+  readonly wifiCredentialsBaked: boolean;
 }
 
 export function resolveEspOffsetBytesForIso(isoPath: string): number {
@@ -124,6 +136,12 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     testMode: input.testMode,
     hostname: input.hostname,
     ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
+    ...(input.wifiCredentials === undefined
+      ? {}
+      : {
+          wifiSsid: input.wifiCredentials.ssid,
+          wifiPassword: input.wifiCredentials.password,
+        }),
   });
 
   if (!result.ok) {
@@ -134,6 +152,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     outputImagePath: resolve(input.outputImagePath),
     ...(credentialBlobPath === undefined ? {} : { credentialBlobPath }),
     bootImageEnv: input.withCredentialBlob ? "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" : "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE",
+    wifiCredentialsBaked: input.wifiCredentials !== undefined,
   };
 }
 
@@ -142,6 +161,7 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
   let outputImagePath = "";
   let withCredentialBlob = true;
   let fresh = false;
+  let withWifiCredentials = false;
   let hostname = DEFAULT_QEMU_HOSTNAME;
 
   for (let i = 0; i < argv.length; i++) {
@@ -154,6 +174,8 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
       withCredentialBlob = true;
     } else if (arg === "--fresh") {
       fresh = true;
+    } else if (arg === "--with-wifi-credentials") {
+      withWifiCredentials = true;
     } else if (arg === "--hostname") {
       hostname = argv[++i] ?? "";
     } else if (arg === "-h" || arg === "--help") {
@@ -174,6 +196,14 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
     hostname,
     espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
     pubkeyPath: TEST_INFRA_PUBKEY,
+    ...(withWifiCredentials
+      ? {
+          wifiCredentials: {
+            ssid: DEFAULT_QEMU_WIFI_SSID,
+            password: DEFAULT_QEMU_WIFI_PASSWORD,
+          },
+        }
+      : {}),
   };
 }
 

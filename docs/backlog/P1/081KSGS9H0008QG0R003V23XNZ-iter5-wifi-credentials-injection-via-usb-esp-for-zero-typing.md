@@ -6,7 +6,7 @@ title: iter-5 wifi-credentials injection via USB ESP — homelab persona MOSTLY 
 effort: M
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-07-08
 depends_on:
   - 081KSGS9H0008QG0R002T3BJ2R
 composes_with:
@@ -181,3 +181,15 @@ The maintainer 2026-05-26 during the iter-4.2 PC1 empirical test surfaced the su
 This row captures + scopes the iter-5 substrate work. Composes directly with iter-4.x (#5080 → #5083 → #5086 → #5088 → #5091 → #5093 → #5099) — same ESP-injection pattern, different payload (wifi credentials + hostname).
 
 Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline + the *"ferry commands by reading and typing avoid like the plague"* discipline — iter-5 wifi-injection is load-bearing for keeping zero-typing as the homelab persona's default operator experience.
+
+## Progress (2026-07-08)
+
+Software-only deepen landed:
+
+- ESP JSON → NM profile write path + serial markers (`association deferred`; no radio claim)
+- Opt-in QEMU gate: `QEMU_WIFI_ESP_PHASE1=1` bakes file-backed zflash USB with
+  `zeta-wifi-credentials.json`, boots via usb-storage, asserts
+  `WIFI_ESP_INSTALL_SERIAL_MARKERS` in phase 1 (`qemu-full-install-test.ts`)
+- CI: `workflow_dispatch` step on `build-ai-cluster-iso.yml` (not push-hard-gate)
+
+Still metal-gated: real WiFi association / reconnect after reboot on hardware.

@@ -4,11 +4,14 @@
  *
  * QEMU full-install test (081KSGS9H0008QG0R0011BC7T2 Slice 1) for the canonical Zeta installer ISO.
  *
- * Phase 1 — boot installer ISO + virtual disk; wait for install completion.
+ * Phase 1 — boot installer ISO (or zflash USB image when QEMU_WIFI_ESP_PHASE1=1)
+ * + virtual disk; wait for install completion.
  * Phase 2 — boot installed disk only; verify login banner (+ optional phase-3
  * first-session serial markers when QEMU_FIRST_SESSION_PHASE3=1).
  * Phase 1 also asserts iter-5.4.1-ci dry-run registration (081KSGS9H0008QG0R0011BC7T2 slice 2)
  * and tree-path coherence (081KSGS9H0008QG0R0011BC7T2 slice 3).
+ * Opt-in QEMU_WIFI_ESP_PHASE1=1 bakes zeta-wifi-credentials.json onto a
+ * file-backed zflash image and asserts ESP→NM serial markers (no radio claim).
  *
  * Composes with qemu-boot-test.ts (cascade #5) and 081KSNY2Z0008QG0R0008PN7RQ scenario 2.
  *
@@ -24,13 +27,29 @@
 import { execFileSync, spawn } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { serialFirstBootInProgress } from "../zflash/test-harness/serial-markers";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import {
+  assertWifiEspInstallSerial,
+  serialFirstBootInProgress,
+} from "../zflash/test-harness/serial-markers";
+import {
+  DEFAULT_ESP_OFFSET_BYTES,
+  DEFAULT_QEMU_WIFI_PASSWORD,
+  DEFAULT_QEMU_WIFI_SSID,
+  prepareBootImage,
+} from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   firstSessionPhase3Enabled,
   firstSessionMarkersSatisfied,
 } from "./qemu-first-session-phase3.ts";
+
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
+const TEST_INFRA_PUBKEY = resolve(
+  REPO_ROOT,
+  "src/Core.TypeScript/zflash/test-harness/keys/zeta-test-infra.pub",
+);
 
 /** zeta-install.sh success banner (end of install script). */
 const INSTALL_COMPLETE_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
@@ -133,6 +152,34 @@ export function assertGeneratedNodeHostnameContract(
     };
   }
   return { ok: true, hostname: generated };
+}
+
+/** Opt-in ESP wifi acceptance gate (no radio association claim). */
+export function wifiEspPhase1Enabled(): boolean {
+  return process.env.QEMU_WIFI_ESP_PHASE1 === "1";
+}
+
+/**
+ * When QEMU_WIFI_ESP_PHASE1=1, phase-1 serial must show ESP JSON found +
+ * NM profile write + association deferred. Failure text never echoes the
+ * QEMU test PSK.
+ */
+export function assertWifiEspPhase1Contract(phase1Serial: string): {
+  readonly ok: true;
+} | { readonly ok: false; readonly reason: string } {
+  const result = assertWifiEspInstallSerial(phase1Serial, {
+    forbiddenSecrets: [DEFAULT_QEMU_WIFI_PASSWORD],
+  });
+  if (!result.ok) {
+    return { ok: false, reason: result.reason };
+  }
+  if (phase1Serial.includes(DEFAULT_QEMU_WIFI_PASSWORD)) {
+    return {
+      ok: false,
+      reason: "wifi ESP phase-1 serial leaked QEMU test wifi password (must stay redacted)",
+    };
+  }
+  return { ok: true };
 }
 
 /** Exported for unit tests. */
@@ -262,15 +309,6 @@ function kvmEnabled(): boolean {
   return existsSync(KVM_PATH);
 }
 
-function appendKvmCpu(args: string[]): void {
-  if (kvmEnabled()) {
-    args.push("-enable-kvm", "-cpu", "host");
-  } else {
-    args.push("-cpu", "qemu64");
-    console.warn(`[qemu-full-install-test] ${KVM_PATH} not available; using TCG (slow)`);
-  }
-}
-
 function createVirtualDisk(diskPath: string): void {
   console.log(`[qemu-full-install-test] Creating ${DISK_SIZE_GB}GB qcow2 disk at ${diskPath}`);
   execFileSync("qemu-img", ["create", "-f", "qcow2", diskPath, `${DISK_SIZE_GB}G`], {
@@ -278,20 +316,52 @@ function createVirtualDisk(diskPath: string): void {
   });
 }
 
-function buildQemuInstallArgs(isoPath: string, diskPath: string, serialLogPath: string): string[] {
+type InstallBootMedia =
+  | { readonly kind: "iso"; readonly path: string }
+  | { readonly kind: "usb-image"; readonly path: string };
+
+function buildQemuInstallArgs(
+  bootMedia: InstallBootMedia,
+  diskPath: string,
+  serialLogPath: string,
+): string[] {
+  return buildQemuInstallArgsPure(bootMedia, diskPath, serialLogPath, kvmEnabled());
+}
+
+/** Exported for unit tests. */
+export function buildQemuInstallArgsPure(
+  bootMedia: InstallBootMedia,
+  diskPath: string,
+  serialLogPath: string,
+  kvm: boolean,
+): string[] {
   const args: string[] = [
     "-machine", "q35",
     "-m", String(MEMORY_MB),
     "-smp", String(CPU_COUNT),
-    "-cdrom", isoPath,
-    "-boot", "d",
     "-drive", `file=${diskPath},if=virtio,format=qcow2`,
     "-serial", `file:${serialLogPath}`,
     "-display", "none",
     "-netdev", "user,id=net0",
     "-device", "virtio-net-pci,netdev=net0",
   ];
-  appendKvmCpu(args);
+  if (bootMedia.kind === "usb-image") {
+    args.push(
+      "-drive",
+      `file=${bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
+      "-device",
+      "qemu-xhci,id=xhci",
+      "-device",
+      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+    );
+  } else {
+    args.push("-cdrom", bootMedia.path, "-boot", "d");
+  }
+  if (kvm) {
+    args.push("-enable-kvm", "-cpu", "host");
+  } else {
+    args.push("-cpu", "qemu64");
+  }
   return args;
 }
 
@@ -603,16 +673,65 @@ async function main(): Promise<never> {
 
   createVirtualDisk(diskPath);
 
+  const requireWifiEsp = wifiEspPhase1Enabled();
+  let bootMedia: InstallBootMedia = { kind: "iso", path: isoPath };
+  if (requireWifiEsp) {
+    const usbImagePath = join(tmpDir, "zflash-wifi-esp-boot.img");
+    console.log(
+      `[qemu-full-install-test] QEMU_WIFI_ESP_PHASE1=1 — baking file-backed zflash image with wifi ESP JSON (ssid=${DEFAULT_QEMU_WIFI_SSID})`,
+    );
+    const prepared = prepareBootImage({
+      isoPath,
+      outputImagePath: usbImagePath,
+      withCredentialBlob: false,
+      testMode: true,
+      hostname: "node-qemu-wifi",
+      espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
+      pubkeyPath: TEST_INFRA_PUBKEY,
+      wifiCredentials: {
+        ssid: DEFAULT_QEMU_WIFI_SSID,
+        password: DEFAULT_QEMU_WIFI_PASSWORD,
+      },
+    });
+    if ("error" in prepared) {
+      console.error(`[qemu-full-install-test] wifi ESP boot-image bake failed: ${prepared.error}`);
+      process.exit(2);
+    }
+    bootMedia = { kind: "usb-image", path: prepared.outputImagePath };
+    console.log(`[qemu-full-install-test] USB boot image: ${bootMedia.path}`);
+  }
+  if (!kvmEnabled()) {
+    console.warn(`[qemu-full-install-test] ${KVM_PATH} not available; using TCG (slow)`);
+  }
+
   const phase1 = await runQemuUntil(
-    buildQemuInstallArgs(isoPath, diskPath, phase1SerialLogPath),
+    buildQemuInstallArgs(bootMedia, diskPath, phase1SerialLogPath),
     phase1SerialLogPath,
     () => waitForInstallComplete(phase1SerialLogPath),
-    "phase 1 (ISO install)",
+    requireWifiEsp ? "phase 1 (zflash USB install + wifi ESP)" : "phase 1 (ISO install)",
   );
   const phase1Serial = readSerial(phase1SerialLogPath);
   if (phase1.exitCode !== 0) {
     writeArtifactSerialLog(phase1Serial, "");
     reportResult(phase1, artifactSerialLogPath);
+  }
+
+  if (requireWifiEsp) {
+    const wifiContract = assertWifiEspPhase1Contract(phase1Serial);
+    if (!wifiContract.ok) {
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `wifi ESP phase-1 contract failed — ${wifiContract.reason}`,
+          serialLogTail: phase1Serial.slice(-2000),
+          ...(phase1.elapsedSeconds !== undefined
+            ? { elapsedSeconds: phase1.elapsedSeconds }
+            : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log("[qemu-full-install-test] wifi ESP phase-1 contract ok (profile write; association deferred)");
   }
 
   const hostname = phase1.hostname ?? extractGeneratedHostname(phase1Serial);

@@ -36,6 +36,44 @@ export const WIFI_ESP_INSTALL_SERIAL_MARKERS: readonly string[] = [
 export const WIFI_ESP_ABSENT_SERIAL_MARKER =
   "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection";
 
+export type WifiEspInstallSerialResult =
+  | { readonly ok: true; readonly matchedMarkers: readonly string[] }
+  | {
+      readonly ok: false;
+      readonly reason: string;
+      readonly missingMarkers: readonly string[];
+    };
+
+/**
+ * Phase-1 install must claim ESP JSON → NM profile write, and must NOT claim
+ * radio association (physical-gated floor).
+ */
+export function assertWifiEspInstallSerial(
+  serialOutput: string,
+  options: { readonly forbiddenSecrets?: readonly string[] } = {},
+): WifiEspInstallSerialResult {
+  const missingMarkers = WIFI_ESP_INSTALL_SERIAL_MARKERS.filter(
+    (marker) => !serialOutput.includes(marker),
+  );
+  if (missingMarkers.length > 0) {
+    const reason = redactSecrets(
+      `wifi ESP install markers missing: ${missingMarkers.join("; ")}`,
+      options.forbiddenSecrets ?? [],
+    );
+    return { ok: false, reason, missingMarkers };
+  }
+  return { ok: true, matchedMarkers: WIFI_ESP_INSTALL_SERIAL_MARKERS };
+}
+
+function redactSecrets(text: string, secrets: readonly string[]): string {
+  let out = text;
+  for (const secret of secrets) {
+    if (secret.length === 0) continue;
+    out = out.split(secret).join("<redacted>");
+  }
+  return out;
+}
+
 /** zeta-install.sh emits these when /zeta-hostname.txt is injected from the boot USB ESP. */
 export const HOSTNAME_INJECTION_SERIAL_MARKERS: readonly string[] = [
   "[iter-5.2]   found injected hostname:",

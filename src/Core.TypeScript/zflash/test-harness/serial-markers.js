@@ -9,7 +9,23 @@ export const B0891_RETENTION_USB_SERIAL_MARKERS = [
   "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP",
   "[iter-5-wifi] wrote NetworkManager profile to installed system",
   "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
-], WIFI_ESP_ABSENT_SERIAL_MARKER = "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection", HOSTNAME_INJECTION_SERIAL_MARKERS = [
+], WIFI_ESP_ABSENT_SERIAL_MARKER = "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection";
+export function assertWifiEspInstallSerial(serialOutput, options = {}) {
+  const missingMarkers = WIFI_ESP_INSTALL_SERIAL_MARKERS.filter((marker) => !serialOutput.includes(marker));
+  if (missingMarkers.length > 0)
+    return { ok: !1, reason: redactSecrets(`wifi ESP install markers missing: ${missingMarkers.join("; ")}`, options.forbiddenSecrets ?? []), missingMarkers };
+  return { ok: !0, matchedMarkers: WIFI_ESP_INSTALL_SERIAL_MARKERS };
+}
+function redactSecrets(text, secrets) {
+  let out = text;
+  for (const secret of secrets) {
+    if (secret.length === 0)
+      continue;
+    out = out.split(secret).join("<redacted>");
+  }
+  return out;
+}
+export const HOSTNAME_INJECTION_SERIAL_MARKERS = [
   "[iter-5.2]   found injected hostname:",
   "[iter-5.2]   wrote /mnt/etc/zeta/cluster-node-id",
   "[iter-5.2]   networking.hostName will be"

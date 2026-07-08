@@ -40,4 +40,10 @@ describe("prepare-boot-image constants", () => {
   test("uses deterministic QEMU USB UUID for test blobs", () => {
     expect(DEFAULT_QEMU_USB_UUID).toContain("b0891");
   });
+
+  test("exports deterministic QEMU wifi ESP credentials for software-only gates", async () => {
+    const { DEFAULT_QEMU_WIFI_SSID, DEFAULT_QEMU_WIFI_PASSWORD } = await import("./prepare-boot-image");
+    expect(DEFAULT_QEMU_WIFI_SSID).toBe("zeta-qemu-homelab");
+    expect(DEFAULT_QEMU_WIFI_PASSWORD).toContain("qemu");
+  });
 });

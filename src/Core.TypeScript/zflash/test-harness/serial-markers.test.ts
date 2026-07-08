@@ -101,4 +101,16 @@ describe("wifi ESP install serial markers", () => {
       expect(serial).toContain(marker);
     }
   });
+
+  test("assertWifiEspInstallSerial fails closed and redacts secrets in reason", async () => {
+    const { assertWifiEspInstallSerial } = await import("./serial-markers");
+    const result = assertWifiEspInstallSerial("no wifi markers", {
+      forbiddenSecrets: ["super-secret-psk"],
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("wifi ESP install markers missing");
+      expect(result.reason).not.toContain("super-secret-psk");
+    }
+  });
 });

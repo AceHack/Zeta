@@ -10,6 +10,7 @@ radio claim, hostname uniqueness contract). Physical S6 UX feel + real
 WiFi association remain metal-gated.
 Next concrete action: **minimize metal** — keep deepening QEMU/CI
 (cascade #6 full-install asserting mock-auth + `node-<6hex>` login;
+opt-in `QEMU_WIFI_ESP_PHASE1=1` ESP→NM acceptance on workflow_dispatch;
 opt-in retention/path-fork execute). **Physical boot** only when ready
 for residual hardware (S6 feel, radio associate, Touch ID). Paper/mock
 S6 flow accepted 2026-07-08 (GitHub → local → done; skip-gh continue
