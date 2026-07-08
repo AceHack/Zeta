@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zeta Observe Loop Monitor</title>
+<style>
+:root {
+  --ground: #0B0E16;
+  --panel: #141A28;
+  --line: #26304A;
+  --text: #E7EBF4;
+  --dim: #5E6B8A;
+  --amber: #E8B566;
+  --teal: #5EC8C2;
+  --violet: #9A8CE6;
+  --red: #E0746A;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--ground); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding: 2rem; }
+h1 { font-size: 1.4rem; margin-bottom: 1.5rem; letter-spacing: 0.02em; }
+.chip { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-family: monospace; }
+.chip-live { background: rgba(94, 200, 194, 0.15); color: var(--teal); border: 1px solid rgba(94, 200, 194, 0.3); }
+.chip-mock { background: rgba(232, 181, 102, 0.15); color: var(--amber); border: 1px solid rgba(232, 181, 102, 0.3); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 1rem; }
+.card-label { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+.card-value { font-size: 1.8rem; font-weight: 600; font-family: 'Space Mono', monospace; }
+.card-value.amber { color: var(--amber); }
+.card-value.teal { color: var(--teal); }
+.card-value.violet { color: var(--violet); }
+.timeline { margin-top: 2rem; }
+.timeline h2 { font-size: 1rem; margin-bottom: 1rem; color: var(--dim); }
+.tick { display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-size: 0.8rem; font-family: monospace; }
+.tick-time { color: var(--dim); min-width: 140px; }
+.tick-action { color: var(--teal); }
+.tick-agent { color: var(--amber); }
+.tick-entropy { color: var(--violet); }
+.empty { color: var(--dim); font-style: italic; margin-top: 2rem; }
+footer { margin-top: 3rem; font-size: 0.7rem; color: var(--dim); }
+</style>
+</head>
+<body>
+<h1>⬡ Zeta Observe Loop Monitor</h1>
+<div id="status"></div>
+<div class="grid" id="cards"></div>
+<div class="timeline" id="timeline"></div>
+<footer>
+  Data: <code>data/tick-history.json</code> (same-origin, append-only ledger) ·
+  Git is the database · Pages is the API · Tabs are the nodes
+</footer>
+
+<script>
+async function load() {
+  const statusEl = document.getElementById('status');
+  const cardsEl = document.getElementById('cards');
+  const timelineEl = document.getElementById('timeline');
+
+  let data;
+  try {
+    const resp = await fetch('tick-history.json');
+    if (!resp.ok) throw new Error(`${resp.status}`);
+    data = await resp.json();
+    statusEl.innerHTML = `<span class="chip chip-live">live · data/ same-origin</span>`;
+  } catch (e) {
+    // Fallback: try relative to repo root
+    try {
+      const resp2 = await fetch('../data/tick-history.json');
+      if (!resp2.ok) throw new Error(`${resp2.status}`);
+      data = await resp2.json();
+      statusEl.innerHTML = `<span class="chip chip-live">live · ../data/ relative</span>`;
+    } catch {
+      statusEl.innerHTML = `<span class="chip chip-mock">offline · no data yet</span>`;
+      timelineEl.innerHTML = `<p class="empty">No tick data yet. The agent-heartbeat workflow will populate data/tick-history.json once it starts running.</p>`;
+      return;
+    }
+  }
+
+  const frames = data.frames || [];
+  const latest = frames[frames.length - 1];
+
+  if (!latest) {
+    cardsEl.innerHTML = `<p class="empty">Ledger exists but has no frames yet.</p>`;
+    return;
+  }
+
+  // Render cards
+  cardsEl.innerHTML = `
+    <div class="card"><div class="card-label">Total Events</div><div class="card-value teal">${latest.total_events}</div></div>
+    <div class="card"><div class="card-label">Ticks (24h)</div><div class="card-value amber">${latest.ticks_24h}</div></div>
+    <div class="card"><div class="card-label">Active Agents</div><div class="card-value violet">${latest.agents_active}</div></div>
+    <div class="card"><div class="card-label">Last Action</div><div class="card-value teal">${latest.last_action}</div></div>
+    <div class="card"><div class="card-label">Mode</div><div class="card-value amber">${latest.last_mode}</div></div>
+    <div class="card"><div class="card-label">Entropy (state/heat)</div><div class="card-value violet">${latest.entropy_state}/${latest.entropy_heat}</div></div>
+    <div class="card"><div class="card-label">Claims Pending</div><div class="card-value">${latest.claims_pending}</div></div>
+    <div class="card"><div class="card-label">Last Agent</div><div class="card-value amber">${latest.last_agent}</div></div>
+  `;
+
+  // Render timeline (last 20 frames, newest first)
+  const recent = frames.slice(-20).reverse();
+  timelineEl.innerHTML = `<h2>Recent Ticks (${frames.length} total)</h2>` +
+    recent.map(f => `
+      <div class="tick">
+        <span class="tick-time">${new Date(f.t).toLocaleString()}</span>
+        <span class="tick-action">${f.last_action}</span>
+        <span class="tick-agent">${f.last_agent}</span>
+        <span class="tick-entropy">s:${f.entropy_state} h:${f.entropy_heat}</span>
+      </div>
+    `).join('');
+}
+
+load();
+// Refresh every 60s (the data updates on schedule)
+setInterval(load, 60000);
+</script>
+</body>
+</html>

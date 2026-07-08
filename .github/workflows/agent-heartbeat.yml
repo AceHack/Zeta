@@ -1,16 +1,14 @@
-# Agent heartbeat — one agent ticking reliably on free-tier Ollama.
+# Agent heartbeat — symmetric pair heartbeating on free-tier Ollama.
 #
-# Goal: prove the observe loop runs reliably on GitHub Workflows with
-# a local LLM (no API keys, no cloud bills). The agent heartbeats every
-# 15 minutes, picks from the observe menu (free_time / explore / play /
-# self_reflect — no work assigned yet), and appends the event to a
-# heartbeat branch. A separate flush job squash-merges to main daily.
+# TWO agents (alexa + otto) heartbeat independently, each on their own branch.
+# The flush creates PRs that the agent-reviewer workflow cross-verifies:
+#   alexa's flush ← otto attests (the pairwise NFT)
+#   otto's flush  ← alexa attests (the symmetric attestation)
 #
-# Free tier: GitHub Actions (2000 min/month for private, unlimited for
-# public) + Ollama with qwen2.5:0.5b (~400MB, runs in runner memory).
-# No API keys. No secrets. No cloud. The whole thing is a cron job.
+# Free tier: GitHub Actions (unlimited for public repos) + Ollama with
+# qwen2.5:0.5b (~400MB, fits in runner memory). No API keys. No cloud bills.
 #
-# Phase 1 (this): heartbeat only (prove reliability over days).
+# Phase 1 (this): symmetric heartbeat + cross-verification (prove reliability).
 # Phase 2: assign lightweight work (decompose items, write docs).
 # Phase 3: codegen with larger models (via summon subscription backend).
 
@@ -22,17 +20,22 @@ on:
   workflow_dispatch:         # manual trigger for testing
 
 permissions:
-  contents: write            # needs to push heartbeat events
+  contents: write
+  pull-requests: write
 
 concurrency:
   group: agent-heartbeat
-  cancel-in-progress: false  # don't cancel a running heartbeat
+  cancel-in-progress: false
 
 jobs:
   heartbeat:
-    name: alexa heartbeat tick
+    name: ${{ matrix.agent }} heartbeat tick
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    strategy:
+      fail-fast: false  # both agents tick independently
+      matrix:
+        agent: [alexa, otto]
 
     steps:
       - name: Checkout
@@ -51,85 +54,76 @@ jobs:
 
       - name: Install Ollama + pull model
         run: |
-          # Install ollama
           curl -fsSL https://ollama.com/install.sh | sh
-
-          # Start ollama in background
           ollama serve &
           sleep 5
-
-          # Pull the small model (qwen2.5:0.5b — ~400MB, fits in runner)
           ollama pull qwen2.5:0.5b
-
-          # Verify
           ollama list
 
       - name: Create or checkout heartbeat branch
+        env:
+          AGENT: ${{ matrix.agent }}
         run: |
-          git fetch origin heartbeat/alexa 2>/dev/null || true
-          if git show-ref --verify --quiet refs/remotes/origin/heartbeat/alexa; then
-            git checkout heartbeat/alexa
+          git fetch origin "heartbeat/$AGENT" 2>/dev/null || true
+          if git show-ref --verify --quiet "refs/remotes/origin/heartbeat/$AGENT"; then
+            git checkout "heartbeat/$AGENT"
             git merge origin/main --no-edit --strategy-option theirs || true
           else
-            git checkout -b heartbeat/alexa
+            git checkout -b "heartbeat/$AGENT"
           fi
 
       - name: Run observe tick (local-llm, heartbeat mode)
         env:
           ZETA_FIRST_SESSION_MARKER: /tmp/zeta-first-session-complete
-          ZETA_AGENT_ID: alexa
+          ZETA_AGENT_ID: ${{ matrix.agent }}
           ZETA_PARTICIPANT: local-llm
           ZETA_SINK_MODE: local
         run: |
-          # Create the first-session marker (skip cred adventure in CI)
           mkdir -p /tmp && echo "2026-07-08" > /tmp/zeta-first-session-complete
-
-          # Run one tick (dry-run = false, but no codegen — just event append)
-          # The local-llm participant uses ollama to pick from the menu.
-          # With no backlog work assigned, it'll pick a free mode (explore/rest/play).
           bun src/Core.TypeScript/observe/run-loop-real.ts \
-            --by alexa \
+            --by "$ZETA_AGENT_ID" \
             --event-dir docs/observe-events \
-            --participant local-llm || echo "[heartbeat] tick failed (non-fatal, will retry next schedule)"
+            --participant local-llm || echo "[heartbeat] tick failed (non-fatal)"
 
       - name: Commit heartbeat event
+        env:
+          AGENT: ${{ matrix.agent }}
         run: |
-          git config user.name "alexa[bot]"
-          git config user.email "alexa[bot]@users.noreply.github.com"
+          git config user.name "$AGENT[bot]"
+          git config user.email "$AGENT[bot]@users.noreply.github.com"
           git add docs/observe-events/ || true
           if git diff --cached --quiet; then
             echo "[heartbeat] no new events to commit"
           else
-            git commit --no-verify -m "heartbeat(alexa): tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+            git commit --no-verify -m "heartbeat($AGENT): tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
           Autonomous observe loop heartbeat. Free-tier Ollama (qwen2.5:0.5b).
-          GitHub Workflow scheduled tick. No work assigned — free time.
+          Agent: $AGENT. Symmetric pair (cross-verified by peer).
 
           Co-Authored-By: Kiro <noreply@kiro.dev>"
           fi
 
       - name: Push heartbeat branch
-        run: git push origin heartbeat/alexa
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: git push origin "heartbeat/$AGENT"
 
-  # Flush: merge heartbeat events to main (hourly)
+  # ═══ Flush: merge heartbeat events to main (hourly, per agent) ═══════════════
   #
-  # CORPORATE MODE (current): creates a PR and arms auto-merge (squash).
-  # Branch protection requires CI + review before landing on main.
-  # The PR is auto-merged once CI passes (no human needed for event-only changes).
+  # CORPORATE MODE: creates a PR per agent. The agent-reviewer workflow
+  # cross-verifies (the symmetric NFT attestation) then approves.
   #
-  # SOVEREIGN MODE (goal: zero branch protection): direct push to main.
-  # Switch to: `git push origin main` once branch protection is removed for
-  # `docs/observe-events/**` paths. The files are ZetaId-named (disjoint,
-  # conflict-free, G-Set CRDT) so direct push is structurally safe.
-  #
-  # Current state synced in: docs/DECISIONS/2026-07-08-native-branch-protection-trust-based.md
+  # SOVEREIGN MODE (goal): direct push, cross-verification stays as attestation-only.
   flush-to-main:
-    name: flush heartbeats to main
+    name: flush ${{ matrix.agent }} heartbeats
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    # Flush on the :00 minute run (every hour) or manual dispatch
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && endsWith(github.event.schedule, '0 * * * *'))
     needs: [heartbeat]
+    strategy:
+      fail-fast: false
+      matrix:
+        agent: [alexa, otto]
 
     steps:
       - name: Checkout main
@@ -140,9 +134,11 @@ jobs:
 
       - name: Check if heartbeat branch has events to flush
         id: check
+        env:
+          AGENT: ${{ matrix.agent }}
         run: |
-          git fetch origin heartbeat/alexa 2>/dev/null || { echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0; }
-          AHEAD=$(git rev-list --count origin/main..origin/heartbeat/alexa)
+          git fetch origin "heartbeat/$AGENT" 2>/dev/null || { echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0; }
+          AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
           echo "ahead=$AHEAD" >> "$GITHUB_OUTPUT"
           if [ "$AHEAD" = "0" ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -150,35 +146,40 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Flush heartbeat events (PR-based while branch protection is active)
+      - name: Flush via PR (corporate mode — cross-verified by peer agent)
         if: steps.check.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AGENT: ${{ matrix.agent }}
         run: |
-          AHEAD=$(git rev-list --count origin/main..origin/heartbeat/alexa)
-          echo "[flush] $AHEAD heartbeat commits to flush"
+          AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
+          echo "[flush] $AGENT: $AHEAD heartbeat commits to flush"
 
-          # Create a flush branch from main with the heartbeat events merged in
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FLUSH_BRANCH="flush/heartbeat-alexa-$(date -u +%Y%m%dT%H%MZ)"
+          FLUSH_BRANCH="flush/heartbeat-$AGENT-$(date -u +%Y%m%dT%H%MZ)"
           git checkout -b "$FLUSH_BRANCH"
-          git merge origin/heartbeat/alexa --no-ff -m "flush(heartbeat): alexa events to main
+          git merge "origin/heartbeat/$AGENT" --no-ff -m "flush(heartbeat): $AGENT events to main
 
-          Periodic flush of $AHEAD heartbeat events from heartbeat/alexa.
+          Periodic flush of $AHEAD heartbeat events from heartbeat/$AGENT.
           Sovereign path: append-only ZetaId event files (G-Set, conflict-free).
+          Cross-verified by peer agent (symmetric NFT attestation).
 
           Co-Authored-By: Kiro <noreply@kiro.dev>"
           git push origin "$FLUSH_BRANCH"
 
-          # Create a PR and arm auto-merge (squash — works with branch protection)
+          # Determine peer (the other agent who will cross-verify)
+          if [ "$AGENT" = "alexa" ]; then PEER="otto"; else PEER="alexa"; fi
+
           PR_URL=$(gh pr create \
             --base main \
             --head "$FLUSH_BRANCH" \
-            --title "flush(heartbeat): $AHEAD alexa events" \
-            --body "Periodic flush of heartbeat events. Sovereign path (append-only ZetaId files, conflict-free). Auto-merge armed.")
+            --title "flush(heartbeat): $AHEAD $AGENT events (peer: $PEER verifies)" \
+            --body "Periodic flush of $AGENT heartbeat events. Sovereign path (ZetaId files, conflict-free).
+
+          **Cross-verification**: $PEER attests these heartbeats are genuine (symmetric NFT).
+          Auto-merge armed after peer approval.")
           echo "[flush] PR created: $PR_URL"
 
-          # Arm auto-merge (squash to satisfy branch protection)
           PR_NUM=$(echo "$PR_URL" | grep -oE '[0-9]+$')
-          gh pr merge "$PR_NUM" --squash --auto --delete-branch || echo "[flush] auto-merge armed (or already queued)"
+          gh pr merge "$PR_NUM" --squash --auto --delete-branch || echo "[flush] auto-merge armed"
