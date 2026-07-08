@@ -19,6 +19,22 @@ export const B0891_FRESH_USB_SERIAL_MARKER =
 /** Post-install first-boot cred restore idempotency markers (installed OS path). */
 export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = ["zeta-creds-restore:", "already-present"];
 
+/** zeta-install.sh emits these when /zeta-hostname.txt is injected from the boot USB ESP. */
+export const HOSTNAME_INJECTION_SERIAL_MARKERS: readonly string[] = [
+  "[iter-5.2]   found injected hostname:",
+  "[iter-5.2]   wrote /mnt/etc/zeta/cluster-node-id",
+  "[iter-5.2]   networking.hostName will be",
+];
+
+/** zeta-install.sh emits these when no hostname blob exists and it generates one on-node. */
+export const HOSTNAME_AUTOGENERATION_SERIAL_MARKERS: readonly string[] = [
+  "[iter-5.2]   no zeta-hostname.txt on USB ESP",
+  "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ...",
+  "[iter-5.2.2]   generated:",
+  "[iter-5.2.2]   wrote /mnt/etc/zeta/cluster-node-id",
+  "[iter-5.2.2]   networking.hostName will be",
+];
+
 /** zeta-install.sh success banner — full install finished (same boundary as scenario 2 phase 1). */
 export const INSTALL_COMPLETE_SERIAL_MARKER = "ZETA CLUSTER NODE INSTALL COMPLETE";
 

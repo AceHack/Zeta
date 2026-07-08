@@ -1,10 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import {
+  assertHostnameAutogenerationSerialMarkers,
+  assertHostnameInjectionSerialMarkers,
   assertRetentionSerialMarkers,
   assertFirstSessionSerialMarkers,
   assertHappyPathFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
   B0891_RETENTION_USB_SERIAL_MARKERS,
+  HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
+  HOSTNAME_INJECTION_SERIAL_MARKERS,
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
   INITIAL_INSTALL_SERIAL_MARKERS,
@@ -202,6 +206,41 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
     const serial = ["zeta-first-session: begin", "zeta-first-session: complete"].join(`
 `), result = assertFirstSessionSerialMarkers(serial);
     expect("ok" in result).toBe(!0);
+  });
+  test("asserts explicit ESP hostname injection markers from QEMU output", () => {
+    const serial = [
+      "[iter-5.2] probing boot USB for injected hostname",
+      "[iter-5.2]   found injected hostname: pikachu (source: /mnt/boot/zeta-hostname.txt)",
+      "[iter-5.2]   wrote /mnt/etc/zeta/cluster-node-id",
+      "[iter-5.2]   networking.hostName will be 'pikachu' on first boot",
+      "[iter-5.2]   ssh access: ssh zeta@pikachu.local"
+    ].join(`
+`), result = assertHostnameInjectionSerialMarkers(serial);
+    expect("ok" in result).toBe(!0);
+    if ("ok" in result)
+      expect(result.ok.matchedMarkers).toEqual(HOSTNAME_INJECTION_SERIAL_MARKERS);
+  });
+  test("asserts on-node hostname autogeneration markers from QEMU output", () => {
+    const serial = [
+      "[iter-5.2] probing boot USB for injected hostname",
+      "[iter-5.2]   no zeta-hostname.txt on USB ESP",
+      "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ...",
+      "[iter-5.2.2]   generated: node-a1b2c3",
+      "[iter-5.2.2]   wrote /mnt/etc/zeta/cluster-node-id",
+      "[iter-5.2.2]   networking.hostName will be 'node-a1b2c3' on first boot"
+    ].join(`
+`), result = assertHostnameAutogenerationSerialMarkers(serial);
+    expect("ok" in result).toBe(!0);
+    if ("ok" in result)
+      expect(result.ok.matchedMarkers).toEqual(HOSTNAME_AUTOGENERATION_SERIAL_MARKERS);
+  });
+  test("reports missing hostname injection markers when ESP hostname was not consumed", () => {
+    const result = assertHostnameInjectionSerialMarkers("[iter-5.2]   no zeta-hostname.txt on USB ESP");
+    expect("error" in result).toBe(!0);
+    if ("error" in result) {
+      expect(result.error.kind).toBe("missing-serial-markers");
+      expect(result.error.missingMarkers).toEqual(HOSTNAME_INJECTION_SERIAL_MARKERS);
+    }
   });
   test("assertHappyPathFirstSessionSerial checks accepted setup-gh local-only path", () => {
     const serial = [

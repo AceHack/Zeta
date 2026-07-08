@@ -297,6 +297,8 @@ describe("planFileBackedZflashImage", () => {
             args: ["convert", "-f", "raw", "-O", "raw", "artifacts/zeta-installer.iso", "artifacts/zflash-baked.img"],
         });
         expect(result.value.espOffsetBytes).toBe(1_048_576);
+        const espDestinations = result.value.espWrites.map((write) => write.destination);
+        expect(espDestinations).toEqual(expect.arrayContaining(["/zeta-hostname.txt", "/zeta-creds.enc"]));
         expect(result.value.espWrites).toEqual([
             {
                 destination: "/zeta-authorized-keys.pub",

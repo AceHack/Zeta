@@ -2,6 +2,8 @@ import { spawn as nodeSpawn, spawnSync as nodeSpawnSync, type SpawnOptions } fro
 import { existsSync, readFileSync } from "node:fs";
 import {
   B0891_RETENTION_USB_SERIAL_MARKERS,
+  HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
+  HOSTNAME_INJECTION_SERIAL_MARKERS,
   INITIAL_INSTALL_SERIAL_MARKERS,
   INSTALLED_OS_RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -214,6 +216,8 @@ const DEFAULT_QEMU_KILL_TIMEOUT_MS = 1000;
 
 export {
   B0891_RETENTION_USB_SERIAL_MARKERS,
+  HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
+  HOSTNAME_INJECTION_SERIAL_MARKERS,
   INITIAL_INSTALL_SERIAL_MARKERS,
   INSTALLED_OS_RETENTION_SERIAL_MARKERS as RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -819,6 +823,22 @@ export function assertRetentionSerialMarkers(
 export function assertFirstSessionSerialMarkers(
   serialOutput: string,
   requiredMarkers: readonly string[] = FIRST_SESSION_SERIAL_MARKERS,
+): RetentionSerialMarkerResult {
+  return assertRetentionSerialMarkers(serialOutput, requiredMarkers);
+}
+
+/** QEMU-testable proof that zeta-install consumed /zeta-hostname.txt from the ESP. */
+export function assertHostnameInjectionSerialMarkers(
+  serialOutput: string,
+  requiredMarkers: readonly string[] = HOSTNAME_INJECTION_SERIAL_MARKERS,
+): RetentionSerialMarkerResult {
+  return assertRetentionSerialMarkers(serialOutput, requiredMarkers);
+}
+
+/** QEMU-testable proof that zeta-install generated a hostname when no ESP hostname was present. */
+export function assertHostnameAutogenerationSerialMarkers(
+  serialOutput: string,
+  requiredMarkers: readonly string[] = HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
 ): RetentionSerialMarkerResult {
   return assertRetentionSerialMarkers(serialOutput, requiredMarkers);
 }

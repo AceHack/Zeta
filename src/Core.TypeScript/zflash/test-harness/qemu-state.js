@@ -2,6 +2,8 @@ import { spawn as nodeSpawn, spawnSync as nodeSpawnSync } from "node:child_proce
 import { existsSync, readFileSync } from "node:fs";
 import {
   B0891_RETENTION_USB_SERIAL_MARKERS,
+  HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
+  HOSTNAME_INJECTION_SERIAL_MARKERS,
   INITIAL_INSTALL_SERIAL_MARKERS,
   INSTALLED_OS_RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -12,6 +14,8 @@ import {
 const DEFAULT_MEMORY_MB = 4096, DEFAULT_CPU_COUNT = 2, DEFAULT_DISK_SIZE_GB = 20, DEFAULT_RETENTION_COMMAND_TIMEOUT_MS = 1800000, DEFAULT_RETENTION_POLL_INTERVAL_MS = 1000, DEFAULT_QEMU_STOP_TIMEOUT_MS = 5000, DEFAULT_QEMU_KILL_TIMEOUT_MS = 1000;
 export {
   B0891_RETENTION_USB_SERIAL_MARKERS,
+  HOSTNAME_AUTOGENERATION_SERIAL_MARKERS,
+  HOSTNAME_INJECTION_SERIAL_MARKERS,
   INITIAL_INSTALL_SERIAL_MARKERS,
   INSTALLED_OS_RETENTION_SERIAL_MARKERS as RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -461,5 +465,11 @@ export function assertRetentionSerialMarkers(serialOutput, requiredMarkers = INS
   };
 }
 export function assertFirstSessionSerialMarkers(serialOutput, requiredMarkers = FIRST_SESSION_SERIAL_MARKERS) {
+  return assertRetentionSerialMarkers(serialOutput, requiredMarkers);
+}
+export function assertHostnameInjectionSerialMarkers(serialOutput, requiredMarkers = HOSTNAME_INJECTION_SERIAL_MARKERS) {
+  return assertRetentionSerialMarkers(serialOutput, requiredMarkers);
+}
+export function assertHostnameAutogenerationSerialMarkers(serialOutput, requiredMarkers = HOSTNAME_AUTOGENERATION_SERIAL_MARKERS) {
   return assertRetentionSerialMarkers(serialOutput, requiredMarkers);
 }

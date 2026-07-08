@@ -66,6 +66,8 @@ bringup.
 
 QEMU scenarios 1–4 green; scenario 2 asserts first-session serial markers on **push** (phase-3 promoted after [run 27862943618](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/27862943618)). **Post-login:** [FIRST-SESSION.md](./FIRST-SESSION.md) slices 1–4 landed; **next** paper/mock-terminal review of the S6 co-design draft plus physical first-login boot; slice 5 CODEOWNERS follows when teams are confirmed.
 
+- ESP hostname + credential injection now has QEMU-testable planning/serial-marker assertions; WiFi radio association remains physical-gated, but a future ESP WiFi blob can reuse the same write-plan + serial-marker pattern.
+
 ## Society validation (not PR-centric)
 
 Per [`docs/BUILD-GATES.md`](../../BUILD-GATES.md): local `preflight` before push; peer replay; CI is signal. Tiers S0–S6 in FIRST-SESSION.md. Full QEMU cascade = society cadence, not per-edit tax.
