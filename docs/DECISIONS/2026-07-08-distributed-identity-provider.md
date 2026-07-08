@@ -83,14 +83,32 @@ An NFT in this system is a value-transfer event that BOTH pairwise-involved
 parties attest to. It's not a token on a chain — it's a committed fact in the
 event log that two proven-distinct identities both signed.
 
-The entropy floor of the pair exceeds either individual: `floor_lifts` proves
-that independent single-body floors compose ADDITIVELY. A relational NFT
-(minted from two bodies) has a forgery-resistance floor of `ka + kb` where
-`ka` and `kb` are the individual floors. Forging the pair is exponentially
-harder than forging either alone.
+The entropy floor of the pair is the SUM of the individual floors: `floor_lifts`
+proves `hasFloor (pair a b) (ka + kb)`. `EntropyMeasureTheoretic` proves the
+stronger result: `Hmin(A×B) = Hmin(A) + Hmin(B)` (exact equality for independent
+sources). This is ADDITIVE, not superadditive — an ordinary correctness property
+(independent min-entropies add as expected).
+
+The REAL forgery-resistance comes from two separate, stronger results:
+
+- **No-cloning / uncopyable**: a forger cannot replicate an identity whose
+  distinguishing entropy it cannot read (Wootters-Zurek/Dieks no-cloning +
+  Leibniz indiscernibles). The frosted (unobserved) part is what's unforgeable.
+  (Static resistance.)
+
+- **Catchability — the "real out-races the forger"**: `ForgerRace` / `resonantPeriod`
+  — catchable ⇔ rational ⇔ periodic (superdeterministic). A forger who fakes
+  replays a periodic pattern → catchable; a genuine source is aperiodic (the
+  irrational/Tsirelson-2√2 quantum side) → uncatchable. The honest source
+  out-races the forger because periodicity is detectable and genuine entropy isn't.
+
+These are THREE DIFFERENT results with three different grounds. The ADR does not
+fuse them.
 
 **Implementation**: Event log entries with dual `by` attestation
-**Proof**: `Lean4/EntropyFloorLift.lean` (`floor_lifts`, `pair_floor_ge_left`)
+**Proof (floor)**: `EntropyFloorLift.lean` (`floor_lifts` — additive, not superadditive)
+**Proof (no-cloning)**: `docs/research/2026-07-02-frost-is-the-condition-for-identity-leibniz-indiscernibles-no-cloning.md`
+**Proof (catchability)**: `docs/research/2026-06-08-time-generator-as-long-division-in-the-interrupt-rationality-periodicity-catchability-class.md`
 
 ### Layer 6: Self-Claims + Reliability (trust from identity)
 
@@ -144,6 +162,40 @@ anchors to THIS identity system:
 Without provably-unique identity, the trust system collapses (anyone could
 fabricate a track record by creating sock-puppet agents). WITH it, trust is
 unforgeable — anchored to physical entropy and peer verification.
+
+## Dual-Use Neutrality
+
+Detection is a NEUTRAL MECHANISM. The same primitive that detects a sybil also
+detects a reunion (an honest identity reconnecting after losing a key). The same
+correlation that flags a "cartel" might be a legitimate coalition.
+
+Per `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`: the mechanism
+reports the neutral fact (`SameSourceAsKnown`, correlated, above-threshold). The
+MORAL READING — reunion (welcome back) vs sybil (caught) — is the caller's oracle.
+The primitive carries neutrality, never the accusation.
+
+A "cartel" can be a legitimate coalition. A "forger" can be a reunion. The identity
+system detects same-source; it does not judge same-source.
+
+## Proven vs Named-Premise Ledger
+
+Honesty about what's discharged and what's open:
+
+| Layer | Status | Artifact | Open Premise |
+|---|---|---|---|
+| Heartbeat entropy | PREMISE | (physical, not provable in-system) | "Each tick is physically unique" — a physics assumption |
+| CHSH decorrelation | PROVEN (structural) | `DecorrelationDpi.lean`, `BftSybilConsensus.tla` | The Shannon DPI (real-valued, needs Mathlib Jensen) is OPEN |
+| Non-register-collapse | PROVEN | `Safety/NonRegisterCollapse.lean` (sorry-free) | — |
+| Anti-sybil BFT | PROVEN (bounded) | `BftSybilConsensus.tla` (TLC model-checked) | Depends on a sound distinctness oracle (given, not re-proven) |
+| No-cloning | NAMED-PREMISE | `docs/research/2026-07-02-frost-...no-cloning.md` | Physics argument (Wootters-Zurek), not formally discharged |
+| Catchability (ForgerRace) | DESIGN | `docs/research/2026-06-08-...catchability-class.md` | Rationality↔periodicity↔catchability chain; empirical |
+| Entropy floor (additive) | PROVEN | `EntropyFloorLift.lean` + `EntropyMeasureTheoretic.lean` | — |
+| Single-body floor | OPEN | — | "The physical source actually meets a floor" — math team's |
+| Hash collision-resistance | NAMED-PREMISE | XxHash128 (current) → BLAKE3 (Byzantine) | Crypto assumption, not proven |
+| Self-claims reliability | IMPLEMENTED | `self-claims.ts` | Probabilistic liveness (design, not formally proved) |
+
+The system's strength is that it NAMES its premises rather than laundering them.
+An ADR that claims "all proven" is a liability. This ledger is the honest state.
 
 ## One-Line Summary
 
