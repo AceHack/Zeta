@@ -94,7 +94,7 @@ describe("first-session-run — demo script", () => {
     });
     const marker = join(mkdtempSync(join(tmpdir(), "zeta-marker-")), "complete.marker");
     const opts: RunOptions = {
-      ...parseArgs(["--demo", "--script", "skip-optional,complete", "--dry-run"]),
+      ...parseArgs(["--demo", "--script", "local-only", "--dry-run"]),
       runner,
       home: "/home/zeta",
       markerPath: marker,

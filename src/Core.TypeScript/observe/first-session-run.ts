@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * first-session-run.ts — post-login choose-your-own-adventure conductor.
+ * first-session-run.ts — post-login first-setup conductor.
  *
  * Invoked from NixOS profile.d on first interactive zeta login (slice 3).
  * Presents a numbered menu; optional --llm uses the local Ollama chooser.
@@ -107,6 +107,7 @@ export function sessionFromProbe(
   return {
     credentials: probed,
     complete,
+    cloudHelpersOffered: false,
   };
 }
 
@@ -123,6 +124,7 @@ export function actionFromDemoToken(token: string, session: NodeSessionState): F
     "setup-gh": "setup_credential:gh",
     "skip-gh": "skip_credential:gh",
     "skip-optional": "skip_optional_credentials",
+    "offer-cloud": "offer_cloud_helpers",
     "local-only": "use_local_llm_only",
     complete: "complete_first_session",
   };
@@ -148,8 +150,9 @@ function printMenu(session: NodeSessionState): void {
   const menu = buildFirstSessionMenu(session);
   console.log("");
   console.log("  ╔══════════════════════════════════════════════════════════╗");
-  console.log("  ║  Zeta first login — choose what to set up                ║");
-  console.log("  ║  GitHub is load-bearing; cloud helpers are optional      ║");
+  console.log("  ║  Zeta first login — a few simple choices                 ║");
+  console.log("  ║  GitHub joins the cluster (first target). Local is OK.   ║");
+  console.log("  ║  Cloud helpers stay hidden until you ask.                ║");
   console.log("  ╚══════════════════════════════════════════════════════════╝");
   console.log("");
   for (let i = 0; i < menu.length; i++) {

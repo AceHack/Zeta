@@ -10,20 +10,30 @@ import {
   type NodeSessionState,
 } from "./first-session";
 
-describe("first-session — credential adventure oracle", () => {
+describe("first-session — credential setup oracle", () => {
   it("defaults to setup gh when all creds missing", () => {
     const action = firstSessionOracle(defaultNodeSession());
     expect(action).toEqual({
       kind: "setup_credential",
       vendor: "gh",
-      reason: expect.stringContaining("self-register"),
+      reason: expect.stringContaining("cluster"),
     });
   });
 
-  it("offers optional vendor setup after gh is ready", () => {
+  it("recommends local after gh is ready (cloud stays hidden)", () => {
     const session: NodeSessionState = {
       credentials: { gh: "ready", claude: "missing", codex: "missing", gemini: "missing" },
       complete: false,
+      cloudHelpersOffered: false,
+    };
+    expect(firstSessionOracle(session).kind).toBe("use_local_llm_only");
+  });
+
+  it("offers optional vendor setup only after cloud helpers are offered", () => {
+    const session: NodeSessionState = {
+      credentials: { gh: "ready", claude: "missing", codex: "missing", gemini: "missing" },
+      complete: false,
+      cloudHelpersOffered: true,
     };
     expect(firstSessionOracle(session).kind).toBe("setup_credential");
     const lead = firstSessionOracle(session);
@@ -36,12 +46,13 @@ describe("first-session — credential adventure oracle", () => {
     const session: NodeSessionState = {
       credentials: { gh: "ready", claude: "skipped", codex: "skipped", gemini: "skipped" },
       complete: false,
+      cloudHelpersOffered: true,
     };
     expect(firstSessionOracle(session).kind).toBe("complete_first_session");
   });
 });
 
-describe("first-session — adventure menu", () => {
+describe("first-session — setup menu", () => {
   it("includes skip gh with register warning while gh missing", () => {
     const menu = buildFirstSessionMenu(defaultNodeSession());
     const kinds = menu.map((a) => (a.kind === "skip_credential" && a.vendor === "gh" ? "skip-gh" : a.kind));
@@ -52,24 +63,38 @@ describe("first-session — adventure menu", () => {
     }
   });
 
-  it("offers local-llm-only path when optional creds remain", () => {
+  it("after gh ready: local default + offer-cloud; no per-vendor cloud rows yet", () => {
     const session: NodeSessionState = {
       credentials: { gh: "ready", claude: "missing", codex: "missing", gemini: "missing" },
       complete: false,
+      cloudHelpersOffered: false,
     };
     const menu = buildFirstSessionMenu(session);
     expect(menu.some((a) => a.kind === "use_local_llm_only")).toBe(true);
+    expect(menu.some((a) => a.kind === "offer_cloud_helpers")).toBe(true);
+    expect(menu.some((a) => a.kind === "setup_credential" && a.vendor === "claude")).toBe(false);
+    expect(menu.some((a) => a.kind === "skip_optional_credentials")).toBe(false);
+  });
+
+  it("after offer_cloud_helpers: optional vendors appear", () => {
+    const session: NodeSessionState = {
+      credentials: { gh: "ready", claude: "missing", codex: "missing", gemini: "missing" },
+      complete: false,
+      cloudHelpersOffered: true,
+    };
+    const menu = buildFirstSessionMenu(session);
+    expect(menu.some((a) => a.kind === "setup_credential" && a.vendor === "claude")).toBe(true);
     expect(menu.some((a) => a.kind === "skip_optional_credentials")).toBe(true);
   });
 
-  it("labels are human-readable for LLM chooser", () => {
+  it("labels are plain-language for humans and LLM chooser", () => {
     const label = firstSessionLabel({
       kind: "setup_credential",
       vendor: "gh",
-      reason: "register",
+      reason: "join the cluster",
     });
-    expect(label).toContain("gh");
-    expect(label).toContain("register");
+    expect(label).toContain("GitHub");
+    expect(label).toContain("cluster");
   });
 });
 
@@ -111,15 +136,32 @@ describe("first-session — simulate state transitions", () => {
     expect(canSelfRegister(session)).toBe(true);
   });
 
-  it("adventure path: gh setup then skip optional then complete", () => {
+  it("recommended path: gh setup then local-only completes", () => {
     const steps: FirstSessionAction[] = [
       { kind: "setup_credential", vendor: "gh", reason: "x" },
-      { kind: "skip_optional_credentials", reason: "x" },
-      { kind: "complete_first_session", reason: "x" },
+      { kind: "use_local_llm_only", reason: "x" },
     ];
     const final = steps.reduce(simulateFirstSession, defaultNodeSession());
     expect(final.complete).toBe(true);
     expect(canSelfRegister(final)).toBe(true);
     expect(final.credentials.claude).toBe("skipped");
+    expect(final.cloudHelpersOffered).toBe(false);
+  });
+
+  it("offer_cloud_helpers unlocks optional vendors without completing", () => {
+    let session = simulateFirstSession(defaultNodeSession(), {
+      kind: "setup_credential",
+      vendor: "gh",
+      reason: "x",
+    });
+    session = simulateFirstSession(session, {
+      kind: "offer_cloud_helpers",
+      reason: "x",
+    });
+    expect(session.cloudHelpersOffered).toBe(true);
+    expect(session.complete).toBe(false);
+    expect(buildFirstSessionMenu(session).some((a) => a.kind === "setup_credential" && a.vendor === "claude")).toBe(
+      true,
+    );
   });
 });

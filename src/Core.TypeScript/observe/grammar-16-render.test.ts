@@ -149,7 +149,7 @@ describe("renderGrammar16 — first-session overlay (slice 4)", () => {
     const accept = slotOf(renderGrammar16(PENDING), SLOT.ACCEPT);
     expect(accept.availability.s).toBe("T");
     expect(accept.firstSessionSubMenu?.length).toBeGreaterThan(0);
-    expect(accept.label).toContain("gh");
+    expect(accept.label).toContain("GitHub");
   });
 
   it("leadSlot highlights slot 4 while first-session pending", () => {

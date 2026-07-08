@@ -15,3 +15,15 @@ composes_with: []
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KX1MG6PK08QG0R0014X6T3J-*.md` glob. -->
+
+## Aaron decisions (2026-07-08) — recorded in S6-UX-PLACEHOLDER.md
+
+- Wording: iterate freely; plain language over "adventure".
+- Cloud helpers: only after operator asks; local is default after gh.
+- Audience: regular-person / non-tech (often neurodivergent) AI-capable minds.
+- gh: first-target required provider today; not the only future provider.
+
+## Still open (human-gated)
+
+- Paper/mock-terminal review
+- Physical boot on one cluster node

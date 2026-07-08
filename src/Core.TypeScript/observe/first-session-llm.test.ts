@@ -1,5 +1,5 @@
 /**
- * first-session-llm.test.ts — local LLM choose-your-own-adventure over first-session DU.
+ * first-session-llm.test.ts — local LLM chooser over first-session DU.
  *
  * Reuses the observe/workflow test harness:
  *   - mock ModelBackend + backendChoosing (closed-loop.test.ts pattern)
@@ -61,6 +61,7 @@ describe("firstSessionWithLlm — mock backend chooser (CI shield)", () => {
     const session: NodeSessionState = {
       credentials: { gh: "ready", claude: "missing", codex: "missing", gemini: "missing" },
       complete: false,
+      cloudHelpersOffered: false,
     };
     const localOnly: FirstSessionAction = {
       kind: "use_local_llm_only",
@@ -83,7 +84,7 @@ describe("firstSessionWithLlm — mock backend chooser (CI shield)", () => {
   });
 });
 
-describe("first-session closed-loop — fold reconstructs adventure trace", () => {
+describe("first-session closed-loop — fold reconstructs setup trace", () => {
   it("one tick: simulate matches fold of appended action", async () => {
     const initial = defaultNodeSession();
     const pick = await firstSessionWithLlm(
@@ -95,15 +96,14 @@ describe("first-session closed-loop — fold reconstructs adventure trace", () =
     expect(next.credentials.gh).toBe("ready");
   });
 
-  it("multi-tick adventure CLOSES: fold(trace) === live final session", async () => {
+  it("multi-tick recommended path CLOSES: fold(trace) === live final session", async () => {
     let session = defaultNodeSession();
     const initial = session;
     const trace: FirstSessionAction[] = [];
 
     const steps: FirstSessionAction[] = [
       { kind: "setup_credential", vendor: "gh", reason: "x" },
-      { kind: "skip_optional_credentials", reason: "x" },
-      { kind: "complete_first_session", reason: "x" },
+      { kind: "use_local_llm_only", reason: "x" },
     ];
 
     for (const step of steps) {
