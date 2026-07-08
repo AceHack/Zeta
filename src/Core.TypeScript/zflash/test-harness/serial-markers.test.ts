@@ -1,5 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { serialFirstBootInProgress } from "./serial-markers";
+import {
+  assertHappyPathFirstSessionSerial,
+  assertSkipGhFirstSessionSerial,
+  serialFirstBootInProgress,
+} from "./serial-markers";
 
 describe("serialFirstBootInProgress", () => {
   test("idle serial-getty shell alone is not first-boot progress", () => {
@@ -9,5 +13,44 @@ describe("serialFirstBootInProgress", () => {
   test("mirrored first-boot banner suppresses getty-race false positive", () => {
     const serial = "nixos@zeta-installer:~$\n  Zeta cluster installer\nRole selected: control-plane";
     expect(serialFirstBootInProgress(serial)).toBe(true);
+  });
+});
+
+describe("first-session path serial markers", () => {
+  test("happy path requires local-only completion with self-register enabled", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: dry-run setup gh",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: dry-run use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true",
+    ].join("\n");
+
+    const result = assertHappyPathFirstSessionSerial(serial);
+
+    expect("ok" in result).toBe(true);
+  });
+
+  test("skip-gh path accepts the continue-later guidance as path evidence", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=skip_credential vendor=gh",
+      "  Continue later: run gh auth login when ready.",
+      "  Tip: on this machine run the first-login helper again, or SSH in and set up GitHub there.",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=false",
+    ].join("\n");
+
+    const result = assertSkipGhFirstSessionSerial(serial);
+
+    expect("ok" in result).toBe(true);
+  });
+
+  test("obsolete begin+complete-only transcript is not path proof", () => {
+    const serial = ["zeta-first-session: begin", "zeta-first-session: complete"].join("\n");
+
+    expect("error" in assertHappyPathFirstSessionSerial(serial)).toBe(true);
+    expect("error" in assertSkipGhFirstSessionSerial(serial)).toBe(true);
   });
 });

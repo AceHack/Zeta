@@ -55,6 +55,89 @@ export const FIRST_SESSION_SERIAL_MARKERS: readonly string[] = [
   "zeta-first-session: complete",
 ];
 
+export const FIRST_SESSION_HAPPY_PATH_SERIAL_MARKERS: readonly string[] = [
+  "zeta-first-session: begin",
+  "zeta-first-session: choice kind=use_local_llm_only",
+  "zeta-first-session: complete canSelfRegister=true",
+];
+
+export const FIRST_SESSION_SETUP_GH_CHOICE_MARKER = "zeta-first-session: choice kind=setup_credential vendor=gh";
+
+export const FIRST_SESSION_SKIP_GH_SERIAL_MARKERS: readonly string[] = [
+  "zeta-first-session: begin",
+  "zeta-first-session: complete canSelfRegister=false",
+];
+
+export const FIRST_SESSION_SKIP_GH_EVIDENCE_MARKERS: readonly string[] = [
+  "zeta-first-session: choice kind=skip_credential vendor=gh",
+  "Continue later:",
+  "SSH in and set up GitHub there",
+];
+
+export interface FirstSessionSerialMarkerAssertion {
+  readonly matchedMarkers: readonly string[];
+}
+
+export type FirstSessionSerialMarkerFeedback = {
+  readonly kind: "missing-serial-markers";
+  readonly missingMarkers: readonly string[];
+  readonly requiredMarkers: readonly string[];
+};
+
+export type FirstSessionSerialMarkerResult =
+  | { readonly ok: FirstSessionSerialMarkerAssertion }
+  | { readonly error: FirstSessionSerialMarkerFeedback };
+
+function assertSerialMarkers(
+  serialOutput: string,
+  requiredMarkers: readonly string[],
+): FirstSessionSerialMarkerResult {
+  const missingMarkers = requiredMarkers.filter((marker) => !serialOutput.includes(marker));
+  if (missingMarkers.length > 0) {
+    return {
+      error: {
+        kind: "missing-serial-markers",
+        missingMarkers,
+        requiredMarkers,
+      },
+    };
+  }
+
+  return {
+    ok: {
+      matchedMarkers: requiredMarkers,
+    },
+  };
+}
+
+export function assertHappyPathFirstSessionSerial(serialOutput: string): FirstSessionSerialMarkerResult {
+  return assertSerialMarkers(serialOutput, FIRST_SESSION_HAPPY_PATH_SERIAL_MARKERS);
+}
+
+export function assertSkipGhFirstSessionSerial(serialOutput: string): FirstSessionSerialMarkerResult {
+  const lifecycle = assertSerialMarkers(serialOutput, FIRST_SESSION_SKIP_GH_SERIAL_MARKERS);
+  if ("error" in lifecycle) {
+    return lifecycle;
+  }
+
+  const evidenceMatchedMarkers = FIRST_SESSION_SKIP_GH_EVIDENCE_MARKERS.filter((marker) => serialOutput.includes(marker));
+  if (evidenceMatchedMarkers.length === 0) {
+    return {
+      error: {
+        kind: "missing-serial-markers",
+        missingMarkers: [...FIRST_SESSION_SKIP_GH_EVIDENCE_MARKERS],
+        requiredMarkers: [...FIRST_SESSION_SKIP_GH_SERIAL_MARKERS, ...FIRST_SESSION_SKIP_GH_EVIDENCE_MARKERS],
+      },
+    };
+  }
+
+  return {
+    ok: {
+      matchedMarkers: [...lifecycle.ok.matchedMarkers, ...evidenceMatchedMarkers],
+    },
+  };
+}
+
 /** serial-getty autologin on ttyS0 can appear before mirrored first-boot output. */
 export function serialFirstBootInProgress(serialOutput: string): boolean {
   return FIRST_BOOT_PROGRESS_SERIAL_MARKERS.some((marker) => serialOutput.includes(marker));

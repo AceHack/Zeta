@@ -7,14 +7,14 @@ import {
   manifestPathsForVendor,
   probeAllCredentials,
   probeVendorStatus
-} from "./first-session-executor.js";
+} from "./first-session-executor";
 import {
   actionFromDemoToken,
   parseArgs,
   runFirstSession,
   sessionFromProbe
-} from "./first-session-run.js";
-import { defaultNodeSession } from "./first-session.js";
+} from "./first-session-run";
+import { defaultNodeSession } from "./first-session";
 function fakeRunner(overrides) {
   return {
     run: overrides.run ?? (() => ({ exitCode: 1 })),
@@ -78,5 +78,44 @@ describe("first-session-run \u2014 demo script", () => {
       markerPath: marker
     }, final = await runFirstSession(opts);
     expect(final.complete).toBe(!0);
+  });
+  it("runFirstSession setup-gh local-only dry-run emits happy-path serial proof", async () => {
+    const logs = [], originalLog = console.log;
+    console.log = (...args) => logs.push(args.map(String).join(" "));
+    try {
+      const marker = join(mkdtempSync(join(tmpdir(), "zeta-marker-")), "complete.marker"), opts = {
+        ...parseArgs(["--demo", "--script", "setup-gh,local-only", "--dry-run"]),
+        runner: fakeRunner({}),
+        home: "/home/zeta",
+        markerPath: marker
+      }, final = await runFirstSession(opts), serial = logs.join(`
+`);
+      expect(final.complete).toBe(!0);
+      expect(serial).toContain("zeta-first-session: choice kind=setup_credential vendor=gh");
+      expect(serial).toContain("zeta-first-session: choice kind=use_local_llm_only");
+      expect(serial).toContain("zeta-first-session: complete canSelfRegister=true");
+    } finally {
+      console.log = originalLog;
+    }
+  });
+  it("runFirstSession skip-gh local-only dry-run emits continue-later proof", async () => {
+    const logs = [], originalLog = console.log;
+    console.log = (...args) => logs.push(args.map(String).join(" "));
+    try {
+      const marker = join(mkdtempSync(join(tmpdir(), "zeta-marker-")), "complete.marker"), opts = {
+        ...parseArgs(["--demo", "--script", "skip-gh,local-only", "--dry-run"]),
+        runner: fakeRunner({}),
+        home: "/home/zeta",
+        markerPath: marker
+      }, final = await runFirstSession(opts), serial = logs.join(`
+`);
+      expect(final.complete).toBe(!0);
+      expect(serial).toContain("zeta-first-session: choice kind=skip_credential vendor=gh");
+      expect(serial).toContain("Continue later:");
+      expect(serial).toContain("SSH in and set up GitHub there");
+      expect(serial).toContain("zeta-first-session: complete canSelfRegister=false");
+    } finally {
+      console.log = originalLog;
+    }
   });
 });

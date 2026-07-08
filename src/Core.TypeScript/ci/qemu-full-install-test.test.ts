@@ -101,7 +101,9 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
   it("detectPhase2Success passes when login and first-session markers present", () => {
     const serial = [
       "zeta-first-session: begin",
-      "zeta-first-session: complete",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true",
       "node-abc123 login:",
     ].join("\n");
     const result = detectPhase2Success(serial, "node-abc123", true);

@@ -218,6 +218,8 @@ export {
   INSTALLED_OS_RETENTION_SERIAL_MARKERS as RETENTION_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
   RETENTION_FAILURE_SERIAL_MARKERS,
+  assertHappyPathFirstSessionSerial,
+  assertSkipGhFirstSessionSerial,
 } from "./serial-markers";
 
 /** Restart phase markers: zflash USB retention when boot image provided; else installed-OS cred-restore. */

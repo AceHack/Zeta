@@ -146,13 +146,21 @@ in
           done
           run_demo() {
             cd "${cfg.repoRoot}"
+            _demo_script="''${ZETA_FIRST_SESSION_DEMO_SCRIPT:-}"
+            if [ -z "$_demo_script" ] && [ -s /etc/zeta/qemu-first-session-ci ]; then
+              _demo_script="$(${pkgs.coreutils}/bin/head -n 1 /etc/zeta/qemu-first-session-ci | ${pkgs.coreutils}/bin/tr -d '[:space:]')"
+            fi
+            if [ -z "$_demo_script" ] || [ "$_demo_script" = "qemu-ci-first-session" ]; then
+              _demo_script="setup-gh,local-only"
+            fi
             ${pkgs.util-linux}/bin/runuser -u ${cfg.user} -- \
               env HOME=${cfg.home} \
               ZETA_FIRST_SESSION_MARKER=${cfg.markerPath} \
               ZETA_FIRST_SESSION_TEE_CONSOLE=1 \
+              ZETA_FIRST_SESSION_DEMO_SCRIPT="$_demo_script" \
               PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin \
               ${lib.getExe pkgs.bun} ${scriptPath} \
-                --demo --script skip-optional,complete --dry-run
+                --demo --script "$_demo_script" --dry-run
           }
           if [ -n "$_serial" ]; then
             exec 3>&1

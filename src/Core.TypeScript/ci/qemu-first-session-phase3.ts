@@ -6,12 +6,23 @@
  * service and tee markers to ttyS0.
  */
 
-import { assertFirstSessionSerialMarkers } from "../zflash/test-harness/qemu-state";
+import {
+  assertHappyPathFirstSessionSerial,
+  assertSkipGhFirstSessionSerial,
+} from "../zflash/test-harness/serial-markers";
+
+export {
+  assertHappyPathFirstSessionSerial,
+  assertSkipGhFirstSessionSerial,
+} from "../zflash/test-harness/serial-markers";
 
 export function firstSessionPhase3Enabled(): boolean {
   return process.env.QEMU_FIRST_SESSION_PHASE3 === "1";
 }
 
 export function firstSessionMarkersSatisfied(serialOutput: string): boolean {
-  return "ok" in assertFirstSessionSerialMarkers(serialOutput);
+  return (
+    "ok" in assertHappyPathFirstSessionSerial(serialOutput) ||
+    "ok" in assertSkipGhFirstSessionSerial(serialOutput)
+  );
 }
