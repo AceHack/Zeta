@@ -32,7 +32,12 @@ export const B0891_RETENTION_USB_SERIAL_MARKERS = [
   "zeta-first-session: begin",
   "zeta-first-session: choice kind=use_local_llm_only",
   "zeta-first-session: complete canSelfRegister=true"
-], FIRST_SESSION_SETUP_GH_CHOICE_MARKER = "zeta-first-session: choice kind=setup_credential vendor=gh", FIRST_SESSION_SKIP_GH_SERIAL_MARKERS = [
+], FIRST_SESSION_SETUP_GH_CHOICE_MARKER = "zeta-first-session: choice kind=setup_credential vendor=gh", FIRST_SESSION_MOCK_IDENTITY_AUTH_MARKERS = [
+  "zeta-first-session: identity-auth-mock-begin",
+  "zeta-first-session: identity-auth-mock-ok"
+], FIRST_SESSION_SKIP_IDENTITY_AUTH_MARKERS = [
+  "zeta-first-session: identity-auth-skip"
+], FIRST_SESSION_SKIP_GH_SERIAL_MARKERS = [
   "zeta-first-session: begin",
   "zeta-first-session: complete canSelfRegister=false"
 ], FIRST_SESSION_SKIP_GH_EVIDENCE_MARKERS = [
@@ -58,6 +63,26 @@ function assertSerialMarkers(serialOutput, requiredMarkers) {
 }
 export function assertHappyPathFirstSessionSerial(serialOutput) {
   return assertSerialMarkers(serialOutput, FIRST_SESSION_HAPPY_PATH_SERIAL_MARKERS);
+}
+export function assertMockIdentityAuthFirstSessionSerial(serialOutput) {
+  const happy = assertHappyPathFirstSessionSerial(serialOutput);
+  if ("error" in happy)
+    return happy;
+  const choice = assertSerialMarkers(serialOutput, [FIRST_SESSION_SETUP_GH_CHOICE_MARKER]);
+  if ("error" in choice)
+    return choice;
+  const mock = assertSerialMarkers(serialOutput, FIRST_SESSION_MOCK_IDENTITY_AUTH_MARKERS);
+  if ("error" in mock)
+    return mock;
+  return {
+    ok: {
+      matchedMarkers: [
+        ...happy.ok.matchedMarkers,
+        ...choice.ok.matchedMarkers,
+        ...mock.ok.matchedMarkers
+      ]
+    }
+  };
 }
 export function assertSkipGhFirstSessionSerial(serialOutput) {
   const lifecycle = assertSerialMarkers(serialOutput, FIRST_SESSION_SKIP_GH_SERIAL_MARKERS);

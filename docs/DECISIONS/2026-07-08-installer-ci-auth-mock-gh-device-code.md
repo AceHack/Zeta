@@ -93,6 +93,11 @@ Costs:
   installer through the mock remains backlog work.
 - Future editors must preserve the distinction between "auth skipped with
   marker" and "auth tested against the mock."
+- `gh` is a **temporary** cluster foothold. Successor stack: Zeta distributed
+  identity provider (ADR 2026-07-08-distributed-identity-provider) for auth,
+  and ZetaDB / DagFs as the eventual git backend **and** client replacement.
+  Keep CI behind `identity-auth-provider.ts` so mock coverage does not harden
+  GitHub CLI as forever.
 
 ## Revisit Trigger
 
@@ -104,7 +109,10 @@ the mock floor.
 ## Composes With
 
 - `src/Core.TypeScript/ci/mock-gh-device-code.ts`
+- `src/Core.TypeScript/ci/identity-auth-provider.ts`
 - `src/Core.TypeScript/observe/first-session-executor.ts`
+- `full-ai-cluster/nixos/modules/zeta-first-session.nix` (`ZETA_IDENTITY_AUTH_MODE=mock`)
 - `full-ai-cluster/usb-nixos-installer/zeta-install.sh`
+- `docs/DECISIONS/2026-07-08-distributed-identity-provider.md` (successor IdP)
 - `docs/backlog/P1/081KSGS9H0008QG0R0011BC7T2-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-r.md`
 - `docs/backlog/P1/081KSGS9H0008QG0R003JNSVR5-installer-interactive-login-vs-baked-in-keys-ci-test-tension.md`

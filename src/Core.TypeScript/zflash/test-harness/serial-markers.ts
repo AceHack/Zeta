@@ -79,6 +79,17 @@ export const FIRST_SESSION_HAPPY_PATH_SERIAL_MARKERS: readonly string[] = [
 
 export const FIRST_SESSION_SETUP_GH_CHOICE_MARKER = "zeta-first-session: choice kind=setup_credential vendor=gh";
 
+/** Present when QEMU/CI exercised the mock identity-auth path (not dry-run-only). */
+export const FIRST_SESSION_MOCK_IDENTITY_AUTH_MARKERS: readonly string[] = [
+  "zeta-first-session: identity-auth-mock-begin",
+  "zeta-first-session: identity-auth-mock-ok",
+];
+
+/** Present when QEMU/CI intentionally skipped live auth with an explicit marker. */
+export const FIRST_SESSION_SKIP_IDENTITY_AUTH_MARKERS: readonly string[] = [
+  "zeta-first-session: identity-auth-skip",
+];
+
 export const FIRST_SESSION_SKIP_GH_SERIAL_MARKERS: readonly string[] = [
   "zeta-first-session: begin",
   "zeta-first-session: complete canSelfRegister=false",
@@ -128,6 +139,27 @@ function assertSerialMarkers(
 
 export function assertHappyPathFirstSessionSerial(serialOutput: string): FirstSessionSerialMarkerResult {
   return assertSerialMarkers(serialOutput, FIRST_SESSION_HAPPY_PATH_SERIAL_MARKERS);
+}
+
+/** Happy path that also claims mock identity-auth coverage (not skip, not dry-run-only). */
+export function assertMockIdentityAuthFirstSessionSerial(
+  serialOutput: string,
+): FirstSessionSerialMarkerResult {
+  const happy = assertHappyPathFirstSessionSerial(serialOutput);
+  if ("error" in happy) return happy;
+  const choice = assertSerialMarkers(serialOutput, [FIRST_SESSION_SETUP_GH_CHOICE_MARKER]);
+  if ("error" in choice) return choice;
+  const mock = assertSerialMarkers(serialOutput, FIRST_SESSION_MOCK_IDENTITY_AUTH_MARKERS);
+  if ("error" in mock) return mock;
+  return {
+    ok: {
+      matchedMarkers: [
+        ...happy.ok.matchedMarkers,
+        ...choice.ok.matchedMarkers,
+        ...mock.ok.matchedMarkers,
+      ],
+    },
+  };
 }
 
 export function assertSkipGhFirstSessionSerial(serialOutput: string): FirstSessionSerialMarkerResult {

@@ -47,10 +47,16 @@ choose Approach A. The initial in-memory device-code stub landed at
 `src/Core.TypeScript/ci/mock-gh-device-code.ts` with a Bun test proving fixed
 `user_code` issuance and stub-token polling.
 
-Row stays **open** for the remaining integration: wire QEMU/first-session
-installer auth coverage to the mock endpoint, or emit an explicit marker when a
-QEMU slice intentionally skips live `gh auth login`. Production ISO behavior
-must continue to ship zero baked GitHub secrets.
+**Integration slice (same day):** first-session / QEMU now route through
+`src/Core.TypeScript/ci/identity-auth-provider.ts` with
+`ZETA_IDENTITY_AUTH_MODE=mock|skip|live`. QEMU boot demo sets `mock` so
+`--dry-run` still exercises the device-code UX and emits
+`identity-auth-mock-*` serial markers (distinct from `identity-auth-skip`).
+`gh` remains a temporary foothold — successor is Zeta IdP + ZetaDB/DagFs as
+git backend/client replacement (see distributed-identity-provider ADR).
+
+Row can close when cascade #6 full-install path also asserts mock markers in
+CI artifacts; production ISO must continue to ship zero baked GitHub secrets.
 
 ## Proposed resolution paths
 

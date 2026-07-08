@@ -153,11 +153,16 @@ in
             if [ -z "$_demo_script" ] || [ "$_demo_script" = "qemu-ci-first-session" ]; then
               _demo_script="setup-gh,local-only"
             fi
+            # ZETA_IDENTITY_AUTH_MODE=mock: exercise device-code UX against the
+            # in-memory stub (ADR 2026-07-08). Temporary gh-shaped foothold;
+            # successor is Zeta IdP + ZetaDB (not baked GitHub secrets).
+            # --dry-run still skips live CLIs; mock/skip auth paths still run.
             ${pkgs.util-linux}/bin/runuser -u ${cfg.user} -- \
               env HOME=${cfg.home} \
               ZETA_FIRST_SESSION_MARKER=${cfg.markerPath} \
               ZETA_FIRST_SESSION_TEE_CONSOLE=1 \
               ZETA_FIRST_SESSION_DEMO_SCRIPT="$_demo_script" \
+              ZETA_IDENTITY_AUTH_MODE=mock \
               PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin \
               ${lib.getExe pkgs.bun} ${scriptPath} \
                 --demo --script "$_demo_script" --dry-run

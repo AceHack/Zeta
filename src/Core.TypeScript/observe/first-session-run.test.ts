@@ -128,6 +128,70 @@ describe("first-session-run — demo script", () => {
     }
   });
 
+  it("runFirstSession setup-gh with ZETA_IDENTITY_AUTH_MODE=mock exercises stub", async () => {
+    const prev = process.env.ZETA_IDENTITY_AUTH_MODE;
+    process.env.ZETA_IDENTITY_AUTH_MODE = "mock";
+    const logs: string[] = [];
+    const originalLog = console.log;
+    console.log = (...args: unknown[]) => logs.push(args.map(String).join(" "));
+    try {
+      const marker = join(mkdtempSync(join(tmpdir(), "zeta-marker-")), "complete.marker");
+      const opts: RunOptions = {
+        ...parseArgs(["--demo", "--script", "setup-gh,local-only", "--dry-run"]),
+        runner: fakeRunner({ which: () => null }),
+        home: "/home/zeta",
+        markerPath: marker,
+      };
+
+      const final = await runFirstSession(opts);
+      const serial = logs.join("\n");
+
+      expect(final.complete).toBe(true);
+      expect(final.credentials.gh).toBe("ready");
+      expect(serial).toContain("zeta-first-session: identity-auth-mock-begin");
+      expect(serial).toContain("zeta-first-session: identity-auth-mock-ok");
+      expect(serial).toContain("zeta-first-session: complete canSelfRegister=true");
+      expect(serial).not.toContain("zeta-first-session: dry-run setup gh");
+    } finally {
+      console.log = originalLog;
+      if (prev === undefined) delete process.env.ZETA_IDENTITY_AUTH_MODE;
+      else process.env.ZETA_IDENTITY_AUTH_MODE = prev;
+    }
+  });
+
+  it("runFirstSession setup-gh with ZETA_IDENTITY_AUTH_MODE=skip emits skip marker", async () => {
+    const prev = process.env.ZETA_IDENTITY_AUTH_MODE;
+    process.env.ZETA_IDENTITY_AUTH_MODE = "skip";
+    const logs: string[] = [];
+    const originalLog = console.log;
+    console.log = (...args: unknown[]) => logs.push(args.map(String).join(" "));
+    try {
+      const marker = join(mkdtempSync(join(tmpdir(), "zeta-marker-")), "complete.marker");
+      // After skip auth, local-only still completes; gh stays missing → canSelfRegister=false
+      // unless we also skip_credential — here setup-gh is attempted then skipped by mode.
+      const opts: RunOptions = {
+        ...parseArgs(["--demo", "--script", "setup-gh,local-only", "--dry-run"]),
+        runner: fakeRunner({}),
+        home: "/home/zeta",
+        markerPath: marker,
+      };
+
+      const final = await runFirstSession(opts);
+      const serial = logs.join("\n");
+
+      expect(final.complete).toBe(true);
+      expect(serial).toContain("zeta-first-session: identity-auth-skip");
+      expect(serial).toContain("zeta-first-session: setup-gh outcome=skipped");
+      // CI skip marks gh skipped (not ready) so self-register stays false
+      expect(final.credentials.gh).toBe("skipped");
+      expect(serial).toContain("zeta-first-session: complete canSelfRegister=false");
+    } finally {
+      console.log = originalLog;
+      if (prev === undefined) delete process.env.ZETA_IDENTITY_AUTH_MODE;
+      else process.env.ZETA_IDENTITY_AUTH_MODE = prev;
+    }
+  });
+
   it("runFirstSession skip-gh local-only dry-run emits continue-later proof", async () => {
     const logs: string[] = [];
     const originalLog = console.log;

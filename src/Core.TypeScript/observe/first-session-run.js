@@ -2,7 +2,7 @@ import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { existsSync, mkdirSync, writeFileSync, appendFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { ollamaBackend } from "../accelerator/local-llm.js";
+import { ollamaBackend } from "../accelerator/local-llm";
 import {
   buildFirstSessionMenu,
   defaultNodeSession,
@@ -11,13 +11,14 @@ import {
   firstSessionWithLlm,
   GH_SKIP_CONTINUE_LATER,
   simulateFirstSession
-} from "./first-session.js";
+} from "./first-session";
+import { resolveIdentityAuthMode } from "../ci/identity-auth-provider";
 import {
   SERIAL_PREFIX,
   defaultShellRunner,
   executeSetupCredential,
   probeAllCredentials
-} from "./first-session-executor.js";
+} from "./first-session-executor";
 export const DEFAULT_MARKER_PATH = `${process.env.HOME ?? "/home/zeta"}/.config/zeta/first-session-complete`;
 export function logSerial(line) {
   console.log(line);
@@ -129,14 +130,24 @@ async function pickAction(session, opts, demoQueue) {
 }
 async function applyAction(session, action, opts) {
   if (action.kind === "setup_credential") {
-    if (opts.dryRun) {
+    const authMode = resolveIdentityAuthMode();
+    if (opts.dryRun && authMode === "live") {
       logSerial(`${SERIAL_PREFIX} dry-run setup ${action.vendor}`);
       return simulateFirstSession(session, action);
     }
-    const result = executeSetupCredential(action.vendor, opts.runner, opts.home);
-    console.log(`${SERIAL_PREFIX} setup-${action.vendor} outcome=${result.outcome}`);
+    const result = executeSetupCredential(action.vendor, opts.runner, opts.home, {
+      authMode,
+      log: logSerial
+    });
+    logSerial(`${SERIAL_PREFIX} setup-${action.vendor} outcome=${result.outcome}`);
     if (result.outcome === "ready")
       return simulateFirstSession(session, action);
+    if (result.outcome === "skipped")
+      return simulateFirstSession(session, {
+        kind: "skip_credential",
+        vendor: action.vendor,
+        reason: result.message
+      });
     console.log(`  (${result.message} \u2014 pick another option)`);
     return session;
   }

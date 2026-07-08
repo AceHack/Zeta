@@ -8,11 +8,13 @@
 
 import {
   assertHappyPathFirstSessionSerial,
+  assertMockIdentityAuthFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
 } from "../zflash/test-harness/serial-markers";
 
 export {
   assertHappyPathFirstSessionSerial,
+  assertMockIdentityAuthFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
 } from "../zflash/test-harness/serial-markers";
 
@@ -22,6 +24,7 @@ export function firstSessionPhase3Enabled(): boolean {
 
 export function firstSessionMarkersSatisfied(serialOutput: string): boolean {
   return (
+    "ok" in assertMockIdentityAuthFirstSessionSerial(serialOutput) ||
     "ok" in assertHappyPathFirstSessionSerial(serialOutput) ||
     "ok" in assertSkipGhFirstSessionSerial(serialOutput)
   );

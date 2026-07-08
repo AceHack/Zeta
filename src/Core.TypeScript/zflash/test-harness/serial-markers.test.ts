@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   assertHappyPathFirstSessionSerial,
+  assertMockIdentityAuthFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
   serialFirstBootInProgress,
 } from "./serial-markers";
@@ -30,6 +31,28 @@ describe("first-session path serial markers", () => {
     const result = assertHappyPathFirstSessionSerial(serial);
 
     expect("ok" in result).toBe(true);
+  });
+
+  test("mock identity-auth path requires mock markers plus happy-path completion", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: identity-auth-mock-begin",
+      "zeta-first-session: identity-auth-mock-ok",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true",
+    ].join("\n");
+
+    expect("ok" in assertMockIdentityAuthFirstSessionSerial(serial)).toBe(true);
+    expect("error" in assertMockIdentityAuthFirstSessionSerial(
+      [
+        "zeta-first-session: begin",
+        "zeta-first-session: choice kind=setup_credential vendor=gh",
+        "zeta-first-session: dry-run setup gh",
+        "zeta-first-session: choice kind=use_local_llm_only",
+        "zeta-first-session: complete canSelfRegister=true",
+      ].join("\n"),
+    )).toBe(true);
   });
 
   test("skip-gh path accepts the continue-later guidance as path evidence", () => {

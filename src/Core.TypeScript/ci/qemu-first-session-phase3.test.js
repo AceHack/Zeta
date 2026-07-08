@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import {
   assertHappyPathFirstSessionSerial,
+  assertMockIdentityAuthFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
   firstSessionMarkersSatisfied
 } from "./qemu-first-session-phase3";
@@ -15,6 +16,22 @@ describe("qemu-first-session-phase3", () => {
 `);
     expect(firstSessionMarkersSatisfied(serial)).toBe(!0);
     expect("ok" in assertHappyPathFirstSessionSerial(serial)).toBe(!0);
+  });
+  it("firstSessionMarkersSatisfied passes for mock identity-auth coverage path", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: identity-auth-begin",
+      "zeta-first-session: identity-auth-mock-begin",
+      "zeta-first-session: identity-auth-mock-user-code ZETA-CI",
+      "zeta-first-session: identity-auth-mock-ok",
+      "zeta-first-session: setup-gh outcome=ready",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true"
+    ].join(`
+`);
+    expect(firstSessionMarkersSatisfied(serial)).toBe(!0);
+    expect("ok" in assertMockIdentityAuthFirstSessionSerial(serial)).toBe(!0);
   });
   it("firstSessionMarkersSatisfied passes for skip-gh continue-later path", () => {
     const serial = [

@@ -29,6 +29,7 @@ import {
   type FirstSessionAction,
   type NodeSessionState,
 } from "./first-session";
+import { resolveIdentityAuthMode } from "../ci/identity-auth-provider";
 import {
   SERIAL_PREFIX,
   defaultShellRunner,
@@ -202,14 +203,29 @@ async function applyAction(
   opts: RunOptions,
 ): Promise<NodeSessionState> {
   if (action.kind === "setup_credential") {
-    if (opts.dryRun) {
+    const authMode = resolveIdentityAuthMode();
+    // dry-run skips live CLIs only. mock/skip still run so QEMU can prove the
+    // CI auth fork without baking secrets (ADR 2026-07-08).
+    if (opts.dryRun && authMode === "live") {
       logSerial(`${SERIAL_PREFIX} dry-run setup ${action.vendor}`);
       return simulateFirstSession(session, action);
     }
-    const result = executeSetupCredential(action.vendor, opts.runner, opts.home);
-    console.log(`${SERIAL_PREFIX} setup-${action.vendor} outcome=${result.outcome}`);
+    const result = executeSetupCredential(action.vendor, opts.runner, opts.home, {
+      authMode,
+      log: logSerial,
+    });
+    logSerial(`${SERIAL_PREFIX} setup-${action.vendor} outcome=${result.outcome}`);
     if (result.outcome === "ready") {
       return simulateFirstSession(session, action);
+    }
+    if (result.outcome === "skipped") {
+      // CI explicit skip — mark vendor skipped so the menu can advance (same
+      // as skip_credential), without claiming ready / self-register.
+      return simulateFirstSession(session, {
+        kind: "skip_credential",
+        vendor: action.vendor,
+        reason: result.message,
+      });
     }
     console.log(`  (${result.message} — pick another option)`);
     return session;

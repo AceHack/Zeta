@@ -1,13 +1,23 @@
 /**
  * first-session-executor.ts — probe + execute credential setup on installed nodes.
  *
- * Slice 3: gh auth login is load-bearing; optional vendors delegate to their CLIs
- * when present. Probing reuses manifest paths from zeta-creds-manifest.
+ * Slice 3: temporary cluster foothold is `gh auth login` (first target today).
+ * Long-term: Zeta distributed IdP (ADR 2026-07-08) + ZetaDB/DagFs as git
+ * backend/client replacement — keep CI behind identity-auth-provider seam.
+ * Optional vendors delegate to their CLIs when present.
  */
 
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import {
+  IDENTITY_AUTH_SERIAL,
+  createMockIdentityAuthProvider,
+  createSkipIdentityAuthProvider,
+  resolveIdentityAuthMode,
+  serialLinesForIdentityAuth,
+  type IdentityAuthMode,
+} from "../ci/identity-auth-provider";
 import { DEFAULT_MANIFEST } from "../installer/zeta-creds-manifest";
 import type { CredStatus, CredVendor } from "./first-session";
 
@@ -17,6 +27,11 @@ export interface ShellRunner {
   readonly run: (cmd: string, args: readonly string[]) => { readonly exitCode: number };
   readonly spawnInteractive: (cmd: string, args: readonly string[]) => { readonly exitCode: number };
   readonly which: (cmd: string) => string | null;
+}
+
+export interface ExecuteSetupOptions {
+  readonly authMode?: IdentityAuthMode;
+  readonly log?: (line: string) => void;
 }
 
 export function defaultShellRunner(): ShellRunner {
@@ -89,29 +104,45 @@ export function executeSetupCredential(
   vendor: CredVendor,
   runner: ShellRunner = defaultShellRunner(),
   home = homedir(),
+  options: ExecuteSetupOptions = {},
 ): SetupResult {
+  const log = options.log ?? ((line: string) => console.log(line));
+  const authMode = options.authMode ?? resolveIdentityAuthMode();
+
   switch (vendor) {
     case "gh": {
+      // Temporary foothold vendor. CI: mock or skip via ZETA_IDENTITY_AUTH_MODE
+      // (ADR 2026-07-08 mock device-code). Production: live gh. Successor: Zeta IdP.
+      if (authMode === "mock") {
+        const result = createMockIdentityAuthProvider().authenticate();
+        for (const line of serialLinesForIdentityAuth(result)) log(line);
+        return {
+          outcome: result.outcome === "ready" ? "ready" : "failed",
+          message: result.message,
+        };
+      }
+      if (authMode === "skip") {
+        const result = createSkipIdentityAuthProvider().authenticate();
+        for (const line of serialLinesForIdentityAuth(result)) log(line);
+        return { outcome: "skipped", message: result.message };
+      }
       if (!runner.which("gh")) {
         return { outcome: "failed", message: "gh binary not found on PATH" };
       }
-      // CI auth fork: keep production on real `gh auth login`; QEMU auth
-      // coverage must route through src/Core.TypeScript/ci/mock-gh-device-code.ts
-      // or skip live gh with an explicit marker (ADR 2026-07-08).
-      console.log(`${SERIAL_PREFIX} gh-auth-begin`);
+      log(IDENTITY_AUTH_SERIAL.liveBegin);
       const login = runner.spawnInteractive("gh", ["auth", "login"]);
       if (login.exitCode !== 0) {
-        console.log(`${SERIAL_PREFIX} gh-auth-failed`);
+        log(IDENTITY_AUTH_SERIAL.liveFailed);
         return { outcome: "failed", message: "gh auth login failed or was cancelled" };
       }
       runner.run("gh", ["auth", "setup-git"]);
       const status = runner.run("gh", ["auth", "status"]);
       if (status.exitCode !== 0) {
-        console.log(`${SERIAL_PREFIX} gh-auth-failed`);
+        log(IDENTITY_AUTH_SERIAL.liveFailed);
         return { outcome: "failed", message: "gh auth status still failing after login" };
       }
-      console.log(`${SERIAL_PREFIX} gh-auth-ok`);
-      return { outcome: "ready", message: "GitHub CLI authenticated" };
+      log(IDENTITY_AUTH_SERIAL.liveOk);
+      return { outcome: "ready", message: "GitHub CLI authenticated (temporary foothold)" };
     }
     case "claude": {
       const bin = runner.which("claude") ?? join(home, ".bun/bin/claude");
