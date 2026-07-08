@@ -32,11 +32,12 @@ opt-in so it never bloats the default install.
 
 1. `tools/setup/manifests/from-ghcup` (new) — format mirrors `from-elan`:
    `ghcup  <bootstrap-haskell-url>  sha256=<hex>  commit=<sha>`; pins `ghc=9.6.6 cabal=3.12.1.0` (key=value style
-   per `from-opam-git`). Realizer `src/Core.TypeScript/ace/setup-realizers/from-ghcup.ts` (clone of `from-elan.ts`).
-2. `tools/setup/common/agda-cubical.sh` (new) — mirrors `tlaps.sh`: idempotency guard, inline pins, invoked by
-   `macos.sh`/`linux.sh` only under `ZETA_INSTALL_FULL=1` (dev-container inherits via `linux.sh`). Pin-pair
-   **Agda 2.7.0.1 ↔ cubical v0.8** (`CUBICAL_COMMIT=<sha>`), idempotent append to `~/.agda/libraries`; verify by
-   typechecking a one-module `{-# OPTIONS --cubical #-}` hello importing `Cubical.Foundations.Prelude`.
+   per `from-opam-git`). Future realizer path: src/Core.TypeScript/ace/setup-realizers/from-ghcup dot ts (clone of
+   `from-elan.ts`).
+2. Future shell helper path tools/setup/common/agda-cubical dot sh — mirrors `tlaps.sh`: idempotency guard, inline
+   pins, invoked by `macos.sh`/`linux.sh` only under `ZETA_INSTALL_FULL=1` (dev-container inherits via `linux.sh`).
+   Pin-pair **Agda 2.7.0.1 ↔ cubical v0.8** (`CUBICAL_COMMIT=<sha>`), idempotent append to `~/.agda/libraries`;
+   verify by typechecking a one-module `{-# OPTIONS --cubical #-}` hello importing `Cubical.Foundations.Prelude`.
 3. `tools/setup/ace-mechanism-pointers.json` — new entry `ecosystem: from-ghcup`, `update: pinned`,
    `opt_in: ["ZETA_INSTALL_FULL=1"]` (same as the tlapm entry); `doctor.sh` gets an `agda --version` optional-warn
    check.
@@ -50,8 +51,8 @@ dev-container.
 **Definition of done:** `install.sh` (full mode, `ZETA_INSTALL_FULL=1`) materializes a working cubical Agda +
 cubical-library across macOS + Linux + dev-container from pinned sources; `doctor.sh` reports it; a
 `{-# OPTIONS --cubical #-}` module importing `Cubical.Foundations.Prelude` typechecks in CI's full-mode lane. Then
-the proof leg (`src/Core.Agda/ProvidedView/Univalence.agda`, items (1)+(3) + the concrete `Cl3.fs` rotor instance
-of (2)) can be dispatched — that's a separate downstream workitem, minted after this lane lands.
+the proof leg (future path src/Core.Agda/ProvidedView/Univalence dot agda, items (1)+(3) + the concrete `Cl3.fs`
+rotor instance of (2)) can be dispatched — that's a separate downstream workitem, minted after this lane lands.
 
 **Cross-links:** `docs/letters/from-soraya-univalence-lane-routing.md` (the routing decision this implements) ·
 `docs/letters/to-soraya-provided-view-univalence-obligation.md` (the obligation the lane serves) ·

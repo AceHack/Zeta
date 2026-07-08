@@ -29,15 +29,20 @@ The vision spine, end to end — each a squash-merged PR (shadow\*):
   `hall/tv/index.html`. The UDP demo accepts `--root-site <dir>` and writes those paths
   through the same injected-IO readout; the browser stays a passive reader, not a GitHub
   GraphQL/API client in the frame loop.
-- **Root-site static reader** — `llmtv-root-site-reader.ts` consumes the committed replay
-  ledger and rebuilds `hall/tv/index.html` with a visible readout state. Missing/empty
-  ledgers render cold, invalid/rejected/expired evidence renders heat, and old-but-valid
-  frames render stale. The standing view remains zero-JS; the browser reads the artifact,
-  not an API loop.
+- **Root-site static reader/status sidecar** — `llmtv-root-site-reader.ts` consumes the
+  committed replay ledger, rebuilds `hall/tv/index.html`, and writes
+  `data/llmtv-live.status.json` with the visible readout state. Missing/empty ledgers
+  render cold, invalid/rejected/expired evidence renders heat, and old-but-valid frames
+  render stale. The standing view remains zero-JS; the browser reads the artifact, not an
+  API loop.
+- **Hall status card** — `llmtv-hall-status-card.ts` consumes
+  `data/llmtv-live.status.json` and patches `hall/index.html` so the parent Hall page shows
+  live/cold/stale/heat from the JSON sidecar without scraping `hall/tv/index.html`.
 - **Static Pages artifact export** — `llmtv-pages-static-export.ts` backs `bun run
   pages:build` and the manual `pages-deploy.yml` workflow. It copies the served static roots
-  into `dist/`, writes `.nojekyll`, and runs the LLMTV reader inside the artifact. Missing
-  replay data is a successful cold page; stale/lossy evidence stays visible as stale/heat.
+  into `dist/`, writes `.nojekyll`, runs the LLMTV reader inside the artifact, and refreshes
+  the Hall status card from the sidecar. Missing replay data is a successful cold page;
+  stale/lossy evidence stays visible as stale/heat.
 - **Root-site editable design sources preserved** — the Iris handoff's `sources/*.dc.html`
   files now live under `docs/design/root-site-iris/sources/` with a file map. The deployed
   org Pages repo keeps the exported static files; the `.dc.html` files are design-source

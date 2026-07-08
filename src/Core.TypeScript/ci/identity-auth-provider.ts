@@ -34,6 +34,7 @@ export const IDENTITY_AUTH_SERIAL = {
   begin: "zeta-first-session: identity-auth-begin",
   mockBegin: "zeta-first-session: identity-auth-mock-begin",
   mockUserCode: "zeta-first-session: identity-auth-mock-user-code",
+  mockUri: "zeta-first-session: identity-auth-mock-uri",
   mockOk: "zeta-first-session: identity-auth-mock-ok",
   mockFailed: "zeta-first-session: identity-auth-mock-failed",
   skip: "zeta-first-session: identity-auth-skip",
@@ -135,7 +136,7 @@ export function serialLinesForIdentityAuth(result: IdentityAuthResult): readonly
       lines.push(`${IDENTITY_AUTH_SERIAL.mockUserCode} ${result.userCode}`);
     }
     if (result.verificationUri) {
-      lines.push(`zeta-first-session: identity-auth-mock-uri ${result.verificationUri}`);
+      lines.push(`${IDENTITY_AUTH_SERIAL.mockUri} ${result.verificationUri}`);
     }
     lines.push(result.outcome === "ready" ? IDENTITY_AUTH_SERIAL.mockOk : IDENTITY_AUTH_SERIAL.mockFailed);
     return lines;

@@ -56,10 +56,25 @@
     a.card h3 { font-family: var(--disp); margin: 0 0 0.35rem; font-size: 1.05rem; }
     a.card p { margin: 0; color: var(--txt-2); font-size: 0.85rem; }
     a.card .pill { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt-3); display: inline-block; margin-top: 0.75rem; }
+    .llmtv-status-card { margin: 0 0 1rem; border: 1px solid var(--line); border-radius: 8px; background: #10131c; display: grid; grid-template-columns: minmax(6rem, 0.34fr) 1fr; overflow: hidden; }
+    .llmtv-status-card__rail { border-right: 1px solid var(--line); background: #0b0f19; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.75rem; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--txt-3); }
+    .llmtv-status-card__body { padding: 1rem; }
+    .llmtv-status-card h2 { font-family: var(--disp); font-size: 1.1rem; margin: 0 0 0.35rem; letter-spacing: 0; }
+    .llmtv-status-card p { margin: 0; color: var(--txt-2); font-size: 0.86rem; }
+    .llmtv-status-card__reason { margin: 0.85rem 0; display: grid; grid-template-columns: 5rem 1fr; gap: 0.5rem; font-family: var(--mono); font-size: 0.72rem; color: var(--txt-2); }
+    .llmtv-status-card__reason dt { margin: 0; color: var(--txt-3); text-transform: uppercase; letter-spacing: 0.12em; }
+    .llmtv-status-card__reason dd { margin: 0; overflow-wrap: anywhere; }
+    .llmtv-status-card__metrics { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .llmtv-status-card__metrics span { border: 1px solid var(--line-2); border-radius: 8px; padding: 0.45rem 0.55rem; min-width: 5.1rem; font-family: var(--mono); font-size: 0.66rem; color: var(--txt-3); text-transform: uppercase; letter-spacing: 0.1em; }
+    .llmtv-status-card__metrics b { display: block; color: var(--txt); font-size: 0.98rem; letter-spacing: 0; }
+    .llmtv-status-card__link { display: inline-block; margin-top: 0.9rem; color: var(--c6); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .llmtv-status-card--live { border-color: rgba(93,191,154,0.65); }
+    .llmtv-status-card--stale { border-color: rgba(241,200,75,0.65); }
+    .llmtv-status-card--heat { border-color: rgba(214,40,40,0.7); }
     footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--line-2); font-family: var(--mono); font-size: 0.72rem; color: var(--txt-3); }
     footer a { color: var(--txt-2); }
     @media (prefers-reduced-motion: reduce) { a.card { transition: none; } }
-    @media (max-width: 40rem) { .hero { grid-template-columns: 1fr; } }
+    @media (max-width: 40rem) { .hero { grid-template-columns: 1fr; } .llmtv-status-card { grid-template-columns: 1fr; } .llmtv-status-card__rail { border-right: 0; border-bottom: 1px solid var(--line); flex-direction: row; } }
   </style>
 </head>
 <body>
@@ -91,6 +106,18 @@
 
     <section>
       <div class="lbl">The factory — live surfaces (unchanged, honored)</div>
+<!-- zeta-llmtv-status-card:start -->
+<aside class="llmtv-status-card llmtv-status-card--cold" data-llmtv-status-card="present" data-status="cold" data-channel="missing" data-frames="0" data-dwellers="0" data-rejected="0" data-expired="0">
+  <div class="llmtv-status-card__rail"><span>cold</span><span>missing</span></div>
+  <div class="llmtv-status-card__body">
+    <h2>LLMTV cold</h2>
+    <p>No status sidecar was present in data/, so the Hall advertises a cold live surface.</p>
+    <dl class="llmtv-status-card__reason"><dt>reason</dt><dd>not generated yet</dd></dl>
+    <div class="llmtv-status-card__metrics"><span><b>0</b>frames</span><span><b>0</b>dwellers</span><span><b>0</b>accepted</span><span><b>0</b>rejected</span><span><b>0</b>expired</span></div>
+    <a class="llmtv-status-card__link" href="./tv/">Open LLMTV</a>
+  </div>
+</aside>
+<!-- zeta-llmtv-status-card:end -->
       <div class="cards">
         <a class="card" href="../demo/index.html"><h3>Factory Dashboard</h3><p>Autonomous software factory operations, BFT agent-array metrics, alignment substrate tracking.</p><span class="pill">operations</span></a>
         <a class="card" href="../genesis/index.html"><h3>Genesis</h3><p>The settlement console — the amber-and-teal control surface.</p><span class="pill">console</span></a>

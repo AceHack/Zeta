@@ -104,7 +104,9 @@ write that page plus its replay ledger as plain same-origin files:
 
 ```text
 data/llmtv-live.replay.json → zeta.llmtv.replay.v1 ledger
+data/llmtv-live.status.json → zeta.llmtv.root-site-status.v1 sidecar
 hall/tv/index.html          → zero-JS LLMTV page rendered from that ledger
+hall/index.html             → zero-JS Hall status card rendered from that sidecar
 ```
 
 Use `src/Core.TypeScript/discovery/llmtv-root-site-readout.ts` for the canonical path
@@ -121,10 +123,12 @@ reader:
 bun src/Core.TypeScript/discovery/llmtv-root-site-reader.ts --root-site /path/to/lucent-financial-group.github.io
 ```
 
-The reader consumes `data/llmtv-live.replay.json`, writes `hall/tv/index.html`, and renders
-missing/empty ledgers as cold, invalid/rejected/expired evidence as heat, and old-but-valid
-frames as stale. This keeps Pages honest: if the mesh is absent, broken, or no longer fresh,
-the page says so instead of presenting an old frame as live.
+The reader consumes `data/llmtv-live.replay.json`, writes `hall/tv/index.html` plus
+`data/llmtv-live.status.json`, and renders missing/empty ledgers as cold,
+invalid/rejected/expired evidence as heat, and old-but-valid frames as stale. The Hall index
+status-card updater consumes that sidecar and patches `hall/index.html`. This keeps Pages
+honest: if the mesh is absent, broken, or no longer fresh, the page says so instead of
+presenting an old frame as live.
 
 The browser does not poll GitHub, GraphQL, or a forge-host API in its frame loop. The live
 mesh, Reticulum/UDP transport, and scheduler write static artifacts; the website reads the
@@ -138,10 +142,11 @@ source-owned static exporter:
 bun run pages:build
 ```
 
-That command copies the served static roots into `dist/`, writes `.nojekyll`, and then runs
-the same LLMTV static reader inside `dist/`. A missing `data/llmtv-live.replay.json` is a
-successful cold build, not a failed deploy; invalid or lossy replay evidence is rendered as
-heat in `dist/hall/tv/index.html`.
+That command copies the served static roots into `dist/`, writes `.nojekyll`, runs the same
+LLMTV static reader inside `dist/`, and refreshes the parent Hall status card from the
+sidecar. A missing `data/llmtv-live.replay.json` is a successful cold build, not a failed
+deploy; invalid or lossy replay evidence is rendered as heat in `dist/hall/tv/index.html`
+and summarized in `dist/hall/index.html`.
 
 ## Offline / PWA
 

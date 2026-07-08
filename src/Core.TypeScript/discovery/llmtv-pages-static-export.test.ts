@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { publishFrame, type BroadcastSource, type SourceMind } from "./llmtv-broadcast";
 import { encodeReplayArtifact, replayFrame, REPLAY_SCHEMA, type ReplayArtifact } from "./llmtv-replay";
+import { HALL_LLMTV_STATUS_CARD_END, HALL_LLMTV_STATUS_CARD_START } from "./llmtv-hall-status-card";
 import {
   buildPagesStaticArtifact,
   parsePagesStaticExportArgs,
@@ -43,6 +44,20 @@ function seedStaticSource(root: string): void {
   write(root, "robots.txt", "User-agent: *\nAllow: /\n");
   write(root, "sitemap.xml", "<urlset></urlset>");
   write(root, "demo/index.html", "<!doctype html><title>demo</title>");
+  write(
+    root,
+    "hall/index.html",
+    [
+      "<!doctype html><title>hall</title>",
+      "<section>",
+      '  <div class="lbl">The factory — live surfaces</div>',
+      HALL_LLMTV_STATUS_CARD_START,
+      '  <aside data-llmtv-status-card="placeholder"></aside>',
+      HALL_LLMTV_STATUS_CARD_END,
+      '  <div class="cards">cards</div>',
+      "</section>",
+    ].join("\n"),
+  );
   write(root, "hall/tv/index.html", "<!doctype html><title>old tv</title>old standing view");
   write(root, "docs/README.md", "# Docs\n");
 }
@@ -91,12 +106,16 @@ describe("llmtv-pages-static-export -- static Pages artifact with LLMTV readout"
     expect(code).toBe(0);
     expect(stderr).toEqual([]);
     expect(stdout.join("")).toContain("llmtv=wrote hall/tv/index.html");
+    expect(stdout.join("")).toContain("statusCard=wrote hall/index.html");
     expect(stdout.join("")).toContain("status=cold");
     expect(read(outDir, "index.html")).toContain("Zeta");
     expect(read(outDir, "demo/index.html")).toContain("demo");
     expect(read(outDir, "docs/README.md")).toContain("# Docs");
     expect(existsSync(join(outDir, ".nojekyll"))).toBe(true);
     expect(read(outDir, "hall/tv/index.html")).toContain('data-readout-status="cold"');
+    expect(read(outDir, "hall/index.html")).toContain('data-llmtv-status-card="present"');
+    expect(read(outDir, "hall/index.html")).toContain('data-status="cold"');
+    expect(read(outDir, "hall/index.html")).toContain('data-channel="static-reader"');
     expect(decodeRootSiteLlmtvStatus(read(outDir, ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH))).toMatchObject({
       channel: "static-reader",
       status: "cold",
@@ -114,8 +133,10 @@ describe("llmtv-pages-static-export -- static Pages artifact with LLMTV readout"
     const summary = buildPagesStaticArtifact({ sourceDir, outDir, nowMs: 1_000 });
 
     expect(summary.llmtvReaderExitCode).toBe(0);
+    expect(summary.llmtvStatusCardExitCode).toBe(0);
     expect(summary.copiedRoots).toContain("data");
     expect(summary.llmtvReaderStdout.join("")).toContain("status=live");
+    expect(summary.llmtvStatusCardStdout.join("")).toContain("status=live");
     expect(read(outDir, ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH)).toContain("zeta.llmtv.replay.v1");
     expect(decodeRootSiteLlmtvStatus(read(outDir, ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH))).toMatchObject({
       channel: "static-reader",
@@ -125,6 +146,9 @@ describe("llmtv-pages-static-export -- static Pages artifact with LLMTV readout"
     });
     expect(read(outDir, "hall/tv/index.html")).toContain('data-readout-status="live"');
     expect(read(outDir, "hall/tv/index.html")).toContain('data-dweller="vera"');
+    expect(read(outDir, "hall/index.html")).toContain('data-status="live"');
+    expect(read(outDir, "hall/index.html")).toContain('data-frames="1"');
+    expect(read(outDir, "hall/index.html")).not.toContain("<script");
   });
 
   it("parses CLI options and refuses to overwrite the source root", () => {

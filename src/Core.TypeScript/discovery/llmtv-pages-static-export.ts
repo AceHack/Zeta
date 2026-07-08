@@ -4,6 +4,7 @@
 
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
+import { runHallLlmtvStatusCardCli, type HallLlmtvStatusCardIo } from "./llmtv-hall-status-card";
 import { runRootSiteLlmtvReaderCli, type RootSiteLlmtvReaderIo } from "./llmtv-root-site-reader";
 
 export const PAGES_STATIC_EXPORT_GENERATED_BY = "llmtv-pages-static-export";
@@ -48,6 +49,9 @@ export interface PagesStaticExportSummary {
   readonly llmtvReaderExitCode: number;
   readonly llmtvReaderStdout: readonly string[];
   readonly llmtvReaderStderr: readonly string[];
+  readonly llmtvStatusCardExitCode: number;
+  readonly llmtvStatusCardStdout: readonly string[];
+  readonly llmtvStatusCardStderr: readonly string[];
 }
 
 type ExportRequest = { readonly kind: "export"; readonly options: PagesStaticExportOptions };
@@ -63,7 +67,8 @@ const USAGE = [
   "",
   "Copies the repo's static Pages roots into the artifact directory, then runs",
   "llmtv-root-site-reader over that artifact so hall/tv/index.html reflects",
-  "data/llmtv-live.replay.json as live, stale, cold, or heat.",
+  "data/llmtv-live.replay.json as live, stale, cold, or heat, then updates",
+  "hall/index.html from data/llmtv-live.status.json.",
 ].join("\n");
 
 function message(error: unknown): string {
@@ -232,6 +237,18 @@ function readerIo(stdout: string[], stderr: string[]): RootSiteLlmtvReaderIo {
   };
 }
 
+function statusCardIo(stdout: string[], stderr: string[]): HallLlmtvStatusCardIo {
+  return {
+    readText: (path) => readFileSync(path, "utf8"),
+    writeText: (path, text) => {
+      mkdirSync(dirname(path), { recursive: true });
+      writeFileSync(path, text, "utf8");
+    },
+    stdout: (text) => stdout.push(text),
+    stderr: (text) => stderr.push(text),
+  };
+}
+
 export function buildPagesStaticArtifact(options: PagesStaticExportOptions): PagesStaticExportSummary {
   const sourceDir = resolve(options.sourceDir);
   const outDir = resolve(options.outDir);
@@ -256,6 +273,12 @@ export function buildPagesStaticArtifact(options: PagesStaticExportOptions): Pag
     readerArgs(options, outDir),
     readerIo(llmtvReaderStdout, llmtvReaderStderr),
   );
+  const llmtvStatusCardStdout: string[] = [];
+  const llmtvStatusCardStderr: string[] = [];
+  const llmtvStatusCardExitCode =
+    llmtvReaderExitCode === 0
+      ? runHallLlmtvStatusCardCli(["--root-site", outDir], statusCardIo(llmtvStatusCardStdout, llmtvStatusCardStderr))
+      : 1;
 
   return {
     sourceDir,
@@ -265,18 +288,24 @@ export function buildPagesStaticArtifact(options: PagesStaticExportOptions): Pag
     llmtvReaderExitCode,
     llmtvReaderStdout,
     llmtvReaderStderr,
+    llmtvStatusCardExitCode,
+    llmtvStatusCardStdout,
+    llmtvStatusCardStderr,
   };
 }
 
 function summarize(summary: PagesStaticExportSummary): string {
   const llmtvLine = summary.llmtvReaderStdout.join("").trim();
+  const cardLine = summary.llmtvStatusCardStdout.join("").trim();
   return [
     `pages-static-export source=${relative(process.cwd(), summary.sourceDir) || "."}`,
     `out=${relative(process.cwd(), summary.outDir) || "."}`,
     `copied=${summary.copiedRoots.length.toString()}`,
     `skipped=${summary.skippedRoots.length.toString()}`,
     `llmtvExit=${summary.llmtvReaderExitCode.toString()}`,
+    `statusCardExit=${summary.llmtvStatusCardExitCode.toString()}`,
     llmtvLine.length === 0 ? "llmtv=quiet" : `llmtv=${llmtvLine}`,
+    cardLine.length === 0 ? "statusCard=quiet" : `statusCard=${cardLine}`,
   ].join(" ");
 }
 
@@ -294,8 +323,9 @@ export function runPagesStaticExportCli(argv: readonly string[], io: PagesStatic
   try {
     const summary = buildPagesStaticArtifact(parsed.request.options);
     for (const text of summary.llmtvReaderStderr) io.stderr(text);
+    for (const text of summary.llmtvStatusCardStderr) io.stderr(text);
     io.stdout(`${summarize(summary)}\n`);
-    return summary.llmtvReaderExitCode === 0 ? 0 : 1;
+    return summary.llmtvReaderExitCode === 0 && summary.llmtvStatusCardExitCode === 0 ? 0 : 1;
   } catch (error) {
     io.stderr(`${PAGES_STATIC_EXPORT_GENERATED_BY} failed: ${message(error)}\n`);
     return 1;
