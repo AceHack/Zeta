@@ -162,3 +162,130 @@ let ``COND-10: Tsirelson operating point is rho* / sqrt(2) = 1/(3*sqrt(2))`` () 
     Assert.True(
         abs (tsirelson - 0.2357) < 0.001,
         sprintf "Tsirelson point should be ≈ 0.2357, got %f" tsirelson)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RHO-STAR-1 through RHO-STAR-5: Analytic proof discharge tests
+//
+// These tests pin each step of the analytic proof in
+// docs/research/rhostar-analytic-proof.md.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// RHO-STAR-1: Dunnett–Sobel N_eff formula is exact for exchangeable correlations.
+/// N_eff(N, ρ) = N / (1 + (N-1)*ρ).
+[<Fact>]
+let ``RHO-STAR-1: effectiveN formula matches Dunnett-Sobel derivation`` () =
+    // At ρ = 0: N_eff = N (fully independent)
+    Assert.Equal(16.0, CondorcetBoundary.effectiveN 16 0.0, 12)
+    // At ρ = 1: N_eff = 1 (fully correlated — one effective voter)
+    Assert.Equal(1.0, CondorcetBoundary.effectiveN 16 1.0, 12)
+    // At ρ = 1/3: N_eff = N / (1 + (N-1)/3) = 3N / (3 + N - 1) = 3N / (N + 2)
+    // For N = 16: N_eff = 48 / 18 = 2.666...
+    let nEff16AtRhoStar = CondorcetBoundary.effectiveN 16 (1.0 / 3.0)
+    Assert.True(
+        abs (nEff16AtRhoStar - (48.0 / 18.0)) < 1e-10,
+        sprintf "N_eff(16, 1/3) should be 48/18 ≈ 2.667, got %f" nEff16AtRhoStar)
+    // At ρ = ρ*(N): N_eff = 3 exactly
+    // ρ*(N) = (N-3)/(3(N-1)) → N_eff = N / (1 + (N-1)*(N-3)/(3(N-1))) = N / (1 + (N-3)/3) = 3N/(N+0) = 3
+    // Wait: 1 + (N-3)/3 = (3 + N - 3)/3 = N/3, so N_eff = N / (N/3) = 3. ✓
+    for n in [ 7; 11; 16; 21; 51 ] do
+        let rhoStar = CondorcetBoundary.rhoStarAlgebraic n
+        let nEff = CondorcetBoundary.effectiveN n rhoStar
+        Assert.True(
+            abs (nEff - 3.0) < 1e-10,
+            sprintf "N_eff(N=%d, rho*=%f) should be exactly 3.0, got %f" n rhoStar nEff)
+
+/// RHO-STAR-2: The N_eff ≥ 3 condition is necessary and sufficient for ensemble advantage.
+/// At N_eff = 3, the majority probability is c²(3 - 2c) > c for all c > 0.5.
+[<Fact>]
+let ``RHO-STAR-2: majority probability at N_eff=3 is c^2*(3-2c) and exceeds c for c > 0.5`` () =
+    for c in [ 0.51; 0.55; 0.60; 0.70; 0.80; 0.90 ] do
+        let pMajority = CondorcetBoundary.majorityProbability 3 c
+        let pAlgebraic = c * c * (3.0 - 2.0 * c)
+        // Algebraic formula matches the binomial sum
+        Assert.True(
+            abs (pMajority - pAlgebraic) < 1e-12,
+            sprintf "P(majority | N=3, c=%g) = %f should equal c²(3-2c) = %f" c pMajority pAlgebraic)
+        // And it exceeds c for all c > 0.5
+        Assert.True(
+            pMajority > c,
+            sprintf "P(majority | N=3, c=%g) = %f should exceed c = %g" c pMajority c)
+    // At N_eff = 1: P(majority) = c (no gain)
+    for c in [ 0.55; 0.70 ] do
+        let pSingle = CondorcetBoundary.majorityProbability 1 c
+        Assert.Equal(c, pSingle, 12)
+
+/// RHO-STAR-3: The algebraic formula ρ*(N) = (N-3)/(3(N-1)) is derived from N_eff ≥ 3.
+/// Verify the algebra: N/(1+(N-1)*ρ) ≥ 3 ↔ ρ ≤ (N-3)/(3(N-1)).
+[<Fact>]
+let ``RHO-STAR-3: rhoStarAlgebraic satisfies N_eff = 3 exactly`` () =
+    // For each N, verify that N_eff(N, rho*(N)) = 3.0 (the derivation is tight).
+    for n in [ 4; 7; 10; 16; 50; 100; 1000 ] do
+        let rhoStar = CondorcetBoundary.rhoStarAlgebraic n
+        // Direct substitution: N / (1 + (N-1)*rho*(N))
+        //   = N / (1 + (N-1)*(N-3)/(3(N-1)))
+        //   = N / (1 + (N-3)/3)
+        //   = N / ((3 + N - 3)/3)
+        //   = N / (N/3)
+        //   = 3
+        let nEff = float n / (1.0 + float (n - 1) * rhoStar)
+        Assert.True(
+            abs (nEff - 3.0) < 1e-9,
+            sprintf "N_eff(N=%d, rho*(N)=%f) should be 3.0, got %f" n rhoStar nEff)
+    // For N ≤ 3: rhoStarAlgebraic = 0 (no positive threshold exists)
+    Assert.Equal(0.0, CondorcetBoundary.rhoStarAlgebraic 3)
+    Assert.Equal(0.0, CondorcetBoundary.rhoStarAlgebraic 1)
+
+/// RHO-STAR-4: The limit ρ*(N) → 1/3 as N → ∞ is independent of c.
+/// Verify the convergence rate: |ρ*(N) - 1/3| = O(1/N).
+[<Fact>]
+let ``RHO-STAR-4: rho*(N) converges to 1/3 at rate O(1/N) independent of c`` () =
+    // The exact error: ρ*(N) - 1/3 = (N-3)/(3(N-1)) - 1/3
+    //   = [(N-3) - (N-1)] / (3(N-1))
+    //   = -2 / (3(N-1))
+    // So |ρ*(N) - 1/3| = 2/(3(N-1)) = O(1/N). ✓
+    for n in [ 10; 100; 1000; 10000 ] do
+        let rhoStar = CondorcetBoundary.rhoStarAlgebraic n
+        let error = abs (rhoStar - 1.0 / 3.0)
+        let expectedError = 2.0 / (3.0 * float (n - 1))
+        Assert.True(
+            abs (error - expectedError) < 1e-12,
+            sprintf "Error |ρ*(N=%d) - 1/3| = %e should equal 2/(3(N-1)) = %e" n error expectedError)
+    // The limit is independent of c: rhoStarAlgebraic does not take c as a parameter.
+    // Verify that the binary-search result at moderate N matches the algebraic formula for multiple c values.
+    // Note: findRhoStar uses binomial coefficients which overflow for very large N;
+    // we use N=201 (the largest N tested in COND-8) for the cross-validation.
+    let n = 201
+    let algebraic = CondorcetBoundary.rhoStarAlgebraic n
+    for c in [ 0.55; 0.65; 0.75; 0.85 ] do
+        let binarySearch = CondorcetBoundary.findRhoStar n c
+        Assert.True(
+            abs (algebraic - binarySearch) < 0.02,
+            sprintf "ρ*(N=%d) algebraic=%f should match binary-search at c=%g (%f)" n algebraic c binarySearch)
+
+/// RHO-STAR-5: The Tsirelson threshold ρ_T = ρ*/√2 = 1/(3√2) is the optimal reseed point.
+/// Verify: ρ_T < ρ* = 1/3 (safety margin), and ρ_T = YinYangEnsemble.tsirelsonThreshold.
+[<Fact>]
+let ``RHO-STAR-5: Tsirelson threshold is rho*/sqrt(2) and matches YinYangEnsemble.tsirelsonThreshold`` () =
+    let rhoStarLimit = CondorcetBoundary.rhoStarLimit  // = 1/3
+    let tsirelsonFromProof = rhoStarLimit / sqrt 2.0   // = 1/(3√2) ≈ 0.2357
+    let tsirelsonFromEnsemble = YinYangEnsemble.tsirelsonThreshold
+    // The two constants must agree to machine precision
+    Assert.True(
+        abs (tsirelsonFromProof - tsirelsonFromEnsemble) < 1e-12,
+        sprintf "Tsirelson from proof (%f) should match YinYangEnsemble.tsirelsonThreshold (%f)"
+            tsirelsonFromProof tsirelsonFromEnsemble)
+    // ρ_T < ρ* (safety margin)
+    Assert.True(
+        tsirelsonFromEnsemble < rhoStarLimit,
+        sprintf "Tsirelson (%f) should be < ρ* = 1/3 (%f)" tsirelsonFromEnsemble rhoStarLimit)
+    // ρ_T > 0 (above fully decorrelated)
+    Assert.True(tsirelsonFromEnsemble > 0.0, "Tsirelson threshold should be > 0")
+    // Numerically: ≈ 0.2357
+    Assert.True(
+        abs (tsirelsonFromEnsemble - 0.2357) < 0.001,
+        sprintf "Tsirelson threshold should be ≈ 0.2357, got %f" tsirelsonFromEnsemble)
+    // The safety margin is exactly 1 - 1/√2 ≈ 29.3% below the event horizon
+    let safetyMargin = (rhoStarLimit - tsirelsonFromEnsemble) / rhoStarLimit
+    Assert.True(
+        abs (safetyMargin - (1.0 - 1.0 / sqrt 2.0)) < 1e-10,
+        sprintf "Safety margin should be 1 - 1/√2 ≈ 0.293, got %f" safetyMargin)
