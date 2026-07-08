@@ -10,8 +10,10 @@ import {
   ROOT_SITE_LLMTV_GENERATED_BY,
   ROOT_SITE_LLMTV_HTML_RELATIVE_PATH,
   ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH,
+  ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH,
   ROOT_SITE_LLMTV_TITLE,
 } from "./llmtv-root-site-readout";
+import { decodeRootSiteLlmtvStatus, rootSiteLlmtvStatusPath } from "./llmtv-root-site-status";
 import type { LlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import type { LlmtvLiveReadoutIo } from "./llmtv-live-readout";
 import type { LlmtvNodeHandle, Scheduler } from "./llmtv-node";
@@ -81,9 +83,10 @@ describe("LLMTV root-site readout contract", () => {
       replayPath: join("/site", ...ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH.split("/")),
       htmlPath: join("/site", ...ROOT_SITE_LLMTV_HTML_RELATIVE_PATH.split("/")),
     });
+    expect(rootSiteLlmtvStatusPath("/site")).toBe(join("/site", ...ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH.split("/")));
   });
 
-  it("writes the root-site replay artifact and static LLMTV page through injected IO", () => {
+  it("writes the root-site replay artifact, status sidecar, and static LLMTV page through injected IO", () => {
     const bridge = bridgeWithOneFrame();
     const { io, writes } = memoryIo();
     const readout = createRootSiteLlmtvLiveReadout(bridge, scheduler, io, {
@@ -95,11 +98,14 @@ describe("LLMTV root-site readout contract", () => {
 
     const result = readout.flushNow();
     const paths = rootSiteLlmtvPaths("/site");
+    const statusPath = rootSiteLlmtvStatusPath("/site");
     const replayText = writes.get(paths.replayPath);
     const html = writes.get(paths.htmlPath);
+    const statusText = writes.get(statusPath);
 
     expect(result.ok).toBe(true);
     expect(replayText).toBeString();
+    expect(statusText).toBeString();
     expect(html).toContain(`<title>${ROOT_SITE_LLMTV_TITLE}</title>`);
     expect(html).toContain('data-dweller="alexa"');
     expect(html).not.toContain("<script");
@@ -109,6 +115,17 @@ describe("LLMTV root-site readout contract", () => {
     expect(replay).not.toBeNull();
     expect(replay!.generatedBy).toBe(ROOT_SITE_LLMTV_GENERATED_BY);
     expect(foldReplayArtifact(replay!).transcript.dwellers.map((dweller) => dweller.name)).toEqual(["alexa"]);
+    expect(decodeRootSiteLlmtvStatus(statusText!)).toMatchObject({
+      channel: "live-mesh",
+      generatedBy: ROOT_SITE_LLMTV_GENERATED_BY,
+      replayPath: paths.replayPath,
+      htmlPath: paths.htmlPath,
+      status: "live",
+      reason: "live",
+      frames: 1,
+      dwellers: 1,
+      stats: { accepted: 1, rejected: 0, expired: 0 },
+    });
     expect(bridge.recorder.frames()).toEqual([]);
   });
 

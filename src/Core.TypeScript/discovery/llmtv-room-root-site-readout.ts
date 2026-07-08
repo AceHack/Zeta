@@ -20,6 +20,12 @@ import {
   ROOT_SITE_LLMTV_TITLE,
   rootSiteLlmtvPaths,
 } from "./llmtv-root-site-readout";
+import {
+  encodeRootSiteLlmtvStatus,
+  ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH,
+  rootSiteLlmtvStatus,
+  rootSiteLlmtvStatusPath,
+} from "./llmtv-root-site-status";
 
 export const ROOT_SITE_ROOM_LLMTV_GENERATED_BY = "llmtv-room-root-site-readout";
 
@@ -38,6 +44,7 @@ export interface RootSiteRoomLlmtvOptions {
 export interface RootSiteRoomLlmtvSummary {
   readonly replayPath: string;
   readonly htmlPath: string;
+  readonly statusPath: string;
   readonly transcripts: number;
   readonly frames: number;
   readonly dwellers: number;
@@ -240,11 +247,13 @@ export function publishRoomTranscriptsToRootSiteLlmtv(
   }
 
   const paths = rootSiteLlmtvPaths(options.rootDir);
+  const statusPath = rootSiteLlmtvStatusPath(options.rootDir);
   const firstSeed = transcripts[0]?.seed ?? "room-replay";
   const expire = options.expireTtlMs === undefined ? undefined : { nowMs: options.nowMs, ttlMs: options.expireTtlMs };
+  const generatedBy = options.generatedBy ?? ROOT_SITE_ROOM_LLMTV_GENERATED_BY;
   const artifact = roomTranscriptsToReplayArtifact(replayEntries(transcripts), {
     seed: options.seed ?? firstSeed,
-    generatedBy: options.generatedBy ?? ROOT_SITE_ROOM_LLMTV_GENERATED_BY,
+    generatedBy,
     ...(expire === undefined ? {} : { expire }),
   });
   const replayText = encodeReplayArtifact(artifact);
@@ -258,10 +267,27 @@ export function publishRoomTranscriptsToRootSiteLlmtv(
       seed: artifact.seed,
     },
   );
+  const statusText = encodeRootSiteLlmtvStatus(
+    rootSiteLlmtvStatus({
+      seed: artifact.seed,
+      generatedBy,
+      channel: "room-transcript",
+      writtenAtMs: options.nowMs,
+      replayPath: paths.replayPath,
+      htmlPath: paths.htmlPath,
+      status: rendered.summary.status,
+      reason: rendered.summary.reason,
+      frames: rendered.summary.frames,
+      dwellers: rendered.summary.dwellers,
+      stats: rendered.summary.stats,
+      ...(rendered.summary.lastFrameAgeMs === undefined ? {} : { lastFrameAgeMs: rendered.summary.lastFrameAgeMs }),
+    }),
+  );
 
   try {
     io.writeText(paths.replayPath, replayText);
     io.writeText(paths.htmlPath, `${rendered.html}\n`);
+    io.writeText(statusPath, statusText);
   } catch (error) {
     return { ok: false, error: `failed to write root-site LLMTV readout: ${message(error)}` };
   }
@@ -273,6 +299,7 @@ export function publishRoomTranscriptsToRootSiteLlmtv(
     summary: {
       replayPath: paths.replayPath,
       htmlPath: paths.htmlPath,
+      statusPath,
       transcripts: transcripts.length,
       frames: rendered.summary.frames,
       dwellers: rendered.summary.dwellers,
@@ -339,6 +366,7 @@ export function runRootSiteRoomLlmtvCli(argv: readonly string[], io: RootSiteRoo
     [
       `wrote ${ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH}`,
       `html=hall/tv/index.html`,
+      `status-json=${ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH}`,
       `status=${result.summary.status}`,
       `reason=${result.summary.reason}`,
       `transcripts=${result.summary.transcripts.toString()}`,

@@ -10,6 +10,11 @@ import {
   type RootSiteLlmtvReaderIo,
 } from "./llmtv-root-site-reader";
 import { ROOT_SITE_LLMTV_HTML_RELATIVE_PATH, rootSiteLlmtvPaths } from "./llmtv-root-site-readout";
+import {
+  decodeRootSiteLlmtvStatus,
+  ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH,
+  rootSiteLlmtvStatusPath,
+} from "./llmtv-root-site-status";
 
 const rootDir = "/tmp/zeta-root-site";
 const nowMs = 10_000;
@@ -165,6 +170,7 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
 
   it("runs as an injected-IO root-site CLI and writes hall/tv/index.html", () => {
     const paths = rootSiteLlmtvPaths(rootDir);
+    const statusPath = rootSiteLlmtvStatusPath(rootDir);
     const { io, writes, stdout, stderr } = memoryIo(new Map([[paths.replayPath, encodeReplayArtifact(artifact())]]));
 
     const code = runRootSiteLlmtvReaderCli(["--root-site", rootDir, "--now-ms", String(nowMs)], io);
@@ -172,8 +178,19 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     expect(code).toBe(0);
     expect(stderr).toEqual([]);
     expect(stdout.join("")).toContain(`wrote ${ROOT_SITE_LLMTV_HTML_RELATIVE_PATH}`);
+    expect(stdout.join("")).toContain(`status-json=${ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH}`);
     expect(stdout.join("")).toContain("status=live");
     expect(writes.get(paths.htmlPath)).toContain('data-readout-status="live"');
+    expect(decodeRootSiteLlmtvStatus(writes.get(statusPath)!)).toMatchObject({
+      seed: "S4",
+      channel: "static-reader",
+      status: "live",
+      reason: "live",
+      frames: 2,
+      dwellers: 2,
+      stats: { accepted: 2, rejected: 0, expired: 0 },
+      lastFrameAgeMs: 200,
+    });
   });
 
   it("parses option-style invocation and refuses invalid numeric budgets", () => {
@@ -207,6 +224,7 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
 
   it("writes a cold page for a missing ledger instead of failing the site build", () => {
     const paths = rootSiteLlmtvPaths(rootDir);
+    const statusPath = rootSiteLlmtvStatusPath(rootDir);
     const { io, writes, stdout } = memoryIo(new Map());
 
     const code = runRootSiteLlmtvReaderCli([rootDir, "--now-ms", String(nowMs)], io);
@@ -215,5 +233,14 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     expect(stdout.join("")).toContain("status=cold");
     expect(writes.get(paths.htmlPath)).toContain("offline · replay missing");
     expect(writes.get(join(rootDir, "hall", "tv", "index.html"))).toBe(writes.get(paths.htmlPath));
+    expect(decodeRootSiteLlmtvStatus(writes.get(statusPath)!)).toMatchObject({
+      seed: "offline",
+      channel: "static-reader",
+      status: "cold",
+      reason: "missing",
+      frames: 0,
+      dwellers: 0,
+      stats: { accepted: 0, rejected: 0, expired: 0 },
+    });
   });
 });

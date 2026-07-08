@@ -22,6 +22,12 @@ import {
   ROOT_SITE_LLMTV_TITLE,
   rootSiteLlmtvPaths,
 } from "./llmtv-root-site-readout";
+import {
+  encodeRootSiteLlmtvStatus,
+  ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH,
+  rootSiteLlmtvStatus,
+  rootSiteLlmtvStatusPath,
+} from "./llmtv-root-site-status";
 
 export const ROOT_SITE_LLMTV_READER_GENERATED_BY = "llmtv-root-site-reader";
 export const DEFAULT_ROOT_SITE_LLMTV_STALE_AFTER_MS = 5 * 60 * 1000;
@@ -48,6 +54,7 @@ export type RootSiteLlmtvArtifactInput =
   | { readonly kind: "missing"; readonly error: string };
 
 export interface RootSiteLlmtvReaderSummary {
+  readonly seed: string;
   readonly status: RootSiteLlmtvReaderStatusKind;
   readonly reason: string;
   readonly replayPath: string;
@@ -260,6 +267,7 @@ function renderResult(
 }
 
 function summarize(
+  seed: string,
   readoutStatus: LlmtvReadoutStatus,
   reason: string,
   replayPath: string,
@@ -270,6 +278,7 @@ function summarize(
   lastFrameAgeMs: number | undefined,
 ): RootSiteLlmtvReaderSummary {
   const base = {
+    seed,
     status: readoutStatus.kind,
     reason,
     replayPath,
@@ -302,7 +311,7 @@ export function renderRootSiteLlmtvReadout(
     return renderResult(
       emptyTranscript(seed),
       readoutStatus,
-      summarize(readoutStatus, input.error, paths.replayPath, paths.htmlPath, 0, 0, ZERO_STATS, undefined),
+      summarize(seed, readoutStatus, input.error, paths.replayPath, paths.htmlPath, 0, 0, ZERO_STATS, undefined),
       options.title,
     );
   }
@@ -322,7 +331,7 @@ export function renderRootSiteLlmtvReadout(
     return renderResult(
       emptyTranscript(seed),
       readoutStatus,
-      summarize(readoutStatus, "invalid-artifact", paths.replayPath, paths.htmlPath, 0, 0, ZERO_STATS, undefined),
+      summarize(seed, readoutStatus, "invalid-artifact", paths.replayPath, paths.htmlPath, 0, 0, ZERO_STATS, undefined),
       options.title,
     );
   }
@@ -353,6 +362,7 @@ export function renderRootSiteLlmtvReadout(
       markLive(folded.transcript, false),
       readoutStatus,
       summarize(
+        artifact.seed,
         readoutStatus,
         "replay-heat",
         paths.replayPath,
@@ -379,7 +389,17 @@ export function renderRootSiteLlmtvReadout(
     return renderResult(
       markLive(folded.transcript, false),
       readoutStatus,
-      summarize(readoutStatus, "empty", paths.replayPath, paths.htmlPath, frames, dwellers, stats, lastFrameAgeMs),
+      summarize(
+        artifact.seed,
+        readoutStatus,
+        "empty",
+        paths.replayPath,
+        paths.htmlPath,
+        frames,
+        dwellers,
+        stats,
+        lastFrameAgeMs,
+      ),
       options.title,
     );
   }
@@ -398,7 +418,17 @@ export function renderRootSiteLlmtvReadout(
     return renderResult(
       markLive(folded.transcript, false),
       readoutStatus,
-      summarize(readoutStatus, "stale", paths.replayPath, paths.htmlPath, frames, dwellers, stats, lastFrameAgeMs),
+      summarize(
+        artifact.seed,
+        readoutStatus,
+        "stale",
+        paths.replayPath,
+        paths.htmlPath,
+        frames,
+        dwellers,
+        stats,
+        lastFrameAgeMs,
+      ),
       options.title,
     );
   }
@@ -415,8 +445,37 @@ export function renderRootSiteLlmtvReadout(
   return renderResult(
     markLive(folded.transcript, true),
     readoutStatus,
-    summarize(readoutStatus, "live", paths.replayPath, paths.htmlPath, frames, dwellers, stats, lastFrameAgeMs),
+    summarize(
+      artifact.seed,
+      readoutStatus,
+      "live",
+      paths.replayPath,
+      paths.htmlPath,
+      frames,
+      dwellers,
+      stats,
+      lastFrameAgeMs,
+    ),
     options.title,
+  );
+}
+
+function statusSidecarText(summary: RootSiteLlmtvReaderSummary, writtenAtMs: number): string {
+  return encodeRootSiteLlmtvStatus(
+    rootSiteLlmtvStatus({
+      seed: summary.seed,
+      generatedBy: ROOT_SITE_LLMTV_READER_GENERATED_BY,
+      channel: "static-reader",
+      writtenAtMs,
+      replayPath: summary.replayPath,
+      htmlPath: summary.htmlPath,
+      status: summary.status,
+      reason: summary.reason,
+      frames: summary.frames,
+      dwellers: summary.dwellers,
+      stats: summary.stats,
+      ...(summary.lastFrameAgeMs === undefined ? {} : { lastFrameAgeMs: summary.lastFrameAgeMs }),
+    }),
   );
 }
 
@@ -450,9 +509,11 @@ export function runRootSiteLlmtvReaderCli(argv: readonly string[], io: RootSiteL
   } satisfies RootSiteLlmtvReaderOptions;
   const input = readArtifact(parsed.request.rootDir, io);
   const rendered = renderRootSiteLlmtvReadout(input, options);
+  const statusPath = rootSiteLlmtvStatusPath(parsed.request.rootDir);
 
   try {
     io.writeText(rendered.summary.htmlPath, `${rendered.html}\n`);
+    io.writeText(statusPath, statusSidecarText(rendered.summary, nowMs));
   } catch (error) {
     io.stderr(`failed to write ${rendered.summary.htmlPath}: ${message(error)}\n`);
     return 1;
@@ -462,6 +523,7 @@ export function runRootSiteLlmtvReaderCli(argv: readonly string[], io: RootSiteL
     [
       `wrote ${ROOT_SITE_LLMTV_HTML_RELATIVE_PATH}`,
       `from=${ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH}`,
+      `status-json=${ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH}`,
       `status=${rendered.summary.status}`,
       `reason=${rendered.summary.reason}`,
       `dwellers=${rendered.summary.dwellers.toString()}`,

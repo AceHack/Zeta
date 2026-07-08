@@ -14,6 +14,7 @@ import {
 } from "./llmtv-live-readout";
 import type { LlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import type { Scheduler } from "./llmtv-node";
+import { ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH, rootSiteLlmtvStatusPath } from "./llmtv-root-site-status";
 
 export const ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH = "data/llmtv-live.replay.json";
 export const ROOT_SITE_LLMTV_HTML_RELATIVE_PATH = "hall/tv/index.html";
@@ -55,7 +56,10 @@ export function createRootSiteLlmtvLiveReadout(
   return createLlmtvLiveReadout(bridge, scheduler, io, {
     ...options,
     ...paths,
+    statusPath: rootSiteLlmtvStatusPath(options.rootDir),
     generatedBy: options.generatedBy ?? ROOT_SITE_LLMTV_GENERATED_BY,
     title: options.title ?? ROOT_SITE_LLMTV_TITLE,
   });
 }
+
+export { ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH, rootSiteLlmtvStatusPath };

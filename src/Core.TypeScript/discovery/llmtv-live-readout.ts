@@ -23,6 +23,11 @@ import {
   type ChannelTable,
 } from "./llmtv-broadcast";
 import type { Scheduler } from "./llmtv-node";
+import {
+  encodeRootSiteLlmtvStatus,
+  rootSiteLlmtvStatus,
+  type RootSiteLlmtvStatusKind,
+} from "./llmtv-root-site-status";
 
 export interface LlmtvLiveReadoutIo {
   readonly writeText: (path: string, text: string) => void;
@@ -33,6 +38,7 @@ export interface LlmtvLiveReadoutOptions {
   readonly readoutEveryMs: number;
   readonly replayPath: string;
   readonly htmlPath: string;
+  readonly statusPath?: string;
   readonly generatedBy?: string;
   readonly title?: string;
   readonly expireTtlMs?: number;
@@ -43,8 +49,11 @@ export interface LlmtvLiveReadoutSummary {
   readonly atMs: number;
   readonly replayPath: string;
   readonly htmlPath: string;
+  readonly statusPath?: string;
   readonly frames: number;
   readonly dwellers: number;
+  readonly status: RootSiteLlmtvStatusKind;
+  readonly reason: string;
   readonly stats: ReplayStats;
 }
 
@@ -151,6 +160,36 @@ function snapshotArtifact(
   return expire === undefined ? withGenerator : { ...withGenerator, expire };
 }
 
+function statusKind(frames: number, dwellers: number, stats: ReplayStats): RootSiteLlmtvStatusKind {
+  if (stats.rejected > 0 || stats.expired > 0) return "heat";
+  if (frames === 0 || dwellers === 0) return "cold";
+  return "live";
+}
+
+function statusReason(status: RootSiteLlmtvStatusKind): string {
+  if (status === "heat") return "replay-heat";
+  if (status === "cold") return "empty";
+  return "live";
+}
+
+function encodeStatus(summary: LlmtvLiveReadoutSummary, options: LlmtvLiveReadoutOptions): string {
+  return encodeRootSiteLlmtvStatus(
+    rootSiteLlmtvStatus({
+      seed: options.seed,
+      generatedBy: generatedBy(options),
+      channel: "live-mesh",
+      writtenAtMs: summary.atMs,
+      replayPath: summary.replayPath,
+      htmlPath: summary.htmlPath,
+      status: summary.status,
+      reason: summary.reason,
+      frames: summary.frames,
+      dwellers: summary.dwellers,
+      stats: summary.stats,
+    }),
+  );
+}
+
 export function createLlmtvLiveReadout(
   bridge: LlmtvLiveReplayBridge,
   scheduler: Scheduler,
@@ -180,24 +219,32 @@ export function createLlmtvLiveReadout(
       rejected: observed.rejected,
       expired: expired.expired,
     };
+    const status = statusKind(artifact.frames.length, transcript.dwellers.length, stats);
+    const summary = {
+      atMs,
+      replayPath: options.replayPath,
+      htmlPath: options.htmlPath,
+      ...(options.statusPath === undefined ? {} : { statusPath: options.statusPath }),
+      frames: artifact.frames.length,
+      dwellers: transcript.dwellers.length,
+      status,
+      reason: statusReason(status),
+      stats,
+    } satisfies LlmtvLiveReadoutSummary;
 
     try {
       io.writeText(options.replayPath, encodeReplayArtifact(artifact));
       io.writeText(options.htmlPath, `${html}\n`);
+      if (options.statusPath !== undefined) {
+        io.writeText(options.statusPath, encodeStatus(summary, options));
+      }
     } catch (error) {
       return { ok: false, reason: "write-failed", error: errorMessage(error) };
     }
 
     table = expired.table;
     bridge.recorder.clear();
-    last = {
-      atMs,
-      replayPath: options.replayPath,
-      htmlPath: options.htmlPath,
-      frames: artifact.frames.length,
-      dwellers: transcript.dwellers.length,
-      stats,
-    };
+    last = summary;
     return { ok: true, skipped: false, summary: last };
   };
 

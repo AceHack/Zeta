@@ -15,6 +15,11 @@ import {
   ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH,
   rootSiteLlmtvPaths,
 } from "./llmtv-root-site-readout";
+import {
+  decodeRootSiteLlmtvStatus,
+  ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH,
+  rootSiteLlmtvStatusPath,
+} from "./llmtv-root-site-status";
 
 const deniedHeat: HeatRow = {
   tick: 1,
@@ -105,11 +110,14 @@ describe("llmtv-room-root-site-readout -- room transcripts to root-site LLMTV", 
       title: "Room LLMTV",
     });
     const paths = rootSiteLlmtvPaths("/site");
+    const statusPath = rootSiteLlmtvStatusPath("/site");
     const replayText = writes.get(paths.replayPath);
     const html = writes.get(paths.htmlPath);
+    const statusText = writes.get(statusPath);
 
     expect(result.ok).toBe(true);
     expect(replayText).toBeString();
+    expect(statusText).toBeString();
     expect(html).toContain("<title>Room LLMTV</title>");
     expect(html).toContain('data-readout-status="live"');
     expect(html).toContain('data-dweller="darkhall"');
@@ -121,6 +129,17 @@ describe("llmtv-room-root-site-readout -- room transcripts to root-site LLMTV", 
     expect(replay?.generatedBy).toBe(ROOT_SITE_ROOM_LLMTV_GENERATED_BY);
     expect(replay?.frames).toHaveLength(1);
     expect(foldReplayArtifact(replay!).transcript.dwellers[0]?.temperatureTreaty?.heatReceipts).toHaveLength(2);
+    expect(decodeRootSiteLlmtvStatus(statusText!)).toMatchObject({
+      channel: "room-transcript",
+      generatedBy: ROOT_SITE_ROOM_LLMTV_GENERATED_BY,
+      replayPath: paths.replayPath,
+      htmlPath: paths.htmlPath,
+      status: "live",
+      reason: "live",
+      frames: 1,
+      dwellers: 1,
+      stats: { accepted: 1, rejected: 0, expired: 0 },
+    });
   });
 
   it("uses the replay fold so repeated room snapshots converge by source sequence", () => {
@@ -159,8 +178,10 @@ describe("llmtv-room-root-site-readout -- room transcripts to root-site LLMTV", 
     expect(code).toBe(0);
     expect(stderr).toEqual([]);
     expect(stdout.join("")).toContain(`wrote ${ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH}`);
+    expect(stdout.join("")).toContain(`status-json=${ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH}`);
     expect(stdout.join("")).toContain("status=live");
     expect(writes.get(join("/site", ...ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH.split("/")))).toBeString();
+    expect(writes.get(join("/site", ...ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH.split("/")))).toBeString();
     expect(writes.get(join("/site", ...ROOT_SITE_LLMTV_HTML_RELATIVE_PATH.split("/")))).toContain(
       'data-readout-status="live"',
     );

@@ -11,6 +11,7 @@ import {
   type PagesStaticExportIo,
 } from "./llmtv-pages-static-export";
 import { ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH } from "./llmtv-root-site-readout";
+import { decodeRootSiteLlmtvStatus, ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH } from "./llmtv-root-site-status";
 
 const tempRoots: string[] = [];
 
@@ -96,6 +97,11 @@ describe("llmtv-pages-static-export -- static Pages artifact with LLMTV readout"
     expect(read(outDir, "docs/README.md")).toContain("# Docs");
     expect(existsSync(join(outDir, ".nojekyll"))).toBe(true);
     expect(read(outDir, "hall/tv/index.html")).toContain('data-readout-status="cold"');
+    expect(decodeRootSiteLlmtvStatus(read(outDir, ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH))).toMatchObject({
+      channel: "static-reader",
+      status: "cold",
+      reason: expect.stringContaining("ENOENT") as unknown as string,
+    });
     expect(read(outDir, "hall/tv/index.html")).not.toContain("old standing view");
   });
 
@@ -111,6 +117,12 @@ describe("llmtv-pages-static-export -- static Pages artifact with LLMTV readout"
     expect(summary.copiedRoots).toContain("data");
     expect(summary.llmtvReaderStdout.join("")).toContain("status=live");
     expect(read(outDir, ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH)).toContain("zeta.llmtv.replay.v1");
+    expect(decodeRootSiteLlmtvStatus(read(outDir, ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH))).toMatchObject({
+      channel: "static-reader",
+      status: "live",
+      frames: 1,
+      dwellers: 1,
+    });
     expect(read(outDir, "hall/tv/index.html")).toContain('data-readout-status="live"');
     expect(read(outDir, "hall/tv/index.html")).toContain('data-dweller="vera"');
   });
