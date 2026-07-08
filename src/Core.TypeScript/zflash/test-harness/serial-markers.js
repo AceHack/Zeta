@@ -5,7 +5,11 @@ export const B0891_RETENTION_USB_SERIAL_MARKERS = [
   "zeta-creds-restore: reading preserved ESP blob",
   "zeta-creds-restore:",
   "already-present"
-], INSTALLED_OS_FRESH_RESTORE_FORBIDDEN_MARKERS = ["already-present"], HOSTNAME_INJECTION_SERIAL_MARKERS = [
+], INSTALLED_OS_FRESH_RESTORE_FORBIDDEN_MARKERS = ["already-present"], WIFI_ESP_INSTALL_SERIAL_MARKERS = [
+  "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP",
+  "[iter-5-wifi] wrote NetworkManager profile to installed system",
+  "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
+], WIFI_ESP_ABSENT_SERIAL_MARKER = "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection", HOSTNAME_INJECTION_SERIAL_MARKERS = [
   "[iter-5.2]   found injected hostname:",
   "[iter-5.2]   wrote /mnt/etc/zeta/cluster-node-id",
   "[iter-5.2]   networking.hostName will be"

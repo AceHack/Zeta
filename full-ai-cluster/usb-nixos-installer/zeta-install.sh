@@ -863,12 +863,13 @@ else
 fi
 echo
 
-# ── Step 6.6: iter-5 wifi ESP payload detection (QEMU-testable plumbing only) ─────────
+# ── Step 6.6: iter-5 wifi ESP → NetworkManager profile (no radio claim) ─────────
 #
-# zflash file-backed/QEMU flows may bake wifi credentials onto the boot USB ESP
-# as zeta-wifi-credentials.json. This step intentionally only detects the file
-# and emits a serial marker; real NetworkManager profile creation/activation is
-# physical-hardware gated because QEMU does not prove wifi association.
+# zflash may bake /zeta-wifi-credentials.json ({ssid,password}) onto the boot
+# USB ESP. This step copies a .nmconnection onto the *installed* system so
+# first boot can autoconnect. Association / radio proof stays physical-gated
+# (QEMU has no wifi NIC to validate). Helper:
+#   src/Core.TypeScript/installer/wifi-esp-to-nm.ts
 echo
 echo "[iter-5-wifi] ── probing boot USB for wifi credentials payload ──"
 WIFI_CREDS_FILE=""
@@ -881,7 +882,37 @@ if [ -z "$WIFI_CREDS_FILE" ] && [ -f "$PROBE_MOUNT/zeta-wifi-credentials.json" ]
 fi
 if [ -n "$WIFI_CREDS_FILE" ]; then
   echo "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP"
-  echo "[iter-5-wifi] TODO: write NetworkManager profile after physical wifi validation"
+  WIFI_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/wifi-esp-to-nm.ts"
+  WIFI_NM_DST="/mnt/etc/NetworkManager/system-connections"
+  if [ -f "$WIFI_HELPER" ]; then
+    WIFI_TMP=/tmp/zeta-esp-wifi.nmconnection
+    WIFI_PROFILE_NAME=$(
+      sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; bun '$WIFI_HELPER' --input '$WIFI_CREDS_FILE' --output '$WIFI_TMP'" \
+        2>/tmp/zeta-esp-wifi.err
+    ) || WIFI_PROFILE_NAME=""
+    WIFI_PROFILE_NAME=$(echo "$WIFI_PROFILE_NAME" | tr -d '[:space:]')
+    if [ -n "$WIFI_PROFILE_NAME" ] && [ -f "$WIFI_TMP" ]; then
+      sudo mkdir -p "$WIFI_NM_DST"
+      sudo chmod 0700 "$WIFI_NM_DST"
+      sudo cp "$WIFI_TMP" "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
+      sudo chown root:root "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
+      sudo chmod 0600 "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
+      rm -f "$WIFI_TMP" /tmp/zeta-esp-wifi.err
+      echo "[iter-5-wifi] wrote NetworkManager profile to installed system ($WIFI_PROFILE_NAME)"
+      echo "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
+    else
+      echo "[iter-5-wifi] invalid zeta-wifi-credentials.json; skipping profile write"
+      rm -f "$WIFI_TMP" /tmp/zeta-esp-wifi.err
+    fi
+  else
+    # Fallback: stage raw JSON on target ESP for a later consume path.
+    sudo mkdir -p /mnt/boot
+    sudo cp "$WIFI_CREDS_FILE" /mnt/boot/zeta-wifi-credentials.json
+    sudo chmod 0600 /mnt/boot/zeta-wifi-credentials.json
+    echo "[iter-5-wifi] staged zeta-wifi-credentials.json on target ESP (helper unavailable)"
+    echo "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
+  fi
 else
   echo "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection"
 fi

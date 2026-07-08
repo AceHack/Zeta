@@ -97,7 +97,9 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
     mustContain: [
       "Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey", // iter-4.2 pubkey injection
       "Step 6.6: iter-5.2 hostname injection", // iter-5.2 hostname-read
+      "Step 6.6: iter-5 wifi ESP", // ESP JSON → NM profile (no radio claim)
       "Step 6.7: iter-5.1 wifi persistence", // iter-5.1 NM-profile persist
+      "association deferred (physical-gated; no radio claim)", // QEMU-honest wifi floor
       "iter-5.2.2", // iter-5.2.2 install-time auto-gen marker
       "/dev/urandom", // install-time hostname generator
       // ── iter-5.4 sentinels (PR #5364 + #5352 + #5354 substrate) ──

@@ -26,6 +26,16 @@ export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = [
 /** Fresh / no-retention install must NOT claim already-present restore. */
 export const INSTALLED_OS_FRESH_RESTORE_FORBIDDEN_MARKERS: readonly string[] = ["already-present"];
 
+/** ESP wifi JSON → NM profile copy (no association / radio claim). */
+export const WIFI_ESP_INSTALL_SERIAL_MARKERS: readonly string[] = [
+  "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP",
+  "[iter-5-wifi] wrote NetworkManager profile to installed system",
+  "[iter-5-wifi] association deferred (physical-gated; no radio claim)",
+];
+
+export const WIFI_ESP_ABSENT_SERIAL_MARKER =
+  "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection";
+
 /** zeta-install.sh emits these when /zeta-hostname.txt is injected from the boot USB ESP. */
 export const HOSTNAME_INJECTION_SERIAL_MARKERS: readonly string[] = [
   "[iter-5.2]   found injected hostname:",

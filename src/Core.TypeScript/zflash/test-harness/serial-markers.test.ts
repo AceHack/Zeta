@@ -88,3 +88,17 @@ describe("installed-OS retention serial markers", () => {
     expect(serial).toContain("already-present");
   });
 });
+
+describe("wifi ESP install serial markers", () => {
+  test("consume path requires wrote-profile plus association-deferred", async () => {
+    const { WIFI_ESP_INSTALL_SERIAL_MARKERS } = await import("./serial-markers");
+    const serial = [
+      "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP",
+      "[iter-5-wifi] wrote NetworkManager profile to installed system (zeta-esp-homelab.nmconnection)",
+      "[iter-5-wifi] association deferred (physical-gated; no radio claim)",
+    ].join("\n");
+    for (const marker of WIFI_ESP_INSTALL_SERIAL_MARKERS) {
+      expect(serial).toContain(marker);
+    }
+  });
+});
