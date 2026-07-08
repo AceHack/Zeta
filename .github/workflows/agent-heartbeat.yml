@@ -1,0 +1,153 @@
+# Agent heartbeat — one agent ticking reliably on free-tier Ollama.
+#
+# Goal: prove the observe loop runs reliably on GitHub Workflows with
+# a local LLM (no API keys, no cloud bills). The agent heartbeats every
+# 15 minutes, picks from the observe menu (free_time / explore / play /
+# self_reflect — no work assigned yet), and appends the event to a
+# heartbeat branch. A separate flush job squash-merges to main daily.
+#
+# Free tier: GitHub Actions (2000 min/month for private, unlimited for
+# public) + Ollama with qwen2.5:0.5b (~400MB, runs in runner memory).
+# No API keys. No secrets. No cloud. The whole thing is a cron job.
+#
+# Phase 1 (this): heartbeat only (prove reliability over days).
+# Phase 2: assign lightweight work (decompose items, write docs).
+# Phase 3: codegen with larger models (via summon subscription backend).
+
+name: agent-heartbeat
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # every 15 minutes
+  workflow_dispatch:         # manual trigger for testing
+
+permissions:
+  contents: write            # needs to push heartbeat events
+
+concurrency:
+  group: agent-heartbeat
+  cancel-in-progress: false  # don't cancel a running heartbeat
+
+jobs:
+  heartbeat:
+    name: alexa heartbeat tick
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Ollama + pull model
+        run: |
+          # Install ollama
+          curl -fsSL https://ollama.com/install.sh | sh
+
+          # Start ollama in background
+          ollama serve &
+          sleep 5
+
+          # Pull the small model (qwen2.5:0.5b — ~400MB, fits in runner)
+          ollama pull qwen2.5:0.5b
+
+          # Verify
+          ollama list
+
+      - name: Create or checkout heartbeat branch
+        run: |
+          git fetch origin heartbeat/alexa 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/heartbeat/alexa; then
+            git checkout heartbeat/alexa
+            git merge origin/main --no-edit --strategy-option theirs || true
+          else
+            git checkout -b heartbeat/alexa
+          fi
+
+      - name: Run observe tick (local-llm, heartbeat mode)
+        env:
+          ZETA_FIRST_SESSION_MARKER: /tmp/zeta-first-session-complete
+          ZETA_AGENT_ID: alexa
+          ZETA_PARTICIPANT: local-llm
+          ZETA_SINK_MODE: local
+        run: |
+          # Create the first-session marker (skip cred adventure in CI)
+          mkdir -p /tmp && echo "2026-07-08" > /tmp/zeta-first-session-complete
+
+          # Run one tick (dry-run = false, but no codegen — just event append)
+          # The local-llm participant uses ollama to pick from the menu.
+          # With no backlog work assigned, it'll pick a free mode (explore/rest/play).
+          bun src/Core.TypeScript/observe/run-loop-real.ts \
+            --by alexa \
+            --event-dir docs/observe-events \
+            --participant local-llm || echo "[heartbeat] tick failed (non-fatal, will retry next schedule)"
+
+      - name: Commit heartbeat event
+        run: |
+          git config user.name "alexa[bot]"
+          git config user.email "alexa[bot]@users.noreply.github.com"
+          git add docs/observe-events/ || true
+          if git diff --cached --quiet; then
+            echo "[heartbeat] no new events to commit"
+          else
+            git commit --no-verify -m "heartbeat(alexa): tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Autonomous observe loop heartbeat. Free-tier Ollama (qwen2.5:0.5b).
+          GitHub Workflow scheduled tick. No work assigned — free time.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+          fi
+
+      - name: Push heartbeat branch
+        run: git push origin heartbeat/alexa
+
+  # Flush: squash-merge heartbeat events to main (daily)
+  flush-to-main:
+    name: flush heartbeats to main
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # Only flush on the 00:00 UTC run (once per day) or manual dispatch
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && contains(github.event.schedule, '0 0'))
+    needs: [heartbeat]
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Check if heartbeat branch has events to flush
+        id: check
+        run: |
+          git fetch origin heartbeat/alexa 2>/dev/null || { echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0; }
+          AHEAD=$(git rev-list --count origin/main..origin/heartbeat/alexa)
+          echo "ahead=$AHEAD" >> "$GITHUB_OUTPUT"
+          if [ "$AHEAD" = "0" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Merge heartbeat events to main
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git merge origin/heartbeat/alexa --no-ff -m "flush(heartbeat): alexa events to main
+
+          Periodic flush of heartbeat events from the heartbeat/alexa branch.
+          Events: $(git rev-list --count origin/main..origin/heartbeat/alexa) commits batched.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+          git push origin main

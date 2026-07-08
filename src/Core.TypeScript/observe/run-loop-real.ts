@@ -165,7 +165,14 @@ async function main(): Promise<number> {
   }
 
   // 3. Execute the pick (real sink + WorkspacePort-based executor for do_item)
-  const sink = folderSink({ eventDir: args.eventDir, by: args.by });
+  // ZETA_SINK_MODE=local: skip git commit/push in the sink (the workflow script
+  // handles commit+push separately — needed for heartbeat branch mode where the
+  // sink can't push to main directly).
+  const sinkMode = process.env.ZETA_SINK_MODE ?? "git";
+  const localCommit = sinkMode === "local"
+    ? (_filePath: string, _envelope: import("./event-sink-folder").EventEnvelope): import("./event-sink-folder").CommitOutcome => ({ ok: true })
+    : undefined;
+  const sink = folderSink({ eventDir: args.eventDir, by: args.by, ...(localCommit ? { commit: localCommit } : {}) });
 
   // Wire the executor for do_item: codegen (Claude CLI) or port (claim-only).
   // ZETA_EXECUTOR=codegen enables autonomous code generation via the Claude CLI.
