@@ -5,12 +5,13 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   createHsmShareAdapterStub,
+  createSealedFileShareAdapter,
   createSoftwareFileShareAdapter,
   loadFrostKeyShares,
 } from "./frost-share-adapter.ts";
-import type { FrostCaCustodyEffects } from "./frost-ca-custody.ts";
+import { frostSharePath, type FrostCaCustodyEffects } from "./frost-ca-custody.ts";
 
-function sandboxFx(): { fx: FrostCaCustodyEffects; root: string } {
+function sandboxFx(): { fx: FrostCaCustodyEffects; root: string; files: Map<string, string> } {
   const root = mkdtempSync(join(tmpdir(), "zeta-frost-adapter-"));
   const files = new Map<string, string>();
   const fx: FrostCaCustodyEffects = {
@@ -21,7 +22,7 @@ function sandboxFx(): { fx: FrostCaCustodyEffects; root: string } {
     },
     mkdirp: () => {},
   };
-  return { fx, root };
+  return { fx, root, files };
 }
 
 describe("FrostShareAdapter", () => {
@@ -67,5 +68,29 @@ describe("FrostShareAdapter", () => {
     const stub = createHsmShareAdapterStub();
     expect(stub.kind).toBe("hsm-stub");
     expect(() => stub.loadShare(1)).toThrow(/not implemented/);
+  });
+
+  test("FSA-4: sealed-file adapter round-trips without plaintext secretShare on disk", () => {
+    const { fx, root, files } = sandboxFx();
+    const adapter = createSealedFileShareAdapter(fx, root, "sealed-ca", {
+      getSealKey: () => new Uint8Array(32).fill(9),
+      randomBytes: (len) => new Uint8Array(len).fill(7),
+    });
+    adapter.storeShare(
+      {
+        x: 1,
+        secretShare: 987654321n,
+        threshold: 2,
+        totalShares: 3,
+        groupPublicKeyHex: "cc".repeat(32),
+      },
+      "sealed-ca",
+    );
+
+    const plaintextFile = files.get(frostSharePath(root, 1)) ?? "";
+    expect(plaintextFile).toContain("zeta-frost-share-sealed-v1");
+    expect(plaintextFile).not.toContain("987654321");
+    expect(plaintextFile).not.toContain("secretShare");
+    expect(adapter.loadShare(1)?.secretShare).toBe(987654321n);
   });
 });

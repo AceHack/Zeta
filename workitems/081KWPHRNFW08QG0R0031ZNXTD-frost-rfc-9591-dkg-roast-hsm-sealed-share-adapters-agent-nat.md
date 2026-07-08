@@ -27,9 +27,10 @@ HSM adapters seal shares so host RAM never sees share bytes during partial sign.
 ## Done when
 
 1. Distributed keygen (no single party holds full scalar post-ceremony) — **slice 1 landed** (`frost-dkg.ts`, `ca-cli frost-ca --dkg`)
-2. ROAST (or documented subset) for concurrent/robust signing sessions — **open**
-3. Share adapter interface: software file (today) | HSM/TPM seal (pluggable) — **slice 1 landed** (`frost-share-adapter.ts`; HSM stub honest)
+2. ROAST (or documented subset) for concurrent/robust signing sessions — **documented subset landed** (`frost-roast.ts`; exact-threshold attempts, session isolation, duplicate/mixed partial aborts, timeout retry)
+3. Share adapter interface: software file (today) | HSM/TPM seal (pluggable) — **sealed-file slice landed** (`frost-share-adapter.ts`; AES-GCM software seal via injected key/effects; HSM stub still honest)
 4. Still monorepo tools-over-trunks (`tools/setup/persona-keys/` + effects injection) — **yes**
+5. Real TPM/PKCS#11 use-without-extract adapter — **open** (no fake HSM claim in this slice)
 
 ## Depends on
 
