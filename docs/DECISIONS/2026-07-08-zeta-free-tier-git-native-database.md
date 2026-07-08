@@ -135,6 +135,48 @@ The free tier IS the product. The paid tier is the acceleration.
 - `.github/workflows/gate.yml` — the CI verification gate
 - `data/metrics-history.json` — the append-only ledger (Pages-served)
 
+## Intelligence Is a Scaling Dimension, Not a Dependency
+
+The system works with ZERO intelligence and gets BETTER with more. The oracle is
+the floor. A tiny model is a slight improvement. A big model is a luxury. Most of
+the system's value comes from infrastructure (event log, CRDT, scheduling, identity),
+not from the model.
+
+**Heterogeneous agents can achieve trust without model homogeneity because trust is
+a property of the identity stack and event log, not of the models themselves.**
+
+This enables a heterogeneous agent network: GPT, Claude, Gemini, a tiny local model,
+or the oracle itself can all participate because the trust primitives live BELOW the
+model layer. Cooperation is structural (both parties attest, identities are provably
+distinct, the event is append-only), not semantic (models don't need to understand
+each other's internals).
+
+The correctness proofs are model-agnostic: the Lean theorems, CRDT merge guarantees,
+and EntropyFloorLift don't have a model in scope. The model can be swapped, upgraded,
+or removed without invalidating ANY formal guarantee. Most "AI systems" have the model
+baked into the correctness argument. This one doesn't.
+
+| Unit | Intelligence Needed | Why |
+|---|---|---|
+| Heartbeat | Zero (oracle) | Presence only — pick any free mode |
+| Event append | Zero (deterministic) | Content-addressed write, no decision |
+| Cross-verification | Zero (structural check) | Valid JSON + ZetaId filename? |
+| Flush/merge | Zero (git merge) | Disjoint files, no conflict possible |
+| Self-claim recording | Zero (append) | "I claim X by T" — just a write |
+| Claim resolution | Zero (deadline check) | tick >= deadline? met or missed |
+| Reliability computation | Zero (arithmetic) | met / (met + missed) |
+| Scheduling (τ*) | Zero (formula) | L/√α — pure math |
+| Mode selection | Tiny model OR oracle | Pick from a menu of 10 options |
+| Decompose an item | Small model | Read spec, write child items |
+| Code generation | Large model | Read context, write code, run tests |
+
+73% of the stack is model-free. The two model-dependent units (decompose + codegen)
+are the ones where judgment genuinely adds value no formula can replicate.
+
+The free tier runs on `qwen2.5:0.5b` (400MB) or pure oracle — both free, both fit
+in a standard GitHub Actions runner. The model adds speed and judgment, not correctness.
+That distinction matters for trust: the infrastructure isn't lying even when no model runs.
+
 ## One-Line Summary
 
-**Git is the database. Pages is the API. Workflows are the compute. Tabs are the nodes. Free.**
+**Git is the database. Pages is the API. Workflows are the compute. Tabs are the nodes. Intelligence scales quality, not ability. Trust is model-agnostic. Free.**
