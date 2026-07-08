@@ -111,13 +111,13 @@ jobs:
       - name: Push heartbeat branch
         run: git push origin heartbeat/alexa
 
-  # Flush: squash-merge heartbeat events to main (daily)
+  # Flush: squash-merge heartbeat events to main (hourly)
   flush-to-main:
     name: flush heartbeats to main
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    # Only flush on the 00:00 UTC run (once per day) or manual dispatch
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && contains(github.event.schedule, '0 0'))
+    # Flush on the :00 minute run (every hour) or manual dispatch
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && endsWith(github.event.schedule, '0 * * * *'))
     needs: [heartbeat]
 
     steps:
