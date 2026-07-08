@@ -77,3 +77,14 @@ describe("first-session path serial markers", () => {
     expect("error" in assertSkipGhFirstSessionSerial(serial)).toBe(true);
   });
 });
+
+describe("installed-OS retention serial markers", () => {
+  test("require reading-preserved ESP blob plus already-present", () => {
+    const serial = [
+      "zeta-creds-restore: reading preserved ESP blob",
+      "zeta-creds-restore: already-present, skipping credential rewrite",
+    ].join("\n");
+    expect(serial).toContain("zeta-creds-restore: reading preserved ESP blob");
+    expect(serial).toContain("already-present");
+  });
+});

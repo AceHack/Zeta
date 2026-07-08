@@ -1,7 +1,11 @@
 export const B0891_RETENTION_USB_SERIAL_MARKERS = [
   "[081KSNY2Z0008QG0R0008PN7RQ-retention]   found pre-baked zeta-creds.enc on boot USB ESP",
   "[081KSNY2Z0008QG0R0008PN7RQ-retention]   Step 6.95-picker will skip account re-entry"
-], B0891_FRESH_USB_SERIAL_MARKER = "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal", INSTALLED_OS_RETENTION_SERIAL_MARKERS = ["zeta-creds-restore:", "already-present"], HOSTNAME_INJECTION_SERIAL_MARKERS = [
+], B0891_FRESH_USB_SERIAL_MARKER = "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal", INSTALLED_OS_RETENTION_SERIAL_MARKERS = [
+  "zeta-creds-restore: reading preserved ESP blob",
+  "zeta-creds-restore:",
+  "already-present"
+], INSTALLED_OS_FRESH_RESTORE_FORBIDDEN_MARKERS = ["already-present"], HOSTNAME_INJECTION_SERIAL_MARKERS = [
   "[iter-5.2]   found injected hostname:",
   "[iter-5.2]   wrote /mnt/etc/zeta/cluster-node-id",
   "[iter-5.2]   networking.hostName will be"

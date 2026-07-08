@@ -66,7 +66,7 @@ in
 
     scriptPath = lib.mkOption {
       type = lib.types.str;
-      default = "${cfg.repoRoot}/tools/installer/zeta-creds-restore.ts";
+      default = "${cfg.repoRoot}/src/Core.TypeScript/installer/zeta-creds-restore.ts";
       description = "Bun TypeScript entrypoint for restore CLI (B-0852.2b).";
     };
 
@@ -166,11 +166,30 @@ in
           }
           trap cleanup EXIT
 
+          # QEMU scenario 3/4: mirror restore markers to serial so the
+          # zflash harness can assert already-present / wrote without
+          # physical USB (081KSNY2Z0008QG0R0008PN7RQ).
+          _serial=""
+          for _dev in /dev/ttyS0 /dev/ttyAMA0; do
+            if [ -e "$_dev" ]; then
+              _serial="$_dev"
+              break
+            fi
+          done
+          log_restore() {
+            echo "$1"
+            if [ -n "$_serial" ]; then
+              echo "$1" >> "$_serial" || true
+            fi
+          }
+
+          log_restore "zeta-creds-restore: reading preserved ESP blob"
+
           # Strip whitespace from UUID (Copilot P1 finding): `cat`
           # includes trailing newline if file ends with one.
           USB_UUID="$(tr -d '[:space:]' < ${cfg.usbUuidPath})"
           if [ -z "$USB_UUID" ]; then
-            echo "zeta-creds-restore: empty USB UUID at ${cfg.usbUuidPath}; aborting"
+            log_restore "zeta-creds-restore: empty USB UUID at ${cfg.usbUuidPath}; aborting"
             exit 1
           fi
 
@@ -178,7 +197,7 @@ in
             if cfg.passphraseMode == "file" then ''
               PASSPHRASE_PATH="${cfg.passphraseFile}"
               if [ ! -f "$PASSPHRASE_PATH" ]; then
-                echo "zeta-creds-restore: passphrase file $PASSPHRASE_PATH missing (passphraseMode=file)"
+                log_restore "zeta-creds-restore: passphrase file $PASSPHRASE_PATH missing (passphraseMode=file)"
                 exit 1
               fi
             '' else ''
@@ -189,7 +208,7 @@ in
                 --timeout=300 \
                 "Zeta cred-blob passphrase: ")"
               if [ -z "$PASSPHRASE" ]; then
-                echo "zeta-creds-restore: empty passphrase from systemd-ask-password"
+                log_restore "zeta-creds-restore: empty passphrase from systemd-ask-password"
                 exit 1
               fi
               umask 0177
@@ -209,12 +228,22 @@ in
           # that only root can write. Post-restore chown step fixes
           # ownership for ${cfg.home} paths so user-facing creds end
           # up zeta-owned not root-owned.
-          ${bunShimPath} ${cfg.scriptPath} \
-            --usb-uuid "$USB_UUID" \
-            --input ${cfg.blobPath} \
-            --passphrase-file "$PASSPHRASE_PATH" \
-            --target-root / \
-            $PERSONA_ARGS
+          # Tee CLI stdout/stderr so "already-present" / "wrote N" hit serial.
+          if [ -n "$_serial" ]; then
+            ${bunShimPath} ${cfg.scriptPath} \
+              --usb-uuid "$USB_UUID" \
+              --input ${cfg.blobPath} \
+              --passphrase-file "$PASSPHRASE_PATH" \
+              --target-root / \
+              $PERSONA_ARGS 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial"
+          else
+            ${bunShimPath} ${cfg.scriptPath} \
+              --usb-uuid "$USB_UUID" \
+              --input ${cfg.blobPath} \
+              --passphrase-file "$PASSPHRASE_PATH" \
+              --target-root / \
+              $PERSONA_ARGS
+          fi
 
           # Post-restore ownership fix: chown ${cfg.home} entries that
           # the manifest writes into (~/.config/gh, ~/.config/claude,

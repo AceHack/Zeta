@@ -16,8 +16,15 @@ export const B0891_RETENTION_USB_SERIAL_MARKERS: readonly string[] = [
 export const B0891_FRESH_USB_SERIAL_MARKER =
   "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal";
 
-/** Post-install first-boot cred restore idempotency markers (installed OS path). */
-export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = ["zeta-creds-restore:", "already-present"];
+/** Post-install first-boot cred restore markers (installed OS path). */
+export const INSTALLED_OS_RETENTION_SERIAL_MARKERS: readonly string[] = [
+  "zeta-creds-restore: reading preserved ESP blob",
+  "zeta-creds-restore:",
+  "already-present",
+];
+
+/** Fresh / no-retention install must NOT claim already-present restore. */
+export const INSTALLED_OS_FRESH_RESTORE_FORBIDDEN_MARKERS: readonly string[] = ["already-present"];
 
 /** zeta-install.sh emits these when /zeta-hostname.txt is injected from the boot USB ESP. */
 export const HOSTNAME_INJECTION_SERIAL_MARKERS: readonly string[] = [

@@ -56,14 +56,12 @@ describe("081KSNY2Z0008QG0R0008PN7RQ scenarios.ts invariants", () => {
     }
   });
 
-  it("composes-with-existing scenarios cite src/Core.TypeScript/ci/ paths", () => {
+  it("composes-with-existing scenarios cite harness paths under src/Core.TypeScript/", () => {
     const composers = SCENARIOS.filter((s) => s.status === "composes-with-existing");
     expect(composers.length).toBeGreaterThan(0);
     for (const s of composers) {
-      const hasCiHarness = s.composesWith.some((dep) =>
-        dep.startsWith("src/Core.TypeScript/ci/"),
-      );
-      expect(hasCiHarness).toBe(true);
+      const hasHarness = s.composesWith.some((dep) => dep.startsWith("src/Core.TypeScript/"));
+      expect(hasHarness).toBe(true);
     }
   });
 
@@ -135,21 +133,24 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
     }
   });
 
-  it("reformat-with-retention → blocked-on-state-preservation", () => {
+  it("reformat-with-retention → can-run-now (opt-in QEMU retention runtime)", () => {
     const s = findScenario("reformat-with-retention");
     if (!s) throw new Error("scenario missing");
     const verdict = determineRunnability(s, new Set());
-    expect(verdict.kind).toBe("blocked-on-state-preservation");
-    if (verdict.kind === "blocked-on-state-preservation") {
-      expect(verdict.required).toBe("persisted-kv");
+    expect(verdict.kind).toBe("can-run-now");
+    if (verdict.kind === "can-run-now") {
+      expect(verdict.harnessEntry).toMatch(/RETENTION_EXECUTE/);
     }
   });
 
-  it("reformat-from-scratch → blocked-on-test-harness-path-fork", () => {
+  it("reformat-from-scratch → can-run-now (opt-in QEMU path-fork runtime)", () => {
     const s = findScenario("reformat-from-scratch");
     if (!s) throw new Error("scenario missing");
     const verdict = determineRunnability(s, new Set());
-    expect(verdict.kind).toBe("blocked-on-test-harness-path-fork");
+    expect(verdict.kind).toBe("can-run-now");
+    if (verdict.kind === "can-run-now") {
+      expect(verdict.harnessEntry).toMatch(/PATH_FORK_EXECUTE/);
+    }
   });
 
   it("cluster-joining → blocked-on-multi-vm-orchestration", () => {
@@ -184,8 +185,8 @@ describe("081KSNY2Z0008QG0R0008PN7RQ determineRunnability discriminator", () => 
     const runnable = computeRunnableSet();
     expect(runnable.has("initial-format")).toBe(true);
     expect(runnable.has("boot-cluster-up")).toBe(true);
-    expect(runnable.has("reformat-with-retention")).toBe(false);
-    expect(runnable.has("reformat-from-scratch")).toBe(false);
+    expect(runnable.has("reformat-with-retention")).toBe(true);
+    expect(runnable.has("reformat-from-scratch")).toBe(true);
     expect(runnable.has("cluster-joining")).toBe(false);
   });
 

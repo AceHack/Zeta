@@ -736,7 +736,7 @@ echo "[081KSKBP80008QG0R003AX2A69.3b] this USB. Future boots can RESTORE creds v
 echo "[081KSKBP80008QG0R003AX2A69.3b] same passphrase (no more re-entering gh login etc."
 echo "[081KSKBP80008QG0R003AX2A69.3b] on every reboot). Encryption: AES-256-GCM with key"
 echo "[081KSKBP80008QG0R003AX2A69.3b] derived via scrypt -> HKDF chain bound to this USB's"
-echo "[081KSKBP80008QG0R003AX2A69.3b] UUID (per tools/installer/zeta-creds-crypto.ts)."
+echo "[081KSKBP80008QG0R003AX2A69.3b] UUID (per src/Core.TypeScript/installer/zeta-creds-crypto.ts)."
 echo "[081KSKBP80008QG0R003AX2A69.3b]"
 echo "[081KSKBP80008QG0R003AX2A69.3b] Press Enter to SKIP (no cred-blob persistence;"
 echo "[081KSKBP80008QG0R003AX2A69.3b] keeps current per-reboot re-entry behavior)."
@@ -1626,7 +1626,7 @@ if [ -d "$ZETA_HOME" ]; then
     # See SECURITY block above for full lifecycle.
     ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
-      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"

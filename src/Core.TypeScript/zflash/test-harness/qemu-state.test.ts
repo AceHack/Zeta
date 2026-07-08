@@ -224,7 +224,8 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
     expect("error" in result).toBe(true);
     if ("error" in result) {
       expect(result.error.kind).toBe("missing-serial-markers");
-      expect(result.error.missingMarkers).toEqual(["already-present"]);
+      expect(result.error.missingMarkers).toContain("already-present");
+      expect(result.error.missingMarkers).toContain("zeta-creds-restore: reading preserved ESP blob");
     }
   });
 
@@ -653,7 +654,10 @@ describe("081KSNY2Z0008QG0R0008PN7RQ QEMU state-preservation planner", () => {
       expect(result.error.kind).toBe("serial-marker-failed");
       expect(result.error.commandExecutions).toHaveLength(6);
       if (result.error.kind === "serial-marker-failed") {
-        expect(result.error.assertion.missingMarkers).toEqual(["already-present"]);
+        expect(result.error.assertion.missingMarkers).toContain("already-present");
+        expect(result.error.assertion.missingMarkers).toContain(
+          "zeta-creds-restore: reading preserved ESP blob",
+        );
       }
     }
   });

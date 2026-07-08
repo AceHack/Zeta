@@ -101,7 +101,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     id: "reformat-with-retention",
     title: "Reformat WITH key + selection retention",
     orderIndex: 3,
-    status: "scaffolded",
+    status: "composes-with-existing",
     acceptanceCriteria: [
       "re-bake USB with existing operator-chosen credentials preserved",
       "same cluster/node identity is retained when retention mode is selected",
@@ -111,19 +111,22 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
       "existing cluster recognizes the re-baked USB",
     ],
     composesWith: [
+      "src/Core.TypeScript/zflash/test-harness/qemu-state.ts",
+      "src/Core.TypeScript/zflash/test-harness/run.ts",
+      "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
       "081KSE6WT0008QG0R003WZAQKV (Touch ID + PAM + ISO-auto-discovery)",
       "081KSKBP80008QG0R003AX2A69 (USB-bound credential substrate)",
       "081KSKBP80008QG0R003ETGS01 (cred-picker integration)",
     ],
     gates: ["reformat-from-scratch"],
     notes:
-      "Requires state-preservation between QEMU boots (TPM-equivalent or persisted KV store on virtual disk). Existing qemu-full-install-test.ts does NOT have this; QEMU snapshot/restart logic deferred to follow-up. PoC defines the contract; implementation work pending.",
+      "Opt-in QEMU retention runtime (ZFLASH_QEMU_RETENTION_EXECUTE=1) + serial markers for ESP zeta-creds.enc and installed-OS restore (already-present). Touch ID / biometric still physical-gated; software path is QEMU-testable.",
   },
   {
     id: "reformat-from-scratch",
     title: "Reformat from scratch (wipe + fresh keys)",
     orderIndex: 4,
-    status: "scaffolded",
+    status: "composes-with-existing",
     acceptanceCriteria: [
       "wipe-and-rebake from zero state produces fresh keys + new USB UUID",
       "no-retention reformat produces a new cluster/node identity",
@@ -132,13 +135,15 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
       "both paths supported + tested",
     ],
     composesWith: [
+      "src/Core.TypeScript/zflash/test-harness/path-fork.ts",
+      "src/Core.TypeScript/zflash/test-harness/run.ts",
       "081KSE6WT0008QG0R003WZAQKV (Touch ID + PAM)",
       "081KSKBP80008QG0R003AX2A69 (USB-bound credential substrate)",
       "081KSNY2Z0008QG0R0011XCT94 (PQ git-crypt + zflash integration — future PQ-credential path)",
     ],
     gates: ["cluster-joining"],
     notes:
-      "Dual-path test: same starting state, two operator choices. Requires test-harness path-fork support. PoC defines the contract.",
+      "Opt-in path-fork runtime (ZFLASH_QEMU_PATH_FORK_EXECUTE=1) asserts migrate vs fresh ESP markers. Full multi-boot identity divergence remains a deepen slice; software fork is QEMU-testable without physical USB.",
   },
   {
     id: "cluster-joining",
@@ -261,6 +266,18 @@ export function determineRunnability(
         return {
           kind: "can-run-now",
           harnessEntry: "src/Core.TypeScript/ci/qemu-full-install-test.ts",
+        };
+      }
+      if (scenario.id === "reformat-with-retention") {
+        return {
+          kind: "can-run-now",
+          harnessEntry: "src/Core.TypeScript/zflash/test-harness/run.ts (ZFLASH_QEMU_RETENTION_EXECUTE=1)",
+        };
+      }
+      if (scenario.id === "reformat-from-scratch") {
+        return {
+          kind: "can-run-now",
+          harnessEntry: "src/Core.TypeScript/zflash/test-harness/run.ts (ZFLASH_QEMU_PATH_FORK_EXECUTE=1)",
         };
       }
       // Future composes-with-existing scenarios fall through to a
