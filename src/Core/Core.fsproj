@@ -68,6 +68,7 @@
     <Compile Include="Antlr4Import.fs" />
     <Compile Include="Slr.fs" />
     <Compile Include="MetaGrammar.fs" />
+    <Compile Include="ZetaIdl.fs" />
     <Compile Include="Cogen.fs" />
     <Compile Include="Isa.fs" />
     <Compile Include="IsaSpec.fs" />
@@ -218,6 +219,7 @@
     <Compile Include="Command.fs" />
     <Compile Include="DeltaCodec.fs" />
     <Compile Include="DiskDeltaLog.fs" />
+    <Compile Include="ZetaFsDeltaLog.fs" />
     <Compile Include="SnapshotStore.fs" />
     <Compile Include="RecoverableSpine.fs" />
     <Compile Include="DurableSaga.fs" />

@@ -102,6 +102,7 @@
     <Compile Include="Antlr4Import.Tests.fs" />
     <Compile Include="Slr.Tests.fs" />
     <Compile Include="MetaGrammar.Tests.fs" />
+    <Compile Include="ZetaIdl.Tests.fs" />
     <Compile Include="Cogen.Tests.fs" />
     <Compile Include="Isa.Tests.fs" />
     <Compile Include="IsaSpec.Tests.fs" />
@@ -132,6 +133,7 @@
     <Compile Include="Clock.FullVertical.Tests.fs" />
     <Compile Include="Merkle.FullVertical.Tests.fs" />
     <Compile Include="ZSetMerkle.Tests.fs" />
+    <Compile Include="ZetaFsDeltaLog.Tests.fs" />
     <Compile Include="ZSetMerkleProof.CrossVerify.Tests.fs" />
     <Compile Include="ZetaIrV1.Tests.fs" />
     <Compile Include="ZetaIrV2.Tests.fs" />
@@ -159,6 +161,7 @@
     <Compile Include="CayleyWeightedSet.Tests.fs" />
     <Compile Include="RayTensor.Tests.fs" />
     <Compile Include="ZetaCli.Tests.fs" />
+    <Compile Include="ZetaShell.Tests.fs" />
     <Compile Include="ZetaGraph.Tests.fs" />
     <Compile Include="Db.Tests.fs" />
     <Compile Include="KeyStore.Tests.fs" />
@@ -603,6 +606,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Cli\Zeta.Cli.fsproj" />
     <ProjectReference Include="..\..\src\Bayesian\Bayesian.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
     <ProjectReference Include="..\..\src/Core.FSharp.Blake3/Zeta.Core.FSharp.Blake3.fsproj" />

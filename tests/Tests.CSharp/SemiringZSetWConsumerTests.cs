@@ -83,4 +83,20 @@ public class SemiringZSetWConsumerTests
         Assert.Equal("status", conflict.Item1.Name);
         Assert.Equal(2L, conflict.Item2); // duplicate add ⇒ weight 2
     }
+
+    [Fact]
+    public void CSharpCanUseSourceGeneratedStructRingWrappers()
+    {
+        var a = ZSetW_IntegerRing.OfSeq(new[] { ("x", 2L), ("y", 1L) });
+        var b = ZSetW_IntegerRing.OfSeq(new[] { ("y", -1L), ("z", 5L) });
+
+        var s = ZSetW_IntegerRing.Sum(a, b);
+        IRing<long> ring = IntegerRingModule.Instance;
+        Assert.Equal(2L, ZSetWModule.Lookup(ring, "x", s));
+        Assert.Equal(0L, ZSetWModule.Lookup(ring, "y", s));
+        Assert.Equal(5L, ZSetWModule.Lookup(ring, "z", s));
+
+        var diff = ZSetW_IntegerRing.Difference(a, a);
+        Assert.True(ZSetWModule.IsEmpty(diff));
+    }
 }

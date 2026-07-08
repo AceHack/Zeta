@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ZetaShell.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

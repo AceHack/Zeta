@@ -96,6 +96,30 @@ let main argv =
     | [| "shape"; "render"; path; kind |] -> shapeRender path kind
     | [| "shape"; "accept"; path |] -> shapeAccept path
     | [| "shape"; "render"; _ |] -> eprintfn "zeta: usage: zeta shape render <cartridge.lines> (svg|html)"; 2
+    | [| "zs" |]
+    | [| "run"; "shell" |] ->
+        match Repository.Discover(Environment.CurrentDirectory) with
+        | null ->
+            eprintfn "zeta: not inside a git repository"
+            1
+        | repoPath ->
+            use repo = new Repository(repoPath)
+            let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
+            let log = GitDeltaLog<DvKey>(repo, codec)
+            ZetaShell.runShell log
+            0
+    | [| "zc" |]
+    | [| "run"; "cell" |] ->
+        match Repository.Discover(Environment.CurrentDirectory) with
+        | null ->
+            eprintfn "zeta: not inside a git repository"
+            1
+        | repoPath ->
+            use repo = new Repository(repoPath)
+            let codec = CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)
+            let log = GitDeltaLog<DvKey>(repo, codec)
+            ZetaShell.runDaemon log Threading.CancellationToken.None
+            0
     | _ ->
 
     match CliParse.parse argv with

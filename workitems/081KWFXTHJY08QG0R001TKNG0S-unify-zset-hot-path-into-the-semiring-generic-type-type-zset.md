@@ -1,7 +1,7 @@
 ---
 id: 081KWFXTHJY08QG0R001TKNG0S
 type: task
-state: backlog
+state: closed
 priority: P2
 slug: unify-zset-hot-path-into-the-semiring-generic-type-type-zset
 title: "Unify ZSet hot-path into the semiring-generic type: type ZSet = ZSetW int64, migrate int64 path, keep perf"
@@ -199,7 +199,7 @@ the dynamic/cold escape hatch**, not the default.
       (ZEntry=16B ⇒ cap crosses LOH ~5.3K entries; 4096⊕4096 rents 128KB pooled).
 - [x] Baseline table with variance in `docs/BENCHMARKS.md` (DONE 2026-07-02) (durable home, not just
       this work-item).
-- [ ] Step 4 — Roslyn source generator: C# per-ring specialisations (the C#-side
+- [x] Step 4 — Roslyn source generator: C# per-ring specialisations (the C#-side
       SRTP-equivalent; gen(int64) byte-locked in golden vectors).
 - [~] Step 5 — schema-as-events: DESIGN PASS DONE (2026-07-02) — docs/research/2026-07-02-schema-as-events-on-the-zset-design-migrations-become-deltas-down-becomes-negate.md (SchemaZ = ZSet<FieldName*FieldSpec>, migrations become deltas, Down becomes negate, 3 implementation slices). Slice 1 DONE (src/Core/SchemaZ.fs + 11 tests incl. the FsCheck ring theorem, 2026-07-02); slice 2 DONE (MigrationZ.compile derives Up/Down from the delta with rename hints; the ambiguity theorem — rename == remove+add on the schema plane, different data planes — pinned as a test; 2026-07-02); slice 3 DONE (SchemaRegistry.schemaAt: stateful op-stream fold -> SchemaZ at any version; schemaDiff = Z-set difference; ghost ops surfaced as errors; 2026-07-02). STEP 5 COMPLETE — all three axes structural. Step 4 (Roslyn generator): reframed per Aaron 2026-07-02 — the FIRST C# CONSUMER exists as a unit test (SemiringZSetWConsumerTests, #9093) and Iris ran the end-user event-storm. VERDICT: (c) test-only for now; generator gated on the first non-test consumer or NuGet publish. Her do-now fixes landed: CompiledName PascalCase across ZSetW/SchemaZ/MigrationZ, OfValuePairs (ValueTuple ofSeq), SchemaZ.Conflicts payload query. Still open from her review: F5 IRing/ISemiring interface split (compile-time negate safety — own reviewed change, Ilyana); F3 struct-ring-from-C# = the gated generator.
 

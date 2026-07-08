@@ -1,7 +1,7 @@
 ---
 id: 081KTGTJC1Q08QG0R002VCB55A
 type: task
-state: backlog
+state: closed
 priority: P1
 slug: content-addressed-merkle-dag-over-the-filesystem-backend-for
 title: "Content-addressed Merkle DAG over the filesystem backend for command parity with git"

@@ -1,7 +1,7 @@
 ---
 id: 081KTJAEMZW08QG0R003VERTX9
 type: task
-state: backlog
+state: closed
 priority: P1
 slug: zeta-idl-the-spec-is-the-asset-an-interface-definition-langu
 title: "Zeta IDL (the spec is the asset): an interface-definition language whose AST is stored in DynamicValue (spec-as-data), what the math is based on; code generated FROM it (4-lang + eventually hardware). Declares CAPABILITIES (interface contracts, e.g. the ray-trace vector ITensor/ISampleable/IIntrospectable/IGeospatial/ISemiring) + RESOURCES (the IGeospatial locality topology); the system = the intelligent ongoing MAPPING between them (ray-trace/schedule). MVP scope (Aaron): interface declarations + the primitives already defined in DynamicValue ONLY. Plan: (1) grammar — ANTLR C# grammar (antlr/grammars-v4) as a REFERENCE to author our own (LICENSE-CHECK + attribution, route to devops/Dejan; NO bulk-copy); (2) parser — use our OWN F# parser-combinator generators + GLR(Tomita)/LR (Bonsai expr-trees; ZetaId-as-generator parser-combinator-over-bits 081KTHTPPCD; observe action-grammar) -> AST as DynamicValue; (3) codegen — IDL-in-DynamicValue -> generative F# type provider (#6925/#6945) + 4-lang ports -> code, eventually direct-to-hardware (HLS). Open: enumerate the 'best features of languages we like' (concrete list); ANTLR-vs-our-own-parsers decision (likely ANTLR=reference grammar, our F# stack=impl). Vision+plan, not built; interfaces today are C# source not yet DV-IDL. Anchors: CORBA-IDL/protobuf/Cap'n-Proto/Thrift/WIT, ANTLR (Parr), parser combinators (Wadler), GLR (Tomita), LR (Knuth), HLS/Bluespec hardware-gen, spec-as-source-of-truth."
