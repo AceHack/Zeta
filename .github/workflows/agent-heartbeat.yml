@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false  # both agents tick independently
       matrix:
-        agent: [alexa, otto]
+        agent: [alexa, otto, soraya]
 
     steps:
       - name: Checkout
@@ -123,7 +123,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        agent: [alexa, otto]
+        agent: [alexa, otto, soraya]
 
     steps:
       - name: Checkout main
