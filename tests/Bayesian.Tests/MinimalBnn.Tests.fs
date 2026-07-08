@@ -45,3 +45,37 @@ module MinimalBnnTests =
         Assert.Equal(first.Objective.CumulativeIv, second.Objective.CumulativeIv)
         Assert.Equal(first.Posterior.Precision, second.Posterior.Precision)
         Assert.Equal(Gaussian.mean first.Posterior, Gaussian.mean second.Posterior)
+
+    [<Fact>]
+    let ``MBNN-4: linear regression converges with arbitrary features x`` () =
+        let trueW = 2.5
+        let observationVariance = 0.5
+        let startState = 
+            MinimalBnn.tryCreate (Gaussian.ofMeanVariance 0.0 10.0) observationVariance
+            |> requireOk
+            
+        let observations = [|
+            (1.0, 2.7)
+            (2.0, 4.9)
+            (-1.0, -2.4)
+            (3.0, 7.6)
+            (-2.0, -5.1)
+            (1.5, 3.8)
+            (-0.5, -1.2)
+            (2.5, 6.2)
+        |]
+        
+        let finalState =
+            observations
+            |> Array.fold (fun stateOpt (x, y) ->
+                match stateOpt with
+                | Ok state -> MinimalBnn.updateWithFeature x y state
+                | Error msg -> Error msg
+            ) (Ok startState)
+            |> requireOk
+            
+        let postMean = finalState.Posterior.PrecisionMean / finalState.Posterior.Precision
+        
+        Assert.True(abs (postMean - trueW) < 0.2, sprintf "posterior mean %g should converge to trueW %g" postMean trueW)
+        Assert.True(finalState.Posterior.Precision > startState.Posterior.Precision)
+        Assert.True(finalState.Objective.CumulativeIv > 0.0<InformationValue.iv>)

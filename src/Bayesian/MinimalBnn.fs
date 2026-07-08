@@ -57,10 +57,10 @@ module MinimalBnn =
         else
             Ok()
 
-    let private likelihood (observationVariance: float) (observation: float) : Gaussian =
+    let private likelihood (observationVariance: float) (x: float) (y: float) : Gaussian =
         let precision = 1.0 / observationVariance
-        { PrecisionMean = observation * precision
-          Precision = precision }
+        { PrecisionMean = x * y * precision
+          Precision = x * x * precision }
 
     let private posteriorGraph (prior: Gaussian) (likelihoodProduct: Gaussian) : FactorGraph<Gaussian> =
         FactorGraph.empty Gaussian.algebra
@@ -88,15 +88,16 @@ module MinimalBnn =
         | Error message, _ -> Error message
         | _, Error message -> Error message
 
-    /// Absorb one scalar observation with the state's fixed Gaussian
-    /// likelihood variance. The update is conjugate: multiply the cumulative
-    /// likelihood message, re-materialize the one-variable factor graph, and
-    /// score the step as IV.
-    let update (observation: float) (state: State) : Result<State, string> =
-        if not (isFinite observation) then
-            Error("observation must be finite")
+    /// Absorb one observation with the state's fixed Gaussian likelihood variance and 
+    /// a specific input feature value `x`. The update is conjugate: multiply the cumulative 
+    /// likelihood message, re-materialize the one-variable factor graph, and score the step as IV.
+    let updateWithFeature (x: float) (y: float) (state: State) : Result<State, string> =
+        if not (isFinite x) then
+            Error("input feature x must be finite")
+        elif not (isFinite y) then
+            Error("observation y must be finite")
         else
-            let likelihoodMessage = likelihood state.ObservationVariance observation
+            let likelihoodMessage = likelihood state.ObservationVariance x y
             let likelihoodProduct = state.LikelihoodProduct * likelihoodMessage
             let graph = posteriorGraph state.Prior likelihoodProduct
             let posterior = FactorGraph.marginal variableId graph
@@ -110,6 +111,13 @@ module MinimalBnn =
                         { ObservationCount = state.Objective.ObservationCount + 1
                           LastIncrementalIv = stepIv
                           CumulativeIv = state.Objective.CumulativeIv + stepIv } }
+
+    /// Absorb one scalar observation with the state's fixed Gaussian
+    /// likelihood variance (assuming input feature x is implicitly 1.0). The update is conjugate: multiply the cumulative
+    /// likelihood message, re-materialize the one-variable factor graph, and
+    /// score the step as IV.
+    let update (observation: float) (state: State) : Result<State, string> =
+        updateWithFeature 1.0 observation state
 
     /// Absorb a finite stream of observations into the running posterior.
     let infer (observations: seq<float>) (state: State) : Result<State, string> =
