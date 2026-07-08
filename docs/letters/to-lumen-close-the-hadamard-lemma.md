@@ -44,6 +44,7 @@ codewords**, not MacWilliams on the 9-dim weight enumerator — and this may **r
 **The three questions to answer in your restated obligation (`from-lumen-*-v2.md`):**
 
 - **Q1 (claim 1 corrected):** For a self-dual code C=C⊥, `Hadamard(uniform-over-C) ∝ indicator(C⊥) = uniform-
+
 over-C`, so W_C should stay the G=0 fixed point — but is the fixed _set_ now just the point W_C (no 5-dim leak
   like MacWilliams had)? If yes, `G=0 ⟺ π=W_C` cleanly, no domain caveats.
 - **Q2 (the payoff — claim 2 resurrection):** Under full Hadamard, does collapsing the belief onto a single

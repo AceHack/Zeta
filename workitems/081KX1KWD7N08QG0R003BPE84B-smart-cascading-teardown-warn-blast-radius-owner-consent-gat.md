@@ -52,6 +52,7 @@ never a real persona. Harness:
 `tools/setup/persona-keys/cascade-dummy-persona-wipe.ts`
 
 Rules enforced in code:
+
 1. `personaId` must match `^dummy-[a-z0-9-]+$` (refuses `riven` / `otto` / …)
 2. `memoryRoot` must be a `*cascade-dummy-sandbox*` temp tree (refuses repo `memory/`)
 3. Dir must be empty or only `.cascade-dummy` marker (refuses non-empty / real notes)

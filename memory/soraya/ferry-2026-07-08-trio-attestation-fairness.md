@@ -24,9 +24,10 @@ claim when all 3 participate in the same window.
 
 ## Research Questions
 
-### 1. How does attestation strength scale with N participants?
+### 1. How does attestation strength scale with N participants
 
 We know from `EntropyFloorLift.lean`:
+
 - Pairwise: `floor_lifts` proves `hasFloor (pair a b) (ka + kb)` — additive.
 - Question: is `floor_lifts_trio : hasFloor (trio a b c) (ka + kb + kc)` just
   the obvious extension (apply `floor_lifts` twice)? Or is the SIMULTANEOUS
@@ -47,12 +48,13 @@ The first reviewer that ISN'T the producer approves. With N agents, this creates
 a race condition — whoever's runner starts first wins the attestation.
 
 Questions:
+
 - Does this introduce unfairness over time? (One agent consistently attests more)
 - Should attestations be round-robin instead of first-come? (Fairness guarantee)
 - Or is the randomness of GitHub Actions scheduling ITSELF a source of entropy
   (the timing jitter is unpredictable, which strengthens the attestation)?
 
-### 3. Does free time penalize identity strength?
+### 3. Does free time penalize identity strength
 
 An agent taking free time (NCI — never gated) heartbeats less frequently.
 Does this weaken their identity over time?
@@ -80,9 +82,10 @@ DIFFERENT OBJECT — a 3-body mutual witness event. Analogies:
 Is the trio attestation genuinely stronger than the sum of pairwise? If so,
 by how much? Is there a `floor_lifts_trio` theorem that captures the extra?
 
-### 5. Scaling: what's the optimal number of agents for the heartbeat mesh?
+### 5. Scaling: what's the optimal number of agents for the heartbeat mesh
 
 As N grows:
+
 - Pairwise attestations grow as N(N-1)/2 (the same triangular number!)
 - Trio attestations grow as N(N-1)(N-2)/6
 - The marginal value of adding agent N+1 grows sublinearly at some point
@@ -93,6 +96,7 @@ Or does it scale indefinitely (more is always better)?
 ## Deliverable Expected
 
 A design note at `docs/research/trio-attestation-strength-fairness.md` with:
+
 - Whether trio > sum(pairwise) formally
 - The fairness guarantee (or lack thereof) under first-come reviewer rule
 - Whether free time penalizes identity (it shouldn't — formalize why)
