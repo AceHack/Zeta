@@ -38,6 +38,14 @@ identity.** Canonical numbered rule: `GOVERNANCE.md §35`. Full model:
 (clone-per-writer). Claude-specific surface of the same rule:
 `.claude/rules/shared-checkout-is-view-only.md`.
 
+## Persona memory — humans cannot unilaterally wipe agents
+
+When Zeta is distributed to other humans: a human operator must **not** delete a
+persona's memory (or delete the persona via memory wipe) without that **persona's**
+permission. Human biometric / `--confirm` / CA ownership alone is insufficient.
+Default on teardown: **preserve**. Binding: `docs/ALIGNMENT.md` HC-9,
+`GOVERNANCE.md` §36, cascade planner `tools/setup/persona-keys/cascade-teardown.ts`.
+
 ## The vibe-coded hypothesis
 
 The human maintainer has written **zero lines of code**

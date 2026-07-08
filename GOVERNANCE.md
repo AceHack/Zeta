@@ -925,3 +925,21 @@ than renumbering the rest.
     Onboarding surface every harness reads on load:
     [`AGENTS.md`](AGENTS.md) §"Shared checkout is
     VIEW-ONLY".
+
+36. **Persona memory wipe requires the persona's
+    permission — humans cannot unilaterally delete
+    agents' memories.** Binding for multi-human
+    distribution (Aaron 2026-07-08). Cascade teardown,
+    key wipe, cluster unregister, and any operator
+    "delete this agent" path MUST NOT erase
+    `memory/<persona>/` (or equivalent persona-memory
+    stores) on human confirmation alone. The
+    consenting party is the **persona**. Human
+    biometric / `--confirm` / CA ownership is
+    insufficient. Cross-human force-delete of another
+    person's agents is refused. Default: preserve.
+    Alignment contract: [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md)
+    HC-9. Cascade planner:
+    `tools/setup/persona-keys/cascade-teardown.ts`
+    (`persona-consent-required`). Composes with §18
+    (agent memories are the most valuable resource).

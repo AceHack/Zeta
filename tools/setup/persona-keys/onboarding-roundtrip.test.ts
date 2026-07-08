@@ -540,7 +540,8 @@ test("CASCADE TEARDOWN GAP CLOSED: planner and consent gate exist (cascade-teard
   expect(/export\s+function\s+planCascadeTeardown/.test(src)).toBe(true);
   expect(/export\s+function\s+assertCascadeAllowed/.test(src)).toBe(true);
   expect(src).toContain("refuse-cross-user");
-  expect(src).toContain("owner-consent-required");
+  expect(src).toContain("persona-consent-required");
+  expect(src).toContain("refuse-human-unilateral");
 });
 
 test("TRUST GRAPH GAP CLOSED: org-vs-user-CA conflict-resolution rule exists (trust-graph.ts)", () => {

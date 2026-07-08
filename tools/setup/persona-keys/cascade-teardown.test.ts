@@ -13,6 +13,7 @@ test("cascade enumerates dependent machines, certs, and registrations", () => {
         id: "memory:unrelated",
         kind: "persona-memory",
         ownerUserId: "alice",
+        personaId: "riven",
         dependsOn: ["ca:other"],
       },
     ],
@@ -28,7 +29,7 @@ test("cascade enumerates dependent machines, certs, and registrations", () => {
   expect(plan.blastRadius.registrations).toBe(1);
 });
 
-test("extra-care nodes require explicit acknowledgment", () => {
+test("extra-care hardware requires acknowledgment; persona-memory requires persona consent", () => {
   const inventory: CascadeTeardownInventory = {
     extraCare: [
       {
@@ -38,7 +39,52 @@ test("extra-care nodes require explicit acknowledgment", () => {
         dependsOn: [TARGET.id],
       },
       {
-        id: "memory:alice",
+        id: "memory:riven",
+        kind: "persona-memory",
+        ownerUserId: "alice",
+        personaId: "riven",
+        dependsOn: [TARGET.id],
+      },
+    ],
+  };
+
+  const plan = planCascadeTeardown({ target: TARGET, requestedByUserId: "alice", inventory });
+  expect(plan.blastRadius.extraCareWarn).toBe(1);
+  expect(plan.blastRadius.personaConsentRequired).toBe(1);
+  expect(plan.nodes.find((n) => n.id === "memory:riven")!.class).toBe("persona-consent-required");
+
+  const noConsent = assertCascadeAllowed(plan, {});
+  expect(noConsent.ok).toBe(false);
+  if (!noConsent.ok) {
+    expect(noConsent.reasons).toContain("hardware:yubikey-slot: requires explicit extra-care acknowledgment");
+    expect(noConsent.reasons).toContain("memory:riven: requires explicit extra-care acknowledgment");
+    expect(noConsent.reasons).toContain(
+      "memory:riven: requires consent from persona riven (human confirm alone is insufficient)",
+    );
+  }
+
+  // Human owner consent alone must NOT authorize persona-memory wipe (HC-9).
+  const humanOnly = assertCascadeAllowed(plan, {
+    acknowledgedNodeIds: ["hardware:yubikey-slot", "memory:riven"],
+    ownerConsentNodeIds: ["memory:riven"],
+  });
+  expect(humanOnly.ok).toBe(false);
+  if (!humanOnly.ok) {
+    expect(humanOnly.reasons.some((r) => r.includes("requires consent from persona riven"))).toBe(true);
+  }
+
+  const allowed = assertCascadeAllowed(plan, {
+    acknowledgedNodeIds: ["hardware:yubikey-slot", "memory:riven"],
+    personaConsentNodeIds: ["memory:riven"],
+  });
+  expect(allowed).toEqual({ ok: true });
+});
+
+test("persona-memory without personaId refuses human-unilateral wipe", () => {
+  const inventory: CascadeTeardownInventory = {
+    extraCare: [
+      {
+        id: "memory:orphan",
         kind: "persona-memory",
         ownerUserId: "alice",
         dependsOn: [TARGET.id],
@@ -47,30 +93,26 @@ test("extra-care nodes require explicit acknowledgment", () => {
   };
 
   const plan = planCascadeTeardown({ target: TARGET, requestedByUserId: "alice", inventory });
-  expect(plan.blastRadius.extraCareWarn).toBe(1);
-  expect(plan.blastRadius.ownerConsentRequired).toBe(1);
-
-  const noConsent = assertCascadeAllowed(plan, {});
-  expect(noConsent.ok).toBe(false);
-  if (!noConsent.ok) {
-    expect(noConsent.reasons).toContain("hardware:yubikey-slot: requires explicit extra-care acknowledgment");
-    expect(noConsent.reasons).toContain("memory:alice: requires explicit extra-care acknowledgment");
-    expect(noConsent.reasons).toContain("memory:alice: requires consent from owner alice");
-  }
+  expect(plan.nodes[0]!.class).toBe("refuse-human-unilateral");
+  expect(plan.blastRadius.refuseHumanUnilateral).toBe(1);
 
   const allowed = assertCascadeAllowed(plan, {
-    acknowledgedNodeIds: ["hardware:yubikey-slot", "memory:alice"],
-    ownerConsentNodeIds: ["memory:alice"],
+    acknowledgedNodeIds: ["memory:orphan"],
+    ownerConsentNodeIds: ["memory:orphan"],
+    personaConsentNodeIds: ["memory:orphan"],
   });
-  expect(allowed).toEqual({ ok: true });
+  expect(allowed.ok).toBe(false);
+  if (!allowed.ok) {
+    expect(allowed.reasons[0]!).toContain("refuses human-unilateral persona-memory wipe");
+  }
 });
 
-test("cross-user memory is refused", () => {
+test("cross-user encrypted vault is refused", () => {
   const inventory: CascadeTeardownInventory = {
     extraCare: [
       {
-        id: "memory:bob",
-        kind: "persona-memory",
+        id: "vault:bob",
+        kind: "unrecoverable-encrypted",
         ownerUserId: "bob",
         dependsOn: [TARGET.id],
       },
@@ -84,12 +126,12 @@ test("cross-user memory is refused", () => {
   expect(plan.blastRadius.refuseCrossUser).toBe(1);
 
   const allowed = assertCascadeAllowed(plan, {
-    acknowledgedNodeIds: ["memory:bob"],
-    ownerConsentNodeIds: ["memory:bob"],
+    acknowledgedNodeIds: ["vault:bob"],
+    ownerConsentNodeIds: ["vault:bob"],
   });
   expect(allowed.ok).toBe(false);
   if (!allowed.ok) {
-    expect(allowed.reasons).toContain("memory:bob: refuses cross-user memory or encrypted-vault teardown");
+    expect(allowed.reasons).toContain("vault:bob: refuses cross-user memory or encrypted-vault teardown");
   }
 });
 

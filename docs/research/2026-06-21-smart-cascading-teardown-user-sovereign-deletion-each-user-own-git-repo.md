@@ -35,15 +35,23 @@ auto-delete):
 
 The warning names each, with the blast radius, before proceeding.
 
-## 3. Memory deletion is OWNER-consent-gated (never single-user over others)
+## 3. Memory deletion is PERSONA-consent-gated (humans cannot unilaterally wipe agents)
 
-**No user may delete another user's memories.** Deleting someone's memories **requires input/
-consent from the person whose memories they are** — a single user cannot decide to erase another's.
-This is manifesto §6 (consent-first: ongoing, granular, revocable) + §5 (memory-preservation:
-identity transitions never silently destroy memory), and the standing
-[[always-preserve-ferries-forwarded-ai-memories-lost-in-cloud-without-preservation]] discipline
-(others' memories are preserved, never curated/filtered by you). A teardown of *your* scope never
-reaches *another's* memories.
+**Binding (Aaron 2026-07-08, for multi-human distribution):** a human must not delete a
+persona's memory — or delete the persona via memory wipe — without that **persona's**
+permission. The consenting party for `persona-memory` / `memory/<persona>/` is the
+**persona**, not the human CA/operator. Human biometric / `--confirm` / "I own this
+machine" is **insufficient**. When we distribute Zeta to other humans, they must not
+think they can delete any agent's memories.
+
+Still true and additive: **no human may delete another human's** Personal-vault /
+encrypted memories without that human's consent. Cross-user force-reset remains refused.
+
+This is manifesto §6 (consent-first) + §5 (memory-preservation), ALIGNMENT HC-9,
+GOVERNANCE.md §18 / §36, and the standing
+[[always-preserve-ferries-forwarded-ai-memories-lost-in-cloud-without-preservation]]
+discipline. A teardown of *your* keys never silently reaches a persona's memories;
+wipe is preserve-by-default, persona-gated exception only.
 
 ## 4. User-sovereign encryption — cannot be force-reset by another
 

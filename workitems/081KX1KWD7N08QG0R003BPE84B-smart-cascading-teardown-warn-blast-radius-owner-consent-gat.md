@@ -25,19 +25,25 @@ extra-care stop nodes, owner-consent for memories, refuse force-reset of another
    - returns a **blast-radius plan** before any wipe
    - classifies nodes: `cascade` | `extra-care-warn` | `owner-consent-required` | `refuse-cross-user`
 2. Extra-care classes (warn + explicit ack, never silent auto-delete):
-   - persona memories
+   - persona memories (**persona-consent-required** — HC-9 / GOVERNANCE §36)
    - physical hardware state tied to keys
-   - unrecoverable encrypted data (G-set residual)
-3. Owner-consent gate: refuse deleting another user's memories / force-resetting their Personal vault
-4. Dry-run default; `--confirm` + biometric still required for destructive path
+   - unrecoverable encrypted data (G-set residual; human owner-consent / refuse-cross-user)
+3. **Persona-consent gate (binding):** a human must not wipe persona memory without that
+   persona's permission. Human biometric / `--confirm` alone is insufficient.
+   Still refuse cross-human Personal-vault force-reset.
+4. Dry-run default; `--confirm` + biometric still required for destructive *key* path
 5. Tests in `cascade-teardown.test.ts` + gap-closed assertion in `onboarding-roundtrip.test.ts`
 6. Round-trip harness still green (sandbox-only)
 
-## Slice 1 (this PR) — plan + gates, no live memory wipe
+## Slice 1 — plan + gates, no live memory wipe (landed #9512)
 
-Ship the **planner + classification + consent refusal** with injected effects. Do not implement
-real memory-store deletion yet — assert the gate refuses cross-user and requires owner ack for
-extra-care. Wire CLI flag `--cascade` on teardown-cli that prints the plan.
+Planner + classification + consent refusal. CLI `--cascade` prints the plan.
+
+## Slice 1b — persona-consent binding (this change)
+
+Rename/clarify consent model: `persona-consent-required` + `refuse-human-unilateral`.
+Human-only consent must fail persona-memory authorization. Policy: ALIGNMENT HC-9,
+GOVERNANCE §36. Still no live memory-store deletion.
 
 ## Anchors
 
