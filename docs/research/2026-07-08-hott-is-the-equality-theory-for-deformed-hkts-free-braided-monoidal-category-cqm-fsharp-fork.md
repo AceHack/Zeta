@@ -94,6 +94,31 @@ degeneracies.
   healthy version (free, reversible deformation; isomorphic endpoints equal). Same root, opposite health; the
   substrate wants to *live in homotopy* and *detect/escape homoclinic*.
 
+## 4a. Status update (2026-07-08, later same day) — the provided-view→univalence obligation is now DISCHARGED (two legs)
+
+The 2nd guardrail above ("provided-view→univalence is a theorem to prove, not inherited") is **no longer merely an
+obligation** — it is discharged on a concrete instance, on **two independent legs (BP-16)**:
+
+- **Leg 1 — cubical (machine-checked):** `src/Core.Agda/ProvidedView/Univalence.agda` typechecks **exit 0**
+  against cubical v0.9 (Agda 2.8.0). Proves item (1) `ua : (A ≃ B) → (A ≡ B)` (equivalence *produces* the path),
+  item (2) on the concrete rotor instance `pathToEquiv (ua rotor) ≡ rotor` + `ua (pathToEquiv p) ≡ p` (ua and
+  pathToEquiv mutually inverse ⇒ "isomorphic-therefore-equal" and "deformable" are the *same* construction —
+  Joyal–Street isotopy = HoTT path), and item (3) transport coherence `uaβ` that **computes** (the thing Lean's
+  UIP makes inconsistent to even axiomatize — so cubical is genuinely required, not a preference).
+- **Leg 2 — F# runtime (FsCheck, 4/4 green):** `tests/Tests.FSharp/Formal/UnivalenceRotorCrossVerify.Tests.fs`
+  witnesses that the real `Cl3` rotor deformation *is* an equivalence — rotor-conjugation roundtrip (invertible
+  both ways) + isometry (chart-compatibility). Agda certifies *equivalence ⇒ path*; F# certifies *rotor
+  deformation ⇒ equivalence*. Composed, the claim is load-bearing without "trust the Agda."
+- **Named residual (unchanged, honest):** general `Spin(n)` with the full Clifford action stays open (no
+  Clifford/Spin in the cubical library) — routed to Lumen's interpretation-functor obligation. What is proven is
+  the univalence *heart* on a concrete rotor, not the general family.
+
+**Effect on the Don Syme pitch:** the section-5 line "cubical Agda / Lean certify the univalent equalities" is now
+a *discharged* claim on a concrete instance, not a promissory note. The pitch upgrades from "here is the obligation
+we would prove" to "here is the machine-checked proof + a runtime cross-check that agree." Scope honesty still
+holds: this proves the three items, NOT "F# is HoTT." Infra lane: workitem `081KX1VE` (cubical ACE lane), PRs
+#9579 (proof) + #9584 (F# leg).
+
 ## 5. What this changes for the fork / the Don Syme argument
 
 - **Design the fork's HKT extension with a HoTT-flavored deformation & equality theory in mind** — iterated/
