@@ -223,18 +223,20 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 
 ## 8. Software-only next slices (no metal)
 
-1. **Land `build-multiboot-usb.ts` planner** — pure TS: parse manifest,
-   plan layout, verify digests; QEMU-testable without flashing.
+1. **Fetch + assemble `zeta-multiboot.img`** — execute path for the
+   landed planner (`src/Core.TypeScript/installer/multiboot/`); QEMU-boot
+   the composite.
 2. **Credential binding model tests** — injectable factors
    (`usbUuid` / `usbISerial` / `uefiKeyfile` / `tpmSeal`); assert which
    reformat/swap cases decrypt.
-3. **Per-target identity namespace on multiboot** — Zeta ESP creds path
-   isolated from `/payloads/mynode-*`.
-4. **Promote cluster/federation vocabulary** into operational glossary
+3. **Promote cluster/federation vocabulary** into operational glossary
    (SEED/GLOSSARY) from Iris Genesis Concepts — so threat reviews cite
    one canon.
-5. **Per-federation threat-model stub template** — same section shape
+4. **Per-federation threat-model stub template** — same section shape
    as §3, filled per Lodge/charter when a federation is chartered.
+
+Planner + `/boot/` vs `/payloads/` identity namespace: landed
+(`planMultibootUsb`).
 
 Phase-3 QEMU escapes already removed (rebuild ISO; mock-auth +
 post-boot self-register required).

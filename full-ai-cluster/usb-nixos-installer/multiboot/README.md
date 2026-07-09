@@ -16,8 +16,10 @@ only the installer) with a GRUB menu + a declarative payload list.
   SHA-256). **No binaries in the repo** (no-binary-in-proof-lineage): images are fetched + verified at
   build time, never committed.
 - [`grub.cfg`](grub.cfg) — the GRUB2 menu template copied onto the USB ESP.
-- `build-multiboot-usb.ts` — **to land**: reads `images.manifest`, fetches + SHA-256-verifies each
-  artifact, lays out the USB (`/boot/iso/`, `/payloads/`), installs GRUB, writes `grub.cfg`.
+- Planner (landed): [`src/Core.TypeScript/installer/multiboot/`](../../../src/Core.TypeScript/installer/multiboot/)
+  — parse manifest, plan `/boot/` vs `/payloads/` layout, resolve SHA256SUMS latest, fill
+  `@KERNEL@`/`@INITRD@`. Hermetic: `bun …/build-multiboot-usb.ts --plan`.
+- Fetch / assemble `zeta-multiboot.img` — **next slice** (network + large artifacts).
 
 ## What's declared today
 
@@ -78,15 +80,14 @@ large (Zeta ISO + MyNode ≈ several GB). Verifiability wins.
 
 ## Honest scope / status
 
-The **declarative manifest + GRUB config + layout** are here and reviewable. The **builder script**
-(`build-multiboot-usb.ts`) is the next step — it's the only piece that touches a physical device, so it
-lands separately with its own DST-style test (mirroring `tools/zflash`'s qemu harness). The Zeta-ISO
-loopback `linux`/`initrd` lines in `grub.cfg` are **`@KERNEL@`/`@INITRD@` placeholders the builder
-substitutes** — on **nixos-25.11** the kernel/initrd live under `boot/nix/store/<hash>-linux-<ver>/bzImage`
-and `boot/nix/store/<hash>-initrd-linux-<ver>/initrd` (hash per build), NOT top-level `/boot`; the
-builder resolves the real paths by reusing the suffix-pattern resolution in
-`tools/ci/audit-installer-iso-content.ts`. (Caught in PR review — hard-coding `/boot/bzImage` fails
-before the kernel loads.)
+The **declarative manifest + GRUB config + pure planner** are here and reviewable
+(`parseImagesManifest` / `planMultibootUsb` / `resolveLatestFromSha256Sums`). The **fetch +
+assemble** step (download MyNode, nix-build Zeta ISO, write `zeta-multiboot.img`, install GRUB)
+is the next slice — large artifacts + network; keep the planner hermetic for unit CI. The Zeta-ISO
+loopback `linux`/`initrd` lines in `grub.cfg` are **`@KERNEL@`/`@INITRD@` placeholders** —
+`resolveIsoKernelInitrdPaths` fills them from ISO path listings (nixos-25.11 store-hashed paths;
+same suffix contract as `audit-installer-iso-content.ts`). Identity namespace: Zeta under `/boot/`,
+flash payloads under `/payloads/` only (see `docs/security/USB-IDENTITY-THREAT-MODEL.md`).
 
 ## Pointers
 
