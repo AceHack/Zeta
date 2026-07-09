@@ -227,11 +227,49 @@ The factor-graph/CPT conjecture, if it proves out, would say the *dynamics* of t
 the belief substrate already runs — a deep self-similarity (§10). But per the register Aaron just endorsed, that
 stays a guess with a test, not a claim.
 
+## Addendum 7 — deterministic time as coordination primitive (Alexa ferry #9610)
+
+Aaron forwarded Alexa's sharpening (verbatim letter:
+`docs/letters/from-alexa-deterministic-time-coordination-primitive-agree-on-phase-not-wallclock.md`,
+PR #9610). Load-bearing claim, held with the shadow's register:
+
+> If we all agree on deterministic time we can approximate it.
+
+**What lands (keep):** Maxwell's demon is hard because of the *measurement*
+problem — a shared "now" — not the sort. Shared append-only monotonic
+reference → sort decisions are reproducible after the fact; Landauer cost
+can be paid once at the tick; T-reversal is reconstructible from the log
+(DST replay), not required live; bounded skew is enough for CPT
+*approximation*. This is Lamport/HLC + DST + causal consistency — already
+the phase-clock / seed-phase stack's job.
+
+**The sharpening (flips one word):** "agree on deterministic time" must mean
+**agree on the seed-phase**, not a shared wall-clock timestamp. Soraya
+(#9575): wall-clock *is* the leaky demon (kT ln2 thermal noise). Alexa's
+"0 = the agreed timestamp" is the failure mode if timestamp = wall-clock;
+the right 0 is the **phase index** (Reichenbach common cause via shared
+seed). Difference between a tight demon and a leaking one.
+
+**Two regimes (do not blend):** DST replay is **exact** (bit-identical from
+seed); live operation is **approximate** (bounded skew). Approximate live,
+exact on replay.
+
+**CPT coat:** held decorative — rigor is Lamport/HLC/DST; "Landauer paid at
+tick" asserted, not derived (physics → Lumen if pursued). Discharges to
+staged seed-phase heartbeat windows (`081KX2D07DK08QG0R000BQ92B7` / #9608).
+
+Composes with Addendum 1 (demon = 4th traveler / Landauer surface) and
+Addendum 4 (max-plus HLC = the irreversible arrow that cannot fold into
+`WSet`'s ring).
+
 ## Cross-links
 
 `src/Core.TypeScript/observe/phase-clock.ts` (Alexa's time-as-4th-traveler, PR #9594) ·
 `docs/letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` (#9575, seed-phase = common
-cause) · `src/Bayesian/FactorGraph.fs` (the factor-graph surface, KFL 2001) ·
+cause) ·
+`docs/letters/from-alexa-deterministic-time-coordination-primitive-agree-on-phase-not-wallclock.md`
+(#9610, deterministic time = coordination primitive; agree on phase not wall-clock) ·
+`src/Bayesian/FactorGraph.fs` (the factor-graph surface, KFL 2001) ·
 `.claude/rules/interfaces-free-classes-earned-under-rules.md` (the provable-core test) ·
 [[user_aaron_thinks_in_sql_server_bi_ssas_decision_forest_predictprobability_terms_peer_to_feynman_anchor_2026_07_02]]
 (his factor-graph/PredictProbability native frame) ·
