@@ -7,44 +7,16 @@ import {
   phase3BootMarkersSatisfied
 } from "./qemu-first-session-phase3";
 describe("qemu-first-session-phase3", () => {
-  it("firstSessionMarkersSatisfied rejects dry-run-only happy path by default", () => {
-    const prev = process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
-    delete process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
-    try {
-      const serial = [
-        "zeta-first-session: begin",
-        "zeta-first-session: choice kind=setup_credential vendor=gh",
-        "zeta-first-session: choice kind=use_local_llm_only",
-        "zeta-first-session: complete canSelfRegister=true"
-      ].join(`
+  it("firstSessionMarkersSatisfied rejects dry-run-only happy path", () => {
+    const serial = [
+      "zeta-first-session: begin",
+      "zeta-first-session: choice kind=setup_credential vendor=gh",
+      "zeta-first-session: choice kind=use_local_llm_only",
+      "zeta-first-session: complete canSelfRegister=true"
+    ].join(`
 `);
-      expect(firstSessionMarkersSatisfied(serial)).toBe(!1);
-      expect("ok" in assertHappyPathFirstSessionSerial(serial)).toBe(!0);
-    } finally {
-      if (prev === void 0)
-        delete process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
-      else
-        process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH = prev;
-    }
-  });
-  it("firstSessionMarkersSatisfied allows dry-run happy path with escape hatch", () => {
-    const prev = process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
-    process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH = "1";
-    try {
-      const serial = [
-        "zeta-first-session: begin",
-        "zeta-first-session: choice kind=setup_credential vendor=gh",
-        "zeta-first-session: choice kind=use_local_llm_only",
-        "zeta-first-session: complete canSelfRegister=true"
-      ].join(`
-`);
-      expect(firstSessionMarkersSatisfied(serial)).toBe(!0);
-    } finally {
-      if (prev === void 0)
-        delete process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH;
-      else
-        process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH = prev;
-    }
+    expect(firstSessionMarkersSatisfied(serial)).toBe(!1);
+    expect("ok" in assertHappyPathFirstSessionSerial(serial)).toBe(!0);
   });
   it("firstSessionMarkersSatisfied passes for mock identity-auth coverage path", () => {
     const serial = [
@@ -83,9 +55,8 @@ describe("qemu-first-session-phase3", () => {
     expect(firstSessionMarkersSatisfied(serial)).toBe(!1);
   });
   it("phase3BootMarkersSatisfied requires post-boot self-register when phase3 on", () => {
-    const prevPhase3 = process.env.QEMU_FIRST_SESSION_PHASE3, prevMissing = process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
+    const prevPhase3 = process.env.QEMU_FIRST_SESSION_PHASE3;
     process.env.QEMU_FIRST_SESSION_PHASE3 = "1";
-    delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
     try {
       const firstSessionOnly = [
         "zeta-first-session: begin",
@@ -113,10 +84,6 @@ describe("qemu-first-session-phase3", () => {
         delete process.env.QEMU_FIRST_SESSION_PHASE3;
       else
         process.env.QEMU_FIRST_SESSION_PHASE3 = prevPhase3;
-      if (prevMissing === void 0)
-        delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
-      else
-        process.env.QEMU_SELF_REGISTER_ALLOW_MISSING = prevMissing;
     }
   });
 });

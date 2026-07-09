@@ -5,13 +5,12 @@
  * Installed nodes with /etc/zeta/qemu-first-session-ci run the boot demo
  * service and tee markers to ttyS0.
  *
- * Cascade #6 deepen (2026-07-08): when phase-3 is on, prefer mock identity-auth
- * coverage (or explicit skip markers). Bare dry-run happy-path without
- * identity-auth-mock-* / identity-auth-skip no longer counts as auth coverage.
+ * Cascade #6 (2026-07-08): phase-3 requires mock identity-auth (or explicit
+ * skip markers) AND post-boot zeta-self-register CI dry-run markers.
+ * No legacy-ISO escape hatches — rebuild the ISO.
  */
 
 import {
-  assertHappyPathFirstSessionSerial,
   assertMockIdentityAuthFirstSessionSerial,
   assertSkipGhFirstSessionSerial,
   FIRST_SESSION_SKIP_IDENTITY_AUTH_MARKERS,
@@ -28,14 +27,9 @@ export function firstSessionPhase3Enabled(): boolean {
   return process.env.QEMU_FIRST_SESSION_PHASE3 === "1";
 }
 
-/**
- * When true (default under QEMU_FIRST_SESSION_PHASE3=1), also require post-boot
- * zeta-self-register CI dry-run markers. Escape hatch for older ISOs:
- * QEMU_SELF_REGISTER_ALLOW_MISSING=1.
- */
+/** Phase-3 always requires post-boot self-register CI dry-run markers. */
 export function postBootSelfRegPhase3Required(): boolean {
-  if (!firstSessionPhase3Enabled()) return false;
-  return process.env.QEMU_SELF_REGISTER_ALLOW_MISSING !== "1";
+  return firstSessionPhase3Enabled();
 }
 
 /** True when serial shows explicit CI skip of live identity auth. */
@@ -48,26 +42,20 @@ export function firstSessionIdentityAuthSkipSatisfied(serialOutput: string): boo
 /**
  * Phase-3 first-session gate for cascade #6:
  * - mock identity-auth path (preferred — proves device-code UX without secrets), or
- * - explicit skip-gh / identity-auth-skip (visible non-coverage), or
- * - legacy happy-path only when ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH=1
- *   (escape hatch for older ISOs without mock wiring).
+ * - explicit skip-gh / identity-auth-skip (visible non-coverage).
+ *
+ * Dry-run-only happy path without mock/skip markers does NOT satisfy.
  */
 export function firstSessionMarkersSatisfied(serialOutput: string): boolean {
   if ("ok" in assertMockIdentityAuthFirstSessionSerial(serialOutput)) {
     return true;
   }
-  if (firstSessionIdentityAuthSkipSatisfied(serialOutput)) {
-    return true;
-  }
-  if (process.env.ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH === "1") {
-    return "ok" in assertHappyPathFirstSessionSerial(serialOutput);
-  }
-  return false;
+  return firstSessionIdentityAuthSkipSatisfied(serialOutput);
 }
 
 /**
- * Full phase-3 success: first-session auth markers AND (unless escaped)
- * post-boot self-register CI dry-run markers.
+ * Full phase-3 success: first-session auth markers AND post-boot
+ * self-register CI dry-run markers.
  */
 export function phase3BootMarkersSatisfied(serialOutput: string): boolean {
   if (!firstSessionMarkersSatisfied(serialOutput)) return false;

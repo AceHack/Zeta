@@ -8,12 +8,13 @@ Current blocker: none for software/QEMU deepen slices landed 2026-07-08
 (mock identity-auth, scenarios 3–4 markers, ESP wifi→NM profile without
 radio claim, hostname uniqueness contract). Physical S6 UX feel + real
 WiFi association remain metal-gated.
-Next concrete action: **minimize metal** — keep deepening QEMU/CI
-(cascade #6 full-install asserting mock-auth + `node-<6hex>` login;
-opt-in `QEMU_WIFI_ESP_PHASE1=1` ESP→NM acceptance on workflow_dispatch;
-scenarios 3/4 dispatch to retention/path-fork runtimes; post-boot
-self-register CI dry-run on phase-3). **Physical boot** only when ready
-for residual hardware (S6 feel, radio associate, Touch ID). Paper/mock
+Next concrete action: **minimize metal** — deepen QEMU/CI + multiboot
+builder + USB/identity threat matrix (see
+[`docs/security/USB-IDENTITY-THREAT-MODEL.md`](../../security/USB-IDENTITY-THREAT-MODEL.md)).
+Phase-3 requires mock-auth + post-boot self-register (no legacy ISO
+escapes). Multiboot scaffold exists (`usb-nixos-installer/multiboot/`);
+`build-multiboot-usb.ts` still to land. **Physical boot** only when ready
+for residual hardware (S6 feel, radio associate, Touch ID / TPM). Paper/mock
 S6 flow accepted 2026-07-08 (GitHub → local → done; skip-gh continue
 later via local/SSH). Longer-term (not blocking S6): desktop app UI
 over NixOS, then microkernel UI; `gh` is temporary foothold — successor

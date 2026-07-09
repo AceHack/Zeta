@@ -341,7 +341,7 @@ async function waitForInstalledLogin(serialLogPath, expectedHostname, requireFir
       };
     await Bun.sleep(POLL_INTERVAL_MS);
   }
-  const content = readSerial(serialLogPath), emptySerialHint = content.trim().length === 0 ? " (serial log empty \u2014 installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)" : content.includes("EFI stub: Loaded initrd") && !content.includes("login:") ? " (serial stopped after EFI initrd \u2014 likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)" : "", phase3Hint = requireFirstSession && !phase3BootMarkersSatisfied(content) ? " (login may be present but phase-3 markers missing \u2014 check zeta-first-session-ci + zeta-self-register-ci; escape: QEMU_SELF_REGISTER_ALLOW_MISSING=1)" : "";
+  const content = readSerial(serialLogPath), emptySerialHint = content.trim().length === 0 ? " (serial log empty \u2014 installed disk may need UEFI/OVMF boot or console=ttyS0 on the installed node)" : content.includes("EFI stub: Loaded initrd") && !content.includes("login:") ? " (serial stopped after EFI initrd \u2014 likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)" : "", phase3Hint = requireFirstSession && !phase3BootMarkersSatisfied(content) ? " (login may be present but phase-3 markers missing \u2014 check zeta-first-session-ci + zeta-self-register-ci; rebuild ISO if markers absent)" : "";
   return {
     exitCode: 1,
     reason: loginNeedle ? `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for "${loginNeedle}"${phase3Hint}${emptySerialHint}` : `phase 2 timeout (${DISK_BOOT_TIMEOUT_SECONDS}s) waiting for installed-system login prompt${phase3Hint}${emptySerialHint}`,

@@ -18,16 +18,16 @@ tags: [ci, qemu, cluster-bringup, auto-install, cluster-join, eliminates-human-p
 
 ## Progress (2026-07-08 cascade deepen)
 
-- Phase-3 first-session gate now requires **mock identity-auth** markers
+- Phase-3 first-session gate requires **mock identity-auth** markers
   (`identity-auth-mock-*`) or explicit skip coverage — dry-run-only happy
-  path no longer counts unless `ZETA_FIRST_SESSION_ALLOW_DRY_RUN_AUTH=1`.
+  path does not count (rebuild ISO; no legacy escape).
 - Live `qemu-full-install-test` runs `assertGeneratedNodeHostnameContract`
   after phase 2 when install generated `node-<6hex>` (Bug 1 regression
   guard wired into the ISO path, not unit-only).
 - Post-boot `zeta-self-register` CI dry-run (`ZETA_SELF_REGISTER_MODE=ci-dry-run`
   + `/etc/zeta/qemu-self-register-ci`): phase-3 also requires
   `zeta-self-register: begin|ci-dry-run|complete` + coherent tree-path
-  (escape: `QEMU_SELF_REGISTER_ALLOW_MISSING=1` for older ISOs).
+  (no `ALLOW_MISSING` escape — rebuild ISO).
 
 ## Progress (2026-06-14)
 

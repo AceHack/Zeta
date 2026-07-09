@@ -569,7 +569,7 @@ async function waitForInstalledLogin(
         ? " (serial stopped after EFI initrd — likely initrd cannot mount virtio root; verify hardware-configuration.nix copy at install + virtio_blk in initrd)"
         : "";
   const phase3Hint = requireFirstSession && !phase3BootMarkersSatisfied(content)
-    ? " (login may be present but phase-3 markers missing — check zeta-first-session-ci + zeta-self-register-ci; escape: QEMU_SELF_REGISTER_ALLOW_MISSING=1)"
+    ? " (login may be present but phase-3 markers missing — check zeta-first-session-ci + zeta-self-register-ci; rebuild ISO if markers absent)"
     : "";
   return {
     exitCode: 1,

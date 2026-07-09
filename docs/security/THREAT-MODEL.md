@@ -10,6 +10,10 @@ layer (we don't have one yet — multi-node is P2 roadmap);
 hardware side-channels and cryptographic primitives (we have
 no crypto today — revisit when crypto lands).
 
+**Installer / USB / identity crypto:** see the sibling
+[`USB-IDENTITY-THREAT-MODEL.md`](./USB-IDENTITY-THREAT-MODEL.md)
+(cluster bringup, ESP creds, multiboot, `gh` foothold → Zeta IdP).
+
 ## §0 Adversary tiers
 
 Zeta's threat model is **tier-aware**. Every mitigation is

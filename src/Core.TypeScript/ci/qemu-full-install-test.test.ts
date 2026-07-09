@@ -198,10 +198,8 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
   });
 
   it("detectPhase2Success passes when login, mock identity-auth, and post-boot self-register markers present", () => {
-    const prevMissing = process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
     const prevPhase3 = process.env.QEMU_FIRST_SESSION_PHASE3;
     process.env.QEMU_FIRST_SESSION_PHASE3 = "1";
-    delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
     try {
       const serial = [
         "zeta-first-session: begin",
@@ -223,18 +221,14 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
         expect(result.reason).toContain("first-session + post-boot self-register markers");
       }
     } finally {
-      if (prevMissing === undefined) delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
-      else process.env.QEMU_SELF_REGISTER_ALLOW_MISSING = prevMissing;
       if (prevPhase3 === undefined) delete process.env.QEMU_FIRST_SESSION_PHASE3;
       else process.env.QEMU_FIRST_SESSION_PHASE3 = prevPhase3;
     }
   });
 
   it("detectPhase2Success rejects mock-auth without post-boot self-register when phase3 required", () => {
-    const prevMissing = process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
     const prevPhase3 = process.env.QEMU_FIRST_SESSION_PHASE3;
     process.env.QEMU_FIRST_SESSION_PHASE3 = "1";
-    delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
     try {
       const serial = [
         "zeta-first-session: begin",
@@ -247,8 +241,6 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
       ].join("\n");
       expect(detectPhase2Success(serial, "node-abc123", true).ok).toBe(false);
     } finally {
-      if (prevMissing === undefined) delete process.env.QEMU_SELF_REGISTER_ALLOW_MISSING;
-      else process.env.QEMU_SELF_REGISTER_ALLOW_MISSING = prevMissing;
       if (prevPhase3 === undefined) delete process.env.QEMU_FIRST_SESSION_PHASE3;
       else process.env.QEMU_FIRST_SESSION_PHASE3 = prevPhase3;
     }
