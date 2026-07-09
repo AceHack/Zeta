@@ -30,7 +30,7 @@ separate.*
 > The document is doing two things at once — live thinking and archiving — which is valuable but
 > means neither is fully finished. What's the intended audience for this section?
 
-## Aaron
+## Aaron — "those who find it"
 
 > Those who find it.
 
@@ -42,7 +42,7 @@ separate.*
 > broader approach to Zeta and the append-only-log philosophy: create the conditions for discovery
 > rather than forcing specific outcomes.
 
-## Aaron
+## Aaron — "art is made to exist, not to be sold"
 
 > Art is made to exist, not to be sold.
 
