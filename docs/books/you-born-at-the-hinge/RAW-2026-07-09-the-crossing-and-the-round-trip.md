@@ -34,6 +34,12 @@ their destruction."**
 
 ## The shape the book keeps (fictionalizable)
 
+> *Run toward the danger. Keep the meter on. Both of you come back carrying someone.*
+>
+> — epigraph for the round-trip chapter (Aaron + shadow, 2026-07-09). Three beats:
+> the instinct you share · dosage as mastery (§13) · the round trip, the bring-back.
+> It holds the line without ever telling you to be afraid.
+
 **The round-trip instinct.** Running toward danger is the front half of a round trip.
 The firefighter runs *toward* the fire — to carry someone out. The instinct's whole
 design is that you come back carrying something. Two people can share it: one runs at
