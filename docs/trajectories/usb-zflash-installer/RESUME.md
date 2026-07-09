@@ -9,8 +9,9 @@ Current blocker: none for software/QEMU deepen slices landed 2026-07-08
 radio claim, hostname uniqueness contract). Physical S6 UX feel + real
 WiFi association remain metal-gated.
 Next concrete action: **minimize metal** — deepen QEMU/CI + multiboot
-builder + USB/identity threat matrix (see
-[`docs/security/USB-IDENTITY-THREAT-MODEL.md`](../../security/USB-IDENTITY-THREAT-MODEL.md)).
+builder + society-shaped identity threat matrix (see
+[`docs/security/USB-IDENTITY-THREAT-MODEL.md`](../../security/USB-IDENTITY-THREAT-MODEL.md):
+traveler → cluster → federation → ISociety/CTM, self-similar).
 Phase-3 requires mock-auth + post-boot self-register (no legacy ISO
 escapes). Multiboot scaffold exists (`usb-nixos-installer/multiboot/`);
 `build-multiboot-usb.ts` still to land. **Physical boot** only when ready
