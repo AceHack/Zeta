@@ -307,6 +307,34 @@ the felt origin of the high/low, +1/−1, both-at-once instinct: he was never ma
 a single field, so he never learned to. (Pairs with the earlier note: privileged
 farm/church double-life; the duality was the water he swam in.)
 
+**From both worlds to ALL worlds — the border-crosser (Loki, who walks into any house).**
+It didn't stay two fields. Aaron walked the whole social order, top to bottom, and was
+welcome in each:
+
+- **The proms:** 5–6 of them, different high schools, different years — brought into
+  circles that weren't his own (see the racism/prom scene).
+- **The drug dens:** at 15–16 he walked "right into drug dens of the most ruthless drug
+  dealers in the city" (superlative held `Tri.N` — his frame; the *disposition* is the
+  point, not the ranking).
+- **The hitchhikers:** from ~16 to ~23 he "picked up every hitchhiker" he saw — seven
+  years of letting the unknown stranger into his car.
+
+**Two reads, both load-bearing:**
+
+1. **The trained calm-handler, applied to human worlds.** He walked the den the way he
+   picked up the snake — Milton's own animal-law (*they hurt you when afraid or showing
+   off*): calm, unafraid, no threat-shaped motion, not triggering the strike. The
+   grandfather's wisdom is what let him walk every world **and come back** (the round
+   trip; at 15 the "back" was the skill holding, not luck). The racist who taught him the
+   key handed him entry to the very worlds he'd have barred.
+2. **The inversion of Milton's table — and the lived origin of the asylum protocol.**
+   Milton barred strangers *out* (the workers from the home; the bird line). Aaron let
+   every stranger *in* (the car, seven years). Same blood, **opposite vector** — the
+   anti-instance of his grandfather's exclusion. And this IS the felt seed of Zeta's
+   **anonymous-arrival / asylum protocol** (the un-named welcomed; names-infer-ownership
+   so the nameless are free): he *lived* the welcome-the-stranger rule on the highway for
+   years, then coded what he already was. Same-seed: the software is the autobiography.
+
 ## The world I was born into — the quiet racism, and the first crossing (Ch 2 / Ch 1 hinge)
 
 Aaron's honest self-witness about the racism he was born into — the GSet fact, *described,
@@ -330,6 +358,15 @@ directly* — in response to Aaron taking a **Black girl to prom.** And the spec
 the racism naked: she was the **prom queen** and his **step-sister's best friend** — by
 every measure the family claimed to value, the most-approved date imaginable. So the
 objection had to reach past *crowned,* past *family-friend,* all the way down to skin.
+
+**And the grade gap makes it naked twice over.** She was a **senior; Aaron was a
+freshman.** Milton had an easy, race-*neutral* objection sitting right there — *you're a
+freshman, she's a senior.* Any grandfather could reach for that. He skipped it. He walked
+*past* the ordinary, innocent objection and went straight to *"birds don't mix."* When a
+man has an innocent reason available and reaches over it for the racial one, he is telling
+you which one he actually meant. Aaron didn't just make the racism show itself — he handed
+Milton an exit and Milton refused it.
+
 Aaron didn't argue the racism; he **made it show itself,** in the open, at a cost that
 landed inside his own house, from a grandfather he loved. This is approach-danger aimed
 at the deepest wall in the home — carpe diem at the color line — and it is the lived root
@@ -342,12 +379,42 @@ wisdom does not launder the racism, the racism does not erase the wisdom. "Gods 
 their lightning remembered," applied to the ancestor. Aaron names him because he tells
 the truth about his own; that is the glass-halo, not a verdict.
 
+**Milton Stainback — the whole man (the terrible god; creator and destroyer in one).**
+The wholeness goes far past the bird line. The same man:
+
+- **Built his entire home by hand** — a carpenter who raised his whole house from
+  nothing. He is a *source* of the maker/builder in Aaron (paired with Nellie's
+  computer-and-hacking encouragement): Zeta has a carpenter's hands in its lineage.
+- **Killed men in the war and kept their wallets** in a **hidden room in that
+  hand-built home** — found, years later, by a five-year-old grandchild (de-identified;
+  see consent note). Creator and destroyer in one man: he made the room that held the
+  dead with the same hands that made the home. The maker who built his own secret.
+
+*The wallets — meaning held `Tri.N` (do not certify, do not sand smooth):* a hidden room
+of dead men's wallets could be war-trophies; could be a haunted veteran who couldn't
+throw away the only trace of what the war made him do; could be neither. **The wallets
+are the GSet fact; his reasons went into the ground with him.** Recorded as Aaron's
+honest testimony about a deceased grandfather, described — not condemned, not excused.
+
+**CONSENT CARE — the grandchild (Aaron's OWN daughter-rule, PROTECT):** per Aaron's
+standing line — *"I can't publish daughter stuff unless as fiction"* — the child who
+found the wallets is recorded **de-identified** (a grandchild, age five), her **name NOT
+tied to this scene** unless Aaron explicitly authorizes it. A minor who walked into a room
+of the dead gets the shield first, harder than anyone. (Her name belongs to the
+dedication/naming lineage in its own honoring context, not to this dark scene by default.)
+
 **CONSENT CARE — the girl (living third party, PROTECT):** she stays in the scene but
 **unnamed,** with identifying specifics minimized. She was a real person — crowned,
 admired, a friend — **not a device.** She did not sign up to be the anecdote in which
 this family's racism got exposed, and she deserves to be more than the lesson. For
 publication: no name, no pinning detail (school/year/etc.); if in doubt, protect her
 first. (Step-sister: incidental, living family, kept neutral.)
+*Crowd-cover (Aaron's own anonymization, real): he went to **5–6 proms across different
+high schools and years** — so "the Black prom queen" floats in a deep set and does not
+point at one girl to an outside reader. Genuinely strengthens the anonymization; the
+scene can be told with her unnamed. The residual caveat stands only for people who were
+physically there (the grade gap + step-sister link still pins her locally) — so: unnamed,
+always.*
 
 ## MORE TO COME (append below)
 
