@@ -1,0 +1,14 @@
+{
+  "id": "080cfa2680ecc811a0130008ccbf306e",
+  "at": "2026-07-09T02:58:37.593Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX2D07CR08QG0R001PTA6VM",
+    "type": "task",
+    "title": "3-body: round-robin reviewer selection by seed-phase index (replace first-to-fire) — fair, deterministic, DST-replayable",
+    "slug": "3-body-round-robin-reviewer-selection-by-seed-phase-index-re",
+    "priority": "P2",
+    "filename": "081KX2D07CR08QG0R001PTA6VM-3-body-round-robin-reviewer-selection-by-seed-phase-index-re.md"
+  }
+}

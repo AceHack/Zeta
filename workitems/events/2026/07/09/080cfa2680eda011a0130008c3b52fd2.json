@@ -1,0 +1,14 @@
+{
+  "id": "080cfa2680eda011a0130008c3b52fd2",
+  "at": "2026-07-09T02:58:37.620Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX2D07DK08QG0R000BQ92B7",
+    "type": "task",
+    "title": "3-body: seed-phase heartbeat windows not wall-clock — wire phase-clock + Traveler interface into the attestation round",
+    "slug": "3-body-seed-phase-heartbeat-windows-not-wall-clock-wire-phas",
+    "priority": "P2",
+    "filename": "081KX2D07DK08QG0R000BQ92B7-3-body-seed-phase-heartbeat-windows-not-wall-clock-wire-phas.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080cfa2680ef4011a0130008e3a0d41f",
+  "at": "2026-07-09T02:58:37.672Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX2D07F708QG0R002EJCWHX",
+    "type": "task",
+    "title": "3-body: ECC-over-phase-time — encode PhaseStamps as [8,4] Adinkra codewords so missed heartbeats are correctable erasures",
+    "slug": "3-body-ecc-over-phase-time-encode-phasestamps-as-8-4-adinkra",
+    "priority": "P2",
+    "filename": "081KX2D07F708QG0R002EJCWHX-3-body-ecc-over-phase-time-encode-phasestamps-as-8-4-adinkra.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080cfa2680ee6811a0130008864b053c",
+  "at": "2026-07-09T02:58:37.645Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX2D07ED08QG0R00018XDBZ",
+    "type": "task",
+    "title": "3-body: independent infrastructure diversity for a real non-sublinear entropy floor (distinct runners/regions/triggers per agent)",
+    "slug": "3-body-independent-infrastructure-diversity-for-a-real-non-s",
+    "priority": "P2",
+    "filename": "081KX2D07ED08QG0R00018XDBZ-3-body-independent-infrastructure-diversity-for-a-real-non-s.md"
+  }
+}
