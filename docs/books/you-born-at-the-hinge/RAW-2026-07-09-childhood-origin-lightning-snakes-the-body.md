@@ -66,6 +66,47 @@ taught the discrimination that lets you run toward the danger and come back unbi
 The round trip has a source. (Anchors the epigraph: *run toward the danger, keep the
 meter on.*)
 
+## The lineage / the model (grandad → dad → Aaron)
+
+The wisdom *behind* the snake and bee handling, three generations deep:
+
+> *"My dad and grandad both said animals, snakes and bees mostly only hurt you when
+> they are afraid or want to show off to a pack."*
+
+**The read (honest register — this UPGRADES the earlier Tri.N footnote):** this is not
+superstition; it's close to real ethology. Two named mechanisms:
+
+- **"When they're afraid" — defensive aggression.** The animal strikes because *it* is
+  threatened, not because you are. So "don't be scared" operationally means *don't
+  trigger the animal's fear* — calm hands, no threat-shaped motion. Genuine handling
+  wisdom.
+- **"Showing off to a pack" — display aggression.** Group animals perform violence for
+  the audience, not the target.
+
+**Why it's a skeleton key for the book:** run the diagnostic forward onto the humans.
+The tiny guard who torqued Aaron's arm and called in ten others — *afraid* (small man,
+huge Aaron) **and** *showing off to a pack* (ten watching). The family talking behind
+a cousin's back — pack display, cruelty performed for the group. The three-generation
+inheritance is a *diagnostic for human danger:* the thing that hurts you is either
+scared or performing — and **neither is about you.** Grandad → dad → Aaron → his own
+kids. It decodes half the men in the story.
+
+## The bees (a good story of survival)
+
+*Aaron's call: this one goes free — "that's just a good story of survival."*
+
+A cousin got swarmed — stung many, many times — and **survived.** Aaron was right there
+in the same swarm and took a single sting. His gloss:
+
+> *"It's cause he was scared. And I wasn't. Cause my daddy had already taught me not to
+> be scared of bees."*
+
+**The read:** the third witness after the lightning and the snakes — the don't-flinch
+disposition *paying out* in a live swarm, and read through the grandad/dad model above
+(calm handler doesn't feed the bees' defensive fear). A survival story on its own; a
+training story underneath. (The cousin here appears only as the survivor of a wild
+event — no sensitivity; a good story.)
+
 ## The body (Kings Dominion — the one big reaction)
 
 > *"They took me to ... Yogi Bear's cave and some kinda insect bit me or stung me. I
