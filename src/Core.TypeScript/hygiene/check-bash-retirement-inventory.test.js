@@ -125,7 +125,7 @@ describe("buildInventoryReport", () => {
         expect(report.retainedCategories.slice(1)).toEqual([
             {
                 category: "git hooks",
-                files: ["scripts/hooks/commit-msg", "scripts/hooks/install-git-hooks.sh"],
+                files: ["githooks/pre-push", "scripts/hooks/commit-msg", "scripts/hooks/install-git-hooks.sh"],
             },
             {
                 category: "host-service wrappers",
@@ -228,7 +228,7 @@ describe("renderReport", () => {
         expect(renderReport(report)).toContain("## Retained shell categories");
         const bootstrapCount = report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files.length ?? 0;
         expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
-        expect(renderReport(report)).toContain("- git hooks: 2");
+        expect(renderReport(report)).toContain("- git hooks: 3");
         expect(renderReport(report)).toContain("- host-service wrappers: 2");
     });
     test("renders drift sections", () => {

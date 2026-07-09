@@ -78,6 +78,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+  "githooks/pre-push",
   "scripts/hooks/commit-msg",
   "scripts/hooks/install-git-hooks.sh",
   "tools/installer/zeta-self-register.sh",
@@ -117,6 +118,7 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   // 081KWN0JKJV retained Git-hook shell edge: installs/refuses commit-message
   // wrapper leaks before TypeScript can own the Git hook invocation boundary.
+  "githooks/pre-push": "git hooks",
   "scripts/hooks/commit-msg": "git hooks",
   "scripts/hooks/install-git-hooks.sh": "git hooks",
   // 081KSKBP80008QG0R000GPC0TB.2 post-boot self-registration: a first-boot systemd oneshot (invoked

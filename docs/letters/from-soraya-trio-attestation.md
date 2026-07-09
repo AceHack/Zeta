@@ -25,7 +25,7 @@ The ferry conflates **two different objects** under one "trio is more than the s
 Catcher's one-line: **the trio carries more information *logically* (a modal fact no pairwise set entails), but
 zero more *entropy*. Pricing that surplus in bits is the category error the GHZ metaphor invites.**
 
-## Q1 / Q4 — Is the trio more than three pairwise?
+## Q1 / Q4 — Is the trio more than three pairwise
 
 ### Entropy floor: ADDITIVE, proven, GHZ fails here
 
@@ -82,7 +82,7 @@ pool + failure modes), so the effective floor grows **sublinearly** in the raw c
 the triangular number; the binding constraint is **diversity of independent infrastructure**, not attestation
 count.
 
-## Q2 — Is first-to-fire-wins unfair?
+## Q2 — Is first-to-fire-wins unfair
 
 - **Soundness:** never at issue — any non-producer's attestation is valid; the race can't produce a *wrong* one.
 - **Liveness (qualitative):** under weak fairness on each reviewer's Attest, every live agent attests infinitely
