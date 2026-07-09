@@ -25,6 +25,10 @@ const transport: HttpTransport = {
     const r = await fetch(url, { method: "POST", headers, body });
     return { status: r.status, body: await r.text() };
   },
+  async get(url, headers) {
+    const r = await fetch(url, { method: "GET", headers });
+    return { status: r.status, body: await r.text() };
+  },
 };
 
 const out = await createTask({ apiKey }, transport, {
