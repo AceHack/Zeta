@@ -178,8 +178,8 @@ fi
 # not pinned by hash). The official `curl mise.run | sh` installer
 # auto-detects the latest release at runtime, which is what Scorecard
 # flags. Bumping: pull /repos/jdx/mise/releases/latest, update
-# MISE_VERSION + both MISE_SHA256_* values together — they form a
-# content-pin set.
+# MISE_VERSION + ALL MISE_SHA256_* values together (gnu + musl, three
+# arches) — they form a content-pin set.
 # Skipped on real NixOS — tarball mise is not FHS-compatible; use system mise.
 # 081KSKBP80008QG0R000E3RKPK docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
 linux_sh_nixos_tarball_mise_allowed() {
@@ -193,6 +193,13 @@ MISE_VERSION="v${MISE_PIN_VERSION}"
 MISE_SHA256_X64="cc9b5bc96ba616d88d0ee515196bec6871a33d64cec774924fbfaa2717a921fd"
 MISE_SHA256_ARM64="6cef74020f98b06a62d6f925c116235b629b4badb197b20a33217bff96d60f0f"
 MISE_SHA256_ARMV7="24ac747716373ffa5efbdee889632d21569eae275ece929b1c04cfee6e4b7c45"
+# musl twins of the same pinned release (part of the content-pin set —
+# bump all six SHA256 values together with MISE_VERSION). Chosen
+# automatically on hosts whose glibc is too old for the gnu build
+# (mise gnu builds need glibc >= 2.38 since ~2025) and on musl libcs.
+MISE_SHA256_X64_MUSL="3ce5ad40a9ce0280e0f80e447cfbcfa0b40281b9d4d0fd5a0a66c47c28c2a5e3"
+MISE_SHA256_ARM64_MUSL="39905c8a85c3ef0bae3ba665b0ac602bc338da599f8c4a0c7912e7ebc4930201"
+MISE_SHA256_ARMV7_MUSL="9b0e0959ff1bb8cca81bcaf3dedd963083a112408c06bde756f5ff3094ef613e"
 
 installed_mise_version=""
 if command -v mise >/dev/null 2>&1; then
@@ -218,12 +225,36 @@ if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
   # uses armv7 today, but dev laptops on a Raspberry Pi 4 in 32-bit
   # mode or older single-board computers do, and the cost of carrying
   # the case is tiny (one extra SHA256 to bump per release).
+  # Libc flavor selection (2026-07-08, Otto cowork cell): the gnu tarballs
+  # link against glibc >= 2.38 and die with "GLIBC_2.38 not found" on
+  # older hosts (Ubuntu 22.04 = 2.35 — sandbox/container cells). The musl
+  # twin of the SAME pinned version is static and runs anywhere, so the
+  # declarative shape is unchanged: detect, pick the pinned musl asset.
+  MISE_LIBC=gnu
+  if ldd --version 2>&1 | head -n 1 | grep -qi musl; then
+    MISE_LIBC=musl
+  else
+    _glibc_ver="$(getconf GNU_LIBC_VERSION 2>/dev/null | awk '{print $2}')" || _glibc_ver=""
+    if [ -n "${_glibc_ver}" ]; then
+      _glibc_major="${_glibc_ver%%.*}"
+      _glibc_minor="${_glibc_ver#*.}"; _glibc_minor="${_glibc_minor%%.*}"
+      if [ "${_glibc_major}" -lt 2 ] \
+        || { [ "${_glibc_major}" -eq 2 ] && [ "${_glibc_minor}" -lt 38 ]; }; then
+        MISE_LIBC=musl
+      fi
+    fi
+  fi
   case "$(uname -m)" in
-    x86_64|amd64)  MISE_ARCH=x64;    MISE_SHA256="${MISE_SHA256_X64}"   ;;
-    aarch64|arm64) MISE_ARCH=arm64;  MISE_SHA256="${MISE_SHA256_ARM64}" ;;
-    armv7l|armv7)  MISE_ARCH=armv7;  MISE_SHA256="${MISE_SHA256_ARMV7}" ;;
+    x86_64|amd64)  MISE_ARCH=x64;    MISE_SHA256="${MISE_SHA256_X64}";   MISE_SHA256_MUSL="${MISE_SHA256_X64_MUSL}"   ;;
+    aarch64|arm64) MISE_ARCH=arm64;  MISE_SHA256="${MISE_SHA256_ARM64}"; MISE_SHA256_MUSL="${MISE_SHA256_ARM64_MUSL}" ;;
+    armv7l|armv7)  MISE_ARCH=armv7;  MISE_SHA256="${MISE_SHA256_ARMV7}"; MISE_SHA256_MUSL="${MISE_SHA256_ARMV7_MUSL}" ;;
     *) echo "error: unsupported arch $(uname -m) for mise install" >&2; exit 1 ;;
   esac
+  if [ "${MISE_LIBC}" = "musl" ]; then
+    echo "· libc gate: $(getconf GNU_LIBC_VERSION 2>/dev/null || echo musl) < glibc 2.38 — using musl build"
+    MISE_ARCH="${MISE_ARCH}-musl"
+    MISE_SHA256="${MISE_SHA256_MUSL}"
+  fi
   MISE_TARBALL="mise-${MISE_VERSION}-linux-${MISE_ARCH}.tar.gz"
   MISE_URL="https://github.com/jdx/mise/releases/download/${MISE_VERSION}/${MISE_TARBALL}"
   MISE_TMP="$(mktemp -d)"

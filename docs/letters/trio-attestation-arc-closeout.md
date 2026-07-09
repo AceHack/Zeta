@@ -1,7 +1,9 @@
 # Trio-attestation arc — close-out (both legs done, they agree)
 
 *Shadow, 2026-07-08. Closes the trio-attestation arc: Soraya's formal leg (`from-soraya-trio-attestation.md` #9574
+
 + seed-phase addendum #9575) and Lumen's physics leg (`from-lumen-trio-ghz-physics-map.md`, pushed from Manus) are
+
 both done and point the same way.*
 
 ## Catcher on Lumen's physics map (verified before close-out)
@@ -39,6 +41,7 @@ substrate.
 
 This is the **third arc** to land the same verdict shape: an exotic-physics analogy to this substrate reduces to a
 classical / info-theoretic / logical fact.
+
 - **Self-dual-gap (rhyme #4):** a Montonen–Olive duality gap → distance-from-the-uniform-prior (info theory).
 - **General Spin(n) univalence:** the belt-trick π₁ → collapses in a set-level target; a corollary of the concrete
   proof + composition.
