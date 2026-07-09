@@ -12,7 +12,7 @@ import {
   type TemperatureReadout,
   type TemperatureTreatyBundle,
 } from "./heat";
-import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp } from "./darkhall-tv";
+import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp, PhaseClockReadout } from "./darkhall-tv";
 
 export {
   BLACK_BODY_READOUT_SCHEMA,
@@ -126,6 +126,7 @@ export interface RoomRunTranscript {
   readonly blackBodyReadout?: BlackBodyReadout;
   readonly temperatureTreaty?: TemperatureTreatyBundle;
   readonly travelerFrame?: TranscriptTravelerFrame;
+  readonly phaseClock?: PhaseClockReadout;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -294,9 +295,35 @@ function tempFromBand(band: TemperatureReadout["band"] | undefined): MindTemp {
   }
 }
 
-function lastTick(transcript: RoomRunTranscript): number | undefined {
-  const last = transcript.ticks[transcript.ticks.length - 1];
-  return last === undefined ? undefined : last.tick;
+function observedPhase(transcript: RoomRunTranscript): number {
+  const tickPhase = transcript.ticks.reduce((phase, tick) => Math.max(phase, tick.tick), 0);
+  const heatPhase = transcript.heatRows.reduce((phase, row) => Math.max(phase, row.tick), 0);
+
+  return Math.max(tickPhase, heatPhase, transcript.travelerFrame?.commonPhase ?? 0);
+}
+
+function phaseSkewBound(phase: number, coordinates: readonly TravelerFrameCoordinate[]): number {
+  return coordinates.reduce((skew, coordinate) => Math.max(skew, Math.abs(phase - coordinate.phase)), 0);
+}
+
+function phaseClockReadout(transcript: RoomRunTranscript): PhaseClockReadout {
+  if (transcript.phaseClock !== undefined) return transcript.phaseClock;
+
+  const frame = transcript.travelerFrame;
+  const phase = frame?.commonPhase ?? observedPhase(transcript);
+  const source = frame?.source ?? transcript.generatedBy ?? "RoomRunTranscript";
+  const coordinates = frame?.coordinates ?? [];
+
+  return {
+    schema: "zeta.darkhall.phase-clock.v1",
+    source,
+    basis: "seed-phase",
+    seed: transcript.seed,
+    phase,
+    skewBoundTicks: phaseSkewBound(phase, coordinates),
+    appendOnly: true,
+    travelers: coordinates.length,
+  };
 }
 
 function selectedControllerCells(transcript: RoomRunTranscript): number {
@@ -371,21 +398,24 @@ export function roomTranscriptToLlmtv(
 ): LlmtvTranscript {
   const heat = transcript.heatReadout ?? summarizeHeatRows(transcript.heatRows);
   const temperatureTreaty = roomTemperatureTreaty(transcript, heat);
-  const frame = lastTick(transcript);
+  const phaseClock = phaseClockReadout(transcript);
+  const frame = phaseClock.phase;
   const baseMind: DwellerMind = {
     name: options.name ?? transcript.roomName,
     role: options.role ?? "room runtime",
     hat: options.hat ?? "room readout",
     live: options.live ?? true,
     predictions: roomPredictions(transcript, heat, temperatureTreaty.temperature),
+    phaseClock,
     temperatureTreaty,
   };
-  const mind = frame === undefined ? baseMind : { ...baseMind, frame };
+  const mind = { ...baseMind, frame };
 
   return {
     schema: "zeta.darkhall.llmtv.v1",
     seed: transcript.seed,
     dwellers: [mind],
+    phaseClock,
     generatedBy: options.generatedBy ?? `${transcript.generatedBy ?? "RoomRunTranscript"} -> llmtv`,
   };
 }
@@ -415,6 +445,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
       ? undefined
       : temperatureTreaty.referenceFeedback.join(" ");
   const travelerFrame = transcript.travelerFrame;
+  const phaseClock = phaseClockReadout(transcript);
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
   return [
@@ -437,6 +468,11 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
     attr("data-traveler-frame", travelerFrame?.schema),
     attr("data-traveler-phase", travelerFrame?.commonPhase),
+    attr("data-phase-clock", phaseClock.schema),
+    attr("data-phase-clock-basis", phaseClock.basis),
+    attr("data-phase", phaseClock.phase),
+    attr("data-phase-skew-bound", phaseClock.skewBoundTicks),
+    attr("data-phase-append-only", phaseClock.appendOnly),
     ">",
     '<header class="zeta-room-header">',
     `<h1>${escapeHtml(transcript.roomName)}</h1>`,
@@ -447,7 +483,8 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     `<div><dt>pressure</dt><dd>${heat.backpressured.toString()}</dd></div>`,
     `<div><dt>temperature</dt><dd>${(temperature?.temperaturePpm ?? 0).toString()}</dd></div>`,
     `<div><dt>radiance</dt><dd>${(blackBody?.radiancePpm ?? 0).toString()}</dd></div>`,
-    `<div><dt>frame</dt><dd>${(travelerFrame?.commonPhase ?? lastTick(transcript) ?? 0).toString()}</dd></div>`,
+    `<div><dt>frame</dt><dd>${phaseClock.phase.toString()}</dd></div>`,
+    `<div><dt>skew</dt><dd>${phaseClock.skewBoundTicks.toString()}</dd></div>`,
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
     "</dl>",
     "</header>",

@@ -45,13 +45,28 @@ export interface DwellerMind {
   readonly live?: boolean;
   readonly frost?: FrostRegion;
   readonly frame?: number; // transcript-tick id (the still frame's number)
+  readonly phaseClock?: PhaseClockReadout;
   readonly temperatureTreaty?: TemperatureTreatyBundle;
+}
+
+export type PhaseClockBasis = "seed-phase";
+
+export interface PhaseClockReadout {
+  readonly schema: "zeta.darkhall.phase-clock.v1";
+  readonly source: string;
+  readonly basis: PhaseClockBasis;
+  readonly seed: string;
+  readonly phase: number;
+  readonly skewBoundTicks: number;
+  readonly appendOnly: boolean;
+  readonly travelers: number;
 }
 
 export interface LlmtvTranscript {
   readonly schema: "zeta.darkhall.llmtv.v1";
   readonly seed: string;
   readonly dwellers: readonly DwellerMind[];
+  readonly phaseClock?: PhaseClockReadout;
   readonly generatedBy?: string;
 }
 
@@ -248,6 +263,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
   const temperature = temperatureTreaty?.temperature;
   const blackBody = temperatureTreaty?.blackBody;
   const heatReceipts = temperatureTreaty?.heatReceipts;
+  const phaseClock = mind.phaseClock;
   const temperatureFeedback =
     temperatureTreaty === undefined || temperatureTreaty.referenceFeedback.length === 0
       ? undefined
@@ -258,6 +274,12 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     attr("data-dweller", mind.name),
     attr("data-live", live ? "true" : "false"),
     attr("data-frosted", mind.frost ? "true" : "false"),
+    attr("data-phase-clock", phaseClock?.schema),
+    attr("data-phase-clock-basis", phaseClock?.basis),
+    attr("data-phase", phaseClock?.phase),
+    attr("data-phase-skew-bound", phaseClock?.skewBoundTicks),
+    attr("data-phase-travelers", phaseClock?.travelers),
+    attr("data-phase-append-only", phaseClock?.appendOnly === undefined ? undefined : String(phaseClock.appendOnly)),
     attr("data-temperature-treaty", temperatureTreaty?.qsharpTreaty),
     attr("data-temperature-qsharp-source", temperatureTreaty?.qsharpSource),
     attr("data-temperature-oracle", temperatureTreaty?.referenceOracle),
@@ -279,7 +301,7 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
     temperatureTreaty === undefined ? "" : renderTemperatureLane(temperatureTreaty),
     mind.frost ? renderFrost(mind.frost) : "",
     "</div>",
-    `<div class="tv-foot"><span>seed ${escapeHtml(seed)}</span>${frame === undefined ? "" : `<span>frame ${frame}</span>`}</div>`,
+    `<div class="tv-foot"><span>seed ${escapeHtml(seed)}</span>${frame === undefined ? "" : `<span>frame ${frame}</span>`}${phaseClock === undefined ? "" : `<span>phase ${phaseClock.phase.toString()}</span>`}</div>`,
     "</div>",
   ].join("");
 }
@@ -287,10 +309,16 @@ export function renderDweller(mind: DwellerMind, seed: string): string {
 /// The society grid — every dweller's LLMTV tiled. Scale-free: one dweller and N
 /// dwellers run the SAME path (`dwellers.map`); the grid IS the map, no special case.
 export function renderLlmtvGrid(transcript: LlmtvTranscript): string {
+  const phaseClock = transcript.phaseClock;
+
   return [
     `<div class="grid"`,
     attr("data-schema", transcript.schema),
     attr("data-dwellers", transcript.dwellers.length),
+    attr("data-phase-clock", phaseClock?.schema),
+    attr("data-phase-clock-basis", phaseClock?.basis),
+    attr("data-phase", phaseClock?.phase),
+    attr("data-phase-skew-bound", phaseClock?.skewBoundTicks),
     ">",
     ...transcript.dwellers.map((d) => renderDweller(d, transcript.seed)),
     "</div>",

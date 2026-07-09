@@ -28,6 +28,9 @@ module DarkHallRoomTranscript =
     [<Literal>]
     let TravelerFrameSchema = "zeta.darkhall.traveler-frame.v1"
 
+    [<Literal>]
+    let PhaseClockSchema = "zeta.darkhall.phase-clock.v1"
+
     type ControllerCell =
         { [<JsonPropertyName("cell")>]
           Cell: int
@@ -156,6 +159,24 @@ module DarkHallRoomTranscript =
           [<JsonPropertyName("commonDominatesHeat")>]
           CommonDominatesHeat: bool }
 
+    type TranscriptPhaseClock =
+        { [<JsonPropertyName("schema")>]
+          Schema: string
+          [<JsonPropertyName("source")>]
+          Source: string
+          [<JsonPropertyName("basis")>]
+          Basis: string
+          [<JsonPropertyName("seed")>]
+          Seed: string
+          [<JsonPropertyName("phase")>]
+          Phase: int64
+          [<JsonPropertyName("skewBoundTicks")>]
+          SkewBoundTicks: int64
+          [<JsonPropertyName("appendOnly")>]
+          AppendOnly: bool
+          [<JsonPropertyName("travelers")>]
+          Travelers: int }
+
     type TranscriptTick =
         { [<JsonPropertyName("tick")>]
           Tick: int
@@ -193,6 +214,8 @@ module DarkHallRoomTranscript =
           TemperatureTreaty: TranscriptTemperatureTreaty
           [<JsonPropertyName("travelerFrame")>]
           TravelerFrame: TranscriptTravelerFrame
+          [<JsonPropertyName("phaseClock")>]
+          PhaseClock: TranscriptPhaseClock
           [<JsonPropertyName("heatRows")>]
           HeatRows: HeatRow list
           [<JsonPropertyName("generatedBy")>]
@@ -312,6 +335,21 @@ module DarkHallRoomTranscript =
           Coordinates = coordinates
           CommonDominatesRoom = TravelerFrame.dominates common roomFrame
           CommonDominatesHeat = TravelerFrame.dominates common heatFrame }
+
+    let phaseClockReadout (source: string) (seed: string) (frame: TranscriptTravelerFrame) : TranscriptPhaseClock =
+        let skew =
+            frame.Coordinates
+            |> List.map (fun coord -> abs (frame.CommonPhase - coord.Phase))
+            |> List.fold max 0L
+
+        { Schema = PhaseClockSchema
+          Source = source
+          Basis = "seed-phase"
+          Seed = seed
+          Phase = frame.CommonPhase
+          SkewBoundTicks = skew
+          AppendOnly = true
+          Travelers = frame.Coordinates.Length }
 
     let heatReadout (rows: HeatRow list) : HeatReadout =
         { Schema = HeatReadoutSchema
@@ -532,6 +570,7 @@ module DarkHallRoomTranscript =
         let ticks = run.Ticks |> List.mapi (fun index tick -> tickOfOutcome (index + 1) tick)
         let temperature = temperatureReadout heatRows
         let treaty = temperatureTreaty temperature
+        let travelerFrame = travelerFrameReadout generatedBy roomName ticks heatRows
 
         { Schema = Schema
           RoomName = roomName
@@ -547,7 +586,8 @@ module DarkHallRoomTranscript =
           TemperatureReadout = treaty.Temperature
           BlackBodyReadout = treaty.BlackBody
           TemperatureTreaty = treaty
-          TravelerFrame = travelerFrameReadout generatedBy roomName ticks heatRows
+          TravelerFrame = travelerFrame
+          PhaseClock = phaseClockReadout generatedBy seed travelerFrame
           HeatRows = heatRows }
 
     let ofBoundaryState seed generatedBy (state: Scheduler.BoundaryScheduledRoomState<'K>) : Transcript =
@@ -561,6 +601,7 @@ module DarkHallRoomTranscript =
             state.LastTick
             |> Option.map (fun tick -> [ tickOfBoundaryOutcome state.CompletedTicks tick ])
             |> Option.defaultValue []
+        let travelerFrame = travelerFrameReadout generatedBy state.Loop.Room.Name ticks rows
 
         { Schema = Schema
           RoomName = state.Loop.Room.Name
@@ -575,7 +616,8 @@ module DarkHallRoomTranscript =
           TemperatureReadout = treaty.Temperature
           BlackBodyReadout = treaty.BlackBody
           TemperatureTreaty = treaty
-          TravelerFrame = travelerFrameReadout generatedBy state.Loop.Room.Name ticks rows
+          TravelerFrame = travelerFrame
+          PhaseClock = phaseClockReadout generatedBy seed travelerFrame
           HeatRows = rows }
 
     let ofUnifiedHeatRun seed generatedBy (run: RoomRun.UnifiedHeatRun<'K>) : Transcript =
@@ -595,6 +637,7 @@ module DarkHallRoomTranscript =
         let heatRows = run.HeatRows |> List.map heatRow
         let temperature = temperatureReadout heatRows
         let treaty = temperatureTreaty temperature
+        let travelerFrame = travelerFrameReadout generatedBy run.Room.Loop.Room.Name ticks heatRows
 
         { Schema = Schema
           RoomName = run.Room.Loop.Room.Name
@@ -609,7 +652,8 @@ module DarkHallRoomTranscript =
           TemperatureReadout = treaty.Temperature
           BlackBodyReadout = treaty.BlackBody
           TemperatureTreaty = treaty
-          TravelerFrame = travelerFrameReadout generatedBy run.Room.Loop.Room.Name ticks heatRows
+          TravelerFrame = travelerFrame
+          PhaseClock = phaseClockReadout generatedBy seed travelerFrame
           HeatRows = heatRows }
 
     let ofUnifiedHorizonRun seed generatedBy (run: RoomRun.UnifiedHorizonRun<'K, 'S>) : Transcript =
@@ -632,9 +676,12 @@ module DarkHallRoomTranscript =
                   Heat = coldHeatRow run.Room.CompletedTicks run.Room.Loop.Room.Name
                   Continuation = "room-horizon" } ]
 
+        let travelerFrame = travelerFrameReadout generatedBy run.Room.Loop.Room.Name ticks baseTranscript.HeatRows
+
         { baseTranscript with
             Ticks = ticks
-            TravelerFrame = travelerFrameReadout generatedBy run.Room.Loop.Room.Name ticks baseTranscript.HeatRows }
+            TravelerFrame = travelerFrame
+            PhaseClock = phaseClockReadout generatedBy seed travelerFrame }
 
     let toJson (transcript: Transcript) : string =
         JsonSerializer.Serialize(transcript, jsonOptions).Replace("\r\n", "\n")

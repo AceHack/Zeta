@@ -175,6 +175,16 @@ const transcript: RoomRunTranscript = {
     commonDominatesRoom: true,
     commonDominatesHeat: true,
   },
+  phaseClock: {
+    schema: "zeta.darkhall.phase-clock.v1",
+    source: "DarkHallScheduler heat-board sim loop",
+    basis: "seed-phase",
+    seed: "0x2a",
+    phase: 2,
+    skewBoundTicks: 0,
+    appendOnly: true,
+    travelers: 2,
+  },
 };
 
 describe("Dark Hall CSS room UI", () => {
@@ -190,6 +200,11 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);
     expect(html).toContain('data-traveler-frame="zeta.darkhall.traveler-frame.v1"');
     expect(html).toContain('data-traveler-phase="2"');
+    expect(html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
+    expect(html).toContain('data-phase-clock-basis="seed-phase"');
+    expect(html).toContain('data-phase="2"');
+    expect(html).toContain('data-phase-skew-bound="0"');
+    expect(html).toContain("<dt>skew</dt><dd>0</dd>");
   });
 
   it("normalizes sparse controller cells without letting callers resize the grid", () => {
@@ -338,6 +353,8 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain('data-heat-readout="zeta.heat.readout.v1"');
     expect(html).toContain(`data-heat-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
     expect(html).toContain(`data-qsharp-source="${HEAT_SIGNAL_QSHARP_SOURCE}"`);
+    expect(html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
+    expect(html).toContain('data-phase="1"');
     expect(html).toContain('data-signals="denied"');
     expect(html).toContain('data-heat-signals="denied"');
     expect(html).toContain("<dd>denied</dd>");
@@ -554,11 +571,13 @@ describe("Dark Hall CSS room UI", () => {
     expect(llmtv.schema).toBe("zeta.darkhall.llmtv.v1");
     expect(llmtv.seed).toBe(transcript.seed);
     expect(llmtv.generatedBy).toBe("test-projector");
+    expect(llmtv.phaseClock).toEqual(transcript.phaseClock);
     expect(llmtv.dwellers).toHaveLength(1);
     expect(dweller.name).toBe("darkhall-room");
     expect(dweller.role).toBe("room loop");
     expect(dweller.hat).toBe("runtime readout");
     expect(dweller.frame).toBe(2);
+    expect(dweller.phaseClock).toEqual(transcript.phaseClock);
     expect(dweller.predictions.map((prediction) => prediction.label)).toEqual([
       "heat receipts",
       "backpressure",
@@ -577,6 +596,10 @@ describe("Dark Hall CSS room UI", () => {
 
     expect(doc).toContain('data-schema="zeta.darkhall.llmtv.v1"');
     expect(doc).toContain('data-dweller="darkhall-room"');
+    expect(doc).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
+    expect(doc).toContain('data-phase-clock-basis="seed-phase"');
+    expect(doc).toContain('data-phase="2"');
+    expect(doc).toContain('data-phase-skew-bound="0"');
     expect(doc).toContain('data-heat-receipts="2"');
     expect(doc).not.toContain("<script");
   });
