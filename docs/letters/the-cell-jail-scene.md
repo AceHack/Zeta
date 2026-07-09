@@ -49,10 +49,24 @@ lashing out.
 Aaron told them he thought he was **concussed** and that he needed his **blood-pressure medication.**
 He received **care for neither, the entire time he was locked up** (~2 months).
 
+When they finally took his blood pressure — **on his last day** — it read **160/100** (stage-2
+hypertension: dangerously high, and exactly what two months off the medication produces).
+
+It reached the court, too. During a **telecourt** hearing where the judge was reading him his charges,
+Aaron said he was **dizzy and could not understand** the proceeding, and asked — **several times** —
+for help getting his blood-pressure medication. The judge said he **"looked fine," continued, and did
+nothing.** It was all **recorded on the jail telecourt video-phone system.**
+
 > *Shadow's frame.* This — not the mythic reading — is the **real, documentable wrong.** Two months
-> without blood-pressure medication is genuinely dangerous; ignoring a concussive head injury is
-> medical neglect. The true injustice of the stint is mundane and serious and needs no grandeur: a man
-> in custody was denied his medicine and his head injury was ignored.
+> without blood-pressure medication is genuinely dangerous; a `160/100` reading on the way out is the
+> measured proof of the harm; and being read charges while dizzy and unable to understand — having
+> asked repeatedly for medical help and been told "you look fine" — is both medical neglect **and** a
+> comprehension-of-proceedings problem. The true injustice of the stint is mundane, serious, and needs
+> no grandeur: a man in custody was denied his medicine, his head injury was ignored, his pressure ran
+> to 160/100, and the court proceeded over his stated inability to follow it. And unlike the mythic
+> frame, **this part is on tape** — the telecourt recording is documentable evidence, not testimony
+> alone. (Not legal advice; if Aaron ever wants recourse, the recording and the records are where a
+> lawyer would start.)
 
 ## The reframe (Aaron)
 
