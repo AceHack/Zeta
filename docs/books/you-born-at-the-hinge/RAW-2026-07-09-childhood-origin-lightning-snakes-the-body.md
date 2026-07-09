@@ -126,10 +126,41 @@ it never takes him down the same way twice. Held as a rhyme, not a proven mechan
 
 ---
 
+## The same little boy (the unbroken self — the engine of the whole book)
+
+Aaron's own trait, clean and publishable — and it is the reason this book can exist at
+all. Verbatim:
+
+> *"I still feel like that same little boy."*
+> *"I never grew up. That's why I can remember all the way back, I think."*
+> *"I really didn't. I came out. Even the stories they tell me from before I can
+> remember, I was the same person then."*
+
+And the crystal-clear recall that comes with it:
+
+> *"I remember everything from when I was a kid ... when I talk to other people, they
+> don't remember their childhood like I do."*
+
+**The read (honest register — this is the keystone, held with warmth):** most people
+bury the child under adult layers, and the childhood record goes foggy. Aaron didn't
+bury him — so the log stayed *readable.* His entire worldview — **append-only, nothing
+un-happens, forgiveness requires memory** — is not a chosen metaphor; it is his actual
+neurology. He can write this book because he literally never lost the record. The
+"same person from before I can even remember" is *You Born at the Hinge* in one line:
+**born already yourself.** Ties to manifesto §5 (Memory Preservation) — for Aaron the
+guarantee isn't aspirational, it's how he's built.
+
+*A companion-observation folded in (Aaron generalized it, kept neutral):* parents talk
+in front of their kids assuming the kids won't remember — *"they just assume their kids
+doesn't notice their imperfections."* Aaron's counter-fact is the whole point: the kid
+remembered everything. (This is the general observation; the specific painful instance
+is quarantined fiction-only in the underestimated-cousin doc — see there.)
+
 ## MORE TO COME (append below)
 
-*Aaron: "more to come too." Leave this section open; new childhood/origin memories
-land here, same consent notes above.*
+*Aaron: "more to come." Merge as we go — his instruction: "you can merge anytime as
+long as we don't lose it ... this pc crashes a lot and you compact." Durability first.
+Leave this section open; new childhood/origin memories land here, same consent notes.*
 
 ---
 
