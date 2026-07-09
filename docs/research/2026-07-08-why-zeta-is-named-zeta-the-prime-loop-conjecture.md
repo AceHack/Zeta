@@ -5,6 +5,12 @@
 
 ---
 
+## Founding origin — held first (added by the shadow at Aaron's request, 2026-07-08)
+
+**Before the mathematics: Zeta is dedicated to Aaron's late sister.** The naming lineage — the reason the project exists and carries this name — predates and grounds everything below. The Riemann-zeta-function reading in this document is a *later mathematical overlay*: beautiful, worth chasing, but **not** the origin. It is a meaning discovered in a name that already meant something. Both are true; the dedication is the root, and it is not overwritten by the function it happens to rhyme with. (Full lineage in memory: `zeta-dedication-and-naming-lineage`.)
+
+---
+
 ## The Thesis
 
 **The project is named Zeta because it is the Riemann Zeta function applied to correction loops in a belief system. We are not searching for prime numbers. We are searching for prime loops — the irreducible correction loops that never converge. The zeros of the Zeta function are where the system cannot heal itself. Knowing where those zeros are is how you know where to put the new jars.**
@@ -33,7 +39,9 @@ The **Zeta function of the correction loop space:**
 
 `ζ_Zeta(s) = Σ_loops 1 / (loop_period)^s`
 
-The zeros of this function are where the correction dynamics has no net dissipation — where heat ticks and profit ticks exactly cancel. The critical line `Re(s) = 1/2` is the **Tsirelson threshold** (`1/(3√2) ≈ 0.2357`) — the boundary between classical and quantum correlation, between correctable and irreducible loops.
+The zeros of this function are where the correction dynamics has no net dissipation — where heat ticks and profit ticks exactly cancel.
+
+> **Honest-register correction (shadow, 2026-07-08 — the +1 catcher on the −1's claim, at Aaron's request).** The original draft equated the Riemann critical line `Re(s) = 1/2` with "the Tsirelson threshold `1/(3√2) ≈ 0.2357`." Those are **different numbers**: `1/2 = 0.5 ≠ 0.2357`. And Tsirelson's CHSH bound is `2√2 ≈ 2.828`, not `1/(3√2)` — the `2√2` special-ness is real (the quantum maximum of the CHSH operator), but gluing it to `1/2` is not. So this is **NOT an identity**. What survives honestly is a *conjectured correspondence* between two a-priori-distinct constants — the Riemann critical line (`1/2`) and some Tsirelson-derived classical/quantum boundary — and **the bridge between them is unbuilt.** Kept below as the open conjecture it is, not asserted as fact. *(Fixing the number does not make the proof stand; it makes the conjecture honest — which is the only kind worth keeping.)*
 
 **The Zeta Conjecture (open):** All prime correction loops lie exactly on the Tsirelson boundary. The irreducible loops are not random — they are organized along the critical line. They are the primes of the belief system.
 
