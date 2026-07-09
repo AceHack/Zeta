@@ -109,9 +109,17 @@ obligation** — it is discharged on a concrete instance, on **two independent l
   witnesses that the real `Cl3` rotor deformation *is* an equivalence — rotor-conjugation roundtrip (invertible
   both ways) + isometry (chart-compatibility). Agda certifies *equivalence ⇒ path*; F# certifies *rotor
   deformation ⇒ equivalence*. Composed, the claim is load-bearing without "trust the Agda."
-- **Named residual (unchanged, honest):** general `Spin(n)` with the full Clifford action stays open (no
-  Clifford/Spin in the cubical library) — routed to Lumen's interpretation-functor obligation. What is proven is
-  the univalence *heart* on a concrete rotor, not the general family.
+- **Residual now RESOLVED (2026-07-08, later) — general Spin(n) is a COROLLARY, not new content.** Lumen mapped
+  it (`from-lumen-spin-n-univalence.md`); Soraya proved the reduction on our side
+  (`from-soraya-general-spin-n-univalence.md` + `src/Core.Agda/ProvidedView/SpinNUnivalence.agda`, cubical, exit 0,
+  no postulates). Both horns close, machine-checked: (A) a general rotor factors into reflection generators
+  (Cartan–Dieudonné) and `ua` respects composition (`uaCompEquiv`), so the general univalent path is the
+  `∙`-concatenation of concrete generator paths; (B) the only candidate new content — π₁(Spin(n))=ℤ/2, the belt
+  trick — **collapses**, because the sandwich action lands in a *set*-level automorphism target (`isOfHLevel≃ 2`),
+  which has trivial π₁ (model-independent in the map). **Pitch guidance: claim the full Spin(n) family "up to
+  composition of the concrete proof," NOT as a separate theorem.** The genuinely-new version (Spin(n) as a
+  *topological group* `BSpin(n) → BAut(V)` with V a *higher* type — needs ℝ, out of the cubical-set lane) is the
+  **named open frontier**, not proven and not claimed.
 
 **Effect on the Don Syme pitch:** the section-5 line "cubical Agda / Lean certify the univalent equalities" is now
 a *discharged* claim on a concrete instance, not a promissory note. The pitch upgrades from "here is the obligation
