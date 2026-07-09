@@ -164,6 +164,17 @@ const transcript: RoomRunTranscript = {
   temperatureReadout: transcriptTemperatureReadout,
   blackBodyReadout: transcriptBlackBodyReadout,
   temperatureTreaty: transcriptTemperatureTreaty,
+  travelerFrame: {
+    schema: "zeta.darkhall.traveler-frame.v1",
+    source: "DarkHallScheduler heat-board sim loop",
+    commonPhase: 2,
+    coordinates: [
+      { traveler: "heat:darkhall", phase: 2 },
+      { traveler: "room:darkhall", phase: 2 },
+    ],
+    commonDominatesRoom: true,
+    commonDominatesHeat: true,
+  },
 };
 
 describe("Dark Hall CSS room UI", () => {
@@ -177,6 +188,8 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain("spawn:darkhall-heat-board");
     expect(html).toContain(`data-temperature-treaty="${HEAT_SIGNAL_TREATY_PATH}"`);
     expect(html).toContain(`data-temperature-oracle="${TEMPERATURE_REFERENCE_ORACLE}"`);
+    expect(html).toContain('data-traveler-frame="zeta.darkhall.traveler-frame.v1"');
+    expect(html).toContain('data-traveler-phase="2"');
   });
 
   it("normalizes sparse controller cells without letting callers resize the grid", () => {

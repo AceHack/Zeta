@@ -92,6 +92,10 @@ let private softPlan sourceName rom width : RoomRun.SoftDrivePlan =
       Frames = 1
       Start = Chip8Cow.create 1UL |> Chip8Cow.loadRom rom }
 
+let private hasTraveler traveler phase (frame: Transcript.TranscriptTravelerFrame) =
+    frame.Coordinates
+    |> List.exists (fun coord -> coord.Traveler = traveler && coord.Phase = phase)
+
 [<Fact>]
 let ``room transcript exports the source-owned contract consumed by the css UI`` () =
     let requestFor (action: Runtime.CabinetAction) =
@@ -131,6 +135,13 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Equal(Transcript.BlackBodyReadoutSchema, transcript.BlackBodyReadout.Schema)
     Assert.Equal(transcript.TemperatureReadout.TemperaturePpm, transcript.BlackBodyReadout.TemperaturePpm)
     Assert.Equal(BlackBodyReadout.radiancePpm transcript.TemperatureReadout.TemperaturePpm, transcript.BlackBodyReadout.RadiancePpm)
+    Assert.Equal(Transcript.TravelerFrameSchema, transcript.TravelerFrame.Schema)
+    Assert.Equal("fsharp-room-loop", transcript.TravelerFrame.Source)
+    Assert.Equal(1L, transcript.TravelerFrame.CommonPhase)
+    Assert.True(transcript.TravelerFrame.CommonDominatesRoom)
+    Assert.True(transcript.TravelerFrame.CommonDominatesHeat)
+    Assert.True(hasTraveler "room:darkhall" 1L transcript.TravelerFrame)
+    Assert.True(hasTraveler "heat:darkhall" 1L transcript.TravelerFrame)
     Assert.Equal(HeatReadout.Schema, transcript.TemperatureTreaty.HeatReadoutSchema)
     Assert.Equal(Transcript.TemperatureReadoutSchema, transcript.TemperatureTreaty.TemperatureReadoutSchema)
     Assert.Equal(Transcript.BlackBodyReadoutSchema, transcript.TemperatureTreaty.BlackBodyReadoutSchema)
@@ -151,6 +162,9 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Contains("\"temperatureReadout\"", json)
     Assert.Contains("\"blackBodyReadout\"", json)
     Assert.Contains("\"temperatureTreaty\"", json)
+    Assert.Contains("\"travelerFrame\"", json)
+    Assert.Contains("\"schema\": \"zeta.darkhall.traveler-frame.v1\"", json)
+    Assert.Contains("\"traveler\": \"room:darkhall\"", json)
     Assert.Contains("\"referenceOracle\": \"fsharp-blackbody-reference\"", json)
     Assert.Contains("\"qsharpTreaty\": \"src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json\"", json)
     Assert.Contains("\"controller\"", json)
@@ -204,6 +218,13 @@ let ``unified room run transcript preserves boundary and soft heat rows`` () =
         Assert.Equal(transcript.BlackBodyReadout, transcript.TemperatureTreaty.BlackBody)
         Assert.Equal("fsharp-blackbody-reference", transcript.TemperatureTreaty.ReferenceOracle)
         Assert.Empty(transcript.TemperatureTreaty.ReferenceFeedback)
+        Assert.Equal(Transcript.TravelerFrameSchema, transcript.TravelerFrame.Schema)
+        Assert.Equal("fsharp-unified-room-run", transcript.TravelerFrame.Source)
+        Assert.Equal(1L, transcript.TravelerFrame.CommonPhase)
+        Assert.True(transcript.TravelerFrame.CommonDominatesRoom)
+        Assert.True(transcript.TravelerFrame.CommonDominatesHeat)
+        Assert.True(hasTraveler "room:darkhall" 1L transcript.TravelerFrame)
+        Assert.True(hasTraveler "heat:darkhall" 1L transcript.TravelerFrame)
         Assert.Equal<string list>([ "denied"; "forgotten" ], transcript.HeatReadout.Signals)
         Assert.Contains("room-boundary.door-denied", heatKinds)
         Assert.Contains("soft-emu.prune", heatKinds)
@@ -220,3 +241,5 @@ let ``unified room run transcript preserves boundary and soft heat rows`` () =
         Assert.Contains("\"forgotten\"", json)
         Assert.Contains("\"temperatureTreaty\"", json)
         Assert.Contains("\"referenceFeedback\": []", json)
+        Assert.Contains("\"travelerFrame\"", json)
+        Assert.Contains("\"traveler\": \"heat:darkhall\"", json)

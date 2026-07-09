@@ -25,6 +25,9 @@ module DarkHallRoomTranscript =
 
     let BlackBodyReadoutSchema = Zeta.Core.HeatReadout.BlackBodySchema
 
+    [<Literal>]
+    let TravelerFrameSchema = "zeta.darkhall.traveler-frame.v1"
+
     type ControllerCell =
         { [<JsonPropertyName("cell")>]
           Cell: int
@@ -133,6 +136,26 @@ module DarkHallRoomTranscript =
           [<JsonPropertyName("blackBody")>]
           BlackBody: TranscriptBlackBodyReadout }
 
+    type TravelerFrameCoordinate =
+        { [<JsonPropertyName("traveler")>]
+          Traveler: string
+          [<JsonPropertyName("phase")>]
+          Phase: int64 }
+
+    type TranscriptTravelerFrame =
+        { [<JsonPropertyName("schema")>]
+          Schema: string
+          [<JsonPropertyName("source")>]
+          Source: string
+          [<JsonPropertyName("commonPhase")>]
+          CommonPhase: int64
+          [<JsonPropertyName("coordinates")>]
+          Coordinates: TravelerFrameCoordinate list
+          [<JsonPropertyName("commonDominatesRoom")>]
+          CommonDominatesRoom: bool
+          [<JsonPropertyName("commonDominatesHeat")>]
+          CommonDominatesHeat: bool }
+
     type TranscriptTick =
         { [<JsonPropertyName("tick")>]
           Tick: int
@@ -168,6 +191,8 @@ module DarkHallRoomTranscript =
           BlackBodyReadout: TranscriptBlackBodyReadout
           [<JsonPropertyName("temperatureTreaty")>]
           TemperatureTreaty: TranscriptTemperatureTreaty
+          [<JsonPropertyName("travelerFrame")>]
+          TravelerFrame: TranscriptTravelerFrame
           [<JsonPropertyName("heatRows")>]
           HeatRows: HeatRow list
           [<JsonPropertyName("generatedBy")>]
@@ -237,6 +262,56 @@ module DarkHallRoomTranscript =
 
         values
         |> List.filter (fun value -> seen.Add value)
+
+    let private actorSuffix (value: string) : string =
+        value.Trim()
+        |> Seq.map (fun c ->
+            if System.Char.IsLetterOrDigit c || c = '-' || c = '_' || c = '.' then
+                c
+            else
+                '-')
+        |> Seq.toArray
+        |> fun chars -> System.String(chars)
+        |> function
+            | "" -> "unknown"
+            | value -> value
+
+    let private observeIfPositive actor phase frame =
+        if phase <= 0L then
+            frame
+        else
+            TravelerFrame.observe actor (Versionstamp.ofInt64 phase) frame
+
+    let private lastTickPhase (ticks: TranscriptTick list) : int64 =
+        ticks |> List.map _.Tick |> List.fold max 0 |> int64
+
+    let private lastHeatPhase (rows: HeatRow list) : int64 =
+        rows |> List.map _.Tick |> List.fold max 0 |> int64
+
+    let travelerFrameReadout
+        (source: string)
+        (roomName: string)
+        (ticks: TranscriptTick list)
+        (rows: HeatRow list)
+        : TranscriptTravelerFrame =
+        let roomActor = sprintf "room:%s" (actorSuffix roomName)
+        let heatActor = sprintf "heat:%s" (actorSuffix roomName)
+        let roomFrame = TravelerFrame.origin |> observeIfPositive roomActor (lastTickPhase ticks)
+        let heatFrame = TravelerFrame.origin |> observeIfPositive heatActor (lastHeatPhase rows)
+        let common = TravelerFrame.transform roomFrame heatFrame
+        let coordinates =
+            common.Coords
+            |> Map.toList
+            |> List.map (fun (traveler, stamp) ->
+                { Traveler = traveler
+                  Phase = stamp.Version })
+
+        { Schema = TravelerFrameSchema
+          Source = source
+          CommonPhase = coordinates |> List.map _.Phase |> List.fold max 0L
+          Coordinates = coordinates
+          CommonDominatesRoom = TravelerFrame.dominates common roomFrame
+          CommonDominatesHeat = TravelerFrame.dominates common heatFrame }
 
     let heatReadout (rows: HeatRow list) : HeatReadout =
         { Schema = HeatReadoutSchema
@@ -454,6 +529,7 @@ module DarkHallRoomTranscript =
             run.Final.LastReadout
             |> Option.defaultWith (fun () -> Runtime.observe run.Final.Room)
         let heatRows = run.Ticks |> List.mapi (fun index tick -> heatRowOfReadout (index + 1) tick.Readout.RoomName tick.Heat)
+        let ticks = run.Ticks |> List.mapi (fun index tick -> tickOfOutcome (index + 1) tick)
         let temperature = temperatureReadout heatRows
         let treaty = temperatureTreaty temperature
 
@@ -466,11 +542,12 @@ module DarkHallRoomTranscript =
               |> List.tryLast
               |> Option.map (fun tick -> controllerCells (Some tick.Choice.Cell) tick.Readout)
               |> Option.defaultWith (fun () -> controllerCells None readout)
-          Ticks = run.Ticks |> List.mapi (fun index tick -> tickOfOutcome (index + 1) tick)
+          Ticks = ticks
           HeatReadout = heatReadout heatRows
           TemperatureReadout = treaty.Temperature
           BlackBodyReadout = treaty.BlackBody
           TemperatureTreaty = treaty
+          TravelerFrame = travelerFrameReadout generatedBy roomName ticks heatRows
           HeatRows = heatRows }
 
     let ofBoundaryState seed generatedBy (state: Scheduler.BoundaryScheduledRoomState<'K>) : Transcript =
@@ -480,6 +557,10 @@ module DarkHallRoomTranscript =
             |> Option.defaultWith (fun () -> Runtime.observe state.Loop.Room)
         let temperature = temperatureReadout rows
         let treaty = temperatureTreaty temperature
+        let ticks =
+            state.LastTick
+            |> Option.map (fun tick -> [ tickOfBoundaryOutcome state.CompletedTicks tick ])
+            |> Option.defaultValue []
 
         { Schema = Schema
           RoomName = state.Loop.Room.Name
@@ -489,14 +570,12 @@ module DarkHallRoomTranscript =
               state.LastTick
               |> Option.map (fun tick -> controllerCells (Some tick.Choice.Cell) tick.Readout)
               |> Option.defaultWith (fun () -> controllerCells None readout)
-          Ticks =
-              state.LastTick
-              |> Option.map (fun tick -> [ tickOfBoundaryOutcome state.CompletedTicks tick ])
-              |> Option.defaultValue []
+          Ticks = ticks
           HeatReadout = heatReadout rows
           TemperatureReadout = treaty.Temperature
           BlackBodyReadout = treaty.BlackBody
           TemperatureTreaty = treaty
+          TravelerFrame = travelerFrameReadout generatedBy state.Loop.Room.Name ticks rows
           HeatRows = rows }
 
     let ofUnifiedHeatRun seed generatedBy (run: RoomRun.UnifiedHeatRun<'K>) : Transcript =
@@ -512,6 +591,7 @@ module DarkHallRoomTranscript =
             |> Option.defaultValue []
 
         let heatTicks = run.HeatRows |> List.mapi (fun index row -> measureTick (index + 1) row)
+        let ticks = tickRows @ heatTicks
         let heatRows = run.HeatRows |> List.map heatRow
         let temperature = temperatureReadout heatRows
         let treaty = temperatureTreaty temperature
@@ -524,11 +604,12 @@ module DarkHallRoomTranscript =
               run.Room.LastTick
               |> Option.map (fun tick -> controllerCells (Some tick.Choice.Cell) tick.Readout)
               |> Option.defaultWith (fun () -> controllerCells None readout)
-          Ticks = tickRows @ heatTicks
+          Ticks = ticks
           HeatReadout = heatReadout heatRows
           TemperatureReadout = treaty.Temperature
           BlackBodyReadout = treaty.BlackBody
           TemperatureTreaty = treaty
+          TravelerFrame = travelerFrameReadout generatedBy run.Room.Loop.Room.Name ticks heatRows
           HeatRows = heatRows }
 
     let ofUnifiedHorizonRun seed generatedBy (run: RoomRun.UnifiedHorizonRun<'K, 'S>) : Transcript =
@@ -541,17 +622,19 @@ module DarkHallRoomTranscript =
               HeatTranscript = run.HeatTranscript }
 
         let baseTranscript = ofUnifiedHeatRun seed generatedBy baseRun
+        let ticks =
+            baseTranscript.Ticks
+            @ [ { Tick = run.Room.CompletedTicks
+                  Phase = "continue"
+                  Event = "horizon-continuation"
+                  ChoiceCell = -1
+                  Outcome = "continued"
+                  Heat = coldHeatRow run.Room.CompletedTicks run.Room.Loop.Room.Name
+                  Continuation = "room-horizon" } ]
 
         { baseTranscript with
-            Ticks =
-                baseTranscript.Ticks
-                @ [ { Tick = run.Room.CompletedTicks
-                      Phase = "continue"
-                      Event = "horizon-continuation"
-                      ChoiceCell = -1
-                      Outcome = "continued"
-                      Heat = coldHeatRow run.Room.CompletedTicks run.Room.Loop.Room.Name
-                      Continuation = "room-horizon" } ] }
+            Ticks = ticks
+            TravelerFrame = travelerFrameReadout generatedBy run.Room.Loop.Room.Name ticks baseTranscript.HeatRows }
 
     let toJson (transcript: Transcript) : string =
         JsonSerializer.Serialize(transcript, jsonOptions).Replace("\r\n", "\n")

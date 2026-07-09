@@ -63,15 +63,9 @@ Soraya if a claim needs proving, lands the verdict + updates the trio-attestatio
 
 ## Cross-links
 
-<<<<<<< HEAD
-`docs/letters/from-soraya-trio-attestation.md` (the formal verdict, #9574) ·
-`docs/letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` (seed-phase = common
-cause, PR #9575) · `memory/soraya/ferry-2026-07-08-trio-attestation-fairness.md` (the originating ferry) ·
-=======
 `docs/letters/from-soraya-trio-attestation.md` (the formal verdict, \#9574) ·
 `docs/letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` (seed-phase = common cause,
 \#9575) · `memory/soraya/ferry-2026-07-08-trio-attestation-fairness.md` (the originating ferry) ·
->>>>>>> 9221761a6 (feat: implement Private Set Intersection (PSI) over Z-sets and cleanup markdownlint warnings)
 `src/Core.Lean4/Lean4/EntropyFloorLift.lean` + `EntropyMeasureTheoretic.lean` (the additive floor) ·
 `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`. Anchors: Greenberger–Horne–Zeilinger (1989, GHZ
 tripartite entanglement); Reichenbach (1956, common-cause principle — the _classical_ alternative to

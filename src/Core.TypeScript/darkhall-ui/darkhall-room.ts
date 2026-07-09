@@ -100,6 +100,20 @@ export interface RoomTranscriptTick {
   readonly continuation?: string;
 }
 
+export interface TravelerFrameCoordinate {
+  readonly traveler: string;
+  readonly phase: number;
+}
+
+export interface TranscriptTravelerFrame {
+  readonly schema: "zeta.darkhall.traveler-frame.v1";
+  readonly source: string;
+  readonly commonPhase: number;
+  readonly coordinates: readonly TravelerFrameCoordinate[];
+  readonly commonDominatesRoom?: boolean;
+  readonly commonDominatesHeat?: boolean;
+}
+
 export interface RoomRunTranscript {
   readonly schema: "zeta.darkhall.room-ui.v1";
   readonly roomName: string;
@@ -111,6 +125,7 @@ export interface RoomRunTranscript {
   readonly temperatureReadout?: TemperatureReadout;
   readonly blackBodyReadout?: BlackBodyReadout;
   readonly temperatureTreaty?: TemperatureTreatyBundle;
+  readonly travelerFrame?: TranscriptTravelerFrame;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -399,6 +414,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     temperatureTreaty === undefined || temperatureTreaty.referenceFeedback.length === 0
       ? undefined
       : temperatureTreaty.referenceFeedback.join(" ");
+  const travelerFrame = transcript.travelerFrame;
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
   return [
@@ -419,6 +435,8 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-black-body-readout", blackBody?.schema),
     attr("data-black-body-radiance", blackBody?.radiancePpm),
     attr("data-black-body-peak-frequency", blackBody?.peakFrequencyPpm),
+    attr("data-traveler-frame", travelerFrame?.schema),
+    attr("data-traveler-phase", travelerFrame?.commonPhase),
     ">",
     '<header class="zeta-room-header">',
     `<h1>${escapeHtml(transcript.roomName)}</h1>`,
@@ -429,6 +447,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     `<div><dt>pressure</dt><dd>${heat.backpressured.toString()}</dd></div>`,
     `<div><dt>temperature</dt><dd>${(temperature?.temperaturePpm ?? 0).toString()}</dd></div>`,
     `<div><dt>radiance</dt><dd>${(blackBody?.radiancePpm ?? 0).toString()}</dd></div>`,
+    `<div><dt>frame</dt><dd>${(travelerFrame?.commonPhase ?? lastTick(transcript) ?? 0).toString()}</dd></div>`,
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
     "</dl>",
     "</header>",
