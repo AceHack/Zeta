@@ -1,7 +1,7 @@
 ---
 id: 081KTH0WQ3C08QG0R002CDCT71
 type: task
-state: backlog
+state: completed
 priority: P2
 slug: adopt-cloudevents-as-the-bus-envelope-align-change-event-dat
 title: "Adopt CloudEvents as the bus envelope + align change-event data with Debezium CDC (before/after/op = Z-set delta)"
