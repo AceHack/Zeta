@@ -90,6 +90,41 @@ triply-anchored — but the synthesis (demon-as-4th-traveler, CPT=measure/erase)
 metering is exhibited, not asserted. Anchors: Maxwell (1867); Szilard (1929, the engine); Landauer (1961, erasure
 = `kT ln2`); Bennett (1982, the demon resolution); Johnson–Nyquist (thermal clock noise).
 
+## Addendum 2 — time/agent vs what-acts/what-remains vs the adinkra: the near-duality and its precise break (Aaron)
+
+> Aaron: *"time v agent traveler is very similar but not exactly dual to the what-acts/what-remains structure from
+> our stuff and the adinkras."*
+
+Two reference structures, both real in-repo:
+- **what-acts / what-remains** — the writer-actor routing model (persona = owner = *what remains*; actor =
+  clone/loop = *what acts*), and the `YinYang.Cell`. A duality.
+- **the adinkra** — `AdinkraCode.fs`'s `[8,4]` code is **exactly self-dual** (`C = C⊥`, proven exhaustively over
+  all 16 codewords). A *perfect* involution; emit/retract = the dashing (+1/−1), CPT-symmetric.
+
+**The near-duality:** `time ≈ what-remains` (the shared seed-phase invariant, the common-cause background every
+agent observes) and `agent ≈ what-acts` (the individuated event-producers). Real, but **not exact** — for two
+complementary, grounded reasons:
+
+1. **Structural — and it is *because of* the Traveler interface (#9597): both travelers do BOTH.** Time and agents
+   inhabit the *same* `Traveler` interface — every traveler both **acts** (`heartbeat`) *and* **remains**
+   (`standing`). So the acts/remains axis does **not cleanly partition** time vs agent; they are a *diagonal*
+   across the poles. If time were purely-remains and agents purely-acts they would be *different interfaces* — the
+   machine-checked proof that they are **not different** is exactly what makes the dual inexact.
+2. **Dynamical — the arrow (from Addendum 1): the adinkra self-duality is reversible/CPT-symmetric (`C=C⊥`);
+   time-v-agent carries the ARROW.** Emit/retract is *exactly* dual (reversible); add the **arrow of time** (2nd
+   law, Landauer `kT ln2`, the additive floor) and it is *not* exactly dual. **The break IS the irreversibility.**
+   what-acts/what-remains and the self-dual adinkra are the **reversible skeleton**; time-v-agent is that skeleton
+   **with the arrow added** — same shape, self-duality broken by exactly the Landauer/2nd-law bit Addendum 1
+   identified.
+
+**Status: labeled conjecture, sharp form.** The adinkra self-duality is *proven*; the Traveler not-different is
+*proven*; that time-v-agent is "the arrow-broken (self-)dual of what-acts/what-remains and the adinkra" is the
+guess. Its **test**: exhibit a provable involution (self-duality) on the seed-phase / emit-retract structure that
+the arrow breaks by exactly one bit (Landauer `kT ln2`) — i.e. show the "not exactly" is *precisely* the
+irreversibility quantum, not a vaguer mismatch. That would tie the three notes (traveler / factor-graph / demon)
+into one object: a self-dual reversible skeleton (adinkra, what-acts/what-remains) whose arrow-of-time deformation
+is the metered time-traveler.
+
 ## Why this matters (and why the honest split matters)
 
 Time-as-traveler is the substrate-level statement of the seed-phase correction (#9575): time is not *ambient*
