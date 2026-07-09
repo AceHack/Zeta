@@ -130,7 +130,12 @@ pre-merge blocking is the exception, reserved for uncompensatable effects.**
    allowed to say "no" instead of "converging."
 
 6. **Drift gets an SLO instead of a moral.** Red/green on main is replaced by
-   MTTH (mean time to heal) per drift class, published on the dashboard. The
+   MTTH (mean time to heal) per drift class, published on the dashboard.
+   MTTH is **tick-indexed, not wallclock-indexed** (amendment 2026-07-09,
+   with the deterministic-agreed-time ferry): drift events carry the tick id
+   of the agreed clock, and mean-time-to-heal is a count of ticks — the
+   phase-clock is the official reference frame for drift accounting, so
+   every agent measures the same drift against the same now. The
    failure mode of drift-tolerance is normalized deviance — unbounded MTTH is
    the new "red," and a drift class whose MTTH trend grows becomes a workitem
    automatically. Aaron's wait-for-consolidation discipline applies: drift
