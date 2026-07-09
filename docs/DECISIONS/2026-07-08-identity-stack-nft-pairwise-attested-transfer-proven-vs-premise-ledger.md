@@ -105,6 +105,7 @@ separated forgery results, the dual-use framing, the epistemic-not-entropic trio
 semantics. An identity-stack map that launders premises into "all proven" is explicitly rejected.
 
 **Consequences:**
+
 - **Positive:** one honest, reviewer-durable artifact connecting scattered proofs; `TODO(Alexa)`.
 - **Costs / open residuals:** layers 1 & 2 remain the load-bearing premises (Bell floor OPEN; CHSH→distinctness
   weakest link); general Spin(n) univalence residual is unrelated but adjacent; `TODO(Alexa)`.

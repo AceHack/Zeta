@@ -1,0 +1,115 @@
+{
+  "primitive": "SchemaEvolution",
+  "version": 1,
+  "description": "Golden vectors for SchemaEvolution across 4 languages (F#, C#, TS, Rust). Test cases exercise add, remove, rename, and windowed-lossless remove (stash/restore dump) operations.",
+  "vectors": [
+    {
+      "name": "add-field-success",
+      "input": {
+        "t": "obj",
+        "v": [["name", { "t": "str", "v": "alice" }]]
+      },
+      "ops": [{ "op": "add", "key": "age", "default": { "t": "int", "v": "30" } }],
+      "expected_up": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "30" }]
+        ]
+      },
+      "expected_down": {
+        "t": "obj",
+        "v": [["name", { "t": "str", "v": "alice" }]]
+      }
+    },
+    {
+      "name": "rename-field-success",
+      "input": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "30" }]
+        ]
+      },
+      "ops": [{ "op": "rename", "from": "name", "to": "username" }],
+      "expected_up": {
+        "t": "obj",
+        "v": [
+          ["username", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "30" }]
+        ]
+      },
+      "expected_down": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "30" }]
+        ]
+      }
+    },
+    {
+      "name": "remove-field-lossy",
+      "input": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "30" }]
+        ]
+      },
+      "ops": [{ "op": "remove", "key": "age", "default": { "t": "int", "v": "0" } }],
+      "expected_up": {
+        "t": "obj",
+        "v": [["name", { "t": "str", "v": "alice" }]]
+      },
+      "expected_down": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "0" }]
+        ]
+      }
+    },
+    {
+      "name": "remove-field-with-dump",
+      "input": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "30" }]
+        ]
+      },
+      "ops": [{ "op": "remove_with_dump", "key": "age" }],
+      "expected_up": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          [
+            "__evo_dump__",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "age",
+                  {
+                    "t": "obj",
+                    "v": [
+                      ["idx", { "t": "int", "v": "1" }],
+                      ["val", { "t": "int", "v": "30" }]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "expected_down": {
+        "t": "obj",
+        "v": [
+          ["name", { "t": "str", "v": "alice" }],
+          ["age", { "t": "int", "v": "30" }]
+        ]
+      }
+    }
+  ]
+}

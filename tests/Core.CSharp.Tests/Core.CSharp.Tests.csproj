@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp\Core.CSharp.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.DynamicValue\Zeta.Core.CSharp.DynamicValue.csproj" />
   </ItemGroup>
 
   <ItemGroup>

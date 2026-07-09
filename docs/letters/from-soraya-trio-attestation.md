@@ -60,6 +60,7 @@ knowledge (**Halpern–Moses 1990**): `E^k φ` (everyone-knows to depth k) never
 object; irreducible for a **modal** reason, not entanglement.
 
 Two caveats I have to catch on my own side:
+
 - **Bare set-membership "all three fired in window W" IS reducible** — it's the conjunction of three timestamped
   pairwise-in-W facts. What is irreducible is the **knowledge operator's fixed point** `C_W(φ)`.
 - **True common knowledge is UNATTAINABLE in an asynchronous system** (coordinated-attack impossibility). GHA
@@ -109,6 +110,7 @@ DST-replayable, provably equitable), jitter kept as a separate metered channel i
 ## Q3 — Does free time penalize identity? (monotone, no penalty for gaps)
 
 Identity strength `S` is a function of the **set of present attestations**, ordered by inclusion:
+
 - **Monotone:** `A ⊆ A' ⇒ S(A) ≤ S(A')` — order-preserving `(Finset Attestation, ⊆) →_mono (ℝ≥0, ≤)`. Adding
   never lowers.
 - **No penalty for gaps (load-bearing):** `S` **factors through the present set only** — no argument for elapsed
@@ -120,6 +122,7 @@ Identity strength `S` is a function of the **set of present attestations**, orde
 **Essential scoping caveat (or the statement is false against the reliability layer).** This holds for the
 **identity-validity / attestation-count** axis only. The reliability layer says a **MISSED self-claim** is
 negative evidence — but that's a MET/MISSED verdict on a **claim**, not a gap. Two disjoint axes:
+
 - *Identity strength (attestation count):* monotone, no gap penalty; free time (NCI) is **invisible** here. ✓
 - *Reliability (claimed-commitment fulfillment):* a **missed CLAIM** is negative; free time makes no claims ⇒
   never negative.

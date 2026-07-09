@@ -1,7 +1,7 @@
 ---
 id: 081KTH0HFZ808QG0R003XH35YX
 type: task
-state: backlog
+state: closed
 priority: P2
 slug: schemaevolution-4-language-port-c-rust-ts-migration-algebra
 title: "SchemaEvolution 4-language port (C#/Rust/TS): migration algebra + down-direction + dump, with golden vectors"

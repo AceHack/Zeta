@@ -26,6 +26,9 @@ pub use dv_key::DvKey;
 pub mod cloud_events;
 pub use cloud_events::CloudEvent;
 
+/// Schema evolution over DynamicValue (zero-downtime versioning seed)
+pub mod schema_evolution;
+
 /// The runtime type tag -- QueryInterface ("what shape are you?") for a value
 /// with no compile-time type.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

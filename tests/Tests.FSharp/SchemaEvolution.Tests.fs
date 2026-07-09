@@ -1,5 +1,8 @@
 module Zeta.Tests.SchemaEvolutionTests
 
+open System.IO
+open System.Reflection
+open System.Text.Json
 open global.Xunit
 open FsCheck
 open FsCheck.FSharp
@@ -210,3 +213,80 @@ let ``Schema: up stashes into the dump; dropDump GCs it (removal becomes permane
 let ``Schema law: removeFieldWithDump is lossless — down∘up = id for any object (key 'a')`` (v: DynamicValue) =
     let reg = [ SE.removeFieldWithDumpMigration 1 "a" ]
     (SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)) = Ok v
+
+let private repoRoot () : string =
+    let mutable dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+    while not (File.Exists(Path.Combine(dir, "Zeta.sln"))) do
+        dir <- Path.GetDirectoryName(dir)
+    dir
+
+let rec private buildValue (v: JsonElement) : DynamicValue =
+    match v.GetProperty("t").GetString() with
+    | "null" -> DynamicValue.Null
+    | "bool" -> DynamicValue.Bool(v.GetProperty("v").GetBoolean())
+    | "int" -> DynamicValue.Int(int64 (v.GetProperty("v").GetString()))
+    | "float" -> DynamicValue.Float(double (v.GetProperty("v").GetString()))
+    | "str" -> DynamicValue.String(v.GetProperty("v").GetString())
+    | "arr" ->
+        let items = [ for item in v.GetProperty("v").EnumerateArray() -> buildValue item ]
+        DynamicValue.Array items
+    | "obj" ->
+        let pairs = [
+            for item in v.GetProperty("v").EnumerateArray() do
+                let arr = [ for x in item.EnumerateArray() -> x ]
+                let key = arr.[0].GetString()
+                let valNode = buildValue arr.[1]
+                yield key, valNode
+        ]
+        DynamicValue.Object pairs
+    | other -> failwithf "unknown tag %s" other
+
+let private buildOp (v: JsonElement) : SE.Migration =
+    let op = v.GetProperty("op").GetString()
+    match op with
+    | "add" ->
+        let key = v.GetProperty("key").GetString()
+        let def = buildValue (v.GetProperty("default"))
+        SE.addFieldMigration 0 key def
+    | "rename" ->
+        let fromKey = v.GetProperty("from").GetString()
+        let toKey = v.GetProperty("to").GetString()
+        SE.renameFieldMigration 0 fromKey toKey
+    | "remove" ->
+        let key = v.GetProperty("key").GetString()
+        let def = buildValue (v.GetProperty("default"))
+        SE.removeFieldMigration 0 key def
+    | "remove_with_dump" ->
+        let key = v.GetProperty("key").GetString()
+        SE.removeFieldWithDumpMigration 0 key
+    | other -> failwithf "unknown op %s" other
+
+[<Fact>]
+let ``Schema: replays golden vectors schema evolution`` () =
+    let path = Path.Join(repoRoot (), "src", "Core.TypeScript", "dynamic-value", "golden-vectors-schema-evolution.json")
+    use doc = JsonDocument.Parse(File.ReadAllText(path))
+    let root = doc.RootElement
+    let vectors = root.GetProperty("vectors").EnumerateArray()
+
+    for vec in vectors do
+        let name = vec.GetProperty("name").GetString()
+        let input = buildValue (vec.GetProperty("input"))
+        let expectedUp = buildValue (vec.GetProperty("expected_up"))
+        let expectedDown = buildValue (vec.GetProperty("expected_down"))
+        let ops = [ for op in vec.GetProperty("ops").EnumerateArray() -> buildOp op ]
+
+        // Run Up migrations
+        let mutable value = input
+        for op in ops do
+            value <- op.Up value
+        Assert.Equal<DynamicValue>(expectedUp, value)
+
+        // Run Down migrations
+        let mutable backVal = value
+        for i in (ops.Length - 1) .. -1 .. 0 do
+            let op = ops.[i]
+            match op.Down with
+            | Some down -> backVal <- down backVal
+            | None -> failwithf "Vector %s: down migration missing" name
+        Assert.Equal<DynamicValue>(expectedDown, backVal)
+
