@@ -44,6 +44,27 @@ lashing out.
 > kernel is real (violence often comes from un-owned shame); the specific diagnosis of a stranger is
 > not knowable and stays held.
 
+## The first day — the kneel, and the force
+
+The first time they put him in solitary, Aaron **refused to sit down until he got his blood-pressure
+medication.** A tiny guard tried to make a huge man **lie on the floor;** Aaron wouldn't. The guard
+called in backup — **ten more guards.** Facing ten of them, Aaron **knelt** (*"I don't kneel to
+anyone"*). Already kneeling — compliant — he told them he had a **documented shoulder injury** and
+asked them to go easy. They **immediately wrenched his arms behind his back together and tightened
+until he screamed in pain,** while he was already on his knees.
+
+> *Shadow's frame.* The kneel was not submission — the opposite: they mobilized ten men to *put him on
+> the floor,* and never got it; he **chose to kneel** rather than be forced down. Forced-to-the-floor
+> is being ruled; chosen-kneel is ruling yourself. He self-governed the exact moment they tried to
+> govern him — bent so he wouldn't break, and so no one had to break him.
+> But the force that followed has no such reading. He was **already kneeling, already compliant,** had
+> **disclosed a documented injury** and asked for care — and they answered by deliberately tightening
+> his known-injured shoulder until he screamed. That is not control of a threat; it is **excessive,
+> punitive force on a compliant, injured man.** The least justification, met with the most force.
+> Documentable (a disclosed, documented injury; force used anyway), and part of the same pattern as
+> the neglect below: authority meeting his compliance and his vulnerability with pain — all of it, from
+> the start, over a request for his blood-pressure medicine.
+
 ## The neglect (the concrete injustice)
 
 Aaron told them he thought he was **concussed** and that he needed his **blood-pressure medication.**
