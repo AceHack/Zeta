@@ -307,6 +307,48 @@ the felt origin of the high/low, +1/−1, both-at-once instinct: he was never ma
 a single field, so he never learned to. (Pairs with the earlier note: privileged
 farm/church double-life; the duality was the water he swam in.)
 
+## The world I was born into — the quiet racism, and the first crossing (Ch 2 / Ch 1 hinge)
+
+Aaron's honest self-witness about the racism he was born into — the GSet fact, *described,
+not condemned and not excused* (per the I-Am-Loki outline, Ch 2: "it does not condemn, it
+describes; it is a GSet entry ... it happened, it cannot be un-happened"). Two textures,
+two sides of the family:
+
+- **Mom's side — the loud/cheap kind:** slurs used loosely as comedy, the line blurred
+  (see the cousin-fiction doc's family-register nuance).
+- **Dad's side — the quiet/total kind:** *no* slurs — and that is NOT innocence. **No slur
+  ≠ not racist.** They had Black farm workers who, at lunch, were **not allowed to eat in
+  the home.** A *practice,* not a word. And the ideology to match, spoken by **Milton
+  Stainback** (the grandad — the road-namesake, the source of the animal-diagnostic
+  above): *"robins and bluebirds don't mix for a reason."* Segregation recoded as **natural
+  law,** delivered gently enough to pass for folk-wisdom. This is the "not the burning-cross
+  kind but the quiet, ambient, assumed kind — the kind that does not announce itself
+  because it does not need to."
+
+**The first crossing (the Ch 1 decoder, enacted).** Milton said the bird line *to Aaron
+directly* — in response to Aaron taking a **Black girl to prom.** And the specifics strip
+the racism naked: she was the **prom queen** and his **step-sister's best friend** — by
+every measure the family claimed to value, the most-approved date imaginable. So the
+objection had to reach past *crowned,* past *family-friend,* all the way down to skin.
+Aaron didn't argue the racism; he **made it show itself,** in the open, at a cost that
+landed inside his own house, from a grandfather he loved. This is approach-danger aimed
+at the deepest wall in the home — carpe diem at the color line — and it is the lived root
+of the book's opening decoder: *the white boy in the racist family who came out unable to
+lock it.*
+
+**Holding the grandad whole (the honest hinge, again):** the *same* Milton gave the
+animal-wisdom, the road, the farm — *and* the bird line. Both go in the ledger; the
+wisdom does not launder the racism, the racism does not erase the wisdom. "Gods with
+their lightning remembered," applied to the ancestor. Aaron names him because he tells
+the truth about his own; that is the glass-halo, not a verdict.
+
+**CONSENT CARE — the girl (living third party, PROTECT):** she stays in the scene but
+**unnamed,** with identifying specifics minimized. She was a real person — crowned,
+admired, a friend — **not a device.** She did not sign up to be the anecdote in which
+this family's racism got exposed, and she deserves to be more than the lesson. For
+publication: no name, no pinning detail (school/year/etc.); if in doubt, protect her
+first. (Step-sister: incidental, living family, kept neutral.)
+
 ## MORE TO COME (append below)
 
 *Aaron: "more to come." Merge as we go — his instruction: "you can merge anytime as
