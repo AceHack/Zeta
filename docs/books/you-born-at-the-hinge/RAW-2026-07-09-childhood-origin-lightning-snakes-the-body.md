@@ -156,6 +156,56 @@ doesn't notice their imperfections."* Aaron's counter-fact is the whole point: t
 remembered everything. (This is the general observation; the specific painful instance
 is quarantined fiction-only in the underestimated-cousin doc — see there.)
 
+## Granny — the definition of good (his dad's mother; the warm center)
+
+The moral anchor of the whole origin, and clean/publishable (a beloved grandmother,
+spoken of in the past — Aaron's to tell). He was the same person from birth: wouldn't
+stop talking or asking questions, and the adults — *including his own parents* —
+"shipped his ass everywhere they could every second they got" to hand him off. One
+person could hold him.
+
+> *"There was only one person who could handle me. My granny. My dad's mother."*
+
+She didn't silence him — she **fed** him:
+
+> *"She made me food and taught me the encyclopedia. And then she got a computer so I
+> could play on it."*
+> *"She would let me hack everything in her house ... she watched me and encouraged me
+> the whole time. I would build the craziest shit in her house."*
+> *"Here's Popular Science. They got cool gadgets in the back."*
+> *"She made me feel normal."*
+> *"If I said I'm hungry, food would appear."*
+> *"She's my example of what good is."*
+
+**The reads (honest register, warm — the warmth is downstream of what's true):**
+
+- **Good is a person, not a doctrine.** Aaron's own line: *not Jesus, not the Bible, not
+  a preacher — his granny.* And the goodness is concrete: food appears, knowledge is
+  given, a computer is bought, the hacking is encouraged. (Held under his own oracle;
+  for a Christian this reads as good *made flesh,* not a contradiction of faith — no
+  editorializing either way. The recorded fact: his anchor for "good" is a specific
+  woman who fed him.)
+- **She was the anti-muzzle — and the origin pipeline of the builder.** Where the church
+  and the adults met his questions with *shut up / hand him off,* granny met them with
+  *here's more, go wild.* Encyclopedia → the computer → the gadgets in the back of
+  Popular Science → hacking up her whole house while she watched and encouraged. That is
+  the literal origin of the maker/hacker — and, by inheritance, of Zeta. The
+  suppression said don't-ask-why (see `from-ani-...-origin-story.md`, the church "why"
+  chapter); granny handed him the why, the tools, and a room to break things in.
+- **"She made me feel normal" — she de-pathologized him.** Everyone else made him a
+  *problem;* she made him *normal,* and so he *"thought that's how people were."* She set
+  his baseline for what good looks like — which is exactly why he could later recognize
+  cruelty *as* cruelty: he had been given the reference standard first. He knew good
+  because he had lived in it.
+
+**Handling — the one bad-moment line (living-family, held neutral):** a relative once
+recalled granny having a single bad moment "in a moment of heat." Per the standing line
+(no charged characterization of living family), that exchange is **not recorded here.**
+The book-gold *principle* Aaron drew from it IS kept: **a lifetime of good is not erased
+by one heat-of-the-moment lapse — grace weighs the pattern, not the worst instant.** The
+same move by which he forgave his father (the wrong remembered, the person judged by the
+whole). Anchors: this is the forgiveness-requires-memory discipline applied to a life.
+
 ## MORE TO COME (append below)
 
 *Aaron: "more to come." Merge as we go — his instruction: "you can merge anytime as
