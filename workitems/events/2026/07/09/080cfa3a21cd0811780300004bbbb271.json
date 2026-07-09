@@ -1,0 +1,14 @@
+{
+  "id": "080cfa3a21cd0811780300004bbbb271",
+  "at": "2026-07-09T14:25:02.000Z",
+  "by": "otto",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX3KA3EK08QG0R0019ER8WV",
+    "type": "task",
+    "title": "Uncompensatable-floor registry \u2014 the drift ADR floor as data, not prose",
+    "slug": "uncompensatable-floor-registry-not-prose",
+    "priority": "P1",
+    "filename": "081KX3KA3EK08QG0R0019ER8WV-uncompensatable-floor-registry-not-prose.md"
+  }
+}

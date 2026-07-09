@@ -1,0 +1,14 @@
+{
+  "id": "080cfa3a21cd7011780300008964b108",
+  "at": "2026-07-09T14:25:02.000Z",
+  "by": "otto",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX3KA3F008QG0R0022EF9R8",
+    "type": "task",
+    "title": "Healer idempotence + closure harness \u2014 healers get golden vectors too",
+    "slug": "healer-idempotence-closure-harness",
+    "priority": "P1",
+    "filename": "081KX3KA3F008QG0R0022EF9R8-healer-idempotence-closure-harness.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080cfa3a21cd881178030000725b5393",
+  "at": "2026-07-09T14:25:02.000Z",
+  "by": "otto",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX3KA3F508QG0R000RR66VH",
+    "type": "task",
+    "title": "Migrate gate (required) to floor-only \u2014 after registry + scoped runner + consent",
+    "slug": "gate-required-to-floor-only-migration",
+    "priority": "P2",
+    "filename": "081KX3KA3F508QG0R000RR66VH-gate-required-to-floor-only-migration.md"
+  }
+}

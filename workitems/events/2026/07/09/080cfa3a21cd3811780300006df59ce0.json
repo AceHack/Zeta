@@ -1,0 +1,14 @@
+{
+  "id": "080cfa3a21cd3811780300006df59ce0",
+  "at": "2026-07-09T14:25:02.000Z",
+  "by": "otto",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX3KA3ES08QG0R003TW3XDE",
+    "type": "task",
+    "title": "Scoped-diff lint runner \u2014 PR checks report only files the PR touches",
+    "slug": "scoped-diff-lint-runner-pr-checks-only-touch",
+    "priority": "P1",
+    "filename": "081KX3KA3ES08QG0R003TW3XDE-scoped-diff-lint-runner-pr-checks-only-touch.md"
+  }
+}

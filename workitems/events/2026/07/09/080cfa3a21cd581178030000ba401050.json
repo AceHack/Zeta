@@ -1,0 +1,14 @@
+{
+  "id": "080cfa3a21cd581178030000ba401050",
+  "at": "2026-07-09T14:25:02.000Z",
+  "by": "otto",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX3KA3EW08QG0R002WFQ6BG",
+    "type": "task",
+    "title": "Drift-event schema + MTTH-in-ticks dashboard",
+    "slug": "drift-event-schema-mtth-ticks-dashboard",
+    "priority": "P1",
+    "filename": "081KX3KA3EW08QG0R002WFQ6BG-drift-event-schema-mtth-ticks-dashboard.md"
+  }
+}
