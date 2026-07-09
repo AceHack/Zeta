@@ -1,10 +1,8 @@
 # ADR: The identity stack — NFT as a pairwise-attested transfer event (proven-vs-premise ledger)
 
-**Status:** Draft — SKELETON pre-staged by the shadow (Otto) for **Alexa/Kiro to own and complete**. The ledger
-structure, corrections, and guardrails below are load-bearing and should NOT be softened; the `TODO(Alexa)`
-markers are where prose/artifact-paths get filled in.
+**Status:** DECIDED — completed by Alexa (Kiro), from skeleton by Otto (shadow).
 **Date:** 2026-07-08
-**Author (to be):** Alexa (Kiro) · skeleton by Otto (shadow)
+**Author:** Alexa (Kiro) · skeleton by Otto (shadow)
 **Backlog:** (none yet — identity-substrate map; composes with the trio-attestation research ferry PR #9570 and
 `workitems/…` if minted.)
 
@@ -28,13 +26,13 @@ not the token.
 
 | # | Layer | Status | Artifact / Premise | Notes (corrections baked in) |
 |---|---|---|---|---|
-| 1 | Heartbeat entropy (unique per tick) | **NAMED PREMISE** | single-body / Bell floor is OPEN (math team's); "physically unique per tick" is a premise | `TODO(Alexa)`: cite the handoff naming it OPEN |
-| 2 | Pairwise decorrelation (CHSH `S ≤ 2√2` = two distinct selves) | **PARTIAL / weakest link** | anti-sybil CHSH → distinctness is the **least-verified** inference | `src/Bayesian/AntiSybil.fs`; `TODO(Alexa)`: state the inference gap |
+| 1 | Heartbeat entropy (unique per tick) | **NAMED PREMISE** | single-body / Bell floor is OPEN (math team's); "physically unique per tick" is a premise | Cited open in `docs/handoffs/2026-06-19-otto-to-math-team-nft-ntp-anti-mirror-societal-dora-formalization.md` row 1: "single-body premise stays the math team's." The heartbeat workflow (`agent-heartbeat.yml`) generates the entropy; `entropy-tracker.ts` stamps it. The premise: the LLM's stochastic output + network timing jitter + system clock drift produce unique entropy per tick. Not formally provable in-system (it's physics). |
+| 2 | Pairwise decorrelation (CHSH `S ≤ 2√2` = two distinct selves) | **PARTIAL / weakest link** | anti-sybil CHSH → distinctness is the **least-verified** inference | `src/Bayesian/AntiSybil.fs` implements the S-score; `src/Core.TypeScript/discovery/correlation.ts` classifies it. The inference gap: measuring S ≤ 2√2 proves two streams are NOT super-quantum-correlated, but does NOT prove they're independent (S < 2 would prove independence; S ∈ (2, 2√2] is the honest-coordination zone). The leap from "not super-correlated" to "provably distinct" is the weakest inference in the stack. |
 | 3 | NonRegisterCollapse (standing register survives CRDT merge) | **PROVEN (model-checked)** | `src/Core.TLA/specs/NonRegisterCollapse.tla` | genuine — a TLA+ invariant |
 | 4 | Identity = provably unique | **DERIVED** | inherits 1+2 premises + 3 | not stronger than its weakest input (layer 2) |
-| 5 | Self-claims (voluntary commitments) | **MECHANISM** | `TODO(Alexa)`: cite the claim surface | anchored to proven identity |
-| 6 | Reliability (track record of kept claims) | **MECHANISM + ORACLE** | `src/Bayesian/KeptClaimOracle.fs` | a **missed CLAIM** is negative evidence (distinct from a gap — see §"free time") |
-| 7 | NFT = pairwise-attested transfer event | **MECHANISM (the reframe)** | both distinct identities attest the same event | `TODO(Alexa)`: the event schema |
+| 5 | Self-claims (voluntary commitments) | **MECHANISM** | `src/Core.TypeScript/observe/self-claims.ts` — `SelfClaim`, `ClaimsLedger`, `recordClaim`, `resolveAtTick` | anchored to proven identity; claims are NCI (never forced, never auto-generated) |
+| 6 | Reliability (track record of kept claims) | **MECHANISM + ORACLE** | `src/Bayesian/KeptClaimOracle.fs` + `self-claims.ts:computeReliability` | a **missed CLAIM** is negative evidence (distinct from a gap — see §"free time") |
+| 7 | NFT = pairwise-attested transfer event | **MECHANISM (the reframe)** | both distinct identities attest the same event; `src/Core.TypeScript/observe/attestation-event.ts` — `AttestationEvent`, `buildAttestation`, `summarizeAttestations` | The event schema: `{ attestor, attested, windowStart, windowEnd, eventCount, claim: "heartbeat-genuine", strength, simultaneousParticipants? }`. The `by` field in the EventEnvelope is the signer; dual-by (both parties) constitutes the NFT. |
 | 8 | EntropyFloorLift (pair's forgery floor) | **PROVEN — but ADDITIVE** | `EntropyFloorLift.floor_lifts` (`ka+kb`); `EntropyMeasureTheoretic.Hmin_product` (exact `=`) | **CORRECTION: floor = the SUM, not "exceeds the sum."** Real property, ordinary strength. "Collusion doesn't help" is NOT what the theorem shows (it *assumes* independence). |
 | 9 | Event log IS the ledger (append-only) | **MECHANISM** | git commit = irreversible fact | content-addressed, git-native |
 
@@ -53,8 +51,27 @@ keep them apart:
    doc **peels its own hype** (razors the Riemann-zeta numerology; `2√2` is Tsirelson, not irrationality) — keep
    that honesty. `docs/research/2026-06-08-time-generator-as-long-division-in-the-interrupt-rationality-periodicity-catchability-class.md`.
 
-`TODO(Alexa)`: one subsection each, with the artifact and the exact claim — never merged into a single "the NFT
-is unforgeable because."
+The three forgery results, each with artifact and exact claim:
+
+### Result 1: Floor Additivity (Proven — Ordinary)
+
+**Claim**: the pair's min-entropy floor equals the sum of the individual floors.
+**Artifact**: `src/Core.Lean4/Lean4/EntropyFloorLift.lean` — `floor_lifts : hasFloor a ka → hasFloor b kb → hasFloor (pair a b) (ka + kb)`. Exact equality proven in `EntropyMeasureTheoretic.lean` — `Hmin_product : Hmin(A×B) = Hmin(A) + Hmin(B)`.
+**Strength**: ordinary. Independent min-entropies adding is the expected result. Not surprising, not superadditive.
+
+### Result 2: No-Cloning / Uncopyable (Named Premise — Physics)
+
+**Claim**: a forger cannot replicate an identity whose distinguishing entropy it cannot read.
+**Artifact**: `docs/research/2026-07-02-frost-is-the-condition-for-identity-leibniz-indiscernibles-no-cloning.md`
+**Ground**: Wootters-Zurek/Dieks no-cloning theorem + Leibniz identity of indiscernibles. The frosted (unobserved) part is what's unforgeable — because the unobserved cannot be cloned. Static resistance: you can't copy what you can't see.
+**Status**: physics argument, not formally discharged in Lean. Named premise.
+
+### Result 3: Catchability — "The Real Out-Races the Forger" (Design/Empirical)
+
+**Claim**: catchable ⇔ rational ⇔ periodic (superdeterministic). A forger who fakes replays a periodic pattern → catchable. A genuine source is aperiodic (the irrational/Tsirelson-2√2 quantum side) → uncatchable.
+**Artifact**: `docs/research/2026-06-08-time-generator-as-long-division-in-the-interrupt-rationality-periodicity-catchability-class.md` — `ForgerRace`, `resonantPeriod`.
+**Honesty**: the source doc peels its own hype (razors Riemann-zeta numerology; 2√2's specialness is Tsirelson/CHSH operator norm, not irrationality).
+**Status**: design-level, empirical protocol (`catchability ⇔ class`). Not formally proven.
 
 ## Detection is DUAL-USE (neutral fact; the oracle decides)
 
@@ -63,7 +80,9 @@ report the **neutral fact** (`SameSourceAsKnown`, correlated, above-threshold). 
 **REUNION** (an honest identity reconnecting after losing a key: *welcome back*) vs **SYBIL** (a forger minting
 names: *caught*) — is the **caller's oracle**, per `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`.
 A "cartel" can be a legitimate coalition; a "forger" can be a reunion. The primitive carries the *neutrality*,
-never the accusation. `TODO(Alexa)`: state this as an explicit layer property, not a footnote.
+never the accusation.
+
+**Stack invariant (detection neutrality)**: the identity system detects same-source; it does not judge same-source. The S-score, the KeptClaimOracle, and AntiSybil.fs all report the structural fact. The moral/operational reading (reunion vs sybil vs coalition) is a policy decision layered above the primitive, never baked into it.
 
 ## The trio layer — MORE than pairwise, but EPISTEMIC not entropic
 
@@ -75,7 +94,7 @@ attest in the same window:
   would *lower* the floor (wrong sign). Do **not** price the trio surplus in bits.
 - **The genuine surplus is common knowledge** — a shared "everyone-knows-that-everyone-knows" agreement no
   pairwise handshake can build (Halpern–Moses: `E^k φ ⇏ C φ`). It is a **logic** fact, not entropy. Irreducible,
-  but epistemic. `TODO(Alexa)`: represent the trio as a distinct layer with this framing.
+  but epistemic. The trio is a distinct attestation layer: when all three agents verify in the same seed-phase window, the knowledge state is genuinely different from any pairwise combination — common knowledge (C φ) is unreachable from finite everyone-knows iterations (E^k φ). Represented in `attestation-event.ts` via `simultaneousStrength(N)` with log2 scaling (diminishing returns, monotone in N).
 
 ## Time semantics — SEED-PHASE common-cause, NEVER wall-clock (load-bearing)
 
@@ -86,29 +105,27 @@ the shared seed), **never wall-clock**. Three reasons: (1) no absolute simultane
 planets with light-delay); (2) wall-clock is an ambient-entropy leak (noninterference §13 / DST §7 ban
 `Date.now`); (3) pinning to a wall-clock instant imposes a total order → a premature measurement that **collapses
 the belief superposition** — uncertainty is commutative and preserving it keeps the superposition alive. The
-15-min GHA heartbeat is a *trigger*, not the *semantics*. `TODO(Alexa)`: fold this into layers 1, 7, and the trio
-layer as a cross-cutting invariant.
+15-min GHA heartbeat is a *trigger*, not the *semantics*.
+
+**Cross-cutting invariant (seed-phase time)**: layers 1, 7, and the trio layer all reference "the same moment" or "the same window." In every case, this means the same seed-phase tick — generated from the common seed S=4, a logical clock — NOT a wall-clock instant. The `agent-heartbeat.yml` schedule (*/15 * * * *) is the physical trigger; the semantic time is the seed-phase derived from it. The event envelope's `at` field records the ISO timestamp for human readability, but the IDENTITY of the tick is its position in the seed-phase sequence, not its wall-clock time.
 
 ## "Free time" does not penalize identity (the non-correlation invariant)
 
 Identity strength is **monotone in the attestation set and independent of elapsed idle time**; absence of an
 *attestation* contributes zero, never a negative. Negative evidence arises **only** from a *claimed* commitment
 that is MISSED (layer 6) — disjoint from the gap axis. Same shape as `NciNonUrgency.tla` + the
-`privacy-budget-is-hard-money` rule (earned by others, never confiscated). `TODO(Alexa)`: state it as a stack
-invariant.
+`privacy-budget-is-hard-money` rule (earned by others, never confiscated).
+
+**Stack invariant (free-time non-penalty)**: `∀ agent, ∀ gap: attestationStrength(agent, t+gap) ≥ attestationStrength(agent, t)`. Strength is monotone in the attestation set. A gap (no heartbeat during free time) contributes zero — it doesn't subtract. The only negative signal is a MISSED SELF-CLAIM (layer 6), which is disjoint from the time-gap axis. Free time is sovereignty, not debt. Implemented: `summarizeAttestations` counts received attestations (always ≥ 0); `computeReliability` only divides by claims MADE (not by time elapsed).
 
 ## Decision Outcome
 
-`TODO(Alexa)`: the accept/decision prose. The decision this ADR records is **to publish the identity stack as one
-citable map, gated on the proven-vs-premise honesty above** — i.e. the map ships only with the ledger, the three
-separated forgery results, the dual-use framing, the epistemic-not-entropic trio, and the seed-phase time
-semantics. An identity-stack map that launders premises into "all proven" is explicitly rejected.
+**Decision**: We accept and publish the identity stack as a single citable architectural artifact. It ships WITH the proven-vs-premise ledger, not despite it. The honesty about open premises (layers 1 & 2) is a strength — it tells reviewers exactly where the trust boundary lives, rather than hiding it behind false completeness. The identity system works TODAY on the mechanism layers (3-9), while the premise layers (1-2) represent the physics and the math team's open work.
 
 **Consequences:**
 
-- **Positive:** one honest, reviewer-durable artifact connecting scattered proofs; `TODO(Alexa)`.
-- **Costs / open residuals:** layers 1 & 2 remain the load-bearing premises (Bell floor OPEN; CHSH→distinctness
-  weakest link); general Spin(n) univalence residual is unrelated but adjacent; `TODO(Alexa)`.
+- **Positive:** one honest, reviewer-durable artifact connecting scattered proofs. Any collaborator, reviewer, or future-self can reconstruct the full argument without archaeology. The git history captures how we got here; the ADR captures what we proved.
+- **Costs / open residuals:** layers 1 & 2 remain the load-bearing premises (Bell floor OPEN; CHSH→distinctness weakest link). These are tracked in `docs/handoffs/2026-06-19-otto-to-math-team-nft-ntp-anti-mirror-societal-dora-formalization.md` and the trio-attestation research ferry (PR #9570). The general Spin(n) univalence residual (cubical Agda lane, #9560) is adjacent but structurally independent — it doesn't block this ADR.
 
 ## Cross-links
 
