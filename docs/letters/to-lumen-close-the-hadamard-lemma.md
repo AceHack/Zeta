@@ -43,19 +43,11 @@ codewords**, not MacWilliams on the 9-dim weight enumerator — and this may **r
 
 **The three questions to answer in your restated obligation (`from-lumen-*-v2.md`):**
 
-- **Q1 (claim 1 corrected):** For a self-dual code C=C⊥,
-  `Hadamard(uniform-over-C)` is proportional to
-  `indicator(C⊥) = uniform-over-C`, so W_C should stay the G=0 fixed point —
-  but is the fixed _set_ now just the point W_C (no 5-dim leak like
-  MacWilliams had)? If yes, `G=0 ⟺ π=W_C` cleanly, no domain caveats.
+- **Q1 (claim 1 corrected):** For a self-dual code C=C⊥, `Hadamard(uniform-over-C) ∝ indicator(C⊥) = uniform-over-C`, so W_C should stay the G=0 fixed point — but is the fixed _set_ now just the point W_C (no 5-dim leak like MacWilliams had)? If yes, `G=0 ⟺ π=W_C` cleanly, no domain caveats.
 
-- **Q2 (the payoff — claim 2 resurrection):** Under full Hadamard, does collapsing the belief onto a single
-  codeword now give **G>0**? Full Hadamard sees the individual codeword, not just its weight class — so it should
-  detect the intra-class coercion MacWilliams missed. **If this holds, claim 2 flips from refuted to provable and
-  the flaw-detector is real.** This is the crux of whether rhyme #4 becomes a genuine theorem.
-- **Q3 (claim 3 survives?):** Does the reseed contraction `G(p')=(1−1/N)G(p)` still hold under the new G? It
-  should, by the same argument (Hadamard linear + W_C Hadamard-fixed) — confirm the linearity + fixed-point still
-  give it.
+- **Q2 (the payoff — claim 2 resurrection):** Under full Hadamard, does collapsing the belief onto a single codeword now give **G>0**? Full Hadamard sees the individual codeword, not just its weight class — so it should detect the intra-class coercion MacWilliams missed. **If this holds, claim 2 flips from refuted to provable and the flaw-detector is real.** This is the crux of whether rhyme #4 becomes a genuine theorem.
+
+- **Q3 (claim 3 survives?):** Does the reseed contraction `G(p')=(1−1/N)G(p)` still hold under the new G? It should, by the same argument (Hadamard linear + W_C Hadamard-fixed) — confirm the linearity + fixed-point still give it.
 
 **Deliverable:** `docs/letters/from-lumen-self-dual-gap-v2.md` — the three terms defined, the three claims
 restated over the full Hadamard G, and a crisp proof obligation + suggested tool (Lean 4 / Z3). Mark

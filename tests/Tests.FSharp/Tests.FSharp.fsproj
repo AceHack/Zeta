@@ -550,6 +550,7 @@
     <Compile Include="Crdt/Lww.Tests.fs" />
     <Compile Include="Crdt/Rga.Tests.fs" />
     <Compile Include="Crdt/DeltaCrdt.Tests.fs" />
+    <Compile Include="Crdt/Psi.Tests.fs" />
 
     <!-- Plugin/ -->
     <Compile Include="Plugin/Harness.Tests.fs" />

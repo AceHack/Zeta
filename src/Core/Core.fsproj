@@ -148,6 +148,7 @@
     <Compile Include="Watermark.fs" />
     <Compile Include="ConsistentHash.fs" />
     <Compile Include="Crdt.fs" />
+    <Compile Include="Psi.fs" />
     <Compile Include="NovelMath.fs" />
     <Compile Include="TropicalPaths.fs" />
     <Compile Include="KleeneClosure.fs" />
