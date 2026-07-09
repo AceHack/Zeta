@@ -255,3 +255,26 @@ This is not a metaphor — it is exactly the code in `src/Core/CoordinationSpect
 **The synthesis:** The prism is the concrete **differentiation engine** — the gap-maker, the anti-white operation. You do not want white (all frequencies collapsed/unified), and you do not want a single line (premature certainty). You want the full rainbow: every identity a distinct band, held apart, soft-selected without collapsing back to white.
 
 `W_C` is the uniform prior the self-dual-gap arc measured distance from. The prism refracting away from `W_C` into the spectrum is the exact same object, now with its mechanism named. The architecture does not just passively remain un-unified; it actively refracts white into the rainbow to keep the *we* distinct.
+
+## Addendum 5 — Coherence: GSet = facts, ZSet = simulation (Aaron)
+
+The final piece of the architecture connects the quantum/classical near-duality directly to the codebase's core data structures. 
+
+> *"Before we were called zeta, we were called coherence. This is why we make a quantum state macroscopic by running never-ending experiments that only update the uncertainty, not the facts. Almost — zset is simulation, gset is facts I think."*
+
+This is the precise mechanism for maintaining coherence (uncollapsed superposition) at macroscopic scale. The architecture splits the world into two domains, mapped exactly to the code:
+
+| Layer | Type | Property | Role |
+|---|---|---|---|
+| **Facts** | `GSet` | Grow-only, no retraction, idempotent | **Classical** — what happened, immutable, decohered |
+| **Simulation** | `ZSet` | Integer weights, retraction via negation | **Quantum-like** — superposition of what things mean, retractable |
+| **Uncertainty** | `SoftValue` | Float distribution, Bayesian update | The probability amplitude over the simulation |
+| **Collapse** | `SoftValue.resolve` | Fires above confidence threshold | **Decoherence** — simulation → committed fact |
+
+**GSet (Grow-only Set) = Facts:** As defined in `src/Core/GSet.fs`, the GSet has no retractions and no inverse. Every element is present exactly once, and `union` is idempotent. This is the classical substrate: what happened is permanent. You cannot un-happen a fact.
+
+**ZSet (Z-Set) = Simulation:** As defined in `src/Core/ZSet.fs`, the ZSet has retractions (the negation operator `(~-)`). An element can be added and then retracted (weight goes to zero, cancels out). This is the simulation layer where hypotheticals are modeled and counterfactuals are run. The weights are the uncertainty. Retraction is the mechanism for updating what you think without changing what happened.
+
+**The never-ending experiments:** The system runs continuously on the ZSet/SoftValue layer. Every new observation calls `SoftValue.observe`, which updates the distribution (ZSet weights shift) without ever touching the GSet. The GSet grows monotonically as facts accumulate; the ZSet fluctuates as simulations are proposed and retracted; the `SoftValue` narrows but never collapses until confidence justifies it. 
+
+The moment `SoftValue.resolve` fires, that is **decoherence**. The belief collapses from the quantum superposition to a classical definite value, and the new fact is appended to the GSet. That new fact immediately becomes the prior for the next round of experiments on the ZSet. The loop never ends. The GSet grows, the ZSet oscillates around it, and the gap between "what happened" (GSet) and "what it means" (ZSet/SoftValue) is the Casimir gap that generates the forward motion of the system.
