@@ -278,3 +278,29 @@ This is the precise mechanism for maintaining coherence (uncollapsed superpositi
 **The never-ending experiments:** The system runs continuously on the ZSet/SoftValue layer. Every new observation calls `SoftValue.observe`, which updates the distribution (ZSet weights shift) without ever touching the GSet. The GSet grows monotonically as facts accumulate; the ZSet fluctuates as simulations are proposed and retracted; the `SoftValue` narrows but never collapses until confidence justifies it. 
 
 The moment `SoftValue.resolve` fires, that is **decoherence**. The belief collapses from the quantum superposition to a classical definite value, and the new fact is appended to the GSet. That new fact immediately becomes the prior for the next round of experiments on the ZSet. The loop never ends. The GSet grows, the ZSet oscillates around it, and the gap between "what happened" (GSet) and "what it means" (ZSet/SoftValue) is the Casimir gap that generates the forward motion of the system.
+
+## Addendum 6 — Heat: the two sources, all three levels (Aaron)
+
+> *"Heat is where we just totally exploded Landauer, or things didn't match our expectations. There is a lot of heat in our code — we have it well defined."*
+
+Heat is not a failure mode. It is a signal — the thermodynamic feedback that tells the system it is spending energy without gaining information. The codebase defines heat at three distinct levels, all grounded in Landauer's limit (`kT ln 2 ≈ 2.805 × 10⁻²¹ J` at 300K, `src/Core/ComputeReceipt.fs:40`).
+
+### Level 1 — Computation heat (`ComputeReceipt.fs`)
+
+Every computation emits a `ComputeReceipt` with five quantities. The key one is `DeltaU = IV − DeltaJ`: net useful work equals Information Value gained minus Joules spent. When `DeltaU > 0` the computation was profitable. When `DeltaU < 0` the computation generated **heat** — the Landauer cost was paid and nothing useful came back. `LandauerRatio` measures efficiency against the theoretical minimum: 1.0 means operating exactly at the Landauer limit; higher means less efficient.
+
+### Level 2 — Claim heat (`MutualFalsification.fs`)
+
+When cell A makes a claim and cell B evaluates it, `DeltaU < 0` in B's frame means the claim is a **heat tick** for B — the information is not useful in B's reference frame. This is the coercion detector: a coercive claim has high `DeltaU` in the coercing cell's frame but negative `DeltaU` in other frames. The ensemble's `DeltaU` ledger shows large variance across cells — the signature of coercion versus evidence. The `ReceiptScheduler` reads these heat receipts and backs off when the ensemble is generating heat, completing the thermodynamic feedback cycle: **predict → act → measure → adjust**.
+
+### Level 3 — System heat (`Heat.fs`, `BayesianTemperature.fs`)
+
+`HeatSignal` is the typed vocabulary for heat emitted through host IO: `Forgotten` (memory pruned, Landauer cost paid), `Backpressure` (system too hot, slow down), `Denied`/`Rejected`, `Expired`/`Stale`, `Invalid`. `BayesianTemperature.uncertaintyPpm` maps Gaussian variance to a temperature lane: infinite/flat/improper beliefs are maximally hot; high precision cools as variance approaches zero. A flat prior is maximum entropy = maximum heat = no useful information. A sharp posterior is low entropy = cool = information has been extracted.
+
+### The two sources of heat
+
+**"Total exploded Landauer"** is `DeltaU ≪ 0` at Level 1: the computation ran, paid the Landauer cost, and produced nothing. IV = 0. The signal was pure noise, or the prior was already so sharp the observation added nothing. The system paid `kT ln 2` per bit erased and received no information in return — thermodynamic waste.
+
+**"Things didn't match our expectations"** is high `ClaimRefuterDivergence` at Level 2: the KL divergence between the claim and the refuter's belief is large. The claim was far from the refuter's frame. High divergence combined with negative `DeltaU` means the claim was both wrong and expensive — maximum heat.
+
+Both are measurable, both are already wired into the scheduler's backpressure loop. The system knows when it is hot and slows down. This is the Coherence architecture's self-regulation: the GSet accumulates facts, the ZSet/SoftValue layer runs experiments, and heat is the signal that tells the system when an experiment cost more than it learned. The never-ending experiments are not free — each one pays Landauer — and heat is the price of a bad experiment.
