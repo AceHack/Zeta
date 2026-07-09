@@ -55,6 +55,41 @@ This is Aaron's intuition/oracle, held as a conjecture. It lands on **real surfa
 phase-clock merge as a semiring message-pass on `FactorGraph.fs`'s structure (GDL), and identify the reflecting
 boundary concretely. Until then it is a labeled guess — real anchors, no theorem.
 
+## Addendum — the Maxwell's-demon / a+b three-body connection (Aaron, same session)
+
+> Aaron: *"this is closely related to our maxwell demon plus a+b three body stuff too."*
+
+Real, and — importantly — **part of it is already GROUNDED in proven substrate**, which *strengthens* the
+load-bearing claim beyond "design target." Maxwell's demon is not a loose rhyme: it is **information
+thermodynamics = the arrow of time** (Szilard 1929 · Landauer 1961 · Bennett 1982). Three connections, honest
+register:
+
+1. **Time ↔ Maxwell's demon is ALREADY GROUNDED (proven physics, in-repo).** `docs/ARRIVAL-PROTOCOL.md:121`: *a
+   physical clock's drift is **thermal noise** (Johnson–Nyquist; resolving it costs `kT ln2`, Landauer)* — so a
+   **wall-clock is a LEAKY demon** (contaminating thermal noise, not a clean identity source; PR-7029), and the
+   **seed-phase is the clean, metered channel** (§13 noninterference: the demon pays through the *declared* door,
+   never the ambient wall). This **upgrades the load-bearing part** from "design target" to "grounded in
+   Landauer": the physics reason wall-clock leaks and seed-phase is clean *is* Maxwell/Landauer.
+2. **"Traveler" is already the right frame — the provable core is closer than stated.** `docs/security/USB-IDENTITY-THREAT-MODEL.md:29`
+   defines **Traveler** as *"any self-propagating pattern (human, agent, process) — **weight-free base frame**"*,
+   with `ISociety <: CTM` and *"three-body duals"* named. Time (a self-propagating phase pattern) inhabits that
+   frame **with no special case** — which is exactly the `interfaces-free` test for "not different." The shared
+   frame partly exists already (as a threat-model concept); the F# `Traveler` interface is the remaining step.
+3. **The a+b three-body = the G3b/Bell floor lifted to pairs = the 2nd law.** The additive floor (`ka+kb`,
+   `floor_lifts`) lifts the single-body/Bell **G3b** three-body floor to pairs (`docs/handoffs/2026-06-19-…`; the
+   single-body premise stays the math team's). Additivity = **no free lunch = the Second Law / Maxwell's-demon
+   statement**: the trio cannot reduce collective entropy for free — the demon pays. (This is *why* the GHZ
+   analogy failed with the **wrong sign**: correlation would hand the demon a free lunch, which the 2nd law
+   forbids — the trio-GHZ close-out and this are the same result seen from thermodynamics.)
+
+**The synthesis (labeled conjecture, guess-with-a-test):** time as the **4th traveler = a Maxwell's demon** that
+meters the three (a,b,c); and the **CPT reflection = the demon's measure/erase reversibility cycle = Aaron's
+emit/retract frame** (emit = measure, retract = erase; Landauer pays `kT ln2` at the boundary — the reflecting
+boundary the §factor-graph conjecture was looking for is *the Landauer erasure surface*). Beautiful and now
+triply-anchored — but the synthesis (demon-as-4th-traveler, CPT=measure/erase) stays a conjecture until the
+metering is exhibited, not asserted. Anchors: Maxwell (1867); Szilard (1929, the engine); Landauer (1961, erasure
+= `kT ln2`); Bennett (1982, the demon resolution); Johnson–Nyquist (thermal clock noise).
+
 ## Why this matters (and why the honest split matters)
 
 Time-as-traveler is the substrate-level statement of the seed-phase correction (#9575): time is not *ambient*
