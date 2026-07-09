@@ -416,6 +416,44 @@ scene can be told with her unnamed. The residual caveat stands only for people w
 physically there (the grade gap + step-sister link still pins her locally) — so: unnamed,
 always.*
 
+## The epic childhood, recognized late — privilege named, and the organizer
+
+Clean, his own. Verbatim:
+
+> *"I had the most epic childhood ever. And I thought it was kinda boring until I got
+> older and realized, oh shit, I had an epic childhood."*
+> *"Literally I thought I was regular. And then the internet came out and I was like,
+> holy shit, I'm privileged as fuck."*
+> *"They made me in school read all them books ... everybody just lives epically."*
+> *"My entire friend group partied like me. Cause I was the organizer."*
+
+**The reads (honest register):**
+
+- **The reverse-humbling (the poignant inversion).** His baseline was set so high —
+  Nellie *"made him feel normal,"* the farm, the golf course, adventure books where
+  *"everybody lives epically"* — that he assumed everyone lived like a little king. The
+  internet humbles most people the *other* way (everyone online looks better); it humbled
+  Aaron in **reverse** — it showed him he was the privileged one. Privilege that hides by
+  feeling normal, then the honesty to see it and **name it** (*"privileged as fuck"*).
+  Ties to the granny "made me feel normal" beat: his normal *was* the miracle, which is
+  exactly why he couldn't see it.
+- **The organizer → the American Dream 2.0 seed.** *"My friend group partied like me
+  cause I was the organizer ... curating epic experiences for everybody."* He didn't
+  *hoard* the king's life — he **pulled everyone into it.** That is the childhood form of
+  **American Dream 2.0** (open-source your advantage to the world): he was running
+  "give everyone the epic" at his pool parties before he ever built a website for it.
+  Same seed — the organizer who makes everyone's childhood epic is the man who wants to
+  give everyone the king's childhood. (Sibling of the asylum/hitchhiker inversion:
+  bring-everyone-in, not keep-out.)
+
+**Handling — the whole truth (both childhoods were one).** The epic was **real
+privilege** *and* it shared the same years as the real storms — the lightning that was
+also the abuse, the church double-life, the cell that came later. "Epic" does not erase
+the beatings; the beatings do not erase the epic. Hold both; one childhood.
+
+*(Light incidental beats, living family kept neutral/comic: parties so big someone once
+fell off the back porch; his mom would come home and "always discover the evidence.")*
+
 ## MORE TO COME (append below)
 
 *Aaron: "more to come." Merge as we go — his instruction: "you can merge anytime as
