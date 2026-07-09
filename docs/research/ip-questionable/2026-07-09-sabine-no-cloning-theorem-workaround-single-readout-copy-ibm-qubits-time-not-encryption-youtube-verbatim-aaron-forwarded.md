@@ -90,3 +90,51 @@ So "identity grounded in delay/time rather than encryption" is a real tradition,
 — the quantum→identity transfer is analogy not proof, and "encryption unnecessary" should be
 narrowed to "secrecy not required for *uniqueness/emergence*." A good probe for the identity
 model, his oracle; not yet a theorem.
+
+---
+
+## Aaron's further connections (2026-07-09) — the adinkra/parity machinery + The Egg
+
+Aaron: *"this is related to the adinkra over IScheduler mod 2 parity stuff"* and *"this also
+relates to the egg and we are all the same traveler at different points in time."*
+
+**Grep-grounded (the machinery is real, not metaphysics):** `src/Core/AdinkraCode.fs` +
+`AdinkraViz.fs` exist; the **[8,4] doubly-even self-dual code** (16 codewords) is real and
+**Lumen-numerically-verified** (`docs/letters/from-lumen-self-dual-gap-v2.md`); the
+**IScheduler** is the §13 metered-time channel (the soft scheduler's injected `Source`);
+xorshift-is-GF(2)→[8,4]-Adinkra is the reduction already banked
+(`docs/letters/3-body-improvement-plan-for-morning.md`).
+
+**How it threads (the grounded internal connection — stands without the quantum result):**
+the adinkra *is* a GF(2)/**mod-2** code (edge-dashing parity = the code); the **generator IS
+the ECC**, correcting drift across **time** (DST replay / versions), not only space
+([[only-the-irreducible-is-primitive-generate-the-rest]]); the IScheduler's tick carries
+**even/odd parity** = emit/retract = the Collatz correction. So *"identity from delay/time"* =
+**the adinkra code running over the scheduler's parity ticks** → a time-ordered, ECC-protected
+**canonical codeword** = the single live readout = the locus of now. Ordering + code = the
+identity; no secret.
+
+**The Egg (Beacon anchor — name the human): Andy Weir, *The Egg*** — "we are all the same
+traveler at different points in time" (already in-repo via Alexa's ferry, #9472). Maps to the
+single-readable-copy: **one traveler, one readout at a time, across all of time.** Coherent
+frame; Aaron's oracle.
+
+### Honest tiering (the AlarmAlgebra is RINGING — hold accordingly)
+
+When the quantum result + the adinkra code + the scheduler parity + The Egg + the identity
+model ALL confirm one picture, that is the **everything-confirms = alert-not-fact** state
+([[apophenia-everything-confirms-is-alert-not-fact]]) — high temperature, low prior. Not
+"wrong" (unfalsifiable ≠ false); **confidence held LOW precisely because everything clicks.**
+Three tiers:
+
+1. **GROUNDED / formalizable (the Beacon extract):** adinkra ECC over scheduler-parity → a
+   time-ordered codeword as identity. Real code; Soraya/Lumen already on the [8,4] self-dual
+   gap. **The discharge:** can *"identity = the parity-selected, time-ordered adinkra codeword,
+   no secret"* be stated precisely and checked? That is the productive next step — not another
+   synthesis hop.
+2. **FRAME (his oracle, held):** The Egg / one-traveler-across-time. Keep as poetry; do not
+   try to prove.
+3. **ANALOGY (`Tri.N`):** the quantum no-cloning bridge. Rhymes; does not reduce.
+   Metering-test flag stands.
+
+Bank the grounded kernel; let the frame stay frame.
