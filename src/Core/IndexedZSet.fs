@@ -6,31 +6,46 @@ open System.Collections.Immutable
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 
-/// A per-key group inside an `IndexedZSet`. Immutable struct, span-friendly.
-[<Struct; IsReadOnly; NoComparison>]
-type KeyGroup<'K, 'V when 'K : comparison and 'V : comparison> =
-    val Key: 'K
-    val Values: ZSet<'V>
-    new(key, values) = { Key = key; Values = values }
-
-
-[<Struct; NoComparison; NoEquality>]
-type KeyGroupComparer<'K, 'V when 'K : comparison and 'V : comparison> =
-    interface IComparer<KeyGroup<'K, 'V>> with
-        member _.Compare(a: KeyGroup<'K, 'V>, b: KeyGroup<'K, 'V>) =
-            KeyComparerCache<'K>.Instance.Compare(a.Key, b.Key)
-
-
-/// `IndexedZSet<'K,'V>` is conceptually `Z[K × V]` but stored as a sorted run
-/// of `KeyGroup<'K,'V>` giving O(log k) key lookup for joins and span-friendly
-/// merges.
 [<Struct; IsReadOnly; CustomEquality; NoComparison>]
 type IndexedZSet<'K, 'V when 'K : comparison and 'V : comparison> =
     val internal groups: ImmutableArray<KeyGroup<'K, 'V>>
+    val internal trie: PatriciaTree<'K, 'V>
 
     /// Construct from an already-sorted-by-key run of per-key groups. Callers
     /// are responsible for the invariant; prefer `IndexedZSet.indexWith`.
-    new(groups: ImmutableArray<KeyGroup<'K, 'V>>) = { groups = groups }
+    new(groups: ImmutableArray<KeyGroup<'K, 'V>>) =
+        let mutable (trie: PatriciaTree<'K, 'V>) = Nil
+        let mutable isInt = true
+        let mutable i = 0
+        if not groups.IsDefaultOrEmpty then
+            match IndexedZSet<'K, 'V>.TryGetUInt64Key groups.[0].Key with
+            | Some _ ->
+                while isInt && i < groups.Length do
+                    match IndexedZSet<'K, 'V>.TryGetUInt64Key groups.[i].Key with
+                    | Some h ->
+                        trie <- PatriciaInt.insert h groups.[i] trie
+                        i <- i + 1
+                    | None ->
+                        isInt <- false
+                        trie <- Nil
+            | None -> ()
+        { groups = groups; trie = trie }
+
+    internal new(groups: ImmutableArray<KeyGroup<'K, 'V>>, trie: PatriciaTree<'K, 'V>) =
+        { groups = groups; trie = trie }
+
+    static member internal TryGetUInt64Key(key: 'K) : uint64 option =
+        match box key with
+        | :? int as i -> Some (uint64 i)
+        | :? int64 as l -> Some (uint64 l)
+        | :? uint64 as ul -> Some ul
+        | :? uint32 as u -> Some (uint64 u)
+        | :? int16 as s -> Some (uint64 s)
+        | :? uint16 as us -> Some (uint64 us)
+        | :? byte as b -> Some (uint64 b)
+        | :? sbyte as sb -> Some (uint64 sb)
+        | :? System.UInt128 as u128 -> Some (uint64 u128)
+        | _ -> None
 
     static member Empty : IndexedZSet<'K, 'V> =
         IndexedZSet(ImmutableArray<KeyGroup<'K, 'V>>.Empty)
@@ -52,43 +67,67 @@ type IndexedZSet<'K, 'V when 'K : comparison and 'V : comparison> =
         if a.IsEmpty then b
         elif b.IsEmpty then a
         else
-            let ga = a.AsSpan()
-            let gb = b.AsSpan()
-            let cap = ga.Length + gb.Length
-            let rented = Pool.Rent<KeyGroup<'K, 'V>> cap
-            try
-                let cmp = KeyComparerCache<'K>.Instance
-                let mutable i = 0
-                let mutable j = 0
-                let mutable k = 0
-                while i < ga.Length && j < gb.Length do
-                    let c = cmp.Compare(ga.[i].Key, gb.[j].Key)
-                    if c < 0 then rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
-                    elif c > 0 then rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
-                    else
-                        let merged = ZSet.add ga.[i].Values gb.[j].Values
-                        if not merged.IsEmpty then
-                            rented.[k] <- KeyGroup(ga.[i].Key, merged)
-                            k <- k + 1
-                        i <- i + 1; j <- j + 1
-                while i < ga.Length do rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
-                while j < gb.Length do rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
-                if k = 0 then IndexedZSet<'K, 'V>.Empty
-                else IndexedZSet(Pool.FreezeSlice(rented, k))
-            finally
-                Pool.Return rented
+            match a.trie, b.trie with
+            | Nil, _
+            | _, Nil ->
+                let ga = a.AsSpan()
+                let gb = b.AsSpan()
+                let cap = ga.Length + gb.Length
+                let rented = Pool.Rent<KeyGroup<'K, 'V>> cap
+                try
+                    let cmp = KeyComparerCache<'K>.Instance
+                    let mutable i = 0
+                    let mutable j = 0
+                    let mutable k = 0
+                    while i < ga.Length && j < gb.Length do
+                        let c = cmp.Compare(ga.[i].Key, gb.[j].Key)
+                        if c < 0 then rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
+                        elif c > 0 then rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
+                        else
+                            let merged = ZSet.add ga.[i].Values gb.[j].Values
+                            if not merged.IsEmpty then
+                                rented.[k] <- KeyGroup(ga.[i].Key, merged)
+                                k <- k + 1
+                            i <- i + 1; j <- j + 1
+                    while i < ga.Length do rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
+                    while j < gb.Length do rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
+                    if k = 0 then IndexedZSet<'K, 'V>.Empty
+                    else IndexedZSet(Pool.FreezeSlice(rented, k))
+                finally
+                    Pool.Return rented
+            | at, bt ->
+                let resolve (g1: KeyGroup<'K, 'V>) (g2: KeyGroup<'K, 'V>) =
+                    KeyGroup(g1.Key, ZSet.add g1.Values g2.Values)
+                let trie' = PatriciaInt.merge resolve at bt
+                let list = PatriciaInt.toList trie' |> List.filter (fun g -> not g.Values.IsEmpty)
+                if list.IsEmpty then IndexedZSet<'K, 'V>.Empty
+                else
+                    let arr = ImmutableArray.CreateRange(list)
+                    IndexedZSet(arr, trie')
 
     /// `-a` — the abelian-group inverse (negate every key's value-`ZSet`), so
     /// `a + (-a) = Zero`. Exact-size allocation, no workspace. C#'s
     /// `IUnaryNegationOperators` twin.
     static member (~-) (a: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> =
-        let span = a.AsSpan()
-        if span.IsEmpty then a
-        else
-            let arr = Pool.AllocateExact<KeyGroup<'K, 'V>> span.Length
-            for i in 0 .. span.Length - 1 do
-                arr.[i] <- KeyGroup(span.[i].Key, ZSet.neg span.[i].Values)
-            IndexedZSet(Pool.Freeze arr)
+        match a.trie with
+        | Nil ->
+            let span = a.AsSpan()
+            if span.IsEmpty then a
+            else
+                let arr = Pool.AllocateExact<KeyGroup<'K, 'V>> span.Length
+                for i in 0 .. span.Length - 1 do
+                    arr.[i] <- KeyGroup(span.[i].Key, ZSet.neg span.[i].Values)
+                IndexedZSet(Pool.Freeze arr)
+        | trie ->
+            let rec negTrie t =
+                match t with
+                | Nil -> Nil
+                | Tip(h, g) -> Tip(h, KeyGroup(g.Key, ZSet.neg g.Values))
+                | Bin(p, m, l, r) -> Bin(p, m, negTrie l, negTrie r)
+            let trie' = negTrie trie
+            let list = PatriciaInt.toList trie'
+            let arr = ImmutableArray.CreateRange(list)
+            IndexedZSet(arr, trie')
 
     /// `a - b = a + (-b)`. The generic-math subtraction rung (C#'s
     /// `ISubtractionOperators` twin); retraction expressed directly.
@@ -106,21 +145,30 @@ type IndexedZSet<'K, 'V when 'K : comparison and 'V : comparison> =
 
     member this.Item
         with get (key: 'K) : ZSet<'V> =
-            let span = this.AsSpan()
-            if span.IsEmpty then ZSet<'V>.Empty
-            else
-                let cmp = KeyComparerCache<'K>.Instance
-                let mutable lo = 0
-                let mutable hi = span.Length - 1
-                let mutable result = ZSet<'V>.Empty
-                let mutable found = false
-                while not found && lo <= hi do
-                    let mid = lo + ((hi - lo) >>> 1)
-                    let c = cmp.Compare(span.[mid].Key, key)
-                    if c = 0 then result <- span.[mid].Values; found <- true
-                    elif c < 0 then lo <- mid + 1
-                    else hi <- mid - 1
-                result
+            match this.trie with
+            | Nil ->
+                let span = this.AsSpan()
+                if span.IsEmpty then ZSet<'V>.Empty
+                else
+                    let cmp = KeyComparerCache<'K>.Instance
+                    let mutable lo = 0
+                    let mutable hi = span.Length - 1
+                    let mutable result = ZSet<'V>.Empty
+                    let mutable found = false
+                    while not found && lo <= hi do
+                        let mid = lo + ((hi - lo) >>> 1)
+                        let c = cmp.Compare(span.[mid].Key, key)
+                        if c = 0 then result <- span.[mid].Values; found <- true
+                        elif c < 0 then lo <- mid + 1
+                        else hi <- mid - 1
+                    result
+            | trie ->
+                match IndexedZSet<'K, 'V>.TryGetUInt64Key key with
+                | Some h ->
+                    match PatriciaInt.tryFind h trie with
+                    | Some g -> g.Values
+                    | None -> ZSet<'V>.Empty
+                | None -> ZSet<'V>.Empty
 
     member this.GetEnumerator() =
         (if this.groups.IsDefault then ImmutableArray<KeyGroup<'K, 'V>>.Empty else this.groups).GetEnumerator()

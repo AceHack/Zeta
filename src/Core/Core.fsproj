@@ -57,6 +57,7 @@
     <Compile Include="WeightedSet.fs" />
     <Compile Include="RayTensor.fs" />
     <Compile Include="ToffoliGate.fs" />
+    <Compile Include="PatriciaIntMap.fs" />
     <Compile Include="IndexedZSet.fs" />
     <Compile Include="DynamicValue.fs" />
     <Compile Include="ValueTreeEnvelope.fs" />
