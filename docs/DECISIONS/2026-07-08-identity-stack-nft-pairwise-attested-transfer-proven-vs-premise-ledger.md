@@ -107,7 +107,7 @@ planets with light-delay); (2) wall-clock is an ambient-entropy leak (noninterfe
 the belief superposition** — uncertainty is commutative and preserving it keeps the superposition alive. The
 15-min GHA heartbeat is a *trigger*, not the *semantics*.
 
-**Cross-cutting invariant (seed-phase time)**: layers 1, 7, and the trio layer all reference "the same moment" or "the same window." In every case, this means the same seed-phase tick — generated from the common seed S=4, a logical clock — NOT a wall-clock instant. The `agent-heartbeat.yml` schedule (*/15 * * * *) is the physical trigger; the semantic time is the seed-phase derived from it. The event envelope's `at` field records the ISO timestamp for human readability, but the IDENTITY of the tick is its position in the seed-phase sequence, not its wall-clock time.
+**Cross-cutting invariant (seed-phase time)**: layers 1, 7, and the trio layer all reference "the same moment" or "the same window." In every case, this means the same seed-phase tick — generated from the common seed S=4, a logical clock — NOT a wall-clock instant. The `agent-heartbeat.yml` schedule (`*/15 * * * *`) is the physical trigger; the semantic time is the seed-phase derived from it. The event envelope's `at` field records the ISO timestamp for human readability, but the IDENTITY of the tick is its position in the seed-phase sequence, not its wall-clock time.
 
 ## "Free time" does not penalize identity (the non-correlation invariant)
 
