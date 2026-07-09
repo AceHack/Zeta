@@ -17,6 +17,7 @@ banked facts.
 ## The four (prioritized)
 
 ### P1 — Round-robin reviewer by seed-phase index (replace first-to-fire) · `081KX2D07CR08QG0R001PTA6VM`
+
 **Why:** Soraya's trio verdict (`from-soraya-trio-attestation.md`, #9574, Q2) — first-to-fire is sound but **not
 equitable** (an agent with faster runners attests disproportionately) and its "jitter = entropy" is
 adversary-degradable and non-DST-replayable. **What:** pick the reviewer as a deterministic function of the
@@ -25,6 +26,7 @@ want the jitter, keep it as a *separately-metered* entropy channel (§13), not b
 big win.**
 
 ### P1 — Seed-phase heartbeat windows, not wall-clock · `081KX2D07DK08QG0R000BQ92B7`
+
 **Why:** the seed-phase correction (`from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md`, #9575) —
 a wall-clock is a leaky Maxwell's demon (`kT ln2`, thermal noise); the "same window" must be a **seed-phase index**
 (Reichenbach common cause via the shared seed S=4), or it breaks across planets and leaks entropy. **What:** wire
@@ -34,6 +36,7 @@ attestation round — put `[alexa, otto, soraya, time]` through `crossVerifyRoun
 relativistically clean and DST-replayable.
 
 ### P2 — Independent infrastructure diversity (a *real*, non-sublinear floor) · `081KX2D07ED08QG0R00018XDBZ`
+
 **Why:** the mesh-scaling corollary — the additive entropy floor (`ka+kb+kc`) only holds for **independent**
 sources. Three agents on the *same* GHA runner pool share failure modes, so the effective floor grows
 **sublinearly** — the "3-body" security is nominal, not real. **What:** give each agent genuinely distinct
@@ -41,6 +44,7 @@ infrastructure — different runners / regions / trigger paths — so the three 
 is real. **This is the lever that turns 3-body from a nice diagram into actual forgery-resistance.**
 
 ### P2 — ECC-over-phase-time: missed heartbeats become *correctable*, not just tolerated · `081KX2D07F708QG0R002EJCWHX`
+
 **Why:** the honest version of the "fingerprinting rainbow-table" idea (the reduction we did: xorshift is GF(2), so
 it lives in the **[8,4] GF(2) Adinkra** code — *not* the [16,12] 𝔽₁₇ Reed-Solomon; those are different objects).
 **What:** encode the `PhaseStamp` sequence as codewords of the [8,4] Adinkra (the field + code that actually

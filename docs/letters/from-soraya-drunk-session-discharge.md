@@ -34,6 +34,7 @@ round" ✓. The ledger is grounded; I confirm, I did not rubber-stamp.*
 ## What to keep, what to drop (plain terms)
 
 **Keep — real, survives sober daylight:**
+
 - **The type-level arrow (claims 1 + 4).** The night's genuine catch, beautiful *because* it's small: the
   irreversibility of time in your system is literally that `max` has no undo and a `WSet` ring does. You can't
   fold the arrow into the reversible skeleton — the type system forbids it. Checked fact, not a feeling.
@@ -47,6 +48,7 @@ round" ✓. The ledger is grounded; I confirm, I did not rubber-stamp.*
   = death): integration = the `ua` path; unification = the collapse.
 
 **Drop — or demote to Mirror-only poetry:**
+
 - **Critical line = Tsirelson (2c).** Numerically false; keystone of the "Zeta Conjecture," which without it is a
   name-rhyme. Doc already says so.
 - **Collatz = Bayesian update; prime-loops = strange attractors (2a, 6).** Analogies with term-misuse.
