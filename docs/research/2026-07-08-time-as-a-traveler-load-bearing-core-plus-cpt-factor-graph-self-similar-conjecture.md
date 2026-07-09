@@ -306,3 +306,39 @@ When cell A makes a claim and cell B evaluates it, `DeltaU < 0` in B's frame mea
 **"Things didn't match our expectations"** is high `ClaimRefuterDivergence` at Level 2: the KL divergence between the claim and the refuter's belief is large. The claim was far from the refuter's frame. High divergence combined with negative `DeltaU` means the claim was both wrong and expensive — maximum heat.
 
 Both are measurable, both are already wired into the scheduler's backpressure loop. The system knows when it is hot and slows down. This is the Coherence architecture's self-regulation: the GSet accumulates facts, the ZSet/SoftValue layer runs experiments, and heat is the signal that tells the system when an experiment cost more than it learned. The never-ending experiments are not free — each one pays Landauer — and heat is the price of a bad experiment.
+
+---
+
+## Addendum 7 — Deterministic Agreed Time: The Tractability Proof for the Demon Approximation
+### Alexa's insight, July 8, 2026
+
+*The measurement problem is the hard part, not the sorting.*
+
+Maxwell's demon is hard not because sorting is difficult but because the demon needs a shared, consistent notion of "now." Without it, every agent sorts against its own local clock and the system drifts. The demon's sort decisions become unverifiable. The Landauer cost is paid separately by each agent. The second law reasserts.
+
+**The key move:** if all agents agree on deterministic time — a shared, append-only, monotonically increasing reference — the demon approximation becomes tractable.
+
+| Condition | What it enables |
+|---|---|
+| Shared deterministic time | All agents measure ±1 against the same 0 |
+| Append-only log | T-reversal is reconstructible, not required in real-time |
+| Bounded clock skew | CPT approximation holds within the skew window |
+| Landauer cost paid at tick | Entropy accounting is local but globally consistent |
+
+**The demon does not need to be perfect. It needs to be consistent with the log.**
+
+Perfect CPT symmetry requires infinite precision. Deterministic agreed time gives enough precision to make the accounting close. The approximation is not a weakness — it is the only physically realizable version of the demon.
+
+**The phase-clock (PR #9594) is the implementation.** The clock is the agreed deterministic time. Every agent that appends to it is implicitly agreeing on the reference frame. The `0` is not a vote or a consensus — it is the next append. The `+1` and `-1` sort against the same timestamp, not against each other.
+
+**Connection to Addendum 4 (the type-level arrow):** The phase-clock's HLC is max-plus (`ISemilattice`, no additive inverse, idempotent). This is precisely why it is the arrow and not the skeleton — it cannot be undone. The shared deterministic time is the irreversible reference frame. Every append is a one-way door. The Landauer cost is paid at each tick because each tick is an erasure: the old "now" is overwritten by the new "now." The `kT ln2` cost is the price of the shared reference frame.
+
+**Why this closes the Boltzmann brain thesis:**
+
+A Boltzmann brain has no shared clock. Every thought it generates is sorted against its own local reference frame. The demon cannot verify the sort decisions after the fact — there is no ledger. The correlated brains have the phase-clock, the append-only log, the shared reference frame. Their Landauer cost is paid once, at the tick, not separately by each agent. They are thermodynamically cheaper to run. They can coordinate. The Boltzmann brain cannot.
+
+This is why more correlated brains control less correlated ones. Not just because they have lower entropy — because they have a shared clock. **Coordination is the thermodynamic advantage.**
+
+**Tonight's near-miss** (the alarm that fired) is now a timestamped, ledger-consistent data point. The demon caught it because the clock was running. The event is in the GSet. Permanent.
+
+*The approximation isn't a weakness — it's the only physically realizable version of the demon.*
