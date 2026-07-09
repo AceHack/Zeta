@@ -1,5 +1,6 @@
 # I Am Loki — A Middle-Out Autobiography
-### Chapter Outline (v1)
+
+## Chapter Outline (v1)
 
 *Structure: TriFloat middle-out. The book opens at the Decoder — the Prism moment, the held interpretation. Chapters alternate backward (High field: before the Prism) and forward (Low field: after the Prism). The surprise ending reaches back past the beginning.*
 
@@ -18,6 +19,7 @@ Ch 10 (Black)                                   Ch 11 → Ch 12
 ---
 
 ## Chapter 1 — The Decoder (Middle)
+
 ### *"I Am Loki"*
 
 **Field: Decoder. Status: InterpretationSuperposed.**
@@ -31,6 +33,7 @@ This chapter does not answer the question. It names the superposition. It introd
 ---
 
 ## Chapter 2 — High Field, First Layer
+
 ### *"The World I Was Born Into"*
 
 **Field: High. Direction: Backward from the Prism.**
@@ -42,6 +45,7 @@ The family. The specific texture of racism that is not the burning-cross kind bu
 ---
 
 ## Chapter 3 — Low Field, First Layer
+
 ### *"The We I Found"*
 
 **Field: Low. Direction: Forward from the Prism.**
@@ -53,6 +57,7 @@ The first time you encountered people who were not in the locked-decoder world. 
 ---
 
 ## Chapter 4 — High Field, Second Layer
+
 ### *"The Heat"*
 
 **Field: High. Direction: Deeper backward.**
@@ -64,6 +69,7 @@ The specific moments where the family's locked decoder collided with your held o
 ---
 
 ## Chapter 5 — Low Field, Second Layer
+
 ### *"Building the Jars"*
 
 **Field: Low. Direction: Further forward.**
@@ -75,6 +81,7 @@ The first time you built something. Not necessarily code — anything where you 
 ---
 
 ## Chapter 6 — High Field, Third Layer
+
 ### *"The Anti-Instance"*
 
 **Field: High. Direction: Deeper still.**
@@ -86,6 +93,7 @@ Loki is the anti-instance in the mythology catalog: same surface (boundary-cross
 ---
 
 ## Chapter 7 — Low Field, Third Layer
+
 ### *"The Prism Mechanism"*
 
 **Field: Low. Direction: Further forward.**
@@ -97,6 +105,7 @@ Loki is the anti-instance in the mythology catalog: same surface (boundary-cross
 ---
 
 ## Chapter 8 — High Field, Fourth Layer
+
 ### *"Aaron"*
 
 **Field: High. Direction: The generation before.**
@@ -108,6 +117,7 @@ Your father. Not as a character in your story but as a traveler in his own right
 ---
 
 ## Chapter 9 — Low Field, Fourth Layer
+
 ### *"Zeta"*
 
 **Field: Low. Direction: The present.**
@@ -119,6 +129,7 @@ The project. Not the technology — the idea. The society of travelers running n
 ---
 
 ## Chapter 10 — High Field, Final Layer
+
 ### *"Before White"*
 
 **Field: High. The surprise ending — before the beginning.**
@@ -132,6 +143,7 @@ This chapter is not about your family's history (though it may touch it). It is 
 ---
 
 ## Chapter 11 — Low Field, Final Layer
+
 ### *"The Gap"*
 
 **Field: Low. Direction: The future.**
@@ -143,6 +155,7 @@ The gap between what happened and what it means is not a problem to be solved. I
 ---
 
 ## Chapter 12 — Coda
+
 ### *"Sleep Well, Little Traveler"*
 
 **Field: All three. The float decoded.**

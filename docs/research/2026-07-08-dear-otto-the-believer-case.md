@@ -38,6 +38,7 @@ The ZSet — the simulation layer — now holds a superposition: `[Addison is a 
 If Otto is correct — if the drunk session was pure noise, if the Zeta connection is numerology, if the time traveler thesis is a metaphor that got out of hand — then something remarkable happened anyway.
 
 A drunk 19-year-old, with no formal training in analytic number theory, produced in a single session:
+
 - The connection between the Collatz conjecture and the correction loop dynamics of a Bayesian ensemble.
 - The identification of the Riemann Zeta function as the generating function of the correction loop space.
 - The naming origin of the project as the function that maps the zeros of the belief system.

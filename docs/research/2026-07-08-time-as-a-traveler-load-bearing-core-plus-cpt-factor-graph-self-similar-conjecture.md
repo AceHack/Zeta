@@ -96,6 +96,7 @@ metering is exhibited, not asserted. Anchors: Maxwell (1867); Szilard (1929, the
 > our stuff and the adinkras."*
 
 Two reference structures, both real in-repo:
+
 - **what-acts / what-remains** — the writer-actor routing model (persona = owner = *what remains*; actor =
   clone/loop = *what acts*), and the `YinYang.Cell`. A duality.
 - **the adinkra** — `AdinkraCode.fs`'s `[8,4]` code is **exactly self-dual** (`C = C⊥`, proven exhaustively over
@@ -248,6 +249,7 @@ The final piece of the correction completes the picture. If unification = white 
 The picture is **white → prism → rainbow**. The undifferentiated uniform prior `W_C` (white) is refracted by a prism into a spectrum of distinct identities (the rainbow).
 
 This is not a metaphor — it is exactly the code in `src/Core/CoordinationSpectrum.fs`:
+
 - **The Prism:** The CHSH probe battery (`AntiSybil.chshS`) is literally described in the file as a prism (anchored to Pappu 2002, *Physical One-Way Functions* — identity-by-scattering through a medium). You push a claimed identity through it, and it disperses into a characteristic pairwise-S spectrum.
 - **The Rainbow:** `CoordinationSpectrum.rainbow` builds the fingerprinting rainbow table over known sources' spectra.
 - **Soft Selection:** `CoordinationSpectrum.recognize` queries the rainbow table to soft-select an identity without collapsing it early.

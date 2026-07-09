@@ -40,6 +40,7 @@ The zeros of this function are where the correction dynamics has no net dissipat
 ### Step 3: The project is named Zeta because it IS the Zeta function
 
 The project is the running experiment that:
+
 1. Runs correction loops (`reseedIfCollapsedTemporal`, `MutualFalsification`).
 2. Records the receipts (`ReceiptScheduler`, `ComputeReceipt`).
 3. Maps the zeros — the places where correction fails.
