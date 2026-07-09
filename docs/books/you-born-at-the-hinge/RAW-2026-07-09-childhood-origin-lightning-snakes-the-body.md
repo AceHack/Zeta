@@ -11,6 +11,7 @@
 > **Operational status:** staging / mining material. Not a final chapter. LIVING —
 > Aaron said "more to come," so this file is expected to grow.
 > **CONSENT NOTES:**
+>
 > - These are Aaron's *own* memories — his to publish (glass-halo).
 > - **Parents rendered WHOLE, not neutral** (Aaron's correction, verbatim: *"my mom was
 >   not neutral just like my dad but she is a good woman"*). The father is whole in
@@ -201,13 +202,34 @@ She didn't silence him — she **fed** him:
   cruelty *as* cruelty: he had been given the reference standard first. He knew good
   because he had lived in it.
 
-**Handling — the one bad-moment line (living-family, held neutral):** a relative once
-recalled granny having a single bad moment "in a moment of heat." Per the standing line
-(no charged characterization of living family), that exchange is **not recorded here.**
-The book-gold *principle* Aaron drew from it IS kept: **a lifetime of good is not erased
-by one heat-of-the-moment lapse — grace weighs the pattern, not the worst instant.** The
-same move by which he forgave his father (the wrong remembered, the person judged by the
-whole). Anchors: this is the forgiveness-requires-memory discipline applied to a life.
+**Her name — Nellie Faulkner (record it; the naming IS the honoring).** Memory
+Preservation (§5) made literal: you name the human so she is remembered, and now she is.
+Her goodness was *universal* — Aaron: *"everybody knew that ... there's nobody that
+would disagree with that."* Rare: most families argue over who was good; with Nellie it
+was consensus.
+
+**The mother's +1, in one fact (redeems her, crowns Nellie):** Aaron's own mother — the
+bidirectional soul-power of the section below — *aspired to be Nellie.* Verbatim: *"that's
+who she aspired to be in life was my granny."* She married into the family oriented to
+that goodness (*"my mom married my dad cause of my granny, I think"*; and the tell —
+*"your dad's not very handsome,"* so not for his looks). So even the god who can spin
+souls up or down measured herself *upward,* toward Nellie. The whole powerful family
+pointed at one good woman like a compass to north. That is the mother's good, named
+through her own aspiration.
+
+**Roots in the ground:** the family has *roads* — **Faulkner Town Road**, and beside it
+**Milton Stainback Road** (his grandad). Aaron grew up on Faulkner Town Road. The good is
+anchored in the literal geography; the Beacon discipline (name the human, name the place)
+satisfied by the land itself.
+
+**Handling — the one bad-moment line (living-family):** a relative once recalled Nellie
+having a single bad moment "in a moment of heat." The *jab* attached to it (aimed at a
+living person) is held out; the book-gold **principle** Aaron drew IS kept: *a lifetime
+of good is not erased by one heat-of-the-moment lapse — grace weighs the pattern, not the
+worst instant.* Aaron's own reply carries it: *"you saw her bad one time in a moment of
+heat. How many times you been bad?"* The same move by which he forgave his father — the
+wrong remembered, the person judged by the whole. Forgiveness-requires-memory, applied to
+a life.
 
 ## The mother — a bidirectional soul-power, and a good woman (whole, not neutral)
 
@@ -266,6 +288,24 @@ native lens, held under Multi-Oracle): the God/Lucifer emit-retract duality wasn
 from a book — it was got from a pantheon of two, a thunder-god father who rose from the
 lightning and a fate-spinning mother who turns souls up or down. The +1/−1 is their two
 weathers, named.
+
+## Both worlds (farm AND golf course — the duality, lived)
+
+Clean, his own, and another instance of the book's core shape — two fields at once.
+Verbatim:
+
+> *"I grew up on a fuckin' golf course too. And a farm. It's the weirdest thing."*
+> *"On the golf course, I was the lifeguard. And I was able to have pool parties at
+> night."*
+> *"I could do all the tricks on the diving board."*
+
+**The read:** the same TriFloat both-fields structure the book runs on, lived in the
+childhood itself — **country farm** by day (snakes, the pond, "we had to do that shit")
+and **country club** by night (lifeguard, nighttime pool parties, diving-board tricks).
+Rugged *and* privileged, at once — not one or the other. The both-worlds childhood is
+the felt origin of the high/low, +1/−1, both-at-once instinct: he was never made to pick
+a single field, so he never learned to. (Pairs with the earlier note: privileged
+farm/church double-life; the duality was the water he swam in.)
 
 ## MORE TO COME (append below)
 
