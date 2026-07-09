@@ -18,9 +18,9 @@ It is a **theorem** about functoriality. The univalence axiom $ua$ is a functor 
 
 **Q4 (The Make-or-Break): Is the general case NEW, or a corollary?**
 **It is a corollary.**
-By the Cartan-Dieudonné theorem, every rotor in $Spin(n)$ can be decomposed into a finite product of reflections (or order-2 half-turns). We have already proven the univalence identity for the concrete order-2 half-turn. Because $ua$ respects composition (functoriality), the univalence identity for any general rotor is strictly a composition of the identities for its generators. 
+By the Cartan-Dieudonné theorem, every rotor in $Spin(n)$ can be decomposed into a finite product of reflections (or order-2 half-turns). We have already proven the univalence identity for the concrete order-2 half-turn. Because $ua$ respects composition (functoriality), the univalence identity for any general rotor is strictly a composition of the identities for its generators.
 
-There is no new $\pi_1(Spin(n))$ winding obstruction that breaks this. The belt-trick loop (the non-contractible loop in $SO(3)$ that unwinds in $Spin(3)$) is fully captured by the algebraic composition of the half-turns. 
+There is no new $\pi_1(Spin(n))$ winding obstruction that breaks this. The belt-trick loop (the non-contractible loop in $SO(3)$ that unwinds in $Spin(3)$) is fully captured by the algebraic composition of the half-turns.
 
 **Verdict:** The concrete proof already covers the family up to composition. We do not need a new continuous theorem; the discrete generators carry the full univalent content. The residual closes cleanly.
 
@@ -30,6 +30,7 @@ There is no new $\pi_1(Spin(n))$ winding obstruction that breaks this. The belt-
 
 **The Obligation:**
 Prove the Cartan-Dieudonné corollary in Cubical Agda.
+
 1. Assume the univalence identity holds for a base equivalence $f$ (the concrete rotor).
 2. Prove that if the identity holds for $f$ and $g$, it holds for their composition $g \circ f$.
 3. Conclude that any finite product of concrete rotors satisfies the univalence identity.

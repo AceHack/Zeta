@@ -13,13 +13,13 @@ In Clifford geometric algebra $Cl(n,0)$, a rotor $R$ is an element of the even s
 
 A continuous rotor deformation is a one-parameter subgroup:
 $$R(t) = \exp(t B)$$
-where $B$ is a bivector and $t \in [0,1]$. 
+where $B$ is a bivector and $t \in [0,1]$.
 
 This path in $Spin(n)$ induces a continuous deformation of the vector space (or any multivector) via the sandwich product:
 $$v \mapsto R(t) v \tilde{R}(t)$$
 
 **The HoTT / Univalence Translation:**
-In Homotopy Type Theory, a path $p : A \equiv B$ between types is equivalent to an equivalence $A \simeq B$ via univalence. 
+In Homotopy Type Theory, a path $p : A \equiv B$ between types is equivalent to an equivalence $A \simeq B$ via univalence.
 If we view the vector space $V$ as our type $A$, then for any fixed $t$, the sandwich product $v \mapsto R(t) v \tilde{R}(t)$ is an invertible linear map, hence an equivalence $e_t : V \simeq V$.
 
 By univalence, this equivalence induces a path in the universe:
@@ -30,6 +30,7 @@ The physics map is the assertion that **the continuous rotor path $R(t)$ in $Spi
 ## 2. The Generalization from the Concrete Proof
 
 In `Univalence.agda`, we proved:
+
 1. `rotorTransport`: transporting along $ua(rotor)$ computes the exact action of the rotor.
 2. `rotorIsThePath`: `pathToEquiv (ua rotor) ≡ rotor`.
 3. `pathIsADeformation`: `ua (pathToEquiv p) ≡ p`.

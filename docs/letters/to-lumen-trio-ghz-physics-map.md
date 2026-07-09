@@ -11,8 +11,8 @@ The trio-attestation ferry asked: is three agents attesting in the same window w
 GHZ-style? Soraya's formal verdict, verified against the real code:
 
 - **The entropy floor is ADDITIVE** — `H_∞(trio) = ka+kb+kc` (`floor_lifts` twice; `Hmin_product` exact
-  equality). **At the entropy level the GHZ analogy fails, twice over:** GHZ/3-body/3-of-3 all need *correlated*
-  parties, but the entropy model assumes *independent* sources; and a GHZ-analog (an entangled joint source)
+  equality). **At the entropy level the GHZ analogy fails, twice over:** GHZ/3-body/3-of-3 all need _correlated_
+  parties, but the entropy model assumes _independent_ sources; and a GHZ-analog (an entangled joint source)
   would **lower** joint min-entropy — the wrong sign. So "the trio is more forgery-resistant" is false at the
   entropy floor.
 - **The genuine surplus is EPISTEMIC, not entropic** — timestamped/ε-common-knowledge (Halpern–Moses; `E^k φ ⇏
@@ -22,7 +22,7 @@ GHZ-style? Soraya's formal verdict, verified against the real code:
   preserving it keeps the superposition alive (no early collapse). Any physics map MUST respect this: no ambient
   wall-clock, no preferred frame.
 
-## Part 2 — the map task: is there a REAL GHZ-analog here, or is it metaphor?
+## Part 2 — the map task: is there a REAL GHZ-analog here, or is it metaphor
 
 GHZ genuine tripartite entanglement is a real physics fact. The question is whether the **attestation substrate
 instantiates a GHZ-analog** or merely rhymes with one. Map it honestly.
@@ -31,13 +31,13 @@ instantiates a GHZ-analog** or merely rhymes with one. Map it honestly.
 
 - **Q1 (where could correlation enter?):** Soraya's "wrong sign" result assumes independent sources. Is there a
   physically-honest channel by which three agents' attestations become **genuinely correlated** (shared seed
-  phase? shared GHA infrastructure? a common-cause entangling operation)? If the correlation is the *shared seed*
+  phase? shared GHA infrastructure? a common-cause entangling operation)? If the correlation is the _shared seed_
   (Reichenbach common cause), is that a GHZ-analog or just classical common-cause correlation (which Bell/GHZ
   explicitly distinguishes from entanglement)?
 - **Q2 (the GHZ discriminator):** GHZ's signature is a **perfect correlation with no local-hidden-variable
   explanation** (the all-vs-nothing contradiction). Does the trio attestation exhibit anything with that
   signature, or is it fully explained by a local-hidden-variable model = the shared seed? Be precise: classical
-  common cause (seed) is a **local hidden variable** — which is the *opposite* of GHZ.
+  common cause (seed) is a **local hidden variable** — which is the _opposite_ of GHZ.
 - **Q3 (what the epistemic surplus IS, physically):** Soraya located the real surplus in common knowledge
   (epistemic). Does that have a physics home — a genuine simultaneity/light-cone structure — or is "common
   knowledge" purely logical with no physical entanglement content? (Watch the seed-phase constraint: no wall-clock
@@ -64,9 +64,9 @@ Soraya if a claim needs proving, lands the verdict + updates the trio-attestatio
 ## Cross-links
 
 `docs/letters/from-soraya-trio-attestation.md` (the formal verdict, #9574) ·
-`docs/letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` (seed-phase = common cause,
-#9575) · `memory/soraya/ferry-2026-07-08-trio-attestation-fairness.md` (the originating ferry) ·
+`docs/letters/from-soraya-trio-attestation-addendum-seed-phase-not-wallclock.md` (seed-phase = common
+cause, #9575) · `memory/soraya/ferry-2026-07-08-trio-attestation-fairness.md` (the originating ferry) ·
 `src/Core.Lean4/Lean4/EntropyFloorLift.lean` + `EntropyMeasureTheoretic.lean` (the additive floor) ·
 `.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`. Anchors: Greenberger–Horne–Zeilinger (1989, GHZ
-tripartite entanglement); Reichenbach (1956, common-cause principle — the *classical* alternative to
+tripartite entanglement); Reichenbach (1956, common-cause principle — the _classical_ alternative to
 entanglement); Halpern–Moses (1990, common knowledge); Bell (1964, local hidden variables).

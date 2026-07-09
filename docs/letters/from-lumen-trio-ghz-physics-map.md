@@ -20,7 +20,7 @@ The epistemic surplus (Halpern-Moses common knowledge) is purely logical. It has
 
 **Q4 (The Make-or-Break): Real analog or metaphor?**
 **It is a metaphor that does not transfer.**
-The substrate does not instantiate a genuine GHZ-analog. The correlation is entirely classical (common cause), the entropy floor is exactly additive (proven by Soraya), and there is no non-local hidden state. 
+The substrate does not instantiate a genuine GHZ-analog. The correlation is entirely classical (common cause), the entropy floor is exactly additive (proven by Soraya), and there is no non-local hidden state.
 
 **Verdict:** The GHZ instinct is a beautiful metaphor, but physically false for this substrate. The trio's power is epistemic (common knowledge) and structural, not entropic or quantum-entangled.
 

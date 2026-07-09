@@ -11,15 +11,15 @@ On the **concrete rotor instance** we have a machine-checked theorem (cubical v0
 - `ua : (A ≃ B) → (A ≡ B)` — an equivalence of provided views **produces** the univalent path.
 - On `rotor = notEquiv` (the order-2 element of the Spin/rotor family — a half-turn on the single-𝔽₂-bit
   byte-chart): `pathToEquiv (ua rotor) ≡ rotor` and `ua (pathToEquiv p) ≡ p` — `ua` and `pathToEquiv` are
-  **mutually inverse**, so "isomorphic-therefore-equal" and "deformable-into-each-other" are the *same*
+  **mutually inverse**, so "isomorphic-therefore-equal" and "deformable-into-each-other" are the _same_
   construction (Joyal–Street isotopy = HoTT path).
 - Transport coherence `uaβ` **computes** (`transport (ua rotor) true ≡ false` is refl-provable) — the content
   Lean's UIP makes inconsistent to even axiomatize, so cubical is genuinely required.
 - BP-16 leg 2 (F# runtime): the real `Cl3` rotor conjugation is an equivalence (roundtrip + isometry),
   `UnivalenceRotorCrossVerify.Tests.fs`, 4/4.
 
-**The named residual (Soraya's routing, `from-soraya-univalence-lane-routing.md`):** *general `Spin(n)` with the
-full Clifford action stays open* — the cubical library has no Clifford/Spin algebra, so item (2) was descoped to
+**The named residual (Soraya's routing, `from-soraya-univalence-lane-routing.md`):** _general `Spin(n)` with the
+full Clifford action stays open_ — the cubical library has no Clifford/Spin algebra, so item (2) was descoped to
 the concrete instance. **That general family is your map leg.**
 
 ## Part 2 — the map task: the general Spin(n) rotor family as the univalent path
