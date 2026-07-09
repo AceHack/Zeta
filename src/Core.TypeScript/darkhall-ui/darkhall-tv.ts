@@ -51,6 +51,9 @@ export interface DwellerMind {
 
 export type PhaseClockBasis = "seed-phase";
 
+export const PHASE_CLOCK_SCHEMA = "zeta.darkhall.phase-clock.v1";
+export const PHASE_CLOCK_BASIS = "seed-phase";
+
 export interface PhaseClockReadout {
   readonly schema: "zeta.darkhall.phase-clock.v1";
   readonly source: string;

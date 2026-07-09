@@ -107,6 +107,8 @@ describe("LLMTV root-site readout contract", () => {
     expect(replayText).toBeString();
     expect(statusText).toBeString();
     expect(html).toContain(`<title>${ROOT_SITE_LLMTV_TITLE}</title>`);
+    expect(html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
+    expect(html).toContain('data-phase="41"');
     expect(html).toContain('data-dweller="alexa"');
     expect(html).not.toContain("<script");
     expect(html).not.toContain("SECRET");
@@ -114,7 +116,9 @@ describe("LLMTV root-site readout contract", () => {
     const replay = decodeReplayArtifact(replayText!);
     expect(replay).not.toBeNull();
     expect(replay!.generatedBy).toBe(ROOT_SITE_LLMTV_GENERATED_BY);
-    expect(foldReplayArtifact(replay!).transcript.dwellers.map((dweller) => dweller.name)).toEqual(["alexa"]);
+    const folded = foldReplayArtifact(replay!);
+    expect(folded.transcript.phaseClock?.phase).toBe(41);
+    expect(folded.transcript.dwellers.map((dweller) => dweller.name)).toEqual(["alexa"]);
     expect(decodeRootSiteLlmtvStatus(statusText!)).toMatchObject({
       channel: "live-mesh",
       generatedBy: ROOT_SITE_LLMTV_GENERATED_BY,

@@ -22,7 +22,14 @@
 // in the proof lineage); LWW-by-seq viewer fold (idempotent §12, order-independent →
 // DST-replayable §7); scale-free (1 source and N fold on the same path §1).
 
-import type { MindTemp, DwellerMind, LlmtvTranscript } from "../darkhall-ui/darkhall-tv";
+import {
+  PHASE_CLOCK_BASIS,
+  PHASE_CLOCK_SCHEMA,
+  type MindTemp,
+  type DwellerMind,
+  type LlmtvTranscript,
+  type PhaseClockReadout,
+} from "../darkhall-ui/darkhall-tv";
 import {
   BLACK_BODY_READOUT_SCHEMA,
   HEAT_FSHARP_SURFACE,
@@ -104,10 +111,17 @@ export type BroadcastMessage =
       readonly seq: number;
       readonly frameNo: number;
       readonly mind: BroadcastMind;
+      readonly phaseClock?: PhaseClockReadout;
     }
   | { readonly t: "dark"; readonly source: BroadcastSource; readonly seq: number };
 
 const SCHEMA = "zeta.llmtv.broadcast.v1";
+
+export interface PublishFrameOptions {
+  readonly phaseClock?: PhaseClockReadout;
+  readonly phaseClockSeed?: string;
+  readonly phaseClockSource?: string;
+}
 
 /// A channel a viewer is watching — the latest frame heard from one source, with the tick
 /// it arrived (for TTL / going-dark).
@@ -116,6 +130,7 @@ export interface Channel {
   readonly seq: number;
   readonly frameNo: number;
   readonly mind: BroadcastMind;
+  readonly phaseClock?: PhaseClockReadout;
   readonly lastSeenMs: number;
 }
 
@@ -128,8 +143,15 @@ export function publishFrame(
   seq: number,
   frameNo: number,
   mind: SourceMind,
+  options: PublishFrameOptions = {},
 ): BroadcastMessage {
-  return { t: "frame", source, seq, frameNo, mind: frostStrip(mind) };
+  const base = { t: "frame" as const, source, seq, frameNo, mind: frostStrip(mind) };
+  const phaseClock =
+    options.phaseClock ??
+    (options.phaseClockSeed === undefined
+      ? undefined
+      : phaseClockForFrame(options.phaseClockSource ?? source.zid, options.phaseClockSeed, frameNo));
+  return phaseClock === undefined ? base : { ...base, phaseClock };
 }
 
 /// TEXT wire (JSON, no binary in the proof lineage) with a schema tag.
@@ -289,6 +311,63 @@ function isBroadcastMind(value: unknown): value is BroadcastMind {
   );
 }
 
+function normalizePhase(value: number): number {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  return Math.trunc(value);
+}
+
+export function phaseClockFromPhases(
+  source: string,
+  seed: string,
+  phases: readonly number[],
+): PhaseClockReadout | undefined {
+  if (phases.length === 0) return undefined;
+  const coordinates = phases.map(normalizePhase);
+  const phase = coordinates.reduce((max, value) => Math.max(max, value), 0);
+  const skewBoundTicks = coordinates.reduce((max, value) => Math.max(max, Math.abs(phase - value)), 0);
+  return {
+    schema: PHASE_CLOCK_SCHEMA,
+    source,
+    basis: PHASE_CLOCK_BASIS,
+    seed,
+    phase,
+    skewBoundTicks,
+    appendOnly: true,
+    travelers: coordinates.length,
+  };
+}
+
+export function phaseClockForFrame(source: string, seed: string, frameNo: number): PhaseClockReadout {
+  return phaseClockFromPhases(source, seed, [frameNo])!;
+}
+
+export function phaseClockFromChannels(
+  table: ChannelTable,
+  seed: string,
+  source = "llmtv-broadcast",
+): PhaseClockReadout | undefined {
+  return phaseClockFromPhases(
+    source,
+    seed,
+    Array.from(table.values()).map((channel) => channel.frameNo),
+  );
+}
+
+function isPhaseClockReadout(value: unknown): value is PhaseClockReadout {
+  const record = asRecord(value);
+  return (
+    record !== null &&
+    record.schema === PHASE_CLOCK_SCHEMA &&
+    typeof record.source === "string" &&
+    record.basis === PHASE_CLOCK_BASIS &&
+    typeof record.seed === "string" &&
+    isFiniteNumber(record.phase) &&
+    isFiniteNumber(record.skewBoundTicks) &&
+    typeof record.appendOnly === "boolean" &&
+    isFiniteNumber(record.travelers)
+  );
+}
+
 function isBroadcastMessage(value: unknown): value is BroadcastMessage {
   const record = asRecord(value);
   if (record === null || !isBroadcastSource(record.source) || !isFiniteNumber(record.seq)) {
@@ -299,7 +378,12 @@ function isBroadcastMessage(value: unknown): value is BroadcastMessage {
     return true;
   }
 
-  return record.t === "frame" && isFiniteNumber(record.frameNo) && isBroadcastMind(record.mind);
+  return (
+    record.t === "frame" &&
+    isFiniteNumber(record.frameNo) &&
+    isBroadcastMind(record.mind) &&
+    (record.phaseClock === undefined || isPhaseClockReadout(record.phaseClock))
+  );
 }
 
 /// Guarded decode — foreign / malformed / wrong-schema input returns null, never throws.
@@ -340,6 +424,7 @@ export function observeBroadcast(table: ChannelTable, msg: BroadcastMessage, now
         seq: msg.seq,
         frameNo: msg.frameNo,
         mind: msg.mind,
+        ...(msg.phaseClock === undefined ? {} : { phaseClock: msg.phaseClock }),
         lastSeenMs: nowMs,
       });
     case "dark": {
@@ -364,9 +449,18 @@ export function expireChannels(table: ChannelTable, nowMs: number, ttlMs: number
 /// zid for a deterministic tile order (DST). Frosted channels carry their veil label
 /// forward; unfrosted ones render no frost region.
 export function toLlmtvTranscript(table: ChannelTable, seed: string): LlmtvTranscript {
-  const dwellers: DwellerMind[] = Array.from(table.values())
-    .sort((a, b) => (a.source.zid < b.source.zid ? -1 : a.source.zid > b.source.zid ? 1 : 0))
+  const channels = Array.from(table.values()).sort((a, b) =>
+    a.source.zid < b.source.zid ? -1 : a.source.zid > b.source.zid ? 1 : 0,
+  );
+  const transcriptPhaseClock = phaseClockFromPhases(
+    "llmtv-broadcast",
+    seed,
+    channels.map((channel) => channel.frameNo),
+  );
+  const dwellers: DwellerMind[] = channels
     .map((c) => {
+      const phaseClock =
+        c.phaseClock?.seed === seed ? c.phaseClock : phaseClockForFrame(c.phaseClock?.source ?? c.source.zid, seed, c.frameNo);
       const base = {
         name: c.source.name,
         role: c.mind.role,
@@ -374,12 +468,14 @@ export function toLlmtvTranscript(table: ChannelTable, seed: string): LlmtvTrans
         predictions: c.mind.predictions,
         live: true,
         frame: c.frameNo,
+        phaseClock,
       };
       const withTreaty =
         c.mind.temperatureTreaty === undefined ? base : { ...base, temperatureTreaty: c.mind.temperatureTreaty };
       return c.mind.frostMarker ? { ...withTreaty, frost: { veilLabel: c.mind.frostMarker.veilLabel } } : withTreaty;
     });
-  return { schema: "zeta.darkhall.llmtv.v1", seed, generatedBy: "llmtv-broadcast", dwellers };
+  const base = { schema: "zeta.darkhall.llmtv.v1" as const, seed, generatedBy: "llmtv-broadcast", dwellers };
+  return transcriptPhaseClock === undefined ? base : { ...base, phaseClock: transcriptPhaseClock };
 }
 
 /// The injected transport port — the ONE declared channel a frame crosses (§13). `publish`

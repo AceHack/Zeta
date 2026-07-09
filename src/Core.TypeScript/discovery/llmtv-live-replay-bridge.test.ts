@@ -108,6 +108,12 @@ describe("LLMTV live replay bridge", () => {
 
     expect(artifact.generatedBy).toBe("llmtv-live-replay-bridge");
     expect(replay.stats.rejected).toBe(0);
+    expect(replay.transcript.phaseClock).toMatchObject({
+      schema: "zeta.darkhall.phase-clock.v1",
+      basis: "seed-phase",
+      seed: "S4",
+      travelers: 2,
+    });
     expect(replay.transcript.dwellers.map((dweller) => dweller.name).sort()).toEqual(["alexa", "soraya"]);
     expect(soraya.node.society("S4").dwellers.map((dweller) => dweller.name)).toEqual(["alexa"]);
   });

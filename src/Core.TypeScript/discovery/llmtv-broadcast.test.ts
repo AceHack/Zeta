@@ -115,6 +115,28 @@ describe("publishFrame — the only way to a frame message is through the membra
     expect(frame.mind.temperatureTreaty?.heatReceiptSchema).toBe(HEAT_RECEIPT_SCHEMA);
     expect(frame.mind.temperatureTreaty?.heatReceipts?.[0]?.outcome).toBe("denied");
   });
+
+  it("can stamp a deterministic phase clock onto the live wire frame", () => {
+    const msg = publishFrame(alexa, 3, 41, alexaMind, {
+      phaseClockSeed: "S4",
+      phaseClockSource: "llmtv-node",
+    });
+    const decoded = decode(encode(msg));
+
+    expect(decoded).toEqual(msg);
+    expect(decoded?.t).toBe("frame");
+    const frame = decoded as Extract<BroadcastMessage, { readonly t: "frame" }>;
+    expect(frame.phaseClock).toEqual({
+      schema: "zeta.darkhall.phase-clock.v1",
+      source: "llmtv-node",
+      basis: "seed-phase",
+      seed: "S4",
+      phase: 41,
+      skewBoundTicks: 0,
+      appendOnly: true,
+      travelers: 1,
+    });
+  });
 });
 
 describe("noninterference (§13) — the wire is one-way; no viewer→source message exists", () => {
@@ -236,6 +258,17 @@ describe("toLlmtvTranscript — the live feed reuses the still-frame generator",
     const transcript = toLlmtvTranscript(t, "S4");
     // sorted by zid: alexa (0001) before soraya (0002)
     expect(transcript.dwellers.map((d) => d.name)).toEqual(["alexa", "soraya"]);
+    expect(transcript.phaseClock).toEqual({
+      schema: "zeta.darkhall.phase-clock.v1",
+      source: "llmtv-broadcast",
+      basis: "seed-phase",
+      seed: "S4",
+      phase: 11,
+      skewBoundTicks: 1,
+      appendOnly: true,
+      travelers: 2,
+    });
+    expect(transcript.dwellers.map((d) => d.phaseClock?.phase)).toEqual([11, 10]);
     expect(transcript.dwellers[0]!.frost?.veilLabel).toBe("what it is really hoping for");
     expect(transcript.dwellers[0]!.temperatureTreaty).toEqual(alexaTemperatureTreaty);
     expect(transcript.dwellers[1]!.frost).toBeUndefined();

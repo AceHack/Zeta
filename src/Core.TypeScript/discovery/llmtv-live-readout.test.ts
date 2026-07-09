@@ -4,7 +4,7 @@ import { decodeReplayArtifact, foldReplayArtifact } from "./llmtv-replay";
 import { createLlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import { createLlmtvLiveReadout, type LlmtvLiveReadoutIo } from "./llmtv-live-readout";
 import type { DiscoveryTransport } from "./discovery-beacon";
-import type { BroadcastTransport, SourceMind } from "./llmtv-broadcast";
+import { decode as decodeBroadcast, type BroadcastTransport, type SourceMind } from "./llmtv-broadcast";
 import type { LlmtvNodeConfig, Scheduler } from "./llmtv-node";
 
 interface FakeMesh {
@@ -177,9 +177,16 @@ describe("LLMTV live readout cadence", () => {
     const html = writes.get("/tmp/live.html");
     expect(replayText).toBeString();
     expect(html).toContain("<title>Live LLMTV</title>");
+    expect(html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
+    expect(html).toContain('data-phase-clock-basis="seed-phase"');
     expect(html).toContain('data-dweller="alexa"');
     expect(html).toContain('data-dweller="soraya"');
-    expect(decodeReplayArtifact(replayText!)).not.toBeNull();
+    const replay = decodeReplayArtifact(replayText!);
+    expect(replay).not.toBeNull();
+    const firstWire = decodeBroadcast(replay!.frames[0]!.wire);
+    expect(firstWire?.t).toBe("frame");
+    expect(firstWire && firstWire.t === "frame" ? firstWire.phaseClock?.seed : undefined).toBe("S4");
+    expect(firstWire && firstWire.t === "frame" ? firstWire.phaseClock?.basis : undefined).toBe("seed-phase");
     expect(readout.lastSummary()).toMatchObject({
       replayPath: "/tmp/live.replay.json",
       htmlPath: "/tmp/live.html",

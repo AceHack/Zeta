@@ -61,6 +61,12 @@ export interface LlmtvNodeConfig {
   readonly ttlMs: number;
   readonly helloEveryMs: number;
   readonly publishEveryMs: number;
+  /// Optional deterministic time coordinate for published frames. When set, each frame
+  /// carries the same seed/phase contract the static replay reader reconstructs.
+  readonly phaseClock?: {
+    readonly seed: string;
+    readonly source?: string;
+  };
 
   /// Beacon authenticity for the discovery wire (BUGS.md P1 #9304 adoption). Absent ⇒ `"off"`
   /// (backward compatible; no behavior change for existing callers). See `BeaconConfig`.
@@ -189,7 +195,14 @@ export function createLlmtvNode(
 
   const publish = (): void => {
     tick += 1;
-    bcast.publish(encodeBroadcast(publishFrame(config.source, tick, tick, config.mind())));
+    const phaseClockOptions =
+      config.phaseClock === undefined
+        ? undefined
+        : {
+            phaseClockSeed: config.phaseClock.seed,
+            phaseClockSource: config.phaseClock.source ?? "llmtv-node",
+          };
+    bcast.publish(encodeBroadcast(publishFrame(config.source, tick, tick, config.mind(), phaseClockOptions)));
   };
 
   const gc = (): void => {

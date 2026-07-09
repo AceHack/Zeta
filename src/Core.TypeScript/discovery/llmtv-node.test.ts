@@ -76,7 +76,7 @@ const mindOf = (role: string, hat: string, label: string, secret?: string): (() 
   ...(secret ? { personal: { frosted: true, veilLabel: `${hat} private`, predictions: [{ label: secret, temp: "warm", valueMilli: 500, epsilonMilli: 300 }] } } : {}),
 });
 
-const cfg = (name: string, mind: () => SourceMind): LlmtvNodeConfig => ({
+const cfg = (name: string, mind: () => SourceMind, phaseClock = false): LlmtvNodeConfig => ({
   self: { persona: name, surface: "llmtv", instance: "0", node: "test" },
   zid: `zid-${name}`,
   routes: [{ kind: "udp", addr: `239.0.0.1:4200#${name}` }],
@@ -85,6 +85,7 @@ const cfg = (name: string, mind: () => SourceMind): LlmtvNodeConfig => ({
   ttlMs: 10_000,
   helloEveryMs: 1_000,
   publishEveryMs: 1_000,
+  ...(phaseClock ? { phaseClock: { seed: "S4", source: "llmtv-node-test" } } : {}),
 });
 
 describe("live node — two nodes discover each other and exchange frames (DST)", () => {
@@ -108,6 +109,40 @@ describe("live node — two nodes discover each other and exchange frames (DST)"
     const societyB = nb.society("S4");
     expect(societyA.dwellers.map((d) => d.name)).toEqual(["soraya"]);
     expect(societyB.dwellers.map((d) => d.name)).toEqual(["alexa"]);
+  });
+
+  it("carries the deterministic phase clock from live wire frames into the society readout", () => {
+    const m = createFakeMesh();
+    const ta = m.attach("alexa");
+    const tb = m.attach("soraya");
+    const na = createLlmtvNode(
+      cfg("alexa", mindOf("coding", "coder hat", "next tick lands green"), true),
+      ta,
+      ta,
+      m.scheduler(),
+    );
+    const nb = createLlmtvNode(cfg("soraya", mindOf("verify", "verifier hat", "Z3 lemma discharges"), true), tb, tb, m.scheduler());
+
+    na.start();
+    nb.start();
+    m.advance(2_500);
+
+    const societyA = na.society("S4");
+    expect(societyA.phaseClock).toEqual({
+      schema: "zeta.darkhall.phase-clock.v1",
+      source: "llmtv-broadcast",
+      basis: "seed-phase",
+      seed: "S4",
+      phase: 3,
+      skewBoundTicks: 0,
+      appendOnly: true,
+      travelers: 1,
+    });
+    expect(societyA.dwellers[0]?.phaseClock).toMatchObject({
+      source: "llmtv-node-test",
+      seed: "S4",
+      phase: 3,
+    });
   });
 });
 

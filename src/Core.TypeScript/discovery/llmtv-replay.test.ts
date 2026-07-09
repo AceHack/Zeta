@@ -56,7 +56,18 @@ describe("LLMTV replay source -- pure fold from wire frames to transcript", () =
 
     expect(result.stats).toEqual({ accepted: 2, rejected: 0, expired: 0 });
     expect(result.transcript.generatedBy).toBe("llmtv-replay");
+    expect(result.transcript.phaseClock).toEqual({
+      schema: "zeta.darkhall.phase-clock.v1",
+      source: "llmtv-broadcast",
+      basis: "seed-phase",
+      seed: "S4",
+      phase: 11,
+      skewBoundTicks: 1,
+      appendOnly: true,
+      travelers: 2,
+    });
     expect(result.transcript.dwellers.map((dweller) => dweller.name)).toEqual(["alexa", "soraya"]);
+    expect(result.transcript.dwellers.map((dweller) => dweller.phaseClock?.phase)).toEqual([11, 10]);
     expect(result.transcript.dwellers[0]?.frost?.veilLabel).toBe("private hope");
     expect(result.transcript.dwellers[0]?.temperatureTreaty).toEqual(alexaTemperatureTreaty);
 
@@ -130,6 +141,8 @@ describe("LLMTV replay source -- pure fold from wire frames to transcript", () =
 
     const doc = renderReplayDocument(artifact);
     expect(doc).toContain('data-schema="zeta.darkhall.llmtv.v1"');
+    expect(doc).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
+    expect(doc).toContain('data-phase="3341"');
     expect(doc).toContain('data-dweller="alexa"');
     expect(doc).toContain('data-temperature-ppm="333000"');
     expect(doc).not.toContain("<script");

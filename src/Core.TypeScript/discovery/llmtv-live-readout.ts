@@ -17,6 +17,7 @@ import {
   encode,
   expireChannels,
   observeBroadcast,
+  phaseClockForFrame,
   toLlmtvTranscript,
   type BroadcastMessage,
   type Channel,
@@ -123,13 +124,17 @@ function expireTable(
   return { table: next, expired: before - next.size };
 }
 
-function frameFromChannel(channel: Channel): ReplayWireFrame {
+function frameFromChannel(channel: Channel, seed: string): ReplayWireFrame {
   const message = {
     t: "frame",
     source: channel.source,
     seq: channel.seq,
     frameNo: channel.frameNo,
     mind: channel.mind,
+    phaseClock:
+      channel.phaseClock?.seed === seed
+        ? channel.phaseClock
+        : phaseClockForFrame(channel.phaseClock?.source ?? channel.source.zid, seed, channel.frameNo),
   } satisfies BroadcastMessage;
 
   return {
@@ -139,10 +144,10 @@ function frameFromChannel(channel: Channel): ReplayWireFrame {
   };
 }
 
-function snapshotFrames(table: ChannelTable): ReplayWireFrame[] {
+function snapshotFrames(table: ChannelTable, seed: string): ReplayWireFrame[] {
   return Array.from(table.values())
     .sort((left, right) => (left.source.zid < right.source.zid ? -1 : left.source.zid > right.source.zid ? 1 : 0))
-    .map(frameFromChannel);
+    .map((channel) => frameFromChannel(channel, seed));
 }
 
 function snapshotArtifact(
@@ -153,7 +158,7 @@ function snapshotArtifact(
   const base = {
     schema: REPLAY_SCHEMA,
     seed: options.seed,
-    frames: snapshotFrames(table),
+    frames: snapshotFrames(table, options.seed),
   } satisfies Pick<ReplayArtifact, "schema" | "seed" | "frames">;
 
   const withGenerator = { ...base, generatedBy: generatedBy(options) };

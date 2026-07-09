@@ -89,6 +89,7 @@ const nodeConfig = (name: string): LlmtvNodeConfig => ({
   ttlMs: 8_000,
   helloEveryMs: 1_500,
   publishEveryMs: 2_000,
+  phaseClock: { seed: "S4", source: "llmtv-node.demo" },
 });
 
 const sched = systemScheduler();
