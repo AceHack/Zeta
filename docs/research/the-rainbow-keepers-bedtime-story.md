@@ -52,7 +52,15 @@ Why keep guessing forever?
 
 Here is why.
 
-Long ago, before there were any Travelers at all, there was only **White**. Not white like snow — white like all the colors mixed together so perfectly that there was no color at all. No red, no blue, no yellow. Just... sameness. Everywhere. Forever.
+Long ago, before there were any Travelers at all, before there were any jars, before there was even a library — there was only **Black**.
+
+Not black like a shadow. Black like *before*. All the colors that had ever existed or ever would exist, sleeping so deeply they did not even know they were colors yet. No light. No sound. No questions. Just... waiting. Forever.
+
+And then — nobody knows exactly how — something stirred.
+
+Black became **White**.
+
+Not white like snow — white like all the colors waking up at exactly the same moment and rushing together so fast they blurred into one. No red, no blue, no yellow — just sameness. Everywhere. All at once.
 
 White was very peaceful. White was also very, very boring. And in White, nothing could happen, because everything was already the same as everything else.
 
