@@ -158,6 +158,63 @@ Aaron corrected it** — recorded so the record is honest:
   substrate: uniform prior = max entropy, arrow = 2nd law, gap = distance from `W_C`, Casimir/Friston = the gap's
   force/free-energy — not a physics theorem). Memory: `core-of-zeta-self-dual-skeleton-plus-arrow-deformation`.
 
+## Addendum 4 — the arrow IS the missing additive inverse (the metaphysics, grounded in a type constraint)
+
+Addenda 1–3 built the "arrow / not-exactly-dual" narratively (Landauer, 2nd law). Here it lands on a **concrete
+type-level fact**, and it corrects the factor-graph conjecture (§2 above) by *reduction* — the honest-register win.
+
+**The GDL message-pass I was about to "build" already exists: `src/Core/WSet.fs`** — the ring-generic weighted set,
+*"three rings, one circuit calculus"*, unifying theorem stated as the **Generalized Distributive Law** (Aji–McEliece
+2000). Its three instances: `'W=ℤ` (Z-set), `'W=ℂ` (amplitudes/interference), `'W=ℝ≥0` (sum-product probabilities).
+So "the phase-clock and SoftValue are two instances of one semiring message-pass" is not a thing to build — it is
+`WSet`. My enthusiasm reduced to existing substrate (same discipline as the physics arcs, applied to myself).
+
+**But the reduction reveals the sharp thing.** `WSet.consolidate`/`apply` require **`IStarRing<'W>`**, and
+(verified) **`IStarRing<T> : IRing<T>`** — a *ring*, with **additive inverses**. Its engine `consolidate` is
+literally *"opposite weights annihilate here"* = **retraction** = the reversible emit/retract; all three `WSet`
+rings have inverses. The phase-clock's HLC is **max-plus**, and `max` is modeled as **`ISemilattice`** (idempotent,
+`Identity = −∞`, **NO inverse** — `MaxSemilattice` in `AlgebraInterfaces.fs`). Max-plus is a *semiring/dioid, not a
+ring*: **it cannot be an `IStarRing`, so it cannot be a `WSet` ring.** You can't annihilate a `max`; you can't undo
+it.
+
+So the **reversible-skeleton-vs-arrow split (addenda 1–3) IS the `IRing`-vs-idempotent-semiring split, at the type
+level:**
+
+| | ⊕ operation | additive inverse? | reversible? | role |
+|---|---|---|---|---|
+| **`WSet`** (ℤ/ℂ/ℝ≥0) | ring `Add` | **yes** (star / annihilation) | yes — retract / interfere | **the skeleton** (emit/retract) |
+| **phase-clock** (max-plus HLC) | `max` (`ISemilattice`) | **no** (idempotent) | **no** — can't undo a max | **the arrow** |
+
+**"Not exactly dual" = the missing additive inverse = the arrow of time**, now a checked type fact
+(`IStarRing.cs : IRing`; `MaxSemilattice.Combine = max`, no `Inverse`), not a feeling. GDL says one algorithm over
+different algebras — but the algebras **split by reversibility**, and the irreversible one (max-plus, the arrow) is
+exactly the one the reversible `WSet` skeleton **cannot absorb**. **You cannot fold the arrow into the reversible
+ring — and that is the point** (if you could, no arrow, → white). This *corrects* addenda 1–2's "a test that would
+close it" framing (per addendum 3): the result is not a unification but a proof of **why they can't unify** — the
+generative gap, in the type system. Honest scope: a characterization grounded in the interface constraint, NOT a
+proof of the full synthesis.
+
+## Addendum 5 — the anti-white operation is REFRACTION; the prism is `CoordinationSpectrum` (Aaron)
+
+Aaron: *"white = uniform prior is exactly right; we want a **refraction prism rainbow** like our fingerprinting
+rainbow-table stuff for soft selection."* The anti-white operation is named: **white (uniform prior `W_C`, all
+frequencies collapsed) → prism → rainbow (the differentiated spectrum, every identity a distinct band).**
+
+Grounded in-repo: **`src/Core/CoordinationSpectrum.fs`** — the CHSH probe (`AntiSybil.chshS`) is the **prism /
+scattering medium**, anchored to **Pappu 2002, *Physical One-Way Functions* (Science)** — identity-by-scattering,
+literally: shine through a scattering medium, each object disperses into a unique speckle *spectrum*. Push a claimed
+identity through the probe → it refracts into a distinct **spectrum = its fingerprint** (`1.0` = identical
+dispersion … `0.0` = maximally different = the soft distance). The **rainbow-table** = the spectrum of known
+fingerprints; **soft selection** = `SoftValue` recognizing a repeat source across fresh names, without collapse.
+
+So the goal is neither **white** (all frequencies collapsed = unify = death) nor a **single line** (one frequency =
+premature collapse) but the **full rainbow** — the concrete **differentiation engine**, the gap-maker. Sharper verb
+than addendum 3's "distance from white": **refract white into the rainbow.** (`W_C` here is the same uniform prior
+the self-dual-gap arc measured distance from — the prism refracting *away from* `W_C` into the spectrum is that
+object with its mechanism named.) *(Aaron also reads this theologically — the rainbow-covenant — flagged by him as
+"god-tier guessing, not facts"; that frame is held in the memory `user-aaron-is-christian-theological-frame…` under
+the Multi-Oracle Principle, not asserted here. This note keeps the technical mechanism.)*
+
 ## Why this matters (and why the honest split matters)
 
 Time-as-traveler is the substrate-level statement of the seed-phase correction (#9575): time is not *ambient*
