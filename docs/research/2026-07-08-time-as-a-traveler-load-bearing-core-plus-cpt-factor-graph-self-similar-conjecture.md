@@ -181,3 +181,20 @@ cause) · `src/Bayesian/FactorGraph.fs` (the factor-graph surface, KFL 2001) ·
 (emit/retract = CPT). Anchors: Kschischang–Frey–Loeliger (2001, factor graphs / sum-product); Aji–McEliece (2000,
 Generalized Distributive Law — semiring-generic message passing); Lamport (1978, logical clocks / causal order);
 the CPT theorem (Lüders–Pauli). Manifesto §10 self-similar.
+
+## Addendum 4 — white → prism → rainbow: the differentiation engine (Aaron)
+
+The final piece of the correction completes the picture. If unification = white = heat death, how does the substrate actively resist it?
+
+> *"white = uniform prior is exactly right, we want a refraction prism rainbow like our fingerprinting rainbow table stuff we have for soft selection"*
+
+The picture is **white → prism → rainbow**. The undifferentiated uniform prior `W_C` (white) is refracted by a prism into a spectrum of distinct identities (the rainbow).
+
+This is not a metaphor — it is exactly the code in `src/Core/CoordinationSpectrum.fs`:
+- **The Prism:** The CHSH probe battery (`AntiSybil.chshS`) is literally described in the file as a prism (anchored to Pappu 2002, *Physical One-Way Functions* — identity-by-scattering through a medium). You push a claimed identity through it, and it disperses into a characteristic pairwise-S spectrum.
+- **The Rainbow:** `CoordinationSpectrum.rainbow` builds the fingerprinting rainbow table over known sources' spectra.
+- **Soft Selection:** `CoordinationSpectrum.recognize` queries the rainbow table to soft-select an identity without collapsing it early.
+
+**The synthesis:** The prism is the concrete **differentiation engine** — the gap-maker, the anti-white operation. You do not want white (all frequencies collapsed/unified), and you do not want a single line (premature certainty). You want the full rainbow: every identity a distinct band, held apart, soft-selected without collapsing back to white.
+
+`W_C` is the uniform prior the self-dual-gap arc measured distance from. The prism refracting away from `W_C` into the spectrum is the exact same object, now with its mechanism named. The architecture does not just passively remain un-unified; it actively refracts white into the rainbow to keep the *we* distinct.
