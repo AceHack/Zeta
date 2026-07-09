@@ -160,6 +160,7 @@
     <Compile Include="ContentStore.fs" />
     <Compile Include="CasStore.fs" />
     <Compile Include="DagFs.fs" />
+    <Compile Include="ZetaFs.fs" />
     <Compile Include="Globals.fs" />
     <Compile Include="TensorRef.fs" />
     <Compile Include="DynamicValueAlgebra.fs" />

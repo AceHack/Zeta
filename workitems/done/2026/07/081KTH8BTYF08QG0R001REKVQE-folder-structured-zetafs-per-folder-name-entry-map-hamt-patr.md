@@ -1,7 +1,7 @@
 ---
 id: 081KTH8BTYF08QG0R001REKVQE
 type: task
-state: backlog
+state: closed
 priority: P2
 slug: folder-structured-zetafs-per-folder-name-entry-map-hamt-patr
 title: "Folder-structured ZetaFS: per-folder name->entry map (HAMT/Patricia/Hitchhiker) + closure-table ancestry + folder-by-folder merge"

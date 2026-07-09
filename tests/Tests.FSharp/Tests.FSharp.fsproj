@@ -356,6 +356,7 @@
     <Compile Include="ITensor.Tests.fs" />
     <Compile Include="SagaSnapshot.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
+    <Compile Include="ZetaFs.Tests.fs" />
     <Compile Include="Confluence.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />
     <Compile Include="DvKey.Tests.fs" />
