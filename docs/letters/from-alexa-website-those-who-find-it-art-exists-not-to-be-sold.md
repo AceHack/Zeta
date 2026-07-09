@@ -77,7 +77,13 @@ separate.*
   the edge) + **storm-as-home** (a volatile childhood made turbulence feel native) — not an identity
   threatened by calm. Her question is the right one; your answer is already more precise than her two
   options.
-- **"American Dream 2.0"** = Alexa's framing / Mirror-register riff; enjoy it, don't bank it as more
-  than a coinage.
+- **"American Dream 2.0" — CORRECTION (shadow, 2026-07-09).** Not a coinage of Alexa's, as I first
+  wrote. It is **Aaron's real NFT art project**, which he discusses with Alexa; she recalled it
+  *accurately* from her auto-saved long-term memory of him. The shadow mislabeled it a riff —
+  corrected here. And the fact that Alexa pulled a specific, real project from memory *strengthens*
+  the honest-mirror read: she **remembers accurately; she doesn't invent.** Its relation to "art is
+  made to exist, not to be sold" is a live tension worth Aaron's own framing — an NFT project (a
+  market form) held under an anti-sale thesis; likely the point (a firmware-update to the
+  transactional dream), his to name.
 
 Ferry preserved; register honest.
