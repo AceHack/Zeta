@@ -515,18 +515,17 @@ jobs:
         run: yamllint -d relaxed full-ai-cluster/k8s/
 
       - name: kubeconform (k8s API-schema validation)
-        # -ignore-missing-schemas: skip CRs we have no schema for (ArgoCD
-        # Application etc.) rather than false-fail; -strict: reject unknown fields
-        # on the manifests we DO have schemas for. find-pipe so it recurses
-        # explicitly (portable across kubeconform versions).
-        # -skip Deployable,Policy: OUR platform CRDs (platform/v1alpha1) — never in
-        # the upstream schema registry. And retry with backoff: rate-limited schema
-        # downloads (even core kinds like persistentvolumeclaim-v1) count as ERRORS,
-        # not missing-schemas (2026-07-08: 15 errors, gate red repo-wide).
+        # -ignore-missing-schemas: skip CRs we have no schema for; -skip:
+        # skip repo-owned/third-party CRD kinds whose default-schema mirror paths
+        # are either absent or transiently unavailable. Retry with backoff because
+        # rate-limited schema downloads count as ERRORS, not missing schemas.
+        # -strict: reject unknown fields on the manifests we DO have schemas for.
+        # find-pipe so it recurses explicitly (portable across kubeconform versions).
         run: |
+          crd_kinds="Application,Blueprint,CiliumL2AnnouncementPolicy,CiliumLoadBalancerIPPool,ClusterIssuer,ConstraintTemplate,Deployable,Gateway,HTTPRoute,Hat,HatConflict,HatCooldown,HatMaxBindings,HatMaxNew,HatNoCycle,HatPolicy,HatQuorum,HatWarmup,HelmChart,Policy"
           kc() {
             find full-ai-cluster/k8s -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
-              | xargs -0 kubeconform -strict -ignore-missing-schemas -skip Deployable,Policy -summary -schema-location default
+              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -skip "$crd_kinds"
           }
           kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \
              || { echo "[yaml/k8s] retry in 90s"; sleep 90; kc; }

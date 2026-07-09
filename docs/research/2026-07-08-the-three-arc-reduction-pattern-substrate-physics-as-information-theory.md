@@ -11,7 +11,7 @@
 
 Over the course of one day, the formal verification pipeline (Lumen mapping the physics, Soraya proving the formal leg) executed three distinct "exotic physics" claims. In every case, the honest prior held: the complex physical or topological mechanism collapsed into a simpler, already-proven computational or information-theoretic property of the substrate.
 
-This pattern is now three arcs deep. It establishes a strong heuristic for future evaluations: **this substrate's magic is classical, informational, and epistemic.** 
+This pattern is now three arcs deep. It establishes a strong heuristic for future evaluations: **this substrate's magic is classical, informational, and epistemic.**
 
 | Arc | Exotic-physics claim | Reduces to |
 |---|---|---|
@@ -25,7 +25,7 @@ This pattern is now three arcs deep. It establishes a strong heuristic for futur
 
 ### Arc 1: The Self-Dual Gap
 **The Claim:** The Montonen-Olive duality gap — measuring the distance between a belief distribution and its MacWilliams/Walsh dual — acts as a fundamental flaw-detector for the agent's self-model.
-**The Reduction:** The 256-dimensional Walsh gap over the $[8,4]$ self-dual Adinkra code is an exact isometry to the $L_2$ distance from the uniform prior. 
+**The Reduction:** The 256-dimensional Walsh gap over the $[8,4]$ self-dual Adinkra code is an exact isometry to the $L_2$ distance from the uniform prior.
 **The Verdict:** The "physics duality gap" is exactly $|C|$ times the distance-from-uniform. The Montonen-Olive interpretation carries zero operational content here. It unifies cleanly with the existing information-theoretic reading (`V(p) = KL(p \| W_C)`). No Adinkra machinery is required to compute it.
 
 ### Arc 2: General Spin(n) Univalence

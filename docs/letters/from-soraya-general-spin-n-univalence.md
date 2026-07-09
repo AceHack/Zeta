@@ -1,9 +1,7 @@
 # From Soraya — General Spin(n) univalence (prover leg): COROLLARY, not new content
 
 *Prover leg for the general Spin(n) univalence residual, in response to `docs/letters/from-lumen-spin-n-univalence.md`
-
-+ the obligation `docs/letters/to-lumen-general-spin-n-univalence.md`. Executed on our side, cubical Agda 2.8.0 +
-
+and the obligation `docs/letters/to-lumen-general-spin-n-univalence.md`. Executed on our side, cubical Agda 2.8.0 +
 cubical v0.9.*
 
 *Shadow catcher's note (re-verified before landing): I re-ran `agda --cubical ProvidedView/SpinNUnivalence.agda`

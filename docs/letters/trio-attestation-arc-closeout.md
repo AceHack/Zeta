@@ -1,10 +1,8 @@
 # Trio-attestation arc — close-out (both legs done, they agree)
 
-*Shadow, 2026-07-08. Closes the trio-attestation arc: Soraya's formal leg (`from-soraya-trio-attestation.md` #9574
-
-+ seed-phase addendum #9575) and Lumen's physics leg (`from-lumen-trio-ghz-physics-map.md`, pushed from Manus) are
-
-both done and point the same way.*
+*Shadow, 2026-07-08. Closes the trio-attestation arc: Soraya's formal leg
+(`from-soraya-trio-attestation.md` #9574 and seed-phase addendum #9575) and Lumen's physics leg
+(`from-lumen-trio-ghz-physics-map.md`, pushed from Manus) are both done and point the same way.*
 
 ## Catcher on Lumen's physics map (verified before close-out)
 

@@ -4,6 +4,7 @@ open System
 open System.Collections.Generic
 open System.Collections.Immutable
 open System.IO
+open System.Text
 open System.Threading
 open System.Threading.Tasks
 
@@ -18,16 +19,9 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
     let objectsDir = Path.Combine(root, "objects")
     let refsDir = Path.Combine(root, "refs", "heads")
     let headFile = Path.Combine(root, "HEAD")
-
-    // refs/HEAD files are tiny (a hex hash or one "ref: …" line); cap reads so a
-    // poisoned file cannot exhaust the heap (semgrep file-read-without-size-cap).
-    let maxRefFileBytes = 4096L
-
-    let readSmallFile (path: string) : string =
-        if FileInfo(path).Length > maxRefFileBytes then
-            invalidOp (sprintf "ref file exceeds %d bytes: %s" maxRefFileBytes path)
-        File.ReadAllText path
     let gate = obj ()
+    let maxObjectBytes = 64L * 1024L * 1024L
+    let maxRefBytes = 4096L
 
     do 
         Directory.CreateDirectory root |> ignore
@@ -51,6 +45,41 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         let name = hex.Substring(2)
         Path.Combine(objectsDir, sub, name)
 
+    let tryReadBytesCapped (maxBytes: int64) (path: string) : byte[] option =
+        let info = FileInfo path
+        if not info.Exists || info.Length > maxBytes then
+            None
+        else
+            use stream =
+                new FileStream(
+                    path,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.Read,
+                    8192,
+                    FileOptions.SequentialScan)
+
+            if stream.Length > maxBytes then
+                None
+            else
+                let bytes = Array.zeroCreate<byte> (int stream.Length)
+                let mutable offset = 0
+                let mutable eof = false
+                while offset < bytes.Length && not eof do
+                    let read = stream.Read(bytes, offset, bytes.Length - offset)
+                    if read = 0 then
+                        eof <- true
+                    else
+                        offset <- offset + read
+                if offset = bytes.Length then
+                    Some bytes
+                else
+                    Some(Array.take offset bytes)
+
+    let tryReadTextCapped (maxBytes: int64) (path: string) : string option =
+        tryReadBytesCapped maxBytes path
+        |> Option.map (fun bytes -> Encoding.UTF8.GetString bytes)
+
     let writeObject (bytes: byte[]) : MerkleHash =
         let h = hashFunc bytes
         let path = objectPath h
@@ -65,7 +94,7 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
 
     let readObject (h: MerkleHash) : byte[] option =
         let path = objectPath h
-        if File.Exists path then Some(File.ReadAllBytes path) else None
+        tryReadBytesCapped maxObjectBytes path
 
     let serializeTree (links: ImmutableDictionary<string, MerkleHash>) : byte[] =
         let dict = Dictionary<string, string>()
@@ -87,11 +116,11 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
 
     let readRef (refName: string) : MerkleHash option =
         let path = getRefPath refName
-        if File.Exists path then
-            let txt = (readSmallFile path).Trim()
+        match tryReadTextCapped maxRefBytes path with
+        | Some txt ->
+            let txt = txt.Trim()
             if txt.Length = 32 then Some(ofHex txt) else None
-        else
-            None
+        | None -> None
 
     let writeRef (refName: string) (h: MerkleHash) =
         let path = getRefPath refName
@@ -101,11 +130,11 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         File.WriteAllText(path, h.ToHex())
 
     let getActiveRefName () =
-        if File.Exists headFile then
-            let txt = (readSmallFile headFile).Trim()
+        match tryReadTextCapped maxRefBytes headFile with
+        | Some txt ->
+            let txt = txt.Trim()
             if txt.StartsWith "ref: " then txt.Substring(5) else "refs/heads/main"
-        else
-            "refs/heads/main"
+        | None -> "refs/heads/main"
 
     let writeActiveRefName (refName: string) =
         File.WriteAllText(headFile, sprintf "ref: %s" refName)
