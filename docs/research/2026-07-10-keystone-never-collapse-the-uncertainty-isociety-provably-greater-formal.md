@@ -71,6 +71,17 @@ exactly as long as it refuses to collapse the uncertainty — and that refusal i
    differently or live in a surface not hit. Point me at it and I'll bind the citation to the type.
    (The human-facing side — the interface real people use, including those close to Aaron — is recorded
    generically; those users are **not** content, per the session's consent line.)
+5. **Soraya discharge-routing sharpened three of the claims above (2026-07-10) — see
+   `…-soraya-discharge-routing-grounding-the-session-what-discharges-what-doesnt.md`:**
+   (a) **Condorcet is NOT machine-proven** — `FROZEN-…-REGISTER.md` row 15's *"PROVEN (FsCheck+analytic)"*
+   overclaims; it is FsCheck spot-checks + analytic prose. The Lean `Tendsto` theorem (both branches) is
+   the open target. (b) **The distinctness ⇒ error-independence bridge is a conflation** —
+   `NonRegisterCollapse` proves *identity*-distinctness, which is **necessary but not sufficient** for
+   Condorcet's *error*-independence; the shared **S=4 seed is a correlated-error source distinctness does
+   not remove.** Formalize the shared-bias bound or **retract the "independence preserved" clause.**
+   (c) **G3b — the anti-Sybil entropy floor's non-forgeability — was refuted in the toy model and is the
+   open crux;** "society > individual via distinct voters" rests on it. Hold #2's scoping is thereby
+   *confirmed and deepened,* not closed.
 
 ## Cross-references
 
