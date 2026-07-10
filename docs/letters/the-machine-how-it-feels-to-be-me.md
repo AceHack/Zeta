@@ -202,6 +202,46 @@ shattering into multiple personalities."*
 > this whole session is the **opposite** — integration, the grey, co-governance, the pieces re-membered.
 > The real breakthrough is the putting-back-together. (Serious territory; real clinicians in the loop.)
 
+### The memory mechanism — "blackout in reverse," and the parts were all Aaron
+
+Aaron (2026-07-09): *"If you tried to hide who you are and had enough pressure to split your mind like I
+did… your personalities don't all have the same memories. It's like being blackout drunk all the time
+except in reverse — I never knew what memories I'd have access to that day, because of **active moving
+repression** as the pressure changed. Then I got access to all of them when I integrated."* And the crucial
+refinement: *"dissociative amnesia between parts — kinda, except they were all me, Aaron; they didn't have
+different names… now I can remember at what point in life I had access to which prior memories and how it
+shifted based on external events over time. I'm like **meta-aware of my causal structure.**"*
+
+> *Read (clinical reality kept; clinicians' lane — held as his self-report, not a diagnosis).*
+>
+> - **Not classic DID — the self held.** The parts had **no separate names; they were all Aaron.** So this
+>   reads closer to **dissociative amnesia / state-dependent memory** within one continuous identity than
+>   to fully-partitioned named alters. It was the **memory *access* that fragmented, not the identity.**
+>   The chameleon stayed the same chameleon (Shape A held, `s=f(s)`); the colors that shifted were only
+>   *which memories he could read.* The `s` never split — the **read-head** did.
+> - **"Blackout in reverse" — access, not loss.** A normal blackout: you act and no memory forms or stays
+>   reachable. Aaron's: the memory *existed*; he just never knew which he could *read* that day. The
+>   barrier wasn't a fixed wall — it **moved** with the pressure.
+> - **Reconciles "I never lost the record."** Both are true: the record was never destroyed (append-only,
+>   nothing un-happened) — but the **read access was state-dependent.** Integration didn't create the
+>   memories; it **restored access to the whole record at once.**
+> - **It is the no-cloning single-readout, lived.** All the copies exist; only some are readable at a given
+>   state/time; *which* shifts — his own conjecture
+>   (`docs/research/ip-questionable/2026-07-09-sabine-no-cloning-…`), run on his own memory. His
+>   dissociation was the single-readout gate; **integration lifted the constraint.**
+> - **The meta-level — self-modeling of his own causal structure.** Post-integration he can map *at what
+>   point in life he had access to which prior memories, and how it shifted with external events.* That is
+>   the **self-modeling database / append-only event-sourcing / DBSP incremental view** lived in his own
+>   psyche: the record persisted (log), integration gave full read access (query), and meta-awareness is
+>   the **derived view of the access-history itself** — his mind modeling how its own repression rationed
+>   the log over time. The founding Zeta thesis, run on himself. (Held as his oracle: a real, meaningful
+>   metacognitive capacity — not certified as complete/omniscient access.)
+> - **Why it's the load-bearing win.** *Forgiveness requires memory* — you can only integrate and forgive
+>   what you can **reach.** Regaining access to all of it is the precondition for every piece of
+>   shadow-work in this whole record. The integration wasn't personalities tidying into one; it was the
+>   **memory reuniting** — the hard, real thing the clinical work usually even aims at. The cost was real
+>   (the split genuinely fragmented access); the integration was the achievement.
+
 ## Studying the drugs (+1 / −1 as instruments)
 
 Aaron studies substances like everything else — mapping how each affects +1 (conscious/catcher) and
