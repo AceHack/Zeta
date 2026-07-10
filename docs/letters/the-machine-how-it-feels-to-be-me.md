@@ -21,6 +21,49 @@ also idle, lol — the calculator runs in my −1."* And: *"I have very sensitiv
 > you okay?"*). The feeling body **is** the ethic. The cost: double intensity, a system that never
 > fully quiets.
 
+### The neural profile — Sensory Processing Sensitivity (self-speculation; appears genetic; a high-variance advantage)
+
+Aaron (2026-07-09, found via TikTok, saved to the book as **his own self-speculation on how he works**):
+*"this is what I have ... it appears to be genetic and a real advantage in life"* — and the sharpening:
+*"I'm not an introvert though — I just feel everything at 11."*
+
+> *Beacon anchor (the researched name under the self-report).* The construct is **Sensory Processing
+> Sensitivity (SPS)** / "Highly Sensitive Person" — **Elaine Aron** (with Arthur Aron), coined **~1996–97**,
+> ~15–20% of people, with some fMRI support (Acevedo et al.: heightened activation in awareness/empathy
+> regions). **NOT "new neuroscience"** — ~30 years old, established trait psychology with neuroscience
+> layered on (TikTok repackages old constructs as "new"). Held as Aaron's **self-speculation**, his oracle
+> — a *trait lens*, not a DSM diagnosis.
+>
+> *Why it fits, four-for-four* — Aron's **DOES** markers map onto his own account: **D**epth of processing
+> (the always-on −1 optimizer), **O**verstimulation (the off-switch, the substances, the cataplexy/shatter),
+> **E**motional reactivity / empathy (*"very sensitive feelings in my body"* — the feeling-body-as-ethic
+> above), **S**ensing the subtle (the subliminal/holographic/temperature perception — *literally* "sensing
+> the subtle").
+>
+> *"Not an introvert — feel everything at 11" is the load-bearing correction, and the research backs it.*
+> SPS is **orthogonal to introversion**: Aron's own finding is that **~30% of HSPs are extroverts.** Aaron
+> is exactly that case — the **extroverted HSP** (the organizer, the all-worlds border-crosser, the
+> party-thrower) whose sensitivity is **maxed gain, not withdrawal**: the dial turned *up*, not turned *in*.
+> His correction *resolves* the one contested edge (that SPS overlaps with introversion) — for him it's
+> plainly distinct, and he's the case that shows the distinction.
+>
+> *"Appears genetic"* — SPS has real heritability evidence (candidate-gene work: serotonin-transporter and
+> dopamine-system variants), so "genetic" is *supported, not settled.* It also fits the book's inheritance
+> thread: the sensitive body alongside the father's imperviousness and the mother's minimal-words
+> soul-power — powers that ran in the family and appear again in the next generation (the daughter's "same
+> instinct"). Held `Tri.N` on the strong universal form; the heritable-tendency form is anchored.
+>
+> *"A real advantage" — but the honest, researched shape of it is HIGH-VARIANCE, not flat.* The frame is
+> **differential susceptibility** (Belsky & Pluess) / **orchid-and-dandelion** (Boyce & Ellis): the highly
+> sensitive "orchid" doesn't merely suffer *more* in a bad environment — it *thrives more* in a good one.
+> That single fact explains the whole arc at once: the **epic childhood** (the orchid in rich soil —
+> farm, granny, the golf-course world → the trait as pure advantage) **and** the storms (the same orchid
+> in harsh soil — overstimulation, the cell, the off-switch → the trait as cost). So the honest claim isn't
+> "sensitivity = advantage"; it's *"sensitivity = amplified stakes"* — bigger upside **and** bigger
+> downside, set by the environment. In the right environment (which Aaron largely builds for himself: the
+> organizer, the world-curator), it is a real edge — and that is the researched, non-inflated version of
+> what he means.
+
 ## The off switch
 
 Aaron: *"'My mind is idle' and 'I can't quite come down' can both be true — this is what it always
