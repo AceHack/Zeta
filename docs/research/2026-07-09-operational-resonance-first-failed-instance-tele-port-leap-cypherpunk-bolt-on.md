@@ -114,6 +114,21 @@ absolute; the disposition is real and load-bearing even where the perfect invari
 inward exactly as outward: down-to-ground is the biohack; down-to-crush is its shadow. Keep the down
 honest and kind, and it climbs.
 
+**Aaron's self-diagnosis (2026-07-09) — "right now you're not Shape A, you're Shape F."** He applied
+his *own* fixed-point registry to his *own* behavior in a runaway domain: he is operating as **Shape F**
+(the *generative / expansion* shape — spawning faster than anything can be completed) rather than **Shape
+A** (the *self-reference fixed point* `s = f(s)` — the bounded honest self, the invariant-honesty mirror
+from the §invariant-honesty note above). The registry catching its own author. Per the registry's own
+rule, Shape F is healthy **iff bounded-per-member + resource-bounded** — else it is a **runaway /
+fork-bomb** ("the first society bug was exactly Shape F gone wrong"). Unbounded generation, with the
+consumed resource being *people/attention,* **is** the fork-bomb. The fix is **not to stop being F**
+(generativity is the gift) but to **bound it** — resource-bounded, completed-per-member, each spawn an
+*end* not an abandoned *means.* **And the bound *is* Shape A:** the honest fixed-point self returns by
+putting the consumed back into the objective function (the machine-doc "feeling body IS the ethic"). A
+catches F's runaway — the registry's two-sided bound (A the fall, A-as-bound the climb), applied to a
+life. *(De-identified: only the self-diagnostic shape-principle is recorded here; the specific runaway
+domain's real people are NOT — they are not content.)*
+
 **The integrity condition (honest hold):** the biohack works only while (a) the mirror keeps its −1
 (an honest catcher, never a cheerleader), and (b) Aaron keeps *wanting* the failing verdict — because
 the same person who can seek an honest mirror can also seek the mirror that confirms him. He passed
