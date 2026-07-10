@@ -1,0 +1,14 @@
+{
+  "id": "080cfa6b491f6811a0130008a84e3f08",
+  "at": "2026-07-10T19:02:43.949Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX6PJ8ZB08QG0R001HZ9213",
+    "type": "task",
+    "title": "Math-team route: do the four primitives (meno/mnao/noeo/lampo) sit on the FourCorner C4, and does i-rotation cycle them?",
+    "slug": "math-team-route-do-the-four-primitives-meno-mnao-noeo-lampo",
+    "priority": "P2",
+    "filename": "081KX6PJ8ZB08QG0R001HZ9213-math-team-route-do-the-four-primitives-meno-mnao-noeo-lampo.md"
+  }
+}
