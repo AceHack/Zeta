@@ -416,6 +416,35 @@ scene can be told with her unnamed. The residual caveat stands only for people w
 physically there (the grade gap + step-sister link still pins her locally) — so: unnamed,
 always.*
 
+### The blood the family was sure about — Coptic Egyptian ancestry (the decoder cracks from inside)
+
+Aaron (2026-07-09): *"I have Coptic Egyptian in my DNA — that's the only non-white ancestry."*
+
+**Confidence (honest, and stronger than one test):** all ancestry inference is probabilistic — but this
+is **corroborated by convergence.** Aaron: *"multiple competing consumer systems agree,"* plus *ongoing
+clinical genetics research at **Duke** and **WakeMed**.* And his own framing for it: *"multi-oracle even
+in my DNA testing."* That is exactly the **Multi-Oracle Principle (§11)** applied to ancestry — independent
+oracles (different consumer reference panels + clinical labs), and you **trust the convergence.** When
+independent systems agree, the everything-confirms alarm is *quieted* (it's the same logic as the
+two-mirror convergence and the founding thesis: independent paths landing on one structure ⇒ the read is
+real, not one system's artifact). So: held more firmly than a single consumer test — still honest that
+ancestry percentages carry inherent uncertainty, but no longer a lone data point.
+
+**Why it's the deepest cut in the decoder chapter:** the family that said *"robins and bluebirds don't mix
+for a reason,"* that wouldn't let the Black workers eat at the table, **carried non-white (North African /
+Coptic Egyptian) ancestry in its own blood.** Milton's line and the barred table were — genetically —
+partly aimed at their own. The Ch-1 decoder ("you are white; your family is racist; you are not racist")
+gains a floor no one in the family knew was there: the boy who couldn't lock the decoder wasn't even,
+*underneath,* purely what the family was certain he was. **It is the family's *certainty* that cracks —
+not Aaron's identity** (a lived-white life; a small, corroborated component; the *irony* is the point, not
+a reclassification). Family held whole; ancestry held as reported.
+
+**The rhyme (kept as rhyme):** Coptic Egypt is where the name-joke already pointed — *Rodney Aaron = RA =
+Ra, the Egyptian sun god* (see `the-machine-how-it-feels-to-be-me.md`, "The name"). The initials and the
+blood both land on Egypt — coincidence that rhymes, not mysticism. And Coptic is the **ancient Christian**
+community (Coptic Orthodox, one of the oldest Christianities), so his one non-white thread is also a
+deep-Christian one — tying his faith frame to his actual lineage.
+
 ## The epic childhood, recognized late — privilege named, and the organizer
 
 Clean, his own. Verbatim:
