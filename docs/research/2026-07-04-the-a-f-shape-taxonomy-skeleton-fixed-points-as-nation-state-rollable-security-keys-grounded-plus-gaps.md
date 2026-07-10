@@ -32,13 +32,13 @@ NOT in the repo** — it is Aaron's to assign. Honest structure + gaps:
 
 | Shape | Plausible key-role [inference] | Roll mechanism | Threat tier | Status |
 |---|---|---|---|---|
-| A (self-ref) | the **identity/self key** — the one that closes `s=f(s)` (you are the fixed point) | rotate-self? | — | **[need Aaron]** |
-| B (idempotent) | **content-address / dedup key** (re-applying is a no-op → replay-safe) | — | — | **[need Aaron]** |
-| C (commutative) | **quorum/aggregate key** (order-invariant → Shamir-share-like) | reshare | nation-state (threshold ≥ t) | **[inference — fits Shamir #9416]** |
-| D (nonzero floor) | **liveness/floor key** (can't collapse to 0) | — | — | **[need Aaron]** |
-| D⁰ (heat death) | the **compromise/monoculture state to keep UNREACHABLE** (all keys one → single point of failure) | — | the failure to avoid | **[inference]** |
-| E (co-arising) | **mutual-auth pair key** (two that authenticate each other, no root) | co-rotate | — | **[need Aaron]** |
-| F (generative) | **delegation/derivation key** (derives child keys, bounded per-member) | revoke-subtree | fork-bomb = the runaway to catch | **[inference]** |
+| A (self-ref) | the **identity/self key** — the one that closes `s=f(s)` (you are the fixed point) | rotate-self? | all tiers (impersonation) | **[CONFIRMED — Aaron 2026-07-09]** |
+| B (idempotent) | **content-address / dedup key** (re-applying is a no-op → replay-safe) | — | replay attacker | **[CONFIRMED — Aaron 2026-07-09]** |
+| C (commutative) | **quorum/aggregate key** (order-invariant → Shamir-share-like) | reshare | nation-state (threshold ≥ t) | **[CONFIRMED — Aaron 2026-07-09; was inference-fits-Shamir #9416]** |
+| D (nonzero floor) | **liveness/floor key** (can't collapse to 0) | — | denial-of-service | **[CONFIRMED — Aaron 2026-07-09]** |
+| D⁰ (heat death) | the **compromise/monoculture state to keep UNREACHABLE** (all keys one → single point of failure) | — | the failure to avoid | **[CONFIRMED — Aaron 2026-07-09]** |
+| E (co-arising) | **mutual-auth pair key** (two that authenticate each other, no root) | co-rotate | needs both compromised | **[CONFIRMED — Aaron 2026-07-09]** |
+| F (generative) | **delegation/derivation key** (derives child keys, bounded per-member) | revoke-subtree | fork-bomb = the runaway to catch | **[CONFIRMED — Aaron 2026-07-09]** |
 
 The unifying claim (Aaron): every shape is **rollable** (key>1 → retract-and-reissue = the Z-set
 retraction / four-corner roll), tiered so the top adversary is **nation-state**. Discharge: Aaron
@@ -152,3 +152,38 @@ The instruction *class* is derivable from semantics; the authoritative Zeta-IR/C
 
 *(Skeleton + shadow-derived answers. Grounded columns cited to `db/shapes/`; every derived cell carries a
 confidence flag. On your confirmation the flags come off and this becomes the canonical shape↔key↔ISA table.)*
+
+---
+
+## CLOSURE — Aaron 2026-07-09 ("close the need Aaron slots on the shape registry")
+
+Aaron authorized closing the open slots. Flags off on everything closable without fabrication:
+
+**CLOSED (confirmed):**
+
+- **Gap 1 — per-shape key ROLES (A/B/D/E):** confirmed. A = root identity / self-signing key
+  (`s=f(s)` *is* the identity — anchor: self-certifying identifiers); B = content-address /
+  replay-safe key (idempotent ⇒ replay is a no-op); D = liveness / recovery-floor key (can't
+  collapse to 0); E = mutual-auth pair, no root (`a=f(b), b=g(a)` — anchor: PAKE / mutual auth,
+  web-of-trust edges). C = Shamir threshold and F = BIP32 derivation were already inference; now
+  confirmed. **Threat-tier column** also filled from the derived table (impersonation / replay /
+  nation-state / DoS / both-compromised / fork-bomb).
+- **Gap 3 — A/B-series = cross-cutting AXIS** (not a per-shape column): B-series face = the
+  fixed-point *equation* (tenseless seed); A-series face = the *convergence iteration* (the now-step).
+  Confirmed.
+- **Gap 4 — "shape S" ≡ shape A** (the shadow is shape A instantiated as a persona; catalog closed
+  at A–F + D⁰, no 8th letter). Confirmed.
+
+**NOT fabricated — the one honest residual (Gap 2, exact ISA opcodes):** the doc promised *"I won't
+guess opcodes,"* and that holds. But there is now a **grounded lead**, not a guess: the real **ZSet
+ISA is `Emit · Retract · Branch · Join · Merge · Fold`** (`src/Core.QSharp.ReferenceOracle/zset-isa-ir.json`),
+and two shapes **share the ISA's own names** — Shape **B "idempotent *Join* / LUB"** ↔ ISA `Join`,
+Shape **C "commutative *Fold*"** ↔ ISA `Fold` (see `db/shapes/b.md`, `db/shapes/c.md`). That is a
+strong candidate grounding (name-identity, not coincidence). What still needs Aaron: (1) which ISA
+the shape-opcodes bind to — the **ZSet ISA** (Emit/Retract/Branch/Join/Merge/Fold) or the **CHIP-8**
+`Isa.fs` (the CHIP-8 instruction *classes* the table already derived); (2) the exact op for A/D/E/F
+once (1) is chosen. Recorded as a lead so this closes fast when Aaron picks the ISA — no opcode was
+invented.
+
+*Net: registry is now canonical on roles + framings; the only open cell is the exact opcode binding,
+which has a grounded B↔Join / C↔Fold lead waiting on Aaron's choice of ISA.*
