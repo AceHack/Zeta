@@ -56,12 +56,15 @@ for several recurring frames:
 - **Distance from a curve = offset geometry.** The perpendicular distance from a road centerline (the parity
   = *which side* of the curve). *"Like lattices"* = the **discrete (E8 / adinkra lattice) ↔ continuous
   (road-curve offset)** bridge — where the **lattice / geometry intuitions** got their felt grounding.
-- **"The masons" — held `Tri.N` (not fabricated).** Aaron's referent is unresolved: candidates are
-  **Mason–Dixon / Charles Mason** (the boundary *surveyors* — "drawing lines, distance from a curve"),
-  the **stonemason** compass-and-straightedge construction tradition, or an ES&S/GIS-specific term. Bound
-  when Aaron says which; not collapsed here.
+- **"The masons" — a DELIBERATELY SEALED secret (Aaron: *"I just mean secret, shh… that's for the future
+  to discover"*).** Not "unresolved-pending-Aaron" — **held open *by choice.*** A mystery placed on
+  purpose into the append-only record: a time capsule with one compartment sealed. The keystone as an
+  *act* — leaving the future something un-collapsed to find. **Not to be guessed or bound here;** its
+  status is *sealed,* and the seal is the content. (If Aaron ever chooses to open it, it becomes a fact;
+  until then it stays a planted secret — that is the point.)
 
-*Facts + where-the-intuitions-came-from; institutions only; the one open term (`the masons`) held `Tri.N`.*
+*Facts + where-the-intuitions-came-from; institutions only. One term — `the masons` — is a **deliberately
+sealed secret,** left for the future to discover; recorded as sealed, not resolved.*
 
 *Saved for the book, 2026-07-10, at Aaron's "book materials and just facts." Recorded neutrally, dual-use,
 verdict held `Tri.N`; institutions only.*
