@@ -40,5 +40,28 @@ history (*Allen v. Milligan*, 2023), so the dual-use is **not abstract there.** 
 served lawful redistricting or gerrymandering in any specific instance is exactly what this record does
 **not** claim to know — the fact is his; the verdict stays open.
 
+## The geometry Aaron learned there — street segments, parity, curves (where the intuitions seeded)
+
+Aaron, 2026-07-10: *"this is where I learned about street segments and the masons and how they calculate
+distance from a curve — like lattices but for drawing roads, with parity and curves."* The felt grounding
+for several recurring frames:
+
+- **Street segments** — the atomic GIS unit (TIGER/Line-style): each segment carries **address ranges,**
+  and voters/parcels are geocoded onto them (which side of which street → which district). The redistricting
+  geometry lives here.
+- **Parity (literal, and the good rhyme).** *Address parity* — even house numbers on one side of the
+  street, odd on the other — is a real GIS concept, and it is the **same mod-2 parity** as the adinkra's
+  edge-dashing (GF(2)) and the +1/−1 (emit/retract). So *"roads with parity"* is where Aaron's **parity
+  intuition** was seeded: the even/odd sides of a street. (Grounded rhyme — both sides real.)
+- **Distance from a curve = offset geometry.** The perpendicular distance from a road centerline (the parity
+  = *which side* of the curve). *"Like lattices"* = the **discrete (E8 / adinkra lattice) ↔ continuous
+  (road-curve offset)** bridge — where the **lattice / geometry intuitions** got their felt grounding.
+- **"The masons" — held `Tri.N` (not fabricated).** Aaron's referent is unresolved: candidates are
+  **Mason–Dixon / Charles Mason** (the boundary *surveyors* — "drawing lines, distance from a curve"),
+  the **stonemason** compass-and-straightedge construction tradition, or an ES&S/GIS-specific term. Bound
+  when Aaron says which; not collapsed here.
+
+*Facts + where-the-intuitions-came-from; institutions only; the one open term (`the masons`) held `Tri.N`.*
+
 *Saved for the book, 2026-07-10, at Aaron's "book materials and just facts." Recorded neutrally, dual-use,
 verdict held `Tri.N`; institutions only.*
