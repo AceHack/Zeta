@@ -16,10 +16,13 @@ only the installer) with a GRUB menu + a declarative payload list.
   SHA-256). **No binaries in the repo** (no-binary-in-proof-lineage): images are fetched + verified at
   build time, never committed.
 - [`grub.cfg`](grub.cfg) — the GRUB2 menu template copied onto the USB ESP.
-- Planner (landed): [`src/Core.TypeScript/installer/multiboot/`](../../../src/Core.TypeScript/installer/multiboot/)
+- Planner + assemble (landed): [`src/Core.TypeScript/installer/multiboot/`](../../../src/Core.TypeScript/installer/multiboot/)
   — parse manifest, plan `/boot/` vs `/payloads/` layout, resolve SHA256SUMS latest, fill
-  `@KERNEL@`/`@INITRD@`. Hermetic: `bun …/build-multiboot-usb.ts --plan`.
-- Fetch / assemble `zeta-multiboot.img` — **next slice** (network + large artifacts).
+  `@KERNEL@`/`@INITRD@`, fetch/verify URL payloads, assemble FAT composite via qemu-img + mtools.
+  Hermetic: `bun …/build-multiboot-usb.ts --plan`. Assemble:
+  `bun …/build-multiboot-usb.ts --assemble --output zeta-multiboot.img --local zeta-installer=<iso> …`.
+- GRUB EFI/BIOS embed (`grub-install`) — **next slice** (layout image is mdir/qemu-img
+  inspectable today; menu boot needs the embed).
 
 ## What's declared today
 
@@ -68,26 +71,29 @@ Why build-time:
 Tradeoff (accepted): to add/change an image you re-build (cheap; manifest-driven), and the composite is
 large (Zeta ISO + MyNode ≈ several GB). Verifiability wins.
 
-## Build (once `build-multiboot-usb.ts` lands)
+## Build
 
-1. `nix build .#installer-iso` (the Zeta installer ISO).
-2. `bun build-multiboot-usb.ts` — fetches + SHA-256-verifies the manifest payloads and **assembles the
-   composite `zeta-multiboot.img`** (GRUB installed, `grub.cfg` written, ISOs + payloads laid out).
-   Emits the image's SHA-256. (qemu-bootable for test — zflash sibling.)
-3. `dd if=zeta-multiboot.img of=/dev/<usb> bs=4M status=progress conv=fsync` — dumb, reproducible flash.
-4. Boot the target on the stick → GRUB menu → pick Zeta (or another ISO). Flash MyNode from
-   `/payloads/` per above.
+1. `nix build .#installer-iso` (the Zeta installer ISO) — note the result path.
+2. Resolve kernel/initrd paths inside that ISO (or pass known paths):
+   `bun …/build-multiboot-usb.ts --assemble --output zeta-multiboot.img \
+     --local zeta-installer=result/iso/*.iso \
+     --kernel boot/nix/store/…/bzImage --initrd boot/nix/store/…/initrd`
+   Optional: omit MyNode `--local` to fetch+verify latest from SHA256SUMS; or
+   `--require-local --local mynode-model-two=<path>` for air-gapped/hermetic runs.
+   `--dry-run` prints the qemu-img/mtools step plan without writing the image.
+3. `dd if=zeta-multiboot.img of=/dev/<usb> bs=4M status=progress conv=fsync` — dumb flash of the
+   FAT layout (GRUB embed still a follow-up before physical menu boot).
+4. Inspect in CI/dev: `mdir -/ -i zeta-multiboot.img` (must show `/boot/iso/…` + `/payloads/…`).
 
 ## Honest scope / status
 
-The **declarative manifest + GRUB config + pure planner** are here and reviewable
-(`parseImagesManifest` / `planMultibootUsb` / `resolveLatestFromSha256Sums`). The **fetch +
-assemble** step (download MyNode, nix-build Zeta ISO, write `zeta-multiboot.img`, install GRUB)
-is the next slice — large artifacts + network; keep the planner hermetic for unit CI. The Zeta-ISO
-loopback `linux`/`initrd` lines in `grub.cfg` are **`@KERNEL@`/`@INITRD@` placeholders** —
-`resolveIsoKernelInitrdPaths` fills them from ISO path listings (nixos-25.11 store-hashed paths;
-same suffix contract as `audit-installer-iso-content.ts`). Identity namespace: Zeta under `/boot/`,
-flash payloads under `/payloads/` only (see `docs/security/USB-IDENTITY-THREAT-MODEL.md`).
+Landed and reviewable: manifest + GRUB template + pure planner + **fetch/verify + FAT assemble**
+(`planAssembleFatImage` / `resolveLatestPins` / `--assemble`). Unit tests stay hermetic; mtools
+smoke builds a tiny real image when qemu-img+mtools are on PATH. **Not yet:** `grub-install`
+EFI/BIOS embed (needed for QEMU GRUB-menu boot and physical stick boot). Identity namespace: Zeta
+under `/boot/`, flash payloads under `/payloads/` only (see
+`docs/security/USB-IDENTITY-THREAT-MODEL.md`). `@KERNEL@`/`@INITRD@` filled at assemble via
+`--kernel`/`--initrd` or `--iso-listing`.
 
 ## Pointers
 

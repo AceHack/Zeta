@@ -1,9 +1,17 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { parseImagesManifest } from "./images-manifest.ts";
 import { planMultibootUsb, renderGrubCfgTemplate, resolveIsoKernelInitrdPaths } from "./plan.ts";
 import { resolveLatestFromSha256Sums, versionKeyFromFilename } from "./sha256sums.ts";
+import {
+  estimateImageSizeBytes,
+  executeAssembleFatImage,
+  planAssembleFatImage
+} from "./assemble.ts";
+import { bindResolvedArtifacts, resolveLatestPins } from "./resolve-artifacts.ts";
 const REPO_MANIFEST = join(import.meta.dir, "../../../../full-ai-cluster/usb-nixos-installer/multiboot/images.manifest");
 describe("parseImagesManifest", () => {
   it("parses the repo images.manifest", () => {
@@ -119,5 +127,240 @@ initrd (loop)/@INITRD@
     expect(rendered).toContain("boot/nix/store/abc123-linux-6.12.1/bzImage");
     expect(rendered).toContain("boot/nix/store/def456-initrd-linux-6.12.1/initrd");
     expect(rendered).not.toContain("@KERNEL@");
+  });
+});
+describe("planAssembleFatImage", () => {
+  it("plans qemu-img + mformat + mmd + mcopy with namespace paths", () => {
+    const parsed = parseImagesManifest(readFileSync(REPO_MANIFEST, "utf8"));
+    expect(parsed.ok).toBe(!0);
+    if (!parsed.ok)
+      return;
+    const pin = {
+      name: "mynode-model-two",
+      filename: "mynode_amd64_0-3-34.img.gz",
+      url: "https://example.com/mynode_amd64_0-3-34.img.gz",
+      sha256: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }, planned = planMultibootUsb({
+      entries: parsed.entries,
+      latestPins: new Map([["mynode-model-two", pin]])
+    });
+    expect(planned.ok).toBe(!0);
+    if (!planned.ok)
+      return;
+    const assembled = planAssembleFatImage({
+      plan: planned.plan,
+      artifacts: [
+        {
+          name: "zeta-installer",
+          imagePath: "/boot/iso/zeta-installer.iso",
+          localPath: "/tmp/zeta.iso",
+          sizeBytes: 1024
+        },
+        {
+          name: "mynode-model-two",
+          imagePath: "/payloads/mynode-model-two.img.gz",
+          localPath: "/tmp/mynode.img.gz",
+          sizeBytes: 2048
+        }
+      ],
+      outputImagePath: "/tmp/zeta-multiboot.img",
+      imageSizeBytes: estimateImageSizeBytes([
+        { sizeBytes: 1024 },
+        { sizeBytes: 2048 }
+      ]),
+      stagingDir: "/tmp/multiboot-staging",
+      grubCfgContent: `linux (loop)/boot/k
+initrd (loop)/boot/i
+`
+    });
+    expect(assembled.ok).toBe(!0);
+    if (!assembled.ok)
+      return;
+    const commands = assembled.steps.filter((s) => s.kind === "command").map((s) => s.kind === "command" ? s.command.command : "");
+    expect(commands[0]).toBe("qemu-img");
+    expect(commands[1]).toBe("mformat");
+    expect(commands).toContain("mmd");
+    expect(commands).toContain("mcopy");
+    const mcopyArgs = assembled.steps.filter((s) => s.kind === "command" && s.command.command === "mcopy").map((s) => s.kind === "command" ? s.command.args.join(" ") : "");
+    expect(mcopyArgs.some((a) => a.includes("::/boot/iso/zeta-installer.iso"))).toBe(!0);
+    expect(mcopyArgs.some((a) => a.includes("::/payloads/mynode-model-two.img.gz"))).toBe(!0);
+    expect(mcopyArgs.some((a) => a.includes("::/boot/grub/grub.cfg"))).toBe(!0);
+  });
+  it("rejects unresolved grub placeholders and missing artifacts", () => {
+    const planned = planMultibootUsb({
+      entries: [
+        {
+          name: "zeta-installer",
+          kind: "grub-iso-local",
+          flakeAttr: "nix:.#installer-iso"
+        }
+      ]
+    });
+    expect(planned.ok).toBe(!0);
+    if (!planned.ok)
+      return;
+    const withPlaceholder = planAssembleFatImage({
+      plan: planned.plan,
+      artifacts: [
+        {
+          name: "zeta-installer",
+          imagePath: "/boot/iso/zeta-installer.iso",
+          localPath: "/tmp/z.iso",
+          sizeBytes: 1
+        }
+      ],
+      outputImagePath: "/tmp/out.img",
+      imageSizeBytes: 2097152,
+      stagingDir: "/tmp/st",
+      grubCfgContent: `linux (loop)/@KERNEL@
+`
+    });
+    expect(withPlaceholder.ok).toBe(!1);
+    const missing = planAssembleFatImage({
+      plan: planned.plan,
+      artifacts: [],
+      outputImagePath: "/tmp/out.img",
+      imageSizeBytes: 2097152,
+      stagingDir: "/tmp/st",
+      grubCfgContent: `ok
+`
+    });
+    expect(missing.ok).toBe(!1);
+    if (!missing.ok)
+      expect(missing.error).toContain("missing local artifact");
+  });
+});
+describe("resolveLatestPins + bindResolvedArtifacts", () => {
+  it("resolves latest pin from injected SHA256SUMS fetch", async () => {
+    const planned = planMultibootUsb({
+      entries: [
+        {
+          name: "zeta-installer",
+          kind: "grub-iso-local",
+          flakeAttr: "nix:.#installer-iso"
+        },
+        {
+          name: "mynode-model-two",
+          kind: "flash-img-latest",
+          baseUrl: "https://example.com/imgs/",
+          selectGlob: "mynode_amd64_*.img.gz",
+          checksumsFile: "SHA256SUMS"
+        }
+      ]
+    });
+    expect(planned.ok).toBe(!0);
+    if (!planned.ok)
+      return;
+    const pins = await resolveLatestPins(planned.plan, async () => [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  mynode_amd64_0-3-30.img.gz",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  mynode_amd64_0-3-34.img.gz"
+    ].join(`
+`));
+    expect(pins.ok).toBe(!0);
+    if (!pins.ok)
+      return;
+    expect(pins.pins.get("mynode-model-two")?.filename).toBe("mynode_amd64_0-3-34.img.gz");
+    expect(pins.pins.get("mynode-model-two")?.url).toContain("mynode_amd64_0-3-34.img.gz");
+  });
+  it("bind requireLocal fails closed without --local", async () => {
+    const planned = planMultibootUsb({
+      entries: [
+        {
+          name: "zeta-installer",
+          kind: "grub-iso-local",
+          flakeAttr: "nix:.#installer-iso"
+        }
+      ]
+    });
+    expect(planned.ok).toBe(!0);
+    if (!planned.ok)
+      return;
+    const bound = await bindResolvedArtifacts({
+      plan: planned.plan,
+      localByName: new Map,
+      cacheDir: "/tmp/cache",
+      pins: new Map,
+      fetchToFile: async () => {
+        throw Error("network should not run");
+      },
+      requireLocal: !0
+    });
+    expect(bound.ok).toBe(!1);
+    if (!bound.ok)
+      expect(bound.error).toContain("requireLocal");
+  });
+});
+describe("executeAssembleFatImage mtools smoke", () => {
+  it("assembles a tiny FAT image and lists /boot + /payloads", () => {
+    const qemu = spawnSync("qemu-img", ["--version"], { encoding: "utf8" }), mformat = spawnSync("mformat", ["-V"], { encoding: "utf8" });
+    if (qemu.status !== 0 || mformat.status !== 0)
+      return;
+    const tmpRoot = mkdtempSync(join(tmpdir(), "multiboot-assemble-")), isoPath = join(tmpRoot, "zeta.iso"), payloadPath = join(tmpRoot, "payload.img.gz"), outImg = join(tmpRoot, "zeta-multiboot.img"), stagingDir = join(tmpRoot, "staging");
+    writeFileSync(isoPath, "fake-iso-bytes");
+    writeFileSync(payloadPath, "fake-payload-bytes");
+    mkdirSync(stagingDir, { recursive: !0 });
+    const planned = planMultibootUsb({
+      entries: [
+        {
+          name: "zeta-installer",
+          kind: "grub-iso-local",
+          flakeAttr: "nix:.#installer-iso"
+        },
+        {
+          name: "mynode-model-two",
+          kind: "flash-img",
+          url: "https://example.com/x.img.gz",
+          sha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    });
+    expect(planned.ok).toBe(!0);
+    if (!planned.ok)
+      return;
+    const artifacts = [
+      {
+        name: "zeta-installer",
+        imagePath: "/boot/iso/zeta-installer.iso",
+        localPath: isoPath,
+        sizeBytes: statSync(isoPath).size
+      },
+      {
+        name: "mynode-model-two",
+        imagePath: "/payloads/mynode-model-two.img.gz",
+        localPath: payloadPath,
+        sizeBytes: statSync(payloadPath).size
+      }
+    ], assembled = planAssembleFatImage({
+      plan: planned.plan,
+      artifacts,
+      outputImagePath: outImg,
+      imageSizeBytes: 4194304,
+      stagingDir,
+      grubCfgContent: `menuentry test { true }
+`
+    });
+    expect(assembled.ok).toBe(!0);
+    if (!assembled.ok)
+      return;
+    const executed = executeAssembleFatImage(assembled.steps, {
+      writeFile: (path, content) => {
+        mkdirSync(dirname(path), { recursive: !0 });
+        writeFileSync(path, content, "utf8");
+      },
+      runCommand: (command) => {
+        const result = spawnSync(command.command, [...command.args], { encoding: "utf8" });
+        return { status: result.status ?? 1, stderr: result.stderr ?? void 0 };
+      }
+    });
+    expect(executed.ok).toBe(!0);
+    const listing = spawnSync("mdir", ["-/", "-i", outImg], { encoding: "utf8" });
+    expect(listing.status).toBe(0);
+    const out = `${listing.stdout}
+${listing.stderr}`;
+    expect(out).toMatch(/boot/i);
+    expect(out).toMatch(/payloads/i);
+    expect(out).toMatch(/zeta-installer\.iso/i);
+    expect(out).toMatch(/mynode-model-two\.img\.gz/i);
+    expect(out).toMatch(/grub\s+cfg/i);
   });
 });

@@ -223,9 +223,9 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 
 ## 8. Software-only next slices (no metal)
 
-1. **Fetch + assemble `zeta-multiboot.img`** — execute path for the
-   landed planner (`src/Core.TypeScript/installer/multiboot/`); QEMU-boot
-   the composite.
+1. **GRUB EFI/BIOS embed** — `grub-install` (or staged `BOOTX64.EFI`) onto the
+   assembled FAT composite so QEMU can menu-boot; layout assemble already lands
+   (`planAssembleFatImage` / `--assemble`).
 2. **Credential binding model tests** — injectable factors
    (`usbUuid` / `usbISerial` / `uefiKeyfile` / `tpmSeal`); assert which
    reformat/swap cases decrypt.
@@ -235,8 +235,8 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 4. **Per-federation threat-model stub template** — same section shape
    as §3, filled per Lodge/charter when a federation is chartered.
 
-Planner + `/boot/` vs `/payloads/` identity namespace: landed
-(`planMultibootUsb`).
+Planner + `/boot/` vs `/payloads/` identity namespace + FAT assemble: landed
+(`planMultibootUsb` / `planAssembleFatImage`).
 
 Phase-3 QEMU escapes already removed (rebuild ISO; mock-auth +
 post-boot self-register required).

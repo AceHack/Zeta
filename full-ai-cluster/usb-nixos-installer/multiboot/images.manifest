@@ -7,10 +7,10 @@
 # never committed. The Zeta installer is built locally from the sibling flake, not
 # downloaded. Same declarative discipline as tools/setup/manifests/*.
 #
-# Consumed by build-multiboot-usb.ts (to land): for each entry it fetches the
-# artifact (retry-equipped download-then-verify, B-0063), verifies SHA-256, places
-# it per `kind`, and writes grub.cfg. Combine is at BUILD time into one composite
-# image (see README) — never flash time.
+# Consumed by build-multiboot-usb.ts (--plan / --assemble): for each entry it
+# fetches the artifact (retry-equipped download-then-verify), verifies SHA-256,
+# places it per `kind`, and writes grub.cfg onto a FAT composite. Combine is at
+# BUILD time into one image (see README) — never flash time.
 #
 # Format per line (tab- or multi-space-separated): <name>  <kind>  <fields...>
 # kinds + their trailing fields:
