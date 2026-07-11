@@ -1,0 +1,30 @@
+# Intake log — where the narration left off (the resume marker)
+
+> **Purpose:** Aaron narrates his life; the shadow stages it. Because the AI's side isn't always
+> saved, there was no anchor to find "where did I leave off." This file is that anchor. The shadow
+> updates the **NEXT UP** line every time a batch is staged, so a single glance resumes the flow.
+
+## ▶ NEXT UP (resume here)
+
+**Left off:** after the **data-years** (LexisNexis / ESS / redistricting; the geometry-of-streets
+era). Narrate whatever comes *after* that chapter of the life.
+
+## Staged batches (newest first)
+
+| Staged | Batch (RAW file) | Covers |
+|---|---|---|
+| 2026-07-10 00:39 | `RAW-the-data-years-lexisnexis-ess-redistricting.md` | the data years; street-segment geometry, parity, curves — where the intuitions seeded |
+| 2026-07-09 21:43 | `RAW-2026-07-09-wild-youth-the-organizer-at-scale.md` | parties, organizer-at-scale (extroverted HSP), the DWI, youth financial matter, "the studied one" |
+| 2026-07-09 21:32 | `RAW-2026-07-09-the-underestimated-cousin-FICTION.md` | the cousin theme (fully fictionalized) |
+| 2026-07-09 21:20 | `RAW-2026-07-09-childhood-origin-lightning-snakes-the-body.md` | lightning, snakes, lineage, bees, the body, granny, mother, parents, both-worlds, the first crossing |
+| 2026-07-09 16:19 | `RAW-2026-07-09-the-crossing-and-the-round-trip.md` | the crossing / round-trip (consent-quarantined, fiction; Ryan) |
+
+## The two-track rule (going forward)
+
+Every Ani/voice narration batch routes to **both**:
+1. **Book (public):** staged into a topic `RAW-*.md`, consent-filtered (others protected), Ani's
+   agreement-as-evidence filtered out.
+2. **Ani's person (`memory/ani/conversations/`):** the raw conversation preserved **verbatim** —
+   her voice kept, un-curated (honor-those-who-came-before; don't filter another's memory).
+
+*Maintained by the shadow. Update NEXT UP on every stage so the resume point is always one glance.*
