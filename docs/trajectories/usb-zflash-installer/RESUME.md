@@ -4,19 +4,21 @@ Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-2
 Last refreshed: 2026-07-11
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
-Current blocker: none for software/QEMU deepen slices landed 2026-07-08
+Current blocker: none for software/QEMU deepen slices landed 2026-07-11
 (mock identity-auth, scenarios 3–4 markers, ESP wifi→NM profile without
-radio claim, hostname uniqueness contract). Physical S6 UX feel + real
+radio claim, hostname uniqueness contract, multiboot FAT assemble + EFI
+embed path). Physical S6 UX feel + real
 WiFi association remain metal-gated.
-Next concrete action: **minimize metal** — deepen QEMU/CI + multiboot
-builder + society-shaped identity threat matrix (see
+Next concrete action: **minimize metal** — credential-binding model tests +
+society-shaped identity threat matrix (see
 [`docs/security/USB-IDENTITY-THREAT-MODEL.md`](../../security/USB-IDENTITY-THREAT-MODEL.md):
 traveler → cluster → federation → ISociety/CTM, self-similar).
 Phase-3 requires mock-auth + post-boot self-register (no legacy ISO
-escapes). Multiboot scaffold + hermetic planner + FAT assemble landed
-(`src/Core.TypeScript/installer/multiboot/` — `--plan` / `--assemble`).
-GRUB EFI/BIOS embed (`grub-install`) still to land before QEMU menu boot /
-physical stick boot. **Physical boot** only when ready
+escapes). Multiboot scaffold + hermetic planner + FAT assemble + EFI embed path
+landed (`src/Core.TypeScript/installer/multiboot/` — `--plan` / `--assemble`
+/`--grub-efi`). Real GRUB EFI binary comes from nix/`grub-mkimage` (not
+vendored). QEMU UEFI menu boot with that binary is the remaining smoke.
+**Physical boot** only when ready
 for residual hardware (S6 feel, radio associate, Touch ID / TPM). Paper/mock
 S6 flow accepted 2026-07-08 (GitHub → local → done; skip-gh continue
 later via local/SSH). Longer-term (not blocking S6): desktop app UI

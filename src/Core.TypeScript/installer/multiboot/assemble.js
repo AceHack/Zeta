@@ -1,3 +1,4 @@
+export const GRUB_EFI_IMAGE_PATH = "/EFI/BOOT/BOOTX64.EFI", GRUB_EFI_CFG_PATH = "/EFI/BOOT/grub.cfg";
 const FAT_OVERHEAD_BYTES = 33554432, MIB = 1048576;
 export function estimateImageSizeBytes(artifacts, overheadBytes = FAT_OVERHEAD_BYTES) {
   let total = overheadBytes;
@@ -23,6 +24,32 @@ export function parentDirPaths(imagePath) {
   }
   return dirs;
 }
+export function planQemuUeFiBootArgs(input) {
+  if (input.outputImagePath.trim().length === 0)
+    return { ok: !1, error: "outputImagePath is required" };
+  if (input.ovmfCodePath.trim().length === 0 || input.ovmfVarsPath.trim().length === 0)
+    return { ok: !1, error: "ovmfCodePath and ovmfVarsPath are required" };
+  const args = [
+    "qemu-system-x86_64",
+    "-machine",
+    "q35",
+    "-m",
+    "1024",
+    "-drive",
+    `if=pflash,format=raw,readonly=on,file=${input.ovmfCodePath}`,
+    "-drive",
+    `if=pflash,format=raw,file=${input.ovmfVarsPath}`,
+    "-drive",
+    `file=${input.outputImagePath},format=raw,if=virtio`,
+    "-nographic"
+  ];
+  if (input.serialLogPath !== void 0 && input.serialLogPath.trim().length > 0)
+    return {
+      ok: !0,
+      args: [...args, "-serial", `file:${input.serialLogPath}`]
+    };
+  return { ok: !0, args };
+}
 export function planAssembleFatImage(input) {
   if (input.plan.items.length === 0)
     return { ok: !1, error: "assemble requires at least one plan item" };
@@ -39,6 +66,9 @@ export function planAssembleFatImage(input) {
       ok: !1,
       error: "grubCfgContent still contains @KERNEL@/@INITRD@ placeholders"
     };
+  const grubEfiLocalPath = input.grubEfiLocalPath?.trim();
+  if (grubEfiLocalPath !== void 0 && grubEfiLocalPath.length === 0)
+    return { ok: !1, error: "grubEfiLocalPath must be non-empty when provided" };
   const byName = new Map;
   for (const art of input.artifacts) {
     if (byName.has(art.name))
@@ -70,7 +100,7 @@ export function planAssembleFatImage(input) {
       ok: !1,
       error: `artifact count ${String(byName.size)} != plan item count ${String(input.plan.items.length)}`
     };
-  const grubCfgStagingPath = `${input.stagingDir.replace(/\/+$/, "")}/grub.cfg`, mtoolsImageSpecifier = input.outputImagePath, steps = [];
+  const grubCfgStagingPath = `${input.stagingDir.replace(/\/+$/, "")}/grub.cfg`, mtoolsImageSpecifier = input.outputImagePath, steps = [], grubEfiEmbedded = grubEfiLocalPath !== void 0;
   steps.push({
     kind: "command",
     command: {
@@ -90,6 +120,10 @@ export function planAssembleFatImage(input) {
   dirsNeeded.add("/boot/grub");
   dirsNeeded.add("/boot/iso");
   dirsNeeded.add("/payloads");
+  if (grubEfiEmbedded) {
+    dirsNeeded.add("/EFI");
+    dirsNeeded.add("/EFI/BOOT");
+  }
   for (const item of input.plan.items)
     for (const d of parentDirPaths(item.imagePath))
       dirsNeeded.add(d);
@@ -125,6 +159,34 @@ export function planAssembleFatImage(input) {
       ]
     }
   });
+  if (grubEfiEmbedded) {
+    steps.push({
+      kind: "command",
+      command: {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          mtoolsImageSpecifier,
+          grubCfgStagingPath,
+          mtoolsDest(GRUB_EFI_CFG_PATH)
+        ]
+      }
+    });
+    steps.push({
+      kind: "command",
+      command: {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          mtoolsImageSpecifier,
+          grubEfiLocalPath,
+          mtoolsDest(GRUB_EFI_IMAGE_PATH)
+        ]
+      }
+    });
+  }
   for (const item of input.plan.items) {
     const art = byName.get(item.name);
     steps.push({
@@ -139,7 +201,8 @@ export function planAssembleFatImage(input) {
     ok: !0,
     steps,
     mtoolsImageSpecifier,
-    grubCfgStagingPath
+    grubCfgStagingPath,
+    grubEfiEmbedded
   };
 }
 export function executeAssembleFatImage(steps, executor) {
@@ -175,4 +238,8 @@ export function executeAssembleFatImage(steps, executor) {
     completed += 1;
   }
   return { ok: !0, completedSteps: completed };
+}
+export function mdirListingHasGrubEfiEmbed(listing) {
+  const hasEfiBoot = /EFI/i.test(listing) && /BOOT/i.test(listing), hasLoader = /BOOTX64/i.test(listing) || /bootx64\.efi/i.test(listing), hasCfg = /grub\s+cfg/i.test(listing) || /grub\.cfg/i.test(listing);
+  return hasEfiBoot && hasLoader && hasCfg;
 }

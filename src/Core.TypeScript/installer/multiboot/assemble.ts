@@ -1,17 +1,23 @@
 /**
- * Multiboot FAT-image assemble planner (slice 2).
+ * Multiboot FAT-image assemble planner (slice 2 + GRUB EFI embed).
  *
  * Pure: given a MultibootPlan + resolved local artifacts + rendered grub.cfg,
  * emit a deterministic command/file step list (qemu-img + mtools). No network,
  * no process spawn — mirrors zflash `planFileBackedZflashImageExecution`.
  *
- * Honesty: this lays out `/boot/` + `/payloads/` + `grub.cfg` on a FAT volume
- * labeled ZETA_MB. Embedding GRUB EFI/BIOS (`grub-install`) is a follow-up;
- * this slice is QEMU-inspectable (mdir / qemu-img) and dd-ready for the FS
- * layout. Identity namespace: flash payloads never under `/boot/`.
+ * Layout: `/boot/` + `/payloads/` + `grub.cfg`. Optional `--grub-efi` embeds
+ * `/EFI/BOOT/BOOTX64.EFI` and a removable-media copy at `/EFI/BOOT/grub.cfg`
+ * (UEFI firmware default search). Operator supplies the EFI binary (from
+ * `grub-mkimage` / nix); we do not vendor binaries. Identity namespace: flash
+ * payloads never under `/boot/`.
  */
 
 import type { MultibootPlan } from "./plan.ts";
+
+/** Removable-media UEFI default loader path (FAT). */
+export const GRUB_EFI_IMAGE_PATH = "/EFI/BOOT/BOOTX64.EFI" as const;
+/** GRUB config beside the EFI binary (removable-media search path). */
+export const GRUB_EFI_CFG_PATH = "/EFI/BOOT/grub.cfg" as const;
 
 export type AssembleCommand = {
   readonly command: string;
@@ -39,6 +45,11 @@ export type PlanAssembleFatImageInput = {
   readonly stagingDir: string;
   /** Fully rendered grub.cfg (placeholders already filled). */
   readonly grubCfgContent: string;
+  /**
+   * Host path to a GRUB x86_64-efi binary to place at GRUB_EFI_IMAGE_PATH.
+   * When set, also copies grub.cfg to GRUB_EFI_CFG_PATH.
+   */
+  readonly grubEfiLocalPath?: string;
 };
 
 export type PlanAssembleFatImageResult =
@@ -47,6 +58,7 @@ export type PlanAssembleFatImageResult =
       readonly steps: readonly AssembleStep[];
       readonly mtoolsImageSpecifier: string;
       readonly grubCfgStagingPath: string;
+      readonly grubEfiEmbedded: boolean;
     }
   | { readonly ok: false; readonly error: string };
 
@@ -90,6 +102,45 @@ export function parentDirPaths(imagePath: string): readonly string[] {
 }
 
 /**
+ * QEMU UEFI argv for inspecting/booting a whole-disk FAT multiboot image.
+ * Pure: no spawn. Caller supplies OVMF code+vars paths and the image.
+ */
+export function planQemuUeFiBootArgs(input: {
+  readonly outputImagePath: string;
+  readonly ovmfCodePath: string;
+  readonly ovmfVarsPath: string;
+  readonly serialLogPath?: string;
+}): { readonly ok: true; readonly args: readonly string[] } | { readonly ok: false; readonly error: string } {
+  if (input.outputImagePath.trim().length === 0) {
+    return { ok: false, error: "outputImagePath is required" };
+  }
+  if (input.ovmfCodePath.trim().length === 0 || input.ovmfVarsPath.trim().length === 0) {
+    return { ok: false, error: "ovmfCodePath and ovmfVarsPath are required" };
+  }
+  const args = [
+    "qemu-system-x86_64",
+    "-machine",
+    "q35",
+    "-m",
+    "1024",
+    "-drive",
+    `if=pflash,format=raw,readonly=on,file=${input.ovmfCodePath}`,
+    "-drive",
+    `if=pflash,format=raw,file=${input.ovmfVarsPath}`,
+    "-drive",
+    `file=${input.outputImagePath},format=raw,if=virtio`,
+    "-nographic",
+  ];
+  if (input.serialLogPath !== undefined && input.serialLogPath.trim().length > 0) {
+    return {
+      ok: true,
+      args: [...args, "-serial", `file:${input.serialLogPath}`],
+    };
+  }
+  return { ok: true, args };
+}
+
+/**
  * Plan FAT composite image assembly. Fails closed on missing artifacts,
  * namespace violations, or unsafe sizes.
  */
@@ -116,6 +167,10 @@ export function planAssembleFatImage(
       ok: false,
       error: "grubCfgContent still contains @KERNEL@/@INITRD@ placeholders",
     };
+  }
+  const grubEfiLocalPath = input.grubEfiLocalPath?.trim();
+  if (grubEfiLocalPath !== undefined && grubEfiLocalPath.length === 0) {
+    return { ok: false, error: "grubEfiLocalPath must be non-empty when provided" };
   }
 
   const byName = new Map<string, ResolvedArtifact>();
@@ -161,6 +216,7 @@ export function planAssembleFatImage(
   const grubCfgStagingPath = `${input.stagingDir.replace(/\/+$/, "")}/grub.cfg`;
   const mtoolsImageSpecifier = input.outputImagePath;
   const steps: AssembleStep[] = [];
+  const grubEfiEmbedded = grubEfiLocalPath !== undefined;
 
   steps.push({
     kind: "command",
@@ -170,8 +226,7 @@ export function planAssembleFatImage(
     },
   });
 
-  // Whole-file FAT32, volume label ZETA_MB (matches grub.cfg root=LABEL=ZETA_MULTIBOOT
-  // intent; LABEL length capped at 11 for FAT — use ZETA_MB).
+  // Whole-file FAT32, volume label ZETA_MB (FAT label ≤11 chars).
   steps.push({
     kind: "command",
     command: {
@@ -185,6 +240,10 @@ export function planAssembleFatImage(
   dirsNeeded.add("/boot/grub");
   dirsNeeded.add("/boot/iso");
   dirsNeeded.add("/payloads");
+  if (grubEfiEmbedded) {
+    dirsNeeded.add("/EFI");
+    dirsNeeded.add("/EFI/BOOT");
+  }
   for (const item of input.plan.items) {
     for (const d of parentDirPaths(item.imagePath)) {
       dirsNeeded.add(d);
@@ -226,6 +285,36 @@ export function planAssembleFatImage(
     },
   });
 
+  if (grubEfiEmbedded) {
+    // Removable-media path: firmware loads BOOTX64.EFI then GRUB reads sibling grub.cfg.
+    steps.push({
+      kind: "command",
+      command: {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          mtoolsImageSpecifier,
+          grubCfgStagingPath,
+          mtoolsDest(GRUB_EFI_CFG_PATH),
+        ],
+      },
+    });
+    steps.push({
+      kind: "command",
+      command: {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          mtoolsImageSpecifier,
+          grubEfiLocalPath!,
+          mtoolsDest(GRUB_EFI_IMAGE_PATH),
+        ],
+      },
+    });
+  }
+
   for (const item of input.plan.items) {
     const art = byName.get(item.name)!;
     steps.push({
@@ -242,6 +331,7 @@ export function planAssembleFatImage(
     steps,
     mtoolsImageSpecifier,
     grubCfgStagingPath,
+    grubEfiEmbedded,
   };
 }
 
@@ -296,4 +386,16 @@ export function executeAssembleFatImage(
     completed += 1;
   }
   return { ok: true, completedSteps: completed };
+}
+
+/**
+ * Assert an `mdir -/` listing contains the EFI embed paths (FAT 8.3 tolerant).
+ */
+export function mdirListingHasGrubEfiEmbed(listing: string): boolean {
+  const hasEfiBoot = /EFI/i.test(listing) && /BOOT/i.test(listing);
+  // BOOTX64.EFI → often "BOOTX64 EFI" or long name bootx64.efi
+  const hasLoader = /BOOTX64/i.test(listing) || /bootx64\.efi/i.test(listing);
+  // sibling grub.cfg under EFI/BOOT
+  const hasCfg = /grub\s+cfg/i.test(listing) || /grub\.cfg/i.test(listing);
+  return hasEfiBoot && hasLoader && hasCfg;
 }

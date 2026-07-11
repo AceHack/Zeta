@@ -16,13 +16,14 @@ only the installer) with a GRUB menu + a declarative payload list.
   SHA-256). **No binaries in the repo** (no-binary-in-proof-lineage): images are fetched + verified at
   build time, never committed.
 - [`grub.cfg`](grub.cfg) — the GRUB2 menu template copied onto the USB ESP.
-- Planner + assemble (landed): [`src/Core.TypeScript/installer/multiboot/`](../../../src/Core.TypeScript/installer/multiboot/)
+- Planner + assemble + GRUB EFI embed (landed): [`src/Core.TypeScript/installer/multiboot/`](../../../src/Core.TypeScript/installer/multiboot/)
   — parse manifest, plan `/boot/` vs `/payloads/` layout, resolve SHA256SUMS latest, fill
-  `@KERNEL@`/`@INITRD@`, fetch/verify URL payloads, assemble FAT composite via qemu-img + mtools.
+  `@KERNEL@`/`@INITRD@`, fetch/verify URL payloads, assemble FAT composite via qemu-img + mtools,
+  optional `--grub-efi` → `/EFI/BOOT/BOOTX64.EFI` + `/EFI/BOOT/grub.cfg`.
   Hermetic: `bun …/build-multiboot-usb.ts --plan`. Assemble:
-  `bun …/build-multiboot-usb.ts --assemble --output zeta-multiboot.img --local zeta-installer=<iso> …`.
-- GRUB EFI/BIOS embed (`grub-install`) — **next slice** (layout image is mdir/qemu-img
-  inspectable today; menu boot needs the embed).
+  `bun …/build-multiboot-usb.ts --assemble --output zeta-multiboot.img --local zeta-installer=<iso> --grub-efi=<BOOTX64.EFI> …`.
+- QEMU UEFI **menu boot** with a real GRUB EFI binary (from `grub-mkimage` / nix) — operator
+  recipe via `planQemuUeFiBootArgs`; CI gate for live menu still optional.
 
 ## What's declared today
 
@@ -74,26 +75,29 @@ large (Zeta ISO + MyNode ≈ several GB). Verifiability wins.
 ## Build
 
 1. `nix build .#installer-iso` (the Zeta installer ISO) — note the result path.
-2. Resolve kernel/initrd paths inside that ISO (or pass known paths):
+2. Resolve kernel/initrd paths inside that ISO (or pass known paths), and supply a GRUB
+   x86_64-efi binary (from `grub-mkimage` / nix — **not** vendored in-repo):
    `bun …/build-multiboot-usb.ts --assemble --output zeta-multiboot.img \
      --local zeta-installer=result/iso/*.iso \
+     --grub-efi /path/to/BOOTX64.EFI \
      --kernel boot/nix/store/…/bzImage --initrd boot/nix/store/…/initrd`
    Optional: omit MyNode `--local` to fetch+verify latest from SHA256SUMS; or
    `--require-local --local mynode-model-two=<path>` for air-gapped/hermetic runs.
    `--dry-run` prints the qemu-img/mtools step plan without writing the image.
-3. `dd if=zeta-multiboot.img of=/dev/<usb> bs=4M status=progress conv=fsync` — dumb flash of the
-   FAT layout (GRUB embed still a follow-up before physical menu boot).
-4. Inspect in CI/dev: `mdir -/ -i zeta-multiboot.img` (must show `/boot/iso/…` + `/payloads/…`).
+3. `dd if=zeta-multiboot.img of=/dev/<usb> bs=4M status=progress conv=fsync` — dumb flash.
+4. Inspect: `mdir -/ -i zeta-multiboot.img` (must show `/boot/iso/…`, `/payloads/…`, and with
+   `--grub-efi` also `/EFI/BOOT/BOOTX64.EFI`). QEMU UEFI: use `planQemuUeFiBootArgs` + OVMF
+   (`edk2-x86_64-code.fd`) with a **real** GRUB EFI (stub bytes only prove layout).
 
 ## Honest scope / status
 
-Landed and reviewable: manifest + GRUB template + pure planner + **fetch/verify + FAT assemble**
-(`planAssembleFatImage` / `resolveLatestPins` / `--assemble`). Unit tests stay hermetic; mtools
-smoke builds a tiny real image when qemu-img+mtools are on PATH. **Not yet:** `grub-install`
-EFI/BIOS embed (needed for QEMU GRUB-menu boot and physical stick boot). Identity namespace: Zeta
-under `/boot/`, flash payloads under `/payloads/` only (see
-`docs/security/USB-IDENTITY-THREAT-MODEL.md`). `@KERNEL@`/`@INITRD@` filled at assemble via
-`--kernel`/`--initrd` or `--iso-listing`.
+Landed: manifest + GRUB template + planner + fetch/verify + FAT assemble + **EFI embed path**
+(`--grub-efi` → `/EFI/BOOT/BOOTX64.EFI` + removable-media `/EFI/BOOT/grub.cfg`). Unit tests
+hermetic; mtools smoke embeds a stub EFI when qemu-img+mtools are on PATH. **Not vendored:**
+the GRUB EFI binary itself (operator/nix/`grub-mkimage`). BIOS `grub-install` core.img path
+not landed (UEFI removable-media first). Identity namespace: Zeta under `/boot/`, flash
+payloads under `/payloads/` only (see `docs/security/USB-IDENTITY-THREAT-MODEL.md`).
+`@KERNEL@`/`@INITRD@` filled at assemble via `--kernel`/`--initrd` or `--iso-listing`.
 
 ## Pointers
 

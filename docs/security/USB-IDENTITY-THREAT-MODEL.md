@@ -223,19 +223,18 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 
 ## 8. Software-only next slices (no metal)
 
-1. **GRUB EFI/BIOS embed** — `grub-install` (or staged `BOOTX64.EFI`) onto the
-   assembled FAT composite so QEMU can menu-boot; layout assemble already lands
-   (`planAssembleFatImage` / `--assemble`).
-2. **Credential binding model tests** — injectable factors
+1. **Credential binding model tests** — injectable factors
    (`usbUuid` / `usbISerial` / `uefiKeyfile` / `tpmSeal`); assert which
    reformat/swap cases decrypt.
-3. **Promote cluster/federation vocabulary** into operational glossary
+2. **Promote cluster/federation vocabulary** into operational glossary
    (SEED/GLOSSARY) from Iris Genesis Concepts — so threat reviews cite
    one canon.
-4. **Per-federation threat-model stub template** — same section shape
+3. **Per-federation threat-model stub template** — same section shape
    as §3, filled per Lodge/charter when a federation is chartered.
+4. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
+   built with a real `grub-mkimage` EFI (layout+embed path already lands).
 
-Planner + `/boot/` vs `/payloads/` identity namespace + FAT assemble: landed
+Planner + `/boot/` vs `/payloads/` + FAT assemble + `--grub-efi` embed: landed
 (`planMultibootUsb` / `planAssembleFatImage`).
 
 Phase-3 QEMU escapes already removed (rebuild ISO; mock-auth +

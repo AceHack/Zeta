@@ -9,7 +9,11 @@ import { resolveLatestFromSha256Sums, versionKeyFromFilename } from "./sha256sum
 import {
   estimateImageSizeBytes,
   executeAssembleFatImage,
+  mdirListingHasGrubEfiEmbed,
   planAssembleFatImage,
+  planQemuUeFiBootArgs,
+  GRUB_EFI_CFG_PATH,
+  GRUB_EFI_IMAGE_PATH,
 } from "./assemble.ts";
 import { bindResolvedArtifacts, resolveLatestPins } from "./resolve-artifacts.ts";
 
@@ -203,6 +207,64 @@ describe("planAssembleFatImage", () => {
     expect(mcopyArgs.some((a) => a.includes("::/boot/iso/zeta-installer.iso"))).toBe(true);
     expect(mcopyArgs.some((a) => a.includes("::/payloads/mynode-model-two.img.gz"))).toBe(true);
     expect(mcopyArgs.some((a) => a.includes("::/boot/grub/grub.cfg"))).toBe(true);
+    expect(assembled.grubEfiEmbedded).toBe(false);
+  });
+
+  it("embeds EFI/BOOT/BOOTX64.EFI + EFI grub.cfg when grubEfiLocalPath set", () => {
+    const planned = planMultibootUsb({
+      entries: [
+        {
+          name: "zeta-installer",
+          kind: "grub-iso-local",
+          flakeAttr: "nix:.#installer-iso",
+        },
+      ],
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) return;
+
+    const assembled = planAssembleFatImage({
+      plan: planned.plan,
+      artifacts: [
+        {
+          name: "zeta-installer",
+          imagePath: "/boot/iso/zeta-installer.iso",
+          localPath: "/tmp/zeta.iso",
+          sizeBytes: 1024,
+        },
+      ],
+      outputImagePath: "/tmp/zeta-multiboot.img",
+      imageSizeBytes: 4 * 1024 * 1024,
+      stagingDir: "/tmp/multiboot-staging",
+      grubCfgContent: "menuentry test { true }\n",
+      grubEfiLocalPath: "/tmp/BOOTX64.EFI",
+    });
+    expect(assembled.ok).toBe(true);
+    if (!assembled.ok) return;
+    expect(assembled.grubEfiEmbedded).toBe(true);
+    const mcopyArgs = assembled.steps
+      .filter((s) => s.kind === "command" && s.command.command === "mcopy")
+      .map((s) => (s.kind === "command" ? s.command.args.join(" ") : ""));
+    expect(mcopyArgs.some((a) => a.includes(`::${GRUB_EFI_IMAGE_PATH}`))).toBe(true);
+    expect(mcopyArgs.some((a) => a.includes(`::${GRUB_EFI_CFG_PATH}`))).toBe(true);
+    const mmdArgs = assembled.steps
+      .filter((s) => s.kind === "command" && s.command.command === "mmd")
+      .map((s) => (s.kind === "command" ? s.command.args.join(" ") : ""));
+    expect(mmdArgs.some((a) => a.includes("::/EFI/BOOT"))).toBe(true);
+  });
+
+  it("planQemuUeFiBootArgs builds OVMF argv", () => {
+    const planned = planQemuUeFiBootArgs({
+      outputImagePath: "/tmp/zeta-multiboot.img",
+      ovmfCodePath: "/opt/homebrew/share/qemu/edk2-x86_64-code.fd",
+      ovmfVarsPath: "/tmp/ovmf-vars.fd",
+      serialLogPath: "/tmp/serial.log",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) return;
+    expect(planned.args[0]).toBe("qemu-system-x86_64");
+    expect(planned.args.join(" ")).toContain("edk2-x86_64-code.fd");
+    expect(planned.args.join(" ")).toContain("zeta-multiboot.img");
   });
 
   it("rejects unresolved grub placeholders and missing artifacts", () => {
@@ -320,10 +382,12 @@ describe("executeAssembleFatImage mtools smoke", () => {
     const tmpRoot = mkdtempSync(join(tmpdir(), "multiboot-assemble-"));
     const isoPath = join(tmpRoot, "zeta.iso");
     const payloadPath = join(tmpRoot, "payload.img.gz");
+    const efiPath = join(tmpRoot, "BOOTX64.EFI");
     const outImg = join(tmpRoot, "zeta-multiboot.img");
     const stagingDir = join(tmpRoot, "staging");
     writeFileSync(isoPath, "fake-iso-bytes");
     writeFileSync(payloadPath, "fake-payload-bytes");
+    writeFileSync(efiPath, "fake-grub-efi-stub");
     mkdirSync(stagingDir, { recursive: true });
 
     const planned = planMultibootUsb({
@@ -365,9 +429,11 @@ describe("executeAssembleFatImage mtools smoke", () => {
       imageSizeBytes: 4 * 1024 * 1024,
       stagingDir,
       grubCfgContent: "menuentry test { true }\n",
+      grubEfiLocalPath: efiPath,
     });
     expect(assembled.ok).toBe(true);
     if (!assembled.ok) return;
+    expect(assembled.grubEfiEmbedded).toBe(true);
 
     const executed = executeAssembleFatImage(assembled.steps, {
       writeFile: (path, content) => {
@@ -390,5 +456,6 @@ describe("executeAssembleFatImage mtools smoke", () => {
     expect(out).toMatch(/mynode-model-two\.img\.gz/i);
     // FAT 8.3 lists grub.cfg as "grub     cfg"
     expect(out).toMatch(/grub\s+cfg/i);
+    expect(mdirListingHasGrubEfiEmbed(out)).toBe(true);
   });
 });

@@ -1,5 +1,12 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, existsSync, writeFileSync, unlinkSync } from "node:fs";
+import {
+  mkdirSync,
+  readFileSync,
+  existsSync,
+  writeFileSync,
+  unlinkSync,
+  statSync
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -28,7 +35,7 @@ function usage() {
     "  build-multiboot-usb.ts --assemble --output <img> --local name=path ...",
     "    [--manifest <path>] [--grub-cfg <path>] [--cache-dir <dir>]",
     "    [--kernel <iso-rel>] [--initrd <iso-rel>] [--iso-listing <path>]",
-    "    [--dry-run] [--require-local]"
+    "    [--grub-efi <BOOTX64.EFI>] [--dry-run] [--require-local]"
   ].join(`
 `));
   process.exit(2);
@@ -136,7 +143,12 @@ async function runAssemble(opts) {
     console.error("assemble requires --kernel and --initrd (or --iso-listing) to fill grub.cfg placeholders");
     return 2;
   }
-  const template = readFileSync(opts.grubCfgPath, "utf8"), grubCfgContent = renderGrubCfgTemplate(template, { kernel, initrd }), imageSizeBytes = estimateImageSizeBytes(bound.artifacts), stagingDir = join(opts.cacheDir, "staging");
+  const template = readFileSync(opts.grubCfgPath, "utf8"), grubCfgContent = renderGrubCfgTemplate(template, { kernel, initrd }), grubEfiPath = opts.grubEfiPath !== void 0 ? resolve(opts.grubEfiPath) : void 0;
+  if (grubEfiPath !== void 0 && !existsSync(grubEfiPath)) {
+    console.error(`--grub-efi not found: ${grubEfiPath}`);
+    return 2;
+  }
+  const efiExtra = grubEfiPath === void 0 ? [] : [{ sizeBytes: statSync(grubEfiPath).size }], imageSizeBytes = estimateImageSizeBytes([...bound.artifacts, ...efiExtra]), stagingDir = join(opts.cacheDir, "staging");
   mkdirSync(stagingDir, { recursive: !0 });
   const assembled = planAssembleFatImage({
     plan: planned.plan,
@@ -144,7 +156,8 @@ async function runAssemble(opts) {
     outputImagePath: resolve(opts.outputImagePath),
     imageSizeBytes,
     stagingDir,
-    grubCfgContent
+    grubCfgContent,
+    ...grubEfiPath === void 0 ? {} : { grubEfiLocalPath: grubEfiPath }
   });
   if (!assembled.ok) {
     console.error(`assemble plan: ${assembled.error}`);
@@ -155,6 +168,7 @@ async function runAssemble(opts) {
       rowId: "multiboot-usb-assemble-dry-run",
       outputImagePath: resolve(opts.outputImagePath),
       imageSizeBytes,
+      grubEfiEmbedded: assembled.grubEfiEmbedded,
       artifacts: bound.artifacts.map((a) => ({
         name: a.name,
         imagePath: a.imagePath,
@@ -177,7 +191,8 @@ async function runAssemble(opts) {
     imageSizeBytes,
     sha256: digest,
     completedSteps: executed.completedSteps,
-    note: "FAT layout assembled; grub-install EFI/BIOS embed is a follow-up"
+    grubEfiEmbedded: assembled.grubEfiEmbedded,
+    note: assembled.grubEfiEmbedded ? "FAT layout + EFI/BOOT/BOOTX64.EFI embedded; QEMU UEFI menu boot needs a real GRUB EFI binary" : "FAT layout assembled; pass --grub-efi <BOOTX64.EFI> to embed UEFI loader"
   }, null, 2));
   return 0;
 }
@@ -205,7 +220,7 @@ function runPlan(manifestPath) {
   return 0;
 }
 async function main(argv) {
-  let mode = null, manifestPath = DEFAULT_MANIFEST, grubCfgPath = DEFAULT_GRUB_CFG, outputImagePath = "", cacheDir = join(REPO_ROOT, ".cache/multiboot"), requireLocal = !1, dryRun = !1, kernel, initrd, isoListingPath;
+  let mode = null, manifestPath = DEFAULT_MANIFEST, grubCfgPath = DEFAULT_GRUB_CFG, outputImagePath = "", cacheDir = join(REPO_ROOT, ".cache/multiboot"), requireLocal = !1, dryRun = !1, kernel, initrd, isoListingPath, grubEfiPath;
   const localByName = new Map;
   for (let i = 0;i < argv.length; i++) {
     const arg = argv[i];
@@ -220,6 +235,10 @@ async function main(argv) {
     } else if (arg === "--grub-cfg") {
       grubCfgPath = argv[++i] ?? "";
       if (grubCfgPath === "")
+        usage();
+    } else if (arg === "--grub-efi") {
+      grubEfiPath = argv[++i] ?? "";
+      if (grubEfiPath === "")
         usage();
     } else if (arg === "--output") {
       outputImagePath = argv[++i] ?? "";
@@ -279,7 +298,8 @@ async function main(argv) {
     dryRun,
     kernel,
     initrd,
-    isoListingPath
+    isoListingPath,
+    grubEfiPath
   });
 }
 if (import.meta.main)
