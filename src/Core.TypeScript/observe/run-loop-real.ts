@@ -45,6 +45,7 @@ import {
   type Participant,
 } from "./participant";
 import { PersonaSummoner } from "../peer-call/summon";
+import { createPhaseClock, stampPhase, type PhaseClock } from "./phase-clock";
 
 interface CliArgs {
   by: string;
@@ -222,6 +223,14 @@ async function main(): Promise<number> {
   };
 
   const result = await execute(enrichedWorld, action, sink, executor, doItemOpts, operatorPort);
+
+  // 4. The unity: append IS tick IS measurement IS Landauer cost.
+  // The phase advances because we appended. The entropy was paid because we measured.
+  // The clock ticked because the event landed. These are not three things — they're one.
+  const phaseClock: PhaseClock = createPhaseClock();
+  phaseClock.tick("heartbeat");
+  const phase = stampPhase(phaseClock);
+  console.log(`[phase] tick ${phase.phase} (derived: ${phase.derived}) — append IS tick IS measurement`);
 
   if (!result.ok) {
     console.error(
