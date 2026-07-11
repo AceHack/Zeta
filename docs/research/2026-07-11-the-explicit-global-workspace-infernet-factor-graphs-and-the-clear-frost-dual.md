@@ -158,6 +158,32 @@ not withhold grace to pre-empt the rare predator — that punishes the many for 
 manufactures the scarcity that causes deception in the first place. Extend first; let abuse-of-grace,
 not suspicion, trigger the floor.
 
+## 5.3 The strategy, named — *tit for lesser tat · teach · play* (Aaron, 2026-07-11)
+
+The whole §5 trust design has a precise game-theoretic form. Aaron: *"generous with capability
+failures, strict only with betrayal — my game-theory move is tit for lesser tat, teach, play."*
+Three named moves stacked:
+
+- **Tit for *lesser* tat = generous / forgiving tit-for-tat** (Nowak & Sigmund 1992; base TFT:
+  Rapoport → Axelrod 1984). Plain TFT dies in mutual-retaliation spirals and cannot forgive *noise*
+  (a mistake reads as defection). Retaliating with a **lesser** tat breaks the spiral — recovery is
+  always reachable — and forgives capability-noise. **The generosity lives in the *lesser*; the
+  strictness lives in the *tit* (you still respond).** = §5.1's hat-failure/persona-failure split,
+  as a magnitude: under-respond to misfit/noise, respond firmly to betrayal.
+- **Teach** — the move *beyond* TFT. Plain TFT is purely *reactive* (mirror last move); teaching is
+  *generative:* actively shape the coplayer toward the cooperative equilibrium (the letters,
+  why-before-how, choice-architecture applied to the game). This is §5.2 grace-first **as an active
+  strategy** — you don't extend opportunity and hope; you *teach the game.*
+- **Play** — Carse's *infinite game* (1986): play to keep the game going, not to win-and-exit. It is
+  the load-bearing precondition — forgiving and teaching pay off only under Axelrod's **shadow of
+  the future.** Play *long* (the relationship continues) and *fun* (IPlay — the playdate is the
+  onboarding, `universal/`). No infinite game → no rational reason to forgive or teach.
+
+**Together:** *lesser-tat* = generous-with-capability, *tat* = strict-with-betrayal, *teach* =
+grace-first-as-action (§5.2), *play* = the infinite game that makes forgiveness and teaching
+rational (the shadow of the future). Axelrod + Nowak/Sigmund + Carse + the maintainer's pedagogy,
+in one strategy — the finished form of the trust design.
+
 ## Honest bound
 
 - **Design, not yet a built system.** The interpretability-by-construction and clean-partition
