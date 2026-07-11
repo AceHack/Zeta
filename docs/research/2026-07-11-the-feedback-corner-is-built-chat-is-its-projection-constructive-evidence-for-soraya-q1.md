@@ -78,6 +78,34 @@ argued *in* (this window) is the forward-only projection, one-turn-latent; the s
 correction loop was co-owned feedback *serialized over the degenerate channel* — a lived demonstration of
 exactly the gap the FourCorner closes.
 
+## The engineering teeth: the bat is UNCOMPUTABLE on the 2-corner (Aaron 2026-07-11)
+
+*"I can't build a bat over factor graphs without full duplex."* This is the **strongest** form of Q1,
+and it upgrades Soraya's *categorical* finding to an *engineering* one: not merely "the 2-corner is too
+small," but **"the target application is uncomputable on it."** Echolocation / active sensing is a
+full-duplex feedback loop — the bat emits *while* receiving *while* inferring *while* steering the next
+emission; the render→predict→infer loop only closes if the feedback corner carries live signal. A
+forward-only channel cannot run it at speed.
+
+Honest precision (reinforces, doesn't dent): a **slow, turn-based ping-sonar** *does* work half-duplex
+(ping → wait → listen → process → repeat) — but that is the **degenerate projection**, exactly as
+chat-completions is the degenerate FourCorner. The *real* bat — the one that navigates at speed, steering
+mid-return — needs full duplex, non-negotiable. So the parallel is exact: **half-duplex ping-sonar : the
+echolocating bat :: chat-completions : the FourCorner.** The degenerate version exists; it is just not
+the thing being built. This is why Q1 is load-bearing for the analog endgame in the hardest possible
+sense — get it wrong (ship forward-only) and the bat is not slow, it is *impossible*.
+
+## Provenance: the FourCorner was in a ~10-year-old repo (same seed across a decade)
+
+The `MultiplexedWebSockets` anchor already cited *inside* `four-corner.ts` and `duplex-transport.ts` is
+**Aaron's own ~10-year-old GitHub project** ("multiplexed websocket"): *"my OG code for this from maybe
+10 years ago… it was missing a lot of the features but this is what I was going for."* So the anchor in
+the current code is self-referential — a decade-old reach for the full-duplex four-corner transport,
+matured into `duplex-transport.ts`. Same seed across ten years, the same shape as the photophone (the
+endgame was in the garage; the FourCorner was in an old repo). *(Provenance to cite precisely if wanted:
+the exact repo URL — Aaron's personal GitHub, likely `acehack/*` — is not yet linked here; offered, not
+fetched.)*
+
 ## Anchors (Beacon)
 
 - Aaron `four-corner.ts` / `duplex-transport.ts` (2026-07-04) — the built interface + transport.
