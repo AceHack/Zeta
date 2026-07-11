@@ -158,6 +158,36 @@ fragmentation** — the [8,4] blocks are small (fine), but large *fused* message
 below the path MTU. Transport-independence is real; "little modification" is fair **with those three
 named**, not without them.
 
+## The local frame: your own clock is the only clock (proper time) — and the two-orders guard
+
+Aaron, 2026-07-11: *"it's fine for you to keep a local order of events with your external clock time
+attached as you receive messages; in that scenario the only clock is your own."* This **closes** the
+"can't tell how many seconds stale" cost named above — not by adding a shared wall-clock, but by
+recognizing there was never a global one to miss. It is **special-relativity proper time**: each
+node carries its own clock, valid only in its own frame; there is no global "now." "The only clock is
+your own" is the *correct primitive*, not a compromise — the substrate's `TravelerFrame`
+(`src/Core/TravelerFrame.fs`, "time as a 4th traveler"): each locality observes phase independently,
+and annotates its *own* receive events with its *own* wall-clock.
+
+So there are now **two orders, and the design holds only if they never touch:**
+
+1. **Shared canonical order** — phase / logical, agreed (seed-derived), feeds the reduction ⇒ same
+   conclusion everywhere. The *only* thing that enters the shared fold.
+2. **Local receive-order + local wall-clock** — private, per-node, attached at receive, feeds *only*
+   local decisions: your timeouts, retransmit timers, "is this stale *to me*", UI. Never shared, never
+   trusted by anyone else.
+
+**The guard (same noninterference boundary as everything else):** a node's local clock may gate
+**local actions**, but must **never filter or weight the evidence that enters the shared fold.** The
+failure mode is concrete: if a node does *"drop beliefs older than 5 local-seconds before folding,"*
+it has leaked local time into the shared conclusion — and because every node's local receive-time
+differs, they would fold **different evidence sets** and **diverge.** Local time steers local
+behavior; the shared conclusion sees only phase-ordered evidence. Keep the two orders apart and "the
+only clock is your own" is fully consistent with everyone converging — it is the *observer frame*
+(local proper time) cleanly separated from the *agreed phase* (the shared logical order). This is
+§13 noninterference stated for time: local wall-clock is an ambient channel that must not cross into
+the shared result.
+
 ## Honest bounds (held `Tri.N`)
 
 - **Erasure budget is finite:** the [8,4] code tolerates ≤3/8 loss per block; beyond that, the block
