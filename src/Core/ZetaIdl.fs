@@ -278,14 +278,14 @@ module ZetaIdl =
 
     /// Generate clean, type-safe F# interface code from the DynamicValue IDL AST.
     let generateFSharp (ast: DynamicValue) : string =
-        let sb = System.Text.StringBuilder()
+        let lines = ResizeArray<string>()
         let interfaces = getArray "interfaces" ast
         for i in interfaces do
             let name = getString "name" i
-            sb.AppendLine(sprintf "type %s =" name) |> ignore
+            lines.Add(sprintf "type %s =" name)
             let methods = getArray "methods" i
             if List.isEmpty methods then
-                sb.AppendLine("    class end") |> ignore
+                lines.Add("    class end")
             else
                 for m in methods do
                     let mName = getString "name" m
@@ -301,5 +301,5 @@ module ZetaIdl =
                                 let aType = getString "type" arg |> mapType
                                 sprintf "%s:%s" aName aType)
                             |> String.concat " * "
-                    sb.AppendLine(sprintf "    abstract member %s : %s -> %s" mName argsStr retType) |> ignore
-        sb.ToString().TrimEnd()
+                    lines.Add(sprintf "    abstract member %s : %s -> %s" mName argsStr retType)
+        String.concat "\n" lines

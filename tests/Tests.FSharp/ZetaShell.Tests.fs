@@ -6,13 +6,30 @@ open System.Text
 open global.Xunit
 open Zeta.Core
 open Zeta.Cli
+open Zeta.Tests.Support
+
+let private deleteDirectoryWithRetry (dir: string) =
+    let rec loop attempts =
+        if Directory.Exists dir then
+            try
+                Directory.Delete(dir, true)
+            with
+            | :? IOException when attempts > 0 ->
+                Threading.Thread.Sleep 50
+                loop (attempts - 1)
+            | :? UnauthorizedAccessException when attempts > 0 ->
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
+                Threading.Thread.Sleep 50
+                loop (attempts - 1)
+
+    loop 10
 
 [<Fact>]
 let ``ZetaShell: runs REPL session with schema reification and data mutations`` () =
-    let dir = Path.Combine(Path.GetTempPath(), sprintf "zs-test-%s" (Guid.NewGuid().ToString("N")))
-    Directory.CreateDirectory dir |> ignore
+    let dir = DeterministicTestPath.nextDir "zs-test"
     try
-        let repo = new LibGit2Sharp.Repository(LibGit2Sharp.Repository.Init(dir))
+        use repo = new LibGit2Sharp.Repository(LibGit2Sharp.Repository.Init(dir))
         let log = Zeta.Core.FSharp.Git.GitDeltaLog<DvKey>(repo, CborEntryCodec<DvKey>(DvKey.value, DvKey.ofValue)) :> IRefDeltaLog<DvKey>
         
         // Pre-seed an initial commit so we can branch
@@ -36,7 +53,6 @@ let ``ZetaShell: runs REPL session with schema reification and data mutations`` 
             ZetaShell.runShell log
             
             let output = stdout.ToString()
-            File.WriteAllText("/tmp/repl-debug.txt", output)
             Assert.Contains("Welcome to zs (ZetaShell) Interactive Interpreter", output)
             Assert.Contains("Reifying type for User...", output)
             Assert.Contains("type IUser =", output)
@@ -48,4 +64,4 @@ let ``ZetaShell: runs REPL session with schema reification and data mutations`` 
             stdin.Dispose()
             stdout.Dispose()
     finally
-        Directory.Delete(dir, true)
+        deleteDirectoryWithRetry dir
