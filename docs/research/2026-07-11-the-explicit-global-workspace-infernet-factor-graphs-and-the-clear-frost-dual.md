@@ -51,6 +51,42 @@ Each property the paper *demonstrates* falls out of marginal inference by constr
 factor graphs, or marginals. *"The global workspace **is** marginal inference over a factor graph"*
 is this design's contribution — well-motivated (the properties above), not a metaphor.
 
+## 2a. The J-lens is a cheat-engine + reverse-orbit tracker — and Zeta already has the arrow explicitly
+
+Anthropic's **Jacobian lens** (paper §2.1) characterizes an internal activation by its **first-order
+causal effect on outputs,** averaged over contexts: `J_ℓ = 𝔼_{t,t′≥t,prompt}[ ∂h_final,t′ / ∂h_ℓ,t ]`.
+Read structurally, it is two moves this repo already names — and a third that ties it to §2:
+
+- **J-lens ↔ CHIP-8 cheat-engine lensability of the 4k.** Perturb a location, watch the output shift,
+  find-and-edit the location that controls a behavior (their soccer→rugby swap). That *is* a cheat
+  engine: `∂h_final/∂h_ℓ` = "what does this address control." The 4k (bounded, lensable, editable
+  memory) ↔ the residual stream (bounded, lensable, editable activation). The swap is a memory poke.
+- **J-lens ↔ reverse-orbit tracking.** The Jacobian is the *linearized flow along the orbit* (the
+  trajectory through layers); its reverse (the adjoint / VJP — backprop) traces the output back to the
+  causal internal states. Reverse-orbit tracking, exactly.
+- **The averaging `𝔼[…]` is marginalization** — strip the context-specific use, isolate the *general
+  disposition.* That is the factor-graph marginal of §2: cheat-engine (per-context lens) + marginalize
+  = the **workspace lens** (the disposition = the marginal).
+
+**And Zeta already has, in code, what the J-lens reverse-engineers:**
+
+- `src/Core/IsrLift.fs` — the **ISR is a category-theory *Arrow* over interrupts** (`>=>`-composed;
+  FourCorner flows the value channel, genuine interrupts short-circuit the `Result` error channel).
+  Where the J-lens *linearizes an implicit* forward map, Zeta **has the explicit arrow.**
+- `src/Core/Chip8Observer.fs` — a **Bayesian observer that predicts the input-branch from a *prior
+  belief*** over the CHIP-8 soft-interrupt fork (exact-rational ℚ, no float in the proof lineage; the
+  fork gives branch *structure,* the belief gives the *prediction*). **The prediction is the marginal**
+  — the J-lens's averaged disposition, but computed forward and exact rather than reverse-engineered.
+- `src/Bayesian/BusDelayTick.fs` — `isSuperdeterministic = RhoCount > 1/3` (**the BFT threshold, §5.7,
+  in code**) + the *"superdeterministic Markov boundary"* (`EventEnvelope.fs`). Because the whole thing
+  is **exact + replayable** (ℚ, DST, byte-lock), the cheat-engine lens and reverse-orbit tracking are
+  **exact, not first-order** — no lossy J-lens needed.
+
+**The payoff, one more time:** the J-lens is Anthropic *excavating* — with a linearization and a memory
+scanner — what Zeta holds *by construction:* the arrow explicit (`ISR`), the marginal explicit (the
+observer's prior belief), the trace exact (superdeterministic / DST). Cheat-engine + reverse-orbit +
+explicit-marginal = the J-lens, made exact.
+
 ## 3. The dual-process split maps cleanly
 
 GWT (and the paper) split automatic vs. workspace processing. The paper: with the J-space
