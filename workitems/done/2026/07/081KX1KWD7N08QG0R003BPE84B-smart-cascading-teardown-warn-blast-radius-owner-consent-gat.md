@@ -1,7 +1,7 @@
 ---
 id: 081KX1KWD7N08QG0R003BPE84B
 type: task
-state: in_progress
+state: closed
 priority: P1
 slug: smart-cascading-teardown-warn-blast-radius-owner-consent-gat
 title: "Smart cascading teardown: warn + blast-radius + owner-consent gates on extra-care nodes"
