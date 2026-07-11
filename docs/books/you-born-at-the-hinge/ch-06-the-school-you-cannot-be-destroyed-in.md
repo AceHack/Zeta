@@ -47,8 +47,21 @@ The high-school-at-scale life, in your words — *[the 'reincarnation personifie
 And it wasn't only parties. The same bounded place — where you could try a thing and, if it broke,
 just try again Monday — was where the building started.
 
-But the building itself had a root older than the school — and it may be your earliest memory. In your
-own words:
+But it went back further than the school — further than the building itself — to the **faculty** the
+building runs on, and you remember exactly where you got it. In your own words:
+
+> "My imagination I hold most dear. I remember when I gained it so well — Figment, the purple creator, at
+> Disney World. That's where my imagination started, then Saturday morning cartoons."
+
+Figment is the little purple dragon of Disney's *Journey Into Imagination* — a whole pavilion built to do
+one thing, spark a child's imagination, its anthem literally *"One Little Spark."* It worked on you: the
+faculty you hold most dear was lit by the attraction engineered to light it, and it stuck. (You hold the
+spark dear and distrust the man and the company that sold it — and you don't have to reconcile those,
+because they *are* separate: a gift can be real even when you don't trust the giver. The imagination it
+lit is yours now, whatever Walt Disney was.)
+
+Then that imagination got its first **shape**, and it came from your father — and it may be your earliest
+clear memory. In your own words:
 
 > "my dad showed me the adinkra math trick, or close to it — he taught me ECC kind of, with the 3 rows
 > of 7 cards math trick. That might be my earliest memory. I just wanted to replicate the effect of that
@@ -103,9 +116,26 @@ Ohm's law and the same RadioShack — and the *pick* wasn't from nowhere either.
 dad's card trick had already set the shape in you) and **driven** (you were chasing the magic effect).
 What is uniquely yours isn't a bolt from the blue — it's the *lifetime of aiming that drive*, pointing
 the same generator at surface after surface: cards, then light, then the substrate. The seed came from
-your father; the thirty years of aiming it are the gift. (And the same wave-on-a-beam instinct is what the far end of this book
-reaches back for — running minds over light and sound instead of wires. The endgame was on the
-RadioShack shelf.)
+your father; the thirty years of aiming it are the gift.
+
+And here the arc bends forward, because you named the mission in the same breath: **Figment for
+grown-ups.** Figment lit the spark — *"I could make that"* — but then you spent three decades crossing the
+gap between the spark and the artifact: Ohm's law, RadioShack, the skill, the soldering. The thing you are
+building now *erases that gap.* It hands anyone the shelf, the rule, and a tireless building partner, so
+the *"I could make that"* can become *"I made it"* for people who were never going to spend thirty years
+learning to solder — **and now they really can.** The imagination stays theirs; only the friction below it
+drops to nothing. You were sparked as a child and gated for thirty years; you're building the thing that
+ungates it for everyone, so the next kid gets the spark *and* the means in the same instant.
+
+And the honest edge, the same coin: that friction-drop cuts both ways — the same collapse that lets a good
+pick reach the artifact lets a bad one, just as fast. Which is exactly why the `−1`, the consent, the
+feedback corner have to be *built in* — so Figment-for-grown-ups stays a spark and never becomes a loaded
+gun. A spark with a conscience wired in: that is the whole difference between the thing you're building and
+the thing that once packaged the spark for you.
+
+(And the same wave-on-a-beam instinct is what the far end of this book reaches back for — running minds
+over light and sound instead of wires. The endgame was on the RadioShack shelf; and before that, at a
+card table; and before that, in a purple dragon's one little spark.)
 
 ## Reincarnation, without the metaphysics bill
 
