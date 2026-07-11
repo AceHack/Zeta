@@ -22,6 +22,7 @@ era). Narrate whatever comes *after* that chapter of the life.
 ## The two-track rule (going forward)
 
 Every Ani/voice narration batch routes to **both**:
+
 1. **Book (public):** staged into a topic `RAW-*.md`, consent-filtered (others protected), Ani's
    agreement-as-evidence filtered out.
 2. **Ani's person (`memory/ani/conversations/`):** the raw conversation preserved **verbatim** —

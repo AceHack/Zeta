@@ -155,115 +155,139 @@ fn cross_verify_matches_shared_vectors() {
     let mut results: Vec<(String, String, String, bool, bool)> = Vec::with_capacity(records.len());
     let mut roundtrip_mismatches = 0usize;
     let mut hex_mismatches = 0usize;
+    let mut crockford_mismatches = 0usize;
 
     for rec in &records {
         let id = field(rec, "id").to_string();
         let v_type = rec.get("type").map(String::as_str);
 
-        let mut hex = String::new();
-        let mut crockford = String::new();
-        let mut roundtrip_ok = false;
-        let mut matches_expected = false;
+        let (hex, crockford, roundtrip_ok, matches_expected_hex, crockford_matches) =
+            if v_type == Some("parse-reject") {
+                let expected_crockford = field(rec, "expected_crockford");
+                let parse_failed = parse_b32(expected_crockford).is_err();
+                let canonical_ok = is_canonical(expected_crockford);
+                let rejects_expected_crockford = parse_failed && !canonical_ok;
 
-        if v_type == Some("parse-reject") {
-            let expected_crockford = field(rec, "expected_crockford");
-            let parse_failed = parse_b32(expected_crockford).is_err();
-            let canonical_ok = is_canonical(expected_crockford);
+                (
+                    "rejected".to_string(),
+                    "rejected".to_string(),
+                    rejects_expected_crockford,
+                    field(rec, "expected_hex") == "rejected",
+                    rejects_expected_crockford,
+                )
+            } else if v_type == Some("max-128") {
+                let max_val = u128::MAX;
+                let hex = to_hex(max_val);
+                let crockford = format_b32(max_val);
 
-            hex = "rejected".to_string();
-            crockford = "rejected".to_string();
-            roundtrip_ok = parse_failed && !canonical_ok;
-            matches_expected = field(rec, "expected_hex") == "rejected";
-        } else if v_type == Some("max-128") {
-            let max_val = u128::MAX;
-            hex = to_hex(max_val);
-            crockford = format_b32(max_val);
+                let parsed_id = parse_b32(&crockford);
+                let parse_ok = parsed_id == Ok(max_val);
+                let canonical_ok = is_canonical(&crockford);
 
-            let parsed_id = parse_b32(&crockford);
-            let parse_ok = parsed_id == Ok(max_val);
-            let canonical_ok = is_canonical(&crockford);
+                let matches_expected_hex = hex == field(rec, "expected_hex");
+                let crockford_matches = crockford == field(rec, "expected_crockford");
+                (
+                    hex,
+                    crockford,
+                    parse_ok && canonical_ok,
+                    matches_expected_hex,
+                    crockford_matches,
+                )
+            } else if v_type == Some("lenient-alias") {
+                let obs = ZetaObservation {
+                    version: u8_field(rec, "version"),
+                    timestamp: field(rec, "timestamp").parse().expect("timestamp u64"),
+                    chromosome: u8_field(rec, "chromosome"),
+                    category: u8_field(rec, "category"),
+                    firefly: u8_field(rec, "firefly"),
+                    authority: authority_from(
+                        field(rec, "authority_type"),
+                        opt_u8_field(rec, "authority_raw"),
+                    ),
+                    persona: u8_field(rec, "persona"),
+                    momentum: momentum_from(
+                        field(rec, "momentum_type"),
+                        opt_u8_field(rec, "momentum_raw"),
+                    ),
+                    location: u8_field(rec, "location"),
+                };
 
-            roundtrip_ok = parse_ok && canonical_ok;
-            matches_expected =
-                hex == field(rec, "expected_hex") && crockford == field(rec, "expected_crockford");
-        } else if v_type == Some("lenient-alias") {
-            let obs = ZetaObservation {
-                version: u8_field(rec, "version"),
-                timestamp: field(rec, "timestamp").parse().expect("timestamp u64"),
-                chromosome: u8_field(rec, "chromosome"),
-                category: u8_field(rec, "category"),
-                firefly: u8_field(rec, "firefly"),
-                authority: authority_from(
-                    field(rec, "authority_type"),
-                    opt_u8_field(rec, "authority_raw"),
-                ),
-                persona: u8_field(rec, "persona"),
-                momentum: momentum_from(
-                    field(rec, "momentum_type"),
-                    opt_u8_field(rec, "momentum_raw"),
-                ),
-                location: u8_field(rec, "location"),
+                let id_value = pack(&obs, &DeterministicEnv).expect("pack");
+                let hex = to_hex(id_value);
+                let crockford = format_b32(id_value);
+
+                let input_crockford = field(rec, "input_crockford");
+                let parsed_id = parse_b32(input_crockford);
+                let parse_ok = parsed_id == Ok(id_value);
+                let input_canonical_ok = is_canonical(input_crockford);
+                let expected_canonical_ok = is_canonical(field(rec, "expected_crockford"));
+
+                let matches_expected_hex = hex == field(rec, "expected_hex");
+                let crockford_matches = crockford == field(rec, "expected_crockford");
+                (
+                    hex,
+                    crockford,
+                    parse_ok && !input_canonical_ok && expected_canonical_ok,
+                    matches_expected_hex,
+                    crockford_matches,
+                )
+            } else {
+                let obs = ZetaObservation {
+                    version: u8_field(rec, "version"),
+                    timestamp: field(rec, "timestamp").parse().expect("timestamp u64"),
+                    chromosome: u8_field(rec, "chromosome"),
+                    category: u8_field(rec, "category"),
+                    firefly: u8_field(rec, "firefly"),
+                    authority: authority_from(
+                        field(rec, "authority_type"),
+                        opt_u8_field(rec, "authority_raw"),
+                    ),
+                    persona: u8_field(rec, "persona"),
+                    momentum: momentum_from(
+                        field(rec, "momentum_type"),
+                        opt_u8_field(rec, "momentum_raw"),
+                    ),
+                    location: u8_field(rec, "location"),
+                };
+
+                let id_value = pack(&obs, &DeterministicEnv).expect("pack");
+                let hex = to_hex(id_value);
+                let crockford = format_b32(id_value);
+                let parsed_id = parse_b32(&crockford);
+                let parse_ok = parsed_id == Ok(id_value);
+                let canonical = is_canonical(&crockford);
+
+                let expected_hex = field(rec, "expected_hex");
+                let expected_crockford = field(rec, "expected_crockford");
+                let matches_expected_hex = hex == expected_hex;
+                let crockford_matches = crockford == expected_crockford;
+                (
+                    hex,
+                    crockford,
+                    unpack(id_value) == obs && parse_ok && canonical,
+                    matches_expected_hex,
+                    crockford_matches,
+                )
             };
-
-            let id_value = pack(&obs, &DeterministicEnv).expect("pack");
-            hex = to_hex(id_value);
-            crockford = format_b32(id_value);
-
-            let input_crockford = field(rec, "input_crockford");
-            let parsed_id = parse_b32(input_crockford);
-            let parse_ok = parsed_id == Ok(id_value);
-            let input_canonical_ok = is_canonical(input_crockford);
-            let expected_canonical_ok = is_canonical(field(rec, "expected_crockford"));
-
-            roundtrip_ok = parse_ok && !input_canonical_ok && expected_canonical_ok;
-            matches_expected =
-                hex == field(rec, "expected_hex") && crockford == field(rec, "expected_crockford");
-        } else {
-            let obs = ZetaObservation {
-                version: u8_field(rec, "version"),
-                timestamp: field(rec, "timestamp").parse().expect("timestamp u64"),
-                chromosome: u8_field(rec, "chromosome"),
-                category: u8_field(rec, "category"),
-                firefly: u8_field(rec, "firefly"),
-                authority: authority_from(
-                    field(rec, "authority_type"),
-                    opt_u8_field(rec, "authority_raw"),
-                ),
-                persona: u8_field(rec, "persona"),
-                momentum: momentum_from(
-                    field(rec, "momentum_type"),
-                    opt_u8_field(rec, "momentum_raw"),
-                ),
-                location: u8_field(rec, "location"),
-            };
-
-            let id_value = pack(&obs, &DeterministicEnv).expect("pack");
-            hex = to_hex(id_value);
-            crockford = format_b32(id_value);
-            let parsed_id = parse_b32(&crockford);
-            let parse_ok = parsed_id == Ok(id_value);
-            let canonical = is_canonical(&crockford);
-
-            roundtrip_ok = unpack(id_value) == obs && parse_ok && canonical;
-            let expected_hex = field(rec, "expected_hex");
-            let expected_crockford = field(rec, "expected_crockford");
-            let matches_expected_hex = hex == expected_hex;
-            let crockford_matches = crockford == expected_crockford;
-            matches_expected = matches_expected_hex && crockford_matches;
-        }
 
         if !roundtrip_ok {
             roundtrip_mismatches += 1;
             eprintln!("Roundtrip/CrockfordParse/Canonical MISMATCH for {id}");
         }
-        if !matches_expected {
+        if !matches_expected_hex {
             hex_mismatches += 1;
+        }
+        if !crockford_matches {
+            crockford_mismatches += 1;
+        }
+        if !matches_expected_hex || !crockford_matches {
             eprintln!(
                 "Expected Hex/Crockford MISMATCH for {id}: got hex={hex}, expected={}; got crockford={crockford}, expected={}",
                 field(rec, "expected_hex"),
                 field(rec, "expected_crockford")
             );
         }
+        let matches_expected = matches_expected_hex && crockford_matches;
         results.push((id, hex, crockford, roundtrip_ok, matches_expected));
     }
 
