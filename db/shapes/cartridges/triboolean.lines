@@ -7,8 +7,8 @@
 # Full budget ⇒ zero Unknown: uncertainty fully reduced, the third state vanishes structurally.
 meta	name	shape-triboolean
 meta	catalog	shapes
-meta	shape-zetaid	3a641b0c1b810e60a89b0435c5aebd67
-gen	progressive	3a641b0c1b810e60a89b0435c5aebd67	1	7	grid:8x8;order:middle-out
+meta	shape-zetaid	3a641b0c1b810e6070e1b227a4b17c44
+gen	progressive	3a641b0c1b810e6070e1b227a4b17c44	1	7	grid:8x8;order:middle-out
 constant	states	3	Lit, Unlit, Unknown	the whole point: a display that can SAY "not yet measured" instead of lying with 0
 constant	encodings	4	what 2 bits physically give	2 * 2 — the in-file law checks it
 constant	forbidden	1	the spare encoding, refused	encodings minus states: we refuse the spare rather than invent a meaning (the no-fourth-state law)

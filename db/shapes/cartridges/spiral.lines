@@ -3,8 +3,8 @@
 # (StrokeAnim rides the curve), read the generator, change a number, see it again.
 meta	name	shape-spiral
 meta	catalog	shapes
-meta	shape-zetaid	5dd5dc3c6e86a31ed648571c1e86e2dd
-gen	curve	40525ef32783f79737fb5c1672111dc8	1	7	center:32,16;seed:6,0;turn:1/12;growth:1100;steps:36
+meta	shape-zetaid	5dd5dc3c6e86a31e47ba05384509f484
+gen	curve	40525ef32783f797bdc12d122187384c	1	7	center:32,16;seed:6,0;turn:1/12;growth:1100;steps:36
 constant	turn-fraction	1/12	the rotor's turn per step as a rational fraction of a circle	exact intent — twelve steps per revolution reads as a clock face, no float angles
 constant	growth-milli	1025	the spiral's outward growth per step (milli-scale)	1.025x per step reaches radius ~14.6 from seed 6 over 36 steps — visibly logarithmic AND provably inside the 64x32 court (Aaron's eye caught the old 1100: radius ~185, nearly six courts wide — the WHY had claimed containment it never checked)
 issue	court-escape	aaron	closed	CAUGHT BY EYE 2026-06-12 ("it drew outside of my visible window"): growth 1100 escaped the court by ~6x while the constant's WHY claimed containment; fixed to 1025 and the catalog gained THE COURT LAW (every stroke point of every cartridge must lie on the court — the whole bug class is now gated)

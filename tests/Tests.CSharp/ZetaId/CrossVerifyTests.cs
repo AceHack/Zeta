@@ -17,8 +17,8 @@ public class CrossVerifyTests
 
     private static IReadOnlyList<KeyValuePair<string, YamlValue>> MapEntries(YamlValue v, string ctx) =>
         v is YamlValue.YMap m
-            ? m.Entries
-            : throw new InvalidOperationException($"expected Map at {ctx}, got {v.GetType().Name}");
+        ? m.Entries
+        : throw new InvalidOperationException($"expected Map at {ctx}, got {v.GetType().Name}");
 
     private static YamlValue Field(IReadOnlyList<KeyValuePair<string, YamlValue>> entries, string key, string ctx)
     {
@@ -26,6 +26,14 @@ public class CrossVerifyTests
             if (string.Equals(kvp.Key, key, StringComparison.Ordinal))
                 return kvp.Value;
         throw new InvalidOperationException($"missing field '{key}' at {ctx}");
+    }
+
+    private static string? TryFieldStr(IReadOnlyList<KeyValuePair<string, YamlValue>> entries, string key)
+    {
+        foreach (var kvp in entries)
+            if (string.Equals(kvp.Key, key, StringComparison.Ordinal))
+                return kvp.Value is YamlValue.YStr s ? s.Value : null;
+        return null;
     }
 
     private static string AsStr(YamlValue v, string ctx) =>
@@ -71,6 +79,8 @@ public class CrossVerifyTests
             Location = AsInt(Field(m, "location", ctx), $"{ctx}.location"),
             ExpectedHex = AsStr(Field(m, "expected_hex", ctx), $"{ctx}.expected_hex"),
             ExpectedCrockford = AsStr(Field(m, "expected_crockford", ctx), $"{ctx}.expected_crockford"),
+            Type = TryFieldStr(m, "type"),
+            InputCrockford = TryFieldStr(m, "input_crockford"),
         };
     }
 
@@ -152,6 +162,7 @@ public class CrossVerifyTests
     }
 
     [Fact]
+#pragma warning disable MA0051
     public void CrossVerifyTwelveVectorsMatchTsBootstrapHex()
     {
         var root = RepoRoot();
@@ -170,30 +181,84 @@ public class CrossVerifyTests
 
         var results = new Dictionary<string, object>(StringComparer.Ordinal);
         int hexMismatches = 0;
-        int crockfordMismatches = 0;
         int roundtripMismatches = 0;
 
         foreach (var v in vectors)
         {
-            var obs = ToObservation(v);
-            var id = ZetaIdCodec.Pack(obs, DeterministicEnv.Instance);
-            var hex = id.ToString("x32", CultureInfo.InvariantCulture);
-            var crockford = ZetaIdCodec.Format(id);
+            string hex;
+            string crockford;
+            bool roundtripOk;
+            bool matchesExpected;
 
-            var unpacked = ZetaIdCodec.Unpack(id);
-            var roundtripOk = unpacked == obs;
-            var parsedId = ZetaIdCodec.Parse(crockford);
-            var parseOk = parsedId == id;
-            var isCanonical = ZetaIdCodec.IsCanonical(crockford);
+            if (string.Equals(v.Type, "parse-reject", StringComparison.Ordinal))
+            {
+                bool parseFailed = false;
+                try
+                {
+                    ZetaIdCodec.Parse(v.ExpectedCrockford);
+                }
+                catch
+                {
+                    parseFailed = true;
+                }
+                var canonicalOk = ZetaIdCodec.IsCanonical(v.ExpectedCrockford);
 
-            var matchesExpected = string.Equals(hex, v.ExpectedHex, StringComparison.Ordinal);
-            var crockfordMatches = string.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal);
+                hex = "rejected";
+                crockford = "rejected";
+                roundtripOk = parseFailed && !canonicalOk;
+                matchesExpected = string.Equals(v.ExpectedHex, "rejected", StringComparison.Ordinal);
+            }
+            else if (string.Equals(v.Type, "max-128", StringComparison.Ordinal))
+            {
+                var maxVal = UInt128.MaxValue;
+                hex = maxVal.ToString("x32", CultureInfo.InvariantCulture);
+                crockford = ZetaIdCodec.Format(maxVal);
 
-            results[v.Id] = new { hex, crockford, roundtripOk = roundtripOk && parseOk && isCanonical, matchesExpected = matchesExpected && crockfordMatches };
+                var parsedId = ZetaIdCodec.Parse(crockford);
+                var parseOk = parsedId == maxVal;
+                var canonicalOk = ZetaIdCodec.IsCanonical(crockford);
 
-            if (!roundtripOk || !parseOk || !isCanonical) roundtripMismatches++;
+                roundtripOk = parseOk && canonicalOk;
+                matchesExpected = string.Equals(hex, v.ExpectedHex, StringComparison.Ordinal) && string.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal);
+            }
+            else if (string.Equals(v.Type, "lenient-alias", StringComparison.Ordinal))
+            {
+                var obs = ToObservation(v);
+                var id = ZetaIdCodec.Pack(obs, DeterministicEnv.Instance);
+                hex = id.ToString("x32", CultureInfo.InvariantCulture);
+                crockford = ZetaIdCodec.Format(id);
+
+                var parsedId = ZetaIdCodec.Parse(v.InputCrockford!);
+                var parseOk = parsedId == id;
+                var inputCanonicalOk = ZetaIdCodec.IsCanonical(v.InputCrockford!);
+                var expectedCanonicalOk = ZetaIdCodec.IsCanonical(v.ExpectedCrockford);
+
+                roundtripOk = parseOk && !inputCanonicalOk && expectedCanonicalOk;
+                matchesExpected = string.Equals(hex, v.ExpectedHex, StringComparison.Ordinal) && string.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal);
+            }
+            else
+            {
+                var obs = ToObservation(v);
+                var id = ZetaIdCodec.Pack(obs, DeterministicEnv.Instance);
+                hex = id.ToString("x32", CultureInfo.InvariantCulture);
+                crockford = ZetaIdCodec.Format(id);
+
+                var unpacked = ZetaIdCodec.Unpack(id);
+                var roundtripVal = unpacked == obs;
+                var parsedId = ZetaIdCodec.Parse(crockford);
+                var parseOk = parsedId == id;
+                var canonicalOk = ZetaIdCodec.IsCanonical(crockford);
+
+                roundtripOk = roundtripVal && parseOk && canonicalOk;
+                var expectedMatches = string.Equals(hex, v.ExpectedHex, StringComparison.Ordinal);
+                var crockfordMatches = string.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal);
+                matchesExpected = expectedMatches && crockfordMatches;
+            }
+
+            results[v.Id] = new { hex, crockford, roundtripOk, matchesExpected };
+
+            if (!roundtripOk) roundtripMismatches++;
             if (!matchesExpected) hexMismatches++;
-            if (!crockfordMatches) crockfordMismatches++;
         }
 
         var outputPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "cs-output.json");
@@ -202,6 +267,6 @@ public class CrossVerifyTests
 
         Assert.Equal(0, roundtripMismatches);
         Assert.Equal(0, hexMismatches);
-        Assert.Equal(0, crockfordMismatches);
     }
+#pragma warning restore MA0051
 }

@@ -36,8 +36,6 @@ let private allowlist =
       "LawRunner.fs", "System.Random(", 3, "every instance is seeded (seed + sampleIndex); reproducible by design"
       // IO-infrastructure edges: temp-file / instance names (affect disk layout, never logical state)
       "Checkpoint.fs", "Guid.NewGuid", 1, "tmp-file suffix for atomic rename — IO edge, not logical state"
-      "DiskSpine.fs", "Guid.NewGuid", 1, "per-instance disk prefix — IO edge, not logical state"
-      "DiskSpineAsync.fs", "Guid.NewGuid", 1, "per-instance disk prefix — IO edge, not logical state"
       // interactive-edge convenience overload, documented as non-replayable; seeded overload exists
       "Crdt.fs", "Guid.NewGuid", 2, "OrSet.Add ambient overload — documented wall-clock edge; the seeded Add(elem, tag) is the DST path"
       // the ambient wall-clock EDGES of consensus (the DST paths are transitionAt/prToVoteAt)

@@ -5,6 +5,68 @@ open System.Threading
 open System.Threading.Tasks
 
 
+open System.Collections.Concurrent
+open System.Runtime.CompilerServices
+
+[<AllowNullLiteral>]
+type BuggifyState(rngState: int64) =
+    member val RngState = rngState with get, set
+
+/// FoundationDB-style buggify probabilistic fault injection.
+/// Provides a static hook so core code paths can inject faults (e.g. disk write errors,
+/// network drops) probabilistically under simulation. Inactive in production.
+[<AbstractClass; Sealed>]
+type Buggify =
+    static member val private context = System.Threading.AsyncLocal<BuggifyState>() with get
+
+    /// Enables BUGGIFY fault-injection under a specific simulation run with a given seed.
+    static member Enable(seed: int64) =
+        Buggify.context.Value <- BuggifyState(seed)
+
+    /// Disables BUGGIFY fault-injection (all BUGGIFY checks instantly return false).
+    static member Disable() =
+        Buggify.context.Value <- null
+
+    /// Evaluates if a BUGGIFY fault is active at the calling site.
+    /// Default probability of activation is 5% (0.05).
+    static member IsActive(?probability: float, [<CallerLineNumber>] ?_line: int, [<CallerFilePath>] ?_file: string) =
+        let state = Buggify.context.Value
+        if box state = null then false
+        else
+            let p = defaultArg probability 0.05
+            let mutable nextRng = 0L
+            lock state (fun () ->
+                state.RngState <- state.RngState + 0x9E3779B97F4A7C15L
+                let mutable z = state.RngState
+                z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9L
+                z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBL
+                nextRng <- z ^^^ (z >>> 31)
+            )
+            let roll = (nextRng &&& 0xFFFF_FFFFL |> float) / 4294967295.0
+            roll < p
+
+    /// Backward compatibility helper for tag-based bug checks.
+    static member Check(probability: float, _tag: string) : bool =
+        Buggify.IsActive(probability)
+
+
+/// Simulated filesystem interface.
+type ISimulatedFs =
+    abstract FlushToStableStorage: path: string -> unit
+
+
+/// Global registry to dispatch filesystem simulation intercepts.
+[<AbstractClass; Sealed>]
+type SimulatedFs =
+    static member val private current : ISimulatedFs option = None with get, set
+    static member Register(fs: ISimulatedFs) = SimulatedFs.current <- Some fs
+    static member Clear() = SimulatedFs.current <- None
+    static member Flush(path: string) =
+        match SimulatedFs.current with
+        | Some fs -> fs.FlushToStableStorage path
+        | None -> ()
+
+
 /// Fault-injection policy used by `ChaosEnvironment`. Policies are additive
 /// — combine them to simulate messy production conditions.
 [<Flags>]
@@ -50,6 +112,21 @@ type ChaosEnvironment
     let hasPolicy flag = (policy &&& flag) = flag
 
     member _.Policy = policy
+
+    /// Enable Buggify for this simulation environment
+    member this.EnableBuggify() =
+        Buggify.Enable(seed)
+        SimulatedFs.Register(this :> ISimulatedFs)
+
+    /// Disable Buggify
+    member this.DisableBuggify() =
+        Buggify.Disable()
+        SimulatedFs.Clear()
+
+    interface ISimulatedFs with
+        member _.FlushToStableStorage(path) =
+            if Buggify.Check(0.05, "fs.flush_failure") then
+                failwithf "BUGGIFY: Simulated disk flush failure for %s" path
 
     /// Internal: advance without taking the lock (caller must hold it).
     /// Lets composite operations — RNG draw + clock advance — happen
@@ -110,6 +187,15 @@ type ChaosEnvironment
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module ChaosEnvironment =
+
+    /// Retrieves a simulation seed from the environment variable "ZETA_SIM_SEED" or uses the default.
+    let getSeedFromEnv (defaultSeed: int64) : int64 =
+        match Environment.GetEnvironmentVariable("ZETA_SIM_SEED") with
+        | null | "" -> defaultSeed
+        | valStr ->
+            match Int64.TryParse(valStr) with
+            | true, v -> v
+            | _ -> defaultSeed
 
     /// Default chaos env — jitters everything with standard parameters.
     let defaults (seed: int64) : ChaosEnvironment =

@@ -1,0 +1,15 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IBoundedZSet",
+  "typeParams": [
+    { "name": "T", "variance": "invariant" },
+    { "name": "TWeight", "variance": "invariant" }
+  ],
+  "extends": ["IZSet"],
+  "doc": "A bounded Z-set view with capacity limits and eviction triggers.",
+  "members": [
+    { "name": "Capacity", "kind": "property", "type": "int", "doc": "The maximum capacity of the Z-set." },
+    { "name": "IsSaturated", "kind": "property", "type": "bool", "doc": "Whether the capacity has been reached." }
+  ],
+  "laws": []
+}

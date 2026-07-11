@@ -33,7 +33,10 @@ const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
 
 const POSITIVE_INT_RE = /^[1-9]\d*$/;
-const V1_TRAILER_RE = /^(?:Agency-Signature-Version:\s*1|AgencySignature-v1:)/im;
+const V1_TRAILER_RE = /^(?:Agency-Signature-Version:\s*1\b|AgencySignature-v1:)/im;
+// v2 adds the Cell trailer (ADR docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md
+// phase 4). Dual-accept until phase-8 contract; version share reported in the summary.
+const V2_TRAILER_RE = /^Agency-Signature-Version:\s*2\b/im;
 const AGENT_COAUTHOR_RE =
   /^Co-authored-by:\s*(?:(?:Claude|Codex|Grok|Gemini|Kiro)\b|.*<noreply@(?:anthropic\.com|openai\.com|x\.ai|google\.com|kiro\.dev)>)/im;
 
@@ -43,6 +46,15 @@ export function hasAgentCoauthorTrailer(trailers: string): boolean {
 
 export function hasAgencySignatureV1(text: string): boolean {
   return V1_TRAILER_RE.test(text);
+}
+
+export function hasAgencySignatureV2(text: string): boolean {
+  return V2_TRAILER_RE.test(text);
+}
+
+/** Any accepted signature version (v1 | v2) — the dual-accept window. */
+export function hasAgencySignature(text: string): boolean {
+  return hasAgencySignatureV1(text) || hasAgencySignatureV2(text);
 }
 
 export function hasAgentCoauthorSignal(trailers: string, message: string): boolean {
@@ -214,9 +226,10 @@ function classifyCommit(
   ship: ShipState | null,
 ): { status: Status; reason: string } | null {
   const trailers = commitTrailers(sha);
-  const hasV1Trailer = hasAgencySignatureV1(trailers);
   const message = commitMessage(sha);
-  const hasV1Message = hasV1Trailer || hasAgencySignatureV1(message);
+  const hasV2 = hasAgencySignatureV2(trailers) || hasAgencySignatureV2(message);
+  const hasV1Trailer = hasAgencySignature(trailers);
+  const hasV1Message = hasV1Trailer || hasAgencySignature(message);
   const hasCoauthor = hasAgentCoauthorSignal(trailers, message);
 
   if (ship === null) {
@@ -244,11 +257,13 @@ function classifyCommit(
       reason: `pre-v1-ship-date (${commitIsoDate(sha)} < ${ship.date})`,
     };
   }
-  if (hasV1Trailer) return { status: "CORRECT", reason: "trailer present" };
+  if (hasV1Trailer) return { status: "CORRECT", reason: hasV2 ? "trailer present (v2)" : "trailer present (v1)" };
   if (hasV1Message) {
     return {
       status: "CORRECT",
-      reason: "AgencySignature block present in commit message",
+      reason: hasV2
+        ? "AgencySignature v2 block present in commit message"
+        : "AgencySignature block present in commit message",
     };
   }
   if (hasCoauthor) {
@@ -311,6 +326,7 @@ function emitHelp(): ExitCode {
 
 interface AuditCounts {
   correct: number;
+  correctV2: number;
   legacy: number;
   human: number;
   regression: number;
@@ -336,8 +352,11 @@ function emitHeader(args: ParsedArgs, targetRev: string, ship: ShipState | null)
   process.stdout.write("\n");
 }
 
-function tallyCommit(status: Status, short: string, counts: AuditCounts): void {
-  if (status === "CORRECT") counts.correct++;
+function tallyCommit(status: Status, short: string, counts: AuditCounts, isV2 = false): void {
+  if (status === "CORRECT") {
+    counts.correct++;
+    if (isV2) counts.correctV2++;
+  }
   else if (status === "LEGACY") counts.legacy++;
   else if (status === "HUMAN-AUTHORED-EXEMPT") counts.human++;
   else {
@@ -357,6 +376,7 @@ function auditCommits(
 ): { counts: AuditCounts; toolingError: boolean } {
   const counts: AuditCounts = {
     correct: 0,
+    correctV2: 0,
     legacy: 0,
     human: 0,
     regression: 0,
@@ -373,7 +393,7 @@ function auditCommits(
     }
     const short = sha.slice(0, 12);
     emitCommitRow(result.status, short, commitSubject(sha), result.reason);
-    tallyCommit(result.status, short, counts);
+    tallyCommit(result.status, short, counts, result.reason.includes("(v2)") || result.reason.includes("v2 block"));
   }
   return { counts, toolingError: false };
 }
@@ -384,6 +404,12 @@ function emitSummary(counts: AuditCounts): ExitCode {
   process.stdout.write(`  LEGACY:                 ${String(counts.legacy)}\n`);
   process.stdout.write(`  HUMAN-AUTHORED-EXEMPT:  ${String(counts.human)}\n`);
   process.stdout.write(`  REGRESSION:             ${String(counts.regression)}\n`);
+  if (counts.correct > 0) {
+    const v1 = counts.correct - counts.correctV2;
+    process.stdout.write(
+      `  version share:          v1: ${String(v1)}  v2: ${String(counts.correctV2)}  (phase-8 contract wants v1 -> 0)\n`,
+    );
+  }
   if (counts.regression === 0) {
     process.stdout.write("\nPASS: no regressions detected\n");
     return 0;

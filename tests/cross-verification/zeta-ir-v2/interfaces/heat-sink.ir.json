@@ -1,0 +1,22 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IHeatSink",
+  "typeParams": [],
+  "doc": "Injected IO port for heat and telemetry output at room boundaries.",
+  "members": [
+    {
+      "name": "Emit",
+      "kind": "method",
+      "params": [
+        { "name": "source", "type": "string" },
+        { "name": "kind", "type": "string" },
+        { "name": "units", "type": "int" },
+        { "name": "massPpm", "type": "int64" },
+        { "name": "detail", "type": "string" }
+      ],
+      "returns": "bool",
+      "doc": "Emit a heat signature representing information loss. Returns true if successfully recorded."
+    }
+  ],
+  "laws": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IGSet",
+  "typeParams": [{ "name": "T", "variance": "invariant" }],
+  "extends": ["ILattice"],
+  "doc": "A grow-only set (G-Set CRDT) supporting monotonic addition and membership query.",
+  "members": [
+    { "name": "Add", "kind": "method", "params": [{"name": "item", "type": "T"}], "returns": "bool", "doc": "Add an item. Returns true if the item was newly admitted." },
+    { "name": "Contains", "kind": "method", "params": [{"name": "item", "type": "T"}], "returns": "bool", "doc": "Query membership." },
+    { "name": "Count", "kind": "property", "type": "int", "doc": "The number of distinct elements present." }
+  ],
+  "laws": []
+}

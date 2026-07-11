@@ -75,3 +75,43 @@ let ``latest snapshot survives a FRESH Repository instance (durable manifest)`` 
         Assert.NotNull(latest)
         latest.Seq |> should equal 11L
         s2.ReadAsync(latest, ct).Result |> should equal state)
+
+
+[<Fact>]
+let ``LatestAsync and ReadAsync correctly recover across multiple commits and restarts`` () =
+    withRepoDir (fun dir ->
+        // Write snapshot 1
+        (let s = openStore dir
+         let state1 = ZSet.ofSeq [ 1, 10L ]
+         s.WriteAsync(1L, state1, ct).Result |> ignore)
+         
+        // Write snapshot 2
+        (let s = openStore dir
+         let state2 = ZSet.ofSeq [ 2, 20L ]
+         s.WriteAsync(2L, state2, ct).Result |> ignore)
+         
+        // Write snapshot 3
+        (let s = openStore dir
+         let state3 = ZSet.ofSeq [ 3, 30L ]
+         s.WriteAsync(3L, state3, ct).Result |> ignore)
+         
+        // Restart (instantiate new store over repo) and verify recovery of the latest (3)
+        let sRecovered = openStore dir
+        let latest = sRecovered.LatestAsync(ct).Result
+        Assert.NotNull(latest)
+        latest.Seq |> should equal 3L
+        sRecovered.ReadAsync(latest, ct).Result |> should equal (ZSet.ofSeq [ 3, 30L ])
+        
+        // Ensure we can still write a new snapshot 4 after recovery
+        let state4 = ZSet.ofSeq [ 4, 40L ]
+        let p4 = sRecovered.WriteAsync(4L, state4, ct).Result
+        p4.Seq |> should equal 4L
+        sRecovered.ReadAsync(p4, ct).Result |> should equal state4
+        
+        // Restart once more and verify 4 is recovered
+        let sFinal = openStore dir
+        let finalLatest = sFinal.LatestAsync(ct).Result
+        Assert.NotNull(finalLatest)
+        finalLatest.Seq |> should equal 4L
+        sFinal.ReadAsync(finalLatest, ct).Result |> should equal state4)
+

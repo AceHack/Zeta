@@ -5,6 +5,7 @@ open System
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open System.IO
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -134,3 +135,83 @@ let ``StableHashStrategy is deterministic`` () =
     let h1 = StableHashStrategy<string>() :> IHashStrategy<string>
     let h2 = StableHashStrategy<string>() :> IHashStrategy<string>
     h1.Hash "test" |> should equal (h2.Hash "test")
+
+
+[<Fact>]
+let ``Buggify fault injection works deterministically under simulation and is inert by default`` () =
+    // 1. Inactive by default
+    Assert.False(Buggify.Check(1.0, "test.tag"))
+    
+    // 2. Active and deterministic under seed
+    let env1 = ChaosEnvironment.defaults 42L
+    env1.EnableBuggify()
+    let results1 = [ for _ in 1 .. 20 -> Buggify.Check(0.5, "test.tag") ]
+    env1.DisableBuggify()
+    
+    // 3. Deactivated after Disable
+    Assert.False(Buggify.Check(1.0, "test.tag"))
+    
+    // 4. Identical replay under identical seed
+    let env2 = ChaosEnvironment.defaults 42L
+    env2.EnableBuggify()
+    let results2 = [ for _ in 1 .. 20 -> Buggify.Check(0.5, "test.tag") ]
+    env2.DisableBuggify()
+    
+    Assert.Equal<bool list>(results1, results2)
+    // Verify some are true and some are false
+    Assert.Contains(true, results1)
+    Assert.Contains(false, results1)
+
+
+[<Fact>]
+let ``DiskBackingStore uses MerkleHash handles and frame-first protocol under StableStorage`` () =
+    let workDir = Path.Combine(Path.GetTempPath(), "zeta-test-spine-" + Guid.NewGuid().ToString("N"))
+    try
+        let store = DiskBackingStore<string>(workDir, inMemoryQuotaBytes = 0L, fsyncPerSave = true) :> IBackingStore<string>
+        let batch = ZSet.singleton "hello" 1L
+        let handle = store.Save(0, batch)
+        
+        // Assert handle is indeed a MerkleHash
+        let hash = handle :?> MerkleHash
+        Assert.True(hash.Hi <> 0UL || hash.Lo <> 0UL)
+        
+        // Check files exist
+        let candidate = Path.Combine(workDir, sprintf "spine-%016x%016x.json" hash.Hi hash.Lo)
+        Assert.True(File.Exists candidate)
+        Assert.True(File.Exists (candidate + ".data"))
+        
+        // Read back
+        let loaded = store.Load handle
+        Assert.Equal(1L, loaded.["hello"])
+        
+        // Release
+        store.Release handle
+        Assert.False(File.Exists candidate)
+        Assert.False(File.Exists (candidate + ".data"))
+    finally
+        if Directory.Exists workDir then Directory.Delete(workDir, true)
+
+
+[<Fact>]
+let ``SimulatedFs Flush signals and handles buggify flush failures`` () =
+    let workDir = Path.Combine(Path.GetTempPath(), "zeta-test-simfs-" + Guid.NewGuid().ToString("N"))
+    try
+        let env = ChaosEnvironment.defaults 123L
+        env.EnableBuggify()
+        
+        let store = DiskBackingStore<string>(workDir, inMemoryQuotaBytes = 0L, fsyncPerSave = true) :> IBackingStore<string>
+        let batch = ZSet.singleton "test" 1L
+        
+        // We run a few saves; eventually Buggify should trigger a simulated disk flush failure
+        let mutable failed = false
+        try
+            for _ in 1 .. 50 do
+                store.Save(0, batch) |> ignore
+        with ex ->
+            if ex.Message.Contains("BUGGIFY: Simulated disk flush failure") then
+                failed <- true
+                
+        env.DisableBuggify()
+        Assert.True(failed, "Expected buggify to trigger simulated flush failure")
+    finally
+        if Directory.Exists workDir then Directory.Delete(workDir, true)

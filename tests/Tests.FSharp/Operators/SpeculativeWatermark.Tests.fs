@@ -1,9 +1,12 @@
 module Zeta.Tests.Operators.SpeculativeWatermarkTests
 #nowarn "0893"
 
+open System
 open System.Threading.Tasks
 open FsUnit.Xunit
 open global.Xunit
+open FsCheck
+open FsCheck.Xunit
 open Zeta.Core
 
 
@@ -137,3 +140,160 @@ let ``empty input produces empty output`` () =
         do! c.StepAsync ()
         out.Current |> ZSet.isEmpty |> should be True
     }
+
+
+// ─────────────────────────────────────────────────────────────────────
+// FsCheck Properties: Speculative Watermark ACC / DISC / RET Mode Collapse
+// ─────────────────────────────────────────────────────────────────────
+
+let private runSpeculativeSimulation (inputs: list<list<Timestamped<int>>>) =
+    task {
+        let c = Circuit.create ()
+        let input = c.ZSetInput<Timestamped<int>> ()
+        let strat = monotonicStrategy ()
+        let speculated = c.SpeculativeWindow(input.Stream, strat, 100L)
+        let accumulated = c.IntegrateZSet speculated
+        
+        let outSpeculated = c.Output speculated
+        let outAccumulated = c.Output accumulated
+        
+        let mutable stepOutputs = []
+        let mutable stepAccumOutputs = []
+        
+        for tickInputs in inputs do
+            let mutable zset = ZSet.Empty
+            for t in tickInputs do
+                zset <- zset + ZSet.singleton t 1L
+            input.Send zset
+            do! c.StepAsync ()
+            stepOutputs <- stepOutputs @ [outSpeculated.Current]
+            stepAccumOutputs <- stepAccumOutputs @ [outAccumulated.Current]
+            
+        return stepOutputs, stepAccumOutputs
+    }
+
+[<Property>]
+let ``speculative window ACC mode matches recomputed state`` (inputs: list<list<int64 * int>>) =
+    let cleanInputs =
+        inputs
+        |> List.map (fun tick ->
+            tick
+            |> List.map (fun (eventTime, value) -> 
+                Timestamped(value, Math.Max(1L, Math.Abs(eventTime))))
+            |> Seq.distinctBy (fun t -> t.Value, t.EventTime)
+            |> Seq.sortBy (fun t -> t.Value, t.EventTime)
+            |> Seq.toList)
+            
+    let outputsTask = runSpeculativeSimulation cleanInputs
+    let _, stepAccumOutputs = outputsTask.Result
+    
+    let mutable watermark = Int64.MinValue
+    let mutable speculative = Map.empty
+    
+    for i in 0 .. cleanInputs.Length - 1 do
+        let tickInputs = cleanInputs.[i]
+        
+        for t in tickInputs do
+            watermark <- Math.Max(watermark, t.EventTime)
+            speculative <- Map.add (t.EventTime, t.Value) watermark speculative
+            
+        let expected = 
+            speculative 
+            |> Map.toList 
+            |> List.map (fun ((et, v), wm) -> struct (Timestamped(v, et), wm), 1L)
+            |> ZSet.ofSeq
+            
+        let actual = stepAccumOutputs.[i]
+        if actual <> expected then
+            failwithf "ACC check failed at tick %d, actual: %A, expected: %A" i actual expected
+    true
+
+[<Property>]
+let ``speculative window DISC mode matches positive-only output`` (inputs: list<list<int64 * int>>) =
+    let cleanInputs =
+        inputs
+        |> List.map (fun tick ->
+            tick
+            |> List.map (fun (eventTime, value) -> 
+                Timestamped(value, Math.Max(1L, Math.Abs(eventTime))))
+            |> Seq.distinctBy (fun t -> t.Value, t.EventTime)
+            |> Seq.sortBy (fun t -> t.Value, t.EventTime)
+            |> Seq.toList)
+            
+    let outputsTask = runSpeculativeSimulation cleanInputs
+    let stepOutputs, _ = outputsTask.Result
+    
+    let mutable watermark = Int64.MinValue
+    let mutable speculative = Map.empty
+    
+    for i in 0 .. cleanInputs.Length - 1 do
+        let tickInputs = cleanInputs.[i]
+        
+        let expectedPositive = ResizeArray()
+        for t in tickInputs do
+            let priorWm = watermark
+            watermark <- Math.Max(watermark, t.EventTime)
+            let key = struct (t.EventTime, t.Value)
+            if t.EventTime <= priorWm && speculative.ContainsKey key then
+                let staleWm = speculative.[key]
+                if watermark > staleWm then
+                    expectedPositive.Add (struct (t, watermark), 1L)
+                    speculative <- Map.add key watermark speculative
+            elif not (speculative.ContainsKey key) then
+                expectedPositive.Add (struct (t, watermark), 1L)
+                speculative <- Map.add key watermark speculative
+                
+        let expectedZSet = ZSet.ofSeq expectedPositive
+        
+        let actualPositive =
+            stepOutputs.[i].AsSpan().ToArray()
+            |> Array.filter (fun entry -> entry.Weight > 0L)
+            |> Array.map (fun entry -> entry.Key, entry.Weight)
+            |> ZSet.ofSeq
+            
+        if actualPositive <> expectedZSet then
+            failwithf "DISC check failed at tick %d, actual positive: %A, expected: %A" i actualPositive expectedZSet
+    true
+
+[<Property>]
+let ``speculative window RET mode matches expected retractions`` (inputs: list<list<int64 * int>>) =
+    let cleanInputs =
+        inputs
+        |> List.map (fun tick ->
+            tick
+            |> List.map (fun (eventTime, value) -> 
+                Timestamped(value, Math.Max(1L, Math.Abs(eventTime))))
+            |> Seq.distinctBy (fun t -> t.Value, t.EventTime)
+            |> Seq.sortBy (fun t -> t.Value, t.EventTime)
+            |> Seq.toList)
+            
+    let outputsTask = runSpeculativeSimulation cleanInputs
+    let stepOutputs, _ = outputsTask.Result
+    
+    let mutable watermark = Int64.MinValue
+    let mutable speculative = Map.empty
+    
+    for i in 0 .. cleanInputs.Length - 1 do
+        let tickInputs = cleanInputs.[i]
+        
+        let expected = ResizeArray()
+        for t in tickInputs do
+            let priorWm = watermark
+            watermark <- Math.Max(watermark, t.EventTime)
+            let key = struct (t.EventTime, t.Value)
+            if t.EventTime <= priorWm && speculative.ContainsKey key then
+                let staleWm = speculative.[key]
+                if watermark > staleWm then
+                    expected.Add (struct (t, staleWm), -1L)
+                    expected.Add (struct (t, watermark), 1L)
+                    speculative <- Map.add key watermark speculative
+            elif not (speculative.ContainsKey key) then
+                expected.Add (struct (t, watermark), 1L)
+                speculative <- Map.add key watermark speculative
+                
+        let expectedZSet = ZSet.ofSeq expected
+        let actual = stepOutputs.[i]
+        
+        if actual <> expectedZSet then
+            failwithf "RET check failed at tick %d, actual: %A, expected: %A" i actual expectedZSet
+    true

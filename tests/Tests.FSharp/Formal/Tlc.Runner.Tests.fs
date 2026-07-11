@@ -335,6 +335,24 @@ let ``TLC validates ChaosEnvDeterminism`` () =
 
 
 [<Fact>]
+let ``TLC validates ConsistentHashRebalance`` () =
+    assertSpecValid "ConsistentHashRebalance"
+
+
+[<Fact>]
+let ``TLC validates DictionaryStripedCAS`` () =
+    assertSpecValid "DictionaryStripedCAS"
+
+
+[<Fact>]
+let ``TLC validates AsyncStreamEnumerator`` () =
+    assertSpecValid "AsyncStreamEnumerator"
+
+
+
+
+
+[<Fact>]
 let ``TLC validates SpineMergeInvariants`` () =
     // BalancedSpine's level-cap merge protocol — verifies two safety
     // invariants over a bounded MaxLevel=2 / MaxBatchSize=1 run with

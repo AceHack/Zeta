@@ -35,8 +35,8 @@ let ``rng.splitmix64 is registered and its ZetaId is pinned (cross-verification 
     // reference at once, never silently.
     let e = GeneratorRegistry.byName "rng.splitmix64" |> Option.get
     Assert.Equal(1, e.Version)
-    Assert.Equal("129c1fac3a48075b481c0f10f30deb06", e.ZetaId)
-    Assert.Equal("129c1fac3a48075b481c0f10f30deb06", GeneratorRegistry.idOf "rng.splitmix64" 1)
+    Assert.Equal("129c1fac3a48075bc89934da1e90fbe4", e.ZetaId)
+    Assert.Equal("129c1fac3a48075bc89934da1e90fbe4", GeneratorRegistry.idOf "rng.splitmix64" 1)
 
 [<Fact>]
 let ``ROTOR: a quarter-turn unit rotor sweeps a seed vector around the center (the rotational generator)`` () =

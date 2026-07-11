@@ -28,6 +28,8 @@ type FlatVector = {
     Location: int
     ExpectedHex: string
     ExpectedCrockford: string
+    Type: string
+    InputCrockford: string
 }
 
 // --- YamlValue → FlatVector list navigation. The fixture is a top-level VMap with a
@@ -42,6 +44,11 @@ let private field (entries: (string * YamlValue) list) (key: string) (ctx: strin
     match entries |> List.tryFind (fun (k, _) -> String.Equals(k, key, StringComparison.Ordinal)) with
     | Some(_, value) -> value
     | None -> raise (InvalidOperationException(sprintf "missing field '%s' at %s" key ctx))
+
+let private fieldOrNull (entries: (string * YamlValue) list) (key: string) : string =
+    match entries |> List.tryFind (fun (k, _) -> String.Equals(k, key, StringComparison.Ordinal)) with
+    | Some(_, VStr s) -> s
+    | _ -> null
 
 let private asStr (v: YamlValue) (ctx: string) : string =
     match v with
@@ -82,6 +89,8 @@ let private toFlatVector (idx: int) (item: YamlValue) : FlatVector =
         Location      = asInt     (field m "location" ctx)       (ctx + ".location")
         ExpectedHex   = asStr     (field m "expected_hex" ctx)   (ctx + ".expected_hex")
         ExpectedCrockford = asStr (field m "expected_crockford" ctx) (ctx + ".expected_crockford")
+        Type          = fieldOrNull m "type"
+        InputCrockford = fieldOrNull m "input_crockford"
     }
 
 let private yamlValueToFlatVectors (root: YamlValue) : FlatVector list =
@@ -165,25 +174,68 @@ let ``cross-verify twelve vectors match TS+C# bootstrap hex`` () =
     let mutable roundtripMismatches = 0
 
     for v in vectors do
-        let obs = toObservation v
-        let id = ZetaIdCodec.pack obs DeterministicEnv.Instance
-        let hex = id.ToString("x32", CultureInfo.InvariantCulture)
-        let crockford = ZetaIdCodec.format id
+        let mutable hex = ""
+        let mutable crockford = ""
+        let mutable roundtripOk = false
+        let mutable matchesExpected = false
 
-        let unpacked = ZetaIdCodec.unpack id
-        let roundtripOk = unpacked = obs
-        let parsedId = ZetaIdCodec.parse crockford
-        let parseOk = parsedId = id
-        let isCanonical = ZetaIdCodec.isCanonical crockford
+        if String.Equals(v.Type, "parse-reject", StringComparison.Ordinal) then
+            let parseFailed =
+                try
+                    ZetaIdCodec.parse v.ExpectedCrockford |> ignore
+                    false
+                with _ -> true
+            let canonicalOk = ZetaIdCodec.isCanonical v.ExpectedCrockford
 
-        let matchesExpected = String.Equals(hex, v.ExpectedHex, StringComparison.Ordinal)
-        let crockfordMatches = String.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal)
+            hex <- "rejected"
+            crockford <- "rejected"
+            roundtripOk <- parseFailed && not canonicalOk
+            matchesExpected <- String.Equals(v.ExpectedHex, "rejected", StringComparison.Ordinal)
+        elif String.Equals(v.Type, "max-128", StringComparison.Ordinal) then
+            let maxVal = System.UInt128.MaxValue
+            hex <- maxVal.ToString("x32", CultureInfo.InvariantCulture)
+            crockford <- ZetaIdCodec.format maxVal
 
-        results.[v.Id] <- box {| hex = hex; crockford = crockford; roundtripOk = (roundtripOk && parseOk && isCanonical); matchesExpected = (matchesExpected && crockfordMatches) |}
+            let parsedId = ZetaIdCodec.parse crockford
+            let parseOk = parsedId = maxVal
+            let canonicalOk = ZetaIdCodec.isCanonical crockford
 
-        if not (roundtripOk && parseOk && isCanonical) then roundtripMismatches <- roundtripMismatches + 1
+            roundtripOk <- parseOk && canonicalOk
+            matchesExpected <- String.Equals(hex, v.ExpectedHex, StringComparison.Ordinal) && String.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal)
+        elif String.Equals(v.Type, "lenient-alias", StringComparison.Ordinal) then
+            let obs = toObservation v
+            let id = ZetaIdCodec.pack obs DeterministicEnv.Instance
+            hex <- id.ToString("x32", CultureInfo.InvariantCulture)
+            crockford <- ZetaIdCodec.format id
+
+            let parsedId = ZetaIdCodec.parse v.InputCrockford
+            let parseOk = parsedId = id
+            let inputCanonicalOk = ZetaIdCodec.isCanonical v.InputCrockford
+            let expectedCanonicalOk = ZetaIdCodec.isCanonical v.ExpectedCrockford
+
+            roundtripOk <- parseOk && not inputCanonicalOk && expectedCanonicalOk
+            matchesExpected <- String.Equals(hex, v.ExpectedHex, StringComparison.Ordinal) && String.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal)
+        else
+            let obs = toObservation v
+            let id = ZetaIdCodec.pack obs DeterministicEnv.Instance
+            hex <- id.ToString("x32", CultureInfo.InvariantCulture)
+            crockford <- ZetaIdCodec.format id
+
+            let unpacked = ZetaIdCodec.unpack id
+            let roundtripVal = unpacked = obs
+            let parsedId = ZetaIdCodec.parse crockford
+            let parseOk = parsedId = id
+            let canonicalOk = ZetaIdCodec.isCanonical crockford
+
+            roundtripOk <- roundtripVal && parseOk && canonicalOk
+            let expectedMatches = String.Equals(hex, v.ExpectedHex, StringComparison.Ordinal)
+            let crockfordMatches = String.Equals(crockford, v.ExpectedCrockford, StringComparison.Ordinal)
+            matchesExpected <- expectedMatches && crockfordMatches
+
+        results.[v.Id] <- box {| hex = hex; crockford = crockford; roundtripOk = roundtripOk; matchesExpected = matchesExpected |}
+
+        if not roundtripOk then roundtripMismatches <- roundtripMismatches + 1
         if not matchesExpected then hexMismatches <- hexMismatches + 1
-        if not crockfordMatches then crockfordMismatches <- crockfordMismatches + 1
 
     // compare.ts reads `fsharp-output.json` (not `fs-output.json`) — match per Copilot #4548 thread
     let outputPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "fsharp-output.json")

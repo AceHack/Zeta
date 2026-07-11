@@ -1,0 +1,12 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IBoundedGSet",
+  "typeParams": [{ "name": "T", "variance": "invariant" }],
+  "extends": ["IGSet"],
+  "doc": "A bounded grow-only set view supporting capacity constraints and heat emissions.",
+  "members": [
+    { "name": "Capacity", "kind": "property", "type": "int", "doc": "The maximum capacity of the set." },
+    { "name": "IsSaturated", "kind": "property", "type": "bool", "doc": "Whether the capacity has been reached." }
+  ],
+  "laws": []
+}

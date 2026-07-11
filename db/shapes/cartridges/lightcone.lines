@@ -4,8 +4,8 @@
 # as geometry, the same cone DBSP's worldlines respect.
 meta	name	shape-lightcone
 meta	catalog	shapes
-meta	shape-zetaid	48dea6f1dbd6742c2cf018f457e1e2cd
-gen	cone	48dea6f1dbd6742c2cf018f457e1e2cd	1	7	event:32,16;slope:1/1;extent:14
+meta	shape-zetaid	48dea6f1dbd6742c20fb81a0db42590c
+gen	cone	48dea6f1dbd6742c20fb81a0db42590c	1	7	event:32,16;slope:1/1;extent:14
 constant	slope	1/1	cells of space per tick of time along the cone edge	c = 1 in court units, exact rational — the speed limit IS the diagonal; anything steeper claims influence faster than the substrate carries it
 constant	extent	14	rows the cone reaches up and down from the event	14 up + 14 down + the event row fills the 32-row court edge-to-edge without wrapping — the whole causal diamond visible at once
 anim	draw	cone

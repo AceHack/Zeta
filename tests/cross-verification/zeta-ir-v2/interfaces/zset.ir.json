@@ -1,0 +1,15 @@
+{
+  "schema": "zeta-ir-v2-interface",
+  "name": "IZSet",
+  "typeParams": [
+    { "name": "T", "variance": "invariant" },
+    { "name": "TWeight", "variance": "invariant" }
+  ],
+  "doc": "A signed multiset (Z-set) supporting weight addition and retraction.",
+  "members": [
+    { "name": "Add", "kind": "method", "params": [{"name": "item", "type": "T"}, {"name": "weight", "type": "TWeight"}], "returns": "void", "doc": "Add or subtract weight from an item." },
+    { "name": "Weight", "kind": "method", "params": [{"name": "item", "type": "T"}], "returns": "TWeight", "doc": "Query the weight of an item." },
+    { "name": "Support", "kind": "method", "params": [], "returns": "IGSet<T>", "doc": "The set of items with non-zero weight." }
+  ],
+  "laws": []
+}

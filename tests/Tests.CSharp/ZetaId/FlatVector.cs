@@ -31,4 +31,8 @@ public sealed class FlatVector
     public string ExpectedHex { get; set; } = string.Empty;
 
     public string ExpectedCrockford { get; set; } = string.Empty;
+
+    public string? Type { get; set; }
+
+    public string? InputCrockford { get; set; }
 }

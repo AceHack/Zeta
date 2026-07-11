@@ -28,7 +28,7 @@ type FileCheckpointStore(rootDir: string) =
     let canonicalRoot = Path.GetFullPath rootDir
 
     do
-        Directory.CreateDirectory canonicalRoot |> ignore
+        FileSystem.Current.CreateDirectory canonicalRoot
 
     /// Is Windows / macOS case-insensitive filesystem?
     /// Same pattern as DiskBackingStore.
@@ -97,18 +97,23 @@ type FileCheckpointStore(rootDir: string) =
                 target + ".tmp." + Guid.NewGuid().ToString("N")
 
             // Write to temp file, fsync, then atomic rename.
-            use fs =
-                new FileStream(
-                    tmpPath,
-                    FileMode.Create,
-                    FileAccess.Write,
-                    FileShare.None)
-            fs.Write(payload, 0, payload.Length)
+            let finalPayload =
+                if Buggify.IsActive(0.01) then
+                    let corrupted = Array.copy payload
+                    if corrupted.Length > 0 then
+                        corrupted.[corrupted.Length - 1] <- corrupted.[corrupted.Length - 1] ^^^ 0xFFuy
+                    corrupted
+                else
+                    payload
+            use fs: Stream = FileSystem.Current.OpenWrite(tmpPath, false)
+            fs.Write(finalPayload, 0, finalPayload.Length)
             // Flush(true) = FlushFileBuffers / fsync
-            fs.Flush true
+            match fs with
+            | :? FileStream as fileStream -> fileStream.Flush true
+            | _ -> fs.Flush()
             fs.Close()
 
-            File.Move(tmpPath, target, true)
+            FileSystem.Current.Move(tmpPath, target, true)
 
             // Best-effort directory fsync — ensures the rename
             // metadata is durable on POSIX. On Linux/macOS we
@@ -120,13 +125,10 @@ type FileCheckpointStore(rootDir: string) =
             // reverting to the prior checkpoint.
             try
                 let dirPath = Path.GetDirectoryName target
-                use dirFs =
-                    new FileStream(
-                        dirPath,
-                        FileMode.Open,
-                        FileAccess.Read,
-                        FileShare.ReadWrite)
-                dirFs.Flush true
+                use dirFs: Stream = FileSystem.Current.OpenRead(dirPath)
+                match dirFs with
+                | :? FileStream as fileStream -> fileStream.Flush true
+                | _ -> dirFs.Flush()
             with
             | :? UnauthorizedAccessException -> ()
             | :? IOException -> ()
@@ -135,7 +137,7 @@ type FileCheckpointStore(rootDir: string) =
 
         member _.LoadCheckpointAsync(circuitId, _ct) =
             let path = checkpointPath circuitId
-            if not (File.Exists path) then
+            if not (FileSystem.Current.Exists path) then
                 ValueTask.FromResult<CheckpointLoadResult>(null)
             else
                 // Treat corrupt / truncated checkpoint as
@@ -148,7 +150,7 @@ type FileCheckpointStore(rootDir: string) =
                     ValueTask.FromResult<CheckpointLoadResult>(null)
 
                 try
-                    let bytes = File.ReadAllBytes path
+                    let bytes = FileSystem.Current.ReadAllBytes path
                     use ms = new MemoryStream(bytes)
                     use br = new BinaryReader(ms)
                     let tick = br.ReadInt64()

@@ -84,6 +84,7 @@
     <Compile Include="Core/Codec.Tests.fs" />
     <Compile Include="RangeSet.Tests.fs" />
     <Compile Include="DynamicValue.Tests.fs" />
+    <Compile Include="ActorRef.Tests.fs" />
     <Compile Include="DynamicValue.GoldenVectors.Tests.fs" />
     <Compile Include="DynamicValue.CborGoldenVectors.Tests.fs" />
     <Compile Include="DynamicValue.MsgpackGoldenVectors.Tests.fs" />
@@ -478,6 +479,7 @@
     <Compile Include="Operators/Join.Tests.fs" />
     <Compile Include="Operators/Upsert.Tests.fs" />
     <Compile Include="Operators/SpeculativeWatermark.Tests.fs" />
+    <Compile Include="Operators/ReticulumChaos.Tests.fs" />
     <Compile Include="Operators/Transaction.Tests.fs" />
     <Compile Include="Operators/Fusion.Tests.fs" />
     <Compile Include="Operators/ResidualMax.Tests.fs" />
@@ -529,6 +531,11 @@
     <Compile Include="Runtime/Shard.Tests.fs" />
     <Compile Include="Runtime/ConsistentHash.Tests.fs" />
     <Compile Include="Runtime/Concurrency.Tests.fs" />
+    <Compile Include="Runtime/VirtualTimeSchedulerIntegration.Tests.fs" />
+    <Compile Include="Runtime/SimulatedFileSystem.Tests.fs" />
+    <Compile Include="Runtime/Buggify.Tests.fs" />
+    <Compile Include="Runtime/TimeWarpDbsp.Tests.fs" />
+    <Compile Include="Runtime/NetworkSimulator.Tests.fs" />
     <Compile Include="Runtime/Allocation.Tests.fs" />
 
     <!-- Infra/ -->

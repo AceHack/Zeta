@@ -63,9 +63,11 @@ Spec == Init /\ [][Next]_vars
 NoReentry == \A c \in Consumers: pending[c] \in {0, 1}
 
 \* Safety: after cancellation + dispose, no yields happen.
-CancelPropagates == \A c \in Consumers:
-    cancelled[c] /\ state[c] = "disposed" =>
-        [][UNCHANGED yielded[c]]_vars
+CancelPropagatesAction == \A c \in Consumers:
+    (cancelled[c] /\ state[c] = "disposed") => yielded'[c] = yielded[c]
 
-Safety == [](TypeOK /\ NoReentry)
+CancelPropagates == [][CancelPropagatesAction]_vars
+
+Safety == TypeOK /\ NoReentry
+THEOREM Spec => []Safety
 ====

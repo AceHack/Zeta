@@ -63,21 +63,113 @@ module Db =
         | Create of path: string * value: DynamicValue
         | Update of path: string * value: DynamicValue
         | Delete of path: string
+        | GSetCreate of path: string * capacity: int option * heatSink: string option
+        | GSetAdd of path: string * item: string
+        | ZSetCreate of path: string * capacity: int option * heatSink: string option
+        | ZSetAdd of path: string * item: string * weight: int64
+
+    /// A single record in the unified database Z-set representing collections and files as Z-sets.
+    type DbRecord =
+        | ZSetEntry of path: string * item: string
+        | ZSetMeta of path: string * capacity: int option * heatSink: string option
 
     /// The materialized db state = the incremental FOLD (DBSP IVM) over the stream (event sourcing; #6994).
     /// Every projection below is backend-INVARIANT — the same stream folds identically on any backend; only
     /// durability differs.
     type DbState =
         { Backend: Backend
-          Files: Map<string, DynamicValue> // the infinite file's contents (path → value; homoiconic #7041)
+          Database: ZSet<DbRecord> // The single source-of-truth Z-set containing all database records
+          Files: Map<string, DynamicValue> // helper projected view of file contents
+          GSets: Map<string, GSet<string>> // helper projected view of GSets
+          ZSets: Map<string, ZSet<string>> // helper projected view of ZSets
+          GSetBounds: Map<string, int>
+          ZSetBounds: Map<string, int>
+          GSetHeatSinks: Map<string, string>
+          ZSetHeatSinks: Map<string, string>
+          HeatLog: (string * string * int * int64 * string) list
           Deps: Map<string, string list> // dependency edges established by DepSetup
           PushedDown: Set<string> // nouns declared push-down (resolved outside the container)
           Resolved: Map<string, string> } // JIT/dynamic resolutions (DI, inside the container)
 
+    // -- Projections mapping the unified Z-set into structured record/collection views --
+
+    let projectFiles (db: ZSet<DbRecord>) : Map<string, DynamicValue> =
+        db
+        |> Seq.choose (fun entry ->
+            match entry.Key with
+            | ZSetEntry(path, json) when entry.Weight > 0L ->
+                match DynamicValue.fromCanonicalJson json with
+                | Ok dv -> Some(path, dv)
+                | _ -> Some(path, DynamicValue.String json)
+            | _ -> None)
+        |> Map.ofSeq
+
+    let projectGSets (db: ZSet<DbRecord>) : Map<string, GSet<string>> =
+        db
+        |> Seq.choose (fun entry ->
+            match entry.Key with
+            | ZSetEntry(path, item) when entry.Weight > 0L -> Some(path, item)
+            | _ -> None)
+        |> Seq.groupBy fst
+        |> Seq.map (fun (path, items) -> path, GSet.ofSeq (items |> Seq.map snd))
+        |> Map.ofSeq
+
+    let projectZSets (db: ZSet<DbRecord>) : Map<string, ZSet<string>> =
+        db
+        |> Seq.choose (fun entry ->
+            match entry.Key with
+            | ZSetEntry(path, item) when entry.Weight <> 0L -> Some(path, (item, entry.Weight))
+            | _ -> None)
+        |> Seq.groupBy fst
+        |> Seq.map (fun (path, pairs) ->
+            let entries = pairs |> Seq.map snd
+            path, ZSet.ofSeq entries)
+        |> Map.ofSeq
+
+    let projectGSetBounds (db: ZSet<DbRecord>) : Map<string, int> =
+        db
+        |> Seq.choose (fun entry ->
+            match entry.Key with
+            | ZSetMeta(path, Some cap, _) when entry.Weight > 0L -> Some(path, cap)
+            | _ -> None)
+        |> Map.ofSeq
+
+    let projectZSetBounds (db: ZSet<DbRecord>) : Map<string, int> =
+        db
+        |> Seq.choose (fun entry ->
+            match entry.Key with
+            | ZSetMeta(path, Some cap, _) when entry.Weight > 0L -> Some(path, cap)
+            | _ -> None)
+        |> Map.ofSeq
+
+    let projectGSetHeatSinks (db: ZSet<DbRecord>) : Map<string, string> =
+        db
+        |> Seq.choose (fun entry ->
+            match entry.Key with
+            | ZSetMeta(path, _, Some hs) when entry.Weight > 0L -> Some(path, hs)
+            | _ -> None)
+        |> Map.ofSeq
+
+    let projectZSetHeatSinks (db: ZSet<DbRecord>) : Map<string, string> =
+        db
+        |> Seq.choose (fun entry ->
+            match entry.Key with
+            | ZSetMeta(path, _, Some hs) when entry.Weight > 0L -> Some(path, hs)
+            | _ -> None)
+        |> Map.ofSeq
+
     /// An empty db on a given backend.
     let empty backend =
         { Backend = backend
+          Database = ZSet.Empty
           Files = Map.empty
+          GSets = Map.empty
+          ZSets = Map.empty
+          GSetBounds = Map.empty
+          ZSetBounds = Map.empty
+          GSetHeatSinks = Map.empty
+          ZSetHeatSinks = Map.empty
+          HeatLog = []
           Deps = Map.empty
           PushedDown = Set.empty
           Resolved = Map.empty }
@@ -90,8 +182,104 @@ module Db =
         | PushDown n -> { st with PushedDown = Set.add n st.PushedDown }
         | JitResolve(n, r) -> { st with Resolved = Map.add n r st.Resolved }
         | Create(p, v)
-        | Update(p, v) -> { st with Files = Map.add p v st.Files }
-        | Delete p -> { st with Files = Map.remove p st.Files }
+        | Update(p, v) ->
+            let oldFileOpt =
+                st.Database
+                |> Seq.tryPick (fun entry ->
+                    match entry.Key with
+                    | ZSetEntry(path, valStr) when path = p -> Some(entry.Key, entry.Weight)
+                    | _ -> None)
+            let json =
+                match DynamicValue.toCanonicalJson v with
+                | Ok s -> s
+                | Error e -> failwithf "toCanonicalJson failed: %A" e
+            let delta =
+                match oldFileOpt with
+                | Some(oldKey, oldW) -> ZSet.ofSeq [ oldKey, -oldW; ZSetEntry(p, json), 1L ]
+                | None -> ZSet.singleton (ZSetEntry(p, json)) 1L
+            let nextDb = st.Database + delta
+            { st with Database = nextDb; Files = projectFiles nextDb }
+        | Delete p ->
+            let oldFileOpt =
+                st.Database
+                |> Seq.tryPick (fun entry ->
+                    match entry.Key with
+                    | ZSetEntry(path, valStr) when path = p -> Some(entry.Key, entry.Weight)
+                    | _ -> None)
+            let delta =
+                match oldFileOpt with
+                | Some(oldKey, oldW) -> ZSet.singleton oldKey -oldW
+                | None -> ZSet.Empty
+            let nextDb = st.Database + delta
+            { st with Database = nextDb; Files = projectFiles nextDb }
+        | GSetCreate(p, capOpt, hsOpt) ->
+            let oldMeta =
+                st.Database
+                |> Seq.tryPick (fun entry ->
+                    match entry.Key with
+                    | ZSetMeta(path, _, _) when path = p -> Some(entry.Key, entry.Weight)
+                    | _ -> None)
+            let newKey = ZSetMeta(p, capOpt, hsOpt)
+            let delta =
+                match oldMeta with
+                | Some(oldK, oldW) -> ZSet.ofSeq [ oldK, -oldW; newKey, 1L ]
+                | None -> ZSet.singleton newKey 1L
+            let nextDb = st.Database + delta
+            { st with Database = nextDb; GSetBounds = projectGSetBounds nextDb; GSetHeatSinks = projectGSetHeatSinks nextDb }
+        | ZSetCreate(p, capOpt, hsOpt) ->
+            let oldMeta =
+                st.Database
+                |> Seq.tryPick (fun entry ->
+                    match entry.Key with
+                    | ZSetMeta(path, _, _) when path = p -> Some(entry.Key, entry.Weight)
+                    | _ -> None)
+            let newKey = ZSetMeta(p, capOpt, hsOpt)
+            let delta =
+                match oldMeta with
+                | Some(oldK, oldW) -> ZSet.ofSeq [ oldK, -oldW; newKey, 1L ]
+                | None -> ZSet.singleton newKey 1L
+            let nextDb = st.Database + delta
+            { st with Database = nextDb; ZSetBounds = projectZSetBounds nextDb; ZSetHeatSinks = projectZSetHeatSinks nextDb }
+        | GSetAdd(p, item) ->
+            let delta = ZSet.singleton (ZSetEntry(p, item)) 1L
+            let nextDb = st.Database + delta
+            let count =
+                nextDb
+                |> Seq.filter (fun entry ->
+                    match entry.Key with
+                    | ZSetEntry(path, _) when path = p && entry.Weight > 0L -> true
+                    | _ -> false)
+                |> Seq.length
+            let capOpt = projectGSetBounds nextDb |> Map.tryFind p
+            let heatLog' =
+                match capOpt with
+                | Some cap when count > cap ->
+                    let hsOpt = projectGSetHeatSinks nextDb |> Map.tryFind p
+                    let hs = defaultArg hsOpt "default"
+                    let detail = sprintf "GSet capacity exceeded at path '%s': count = %d, cap = %d" p count cap
+                    (p, "gset-saturation", 1, int64 (count - cap), detail) :: st.HeatLog
+                | _ -> st.HeatLog
+            { st with Database = nextDb; GSets = projectGSets nextDb; HeatLog = heatLog' }
+        | ZSetAdd(p, item, w) ->
+            let delta = ZSet.singleton (ZSetEntry(p, item)) w
+            let nextDb = st.Database + delta
+            let supportCount =
+                nextDb
+                |> Seq.filter (fun entry ->
+                    match entry.Key with
+                    | ZSetEntry(path, _) when path = p && entry.Weight <> 0L -> true
+                    | _ -> false)
+                |> Seq.length
+            let capOpt = projectZSetBounds nextDb |> Map.tryFind p
+            let heatLog' =
+                match capOpt with
+                | Some cap when supportCount > cap ->
+                    let hsOpt = projectZSetHeatSinks nextDb |> Map.tryFind p
+                    let hs = defaultArg hsOpt "default"
+                    let detail = sprintf "ZSet capacity exceeded at path '%s': support count = %d, cap = %d" p supportCount cap
+                    (p, "zset-saturation", 1, int64 (supportCount - cap), detail) :: st.HeatLog
+                | _ -> st.HeatLog
+            { st with Database = nextDb; ZSets = projectZSets nextDb; HeatLog = heatLog' }
 
     /// Fold a whole Z-set stream into state — deterministic and replayable (DST §7). Backend-INVARIANT: the
     /// same stream folds to the same projections on any backend (only durability differs).

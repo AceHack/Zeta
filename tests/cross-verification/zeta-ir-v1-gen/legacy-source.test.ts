@@ -113,7 +113,7 @@ test("splitmix64 legacy zetaId is reconstructed from identity (idOf), not stored
   const derived = toLegacyIrJson(sm);
   // the historically-stored id, re-derived purely from generator@version.
   expect(derived).toContain(`"zetaId":"${idOf("rng.splitmix64", 1)}"`);
-  expect(derived).toContain('"zetaId":"129c1fac3a48075b481c0f10f30deb06"');
+  expect(derived).toContain('"zetaId":"129c1fac3a48075bc89934da1e90fbe4"');
 });
 
 test("changing an op constant breaks the byte-lock (the green can turn red)", () => {

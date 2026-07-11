@@ -45,6 +45,7 @@ Base = `claim/cross-lang-zset-isa-capstone`, whose PR (#8950) merged — but tha
 ## The real task (whole-stack migration)
 
 Migrate the entire stack onto current main as one deliberate, unhurried effort:
+
 1. Re-target #9551 to `main` (or open a fresh branch off current main).
 2. Rebase / replay the 12 commits across 720 commits of drift — resolve conflicts methodically
    (Identity Treaty registry codegen, db-zset IR, ActorRef, the lint baseline).

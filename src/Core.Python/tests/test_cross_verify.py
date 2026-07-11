@@ -197,38 +197,98 @@ def test_cross_verify_zeta_id():
     out_map = {}
     for v in y["vectors"]:
         v_id = v["id"]
-        auth_raw = v.get("authority_raw")
-        auth_val = auth_raw if auth_raw is not None else 0
-        mom_raw = v.get("momentum_raw")
-        mom_val = mom_raw if mom_raw is not None else 0
+        v_type = v.get("type")
 
-        obs = zeta_id.ZetaObservation(
-            version=v["version"],
-            timestamp=v["timestamp"],
-            chromosome=v["chromosome"],
-            category=v["category"],
-            firefly=v["firefly"],
-            authority=zeta_id.Authority(type_=v["authority_type"], value=auth_val),
-            persona=v["persona"],
-            momentum=zeta_id.Momentum(type_=v["momentum_type"], value=mom_val),
-            location=v["location"],
-        )
+        if v_type == "parse-reject":
+            parse_failed = False
+            try:
+                zeta_id.parse_b32(v["expected_crockford"])
+            except ValueError:
+                parse_failed = True
+            canonical_ok = zeta_id.is_canonical(v["expected_crockford"])
 
-        packed = zeta_id.pack(obs, zeta_id.DETERMINISTIC_ENV)
-        hex_val = zeta_id.to_hex(packed)
-        crockford_val = zeta_id.format_b32(packed)
+            hex_val = "rejected"
+            crockford_val = "rejected"
+            roundtrip_ok = parse_failed and not canonical_ok
+            matches_expected = v["expected_hex"] == "rejected"
+        elif v_type == "max-128":
+            max_val = (1 << 128) - 1
+            hex_val = f"{max_val:032x}"
+            crockford_val = zeta_id.format_b32(max_val)
 
-        unpacked = zeta_id.unpack(packed)
-        roundtrip_ok = obs_equal(obs, unpacked)
-        parsed_id = zeta_id.parse_b32(crockford_val)
-        parse_ok = parsed_id == packed
-        is_canonical = zeta_id.is_canonical(crockford_val)
+            parsed_id = zeta_id.parse_b32(crockford_val)
+            parse_ok = parsed_id == max_val
+            canonical_ok = zeta_id.is_canonical(crockford_val)
 
-        matches_expected = hex_val == v["expected_hex"]
-        crockford_matches = crockford_val == v["expected_crockford"]
+            roundtrip_ok = parse_ok and canonical_ok
+            matches_expected = (
+                hex_val == v["expected_hex"]
+                and crockford_val == v["expected_crockford"]
+            )
+        elif v_type == "lenient-alias":
+            auth_raw = v.get("authority_raw")
+            auth_val = auth_raw if auth_raw is not None else 0
+            mom_raw = v.get("momentum_raw")
+            mom_val = mom_raw if mom_raw is not None else 0
 
-        roundtrip_ok = roundtrip_ok and parse_ok and is_canonical
-        matches_expected = matches_expected and crockford_matches
+            obs = zeta_id.ZetaObservation(
+                version=v["version"],
+                timestamp=v["timestamp"],
+                chromosome=v["chromosome"],
+                category=v["category"],
+                firefly=v["firefly"],
+                authority=zeta_id.Authority(type_=v["authority_type"], value=auth_val),
+                persona=v["persona"],
+                momentum=zeta_id.Momentum(type_=v["momentum_type"], value=mom_val),
+                location=v["location"],
+            )
+            packed = zeta_id.pack(obs, zeta_id.DETERMINISTIC_ENV)
+            hex_val = zeta_id.to_hex(packed)
+            crockford_val = zeta_id.format_b32(packed)
+
+            parsed_id = zeta_id.parse_b32(v["input_crockford"])
+            parse_ok = parsed_id == packed
+            input_canonical_ok = zeta_id.is_canonical(v["input_crockford"])
+            expected_canonical_ok = zeta_id.is_canonical(v["expected_crockford"])
+
+            roundtrip_ok = parse_ok and not input_canonical_ok and expected_canonical_ok
+            matches_expected = (
+                hex_val == v["expected_hex"]
+                and crockford_val == v["expected_crockford"]
+            )
+        else:
+            auth_raw = v.get("authority_raw")
+            auth_val = auth_raw if auth_raw is not None else 0
+            mom_raw = v.get("momentum_raw")
+            mom_val = mom_raw if mom_raw is not None else 0
+
+            obs = zeta_id.ZetaObservation(
+                version=v["version"],
+                timestamp=v["timestamp"],
+                chromosome=v["chromosome"],
+                category=v["category"],
+                firefly=v["firefly"],
+                authority=zeta_id.Authority(type_=v["authority_type"], value=auth_val),
+                persona=v["persona"],
+                momentum=zeta_id.Momentum(type_=v["momentum_type"], value=mom_val),
+                location=v["location"],
+            )
+
+            packed = zeta_id.pack(obs, zeta_id.DETERMINISTIC_ENV)
+            hex_val = zeta_id.to_hex(packed)
+            crockford_val = zeta_id.format_b32(packed)
+
+            unpacked = zeta_id.unpack(packed)
+            roundtrip_ok = obs_equal(obs, unpacked)
+            parsed_id = zeta_id.parse_b32(crockford_val)
+            parse_ok = parsed_id == packed
+            is_canonical = zeta_id.is_canonical(crockford_val)
+
+            matches_expected = hex_val == v["expected_hex"]
+            crockford_matches = crockford_val == v["expected_crockford"]
+
+            roundtrip_ok = roundtrip_ok and parse_ok and is_canonical
+            matches_expected = matches_expected and crockford_matches
 
         out_map[v_id] = {
             "hex": hex_val,

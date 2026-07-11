@@ -1,6 +1,7 @@
 namespace Zeta.Core
 
 open System
+open Zeta.Core.Abstractions
 open System.Buffers.Binary
 open System.Collections.Generic
 open System.IO
@@ -25,28 +26,27 @@ type IBackingStore<'K when 'K : comparison> =
     abstract Release: handle: obj -> unit
 
 
-/// In-memory backing store — stores batches in a dictionary keyed by id.
+/// In-memory backing store — stores batches in a dictionary keyed by MerkleHash.
 /// This is what `Spine<'K>` effectively does internally.
 [<Sealed>]
 type InMemoryBackingStore<'K when 'K : comparison>() =
-    let store = Dictionary<int64, ZSet<'K>>()
-    let mutable nextId = 0L
+    let store = Dictionary<MerkleHash, ZSet<'K>>()
     interface IBackingStore<'K> with
         member _.Save(_level, batch) =
-            let id = Interlocked.Increment &nextId
-            lock store (fun () -> store.[id] <- batch)
-            id :> obj
+            let bytes = Checkpoint.toBytes batch
+            let hash = MerkleHash.ofBytes(ReadOnlySpan bytes)
+            lock store (fun () -> store.[hash] <- batch)
+            hash :> obj
         member _.Load handle =
-            let id = handle :?> int64
-            lock store (fun () -> store.[id])
+            let hash = handle :?> MerkleHash
+            lock store (fun () -> store.[hash])
         member _.Release handle =
-            let id = handle :?> int64
-            lock store (fun () -> store.Remove id |> ignore)
+            let hash = handle :?> MerkleHash
+            lock store (fun () -> store.Remove hash |> ignore)
 
 
-/// Disk-backed store that overflows large batches to a working directory
-/// as binary files. Above a configurable in-RAM quota, levels spill to
-/// disk; below, they stay in memory.
+/// **Disk-backed level store.** Persists Z-sets to a workspace folder using
+/// double-buffered, frame-first atomic file updates.
 ///
 /// Serialisation is the same JSON form used by `Checkpoint` — convenient
 /// but not fastest; production deployments would use Apache Arrow / Parquet.
@@ -57,31 +57,17 @@ type InMemoryBackingStore<'K when 'K : comparison>() =
 /// resident if anything).
 [<Sealed>]
 type DiskBackingStore<'K when 'K : comparison>
-    (workDir: string, inMemoryQuotaBytes: int64) =
-    // Canonicalise the work dir once, up front. We want to guarantee every
-    // spill path we produce lives under this root — a later sanity check
-    // proves it. Without `GetFullPath`, a caller-supplied relative or
-    // `..`-laden path would let a poisoned file-id sneak writes outside
-    // the intended directory. Belt-and-braces for a server-side caller.
+    (workDir: string, inMemoryQuotaBytes: int64, ?fsyncPerSave: bool, ?cryptoProvider: ICryptoProvider) =
+    let fsync = defaultArg fsyncPerSave false
+    let crypto = defaultArg cryptoProvider null
     let rootDir = Path.GetFullPath workDir
-    do Directory.CreateDirectory rootDir |> ignore
-    // Per-instance prefix — if two `DiskBackingStore` instances share the
-    // same `workDir`, their `nextId` counters would collide (each restarts
-    // at 0) and they'd clobber each other's `spine-{id}.json` files.
-    // GUID gives cross-instance isolation without needing cross-process
-    // coordination.
-    let instancePrefix = Guid.NewGuid().ToString("N")
-    let hot = Dictionary<int64, ZSet<'K>>()
-    let paths = Dictionary<int64, string>()
-    let mutable nextId = 0L
+    do FileSystem.Current.CreateDirectory rootDir
+    let hot = Dictionary<MerkleHash, ZSet<'K>>()
+    let paths = Dictionary<MerkleHash, string>()
     let mutable heapBytes = 0L
-    // `hotLock` guards `hot`, `paths`, `heapBytes`, `nextId` metadata; I/O
-    // operations (File.Read/Write/Delete) are always performed **outside**
-    // this lock to avoid serialising disk access across all store ops.
     let hotLock = obj ()
 
     let approxSize (z: ZSet<'K>) : int64 =
-        // Rough estimate: 24 bytes per entry (struct overhead + key ptr + weight).
         int64 (z.Count * 24)
 
     /// Is Windows / macOS case-insensitive filesystem? Path comparisons
@@ -93,44 +79,98 @@ type DiskBackingStore<'K when 'K : comparison>
         if isCaseInsensitivePathFs then StringComparison.OrdinalIgnoreCase
         else StringComparison.Ordinal
 
-    /// Build a spill path for `id` and assert it's inside `rootDir`.
-    /// Uses platform-appropriate case sensitivity — Windows/macOS ignore
-    /// case in path roots, which a strict `Ordinal` check would miss.
-    /// Also rejects NTFS alternate data streams (embedded `:`) in the
-    /// filename portion as a defense-in-depth.
-    let pathFor (id: int64) : string =
-        let filename = $"spine-{instancePrefix}-{id}.json"
+    /// Build a spill path for `hash` and assert it's inside `rootDir`.
+    let pathFor (hash: MerkleHash) : string =
+        let filename = sprintf "spine-%016x%016x.json" hash.Hi hash.Lo
         let candidate = Path.GetFullPath(Path.Combine(rootDir, filename))
         let rootWithSep = rootDir.TrimEnd(Path.DirectorySeparatorChar) + string Path.DirectorySeparatorChar
         if not (candidate.StartsWith(rootWithSep, pathComparison)) then
             invalidOp $"Refused spine spill path outside working directory: {candidate}"
-        // Reject NTFS alternate-data-stream suffixes in the filename.
         let finalName = Path.GetFileName candidate
         if finalName.Contains ':' then
             invalidOp $"Refused spine spill with ADS suffix in filename: {finalName}"
         candidate
 
-    /// Spill an id from `hot` to disk. Caller must hold `hotLock`.
-    /// The actual `File.WriteAllBytes` happens *outside* the lock so other
-    /// store operations don't serialise on the disk write.
-    let spillLocked (id: int64) : (string * byte array) option =
-        match hot.TryGetValue id with
+    /// Frame-first/header-second transaction commit protocol with fsync boundary support.
+    let writeAtomicFrame (candidate: string) (bytes: byte[]) =
+        let headPath = candidate + ".head"
+        let dataPath = candidate + ".data"
+        let opts =
+            if fsync then FileOptions.WriteThrough
+            else FileOptions.None
+
+        // 1. Write payload data frame
+        do
+            use fs: Stream = FileSystem.Current.OpenWrite(dataPath, fsync)
+            if isNull crypto then
+                fs.Write(bytes, 8, bytes.Length - 8)
+            else
+                let original = Array.zeroCreate<byte> (bytes.Length - 8)
+                Array.Copy(bytes, 8, original, 0, bytes.Length - 8)
+                let encrypted = crypto.Encrypt original
+                fs.Write(ReadOnlySpan encrypted)
+            fs.Flush()
+            if fsync then
+                match fs with
+                | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                | _ -> ()
+
+        // 2. Write header frame
+        do
+            use fs: Stream = FileSystem.Current.OpenWrite(headPath, fsync)
+            fs.Write(bytes, 0, 8)
+            fs.Flush()
+            if fsync then
+                match fs with
+                | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                | _ -> ()
+
+        // 3. Rename header to candidate
+        if FileSystem.Current.Exists candidate then FileSystem.Current.Delete candidate
+        FileSystem.Current.Move(headPath, candidate, true)
+
+        // 4. fsync parent directory
+        if fsync then
+            let parent = Path.GetDirectoryName candidate
+            FileSync.fsyncDir parent
+
+        // 5. SimulatedFs Flush hook
+        SimulatedFs.Flush candidate
+
+    /// Read data from frame-first files
+    let readAtomicFrame (candidate: string) : byte[] =
+        let dataPath = candidate + ".data"
+        let header = FileSystem.Current.ReadAllBytes candidate
+        if header.Length <> 8 then
+            failwithf "Spine batch corruption: header length is %d (expected 8)" header.Length
+        let rawData = FileSystem.Current.ReadAllBytes dataPath
+        let data =
+            if isNull crypto then rawData
+            else crypto.Decrypt rawData
+        let bytes = Array.zeroCreate<byte> (8 + data.Length)
+        Array.Copy(header, 0, bytes, 0, 8)
+        Array.Copy(data, 0, bytes, 8, data.Length)
+        bytes
+
+    /// Spill a hash from `hot` to disk. Caller must hold `hotLock`.
+    let spillLocked (hash: MerkleHash) : (string * byte array) option =
+        match hot.TryGetValue hash with
         | true, z ->
-            let path = pathFor id
+            let path = pathFor hash
             let bytes = Checkpoint.toBytes z
-            paths.[id] <- path
+            paths.[hash] <- path
             heapBytes <- heapBytes - approxSize z
-            hot.Remove id |> ignore
+            hot.Remove hash |> ignore
             Some (path, bytes)
         | _ -> None
 
     let evictIfOverQuotaLocked () : ResizeArray<string * byte array> =
         let writes = ResizeArray<string * byte array>()
         if heapBytes > inMemoryQuotaBytes then
-            let ids = hot.Keys |> Seq.sort |> Seq.toArray
+            let hashes = hot.Keys |> Seq.sortBy (fun h -> h.Hi, h.Lo) |> Seq.toArray
             let mutable i = 0
-            while heapBytes > inMemoryQuotaBytes && i < ids.Length do
-                match spillLocked ids.[i] with
+            while heapBytes > inMemoryQuotaBytes && i < hashes.Length do
+                match spillLocked hashes.[i] with
                 | Some pair -> writes.Add pair
                 | None -> ()
                 i <- i + 1
@@ -138,76 +178,65 @@ type DiskBackingStore<'K when 'K : comparison>
 
     interface IBackingStore<'K> with
         member _.Save(_level, batch) =
-            let id = Interlocked.Increment &nextId
+            let bytes = Checkpoint.toBytes batch
+            let hash = MerkleHash.ofBytes(ReadOnlySpan bytes)
             let writes =
                 lock hotLock (fun () ->
-                    hot.[id] <- batch
+                    hot.[hash] <- batch
                     heapBytes <- heapBytes + approxSize batch
                     evictIfOverQuotaLocked ())
-            // Disk writes *after* lock release — we already swapped the
-            // path in `paths` under lock, so concurrent Load/Release see
-            // the path entry even if the write is mid-flight (they'd
-            // either find it in `hot` (if not yet evicted) or in `paths`;
-            // the latter means they'd read the file we're about to write,
-            // which creates a small race window but matches the semantics
-            // of "Save isn't durable until it returns").
-            for (path, bytes) in writes do
-                File.WriteAllBytes(path, bytes)
-            id :> obj
+            for (path, b) in writes do
+                writeAtomicFrame path b
+            hash :> obj
 
         member _.Load handle =
-            let id = handle :?> int64
-            // Phase 1: see if it's hot.
+            let hash = handle :?> MerkleHash
             let hotHit =
                 lock hotLock (fun () ->
-                    match hot.TryGetValue id with
+                    match hot.TryGetValue hash with
                     | true, z -> ValueSome z
                     | _ -> ValueNone)
             match hotHit with
             | ValueSome z -> z
             | ValueNone ->
-                // Phase 2: look up the path under lock, *then* read outside.
                 let pathOpt =
                     lock hotLock (fun () ->
-                        match paths.TryGetValue id with
+                        match paths.TryGetValue hash with
                         | true, p -> ValueSome p
                         | _ -> ValueNone)
                 match pathOpt with
-                | ValueNone -> failwithf "Spine batch %d not found" id
+                | ValueNone -> failwithf "Spine batch %s not found" (sprintf "%016x%016x" hash.Hi hash.Lo)
                 | ValueSome p ->
-                    let bytes = File.ReadAllBytes p   // I/O outside lock
+                    let bytes = readAtomicFrame p
                     let z = Checkpoint.ofBytes<'K> bytes
-                    // Phase 3: re-hot so the next Load is O(1). Respect
-                    // the quota — if we'd exceed it we skip the re-hot
-                    // and accept the next Load re-reading from disk.
                     lock hotLock (fun () ->
                         if heapBytes + approxSize z <= inMemoryQuotaBytes
-                           && not (hot.ContainsKey id) then
-                            hot.[id] <- z
+                           && not (hot.ContainsKey hash) then
+                            hot.[hash] <- z
                             heapBytes <- heapBytes + approxSize z)
                     z
 
         member _.Release handle =
-            let id = handle :?> int64
-            // Pull the path (if any) out under lock; delete outside.
+            let hash = handle :?> MerkleHash
             let pathOpt =
                 lock hotLock (fun () ->
-                    match hot.TryGetValue id with
+                    match hot.TryGetValue hash with
                     | true, z ->
                         heapBytes <- heapBytes - approxSize z
-                        hot.Remove id |> ignore
+                        hot.Remove hash |> ignore
                     | _ -> ()
-                    match paths.TryGetValue id with
+                    match paths.TryGetValue hash with
                     | true, p ->
-                        paths.Remove id |> ignore
+                        paths.Remove hash |> ignore
                         ValueSome p
                     | _ -> ValueNone)
             match pathOpt with
             | ValueSome p ->
-                try File.Delete p
+                try
+                    if FileSystem.Current.Exists p then FileSystem.Current.Delete p
+                    let dataPath = p + ".data"
+                    if FileSystem.Current.Exists dataPath then FileSystem.Current.Delete dataPath
                 with ex ->
-                    // Don't swallow silently — log to stderr so a full
-                    // disk or permission error surfaces.
                     Console.Error.WriteLine $"DiskBackingStore.Release: File.Delete %s{p} failed: %s{ex.Message}"
             | ValueNone -> ()
 

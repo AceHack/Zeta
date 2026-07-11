@@ -27,66 +27,97 @@ type IAsyncBackingStore<'K when 'K : comparison> =
 /// no I/O to yield on, and we never spin up a thread to pretend otherwise.
 [<Sealed>]
 type InMemoryAsyncBackingStore<'K when 'K : comparison>() =
-    let store = Dictionary<int64, ZSet<'K>>()
-    let mutable nextId = 0L
+    let store = Dictionary<MerkleHash, ZSet<'K>>()
     interface IAsyncBackingStore<'K> with
         member _.SaveAsync(_level, batch, _ct) =
-            let id = Interlocked.Increment &nextId
-            lock store (fun () -> store.[id] <- batch)
-            ValueTask<obj>(id :> obj)
+            let bytes = Checkpoint.toBytes batch
+            let hash = MerkleHash.ofBytes(ReadOnlySpan bytes)
+            lock store (fun () -> store.[hash] <- batch)
+            ValueTask<obj>(hash :> obj)
         member _.LoadAsync(handle, _ct) =
-            let id = handle :?> int64
-            ValueTask<ZSet<'K>>(lock store (fun () -> store.[id]))
+            let hash = handle :?> MerkleHash
+            ValueTask<ZSet<'K>>(lock store (fun () -> store.[hash]))
         member _.ReleaseAsync(handle, _ct) =
-            let id = handle :?> int64
-            lock store (fun () -> store.Remove id |> ignore)
+            let hash = handle :?> MerkleHash
+            lock store (fun () -> store.Remove hash |> ignore)
             ValueTask.CompletedTask
 
 
 /// Disk-backed async store. Mirrors `DiskBackingStore` exactly — same spill
-/// quota, per-instance GUID prefix, path canonicalisation + traversal/ADS guards,
-/// and the same lock discipline (metadata under `hotLock`; **all I/O awaited
-/// OUTSIDE the lock**) — but the actual reads/writes are `File.*Async`.
-/// `fsyncPerSave` (default false) selects the durability mode:
-///   • false ⇒ **OS-buffered** — `File.WriteAllBytesAsync`; durable across a
-///     process crash, last ~sec lost on a host/kernel crash.
-///   • true  ⇒ **fsync-per-save** — the spill is written through to stable
-///     storage (`FileOptions.WriteThrough` + `Flush(flushToDisk=true)`) before
-///     `SaveAsync` completes. HONESTY CAVEAT: this fsyncs the file's data +
-///     metadata; it does NOT yet fsync the *parent directory*, so a brand-new
-///     file's directory entry could be lost on a crash between create and dir
-///     fsync. Parent-dir fsync is a documented follow-up before this is claimed
-///     as full buffered-durable-linearizability (Izraelevitz DISC'16).
+/// quota, path canonicalisation + traversal/ADS guards, and the same lock
+/// discipline (metadata under `hotLock`; all I/O awaited OUTSIDE the lock)
+/// but the actual reads/writes are async.
 [<Sealed>]
 type DiskAsyncBackingStore<'K when 'K : comparison>
     (workDir: string, inMemoryQuotaBytes: int64, ?fsyncPerSave: bool) =
     let fsync = defaultArg fsyncPerSave false
     let rootDir = Path.GetFullPath workDir
-    do Directory.CreateDirectory rootDir |> ignore
+    do FileSystem.Current.CreateDirectory rootDir
 
     /// Write bytes to `path`, forcing them through to stable storage when
     /// `fsync` is set. Async throughout — no `Task.Run` over sync I/O.
-    let writeBytesAsync (path: string) (bytes: byte[]) (ct: CancellationToken) : Task =
+    let writeAtomicFrameAsync (candidate: string) (bytes: byte[]) (ct: CancellationToken) : Task =
         task {
+            let headPath = candidate + ".head"
+            let dataPath = candidate + ".data"
             let opts =
                 if fsync then FileOptions.Asynchronous ||| FileOptions.WriteThrough
                 else FileOptions.Asynchronous
-            use fs =
-                new FileStream(
-                    path, FileMode.Create, FileAccess.Write, FileShare.None,
-                    bufferSize = 4096, options = opts)
-            do! fs.WriteAsync(ReadOnlyMemory(bytes), ct).AsTask()
-            do! fs.FlushAsync ct
-            // WriteThrough already bypasses the OS write-back cache; the explicit
-            // flush-to-disk is belt-and-braces for platforms where WriteThrough
-            // is advisory.
-            if fsync then fs.Flush(flushToDisk = true)
+
+            // 1. Write payload data frame
+            let! () =
+                task {
+                    use fs: Stream = FileSystem.Current.OpenWrite(dataPath, fsync)
+                    do! fs.WriteAsync(ReadOnlyMemory(bytes, 8, bytes.Length - 8), ct).AsTask()
+                    do! fs.FlushAsync ct
+                    if fsync then
+                        match fs with
+                        | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                        | _ -> ()
+                }
+
+            // 2. Write header frame
+            let! () =
+                task {
+                    use fs: Stream = FileSystem.Current.OpenWrite(headPath, fsync)
+                    do! fs.WriteAsync(ReadOnlyMemory(bytes, 0, 8), ct).AsTask()
+                    do! fs.FlushAsync ct
+                    if fsync then
+                        match fs with
+                        | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                        | _ -> ()
+                }
+
+            // 3. Rename header to candidate
+            if FileSystem.Current.Exists candidate then FileSystem.Current.Delete candidate
+            FileSystem.Current.Move(headPath, candidate, true)
+
+            // 4. fsync parent directory
+            if fsync then
+                let parent = Path.GetDirectoryName candidate
+                FileSync.fsyncDir parent
+
+            // 5. SimulatedFs Flush hook
+            SimulatedFs.Flush candidate
         }
         :> Task
-    let instancePrefix = Guid.NewGuid().ToString("N")
-    let hot = Dictionary<int64, ZSet<'K>>()
-    let paths = Dictionary<int64, string>()
-    let mutable nextId = 0L
+
+    /// Read data from frame-first files
+    let readAtomicFrameAsync (candidate: string) (ct: CancellationToken) : Task<byte[]> =
+        task {
+            let dataPath = candidate + ".data"
+            let! header = FileSystem.Current.ReadAllBytesAsync(candidate, ct)
+            if header.Length <> 8 then
+                failwithf "Spine batch corruption: header length is %d (expected 8)" header.Length
+            let! data = FileSystem.Current.ReadAllBytesAsync(dataPath, ct)
+            let bytes = Array.zeroCreate<byte> (8 + data.Length)
+            Array.Copy(header, 0, bytes, 0, 8)
+            Array.Copy(data, 0, bytes, 8, data.Length)
+            return bytes
+        }
+
+    let hot = Dictionary<MerkleHash, ZSet<'K>>()
+    let paths = Dictionary<MerkleHash, string>()
     let mutable heapBytes = 0L
     let hotLock = obj ()
 
@@ -99,8 +130,8 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
         if isCaseInsensitivePathFs then StringComparison.OrdinalIgnoreCase
         else StringComparison.Ordinal
 
-    let pathFor (id: int64) : string =
-        let filename = $"spine-{instancePrefix}-{id}.json"
+    let pathFor (hash: MerkleHash) : string =
+        let filename = sprintf "spine-%016x%016x.json" hash.Hi hash.Lo
         let candidate = Path.GetFullPath(Path.Combine(rootDir, filename))
         let rootWithSep = rootDir.TrimEnd(Path.DirectorySeparatorChar) + string Path.DirectorySeparatorChar
         if not (candidate.StartsWith(rootWithSep, pathComparison)) then
@@ -110,27 +141,25 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
             invalidOp $"Refused spine spill with ADS suffix in filename: {finalName}"
         candidate
 
-    /// Spill an id from `hot` to disk. Caller must hold `hotLock`. The actual
-    /// `File.WriteAllBytesAsync` happens *outside* the lock (the returned pair
-    /// carries the bytes to write).
-    let spillLocked (id: int64) : (string * byte array) option =
-        match hot.TryGetValue id with
+    /// Spill a hash from `hot` to disk. Caller must hold `hotLock`.
+    let spillLocked (hash: MerkleHash) : (string * byte array) option =
+        match hot.TryGetValue hash with
         | true, z ->
-            let path = pathFor id
+            let path = pathFor hash
             let bytes = Checkpoint.toBytes z
-            paths.[id] <- path
+            paths.[hash] <- path
             heapBytes <- heapBytes - approxSize z
-            hot.Remove id |> ignore
+            hot.Remove hash |> ignore
             Some (path, bytes)
         | _ -> None
 
     let evictIfOverQuotaLocked () : ResizeArray<string * byte array> =
         let writes = ResizeArray<string * byte array>()
         if heapBytes > inMemoryQuotaBytes then
-            let ids = hot.Keys |> Seq.sort |> Seq.toArray
+            let hashes = hot.Keys |> Seq.sortBy (fun h -> h.Hi, h.Lo) |> Seq.toArray
             let mutable i = 0
-            while heapBytes > inMemoryQuotaBytes && i < ids.Length do
-                match spillLocked ids.[i] with
+            while heapBytes > inMemoryQuotaBytes && i < hashes.Length do
+                match spillLocked hashes.[i] with
                 | Some pair -> writes.Add pair
                 | None -> ()
                 i <- i + 1
@@ -138,24 +167,25 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
 
     interface IAsyncBackingStore<'K> with
         member _.SaveAsync(_level, batch, ct) =
-            let id = Interlocked.Increment &nextId
+            let bytes = Checkpoint.toBytes batch
+            let hash = MerkleHash.ofBytes(ReadOnlySpan bytes)
             let writes =
                 lock hotLock (fun () ->
-                    hot.[id] <- batch
+                    hot.[hash] <- batch
                     heapBytes <- heapBytes + approxSize batch
                     evictIfOverQuotaLocked ())
             task {
-                for (path, bytes) in writes do
-                    do! writeBytesAsync path bytes ct
-                return (id :> obj)
+                for (path, b) in writes do
+                    do! writeAtomicFrameAsync path b ct
+                return (hash :> obj)
             }
             |> ValueTask<obj>
 
         member _.LoadAsync(handle, ct) =
-            let id = handle :?> int64
+            let hash = handle :?> MerkleHash
             let hotHit =
                 lock hotLock (fun () ->
-                    match hot.TryGetValue id with
+                    match hot.TryGetValue hash with
                     | true, z -> ValueSome z
                     | _ -> ValueNone)
             match hotHit with
@@ -163,44 +193,44 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
             | ValueNone ->
                 let pathOpt =
                     lock hotLock (fun () ->
-                        match paths.TryGetValue id with
+                        match paths.TryGetValue hash with
                         | true, p -> ValueSome p
                         | _ -> ValueNone)
                 match pathOpt with
-                | ValueNone -> failwithf "Spine batch %d not found" id
+                | ValueNone -> failwithf "Spine batch %s not found" (sprintf "%016x%016x" hash.Hi hash.Lo)
                 | ValueSome p ->
                     task {
-                        let! bytes = File.ReadAllBytesAsync(p, ct)   // I/O outside lock
+                        let! bytes = readAtomicFrameAsync p ct
                         let z = Checkpoint.ofBytes<'K> bytes
                         lock hotLock (fun () ->
                             if heapBytes + approxSize z <= inMemoryQuotaBytes
-                               && not (hot.ContainsKey id) then
-                                hot.[id] <- z
+                               && not (hot.ContainsKey hash) then
+                                hot.[hash] <- z
                                 heapBytes <- heapBytes + approxSize z)
                         return z
                     }
                     |> ValueTask<ZSet<'K>>
 
         member _.ReleaseAsync(handle, _ct) =
-            let id = handle :?> int64
+            let hash = handle :?> MerkleHash
             let pathOpt =
                 lock hotLock (fun () ->
-                    match hot.TryGetValue id with
+                    match hot.TryGetValue hash with
                     | true, z ->
                         heapBytes <- heapBytes - approxSize z
-                        hot.Remove id |> ignore
+                        hot.Remove hash |> ignore
                     | _ -> ()
-                    match paths.TryGetValue id with
+                    match paths.TryGetValue hash with
                     | true, p ->
-                        paths.Remove id |> ignore
+                        paths.Remove hash |> ignore
                         ValueSome p
                     | _ -> ValueNone)
-            // File.Delete has no async variant; it is a fast metadata syscall, so
-            // a completed ValueTask is truthful (we are not hiding latency behind
-            // a thread).
             match pathOpt with
             | ValueSome p ->
-                try File.Delete p
+                try
+                    if FileSystem.Current.Exists p then FileSystem.Current.Delete p
+                    let dataPath = p + ".data"
+                    if FileSystem.Current.Exists dataPath then FileSystem.Current.Delete dataPath
                 with ex ->
                     Console.Error.WriteLine $"DiskAsyncBackingStore.ReleaseAsync: File.Delete %s{p} failed: %s{ex.Message}"
             | ValueNone -> ()

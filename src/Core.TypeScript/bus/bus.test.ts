@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
@@ -130,14 +130,15 @@ describe("bus — TTL expiry", () => {
   afterEach(cleanTestDir);
 
   test("expired messages are excluded from list by default", () => {
-    // publish a message then manually expire it via env override + tiny TTL
-    // We use the programmatic API directly (import) to set a 0ms TTL
-    const r = spawnSync("bun", ["-e", `
+    const tempFile = join(TEST_DIR, `eval-${Math.random().toString(36).substring(2)}.ts`);
+    writeFileSync(tempFile, `
       process.env.ZETA_BUS_DIR = ${JSON.stringify(TEST_DIR)};
       const { publish } = await import(${JSON.stringify(SCRIPT)});
       const env = publish("otto", "*", { topic: "heartbeat", payload: { status: "idle" } }, 0);
       console.log(JSON.stringify(env));
-    `], { encoding: "utf-8" });
+    `);
+    const r = spawnSync("bun", [tempFile], { encoding: "utf-8" });
+    try { unlinkSync(tempFile); } catch {}
     expect(r.status).toBe(0);
     const env = JSON.parse(r.stdout.trim());
     expect(env.id).toBeTruthy();

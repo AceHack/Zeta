@@ -222,7 +222,7 @@ let ``CODEGEN-FORWARD: SplitMix64 IR row byte-locks F# toCanonicalJson and round
         DynamicValue.Object
             [ ("generator", s "rng.splitmix64")
               ("version", i 1L)
-              ("zetaId", s "129c1fac3a48075b481c0f10f30deb06")
+              ("zetaId", s "129c1fac3a48075bc89934da1e90fbe4")
               ("ops",
                DynamicValue.Array
                    [ op "mul" "k" 0x9e3779b97f4a7c15L

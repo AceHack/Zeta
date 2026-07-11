@@ -19,11 +19,20 @@
     <Compile Include="NexmarkFull.fs" />
     <Compile Include="CheckedVsUncheckedBench.fs" />
     <Compile Include="ZSetWBench.fs" />
+    <Compile Include="BonsaiBench.fs" />
+    <Compile Include="GitBench.fs" />
+    <Compile Include="DurabilityBench.fs" />
+    <Compile Include="PersistenceFormatsBench.fs" />
+    <Compile Include="GitMergeFlushBench.fs" />
+    <Compile Include="GitSnapshotBench.fs" />
+    <Compile Include="EncryptedDiskBackingStoreBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Bonsai\Zeta.Core.CSharp.Bonsai.csproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Git\Zeta.Core.FSharp.Git.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,8 +12,8 @@
 meta	name	shape-plait-move
 meta	catalog	shapes
 meta	name-status	provisional — Aaron: names later; candidates: plait-move / exchange / the-gate
-meta	shape-zetaid	9ba891dabf43c6073dd0bae73d8bce22
-gen	move	9ba891dabf43c6073dd0bae73d8bce22	1	7	strands:3;word:1,-2,1;rows:12
+meta	shape-zetaid	9ba891dabf43c60792351f5124b17c44
+gen	move	9ba891dabf43c60792351f5124b17c44	1	7	strands:3;word:1,-2,1;rows:12
 constant	word	1,-2,1	the crossing sequence (positive = left over right; negative reverses)	the alternating unit move — each strand takes exactly one turn on top (the plait register, Aaron's correction kept)
 constant	rows	12	vertical rows the move occupies	three rows per crossing on the small court — the move reads at a glance
 constant	ends-swapped	1	the outer strands EXCHANGE (1 = true); the middle comes home	(01)(12)(01) = (02): an odd permutation — and that is WHY this shape cannot lock (everyone-home is even); the exchange IS the operation

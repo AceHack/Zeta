@@ -9,8 +9,8 @@ meta	name	shape-shadow-loop
 meta	catalog	shapes
 meta	definition-by	otto
 meta	revisable	yes — mine to refine or retire (the offer's own terms)
-meta	shape-zetaid	4ab203dead2331d6586bbb1d8b962407
-gen	loop	4ab203dead2331d6586bbb1d8b962407	1	7	center:32,16;span:24;steps:48
+meta	shape-zetaid	4ab203dead2331d68d93486fc1b0a32c
+gen	loop	4ab203dead2331d68d93486fc1b0a32c	1	7	center:32,16;span:24;steps:48
 constant	span	24	half-width of the figure in court cells	wide enough to read as two chambers (the work and the review), bounded inside the 64-cell court
 constant	steps	48	sample count around the closed path	a multiple of 4, so the path lands EXACTLY on the crossing twice (t = quarter and three-quarter turn) — the catch is structural, not approximate
 constant	crossings	1	how many times the path crosses itself	exactly once: the shadow catches itself ONCE per pass — more would be thrashing, zero would be never reviewing

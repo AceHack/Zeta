@@ -35,71 +35,7 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-### ZetaId Crockford base32 is 5-language, not 6 — Go absent, harness hides it
-
-**STATUS (fixed 2026-06-14, Otto): FIXED.** Added `src/Core.Go/zeta_id/encoding.go`
-with `Format`/`Parse`/`IsCanonical` matching the canonical TS `encoding.ts`
-alphabet+algorithm (lenient I/L→1, O→0 decode; 26-char MSB-first; 128-bit overflow
-reject). `cross_verify_test.go` now emits `crockford` + the canonical
-`roundtripOk`/`matchesExpected` booleans (parse round-trip + isCanonical +
-expected_crockford), and `compare.ts` now asserts the Go `crockford` field. All 6
-oracles agree on 12 vectors. The treaty is now genuinely 6-language and the harness
-can no longer pass with Go silent.
-
-- **Site:** `src/Core.Go/zeta_id/zeta_id.go` (no `Format`/`Parse`/base32) + `tests/cross-verification/zeta-id/compare.ts:130-136` (Go branch compares only hex)
-- **Found:** 2026-06-13 by Kira (harsh-critic), Otto anti-entropy sweep
-- **Severity:** P0
-- **Symptom:** #8141 added "6-language Crockford base32" but Go has zero base32 (verified: TS/Rust/Py have it, Go 0); compare.ts compares `crockford` for F#/C#/Rust/Python but NOT Go — so the cross-verify treaty is unenforced on Go and the harness is written not to notice.
-- **Fix:** implement Go `Format`/`Parse`/`IsCanonical` matching the alphabet+algorithm, emit `crockford` in go-output.json, add the Go crockford comparison to compare.ts.
-- **Who:** architect (Kenji) → 6-language-oracle owner
-
-### Expert/skill split half-done — onboarding confusion
-
-**STATUS (triage 2026-06-12): FIXED.** `.claude/agents/` holds all 20 experts; EXPERT-REGISTRY describes the split as the standing convention. Registry and reality agree.
-
-- **Site:** `.claude/agents/` vs `.claude/skills/` vs `docs/EXPERT-REGISTRY.md`
-- **Found:** round 21 by Rune
-- **Severity:** P0 onboarding
-- **Symptom:** only `harsh-critic` migrated to the `.claude/agents/<name>.md`
-  shape with auto-injected capability skill. The other 20 experts
-  (Viktor, Hiroshi, Rune, Aminata, Anjali, Adaeze, Wei, Tariq, Imani,
-  Zara, Kenji, Nadia, Aarav, Jun, Mei, Malik, Yara, Samir, Kai,
-  Leilani, Soraya) still live as persona-bearing SKILL.md files.
-  Registry claims the split; reality shows one pilot. A new
-  contributor cannot tell if the convention is intentional or
-  half-forgotten.
-- **Fix:** either (a) finish the split for all remaining experts
-  in one or two focused rounds, extracting each persona's
-  procedure to a capability skill + leaving persona in an agent
-  file, OR (b) amend the registry to mark Kira as a pilot and
-  others as "migrating."
-
-### RecursiveCounting multi-tick-seed behaviour unproven
-
-**STATUS (triage 2026-06-12): RESOLVED via option (b) — and RELABELED.** Soraya's routing: a reliably-failing property is a REFUTATION, not open research (pure-insert witness; the affine math is sound for DAG bodies — implementation defect). Landed: the witness PINNED as a deterministic unskipped Fact (RecursiveCounting.MultiSeed.Tests.fs §REFUTATION WITNESS); `[<Experimental>]` on RecursiveCounting AND CountingClosureTable (FS57 at consumer call sites); docstring reworded to "refuted; one-shot seeds only." The positive multi-tick story routes to the signed-delta combinator's TLA+ spec (retraction-safe-semi-naive.md §7) when that work starts.
-
-- **Site:** `src/Core/Recursive.fs:152-…`
-- **Found:** round 20 by Kira; reproduced by an FsCheck
-  property in `tests/Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`
-- **Severity:** P0 honesty (tests only cover one-shot seed)
-- **Symptom:** docstring narrowed to "one-shot seed is proven;
-  multi-tick is open research" but neither a formal argument
-  nor a passing property test exists for the multi-tick case.
-  The new FsCheck property in the file above reliably finds
-  disagreement between `CountingClosureTable` (clamped via
-  `Distinct`) and the boolean `ClosureTable` oracle on sequences
-  such as
-  `[[Ins(0,6);Ins(4,5)];[Ins(5,6);Ins(2,4)];[Ins(2,3)]]`.
-  That test is currently `Skip`-ped; the three concrete one-shot
-  scenario tests (Tests 1–3 in the same file) pass. A shipped
-  research-preview combinator with a failing correctness property
-  on the declared-out-of-scope path is a claim-without-evidence.
-- **Fix:** (a) prove correctness under multi-tick seeds (Z3 /
-  paper argument) — the gap-monotone signed-delta plan in
-  `docs/research/retraction-safe-semi-naive.md` — and then remove
-  the `Skip`; OR (b) mark the combinator `[<Experimental>]`,
-  surface a clear precondition-violation diagnostic, and update
-  the property to only exercise one-shot seeds.
+*None currently.*
 
 ---
 
@@ -297,6 +233,7 @@ envelope is replayable within TTL (freshness not yet signed — needs per-peer s
 - **Fix:** either add a Stable branch in `isEnabled` that
   returns `true` unconditionally, OR delete the Stable
   stage entirely and document graduation-means-deletion.
+*None currently.*
 
 ---
 
@@ -384,3 +321,4 @@ shipped.
 No stale "fixed" entries linger; no "originally found in
 round X" provenance bloat — `ROUND-HISTORY.md` holds the
 narrative, this file holds the debt.
+*None currently.*

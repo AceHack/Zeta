@@ -16,6 +16,7 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 ## Blueprints
 
 - [`code-review-zero-empathy`](blueprints/code-review-zero-empathy.md) — "Zero-empathy code review — P0/P1/P2 ranked findings, file:line refs, no compliments, under 600 words."
+- [`github-pr-review-hygiene`](blueprints/github-pr-review-hygiene.md) — "GitHub PR review hygiene — commit history, PR layout, peer etiquette, thread resolution state machine."
 - [`maintainability-reviewer`](blueprints/maintainability-reviewer.md) — "Long-horizon readability review — naming, module shape, docstring discipline, file-size, tribal-knowledge risk."
 - [`complexity-reviewer`](blueprints/complexity-reviewer.md) — "Complexity reviewer — audits O(n) claims, space-vs-time trade-offs, lower bounds, constant-factor cost in code."
 - [`reducer`](blueprints/reducer.md) — Complexity reduction — Brooks essential/accidental, Kolmogorov/Shannon metrics, Rodney's Razor, code complexity audit.

@@ -24,6 +24,7 @@ import { join } from "node:path";
 const MASK = (1n << 64n) - 1n;
 const u64 = (x: bigint): bigint => x & MASK;
 const PRIME = 0x100000001b3n;
+const PRIME2 = 0x1000000021bn;
 
 function hash128(s: string): string {
   let h1 = 0xcbf29ce484222325n;
@@ -31,7 +32,8 @@ function hash128(s: string): string {
   for (const ch of s) {
     const c = BigInt(ch.codePointAt(0) ?? 0);
     h1 = u64((h1 ^ u64(c)) * PRIME);
-    h2 = u64((h2 ^ u64(c * 31n)) * PRIME);
+    const rotated = u64((c << 31n) | (c >> 33n));
+    h2 = u64((h2 ^ rotated) * PRIME2);
   }
   return h1.toString(16).padStart(16, "0") + h2.toString(16).padStart(16, "0");
 }

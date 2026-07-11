@@ -1,6 +1,15 @@
 #!/usr/bin/env bun
 // validate-agencysignature-pr-body.ts — pre-merge validator for the
-// AgencySignature Convention v1 trailer block in a PR description body.
+// AgencySignature Convention v1|v2 trailer block in a PR description body.
+//
+// v2 (ADR docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md phase 4;
+// treaty docs/research/2026-07-03-persona-cell-identity-treaty-*.md Article 1):
+// adds required `Cell:` trailer (canonical cell projection
+// `<surface>[/<instance>][@<node>]`) + optional `Persona:` alias of `Agent`.
+// Cell is validated through the ONE parser (identity/actor-ref.ts) by
+// reconstructing the canonical `<persona>/<cell>` projection — this file
+// never hand-parses persona-cell strings. Dual-accept: v1 stays valid
+// until phase-8 contract; the auditor reports version share.
 //
 // TypeScript+Bun port of validate-agencysignature-pr-body.sh, slice 9
 // of the TS+Bun migration. See docs/best-practices/repo-scripting.md.
@@ -23,6 +32,7 @@
 //   2 — tooling / input error
 
 import { spawnSync } from "node:child_process";
+import { parse as parseActorRef } from "../identity/actor-ref.ts";
 
 type ExitCode = 0 | 1 | 2;
 
@@ -30,6 +40,8 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 const SPEC_DOC =
   "docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md";
+const ADR_DOC =
+  "docs/DECISIONS/2026-07-03-persona-cell-identity-unification.md";
 
 const REQUIRED_KEYS: readonly string[] = [
   "Agency-Signature-Version",
@@ -50,7 +62,7 @@ const TASK_RE =
   /^(?:none|Otto-\d+|task-#?\d+|#?\d+|[A-Za-z][A-Za-z0-9]*-\d+)$/;
 
 const ENUMS: readonly { readonly key: string; readonly allowed: readonly string[] }[] = [
-  { key: "Agency-Signature-Version", allowed: ["1"] },
+  { key: "Agency-Signature-Version", allowed: ["1", "2"] },
   { key: "Credential-Mode", allowed: ["shared", "dedicated-agent", "human-only", "unknown"] },
   { key: "Human-Review", allowed: ["explicit", "not-implied-by-credential", "none"] },
   { key: "Human-Review-Evidence", allowed: ["chat", "pr-review", "pr-comment", "signed-policy", "none"] },
@@ -383,8 +395,56 @@ function checkHumanReviewConsistency(trailers: string): ExitCode | null {
   return null;
 }
 
+
+const V2_REQUIRED_EXTRA: readonly string[] = ["Cell"];
+
+function checkV2(trailers: string): ExitCode | null {
+  const version = getValue(trailers, "Agency-Signature-Version");
+  if (version !== "2") return null; // v1: Cell/Persona ignored (forward-compat)
+
+  const missing = V2_REQUIRED_EXTRA.filter((key) => {
+    const prefix = `${key.toLowerCase()}:`;
+    return !trailers.split("\n").some((l) => l.toLowerCase().startsWith(prefix));
+  });
+  if (missing.length > 0) {
+    process.stdout.write(`FAIL: missing required AgencySignature v2 trailer keys: ${missing.join(" ")}\n`);
+    process.stdout.write("  Cause:  Agency-Signature-Version: 2 requires the Cell trailer\n");
+    process.stdout.write("  Fix:    add `Cell: <surface>[/<instance>][@<node>]` (e.g. Cell: cowork/main@machine-a)\n");
+    process.stdout.write(`  Spec:   ${ADR_DOC} phase 4\n`);
+    return 1;
+  }
+
+  const agent = getValue(trailers, "Agent");
+  const persona = getValue(trailers, "Persona");
+  if (persona !== "" && persona !== agent) {
+    process.stdout.write("FAIL: Persona trailer must equal Agent when both are present\n");
+    process.stdout.write(`  Agent:   '${agent}'\n`);
+    process.stdout.write(`  Persona: '${persona}'\n`);
+    process.stdout.write("  Reason:  Persona is v2's explicit alias of v1's Agent key — one identity, two spellings\n");
+    process.stdout.write(`  Spec:    ${ADR_DOC} phase 4\n`);
+    return 1;
+  }
+
+  const cell = getValue(trailers, "Cell");
+  try {
+    // THE one parser (treaty Article 1): validate by reconstructing the
+    // canonical projection `<persona>/<cell>`. No local string surgery.
+    parseActorRef(`${agent}/${cell}`);
+  } catch (err) {
+    process.stdout.write("FAIL: invalid Agent/Cell pair for AgencySignature v2\n");
+    process.stdout.write(`  Agent:  '${agent}' (must be a bare lowercase PersonaId from registry/personas.yaml)\n`);
+    process.stdout.write(`  Cell:   '${cell}' (canonical cell projection: <surface>[/<instance>][@<node>])\n`);
+    process.stdout.write(`  Parser: ${err instanceof Error ? err.message : String(err)}\n`);
+    process.stdout.write("  Law:    treaty Article 1 — projections are produced/parsed by exactly one module\n");
+    process.stdout.write(`  Spec:   ${ADR_DOC} phase 4\n`);
+    return 1;
+  }
+  return null;
+}
+
 function emitPass(trailers: string): ExitCode {
-  process.stdout.write("PASS: AgencySignature v1 trailer block valid\n");
+  const version = getValue(trailers, "Agency-Signature-Version");
+  process.stdout.write(`PASS: AgencySignature v${version} trailer block valid\n`);
   process.stdout.write(
     `  Agency-Signature-Version: ${getValue(trailers, "Agency-Signature-Version")}\n`,
   );
@@ -411,6 +471,11 @@ function emitPass(trailers: string): ExitCode {
     `  Action-Mode:              ${getValue(trailers, "Action-Mode")}\n`,
   );
   process.stdout.write(`  Task:                     ${getValue(trailers, "Task")}\n`);
+  if (getValue(trailers, "Agency-Signature-Version") === "2") {
+    const persona = getValue(trailers, "Persona");
+    if (persona !== "") process.stdout.write(`  Persona:                  ${persona}\n`);
+    process.stdout.write(`  Cell:                     ${getValue(trailers, "Cell")}\n`);
+  }
   return 0;
 }
 
@@ -439,6 +504,9 @@ export function main(): ExitCode {
 
   const enumCheck = checkEnums(trailers);
   if (enumCheck !== null) return enumCheck;
+
+  const v2Check = checkV2(trailers);
+  if (v2Check !== null) return v2Check;
 
   const taskCheck = checkTaskPattern(trailers);
   if (taskCheck !== null) return taskCheck;

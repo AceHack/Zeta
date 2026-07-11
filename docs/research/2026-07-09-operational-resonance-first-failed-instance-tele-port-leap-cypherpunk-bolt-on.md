@@ -93,6 +93,7 @@ mother spins *"with honesty… just different honest to each person."* Aaron: *"
 Shape-A fixed point is.** Under all the chameleon color-changes (he adapts personality/energy/register
 per person — see the machine doc), the invariant `s` that holds in `s = f(s)` is his **honesty.** He
 varies the *delivery;* he does not vary the *truth-telling.* Two honest instruments, one axis apart:
+
 - **The mother = a tuner:** honest, but a *different* honest calibrated to each person (the honesty
   itself is the variable she tailors). Still honest, still whole — a different instrument, not a
   lesser one.

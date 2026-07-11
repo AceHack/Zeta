@@ -19,14 +19,18 @@ module GeneratorRegistry =
           Version: int
           ZetaId: string }
 
-    // deterministic content-address: FNV-1a-ish 128-bit fold over name@version (no wall, no random —
+    // deterministic content-address: FNV-1a 128-bit fold over name@version (no wall, no random —
     // the id is a pure function of identity, so it is the SAME everywhere, forever).
+    // The second lane (h2) uses non-linear bitwise rotation and a different prime to ensure
+    // full 128-bit entropy (decorrelated lanes).
     let private hash128 (s: string) : string =
         let mutable h1 = 0xcbf29ce484222325UL
         let mutable h2 = 0x84222325cbf29ce4UL
         for ch in s do
             h1 <- (h1 ^^^ uint64 (int ch)) * 0x100000001b3UL
-            h2 <- (h2 ^^^ uint64 (int ch * 31)) * 0x100000001b3UL
+            let c = uint64 (int ch)
+            let rotated = (c <<< 31) ||| (c >>> 33)
+            h2 <- (h2 ^^^ rotated) * 0x1000000021bUL
         sprintf "%016x%016x" h1 h2
 
     /// Mint the stable ZetaId for a generator name@version (deterministic; the same input always yields
@@ -35,7 +39,9 @@ module GeneratorRegistry =
 
     /// Register (declare) a generator — returns its entry. Registration is just naming; the id follows.
     let register (name: string) (version: int) : Entry =
-        { Name = name; Version = version; ZetaId = idOf name version }
+        { Name = name
+          Version = version
+          ZetaId = idOf name version }
 
     /// The stable generators known today — the BoundaryLight family + the kernel + the verbs that have
     /// earned a fixed identity. Adding a generator = adding a line; bumping a version = a new id (so a

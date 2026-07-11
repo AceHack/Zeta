@@ -11,6 +11,12 @@ const semiring: InterfaceIr = JSON.parse(readFileSync(join(irDir, "semiring.ir.j
 const ring: InterfaceIr = JSON.parse(readFileSync(join(irDir, "ring.ir.json"), "utf-8"));
 const starRing: InterfaceIr = JSON.parse(readFileSync(join(irDir, "star-ring.ir.json"), "utf-8"));
 const zsetIsa: InterfaceIr = JSON.parse(readFileSync(join(irDir, "zset-isa.ir.json"), "utf-8"));
+const gset: InterfaceIr = JSON.parse(readFileSync(join(irDir, "gset.ir.json"), "utf-8"));
+const zset: InterfaceIr = JSON.parse(readFileSync(join(irDir, "zset.ir.json"), "utf-8"));
+const boundedGset: InterfaceIr = JSON.parse(readFileSync(join(irDir, "bounded-gset.ir.json"), "utf-8"));
+const boundedZset: InterfaceIr = JSON.parse(readFileSync(join(irDir, "bounded-zset.ir.json"), "utf-8"));
+const heatSink: InterfaceIr = JSON.parse(readFileSync(join(irDir, "heat-sink.ir.json"), "utf-8"));
+const database: InterfaceIr = JSON.parse(readFileSync(join(irDir, "database.ir.json"), "utf-8"));
 
 describe("codegen-interface — ISemiring", () => {
   test("C# emits correct interface with inheritance", () => {
@@ -201,6 +207,102 @@ describe("codegen-interface — IZSetIsa (the 6 Z-set/Quantum ISA operators)", (
     const fsx = emitFSharp(zsetIsa);
     expect(fsx).toContain("type IZSetIsa<'TState, 'TEvent, 'TWeight> =");
     expect(fsx).toContain("abstract member Emit: 'TEvent * 'TWeight -> unit");
+  });
+});
+
+describe("codegen-interface — first-class collections & heat-sink", () => {
+  test("generates IGSet", () => {
+    const ts = emitTypeScript(gset);
+    expect(ts).toContain("export interface IGSet<T> extends ILattice<T>");
+    expect(ts).toContain("Add(item: T): boolean;");
+    expect(ts).toContain("Contains(item: T): boolean;");
+    expect(ts).toContain("readonly Count: number;");
+
+    const cs = emitCSharp(gset);
+    expect(cs).toContain("public interface IGSet<T> : ILattice<T>");
+    expect(cs).toContain("public bool Add(T item);");
+
+    const fsx = emitFSharp(gset);
+    expect(fsx).toContain("type IGSet<'T> =");
+    expect(fsx).toContain("abstract member Add: 'T -> bool");
+  });
+
+  test("generates IZSet", () => {
+    const ts = emitTypeScript(zset);
+    expect(ts).toContain("export interface IZSet<T, TWeight>");
+    expect(ts).toContain("Add(item: T, weight: TWeight): void;");
+    expect(ts).toContain("Weight(item: T): TWeight;");
+    expect(ts).toContain("Support(): IGSet<T>;");
+
+    const cs = emitCSharp(zset);
+    expect(cs).toContain("public interface IZSet<T, TWeight>");
+    expect(cs).toContain("public void Add(T item, TWeight weight);");
+
+    const fsx = emitFSharp(zset);
+    expect(fsx).toContain("type IZSet<'T, 'TWeight> =");
+    expect(fsx).toContain("abstract member Add: 'T * 'TWeight -> unit");
+  });
+
+  test("generates IBoundedGSet", () => {
+    const ts = emitTypeScript(boundedGset);
+    expect(ts).toContain("export interface IBoundedGSet<T> extends IGSet<T>");
+    expect(ts).toContain("readonly Capacity: number;");
+    expect(ts).toContain("readonly IsSaturated: boolean;");
+
+    const cs = emitCSharp(boundedGset);
+    expect(cs).toContain("public interface IBoundedGSet<T> : IGSet<T>");
+    expect(cs).toContain("public int Capacity { get; }");
+
+    const fsx = emitFSharp(boundedGset);
+    expect(fsx).toContain("type IBoundedGSet<'T> =");
+    expect(fsx).toContain("inherit IGSet<'T>");
+    expect(fsx).toContain("abstract member Capacity: int");
+  });
+
+  test("generates IBoundedZSet", () => {
+    const ts = emitTypeScript(boundedZset);
+    expect(ts).toContain("export interface IBoundedZSet<T, TWeight> extends IZSet<T, TWeight>");
+
+    const cs = emitCSharp(boundedZset);
+    expect(cs).toContain("public interface IBoundedZSet<T, TWeight> : IZSet<T, TWeight>");
+
+    const fsx = emitFSharp(boundedZset);
+    expect(fsx).toContain("type IBoundedZSet<'T, 'TWeight> =");
+    expect(fsx).toContain("inherit IZSet<'T, 'TWeight>");
+  });
+
+  test("generates IHeatSink", () => {
+    const ts = emitTypeScript(heatSink);
+    expect(ts).toContain("export interface IHeatSink");
+    expect(ts).toContain("Emit(source: string, kind: string, units: number, massPpm: number, detail: string): boolean;");
+
+    const cs = emitCSharp(heatSink);
+    expect(cs).toContain("public interface IHeatSink");
+    expect(cs).toContain("public bool Emit(string source, string kind, int units, long massPpm, string detail);");
+
+    const fsx = emitFSharp(heatSink);
+    expect(fsx).toContain("type IHeatSink =");
+    expect(fsx).toContain("abstract member Emit: string * string * int * int64 * string -> bool");
+  });
+
+  test("generates IDatabase", () => {
+    const ts = emitTypeScript(database);
+    expect(ts).toContain("export interface IDatabase");
+    expect(ts).toContain("CreateFile(path: string, value: string): boolean;");
+    expect(ts).toContain("ReadGSet(path: string): IGSet<string>;");
+    expect(ts).toContain("ReadZSet(path: string): IZSet<string, number>;");
+
+    const cs = emitCSharp(database);
+    expect(cs).toContain("public interface IDatabase");
+    expect(cs).toContain("public bool CreateFile(string path, string value);");
+    expect(cs).toContain("public IGSet<string> ReadGSet(string path);");
+    expect(cs).toContain("public IZSet<string, long> ReadZSet(string path);");
+
+    const fsx = emitFSharp(database);
+    expect(fsx).toContain("type IDatabase =");
+    expect(fsx).toContain("abstract member CreateFile: string * string -> bool");
+    expect(fsx).toContain("abstract member ReadGSet: string -> IGSet<string>");
+    expect(fsx).toContain("abstract member ReadZSet: string -> IZSet<string, int64>");
   });
 });
 

@@ -70,5 +70,29 @@
     "hex": "0ffffffffffff9c1f80ff80800000000",
     "matchesExpected": true,
     "roundtripOk": true
+  },
+  "all-zero": {
+    "crockford": "00000000000000000000000000",
+    "hex": "00000000000000000000000000000000",
+    "matchesExpected": true,
+    "roundtripOk": true
+  },
+  "max-128": {
+    "crockford": "7ZZZZZZZZZZZZZZZZZZZZZZZZZ",
+    "hex": "ffffffffffffffffffffffffffffffff",
+    "matchesExpected": true,
+    "roundtripOk": true
+  },
+  "overflow-reject-1": {
+    "crockford": "rejected",
+    "hex": "rejected",
+    "matchesExpected": true,
+    "roundtripOk": true
+  },
+  "lenient-alias-1": {
+    "crockford": "081JVQXNCD370ZG2R010000000",
+    "hex": "080cb77ed58d19c1f80b000800000000",
+    "matchesExpected": true,
+    "roundtripOk": true
   }
 }

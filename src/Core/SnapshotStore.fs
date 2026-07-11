@@ -45,7 +45,7 @@ type DiskSnapshotStore<'K when 'K : comparison>
 
     let fsync = defaultArg fsyncOnWrite false
     let root = Path.GetFullPath dir
-    do Directory.CreateDirectory root |> ignore
+    do FileSystem.Current.CreateDirectory root
     let manifestPath = Path.Combine(root, "LATEST.json")
     let snapName (seq: int64) = sprintf "snapshot-%020d.snap" seq
 
@@ -56,12 +56,15 @@ type DiskSnapshotStore<'K when 'K : comparison>
                 if fsync then FileOptions.Asynchronous ||| FileOptions.WriteThrough
                 else FileOptions.Asynchronous
             do! (task {
-                    use fs = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None, 4096, opts)
+                    use fs: Stream = FileSystem.Current.OpenWrite(tmp, fsync)
                     do! fs.WriteAsync(System.ReadOnlyMemory bytes, ct).AsTask()
                     do! fs.FlushAsync ct
-                    if fsync then fs.Flush(flushToDisk = true)
+                    if fsync then
+                        match fs with
+                        | :? FileStream as fileStream -> fileStream.Flush(flushToDisk = true)
+                        | _ -> ()
                  } : Task)
-            File.Move(tmp, path, overwrite = true)   // atomic replace on the same volume
+            FileSystem.Current.Move(tmp, path, true)   // atomic replace on the same volume
             if fsync then FileSync.fsyncDir root     // durably commit the rename in the dir
         }
         :> Task
@@ -82,16 +85,16 @@ type DiskSnapshotStore<'K when 'K : comparison>
         member _.ReadAsync(pointer, ct) =
             task {
                 let file = pointer.Handle :?> string
-                let! bytes = File.ReadAllBytesAsync(Path.Combine(root, file), ct)
+                let! bytes = FileSystem.Current.ReadAllBytesAsync(Path.Combine(root, file), ct)
                 return codec.Decode bytes
             }
 
         member _.LatestAsync(ct) =
             task {
-                if not (File.Exists manifestPath) then
+                if not (FileSystem.Current.Exists manifestPath) then
                     return null
                 else
-                    let! bytes = File.ReadAllBytesAsync(manifestPath, ct)
+                    let! bytes = FileSystem.Current.ReadAllBytesAsync(manifestPath, ct)
                     let m = JsonSerializer.Deserialize<Dictionary<string, string>> bytes
                     match m with
                     | null -> return null

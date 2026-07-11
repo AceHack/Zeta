@@ -190,8 +190,7 @@ module DurabilityMode =
     /// `DBSP_FLAG_WITNESSDURABLE=1`, or meta-flag
     /// `DBSP_FLAG_RESEARCHPREVIEW=1`. The underlying store still
     /// throws on every `Save` — enabling the flag is an explicit
-    /// opt-in to a research-preview surface, not a claim that it
-    /// works.
+    /// opt-in to a research-preview surface, not a claim that it works.
     let createBackingStore<'K when 'K : comparison>
         (mode: DurabilityMode)
         (workDir: string)
@@ -200,16 +199,9 @@ module DurabilityMode =
         match mode with
         | DurabilityMode.InMemoryOnly -> upcast InMemoryBackingStore<'K>()
         | DurabilityMode.OsBuffered ->
-            upcast DiskBackingStore<'K>(workDir, inMemoryQuotaBytes)
+            upcast DiskBackingStore<'K>(workDir, inMemoryQuotaBytes, fsyncPerSave = false)
         | DurabilityMode.StableStorage ->
-            // The shipped `DiskBackingStore` buffers via the OS page cache — it does NOT fsync
-            // per Save: StableStorage currently gets OsBuffered semantics (P0 in docs/BACKLOG.md;
-            // real per-Save fsync before v0.1 tags). The downgrade now SIGNALS at construction
-            // (round-3 fix: the doc above used to claim flagging that did not exist — a caller
-            // selecting fsync durability got page-cache semantics with zero runtime signal).
-            eprintfn
-                "zeta-durability WARNING: DurabilityMode.StableStorage is not yet fsync-backed —                  you are getting OsBuffered (page-cache) semantics. See docs/BACKLOG.md (P0)."
-            upcast DiskBackingStore<'K>(workDir, inMemoryQuotaBytes)
+            upcast DiskBackingStore<'K>(workDir, inMemoryQuotaBytes, fsyncPerSave = true)
         | DurabilityMode.WitnessDurable ->
             if not (FeatureFlags.isEnabled Flag.WitnessDurable) then
                 invalidOp
@@ -262,10 +254,7 @@ module DurabilityMode =
         | DurabilityMode.OsBuffered ->
             "survives process crash; last ~sec lost on host crash"
         | DurabilityMode.StableStorage ->
-            // Reflects what actually ships today, not the paper
-            // target. See the DU comment above.
-            "advertised: buffered-durable-linearizable; shipped: \
-             OsBuffered semantics until per-Save fsync path lands"
+            "buffered-durable-linearizability (fsync-per-save frame-first protocol)"
         | DurabilityMode.WitnessDurable ->
             "research preview — no shipped durability guarantee; \
              Save throws until the WDC protocol is specified and \

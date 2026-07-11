@@ -142,7 +142,7 @@ const ORACLES: readonly { file: string; name: string }[] = [
 ];
 
 /** Bookkeeping keys on a canonical vector that are not part of the compared value. */
-const VECTOR_META_KEYS = new Set(["id", "type", "description", "note"]);
+const VECTOR_META_KEYS = new Set(["id", "type", "description", "note", "name", "gen_version"]);
 /** Scalar fields, in priority order, that carry a canonical expected value. */
 const CANONICAL_SCALAR_FIELDS = ["expected", "expected_hex", "result", "value", "hex"];
 
@@ -229,6 +229,44 @@ function canonicalExpected(vec: Record<string, unknown>): unknown {
 
 /** Load the canonical vectors from vectors.json or vectors.yaml. Returns a map id -> expected canon string (or null if no canonical value is defined). */
 // eslint-disable-next-line sonarjs/cognitive-complexity
+function parseSimpleYaml(content: string): any {
+  const lines = content.split(/\r?\n/);
+  const result: any = { vectors: [] };
+  let currentVec: Record<string, any> = {};
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    if (trimmed.startsWith("version:") || trimmed.startsWith("description:")) continue;
+    if (trimmed.startsWith("- ")) {
+      currentVec = {};
+      result.vectors.push(currentVec);
+      const pair = trimmed.slice(2).split(":");
+      if (pair.length >= 2) {
+        const key = pair[0];
+        if (key !== undefined) {
+          const k = key.trim();
+          const v = pair.slice(1).join(":").trim().replace(/^['"]|['"]$/g, "");
+          const num = Number(v);
+          currentVec[k] = isNaN(num) ? v : num;
+        }
+      }
+    } else if (line.startsWith("    ") || line.startsWith("  ")) {
+      if (trimmed.startsWith("- ")) continue;
+      const pair = trimmed.split(":");
+      if (pair.length >= 2) {
+        const key = pair[0];
+        if (key !== undefined) {
+          const k = key.trim();
+          const v = pair.slice(1).join(":").trim().replace(/^['"]|['"]$/g, "");
+          const num = Number(v);
+          currentVec[k] = isNaN(num) ? v : (v === "true" ? true : (v === "false" ? false : num));
+        }
+      }
+    }
+  }
+  return result;
+}
+
 function loadCanonical(dir: string): Map<string, string | null> {
   const jsonP = join(dir, "vectors.json");
   const yamlP = join(dir, "vectors.yaml");
@@ -239,9 +277,10 @@ function loadCanonical(dir: string): Map<string, string | null> {
     // Bun.YAML is available in the bun runtime CI uses for these oracles.
     const yaml = (globalThis as { Bun?: { YAML?: { parse(s: string): unknown } } }).Bun?.YAML;
     if (yaml === undefined) {
-      throw new Error(`Bun.YAML is unavailable while parsing ${yamlP}`);
+      parsed = parseSimpleYaml(readFileSync(yamlP, "utf8"));
+    } else {
+      parsed = yaml.parse(readFileSync(yamlP, "utf8"));
     }
-    parsed = yaml.parse(readFileSync(yamlP, "utf8"));
   } else {
     throw new Error(`no canonical vectors.json or vectors.yaml in ${dir} (assert-don't-skip)`);
   }

@@ -10,7 +10,7 @@ depends_on: []
 composes_with: []
 ---
 
-# Math-team route: do the four primitives (meno/mnao/noeo/lampo) sit on the FourCorner C4, and does i-rotation cycle them?
+# Math-team route: do the four primitives (meno/mnao/noeo/lampo) sit on the FourCorner C4, and does i-rotation cycle them
 
 <!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.

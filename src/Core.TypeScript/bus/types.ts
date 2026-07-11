@@ -1,6 +1,7 @@
 // types.ts — Inter-agent ephemeral bus protocol schema (081KR7JY10008QG0R000R503K2 slice 1)
 //
 // Transport: /tmp/zeta-bus/ JSON files. No runtime dependencies.
+import type { ActorRef } from "../identity/actor-ref.ts";
 // Each message is one JSON file; TTL expiry pruned by `clean --expired`.
 //
 // Topic taxonomy (agent-designed, 2026-05-13):
@@ -94,6 +95,7 @@ export type ClaimPayload = {
    * glance which checkout produced the claim.
    */
   worktree?: string;
+  shareableWithinPersona?: boolean;
 };
 
 export type ShadowCatchPayload = {
@@ -152,6 +154,7 @@ export type BusMessage =
 export type MessageEnvelope = BusMessage & {
   id: string;
   from: SenderAgentId; // a specific named agent, never "*"
+  sender?: ActorRef;
   to: AgentId; // specific agent or "*" for broadcast
   timestamp: string; // ISO-8601
   expiresAt: string; // ISO-8601; pruned by clean --expired

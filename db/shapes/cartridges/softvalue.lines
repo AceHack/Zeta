@@ -10,8 +10,8 @@
 # claim). Capability upgrades buy channels; what a rung cannot carry it must not claim.
 meta	name	shape-softvalue
 meta	catalog	shapes
-meta	shape-zetaid	14503a27553efb16dbde7ee3da7d8887
-gen	ladder	14503a27553efb16dbde7ee3da7d8887	1	7	rungs:3;bar-cells:40
+meta	shape-zetaid	14503a27553efb162eb23a69db42590c
+gen	ladder	14503a27553efb162eb23a69db42590c	1	7	rungs:3;bar-cells:40
 constant	value-milli	700	the value, milli-scale (0..1000)	one value for all three rungs — the ladder's whole lesson is that the VALUE never changes, only what travels WITH it
 constant	confidence-milli	850	how sure the soft side is, milli-scale	chosen so fine and coarse bars visibly DIFFER (850 -> 34 fine vs 30 quantized): the resolution loss is the picture
 constant	bar-cells	40	bar width budget in court cells	ONE CELL = 25 MILLI (1000/40) — every milli constant in this file must be a multiple of 25 or its bar law breaks; that is the rule to know before editing value-milli

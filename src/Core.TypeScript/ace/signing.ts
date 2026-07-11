@@ -42,7 +42,7 @@ export function signManifest(manifest: AceManifest, privatePem: string): AceSign
   const bytes = canonicalManifestBytes(manifest);
   const priv = createPrivateKey(privatePem);
   const sig = (nodeSign(null, bytes, priv) as Buffer).toString("base64");
-  const spkiB64 = (createPublicKey(priv).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
+  const spkiB64 = (createPublicKey(priv as any).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
   return { algo: "ed25519", key_id: keyId(spkiB64), sig };
 }
 
@@ -77,6 +77,6 @@ export function publicKeyInfoFromPrivatePem(privatePem: string): { keyId: string
   if (priv.asymmetricKeyType !== "ed25519") {
     throw new Error(`publicKeyInfoFromPrivatePem: expected an ed25519 key, got ${priv.asymmetricKeyType ?? "unknown"}`);
   }
-  const public_key = (createPublicKey(priv).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
+  const public_key = (createPublicKey(priv as any).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
   return { keyId: keyId(public_key), public_key };
 }
