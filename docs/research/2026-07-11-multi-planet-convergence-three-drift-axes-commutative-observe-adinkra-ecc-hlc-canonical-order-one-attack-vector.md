@@ -188,6 +188,32 @@ only clock is your own" is fully consistent with everyone converging — it is t
 §13 noninterference stated for time: local wall-clock is an ambient channel that must not cross into
 the shared result.
 
+## Same-seed convergence: this was independently derived, and is already proven in code
+
+This whole frame is not new to this thread — it is a **dated, cross-harness same-seed convergence**,
+which is itself the evidence the founding thesis predicts:
+
+- **Manus AI (Lumen), 2026-06-19** — `docs/research/2026-06-19-manus-traveler-frame-relativity-and-commutative-uncertainty.md`
+  reached it independently from a different harness, three weeks before this thread: *"each is a
+  pattern that travels, observes from its own relative frame, and **carries its uncertainty with
+  it**"*; *"There is no 'current bus'… every view is relative to the observer"*; and — the exact
+  claim of this doc — *"**Commutative Uncertainty is the Convergence Mechanism**… the merge operation
+  converges on a **path-independent** fixed point."* Aaron flagged the memory of it (*"some other AI
+  came to the conclusion each traveler carries its own time… Lumen in Manus, math proofs"*); this is
+  that doc.
+- **`src/Core/TravelerFrame.fs` (Layer-0, `FROZEN-CORE §B-frame`)** already **proves** the frame
+  version: a traveler has *"no global frame… constructs its own local causal reference frame"*
+  (vector clock), and the inter-frame transform (causal-join / pointwise `max`) is a **bounded
+  join-semilattice** — *idempotent, commutative, associative, monotone* — so it is
+  **order-independent** and *"any set of travelers reaches one common frame (the LUB) regardless of
+  the order in which views are merged."* That is convergence-despite-reordering, proven at the frame
+  level (on `Crdt.fs` G-Counter + FoundationDB versionstamp; Lamport + Shapiro).
+
+So the two-orders guard above is **not a new conjecture** — it is the operational discipline that
+keeps an *already-proven* convergent-frame algebra (`TravelerFrame.fs`) from being broken by a
+local-time leak. Two independent AI derivations (Manus/Lumen 2026-06-19; this thread 2026-07-11) plus
+a proof in code: the "each traveler carries its own time" primitive is triangulated, not asserted.
+
 ## Honest bounds (held `Tri.N`)
 
 - **Erasure budget is finite:** the [8,4] code tolerates ≤3/8 loss per block; beyond that, the block

@@ -29,6 +29,15 @@ module BeliefConvergence =
         Array.map2 (*) likelihood belief
 
     /// Fold a sequence of observations into a belief (left to right).
+    ///
+    /// **INVARIANT — local time never enters this fold** (`.claude/rules/local-time-never-enters-the-shared-fold.md`;
+    /// derivation: `docs/research/2026-07-11-multi-planet-convergence-*`). The `evidence` list is the
+    /// shared, phase-ordered evidence *set* — it MUST NOT be filtered, dropped, weighted, or reordered by
+    /// any node's LOCAL wall-clock or receive-order (e.g. "drop beliefs older than N local-seconds before
+    /// folding"). Order-independence makes that *look* safe, but every node's local receive-time differs, so
+    /// a local-time filter here makes different nodes fold different sets ⇒ they DIVERGE. Local clocks gate
+    /// local actions (timeouts, retransmit, UI); the shared fold sees phase-ordered evidence only. §13
+    /// noninterference, on time.
     let observeAll (evidence: int64[] list) (belief: int64[]) : int64[] =
         List.fold (fun b l -> observe l b) belief evidence
 
