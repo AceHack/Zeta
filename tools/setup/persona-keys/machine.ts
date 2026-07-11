@@ -285,8 +285,8 @@ export function realEffects(): MachineEffects {
         // (standard for an unattended device key); the private file stays local (umask 077).
         const r = spawnSync(
           "ssh-keygen",
-          ["-t", "ed25519", "-f", keyPath, "-N", "", "-C", comment],
-          { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+          ["-t", "ed25519", "-f", keyPath, "-C", comment],
+          { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], input: "\n\n" },
         );
         if (r.status !== 0) {
           throw new Error(`ssh-keygen failed (status ${r.status ?? "signal"}): ${r.stderr ?? ""}`);

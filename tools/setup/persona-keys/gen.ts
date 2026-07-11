@@ -1,6 +1,7 @@
 // Zeta keyring CLI — a thin shell around the pure treaty oracle (derive.ts).
 // SECURITY: the seed phrase is NEVER read from argv (visible in ps/shell history).
 // Either --generate a fresh one in-process, or read an existing one from STDIN.
+import { readFileSync } from "node:fs";
 import { deriveKeyring, freshMnemonic } from "./derive.ts";
 
 const args = process.argv.slice(2);
@@ -13,6 +14,6 @@ const publicOnly = flag("--public-only");
 // shows the human their phrase to write down BEFORE deriving).
 if (flag("--emit-mnemonic")) { process.stdout.write(freshMnemonic() + "\n"); process.exit(0); }
 
-const mnemonic = flag("--generate") ? freshMnemonic() : (await Bun.stdin.text()).trim();
+const mnemonic = flag("--generate") ? freshMnemonic() : readFileSync(0, "utf8").trim();
 const { full, pub } = deriveKeyring(mnemonic, user);
 console.log(JSON.stringify(publicOnly ? pub : full, null, 2));

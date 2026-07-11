@@ -407,8 +407,10 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
     // 2. Generate a THROWAWAY device key in temp (a bare ssh-keygen, never committed). PURE
     // label — the MACHINE only, NO `user@` in the device key comment (pure-key model).
     const deviceKey = join(tmp, "device_ed25519");
-    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", "mymac (zeta-machine)"], {
+    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", "mymac (zeta-machine)"], {
       encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+      input: "\n\n",
     });
     expect(kg.status).toBe(0);
     const devicePub = deviceKey + ".pub";
@@ -509,7 +511,11 @@ test("REAL ssh-keygen: a multi-principal cert shows BOTH users + a machine-only 
     expect(caRes.action).toBe("generated");
 
     const deviceKey = join(tmp, "device_ed25519");
-    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", "shared (zeta-machine)"], { encoding: "utf8" });
+    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", "shared (zeta-machine)"], {
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+      input: "\n\n",
+    });
     expect(kg.status).toBe(0);
     const devicePub = deviceKey + ".pub";
 

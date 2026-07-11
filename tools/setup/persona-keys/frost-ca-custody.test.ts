@@ -104,8 +104,10 @@ test("frost-ca confirm: writes shares + optional public key; attest verifies", a
     expect(existsSync(frostCaPublicKeyPath(sb.repoRoot, CA))).toBe(true);
 
     const deviceKey = join(sb.home, "device");
-    const keygen = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", HOST], {
+    const keygen = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", HOST], {
       encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+      input: "\n\n",
     });
     expect(keygen.status).toBe(0);
     const devicePubPath = join(sb.repoRoot, "machines", `${HOST}.pub`);

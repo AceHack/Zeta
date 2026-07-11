@@ -201,9 +201,8 @@ export function realEffects() {
             mkdirSync(dirOf(caKeyPath), { recursive: true, mode: 0o700 });
             const prevUmask = process.umask(0o077); // CA private key must not be group/other readable
             try {
-                // ssh-keygen generates the CA key itself — no secret on argv. -N "" = no passphrase
-                // (the operator may add one); the private file stays LOCAL under umask 077.
-                const r = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", caKeyPath, "-N", "", "-C", comment], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+                // ssh-keygen generates the CA key itself — no secret on argv.
+                const r = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", caKeyPath, "-C", comment], { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], input: "\n\n" });
                 if (r.status !== 0) {
                     throw new Error(`ssh-keygen (CA) failed (status ${r.status ?? "signal"}): ${r.stderr ?? ""}`);
                 }

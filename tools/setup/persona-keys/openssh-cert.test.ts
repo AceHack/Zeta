@@ -41,8 +41,10 @@ test("frost-signed OpenSSH user cert is accepted by ssh-keygen -L", () => {
   const dir = mkdtempSync(join(tmpdir(), "zeta-openssh-cert-"));
   try {
     const deviceKey = join(dir, "device");
-    const gen = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", "device"], {
+    const gen = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", "device"], {
       encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"],
+      input: "\n\n",
     });
     expect(gen.status).toBe(0);
     const devicePubLine = readFileSync(deviceKey + ".pub", "utf8").trim();

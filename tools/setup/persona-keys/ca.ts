@@ -388,8 +388,8 @@ export function realEffects(): CaEffects {
         // (the operator may add one); the private file stays LOCAL under umask 077.
         const r = spawnSync(
           "ssh-keygen",
-          ["-t", "ed25519", "-f", caKeyPath, "-N", "", "-C", comment],
-          { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+          ["-t", "ed25519", "-f", caKeyPath, "-C", comment],
+          { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], input: "\n\n" },
         );
         if (r.status !== 0) {
           throw new Error(`ssh-keygen (CA) failed (status ${r.status ?? "signal"}): ${r.stderr ?? ""}`);

@@ -7,7 +7,9 @@ import { test, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 const gv = JSON.parse(readFileSync(new URL("./golden-vectors-keyring.json", import.meta.url), "utf8"));
 test("TS oracle reproduces the keyring golden vector bit-perfect", async () => {
-    const proc = Bun.spawn(["bun", new URL("./gen.ts", import.meta.url).pathname, "--user", gv.input.user, "--public-only"], { stdin: new TextEncoder().encode(gv.input.mnemonic), stdout: "pipe" });
+    const proc = Bun.spawn(["bun", new URL("./gen.ts", import.meta.url).pathname, "--user", gv.input.user, "--public-only"], { stdin: "pipe", stdout: "pipe" });
+    proc.stdin.write(gv.input.mnemonic);
+    proc.stdin.end();
     const out = JSON.parse(await new Response(proc.stdout).text());
     await proc.exited;
     // deep byte-lock: the entire public surface must match the golden vector exactly
@@ -15,7 +17,9 @@ test("TS oracle reproduces the keyring golden vector bit-perfect", async () => {
 });
 test("derivation is deterministic across runs (same seed -> same output)", async () => {
     const run = async () => {
-        const p = Bun.spawn(["bun", new URL("./gen.ts", import.meta.url).pathname, "--user", "zeta", "--public-only"], { stdin: new TextEncoder().encode(gv.input.mnemonic), stdout: "pipe" });
+        const p = Bun.spawn(["bun", new URL("./gen.ts", import.meta.url).pathname, "--user", "zeta", "--public-only"], { stdin: "pipe", stdout: "pipe" });
+        p.stdin.write(gv.input.mnemonic);
+        p.stdin.end();
         const t = await new Response(p.stdout).text();
         await p.exited;
         return t;

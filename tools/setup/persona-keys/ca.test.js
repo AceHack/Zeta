@@ -381,8 +381,10 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
         expect(caPub).not.toMatch(new RegExp(PRIV_MARKER));
         // 2. Generate a THROWAWAY device key in temp (a bare ssh-keygen, never committed).
         const deviceKey = join(tmp, "device_ed25519");
-        const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-N", "", "-C", "tester@mymac"], {
+        const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", "tester@mymac"], {
             encoding: "utf8",
+            stdio: ["pipe", "pipe", "pipe"],
+            input: "\n\n",
         });
         expect(kg.status).toBe(0);
         const devicePub = deviceKey + ".pub";

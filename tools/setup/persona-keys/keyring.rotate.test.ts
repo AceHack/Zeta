@@ -14,11 +14,13 @@ const KEYRING = join(HERE, "keyring.sh");
 const gv = JSON.parse(readFileSync(join(HERE, "golden-vectors-keyring.json"), "utf8"));
 
 // run keyring.sh with piped stdin; --public-only (no sink) into a throwaway --out dir
-async function run(mode: string, name: string, stdin: string) {
+async function run(mode: string, name: string, stdinStr: string) {
   const out = mkdtempSync(join(tmpdir(), "zk-rot-"));
   const p = Bun.spawn(["bash", KEYRING, mode, name, "--public-only", "--out", out], {
-    stdin: new TextEncoder().encode(stdin), stdout: "pipe", stderr: "pipe",
+    stdin: "pipe", stdout: "pipe", stderr: "pipe",
   });
+  p.stdin.write(stdinStr);
+  p.stdin.end();
   await p.exited;
   const pub = JSON.parse(readFileSync(join(out, "keyring-public.json"), "utf8"));
   rmSync(out, { recursive: true, force: true });
