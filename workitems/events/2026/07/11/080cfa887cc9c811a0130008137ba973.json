@@ -1,0 +1,14 @@
+{
+  "id": "080cfa887cc9c811a0130008137ba973",
+  "at": "2026-07-11T12:03:24.601Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX8GZ69R08QG0R002M5J8DG",
+    "type": "task",
+    "title": "Migrate the stranded persona-cell / Identity-Treaty stack (PR #9551) onto main — whole-stack, not separable",
+    "slug": "migrate-the-stranded-persona-cell-identity-treaty-stack-pr-9",
+    "priority": "P2",
+    "filename": "081KX8GZ69R08QG0R002M5J8DG-migrate-the-stranded-persona-cell-identity-treaty-stack-pr-9.md"
+  }
+}
