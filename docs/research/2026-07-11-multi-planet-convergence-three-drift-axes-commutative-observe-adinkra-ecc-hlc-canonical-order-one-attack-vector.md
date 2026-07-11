@@ -108,6 +108,56 @@ nonlinear ops). Strictly stronger than FoundationDB's order-preserving bit-repla
 same order; this needs only the same *set*, tolerates losing part of it, and agrees to the bit — the
 requirements a multi-planet, delay-tolerant substrate actually faces.
 
+## Design intent (Aaron 2026-07-11): never HLC-as-truth — pure phase time closes the catch
+
+Aaron: *"i'm trying to never need HLC-as-real-time-truth cause our time is all DST-like phase time
+we are agreeing on, never wallclock time."* This doesn't work *around* the honest catch above — it
+**removes the failing property entirely.** If the HLC's physical component is never read as truth —
+only the agreed logical **phase** (seed-derived from S=4) plus a node-id tiebreak — then:
+
+- The **bounded-skew assumption is never invoked.** Nothing depends on two planets' wall-clocks being
+  close, so the multi-planet failure mode has no surface to fail on. The `Tri.N` "HLC-physical-as-
+  approximation latent bug" flagged below is closed *by never reading it as truth.*
+- The clock **degenerates to a pure logical/phase clock** (Lamport phase + deterministic tiebreak) —
+  which is *exactly* the deterministic total-order sort key axis 3 needs, and nothing more. The
+  sort-key *is* the whole clock; there was never a truth-claim to lose.
+- **Cost, named honestly:** pure phase time cannot answer *"how many seconds stale is this belief?"*
+  — there is no wall-clock truth to measure against. In a DST/phase world that question is out of
+  scope *by design* (you order by phase, not seconds), so it is a cost he **chose**, not one he
+  missed. Anything that genuinely needs real-elapsed-seconds (a timeout, a rate limit in wall-time)
+  must get it from a *local* clock, never from the agreed phase.
+
+This is the manifesto's own move applied to the clock itself: time is a **participant with an agreed
+phase** (the injected `IScheduler` / seed), not ambient wall-clock — **noninterference (§13) on
+time.** The earlier "HLC works multi-planet only as a sort-key" is the *general* statement; "never
+use it as truth at all" is the *stricter discipline* that makes the sort-key the only role, so the
+catch can't reappear by accident.
+
+## The UDP corollary (Aaron 2026-07-11): the same design runs over unreliable datagrams
+
+Aaron: *"the Adinkra stuff means this will likely work over UDP with little modification."* Correct,
+and it falls straight out of the three axes — **UDP's two pathologies *are* axes 1 and 2:**
+
+- UDP **reorders** datagrams → axis 1 (commutative `observe`) already absorbs it.
+- UDP **drops** datagrams → axis 2 (Adinkra ECC) reconstructs up to 3/8 loss per block.
+- UDP is **connectionless / stateless** → matches the phase-time design (no session, no handshake
+  truth to keep).
+
+So the convergence substrate is **transport-agnostic**: it does not need TCP's ordering +
+reliability, because it *provides its own* (commutative + erasure-coded + phase-ordered) at the
+application layer. This is the fountain-code / application-layer-FEC insight (RaptorQ, QUIC's loss
+handling) — drop the reliable-ordered transport, carry the guarantees yourself. It is also why the
+same design serves both interplanetary DTN *and* a plain UDP LAN: they are the same failure model at
+different latencies.
+
+**Honest bounds on "little modification" (`Tri.N`):** (a) **congestion / rate control** — UDP has
+none, and a belief-flood can still collapse a link; that must be added (van Jacobson-style), the
+erasure code does not provide it. (b) **Erasure budget** bounds tolerable loss (>3/8 per block ⇒
+retransmit or a higher-rate code) — a lossy link past that budget still stalls. (c) **MTU /
+fragmentation** — the [8,4] blocks are small (fine), but large *fused* messages need fragmenting
+below the path MTU. Transport-independence is real; "little modification" is fair **with those three
+named**, not without them.
+
 ## Honest bounds (held `Tri.N`)
 
 - **Erasure budget is finite:** the [8,4] code tolerates ≤3/8 loss per block; beyond that, the block
@@ -128,7 +178,9 @@ requirements a multi-planet, delay-tolerant substrate actually faces.
 - **HLC / clocks:** Kulkarni et al., *Hybrid Logical Clocks* (2014); CockroachDB HLC; Lamport,
   *Time, Clocks, and the Ordering of Events* (1978); Jefferson, *Virtual Time* (1985, Time Warp).
 - **Delay-tolerant networking:** Cerf et al., *Delay-Tolerant Networking Architecture* (RFC 4838) —
-  the interplanetary regime; Reticulum (in-repo transport).
+  the interplanetary regime; Reticulum (in-repo transport). **Transport-independence / FEC:** Luby,
+  *RaptorQ* (RFC 6330, fountain codes); QUIC (RFC 9000, app-layer loss handling over UDP); Jacobson,
+  *Congestion Avoidance and Control* (1988, the rate-control UDP still lacks).
 - **Erasure / Adinkra codes:** MacWilliams & Sloane, *Theory of Error-Correcting Codes* (erasure =
   `d−1`); S. J. Gates Jr. & Iga et al. (adinkras ↔ doubly-even self-dual codes); the [8,4] extended
   Hamming code.
