@@ -280,6 +280,7 @@ export function publishRoomTranscriptsToRootSiteLlmtv(
       frames: rendered.summary.frames,
       dwellers: rendered.summary.dwellers,
       stats: rendered.summary.stats,
+      ...(rendered.summary.phaseClock === undefined ? {} : { phaseClock: rendered.summary.phaseClock }),
       ...(rendered.summary.lastFrameAgeMs === undefined ? {} : { lastFrameAgeMs: rendered.summary.lastFrameAgeMs }),
     }),
   );

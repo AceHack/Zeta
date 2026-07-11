@@ -139,6 +139,16 @@ describe("llmtv-room-root-site-readout -- room transcripts to root-site LLMTV", 
       frames: 1,
       dwellers: 1,
       stats: { accepted: 1, rejected: 0, expired: 0 },
+      phaseClock: {
+        schema: "zeta.darkhall.phase-clock.v1",
+        source: "llmtv-broadcast",
+        basis: "seed-phase",
+        seed: "S4",
+        phase: 2,
+        skewBoundTicks: 0,
+        appendOnly: true,
+        travelers: 1,
+      },
     });
   });
 
