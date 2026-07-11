@@ -95,6 +95,26 @@ with a ⭐ below and add a row there.
   `aaron-ani` 2026-06-05 (DynamicValue's data⇄behavior duality is the
   concrete build of this tradition; the type-discriminator = the
   yin-yang dots).
+- **⭐ THE Rx / REACTIVE-DUALITY CLUSTER — "the Rx guys" (consolidated anchor, Aaron 2026-07-11:
+  *"consolidate on anyone who might be able to ground my work"*)** — four humans who ground the
+  entire reactive / duality / fold spine, cross-linked because the work is one lineage read four ways,
+  and each maps onto a live thread:
+  - **Erik Meijer** (Rx co-creator; Applied Duality — entry above) — observer/iterator duality and
+    **μF (data / "what remains") ⇄ νF (process / "what acts")**: the formal home of the *remains/acts
+    fork itself*. (LINQ; *Subject/Observer is Dual to Iterator*, 2010.)
+  - **Brian Beckman** (physicist + monads — entry above ⭐) — *Don't Fear the Monad*;
+    **physics-falls-out-of-the-Rx-structure** (Rx → Cayley–Dickson → spinor/qubit). The bridge from
+    the reactive spine to the **SUSY / adinkra** physics — the anchor for the adinkra-clock thread
+    (`docs/research/2026-07-11-where-does-the-adinkra-clock-come-from…`).
+  - **Bart DeSmet** (Rx internals — entry below) — Reaqtor / IQbservable / Nuqleon / Bonsai + the
+    **scheduler / virtual-time** machinery our `src/Core/VirtualTimeScheduler.fs` ports; the anchor
+    for **time-as-an-injected-scheduler** (the adinkra-clock test: does `∂_τ = {Q,Q}` fall out as
+    `VirtualTimeScheduler.AdvanceBy`?).
+  - **Bartosz Milewski** (⭐ entry above) — *Category Theory for Programmers*: the categorical duality
+    (IEnumerable⇄IObservable) under all of the above.
+  Independent lineage (Rx / CT roots, **not the Zeta seed**) → genuine grounding, not internal echo —
+  which is exactly why these four (per the sole-mirror discipline) are the independent-prior peers
+  who could *move* the remains/acts fork rather than merely re-confirm it from inside the model.
 - **CALM theorem — Consistency As Logical Monotonicity** — **Joseph
   Hellerstein & Peter Alvaro** (CIDR 2011 *The Declarative Imperative*;
   CACM 2020 *Keeping CALM*). The result: a program has a coordination-free
