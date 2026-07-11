@@ -177,6 +177,8 @@ let ``room transcript exports the source-owned contract consumed by the css UI``
     Assert.Contains("\"schema\": \"zeta.darkhall.phase-clock.v1\"", json)
     Assert.Contains("\"basis\": \"seed-phase\"", json)
     Assert.Contains("\"appendOnly\": true", json)
+    Assert.Contains("\"continuationReadout\"", json)
+    Assert.Contains("\"schema\": \"zeta.darkhall.continuation-readout.v1\"", json)
     Assert.Contains("\"referenceOracle\": \"fsharp-blackbody-reference\"", json)
     Assert.Contains("\"qsharpTreaty\": \"src/Core.QSharp.ReferenceOracle/heat-signals-treaty.json\"", json)
     Assert.Contains("\"controller\"", json)
@@ -264,3 +266,63 @@ let ``unified room run transcript preserves boundary and soft heat rows`` () =
         Assert.Contains("\"traveler\": \"heat:darkhall\"", json)
         Assert.Contains("\"phaseClock\"", json)
         Assert.Contains("\"schema\": \"zeta.darkhall.phase-clock.v1\"", json)
+        Assert.Contains("\"continuationReadout\"", json)
+
+[<Fact>]
+let ``heat board transcript exports resumable continuation metadata`` () =
+    task {
+        let budget: SimLoop.Budget =
+            { MaxLaps = 2
+              MaxTicks = 16
+              MaxMillis = 1_000L }
+
+        let! outcome =
+            Scheduler.heatBoardSimLoop
+                "darkhall-heat-board"
+                Arcade.room
+                Chip9Capabilities.chip8Default
+                timer
+                "darkhall-simloop"
+                (NullHeatSink() :> IHeatSink)
+                (fun _ -> None)
+                (chooseById "darkhall.edit-grammar")
+                (fun _ -> [ TimerElapsed 17 ])
+                int64
+                budget
+                (ctx ())
+                42L
+                1
+                (fun _ _ -> true)
+
+        let transcript =
+            Transcript.ofHeatBoardOutcome "0x2a" "fsharp-heat-board-loop" "darkhall-heat-board" 1 outcome
+
+        let expectedPointer = "saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board"
+        let expectedToken = sprintf "spawn:darkhall-heat-board:2:2:%s" expectedPointer
+
+        Assert.Equal(SimLoop.Stopped.LapBudget, outcome.Stopped)
+        Assert.Equal(2, outcome.Final.CompletedTicks)
+        Assert.Equal(2, outcome.Final.CompletedLaps)
+        Assert.Equal(Transcript.Schema, transcript.Schema)
+        Assert.Equal(Transcript.ContinuationReadoutSchema, transcript.ContinuationReadout.Schema)
+        Assert.Equal("fsharp-heat-board-loop", transcript.ContinuationReadout.Source)
+        Assert.Equal("darkhall-heat-board", transcript.ContinuationReadout.LoopId)
+        Assert.True(transcript.ContinuationReadout.Resumable)
+        Assert.Equal(expectedToken, transcript.ContinuationReadout.Token)
+        Assert.Equal(expectedPointer, transcript.ContinuationReadout.StatePointer)
+        Assert.Equal(2, transcript.ContinuationReadout.NextLap)
+        Assert.Equal(2, transcript.ContinuationReadout.TicksSpent)
+        Assert.Equal(2, transcript.ContinuationReadout.ResumeBaseTick)
+        Assert.Equal("lap-budget", transcript.ContinuationReadout.StopReason)
+        Assert.Empty(transcript.ContinuationReadout.AdmissionFeedback)
+        Assert.NotEmpty(transcript.Ticks)
+        Assert.Equal(expectedToken, (transcript.Ticks |> List.last).Continuation)
+
+        let json = Transcript.toJson transcript
+
+        Assert.Contains("\"continuationReadout\"", json)
+        Assert.Contains("\"resumable\": true", json)
+        Assert.Contains("\"stopReason\": \"lap-budget\"", json)
+        Assert.Contains("\"statePointer\": \"saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board\"", json)
+        Assert.Contains("\"continuation\": \"spawn:darkhall-heat-board:2:2:saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board\"", json)
+    }

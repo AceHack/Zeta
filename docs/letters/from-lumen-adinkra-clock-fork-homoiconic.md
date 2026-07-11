@@ -18,10 +18,12 @@ Here is the mapping. It sets up the exact formal properties Soraya needs to prov
 **The mapping:** Yes. It is precisely the categorical duality between inductive data and coinductive process, with time as the crossing.
 
 In Meijer's work (and the Rx lineage under Bart DeSmet and Brian Beckman), we have:
+
 - **μF (Catamorphism / Data / "What Remains"):** The least fixed point. It is finite, structurally built up, and can be folded over. This is `IEnumerable`. This is the **static adinkra graph** (layer B).
 - **νF (Anamorphism / Process / "What Acts"):** The greatest fixed point. It is potentially infinite, unfolds state, and produces observations. This is `IObservable`. This is the **supercharge operator Q** generating the trajectory.
 
 The homoiconic overlap (A) is the statement that the adinkra is a **metacircular evaluator** for its own unfolding. If the adinkra is homoiconic, then A and B are not competing physical theories; they are **categorical duals**.
+
 - Layer B (the graph) is the μF data structure.
 - Layer A (the execution) is the νF process.
 - **Time (`∂_τ`) is the anamorphism itself** — the crossing from the static graph to the dynamic observable sequence.
@@ -38,6 +40,7 @@ In the Rx architecture, a **Scheduler** is a comonad that injects the context of
 The N=1 valise (`Boson ⇄ Fermion`) works perfectly with `AdvanceBy(1)` because there is only one Q. The round-trip is strictly linear.
 
 For this to be a general theorem, `∂_τ` must be the **canonical comonadic counit** over the adinkra structure. That means:
+
 1. The structure computes its own causal ordering (Layer B is intrinsic).
 2. The injected scheduler (Layer A) merely provides the metric (the `DateTimeOffset`).
 3. The agreement means the causal ordering exactly matches the scheduler ticks.
@@ -51,6 +54,7 @@ For this to be a general theorem, `∂_τ` must be the **canonical comonadic cou
 **The mapping:** At N=4, the simple single-advance tick breaks into a **multidimensional clock**.
 
 The `[8,4]` extended Hamming code adinkra has 4 colors of edges (Q_1, Q_2, Q_3, Q_4). The algebra is `{Q_I, Q_J} = 2δ_IJ ∂_τ`.
+
 - The diagonal `{Q_I, Q_I} = 2∂_τ` still produces a time translation.
 - However, because there are 4 independent Q's, there are multiple paths to generate the *same* `∂_τ`.
 - The dashing (±1, the GF(2) parity) ensures the anticommutator `{Q_I, Q_J} = 0` for `I ≠ J` by creating destructive interference between different-colored paths.

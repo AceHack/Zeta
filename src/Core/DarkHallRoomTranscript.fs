@@ -31,6 +31,9 @@ module DarkHallRoomTranscript =
     [<Literal>]
     let PhaseClockSchema = "zeta.darkhall.phase-clock.v1"
 
+    [<Literal>]
+    let ContinuationReadoutSchema = "zeta.darkhall.continuation-readout.v1"
+
     type ControllerCell =
         { [<JsonPropertyName("cell")>]
           Cell: int
@@ -177,6 +180,30 @@ module DarkHallRoomTranscript =
           [<JsonPropertyName("travelers")>]
           Travelers: int }
 
+    type TranscriptContinuationReadout =
+        { [<JsonPropertyName("schema")>]
+          Schema: string
+          [<JsonPropertyName("source")>]
+          Source: string
+          [<JsonPropertyName("loopId")>]
+          LoopId: string
+          [<JsonPropertyName("resumable")>]
+          Resumable: bool
+          [<JsonPropertyName("token")>]
+          Token: string
+          [<JsonPropertyName("statePointer")>]
+          StatePointer: string
+          [<JsonPropertyName("nextLap")>]
+          NextLap: int
+          [<JsonPropertyName("ticksSpent")>]
+          TicksSpent: int
+          [<JsonPropertyName("resumeBaseTick")>]
+          ResumeBaseTick: int
+          [<JsonPropertyName("stopReason")>]
+          StopReason: string
+          [<JsonPropertyName("admissionFeedback")>]
+          AdmissionFeedback: string list }
+
     type TranscriptTick =
         { [<JsonPropertyName("tick")>]
           Tick: int
@@ -216,6 +243,8 @@ module DarkHallRoomTranscript =
           TravelerFrame: TranscriptTravelerFrame
           [<JsonPropertyName("phaseClock")>]
           PhaseClock: TranscriptPhaseClock
+          [<JsonPropertyName("continuationReadout")>]
+          ContinuationReadout: TranscriptContinuationReadout
           [<JsonPropertyName("heatRows")>]
           HeatRows: HeatRow list
           [<JsonPropertyName("generatedBy")>]
@@ -350,6 +379,72 @@ module DarkHallRoomTranscript =
           SkewBoundTicks = skew
           AppendOnly = true
           Travelers = frame.Coordinates.Length }
+
+    let private stoppedName =
+        function
+        | SimLoop.Stopped.CutChoseClose -> "cut-chose-close"
+        | SimLoop.Stopped.LapBudget -> "lap-budget"
+        | SimLoop.Stopped.TickBudget -> "tick-budget"
+        | SimLoop.Stopped.ClockBudget -> "clock-budget"
+        | SimLoop.Stopped.RoomError _ -> "room-error"
+
+    let private continuationFeedbackName =
+        function
+        | Scheduler.HeatBoardContinuationFeedback.MalformedContinuation _ -> "malformed-continuation"
+        | Scheduler.HeatBoardContinuationFeedback.LoopIdMismatch _ -> "loop-id-mismatch"
+        | Scheduler.HeatBoardContinuationFeedback.StatePointerMismatch _ -> "state-pointer-mismatch"
+        | Scheduler.HeatBoardContinuationFeedback.ResumeTickOverflow _ -> "resume-tick-overflow"
+        | Scheduler.HeatBoardContinuationFeedback.SnapshotLapMismatch _ -> "snapshot-lap-mismatch"
+        | Scheduler.HeatBoardContinuationFeedback.SnapshotTickMismatch _ -> "snapshot-tick-mismatch"
+        | Scheduler.HeatBoardContinuationFeedback.SnapshotMissing _ -> "snapshot-missing"
+        | Scheduler.HeatBoardContinuationFeedback.SnapshotStoreRejected _ -> "snapshot-store-rejected"
+
+    let private noContinuationReadout (source: string) (loopId: string) (stopReason: string) : TranscriptContinuationReadout =
+        { Schema = ContinuationReadoutSchema
+          Source = source
+          LoopId = loopId
+          Resumable = false
+          Token = ""
+          StatePointer = ""
+          NextLap = 0
+          TicksSpent = 0
+          ResumeBaseTick = 0
+          StopReason = stopReason
+          AdmissionFeedback = [] }
+
+    let continuationReadout
+        (source: string)
+        (loopId: string)
+        (ticksPerLap: int)
+        (outcome: SimLoop.Outcome<Scheduler.ScheduledRoomState, string list>)
+        : TranscriptContinuationReadout =
+        let stopReason = stoppedName outcome.Stopped
+
+        match Scheduler.continueHeatBoardAfter loopId outcome with
+        | None -> noContinuationReadout source loopId stopReason
+        | Some token ->
+            let encoded = SimLoop.encodeContinuation token
+
+            match Scheduler.admitHeatBoardContinuation loopId ticksPerLap encoded with
+            | Ok admission ->
+                { Schema = ContinuationReadoutSchema
+                  Source = source
+                  LoopId = token.LoopId
+                  Resumable = true
+                  Token = encoded
+                  StatePointer = token.StatePointer
+                  NextLap = token.NextLap
+                  TicksSpent = token.TicksSpent
+                  ResumeBaseTick = admission.ResumeBaseTick
+                  StopReason = stopReason
+                  AdmissionFeedback = [] }
+            | Error feedback ->
+                { noContinuationReadout source token.LoopId stopReason with
+                    Token = encoded
+                    StatePointer = token.StatePointer
+                    NextLap = token.NextLap
+                    TicksSpent = token.TicksSpent
+                    AdmissionFeedback = [ continuationFeedbackName feedback ] }
 
     let heatReadout (rows: HeatRow list) : HeatReadout =
         { Schema = HeatReadoutSchema
@@ -561,6 +656,25 @@ module DarkHallRoomTranscript =
           Heat = projected
           Continuation = "" }
 
+    let private attachContinuationToLast
+        (roomName: string)
+        (continuation: TranscriptContinuationReadout)
+        (ticks: TranscriptTick list)
+        : TranscriptTick list =
+        if not continuation.Resumable then
+            ticks
+        else
+            match List.rev ticks with
+            | last :: rest -> List.rev ({ last with Continuation = continuation.Token } :: rest)
+            | [] ->
+                [ { Tick = continuation.NextLap
+                    Phase = "continue"
+                    Event = "heat-board-continuation"
+                    ChoiceCell = -1
+                    Outcome = "continued"
+                    Heat = coldHeatRow continuation.NextLap roomName
+                    Continuation = continuation.Token } ]
+
     let ofRunOutcome seed generatedBy (run: RoomLoop.RunOutcome) : Transcript =
         let roomName = run.Final.Room.Name
         let readout =
@@ -588,6 +702,7 @@ module DarkHallRoomTranscript =
           TemperatureTreaty = treaty
           TravelerFrame = travelerFrame
           PhaseClock = phaseClockReadout generatedBy seed travelerFrame
+          ContinuationReadout = noContinuationReadout generatedBy "" "not-simloop"
           HeatRows = heatRows }
 
     let ofBoundaryState seed generatedBy (state: Scheduler.BoundaryScheduledRoomState<'K>) : Transcript =
@@ -618,7 +733,51 @@ module DarkHallRoomTranscript =
           TemperatureTreaty = treaty
           TravelerFrame = travelerFrame
           PhaseClock = phaseClockReadout generatedBy seed travelerFrame
+          ContinuationReadout = noContinuationReadout generatedBy "" "not-simloop"
           HeatRows = rows }
+
+    let ofHeatBoardOutcome
+        seed
+        generatedBy
+        loopId
+        ticksPerLap
+        (outcome: SimLoop.Outcome<Scheduler.ScheduledRoomState, string list>)
+        : Transcript =
+        let state = outcome.Final
+        let roomName = state.Loop.Room.Name
+        let readout =
+            state.LastTick
+            |> Option.map _.Readout
+            |> Option.orElse state.Loop.LastReadout
+            |> Option.defaultWith (fun () -> Runtime.observe state.Loop.Room)
+        let rows = state |> Scheduler.heatRows
+        let heatRows = rows |> List.map heatRow
+        let continuation = continuationReadout generatedBy loopId ticksPerLap outcome
+        let ticks =
+            rows
+            |> List.mapi (fun index row -> measureTick (index + 1) row)
+            |> attachContinuationToLast roomName continuation
+        let temperature = temperatureReadout heatRows
+        let treaty = temperatureTreaty temperature
+        let travelerFrame = travelerFrameReadout generatedBy roomName ticks heatRows
+
+        { Schema = Schema
+          RoomName = roomName
+          Seed = seed
+          GeneratedBy = generatedBy
+          Controller =
+              state.LastTick
+              |> Option.map (fun tick -> controllerCells (Some tick.Choice.Cell) tick.Readout)
+              |> Option.defaultWith (fun () -> controllerCells None readout)
+          Ticks = ticks
+          HeatReadout = heatReadout heatRows
+          TemperatureReadout = treaty.Temperature
+          BlackBodyReadout = treaty.BlackBody
+          TemperatureTreaty = treaty
+          TravelerFrame = travelerFrame
+          PhaseClock = phaseClockReadout generatedBy seed travelerFrame
+          ContinuationReadout = continuation
+          HeatRows = heatRows }
 
     let ofUnifiedHeatRun seed generatedBy (run: RoomRun.UnifiedHeatRun<'K>) : Transcript =
         let readout =
@@ -654,6 +813,7 @@ module DarkHallRoomTranscript =
           TemperatureTreaty = treaty
           TravelerFrame = travelerFrame
           PhaseClock = phaseClockReadout generatedBy seed travelerFrame
+          ContinuationReadout = noContinuationReadout generatedBy "" "not-simloop"
           HeatRows = heatRows }
 
     let ofUnifiedHorizonRun seed generatedBy (run: RoomRun.UnifiedHorizonRun<'K, 'S>) : Transcript =
