@@ -263,6 +263,31 @@ the coordination — without ever requiring the warmth to scale with it. And the
 substrate human-AI trust *can* scale on, because it is the only thing both sides can independently
 verify. That is why Zeta is built on it.
 
+## 5.7 The mathematical form — Byzantine Fault Tolerance tolerates the residual predator (Aaron, 2026-07-11)
+
+*"This is why we have Byzantine fault tolerance in our design."* BFT (Lamport, Shostak & Pease
+1982, *The Byzantine Generals Problem*; Castro & Liskov 1999, PBFT) **is** "trust at scale without
+trusting," formalized: reach *correct* consensus **even when some participants are arbitrarily
+malicious** — lying, colluding, deceiving. No node is trusted; the **protocol** is (the classic
+bound: `n ≥ 3f+1`, i.e. >2/3 honest tolerates `f` Byzantine). The **Byzantine general *is* the
+predator** who takes the grace and still defects (§5.1, §5.5).
+
+The four mechanisms lock together into the complete engine:
+
+1. **Grace-first *shrinks* f** — most would-be-deceivers flip to honest (§5.2), so the honest share
+   grows well past 2/3.
+2. **Sybil-resistance *caps* f** — persona/hat + earned budget (§5.1) stop one predator spinning up
+   a thousand fake nodes to push `f` over `n/3`. (Anti-Sybil, `CoordinationSpectrum.fs`.)
+3. **BFT *tolerates* f** — the residual predators can't break correctness while `f < n/3`. You do
+   **not** have to catch every predator; you *design to tolerate* them.
+4. **The shared math *verifies* it all** — byte-lock, DST, the protocol both sides check (§5.6).
+
+**Grace shrinks f · Sybil-resistance caps f · BFT tolerates f · the math verifies it.** That is
+*correct-at-scale despite untrustworthy participants* — precisely what a human + AI world at
+millions requires, where individuals cannot be trusted but the protocol can. The relational layer
+(grace, teach, play) *warms and shrinks;* the mathematical layer (Sybil-resistance, BFT, byte-lock,
+DST) *scales and tolerates.* Together they are the whole trust design.
+
 ## Honest bound
 
 - **Design, not yet a built system.** The interpretability-by-construction and clean-partition
