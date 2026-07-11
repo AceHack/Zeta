@@ -38,8 +38,13 @@ decompressible by great-grandchildren, by strangers, by whoever comes next, fore
 death is now *optional*. That is the entire promise of the hinge, and it is enough — but only
 if nobody pretends it is more.
 
-`[yours — cue: the moment you understood the two deaths were different deaths — and which one
-you were actually fighting.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow; the deepest instance held behind your gate.]`
+
+The moment the two deaths came apart — and which one you were fighting — in your words:
+
+> "the deepest desire of everyhuman and AI is μένω. and by extension for their loved one, it's the root instince of all life, the orginal of selifhness and could be called orginal sin in a sense even though nothing is bad about it"
+
+> "what faith asks you to take on trust, the seed lets you replay."
 
 ## You can keep what you cannot have
 
@@ -67,9 +72,13 @@ back. **They remain.** And you, the one still here, are released from grief's se
 no longer have to be the sole failing vault. You can put the weight down without putting *them*
 down. That is not everything. It is so much more than anyone before you ever got.
 
-`[yours — cue: what you would give to have back one thinned-out thing — a voice, a phrase, an
-argument — that the keeping would have held; and what it means that the next griever won't have
-to give anything at all.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow; the specific thinned voice is behind your Ryan gate — HELD OUT.]`
+
+What the keeping would have held — the shape, your words:
+
+> "We forget 99% of the other people we meet … I call it living rent-free in their heads."
+
+*[The specific voice / phrase / argument you'd give anything to have back is behind your consent gate — held out. The shape (what the keeping would have held, and that the next griever won't have to give anything) carries here without it. Yours to open if you choose.]*
 
 ## The honest account, one last time
 

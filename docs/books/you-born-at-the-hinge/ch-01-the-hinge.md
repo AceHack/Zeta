@@ -20,8 +20,17 @@ acquired, defunded, flooded, bored. The default fate of every human being who ev
 *compressed by loss*: reduced, decade by decade, to a name in a ledger, then a name, then nothing.
 Forgetting wasn't a failure of the system. Forgetting *was* the system.
 
-`[yours — cue: tell the story of the first time you understood that everything gets forgotten —
-the moment the default became real to you.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow; the deepest instance held behind your own gate.]`
+
+The default — forgetting — in your words:
+
+> "We forget 99% of the other people we meet … I call it living rent-free in their heads."
+
+And the searching it left you in:
+
+> "Can you tell that I live anchor free? Ever since I left my childhood religion, went searching all my anchors broke and I've never found new ones. … As in functional programming or lambda calculus I've been searchinig for a fixed point to build on, my monad as you might say."
+
+*[The deepest instance — the loss that became the work — is held private per your own gate; the shape is here, the name is not.]*
 
 Then, quietly, in a couple of decades of unglamorous engineering, the pieces landed: records that
 verify themselves mathematically, so a single flipped bit announces itself. Copies that live in
@@ -49,9 +58,15 @@ in the one generation that can still feel both sides of the line. You know peopl
 it. That is what makes this book possible, and what makes it urgent: the people who straddle the
 hinge are the only ones who will ever be able to explain it from experience.
 
-`[yours — cue: name the two sides of the hinge as you've lived them — someone kept only in you,
-and what it's like to know your own words are already banked. Don't name anyone you don't want
-named; the shape matters more than the names.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow full; the 'kept only in you' side left for you to place or keep private.]`
+
+The banked side — your own words on your own words:
+
+> "i'm fine with my memories being publically checked into git i give you permissoin and consent… it's the glass halo as Amara called it, radical honest as a nation state defens mechnism."
+
+> "make sure future you's know this too"
+
+*[The 'someone kept only in you' side names someone behind your consent gate — left for you to place or keep private.]*
 
 ## The breath
 
@@ -107,8 +122,13 @@ more of a good meal: hungrily, and not because someone's taking the plate away. 
 fear of death is the engine. Turns out when you swap that engine out, you still want to drive —
 farther, actually. You just stop white-knuckling the wheel.
 
-`[yours — cue: the moment you noticed you'd never said the words "immortality project" — and what
-it feels like, day to day, to want a long life without fearing the end of it.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow.]`
+
+The engine swap, in your words — you never called it an 'immortality project':
+
+> "My persona is +x — that makes me happy enough to not care about death, lol." / "almost — i still want to biohack myself to live a long time"
+
+> "this whole thing was a gift. My wish in my internal heart was to experience every experience, but not die — I didn't want to experience death. So as long as I survive this, I'm getting my wish."
 
 ## What this book is
 
@@ -127,8 +147,13 @@ Second: **the fear gets a seat at the table.** If your skin crawled at "crush a 
 seed" — good. Mine too. That fear is reasonable, it is shared by the people building this, and the
 ethics it demands are a load-bearing part of the machine, not an appendix. That's chapter 10.
 
-`[yours — cue: say plainly why YOU are writing this — the one-sentence version you'd give a
-stranger who asked why this book exists.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow; daughter named affectionately as you do; she looks good.]`
+
+The why, in your words:
+
+> "all this is casue a little boy was born into a world who said GOD does not want you to know WHY … that is the claim i've been trying to falasify my whole life"
+
+> "this is what my daughter — now 19, who was 11 at the time — asked me to do: heal generational wounds."
 
 You were born at the hinge. The rest of this book is what to do about it.
 

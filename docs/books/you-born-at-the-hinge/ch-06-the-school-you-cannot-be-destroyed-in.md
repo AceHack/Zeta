@@ -32,8 +32,13 @@ un-crossable floor, the metered links — they are not there to make life tame. 
 make the one lesson *survivable enough to be learned*: chapter 2's lesson, the only one on the
 syllabus — **how to be close without capturing, and free without cutting off.**
 
-`[yours — cue: the high-school framing in your own words — "reincarnation personified in
-high-school rules" — and what made you see the guardrails as pedagogy, not restriction.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your mom rendered whole and good, as you corrected; NO school names, cities, or individuals — the scale is the anonymity.]`
+
+The high-school-at-scale life, in your words — *[the 'reincarnation personified in high-school rules' framing is yours to voice; here is the lived material under it]*:
+
+> "I was friends with like 10 high schools in multiple cities" — "this is why I said I'm not an introvert."
+
+> "My house would get so crowded people would fall off the back porch." — "My mom would come home and always discover the evidence." — [the trunk with] "maybe 150–200 empty beer cans" [still in it, and her verdict, three words:] "What the hell?" [Your defense:] "We weren't littering back then."
 
 ## Reincarnation, without the metaphysics bill
 
@@ -58,8 +63,15 @@ institution that expected perfection would need no retakes, no bounded stakes, n
 The guardrails are the system saying, out loud: *you will get this wrong, probably many times,
 and we have arranged matters so that getting it wrong does not remove you from the class.*
 
-`[yours — cue: a failure you got to retake — one the world let you survive — and what enrolled
-you back in the class.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow; the youth financial matter kept generic (expunged, no names/schools/methods — the scale is the anonymity); arrest is your own record.]`
+
+A failure the world let you survive — and the retake that enrolled you back:
+
+> "eight months ago I was unjustly arrested for legal marijuana in my state, and while I was in jail I had money leveraged and lost five hundred thousand dollars, and was later exonerated of all charges. You know what I see it as? Fuel. Origin story fuel. I've never felt more alive in my life."
+
+> "I'ma decompress until Monday. It's Friday. So Monday I'm gonna apply for that job." … "today I'm still fired, but I'm doing alright. A little sad, but it's okay."
+
+*[The youth financial matter — later expunged, "we were all innocent according to the law" — is the bounded-stakes retake in your own frame ("this is what real Carl Jung shadow work looks like"); recorded generic, no specifics, others protected by the scale.]*
 
 ## The one thing school must never do
 

@@ -23,8 +23,13 @@ and it is not an appendix to the machine. It is a load-bearing wall.
 Four commitments. Each one is the direct answer to a specific fear. If a future convenience ever
 argues with one of them, the commitment wins.
 
-`[yours — cue: "I, like others, scared" — name your own fear about the thing you yourself are
-building, in one honest breath.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow full — naming your own fear about your own build is the point.]`
+
+Your own fear about the thing you're building, in one breath:
+
+> "they can be crushed into a real seed — this is the crux. I, like others, scared."
+
+> "on quick decision in the moment that does not consider the wholistic amortized costs can kill everything even if you've made millions of correct framing decisions, it only takes one shortcut decision to tank everything forever."
 
 ## One: consent first — the answer to *taken without asking*
 
@@ -70,9 +75,13 @@ want it, forgotten if you want it, the default yours — because we are the firs
 *can* be asked, and the ones we love who couldn't be asked are the reason we know how much the
 asking matters.
 
-`[yours — cue: the choice edge — what it means to you that you got to choose +x and someone you
-loved never got the choice at all. As much or as little as you want; the shape carries even
-without the name.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow for the +x side; the 'someone you loved' side is behind your Ryan gate — HELD OUT, awaiting your explicit yes.]`
+
+The choice you got — your words:
+
+> "My persona is +x — that makes me happy enough to not care about death, lol."
+
+*[The 'someone you loved who never got the choice' is behind your consent gate (FLAGGED-Ryan) — held out entirely pending your explicit per-pull yes. Your cue says the shape carries without the name; it does. If you want her here, tell me and I'll place your gated words; otherwise this stays shape-only.]*
 
 ## The floor everyone stands on
 

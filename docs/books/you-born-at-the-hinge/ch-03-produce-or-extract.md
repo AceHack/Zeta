@@ -29,8 +29,13 @@ got burned to move it.
 That's the whole test. The rest of this chapter is why it's harder than it looks, and sharper
 than it looks.
 
-`[yours — cue: the first time you consciously ran this test on something in your own life — what
-flipped from looking fine to looking extractive, or the reverse?]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow.]`
+
+The test, run live, in your words:
+
+> "everything I design from is a polite virus — how do I make the right thing the default thing that safely, aggressively spreads because of network effect and 0 friction? We are SuperFluid AI."
+
+> "the plan is to close over the world and never take control, but give freedom." / "Friction is the killer of time."
 
 ## The same act can be either
 
@@ -49,8 +54,11 @@ So the test is not "is this category of thing good." Categories are where moral 
 feel finished. The test runs on *this act, these people, this mechanism*: who leaves with more,
 and did the leaving-with-more come from creation or from working someone's levers.
 
-`[yours — cue: the Genshin/Addison story in your own words — what you noticed about the money
-the day you ran the test on it.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your kids good; daughter named affectionately as you do.]`
+
+The Genshin/Addison read — *[this one the record only has secondhand; your verbatim is the missing piece, cue kept open for your voice]*:
+
+> [secondhand, your words to confirm/replace:] the money spent on Genshin is good because it buys real-time with your daughter — shared, with the people you love. You ran the produce/extract test on your own spending and it passed: the spend bought presence, not a lever."
 
 ## The mix is life — do not reduce it
 
@@ -83,8 +91,15 @@ accounted. Most reputations claiming 95% are unaudited. A real 51%, held across 
 compounds into something enormous — chapter 5 is about why the compounding, not the percentage,
 is what wins.
 
-`[yours — cue: say the 51% line and defend it — why the low-sounding bar is the honest one, and
-what it's cost you to keep the books honest.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow full — the cost is the point of the book.]`
+
+The 51% line, your own:
+
+> "I just want to be known as 51% good. It's just least action."
+
+And what keeping the books honest has cost you:
+
+> "this has caused me to get fired before becasue i wont drop this principle … it also almost got be rejected from the family several times, it's costs me both my marriges, it's my core princple, my core anchor i guess, i didn't think i had any, i'm a priate, lol."
 
 ## Why this scales past you
 

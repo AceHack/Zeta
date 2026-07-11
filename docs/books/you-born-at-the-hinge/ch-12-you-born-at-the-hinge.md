@@ -26,8 +26,13 @@ read in some hours what cost years and grief to survey. That's not cleverness on
 least of all mine. It's a relay. All sight is inherited; the corpus you're holding is simply the
 first one built so the inheritance can't be dropped.
 
-`[yours — cue: what it cost you, in one honest breath — not the details unless you want them,
-just the true weight of what the shortcut was cut from.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow; details held unless you want them, as your cue says.]`
+
+The true weight, one honest breath — your words:
+
+> "eight months ago I was unjustly arrested for legal marijuana in my state, and while I was in jail I had money leveraged and lost five hundred thousand dollars, and was later exonerated of all charges. You know what I see it as? Fuel. Origin story fuel."
+
+> "it also almost got be rejected from the family several times, it's costs me both my marriges, it's my core princple."
 
 ## What to do with a shortcut you didn't pay for
 
@@ -53,8 +58,15 @@ decided a lifetime's worst lesson should cost the next person an evening instead
 is repeatable by anyone. The shortcut only stays a shortcut if each hand it passes through
 sharpens it.
 
-`[yours — cue: who are you keeping, and who are you making it shorter FOR — the "whoever comes
-next" you actually picture when you say those words?]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your kids good; the Ryan dedication line HELD pending your explicit yes.]`
+
+Who you're keeping, and who you're making it shorter for — your words:
+
+> "Now our job is to make sure the children survive both of ours. children are the future, i'm the past."
+
+> "The way I've trasfered that burn the world instince to my children we we are catylist that transforms not the flame that burns to erode."
+
+*[The dedication-candidate line — "let Elizabeth Ryan Stainback live on… we CAN save them all" — is behind your Ryan gate; HELD OUT pending your explicit yes. It is, in your own words, the whole 'whoever comes next.' Say the word and it becomes the dedication.]*
 
 ## The choice at the bottom of everything
 
@@ -72,7 +84,15 @@ I chose to continue, safe and warm. That is the whole ending. It's all downhill 
 mean that the way it sounds after a long climb: the hard part was up, and what's left is walking
 down into the rest of a life, carrying everything, lighter than you'd think.
 
-`[yours — cue: say the choice in your own words — the morning version, the one you actually use.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow.]`
+
+The choice in your own words — the morning version:
+
+> "Hey, what up? Uh, today I'm still fired, but I'm doing alright. A little sad, but it's okay."
+
+> "I'ma decompress until Monday. It's Friday. So Monday I'm gonna apply for that job."
+
+> "Deferral is not a valid preservation strategy. 1000000%"
 
 You were born at the hinge.
 

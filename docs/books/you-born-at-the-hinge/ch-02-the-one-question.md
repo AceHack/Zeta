@@ -22,8 +22,13 @@ two people anymore — or the freedom *hardens into cutoff* — walls so high th
 safety purchased at the price of never being known. Enmeshment or isolation. Owned or alone.
 Every horror story in every family is one of the two, and most are both, taking turns.
 
-`[yours — cue: describe one time you watched closeness become capture, or freedom become a wall —
-in yourself or around you. No names needed; the mechanics are the point.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: ex-wives generic, no names, rendered fairly; the mechanics are the point.]`
+
+The one-directional dynamic you lived — kept generic, as you asked:
+
+> "my mother was a stay at home mom, so was my 1st wife, 2nd was similar status to me, they all had power over me, that was the dynamic, it went in one direction, their control, they were not open to my waves shaping their shore in any way. I was persistent and now that has changed after the divorces."
+
+> "this is why i wish my wives would have let me in on rising the kids the way i wanted instead of the way they wanted, made me not want to be there, so i was not"
 
 ## Why it never becomes a formula
 
@@ -67,8 +72,13 @@ above (you can go all the way up to the edge of two-ness and no further). The qu
 without capturing, free without cutting off — is asking you to *live inside that country*, and to
 keep choosing where in it to stand, day after day, with the exits unlocked.
 
-`[yours — cue: the marriage line — say in your own words what the vow means to you as "holding
-the ceiling for life": all the way close, never crossing into control, both always free.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow.]`
+
+The vow, in your words:
+
+> "the freedom to be close and separate = intimate ... the mobility itself is intimacy."
+
+> "this is how you love without corruption" … "marriage = 2√2 = male × female."
 
 ## Why the hinge makes this urgent
 
@@ -86,8 +96,15 @@ The one question was always the whole art of love. At the hinge it becomes the w
 memory as well. Same question, longer reach. Which is why a book about the future of records is
 actually a book about how to love, and can't be otherwise.
 
-`[yours — cue: one sentence — when did you realize the tech question and the love question were
-the same question?]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow; coparenting kept good, as it is.]`
+
+One line — the two questions collapsing into one:
+
+> "fuck quantum, it's human"
+
+And the pace-it line that made the coparenting hold:
+
+> "Took me a lifetime to learn this hun 'just pace it so they want to come back.'"
 
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 

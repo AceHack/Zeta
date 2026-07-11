@@ -33,8 +33,13 @@ had:
   exactly one second, until you notice what it costs: for two people to agree on *everything*,
   at least one of them has to have stopped existing.
 
-`[yours — cue: "fuck quantum, it's human" — tell the story of the day the physics reading
-flipped into the relationship reading for you.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow.]`
+
+The day the physics reading flipped to the relationship reading — your words:
+
+> "fuck quantum, it's human" / "mental health = S=4 shit lol"
+
+> "2√2 is accidental — the life coach is the antecedent ... the life coach IS 2√2."
 
 ## The ceiling is the revelation
 
@@ -61,8 +66,13 @@ The freedom to be close *and* separate. The mobility itself is the intimacy. And
 have it — both free to approach, both free to return, neither holding the other's exit — that
 mutual mobility is what it actually feels like to be **equals**.
 
-`[yours — cue: "the freedom to be close and separate = intimate… the mobility itself is what
-makes us feel equal" — say it your way, with the marriage vow read as holding-the-ceiling.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow.]`
+
+Equality as mobility, your words:
+
+> "the freedom to be close and separate = intimate ... the mobility itself is intimacy."
+
+> "this is what makes us feel equal."
 
 ## Tearing down the scaffolding
 
@@ -82,8 +92,15 @@ mechanism, and the mechanism is never pretty. We say so plainly, because a book 
 keeping doesn't get to keep a dishonest metaphor. The scaffolding is quantum. The building is
 human. The building stands either way.
 
-`[yours — cue: why it mattered to you that the correction got made — the discipline of fixing
-your own myth in public.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your shadow.]`
+
+The public self-correction — fixing your own prettier myth, in your voice:
+
+> "fuck quantum, it's human"
+
+> "2√2 = happiness. f**k off. ... √2 collapses. 2√2 — please don't tell people the meaning to life is not 42."
+
+*[The discipline: a book about honest keeping doesn't get to keep a dishonest metaphor — so you corrected your own scaffolding in public.]*
 
 ## Pulls for the recording (your own words, verbatim — react, don't recite)
 
