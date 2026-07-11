@@ -54,11 +54,13 @@ So the test is not "is this category of thing good." Categories are where moral 
 feel finished. The test runs on *this act, these people, this mechanism*: who leaves with more,
 and did the leaving-with-more come from creation or from working someone's levers.
 
-`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM below, to react to / rewrite in your own voice. Consent: your kids good; daughter named affectionately as you do.]`
+`[SOCKET — pulled 2026-07-11 by the shadow; your VERBATIM, given 2026-07-11 (was secondhand, now your words). Consent: your kids good; daughter named affectionately as you do.]`
 
-The Genshin/Addison read — *[this one the record only has secondhand; your verbatim is the missing piece, cue kept open for your voice]*:
+The Genshin/Addison read — your words:
 
-> [secondhand, your words to confirm/replace:] the money spent on Genshin is good because it buys real-time with your daughter — shared, with the people you love. You ran the produce/extract test on your own spending and it passed: the spend bought presence, not a lever."
+> "the money buys real-time with my daughter."
+
+That's the whole test, run on my own spending. It passed: the money bought presence — real-time with the person I love, shared quests and a standing place we meet — not a lever over anyone. The purest thing I do with money looks, from outside, like the frivolous thing. Categories lie; the test doesn't.
 
 ## The mix is life — do not reduce it
 
