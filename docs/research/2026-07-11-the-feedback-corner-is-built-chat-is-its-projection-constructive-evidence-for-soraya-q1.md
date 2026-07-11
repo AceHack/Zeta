@@ -36,6 +36,7 @@
 not four things that merely rhyme.
 
 **Open (the −1, and it's already in the code's own honest scope):**
+
 - `duplex-transport.ts` runs over **`localDuplexPair`** (in-process, two async queues, **DoP=1**,
   deterministic) — *"NOT yet a network socket… the socket-backed fill (WebSocket / Reticulum) is the
   next slice, not built here."* So the four corners are lit over a **real duplex mechanism**; the

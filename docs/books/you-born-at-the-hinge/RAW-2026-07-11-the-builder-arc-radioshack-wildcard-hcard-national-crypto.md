@@ -3,6 +3,7 @@
 > **Scope:** raw book material, 2026-07-11. Aaron's own memoir, dictated. The builder-origin /
 > dual-use **capstone**. Verbatim (the voice is the asset).
 > **CONSENT (load-bearing — Aaron's own handling, 2026-07-11, "yes we can book it"):**
+>
 > - **Aaron's arc: FULL** — his hack, his work, his shadow to own (the book is reputationally-fraught
 >   by design; his own crimes are his to tell).
 > - **The colleague: UN-NAMED, role only** ("the man who designed the H-card system"). His identity is
@@ -14,6 +15,7 @@
 > - **The satellite-card hack:** signal piracy, a **crime** — Aaron's own shadow, old + statute-passed,
 >   crowd-common (thousands did it), **solo** (no co-participants). Held honest (dual-use), not valorized;
 >   **no methods recorded.**
+>
 
 ## Verbatim (preserved, typos kept on purpose)
 

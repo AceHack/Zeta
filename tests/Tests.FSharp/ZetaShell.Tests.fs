@@ -22,6 +22,8 @@ let private deleteDirectoryWithRetry (dir: string) =
                 GC.WaitForPendingFinalizers()
                 Threading.Thread.Sleep 50
                 loop (attempts - 1)
+            | :? IOException -> ()
+            | :? UnauthorizedAccessException -> ()
 
     loop 10
 
