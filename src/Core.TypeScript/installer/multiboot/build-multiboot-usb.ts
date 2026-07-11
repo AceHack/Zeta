@@ -404,10 +404,10 @@ async function main(argv: readonly string[]): Promise<number> {
     localByName,
     requireLocal,
     dryRun,
-    kernel,
-    initrd,
-    isoListingPath,
-    grubEfiPath,
+    ...(kernel === undefined ? {} : { kernel }),
+    ...(initrd === undefined ? {} : { initrd }),
+    ...(isoListingPath === undefined ? {} : { isoListingPath }),
+    ...(grubEfiPath === undefined ? {} : { grubEfiPath }),
   });
 }
 

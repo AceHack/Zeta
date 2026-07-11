@@ -25,7 +25,7 @@ time-step is the **round trip**: cross to the other half and come back. The cloc
 is *generated* by doing the crossing twice. **Time = Q².** (Rhymes with Aaron's own round-trip — run
 toward the other side, return — and with the ±1 dashing as the memory register.)
 
-## The fork (held `Tri.N`): where is the adinkra's boundary?
+## The fork (held `Tri.N`): where is the adinkra's boundary
 
 The two readings differ on *what counts as the adinkra*, and the physics does **not** force a choice
 — because off-shell adinkras are **timeless by construction** (they encode the algebra without

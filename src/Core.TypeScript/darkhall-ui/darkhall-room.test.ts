@@ -119,6 +119,22 @@ const transcriptTemperatureTreaty = temperatureTreatyBundle({
   blackBody: transcriptBlackBodyReadout,
 });
 
+const continuationToken = "spawn:darkhall-heat-board:2:2:saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board";
+
+const transcriptContinuationReadout = {
+  schema: "zeta.darkhall.continuation-readout.v1",
+  source: "DarkHallScheduler heat-board sim loop",
+  loopId: "darkhall-heat-board",
+  resumable: true,
+  token: continuationToken,
+  statePointer: "saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board",
+  nextLap: 2,
+  ticksSpent: 2,
+  resumeBaseTick: 2,
+  stopReason: "lap-budget",
+  admissionFeedback: [],
+} as const;
+
 const transcript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "darkhall",
@@ -156,7 +172,7 @@ const transcript: RoomRunTranscript = {
       event: "finite horizon measured",
       outcome: "continued",
       heat: horizonHeat,
-      continuation: "spawn:darkhall-heat-board:2:2:saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board",
+      continuation: continuationToken,
     },
   ],
   heatRows,
@@ -164,6 +180,7 @@ const transcript: RoomRunTranscript = {
   temperatureReadout: transcriptTemperatureReadout,
   blackBodyReadout: transcriptBlackBodyReadout,
   temperatureTreaty: transcriptTemperatureTreaty,
+  continuationReadout: transcriptContinuationReadout,
   travelerFrame: {
     schema: "zeta.darkhall.traveler-frame.v1",
     source: "DarkHallScheduler heat-board sim loop",
@@ -204,7 +221,15 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain('data-phase-clock-basis="seed-phase"');
     expect(html).toContain('data-phase="2"');
     expect(html).toContain('data-phase-skew-bound="0"');
+    expect(html).toContain('data-continuation-readout="zeta.darkhall.continuation-readout.v1"');
+    expect(html).toContain('data-continuation-status="resumable"');
+    expect(html).toContain('data-continuation-loop="darkhall-heat-board"');
+    expect(html).toContain('data-continuation-stop="lap-budget"');
+    expect(html).toContain('data-continuation-next-lap="2"');
+    expect(html).toContain('data-continuation-resume-base-tick="2"');
     expect(html).toContain("<dt>skew</dt><dd>0</dd>");
+    expect(html).toContain("<dt>resume</dt><dd>resumable</dd>");
+    expect(html).toContain(`<code>${continuationToken}</code>`);
   });
 
   it("normalizes sparse controller cells without letting callers resize the grid", () => {
@@ -334,6 +359,19 @@ describe("Dark Hall CSS room UI", () => {
         "signals": ["denied"],
         "reasons": ["darkhall -> glass refused"]
       },
+      "continuationReadout": {
+        "schema": "zeta.darkhall.continuation-readout.v1",
+        "source": "DarkHallRoomTranscript.fs",
+        "loopId": "darkhall-heat-board",
+        "resumable": true,
+        "token": "spawn:darkhall-heat-board:2:2:saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board",
+        "statePointer": "saves/darkhall/darkhall-heat-board/lap-2-tick-2.heat-board",
+        "nextLap": 2,
+        "ticksSpent": 2,
+        "resumeBaseTick": 2,
+        "stopReason": "lap-budget",
+        "admissionFeedback": []
+      },
       "heatRows": [
         {
           "tick": 1,
@@ -355,6 +393,8 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain(`data-qsharp-source="${HEAT_SIGNAL_QSHARP_SOURCE}"`);
     expect(html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
     expect(html).toContain('data-phase="1"');
+    expect(html).toContain('data-continuation-status="resumable"');
+    expect(html).toContain('data-continuation-stop="lap-budget"');
     expect(html).toContain('data-signals="denied"');
     expect(html).toContain('data-heat-signals="denied"');
     expect(html).toContain("<dd>denied</dd>");
@@ -547,10 +587,14 @@ describe("Dark Hall CSS room UI", () => {
     expect(doc).toContain('data-temperature-band="warm"');
     expect(doc).toContain('data-black-body-readout="zeta.blackbody.readout.v1"');
     expect(doc).toContain(`data-black-body-radiance="${transcriptBlackBodyReadout.radiancePpm.toString()}"`);
+    expect(doc).toContain('data-continuation-status="resumable"');
+    expect(doc).toContain("<dt>resume</dt><dd>resumable</dd>");
     expect(doc).toContain('<link rel="stylesheet" href="./darkhall-room.css">');
     expect(doc).not.toContain("<script");
     expect(doc).not.toMatch(/setInterval|requestAnimationFrame|performance\.now|Date\./);
     expect(css).toContain("grid-template-columns: repeat(4, minmax(0, 1fr));");
+    expect(css).toContain(".zeta-room-continuation");
+    expect(css).toContain('[data-continuation-status="resumable"]');
     expect(css).toContain("transform: scaleX(var(--heat-rejected));");
     expect(css).not.toContain("@keyframes");
     expect(css).not.toMatch(/\banimation\b/);
@@ -582,8 +626,11 @@ describe("Dark Hall CSS room UI", () => {
       "heat receipts",
       "backpressure",
       "room progress",
+      "continuation",
     ]);
     expect(dweller.predictions[0]?.valueMilli).toBeGreaterThan(0);
+    expect(dweller.predictions[3]?.valueMilli).toBe(1000);
+    expect(dweller.predictions[3]?.epsilonMilli).toBe(0);
     expect(dweller.temperatureTreaty?.referenceOracle).toBe(TEMPERATURE_REFERENCE_ORACLE);
     expect(dweller.temperatureTreaty?.temperature).toEqual(transcriptTemperatureTreaty.temperature);
     expect(dweller.temperatureTreaty?.blackBody).toEqual(transcriptTemperatureTreaty.blackBody);
@@ -601,6 +648,7 @@ describe("Dark Hall CSS room UI", () => {
     expect(doc).toContain('data-phase="2"');
     expect(doc).toContain('data-phase-skew-bound="0"');
     expect(doc).toContain('data-heat-receipts="2"');
+    expect(doc).toContain("continuation");
     expect(doc).not.toContain("<script");
   });
 

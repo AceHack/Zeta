@@ -114,6 +114,20 @@ export interface TranscriptTravelerFrame {
   readonly commonDominatesHeat?: boolean;
 }
 
+export interface TranscriptContinuationReadout {
+  readonly schema: "zeta.darkhall.continuation-readout.v1";
+  readonly source: string;
+  readonly loopId: string;
+  readonly resumable: boolean;
+  readonly token: string;
+  readonly statePointer: string;
+  readonly nextLap: number;
+  readonly ticksSpent: number;
+  readonly resumeBaseTick: number;
+  readonly stopReason: string;
+  readonly admissionFeedback: readonly string[];
+}
+
 export interface RoomRunTranscript {
   readonly schema: "zeta.darkhall.room-ui.v1";
   readonly roomName: string;
@@ -127,6 +141,7 @@ export interface RoomRunTranscript {
   readonly temperatureTreaty?: TemperatureTreatyBundle;
   readonly travelerFrame?: TranscriptTravelerFrame;
   readonly phaseClock?: PhaseClockReadout;
+  readonly continuationReadout?: TranscriptContinuationReadout;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -266,6 +281,41 @@ function renderTick(tick: RoomTranscriptTick): string {
   ].join("");
 }
 
+function continuationStatus(readout: TranscriptContinuationReadout): "resumable" | "blocked" | "closed" {
+  if (readout.resumable) return "resumable";
+  if (readout.admissionFeedback.length > 0) return "blocked";
+  return "closed";
+}
+
+function renderContinuationReadout(readout: TranscriptContinuationReadout | undefined): string {
+  if (readout === undefined) return "";
+
+  const status = continuationStatus(readout);
+  const feedback = readout.admissionFeedback.length > 0 ? readout.admissionFeedback.join(", ") : "none";
+  const token = readout.token.length > 0 ? readout.token : "none";
+
+  return [
+    `<section class="zeta-room-continuation"`,
+    attr("aria-label", "Continuation readout"),
+    attr("data-continuation-readout", readout.schema),
+    attr("data-continuation-status", status),
+    attr("data-continuation-loop", readout.loopId),
+    attr("data-continuation-stop", readout.stopReason),
+    attr("data-continuation-next-lap", readout.nextLap),
+    attr("data-continuation-resume-base-tick", readout.resumeBaseTick),
+    ">",
+    "<dl>",
+    `<div><dt>resume</dt><dd>${status}</dd></div>`,
+    `<div><dt>stop</dt><dd>${escapeHtml(readout.stopReason)}</dd></div>`,
+    `<div><dt>next lap</dt><dd>${readout.nextLap.toString()}</dd></div>`,
+    `<div><dt>base tick</dt><dd>${readout.resumeBaseTick.toString()}</dd></div>`,
+    `<div><dt>feedback</dt><dd>${escapeHtml(feedback)}</dd></div>`,
+    `<div><dt>token</dt><dd><code>${escapeHtml(token)}</code></dd></div>`,
+    "</dl>",
+    "</section>",
+  ].join("");
+}
+
 function treatyFromReadouts(
   temperature: TemperatureReadout,
   blackBody: BlackBodyReadout | undefined,
@@ -369,6 +419,18 @@ function roomPredictions(
   const temp = tempFromBand(temperature.band);
   const backpressureTicks = transcript.ticks.filter((tick) => tick.outcome === "backpressure").length;
   const refusedTicks = transcript.ticks.filter((tick) => tick.outcome === "refused").length;
+  const continuation = transcript.continuationReadout;
+  const continuationPrediction: MindPrediction[] =
+    continuation === undefined
+      ? []
+      : [
+          {
+            label: "continuation",
+            temp: continuation.resumable ? "warm" : continuation.admissionFeedback.length > 0 ? "hot" : "cool",
+            valueMilli: continuation.resumable ? 1000 : 0,
+            epsilonMilli: countMilli(continuation.admissionFeedback.length),
+          },
+        ];
 
   return [
     {
@@ -389,6 +451,7 @@ function roomPredictions(
       valueMilli: countMilli(transcript.ticks.length),
       epsilonMilli: countMilli(refusedTicks),
     },
+    ...continuationPrediction,
   ];
 }
 
@@ -446,6 +509,8 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
       : temperatureTreaty.referenceFeedback.join(" ");
   const travelerFrame = transcript.travelerFrame;
   const phaseClock = phaseClockReadout(transcript);
+  const continuation = transcript.continuationReadout;
+  const continuationStatusValue = continuation === undefined ? undefined : continuationStatus(continuation);
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
   return [
@@ -473,6 +538,12 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-phase", phaseClock.phase),
     attr("data-phase-skew-bound", phaseClock.skewBoundTicks),
     attr("data-phase-append-only", phaseClock.appendOnly),
+    attr("data-continuation-readout", continuation?.schema),
+    attr("data-continuation-status", continuationStatusValue),
+    attr("data-continuation-loop", continuation?.loopId),
+    attr("data-continuation-stop", continuation?.stopReason),
+    attr("data-continuation-next-lap", continuation?.nextLap),
+    attr("data-continuation-resume-base-tick", continuation?.resumeBaseTick),
     ">",
     '<header class="zeta-room-header">',
     `<h1>${escapeHtml(transcript.roomName)}</h1>`,
@@ -485,6 +556,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     `<div><dt>radiance</dt><dd>${(blackBody?.radiancePpm ?? 0).toString()}</dd></div>`,
     `<div><dt>frame</dt><dd>${phaseClock.phase.toString()}</dd></div>`,
     `<div><dt>skew</dt><dd>${phaseClock.skewBoundTicks.toString()}</dd></div>`,
+    `<div><dt>resume</dt><dd>${escapeHtml(continuationStatusValue ?? "none")}</dd></div>`,
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
     "</dl>",
     "</header>",
@@ -498,6 +570,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     ...transcript.heatRows.map(renderHeatRow),
     "</ol>",
     "</section>",
+    renderContinuationReadout(continuation),
     ...(transcript.sLanes && transcript.sLanes.length > 0
       ? [
           '<section class="zeta-room-coordination" aria-label="Coordination board (CHSH S-lanes; above 2 convicts a common cause)">',

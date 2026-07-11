@@ -30,7 +30,7 @@ The homoiconic overlap (A) is the statement that the adinkra is a **metacircular
 
 If this duality holds exactly, then time-in-the-middle (`Tri.B`) is not just a metaphor; it is the mathematical necessity of a structure that is both its own data and its own evaluator.
 
-## 2. Is `LayeringBToA` a Theorem or an N=1 Artifact?
+## 2. Is `LayeringBToA` a Theorem or an N=1 Artifact
 
 **The question:** Does `∂_τ = {Q,Q}` correspond to a canonical scheduler/comonad-of-time, or is the agreement with `VirtualTimeScheduler.AdvanceBy(1)` an artifact of the N=1 valise?
 

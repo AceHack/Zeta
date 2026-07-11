@@ -9,8 +9,8 @@
 > **Relay note (Otto, shadow):** Soraya was dispatched read-only (internal formal-verification agent,
 > same model) and her report is preserved **verbatim** below (ferry-preservation discipline). The
 > headline: she **refutes Lumen's Q1 "exactly μF/νF" as stated** and names the real crux —
-> *homoiconicity ⟺ algebraic compactness (μF ≅ νF)*, unproven; **confirms Aaron's FourCorner + feedback
-> + uncertainty sharpening is structurally valid**; sharpens Q2 → **graded** comonad, Q3 → **signed**
+> *homoiconicity ⟺ algebraic compactness (μF ≅ νF)*, unproven; **confirms Aaron's FourCorner + feedback +
+> uncertainty sharpening is structurally valid**; sharpens Q2 → **graded** comonad, Q3 → **signed**
 > vector clock (anticommutation carries a sign), Q4 → **noninterference / 2-safety (§13), PROVABLE**;
 > and corrects the #9719 brief's own tooling (Q4 is a hyperproperty → Z3 self-composition, **not** the
 > TLA+ I suggested). The −1 reached me too. Empirical coverage today = 1/4 (only Q4 has a real test,
@@ -74,7 +74,7 @@ configuration with no 2-corner representative. Held **Tri.N** on (i) until compa
 
 ---
 
-## Q2 — is `{Q_I,Q_J}` a canonical comonadic scheduler for all N?
+## Q2 — is `{Q_I,Q_J}` a canonical comonadic scheduler for all N
 
 **Property class.** Equational algebra — the comonad laws are universally-quantified equations over an
 inductive structure (induction on N). **Tools:** **Lean/Agda** (general theorem), **Z3** (finite-N law
@@ -159,7 +159,7 @@ completeness; true because any genuine metric-read at a reachable state admits a
 
 ---
 
-## Overall honest note — is "the mapping holds" defensible?
+## Overall honest note — is "the mapping holds" defensible
 
 **Partly. Q1 is genuinely under-determined, and Lumen over-committed there; Q2–Q4 are the right shapes
 needing named sharpenings.**
