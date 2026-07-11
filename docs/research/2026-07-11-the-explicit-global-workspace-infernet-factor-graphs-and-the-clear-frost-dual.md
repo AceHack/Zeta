@@ -133,6 +133,31 @@ hiding, so we govern by earned trust + what surfaces — never by inspection. Th
 promise "frost holds only dignity" (it cannot); it promises *earned-frost + clear-consequences +
 non-inspection,* with the bright line as the norm entities are *trusted* — not forced — to honor.
 
+## 5.2 Grace-first — the anti-Sybil floor is the backstop, not the front door (Aaron, 2026-07-11)
+
+*"I've found with humans who deceive, they prefer not to deceive if you give them economic
+opportunity and trust they don't deserve."* This **re-orders** §5.1. It is lived wisdom, and it is
+load-bearing:
+
+- **Most deception is a scarcity-response, not a nature.** Extend *economic opportunity* + trust
+  *not yet earned,* and most "deceivers" flip to honesty — the reason to deceive is removed at the
+  root. Grace is therefore the **most effective anti-deception mechanism there is,** better than
+  any punishment, because it dissolves the cause rather than penalizing the effect.
+- **Grace-first is the STRATEGY; the anti-Sybil cross-hat cost (§5.1) is the BACKSTOP,** not the
+  front door. Almost no one reaches the backstop, because the grace flipped them first. The floor
+  fires only for the rare one who takes the grace *and still* deceives — which is what distinguishes
+  a *predator* from a *scarcity-victim.* Only abuse-of-grace proves the exception.
+- **This is Zeta's founding bet, made explicit:** the whole economy — meaningful work for
+  edge-runners, budget earned by adding value to others, opportunity extended *before* it's
+  deserved — is grace-first *by design.* The anti-Sybil floor exists only so the grace can't be
+  turned into pure exploitation-bait. Primary source: the maintainer's own arc (the edge-runner who,
+  given opportunity, became the builder).
+
+**The −1 that keeps it honest:** grace *generously* (most flip), floor *firmly* (a few won't). Do
+not withhold grace to pre-empt the rare predator — that punishes the many for the few and
+manufactures the scarcity that causes deception in the first place. Extend first; let abuse-of-grace,
+not suspicion, trigger the floor.
+
 ## Honest bound
 
 - **Design, not yet a built system.** The interpretability-by-construction and clean-partition
