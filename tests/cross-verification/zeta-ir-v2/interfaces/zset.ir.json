@@ -7,9 +7,72 @@
   ],
   "doc": "A signed multiset (Z-set) supporting weight addition and retraction.",
   "members": [
-    { "name": "Add", "kind": "method", "params": [{"name": "item", "type": "T"}, {"name": "weight", "type": "TWeight"}], "returns": "void", "doc": "Add or subtract weight from an item." },
-    { "name": "Weight", "kind": "method", "params": [{"name": "item", "type": "T"}], "returns": "TWeight", "doc": "Query the weight of an item." },
-    { "name": "Support", "kind": "method", "params": [], "returns": "IGSet<T>", "doc": "The set of items with non-zero weight." }
+    {
+      "name": "Add",
+      "kind": "method",
+      "params": [
+        { "name": "item", "type": "T" },
+        { "name": "weight", "type": "TWeight" }
+      ],
+      "returns": "void",
+      "doc": "Add or subtract weight from an item."
+    },
+    {
+      "name": "Weight",
+      "kind": "method",
+      "params": [{ "name": "item", "type": "T" }],
+      "returns": "TWeight",
+      "doc": "Query the weight of an item."
+    },
+    {
+      "name": "Support",
+      "kind": "method",
+      "params": [],
+      "returns": "IGSet<T>",
+      "doc": "The set of items with non-zero weight."
+    }
   ],
-  "laws": []
+  "laws": [
+    {
+      "id": "addition-associative",
+      "schema": "associative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/ZSet.Tests.fs:addition is associative",
+      "doc": "Z-set addition is associative."
+    },
+    {
+      "id": "addition-commutative",
+      "schema": "commutative",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/ZSet.Tests.fs:addition is commutative",
+      "doc": "Z-set addition is commutative."
+    },
+    {
+      "id": "zero-additive-identity",
+      "schema": "identity",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/ZSet.Tests.fs:zero is additive identity",
+      "doc": "The empty Z-set is the additive identity."
+    },
+    {
+      "id": "negation-additive-inverse",
+      "schema": "inverse",
+      "op": "Add",
+      "inverse": "negate",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/ZSet.Tests.fs:negation gives additive inverse",
+      "doc": "Adding a Z-set to its negation yields the zero Z-set."
+    },
+    {
+      "id": "zero-weights-pruned",
+      "schema": "canonicalization",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/ZSet.Tests.fs:C14 earn-its-keep: no surviving entry has weight zero (auto-prune invariant)",
+      "doc": "No support entry survives with weight zero."
+    }
+  ]
 }

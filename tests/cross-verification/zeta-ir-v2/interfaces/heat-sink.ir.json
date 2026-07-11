@@ -18,5 +18,30 @@
       "doc": "Emit a heat signature representing information loss. Returns true if successfully recorded."
     }
   ],
-  "laws": []
+  "laws": [
+    {
+      "id": "empty-heat-cold",
+      "schema": "zero-observation",
+      "op": "Emit",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/BoundedGSet.Tests.fs:bounded heat adapter keeps empty heat cold",
+      "doc": "Empty heat does not spend heat-channel capacity."
+    },
+    {
+      "id": "sink-backpressure-preserves-stored-heat",
+      "schema": "backpressure",
+      "op": "Emit",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/BoundedGSet.Tests.fs:bounded heat sink no-forget policy backpressures without losing stored heat",
+      "doc": "When a bounded heat sink is full in no-forget mode, the rejected heat is reported as backpressure and existing stored heat remains intact."
+    },
+    {
+      "id": "recursive-heat-explicit",
+      "schema": "loss-accounting",
+      "op": "Emit",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/BoundedGSet.Tests.fs:bounded heat sink rolling policy reports recursive heat explicitly",
+      "doc": "If the heat channel itself forgets a prior heat signature, that loss is recorded as storage heat."
+    }
+  ]
 }

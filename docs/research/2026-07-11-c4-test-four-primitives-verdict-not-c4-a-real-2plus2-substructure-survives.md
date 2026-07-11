@@ -56,7 +56,7 @@ the FourCorner's four either.
 ## Why it isn't the FourCorner four (the honest disambiguation)
 
 `src/Core/FourCorner.fs` builds C₄ from **(in/out) × (data/feedback)** — *two independent binary
-axes* (Klein/​C₄). The primitives partly align — **noeo = data-in, lampo = data-out** (the flux
+axes* (Klein/C₄). The primitives partly align — **noeo = data-in, lampo = data-out** (the flux
 axis matches) — but the *second* axis does **not** match: FourCorner's second axis is
 data-vs-feedback (a negation); the primitives' second "axis" is meno-vs-mnao, a **scope
 repetition of the same generator**, not a negation. Same *cardinality* (four), **different

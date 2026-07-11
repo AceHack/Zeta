@@ -11,8 +11,8 @@
 # oracle alone.
 meta	name	shape-sybil-verdict
 meta	catalog	shapes
-meta	shape-zetaid	0022fd07610c1fe0ddbf7b301f4f5381
-gen	plait	0022fd07610c1fe0ddbf7b301f4f5381	1	7	claims:3;crossings:5
+meta	shape-zetaid	0022fd07610c1fe0bffe61f8a187384c
+gen	plait	0022fd07610c1fe0bffe61f8a187384c	1	7	claims:3;crossings:5
 constant	rounds	256	CHSH probe rounds per claim	enough for the conducted pair's EXACT S=4 — deterministic products, not asymptotics
 constant	seed-conductor-a	149	claim 0's settings seed	the conductor's left hand — shares one cause with claim 1
 constant	seed-conductor-b	151	claim 1's settings seed	its OUTCOMES read claim 0's settings (the PR-box rule) — that reach IS what gets convicted

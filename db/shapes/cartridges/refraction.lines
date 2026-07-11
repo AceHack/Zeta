@@ -13,8 +13,8 @@
 # not the claim.
 meta	name	shape-refraction
 meta	catalog	shapes
-meta	shape-zetaid	15fbc51afc2e1784be252a7d25ac69d7
-gen	bend	15fbc51afc2e1784be252a7d25ac69d7	1	7	membrane:16;index-milli:2000
+meta	shape-zetaid	15fbc51afc2e178485e78ba2a4b17c44
+gen	bend	15fbc51afc2e178485e78ba2a4b17c44	1	7	membrane:16;index-milli:2000
 constant	membrane-row	16	the membrane's court row	the medium boundary — where the ring/snap/frost crossing happens; mid-court so both media show
 constant	impact-col	22	the crossing point's column	off-center so the bent ray has room to run its longer horizontal
 constant	dx-in	14	incoming run (columns)	with dy-in equal, incidence is the unit slope — one clean 45-degree reference angle

@@ -1,4 +1,31 @@
 {
+  "IBoundedGSet": {
+    "typeParams": [
+      "invariant:T"
+    ],
+    "members": [
+      "property:Capacity",
+      "property:IsSaturated"
+    ],
+    "laws": 3,
+    "extends": [
+      "IGSet"
+    ]
+  },
+  "IBoundedZSet": {
+    "typeParams": [
+      "invariant:T",
+      "invariant:TWeight"
+    ],
+    "members": [
+      "property:Capacity",
+      "property:IsSaturated"
+    ],
+    "laws": 3,
+    "extends": [
+      "IZSet"
+    ]
+  },
   "ICodec": {
     "typeParams": [
       "contravariant:A",
@@ -9,6 +36,22 @@
       "method:Decode"
     ],
     "laws": 3,
+    "extends": []
+  },
+  "IDatabase": {
+    "typeParams": [],
+    "members": [
+      "method:CreateFile",
+      "method:ReadFile",
+      "method:DeleteFile",
+      "method:CreateGSet",
+      "method:AddToGSet",
+      "method:ReadGSet",
+      "method:CreateZSet",
+      "method:AddToZSet",
+      "method:ReadZSet"
+    ],
+    "laws": 4,
     "extends": []
   },
   "IDbspOperators": {
@@ -35,6 +78,28 @@
       "property:Identity",
       "method:Combine",
       "method:Inverse"
+    ],
+    "laws": 3,
+    "extends": []
+  },
+  "IGSet": {
+    "typeParams": [
+      "invariant:T"
+    ],
+    "members": [
+      "method:Add",
+      "method:Contains",
+      "property:Count"
+    ],
+    "laws": 4,
+    "extends": [
+      "ILattice"
+    ]
+  },
+  "IHeatSink": {
+    "typeParams": [],
+    "members": [
+      "method:Emit"
     ],
     "laws": 3,
     "extends": []
@@ -127,6 +192,19 @@
     "extends": [
       "IRing"
     ]
+  },
+  "IZSet": {
+    "typeParams": [
+      "invariant:T",
+      "invariant:TWeight"
+    ],
+    "members": [
+      "method:Add",
+      "method:Weight",
+      "method:Support"
+    ],
+    "laws": 5,
+    "extends": []
   },
   "IZSetIsa": {
     "typeParams": [

@@ -5,9 +5,54 @@
   "extends": ["ILattice"],
   "doc": "A grow-only set (G-Set CRDT) supporting monotonic addition and membership query.",
   "members": [
-    { "name": "Add", "kind": "method", "params": [{"name": "item", "type": "T"}], "returns": "bool", "doc": "Add an item. Returns true if the item was newly admitted." },
-    { "name": "Contains", "kind": "method", "params": [{"name": "item", "type": "T"}], "returns": "bool", "doc": "Query membership." },
+    {
+      "name": "Add",
+      "kind": "method",
+      "params": [{ "name": "item", "type": "T" }],
+      "returns": "bool",
+      "doc": "Add an item. Returns true if the item was newly admitted."
+    },
+    {
+      "name": "Contains",
+      "kind": "method",
+      "params": [{ "name": "item", "type": "T" }],
+      "returns": "bool",
+      "doc": "Query membership."
+    },
     { "name": "Count", "kind": "property", "type": "int", "doc": "The number of distinct elements present." }
   ],
-  "laws": []
+  "laws": [
+    {
+      "id": "add-idempotent",
+      "schema": "idempotent",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/GSet.Tests.fs:add is idempotent for a present element",
+      "doc": "Adding an already-present element does not change the set."
+    },
+    {
+      "id": "union-idempotent",
+      "schema": "idempotent",
+      "op": "Union",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/GSet.Tests.fs:union is idempotent: union a a = a",
+      "doc": "Union(a, a) = a."
+    },
+    {
+      "id": "union-commutative",
+      "schema": "commutative",
+      "op": "Union",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/GSet.Tests.fs:union is commutative: union a b = union b a",
+      "doc": "Union(a, b) = Union(b, a)."
+    },
+    {
+      "id": "union-associative",
+      "schema": "associative",
+      "op": "Union",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/GSet.Tests.fs:union is associative: union (union a b) c = union a (union b c)",
+      "doc": "Union(Union(a, b), c) = Union(a, Union(b, c))."
+    }
+  ]
 }

@@ -17,18 +17,14 @@
     {
       "name": "ReadFile",
       "kind": "method",
-      "params": [
-        { "name": "path", "type": "string" }
-      ],
+      "params": [{ "name": "path", "type": "string" }],
       "returns": "string",
       "doc": "Read the string value of a file at path."
     },
     {
       "name": "DeleteFile",
       "kind": "method",
-      "params": [
-        { "name": "path", "type": "string" }
-      ],
+      "params": [{ "name": "path", "type": "string" }],
       "returns": "bool",
       "doc": "Delete a file at path. Returns true if the file was deleted."
     },
@@ -56,9 +52,7 @@
     {
       "name": "ReadGSet",
       "kind": "method",
-      "params": [
-        { "name": "path", "type": "string" }
-      ],
+      "params": [{ "name": "path", "type": "string" }],
       "returns": "IGSet<string>",
       "doc": "Read the G-Set at path."
     },
@@ -87,12 +81,15 @@
     {
       "name": "ReadZSet",
       "kind": "method",
-      "params": [
-        { "name": "path", "type": "string" }
-      ],
+      "params": [{ "name": "path", "type": "string" }],
       "returns": "IZSet<string, int64>",
       "doc": "Read the Z-set at path."
     }
   ],
-  "laws": []
+  "laws": [
+    "CreateFile is idempotent at an existing path: a repeated create reports false rather than creating a second file at the same path.",
+    "ReadFile observes the latest successfully created value for an existing path.",
+    "DeleteFile makes a previously existing path absent and reports whether deletion occurred.",
+    "GSet and ZSet reads expose their collection contracts through IGSet and IZSet rather than leaking implementation-specific storage."
+  ]
 }

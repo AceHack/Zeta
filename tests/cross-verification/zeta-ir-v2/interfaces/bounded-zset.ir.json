@@ -11,5 +11,9 @@
     { "name": "Capacity", "kind": "property", "type": "int", "doc": "The maximum capacity of the Z-set." },
     { "name": "IsSaturated", "kind": "property", "type": "bool", "doc": "Whether the capacity has been reached." }
   ],
-  "laws": []
+  "laws": [
+    "Bounded Z-set admission preserves the inherited Z-set weight algebra for admitted entries.",
+    "Capacity pressure must be observable as explicit rejection or loss accounting; it may not silently drop signed weight.",
+    "A saturated bounded Z-set must report IsSaturated = true."
+  ]
 }

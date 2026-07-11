@@ -18,14 +18,53 @@ type IFileSystem =
     abstract GetFiles: path: string * searchPattern: string -> string[]
     abstract CreateDirectory: path: string -> unit
 
+module private PhysicalFileSystemLimits =
+    let maxReadAllBytes = 256L * 1024L * 1024L
+
+    let checkReadAllBytesCap (path: string) =
+        let info = FileInfo(path)
+        if info.Exists && info.Length > maxReadAllBytes then
+            raise (IOException(sprintf "File exceeds ReadAllBytes cap (%d bytes): %s" maxReadAllBytes path))
+
+    let checkStreamCap (path: string) (stream: Stream) =
+        if stream.Length > maxReadAllBytes then
+            raise (IOException(sprintf "File exceeds ReadAllBytes cap (%d bytes): %s" maxReadAllBytes path))
+
+    let readAllBytes (path: string) =
+        checkReadAllBytesCap path
+        use stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan)
+        checkStreamCap path stream
+        use buffer = new MemoryStream(int stream.Length)
+        stream.CopyTo(buffer)
+        buffer.ToArray()
+
+    let readAllBytesAsync (path: string) (ct: CancellationToken) = task {
+        checkReadAllBytesCap path
+        use stream =
+            new FileStream(
+                path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                4096,
+                FileOptions.Asynchronous ||| FileOptions.SequentialScan
+            )
+        checkStreamCap path stream
+        use buffer = new MemoryStream(int stream.Length)
+        do! stream.CopyToAsync(buffer, ct)
+        return buffer.ToArray()
+    }
+
 /// The default physical file system wrapper delegating to System.IO.
 type PhysicalFileSystem() =
     interface IFileSystem with
         member _.Exists(path) = File.Exists(path)
         member _.Delete(path) = File.Delete(path)
         member _.Move(src, dest, overwrite) = File.Move(src, dest, overwrite)
-        member _.ReadAllBytes(path) = File.ReadAllBytes(path)
-        member _.ReadAllBytesAsync(path, ct) = File.ReadAllBytesAsync(path, ct)
+        member _.ReadAllBytes(path) =
+            PhysicalFileSystemLimits.readAllBytes path
+        member _.ReadAllBytesAsync(path, ct) =
+            PhysicalFileSystemLimits.readAllBytesAsync path ct
         member _.OpenFile(path, mode, access, share) =
             new FileStream(path, mode, access, share, 4096, true) :> Stream
         member _.OpenWrite(path, fsync) =

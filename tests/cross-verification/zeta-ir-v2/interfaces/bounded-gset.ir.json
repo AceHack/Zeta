@@ -8,5 +8,30 @@
     { "name": "Capacity", "kind": "property", "type": "int", "doc": "The maximum capacity of the set." },
     { "name": "IsSaturated", "kind": "property", "type": "bool", "doc": "Whether the capacity has been reached." }
   ],
-  "laws": []
+  "laws": [
+    {
+      "id": "no-forget-backpressures",
+      "schema": "bounded-admission",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/BoundedGSet.Tests.fs:no-forget policy backpressures instead of forgetting",
+      "doc": "The no-forget policy rejects over-capacity additions through backpressure rather than evicting materialized elements."
+    },
+    {
+      "id": "forgetting-reports-heat",
+      "schema": "loss-accounting",
+      "op": "Add",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/BoundedGSet.Tests.fs:forget policies keep the configured side and report heat",
+      "doc": "Forgetting policies report the forgotten finite-view loss as heat."
+    },
+    {
+      "id": "bounded-union-idempotent-associative",
+      "schema": "bounded-lattice",
+      "op": "Union",
+      "status": "proven",
+      "proof": "tests/Tests.FSharp/Algebra/BoundedGSet.Tests.fs:bounded union is idempotent and associative for one projection policy",
+      "doc": "Bounded union is idempotent and associative when both operands use the same projection policy."
+    }
+  ]
 }

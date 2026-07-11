@@ -23,6 +23,14 @@ interface Member {
   readonly doc: string;
 }
 
+interface LawClaim {
+  readonly id?: string;
+  readonly schema?: string;
+  readonly status?: string;
+  readonly proof?: string;
+  readonly doc?: string;
+}
+
 interface InterfaceIr {
   readonly schema: "zeta-ir-v2-interface";
   readonly name: string;
@@ -30,13 +38,33 @@ interface InterfaceIr {
   readonly extends?: readonly string[];
   readonly doc: string;
   readonly members: readonly Member[];
-  readonly laws: readonly string[];
+  readonly laws: readonly (string | LawClaim)[];
 }
 
-const expectedNames = new Set(["ICodec", "IDbspOperators", "IGroup", "IKleeneAlgebra", "ILattice", "IMonoid", "IPort", "IRing", "ISemiring", "IStarRing", "IZSetIsa"]);
+const expectedNames = new Set([
+  "IBoundedGSet",
+  "IBoundedZSet",
+  "ICodec",
+  "IDatabase",
+  "IDbspOperators",
+  "IGSet",
+  "IGroup",
+  "IHeatSink",
+  "IKleeneAlgebra",
+  "ILattice",
+  "IMonoid",
+  "IPort",
+  "IRing",
+  "ISemiring",
+  "IStarRing",
+  "IZSet",
+  "IZSetIsa",
+]);
 const allowedVariance = new Set<Variance>(["contravariant", "covariant", "invariant"]);
 const dir = join(import.meta.dir, "interfaces");
-const files = readdirSync(dir).filter((name) => name.endsWith(".ir.json")).sort();
+const files = readdirSync(dir)
+  .filter((name) => name.endsWith(".ir.json"))
+  .sort();
 const observed = new Map<string, InterfaceIr>();
 
 let mismatches = 0;
@@ -54,7 +82,7 @@ for (const file of files) {
   observed.set(ir.name, ir);
 
   if (!ir.doc || ir.doc.trim().length === 0) fail(`${file}: missing doc`);
-  if (!ir.typeParams || ir.typeParams.length === 0) fail(`${file}: missing type params`);
+  if (!Array.isArray(ir.typeParams)) fail(`${file}: missing type params`);
   for (const typeParam of ir.typeParams) {
     if (!typeParam.name) fail(`${file}: unnamed type param`);
     if (!allowedVariance.has(typeParam.variance)) fail(`${file}: invalid variance ${String(typeParam.variance)}`);
@@ -66,7 +94,8 @@ for (const file of files) {
     if (!member.name) fail(`${file}: unnamed member`);
     if (memberNames.has(member.name)) fail(`${file}: duplicate member ${member.name}`);
     memberNames.add(member.name);
-    if (member.kind !== "method" && member.kind !== "property") fail(`${file}: invalid member kind ${String(member.kind)}`);
+    if (member.kind !== "method" && member.kind !== "property")
+      fail(`${file}: invalid member kind ${String(member.kind)}`);
     if (!member.doc || member.doc.trim().length === 0) fail(`${file}: member ${member.name} missing doc`);
     if (member.kind === "method" && !member.returns) fail(`${file}: method ${member.name} missing returns`);
     if (member.kind === "property" && !member.type) fail(`${file}: property ${member.name} missing type`);
