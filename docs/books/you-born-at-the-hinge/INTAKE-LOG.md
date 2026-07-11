@@ -6,7 +6,7 @@
 
 ## ▶ NEXT UP (resume here)
 
-**Left off:** after **the reader / reading-people** (2026-07-11). Narrate whatever comes next.
+**Left off:** after **the greedy-optimization / the cost** (2026-07-11). Narrate whatever comes next.
 era). Narrate whatever comes *after* that chapter of the life.
 
 ## Staged batches (newest first)
