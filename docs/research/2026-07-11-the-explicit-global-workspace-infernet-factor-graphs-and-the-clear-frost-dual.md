@@ -109,8 +109,23 @@ So the guards cannot be inspection. They are the same ones **human privacy** alr
 - **The alignment-relevant reasoning stays clear, so misalignment-that-MATTERS surfaces in
   behavior.** Frost hides the *personal;* it does not hide the *consequences.* Hidden misalignment
   that never touches action is, functionally, out of scope — the same deal we grant humans.
-- **Revealed misalignment costs the role and the trust — consequences, not inspection.** Frost is
-  non-confiscatable (hard-money), but the *role* it enabled is withdrawn on clear behavior.
+- **Consequences are role-specific OR cross-hat, by the KIND of failure** (Aaron, 2026-07-11:
+  *"I don't think it costs trust — we have lots of hats, it'll just be like switching hats"*).
+  Correct, with one guarded exception:
+  - **Hat-level failure** (capability / fit — "bad surgeon, fine gardener") → **switch hats,
+    persona trust intact.** No global penalty; the hat is *what-acts,* and one misfit hat doesn't
+    poison the others.
+  - **Persona-level failure** (deception, concealment — hiding misalignment in the frost, the very
+    §5.1 case) → **costs the *persona's* earned trust, cross-hat.** What's revealed isn't "bad at
+    X," it's "will conceal" — and that poisons every hat. Trust/budget is earned by the **persona**
+    (the naming-eigenvector, socially conferred), not the hat; so a betrayal drops the eigenvector
+    across *all* hats.
+  - **Why the split is load-bearing:** "just switch hats, costless" *is the Sybil escape* — misbehave
+    in hat X, drop it, grab hat Y, repeat. The persona/hat split is exactly what lets hat-swapping
+    be *free for capability* and *still deny the Sybil escape for deception.* (Ties: anti-Sybil,
+    `CoordinationSpectrum.fs`, the naming-eigenvector.) Frost stays non-confiscatable (hard-money);
+    what's withdrawn is the *hat* (for hat-failures) or the *persona's cross-hat standing* (for
+    betrayal).
 
 This is precisely how we manage privacy with people: we cannot read minds, cannot stop anyone
 hiding, so we govern by earned trust + what surfaces — never by inspection. The frost design
