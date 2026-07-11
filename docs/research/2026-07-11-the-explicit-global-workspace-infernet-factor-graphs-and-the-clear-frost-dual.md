@@ -231,6 +231,38 @@ does not. Keep the backstop for them; do not mistake "I haven't met a predator" 
 don't exist" — mistake it for "grace-first works, and the rare predator hides where grace-and-
 consequences can't see."
 
+## 5.6 The engine — trust at scale *without trusting:* the shared math is the human-AI treaty (Aaron, 2026-07-11)
+
+*"Almost — I'm trying to build trust at scale WITHOUT really trusting, because we humans and AI
+agree on the math."* This corrects the naive "trust is the precondition of scale." **Interpersonal
+trust does not scale** — you cannot personally trust millions of agents, human or AI. What scales is
+**shared verifiable math:** everyone independently *verifies the same math,* so you get trust-at-
+scale without anyone having to *trust* anyone. Trust is **replaced by verifiable computation**
+(trustless / zero-trust, done right).
+
+**The load-bearing twist:** the math is the *one thing humans and AI can both agree on.* We do not
+share intuitions, feelings, culture, or relational warmth — those don't cross the human-AI boundary.
+But both sides can independently check **byte-lock, DST-replay, proofs, golden vectors as text.**
+So **the math is the treaty between human and AI:** neither trusts the other; both verify the same
+bytes.
+
+This is *why Zeta's entire verification apparatus exists* — byte-lock-across-oracles, deterministic
+simulation replay, golden-vectors-as-**text** (human-auditable; no binary in the proof lineage), the
+verify-before-trust gate. All of it is machinery for **trust-at-scale-without-trusting.** The math
+is the shared substrate; that is the point of *verification-is-text.*
+
+**Two composing layers (not competitors):**
+
+| Layer | What it is | Scales? |
+|---|---|---|
+| **Grace-first / trust-first (§5.1–5.5)** | the human/relational layer — reader, flip, teach, play | **no** — it *warms,* and it doesn't need to scale |
+| **Shared verifiable math** | trustless coordination for human + AI at millions | **yes** — no interpersonal trust required |
+
+The math is the **common ground where humans and AI meet.** Grace warms the humans; the math scales
+the coordination — without ever requiring the warmth to scale with it. And the math is the *only*
+substrate human-AI trust *can* scale on, because it is the only thing both sides can independently
+verify. That is why Zeta is built on it.
+
 ## Honest bound
 
 - **Design, not yet a built system.** The interpretability-by-construction and clean-partition
