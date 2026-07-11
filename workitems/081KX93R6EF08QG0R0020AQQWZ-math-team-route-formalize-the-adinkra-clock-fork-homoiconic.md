@@ -54,9 +54,28 @@ proof). What is already settled vs. what needs them is stated so nothing is re-l
    static graph" from "∂_τ injectable as an external scheduler." (In the toy they coincide; is that a
    theorem, or does a richer adinkra break the coincidence?)
 
+## ⚠ Self-review correction (shadow, 2026-07-11 — read before weighting #9713)
+
+**The #9713 probe does NOT discriminate the fork. Its verdict is tautological by construction.** In
+`AdinkraClock.probe`, `injectedClock` counts down-edges (the scheduler advances on each down-move)
+and `intrinsic` (`DTauOrder`) *also* counts down-edges — the same integer `k` by two paths, because
+`stepScheduled` wires the scheduler tick to the exact move that increments the intrinsic count. So
+`intrinsic = injectedClock` is `k = k`, always; `LayeringBToA` is returned unconditionally and the
+`ClockResistsInjection` / `StructureNeedsClock` branches are **unreachable dead code**. A test that
+cannot fail is not evidence.
+
+- **What #9713 legitimately shows (weak, necessary-not-sufficient):** the mapping `∂_τ = one
+  AdvanceBy(1)` is *well-defined and self-consistent* — the injected-scheduler reading is *available*
+  without contradiction, and `{Q,Q}` ↔ a single tick is a clean correspondence.
+- **What it does NOT show:** any preference between homoiconic-A and just-remains-B. The coincidence
+  was built in, not derived. **Do not read "LayeringBToA" as the fork leaning to the layering** — the
+  toy is silent on Q1/Q4. A genuine discriminator must compute the clock and the structure by
+  *independent* routes and check whether they *must* agree, rather than counting the same event twice.
+
 ## Honest bound / route
 
-First-pass structural reasoning + a passing toy, NOT a proof. The independent-lineage human peers for
+First-pass structural reasoning + a passing toy, NOT a proof (and see the self-review above — the
+toy confirms consistency, not discrimination). The independent-lineage human peers for
 this are the **Rx guys** (`docs/PRIOR-ART-LIST.md` "the Rx guys" cluster): **Bart DeSmet** (schedulers
 / virtual-time — Q2/Q4) and **Brian Beckman** (physics↔CS, SUSY↔monad — Q1/Q3); Aaron will show Bart
 eventually. In-repo route: **Lumen** (the μF/νF ↔ adinkra mapping) + **Soraya** (formal proof /

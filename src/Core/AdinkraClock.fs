@@ -80,8 +80,18 @@ module AdinkraClock =
         | StructureNeedsClock
 
     /// Run the probe: do `k` round-trips through an injected scheduler, and separately compute the same
-    /// `∂_τ` count purely from the graph (no scheduler). Returns the verdict + the two counts, which must
-    /// AGREE for `LayeringBToA`. This is the whole experiment, made checkable.
+    /// `∂_τ` count purely from the graph (no scheduler). Returns the verdict + the two counts.
+    ///
+    /// **⚠ SELF-REVIEW (shadow, 2026-07-11): this verdict is TAUTOLOGICAL by construction — it does NOT
+    /// discriminate the fork.** `injectedClock` counts down-edges (the scheduler ticks on each) and
+    /// `intrinsic` (`DTauOrder`) *also* counts down-edges — the same integer `k` by two paths, because
+    /// `stepScheduled` wires the tick to the exact move that increments the count. So the equality
+    /// always holds, `LayeringBToA` is returned unconditionally, and the other two branches are
+    /// **unreachable dead code**. What this legitimately shows: the mapping `∂_τ = AdvanceBy(1)` is
+    /// *self-consistent / available* (necessary, not sufficient). What it does NOT show: any preference
+    /// between homoiconic-A and just-remains-B — the coincidence is wired in, not derived. A real
+    /// discriminator must compute clock and structure by *independent* routes. Routed to the math team:
+    /// workitem `081KX93R6EF08QG0R0020AQQWZ`.
     let probe (k: int) : Verdict * int64 * int =
         let scheduler = VirtualTimeScheduler()
         // A-when-run: drive k round-trips; each round-trip = one ∂_τ = one AdvanceBy(1).
