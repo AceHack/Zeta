@@ -1,0 +1,14 @@
+{
+  "id": "080cfa8905913011a01300082b822d93",
+  "at": "2026-07-11T12:22:05.094Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX8J1CH508QG0R0026EHNNH",
+    "type": "bug",
+    "title": "DiskSpine content-addressed handles need ref-counting — duplicate-batch Save+Release breaks co-resident handle (P1, from #9680 review)",
+    "slug": "diskspine-content-addressed-handles-need-ref-counting-duplic",
+    "priority": "P2",
+    "filename": "081KX8J1CH508QG0R0026EHNNH-diskspine-content-addressed-handles-need-ref-counting-duplic.md"
+  }
+}
