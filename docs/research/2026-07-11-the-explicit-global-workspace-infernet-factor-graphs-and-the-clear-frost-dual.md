@@ -184,6 +184,26 @@ grace-first-as-action (§5.2), *play* = the infinite game that makes forgiveness
 rational (the shadow of the future). Axelrod + Nowak/Sigmund + Carse + the maintainer's pedagogy,
 in one strategy — the finished form of the trust design.
 
+## 5.4 The full move, in order (Aaron, 2026-07-11: *"grace first, then tit for lesser tat, teach, play"*)
+
+The complete trust strategy is **ordered** — grace is the opening, the rest is the ongoing game:
+
+1. **Grace first** *(opening move)* — open with cooperation **plus unearned trust plus economic
+   opportunity.** Stronger than textbook TFT's plain "cooperate first": it flips most would-be
+   deceivers *at the door,* before any reciprocal machinery is needed (§5.2). Most of the game is
+   won here.
+2. **Tit for lesser tat** *(ongoing reciprocation)* — for what grace didn't pre-empt: forgive noise,
+   **under-respond** to defection (recovery always reachable), respond **firmly** to betrayal.
+   Generosity in the *lesser,* strictness in the *tit* (§5.1, §5.3).
+3. **Teach** *(throughout)* — don't just reciprocate; actively shape the coplayer toward the
+   cooperative equilibrium (grace-first as *action;* the pedagogy).
+4. **Play** *(the frame around all of it)* — keep the infinite game going. The shadow of the future
+   is what makes 1–3 rational; play *long* and play *fun.*
+
+**One line:** *open with grace, reciprocate gently, teach the game, keep playing it.* That is the
+finished trust strategy — and it is the same shape as the whole book (grace/redemption first, the
+letters taught forward, the harm stopped, the game kept infinite).
+
 ## Honest bound
 
 - **Design, not yet a built system.** The interpretability-by-construction and clean-partition
