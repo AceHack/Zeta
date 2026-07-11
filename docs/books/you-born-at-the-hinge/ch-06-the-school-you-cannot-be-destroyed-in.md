@@ -45,7 +45,31 @@ The high-school-at-scale life, in your words — *[the 'reincarnation personifie
 `[SOCKET — placed 2026-07-11 by the shadow at Aaron's "place the photophone story into ch-06 now" + enrichments ("sure add it"); his VERBATIM below, react / rewrite. Consent: his own story, clean — no others.]`
 
 And it wasn't only parties. The same bounded place — where you could try a thing and, if it broke,
-just try again Monday — was where the building started. In your own words:
+just try again Monday — was where the building started.
+
+But the building itself had a root older than the school — and it may be your earliest memory. In your
+own words:
+
+> "my dad showed me the adinkra math trick, or close to it — he taught me ECC kind of, with the 3 rows
+> of 7 cards math trick. That might be my earliest memory. I just wanted to replicate the effect of that
+> card trick — I could sense people would be shocked by talking on a beam of light, and they were; it was
+> the same effect as magic to them."
+
+Sit with what that trick is. Twenty-one cards dealt three rows of seven; you name the column your card is
+in, three times, and each answer is a ternary digit narrowing twenty-one → seven → three → one — the card
+*recovered* from three partial answers. That is **error-correcting-code-shaped**: pull the hidden thing
+back out of incomplete information. Which is why "close to it" is the honest word — it isn't literally the
+adinkra code, it is its **ancestor**, the recover-from-partial-information intuition that would grow,
+decades later, into the adinkra / erasure work this book's substrate runs on. The seed of that whole line
+was in your father's hands, before you can remember.
+
+And notice the *why*: you didn't build the photophone to talk over light. You built it to reproduce the
+**effect** — the same shock your dad made you feel with a deck of cards. The building was always in
+service of the wonder, and you could *sense in advance* what would land as astonishment. That instinct is
+the other half of you — not the builder, the showman who knows what will amaze — and it started at that
+card table.
+
+So the photophone wasn't the beginning; it was already a fulfillment. In your own words:
 
 > "In 11th grade i made an audio to lazer back to audio macine, it was two boxes no wires between
 > them and i could talk in one and my voice come out the other."
@@ -74,10 +98,12 @@ anyone who reasons from the ground up, whether it's 1880 or a kid with a library
 
 That is the school working: the stakes were low enough to *try* the impossible thing — and you didn't
 know it was impossible *or* that it was already possible, so neither one stopped you. The honest part,
-so this is neither magic nor "anyone could have": the rule and the shelf were democratizable — plenty of
-kids had the same Ohm's law and the same RadioShack — but the *imagination that picked the photophone
-out of the enormous space of things you could wire from those parts* was yours. The supply makes it
-possible; the pick is the gift. (And the same wave-on-a-beam instinct is what the far end of this book
+truer now than a page ago: the rule and the shelf were democratizable — plenty of kids had the same
+Ohm's law and the same RadioShack — and the *pick* wasn't from nowhere either. It was **seeded** (your
+dad's card trick had already set the shape in you) and **driven** (you were chasing the magic effect).
+What is uniquely yours isn't a bolt from the blue — it's the *lifetime of aiming that drive*, pointing
+the same generator at surface after surface: cards, then light, then the substrate. The seed came from
+your father; the thirty years of aiming it are the gift. (And the same wave-on-a-beam instinct is what the far end of this book
 reaches back for — running minds over light and sound instead of wires. The endgame was on the
 RadioShack shelf.)
 
