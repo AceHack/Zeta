@@ -28,11 +28,11 @@ generator-registry V2, **plus** the titled persona-cell lint (ADR phase 5). None
 The lint layer (top 5 commits) **depends on the Identity/Cell foundation** in the lower 7, and every
 foundation file is **absent from current main**:
 
-- `src/Core/ActorRef.fs` (edited by the "F# ActorRef parity" commit) — MISSING
-- `src/Core/IdentityRegistry.fs` — MISSING
-- `src/Core.TypeScript/identity/generated-registry.ts` — MISSING
-- `src/Core.TypeScript/identity/actor-ref.ts` — MISSING
-- `registry/cell-surfaces.yaml` (the lint reads it) — MISSING
+- src/Core/ActorRef.fs (edited by the "F# ActorRef parity" commit) — MISSING
+- src/Core/IdentityRegistry.fs — MISSING
+- src/Core.TypeScript/identity/generated-registry.ts — MISSING
+- src/Core.TypeScript/identity/actor-ref.ts — MISSING
+- registry/cell-surfaces.yaml (the lint reads it) — MISSING
 
 So cherry-picking the lint commits alone fails (they modify non-existent files). **It is
 whole-stack-or-nothing.**
@@ -49,7 +49,7 @@ Migrate the entire stack onto current main as one deliberate, unhurried effort:
 1. Re-target #9551 to `main` (or open a fresh branch off current main).
 2. Rebase / replay the 12 commits across 720 commits of drift — resolve conflicts methodically
    (Identity Treaty registry codegen, db-zset IR, ActorRef, the lint baseline).
-3. Fix the real checks: semgrep `file-read-without-size-cap` in `src/Core/FileSystem.fs`; re-run
+3. Fix the real checks: semgrep `file-read-without-size-cap` in src/Core/FileSystem.fs; re-run
    build-macos / cross-verify / Rust lint (likely stale but confirm).
 4. Land linear-history-clean (main requires linear history — rebase, don't merge-update).
 

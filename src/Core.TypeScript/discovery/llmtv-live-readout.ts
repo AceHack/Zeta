@@ -3,7 +3,12 @@
 // The mesh runner owns sockets. The bridge owns capture. This module owns the readout tick:
 // drain the captured wires, write the replay artifact, and render the zero-JS LLMTV page.
 
-import { renderLlmtvDocument, type RenderDocumentOptions } from "../darkhall-ui/darkhall-tv";
+import {
+  renderLlmtvDocument,
+  type LlmtvReadoutStatus,
+  type PhaseClockReadout,
+  type RenderDocumentOptions,
+} from "../darkhall-ui/darkhall-tv";
 import type { LlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import {
   encodeReplayArtifact,
@@ -24,11 +29,7 @@ import {
   type ChannelTable,
 } from "./llmtv-broadcast";
 import type { Scheduler } from "./llmtv-node";
-import {
-  encodeRootSiteLlmtvStatus,
-  rootSiteLlmtvStatus,
-  type RootSiteLlmtvStatusKind,
-} from "./llmtv-root-site-status";
+import { encodeRootSiteLlmtvStatus, rootSiteLlmtvStatus, type RootSiteLlmtvStatusKind } from "./llmtv-root-site-status";
 
 export interface LlmtvLiveReadoutIo {
   readonly writeText: (path: string, text: string) => void;
@@ -56,6 +57,7 @@ export interface LlmtvLiveReadoutSummary {
   readonly status: RootSiteLlmtvStatusKind;
   readonly reason: string;
   readonly stats: ReplayStats;
+  readonly phaseClock?: PhaseClockReadout;
 }
 
 export type LlmtvLiveReadoutFlushResult =
@@ -74,8 +76,12 @@ function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-function renderOptions(options: LlmtvLiveReadoutOptions): RenderDocumentOptions {
-  return options.title === undefined ? {} : { title: options.title };
+function renderOptions(
+  options: LlmtvLiveReadoutOptions,
+  readoutStatus: LlmtvReadoutStatus | undefined,
+): RenderDocumentOptions {
+  const base = options.title === undefined ? {} : { title: options.title };
+  return readoutStatus === undefined ? base : { ...base, readoutStatus };
 }
 
 function generatedBy(options: LlmtvLiveReadoutOptions): string {
@@ -177,6 +183,47 @@ function statusReason(status: RootSiteLlmtvStatusKind): string {
   return "live";
 }
 
+function phaseMetrics(phaseClock: PhaseClockReadout | undefined): LlmtvReadoutStatus["metrics"] {
+  if (phaseClock === undefined) return [];
+  return [
+    { label: "phase", value: phaseClock.phase },
+    { label: "skew", value: phaseClock.skewBoundTicks },
+    { label: "travelers", value: phaseClock.travelers },
+  ];
+}
+
+function readoutStatus(summary: LlmtvLiveReadoutSummary): LlmtvReadoutStatus {
+  const label =
+    summary.status === "live"
+      ? "live · mesh readout"
+      : summary.status === "heat"
+        ? "heat · replay fold"
+        : "cold · no channels";
+  const detail =
+    summary.status === "live"
+      ? "The live mesh fold is current and phase-stamped; the browser only reads the rendered artifact."
+      : summary.status === "heat"
+        ? "The live fold reported rejected or expired evidence. Phase is shown only for the surviving rows."
+        : "No live channels were available on this readout tick.";
+  const heatSignals = summary.status === "heat" ? (["denied"] as const) : undefined;
+
+  return {
+    kind: summary.status,
+    label,
+    detail,
+    source: summary.statusPath ?? summary.replayPath,
+    metrics: [
+      { label: "frames", value: summary.frames },
+      { label: "dwellers", value: summary.dwellers },
+      { label: "accepted", value: summary.stats.accepted },
+      { label: "rejected", value: summary.stats.rejected },
+      { label: "expired", value: summary.stats.expired },
+      ...phaseMetrics(summary.phaseClock),
+    ],
+    ...(heatSignals === undefined ? {} : { heatSignals }),
+  };
+}
+
 function encodeStatus(summary: LlmtvLiveReadoutSummary, options: LlmtvLiveReadoutOptions): string {
   return encodeRootSiteLlmtvStatus(
     rootSiteLlmtvStatus({
@@ -191,6 +238,7 @@ function encodeStatus(summary: LlmtvLiveReadoutSummary, options: LlmtvLiveReadou
       frames: summary.frames,
       dwellers: summary.dwellers,
       stats: summary.stats,
+      ...(summary.phaseClock === undefined ? {} : { phaseClock: summary.phaseClock }),
     }),
   );
 }
@@ -218,7 +266,6 @@ export function createLlmtvLiveReadout(
 
     const artifact = snapshotArtifact(expired.table, options, expire);
     const transcript = withGeneratedBy(toLlmtvTranscript(expired.table, options.seed), options);
-    const html = renderLlmtvDocument(transcript, renderOptions(options));
     const stats = {
       accepted: observed.accepted,
       rejected: observed.rejected,
@@ -235,7 +282,9 @@ export function createLlmtvLiveReadout(
       status,
       reason: statusReason(status),
       stats,
+      ...(transcript.phaseClock === undefined ? {} : { phaseClock: transcript.phaseClock }),
     } satisfies LlmtvLiveReadoutSummary;
+    const html = renderLlmtvDocument(transcript, renderOptions(options, readoutStatus(summary)));
 
     try {
       io.writeText(options.replayPath, encodeReplayArtifact(artifact));

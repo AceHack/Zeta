@@ -107,8 +107,10 @@ describe("LLMTV root-site readout contract", () => {
     expect(replayText).toBeString();
     expect(statusText).toBeString();
     expect(html).toContain(`<title>${ROOT_SITE_LLMTV_TITLE}</title>`);
+    expect(html).toContain('data-readout-status="live"');
     expect(html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
     expect(html).toContain('data-phase="41"');
+    expect(html).toContain("<b>skew</b>");
     expect(html).toContain('data-dweller="alexa"');
     expect(html).not.toContain("<script");
     expect(html).not.toContain("SECRET");
@@ -129,6 +131,13 @@ describe("LLMTV root-site readout contract", () => {
       frames: 1,
       dwellers: 1,
       stats: { accepted: 1, rejected: 0, expired: 0 },
+      phaseClock: {
+        schema: "zeta.darkhall.phase-clock.v1",
+        seed: "S4",
+        phase: 41,
+        skewBoundTicks: 0,
+        travelers: 1,
+      },
     });
     expect(bridge.recorder.frames()).toEqual([]);
   });

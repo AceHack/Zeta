@@ -22,7 +22,7 @@ signed-history rewrites, workflow supply-chain/script-injection findings,
 scoped build/test breaks. Its Ratification section requires the list be a
 REGISTRY so detectors, hooks, and humans read one source of truth.
 
-Deliverable: `registry/uncompensatable-floor.yaml` (schema zeta-registry/v1)
+Deliverable: registry/uncompensatable-floor.yaml (schema zeta-registry/v1)
 with one entry per floor class: id, description, detector pointer,
 rationale (erasure-class derivation per the deterministic-time ferry),
 consent requirement for additions (treaty-amendment path). Codegen twins

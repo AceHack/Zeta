@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import { PHASE_CLOCK_BASIS, PHASE_CLOCK_SCHEMA, type PhaseClockReadout } from "../darkhall-ui/darkhall-tv";
 import type { ReplayStats } from "./llmtv-replay";
 
 export const ROOT_SITE_LLMTV_STATUS_SCHEMA = "zeta.llmtv.root-site-status.v1";
@@ -20,6 +21,7 @@ export interface RootSiteLlmtvStatus {
   readonly frames: number;
   readonly dwellers: number;
   readonly stats: ReplayStats;
+  readonly phaseClock?: PhaseClockReadout;
   readonly lastFrameAgeMs?: number;
 }
 
@@ -35,6 +37,7 @@ export interface RootSiteLlmtvStatusInput {
   readonly frames: number;
   readonly dwellers: number;
   readonly stats: ReplayStats;
+  readonly phaseClock?: PhaseClockReadout;
   readonly lastFrameAgeMs?: number;
 }
 
@@ -60,9 +63,10 @@ export function rootSiteLlmtvStatus(input: RootSiteLlmtvStatusInput): RootSiteLl
     frames: input.frames,
     dwellers: input.dwellers,
     stats: input.stats,
-  } satisfies Omit<RootSiteLlmtvStatus, "lastFrameAgeMs">;
+  } satisfies Omit<RootSiteLlmtvStatus, "phaseClock" | "lastFrameAgeMs">;
 
-  return input.lastFrameAgeMs === undefined ? base : { ...base, lastFrameAgeMs: input.lastFrameAgeMs };
+  const withPhase = input.phaseClock === undefined ? base : { ...base, phaseClock: input.phaseClock };
+  return input.lastFrameAgeMs === undefined ? withPhase : { ...withPhase, lastFrameAgeMs: input.lastFrameAgeMs };
 }
 
 export function encodeRootSiteLlmtvStatus(status: RootSiteLlmtvStatus): string {
@@ -103,6 +107,34 @@ function decodeChannel(value: unknown): RootSiteLlmtvStatusChannel | null {
   return value === "live-mesh" || value === "room-transcript" || value === "static-reader" ? value : null;
 }
 
+function decodePhaseClock(value: unknown): PhaseClockReadout | null {
+  const record = asRecord(value);
+  if (
+    record === null ||
+    record.schema !== PHASE_CLOCK_SCHEMA ||
+    typeof record.source !== "string" ||
+    record.basis !== PHASE_CLOCK_BASIS ||
+    typeof record.seed !== "string" ||
+    !finiteNumber(record.phase) ||
+    !finiteNumber(record.skewBoundTicks) ||
+    typeof record.appendOnly !== "boolean" ||
+    !finiteNumber(record.travelers)
+  ) {
+    return null;
+  }
+
+  return {
+    schema: PHASE_CLOCK_SCHEMA,
+    source: record.source,
+    basis: PHASE_CLOCK_BASIS,
+    seed: record.seed,
+    phase: record.phase,
+    skewBoundTicks: record.skewBoundTicks,
+    appendOnly: record.appendOnly,
+    travelers: record.travelers,
+  };
+}
+
 export function decodeRootSiteLlmtvStatus(text: string): RootSiteLlmtvStatus | null {
   let parsed: unknown;
   try {
@@ -115,6 +147,7 @@ export function decodeRootSiteLlmtvStatus(text: string): RootSiteLlmtvStatus | n
   const stats = decodeStats(record?.stats);
   const status = decodeStatusKind(record?.status);
   const channel = decodeChannel(record?.channel);
+  const phaseClock = record?.phaseClock === undefined ? undefined : decodePhaseClock(record.phaseClock);
 
   if (
     record === null ||
@@ -129,7 +162,8 @@ export function decodeRootSiteLlmtvStatus(text: string): RootSiteLlmtvStatus | n
     typeof record.reason !== "string" ||
     !finiteNumber(record.frames) ||
     !finiteNumber(record.dwellers) ||
-    stats === null
+    stats === null ||
+    phaseClock === null
   ) {
     return null;
   }
@@ -146,6 +180,7 @@ export function decodeRootSiteLlmtvStatus(text: string): RootSiteLlmtvStatus | n
     frames: record.frames,
     dwellers: record.dwellers,
     stats,
+    ...(phaseClock === undefined ? {} : { phaseClock }),
   });
 
   if (record.lastFrameAgeMs === undefined) {

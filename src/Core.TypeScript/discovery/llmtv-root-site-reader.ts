@@ -11,6 +11,7 @@ import { dirname } from "node:path";
 import {
   renderLlmtvDocument,
   type LlmtvReadoutStatus,
+  type PhaseClockReadout,
   type LlmtvTranscript,
   type RenderDocumentOptions,
 } from "../darkhall-ui/darkhall-tv";
@@ -62,6 +63,7 @@ export interface RootSiteLlmtvReaderSummary {
   readonly frames: number;
   readonly dwellers: number;
   readonly stats: ReplayStats;
+  readonly phaseClock?: PhaseClockReadout;
   readonly lastFrameAgeMs?: number;
 }
 
@@ -221,14 +223,23 @@ function metrics(
   dwellers: number,
   stats: ReplayStats,
   lastFrameAgeMs: number | undefined,
+  phaseClock: PhaseClockReadout | undefined,
 ): LlmtvReadoutStatus["metrics"] {
-  return [
+  const base = [
     { label: "frames", value: frames },
     { label: "dwellers", value: dwellers },
     { label: "accepted", value: stats.accepted },
     { label: "rejected", value: stats.rejected },
     { label: "expired", value: stats.expired },
     { label: "age", value: ageText(lastFrameAgeMs) },
+  ];
+
+  if (phaseClock === undefined) return base;
+  return [
+    ...base,
+    { label: "phase", value: phaseClock.phase },
+    { label: "skew", value: phaseClock.skewBoundTicks },
+    { label: "travelers", value: phaseClock.travelers },
   ];
 }
 
@@ -240,6 +251,7 @@ function status(
   dwellers: number,
   stats: ReplayStats,
   lastFrameAgeMs: number | undefined,
+  phaseClock: PhaseClockReadout | undefined,
   heatKinds: readonly string[] = [],
 ): LlmtvReadoutStatus {
   return {
@@ -247,7 +259,7 @@ function status(
     label,
     detail,
     source: ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH,
-    metrics: metrics(frames, dwellers, stats, lastFrameAgeMs),
+    metrics: metrics(frames, dwellers, stats, lastFrameAgeMs, phaseClock),
     heatSignals: heatSignalsFromKinds(heatKinds),
   };
 }
@@ -276,6 +288,7 @@ function summarize(
   dwellers: number,
   stats: ReplayStats,
   lastFrameAgeMs: number | undefined,
+  phaseClock: PhaseClockReadout | undefined,
 ): RootSiteLlmtvReaderSummary {
   const base = {
     seed,
@@ -287,7 +300,8 @@ function summarize(
     dwellers,
     stats,
   };
-  return lastFrameAgeMs === undefined ? base : { ...base, lastFrameAgeMs };
+  const withPhase = phaseClock === undefined ? base : { ...base, phaseClock };
+  return lastFrameAgeMs === undefined ? withPhase : { ...withPhase, lastFrameAgeMs };
 }
 
 export function renderRootSiteLlmtvReadout(
@@ -307,11 +321,23 @@ export function renderRootSiteLlmtvReadout(
       0,
       ZERO_STATS,
       undefined,
+      undefined,
     );
     return renderResult(
       emptyTranscript(seed),
       readoutStatus,
-      summarize(seed, readoutStatus, input.error, paths.replayPath, paths.htmlPath, 0, 0, ZERO_STATS, undefined),
+      summarize(
+        seed,
+        readoutStatus,
+        input.error,
+        paths.replayPath,
+        paths.htmlPath,
+        0,
+        0,
+        ZERO_STATS,
+        undefined,
+        undefined,
+      ),
       options.title,
     );
   }
@@ -326,12 +352,24 @@ export function renderRootSiteLlmtvReadout(
       0,
       ZERO_STATS,
       undefined,
+      undefined,
       ["llmtv.replay.invalid"],
     );
     return renderResult(
       emptyTranscript(seed),
       readoutStatus,
-      summarize(seed, readoutStatus, "invalid-artifact", paths.replayPath, paths.htmlPath, 0, 0, ZERO_STATS, undefined),
+      summarize(
+        seed,
+        readoutStatus,
+        "invalid-artifact",
+        paths.replayPath,
+        paths.htmlPath,
+        0,
+        0,
+        ZERO_STATS,
+        undefined,
+        undefined,
+      ),
       options.title,
     );
   }
@@ -342,6 +380,7 @@ export function renderRootSiteLlmtvReadout(
   const frames = artifact.frames.length;
   const dwellers = folded.transcript.dwellers.length;
   const stats = folded.stats;
+  const phaseClock = folded.transcript.phaseClock;
 
   if (stats.rejected > 0 || stats.expired > 0) {
     const heatKinds = [
@@ -356,6 +395,7 @@ export function renderRootSiteLlmtvReadout(
       dwellers,
       stats,
       lastFrameAgeMs,
+      phaseClock,
       heatKinds,
     );
     return renderResult(
@@ -371,6 +411,7 @@ export function renderRootSiteLlmtvReadout(
         dwellers,
         stats,
         lastFrameAgeMs,
+        phaseClock,
       ),
       options.title,
     );
@@ -385,6 +426,7 @@ export function renderRootSiteLlmtvReadout(
       dwellers,
       stats,
       lastFrameAgeMs,
+      phaseClock,
     );
     return renderResult(
       markLive(folded.transcript, false),
@@ -399,6 +441,7 @@ export function renderRootSiteLlmtvReadout(
         dwellers,
         stats,
         lastFrameAgeMs,
+        phaseClock,
       ),
       options.title,
     );
@@ -413,6 +456,7 @@ export function renderRootSiteLlmtvReadout(
       dwellers,
       stats,
       lastFrameAgeMs,
+      phaseClock,
       ["llmtv.replay.stale"],
     );
     return renderResult(
@@ -428,6 +472,7 @@ export function renderRootSiteLlmtvReadout(
         dwellers,
         stats,
         lastFrameAgeMs,
+        phaseClock,
       ),
       options.title,
     );
@@ -441,6 +486,7 @@ export function renderRootSiteLlmtvReadout(
     dwellers,
     stats,
     lastFrameAgeMs,
+    phaseClock,
   );
   return renderResult(
     markLive(folded.transcript, true),
@@ -455,6 +501,7 @@ export function renderRootSiteLlmtvReadout(
       dwellers,
       stats,
       lastFrameAgeMs,
+      phaseClock,
     ),
     options.title,
   );
@@ -474,6 +521,7 @@ function statusSidecarText(summary: RootSiteLlmtvReaderSummary, writtenAtMs: num
       frames: summary.frames,
       dwellers: summary.dwellers,
       stats: summary.stats,
+      ...(summary.phaseClock === undefined ? {} : { phaseClock: summary.phaseClock }),
       ...(summary.lastFrameAgeMs === undefined ? {} : { lastFrameAgeMs: summary.lastFrameAgeMs }),
     }),
   );

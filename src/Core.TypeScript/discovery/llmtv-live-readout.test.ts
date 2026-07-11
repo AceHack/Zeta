@@ -177,8 +177,11 @@ describe("LLMTV live readout cadence", () => {
     const html = writes.get("/tmp/live.html");
     expect(replayText).toBeString();
     expect(html).toContain("<title>Live LLMTV</title>");
+    expect(html).toContain('data-readout-status="live"');
     expect(html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
     expect(html).toContain('data-phase-clock-basis="seed-phase"');
+    expect(html).toContain("<b>phase</b>");
+    expect(html).toContain("<b>skew</b>");
     expect(html).toContain('data-dweller="alexa"');
     expect(html).toContain('data-dweller="soraya"');
     const replay = decodeReplayArtifact(replayText!);
@@ -191,6 +194,7 @@ describe("LLMTV live readout cadence", () => {
       replayPath: "/tmp/live.replay.json",
       htmlPath: "/tmp/live.html",
       dwellers: 2,
+      phaseClock: { schema: "zeta.darkhall.phase-clock.v1", phase: 2, skewBoundTicks: 0, travelers: 2 },
     });
   });
 

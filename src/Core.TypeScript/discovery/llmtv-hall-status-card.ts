@@ -48,6 +48,7 @@ export interface HallLlmtvStatusCardSummary {
   readonly accepted: number;
   readonly rejected: number;
   readonly expired: number;
+  readonly phaseClock?: RootSiteLlmtvStatus["phaseClock"];
 }
 
 type RenderRequest = {
@@ -140,8 +141,12 @@ export function parseHallLlmtvStatusCardArgs(argv: readonly string[]): ParseResu
   return { ok: true, request: { kind: "render", rootDir } };
 }
 
-function summaryFromStatus(status: RootSiteLlmtvStatus, indexPath: string, statusPath: string): HallLlmtvStatusCardSummary {
-  return {
+function summaryFromStatus(
+  status: RootSiteLlmtvStatus,
+  indexPath: string,
+  statusPath: string,
+): HallLlmtvStatusCardSummary {
+  const base = {
     status: status.status,
     channel: status.channel,
     reason: status.reason,
@@ -153,6 +158,7 @@ function summaryFromStatus(status: RootSiteLlmtvStatus, indexPath: string, statu
     rejected: status.stats.rejected,
     expired: status.stats.expired,
   };
+  return status.phaseClock === undefined ? base : { ...base, phaseClock: status.phaseClock };
 }
 
 function missingSummary(error: string, indexPath: string, statusPath: string): HallLlmtvStatusCardSummary {
@@ -218,7 +224,7 @@ function copy(summary: HallLlmtvStatusCardSummary): string {
   return "The replay path is validly quiet.";
 }
 
-function metric(label: string, value: number): string {
+function metric(label: string, value: number | string): string {
   return `<span><b>${escapeHtml(value.toString())}</b>${escapeHtml(label)}</span>`;
 }
 
@@ -226,14 +232,23 @@ export function renderHallLlmtvStatusCard(summary: HallLlmtvStatusCardSummary): 
   const title = heading(summary.status);
   const detail = copy(summary);
   const reason = summary.reason.length === 0 ? "none" : summary.reason;
+  const phaseClock = summary.phaseClock;
+  const phaseMetrics =
+    phaseClock === undefined
+      ? ""
+      : [
+          metric("phase", phaseClock.phase),
+          metric("skew", phaseClock.skewBoundTicks),
+          metric("travelers", phaseClock.travelers),
+        ].join("");
   return [
-    `<aside class="llmtv-status-card llmtv-status-card--${escapeHtml(summary.status)}" data-llmtv-status-card="present" data-status="${escapeHtml(summary.status)}" data-channel="${escapeHtml(summary.channel)}" data-frames="${escapeHtml(summary.frames.toString())}" data-dwellers="${escapeHtml(summary.dwellers.toString())}" data-rejected="${escapeHtml(summary.rejected.toString())}" data-expired="${escapeHtml(summary.expired.toString())}">`,
+    `<aside class="llmtv-status-card llmtv-status-card--${escapeHtml(summary.status)}" data-llmtv-status-card="present" data-status="${escapeHtml(summary.status)}" data-channel="${escapeHtml(summary.channel)}" data-frames="${escapeHtml(summary.frames.toString())}" data-dwellers="${escapeHtml(summary.dwellers.toString())}" data-rejected="${escapeHtml(summary.rejected.toString())}" data-expired="${escapeHtml(summary.expired.toString())}"${phaseClock === undefined ? "" : ` data-phase-clock="${escapeHtml(phaseClock.schema)}" data-phase-clock-basis="${escapeHtml(phaseClock.basis)}" data-phase-source="${escapeHtml(phaseClock.source)}" data-phase="${escapeHtml(phaseClock.phase.toString())}" data-phase-skew-bound="${escapeHtml(phaseClock.skewBoundTicks.toString())}" data-phase-travelers="${escapeHtml(phaseClock.travelers.toString())}" data-phase-append-only="${escapeHtml(String(phaseClock.appendOnly))}"`}>`,
     `  <div class="llmtv-status-card__rail"><span>${escapeHtml(summary.status)}</span><span>${escapeHtml(summary.channel)}</span></div>`,
     `  <div class="llmtv-status-card__body">`,
     `    <h2>${escapeHtml(title)}</h2>`,
     `    <p>${escapeHtml(detail)}</p>`,
     `    <dl class="llmtv-status-card__reason"><dt>reason</dt><dd>${escapeHtml(reason)}</dd></dl>`,
-    `    <div class="llmtv-status-card__metrics">${metric("frames", summary.frames)}${metric("dwellers", summary.dwellers)}${metric("accepted", summary.accepted)}${metric("rejected", summary.rejected)}${metric("expired", summary.expired)}</div>`,
+    `    <div class="llmtv-status-card__metrics">${metric("frames", summary.frames)}${metric("dwellers", summary.dwellers)}${metric("accepted", summary.accepted)}${metric("rejected", summary.rejected)}${metric("expired", summary.expired)}${phaseMetrics}</div>`,
     `    <a class="llmtv-status-card__link" href="./tv/">Open LLMTV</a>`,
     `  </div>`,
     `</aside>`,
@@ -241,11 +256,7 @@ export function renderHallLlmtvStatusCard(summary: HallLlmtvStatusCardSummary): 
 }
 
 export function renderHallLlmtvStatusCardBlock(summary: HallLlmtvStatusCardSummary): string {
-  return [
-    HALL_LLMTV_STATUS_CARD_START,
-    renderHallLlmtvStatusCard(summary),
-    HALL_LLMTV_STATUS_CARD_END,
-  ].join("\n");
+  return [HALL_LLMTV_STATUS_CARD_START, renderHallLlmtvStatusCard(summary), HALL_LLMTV_STATUS_CARD_END].join("\n");
 }
 
 function insertBeforeCards(html: string, block: string): string | null {
@@ -278,7 +289,9 @@ export function updateHallLlmtvStatusCard(
   input: HallLlmtvStatusCardInput,
   indexHtml: string,
   options: HallLlmtvStatusCardOptions,
-): { readonly ok: true; readonly html: string; readonly summary: HallLlmtvStatusCardSummary } | { readonly ok: false; readonly error: string } {
+):
+  | { readonly ok: true; readonly html: string; readonly summary: HallLlmtvStatusCardSummary }
+  | { readonly ok: false; readonly error: string } {
   const summary = summarizeHallLlmtvStatusCard(input, options);
   const block = renderHallLlmtvStatusCardBlock(summary);
   const html = replaceHallLlmtvStatusCardBlock(indexHtml, block);
@@ -330,6 +343,12 @@ export function runHallLlmtvStatusCardCli(argv: readonly string[], io: HallLlmtv
       `channel=${updated.summary.channel}`,
       `frames=${updated.summary.frames.toString()}`,
       `dwellers=${updated.summary.dwellers.toString()}`,
+      ...(updated.summary.phaseClock === undefined
+        ? []
+        : [
+            `phase=${updated.summary.phaseClock.phase.toString()}`,
+            `skew=${updated.summary.phaseClock.skewBoundTicks.toString()}`,
+          ]),
     ].join(" ") + "\n",
   );
   return 0;

@@ -94,6 +94,8 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
     });
     expect(rendered.html).toContain('data-readout-status="live"');
     expect(rendered.html).toContain("live · same-origin replay");
+    expect(rendered.html).toContain('data-phase="3341"');
+    expect(rendered.html).toContain("<b>skew</b>");
     expect(rendered.html).toContain('data-dweller="alexa"');
     expect(rendered.html).toContain('data-dweller="soraya"');
     expect(rendered.html).toContain("private hope");
@@ -190,6 +192,13 @@ describe("llmtv-root-site-reader -- static Pages reader over the replay ledger",
       dwellers: 2,
       stats: { accepted: 2, rejected: 0, expired: 0 },
       lastFrameAgeMs: 200,
+      phaseClock: {
+        schema: "zeta.darkhall.phase-clock.v1",
+        seed: "S4",
+        phase: 3341,
+        skewBoundTicks: 0,
+        travelers: 2,
+      },
     });
   });
 

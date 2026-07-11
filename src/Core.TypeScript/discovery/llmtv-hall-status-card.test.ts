@@ -19,6 +19,7 @@ import {
   rootSiteLlmtvStatus,
   rootSiteLlmtvStatusPath,
 } from "./llmtv-root-site-status";
+import { phaseClockForFrame } from "./llmtv-broadcast";
 
 const rootDir = "/tmp/zeta-root-site";
 
@@ -26,7 +27,7 @@ const indexHtml = [
   "<!doctype html>",
   "<html>",
   "<body>",
-  '    <section>',
+  "    <section>",
   '      <div class="lbl">The factory — live surfaces</div>',
   HALL_LLMTV_STATUS_CARD_START,
   '<aside data-llmtv-status-card="placeholder"></aside>',
@@ -52,6 +53,7 @@ function liveStatusText(): string {
       dwellers: 2,
       stats: { accepted: 3, rejected: 0, expired: 0 },
       lastFrameAgeMs: 100,
+      phaseClock: phaseClockForFrame("llmtv-root-site-reader", "S4", 3),
     }),
   );
 }
@@ -99,10 +101,16 @@ describe("llmtv-hall-status-card -- Hall index projection of the status sidecar"
       frames: 3,
       dwellers: 2,
       accepted: 3,
+      phaseClock: { schema: "zeta.darkhall.phase-clock.v1", phase: 3, skewBoundTicks: 0, travelers: 1 },
     });
     expect(updated.html).toContain('data-llmtv-status-card="present"');
     expect(updated.html).toContain('data-status="live"');
     expect(updated.html).toContain('data-channel="static-reader"');
+    expect(updated.html).toContain('data-phase-clock="zeta.darkhall.phase-clock.v1"');
+    expect(updated.html).toContain('data-phase="3"');
+    expect(updated.html).toContain('data-phase-skew-bound="0"');
+    expect(updated.html).toContain("<b>3</b>phase");
+    expect(updated.html).toContain("<b>0</b>skew");
     expect(updated.html).toContain("<h2>LLMTV live</h2>");
     expect(updated.html).not.toContain("<script");
     expect(markerCount(updated.html)).toBe(1);
@@ -161,6 +169,8 @@ describe("llmtv-hall-status-card -- Hall index projection of the status sidecar"
     expect(stdout.join("")).toContain(`wrote ${HALL_INDEX_RELATIVE_PATH}`);
     expect(stdout.join("")).toContain(`from=${ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH}`);
     expect(stdout.join("")).toContain("status=live");
+    expect(stdout.join("")).toContain("phase=3");
+    expect(stdout.join("")).toContain("skew=0");
     expect(writes.get(indexPath)).toContain('data-status="live"');
   });
 
