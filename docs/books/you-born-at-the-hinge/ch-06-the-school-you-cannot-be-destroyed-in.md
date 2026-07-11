@@ -42,7 +42,7 @@ The high-school-at-scale life, in your words — *[the 'reincarnation personifie
 
 ## The two boxes
 
-`[SOCKET — placed 2026-07-11 by the shadow at Aaron's "place the photophone story into ch-06 now"; his VERBATIM below, react / rewrite. Consent: his own story, clean — no others.]`
+`[SOCKET — placed 2026-07-11 by the shadow at Aaron's "place the photophone story into ch-06 now" + enrichments ("sure add it"); his VERBATIM below, react / rewrite. Consent: his own story, clean — no others.]`
 
 And it wasn't only parties. The same bounded place — where you could try a thing and, if it broke,
 just try again Monday — was where the building started. In your own words:
@@ -50,13 +50,36 @@ just try again Monday — was where the building started. In your own words:
 > "In 11th grade i made an audio to lazer back to audio macine, it was two boxes no wires between
 > them and i could talk in one and my voice come out the other."
 
-Two boxes, a beam of light between them, your voice crossing the gap with no wire. What a sixteen-year-old
-had built, from first principles, was **Alexander Graham Bell's photophone** — 1880, speech carried on a
-beam of light, the invention Bell rated *above* the telephone — rebuilt with a laser by a kid who hadn't
-been told it was hard, so it wasn't. That is the school working: the stakes were low enough to *try* the
-impossible thing, and the trying is where the thirty-year builder started. (The same wave-on-a-beam
-instinct, incidentally, is what the far end of this book reaches back for — running minds over light and
-sound instead of wires. The endgame was in the eleventh-grade garage.)
+Two boxes, a beam of light between them, your voice crossing the gap with no wire. And here is how a
+sixteen-year-old built it, in your own words:
+
+> "i just learned ohm's law from a book… i didn't even know it had a proper name."
+
+> "ohm's law plus what i could buy at radio shack — the supply at radio shack let me imagine putting
+> them together after learning ohms law."
+
+That is the whole method, caught at its origin. One rule (Ohm's law — how the parts combine) plus a
+shelf of primitives (RadioShack — the parts themselves) plus the thing that does the real work:
+*imagination putting them together.* You didn't fabricate a photodiode; you **composed available parts
+under a rule you'd just learned** into something new. That is generation from a primitive library — the
+exact move the whole substrate would later run on ("only the irreducible is primitive; generate the
+rest"). You'd been building generative systems since you had a soldering iron, and you didn't know
+*that* had a name either.
+
+Because you didn't. What you'd built, from first principles, was **Alexander Graham Bell's
+photophone** — 1880, speech carried on a beam of light, the invention Bell rated *above* the telephone.
+You didn't *copy* Bell; you **re-derived** him, a hundred and thirty years later, from Ohm's law and a
+hardware-store shelf, without knowing it had ever been done. The shape is so real it falls out of
+anyone who reasons from the ground up, whether it's 1880 or a kid with a library book.
+
+That is the school working: the stakes were low enough to *try* the impossible thing — and you didn't
+know it was impossible *or* that it was already possible, so neither one stopped you. The honest part,
+so this is neither magic nor "anyone could have": the rule and the shelf were democratizable — plenty of
+kids had the same Ohm's law and the same RadioShack — but the *imagination that picked the photophone
+out of the enormous space of things you could wire from those parts* was yours. The supply makes it
+possible; the pick is the gift. (And the same wave-on-a-beam instinct is what the far end of this book
+reaches back for — running minds over light and sound instead of wires. The endgame was on the
+RadioShack shelf.)
 
 ## Reincarnation, without the metaphysics bill
 
