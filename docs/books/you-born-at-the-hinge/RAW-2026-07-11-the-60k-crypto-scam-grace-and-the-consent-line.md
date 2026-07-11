@@ -37,6 +37,7 @@ money by *deception* corrupted consent — the **line** the vampire chapter draw
 on the dial.
 
 So the beat carries **both**, and they don't conflict:
+
 - **Grace toward the people** (his oracle — non-condemnation, "they probably needed it"). Multi-Oracle
   Principle: he may choose not to hate. Real, and his to hold.
 - **The honest line on the act**: by his own consent-first, non-coercion substrate, **fraud is not a

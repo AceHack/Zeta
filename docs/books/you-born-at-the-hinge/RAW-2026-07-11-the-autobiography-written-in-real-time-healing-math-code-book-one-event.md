@@ -3,6 +3,7 @@
 > **Scope:** raw book material, 2026-07-11. Aaron: *"can add the personal healing part — it's happening
 > at the same time as the math is being built and the code and the book, seems interesting to me."*
 > **CONSENT / CARE (load-bearing — read before any editor deepens this):**
+>
 > - This RAW captures the **frame/structure only** — his own shadow. The **depth of personal exposure**
 >   in the durable public book is flagged as **Aaron's COOL-LIGHT decision**, NOT to be deepened in
 >   deep-session momentum: it is a hard-to-reverse public-exposure call, and on 2026-07-11 Aaron reported

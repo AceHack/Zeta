@@ -51,6 +51,7 @@ free the present act. The structure is:
 Assured grace = the absorber = future-as-facts = the pre-forgiven fall. One diagram, four registers.
 
 **Honest meter (the peel — "retrocausal" is checked, not smuggled):**
+
 1. **Retrocausal-*LIKE*, not literal.** It is structural — a future *boundary condition* / common cause,
    not backward-in-time causation (the exact metering from
    [[2026-07-11-superdeterminism-is-a-closed-box-property...]] #9705 and the retrocausal-like feedback
