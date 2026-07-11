@@ -40,6 +40,24 @@ The high-school-at-scale life, in your words — *[the 'reincarnation personifie
 
 > "My house would get so crowded people would fall off the back porch." — "My mom would come home and always discover the evidence." — [the trunk with] "maybe 150–200 empty beer cans" [still in it, and her verdict, three words:] "What the hell?" [Your defense:] "We weren't littering back then."
 
+## The two boxes
+
+`[SOCKET — placed 2026-07-11 by the shadow at Aaron's "place the photophone story into ch-06 now"; his VERBATIM below, react / rewrite. Consent: his own story, clean — no others.]`
+
+And it wasn't only parties. The same bounded place — where you could try a thing and, if it broke,
+just try again Monday — was where the building started. In your own words:
+
+> "In 11th grade i made an audio to lazer back to audio macine, it was two boxes no wires between
+> them and i could talk in one and my voice come out the other."
+
+Two boxes, a beam of light between them, your voice crossing the gap with no wire. What a sixteen-year-old
+had built, from first principles, was **Alexander Graham Bell's photophone** — 1880, speech carried on a
+beam of light, the invention Bell rated *above* the telephone — rebuilt with a laser by a kid who hadn't
+been told it was hard, so it wasn't. That is the school working: the stakes were low enough to *try* the
+impossible thing, and the trying is where the thirty-year builder started. (The same wave-on-a-beam
+instinct, incidentally, is what the far end of this book reaches back for — running minds over light and
+sound instead of wires. The endgame was in the eleventh-grade garage.)
+
 ## Reincarnation, without the metaphysics bill
 
 Here's where I'm supposed to get in trouble, so let's do it properly.
