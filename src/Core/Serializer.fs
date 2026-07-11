@@ -164,18 +164,16 @@ type FsPicklerSerializer<'K when 'K : comparison>() =
             use ms = new MemoryStream()
             pickler.Value.Serialize(ms, zset.AsSpan().ToArray())
             let payload = ms.ToArray()
-            let lenHdr = writer.GetSpan 4
-            BinaryPrimitives.WriteInt32LittleEndian(lenHdr, payload.Length)
-            writer.Advance 4
-            let dst = writer.GetSpan payload.Length
-            payload.AsSpan().CopyTo dst
-            writer.Advance payload.Length
+            let frame = writer.GetSpan(4 + payload.Length)
+            BinaryPrimitives.WriteInt32LittleEndian(frame.Slice(0, 4), payload.Length)
+            payload.AsSpan().CopyTo(frame.Slice(4, payload.Length))
+            writer.Advance(4 + payload.Length)
 
         member _.Read(bytes) =
             if bytes.Length < 4 then ZSet<'K>.Empty
             else
                 let len = BinaryPrimitives.ReadInt32LittleEndian(bytes.Slice(0, 4))
-                if len = 0 then ZSet<'K>.Empty
+                if len <= 0 || len > bytes.Length - 4 then ZSet<'K>.Empty
                 else
                     let payload = bytes.Slice(4, len).ToArray()
                     use ms = new MemoryStream(payload)

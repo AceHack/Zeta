@@ -230,3 +230,15 @@ let ``zero-length payload reads as empty Z-set`` () =
     BinaryPrimitives.WriteInt32LittleEndian(Span(header, 0, 4), 0)
     let result = ser.Read(ReadOnlySpan header)
     ZSet.isEmpty result |> should be True
+
+
+[<Fact>]
+let ``truncated declared payload reads as empty Z-set`` () =
+    // The length header is untrusted storage input. A declared payload
+    // longer than the available bytes must not escape as an
+    // ArgumentOutOfRangeException from ReadOnlySpan.Slice.
+    let ser = FsPicklerSerializer<string>() :> ISerializer<string>
+    let bytes = Array.zeroCreate<byte> 8
+    BinaryPrimitives.WriteInt32LittleEndian(Span(bytes, 0, 4), 16)
+    let result = ser.Read(ReadOnlySpan bytes)
+    ZSet.isEmpty result |> should be True
