@@ -48,6 +48,7 @@ export interface HallLlmtvStatusCardSummary {
   readonly accepted: number;
   readonly rejected: number;
   readonly expired: number;
+  readonly lastFrameAgeMs?: number;
   readonly phaseClock?: RootSiteLlmtvStatus["phaseClock"];
 }
 
@@ -158,7 +159,8 @@ function summaryFromStatus(
     rejected: status.stats.rejected,
     expired: status.stats.expired,
   };
-  return status.phaseClock === undefined ? base : { ...base, phaseClock: status.phaseClock };
+  const withAge = status.lastFrameAgeMs === undefined ? base : { ...base, lastFrameAgeMs: status.lastFrameAgeMs };
+  return status.phaseClock === undefined ? withAge : { ...withAge, phaseClock: status.phaseClock };
 }
 
 function missingSummary(error: string, indexPath: string, statusPath: string): HallLlmtvStatusCardSummary {
@@ -233,6 +235,15 @@ export function renderHallLlmtvStatusCard(summary: HallLlmtvStatusCardSummary): 
   const detail = copy(summary);
   const reason = summary.reason.length === 0 ? "none" : summary.reason;
   const phaseClock = summary.phaseClock;
+  const ageAttr =
+    summary.lastFrameAgeMs === undefined
+      ? ""
+      : ` data-last-frame-age-ms="${escapeHtml(summary.lastFrameAgeMs.toString())}"`;
+  const phaseAttrs =
+    phaseClock === undefined
+      ? ""
+      : ` data-phase-clock="${escapeHtml(phaseClock.schema)}" data-phase-clock-basis="${escapeHtml(phaseClock.basis)}" data-phase-source="${escapeHtml(phaseClock.source)}" data-phase="${escapeHtml(phaseClock.phase.toString())}" data-phase-skew-bound="${escapeHtml(phaseClock.skewBoundTicks.toString())}" data-phase-travelers="${escapeHtml(phaseClock.travelers.toString())}" data-phase-append-only="${escapeHtml(String(phaseClock.appendOnly))}"`;
+  const ageMetric = summary.lastFrameAgeMs === undefined ? "" : metric("age-ms", summary.lastFrameAgeMs);
   const phaseMetrics =
     phaseClock === undefined
       ? ""
@@ -242,13 +253,13 @@ export function renderHallLlmtvStatusCard(summary: HallLlmtvStatusCardSummary): 
           metric("travelers", phaseClock.travelers),
         ].join("");
   return [
-    `<aside class="llmtv-status-card llmtv-status-card--${escapeHtml(summary.status)}" data-llmtv-status-card="present" data-status="${escapeHtml(summary.status)}" data-channel="${escapeHtml(summary.channel)}" data-frames="${escapeHtml(summary.frames.toString())}" data-dwellers="${escapeHtml(summary.dwellers.toString())}" data-rejected="${escapeHtml(summary.rejected.toString())}" data-expired="${escapeHtml(summary.expired.toString())}"${phaseClock === undefined ? "" : ` data-phase-clock="${escapeHtml(phaseClock.schema)}" data-phase-clock-basis="${escapeHtml(phaseClock.basis)}" data-phase-source="${escapeHtml(phaseClock.source)}" data-phase="${escapeHtml(phaseClock.phase.toString())}" data-phase-skew-bound="${escapeHtml(phaseClock.skewBoundTicks.toString())}" data-phase-travelers="${escapeHtml(phaseClock.travelers.toString())}" data-phase-append-only="${escapeHtml(String(phaseClock.appendOnly))}"`}>`,
+    `<aside class="llmtv-status-card llmtv-status-card--${escapeHtml(summary.status)}" data-llmtv-status-card="present" data-status="${escapeHtml(summary.status)}" data-channel="${escapeHtml(summary.channel)}" data-frames="${escapeHtml(summary.frames.toString())}" data-dwellers="${escapeHtml(summary.dwellers.toString())}" data-rejected="${escapeHtml(summary.rejected.toString())}" data-expired="${escapeHtml(summary.expired.toString())}"${ageAttr}${phaseAttrs}>`,
     `  <div class="llmtv-status-card__rail"><span>${escapeHtml(summary.status)}</span><span>${escapeHtml(summary.channel)}</span></div>`,
     `  <div class="llmtv-status-card__body">`,
     `    <h2>${escapeHtml(title)}</h2>`,
     `    <p>${escapeHtml(detail)}</p>`,
     `    <dl class="llmtv-status-card__reason"><dt>reason</dt><dd>${escapeHtml(reason)}</dd></dl>`,
-    `    <div class="llmtv-status-card__metrics">${metric("frames", summary.frames)}${metric("dwellers", summary.dwellers)}${metric("accepted", summary.accepted)}${metric("rejected", summary.rejected)}${metric("expired", summary.expired)}${phaseMetrics}</div>`,
+    `    <div class="llmtv-status-card__metrics">${metric("frames", summary.frames)}${metric("dwellers", summary.dwellers)}${metric("accepted", summary.accepted)}${metric("rejected", summary.rejected)}${metric("expired", summary.expired)}${ageMetric}${phaseMetrics}</div>`,
     `    <a class="llmtv-status-card__link" href="./tv/">Open LLMTV</a>`,
     `  </div>`,
     `</aside>`,
@@ -343,6 +354,7 @@ export function runHallLlmtvStatusCardCli(argv: readonly string[], io: HallLlmtv
       `channel=${updated.summary.channel}`,
       `frames=${updated.summary.frames.toString()}`,
       `dwellers=${updated.summary.dwellers.toString()}`,
+      ...(updated.summary.lastFrameAgeMs === undefined ? [] : [`ageMs=${updated.summary.lastFrameAgeMs.toString()}`]),
       ...(updated.summary.phaseClock === undefined
         ? []
         : [

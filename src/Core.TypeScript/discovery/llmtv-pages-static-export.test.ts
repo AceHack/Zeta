@@ -67,7 +67,16 @@ function replayArtifact(): ReplayArtifact {
     schema: REPLAY_SCHEMA,
     seed: "S4",
     generatedBy: "pages-export-test",
-    frames: [replayFrame(publishFrame(source, 1, 700, mind), 900, "test-bus/vera")],
+    frames: [
+      replayFrame(
+        publishFrame(source, 1, 700, mind, {
+          phaseClockSeed: "S4",
+          phaseClockSource: "llmtv-pages-export-test",
+        }),
+        900,
+        "test-bus/vera",
+      ),
+    ],
   };
 }
 
@@ -137,17 +146,23 @@ describe("llmtv-pages-static-export -- static Pages artifact with LLMTV readout"
     expect(summary.copiedRoots).toContain("data");
     expect(summary.llmtvReaderStdout.join("")).toContain("status=live");
     expect(summary.llmtvStatusCardStdout.join("")).toContain("status=live");
+    expect(summary.llmtvStatusCardStdout.join("")).toContain("ageMs=100");
+    expect(summary.llmtvStatusCardStdout.join("")).toContain("phase=700");
     expect(read(outDir, ROOT_SITE_LLMTV_REPLAY_RELATIVE_PATH)).toContain("zeta.llmtv.replay.v1");
     expect(decodeRootSiteLlmtvStatus(read(outDir, ROOT_SITE_LLMTV_STATUS_RELATIVE_PATH))).toMatchObject({
       channel: "static-reader",
       status: "live",
       frames: 1,
       dwellers: 1,
+      lastFrameAgeMs: 100,
+      phaseClock: { schema: "zeta.darkhall.phase-clock.v1", phase: 700, skewBoundTicks: 0, travelers: 1 },
     });
     expect(read(outDir, "hall/tv/index.html")).toContain('data-readout-status="live"');
     expect(read(outDir, "hall/tv/index.html")).toContain('data-dweller="vera"');
     expect(read(outDir, "hall/index.html")).toContain('data-status="live"');
     expect(read(outDir, "hall/index.html")).toContain('data-frames="1"');
+    expect(read(outDir, "hall/index.html")).toContain('data-last-frame-age-ms="100"');
+    expect(read(outDir, "hall/index.html")).toContain('data-phase="700"');
     expect(read(outDir, "hall/index.html")).not.toContain("<script");
   });
 
