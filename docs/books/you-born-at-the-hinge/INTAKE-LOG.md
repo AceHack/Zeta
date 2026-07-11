@@ -6,7 +6,7 @@
 
 ## ▶ NEXT UP (resume here)
 
-**Left off:** after the **data-years** (LexisNexis / ESS / redistricting; the geometry-of-streets
+**Left off:** after **the reader / reading-people** (2026-07-11). Narrate whatever comes next.
 era). Narrate whatever comes *after* that chapter of the life.
 
 ## Staged batches (newest first)
