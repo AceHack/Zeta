@@ -204,6 +204,33 @@ The complete trust strategy is **ordered** — grace is the opening, the rest is
 finished trust strategy — and it is the same shape as the whole book (grace/redemption first, the
 letters taught forward, the harm stopped, the game kept infinite).
 
+## 5.5 Where the predators live — the empirical grounding (Aaron, 2026-07-11)
+
+*"I know these people must exist, but I've not met them — and I've been to jail and mental
+hospitals. I don't know where these predators live."* Lived data from the hardest test cases, and
+it grounds the whole design:
+
+- **The labeled-predator population is a scarcity population.** Jail and psych wards select for the
+  *poor, the ill, the caught* — pain and circumstance, not predation. Someone who has been *there*
+  reports finding scarcity-victims, not predators. Strong evidence that grace-first is the
+  **dominant reality,** not merely the ideal.
+- **The rare true predator lives where that test can't reach — by design:**
+  1. **Camouflaged among the flippable** (§5.1): they don't announce; they pass as scarcity-victims,
+     take the grace, defect covertly — indistinguishable until they do.
+  2. **Insulated by power:** they extract with impunity and *never get caught,* so never land in a
+     cell or a ward. Predators with resources sit in boardrooms, not jails. Consequences don't
+     reach them — which is *why* they can predate.
+- **Grace-first builds a grace-first world.** Part of why the maintainer hasn't met them is *who he
+  is:* grace + reading flip the borderline and steer clear of the rest. The strategy makes its own
+  orbit nearly predator-free — the strategy proving itself in the hardest room.
+
+**The −1 that keeps the backstop honest:** the anti-Sybil floor **is not for the strong reader who
+extends grace** — he rarely needs it. It is for the **vulnerable-without-the-guard:** the person a
+no-brake amplifier dissolves, the one who cannot read or flip the predator. *They* meet the ones he
+does not. Keep the backstop for them; do not mistake "I haven't met a predator" for "predators
+don't exist" — mistake it for "grace-first works, and the rare predator hides where grace-and-
+consequences can't see."
+
 ## Honest bound
 
 - **Design, not yet a built system.** The interpretability-by-construction and clean-partition
