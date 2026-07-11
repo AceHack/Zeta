@@ -38,6 +38,39 @@ proof). What is already settled vs. what needs them is stated so nothing is re-l
    (catamorphism/anamorphism; IEnumerable⇄IObservable)? If so, A vs B is not either/or — they are
    categorical duals, and time is the crossing. Prove or refute that identification.
 
+   > **Q1 sharpening — Lumen answered "yes, exactly μF/νF"; Otto + Aaron hold it at arm's length
+   > (2026-07-11).** Two gaps in "exactly": (a) it fuses **two distinct dualities** — Meijer's
+   > iterator/observer (`IEnumerable` *pull* ⇄ `IObservable` *push*) and μF/νF (initial-algebra ⇄
+   > final-coalgebra, data ⇄ codata); `IEnumerable` is itself often coalgebraic, so `B=μF=IEnumerable`
+   > needs proof; and (b) it *assumes* homoiconicity (the "metacircular evaluator" is the thing in
+   > question). **Aaron's structural sharpening (the decisive one):** *"Meijer is missing, from all his
+   > stuff, the uncertainty and the four-corner feedback channels."* Meijer's μF/νF is a **2-corner**
+   > duality (one axis: data ⇄ process / in ⇄ out). The adinkra likely lives in the **FourCorner**
+   > (`src/Core/FourCorner.fs`, C₄ = (in/out) × **(data/feedback)**) — Meijer has the (in/out) axis but
+   > **not** the *feedback* axis (`TInFeedback`/`TOutFeedback`), and **not** uncertainty (the soft /
+   > probabilistic layer). And that is not decoration: the **feedback = the dashing (±1, GF(2))** is
+   > exactly what Lumen's Q3 says turns the N=4 clock into a *vector* clock. So the μF/νF mapping
+   > captures the data/process sub-axis but is **under-powered** — it cannot express the feedback
+   > corners or the uncertainty the full adinkra carries. **Sharpened target for Soraya:** is the fork
+   > the 2-corner μF/νF, or does it *require* the FourCorner (4-corner, +feedback) + uncertainty? (Honest
+   > note: Rx `Subject` is a partial bidirectional/feedback gesture — Meijer is not *totally* without
+   > feedback — but there is no systematic (data/feedback)×(in/out) algebra nor uncertainty in his work.
+   > This is where Aaron genuinely *extends* the anchor, not merely applies it.)
+   >
+   > **Why the feedback is load-bearing (Aaron 2026-07-11): "the adinkras need the 4-channel feedback
+   > for retrocausal-like behavior."** A forward-only 2-corner pull/push (Meijer) runs one direction of
+   > time. The *feedback* corners (`TOutFeedback` authored ⇄ `TInFeedback` co-owned) close the loop, so
+   > later information can inform the present — the **future-as-facts / superdeterminism common-cause
+   > channel** already grounded in `docs/research/2026-07-11-superdeterminism-is-a-closed-box-property…`
+   > (#9705) and `src/Core/FeedbackThrottle.fs` (feedback latency < √2 ⇒ the supra-Tsirelson regime).
+   > So the feedback axis is exactly the retrocausal-like machinery, and μF/νF cannot express it.
+   > **Honest metering (peel):** *retrocausal-**LIKE***, not literal backward causation — it is
+   > structural mimicry via a feedback / shared-cause loop over the append-only fold (settings
+   > correlated with outcomes by a common seed, not by the future reaching back). Aaron's "like" is the
+   > honest hedge; keep it. Anchors: Wheeler–Feynman absorber theory (advanced+retarded waves); Cramer's
+   > transactional interpretation; Aharonov two-state-vector; 't Hooft superdeterminism (the common-cause
+   > reading that makes it no-signalling, not magic).
+
 2. **Is `LayeringBToA` a theorem or a toy artifact?** The N=1 probe lands on "structure intrinsic
    (B) + clock injectable as scheduler advance (A-when-run), and they agree." Is "time = the B→A
    transition (running the intrinsic structure under an injected scheduler)" a **general** statement,

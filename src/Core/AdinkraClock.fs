@@ -109,3 +109,51 @@ module AdinkraClock =
             elif injectedClock = 0L && intrinsic > 0 then ClockResistsInjection
             else StructureNeedsClock
         verdict, injectedClock, intrinsic
+
+    // ── Lumen's Q4 discriminator (letter from-lumen-adinkra-clock-fork-homoiconic, 2026-07-11):
+    // metric-freeness = invariance of the causal trace under a monotonic rescale of the injected
+    // metric. UNLIKE `probe` above, this is a REAL discriminator — it returns FALSE for a step that
+    // reads the clock (the negative control), so it can actually fail. This is the honest repair of
+    // the tautology. Workitem 081KX93R6EF08QG0R0020AQQWZ Q4.
+    //
+    // Vernacular (Aaron 2026-07-11): this IS **frames-per-second**. The causal trace is the *frame
+    // sequence* (which frames, in what order — the animation itself, topological); the metric is the
+    // *duration* between frames = 1/fps ("more frames → shorter metric duration"). Same animation at
+    // 24 fps or 60 fps ⇒ metric-free ⇒ Layer B holds. The general statement is even stronger than
+    // constant-fps: it allows *variable*-rate playback (slow-mo → fast-forward) and still the same
+    // sequence — same shape as proper time / the two-orders guard (#9709): the causal order is shared
+    // and invariant, the fps/clock is local and rescalable. ──
+
+    /// A step whose down-edge advances the injected scheduler by `metric` ticks. The `metric` is the
+    /// *duration* of a tick; whether the STATE reads it is what the discriminator tests.
+    /// `stepPure`: the real adinkra step — advances the clock but the state NEVER reads it (metric-free
+    /// by construction; Layer B holds).
+    let stepPure (metric: int64) (scheduler: VirtualTimeScheduler) (s: State) : State =
+        let s', tick = step s
+        if tick then scheduler.AdvanceBy(metric)
+        s'
+
+    /// NEGATIVE CONTROL — a Layer-B-**violating** step: after ticking, it overwrites `DTauOrder` with
+    /// the injected metric (`scheduler.Now`) instead of the topological count. Its trace therefore
+    /// DEPENDS on the metric, so `isMetricFree` must report it `false`. This is what proves the
+    /// discriminator is not tautological: it distinguishes this from `stepPure`.
+    let stepMetricDependent (metric: int64) (scheduler: VirtualTimeScheduler) (s: State) : State =
+        let s', tick = step s
+        if tick then scheduler.AdvanceBy(metric)
+        { s' with DTauOrder = int scheduler.Now }
+
+    /// The causal trace: the sequence of `State`s from folding `n` moves under a down-edge duration of
+    /// `metric` ticks. The topological content, which a metric-free structure leaves invariant.
+    let traceUnder (stepFn: int64 -> VirtualTimeScheduler -> State -> State) (metric: int64) (n: int) : State list =
+        let scheduler = VirtualTimeScheduler()
+        let mutable s = initial
+        [ for _ in 1..n do
+            s <- stepFn metric scheduler s
+            yield s ]
+
+    /// **Lumen's Q4 metric-freeness discriminator.** `stepFn` is metric-free (Layer B holds) iff its
+    /// causal trace is invariant under a monotonic rescale of the injected tick duration (here 1 vs 7).
+    /// Returns `true` for `stepPure` (the real adinkra — metric-free) and `false` for
+    /// `stepMetricDependent` (reads the clock — Layer B violated). A genuine test: it can fail.
+    let isMetricFree (stepFn: int64 -> VirtualTimeScheduler -> State -> State) (n: int) : bool =
+        traceUnder stepFn 1L n = traceUnder stepFn 7L n
