@@ -49,8 +49,17 @@ while the producers' curve keeps climbing past it. Extraction is rational under 
 condition: **a countdown.** A short game, a getaway, a next town. Remove the countdown and
 production dominates — not morally, *arithmetically*.
 
-`[yours — cue: where you learned this with your own money and years — the extractive play you
-watched pay first and then flatline, and the producing play that looked stupid until it didn't.]`
+`[SOCKET — pulled 2026-07-11; your verbatim below, to react to / rewrite in your voice. Consent: your shadow; family generic.]`
+
+The extractive play that paid first and then flatlined — your own words:
+
+> "I greedy-optimized that for lots of years and sex becomes meaningless when you do that."
+
+The proxy floods you first; then the real signal stops registering — Goodhart, learned at the highest cost there is, with your own years. And the producing play that looked stupid until it didn't — your own words:
+
+> "Somebody sees that some dude spent two hundred thousand dollars on an open source project… it short-circuited their brain."
+
+Two hundred thousand of your own money on a thing that makes surplus for everyone. Looked stupid. Until it was the shortcut this book is about.
 
 ## Why the vampire, specifically
 
@@ -68,8 +77,13 @@ Every extractor is someone who decided the game was short — that they'd be gon
 or forgotten before the flatline arrived. Fear of the ending is the pathogen. The extraction is
 just the symptom.
 
-`[yours — cue: the vampire you've known — no names needed — and the moment you understood their
-clock was the disease.]`
+`[SOCKET — pulled 2026-07-11; your verbatim below, to react to / rewrite. No names, by design.]`
+
+The vampire you've known — no names, just the clock. Your own words:
+
+> "From the time they questioned me about it — did I even know I spend that much, 'cause I can't even see how much I spend, they don't give that to us little peons, we can't even see dollar amounts — to the time I got fired was like 24 hours."
+
+A thing that extracts your value for years, can't let you see the mirror (the dollar amounts), and the moment the mirror finally shows what it is — the $200k, the surplus you made — it bites in twenty-four hours. Their clock was quarterly; the short game was the disease. The bite was just the symptom.
 
 ## The anti-vampire wager
 
