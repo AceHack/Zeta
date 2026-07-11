@@ -95,16 +95,20 @@ echolocating bat :: chat-completions : the FourCorner.** The degenerate version 
 the thing being built. This is why Q1 is load-bearing for the analog endgame in the hardest possible
 sense — get it wrong (ship forward-only) and the bat is not slow, it is *impossible*.
 
-## Provenance: the FourCorner was in a ~10-year-old repo (same seed across a decade)
+## Provenance: the FourCorner was in Aaron's own OG repo (same seed across ~a decade)
 
 The `MultiplexedWebSockets` anchor already cited *inside* `four-corner.ts` and `duplex-transport.ts` is
-**Aaron's own ~10-year-old GitHub project** ("multiplexed websocket"): *"my OG code for this from maybe
-10 years ago… it was missing a lot of the features but this is what I was going for."* So the anchor in
-the current code is self-referential — a decade-old reach for the full-duplex four-corner transport,
-matured into `duplex-transport.ts`. Same seed across ten years, the same shape as the photophone (the
-endgame was in the garage; the FourCorner was in an old repo). *(Provenance to cite precisely if wanted:
-the exact repo URL — Aaron's personal GitHub, likely `acehack/*` — is not yet linked here; offered, not
-fetched.)*
+**Aaron's own GitHub project** ("multiplexed websocket"): *"my OG code for this from maybe 10 years ago…
+it was missing a lot of the features but this is what I was going for."* So the anchor in the current
+code is **self-referential** — an early reach for the full-duplex four-corner transport, matured into
+`duplex-transport.ts`. Same shape as the photophone (the endgame was in the garage; the FourCorner was in
+an old repo).
+
+**Cited (looked up 2026-07-11 at Aaron's "look it up and cite the repo"):**
+[`github.com/AceHack/MultiplexedWebSockets`](https://github.com/AceHack/MultiplexedWebSockets) — **C#**,
+earliest GitHub commit **2018-10-08**, last pushed 2023-05-16. Date: **~8 years ago** — **Aaron confirmed
+"2018 sounds right"** (his *"maybe 10"* was an approximation). The point — same seed across most of a
+decade — holds; the anchor now points at its actual, dated source.
 
 ## Anchors (Beacon)
 
