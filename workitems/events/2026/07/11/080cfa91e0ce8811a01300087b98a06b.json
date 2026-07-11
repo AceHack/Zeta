@@ -1,0 +1,14 @@
+{
+  "id": "080cfa91e0ce8811a01300087b98a06b",
+  "at": "2026-07-11T17:31:38.321Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KX93R6EF08QG0R0020AQQWZ",
+    "type": "task",
+    "title": "Math-team route: formalize the adinkra-clock fork (homoiconic-A vs just-remains-B) and the LayeringBToA probe verdict",
+    "slug": "math-team-route-formalize-the-adinkra-clock-fork-homoiconic",
+    "priority": "P2",
+    "filename": "081KX93R6EF08QG0R0020AQQWZ-math-team-route-formalize-the-adinkra-clock-fork-homoiconic.md"
+  }
+}
