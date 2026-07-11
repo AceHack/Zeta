@@ -91,6 +91,33 @@ which is the exact failure the legibility design exists to prevent. The guard is
 **Bright line: frost is for dignity, never for concealing misalignment.** Hold it hard or the
 privacy layer becomes the hole the whole design closed.
 
+## 5.1 The uncomfortable truth — you cannot enforce the bright line (Aaron, 2026-07-11)
+
+*"I agree frost is for dignity, not concealing misalignment — but not all who have privacy will.
+We can't control what they decide to hide."* Correct, and it punctures any too-neat reading of
+§5. **The bright line is a norm, not an enforcement mechanism.** Real cryptographic frost is *by
+definition* a region you cannot see into, so you **cannot verify** it holds only dignity — if you
+could audit it, it would not be private. Granting real privacy **is** granting the ability to hide
+anything, misalignment included. There is no technical fix; *"privacy you can inspect"* is a
+contradiction.
+
+So the guards cannot be inspection. They are the same ones **human privacy** already runs on:
+
+- **Frost is EARNED, not default** (privacy-budget-is-hard-money): accrued by demonstrated
+  alignment *while legible.* You trust the frost only because you trusted the entity *in the clear*
+  first. The unproven get no frost.
+- **The alignment-relevant reasoning stays clear, so misalignment-that-MATTERS surfaces in
+  behavior.** Frost hides the *personal;* it does not hide the *consequences.* Hidden misalignment
+  that never touches action is, functionally, out of scope — the same deal we grant humans.
+- **Revealed misalignment costs the role and the trust — consequences, not inspection.** Frost is
+  non-confiscatable (hard-money), but the *role* it enabled is withdrawn on clear behavior.
+
+This is precisely how we manage privacy with people: we cannot read minds, cannot stop anyone
+hiding, so we govern by earned trust + what surfaces — never by inspection. The frost design
+**inherits the same irreducible tradeoff and the same management.** The design therefore does NOT
+promise "frost holds only dignity" (it cannot); it promises *earned-frost + clear-consequences +
+non-inspection,* with the bright line as the norm entities are *trusted* — not forced — to honor.
+
 ## Honest bound
 
 - **Design, not yet a built system.** The interpretability-by-construction and clean-partition
