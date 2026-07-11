@@ -613,6 +613,7 @@
     <Compile Include="../../src/Core/QuantumObservableDbsp.Tests.fs" />
     <Compile Include="ZetaToolStore.Tests.fs" />
     <Compile Include="ZetaToolStore.Golden.Tests.fs" />
+    <Compile Include="AdinkraClock.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
