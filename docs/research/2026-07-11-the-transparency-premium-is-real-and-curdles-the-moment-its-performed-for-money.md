@@ -55,6 +55,46 @@ thing that had the value, and (b) eventually detected and re-priced. **The money
 openness, never its *objective*** — the moment openness becomes the objective's *means*, it's performance,
 and performance doesn't let the quiet bats in.
 
+## Money as a value-metric: good on the scoreboard, corrupting as the game (Aaron, 2026-07-11)
+
+Aaron: *"over time, history convinced me money is a good metric for reduction"* (uncertainty-reduction /
+value-added — the [[every-bug-has-economic-value]] ΔU). **True — bounded by three conditions:**
+
+1. **Asymptotic, not per-instance.** Over time and in aggregate, sustained payment *calibrates* value (fake
+   value stops getting paid; the lemons unravel — #9755, the external calibration). But *short-term, money
+   pays handsomely for fraud, hype, and manipulation* (the scammers **got paid**). So money tracks value on
+   a **delay**, never per-transaction. Don't read a single payment as proof of value, or a bubble as worth.
+2. **Market-domain only.** Money measures *market-priced* reduction and is **blind** to non-market value —
+   raising a child, a real friendship, a hard truth no one will pay to hear. That blind domain is exactly
+   the non-regenerable one that matters most (time, people, trust). *The day money feels like a good metric
+   for your daughter is the day the metric ate the territory.*
+3. **Byproduct, not objective.** Money measures value when it *follows* value; it *decouples* from value
+   the moment it becomes the target (Goodhart — this is the same curdle as performed-transparency above).
+
+**Money is a good metric when it's the scoreboard — not when it becomes the game.**
+
+### The ISociety shrinks the fraud-window (Aaron) — and the honest −1s
+
+Aaron: *"short-term money pays for fraud — yes, but over time our **ISociety** is reducing this."* Correct
+in direction: the short-term fraud-gets-paid problem is a **detection-lag** function, and the society's
+mechanisms — reputation-gossip (#9756/#9757), the transparency premium (#9760), time-calibration (#9755),
+anti-Sybil, influence-weighted scrutiny (#9749) — all **shorten the lag**, so money tracks value faster and
+the asymptotic calibration converges sooner. A fast, transparent, hard-to-game society genuinely shrinks
+the window vs. a slow opaque one (history bears it out: better information infrastructure prices out
+detectable fraud faster). But three −1s:
+
+- **Asymptotic + adversarial (red-queen).** Fraud *co-evolves* with detection: as the society detects
+  faster, fraudsters evade faster. The window **shrinks but never closes** — a permanent arms race, not a
+  solved problem. "Reducing it" ≠ "eliminating it."
+- **Fraud *relocates* to the reputation layer.** Make money track value via reputation and the *reputation
+  system* becomes the new fraud target (fake attestations, Sybil, coordinated false gossip — #9757). You
+  move fraud from "fake the product" to "fake the reputation"; net elimination requires the reputation
+  layer's guards to *stay ahead*, forever. Reduction is relocation unless the guards win the race.
+- **Keep the progress-claim falsifiable.** *"Our ISociety is reducing this"* is itself a measurable
+  hypothesis, not an article of faith — **track the actual fraud→detection lag over time.** If it isn't
+  measurably shrinking, the claim is an [[2026-07-11-the-immune-guess-maximum-falsifiability-is-the-solution-and-avoided-at-all-costs]]
+  immune guess about your own society. Measure it; don't assume it.
+
 ## Anchors (Beacon)
 
 - **In-repo:** honesty = epistemic + economic accelerant (#9755); reputation-gossip / trust propagation
