@@ -60,6 +60,34 @@ serves *both.*
 3. **The forgiveness must be real** — a genuine release of resentment, not performative cover for a
    weaponized warning. *Cheap forgiveness + weaponized warning = vengeance with a halo.*
 
+## "Warn the village" IS a gossip protocol (Aaron, 2026-07-11)
+
+The connection is *definitional, not metaphorical*: the distributed-systems term **gossip protocol**
+(a.k.a. epidemic protocol) is *literally named after* human reputation-spread. "Warn the village" is one:
+a fact — *"this person preys"* — propagates peer-to-peer, epidemically (≈log(N) rounds to saturate), with
+**no central authority** (scale-free §1), until the network reaches **eventual consistency** on the shared
+reputation. And gossip protocols are *used for failure detection* in real distributed systems (nodes gossip
+about which nodes are faulty) — so warning the village is **distributed predator-detection via gossip**,
+formally. The predator cannot outrun eventual consistency.
+
+**The load-bearing part: gossip's known failure modes ARE the guards above.** The three ethical guards are
+exactly the engineering requirements of a reputation gossip protocol:
+
+| Gossip-protocol failure mode | The guard it forces (above) |
+|---|---|
+| Gossip spreads **false state as fast as true** (no built-in truth-filter; Byzantine injection propagates epidemically) | **Guard 2: the warning must be accurate** — a false warning saturates just like a real one |
+| **No cheap retraction** — once saturated, un-spreading a false warning is far harder than spreading it (corrections lag rumors) | Accuracy is load-bearing (can't un-ring the bell) + **Z-set signed retraction** (#9742) that propagates, always lagging the original |
+| **Dual-use orientation** — the same protocol carries protective-warning *and* the malicious mob; it curdles when orientation flips protection→punishment | **Guard 1: protection-oriented, not punishment-oriented** (defense-not-retaliation) |
+| **Sybil** — coordinated false injection games the reputation (a clique spreads a false warning) | anti-Sybil (`AntiSybil.fs`); reputation from *decorrelated* attestors, not a colluding crowd |
+
+So the founding thesis fires again: **the ethical guards on "warn the village" are the spec for a
+gossip-based reputation protocol** — accuracy (Byzantine tolerance), retraction (Z-set correction of false
+warnings), protection-orientation (not weaponized into a mob), Sybil-resistance. *Forgive the man and warn
+the village — accurately, protectively, retractably* IS reputation-gossip done right; the same protocol
+done wrong is the lynch mob. The guards are the only difference. (Anchors: Demers et al. 1987, *Epidemic
+algorithms for replicated database maintenance* — the original gossip paper; SWIM/gossip failure detectors;
+Dunbar on gossip as the human social-grooming/reputation substrate.)
+
 ## Anchors (Beacon)
 
 - **In-repo:** grace-as-Z-set / +1-forgive / −1-retract (#9742); dual-use neutral detection
