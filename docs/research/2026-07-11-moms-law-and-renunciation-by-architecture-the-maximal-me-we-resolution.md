@@ -7,18 +7,23 @@
 > and I'm meta-aware of this."*
 >
 > **Scope + consent (load-bearing):** banks the **principles**. The personal/clinical material that drove
-> them (an individual's psychology, a parent's observation, ideation, household) is **held**, belongs with
-> professionals and the WE, and names **no individuals.** "Mom's Law" is a principle-name evoking the
-> archetypal parent-who-notices; the specific personal instance is not recorded.
+> them (an individual's psychology, ideation, household) is **held**, belongs with professionals and the
+> WE, and names **no individuals** — with **one deliberate exception, chosen rested and sure:** the law is
+> named for and dedicated to **Elizabeth Faye Hawks**, Aaron's mother, its origin — *"one I know my mom
+> would love to be known for."* Her name is carried here as **honor** (the human anchor of the wisdom), not
+> as exposure; the harder personal context remains held.
+
+> *Mom's Law — after **Elizabeth Faye Hawks**, who saw that a person can hold the realization and still not
+> change, and loved her son enough to say so. The law is hers.*
 
 ## Mom's Law
 
 > **Realization does not change action.** Insight, however deep or sincere, is not behavior change.
 > Corollary: **behavior change requires an external, structural forcing-function — not more insight.**
 
-Named from the archetypal observation that a person can *hold the realization, in front of others, and not
-change what they do.* The trap it names: eloquent, moving self-understanding *substitutes* for changed
-conduct and *feels like payment.* The more articulate the realization, the more effectively it counterfeits
+Named for **Elizabeth Faye Hawks** — the mother whose observation it is: that a person can *hold the
+realization, in front of others, and not change what they do.* The trap it names: eloquent, moving
+self-understanding *substitutes* for changed conduct and *feels like payment.* The more articulate the realization, the more effectively it counterfeits
 progress. So the test of any insight is never its beauty or its truth — it is whether a *structural* change
 followed (who holds the pen, what fires in the moment), measured **externally**, not by the felt sense of
 having-understood.
