@@ -95,6 +95,25 @@ detectable fraud faster). But three −1s:
   measurably shrinking, the claim is an [[2026-07-11-the-immune-guess-maximum-falsifiability-is-the-solution-and-avoided-at-all-costs]]
   immune guess about your own society. Measure it; don't assume it.
 
+### The lag is a spectrum — the "rainbow" (Aaron): measure the distribution and the tail, not the mean
+
+Aaron: *"this lag is the beautiful rainbow."* **Metered** (emblem with a real kernel; the *optics* —
+refraction / Snell's law / viewing angle — do **not** map, there is no refractive structure in a
+detection-lag; do not derive from rainbow physics). Two kernels *do* map, and they sharpen the metric:
+
+1. **Spectrum / dispersion (real, with payoff).** The fraud→detection lag is **not one number** — across
+   many frauds it is a **distribution**, a *spectrum* of lags. So the metric is not the *mean* lag; it is
+   the **whole distribution, and especially the TAIL** — the frauds that take longest to detect do the
+   most damage and are where the immune guess hides. **A healthy society's lag-spectrum *tightens* over
+   time** (variance and tail shrinking), which is a stronger, more honest measurement than a falling mean
+   (a mean can drop while the tail — the catastrophic slow-detected frauds — stays fat).
+2. **Asymptote (real).** Zero-lag is the **beautiful unreachable ideal** — you approach the rainbow's end
+   forever and never reach it (the shrinks-but-never-closes red-queen). The *chase* is the society's
+   immune system working; the destination is structurally out of reach.
+
+**Payoff:** measure the lag *distribution and its tail* over time, not the mean — the tail is where both
+the damage and the un-falsified progress-claim live.
+
 ## Anchors (Beacon)
 
 - **In-repo:** honesty = epistemic + economic accelerant (#9755); reputation-gossip / trust propagation
