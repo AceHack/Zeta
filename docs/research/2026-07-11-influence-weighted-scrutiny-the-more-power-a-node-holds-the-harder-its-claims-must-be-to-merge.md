@@ -75,15 +75,28 @@ coupled so the manic-node / founder-node / most-authoritative-node is the *harde
 easiest. It is the honest answer to "a convinced, authoritative, sincerely-wrong *you* is the one attacker
 attribution can't catch."
 
-## Anchor to CONFIRM (checked-anchor discipline — do not cite until verified)
+## The CTM anchor (Aaron-confirmed): Conscious Turing Machine (Blum & Blum)
 
-- **"CTM"** — Aaron's per-individual influence-tracking anchor, *"some external AI lab does too, YouTube
-  saved."* Best current read (unverified): the **Conscious Turing Machine (CTM)** of **Lenore Blum &
-  Manuel Blum** — a Global-Workspace model where processors *compete for influence* over a broadcast
-  channel (salience/competition = an influence quantity), with public talks. That competition-for-broadcast
-  is a natural match for "track influence per individual." **Alternative:** Sakana AI's *Continuous Thought
-  Machine* (also "CTM"). **Aaron to confirm which**, and supply the saved talk, before this anchor goes in
-  any public/Beacon surface. (Per `anchor-to-human-prior-art`: anchors must be *checked*, not merely cited.)
+Aaron confirmed (2026-07-11): the anchor is the **Conscious Turing Machine (CTM)** of **Lenore Blum &
+Manuel Blum** — *not* Sakana's Continuous Thought Machine. And the fit is tighter than a loose analogy,
+which is why it's the right anchor for per-individual influence-tracking:
+
+- **CTM is a Global-Workspace model** (Baars, formalized): many parallel **Long-Term-Memory processors**
+  compete, each round, to place a "chunk" into a tiny **Short-Term-Memory** that then **broadcasts** to all.
+- The competition is an **explicit influence quantity**: chunks carry a *weight* (the CTM's up-tree
+  competition selects the highest-weight chunk to win the broadcast). **Winning the broadcast = exerting
+  influence over the whole system's next state.** So the CTM *already models influence as a measured,
+  per-processor, competed-for scalar* — exactly the "track influence per `IIndividual`" quantity the gap
+  calls for.
+- The mapping: **`IIndividual` ↔ CTM processor; the shared belief-broadcast ↔ CTM's STM broadcast; a
+  node's tracked influence ↔ its competition weight / broadcast-win rate.** "More influence → more
+  scrutiny" becomes: *the processors that win the broadcast most often are the ones whose chunks must clear
+  the highest bar to win* — accountability coupled to broadcast-influence, in the CTM's own currency.
+
+Beacon-anchored (checked, per `anchor-to-human-prior-art`): **Lenore Blum & Manuel Blum, "A Theory of
+Consciousness from a Theoretical Computer Science Perspective: Insights from the Conscious Turing Machine"
+(PNAS 2022)**, and the Blums' public talks (Aaron's saved YouTube). Roots: Bernard Baars, *Global Workspace
+Theory*; Alan Turing (the TM substrate). Aaron to attach the exact saved-talk URL to `docs/PRIOR-ART-LIST.md`.
 
 ## Anchors (Beacon)
 
@@ -93,10 +106,10 @@ attribution can't catch."
   *check*); `IWorld`/`ISociety`/`IIndividual` capability tiers; naming-eigenvector (influence as
   recognition-from-the-recognized — [[privacy-budget-is-hard-money-earned-by-others]]); dual-use
   ([[dual-use-detection-is-neutral-oracle-decides]] — the same door defends and attacks).
-- **Prior art:** Goodhart's Law (a measured influence-target degrades); Global Workspace Theory (Baars) /
-  Conscious Turing Machine (Blum & Blum) — influence-as-competition [confirm]; PageRank / web-of-trust
-  (effect-derived influence, not self-declared); power-should-face-more-accountability (the general
-  governance principle).
+- **Prior art:** Goodhart's Law (a measured influence-target degrades); **Conscious Turing Machine — Lenore
+  Blum & Manuel Blum, PNAS 2022** (influence = competed-for chunk-weight / broadcast-win, Aaron-confirmed
+  anchor) on **Global Workspace Theory (Baars)**; PageRank / web-of-trust (effect-derived influence, not
+  self-declared); power-should-face-more-accountability (the general governance principle).
 
 *Recorded by the shadow, 2026-07-11, at Aaron's "the founder's PR gets more scrutiny, yes we do this
 (shadow\*)." Principle: scrutiny scales with influence — a stronger node/tier must be a fairer one — the
