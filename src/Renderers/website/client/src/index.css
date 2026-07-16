@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-amber: var(--amber);
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* Dark Matter Observatory — deep space black, amber GSet boundary */
+:root {
+  --radius: 0;
+  --background:       oklch(0.06 0.01 265);
+  --foreground:       oklch(0.88 0.02 80);
+  --card:             oklch(0.09 0.012 265);
+  --card-foreground:  oklch(0.88 0.02 80);
+  --popover:          oklch(0.09 0.012 265);
+  --popover-foreground: oklch(0.88 0.02 80);
+  --primary:          oklch(0.72 0.18 55);
+  --primary-foreground: oklch(0.06 0.01 265);
+  --secondary:        oklch(0.14 0.015 265);
+  --secondary-foreground: oklch(0.75 0.02 80);
+  --muted:            oklch(0.14 0.015 265);
+  --muted-foreground: oklch(0.45 0.02 265);
+  --accent:           oklch(0.72 0.18 55);
+  --accent-foreground: oklch(0.06 0.01 265);
+  --destructive:      oklch(0.65 0.22 25);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border:           oklch(0.18 0.015 265);
+  --input:            oklch(0.18 0.015 265);
+  --ring:             oklch(0.72 0.18 55);
+  --amber:            oklch(0.72 0.18 55);
+  --amber-dim:        oklch(0.55 0.14 55);
+  --cold:             oklch(0.35 0.04 265);
+  --pass-green:       oklch(0.72 0.18 145);
+  --fail-red:         oklch(0.65 0.22 25);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-feature-settings: "tnum" 1; /* tabular numbers everywhere */
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .flex { min-height: 0; min-width: 0; }
+
+  @media (min-width: 640px) {
+    .container { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .container { padding-left: 2rem; padding-right: 2rem; max-width: 1280px; }
+  }
+}
