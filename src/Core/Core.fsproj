@@ -301,6 +301,7 @@
     <Compile Include="BellState.fs" />
     <Compile Include="FeedbackThrottle.fs" />
     <Compile Include="DelayDecorrelation.fs" />
+    <Compile Include="DebouncedOracle.fs" />
     <Compile Include="Chip8.fs" />
     <Compile Include="Chip8Cow.fs" />
     <Compile Include="SoftChip8.fs" />
