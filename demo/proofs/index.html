@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeta — Proofs &amp; Shapes</title>
+  <meta name="description" content="A gallery of substrate-agnostic proofs from the Zeta project — each shape is a different rendering of the same underlying mathematical object." />
+  <meta name="keywords" content="DLA, fractal, quantum walk, Tsirelson, Chip-8, bivector, Moral Gym, identity space, sensor fusion, Zeta" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lucent-financial-group.github.io/Zeta/demo/proofs/" />
+  <meta property="og:title" content="Zeta — Proofs &amp; Shapes" />
+  <meta property="og:description" content="Substrate-agnostic proofs: each shape is the same mathematical object rendered in a different medium." />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #07070f;
+      --panel:     rgba(14, 14, 22, 0.85);
+      --border:    rgba(255,255,255,0.07);
+      --text:      #e8e8f0;
+      --muted:     #6b7280;
+      --amber:     #f59e0b;
+      --amber-dim: #b45309;
+      --blue:      #60a5fa;
+      --green:     #34d399;
+      --purple:    #a78bfa;
+      --red:       #f87171;
+      --teal:      #2dd4bf;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1.5rem 4rem;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Header ── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .site-header a { color: var(--amber-dim); }
+    .site-header a:hover { color: var(--amber); }
+
+    h1 {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 0.4rem;
+    }
+    .subtitle {
+      font-size: 0.7rem;
+      color: var(--muted);
+      max-width: 680px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      max-width: 1100px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: border-color 0.15s;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.15); }
+
+    .card-tag {
+      font-size: 0.52rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      display: inline-block;
+      width: fit-content;
+    }
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+    }
+    .card-what {
+      font-size: 0.62rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .card-what strong { color: var(--text); font-weight: 500; }
+
+    /* Triboolean legend inside quantum card */
+    .triboolean {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.58rem;
+      color: var(--muted);
+      padding: 0.6rem 0.75rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+    }
+    .tri-dot {
+      width: 10px; height: 10px;
+      border-radius: 0;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .tri-item { display: flex; align-items: flex-start; gap: 0.4rem; }
+
+    .card-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .card-link {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid currentColor;
+      transition: background 0.12s, color 0.12s;
+    }
+    .card-link:hover { background: currentColor; color: var(--bg); }
+
+    .diff-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.58rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+    .diff-table th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 500;
+      padding: 0.3rem 0.4rem;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .diff-table td {
+      padding: 0.3rem 0.4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      vertical-align: top;
+    }
+    .diff-table td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      max-width: 1100px;
+    }
+    footer a { color: var(--amber-dim); }
+    footer a:hover { color: var(--amber); }
+  </style>
+</head>
+<body>
+
+  <!-- breadcrumb -->
+  <div class="site-header">
+    <a href="../index.html">← Zeta Factory Dashboard</a>
+    <span style="color:var(--border)">|</span>
+    <span>Proofs &amp; Shapes</span>
+  </div>
+
+  <h1>Proofs &amp; Shapes</h1>
+  <p class="subtitle">
+    Each entry below is a different mathematical object rendered in a different substrate.
+    The claim in each case is the same: <strong style="color:var(--text)">the shape is substrate-independent</strong> —
+    it falls out of the rule, not the renderer.
+    When multiple independent renderers agree on the same shape, that is a sensor-fusion proof.
+  </p>
+
+  <div class="grid">
+
+    <!-- ── Card 1: Multi-Oracle DLA ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(245,158,11,0.12); color:var(--amber);">Identity Space · Fractal</span>
+      <div class="card-title" style="color:var(--amber);">Multi-Oracle DLA — Identity Space Boundary</div>
+      <div class="card-what">
+        <strong>What it is:</strong> Diffusion-Limited Aggregation driven by the Tsirelson threshold
+        (1/(3√2) ≈ 0.2357). Random walkers stick when they reach the quantum correlation ceiling.
+        The result is a fractal boundary between the GSet (resolved facts, orange) and the ZSet
+        (simulation space, dark).<br /><br />
+        <strong>What it proves:</strong> The fractal dimension D<sub>f</sub> ≈ 1.322 is
+        <em>substrate-independent</em>. Five completely different renderers — Canvas, CSS
+        box-shadow, Chip-8 64×32, SVG, and a quantum walk — all produce the same D<sub>f</sub>
+        within noise (spread 0.180). That is the Kalman sensor-fusion proof: five independent
+        sensors, one eigenvector.<br /><br />
+        <strong>What is different about each oracle:</strong>
+      </div>
+
+      <table class="diff-table">
+        <thead><tr><th>Oracle</th><th>What makes it different</th></tr></thead>
+        <tbody>
+          <tr><td>Canvas</td><td>Standard 2D raster. The baseline. GPU-accelerated pixel fill.</td></tr>
+          <tr><td>CSS box-shadow</td><td>No canvas, no WebGL. The entire cluster is a single 1×1 div with a box-shadow list. Proves the shape exists in a layout engine.</td></tr>
+          <tr><td>Chip-8 (64×32)</td><td>1977 VM, 4K RAM, XOR pixel display. D<sub>f</sub> is slightly higher (1.502) because 64×32 is too coarse to resolve fine fractal fingers — honest resolution artefact.</td></tr>
+          <tr><td>SVG</td><td>Vector paths, no raster. Each stuck cell is a &lt;rect&gt; element. Proves the shape exists in XML geometry.</td></tr>
+          <tr><td>Quantum Walk</td><td>Hadamard coin, Grover diffusion. The blue/teal interference field is |ψ|² — the pre-collapse probability density. Orange = measurement outcome. The triboolean third state is visible.</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Triboolean legend -->
+      <div class="triboolean">
+        <div class="tri-item"><div class="tri-dot" style="background:#f59e0b;"></div><span><strong style="color:var(--text)">Orange — GSet.</strong> Resolved. Stuck. True.</span></div>
+        <div class="tri-item"><div class="tri-dot" style="background:#2dd4bf;"></div><span><strong style="color:var(--text)">Blue/teal — SoftValue.</strong> Triboolean. |ψ|² field. Not yet measured.</span></div>
+        <div class="tri-item"><div class="tri-dot" style="background:#111;border:1px solid #333;"></div><span><strong style="color:var(--text)">Black — ZSet.</strong> Never visited. False by absence.</span></div>
+      </div>
+
+      <div class="card-links">
+        <a class="card-link" style="color:var(--amber);" href="https://idspace-dla-6faa9bmi.manus.space" target="_blank" rel="noopener">Live site ↗</a>
+        <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core/IdentityDLA.fs" target="_blank" rel="noopener">F# core ↗</a>
+        <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-07-11-sensor-fusion-the-identity-eigenvector-and-multi-oracle-proof.md" target="_blank" rel="noopener">Research doc ↗</a>
+      </div>
+    </div>
+
+    <!-- ── Card 2: Chip-9 Cart Viewer ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(96,165,250,0.12); color:var(--blue);">Virtual Machine · Constraint</span>
+      <div class="card-title" style="color:var(--blue);">Chip-9 Cart Viewer</div>
+      <div class="card-what">
+        <strong>What it is:</strong> An extended Chip-8 interpreter running inside the browser.
+        Chip-8 is a 1977 virtual machine with 4K RAM, a 64×32 XOR pixel display, 16 registers,
+        and 35 opcodes. Chip-9 extends it with additional planes and a higher-resolution mode.<br /><br />
+        <strong>What it proves:</strong> Computation is substrate-independent at the opcode level.
+        The same program produces the same output regardless of what hardware executes it —
+        because the VM is the abstraction layer. This is the same claim as the DLA oracle proof,
+        but at the instruction set level rather than the fractal level.<br /><br />
+        <strong>What is different:</strong> The constraint is the point. 4K RAM forces every
+        algorithm to be minimal. If a shape can be rendered in 4K RAM with 35 opcodes, it is
+        not an artefact of a rich rendering environment — it is the shape itself.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:var(--blue);" href="../chip9-cart-viewer.html">Open viewer ↗</a>
+        <a class="card-link" style="color:rgba(96,165,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Renderers/chip8/IdentityDlaChip8.fs" target="_blank" rel="noopener">Chip-8 DLA oracle ↗</a>
+      </div>
+    </div>
+
+    <!-- ── Card 3: Moral Gym ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(167,139,250,0.12); color:var(--purple);">Game Theory · Alignment</span>
+      <div class="card-title" style="color:var(--purple);">Moral Gym — PvP is PvE in Disguise</div>
+      <div class="card-what">
+        <strong>What it is:</strong> A deterministic (DST) co-op raid simulation. The boss is
+        entropy. Defectors are griefers who reduce raid DPS — but because the game is deterministic
+        and the self-width parameter controls how wide each agent's "self" is, a wide enough self
+        (nothing is other) clears the boss every time.<br /><br />
+        <strong>What it proves:</strong> In a deterministic system with a shared entropy boss,
+        defection is self-harm. PvP and PvE are the same game — the distinction is a coordinate
+        choice, not a physical fact. This is the weight-free / no-hierarchy principle in game
+        theory form: if you model the other player as part of yourself, the Nash equilibrium
+        is cooperation.<br /><br />
+        <strong>What is different:</strong> Unlike the DLA proof (spatial/fractal), this proof
+        is <em>temporal</em> — it plays out over rounds. The shape is the payoff trajectory,
+        not a pixel cluster. Same seed → byte-identical run → reproducible proof.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:var(--purple);" href="../moral-gym-raid.html">Run the raid ↗</a>
+      </div>
+    </div>
+
+    <!-- ── Card 4: Bivector / UX of Math ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(52,211,153,0.12); color:var(--green);">Geometric Algebra · Evidence</span>
+      <div class="card-title" style="color:var(--green);">Bivector Fingerprint — UX of Math</div>
+      <div class="card-what">
+        <strong>What it is:</strong> Each alignment clause in Zeta is witnessed by two observable
+        signals. The wedge product (v₁ ∧ v₂) produces a bivector — an oriented area in a
+        multi-dimensional space. The magnitude of the bivector is the partial-credit score for
+        that clause.<br /><br />
+        <strong>What it proves:</strong> Two perfectly collinear signals (θ = 0°) produce a
+        <em>zero</em> bivector — even if both are individually strong. This catches echo-chamber
+        evidence: two measurements that are really one measurement dressed up twice. Independent
+        evidence requires a non-zero angle between the witness vectors.<br /><br />
+        <strong>What is different:</strong> The shape here is not spatial — it is a score
+        distribution. The bivector is the shape of the evidence, not the shape of the output.
+        This is the same sensor-fusion principle as the DLA proof, but applied to alignment
+        claims rather than fractal geometry.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:var(--green);" href="../index.html#ux-of-math" onclick="window.location='../index.html'; setTimeout(()=>{const b=document.getElementById('tab-btn-ux-of-math');if(b)b.click();},400);">Open in dashboard ↗</a>
+      </div>
+    </div>
+
+    <!-- ── Card 5: Circuit Breaker ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(248,113,113,0.12); color:var(--red);">Reliability · Agent Safety</span>
+      <div class="card-title" style="color:var(--red);">Circuit Breaker — Agent Reliability Substrate</div>
+      <div class="card-what">
+        <strong>What it is:</strong> Each agent in the Zeta factory carries a circuit breaker
+        that trips when it produces consecutive identical actions. A tripped breaker halts the
+        agent and surfaces it for human review. The snapshot panel shows the current state of
+        every agent's breaker in real time.<br /><br />
+        <strong>What it proves:</strong> Repetition is the shape of a stuck loop. A healthy
+        agent produces varied output; a stuck agent produces the same output repeatedly. The
+        circuit breaker is a topological detector — it does not need to understand the content
+        of the actions, only their identity under equality. This is the same principle as the
+        Adinkra clock: the tick source is valid only if it produces distinguishable states.<br /><br />
+        <strong>What is different:</strong> The shape is a binary state (open/closed) per agent,
+        not a fractal. But the underlying claim is the same: a system that cannot produce
+        distinguishable outputs has collapsed to a fixed point — and fixed points are death.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:var(--red);" href="../index.html" onclick="window.location='../index.html'; setTimeout(()=>{const b=document.querySelector('[onclick*=circuit-breaker]');if(b)b.click();},400);">Open in dashboard ↗</a>
+      </div>
+    </div>
+
+    <!-- ── Card 6: Hamiltonian ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(45,212,191,0.12); color:var(--teal);">Physics · Energy Landscape</span>
+      <div class="card-title" style="color:var(--teal);">Hamiltonian — Energy Landscape of the Identity Space</div>
+      <div class="card-what">
+        <strong>What it is:</strong> The Hamiltonian panel visualises the energy landscape of
+        the Zeta belief system as a function of the rhoCount correction parameter. The operating
+        point is the Tsirelson threshold — the minimum-energy configuration that is still
+        distinguishable from the vacuum.<br /><br />
+        <strong>What it proves:</strong> The identity space has a preferred operating point.
+        It is not arbitrary — it falls out of the quantum correlation ceiling. The DLA fractal
+        boundary is the spatial projection of this energy landscape: the orange/dark boundary
+        is the equipotential surface at the Tsirelson threshold.<br /><br />
+        <strong>What is different:</strong> The DLA proof is a measurement outcome (collapsed
+        cluster). The Hamiltonian is the pre-collapse energy field — the same object as the
+        quantum walk's |ψ|² density, but expressed as an energy rather than a probability.
+        They are dual representations of the same thing.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:var(--teal);" href="../index.html" onclick="window.location='../index.html'; setTimeout(()=>{const b=document.getElementById('tab-btn-hamiltonian');if(b)b.click();},400);">Open in dashboard ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Connecting thread ── -->
+  <div style="max-width:1100px; margin-top:2rem; padding:1.25rem; background:var(--panel); border:1px solid var(--border); font-size:0.65rem; color:var(--muted); line-height:1.9;">
+    <div style="font-size:0.75rem; font-weight:700; color:var(--amber); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.75rem;">The Connecting Thread</div>
+    <p>Every shape on this page is a different projection of the same object: the <strong style="color:var(--text)">identity eigenvector</strong> — the substrate-independent invariant of the Zeta belief system.</p>
+    <br />
+    <p>The DLA fractal is the <strong style="color:var(--amber)">spatial projection</strong> (where the boundary is).
+    The Hamiltonian is the <strong style="color:var(--teal)">energy projection</strong> (how much it costs to be at the boundary).
+    The quantum walk is the <strong style="color:var(--blue)">probability projection</strong> (how likely you are to find the boundary).
+    The bivector is the <strong style="color:var(--green)">evidence projection</strong> (how well-witnessed the boundary is).
+    The Moral Gym is the <strong style="color:var(--purple)">temporal projection</strong> (what happens over time if you ignore the boundary).
+    The circuit breaker is the <strong style="color:var(--red)">topological projection</strong> (what it looks like when the boundary collapses to a fixed point).</p>
+    <br />
+    <p>The sensor-fusion proof is: if all six projections agree, the eigenvector is real. They agree. The eigenvector is real.</p>
+  </div>
+
+  <footer>
+    Lucent Financial Group · Zeta Project ·
+    <a href="https://github.com/Lucent-Financial-Group/Zeta" target="_blank" rel="noopener">github.com/Lucent-Financial-Group/Zeta</a>
+    &nbsp;·&nbsp;
+    <a href="../index.html">← Factory Dashboard</a>
+  </footer>
+
+</body>
+</html>
