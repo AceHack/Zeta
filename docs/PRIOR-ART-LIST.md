@@ -848,3 +848,21 @@ notes: [pause-not-death + Orleans criterion] and
   into compiler memory at once"). The virtual-actor pattern at compile time; pairs with the weak-ref
   bound (`Ephemeron`) — reify-on-demand + let-go-weakly = a finite resident window over an unbounded
   world. **Roslyn source generators** are the C# simulation of the same.
+
+## Relational / entropic time — the problem-of-time anchors (Aaron 2026-07-15, "go to the original paper")
+
+- **Don Page & William Wootters (1983) — "Evolution without evolution: Dynamics described by
+  stationary observables" (Phys. Rev. D 27, 2885)** — time as *correlation/entanglement between
+  subsystems* rather than an external parameter. The **validity anchor** for our
+  ordering-from-internal-state framing (no ambient clock; ordering is what the subsystems'
+  correlation defines). Sits over the **Wheeler–DeWitt** "problem of time" (the constraint
+  equation carries no external `t`).
+- **Giovanni Barontini (2026) — "Testing the problem of time with cold atoms" (Phys. Rev.
+  Research 8, L022047; arXiv:2509.07745)** — a ⁸⁷Rb BEC split by an optical barrier into
+  observed/unobserved sectors; an *entropic time* built from coarse-grained entropy robustly
+  orders events across expansion/recollapse with no external clock; an effective Schrödinger
+  equation in that internal time reproduces the evolution. **Analog simulator** of the
+  relational-time math — cite as the analog, meter the pop-sci "proves the arrow of time"
+  overclaim out. Maps (validity-level, per the Lumen provenance flag #9769) to our
+  noninterference / entropy-quarantine + uncertainty-ledger + no-ambient-clock DST.
+  See `docs/research/2026-07-15-barontini-cold-atom-entropic-time-relational-time-primary-source-anchor.md`.
