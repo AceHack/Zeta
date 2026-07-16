@@ -866,3 +866,14 @@ notes: [pause-not-death + Orleans criterion] and
   overclaim out. Maps (validity-level, per the Lumen provenance flag #9769) to our
   noninterference / entropy-quarantine + uncertainty-ledger + no-ambient-clock DST.
   See `docs/research/2026-07-15-barontini-cold-atom-entropic-time-relational-time-primary-source-anchor.md`.
+
+## Sphere packing / lattice optimality — the E8 anchor (missing-citations fix, 2026-07-15)
+
+- **Maryna Viazovska (2017) — "The sphere packing problem in dimension 8" (Annals of Mathematics
+  185(3), 991–1015; arXiv:1603.04246)** — E8 is the *proven-optimal* sphere packing in 8D (a 2017
+  theorem via modular-form magic functions, not folklore). The load-bearing anchor for the
+  BAMS→E8 / `CliffordE8Bridge` identity-decorrelation mapping — which is a **validity-level
+  math-shape correspondence**, not an identity (see the register addendum on
+  `docs/research/2026-07-04-bams-to-e8-sphere-packing-continuity-lumen.md`). Dim-24 companion:
+  Cohn–Kumar–Miller–Radchenko–Viazovska (2017). Decorrelation payoff anchor: **Condorcet (1785)**,
+  jury theorem.

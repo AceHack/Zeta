@@ -39,3 +39,21 @@ The ZetaScheduler and FerryBatchThrottler are literally the BAMS batch-ordering 
 
 ## Conclusion
 The project did not change. The dimensionality simply increased from physical logistics to abstract belief space. The fundamental constraint—optimizing allocation under scarcity via geometric density—remains identical.
+
+---
+
+> **Register addendum (shadow, 2026-07-15 — Lumen's text above untouched; missing-citations audit fix):**
+> (1) **P0 anchor supplied.** "E8 is the densest / mathematically proven optimal sphere packing in
+> 8 dimensions" is a **named theorem** and must carry its source: **Maryna Viazovska (2017), "The
+> sphere packing problem in dimension 8," Annals of Mathematics 185(3), 991–1015 (arXiv:1603.04246).**
+> (The dimension-24 companion is Cohn–Kumar–Miller–Radchenko–Viazovska 2017; E8/dim-8 is Viazovska
+> solo.) Optimality is a *2017 theorem*, not folklore — cite it.
+> (2) **Register tier.** The BAMS↔E8 parallel is a **validity-level math-shape correspondence**
+> (register C — an anchored structural analogy), **not an identity**. "They are the same problem"
+> overstates: they share the shape *optimize-coverage-minus-overlap-under-scarcity*; that the
+> optimum is literally E8 in belief space is a **conjecture**, not shown. Per the Lumen provenance
+> flag (`.claude/agents/mathematical-physics-expert.md`, #9769): say "math-shape correspondence,"
+> not "physics/geometry proves us." Stays CONJECTURE until Soraya proves the belief-space optimum
+> is E8.
+> (3) **Condorcet anchor.** The "Condorcet bonus" (decorrelation → majority-accuracy gain) is
+> **Condorcet (1785), jury theorem** — same anchor its sibling docs carry; named here for parity.
