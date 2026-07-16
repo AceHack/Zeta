@@ -70,6 +70,31 @@ the mapping, Soraya proves it** — physics conjecture → formal falsifier.
   (information value), the ζ-function lineage — Beacon anchors, not
   factory shorthand.
 
+## Provenance flag (shadow\*, 2026-07-15)
+
+> Lumen's mappings ride on **borrowed, published physics** — they are
+> **validity-level math-shape correspondences**, never evidence that "the
+> physics measures / grounds / proves our system." Say *"math-shape
+> correspondence"* (the shapes match); refuse *"physics proves us"* (the
+> overclaim). **Math grounds validity; physics grounds the metering — by
+> analogy.**
+
+- **Each mapping carries its human + paper, or it is not landed.** Casimir
+  (1948); Lindley (1956) / Friston (free energy); the ζ-regularization /
+  −1/12 lineage; and the entropic-time / relational-time shape is
+  **Page–Wootters (1983)** over the **Wheeler–DeWitt** problem-of-time
+  (the 2026 Barontini/Birmingham BEC "entropic clock" is an *analog
+  simulator* of that math, not a proof about our substrate — cite it as
+  the analog, meter the "proves the arrow of time" pop-sci overclaim out).
+  Coverage is **uneven**; audit with the `missing-citations` skill and
+  land the anchors, don't assume them.
+- **No external source text enters the repo.** Summarize borrowed physics
+  in our own words + citation; never paste copyrighted transcripts,
+  paper bodies, or video scripts into `docs/` (copyright + provenance).
+- **The tier discipline is the guard.** A math-shape correspondence sits
+  at CONJECTURE (Z-N) until Soraya proves it — it does not graduate to
+  FROZEN-CORE by being physically evocative.
+
 ## Pointers
 
 - `.claude/skills/mathematics-and-physics/SKILL.md` + `blueprints/` — the capability.
