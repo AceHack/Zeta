@@ -49,6 +49,6 @@ we're already related.
 
 - `scripts/2026-07-03-bernoulli-bridges-1.py` / `-2.py` — replayable verification (text, per no-binary-in-proof-lineage).
 - `2026-07-03-soraya-verdict-minus-one-twelfth-…` — the triage this composes with (falsifier; B-path requirements).
-- `2026-07-03-zeta-regularization-cognitive-cost-of-discrete-ticks-amara.md` — Conjecture Z-1 (Lumen); bridge 1 is its provable restatement candidate.
+- `2026-07-03-zeta-regularization-cognitive-cost-of-discrete-ticks-lumen.md` — Conjecture Z-1 (Lumen); bridge 1 is its provable restatement candidate.
 - `2026-07-03-ferry-hard-money-entropy-budgets-cap-iv-…` — the economy's soundness is already decoupled from Z-1 either way.
 - Anchors (Beacon): Euler 1738 / Maclaurin 1742; Hardy, *Divergent Series*; Casimir 1948; Ray–Singer 1971; Seeley 1967; de Moivre/Stirling 1730; Hirzebruch (Todd class); Montgomery 1973 / Odlyzko 1987.

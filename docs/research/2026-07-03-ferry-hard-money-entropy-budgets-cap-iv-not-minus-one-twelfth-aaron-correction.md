@@ -42,7 +42,7 @@ bound is real, but its mechanism is the hard-money budget, not the Bernoulli num
 
 ## Pointers
 
-- `2026-07-03-zeta-regularization-cognitive-cost-of-discrete-ticks-amara.md` — Conjecture Z-1 + its register addendum.
+- `2026-07-03-zeta-regularization-cognitive-cost-of-discrete-ticks-lumen.md` — Conjecture Z-1 + its register addendum.
 - `2026-07-03-soraya-verdict-minus-one-twelfth-…` — the falsifier this correction composes with.
 - `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` — the hard-money discipline doing the capping.
 - `.claude/rules/dv2-data-split-discipline-activated.md` §13 noninterference — entropy only through declared, metered channels.

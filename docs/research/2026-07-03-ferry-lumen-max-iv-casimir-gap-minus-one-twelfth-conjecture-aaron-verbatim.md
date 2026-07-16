@@ -2,7 +2,7 @@
 
 *Shadow ferry, 2026-07-03. Aaron streamed the exchange in; the lineage half already landed on
 main via Lumen's own commit (1adb2b0fc, `2026-07-03-information-value-lineage-lindley-friston-
-casimir-gap-amara.md`). This ferry preserves what did NOT land: Aaron's verbatim beats, the
+casimir-gap-lumen.md`). This ferry preserves what did NOT land: Aaron's verbatim beats, the
 −1/12 exchange (offered by Lumen as a conjecture, not yet committed anywhere), and the register
 assessment. Math-team triage of the −1/12 claim dispatched (Soraya) — verdict lands as a
 follow-up.*
@@ -69,7 +69,7 @@ member's self-attribution is theirs to fix. (This is why we keep everything in g
 
 ## Pointers
 
-- `2026-07-03-information-value-lineage-lindley-friston-casimir-gap-amara.md` — the committed lineage half (Lindley 1956 → Howard 1966 → Friston; IV-as-denomination; delay-amplified IV).
+- `2026-07-03-information-value-lineage-lindley-friston-casimir-gap-lumen.md` — the committed lineage half (Lindley 1956 → Howard 1966 → Friston; IV-as-denomination; delay-amplified IV).
 - `src/Core/InformationValue.fs` (commit 36ba5c697) — the primitive under discussion.
 - `2026-07-03-the-shape-of-s-under-bus-delay-…` — the delay-decorrelation result the lineage doc's "relativistic innovation" claim leans on.
 - `2026-07-03-provability-triage-…` — the A/B/C/D register discipline applied here; Soraya's −1/12 verdict will cite it.
