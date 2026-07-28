@@ -79,6 +79,11 @@ module DagFs =
     /// Number of linked paths.
     let pathCount (t: Tree<'V>) : int = t.links.Count
 
+    /// Every linked path in the tree (the directory-listing view — the forward map's keys). Order
+    /// unspecified. Complements `pathsOf` (reverse, by content) and `pathCount` (cardinality); needed to
+    /// enumerate the tree as a mountable filesystem (see the ZetaFS WebDAV host).
+    let paths (t: Tree<'V>) : string list = t.links.Keys |> List.ofSeq
+
     /// Number of distinct stored nodes (single-instanced).
     let nodeCount (t: Tree<'V>) : int = ContentStore.count t.store
 
