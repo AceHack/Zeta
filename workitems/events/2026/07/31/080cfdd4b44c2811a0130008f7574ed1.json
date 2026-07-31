@@ -1,0 +1,14 @@
+{
+  "id": "080cfdd4b44c2811a0130008f7574ed1",
+  "at": "2026-07-31T23:50:55.621Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYX9D2C408QG0R003ADEY16",
+    "type": "bug",
+    "title": "auto-merge lands PRs before the gate completes — broken deps (CS9057) reached main",
+    "slug": "auto-merge-lands-prs-before-the-gate-completes-broken-deps-c",
+    "priority": "P2",
+    "filename": "081KYX9D2C408QG0R003ADEY16-auto-merge-lands-prs-before-the-gate-completes-broken-deps-c.md"
+  }
+}
