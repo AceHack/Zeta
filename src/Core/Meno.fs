@@ -44,14 +44,24 @@ module Meno =
     /// Monoidal: Tensor product (parallel persistence).
     let tensor<'a, 'b, 'c, 'd when 'a:comparison and 'b:comparison and 'c:comparison and 'd:comparison> (MenoArrow f) (MenoArrow g) : Arrow<'a * 'c, 'b * 'd> =
         MenoArrow (fun zsetAC -> 
-            // This is a simplification for the structural shape.
-            // A true ZSet tensor product requires a Cartesian product of the underlying sets,
-            // multiplying the weights.
-            ZSet.empty // Placeholder to make the compiler happy while we fix the types
+            // Z-linear (Kronecker) tensor of morphisms: for each basis pair (a,c) of weight w,
+            // emit w*(f{a} (x) g{c}) and sum -- the bilinear extension of (a (x) c) |-> f(a) (x) g(c).
+            // Assumes f,g Z-linear (true for arr/id/compose). NB the Cartesian (x) makes the category
+            // SYMMETRIC monoidal (Mod_Z) -- so braid below is the swap, not a genuine braid.
+            let mutable acc : ZSet<'b * 'd> = ZSet.empty
+            let span = zsetAC.AsSpan()
+            for i in 0 .. span.Length - 1 do
+                let (a, c) = span.[i].Key
+                acc <- acc + ZSet.scale span.[i].Weight (ZSet.cartesian (f (ZSet.singleton a 1L)) (g (ZSet.singleton c 1L)))
+            acc
         )
 
-    /// Braided: The braiding map (worldlines crossing).
-    /// This is the core of the braided monoidal category. It swaps the parallel tracks.
+    /// Braiding map c_{A,B} : A(x)B -> B(x)A (worldlines crossing).
+    /// **HONEST TIER: this is the SYMMETRIC braiding (the swap), sigma^2=id -- NOT a genuine braid.**
+    /// The Cartesian tensor above induces symmetric-monoidal (Mod_Z) structure, for which the swap is
+    /// the correct braiding. A genuine braided category (sigma^2 != id, the Braid.fs crossing) needs an
+    /// R-matrix / Yang-Baxter operator as the braiding -- a separate build. Do NOT FsCheck coherence
+    /// against this swap and call it "braided": symmetric => hexagons hold trivially (false-green).
     let braid<'a, 'b when 'a:comparison and 'b:comparison> : Arrow<'a * 'b, 'b * 'a> =
         MenoArrow (fun zsetAB -> 
             ZSet.map (fun (a, b) -> (b, a)) zsetAB
@@ -66,14 +76,25 @@ module Meno =
     /// Arrow: first (apply an arrow to the first part of a tuple, leaving the second unchanged).
     let first<'a, 'b, 'c when 'a:comparison and 'b:comparison and 'c:comparison> (MenoArrow f) : Arrow<'a * 'c, 'b * 'c> =
         MenoArrow (fun zsetAC -> 
-            // In a real implementation, we group by 'c', apply f to the 'a's, and re-zip.
-            ZSet.empty // Placeholder
+            // f (x) id : apply f to the first factor, identity on the second.
+            let mutable acc : ZSet<'b * 'c> = ZSet.empty
+            let span = zsetAC.AsSpan()
+            for i in 0 .. span.Length - 1 do
+                let (a, c) = span.[i].Key
+                acc <- acc + ZSet.scale span.[i].Weight (ZSet.cartesian (f (ZSet.singleton a 1L)) (ZSet.singleton c 1L))
+            acc
         )
 
     /// Arrow: second (apply an arrow to the second part of a tuple).
     let second<'a, 'b, 'c when 'a:comparison and 'b:comparison and 'c:comparison> (MenoArrow f) : Arrow<'c * 'a, 'c * 'b> =
         MenoArrow (fun zsetCA -> 
-            ZSet.empty // Placeholder
+            // id (x) f : identity on the first factor, apply f to the second.
+            let mutable acc : ZSet<'c * 'b> = ZSet.empty
+            let span = zsetCA.AsSpan()
+            for i in 0 .. span.Length - 1 do
+                let (c, a) = span.[i].Key
+                acc <- acc + ZSet.scale span.[i].Weight (ZSet.cartesian (ZSet.singleton c 1L) (f (ZSet.singleton a 1L)))
+            acc
         )
 
     // The Bridge to Maji

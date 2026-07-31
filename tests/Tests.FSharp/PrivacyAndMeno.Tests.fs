@@ -91,3 +91,28 @@ module PrivacyAndMenoTests =
         // Use Euclidean normSq (not Clifford distSq) for the distance check
         let normSqDiff = Cl3.normSq (Cl3.sub result token.CurrentCodeword)
         Assert.True(normSqDiff < 1e-6, sprintf "normSqDiff = %f, expected < 1e-6" normSqDiff)
+
+    [<Fact>]
+    let ``MENO-4: Tensor is the Z-linear (Kronecker) product of arrows`` () =
+        // The real ⊗ (not the old ZSet.empty placeholder): (f ⊗ g) applied to a Z-linear
+        // combination of basis pairs acts factor-wise and multiplies weights, with NO cross terms.
+        // f: +1, g: *10 over ints. input = 3·(1,2) + 1·(5,6)  ⇒  3·(2,20) + 1·(6,60).
+        let f = Meno.arr (fun (x: int) -> x + 1)
+        let g = Meno.arr (fun (x: int) -> x * 10)
+        let input = ZSet.ofSeq [ ((1, 2), 3L); ((5, 6), 1L) ]
+        let (Meno.MenoArrow t) = Meno.tensor f g
+        let output = t input
+        let pairs = [ for e in output -> (e.Key, e.Weight) ]
+        Assert.Equal(2, pairs.Length)                       // no (2,60)/(6,20) cross terms
+        Assert.Contains(((2, 20), 3L), pairs)               // weight 3·1 = 3
+        Assert.Contains(((6, 60), 1L), pairs)               // weight 1·1 = 1
+
+    [<Fact>]
+    let ``MENO-5: first applies an arrow to the first factor only (f ⊗ id)`` () =
+        let f = Meno.arr (fun (x: int) -> x + 100)
+        let (Meno.MenoArrow ff) = Meno.first<int, int, string> f
+        let input = ZSet.singleton (1, "keep") 1L
+        let output = ff input
+        let pairs = [ for e in output -> (e.Key, e.Weight) ]
+        Assert.Equal(1, pairs.Length)
+        Assert.Contains(((101, "keep"), 1L), pairs)         // f on the first factor, second untouched
