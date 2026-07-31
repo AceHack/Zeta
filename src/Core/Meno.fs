@@ -68,10 +68,30 @@ module Meno =
         )
 
     /// Arrow: arr (lift a pure function into the Meno category).
-    let arr<'a, 'b when 'a:comparison and 'b:comparison> (f: 'a -> 'b) : Arrow<'a, 'b> = 
-        MenoArrow (fun zsetA -> 
+    let arr<'a, 'b when 'a:comparison and 'b:comparison> (f: 'a -> 'b) : Arrow<'a, 'b> =
+        MenoArrow (fun zsetA ->
             ZSet.map f zsetA
         )
+
+    // --- Monoidal coherence data (associator + unitors) — needed to STATE the hexagons; a Cartesian ⊗
+    //     is strict-coherent up to these canonical tuple-rearrangement isos (pentagon/triangle hold). ---
+
+    /// Monoidal unit I — the ZSet on the single-element `unit` type (the terminal object of the Cartesian ⊗).
+    let unitObject : ZSet<unit> = ZSet.singleton () 1L
+
+    /// Associator α : (A⊗B)⊗C → A⊗(B⊗C) — reassociate left-nested to right-nested tuples (natural iso).
+    let associator<'a, 'b, 'c when 'a:comparison and 'b:comparison and 'c:comparison> : Arrow<('a * 'b) * 'c, 'a * ('b * 'c)> =
+        arr (fun ((a, b), c) -> (a, (b, c)))
+
+    /// Inverse associator α⁻¹ : A⊗(B⊗C) → (A⊗B)⊗C.
+    let associatorInv<'a, 'b, 'c when 'a:comparison and 'b:comparison and 'c:comparison> : Arrow<'a * ('b * 'c), ('a * 'b) * 'c> =
+        arr (fun (a, (b, c)) -> ((a, b), c))
+
+    /// Left unitor λ : I⊗A → A (drop the unit element).
+    let leftUnitor<'a when 'a:comparison> : Arrow<unit * 'a, 'a> = arr (fun ((), a) -> a)
+
+    /// Right unitor ρ : A⊗I → A.
+    let rightUnitor<'a when 'a:comparison> : Arrow<'a * unit, 'a> = arr (fun (a, ()) -> a)
 
     /// Arrow: first (apply an arrow to the first part of a tuple, leaving the second unchanged).
     let first<'a, 'b, 'c when 'a:comparison and 'b:comparison and 'c:comparison> (MenoArrow f) : Arrow<'a * 'c, 'b * 'c> =

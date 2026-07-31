@@ -116,3 +116,35 @@ module PrivacyAndMenoTests =
         let pairs = [ for e in output -> (e.Key, e.Weight) ]
         Assert.Equal(1, pairs.Length)
         Assert.Contains(((101, "keep"), 1L), pairs)         // f on the first factor, second untouched
+
+    // --- Monoidal coherence: associator + unitors + pentagon + triangle (Soraya's Step 1) ---
+
+    let private applyMeno (arrow: Meno.Arrow<'a, 'b>) (x: 'a) : 'b list =
+        let (Meno.MenoArrow f) = arrow
+        [ for e in f (ZSet.singleton x 1L) -> e.Key ]
+
+    [<Fact>]
+    let ``MENO-6: associator reassociates and α⁻¹ inverts it`` () =
+        Assert.Equal<(int * (int * int)) list>([ (1, (2, 3)) ], applyMeno Meno.associator ((1, 2), 3))
+        Assert.Equal<((int * int) * int) list>(
+            [ ((1, 2), 3) ], applyMeno (Meno.compose Meno.associator Meno.associatorInv) ((1, 2), 3))
+
+    [<Fact>]
+    let ``MENO-7: unitors drop the monoidal unit`` () =
+        Assert.Equal<int list>([ 42 ], applyMeno Meno.leftUnitor ((), 42))
+        Assert.Equal<int list>([ 42 ], applyMeno Meno.rightUnitor (42, ()))
+
+    [<Fact>]
+    let ``MENO-8: pentagon — the two reassociation paths agree`` () =
+        let sample = (((1, 2), 3), 4)
+        let top = Meno.compose Meno.associator Meno.associator                    // 2 α's
+        let bottom =                                                              // 3 α's: (α⊗id) · α · (id⊗α)
+            Meno.compose (Meno.compose (Meno.first Meno.associator) Meno.associator) (Meno.second Meno.associator)
+        Assert.Equal<(int * (int * (int * int))) list>(applyMeno top sample, applyMeno bottom sample)
+
+    [<Fact>]
+    let ``MENO-9: triangle — the unit coherence`` () =
+        let sample = ((7, ()), 9)
+        let viaAlpha = Meno.compose Meno.associator (Meno.second Meno.leftUnitor) // α then (id ⊗ λ)
+        let viaUnitor = Meno.first Meno.rightUnitor                               // ρ ⊗ id
+        Assert.Equal<(int * int) list>(applyMeno viaAlpha sample, applyMeno viaUnitor sample)
