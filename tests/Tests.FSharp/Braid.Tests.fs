@@ -179,3 +179,27 @@ let ``MENO-BRAID P5c: ρ realizes Bₙ faithfully — σ₁²≠id in the rep, m
     let strands = [ Braid.gen 0; Braid.gen 1; Braid.gen 2 ]
     Assert.False(Braid.equal 3 [ 1; 1 ] [])                                  // σ₁² ≠ id in B₃
     Assert.NotEqual<MenoBraided.V list list>(applyRep [] strands, applyRep [ 1; 1 ] strands) // rep agrees (swap would not)
+
+// --- OrbitBraid: trajectory → braid (the orbit→braid half; the Thurston bridge now composes end-to-end) ---
+
+[<Fact>]
+let ``ORBIT-BRAID: a single over-crossing extracts σ₀ = [1]`` () =
+    let frames = [ [ (0., 0.); (1., 0.) ]; [ (1.5, 1.); (0.5, 0.) ] ] // id 0 moves right passing OVER id 1
+    Assert.Equal<int list>([ 1 ], OrbitBraid.braidFromFrames frames)
+
+[<Fact>]
+let ``ORBIT-BRAID: no x-order swaps is the trivial braid`` () =
+    let frames = [ [ (0., 0.); (1., 0.) ]; [ (0., 0.); (1., 0.) ] ]
+    Assert.Equal<int list>([], OrbitBraid.braidFromFrames frames)
+
+[<Fact>]
+let ``ORBIT-BRAID -> BRAID ENTROPY: a pseudo-Anosov trajectory yields dilatation 2.618 end-to-end`` () =
+    // A constructed σ₀σ₁⁻¹ motion of 3 points — the full Thurston bridge: trajectory -> braid -> entropy.
+    let frames =
+        [ [ (0., 0.); (1., 0.); (2., 0.) ]
+          [ (1.5, 1.); (0.5, 0.); (2., 0.) ]     // σ₀:   ids 0,1 swap at lane 0, id 0 over
+          [ (2.5, -1.); (0.5, 0.); (1.8, 0.) ] ] // σ₁⁻¹: ids 0,2 swap at lane 1, id 0 under
+    let braid = OrbitBraid.braidFromFrames frames
+    Assert.Equal<int list>([ 1; -2 ], braid) // extracted the canonical pA braid
+    let lam = BraidEntropy.dilatationEstimate 3 braid
+    Assert.True(abs (lam - 2.6180) < 0.05, sprintf "λ = %f, expected ≈ 2.618 (the entropy the orbit forces)" lam)

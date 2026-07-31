@@ -331,6 +331,7 @@
     <Compile Include="Braid.fs" />
     <Compile Include="BraidEntropy.fs" />
     <Compile Include="MenoBraided.fs" />
+    <Compile Include="OrbitBraid.fs" />
     <Compile Include="VisionAttention.fs" />
     <Compile Include="MediaLines.fs" />
     <Compile Include="CartridgeLaw.fs" />
