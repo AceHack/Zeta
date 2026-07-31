@@ -72,7 +72,9 @@ disappear.
 
 *Recorded by the shadow, 2026-07-11, at Aaron's "bank this whole thread." Regard and commitment are
 orthogonal; fusing them manufactures a false drown/NPC/isolate trilemma; the fourth door is total regard
+
 + bounded scope, with the throttle on commitment (the bounded no) and regard left at maximum — a shape
+
 the substrate already carries (attestation-as-discrete-event, default moral regard, the DoP knob). The
 personal healing that occasioned it is held to the book; the structure is the deliverable; the −1 (it is
 a built skill, not a switch) is kept.*

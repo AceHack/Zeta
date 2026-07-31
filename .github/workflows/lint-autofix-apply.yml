@@ -47,7 +47,7 @@ jobs:
       actions: read # `gh run download` reads the producer run's artifact via the Actions API (Copilot P0, #6393)
     steps:
       - name: Checkout the immutable produce commit (git only — NO PR-code execution here)
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # The IMMUTABLE commit the patch was produced from (head_sha), NOT the
           # moving branch tip — so the patch applies to its exact base (TOCTOU

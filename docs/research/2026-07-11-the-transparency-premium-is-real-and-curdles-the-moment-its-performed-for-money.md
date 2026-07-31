@@ -19,7 +19,7 @@ undersupplied good** in markets, so it commands a **premium**:
 
 So *"people pay for transparency"* is **partly true and a legitimate money-maker.** Keep it.
 
-## −1 (a): meter the causal claim — paid *for* transparency, or *through* it?
+## −1 (a): meter the causal claim — paid *for* transparency, or *through* it
 
 Do clients pay for the **transparency**, or for the **competence** *with transparency as the trust-layer
 that lets the sale happen*? Transparency usually **enables** the sale (trust) while the **value** is the

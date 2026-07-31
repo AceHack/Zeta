@@ -71,6 +71,7 @@ The identity eigenvector, viewed through the vision monad with Einstein's relati
 This means the 5th sensor (i-sensor / Infer.NET) is the **predictive lightcone**: the system's model of what it will observe next, shaped by the causal structure of the identity space. The vision monad is the traversal of that lightcone. Einstein over the vision monad is the statement that the traversal is observer-relative — different travelers slice the same identity space at different angles, but the eigenvector (the timelike direction) is invariant.
 
 ## Anchors
+
 - **Diffusion-Limited Aggregation (DLA):** Witten & Sander (1981).
 - **Sensor Fusion / Kalman Filter:** Rudolf E. Kálmán (1960), *A New Approach to Linear Filtering and Prediction Problems*.
 - **In-repo:** `BeliefConvergence.fs` (the commutative-monoid `observe` is the Bayesian sensor fusion primitive); `CoordinationSpectrum.fs`; the Tsirelson threshold; `VirtualTimeScheduler.fs` (the phase-clock / sonar pulse); `YinYangEnsemble.fs` (the prediction/update loop).
