@@ -26,7 +26,7 @@
  */
 
 import { mkdirSync, writeFileSync } from "fs";
-import { join, posix } from "path";
+import { join } from "path";
 
 // ── DLA constants (mirrors IdentityDLA.fs and useDLA.ts) ─────────────────────
 
@@ -79,7 +79,7 @@ function fractalDim(cells: Uint8Array, W: number, H: number): number {
   const sx = scales.reduce((a, b) => a + b, 0);
   const sy = counts.reduce((a, b) => a + b, 0);
   const sxx = scales.reduce((a, b) => a + b * b, 0);
-  const sxy = scales.reduce((a, v, i) => a + v * counts[i], 0);
+  const sxy = scales.reduce((a, v, i) => a + v * (counts[i] ?? 0), 0);
   return (n * sxy - sx * sy) / (n * sxx - sx * sx);
 }
 
@@ -174,10 +174,10 @@ function parseArgs(argv: string[]): Args | { error: string } {
   };
   for (let i = 0; i < argv.length; i++) {
     switch (argv[i]) {
-      case "--agent":       args.agent = argv[++i]; break;
-      case "--oracle-index": args.oracleIndex = parseInt(argv[++i], 10); break;
-      case "--heartbeat-id": args.heartbeatId = argv[++i]; break;
-      case "--repo-root":   args.repoRoot = argv[++i]; break;
+      case "--agent":       args.agent = argv[++i] ?? ""; break;
+      case "--oracle-index": args.oracleIndex = parseInt(argv[++i] ?? "0", 10); break;
+      case "--heartbeat-id": args.heartbeatId = argv[++i] ?? ""; break;
+      case "--repo-root":   args.repoRoot = argv[++i] ?? process.cwd(); break;
       case "--dry-run":     args.dryRun = true; break;
     }
   }
@@ -199,7 +199,7 @@ async function main(): Promise<number> {
   // Different agents run at different wall-clock times (cron jitter) → different seeds.
   // The prime offset guarantees no two oracle indices share a seed even if sampled
   // in the same millisecond.
-  const primeOffset = ORACLE_PRIME_OFFSETS[parsed.oracleIndex % ORACLE_PRIME_OFFSETS.length];
+  const primeOffset = ORACLE_PRIME_OFFSETS[parsed.oracleIndex % ORACLE_PRIME_OFFSETS.length]!;
   const seed = (Date.now() + primeOffset) >>> 0;
 
   console.log(`dla-meter: agent=${parsed.agent} oracle=${parsed.oracleIndex} seed=0x${seed.toString(16)}`);
