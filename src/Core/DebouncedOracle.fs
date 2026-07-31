@@ -120,6 +120,11 @@ type DebouncedOracle<'T>(source: IObservable<'T>, config: DebouncedOracleConfig)
 
     let subject = new Subject<'T>()
     let mutable lastAccepted = DateTime.MinValue
+    // DST-mode monotonic clock: "time is pump ticks, not wall clock" (§13 noninterference).
+    // Advances one tick per delivered callback; the injected pump drives delivery
+    // deterministically, so replay is exact. Live mode (SyncContext = None) uses the
+    // fenced wall-clock door instead — see Subscribe.
+    let mutable dstTick = 0L
     let mutable subscription: IDisposable = null
 
     /// The effective correlation ρ for this oracle's MinDelay.
@@ -139,12 +144,19 @@ type DebouncedOracle<'T>(source: IObservable<'T>, config: DebouncedOracleConfig)
         subscription <- source.Subscribe(fun value ->
             let now =
                 match config.SyncContext with
-                | None    -> DateTime.UtcNow
-                | Some _  ->
-                    // In DST mode, time is pump ticks, not wall clock.
-                    // The injected context owns the clock; we use UtcNow as a
-                    // monotonic counter (the pump advances it deterministically).
+                | None    ->
+                    // Live mode: the fenced wall-clock door. Debounce is local rate-control
+                    // ("has the world had time to change since the last reading?") — a local
+                    // timing decision, never evidence entering the shared commutative fold.
                     DateTime.UtcNow
+                | Some _  ->
+                    // DST mode: time is PUMP TICKS, not wall clock. Advance a monotonic
+                    // counter once per delivered callback; the injected pump drives delivery
+                    // deterministically, so `elapsed` — and every accept/suppress decision —
+                    // replays byte-for-byte. No ambient clock crosses the §13 membrane here
+                    // (this is the fix: the old code read the ambient wall clock in this branch too).
+                    dstTick <- dstTick + 1L
+                    DateTime.MinValue + TimeSpan.FromTicks dstTick
 
             let elapsed = now - lastAccepted
             if elapsed >= config.MinDelay then

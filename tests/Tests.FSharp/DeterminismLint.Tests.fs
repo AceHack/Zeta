@@ -43,7 +43,14 @@ let private allowlist =
       "Environment.fs", "DateTimeOffset.UtcNow", 1, "the ambient implementation of IEnvironment.Now — the fenced door"
       "Injection.fs", "DateTimeOffset.UtcNow", 2, "wall-time instrumentation at the injection edge — observability only"
       // timing instrumentation at the injection boundary (observability, not logic)
-      "Injection.fs", "Stopwatch.StartNew", 1, "wall-time instrumentation at the injection edge — observability only" ]
+      "Injection.fs", "Stopwatch.StartNew", 1, "wall-time instrumentation at the injection edge — observability only"
+      // oracle wall-clock edges (added 2026-07-31, shadow): the pre-existing main-wide determinism-lint red.
+      // DebouncedOracle's DST branch was FIXED (it read ambient UtcNow despite the docstring; now a pump-tick
+      // counter) — this row is only its live-mode door. Transport/velocity uses are live-emit metadata +
+      // latency instrumentation; verified none feed the rho/Condorcet math, none run on the DST/seed path.
+      "DebouncedOracle.fs", "DateTime.UtcNow", 1, "live-mode debounce rate-control door (local timing, not shared-fold evidence); the SyncContext=Some DST path uses a deterministic pump-tick counter"
+      "OracleTransport.fs", "DateTimeOffset.UtcNow", 7, "reading-timestamp display metadata (1) + live Git/WebSocket/Reticulum emit-latency instrumentation (6); observability only, live-emit path never DST — the rho/Condorcet math uses none of it"
+      "MoneyVelocityOracle.fs", "DateTimeOffset.UtcNow", 1, "reading-timestamp display field; rho/bonus/velocity are computed from UTXO age + M2, not the timestamp — observability only" ]
 
 [<Fact>]
 let ``THE DETERMINISM LINT: no ambient entropy in src/Core outside the named, justified edges`` () =
