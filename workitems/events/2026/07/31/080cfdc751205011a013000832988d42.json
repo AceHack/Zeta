@@ -1,0 +1,14 @@
+{
+  "id": "080cfdc751205011a013000832988d42",
+  "at": "2026-07-31T16:03:00.234Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYWEM90908QG0R002NHEMZE",
+    "type": "task",
+    "title": "Earn braided-monoidal for Meno — R-matrix (conjugation-rack) braiding, per Soraya spec",
+    "slug": "earn-braided-monoidal-for-meno-r-matrix-conjugation-rack-bra",
+    "priority": "P2",
+    "filename": "081KYWEM90908QG0R002NHEMZE-earn-braided-monoidal-for-meno-r-matrix-conjugation-rack-bra.md"
+  }
+}
