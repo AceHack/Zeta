@@ -877,3 +877,13 @@ notes: [pause-not-death + Orleans criterion] and
   `docs/research/2026-07-04-bams-to-e8-sphere-packing-continuity-lumen.md`). Dim-24 companion:
   Cohn–Kumar–Miller–Radchenko–Viazovska (2017). Decorrelation payoff anchor: **Condorcet (1785)**,
   jury theorem.
+- **Pierre-Philippe Dechant (2016) — "The E8 geometry from a Clifford perspective" (Advances in
+  Applied Clifford Algebras 27, 397–421; arXiv:1603.06682)** — the Weyl group W(E8) is realized by
+  **Clifford versors** (the pin/spin cover), constructed in **Cl(8,0)**. This is the honest anchor
+  for the `CliffordE8Bridge` algebra-gap: the bridge uses **Cl(3,0)** as an 8-dimensional space,
+  which is **not** Dechant's Cl(8,0) — so "our Clifford construction realizes W(E8)" is an *open,
+  wrong-algebra* claim (route (B) of the E8-braid-orbit conjecture, FROZEN-CORE §B-other, 2026-07-31),
+  not a closed identity. It also fixes the algebra a *correct* restatement would live in, and anchors
+  the Coxeter/reflection-group (type-E8) side against the separate type-A Artin/braid lineage
+  (`MenoBraided.braidR`). Prior in-repo: `docs/history/pr-reviews/PR-8695-…dechant-repr.md`,
+  `PR-8657-…dechant-wilson-baez-…md`.
