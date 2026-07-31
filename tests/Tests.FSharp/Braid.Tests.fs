@@ -90,3 +90,36 @@ let ``DENSITY: dense vs sparse braiding are distinguishable by pairLoad (ferry 1
 let ``the permutation is the order-forgetting quotient: σ₁² has trivial permutation but is NOT the identity braid`` () =
     Assert.Equal<int list>([ 0 .. N - 1 ], Braid.permutation N [ 1; 1 ])
     Assert.False(Braid.isIdentity N [ 1; 1 ]) // the kernel (pure braid group) is the memory
+
+// --- BraidEntropy: the Thurston–Nielsen–Boyland bridge (a braid forces topological entropy h ≥ log λ) ---
+
+[<Fact>]
+let ``BRAID ENTROPY: σ₁σ₂⁻¹ is pseudo-Anosov with dilatation (3+√5)/2 — the canonical pA on 3 strands`` () =
+    // [1;-2] = σ₁σ₂⁻¹.  Dilatation λ = (3+√5)/2 ≈ 2.6180 (golden φ²), log λ ≈ 0.9624 — the entropy it forces.
+    let h = BraidEntropy.growthRate 3 [ 1; -2 ]
+    let lam = BraidEntropy.dilatationEstimate 3 [ 1; -2 ]
+    Assert.True(abs (h - 0.9624) < 0.02, sprintf "log λ = %f, expected ≈ 0.9624" h)
+    Assert.True(abs (lam - 2.6180) < 0.05, sprintf "λ = %f, expected ≈ 2.618" lam)
+
+[<Fact>]
+let ``BRAID ENTROPY: a single crossing is reducible — entropy ≈ 0 (no exponential stretch)`` () =
+    let h = BraidEntropy.growthRate 3 [ 1 ]
+    Assert.True(h < 0.1, sprintf "reducible braid should force ≈0 entropy, got %f" h)
+    Assert.True(BraidEntropy.dilatationEstimate 3 [ 1 ] < 1.15)
+
+[<Fact>]
+let ``BRAID ENTROPY: the empty braid forces no entropy`` () =
+    Assert.Equal(0.0, BraidEntropy.growthRate 3 [])
+
+[<Fact>]
+let ``BRAID ENTROPY is a braid invariant: Artin-equal words force equal entropy`` () =
+    // σ₁σ₂σ₁ = σ₂σ₁σ₂ (the Artin relation) ⇒ the same braid ⇒ the same forced entropy.
+    let a = BraidEntropy.growthRate 3 [ 1; 2; 1 ]
+    let b = BraidEntropy.growthRate 3 [ 2; 1; 2 ]
+    Assert.True(abs (a - b) < 1e-9, sprintf "equal braids gave %f vs %f" a b)
+
+[<Fact>]
+let ``BRAID ENTROPY: pseudo-Anosov strictly dominates reducible (the bridge separates the classes)`` () =
+    let pA = BraidEntropy.growthRate 3 [ 1; -2 ]
+    let reducible = BraidEntropy.growthRate 3 [ 1 ]
+    Assert.True(pA > reducible + 0.5, sprintf "pA %f should dominate reducible %f" pA reducible)
