@@ -51,3 +51,34 @@ let ``membership is exactly the Construction-A spec: x ∈ L ⟺ x mod 2 ∈ C``
     let y = Array.copy x
     y.[abs noise % 8] <- y.[abs noise % 8] + 1
     E8Lattice.isMember x && not (E8Lattice.isMember y)
+
+[<Fact>]
+let ``WEYL ORBIT: the 240 roots form ONE transitive Weyl orbit (Soraya's E8-braid-orbit (A), regression)`` () =
+    // Soraya's E8-braid-orbit routing (2026-07-31): "is E8 a braid-group orbit?" splits into (A) CLOSED —
+    // the 240 roots ARE a single transitive W(E8) orbit (classical, theorem-certain). This is that
+    // regression against the actual roots: the orbit of ONE seed under reflection-in-every-root closes to
+    // exactly 240 = the whole root set. It is NOT a resolution of the OPEN, ill-posed bipartite-braid
+    // conjecture (C) (no root↔strand embedding exists yet; filed in FROZEN-CORE §B). Anchor: Dechant 2016.
+    let roots = E8Lattice.roots
+    let dot (v: int[]) (a: int[]) = Array.fold2 (fun acc vi ai -> acc + vi * ai) 0 v a
+    // reflect v in root a: v - 2·<v,a>/<a,a>·a ; <a,a> = normSq = 4, all <v,a> even ⇒ integer.
+    let reflect (v: int[]) (a: int[]) = let d = dot v a in Array.map2 (fun vi ai -> vi - (d / 2) * ai) v a
+    let key (v: int[]) = List.ofArray v
+    let mutable seen = Set.singleton (key (List.head roots))
+    let mutable frontier = seen
+    let mutable changed = true
+    while changed do
+        changed <- false
+        let next =
+            [ for v in frontier do
+                  let va = List.toArray v
+                  for a in roots do
+                      let r = key (reflect va a)
+                      if not (Set.contains r seen) then yield r ]
+            |> Set.ofList
+        if not (Set.isEmpty next) then
+            seen <- Set.union seen next
+            frontier <- next
+            changed <- true
+    Assert.Equal(240, Set.count seen) // one orbit reaches all 240
+    Assert.Equal<Set<int list>>(roots |> List.map key |> Set.ofList, seen) // = the full root set
