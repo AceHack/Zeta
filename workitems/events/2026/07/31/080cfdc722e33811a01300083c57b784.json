@@ -1,0 +1,14 @@
+{
+  "id": "080cfdc722e33811a01300083c57b784",
+  "at": "2026-07-31T15:56:41.447Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYWE8Q3508QG0R000KZ5PWR",
+    "type": "task",
+    "title": "Open-generics dispatch over ZSets — the polymorphic ZSet base atom",
+    "slug": "open-generics-dispatch-over-zsets-the-polymorphic-zset-base",
+    "priority": "P2",
+    "filename": "081KYWE8Q3508QG0R000KZ5PWR-open-generics-dispatch-over-zsets-the-polymorphic-zset-base.md"
+  }
+}

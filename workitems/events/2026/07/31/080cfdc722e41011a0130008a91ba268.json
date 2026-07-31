@@ -1,0 +1,14 @@
+{
+  "id": "080cfdc722e41011a0130008a91ba268",
+  "at": "2026-07-31T15:56:41.474Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYWE8Q4008QG0R000H558SH",
+    "type": "task",
+    "title": "Schema-on-ZSets — schema as events on the ZSet (DB stored-proc architecture)",
+    "slug": "schema-on-zsets-schema-as-events-on-the-zset-db-stored-proc",
+    "priority": "P2",
+    "filename": "081KYWE8Q4008QG0R000H558SH-schema-on-zsets-schema-as-events-on-the-zset-db-stored-proc.md"
+  }
+}

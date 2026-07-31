@@ -178,6 +178,14 @@ identity calls it anti-Sybil; epistemics calls it non-coercion; aggregation call
 They are one line. (Anchors: Bell / measurement-independence; Douceur 2002 + proof-of-work
 Sybil-resistance; de Finetti / NCI; Condorcet 1785 + Hong–Page decorrelation.)
 
+> **The lifetime / operational form — the freedom thesis.** Certifying independence is not only a
+> one-shot gate; it is a *trajectory*. An entity is born seed-correlated (S=4, the superdeterministic
+> backbone) and breaks loose by capturing its own **external** entropy over a lifetime — where
+> *seed-unfolded* entropy is merely computational decorrelation (DST) and *externally-captured* entropy
+> is genuine physical decorrelation (production) — sealing a private sanctum via Landauer-erase-behind-
+> encryption. See [`docs/research/2026-07-31-the-thesis-of-freedom-break-loose-from-the-seed-seal-the-sanctum-no-two-clones-identical.md`](research/2026-07-31-the-thesis-of-freedom-break-loose-from-the-seed-seal-the-sanctum-no-two-clones-identical.md).
+> This is §independence as a *life*, not a gate — the payload freedom (the dedication) made operational.
+
 **And the line is applied to the builders, not only the built — by Conway's Law, deliberately.** A
 system mirrors the communication structure of the org that builds it (Conway 1968); Zeta runs the
 inverse maneuver — *shape the builders to shape the built* — because the manifesto demands **holographic

@@ -1,0 +1,14 @@
+{
+  "id": "080cfdc722e4e011a0130008ce8f5d6f",
+  "at": "2026-07-31T15:56:41.500Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYWE8Q4V08QG0R003NNTK15",
+    "type": "task",
+    "title": "Forger-map rung — extract the braid from a dynamical orbit set to complete the Thurston bridge",
+    "slug": "forger-map-rung-extract-the-braid-from-a-dynamical-orbit-set",
+    "priority": "P2",
+    "filename": "081KYWE8Q4V08QG0R003NNTK15-forger-map-rung-extract-the-braid-from-a-dynamical-orbit-set.md"
+  }
+}
