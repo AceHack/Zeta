@@ -41,3 +41,25 @@ module MenoBraided =
     /// The inverse braiding R⁻¹ : `R⁻¹(u,v) = (v, v⁻¹·u·v)`. `braidRinv ∘ braidR = id`.
     let braidRinv : Meno.Arrow<V * V, V * V> =
         Meno.arr (fun (u, v) -> (v, Braid.mul (Braid.mul (Braid.inv v) u) v))
+
+    /// Apply R (c>0) or R⁻¹ (c<0) at strand position |c|-1 of a strand-word list — one braid crossing.
+    /// Positions out of range pass straight (a no-op crossing).
+    let private crossingOnList (c: int) (strands: V list) : V list =
+        let i = abs c - 1
+        let a = List.toArray strands
+        if i >= 0 && i + 1 < a.Length then
+            let x, y = a.[i], a.[i + 1]
+            if c > 0 then
+                a.[i] <- Braid.mul (Braid.mul x y) (Braid.inv x)      // R:   x·y·x⁻¹
+                a.[i + 1] <- x                                        //      x
+            else
+                a.[i] <- y                                            // R⁻¹: y
+                a.[i + 1] <- Braid.mul (Braid.mul (Braid.inv y) x) y  //      y⁻¹·x·y
+        List.ofArray a
+
+    /// The n-strand braiding representation ρ : Bₙ → Aut(V^⊗n), with V^⊗n modeled as a `V list` of length
+    /// n. ρ(σᵢ) = R at position i; a braid word composes its crossings left-to-right. Because R IS Braid's
+    /// crossing, ρ realizes Bₙ FAITHFULLY (`ρ-equal ⟺ Braid.equal`, P5c), satisfies the Yang–Baxter /
+    /// Artin relation (P5a), far strands commute (P5b), and σ²≠id (P4). This is the "⟨V⟩ realizes Bₙ" claim.
+    let rep (braid: int list) : Meno.Arrow<V list, V list> =
+        Meno.arr (fun strands -> braid |> List.fold (fun s c -> crossingOnList c s) strands)

@@ -157,3 +157,25 @@ let ``MENO-BRAID: braidRinv inverts braidR (both orders)`` () =
         [ (x0, x1) ], applyBraid (Meno.compose MenoBraided.braidR MenoBraided.braidRinv) (x0, x1))
     Assert.Equal<(MenoBraided.V * MenoBraided.V) list>(
         [ (x0, x1) ], applyBraid (Meno.compose MenoBraided.braidRinv MenoBraided.braidR) (x0, x1))
+
+// --- MenoBraided.rep: the n-strand braiding realizes Bₙ (Yang–Baxter, far-commute, faithful) ---
+
+let private applyRep (braid: int list) (strands: MenoBraided.V list) =
+    let (Meno.MenoArrow f) = MenoBraided.rep braid
+    [ for e in f (ZSet.singleton strands 1L) -> e.Key ]
+
+[<Fact>]
+let ``MENO-BRAID P5a: the R-matrix rep satisfies Yang–Baxter (Artin σ₁σ₂σ₁ = σ₂σ₁σ₂)`` () =
+    let strands = [ Braid.gen 0; Braid.gen 1; Braid.gen 2 ]
+    Assert.Equal<MenoBraided.V list list>(applyRep [ 1; 2; 1 ] strands, applyRep [ 2; 1; 2 ] strands)
+
+[<Fact>]
+let ``MENO-BRAID P5b: far strands commute in the rep (σ₁σ₃ = σ₃σ₁)`` () =
+    let strands = [ Braid.gen 0; Braid.gen 1; Braid.gen 2; Braid.gen 3 ]
+    Assert.Equal<MenoBraided.V list list>(applyRep [ 1; 3 ] strands, applyRep [ 3; 1 ] strands)
+
+[<Fact>]
+let ``MENO-BRAID P5c: ρ realizes Bₙ faithfully — σ₁²≠id in the rep, matching Braid.equal`` () =
+    let strands = [ Braid.gen 0; Braid.gen 1; Braid.gen 2 ]
+    Assert.False(Braid.equal 3 [ 1; 1 ] [])                                  // σ₁² ≠ id in B₃
+    Assert.NotEqual<MenoBraided.V list list>(applyRep [] strands, applyRep [ 1; 1 ] strands) // rep agrees (swap would not)
