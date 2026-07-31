@@ -33,6 +33,7 @@
     <Compile Include="DoorGraph.fs" />
     <Compile Include="Fixpoint.fs" />
     <Compile Include="Orbit.fs" />
+    <Compile Include="PhasePortrait.fs" />
     <Compile Include="AdinkraCode.fs" />
     <Compile Include="BinaryCode.fs" />
     <Compile Include="E8Lattice.fs" />

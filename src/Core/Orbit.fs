@@ -38,6 +38,11 @@ module Orbit =
         | Fixed // period 1 — the stationary (n=0) mode (Fixpoint)
         | Crystal of int // period n>1 — a standing wave in time (discrete-time-crystal candidate)
         | Quasiperiodic // no period ≤ maxPeriod — ordered-aperiodic (time-quasicrystal regime)
+        | Chaotic of float // largest-Lyapunov estimate λ > 0 — sensitive dependence: the chaotic /
+                           // positive-topological-entropy regime PAST the quasiperiodic edge (the
+                           // homoclinic-tangle family). `classify` (period-only) cannot see this — a
+                           // chaotic orbit has "no period ≤ maxPeriod" and would be mislabelled
+                           // `Quasiperiodic`. `classifyDynamics` reaches it via `largestLyapunov`.
 
     /// The smallest period `n ∈ 1..maxPeriod` with `stepⁿ(s0) ≈ s0` (within `tol`), or `None` if none — the
     /// orbit through `s0` does not close in `maxPeriod` loop-steps (quasiperiodic / aperiodic).
@@ -58,6 +63,51 @@ module Orbit =
         | Some 1 -> Fixed
         | Some n -> Crystal n
         | None -> Quasiperiodic
+
+    /// Estimate the largest Lyapunov exponent λ by tracking how fast two nearby orbits diverge
+    /// (Benettin et al. 1980). Over each short window: evolve the pair, take the log-stretch of their
+    /// separation, then re-seed the perturbation with `nudge` at the current base point to stay in the
+    /// linear regime. Average the per-step stretch over the windows.
+    ///   λ > 0 ⇒ sensitive dependence — chaos / positive topological entropy (the homoclinic regime);
+    ///   λ ≈ 0 ⇒ ordered (rotation / quasiperiodic);   λ < 0 ⇒ contracting onto an attractor.
+    /// Honest scope: `nudge` supplies SOME small perturbation (need not lie along the unstable direction —
+    /// the top exponent dominates within a few steps, which is why the windows are short and averaged).
+    /// Needs only a metric `dist`, the map `step`, and `nudge` — NO tangent-space/vector structure on 'S —
+    /// so it is an ESTIMATE, not a certified exponent. `windowLen` too long saturates it (the separation
+    /// hits the attractor diameter and the log-stretch flattens): keep windows short.
+    let largestLyapunov
+        (dist: 'S -> 'S -> float) (step: 'S -> 'S) (nudge: 'S -> 'S)
+        (windows: int) (windowLen: int) (s0: 'S) : float =
+        let wlen = max 1 windowLen
+        let mutable ax = s0
+        let mutable sum = 0.0
+        let mutable n = 0
+        for _ in 1 .. max 1 windows do
+            let mutable bx = nudge ax
+            let d0 = dist ax bx
+            if d0 > 0.0 then
+                for _ in 1 .. wlen do
+                    ax <- step ax
+                    bx <- step bx
+                let dN = dist ax bx
+                if dN > 0.0 then
+                    sum <- sum + log (dN / d0) / float wlen
+                    n <- n + 1
+            else
+                ax <- step ax // degenerate nudge (d0 = 0): still advance the base orbit
+        if n = 0 then 0.0 else sum / float n
+
+    /// Classify including the chaotic class. Estimate λ first: if it exceeds `lyapTol` (> 0) the orbit is
+    /// `Chaotic λ` — sensitive dependence, past the quasiperiodic edge; otherwise fall through to the
+    /// period-based `classify` (Fixed / Crystal n / Quasiperiodic). This adds the fourth class `classify`
+    /// alone cannot see (it would mislabel a chaotic, aperiodic orbit `Quasiperiodic`) — the exact
+    /// Lyapunov measurement the module docstring flags as missing.
+    let classifyDynamics
+        (dist: 'S -> 'S -> float) (step: 'S -> 'S) (nudge: 'S -> 'S)
+        (tol: float) (maxPeriod: int) (lyapTol: float) (windows: int) (windowLen: int) (s0: 'S) : Kind =
+        let lam = largestLyapunov dist step nudge windows windowLen s0
+        if lam > lyapTol then Chaotic lam
+        else classify dist step tol maxPeriod s0
 
     /// Is this a (discrete) time-crystal candidate — a standing wave of period > 1? (Period found and > 1.)
     let isCrystal (dist: 'S -> 'S -> float) (step: 'S -> 'S) (tol: float) (maxPeriod: int) (s0: 'S) : bool =
