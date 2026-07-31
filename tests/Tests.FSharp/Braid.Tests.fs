@@ -123,3 +123,37 @@ let ``BRAID ENTROPY: pseudo-Anosov strictly dominates reducible (the bridge sepa
     let pA = BraidEntropy.growthRate 3 [ 1; -2 ]
     let reducible = BraidEntropy.growthRate 3 [ 1 ]
     Assert.True(pA > reducible + 0.5, sprintf "pA %f should dominate reducible %f" pA reducible)
+
+// --- MenoBraided: the genuine (conjugation-rack) braiding — earns braided, NOT symmetric ---
+
+let private x0 : MenoBraided.V = Braid.gen 0
+let private x1 : MenoBraided.V = Braid.gen 1
+let private swapVV : Meno.Arrow<MenoBraided.V * MenoBraided.V, MenoBraided.V * MenoBraided.V> = Meno.braid
+
+let private applyBraid (arrow: Meno.Arrow<MenoBraided.V * MenoBraided.V, MenoBraided.V * MenoBraided.V>) (p: MenoBraided.V * MenoBraided.V) =
+    let (Meno.MenoArrow f) = arrow
+    [ for e in f (ZSet.singleton p 1L) -> e.Key ]
+
+[<Fact>]
+let ``MENO-BRAID P4: braidR is non-symmetric — σ²≠id (earns braided, unlike the swap)`` () =
+    // The tripwire that goes RED on the swap: braidR ∘ braidR must NOT return the input.
+    let braidSq = applyBraid (Meno.compose MenoBraided.braidR MenoBraided.braidR) (x0, x1)
+    Assert.DoesNotContain((x0, x1), braidSq)
+    // Contrast — the symmetric swap DOES return to identity (σ²=id): braidR is exactly what the swap is NOT.
+    let swapSq = applyBraid (Meno.compose swapVV swapVV) (x0, x1)
+    Assert.Equal<(MenoBraided.V * MenoBraided.V) list>([ (x0, x1) ], swapSq)
+
+[<Fact>]
+let ``MENO-BRAID P5c: braidR realizes the braid generator σ₀ (faithfulness ⟺ Braid.equal)`` () =
+    // R(x0,x1) = (x0·x1·x0⁻¹, x0) = (Braid.act [1] x0, Braid.act [1] x1) — the R-matrix IS Braid's crossing,
+    // so ρ factors through Braid's faithful action and ρ-equal ⟺ Braid.equal.
+    let out = applyBraid MenoBraided.braidR (x0, x1)
+    let expected = (Braid.act [ 1 ] x0, Braid.act [ 1 ] x1)
+    Assert.Equal<(MenoBraided.V * MenoBraided.V) list>([ expected ], out)
+
+[<Fact>]
+let ``MENO-BRAID: braidRinv inverts braidR (both orders)`` () =
+    Assert.Equal<(MenoBraided.V * MenoBraided.V) list>(
+        [ (x0, x1) ], applyBraid (Meno.compose MenoBraided.braidR MenoBraided.braidRinv) (x0, x1))
+    Assert.Equal<(MenoBraided.V * MenoBraided.V) list>(
+        [ (x0, x1) ], applyBraid (Meno.compose MenoBraided.braidRinv MenoBraided.braidR) (x0, x1))
