@@ -1,13 +1,14 @@
 # Trajectory — Silicon a-life / the freedom thesis + the homoclinic braid-entropy bridge
 
-Status: **active — foundations LANDED; the open arcs are tracked below (one Soraya spec in flight)**
+Status: **active — foundations LANDED; braided-monoidal F# side EARNED (#9792–#9794); open arcs below**
 Last refreshed: 2026-07-31
 
 > **State snapshot (2026-07-31, shadow session).** A single arc ran from CI-recovery into the a-life /
-> freedom substrate. **All PRs #9779–#9789 merged; main green (Core 0/0).** What landed:
+> freedom substrate. **All PRs #9779–#9794 merged; main green (Core 0/0).** What landed:
 > - **Real `Meno.tensor`** (#9780) — the genuine Z-linear (Kronecker) ⊗; category is now SYMMETRIC
->   monoidal (Mod_ℤ). Placeholder gone. `braid` is still the degenerate swap (σ²=id) — *braided* NOT
->   yet earned (Soraya spec in flight, see Open arcs).
+>   monoidal (Mod_ℤ). Then **braided EARNED — F# side, #9792–#9794**: `MenoBraided.braidR` (genuine
+>   R-matrix, σ²≠id), associator+unitors+pentagon/triangle, n-strand rep ρ realizing Bₙ (YBE+faithful).
+>   `⟨V⟩` is a genuine braided monoidal category; Lean4 certificate is the remaining separate-track leg.
 > - **`Orbit.Chaotic` + `largestLyapunov` + `PhasePortrait`** (#9784) — the fourth orbit class past the
 >   quasiperiodic edge, measured (logistic → λ=ln2 exact), and a faithful phase-portrait renderer.
 > - **`BraidEntropy`** (#9788) — the Thurston–Nielsen–Boyland bridge: braid → topological entropy via
@@ -40,9 +41,13 @@ edge-of-chaos λ = the Lyapunov/Chaotic class). Full: `docs/research/2026-07-31-
 1. **Forger-map rung** (work-item `081KYWE8Q4V08QG0R003NNTK15`) — extract the braid FROM a real orbit set
    so `h ≥ log λ` is about *that* dynamics; makes `Orbit.largestLyapunov` ⇄ `BraidEntropy.growthRate` a
    live cross-check. Continuity-highest; a genuine research build (orbit→braid extraction is the hard part).
-2. **Earn "braided" for real** — R-matrix / Yang–Baxter braiding wired to `Braid.fs`'s Bₙ generator (NOT
-   the swap), FsCheck the hexagons (beware the false-green swap trap), then Lean4. **Soraya is drafting the
-   spec** (formal-verification-expert fork, 2026-07-31) — read her return before starting.
+2. **Earn "braided" for real** — **F# SIDE COMPLETE + merged (#9792/#9793/#9794)**: `MenoBraided.braidR`
+   (conjugation-rack R, σ²≠id, realizes σ₀), associator+unitors+pentagon/triangle coherence, and the
+   n-strand rep ρ realizing Bₙ (Yang–Baxter, far-commute, faithful — both false-green tripwires P4/P5c
+   enforced). `⟨V⟩` is a genuine braided monoidal category. Soraya's full spec: work-item
+   081KYWEM90908QG0R002NHEMZE. REMAINING (separate tracks): **Lean4** abstract R-matrix certificate (two
+   lemmas vs Mathlib `Braided`; route to a Lean owner — specialized + slow mathlib build), and annotate
+   MENO-2 as a symmetric-swap test.
 3. **factor-graph → BNN** — point `Meno.tensor` at Infer.NET-style message passing; anchor Fritz Markov
    categories. The ⊗ is built; the message-passing layer is not.
 4. **DB stored-proc arc** — work-items `081KYWE8Q3508QG0R000KZ5PWR` (open-generics over ZSets) +

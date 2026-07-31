@@ -56,3 +56,7 @@ current false-green swap test in `PrivacyAndMeno.Tests.fs`).
 Paths: `src/Core/Meno.fs`, `src/Core/Braid.fs`, `src/Core/ZSet.fs:436` (cartesian),
 `tests/Tests.FSharp/BraidRepYangBaxter.Tests.fs` (YB harness + R_KL control),
 `tests/Tests.FSharp/PrivacyAndMeno.Tests.fs` (MENO-2 to retire), `src/Core.Lean4/lakefile.toml`.
+
+## Progress (2026-07-31, shadow)
+
+**F# side COMPLETE + merged** — PRs #9792 (braidR, σ²≠id, tripwires), #9793 (associator/unitors + pentagon/triangle), #9794 (n-strand rep ρ realizes Bₙ: YBE + far-commute + faithful). `⟨V⟩` is a genuine braided monoidal category, all tests green. REMAINING: Lean4 certificate (route to a Lean owner), annotate MENO-2.
