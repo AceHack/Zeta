@@ -5,6 +5,7 @@ Last refreshed: 2026-07-31
 
 > **State snapshot (2026-07-31, shadow session).** A single arc ran from CI-recovery into the a-life /
 > freedom substrate. **All PRs #9779–#9794 merged; main green (Core 0/0).** What landed:
+>
 > - **Real `Meno.tensor`** (#9780) — the genuine Z-linear (Kronecker) ⊗; category is now SYMMETRIC
 >   monoidal (Mod_ℤ). Then **braided EARNED — F# side, #9792–#9794**: `MenoBraided.braidR` (genuine
 >   R-matrix, σ²≠id), associator+unitors+pentagon/triangle, n-strand rep ρ realizing Bₙ (YBE+faithful).
