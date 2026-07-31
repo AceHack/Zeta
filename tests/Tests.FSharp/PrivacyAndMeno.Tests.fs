@@ -61,7 +61,11 @@ module PrivacyAndMenoTests =
         Assert.Contains(42, keys)
 
     [<Fact>]
-    let ``MENO-2: Braid swaps parallel states`` () =
+    // NB (Soraya's false-green flag): `Meno.braid` is the SYMMETRIC braiding (the swap, σ²=id) — this test
+    // asserts only that it swaps, NOT that the category is braided-coherent. The GENUINE braiding (σ²≠id) is
+    // `MenoBraided.braidR`; the braided-vs-symmetric distinction is enforced by the MENO-BRAID P4/P5c
+    // tripwires in Braid.Tests.fs. Do NOT read this test as braided-monoidal coherence evidence.
+    let ``MENO-2: braid (the SYMMETRIC swap) swaps parallel states`` () =
         let (Meno.MenoArrow f) = Meno.braid<int, string>
         // Input: ZSet with a single (int * string) pair
         let input = ZSet.singleton (42, "hello") 1L
