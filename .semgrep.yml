@@ -170,6 +170,7 @@ rules:
         - "src/Core/**/*.fs"
       exclude:
         - "**/DiskBackingStore*.fs"   # size-checked in pathFor
+        - "**/*.Tests.fs"             # tests read repo-controlled fixtures, not an untrusted-file attack surface
     message: >-
       `File.ReadAllBytes/ReadAllText` without a `FileInfo.Length` cap
       lets a poisoned file exhaust the heap. Check the size first:

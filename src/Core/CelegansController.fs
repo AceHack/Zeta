@@ -113,6 +113,12 @@ module CelegansController =
 
     /// Load the connectome from the embedded CSV path (relative to the assembly location).
     let loadFromCsv (csvPath: string) : Connectome =
+        // Size cap before read — a poisoned/oversized CSV must not exhaust the heap
+        // (the sanctioned pattern; cf. the Checkpoint.fs stream loader).
+        let info = FileInfo csvPath
+        if info.Length > 64L * 1024L * 1024L then
+            invalidOp (sprintf "connectome CSV '%s' is %d bytes — exceeds the 64 MiB load cap" csvPath info.Length)
+        // nosemgrep: file-read-without-size-cap -- guarded by the FileInfo.Length cap immediately above
         let text = File.ReadAllText(csvPath)
         buildConnectome (parseSynapses text)
 
