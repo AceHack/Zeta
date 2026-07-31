@@ -97,6 +97,44 @@ module Orbit =
                 ax <- step ax // degenerate nudge (d0 = 0): still advance the base orbit
         if n = 0 then 0.0 else sum / float n
 
+    /// The phase-AREA growth rate of a 2-D map = **Σλ = λ_max + λ_min** (the sum of the Lyapunov exponents
+    /// = the mean log|det J| = the divergence of the flow). Tracks a small triangle of 3 nearby points and
+    /// measures the exponential growth of its area (shoelace), re-seeding the triangle each window
+    /// (Benettin) to stay small.
+    ///   Σλ < 0 ⇒ **DISSIPATIVE** — area contracts, a strange attractor stays bounded ("survivable" chaos);
+    ///   Σλ ≈ 0 ⇒ area-preserving (conservative / rotation);   Σλ > 0 ⇒ expanding ("explosive").
+    /// With `largestLyapunov` this classifies chaos: **survivable** = `λ_max > 0 ∧ Σλ < 0`; **explosive** =
+    /// `Σλ > 0`. (Lior's antigravity check #3, 2026-07-31: reversibility = negative phase-volume divergence —
+    /// the retract that keeps chaos bounded instead of exploding is the *physical* dissipation condition,
+    /// not a moral one.) Honest scope: this is the AREA rate of a 2-D map (exact `Σλ` for area; for a
+    /// higher-dim system it is only the top-2-exponent sum). The re-seeded triangle is axis-aligned each
+    /// window — fine, since the total area rate is direction-independent.
+    let divergenceRate2D
+        (step: float * float -> float * float)
+        (windows: int) (windowLen: int) (eps: float) (s0: float * float) : float =
+        let wlen = max 1 windowLen
+        let area (ax, ay) (bx, by) (cx, cy) = 0.5 * abs ((bx - ax) * (cy - ay) - (cx - ax) * (by - ay))
+        let mutable a = s0
+        let mutable sum = 0.0
+        let mutable n = 0
+        for _ in 1 .. max 1 windows do
+            let (ax, ay) = a
+            let mutable b = (ax + eps, ay)
+            let mutable c = (ax, ay + eps)
+            let area0 = area a b c
+            if area0 > 0.0 then
+                for _ in 1 .. wlen do
+                    a <- step a
+                    b <- step b
+                    c <- step c
+                let areaN = area a b c
+                if areaN > 0.0 then
+                    sum <- sum + log (areaN / area0) / float wlen
+                    n <- n + 1
+            else
+                a <- step a
+        if n = 0 then 0.0 else sum / float n
+
     /// Classify including the chaotic class. Estimate λ first: if it exceeds `lyapTol` (> 0) the orbit is
     /// `Chaotic λ` — sensitive dependence, past the quasiperiodic edge; otherwise fall through to the
     /// period-based `classify` (Fixed / Crystal n / Quasiperiodic). This adds the fourth class `classify`

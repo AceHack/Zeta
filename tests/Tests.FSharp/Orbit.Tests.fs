@@ -88,3 +88,33 @@ let ``renderPair draws both nearby orbits on one co-scaled grid`` () =
     let img = PhasePortrait.renderPair id step 0 40 21 11 (1.0, 0.0) (2.0, 0.0)
     Assert.Contains("#", img)
     Assert.Contains("o", img)
+
+// --- divergenceRate2D: the dissipation half — Σλ classifies survivable vs explosive chaos (Lior #3) ---
+
+[<Fact>]
+let ``DIVERGENCE: the Hénon map is dissipative — Σλ = ln(0.3) exactly (det J = -0.3 constant)`` () =
+    let henon (x, y) = (1.0 - 1.4 * x * x + y, 0.3 * x)
+    let sigma = Orbit.divergenceRate2D henon 400 1 1e-7 (0.1, 0.1)
+    Assert.True(abs (sigma - log 0.3) < 0.01, sprintf "Σλ = %f, expected ln(0.3) ≈ -1.204" sigma)
+
+[<Fact>]
+let ``DIVERGENCE: a plane rotation is area-preserving — Σλ ≈ 0 (conservative)`` () =
+    let th = 0.7
+    let rot (x, y) = (x * cos th - y * sin th, x * sin th + y * cos th)
+    Assert.True(abs (Orbit.divergenceRate2D rot 400 1 1e-7 (1.0, 0.0)) < 0.01)
+
+[<Fact>]
+let ``DIVERGENCE: a linear expansion is explosive — Σλ = ln(1.44) > 0`` () =
+    let expand (x, y) = (1.2 * x, 1.2 * y)
+    let sigma = Orbit.divergenceRate2D expand 25 1 1e-7 (0.001, 0.001)
+    Assert.True(abs (sigma - log 1.44) < 0.01, sprintf "Σλ = %f, expected ln(1.44) ≈ 0.365" sigma)
+
+[<Fact>]
+let ``DIVERGENCE: the Hénon attractor is SURVIVABLE chaos — λ_max > 0 AND Σλ < 0`` () =
+    let henon (x, y) = (1.0 - 1.4 * x * x + y, 0.3 * x)
+    let d (ax, ay) (bx, by) = sqrt ((ax - bx) ** 2.0 + (ay - by) ** 2.0)
+    let nudge (x, y) = (x + 1e-8, y)
+    let lambdaMax = Orbit.largestLyapunov d henon nudge 400 2 (0.1, 0.1)
+    let sigma = Orbit.divergenceRate2D henon 400 1 1e-7 (0.1, 0.1)
+    Assert.True(lambdaMax > 0.0, sprintf "λ_max = %f should be > 0 (chaotic)" lambdaMax) // local stretch
+    Assert.True(sigma < 0.0, sprintf "Σλ = %f should be < 0 (dissipative)" sigma)        // global contract
