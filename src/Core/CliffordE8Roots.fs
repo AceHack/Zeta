@@ -131,6 +131,19 @@ module CliffordE8Roots =
     /// The kissing number of E8 — |roots| must equal 240, recovered purely by reflection closure.
     let kissingNumber : int = List.length roots
 
-    /// The generated roots carried into Cl(3,0) as multivectors (the unfold realized through the geometric
-    /// product, not merely the basis/metric bridge). Reuses `CliffordE8Bridge.rootToMv`.
+    /// The generated roots **relabelled** into `Cl(3,0)` blade coordinates via
+    /// `CliffordE8Bridge.rootToMv`.
+    ///
+    /// **Honest scope (corrected 2026-08-01, Soraya's route-(B) audit — this doc-comment previously
+    /// overclaimed).** The GENERATION above is the real thing: reflection/versor closure in **Cl(8,0)**,
+    /// where each of the 8 coordinates is a grade-1 generator. But this final `rootToMv` hop is **merely
+    /// the basis/metric relabeling** — an arbitrary bijection of the 8 coordinate positions onto the 8
+    /// `Cl(3,0)` blade masks (`gradeOfCoord i = popcount i`). It is NOT "the unfold realized through the
+    /// geometric product": sandwiching mixed-grade `Cl(3,0)` multivectors under the 3-bit-XOR product
+    /// implements **no** W(E8) reflection, and `dim Cl(3,0) = 2³ = 8` coinciding with `rank E8 = 8` is
+    /// numeric, not a homomorphism. Use `roots` (the Cl(8,0)-generated `int[]`) for anything load-bearing;
+    /// treat `rootMvs` as a display/interop relabeling only.
+    ///
+    /// For a 3D-visual route to E8 that is principled rather than a relabeling, see
+    /// `IcosahedralH3` (H3 → 2I/600-cell → E8 by the icosian golden doubling; its 240 set-equal these).
     let rootMvs : Cl3.Mv list = roots |> List.map CliffordE8Bridge.rootToMv
