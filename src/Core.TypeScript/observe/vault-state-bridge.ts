@@ -55,7 +55,7 @@ export type StatusKind = "live" | "cold" | "stale" | "heat";
 export interface VaultRoster {
   readonly schema: "zeta.vault-roster.v1";
   readonly agents: readonly { id: string; name: string }[];
-  readonly vaults: readonly { id: string; name: string; rooms: readonly { id: string; name: string }[] }[];
+  readonly vaults: readonly { id: string; name: string; rooms: readonly { id: string; name: string; default_agent_ids: string[] }[] }[];
   readonly hats: readonly { id: string; name: string; rights: string[]; restrictions: string[] }[];
 }
 
@@ -141,31 +141,31 @@ export function buildRoster(): VaultRoster {
       {
         id: "observatory", name: "Observatory",
         rooms: [
-          { id: "signal-triage", name: "Signal Triage" },
-          { id: "demand-forecast", name: "Demand Forecast" },
+          { id: "signal-triage", name: "Signal Triage", default_agent_ids: ["alexa", "otto", "soraya"] },
+          { id: "demand-forecast", name: "Demand Forecast", default_agent_ids: ["alexa", "otto", "soraya"] },
         ],
       },
       {
         id: "tools", name: "Tools",
         rooms: [
-          { id: "drift-watch", name: "Drift Watch" },
-          { id: "heal-bay", name: "Heal Bay" },
+          { id: "drift-watch", name: "Drift Watch", default_agent_ids: ["otto"] },
+          { id: "heal-bay", name: "Heal Bay", default_agent_ids: ["otto"] },
         ],
       },
       {
         id: "system", name: "System",
         rooms: [
-          { id: "merge-floor", name: "Merge Floor" },
-          { id: "archive-stacks", name: "Archive Stacks" },
+          { id: "merge-floor", name: "Merge Floor", default_agent_ids: ["alexa"] },
+          { id: "archive-stacks", name: "Archive Stacks", default_agent_ids: ["soraya"] },
         ],
       },
       {
         id: "training", name: "Training",
-        rooms: [{ id: "codegen-lab", name: "Codegen Lab" }],
+        rooms: [{ id: "codegen-lab", name: "Codegen Lab", default_agent_ids: ["alexa", "otto", "soraya"] }],
       },
       {
         id: "economy", name: "Economy",
-        rooms: [{ id: "reputation-engine", name: "Reputation Engine" }],
+        rooms: [{ id: "reputation-engine", name: "Reputation Engine", default_agent_ids: ["alexa", "otto", "soraya"] }],
       },
     ],
     hats: [

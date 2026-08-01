@@ -137,8 +137,9 @@ The **page** (Iris's domain) applies the state machine at render time:
   now - last_seen    < 30 min      30min–2h       > 2h        null
   ──────────────    ──────────    ──────────     ──────       ──────
   DU state           working        idle         attention     cold
-  DU color           amber          dim           red          (absent)
 ```
+
+Color mapping is Iris's domain (the design system CSS DU). The adapter emits only `last_seen` — the page owns the visual.
 
 This ensures: if the adapter stops running, dwellers degrade to "attention" then "cold" automatically — the browser's clock is the oracle, not a stale file claiming liveness.
 

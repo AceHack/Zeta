@@ -21,11 +21,21 @@
       "rooms": [
         {
           "id": "signal-triage",
-          "name": "Signal Triage"
+          "name": "Signal Triage",
+          "default_agent_ids": [
+            "alexa",
+            "otto",
+            "soraya"
+          ]
         },
         {
           "id": "demand-forecast",
-          "name": "Demand Forecast"
+          "name": "Demand Forecast",
+          "default_agent_ids": [
+            "alexa",
+            "otto",
+            "soraya"
+          ]
         }
       ]
     },
@@ -35,11 +45,17 @@
       "rooms": [
         {
           "id": "drift-watch",
-          "name": "Drift Watch"
+          "name": "Drift Watch",
+          "default_agent_ids": [
+            "otto"
+          ]
         },
         {
           "id": "heal-bay",
-          "name": "Heal Bay"
+          "name": "Heal Bay",
+          "default_agent_ids": [
+            "otto"
+          ]
         }
       ]
     },
@@ -49,11 +65,17 @@
       "rooms": [
         {
           "id": "merge-floor",
-          "name": "Merge Floor"
+          "name": "Merge Floor",
+          "default_agent_ids": [
+            "alexa"
+          ]
         },
         {
           "id": "archive-stacks",
-          "name": "Archive Stacks"
+          "name": "Archive Stacks",
+          "default_agent_ids": [
+            "soraya"
+          ]
         }
       ]
     },
@@ -63,7 +85,12 @@
       "rooms": [
         {
           "id": "codegen-lab",
-          "name": "Codegen Lab"
+          "name": "Codegen Lab",
+          "default_agent_ids": [
+            "alexa",
+            "otto",
+            "soraya"
+          ]
         }
       ]
     },
@@ -73,7 +100,12 @@
       "rooms": [
         {
           "id": "reputation-engine",
-          "name": "Reputation Engine"
+          "name": "Reputation Engine",
+          "default_agent_ids": [
+            "alexa",
+            "otto",
+            "soraya"
+          ]
         }
       ]
     }
