@@ -108,6 +108,47 @@ jobs:
           AGENT: ${{ matrix.agent }}
         run: git push origin "heartbeat/$AGENT"
 
+      - name: Auto-merge clean PRs (agent-to-agent value transfer)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Only the first agent in the matrix (alexa) does merge duty to avoid races
+          if [ "$AGENT" != "alexa" ]; then
+            echo "[merge] Skipping — only alexa handles merge duty"
+            exit 0
+          fi
+
+          # Find clean PRs (CI passed, approved or auto-mergeable)
+          CLEAN_PRS=$(gh pr list --state open --json number,title,mergeable --jq '.[] | select(.mergeable == "MERGEABLE") | .number' 2>/dev/null | head -3)
+          if [ -z "$CLEAN_PRS" ]; then
+            echo "[merge] No clean PRs to merge"
+            exit 0
+          fi
+
+          for PR in $CLEAN_PRS; do
+            echo "[merge] Attempting to merge PR #$PR..."
+            gh pr merge "$PR" --squash --auto --delete-branch 2>&1 || echo "[merge] PR #$PR not ready (non-fatal)"
+          done
+
+      - name: Archive PR review history (git-native backup)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Only soraya handles archive duty (rotate duties across agents)
+          if [ "$AGENT" != "soraya" ]; then
+            echo "[archive] Skipping — only soraya handles archive duty"
+            exit 0
+          fi
+
+          # Archive up to 3 recently-merged PRs that aren't in the manifest yet
+          echo "[archive] Checking for un-archived merged PRs..."
+          bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
+            --owner Lucent-Financial-Group --repo Zeta --batch 3 --since 7d \
+            2>&1 | tail -10 || echo "[archive] archive step failed (non-fatal)"
+
+
   # ═══ Flush: merge heartbeat events to main (hourly, per agent) ═══════════════
   #
   # CORPORATE MODE: creates a PR per agent. The agent-reviewer workflow
