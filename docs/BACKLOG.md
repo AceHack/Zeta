@@ -493,6 +493,9 @@ are closed (status: closed/done in frontmatter)._
 - [ ] **[081KT2T2J0008QG0R003TSGNMN](backlog/P1/081KT2T2J0008QG0R003TSGNMN-geospatial-ux-map-ui-for-borders-tiles-addressing-simulated-.md)** Geospatial UX — map UI for borders / tiles / addressing / simulated-entities, per-perspective + per-projection selectable; the visible layer over the geospatial core (Aaron 2026-06-02)
 - [ ] **[081KT2T2J0008QG0R003VK5GRX](backlog/P1/081KT2T2J0008QG0R003VK5GRX-vectors-before-trajectories-build-most-inevitable-first-seed.md)** Vectors before trajectories (vector = atomic noun, trajectory = derived) + build-most-inevitable-first + seed/core = F# computation-expression DSL over a reduced Bayesian Infer.NET model + every 4×4 add-on = a CE extension (skill/hat/ontology/language-kernel) on the seed (Aaron 2026-06-02)
 - [x] **[081KT7YW00008QG0R002T1XNWT](backlog/P1/081KT7YW00008QG0R002T1XNWT-canonical-yaml-never-collapse-empty-collections-flow-empty-e.md)** ✅ LANDED 2026-06-04 — Canonical YAML never-collapse of empty collections — emit flow `{}` / `[]` so empty `{}`, empty `[]`, and `null` round-trip as THREE distinct states (encode-injective; SQL-null/monad-preservation across the boundary; parity with proven CBOR injectivity). Found by FsCheck (minimal case `Object []`); cross-lang scanner+dom+encoder+cross-verify change across TS/F#/Rust+C# (Aaron 2026-06-04)
+- [ ] **[081KZETA0007040001](backlog/P1/081KZETA0007040001-agent-branch-merge-observe-loop.md)** Agent-to-agent branch merge via observe loop — no PRs, CI-green claim branches auto-merge
+- [ ] **[081KZETA0007040002](backlog/P1/081KZETA0007040002-self-claims-probabilistic-liveness.md)** Self-claims event type — probabilistic liveness via track record
+- [ ] **[081KZETA0007040005](backlog/P1/081KZETA0007040005-live-codegen-tick-flip-switch.md)** Flip ZETA_EXECUTOR=codegen on live cron tick — first autonomous code generation
 
 ## P2 — research-grade
 
@@ -982,6 +985,8 @@ are closed (status: closed/done in frontmatter)._
 - [x] **[081KTZ4EF0008QG0R001R3XPYV](backlog/P2/081KTZ4EF0008QG0R001R3XPYV.md)** WSet<'K,'W> — the ring-generic circuit; three rings, one calculus (DBSP ℤ · quantum ℂ · inference ℝ≥0), GDL-anchored
 - [x] **[081KTZ4EF0008QG0R002WVTMMJ](backlog/P2/081KTZ4EF0008QG0R002WVTMMJ.md)** DRW edge semantics — clip (COSMAC VIP correct) not wrap; a coordinated four-oracle golden change
 - [ ] **[081KTZ4EF0008QG0R0035FW7HY](backlog/P2/081KTZ4EF0008QG0R0035FW7HY.md)** Research paper: The Oracle Stack — mutual oracles, honesty registers, and refutation witnesses in an autonomous software factory (experience report)
+- [ ] **[081KZETA0007040003](backlog/P2/081KZETA0007040003-optimal-commit-cadence-am-gm.md)** Optimal commit cadence (τ* = L/√α) — AM-GM scheduling hint in ferry-throttler
+- [ ] **[081KZETA0007040004](backlog/P2/081KZETA0007040004-physics-persona-registry.md)** Physics persona — add mathematical-physics expert to persona registry
 
 ## P3 — convenience / deferred
 
