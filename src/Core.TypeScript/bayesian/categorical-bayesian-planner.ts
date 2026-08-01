@@ -24,7 +24,8 @@ export interface BayesianState<TState> {
 }
 
 /**
- * Combines two factor log-probability tensors commutatively: (A + B = B + A).
+ * Combines two factor log-probability tensors commutatively with 100% byte-lock strict equality: (A + B === B + A).
+ * Canonical key sorting guarantees identical IEEE-754 floating-point evaluation order regardless of frame arrival order.
  */
 export function combineFactorsCommutatively(
   factorA: CategoricalFactorTensor,
@@ -32,10 +33,12 @@ export function combineFactorsCommutatively(
 ): CategoricalFactorTensor {
   const combinedLogProbs = new Map<string, number>();
 
-  const allKeys = new Set([
-    ...Array.from(factorA.logProbabilities.keys()),
-    ...Array.from(factorB.logProbabilities.keys()),
-  ]);
+  const allKeys = Array.from(
+    new Set([
+      ...Array.from(factorA.logProbabilities.keys()),
+      ...Array.from(factorB.logProbabilities.keys()),
+    ]),
+  ).sort(); // Canonical lexicographical sort for byte-lock determinism
 
   for (const key of allKeys) {
     const logA = factorA.logProbabilities.get(key) ?? 0.0;

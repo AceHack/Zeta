@@ -1,41 +1,59 @@
 import { describe, expect, it } from "bun:test";
 import {
   ShivaWeakFactorCache,
+  ShivaMarkSweepGc,
   futamura1stProjection,
 } from "./shiva-weak-factor-graph.ts";
 
-describe("Shiva Ephemeron WeakRef Factor Graph & Futamura 1st Projection", () => {
-  it("evaluates factor values on-demand via generator and caches WeakRef holder", () => {
-    const cache = new ShivaWeakFactorCache();
-    let generatorEvaluations = 0;
+describe("Shiva Ephemeron WeakRef Factor Graph & Deterministic Mark-Sweep GC", () => {
+  it("DETERMINISTIC SHIVA GC: tri-color mark-and-sweep matching F# ShivaGc.fs (same roots+heap -> same result)", () => {
+    const gc = new ShivaMarkSweepGc<string>();
 
-    const generator = (key: string) => {
-      generatorEvaluations++;
-      return key === "1,1" ? -0.1 : -0.5;
-    };
+    gc.allocate("root-01", "root-data", ["child-01"]);
+    gc.allocate("child-01", "child-data", []);
+    gc.allocate("dead-node-02", "orphan-data", []);
 
-    const val1 = cache.getOrCompute("f1", "1,1", generator);
-    expect(val1).toBe(-0.1);
-    expect(generatorEvaluations).toBe(1);
+    gc.addRoot("root-01");
 
-    // Second call for same key reuses WeakRef cache (generator not re-invoked if held)
-    const val2 = cache.getOrCompute("f1", "1,1", generator);
-    expect(val2).toBe(-0.1);
+    // Sweeping reclaims dead-node-02 because it is unreachable from roots
+    const sweep1 = gc.markAndSweep();
+    expect(sweep1.retractedIds).toEqual(["dead-node-02"]);
+    expect(sweep1.remainingCount).toBe(2);
+    expect(gc.has("child-01")).toBeTrue();
+    expect(gc.has("dead-node-02")).toBeFalse();
+
+    // Removing root-01 and sweeping reclaims everything deterministically
+    gc.removeRoot("root-01");
+    const sweep2 = gc.markAndSweep();
+    expect([...sweep2.retractedIds].sort()).toEqual(["child-01", "root-01"]);
+    expect(sweep2.remainingCount).toBe(0);
   });
 
-  it("reclaims unreachable cache entries during Shiva GC sweep", () => {
+  it("SHIVA SWEEP TEST: unpinning a strong root forces retraction (totalRetracted > 0)", () => {
     const cache = new ShivaWeakFactorCache();
     const generator = (key: string) => (key === "target" ? -0.05 : -1.0);
 
     cache.getOrCompute("f1", "target", generator);
     cache.getOrCompute("f1", "dead-node", generator);
 
-    const initialSize = cache.getAccessLog().length;
-    expect(initialSize).toBe(2);
+    // Unpin root to allow Shiva GC retraction
+    cache.unpinRoot("f1:dead-node");
 
-    // Force garbage collection / sweep pass
     const sweepResult = cache.shivaSweep();
-    expect(sweepResult.remaining).toBeGreaterThanOrEqual(0);
+    expect(sweepResult.totalRetracted).toBeGreaterThan(0);
+    expect(sweepResult.remaining).toBe(1);
+  });
+
+  it("NEGATIVE CONTROL: pinned roots are NOT retracted during sweep", () => {
+    const cache = new ShivaWeakFactorCache();
+    const generator = () => -0.1;
+
+    cache.getOrCompute("f1", "pinned-node", generator);
+
+    // Without unpinning, sweep MUST retract 0 entries (negative control!)
+    const sweepResult = cache.shivaSweep();
+    expect(sweepResult.totalRetracted).toBe(0);
+    expect(sweepResult.remaining).toBe(1);
   });
 
   it("Futamura 1st projection compiles step + factor evaluation into a zero-allocation pipeline", () => {

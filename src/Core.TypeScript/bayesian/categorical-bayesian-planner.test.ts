@@ -10,29 +10,66 @@ describe("Categorical Bayesian Factor Graphs & Order-Independent Hierarchical Pl
   const factorA: CategoricalFactorTensor = {
     factorId: "mesh-frame-alpha",
     logProbabilities: new Map([
-      ["0,0", -0.1],
-      ["0,1", -0.5],
-      ["1,1", -0.2],
+      ["0,0", -0.10000000000000002],
+      ["0,1", -0.5000000000000001],
+      ["1,1", -0.20000000000000003],
     ]),
   };
 
   const factorB: CategoricalFactorTensor = {
     factorId: "mesh-frame-beta",
     logProbabilities: new Map([
-      ["0,1", -0.3],
-      ["1,1", -0.1],
-      ["2,2", -0.8],
+      ["0,1", -0.30000000000000004],
+      ["1,1", -0.10000000000000002],
+      ["2,2", -0.8000000000000002],
     ]),
   };
 
-  it("COMMUTATIVE INVARIANT: factor fusion combine(A, B) is strictly byte-lock identical to combine(B, A)", () => {
+  it("STRICT BYTE-LOCK COMMUTATIVE INVARIANT: factor fusion combine(A, B) is strictly === identical to combine(B, A)", () => {
     const fusedAB = combineFactorsCommutatively(factorA, factorB);
     const fusedBA = combineFactorsCommutatively(factorB, factorA);
+
+    expect(fusedAB.logProbabilities.size).toBe(fusedBA.logProbabilities.size);
 
     for (const [key, valAB] of fusedAB.logProbabilities.entries()) {
       const valBA = fusedBA.logProbabilities.get(key);
       expect(valBA).toBeDefined();
-      expect(valBA).toBeCloseTo(valAB, 8);
+      // Strict === equality (not toBeCloseTo!) thanks to canonical key sorting
+      expect(valBA).toBe(valAB);
+    }
+  });
+
+  it("PROPERTY TEST: 100 random frame arrival permutations yield 100% byte-lock identical belief tensors", () => {
+    const factors: CategoricalFactorTensor[] = [
+      factorA,
+      factorB,
+      {
+        factorId: "mesh-frame-gamma",
+        logProbabilities: new Map([
+          ["0,0", -0.05],
+          ["2,2", -0.15],
+          ["3,3", -0.99],
+        ]),
+      },
+    ];
+
+    // Reference canonical fusion
+    let referenceFused = factors[0]!;
+    for (let i = 1; i < factors.length; i++) {
+      referenceFused = combineFactorsCommutatively(referenceFused, factors[i]!);
+    }
+
+    const referenceJSON = JSON.stringify(Array.from(referenceFused.logProbabilities.entries()));
+
+    // Test 100 randomized permutations of factor arrival order over Reticulum mesh
+    for (let perm = 0; perm < 100; perm++) {
+      const shuffled = [...factors].sort(() => Math.random() - 0.5);
+      let permFused = shuffled[0]!;
+      for (let i = 1; i < shuffled.length; i++) {
+        permFused = combineFactorsCommutatively(permFused, shuffled[i]!);
+      }
+      const permJSON = JSON.stringify(Array.from(permFused.logProbabilities.entries()));
+      expect(permJSON).toBe(referenceJSON);
     }
   });
 
