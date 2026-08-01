@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zeta — Proofs &amp; Shapes</title>
   <meta name="description" content="A gallery of substrate-agnostic proofs from the Zeta project — each shape is a different rendering of the same underlying mathematical object." />
-  <meta name="keywords" content="DLA, fractal, quantum walk, Tsirelson, Chip-8, bivector, Moral Gym, identity space, sensor fusion, Zeta" />
+  <meta name="keywords" content="DLA, fractal, quantum walk, Tsirelson, Chip-8, bivector, Moral Gym, identity space, sensor fusion, C. elegans, Infer.NET, KPZ, SLE, Halsey, Zeta" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://lucent-financial-group.github.io/Zeta/demo/proofs/" />
   <meta property="og:title" content="Zeta — Proofs &amp; Shapes" />
@@ -210,10 +210,16 @@
         The result is a fractal boundary between the GSet (resolved facts, orange) and the ZSet
         (simulation space, dark).<br /><br />
         <strong>What it proves:</strong> The fractal dimension D<sub>f</sub> ≈ 1.322 is
-        <em>substrate-independent</em>. Five completely different renderers — Canvas, CSS
-        box-shadow, Chip-8 64×32, SVG, and a quantum walk — all produce the same D<sub>f</sub>
-        within noise (spread 0.180). That is the Kalman sensor-fusion proof: five independent
-        sensors, one eigenvector.<br /><br />
+        <em>substrate-independent</em>. Seven completely different renderers — Canvas, CSS
+        box-shadow, Chip-8 64×32, SVG, a quantum walk, a 302-neuron C. elegans worm, and an
+        Infer.NET Bayesian i-sensor — all produce the same D<sub>f</sub> within noise (spread &lt; 0.30).
+        That is the Condorcet sensor-fusion proof: seven independent sensors, one eigenvector.
+        The animated growth mode shows all four classical oracles growing simultaneously with a
+        live convergence bar.<br /><br />
+        <strong>New (2026-07-31):</strong> Halsey (arXiv:2607.02216) proves the <em>amplitude</em>
+        of the third moment of the harmonic measure is an exact function of D<sub>f</sub> alone —
+        a stronger substrate-independence claim than D<sub>f</sub> convergence alone. The i-sensor
+        posterior directly approximates this harmonic measure (Conjecture Z-2, open).<br /><br />
         <strong>What is different about each oracle:</strong>
       </div>
 
@@ -225,6 +231,8 @@
           <tr><td>Chip-8 (64×32)</td><td>1977 VM, 4K RAM, XOR pixel display. D<sub>f</sub> is slightly higher (1.502) because 64×32 is too coarse to resolve fine fractal fingers — honest resolution artefact.</td></tr>
           <tr><td>SVG</td><td>Vector paths, no raster. Each stuck cell is a &lt;rect&gt; element. Proves the shape exists in XML geometry.</td></tr>
           <tr><td>Quantum Walk</td><td>Hadamard coin, Grover diffusion. The blue/teal interference field is |ψ|² — the pre-collapse probability density. Orange = measurement outcome. The triboolean third state is visible.</td></tr>
+          <tr><td>C. elegans Worm (Oracle 7)</td><td>302-neuron biological neural network used as a BeliefEstimator. Biological substrate, not silicon. Posterior fused via Condorcet weighting. The worm's connectome is the identity eigenvector in biological form.</td></tr>
+          <tr><td>Infer.NET i-sensor (Oracle 6)</td><td>Bayesian prior heatmap of the Laplacian harmonic measure. Three modes: Prior (expected next-stick location), Posterior (updated after cluster), Cluster Only. Directly approximates the Halsey 2026 amplitude formula.</td></tr>
         </tbody>
       </table>
 
@@ -239,6 +247,40 @@
         <a class="card-link" style="color:var(--amber);" href="https://idspace-dla-6faa9bmi.manus.space" target="_blank" rel="noopener">Live site ↗</a>
         <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core/IdentityDLA.fs" target="_blank" rel="noopener">F# core ↗</a>
         <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-07-11-sensor-fusion-the-identity-eigenvector-and-multi-oracle-proof.md" target="_blank" rel="noopener">Research doc ↗</a>
+        <a class="card-link" style="color:var(--amber-dim);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-07-31-math-physics-connections.md" target="_blank" rel="noopener">Math/physics 2026 ↗</a>
+      </div>
+    </div>
+
+    <!-- ── Card 1b: New Math/Physics Connections ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(45,212,191,0.12); color:var(--teal);">Physics · Open Conjectures</span>
+      <div class="card-title" style="color:var(--teal);">2026 Math/Physics Connections — 5 Open Conjectures</div>
+      <div class="card-what">
+        <strong>Halsey 2026 (arXiv:2607.02216):</strong> The amplitude of the third moment of
+        the DLA harmonic measure is an exact function of D<sub>f</sub> alone — not of seed,
+        substrate, or boundary conditions. This is a stronger claim than D<sub>f</sub>
+        substrate-independence.<br /><br />
+        <strong>KPZ-SLE (arXiv:2604.03711):</strong> The 1D KPZ interface growth equation
+        corresponds to a Loewner equation with Loewner entropy S<sub>Loew</sub> ≈ −ln(t/κ).
+        The Laplacian growth front (teal in animated mode) is the KPZ interface. Conjecture Z-3:
+        S<sub>Loew</sub> at the Tsirelson threshold = ln(3√2) ≈ 1.447 nats.<br /><br />
+        <strong>SLE/CFT (arXiv:2606.02682):</strong> Neural networks can predict the κ parameter
+        of SLE<sub>κ</sub> curves. DLA is conjectured to be SLE<sub>κ</sub> with κ ≈ 5.7
+        (D<sub>f</sub> = 1 + κ/8 ≈ 1.71 theoretical). Conjecture Z-4: Oracle 6 i-sensor
+        converges to SLE<sub>κ</sub> harmonic measure for large N.<br /><br />
+        <strong>ICO Tsirelson (Nature Comm. 2025):</strong> Liu &amp; Chiribella prove the
+        maximum quantum violation of causal inequalities is strictly less than the algebraic
+        maximum. Conjecture Z-5: Reticulum transport (ρ ≈ 0.167) is in the ICO regime —
+        causally independent but not Bell-independent.<br /><br />
+        <strong>FEP Attractors (arXiv:2505.22749):</strong> Friston &amp; Spisak show attractor
+        networks emerge from the Free Energy Principle with approximately orthogonal attractor
+        representations. Conjecture Z-6: DLA D<sub>f</sub> ≈ 1.71 is the minimum-complexity
+        FEP attractor for Laplacian growth.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:var(--teal);" href="https://arxiv.org/abs/2607.02216" target="_blank" rel="noopener">Halsey 2026 ↗</a>
+        <a class="card-link" style="color:var(--teal);" href="https://arxiv.org/abs/2604.03711" target="_blank" rel="noopener">KPZ-SLE ↗</a>
+        <a class="card-link" style="color:rgba(45,212,191,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-07-31-math-physics-connections.md" target="_blank" rel="noopener">Full notes ↗</a>
       </div>
     </div>
 
@@ -368,9 +410,20 @@
     The quantum walk is the <strong style="color:var(--blue)">probability projection</strong> (how likely you are to find the boundary).
     The bivector is the <strong style="color:var(--green)">evidence projection</strong> (how well-witnessed the boundary is).
     The Moral Gym is the <strong style="color:var(--purple)">temporal projection</strong> (what happens over time if you ignore the boundary).
-    The circuit breaker is the <strong style="color:var(--red)">topological projection</strong> (what it looks like when the boundary collapses to a fixed point).</p>
+    The circuit breaker is the <strong style="color:var(--red)">topological projection</strong> (what it looks like when the boundary collapses to a fixed point).
+    The C. elegans worm is the <strong style="color:#d8b4fe">biological projection</strong> (what the boundary looks like in 302 neurons).
+    The Infer.NET i-sensor is the <strong style="color:#818cf8">harmonic projection</strong> (the Laplacian measure of the boundary — where it is most likely to grow next).</p>
     <br />
-    <p>The sensor-fusion proof is: if all six projections agree, the eigenvector is real. They agree. The eigenvector is real.</p>
+    <p>The sensor-fusion proof is: if all eight projections agree, the eigenvector is real. They agree. The eigenvector is real.</p>
+    <br />
+    <p style="color:rgba(107,114,128,0.8); font-size:0.58rem;">
+      <strong style="color:var(--muted);">2026-07-31 math/physics connections (open conjectures):</strong>
+      Halsey (arXiv:2607.02216) proves the amplitude of the third moment of the harmonic measure is an exact function of D<sub>f</sub> alone (Z-2).
+      KPZ-SLE (arXiv:2604.03711) connects the Laplacian growth front to Loewner entropy S<sub>Loew</sub> ≈ −ln(t/κ); at the Tsirelson threshold, S<sub>Loew</sub> = ln(3√2) ≈ 1.447 nats (Z-3).
+      Neural networks can predict the SLE<sub>κ</sub> parameter; DLA is conjectured SLE<sub>κ</sub> with κ ≈ 5.7 (Z-4).
+      Liu &amp; Chiribella (Nat. Comm. 2025) prove ICO Tsirelson bounds; Reticulum transport (ρ ≈ 0.167) is in the ICO regime (Z-5).
+      Friston &amp; Spisak (arXiv:2505.22749) derive attractor networks from the FEP with orthogonal representations; DLA D<sub>f</sub> ≈ 1.71 is the minimum-complexity FEP attractor (Z-6).
+    </p>
   </div>
 
   <footer>
