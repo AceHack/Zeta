@@ -39,6 +39,7 @@
     <Compile Include="E8Lattice.fs" />
     <Compile Include="CliffordE8Bridge.fs" />
     <Compile Include="CliffordE8Roots.fs" />
+    <Compile Include="IcosahedralH3.fs" />
     <Compile Include="Tsirelson.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />

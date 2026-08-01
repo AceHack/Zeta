@@ -242,6 +242,7 @@
     <Compile Include="Braid.Tests.fs" />
     <Compile Include="Braid.GoldenVectors.Tests.fs" />
     <Compile Include="E8Lattice.Tests.fs" />
+    <Compile Include="IcosahedralH3.Tests.fs" />
     <Compile Include="DashedWalk.Tests.fs" />
     <Compile Include="Tsirelson.Tests.fs" />
     <Compile Include="GeneratorCatalog.Tests.fs" />
