@@ -320,3 +320,19 @@ else
 fi
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"
+
+# -- WASM compiler substrates (Oracles 10-13 / Conjecture Z-7) -----------------
+# Zig and Rust wasm32 are NOT in Ubuntu apt; install via dedicated idempotent
+# scripts. Both scripts skip if the correct version is already present.
+# NixOS nodes get these via common.nix systemPackages instead.
+if [ "$IS_NIXOS" != 1 ]; then
+  echo "-- installing Zig (wasm32-freestanding substrate, Oracle 11) --"
+  bash "$SETUP_DIR/common/install-zig.sh"
+
+  echo "-- installing Rust + wasm32-unknown-unknown target (Oracle 12) --"
+  bash "$SETUP_DIR/common/install-rust-wasm32.sh"
+  # Source cargo env so rustc/cargo are on PATH for the remainder of this session
+  # shellcheck source=/dev/null
+  [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env" || true
+fi
+echo "OK WASM compiler substrates ready (Zig + Rust wasm32)"

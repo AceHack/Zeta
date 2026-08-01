@@ -9,6 +9,16 @@
 # the `lint (yaml/k8s)` gate job. Same pins as before the split — one tool graph, tiered.
 
 [tools]
+# -- WASM compiler substrates (Oracles 10-13 / Conjecture Z-7) --
+# Full-tier hosts (cluster nodes, dev laptops) carry all six WASM compilers.
+# These mirror the declarations in .mise.toml for the base tier.
+# zig: wasm32-freestanding substrate (Oracle 11, 951B binary)
+zig = "0.13.0"
+# rust: wasm32-unknown-unknown substrate (Oracle 12, 7.4KB binary)
+# After mise install, run: rustup target add wasm32-unknown-unknown
+rust = "1.87.0"
+
+# -- Kubernetes tooling (full-tier only) --
 k3d = "5.8.3"
 kind = "0.31.0"
 kubectl = "1.36.1"
