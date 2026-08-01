@@ -713,8 +713,8 @@ public sealed class IndexedZSet<TKey, TValue> :
     {
         // Consistent with Equals: comparers are part of identity, so fold them in (Copilot P0, #6404).
         var hash = default(HashCode);
-        hash.Add(KeyCollationName);
-        hash.Add(ValueCollationName);
+        hash.Add(KeyCollationName, StringComparer.Ordinal);
+        hash.Add(ValueCollationName, StringComparer.Ordinal);
         hash.Add(_compareK);
         hash.Add(_compareV);
         hash.Add(_groups.Length);

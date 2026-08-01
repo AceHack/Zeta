@@ -379,7 +379,7 @@ public sealed class GSet<T> :
         // alike; otherwise count-only for the element part (still consistent with the
         // comparer-based Equals). (PR review 2026-06-01.)
         var hash = default(HashCode);
-        hash.Add(CollationName);
+        hash.Add(CollationName, StringComparer.Ordinal);
         hash.Add(_comparer);
         hash.Add(_items.Length);
         if (_comparer is IEqualityComparer<T> eq)

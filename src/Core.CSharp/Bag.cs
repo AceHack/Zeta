@@ -485,7 +485,7 @@ public sealed class Bag<T> :
         // When the comparer is also an equality comparer (e.g. StringComparer.Ordinal) hash each
         // key through it so Compare==0 keys hash alike; always fold the count. (Mirrors GSet.)
         var hash = default(HashCode);
-        hash.Add(CollationName);
+        hash.Add(CollationName, StringComparer.Ordinal);
         hash.Add(_comparer);
         hash.Add(_items.Length);
         var eq = _comparer as IEqualityComparer<T>;

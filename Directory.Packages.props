@@ -9,7 +9,7 @@
     <PackageVersion Include="G-Research.FSharp.Analyzers" Version="0.22.0" />
     <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
     <PackageVersion Include="FSharp.Analyzers.Build" Version="0.5.0" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.125" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.138" />
     <!-- SonarAnalyzer.CSharp pinned but NOT referenced from
          Directory.Build.props yet — surfaces 15+ real findings
          (S1905 unnecessary casts, S6966 SendAsync, S2699
@@ -28,8 +28,8 @@
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
-    <PackageVersion Include="FsCheck" Version="3.3.3" />
-    <PackageVersion Include="FsCheck.Xunit.v3" Version="3.3.3" />
+    <PackageVersion Include="FsCheck" Version="3.3.4" />
+    <PackageVersion Include="FsCheck.Xunit.v3" Version="3.3.4" />
     <PackageVersion Include="FsUnit.Xunit" Version="7.1.1" />
     <PackageVersion Include="Unquote" Version="7.0.1" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
@@ -59,6 +59,6 @@
     <!-- Microsoft first-party DI: the IServiceCollection seam the mediator registers into.
          Abstractions for the port library; the full container for the proving test. -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
   </ItemGroup>
 </Project>

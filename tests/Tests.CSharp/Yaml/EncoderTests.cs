@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -92,9 +93,9 @@ public class EncoderTests
         var encMap = YamlEncoder.Encode(emptyMap);
         var encSeq = YamlEncoder.Encode(emptySeq);
         var encNull = YamlEncoder.Encode(nullVal);
-        Assert.NotEqual(encMap, encSeq);
-        Assert.NotEqual(encMap, encNull);
-        Assert.NotEqual(encSeq, encNull);
+        Assert.NotEqual(encMap, encSeq, StringComparer.Ordinal);
+        Assert.NotEqual(encMap, encNull, StringComparer.Ordinal);
+        Assert.NotEqual(encSeq, encNull, StringComparer.Ordinal);
 
         // Each round-trips to itself, and the parsed value carries the right kind.
         Assert.True(Roundtrips(emptyMap));

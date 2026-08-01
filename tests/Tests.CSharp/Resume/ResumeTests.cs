@@ -237,11 +237,11 @@ public class ResumeTests
         var ser = StrOk(ResumeEngine.SerializeState(suspended.State));
 
         var tamperedOp = ser.Replace("\"op\":\"add\"", "\"op\":\"xor\"", StringComparison.Ordinal);
-        Assert.NotEqual(ser, tamperedOp);
+        Assert.NotEqual(ser, tamperedOp, StringComparer.Ordinal);
         AssertStateErr<ResumeFeedback.MalformedState>(ResumeEngine.ParseState(tamperedOp));
 
         var tamperedInt = ser.Replace("\"v\":7", "\"v\":9007199254740993", StringComparison.Ordinal);
-        Assert.NotEqual(ser, tamperedInt);
+        Assert.NotEqual(ser, tamperedInt, StringComparer.Ordinal);
         AssertStateErr<ResumeFeedback.MalformedState>(ResumeEngine.ParseState(tamperedInt));
     }
 }
