@@ -1,11 +1,12 @@
 ---
 id: 081KX3KA3ES08QG0R003TW3XDE
 type: task
-state: in-progress
+state: done
 priority: P1
 slug: scoped-diff-lint-runner-pr-checks-only-touch
 title: "Scoped-diff lint runner — PR checks report only files the PR touches"
 created: 2026-07-09T14:08:50.000Z
+completed: 2026-08-01T17:39:20.512Z
 depends_on: []
 composes_with: []
 ---
