@@ -113,11 +113,13 @@
     kubernetes-helm
     k9s
 
-    # ── WASM toolchain (Oracles 10-12 / DLA multi-compiler substrate) ───────────
-    # Six WASM compiler substrates declared in desired-state so every cluster
-    # node can reproduce the Oracle 10-12 builds without manual intervention.
-    # Conjecture Z-7 (binary_size perp D_f): all compilers must be available
-    # for re-verification at any time on any host.
+    # ── Byte-lock toolchain (Oracles 10-16 / DLA 9-substrate byte-lock) ─────────
+    # All 9 compiler/runtime substrates declared in desired-state so every cluster
+    # node can reproduce all byte-lock builds and run the drift check without
+    # manual intervention.  The byte-lock (src/wasm-dla/bytelock/) verifies that
+    # all 9 substrates produce byte-identical walker trajectories at any seed.
+    # Substrates: WAT, LLVM/C, Emscripten, Rust, AssemblyScript, Zig (WASM)
+    #             + JS/V8, Lua 5.4, Go (bytecode/script)
     #
     # wabt: WebAssembly Binary Toolkit -- wat2wasm, wasm2wat, wasm-validate.
     #   WAT (bare-metal) compiler substrate (697B DLA binary).
@@ -145,6 +147,14 @@
     #       targets = [ "wasm32-unknown-unknown" ];
     #     }
     rustup
+    # go: Go WASM substrate (GOOS=js GOARCH=wasm, Oracle 16).
+    #   Byte-lock harness: src/wasm-dla/bytelock/run-go-wasm.mjs
+    #   Requires wasm_exec.js: cp $(go env GOROOT)/misc/wasm/wasm_exec.js bytelock/
+    go
+    # lua5: Lua 5.4 bytecode substrate (luac5.4 -o, Oracle 15, 2.2KB).
+    #   Byte-lock harness: src/wasm-dla/bytelock/dla-canonical.lua
+    #   NixOS package name: lua5 (provides lua5.4 binary)
+    lua5
   ];
 
   # ---------------------------------------------------------------------------

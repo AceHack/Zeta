@@ -1,6 +1,6 @@
 // src/wasm-dla/bytelock/dla-canonical.zig
 //
-// Canonical DLA substrate — Byte-Lock v1
+// Canonical DLA substrate — Byte-Lock v2 (Zig)
 // Spec: src/wasm-dla/CANONICAL_SPEC.md
 //
 // PRNG:   xorshift32
@@ -9,12 +9,19 @@
 // Walk:   4-directional, clamp to [1, 126]
 // Output: trajectory[] = (stick_x << 16) | stick_y, or 0xFFFFFFFF if escaped
 //
-// Compile:
-//   zig build-lib dla-canonical.zig -target wasm32-freestanding -O ReleaseSmall \
-//     -femit-bin=dla-canonical-zig.wasm
+// Compile (two-step — Zig 0.13 wasm32-freestanding produces an ar archive):
+//   zig build-lib dla-canonical.zig -target wasm32-freestanding -rdynamic \
+//     -O ReleaseFast -femit-bin=dla-canonical-zig-obj.wasm
+//   wasm-ld dla-canonical-zig-obj.wasm.o --no-entry \
+//     --export=init --export=run \
+//     --export=get_cluster_size --export=get_max_r_bits --export=get_trajectory_entry \
+//     --allow-undefined -o dla-canonical-zig.wasm
 //
-// Note: Zig wasm32-freestanding has no std.math.cos/sin.
-// We import them from the host (same as WAT).
+// WHY NO @min / @round:
+//   Zig 0.13 on wasm32-freestanding emits calls to fminf and roundf as host imports
+//   rather than compiling them to WASM f32.min / f32.nearest instructions.
+//   We implement both inline to keep the import list to {cos_f32, sin_f32} only,
+//   matching the WAT and C substrates exactly.
 
 const GRID_SIZE: i32 = 128;
 const CENTER: i32 = 64;
@@ -30,9 +37,20 @@ var cluster_size: i32 = 0;
 var max_r: f32 = 1.0;
 var trajectory: [800]u32 = undefined;
 
-// Imported from host
+// Imported from host (same interface as WAT substrate)
 extern fn cos_f32(x: f32) f32;
 extern fn sin_f32(x: f32) f32;
+
+// Inline min — avoids fminf host import on wasm32-freestanding
+inline fn f32_min(a: f32, b: f32) f32 {
+    return if (a < b) a else b;
+}
+
+// JS Math.round semantics: round half away from zero.
+// Avoids roundf host import on wasm32-freestanding.
+inline fn js_round(x: f32) i32 {
+    return @intFromFloat(if (x >= 0.0) x + 0.5 else x - 0.5);
+}
 
 fn xorshift32() u32 {
     prng_state ^= prng_state << 13;
@@ -75,24 +93,23 @@ export fn init(seed: u32) void {
 export fn run() void {
     var w: i32 = 0;
     while (w < N_WALKERS) : (w += 1) {
-        // Spawn
-        const spawn_r: f32 = @min(max_r + 3.0, SPAWN_CAP);
+        // Spawn on circle at min(maxR + 3, SPAWN_CAP)
+        const spawn_r: f32 = f32_min(max_r + 3.0, SPAWN_CAP);
         const angle_bits: u32 = xorshift32();
         const angle: f32 = (@as(f32, @floatFromInt(angle_bits)) / 4294967296.0) * TWO_PI;
         var wx: i32 = clamp(
-            @intFromFloat(@round(@as(f32, @floatFromInt(CENTER)) + spawn_r * cos_f32(angle))),
+            js_round(@as(f32, @floatFromInt(CENTER)) + spawn_r * cos_f32(angle)),
             1, GRID_SIZE - 2,
         );
         var wy: i32 = clamp(
-            @intFromFloat(@round(@as(f32, @floatFromInt(CENTER)) + spawn_r * sin_f32(angle))),
+            js_round(@as(f32, @floatFromInt(CENTER)) + spawn_r * sin_f32(angle)),
             1, GRID_SIZE - 2,
         );
         const kill_r: f32 = spawn_r + KILL_EXTRA;
         const kill_r2: f32 = kill_r * kill_r;
 
         var step: i32 = 0;
-        var done = false;
-        while (step < MAX_STEPS and !done) : (step += 1) {
+        while (step < MAX_STEPS) : (step += 1) {
             if (has_neighbor(wx, wy)) {
                 // Stick
                 grid[grid_idx(wx, wy)] = 1;
@@ -102,14 +119,13 @@ export fn run() void {
                 const r: f32 = @sqrt(dx * dx + dy * dy);
                 if (r > max_r) max_r = r;
                 trajectory[@intCast(w)] = (@as(u32, @intCast(wx)) << 16) | @as(u32, @intCast(wy));
-                done = true;
                 break;
             }
-            // Kill radius
+            // Kill radius check
             const dx: f32 = @floatFromInt(wx - CENTER);
             const dy: f32 = @floatFromInt(wy - CENTER);
             if (dx * dx + dy * dy > kill_r2) break;
-            // Move
+            // 4-directional walk
             const dir: u32 = xorshift32() % 4;
             switch (dir) {
                 0 => wx = clamp(wx + 1, 1, GRID_SIZE - 2),
@@ -118,7 +134,7 @@ export fn run() void {
                 else => wy = clamp(wy - 1, 1, GRID_SIZE - 2),
             }
         }
-        // trajectory[w] stays 0xFFFFFFFF if not stuck
+        // trajectory[w] stays 0xFFFFFFFF if walker did not stick
     }
 }
 

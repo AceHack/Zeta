@@ -195,17 +195,21 @@
             ripgrep
             fd
 
-            # ── WASM toolchain (Oracles 10-12 / DLA multi-compiler substrate) ──────
+            # ── Byte-lock toolchain (Oracles 10-16 / DLA 9-substrate byte-lock) ────
             # Mirrors common.nix systemPackages. Available in `nix develop` so
-            # contributors can rebuild all six WASM compiler outputs locally
-            # and verify Conjecture Z-7 (binary_size perp D_f) on any host.
-            wabt        # wat2wasm, wasm2wat, wasm-validate (WAT bare-metal substrate, 697B)
+            # contributors can rebuild all 9 substrates locally and run the
+            # byte-lock drift check (src/wasm-dla/bytelock/) on any host.
+            # Substrates: WAT, LLVM/C, Emscripten, Rust, ASC, Zig (WASM)
+            #             + JS/V8, Lua 5.4, Go (bytecode/script)
+            wabt        # wat2wasm, wasm2wat, wasm-validate (WAT bare-metal substrate)
             binaryen    # wasm-opt, wasm-as (AssemblyScript optimizer + WASM IR tools)
-            emscripten  # emcc (C/C++ -> WASM, C compiler substrate, 1.1KB)
-            nodejs      # AssemblyScript (asc) runtime host
-            zig         # wasm32-freestanding substrate (Oracle 11, 951B)
-            llvm        # llc, llvm-as, opt -- LLVM IR to WASM pipeline (Oracle 13)
+            emscripten  # emcc (C/C++ -> WASM, C compiler substrate)
+            nodejs      # AssemblyScript (asc) runtime host + JS/V8 byte-lock runner
+            zig         # wasm32-freestanding substrate (two-step: build-lib + wasm-ld)
+            llvm        # llc, llvm-as, opt -- LLVM IR to WASM pipeline
             rustup      # Rust toolchain; run: rustup target add wasm32-unknown-unknown
+            go          # Go WASM substrate (GOOS=js GOARCH=wasm); needs wasm_exec.js
+            lua5        # Lua 5.4 bytecode substrate (luac5.4 -o)
           ];
 
           shellHook = ''

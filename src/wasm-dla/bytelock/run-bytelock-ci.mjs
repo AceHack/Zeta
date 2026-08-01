@@ -97,6 +97,8 @@ const WASM_SUBSTRATES = [
   { name: "Emscripten",  file: "dla-canonical-emcc.wasm", type: "wasm" },
   { name: "Rust",        file: "dla-canonical-rust.wasm", type: "wasm" },
   { name: "AssemblyScript", file: "dla-canonical-asc.wasm", type: "wasm" },
+  // Zig: two-step build (zig build-lib + wasm-ld) to avoid fminf/roundf host imports
+  { name: "Zig",            file: "dla-canonical-zig.wasm", type: "wasm" },
 ];
 
 const SCRIPT_SUBSTRATES = [
@@ -129,6 +131,11 @@ async function runWasmSubstrate(wasmPath, seed) {
         const view = new Uint8Array(memoryRef.buffer);
         view.fill(val & 0xff, ptr, ptr + len);
         return ptr;
+      },
+      memcpy: (dst, src, len) => {
+        const view = new Uint8Array(memoryRef.buffer);
+        view.copyWithin(dst, src, src + len);
+        return dst;
       },
     },
   };

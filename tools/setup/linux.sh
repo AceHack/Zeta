@@ -321,18 +321,26 @@ fi
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"
 
-# -- WASM compiler substrates (Oracles 10-13 / Conjecture Z-7) -----------------
-# Zig and Rust wasm32 are NOT in Ubuntu apt; install via dedicated idempotent
-# scripts. Both scripts skip if the correct version is already present.
-# NixOS nodes get these via common.nix systemPackages instead.
+# -- Byte-lock toolchain (Oracles 10-16 / DLA 9-substrate byte-lock) -----------
+# All 9 substrates declared in desired-state (common.nix for NixOS, here for
+# non-NixOS Ubuntu/Debian). The byte-lock (src/wasm-dla/bytelock/) verifies
+# byte-identical walker trajectories across all substrates at any seed.
+# Substrates: WAT, LLVM/C, Emscripten, Rust, ASC, Zig (WASM)
+#             + JS/V8, Lua 5.4, Go (bytecode/script)
+#
+# wabt, lua5.4, golang-go are in Ubuntu apt; Zig and Rust need dedicated scripts.
 if [ "$IS_NIXOS" != 1 ]; then
-  echo "-- installing Zig (wasm32-freestanding substrate, Oracle 11) --"
+  echo "-- installing wabt, lua5.4, golang-go via apt --"
+  SUDO=""
+  if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
+  $SUDO apt-get install -y --no-install-recommends wabt lua5.4 golang-go 2>/dev/null || \
+    echo "⚠ apt install of wabt/lua5.4/golang-go failed — substrates will show TOOLING-ABSENT"
+  echo "-- installing Zig (wasm32-freestanding substrate) --"
   bash "$SETUP_DIR/common/install-zig.sh"
-
-  echo "-- installing Rust + wasm32-unknown-unknown target (Oracle 12) --"
+  echo "-- installing Rust + wasm32-unknown-unknown target --"
   bash "$SETUP_DIR/common/install-rust-wasm32.sh"
   # Source cargo env so rustc/cargo are on PATH for the remainder of this session
   # shellcheck source=/dev/null
   [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env" || true
 fi
-echo "OK WASM compiler substrates ready (Zig + Rust wasm32)"
+echo "OK byte-lock toolchain ready (WAT/C/Emcc/Rust/ASC/Zig WASM + JS/Lua/Go)"
