@@ -139,7 +139,17 @@ jobs:
             # refuse the write and say so; it is not to stop the society.
             echo "::warning::[heal] BLAST RADIUS EXCEEDED — nothing written, tree untouched."
             echo "[heal] A Tier-0 run this large wants a human read, not a silent commit."
-            echo "[heal] Continuing the tick: this is a finding about the repo, not a broken tick."
+            echo "[heal] Nothing to stage (the healer wrote nothing); ending this step cleanly."
+            # exit 0, NOT fall-through. The healer wrote nothing, so there is nothing to stage —
+            # but `--plan-out` is written BEFORE the bound check, so /tmp/heal-plan.txt still holds
+            # the full oversized plan. Falling through ran `git add --pathspec-from-file` over ~1005
+            # paths that were never modified, and under `set -e` any refusal (an ignored path, a
+            # pathspec matching nothing) killed the step.
+            #
+            # My error, twice: #9911 removed the `exit 1` without replacing it. exit 0 ends the STEP
+            # successfully and the job continues — which is what "loud but not fatal" actually
+            # requires. The 19:56 tick failed on this, with otto down and alexa/soraya green.
+            exit 0
           fi
           if [ "$HEAL_RC" -ne 0 ]; then
             echo "::warning::[heal] HEALER FAILED rc=$HEAL_RC — drift may exist but went undetected"
