@@ -21,18 +21,10 @@ import { randomBytes } from "node:crypto";
 
 describe("bindingMaterialForContext", () => {
   it("extracts each factor from fixture context", () => {
-    expect(bindingMaterialForContext("usbUuid", FIXTURE_ENCRYPT_CTX)).toBe(
-      FIXTURE_ENCRYPT_CTX.usbUuid,
-    );
-    expect(bindingMaterialForContext("usbISerial", FIXTURE_ENCRYPT_CTX)).toBe(
-      FIXTURE_ENCRYPT_CTX.usbISerial,
-    );
-    expect(bindingMaterialForContext("uefiKeyfile", FIXTURE_ENCRYPT_CTX)).toBe(
-      FIXTURE_ENCRYPT_CTX.uefiKeyfile,
-    );
-    expect(bindingMaterialForContext("tpmSeal", FIXTURE_ENCRYPT_CTX)).toBe(
-      FIXTURE_ENCRYPT_CTX.tpmSeal,
-    );
+    expect(bindingMaterialForContext("usbUuid", FIXTURE_ENCRYPT_CTX)).toBe(FIXTURE_ENCRYPT_CTX.usbUuid);
+    expect(bindingMaterialForContext("usbISerial", FIXTURE_ENCRYPT_CTX)).toBe("USB-STICK-SERIAL-001");
+    expect(bindingMaterialForContext("uefiKeyfile", FIXTURE_ENCRYPT_CTX)).toBe("uefi-keyfile-bytes-deadbeef");
+    expect(bindingMaterialForContext("tpmSeal", FIXTURE_ENCRYPT_CTX)).toBe("tpm-pcr-seal-node-alpha");
   });
 
   it("returns null when optional factor missing", () => {

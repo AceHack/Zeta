@@ -49,6 +49,7 @@
     "full-ai-cluster/portal/web/**",
     "src/Renderers/website",
     "src/Renderers/website/**",
+    "src/wasm-dla/assemblyscript/**",
     "src/Core.TypeScript/qsharp-oracle/**",
     "src/Core.TypeScript/cursor/**",
     "db",

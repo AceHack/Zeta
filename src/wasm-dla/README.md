@@ -12,12 +12,12 @@ the evidence base for **Conjecture Z-7** in the frozen core register.
 > correlation with the fractal dimension D_f it computes. A 979-byte
 > WAT binary and a 1.5 MB Go binary produce the same D_f ≈ 1.322.
 
-| Compiler | Language | Binary Size | D_f |
-|---|---|---|---|
-| `wat2wasm` (wabt) | WebAssembly Text Format | ~979 bytes | 1.322 |
-| `asc` (AssemblyScript) | TypeScript subset | ~6 KB | 1.322 |
-| `go build` (GOOS=js GOARCH=wasm) | Go | ~1.5 MB | 1.322 |
-| `emcc` (Emscripten) | C | ~8 KB | 1.322 |
+| Compiler                         | Language                | Binary Size | D_f   |
+| -------------------------------- | ----------------------- | ----------- | ----- |
+| `wat2wasm` (wabt)                | WebAssembly Text Format | ~979 bytes  | 1.322 |
+| `asc` (AssemblyScript)           | TypeScript subset       | ~6 KB       | 1.322 |
+| `go build` (GOOS=js GOARCH=wasm) | Go                      | ~1.5 MB     | 1.322 |
+| `emcc` (Emscripten)              | C                       | ~8 KB       | 1.322 |
 
 The 1,600× size difference between WAT and Go with identical D_f is the
 core claim. Compiler is irrelevant to the fractal dimension.
@@ -40,24 +40,28 @@ src/wasm-dla/
 ## Build Instructions
 
 ### WAT (bare-metal)
+
 ```bash
 wat2wasm wat/dla.wat -o /tmp/dla-wat.wasm
 wasm-validate /tmp/dla-wat.wasm
 ```
 
 ### AssemblyScript
+
 ```bash
 npx asc assemblyscript/assembly/index.ts --outFile /tmp/dla-asc.wasm --optimize
 wasm-validate /tmp/dla-asc.wasm
 ```
 
 ### Go
+
 ```bash
 GOOS=js GOARCH=wasm go build -o /tmp/dla-go.wasm ./go/
 # Note: Go WASM is not wasm-validate compatible (uses non-standard imports)
 ```
 
 ### Emscripten (C)
+
 ```bash
 emcc c/dla.c -o /tmp/dla-emcc.wasm \
   -s WASM=1 -s SIDE_MODULE=1 -O2 --no-entry \
