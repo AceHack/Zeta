@@ -81,11 +81,16 @@ jobs:
           bun src/Core.TypeScript/hygiene/drift-ledger.ts slo \
             --dir docs/drift-events --config registry/drift-slo.yaml --workitems workitems
 
+      - name: Publish the MTTH fold for the Pages monitor panel
+        run: |
+          bun src/Core.TypeScript/hygiene/drift-ledger.ts report \
+            --dir docs/drift-events --json > data/drift-mtth.json
+
       - name: Commit and push the tick event (and any SLO filings)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events workitems
+          git add docs/drift-events workitems data/drift-mtth.json
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else

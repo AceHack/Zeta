@@ -45,8 +45,10 @@ footer { margin-top: 3rem; font-size: 0.7rem; color: var(--dim); }
 <div id="status"></div>
 <div class="grid" id="cards"></div>
 <div class="timeline" id="timeline"></div>
+<div class="timeline" id="drift"></div>
 <footer>
   Data: <code>data/tick-history.json</code> (same-origin, append-only ledger) ·
+  <code>data/drift-mtth.json</code> (drift-sweep MTTH fold, tick-indexed) ·
   Git is the database · Pages is the API · Tabs are the nodes
 </footer>
 
@@ -109,9 +111,44 @@ async function load() {
     `).join('');
 }
 
+// Drift ledger panel — MTTH per drift class, tick-indexed (the drift-and-heal
+// ADR's measurement surface: 1 tick = one drift-sweep of main, cron every 4h).
+// Written by .github/workflows/drift-sweep.yml via `drift-ledger report --json`.
+async function loadDrift() {
+  const el = document.getElementById('drift');
+  let d;
+  try {
+    let resp = await fetch('drift-mtth.json');
+    if (!resp.ok) resp = await fetch('../data/drift-mtth.json');
+    if (!resp.ok) throw new Error(`${resp.status}`);
+    d = await resp.json();
+  } catch {
+    el.innerHTML = `<h2>Drift Ledger — MTTH per class</h2>
+      <p class="empty">No drift data yet. The drift-sweep workflow writes data/drift-mtth.json each tick.</p>`;
+    return;
+  }
+  const classes = d.classes || [];
+  const openTotal = classes.reduce((a, c) => a + (c.openCount || 0), 0);
+  const header = `<h2>Drift Ledger — tick ${d.latestTick} · ${classes.length} class(es) · ${openTotal} open</h2>`;
+  if (classes.length === 0) {
+    el.innerHTML = header + `<p class="empty">Ledger is clean — no drift classes observed yet.</p>`;
+    return;
+  }
+  el.innerHTML = header + classes.map(c => `
+      <div class="tick">
+        <span class="tick-time">${c.rule}</span>
+        <span class="tick-action">MTTH ${c.mtthTicks === null ? '—' : c.mtthTicks.toFixed(1)} tick(s)</span>
+        <span class="tick-agent">${c.healedCount} heal(s)</span>
+        <span class="tick-entropy">${c.openCount} open${c.oldestOpenAgeTicks === null ? '' : ` · oldest ${c.oldestOpenAgeTicks} tick(s)`}</span>
+      </div>
+    `).join('');
+}
+
 load();
+loadDrift();
 // Refresh every 60s (the data updates on schedule)
 setInterval(load, 60000);
+setInterval(loadDrift, 60000);
 </script>
 </body>
 </html>

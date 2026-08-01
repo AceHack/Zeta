@@ -341,7 +341,15 @@ if (invokedDirectly) {
     process.exit(2);
   }
   if (cmd === "report") {
-    for (const l of foldMtth(readLedger(dir)).lines) console.log(l);
+    const report = foldMtth(readLedger(dir));
+    if (rest.includes("--json")) {
+      // Machine-readable surface (data/drift-mtth.json → the Pages monitor
+      // panel). Same fold, same bytes for the same ledger (DST).
+      const { lines: _lines, ...machine } = report;
+      console.log(JSON.stringify(machine, null, 2));
+    } else {
+      for (const l of report.lines) console.log(l);
+    }
     process.exit(0);
   }
   if (cmd === "slo") {
