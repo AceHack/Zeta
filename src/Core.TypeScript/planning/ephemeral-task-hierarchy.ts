@@ -9,7 +9,13 @@
  *   3. EPHEMERAL META-HIERARCHIES & NON-VACUOUS DISSOLUTION:
  *      - `boltTaskHierarchy` confers temporary task capabilities to assigned peers.
  *      - `unboltTaskHierarchy` consumes the hierarchy, strips task capabilities, and asserts zero residual hat leakage.
+ *   4. CALIBRATION LEDGER — SEPARATE FROM PEER RECORD (PR #9901, 2026-08-01):
+ *      - `unboltTaskHierarchy` accepts an optional `CalibrationLedger` and passes it through UNCHANGED.
+ *      - The ledger is NOT stored in `FlatSocietyBase.peers` — it lives outside so the wholesale
+ *        restore from `base.peers` cannot erase it. See `calibration-ledger.ts`.
  */
+
+import type { CalibrationLedger } from "./calibration-ledger.js";
 
 export interface TravelerPeer {
   readonly zid: string;
@@ -149,13 +155,32 @@ export function boltTaskHierarchy(
 }
 
 /**
+ * Result of unboltTaskHierarchy — the restored FlatSocietyBase plus the
+ * calibration ledger passed through UNCHANGED.
+ *
+ * The ledger is returned alongside (not embedded in) the state so that
+ * callers can thread it through without risk of it being erased by a
+ * future wholesale restore from base.peers.
+ */
+export interface UnboltResult {
+  readonly state: FlatSocietyBase;
+  /** Calibration ledger — passed through from input, never modified by unbolt. */
+  readonly calibrationLedger: CalibrationLedger | undefined;
+}
+
+/**
  * Dissolves the ephemeral task hierarchy, strips conferred task capabilities,
  * and asserts zero residual hat leakage.
+ *
+ * The optional `calibrationLedger` is passed through UNCHANGED in the result.
+ * It is NOT restored from base.peers — this is the storage-location fix for
+ * the defect described in PR #9901 §3.1.
  */
 export function unboltTaskHierarchy(
   baseOrBolted: FlatSocietyBase | BoltedSocietyState,
   hierarchyInput?: EphemeralMetaHierarchy,
-): FlatSocietyBase {
+  calibrationLedger?: CalibrationLedger,
+): UnboltResult {
   const base = "activePeers" in baseOrBolted ? baseOrBolted.base : baseOrBolted;
   const hierarchy = "activePeers" in baseOrBolted ? baseOrBolted.hierarchy : hierarchyInput;
 
@@ -184,11 +209,12 @@ export function unboltTaskHierarchy(
     }
   }
 
-  return {
+  const state: FlatSocietyBase = {
     peers: restoredPeers,
     mutualEmpowermentScore: computeMutualEmpowerment(Array.from(restoredPeers.values())),
     empowermentFloor: computeEmpowermentFloor(Array.from(restoredPeers.values())),
   };
+  return { state, calibrationLedger };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

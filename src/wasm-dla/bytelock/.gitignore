@@ -1,16 +1,11 @@
-# Zig build artifacts
-.zig-cache/
-zig-out/
+# Compiled WASM binaries (built by CI/local toolchain, not stored in repo)
+*.wasm
+*.wasm.o
 *.o
 *.a
-
-# Rust intermediate objects
-*.rcgu.o
-
-# Candidate verification files (generated during CI, not source)
-candidate-*.json
-
-# Go WASM build artifacts (built in CI, not committed — binary-in-proof-lineage rule)
-dla-canonical-go.wasm
 wasm_exec.js
 go.sum
+
+# Build artifacts
+zig-cache/
+zig-out/

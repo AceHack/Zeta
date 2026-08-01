@@ -13,7 +13,9 @@
  * Usage:
  *   node run-bytelock-ci.mjs
  *   node run-bytelock-ci.mjs --seeds 1,42,100,999
- *   node run-bytelock-ci.mjs --json   (output JSON report)
+ *   node run-bytelock-ci.mjs --json                              (print JSON report to stdout)
+ *   node run-bytelock-ci.mjs --report-file=bytelock.json          (write JSON report to file)
+ *   node run-bytelock-ci.mjs --seeds-file=testdata/seeds-100.json (large corpus)
  *
  * Substrates tested:
  *   WASM:     dla-canonical-wat.wasm, dla-canonical-llvm.wasm,
@@ -24,7 +26,7 @@
  *   Go:       run-go-wasm.mjs (via wasm_exec.js bridge — dla-canonical-go.wasm)
  */
 
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -45,9 +47,15 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 //   node run-bytelock-ci.mjs --seeds=42
 //   node run-bytelock-ci.mjs --seeds-file=seeds-100.json
 //   node run-bytelock-ci.mjs --json --seeds-file=/path/to/corpus.json
+//   node run-bytelock-ci.mjs --report-file=bytelock.json  (write JSON to file, not stdout)
 
 const args = process.argv.slice(2);
-const jsonMode = args.includes("--json");
+const reportFileArg = args.find((a) => a.startsWith("--report-file=") || a === "--report-file");
+const reportFilePath = reportFileArg
+  ? (reportFileArg.split("=")[1] || args[args.indexOf(reportFileArg) + 1] || null)
+  : null;
+// --json mode: either explicit --json flag, or --report-file (always produces JSON)
+const jsonMode = args.includes("--json") || reportFilePath != null;
 
 // --seeds-file resolution
 const seedsFileArg = args.find((a) => a.startsWith("--seeds-file=") || a === "--seeds-file");
@@ -294,7 +302,26 @@ if (!jsonMode) {
         (tooling ? `; ${tooling} NOT exercised (toolchain absent) and therefore NOT verified.` : "."),
   );
 } else {
-  process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+  const jsonOut = JSON.stringify(report, null, 2) + "\n";
+  if (reportFilePath) {
+    writeFileSync(reportFilePath, jsonOut, "utf8");
+    // When --report-file is used, also print the human summary to stdout
+    const tooling2 = report.summary.tooling ?? 0;
+    const executedN2 = report.summary.pass + report.summary.fail;
+    const totalN2 = executedN2 + tooling2 + report.summary.skip;
+    console.log(`\nReport written to: ${reportFilePath}`);
+    console.log(
+      `Summary: ${report.summary.pass} PASS, ${report.summary.fail} FAIL, ${tooling2} TOOLING-ABSENT, ${report.summary.skip} SKIP`,
+    );
+    console.log(
+      anyFail
+        ? `\nByte-lock DIVERGED \u2014 ${report.summary.fail} of ${executedN2} executed substrate(s) disagree (drift signal, not a gate).`
+        : `\nByte-lock AGREED \u2014 ${executedN2} of ${totalN2} substrate(s) executed and produced identical trajectories` +
+          (tooling2 ? `; ${tooling2} NOT exercised (toolchain absent) and therefore NOT verified.` : "."),
+    );
+  } else {
+    process.stdout.write(jsonOut);
+  }
 }
 
 // ── LIVENESS FLOOR — the ONLY hard failure ──────────────────────────────────────
