@@ -1256,6 +1256,80 @@ cross-refs `docs/ROADMAP.md`, `docs/INSTALLED.md`.
 
 ---
 
+## Society identity (Genesis Concepts — Iris / Addison UI)
+
+Canonical UI source:
+[`docs/design/root-site-iris/Genesis Concepts.dc.html`](design/root-site-iris/Genesis%20Concepts.dc.html).
+Operational threat-model use:
+[`docs/security/USB-IDENTITY-THREAT-MODEL.md`](security/USB-IDENTITY-THREAT-MODEL.md)
+(self-similar traveler → cluster → federation → ISociety/CTM).
+
+### Cluster
+
+**Plain:** A group held together by **relationships**, not by
+enforceable rules — shared history, trust, culture, purpose.
+Clusters emerge and dissolve naturally. They can contain agents,
+rooms, vaults, federations, or other clusters. Betrayal is social,
+not a contract breach.
+**Technical:** In threat reviews, *cluster-shaped* means soft trust
+surfaces with **no enforceable obligations**. Today's operator
+homelab / shared USB bringup is mostly cluster-shaped. Do not
+over-claim enforceability at this layer.
+**Not:** an organization, a federation, or a k8s cluster (unless
+the doc explicitly means Kubernetes).
+
+### Federation
+
+**Plain:** An institution held together by **contracts** — name,
+purpose, constitution, governance, treasury, membership rules,
+obligations, dispute process — and **always exit procedures**.
+Contracts are enforceable; exits must exist (see Universal Exit
+Principle).
+**Technical:** In threat reviews, *federation-shaped* means hard
+rules + custody + exit paths. A GitHub PR used as a fake
+"membership contract" during bringup is federation-*shaped* but
+not yet a real federation until IdP + Lodge constitutions land.
+**Canon:** *Relationships create clusters; contracts create
+federations.*
+
+### Universal Exit Principle
+
+**Plain:** No human, agent, vault, cluster, or federation may be
+trapped indefinitely. Exit may cost (notice period, buyout,
+reputation hit) but **must exist**.
+**Technical:** Non-negotiable in Genesis Concepts and in
+USB/society threat models. Any design that blocks exit without
+an explicit, priced escape path is a critical design smell.
+
+### Lodge
+
+**Plain:** A **federation charter** — a named federation instance
+with its own constitution (example in the UI: The Aperture Lodge).
+**Technical:** Not a cluster. Use when citing federation-specific
+custody, treasury, or degree-of-entry rules.
+
+### ISociety
+
+**Plain:** The bidirectional schedule/route **contract** a member
+presents to society and receives from society — the membrane
+between "inside my society's view" and "outside world's view."
+**Technical:** Self-similar scale between traveler/cluster/federation
+and the top recursive layer. Threat-model owner for membrane
+questions (what crosses inward vs outward).
+
+### CTM / World
+
+**Plain:** The recursive top layer — a society of causal/traveler
+models that *is itself* a CTM (`ISociety <: CTM`). Carries the
+most information advantage **and** the most fairness obligation
+(three-body / Lagrange symmetry: the top orbit must stay the most
+symmetric).
+**Technical:** Research + IdP ADR territory today; not installer-
+wired. Same STRIDE questions as lower scales, with stronger fairness
+obligations.
+
+---
+
 ## Git-native Agile mapping (Vera 2026-05-07)
 
 The original Agile Manifesto's collaboration concepts mapped

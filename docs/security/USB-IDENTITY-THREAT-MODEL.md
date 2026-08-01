@@ -10,6 +10,8 @@
   (Zeta distributed IdP — DECIDED)
 - Iris / Addison UI: [`docs/design/root-site-iris/Genesis Concepts.dc.html`](../design/root-site-iris/Genesis%20Concepts.dc.html)
   (cluster vs federation); Lodge = federation charter
+- Glossary canon: [`docs/SEED-VOCABULARY.md`](../SEED-VOCABULARY.md) (carved kernel),
+  [`docs/GLOSSARY.md`](../GLOSSARY.md) §Society identity (Genesis Concepts)
 - Self-similarity: CTM ⊣ ISociety (recursive); Traveler frame;
   three-body / Lagrange fairness layering
 
@@ -32,7 +34,8 @@ identity geometry *is* the threat model, and it repeats at every scale
 | **ISociety** | Bidirectional schedule/route contract a member presents to / receives from society | Membrane: inward sees CTM; outward sees ISociety |
 | **CTM / World** | Recursive fixpoint — society of CTMs *is-a* CTM (`ISociety <: CTM`) | Top layer: most information advantage **and** most fairness obligation |
 
-**UI canon (Addison / Iris Genesis Concepts):**
+**UI canon (Addison / Iris Genesis Concepts):** see also
+[`docs/GLOSSARY.md`](../GLOSSARY.md) §Society identity (Genesis Concepts).
 
 > Relationships create **clusters** (never enforceable);
 > contracts create **federations** (enforceable, always with exits).
@@ -223,19 +226,16 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 
 ## 8. Software-only next slices (no metal)
 
-1. **Promote cluster/federation vocabulary** into operational glossary
-   (SEED/GLOSSARY) from Iris Genesis Concepts — so threat reviews cite
-   one canon.
-2. **Per-federation threat-model stub template** — same section shape
+1. **Per-federation threat-model stub template** — same section shape
    as §3, filled per Lodge/charter when a federation is chartered.
-3. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
+2. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
    built with a real `grub-mkimage` EFI (layout+embed path already lands).
 
-Credential binding model tests: landed
-(`src/Core.TypeScript/installer/credential-binding-model.ts` — injectable
-`usbUuid` / `usbISerial` / `uefiKeyfile` / `tpmSeal`; reformat/swap matrix +
-crypto proof). Planner + `/boot/` vs `/payloads/` + FAT assemble +
-`--grub-efi` embed: landed (`planMultibootUsb` / `planAssembleFatImage`).
+Cluster/federation vocabulary promoted to operational glossary
+(`docs/SEED-VOCABULARY.md` carved kernel + `docs/GLOSSARY.md` §Society
+identity). Credential binding model tests landed
+(`src/Core.TypeScript/installer/credential-binding-model.ts`). Planner +
+`/boot/` vs `/payloads/` + FAT assemble + `--grub-efi` embed: landed.
 
 Phase-3 QEMU escapes already removed (rebuild ISO; mock-auth +
 post-boot self-register required).

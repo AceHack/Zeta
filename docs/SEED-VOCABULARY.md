@@ -49,6 +49,18 @@ sim layers, and turn load-bearing claims into tests, specs, or proofs.
   without imposing any lens / view / objective / destiny** (category-theory-provable). Aaron's coinage; rich history:
   `docs/research/2026-06-07-traveler-frame-is-any-self-propagating-pattern-...md`, `TravelerFrame.fs` (Layer-0),
   `ITravelerFrame` (#6889).
+- **cluster** vs **federation** — Iris/Addison Genesis Concepts: **relationships create clusters** (shared
+  history/trust/culture; **never enforceable**; emerge and dissolve naturally); **contracts create federations**
+  (constitution, membership, treasury, dispute process; **enforceable, always with exits**). Clusters are not
+  organizations; federations are not social groups. Do not treat soft cluster trust as federation authority.
+- **Universal Exit Principle** — no human, agent, vault, cluster, or federation may be trapped indefinitely; exit
+  may cost (notice, buyout, reputation) but **must exist** (Genesis Concepts; threat reviews cite this as
+  non-negotiable).
+- **ISociety** / **CTM (World)** — society scales self-similarly: **ISociety** = the bidirectional schedule/route
+  contract a member presents to / receives from society (membrane); **CTM / World** = recursive fixpoint where a
+  society of CTMs *is-a* CTM (`ISociety <: CTM`) — top layer carries the most information advantage **and** the most
+  fairness obligation (three-body / Lagrange layering).
+- **Lodge** — a **federation charter** instance (e.g. The Aperture Lodge in Genesis Concepts UI); not a cluster.
 - **AX / UX / DX** — Agent-experience (autonomous agents, via observe.ts + the action grammar — the *largest*
   audience) / User-experience (regular humans / library consumers) / Developer-experience (contributors, ~10%).
 - **Mirror / Beacon** — two registers: *Mirror* = fast internal high-bandwidth shorthand (everything); *Beacon* =

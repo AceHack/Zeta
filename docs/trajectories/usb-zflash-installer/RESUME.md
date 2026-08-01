@@ -9,15 +9,15 @@ Current blocker: none for software/QEMU deepen slices landed 2026-07-31
 radio claim, hostname uniqueness contract, multiboot FAT assemble + EFI
 embed path, credential-binding model tests). Physical S6 UX feel + real
 WiFi association remain metal-gated.
-Next concrete action: **minimize metal** — promote cluster/federation
-glossary + per-federation threat-model stub (see
+Next concrete action: **minimize metal** — per-federation threat-model
+stub template (see
 [`docs/security/USB-IDENTITY-THREAT-MODEL.md`](../../security/USB-IDENTITY-THREAT-MODEL.md):
 traveler → cluster → federation → ISociety/CTM, self-similar).
-Credential binding model tests landed (`credential-binding-model.ts` —
-usbUuid / usbISerial / uefiKeyfile / tpmSeal matrix + crypto proof).
-Phase-3 requires mock-auth + post-boot self-register (no legacy ISO
-escapes). Multiboot scaffold + hermetic planner + FAT assemble + EFI embed path
-landed (`src/Core.TypeScript/installer/multiboot/` — `--plan` / `--assemble`
+Cluster/federation glossary promoted (`docs/SEED-VOCABULARY.md` +
+`docs/GLOSSARY.md` §Society identity). Credential binding model tests
+landed (`credential-binding-model.ts`). Multiboot scaffold + hermetic
+planner + FAT assemble + EFI embed path landed
+(`src/Core.TypeScript/installer/multiboot/` — `--plan` / `--assemble`
 /`--grub-efi`). Real GRUB EFI binary comes from nix/`grub-mkimage` (not
 vendored). QEMU UEFI menu boot with that binary is optional CI smoke.
 **Physical boot** only when ready
