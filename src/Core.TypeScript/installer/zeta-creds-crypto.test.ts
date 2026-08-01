@@ -12,7 +12,11 @@
 
 import { describe, expect, it } from "bun:test";
 import { randomBytes } from "node:crypto";
-import { IV_LEN, KEY_LEN, SALT_LEN, TAG_LEN, decrypt, deriveKey, encrypt, type Envelope } from "./zeta-creds-crypto";
+import {
+  IV_LEN, KEY_LEN, SALT_LEN, TAG_LEN,
+  decrypt, deriveKey, deriveKeyFromBindingMaterial, encrypt,
+  type Envelope,
+} from "./zeta-creds-crypto";
 
 const UUID = "9e8d7c6b-5a49-3827-1605-fedcba987654";
 const ALT_UUID = "00000000-0000-0000-0000-000000000000";
@@ -195,6 +199,53 @@ describe("decrypt — security rejections", () => {
     const result = decrypt(malformed, UUID, PASS);
     // Must return structured error (locks in the no-throw contract for callers).
     expect("error" in result).toBe(true);
+  });
+});
+
+/**
+ * THE DEGENERATE-BINDING-MATERIAL GUARD.
+ *
+ * Found 2026-08-01 by mutation sweep, not by reading: flipping `bindingMaterial.length === 0`
+ * to `=== 1` in zeta-creds-crypto.ts left the whole installer suite green. The guard was
+ * unreachable by any test, which means it was load-bearing and unproven at the same time.
+ *
+ * Why it is load-bearing. The USB claim is "keys are USB- and machine-specific, useless on
+ * other devices." That property comes from ONE place: binding material entering the HKDF ikm
+ * as `bindingMaterial | stretched`. With empty binding material the ikm degenerates to
+ * `"" | stretched` — a key derived from the passphrase ALONE, identical on every machine on
+ * earth. The device binding silently disappears while every round-trip test still passes,
+ * because a passphrase-only key encrypts and decrypts perfectly well. It just does it
+ * everywhere.
+ *
+ * So this guard is the difference between "device-bound" and "portable", and the failure it
+ * prevents is invisible to every test that only checks round-tripping. Both directions are
+ * pinned below: the guard REFUSES empty material, and non-empty material genuinely changes
+ * the key (otherwise refusing empty input would be theatre).
+ */
+describe("binding material is load-bearing, not decorative", () => {
+  it("REFUSES empty binding material rather than deriving a passphrase-only key", () => {
+    const salt = randomBytes(SALT_LEN);
+    expect(() => deriveKeyFromBindingMaterial("", PASS, salt)).toThrow(/non-empty/);
+  });
+
+  it("binding material actually enters the key — one differing char changes it", () => {
+    // If this failed, the guard above would be guarding nothing: material would be accepted
+    // and then ignored, which is the same portable-key outcome by a different route.
+    const salt = randomBytes(SALT_LEN);
+    const a = deriveKeyFromBindingMaterial(UUID, PASS, salt);
+    const b = deriveKeyFromBindingMaterial(ALT_UUID, PASS, salt);
+    expect(a.equals(b)).toBe(false);
+  });
+
+  it("a one-character binding material is accepted — the guard is length-0, not length-1", () => {
+    // Pins the boundary the surviving mutant moved. `=== 1` would reject "x" and, worse,
+    // ACCEPT "" — exactly backwards.
+    const salt = randomBytes(SALT_LEN);
+    expect(() => deriveKeyFromBindingMaterial("x", PASS, salt)).not.toThrow();
+  });
+
+  it("still enforces salt length on the binding-material entrypoint", () => {
+    expect(() => deriveKeyFromBindingMaterial(UUID, PASS, randomBytes(16))).toThrow();
   });
 });
 

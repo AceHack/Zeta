@@ -313,6 +313,52 @@ describe("parseRestoreArgs", () => {
     expect(result.dryRun).toBe(true);
   });
 
+  /**
+   * ARGV-BOUNDS + EMPTY-PASSPHRASE GUARDS.
+   *
+   * Both found 2026-08-01 by mutation sweep of the restore path. Neither was reachable by any
+   * existing test, so both were load-bearing and unproven — the same shape as the binding-material
+   * guard in zeta-creds-crypto.test.ts.
+   *
+   * These matter specifically at RESTORE time, which is the moment a USB hands real credentials to
+   * a machine. A trailing flag with no value (`--passphrase-file` as the last argv entry) and an
+   * empty passphrase file are both operator-typo territory, not adversary territory — which is
+   * exactly why they need pinning: the failure is quiet and the operator is mid-provisioning.
+   */
+  it("a trailing flag with no value is refused, not read past the end of argv", () => {
+    // `next()` guards `i + 1 >= argv.length`. Mutating that bound survived the suite.
+    // parseArgs catches the internal throw and returns it as a structured error — the
+    // no-throw contract callers rely on. What must hold is that it REFUSES, with the reason.
+    const a = parseRestoreArgs(["--usb-uuid"], {});
+    expect("error" in a && /requires a value/.test(a.error)).toBe(true);
+    const b = parseRestoreArgs(["--usb-uuid", UUID, "--input"], {});
+    expect("error" in b && /requires a value/.test(b.error)).toBe(true);
+  });
+
+  it("an EMPTY passphrase file is refused — never derives a key from the empty string", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-empty-"));
+    const empty = join(dir, "empty.pass");
+    writeFileSync(empty, "");
+    const result = parseRestoreArgs(
+      ["--usb-uuid", UUID, "--input", "/x.enc", "--passphrase-file", empty],
+      {},
+    );
+    expect("error" in result).toBe(true);
+  });
+
+  it("a passphrase file holding only a newline is empty after trimming, and refused", () => {
+    // The reader strips one trailing \r?\n. A file containing just that is indistinguishable
+    // from an empty one and must land on the same refusal.
+    const dir = mkdtempSync(join(tmpdir(), "zcreds-nl-"));
+    const nl = join(dir, "nl.pass");
+    writeFileSync(nl, "\n");
+    const result = parseRestoreArgs(
+      ["--usb-uuid", UUID, "--input", "/x.enc", "--passphrase-file", nl],
+      {},
+    );
+    expect("error" in result).toBe(true);
+  });
+
   it("default target-root is /", () => {
     const result = parseRestoreArgs(["--usb-uuid", UUID, "--input", "/x", "--passphrase-env", "PP"], { PP: "x" });
     if ("error" in result) throw new Error(result.error);
