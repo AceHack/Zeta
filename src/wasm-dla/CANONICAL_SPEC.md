@@ -1,4 +1,5 @@
 # Canonical DLA Spec — Byte-Lock v1
+
 **Status:** DRAFT — written 2026-08-01 before porting any substrate.
 **Purpose:** All 10 substrates must implement this exact algorithm so the byte-lock produces a meaningful conformance check (not a tautology).
 
@@ -9,6 +10,7 @@
 The 10 substrates currently split into **two incompatible families**:
 
 ### Family A — LCG PRNG (Knuth constants)
+
 `prng_state = prng_state * 1664525 + 1013904223 (mod 2^32)`
 
 | Substrate | Grid | Spawn rule | Walk rule | Boundary | Max steps |
@@ -23,6 +25,7 @@ The 10 substrates currently split into **two incompatible families**:
 **Note:** WAT uses `i32.rem_u` (unsigned remainder), others use signed `%`. For positive values these are identical.
 
 ### Family B — xorshift32 PRNG
+
 `s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return s >>> 0`
 
 | Substrate | Grid | Spawn rule | Walk rule | Boundary | Max steps |
@@ -35,6 +38,7 @@ The 10 substrates currently split into **two incompatible families**:
 | Lua 5.4 bytecode | 128×128 | circle spawn (xorshift-like, Lua `~` operator) | 4-dir, clamp | clamp | 50,000 |
 
 **Additional divergences found:**
+
 - Rust: `idx` uses `rem_euclid` (wraps negative coords) instead of clamp — different boundary behaviour
 - Rust: `get_df` uses `sqrt(n) + 1` as radius proxy — different formula
 - JS (dla-meter): 8-directional walk (diagonal moves allowed) — fundamentally different
@@ -47,6 +51,7 @@ The 10 substrates currently split into **two incompatible families**:
 ## Canonical Spec
 
 ### Rationale for choices
+
 - **xorshift32** chosen over LCG: already used by the majority of bytecode substrates (V8, QuickJS, Lua) and the webdev JS oracles. Simpler to port WASM sources than to rewrite 3 bytecode sources.
 - **128×128 grid** chosen over 100×100: used by WAT/Zig/C/LLVM/ASC/Go/V8/QuickJS/Lua. Only Rust and JS (useDLA/dla-meter) use 100×100.
 - **Deterministic sticking** (no Tsirelson probability): the byte-lock requires deterministic output. Probabilistic sticking (useDLA) is incompatible with a byte-lock.
@@ -125,7 +130,9 @@ Output (the byte-lock target):
 ```
 
 ### Float precision note
+
 `angle = (prng.next() / 4294967296.0) * 2 * PI`
+
 - In WASM f32: `(f32(prng_bits) / 4294967296.0f32) * 6.2831855f32`
 - In JS (f64): `(prng_bits / 4294967296) * Math.PI * 2`
 - These will produce slightly different angles for the same seed due to f32 vs f64 precision.
@@ -133,6 +140,7 @@ Output (the byte-lock target):
 - The walk itself uses only integer arithmetic (no floats after spawn), so only the spawn point can diverge.
 
 ### Golden vector format (hex-in-JSON)
+
 ```json
 {
   "spec_version": "1",
