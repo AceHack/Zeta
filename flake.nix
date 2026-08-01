@@ -195,14 +195,17 @@
             ripgrep
             fd
 
-            # ── WASM toolchain (Oracle 10 / DLA multi-compiler substrate) ───────
+            # ── WASM toolchain (Oracles 10-12 / DLA multi-compiler substrate) ──────
             # Mirrors common.nix systemPackages. Available in `nix develop` so
-            # contributors can rebuild all four WASM compiler outputs locally
-            # and verify Conjecture Z-7 (binary_size ⊥ D_f) on any host.
-            wabt        # wat2wasm, wasm2wat, wasm-validate (WAT bare-metal substrate)
+            # contributors can rebuild all six WASM compiler outputs locally
+            # and verify Conjecture Z-7 (binary_size perp D_f) on any host.
+            wabt        # wat2wasm, wasm2wat, wasm-validate (WAT bare-metal substrate, 697B)
             binaryen    # wasm-opt, wasm-as (AssemblyScript optimizer + WASM IR tools)
-            emscripten  # emcc (C/C++ → WASM, fourth compiler substrate)
+            emscripten  # emcc (C/C++ -> WASM, C compiler substrate, 1.1KB)
             nodejs      # AssemblyScript (asc) runtime host
+            zig         # wasm32-freestanding substrate (Oracle 11, 951B)
+            llvm        # llc, llvm-as, opt -- LLVM IR to WASM pipeline (Oracle 13)
+            rustup      # Rust toolchain; run: rustup target add wasm32-unknown-unknown
           ];
 
           shellHook = ''

@@ -134,3 +134,25 @@ emscripten
 # `pnpm add -g assemblyscript` or via the project's node_modules/.bin/asc.
 # nodejs is required as the asc runtime host.
 nodejs          # AssemblyScript runtime host (asc CLI requires Node.js)
+
+# ── LLVM tools (Oracle 13 / LLVM IR substrate) ────────────────────────────────
+# llc, llvm-as, opt — LLVM IR to WASM pipeline. Provides the LLVM IR layer as
+# a distinct substrate between C source and WASM binary (Conjecture Z-7 sixth
+# substrate). Ubuntu Noble: `llvm` metapackage installs llc-18, llvm-as-18, opt-18.
+# Verified: apt-cache show llvm (Noble 1:18.0-59~exp2).
+llvm
+
+# ── Zig compiler (Oracle 11 / wasm32-freestanding substrate) ──────────────────
+# Zig compiles to WASM natively (`zig build-exe -target wasm32-freestanding`)
+# producing extremely small binaries (951B). NOT in Ubuntu Noble apt — installed
+# via the official Zig release tarball. Declared here for single-source-of-truth.
+# Actual install: mise zig plugin (see .mise.toml `zig = "0.13.0"`) or
+# tools/setup/common/install-zig.sh (downloads zig-linux-x86_64-0.13.0.tar.xz).
+# zig — installed via mise zig plugin or install-zig.sh (not apt)
+
+# ── Rust (rustup) — wasm32-unknown-unknown target ─────────────────────────────
+# rustup is NOT in apt — installed via https://sh.rustup.rs. The wasm32 target
+# is added via `rustup target add wasm32-unknown-unknown`. Declared here for
+# single-source-of-truth. Actual install: mise rust plugin (wraps rustup).
+# See .mise.toml `rust = "1.87.0"`. Produces the Rust WASM substrate (7.4KB opt).
+# rust/cargo — installed via mise rust plugin (wraps rustup, not apt)

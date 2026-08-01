@@ -1,11 +1,12 @@
 ---
 id: 081KYWEM90908QG0R002NHEMZE
 type: task
-state: backlog
+state: done
 priority: P2
 slug: earn-braided-monoidal-for-meno-r-matrix-conjugation-rack-bra
 title: "Earn braided-monoidal for Meno — R-matrix (conjugation-rack) braiding, per Soraya spec"
 created: 2026-07-31T16:03:00.233Z
+completed: 2026-08-01T04:06:47.650Z
 depends_on: []
 composes_with: []
 ---

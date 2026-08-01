@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# tools/setup/common/install-rust-wasm32.sh
+#
+# Install Rust via rustup and add the wasm32-unknown-unknown target.
+# Idempotent: skips if rustup and the wasm32 target are already installed.
+#
+# Desired-state rationale:
+#   - Rust is declared in .mise.toml (rust = "1.87.0") for dev workstations.
+#   - On CI runners and cluster nodes where mise is not available, this script
+#     provides the same pinned version via rustup.rs.
+#   - The wasm32-unknown-unknown target is required for Oracle 12 (Rust WASM
+#     substrate, 7.4KB DLA binary) and Conjecture Z-7 discharge.
+#
+# Usage:
+#   bash tools/setup/common/install-rust-wasm32.sh
+#   RUST_VERSION=1.87.0 bash tools/setup/common/install-rust-wasm32.sh
+#
+# Called by: tools/setup/linux.sh (after apt packages)
+set -euo pipefail
+
+RUST_VERSION="${RUST_VERSION:-1.87.0}"
+
+# Step 1: Install rustup if not present
+if ! command -v rustup >/dev/null 2>&1; then
+  echo "Installing rustup (Rust ${RUST_VERSION})..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
+    sh -s -- -y --default-toolchain "$RUST_VERSION" --no-modify-path
+  # Source cargo env for the rest of this script
+  # shellcheck source=/dev/null
+  source "$HOME/.cargo/env"
+  echo "rustup $(rustup --version 2>&1 | head -1) installed"
+else
+  echo "rustup already installed: $(rustup --version 2>&1 | head -1)"
+  # Ensure the correct toolchain is active
+  source "$HOME/.cargo/env" 2>/dev/null || true
+fi
+
+# Step 2: Ensure the pinned toolchain is installed
+if ! rustup toolchain list 2>/dev/null | grep -q "${RUST_VERSION}"; then
+  echo "Installing Rust toolchain ${RUST_VERSION}..."
+  rustup toolchain install "$RUST_VERSION"
+fi
+rustup default "$RUST_VERSION"
+echo "  rustc $(rustc --version)"
+
+# Step 3: Add wasm32-unknown-unknown target
+if rustup target list --installed 2>/dev/null | grep -q "wasm32-unknown-unknown"; then
+  echo "  wasm32-unknown-unknown target already installed"
+else
+  echo "Adding wasm32-unknown-unknown target..."
+  rustup target add wasm32-unknown-unknown
+  echo "  wasm32-unknown-unknown target installed"
+fi
+
+echo "Rust ${RUST_VERSION} + wasm32-unknown-unknown ready"
