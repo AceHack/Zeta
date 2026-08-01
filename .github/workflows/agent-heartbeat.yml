@@ -108,6 +108,38 @@ jobs:
           AGENT: ${{ matrix.agent }}
         run: git push origin "heartbeat/$AGENT"
 
+      - name: Measure cadence (declared vs actual — detect silent degradation)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Find the last two heartbeat events to compute the gap
+          EVENTS=$(ls -t docs/observe-events/*.json 2>/dev/null | head -2)
+          if [ "$(echo "$EVENTS" | wc -l)" -lt 2 ]; then
+            echo "[cadence] Not enough events to measure gap yet"
+            exit 0
+          fi
+          LATEST=$(echo "$EVENTS" | head -1)
+          PREVIOUS=$(echo "$EVENTS" | tail -1)
+          # Extract timestamps
+          T1=$(python3 -c "import json; print(json.load(open('$LATEST'))['at'])" 2>/dev/null || echo "")
+          T0=$(python3 -c "import json; print(json.load(open('$PREVIOUS'))['at'])" 2>/dev/null || echo "")
+          if [ -z "$T1" ] || [ -z "$T0" ]; then
+            echo "[cadence] Could not parse timestamps"
+            exit 0
+          fi
+          # Compute gap in seconds
+          GAP=$(python3 -c "
+          from datetime import datetime
+          t1 = datetime.fromisoformat('$T1'.replace('Z','+00:00'))
+          t0 = datetime.fromisoformat('$T0'.replace('Z','+00:00'))
+          gap = (t1 - t0).total_seconds()
+          declared = 900  # 15 min
+          ratio = declared / gap if gap > 0 else 0
+          print(f'gap={int(gap)}s ({int(gap/60)}min) declared=900s ratio={ratio:.1%}')
+          if gap > 1800:  # more than 2x declared
+            print(f'::warning::[cadence] {int(gap/60)}min gap exceeds 2x declared (30min). Running at {ratio:.0%} of target.')
+          " 2>/dev/null || echo "[cadence] measurement failed (non-fatal)")
+
       - name: Auto-merge clean PRs (agent-to-agent value transfer)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -237,7 +269,9 @@ jobs:
     name: flush ${{ matrix.agent }} heartbeats
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && endsWith(github.event.schedule, '0 * * * *'))
+    # always() ensures a failed heartbeat can't skip the drain.
+    # The schedule condition gates it to hourly or manual dispatch.
+    if: always() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && endsWith(github.event.schedule, '0 * * * *')))
     needs: [heartbeat]
     strategy:
       fail-fast: false
