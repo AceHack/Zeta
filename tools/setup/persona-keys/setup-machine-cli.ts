@@ -9,8 +9,10 @@
 //   * It ALWAYS wires the CA door. If a CA private key exists on THIS host the device cert is
 //     auto-signed against it (no `--sign-with-ca` flag); if NONE exists, setup-machine REALIZES a
 //     local CA (under the same one approval) then signs — so a fresh host ends with CA + machine
-//     key + cert under ONE fingerprint. (Deferred: the "joining a cluster whose CA is elsewhere"
-//     case — for now no local CA ⇒ realize one; the readout names it so the operator can re-home.)
+//     key + cert under ONE fingerprint. JOINING a cluster is now detected rather than deferred:
+//     the CLI scans the committed trust roots (`maintainers/<ca>/ssh-ca.pub`) and, when one
+//     exists without a local CA private key, ca.ts resolves the disposition to "route" — no 2nd
+//     CA is fabricated (that would split the trust root) and the cert is routed to the CA holder.
 //   * `--dry-run` prompts NOTHING, writes NOTHING, generates NOTHING, fetches NOTHING.
 //
 // Usage:
@@ -18,14 +20,14 @@
 //   bun setup-machine-cli.ts --user aaron --dry-run       # plan only — NOTHING is done
 //   bun setup-machine-cli.ts --user aaron --host mymac    # explicit hostname
 //   bun setup-machine-cli.ts --user aaron --trust octocat --gpg   # also resolve a trust set
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, resolve as resolvePath } from "node:path";
+import { dirname, join, resolve as resolvePath } from "node:path";
 import { fileURLToPath } from "node:url";
 import { realEffects as realMachineEffects } from "./machine.ts";
 import { realEffects as realTrustEffects } from "./github-trust.ts";
 import { realEffects as realCaEffects } from "./ca.ts";
-import { caPrivateKeyPath } from "./ca.ts";
+import { caPrivateKeyPath, maintainersDirPath, resolveCaDisposition } from "./ca.ts";
 import { realBiometric, sessionBiometric } from "./biometric.ts";
 import { formatSetupMachine, setupMachine, type SetupMachineOptions } from "./setup-machine.ts";
 import type { OnboardEffects } from "./onboard.ts";
@@ -65,8 +67,29 @@ function usage(): void {
       "[--dry-run] [--repo-root <path>]\n" +
       "  ONE command, ONE fingerprint: status -> user-keyring(instruction) -> machine-key -> " +
       "trust-resolve -> (realize a local CA if none) -> auto cert-sign.\n" +
-      "  Reuse-only: all key/biometric/seed/CA logic is delegated. --dry-run does NOTHING.\n",
+      "  Reuse-only: all key/biometric/seed/CA logic is delegated. --dry-run does NOTHING.\n" +
+      "  Joining a cluster (a committed trust root exists but no local CA private key) ROUTES the " +
+      "cert to the CA holder instead of fabricating a second CA.\n",
   );
+}
+
+/** Scan the committed trust roots — the CA PUBLIC keys already in the repo
+ *  (`maintainers/<ca>/ssh-ca.pub`). Their presence means a CA exists somewhere ⇒ ROUTE, never
+ *  fabricate a 2nd CA. Read-only directory probe (noninterference: the only ambient read here). */
+function committedTrustRoots(repoRootPath: string): string[] {
+  const dir = maintainersDirPath(repoRootPath);
+  let entries: string[];
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return [];
+  }
+  const roots: string[] = [];
+  for (const name of entries) {
+    if (existsSync(join(dir, name, "ssh-ca.pub"))) roots.push(name);
+  }
+  roots.sort(); // ordinal-stable (culture-invariant) for a deterministic readout
+  return roots;
 }
 
 async function main(): Promise<number> {
@@ -94,14 +117,31 @@ async function main(): Promise<number> {
   // approval) then signs. The CA door is the ONLY channel for that realize+sign (noninterference).
   const caConfigured = existsSync(caPrivateKeyPath(home));
 
+  // ── CA REALIZE-vs-ROUTE ──────────────────────────────────────────────────────────────────
+  // Gather the two facts the disposition is a pure function of: (1) is the CA PRIVATE key present
+  // on THIS host? (2) what committed CA trust roots already exist in the repo? Then resolve:
+  //   present → sign here · realize → no CA anywhere → create here · route → the CA lives on
+  //   another host → do NOT fabricate a 2nd CA; route the cert to its holder.
+  const caDisposition = resolveCaDisposition({
+    localCaPrivateExists: caConfigured,
+    committedTrustRoots: committedTrustRoots(repoRoot),
+    home,
+  });
+  // The CA door is needed whenever the CA is usable HERE ("present" → sign with the local CA, or
+  // "realize" → generate it here then sign). On "route" no CA door is wired, so this host cannot
+  // sign or fabricate at all — fail-closed by construction, not just by branch.
+  const caUsableHere =
+    caDisposition.disposition === "present" || caDisposition.disposition === "realize";
+
   const fx: OnboardEffects = {
     // machine keygen rides the session door (one approval).
     machine: realMachineEffects(),
     trust: realTrustEffects(),
     // The SHARED gate for machine-keygen + realize-CA + cert-sign is the session door (ONE approval).
     biometricAuth: session.door,
-    // CA door ALWAYS wired — used to sign against an existing CA OR to realize a missing one.
-    ca: realCaEffects(),
+    // CA door wired when the CA is usable here (sign against an existing CA OR realize a missing
+    // one). Omitted on "route" — the CA lives elsewhere, so we neither sign nor fabricate.
+    ...(caUsableHere ? { ca: realCaEffects() } : {}),
   };
 
   const opts: SetupMachineOptions = {
@@ -112,6 +152,7 @@ async function main(): Promise<number> {
     dryRun,
     includeGpg,
     caConfigured,
+    caDisposition,
     ...(hostname !== undefined ? { hostname } : {}),
     ...(trustIdentities.length > 0 ? { trustIdentities } : {}),
     ...(certValidity !== undefined ? { certValidity } : {}),

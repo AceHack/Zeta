@@ -28,6 +28,7 @@ import {
   caPublicKeyPath,
   certPath,
   ensureCa,
+  resolveCaDisposition,
   signMachineCert,
   DEFAULT_CERT_VALIDITY,
   type CaEffects,
@@ -537,4 +538,35 @@ test("REAL ssh-keygen: a multi-principal cert shows BOTH users + a machine-only 
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
+});
+
+// ── resolveCaDisposition — the realize-vs-route decision (pure; no IO, no keygen) ──────────
+// setup-machine calls this BEFORE touching anything: it must REALIZE a missing CA only on a
+// first/solo node, and ROUTE (never fabricate a 2nd CA) when one already exists elsewhere. The
+// ONLY ambiguous case is resolved by the LOCAL CA-private presence + the committed trust roots —
+// facts the host can see for itself. (Aaron 2026-06-21.)
+
+test("disposition PRESENT — local CA private exists ⇒ sign here", () => {
+  const d = resolveCaDisposition({ localCaPrivateExists: true, committedTrustRoots: ["zeta"], home: "/h" });
+  expect(d.disposition).toBe("present");
+  expect(d.localCaPrivateExists).toBe(true);
+});
+
+test("disposition REALIZE — no local CA AND no committed trust root ⇒ first node, create here", () => {
+  const d = resolveCaDisposition({ localCaPrivateExists: false, committedTrustRoots: [], home: "/h" });
+  expect(d.disposition).toBe("realize");
+  expect(d.rationale).toContain("first");
+});
+
+test("disposition ROUTE — no local CA BUT a committed trust root exists ⇒ never fabricate a 2nd CA", () => {
+  const d = resolveCaDisposition({ localCaPrivateExists: false, committedTrustRoots: ["zeta", "acme"], home: "/h" });
+  expect(d.disposition).toBe("route");
+  expect(d.committedTrustRoots).toEqual(["zeta", "acme"]);
+  expect(d.rationale).toContain("ROUTE");
+});
+
+test("disposition bias-to-route — local CA-private wins even with no trust root yet (present, not realize)", () => {
+  // If the host already holds a CA private (somehow before commit), it is "present" — we sign here.
+  const d = resolveCaDisposition({ localCaPrivateExists: true, committedTrustRoots: [], home: "/h" });
+  expect(d.disposition).toBe("present");
 });

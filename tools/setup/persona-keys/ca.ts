@@ -120,6 +120,95 @@ export function caPublicKeyPath(repoRoot: string, ca: string): string {
   return join(repoRoot, "maintainers", ca, "ssh-ca.pub");
 }
 
+/**
+ * The CA dependency disposition for THIS host — the realize-vs-route decision setup-machine
+ * makes BEFORE touching anything (Aaron 2026-06-21: setup must REALIZE missing deps, but must
+ * NEVER fabricate a SECOND CA when one already exists elsewhere — route to its holder instead).
+ * It is a pure function of two facts:
+ *
+ *   - `localCaPrivateExists` — is the CA PRIVATE key present on THIS host (`~/.config/zeta/ca/`)?
+ *   - `committedTrustRoots`  — the committed CA PUBLIC trust roots already in the repo
+ *                              (`maintainers/<ca>/ssh-ca.pub`), if any.
+ *
+ * The three dispositions (fail-SAFE — when in doubt we ROUTE, never fabricate):
+ *
+ *   - "present"  — THIS host holds the CA private key. The cert can be signed here directly.
+ *   - "realize"  — NO local CA private AND NO committed trust root anywhere ⇒ this is a solo /
+ *                  first node, so REALIZE the cluster CA here (call `ensureCa`). Bootstrapping
+ *                  the trust root is exactly what a first node is for.
+ *   - "route"    — NO local CA private BUT a committed trust root EXISTS (the CA lives on
+ *                  ANOTHER host) ⇒ DO NOT fabricate a second CA (that would SPLIT the trust
+ *                  root). Route: the device cert must be signed by the CA holder.
+ *
+ * This is the honest seam: the ONLY ambiguous case ("is THIS host the CA holder?") is resolved
+ * by the presence of the LOCAL CA private key — a fact this host can see for itself — and we
+ * bias to ROUTE (the safe choice) whenever a trust root already exists but the private key does
+ * not. No network probe, no guess: realize only when there is provably no CA anywhere yet.
+ */
+export type CaDisposition = "present" | "realize" | "route";
+
+/** The resolved CA disposition + the facts it was derived from (for an auditable readout). */
+export interface CaDispositionResult {
+  readonly disposition: CaDisposition;
+  /** True iff the CA PRIVATE key is present on THIS host. */
+  readonly localCaPrivateExists: boolean;
+  /** The committed CA PUBLIC trust-root identities found in the repo (maintainers/<ca>/). */
+  readonly committedTrustRoots: readonly string[];
+  /** Local path the CA PRIVATE key lives at (never its contents). */
+  readonly caPrivatePath: string;
+  /** A one-line human-readable rationale for the chosen disposition. */
+  readonly rationale: string;
+}
+
+/**
+ * Resolve the CA disposition for this host — PURE over the two injected facts (the local
+ * CA-private presence + the committed trust roots). No IO here; the caller (CLI) gathers the
+ * facts through its injected effects and the test injects them directly.
+ */
+export function resolveCaDisposition(opts: {
+  readonly localCaPrivateExists: boolean;
+  readonly committedTrustRoots: readonly string[];
+  readonly home?: string;
+}): CaDispositionResult {
+  const caPrivatePath = opts.home === undefined ? caPrivateKeyPath() : caPrivateKeyPath(opts.home);
+  const roots = opts.committedTrustRoots;
+  if (opts.localCaPrivateExists) {
+    return {
+      disposition: "present",
+      localCaPrivateExists: true,
+      committedTrustRoots: roots,
+      caPrivatePath,
+      rationale: "CA private key present on THIS host — sign the device cert here directly.",
+    };
+  }
+  if (roots.length > 0) {
+    return {
+      disposition: "route",
+      localCaPrivateExists: false,
+      committedTrustRoots: roots,
+      caPrivatePath,
+      rationale:
+        `a committed CA trust root exists (${roots.join(", ")}) but no local CA private key — ` +
+        "the CA lives on ANOTHER host; ROUTE the cert to the CA holder (do NOT fabricate a 2nd CA).",
+    };
+  }
+  return {
+    disposition: "realize",
+    localCaPrivateExists: false,
+    committedTrustRoots: roots,
+    caPrivatePath,
+    rationale:
+      "no local CA private key AND no committed trust root anywhere — this is a solo / first " +
+      "node, so REALIZE the cluster CA here (bootstrap the trust root).",
+  };
+}
+
+/** Where committed CA PUBLIC trust roots live: maintainers/<ca>/ssh-ca.pub. The realizer scans
+ *  this to detect "a CA already exists somewhere" (→ route, never fabricate a second CA). */
+export function maintainersDirPath(repoRoot: string): string {
+  return join(repoRoot, "maintainers");
+}
+
 /** Where a signed device certificate is written — next to the device pubkey it certifies. */
 export function certPath(devicePubPath: string): string {
   // ssh-keygen -s names the cert "<base>-cert.pub" where base is the pubkey minus ".pub".

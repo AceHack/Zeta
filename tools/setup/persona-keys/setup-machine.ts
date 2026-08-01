@@ -22,10 +22,15 @@
 //      skipping the cert, it REALIZES one (`ensureCa`, under the SAME session approval already in
 //      scope — NO second prompt) and then signs — so a fresh host ends with CA + machine key +
 //      cert under ONE fingerprint (the solo / first-node / CA-holder case). Idempotent: an
-//      existing CA is a no-op (ca.ts returns `exists`, no prompt). DEFERRED (do NOT build here):
-//      cluster-membership detection — "this host is JOINING a cluster whose CA lives elsewhere"
-//      ⇒ sign via the CA holder, do NOT realize a local one. For now, no local CA ⇒ realize one;
-//      the readout names this so the operator can re-home if they were joining.
+//      existing CA is a no-op (ca.ts returns `exists`, no prompt).
+//
+//   3. CLUSTER-MEMBERSHIP ROUTING (closes the previously-deferred join case) — "no local CA ⇒
+//      realize one" is WRONG for a host JOINING a cluster whose CA lives elsewhere: it would
+//      mint a second CA and SPLIT the trust root. The caller may now supply a `caDisposition`
+//      (ca.ts `resolveCaDisposition`, a pure function of the local CA-private presence + the
+//      committed `maintainers/<ca>/ssh-ca.pub` trust roots). On "route" we realize NOTHING and
+//      sign NOTHING here — the cert is routed to the CA holder with an exact instruction.
+//      Omitting `caDisposition` preserves the legacy present/realize behaviour exactly.
 //
 // SECURITY INVARIANTS (security-class — honesty over green):
 //  - The session is ONE *human* approval, not zero: every sub-op still calls `requireBiometric`
@@ -47,7 +52,7 @@
 // FAIL-CLOSED rather than time-windowed.
 
 import { onboard, type OnboardEffects, type OnboardOptions, type OnboardResult } from "./onboard.ts";
-import { ensureCa, type CaResult } from "./ca.ts";
+import { ensureCa, type CaDisposition, type CaDispositionResult, type CaResult } from "./ca.ts";
 import { requireBiometric, type BiometricResult, type SessionGate } from "./biometric.ts";
 
 /** Options for a one-fingerprint machine setup — the operator identity + repo root, plus the
@@ -69,6 +74,37 @@ export interface SetupMachineOptions {
    *  auto-signed against it (no flag). When false, setup REALIZES a new local CA (under the same
    *  session approval) then signs — see SetupMachineResult.caRealized. */
   readonly caConfigured: boolean;
+  /** OPTIONAL cluster-membership resolution (ca.ts `resolveCaDisposition`) — closes the
+   *  previously-deferred JOIN case. When supplied it DECIDES the CA path:
+   *    - "present" → sign here (equivalent to caConfigured: true);
+   *    - "realize" → no CA anywhere yet ⇒ create one here (equivalent to caConfigured: false);
+   *    - "route"   → a committed trust root exists but the CA PRIVATE lives on ANOTHER host ⇒
+   *                  do NOT fabricate a second CA (that would SPLIT the trust root) and do NOT
+   *                  sign here; the cert is routed to the CA holder (see `caRouted`).
+   *  When OMITTED the legacy behaviour is preserved exactly: `caConfigured` alone decides
+   *  present-vs-realize, and "route" can never be selected. */
+  readonly caDisposition?: CaDispositionResult;
+}
+
+/** The route outcome — emitted ONLY when the CA lives on another host (disposition "route").
+ *  Public only: the trust-root identities + the operator instruction. No key material. */
+export interface CaRouted {
+  /** The committed CA PUBLIC trust roots that prove a CA already exists elsewhere. */
+  readonly trustRoots: readonly string[];
+  /** The exact operator instruction to get this machine's cert signed by the CA holder. */
+  readonly instruction: string;
+}
+
+/** The exact instruction to route a device cert to the CA holder when the CA lives elsewhere
+ *  (disposition "route"). We print this rather than fabricate a second CA. */
+function routeCertInstruction(user: string, hostname: string, holders: readonly string[]): string {
+  return [
+    `the CA for this cluster lives on ANOTHER host (trust root: ${holders.join(", ")}) and no CA`,
+    "private key is present here — so this host CANNOT sign the cert (fabricating a 2nd CA would",
+    "split the trust root). ROUTE: have the CA holder sign this machine's key into a cert:",
+    `    bun tools/setup/persona-keys/ca-cli.ts cert --user ${user} --machine ${hostname}   # on the CA holder`,
+    `  then commit machines/${hostname}.pub here and place the returned ${hostname}-cert.pub next to it.`,
+  ].join("\n");
 }
 
 /** The result of a one-fingerprint setup: the full onboard trace + the proof fields that make
@@ -88,6 +124,11 @@ export interface SetupMachineResult {
    *  CA was already configured (nothing realized). ca.ts is idempotent: an existing CA never
    *  reaches here. No secret — public CA fields only. */
   readonly caRealized?: CaResult;
+  /** The resolved CA disposition, when the caller supplied one (auditable: the facts + rationale). */
+  readonly caDisposition?: CaDispositionResult;
+  /** Present ONLY on the "route" path: the CA lives elsewhere, so NOTHING was realized or signed
+   *  here and the operator must get the cert signed by the CA holder. */
+  readonly caRouted?: CaRouted;
 }
 
 /**
@@ -113,8 +154,16 @@ export async function setupMachine(
   // real run that has a CA door (`fx.ca`), not only when a CA pre-existed. (No `fx.ca` ⇒ cannot
   // realize or sign ⇒ clean skip, the legacy behaviour.)
   const canProvideCa = fx.ca !== undefined;
-  const willRealizeCa = canProvideCa && !opts.caConfigured && !dryRun;
-  const certRequested = canProvideCa && !dryRun;
+  // CLUSTER-MEMBERSHIP (ca.ts `resolveCaDisposition`) — supplied by the CLI, which probes the
+  // local CA private + the committed trust roots. When OMITTED we fall back to the legacy
+  // caConfigured boolean, which yields exactly the previous present/realize behaviour and can
+  // never select "route".
+  const disp: CaDisposition = opts.caDisposition?.disposition ?? (opts.caConfigured ? "present" : "realize");
+  // A CA is usable for signing HERE iff it is already present or we will realize it here. On
+  // "route" the CA private lives on another host: we neither fabricate one nor sign.
+  const caUsable = disp === "present" || disp === "realize";
+  const willRealizeCa = canProvideCa && disp === "realize" && !dryRun;
+  const certRequested = canProvideCa && caUsable && !dryRun;
 
   // ── ONE-FINGERPRINT APPROVAL (up front) ─────────────────────────────────────────────────
   // On a real run we trigger the SINGLE human approval here, through the session door. Every
@@ -137,12 +186,14 @@ export async function setupMachine(
   // (`exists`, no prompt). On --dry-run we still call it (dryRun:true) so the plan shows "would
   // realize CA" while generating/prompting NOTHING. commitPub writes ONLY the CA PUBLIC key (the
   // git-distributed trust root); the CA private key stays local (ca.ts, never committed here).
-  // TODO(deferred — do NOT build here): cluster-membership detection. If THIS host is joining an
-  // existing cluster whose CA lives elsewhere, it should sign via the CA holder, NOT realize a
-  // local CA. For now "no local CA ⇒ realize one"; the readout names this so the operator can
-  // re-home a mistakenly-realized CA when they were actually joining.
+  // CLUSTER-MEMBERSHIP (was deferred; now closed by ca.ts `resolveCaDisposition`): when the
+  // caller supplies a disposition of "route" — a committed trust root exists but the CA private
+  // does NOT live here — we take NEITHER branch: no CA is realized (fabricating a 2nd CA would
+  // SPLIT the cluster's trust root) and no cert is signed here. The cert is routed to the CA
+  // holder instead (see `caRouted`). With no disposition supplied the legacy "no local CA ⇒
+  // realize one" behaviour is unchanged.
   let caRealized: CaResult | undefined;
-  if (canProvideCa && !opts.caConfigured && fx.ca !== undefined) {
+  if (canProvideCa && disp === "realize" && fx.ca !== undefined) {
     caRealized = await ensureCa(fx.ca, {
       ca: opts.user, // the maintainers/<user>/ trust root the CA public key lands under
       repoRoot: opts.repoRoot,
@@ -171,18 +222,32 @@ export async function setupMachine(
     // ca.ts is fail-closed: if the realize was declined (no CA private), signMachineCert returns
     // a clean `no-ca`/`aborted-biometric` skip — never a spurious or partial sign. No CA door at
     // all ⇒ signWithCa unset ⇒ the cert step is omitted entirely (the legacy clean skip).
-    ...(canProvideCa ? { signWithCa: true } : {}),
+    // On the "route" path caUsable is false ⇒ signWithCa is unset ⇒ we do NOT sign here.
+    ...(canProvideCa && caUsable ? { signWithCa: true } : {}),
   };
 
   const res = await onboard(fx, onboardOpts);
 
   const decision = session.decision();
+  const caRouted: CaRouted | undefined =
+    disp === "route"
+      ? {
+          trustRoots: opts.caDisposition?.committedTrustRoots ?? [],
+          instruction: routeCertInstruction(
+            opts.user,
+            res.hostname,
+            opts.caDisposition?.committedTrustRoots ?? [],
+          ),
+        }
+      : undefined;
   return {
     onboard: res,
     biometricApprovals: session.underlyingCalls(),
     ...(decision !== undefined ? { approval: decision } : {}),
     certRequested,
     ...(caRealized !== undefined ? { caRealized } : {}),
+    ...(opts.caDisposition !== undefined ? { caDisposition: opts.caDisposition } : {}),
+    ...(caRouted !== undefined ? { caRouted } : {}),
   };
 }
 
@@ -234,17 +299,36 @@ export function formatSetupMachine(res: SetupMachineResult): string {
       );
     }
   }
+  // ROUTE readout: the CA lives on ANOTHER host, so NOTHING was realized or signed here. Print
+  // the exact instruction to get the cert signed by the CA holder (we never fabricate a 2nd CA).
+  if (res.caRouted !== undefined) {
+    lines.push(
+      `CA: NOT realized here — a committed trust root already exists (${res.caRouted.trustRoots.join(", ")})` +
+        " but the CA private key lives on ANOTHER host. Fabricating a 2nd CA would SPLIT the trust root.",
+    );
+    for (const dl of res.caRouted.instruction.split("\n")) lines.push(`    ${dl}`);
+  }
   lines.push(
     res.onboard.dryRun
       ? "Biometric: not invoked (dry-run). On a real run: ONE approval covers the whole sequence."
       : `Biometric: ${res.biometricApprovals} human approval(s) for the whole run (one-fingerprint).`,
   );
-  const pending = res.onboard.steps.filter((s) => s.pending);
+  const pending: { kind: string; detail: string }[] = res.onboard.steps
+    .filter((s) => s.pending)
+    .map((s) => ({ kind: s.kind, detail: s.detail.split("\n")[0] ?? s.headline }));
+  // On the route path the cert step never ran (signWithCa unset), so it cannot appear in
+  // onboard.steps — surface it explicitly as the operator action it is.
+  if (res.caRouted !== undefined) {
+    pending.push({
+      kind: "cert-sign",
+      detail: `routed: have the CA holder sign this machine's cert (trust root: ${res.caRouted.trustRoots.join(", ")}).`,
+    });
+  }
   if (pending.length === 0) {
     lines.push("Operator action still required: none.");
   } else {
     lines.push(`Operator action still required (${pending.length}):`);
-    pending.forEach((s, i) => lines.push(`  ${i + 1}. [${s.kind}] ${s.detail.split("\n")[0] ?? s.headline}`));
+    pending.forEach((s, i) => lines.push(`  ${i + 1}. [${s.kind}] ${s.detail}`));
   }
   return lines.join("\n");
 }

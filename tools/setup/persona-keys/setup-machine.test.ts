@@ -18,6 +18,7 @@ import type { GithubTrustEffects } from "./github-trust.ts";
 import type { CaEffects } from "./ca.ts";
 import { sessionBiometric, type BiometricAuth } from "./biometric.ts";
 import type { OnboardEffects } from "./onboard.ts";
+import { resolveCaDisposition } from "./ca.ts";
 import { setupMachine, formatSetupMachine, type SetupMachineOptions } from "./setup-machine.ts";
 
 const PUB = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwJVbQNiFzUCiOhc mymac (zeta-machine)";
@@ -225,4 +226,67 @@ test("formatSetupMachine reports the one-fingerprint count on a real run", async
   const f = fixture({ sessionDoor: session.door, caPreExists: true });
   const res = await setupMachine(f.fx, session, baseOpts({ caConfigured: true }));
   expect(formatSetupMachine(res)).toContain("1 human approval(s)");
+});
+
+// ── CLUSTER-MEMBERSHIP ROUTING (the previously-deferred JOIN case) ────────────────────────
+// "no local CA ⇒ realize one" is WRONG for a host joining a cluster whose CA lives elsewhere:
+// it mints a SECOND CA and SPLITS the trust root. With a `caDisposition` of "route" nothing is
+// realized and nothing is signed here — the cert is routed to the CA holder. (Aaron 2026-06-21.)
+
+test("JOIN-CLUSTER routes: trust root elsewhere, no local CA → NO 2nd CA fabricated, cert routed", async () => {
+  const { door, prompts } = countingDoor(true);
+  const session = sessionBiometric(door);
+  const disp = resolveCaDisposition({
+    localCaPrivateExists: false,
+    committedTrustRoots: ["zeta"],
+    home: "/home/aaron",
+  });
+  expect(disp.disposition).toBe("route");
+  // On route the real CLI wires NO CA door — mirror that here.
+  const f = fixture({ sessionDoor: session.door, caPreExists: false, wireCa: false });
+
+  const res = await setupMachine(f.fx, session, baseOpts({ caConfigured: false, caDisposition: disp }));
+
+  // The machine key is still realized under the one approval, but NO CA and NO cert here.
+  expect(prompts().length).toBe(1);
+  expect(f.genCalls()).toBe(1); // machine key still realized
+  expect(f.caGenCalls()).toBe(0); // NO second CA fabricated
+  expect(f.signCalls()).toBe(0); // cert routed, not signed here
+  expect(res.caRealized).toBeUndefined();
+  expect(res.certRequested).toBe(false);
+  expect(res.caRouted?.trustRoots).toEqual(["zeta"]);
+  expect(res.caRouted?.instruction).toContain("on the CA holder");
+  const out = formatSetupMachine(res);
+  expect(out).toContain("NOT realized here");
+  expect(out).toContain("SPLIT the trust root");
+});
+
+test("JOIN-CLUSTER route: even WITH a CA door wired, route realizes/signs NOTHING (fail-safe)", async () => {
+  const { door } = countingDoor(true);
+  const session = sessionBiometric(door);
+  const disp = resolveCaDisposition({
+    localCaPrivateExists: false,
+    committedTrustRoots: ["zeta", "acme"],
+    home: "/home/aaron",
+  });
+  // Belt-and-braces: a caller that wires the CA door anyway must STILL not fabricate or sign.
+  const f = fixture({ sessionDoor: session.door, caPreExists: false, wireCa: true });
+
+  const res = await setupMachine(f.fx, session, baseOpts({ caConfigured: false, caDisposition: disp }));
+
+  expect(f.caGenCalls()).toBe(0);
+  expect(f.signCalls()).toBe(0);
+  expect(res.caRouted?.trustRoots).toEqual(["zeta", "acme"]);
+});
+
+test("no caDisposition supplied → legacy present/realize behaviour is unchanged (realize)", async () => {
+  const { door } = countingDoor(true);
+  const session = sessionBiometric(door);
+  const f = fixture({ sessionDoor: session.door, caPreExists: false });
+
+  const res = await setupMachine(f.fx, session, baseOpts({ caConfigured: false }));
+
+  expect(f.caGenCalls()).toBe(1); // still realizes, exactly as before
+  expect(res.caRealized?.action).toBe("generated");
+  expect(res.caRouted).toBeUndefined();
 });
