@@ -9,3 +9,4 @@ go.sum
 # Build artifacts
 zig-cache/
 zig-out/
+.zig-cache/

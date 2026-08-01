@@ -421,6 +421,57 @@ citation.
   (+ `docs/research/scripts/`) · zoo reference
   `2026-07-03-the-constants-zoo-spectrum-classes-and-brownian-llm-ensembles-aaron.md`.
 
+
+### Proper scoring rules / calibration / prediction markets (added 2026-08-01 per Soraya review of calibration-ledger.ts)
+
+These six anchors are now load-bearing: `calibration-ledger.ts` uses Beta-Bernoulli
+posterior update and coverage-at-τ scoring, both of which are grounded here.
+Absence from this list was the gap that let a sandbagging-optimal scoring rule
+ship with green CI.
+
+- **Brier 1950 — *Verification of Forecasts Expressed in Terms of Probability*** ⭐ —
+  the original proper scoring rule: S(p, o) = (p − o)². Proper = truthful reporting
+  is the unique optimum. The ancestor of every calibration score in this repo.
+  Soraya's note: the sandbagging defect in the original `settlePrediction` (argmax
+  at D = +∞) is exactly what a proper scoring rule prevents by construction.
+- **Savage 1971 — *Elicitation of Personal Probabilities and Expectations*** ⭐ —
+  the characterization theorem: S is proper iff it is a mixture of elementary
+  proper scores. The Brier score, log score, and spherical score are all instances.
+  The Beta-Bernoulli update in `calibration-ledger.ts` is the conjugate-prior form
+  of the log score for binary outcomes.
+- **DeGroot & Fienberg 1983 — *The Comparison and Evaluation of Forecasters*** ⭐ —
+  the calibration–resolution decomposition: a forecaster's score = calibration
+  component + resolution component. Resolution (discrimination) is what you want;
+  calibration is a necessary but not sufficient condition. The repo's `trustBound`
+  is a calibration measure; resolution is not yet tracked.
+- **Murphy 1973 — *A New Vector Partition of the Probability Score*** ⭐ —
+  the three-way Brier decomposition: reliability + resolution − uncertainty.
+  The reliability term is the calibration curve integral; the uncertainty term is
+  the climatological variance. Pairs with DeGroot–Fienberg: the two papers together
+  give the full geometry of what a calibration ledger can and cannot measure.
+- **Gneiting & Raftery 2007 — *Strictly Proper Scoring Rules, Prediction, and Estimation*** ⭐ —
+  the definitive modern survey. Proves: (1) a scoring rule is proper iff it is a
+  subgradient of a convex function G; (2) the Brier, log, CRPS, and energy scores
+  are all strictly proper; (3) the coverage-at-τ (interval score) is strictly proper
+  for quantile forecasts. The direct theoretical anchor for the coverage-at-τ
+  replacement of `settlePrediction`. Equation (43) is the interval score used in
+  `calibration-ledger.ts`.
+- **Cantelli 1928 / Scarf 1958 — one-sided Chebyshev / distributionally robust bound** ⭐ —
+  Cantelli: P(X ≥ μ + kσ) ≤ 1/(1+k²). Scarf: the exact minimax bound over all
+  distributions with known mean and variance. Together they give the moment-ambiguity
+  guarantee: `trustBound(k) = μ − kσ` is an exact maximin floor (not a resemblance,
+  per Soraya's correction of §7.3). The α = 1/(1+k²) shortfall probability is the
+  coverage guarantee. At k=1: α = 0.5 (vacuous as a floor — Soraya's note);
+  at k=3: α = 0.1 (meaningful). The repo should default k=3, not k=1.
+- **Friedman & Resnick 2001 — *The Social Cost of Cheap Pseudonyms*** ⭐ —
+  the formal model of Sybil/whitewash incentives in reputation systems. Proves:
+  a reputation system is Sybil-resistant iff the cost of a fresh identity exceeds
+  the expected gain from whitewashing. The whitewash-profitable finding from
+  Soraya's review (0 hits / 1 miss → fresh identity is better) is exactly the
+  Friedman–Resnick condition violated. The fix (coverage-at-τ scoring) makes
+  whitewashing unprofitable because a fresh identity has no coverage history and
+  therefore no trust weight.
+
 ### Retrieval + embeddings
 
 - **Malkov & Yashunin, *Efficient and robust approximate

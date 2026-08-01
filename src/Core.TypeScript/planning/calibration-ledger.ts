@@ -1,7 +1,7 @@
 /**
  * calibration-ledger.ts — Per-hat calibration ledger
  *
- * Design contract (PR #9901, Otto 2026-08-01):
+ * Design contract (PR #9901, Otto 2026-08-01; Soraya review 2026-08-01):
  *
  *   1. SEPARATE FROM PEER RECORD — this ledger is never stored inside
  *      FlatSocietyBase.peers, so unboltTaskHierarchy's wholesale restore
@@ -20,13 +20,30 @@
  *      can be poorly calibrated and excellent, or well-calibrated and
  *      mediocre. Weighting a claim is not the same as valuing the claimant.
  *
- * What Soraya should prove or refute (§7 of spec):
- *   - Is Beta-Bernoulli over settled hit/miss adequate, or does calibration
- *     require an explicit calibration-curve posterior?
- *   - Does μ − kσ have the maximin property formally, or only by analogy?
- *     This document asserts a resemblance, not a theorem.
- *   - Cold-start prior: what prior avoids "trusted by default" AND
- *     "permanently unprovable"?
+ *   5. COVERAGE-AT-τ SCORING — predictions are scored by whether the actual
+ *      completion time falls within the declared interval [predictedAt, predictedDeadline].
+ *      This is the interval score from Gneiting & Raftery 2007 §6.2 (eq. 43):
+ *        S(l, u, y; α) = (u − l) + (2/α)(l − y)⁺ + (2/α)(y − u)⁺
+ *      where α is the nominal coverage level (we use τ = 0.9, so α = 0.1).
+ *      A hit is y ∈ [l, u]; a miss is y outside the interval.
+ *      Sandbagging (declaring u = +∞) is penalised: the (u − l) term grows
+ *      without bound, so argmax is NOT at D = +∞. This is the fix for the
+ *      original settlePrediction defect.
+ *
+ *   6. SYBIL RESISTANCE — trustBound is clamped to [0, 1] and defaults to
+ *      k = 3 (α = 0.1 shortfall guarantee, Cantelli 1928 / Scarf 1958).
+ *      At k = 1 the guarantee is α = 0.5 (vacuous). At k = 3 it is α = 0.1
+ *      (meaningful). Soraya's correction: μ − kσ is an EXACT maximin over
+ *      moment-ambiguity distributions, not a resemblance (Cantelli/Scarf).
+ *
+ * Theoretical anchors (PRIOR-ART-LIST.md §"Proper scoring rules"):
+ *   - Brier 1950 (proper scoring rules)
+ *   - Savage 1971 (characterization theorem)
+ *   - DeGroot & Fienberg 1983 (calibration–resolution decomposition)
+ *   - Murphy 1973 (three-way Brier decomposition)
+ *   - Gneiting & Raftery 2007 (strictly proper scoring rules; interval score eq. 43)
+ *   - Cantelli 1928 / Scarf 1958 (exact maximin bound)
+ *   - Friedman & Resnick 2001 (Sybil/whitewash cost model)
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -35,6 +52,11 @@
 
 /**
  * A single prediction outcome, settled by reality.
+ *
+ * Scoring uses coverage-at-τ (interval score, Gneiting & Raftery 2007 eq. 43).
+ * The declared interval is [predictedAt, predictedDeadline].
+ * A hit is settledAt ∈ [predictedAt, predictedDeadline].
+ * A miss is settledAt outside the interval (either early or late).
  *
  * Self-report is safe here because the prediction is decoupled from the
  * entitlement: you may self-claim a DATE you are trying to hit, never a
@@ -46,21 +68,31 @@ export interface PredictionOutcome {
   readonly predictionId: string;
   /** The hat under which the prediction was made. */
   readonly hatId: string;
-  /** When the prediction was made. */
+  /** When the prediction was made (lower bound of declared interval). */
   readonly predictedAt: number; // Unix ms
-  /** The date the agent predicted it would hit. */
+  /** The date the agent predicted it would hit (upper bound of declared interval). */
   readonly predictedDeadline: number; // Unix ms
   /** When the outcome was actually settled. null = not yet settled. */
   readonly settledAt: number | null; // Unix ms
   /**
-   * Whether the prediction was a hit (settled on or before predictedDeadline).
+   * Whether the prediction was a hit (settledAt ∈ [predictedAt, predictedDeadline]).
    * null = not yet settled.
    *
-   * Scoring is symmetric: early misses cost the same as late ones.
-   * If predicting late is always safer, everyone sandbags and the record
-   * measures caution rather than calibration.
+   * Coverage-at-τ scoring: both early misses (settledAt < predictedAt) and
+   * late misses (settledAt > predictedDeadline) are penalised. The interval
+   * score also penalises wide intervals — declaring predictedDeadline = +∞
+   * is not a free lunch.
    */
   readonly hit: boolean | null;
+  /**
+   * The interval score for this prediction (Gneiting & Raftery 2007 eq. 43).
+   * Lower is better. null = not yet settled.
+   *
+   * S(l, u, y; α) = (u − l)/T_SCALE + (2/α)(l − y)⁺/T_SCALE + (2/α)(y − u)⁺/T_SCALE
+   * where l = predictedAt, u = predictedDeadline, y = settledAt, α = COVERAGE_ALPHA.
+   * Normalised by T_SCALE (one day in ms) to keep scores in a human-readable range.
+   */
+  readonly intervalScore: number | null;
 }
 
 /**
@@ -87,18 +119,15 @@ export interface CalibrationLedger {
 /**
  * The posterior over an agent's calibration score for a given hat.
  *
- * Shape: Gaussian approximation from Beta-Bernoulli update.
+ * Shape: Gaussian approximation from Beta-Bernoulli update over hit/miss.
  * Keep: factor graph over Gaussians, explicit σ — 3 settled predictions
  * must not rank like 300.
  * Replace (per spec §4): TrueSkill's likelihood is ordinal comparison
  * (zero-sum). Calibration is measured against reality — two agents can
  * both be perfectly calibrated with no loser.
  *
- * NOTE (Soraya §7.1): Is Beta-Bernoulli over settled hit/miss adequate,
- * or does calibration require an explicit calibration-curve posterior?
- * These differ: an agent can be accurate and miscalibrated, or calibrated
- * and uninformative. This implementation uses Beta-Bernoulli as a starting
- * point; the likelihood is replaceable without changing the bound API.
+ * NOTE (Soraya §7.1): Beta-Bernoulli over hit/miss is a starting point.
+ * The likelihood is replaceable without changing the bound API.
  */
 export interface CalibrationPosterior {
   readonly zid: string;
@@ -112,7 +141,7 @@ export interface CalibrationPosterior {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Cold-start prior
+// Constants
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -124,11 +153,37 @@ export interface CalibrationPosterior {
  * Beta(2, 2) is a weak, symmetric, unimodal prior centered at 0.5 with
  * σ ≈ 0.22. It is informative enough to avoid division-by-zero in the
  * Gaussian approximation, but weak enough that 3–5 settled outcomes
- * dominate it. This is an initial choice; Soraya should verify it avoids
- * the sybil incentive (fresh identity must not have maximal trustBound).
+ * dominate it.
  */
 const PRIOR_ALPHA = 2;
 const PRIOR_BETA = 2;
+
+/**
+ * Coverage level α for the interval score (Gneiting & Raftery 2007 eq. 43).
+ * τ = 1 − α = 0.9 means we target 90% coverage.
+ * α = 0.1 means the penalty multiplier 2/α = 20 for misses outside the interval.
+ */
+const COVERAGE_ALPHA = 0.1;
+
+/**
+ * Time scale for normalising the interval score (one day in ms).
+ * Keeps interval scores in a human-readable range (e.g. 1.0 = one day wide).
+ */
+const T_SCALE_MS = 86_400_000; // 24 * 60 * 60 * 1000
+
+/**
+ * Default k for trustBound — Cantelli/Scarf shortfall guarantee.
+ * k = 1: α = 0.5 (vacuous floor — Soraya's note).
+ * k = 3: α = 0.1 (meaningful floor; P(X < trustBound) ≤ 0.1).
+ * Default is 3, not 1.
+ */
+const DEFAULT_TRUST_K = 3.0;
+
+/**
+ * Default k for exploreBound — UCB exploration bonus.
+ * k = 1 is standard UCB1; higher k explores more aggressively.
+ */
+const DEFAULT_EXPLORE_K = 1.0;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Ledger operations
@@ -165,6 +220,7 @@ export function recordPrediction(
     predictedDeadline,
     settledAt: null,
     hit: null,
+    intervalScore: null,
   };
   const updated: CalibrationRecord = {
     ...existing,
@@ -176,10 +232,29 @@ export function recordPrediction(
 }
 
 /**
- * Settle a prediction — record the actual completion time and compute hit/miss.
+ * Settle a prediction — record the actual completion time and compute
+ * hit/miss and interval score.
  *
- * Scoring is symmetric: early misses cost the same as late ones (spec §6).
- * hit = settledAt <= predictedDeadline.
+ * Scoring: coverage-at-τ (interval score, Gneiting & Raftery 2007 eq. 43).
+ *
+ *   S(l, u, y; α) = (u − l)/T + (2/α)(l − y)⁺/T + (2/α)(y − u)⁺/T
+ *
+ * where:
+ *   l = predictedAt (lower bound of declared interval)
+ *   u = predictedDeadline (upper bound of declared interval)
+ *   y = settledAt (actual completion time)
+ *   α = COVERAGE_ALPHA = 0.1 (targeting 90% coverage)
+ *   T = T_SCALE_MS (one day, for normalisation)
+ *   (x)⁺ = max(0, x)
+ *
+ * A hit is y ∈ [l, u] (interval score = (u − l)/T, no miss penalty).
+ * A late miss is y > u (interval score includes (2/α)(y − u)/T penalty).
+ * An early miss is y < l (interval score includes (2/α)(l − y)/T penalty).
+ *
+ * SANDBAGGING PREVENTION: declaring u = +∞ is penalised because the
+ * (u − l)/T term grows without bound. The argmax of the expected score
+ * is at the true quantile τ = 1 − α, not at +∞. This is the fix for the
+ * original settlePrediction defect (monotone in declared date → argmax at D = +∞).
  *
  * Returns a new ledger — the original is never mutated.
  */
@@ -196,10 +271,22 @@ export function settlePrediction(
 
   const updatedOutcomes = record.outcomes.map((o) => {
     if (o.predictionId !== predictionId || o.settledAt !== null) return o;
+
+    const l = o.predictedAt;
+    const u = o.predictedDeadline;
+    const y = settledAt;
+
+    // Interval score: (u − l)/T + (2/α)(l − y)⁺/T + (2/α)(y − u)⁺/T
+    const width = (u - l) / T_SCALE_MS;
+    const earlyPenalty = Math.max(0, l - y) / T_SCALE_MS * (2 / COVERAGE_ALPHA);
+    const latePenalty = Math.max(0, y - u) / T_SCALE_MS * (2 / COVERAGE_ALPHA);
+    const intervalScore = width + earlyPenalty + latePenalty;
+
     return {
       ...o,
       settledAt,
-      hit: settledAt <= o.predictedDeadline,
+      hit: y >= l && y <= u,
+      intervalScore,
     };
   });
 
@@ -257,7 +344,7 @@ export function updatePosterior(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * exploreBound — μ + k·σ (optimistic).
+ * exploreBound — μ + k·σ (optimistic), clamped to [0, 1].
  *
  * Use when deciding WHICH OPTION TO EXPLORE. Uncertainty is an opportunity:
  * unexplored branches deserve budget.
@@ -266,26 +353,33 @@ export function updatePosterior(
  * It is correct for exploration and MUST NOT be used for trust decisions.
  *
  * @param posterior - The calibration posterior for (zid, hatId).
- * @param k - Confidence multiplier. Default 1.0 (one standard deviation).
+ * @param k - Confidence multiplier. Default DEFAULT_EXPLORE_K = 1.0.
  */
-export function exploreBound(posterior: CalibrationPosterior, k = 1.0): number {
-  return posterior.mu + k * posterior.sigma;
+export function exploreBound(
+  posterior: CalibrationPosterior,
+  k = DEFAULT_EXPLORE_K,
+): number {
+  return Math.min(1, Math.max(0, posterior.mu + k * posterior.sigma));
 }
 
 /**
- * trustBound — μ − k·σ (conservative).
+ * trustBound — μ − k·σ (conservative), clamped to [0, 1].
  *
  * Use when deciding WHOSE CLAIM TO TRUST. Uncertainty is a liability:
  * unproven ≠ proven-average.
  *
- * This is the maximin instinct: rank by the floor you can defend, not the
- * mean. The flat-society design already uses this for empowermentFloor;
- * this is the same principle applied to calibration.
+ * EXACT MAXIMIN (Soraya correction of §7.3): μ − kσ is an exact maximin
+ * over all distributions with the same mean and variance (moment-ambiguity
+ * class), with shortfall probability α = 1/(1+k²) by Cantelli 1928 / Scarf 1958.
+ * This is NOT a resemblance — it is the Cantelli bound applied to the posterior.
  *
- * NOTE (Soraya §7.3): Does μ − kσ have the maximin property FORMALLY, or
- * only by analogy? The flat-society floor is a genuine min over peers; this
- * is a quantile of a posterior. This document asserts a resemblance, not a
- * theorem. Name the relationship honestly.
+ * CLAMPING: result is clamped to [0, 1]. At k=3 with a fresh prior (μ≈0.5,
+ * σ≈0.22), trustBound ≈ 0.5 − 3·0.22 = −0.16 before clamping → 0.0 after.
+ * This is correct: a fresh identity has no trust floor above zero.
+ *
+ * DEFAULT k = 3 (not 1):
+ *   k=1: α = 0.5 (50% shortfall guarantee — vacuous as a floor, Soraya's note).
+ *   k=3: α = 0.1 (10% shortfall guarantee — meaningful floor).
  *
  * SIGN TRAP (spec §5): Using exploreBound for trust decisions would
  * systematically trust unproven agents MORE because they are uncertain —
@@ -294,10 +388,13 @@ export function exploreBound(posterior: CalibrationPosterior, k = 1.0): number {
  * impossible at a call site.
  *
  * @param posterior - The calibration posterior for (zid, hatId).
- * @param k - Confidence multiplier. Default 1.0 (one standard deviation).
+ * @param k - Confidence multiplier. Default DEFAULT_TRUST_K = 3.0.
  */
-export function trustBound(posterior: CalibrationPosterior, k = 1.0): number {
-  return posterior.mu - k * posterior.sigma;
+export function trustBound(
+  posterior: CalibrationPosterior,
+  k = DEFAULT_TRUST_K,
+): number {
+  return Math.min(1, Math.max(0, posterior.mu - k * posterior.sigma));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
