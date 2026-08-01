@@ -132,3 +132,118 @@ module IcosahedralH3 =
     /// The number of spinors — the order of the binary icosahedral group 2I (120 = the 600-cell vertices
     /// = the H4 root count, Dechant's rank-3→rank-4 spinor induction).
     let spinorCount = List.length spinors
+
+    // ============================================================================================
+    // Increment 3 — the icosian golden doubling: the 120 spinors (2I) and their φ-partners → E8's 240.
+    //
+    // A DIFFERENT theorem from the 3→4 spinor induction (increment 2): here the jump is 4→8 because
+    // ℚ(√5) is 2-dimensional over ℚ, NOT a further even-subalgebra step. The **icosian ring**
+    // (Conway–Sloane, SPLAG §8.2.1; Elser–Sloane 1987; recast in Dechant, Proc. R. Soc. A 472 (2016)
+    // 20150504) is the quaternions with coordinates in ℚ(√5); its **240 units = 2I ∪ φ·2I** (the 120
+    // spinors and their golden-ratio partners), and under the golden-weighted norm the icosian ring is
+    // ISOMETRIC to the E8 lattice.
+    //
+    // EXACT arithmetic (byte-lockable, no float ε): each quaternion coordinate a ∈ ℚ(√5) is stored as a
+    // pair (m, n) ∈ ℤ² meaning a = (m + nφ)/2. ℤ[φ] is closed under ×φ (φ² = φ + 1), so the φ-doubling is
+    // denominator-free: φ·(m + nφ)/2 = (n + (m+n)φ)/2. An icosian is int[8] = [ma;na;mb;nb;mc;nc;md;nd].
+    //
+    // The 4→8 doubling (icosian → 8 rational coordinates) is, in this coordinatization, exactly the
+    // reinterpretation of the 4 ℚ(√5) coordinates (aᵢ = aᵢ₀ + aᵢ₁φ) as the 8 rationals
+    // (a₀,a₁,b₀,b₁,c₀,c₁,d₀,d₁) — the content of "ℚ(√5) is 2-dim over ℚ". Scaled by 2, these are the
+    // integer 8-vectors [ma;na;…] of Euclidean norm² = 4, the E8 root length (E8Lattice's convention).
+    //
+    // Golden norm collapses to a global scale: the golden-weighted inner product equals (2+φ)·(rational
+    // part of the quaternion inner product) = (2+φ)/4 · (standard integer dot on the 8-vectors). So the
+    // standard integer dot on `e8Roots` reproduces the E8 angles exactly, up to the global factor (2+φ)/4.
+    //
+    // Anchors: Conway–Sloane, *Sphere Packings, Lattices and Groups* §8.2.1 (icosian ring ≅ E8); V. Elser
+    // & N. J. A. Sloane, J. Phys. A 20 (1987) (E8 → H4); P.-P. Dechant, Proc. R. Soc. A 472 (2016)
+    // 20150504 (Clifford recast). Uniqueness of the E8 root system ⇒ this road, the Cl(8,0)-versor road
+    // (`CliffordE8Roots`) and Construction A (`E8Lattice`) all reach the identical 240 (a BP-16 cross-check).
+    // ============================================================================================
+
+    /// EXACT φ-scaling in ℤ[φ] (denominator-free): φ·(m + nφ)/2 = (n + (m+n)φ)/2, since φ² = φ + 1.
+    /// Carries a unit icosian (2I) to its golden partner (φ·2I) — the generator of the 4→8 doubling.
+    let private goldenScale (q: int[]) : int[] =
+        Array.init 8 (fun i -> if i % 2 = 0 then q.[i + 1] else q.[i - 1] + q.[i])
+
+    // The 120 UNIT icosians = 2I (the 600-cell vertices), listed EXACTLY by their three coordinate
+    // families (Conway–Sloane): 8 of shape (±1,0,0,0); 16 of shape (±½,±½,±½,±½); 96 = even permutations
+    // of (0, ±½, ±φ⁻¹/2, ±φ/2). Coordinate values in (m,n) = (m + nφ)/2 form:
+    //   0 = (0,0);  ½ = (1,0);  1 = (2,0);  φ/2 = (0,1);  φ⁻¹/2 = (φ−1)/2 = (−1,1).
+    let private twoI : int list list =
+        let coord (m, n) = [ m; n ]
+        let neg (m, n) = (-m, -n)
+        let eight =
+            [ for p in 0 .. 3 do
+                for s in [ 2; -2 ] do
+                    yield [ for i in 0 .. 3 -> if i = p then coord (s, 0) else coord (0, 0) ] |> List.concat ]
+        let sixteen =
+            [ for signs in 0 .. 15 do
+                yield [ for i in 0 .. 3 -> coord ((if (signs >>> i) &&& 1 = 1 then -1 else 1), 0) ] |> List.concat ]
+        let baseVals = [| (0, 0); (1, 0); (-1, 1); (0, 1) |] // 0, ½, φ⁻¹/2, φ/2
+        let rec permute l =
+            match l with
+            | [] -> [ [] ]
+            | _ -> [ for x in l do for r in permute (List.filter ((<>) x) l) -> x :: r ]
+        let inversions (p: int list) =
+            let a = List.toArray p
+            let mutable c = 0
+            for i in 0 .. 3 do
+                for j in i + 1 .. 3 do
+                    if a.[i] > a.[j] then c <- c + 1
+            c
+        let ninetySix =
+            [ for p in permute [ 0; 1; 2; 3 ] do
+                if inversions p % 2 = 0 then // even permutations only (the alternating group A4)
+                    for signs in 0 .. 7 do
+                        let parr = List.toArray p
+                        let coords = Array.create 4 (0, 0)
+                        for k in 0 .. 3 do
+                            let v =
+                                if k = 0 then baseVals.[k]
+                                elif (signs >>> (k - 1)) &&& 1 = 1 then neg baseVals.[k]
+                                else baseVals.[k]
+                            coords.[parr.[k]] <- v
+                        yield [ for i in 0 .. 3 -> coord coords.[i] ] |> List.concat ]
+        (eight @ sixteen @ ninetySix) |> List.distinct
+
+    /// **The 240 icosians = 2I ∪ φ·2I** — the units of the icosian ring, EXACT in ℤ[φ]. Each is an
+    /// int[8] = [ma;na;mb;nb;mc;nc;md;nd] with quaternion coordinate aᵢ = (m + nφ)/2. The first 120 are
+    /// the unit icosians (2I = increment-2's spinors, realized exactly); the next 120 are their φ-partners.
+    let icosians : int[] list =
+        let unit = twoI |> List.map List.toArray
+        let golden = unit |> List.map goldenScale
+        (unit @ golden) |> List.map List.ofArray |> List.distinct |> List.map List.toArray
+
+    /// The number of icosians — must be 240 (120 = 2I, 120 = φ·2I); the kissing number of E8.
+    let icosianCount = List.length icosians
+
+    /// **The icosian doubling into 8D** — the 240 icosians as integer 8-vectors of Euclidean norm² = 4
+    /// (E8Lattice's root-length convention). Coordinate value aᵢ = (m + nφ)/2, so [ma;na;…] = 2·(a₀,a₁,…),
+    /// the 8 rationals (a₀,a₁,b₀,b₁,c₀,c₁,d₀,d₁) scaled by 2. This IS an E8 root system (invariant gate);
+    /// aligned onto `E8Lattice.roots` by the explicit isometry `e8Isometry` below (target gate).
+    let e8Roots : int[] list = icosians
+
+    /// Standard integer inner product on ℝ⁸. On `e8Roots` (all norm² = 4) it equals the golden-weighted
+    /// E8 inner product up to the global factor (2+φ)/4 (the golden weighting collapses to a global scale),
+    /// so it reproduces the E8 angles exactly.
+    let e8Dot (a: int[]) (b: int[]) : int = Array.fold2 (fun s x y -> s + x * y) 0 a b
+
+    /// The reflection of root α in the hyperplane ⟂ β: α − 2(α·β)/(β·β)·β. With β·β = 4 and α·β even for
+    /// roots, this is α − (α·β)/2·β — exact integer arithmetic, and the root system is closed under it.
+    let e8Reflect (beta: int[]) (alpha: int[]) : int[] =
+        let coeff = e8Dot alpha beta / 2
+        Array.init 8 (fun i -> alpha.[i] - coeff * beta.[i])
+
+    /// **The explicit isometry (BP-16 3rd-road cross-check).** An orthogonal map — the coordinate
+    /// permutation new[i] = old[e8Isometry.[i]] (here the transposition of coordinates 5 and 7) — that
+    /// carries `e8Roots` onto `E8Lattice.roots` as SETS. Both are Construction A over the (unique) [8,4]
+    /// extended Hamming code, hence permutation-equivalent; this is the concrete permutation aligning the
+    /// icosian frame to the in-tree adinkra frame. So the icosian road, the Cl(8,0)-versor road
+    /// (`CliffordE8Roots`) and Construction A (`E8Lattice`) all land on the identical 240 E8 roots.
+    let e8Isometry : int[] = [| 0; 1; 2; 3; 4; 7; 6; 5 |]
+
+    /// `e8Roots` carried through `e8Isometry` — set-equal to `E8Lattice.roots` (and `CliffordE8Roots.roots`).
+    let e8RootsAligned : int[] list =
+        e8Roots |> List.map (fun v -> Array.init 8 (fun i -> v.[e8Isometry.[i]]))

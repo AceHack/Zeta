@@ -68,3 +68,62 @@ let ``H3 spinors: the group contains -1 (the double cover: 2I, not the order-60 
     let keys =
         IcosahedralH3.spinors |> List.map (fun v -> (q v.S, q v.E12, q v.E13, q v.E23)) |> Set.ofList
     Assert.True(keys.Contains (q -1.0, 0, 0, 0), "2I must contain -1 (the nontrivial central element of the double cover)")
+
+// --- Increment 3: the icosian golden doubling 2I ∪ φ·2I → E8's 240 roots (Conway–Sloane SPLAG §8.2.1) ---
+// The 4→8 step is a DIFFERENT theorem than the 3→4 spinor induction (increment 2). Exact ℤ[φ] arithmetic
+// (byte-lockable). Gate achieved: the FULL target — an explicit orthogonal isometry set-equals E8Lattice.roots.
+
+[<Fact>]
+let ``icosians: exactly 240 units = 2I ∪ φ·2I (the E8 kissing number)`` () =
+    Assert.Equal(240, IcosahedralH3.icosianCount)
+
+[<Fact>]
+let ``icosians: the unit part is the 120 spinors (2I) and the 240 are distinct`` () =
+    Assert.Equal(120, IcosahedralH3.spinorCount)
+    let distinct = IcosahedralH3.icosians |> List.map List.ofArray |> List.distinct |> List.length
+    Assert.Equal(240, distinct)
+
+[<Fact>]
+let ``icosians: all share the same golden-weighted norm (Σ(m²+n²) = 4 exactly — byte-lockable)`` () =
+    for v in IcosahedralH3.icosians do
+        Assert.Equal(4, IcosahedralH3.e8Dot v v)
+
+[<Fact>]
+let ``icosians→E8: the inner-product multiset equals E8Lattice's (isometry invariant ⇒ E8 up to isometry)`` () =
+    let multiset (roots: int[] list) =
+        let m = System.Collections.Generic.Dictionary<int, int>()
+        for a in roots do
+            for b in roots do
+                let d = IcosahedralH3.e8Dot a b
+                m.[d] <- (if m.ContainsKey d then m.[d] else 0) + 1
+        m |> Seq.map (fun kv -> kv.Key, kv.Value) |> Seq.sortBy fst |> List.ofSeq
+    Assert.Equal<(int * int) list>(multiset E8Lattice.roots, multiset IcosahedralH3.e8Roots)
+
+[<Fact>]
+let ``icosians→E8: the 240 are closed under reflection (a genuine root system — the only rank-8 with 240 roots is E8)`` () =
+    let keys = IcosahedralH3.e8Roots |> List.map List.ofArray |> Set.ofList
+    for b in IcosahedralH3.e8Roots do
+        for a in IcosahedralH3.e8Roots do
+            Assert.True(
+                keys.Contains(IcosahedralH3.e8Reflect b a |> List.ofArray),
+                "the icosian E8 root system must be closed under reflection")
+
+[<Fact>]
+let ``icosians→E8: the explicit isometry set-equals E8Lattice.roots (BP-16 3rd independent road to E8)`` () =
+    let aligned = IcosahedralH3.e8RootsAligned |> List.map List.ofArray |> Set.ofList
+    let e8 = E8Lattice.roots |> List.map List.ofArray |> Set.ofList
+    Assert.Equal<Set<int list>>(e8, aligned)
+
+[<Fact>]
+let ``icosians→E8: the same isometry set-equals CliffordE8Roots.roots (all three roads = one E8)`` () =
+    let aligned = IcosahedralH3.e8RootsAligned |> List.map List.ofArray |> Set.ofList
+    let cliff = CliffordE8Roots.roots |> List.map List.ofArray |> Set.ofList
+    Assert.Equal<Set<int list>>(cliff, aligned)
+
+// NOTE: a direct coordinate comparison of the icosian 120-unit part against increment-2's Cl3 rotor
+// spinors was intentionally dropped — the two build the SAME group 2I but in DIFFERENT coordinate frames
+// (icosian ℤ[φ] quaternions vs even-subalgebra rotor coefficients), so a sorted-|coord| multiset compare
+// is ill-posed (it would require first solving the inter-frame isometry). The structural "both are 2I"
+// facts are already covered: increment-2 gates spinorCount=120 + contains −1; increment-3 gates the 240 =
+// 120 unit ∪ 120 φ-part, and — the real cross-check — the icosian E8 set-equals E8Lattice.roots AND
+// CliffordE8Roots.roots above (all three independent roads land on the one E8).
