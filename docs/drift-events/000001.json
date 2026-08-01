@@ -1,0 +1,18 @@
+{
+  "tick": 1,
+  "at": "2026-08-01T13:42:35.788Z",
+  "findings": [
+    {
+      "path": "docs/research/void-discharges-2026-08-01/README.md",
+      "rule": "MD038"
+    },
+    {
+      "path": "src/wasm-dla/CANONICAL_SPEC.md",
+      "rule": "MD022"
+    },
+    {
+      "path": "src/wasm-dla/CANONICAL_SPEC.md",
+      "rule": "MD032"
+    }
+  ]
+}
