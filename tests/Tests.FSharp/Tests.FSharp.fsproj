@@ -573,6 +573,7 @@
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
     <Compile Include="Formal/SemiringRing.Laws.Tests.fs" />
     <Compile Include="Formal/WSet.Comonoid.Laws.Tests.fs" />
+    <Compile Include="Formal/WSet.FourCornerTrace.Laws.Tests.fs" />
     <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Jaccard.Laws.Tests.fs" />
     <Compile Include="Formal/Clock.Laws.Tests.fs" />
