@@ -1,6 +1,7 @@
 export {
   BROWSER_EXECUTION_TIERS,
   BROWSER_NODE_SCHEMA,
+  foldBrowserTabPresence,
   planBrowserNode,
   type BrowserAdapterReliability,
   type BrowserCheckpoint,
@@ -30,3 +31,20 @@ export {
   type BrowserRuntimeProbeFeedback,
   type BrowserRuntimeProbeReadout,
 } from "./browser-runtime-probe";
+
+export {
+  BROWSER_TAB_COORDINATOR_SCHEMA,
+  startBrowserTabCoordinator,
+  type BrowserTabChannel,
+  type BrowserTabChannelMessage,
+  type BrowserTabChannelSubscription,
+  type BrowserTabCoordinator,
+  type BrowserTabCoordinatorFeedback,
+  type BrowserTabCoordinatorOptions,
+  type BrowserTabCoordinatorReadout,
+  type BrowserTabOperationResult,
+  type BrowserTabPresenceMessage,
+  type BrowserTabProbeMessage,
+} from "./browser-tab-coordinator";
+
+export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";

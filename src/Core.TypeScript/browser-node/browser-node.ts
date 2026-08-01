@@ -177,7 +177,7 @@ function sequenceOrder(sequence: number): number {
   return Number.isSafeInteger(sequence) && sequence >= 0 ? sequence : -1;
 }
 
-function foldTabs(events: readonly BrowserTabPresence[]): readonly BrowserTabPresence[] {
+export function foldBrowserTabPresence(events: readonly BrowserTabPresence[]): readonly BrowserTabPresence[] {
   const latest = new Map<string, BrowserTabPresence>();
 
   for (const event of events) {
@@ -461,7 +461,7 @@ function planPort(
 export function planBrowserNode(snapshot: BrowserNodeSnapshot): BrowserNodeReadout {
   const capabilities = uniqueSorted(snapshot.capabilities);
   const capabilitySet = new Set(capabilities);
-  const tabs = foldTabs(snapshot.tabs);
+  const tabs = foldBrowserTabPresence(snapshot.tabs);
   const liveness = livenessReadout(tabs, snapshot.checkpoint, capabilitySet);
   const portPlans = foldRequests(snapshot.requests).map((request) =>
     planPort(request, snapshot.bindings, capabilitySet),
