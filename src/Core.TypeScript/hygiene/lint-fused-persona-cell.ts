@@ -77,7 +77,10 @@ const LITERAL_RE = /'([^'\\]*)'|"([^"\\]*)"|`([^`\\]*)`/g;
 
 const EXEMPT_MARKER = "fused-ok:";
 
-function buildMatchers(personas: readonly string[], surfaces: readonly string[]): {
+function buildMatchers(
+  personas: readonly string[],
+  surfaces: readonly string[],
+): {
   hyphen: RegExp;
   slash: RegExp;
 } {
@@ -86,10 +89,7 @@ function buildMatchers(personas: readonly string[], surfaces: readonly string[])
   // otto-cli  (legacy composite form)
   const hyphen = new RegExp(`(^|(?!${NOT_BEFORE}).)(?:${p})-(?:${s})(?![a-z0-9._-])`, "g");
   // otto/cli, otto/cli/2, otto/cli/2@node7  (canonical projection form)
-  const slash = new RegExp(
-    `(^|(?!${NOT_BEFORE}).)(?:${p})/(?:${s})(?:/${SEG})?(?:@${SEG})?(?![a-z0-9._@/-])`,
-    "g",
-  );
+  const slash = new RegExp(`(^|(?!${NOT_BEFORE}).)(?:${p})/(?:${s})(?:/${SEG})?(?:@${SEG})?(?![a-z0-9._@/-])`, "g");
   return { hyphen, slash };
 }
 
@@ -119,10 +119,7 @@ export function findFusedLiterals(
     let lit: RegExpExecArray | null = LITERAL_RE.exec(line);
     while (lit !== null) {
       const content = lit[1] ?? lit[2] ?? lit[3] ?? "";
-      for (const [form, re] of [
-        ["hyphen", hyphen] as const,
-        ["slash", slash] as const,
-      ]) {
+      for (const [form, re] of [["hyphen", hyphen] as const, ["slash", slash] as const]) {
         re.lastIndex = 0;
         let m: RegExpExecArray | null = re.exec(content);
         while (m !== null) {
@@ -145,28 +142,21 @@ export function findFusedLiterals(
 /** The one module (treaty Art. 1) + its golden vectors + registry codegen. */
 export const PARSER_MODULE_ALLOWLIST: readonly string[] = [
   "src/Core.TypeScript/identity/actor-ref.ts",
-  "src/Core.TypeScript/identity/actor-ref.js",
   "src/Core.TypeScript/identity/actor-ref.test.ts",
-  "src/Core.TypeScript/identity/actor-ref.test.js",
   "src/Core.TypeScript/identity/generated-registry.ts",
-  "src/Core.TypeScript/identity/generated-registry.js",
   "src/Core/ActorRef.fs", // F# oracle twin of the one module
   "tests/Tests.FSharp/ActorRef.Tests.fs", // F# oracle golden vectors
   "tests/cross-verification/golden-vectors/actor-ref.json",
   // this lint (its own vocabulary/test fixtures)
   "src/Core.TypeScript/hygiene/lint-fused-persona-cell.ts",
-  "src/Core.TypeScript/hygiene/lint-fused-persona-cell.js",
   "src/Core.TypeScript/hygiene/lint-fused-persona-cell.test.ts",
-  "src/Core.TypeScript/hygiene/lint-fused-persona-cell.test.js",
 ];
 
 export function isAllowlisted(filePath: string): boolean {
   return PARSER_MODULE_ALLOWLIST.includes(filePath.replace(/\\/g, "/"));
 }
 
-const SCAN_EXTENSIONS = new Set([
-  ".ts", ".js", ".mjs", ".cjs", ".fs", ".fsx", ".fsi", ".py", ".sh",
-]);
+const SCAN_EXTENSIONS = new Set([".ts", ".js", ".mjs", ".cjs", ".fs", ".fsx", ".fsi", ".py", ".sh"]);
 
 export function isInScope(filePath: string): boolean {
   const p = filePath.replace(/\\/g, "/");
@@ -293,8 +283,7 @@ export function main(argv: readonly string[] = process.argv.slice(2)): number {
 }
 
 const invokedDirectly =
-  typeof process.argv[1] === "string" &&
-  /lint-fused-persona-cell\.(?:ts|js)$/.test(process.argv[1]);
+  typeof process.argv[1] === "string" && /lint-fused-persona-cell\.(?:ts|js)$/.test(process.argv[1]);
 if (invokedDirectly) {
   process.exit(main());
 }

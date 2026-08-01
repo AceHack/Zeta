@@ -40,6 +40,12 @@ be able to recreate the environment from this doc.
 | ------------------- | ------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | **quantum-circuit** | 0.9.247 | TypeScript quantum circuit simulator (second oracle) for Q# golden observables cross-verification | Installed via `bun add -d quantum-circuit` as part of `package.json` devDependencies |
 
+## NPM / Bun browser integration dependencies
+
+| Package        | Version | Why                                                                                         | How installed                                                                                          |
+| -------------- | ------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Playwright** | 1.62.1  | Opt-in real-Chromium multi-page verification for the browser node and page-owned mesh layer | Package pinned by `bun add -d --exact playwright@1.62.1`; Chromium via `bun run install:browser-smoke` |
+
 ## Project-specific binary artifacts (downloaded by `tools/setup/install.sh`)
 
 | Artifact                  | Version              | Path                                     | Why                                                      | Install command                                                                                                                               |

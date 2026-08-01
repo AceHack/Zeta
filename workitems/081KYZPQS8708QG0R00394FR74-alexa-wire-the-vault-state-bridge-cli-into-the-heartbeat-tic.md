@@ -73,5 +73,5 @@ unilaterally exiling another.
 
 ## Pointers
 
-- #9932 — the adapter · `src/Core.TypeScript/observe/vault-state-bridge.test.ts` — the 23 tests
-- [[iris-page-side-render-discipline]] · `docs/design/2026-08-01-vault-monitoring-bridge.md`
+- #9932 — the adapter and its 23 contract tests
+- [Iris page-side render discipline](081KYZKWRDH08QG0R000XNP53K-iris-page-side-render-discipline-for-the-vault-monitoring-br.md) · `docs/design/2026-08-01-vault-monitoring-bridge.md`

@@ -65,7 +65,7 @@ note is here so the page never renders one as the other.
 ## Pointers
 
 - `docs/design/2026-08-01-vault-monitoring-bridge.md` — the contract
-- `src/Core.TypeScript/.../llmtv-root-site-status.ts` — the shipped `live|cold|stale|heat` vocabulary
+- `src/Core.TypeScript/discovery/llmtv-root-site-status.ts` — the shipped `live|cold|stale|heat` vocabulary
 - #9927 (contract) · #9916 (browser mesh node) · #9914 (superseded first attempt, same file)
 
 ## Update 2026-08-01 — the data source now exists and is verified
