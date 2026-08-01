@@ -1,0 +1,14 @@
+{
+  "id": "080cfde93a44f011a0130008d8e6db72",
+  "at": "2026-08-01T11:48:16.158Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYYJEJ4X08QG0R003P8GXSY",
+    "type": "task",
+    "title": "Git-native BUILD RECEIPT: a signed attestation in the commit (tree hash + verification result + signer) that replaces the CI gate's job — attestation not permission, peers verify, no forge host",
+    "slug": "git-native-build-receipt-a-signed-attestation-in-the-commit",
+    "priority": "P2",
+    "filename": "081KYYJEJ4X08QG0R003P8GXSY-git-native-build-receipt-a-signed-attestation-in-the-commit.md"
+  }
+}
