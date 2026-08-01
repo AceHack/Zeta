@@ -206,7 +206,7 @@ proof log).
 - **Multi-oracle DLA sensor-fusion proof (2026-07-31)**
   (`src/Core/IdentityDLA.fs`, `src/Renderers/`,
   `idspace-dla-6faa9bmi.manus.space`) — DLA with
-  Tsirelson sticking threshold (1/(3√2) ≈ 0.2357)
+  sticking threshold (1/(3√2) ≈ 0.2357) — ⚠ 1/(3√2) ≈ 0.2357 is a **design parameter, NOT the Tsirelson bound** (that is S ≤ 2√2 ≈ 2.828 on the CHSH correlator — `src/Core/Tsirelson.fs`). Corrected 2026-08-01, Soraya audit; see `docs/research/void-discharges-2026-08-01/README.md`.
   rendered across six independent substrates (Canvas,
   CSS-only, Chip-8 VM, SVG, Q# quantum walk, *C. elegans*
   biological connectome). All six agree on D_f ≈ 1.322

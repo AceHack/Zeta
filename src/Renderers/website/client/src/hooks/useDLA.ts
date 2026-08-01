@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 
-export const TSIRELSON = 1 / (3 * Math.sqrt(2)); // ≈ 0.2357
+// ⚠ NAME IS A MISNOMER (Soraya audit, 2026-08-01). `TSIRELSON` is NOT the Tsirelson bound.
+// Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH correlator (see src/Core/Tsirelson.fs,
+// src/Core/BellTest.fs). There is no Tsirelson bound on a correlation coefficient. 1/(3√2)
+// is ρ*/√2 — the Condorcet limit ρ* = 1/3 pushed through the FREELY CHOSEN linear map
+// ρ = S/12 — a design parameter chosen for homoiconicity, not derived. See
+// docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md
+// Here it is used purely as a DLA sticking probability / density cutoff. Do not read it as physics.
+export const TSIRELSON = 1 / (3 * Math.sqrt(2)); // ≈ 0.2357 — DLA sticking probability (design choice)
 
 // ── Seeded xorshift32 PRNG ────────────────────────────────────────────────────
 function makeRng(seed: number) {

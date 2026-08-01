@@ -169,7 +169,8 @@ module BusDelayTick =
     /// **rhoCount-driven interval multiplier.**
     ///
     /// Returns a recommended interval multiplier based on the current rhoCount:
-    ///   - `1.0` at the Tsirelson operating point (ρ_T ≈ 0.2357)
+    ///   - `1.0` at the chosen operating point ρ_T ≈ 0.2357 (a design parameter, NOT the
+    ///     Tsirelson bound — that is S ≤ 2√2 on the CHSH correlator; corrected 2026-08-01)
     ///   - `> 1.0` when rhoCount > ρ_T (temporally collapsed — slow down)
     ///   - `< 1.0` when rhoCount < ρ_T (temporally diverse — speed up)
     ///

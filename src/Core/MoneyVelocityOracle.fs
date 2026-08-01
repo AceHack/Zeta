@@ -187,9 +187,23 @@ let moneyRho (medianAgeDays: float) : float =
 let moneyCondorcetBonus (medianAgeDays: float) : float =
     1.0 - moneyRho medianAgeDays
 
-/// The Tsirelson point for money: the median UTXO age at which ρ = 1/(3√2).
-/// This is the age at which the money velocity oracle enters the Classical regime.
-/// L* = 1/ρ* - 1 = 3√2 - 1 ≈ 3.243 years ≈ 1184 days.
+/// The median UTXO age at which ρ = 1/(3√2) ≈ 0.2357 (the `YinYangEnsemble` reseed threshold).
+/// L* = 1/ρ - 1 = 3√2 - 1 ≈ 3.243 years ≈ 1184 days.
+///
+/// ⚠ **TWO CORRECTIONS** (Soraya audit, 2026-08-01), neither of which changes the value:
+///
+/// 1. **Not a Tsirelson bound.** Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH correlator
+///    (`src/Core/Tsirelson.fs`). `1/(3√2)` is `ρ*/√2` — the Condorcet limit through the freely
+///    chosen map `ρ = S/12`; a design parameter. See
+///    `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md`
+///
+/// 2. **The old docstring contradicted this file's own classifier.** It claimed this is "the age at
+///    which the money velocity oracle enters the Classical regime". It is not: `moneyRegime` below
+///    puts the SoundMoney/Moderate boundary at `1/(1+√2) = √2 − 1 ≈ 0.4142`, i.e. `L = √2` years
+///    ≈ 517 days — not 1184. The two numbers answer different questions (reseed threshold vs.
+///    regime boundary; see the 2026-07-04 doc, which adjudicates exactly this pair) and are NOT
+///    interchangeable. **Left for a human:** decide whether this binding is wanted at all, since
+///    nothing outside this file consumes it.
 let tsirelsonAgeDays : float =
     let rhoStar = 1.0 / (3.0 * Math.Sqrt 2.0)
     (1.0 / rhoStar - 1.0) * 365.0  // ≈ 1184 days ≈ 3.24 years
@@ -215,8 +229,10 @@ let m2VelocityToRho (velocity: float) : float =
     let L = 1.0 / max 0.001 velocity
     1.0 / (1.0 + L)
 
-/// The M2 velocity at the Tsirelson point: velocity = 1/L* = 1/(3√2-1) ≈ 0.308.
-/// Below this velocity, M2 money enters the Classical regime (ρ < ρ*).
+/// The M2 velocity at the ρ = 1/(3√2) point: velocity = 1/L* = 1/(3√2-1) ≈ 0.308.
+/// ⚠ Same two corrections as `tsirelsonAgeDays` above: `1/(3√2)` is a design parameter, not a
+/// Tsirelson bound, and the Classical/SoundMoney boundary used by `moneyRegime` is ρ = √2 − 1
+/// (velocity ≈ 0.707), not this one.
 /// M2 velocity has never been this low in recorded history.
 /// Bitcoin's effective velocity (1/medianHoldingPeriod) is typically 0.1-0.5.
 let tsirelsonM2Velocity : float =
@@ -285,4 +301,8 @@ let regimeTable : (string * float * float * MoneyRegime * string) list =
       "BTC 3yr holder",   1095.0,          moneyRho 1095.0,       moneyRegime (moneyRho 1095.0),       "SoundMoney"
       "BTC 5yr holder",   1825.0,          moneyRho 1825.0,       moneyRegime (moneyRho 1825.0),       "SoundMoney"
       "BTC 10yr holder",  3650.0,          moneyRho 3650.0,       moneyRegime (moneyRho 3650.0),       "SoundMoney"
-      "Tsirelson point",  tsirelsonAgeDays, 1.0/(3.0*Math.Sqrt 2.0), SoundMoney,                      "Tsirelson boundary" ]
+      // NOTE (2026-08-01): this row ASSERTS `SoundMoney` rather than calling `moneyRegime`, so it
+      // cannot disagree with the classifier — an assertion, not a computation. The label is also
+      // corrected: this is the chosen reseed threshold ρ_T, NOT a Tsirelson bound and NOT the
+      // regime boundary (which `moneyRegime` puts at ρ = √2 − 1 ≈ 0.414, i.e. ≈ 517 days).
+      "rho_T reseed point (design choice)",  tsirelsonAgeDays, 1.0/(3.0*Math.Sqrt 2.0), moneyRegime (1.0/(3.0*Math.Sqrt 2.0)), "chosen threshold, not a physical bound" ]

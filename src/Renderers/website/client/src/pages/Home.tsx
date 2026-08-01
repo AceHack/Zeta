@@ -155,7 +155,7 @@ export default function Home() {
             letterSpacing: "0.05em",
           }}
         >
-          Seed {SEED}&nbsp;·&nbsp;Tsirelson threshold = 1/(3√2) ≈{" "}
+          Seed {SEED}&nbsp;·&nbsp;sticking probability p_stick = 1/(3√2) ≈{" "}
           {TSIRELSON.toFixed(4)}&nbsp;·&nbsp;Four independent rendering substrates
         </p>
       </header>
@@ -307,8 +307,8 @@ export default function Home() {
             text: "Diffusion-Limited Aggregation. Random walkers stick to a cluster when they touch it. The result is a fractal boundary — the same shape as lightning, snowflakes, river deltas, and neuron dendrites.",
           },
           {
-            label: "The Tsirelson threshold",
-            text: `Sticking probability = 1/(3√2) ≈ ${TSIRELSON.toFixed(4)}. This is the Tsirelson bound — the maximum quantum correlation. It is the operating point of the identity space. Walkers stick when they reach it.`,
+            label: "The sticking threshold (corrected 2026-08-01)",
+            text: `Sticking probability = 1/(3√2) ≈ ${TSIRELSON.toFixed(4)}. CORRECTION (2026-08-01): this was previously described as "the Tsirelson bound — the maximum quantum correlation". It is neither. Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH correlator, and quantum correlations are not capped at 0.2357. This number is a chosen design parameter (ρ*/√2 — the Condorcet limit through the freely chosen map ρ = S/12). It is the declared operating point of the identity space; walkers stick with this probability.`,
           },
           {
             label: "The sensor fusion proof",

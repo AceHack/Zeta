@@ -179,6 +179,10 @@ let ``RHO-5: reseedIfCollapsed triggers reseed on collapse and returns reseeded 
     Assert.False(didReseedFresh, "reseedIfCollapsed should not trigger on a fresh ensemble")
 
 // ── RHO-6: tsirelsonThreshold is 1/(3√2) ≈ 0.2357 ────────────────────────────────────────────
+// ⚠ NAMING CORRECTION (2026-08-01, Soraya audit): the assertion is true arithmetic, but
+// `1/(3√2)` is NOT a Tsirelson bound (that is S ≤ 2√2 on the CHSH correlator, src/Core/Tsirelson.fs).
+// It is a design parameter — ρ*/√2 via the freely chosen map ρ = S/12. This test pins a CHOICE.
+// See docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md
 
 [<Fact>]
 let ``RHO-6: tsirelsonThreshold equals 1/(3*sqrt(2)) and is strictly between 0 and rho*=1/3`` () =

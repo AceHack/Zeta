@@ -274,7 +274,9 @@ module CelegansController =
     ///
     /// This is the biological oracle for the sensor-fusion proof: the worm observes the DLA
     /// cluster growing on the Chip-8 display and its synchronization state is recorded.
-    /// If the order parameter crosses the Tsirelson threshold (1/(3√2) ≈ 0.2357) at the same
+    /// ⚠ 1/(3√2) is a DESIGN PARAMETER, not the Tsirelson bound (which is S ≤ 2√2 on the CHSH
+    /// correlator; see src/Core/Tsirelson.fs). Corrected 2026-08-01 — Soraya audit.
+    /// If the order parameter crosses the chosen threshold ρ_T (1/(3√2) ≈ 0.2357) at the same
     /// cluster size as the computational oracles, the identity eigenvector is substrate-independent.
     let runDlaOracle
         (connectome: Connectome)

@@ -138,7 +138,17 @@ let ``COND-9: rho* converges to 1/3 as N grows, independent of c`` () =
         abs (rhoStarLargeN - (1.0/3.0)) < 0.001,
         sprintf "ρ*(N=10001) should be close to 1/3, got %f" rhoStarLargeN)
 
-/// COND-10: The Tsirelson operating point ρ_T = 1/(3√2) ≈ 0.236 is the optimal reseed threshold.
+/// ⚠ **NAMING CORRECTION (Soraya audit, 2026-08-01) — the assertion below is TRUE, the name is not.**
+/// `ρ*/√2 = (1/3)/√2 = 1/(3√2)` is exact arithmetic and this test is sound as an algebraic check.
+/// But `1/(3√2)` is NOT a Tsirelson bound: Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH
+/// *correlator* (`src/Core/Tsirelson.fs`, S² = 8 exact). There is no Tsirelson bound on a
+/// correlation coefficient. `ρ_T` is the image of 2√2 under the FREELY CHOSEN linear map ρ = S/12 —
+/// a design parameter, documented as such in
+/// `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md`
+/// This test therefore pins a DESIGN CHOICE (useful — it stops silent drift), not a law of physics.
+/// §A #15 (Generalized Condorcet / ΔU-aggregation) cites this file but does NOT depend on this test:
+/// its claim rests on ρ*(N) = (N−3)/(3(N−1)), proved in `docs/research/rhostar-analytic-proof.md`.
+/// COND-10: The chosen operating point ρ_T = 1/(3√2) ≈ 0.236 is the reseed threshold.
 ///
 /// The Bell inequality triangle maps onto the three ρ regimes:
 ///   S = 4  (ρ > 1/3):      superdeterminism / common seed — groupthink, useless ensemble
@@ -262,7 +272,17 @@ let ``RHO-STAR-4: rho*(N) converges to 1/3 at rate O(1/N) independent of c`` () 
             abs (algebraic - binarySearch) < 0.02,
             sprintf "ρ*(N=%d) algebraic=%f should match binary-search at c=%g (%f)" n algebraic c binarySearch)
 
-/// RHO-STAR-5: The Tsirelson threshold ρ_T = ρ*/√2 = 1/(3√2) is the optimal reseed point.
+/// ⚠ **NAMING CORRECTION (Soraya audit, 2026-08-01) — the assertion below is TRUE, the name is not.**
+/// `ρ*/√2 = (1/3)/√2 = 1/(3√2)` is exact arithmetic and this test is sound as an algebraic check.
+/// But `1/(3√2)` is NOT a Tsirelson bound: Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH
+/// *correlator* (`src/Core/Tsirelson.fs`, S² = 8 exact). There is no Tsirelson bound on a
+/// correlation coefficient. `ρ_T` is the image of 2√2 under the FREELY CHOSEN linear map ρ = S/12 —
+/// a design parameter, documented as such in
+/// `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md`
+/// This test therefore pins a DESIGN CHOICE (useful — it stops silent drift), not a law of physics.
+/// §A #15 (Generalized Condorcet / ΔU-aggregation) cites this file but does NOT depend on this test:
+/// its claim rests on ρ*(N) = (N−3)/(3(N−1)), proved in `docs/research/rhostar-analytic-proof.md`.
+/// RHO-STAR-5: The chosen threshold ρ_T = ρ*/√2 = 1/(3√2) is the reseed point.
 /// Verify: ρ_T < ρ* = 1/3 (safety margin), and ρ_T = YinYangEnsemble.tsirelsonThreshold.
 [<Fact>]
 let ``RHO-STAR-5: Tsirelson threshold is rho*/sqrt(2) and matches YinYangEnsemble.tsirelsonThreshold`` () =

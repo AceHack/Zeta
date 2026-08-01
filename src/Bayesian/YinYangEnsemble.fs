@@ -154,7 +154,14 @@ module YinYangEnsemble =
 
     // ── Tsirelson operating-point threshold ─────────────────────────────────────────────────────────────
 
-    /// **Tsirelson reseed threshold: ρ_T = 1/(3√2) ≈ 0.2357.**
+    /// **Reseed threshold: ρ_T = 1/(3√2) ≈ 0.2357** (historically named "Tsirelson threshold").
+    ///
+    /// ⚠ **The name is a misnomer** (Soraya audit, 2026-08-01): `1/(3√2)` is NOT a Tsirelson bound.
+    /// Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* (`src/Core/Tsirelson.fs`).
+    /// This module is the ONE site that already stated the provenance honestly — the caveat below
+    /// is original and correct. What went wrong is that the NAME travelled to the DLA renderers,
+    /// the demo site, and conjectures Z-3/Z-5 while the caveat did not, and there it was read as a
+    /// physical bound. Keep the caveat attached wherever this number goes.
     ///
     /// A DESIGN CHOICE, not a first-principles derivation — the *homoiconic linear identification* of the
     /// Condorcet ρ-regimes with the Bell/CHSH S-regimes (proof of "chosen, not derived" + the homoiconicity

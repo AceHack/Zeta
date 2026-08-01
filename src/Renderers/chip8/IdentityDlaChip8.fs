@@ -20,7 +20,9 @@ module IdentityDlaChip8 =
     let private W = Chip8.DisplayW  // 64
     let private H = Chip8.DisplayH  // 32
 
-    let private TSIRELSON = 1.0 / (3.0 * sqrt 2.0)  // ≈ 0.2357
+    // ⚠ Misnomer: NOT the Tsirelson bound (that is S ≤ 2√2 on the CHSH correlator, see
+    // src/Core/Tsirelson.fs). This is a chosen DLA sticking probability. Corrected 2026-08-01.
+    let private TSIRELSON = 1.0 / (3.0 * sqrt 2.0)  // ≈ 0.2357 — sticking probability (design choice)
 
     // ── Minimal seeded PRNG (xorshift32, same family as Chip-8 RND opcode) ────────────────────
     type private Rng(seed: int) =

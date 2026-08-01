@@ -7,7 +7,8 @@ open System
 /// Generates the identity space boundary shape using Zeta's own primitives:
 ///   - The **random walker** is a traveler with a flat prior (ZSet side — cold, sparse).
 ///   - **Sticking** is a decoherence event (GSet side — warm, dense) gated by the
-///     Tsirelson threshold (1/(3√2) ≈ 0.2357).
+///     sticking threshold (1/(3√2) ≈ 0.2357) — a DESIGN CHOICE, not the Tsirelson bound
+///     (that is S ≤ 2√2 on the CHSH correlator; see Tsirelson.fs). Corrected 2026-08-01.
 ///   - The **gradient field** is `rhoCount`-shaped: walkers are biased toward the
 ///     cluster boundary proportionally to the local density gradient.
 ///   - The **cluster** is the GSet (accumulated resolved facts).
@@ -26,6 +27,16 @@ module IdentityDLA =
 
     // ── Constants ─────────────────────────────────────────────────────────────────────────────
 
+    /// ⚠ **THE NAME IS A MISNOMER** (Soraya audit, 2026-08-01). This is NOT the Tsirelson bound.
+    /// Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* — see `src/Core/Tsirelson.fs`
+    /// (S² = 8 in exact integer arithmetic) and `src/Core/BellTest.fs`. There is no Tsirelson bound
+    /// on a correlation *coefficient*, and quantum correlations are not capped at 0.2357.
+    /// `1/(3√2)` is `ρ*/√2` — the Condorcet limit `ρ* = 1/3` pushed through the FREELY CHOSEN
+    /// linear map `ρ = S/12`. The repo's own derivation attempt concluded it "cannot be derived from
+    /// first principles; it follows forced from two named modeling choices [made] for homoiconicity":
+    /// `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md`
+    /// Identifier NOT renamed here (cross-language call sites); the label is corrected instead.
+    /// Used here purely as a **DLA sticking probability** — a growth parameter. Do not read it as physics.
     /// The Tsirelson operating point: 1/(3√2) ≈ 0.2357.
     /// Used as the base sticking probability — a walker touching the cluster sticks with
     /// this probability, modulated by the local gradient.

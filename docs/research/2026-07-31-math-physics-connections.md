@@ -1,5 +1,16 @@
 # Math/Physics Deep-Dive: New Connections to the DLA Identity-Space Framework
 
+> **⚠ CORRECTION BANNER (2026-08-01, Soraya audit) — READ BEFORE CITING THIS DOC.**
+> This document is the source of conjectures Z-2 … Z-6. **None of them is discharged.** All six
+> (Z-2/3/4/5/6/7) were reviewed 2026-08-01 and demoted §A → §B; the discharge scripts are
+> quarantined at `docs/research/void-discharges-2026-08-01/` and are NOT evidence.
+> **Z-3 specifically is withdrawn**: `S_Loew(t*) = ln(3√2)` is the identity `−ln(1/x) = ln(x)`
+> evaluated at `x = 1/(3√2)` — true for every `x`, so it says nothing about Loewner entropy or
+> SLE; "for all κ" is vacuous because `t/κ` was pinned, making κ cancel by construction.
+> Also: 1/(3√2) ≈ 0.2357 is a **design parameter, NOT the Tsirelson bound** (that is S ≤ 2√2 ≈ 2.828 on the CHSH correlator — `src/Core/Tsirelson.fs`). Corrected 2026-08-01, Soraya audit; see `docs/research/void-discharges-2026-08-01/README.md`.
+> Retained unedited below for the record.
+
+
 **Date:** 2026-07-31  
 **Status:** Research notes — conjectures, not proven claims  
 **Author:** Addison + Manus research pass
