@@ -413,6 +413,7 @@
     <Compile Include="Formal/CliffordE8Bridge.Tests.fs" />
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
     <Compile Include="Formal/CliffordStarRing.Laws.Tests.fs" />
+    <Compile Include="Formal/CliffordReflection.Laws.Tests.fs" />
     <Compile Include="CayleyDicksonAdinkra.Tests.fs" />
     <Compile Include="Evolution.Tests.fs" />
     <Compile Include="MediatorUnit.Tests.fs" />
