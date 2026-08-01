@@ -53,7 +53,7 @@ class NativeChannel {
 }
 
 class NativeBrowserRoot {
-  BroadcastChannel: typeof NativeChannel = NativeChannel;
+  BroadcastChannel: typeof NativeChannel | typeof globalThis.BroadcastChannel = NativeChannel;
   readonly documentListeners = new Map<string, Set<NativeListener>>();
   readonly pageListeners = new Map<string, Set<NativeListener>>();
   readonly document = {
@@ -117,6 +117,14 @@ function unwrap(result: ReturnType<typeof startNativeDarkHallBrowser>): DarkHall
   return result.value;
 }
 
+async function waitFor(label: string, predicate: () => boolean): Promise<void> {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    if (predicate()) return;
+    await Bun.sleep(2);
+  }
+  throw new Error(`Timed out waiting for ${label}.`);
+}
+
 describe("native Dark Hall browser bootstrap", () => {
   beforeEach(() => {
     NativeChannel.instances = [];
@@ -151,6 +159,78 @@ describe("native Dark Hall browser bootstrap", () => {
     expect(runtime.host.stop().ok).toBe(true);
     expect(channel?.closed).toBe(true);
     expect(root.listenerCount()).toBe(0);
+  });
+
+  test("connects two native tabs and keeps the survivor live after its peer closes", async () => {
+    const channelName = "zeta-darkhall-tabs-connected-test";
+    const rootA = new NativeBrowserRoot();
+    const rootB = new NativeBrowserRoot();
+    rootA.BroadcastChannel = globalThis.BroadcastChannel;
+    rootB.BroadcastChannel = globalThis.BroadcastChannel;
+    const mountA = { innerHTML: "" };
+    const mountB = { innerHTML: "" };
+    const runtimeA = unwrap(
+      startNativeDarkHallBrowser({
+        ...options(rootA, mountA),
+        channelName,
+        nodeId: "llmtv-room-connected",
+        tabId: "tab-a",
+        initialSequence: 100,
+      }),
+    );
+    const runtimeB = unwrap(
+      startNativeDarkHallBrowser({
+        ...options(rootB, mountB),
+        channelName,
+        nodeId: "llmtv-room-connected",
+        tabId: "tab-b",
+        initialSequence: 200,
+      }),
+    );
+
+    try {
+      await waitFor(
+        "both tabs to discover each other",
+        () => runtimeA.host.read().coordinator.tabs.length === 2 && runtimeB.host.read().coordinator.tabs.length === 2,
+      );
+
+      expect(runtimeA.host.read().coordinator.liveness.liveTabIds).toEqual(["tab-a", "tab-b"]);
+      expect(runtimeB.host.read().coordinator.liveness.liveTabIds).toEqual(["tab-a", "tab-b"]);
+      expect(mountA.innerHTML).toContain('data-tab="tab-b"');
+      expect(mountB.innerHTML).toContain('data-tab="tab-a"');
+
+      rootB.document.visibilityState = "hidden";
+      rootB.emit("visibilitychange");
+      await waitFor(
+        "tab B background state to reach tab A",
+        () => runtimeA.host.read().coordinator.tabs.find((tab) => tab.tabId === "tab-b")?.state === "background",
+      );
+      expect(mountA.innerHTML).toContain('data-tab="tab-b" data-state="background"');
+
+      rootB.emit("pagehide");
+      await waitFor(
+        "tab B dark state to reach tab A",
+        () => runtimeA.host.read().coordinator.tabs.find((tab) => tab.tabId === "tab-b")?.state === "dark",
+      );
+      expect(runtimeB.host.read()).toMatchObject({ state: "dark", stopped: true });
+      expect(runtimeA.host.read().coordinator.liveness).toMatchObject({
+        zetaAlive: true,
+        liveTabIds: ["tab-a"],
+      });
+
+      rootA.document.visibilityState = "hidden";
+      rootA.emit("visibilitychange");
+      expect(runtimeA.host.read()).toMatchObject({ state: "background", stopped: false, admission: "open" });
+      expect(mountA.innerHTML).toContain('data-browser-local-state="background"');
+      expect(rootA.listenerCount()).toBe(3);
+      expect(rootB.listenerCount()).toBe(0);
+    } finally {
+      if (!runtimeB.host.read().stopped) runtimeB.host.stop();
+      if (!runtimeA.host.read().stopped) runtimeA.host.stop();
+    }
+
+    expect(rootA.listenerCount()).toBe(0);
+    expect(rootB.listenerCount()).toBe(0);
   });
 
   test("does not allocate a channel when a preflight native edge is unavailable", () => {
