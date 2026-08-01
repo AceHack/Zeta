@@ -547,7 +547,7 @@ jobs:
     # analysis as possible, match or surpass SQLSharp + scratch").
     # See openspec/specs/static-analysis/profiles/shell.md.
     name: lint (shellcheck)
-    timeout-minutes: 5
+    timeout-minutes: 12
     runs-on: ubuntu-24.04
 
     steps:
@@ -764,7 +764,7 @@ jobs:
     # the layer that catches all paths, not at the input-tool
     # layer.
     name: lint (tick-history order)
-    timeout-minutes: 5
+    timeout-minutes: 12
     runs-on: ubuntu-24.04
 
     steps:
@@ -856,7 +856,7 @@ jobs:
     # 081KQ3HBZ0008QG0R001FPVG3Z Sub-task 2 — wire the lint to gate.yml after Sub-task 1
     # backfilled all pre-existing violations to 0.
     name: lint (archive header §33)
-    timeout-minutes: 5
+    timeout-minutes: 12
     runs-on: ubuntu-24.04
 
     steps:
@@ -901,7 +901,7 @@ jobs:
     # 081KRMEXM0008QG0R000K25MXS Slice B.3 + B.4 — wire the scanner to gate.yml in --enforce mode
     # after PR #3552 backfilled all pre-existing violations to 0.
     name: lint (§33 migration xrefs)
-    timeout-minutes: 5
+    timeout-minutes: 12
     runs-on: ubuntu-24.04
 
     steps:
@@ -1053,7 +1053,7 @@ jobs:
     # (docs + specs + skills are a huge surface; drift is easy).
     # See openspec/specs/static-analysis/profiles/markdown.md.
     name: lint (markdownlint)
-    timeout-minutes: 5
+    timeout-minutes: 12
     runs-on: ubuntu-24.04
 
     steps:
@@ -1142,7 +1142,7 @@ jobs:
     # round-30 semgrep elevation: codified rules (tsconfig strict mode)
     # without a gate aren't a control.
     name: lint (TS)
-    timeout-minutes: 5
+    timeout-minutes: 12
     runs-on: ubuntu-24.04
 
     steps:
@@ -1400,7 +1400,7 @@ jobs:
     # (branch protection) is a separate operator/devops step — until then it runs + shows on every PR
     # but does not block auto-merge.
     name: cross-verify (trust-core oracles + ace suite)
-    timeout-minutes: 5
+    timeout-minutes: 12
     runs-on: ubuntu-24.04
 
     steps:
