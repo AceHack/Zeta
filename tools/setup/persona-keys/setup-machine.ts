@@ -25,12 +25,17 @@
 //      existing CA is a no-op (ca.ts returns `exists`, no prompt).
 //
 //   3. CLUSTER-MEMBERSHIP ROUTING (closes the previously-deferred join case) — "no local CA ⇒
-//      realize one" is WRONG for a host JOINING a cluster whose CA lives elsewhere: it would
-//      mint a second CA and SPLIT the trust root. The caller may now supply a `caDisposition`
-//      (ca.ts `resolveCaDisposition`, a pure function of the local CA-private presence + the
-//      committed `maintainers/<ca>/ssh-ca.pub` trust roots). On "route" we realize NOTHING and
-//      sign NOTHING here — the cert is routed to the CA holder with an exact instruction.
-//      Omitting `caDisposition` preserves the legacy present/realize behaviour exactly.
+//      realize one" is WRONG for a host JOINING a cluster whose CA lives elsewhere: it mints an
+//      UNATTESTED CA. Zeta is fully decentralized — every node is its own CA, so a second CA is
+//      not itself a fault (there is NO single trust root to "split"; an earlier comment here said
+//      otherwise and was wrong — Aaron 2026-08-01). What makes a CA usable is that its PUBLIC key
+//      was bootstrapped through an external authority: a GitHub-controlled maintainer identity
+//      committing `maintainers/<ca>/ssh-ca.pub`. A CA minted on join is a key nobody attested, so
+//      no peer can verify certs it signs — an orphan identity, and silently so.
+//      The caller may now supply a `caDisposition` (ca.ts `resolveCaDisposition`, a pure function
+//      of local CA-private presence + the committed bootstrap anchors). On "route" we realize
+//      NOTHING and sign NOTHING here — the cert is routed to the anchor's holder with an exact
+//      instruction. Omitting `caDisposition` preserves the legacy present/realize behaviour exactly.
 //
 // SECURITY INVARIANTS (security-class — honesty over green):
 //  - The session is ONE *human* approval, not zero: every sub-op still calls `requireBiometric`

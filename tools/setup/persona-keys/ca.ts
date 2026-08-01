@@ -133,12 +133,34 @@ export function caPublicKeyPath(repoRoot: string, ca: string): string {
  * The three dispositions (fail-SAFE — when in doubt we ROUTE, never fabricate):
  *
  *   - "present"  — THIS host holds the CA private key. The cert can be signed here directly.
- *   - "realize"  — NO local CA private AND NO committed trust root anywhere ⇒ this is a solo /
- *                  first node, so REALIZE the cluster CA here (call `ensureCa`). Bootstrapping
- *                  the trust root is exactly what a first node is for.
- *   - "route"    — NO local CA private BUT a committed trust root EXISTS (the CA lives on
- *                  ANOTHER host) ⇒ DO NOT fabricate a second CA (that would SPLIT the trust
- *                  root). Route: the device cert must be signed by the CA holder.
+ *   - "realize"  — NO local CA private AND NO committed anchor anywhere ⇒ this is a solo /
+ *                  first node, so REALIZE its CA here (call `ensureCa`) — and then COMMIT its
+ *                  public key, which is what makes it attested (see the trust model below).
+ *   - "route"    — NO local CA private BUT a committed anchor EXISTS (that CA lives on ANOTHER
+ *                  host) ⇒ DO NOT mint a second CA here. Route: the device cert must be signed
+ *                  by the anchor's holder, because the anchor is the key peers already trust.
+ *
+ * ── THE TRUST MODEL (Aaron 2026-08-01 — correcting an earlier mis-framing in this file) ───────
+ * There is NO single trust root in Zeta. The model is fully decentralized: **every node is its
+ * own CA.** So a second CA existing is NOT, by itself, a fault — it is the design.
+ *
+ * What makes a node's CA usable by peers is that it has been **BOOTSTRAPPED through an external,
+ * already-centralized authority** — a GitHub account controlling a maintainer identity — by
+ * COMMITTING its CA public key to the repo (`maintainers/<ca>/ssh-ca.pub`). Control of the
+ * GitHub account + repo history IS the bootstrap channel; the committed key is the attestation.
+ * (Same shape as the cert conventions we mirror: git's `allowed_signers` for commit signing,
+ * k8s/cert-manager trust bundles, SSH CAs.)
+ *
+ * So the ACTUAL failure mode this guard prevents is NOT "splitting a trust root" — there is no
+ * root to split. It is minting an **UNATTESTED** CA: a key nobody bootstrapped through the
+ * GitHub channel, so no peer can verify certs signed by it. That host would hold an orphan
+ * identity — invisible to the web of trust, and silently so.
+ *
+ * Naming caveat: `committedTrustRoots` are **bootstrap anchors**, not PKI roots in the
+ * single-root sense. Read the name as "the CA public keys already attested via the repo".
+ * Prior art for bootstrapping decentralized identity off a centralized IdP: Sigstore/Fulcio
+ * (OIDC identity ⇒ short-lived signing certs), SPIFFE/SPIRE (workload identity), TOFU and the
+ * PGP web-of-trust, Zooko's triangle (the tradeoff this pattern navigates).
  *
  * This is the honest seam: the ONLY ambiguous case ("is THIS host the CA holder?") is resolved
  * by the presence of the LOCAL CA private key — a fact this host can see for itself — and we

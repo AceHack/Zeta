@@ -25,6 +25,12 @@
   "include": ["**/*.ts"],
   "exclude": [
     "node_modules",
+    // AssemblyScript, NOT TypeScript: compiled by `asc`, not tsc. Its builtins
+    // (i32/u32/f64/StaticArray) are AssemblyScript types tsc cannot know, so typechecking it
+    // here yields ~33 bogus TS2304 "Cannot find name" errors. Excluded, not silenced — `asc`
+    // is its real checker (see the compile line in assembly/index.ts).
+    "src/wasm-dla/assemblyscript",
+    "src/wasm-dla/assemblyscript/**",
     "**/node_modules/**",
     ".git",
     ".git/**",

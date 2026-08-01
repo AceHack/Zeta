@@ -131,7 +131,12 @@ function getActualBinarySize(compiler: Compiler): number {
   if (fs.existsSync(p)) {
     return fs.statSync(p).size;
   }
-  return BINARY_SIZES[compiler];
+  const recorded = BINARY_SIZES[compiler];
+  if (recorded === undefined) {
+    // Fail loudly: a silent 0 here would quietly corrupt the correlation being discharged.
+    throw new Error(`z7-pearson: no recorded binary size for compiler '${compiler}'`);
+  }
+  return recorded;
 }
 
 // ── Pearson correlation ───────────────────────────────────────────────────────
@@ -145,6 +150,8 @@ function pearson(xs: number[], ys: number[]): number {
     denX = 0,
     denY = 0;
   for (let i = 0; i < n; i++) {
+    // i < n = xs.length = ys.length, so both reads are in-bounds; assert for
+    // noUncheckedIndexedAccess rather than widening the arithmetic to `| undefined`.
     const dx = xs[i]! - meanX;
     const dy = ys[i]! - meanY;
     num += dx * dy;

@@ -497,10 +497,30 @@ export function createTpmShareAdapter(
   };
 }
 
+export function createSimulatorShareAdapter(
+  fx: FrostCaCustodyEffects,
+  sharesDir: string,
+  ca: string,
+  simSeed = "zeta-hardware-simulator-seed-32-bytes",
+): FrostShareAdapter {
+  const sealKey = new Uint8Array(32);
+  sealKey.set(new TextEncoder().encode(simSeed).subarray(0, 32));
+  const sealEffects: FrostShareSealEffects = {
+    getSealKey: () => sealKey,
+  };
+  const baseAdapter = createSealedFileShareAdapter(fx, sharesDir, ca, sealEffects);
+  return {
+    kind: "sealed-file",
+    loadShare: (x) => baseAdapter.loadShare(x),
+    storeShare: (rec, caName) => baseAdapter.storeShare(rec, caName),
+  };
+}
+
 export interface HsmShareAdapterOptions {
-  readonly hsmKind: "stub" | "pkcs11" | "tpm";
+  readonly hsmKind: "stub" | "pkcs11" | "tpm" | "simulator";
   readonly pkcs11Opts?: Pkcs11SealEffectsOptions;
   readonly tpmOpts?: TpmSealEffectsOptions;
+  readonly allowSimulatorFallback?: boolean;
 }
 
 export function createHsmShareAdapter(
@@ -509,13 +529,26 @@ export function createHsmShareAdapter(
   ca: string,
   opts: HsmShareAdapterOptions,
 ): FrostShareAdapter {
+  if (opts.hsmKind === "simulator") {
+    return createSimulatorShareAdapter(fx, sharesDir, ca);
+  }
   if (opts.hsmKind === "pkcs11") {
     if (!opts.pkcs11Opts) throw new Error("frost-share-adapter: pkcs11Opts required for pkcs11 hsmKind");
-    return createPkcs11ShareAdapter(fx, sharesDir, ca, opts.pkcs11Opts);
+    try {
+      return createPkcs11ShareAdapter(fx, sharesDir, ca, opts.pkcs11Opts);
+    } catch (err) {
+      if (opts.allowSimulatorFallback) return createSimulatorShareAdapter(fx, sharesDir, ca);
+      throw err;
+    }
   }
   if (opts.hsmKind === "tpm") {
     if (!opts.tpmOpts) throw new Error("frost-share-adapter: tpmOpts required for tpm hsmKind");
-    return createTpmShareAdapter(fx, sharesDir, ca, opts.tpmOpts);
+    try {
+      return createTpmShareAdapter(fx, sharesDir, ca, opts.tpmOpts);
+    } catch (err) {
+      if (opts.allowSimulatorFallback) return createSimulatorShareAdapter(fx, sharesDir, ca);
+      throw err;
+    }
   }
   return createHsmShareAdapterStub();
 }
