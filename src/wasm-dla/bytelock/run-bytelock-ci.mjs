@@ -32,14 +32,60 @@ import { dirname, join } from "path";
 const __dir = dirname(fileURLToPath(import.meta.url));
 
 // ── Config ────────────────────────────────────────────────────────────────────
+//
+// Seed resolution order (first match wins):
+//   1. --seeds-file=PATH  JSON file: array of numbers, e.g. [1,42,100,999]
+//                         or object: { "seeds": [1,42,...] }
+//                         Use for large-corpus regression runs without changing CI config.
+//   2. --seeds=N,M,...    Comma-separated list on the command line.
+//   3. Default: 1,42,100,999
+//
+// Usage examples:
+//   node run-bytelock-ci.mjs
+//   node run-bytelock-ci.mjs --seeds=42
+//   node run-bytelock-ci.mjs --seeds-file=seeds-100.json
+//   node run-bytelock-ci.mjs --json --seeds-file=/path/to/corpus.json
+
 const args = process.argv.slice(2);
 const jsonMode = args.includes("--json");
-const seedsArg = args.find((a) => a.startsWith("--seeds=") || a === "--seeds");
-// Prefer --seeds=VALUE over --seeds VALUE to avoid consuming the next flag as a value
-const seedsVal = seedsArg
-  ? (seedsArg.split("=")[1] || args[args.indexOf(seedsArg) + 1] || "1,42,100,999")
-  : "1,42,100,999";
-const CI_SEEDS = seedsVal.split(",").map(Number);
+
+// --seeds-file resolution
+const seedsFileArg = args.find((a) => a.startsWith("--seeds-file=") || a === "--seeds-file");
+let CI_SEEDS;
+if (seedsFileArg) {
+  const seedsFilePath = seedsFileArg.split("=")[1] || args[args.indexOf(seedsFileArg) + 1];
+  if (!seedsFilePath || seedsFilePath.startsWith("-")) {
+    console.error("--seeds-file requires a path argument, e.g. --seeds-file=seeds.json");
+    process.exit(2);
+  }
+  const absPath = seedsFilePath.startsWith("/") ? seedsFilePath : join(__dir, seedsFilePath);
+  let parsed;
+  try {
+    parsed = JSON.parse(readFileSync(absPath, "utf8"));
+  } catch (e) {
+    console.error(`--seeds-file: could not read or parse '${absPath}': ${e.message}`);
+    process.exit(2);
+  }
+  const seedArray = Array.isArray(parsed) ? parsed : parsed.seeds;
+  if (!Array.isArray(seedArray) || seedArray.length === 0) {
+    console.error(`--seeds-file: '${absPath}' must be a JSON array or { "seeds": [...] }`);
+    process.exit(2);
+  }
+  CI_SEEDS = seedArray.map(Number).filter((n) => !isNaN(n));
+  if (CI_SEEDS.length === 0) {
+    console.error(`--seeds-file: '${absPath}' contained no valid numeric seeds`);
+    process.exit(2);
+  }
+  if (!jsonMode) console.log(`Seeds loaded from file: ${absPath} (${CI_SEEDS.length} seeds)`);
+} else {
+  // --seeds=N,M,... or default
+  const seedsArg = args.find((a) => a.startsWith("--seeds=") || a === "--seeds");
+  // Prefer --seeds=VALUE over --seeds VALUE to avoid consuming the next flag as a value
+  const seedsVal = seedsArg
+    ? (seedsArg.split("=")[1] || args[args.indexOf(seedsArg) + 1] || "1,42,100,999")
+    : "1,42,100,999";
+  CI_SEEDS = seedsVal.split(",").map(Number);
+}
 
 // ── Import reference ──────────────────────────────────────────────────────────
 const { runDLA, toGoldenVector, verify } = await import(join(__dir, "reference.mjs"));
