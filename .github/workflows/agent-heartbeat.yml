@@ -161,6 +161,33 @@ jobs:
       # said "[heal] Committed healed files", which was true and completely inert: the heal
       # never reached the repository. The self-healing system had never actually healed
       # anything. Keeping it here means one push carries both the event and the heal.
+      - name: Hunt tests that cannot fail (one mutant per agent per tick)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # THE SOCIETY'S STANDING JOB. A passing test proves nothing until you know it can fail.
+          # On 2026-08-01 that gap produced six unfalsifiable "discharges" in the frozen core and a
+          # cache whose test asserted `remaining >= 0` on a count that is non-negative by
+          # construction — disabling the retraction entirely left it 3 pass / 0 fail. All caught by
+          # hand, which is the most expensive tier there is.
+          #
+          # WHY THE FLEET IS THE RIGHT RUNNER, and it is not about capability: flipping `>=` to `>`
+          # and comparing exit codes needs ZERO judgement — no model has to be RIGHT about anything.
+          # Selection is deterministic from (agent, tick), so three agents cover three different
+          # files having exchanged NO messages. Adding members adds throughput at zero coordination
+          # cost.
+          #
+          # DRIFT REPORT, NOT A GATE (exit 3 = surviving mutant). It never fails the tick: this
+          # bounds DETECTION LATENCY, it does not block. `|| true` keeps the tick alive while the
+          # ::warning:: keeps the finding loud — the runner prints the file, suite, and mutation.
+          #
+          # Runs BEFORE the push per the ordering rule below, though it writes nothing: runMutant
+          # restores the file in a `finally`, including when the suite cannot run at all.
+          TICK=$(git rev-list --count HEAD)
+          echo "[mutation] $AGENT tick=$TICK — hunting one surviving mutant"
+          bun src/Core.TypeScript/hygiene/mutation-runner.ts \
+            --agent "$AGENT" --tick "$TICK" --since 24h 2>&1 || true
+
       - name: Measure cadence (declared vs actual — detect silent degradation)
         env:
           AGENT: ${{ matrix.agent }}

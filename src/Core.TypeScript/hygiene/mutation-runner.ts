@@ -191,7 +191,7 @@ function main(): void {
   const root = argValue("--repo-root") ?? process.cwd();
   const agent = argValue("--agent") ?? "unknown";
   const tick = Number(argValue("--tick") ?? "0");
-  const since = argValue("--since") ?? "24h";
+  const since = argValue("--since") ?? "24 hours ago";
   const dryRun = process.argv.includes("--dry-run");
 
   if (!Number.isFinite(tick)) {
@@ -206,10 +206,33 @@ function main(): void {
     encoding: "utf8",
   });
   const files = [...new Set((changed.stdout ?? "").split("\n").map((s) => s.trim()).filter(Boolean))];
+
+  // DISTINGUISH "nothing happened" FROM "I CANNOT SEE" — the defect this tool exists to find, which
+  // it shipped with. `--since=24h` is NOT valid git approxidate: git does not error on it, it
+  // silently matches zero commits. Verified: --since="24h" -> 0 commits, --since="24 hours ago" ->
+  // 175, on the same repo at the same moment. The runner would have reported "nothing to do" on
+  // every tick forever while looking perfectly healthy.
+  //
+  // Zero commits in the window is almost always a BAD DATE SPEC, not a quiet repo, so it is a
+  // ::warning:: and a non-zero exit — never a cheerful no-op. Zero *pairs* among real commits is a
+  // legitimate quiet result and stays informational.
+  if (files.length === 0) {
+    console.error(
+      `::warning::[mutation] ${agent}: git log --since="${since}" returned NO FILES AT ALL.\n` +
+        `  That is usually an unparseable date, not a quiet repo — git approxidate silently matches\n` +
+        `  nothing rather than erroring (e.g. "24h" is invalid; "24 hours ago" is not).\n` +
+        `  Refusing to report "nothing to do" over a window that may not exist.`,
+    );
+    process.exit(1);
+  }
+
   const targets = pairWithTests(files, root);
 
   if (targets.length === 0) {
-    console.log(`[mutation] ${agent}: no source+test pairs changed in the last ${since} — nothing to do.`);
+    console.log(
+      `[mutation] ${agent}: ${files.length} file(s) changed in the last ${since}, but no source+test` +
+        ` pairs among them — nothing to mutate.`,
+    );
     return;
   }
 
