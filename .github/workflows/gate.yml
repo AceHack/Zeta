@@ -387,6 +387,13 @@ jobs:
         if: needs.path-filter.outputs.code == 'true'
         run: ./tools/setup/install.sh
 
+      - name: Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057, #9774 regression)
+        # Fast pre-build backstop: a Microsoft.CodeAnalysis.* pin newer than the SDK's own
+        # Roslyn makes generators unloadable (CS9057) — which reached main via #9774. Reads the
+        # SDK's ACTUAL csc version (no heuristic), so it self-updates when the SDK is bumped.
+        if: needs.path-filter.outputs.code == 'true'
+        run: bun src/Core.TypeScript/hygiene/audit-codeanalysis-sdk-match.ts
+
       - name: Build (0 Warning(s) / 0 Error(s) required)
         # BASH_ENV (set by shellenv.sh during the install step) has
         # already pointed this shell at the managed shellenv file;
