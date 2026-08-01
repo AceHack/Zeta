@@ -1,0 +1,78 @@
+# actions-runner-controller — the ORG-WIDE runner scale set.
+#
+# Registration scope is the ORGANISATION, not a repository (Aaron 2026-08-01,
+# "org-wide registration"). githubConfigUrl therefore points at the org root. A
+# repo-scoped URL here would bind every runner to one repository and silently
+# undo the scope decision, which is why the test suite pins it.
+#
+# CREDENTIALS ARE NEVER IN THIS FILE. githubConfigSecret is a NAME reference to a
+# secret this repo does not contain and cannot mint. It is materialised by
+# external-secrets from Vault, and the GitHub App private key behind it is
+# operator-approved, never operator-run. Nothing here is copyable into a working
+# credential — that is the point.
+#
+# TOOLCHAIN REQUIREMENT (measured, not assumed): the k8s lane in
+# k8s-argocd-health-test.yml needs .mise.full.toml — k3d/kubectl/helm — at BOTH
+# install and run time, via ZETA_HOST_TIER=full / MISE_ENV=full. A runner image
+# shipping only the default tier fails the shim resolve and dies on a node that
+# looks healthy. USB-provisioned nodes MUST carry the full tier.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # Strictly after arc-controller (wave 3): the AutoscalingRunnerSet CR needs
+    # its controller present or ArgoCD reports synced against nothing.
+    argocd.argoproj.io/sync-wave: "4"
+  name: arc-runner-set
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: ghcr.io/actions/actions-runner-controller-charts
+    chart: gha-runner-scale-set
+    targetRevision: 0.12.1
+    helm:
+      releaseName: zeta-org-runners
+      valuesObject:
+        # ORG-WIDE. Not .../Zeta — see the header.
+        githubConfigUrl: https://github.com/Lucent-Financial-Group
+        # Name reference only. Materialised by external-secrets from Vault.
+        githubConfigSecret: arc-github-app
+        # The label workflows select with `runs-on:`. The k8s lane already reads
+        # `runs-on: ${{ matrix.runner }}`, so adopting these is a matrix entry
+        # rather than a workflow rewrite.
+        runnerScaleSetName: zeta-self-hosted
+        # BOUNDED BOTH WAYS. minRunners > 0 keeps a warm runner so the cadence
+        # measurement above is not re-imported as cold-start latency; maxRunners
+        # is a hard ceiling because these are finite physical nodes, not cloud
+        # capacity that silently absorbs a runaway fan-out.
+        minRunners: 1
+        maxRunners: 6
+        containerMode:
+          type: dind
+        template:
+          spec:
+            containers:
+              - name: runner
+                image: ghcr.io/actions/actions-runner:2.330.0
+                command: ["/home/runner/run.sh"]
+                resources:
+                  requests: { cpu: 500m, memory: 2Gi }
+                  limits: { cpu: "4", memory: 8Gi }
+                volumeMounts:
+                  # Models cached on a PVC and pulled ONCE, instead of ~16GB per
+                  # tick over the network. This is the second reason for the move.
+                  - name: model-cache
+                    mountPath: /home/runner/.cache/models
+            volumes:
+              - name: model-cache
+                persistentVolumeClaim:
+                  claimName: arc-model-cache
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-runners
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true ]

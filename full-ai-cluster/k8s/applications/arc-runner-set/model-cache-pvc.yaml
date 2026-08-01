@@ -1,0 +1,15 @@
+# PVC backing the runner model cache.
+#
+# Reconciled by the arc-runner-set Application, not by the root App-of-Apps
+# (the root includes only */Application.yaml).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: arc-model-cache
+  namespace: arc-runners
+spec:
+  accessModes: [ ReadWriteMany ]
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 100Gi

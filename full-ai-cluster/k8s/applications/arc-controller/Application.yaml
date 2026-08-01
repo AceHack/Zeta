@@ -1,0 +1,56 @@
+# actions-runner-controller (ARC) — the controller half.
+#
+# Runs the operator that watches AutoscalingRunnerSet CRs and creates ephemeral
+# runner pods. It registers nothing itself; the runner set (see ../arc-runner-set/)
+# carries the org binding.
+#
+# WHY SELF-HOSTED AT ALL — the measurement, not a preference:
+#   The heartbeat declares `*/15` cadence. Measured 2026-08-01 over five consecutive
+#   ticks, the actual intervals were 63, 71, 65, 86 and 66 minutes — roughly 20% of
+#   declared. That is GitHub's scheduler being best-effort, not our configuration, so
+#   no workflow tuning reaches it. Self-hosted runners are the only lever. They also
+#   remove the ~16GB model pull per tick (PVC-cached instead) and the 10GB/repo Actions
+#   cache ceiling that was briefly considered as a reason to split the repo.
+#
+# GitHub-specific by construction, and that is contained: ARC lives in the k8s deploy
+# layer, never in Core. The forge stays a plugin — nothing here is imported by the
+# substrate, and swapping forges means replacing this directory, not editing Core.
+# Approved by Aaron 2026-08-01 ("ARC is fine").
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # After cert-manager / external-secrets (wave 0) so the runner set's
+    # credentials exist before the controller starts reconciling it.
+    argocd.argoproj.io/sync-wave: "3"
+  name: arc-controller
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: ghcr.io/actions/actions-runner-controller-charts
+    chart: gha-runner-scale-set-controller
+    # Pinned, never a floating tag: an unpinned controller upgrades itself under
+    # the runners it manages, which is a silent capability change on hardware we
+    # provisioned deliberately.
+    targetRevision: 0.12.1
+    helm:
+      releaseName: arc-controller
+      valuesObject:
+        replicaCount: 1
+        # Bounded so a controller crash-loop cannot starve the node the runners
+        # themselves need. USB-provisioned nodes are not elastic.
+        resources:
+          requests: { cpu: 100m, memory: 128Mi }
+          limits: { cpu: 500m, memory: 512Mi }
+        flags:
+          logLevel: info
+          logFormat: json
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-systems
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true ]
