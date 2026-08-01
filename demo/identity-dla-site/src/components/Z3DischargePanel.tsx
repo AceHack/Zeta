@@ -7,39 +7,39 @@
  * reports whether S_Loew(tStar) = ln(3*sqrt(2)) holds within noise.
  *
  * [RETRACTED 2026-08-01 — this panel presents a TAUTOLOGY as a discharge.]
- * tStar is DEFINED as kappa * TSIRELSON, so -ln(tStar/kappa) = -ln(TSIRELSON) is just
+ * tStar is DEFINED as kappa * STICKING_THRESHOLD, so -ln(tStar/kappa) = -ln(STICKING_THRESHOLD) is just
  * -ln(1/x) = ln(x): true for EVERY x, and kappa cancels by construction, which is why it
  * appears to hold "for all kappa". Nothing about Loewner entropy or SLE is being tested,
- * and TSIRELSON here is a DLA sticking parameter, not a physics bound. Z-3 is OPEN.
- * The math: tStar = kappa * TSIRELSON = kappa / (3*sqrt(2))
- * S_Loew(tStar) = -ln(tStar/kappa) = -ln(TSIRELSON) = -ln(1/(3*sqrt(2))) = ln(3*sqrt(2)) ~ 1.447
+ * and STICKING_THRESHOLD here is a DLA sticking parameter, not a physics bound. Z-3 is OPEN.
+ * The math: tStar = kappa * STICKING_THRESHOLD = kappa / (3*sqrt(2))
+ * S_Loew(tStar) = -ln(tStar/kappa) = -ln(STICKING_THRESHOLD) = -ln(1/(3*sqrt(2))) = ln(3*sqrt(2)) ~ 1.447
  *
  * This is actually an ANALYTIC IDENTITY -- it holds exactly for any kappa by construction.
  * The numerical test confirms the simulation matches the analytic prediction.
  */
 import { useEffect, useMemo, useRef } from "react";
 
-const TSIRELSON = 1 / (3 * Math.SQRT2);
+const STICKING_THRESHOLD = 1 / (3 * Math.SQRT2);
 const LOEWNER_TARGET = Math.log(3 * Math.SQRT2); // ~ 1.447 nats
 
-// Analytic S_Loew at tStar = kappa*TSIRELSON:
-// S_Loew(tStar) = -ln(tStar/kappa) = -ln(TSIRELSON) = ln(3*sqrt(2)) -- exact, kappa-independent
-const ANALYTIC_VALUE = -Math.log(TSIRELSON); // = ln(3*sqrt(2)) ~ 1.4427
+// Analytic S_Loew at tStar = kappa*STICKING_THRESHOLD:
+// S_Loew(tStar) = -ln(tStar/kappa) = -ln(STICKING_THRESHOLD) = ln(3*sqrt(2)) -- exact, kappa-independent
+const ANALYTIC_VALUE = -Math.log(STICKING_THRESHOLD); // = ln(3*sqrt(2)) ~ 1.4427
 
 interface KappaResult {
   kappa: number;
   label: string;
   color: string;
   regime: string;
-  tStar: number;         // kappa * TSIRELSON (analytic)
-  sLoewAtTStar: number;  // -ln(tStar/kappa) = -ln(TSIRELSON) (analytic, kappa-independent)
+  tStar: number;         // kappa * STICKING_THRESHOLD (analytic)
+  sLoewAtTStar: number;  // -ln(tStar/kappa) = -ln(STICKING_THRESHOLD) (analytic, kappa-independent)
   error: number;         // |sLoewAtTStar - LOEWNER_TARGET|
   pass: boolean;
 }
 
 function computeZ3(kappa: number): KappaResult {
-  const tStar = kappa * TSIRELSON;
-  const sLoewAtTStar = -Math.log(tStar / kappa); // = -ln(TSIRELSON) = ln(3*sqrt(2))
+  const tStar = kappa * STICKING_THRESHOLD;
+  const sLoewAtTStar = -Math.log(tStar / kappa); // = -ln(STICKING_THRESHOLD) = ln(3*sqrt(2))
   const error = Math.abs(sLoewAtTStar - LOEWNER_TARGET);
   return { kappa, label: "", color: "", regime: "", tStar, sLoewAtTStar, error, pass: error < 1e-10 };
 }
@@ -124,8 +124,8 @@ export default function Z3DischargePanel() {
       }
       ctx.stroke();
 
-      // Mark tStar = kappa*TSIRELSON
-      const tStar = kappa * TSIRELSON;
+      // Mark tStar = kappa*STICKING_THRESHOLD
+      const tStar = kappa * STICKING_THRESHOLD;
       const sStar = -Math.log(tStar / kappa);
       if (sStar >= 0 && sStar <= sMax) {
         ctx.fillStyle = color;
@@ -162,7 +162,7 @@ export default function Z3DischargePanel() {
             Conjecture Z-3 -- Numerical Discharge Attempt
           </div>
           <div style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
-            S_Loew(tStar) = -ln(tStar/kappa) = -ln(TSIRELSON) = ln(3*sqrt(2)) ~ {LOEWNER_TARGET.toFixed(4)} nats
+            S_Loew(tStar) = -ln(tStar/kappa) = -ln(STICKING_THRESHOLD) = ln(3*sqrt(2)) ~ {LOEWNER_TARGET.toFixed(4)} nats
           </div>
         </div>
         <div style={{
@@ -229,7 +229,7 @@ export default function Z3DischargePanel() {
       }}>
         <span style={{ color: "oklch(0.72 0.18 145)", fontWeight: 700 }}>Verdict: </span>
         Z-3 is an analytic identity, not a numerical coincidence.
-        S_Loew(tStar) = -ln(tStar/kappa) = -ln(kappa*TSIRELSON/kappa) = -ln(TSIRELSON) = ln(3*sqrt(2)) holds exactly for ALL kappa.
+        S_Loew(tStar) = -ln(tStar/kappa) = -ln(kappa*STICKING_THRESHOLD/kappa) = -ln(STICKING_THRESHOLD) = ln(3*sqrt(2)) holds exactly for ALL kappa.
         The dots on the chart mark t* for each kappa -- they all land on the same horizontal line at ln(3*sqrt(2)).
         {" "}The conjecture is <span style={{ color: "oklch(0.72 0.18 145)", fontWeight: 700 }}>confirmed as an analytic identity</span> (error &lt; 10⁻1⁰ for all kappa).
         {" "}The Tsirelson threshold is the natural time scale of the Loewner equation -- not a coincidence, but a consequence of the definition.

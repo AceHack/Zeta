@@ -29,7 +29,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { fractalDim } from "@/hooks/useDLA";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const TSIRELSON = 1 / (3 * Math.SQRT2); // ≈ 0.2357
+const STICKING_THRESHOLD = 1 / (3 * Math.SQRT2); // ≈ 0.2357
 const KAPPA_DLA = 5.7;                  // Conjectured SLE parameter for DLA
 const KAPPA_OBS = 2.67;                 // κ that gives D_f ≈ 1.334 (observed)
 const LOEWNER_ENTROPY_TARGET = Math.log(3 * Math.SQRT2); // ≈ 1.447 nats (Z-3)
@@ -90,9 +90,9 @@ function runSLE(seed: number, W: number, H: number, kappa: number, nSteps: numbe
 
   // Loewner entropy S_Loew(t) = -ln(t/κ) — diverges at t=0, approaches 0 as t→∞
   // We want the t where S_Loew = ln(3√2) ≈ 1.447
-  // -ln(t/κ) = ln(3√2) → t/κ = exp(-ln(3√2)) = 1/(3√2) = TSIRELSON
-  // → t_* = κ · TSIRELSON ≈ 5.7 · 0.2357 ≈ 1.343
-  const tStar = kappa * TSIRELSON;
+  // -ln(t/κ) = ln(3√2) → t/κ = exp(-ln(3√2)) = 1/(3√2) = STICKING_THRESHOLD
+  // → t_* = κ · STICKING_THRESHOLD ≈ 5.7 · 0.2357 ≈ 1.343
+  const tStar = kappa * STICKING_THRESHOLD;
 
   // Zipper: track the curve tip in the upper half-plane
   // The tip at time t is approximately at (W_t, 0+) in the Loewner frame

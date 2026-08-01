@@ -13,7 +13,7 @@
  *
  * The probability density |ψ|² at each cell is the quantum analogue of
  * the DLA density field. We then apply the Tsirelson sticking rule to
- * the probability density: cells with |ψ|² > TSIRELSON collapse (stick).
+ * the probability density: cells with |ψ|² > STICKING_THRESHOLD collapse (stick).
  *
  * Seed independence (live mode):
  *   The seed controls the initial phase angle of the coin state.
@@ -38,7 +38,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { fractalDim, TSIRELSON, liveSeed, ORACLE_PRIME_OFFSETS } from "./useDLA";
+import { fractalDim, STICKING_THRESHOLD, liveSeed, ORACLE_PRIME_OFFSETS } from "./useDLA";
 
 export interface QuantumGrid {
   cells: Uint8Array;      // collapsed cluster (measurement outcome)
@@ -160,7 +160,7 @@ export function runQuantumWalk(
   let clusterSize = 0;
   let maxD = 0;
   for (let i = 0; i < density.length; i++) if (density[i] > maxD) maxD = density[i];
-  const collapseThreshold = maxD * TSIRELSON * 1.2;
+  const collapseThreshold = maxD * STICKING_THRESHOLD * 1.2;
 
   for (let i = 0; i < density.length; i++) {
     if (density[i] >= collapseThreshold) {

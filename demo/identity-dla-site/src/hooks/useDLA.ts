@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const TSIRELSON = 1 / (3 * Math.sqrt(2)); // ≈ 0.2357
+export const STICKING_THRESHOLD = 1 / (3 * Math.sqrt(2)); // ≈ 0.2357
 
 // ── Seeded xorshift32 PRNG ────────────────────────────────────────────────────
 function makeRng(seed: number) {
@@ -51,7 +51,7 @@ export function runDLA(seed: number, W: number, H: number, nWalkers: number): DL
 
   function stickP(x: number, y: number): number {
     const n = nbrs(x, y);
-    return n === 0 ? 0 : Math.min(1, TSIRELSON * (1 + n * 0.5));
+    return n === 0 ? 0 : Math.min(1, STICKING_THRESHOLD * (1 + n * 0.5));
   }
 
   const dirs: [number, number][] = [[0, 1], [0, -1], [1, 0], [-1, 0]];

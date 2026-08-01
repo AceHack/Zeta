@@ -7,12 +7,12 @@
  *   - Three regime markers: simple curve (kappa < 4), space-filling (kappa = 4), self-intersecting (kappa > 4)
  *   - DLA observed value: kappa ~ 2.67 (D_f ~ 1.334)
  *   - DLA theoretical conjecture: kappa ~ 5.7 (D_f ~ 1.71) -- Conjecture Z-4
- *   - Tsirelson threshold line: D_f = 1 + TSIRELSON = 1.2357
+ *   - Tsirelson threshold line: D_f = 1 + STICKING_THRESHOLD = 1.2357
  *   - Known SLE universality classes: SAW (kappa=2), LERW (kappa=2), Ising (kappa=3), percolation (kappa=6), UST (kappa=8)
  */
 import { useEffect, useRef } from "react";
 
-const TSIRELSON = 1 / (3 * Math.SQRT2); // ~ 0.2357
+const STICKING_THRESHOLD = 1 / (3 * Math.SQRT2); // ~ 0.2357
 
 // D_f = 1 + kappa/8 for kappa <= 8, else 2
 function df(kappa: number): number {
@@ -80,8 +80,8 @@ export default function KappaPhaseDiagram({ width = 900, height = 260 }: { width
     ctx.beginPath(); ctx.moveTo(toX(4), PAD_T); ctx.lineTo(toX(4), PAD_T + plotH); ctx.stroke();
     ctx.setLineDash([]);
 
-    // Tsirelson D_f line: D_f = 1 + TSIRELSON ~ 1.2357
-    const tsirelsonDf = 1 + TSIRELSON;
+    // Tsirelson D_f line: D_f = 1 + STICKING_THRESHOLD ~ 1.2357
+    const tsirelsonDf = 1 + STICKING_THRESHOLD;
     ctx.strokeStyle = "rgba(245,158,11,0.5)";
     ctx.setLineDash([3, 5]);
     ctx.lineWidth = 1.5;

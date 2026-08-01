@@ -16,7 +16,7 @@
 import { useEffect, useRef, useMemo } from "react";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const TSIRELSON = 1 / (3 * Math.SQRT2);
+const STICKING_THRESHOLD = 1 / (3 * Math.SQRT2);
 const LOEWNER_TARGET = Math.log(3 * Math.SQRT2); // ≈ 1.447 nats
 const KAPPA_OBS = 2.67;
 const KAPPA_DLA = 5.7;
@@ -39,9 +39,9 @@ function loewnerEntropy(t: number, kappa: number): number {
   return Math.max(0, -Math.log(t / kappa));
 }
 
-// t* where S_Loew = ln(3√2): t* = κ · TSIRELSON
+// t* where S_Loew = ln(3√2): t* = κ · STICKING_THRESHOLD
 function tStar(kappa: number): number {
-  return kappa * TSIRELSON;
+  return kappa * STICKING_THRESHOLD;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────

@@ -19,7 +19,7 @@
  *   The Tsirelson threshold is visually legible: watch the boundary form at ρ = 0.2357.
  */
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useDLA, TSIRELSON, ORACLE_PRIME_OFFSETS, runDLA, DLAGrid } from "@/hooks/useDLA";
+import { useDLA, STICKING_THRESHOLD, ORACLE_PRIME_OFFSETS, runDLA, DLAGrid } from "@/hooks/useDLA";
 import { useQuantumWalk } from "@/hooks/useQuantumWalk";
 import OracleCanvas from "@/components/OracleCanvas";
 import OracleCSS from "@/components/OracleCSS";
@@ -40,7 +40,7 @@ const FIXED_SEED = 42;
 const W = 100, H = 100, N = 1200;
 const QW = 80, QH = 80, QSTEPS = 120;
 
-const TSIRELSON_CHSH = 1 / (2 * Math.sqrt(2));
+const CHSH_INV_2SQRT2 = 1 / (2 * Math.sqrt(2));
 
 // ── Animated growth hook ─────────────────────────────────────────────────────
 // Runs DLA step-by-step, emitting partial grids so the canvas can show growth.
@@ -180,7 +180,7 @@ function useAnimatedDLA(seed: number | "live", W: number, H: number, N: number, 
       }
       function stickP(x: number, y: number): number {
         const n = nbrs(x, y);
-        return n === 0 ? 0 : Math.min(1, TSIRELSON * (1 + n * 0.5));
+        return n === 0 ? 0 : Math.min(1, STICKING_THRESHOLD * (1 + n * 0.5));
       }
 
       const batchSize = Math.min(WALKERS_PER_FRAME, N - st.walkersDone);
@@ -567,7 +567,7 @@ export default function Home() {
           marginTop: "0.4rem", letterSpacing: "0.05em", opacity: 0.7,
         }}>
           {live ? "Seeds from wall-clock + prime offsets" : `Seed ${sliderSeed}`}
-          &nbsp;·&nbsp;Tsirelson threshold = 1/(3√2) ≈ {TSIRELSON.toFixed(4)}
+          &nbsp;·&nbsp;sticking threshold = 1/(3√2) ≈ {STICKING_THRESHOLD.toFixed(4)}
           &nbsp;·&nbsp;Kalman sensor fusion
         </p>
       </header>
@@ -597,7 +597,7 @@ export default function Home() {
                   Animated Growth Mode — 4 Classical Oracles Simultaneously
                 </div>
                 <div style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
-                  Teal = Laplacian front · Amber = cluster · Tsirelson ρ = {TSIRELSON.toFixed(4)} · Each oracle runs an independent seed
+                  Teal = Laplacian front · Amber = cluster · sticking ρ = {STICKING_THRESHOLD.toFixed(4)} · Each oracle runs an independent seed
                 </div>
               </div>
               <div style={{ fontSize: "0.52rem", color: "var(--muted-foreground)", textAlign: "right" }}>
@@ -713,7 +713,7 @@ export default function Home() {
           subtitle={`Hadamard coin · Grover diffusion · 2D lattice · ${QSTEPS} steps · ${QW}×${QH}`}
           df={qgrid?.df ?? 0} clusterSize={qgrid?.clusterSize ?? 0}
           totalCells={QW * QH}
-          note={`Orange = collapsed cluster (GSet — resolved facts). Blue/teal = |ψ|² interference field (SoftValue — triboolean, pre-collapse). Black = ZSet (never visited). Sticking threshold: Tsirelson 1/(3√2) ≈ ${TSIRELSON.toFixed(4)}. In live mode the initial phase angle rotates by seed/(1000·2π) — different shape, same D_f.`}
+          note={`Orange = collapsed cluster (GSet — resolved facts). Blue/teal = |ψ|² interference field (SoftValue — triboolean, pre-collapse). Black = ZSet (never visited). Sticking threshold: 1/(3√2) ≈ ${STICKING_THRESHOLD.toFixed(4)}. In live mode the initial phase angle rotates by seed/(1000·2π) — different shape, same D_f.`}
           quantum seed={qgrid?.seed} live={live}
         >
           {qready && qgrid ? <OracleQuantum grid={qgrid} width={480} height={360} /> : <Skeleton width={480} height={360} />}
@@ -745,7 +745,7 @@ export default function Home() {
           subtitle={`302 neurons · Kuramoto oscillator · White 1986 · seed=${wormSeed.toString(16).slice(-6).toUpperCase()}`}
           df={wormResult?.df ?? 0} clusterSize={wormResult?.stuckCount ?? 0}
           totalCells={64 * 32}
-          note={`The 302-neuron C. elegans hermaphrodite connectome (White et al. 1986) simulated as a Kuramoto phase oscillator network. Chip-8 display brightness drives sensory neuron phases. Motor neuron synchrony (order parameter r) sets the DLA sticking probability. The worm has no knowledge of DLA, Tsirelson, or the other oracles — it is a fully independent biological substrate. r < ${TSIRELSON.toFixed(4)} (Tsirelson) = incoherent/independent. r > ${TSIRELSON.toFixed(4)} = synchronized/correlated.`}
+          note={`The 302-neuron C. elegans hermaphrodite connectome (White et al. 1986) simulated as a Kuramoto phase oscillator network. Chip-8 display brightness drives sensory neuron phases. Motor neuron synchrony (order parameter r) sets the DLA sticking probability. The worm has no knowledge of DLA, the sticking threshold, or the other oracles — it is a fully independent biological substrate. r < ${STICKING_THRESHOLD.toFixed(4)} (the sticking threshold) = incoherent/independent. r > ${STICKING_THRESHOLD.toFixed(4)} = synchronized/correlated.`}
           seed={wormSeed} live={live}
         >
           <OracleWorm
@@ -761,7 +761,7 @@ export default function Home() {
           subtitle={`Loewner equation · κ ≈ 2.67 · D_f = 1 + κ/8 · seed=${sleSeed.toString(16).slice(-6).toUpperCase()}`}
           df={sleResult?.df ?? 0} clusterSize={sleResult?.curveLength ?? 0}
           totalCells={W * H}
-          note={`Schramm–Loewner Evolution SLE_κ is the theoretical oracle — it computes D_f from first principles using the Loewner equation dg_t/dt = 2/(g_t(z)−W_t) with Brownian driver W_t = √κ·B_t. For DLA the conjectured κ ≈ 5.7 (Conjecture Z-4), giving D_f = 1 + κ/8 ≈ 1.71. The observed D_f ≈ 1.322 corresponds to κ ≈ 2.67. The Loewner entropy S_Loew = −ln(t/κ) crosses ln(3√2) ≈ 1.447 nats at t* = κ·TSIRELSON (Conjecture Z-3). Toggle κ to explore the SLE phase diagram.`}
+          note={`Schramm–Loewner Evolution SLE_κ is the theoretical oracle — it computes D_f from first principles using the Loewner equation dg_t/dt = 2/(g_t(z)−W_t) with Brownian driver W_t = √κ·B_t. For DLA the conjectured κ ≈ 5.7 (Conjecture Z-4), giving D_f = 1 + κ/8 ≈ 1.71. The observed D_f ≈ 1.322 corresponds to κ ≈ 2.67. The Loewner entropy S_Loew = −ln(t/κ) crosses ln(3√2) ≈ 1.447 nats at t* = κ·STICKING_THRESHOLD (Conjecture Z-3). Toggle κ to explore the SLE phase diagram.`}
           seed={sleSeed} live={live}
         >
           <OracleSLE
@@ -899,7 +899,7 @@ export default function Home() {
               {live
                 ? `Seeds: O1=${main.seed.toString(16).slice(-6).toUpperCase()} O3=${chip8.seed.toString(16).slice(-6).toUpperCase()} O5=${qgrid.seed.toString(16).slice(-6).toUpperCase()} (wall-clock + prime offsets)`
                 : `Seed: ${sliderSeed} (shared — toggle Live Mode for independent seeds)`}
-              &nbsp;·&nbsp;Tsirelson: {TSIRELSON.toFixed(4)}&nbsp;·&nbsp;
+              &nbsp;·&nbsp;sticking: {STICKING_THRESHOLD.toFixed(4)}&nbsp;·&nbsp;
               Walkers: {N}&nbsp;·&nbsp;Quantum steps: {QSTEPS}&nbsp;·&nbsp;
               Compute: {main.elapsed.toFixed(2)}s + {qgrid.elapsed.toFixed(2)}s
               <br />
@@ -926,7 +926,7 @@ export default function Home() {
           },
           {
             label: "Why 1/(3√2) and not 1/(2√2)?",
-            text: `1/(2√2) ≈ ${TSIRELSON_CHSH.toFixed(4)} is the Tsirelson bound for a single qubit (1D CHSH). Our identity space is 2D with a 4-directional coin — 3 independent correlators per site (x, y, xy) — giving β_max = 1/(3√2) ≈ ${TSIRELSON.toFixed(4)}. Same physics, right dimension.`,
+            text: `[CORRECTED 2026-08-01] 1/(3√2) ≈ ${STICKING_THRESHOLD.toFixed(4)} is this simulation's PARTICLE-STICKING THRESHOLD, not a Tsirelson bound. The CHSH Tsirelson bound is S ≤ 2√2 ≈ 2.828 (a bound on a CHSH sum, not a 1/(n√2) probability), and there is no published "Tsirelson bound for a 2D lattice walker" — the earlier "same physics, right dimension" claim was invented. In Zeta's own model the correlation at the Tsirelson crossing is ρ* = √2 − 1 ≈ 0.414 (FeedbackThrottle.fs).`,
           },
           {
             label: "Seed independence (ρ = 1/(1+L))",

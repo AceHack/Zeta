@@ -31,7 +31,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const TSIRELSON = 1 / (3 * Math.sqrt(2)); // 0.2357
+const STICKING_THRESHOLD = 1 / (3 * Math.sqrt(2)); // 0.2357
 
 // Seeded xorshift32 PRNG
 function makeRng(seed: number) {
@@ -101,7 +101,7 @@ function runInferNet(seed: number, W: number, H: number, nWalkers: number): Infe
   }
   function stickP(x: number, y: number): number {
     const n = nbrs(x, y);
-    return n === 0 ? 0 : Math.min(1, TSIRELSON * (1 + n * 0.5));
+    return n === 0 ? 0 : Math.min(1, STICKING_THRESHOLD * (1 + n * 0.5));
   }
 
   // Run DLA to build the actual cluster
@@ -149,7 +149,7 @@ function runInferNet(seed: number, W: number, H: number, nWalkers: number): Infe
         prior[I(x, y)] = Math.exp(-lambda * distToCluster) * 0.1;
       } else {
         // Adjacent to cluster — high prior
-        prior[I(x, y)] = TSIRELSON * (1 + n * 0.5) * Math.exp(-lambda * 0);
+        prior[I(x, y)] = STICKING_THRESHOLD * (1 + n * 0.5) * Math.exp(-lambda * 0);
       }
       if (prior[I(x, y)] > priorMax) priorMax = prior[I(x, y)];
     }

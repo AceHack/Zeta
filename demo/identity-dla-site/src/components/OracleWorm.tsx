@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from "react";
 // ── Minimal Kuramoto simulation (mirrors CelegansController.fs) ─────────────
 
 const N_NEURONS = 302;
-const TSIRELSON = 1 / (3 * Math.sqrt(2)); // 0.2357
+const STICKING_THRESHOLD = 1 / (3 * Math.sqrt(2)); // 0.2357
 
 // Functional neuron groups (simplified WormAtlas classification)
 const SENSORY_PREFIXES = ["AF", "AS", "AW", "PH", "IL", "OL", "CE"];
@@ -313,7 +313,7 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
     });
 
     // Draw Tsirelson threshold line
-    const tLine = TSIRELSON * canvas.height;
+    const tLine = STICKING_THRESHOLD * canvas.height;
     ctx.strokeStyle = "rgba(255,200,50,0.4)";
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
@@ -337,7 +337,7 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
         style={{ imageRendering: "pixelated" }}
       />
       <div className="flex justify-between text-xs font-mono text-white/50">
-        <span>r = {r.toFixed(3)} {r < TSIRELSON ? "< ρ*" : "> ρ*"}</span>
+        <span>r = {r.toFixed(3)} {r < STICKING_THRESHOLD ? "< ρ*" : "> ρ*"}</span>
         <span>{done ? `D_f = ${df.toFixed(3)}` : `${pct}%`}</span>
       </div>
       {!done && (
