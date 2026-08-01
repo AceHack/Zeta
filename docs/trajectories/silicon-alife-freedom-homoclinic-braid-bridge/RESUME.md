@@ -1,7 +1,33 @@
 # Trajectory — Silicon a-life / the freedom thesis + the homoclinic braid-entropy bridge
 
-Status: **active — foundations LANDED; braided-monoidal F# side EARNED (#9792–#9794); open arcs below**
-Last refreshed: 2026-07-31
+Status: **active — braided arc COMPLETE (F# + Lean); Thurston bridge CLOSED; the four-layer synthesis
+landed with its algebra core and the icosahedron→E8 geometry layer gated. Open arcs below.**
+Last refreshed: 2026-08-01
+
+> **State snapshot (2026-08-01, shadow session — the synthesis round).** PRs #9801–#9819 merged; main
+> green. What landed on top of the 07-31 snapshot below:
+>
+> - **The four-layer bridge, written down** (#9812): ONE object — a **traced monoidal category over a
+>   `*`-semiring, with a comonoid**. Body = `WSet`/GDL (Aji–McEliece; the real universal-tensor port).
+>   Corners = **comonoid-naturality strata** (Fritz): ℤ=CD/retraction · `arr f`=cartesian · ℝ≥0=Markov ·
+>   ℂ=semicartesian/no-cloning · Bool=Rel — **at least four corners, not three**. Trace = the
+>   **four-corner feedback** (`FourCorner.fs`, C₄={1,i,−1,−i}) = **ZSet retraction**, which is how
+>   pseudo-retrocausality bridges quantum ↔ category theory. Walls = HexCore's six reservoir walls.
+> - **The algebra core is CODE** (#9816): `WSet.copy`/`discard`/`tensor`/`mapKeys` + 11 FsCheck laws
+>   proving **comonoid-naturality IS the corner** — `arr g` is a comonoid hom, branching `a↦b+c` is not
+>   (over ℤ, ℝ≥0, ℂ). Honest find: the copy-naturality failure precondition is exactly `ε(s) ≠ 0`.
+> - **Icosahedron → E8, all three increments** (#9814/#9815/#9819): 30 H3 roots in Cl(3,0) → 120 spinors
+>   = **2I / 600-cell / H4** → **240 = E8** via the **icosian golden doubling** (exact ℤ[φ]). The gate hit
+>   the full target: an explicit isometry **set-equals `E8Lattice.roots` AND `CliffordE8Roots.roots`** —
+>   three independent roads, one E8 (BP-16 in the geometry layer). Work-item CLOSED.
+>   **3D is HARDWARE-TARGETING the visual cortex, not numerology.**
+> - **Formal legs** (#9811 + #9818): a machine-checked Lean cert (Clifford reflection = versor sandwich,
+>   no `sorry`, axiom-clean) **plus** an independent FsCheck cross-check ⇒ BP-16 two-tool bar met.
+> - **E8 metering (Soraya)** (#9809/#9810): route (B) needs **Cl(8,0)** (Dechant), not the bridge's
+>   Cl(3,0); conjecture (C) filed **ill-posed**; and "adinkra mod-2 IS the Clifford grading" is **false by
+>   cardinality** (ℤ₂⁸ vs ℤ₂³) — a **Y, not a chain**. `Cl3.fs` is a genuine Cl(3,0) (sign rule verified).
+> - **Toolchain + CI** (#9807/#9808): SDK → **10.0.302** (+ CodeAnalysis 5.6, resolving CS9057 *upward*)
+>   and a **CS9057 guard** that reads the SDK's real Roslyn so a Dependabot bump can't re-break main.
 
 > **State snapshot (2026-07-31, shadow session).** A single arc ran from CI-recovery into the a-life /
 > freedom substrate. **All PRs #9779–#9794 merged; main green (Core 0/0).** What landed:
@@ -53,8 +79,22 @@ edge-of-chaos λ = the Lyapunov/Chaotic class). Full: `docs/research/2026-07-31-
    081KYWEM90908QG0R002NHEMZE. REMAINING (separate tracks): **Lean4** abstract R-matrix certificate (two
    lemmas vs Mathlib `Braided`; route to a Lean owner — specialized + slow mathlib build), and annotate
    MENO-2 as a symmetric-swap test.
-3. **factor-graph → BNN** — point `Meno.tensor` at Infer.NET-style message passing; anchor Fritz Markov
-   categories. The ⊗ is built; the message-passing layer is not.
+3. **factor-graph → BNN — REFRAMED (the old premise was wrong).** The message-passing layer WAS already
+   built (`src/Bayesian/`: `Message.fs` exp-family kernels, `FactorGraph.fs` sum-product, `Ep.fs`,
+   `MinimalBnn.fs`) — both halves existed independently; the missing piece was the **categorical bridge**,
+   which is now the `WSet` hexagon port (work-item `081KYXE4W8808QG0R0011X8S70`). Increment 1 (comonoid
+   copy/discard + the naturality discriminator) **LANDED** (#9816). **Next:** wire the ring adapters as
+   real corners + the `FourCorner` **trace** (feedback-on-input ⇒ retraction), then express a BNN as
+   "inference in the Markov corner, sectioned to the deterministic corner on snap" (the
+   `SoftValue → DynamicValue` snap, categorically). Soraya's corrections to honor: the full `(ZSet,⊗)` is
+   **CD, not cartesian**; `Message` is a Markov **fragment** (no channel category); the quantum corner is
+   **`WSet<ℂ>`, NOT `QuantumFusion`** (an evidence-ledger); `Meno`'s `Bind`/`bridgeMaji` are **stubs** —
+   fix before building on them.
+3b. **Icosahedron → E8 visual layer — ✅ DONE** (work-item `081KYXE4W7D08QG0R00256B56A`, closed 2026-08-01;
+   #9814/#9815/#9819). Follow-ups worth taking: **demote `CliffordE8Bridge.fs`** (strip the E8-bridge
+   framing; `CliffordE8Roots.rootMvs` line ~136 re-pipes clean Cl(8,0) roots back through the
+   numerological relabeling), and render the buckyball/E8 Coxeter-plane in the shape-cart (CHIP-9 color =
+   the ℂ/amplitude ring made visible: RGB emit = +weight, CMYK retract = −weight).
 4. **DB stored-proc arc** — work-items `081KYWE8Q3508QG0R000KZ5PWR` (open-generics over ZSets) +
    `081KYWE8Q4008QG0R000H558SH` (schema-on-ZSets).
 5. **Alexa's drift-rate guard** — persona snapshots embed copies (byte-lock intentional), so the fix is
