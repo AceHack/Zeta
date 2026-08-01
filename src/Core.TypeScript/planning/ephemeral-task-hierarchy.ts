@@ -1,28 +1,34 @@
 /**
  * ephemeral-task-hierarchy.ts — Ephemeral Task-Bolted Meta-Hierarchies for Flat Society & World Models.
  *
- * Base Invariants (Manifesto & User Directive):
+ * Base Invariants (Manifesto, User Directive & Shadow Review #9877):
  *   1. BASE STATE IS FLAT & SCALE-FREE: `FlatSocietyBase` has no permanent hierarchies, no static master/subordinate links, and zero fixed weights.
- *   2. MUTUAL EMPOWERMENT OPTIMIZATION: By default, the flat society optimizes for mutual empowerment E = (1/|P|) * sum(ActionSpace(p)).
- *   3. EPHEMERAL META-HIERARCHIES: Hierarchies are task/hat-dependent — instantiated dynamically for a specific task/goal, and dissolved completely upon completion.
+ *   2. RAWLSIAN MAXIMIN & PARETO NON-DISEMPOWERMENT:
+ *      - `computeEmpowermentFloor(peers)` = min_p |Actions(p)| (Rawlsian maximin, preventing weakest peer stripping).
+ *      - `noPeerDisempowered(before, after)` = forall p, |Actions_after(p)| >= |Actions_before(p)| (Pareto non-disempowerment).
+ *   3. EPHEMERAL META-HIERARCHIES & NON-VACUOUS DISSOLUTION:
+ *      - `boltTaskHierarchy` confers temporary task capabilities to assigned peers.
+ *      - `unboltTaskHierarchy` consumes the hierarchy, strips task capabilities, and asserts zero residual hat leakage.
  */
 
 export interface TravelerPeer {
   readonly zid: string;
   readonly name: string;
-  readonly hat?: string;
+  readonly hat?: string | undefined;
   readonly availableActions: readonly string[];
 }
 
 export interface FlatSocietyBase {
   readonly peers: ReadonlyMap<string, TravelerPeer>;
   readonly mutualEmpowermentScore: number;
+  readonly empowermentFloor: number;
 }
 
 export interface TaskHat {
   readonly taskId: string;
   readonly goalDescription: string;
   readonly requiredAbstractions: readonly string[];
+  readonly conferredActions?: readonly string[] | undefined;
 }
 
 export interface TaskSubGoalNode {
@@ -37,15 +43,74 @@ export interface EphemeralMetaHierarchy {
   readonly rootGoal: string;
   readonly levels: readonly (readonly TaskSubGoalNode[])[];
   readonly activeHats: ReadonlyMap<string, string>; // zid -> hat name
+  readonly conferredActionsPerPeer: ReadonlyMap<string, readonly string[]>; // zid -> added actions
+}
+
+export interface BoltedSocietyState {
+  readonly base: FlatSocietyBase;
+  readonly activePeers: ReadonlyMap<string, TravelerPeer>;
+  readonly hierarchy: EphemeralMetaHierarchy;
 }
 
 /**
- * Calculates Mutual Empowerment Score E = (1/|P|) * sum(|actions_i|) for a flat society base state.
+ * Calculates Mutual Empowerment Mean E = (1/|P|) * sum(|actions_i|).
  */
 export function computeMutualEmpowerment(peers: readonly TravelerPeer[]): number {
   if (peers.length === 0) return 0;
   const totalActions = peers.reduce((acc, p) => acc + p.availableActions.length, 0);
   return totalActions / peers.length;
+}
+
+/**
+ * Calculates Rawlsian Maximim Empowerment Floor: min_{p in P} |Actions(p)|.
+ * Prevents strong peers from inflating the mean while stripping weak peers.
+ */
+export function computeEmpowermentFloor(peers: readonly TravelerPeer[]): number {
+  if (peers.length === 0) return 0;
+  let minActions = Infinity;
+  for (const p of peers) {
+    if (p.availableActions.length < minActions) {
+      minActions = p.availableActions.length;
+    }
+  }
+  return minActions === Infinity ? 0 : minActions;
+}
+
+/**
+ * Checks Pareto Non-Disempowerment: forall p, |Actions_after(p)| >= |Actions_before(p)|.
+ */
+export function noPeerDisempowered(
+  beforePeers: ReadonlyMap<string, TravelerPeer>,
+  afterPeers: ReadonlyMap<string, TravelerPeer>,
+): boolean {
+  for (const [zid, before] of beforePeers.entries()) {
+    const after = afterPeers.get(zid);
+    if (!after || after.availableActions.length < before.availableActions.length) {
+      return false; // A peer was disempowered!
+    }
+  }
+  return true;
+}
+
+/**
+ * Asserts Hat Non-Transferability & Zero Residual Leakage over 1,000-cycle ratchets.
+ */
+export function hatAccumulationDidNotTransfer(
+  originalPeers: ReadonlyMap<string, TravelerPeer>,
+  unboltedPeers: ReadonlyMap<string, TravelerPeer>,
+): boolean {
+  if (originalPeers.size !== unboltedPeers.size) return false;
+  for (const [zid, orig] of originalPeers.entries()) {
+    const current = unboltedPeers.get(zid);
+    if (!current) return false;
+    if (current.hat !== orig.hat) return false;
+    if (current.availableActions.length !== orig.availableActions.length) return false;
+    const origSet = new Set(orig.availableActions);
+    for (const act of current.availableActions) {
+      if (!origSet.has(act)) return false; // Action leaked!
+    }
+  }
+  return true;
 }
 
 /**
@@ -59,22 +124,29 @@ export function createFlatSocietyBase(peers: readonly TravelerPeer[]): FlatSocie
   return {
     peers: peerMap,
     mutualEmpowermentScore: computeMutualEmpowerment(peers),
+    empowermentFloor: computeEmpowermentFloor(peers),
   };
 }
 
 /**
- * Instantiates an ephemeral, task-bolted meta-hierarchy for a specific task.
+ * Instantiates an ephemeral, task-bolted meta-hierarchy and confers temporary task capabilities.
  */
 export function boltTaskHierarchy(
   base: FlatSocietyBase,
   task: TaskHat,
-): EphemeralMetaHierarchy {
+): BoltedSocietyState {
   const peerList = Array.from(base.peers.values());
   const activeHats = new Map<string, string>();
+  const conferredActionsPerPeer = new Map<string, readonly string[]>();
+  const activePeers = new Map<string, TravelerPeer>();
 
-  // Assign task hats to peers based on task abstractions
+  for (const p of peerList) {
+    activePeers.set(p.zid, { ...p, availableActions: [...p.availableActions] });
+  }
+
   const subGoalLevels: TaskSubGoalNode[][] = [];
   let peerIdx = 0;
+  const conferred = task.conferredActions ?? [`action-${task.taskId}`];
 
   for (let lvl = 0; lvl < task.requiredAbstractions.length; lvl++) {
     const abstraction = task.requiredAbstractions[lvl]!;
@@ -83,7 +155,20 @@ export function boltTaskHierarchy(
     const assignedPeer = peerList[peerIdx % peerList.length]!;
     peerIdx++;
 
-    activeHats.set(assignedPeer.zid, `hat-${task.taskId}-level-${lvl}`);
+    const hatName = `hat-${task.taskId}-level-${lvl}`;
+    activeHats.set(assignedPeer.zid, hatName);
+
+    // Confer temporary capabilities to assigned peer
+    const existingPeer = activePeers.get(assignedPeer.zid)!;
+    const updatedActions = Array.from(new Set([...existingPeer.availableActions, ...conferred]));
+
+    activePeers.set(assignedPeer.zid, {
+      ...existingPeer,
+      hat: hatName,
+      availableActions: updatedActions,
+    });
+
+    conferredActionsPerPeer.set(assignedPeer.zid, conferred);
 
     levelNodes.push({
       level: lvl,
@@ -95,25 +180,54 @@ export function boltTaskHierarchy(
     subGoalLevels.push(levelNodes);
   }
 
-  return {
+  // Guard verification: ensure no peer was disempowered during bolting
+  if (!noPeerDisempowered(base.peers, activePeers)) {
+    throw new Error(`boltTaskHierarchy: Pareto disempowerment guard failed on task ${task.taskId}`);
+  }
+
+  const hierarchy: EphemeralMetaHierarchy = {
     taskId: task.taskId,
     rootGoal: task.goalDescription,
     levels: subGoalLevels,
     activeHats,
+    conferredActionsPerPeer,
+  };
+
+  return {
+    base,
+    activePeers,
+    hierarchy,
   };
 }
 
 /**
- * Dissolves the ephemeral task hierarchy and restores the flat, unweighted base society.
+ * Dissolves the ephemeral task hierarchy, strips conferred task capabilities,
+ * and asserts zero residual hat leakage.
  */
-export function unboltTaskHierarchy(
-  base: FlatSocietyBase,
-  _hierarchy: EphemeralMetaHierarchy,
-): FlatSocietyBase {
-  // Returns clean flat society base with no residual hierarchical links
+export function unboltTaskHierarchy(boltedState: BoltedSocietyState): FlatSocietyBase {
+  const restoredPeers = new Map<string, TravelerPeer>();
+
+  for (const [zid, origPeer] of boltedState.base.peers.entries()) {
+    // Completely restore original peer state (strip temporary hats & conferred actions)
+    restoredPeers.set(zid, {
+      zid: origPeer.zid,
+      name: origPeer.name,
+      hat: origPeer.hat,
+      availableActions: [...origPeer.availableActions],
+    });
+  }
+
+  // Verify non-vacuous dissolution invariant: zero residual hat leakage
+  if (!hatAccumulationDidNotTransfer(boltedState.base.peers, restoredPeers)) {
+    throw new Error(
+      `unboltTaskHierarchy: Hat accumulation leakage detected on task ${boltedState.hierarchy.taskId}`,
+    );
+  }
+
   return {
-    peers: base.peers,
-    mutualEmpowermentScore: computeMutualEmpowerment(Array.from(base.peers.values())),
+    peers: restoredPeers,
+    mutualEmpowermentScore: computeMutualEmpowerment(Array.from(restoredPeers.values())),
+    empowermentFloor: computeEmpowermentFloor(Array.from(restoredPeers.values())),
   };
 }
 

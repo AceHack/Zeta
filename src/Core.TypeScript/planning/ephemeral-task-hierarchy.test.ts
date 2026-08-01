@@ -1,6 +1,9 @@
 import { describe, expect, it } from "bun:test";
 import {
   computeMutualEmpowerment,
+  computeEmpowermentFloor,
+  noPeerDisempowered,
+  hatAccumulationDidNotTransfer,
   createFlatSocietyBase,
   boltTaskHierarchy,
   unboltTaskHierarchy,
@@ -15,41 +18,100 @@ describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
     { zid: "peer-03", name: "otto", availableActions: ["move", "probe", "audit"] },
   ];
 
-  it("verifies base state society is flat, unweighted, and calculates mutual empowerment", () => {
+  it("verifies base state society is flat, unweighted, and calculates maximin empowerment floor", () => {
     const flatBase = createFlatSocietyBase(peers);
     expect(flatBase.peers.size).toBe(3);
     // Total actions = 3 + 3 + 3 = 9 => E = 9 / 3 = 3.0
     expect(flatBase.mutualEmpowermentScore).toBeCloseTo(3.0, 4);
-    expect(computeMutualEmpowerment(peers)).toBeCloseTo(3.0, 4);
+    expect(flatBase.empowermentFloor).toBe(3);
   });
 
-  it("instantiates an ephemeral task hierarchy bolted on for a specific goal", () => {
+  it("demonstrates why mean E(S) alone fails and why Rawlsian maximin floor is required", () => {
+    const beforePeers: TravelerPeer[] = [
+      { zid: "strong-01", name: "strong", availableActions: ["a1", "a2", "a3", "a4", "a5"] },
+      { zid: "weak-02", name: "weak", availableActions: ["w1", "w2", "w3", "w4", "w5"] },
+    ];
+
+    // Strong peer gains +100 actions while weak peer is stripped (5 -> 0)
+    const afterPeers: TravelerPeer[] = [
+      { zid: "strong-01", name: "strong", availableActions: Array.from({ length: 105 }, (_, i) => `act-${i}`) },
+      { zid: "weak-02", name: "weak", availableActions: [] }, // Disempowered!
+    ];
+
+    const meanBefore = computeMutualEmpowerment(beforePeers); // 5.0
+    const meanAfter = computeMutualEmpowerment(afterPeers);   // 52.5 (Mean improves 10x!)
+
+    const floorBefore = computeEmpowermentFloor(beforePeers); // 5
+    const floorAfter = computeEmpowermentFloor(afterPeers);   // 0 (Floor drops to zero!)
+
+    const beforeMap = new Map(beforePeers.map((p) => [p.zid, p]));
+    const afterMap = new Map(afterPeers.map((p) => [p.zid, p]));
+
+    expect(meanAfter).toBeGreaterThan(meanBefore);
+    expect(floorAfter).toBeLessThan(floorBefore);
+    // Pareto side-condition correctly flags the disempowerment!
+    expect(noPeerDisempowered(beforeMap, afterMap)).toBeFalse();
+  });
+
+  it("non-vacuously confers capabilities during bolt and strips them completely upon unbolt", () => {
     const flatBase = createFlatSocietyBase(peers);
     const task: TaskHat = {
       taskId: "task-nav-64x64",
       goalDescription: "Navigate CHIP-8 nav ROM maze",
       requiredAbstractions: ["Coarse Region BFS", "Fine Room Step"],
+      conferredActions: ["chip8-nav-boost"],
     };
 
-    const hierarchy = boltTaskHierarchy(flatBase, task);
-    expect(hierarchy.taskId).toBe("task-nav-64x64");
-    expect(hierarchy.levels.length).toBe(2);
-    expect(hierarchy.activeHats.size).toBe(2);
+    const boltedState = boltTaskHierarchy(flatBase, task);
+    expect(boltedState.hierarchy.taskId).toBe("task-nav-64x64");
+
+    // Verify capability was ACTUALLY conferred to assigned peers during bolt
+    const peer1Active = boltedState.activePeers.get("peer-01")!;
+    expect(peer1Active.availableActions).toContain("chip8-nav-boost");
+    expect(peer1Active.hat).toBeDefined();
+
+    // Unbolt and verify complete stripping back to flat base
+    const restoredBase = unboltTaskHierarchy(boltedState);
+    expect(restoredBase.peers.get("peer-01")!.availableActions).not.toContain("chip8-nav-boost");
+    expect(restoredBase.peers.get("peer-01")!.hat).toBeUndefined();
+    expect(restoredBase.empowermentFloor).toBe(3);
   });
 
-  it("dissolves task hierarchy completely, restoring flat unweighted base state with zero residual hierarchy", () => {
-    const flatBase = createFlatSocietyBase(peers);
-    const task: TaskHat = {
-      taskId: "task-nav-64x64",
-      goalDescription: "Navigate CHIP-8 nav ROM maze",
-      requiredAbstractions: ["Coarse Region BFS"],
-    };
+  it("NEGATIVE CONTROL 1: fails hatAccumulationDidNotTransfer if an action leaks post-unbolt", () => {
+    const origMap = new Map(peers.map((p) => [p.zid, p]));
+    const leakedMap = new Map<string, TravelerPeer>();
 
-    const hierarchy = boltTaskHierarchy(flatBase, task);
-    const restoredBase = unboltTaskHierarchy(flatBase, hierarchy);
+    for (const [zid, p] of origMap.entries()) {
+      if (zid === "peer-01") {
+        leakedMap.set(zid, { ...p, availableActions: [...p.availableActions, "leaked-action"] });
+      } else {
+        leakedMap.set(zid, p);
+      }
+    }
 
-    expect(restoredBase.peers.size).toBe(3);
-    expect(restoredBase.mutualEmpowermentScore).toBeCloseTo(3.0, 4);
+    // Negative control MUST return false when an action leaks!
+    expect(hatAccumulationDidNotTransfer(origMap, leakedMap)).toBeFalse();
+  });
+
+  it("1,000-CYCLE RATCHET TEST: confirms 0 hat accumulation across 1,000 bolt/unbolt cycles", () => {
+    let currentBase = createFlatSocietyBase(peers);
+
+    for (let cycle = 0; cycle < 1000; cycle++) {
+      const task: TaskHat = {
+        taskId: `ratchet-task-${cycle}`,
+        goalDescription: `Cycle ${cycle} execution`,
+        requiredAbstractions: [`Abs-${cycle % 3}`],
+        conferredActions: [`temp-cap-${cycle}`],
+      };
+
+      const bolted = boltTaskHierarchy(currentBase, task);
+      currentBase = unboltTaskHierarchy(bolted);
+    }
+
+    // After 1,000 cycles, state MUST be byte-lock identical to original base
+    const origMap = new Map(peers.map((p) => [p.zid, p]));
+    expect(hatAccumulationDidNotTransfer(origMap, currentBase.peers)).toBeTrue();
+    expect(currentBase.empowermentFloor).toBe(3);
   });
 });
 
