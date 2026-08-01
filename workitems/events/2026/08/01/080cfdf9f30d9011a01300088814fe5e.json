@@ -1,0 +1,14 @@
+{
+  "id": "080cfdf9f30d9011a01300088814fe5e",
+  "at": "2026-08-01T21:32:44.338Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYZKWRDH08QG0R000XNP53K",
+    "type": "task",
+    "title": "Iris: page-side render discipline for the vault monitoring bridge (contract landed in #9927)",
+    "slug": "iris-page-side-render-discipline-for-the-vault-monitoring-br",
+    "priority": "P1",
+    "filename": "081KYZKWRDH08QG0R000XNP53K-iris-page-side-render-discipline-for-the-vault-monitoring-br.md"
+  }
+}
