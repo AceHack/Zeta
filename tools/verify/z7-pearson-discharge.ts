@@ -29,7 +29,6 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import * as crypto from "crypto";
 
 // ── DLA simulation (pure TypeScript, host-side reference implementation) ──────
 // This is the same algorithm as all four WASM substrates.
@@ -119,7 +118,12 @@ function getActualBinarySize(compiler: string): number {
   if (p && fs.existsSync(p)) {
     return fs.statSync(p).size;
   }
-  return BINARY_SIZES[compiler];
+  const recorded = BINARY_SIZES[compiler];
+  if (recorded === undefined) {
+    // Fail loudly: a silent 0 here would quietly corrupt the correlation being discharged.
+    throw new Error(`z7-pearson: no recorded binary size for compiler '${compiler}'`);
+  }
+  return recorded;
 }
 
 // ── Pearson correlation ───────────────────────────────────────────────────────
@@ -129,7 +133,9 @@ function pearson(xs: number[], ys: number[]): number {
   const meanY = ys.reduce((a, b) => a + b, 0) / n;
   let num = 0, denX = 0, denY = 0;
   for (let i = 0; i < n; i++) {
-    const dx = xs[i] - meanX, dy = ys[i] - meanY;
+    // i < n = xs.length = ys.length, so both reads are in-bounds; assert for
+    // noUncheckedIndexedAccess rather than widening the arithmetic to `| undefined`.
+    const dx = xs[i]! - meanX, dy = ys[i]! - meanY;
     num += dx * dy;
     denX += dx * dx;
     denY += dy * dy;

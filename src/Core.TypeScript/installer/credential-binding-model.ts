@@ -31,9 +31,13 @@ export type CredentialBindingScenario =
 /** Inputs available at encrypt and decrypt time (all injectable for tests). */
 export type BindingContext = {
   readonly usbUuid: string;
-  readonly usbISerial?: string;
-  readonly uefiKeyfile?: string;
-  readonly tpmSeal?: string;
+  // `?: T | undefined` (not just `?: T`) is deliberate under `exactOptionalPropertyTypes`: these
+  // fields model factors that can be EXPLICITLY GONE, not merely absent — e.g. `esp_wipe` sets
+  // `uefiKeyfile: undefined` to model the keyfile being wiped. Narrowing these to `?: T` would
+  // force those scenarios to omit the key, losing the distinction between "wiped" and "unknown".
+  readonly usbISerial?: string | undefined;
+  readonly uefiKeyfile?: string | undefined;
+  readonly tpmSeal?: string | undefined;
 };
 
 export type BindingScenarioOutcome = {
@@ -42,12 +46,16 @@ export type BindingScenarioOutcome = {
 };
 
 /** Stable test fixtures — not production secrets. */
-export const FIXTURE_ENCRYPT_CTX: BindingContext = {
+// `satisfies` (not `: BindingContext`) so the fixture keeps its CONCRETE shape — every field is
+// present here, so `FIXTURE_ENCRYPT_CTX.usbISerial` types as `string`, not `string | undefined`.
+// That lets tests compare it against `bindingMaterialForContext`'s `string | null` without
+// sprinkling non-null assertions, while staying assignable to `BindingContext`.
+export const FIXTURE_ENCRYPT_CTX = {
   usbUuid: "9e8d7c6b-5a49-3827-1605-fedcba987654",
   usbISerial: "USB-STICK-SERIAL-001",
   uefiKeyfile: "uefi-keyfile-bytes-deadbeef",
   tpmSeal: "tpm-pcr-seal-node-alpha",
-};
+} satisfies BindingContext;
 
 export const FIXTURE_PASSPHRASE = "correct horse battery staple";
 export const FIXTURE_WRONG_PASSPHRASE = "Tr0ub4dor&3";
