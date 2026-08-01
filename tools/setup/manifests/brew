@@ -134,3 +134,24 @@ binaryen
 #   NOTE: emscripten pulls llvm as a dep (~500 MB); tier=standard to avoid
 #   adding 500 MB to slim/CI-only hosts that don't need C→WASM compilation.
 emscripten tier=standard
+
+# ── Zig compiler (Oracle 11 / wasm32-freestanding substrate) ──────────────────
+# Zig compiles to WASM natively (`zig build-exe -target wasm32-freestanding`)
+# producing extremely small binaries (951B). Bottled arm64+x86_64.
+# Verified: brew formula `zig` (0.13.0). Idempotent.
+zig
+
+# ── LLVM tools (Oracle 13 / LLVM IR substrate) ────────────────────────────────
+# llc, llvm-as, opt — LLVM IR to WASM pipeline. Provides the LLVM IR layer as
+# a distinct substrate between C source and WASM binary.
+# NOTE: emscripten (above) already pulls llvm as a dep on macOS. This entry
+# ensures llc/opt are on PATH even on hosts that skip emscripten (tier=standard).
+# Verified: brew formula `llvm` (18.x). tier=standard (large dep ~500MB).
+llvm tier=standard
+
+# ── Rust (rustup) — wasm32-unknown-unknown target ─────────────────────────────
+# rustup is the canonical Rust toolchain manager. The wasm32 target is added
+# via `rustup target add wasm32-unknown-unknown` after install.
+# NOTE: brew has a `rust` formula but it does NOT include rustup or target mgmt.
+# Use the official rustup.rs installer (already in mise via `rust = "1.87.0"`).
+# rust — installed via mise rust plugin (wraps rustup, not brew)

@@ -28,9 +28,15 @@ min_version = "2026.6.12"
 dotnet = "10.0.302"
 go = "1.26.4"
 golangci-lint = "2.12.2"
-# Rust stable. Edition 2024 requires ≥1.85. The mise rust plugin
+# Rust stable. Edition 2024 requires >=1.85. The mise rust plugin
 # wraps rustup; `mise install` provisions rustc + cargo.
+# After `mise install`, run: rustup target add wasm32-unknown-unknown
+# to enable the Rust WASM substrate (Oracle 10 sixth compiler / Conjecture Z-7).
 rust = "1.87.0"
+# Zig 0.13.0 -- wasm32-freestanding compiler substrate (Oracle 11).
+# Produces 951B DLA binary: `zig build-exe -target wasm32-freestanding`.
+# mise zig plugin downloads the official release tarball.
+zig = "0.13.0"
 python = "3.14.6"
 # Java 26 (latest). Round-34 migration: OpenJDK moved off brew
 # and onto mise so all language runtimes share one manager.
