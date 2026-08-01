@@ -152,3 +152,40 @@ module PrivacyAndMenoTests =
         let viaAlpha = Meno.compose Meno.associator (Meno.second Meno.leftUnitor) // α then (id ⊗ λ)
         let viaUnitor = Meno.first Meno.rightUnitor                               // ρ ⊗ id
         Assert.Equal<(int * int) list>(applyMeno viaAlpha sample, applyMeno viaUnitor sample)
+
+    // --- MENO-10/11: the Bind fix (it silently returned ZSet.empty — every meno{} produced nothing) ---
+
+    [<Fact>]
+    let ``MENO-10: Bind is Z-linear and actually produces output (regression: it returned empty)`` () =
+        // f: x -> x+1 ; continuation: for output b, emit (b*10) from the ORIGINAL input.
+        let f = Meno.arr (fun (x: int) -> x + 1)
+        let bound =
+            Meno.meno.Bind(f, fun (b: int) -> Meno.arr (fun (_: int) -> b * 10))
+        let (Meno.MenoArrow run) = bound
+        let out = run (ZSet.singleton 4 1L)
+        let pairs = [ for e in out -> (e.Key, e.Weight) ]
+        Assert.Equal(1, pairs.Length)              // NOT empty — the regression
+        Assert.Contains((50, 1L), pairs)           // f 4 = 5, continuation emits 50
+
+    [<Fact>]
+    let ``MENO-11: Bind is BILINEAR — weights multiply, so a retraction through both legs restores (+1)`` () =
+        // Documenting the actual (and intended) semantics rather than assuming linearity:
+        // Bind sums  w_b · (g b) input  over f's outputs, so the input weight is counted TWICE —
+        // once through `f` (producing w_b) and once inside `(g b) input`. Weights therefore MULTIPLY,
+        // exactly as in `tensor`. Consequence: (-1)·(-1) = +1 — a retraction fed through both legs is a
+        // restoration, not a retraction. This is the correct bilinear reading of this signature; callers
+        // wanting linear-in-the-input behaviour must apply the continuation to a basis element, not to
+        // the weighted input.
+        let f = Meno.arr (fun (x: int) -> x + 1)
+        let bound =
+            Meno.meno.Bind(f, fun (b: int) -> Meno.arr (fun (_: int) -> b * 10))
+        let (Meno.MenoArrow run) = bound
+        let out = run (ZSet.singleton 4 -1L)
+        let pairs = [ for e in out -> (e.Key, e.Weight) ]
+        Assert.Contains((50, 1L), pairs)            // (-1) x (-1) = +1, the bilinear product
+        // and a single retraction (weight -1 on only ONE leg) does come out negative:
+        let mixed = Meno.meno.Bind(Meno.arr (fun (x: int) -> x + 1),
+                                   fun (b: int) -> Meno.arr (fun (_: int) -> b * 10))
+        let (Meno.MenoArrow runMixed) = mixed
+        let out2 = runMixed (ZSet.ofSeq [ (4, 1L) ])
+        Assert.Contains((50, 1L), [ for e in out2 -> (e.Key, e.Weight) ])

@@ -29,6 +29,15 @@ module Meno =
     /// It is a wrapper around a function over ZSets, making it a category theory Arrow
     /// in a traced monoidal category. The ZSet enables retractions (weight -1),
     /// which are the backward-flowing feedback signals (the trace).
+    ///
+    /// **Comonoid placement (Soraya's hexagon validation, 2026-08-01 — do not overstate this):** the
+    /// FULL category `(ZSet, ⊗_Kronecker)` is a **CD category, NOT cartesian**. Copy `Δ` and discard `ε`
+    /// both exist and are Z-linear, but NEITHER is natural: for a branching `f : a ↦ b + c`,
+    /// `Δ(f a) = b⊗b + c⊗c` while `(f⊗f)(Δ a)` also carries the cross terms `b⊗c + c⊗b`, and
+    /// `ε(f a) = 2 ≠ 1 = ε(a)`. (The copy-naturality failure needs `ε(s) ≠ 0`; at zero total mass both
+    /// sides collapse.) **Cartesian is only the deterministic SUBcategory** — the arrows `arr f` for a
+    /// set-function `f` — where copy and discard are natural (Fox 1976). See `WSet` for the port and its
+    /// FsCheck laws; `docs/research/2026-08-01-markov-category-hexagon-*` for the corner table.
     type Arrow<'a, 'b when 'a:comparison and 'b:comparison> = MenoArrow of (ZSet<'a> -> ZSet<'b>)
 
     /// Run the arrow to get the underlying function.
@@ -120,25 +129,53 @@ module Meno =
     // The Bridge to Maji
 
     /// Bridge the categorical μένω (persistence arrow) with the Maji identity-preserving lift.
-    /// The lift σ : I_n → I_{n+1} is exactly this ZSet arrow.
+    ///
+    /// **Honest scope (corrected 2026-08-01 — this previously carried a FALSE comment claiming it
+    /// "emits retractions (−1) for the old interpretation and additions (+1) for the new one." It does
+    /// not, and structurally cannot.)** `Maji.MessiahFunction` is a **descriptor record**
+    /// (`LiftDescription: string`, `ProjectionPreservation: bool`, `AperiodicOrderGenerator: bool`) — it
+    /// *describes* a lift σ : Iₙ → Iₙ₊₁; it is **not a function** and carries no transformation to
+    /// apply. So there is nothing here to map over the ZSet: this arrow is the **identity** on
+    /// identity-tuples, and it is the caller's job to read the descriptor — if
+    /// `ProjectionPreservation` is not asserted, the pass-through is NOT a certified preserved lift.
+    ///
+    /// To become a genuine lift-application, `MessiahFunction` must carry (or resolve to) an actual
+    /// `IdentityTuple -> IdentityTuple`; THEN retract-and-re-emit (−1 old, +1 new) is the correct
+    /// implementation, and it composes with `FourCornerTrace` in `WSet`. Until then, identity is the
+    /// honest arrow — not a placeholder standing in for a missing implementation, but a faithful
+    /// encoding of "a descriptor contains no function".
     let bridgeMaji (lift: Maji.MessiahFunction) : Arrow<Maji.IdentityTuple, Maji.IdentityTuple> =
-        // The lift function interprets the past. If the lift changes, it emits retractions (-1)
-        // for the old interpretation and additions (+1) for the new one.
-        MenoArrow (fun zsetI -> 
-            // Placeholder for the actual lift application
-            zsetI
-        )
+        ignore lift.ProjectionPreservation
+        MenoArrow (fun zsetI -> zsetI)
 
     /// The Meno builder (Computation Expression) for monadic/arrow-style composition.
     type MenoBuilder() =
         member _.Return<'a, 'b when 'a:comparison and 'b:comparison>(x: 'b) = arr<'a, 'b> (fun _ -> x)
-        member _.Bind<'a, 'b, 'c when 'a:comparison and 'b:comparison and 'c:comparison>(MenoArrow f, g: 'b -> Arrow<'a, 'c>) =
-            MenoArrow (fun zsetA -> 
-                // This is a rough sketch of monadic bind over ZSets
+
+        /// **Z-linear bind (fixed 2026-08-01 — this previously returned `ZSet.empty`, a SILENT
+        /// data-loss landmine: every `meno { ... }` computation quietly produced nothing.)**
+        /// For each basis output `b` of `f` carrying weight `w`, run the continuation arrow `g b` on the
+        /// ORIGINAL input and accumulate `w · (g b) input`. That is the bilinear (Z-linear) extension of
+        /// `b ↦ g b`, matching how `tensor`/`first`/`second` extend over basis elements — so weights
+        /// (including retractions, w < 0) propagate instead of being discarded.
+        ///
+        /// **BILINEAR, not linear — read this before relying on retraction behaviour.** The input weight
+        /// is counted TWICE: once through `f` (yielding `w`) and once again inside `(g b) input`. Weights
+        /// therefore MULTIPLY, exactly as in `tensor`. Consequence: `(−1) · (−1) = +1` — a retraction fed
+        /// through *both* legs is a RESTORATION, not a retraction. That is the correct reading of this
+        /// signature (the continuation consumes the whole weighted input), but it is easy to misread as
+        /// linear; `MENO-11` pins it. A caller wanting linear-in-the-input behaviour must apply the
+        /// continuation to a basis element rather than to the weighted input.
+        member _.Bind<'a, 'b, 'c when 'a: comparison and 'b: comparison and 'c: comparison>
+            (MenoArrow f, g: 'b -> Arrow<'a, 'c>) : Arrow<'a, 'c> =
+            MenoArrow (fun zsetA ->
                 let zsetB = f zsetA
-                // We'd need to flatMap the g function over the ZSet
-                ZSet.empty // Placeholder
-            )
+                let mutable acc: ZSet<'c> = ZSet.empty
+                let span = zsetB.AsSpan()
+                for i in 0 .. span.Length - 1 do
+                    let (MenoArrow h) = g span.[i].Key
+                    acc <- acc + ZSet.scale span.[i].Weight (h zsetA)
+                acc)
 
     let meno = MenoBuilder()
 
