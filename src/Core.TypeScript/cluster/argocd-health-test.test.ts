@@ -276,6 +276,49 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     expect(verdicts.every((verdict) => verdict.ok)).toBe(true);
   });
 
+  /**
+   * THE SMOKE-COUNT BOUNDARY.
+   *
+   * Found 2026-08-01 by mutation sweep: flipping `childApplicationCount >= SMOKE_MIN_APPLICATIONS`
+   * to `>` left this suite green. Every existing smoke test supplies 22 children — comfortably
+   * above the threshold of 20 — so the boundary itself was never exercised in either direction.
+   *
+   * This is the check that decides whether the App-of-Apps actually produced a cluster. An
+   * unpinned boundary here is the specific failure mode that matters for self-hosted runners:
+   * a health check whose threshold can drift without any test noticing reports a cluster ready
+   * when it is one Application short, and the runner lands on a half-built node.
+   */
+  test("BOUNDARY: exactly SMOKE_MIN_APPLICATIONS children passes (>= not >)", () => {
+    const verdicts = classifySmokeApplications([
+      { name: "zeta-root-dev", syncStatus: "OutOfSync", healthStatus: "Healthy", message: "" },
+      ...Array.from({ length: 20 }, (_value, index) => ({
+        name: `child-${String(index)}`,
+        syncStatus: "OutOfSync",
+        healthStatus: "Missing",
+        message: "",
+      })),
+    ]);
+    const count = verdicts.find((verdict) => verdict.name === "child-application-count");
+    expect(count?.ok).toBe(true);
+    expect(count?.syncStatus).toBe("20");
+  });
+
+  test("BOUNDARY: one short of SMOKE_MIN_APPLICATIONS fails, with the count reported", () => {
+    // The other half of the pin. Without this, `>=` could become `>=  0` and still look fine.
+    const verdicts = classifySmokeApplications([
+      { name: "zeta-root-dev", syncStatus: "OutOfSync", healthStatus: "Healthy", message: "" },
+      ...Array.from({ length: 19 }, (_value, index) => ({
+        name: `child-${String(index)}`,
+        syncStatus: "OutOfSync",
+        healthStatus: "Missing",
+        message: "",
+      })),
+    ]);
+    const count = verdicts.find((verdict) => verdict.name === "child-application-count");
+    expect(count?.ok).toBe(false);
+    expect(count?.syncStatus).toBe("19");
+  });
+
   test("smoke scope tolerates cert-manager progressing while sync settles", () => {
     const verdicts = classifySmokeApplications([
       { name: "zeta-root-dev", syncStatus: "OutOfSync", healthStatus: "Healthy", message: "" },
