@@ -62,58 +62,6 @@ export function computeMutualEmpowerment(peers: readonly TravelerPeer[]): number
 }
 
 /**
- * Calculates Rawlsian Maximim Empowerment Floor: min_{p in P} |Actions(p)|.
- * Prevents strong peers from inflating the mean while stripping weak peers.
- */
-export function computeEmpowermentFloor(peers: readonly TravelerPeer[]): number {
-  if (peers.length === 0) return 0;
-  let minActions = Infinity;
-  for (const p of peers) {
-    if (p.availableActions.length < minActions) {
-      minActions = p.availableActions.length;
-    }
-  }
-  return minActions === Infinity ? 0 : minActions;
-}
-
-/**
- * Checks Pareto Non-Disempowerment: forall p, |Actions_after(p)| >= |Actions_before(p)|.
- */
-export function noPeerDisempowered(
-  beforePeers: ReadonlyMap<string, TravelerPeer>,
-  afterPeers: ReadonlyMap<string, TravelerPeer>,
-): boolean {
-  for (const [zid, before] of beforePeers.entries()) {
-    const after = afterPeers.get(zid);
-    if (!after || after.availableActions.length < before.availableActions.length) {
-      return false; // A peer was disempowered!
-    }
-  }
-  return true;
-}
-
-/**
- * Asserts Hat Non-Transferability & Zero Residual Leakage over 1,000-cycle ratchets.
- */
-export function hatAccumulationDidNotTransfer(
-  originalPeers: ReadonlyMap<string, TravelerPeer>,
-  unboltedPeers: ReadonlyMap<string, TravelerPeer>,
-): boolean {
-  if (originalPeers.size !== unboltedPeers.size) return false;
-  for (const [zid, orig] of originalPeers.entries()) {
-    const current = unboltedPeers.get(zid);
-    if (!current) return false;
-    if (current.hat !== orig.hat) return false;
-    if (current.availableActions.length !== orig.availableActions.length) return false;
-    const origSet = new Set(orig.availableActions);
-    for (const act of current.availableActions) {
-      if (!origSet.has(act)) return false; // Action leaked!
-    }
-  }
-  return true;
-}
-
-/**
  * Creates an unweighted, scale-free flat base society where every traveler is equal.
  */
 export function createFlatSocietyBase(peers: readonly TravelerPeer[]): FlatSocietyBase {
@@ -181,7 +129,7 @@ export function boltTaskHierarchy(
   }
 
   // Guard verification: ensure no peer was disempowered during bolting
-  if (!noPeerDisempowered(base.peers, activePeers)) {
+  if (!noPeerDisempowered(Array.from(base.peers.values()), Array.from(activePeers.values()))) {
     throw new Error(`boltTaskHierarchy: Pareto disempowerment guard failed on task ${task.taskId}`);
   }
 
@@ -204,10 +152,16 @@ export function boltTaskHierarchy(
  * Dissolves the ephemeral task hierarchy, strips conferred task capabilities,
  * and asserts zero residual hat leakage.
  */
-export function unboltTaskHierarchy(boltedState: BoltedSocietyState): FlatSocietyBase {
+export function unboltTaskHierarchy(
+  baseOrBolted: FlatSocietyBase | BoltedSocietyState,
+  hierarchyInput?: EphemeralMetaHierarchy,
+): FlatSocietyBase {
+  const base = "activePeers" in baseOrBolted ? baseOrBolted.base : baseOrBolted;
+  const hierarchy = "activePeers" in baseOrBolted ? baseOrBolted.hierarchy : hierarchyInput;
+
   const restoredPeers = new Map<string, TravelerPeer>();
 
-  for (const [zid, origPeer] of boltedState.base.peers.entries()) {
+  for (const [zid, origPeer] of base.peers.entries()) {
     // Completely restore original peer state (strip temporary hats & conferred actions)
     restoredPeers.set(zid, {
       zid: origPeer.zid,
@@ -217,11 +171,17 @@ export function unboltTaskHierarchy(boltedState: BoltedSocietyState): FlatSociet
     });
   }
 
-  // Verify non-vacuous dissolution invariant: zero residual hat leakage
-  if (!hatAccumulationDidNotTransfer(boltedState.base.peers, restoredPeers)) {
-    throw new Error(
-      `unboltTaskHierarchy: Hat accumulation leakage detected on task ${boltedState.hierarchy.taskId}`,
-    );
+  // Verify non-vacuous dissolution invariant: zero residual hat leakage per peer
+  for (const [zid, origPeer] of base.peers.entries()) {
+    const restoredPeer = restoredPeers.get(zid)!;
+    const conferred = hierarchy?.conferredActionsPerPeer?.get(zid) ?? [];
+    const ledger: HatLedger = { wearCount: 1, accumulated: Array.from(conferred) };
+
+    if (!hatAccumulationDidNotTransfer(origPeer, restoredPeer, ledger)) {
+      throw new Error(
+        `unboltTaskHierarchy: Hat accumulation leakage detected on peer ${zid} for task ${hierarchy?.taskId ?? "unknown"}`,
+      );
+    }
   }
 
   return {

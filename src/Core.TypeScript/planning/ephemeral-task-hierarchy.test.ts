@@ -9,6 +9,7 @@ import {
   unboltTaskHierarchy,
   type TravelerPeer,
   type TaskHat,
+  type HatLedger,
 } from "./ephemeral-task-hierarchy.ts";
 
 describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
@@ -44,13 +45,10 @@ describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
     const floorBefore = computeEmpowermentFloor(beforePeers); // 5
     const floorAfter = computeEmpowermentFloor(afterPeers);   // 0 (Floor drops to zero!)
 
-    const beforeMap = new Map(beforePeers.map((p) => [p.zid, p]));
-    const afterMap = new Map(afterPeers.map((p) => [p.zid, p]));
-
     expect(meanAfter).toBeGreaterThan(meanBefore);
     expect(floorAfter).toBeLessThan(floorBefore);
     // Pareto side-condition correctly flags the disempowerment!
-    expect(noPeerDisempowered(beforeMap, afterMap)).toBeFalse();
+    expect(noPeerDisempowered(beforePeers, afterPeers)).toBeFalse();
   });
 
   it("non-vacuously confers capabilities during bolt and strips them completely upon unbolt", () => {
@@ -78,19 +76,15 @@ describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
   });
 
   it("NEGATIVE CONTROL 1: fails hatAccumulationDidNotTransfer if an action leaks post-unbolt", () => {
-    const origMap = new Map(peers.map((p) => [p.zid, p]));
-    const leakedMap = new Map<string, TravelerPeer>();
-
-    for (const [zid, p] of origMap.entries()) {
-      if (zid === "peer-01") {
-        leakedMap.set(zid, { ...p, availableActions: [...p.availableActions, "leaked-action"] });
-      } else {
-        leakedMap.set(zid, p);
-      }
-    }
+    const wearerBefore: TravelerPeer = peers[0]!;
+    const wearerAfterLeaked: TravelerPeer = {
+      ...wearerBefore,
+      availableActions: [...wearerBefore.availableActions, "leaked-action"],
+    };
+    const ledger = { wearCount: 1, accumulated: ["leaked-action"] };
 
     // Negative control MUST return false when an action leaks!
-    expect(hatAccumulationDidNotTransfer(origMap, leakedMap)).toBeFalse();
+    expect(hatAccumulationDidNotTransfer(wearerBefore, wearerAfterLeaked, ledger)).toBeFalse();
   });
 
   it("1,000-CYCLE RATCHET TEST: confirms 0 hat accumulation across 1,000 bolt/unbolt cycles", () => {
@@ -109,8 +103,10 @@ describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
     }
 
     // After 1,000 cycles, state MUST be byte-lock identical to original base
-    const origMap = new Map(peers.map((p) => [p.zid, p]));
-    expect(hatAccumulationDidNotTransfer(origMap, currentBase.peers)).toBeTrue();
+    const origPeer = peers[0]!;
+    const restoredPeer = currentBase.peers.get("peer-01")!;
+    const ledger = { wearCount: 1000, accumulated: Array.from({ length: 1000 }, (_, i) => `temp-cap-${i}`) };
+    expect(hatAccumulationDidNotTransfer(origPeer, restoredPeer, ledger)).toBeTrue();
     expect(currentBase.empowermentFloor).toBe(3);
   });
 });
@@ -119,12 +115,7 @@ describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
 // The architecture is right — ephemeral hats, no permanent class. These test the two
 // places permanent imbalance can still accrue underneath a correct architecture.
 
-import {
-  computeEmpowermentFloor,
-  noPeerDisempowered,
-  hatAccumulationDidNotTransfer,
-  type HatLedger,
-} from "./ephemeral-task-hierarchy.ts";
+
 
 const peer = (zid: string, actions: readonly string[]): TravelerPeer => ({
   zid,
@@ -189,7 +180,7 @@ describe("INVARIANT 2 — a hat may accumulate, but nothing it accumulates may f
         goalDescription: "cycle",
         requiredAbstractions: ["coarse", "fine"],
       });
-      base = unboltTaskHierarchy(base, h);
+      base = unboltTaskHierarchy(h);
     }
     expect(JSON.stringify(Array.from(base.peers.values()))).toBe(snapshot);
     expect(computeEmpowermentFloor(Array.from(base.peers.values()))).toBe(floor0);
