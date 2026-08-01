@@ -82,3 +82,53 @@ module IcosahedralH3 =
     /// The number of H3 roots — the icosahedral invariant (30 = the 30 edges of the icosahedron / the
     /// 15 reflection hyperplanes × 2).
     let rootCount = List.length roots
+
+    // --- Increment 2: the spinors — even products of H3 roots = the binary icosahedral group 2I ---
+    // The even subalgebra Cl⁺(3,0) = {scalar + bivectors} ≅ ℍ (quaternions). The geometric product of
+    // two unit root vectors is a ROTOR (unit even multivector); the group these rotors generate is the
+    // **binary icosahedral group 2I** (order 120) — the double cover of the icosahedral rotation group,
+    // and (as unit quaternions in ℝ⁴) the vertices of the **600-cell** = the root system of H4. This is
+    // Dechant's spinor induction 3→4. (The 4→8 step to E8 is the SEPARATE icosian doubling — increment 3.)
+
+    /// A rotor from two roots a,b: R = (a/√|a|²)(b/√|b|²) — the unit even multivector. Since our roots
+    /// have |·|²=2, R = gp a b / 2, re-normalized against float drift.
+    let private rotorOf (a: Cl3.Mv) (b: Cl3.Mv) : Cl3.Mv =
+        let r = Cl3.gp a b
+        Cl3.smul (1.0 / sqrt (Cl3.normSq r)) r
+
+    // ε-canonical key on the four EVEN components (S, E12, E13, E23) — the quaternion coordinates.
+    let private spinorKey (v: Cl3.Mv) : struct (int * int * int * int) =
+        let q (x: float) = int (System.Math.Round(x * 1.0e6))
+        struct (q v.S, q v.E12, q v.E13, q v.E23)
+
+    /// The spinor group: the closure under the geometric product of the rotors built from pairs of
+    /// simple roots. Exactly 120 = the binary icosahedral group 2I (the 600-cell / H4 root system).
+    let spinors : Cl3.Mv list =
+        let seen = System.Collections.Generic.Dictionary<struct (int * int * int * int), Cl3.Mv>()
+        let add (v: Cl3.Mv) = let k = spinorKey v in if not (seen.ContainsKey k) then seen.[k] <- v
+        // generators: rotors from every ordered pair of distinct simple roots (+ identity as the unit)
+        add Cl3.one
+        for a in simpleRoots do
+            for b in simpleRoots do
+                if not (System.Object.ReferenceEquals(a, b)) then add (rotorOf a b)
+        // BFS group closure: multiply every seen spinor by every generator until stable
+        let generators () = [ for kv in seen -> kv.Value ]
+        let mutable changed = true
+        let mutable guard = 0
+        while changed && guard < 10000 do
+            changed <- false
+            guard <- guard + 1
+            let current = generators ()
+            for g in current do
+                for h in current do
+                    let p = Cl3.gp g h
+                    let p = Cl3.smul (1.0 / sqrt (Cl3.normSq p)) p // keep unit against drift
+                    let k = spinorKey p
+                    if not (seen.ContainsKey k) then
+                        seen.[k] <- p
+                        changed <- true
+        [ for kv in seen -> kv.Value ]
+
+    /// The number of spinors — the order of the binary icosahedral group 2I (120 = the 600-cell vertices
+    /// = the H4 root count, Dechant's rank-3→rank-4 spinor induction).
+    let spinorCount = List.length spinors
