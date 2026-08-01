@@ -103,42 +103,94 @@ jobs:
           Co-Authored-By: Kiro <noreply@kiro.dev>"
           fi
 
-      - name: Push heartbeat branch
+      - name: Run Tier-0 self-healers (automated drift correction)
         env:
           AGENT: ${{ matrix.agent }}
-        run: git push origin "heartbeat/$AGENT"
+        run: |
+          # Only otto handles healer duty
+          if [ "$AGENT" != "otto" ]; then
+            echo "[heal] Skipping — only otto handles healer duty"
+            exit 0
+          fi
 
+          # Run the composed Tier-0 healers over the working tree.
+          # Direct exit-code check, not `$?` (shellcheck SC2181) — actionlint treats this as an
+          # error, so the indirect form turned main red on merge.
+          echo "[heal] Running Tier-0 healers..."
+          if ! bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1; then
+            echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
+          fi
+
+          # If anything was healed, stage and commit it
+          if ! git diff --quiet; then
+            git config user.name "otto[bot]"
+            git config user.email "otto[bot]@users.noreply.github.com"
+            git add -A
+            git commit --no-verify -m "heal(otto): Tier-0 drift correction $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Automated self-healing: stale-js, unpinned-actions, unused-imports,
+          exact-optional-spread. Zero intelligence. Certified against 3 laws.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+            echo "[heal] Committed healed files"
+          else
+            echo "[heal] No drift found — all clean"
+          fi
+
+      # NOTE ON ORDER (2026-08-01): the healer MUST run before the push.
+      # It previously sat after it, with no push of its own anywhere in this job — so it
+      # committed healed files to a local branch on a runner that was then destroyed. The log
+      # said "[heal] Committed healed files", which was true and completely inert: the heal
+      # never reached the repository. The self-healing system had never actually healed
+      # anything. Keeping it here means one push carries both the event and the heal.
       - name: Measure cadence (declared vs actual — detect silent degradation)
         env:
           AGENT: ${{ matrix.agent }}
         run: |
-          # Find the last two heartbeat events to compute the gap
-          EVENTS=$(ls -t docs/observe-events/*.json 2>/dev/null | head -2)
-          if [ "$(echo "$EVENTS" | wc -l)" -lt 2 ]; then
-            echo "[cadence] Not enough events to measure gap yet"
-            exit 0
-          fi
-          LATEST=$(echo "$EVENTS" | head -1)
-          PREVIOUS=$(echo "$EVENTS" | tail -1)
-          # Extract timestamps
-          T1=$(python3 -c "import json; print(json.load(open('$LATEST'))['at'])" 2>/dev/null || echo "")
-          T0=$(python3 -c "import json; print(json.load(open('$PREVIOUS'))['at'])" 2>/dev/null || echo "")
-          if [ -z "$T1" ] || [ -z "$T0" ]; then
-            echo "[cadence] Could not parse timestamps"
-            exit 0
-          fi
-          # Compute gap in seconds
-          GAP=$(python3 -c "
+          # WHY THIS IS ALL IN PYTHON AND FILTERED BY AGENT.
+          #
+          # Three agents tick together, so "the last two events" GLOBALLY are two different
+          # agents inside the SAME tick. Measuring that gap reports the spacing between peers,
+          # not the cadence: on real data it read 29s / "3004% of target" while the society was
+          # actually running at 14% of target. A measurement that confidently reports the
+          # opposite of the truth is worse than none — it manufactures false confidence.
+          # Consecutive events FOR ONE AGENT are consecutive TICKS. That is the cadence.
+          #
+          # Python, not shell: `ls -t` trips SC2012 (actionlint escalates it to a gate failure —
+          # it turned main red in #9898), and `find -printf` is GNU-only so it would work on the
+          # runner while being unverifiable on a Mac — the same environment-mismatch trap that
+          # made #9890 ship broken. Reading the JSON directly avoids both and is testable
+          # anywhere. Event files are ZetaId-named and ZetaIds are time-ordered, so name order
+          # is chronological — verified against all 947 committed events, not assumed.
+          #
+          # Output goes to STDOUT, never captured into a variable: #9898 assigned the result to
+          # $GAP and never referenced it, so the measurement AND its ::warning:: were computed
+          # correctly and discarded. An annotation only becomes an annotation on the step's
+          # stdout. The measurement added to catch silent degradation was itself silent.
+          python3 -c "
+          import json, glob, os, sys
+          agent = os.environ.get('AGENT', '')
+          rows = []
+          for f in sorted(glob.glob('docs/observe-events/*.json')):
+              try:
+                  d = json.load(open(f))
+              except Exception:
+                  continue
+              if d.get('by') == agent and d.get('at'):
+                  rows.append(d['at'])
+          if len(rows) < 2:
+              print(f'[cadence] {agent}: fewer than 2 events — cannot measure yet')
+              sys.exit(0)
           from datetime import datetime
-          t1 = datetime.fromisoformat('$T1'.replace('Z','+00:00'))
-          t0 = datetime.fromisoformat('$T0'.replace('Z','+00:00'))
+          t1 = datetime.fromisoformat(rows[-1].replace('Z', '+00:00'))
+          t0 = datetime.fromisoformat(rows[-2].replace('Z', '+00:00'))
           gap = (t1 - t0).total_seconds()
-          declared = 900  # 15 min
+          declared = 900
           ratio = declared / gap if gap > 0 else 0
-          print(f'gap={int(gap)}s ({int(gap/60)}min) declared=900s ratio={ratio:.1%}')
-          if gap > 1800:  # more than 2x declared
-            print(f'::warning::[cadence] {int(gap/60)}min gap exceeds 2x declared (30min). Running at {ratio:.0%} of target.')
-          " 2>/dev/null || echo "[cadence] measurement failed (non-fatal)")
+          print(f'[cadence] {agent}: gap={int(gap)}s ({gap/60:.1f}min) declared=900s ({declared/60:.0f}min) actual={ratio:.1%} of target')
+          if gap > 1800:
+              print(f'::warning::[cadence] {agent}: {gap/60:.0f}min since its last tick, over 2x the declared 15min. Running at {ratio:.0%} of target.')
+          " || echo "::warning::[cadence] measurement failed (non-fatal — but the cadence is now UNMEASURED, which is the condition this step exists to prevent)"
 
       - name: Auto-merge clean PRs (agent-to-agent value transfer)
         env:
@@ -178,39 +230,23 @@ jobs:
           echo "[archive] Checking for un-archived merged PRs..."
           bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
             --owner Lucent-Financial-Group --repo Zeta --batch 3 --since 7d \
-            2>&1 | tail -10 || echo "[archive] archive step failed (non-fatal)"
+            2>&1 | tail -10 || echo "::warning::[archive] archive step failed (non-fatal)"
 
-      - name: Run Tier-0 self-healers (automated drift correction)
-        env:
-          AGENT: ${{ matrix.agent }}
-        run: |
-          # Only otto handles healer duty
-          if [ "$AGENT" != "otto" ]; then
-            echo "[heal] Skipping — only otto handles healer duty"
-            exit 0
-          fi
+          # Stage + commit what the archive wrote. It writes into TRACKED paths
+          # (docs/github/prs/, incl. manifest.jsonl) but previously never staged them, and it
+          # ran after the push anyway — so its output was written to a runner and destroyed.
+          if ! git diff --quiet -- docs/github/prs/ || [ -n "$(git ls-files -o --exclude-standard docs/github/prs/)" ]; then
+            git config user.name "${AGENT}[bot]"
+            git config user.email "${AGENT}[bot]@users.noreply.github.com"
+            git add docs/github/prs/
+            git commit --no-verify -q -m "archive($AGENT): PR review history $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          # Run the composed Tier-0 healers over the working tree
-          echo "[heal] Running Tier-0 healers..."
-          bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1
-          if [ $? -ne 0 ]; then
-            echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
-          fi
+          Git-native backup of merged PR review threads.
 
-          # If anything was healed, stage and commit it
-          if ! git diff --quiet; then
-            git config user.name "otto[bot]"
-            git config user.email "otto[bot]@users.noreply.github.com"
-            git add -A
-            git commit --no-verify -m "heal(otto): Tier-0 drift correction $(date -u +%Y-%m-%dT%H:%M:%SZ)
-
-          Automated self-healing: stale-js, unpinned-actions, unused-imports,
-          exact-optional-spread. Zero intelligence. Certified against 3 laws.
-
-          Co-Authored-By: Kiro <noreply@kiro.dev>"
-            echo "[heal] Committed healed files"
+          Co-Authored-By: Kiro <noreply@kiro.dev>" || true
+            echo "[archive] committed archive output"
           else
-            echo "[heal] No drift found — all clean"
+            echo "[archive] nothing new to archive"
           fi
 
       - name: Attempt codegen work (7B model — real intellectual work)
@@ -265,6 +301,45 @@ jobs:
   # cross-verifies (the symmetric NFT attestation) then approves.
   #
   # SOVEREIGN MODE (goal): direct push, cross-verification stays as attestation-only.
+      # THE PUSH IS LAST, DELIBERATELY — see the ordering audit of 2026-08-01.
+      #
+      # This job has exactly ONE push. Every step that produces an artifact must therefore run
+      # BEFORE it, or its work is committed to a local branch on a runner that is then destroyed.
+      # The push used to sit at step 8 of 13, which silently discarded the output of all three
+      # productive steps:
+      #     archive  — wrote docs/github/prs/ (tracked!) and never even staged it
+      #     healer   — committed, never pushed  ("[heal] Committed healed files" — true, inert)
+      #     codegen  — `git add -A` + commit, never pushed (the 7B's "real intellectual work")
+      # so the society produced exactly one durable artifact per tick, the heartbeat event,
+      # because that was the only thing committed before the push.
+      #
+      # Rule for anyone adding a step here: if it writes or commits, it goes ABOVE this line.
+      - name: Push heartbeat branch
+        env:
+          AGENT: ${{ matrix.agent }}
+        # --force-with-lease is REQUIRED here, and it is safe. Why both halves matter:
+        #
+        # REQUIRED: the branch is reset from main each tick (#9895) and the flush SQUASHES onto
+        # main. A squash creates a NEW commit, so the branch's previous tip is never an ancestor
+        # of the new main:
+        #     tick 1:  branch = main@A + event1        -> push fast-forwards, fine
+        #     flush:   squash event1 onto main         -> main@B, which does NOT contain A+event1
+        #     tick 2:  checkout -B from B, + event2    -> remote is still A+event1, NOT an ancestor
+        #                                              -> plain push REJECTED (non-fast-forward)
+        # So an unforced push works exactly once after each flush and fails every tick after.
+        # Verified against the live repo: the pre-flush tip 80cf58075 is not an ancestor of main.
+        #
+        # SAFE: the heartbeat branch is scratch space, not a record. The flush has already landed
+        # its content on main before the next reset, so nothing unique lives here to lose.
+        # --force-with-lease (not --force) still refuses if someone else moved the ref underneath
+        # us — it declines a surprise, it just does not require ancestry.
+        #
+        # CONFIG NOTE: this is why `heartbeat/*` must NOT carry a `non_fast_forward` ruleset.
+        # Ruleset 16934633 ("Heartbeat Branch Protection") targets `refs/heads/agent-heartbeats`,
+        # which matches nothing — the real branches are `heartbeat/<agent>`. Retargeting it must
+        # keep `deletion` only; adding non_fast_forward would deadlock this step permanently.
+        run: git push --force-with-lease origin "heartbeat/$AGENT"
+
   flush-to-main:
     name: flush ${{ matrix.agent }} heartbeats
     runs-on: ubuntu-24.04
@@ -349,24 +424,55 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # SQUASH, NOT MERGE — main forbids merge commits.
+          #
+          # `main` carries ruleset "Branch Safety" (id 16189060, ACTIVE) targeting ~DEFAULT_BRANCH
+          # with `required_linear_history`. A `--no-ff` merge commit is rejected outright:
+          #     ! [remote rejected] HEAD -> main (push declined due to repository rule violations)
+          #
+          # #9890 shipped the merge form and would have failed on its very first run. It passed
+          # review because it was verified in a scratch repo that HAD NO RULESETS — an environment
+          # that differed from production in the one way that decided the outcome. Recording that
+          # here so the next person tests the rule, not just the logic.
+          #
+          # NOTE: classic branch protection is EMPTY on this repo (required_status_checks: false,
+          # required_pull_request_reviews: false, restrictions: false). Rulesets are a SEPARATE
+          # mechanism and do not appear in that API. Check both:
+          #     gh api repos/<owner>/<repo>/rules/branches/main
+          #
+          # Squashing loses nothing here: the payload is append-only ZetaId event files (G-Set),
+          # so the per-tick commit boundaries carry no information the events themselves do not.
+          # One linear commit per flush satisfies the rule and reads better in `git log`.
           PUSHED=0
           for attempt in 1 2 3 4 5; do
             git fetch origin main --quiet
             git checkout -B "flush-work-$AGENT" origin/main --quiet
-            git merge "origin/heartbeat/$AGENT" --no-ff -m "flush(heartbeat): $AGENT events to main
-
-          Periodic flush of $AHEAD heartbeat events from heartbeat/$AGENT.
-          Sovereign path: append-only ZetaId event files (G-Set, conflict-free).
-
-          Co-Authored-By: Kiro <noreply@kiro.dev>" || {
-              echo "[flush] MERGE CONFLICT for $AGENT — surfacing instead of force-resolving."
+            git merge --squash "origin/heartbeat/$AGENT" >/dev/null 2>&1 || {
+              echo "[flush] CONFLICT for $AGENT — surfacing instead of force-resolving."
               echo "[flush] Append-only ZetaId events should never conflict; a conflict here means"
               echo "[flush] something is writing outside the G-Set discipline and wants a human."
               exit 1
             }
 
+            # Idempotency (#6): if these events are already on main the squash stages nothing,
+            # and re-flushing must be a no-op rather than an empty-commit or an error.
+            STAGED=$(git diff --cached --name-only | wc -l | tr -d ' ')
+            if [ "$STAGED" = "0" ]; then
+              echo "[flush] $AGENT: already on main — nothing to land (no-op)"
+              PUSHED=1
+              break
+            fi
+
+            git commit -q -m "flush(heartbeat): $AGENT events to main ($STAGED files)
+
+          Squashed flush of $AHEAD heartbeat commits from heartbeat/$AGENT.
+          Append-only ZetaId event files (G-Set, conflict-free) — squashed because main
+          requires linear history; the commit boundaries carry no information the events do not.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+
             if git push origin HEAD:main; then
-              echo "[flush] $AGENT: $AHEAD events landed on main (attempt $attempt)"
+              echo "[flush] $AGENT: $STAGED event files landed on main (attempt $attempt)"
               PUSHED=1
               break
             fi
