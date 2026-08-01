@@ -1574,8 +1574,27 @@ if [ -d "$ZETA_HOME" ]; then
       PATH="$ZETA_TARGET_PATH" \
       ZETA_INSTALL_NIXOS_MODE=installed \
       ZETA_INSTALL_FULL=1 \
-      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 | tail -10 || \
-        echo "[iter-5.5.0]   WARN: install.sh FAILED — runtimes/agent CLIs may be partial; can retry post-reboot via 'cd ~/Zeta && tools/setup/install.sh'"
+      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 | tail -10
+      # CAPTURE THE REAL EXIT CODE. This previously read `... | tail -10 || echo WARN`,
+      # where the pipe makes the pipeline's status `tail`'s — always 0 — so the `||` never
+      # fired and an install.sh failure printed NOTHING AT ALL. The node finished
+      # provisioning, reported success, and could ship without k3d/kubectl/helm.
+      #
+      # Staying non-fatal is right: a node that boots without agent CLIs is still
+      # recoverable, and hard-failing a first-boot install is worse. But "do not fail" and
+      # "do not notice" are different instructions, and only the first was intended.
+      install_rc=${PIPESTATUS[0]}
+      if [ "$install_rc" -ne 0 ]; then
+        echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
+        # Durable marker, not just a line that scrolls past on a first-boot console. The
+        # full tier carries k3d/kubectl/helm (.mise.full.toml, base tier has none), so
+        # without it this node cannot host the ARC runners — and that must be discoverable
+        # ON the node, not only in whichever terminal happened to be watching.
+        sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
+        printf 'install.sh rc=%s at %s\nPARTIAL PROVISION: agent CLIs and/or the full mise tier (k3d/kubectl/helm) may be absent.\nretry: cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh\n' \
+          "$install_rc" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+          | sudo -u "#$ZETA_UID" tee "$ZETA_HOME/.zeta/PARTIAL-PROVISION" >/dev/null 2>&1 || true
+      fi
   fi
 
   # install.sh owns the manifest-driven agent CLI installs. Keep the
