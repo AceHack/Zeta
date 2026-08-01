@@ -938,7 +938,23 @@ jobs:
     # so historical residue in immutable shards doesn't block — new violations
     # still fail. Same shape as Stryker `--reset` or ESLint suppressions.
     name: lint (tick-shard relative-paths)
-    timeout-minutes: 5
+    timeout-minutes: 12
+    # RAISED 5 -> 12 (2026-08-01). This job was CANCELLED by its own budget four times today.
+    # It is not randomly flaky — it is systematically near the ceiling: the lint itself runs in
+    # 120-158s, but the job first runs ./tools/setup/install.sh (the full three-way-parity
+    # toolchain per GOVERNANCE §24), and a slightly slow install pushes the total past 300s.
+    # Observed cancellations at 316s and 317s against a 300s budget.
+    #
+    # A cancelled job reports as a RED CHECK indistinguishable from a real failure, so this cost
+    # four spurious reds and several rerun cycles on unrelated PRs today.
+    #
+    # DEEPER ISSUE, not fixed here: audit-tick-shard-relative-paths.ts imports ONLY node built-ins
+    # (node:fs, node:path, node:child_process). It needs a JS runtime and nothing else, yet
+    # installs an entire toolchain to get one. gate.yml runs install.sh in 64 jobs and setup-bun in
+    # 2. Either caching install.sh's output or using setup-bun for runtime-only jobs would remove
+    # this whole class — but the cache is already at 10.05GB of a 10GB ceiling, and §24 makes
+    # install.sh the single install path, so both need a deliberate decision rather than a
+    # drive-by change.
     runs-on: ubuntu-24.04
 
     steps:
