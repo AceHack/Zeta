@@ -113,16 +113,19 @@ export function applyBindingScenario(
       return {
         usbUuid: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
         usbISerial: "USB-STICK-SERIAL-OTHER",
-        uefiKeyfile: encryptCtx.uefiKeyfile,
-        tpmSeal: encryptCtx.tpmSeal,
+        ...(encryptCtx.uefiKeyfile !== undefined
+          ? { uefiKeyfile: encryptCtx.uefiKeyfile }
+          : {}),
+        ...(encryptCtx.tpmSeal !== undefined ? { tpmSeal: encryptCtx.tpmSeal } : {}),
       };
-    case "esp_wipe":
+    case "esp_wipe": {
       // Full ESP wipe: uefi keyfile gone; uuid may change on recreate.
+      const { uefiKeyfile: _espWiped, ...withoutKeyfile } = encryptCtx;
       return {
-        ...encryptCtx,
+        ...withoutKeyfile,
         usbUuid: "00000000-0000-0000-0000-222222222222",
-        uefiKeyfile: undefined,
       };
+    }
     case "machine_swap":
       // Same stick/file copy, different machine TPM seal.
       return {

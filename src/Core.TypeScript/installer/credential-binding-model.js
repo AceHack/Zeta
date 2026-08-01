@@ -41,15 +41,16 @@ export function applyBindingScenario(scenario, encryptCtx) {
       return {
         usbUuid: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
         usbISerial: "USB-STICK-SERIAL-OTHER",
-        uefiKeyfile: encryptCtx.uefiKeyfile,
-        tpmSeal: encryptCtx.tpmSeal
+        ...encryptCtx.uefiKeyfile !== undefined ? { uefiKeyfile: encryptCtx.uefiKeyfile } : {},
+        ...encryptCtx.tpmSeal !== undefined ? { tpmSeal: encryptCtx.tpmSeal } : {}
       };
-    case "esp_wipe":
+    case "esp_wipe": {
+      const { uefiKeyfile: _espWiped, ...withoutKeyfile } = encryptCtx;
       return {
-        ...encryptCtx,
-        usbUuid: "00000000-0000-0000-0000-222222222222",
-        uefiKeyfile: void 0
+        ...withoutKeyfile,
+        usbUuid: "00000000-0000-0000-0000-222222222222"
       };
+    }
     case "machine_swap":
       return {
         ...encryptCtx,

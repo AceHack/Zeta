@@ -56,6 +56,7 @@
     "src/Renderers/website",
     "src/Renderers/website/**",
     "src/Core.TypeScript/qsharp-oracle/**",
+    "src/wasm-dla/assemblyscript/**",
     "src/Core.TypeScript/cursor/**",
     "db",
     "db/**"
