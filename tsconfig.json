@@ -58,6 +58,7 @@
     "src/Core.TypeScript/qsharp-oracle/**",
     "src/Core.TypeScript/cursor/**",
     "src/wasm-dla/assemblyscript/assembly/**",
+    "demo/identity-dla-site/**",
     "db",
     "db/**"
   ]

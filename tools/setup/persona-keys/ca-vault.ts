@@ -161,7 +161,7 @@ export async function signSshCertWithFallback(
 
   // 3. Fallback to local Ed25519 CA
   const fx = options.fx ?? realEffects();
-  const biometricAuth = options.biometricAuth ?? (async () => ({ ok: true, method: "passphrase", prompt: "auto" }));
+  const biometricAuth = options.biometricAuth ?? (async () => ({ ok: true, method: "passphrase", prompt: "auto", platform: "macos-touchid" }));
   const certResult = await signMachineCert(fx, { ...options, biometricAuth });
 
   const res: VaultSignResult = {

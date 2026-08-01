@@ -135,6 +135,10 @@ function getActualBinarySize(compiler: Compiler): number {
     Go:          path.join(__dirname, "../../wasm-dla/go/main.wasm"),
     V8_Bytecode: "", // no binary file on disk — size is hardcoded (vm.Script.createCachedData)
   };
+  const p = paths[compiler];
+  if (p && fs.existsSync(p)) {
+    return fs.statSync(p).size;
+  }
   const recorded = BINARY_SIZES[compiler];
   if (recorded === undefined) {
     // Fail loudly: a silent 0 here would quietly corrupt the correlation being discharged.
