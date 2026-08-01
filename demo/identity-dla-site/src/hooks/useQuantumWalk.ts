@@ -12,7 +12,7 @@
  *   3. Interference: amplitudes at each cell sum (complex addition)
  *
  * The probability density |ψ|² at each cell is the quantum analogue of
- * the DLA density field. We then apply the Tsirelson sticking rule to
+ * the DLA density field. We then apply the sticking rule to
  * the probability density: cells with |ψ|² > STICKING_THRESHOLD collapse (stick).
  *
  * Seed independence (live mode):
@@ -32,9 +32,24 @@
  *     - "1/(3√2) = Tsirelson bound for a 2D LATTICE walker" — no such published bound
  *       exists; the 1/(n√2) family was invented to make the numbers line up.
  *
- *   Within Zeta's own model the correlation at the Tsirelson crossing is
- *   ρ* = √2 − 1 ≈ 0.414 (see src/Core/FeedbackThrottle.fs, which solves
- *   2 + 2/(1+L) = 2√2) — not 0.2357. Do not re-label this constant as physics.
+ *   THE ARGUMENT THAT CONVICTS (Soraya 2026-08-01 — sharper than my first version):
+ *     Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH CORRELATOR — a bound on a sum of
+ *     four expectation values. THERE IS NO TSIRELSON BOUND ON A CORRELATION COEFFICIENT
+ *     AT ALL, so no probability-like number in [0,1] can be one. Asking whether 0.2357
+ *     or 0.414 is "the real" Tsirelson value is the WRONG QUESTION: both are images of
+ *     2√2 under freely chosen maps, and the repo already adjudicated them as DIFFERENT
+ *     QUANTITIES (reseed threshold vs AntiSybil ceiling), not a contradiction.
+ *
+ *   PROVENANCE — the failure was not fabrication (Soraya):
+ *     2026-07-04  born in YinYangEnsemble.fs via a DECLARED map, WITH the caveat
+ *                 "A DESIGN CHOICE, not a first-principles derivation".
+ *     2026-07-16  adopted as the DLA sticking probability — THE CAVEAT WAS DROPPED.
+ *     2026-07-31  read as physics here and in Z-3 / Z-5.
+ *     The name travelled and the caveat did not — which is why this is now
+ *     STICKING_THRESHOLD. A caveat in a comment survives only while someone re-copies
+ *     it; a caveat in the IDENTIFIER travels with every use.
+ *
+ *   Do not re-label this constant as physics.
  */
 
 import { useEffect, useState } from "react";

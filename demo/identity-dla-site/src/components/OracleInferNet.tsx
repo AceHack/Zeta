@@ -20,7 +20,7 @@
  *
  * Connection to Infer.NET:
  *   - The prior P(stick) is a Gaussian process over the grid
- *   - The likelihood is the Tsirelson sticking rule
+ *   - The likelihood is the sticking rule
  *   - The posterior is the predicted next-stick heatmap
  *   - The fractal dimension of the posterior is the i-sensor's D_f
  *
@@ -157,7 +157,7 @@ function runInferNet(seed: number, W: number, H: number, nWalkers: number): Infe
 
   // ── Sample posterior cluster from prior ──────────────────────────────────────
   // The posterior is a DLA run where the sticking probability is the prior
-  // instead of the Tsirelson rule. This is the "predicted" cluster.
+  // instead of the sticking rule. This is the "predicted" cluster.
   const posterior = new Uint8Array(W * H);
   // Copy the actual cluster as the seed for the posterior
   for (let i = 0; i < W * H; i++) posterior[i] = cells[i];

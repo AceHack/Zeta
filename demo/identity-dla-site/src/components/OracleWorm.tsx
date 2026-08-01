@@ -5,11 +5,11 @@
  * This panel simulates the 302-neuron C. elegans connectome (White 1986)
  * as a Kuramoto phase oscillator network. The Chip-8 display pixels are
  * mapped onto sensory neurons; motor neuron phases drive the DLA sticking
- * probability. The worm has no knowledge of DLA, Tsirelson, or the other
+ * probability. The worm has no knowledge of DLA, the sticking constant, or the other
  * oracles — it is a fully independent biological substrate.
  *
  * The Kuramoto order parameter r ∈ [0,1] is the worm's ρ:
- *   r < 0.2357 (Tsirelson threshold) → incoherent, independent
+ *   r < 0.2357 (the sticking threshold) → incoherent, independent
  *   r > 0.2357 → synchronized, correlated
  *
  * The DLA cluster grows where the worm's motor neurons are synchronized.
@@ -312,7 +312,7 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
       ctx.fillRect(x * scale, y * scale, scale, scale);
     });
 
-    // Draw Tsirelson threshold line
+    // Draw sticking threshold line
     const tLine = STICKING_THRESHOLD * canvas.height;
     ctx.strokeStyle = "rgba(255,200,50,0.4)";
     ctx.setLineDash([4, 4]);

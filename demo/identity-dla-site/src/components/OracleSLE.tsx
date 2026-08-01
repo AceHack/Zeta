@@ -21,7 +21,7 @@
  * We run both and let the box-counting estimator decide. The Loewner entropy
  * S_Loew ≈ -ln(t/κ) is computed in real time and displayed.
  *
- * Conjecture Z-3: S_Loew at Tsirelson threshold = ln(3√2) ≈ 1.447 nats
+ * Conjecture Z-3: S_Loew at sticking constant = ln(3√2) ≈ 1.447 nats [tautology; Z-3 retracted]
  * Conjecture Z-4: Oracle 6 i-sensor → SLE_κ harmonic measure for large N
  */
 
@@ -64,7 +64,7 @@ interface SLEResult {
   df: number;
   kappa: number;
   loewnerEntropy: number;
-  tsirelsonCrossing: number | null; // t at which S_Loew first = target
+  stickingCrossing: number | null; // t at which S_Loew first = target
   elapsed: number;
   seed: number;
   cells: Uint8Array;
@@ -86,7 +86,7 @@ function runSLE(seed: number, W: number, H: number, kappa: number, nSteps: numbe
 
   // Driving function W_t = √κ · B_t
   let W_t = 0;
-  let tsirelsonCrossing: number | null = null;
+  let stickingCrossing: number | null = null;
 
   // Loewner entropy S_Loew(t) = -ln(t/κ) — diverges at t=0, approaches 0 as t→∞
   // We want the t where S_Loew = ln(3√2) ≈ 1.447
@@ -120,8 +120,8 @@ function runSLE(seed: number, W: number, H: number, kappa: number, nSteps: numbe
 
     // Loewner entropy
     const sLoew = t > 1e-6 ? -Math.log(t / kappa) : 10;
-    if (tsirelsonCrossing === null && Math.abs(sLoew - LOEWNER_ENTROPY_TARGET) < 0.05) {
-      tsirelsonCrossing = t;
+    if (stickingCrossing === null && Math.abs(sLoew - LOEWNER_ENTROPY_TARGET) < 0.05) {
+      stickingCrossing = t;
     }
 
     // Record curve point every 5 steps
@@ -169,7 +169,7 @@ function runSLE(seed: number, W: number, H: number, kappa: number, nSteps: numbe
     df,
     kappa,
     loewnerEntropy: Math.max(0, loewnerEntropy),
-    tsirelsonCrossing,
+    stickingCrossing,
     elapsed,
     seed,
     cells,
@@ -184,7 +184,7 @@ interface OracleSLEProps {
   width?: number;
   height?: number;
   nSteps?: number;
-  onResult?: (df: number, curveLength: number, loewnerEntropy: number, tsirelsonCrossing: number | null) => void;
+  onResult?: (df: number, curveLength: number, loewnerEntropy: number, stickingCrossing: number | null) => void;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -208,7 +208,7 @@ export default function OracleSLE({
     const r = runSLE(seed, width, height, k, nSteps);
     setResult(r);
     // Use a timeout to defer the parent callback outside the React commit phase
-    setTimeout(() => { onResultRef.current?.(r.df, r.curve.length, r.loewnerEntropy, r.tsirelsonCrossing); }, 0);
+    setTimeout(() => { onResultRef.current?.(r.df, r.curve.length, r.loewnerEntropy, r.stickingCrossing); }, 0);
   }, [seed, width, height, nSteps]);
 
   useEffect(() => { run(kappa); }, [run, kappa]);
@@ -264,9 +264,9 @@ export default function OracleSLE({
       }
     }
 
-    // Tsirelson crossing marker
-    if (result.tsirelsonCrossing !== null) {
-      const idx = Math.round((result.tsirelsonCrossing / (nSteps * 0.01)) * (curve.length - 1) / 5);
+    // sticking-constant crossing marker
+    if (result.stickingCrossing !== null) {
+      const idx = Math.round((result.stickingCrossing / (nSteps * 0.01)) * (curve.length - 1) / 5);
       const pt = curve[Math.min(idx, curve.length - 1)];
       ctx.fillStyle = "rgba(245,158,11,0.9)";
       ctx.beginPath();
@@ -293,9 +293,9 @@ export default function OracleSLE({
     ctx.fillStyle = "rgba(107,114,128,0.8)";
     ctx.font = "11px 'JetBrains Mono', monospace";
     ctx.fillText(`κ = ${result.kappa.toFixed(2)}  S_Loew = ${result.loewnerEntropy.toFixed(3)}`, 10, 40);
-    if (result.tsirelsonCrossing !== null) {
+    if (result.stickingCrossing !== null) {
       ctx.fillStyle = "rgba(245,158,11,0.6)";
-      ctx.fillText(`t* = ${result.tsirelsonCrossing.toFixed(3)} (S_Loew = ln(3√2))`, 10, 56);
+      ctx.fillText(`t* = ${result.stickingCrossing.toFixed(3)} (S_Loew = ln(3√2))`, 10, 56);
     }
   }, [result, width, height, nSteps]);
 
@@ -339,12 +339,12 @@ export default function OracleSLE({
           <span style={{ color: "rgba(45,212,191,0.8)" }}>SLE_κ</span> curve · {result.curve.length} points ·{" "}
           <span style={{ color: "rgba(245,158,11,0.8)" }}>D_f = {result.df.toFixed(3)}</span> ·{" "}
           S_Loew = {result.loewnerEntropy.toFixed(3)} ·{" "}
-          {result.tsirelsonCrossing !== null ? (
+          {result.stickingCrossing !== null ? (
             <span style={{ color: "rgba(245,158,11,0.7)" }}>
-              t* = {result.tsirelsonCrossing.toFixed(3)} (Tsirelson crossing ✓)
+              t* = {result.stickingCrossing.toFixed(3)} (sticking-constant crossing ✓)
             </span>
           ) : (
-            <span style={{ color: "rgba(107,114,128,0.5)" }}>Tsirelson crossing not reached</span>
+            <span style={{ color: "rgba(107,114,128,0.5)" }}>sticking-constant crossing not reached</span>
           )} ·{" "}
           {result.elapsed.toFixed(3)}s
         </div>

@@ -13,7 +13,7 @@
  *   bun src/Core.TypeScript/hygiene/healers/run-tier0.ts [--repo-root <path>]
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { composeHealers, type FileTree } from "../healer-harness";
 import { staleJsHealer } from "./stale-js";

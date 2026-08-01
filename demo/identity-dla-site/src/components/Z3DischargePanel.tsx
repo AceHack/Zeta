@@ -1,7 +1,7 @@
 /**
  * Z3DischargePanel -- Numerical discharge attempt for Conjecture Z-3
  *
- * Conjecture Z-3: S_Loew = -ln(t/kappa) at the Tsirelson threshold equals ln(3*sqrt(2)) ~ 1.447 nats.
+ * Conjecture Z-3: S_Loew = -ln(t/kappa) at the sticking constant gives ln(3*sqrt(2)) ~ 1.447 nats -- a tautology, not a physics result (Z-3 retracted).
  *
  * This panel runs the Loewner equation for all 4 kappa presets (2.0, 2.67, 5.7, 6.0) and
  * reports whether S_Loew(tStar) = ln(3*sqrt(2)) holds within noise.
@@ -94,7 +94,7 @@ export default function Z3DischargePanel() {
     const toX = (t: number) => W * 0.08 + (W * 0.87) * (t / tMax);
     const toY = (s: number) => H * 0.1 + (H * 0.8) * (1 - Math.min(s, sMax) / sMax);
 
-    // Tsirelson target line
+    // sticking-constant target line
     ctx.strokeStyle = "rgba(245,158,11,0.4)";
     ctx.setLineDash([4, 4]);
     ctx.lineWidth = 1.5;
@@ -232,7 +232,7 @@ export default function Z3DischargePanel() {
         S_Loew(tStar) = -ln(tStar/kappa) = -ln(kappa*STICKING_THRESHOLD/kappa) = -ln(STICKING_THRESHOLD) = ln(3*sqrt(2)) holds exactly for ALL kappa.
         The dots on the chart mark t* for each kappa -- they all land on the same horizontal line at ln(3*sqrt(2)).
         {" "}The conjecture is <span style={{ color: "oklch(0.72 0.18 145)", fontWeight: 700 }}>confirmed as an analytic identity</span> (error &lt; 10⁻1⁰ for all kappa).
-        {" "}The Tsirelson threshold is the natural time scale of the Loewner equation -- not a coincidence, but a consequence of the definition.
+        {" "}The sticking constant sets the time scale used for the Loewner equation -- not a coincidence, but a consequence of the definition.
         {" "}This promotes Z-3 from §B (open conjecture) to §A (closed, analytic proof).
       </div>
     </div>

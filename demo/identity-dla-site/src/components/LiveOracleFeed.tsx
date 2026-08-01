@@ -402,7 +402,7 @@ export function LiveOracleFeed() {
               {" "}The ρ = 1/(1+L) formula shows the Austrian position is not a value judgment — it is a mathematical requirement
               for the price signal to be substrate-independent (real). Bitcoin's median UTXO age ({moneyVelocity.medianAgeDays.toFixed(0)}d)
               gives ρ = {moneyVelocity.rho.toFixed(4)} vs M2's ρ = {moneyVelocity.m2Rho?.toFixed(4)}.
-              {" "}The Tsirelson point (ρ = 1/(3√2) ≈ 0.2357) is the boundary between SharedState and Classical/Independent regimes.
+              {" "}The sticking point (ρ = 1/(3√2) ≈ 0.2357 — a simulation parameter, NOT a Tsirelson bound) is the boundary between SharedState and Classical/Independent regimes.
               {" "}Bitcoin long-term holders (5y+) cross this boundary. M2 velocity has never crossed it in recorded history.
             </div>
 

@@ -2,7 +2,7 @@
  * Oracle 10 — Multi-Compiler WebAssembly DLA
  * Design: Dark Matter Observatory
  *
- * Seven compilers, same algorithm, same Tsirelson threshold, same D_f.
+ * Seven compilers, same algorithm, same sticking threshold, same D_f.
  * Each WASM binary was compiled from a different source language:
  *
  *   WAT   Hand-written WebAssembly Text Format → WASM (697 bytes, bare metal)
@@ -375,7 +375,7 @@ export default function OracleWASM({ seed, onResult }: OracleWASMProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
       {/* Header */}
       <div style={{ fontSize: "0.6rem", color: "var(--muted-foreground)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-        Seven compilers · Same algorithm · Same Tsirelson threshold ρ = 1/(3√2) · Same D_f · Conjecture Z-7
+        Seven compilers · Same algorithm · Same sticking threshold ρ = 1/(3√2) · Same D_f · Conjecture Z-7
       </div>
 
       {/* Compiler panels — 2×2 grid */}

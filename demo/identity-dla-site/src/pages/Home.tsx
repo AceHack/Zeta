@@ -16,7 +16,7 @@
  *
  * Animated growth mode:
  *   Shows DLA building walker-by-walker with the Laplacian growth front visible.
- *   The Tsirelson threshold is visually legible: watch the boundary form at ρ = 0.2357.
+ *   The sticking threshold is visually legible: watch the boundary form at ρ = 0.2357 (a simulation parameter, not a physics bound).
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useDLA, STICKING_THRESHOLD, ORACLE_PRIME_OFFSETS, runDLA, DLAGrid } from "@/hooks/useDLA";
@@ -475,7 +475,7 @@ export default function Home() {
   const { grid: qgrid, ready: qready } = useQuantumWalk(QW, QH, QSTEPS, seed);
   const [wormResult, setWormResult] = useState<{ df: number; stuckCount: number; r: number } | null>(null);
   const [inferResult, setInferResult] = useState<{ df: number; clusterSize: number } | null>(null);
-  const [sleResult, setSleResult] = useState<{ df: number; curveLength: number; loewnerEntropy: number; tsirelsonCrossing: number | null } | null>(null);
+  const [sleResult, setSleResult] = useState<{ df: number; curveLength: number; loewnerEntropy: number; stickingCrossing: number | null } | null>(null);
   const [gpuResult, setGpuResult] = useState<number | null>(null);
   const [wasmResult, setWasmResult] = useState<number | null>(null);
   const [v8Result, setV8Result] = useState<number | null>(null);
@@ -769,8 +769,8 @@ export default function Home() {
             width={480}
             height={360}
             nSteps={1000}
-            onResult={(df, curveLength, loewnerEntropy, tsirelsonCrossing) =>
-              setSleResult({ df, curveLength, loewnerEntropy, tsirelsonCrossing })
+            onResult={(df, curveLength, loewnerEntropy, stickingCrossing) =>
+              setSleResult({ df, curveLength, loewnerEntropy, stickingCrossing })
             }
           />
         </OracleCard>
@@ -926,7 +926,7 @@ export default function Home() {
           },
           {
             label: "Why 1/(3√2) and not 1/(2√2)?",
-            text: `[CORRECTED 2026-08-01] 1/(3√2) ≈ ${STICKING_THRESHOLD.toFixed(4)} is this simulation's PARTICLE-STICKING THRESHOLD, not a Tsirelson bound. The CHSH Tsirelson bound is S ≤ 2√2 ≈ 2.828 (a bound on a CHSH sum, not a 1/(n√2) probability), and there is no published "Tsirelson bound for a 2D lattice walker" — the earlier "same physics, right dimension" claim was invented. In Zeta's own model the correlation at the Tsirelson crossing is ρ* = √2 − 1 ≈ 0.414 (FeedbackThrottle.fs).`,
+            text: `[CORRECTED 2026-08-01] 1/(3√2) ≈ ${STICKING_THRESHOLD.toFixed(4)} is this simulation's PARTICLE-STICKING THRESHOLD, not a Tsirelson bound. The CHSH Tsirelson bound is S ≤ 2√2 ≈ 2.828 (a bound on a CHSH sum, not a 1/(n√2) probability), and there is no published "Tsirelson bound for a 2D lattice walker" — the earlier "same physics, right dimension" claim was invented. Tsirelson's bound is S ≤ 2√2 ≈ 2.828 on the CHSH correlator; there is no Tsirelson bound on a correlation coefficient at all, so no number in [0,1] can be one.`,
           },
           {
             label: "Seed independence (ρ = 1/(1+L))",
@@ -950,7 +950,7 @@ export default function Home() {
           },
           {
             label: "Animated growth mode",
-            text: "Toggle Animated Growth Mode to watch DLA build walker-by-walker. The teal Laplacian front shows the boundary between the cluster and the void — the cells that are candidates for the next stick event. The front forms at exactly ρ = 0.2357 (Tsirelson threshold). Watch the fractal emerge from the rule.",
+            text: "Toggle Animated Growth Mode to watch DLA build walker-by-walker. The teal Laplacian front shows the boundary between the cluster and the void — the cells that are candidates for the next stick event. The front forms at exactly ρ = 0.2357 (the sticking threshold — a simulation parameter, not a physics bound). Watch the fractal emerge from the rule.",
           },
         ].map(({ label, text }) => (
           <div key={label} style={{

@@ -4,9 +4,9 @@
  * Design philosophy: Obsidian Ledger — monochrome amber-on-black, mathematical precision
  *
  * Displays S_Loew(t) = -ln(t/κ) as the DLA cluster grows.
- * Marks the Tsirelson crossing: t* where S_Loew = ln(3√2) ≈ 1.447 nats.
+ * Marks the t* where S_Loew = ln(3√2) ≈ 1.447 nats — NOTE: this is the tautology -ln(1/x)=ln(x) at the chosen sticking constant, not a physics crossing (Z-3 retracted 2026-08-01).
  *
- * Conjecture Z-3: S_Loew at the Tsirelson threshold = ln(3√2) ≈ 1.447 nats
+ * Conjecture Z-3: S_Loew at the sticking constant = ln(3√2) ≈ 1.447 nats [tautology; Z-3 retracted]
  *
  * The Loewner entropy is the information-theoretic content of the SLE_κ driver.
  * At t = t*, the system is at the quantum correlation ceiling — the same threshold
@@ -55,7 +55,7 @@ export default function LoewnerEntropyPanel({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Normalize walker count to time t ∈ [0.01, T_max]
-  // We scale so that t* (Tsirelson crossing) occurs at ~30% of total walkers
+  // We scale so that t* (sticking-threshold crossing) occurs at ~30% of total walkers
   const T_MAX = 5.0;
   const t = useMemo(() => {
     if (totalWalkers === 0) return 0.01;
@@ -235,12 +235,12 @@ export default function LoewnerEntropyPanel({
       {/* Conjecture Z-3 note */}
       <div style={{ fontSize: "0.55rem", color: "rgba(107,114,128,0.6)", lineHeight: 1.7 }}>
         <span style={{ color: "rgba(245,158,11,0.5)" }}>Conjecture Z-3:</span>{" "}
-        S_Loew at the Tsirelson threshold = ln(3√2) ≈ {LOEWNER_TARGET.toFixed(4)} nats.
+        S_Loew at the sticking constant → ln(3√2) ≈ {LOEWNER_TARGET.toFixed(4)} nats.
         The amber dashed line marks this target. Vertical dashed lines mark t* for each κ.
         The orange dot is the current time t (proportional to walker count).
         {" "}<span style={{ color: "#2dd4bf" }}>Teal = κ={KAPPA_OBS} (observed D_f ≈ 1.322)</span>.{" "}
         <span style={{ color: "#a78bfa" }}>Purple = κ={KAPPA_DLA} (theoretical DLA D_f ≈ 1.71)</span>.
-        When the orange marker crosses a t* line, the cluster has reached the Tsirelson entropy threshold.
+        When the orange marker crosses a t* line, the cluster has reached the sticking-constant entropy value.
       </div>
     </div>
   );
