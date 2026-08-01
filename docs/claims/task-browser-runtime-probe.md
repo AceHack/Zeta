@@ -4,11 +4,12 @@
 - **Harness:** codex
 - **Claimed at:** 2026-08-01T03:35:50Z
 - **ETA:** 2026-08-01T05:00:00Z
-- **Scope:** Add a deterministic browser runtime capability probe that feeds the source-owned browser-node contract.
-- **Durable target:** `src/Core.TypeScript/browser-node/` and a pull request against `main`.
+- **Scope:** Add a deterministic browser runtime capability probe and repair the unclaimed markdown/TypeScript gate failures found while publishing it.
+- **Durable target:** `src/Core.TypeScript/browser-node/`, the failing installer/WASM/verifier gate surfaces, and a pull request against `main`.
 - **Platform mirror:** none
 
 ## Notes
 
-This slice owns runtime capability observation only. Mesh transport, discovery,
-realtime serving, and renderer integration remain outside the claim.
+Runtime work owns capability observation only. Mesh transport, discovery,
+realtime serving, and renderer integration remain outside the claim. Gate repair
+is limited to the failures reported by `preflight:quick` at claim publication.
