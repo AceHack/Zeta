@@ -1,0 +1,85 @@
+# The drift clock — each run is one TICK of the drift ledger.
+#
+# Workitem 081KX3KA3EW08QG0R002WFQ6BG (drift-and-heal ADR items 2 + 6 as
+# amended 2026-07-09: MTTH is tick-indexed, the phase clock is the official
+# drift reference frame).
+#
+# Post-flip (#9860) the hygiene lints REPORT drift instead of blocking
+# merges. This sweep is what keeps that honest: on a cadence it runs the
+# non-blocking detectors over main, pipes findings into
+# `drift-ledger sweep` (tick = max existing + 1, derived from the ledger
+# itself — no ambient clock in the math; the ISO timestamp is metadata
+# only), and commits the tick event to docs/drift-events/.
+# `drift-ledger report` folds tick-indexed MTTH per drift class.
+# Unmeasured drift-tolerance is normalized deviance — this workflow is the
+# measurement (#9863 built the fold; this arms it).
+#
+# Detectors are ADDITIVE: to bring another non-blocking drift class into
+# the ledger, append its output to the same findings file before the sweep
+# step. v1 pipes markdownlint (the dominant observed drift class; pin
+# matches .mise.toml). --tracked (git ls-files) keeps path-shaped tool
+# preamble out of the permanent ledger.
+#
+# Loop safety: the commit-back uses the workflow's GITHUB_TOKEN, whose
+# pushes do not trigger workflows, and the message carries [skip ci] —
+# belt and suspenders. Cron is off-minute per the thundering-herd
+# convention.
+#
+# Safe-pattern compliance (mirrors tick-metrics.yml): SHA-pinned actions,
+# explicit minimal permissions, concurrency without cancel-in-progress,
+# only first-party trusted context — no user-authored text referenced.
+
+name: drift-sweep
+
+on:
+  schedule:
+    - cron: "23 */4 * * *" # every 4 hours, off-minute
+  workflow_dispatch: {}
+
+permissions:
+  contents: write # commits the tick event back to docs/drift-events/
+
+concurrency:
+  group: drift-sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    name: sweep main into the drift ledger
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Run detectors (findings are data here, not failures)
+        run: |
+          set +e
+          bunx markdownlint-cli2@0.22.1 "**/*.md" > /tmp/findings.txt 2>&1
+          echo "markdownlint exit: $? ($(wc -l < /tmp/findings.txt) output line(s))"
+          exit 0
+
+      - name: Record the tick
+        run: |
+          git ls-files > /tmp/tracked.txt
+          bun src/Core.TypeScript/hygiene/drift-ledger.ts sweep \
+            --dir docs/drift-events --tracked /tmp/tracked.txt < /tmp/findings.txt
+          bun src/Core.TypeScript/hygiene/drift-ledger.ts report --dir docs/drift-events
+
+      - name: Commit and push the tick event
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/drift-events
+          if git diff --cached --quiet; then
+            echo "Nothing staged — no tick recorded."
+          else
+            git commit -m "drift: record sweep tick [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi

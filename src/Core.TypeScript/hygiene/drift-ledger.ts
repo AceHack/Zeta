@@ -21,16 +21,18 @@
 // report, per the two-orders rule: local wallclock never enters the fold).
 //
 // Usage:
-//   <linter> 2>&1 | bun drift-ledger.ts sweep --dir docs/drift-events
+//   <linter> 2>&1 | bun drift-ledger.ts sweep --dir docs/drift-events \
+//       [--tracked tracked-files.txt]
 //       Parse findings from stdin (same formats as scoped-lint), append one
-//       sweep event at the next tick.
+//       sweep event at the next tick. --tracked (e.g. `git ls-files` output)
+//       keeps path-shaped tool preamble out of the permanent ledger.
 //   bun drift-ledger.ts report --dir docs/drift-events
 //       Fold all events, print MTTH per class in ticks.
 
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { findingPath } from "./scoped-lint.ts";
+import { findingPath, normalizePath, parseChangedFiles } from "./scoped-lint.ts";
 
 // ---------------------------------------------------------------------------
 // Model
@@ -57,13 +59,19 @@ export function findingRule(line: string): string {
   return m?.[1] ?? "finding";
 }
 
-/** Parse linter output (scoped-lint's recognized formats) into findings. */
-export function parseFindings(output: string): readonly DriftFinding[] {
+/** Parse linter output (scoped-lint's recognized formats) into findings.
+ * `knownPaths` (e.g. `git ls-files`) guards against tool preamble that merely
+ * LOOKS path-shaped (`Summary: 3 error(s)`, glob-echo preamble lines) — the same
+ * guard as scoped-lint's classifyLines. The ledger is permanent; junk keys
+ * must never enter it. Paths are normalized so ledger keys are stable. */
+export function parseFindings(output: string, knownPaths?: ReadonlySet<string>): readonly DriftFinding[] {
   const seen = new Set<string>();
   const out: DriftFinding[] = [];
   for (const line of output.split("\n")) {
-    const path = findingPath(line);
-    if (path === null) continue;
+    const raw = findingPath(line);
+    if (raw === null) continue;
+    const path = normalizePath(raw);
+    if (knownPaths !== undefined && !knownPaths.has(path)) continue;
     const rule = findingRule(line);
     const key = JSON.stringify([path, rule]);
     if (!seen.has(key)) {
@@ -178,21 +186,30 @@ if (invokedDirectly) {
   const [cmd, ...rest] = process.argv.slice(2);
   const dirIdx = rest.indexOf("--dir");
   const dir = dirIdx !== -1 ? rest[dirIdx + 1] : undefined;
+  const trackedIdx = rest.indexOf("--tracked");
+  const trackedFile = trackedIdx !== -1 ? rest[trackedIdx + 1] : undefined;
   if ((cmd !== "sweep" && cmd !== "report") || dir === undefined) {
-    console.error("usage: drift-ledger.ts <sweep|report> --dir <ledger-dir>   (sweep reads linter output on stdin)");
+    console.error(
+      "usage: drift-ledger.ts <sweep|report> --dir <ledger-dir> [--tracked <ls-files.txt>]   (sweep reads linter output on stdin)",
+    );
     process.exit(2);
   }
   if (cmd === "report") {
     for (const l of foldMtth(readLedger(dir)).lines) console.log(l);
     process.exit(0);
   }
+  const tracked = trackedFile !== undefined ? parseChangedFiles(readFileSync(trackedFile, "utf8")) : undefined;
   const chunks: Buffer[] = [];
   process.stdin.on("data", (c: Buffer) => chunks.push(c));
   process.stdin.on("end", () => {
     mkdirSync(dir, { recursive: true });
     const events = readLedger(dir);
     const tick = nextTick(events);
-    const event: SweepEvent = { tick, at: new Date().toISOString(), findings: parseFindings(Buffer.concat(chunks).toString("utf8")) };
+    const event: SweepEvent = {
+      tick,
+      at: new Date().toISOString(),
+      findings: parseFindings(Buffer.concat(chunks).toString("utf8"), tracked),
+    };
     writeFileSync(join(dir, `${String(tick).padStart(6, "0")}.json`), `${JSON.stringify(event, null, 2)}\n`);
     console.log(`drift-ledger: tick ${String(tick)} recorded, ${String(event.findings.length)} finding(s)`);
     process.exit(0);

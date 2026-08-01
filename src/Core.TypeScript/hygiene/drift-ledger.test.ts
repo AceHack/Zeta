@@ -37,6 +37,25 @@ describe("parseFindings", () => {
   test("findingRule falls back to the agnostic class", () => {
     expect(findingRule("docs/a.md:3 something unclassified")).toBe("finding");
   });
+
+  test("knownPaths guard: path-shaped tool preamble never enters the ledger", () => {
+    const known = new Set(["docs/a.md"]);
+    const out = parseFindings(
+      [
+        "markdownlint-cli2 v0.22.1 (markdownlint v0.38.0)",
+        "Finding: docs", // glob-echo preamble, path-shaped
+        "Linting: 105 file(s)",
+        "Summary: 3 error(s)",
+        "docs/a.md:19 MD022/blanks Headings",
+        "./docs/a.md:20 MD009/no-trailing-spaces", // normalized to the same key space
+      ].join("\n"),
+      known,
+    );
+    expect(out).toEqual([
+      { path: "docs/a.md", rule: "MD022" },
+      { path: "docs/a.md", rule: "MD009" },
+    ]);
+  });
 });
 
 describe("foldMtth", () => {
