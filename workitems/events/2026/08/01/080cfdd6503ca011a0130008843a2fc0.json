@@ -1,0 +1,14 @@
+{
+  "id": "080cfdd6503ca011a0130008843a2fc0",
+  "at": "2026-08-01T00:47:10.228Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYXCM1WK08QG0R003B9KVP4",
+    "type": "task",
+    "title": "Cl(8,0) versor construction of W(E8): Lean cert (root2-scalar + sandwich-reflection via Mathlib ι_mul_ι_mul_invOf_ι) + exact-arithmetic FsCheck of Coxeter relations and |W(E8)| on the 240 roots; new CliffordE8Versor module, retire Cl(3,0) as the versor bridge",
+    "slug": "cl-8-0-versor-construction-of-w-e8-lean-cert-root2-scalar-sa",
+    "priority": "P2",
+    "filename": "081KYXCM1WK08QG0R003B9KVP4-cl-8-0-versor-construction-of-w-e8-lean-cert-root2-scalar-sa.md"
+  }
+}

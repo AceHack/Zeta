@@ -23,6 +23,15 @@ open System.Numerics
 /// — remains open/aspirational, `FROZEN-CORE §B`). What is proven here: the 8↔8 linear isometry, the
 /// root↔multivector bijection preserving norm², and the grade partition.
 ///
+/// **Route (B) note (Soraya 2026-08-01, work-item 081KYXCM1WK08QG0R003B9KVP4):** the W(E8) *versor*
+/// construction (Dechant 2016 — reflections as sandwiches `v ↦ -αvα⁻¹`) lives in **Cl(8,0)**, whose
+/// grade-1 subspace IS the 8-dim ambient ℝ⁸ and where every root is a pure grade-1 vector. This
+/// `Cl(3,0)` bridge is a DIFFERENT object: its "8" is `dim Cl(3,0) = 2³` (blade count), not `rank E8`,
+/// and its popcount grading scatters roots across grades 0–3 — so sandwiching here implements NO W(E8)
+/// reflection. Cl(3,0) is the basis/metric bridge and cannot become the versor bridge; that is a
+/// separate `CliffordE8Versor` module over `CliffordAlgebra ℝ⁸`. This peel's disclaimer is exactly
+/// right — route (B) confirms it.
+///
 /// Anchors: W. K. Clifford (geometric algebra); Conway–Sloane (E8 Construction A); Gates (adinkra doubly-even
 /// self-dual ECC). Ties: `docs/research/2026-06-19-adinkra-clifford-e8-unfold-status-…`.
 [<RequireQualifiedAccess>]
