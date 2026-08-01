@@ -1,0 +1,9 @@
+{
+  "id": "080cfb3cc933b011a0130008ce47f366",
+  "at": "2026-07-15T21:05:17.943Z",
+  "by": "otto",
+  "action": {
+    "kind": "edit_grammar",
+    "reason": "propose extending the action grammar"
+  }
+}
