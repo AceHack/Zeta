@@ -24,3 +24,4 @@ import Lean4.CborCodec
 import Lean4.YamlCodec
 import Lean4.Bonsai
 import Lean4.AdjCtlOrthogonality
+import Lean4.CliffordReflectionE8
