@@ -25,7 +25,7 @@ min_version = "2026.6.12"
 # .NET 10 SDK (latest). Kept in sync with `global.json` — Zeta's
 # own `.NET`-native pin contract. Round-34 flip from
 # Microsoft's dotnet-install.sh to mise (see header).
-dotnet = "10.0.203"
+dotnet = "10.0.302"
 go = "1.26.4"
 golangci-lint = "2.12.2"
 # Rust stable. Edition 2024 requires ≥1.85. The mise rust plugin
