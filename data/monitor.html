@@ -86,6 +86,18 @@ async function load() {
     return;
   }
 
+  // Freshness: age of newest frame. Degrade live → stale past 2 hours.
+  const newestAt = new Date(latest.t);
+  const ageMs = Date.now() - newestAt.getTime();
+  const ageMin = Math.round(ageMs / 60000);
+  const ageStr = ageMin < 60 ? `${ageMin}min ago` : `${Math.round(ageMin/60)}h ${ageMin%60}min ago`;
+  const STALE_THRESHOLD_MS = 2 * 60 * 60 * 1000; // 2 hours
+  if (ageMs > STALE_THRESHOLD_MS) {
+    statusEl.innerHTML = `<span class="chip chip-mock">stale · last frame ${ageStr}</span>`;
+  } else {
+    statusEl.innerHTML += ` <span class="chip chip-live">fresh · ${ageStr}</span>`;
+  }
+
   // Render cards
   cardsEl.innerHTML = `
     <div class="card"><div class="card-label">Total Events</div><div class="card-value teal">${latest.total_events}</div></div>
