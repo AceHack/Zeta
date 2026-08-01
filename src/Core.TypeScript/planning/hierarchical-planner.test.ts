@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import {
   flatGridSearch,
   hierarchicalGridSearch,
+  leastActionSelect,
   type GridState,
 } from "./hierarchical-planner.ts";
 
@@ -61,6 +62,33 @@ describe("Hierarchical Planning — 2-Level Coarse-to-Fine State Space Explorati
     const ratio = collapsedResult.totalStatesExplored / flatResult.stateCount;
     // Negative control MUST equal 1.0 (no reduction)
     expect(ratio).toBeCloseTo(1.0, 2);
+  });
+
+  it("tests leastActionSelect block size optimization for minimum exploration cost", () => {
+    const availableSizes = [1, 2, 4, 8];
+    // For gridSize = 8, distance = 7, leastActionSelect should pick block size 2 or 4 over 8
+    const optimal = leastActionSelect(8, 7, availableSizes);
+    expect(optimal).toBe(2);
+  });
+
+  it("tests coarse corridor replanning when a fine-level transition is blocked by a wall", () => {
+    // Maze step function with a wall at row 1, col 1..2 blocking direct transition
+    const mazeStep = (s: GridState, a: string): GridState => {
+      const next = step(s, a);
+      if (next.row === 1 && next.col === 1) return s; // Wall at (1,1)
+      return next;
+    };
+
+    const result = hierarchicalGridSearch(gridSize, blockSize, start, goal, actions, mazeStep);
+    expect(result.plan).not.toBeNull();
+
+    // Replay plan and verify goal is reached around wall
+    let state = { ...start };
+    for (const act of result.plan!) {
+      state = mazeStep(state, act);
+    }
+    expect(state.row).toBe(goal.row);
+    expect(state.col).toBe(goal.col);
   });
 
   it("1,000-CYCLE RATCHET TEST: confirms 0 state accumulation across 1,000 planning cycles", () => {
