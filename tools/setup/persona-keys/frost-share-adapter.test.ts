@@ -251,4 +251,37 @@ describe("FrostShareAdapter", () => {
     });
     expect(tpm.kind).toBe("sealed-file");
   });
+
+  test("FSA-9: simulator adapter round-trips shares and falls back gracefully", () => {
+    const { fx, root } = sandboxFx();
+    const sim = createHsmShareAdapter(fx, root, "sim-ca", {
+      hsmKind: "simulator",
+    });
+    expect(sim.kind).toBe("sealed-file");
+
+    sim.storeShare(
+      {
+        x: 1,
+        secretShare: 123456789n,
+        threshold: 2,
+        totalShares: 3,
+        groupPublicKeyHex: "dd".repeat(32),
+      },
+      "sim-ca",
+    );
+
+    const loaded = sim.loadShare(1);
+    expect(loaded?.secretShare).toBe(123456789n);
+
+    // Verify allowSimulatorFallback when hardware unattached
+    const fallbackSim = createHsmShareAdapter(fx, root, "sim-ca", {
+      hsmKind: "tpm",
+      tpmOpts: {
+        sealedKeyPath: "/invalid/path",
+        tpm2UnsealCmd: "false",
+      },
+      allowSimulatorFallback: true,
+    });
+    expect(fallbackSim.kind).toBe("sealed-file");
+  });
 });
