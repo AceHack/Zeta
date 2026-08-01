@@ -1,0 +1,14 @@
+{
+  "id": "080cfdd713884811a01300087905a2d6",
+  "at": "2026-08-01T01:13:50.089Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYXE4W8808QG0R0011X8S70",
+    "type": "task",
+    "title": "WSet is the universal-tensor hexagon port: generalize WSet/IStarRing to carry copy/discard comonoid morphisms; ring adapters = Markov corners (Z=CD, R>=0=Markov, C=semicartesian/no-cloning, Bool=Rel); demote CliffordE8Bridge numerology; FsCheck comonoid-naturality strata + Lean ZSet-copy-is-comonoid via Mathlib Coalgebra",
+    "slug": "wset-is-the-universal-tensor-hexagon-port-generalize-wset-is",
+    "priority": "P2",
+    "filename": "081KYXE4W8808QG0R0011X8S70-wset-is-the-universal-tensor-hexagon-port-generalize-wset-is.md"
+  }
+}
