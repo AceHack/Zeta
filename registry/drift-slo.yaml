@@ -1,0 +1,26 @@
+# Drift SLO registry — the enforcement half of the drift-and-heal ADR
+# (items 2 + 6 as amended 2026-07-09: MTTH and its SLO are TICK-indexed;
+# the phase clock is the official drift reference frame).
+#
+# 1 tick = one drift-sweep of main (.github/workflows/drift-sweep.yml,
+# cron every 4h). A drift class whose oldest OPEN finding has been open
+# for MORE than max_open_age_ticks ticks is in breach, and the sweep
+# auto-files a P1 workitem for it (`drift-ledger.ts slo`) — one filing
+# per breach episode, tracked in docs/drift-events/slo-filed.json, which
+# clears when the class fully heals.
+#
+# Post-flip (#9860) drift does not block merges; THIS file is what keeps
+# that from decaying into normalized deviance: a threshold here is a
+# promise about how long the fleet lets a drift class live before work
+# is mechanically filed. Raising a budget = weakening that promise —
+# treat changes like any registry change (PR + review; the floor
+# registry's consent discipline is the sibling precedent).
+
+defaults:
+  # ~24 hours at the 4-hour cadence.
+  max_open_age_ticks: 6
+
+# Per-rule overrides (tighter or looser than the default), e.g.:
+#   MD022:
+#     max_open_age_ticks: 12
+per_rule: {}

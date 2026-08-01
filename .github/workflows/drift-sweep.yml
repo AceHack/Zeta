@@ -64,6 +64,9 @@ jobs:
           echo "markdownlint exit: $? ($(wc -l < /tmp/findings.txt) output line(s))"
           exit 0
 
+      - name: Install dependencies (yaml parser for the SLO registry)
+        run: bun install --frozen-lockfile
+
       - name: Record the tick
         run: |
           git ls-files > /tmp/tracked.txt
@@ -71,11 +74,18 @@ jobs:
             --dir docs/drift-events --tracked /tmp/tracked.txt < /tmp/findings.txt
           bun src/Core.TypeScript/hygiene/drift-ledger.ts report --dir docs/drift-events
 
-      - name: Commit and push the tick event
+      - name: SLO check — auto-file P1 workitems for breaching drift classes
+        env:
+          ZETA_WORKITEM_ACTOR: drift-sweep
+        run: |
+          bun src/Core.TypeScript/hygiene/drift-ledger.ts slo \
+            --dir docs/drift-events --config registry/drift-slo.yaml --workitems workitems
+
+      - name: Commit and push the tick event (and any SLO filings)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/drift-events
+          git add docs/drift-events workitems
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else

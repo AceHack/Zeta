@@ -1,6 +1,17 @@
 import { describe, expect, test } from "bun:test";
 
-import { findingRule, foldMtth, nextTick, parseFindings, type SweepEvent } from "./drift-ledger";
+import {
+  findingRule,
+  foldMtth,
+  newlyBreaching,
+  nextTick,
+  normalizeSloConfig,
+  parseFindings,
+  reconcileFiled,
+  sloBreaches,
+  type FiledMap,
+  type SweepEvent,
+} from "./drift-ledger";
 
 // Workitem 081KX3KA3EW — tick-indexed MTTH: the flip's safety net.
 // Proofs:
@@ -115,5 +126,66 @@ describe("nextTick", () => {
   test("derived from the ledger itself — max + 1, starting at 1", () => {
     expect(nextTick([])).toBe(1);
     expect(nextTick([sweep(1, []), sweep(7, [])])).toBe(8);
+  });
+});
+
+// ── SLO: the enforcement half ────────────────────────────────────────────────
+// Proofs:
+//   1. Breach is age STRICTLY OVER budget (age == max is at the boundary).
+//   2. per_rule overrides defaults; snake_case YAML normalizes to the config.
+//   3. Episode idempotency: filed rules are not re-filed while open; a fully
+//      healed rule clears from the map so a re-breach files anew.
+
+// snake_case shape, exactly as the YAML document parses (yaml itself stays a
+// lazy CLI-edge dep — this test file must run under bare `bun test`).
+const cfg = normalizeSloConfig({
+  defaults: { max_open_age_ticks: 6 },
+  per_rule: { MD022: { max_open_age_ticks: 2 } },
+});
+
+describe("sloBreaches", () => {
+  // MD022 budget 2 (override), everything else 6 (default).
+  const events = [
+    sweep(1, [["a.md", "MD022"], ["b.md", "MD032"], ["c.md", "MD038"]]),
+    sweep(4, [["a.md", "MD022"], ["b.md", "MD032"], ["c.md", "MD038"]]),
+    sweep(7, [["a.md", "MD022"], ["b.md", "MD032"]]), // MD038 healed
+  ];
+  const report = foldMtth(events);
+
+  test("age > budget breaches; age == budget does not; healed never does", () => {
+    const b = sloBreaches(report, cfg);
+    // MD022: open age 6 > budget 2 → breach. MD032: age 6 == default 6 → boundary, no breach.
+    expect(b.map((x) => x.rule)).toEqual(["MD022"]);
+    expect(b[0]!.maxOpenAgeTicks).toBe(2);
+    expect(b[0]!.oldestOpenAgeTicks).toBe(6);
+  });
+
+  test("past the default budget, the default class breaches too", () => {
+    const later = foldMtth([...events, sweep(8, [["a.md", "MD022"], ["b.md", "MD032"]])]);
+    expect(sloBreaches(later, cfg).map((x) => x.rule)).toEqual(["MD022", "MD032"]);
+  });
+});
+
+describe("filed-map episode idempotency", () => {
+  const report = foldMtth([sweep(1, [["a.md", "MD022"]]), sweep(4, [["a.md", "MD022"]])]);
+  const filed: FiledMap = { MD022: { workitem: "081KTESTONLY", filedAtTick: 3 } };
+
+  test("still-open rule stays filed and is not re-filed", () => {
+    const kept = reconcileFiled(report, filed);
+    expect(kept).toEqual(filed);
+    expect(newlyBreaching(sloBreaches(report, cfg), kept)).toEqual([]);
+  });
+
+  test("fully healed rule clears; a re-breach later files a NEW workitem", () => {
+    const healed = foldMtth([sweep(1, [["a.md", "MD022"]]), sweep(2, [])]);
+    expect(reconcileFiled(healed, filed)).toEqual({});
+  });
+});
+
+describe("normalizeSloConfig", () => {
+  test("rejects a config without a usable default budget", () => {
+    expect(() => normalizeSloConfig({ per_rule: {} })).toThrow(/defaults\.max_open_age_ticks/);
+    expect(() => normalizeSloConfig({ defaults: { max_open_age_ticks: 0 } })).toThrow();
+    expect(() => normalizeSloConfig(null)).toThrow();
   });
 });

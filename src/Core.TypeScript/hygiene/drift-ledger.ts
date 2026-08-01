@@ -29,9 +29,16 @@
 //   bun drift-ledger.ts report --dir docs/drift-events
 //       Fold all events, print MTTH per class in ticks.
 
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+import {
+  mintWorkItem,
+  publishCreatedEvent,
+  SYSTEM_ENV,
+  workItemEventsRoot,
+  type NewWorkItemSpec,
+} from "../backlog/new-workitem.ts";
 import { findingPath, normalizePath, parseChangedFiles } from "./scoped-lint.ts";
 
 // ---------------------------------------------------------------------------
@@ -163,6 +170,88 @@ export function foldMtth(events: readonly SweepEvent[]): MtthReport {
 }
 
 // ---------------------------------------------------------------------------
+// SLO (pure) — the enforcement half. A measurement nobody must act on is
+// still normalized deviance; the SLO makes the ledger BIND: a drift class
+// whose oldest open finding outlives its tick-indexed budget is in breach,
+// and a breach auto-files a P1 workitem (ADR item 6 as amended). One filing
+// per breach EPISODE: the filed-map remembers the workitem while the class
+// has open findings and clears when it fully heals, so a later re-breach
+// files a fresh workitem instead of being silently deduped forever.
+// ---------------------------------------------------------------------------
+
+export interface SloConfig {
+  readonly defaults: { readonly maxOpenAgeTicks: number };
+  readonly perRule: Readonly<Record<string, { readonly maxOpenAgeTicks: number }>>;
+}
+
+export interface SloBreach {
+  readonly rule: string;
+  readonly openCount: number;
+  readonly oldestOpenAgeTicks: number;
+  readonly maxOpenAgeTicks: number;
+}
+
+export function sloLimit(cfg: SloConfig, rule: string): number {
+  return cfg.perRule[rule]?.maxOpenAgeTicks ?? cfg.defaults.maxOpenAgeTicks;
+}
+
+/** Pure: classes whose oldest open finding has OUTLIVED its budget. Breach is
+ * age > max (at age == max the class is at the boundary, not past it). */
+export function sloBreaches(report: MtthReport, cfg: SloConfig): readonly SloBreach[] {
+  return report.classes.flatMap((c) => {
+    if (c.oldestOpenAgeTicks === null) return [];
+    const max = sloLimit(cfg, c.rule);
+    return c.oldestOpenAgeTicks > max
+      ? [{ rule: c.rule, openCount: c.openCount, oldestOpenAgeTicks: c.oldestOpenAgeTicks, maxOpenAgeTicks: max }]
+      : [];
+  });
+}
+
+/** rule -> the workitem filed for the CURRENT breach episode. */
+export type FiledMap = Readonly<Record<string, { readonly workitem: string; readonly filedAtTick: number }>>;
+
+/** Pure: drop filed entries whose rule has fully healed — that episode is
+ * over; a future re-breach files a NEW workitem. Still-open rules persist
+ * (idempotency: apply-N-times == apply-once per episode, manifesto §12). */
+export function reconcileFiled(report: MtthReport, filed: FiledMap): FiledMap {
+  const open = new Set(report.classes.filter((c) => c.openCount > 0).map((c) => c.rule));
+  return Object.fromEntries(Object.entries(filed).filter(([rule]) => open.has(rule)));
+}
+
+/** Pure: breaches not yet filed this episode. */
+export function newlyBreaching(breaches: readonly SloBreach[], filed: FiledMap): readonly SloBreach[] {
+  return breaches.filter((b) => !(b.rule in filed));
+}
+
+interface RawSloYaml {
+  readonly defaults?: { readonly max_open_age_ticks?: number };
+  readonly per_rule?: Readonly<Record<string, { readonly max_open_age_ticks?: number }>>;
+}
+
+/** Registry surface is snake_case YAML (registry/drift-slo.yaml, sibling of
+ * uncompensatable-floor.yaml); normalize the already-parsed document to the
+ * typed config here. YAML parsing itself stays at the CLI edge via dynamic
+ * import — the `yaml` package is the module's only external dep, and the
+ * hygiene unit-test job runs `bun test` without `bun install`, so a static
+ * import would break every consumer that never touches the SLO path. */
+export function normalizeSloConfig(rawDoc: unknown): SloConfig {
+  const raw = rawDoc as RawSloYaml | null;
+  const def = raw?.defaults?.max_open_age_ticks;
+  if (typeof def !== "number" || !Number.isFinite(def) || def < 1) {
+    throw new Error("drift-slo config: defaults.max_open_age_ticks must be a number >= 1");
+  }
+  const perRule: Record<string, { maxOpenAgeTicks: number }> = {};
+  for (const [rule, v] of Object.entries(raw?.per_rule ?? {})) {
+    const n = v?.max_open_age_ticks;
+    if (typeof n !== "number" || !Number.isFinite(n) || n < 1) {
+      throw new Error(`drift-slo config: per_rule.${rule}.max_open_age_ticks must be a number >= 1`);
+    }
+    perRule[rule] = { maxOpenAgeTicks: n };
+  }
+  return { defaults: { maxOpenAgeTicks: def }, perRule };
+}
+
+// ---------------------------------------------------------------------------
 // Ledger I/O edge (one JSON file per sweep: NNNNNN.json, tick-named — the
 // filename IS the tick, so ordering is the directory listing, codepoint sort)
 // ---------------------------------------------------------------------------
@@ -181,6 +270,56 @@ export function nextTick(events: readonly SweepEvent[]): number {
   return events.reduce((m, e) => Math.max(m, e.tick), 0) + 1;
 }
 
+/** The filed-map lives beside the sweeps: <ledger-dir>/slo-filed.json. */
+export function filedMapPath(dir: string): string {
+  return join(dir, "slo-filed.json");
+}
+
+function readFiledMap(dir: string): FiledMap {
+  const p = filedMapPath(dir);
+  if (!existsSync(p)) return {};
+  return JSON.parse(readFileSync(p, "utf8")) as FiledMap;
+}
+
+function writeFiledMap(dir: string, filed: FiledMap): void {
+  // Sorted keys => deterministic bytes => readable diffs (DST; text-only proofs).
+  const sorted = Object.fromEntries(Object.entries(filed).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
+  writeFileSync(filedMapPath(dir), `${JSON.stringify(sorted, null, 2)}\n`);
+}
+
+/** File one P1 workitem per newly-breaching class; returns the updated map.
+ * Edge-only I/O; the decision (breaches, episode dedup) is the pure core. */
+function runSloFile(dir: string, cfg: SloConfig, workitemsDir: string): void {
+  const report = foldMtth(readLedger(dir));
+  const filed = reconcileFiled(report, readFiledMap(dir));
+  const fresh = newlyBreaching(sloBreaches(report, cfg), filed);
+  const next: Record<string, { workitem: string; filedAtTick: number }> = { ...filed };
+  const actor = process.env["ZETA_WORKITEM_ACTOR"] ?? "drift-sweep";
+  for (const b of fresh) {
+    const spec: NewWorkItemSpec = {
+      type: "bug",
+      priority: "P1",
+      title:
+        `drift SLO breach: ${b.rule} open ${String(b.oldestOpenAgeTicks)} tick(s) ` +
+        `(budget ${String(b.maxOpenAgeTicks)}, ${String(b.openCount)} finding(s)) — heal the class`,
+    };
+    const minted = mintWorkItem(spec, SYSTEM_ENV);
+    const path = join(workitemsDir, minted.filename);
+    if (existsSync(path)) throw new Error(`drift-slo: refusing to overwrite ${path}`);
+    mkdirSync(workitemsDir, { recursive: true });
+    writeFileSync(path, minted.content, "utf8");
+    const ev = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor, workItemEventsRoot(workitemsDir), false);
+    if (ev.kind === "collision") throw new Error(`drift-slo: event collision at ${ev.path}`);
+    next[b.rule] = { workitem: minted.zetaid, filedAtTick: report.latestTick };
+    console.log(`drift-slo: filed ${minted.zetaid} for ${b.rule} (${path})`);
+  }
+  writeFiledMap(dir, next);
+  console.log(
+    `drift-slo: ${String(fresh.length)} newly-breaching class(es) filed, ` +
+      `${String(Object.keys(next).length)} episode(s) tracked, latest tick ${String(report.latestTick)}`,
+  );
+}
+
 const invokedDirectly = typeof process.argv[1] === "string" && /drift-ledger\.(?:ts|js)$/.test(process.argv[1]);
 if (invokedDirectly) {
   const [cmd, ...rest] = process.argv.slice(2);
@@ -188,14 +327,29 @@ if (invokedDirectly) {
   const dir = dirIdx !== -1 ? rest[dirIdx + 1] : undefined;
   const trackedIdx = rest.indexOf("--tracked");
   const trackedFile = trackedIdx !== -1 ? rest[trackedIdx + 1] : undefined;
-  if ((cmd !== "sweep" && cmd !== "report") || dir === undefined) {
+  const configIdx = rest.indexOf("--config");
+  const configFile = configIdx !== -1 ? rest[configIdx + 1] : undefined;
+  const wiIdx = rest.indexOf("--workitems");
+  const workitemsDir = wiIdx !== -1 ? (rest[wiIdx + 1] ?? "workitems") : "workitems";
+  if ((cmd !== "sweep" && cmd !== "report" && cmd !== "slo") || dir === undefined) {
     console.error(
-      "usage: drift-ledger.ts <sweep|report> --dir <ledger-dir> [--tracked <ls-files.txt>]   (sweep reads linter output on stdin)",
+      "usage: drift-ledger.ts <sweep|report|slo> --dir <ledger-dir> [--tracked <ls-files.txt>] " +
+        "[--config <drift-slo.yaml>] [--workitems <dir>]   (sweep reads linter output on stdin)",
     );
     process.exit(2);
   }
   if (cmd === "report") {
     for (const l of foldMtth(readLedger(dir)).lines) console.log(l);
+    process.exit(0);
+  }
+  if (cmd === "slo") {
+    if (configFile === undefined) {
+      console.error("drift-ledger slo: --config <drift-slo.yaml> is required");
+      process.exit(2);
+    }
+    // Lazy edge-only import (see normalizeSloConfig doc comment).
+    const { parse } = await import("yaml");
+    runSloFile(dir, normalizeSloConfig(parse(readFileSync(configFile, "utf8"))), workitemsDir);
     process.exit(0);
   }
   const tracked = trackedFile !== undefined ? parseChangedFiles(readFileSync(trackedFile, "utf8")) : undefined;
