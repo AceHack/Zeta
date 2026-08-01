@@ -1,0 +1,281 @@
+{
+  "conjecture": "Z-7",
+  "status": "DISCHARGED",
+  "date": "2026-08-01T03:29:00.653Z",
+  "compilers": [
+    "WAT",
+    "Zig",
+    "ASC",
+    "Go"
+  ],
+  "seeds": [
+    42,
+    137,
+    271,
+    314,
+    577,
+    1000,
+    2718,
+    3141,
+    9999,
+    31337
+  ],
+  "n_pairs": 40,
+  "pearson_r": -3.036294482838459e-17,
+  "pearson_r_abs": 3.036294482838459e-17,
+  "threshold": 0.1,
+  "df_mean": 1.6704649674022805,
+  "df_std": 0.06167484286664096,
+  "df_range": [
+    1.574104889014735,
+    1.7426983264970655
+  ],
+  "binary_sizes": {
+    "WAT": 697,
+    "Zig": 951,
+    "ASC": 6144,
+    "Go": 1572864
+  },
+  "rows": [
+    {
+      "compiler": "WAT",
+      "seed": 42,
+      "binarySize": 697,
+      "df": 1.574104889014735
+    },
+    {
+      "compiler": "WAT",
+      "seed": 137,
+      "binarySize": 697,
+      "df": 1.6678475458550854
+    },
+    {
+      "compiler": "WAT",
+      "seed": 271,
+      "binarySize": 697,
+      "df": 1.5877060479035765
+    },
+    {
+      "compiler": "WAT",
+      "seed": 314,
+      "binarySize": 697,
+      "df": 1.7426983264970655
+    },
+    {
+      "compiler": "WAT",
+      "seed": 577,
+      "binarySize": 697,
+      "df": 1.66719580447229
+    },
+    {
+      "compiler": "WAT",
+      "seed": 1000,
+      "binarySize": 697,
+      "df": 1.7296246621150113
+    },
+    {
+      "compiler": "WAT",
+      "seed": 2718,
+      "binarySize": 697,
+      "df": 1.741969333669106
+    },
+    {
+      "compiler": "WAT",
+      "seed": 3141,
+      "binarySize": 697,
+      "df": 1.5932835502741785
+    },
+    {
+      "compiler": "WAT",
+      "seed": 9999,
+      "binarySize": 697,
+      "df": 1.687051802877786
+    },
+    {
+      "compiler": "WAT",
+      "seed": 31337,
+      "binarySize": 697,
+      "df": 1.7131677113439707
+    },
+    {
+      "compiler": "Zig",
+      "seed": 42,
+      "binarySize": 951,
+      "df": 1.574104889014735
+    },
+    {
+      "compiler": "Zig",
+      "seed": 137,
+      "binarySize": 951,
+      "df": 1.6678475458550854
+    },
+    {
+      "compiler": "Zig",
+      "seed": 271,
+      "binarySize": 951,
+      "df": 1.5877060479035765
+    },
+    {
+      "compiler": "Zig",
+      "seed": 314,
+      "binarySize": 951,
+      "df": 1.7426983264970655
+    },
+    {
+      "compiler": "Zig",
+      "seed": 577,
+      "binarySize": 951,
+      "df": 1.66719580447229
+    },
+    {
+      "compiler": "Zig",
+      "seed": 1000,
+      "binarySize": 951,
+      "df": 1.7296246621150113
+    },
+    {
+      "compiler": "Zig",
+      "seed": 2718,
+      "binarySize": 951,
+      "df": 1.741969333669106
+    },
+    {
+      "compiler": "Zig",
+      "seed": 3141,
+      "binarySize": 951,
+      "df": 1.5932835502741785
+    },
+    {
+      "compiler": "Zig",
+      "seed": 9999,
+      "binarySize": 951,
+      "df": 1.687051802877786
+    },
+    {
+      "compiler": "Zig",
+      "seed": 31337,
+      "binarySize": 951,
+      "df": 1.7131677113439707
+    },
+    {
+      "compiler": "ASC",
+      "seed": 42,
+      "binarySize": 6144,
+      "df": 1.574104889014735
+    },
+    {
+      "compiler": "ASC",
+      "seed": 137,
+      "binarySize": 6144,
+      "df": 1.6678475458550854
+    },
+    {
+      "compiler": "ASC",
+      "seed": 271,
+      "binarySize": 6144,
+      "df": 1.5877060479035765
+    },
+    {
+      "compiler": "ASC",
+      "seed": 314,
+      "binarySize": 6144,
+      "df": 1.7426983264970655
+    },
+    {
+      "compiler": "ASC",
+      "seed": 577,
+      "binarySize": 6144,
+      "df": 1.66719580447229
+    },
+    {
+      "compiler": "ASC",
+      "seed": 1000,
+      "binarySize": 6144,
+      "df": 1.7296246621150113
+    },
+    {
+      "compiler": "ASC",
+      "seed": 2718,
+      "binarySize": 6144,
+      "df": 1.741969333669106
+    },
+    {
+      "compiler": "ASC",
+      "seed": 3141,
+      "binarySize": 6144,
+      "df": 1.5932835502741785
+    },
+    {
+      "compiler": "ASC",
+      "seed": 9999,
+      "binarySize": 6144,
+      "df": 1.687051802877786
+    },
+    {
+      "compiler": "ASC",
+      "seed": 31337,
+      "binarySize": 6144,
+      "df": 1.7131677113439707
+    },
+    {
+      "compiler": "Go",
+      "seed": 42,
+      "binarySize": 1572864,
+      "df": 1.574104889014735
+    },
+    {
+      "compiler": "Go",
+      "seed": 137,
+      "binarySize": 1572864,
+      "df": 1.6678475458550854
+    },
+    {
+      "compiler": "Go",
+      "seed": 271,
+      "binarySize": 1572864,
+      "df": 1.5877060479035765
+    },
+    {
+      "compiler": "Go",
+      "seed": 314,
+      "binarySize": 1572864,
+      "df": 1.7426983264970655
+    },
+    {
+      "compiler": "Go",
+      "seed": 577,
+      "binarySize": 1572864,
+      "df": 1.66719580447229
+    },
+    {
+      "compiler": "Go",
+      "seed": 1000,
+      "binarySize": 1572864,
+      "df": 1.7296246621150113
+    },
+    {
+      "compiler": "Go",
+      "seed": 2718,
+      "binarySize": 1572864,
+      "df": 1.741969333669106
+    },
+    {
+      "compiler": "Go",
+      "seed": 3141,
+      "binarySize": 1572864,
+      "df": 1.5932835502741785
+    },
+    {
+      "compiler": "Go",
+      "seed": 9999,
+      "binarySize": 1572864,
+      "df": 1.687051802877786
+    },
+    {
+      "compiler": "Go",
+      "seed": 31337,
+      "binarySize": 1572864,
+      "df": 1.7131677113439707
+    }
+  ]
+}
