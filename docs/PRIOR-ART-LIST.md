@@ -927,6 +927,29 @@ notes: [pause-not-death + Orleans criterion] and
   `docs/research/2026-07-04-bams-to-e8-sphere-packing-continuity-lumen.md`). Dim-24 companion:
   Cohn–Kumar–Miller–Radchenko–Viazovska (2017). Decorrelation payoff anchor: **Condorcet (1785)**,
   jury theorem.
+- **Homotopy Type Theory / univalent foundations — Awodey; Voevodsky; *Homotopy Type Theory:
+  Univalent Foundations of Mathematics* (the HoTT Book, 2013)** ⭐ — the **equality theory for
+  deformed HKTs**, and one of the maintainer's primary goals: HoTT ∘ F# HKT over 2D/3D
+  geometrically-intuitive objects. Types are spaces, equality is a **path**, and "topologically
+  bent over time" is literally **transport along a path**. Computational univalence lives in
+  **cubical type theory** — Cohen–Coquand–Huber–Mörtberg; **cubical Agda** (relevant precisely
+  when deformations must *run*, not merely typecheck; a cubical-Agda proof lane is wired —
+  `081KX1VE4G808QG0R003DCK3GV`).
+  **Adjacent, same lineage:** **Joyal–Street (1991) "The geometry of tensor calculus"** — *diagram
+  isotopy = equality*, the topological-equality bridge itself; **Abramsky & Coecke** (LICS 2004) and
+  Coecke–Kissinger for CQM/ZX as an interpretation-functor; **Grothendieck** (*Pursuing Stacks*) /
+  Baez–Dolan for the homotopy hypothesis.
+  **SCOPE, as the source doc itself insists** (`docs/research/2026-07-08-hott-is-the-equality-theory-for-deformed-hkts-free-braided-monoidal-category-cqm-fsharp-fork.md`
+  §4 "honest ledger"): **F# is NOT a HoTT proof assistant** — no path types, no univalence, no
+  dependent types; today's F# "HKT" is *simulated* (defunctionalisation / the brand trick). The gap
+  between F# and HoTT is **dependent types**, not HKT — they are different asks. Two-lane split:
+  **F# carries runtime; the proof assistant certifies the equalities.** And "all related" ≠ "all
+  done" — each link (braided→CQM, braided→HoTT, Clifford→braided) is a *specific functor to
+  construct*, not inherited by noticing the connection.
+  **Why this entry exists:** the anchors were correctly recorded in that research doc on 2026-07-08
+  and never propagated here, so a repo-wide content search for `HoTT` / `univalence` / `cubical` /
+  `Voevodsky` returned **zero hits** on 2026-08-01 — the work was reachable only by filename. An
+  unindexed anchor is indistinguishable from an absent one, and was twice mistaken for absence.
 - **Pierre-Philippe Dechant (2016) — "The E8 geometry from a Clifford perspective" (Advances in
   Applied Clifford Algebras 27, 397–421; arXiv:1603.06682)** — the Weyl group W(E8) is realized by
   **Clifford versors** (the pin/spin cover), constructed in **Cl(8,0)**. This is the honest anchor
