@@ -1081,8 +1081,30 @@ jobs:
             sleep "$backoff"
           done
 
-      - name: Run markdownlint
-        run: mise exec -- markdownlint-cli2 "**/*.md"
+      - name: Run markdownlint (scoped to the PR's own diff on pull_request)
+        # Drift-and-heal ADR item 4 (workitem 081KX3KA3ES08QG0R003TW3XDE, the
+        # priority-inversion fix): on pull_request this job fails ONLY on
+        # findings in files the PR itself touches; findings in unrelated files
+        # print as out-of-scope drift (informational — the drift-sweep ledger
+        # on main owns them, and the SLO auto-files work when they linger).
+        # On push/main the whole tree still lints: that run IS the detector.
+        # HEAD is the merge commit on pull_request, so HEAD^1..HEAD is exactly
+        # this PR's changes against current main — no user-controlled ref
+        # names touched (safe-pattern: first-party context only). The
+        # `|| true` inside the group is load-bearing: the default shell is
+        # `bash -e -o pipefail`, and the verdict must come from scoped-lint
+        # (rightmost pipe stage), not the raw linter.
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            git fetch --deepen=1 origin
+            git diff --name-only HEAD^1 HEAD > /tmp/changed-files.txt
+            git ls-files > /tmp/tracked-files.txt
+            { mise exec -- markdownlint-cli2 "**/*.md" 2>&1 || true; } \
+              | mise exec -- bun src/Core.TypeScript/hygiene/scoped-lint.ts \
+                  --changed /tmp/changed-files.txt --tracked /tmp/tracked-files.txt
+          else
+            mise exec -- markdownlint-cli2 "**/*.md"
+          fi
 
   lint-typescript:
     # The TypeScript member of the per-language lint family (lint (F#) / (C#) /
