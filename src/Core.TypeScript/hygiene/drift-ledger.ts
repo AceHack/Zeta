@@ -305,9 +305,11 @@ function runSloFile(dir: string, cfg: SloConfig, workitemsDir: string): void {
     };
     const minted = mintWorkItem(spec, SYSTEM_ENV);
     const path = join(workitemsDir, minted.filename);
-    if (existsSync(path)) throw new Error(`drift-slo: refusing to overwrite ${path}`);
     mkdirSync(workitemsDir, { recursive: true });
-    writeFileSync(path, minted.content, "utf8");
+    // flag "wx" = atomic create-exclusive: throws EEXIST instead of clobbering,
+    // with no check-then-write race (CodeQL js/file-system-race on the
+    // existsSync form; collision itself is astronomically unlikely — 128-bit id).
+    writeFileSync(path, minted.content, { encoding: "utf8", flag: "wx" });
     const ev = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor, workItemEventsRoot(workitemsDir), false);
     if (ev.kind === "collision") throw new Error(`drift-slo: event collision at ${ev.path}`);
     next[b.rule] = { workitem: minted.zetaid, filedAtTick: report.latestTick };
