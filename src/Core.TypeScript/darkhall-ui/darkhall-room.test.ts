@@ -1,6 +1,11 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { BROWSER_NODE_SCHEMA } from "../browser-node/browser-node";
+import {
+  BROWSER_TAB_COORDINATOR_SCHEMA,
+  type BrowserTabCoordinatorReadout,
+} from "../browser-node/browser-tab-coordinator";
 import {
   BLACK_BODY_READOUT_SCHEMA,
   classifyHeatKind,
@@ -135,6 +140,37 @@ const transcriptContinuationReadout = {
   admissionFeedback: [],
 } as const;
 
+const browserTabReadout: BrowserTabCoordinatorReadout = {
+  schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+  nodeSchema: BROWSER_NODE_SCHEMA,
+  nodeId: "llmtv-room-a",
+  localTabId: "tab-a",
+  tabs: [
+    { tabId: "tab-a", sequence: 4, state: "foreground" },
+    { tabId: "tab-b", sequence: 2, state: "background" },
+    { tabId: "tab-<dark>", sequence: 9, state: "dark" },
+  ],
+  liveness: {
+    runtime: "node-capable",
+    availability: "live",
+    continuity: "multi-tab",
+    zetaAlive: true,
+    criticalPathEligible: false,
+    checkpoint: "durable",
+    openTabIds: ["tab-a", "tab-b"],
+    liveTabIds: ["tab-a", "tab-b"],
+    suspendedTabIds: [],
+    darkTabIds: ["tab-<dark>"],
+  },
+  feedback: [
+    {
+      severity: "backpressure",
+      code: "tab-capacity-exhausted",
+      detail: "The bounded readout retained its current peers.",
+    },
+  ],
+};
+
 const transcript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "darkhall",
@@ -230,6 +266,35 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain("<dt>skew</dt><dd>0</dd>");
     expect(html).toContain("<dt>resume</dt><dd>resumable</dd>");
     expect(html).toContain(`<code>${continuationToken}</code>`);
+  });
+
+  it("projects browser tab ownership and liveness into CSS-addressable room state", () => {
+    const html = renderDarkHallRoomHtml({ ...transcript, browserTabReadout });
+
+    expect(html).toContain(`data-browser-tab-readout="${BROWSER_TAB_COORDINATOR_SCHEMA}"`);
+    expect(html).toContain('data-browser-node="llmtv-room-a"');
+    expect(html).toContain('data-browser-local-tab="tab-a"');
+    expect(html).toContain('data-browser-local-state="foreground"');
+    expect(html).toContain('data-browser-availability="live"');
+    expect(html).toContain('data-browser-continuity="multi-tab"');
+    expect(html).toContain('data-browser-alive="true"');
+    expect(html).toContain('data-browser-feedback="1"');
+    expect(html).toContain("--browser-tab-count:3");
+    expect(html).toContain("--browser-live-ratio:0.6667");
+    expect(html).toContain('data-tab="tab-a" data-state="foreground" data-local="true"');
+    expect(html).toContain('data-tab="tab-&lt;dark&gt;" data-state="dark" data-local="false"');
+    expect(html).not.toContain("tab-<dark>");
+    expect(html).not.toContain("<script");
+    expect(css).toContain('.zeta-browser-tab[data-local="true"]');
+    expect(css).toContain("var(--browser-live-ratio, 0)");
+    expect(css).not.toContain("animation:");
+  });
+
+  it("keeps browser tab rendering additive for transcripts without a readout", () => {
+    const html = renderDarkHallRoomHtml(transcript);
+
+    expect(html).not.toContain("zeta-room-browser");
+    expect(html).not.toContain("data-browser-tab-readout");
   });
 
   it("normalizes sparse controller cells without letting callers resize the grid", () => {

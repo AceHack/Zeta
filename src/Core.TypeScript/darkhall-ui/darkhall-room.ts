@@ -12,6 +12,7 @@ import {
   type TemperatureReadout,
   type TemperatureTreatyBundle,
 } from "./heat";
+import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
 import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp, PhaseClockReadout } from "./darkhall-tv";
 
 export {
@@ -142,6 +143,7 @@ export interface RoomRunTranscript {
   readonly travelerFrame?: TranscriptTravelerFrame;
   readonly phaseClock?: PhaseClockReadout;
   readonly continuationReadout?: TranscriptContinuationReadout;
+  readonly browserTabReadout?: BrowserTabCoordinatorReadout;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -312,6 +314,64 @@ function renderContinuationReadout(readout: TranscriptContinuationReadout | unde
     `<div><dt>feedback</dt><dd>${escapeHtml(feedback)}</dd></div>`,
     `<div><dt>token</dt><dd><code>${escapeHtml(token)}</code></dd></div>`,
     "</dl>",
+    "</section>",
+  ].join("");
+}
+
+function renderBrowserTabReadout(readout: BrowserTabCoordinatorReadout | undefined): string {
+  if (readout === undefined) return "";
+
+  const localState = readout.tabs.find((tab) => tab.tabId === readout.localTabId)?.state ?? "untracked";
+  const heatCount = readout.feedback.filter((feedback) => feedback.severity === "heat").length;
+  const pressureCount = readout.feedback.length - heatCount;
+  const liveCount = readout.liveness.liveTabIds.length;
+  const liveRatio = readout.tabs.length === 0 ? 0 : liveCount / readout.tabs.length;
+  const style = [
+    `--browser-tab-count:${readout.tabs.length.toString()}`,
+    `--browser-live-count:${liveCount.toString()}`,
+    `--browser-live-ratio:${liveRatio.toFixed(4)}`,
+    `--browser-feedback-count:${readout.feedback.length.toString()}`,
+  ].join(";");
+
+  return [
+    `<section class="zeta-room-browser"`,
+    attr("aria-label", "Browser node continuity"),
+    attr("data-browser-tab-readout", readout.schema),
+    attr("data-browser-node", readout.nodeId),
+    attr("data-browser-local-tab", readout.localTabId),
+    attr("data-browser-local-state", localState),
+    attr("data-browser-availability", readout.liveness.availability),
+    attr("data-browser-continuity", readout.liveness.continuity),
+    attr("data-browser-alive", readout.liveness.zetaAlive),
+    attr("data-browser-feedback", readout.feedback.length),
+    attr("style", style),
+    ">",
+    '<header class="zeta-browser-header">',
+    "<h2>Browser node</h2>",
+    `<p>${escapeHtml(readout.liveness.availability)} · ${escapeHtml(readout.liveness.continuity)}</p>`,
+    "</header>",
+    '<dl class="zeta-browser-summary">',
+    `<div><dt>node</dt><dd>${escapeHtml(readout.nodeId)}</dd></div>`,
+    `<div><dt>tabs</dt><dd>${readout.tabs.length.toString()}</dd></div>`,
+    `<div><dt>live</dt><dd>${liveCount.toString()}</dd></div>`,
+    `<div><dt>pressure</dt><dd>${pressureCount.toString()}</dd></div>`,
+    `<div><dt>heat</dt><dd>${heatCount.toString()}</dd></div>`,
+    '<div class="zeta-browser-meter" aria-hidden="true"></div>',
+    "</dl>",
+    '<ol class="zeta-browser-tabs">',
+    ...readout.tabs.map((tab) =>
+      [
+        '<li class="zeta-browser-tab"',
+        attr("data-tab", tab.tabId),
+        attr("data-state", tab.state),
+        attr("data-local", tab.tabId === readout.localTabId),
+        ">",
+        `<span class="zeta-browser-tab-id">${escapeHtml(tab.tabId)}</span>`,
+        `<span class="zeta-browser-tab-state">${escapeHtml(tab.state)}</span>`,
+        "</li>",
+      ].join(""),
+    ),
+    "</ol>",
     "</section>",
   ].join("");
 }
@@ -511,6 +571,8 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const phaseClock = phaseClockReadout(transcript);
   const continuation = transcript.continuationReadout;
   const continuationStatusValue = continuation === undefined ? undefined : continuationStatus(continuation);
+  const browser = transcript.browserTabReadout;
+  const browserLocalState = browser?.tabs.find((tab) => tab.tabId === browser.localTabId)?.state ?? undefined;
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
   return [
@@ -544,6 +606,14 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-continuation-stop", continuation?.stopReason),
     attr("data-continuation-next-lap", continuation?.nextLap),
     attr("data-continuation-resume-base-tick", continuation?.resumeBaseTick),
+    attr("data-browser-tab-readout", browser?.schema),
+    attr("data-browser-node", browser?.nodeId),
+    attr("data-browser-local-tab", browser?.localTabId),
+    attr("data-browser-local-state", browserLocalState),
+    attr("data-browser-availability", browser?.liveness.availability),
+    attr("data-browser-continuity", browser?.liveness.continuity),
+    attr("data-browser-alive", browser?.liveness.zetaAlive),
+    attr("data-browser-feedback", browser?.feedback.length),
     ">",
     '<header class="zeta-room-header">',
     `<h1>${escapeHtml(transcript.roomName)}</h1>`,
@@ -558,6 +628,12 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     `<div><dt>skew</dt><dd>${phaseClock.skewBoundTicks.toString()}</dd></div>`,
     `<div><dt>resume</dt><dd>${escapeHtml(continuationStatusValue ?? "none")}</dd></div>`,
     `<div><dt>signals</dt><dd>${escapeHtml(heat.signals.join(", ") || "cold")}</dd></div>`,
+    ...(browser === undefined
+      ? []
+      : [
+          `<div><dt>tabs</dt><dd>${browser.tabs.length.toString()}</dd></div>`,
+          `<div><dt>live tabs</dt><dd>${browser.liveness.liveTabIds.length.toString()}</dd></div>`,
+        ]),
     "</dl>",
     "</header>",
     '<section class="zeta-room-controller" aria-label="Dark Hall controller readout">',
@@ -571,6 +647,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     "</ol>",
     "</section>",
     renderContinuationReadout(continuation),
+    renderBrowserTabReadout(browser),
     ...(transcript.sLanes && transcript.sLanes.length > 0
       ? [
           '<section class="zeta-room-coordination" aria-label="Coordination board (CHSH S-lanes; above 2 convicts a common cause)">',

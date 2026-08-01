@@ -80,6 +80,7 @@ export interface BrowserTabCoordinatorReadout {
   readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
   readonly nodeSchema: typeof BROWSER_NODE_SCHEMA;
   readonly nodeId: string;
+  readonly localTabId: string;
   readonly tabs: readonly BrowserTabPresence[];
   readonly liveness: BrowserLivenessReadout;
   readonly feedback: readonly (BrowserNodeFeedback | BrowserTabCoordinatorFeedback)[];
@@ -225,6 +226,7 @@ export function startBrowserTabCoordinator(
       schema: BROWSER_TAB_COORDINATOR_SCHEMA,
       nodeSchema: node.schema,
       nodeId: options.nodeId,
+      localTabId: options.tabId,
       tabs,
       liveness: node.liveness,
       feedback: [...node.feedback, ...(observerFailure === null ? [] : [observerFailure]), ...eventFeedback],

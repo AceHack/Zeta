@@ -112,6 +112,8 @@ describe("browser tab coordinator", () => {
     const tabA = started(startBrowserTabCoordinator(options("tab-a"), bus.connect()));
     const tabB = started(startBrowserTabCoordinator(options("tab-b"), bus.connect()));
 
+    expect(tabA.read().localTabId).toBe("tab-a");
+    expect(tabB.read().localTabId).toBe("tab-b");
     expect(tabA.read().liveness).toMatchObject({ continuity: "multi-tab", liveTabIds: ["tab-a", "tab-b"] });
     expect(tabB.read().liveness).toMatchObject({ continuity: "multi-tab", liveTabIds: ["tab-a", "tab-b"] });
 
