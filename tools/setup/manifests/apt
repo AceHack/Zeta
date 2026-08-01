@@ -102,3 +102,35 @@ cvc5
 # skips the lane; fix = add the matching cubical release row). agda-stdlib is
 # deliberately NOT required: the cubical library is independent of it.
 agda
+
+# ── WASM toolchain (Oracle 10 / DLA multi-compiler substrate) ─────────────────
+# Three compilers proved substrate-independence of D_f ≈ 1.322 (Oracle 10):
+#   WAT (bare metal), AssemblyScript (TypeScript→WASM), Go (GOOS=js GOARCH=wasm).
+# A fourth compiler (Emscripten, C→WASM) is the next substrate (Conjecture Z-7).
+# All four compilers must be present on every cluster node and CI runner so the
+# WASM oracle build is reproducible in desired-state (not "works on my machine").
+#
+# wabt: WebAssembly Binary Toolkit — wat2wasm, wasm2wat, wasm-validate, wasm-strip.
+#   Noble (24.04): wabt in universe apt. Provides the WAT (bare-metal) compiler.
+#   Verified present: apt-cache show wabt (Noble 1.0.33-1).
+wabt
+#
+# binaryen: wasm-opt, wasm-as, wasm-dis — WASM optimizer and toolchain.
+#   Noble: binaryen in universe apt. Used by AssemblyScript (asc) internally for
+#   optimization passes. Also provides wasm-opt for post-compile size reduction.
+#   Verified present: apt-cache show binaryen (Noble 114-1).
+binaryen
+#
+# emscripten: C/C++ → WASM compiler (LLVM-based, Emscripten SDK). Provides emcc.
+#   Noble: emscripten in universe apt (3.x). Fourth WASM compiler substrate.
+#   Rationale: C is the most historically significant compiled language; having
+#   WAT + ASC + Go + C in the same panel makes the compiler-independence claim
+#   nearly exhaustive (Conjecture Z-7: binary_size ⊥ D_f across all compilers).
+#   Verified present: apt-cache show emscripten (Noble 3.1.6~dfsg-1).
+emscripten
+#
+# AssemblyScript (asc) is installed via pnpm (already in mise) at the project
+# level — it is NOT an apt package. The asc binary is available after
+# `pnpm add -g assemblyscript` or via the project's node_modules/.bin/asc.
+# nodejs is required as the asc runtime host.
+nodejs          # AssemblyScript runtime host (asc CLI requires Node.js)

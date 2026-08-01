@@ -194,6 +194,15 @@
             yq-go
             ripgrep
             fd
+
+            # ── WASM toolchain (Oracle 10 / DLA multi-compiler substrate) ───────
+            # Mirrors common.nix systemPackages. Available in `nix develop` so
+            # contributors can rebuild all four WASM compiler outputs locally
+            # and verify Conjecture Z-7 (binary_size ⊥ D_f) on any host.
+            wabt        # wat2wasm, wasm2wat, wasm-validate (WAT bare-metal substrate)
+            binaryen    # wasm-opt, wasm-as (AssemblyScript optimizer + WASM IR tools)
+            emscripten  # emcc (C/C++ → WASM, fourth compiler substrate)
+            nodejs      # AssemblyScript (asc) runtime host
           ];
 
           shellHook = ''

@@ -110,3 +110,27 @@ eprover
 # ~1.5 GB; slim hosts skip, and agda-cubical.sh skips gracefully without it).
 agda tier=standard
 
+
+# ── WASM toolchain (Oracle 10 / DLA multi-compiler substrate) ─────────────────
+# Mirrors the apt manifest additions. All four WASM compilers must be present
+# on every developer workstation (macOS) so the Oracle 10 build is reproducible
+# in desired-state. Desired-state rationale: Conjecture Z-7 (binary_size ⊥ D_f)
+# requires all four compilers to produce binaries that can be re-verified at any
+# time on any host — not just the CI runner that first built them.
+#
+# wabt: WebAssembly Binary Toolkit — wat2wasm, wasm2wat, wasm-validate, wasm-strip.
+#   Provides the WAT (bare-metal) compiler substrate. Bottled arm64+x86_64.
+#   Verified: brew formula `wabt` (2.0.36). Idempotent.
+wabt
+#
+# binaryen: wasm-opt, wasm-as, wasm-dis — WASM optimizer and toolchain.
+#   Used by AssemblyScript (asc) internally. Bottled arm64+x86_64.
+#   Verified: brew formula `binaryen` (119). Idempotent.
+binaryen
+#
+# emscripten: C/C++ → WASM compiler (LLVM-based). Provides emcc.
+#   Fourth WASM compiler substrate (C language). Bottled arm64+x86_64.
+#   Verified: brew formula `emscripten` (4.x). Idempotent.
+#   NOTE: emscripten pulls llvm as a dep (~500 MB); tier=standard to avoid
+#   adding 500 MB to slim/CI-only hosts that don't need C→WASM compilation.
+emscripten tier=standard
