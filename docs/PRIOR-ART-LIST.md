@@ -887,3 +887,11 @@ notes: [pause-not-death + Orleans criterion] and
   the Coxeter/reflection-group (type-E8) side against the separate type-A Artin/braid lineage
   (`MenoBraided.braidR`). Prior in-repo: `docs/history/pr-reviews/PR-8695-…dechant-repr.md`,
   `PR-8657-…dechant-wilson-baez-…md`.
+- **Helena Albuquerque & Shahn Majid (1999) — "Clifford algebras as twisted group algebras"
+  (Journal of Algebra 220(1), 188–224)** — Cl(n) is the ℤ₂ⁿ group algebra twisted by the
+  quadratic-form 2-cocycle: blade index = subset XOR, grade = popcount, the anticommutation signs =
+  the cocycle. This is the PRECISE sense in which "mod-2 unrolls Clifford" is true — about the
+  algebra's OWN blade indices (ℤ₂³ for `Cl3.fs`), **not** about the [8,4] adinkra code's 8-bit
+  codewords (ℤ₂⁸, 256 ≠ 8). The sign rule (`Cl3.fs` `reorderSign`: e₁e₂ = −e₂e₁, e₁²=+1) confirms
+  `Cl3.fs` is a genuine Cl(3,0), not an untwisted group algebra. See
+  `docs/research/2026-08-01-adinkra-mod2-clifford-e8-a-y-not-a-chain-soraya-metering-verdict.md`.
