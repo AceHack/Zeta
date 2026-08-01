@@ -110,6 +110,63 @@ module DebouncedOracleConfig =
         1.0 - effectiveCorrelation cfg
 
 
+/// **What the debounce ACTUALLY observed** — the measured counterpart to the declared ρ.
+///
+/// WHY THIS EXISTS (2026-08-01). `EffectiveCorrelation` is a pure function of `config`:
+/// ρ = 1/(1+MinDelay). It never touches a reading. So the module that exists to GUARANTEE
+/// decorrelation published a decorrelation figure that no observed behaviour could ever
+/// contradict — a claim with no falsifier, in the module built to prove it.
+///
+/// These are the quantities the oracle can actually measure, and they are cheap: it already
+/// computes `elapsed` on every callback and throws it away.
+///
+///   - `Accepted` / `Suppressed` — if `Suppressed = 0` the debounce is provably INERT no matter
+///     what ρ claims; if it is ~everything, MinDelay is blinding the sensor. Either is a finding.
+///   - `MinObservedGap` / `MaxObservedGap` — is the configured L anywhere near reality?
+///
+/// Deliberately NOT here: measured autocorrelation. That needs comparable readings, and
+/// `DebouncedOracle<'T>` is generic over opaque 'T. Reporting 0.0 for "cannot measure" would be
+/// the same conflation this record exists to break — see `ObservedCorrelation` below, which is an
+/// `option` so "unmeasurable" and "measured zero" stay distinct.
+type DebounceObservation =
+    { /// Readings that passed the MinDelay gate.
+      Accepted: int
+      /// Readings dropped as within-window (the claimed "self-emission" case).
+      Suppressed: int
+      /// Smallest gap between two ACCEPTED readings, in seconds. `None` until 2 are accepted.
+      MinObservedGap: float option
+      /// Largest gap between two accepted readings, in seconds.
+      MaxObservedGap: float option }
+
+[<RequireQualifiedAccess>]
+module DebounceObservation =
+
+    let empty =
+        { Accepted = 0; Suppressed = 0; MinObservedGap = None; MaxObservedGap = None }
+
+    /// Total readings the oracle saw (accepted + suppressed).
+    let total (o: DebounceObservation) : int = o.Accepted + o.Suppressed
+
+    /// Fraction of readings suppressed. `None` when nothing was seen — NOT 0.0, which would
+    /// read as "nothing was suppressed" and is a different fact from "nothing arrived".
+    let suppressionRate (o: DebounceObservation) : float option =
+        match total o with
+        | 0 -> None
+        | n -> Some(float o.Suppressed / float n)
+
+    /// **The falsifier.** The debounce is INERT when it saw readings and suppressed none: the
+    /// declared ρ then rests entirely on a constant, because the gate never fired. This is the
+    /// check that `EffectiveCorrelation` alone can never fail.
+    let isInert (o: DebounceObservation) : bool =
+        total o > 0 && o.Suppressed = 0
+
+    /// Does the observed gap distribution actually straddle the configured MinDelay? If every
+    /// observed gap is far above it, the gate is decorative; the source was already slow enough.
+    let gateIsBinding (cfg: DebouncedOracleConfig) (o: DebounceObservation) : bool option =
+        match o.MinObservedGap with
+        | None -> None
+        | Some g -> Some(g < cfg.MinDelay.TotalSeconds * 2.0)
+
 /// A debounced oracle: an `IObservable<'T>` that suppresses readings that
 /// arrive within `MinDelay` of the last accepted reading.
 ///
@@ -126,9 +183,18 @@ type DebouncedOracle<'T>(source: IObservable<'T>, config: DebouncedOracleConfig)
     // fenced wall-clock door instead — see Subscribe.
     let mutable dstTick = 0L
     let mutable subscription: IDisposable = null
+    // Measured counterpart to the DECLARED rho. See DebounceObservation for why.
+    let mutable observation = DebounceObservation.empty
 
-    /// The effective correlation ρ for this oracle's MinDelay.
+    /// The **declared** correlation ρ for this oracle's MinDelay: ρ = 1/(1+L).
+    /// A pure function of config — it is what we ASSERT, not what we observed.
+    /// Compare against `Observation` before trusting it; see `DebounceObservation.isInert`.
     member _.EffectiveCorrelation = DebouncedOracleConfig.effectiveCorrelation config
+
+    /// **What actually happened** — accepted/suppressed counts and the observed gap range.
+    /// This is the falsifier for `EffectiveCorrelation`: a debounce that suppressed nothing
+    /// leaves the declared ρ resting entirely on a constant nobody checked.
+    member _.Observation = observation
 
     /// The Condorcet bonus (independence value) for this oracle's MinDelay.
     member _.CondorcetBonus = DebouncedOracleConfig.condorcetBonus config
@@ -162,13 +228,38 @@ type DebouncedOracle<'T>(source: IObservable<'T>, config: DebouncedOracleConfig)
             if elapsed >= config.MinDelay then
                 // L > 0: this reading is from the world, not from the sender.
                 // Accept it — this is a fixation.
+                //
+                // Record the observed gap BEFORE advancing lastAccepted. Only gaps between two
+                // ACCEPTED readings are meaningful; the first acceptance has no predecessor
+                // (lastAccepted is still DateTime.MinValue) so it contributes no gap — recording
+                // it would report a ~millennium-long interval as the minimum.
+                let isFirst = (lastAccepted = DateTime.MinValue)
+                let gapSeconds = elapsed.TotalSeconds
                 lastAccepted <- now
+                observation <-
+                    { observation with
+                        Accepted = observation.Accepted + 1
+                        MinObservedGap =
+                            if isFirst then observation.MinObservedGap
+                            else Some(match observation.MinObservedGap with
+                                      | None -> gapSeconds
+                                      | Some m -> min m gapSeconds)
+                        MaxObservedGap =
+                            if isFirst then observation.MaxObservedGap
+                            else Some(match observation.MaxObservedGap with
+                                      | None -> gapSeconds
+                                      | Some m -> max m gapSeconds) }
                 match config.SyncContext with
                 | None    -> subject.OnNext value
                 | Some sc -> sc.Post((fun _ -> subject.OnNext value), null)
-            // else: L = 0 (within debounce window) — suppress.
-            //   This reading is correlation-to-one: the oracle is hearing
-            //   its own emission. Drop it. This is a saccade.
+            else
+                // L = 0 (within debounce window) — suppress.
+                //   This reading is correlation-to-one: the oracle is hearing
+                //   its own emission. Drop it. This is a saccade.
+                //
+                // COUNTED, not just dropped: a debounce that suppresses nothing is inert, and
+                // that is invisible unless someone counts. See DebounceObservation.isInert.
+                observation <- { observation with Suppressed = observation.Suppressed + 1 }
         )
 
     /// The debounced observable stream.
