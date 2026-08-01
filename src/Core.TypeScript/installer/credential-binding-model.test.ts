@@ -25,13 +25,13 @@ describe("bindingMaterialForContext", () => {
       FIXTURE_ENCRYPT_CTX.usbUuid,
     );
     expect(bindingMaterialForContext("usbISerial", FIXTURE_ENCRYPT_CTX)).toBe(
-      FIXTURE_ENCRYPT_CTX.usbISerial,
+      FIXTURE_ENCRYPT_CTX.usbISerial ?? null,
     );
     expect(bindingMaterialForContext("uefiKeyfile", FIXTURE_ENCRYPT_CTX)).toBe(
-      FIXTURE_ENCRYPT_CTX.uefiKeyfile,
+      FIXTURE_ENCRYPT_CTX.uefiKeyfile ?? null,
     );
     expect(bindingMaterialForContext("tpmSeal", FIXTURE_ENCRYPT_CTX)).toBe(
-      FIXTURE_ENCRYPT_CTX.tpmSeal,
+      FIXTURE_ENCRYPT_CTX.tpmSeal ?? null,
     );
   });
 

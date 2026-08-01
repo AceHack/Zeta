@@ -127,10 +127,6 @@ function getActualBinarySize(compiler: Compiler): number {
     ASC: path.join(__dirname, "../../wasm-dla/assemblyscript/build/release.wasm"),
     Go: path.join(__dirname, "../../wasm-dla/go/main.wasm"),
   };
-  const p = paths[compiler];
-  if (fs.existsSync(p)) {
-    return fs.statSync(p).size;
-  }
   const recorded = BINARY_SIZES[compiler];
   if (recorded === undefined) {
     // Fail loudly: a silent 0 here would quietly corrupt the correlation being discharged.

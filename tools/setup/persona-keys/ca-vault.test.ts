@@ -22,7 +22,7 @@ describe("ca-vault integration", () => {
     } as any);
 
     expect(res.provider).toBe("local-ca");
-    expect(res.certResult).toBeDefined();
+    expect(res.certText).toBeDefined();
   });
 
   it("issues cert via mock Vault endpoint", async () => {
