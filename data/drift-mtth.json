@@ -1,0 +1,26 @@
+{
+  "latestTick": 3,
+  "classes": [
+    {
+      "rule": "MD022",
+      "healedCount": 1,
+      "mtthTicks": 1,
+      "openCount": 0,
+      "oldestOpenAgeTicks": null
+    },
+    {
+      "rule": "MD032",
+      "healedCount": 1,
+      "mtthTicks": 1,
+      "openCount": 0,
+      "oldestOpenAgeTicks": null
+    },
+    {
+      "rule": "MD038",
+      "healedCount": 1,
+      "mtthTicks": 1,
+      "openCount": 0,
+      "oldestOpenAgeTicks": null
+    }
+  ]
+}
