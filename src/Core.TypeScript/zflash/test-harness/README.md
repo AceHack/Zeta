@@ -175,7 +175,7 @@ When a scenario transitions to composes-with-existing:
 | 4 path-fork       | `workflow_dispatch` on ISO workflow        | `ZFLASH_QEMU_PATH_FORK_EXECUTE=1` + bootstrap; fork boots stop on 081KSNY2Z0008QG0R0008PN7RQ markers only (one full install in bootstrap) |
 | 5 cluster-join    | skipped in harness                         | multi-VM orchestration pending                                                                                        |
 
-Dry-run + unit invariants: `.github/workflows/zflash-qemu-test.yml` on every harness-touching PR.
+Dry-run + unit invariants: `.github/workflows/zflash-harness-lint.yml` on every harness-touching PR.
 
 Prepare a retention boot image locally:
 

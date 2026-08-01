@@ -7,7 +7,19 @@
 # Runtime QEMU execution remains opt-in from the CLI until the stateful
 # scenarios are fully wired and cheap enough for PR-time CI.
 
-name: zflash-qemu-test
+name: zflash-harness-lint
+#
+# RENAMED 2026-08-01 (was `zflash-qemu-test`). It never invoked qemu — no `qemu-system`, no
+# `qemu-img`, no qemu install anywhere in the file; the single job is `zflash-qemu-harness-dry-run`
+# and it runs `bun test` on library files. Three consecutive green runs therefore meant "the
+# harness invariants hold", NOT "a boot was validated" — and it is the workflow anyone would check
+# when asking "is flashing tested?".
+#
+# The REAL boot coverage lives in `build-ai-cluster-iso.yml`: it installs qemu-system-x86 + ovmf,
+# boots the built image, and captures serial logs as artifacts. That one is genuinely green.
+#
+# A green check that implies more than it tested is worse than no check. This name now matches
+# what the job does.
 
 on:
   schedule:
