@@ -238,3 +238,175 @@ module MigrationZ =
               To = fromV + 1
               Up = composeAll upSteps
               Down = Some(composeAll downSteps) }
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  SchemaLog — the EVENT LOG whose fold IS the schema
+//  (081KYWE8Q4008QG0R000H558SH, increment 1).
+//
+//  Aaron 2026-07-31: schema-on-ZSets is "our entire db stored-proc
+//  architecture long term." Design source:
+//  docs/research/2026-07-01-the-polymorphic-zset-base-atom-open-generics-
+//  dispatch-and-schema-as-events-on-the-zset.md §5.
+//
+//  The layer above `SchemaZ`'s deltas: a schema is NOT a desired-state map
+//  that someone edits. It is the FOLD of an append-only log of events, each
+//  carrying a +1 (grant/add) or −1 (revoke/drop) Z-set weight. The CURRENT
+//  schema is the consolidated Z-set at a position in that log; a schema
+//  VERSION is a prefix, not a privileged integer. Revoke ≡ Z-set retraction.
+//
+//  Three properties fall out of the Z-set abelian group, and each is a
+//  quantified law in SchemaZ.Tests.fs — not a hope:
+//   • ORDER-INDEPENDENCE — `+` is commutative + associative, so folding the
+//     same event set in ANY order gives the same schema. This is the
+//     load-bearing DST / merge property (multi-writer, out-of-order delivery).
+//   • REPLAY / PREFIX-SPLIT — folding a prefix then the rest == folding all.
+//     Checkpoint-and-resume is arithmetic, not a special code path.
+//   • RETRACTION CANCELS — grant then revoke ⇒ weight 0 ⇒ the row drops out
+//     of the fold entirely. The field is *absent*, not tombstoned.
+//
+//  IDEMPOTENCY — stated honestly, both halves (discipline #6 says: make it
+//  idempotent by key, or NAME where it is not):
+//   • REDELIVERY of the SAME event IS idempotent. `EventId` is the
+//     idempotency key; `dedupe` collapses byte-identical redeliveries by the
+//     WHOLE event (id AND op) before the fold, so at-least-once transports
+//     are safe: `current (log @ log) = current log`.
+//   • DUPLICATE INTENT is deliberately NOT idempotent. Two DISTINCT events
+//     (different ids) that both add the same field fold to weight 2 — a
+//     DETECTED conflict (`SchemaZ.wellFormed` = false, `SchemaZ.conflicts`
+//     names the row), never a silent last-writer-wins overwrite. Z-set `+`
+//     is sum, not G-Set union; that is the whole point of using ℤ weights.
+//   • An `EventId` reused for a DIFFERENT op is neither deduped nor
+//     resolved — `idCollisions` reports it as the neutral FACT it is and
+//     leaves the reading (retry-with-drift? forged id? two writers, one
+//     counter?) to caller policy (`dual-use-detection-is-neutral-oracle-decides`).
+// ═══════════════════════════════════════════════════════════════════
+
+/// A schema-plane intent. Each op denotes a Z-set delta (`SchemaOp.delta`)
+/// and has an exact additive inverse (`SchemaOp.invert`) — the ring gives
+/// undo for free, so there is no hand-written Down on this plane.
+type SchemaOp =
+    /// Grant: the field becomes present. (+1 on the (name, type) pair.)
+    | AddField of added: FieldId
+    /// Revoke: the field becomes absent. (−1 — a retraction, the antiparticle.)
+    | DropField of dropped: FieldId
+    /// Retract the old identity, insert the new. Never in-place mutation.
+    | RenameField of renameFrom: string * renameTo: string * renameType: DynamicValueType
+    /// Same retract+insert shape — the (name, type) PAIR is the identity.
+    | RetypeField of retypeName: string * fromType: DynamicValueType * toType: DynamicValueType
+
+/// One entry in the append-only schema log: an intent plus its idempotency
+/// key. `EventId` is a caller-supplied natural/dedup key (a ZetaId in
+/// production) — it exists so redelivery is safe, NOT so duplicate intent is
+/// hidden. Ordinal string identity throughout (`culture-invariant-by-default`).
+type SchemaEvent = { EventId: string; Op: SchemaOp }
+
+/// The log. Append-only; the current schema is its fold, never a stored map.
+type SchemaLog = SchemaEvent list
+
+[<RequireQualifiedAccess>]
+module SchemaOp =
+
+    /// The Z-set delta an op denotes — the ONLY bridge from intent to algebra.
+    [<CompiledName "Delta">]
+    let delta (op: SchemaOp) : SchemaZ =
+        match op with
+        | AddField fid -> SchemaZ.addFieldDelta fid.Name fid.Type
+        | DropField fid -> SchemaZ.removeFieldDelta fid.Name fid.Type
+        | RenameField (fromName, toName, ty) -> SchemaZ.renameFieldDelta fromName toName ty
+        | RetypeField (name, fromTy, toTy) -> SchemaZ.retypeFieldDelta name fromTy toTy
+
+    /// The op whose delta is the ring NEGATE of this one:
+    /// `delta (invert op) = -(delta op)` — proven, not asserted.
+    [<CompiledName "Invert">]
+    let invert (op: SchemaOp) : SchemaOp =
+        match op with
+        | AddField fid -> DropField fid
+        | DropField fid -> AddField fid
+        | RenameField (fromName, toName, ty) -> RenameField(toName, fromName, ty)
+        | RetypeField (name, fromTy, toTy) -> RetypeField(name, toTy, fromTy)
+
+[<RequireQualifiedAccess>]
+module SchemaEvent =
+
+    /// Mint an event: an idempotency key + an intent.
+    [<CompiledName "Create">]
+    let create (eventId: string) (op: SchemaOp) : SchemaEvent = { EventId = eventId; Op = op }
+
+    /// The Z-set delta this event contributes to the fold.
+    [<CompiledName "Delta">]
+    let delta (e: SchemaEvent) : SchemaZ = SchemaOp.delta e.Op
+
+    /// The compensating event — a NEW event (fresh id) that retracts this
+    /// one. The log is append-only: undo is an appended retraction, never an
+    /// erasure (§5 Memory Preservation).
+    [<CompiledName "Compensate">]
+    let compensate (eventId: string) (e: SchemaEvent) : SchemaEvent =
+        { EventId = eventId; Op = SchemaOp.invert e.Op }
+
+[<RequireQualifiedAccess>]
+module SchemaLog =
+
+    /// The empty log.
+    [<CompiledName "Empty">]
+    let empty: SchemaLog = []
+
+    /// Collapse redeliveries: distinct on the WHOLE event (id AND op),
+    /// first occurrence wins, order preserved. Deterministic, so DST
+    /// replays it; set-semantics, so it is itself idempotent + commutative.
+    [<CompiledName "Dedupe">]
+    let dedupe (log: SchemaEvent seq) : SchemaLog = log |> List.ofSeq |> List.distinct
+
+    /// Fold a log into a schema WITHOUT deduplication — the raw ℤ sum of
+    /// every event's delta. Honest about at-least-once transports: a
+    /// redelivered event doubles a weight here. Use `current` unless you
+    /// specifically want the raw arithmetic (the prefix-split law is stated
+    /// on this fold, because it holds unconditionally).
+    [<CompiledName "FoldRawFrom">]
+    let foldRawFrom (start: SchemaZ) (log: SchemaEvent seq) : SchemaZ =
+        log |> Seq.fold (fun acc e -> acc + SchemaEvent.delta e) start
+
+    /// `foldRawFrom` from the empty schema.
+    [<CompiledName "FoldRaw">]
+    let foldRaw (log: SchemaEvent seq) : SchemaZ = foldRawFrom SchemaZ.empty log
+
+    /// THE current schema: dedupe by event identity, then fold. Redelivery-safe
+    /// and order-independent — the two properties a replicated log needs.
+    [<CompiledName "CurrentFrom">]
+    let currentFrom (start: SchemaZ) (log: SchemaEvent seq) : SchemaZ =
+        foldRawFrom start (dedupe log)
+
+    /// `currentFrom` from the empty schema — the live schema of a log.
+    [<CompiledName "Current">]
+    let current (log: SchemaEvent seq) : SchemaZ = currentFrom SchemaZ.empty log
+
+    /// The schema AT version `n` = the fold of the first `n` events. A
+    /// version is a POSITION in the log, not a privileged integer stored
+    /// beside the data.
+    [<CompiledName "At">]
+    let at (n: int) (log: SchemaEvent seq) : SchemaZ =
+        current (log |> Seq.truncate (max 0 n))
+
+    /// The live fields of a log's current schema (weight-+1 rows).
+    [<CompiledName "Fields">]
+    let fields (log: SchemaEvent seq) : FieldId list = SchemaZ.fields (current log)
+
+    /// Rows the folded log cannot justify (weight ≠ +1), with their weights:
+    /// duplicate intent, revoke-before-grant, concurrent-merge conflict.
+    /// Empty ⇔ the current schema is well-formed.
+    [<CompiledName "Conflicts">]
+    let conflicts (log: SchemaEvent seq) : (FieldId * int64) list = SchemaZ.conflicts (current log)
+
+    /// Event ids carrying MORE THAN ONE distinct op — an idempotency key
+    /// that does not key one intent. Reported as the neutral fact; the
+    /// reading (retry drift / forged id / two writers sharing a counter) is
+    /// caller policy. Deterministic order: ids ascending in binary collation.
+    [<CompiledName "IdCollisions">]
+    let idCollisions (log: SchemaEvent seq) : (string * SchemaOp list) list =
+        dedupe log
+        |> List.groupBy (fun e -> e.EventId)
+        |> List.choose (fun (id, es) ->
+            match es |> List.map (fun e -> e.Op) |> List.distinct with
+            | [ _ ] -> None
+            | ops -> Some(id, ops))
+        |> List.sortWith (fun (a, _) (b, _) -> Collation.binary.Compare(a, b))

@@ -40,6 +40,32 @@ type private SchemaArb =
         }
         |> Arb.fromGen
 
+    // Event-log generators (increment 1). Ids come from a SMALL pool so that
+    // redeliveries (same id AND op) and id collisions (same id, different op)
+    // actually occur in generated logs — those collisions are exactly where
+    // the dedup/conflict story earns its keep.
+    static member SchemaOp() =
+        gen {
+            let! fid = SchemaArb.FieldId().Generator
+            let! other = SchemaArb.FieldId().Generator
+            let! which = Gen.choose (0, 3)
+            return
+                match which with
+                | 0 -> AddField fid
+                | 1 -> DropField fid
+                | 2 -> RenameField(fid.Name, other.Name, fid.Type)
+                | _ -> RetypeField(fid.Name, fid.Type, other.Type)
+        }
+        |> Arb.fromGen
+
+    static member SchemaEvent() =
+        gen {
+            let! id = Gen.elements [ "e1"; "e2"; "e3"; "e4"; "e5" ]
+            let! op = SchemaArb.SchemaOp().Generator
+            return SchemaEvent.create id op
+        }
+        |> Arb.fromGen
+
 // ── The ring theorem ─────────────────────────────────────────────────
 
 [<Property(Arbitrary = [| typeof<SchemaArb> |])>]
@@ -256,3 +282,172 @@ let ``compiled migrations slot into the SchemaEvolution.migrate stream`` () =
         | Ok back -> Assert.True((back = v))
         | Error e -> Assert.True(false, e)
     | Error e -> Assert.True(false, e)
+
+// ═══════════════════════════════════════════════════════════════════
+// Increment 1 (081KYWE8Q4008QG0R000H558SH) — SchemaLog: schema as EVENTS.
+//
+// The schema is the FOLD of an append-only +1/−1 event log, never a stored
+// desired-state map. Four laws carry the architecture; each is quantified,
+// not exemplified:
+//   L1  op inversion       — delta (invert op) = −(delta op)
+//   L2  order-independence — any permutation of the log folds to the same
+//                            schema (the load-bearing DST / merge property)
+//   L3  replay / prefix    — fold(prefix) then fold(rest) == fold(all)
+//   L4  retraction cancels — grant then revoke ⇒ weight 0 ⇒ field ABSENT
+// Plus idempotency, stated in BOTH directions (it holds for redelivery,
+// and it deliberately does NOT hold for duplicate intent).
+// ═══════════════════════════════════════════════════════════════════
+
+let private ev id op = SchemaEvent.create id op
+
+// ── L1: every op has an exact additive inverse ───────────────────────
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``L1 op inversion: delta (invert op) is the ring negate of delta op`` (op: SchemaOp) =
+    SchemaOp.delta (SchemaOp.invert op) = -(SchemaOp.delta op)
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``L1 invert is an involution`` (op: SchemaOp) =
+    SchemaOp.invert (SchemaOp.invert op) = op
+
+// ── L2: order-independence — the load-bearing DST / merge property ───
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``L2 order-independence: ANY permutation of the log folds to the SAME schema`` (log: SchemaEvent list) =
+    Prop.forAll (Arb.fromGen (Gen.shuffle log)) (fun perm ->
+        SchemaLog.current perm = SchemaLog.current log
+        && SchemaLog.foldRaw perm = SchemaLog.foldRaw log)
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``L2 corollary: two writers' logs merge to the same schema in either concatenation order``
+    (a: SchemaEvent list) (b: SchemaEvent list) =
+    SchemaLog.current (a @ b) = SchemaLog.current (b @ a)
+
+// ── L3: replay / prefix-split — checkpoint-and-resume is arithmetic ──
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``L3 replay: folding a prefix then the rest equals folding all`` (log: SchemaEvent list) (n: int) =
+    let k = if List.isEmpty log then 0 else abs n % (List.length log + 1)
+    let prefix = List.truncate k log
+    let rest = List.skip k log
+    SchemaLog.foldRawFrom (SchemaLog.foldRaw prefix) rest = SchemaLog.foldRaw log
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``L3 on a duplicate-free log the deduped fold IS the raw fold`` (log: SchemaEvent list) =
+    let clean = SchemaLog.dedupe log
+    SchemaLog.current clean = SchemaLog.foldRaw clean
+
+// ── L4: retraction cancels — revoke ≡ Z-set retraction ───────────────
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``L4 retraction cancels: appending a compensating event per entry folds back to the EMPTY schema``
+    (log: SchemaEvent list) =
+    let deduped = SchemaLog.dedupe log
+    let undo =
+        deduped
+        |> List.mapi (fun i e -> SchemaEvent.compensate (sprintf "undo-%d-%s" i e.EventId) e)
+    SchemaLog.current (deduped @ undo) = SchemaZ.empty
+
+[<Fact>]
+let ``L4 grant then revoke: the field is ABSENT from the folded schema, not tombstoned`` () =
+    let fid = f "email" DynamicValueType.String
+    let log =
+        [ ev "e1" (AddField(f "id" DynamicValueType.Int))
+          ev "e2" (AddField fid)
+          ev "e3" (DropField fid) ]
+    let s = SchemaLog.current log
+    Assert.True(SchemaZ.wellFormed s)
+    Assert.Equal<FieldId list>([ f "id" DynamicValueType.Int ], SchemaZ.fields s)
+    // weight 0 ⇒ the row is gone from the Z-set entirely (consolidation), so
+    // "absent" is not a flag anyone has to remember to check.
+    Assert.Equal(0L, s.[fid])
+    Assert.Equal(1, s.Count)
+
+// ── Idempotency, stated in BOTH directions (discipline #6) ───────────
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``idempotent under REDELIVERY: replaying the whole log again changes nothing`` (log: SchemaEvent list) =
+    SchemaLog.current (log @ log) = SchemaLog.current log
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``dedupe is itself idempotent`` (log: SchemaEvent list) =
+    SchemaLog.dedupe (SchemaLog.dedupe log) = SchemaLog.dedupe log
+
+[<Fact>]
+let ``NOT idempotent by intent: two DISTINCT events adding the same field is a DETECTED conflict`` () =
+    // Same field, two different idempotency keys — this is two writers each
+    // deciding to add "status", NOT one event delivered twice. The fold says
+    // weight 2 and names the row; it never silently picks a winner.
+    let fid = f "status" DynamicValueType.String
+    let log = [ ev "w1" (AddField fid); ev "w2" (AddField fid) ]
+    let s = SchemaLog.current log
+    Assert.False(SchemaZ.wellFormed s)
+    Assert.Equal(2L, s.[fid])
+    Assert.Equal<(FieldId * int64) list>([ fid, 2L ], SchemaLog.conflicts log)
+    // whereas ONE event delivered twice is a no-op
+    let redelivered = [ ev "w1" (AddField fid); ev "w1" (AddField fid) ]
+    Assert.True(SchemaZ.wellFormed (SchemaLog.current redelivered))
+
+[<Fact>]
+let ``revoke-before-grant is DETECTED (weight -1), never a silent no-op`` () =
+    let log = [ ev "e1" (DropField(f "ghost" DynamicValueType.Int)) ]
+    Assert.False(SchemaZ.wellFormed (SchemaLog.current log))
+    Assert.Equal<(FieldId * int64) list>([ f "ghost" DynamicValueType.Int, -1L ], SchemaLog.conflicts log)
+
+// ── A version is a POSITION in the log ───────────────────────────────
+
+[<Fact>]
+let ``a schema version is a prefix of the event log, not a stored integer`` () =
+    let log =
+        [ ev "e1" (AddField(f "id" DynamicValueType.Int))
+          ev "e2" (AddField(f "email" DynamicValueType.String))
+          ev "e3" (RenameField("id", "user_id", DynamicValueType.Int))
+          ev "e4" (RetypeField("email", DynamicValueType.String, DynamicValueType.Bool))
+          ev "e5" (DropField(f "email" DynamicValueType.Bool)) ]
+    let names n = SchemaLog.at n log |> SchemaZ.fields |> List.map (fun x -> x.Name) |> List.sort
+    Assert.Equal<string list>([], names 0)
+    Assert.Equal<string list>([ "id" ], names 1)
+    Assert.Equal<string list>([ "email"; "id" ], names 2)
+    Assert.Equal<string list>([ "email"; "user_id" ], names 3)
+    Assert.Equal<string list>([ "email"; "user_id" ], names 4)
+    Assert.Equal<string list>([ "user_id" ], names 5)
+    // every prefix of a linear single-writer history is well-formed
+    for n in 0 .. 5 do
+        Assert.True(SchemaZ.wellFormed (SchemaLog.at n log), sprintf "prefix %d ill-formed" n)
+    // and the retype at e4 really did change the type, not just the name
+    Assert.Equal<FieldId list>(
+        [ f "email" DynamicValueType.Bool; f "user_id" DynamicValueType.Int ] |> List.sortBy (fun x -> x.Name),
+        SchemaLog.at 4 log |> SchemaZ.fields |> List.sortBy (fun x -> x.Name))
+
+// ── Id collisions: reported as the neutral fact, never resolved ──────
+
+[<Fact>]
+let ``an EventId carrying two DIFFERENT ops is reported, not silently resolved`` () =
+    let log =
+        [ ev "dup" (AddField(f "a" DynamicValueType.Int))
+          ev "dup" (DropField(f "b" DynamicValueType.Int))
+          ev "ok" (AddField(f "b" DynamicValueType.Int)) ]
+    match SchemaLog.idCollisions log with
+    | [ (id, ops) ] ->
+        Assert.Equal<string>("dup", id)
+        Assert.Equal(2, List.length ops)
+    | other -> Assert.True(false, sprintf "expected exactly one collision, got %A" other)
+    // a clean log reports none
+    Assert.Empty(SchemaLog.idCollisions [ ev "e1" (AddField(f "a" DynamicValueType.Int)) ])
+
+// ── The event layer agrees with the delta layer it sits on ───────────
+
+[<Property(Arbitrary = [| typeof<SchemaArb> |])>]
+let ``the event fold agrees with SchemaZ.fold over the same deltas`` (log: SchemaEvent list) =
+    SchemaLog.foldRaw log = SchemaZ.fold (log |> List.map SchemaEvent.delta) SchemaZ.empty
+
+[<Fact>]
+let ``an event log compiles to a data-plane migration through MigrationZ`` () =
+    // The whole point: one log drives BOTH planes — schema (this file's
+    // algebra) and data (SchemaEvolution's Up/Down), with no privileged
+    // stop-the-world migration channel.
+    let log = [ ev "e1" (RenameField("id", "user_id", DynamicValueType.Int)) ]
+    let m =
+        MigrationZ.compile 1 [ { MigrationZ.From = "id"; MigrationZ.To = "user_id" } ] Map.empty (SchemaLog.current log)
+        |> unwrap
+    Assert.True((m.Up (obj' [ "id", DynamicValue.Int 3L ]) = obj' [ "user_id", DynamicValue.Int 3L ]))
