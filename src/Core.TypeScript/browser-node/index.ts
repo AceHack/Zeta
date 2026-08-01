@@ -50,6 +50,17 @@ export {
 export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";
 
 export {
+  BROWSER_CHECKPOINT_RECORD_SCHEMA,
+  openNativeIndexedDbCheckpointPort,
+  validateBrowserCheckpointRecord,
+  type BrowserCheckpointFeedback,
+  type BrowserCheckpointPort,
+  type BrowserCheckpointRecord,
+  type BrowserCheckpointResult,
+  type NativeIndexedDbCheckpointOptions,
+} from "./browser-indexeddb-checkpoint";
+
+export {
   BROWSER_LIFECYCLE_HOST_SCHEMA,
   createBrowserSequenceCounter,
   createNativeBrowserLifecyclePort,

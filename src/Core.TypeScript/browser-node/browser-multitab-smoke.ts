@@ -1,9 +1,10 @@
 import { resolve } from "node:path";
 import { chromium, type Browser, type Page } from "playwright";
+import type { BrowserCheckpointFeedback } from "./browser-indexeddb-checkpoint";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v1" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v2" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -63,6 +64,22 @@ export interface BrowserMultitabSmokeTranscript {
   readonly stoppedPageB: BrowserLifecycleHostReadout;
   readonly afterStop: {
     readonly pageA: BrowserMultitabPageObservation;
+  };
+  readonly checkpoint: {
+    readonly savedRevision: number;
+    readonly payload: readonly number[];
+    readonly staleWrite: BrowserCheckpointFeedback;
+  };
+  readonly stoppedPageA: BrowserLifecycleHostReadout;
+  readonly afterRestart: {
+    readonly pageC: BrowserMultitabPageObservation;
+  };
+  readonly retraction: {
+    readonly staleDelete: BrowserCheckpointFeedback;
+    readonly removed: boolean;
+  };
+  readonly afterRetraction: {
+    readonly pageD: BrowserMultitabPageObservation;
   };
 }
 
@@ -193,6 +210,21 @@ async function waitForSurvivor(page: Page): Promise<void> {
   );
 }
 
+async function waitForSinglePage(page: Page, tabId: string): Promise<void> {
+  await page.waitForFunction(
+    `() => {
+      const source = globalThis.__zetaBrowserSmoke?.read();
+      const iris = globalThis.ZetaMesh?.snapshot();
+      return source?.ok === true &&
+        source.value.host.coordinator.liveness.liveTabIds.join(",") === ${JSON.stringify(tabId)} &&
+        source.value.host.coordinator.tabs.length === 1 &&
+        iris?.tabs === 1;
+    }`,
+    undefined,
+    { timeout: timeoutMs },
+  );
+}
+
 function sourceHost(observation: BrowserMultitabPageObservation): BrowserLifecycleHostReadout | null {
   return observation.source.ok ? observation.source.value.host : null;
 }
@@ -228,6 +260,39 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   if (transcript.afterStop.pageA.iris.tabs !== 1) failures.push("Iris page A did not remove stopped page B");
   if (!transcript.afterStop.pageA.rendered.irisLabel.includes("1 tab"))
     failures.push("page A did not render the Iris one-tab label");
+  if (transcript.checkpoint.savedRevision !== 300)
+    failures.push("page A did not persist checkpoint revision 300");
+  if (transcript.checkpoint.staleWrite.code !== "checkpoint-revision-conflict")
+    failures.push("the checkpoint store did not reject a stale revision");
+  if (transcript.afterRestart.pageC.source.ok) {
+    const recovered = transcript.afterRestart.pageC.source.value;
+    if (recovered.checkpoint.recoveredRevision !== 300 || recovered.checkpoint.currentRevision !== 300)
+      failures.push("page C did not recover checkpoint revision 300");
+    if (recovered.host.coordinator.liveness.checkpoint !== "durable")
+      failures.push("page C did not derive durable continuity from the recovered checkpoint");
+    if (JSON.stringify(recovered.checkpoint.payload) !== JSON.stringify(transcript.checkpoint.payload))
+      failures.push("page C recovered different checkpoint bytes");
+    if (recovered.host.coordinator.tabs.map((tab) => tab.tabId).join(",") !== "tab-c")
+      failures.push("page C restored obsolete tab-presence state");
+  } else {
+    failures.push("page C did not start after checkpoint recovery");
+  }
+  if (transcript.afterRestart.pageC.iris.tabs !== 1)
+    failures.push("Iris page C did not restart as one live tab");
+  if (transcript.retraction.staleDelete.code !== "checkpoint-revision-conflict")
+    failures.push("the checkpoint store did not reject a stale removal revision");
+  if (!transcript.retraction.removed) failures.push("the checkpoint store did not retract revision 300");
+  if (transcript.afterRetraction.pageD.source.ok) {
+    const restarted = transcript.afterRetraction.pageD.source.value;
+    if (restarted.checkpoint.recoveredRevision !== null || restarted.checkpoint.currentRevision !== null)
+      failures.push("page D recovered a checkpoint after its bounded retraction");
+    if (restarted.host.coordinator.liveness.checkpoint !== "none")
+      failures.push("page D reported durable continuity after checkpoint retraction");
+    if (restarted.host.coordinator.tabs.map((tab) => tab.tabId).join(",") !== "tab-d")
+      failures.push("page D restored obsolete tab-presence state");
+  } else {
+    failures.push("page D did not start after checkpoint retraction");
+  }
 
   return failures;
 }
@@ -294,15 +359,103 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     if (!stopped.ok) return failed("smoke-failed", `Page B stop failed: ${stopped.feedback.detail}`);
 
     await waitForSurvivor(pageA);
+    const pageAAfterStop = await observe(pageA);
+    const checkpoint = await pageA.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      const saved = await root.__zetaBrowserSmoke.checkpoint(300);
+      if (!saved.ok) return saved;
+      const stale = await root.__zetaBrowserSmoke.checkpoint(299);
+      if (stale.ok) {
+        return {
+          ok: false as const,
+          feedback: {
+            severity: "heat" as const,
+            code: "smoke-failed" as const,
+            detail: "IndexedDB admitted stale checkpoint revision 299.",
+          },
+        };
+      }
+      return {
+        ok: true as const,
+        value: {
+          savedRevision: saved.value.revision,
+          payload: [...saved.value.payload],
+          staleWrite: stale.feedback,
+        },
+      };
+    });
+    if (!checkpoint.ok) return failed("smoke-failed", checkpoint.feedback.detail);
+
+    const stoppedA = await pageA.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      const result = root.__zetaBrowserSmoke.stop();
+      root.ZetaMesh.destroy();
+      return result;
+    });
+    if (!stoppedA.ok) return failed("smoke-failed", `Page A stop failed: ${stoppedA.feedback.detail}`);
+
+    await Promise.all([pageA.close(), pageB.close()]);
+    const pageC = await context.newPage();
+    await pageC.addInitScript(initIrisId("iris-c"));
+    await pageC.goto(`${baseUrl}?tab=tab-c&sequence=400`);
+    await waitForReady(pageC);
+    await pageC.evaluate("globalThis.ZetaMesh.announce()");
+    await waitForSinglePage(pageC, "tab-c");
+    const pageCAfterRestart = await observe(pageC);
+    const retraction = await pageC.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      const stale = await root.__zetaBrowserSmoke.removeCheckpoint(299);
+      if (stale.ok) {
+        return {
+          ok: false as const,
+          feedback: {
+            severity: "heat" as const,
+            code: "smoke-failed" as const,
+            detail: "IndexedDB admitted stale checkpoint removal revision 299.",
+          },
+        };
+      }
+      const removed = await root.__zetaBrowserSmoke.removeCheckpoint(300);
+      if (!removed.ok) return removed;
+      return {
+        ok: true as const,
+        value: { staleDelete: stale.feedback, removed: removed.value },
+      };
+    });
+    if (!retraction.ok) return failed("smoke-failed", retraction.feedback.detail);
+
+    await pageC.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      root.__zetaBrowserSmoke.stop();
+      root.ZetaMesh.destroy();
+    });
+    await pageC.close();
+    const pageD = await context.newPage();
+    await pageD.addInitScript(initIrisId("iris-d"));
+    await pageD.goto(`${baseUrl}?tab=tab-d&sequence=500`);
+    await waitForReady(pageD);
+    await pageD.evaluate("globalThis.ZetaMesh.announce()");
+    await waitForSinglePage(pageD, "tab-d");
+
     const transcript: BrowserMultitabSmokeTranscript = {
       schema: BROWSER_MULTITAB_SMOKE_SCHEMA,
       beforeStop: { pageA: pageAFirst, pageB: pageBFirst },
       stoppedPageB: stopped.value,
-      afterStop: { pageA: await observe(pageA) },
+      afterStop: { pageA: pageAAfterStop },
+      checkpoint: checkpoint.value,
+      stoppedPageA: stoppedA.value,
+      afterRestart: { pageC: pageCAfterRestart },
+      retraction: retraction.value,
+      afterRetraction: { pageD: await observe(pageD) },
     };
     const failures = validateTranscript(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));
-    await pageB.close();
+    await pageD.evaluate(() => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      root.__zetaBrowserSmoke.stop();
+      root.ZetaMesh.destroy();
+    });
+    await pageD.close();
     return { ok: true, value: transcript };
   } catch (error) {
     return failed("smoke-failed", errorDetail(error));
