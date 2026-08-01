@@ -28,6 +28,7 @@
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/ZSetW.Tests.fs" />
     <Compile Include="Algebra/SchemaZ.Tests.fs" />
+    <Compile Include="Algebra/ZAtom.Tests.fs" />
     <Compile Include="Algebra/TropicalPaths.Tests.fs" />
     <Compile Include="Algebra/RationalRing.Tests.fs" />
     <Compile Include="Algebra/Provenance.Tests.fs" />

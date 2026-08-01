@@ -125,6 +125,7 @@
     <Compile Include="SagaSnapshot.fs" />
     <Compile Include="SchemaEvolution.fs" />
     <Compile Include="SchemaZ.fs" />
+    <Compile Include="ZAtom.fs" />
     <Compile Include="SchemaRegistry.fs" />
     <Compile Include="EvolutionWindow.fs" />
     <Compile Include="Protobuf.fs" />
