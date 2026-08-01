@@ -48,3 +48,23 @@ export {
 } from "./browser-tab-coordinator";
 
 export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";
+
+export {
+  BROWSER_LIFECYCLE_HOST_SCHEMA,
+  createBrowserSequenceCounter,
+  createNativeBrowserLifecyclePort,
+  startBrowserLifecycleHost,
+  type BrowserDocumentVisibility,
+  type BrowserLifecycleEvent,
+  type BrowserLifecycleEventType,
+  type BrowserLifecycleHost,
+  type BrowserLifecycleHostFeedback,
+  type BrowserLifecycleHostOptions,
+  type BrowserLifecycleHostReadout,
+  type BrowserLifecyclePort,
+  type BrowserLifecycleResult,
+  type BrowserLifecycleSubscription,
+  type BrowserReadoutSinkResult,
+  type BrowserSequencePort,
+  type BrowserTabReadoutSink,
+} from "./browser-lifecycle-host";
