@@ -1,11 +1,12 @@
 ---
 id: 081KX3KA3EW08QG0R002WFQ6BG
 type: task
-state: in-progress
+state: done
 priority: P1
 slug: drift-event-schema-mtth-ticks-dashboard
 title: "Drift-event schema + MTTH-in-ticks dashboard"
 created: 2026-07-09T14:08:50.000Z
+completed: 2026-08-01T16:09:18.837Z
 depends_on: []
 composes_with: []
 ---
