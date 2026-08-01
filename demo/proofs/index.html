@@ -196,7 +196,7 @@
     The claim in each case is the same: <strong style="color:var(--text)">the shape is substrate-independent</strong> —
         it falls out of the rule, not the renderer.
         When multiple independent renderers agree on the same shape, that is a sensor-fusion proof.
-        Nine oracles total: 4 classical (Canvas, CSS, Chip-8, SVG) + Quantum Walk + C. elegans Worm + Infer.NET i-sensor + SLE<sub>&kappa;</sub> Curve + WebGPU Compute Shader.
+        Ten oracles total: 4 classical (Canvas, CSS, Chip-8, SVG) + Quantum Walk + C. elegans Worm + Infer.NET i-sensor + SLE<sub>&kappa;</sub> Curve + WebGPU Compute Shader + Multi-Compiler WASM (WAT + AssemblyScript + Go).
       </p>
 
   <div class="grid">
@@ -236,6 +236,7 @@
           <tr><td>Infer.NET i-sensor (Oracle 6)</td><td>Bayesian prior heatmap of the Laplacian harmonic measure. Three modes: Prior (expected next-stick location), Posterior (updated after cluster), Cluster Only. Directly approximates the Halsey 2026 amplitude formula.</td></tr>
           <tr><td>SLE<sub>&kappa;</sub> Curve (Oracle 8)</td><td>Schramm&ndash;Loewner Evolution via the chordal Loewner equation with Brownian driver W<sub>t</sub> = &radic;&kappa;&thinsp;B<sub>t</sub>. The theoretical oracle &mdash; computes D<sub>f</sub> from first principles. &kappa; toggle: 2.67 (observed), 5.7 (theoretical Z-4), 2.0 (SAW), 6.0 (percolation). Loewner entropy S<sub>Loew</sub> = &minus;ln(t/&kappa;) is displayed in real time. Conjecture Z-3 confirmed as analytic identity: S<sub>Loew</sub>(t*) = ln(3&radic;2) &asymp; 1.447 nats for all &kappa;.</td></tr>
           <tr><td>WebGPU Compute Shader (Oracle 9)</td><td>Entire DLA simulation runs on the GPU via a WGSL compute shader. Each GPU thread is one walker; sticking is detected via a neighbor check against the cluster bitmap in GPU memory. 12,000+ walkers in real time. First oracle on the GPU substrate &mdash; proves substrate independence extends to massively parallel GPU execution. Requires Chrome 113+ or Edge 113+.</td></tr>
+          <tr><td>Multi-Compiler WASM (Oracle 10)</td><td>Three compilers, same algorithm, same Tsirelson threshold, same D<sub>f</sub>. <strong>WAT</strong> (979 bytes, hand-written WebAssembly Text Format &mdash; the assembly language of WASM itself), <strong>AssemblyScript</strong> (6 KB, TypeScript&rarr;WASM compiler), <strong>Go</strong> (1.5 MB, full Go runtime compiled to WASM via GOOS=js GOARCH=wasm). The Go binary is 1,600&times; larger than the WAT binary. Both produce the same D<sub>f</sub>. Size is irrelevant. Compiler is irrelevant. The shape is the shape.</td></tr>
         </tbody>
       </table>
 
