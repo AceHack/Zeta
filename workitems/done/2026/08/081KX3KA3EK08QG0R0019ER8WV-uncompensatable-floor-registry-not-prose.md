@@ -1,11 +1,12 @@
 ---
 id: 081KX3KA3EK08QG0R0019ER8WV
 type: task
-state: backlog
+state: done
 priority: P1
 slug: uncompensatable-floor-registry-not-prose
 title: "Uncompensatable-floor registry — the drift ADR floor as data, not prose"
 created: 2026-07-09T14:08:50.000Z
+completed: 2026-08-01T23:20:10.840Z
 depends_on: []
 composes_with: []
 ---
