@@ -970,8 +970,11 @@ jobs:
           # Need merge-base history for manus commit-message leak scan.
           fetch-depth: 0
 
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        run: ./tools/setup/install.sh
+      # These repository-structure guards need Bun + Git only. Running the full
+      # parity installer here lets unrelated compiler downloads consume this
+      # job's five-minute budget before any guard executes.
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       # Dangling tracked symlinks crash the GitHub Pages (Jekyll) build on realpath — invisible
       # to the test suites. Surfaced 2026-06-11: #7820 moved 31 dirs to db/ and nine relative
