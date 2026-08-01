@@ -1,0 +1,102 @@
+{
+  "timestamp": "2026-08-01T12:55:49.790Z",
+  "preRegistrationDoc": "docs/research/pre-registration-quantum-walk-dla.md",
+  "seedCount": 10,
+  "meanQuantumDf": 1.7447679279187607,
+  "meanClassicalDf": 1.785009506378712,
+  "meanDeltaDf": 0.040241578459951244,
+  "pValueEst": 0.42,
+  "outcome": "H0_ACCEPTED_ZENODECAY",
+  "seedResults": [
+    {
+      "seed": 101,
+      "particleCount": 200,
+      "quantumDf": 1.8045132694211294,
+      "classicalDf": 1.8706796112540083,
+      "deltaDf": 0.06616634183287884,
+      "maxRadiusQuantum": 7.615773105863909,
+      "maxRadiusClassical": 7.280109889280519
+    },
+    {
+      "seed": 102,
+      "particleCount": 200,
+      "quantumDf": 1.775022434897456,
+      "classicalDf": 1.9195872000656018,
+      "deltaDf": 0.14456476516814587,
+      "maxRadiusQuantum": 6.4031242374328485,
+      "maxRadiusClassical": 6.0827625302982185
+    },
+    {
+      "seed": 103,
+      "particleCount": 200,
+      "quantumDf": 1.8206115019933655,
+      "classicalDf": 1.8415644423232036,
+      "deltaDf": 0.020952940329838077,
+      "maxRadiusQuantum": 8.94427190999916,
+      "maxRadiusClassical": 7
+    },
+    {
+      "seed": 104,
+      "particleCount": 200,
+      "quantumDf": 1.641382262992878,
+      "classicalDf": 1.6073940699328777,
+      "deltaDf": 0.03398819306000034,
+      "maxRadiusQuantum": 10.44030650891055,
+      "maxRadiusClassical": 11.40175425099138
+    },
+    {
+      "seed": 105,
+      "particleCount": 200,
+      "quantumDf": 1.567337635574859,
+      "classicalDf": 1.8985430615062966,
+      "deltaDf": 0.33120542593143765,
+      "maxRadiusQuantum": 9.486832980505138,
+      "maxRadiusClassical": 7.0710678118654755
+    },
+    {
+      "seed": 106,
+      "particleCount": 200,
+      "quantumDf": 1.7059262908024648,
+      "classicalDf": 1.9118871020214394,
+      "deltaDf": 0.20596081121897458,
+      "maxRadiusQuantum": 9.433981132056603,
+      "maxRadiusClassical": 6.324555320336759
+    },
+    {
+      "seed": 107,
+      "particleCount": 200,
+      "quantumDf": 1.7569537761277536,
+      "classicalDf": 1.7792177996926244,
+      "deltaDf": 0.022264023564870783,
+      "maxRadiusQuantum": 9.055385138137417,
+      "maxRadiusClassical": 8.06225774829855
+    },
+    {
+      "seed": 108,
+      "particleCount": 200,
+      "quantumDf": 1.644344367706499,
+      "classicalDf": 1.622918004309771,
+      "deltaDf": 0.021426363396727988,
+      "maxRadiusQuantum": 9.848857801796104,
+      "maxRadiusClassical": 10.295630140987
+    },
+    {
+      "seed": 109,
+      "particleCount": 200,
+      "quantumDf": 1.8650636272817684,
+      "classicalDf": 1.6606657786720544,
+      "deltaDf": 0.204397848609714,
+      "maxRadiusQuantum": 6.0827625302982185,
+      "maxRadiusClassical": 9.219544457292889
+    },
+    {
+      "seed": 110,
+      "particleCount": 200,
+      "quantumDf": 1.8665241123894336,
+      "classicalDf": 1.7376379940092457,
+      "deltaDf": 0.12888611838018793,
+      "maxRadiusQuantum": 6.4031242374328485,
+      "maxRadiusClassical": 9.055385138137417
+    }
+  ]
+}
