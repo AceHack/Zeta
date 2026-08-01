@@ -348,7 +348,7 @@ async function mergePullRequest(
   try {
     const ghResult = spawnSync(
       "gh",
-      ["pr", "merge", String(prNum), "--merge", "--auto", "--delete-branch"],
+      ["pr", "merge", String(prNum), "--squash", "--auto", "--delete-branch"],
       {
         cwd: opts.repoRoot,
         encoding: "utf-8",
