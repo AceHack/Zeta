@@ -63,17 +63,14 @@ jobs:
           ollama pull qwen2.5:7b
           ollama list
 
-      - name: Create or checkout heartbeat branch
+      - name: Reset heartbeat branch from main (staleness impossible by construction)
         env:
           AGENT: ${{ matrix.agent }}
         run: |
-          git fetch origin "heartbeat/$AGENT" 2>/dev/null || true
-          if git show-ref --verify --quiet "refs/remotes/origin/heartbeat/$AGENT"; then
-            git checkout "heartbeat/$AGENT"
-            git merge origin/main --no-edit --strategy-option theirs || true
-          else
-            git checkout -b "heartbeat/$AGENT"
-          fi
+          # ALWAYS start from current main. The flush (#9890) pushes events
+          # directly to main now, so no events are stranded on the branch.
+          # This makes staleness IMPOSSIBLE — the agent always runs the latest code.
+          git checkout -B "heartbeat/$AGENT" origin/main
 
       - name: Run observe tick (local-llm, heartbeat mode)
         env:
@@ -163,8 +160,10 @@ jobs:
 
           # Run the composed Tier-0 healers over the working tree
           echo "[heal] Running Tier-0 healers..."
-          bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . \
-            2>&1 || echo "[heal] healer run failed (non-fatal)"
+          bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1
+          if [ $? -ne 0 ]; then
+            echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
+          fi
 
           # If anything was healed, stage and commit it
           if ! git diff --quiet; then
@@ -190,15 +189,10 @@ jobs:
           ZETA_EXECUTOR: codegen
           ZETA_CODEGEN_MODEL: qwen2.5:7b
         run: |
-          # Only attempt work on every 4th tick (hourly, not every 15min)
-          # to avoid burning through runner minutes on long codegen tasks.
-          MINUTE=$(date -u +%M)
-          if [ "$MINUTE" != "00" ] && [ "$MINUTE" != "01" ] && [ "$MINUTE" != "02" ]; then
-            echo "[work] Not a work tick (only on :00). Skipping."
-            exit 0
-          fi
-
-          # Only one agent does work per hour (use the rotation)
+          # Work fires once per hour. Use the hour number (reliable) not the minute
+          # (unreliable — delayed cron arrives at random minutes, never exactly :00).
+          # Gate: only one work tick per hour per agent, enforced by checking if
+          # a work event was already committed this hour (idempotent).
           HOUR=$(date -u +%H)
           ROTATION=$(( HOUR % 3 ))
           AGENTS=("alexa" "otto" "soraya")
