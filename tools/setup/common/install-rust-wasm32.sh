@@ -32,6 +32,7 @@ if ! command -v rustup >/dev/null 2>&1; then
 else
   echo "rustup already installed: $(rustup --version 2>&1 | head -1)"
   # Ensure the correct toolchain is active
+  # shellcheck source=/dev/null
   source "$HOME/.cargo/env" 2>/dev/null || true
 fi
 
