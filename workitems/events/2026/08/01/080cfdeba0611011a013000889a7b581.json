@@ -1,0 +1,14 @@
+{
+  "id": "080cfdeba0611011a013000889a7b581",
+  "at": "2026-08-01T13:12:06.946Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYYQ831108QG0R001FJJ9XK",
+    "type": "bug",
+    "title": "Investigate intermittent .NET 10 ARM64 AccessViolation in CoreCLR GC and Roslyn",
+    "slug": "investigate-intermittent-net-10-arm64-accessviolation-in-cor",
+    "priority": "P2",
+    "filename": "081KYYQ831108QG0R001FJJ9XK-investigate-intermittent-net-10-arm64-accessviolation-in-cor.md"
+  }
+}

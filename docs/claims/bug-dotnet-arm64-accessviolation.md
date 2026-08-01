@@ -5,7 +5,7 @@
 - **Claimed at:** 2026-08-01T13:11:43Z
 - **ETA:** 2026-08-01T13:56:43Z
 - **Scope:** Preserve reproducible evidence and acceptance criteria for intermittent .NET 10 ARM64 native crashes during local Zeta gates.
-- **Durable target:** workitems/<zetaid>-investigate-intermittent-dotnet-10-arm64-accessviolation.md
+- **Durable target:** workitems/081KYYQ831108QG0R001FJJ9XK-investigate-intermittent-net-10-arm64-accessviolation-in-cor.md
 - **Platform mirror:** none
 
 ## Notes
