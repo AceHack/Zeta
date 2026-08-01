@@ -46,6 +46,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
 import { prepareBootImage, DEFAULT_ESP_OFFSET_BYTES } from "./prepare-boot-image";
@@ -59,7 +60,6 @@ import {
   type Qcow2SnapshotRetentionPlan,
 } from "./qemu-state";
 import {
-  createSpawnSyncQcow2RetentionExecutor as createSpawnSyncPathForkExecutor,
   executePathForkRuntimePlan,
   planPathForkBaselineBootstrap,
   planPathForkRuntime,
@@ -67,6 +67,7 @@ import {
   type PathForkExecutionResult,
   type PathForkRuntimePlan,
 } from "./path-fork";
+const createSpawnSyncPathForkExecutor = createSpawnSyncQcow2RetentionExecutor;
 
 type Mode = "list" | "dry-run" | "scenario" | "all";
 
@@ -109,7 +110,8 @@ export interface PathForkRuntimeOptions {
   readonly kvmAvailable?: boolean;
 }
 
-const REPO_ROOT = resolve(import.meta.dir, "../../../..");
+const currentDir = typeof import.meta.dir === "string" ? import.meta.dir : fileURLToPath(new URL(".", import.meta.url));
+const REPO_ROOT = resolve(currentDir, "../../../..");
 const CI_DIR = "src/Core.TypeScript/ci";
 const AUDIT_INSTALLER_ISO = `${CI_DIR}/audit-installer-iso-content.ts`;
 const QEMU_BOOT_TEST = `${CI_DIR}/qemu-boot-test.ts`;

@@ -28,7 +28,27 @@
 // Phase 3 (NOT this row): hardware-bound keys (TPM / YubiKey / Touch-ID-derived)
 //   to defeat the "attacker stole USB AND knows passphrase AND knows UUID" case.
 
-import { createCipheriv, createDecipheriv, hkdfSync, randomBytes, scryptSync } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHmac, randomBytes, scryptSync } from "node:crypto";
+
+function hkdfHmacSync(hashAlgo: string, ikm: Uint8Array, salt: Uint8Array, info: Uint8Array, keyLen: number): Buffer {
+  const prk = createHmac(hashAlgo, salt.length ? salt : new Uint8Array(32)).update(ikm).digest();
+  const okm = Buffer.alloc(keyLen);
+  let t = Buffer.alloc(0);
+  let offset = 0;
+  let counter = 1;
+  while (offset < keyLen) {
+    const hmac = createHmac(hashAlgo, prk);
+    hmac.update(t);
+    hmac.update(info);
+    hmac.update(Buffer.from([counter]));
+    t = hmac.digest();
+    const chunkLen = Math.min(t.length, keyLen - offset);
+    t.copy(okm, offset, 0, chunkLen);
+    offset += chunkLen;
+    counter++;
+  }
+  return okm;
+}
 
 /** AES-256-GCM key size (bytes). */
 export const KEY_LEN = 32;
@@ -122,7 +142,7 @@ export function deriveKey(usbUuid: string, passphrase: string, salt: Uint8Array)
   // Layer 2: HKDF binds the stretched secret to the USB UUID via IKM concatenation.
   // UUID first then stretched (order-sensitive; documented; decrypt must match).
   const ikm = Buffer.concat([Buffer.from(usbUuid, "utf8"), Buffer.from("|", "utf8"), stretched]);
-  const derived = hkdfSync("sha256", ikm, saltCopy, HKDF_INFO, KEY_LEN);
+  const derived = hkdfHmacSync("sha256", ikm, saltCopy, HKDF_INFO, KEY_LEN);
   return Buffer.from(derived);
 }
 
