@@ -1541,26 +1541,22 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 1
     if: always()
+    # ── THE FLIP (drift-and-heal ADR, Aaron 2026-08-01): blocking gates are
+    # corporate mode; drift checks are sovereign mode. The gate now rolls up
+    # ONLY the uncompensatable floor (registry/uncompensatable-floor.yaml):
+    #   - build-and-test        (functional build/test breaks)
+    #   - cross-verify/full-verify (treaty byte-lock golden vectors)
+    #   - lint [semgrep]        (workflow supply-chain / script-injection)
+    # Every hygiene/style lint below STILL RUNS on every PR and every main
+    # push — that is the drift detection — it just no longer blocks unrelated
+    # lanes (the 2026-07-08 priority inversion / 2026-08-01 six-rebuild race).
+    # In-scope authors get their signal from the job's own red X and from
+    # hygiene/scoped-lint.ts locally; heals converge via certified healers
+    # (hygiene/healer-harness.ts). Re-adding a job to this list = adding to
+    # the floor = treaty-amendment consent path.
     needs:
       - build-and-test
       - lint
-      - lint-shell
-      - lint-bash-retirement-inventory
-      - lint-workflows
-      - lint-tick-history-order
-      - lint-no-conflict-markers
-      - lint-archive-header-section33
-      - lint-section-33-migration-xrefs
-      - lint-tick-shard-relative-paths
-      - lint-structural-hygiene
-      - lint-no-empty-dirs
-      - lint-markdown
-      - lint-typescript
-      - lint-fsharp
-      - lint-csharp
-      - lint-go
-      - lint-python
-      - lint-rust
       - cross-verify
       - full-verify
     steps:
