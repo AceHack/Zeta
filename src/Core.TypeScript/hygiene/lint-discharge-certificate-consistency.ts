@@ -38,6 +38,8 @@ export interface DischargeRow {
   readonly line: number;
   readonly label: string;
   readonly certificates: readonly string[];
+  /** Whether the row cites ANY evidence artifact (certificate, proof, byte-lock, test, SMT). */
+  readonly evidence: boolean;
 }
 
 /** Does this row TEXT assert a live §A discharge? Demotion banners explicitly do not. */
@@ -58,6 +60,30 @@ export function citedCertificates(text: string): readonly string[] {
   return [...out];
 }
 
+/**
+ * Does the row cite ANY evidence artifact at all?
+ *
+ * The register's own §A gate (lines 21-22) admits a row on "a proof / byte-lock / conformance
+ * anchor that is closed" — so evidence is broader than a certificate. But it is never NOTHING.
+ * A row asserting DISCHARGED while pointing at no artifact whatsoever is discharged BY ASSERTION,
+ * which is the failure this whole guard exists for — arguably worse than contradicting a
+ * certificate, because there is not even a claim to check.
+ *
+ * Real example: Z-3 claimed "§A — DISCHARGED (analytic identity)" citing no artifact. The
+ * "identity" was -ln(1/x) = ln(x) evaluated at a rendering constant — true for every x, and
+ * therefore unfalsifiable. The certificate check skipped it; this one does not.
+ */
+export function citesAnyEvidence(text: string): boolean {
+  return (
+    citedCertificates(text).length > 0 ||
+    /\.lean\b/.test(text) || // Lean proof
+    /\.tla\b/.test(text) || // TLA+ spec
+    /golden[- ]?vector/i.test(text) || // byte-lock
+    /\.Tests?\.fs\b|\.test\.ts\b/.test(text) || // a gated test
+    /\.smt2\b|\bZ3\b/.test(text) // SMT obligation
+  );
+}
+
 /** Short human label for a row (the bolded conjecture name, else a truncation). */
 export function rowLabel(text: string): string {
   const m = text.match(/\*\*([^*]{3,80})\*\*/);
@@ -68,7 +94,12 @@ export function scanRegister(body: string): readonly DischargeRow[] {
   const rows: DischargeRow[] = [];
   body.split("\n").forEach((text, idx) => {
     if (!assertsDischarged(text)) return;
-    rows.push({ line: idx + 1, label: rowLabel(text), certificates: citedCertificates(text) });
+    rows.push({
+      line: idx + 1,
+      label: rowLabel(text),
+      certificates: citedCertificates(text),
+      evidence: citesAnyEvidence(text),
+    });
   });
   return rows;
 }
@@ -97,7 +128,17 @@ function main(): void {
   const failures: string[] = [];
 
   for (const row of rows) {
-    if (row.certificates.length === 0) continue; // rows may discharge via proof/byte-lock instead
+    if (row.certificates.length === 0) {
+      // No certificate is fine ONLY if some other evidence artifact is cited (proof, byte-lock,
+      // gated test, SMT obligation). Citing nothing at all is discharge-by-assertion.
+      if (!row.evidence) {
+        failures.push(
+          `  ${REGISTER}:${row.line} — "${row.label}"\n     claims §A DISCHARGED but cites NO evidence artifact at all` +
+            ` (no certificate, proof, byte-lock, gated test, or SMT obligation) — discharged by assertion`,
+        );
+      }
+      continue;
+    }
     for (const cert of row.certificates) {
       const certPath = join(root, cert);
       if (!existsSync(certPath)) {
@@ -114,12 +155,12 @@ function main(): void {
   }
 
   if (failures.length > 0) {
-    console.error("[discharge-consistency] ✗ register rows contradict their own cited evidence:\n");
+    console.error("[discharge-consistency] ✗ §A-DISCHARGED rows failed the evidence check:\n");
     console.error(failures.join("\n\n"));
     console.error(
       "\n  §A is the frozen core — 'closed, build on this, nothing here rests on anything open'.\n" +
-        "  A row may not assert DISCHARGED while the certificate it cites disagrees.\n" +
-        "  Either fix the discharge until its certificate says DISCHARGED, or demote the row.\n",
+        "  A DISCHARGED row must cite evidence, and that evidence must agree with it.\n" +
+        "  Either produce/repair the evidence, or demote the row to §B.\n",
     );
     process.exit(1);
   }
