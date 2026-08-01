@@ -1,0 +1,14 @@
+{
+  "id": "080cfde9671d5811a0130008b94789ee",
+  "at": "2026-08-01T11:54:23.531Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYYJSRXA08QG0R001E36E1X",
+    "type": "task",
+    "title": "Drift-rate to intelligence-allocation loop: join caught-drift events (healer/retraction) to the DORA fold per area, and let that rate drive model tier / review depth — inverted DORA, optimizing for how LITTLE intelligence a task needs; exposure in the denominator",
+    "slug": "drift-rate-to-intelligence-allocation-loop-join-caught-drift",
+    "priority": "P2",
+    "filename": "081KYYJSRXA08QG0R001E36E1X-drift-rate-to-intelligence-allocation-loop-join-caught-drift.md"
+  }
+}
