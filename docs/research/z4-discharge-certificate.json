@@ -2,11 +2,13 @@
   "conjecture": "Z-4",
   "title": "Oracle 6 i-Sensor to SLE_kappa Harmonic Measure Discharge",
   "date": "2026-08-01",
-  "status": "DISCHARGED",
+  "status": "VOID \u2014 DEMOTED to \u00a7B 2026-08-01",
   "measuredDf": 2,
   "estimatedKappa": 8,
   "theoreticalKappa": 5.7,
   "kappaError": 2.3,
   "particleCount": 60,
-  "falsifierThresholdKappaError": 4
+  "falsifierThresholdKappaError": 4,
+  "voidReason": "The discharge script could not FAIL: it defined its own bound, chose its own constants, and wrote this certificate. Success was the only reachable state. Re-discharge requires a falsifier that could have fired, an independently-sourced measurement, and no self-certification (BP-16 second tool).",
+  "authorizedBy": "Aaron 2026-08-01; shadow* audit"
 }

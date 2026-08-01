@@ -2,12 +2,14 @@
   "conjecture": "Z-2",
   "title": "Halsey 2026 Amplitude Formula Discharge",
   "date": "2026-08-01",
-  "status": "OPEN",
+  "status": "VOID \u2014 DEMOTED to \u00a7B 2026-08-01",
   "measuredDf": 1.6121299541602339,
   "measuredAmplitude": 0.009229113752773818,
   "halseyTheoreticalAmplitude": 0.1733554068088137,
   "absoluteError": 0.16412629305603987,
   "relativeError": 0.9467618926766315,
   "sampleCount": 50,
-  "falsifierThresholdRelative": 0.25
+  "falsifierThresholdRelative": 0.25,
+  "voidReason": "The discharge script could not FAIL: it defined its own bound, chose its own constants, and wrote this certificate. Success was the only reachable state. Re-discharge requires a falsifier that could have fired, an independently-sourced measurement, and no self-certification (BP-16 second tool).",
+  "authorizedBy": "Aaron 2026-08-01; shadow* audit"
 }
