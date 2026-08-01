@@ -145,6 +145,7 @@ for (const sub of [...WASM_SUBSTRATES, ...SCRIPT_SUBSTRATES]) {
   }
 
   let subPass = true;
+  let subToolingMiss = false;
   for (const seed of CI_SEEDS) {
     const golden = toGoldenVector(seed, runDLA(seed));
     let candidate;
@@ -161,37 +162,106 @@ for (const sub of [...WASM_SUBSTRATES, ...SCRIPT_SUBSTRATES]) {
     }
 
     if (runError) {
-      subReport.results.push({ seed, pass: false, error: runError });
-      subPass = false;
-      if (!jsonMode) console.log(`  FAIL  ${sub.name.padEnd(20)} seed=${seed}  ERROR: ${runError.slice(0, 80)}`);
+      // A RUN ERROR IS NOT A BYTE DIVERGENCE. An absent toolchain means the substrate was
+      // never exercised — that is INFRASTRUCTURE, and reporting it as "divergences found"
+      // (as this runner did on 2026-08-01 for `lua5.4: command not found`) trains everyone
+      // to ignore the signal that matters.
+      const tooling = /command not found|Command failed|ENOENT|not recognized|No such file|not found/i.test(
+        String(runError),
+      );
+      subReport.results.push({ seed, pass: false, error: runError, kind: tooling ? "tooling" : "run-error" });
+      if (tooling) {
+        subToolingMiss = true;
+        if (!jsonMode)
+          console.log(`  TOOL  ${sub.name.padEnd(20)} seed=${seed}  (toolchain absent — NOT a divergence)`);
+      } else {
+        subPass = false;
+        if (!jsonMode) console.log(`  FAIL  ${sub.name.padEnd(20)} seed=${seed}  ERROR: ${runError.slice(0, 80)}`);
+      }
       continue;
     }
 
     const result = verify(golden, candidate);
     subReport.results.push({ seed, pass: result.pass, divergences: result.divergences });
     if (!result.pass) {
-      subPass = false;
-      if (!jsonMode) {
-        console.log(`  FAIL  ${sub.name.padEnd(20)} seed=${seed}`);
-        for (const d of result.divergences) console.log(`        ${d}`);
+      // A MISSING TOOLCHAIN IS NOT A BYTE DIVERGENCE. Conflating them is how a real
+      // signal gets ignored: on 2026-08-01 this runner printed "divergences found" when
+      // the only cause was `lua5.4: command not found`. Infrastructure and evidence are
+      // different failures and must be reported differently.
+      const toolingMiss = result.divergences.some((d) =>
+        /command not found|ENOENT|not recognized|No such file/i.test(String(d)),
+      );
+      if (toolingMiss) {
+        subReport.status = "TOOLING";
+        subToolingMiss = true;
+        if (!jsonMode) {
+          console.log(`  TOOL  ${sub.name.padEnd(20)} seed=${seed} (toolchain absent — NOT a divergence)`);
+        }
+      } else {
+        subPass = false;
+        if (!jsonMode) {
+          console.log(`  FAIL  ${sub.name.padEnd(20)} seed=${seed}`);
+          for (const d of result.divergences) console.log(`        ${d}`);
+        }
       }
     } else {
       if (!jsonMode) console.log(`  PASS  ${sub.name.padEnd(20)} seed=${seed}`);
     }
   }
 
-  subReport.status = subPass ? "PASS" : "FAIL";
-  if (subPass) report.summary.pass++;
-  else { report.summary.fail++; anyFail = true; }
+  if (subToolingMiss) {
+    subReport.status = "TOOLING";
+    report.summary.tooling = (report.summary.tooling ?? 0) + 1;
+  } else {
+    subReport.status = subPass ? "PASS" : "FAIL";
+    if (subPass) report.summary.pass++;
+    else { report.summary.fail++; anyFail = true; }
+  }
   report.substrates.push(subReport);
 }
 
 if (!jsonMode) {
   console.log("");
-  console.log(`Summary: ${report.summary.pass} PASS, ${report.summary.fail} FAIL, ${report.summary.skip} SKIP`);
-  console.log(anyFail ? "\nByte-lock FAILED — divergences found." : "\nByte-lock PASSED — all substrates produce identical trajectories.");
+  const tooling = report.summary.tooling ?? 0;
+  const executedN = report.summary.pass + report.summary.fail;
+  const totalN = executedN + tooling + report.summary.skip;
+  console.log(
+    `Summary: ${report.summary.pass} PASS, ${report.summary.fail} FAIL, ${tooling} TOOLING-ABSENT, ${report.summary.skip} SKIP`,
+  );
+  // State COVERAGE, never "all substrates". Saying "all" when one was never exercised is
+  // the same overclaim that put unfalsifiable discharges into the frozen core.
+  console.log(
+    anyFail
+      ? `\nByte-lock DIVERGED — ${report.summary.fail} of ${executedN} executed substrate(s) disagree (drift signal, not a gate).`
+      : `\nByte-lock AGREED — ${executedN} of ${totalN} substrate(s) executed and produced identical trajectories` +
+        (tooling ? `; ${tooling} NOT exercised (toolchain absent) and therefore NOT verified.` : "."),
+  );
 } else {
   process.stdout.write(JSON.stringify(report, null, 2) + "\n");
 }
 
-process.exit(anyFail ? 1 : 0);
+// ── LIVENESS FLOOR — the ONLY hard failure ──────────────────────────────────────
+// This is a DRIFT CHECK: a byte divergence is a SIGNAL (a compiler upgrade changed float
+// rounding is something you want to KNOW, not something to block), and it runs post-merge
+// on main where it cannot gate anything anyway.
+//
+// But one thing must be hard: LIVENESS. The real hazard is not divergence — it is the
+// byte-lock going GREEN WHILE VERIFYING NOTHING (missing .wasm, every substrate skipped).
+// "Verified 0 of 10 substrates" must never read as success. That is the exact false-green
+// shape that put six unfalsifiable "discharges" into the frozen core on 2026-08-01.
+const MIN_SUBSTRATES = Number(process.env.BYTELOCK_MIN_SUBSTRATES ?? 2);
+const executed = report.summary.pass + report.summary.fail;
+if (executed < MIN_SUBSTRATES) {
+  if (!jsonMode) {
+    console.error(
+      `\nLIVENESS FAILURE: only ${executed} substrate(s) actually executed ` +
+        `(minimum ${MIN_SUBSTRATES}). A byte-lock that verifies nothing must not report success.`,
+    );
+  }
+  process.exit(2); // 2 = did not run, distinct from 1 = diverged
+}
+
+// Divergence is reported, not fatal — this is a drift signal. Set BYTELOCK_STRICT=1 to
+// make divergence fatal (useful when running it deliberately as a gate somewhere else).
+const strict = process.env.BYTELOCK_STRICT === "1";
+process.exit(anyFail && strict ? 1 : 0);

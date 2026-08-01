@@ -1,0 +1,90 @@
+name: bytelock
+
+# N-ORACLE BYTE-LOCK — a DRIFT CHECK, not a gate.
+#
+# WHY DRIFT AND NOT A GATE (Aaron asked directly, 2026-08-01):
+#   1. Architecture. Zeta is moving off forge hosts toward git-native then zetadb-native.
+#      "CI gates are for corporate jobs, not sovereign ones." The discipline is RETRACTION
+#      OVER PREVENTION: a divergence is noticed and healed, not forbidden by an authority.
+#   2. It runs on `push: main`, i.e. POST-MERGE — it cannot gate anything by construction.
+#   3. Empirically decisive: before the 2026-08-01 fix this runner reported
+#      "Byte-lock FAILED — divergences found" when the only cause was
+#      `lua5.4: command not found`. As a required gate, one runner missing a toolchain
+#      would block all work; as a drift signal it is simply information.
+#   4. A real byte divergence is usually something you WANT TO KNOW (a Zig upgrade changed
+#      float rounding), not something to prevent. Blocking would hide the finding.
+#
+# WHAT IS HARD — LIVENESS, NOT THE RESULT:
+#   The hazard is not divergence. It is the byte-lock going GREEN WHILE VERIFYING NOTHING
+#   (missing .wasm artefacts, every substrate skipped). "Verified 0 of 10" must never read
+#   as success — that is exactly the false-green shape that put six unfalsifiable
+#   "discharges" into the frozen core on 2026-08-01. So the runner exits 2 when fewer than
+#   BYTELOCK_MIN_SUBSTRATES actually executed, and THAT is what fails this job.
+#
+#   exit 0 = agreed (or diverged — reported as drift)
+#   exit 1 = diverged AND BYTELOCK_STRICT=1 (not set here)
+#   exit 2 = LIVENESS FAILURE — too few substrates ran. This is the failure that matters.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/wasm-dla/**"
+      - ".github/workflows/bytelock.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bytelock-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bytelock:
+    name: byte-lock (drift check)
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install substrate toolchains
+        # wat2wasm (wabt) and lua5.4 are the two the runner shells out to; node runs the
+        # WASM substrates and the JS reference. A toolchain that fails to install shows up
+        # as TOOLING-ABSENT (not a divergence) and reduces the executed count — which the
+        # liveness floor below then catches if it drops too far.
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends wabt lua5.4
+
+      - name: Versions (recorded so a drift can be attributed to a toolchain change)
+        run: |
+          node --version
+          wat2wasm --version || echo "wat2wasm: ABSENT"
+          lua5.4 -v || echo "lua5.4: ABSENT"
+
+      - name: Run the N-oracle byte-lock
+        working-directory: src/wasm-dla/bytelock
+        env:
+          # The floor is the only hard failure. Raise it as substrates become reliably
+          # buildable in CI; never lower it silently — that is how a check goes vacuous.
+          BYTELOCK_MIN_SUBSTRATES: "2"
+        run: node run-bytelock-ci.mjs
+
+      - name: Emit the machine-readable report
+        if: always()
+        working-directory: src/wasm-dla/bytelock
+        env:
+          BYTELOCK_MIN_SUBSTRATES: "2"
+        run: node run-bytelock-ci.mjs --json > bytelock-report.json || true
+
+      - name: Upload the report (the drift record)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: bytelock-report
+          path: src/wasm-dla/bytelock/bytelock-report.json
+          if-no-files-found: warn
+          retention-days: 30
