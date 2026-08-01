@@ -13,6 +13,7 @@ Non-fusion disclaimer: the categorical claims below (Meno = cartesian sub-catego
 ## The gap (corrected from the stale RESUME framing)
 
 The RESUME said "the ⊗ is built; the message-passing layer is not." **Both are already built and independent:**
+
 - `Meno` — a symmetric-monoidal category over `ZSet`: Z-linear arrows `ZSet<'a> → ZSet<'b>`, Kronecker `tensor`, swap-`braid`, associator/unitors, `first`/`second`. Deterministic, exact, DBSP-incremental.
 - `Message`/`FactorGraph`/`Ep` — Infer.NET-style message passing: exponential-family messages in natural parameters (`product` = add nat-params = BP combine; `/` = subtract = EP cavity; marginalize), a bipartite factor graph with `passOnce`, EP for non-conjugate factors, and `MinimalBnn` (a BNN-v0 inference cell).
 
@@ -44,7 +45,7 @@ The deep point: **copy fails in exactly one direction as you climb.** Determinis
 
 *(This S-ladder mapping is Aaron's placement — flagged as structural analogy, for Soraya to accept or reject, not asserted as proof.)*
 
-## The open question — which type is the third corner?
+## The open question — which type is the third corner
 
 The quantum lane is **aspirational in code**: `QuantumFusion.fs` is a Bayesian/Q# oracle-aggregation app, not a CPTP-channel category; there is no density-matrix / Kraus / partial-trace category in the tree. So the honest options for the buildable third adapter are:
 

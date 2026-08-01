@@ -1,4 +1,5 @@
 # To Otto — SDK Bump Verification Plan: 10.0.302 + CodeAnalysis 5.6
+
 *Routed from Addison/Manus · 2026-07-31*
 
 ---

@@ -2,8 +2,8 @@
 //! (`tools/setup/persona-keys/golden-vectors-keyring-4x4.json`).
 //! Verifies canonical JSON, canonical CBOR (hex), and canonical XML output against the seed.
 
-use std::path::PathBuf;
 use serde_json::Value;
+use std::path::PathBuf;
 use zeta_core_dynamic_value::DynamicValue;
 
 fn repo_root() -> PathBuf {
@@ -31,9 +31,15 @@ fn rust_oracle_agrees_with_keyring_4x4_golden_vector() {
     let v: Value = serde_json::from_str(&text).expect("parse json");
 
     let expected = &v["expected"];
-    let json_expected = expected["canonical_json"].as_str().expect("canonical_json string");
-    let cbor_hex_expected = expected["canonical_cbor_hex"].as_str().expect("canonical_cbor_hex string");
-    let xml_expected = expected["canonical_xml"].as_str().expect("canonical_xml string");
+    let json_expected = expected["canonical_json"]
+        .as_str()
+        .expect("canonical_json string");
+    let cbor_hex_expected = expected["canonical_cbor_hex"]
+        .as_str()
+        .expect("canonical_cbor_hex string");
+    let xml_expected = expected["canonical_xml"]
+        .as_str()
+        .expect("canonical_xml string");
 
     // 1. Decode canonical_json into a DynamicValue
     let dv = DynamicValue::from_canonical_json(json_expected)
@@ -45,7 +51,11 @@ fn rust_oracle_agrees_with_keyring_4x4_golden_vector() {
 
     // 3. Verify CBOR re-encoding matches canonical_cbor_hex
     let cbor_bytes = dv.to_canonical_cbor().expect("to_canonical_cbor");
-    assert_eq!(hex(&cbor_bytes), cbor_hex_expected, "CBOR re-encoding mismatch");
+    assert_eq!(
+        hex(&cbor_bytes),
+        cbor_hex_expected,
+        "CBOR re-encoding mismatch"
+    );
 
     // 4. Verify XML re-encoding matches canonical_xml
     let re_xml = dv.to_canonical_xml().expect("to_canonical_xml");

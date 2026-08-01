@@ -23,6 +23,7 @@ The code sits at the **center**. One arm reaches E8 (proven); the other reaches 
 ## The sign-rule discriminator (Q2) — Cl3.fs is real Clifford
 
 The test that separates a genuine Clifford algebra from a ℤ₂³ group algebra is the **sign**:
+
 - `reorderSign` (`Cl3.fs:64-70`) counts anticommuting swaps, returns −1 on odd parity; `gp` (:74-83) multiplies blades by `mask = i XOR j` **times that sign**.
 - Hand-trace: `e₁e₂` → swaps 0 → `+e₁₂`; `e₂e₁` → swaps 1 → `−e₁₂`, so **e₁e₂ = −e₂e₁**. `e₁e₁` → mask 0, `+1`, so **e₁² = +1** (the (3,0) Euclidean square).
 - A ℤ₂³ group algebra would carry `mask = a XOR b` with sign **always +1**. The −1 is exactly the Clifford twist.
@@ -32,10 +33,12 @@ Honest peel: the (3,0) signature is **baked in** — no quadratic-form parameter
 ## The metaphor at the joint (Q1) — false as a group identity
 
 The strong reading conflates two different ℤ₂-spaces:
+
 - The **[8,4] code** lives in **ℤ₂⁸** (256 elements, 16 codewords); `AdinkraCode.xor` (:63) is **untwisted** GF(2) XOR — a plain linear code.
 - **Cl(3,0)** blade masks live in **ℤ₂³** (8 elements); the operation is XOR **plus the cocycle twist**, graded by popcount.
 
 **|ℤ₂⁸| = 256 ≠ 8 = |ℤ₂³|** — so "the code's mod-2 *is* the Clifford grading" is **FALSE** as a group/structure identity. The true weaker statements:
+
 1. **Clifford Cl(n) is the ℤ₂ⁿ twisted group algebra** (Chevalley; **Albuquerque–Majid 1999**) — mask = subset XOR, grade = popcount, twist = the quadratic-form 2-cocycle. `Cl3.fs` correctly realizes this **for ℤ₂³** (its own 3-bit blade indices) — not for the code's 8-bit codewords.
 2. The two meet **only** through `CliffordE8Bridge`, which bijects the 8 E8-coordinate positions with the 8 Cl(3) blade masks and labels each `gradeOfCoord i = popcount i` (:33) — a coordinate↔blade-mask **relabeling + isometry**, explicitly scoped basis/metric-only.
 

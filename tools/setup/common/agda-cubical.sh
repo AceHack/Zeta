@@ -153,9 +153,14 @@ fi
 # `agda --print-agda-app-dir` reports the dir THIS agda actually reads.
 # Older Agda (e.g. Ubuntu noble's 2.6.3) lacks the flag and reads ~/.agda.
 AGDA_APP_DIR="$(agda --print-agda-app-dir 2>/dev/null | head -n1 || true)"
-if [ -z "$AGDA_APP_DIR" ]; then
-  AGDA_APP_DIR="$HOME/.agda"
-fi
+# Older Agda (2.6.3, Ubuntu noble) prints "Error: Unrecognized option: …" to
+# STDOUT, so emptiness is not a sufficient guard — the captured value must be
+# an absolute path or we register into a garbage location and the verify
+# typecheck fails with "Installed libraries: (none)" (gate-red 2026-07-31).
+case "$AGDA_APP_DIR" in
+  /*) : ;;
+  *) AGDA_APP_DIR="$HOME/.agda" ;;
+esac
 mkdir -p "$AGDA_APP_DIR"
 LIBRARIES_FILE="$AGDA_APP_DIR/libraries"
 touch "$LIBRARIES_FILE"

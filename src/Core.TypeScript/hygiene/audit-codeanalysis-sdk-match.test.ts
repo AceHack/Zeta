@@ -41,5 +41,5 @@ test("offenders: the #9774 regression (5.6.0 pin under 5.3.0 Roslyn) is caught",
   const bumped = PROPS.replace('CodeAnalysis.CSharp" Version="5.3.0"', 'CodeAnalysis.CSharp" Version="5.6.0"');
   const bad = offenders(roslyn, parseCodeAnalysisPins(bumped));
   expect(bad.length).toBe(1);
-  expect(bad[0].raw).toBe("5.6.0");
+  expect(bad[0]!.raw).toBe("5.6.0");
 });

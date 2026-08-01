@@ -35,7 +35,7 @@ export function parseVersion(s: string): V | null {
   // tolerate pre-release suffixes: "5.3.0-2.26219.105" → 5.3.0
   const m = s.trim().match(/^(\d+)\.(\d+)\.(\d+)/);
   if (!m) return null;
-  return { major: +m[1], minor: +m[2], patch: +m[3] };
+  return { major: +m[1]!, minor: +m[2]!, patch: +m[3]! };
 }
 
 /** Lexicographic (major, minor, patch) compare. > 0 ⇒ a is newer than b. */
@@ -50,8 +50,8 @@ export function parseCodeAnalysisPins(text: string): { name: string; version: V;
   const re = /Include="(Microsoft\.CodeAnalysis[^"]*)"\s+Version="([^"]+)"/g;
   const pins: { name: string; version: V; raw: string }[] = [];
   for (const m of text.matchAll(re)) {
-    const v = parseVersion(m[2]);
-    if (v) pins.push({ name: m[1], version: v, raw: m[2] });
+    const v = parseVersion(m[2]!);
+    if (v) pins.push({ name: m[1]!, version: v, raw: m[2]! });
   }
   return pins;
 }

@@ -1,4 +1,5 @@
 # To Lumen — Z-1 Conjecture Discharge
+
 *Routed from Otto via Addison/Manus · 2026-07-31*
 
 ---

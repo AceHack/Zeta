@@ -24,6 +24,7 @@ Kronecker; Soraya read a stale view-only checkout). BraidEntropy is on main, NOT
 **Design — the braiding needs extra data (a Yang–Baxter R-matrix); the swap is *forced symmetric*.**
 A Cartesian/Kronecker ⊗ is symmetric by a theorem — the current `Meno.braid` is a *correct symmetric*
 braiding, not "unearned." Genuine braid = an R with R²≠id.
+
 - **PRIMARY (ZSet-ℤ-native): the conjugation-rack R** — `R(x⊗y) = (x·y·x⁻¹) ⊗ x`, `R⁻¹(u⊗v) = v ⊗ (v⁻¹·u·v)`,
   over `V = ℤ[Fₙ-gens]` (Braid.fs `Word`s). Integer, float-free, byte-lockable, DST-replayable, **R²≠id**.
   It IS the ℤ-linear shadow of `Braid.applyCrossing` — `ρ(σᵢ) = I^⊗(i-1) ⊗ R ⊗ I^⊗(n-i-1)`, and
@@ -37,12 +38,15 @@ braiding, not "unearned." Genuine braid = an R with R²≠id.
 **THE FALSE-GREEN TRAP (load-bearing).** 6 of 8 FsCheck properties PASS on the degenerate swap (symmetric
 ⊂ braided): P1 naturality, P2a/P2b hexagons, P3 bifunctoriality, P5a Yang–Baxter, P5b far-commute. Only
 TWO go RED on the swap — GATE ON THESE:
+
 - **P4: `∃z. run(c∘c) z ≠ z`** (σ²≠id witness) — swap has σ²=id.
 - **P5c: `ρ-equal ⟺ Braid.equal`** — `Braid.equal 3 [1;1] [] = false` but swap collapses σ₁²→id.
+
 A suite without P4+P5c enforced would certify a symmetric category as "braided." Retire MENO-2 (the
 current false-green swap test in `PrivacyAndMeno.Tests.fs`).
 
 **Sequencing (≈1 implementer-week for the FsCheck gate):**
+
 0. (DONE) wire `Meno.tensor`→`ZSet.cartesian`.
 1. **[S–M, the sleeper]** add associator α + unitors as Meno arrows — ZSet tuples are NON-STRICT, so the
    hexagons can't even be *stated* without α.
