@@ -1,7 +1,7 @@
 {
   "conjecture": "Z-7",
-  "claim": "binary_size ⊥ D_f: Pearson(binary_size, D_f) over 80 (compiler, seed) pairs satisfies |r| < 0.1",
-  "status": "DISCHARGED",
+  "claim": "binary_size \u22a5 D_f: Pearson(binary_size, D_f) over 80 (compiler, seed) pairs satisfies |r| < 0.1",
+  "status": "VOID \u2014 DEMOTED to \u00a7B 2026-08-01",
   "date": "2026-08-01T11:54:24.000Z",
   "compilers": [
     "WAT",
@@ -40,5 +40,6 @@
     "ASC": 6144,
     "Go": 1572864,
     "V8_Bytecode": 632
-  }
+  },
+  "voidReason": "r=0 is an algebraic identity: runDLA(seed) never receives the compiler argument, so all compilers share one simulation output and cov(size,D_f)=0 by construction. No WASM was executed."
 }

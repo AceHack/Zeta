@@ -1015,6 +1015,15 @@ jobs:
       - name: Run no-empty-dirs
         run: bun src/Core.TypeScript/lint/no-empty-dirs.ts
 
+      - name: Guard — discharge rows may not contradict their own certificates
+        # 2026-08-01: five rows were written "§A — DISCHARGED" while Z-2's own cited
+        # certificate said status:"OPEN" (94.7% error vs a 25% threshold). The script
+        # honestly reported failure; the register cell overrode it in prose. §A is the
+        # frozen core, so a false row there is an integrity defect. This catches that
+        # class MECHANICALLY — no judgement about whether a discharge is *good*, only a
+        # refusal of rows that contradict (or are missing) their cited evidence.
+        run: bun src/Core.TypeScript/hygiene/lint-discharge-certificate-consistency.ts
+
   lint-markdown:
     # markdownlint-cli2 on every .md file outside the ignore list in
     # .markdownlint-cli2.jsonc. Round 33 static-analysis expansion
