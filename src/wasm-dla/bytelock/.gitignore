@@ -1,0 +1,11 @@
+# Zig build artifacts
+.zig-cache/
+zig-out/
+*.o
+*.a
+
+# Rust intermediate objects
+*.rcgu.o
+
+# Candidate verification files (generated during CI, not source)
+candidate-*.json
