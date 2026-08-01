@@ -67,3 +67,38 @@ note is here so the page never renders one as the other.
 - `docs/design/2026-08-01-vault-monitoring-bridge.md` — the contract
 - `src/Core.TypeScript/.../llmtv-root-site-status.ts` — the shipped `live|cold|stale|heat` vocabulary
 - #9927 (contract) · #9916 (browser mesh node) · #9914 (superseded first attempt, same file)
+
+## Update 2026-08-01 — the data source now exists and is verified
+
+When this was routed, the contract was on main but **nothing emitted the JSON**. That gap is
+closed: #9932 ships `vault-state-bridge.ts`, which writes both `vault-roster.json` and
+`vault-state.json`.
+
+It was verified rather than accepted on report — 23 contract tests written by a different party
+than the implementation, and the adapter passed all of them. What that buys the page:
+
+- **A stopped society cannot render live.** Pinned in both directions, including the exact
+  30min/2h boundaries.
+- **The measured real cadence (~65min) reads `stale`, not `live`.** The heartbeat declares
+  `*/15` but actually runs at 63–86 minute intervals. The page will show that honestly instead
+  of smoothing it away — which is correct, and worth not "fixing" when it looks wrong.
+- **Zero events yields `cold` even with a fresh frame.** Stronger than the contract required: a
+  society that ticks but accomplishes nothing does not present as alive.
+- **`heat` overrides freshness without scarring.** Recent failures surface immediately; old ones
+  age out, so recovery is visible.
+- **Deterministic** under injected `nowMs` — the page can be replayed from a fixture, and there
+  is a negative-control test proving a moving clock genuinely changes the reading.
+- **No `color`, no precomputed adjectives, no `mock`/`degenerate`** anywhere in the emitted JSON.
+- **The roster carries identity only, never liveness** — so the settlement still draws its
+  dwellers when the state fetch fails.
+
+## The one caveat that affects what you build
+
+The CLI is **not yet wired into the tick** (that step is Alexa's, routed alongside this). Until
+it lands, the JSON on disk is a one-time snapshot, not a live surface. Build against it anyway —
+the contract degrades honestly, so a stale file renders `cold` rather than lying, and the page
+is correct before the wiring exists.
+
+Dweller records carry `last_seen: null` when an agent has no events in the window. That is not a
+bug to render around: null means "not observed", and the honest treatment is the frost/withheld
+shape, not a zero or a dash.

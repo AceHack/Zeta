@@ -1,0 +1,14 @@
+{
+  "id": "080cfdfb5f284011a013000805bbd6dd",
+  "at": "2026-08-01T22:22:27.080Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYZPQS8708QG0R00394FR74",
+    "type": "task",
+    "title": "Alexa: wire the vault-state-bridge CLI into the heartbeat tick + decide the dead eventsByAgent plumbing",
+    "slug": "alexa-wire-the-vault-state-bridge-cli-into-the-heartbeat-tic",
+    "priority": "P1",
+    "filename": "081KYZPQS8708QG0R00394FR74-alexa-wire-the-vault-state-bridge-cli-into-the-heartbeat-tic.md"
+  }
+}
