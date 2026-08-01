@@ -378,6 +378,39 @@ jobs:
       # because that was the only thing committed before the push.
       #
       # Rule for anyone adding a step here: if it writes or commits, it goes ABOVE this line.
+      - name: Generate vault state JSON (bridge adapter)
+        env:
+          AGENT: ${{ matrix.agent }}
+        run: |
+          # Only otto generates (avoid 3 parallel writes to the same file)
+          if [ "$AGENT" != "otto" ]; then
+            echo "[bridge] Skipping — only otto generates vault-state"
+            exit 0
+          fi
+
+          echo "[bridge] Generating vault-roster.json + vault-state.json..."
+          bun src/Core.TypeScript/observe/vault-state-bridge-cli.ts \
+            --events-dir docs/observe-events \
+            --tick-history data/tick-history.json \
+            --drift-ledger data/drift-mtth.json \
+            --output-dir data \
+            2>&1 | tail -5 || echo "::warning::[bridge] vault-state generation failed (non-fatal)"
+
+          # Stage if produced — non-fatal means the push still carries the heartbeat event
+          if [ -f data/vault-state.json ]; then
+            git add data/vault-roster.json data/vault-state.json
+            if ! git diff --cached --quiet -- data/vault-roster.json data/vault-state.json; then
+              git commit --no-verify -q -m "bridge(otto): vault-state $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Vault monitoring bridge — projects heartbeat telemetry into Genesis ontology.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+              echo "[bridge] Committed vault-state update"
+            else
+              echo "[bridge] vault-state unchanged"
+            fi
+          fi
+
       - name: Push heartbeat branch
         env:
           AGENT: ${{ matrix.agent }}

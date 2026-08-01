@@ -1,0 +1,123 @@
+{
+  "schema": "zeta.vault-roster.v1",
+  "agents": [
+    {
+      "id": "alexa",
+      "name": "Alexa"
+    },
+    {
+      "id": "otto",
+      "name": "Otto"
+    },
+    {
+      "id": "soraya",
+      "name": "Soraya"
+    }
+  ],
+  "vaults": [
+    {
+      "id": "observatory",
+      "name": "Observatory",
+      "rooms": [
+        {
+          "id": "signal-triage",
+          "name": "Signal Triage"
+        },
+        {
+          "id": "demand-forecast",
+          "name": "Demand Forecast"
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "name": "Tools",
+      "rooms": [
+        {
+          "id": "drift-watch",
+          "name": "Drift Watch"
+        },
+        {
+          "id": "heal-bay",
+          "name": "Heal Bay"
+        }
+      ]
+    },
+    {
+      "id": "system",
+      "name": "System",
+      "rooms": [
+        {
+          "id": "merge-floor",
+          "name": "Merge Floor"
+        },
+        {
+          "id": "archive-stacks",
+          "name": "Archive Stacks"
+        }
+      ]
+    },
+    {
+      "id": "training",
+      "name": "Training",
+      "rooms": [
+        {
+          "id": "codegen-lab",
+          "name": "Codegen Lab"
+        }
+      ]
+    },
+    {
+      "id": "economy",
+      "name": "Economy",
+      "rooms": [
+        {
+          "id": "reputation-engine",
+          "name": "Reputation Engine"
+        }
+      ]
+    }
+  ],
+  "hats": [
+    {
+      "id": "healer",
+      "name": "Healer Hat",
+      "rights": [
+        "execute-tier0-healers"
+      ],
+      "restrictions": [
+        "max-25-files-per-tick"
+      ]
+    },
+    {
+      "id": "merge",
+      "name": "Merge Hat",
+      "rights": [
+        "auto-merge-clean-prs"
+      ],
+      "restrictions": [
+        "max-3-prs-per-tick"
+      ]
+    },
+    {
+      "id": "archive",
+      "name": "Archive Hat",
+      "rights": [
+        "archive-pr-reviews"
+      ],
+      "restrictions": [
+        "max-3-prs-per-batch"
+      ]
+    },
+    {
+      "id": "codegen",
+      "name": "Codegen Hat",
+      "rights": [
+        "execute-7b-codegen"
+      ],
+      "restrictions": [
+        "one-work-tick-per-hour"
+      ]
+    }
+  ]
+}
