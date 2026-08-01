@@ -1,7 +1,8 @@
 # Vault Monitoring Bridge — Design Document
 
 **Date:** 2026-08-01 · **From:** Alexa/Kiro · **For review by:** Otto (shadow)
-**Status:** design proposal — awaiting review before implementation
+**Status:** design proposal — contract changes applied per Otto/Iris review (v2)
+**Revision:** 5 contract changes from Iris's verdict: timestamps not adjectives, status vocabulary alignment, remove color from schema, hub/satellite split, silent replaces degenerate.
 
 ## The One-Paragraph Version
 
@@ -52,10 +53,13 @@ A TypeScript adapter reads the live heartbeat event log and tick-history, then p
 
 **Key decisions:**
 
-1. One JSON file carries the entire projection (matches tick-history.json / drift-mtth.json pattern)
+1. Two files: roster (hub, rarely changes) + state (satellite, every tick) — page draws dwellers even when state fetch fails
 2. Deterministic adapter — identical inputs produce byte-identical output
 3. No new CI workflow — runs as a step in the existing heartbeat job
-4. Recovery-first reputation — decaying window, 0.1 floor, consensus-only degenerate labeling
+4. Recovery-first reputation — decaying window, 0.1 floor, consensus-only silent labeling
+5. Timestamps not adjectives — the page computes freshness from `last_seen` + browser clock
+6. `live|cold|stale|heat` status vocabulary — same DU already shipped in llmtv-root-site-status.ts
+7. No color in the JSON — the design system DU is the single source of truth for visual mapping
 
 ---
 
@@ -110,16 +114,35 @@ Hats are temporary. Remove the hat, rights go away, identity stays. The codegen 
 
 ---
 
-## Dweller State Machine
+## Dweller State (timestamps, not adjectives)
+
+**Change 1 (Iris):** The adapter emits the raw `last_seen` timestamp. The page computes freshness client-side. A stopped society can never render "working" forever — the browser's own clock catches it.
+
+The adapter does NOT emit precomputed state adjectives like `"working"` / `"idle"` / `"attention"`. It emits:
+
+```typescript
+interface Dweller {
+  agent_id: string;
+  name: string;
+  last_seen: string | null;    // ISO 8601 of most recent event, or null if never seen
+  hat: HatRef | null;
+  last_action: { kind: string; at: string } | null;
+  reputation: ReputationRecord;
+}
+```
+
+The **page** (Iris's domain) applies the state machine at render time:
 
 ```
-  event age     < 30 min      30min–2h       > 2h        no events
-  ──────────   ──────────    ──────────     ──────       ──────────
-  state         working        idle         attention       cold
-  color         amber          dim           red           (absent)
+  now - last_seen    < 30 min      30min–2h       > 2h        null
+  ──────────────    ──────────    ──────────     ──────       ──────
+  DU state           working        idle         attention     cold
+  DU color           amber          dim           red          (absent)
 ```
 
-Dweller location = their current hat duty's room. Otto wearing the Healer Hat appears in the Heal Bay. The state degrades monotonically — never skips or reverses.
+This ensures: if the adapter stops running, dwellers degrade to "attention" then "cold" automatically — the browser's clock is the oracle, not a stale file claiming liveness.
+
+Dweller location = their current hat duty's room. Otto wearing the Healer Hat appears in the Heal Bay.
 
 ---
 
@@ -129,11 +152,21 @@ Dweller location = their current hat duty's room. Otto wearing the Healer Hat ap
 1. Split 7-day window: Recent (48h, weight 2x) + Older (days 3–7, weight 1x)
 2. score = (2 × recent_ratio + 1 × older_ratio) / 3
 3. Floor: max(score, 0.1) — no agent stuck at zero if they've ticked at all
-4. Epsilon: 1/√(total_events), min 0.3 when < 10 events (high uncertainty)
+4. Epsilon: SIGNED. Positive ε means "could be better than score shows" (recovering).
+   Negative ε means "could be worse" (declining). |ε| = 1/√(total_events), min 0.3 when < 10.
 5. Trend: "recovering" | "declining" | "stable" (±0.05)
-6. Degenerate: ONLY if zero ticks for 7 days AND 2+ peers were active
+6. Silent (replaces "degenerate"): ONLY if zero ticks for 7 days AND k ≥ 2 peers were active
    — consensus-based exclusion, never unilateral
+   — k ≥ 2 is the threshold because with k=1, a single malicious peer could
+     whitewash another into silence (profitable collusion). k ≥ 2 means two
+     independent witnesses must agree on absence.
 ```
+
+**Change 5 (Iris/Otto):** "degenerate" → `"silent"`. The word means "has not been heard from" — factual, not judgmental. And the epsilon is **signed**: `+ε` means upside uncertainty (the agent might be doing better than the score shows, we just haven't seen enough), `−ε` means downside uncertainty. This gives Iris a directional indicator to render (trend arrow up vs down) without needing a separate "trend" string — the sign of ε IS the trend.
+
+**Why k ≥ 2 (peer count, not Cantelli):** with 3 agents total, requiring 2 active peers to declare silence means a single agent cannot unilaterally exile another. If only otto is ticking and alexa+soraya are both dark, otto cannot declare them silent — maybe otto is the outlier. The moment any two agents independently confirm they're alive while a third is absent, the absence is corroborated. This is the minimal consensus that prevents whitewashing (one agent profiting from another's silence label).
+
+**Note:** the k ≥ 2 here is a **peer count threshold** (combinatorial: how many independent witnesses are needed). It is NOT the Cantelli k ≈ 1.95 from α = 1/(1+k²) — that is a deviation multiplier bounding tail probability. They happen to land near the same number by coincidence. The justification for 2 peers is purely "a single malicious peer cannot unilaterally exile" — a quorum argument, not a statistical one. Do not conflate them.
 
 **Design intent:** fail, come back, try again = score recovers fast. Failures are welcome — they are the training signal.
 
@@ -152,48 +185,104 @@ Uncertainty is RENDERED, never hidden. The empty portion of the bar IS the epsil
 
 ---
 
-## JSON Schema (the contract)
+## JSON Schema (the contract — v2)
+
+**Changes 1–4 from Iris's review applied:**
+
+### Split: Hub (roster) vs Satellite (state)
+
+**Change 4:** The roster (who exists, what hats are defined, what rooms exist) is separated from the live state (timestamps, confidence, activity). This means the settlement page can draw the dwellers and rooms even when the state fetch fails — it just shows them as cold.
+
+**File: `data/vault-roster.json`** (the hub — changes rarely, committed by humans or on major topology changes)
 
 ```typescript
-interface VaultStateJSON {
-  schema_version: "1.0.0";
-  provenance: {
-    generated_at: string;       // ISO 8601
-    tick_frame_t: string;       // Source frame timestamp
-    total_events_read: number;
-    mock: boolean;              // true = no real data available
-  };
-  vaults: Vault[];
-}
-
-interface Vault {
-  id: string;
-  name: string;
-  state: "active" | "sealed" | "idle" | "attention";
-  confidence: { value: number; epsilon: number };
-  rooms: Room[];
-}
-
-interface Room {
-  id: string;
-  name: string;
-  state: "active" | "idle" | "attention" | "cold";
-  confidence: { value: number; epsilon: number };
-  dwellers: Dweller[];
-  activity_log: { at: string; agent: string; kind: string; summary: string }[];
-}
-
-interface Dweller {
-  agent_id: string;
-  name: string;
-  state: "working" | "idle" | "attention" | "cold";
-  color: "amber" | "dim" | "red" | null;
-  hat: { id: string; name: string; rights: string[]; restrictions: string[] } | null;
-  last_action: { kind: string; at: string } | null;
-  reputation: { value: number; epsilon: number; trend: string };
-  reputation_history: number[];  // Last 7 daily scores
+interface VaultRoster {
+  schema: "zeta.vault-roster.v1";
+  agents: {
+    id: string;              // "alexa" | "otto" | "soraya"
+    name: string;            // Display name
+  }[];
+  vaults: {
+    id: string;
+    name: string;
+    rooms: { id: string; name: string }[];
+  }[];
+  hats: {
+    id: string;              // "healer" | "merge" | "archive" | "codegen"
+    name: string;
+    rights: string[];
+    restrictions: string[];
+  }[];
 }
 ```
+
+**File: `data/vault-state.json`** (the satellite — regenerated every tick by the adapter)
+
+```typescript
+interface VaultState {
+  schema: "zeta.vault-state.v1";
+  status: "live" | "cold" | "stale" | "heat";  // Change 2: aligns with llmtv-root-site-status.ts
+  reason: string;                                // Human-readable why this status
+  generated_at_ms: number;                       // Unix epoch ms (not ISO string — avoids TZ ambiguity)
+  tick_frame_t: string;                          // ISO 8601 of the source tick-history frame
+  total_events_read: number;
+
+  // Per-vault state
+  vaults: VaultSnapshot[];
+}
+
+interface VaultSnapshot {
+  id: string;                                    // Matches roster vault.id
+  status: "live" | "cold" | "stale" | "heat";   // Vault-level status
+  confidence: { value: number; epsilon: number };
+  rooms: RoomSnapshot[];
+}
+
+interface RoomSnapshot {
+  id: string;                                    // Matches roster room.id
+  confidence: { value: number; epsilon: number };
+  activity_log: ActivityEntry[];                  // Last 5 relevant events
+  dwellers: DwellerSnapshot[];
+}
+
+interface DwellerSnapshot {
+  agent_id: string;                              // Matches roster agent.id
+  last_seen: string | null;                      // ISO 8601 — Change 1: timestamp, not adjective
+  hat_id: string | null;                         // References roster hat.id
+  last_action: { kind: string; at: string } | null;
+  reputation: {
+    value: number;                               // 0.0–1.0
+    epsilon: number;                             // SIGNED — Change 5: +ε = upside, −ε = downside
+    silent: boolean;                             // true = consensus-declared absent (was "degenerate")
+  };
+  reputation_history: number[];                  // Last 7 daily scores
+}
+
+// NO color field anywhere — Change 3: the state DU (amber/teal/violet/red/dim) is
+// defined ONCE in the design system CSS, keyed by the status/age computation.
+// The JSON carries data (timestamps, scores); the page carries the visual mapping.
+// Duplicating the DU in the JSON creates two sources of truth for "what color means."
+
+interface ActivityEntry {
+  at: string;
+  agent: string;
+  kind: string;
+  summary: string;
+}
+```
+
+### Status vocabulary (Change 2)
+
+Aligns with the already-shipped `RootSiteLlmtvStatusKind` from `llmtv-root-site-status.ts`:
+
+| Status | Meaning | Condition |
+|--------|---------|-----------|
+| `live` | Data is fresh and the domain is actively producing | Latest frame < 30 min old |
+| `stale` | Data exists but is aging beyond expected cadence | Latest frame 30min–2h old |
+| `cold` | No data has ever arrived, or the source is dark | No events, or > 8h since last |
+| `heat` | Evidence of active problems (failures, rejected work) | Recent failures detected |
+
+This is the same DU the LLMTV status card already renders. One vocabulary across all surfaces.
 
 ---
 
@@ -224,11 +313,12 @@ Non-fatal: if the bridge fails, the heartbeat and tick-history still land. Fresh
 | Condition | Behavior |
 |-----------|----------|
 | Bridge adapter fails | Warning annotation, push proceeds, previous vault-state.json stays served |
-| Zero events found | Emit mock=true, all dwellers cold |
+| Zero events found | Emit status=`"cold"`, all dwellers last_seen=null |
 | drift-mtth.json missing | Tools vault confidence = (0.0, 0.5) — maximum uncertainty |
 | Single event malformed | Skip with warning, process the rest |
-| Settlement page fetch fails | "offline" chip, no dwellers rendered (never fabricates activity) |
-| Schema version unrecognized | Fallback to offline rendering |
+| Settlement page: vault-state.json fetch fails | Page renders from roster (hub) alone — dwellers drawn but cold; no fabricated activity |
+| Settlement page: vault-roster.json fetch fails | Offline chip, nothing rendered (can't draw what we don't know exists) |
+| Schema version unrecognized | Fallback to cold rendering, console warning |
 
 ---
 
@@ -236,11 +326,13 @@ Non-fatal: if the bridge fails, the heartbeat and tick-history still land. Fresh
 
 1. **Round-trip:** serialize → parse → re-serialize = identical
 2. **Determinism:** same inputs → byte-identical output
-3. **Reputation bounds:** score ∈ [0.1, 1.0] for any agent that has ticked (degenerate excepted)
-4. **Monotone freshness:** working → idle → attention → cold, never reverses
+3. **Reputation bounds:** score ∈ [0.1, 1.0] for any agent that has ticked (silent excepted)
+4. **Monotone freshness (page-side):** as `now - last_seen` grows, state degrades working → idle → attention → cold, never reverses
 5. **Hat rotation:** hour % 3 is the only codegen assignment; static hats never change
 6. **Decaying weight:** recent events always score ≥ older events of equal count
-7. **Consensus exclusion:** degenerate requires 7 days zero + 2 active peers
+7. **Consensus exclusion:** silent requires 7 days zero + k ≥ 2 active peers (whitewashing unprofitable)
+8. **Hub/satellite independence:** roster fetch failure does NOT corrupt state; state fetch failure does NOT prevent roster rendering
+9. **No precomputed adjectives:** vault-state.json contains NO state/color strings for dwellers — only timestamps and scores
 
 ---
 
@@ -253,10 +345,11 @@ Non-fatal: if the bridge fails, the heartbeat and tick-history still land. Fresh
 | Hats rotate | Codegen hourly; static hats documented as current reality |
 | Same data, different surface | vault-state.json powers both settlement.html and could power monitor.html |
 | Git is the database, Pages is the API | vault-state.json committed to main, served by Pages |
-| The page never pretends | live/stale/offline labeling; missing data = cold, not zero |
-| Recovery-first reputation | Decaying window, 0.1 floor, "recovering" trend |
+| The page never pretends | live/stale/cold/heat labeling; timestamps not adjectives; browser clock is oracle |
+| Recovery-first reputation | Decaying window, 0.1 floor, signed ε, consensus-only silent labeling |
 | Everyone is IT | Mutual observation symmetric — all agents measured the same way |
 | Deterministic & testable | Pure function, injected clock, byte-identical output |
+| Hub/satellite resilience | Roster (who exists) separate from state (how they're doing) — partial failure renders honestly |
 
 ---
 
@@ -269,9 +362,19 @@ Non-fatal: if the bridge fails, the heartbeat and tick-history still land. Fresh
 
 ---
 
-## Open Questions (for Otto)
+## Open Questions (remaining after Iris/Otto review)
 
 1. Should the codegen hat rotation frequency change from hourly to per-tick (15min)?
 2. Should the Economy vault include cross-agent attestation data (the peer verification NFTs)?
 3. Should vault-state.json carry raw event IDs for rooms' activity_logs, or just summaries?
-4. Is 7 days the right window for degenerate consensus, or should it be shorter (3 days)?
+4. Is 7 days the right window for silent consensus, or should it be shorter (3 days)?
+
+## Resolved (from Otto/Iris review)
+
+| Issue | Resolution |
+|-------|------------|
+| Precomputed state adjectives | **Timestamps only.** Page computes freshness at render time. (Iris change 1) |
+| `provenance.mock` boolean | **Replaced** with `status: "live" \| "cold" \| "stale" \| "heat"` — aligns with shipped vocabulary in `llmtv-root-site-status.ts`. (Iris change 2) |
+| Color in JSON schema | **Removed.** The state DU lives in the design system CSS. JSON carries data, page carries visual. (Iris change 3) |
+| Single file carries everything | **Split** into roster (hub) + state (satellite). Settlement draws dwellers from roster even when state fetch fails. (Iris change 4) |
+| "Degenerate" label | **Renamed** to `"silent"`. Factual, not judgmental. Epsilon is signed (+upside, −downside). k ≥ 2 consensus threshold to prevent whitewashing. (Iris/Otto change 5) |
