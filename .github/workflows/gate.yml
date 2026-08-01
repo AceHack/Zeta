@@ -322,6 +322,10 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The pull_request ref is a synthetic merge commit. Its first parent
+          # must be present for the PR-scoped markdown diff below.
+          fetch-depth: 2
 
       - name: Path-filter result (081KQGDBJ0008QG0R001MK4YPC)
         shell: bash
@@ -1112,7 +1116,6 @@ jobs:
         # (rightmost pipe stage), not the raw linter.
         run: |
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-            git fetch --deepen=1 origin
             git diff --name-only HEAD^1 HEAD > /tmp/changed-files.txt
             git ls-files > /tmp/tracked-files.txt
             { mise exec -- markdownlint-cli2 "**/*.md" 2>&1 || true; } \

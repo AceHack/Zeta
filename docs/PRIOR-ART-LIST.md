@@ -421,7 +421,6 @@ citation.
   (+ `docs/research/scripts/`) · zoo reference
   `2026-07-03-the-constants-zoo-spectrum-classes-and-brownian-llm-ensembles-aaron.md`.
 
-
 ### Proper scoring rules / calibration / prediction markets (added 2026-08-01 per Soraya review of calibration-ledger.ts)
 
 These six anchors are now load-bearing: `calibration-ledger.ts` uses Beta-Bernoulli
