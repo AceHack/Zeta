@@ -1,0 +1,36 @@
+--- a/.github/workflows/agent-heartbeat.yml
++++ b/.github/workflows/agent-heartbeat.yml
+@@ -86,6 +86,23 @@ jobs:
+             --event-dir docs/observe-events \
+             --participant local-llm || echo "[heartbeat] tick failed (non-fatal)"
+ 
++      - name: Run DLA meter (oracle reading)
++        env:
++          ZETA_AGENT_ID: ${{ matrix.agent }}
++        run: |
++          case "$ZETA_AGENT_ID" in
++            alexa)  ORACLE_IDX=0 ;;
++            otto)   ORACLE_IDX=1 ;;
++            soraya) ORACLE_IDX=2 ;;
++            *)      ORACLE_IDX=0 ;;
++          esac
++          HB_ID=$(git rev-parse --short HEAD 2>/dev/null || echo "0000000000000000")
++          bun src/Core.TypeScript/oracle/dla-meter.ts \
++            --agent "$ZETA_AGENT_ID" \
++            --oracle-idx "$ORACLE_IDX" \
++            --heartbeat-id "$HB_ID" \
++            --output-branch oracle-readings \
++            || echo "[heartbeat] DLA meter failed (non-fatal)"
++
+       - name: Commit heartbeat event
+         env:
+           AGENT: ${{ matrix.agent }}
+@@ -97,7 +114,8 @@ jobs:
+           else
+             git commit --no-verify -m "heartbeat($AGENT): tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+           Autonomous observe loop heartbeat. Free-tier Ollama (qwen2.5:0.5b).
+-          Agent: $AGENT. Symmetric pair (cross-verified by peer).
++          Agent: $AGENT. DLA meter: oracle-readings/$AGENT. Symmetric pair (cross-verified by peer).
+           Co-Authored-By: Kiro <noreply@kiro.dev>"
+           fi
++          git add oracle-readings/ || true
