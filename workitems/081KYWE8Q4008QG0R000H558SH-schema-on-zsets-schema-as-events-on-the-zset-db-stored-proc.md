@@ -21,7 +21,7 @@ composes_with: []
 Aaron 2026-07-31: schema-on-ZSets is *"our entire db stored-proc architecture long term."* Schema modeled as EVENTS on the ZSet (grant/revoke = +1/−1 retraction fold), never a static desired-state map.
 Sources: [`docs/research/2026-07-01-the-polymorphic-zset-base-atom-open-generics-dispatch-and-schema-as-events-on-the-zset.md`](../docs/research/2026-07-01-the-polymorphic-zset-base-atom-open-generics-dispatch-and-schema-as-events-on-the-zset.md), [`docs/research/2026-07-02-quantum-phase5-two-ledgers-calm-is-ctl-not-adj-landauer-as-cost-contract.md`](../docs/research/2026-07-02-quantum-phase5-two-ledgers-calm-is-ctl-not-adj-landauer-as-cost-contract.md).
 
-## STATUS — increment 1 LANDED (2026-08-01, PR #9823). Work-item stays OPEN.
+## STATUS — increment 1 LANDED (2026-08-01, PR #9823). Work-item stays OPEN
 
 Shipped: the EVENT LOG layer above the pre-existing delta plane — `SchemaOp` (+`delta`/`invert`),
 `SchemaEvent` (idempotency key; `compensate` appends a retraction, never erases), `SchemaLog`

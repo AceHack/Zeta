@@ -27,6 +27,7 @@ if ! command -v rustup >/dev/null 2>&1; then
     sh -s -- -y --default-toolchain "$RUST_VERSION" --no-modify-path
   # Source cargo env for the rest of this script
   # shellcheck source=/dev/null
+  # shellcheck source=/dev/null
   source "$HOME/.cargo/env"
   echo "rustup $(rustup --version 2>&1 | head -1) installed"
 else

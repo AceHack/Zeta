@@ -22,7 +22,7 @@ Aaron 2026-07-31: *"open generics dispatch over zsets ... is our entire db store
 Source: [`docs/research/2026-07-01-the-polymorphic-zset-base-atom-open-generics-dispatch-and-schema-as-events-on-the-zset.md`](../docs/research/2026-07-01-the-polymorphic-zset-base-atom-open-generics-dispatch-and-schema-as-events-on-the-zset.md).
 Push forward: open-generics dispatch over the polymorphic ZSet base atom — the runtime dispatch that lets ZSet operators specialize per stored type.
 
-## STATUS — increment 1 LANDED (2026-08-01, PR #9841). Work-item stays OPEN.
+## STATUS — increment 1 LANDED (2026-08-01, PR #9841). Work-item stays OPEN
 
 Design finding: the doc carries TWO open generics and one was ALREADY LANDED — the **weight** axis
 (`'W` over `ISemiring`, struct-ring monomorphisation) lives in `ZSetW.fs`'s `*By` ops. The un-landed
