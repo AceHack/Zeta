@@ -191,7 +191,19 @@ The total IV extracted by a discrete-ticking agent from a continuous linear-spec
 
 *Economic Bounding Correction (Aaron):* The IV cap is the hard-money entropy budget (finite capacity to hold uncorrelated/unique information), NOT the regularization constant. The architecture's monetary stability is decoupled from the fate of this math conjecture.
 
-*T-1/12 relationship (2026-07-03):* §A #22 (T-1/12) is the provable restatement that survives from Z-1 — its soul: the same B₂ prices tick-sampling as a **finite-Δ correction coefficient**, no regularization. **Landing T-1/12 does NOT discharge Z-1.** Z-1 proper — −1/12 as a regularized *total* IV bound — remains open on all three verdict requirements: (a) a named process class with Iₙ ∝ n (none found; the natural Zeta spectra give ζ(0) = −1/2, ζ′(0), or convergent π²/6 — the falsifier stands), (b) tick boundaries quantizing modes, (c) operational scheme-independence. A future reader who cites −1/12 must say which one: the sampling *coefficient* (proven, #22) or the regularized *total* (open, here). Any future (a)(b)(c) derivation must reduce to #22 in the finite-Δ regime — a free consistency check on candidate proofs. *(Suggested wording fix for the Z-1 statement above, Lumen's to adopt: "the residual penalty is −1/12 **per unit spectral slope, as a Δ² coefficient (see §A #22); as a regularized total it remains conjectural**.")*
+*T-1/12 relationship (2026-07-03):* §A #22 (T-1/12) is the provable restatement that survives from Z-1 — its soul: the same B₂ prices tick-sampling as a **finite-Δ correction coefficient**, no regularization. **Landing T-1/12 does NOT discharge Z-1.** Z-1 proper — −1/12 as a regularized *total* IV bound — remains open on all three verdict requirements: (a) a named process class with Iₙ ∝ n (none found; the natural Zeta spectra give ζ(0) = −1/2, ζ′(0), or convergent π²/6 — the falsifier stands), (b) tick boundaries quantizing modes, (c) operational scheme-independence. A future reader who cites −1/12 must say which one: the sampling *coefficient* (proven, #22) or the regularized *total* (open, here). Any future (a)(b)(c) derivation must reduce to #22 in the finite-Δ regime — a free consistency check on candidate proofs. *(Suggested wording fix for the Z-1 statement above, Lumen's to adopt: "the residual penalty is −1/12 **per unit spectral slope, as a Δ² coefficient (see §A #22); as a regularized total it remains conjectural**.")* 
+
+*Falsifier verdict (Manus/Addison session 2026-07-31):* **Z-1 falsifier is decisive. CLOSED as falsified. Keep only §A #22.**
+
+All natural Zeta process spectra were enumerated and all fail requirement (a) — the Iₙ ∝ n class:
+- Constant/white-noise (Iₙ = 1): ζ(0) = −1/2. I′(0) = 0, T-1/12 coefficient vanishes.
+- Linear (Iₙ = n): ζ(−1) = −1/12. This IS the Z-1 claim — but no physical Zeta process has Iₙ ∝ n.
+- Quadratic (Iₙ = n²): ζ(−2) = 0. Trivial zero.
+- Harmonic (Iₙ = 1/n): ζ(1) divergent. Not regularizable.
+- Exponential (Iₙ = e^{−an}): convergent sum. Regularization irrelevant.
+- DLA boundary (this session): mode count scales as ε^{−D_f} (power law, D_f ≈ 1.322), not linearly in n.
+
+The only physical candidate for Iₙ ∝ n is a quantum harmonic oscillator (QHO) — the Casimir vacuum energy spectrum. The Zeta tick source is a cron (classical periodic process), not a QHO. Tick boundaries are engineering parameters, not mode quantization conditions. **The falsifier for (a) is robust and decisive.** Requirements (b) and (c) are moot. Z-1 is **CLOSED**. The −1/12 lives only as the T-1/12 Δ² coefficient (§A #22, proven). Any future citation of −1/12 in this codebase must specify: sampling *coefficient* (§A #22, proven) or regularized *total* (Z-1, **falsified**). See `docs/letters/to-lumen-z1-conjecture-discharge.md`.
 
 ### B-frame. The traveler self-frame over DBSP (Aaron's load-bearing target, 2026-06-05)
 

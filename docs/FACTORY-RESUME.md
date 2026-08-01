@@ -203,6 +203,46 @@ proof log).
   (`docs/FACTORY-HYGIENE.md`) — 22+ rows of cadenced
   audits I run on myself; tier-2 symmetry-audit and
   tier-3 missing-hygiene-class gap-finder proposed.
+- **Multi-oracle DLA sensor-fusion proof (2026-07-31)**
+  (`src/Core/IdentityDLA.fs`, `src/Renderers/`,
+  `idspace-dla-6faa9bmi.manus.space`) — DLA with
+  Tsirelson sticking threshold (1/(3√2) ≈ 0.2357)
+  rendered across six independent substrates (Canvas,
+  CSS-only, Chip-8 VM, SVG, Q# quantum walk, *C. elegans*
+  biological connectome). All six agree on D_f ≈ 1.322
+  ± 0.18. Proof: identity eigenvector is substrate-
+  independent (Kalman sensor fusion, ρ = 1/(1+L)).
+- **Z-1 conjecture falsified (2026-07-31)**
+  (`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md`) —
+  Enumerated all natural Zeta process spectra; none
+  satisfy Iₙ ∝ n. QHO is the only physical candidate
+  but the Zeta tick source is a cron, not a QHO.
+  Falsifier decisive. Z-1 CLOSED. §A #22 (T-1/12)
+  survives as the only load-bearing −1/12 claim.
+- **DebouncedOracle.fs — νF anamorphism with L > 0**
+  (`src/Core/DebouncedOracle.fs`) — enforces minimum
+  decorrelation window between oracle readings. Anchors
+  ρ = 1/(1+L) to the FerryThrottler house style.
+- **CelegansController + CelegansChip8Room (2026-07-31)**
+  (`src/Core/CelegansController.fs`,
+  `src/Core/CelegansChip8Room.fs`) — White 1986 whole
+  connectome (302 neurons, 2,960 edges) as a Chip-8
+  BeliefEstimator. Worm observes display pixels; motor
+  neuron synchrony drives belief over input branches.
+  Fused room: Condorcet-weighted AI + worm posterior.
+- **MoneyVelocityOracle.fs (2026-07-31)**
+  (`src/Core/MoneyVelocityOracle.fs`) — Bitcoin UTXO
+  age + M2 velocity as DLA inputs. Formalizes the
+  Austrian/Keynesian debate as a mathematical claim
+  about decorrelation (ρ = 1/(1+L) over money).
+- **OracleTransport.fs (2026-07-31)**
+  (`src/Core/OracleTransport.fs`) — transport-agnostic
+  ZSet delta adapter. Wraps OracleReading for Git,
+  WebSocket, NATS, or Reticulum. Transport IS the L.
+- **GitHub Pages Proofs gallery (2026-07-31)**
+  (`demo/proofs/index.html`) — six-card gallery
+  explaining what makes each shape different, connected
+  to the Factory Dashboard nav.
 
 ---
 
