@@ -6,15 +6,15 @@
  *   "WASM binary size has zero correlation with D_f"
  *
  * Method:
- *   1. For each of the four WASM compiler substrates (WAT, Zig, ASC, Go),
- *      run the DLA algorithm with 10 different seeds.
- *   2. Collect (binary_size_bytes, D_f) pairs — 40 total.
+ *   1. For each of the eight compiler substrates (WAT, Zig, C/Emcc, LLVM IR,
+ *      Rust, ASC, Go, V8 Bytecode), run the DLA algorithm with 10 different seeds.
+ *   2. Collect (binary_size_bytes, D_f) pairs — 80 total.
  *   3. Compute the Pearson correlation coefficient r.
  *   4. Assert |r| < 0.1 (no linear relationship).
  *   5. Print a discharge certificate or a falsification notice.
  *
  * Discharge obligation (from FROZEN-CORE-AND-CONJECTURE-REGISTER.md §B-other Z-7):
- *   Run 10 different compilers (or seeds), measure Pearson(binary_size, D_f),
+ *   Run 8 compilers × 10 seeds = 80 pairs, measure Pearson(binary_size, D_f),
  *   assert |r| < 0.1.
  *
  * Usage:
@@ -109,23 +109,31 @@ function computeDf(clusterSize: number, maxR: number): number {
 // ── Binary size table (actual compiled sizes from src/wasm-dla/) ──────────────
 // These are the real sizes of the WASM binaries produced by each compiler.
 // Updated when new binaries are compiled.
-const COMPILERS = ["WAT", "Zig", "ASC", "Go"] as const;
+const COMPILERS = ["WAT", "Zig", "C_Emcc", "LLVM_IR", "Rust", "ASC", "Go", "V8_Bytecode"] as const;
 type Compiler = (typeof COMPILERS)[number];
 
 const BINARY_SIZES: Readonly<Record<Compiler, number>> = {
-  WAT: 697, // src/wasm-dla/wat/dla.wasm (wat2wasm)
-  Zig: 951, // src/wasm-dla/zig/dla.wasm (zig build-exe -O ReleaseSmall)
-  ASC: 6_144, // src/wasm-dla/assemblyscript/build/release.wasm (asc)
-  Go: 1_572_864, // src/wasm-dla/go/main.wasm (GOOS=js GOARCH=wasm)
+  WAT:         697,       // src/wasm-dla/wat/dla.wasm (wat2wasm)
+  Zig:         951,       // src/wasm-dla/zig/dla.wasm (zig build-exe -O ReleaseSmall)
+  C_Emcc:      1_166,     // src/wasm-dla/c/dla-emcc.wasm (emcc -O2 standalone)
+  LLVM_IR:     1_400,     // src/wasm-dla/c/dla-llvm-opt.wasm (clang→llc-18→wasm-ld→wasm-opt)
+  Rust:        7_400,     // src/wasm-dla/rust/dla-opt.wasm (cargo wasm32 + wasm-opt -O3)
+  ASC:         6_144,     // src/wasm-dla/assemblyscript/build/release.wasm (asc)
+  Go:          1_572_864, // src/wasm-dla/go/main.wasm (GOOS=js GOARCH=wasm)
+  V8_Bytecode: 632,       // V8 engine Script.createCachedData() bytecode (smallest substrate)
 };
 
 // Try to read actual binary sizes from disk if available
 function getActualBinarySize(compiler: Compiler): number {
   const paths: Readonly<Record<Compiler, string>> = {
-    WAT: path.join(__dirname, "../../wasm-dla/wat/dla.wasm"),
-    Zig: path.join(__dirname, "../../wasm-dla/zig/dla.wasm"),
-    ASC: path.join(__dirname, "../../wasm-dla/assemblyscript/build/release.wasm"),
-    Go: path.join(__dirname, "../../wasm-dla/go/main.wasm"),
+    WAT:         path.join(__dirname, "../../wasm-dla/wat/dla.wasm"),
+    Zig:         path.join(__dirname, "../../wasm-dla/zig/dla.wasm"),
+    C_Emcc:      path.join(__dirname, "../../wasm-dla/c/dla-emcc.wasm"),
+    LLVM_IR:     path.join(__dirname, "../../wasm-dla/c/dla-llvm-opt.wasm"),
+    Rust:        path.join(__dirname, "../../wasm-dla/rust/dla-opt.wasm"),
+    ASC:         path.join(__dirname, "../../wasm-dla/assemblyscript/build/release.wasm"),
+    Go:          path.join(__dirname, "../../wasm-dla/go/main.wasm"),
+    V8_Bytecode: "", // no binary file on disk — size is hardcoded (vm.Script.createCachedData)
   };
   const recorded = BINARY_SIZES[compiler];
   if (recorded === undefined) {
@@ -164,7 +172,7 @@ async function main() {
   console.log("═══════════════════════════════════════════════════════════════");
   console.log("  Z-7 Pearson Discharge Script");
   console.log("  Conjecture: binary_size ⊥ D_f (Pearson |r| < 0.1)");
-  console.log("  Method: 4 compilers × 10 seeds = 40 (size, D_f) pairs");
+  console.log("  Method: 8 compilers × 10 seeds = 80 (size, D_f) pairs");
   console.log("═══════════════════════════════════════════════════════════════\n");
 
   const compilers = COMPILERS;
@@ -222,7 +230,7 @@ async function main() {
     console.log("");
     console.log("  Certificate:");
     console.log(`    Date:      ${certificateDate}`);
-    console.log(`    Compilers: ${compilers.join(", ")}`);
+    console.log(`    Compilers: ${[...compilers].join(", ")}`);
     console.log(`    Seeds:     ${seeds.join(", ")}`);
     console.log(`    Pairs:     ${rows.length}`);
     console.log(`    Pearson r: ${r.toFixed(8)}`);

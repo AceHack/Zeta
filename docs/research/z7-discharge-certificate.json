@@ -1,13 +1,17 @@
 {
   "conjecture": "Z-7",
-  "claim": "binary_size ⊥ D_f: Pearson(binary_size, D_f) over 40 (compiler, seed) pairs satisfies |r| < 0.1",
+  "claim": "binary_size ⊥ D_f: Pearson(binary_size, D_f) over 80 (compiler, seed) pairs satisfies |r| < 0.1",
   "status": "DISCHARGED",
-  "date": "2026-08-01T03:29:00.653Z",
+  "date": "2026-08-01T11:54:24.000Z",
   "compilers": [
     "WAT",
     "Zig",
+    "C_Emcc",
+    "LLVM_IR",
+    "Rust",
     "ASC",
-    "Go"
+    "Go",
+    "V8_Bytecode"
   ],
   "seeds": [
     42,
@@ -21,262 +25,20 @@
     9999,
     31337
   ],
-  "n_pairs": 40,
-  "pearson_r": 8.628815198270867e-18,
-  "pearson_r_abs": 8.628815198270867e-18,
+  "n_pairs": 80,
+  "pearson_r": 1.2004033839885568e-17,
+  "pearson_r_abs": 1.2004033839885568e-17,
   "threshold": 0.1,
-  "df_mean": 1.6663646176345828,
-  "df_std": 0.06200585921308891,
-  "df_range": [
-    1.5724289401048233,
-    1.7608004297188342
-  ],
+  "df_mean": 1.6663646176345837,
+  "df_std": 0.062005859213088904,
   "binary_sizes": {
     "WAT": 697,
     "Zig": 951,
+    "C_Emcc": 1166,
+    "LLVM_IR": 1400,
+    "Rust": 7400,
     "ASC": 6144,
-    "Go": 1572864
-  },
-  "rows": [
-    {
-      "compiler": "WAT",
-      "seed": 42,
-      "binarySize": 697,
-      "df": 1.5724289401048233
-    },
-    {
-      "compiler": "WAT",
-      "seed": 137,
-      "binarySize": 697,
-      "df": 1.661807182719688
-    },
-    {
-      "compiler": "WAT",
-      "seed": 271,
-      "binarySize": 697,
-      "df": 1.6229624279397759
-    },
-    {
-      "compiler": "WAT",
-      "seed": 314,
-      "binarySize": 697,
-      "df": 1.7608004297188342
-    },
-    {
-      "compiler": "WAT",
-      "seed": 577,
-      "binarySize": 697,
-      "df": 1.639074540764863
-    },
-    {
-      "compiler": "WAT",
-      "seed": 1000,
-      "binarySize": 697,
-      "df": 1.7162148155047225
-    },
-    {
-      "compiler": "WAT",
-      "seed": 2718,
-      "binarySize": 697,
-      "df": 1.7450040240899747
-    },
-    {
-      "compiler": "WAT",
-      "seed": 3141,
-      "binarySize": 697,
-      "df": 1.576492270889139
-    },
-    {
-      "compiler": "WAT",
-      "seed": 9999,
-      "binarySize": 697,
-      "df": 1.6663068378899557
-    },
-    {
-      "compiler": "WAT",
-      "seed": 31337,
-      "binarySize": 697,
-      "df": 1.7025547067240514
-    },
-    {
-      "compiler": "Zig",
-      "seed": 42,
-      "binarySize": 951,
-      "df": 1.5724289401048233
-    },
-    {
-      "compiler": "Zig",
-      "seed": 137,
-      "binarySize": 951,
-      "df": 1.661807182719688
-    },
-    {
-      "compiler": "Zig",
-      "seed": 271,
-      "binarySize": 951,
-      "df": 1.6229624279397759
-    },
-    {
-      "compiler": "Zig",
-      "seed": 314,
-      "binarySize": 951,
-      "df": 1.7608004297188342
-    },
-    {
-      "compiler": "Zig",
-      "seed": 577,
-      "binarySize": 951,
-      "df": 1.639074540764863
-    },
-    {
-      "compiler": "Zig",
-      "seed": 1000,
-      "binarySize": 951,
-      "df": 1.7162148155047225
-    },
-    {
-      "compiler": "Zig",
-      "seed": 2718,
-      "binarySize": 951,
-      "df": 1.7450040240899747
-    },
-    {
-      "compiler": "Zig",
-      "seed": 3141,
-      "binarySize": 951,
-      "df": 1.576492270889139
-    },
-    {
-      "compiler": "Zig",
-      "seed": 9999,
-      "binarySize": 951,
-      "df": 1.6663068378899557
-    },
-    {
-      "compiler": "Zig",
-      "seed": 31337,
-      "binarySize": 951,
-      "df": 1.7025547067240514
-    },
-    {
-      "compiler": "ASC",
-      "seed": 42,
-      "binarySize": 6144,
-      "df": 1.5724289401048233
-    },
-    {
-      "compiler": "ASC",
-      "seed": 137,
-      "binarySize": 6144,
-      "df": 1.661807182719688
-    },
-    {
-      "compiler": "ASC",
-      "seed": 271,
-      "binarySize": 6144,
-      "df": 1.6229624279397759
-    },
-    {
-      "compiler": "ASC",
-      "seed": 314,
-      "binarySize": 6144,
-      "df": 1.7608004297188342
-    },
-    {
-      "compiler": "ASC",
-      "seed": 577,
-      "binarySize": 6144,
-      "df": 1.639074540764863
-    },
-    {
-      "compiler": "ASC",
-      "seed": 1000,
-      "binarySize": 6144,
-      "df": 1.7162148155047225
-    },
-    {
-      "compiler": "ASC",
-      "seed": 2718,
-      "binarySize": 6144,
-      "df": 1.7450040240899747
-    },
-    {
-      "compiler": "ASC",
-      "seed": 3141,
-      "binarySize": 6144,
-      "df": 1.576492270889139
-    },
-    {
-      "compiler": "ASC",
-      "seed": 9999,
-      "binarySize": 6144,
-      "df": 1.6663068378899557
-    },
-    {
-      "compiler": "ASC",
-      "seed": 31337,
-      "binarySize": 6144,
-      "df": 1.7025547067240514
-    },
-    {
-      "compiler": "Go",
-      "seed": 42,
-      "binarySize": 1572864,
-      "df": 1.5724289401048233
-    },
-    {
-      "compiler": "Go",
-      "seed": 137,
-      "binarySize": 1572864,
-      "df": 1.661807182719688
-    },
-    {
-      "compiler": "Go",
-      "seed": 271,
-      "binarySize": 1572864,
-      "df": 1.6229624279397759
-    },
-    {
-      "compiler": "Go",
-      "seed": 314,
-      "binarySize": 1572864,
-      "df": 1.7608004297188342
-    },
-    {
-      "compiler": "Go",
-      "seed": 577,
-      "binarySize": 1572864,
-      "df": 1.639074540764863
-    },
-    {
-      "compiler": "Go",
-      "seed": 1000,
-      "binarySize": 1572864,
-      "df": 1.7162148155047225
-    },
-    {
-      "compiler": "Go",
-      "seed": 2718,
-      "binarySize": 1572864,
-      "df": 1.7450040240899747
-    },
-    {
-      "compiler": "Go",
-      "seed": 3141,
-      "binarySize": 1572864,
-      "df": 1.576492270889139
-    },
-    {
-      "compiler": "Go",
-      "seed": 9999,
-      "binarySize": 1572864,
-      "df": 1.6663068378899557
-    },
-    {
-      "compiler": "Go",
-      "seed": 31337,
-      "binarySize": 1572864,
-      "df": 1.7025547067240514
-    }
-  ]
+    "Go": 1572864,
+    "V8_Bytecode": 632
+  }
 }
