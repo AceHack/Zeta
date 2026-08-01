@@ -61,6 +61,63 @@ envelope is replayable within TTL (freshness not yet signed — needs per-peer s
 - **Fix:** REUSE the already-shipped human auth — do NOT invent. Personas share the `tools/setup/persona-keys/` keyring (README: "each traveler — persona **or** human maintainer"). Bind `zid` to the persona keyring pubkey; sign `hello`/`probeMatch`/`bye` with `ace/signing.ts` (Ed25519 over canonical key-sorted JSON, `key_id=ed25519:sha256(SPKI)[..16]`) and verify against a trust-store before upsert/delete; `bye` must be self-signed by the leaving peer. Rotation = the existing dual-key overlap-window ADR (2026-06-15), unchanged.
 - **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory
 
+### Reticulum announce wire is unsigned AND `dest` is unbound to `zid` — route hijack + category-confusion downgrade (bus, shadow*)
+
+**The twin of the entry above, on the wire that never got the membrane.** `beacon-auth.ts` hardened
+the *discovery-beacon* wire. The *Reticulum announce / path-table* wire is a second, parallel wire
+carrying the same class of claim with no authenticity layer at all.
+
+**TWO defects, and the ORDER MATTERS — fixing (B) without (A) verifies nothing.**
+
+- **Site (A) — `dest` is never bound to `zid`:** `src/Core.TypeScript/discovery/reticulum-transport.ts:85-95`
+  (`observeAnnounce`) + `:181-183` (frame handler). `destinationHash()` is called at `:154` only —
+  where a node computes its *own* dest — and in tests. It is **never** called on the receive path.
+  So an `Announce` carries `dest` and `zid` as two independent, never-cross-checked fields, and the
+  path table stores `zid: a.zid` under `a.dest` with no established relationship between them.
+- **Site (B) — announces are unsigned:** same file. Imports are `createHash` plus two *type-only*
+  imports — no auth, no verify. `observeAnnounce` accepts any strictly-lower hop count
+  unconditionally (`if (cur && a.hops >= cur.hops) { refresh only }`), so an announce with `hops: 0`
+  replaces any existing path. Announces carry `zid` in the clear, so relaying one announce yields
+  everything needed to impersonate that destination. Tests cover fold properties
+  (idempotent / order-independent / best-hop); **zero adversarial tests**.
+- **Found:** 2026-08-01 by Otto (autonomous tick, verifying an unrelated Reticulum claim), Aaron
+  steer ("what tones the pair?")
+- **Severity:** P1. **Not exploitable today** — no live mesh deployment; latent defect in
+  infrastructure with real consumers (`dht-discovery.ts`, `reticulum-metered-transport.ts`,
+  `mux-transport-bridge.ts`, `network-transport.ts`).
+- **Symptom:** Announce `{dest: H(victimZid), hops: 0}` captures any destination's route — payload
+  crypto does not close it (blackhole/denial and traffic analysis survive encryption). Worse, (A)
+  makes the *typed* fix bypassable: ZetaIds carry a `Category` nibble selecting how lower bits parse
+  (agent vs actor vs shape), and identity-bearing destinations need a signature while inanimate
+  shapes have no key to sign with. Dispatch that requirement off `a.zid`'s category while `dest` is
+  unbound, and an attacker sends `{dest: H(agentZid), zid: <shape-category zid>, hops: 0}` —
+  declares "shape, no signature needed" and walks past the check.
+- **Claim-class note (why one rule cannot serve both):** identity destinations take an **exclusive**
+  claim ("I am this identity" — exactly one legitimate announcer, adjudicated by signature); object
+  destinations take a **non-exclusive custody** claim ("I can serve this shape" — many legitimate
+  custodians, adjudicated by hop count, no crypto needed). `observeAnnounce` currently applies
+  lowest-hop-wins to both, which is *correct* for objects and *is the hijack vector* for identities.
+  No addressable objects exist yet (`roms/chip8/` holds five test fixtures; nothing mints shape
+  ZetaIds), so the simple fix is correct today and the split is a constraint on how it may grow.
+- **Fix — in this order:**
+  1. **Tone the pair.** Reject any announce where `a.dest !== destinationHash(a.zid)`. One line, no
+     crypto, no keys. Hashing the whole ZetaId already commits to the category; the receive path
+     just never checks the commitment. Without this, steps 2-3 are decorative.
+  2. Dispatch on the now-trustworthy `Category` nibble (a bit-parse, free).
+  3. Require an Ed25519 signature for identity-bearing categories — **reuse `beacon-auth.ts`, do not
+     invent**: same trust store, same `ace/signing.ts` canonical bytes, same dual-key
+     overlap-window rotation ADR. Put the membrane in front of `observeAnnounce` exactly as it sits
+     in front of `discovery-beacon`'s `observe`. Add the adversarial tests the fold tests lack.
+- **Docstring defect (fix alongside):** `:17-20` says **"SELF-CERTIFYING ADDRESS."** Hashing a
+  *public* identifier is self-**describing**, not self-**certifying** — real RNS earns
+  self-certification from `dest = H(pubkey)` plus signed announces. The word swap states the bug in
+  the comment, and predates its discovery. Zeta's divergence (hash the ZetaId, not the key) is
+  *deliberate and correct* — it keeps address separate from identity, which `dest = H(pubkey)`
+  conflates, and it is what permits key rotation without address churn. Only the verification is
+  missing, not the design.
+- **Who:** architect (Kenji) → discovery/bus owner; Nadia (agent-layer defence) advisory; Aaron
+  (primary source — Itron/Cisco Riva mesh, Wi-SUN contributor) on the routing-hierarchy semantics
+
 ### Reticulum relay `seenFids` is a grow-only set — memory-exhaustion DoS (bus, shadow*)
 
 - **Site:** `src/Core.TypeScript/discovery/reticulum-transport.ts:158` (`const seenFids = new Set<string>()`)
