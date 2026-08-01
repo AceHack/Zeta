@@ -164,7 +164,19 @@ let medianUtxoAgeDays (buckets: UtxoAgeBucket[]) : float =
             if cumulative < target then
                 cumulative <- cumulative + b.Count
                 medianBucket <- b
-        float (medianBucket.MinAgeDays + medianBucket.MaxAgeDays) / 2.0
+        // ⚠ INTEGER-OVERFLOW FIX (2026-08-01, found by the first behavioural test ever written
+        // for this module). The top bucket is OPEN-ENDED (`MaxAgeDays = Int32.MaxValue`), so the
+        // old midpoint `(Min + Max) / 2` OVERFLOWED int32: 3650 + 2147483647 wraps to
+        // -2147479999, giving a median of -1073739999.5 DAYS. `moneyRho`'s `max 0.0 L` clamp then
+        // silently turned that into ρ = 1.0 — so a UTXO set held entirely by >10-year holders (the
+        // SOUNDEST money there is) was classified Inflationary. A complete semantic inversion,
+        // hidden by a defensive clamp.
+        //
+        // For an open-ended bucket the honest representative is its LOWER bound: we know the money
+        // is *at least* this old, and claiming a specific larger age would be inventing data.
+        // Arithmetic is widened to int64 so no future bound can overflow either.
+        if medianBucket.MaxAgeDays = Int32.MaxValue then float medianBucket.MinAgeDays
+        else float (int64 medianBucket.MinAgeDays + int64 medianBucket.MaxAgeDays) / 2.0
 
 
 // ── ρ = 1/(1+L) for money ────────────────────────────────────────────────────
