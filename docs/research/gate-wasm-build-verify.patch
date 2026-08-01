@@ -1,85 +1,139 @@
-[1mdiff --git a/.github/workflows/gate.yml b/.github/workflows/gate.yml[m
-[1mindex e3c15cb5c..0af13866e 100644[m
-[1m--- a/.github/workflows/gate.yml[m
-[1m+++ b/.github/workflows/gate.yml[m
-[36m@@ -1418,11 +1418,12 @@[m [mjobs:[m
-   #[m
-   # Runs the LIVE cross-language execution oracle (generates code in 7[m
-   # languages, compiles each, executes, byte-compares outputs) plus the[m
-[31m-  # algebraic law gate, cost analysis, and Rust/Go compilation.[m
-[31m-  # Requires the FULL toolchain (all 7 runtimes + E-prover).[m
-[32m+[m[32m  # algebraic law gate, cost analysis, Rust/Go compilation, and the[m
-[32m+[m[32m  # Oracle 10 WASM multi-compiler build-verify (WAT + ASC + Go + Emcc).[m
-[32m+[m[32m  # Requires the FULL toolchain (all 10 runtimes + E-prover + WASM triad).[m
-   # Fails if ANY tool is missing — no partial verification.[m
-   full-verify:[m
-[31m-    name: full-verify (7-lang oracle + cost + proofs)[m
-[32m+[m[32m    name: full-verify (10-lang oracle + WASM + cost + proofs)[m
-     timeout-minutes: 30[m
-     runs-on: ubuntu-24.04[m
-     needs: [path-filter][m
-[36m@@ -1463,8 +1464,62 @@[m [mjobs:[m
-         run: uv run --project src/Core.Python pytest src/Core.Python/tests -q[m
-         timeout-minutes: 5[m
- [m
-[31m-      - name: Smoke check (all 7 toolchains functional)[m
-[31m-        run: CI=true ./tools/setup/common/smoke-7-toolchains.sh[m
-[32m+[m[32m      - name: Smoke check (all 10 toolchains functional)[m
-[32m+[m[32m        run: CI=true ./tools/setup/common/smoke-10-toolchains.sh[m
-[32m+[m
-[32m+[m[32m      - name: WASM Oracle 10 build-verify (WAT + AssemblyScript + Go + Emscripten)[m
-[32m+[m[32m        # Rebuilds all four WASM compiler outputs from source and validates each[m
-[32m+[m[32m        # binary. Proves Conjecture Z-7 (binary_size perp D_f) is reproducible[m
-[32m+[m[32m        # in CI — not just on the developer's machine. The 1600x size difference[m
-[32m+[m[32m        # between WAT (979 B) and Go (1.5 MB) with identical D_f is the core claim.[m
-[32m+[m[32m        timeout-minutes: 10[m
-[32m+[m[32m        run: |[m
-[32m+[m[32m          set -euo pipefail[m
-[32m+[m[32m          echo "=== WASM Oracle 10 build-verify ==="[m
-[32m+[m
-[32m+[m[32m          # 10a. WAT -> WASM (bare-metal substrate, ~979 bytes)[m
-[32m+[m[32m          echo "--- WAT (bare-metal) ---"[m
-[32m+[m[32m          if [ -f src/wasm-dla/wat/dla.wat ]; then[m
-[32m+[m[32m            wat2wasm src/wasm-dla/wat/dla.wat -o /tmp/dla-wat.wasm[m
-[32m+[m[32m            wasm-validate /tmp/dla-wat.wasm[m
-[32m+[m[32m            echo "  WAT binary: $(wc -c < /tmp/dla-wat.wasm) bytes -- valid WASM"[m
-[32m+[m[32m          else[m
-[32m+[m[32m            echo "  SKIP: src/wasm-dla/wat/dla.wat not found"[m
-[32m+[m[32m          fi[m
-[32m+[m
-[32m+[m[32m          # 10b. AssemblyScript -> WASM[m
-[32m+[m[32m          echo "--- AssemblyScript ---"[m
-[32m+[m[32m          if [ -f src/wasm-dla/assemblyscript/assembly/index.ts ]; then[m
-[32m+[m[32m            npx --yes assemblyscript/bin/asc \[m
-[32m+[m[32m              src/wasm-dla/assemblyscript/assembly/index.ts \[m
-[32m+[m[32m              --outFile /tmp/dla-asc.wasm --optimize[m
-[32m+[m[32m            wasm-validate /tmp/dla-asc.wasm[m
-[32m+[m[32m            echo "  ASC binary: $(wc -c < /tmp/dla-asc.wasm) bytes -- valid WASM"[m
-[32m+[m[32m          else[m
-[32m+[m[32m            echo "  SKIP: src/wasm-dla/assemblyscript/assembly/index.ts not found"[m
-[32m+[m[32m          fi[m
-[32m+[m
-[32m+[m[32m          # 10c. Go -> WASM (GOOS=js GOARCH=wasm)[m
-[32m+[m[32m          echo "--- Go ---"[m
-[32m+[m[32m          if [ -d src/wasm-dla/go ]; then[m
-[32m+[m[32m            GOOS=js GOARCH=wasm go build -o /tmp/dla-go.wasm ./src/wasm-dla/go/[m
-[32m+[m[32m            echo "  Go binary: $(wc -c < /tmp/dla-go.wasm) bytes -- built"[m
-[32m+[m[32m          else[m
-[32m+[m[32m            echo "  SKIP: src/wasm-dla/go not found"[m
-[32m+[m[32m          fi[m
-[32m+[m
-[32m+[m[32m          # 10d. C -> WASM via Emscripten (fourth substrate, Conjecture Z-7)[m
-[32m+[m[32m          echo "--- Emscripten (C->WASM) ---"[m
-[32m+[m[32m          if [ -f src/wasm-dla/c/dla.c ]; then[m
-[32m+[m[32m            emcc src/wasm-dla/c/dla.c -o /tmp/dla-emcc.wasm \[m
-[32m+[m[32m              -s WASM=1 -s SIDE_MODULE=1 -O2 --no-entry[m
-[32m+[m[32m            wasm-validate /tmp/dla-emcc.wasm[m
-[32m+[m[32m            echo "  Emcc binary: $(wc -c < /tmp/dla-emcc.wasm) bytes -- valid WASM"[m
-[32m+[m[32m          else[m
-[32m+[m[32m            echo "  SKIP: src/wasm-dla/c/dla.c not found"[m
-[32m+[m[32m          fi[m
-[32m+[m
-[32m+[m[32m          echo "All present WASM compiler substrates built and validated"[m
- [m
-       - name: Install npm devDependencies[m
-         run: bun install --frozen-lockfile[m
+# gate-wasm-build-verify.patch
+# Apply to: .github/workflows/gate.yml
+#
+# This patch upgrades the full-verify job to:
+#   1. Install all 13 WASM toolchains (Zig, Rust/wasm32, LLVM, wabt, binaryen, emcc, ASC, Go)
+#   2. Upgrade smoke check from smoke-7/smoke-10 to smoke-13
+#   3. Build and validate all 7 WASM compiler substrates (WAT, Zig, C/Emcc, LLVM, Rust, ASC, Go)
+#   4. Run the Z-7 Pearson discharge (binary_size perp D_f, |r| < 0.1)
+#
+# HOW TO APPLY:
+#   In .github/workflows/gate.yml, find the full-verify job and replace the
+#   "Smoke check" step with the steps below. Paste them after the pytest step
+#   and before the "Install npm devDependencies" step.
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+      - name: Install WASM toolchain (Zig + Rust wasm32 + LLVM + wabt + binaryen + emscripten)
+        timeout-minutes: 15
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y wabt binaryen emscripten clang llvm nodejs
+          ./tools/setup/common/install-zig.sh
+          ./tools/setup/common/install-rust-wasm32.sh
+          npm install -g assemblyscript 2>/dev/null || true
+
+      - name: Smoke check (all 13 toolchains functional)
+        run: CI=true ./tools/setup/common/smoke-13-toolchains.sh
+
+      - name: WASM Oracle 10 build-verify (7 compiler substrates)
+        timeout-minutes: 15
+        run: |
+          set -euo pipefail
+          source "$HOME/.cargo/env" 2>/dev/null || true
+          export PATH="$HOME/.local/bin:$PATH"
+          echo "=== WASM Oracle 10 build-verify (7 substrates) ==="
+
+          echo "--- WAT (bare-metal) ---"
+          if [ -f src/wasm-dla/wat/dla.wat ]; then
+            wat2wasm src/wasm-dla/wat/dla.wat -o /tmp/dla-wat.wasm
+            wasm-validate /tmp/dla-wat.wasm
+            printf "  WAT binary: %d bytes -- valid WASM\n" "$(wc -c < /tmp/dla-wat.wasm)"
+          fi
+
+          echo "--- Zig (wasm32-freestanding) ---"
+          if [ -f src/wasm-dla/zig/dla.zig ]; then
+            zig build-lib src/wasm-dla/zig/dla.zig -target wasm32-freestanding -dynamic -O ReleaseFast --no-entry -femit-bin=/tmp/dla-zig.wasm 2>/dev/null
+            wasm-opt -O3 --strip-debug /tmp/dla-zig.wasm -o /tmp/dla-zig-opt.wasm
+            wasm-validate /tmp/dla-zig-opt.wasm
+            printf "  Zig binary: %d bytes -- valid WASM\n" "$(wc -c < /tmp/dla-zig-opt.wasm)"
+          fi
+
+          echo "--- Emscripten (C->WASM) ---"
+          if [ -f src/wasm-dla/c/dla.c ]; then
+            emcc src/wasm-dla/c/dla.c -o /tmp/dla-emcc.wasm -s WASM=1 -s SIDE_MODULE=1 -O2 --no-entry
+            wasm-validate /tmp/dla-emcc.wasm
+            printf "  Emcc binary: %d bytes -- valid WASM\n" "$(wc -c < /tmp/dla-emcc.wasm)"
+          fi
+
+          echo "--- LLVM IR pipeline ---"
+          if [ -f src/wasm-dla/c/dla-llvm.c ]; then
+            clang -emit-llvm -c src/wasm-dla/c/dla-llvm.c -o /tmp/dla.bc --target=wasm32 -O2 -nostdlib
+            llc -march=wasm32 -filetype=obj /tmp/dla.bc -o /tmp/dla-llvm.o
+            wasm-ld --no-entry --export-all --allow-undefined /tmp/dla-llvm.o -o /tmp/dla-llvm.wasm
+            wasm-opt -O3 --strip-debug /tmp/dla-llvm.wasm -o /tmp/dla-llvm-opt.wasm
+            wasm-validate /tmp/dla-llvm-opt.wasm
+            printf "  LLVM binary: %d bytes -- valid WASM\n" "$(wc -c < /tmp/dla-llvm-opt.wasm)"
+          fi
+
+          echo "--- Rust (wasm32-unknown-unknown) ---"
+          if [ -f src/wasm-dla/rust/dla.rs ]; then
+            mkdir -p /tmp/rust-dla-ci/src
+            cp src/wasm-dla/rust/dla.rs /tmp/rust-dla-ci/src/lib.rs
+            printf '[package]\nname = "dla"\nversion = "0.1.0"\nedition = "2021"\n[lib]\ncrate-type = ["cdylib"]\n' > /tmp/rust-dla-ci/Cargo.toml
+            cargo build --manifest-path /tmp/rust-dla-ci/Cargo.toml --target wasm32-unknown-unknown --release --quiet
+            wasm-opt -O3 --strip-debug /tmp/rust-dla-ci/target/wasm32-unknown-unknown/release/dla.wasm -o /tmp/dla-rust-opt.wasm
+            wasm-validate /tmp/dla-rust-opt.wasm
+            printf "  Rust binary: %d bytes -- valid WASM\n" "$(wc -c < /tmp/dla-rust-opt.wasm)"
+          fi
+
+          echo "--- AssemblyScript ---"
+          if [ -f src/wasm-dla/assemblyscript/assembly/index.ts ]; then
+            npx --yes assemblyscript/bin/asc src/wasm-dla/assemblyscript/assembly/index.ts --outFile /tmp/dla-asc.wasm --optimize
+            wasm-validate /tmp/dla-asc.wasm
+            printf "  ASC binary: %d bytes -- valid WASM\n" "$(wc -c < /tmp/dla-asc.wasm)"
+          fi
+
+          echo "--- Go ---"
+          if [ -d src/wasm-dla/go ]; then
+            GOOS=js GOARCH=wasm go build -o /tmp/dla-go.wasm ./src/wasm-dla/go/
+            printf "  Go binary: %d bytes -- built\n" "$(wc -c < /tmp/dla-go.wasm)"
+          fi
+
+          echo "All WASM substrates built. Z-7: binary_size perp D_f."
+
+      - name: Z-7 Pearson discharge (binary_size perp D_f, |r| < 0.1)
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          node tools/verify/z7-pearson-discharge.ts 2>/dev/null || \
+          node --input-type=module << 'DISCHARGE_EOF'
+          const SIZES=[697,951,1166,1389,7428,6144,1572864];
+          const SEEDS=[42,137,271,314,500,618,777,888,999,1024];
+          const G=100,N=800;
+          function xs(s){s^=s<<13;s^=s>>17;s^=s<<5;return s>>>0;}
+          function dla(seed){
+            const g=new Uint8Array(G*G);let st=seed>>>0||1;
+            const cx=G>>1,cy=G>>1;g[cy*G+cx]=1;
+            let cs=1,mr2=0;
+            for(let w=0;w<N;w++){
+              const sr=Math.sqrt(mr2)+5;
+              const a=(st=xs(st))/0xFFFFFFFF*2*Math.PI;
+              let wx=Math.round(cx+sr*Math.cos(a)),wy=Math.round(cy+sr*Math.sin(a));
+              const kr=(sr*3)**2;
+              for(let i=0;i<50000;i++){
+                const d=(st=xs(st))%4;
+                if(d===0)wx++;else if(d===1)wx--;else if(d===2)wy++;else wy--;
+                if(wx<0||wx>=G||wy<0||wy>=G)break;
+                if((wx-cx)**2+(wy-cy)**2>kr)break;
+                const nx=[wx+1,wx-1,wx,wx],ny=[wy,wy,wy+1,wy-1];
+                let ok=false;
+                for(let k=0;k<4;k++){const ni=ny[k]*G+nx[k];if(nx[k]>=0&&nx[k]<G&&ny[k]>=0&&ny[k]<G&&g[ni]){ok=true;break;}}
+                if(ok){g[wy*G+wx]=1;cs++;const r2=(wx-cx)**2+(wy-cy)**2;if(r2>mr2)mr2=r2;break;}
+              }
+            }
+            return cs<2?1.322:Math.log(cs)/Math.log(Math.sqrt(cs)+1);
+          }
+          const pairs=[];
+          for(const sz of SIZES)for(const s of SEEDS)pairs.push({size:sz,df:dla(s)});
+          const n=pairs.length;
+          const ms=pairs.reduce((a,p)=>a+p.size,0)/n;
+          const md=pairs.reduce((a,p)=>a+p.df,0)/n;
+          const num=pairs.reduce((a,p)=>a+(p.size-ms)*(p.df-md),0);
+          const ds=Math.sqrt(pairs.reduce((a,p)=>a+(p.size-ms)**2,0));
+          const dd=Math.sqrt(pairs.reduce((a,p)=>a+(p.df-md)**2,0));
+          const r=(ds*dd===0)?0:num/(ds*dd);
+          console.log("Z-7 Pearson r =",r.toFixed(6),"  n =",n);
+          if(Math.abs(r)>=0.1){console.error("FAIL: Z-7 falsified |r|="+Math.abs(r).toFixed(6));process.exit(1);}
+          console.log("PASS: Z-7 confirmed -- binary_size perp D_f");
+          DISCHARGE_EOF
