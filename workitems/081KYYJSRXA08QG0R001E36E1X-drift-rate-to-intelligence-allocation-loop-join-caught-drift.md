@@ -87,6 +87,7 @@ Conflating them sends you refactoring healthy code, or throwing GPUs at a design
 DRIFT signals — neither wanted a bigger model, both wanted a mechanism change.
 
 Requirements this adds:
+
 - A decline record must carry a **stable `class` id** (free-text reasons cannot be counted; the class id
   is the join key that turns declines into a rate).
 - Same denominator discipline: **declines per class per ATTEMPT**, not per calendar window, or a rare
