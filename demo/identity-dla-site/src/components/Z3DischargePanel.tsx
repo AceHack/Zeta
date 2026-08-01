@@ -6,6 +6,11 @@
  * This panel runs the Loewner equation for all 4 kappa presets (2.0, 2.67, 5.7, 6.0) and
  * reports whether S_Loew(tStar) = ln(3*sqrt(2)) holds within noise.
  *
+ * [RETRACTED 2026-08-01 — this panel presents a TAUTOLOGY as a discharge.]
+ * tStar is DEFINED as kappa * TSIRELSON, so -ln(tStar/kappa) = -ln(TSIRELSON) is just
+ * -ln(1/x) = ln(x): true for EVERY x, and kappa cancels by construction, which is why it
+ * appears to hold "for all kappa". Nothing about Loewner entropy or SLE is being tested,
+ * and TSIRELSON here is a DLA sticking parameter, not a physics bound. Z-3 is OPEN.
  * The math: tStar = kappa * TSIRELSON = kappa / (3*sqrt(2))
  * S_Loew(tStar) = -ln(tStar/kappa) = -ln(TSIRELSON) = -ln(1/(3*sqrt(2))) = ln(3*sqrt(2)) ~ 1.447
  *

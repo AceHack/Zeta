@@ -191,6 +191,7 @@
   </div>
 
   <h1>Proofs &amp; Shapes</h1>
+      <p style="background:#3a1f1f;border-left:4px solid #c04040;padding:10px;margin:12px 0;"><strong>[CORRECTION 2026-08-01]</strong> The constant 1/(3&radic;2) &asymp; 0.2357 used across this page is a <em>DLA particle-sticking parameter</em> chosen for the simulation &mdash; it is <strong>not</strong> a Tsirelson bound. The CHSH Tsirelson bound is S &le; 2&radic;2 &asymp; 2.828, and within Zeta's own model the correlation at that crossing is &rho;* = &radic;2 &minus; 1 &asymp; 0.414 (<code>FeedbackThrottle.fs</code>). Claims on this page that depend on reading it as a physics bound have been retracted.</p>
   <p class="subtitle">
     Each entry below is a different mathematical object rendered in a different substrate.
     The claim in each case is the same: <strong style="color:var(--text)">the shape is substrate-independent</strong> —
@@ -206,8 +207,8 @@
       <span class="card-tag" style="background:rgba(245,158,11,0.12); color:var(--amber);">Identity Space · Fractal</span>
       <div class="card-title" style="color:var(--amber);">Multi-Oracle DLA — Identity Space Boundary</div>
       <div class="card-what">
-        <strong>What it is:</strong> Diffusion-Limited Aggregation driven by the Tsirelson threshold
-        (1/(3√2) ≈ 0.2357). Random walkers stick when they reach the quantum correlation ceiling.
+        <strong>What it is:</strong> Diffusion-Limited Aggregation with a sticking threshold of
+        1/(3&radic;2) &asymp; 0.2357 &mdash; a <em>simulation parameter</em>, not a physics bound. <em>[Corrected 2026-08-01: this was previously described as "the Tsirelson threshold" and as a "quantum correlation ceiling". It is neither.]</em>
         The result is a fractal boundary between the GSet (resolved facts, orange) and the ZSet
         (simulation space, dark).<br /><br />
         <strong>What it proves:</strong> The fractal dimension D<sub>f</sub> ≈ 1.322 is
@@ -236,7 +237,7 @@
           <tr><td>Infer.NET i-sensor (Oracle 6)</td><td>Bayesian prior heatmap of the Laplacian harmonic measure. Three modes: Prior (expected next-stick location), Posterior (updated after cluster), Cluster Only. Directly approximates the Halsey 2026 amplitude formula.</td></tr>
           <tr><td>SLE<sub>&kappa;</sub> Curve (Oracle 8)</td><td>Schramm&ndash;Loewner Evolution via the chordal Loewner equation with Brownian driver W<sub>t</sub> = &radic;&kappa;&thinsp;B<sub>t</sub>. The theoretical oracle &mdash; computes D<sub>f</sub> from first principles. &kappa; toggle: 2.67 (observed), 5.7 (theoretical Z-4), 2.0 (SAW), 6.0 (percolation). Loewner entropy S<sub>Loew</sub> = &minus;ln(t/&kappa;) is displayed in real time. Conjecture Z-3 confirmed as analytic identity: S<sub>Loew</sub>(t*) = ln(3&radic;2) &asymp; 1.447 nats for all &kappa;.</td></tr>
           <tr><td>WebGPU Compute Shader (Oracle 9)</td><td>Entire DLA simulation runs on the GPU via a WGSL compute shader. Each GPU thread is one walker; sticking is detected via a neighbor check against the cluster bitmap in GPU memory. 12,000+ walkers in real time. First oracle on the GPU substrate &mdash; proves substrate independence extends to massively parallel GPU execution. Requires Chrome 113+ or Edge 113+.</td></tr>
-          <tr><td>Multi-Compiler WASM (Oracle 10)</td><td>Seven compilers, same algorithm, same Tsirelson threshold, same D<sub>f</sub>. <strong>WAT</strong> (697B, bare-metal WASM text), <strong>Zig</strong> (951B, wasm32-freestanding, zero runtime), <strong>C/Emscripten</strong> (1.1KB, clang&rarr;WASM standalone), <strong>LLVM IR</strong> (1.4KB, full clang&rarr;llc-18 -march=wasm32&rarr;wasm-ld-18&rarr;wasm-opt pipeline), <strong>Rust</strong> (7.4KB, cargo build --target wasm32-unknown-unknown + wasm-opt -O3), <strong>AssemblyScript</strong> (6KB, TypeScript&rarr;WASM), <strong>Go</strong> (1.5MB, full runtime). 2,257&times; size range. Zero D<sub>f</sub> variance. Conjecture Z-7 (binary_size &perp; D<sub>f</sub>) discharged: Pearson r = 0.000000 over 40 (compiler, seed) pairs.</td></tr>
+          <tr><td>Multi-Compiler WASM (Oracle 10)</td><td>Seven compilers, same algorithm, same sticking threshold, same D<sub>f</sub>. <strong>WAT</strong> (697B, bare-metal WASM text), <strong>Zig</strong> (951B, wasm32-freestanding, zero runtime), <strong>C/Emscripten</strong> (1.1KB, clang&rarr;WASM standalone), <strong>LLVM IR</strong> (1.4KB, full clang&rarr;llc-18 -march=wasm32&rarr;wasm-ld-18&rarr;wasm-opt pipeline), <strong>Rust</strong> (7.4KB, cargo build --target wasm32-unknown-unknown + wasm-opt -O3), <strong>AssemblyScript</strong> (6KB, TypeScript&rarr;WASM), <strong>Go</strong> (1.5MB, full runtime). 2,257&times; size range. Zero D<sub>f</sub> variance. Conjecture Z-7 (binary_size &perp; D<sub>f</sub>) discharged: Pearson r = 0.000000 over 40 (compiler, seed) pairs.</td></tr>
           <tr><td>V8 Bytecode (Oracle 14)</td><td>The DLA JS source compiled to V8 engine internal bytecode (Node.js <code>vm.Script.createCachedData</code>, 632 bytes) and executed from cache. A distinct substrate from the JS source text. Sits between WAT (697B) and Zig (951B) in the binary-size gradient. D<sub>f</sub> invariant. Conjecture Z-7 extended to JS engine bytecode.</td></tr>
           <tr><td>QuickJS Bytecode (Oracle 15)</td><td>The DLA JS source compiled to QuickJS bytecode (Fabrice Bellard, 2019) using <code>qjsc -c</code> &rarr; 1,552 bytes of register-based VM opcodes. BC_VERSION=5, atoms table (15 atoms), compact opcode stream. A distinct bytecode format from V8 (632B). D<sub>f</sub> invariant. Conjecture Z-7 confirmed at 9 bytecode/binary substrates (7 WASM + V8 + QuickJS).</td></tr>
           <tr><td>Lua 5.4 Bytecode (Oracle 16)</td><td>The DLA algorithm compiled to Lua 5.4 bytecode using <code>luac5.4 -o dla.luac</code> &rarr; 2,178 bytes. Magic: <code>\x1bLua</code>, version 0x54, LUAC_DATA: 19930d0a1a0a. Register-based VM, 47 opcodes. Includes debug info (source name embedded). D<sub>f</sub> invariant. Conjecture Z-7 confirmed at 10 bytecode/binary substrates.</td></tr>
@@ -338,7 +339,7 @@
         <strong>KPZ-SLE (arXiv:2604.03711):</strong> The 1D KPZ interface growth equation
         corresponds to a Loewner equation with Loewner entropy S<sub>Loew</sub> ≈ −ln(t/κ).
         The Laplacian growth front (teal in animated mode) is the KPZ interface. Conjecture Z-3:
-        S<sub>Loew</sub> at the Tsirelson threshold = ln(3√2) ≈ 1.447 nats.<br /><br />
+        <em>[RETRACTED 2026-08-01]</em> The former claim &mdash; &ldquo;S<sub>Loew</sub> at the Tsirelson threshold = ln(3&radic;2) &asymp; 1.447 nats&rdquo; &mdash; is a tautology, not a result: t* was <em>defined</em> as &kappa;&middot;(1/(3&radic;2)), so S<sub>Loew</sub> = &minus;ln(t*/&kappa;) = &minus;ln(1/(3&radic;2)) = ln(3&radic;2) is just &minus;ln(1/x) = ln(x), true for every x. &kappa; cancels by construction, so &ldquo;for all &kappa;&rdquo; is vacuous. Conjecture Z-3 is demoted to open.<br /><br />
         <strong>SLE/CFT (arXiv:2606.02682):</strong> Neural networks can predict the κ parameter
         of SLE<sub>κ</sub> curves. DLA is conjectured to be SLE<sub>κ</sub> with κ ≈ 5.7
         (D<sub>f</sub> = 1 + κ/8 ≈ 1.71 theoretical). Conjecture Z-4: Oracle 6 i-sensor
@@ -494,9 +495,9 @@
     <p style="color:rgba(107,114,128,0.8); font-size:0.58rem;">
       <strong style="color:var(--muted);">2026-07-31 math/physics connections (open conjectures):</strong>
       Halsey (arXiv:2607.02216) proves the amplitude of the third moment of the harmonic measure is an exact function of D<sub>f</sub> alone (Z-2).
-      KPZ-SLE (arXiv:2604.03711) connects the Laplacian growth front to Loewner entropy S<sub>Loew</sub> ≈ −ln(t/κ); at the Tsirelson threshold, S<sub>Loew</sub> = ln(3√2) ≈ 1.447 nats (Z-3).
+      KPZ-SLE connects the Laplacian growth front to Loewner entropy S<sub>Loew</sub> &asymp; &minus;ln(t/&kappa;). <em>[Corrected 2026-08-01: the former &ldquo;at the Tsirelson threshold, S<sub>Loew</sub> = ln(3&radic;2)&rdquo; (Z-3) is a tautology and is retracted; Z-3 is open.]</em>
       Neural networks can predict the SLE<sub>κ</sub> parameter; DLA is conjectured SLE<sub>κ</sub> with κ ≈ 5.7 (Z-4).
-      Liu &amp; Chiribella (Nat. Comm. 2025) prove ICO Tsirelson bounds; Reticulum transport (ρ ≈ 0.167) is in the ICO regime (Z-5).
+      <em>[RETRACTED 2026-08-01]</em> The former claim &mdash; &ldquo;Reticulum transport (&rho; &asymp; 0.167) is in the ICO regime (Z-5)&rdquo; &mdash; was not measured: L was a hard-coded constant, &rho; = 1/(1+L) is Zeta's own latency model (not a result of Liu &amp; Chiribella), and being <em>below</em> a bound does not demonstrate a non-classical regime. Z-5 is open.
       Friston &amp; Spisak (arXiv:2505.22749) derive attractor networks from the FEP with orthogonal representations; DLA D<sub>f</sub> ≈ 1.71 is the minimum-complexity FEP attractor (Z-6).
     </p>
   </div>

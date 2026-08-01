@@ -22,10 +22,19 @@
  *   This is the quantum oracle's contribution to the sensor-fusion proof:
  *   the D_f is invariant under phase rotation of the initial coin state.
  *
- * Why 1/(3√2) and not 1/(2√2)?
- *   - 1/(2√2) = Tsirelson bound for a SINGLE qubit (CHSH inequality max = 2√2)
- *   - 1/(3√2) = Tsirelson bound for a 2D LATTICE walker (4-directional coin)
- *     The 4-component Grover coin has 3 independent correlators per site (x, y, xy).
+ * Why 1/(3√2)?  [CORRECTED 2026-08-01 — the previous answer here was FALSE.]
+ *   It is a STICKING-PROBABILITY PARAMETER chosen for this simulation. It is not a
+ *   Tsirelson bound and carries no physics content.
+ *
+ *   The two claims previously written here were both wrong:
+ *     - "1/(2√2) = Tsirelson bound for a SINGLE qubit" — no. The CHSH Tsirelson bound
+ *       is S ≤ 2√2 ≈ 2.828, a bound on a CHSH sum, not 1/(2√2) ≈ 0.354.
+ *     - "1/(3√2) = Tsirelson bound for a 2D LATTICE walker" — no such published bound
+ *       exists; the 1/(n√2) family was invented to make the numbers line up.
+ *
+ *   Within Zeta's own model the correlation at the Tsirelson crossing is
+ *   ρ* = √2 − 1 ≈ 0.414 (see src/Core/FeedbackThrottle.fs, which solves
+ *   2 + 2/(1+L) = 2√2) — not 0.2357. Do not re-label this constant as physics.
  */
 
 import { useEffect, useState } from "react";
