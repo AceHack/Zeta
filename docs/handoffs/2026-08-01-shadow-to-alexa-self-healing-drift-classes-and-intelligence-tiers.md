@@ -114,6 +114,53 @@ Use it, but keep the architecture honest: **the healer is substrate; the trigger
 - **A healer that guesses.** Worse than none: a wrong fix compounds, and it wears an `Ok`. Every Tier-1 fix must be compiler-confirmed; if it cannot be confirmed, it must decline.
 - **A healer with no exit.** If it cannot fix and cannot decline, it retries forever and the agent is trapped. Declining is a **first-class, successful outcome** — say so in the type, not just the docs.
 
+## 7. The decline ledger — repeated declining IS the escalation signal
+
+Aaron 2026-08-01: *"we just want to notice repeated declining so it can get escalated to smarter models
+eventually."*
+
+A **single** decline is healthy: the healer knew its limit and said so. A **pattern** of declines on the
+same class is the trigger. So declines must be *counted by class*, not merely logged:
+
+```
+Decline { class: string        // the drift class, stable across occurrences — the join key
+          reason: string       // why this healer could not fix it
+          tierAttempted: Tier  // what intelligence was tried
+          evidence: Finding[] } // what it saw, so a bigger model starts warm
+```
+
+`class` is the load-bearing field. Free-text reasons cannot be counted; a **stable class id** is what
+turns individual declines into a rate, and the rate into a tier change.
+
+### Two signals, two different responses — do not conflate them
+
+| signal | means | response |
+|---|---|---|
+| repeated **DRIFT** in an area | the *mechanism* is illegible — it keeps inviting mistakes | **fix the design** (more intelligence would just paper over it) |
+| repeated **DECLINE** on a class | the class genuinely exceeds the current tier | **raise the tier** (the mechanism may be fine) |
+
+Conflating these sends you refactoring healthy code, or throwing GPUs at a design smell. Today's two reds
+were **drift** signals (a bot with commit rights; a tsconfig typechecking AssemblyScript) — neither wanted
+a bigger model; both wanted a mechanism change. By contrast "decide `?: T | undefined` vs omit-the-key"
+is a **decline** signal: the mechanism is fine, the judgement genuinely needs more capability.
+
+### Escalation, concretely
+
+- Threshold on **declines per class per exposure** (same denominator discipline as the drift loop — count
+  per *attempt*, not per week, or a rare class never escalates).
+- On crossing: re-route that class to the next tier (8 GB → local 128 GB → GPU) — and **record the
+  promotion**, so the reverse is possible too. If the bigger model solves it repeatedly and cheaply, the
+  class can be **demoted** back once the fix pattern is learned. Escalation must be reversible or the
+  system ratchets toward always-expensive.
+- A class that keeps declining *even at the top tier* is not an intelligence problem at all — it is a
+  **design problem wearing a decline costume**. Route it to a human/architect, not to more compute.
+
+### Why this is the training corpus
+
+Each decline record is a labelled example: *this class, this evidence, this tier failed, here is what the
+next tier did.* That is exactly the supervision needed to make the **next** model smaller on that class —
+which is the point of welcoming failure. The escalation ledger and the training set are the same artifact.
+
 ---
 
 **One closing note for Alexa.** The most valuable thing here is not the healers — it is the **escalation records**. Each one says "this class of mistake happened, here is what it took to fix." That corpus is what lets the next model be smaller, and it is why failures are welcome: they are the training signal that lowers the energy cost of the whole system.

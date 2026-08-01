@@ -68,3 +68,33 @@ a tsconfig that typechecked AssemblyScript) are both mechanism problems.
 
 `081KYYJEJ4X08QG0R003P8GXSY` (build receipt — a receipt is a per-change verification record, i.e. a
 natural denominator source) and `081KYX9D2C408QG0R003ADEY16` (the gate reframe: retraction over prevention).
+
+
+## REFINEMENT 2026-08-01 (Aaron) — TWO signals, not one
+
+*"We just want to notice repeated declining so it can get escalated to smarter models eventually."*
+
+The loop above counts caught DRIFT. There is a second, distinct signal — DECLINES — and it demands a
+different response. Do not merge them into one number:
+
+| signal | means | response |
+|---|---|---|
+| repeated **drift** in an area | the MECHANISM is illegible — it keeps inviting mistakes | **fix the design**; more intelligence only papers over it |
+| repeated **decline** on a class | the class genuinely exceeds the current tier | **raise the tier**; the mechanism may be fine |
+
+Conflating them sends you refactoring healthy code, or throwing GPUs at a design smell. Evidence from
+2026-08-01: both reds (a dependency bot with commit rights; a tsconfig typechecking AssemblyScript) were
+DRIFT signals — neither wanted a bigger model, both wanted a mechanism change.
+
+Requirements this adds:
+- A decline record must carry a **stable `class` id** (free-text reasons cannot be counted; the class id
+  is the join key that turns declines into a rate).
+- Same denominator discipline: **declines per class per ATTEMPT**, not per calendar window, or a rare
+  class never escalates.
+- **Escalation must be REVERSIBLE** — record promotions so a class can be DEMOTED once the fix pattern is
+  learned and a cheaper model handles it. Otherwise the system ratchets toward always-expensive, which
+  defeats the objective (minimum intelligence spend).
+- A class still declining **at the top tier** is a design problem wearing a decline costume — route to a
+  human/architect, not to more compute.
+
+Full plan: `docs/handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md` §7.
