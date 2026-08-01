@@ -20,3 +20,13 @@ export {
   type BrowserTabPresence,
   type BrowserTabState,
 } from "./browser-node";
+
+export {
+  BROWSER_RUNTIME_PROBE_SCHEMA,
+  probeBrowserRuntime,
+  probeCurrentBrowserRuntime,
+  type BrowserCapabilityObservation,
+  type BrowserCapabilityProbeState,
+  type BrowserRuntimeProbeFeedback,
+  type BrowserRuntimeProbeReadout,
+} from "./browser-runtime-probe";
