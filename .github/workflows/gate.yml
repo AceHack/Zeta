@@ -1059,6 +1059,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The pull_request ref is a synthetic merge commit. Its first parent
+          # must be present for the PR-scoped markdown diff below.
+          fetch-depth: 2
 
       - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
         # Comprehensive cache — see lint-shell job above for the
