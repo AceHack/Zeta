@@ -1,0 +1,14 @@
+{
+  "id": "080cfbaf10ecf011a01300089e607efa",
+  "at": "2026-07-18T15:39:40.830Z",
+  "by": "alexa",
+  "action": {
+    "kind": "decompose",
+    "item": {
+      "id": "081KQGDBJ0008QG0R002NV04N9",
+      "title": "GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)",
+      "ready": true,
+      "ambiguous": true
+    }
+  }
+}
