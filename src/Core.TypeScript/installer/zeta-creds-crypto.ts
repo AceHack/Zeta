@@ -97,6 +97,40 @@ export interface Envelope {
 }
 
 /**
+ * Derive AES-256 key from binding material + operator passphrase via scrypt → HKDF chain.
+ *
+ * `bindingMaterial` is the factor-specific stable (or ephemeral) string — today the
+ * shipped path passes `usbUuid`; research factors pass iSerial / keyfile / TPM seal.
+ * See `credential-binding-model.ts` for the reformat/swap expectation matrix.
+ */
+export function deriveKeyFromBindingMaterial(
+  bindingMaterial: string,
+  passphrase: string,
+  salt: Uint8Array,
+): Buffer {
+  if (salt.length !== SALT_LEN) {
+    throw new Error(`salt must be ${SALT_LEN} bytes; got ${salt.length}`);
+  }
+  if (bindingMaterial.length === 0) {
+    throw new Error("bindingMaterial must be non-empty");
+  }
+  const saltCopy = Buffer.from(salt);
+  const stretched = scryptSync(passphrase, saltCopy, SCRYPT_STRETCHED_LEN, {
+    N: SCRYPT_N,
+    r: SCRYPT_R,
+    p: SCRYPT_P,
+    maxmem: SCRYPT_MAXMEM,
+  });
+  const ikm = Buffer.concat([
+    Buffer.from(bindingMaterial, "utf8"),
+    Buffer.from("|", "utf8"),
+    stretched,
+  ]);
+  const derived = hkdfHmacSync("sha256", ikm, saltCopy, HKDF_INFO, KEY_LEN);
+  return Buffer.from(derived);
+}
+
+/**
  * Derive AES-256 key from USB UUID + operator passphrase via scrypt → HKDF chain.
  *
  * **Two-layer derivation** (security-review HIGH finding 2026-05-27 fix):
@@ -128,22 +162,22 @@ export interface Envelope {
  * @returns 32-byte AES-256 key
  */
 export function deriveKey(usbUuid: string, passphrase: string, salt: Uint8Array): Buffer {
-  if (salt.length !== SALT_LEN) {
-    throw new Error(`salt must be ${SALT_LEN} bytes; got ${salt.length}`);
-  }
-  const saltCopy = Buffer.from(salt);
-  // Layer 1: scrypt stretches low-entropy passphrase into high-entropy intermediate.
-  const stretched = scryptSync(passphrase, saltCopy, SCRYPT_STRETCHED_LEN, {
-    N: SCRYPT_N,
-    r: SCRYPT_R,
-    p: SCRYPT_P,
-    maxmem: SCRYPT_MAXMEM,
-  });
-  // Layer 2: HKDF binds the stretched secret to the USB UUID via IKM concatenation.
-  // UUID first then stretched (order-sensitive; documented; decrypt must match).
-  const ikm = Buffer.concat([Buffer.from(usbUuid, "utf8"), Buffer.from("|", "utf8"), stretched]);
-  const derived = hkdfHmacSync("sha256", ikm, saltCopy, HKDF_INFO, KEY_LEN);
-  return Buffer.from(derived);
+  return deriveKeyFromBindingMaterial(usbUuid, passphrase, salt);
+}
+
+/** Encrypt with explicit binding material (generalized factor path). */
+export function encryptWithBindingMaterial(
+  plaintext: Uint8Array,
+  bindingMaterial: string,
+  passphrase: string,
+): Envelope {
+  const salt = randomBytes(SALT_LEN);
+  const iv = randomBytes(IV_LEN);
+  const key = deriveKeyFromBindingMaterial(bindingMaterial, passphrase, salt);
+  const cipher = createCipheriv("aes-256-gcm", key, iv);
+  const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return { salt, iv, tag, ciphertext };
 }
 
 /**
@@ -155,19 +189,13 @@ export function deriveKey(usbUuid: string, passphrase: string, salt: Uint8Array)
  * @returns envelope { salt, iv, tag, ciphertext } ready for serialization
  */
 export function encrypt(plaintext: Uint8Array, usbUuid: string, passphrase: string): Envelope {
-  const salt = randomBytes(SALT_LEN);
-  const iv = randomBytes(IV_LEN);
-  const key = deriveKey(usbUuid, passphrase, salt);
-  const cipher = createCipheriv("aes-256-gcm", key, iv);
-  const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()]);
-  const tag = cipher.getAuthTag();
-  return { salt, iv, tag, ciphertext };
+  return encryptWithBindingMaterial(plaintext, usbUuid, passphrase);
 }
 
 /**
  * Decrypt envelope. Returns plaintext on success OR { error } on:
  *   - wrong passphrase (auth tag verification fails)
- *   - wrong USB UUID (auth tag verification fails)
+ *   - wrong binding material (auth tag verification fails)
  *   - tampered ciphertext (auth tag verification fails)
  *   - tampered tag (auth tag verification fails)
  *   - tampered salt (key derives differently → auth tag verification fails)
@@ -177,11 +205,15 @@ export function encrypt(plaintext: Uint8Array, usbUuid: string, passphrase: stri
  * per the row's auth-method picker semantics.
  *
  * @param envelope - serialized blob contents
- * @param usbUuid - USB filesystem UUID
+ * @param bindingMaterial - factor material used at encrypt (today: USB UUID string)
  * @param passphrase - operator passphrase
  * @returns plaintext on success OR { error: string } on any failure
  */
-export function decrypt(envelope: Envelope, usbUuid: string, passphrase: string): Buffer | { readonly error: string } {
+export function decrypt(
+  envelope: Envelope,
+  bindingMaterial: string,
+  passphrase: string,
+): Buffer | { readonly error: string } {
   if (envelope.salt.length !== SALT_LEN) {
     return { error: `salt must be ${SALT_LEN} bytes; got ${envelope.salt.length}` };
   }
@@ -191,18 +223,16 @@ export function decrypt(envelope: Envelope, usbUuid: string, passphrase: string)
   if (envelope.tag.length !== TAG_LEN) {
     return { error: `tag must be ${TAG_LEN} bytes; got ${envelope.tag.length}` };
   }
-  // deriveKey would throw on wrong-length salt; we validated above so this
-  // can't fail at the deriveKey call site for that reason.
-  const key = deriveKey(usbUuid, passphrase, envelope.salt);
+  const key = deriveKeyFromBindingMaterial(bindingMaterial, passphrase, envelope.salt);
   const decipher = createDecipheriv("aes-256-gcm", key, envelope.iv);
   decipher.setAuthTag(envelope.tag);
   try {
     const plaintext = Buffer.concat([decipher.update(envelope.ciphertext), decipher.final()]);
     return plaintext;
   } catch (err) {
-    // node:crypto throws on auth-tag mismatch. Return as structured error
-    // so callers don't need try/catch (substrate-honest: failure IS a value).
     const msg = err instanceof Error ? err.message : String(err);
-    return { error: `decryption failed (wrong passphrase / wrong UUID / tampered blob): ${msg}` };
+    return {
+      error: `decryption failed (wrong passphrase / wrong binding / tampered blob): ${msg}`,
+    };
   }
 }

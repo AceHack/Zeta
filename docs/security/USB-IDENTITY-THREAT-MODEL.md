@@ -223,19 +223,19 @@ GitHub-forever APIs into Nix modules. CI uses `mock`; metal may use
 
 ## 8. Software-only next slices (no metal)
 
-1. **Credential binding model tests** — injectable factors
-   (`usbUuid` / `usbISerial` / `uefiKeyfile` / `tpmSeal`); assert which
-   reformat/swap cases decrypt.
-2. **Promote cluster/federation vocabulary** into operational glossary
+1. **Promote cluster/federation vocabulary** into operational glossary
    (SEED/GLOSSARY) from Iris Genesis Concepts — so threat reviews cite
    one canon.
-3. **Per-federation threat-model stub template** — same section shape
+2. **Per-federation threat-model stub template** — same section shape
    as §3, filled per Lodge/charter when a federation is chartered.
-4. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
+3. **QEMU UEFI menu-boot CI** (optional) — run OVMF against a composite
    built with a real `grub-mkimage` EFI (layout+embed path already lands).
 
-Planner + `/boot/` vs `/payloads/` + FAT assemble + `--grub-efi` embed: landed
-(`planMultibootUsb` / `planAssembleFatImage`).
+Credential binding model tests: landed
+(`src/Core.TypeScript/installer/credential-binding-model.ts` — injectable
+`usbUuid` / `usbISerial` / `uefiKeyfile` / `tpmSeal`; reformat/swap matrix +
+crypto proof). Planner + `/boot/` vs `/payloads/` + FAT assemble +
+`--grub-efi` embed: landed (`planMultibootUsb` / `planAssembleFatImage`).
 
 Phase-3 QEMU escapes already removed (rebuild ISO; mock-auth +
 post-boot self-register required).
