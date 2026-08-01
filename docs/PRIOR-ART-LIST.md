@@ -176,8 +176,16 @@ with a ⭐ below and add a row there.
 - **Physics of floats OVER Bayesian inference** ⭐ **(Aaron 2026-06-10 — "track this prior art very
   carefully; this IS what I'm doing")** — the substrate does Bayesian inference in explicit float-bit
   physics: `mea` = a Bayesian update; ΔU = **KL divergence** (info gain in **bits**); the **ULP** is
-  the posterior's precision floor; the `Resolution`/unum primitive tracks the meaningful bits of belief
-  (`maxed` = converged to the ULP floor; `needsMoreBits` = widen). Anchors, carefully:
+  the posterior's precision floor. **INTENDED, NOT BUILT (verified 2026-08-01):** a `Resolution`
+  primitive tracking the meaningful bits of belief (`maxed` = converged to the ULP floor;
+  `needsMoreBits` = widen) is **not present** — `rg 'maxed|needsMoreBits|Resolution'` over
+  `src/Core.TypeScript/tri-boolean-float/` returns zero hits. The shipped TriBoolean Float's
+  `decode` is **all-or-nothing** (`ok(number)` or one of two superposed states), so a carrier one
+  trit short of resolution is indistinguishable from one with nothing resolved — there is no
+  graded resolution quantity in the codomain. Load-bearing: Soraya 2026-08-01 showed a
+  self-describing carrier cannot hold the non-transferable quantity Friedman–Resnick requires,
+  precisely because resolution is neither graded nor unforgeable (`fromValue(v)` mints a
+  fully-resolved carrier for any representable `v`). Anchors, carefully:
   **Bayes/Laplace/Cox/Jaynes** (probability as logic) · **Kullback–Leibler** (= ΔU) + **mutual
   information** · **Rissanen MDL** (inference = counting bits) · **Lindley / Bayesian experimental
   design** (expected info gain — what `mea` maximizes) · **Solomonoff/Kolmogorov** (universal prior) ·
@@ -467,9 +475,12 @@ ship with green CI.
   a reputation system is Sybil-resistant iff the cost of a fresh identity exceeds
   the expected gain from whitewashing. The whitewash-profitable finding from
   Soraya's review (0 hits / 1 miss → fresh identity is better) is exactly the
-  Friedman–Resnick condition violated. The fix (coverage-at-τ scoring) makes
-  whitewashing unprofitable because a fresh identity has no coverage history and
-  therefore no trust weight.
+  Friedman–Resnick condition violated. **CORRECTED 2026-08-01 (Soraya, trimming her own
+  earlier claim):** coverage-at-τ makes **sandbagging** unprofitable — the `(u−l)` width term
+  penalises `u=+∞` — and that fix is real and shipped. It does **not** close the whitewash
+  window: the interval score is still a function of history alone, so a fresh identity still
+  lands at the prior. The undischarged obligation is Friedman–Resnick's own conclusion — free
+  identities force an entry cost or newcomer-distrust, and **reputation alone cannot supply it.**
 
 ### Retrieval + embeddings
 
