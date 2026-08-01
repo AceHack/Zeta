@@ -29,6 +29,19 @@ paths-ignore:
   # to fix bundler output or a prototype, not Zeta's code.
   - "genesis/**"
 
+  # Iris design-handoff GENERATED assets. Both declare their own nature:
+  # support.js opens with "GENERATED from dc-runtime/src/*.ts — do not edit",
+  # and _ds_bundle.js is a 100KB minified third-party design-system bundle.
+  # Same case as genesis/** above — findings would ask us to fix bundler output.
+  #
+  # SCOPED DELIBERATELY NARROW: docs/design/root-site-iris/edge/zeta-mesh.js is
+  # NOT excluded. It is authored Zeta source ("no deps, no build step") and it
+  # folds unverified BroadcastChannel/WebSocket input straight into state (#9916).
+  # That file is exactly what CodeQL should look at; excluding the directory
+  # would have hidden it.
+  - "docs/design/root-site-iris/_ds/**"
+  - "docs/design/root-site-iris/support.js"
+
   # Benchmark harness. Perf-critical by definition; uses
   # patterns (unsafe pointers, pinned spans, unchecked
   # arithmetic) that are intentional there. Keep CodeQL
