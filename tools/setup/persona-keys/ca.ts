@@ -162,6 +162,29 @@ export function caPublicKeyPath(repoRoot: string, ca: string): string {
  * (OIDC identity ⇒ short-lived signing certs), SPIFFE/SPIRE (workload identity), TOFU and the
  * PGP web-of-trust, Zooko's triangle (the tradeoff this pattern navigates).
  *
+ * ── TRAJECTORY: this is SCAFFOLD, not the destination (Aaron 2026-08-01) ──────────────────────
+ * **SPIFFE/SPIRE is the long-term target shape** — a workload-identity plane issuing short-lived
+ * SVIDs against trust bundles. Zeta is heading to two natively-Zeta realizations of it:
+ *
+ *   1. **git-native** — the repo IS the attestation substrate: signed commits, `allowed_signers`,
+ *      and the commit DAG as the append-only ledger. Still leans on a host (GitHub) for account
+ *      control, but the TRUST DATA lives in git, replicable by anyone with a clone.
+ *   2. **zetadb-native — eventually NO central authority at all.** The identity/trust plane
+ *      becomes a **Z-set event fold**: grant = +1, revoke = −1 (a RETRACTION), and the current
+ *      trust state is the consolidated fold — never a hand-authored desired-state map. This is
+ *      the same discipline already built for schema (`SchemaLog`, work-item
+ *      081KYWE8Q4008QG0R000H558SH: order-independent, prefix-replayable, retraction-cancels) and
+ *      the same rule as config/secrets topology (emerge from events; revoke ≡ Z-set retract).
+ *      Order-independence is what lets it converge with no coordinator — that is precisely the
+ *      property that removes the central authority.
+ *
+ * So read `committedTrustRoots` as the SCAFFOLD RUNG: GitHub-account control is the bootstrap we
+ * borrow TODAY because a cold network has no other shared prior. Each rung removes a borrowed
+ * authority — GitHub-committed keys → git-native ledger → Z-set fold with none. Do not harden
+ * anything against GitHub specifically; keep the disposition logic a pure function of
+ * (local private key, attested anchors) so the anchor SOURCE can be swapped underneath it.
+ * (The current signature already satisfies this — `resolveCaDisposition` never names GitHub.)
+ *
  * This is the honest seam: the ONLY ambiguous case ("is THIS host the CA holder?") is resolved
  * by the presence of the LOCAL CA private key — a fact this host can see for itself — and we
  * bias to ROUTE (the safe choice) whenever a trust root already exists but the private key does

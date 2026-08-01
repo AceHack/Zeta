@@ -1,0 +1,14 @@
+{
+  "id": "080cfddb8f3fb011a013000875e947ee",
+  "at": "2026-08-01T03:50:32.182Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KYXQ3SZN08QG0R002X3DTQM",
+    "type": "task",
+    "title": "git-native SPIFFE: identity/trust plane as a Z-set event fold (grant +1 / revoke -1 retraction), rung 2 of removing the central authority — repo/commit-DAG as attestation substrate, then zetadb-native with no host at all",
+    "slug": "git-native-spiffe-identity-trust-plane-as-a-z-set-event-fold",
+    "priority": "P2",
+    "filename": "081KYXQ3SZN08QG0R002X3DTQM-git-native-spiffe-identity-trust-plane-as-a-z-set-event-fold.md"
+  }
+}
