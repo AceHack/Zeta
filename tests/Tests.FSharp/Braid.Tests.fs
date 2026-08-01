@@ -203,3 +203,33 @@ let ``ORBIT-BRAID -> BRAID ENTROPY: a pseudo-Anosov trajectory yields dilatation
     Assert.Equal<int list>([ 1; -2 ], braid) // extracted the canonical pA braid
     let lam = BraidEntropy.dilatationEstimate 3 braid
     Assert.True(abs (lam - 2.6180) < 0.05, sprintf "λ = %f, expected ≈ 2.618 (the entropy the orbit forces)" lam)
+
+// --- THE BRIDGE CLOSES: dynamics-entropy ⇄ braid-forced-entropy on ONE motion (forger-map rung 081KYWE8Q4V08QG0R003NNTK15) ---
+// Boyland / Fathi–Shub give the ONE-DIRECTIONAL theorem: a pseudo-Anosov braid FORCES topological entropy
+// h_top ≥ log λ. `Orbit.largestLyapunov` measures λ_max from the DYNAMICS (nearby-orbit divergence);
+// `BraidEntropy.growthRate` measures the log λ the TOPOLOGY forces. The two roads are independent. This
+// canonical case makes them COINCIDE: the Arnold cat map [[2,1],[1,1]] has expansion (3+√5)/2 = 2.618 =
+// the dilatation of the σ₁σ₂⁻¹ braid [1;-2] — they are the SAME pseudo-Anosov, so both roads must land on
+// log 2.618 ≈ 0.962. **Honest peel:** the *general* guarantee is only the h_top ≥ log λ LOWER BOUND; this
+// equality holds because it is the canonical cat-map / σ₁σ₂⁻¹ pA correspondence, NOT because λ_max =
+// growthRate for arbitrary systems (Ruelle's inequality points the other way for the metric entropy).
+
+[<Fact>]
+let ``BRIDGE: cat-map λ_max and σ₁σ₂⁻¹ braid-forced entropy agree at log 2.618 (two independent roads)`` () =
+    let logDil = log 2.6180339887 // log((3+√5)/2) ≈ 0.9624
+    // road 1 — the DYNAMICS: Lyapunov exponent of the Arnold cat map (dominant eigenvalue = 2.618).
+    // On the TORUS (mod 1) so the reference orbit stays bounded; toroidal metric; a window of ~14 steps lets
+    // the fixed nudge align to the unstable eigenvector (sub-dominant decays like (0.382/2.618)^k), while the
+    // tiny 1e-9 nudge (grows 2.618^14·1e-9 ≈ 2e-3 < ½) never wraps, so the toroidal distance is the true one.
+    let frac (v: float) = v - floor v
+    let cat (x, y) = (frac (2.0 * x + y), frac (x + y))
+    let td (a: float) (b: float) = let g = abs (a - b) in min g (1.0 - g)
+    let d (ax, ay) (bx, by) = sqrt (td ax bx ** 2.0 + td ay by ** 2.0)
+    let nudge (x, y) = (frac (x + 1e-9), y)
+    let lambdaMax = Orbit.largestLyapunov d cat nudge 250 14 (0.1234, 0.5678)
+    // road 2 — the TOPOLOGY: the entropy the σ₁σ₂⁻¹ braid's dilatation forces (h_top ≥ this)
+    let logLambdaBraid = BraidEntropy.growthRate 3 [ 1; -2 ]
+    Assert.True(abs (lambdaMax - logDil) < 0.05, sprintf "dynamics λ_max = %f, expected log 2.618 ≈ %f" lambdaMax logDil)
+    Assert.True(abs (logLambdaBraid - logDil) < 0.08, sprintf "braid-forced log λ = %f, expected ≈ %f" logLambdaBraid logDil)
+    // the bridge: two independent roads (measure the flow vs. count the braid) land on the same entropy
+    Assert.True(abs (lambdaMax - logLambdaBraid) < 0.1, sprintf "roads disagree: dynamics %f vs topology %f" lambdaMax logLambdaBraid)

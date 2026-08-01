@@ -39,9 +39,13 @@ edge-of-chaos λ = the Lyapunov/Chaotic class). Full: `docs/research/2026-07-31-
 
 ## Open arcs — the next pick-up (pick one)
 
-1. **Forger-map rung** (work-item `081KYWE8Q4V08QG0R003NNTK15`) — extract the braid FROM a real orbit set
-   so `h ≥ log λ` is about *that* dynamics; makes `Orbit.largestLyapunov` ⇄ `BraidEntropy.growthRate` a
-   live cross-check. Continuity-highest; a genuine research build (orbit→braid extraction is the hard part).
+1. **Forger-map rung — ✅ DONE** (work-item `081KYWE8Q4V08QG0R003NNTK15`, completed 2026-08-01). Orbit→braid
+   extraction (`OrbitBraid.braidFromFrames`/`braidOfTrajectory`) landed, and the payoff is now WIRED: the
+   `Orbit.largestLyapunov` ⇄ `BraidEntropy.growthRate` cross-check is live — the canonical Arnold cat map
+   (λ_max = log 2.618) and the σ₁σ₂⁻¹ braid `[1;-2]` (same pseudo-Anosov dilatation) meet at log 2.618 on
+   two independent roads (`BraidTests.BRIDGE`). Honest boundary held: the *general* theorem is only the
+   one-directional `h_top ≥ log λ` (Boyland/Fathi–Shub); the equality is the canonical cat-map/braid
+   correspondence, not `λ_max = growthRate` for arbitrary systems (Ruelle points the other way).
 2. **Earn "braided" for real** — **F# SIDE COMPLETE + merged (#9792/#9793/#9794)**: `MenoBraided.braidR`
    (conjugation-rack R, σ²≠id, realizes σ₀), associator+unitors+pentagon/triangle coherence, and the
    n-strand rep ρ realizing Bₙ (Yang–Baxter, far-commute, faithful — both false-green tripwires P4/P5c

@@ -1,11 +1,12 @@
 ---
 id: 081KYWE8Q4V08QG0R003NNTK15
 type: task
-state: backlog
+state: done
 priority: P2
 slug: forger-map-rung-extract-the-braid-from-a-dynamical-orbit-set
 title: "Forger-map rung — extract the braid from a dynamical orbit set to complete the Thurston bridge"
 created: 2026-07-31T15:56:41.499Z
+completed: 2026-08-01T00:25:13.143Z
 depends_on: []
 composes_with: []
 ---
