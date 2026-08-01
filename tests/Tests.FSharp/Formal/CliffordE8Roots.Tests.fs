@@ -167,3 +167,39 @@ let ``L-E negative control: a WRONG Coxeter order does NOT give the identity (th
                         List.ofArray cur <> List.ofArray x)
                 if moved then foundWitness <- true
     Assert.True(foundWitness, "no pair moved a root below its Coxeter order — the relation tests would be vacuous")
+
+
+// ── The COXETER NUMBER h(E8) = 30 — the invariant behind the famous 2D picture ─────────────────
+// The canonical E8 image (the Gosset 4_21 Petrie / Coxeter-plane projection) shows the 240 roots as
+// 8 concentric rings of 30. The "30" is not decoration: it is the ORDER OF THE COXETER ELEMENT
+// w = s₁s₂⋯s₈ (the product of all simple reflections), h(E8) = 30, and the Coxeter plane is w's
+// rotation plane (it acts there as a 2π/30 turn). Building the plane itself needs a complex
+// eigendecomposition of the 8×8; the ORDER is decidable in exact integers, so we gate that here —
+// the projection is a rendering concern, this is the mathematical content underneath it.
+// Anchors: Coxeter (regular polytopes; the element and its number); Gosset (4_21).
+
+/// The Coxeter element: apply every simple reflection once, in the fixed `simpleSystem` order.
+let private coxeterElement (x: int[]) : int[] =
+    CliffordE8Roots.simpleSystem |> List.fold (fun v a -> CliffordE8Roots.reflect a v) x
+
+[<Fact>]
+let ``COXETER NUMBER: the Coxeter element w = s₁⋯s₈ has order exactly 30 = h(E8)`` () =
+    // order = least k > 0 with wᵏ = identity on EVERY root (not merely on one orbit)
+    let allRoots = CliffordE8Roots.roots
+    let isIdentity (k: int) =
+        allRoots
+        |> List.forall (fun x ->
+            let mutable cur = x
+            for _ in 1 .. k do
+                cur <- coxeterElement cur
+            List.ofArray cur = List.ofArray x)
+    let order = [ 1 .. 60 ] |> List.tryFind isIdentity
+    Assert.Equal(Some 30, order)
+
+[<Fact>]
+let ``COXETER NUMBER: w is a genuine rotation — no root is fixed by w (it has no eigenvalue-1 axis here)`` () =
+    // A Coxeter element of a finite Weyl group fixes no nonzero vector of the reflection
+    // representation; concretely, no ROOT survives w. This is why its plane is a clean rotation and
+    // the picture closes into rings rather than collapsing onto fixed directions.
+    for x in CliffordE8Roots.roots do
+        Assert.NotEqual<int list>(List.ofArray x, List.ofArray (coxeterElement x))
