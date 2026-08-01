@@ -116,16 +116,34 @@ jobs:
           # Run the composed Tier-0 healers over the working tree.
           # Direct exit-code check, not `$?` (shellcheck SC2181) — actionlint treats this as an
           # error, so the indirect form turned main red on merge.
-          echo "[heal] Running Tier-0 healers..."
-          if ! bun src/Core.TypeScript/hygiene/healers/run-tier0.ts --repo-root . 2>&1; then
-            echo "::warning::[heal] HEALER FAILED — drift may exist but went undetected"
+          # BOUNDED blast radius. The bound is the precondition for retraction-over-prevention:
+          # drift cleanup after the fact stays tractable only while one tick cannot rewrite the
+          # repository. exit 2 = the plan exceeded the bound and NOTHING was written.
+          echo "[heal] Running Tier-0 healers (bounded)..."
+          set +e
+          bun src/Core.TypeScript/hygiene/healers/run-tier0.ts \
+            --repo-root . --max-files 25 --plan-out /tmp/heal-plan.txt 2>&1
+          HEAL_RC=$?
+          set -e
+
+          # An oversized plan is a FINDING, not a routine heal — it must stay loud.
+          if [ "$HEAL_RC" -eq 2 ]; then
+            echo "::warning::[heal] BLAST RADIUS EXCEEDED — nothing written, tree untouched."
+            echo "[heal] A Tier-0 run this large wants a human read, not a silent commit."
+            exit 1
+          fi
+          if [ "$HEAL_RC" -ne 0 ]; then
+            echo "::warning::[heal] HEALER FAILED rc=$HEAL_RC — drift may exist but went undetected"
           fi
 
           # If anything was healed, stage and commit it
-          if ! git diff --quiet; then
+          # Stage EXACTLY the paths the healer touched — never `git add -A`, which sweeps in
+          # anything else this tick left in the tree (the observe-tick's own event files, a stray
+          # artefact) and attributes it to the healer.
+          if [ -s /tmp/heal-plan.txt ]; then
             git config user.name "otto[bot]"
             git config user.email "otto[bot]@users.noreply.github.com"
-            git add -A
+            git add --pathspec-from-file=/tmp/heal-plan.txt
             git commit --no-verify -m "heal(otto): Tier-0 drift correction $(date -u +%Y-%m-%dT%H:%M:%SZ)
 
           Automated self-healing: stale-js, unpinned-actions, unused-imports,

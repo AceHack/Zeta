@@ -1,16 +1,54 @@
 #!/usr/bin/env bun
 /**
- * run-tier0.ts — run all Tier-0 healers over the working tree.
+ * run-tier0.ts — run all Tier-0 healers over the working tree, UNDER A BOUNDED BLAST RADIUS.
  *
- * Called by the heartbeat workflow (otto's duty). Reads files from disk,
- * applies the composed Tier-0 healers, writes back any changes.
+ * Called by the heartbeat workflow (otto's duty). Reads files from disk, applies the composed
+ * Tier-0 healers, writes back any changes — but never more than `--max-files` of them, and never
+ * partially.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────────────────────
+ * WHY THE BOUND EXISTS (2026-08-01)
+ *
+ * The society is moving off PR review toward "drift cleanup after the fact" (Aaron: "i'm happy
+ * to keep moving away from PR ceremony as long as we have the replacements for it"). Auditing
+ * what a PR actually provided, every column had a replacement except one:
+ *
+ *     pre-merge CI    → post-merge CI + these healers        ✓
+ *     human review    → n/a for machine telemetry            ✓
+ *     audit trail     → git history + AgencySignature        ✓
+ *     rollback        → git revert / Z-set retraction        ✓
+ *     BLAST RADIUS    → NOTHING                              ✗   ← this file
+ *
+ * Retraction-over-prevention works because drift is *bounded and observable*. An unbounded
+ * autonomous writer breaks that: a single bad tick that rewrites 4,000 files is not "drift you
+ * heal later", it is an outage, and the healer that caused it runs again on the next tick. The
+ * bound is what keeps after-the-fact cleanup tractable — it is the precondition for dropping
+ * the gate, not a substitute for it.
+ *
+ * This is not hypothetical for this specific script: on 2026-08-01 the unused-import healer
+ * shipped WITH an unused import and turned main red. A zero-intelligence healer is exactly the
+ * kind of thing that is confidently wrong at scale.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────────────────────
+ * ALL-OR-NOTHING, NOT FIRST-N
+ *
+ * The bound is checked against the COMPLETE plan before a single byte is written. Writing 24
+ * files and stopping at the 25th would leave the tree in a state no healer intended — a partial
+ * application is worse than either healing everything or healing nothing, because it is not
+ * reproducible and not idempotent. So: compute the whole plan, decide once, then apply all of
+ * it or none of it. (Discipline #6 idempotency: re-running after a refusal is a no-op; re-running
+ * after a successful heal converges, because healers are fixpoints.)
+ *
+ * Exceeding the bound is NOT silently truncated — silent truncation is how a check goes vacuous.
+ * It exits 2 and prints the full plan, so the oversized drift is visible and a human decides.
  *
  * Exit codes:
- *   0 — healers ran (may or may not have healed anything)
+ *   0 — healers ran (may or may not have healed anything); or --dry-run completed
  *   1 — fatal error (never in practice — totality law)
+ *   2 — BLAST RADIUS EXCEEDED: nothing was written, the plan is printed, a human decides
  *
  * Usage:
- *   bun src/Core.TypeScript/hygiene/healers/run-tier0.ts [--repo-root <path>]
+ *   bun run-tier0.ts [--repo-root <path>] [--max-files N] [--dry-run] [--plan-out <path>]
  */
 
 import { readFileSync, writeFileSync, readdirSync } from "node:fs";
@@ -21,9 +59,18 @@ import { unpinnedActionsHealer } from "./unpinned-actions";
 import { exactOptionalHealer } from "./exact-optional-spread";
 import { unusedImportHealer } from "./unused-import";
 
-const REPO_ROOT = process.argv.includes("--repo-root")
-  ? process.argv[process.argv.indexOf("--repo-root") + 1]!
-  : process.cwd();
+/**
+ * The default bound. Chosen from the observed corpus, not from taste: real Tier-0 drift runs
+ * land 1–8 files. 25 is comfortably above every honest run we have on record and far below the
+ * "something has gone wrong" range. Raise it deliberately and in a commit that says why; do not
+ * raise it to make a red run go green — an oversized plan is a FINDING.
+ */
+export const DEFAULT_MAX_FILES = 25;
+
+function argValue(flag: string): string | undefined {
+  const i = process.argv.indexOf(flag);
+  return i >= 0 ? process.argv[i + 1] : undefined;
+}
 
 /** Recursively collect files (skipping node_modules, .git, binary). */
 function collectFiles(dir: string, base: string = dir): Map<string, string> {
@@ -61,41 +108,103 @@ const tier0 = composeHealers("tier-0-composed", [
   exactOptionalHealer,
 ]);
 
-function main(): void {
-  console.log(`[tier-0] Scanning ${REPO_ROOT}...`);
-
-  const tree: FileTree = collectFiles(REPO_ROOT);
-  console.log(`[tier-0] Collected ${tree.size} healable files`);
-
-  const healed = tier0.heal(tree);
-
-  // Find what changed
-  let healedCount = 0;
-  for (const [path, content] of healed) {
-    const original = tree.get(path);
-    if (original !== content) {
-      // File was healed — write it back
-      writeFileSync(join(REPO_ROOT, path), content);
-      console.log(`[tier-0] HEALED: ${path}`);
-      healedCount++;
-    }
-  }
-
-  // Find files that were REMOVED (stale-js)
-  for (const path of tree.keys()) {
-    if (!healed.has(path)) {
-      // File was removed by the healer — we can't delete from the workflow
-      // (git rm needs to happen at the commit stage). Log it instead.
-      console.log(`[tier-0] WOULD REMOVE: ${path} (stale — handle in git stage)`);
-      healedCount++;
-    }
-  }
-
-  if (healedCount === 0) {
-    console.log(`[tier-0] No drift found. All clean.`);
-  } else {
-    console.log(`[tier-0] Fixed ${healedCount} file(s).`);
-  }
+/** What the healers WOULD do. Computed in full before anything touches disk. */
+export interface HealPlan {
+  /** Paths whose content changed, with the new content. */
+  readonly rewrites: ReadonlyMap<string, string>;
+  /** Paths the healers dropped from the tree (stale-js). Reported, not deleted here. */
+  readonly removals: readonly string[];
+  /** rewrites.size + removals.length — what the bound is checked against. */
+  readonly touched: number;
 }
 
-main();
+/**
+ * Diff the healed tree against the original. PURE — no filesystem, no clock — so the bound can
+ * be tested against synthetic trees without a repo (and so it is DST-replayable).
+ */
+export function computePlan(before: FileTree, after: FileTree): HealPlan {
+  const rewrites = new Map<string, string>();
+  for (const [path, content] of after) {
+    if (before.get(path) !== content) rewrites.set(path, content);
+  }
+  const removals: string[] = [];
+  for (const path of before.keys()) {
+    if (!after.has(path)) removals.push(path);
+  }
+  return { rewrites, removals, touched: rewrites.size + removals.length };
+}
+
+/** Renders the plan for a human. Always printed when the bound is exceeded — never truncated. */
+export function describePlan(plan: HealPlan): string {
+  const lines: string[] = [];
+  for (const path of [...plan.rewrites.keys()].sort()) lines.push(`  REWRITE  ${path}`);
+  for (const path of [...plan.removals].sort()) lines.push(`  REMOVE   ${path}`);
+  return lines.join("\n");
+}
+
+function main(): void {
+  const repoRoot = argValue("--repo-root") ?? process.cwd();
+  const dryRun = process.argv.includes("--dry-run");
+  const planOut = argValue("--plan-out");
+
+  const rawMax = argValue("--max-files");
+  const parsedMax = rawMax === undefined ? DEFAULT_MAX_FILES : Number(rawMax);
+  if (!Number.isFinite(parsedMax) || parsedMax < 1) {
+    // A malformed bound must not silently become "unbounded". Fail loudly.
+    console.error(`[tier-0] FATAL: --max-files must be a positive integer, got "${rawMax}".`);
+    process.exit(1);
+  }
+  const maxFiles = Math.floor(parsedMax);
+
+  console.log(`[tier-0] Scanning ${repoRoot}... (blast radius bound: ${maxFiles} files${dryRun ? ", DRY RUN" : ""})`);
+
+  const tree: FileTree = collectFiles(repoRoot);
+  console.log(`[tier-0] Collected ${tree.size} healable files`);
+
+  // Compute the ENTIRE plan first. Nothing has touched disk at this point.
+  const plan = computePlan(tree, tier0.heal(tree));
+
+  if (planOut) {
+    // Emitted so the workflow can stage EXACTLY these paths instead of `git add -A`, which
+    // would sweep in anything else the tick happened to leave in the tree.
+    writeFileSync(planOut, [...plan.rewrites.keys(), ...plan.removals].sort().join("\n") + "\n");
+  }
+
+  if (plan.touched === 0) {
+    console.log(`[tier-0] No drift found. All clean.`);
+    return;
+  }
+
+  // ── THE BOUND ── checked against the complete plan, before any write.
+  if (plan.touched > maxFiles) {
+    console.error(
+      `\n[tier-0] ✗ BLAST RADIUS EXCEEDED — ${plan.touched} files planned, bound is ${maxFiles}.\n` +
+        `[tier-0] NOTHING WAS WRITTEN. The working tree is untouched.\n\n` +
+        describePlan(plan) +
+        `\n\n[tier-0] A Tier-0 run this large is a FINDING, not a routine heal — honest runs land\n` +
+        `[tier-0] 1-8 files. Either a healer has a bug (the unused-import healer shipped with an\n` +
+        `[tier-0] unused import on 2026-08-01), or real drift accumulated and wants a human read.\n` +
+        `[tier-0] Inspect the plan above, then re-run with an explicit --max-files if it is genuine.\n`,
+    );
+    process.exit(2);
+  }
+
+  if (dryRun) {
+    console.log(`[tier-0] DRY RUN — ${plan.touched} file(s) would change, nothing written:\n${describePlan(plan)}`);
+    return;
+  }
+
+  // Within bound: apply the whole plan.
+  for (const [path, content] of plan.rewrites) {
+    writeFileSync(join(repoRoot, path), content);
+    console.log(`[tier-0] HEALED: ${path}`);
+  }
+  for (const path of plan.removals) {
+    // We do not unlink here — removal is staged at the git layer so it is reviewable as a diff.
+    console.log(`[tier-0] WOULD REMOVE: ${path} (stale — handle in git stage)`);
+  }
+
+  console.log(`[tier-0] Fixed ${plan.touched} file(s) (bound ${maxFiles}).`);
+}
+
+if (import.meta.main) main();
