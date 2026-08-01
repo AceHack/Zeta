@@ -52,12 +52,15 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Install Ollama + pull model
+      - name: Install Ollama + pull models
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           ollama serve &
           sleep 5
+          # Tiny model for heartbeat (fast, 400MB)
           ollama pull qwen2.5:0.5b
+          # Smart model for codegen/decompose work (5GB, fits in 7GB runner)
+          ollama pull qwen2.5:7b
           ollama list
 
       - name: Create or checkout heartbeat branch
@@ -177,6 +180,56 @@ jobs:
             echo "[heal] Committed healed files"
           else
             echo "[heal] No drift found — all clean"
+          fi
+
+      - name: Attempt codegen work (7B model — real intellectual work)
+        env:
+          AGENT: ${{ matrix.agent }}
+          ZETA_FIRST_SESSION_MARKER: /tmp/zeta-first-session-complete
+          ZETA_SINK_MODE: local
+          ZETA_EXECUTOR: codegen
+          ZETA_CODEGEN_MODEL: qwen2.5:7b
+        run: |
+          # Only attempt work on every 4th tick (hourly, not every 15min)
+          # to avoid burning through runner minutes on long codegen tasks.
+          MINUTE=$(date -u +%M)
+          if [ "$MINUTE" != "00" ] && [ "$MINUTE" != "01" ] && [ "$MINUTE" != "02" ]; then
+            echo "[work] Not a work tick (only on :00). Skipping."
+            exit 0
+          fi
+
+          # Only one agent does work per hour (use the rotation)
+          HOUR=$(date -u +%H)
+          ROTATION=$(( HOUR % 3 ))
+          AGENTS=("alexa" "otto" "soraya")
+          WORK_AGENT=${AGENTS[$ROTATION]}
+
+          if [ "$AGENT" != "$WORK_AGENT" ]; then
+            echo "[work] Not my work turn (this hour: $WORK_AGENT). Skipping."
+            exit 0
+          fi
+
+          echo "[work] My turn for codegen work (agent=$AGENT, model=qwen2.5:7b)"
+
+          # Run the observe loop with the 7B model for real work
+          bun src/Core.TypeScript/observe/run-loop-real.ts \
+            --by "$AGENT" \
+            --event-dir docs/observe-events \
+            --participant local-llm:qwen2.5:7b \
+            2>&1 | tail -20 || echo "[work] codegen tick failed (non-fatal)"
+
+          # Commit any work produced
+          if ! git diff --quiet; then
+            git add -A
+            git commit --no-verify -m "work($AGENT): codegen tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Autonomous intellectual work. Model: qwen2.5:7b (free, 5GB).
+          Produced by the observe loop's codegen executor.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+            echo "[work] Committed work output"
+          else
+            echo "[work] No new work produced this tick"
           fi
 
 
