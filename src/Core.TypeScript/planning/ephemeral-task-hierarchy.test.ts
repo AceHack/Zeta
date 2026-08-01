@@ -69,7 +69,10 @@ describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
     expect(peer1Active.hat).toBeDefined();
 
     // Unbolt and verify complete stripping back to flat base
-    const restoredBase = unboltTaskHierarchy(boltedState);
+    // unboltTaskHierarchy returns UnboltResult { state, calibrationLedger } as of the
+    // calibration-ledger work — the society state is under .state, and the ledger is passed
+    // through untouched (that pass-through is the point: hat time must survive unbolt).
+    const restoredBase = unboltTaskHierarchy(boltedState).state;
     expect(restoredBase.peers.get("peer-01")!.availableActions).not.toContain("chip8-nav-boost");
     expect(restoredBase.peers.get("peer-01")!.hat).toBeUndefined();
     expect(restoredBase.empowermentFloor).toBe(3);
@@ -99,7 +102,7 @@ describe("Ephemeral Task-Bolted Hierarchies & Flat Society Base Model", () => {
       };
 
       const bolted = boltTaskHierarchy(currentBase, task);
-      currentBase = unboltTaskHierarchy(bolted);
+      currentBase = unboltTaskHierarchy(bolted).state;
     }
 
     // After 1,000 cycles, state MUST be byte-lock identical to original base
@@ -180,7 +183,7 @@ describe("INVARIANT 2 — a hat may accumulate, but nothing it accumulates may f
         goalDescription: "cycle",
         requiredAbstractions: ["coarse", "fine"],
       });
-      base = unboltTaskHierarchy(h);
+      base = unboltTaskHierarchy(h).state;
     }
     expect(JSON.stringify(Array.from(base.peers.values()))).toBe(snapshot);
     expect(computeEmpowermentFloor(Array.from(base.peers.values()))).toBe(floor0);
