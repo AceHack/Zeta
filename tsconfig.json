@@ -29,8 +29,12 @@
     // (i32/u32/f64/StaticArray) are AssemblyScript types tsc cannot know, so typechecking it
     // here yields ~33 bogus TS2304 "Cannot find name" errors. Excluded, not silenced — `asc`
     // is its real checker (see the compile line in assembly/index.ts).
-    "src/wasm-dla/assemblyscript",
-    "src/wasm-dla/assemblyscript/**",
+    // WHOLE TREE, not per-directory: every .ts under src/wasm-dla is AssemblyScript
+    // (verified 2026-08-01 — zero real TypeScript there). A path-specific exclude broke
+    // again the moment a new AS file landed in bytelock/, so exclude the tree and let
+    // `asc` be its checker. If genuine TS is ever added here, re-narrow deliberately.
+    "src/wasm-dla",
+    "src/wasm-dla/**",
     "**/node_modules/**",
     ".git",
     ".git/**",
