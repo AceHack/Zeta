@@ -29,8 +29,9 @@
 //      UNATTESTED CA. Zeta is fully decentralized — every node is its own CA, so a second CA is
 //      not itself a fault (there is NO single trust root to "split"; an earlier comment here said
 //      otherwise and was wrong — Aaron 2026-08-01). What makes a CA usable is that its PUBLIC key
-//      was bootstrapped through an external authority: a GitHub-controlled maintainer identity
-//      committing `maintainers/<ca>/ssh-ca.pub`. A CA minted on join is a key nobody attested, so
+//      was ATTESTED by committing `maintainers/<ca>/ssh-ca.pub` to the repo (git-native; who may
+//      commit is a swappable forge-host plugin concern, NEVER GitHub-specific). A CA minted on
+//      join is a key nobody attested, so
 //      no peer can verify certs it signs — an orphan identity, and silently so.
 //      The caller may now supply a `caDisposition` (ca.ts `resolveCaDisposition`, a pure function
 //      of local CA-private presence + the committed bootstrap anchors). On "route" we realize

@@ -144,10 +144,12 @@ export function caPublicKeyPath(repoRoot: string, ca: string): string {
  * There is NO single trust root in Zeta. The model is fully decentralized: **every node is its
  * own CA.** So a second CA existing is NOT, by itself, a fault — it is the design.
  *
- * What makes a node's CA usable by peers is that it has been **BOOTSTRAPPED through an external,
- * already-centralized authority** — a GitHub account controlling a maintainer identity — by
- * COMMITTING its CA public key to the repo (`maintainers/<ca>/ssh-ca.pub`). Control of the
- * GitHub account + repo history IS the bootstrap channel; the committed key is the attestation.
+ * What makes a node's CA usable by peers is that it has been **ATTESTED**: its CA public key is
+ * COMMITTED to the repo (`maintainers/<ca>/ssh-ca.pub`). The committed key IS the attestation, and
+ * the repo (any git remote, or none) carries it — this is git-native, not host-specific. Whoever
+ * gates *who may commit an anchor* is the access-control layer, and that is a **forge-host plugin**
+ * concern (`src/Core.TypeScript/forge-host/`: github | gitlab | gitea | bitbucket | sourcehut |
+ * codeberg), deliberately swappable and never named here.
  * (Same shape as the cert conventions we mirror: git's `allowed_signers` for commit signing,
  * k8s/cert-manager trust bundles, SSH CAs.)
  *
@@ -162,28 +164,41 @@ export function caPublicKeyPath(repoRoot: string, ca: string): string {
  * (OIDC identity ⇒ short-lived signing certs), SPIFFE/SPIRE (workload identity), TOFU and the
  * PGP web-of-trust, Zooko's triangle (the tradeoff this pattern navigates).
  *
- * ── TRAJECTORY: this is SCAFFOLD, not the destination (Aaron 2026-08-01) ──────────────────────
- * **SPIFFE/SPIRE is the long-term target shape** — a workload-identity plane issuing short-lived
- * SVIDs against trust bundles. Zeta is heading to two natively-Zeta realizations of it:
+ * ── TRAJECTORY: NEVER GitHub — the forge is a PLUGIN (Aaron 2026-08-01) ──────────────────────
+ * **SPIFFE/SPIRE is the long-term target shape** (workload identity: short-lived SVIDs against
+ * trust bundles). Zeta must reach it WITHOUT privileging any host. Aaron: *"never github — we
+ * call this a forgehost plugin; we want to be able to run with just cron processes basically one
+ * day, or just browser tabs, or completely with github, git-native, or zetadb-native only,
+ * decentralized."*
  *
- *   1. **git-native** — the repo IS the attestation substrate: signed commits, `allowed_signers`,
- *      and the commit DAG as the append-only ledger. Still leans on a host (GitHub) for account
- *      control, but the TRUST DATA lives in git, replicable by anyone with a clone.
- *   2. **zetadb-native — eventually NO central authority at all.** The identity/trust plane
- *      becomes a **Z-set event fold**: grant = +1, revoke = −1 (a RETRACTION), and the current
- *      trust state is the consolidated fold — never a hand-authored desired-state map. This is
- *      the same discipline already built for schema (`SchemaLog`, work-item
- *      081KYWE8Q4008QG0R000H558SH: order-independent, prefix-replayable, retraction-cancels) and
- *      the same rule as config/secrets topology (emerge from events; revoke ≡ Z-set retract).
- *      Order-independence is what lets it converge with no coordinator — that is precisely the
- *      property that removes the central authority.
+ * **The forge seam already exists and is genuinely host-agnostic:**
+ * `src/Core.TypeScript/forge-host/` — a `registerAdapter(pattern, factory)` registry, a
+ * `ForgeHost` interface, and `ForgeType` already spanning github | gitlab | gitea | bitbucket |
+ * sourcehut | codeberg | unknown, with github AND gitlab adapters shipped. GitHub is one plugin
+ * among six, not a dependency.
  *
- * So read `committedTrustRoots` as the SCAFFOLD RUNG: GitHub-account control is the bootstrap we
- * borrow TODAY because a cold network has no other shared prior. Each rung removes a borrowed
- * authority — GitHub-committed keys → git-native ledger → Z-set fold with none. Do not harden
- * anything against GitHub specifically; keep the disposition logic a pure function of
- * (local private key, attested anchors) so the anchor SOURCE can be swapped underneath it.
- * (The current signature already satisfies this — `resolveCaDisposition` never names GitHub.)
+ * **Where THIS file actually sits — better than "GitHub-bootstrapped":** `resolveCaDisposition`
+ * reads `maintainers/<ca>/ssh-ca.pub` **from the working tree**. That is already **git-native**:
+ * any git host, a bare remote, or a sneakernet clone satisfies it. The only borrowed authority is
+ * **push access control** (who may commit an anchor) — and that is a forge-host plugin concern,
+ * not a property of this logic. So do not describe this as "GitHub bootstrap"; describe it as
+ * *committed-anchor attestation, with access control delegated to whatever forge plugin is in use*.
+ *
+ * **Two independent axes to keep separate:**
+ *   - *Anchor attestation:* committed anchors (today, git-native) → a Z-set trust fold
+ *     (zetadb-native: grant +1 / revoke −1 retraction; current trust = the consolidated fold,
+ *     never a desired-state map). ORDER-INDEPENDENCE is what lets that converge with **no
+ *     coordinator** — it is precisely the property that removes the central authority. The
+ *     primitive is already proven: `SchemaLog` (work-item 081KYWE8Q4008QG0R000H558SH) shows
+ *     order-independence, prefix-replay, retraction-cancels, honest idempotency on a ±1 event log.
+ *   - *Execution substrate:* a forge's CI → plain **cron processes** → **browser tabs** → nothing
+ *     but peers. The trust logic must not assume ANY of these.
+ *
+ * **Constraint to hold now (already satisfied — keep it that way):** `resolveCaDisposition` is a
+ * pure function of (local private key, attested anchors). It names no forge, performs no network
+ * IO, and no `ForgeHost` type appears in this file. Swapping the anchor SOURCE (committed file →
+ * git object → Z-set fold) must stay a change of caller, never a change of this function.
+ * Work-item 081KYXQ3SZN08QG0R002X3DTQM tracks the fold rung.
  *
  * This is the honest seam: the ONLY ambiguous case ("is THIS host the CA holder?") is resolved
  * by the presence of the LOCAL CA private key — a fact this host can see for itself — and we
