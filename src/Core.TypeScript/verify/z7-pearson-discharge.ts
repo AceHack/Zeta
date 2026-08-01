@@ -1,6 +1,6 @@
 #!/usr/bin/env npx ts-node
 /**
- * tools/verify/z7-pearson-discharge.ts
+ * src/Core.TypeScript/verify/z7-pearson-discharge.ts
  *
  * Formal discharge of Conjecture Z-7:
  *   "WASM binary size has zero correlation with D_f"
@@ -18,17 +18,18 @@
  *   assert |r| < 0.1.
  *
  * Usage:
- *   npx ts-node tools/verify/z7-pearson-discharge.ts
+ *   ZETA_CERTIFICATE_DATE=2026-08-01T03:29:00.653Z \
+ *     npx ts-node src/Core.TypeScript/verify/z7-pearson-discharge.ts
  *   # or in CI:
- *   node --loader ts-node/esm tools/verify/z7-pearson-discharge.ts
+ *   node --loader ts-node/esm src/Core.TypeScript/verify/z7-pearson-discharge.ts
  *
  * Exit codes:
  *   0 — Z-7 discharged (|r| < 0.1)
  *   1 — Z-7 falsified (|r| >= 0.1) or runtime error
  */
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 // ── DLA simulation (pure TypeScript, host-side reference implementation) ──────
 // This is the same algorithm as all four WASM substrates.
@@ -39,16 +40,19 @@ import * as path from "path";
 const GRID_SIZE = 128;
 const CENTER = 64;
 const N_WALKERS = 1200;
+const DEFAULT_CERTIFICATE_DATE = "2026-08-01T03:29:00.653Z";
 
 function xorshift32(s: number): number {
   // xorshift32 avoids the pathological short cycles of the Knuth LCG for low bits
-  s ^= s << 13; s ^= s >>> 17; s ^= s << 5;
+  s ^= s << 13;
+  s ^= s >>> 17;
+  s ^= s << 5;
   return s >>> 0;
 }
 
 function runDLA(seed: number): { clusterSize: number; maxR: number } {
   const grid = new Uint8Array(GRID_SIZE * GRID_SIZE);
-  let s = (seed >>> 0) || 1; // xorshift32 must not be 0
+  let s = seed >>> 0 || 1; // xorshift32 must not be 0
   grid[CENTER * GRID_SIZE + CENTER] = 1;
   let clusterSize = 1;
   let maxR = 1;
@@ -57,7 +61,7 @@ function runDLA(seed: number): { clusterSize: number; maxR: number } {
     // Spawn on a circle of radius maxR + 3 (standard DLA spawn strategy)
     const spawnR = Math.min(maxR + 3, 58);
     s = xorshift32(s);
-    const angle = (s / 0xFFFFFFFF) * 2 * Math.PI;
+    const angle = (s / 0xffffffff) * 2 * Math.PI;
     let wx = Math.round(CENTER + spawnR * Math.cos(angle));
     let wy = Math.round(CENTER + spawnR * Math.sin(angle));
     wx = Math.max(1, Math.min(GRID_SIZE - 2, wx));
@@ -66,17 +70,23 @@ function runDLA(seed: number): { clusterSize: number; maxR: number } {
 
     for (let step = 0; step < 50000; step++) {
       // Stick check
-      if (grid[wy * GRID_SIZE + (wx - 1)] || grid[wy * GRID_SIZE + (wx + 1)] ||
-          grid[(wy - 1) * GRID_SIZE + wx] || grid[(wy + 1) * GRID_SIZE + wx]) {
+      if (
+        grid[wy * GRID_SIZE + (wx - 1)] ||
+        grid[wy * GRID_SIZE + (wx + 1)] ||
+        grid[(wy - 1) * GRID_SIZE + wx] ||
+        grid[(wy + 1) * GRID_SIZE + wx]
+      ) {
         grid[wy * GRID_SIZE + wx] = 1;
         clusterSize++;
-        const dx = wx - CENTER, dy = wy - CENTER;
+        const dx = wx - CENTER,
+          dy = wy - CENTER;
         const r = Math.sqrt(dx * dx + dy * dy);
         if (r > maxR) maxR = r;
         break;
       }
       // Kill if too far from cluster
-      const dx = wx - CENTER, dy = wy - CENTER;
+      const dx = wx - CENTER,
+        dy = wy - CENTER;
       if (dx * dx + dy * dy > killR2) break;
       // Walk
       s = xorshift32(s);
@@ -99,23 +109,26 @@ function computeDf(clusterSize: number, maxR: number): number {
 // ── Binary size table (actual compiled sizes from src/wasm-dla/) ──────────────
 // These are the real sizes of the WASM binaries produced by each compiler.
 // Updated when new binaries are compiled.
-const BINARY_SIZES: Record<string, number> = {
-  WAT: 697,           // src/wasm-dla/wat/dla.wasm (wat2wasm)
-  Zig: 951,           // src/wasm-dla/zig/dla.wasm (zig build-exe -O ReleaseSmall)
-  ASC: 6_144,         // src/wasm-dla/assemblyscript/build/release.wasm (asc)
-  Go: 1_572_864,      // src/wasm-dla/go/main.wasm (GOOS=js GOARCH=wasm)
+const COMPILERS = ["WAT", "Zig", "ASC", "Go"] as const;
+type Compiler = (typeof COMPILERS)[number];
+
+const BINARY_SIZES: Readonly<Record<Compiler, number>> = {
+  WAT: 697, // src/wasm-dla/wat/dla.wasm (wat2wasm)
+  Zig: 951, // src/wasm-dla/zig/dla.wasm (zig build-exe -O ReleaseSmall)
+  ASC: 6_144, // src/wasm-dla/assemblyscript/build/release.wasm (asc)
+  Go: 1_572_864, // src/wasm-dla/go/main.wasm (GOOS=js GOARCH=wasm)
 };
 
 // Try to read actual binary sizes from disk if available
-function getActualBinarySize(compiler: string): number {
-  const paths: Record<string, string> = {
-    WAT: path.join(__dirname, "../../src/wasm-dla/wat/dla.wasm"),
-    Zig: path.join(__dirname, "../../src/wasm-dla/zig/dla.wasm"),
-    ASC: path.join(__dirname, "../../src/wasm-dla/assemblyscript/build/release.wasm"),
-    Go: path.join(__dirname, "../../src/wasm-dla/go/main.wasm"),
+function getActualBinarySize(compiler: Compiler): number {
+  const paths: Readonly<Record<Compiler, string>> = {
+    WAT: path.join(__dirname, "../../wasm-dla/wat/dla.wasm"),
+    Zig: path.join(__dirname, "../../wasm-dla/zig/dla.wasm"),
+    ASC: path.join(__dirname, "../../wasm-dla/assemblyscript/build/release.wasm"),
+    Go: path.join(__dirname, "../../wasm-dla/go/main.wasm"),
   };
   const p = paths[compiler];
-  if (p && fs.existsSync(p)) {
+  if (fs.existsSync(p)) {
     return fs.statSync(p).size;
   }
   const recorded = BINARY_SIZES[compiler];
@@ -128,14 +141,19 @@ function getActualBinarySize(compiler: string): number {
 
 // ── Pearson correlation ───────────────────────────────────────────────────────
 function pearson(xs: number[], ys: number[]): number {
+  if (xs.length === 0 || xs.length !== ys.length) return Number.NaN;
+
   const n = xs.length;
   const meanX = xs.reduce((a, b) => a + b, 0) / n;
   const meanY = ys.reduce((a, b) => a + b, 0) / n;
-  let num = 0, denX = 0, denY = 0;
+  let num = 0,
+    denX = 0,
+    denY = 0;
   for (let i = 0; i < n; i++) {
     // i < n = xs.length = ys.length, so both reads are in-bounds; assert for
     // noUncheckedIndexedAccess rather than widening the arithmetic to `| undefined`.
-    const dx = xs[i]! - meanX, dy = ys[i]! - meanY;
+    const dx = xs[i]! - meanX;
+    const dy = ys[i]! - meanY;
     num += dx * dy;
     denX += dx * dx;
     denY += dy * dy;
@@ -145,13 +163,15 @@ function pearson(xs: number[], ys: number[]): number {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
+  const certificateDate = process.env.ZETA_CERTIFICATE_DATE ?? DEFAULT_CERTIFICATE_DATE;
+
   console.log("═══════════════════════════════════════════════════════════════");
   console.log("  Z-7 Pearson Discharge Script");
   console.log("  Conjecture: binary_size ⊥ D_f (Pearson |r| < 0.1)");
   console.log("  Method: 4 compilers × 10 seeds = 40 (size, D_f) pairs");
   console.log("═══════════════════════════════════════════════════════════════\n");
 
-  const compilers = Object.keys(BINARY_SIZES);
+  const compilers = COMPILERS;
   const seeds = [42, 137, 271, 314, 577, 1000, 2718, 3141, 9999, 31337];
 
   const binarySizes: number[] = [];
@@ -170,9 +190,7 @@ async function main() {
       binarySizes.push(binarySize);
       dfValues.push(df);
       rows.push({ compiler, seed, binarySize, df });
-      console.log(
-        `${compiler.padEnd(8)} ${String(seed).padEnd(8)} ${String(binarySize).padEnd(12)} ${df.toFixed(6)}`
-      );
+      console.log(`${compiler.padEnd(8)} ${String(seed).padEnd(8)} ${String(binarySize).padEnd(12)} ${df.toFixed(6)}`);
     }
   }
 
@@ -184,7 +202,7 @@ async function main() {
 
   // Summary statistics
   const dfMean = dfValues.reduce((a, b) => a + b, 0) / dfValues.length;
-  const dfStd = Math.sqrt(dfValues.map(d => (d - dfMean) ** 2).reduce((a, b) => a + b, 0) / dfValues.length);
+  const dfStd = Math.sqrt(dfValues.map((d) => (d - dfMean) ** 2).reduce((a, b) => a + b, 0) / dfValues.length);
   const dfMin = Math.min(...dfValues);
   const dfMax = Math.max(...dfValues);
 
@@ -207,7 +225,7 @@ async function main() {
     console.log("    not the compiler, runtime, or binary size.");
     console.log("");
     console.log("  Certificate:");
-    console.log(`    Date:      ${new Date().toISOString()}`);
+    console.log(`    Date:      ${certificateDate}`);
     console.log(`    Compilers: ${compilers.join(", ")}`);
     console.log(`    Seeds:     ${seeds.join(", ")}`);
     console.log(`    Pairs:     ${rows.length}`);
@@ -220,7 +238,7 @@ async function main() {
       conjecture: "Z-7",
       claim: "binary_size ⊥ D_f: Pearson(binary_size, D_f) over 40 (compiler, seed) pairs satisfies |r| < 0.1",
       status: "DISCHARGED",
-      date: new Date().toISOString(),
+      date: certificateDate,
       compilers,
       seeds,
       n_pairs: rows.length,
@@ -230,10 +248,10 @@ async function main() {
       df_mean: dfMean,
       df_std: dfStd,
       df_range: [dfMin, dfMax],
-      binary_sizes: Object.fromEntries(compilers.map(c => [c, getActualBinarySize(c)])),
+      binary_sizes: Object.fromEntries(compilers.map((c) => [c, getActualBinarySize(c)])),
       rows,
     };
-    const certPath = path.join(__dirname, "../../docs/research/z7-discharge-certificate.json");
+    const certPath = path.join(__dirname, "../../../docs/research/z7-discharge-certificate.json");
     fs.writeFileSync(certPath, JSON.stringify(cert, null, 2));
     console.log(`\n  Certificate written to: docs/research/z7-discharge-certificate.json`);
     process.exit(0);
@@ -247,7 +265,7 @@ async function main() {
   }
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error("Z-7 discharge script error:", e);
   process.exit(1);
 });
