@@ -128,9 +128,18 @@ jobs:
 
           # An oversized plan is a FINDING, not a routine heal — it must stay loud.
           if [ "$HEAL_RC" -eq 2 ]; then
+            # LOUD, BUT NOT FATAL. An oversized heal plan is a FINDING about the repository, not a
+            # failure of this tick. `exit 1` here (my error, 2026-08-01) killed the WHOLE heartbeat
+            # job — observe tick, flush, archive, codegen and the mutation runner all died because
+            # ONE duty had a big plan. First production firing: "1005 files planned, bound is 25"
+            # took otto's entire tick down with it.
+            #
+            # That contradicts the rule applied everywhere else here — DRIFT REPORT, NOT A GATE —
+            # and it fails in the OFF direction rather than the closed one. The bound's job is to
+            # refuse the write and say so; it is not to stop the society.
             echo "::warning::[heal] BLAST RADIUS EXCEEDED — nothing written, tree untouched."
             echo "[heal] A Tier-0 run this large wants a human read, not a silent commit."
-            exit 1
+            echo "[heal] Continuing the tick: this is a finding about the repo, not a broken tick."
           fi
           if [ "$HEAL_RC" -ne 0 ]; then
             echo "::warning::[heal] HEALER FAILED rc=$HEAL_RC — drift may exist but went undetected"
