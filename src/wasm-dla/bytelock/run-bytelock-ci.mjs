@@ -21,7 +21,7 @@
  *             dla-canonical-asc.wasm
  *   Bytecode: dla-canonical-source.js (V8/QuickJS source),
  *             dla-canonical.lua (Lua 5.4)
- *   (Go substrate requires wasm_exec.js runtime — tested separately)
+ *   Go:       run-go-wasm.mjs (via wasm_exec.js bridge — dla-canonical-go.wasm)
  */
 
 import { readFileSync, existsSync } from "fs";
@@ -35,8 +35,9 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const jsonMode = args.includes("--json");
 const seedsArg = args.find((a) => a.startsWith("--seeds=") || a === "--seeds");
+// Prefer --seeds=VALUE over --seeds VALUE to avoid consuming the next flag as a value
 const seedsVal = seedsArg
-  ? (args[args.indexOf(seedsArg) + 1] || seedsArg.split("=")[1] || "1,42,100,999")
+  ? (seedsArg.split("=")[1] || args[args.indexOf(seedsArg) + 1] || "1,42,100,999")
   : "1,42,100,999";
 const CI_SEEDS = seedsVal.split(",").map(Number);
 
@@ -55,6 +56,9 @@ const WASM_SUBSTRATES = [
 const SCRIPT_SUBSTRATES = [
   { name: "JS (V8)",     cmd: "node",    args: ["dla-canonical-source.js"], type: "script" },
   { name: "Lua 5.4",     cmd: "lua5.4",  args: ["dla-canonical.lua"],       type: "script" },
+  // Go WASM uses the wasm_exec.js runtime bridge — run via dedicated harness.
+  // Requires: go (GOOS=js GOARCH=wasm) + wasm_exec.js already copied to this dir.
+  { name: "Go",          cmd: "node",    args: ["run-go-wasm.mjs"],         type: "script" },
 ];
 
 // ── WASM runner ───────────────────────────────────────────────────────────────
