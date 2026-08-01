@@ -78,6 +78,77 @@ released in lockstep, which is a monorepo with extra steps and worse tooling.
 **Litmus for any proposed cut:** *can these two repos release independently?* If a change to A
 always requires a same-day change to B, they are one repo wearing two names.
 
+### 2.1 CONTAINMENT COST — a second axis that can override change rate (resolved 2026-08-01)
+
+Change rate is the right **default** discipline, and it is not the only one. Aaron, resolving the
+Mirror/Beacon open question:
+
+> "I think Mirror/Beacon is much safer as a repo split, the way we use Mirror shorthand all the time."
+
+That is correct, and it identifies a partition axis DV2.0 alone does not supply:
+
+> **Boundary strength should match the COST OF ACCIDENTAL CROSSING, not only the change rate.**
+
+The mechanism is about *attention*, not intent:
+
+- **A branch merge is routine and low-attention.** It happens dozens of times a day and nobody reads
+  every line. The leak path is not carelessness — it is a normal merge doing exactly what merges do.
+- **A cross-repo copy is deliberate.** Someone must consciously move the thing, which is precisely
+  the moment the Mirror→Beacon compression is supposed to happen.
+
+Mirror register is coined shorthand used constantly (substrate, tick, glass halo, ferry). Beacon
+register is outward-facing and must stand on anchored first principles. So the crossing is **cheap
+to do accidentally and expensive to undo** — once an unanchored coinage is published under a Beacon
+surface, retracting it is a public correction.
+
+**This is not hypothetical.** On 2026-08-01 a fabricated "Tsirelson" constant reached a **public**
+GitHub Pages site: coined internal shorthand carried outward with its caveat dropped between
+2026-07-04 and 2026-07-16. One repo, so a boundary would not have stopped that specific instance —
+but it demonstrates the failure mode is real, routine, and slow to notice.
+
+#### The algebra underneath it — Z-set vs G-set (Aaron, 2026-08-01)
+
+> "It's like the G-set / Z-set split. Mirror is easy Z-set; Beacon is harder to change, it's becoming
+> G-set over time."
+
+This is the sharper statement of the same thing, and it explains *why* the containment cost differs
+rather than merely asserting that it does:
+
+| register | algebra | retraction |
+|---|---|---|
+| **Mirror** | **Z-set** — signed, `+1` / `−1` | free. A wrong coinage is simply retracted; that is what the register is for |
+| **Beacon** | **G-set** — grow-only | **no retraction operator.** Once published, cited, or copied, it is in the set |
+
+So the crossing is not just expensive — **it is a change of algebra.** Content moves from a structure
+that *has* an inverse to one that does not. That is the real reason the boundary must be strong: you
+cannot undo on the far side, so the decision has to be made on the near side.
+
+And the "over time" is load-bearing. Beacon is not born grow-only — **it hardens**. A claim published
+this morning can still be corrected; one cited for a year effectively cannot, because retraction no
+longer reaches everyone who copied it. **Retraction cost rises monotonically with time since
+publication**, which means the window for cheap correction closes silently and without warning.
+
+The Tsirelson case is exactly this trajectory: born 2026-07-04 *with* an honest caveat (still
+Z-set — retractable), caveat dropped 2026-07-16, then published to a public site. Correcting it was
+still possible, but it had already become a public correction rather than an edit.
+
+> **Design consequence: the repo boundary IS the Z-set → G-set transition point.** A branch merge
+> performs that transition invisibly and in bulk; a cross-repo copy makes it a deliberate, reviewable
+> act. The boundary should sit exactly where the algebra changes.
+
+(The repo already reasons this way elsewhere — the heartbeat flush documents its payload as
+"append-only ZetaId event files (G-Set, conflict-free)", and Z-set retraction is the core correction
+primitive. This is that same distinction applied to *registers* rather than to data.)
+
+**Consequence for the design:** Mirror/Beacon is the one axis that earns the split **independent of
+any CI quota** (§0). Where §0 argues the cache ceiling should not drive topology, this axis needs no
+such justification — containment is the reason, and it would hold if the quota were infinite.
+
+Applying the litmus from §2 honestly: Mirror and Beacon repos might *not* release independently, and
+by change rate alone they could be branches. **Containment overrides that here.** When the two
+disciplines disagree, name which one is deciding and why — this document decides for containment on
+this axis, and for change rate on every other.
+
 ---
 
 ## 3. `ace` and `zetadb` as the shared core
@@ -159,9 +230,8 @@ real forker.
    says persona = "what remains", actor = "what acts" — the repo should follow the persona.
 2. **Where does `references/prior-art/` live?** Gigabytes, gitignored, explicit-target search only.
    It is neither hub nor product.
-3. **Does the Mirror/Beacon axis cross-cut the others**, or is it a *branch* discipline within each
-   repo? Axis 3 says repos; DV2.0 change-rate analysis suggests it might be branches. **These
-   disagree and it should be resolved before cutting.**
+3. ~~**Does the Mirror/Beacon axis cross-cut the others**, or is it a *branch* discipline?~~
+   **RESOLVED 2026-08-01 — repo split. See §2.1.**
 4. **Honor-system license framing** (axis 2) — unresolved there, still unresolved here.
 5. **Does `ace` bootstrap itself?** If installing `ace` requires `ace`, name the escape hatch.
 
