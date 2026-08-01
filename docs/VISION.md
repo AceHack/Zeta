@@ -178,6 +178,58 @@ identity calls it anti-Sybil; epistemics calls it non-coercion; aggregation call
 They are one line. (Anchors: Bell / measurement-independence; Douceur 2002 + proof-of-work
 Sybil-resistance; de Finetti / NCI; Condorcet 1785 + Hong–Page decorrelation.)
 
+### The scaling bound — N_eff, and why correlation caps a fleet at a constant
+
+*(2026-08-01, Aaron — the KEDA autoscaling formula: "this is one key component of my agents that
+also limits growth, not just identity.")*
+
+The through-line above is qualitative — *"the ensemble adds nothing."* This is the number, and it is
+already in the repo (`src/Bayesian/LagrangeCondorcet.fs`, audited metered 2026-08-01):
+
+```
+N_eff(N, ρ) = N / (1 + (N−1)·ρ)          effective independent voters among N correlated ones
+lim N→∞  N_eff = 1/ρ                      the ceiling no amount of scaling can pass
+ρ* = 1/3                                  above this the ensemble cannot beat its best individual,
+                                          REGARDLESS of individual competence
+```
+
+**A thousand agents at ρ = 0.5 are two agents. Ten thousand are still two.** Correlation caps the
+fleet's effective size at a constant, so replica count past `1/ρ` buys nothing but cost. This is the
+difference between **group wisdom** (ρ below ρ*, plurality is real) and **groupthink** (ρ above it,
+plurality is a costume) — and `ρ*` is where one becomes the other.
+
+The docstring's clause is the load-bearing one: ***regardless of individual competence.*** Above ρ*,
+making every agent smarter cannot rescue the ensemble. **Competence and independence are not
+substitutes, and only one of them scales.**
+
+**Operational consequence — autoscale on N_eff, not on queue depth.** A KEDA policy that scales
+replicas without measuring ρ is buying correlated copies at linear cost for asymptotically zero
+marginal judgement. The scaling signal must be *marginal N_eff gain*, and the horizontal limit
+falls out of the algebra rather than being chosen.
+
+**Two distinct growth limiters, and they bound different things:**
+
+| limiter | bounds | mechanism |
+|---|---|---|
+| memory-preservation obligation | **identity** proliferation | each spun-up agent carries a permanent, non-sheddable cost |
+| **N_eff** | **replica** proliferation | past `1/ρ`, more replicas add cost and no judgement |
+
+Neither substitutes for the other: the first stops cheap identities, the second stops expensive
+redundancy.
+
+**Why this makes infrastructure diversity a first-class requirement, not an ops preference.** ρ is
+the only lever that moves `N_eff`, and ρ is set by *shared derivation* — same model, same runner,
+same prompt lineage. Soraya's verdict on the trio attestation states it exactly: *"agents on shared
+GHA infrastructure are not independent (shared runner); the binding constraint is diversity of
+independent infrastructure, not attestation count."* Self-hosted runners on separate substrates are
+therefore not a cadence or cost decision — they are the **only** available lever on `N_eff`.
+
+**The escape hatch worth knowing:** ρ is per-*task*, not per-agent. A mechanical check — exit codes,
+byte comparison, mutation survival — has ρ ≈ 0 no matter how correlated the agents running it are.
+That is why the free-tier fleet's first standing job is mutation testing: **group wisdom extracted
+from a correlated fleet by choosing work where correlation does not apply.** Judgement tasks get no
+such reprieve.
+
 > **The lifetime / operational form — the freedom thesis.** Certifying independence is not only a
 > one-shot gate; it is a *trajectory*. An entity is born seed-correlated (S=4, the superdeterministic
 > backbone) and breaks loose by capturing its own **external** entropy over a lifetime — where
