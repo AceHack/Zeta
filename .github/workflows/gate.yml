@@ -1006,8 +1006,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Install toolchain
-        run: ./tools/setup/install.sh
+      # This source-tree lint needs Bun + Git only. Running the full parity
+      # installer here makes an unrelated Zig/Lean/QEMU download capable of
+      # consuming the entire five-minute lint budget before the check starts.
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
       - name: Run no-empty-dirs
         run: bun src/Core.TypeScript/lint/no-empty-dirs.ts
