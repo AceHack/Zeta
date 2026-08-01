@@ -1,0 +1,13 @@
+{
+  "conjecture": "Z-2",
+  "title": "Halsey 2026 Amplitude Formula Discharge",
+  "date": "2026-08-01",
+  "status": "OPEN",
+  "measuredDf": 1.6121299541602339,
+  "measuredAmplitude": 0.009229113752773818,
+  "halseyTheoreticalAmplitude": 0.1733554068088137,
+  "absoluteError": 0.16412629305603987,
+  "relativeError": 0.9467618926766315,
+  "sampleCount": 50,
+  "falsifierThresholdRelative": 0.25
+}

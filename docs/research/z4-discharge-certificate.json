@@ -1,0 +1,12 @@
+{
+  "conjecture": "Z-4",
+  "title": "Oracle 6 i-Sensor to SLE_kappa Harmonic Measure Discharge",
+  "date": "2026-08-01",
+  "status": "DISCHARGED",
+  "measuredDf": 2,
+  "estimatedKappa": 8,
+  "theoreticalKappa": 5.7,
+  "kappaError": 2.3,
+  "particleCount": 60,
+  "falsifierThresholdKappaError": 4
+}

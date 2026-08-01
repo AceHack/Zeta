@@ -1,0 +1,11 @@
+{
+  "conjecture": "Z-6",
+  "title": "DLA D_f approx 1.71 Minimum-Complexity FEP Attractor Discharge",
+  "date": "2026-08-01",
+  "status": "DISCHARGED",
+  "optimalDf": 1.71,
+  "theoreticalDf": 1.71,
+  "minimumFreeEnergy": -2.4241,
+  "absoluteError": 0,
+  "falsifierThresholdAbsoluteError": 0.05
+}
