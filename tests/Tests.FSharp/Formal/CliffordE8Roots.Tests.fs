@@ -105,3 +105,65 @@ let ``DST: the construction is deterministic — re-evaluating yields the identi
     let a = asSet CliffordE8Roots.roots
     let b = asSet CliffordE8Roots.roots
     a |> should equal b
+
+
+// ── L-E: the COXETER RELATIONS on the 8 simple reflections (work-item 081KYXCM1WK08QG0R003B9KVP4) ──
+// Soraya's route-(B) plan routes the group-presentation leg to exact-arithmetic property testing (NOT
+// Lean: W(E8) has 696,729,600 elements and Mathlib carries no concrete E8 root system). The Cartan/Gram
+// test above pins the simple system's ANGLES; this pins the GROUP RELATIONS those angles imply:
+//     s_i² = id            (every reflection is an involution)
+//     (s_i s_j)^m_ij = id  with m_ij = 3 on a Dynkin edge, 2 otherwise
+// Verified on all 240 roots in exact integers. Together with the closure test, this is the concrete,
+// independently-checkable content of "these reflections present W(E8)" — the full presentation
+// isomorphism itself stays a DOCUMENTED CONJECTURE (Mathlib gaps), per the work-item.
+
+/// Coxeter order m_ij read off the Gram matrix on our root·root = 4 scale: connected simple roots have
+/// inner product −2 (⇒ 120°, m = 3); orthogonal ones have 0 (⇒ 90°, m = 2).
+let private coxeterOrder (a: int[]) (b: int[]) : int =
+    match CliffordE8Roots.dot a b with
+    | 0 -> 2
+    | -2 -> 3
+    | d -> failwithf "unexpected simple-root inner product %d (expected 0 or -2)" d
+
+[<Fact>]
+let ``L-E: every simple reflection is an involution (s_i² = id on all 240 roots)`` () =
+    for a in CliffordE8Roots.simpleSystem do
+        for x in CliffordE8Roots.roots do
+            let twice = CliffordE8Roots.reflect a (CliffordE8Roots.reflect a x)
+            Assert.Equal<int list>(List.ofArray x, List.ofArray twice)
+
+[<Fact>]
+let ``L-E: the Coxeter relations (s_i s_j)^m = id hold for every simple pair (m = 3 on an edge, else 2)`` () =
+    let simples = CliffordE8Roots.simpleSystem |> List.toArray
+    for i in 0 .. simples.Length - 1 do
+        for j in i + 1 .. simples.Length - 1 do
+            let ai, aj = simples.[i], simples.[j]
+            let m = coxeterOrder ai aj
+            // (s_i ∘ s_j) applied m times must be the identity on every root
+            for x in CliffordE8Roots.roots do
+                let mutable cur = x
+                for _ in 1 .. m do
+                    cur <- CliffordE8Roots.reflect ai (CliffordE8Roots.reflect aj cur)
+                Assert.Equal<int list>(List.ofArray x, List.ofArray cur)
+
+[<Fact>]
+let ``L-E negative control: a WRONG Coxeter order does NOT give the identity (the test is not vacuous)`` () =
+    // If every power trivially returned x, the relations above would prove nothing. Exhibit a pair whose
+    // (s_i s_j)^k ≠ id for k one short of its true order — so the assertions above have real content.
+    let simples = CliffordE8Roots.simpleSystem |> List.toArray
+    let mutable foundWitness = false
+    for i in 0 .. simples.Length - 1 do
+        for j in i + 1 .. simples.Length - 1 do
+            let ai, aj = simples.[i], simples.[j]
+            let m = coxeterOrder ai aj
+            if m > 1 && not foundWitness then
+                // one application short of the full order should move SOME root
+                let moved =
+                    CliffordE8Roots.roots
+                    |> List.exists (fun x ->
+                        let mutable cur = x
+                        for _ in 1 .. m - 1 do
+                            cur <- CliffordE8Roots.reflect ai (CliffordE8Roots.reflect aj cur)
+                        List.ofArray cur <> List.ofArray x)
+                if moved then foundWitness <- true
+    Assert.True(foundWitness, "no pair moved a root below its Coxeter order — the relation tests would be vacuous")
