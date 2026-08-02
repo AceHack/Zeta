@@ -78,6 +78,23 @@ module TravelerFrame =
         b.Coords
         |> Map.forall (fun k vb -> (coord k a).Version >= vb.Version)
 
+    /// `a` and `b` are **concurrent** — spacelike / causally incomparable (`a ‖ b`): neither's
+    /// causal view contains the other's, i.e. **each has seen something the other has not** (a
+    /// genuine fork in the causal DAG). Because the partial order is `dominates`, for any two frames
+    /// EXACTLY ONE of the four cells of `(dominates a b, dominates b a) ∈ 𝔹²` holds — equal (mutual
+    /// dominance) · `a▷b` · `b▷a` · `a‖b` — and `concurrent` is that last cell. **Symmetric** and
+    /// **irreflexive** (a frame never forks itself, since it always dominates itself).
+    ///
+    /// This is the **sole legal gate for spacelike pair-selection** — e.g. the CHSH
+    /// interference-monitor may only fold a commit/message pair into a Bell correlation when the two
+    /// are `concurrent`, never when one is causally before the other (that would be a signaling
+    /// pair). Concurrency is decided by the **versionstamp partial order ONLY, never by wall-clock**:
+    /// two observers with different receive-times must classify the same pair identically
+    /// (`local-time-never-enters-the-shared-fold`). This is the distributed-systems reading of
+    /// spacelike separation — the light cone drawn by causality, not by any node's clock.
+    let concurrent (a: Frame) (b: Frame) : bool =
+        not (dominates a b) && not (dominates b a)
+
     /// The common frame of a set of travelers: fold `transform` from the origin. Because `transform`
     /// is a commutative/associative/idempotent join, this is the LUB and is **independent of the
     /// order** the frames are folded in — the relative-frame consistency law (proven in tests).

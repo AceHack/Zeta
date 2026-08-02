@@ -127,3 +127,64 @@ let ``two travelers converge to one common frame after exchanging views`` () =
     Assert.Equal(3L, (TF.coord "a" ab).Version)
     Assert.Equal(4L, (TF.coord "b" ab).Version)
     Assert.Equal(2L, (TF.coord "c" ab).Version)
+
+// ═══════════════════════════════════════════════════════════════════
+// concurrent — the SPACELIKE predicate (a ‖ b). The sole legal gate for spacelike pair-selection
+// (the CHSH interference-monitor). Concurrency by the versionstamp partial order ONLY, never
+// wall-clock (local-time-never-enters-the-shared-fold). These properties pin the four-cell
+// tetrachotomy of (dominates a b, dominates b a) and the genuine-fork semantics, so a wrong
+// definition (∧→∨, or a dropped conjunct) fails the suite.
+// ═══════════════════════════════════════════════════════════════════
+
+// Does some coordinate strictly favour `x` over `y`? (Over the union of keys; missing = ⊥.)
+let private aheadSomewhere (x: TF.Frame) (y: TF.Frame) =
+    let keys = Set.union (x.Coords |> Map.toSeq |> Seq.map fst |> Set.ofSeq)
+                         (y.Coords |> Map.toSeq |> Seq.map fst |> Set.ofSeq)
+    keys |> Set.exists (fun k -> (TF.coord k x).Version > (TF.coord k y).Version)
+
+[<Property(Arbitrary = [| typeof<FrameArb> |])>]
+let ``concurrent is symmetric`` (a: TF.Frame) (b: TF.Frame) =
+    TF.concurrent a b = TF.concurrent b a
+
+[<Property(Arbitrary = [| typeof<FrameArb> |])>]
+let ``concurrent is irreflexive — a frame never forks itself`` (f: TF.Frame) =
+    not (TF.concurrent f f)
+
+[<Property(Arbitrary = [| typeof<FrameArb> |])>]
+let ``if either dominates, the pair is NOT concurrent (exclusive with the order)`` (a: TF.Frame) (b: TF.Frame) =
+    if TF.dominates a b || TF.dominates b a then not (TF.concurrent a b) else true
+
+[<Property(Arbitrary = [| typeof<FrameArb> |])>]
+let ``EXACTLY ONE of {equal, a▷b, b▷a, concurrent} holds (tetrachotomy)`` (a: TF.Frame) (b: TF.Frame) =
+    let da = TF.dominates a b
+    let db = TF.dominates b a
+    let equal = da && db                 // mutual dominance = equal causal view
+    let aOnly = da && not db
+    let bOnly = db && not da
+    let conc = TF.concurrent a b
+    // exactly one true, and `concurrent` is the neither-dominates cell
+    ([ equal; aOnly; bOnly; conc ] |> List.filter id |> List.length) = 1
+    && conc = (not da && not db)
+
+[<Property(Arbitrary = [| typeof<FrameArb> |])>]
+let ``concurrent ⟺ genuine fork (each ahead somewhere) — semantics, independent of dominates`` (a: TF.Frame) (b: TF.Frame) =
+    TF.concurrent a b = (aheadSomewhere a b && aheadSomewhere b a)
+
+// ── concrete examples (documentation) ──
+
+[<Fact>]
+let ``a genuine fork is concurrent; a causal chain is not`` () =
+    let a = TF.origin |> TF.observe "x" (Versionstamp.ofInt64 3L)   // ahead on x
+    let b = TF.origin |> TF.observe "y" (Versionstamp.ofInt64 2L)   // ahead on y
+    Assert.True(TF.concurrent a b)                                  // fork ⇒ spacelike
+    let later = a |> TF.observe "y" (Versionstamp.ofInt64 5L)       // saw a, then y@5 ⇒ dominates b
+    Assert.True(TF.dominates later b)
+    Assert.False(TF.concurrent later b)                            // causal chain ⇒ NOT spacelike (signaling)
+
+[<Fact>]
+let ``origin is concurrent with nothing (bottom is below everything)`` () =
+    // ⊥ is dominated by every frame, so it is never a genuine fork with any frame — including itself.
+    Assert.False(TF.concurrent TF.origin TF.origin)
+    let f = TF.origin |> TF.observe "a" (Versionstamp.ofInt64 1L)
+    Assert.False(TF.concurrent TF.origin f)
+    Assert.False(TF.concurrent f TF.origin)

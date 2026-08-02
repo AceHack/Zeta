@@ -22,5 +22,14 @@ export const transform = (a: Frame, b: Frame): Frame => {
 export const dominates = (a: Frame, b: Frame): boolean =>
   Object.keys(b).every((k) => coord(a, k) >= b[k]!);
 
+/**
+ * `a` and `b` are concurrent (spacelike / causally incomparable): a ‖ b — neither dominates the
+ * other, i.e. each has seen something the other has not (a genuine fork). Exactly one of
+ * {equal, a▷b, b▷a, a‖b} holds for any pair; this is the last cell. Symmetric and irreflexive.
+ * The sole legal gate for spacelike pair-selection (e.g. the CHSH monitor): concurrency is decided
+ * by the vector-clock order ONLY, never wall-clock — two observers must classify a pair identically.
+ */
+export const concurrent = (a: Frame, b: Frame): boolean => !dominates(a, b) && !dominates(b, a);
+
 /** The common frame of a set: fold `transform` from the origin (the LUB). */
 export const converge = (frames: readonly Frame[]): Frame => frames.reduce(transform, {} as Frame);
