@@ -1,0 +1,71 @@
+/* zeta-state.css — the state DU, in ONE place.
+ *
+ * Iris's render spec §1.3, 2026-08-01. Hand-authored: `_ds_bundle.css` is generated output and
+ * must not be edited, so this sits beside it and is pulled in by `styles.css`. If the design
+ * tool ever regenerates `styles.css`, THIS IMPORT IS THE THING TO RESTORE.
+ *
+ * WHY IT EXISTS. The JSON carries no colour (contract change 3) — the state DU is the single
+ * source of truth for visual mapping, and duplicating it in the data would create two sources
+ * of truth for "what colour means", which drift silently. So every consuming element reads
+ * `var(--state)` and the mapping lives here, keyed by attribute. The case IS the attribute.
+ *
+ * DISAMBIGUATION, load-bearing: the BASE design language labels red as "attention / live". That
+ * "live" is the broadcast-recording sense (an on-air light), NOT this DU's `live`. Here `live`
+ * is TEAL and red is reserved exclusively for `heat`. Implementers get this wrong from the BASE
+ * table alone, so it is stated at the definition site.
+ */
+
+:root {
+  --state-live: #5EC8C2;      /* teal   — settled/active: producing on cadence            */
+  --state-stale: #E8B566;     /* amber  — aging past declared cadence; NOT an alarm       */
+  --state-cold: #46506B;      /* dim    — watched, nothing there                          */
+  --state-heat: #E0746A;      /* red    — active failures. red is ONLY ever heat          */
+  --state-withheld: #9A8CE6;  /* violet — NOT a status: the withheld register (see below) */
+
+  /* FAIL-SAFE DEFAULT. An element with no `data-state` reads cold, never live. Unknown must
+   * never render as alive — that is the property the whole contract exists to protect. */
+  --state: var(--state-cold);
+}
+
+[data-state="live"]  { --state: var(--state-live); }
+[data-state="stale"] { --state: var(--state-stale); }
+[data-state="cold"]  { --state: var(--state-cold); }
+[data-state="heat"]  { --state: var(--state-heat); }
+
+/* Declared LAST so it outranks status: an unobserved thing is violet whatever its nominal
+ * state, because "we did not measure" is a different claim from "we measured idle". */
+[data-observed="false"] { --state: var(--state-withheld); }
+
+/* ── The withheld register (§2.1) — three members, deliberately NOT merged ───────────────
+ * Violet all three, but the TREATMENT differs and the difference is the honesty:
+ *   hatch = "nothing was written here"   (no measurement exists / does not exist yet)
+ *   blur  = "something is here and you may not see it"  (present, earned, permanently withheld)
+ * Blur is ONLY frost. Never blur a placeholder — blur requires real content in the DOM, and
+ * blurring an absence would tell the reader a dweller is exercising privacy when the truth is
+ * that we have no measurement. That is presenting as more certain than the data, in the
+ * direction of attributing intent. */
+[data-withheld="unobserved"],
+[data-withheld="sealed"] {
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--state-withheld) 22%, transparent) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+[data-withheld="frost"] {
+  filter: blur(6px);
+  user-select: none;
+}
+
+/* ── Motion is reserved for `live` (§1.6) ────────────────────────────────────────────────
+ * A pulse is a CLAIM of liveness. It is emitted only under `live`, and the page's 60s re-tick
+ * must be able to remove it when the clock crosses the threshold — otherwise a tab left open
+ * at 09:00 still breathes at 17:00 and "a stopped society can never render live" is false in
+ * the only place anyone observes it. No motion on cold, heat, or anything withheld. */
+[data-state="live"] .zx-pulse { animation: zx-breathe 1.5s infinite; }
+
+[data-state="stale"] .zx-pulse,
+[data-state="cold"] .zx-pulse,
+[data-state="heat"] .zx-pulse,
+[data-observed="false"] .zx-pulse { animation: none; }
