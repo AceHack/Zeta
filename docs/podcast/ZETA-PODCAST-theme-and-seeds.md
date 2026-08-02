@@ -27,6 +27,30 @@ Two failure modes to guard every episode:
 - **Woo / numerology trap-zone** (E8-TOE / register-leak energy) — the register-labeling is the guard;
   entailment-check structural rhymes before promoting "rhymes with" to "is" (the maji≠Majid discipline).
 
+## Equal-weight corrections, not footnotes (staple; Aaron 2026-08-02)
+
+When the show is wrong on air, the correction is **not** a buried footnote/errata — it is **high-quality,
+production-and-reach-matched content made to fix the mistake**, because *the people who learned it wrong
+don't read the footnote.* This is the **retraction-must-match-the-emission** principle (Z-set / DBSP: a
+`+1` broadcast to N people is only cancelled by a `−1` that reaches the same N — a footnote is a `−1`
+that reaches 3, leaving the error live for N−3). It is also the *un-install* half of the
+prior-installer point: a wrong prior installed by vivid content can't be un-installed by a weak note —
+the correction must be at least as vivid and as far-reaching as the install.
+
+**Anchored, not just principled:** the **continued-influence effect** (Johnson & Seifert 1994;
+Lewandowsky et al.) — misinformation keeps shaping belief *after* correction, and weak corrections fail;
+effective debunking must be substantial, repeated, and supply an *alternative account* (the *Debunking
+Handbook*, Lewandowsky & Cook). Journalism's **"equal prominence"** corrections standard is the same
+instinct. Poorly-done corrections can even backfire (familiarity) — hence *high-quality*.
+
+**Triage (so it's affordable):** correction-weight ∝ **reach × consequence × the confidence it was
+stated with.** A minor aside gets a line; a confidently-taught wrong *model* that shaped beliefs gets a
+full equal-weight treatment. This is also the format's **credibility engine** — publicly, proportionally
+fixing your own errors is the strongest trust signal for a BS-detecting audience (*showing the seams*),
+and it operationalizes *un-discount the audience*: you respect them enough to re-reach them with the fix,
+not merely cover yourself. It is disconfirmation-as-fuel made public — the −1 turned on your own past
+episodes.
+
 ## Episode seeds (grow this list)
 
 1. **"Are all humans actually androids to their creator?"** (Aaron 2026-08-02) — the existential
