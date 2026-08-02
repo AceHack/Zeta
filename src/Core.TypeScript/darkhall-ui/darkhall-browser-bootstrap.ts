@@ -6,6 +6,7 @@ import {
   type BrowserDocumentVisibility,
   type BrowserLifecycleHost,
   type BrowserLifecycleHostOptions,
+  type BrowserReadoutSinkResult,
 } from "../browser-node/browser-lifecycle-host";
 import type { BrowserTabState } from "../browser-node/browser-node";
 import { createDarkHallBrowserTabSink, createNativeDarkHallRoomMount } from "./darkhall-browser-tab-sink";
@@ -41,6 +42,7 @@ export interface DarkHallBrowserRuntime {
   readonly schema: typeof DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA;
   readonly channelName: string;
   readonly host: BrowserLifecycleHost;
+  updateTranscript(transcript: RoomRunTranscript): BrowserReadoutSinkResult<null>;
 }
 
 function succeeded<T>(value: T): DarkHallBrowserBootstrapResult<T> {
@@ -126,5 +128,10 @@ export function startNativeDarkHallBrowser(
     );
   }
 
-  return succeeded({ schema: DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA, channelName, host: host.value });
+  return succeeded({
+    schema: DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA,
+    channelName,
+    host: host.value,
+    updateTranscript: (nextTranscript) => sink.updateTranscript(nextTranscript),
+  });
 }

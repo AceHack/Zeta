@@ -83,6 +83,17 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   tailscale:
     "mesh VPN client; on Windows, Tailscale installs natively via MSI/installer or winget (Tailscale.Tailscale).",
   agda: "cubical Agda proof lane is Unix-only for now (081KX1VE4G808QG0R003DCK3GV named debt, tlaps/Isabelle precedent); Windows disposition (choco agda / ghcup) deferred until the lane needs a Windows leg.",
+  // The multi-compiler WASM lane added these Unix packages in 1dd36bad2. Windows currently has no
+  // host-tier filter in manifests/windows, so forcing the large compiler stack into that base
+  // manifest would also force it into every constrained Windows installer smoke. Keep each
+  // disposition explicit until Windows gains the same tier=standard/full parser as Unix.
+  wabt: "WABT is available only in Scoop Extras, while install.ps1 intentionally bootstraps the Main bucket alone; Windows package-source expansion remains a separate installer decision.",
+  binaryen:
+    "WASM optimizer/compiler support is a full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
+  emscripten:
+    "Emscripten is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
+  llvm: "LLVM is a large full compiler-lane dependency; defer Windows installation until manifests/windows supports host tiers instead of forcing it onto every base host.",
+  zig: "Zig is already installed cross-platform by mise from .mise.toml; it does not belong in the Windows system-package manifest.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {

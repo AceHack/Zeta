@@ -1,32 +1,16 @@
 import {
-  startNativeDarkHallBrowser,
-  type DarkHallBrowserBootstrapFeedback,
-  type DarkHallBrowserRuntime,
-} from "../darkhall-ui/darkhall-browser-bootstrap";
-import {
-  BROWSER_CHECKPOINT_RECORD_SCHEMA,
-  openNativeIndexedDbCheckpointPort,
-  type BrowserCheckpointFeedback,
-  type BrowserCheckpointPort,
-  type BrowserCheckpointRecord,
-  type BrowserCheckpointResult,
-} from "./browser-indexeddb-checkpoint";
-import {
-  decodeBrowserRoomCheckpoint,
-  encodeBrowserRoomCheckpoint,
-  type BrowserRoomCheckpointFeedback,
-  type BrowserRoomCheckpointResult,
-  type DurableRoomRunTranscript,
-} from "./browser-room-checkpoint";
-import type { BrowserLifecycleHostReadout, BrowserLifecycleResult } from "./browser-lifecycle-host";
+  startNativeDurableDarkHallBrowser,
+  type DarkHallBrowserDurableFeedback,
+  type DarkHallBrowserDurableResult,
+  type DarkHallBrowserDurableRuntime,
+} from "../darkhall-ui/darkhall-browser-durable-runtime";
+import type { BrowserCheckpointRecord } from "./browser-indexeddb-checkpoint";
+import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { RoomRunTranscript } from "../darkhall-ui/darkhall-room";
 
 export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v3" as const;
 
-type BrowserMultitabFeedback =
-  | DarkHallBrowserBootstrapFeedback
-  | BrowserCheckpointFeedback
-  | BrowserRoomCheckpointFeedback;
+type BrowserMultitabFeedback = DarkHallBrowserDurableFeedback;
 
 export type BrowserMultitabFixtureReadout =
   | {
@@ -53,16 +37,14 @@ export interface BrowserMultitabCheckpointReadout {
   } | null;
 }
 
-export type BrowserMultitabFixtureStopResult =
-  | BrowserLifecycleResult<BrowserLifecycleHostReadout>
-  | { readonly ok: false; readonly feedback: BrowserMultitabFeedback };
+export type BrowserMultitabFixtureStopResult = DarkHallBrowserDurableResult<BrowserLifecycleHostReadout>;
 
-export type BrowserMultitabCheckpointResult<T> = BrowserCheckpointResult<T> | BrowserRoomCheckpointResult<T>;
+export type BrowserMultitabCheckpointResult<T> = DarkHallBrowserDurableResult<T>;
 
 export interface BrowserMultitabFixtureApi {
   read(): BrowserMultitabFixtureReadout;
   checkpoint(revision: number): Promise<BrowserMultitabCheckpointResult<BrowserCheckpointRecord>>;
-  removeCheckpoint(throughRevision: number): Promise<BrowserCheckpointResult<boolean>>;
+  removeCheckpoint(throughRevision: number): Promise<BrowserMultitabCheckpointResult<boolean>>;
   stop(): BrowserMultitabFixtureStopResult;
 }
 
@@ -137,34 +119,18 @@ function elementById(id: string): unknown {
   return Reflect.apply(getElementById, documentValue, [id]);
 }
 
-function read(
-  runtime: DarkHallBrowserRuntime,
-  recoveredRevision: number | null,
-  currentCheckpoint: BrowserCheckpointRecord | null,
-  currentTranscript: DurableRoomRunTranscript | null,
-): BrowserMultitabFixtureReadout {
-  const latestTick = currentTranscript?.ticks.reduce<number | null>(
-    (latest, tick) => (latest === null || tick.tick > latest ? tick.tick : latest),
-    null,
-  );
+function read(runtime: DarkHallBrowserDurableRuntime): BrowserMultitabFixtureReadout {
+  const current = runtime.read();
   return {
     ok: true,
     value: {
       schema: BROWSER_MULTITAB_FIXTURE_SCHEMA,
-      host: runtime.host.read(),
+      host: current.host,
       checkpoint: {
-        recoveredRevision,
-        currentRevision: currentCheckpoint?.revision ?? null,
-        payloadBytes: currentCheckpoint?.payload.byteLength ?? null,
-        room:
-          currentTranscript === null
-            ? null
-            : {
-                roomName: currentTranscript.roomName,
-                seed: currentTranscript.seed,
-                latestTick: latestTick ?? null,
-                continuationToken: currentTranscript.continuationReadout?.token ?? null,
-              },
+        recoveredRevision: current.recoveredRevision,
+        currentRevision: current.currentRevision,
+        payloadBytes: current.payloadBytes,
+        room: current.currentRevision === null ? null : current.room,
       },
     },
   };
@@ -172,117 +138,38 @@ function read(
 
 const mount = elementById("darkhall-room");
 const nodeId = queryParameter("node") ?? "llmtv-browser-smoke";
-const checkpointPortResult = await openNativeIndexedDbCheckpointPort(globalThis, {
+const started = await startNativeDurableDarkHallBrowser({
   databaseName: "zeta-browser-smoke",
   storeName: "node-checkpoints",
+  mount,
+  channelName: queryParameter("channel") ?? "zeta-darkhall-browser-smoke",
+  initialTranscript,
+  nodeId,
+  tabId: queryParameter("tab") ?? "tab-unknown",
+  initialSequence: Number(queryParameter("sequence") ?? "0"),
+  maxTrackedTabs: 8,
+  maxFeedback: 8,
+  capabilities: ["css", "javascript", "broadcast-channel", "indexed-db"],
 });
-const loaded = checkpointPortResult.ok ? await checkpointPortResult.value.load(nodeId) : checkpointPortResult;
-const decoded =
-  loaded.ok && loaded.value !== null
-    ? decodeBrowserRoomCheckpoint(loaded.value.payload)
-    : ({ ok: true, value: initialTranscript } as const);
-const started =
-  loaded.ok && decoded.ok
-    ? startNativeDarkHallBrowser({
-        mount,
-        channelName: queryParameter("channel") ?? "zeta-darkhall-browser-smoke",
-        transcript: decoded.value,
-        nodeId,
-        tabId: queryParameter("tab") ?? "tab-unknown",
-        initialSequence: Number(queryParameter("sequence") ?? "0"),
-        maxTrackedTabs: 8,
-        maxFeedback: 8,
-        capabilities: ["css", "javascript", "broadcast-channel", "indexed-db"],
-        checkpoint: loaded.value === null ? "none" : "durable",
-      })
-    : null;
-
-let startupFailure: BrowserMultitabFixtureFailure | null = null;
-if (!checkpointPortResult.ok) startupFailure = checkpointPortResult;
-else if (!loaded.ok) startupFailure = loaded;
-else if (!decoded.ok) startupFailure = decoded;
-else if (started === null) {
-  startupFailure = {
-    ok: false,
-    feedback: {
-      severity: "heat",
-      code: "checkpoint-store-closed",
-      detail: "The browser checkpoint fixture could not create its room runtime.",
-    },
-  };
-} else if (!started.ok) startupFailure = started;
-
-let currentCheckpoint = loaded.ok ? loaded.value : null;
-let currentTranscript: DurableRoomRunTranscript | null =
-  loaded.ok && loaded.value !== null && decoded.ok ? decoded.value : null;
-const recoveredRevision = currentCheckpoint?.revision ?? null;
-const checkpointPort: BrowserCheckpointPort | null = checkpointPortResult.ok ? checkpointPortResult.value : null;
 
 let api: BrowserMultitabFixtureApi;
-if (startupFailure !== null || started === null || !started.ok || checkpointPort === null) {
-  const failure: BrowserMultitabFixtureFailure = startupFailure ?? {
-    ok: false,
-    feedback: {
-      severity: "heat",
-      code: "checkpoint-store-closed",
-      detail: "The browser checkpoint fixture did not start.",
-    },
-  };
-  if (checkpointPort !== null) checkpointPort.close();
+if (!started.ok) {
+  const failure: BrowserMultitabFixtureFailure = started;
   api = {
     read: () => failure,
-    checkpoint: () =>
-      Promise.resolve({
-        ok: false,
-        feedback: {
-          severity: "heat",
-          code: "checkpoint-store-closed",
-          detail: "The browser checkpoint fixture did not start.",
-        },
-      }),
-    removeCheckpoint: () =>
-      Promise.resolve({
-        ok: false,
-        feedback: {
-          severity: "heat",
-          code: "checkpoint-store-closed",
-          detail: "The browser checkpoint fixture did not start.",
-        },
-      }),
+    checkpoint: () => Promise.resolve(failure),
+    removeCheckpoint: () => Promise.resolve(failure),
     stop: () => failure,
   };
 } else {
   const runtime = started.value;
   api = {
-    read: () => read(runtime, recoveredRevision, currentCheckpoint, currentTranscript),
-    checkpoint: async (revision) => {
-      const nextTranscript = transcriptAtRevision(revision);
-      const encoded = encodeBrowserRoomCheckpoint(nextTranscript);
-      if (!encoded.ok) return encoded;
-      const saved = await checkpointPort.save({
-        schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
-        nodeId,
-        revision,
-        payload: encoded.value,
-      });
-      if (saved.ok) {
-        currentCheckpoint = saved.value;
-        currentTranscript = nextTranscript;
-      }
-      return saved;
-    },
-    removeCheckpoint: async (throughRevision) => {
-      const removed = await checkpointPort.remove(nodeId, throughRevision);
-      if (removed.ok && removed.value) {
-        currentCheckpoint = null;
-        currentTranscript = null;
-      }
-      return removed;
-    },
+    read: () => read(runtime),
+    checkpoint: (revision) => runtime.checkpoint(revision, transcriptAtRevision(revision)),
+    removeCheckpoint: (throughRevision) => runtime.retract(throughRevision),
     stop: () => {
-      const stopped = runtime.host.stop();
-      const closed = checkpointPort.close();
-      return stopped.ok && !closed.ok ? closed : stopped;
+      const stopped = runtime.stop();
+      return stopped.ok ? { ok: true, value: stopped.value.host } : stopped;
     },
   };
 }

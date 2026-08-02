@@ -151,6 +151,13 @@ describe("native Dark Hall browser bootstrap", () => {
     });
     expect(root.listenerCount()).toBe(3);
 
+    expect(runtime.updateTranscript({ ...transcript, roomName: "advanced-room" })).toEqual({
+      ok: true,
+      value: null,
+    });
+    expect(mount.innerHTML).toContain('data-room="advanced-room"');
+    expect(mount.innerHTML).toContain('data-browser-local-state="background"');
+
     root.document.visibilityState = "visible";
     root.emit("visibilitychange");
     expect(runtime.host.read().state).toBe("foreground");

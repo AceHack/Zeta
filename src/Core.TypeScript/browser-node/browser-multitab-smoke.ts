@@ -1,8 +1,7 @@
 import { resolve } from "node:path";
 // @ts-ignore -- playwright is dynamically installed for browser smoke runner
 import { chromium, type Browser, type Page } from "playwright";
-import type { BrowserCheckpointFeedback } from "./browser-indexeddb-checkpoint";
-import type { BrowserRoomCheckpointFeedback } from "./browser-room-checkpoint";
+import type { DarkHallBrowserDurableFeedback } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 
@@ -76,14 +75,14 @@ export interface BrowserMultitabSmokeTranscript {
       readonly latestTick: number | null;
       readonly continuationToken: string | null;
     };
-    readonly staleWrite: BrowserCheckpointFeedback | BrowserRoomCheckpointFeedback;
+    readonly staleWrite: DarkHallBrowserDurableFeedback;
   };
   readonly stoppedPageA: BrowserLifecycleHostReadout;
   readonly afterRestart: {
     readonly pageC: BrowserMultitabPageObservation;
   };
   readonly retraction: {
-    readonly staleDelete: BrowserCheckpointFeedback;
+    readonly staleDelete: DarkHallBrowserDurableFeedback;
     readonly removed: boolean;
   };
   readonly afterRetraction: {

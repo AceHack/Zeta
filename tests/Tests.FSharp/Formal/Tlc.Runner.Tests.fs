@@ -7,6 +7,7 @@ module Zeta.Tests.Formal.TlcRunnerTests
 open System
 open System.Diagnostics
 open System.IO
+open System.Threading
 open FsUnit.Xunit
 open global.Xunit
 
@@ -63,6 +64,11 @@ let private tlaJarPath =
 
 
 let private specsPath = Path.Combine(repoRoot, "src", "Core.TLA", "specs")
+
+
+// F# module-level xUnit facts can still be scheduled concurrently despite the
+// collection annotation above. Keep the external JVM boundary serialized too.
+let private tlcProcessGate = new SemaphoreSlim(1, 1)
 
 
 let private which (exe: string) : string option =
@@ -122,21 +128,24 @@ let private toolchainReady () : bool =
 
 
 /// Runs TLC on a single spec. Returns `(exitCode, stdout)`.
-let private runTlc (specName: string) : int * string =
+let private runTlcUnlocked (specName: string) : int * string =
     // Assume java is on PATH. If it's not, the user sees a clear
     // ProcessStartInfo error.
     if not (File.Exists tlaJarPath) then
         failwithf "TLC jar not found at %s — run tools/setup/install.sh" tlaJarPath
     let tempDir = Path.Combine(Path.GetTempPath(), $"tlc_run_{specName}_{Guid.NewGuid().ToString()}")
+    let errorFilePath = Path.Combine(tempDir, "hs_err_pid%p.log")
     Directory.CreateDirectory(tempDir) |> ignore
     let psi = ProcessStartInfo()
     psi.FileName <- "java"
     psi.WorkingDirectory <- specsPath
-    // TLC recommends ParallelGC for model-checker throughput. On local
-    // macOS/aarch64 with OpenJDK 26, the default G1 collector has also
-    // crashed in G1 remset rebuild during tiny specs; pin the collector so a
-    // JVM GC crash does not masquerade as a failed formal model.
-    psi.ArgumentList.Add "-XX:+UseParallelGC"
+    // These test models are small. Bound each JVM and use the simplest
+    // collector: OpenJDK 26 on macOS/aarch64 has crashed in both G1 remset
+    // rebuild and ParallelGC promotion while running this suite.
+    psi.ArgumentList.Add "-Xms64m"
+    psi.ArgumentList.Add "-Xmx1g"
+    psi.ArgumentList.Add "-XX:+UseSerialGC"
+    psi.ArgumentList.Add $"-XX:ErrorFile={errorFilePath}"
     psi.ArgumentList.Add "-cp"
     psi.ArgumentList.Add tlaJarPath
     psi.ArgumentList.Add "tlc2.TLC"
@@ -162,6 +171,12 @@ let private runTlc (specName: string) : int * string =
     for f in Directory.GetFiles(specsPath,"MC*.tla") do
         try File.Delete f with _ -> ()
     p.ExitCode, stdout
+
+
+let private runTlc (specName: string) : int * string =
+    tlcProcessGate.Wait()
+    try runTlcUnlocked specName
+    finally tlcProcessGate.Release() |> ignore
 
 
 /// The smoke test — proves Java + tla2tools.jar + `.tla`/`.cfg`

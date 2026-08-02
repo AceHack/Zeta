@@ -36,6 +36,10 @@ export interface PreRegisteredExperimentResult {
   readonly seedResults: readonly QuantumDlaResult[];
 }
 
+export type QuantumDlaArtifactResult =
+  | { readonly ok: true; readonly path: string }
+  | { readonly ok: false; readonly detail: string };
+
 /**
  * Applies 4-state Grover/Hadamard coin operator to coin state vector [u, d, l, r].
  */
@@ -83,10 +87,7 @@ export function simulateQuantumDla(
       const wIdx = wy * gridSize + wx;
       if (gridClass[wIdx] === 0) {
         const nbrs =
-          gridClass[wIdx - 1]! +
-          gridClass[wIdx + 1]! +
-          gridClass[wIdx - gridSize]! +
-          gridClass[wIdx + gridSize]!;
+          gridClass[wIdx - 1]! + gridClass[wIdx + 1]! + gridClass[wIdx - gridSize]! + gridClass[wIdx + gridSize]!;
         if (nbrs > 0) {
           gridClass[wIdx] = 1;
           occupiedClass++;
@@ -149,10 +150,7 @@ export function simulateQuantumDla(
       const wIdx = wy * gridSize + wx;
       if (gridQuant[wIdx] === 0) {
         const nbrs =
-          gridQuant[wIdx - 1]! +
-          gridQuant[wIdx + 1]! +
-          gridQuant[wIdx - gridSize]! +
-          gridQuant[wIdx + gridSize]!;
+          gridQuant[wIdx - 1]! + gridQuant[wIdx + 1]! + gridQuant[wIdx - gridSize]! + gridQuant[wIdx + gridSize]!;
         if (nbrs > 0) {
           gridQuant[wIdx] = 1;
           occupiedQuant++;
@@ -187,7 +185,10 @@ export function simulateQuantumDla(
 /**
  * Runs full pre-registered experiment across 10 independent seeds.
  */
-export function runPreRegisteredQuantumExperiment(seedCount: number = 10): PreRegisteredExperimentResult {
+export function runPreRegisteredQuantumExperiment(
+  seedCount = 10,
+  timestamp = new Date().toISOString(),
+): PreRegisteredExperimentResult {
   const seedResults: QuantumDlaResult[] = [];
   for (let i = 0; i < seedCount; i++) {
     const seed = 101 + i;
@@ -203,7 +204,7 @@ export function runPreRegisteredQuantumExperiment(seedCount: number = 10): PreRe
     meanDeltaDf >= 0.08 ? "H1_CONFIRMED" : "H0_ACCEPTED_ZENODECAY";
 
   const resultData: PreRegisteredExperimentResult = {
-    timestamp: new Date().toISOString(),
+    timestamp,
     preRegistrationDoc: "docs/research/pre-registration-quantum-walk-dla.md",
     seedCount,
     meanQuantumDf,
@@ -214,26 +215,35 @@ export function runPreRegisteredQuantumExperiment(seedCount: number = 10): PreRe
     seedResults,
   };
 
-  const outputDir = path.join(__dirname, "../../../docs/research");
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  fs.writeFileSync(
-    path.join(outputDir, "quantum-walk-dla-results.json"),
-    JSON.stringify(resultData, null, 2),
-    "utf8",
-  );
-
   return resultData;
+}
+
+/** Persist an already-computed experiment without coupling calculation to repository I/O. */
+export function writePreRegisteredQuantumExperiment(
+  result: PreRegisteredExperimentResult,
+  outputDir: string,
+): QuantumDlaArtifactResult {
+  const outputPath = path.join(outputDir, "quantum-walk-dla-results.json");
+  try {
+    fs.mkdirSync(outputDir, { recursive: true });
+    fs.writeFileSync(outputPath, `${JSON.stringify(result, null, 2)}\n`, "utf8");
+    return { ok: true, path: outputPath };
+  } catch (error) {
+    return { ok: false, detail: `Quantum Walk DLA artifact write failed: ${String(error)}` };
+  }
 }
 
 if (import.meta.main) {
   const exp = runPreRegisteredQuantumExperiment();
+  const written = writePreRegisteredQuantumExperiment(exp, path.join(__dirname, "../../../docs/research"));
   console.log(`[Quantum Walk DLA Experiment Results]`);
   console.log(`  Pre-registration Doc: ${exp.preRegistrationDoc}`);
   console.log(`  Mean Quantum D_f:     ${exp.meanQuantumDf.toFixed(4)}`);
   console.log(`  Mean Classical D_f:   ${exp.meanClassicalDf.toFixed(4)}`);
   console.log(`  Mean Delta D_f:       ${exp.meanDeltaDf.toFixed(4)}`);
   console.log(`  Experimental Outcome: ${exp.outcome}`);
+  if (!written.ok) {
+    console.error(written.detail);
+    process.exitCode = 1;
+  }
 }

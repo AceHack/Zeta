@@ -22,6 +22,7 @@ IS the credibility** — Gen Z/Alpha have fine BS detectors and hate being preac
 the audience*: hand them the checkable operation and let them hold their own oracle.
 
 Two failure modes to guard every episode:
+
 - **Both-sides-ism** — "everyone's right" is as dishonest as "one side wins." Multi-oracle ≠
   all-claims-equal: the *mechanism* is fact for everyone; the *ontology* is offered, not asserted.
 - **Woo / numerology trap-zone** (E8-TOE / register-leak energy) — the register-labeling is the guard;

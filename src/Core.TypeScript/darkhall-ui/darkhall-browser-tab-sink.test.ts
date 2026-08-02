@@ -64,6 +64,31 @@ describe("Dark Hall browser tab sink", () => {
     expect(transcript.browserTabReadout).toBeUndefined();
   });
 
+  test("re-renders the latest browser observation when the room transcript advances", () => {
+    const writes: string[] = [];
+    const sink = createDarkHallBrowserTabSink(transcript, {
+      replace: (markup) => {
+        writes.push(markup);
+        return { ok: true, value: null };
+      },
+    });
+
+    expect(sink.updateTranscript({ ...transcript, roomName: "before-observation" })).toEqual({
+      ok: true,
+      value: null,
+    });
+    expect(writes).toHaveLength(0);
+
+    expect(sink.write(readout).ok).toBe(true);
+    expect(sink.updateTranscript({ ...transcript, roomName: "advanced-room" })).toEqual({
+      ok: true,
+      value: null,
+    });
+    expect(writes).toHaveLength(2);
+    expect(writes[1]).toContain('data-room="advanced-room"');
+    expect(writes[1]).toContain('data-browser-local-tab="tab-a"');
+  });
+
   test("adapts an innerHTML mount through a typed native edge", () => {
     const element = { innerHTML: "old" };
     const mounted = createNativeDarkHallRoomMount(element);

@@ -6,6 +6,10 @@ export interface DarkHallRoomMount {
   replace(markup: string): BrowserReadoutSinkResult<null>;
 }
 
+export interface DarkHallBrowserTabSink extends BrowserTabReadoutSink {
+  updateTranscript(transcript: RoomRunTranscript): BrowserReadoutSinkResult<null>;
+}
+
 function succeeded<T>(value: T): BrowserReadoutSinkResult<T> {
   return { ok: true, value };
 }
@@ -20,17 +24,29 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 /** Render each coordinator observation through the source-owned room transcript. */
 export function createDarkHallBrowserTabSink(
-  transcript: RoomRunTranscript,
+  initialTranscript: RoomRunTranscript,
   mount: DarkHallRoomMount,
-): BrowserTabReadoutSink {
+): DarkHallBrowserTabSink {
+  let transcript = initialTranscript;
+  let latestReadout: BrowserTabCoordinatorReadout | null = null;
+
+  const render = (readout: BrowserTabCoordinatorReadout): BrowserReadoutSinkResult<null> => {
+    try {
+      const markup = renderDarkHallRoomHtml({ ...transcript, browserTabReadout: readout });
+      return mount.replace(markup);
+    } catch {
+      return failed("The injected Dark Hall room mount threw while replacing markup.");
+    }
+  };
+
   return {
     write: (readout: BrowserTabCoordinatorReadout) => {
-      try {
-        const markup = renderDarkHallRoomHtml({ ...transcript, browserTabReadout: readout });
-        return mount.replace(markup);
-      } catch {
-        return failed("The injected Dark Hall room mount threw while replacing markup.");
-      }
+      latestReadout = readout;
+      return render(readout);
+    },
+    updateTranscript: (nextTranscript) => {
+      transcript = nextTranscript;
+      return latestReadout === null ? succeeded(null) : render(latestReadout);
     },
   };
 }

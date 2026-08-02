@@ -1,8 +1,12 @@
 import { describe, expect, it } from "bun:test";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   applyHadamardCoin,
   simulateQuantumDla,
   runPreRegisteredQuantumExperiment,
+  writePreRegisteredQuantumExperiment,
 } from "./quantum-walk-dla.ts";
 
 describe("Oracle 11: Quantum Walk DLA Simulator", () => {
@@ -23,9 +27,34 @@ describe("Oracle 11: Quantum Walk DLA Simulator", () => {
   });
 
   it("runs 10-seed pre-registered experiment and emits raw result JSON", () => {
-    const exp = runPreRegisteredQuantumExperiment(10);
-    expect(exp.seedCount).toBe(10);
-    expect(exp.seedResults.length).toBe(10);
-    expect(["H1_CONFIRMED", "H0_ACCEPTED_ZENODECAY"]).toContain(exp.outcome);
+    const outputDir = mkdtempSync(join(tmpdir(), "zeta-quantum-walk-dla-"));
+    try {
+      const exp = runPreRegisteredQuantumExperiment(10, "2026-08-02T00:00:00.000Z");
+      const written = writePreRegisteredQuantumExperiment(exp, outputDir);
+      expect(written.ok).toBe(true);
+      if (!written.ok) return;
+
+      expect(exp.seedCount).toBe(10);
+      expect(exp.seedResults.length).toBe(10);
+      expect(["H1_CONFIRMED", "H0_ACCEPTED_ZENODECAY"]).toContain(exp.outcome);
+      expect(JSON.parse(readFileSync(written.path, "utf8"))).toEqual(exp);
+    } finally {
+      rmSync(outputDir, { recursive: true, force: true });
+    }
+  });
+
+  it("reports artifact write failures as data", () => {
+    const outputDir = mkdtempSync(join(tmpdir(), "zeta-quantum-walk-dla-failure-"));
+    const blockedPath = join(outputDir, "not-a-directory");
+    try {
+      writeFileSync(blockedPath, "occupied", "utf8");
+      const exp = runPreRegisteredQuantumExperiment(1, "2026-08-02T00:00:00.000Z");
+      expect(writePreRegisteredQuantumExperiment(exp, blockedPath)).toMatchObject({
+        ok: false,
+        detail: expect.stringContaining("artifact write failed"),
+      });
+    } finally {
+      rmSync(outputDir, { recursive: true, force: true });
+    }
   });
 });

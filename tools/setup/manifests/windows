@@ -18,6 +18,11 @@
 #   git — scoop: git | winget: Git.Git | choco: git
 git    winget=Git.Git    choco=git
 
+# AssemblyScript runtime host (symmetric with apt `nodejs`). The browser-facing
+# runtime still prefers Bun; this line exists for compiler tooling that invokes
+# the `node` executable directly.
+nodejs    winget=OpenJS.NodeJS    choco=nodejs
+
 # USB/ISO QEMU acceptance substrate (B-0891). The Unix package split is
 # qemu-system-x86 + qemu-utils; Windows carries those binaries through qemu.
 qemu   winget=SoftwareFreedomConservancy.QEMU   choco=qemu
