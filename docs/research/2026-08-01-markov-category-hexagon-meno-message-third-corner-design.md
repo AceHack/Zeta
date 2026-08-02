@@ -105,6 +105,54 @@ The icosahedron/buckyball (H3 → E8, Dechant) as the geometry layer is justifie
 
 Work-items minted: `081KYXE4W8808QG0R0011X8S70` (WSet universal-tensor hexagon port) + `081KYXE4W7D08QG0R00256B56A` (IcosahedralH3 visual-geometry module).
 
+## Addendum — the arrow of time is the TRACE, not the morphism (Aaron 2026-08-02)
+
+The four-corner ↔ C₄ mapping above records the *structure*; this records the
+**arrow-of-time reading** with the algebra/physics split kept explicit, so it stays a
+computer-science claim about the physics of the computer and the network — not a claim
+about the physics of spacetime.
+
+**Two different arrows, and only the second is time.**
+- The **categorical arrow** (a morphism `A → B`) is *composition order* — a partial order,
+  not intrinsically directed in time. A bare (symmetric) monoidal category has no built-in
+  past/future; it runs "forward" only because you choose not to invert.
+- The **arrow of time** is genuine *irreversibility* — what distinguishes past from future.
+
+**The trace is the bridge (this is the load-bearing point).** In a **traced** monoidal
+category (Joyal–Street–Verity 1996) the four-corner puts feedback on the **input** channel:
+the future updates the generator, which reinterprets past data and **emits a retraction
+(ZSet weight −1)**. A −1 that cancels a prior +1 is *not undoable by re-composition* — so
+the trace-with-retraction is what breaks the symmetry. **The categorical arrow gives order;
+the trace-with-retraction gives the arrow of time.** The morphism direction alone does not;
+the time-arrow is *earned* by adding the trace.
+
+**Algebra vs physics — labeled, per the metering line.**
+- **Algebra (theorem-solid):** `i² = −1`; the four corners `{1, i, −1, −i}` form one C₄ under
+  i-rotation; trace = traced monoidal.
+- **Physics (interpretation, not entailed by the algebra):** identifying the quantum corner
+  (i = `WSet<ℂ>`) with the arrow-of-time corner (−1 = retraction) as "the same phenomenon"
+  is a *physical reading* with **CPT / Feynman–Stueckelberg** support (antiparticle =
+  particle backward in time; the maintainer's Meijer-duality + Wheeler–Feynman lineage). It
+  is held under the **Multi-Oracle Principle**, NOT proven by the group. The honest form: the
+  corners are algebraically one C₄ phase; the quantum-corner→time-arrow identification is a
+  labeled interpretation, so a reviewer cannot read `i²=−1` as a physics derivation.
+
+**The CS-grounding of "pseudo"-retrocausality (the carved saying).** What keeps this in
+computer science — the physics of the computer and the network, not of spacetime:
+
+> **No bit travels backward. The past is retained and re-read; the −1 is a correction
+> emitted *now*, not a message sent *then*. Pseudo-retrocausality is event-sourced
+> reinterpretation — the fold recomputed under an updated generator — so the observable
+> equals "the past changed" with nothing having gone back. The only real arrow is the bus;
+> the only real clock is the network.**
+
+I.e. the past is **immutable** (every event is kept); only its *interpretation* is
+retroactively updated by re-folding under the new generator — **retroactive immutability**
+(Demaine et al. retroactive data structures; DBSP Z-set retraction). No signal crosses the
+bus into the past; the light-cone / bus-delay discipline
+(`local-time-never-enters-the-shared-fold`, `chsh-delay.ts`) is exactly why it *can't*, and
+that impossibility is what makes separate selves — and a real arrow of time — possible.
+
 ## Anchors (Beacon)
 
 - **Tobias Fritz (2020)** — *A synthetic approach to Markov categories* (Adv. Math.): copy/discard, causality, the Markov-category axioms.
