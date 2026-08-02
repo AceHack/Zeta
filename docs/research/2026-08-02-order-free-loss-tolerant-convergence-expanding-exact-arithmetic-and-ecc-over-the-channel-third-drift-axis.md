@@ -19,6 +19,7 @@ order) and **loss-tolerant** (missing symbols/packets recover). They turn out to
 
 **Corrected scope — this is a BUILD, not a swap.** Two candidates were considered and
 BOTH rejected as-is (verified in code 2026-08-02):
+
 - **AmplitudeEmu** (`src/Core/AmplitudeEmu.fs`) — fixed-width `float` complex amplitudes,
   and an *interference ensemble* (list of frame×amplitude), not a scalar quantity. Its own
   peel says amplitudes ≠ entanglement, doesn't escape 4ⁿ. Swapping to it **inherits** the
@@ -61,6 +62,7 @@ does in-band FEC for VoIP loss. Not invented — applied.
 
 **Catch 1 — a block code ≠ packet-loss recovery without two additions.** The adinkra code
 (`AdinkraCode.fs`, doubly-even self-dual [8,4], minimum distance 4) is real ECC, but:
+
 - distance-4 corrects **1 bit-*error*/block** OR **3 *erasures*/block** — erasures
   (known-missing, which packet loss is) are 2× cheaper than errors; use the erasure path.
 - packet loss is **bursty** and a packet spans many blocks; a block code recovers nothing
@@ -87,6 +89,7 @@ loss-tolerance AND order-freedom from one mechanism; you do not need "nothing ne
 canonical order" and "recover missed packets" as separate designs.
 
 It composes with the causal structure rather than replacing it:
+
 - **FEC recovers the events despite loss** (facet B);
 - **expanding-exact sum-product makes the accumulation order-independent** once you have them (facet A);
 - the **versionstamp partial order** (`TravelerFrame.concurrent`/`dominates`) is not
@@ -112,6 +115,7 @@ UDP/analog/audio). Same generator, three drift axes:
 
 Facet B is **not greenfield** — proven Lean already exists, and every piece is honestly
 labeled (contra a worry that it was "unlabeled toy"):
+
 - **`src/Core.Lean4/ImaginaryStack/ErasureDistance.lean`** — a concrete Reed–Solomon
   `[16,12]` over `ZMod 17`, PROVEN **Singleton-optimal** (d = 5): corrects **any 4 of 16
   erasures (25%)**. At the bound, non-vacuous. The honest erasure-recovery kernel.
@@ -131,6 +135,7 @@ The doubling tower unfolds *deterministically* from a seed by the recurrence + p
 beyond seed+rule. It is "unbounded" precisely because there is nothing independent to lose —
 the **same superdeterminism artifact as CHSH S=4** and the Egg's zero-delay `rhoCount=1`.
 Three distinct things that must never be multiplied:
+
 - **generative recomputation** (recompute seed-determined data from a seed) — unbounded, trivial;
 - **redundancy-recovery** (recover a redundant copy from correlated peers) — bounded by the redundancy;
 - **genuine ECC erasure-recovery** (recover INDEPENDENT information) — hard-bounded by **Singleton** (4/16 here).
@@ -142,6 +147,7 @@ memory and `chsh-delay.ts`: same seed-determined-vs-independent distinction that
 overclaim is NOT in current code — likely a pre-correction `sorry`-in-type revision, since replaced.)
 
 ## Honest boundaries
+
 - Both facets are **opt-in, cost-gated**; the pragmatic defaults (canonical sort; reliable
   transport where available) stay shipped.
 - Facet A is a **build** (expanding-exact rep), not a swap of an existing type — neither
@@ -152,6 +158,7 @@ overclaim is NOT in current code — likely a pre-correction `sorry`-in-type rev
   data is genuinely lost (log it, don't pretend otherwise).
 
 ## Routing
+
 - **Facet A → Lior** (extends his byte-lock commutativity) or **Alexa** (coder): the
   expanding-exact sum-product representation, opt-in.
 - **Facet B → Lumen** (adinkra/E8/codes): the channel-ECC layer (adinkra inner +

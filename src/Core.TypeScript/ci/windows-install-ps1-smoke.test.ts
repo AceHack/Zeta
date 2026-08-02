@@ -37,8 +37,17 @@ test("container mode documents its skip (loop-task) — never silent", () => {
   expect(CONTAINER_SKIPS["loop-task"]).toMatch(/interactive session/);
 });
 
-test("shared commands are scoop, git, mise", () => {
-  expect([...SHARED_COMMANDS]).toEqual(["scoop", "git", "mise"]);
+test("shared commands include direct Bun after the installer returns", () => {
+  expect([...SHARED_COMMANDS]).toEqual(["scoop", "git", "mise", "bun"]);
+});
+
+test("Windows installer publishes mise runtime paths for later GitHub Actions steps", () => {
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
+  const installer = readFileSync(join(repoRoot, "tools", "setup", "install.ps1"), "utf8");
+  expect(installer).toContain("mise bin-paths --quiet");
+  expect(installer).toContain("Publish-ZetaRuntimePaths $runtimeBinPaths");
+  expect(installer).toContain("$env:GITHUB_PATH");
+  expect(installer).toContain("[System.IO.File]::AppendAllText");
 });
 
 test("agent CLI manifest parser keeps package id plus expected binary metadata", () => {
@@ -77,9 +86,7 @@ test("bun global package detection accepts scoped id or unscoped package name", 
 // Per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md: this asserts the positive.
 test("Windows .ps1 entrypoints are ASCII-only (PS 5.1 reads BOM-less .ps1 as ANSI, not UTF-8)", () => {
   const repoRoot = join(import.meta.dir, "..", "..", "..");
-  const files = [
-    join(repoRoot, "tools", "setup", "install.ps1"),
-  ];
+  const files = [join(repoRoot, "tools", "setup", "install.ps1")];
   for (const f of files) {
     const text = readFileSync(f, "utf8");
     const offenders = [...text]

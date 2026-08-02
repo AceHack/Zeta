@@ -74,8 +74,10 @@ COPY package.json C:/workspace/package.json
 # Empty (local runs without the env var) -> mise stays unauthenticated, identical to prior behavior.
 ARG MISE_GITHUB_TOKEN
 
-# Install graph + assert in ONE RUN so install.ps1's in-process PATH additions (scoop + mise
-# shims) carry to the smoke. -SkipLoopRegister: no interactive session in a container -> the
+# Install graph + assert in ONE RUN so install.ps1's in-process PATH additions carry to the smoke.
+# Calling bun DIRECTLY is intentional: it proves the installer publishes mise runtime bins instead
+# of requiring every later caller to know about `mise exec`. -SkipLoopRegister: no interactive
+# session in a container -> the
 # user-mode scheduled task isn't registered (desktop loop-smoke covers it). install.ps1 detects
 # the admin context (ContainerAdministrator) + passes -RunAsAdmin to the scoop bootstrap.
 # install.ps1 uses $ErrorActionPreference='Stop', so any install failure throws -> the build fails.
@@ -87,7 +89,7 @@ ARG MISE_GITHUB_TOKEN
 # 2026-05-31: install.ps1 succeeded end-to-end; the quoting bug + missing VC++ runtime were the
 # last blockers.)
 RUN & 'C:\workspace\tools\setup\install.ps1' -SkipLoopRegister; `
-    mise exec -- bun 'C:\workspace\src\Core.TypeScript\ci\windows-install-ps1-smoke.ts' --mode container; `
+    bun 'C:\workspace\src\Core.TypeScript\ci\windows-install-ps1-smoke.ts' --mode container; `
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 RUN Write-Host "Slice 2c — install.ps1 Server-Core Docker validation COMPLETE"

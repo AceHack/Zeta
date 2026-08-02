@@ -75,6 +75,7 @@ radar"); the formal half was re-grounded as immune-system math.
   asserted.
 
 ## Lineage / pointers
+
 - Origin: Aaron + Amara — "rainbow spectrum soul radar" (Mirror name).
 - `src/Core/CoordinationSpectrum.fs` (the prism) · `src/Core/AntiSybil.fs` (`chshS`, the sybil detector) · `src/Bayesian/BusRegime.fs` (the honest-ceiling / light-cone regime).
 - `docs/trajectories/aurora-immune-reground/RESUME.md` + `docs/research/2026-06-16-aurora-immune-math-reconciliation-*.md` + `docs/research/aurora-immune-math-standardization-2026-04-26.md` (Amara's Aurora immune math, formally re-grounded).

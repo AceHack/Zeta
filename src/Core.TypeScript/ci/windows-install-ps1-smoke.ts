@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// tools/ci/windows-install-ps1-smoke.ts
+// src/Core.TypeScript/ci/windows-install-ps1-smoke.ts
 //
 // Asserts the outcomes of tools/setup/install.ps1 on a Windows machine. Shared by two surfaces:
 //   --mode desktop   : full graph INCL. the ZetaOttoLoop scheduled task (the loop runs this on a
@@ -9,8 +9,8 @@
 //                      skip-with-reason, NEVER a silent green
 //                      (per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md).
 //
-//   bun tools/ci/windows-install-ps1-smoke.ts --mode desktop
-//   bun tools/ci/windows-install-ps1-smoke.ts --mode container
+//   bun src/Core.TypeScript/ci/windows-install-ps1-smoke.ts --mode desktop
+//   bun src/Core.TypeScript/ci/windows-install-ps1-smoke.ts --mode container
 //
 // Exit 0 = all checks passed; 1 = one or more FAILED; 2 = bad usage.
 import { execFileSync } from "node:child_process";
@@ -76,7 +76,7 @@ export function bunGlobalOutputContainsPackage(output: string, packageId: string
 }
 
 /** Pure: system-command checks that run in BOTH modes. */
-export const SHARED_COMMANDS = ["scoop", "git", "mise"] as const;
+export const SHARED_COMMANDS = ["scoop", "git", "mise", "bun"] as const;
 
 /** Pure: checks skipped in container mode — each with the reason printed (not silently dropped). */
 export const CONTAINER_SKIPS: Record<string, string> = {

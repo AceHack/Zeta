@@ -51,6 +51,43 @@ function Invoke-Tool {
   try { & $Cmd 2>&1 | ForEach-Object { Write-Host "$_" } } finally { $ErrorActionPreference = $prev }
   if ($LASTEXITCODE -ne 0) { throw "$What failed (exit $LASTEXITCODE)" }
 }
+# Capture native output with the same PowerShell 5.1 stderr discipline as Invoke-Tool. Used when
+# the output is data consumed by this script rather than progress intended for the console.
+function Get-ToolOutput {
+  param([Parameter(Mandatory)][scriptblock]$Cmd, [string]$What = 'native command')
+  $prev = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  try { $lines = @(& $Cmd 2>&1 | ForEach-Object { "$_" }) } finally { $ErrorActionPreference = $prev }
+  if ($LASTEXITCODE -ne 0) { throw "$What failed (exit $LASTEXITCODE)" }
+  return $lines
+}
+function Publish-ZetaRuntimePaths {
+  param([Parameter(Mandatory)][string[]]$Paths)
+
+  $entries = @($Paths | ForEach-Object { $_.Trim() } | Where-Object { $_ } | Select-Object -Unique)
+  if ($entries.Count -eq 0) { throw 'mise returned no active runtime bin paths after install' }
+
+  foreach ($entry in $entries) {
+    if (-not (Test-Path -LiteralPath $entry -PathType Container)) {
+      throw "mise runtime bin path does not exist: $entry"
+    }
+  }
+
+  $separator = [System.IO.Path]::PathSeparator
+  $current = @($env:PATH -split [regex]::Escape([string]$separator) | Where-Object { $_ })
+  $remaining = @($current | Where-Object { $entries -notcontains $_ })
+  $env:PATH = (@($entries) + $remaining) -join $separator
+
+  # GitHub Actions starts each run step in a new process. GITHUB_PATH is the supported channel
+  # for carrying these runtime directories into those later steps. UTF-8 without BOM works in
+  # Windows PowerShell 5.1 as well as pwsh 7.
+  if ($env:GITHUB_PATH) {
+    $utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
+    foreach ($entry in $entries) {
+      [System.IO.File]::AppendAllText($env:GITHUB_PATH, "$entry$([Environment]::NewLine)", $utf8NoBom)
+    }
+  }
+}
 # Best-effort native call: surface merged output, return the exit code, NEVER throw -- for GRACEFUL
 # steps that must not brick install (e.g. the local-LLM pull + `optional` manifest tools). Mirrors
 # mechanisms/from-ollama.sh's warn-and-continue discipline (exceptions-as-signals: best-effort substrate).
@@ -248,6 +285,9 @@ try {
   # python.github_attestations in .mise.toml (v2026.3.18+ only); env works everywhere.
   if (-not $env:MISE_PYTHON_GITHUB_ATTESTATIONS) { $env:MISE_PYTHON_GITHUB_ATTESTATIONS = '0' }
   Invoke-Tool { mise install --yes } 'mise install --yes'
+  $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet } 'mise bin-paths --quiet')
+  Publish-ZetaRuntimePaths $runtimeBinPaths
+  Write-Host "ok mise runtimes on PATH: $($runtimeBinPaths.Count) active bin path(s)"
 } finally { Pop-Location }
 
 # 5. agent + peer-AI CLIs via bun --global (bun provided by mise) -- identical manifest to Unix.
@@ -334,4 +374,4 @@ if (-not $SkipLoopRegister) {
 
 Write-Host ""
 Write-Host "=== Install complete ==="
-Write-Host "Open a new shell to pick up scoop + mise shims on PATH."
+Write-Host "Runtime paths are active now; open a new shell to pick up persistent scoop shims."

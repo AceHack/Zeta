@@ -79,6 +79,7 @@ it does NOT recover lost information — that is ECC (`ErasureDistance.lean`, Si
 Do not let "order-free arithmetic" get described as "loss recovery." (See the order-free handoff.)
 
 **Test discipline (sabotage-verified, the house style):**
+
 - **The proof it works:** the 100-permutation byte-lock property test passes **without** the
   canonical `.sort()` when `'W` is the middle-out float — identical result across all arrival
   orders. (Contrast: with IEEE-754 `'W` and no sort, it fails.)

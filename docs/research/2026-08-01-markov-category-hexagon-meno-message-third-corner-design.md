@@ -113,6 +113,7 @@ computer-science claim about the physics of the computer and the network — not
 about the physics of spacetime.
 
 **Two different arrows, and only the second is time.**
+
 - The **categorical arrow** (a morphism `A → B`) is *composition order* — a partial order,
   not intrinsically directed in time. A bare (symmetric) monoidal category has no built-in
   past/future; it runs "forward" only because you choose not to invert.
@@ -127,6 +128,7 @@ the trace-with-retraction gives the arrow of time.** The morphism direction alon
 the time-arrow is *earned* by adding the trace.
 
 **Algebra vs physics — labeled, per the metering line.**
+
 - **Algebra (theorem-solid):** `i² = −1`; the four corners `{1, i, −1, −i}` form one C₄ under
   i-rotation; trace = traced monoidal.
 - **Physics (interpretation, not entailed by the algebra):** identifying the quantum corner

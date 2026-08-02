@@ -60,6 +60,7 @@ entanglement. Loophole-free Bell testing is hard in real physics too (Hensen 201
 all three simultaneously only in 2015).
 
 ## Honest smaller caveats (already half-flagged in code)
+
 - The Hoeffding margin assumes per-round-independent λ; real commit streams may
   autocorrelate → the margin is optimistic under autocorrelation.
 - `min(RTT)/2` symmetric-path halving is wrong for asymmetric planetary geometry
@@ -68,7 +69,9 @@ all three simultaneously only in 2015).
 ## Anchors (Beacon)
 Bell 1964; Clauser–Horne–Shimony–Holt 1969; Tsirelson 1980; Aspect 1982; Toner–Bacon
 2003 (1 bit fakes super-quantum); Hensen et al. 2015 (loophole-free); Pironio et al. 2010
+
 + Hoeffding 1963 (finite-statistics DI margin). In-repo lineage:
+
 `docs/research/2026-06-12-gates-ecc-tsirelson-*`, the geo-superdeterminism doc.
 
 ## Cross-cutting principle

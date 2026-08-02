@@ -64,6 +64,7 @@ work). The transport design wants the upgrade **unobservable on the wire**. Thes
 appear to conflict.
 
 **Partial reconciliation (two orders, not one):**
+
 - *Wire, in-transit:* opaque. Defeats the network-level censor. (Transport property.)
 - *Ledger, at-rest:* transparent. The trust *outcome* is posted for everyone —
   anti-sybil, cartel detection, glass-halo. (The value.)
@@ -89,6 +90,7 @@ anti-sybil working in the common case; gives the endangered case an out.
 
 Whether this is right is exactly the "not everyone will like this" question. It is a
 **candidate**, flagged for review, not a ruling. Points needing an owner:
+
 - Does a frostable edge defeat anti-sybil (a cartel simply frosts all its internal
   edges)? Likely need: frosting an edge costs budget *and* is itself a visible fact
   ("this edge is frosted") even when its endpoints are hidden — so a cluster of
