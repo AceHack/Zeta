@@ -456,7 +456,13 @@ describe("silence is a corroborated FACT, not a confident measurement", () => {
     expect(soraya?.silent).toBe(true);
     // The load-bearing assertion. Zero here is a claim of perfect knowledge about an agent
     // we have not heard from at all.
-    expect(Math.abs(soraya?.epsilon ?? 0)).toBeGreaterThan(0);
+    //
+    // ASSERTED ON SIGN, NOT MAGNITUDE. `Math.abs` here was a could-not-fail assertion: the
+    // adapter's epsilon sign is the whole claim (the page turns it into ▲/▼ via `signedBar`),
+    // and an abs-wrapped test cannot see it move. Flipping the sign at the adapter left all
+    // 27 tests green. `-1` is the deliberate withheld sentinel, defended at
+    // vault-state-bridge.ts:309-321 — pin it, not its size.
+    expect(soraya?.epsilon).toBeLessThan(0);
   });
 
   test("a silent dweller is MORE uncertain than an observed one", () => {
@@ -473,8 +479,61 @@ describe("silence is a corroborated FACT, not a confident measurement", () => {
         ],
       }),
     );
+    // `abs` is legitimate HERE — this is a width claim, and width is a magnitude. But width
+    // alone was the only thing asserted, so the sign rode along untested. Both now.
     const silent = Math.abs(dwellerReputation(state, "soraya")?.epsilon ?? 0);
     const observed = Math.abs(dwellerReputation(state, "otto")?.epsilon ?? 1);
     expect(silent).toBeGreaterThan(observed);
+    expect(dwellerReputation(state, "soraya")?.epsilon).toBeLessThan(0);
+    // Deliberately NOT pinning otto's sign: it derives from the fixture's trend
+    // (vault-state-bridge.ts:353) and is not a property this test is about.
+  });
+
+  // ───────────────────────────────────────────────────────────────────────────────────────
+  // P2 — peer-independence. Peer count gates `silent` and NOTHING ELSE.
+  //
+  // Soraya 2026-08-02, formalised after the whitewash-floor routing:
+  //
+  //   ∀ agent a, ∀ own-evidence o, ∀ peer configs P, P':
+  //     R(o,P).value == R(o,P').value  ∧  sign(R(o,P).ε) == sign(R(o,P').ε)
+  //     -- `silent` MAY differ; it is the only peer-derived output.
+  //
+  // WHY IT IS A SECURITY PROPERTY, not a tidiness one: peer count is not the subject's own
+  // evidence, so letting it move `value`/`sign(ε)` makes the reputation non-monotone in
+  // absence — an agent improves its own reading by going dark in company. With a 3-agent
+  // roster that is a 2-of-3 coalition and requires no identity change, which makes it
+  // strictly cheaper than whitewashing.
+  //
+  // SCOPE: this pins the 0-vs-1 peer pair, which lands on ONE branch today and is therefore
+  // true both before and after the adapter fix — a fix-agnostic guard. The 1-vs-2 pair
+  // crosses the silent threshold and FAILS on current main; it ships with the adapter fix
+  // (Alexa's) so main never goes red. Do not add a sign assertion to the two `<2 peers`
+  // cases above — that cell is the defect, and pinning its sign would cement it.
+  // ───────────────────────────────────────────────────────────────────────────────────────
+  describe("P2: peer count may set `silent`, and may not touch value or epsilon's sign", () => {
+    /** Soraya with zero trailing-7d evidence, under a chosen number of active peers. */
+    function subjectUnderPeers(activePeers: 0 | 1): { value: number; epsilon: number } {
+      const state = buildVaultState(
+        input({
+          tickHistory: historyAged(5 * MIN),
+          events: [
+            event("otto", "commit", activePeers >= 1 ? NOW - 1 * HOUR : WEEK_OLD),
+            event("alexa", "commit", WEEK_OLD),
+            event("soraya", "commit", WEEK_OLD), // the subject: identical in both worlds
+          ],
+        }),
+      );
+      const r = dwellerReputation(state, "soraya");
+      return { value: r?.value ?? Number.NaN, epsilon: r?.epsilon ?? Number.NaN };
+    }
+
+    test("0 vs 1 active peer: identical own-evidence yields identical value", () => {
+      expect(subjectUnderPeers(0).value).toBe(subjectUnderPeers(1).value);
+    });
+
+    test("0 vs 1 active peer: identical own-evidence yields the same epsilon SIGN", () => {
+      // The assertion the abs-wrapped originals could not make.
+      expect(Math.sign(subjectUnderPeers(0).epsilon)).toBe(Math.sign(subjectUnderPeers(1).epsilon));
+    });
   });
 });
