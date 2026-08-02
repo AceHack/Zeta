@@ -325,7 +325,10 @@ function computeReputation(
       return { value: 0, epsilon: -1, silent: true, history: [0, 0, 0, 0, 0, 0, 0] };
     }
     // Not enough peers to declare silent — just very uncertain
-    return { value: 0.1, epsilon: 0.5, silent: false, history: [0, 0, 0, 0, 0, 0, 0] };
+    // Not enough peers to declare silent — but still very uncertain, and the
+    // uncertainty is DOWNSIDE (negative): zero ticks is not evidence of capability.
+    // The only reason this isn't silent:true is insufficient corroboration.
+    return { value: 0.1, epsilon: -0.5, silent: false, history: [0, 0, 0, 0, 0, 0, 0] };
   }
 
   // Split into recent (48h) and older (days 3-7)
