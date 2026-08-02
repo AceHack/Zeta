@@ -61,6 +61,8 @@ import {
 import type { AppendOutcome, EventSink } from "./execute";
 import type { NextAction } from "./observe";
 import type { EntropyTracker } from "../algebra/entropy-tracker";
+import type { PhaseClock, PhaseStamp } from "./phase-clock";
+import { stampPhase } from "./phase-clock";
 
 /**
  * Mint a WorkItem-category ZetaId as 32-hex — the observe-event identity.
@@ -97,10 +99,11 @@ export interface EntropySnapshot {
 /** The durable FACT: a recorded action with stable identity + actor + time. */
 export interface EventEnvelope {
   readonly id: string; // ZetaId hex — stable identity; the filename; G-Set dedup key
-  readonly at: string; // canonical ISO-8601 ms timestamp
+  readonly at: string; // canonical ISO-8601 ms timestamp (human readability — NOT the semantic time)
   readonly by: string; // acting agent id (the actor trail)
   readonly action: NextAction; // the chosen action this event records
   readonly entropy?: EntropySnapshot; // the thermodynamic accounting at this commit (absent = tracker not wired)
+  readonly phase?: PhaseStamp; // the semantic time coordinate (phase clock tick — the REAL time for multi-planet)
 }
 
 /** Outcome of committing the event file (sync; mirrors the bus's git pattern). */
@@ -119,6 +122,8 @@ export interface FolderSinkOptions {
   readonly commit?: (filePath: string, envelope: EventEnvelope) => CommitOutcome;
   /** Entropy tracker (injected effect). When present, each append stamps {entropy_state, entropy_heat}. */
   readonly entropy?: EntropyTracker;
+  /** Phase clock (injected — the 4th traveler). When present, each append ticks and stamps {phase, derived}. */
+  readonly phaseClock?: PhaseClock;
 }
 
 /**
@@ -314,6 +319,7 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
   const now = opts.now ?? (() => Date.now());
   const commit = opts.commit ?? gitCommitToMain;
   const entropy = opts.entropy;
+  const phaseClock = opts.phaseClock;
   return {
     append: (action: NextAction): Promise<AppendOutcome> => {
       // `ourFile` is set ONLY to a file WE created this append — so failure-cleanup removes our own
@@ -347,7 +353,11 @@ export function folderSink(opts: FolderSinkOptions): EventSink {
           };
         }
 
-        const envelope: EventEnvelope = { id, at, by: opts.by, action, ...(entropySnapshot ? { entropy: entropySnapshot } : {}) };
+        const envelope: EventEnvelope = {
+          id, at, by: opts.by, action,
+          ...(entropySnapshot ? { entropy: entropySnapshot } : {}),
+          ...(phaseClock ? { phase: (() => { phaseClock.tick("heartbeat"); return stampPhase(phaseClock); })() } : {}),
+        };
         const written = writeEventFile(envelope, opts.eventDir);
         if (!written.ok) return Promise.resolve({ ok: false, reason: written.reason });
         if (written.created) ourFile = written.path; // only OUR new file is ours to clean up

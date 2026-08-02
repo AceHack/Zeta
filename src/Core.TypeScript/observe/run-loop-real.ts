@@ -173,7 +173,12 @@ async function main(): Promise<number> {
   const localCommit = sinkMode === "local"
     ? (_filePath: string, _envelope: import("./event-sink-folder").EventEnvelope): import("./event-sink-folder").CommitOutcome => ({ ok: true })
     : undefined;
-  const sink = folderSink({ eventDir: args.eventDir, by: args.by, ...(localCommit ? { commit: localCommit } : {}) });
+
+  // The phase clock: time as a 4th traveler. Created BEFORE the sink so append IS tick.
+  // Each agent carries its own phase clock — no wall-clock needed for multi-planet.
+  const phaseClock: PhaseClock = createPhaseClock();
+
+  const sink = folderSink({ eventDir: args.eventDir, by: args.by, phaseClock, ...(localCommit ? { commit: localCommit } : {}) });
 
   // Wire the executor for do_item: codegen (Claude CLI) or port (claim-only).
   // ZETA_EXECUTOR=codegen enables autonomous code generation via the Claude CLI.
@@ -225,10 +230,8 @@ async function main(): Promise<number> {
   const result = await execute(enrichedWorld, action, sink, executor, doItemOpts, operatorPort);
 
   // 4. The unity: append IS tick IS measurement IS Landauer cost.
-  // The phase advances because we appended. The entropy was paid because we measured.
+  // The phase advanced during append. The entropy was paid during append.
   // The clock ticked because the event landed. These are not three things — they're one.
-  const phaseClock: PhaseClock = createPhaseClock();
-  phaseClock.tick("heartbeat");
   const phase = stampPhase(phaseClock);
   console.log(`[phase] tick ${phase.phase} (derived: ${phase.derived}) — append IS tick IS measurement`);
 
