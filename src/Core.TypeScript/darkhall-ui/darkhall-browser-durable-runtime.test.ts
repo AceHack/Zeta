@@ -139,17 +139,44 @@ function options(): DarkHallBrowserDurableOptions {
   };
 }
 
-function createStarter(updateFailure = false): {
+function createStarter(
+  updateFailure = false,
+  checkpointFailure = false,
+): {
   readonly start: DarkHallBrowserStarter;
   readonly starts: DarkHallBrowserBootstrapOptions[];
   readonly updates: RoomRunTranscript[];
+  readonly checkpointUpdates: string[];
   readonly runtime: DarkHallBrowserRuntime;
 } {
   const starts: DarkHallBrowserBootstrapOptions[] = [];
   const updates: RoomRunTranscript[] = [];
+  const checkpointUpdates: string[] = [];
   let stopped = false;
+  let checkpoint: "none" | "volatile" | "durable" = "none";
   const host: BrowserLifecycleHost = {
-    read: () => hostReadout(stopped),
+    read: () => ({
+      ...hostReadout(stopped),
+      coordinator: {
+        ...coordinatorReadout,
+        liveness: { ...coordinatorReadout.liveness, checkpoint },
+      },
+    }),
+    updateCheckpoint: (nextCheckpoint) => {
+      checkpointUpdates.push(nextCheckpoint);
+      if (checkpointFailure) {
+        return {
+          ok: false,
+          feedback: {
+            severity: "heat",
+            code: "coordinator-operation-failed",
+            detail: "injected checkpoint projection failure",
+          },
+        };
+      }
+      checkpoint = nextCheckpoint;
+      return { ok: true, value: host.read() };
+    },
     stop: () => {
       stopped = true;
       return { ok: true, value: hostReadout(true) };
@@ -167,9 +194,11 @@ function createStarter(updateFailure = false): {
   return {
     starts,
     updates,
+    checkpointUpdates,
     runtime,
     start: (startOptions) => {
       starts.push(startOptions);
+      checkpoint = startOptions.checkpoint;
       return { ok: true, value: runtime };
     },
   };
@@ -211,9 +240,11 @@ describe("durable Dark Hall browser runtime", () => {
     const saved = await started.value.checkpoint(2, advanced);
     expect(saved.ok).toBe(true);
     expect(starter.updates).toEqual([advanced]);
+    expect(starter.checkpointUpdates).toEqual(["durable"]);
     expect(started.value.read()).toMatchObject({
       recoveredRevision: null,
       currentRevision: 2,
+      host: { coordinator: { liveness: { checkpoint: "durable" } } },
       room: { roomName: "advanced-room", latestTick: 2 },
     });
 
@@ -221,7 +252,12 @@ describe("durable Dark Hall browser runtime", () => {
     expect(staleRetraction).toMatchObject({ ok: false, feedback: { code: "checkpoint-revision-conflict" } });
     expect(await started.value.retract(2)).toEqual({ ok: true, value: true });
     expect(starter.updates).toEqual([advanced, initialTranscript]);
-    expect(started.value.read()).toMatchObject({ currentRevision: null, room: { roomName: "browser-room" } });
+    expect(starter.checkpointUpdates).toEqual(["durable", "none"]);
+    expect(started.value.read()).toMatchObject({
+      currentRevision: null,
+      host: { coordinator: { liveness: { checkpoint: "none" } } },
+      room: { roomName: "browser-room" },
+    });
   });
 
   test("recovers the persisted transcript before the browser host starts", async () => {
@@ -315,6 +351,29 @@ describe("durable Dark Hall browser runtime", () => {
     expect(started.value.read()).toMatchObject({
       currentRevision: 3,
       room: { roomName: "persisted-before-render" },
+    });
+  });
+
+  test("keeps the committed revision when the checkpoint projection rejects the update", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter(false, true);
+    const started = await startDurableDarkHallBrowser(options(), port, starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    const advanced = { ...initialTranscript, roomName: "persisted-before-projection" };
+    const saved = await started.value.checkpoint(4, advanced);
+    expect(saved).toMatchObject({
+      ok: false,
+      feedback: { source: "browser-runtime", code: "coordinator-operation-failed" },
+    });
+    expect(port.record?.revision).toBe(4);
+    expect(starter.checkpointUpdates).toEqual(["durable"]);
+    expect(starter.updates).toEqual([advanced]);
+    expect(started.value.read()).toMatchObject({
+      currentRevision: 4,
+      host: { coordinator: { liveness: { checkpoint: "none" } } },
+      room: { roomName: "persisted-before-projection" },
     });
   });
 

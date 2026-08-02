@@ -212,6 +212,29 @@ describe("browser lifecycle host", () => {
     expect(tabSets).toEqual([["tab-a"], ["tab-a", "tab-b"]]);
   });
 
+  test("projects checkpoint changes through the lifecycle sink immediately", () => {
+    const lifecycle = new FakeLifecycle();
+    const channel = new FakeChannel();
+    const checkpoints: string[] = [];
+    const host = start(lifecycle, channel, {
+      write: (readout) => {
+        checkpoints.push(readout.liveness.checkpoint);
+        return { ok: true, value: null };
+      },
+    });
+
+    expect(host.updateCheckpoint("none")).toMatchObject({
+      ok: true,
+      value: { coordinator: { liveness: { checkpoint: "none" } } },
+    });
+    expect(checkpoints).toEqual(["durable", "none"]);
+    expect(host.stop().ok).toBe(true);
+    expect(host.updateCheckpoint("durable")).toMatchObject({
+      ok: false,
+      feedback: { code: "host-stopped" },
+    });
+  });
+
   test("backpressures rather than wrapping an exhausted sequence", () => {
     const lifecycle = new FakeLifecycle();
     const channel = new FakeChannel();

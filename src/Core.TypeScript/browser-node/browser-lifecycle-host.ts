@@ -6,7 +6,7 @@ import {
   type BrowserTabCoordinatorOptions,
   type BrowserTabCoordinatorReadout,
 } from "./browser-tab-coordinator";
-import type { BrowserTabState } from "./browser-node";
+import type { BrowserCheckpoint, BrowserTabState } from "./browser-node";
 
 export const BROWSER_LIFECYCLE_HOST_SCHEMA = "zeta.browser-lifecycle-host.v1" as const;
 
@@ -78,6 +78,7 @@ export interface BrowserLifecycleHostReadout {
 
 export interface BrowserLifecycleHost {
   read(): BrowserLifecycleHostReadout;
+  updateCheckpoint(checkpoint: BrowserCheckpoint): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
   stop(): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
 }
 
@@ -323,6 +324,16 @@ export function startBrowserLifecycleHost(
 
   const host: BrowserLifecycleHost = {
     read,
+    updateCheckpoint: (checkpoint) => {
+      if (stopped) return failed("host-stopped", "The browser lifecycle host has already stopped.");
+      const updated = coordinator.updateCheckpoint(checkpoint);
+      if (!updated.ok) {
+        const operationFailure = coordinatorFailure(updated.feedback);
+        record(operationFailure);
+        return { ok: false, feedback: operationFailure };
+      }
+      return succeeded(read());
+    },
     stop: () => {
       if (stopped) return failed("host-stopped", "The browser lifecycle host has already stopped.");
       const result = stopCoordinator();

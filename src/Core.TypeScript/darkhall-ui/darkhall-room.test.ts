@@ -277,6 +277,7 @@ describe("Dark Hall CSS room UI", () => {
     expect(html).toContain('data-browser-local-state="foreground"');
     expect(html).toContain('data-browser-availability="live"');
     expect(html).toContain('data-browser-continuity="multi-tab"');
+    expect(html).toContain('data-browser-checkpoint="durable"');
     expect(html).toContain('data-browser-alive="true"');
     expect(html).toContain('data-browser-feedback="1"');
     expect(html).toContain("--browser-tab-count:3");

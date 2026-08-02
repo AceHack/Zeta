@@ -60,6 +60,7 @@ describe("Dark Hall browser tab sink", () => {
     expect(writes[0]).toContain('data-browser-node="llmtv-room-a"');
     expect(writes[0]).toContain('data-browser-local-tab="tab-a"');
     expect(writes[0]).toContain('data-browser-continuity="multi-tab"');
+    expect(writes[0]).toContain('data-browser-checkpoint="durable"');
     expect(writes[0]).not.toContain("<script");
     expect(transcript.browserTabReadout).toBeUndefined();
   });

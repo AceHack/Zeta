@@ -14,6 +14,7 @@ import {
   type DurableRoomRunTranscript,
 } from "../browser-node/browser-room-checkpoint";
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
+import type { BrowserCheckpoint } from "../browser-node/browser-node";
 import {
   startNativeDarkHallBrowser,
   type DarkHallBrowserBootstrapFeedback,
@@ -313,6 +314,15 @@ export async function startDurableDarkHallBrowser(
     }
   };
 
+  const updateCheckpointReadout = (checkpoint: BrowserCheckpoint): DarkHallBrowserDurableResult<null> => {
+    try {
+      const updated = browserRuntime.host.updateCheckpoint(checkpoint);
+      return updated.ok ? succeeded(null) : failed("browser-runtime", updated.feedback);
+    } catch {
+      return thrown("browser-runtime", "browser-runtime-operation-threw", "updating checkpoint liveness");
+    }
+  };
+
   return succeeded({
     read,
     transcript: () => currentTranscript,
@@ -353,7 +363,9 @@ export async function startDurableDarkHallBrowser(
       const decoded = decodeBrowserRoomCheckpoint(verified.value.payload);
       if (!decoded.ok) return failed("room-checkpoint", decoded.feedback);
       currentTranscript = decoded.value;
+      const checkpointReadout = updateCheckpointReadout("durable");
       const rendered = updateRenderedTranscript(currentTranscript);
+      if (!checkpointReadout.ok) return checkpointReadout;
       return rendered.ok ? succeeded(verified.value) : rendered;
     },
     retract: async (throughRevision) => {
@@ -382,7 +394,9 @@ export async function startDurableDarkHallBrowser(
 
       currentRecord = null;
       currentTranscript = initial.value;
+      const checkpointReadout = updateCheckpointReadout("none");
       const rendered = updateRenderedTranscript(currentTranscript);
+      if (!checkpointReadout.ok) return checkpointReadout;
       return rendered.ok ? succeeded(true) : rendered;
     },
     stop: () => {

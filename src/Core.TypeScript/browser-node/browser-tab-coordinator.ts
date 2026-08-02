@@ -90,10 +90,13 @@ export interface BrowserTabCoordinator {
   read(): BrowserTabCoordinatorReadout;
   announce(sequence: number, state: BrowserTabState): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
   probe(sequence: number): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
+  /** Refresh this tab's projection after the checkpoint adapter commits. */
+  updateCheckpoint(checkpoint: BrowserCheckpoint): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
   stop(sequence: number): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
 }
 
 const TAB_STATES: ReadonlySet<string> = new Set(["foreground", "background", "suspended", "dark"]);
+const CHECKPOINTS: ReadonlySet<string> = new Set(["none", "volatile", "durable"]);
 
 function succeeded<T>(value: T): BrowserTabOperationResult<T> {
   return { ok: true, value };
@@ -189,6 +192,9 @@ function validateOptions(options: BrowserTabCoordinatorOptions): BrowserTabOpera
   if (!Number.isSafeInteger(options.maxTrackedTabs) || options.maxTrackedTabs < 1) {
     return failed("coordinator-configuration-invalid", "The tracked-tab capacity must be a positive safe integer.");
   }
+  if (!CHECKPOINTS.has(options.checkpoint)) {
+    return failed("coordinator-configuration-invalid", "The initial checkpoint state is invalid.");
+  }
   return succeeded(null);
 }
 
@@ -211,6 +217,7 @@ export function startBrowserTabCoordinator(
   };
   let tabs: readonly BrowserTabPresence[] = [initialPresence];
   let localPresence = initialPresence;
+  let checkpoint = options.checkpoint;
   let stopped = false;
   let observerFailure: BrowserTabCoordinatorFeedback | null = null;
 
@@ -218,7 +225,7 @@ export function startBrowserTabCoordinator(
     const node = planBrowserNode({
       capabilities: options.capabilities,
       tabs,
-      checkpoint: options.checkpoint,
+      checkpoint,
       bindings: [],
       requests: [],
     });
@@ -387,6 +394,17 @@ export function startBrowserTabCoordinator(
       }
       const published = publish(probeMessage(options.nodeId, options.tabId, sequence));
       if (!published.ok) return published;
+      const readout = project();
+      notify(readout);
+      return succeeded(readout);
+    },
+    updateCheckpoint: (nextCheckpoint) => {
+      const running = ensureRunning();
+      if (!running.ok) return running;
+      if (!CHECKPOINTS.has(nextCheckpoint)) {
+        return failed("coordinator-configuration-invalid", "The checkpoint state is invalid.");
+      }
+      checkpoint = nextCheckpoint;
       const readout = project();
       notify(readout);
       return succeeded(readout);

@@ -206,6 +206,33 @@ describe("browser tab coordinator", () => {
     expect(tabA.stop(2).ok).toBe(true);
   });
 
+  test("updates the local checkpoint projection without claiming a channel mutation", () => {
+    const bus = new FakeBus();
+    const readouts: BrowserTabCoordinatorReadout[] = [];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", (readout) => readouts.push(readout)),
+        bus.connect(),
+      ),
+    );
+
+    expect(tabA.updateCheckpoint("durable")).toMatchObject({
+      ok: true,
+      value: { liveness: { checkpoint: "durable" } },
+    });
+    expect(tabA.read().liveness.checkpoint).toBe("durable");
+    expect(readouts.at(-1)?.liveness.checkpoint).toBe("durable");
+    expect(tabA.updateCheckpoint("invalid" as never)).toMatchObject({
+      ok: false,
+      feedback: { code: "coordinator-configuration-invalid" },
+    });
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabA.updateCheckpoint("none")).toMatchObject({
+      ok: false,
+      feedback: { code: "coordinator-stopped" },
+    });
+  });
+
   test("reports malformed messages and local tab-id collisions as heat", () => {
     const bus = new FakeBus();
     const readouts: BrowserTabCoordinatorReadout[] = [];

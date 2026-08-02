@@ -157,6 +157,13 @@ describe("native Dark Hall browser bootstrap", () => {
     });
     expect(mount.innerHTML).toContain('data-room="advanced-room"');
     expect(mount.innerHTML).toContain('data-browser-local-state="background"');
+    expect(mount.innerHTML).toContain('data-browser-checkpoint="durable"');
+
+    expect(runtime.host.updateCheckpoint("none")).toMatchObject({
+      ok: true,
+      value: { coordinator: { liveness: { checkpoint: "none" } } },
+    });
+    expect(mount.innerHTML).toContain('data-browser-checkpoint="none"');
 
     root.document.visibilityState = "visible";
     root.emit("visibilitychange");
