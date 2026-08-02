@@ -19,7 +19,8 @@ session's `book/*` · `docs/*` · `feat/*`). Script: `scratchpad/run-meter-senso
 | window (200 commits) | total pairs | spacelike (concurrent) | timelike (ordered) | spacelike ratio |
 |---|---|---|---|---|
 | **main** (squash-linear) | 19,900 | **0** | 19,900 | **0.0000** |
-| **all refs** (concurrent branches) | 19,900 | **10,138** | 9,762 | **0.5094** |
+| **all refs** (last 200, `-n` truncated) | 19,900 | **10,138** | 9,762 | 0.5094 *(upper bound — see caveat)* |
+| **causally-closed** (branches above `main~300`, 407 commits, no truncation) | 82,621 | **19,294** | 63,327 | **0.2335** |
 
 ## Reading (register-2 facts)
 
@@ -28,18 +29,22 @@ session's `book/*` · `docs/*` · `feat/*`). Script: `scratchpad/run-meter-senso
   main alone.** This is not a null result; it is a *confirmation* of the "spacelike pairs only" premise
   (two-fours memory): you cannot measure decorrelation on a totally-ordered chain. You need the
   multi-writer graph.
-- **The multi-writer graph is ~51% concurrent.** Across all refs, ~half the commit pairs are spacelike —
+- **The multi-writer graph is genuinely concurrent (~23% truncation-free; 51% was the truncated upper bound).** Across the branches, a real fraction of commit pairs are spacelike —
   genuine causal concurrency from parallel branches (the fleet + this session's ~20 branches). *That* is
   where the meter has valid CHSH pairs to fuse.
 - The sensor works **end-to-end on real data** (parse → spacelike selection), our shipped code.
 
 ## Caveats (register-honest — do not overread the 0.51)
 
-- **Window truncation.** A bounded 200-commit walk cannot see ancestry *outside* the window, so an
-  edge pair whose connecting causal path exits the window can be mis-classified as concurrent. The
-  0.5094 is a **within-window upper bound**, not a whole-history truth — the un-enumerable side of the
-  finite-map / hunt-the-attractor boundary. A causally-closed window (a tag/date range that contains
-  whole branches) would tighten it.
+- **Window truncation — now RESOLVED with a real number.** A bounded `-n 200` walk can't see ancestry
+  *outside* the window, so an edge pair whose connecting path exits the window is mis-classified as
+  concurrent — making 0.5094 a **within-window upper bound**. The follow-up **causally-closed** window
+  (everything on local branches above the common floor `main~300`, 2026-07-31 — so no connecting commit
+  is cut off) gives the truncation-free figure: **0.2335**. As predicted, removing truncation dropped
+  the spacelike ratio (0.51 upper bound → **~0.23** truncation-free). The honest concurrency of the
+  multi-writer graph is ~23%, not ~51%; the 0.51 was the artifact the caveat warned about. (Whole-history
+  remains the un-enumerable side of the finite-map / hunt-the-attractor boundary; this window is
+  causally-closed *above main~300*, which is enough for these branches.)
 - **Fusion (S) not run.** There are no per-commit probe streams — the deliberately-unhardcoded
   register-3 piece. This is the **metrology / sensor** output only, never a decorrelation-S number; the
   missing piece for a real S is a **principled per-commit probe** (the register-3 frontier — forcing a
