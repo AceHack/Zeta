@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+// @ts-ignore -- playwright is dynamically installed for browser smoke runner
 import { chromium, type Browser, type Page } from "playwright";
 import type { BrowserCheckpointFeedback } from "./browser-indexeddb-checkpoint";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";

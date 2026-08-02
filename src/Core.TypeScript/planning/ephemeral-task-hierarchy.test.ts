@@ -151,6 +151,12 @@ describe("INVARIANT 1 — maximin, not mean", () => {
     const after = [peer("a", ["x", "y"]), peer("b", ["x"])];
     expect(noPeerDisempowered(before, after)).toBe(false);
   });
+
+  it("NEGATIVE CONTROL 2: rejects disempowerment if a peer is completely missing/removed in after", () => {
+    const before = [peer("a", ["x", "y"]), peer("b", ["x", "y"])];
+    const after = [peer("a", ["x", "y"])]; // "b" is missing!
+    expect(noPeerDisempowered(before, after)).toBe(false);
+  });
 });
 
 describe("INVARIANT 2 — a hat may accumulate, but nothing it accumulates may flow to its wearer", () => {

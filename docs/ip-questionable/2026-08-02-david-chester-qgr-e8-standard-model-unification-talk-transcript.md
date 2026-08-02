@@ -21,6 +21,7 @@ This talk is squarely *inside* the trap-zone he is avoiding, so the value is in 
 **checked anchors** while leaving its **unproven TOE claims** alone.
 
 **Chester is the MOST honest of the E8-physics crowd** (worth saying plainly):
+
 - He **explicitly critiques Garrett Lisi's 2007 paper** and names its real flaws — no chiral
   fermions identified, no explanation of three generations, it cites `spin(15,1)` which is *not
   in E8*, and it claims a "super-connection" without a super-algebra (E8 is not one). Naming the
@@ -32,6 +33,7 @@ This talk is squarely *inside* the trap-zone he is avoiding, so the value is in 
   trick," "worth studying in future work." That labeling is the honest register.
 
 **The genuinely rigorous anchors (mine these; they need no TOE claim):**
+
 - E8 as Lie group (248-dim) / algebra (248 generators) / root system (240 roots, 8D) / lattice.
 - **Freudenthal–Tits magic square** (1960s) — octonions ↔ exceptional Lie groups (G2, F4, E6, E7, E8). Real, published.
 - Octonion ↔ E8 ↔ Clifford (Cl(16)) relationships; Rosenfeld projective planes.
@@ -40,6 +42,7 @@ This talk is squarely *inside* the trap-zone he is avoiding, so the value is in 
 - Gauge-gravity: Einstein–Cartan, **MacDowell–Mansouri** (1977), conformal/superconformal gravity (Kaku et al. 1977).
 
 **The UNPROVEN claims (leave these; this is where the numerology risk lives):**
+
 - The whole SM **+ gravity from a single 248 rep of E8** — the *dream*, not achieved (Chester
   splits a "strict" 248-off-shell-dof version he calls "hard to pull off" from a "looser"
   gauge-a-subalgebra-treat-rest-as-scalar version).
@@ -62,6 +65,7 @@ This talk is squarely *inside* the trap-zone he is avoiding, so the value is in 
 recovery). Zeta's use stays **Beacon-honest precisely because it uses E8 as an error-correcting
 code / generator for the *computational* substrate — never as a claim about fundamental physics,
 the Standard Model, three generations, or gravity.** The line is bright:
+
 - **Same E8 math, honest use:** checked, byte-locked, executable, coding/generation. (Ours.)
 - **Same E8 math, trap use:** aspirational unproven TOE for particle physics. (Theirs.)
 

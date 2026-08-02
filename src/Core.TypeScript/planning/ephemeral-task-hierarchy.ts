@@ -251,10 +251,10 @@ export function noPeerDisempowered(
   before: readonly TravelerPeer[],
   after: readonly TravelerPeer[],
 ): boolean {
-  const beforeByZid = new Map(before.map((p) => [p.zid, p.availableActions.length]));
-  for (const p of after) {
-    const was = beforeByZid.get(p.zid);
-    if (was !== undefined && p.availableActions.length < was) return false;
+  const afterByZid = new Map(after.map((p) => [p.zid, p.availableActions.length]));
+  for (const p of before) {
+    const now = afterByZid.get(p.zid);
+    if (now === undefined || now < p.availableActions.length) return false;
   }
   return computeEmpowermentFloor(after) >= computeEmpowermentFloor(before);
 }
