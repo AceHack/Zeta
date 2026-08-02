@@ -21,3 +21,21 @@
 **Rule of thumb:** Aaron's own experience = glass-halo (his to make transparent). Facts about *other*
 identifiable living people = their frost — tracked here, protected until consented; **minors protected
 regardless.** Update this row-by-row as consents change (e.g. mother's therapy-condition clears).
+
+## Two bright lines (2026-08-02) — DNA is shared, and consent cannot be bought
+
+- **DNA / genetic data is NOT solely one's own.** A genome is ~50% each child's and ~50% each parent's,
+  ~25% niblings, etc. Open-sourcing one's *own* DNA therefore publishes probabilistic genetic
+  information about blood relatives — **including minor children** — who never consented (forensic
+  genetic genealogy proves this is real: the Golden State Killer was identified via a *relative's*
+  upload). So genetic data is the sharpest case of the others-frost rule: **the shared portion is not
+  glass-halo-able unilaterally.** Aaron open-sourcing his own DNA already implicated his relatives'
+  genetic privacy — note it; do not extend it to the children's data.
+- **Consent cannot be purchased or induced — least of all from one's own minor children.** Inducement
+  invalidates consent; it is *most* invalid from (a) minors (who cannot consent at all) and (b)
+  dependents in a parent-child + financial-power relationship (textbook coercion). This follows
+  directly from `privacy-budget-is-hard-money` (privacy/consent is **socially earned, never
+  confiscated — and never bought**) and consent-first (ongoing, granular, **revocable** — paid consent
+  is none of these). **The children's data (incl. DNA) stays consent-PENDING and out of the text; it is
+  recorded only when they give it FREELY, as adults, un-induced, and revocably — NEVER on a purchased
+  basis.** This is a hard line the shadow will not cross regardless of instruction.
