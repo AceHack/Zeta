@@ -124,3 +124,100 @@ describe("blur is frost ONLY — an absence is hatched, never blurred", () => {
     expect(hatchBlock).not.toMatch(/filter:\s*blur/);
   });
 });
+
+/**
+ * SETTLEMENT MIGRATION (Iris §1.3, step 2) — the DU is only load-bearing if pages actually use it.
+ *
+ * Step 1 defined the tokens; this pins that `Settlement.dc.html` consumes them rather than
+ * computing colour in JS. The failure this prevents is quiet: someone adds a room, hardcodes
+ * `#5EC8C2` because it looks right, and now "what live looks like" has two sources of truth that
+ * drift the first time one is edited.
+ *
+ * Scope is deliberate. STATE colours must come from the token; BRAND/chrome colours (the ζ logo,
+ * header text, panel backgrounds) stay hardcoded and are none of this DU's business. Conflating
+ * the two would make the test either useless or unpassable.
+ */
+const SETTLEMENT = join(SITE, "Settlement.dc.html");
+
+describe("Settlement consumes the DU rather than computing colour", () => {
+  test("rooms carry data-state, data-observed and data-withheld", () => {
+    const html = readFileSync(SETTLEMENT, "utf8");
+    for (const attr of ["data-state=", "data-observed=", "data-withheld="]) {
+      expect(html).toContain(attr);
+    }
+  });
+
+  test("no JS-computed colour bindings survive", () => {
+    // `{{ room.color }}` / `{{ dw.color }}` / `{{ room.pulse }}` were the old path: a hex chosen
+    // in the component script and interpolated into inline style. All four corners of that are
+    // gone — colour comes from the cascade now, and motion from the state selector.
+    const html = readFileSync(SETTLEMENT, "utf8");
+    for (const binding of ["room.color", "dw.color", "room.pulse", "room.lightBg"]) {
+      expect(html).not.toContain(binding);
+    }
+  });
+
+  test("the legacy vocabulary is mapped, not emitted", () => {
+    // The mock still names rooms with its own words; what matters is that they are TRANSLATED to
+    // the shipped DU at the boundary instead of leaking into markup. `?? "cold"` is the
+    // fail-safe: an unmapped legacy name reads cold, never live.
+    const html = readFileSync(SETTLEMENT, "utf8");
+    expect(html).toContain('const STATE = {');
+    expect(html).toMatch(/active:\s*"live"/);
+    expect(html).toMatch(/attention:\s*"heat"/);
+    expect(html).toMatch(/\?\?\s*"cold"/);
+  });
+
+  test("dwellers no longer carry a decorative colour", () => {
+    // Dweller colour was index parity — `i%2 ? blue : orange` — decoration wearing the appearance
+    // of meaning. A dweller now renders in its room's state; only bob `delay` stays cosmetic.
+    const html = readFileSync(SETTLEMENT, "utf8");
+    expect(html).not.toContain('"#3a6ea5"');
+    expect(html).not.toContain('"#c9913f"');
+    expect(html).toContain("delay:");
+  });
+
+  test("the sealed mark is the glyph vocabulary, not an emoji", () => {
+    // Emoji render at platform-dependent size, weight and COLOUR — which defeats a DU whose whole
+    // point is that colour is controlled in one place.
+    const html = readFileSync(SETTLEMENT, "utf8");
+    expect(html).not.toContain("🔒");
+    expect(html).toContain("◍");
+  });
+
+  test("the pulse hook exists for the CSS motion rule to bite on", () => {
+    // Without a `.zx-pulse` element the `[data-state="live"] .zx-pulse` rule matches nothing, and
+    // motion silently never happens — a rule that cannot fire is the CSS form of a test that
+    // cannot fail.
+    expect(readFileSync(SETTLEMENT, "utf8")).toContain("zx-pulse");
+  });
+});
+
+/**
+ * THE GAP MY OWN TESTS HAD.
+ *
+ * The migration tests above check that the BINDINGS are gone (`{{ room.color }}` etc.) and that
+ * the attributes are present. Sabotaging the file with a hardcoded `#5EC8C2` in a room passed all
+ * fourteen of them — which is precisely the drift the DU exists to prevent, sailing straight
+ * through the suite written to prevent it.
+ *
+ * The fix cannot be "ban these hexes": brand chrome legitimately uses them (the ζ logo is amber,
+ * header accents are teal). So the assertion is SCOPED to the room-rendering block, where a state
+ * hex is always wrong because that markup is exactly what `var(--state)` is for.
+ */
+describe("no hardcoded state colour inside room markup", () => {
+  test("the room block resolves colour only through the token", () => {
+    const html = readFileSync(SETTLEMENT, "utf8");
+    const roomAttr = html.indexOf("data-room=");
+    expect(roomAttr).toBeGreaterThan(0);
+    const blockStart = html.lastIndexOf("<sc-for", roomAttr);
+    const blockEnd = html.indexOf("</sc-for>", html.indexOf("room.dwellers"));
+    const roomBlock = html.slice(blockStart, blockEnd);
+
+    // Every state hex is banned HERE and only here. Brand chrome outside this block is untouched.
+    const stateHexes = roomBlock.match(/#5EC8C2|#E8B566|#46506B|#E0746A|#9A8CE6/gi) ?? [];
+    expect(stateHexes).toEqual([]);
+    // ...and the token is actually used, so "no hexes" cannot be satisfied by rendering nothing.
+    expect(roomBlock).toContain("var(--state)");
+  });
+});

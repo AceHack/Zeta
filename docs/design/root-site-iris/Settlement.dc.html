@@ -73,23 +73,23 @@
           <sc-for list="{{ floors }}" as="floor" hint-placeholder-count="4">
             <div style="display:flex;min-height:150px;border-top:3px solid #4a3e30">
               <sc-for list="{{ floor.rooms }}" as="room" hint-placeholder-count="2">
-                <a href="{{ room.href }}" data-room="{{ room.id }}" style="{{ room.style }}" style-hover="filter:brightness(1.22)">
-                  <div style="position:absolute;top:0;left:0;right:0;height:72%;pointer-events:none;background:{{ room.lightBg }};opacity:.42"></div>
+                <a href="{{ room.href }}" data-room="{{ room.id }}" data-state="{{ room.state }}" data-observed="{{ room.observed }}" data-withheld="{{ room.withheld }}" style="{{ room.style }}" style-hover="filter:brightness(1.22)">
+                  <div style="position:absolute;top:0;left:0;right:0;height:72%;pointer-events:none;background:radial-gradient(130px 96px at 50% -14px,var(--state),transparent 70%);opacity:.42"></div>
                   <div style="position:absolute;top:9px;left:9px;display:flex;align-items:center;gap:6px;z-index:3;background:rgba(10,7,5,.72);border:1px solid #4a3e30;border-radius:6px;padding:4px 8px">
-                    <span style="width:7px;height:7px;border-radius:50%;background:{{ room.color }};display:inline-block"></span>
+                    <span style="width:7px;height:7px;border-radius:50%;background:var(--state);display:inline-block"></span>
                     <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px">{{ room.name }}</span>
                   </div>
                   <sc-if value="{{ room.sealed }}" hint-placeholder-val="{{ false }}">
-                    <span style="position:absolute;top:10px;right:11px;z-index:3;font-family:'Space Mono',monospace;font-size:11px;color:#9A8CE6">🔒</span>
-                    <div style="position:absolute;left:0;right:0;bottom:36px;text-align:center;z-index:2;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#9A8CE6">Sealed · Phase 2</div>
+                    <span style="position:absolute;top:10px;right:11px;z-index:3;font-family:'Space Mono',monospace;font-size:11px;color:var(--state)">◍</span>
+                    <div style="position:absolute;left:0;right:0;bottom:36px;text-align:center;z-index:2;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--state)">Sealed · Phase 2</div>
                   </sc-if>
                   <sc-if value="{{ room.open }}" hint-placeholder-val="{{ true }}">
-                    <span style="position:absolute;top:11px;right:11px;width:9px;height:9px;border-radius:50%;z-index:3;background:{{ room.color }};box-shadow:0 0 8px 1px {{ room.color }};animation:{{ room.pulse }}"></span>
+                    <span class="zx-pulse" style="position:absolute;top:11px;right:11px;width:9px;height:9px;border-radius:50%;z-index:3;background:var(--state);box-shadow:0 0 8px 1px var(--state);animation:none"></span>
                     <div style="position:absolute;left:0;right:0;bottom:28px;height:46px;display:flex;align-items:flex-end;gap:11px;padding-left:18px;z-index:2">
                       <sc-for list="{{ room.dwellers }}" as="dw" hint-placeholder-count="2">
                         <div style="width:13px;height:30px;animation:zx-bob 2.4s ease-in-out infinite;animation-delay:{{ dw.delay }}">
                           <div style="width:9px;height:9px;border-radius:50%;background:#e8c9a0;margin:0 auto;border:1px solid rgba(0,0,0,.2)"></div>
-                          <div style="width:13px;height:20px;border-radius:5px 5px 3px 3px;margin-top:-1px;border:1px solid rgba(0,0,0,.3);background:{{ dw.color }}"></div>
+                          <div style="width:13px;height:20px;border-radius:5px 5px 3px 3px;margin-top:-1px;border:1px solid rgba(0,0,0,.3);background:var(--state)"></div>
                         </div>
                       </sc-for>
                     </div>
@@ -122,18 +122,25 @@ class Component extends DCLogic {
   renderVals() {
     const roomBase = "flex:1;position:relative;cursor:pointer;overflow:hidden;border-right:3px solid #4a3e30;background:linear-gradient(180deg,#1c1510 0%,#140f0b 72%);text-decoration:none;color:inherit;display:block;min-height:150px";
     const sealedBase = "flex:1;position:relative;cursor:pointer;overflow:hidden;border-right:3px solid #4a3e30;background:repeating-linear-gradient(45deg,#1a130d 0 14px,#15100b 14px 28px);text-decoration:none;color:inherit;display:block;min-height:150px";
-    const C = { dim:"#46506B", teal:"#5EC8C2", amber:"#E8B566", red:"#E0746A", violet:"#9A8CE6" };
-    const dw = (n) => Array.from({length:n}, (_, i) => ({ delay: (i*0.4)+"s", color: i%2 ? "#3a6ea5" : "#c9913f" }));
-    const mk = (id, name, state, opts = {}) => {
-      const color = state === "active" ? C.teal : state === "working" ? C.amber : state === "attention" ? C.red : state === "locked" ? C.violet : C.dim;
-      const sealed = state === "locked";
+    // Colour no longer lives here. The state DU owns visual mapping (contract change 3) and the
+    // page reads var(--state); this maps the mock's legacy names onto the SHIPPED
+    // live|cold|stale|heat vocabulary so nothing downstream invents a fifth one.
+    const STATE = { active:"live", working:"stale", attention:"heat", idle:"cold", locked:"cold" };
+    // Dweller colour was index parity — decoration wearing the appearance of meaning. Gone: a
+    // dweller renders in its room's state, and only `delay` (bob phase) stays cosmetic.
+    const dw = (n) => Array.from({length:n}, (_, i) => ({ delay: (i*0.4)+"s" }));
+    const mk = (id, name, legacyState, opts = {}) => {
+      const sealed = legacyState === "locked";
       return {
-        id, name, color,
+        id, name,
+        state: STATE[legacyState] ?? "cold",   // unknown reads cold, never live
+        // Sealed is the WITHHELD register, not a status: violet, hatched, and it outranks state
+        // in the cascade because "may not be seen" differs from "nothing is happening".
+        observed: sealed ? "false" : "true",
+        withheld: sealed ? "sealed" : "",
         sealed, open: !sealed,
         href: opts.href ?? ("Vaults.dc.html#" + id),
         style: sealed ? sealedBase : roomBase,
-        lightBg: "radial-gradient(130px 96px at 50% -14px," + color + ",transparent 70%)",
-        pulse: (state === "working" || state === "attention") ? "zx-breathe 1.5s infinite" : "none",
         dwellers: dw(opts.n ?? 0),
       };
     };
