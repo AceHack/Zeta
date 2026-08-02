@@ -12,6 +12,7 @@
 
 | Staged | Batch (RAW file) | Covers |
 |---|---|---|
+| 2026-08-02 | `RAW-2026-08-02-thrill-seeker-since-birth-the-trait-that-nearly-killed-him.md` | thrill-seeker since birth; "no factory defaults — built my own OS" (common sense isn't common, it's un-inspectable defaults); the stove mapped 1000× (empiricist origin); the near-death catalog (car-surfing, ~7 cars, cliffs); the trait that nearly killed him became the engine — cost and gift are the same coin. Son OMITTED per standing rule. Consented. Home: childhood-origin/builder arc. |
 | 2026-08-02 | `RAW-2026-08-02-feynman-diagrams-to-susskind-and-readers-disease.md` | Feynman diagrams = imagination on-ramp (elementary physics) → Susskind depth; "reader's disease" (knowing knowledge you can't say out loud, coined by Chris King) surfaced saying "Feynman" aloud for the first time — the autodidact's fingerprint, reading outran hearing. Consented. Home: early/childhood-builder arc. |
 | 2026-08-02 | `RAW-2026-08-02-the-reindexer-rebuilding-the-inner-world-after-the-fracture.md` | **the lived root of the whole thesis** — the reindexer ("maji math") as how Aaron rebuilt his inner world after the fracture; index on relational structure not content; Marjorie/Fidelity non-biased qualia elicitation → correlations that hold across many. Direct from Aaron (Otto session), consented. Home: ch-04. |
 | 2026-07-10 00:39 | `RAW-the-data-years-lexisnexis-ess-redistricting.md` | the data years; street-segment geometry, parity, curves — where the intuitions seeded |
