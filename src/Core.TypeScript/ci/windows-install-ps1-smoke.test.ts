@@ -63,6 +63,11 @@ test("Windows ARM64 installs the configured mise graph minus only unavailable op
   expect(installer).toContain("$miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools");
   expect(installer).toContain("mise install --yes @miseInstallSpecs");
   expect(installer).toContain("mise bin-paths --quiet @miseInstallSpecs");
+  const filteredInstall = installer.indexOf("mise install --yes @miseInstallSpecs");
+  const disableImplicitInstall = installer.indexOf("$env:MISE_EXEC_AUTO_INSTALL = 'false'");
+  const firstBunExec = installer.indexOf("mise exec -- bun install --global");
+  expect(disableImplicitInstall).toBeGreaterThan(filteredInstall);
+  expect(firstBunExec).toBeGreaterThan(disableImplicitInstall);
   expect(installer).toContain("warn: Windows ARM64 omits optional mise tool");
 });
 

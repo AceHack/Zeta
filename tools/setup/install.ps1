@@ -328,6 +328,11 @@ try {
     $miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools @($unsupported.Keys))
     Invoke-Tool { mise install --yes @miseInstallSpecs } 'mise install --yes (Windows ARM64 supported tool graph)'
     $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet @miseInstallSpecs } 'mise bin-paths --quiet (Windows ARM64 supported tool graph)')
+    # Later bootstrap steps use `mise exec -- bun ...`. Its default exec_auto_install setting
+    # otherwise expands back to the whole config and retries the three unsupported tools before
+    # launching Bun. The supported graph is explicit and complete at this point, so disable only
+    # that implicit expansion for the remainder of this Windows ARM64 process.
+    $env:MISE_EXEC_AUTO_INSTALL = 'false'
   } else {
     Invoke-Tool { mise install --yes } 'mise install --yes'
     $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet } 'mise bin-paths --quiet')
