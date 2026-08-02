@@ -381,6 +381,21 @@ describe("exploreBound / trustBound — sign trap guard and clamping", () => {
 
     // Both clamp to 0 at k=3 — the floor is the same for fresh and one-miss.
     // This is the documented gap: whitewashing is profitable here.
+    //
+    // ANTI-RECURRENCE (Otto/Soraya, 2026-08-02 — this question has surfaced twice):
+    //   This is NOT a prior-shape problem. Beta(2,2) IS the shipped prior
+    //   (PRIOR_ALPHA=2, PRIOR_BETA=2 in calibration-ledger.ts, shipped at 5a65daf37).
+    //   Soraya's ruling: no prior shape closes this window because the gap is
+    //   the clamp at k=3, not the prior mass. Strengthening the prior moves the
+    //   wrong way — Beta(2,2) already hands a zero-evidence identity mu=0.5;
+    //   an asymmetric pessimistic prior (alpha<beta) only relocates the clamp.
+    //   The real whitewash window (P2) was the epsilon-sign / peer-count bug
+    //   in vault-state-bridge.ts, which shipped in #9958.
+    //   The only levers that change this floor are architecture/values calls:
+    //     (a) lower k (gap becomes visible, but floor becomes vacuous), or
+    //     (b) raise the clamp floor (should a fresh identity floor above 0?).
+    //   Do NOT re-route to Soraya on prior shape — she already answered this.
+    //   See docs/research/2026-08-02-caveat-b-* for the separate BusRegime issue.
     expect(freshTB).toBe(0.0);
     expect(oneMissTB).toBe(0.0);
 
