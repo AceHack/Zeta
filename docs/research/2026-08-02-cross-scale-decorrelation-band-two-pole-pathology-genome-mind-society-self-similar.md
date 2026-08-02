@@ -132,6 +132,31 @@ with intact modeling) — which is different from an inability to model. So the 
 **secure-base → exploration for the loss-averse; sensation-seeking → exploration for the risk-inverted
 minority, paid for in variance/survivorship.**
 
+**The core thread of the daredevil is invincibility that *resists disconfirmation* (Aaron 2026-08-02).**
+The defining feature isn't only not-weighting the downside beforehand — it's a felt invincibility that
+**survives repeated injury**, ignoring the wound bleeding in front of your face. Mechanism:
+**survivorship bias run internally.** Each time you're hurt and *live*, the survival is re-read as
+evidence *for* invincibility ("hurt, and still here → untouchable") when it is only "haven't hit the
+fatal draw yet." So each injury that should *lower* the belief perversely *raises* it — the wound stops
+being a **warning** and becomes a **badge**. It's not ignored-as-unseen; it's **re-encoded**. The one
+disconfirmation that would correct the belief (death) is the one you're not around to update on. In the
+model this is **aberrant precision on the self-vulnerability prior** — kin to the psychosis rung but
+domain-local (the invincibility prior held at such high precision that direct wound-evidence can't
+lower it) — and it is the **want→true register-leak in its most physical form**: "I *feel* invincible"
+(felt/register-1) → "I *am* invincible" (fact/register-2), with disconfirming wounds re-read to protect
+the feeling. The daredevil fools himself, with the easiest person to fool, about the one thing that can
+kill him. **The lever (ties the son thread):** self-injury gets re-encoded as a badge, so the belief
+only breaks on disconfirmation it *cannot* re-encode — an **external mirror** (seeing it in someone
+else; a survived-daredevil laying the near-fatal draws and the graveyard out where they read as
+*warning*, not trophy). Anchors: Elkind's **personal fable** (adolescent invulnerability); Sharot's
+**optimism bias**; Langer's **illusion of control** — all amplified in high sensation-seekers.
+**Legibility anchor (register 1, felt-interior):** Shyamalan's *Unbreakable / Split / Glass* trilogy
+(Eastrail-177) casts invincible David Dunn against brittle "Mr. Glass" — the two poles literally — and
+"gets the feeling right on the inside" (Aaron). The honest irony: the film makes *literal* what the
+daredevil merely *feels* — the register-merge (feeling → fact) rendered true on screen — which is
+exactly why it captures the interior and exactly why it is dangerous as a self-model: you feel like
+David Dunn; you are not.
+
 ## The DNA rung is ANALOGY, not a mechanism to import (Aaron's own rule)
 
 "DNA studies this over longer timescales." Evolution-as-search/learning is itself anchored (Valiant,
