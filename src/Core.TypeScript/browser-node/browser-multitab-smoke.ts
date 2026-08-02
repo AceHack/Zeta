@@ -2,10 +2,11 @@ import { resolve } from "node:path";
 // @ts-ignore -- playwright is dynamically installed for browser smoke runner
 import { chromium, type Browser, type Page } from "playwright";
 import type { BrowserCheckpointFeedback } from "./browser-indexeddb-checkpoint";
+import type { BrowserRoomCheckpointFeedback } from "./browser-room-checkpoint";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v2" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v3" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -68,8 +69,14 @@ export interface BrowserMultitabSmokeTranscript {
   };
   readonly checkpoint: {
     readonly savedRevision: number;
-    readonly payload: readonly number[];
-    readonly staleWrite: BrowserCheckpointFeedback;
+    readonly payloadBytes: number;
+    readonly room: {
+      readonly roomName: string;
+      readonly seed: string;
+      readonly latestTick: number | null;
+      readonly continuationToken: string | null;
+    };
+    readonly staleWrite: BrowserCheckpointFeedback | BrowserRoomCheckpointFeedback;
   };
   readonly stoppedPageA: BrowserLifecycleHostReadout;
   readonly afterRestart: {
@@ -261,8 +268,16 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   if (transcript.afterStop.pageA.iris.tabs !== 1) failures.push("Iris page A did not remove stopped page B");
   if (!transcript.afterStop.pageA.rendered.irisLabel.includes("1 tab"))
     failures.push("page A did not render the Iris one-tab label");
-  if (transcript.checkpoint.savedRevision !== 300)
-    failures.push("page A did not persist checkpoint revision 300");
+  if (transcript.checkpoint.savedRevision !== 300) failures.push("page A did not persist checkpoint revision 300");
+  if (transcript.checkpoint.payloadBytes <= 0) failures.push("page A persisted an empty room checkpoint payload");
+  if (
+    transcript.checkpoint.room.roomName !== "browser-smoke" ||
+    transcript.checkpoint.room.seed !== "real-chromium-two-page" ||
+    transcript.checkpoint.room.latestTick !== 300 ||
+    transcript.checkpoint.room.continuationToken !== "resume:301"
+  ) {
+    failures.push("page A did not persist the expected semantic room state");
+  }
   if (transcript.checkpoint.staleWrite.code !== "checkpoint-revision-conflict")
     failures.push("the checkpoint store did not reject a stale revision");
   if (transcript.afterRestart.pageC.source.ok) {
@@ -271,15 +286,22 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
       failures.push("page C did not recover checkpoint revision 300");
     if (recovered.host.coordinator.liveness.checkpoint !== "durable")
       failures.push("page C did not derive durable continuity from the recovered checkpoint");
-    if (JSON.stringify(recovered.checkpoint.payload) !== JSON.stringify(transcript.checkpoint.payload))
-      failures.push("page C recovered different checkpoint bytes");
+    if (recovered.checkpoint.payloadBytes !== transcript.checkpoint.payloadBytes)
+      failures.push("page C recovered a different checkpoint byte count");
+    if (
+      recovered.checkpoint.room?.roomName !== transcript.checkpoint.room.roomName ||
+      recovered.checkpoint.room.seed !== transcript.checkpoint.room.seed ||
+      recovered.checkpoint.room.latestTick !== transcript.checkpoint.room.latestTick ||
+      recovered.checkpoint.room.continuationToken !== transcript.checkpoint.room.continuationToken
+    ) {
+      failures.push("page C did not decode the persisted semantic room state");
+    }
     if (recovered.host.coordinator.tabs.map((tab) => tab.tabId).join(",") !== "tab-c")
       failures.push("page C restored obsolete tab-presence state");
   } else {
     failures.push("page C did not start after checkpoint recovery");
   }
-  if (transcript.afterRestart.pageC.iris.tabs !== 1)
-    failures.push("Iris page C did not restart as one live tab");
+  if (transcript.afterRestart.pageC.iris.tabs !== 1) failures.push("Iris page C did not restart as one live tab");
   if (transcript.retraction.staleDelete.code !== "checkpoint-revision-conflict")
     failures.push("the checkpoint store did not reject a stale removal revision");
   if (!transcript.retraction.removed) failures.push("the checkpoint store did not retract revision 300");
@@ -287,6 +309,8 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
     const restarted = transcript.afterRetraction.pageD.source.value;
     if (restarted.checkpoint.recoveredRevision !== null || restarted.checkpoint.currentRevision !== null)
       failures.push("page D recovered a checkpoint after its bounded retraction");
+    if (restarted.checkpoint.payloadBytes !== null || restarted.checkpoint.room !== null)
+      failures.push("page D retained semantic room checkpoint state after retraction");
     if (restarted.host.coordinator.liveness.checkpoint !== "none")
       failures.push("page D reported durable continuity after checkpoint retraction");
     if (restarted.host.coordinator.tabs.map((tab) => tab.tabId).join(",") !== "tab-d")
@@ -376,16 +400,20 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
           },
         };
       }
+      const readout = root.__zetaBrowserSmoke.read();
       return {
         ok: true as const,
         value: {
           savedRevision: saved.value.revision,
-          payload: [...saved.value.payload],
+          payloadBytes: saved.value.payload.byteLength,
+          room: readout.ok ? readout.value.checkpoint.room : null,
           staleWrite: stale.feedback,
         },
       };
     });
     if (!checkpoint.ok) return failed("smoke-failed", checkpoint.feedback.detail);
+    const checkpointRoom = checkpoint.value.room;
+    if (checkpointRoom === null) return failed("smoke-failed", "Checkpoint room readout was unavailable.");
 
     const stoppedA = await pageA.evaluate(() => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
@@ -443,7 +471,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       beforeStop: { pageA: pageAFirst, pageB: pageBFirst },
       stoppedPageB: stopped.value,
       afterStop: { pageA: pageAAfterStop },
-      checkpoint: checkpoint.value,
+      checkpoint: { ...checkpoint.value, room: checkpointRoom },
       stoppedPageA: stoppedA.value,
       afterRestart: { pageC: pageCAfterRestart },
       retraction: retraction.value,

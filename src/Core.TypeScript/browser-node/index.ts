@@ -61,6 +61,16 @@ export {
 } from "./browser-indexeddb-checkpoint";
 
 export {
+  BROWSER_ROOM_CHECKPOINT_SCHEMA,
+  MAX_BROWSER_ROOM_CHECKPOINT_BYTES,
+  decodeBrowserRoomCheckpoint,
+  encodeBrowserRoomCheckpoint,
+  type BrowserRoomCheckpointFeedback,
+  type BrowserRoomCheckpointResult,
+  type DurableRoomRunTranscript,
+} from "./browser-room-checkpoint";
+
+export {
   BROWSER_LIFECYCLE_HOST_SCHEMA,
   createBrowserSequenceCounter,
   createNativeBrowserLifecyclePort,
