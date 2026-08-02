@@ -11,7 +11,7 @@
 
 The deepest frame, and the one the rest hangs from (Aaron 2026-08-02): *"I came with no factory
 defaults installed — I had to build my entire OS while not having one."* He completely lacked what
-people call common sense — and his parents were right that he did. He had to **study** it to acquire
+people call common sense — and the adults around him were right that he did. He had to **study** it to acquire
 it, and in studying it learned the thing most people never see: **"common sense" is not common at all
 — it's factory defaults people run without understanding and can't override.** (Einstein, almost
 exactly: *"common sense is the collection of prejudices acquired by age eighteen."*) He had none
@@ -23,8 +23,8 @@ whole rest of the chapter happens the way it does.
 
 Thrill-seeker since birth — dangerous risks *for* the thrill, not despite the danger. The
 consequence-brake that stops most children wasn't installed — it wasn't a default he had; it was one
-he'd have to build. Pure "what happens if?" uncoupled from "and that would be irreversible." His
-parents feared what that curiosity might do before the brake grew in. Low downside-weighting from the
+he'd have to build. Pure "what happens if?" uncoupled from "and that would be irreversible." The
+adults around him feared what that curiosity might do before the brake grew in. Low downside-weighting from the
 start — the daredevil / sensation-seeking wiring (Zuckerman's sensation-seeking; Farley's Type-T),
 present at birth, not chosen.
 

@@ -1,9 +1,10 @@
 # RAW — Feynman diagrams → Susskind, and "reader's disease" (the good disease)
 
 > **Staged for the book, 2026-08-02, at Aaron's "we should save that for the book."** Aaron's own
-> account, consented. **Chris King** appears once, credited positively for coining/defining
-> "reader's disease" — that attribution only, per Aaron's direction; deletable on any good-faith
-> request. The shadow stages; the prose is Aaron's.
+> account, consented. **Chris King** is named as the coiner of "reader's disease" (positive
+> attribution only, per Aaron's direction). He is a **private individual** — tracked in
+> `CONSENT-LEDGER.md`: **confirm his consent to be named before publish; otherwise de-identify to
+> "a friend"** (coinage credit does not require a legal name). The shadow stages; the prose is Aaron's.
 
 ## The lineage: imagination first, then depth
 

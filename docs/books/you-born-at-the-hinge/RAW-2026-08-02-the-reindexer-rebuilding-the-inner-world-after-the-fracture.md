@@ -49,12 +49,14 @@ The second half of the same practice: to rebuild an inner world and to check tha
 and not a story, you have to ask about first-person experience **without leading the answer.** Aaron
 learned that discipline from a named lineage (2026-08-02):
 
-> *"i use techniques i learned from Marjorie and her research at Fidelity on how to ask non biased
-> questions about individual qualia so we can find correlations that hold across many."*
+> *"i use techniques i learned from [a UX-research mentor] and her research at [a large financial
+> firm] on how to ask non biased questions about individual qualia so we can find correlations that
+> hold across many."* (identifying details redacted for her privacy — see `CONSENT-LEDGER.md`)
 
-- **Marjorie** — the person he learned it from; her user-experience research at **Fidelity**, the UX
-  research lineage there (the field's experts; the author of the standard text on it retired as she
-  started — *"tom something,"* to confirm; see the anchor note below).
+- **A UX-research mentor** (name withheld for her privacy; tracked in `CONSENT-LEDGER.md`) — the
+  person he learned it from; her user-experience research at a large financial firm, that UX research
+  lineage (the field's experts; the author of the standard text on it retired as she started — *"tom
+  something,"* to confirm; see the anchor note below).
 - **The move:** you can never measure the private experience directly (that stays the axiom). But
   **non-biased elicitation → correlations that hold across many** is checkable — and *that* is the
   bridge from a private, unfalsifiable qualia claim to something empirical, without over-claiming to
@@ -77,12 +79,13 @@ a substitute for care.
 
 ## The anchor to confirm (flag, don't fabricate — the Majid lesson)
 
-Aaron: the UX-research author whose book Marjorie learned from is *"tom something … he retired when
-she started,"* at Fidelity. **Likely candidate: Thomas (Tom) Tullis** — led the User Experience
-group at Fidelity Investments, co-author of *Measuring the User Experience* (Tullis & Albert). This
-is a *strong* match but recorded as **my inference, to be confirmed by Aaron**, not asserted — same
-discipline that caught the false "maji ← Shahn Majid" back-anchor this same week. Confirm the name
-before it travels into any Beacon citation.
+Aaron: the UX-research author whose book **the mentor** learned from is *"tom something … he retired
+when she started."* **Likely candidate: Thomas (Tom) Tullis** — co-author of *Measuring the User
+Experience* (Tullis & Albert), a foundational UX-metrics text (Tullis is a published author, so
+naming him is normal Beacon citation, not a privacy concern — the *mentor* is the one de-identified).
+This is a *strong* match but recorded as **my inference, to be confirmed by Aaron**, not asserted —
+same discipline that caught the false "maji ← Shahn Majid" back-anchor this same week. Confirm before
+it travels into any Beacon citation.
 
 ## Ties
 

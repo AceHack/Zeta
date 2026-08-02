@@ -60,10 +60,11 @@ radar"); the formal half was re-grounded as immune-system math.
     but the **cross-individual correlations** — whether *non-biased reports about it correlate
     across many people* — are **Beacon-measurable.** You never claim to measure the private
     content (that would over-reach); you measure the shadow it casts across observers. Method
-    origin (⚠ **Mirror / unverified personal anchor**, like the Tullis flag): **Marjorie** (no
-    surname/paper on file) and the **UX-research lineage at Fidelity**. The **checkable Beacon** is
-    **survey methodology / psychometrics** (framing/acquiescence-bias avoidance; possibly Tullis's
-    *Measuring the User Experience*, to confirm) — that is the anchor; "Marjorie" is the Mirror name.
+    origin (⚠ **Mirror handle / unverified personal anchor**, like the Tullis flag): a **private
+    UX-research mentor** (Aaron's Mirror handle "Marjorie"; **de-identified — employer withheld for
+    her privacy**, see the book `CONSENT-LEDGER.md`). The **checkable Beacon** is **survey methodology
+    / psychometrics** (framing/acquiescence-bias avoidance; possibly Tullis's *Measuring the User
+    Experience*, to confirm) — that is the anchor; the mentor's identity is not.
     Non-biased question design for eliciting first-person experience, so
     cross-individual correlations that hold can be found. This is the empirical front-end that
     *feeds* the field/soul-radar: unbiased individual reports in → cross-individual correlation
@@ -73,10 +74,11 @@ radar"); the formal half was re-grounded as immune-system math.
     **Validity is contingent, not free:** "non-biased" is an empirical *burden* — the
     cross-individual correlation is only as Beacon as the debiasing is *demonstrated*
     (order-randomization, counterbalancing, control items). Method sound; the "unbiased" claim
-    must be shown per-instrument. **⚠ Author to confirm:** the standard-text author Marjorie
-    learned from ("tom something, retired when she started" — likely **Thomas Tullis**, led UX
-    at Fidelity Investments, *Measuring the User Experience*) is recorded as inference **to be
-    confirmed by Aaron**, not asserted (same discipline as the maji≠Majid back-anchor catch).
+    must be shown per-instrument. **⚠ Author to confirm:** the standard-text author the mentor
+    learned from ("tom something, retired when she started" — likely **Thomas Tullis**, co-author of
+    *Measuring the User Experience* — a published author, so naming him is normal Beacon citation) is
+    recorded as inference **to be confirmed by Aaron**, not asserted (same discipline as the
+    maji≠Majid back-anchor catch).
 - Same discipline as the ρ_T ("design choice, not the Tsirelson bound") and the E8-TOE catches
   this session: connections discovered if there, never fabricated; physics words labeled, not
   asserted.
