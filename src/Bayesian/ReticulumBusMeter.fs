@@ -36,7 +36,7 @@ module ReticulumBusMeter =
 
     /// The regime of this node's mesh view against a decision deadline (ms).
     let regimeOfSnapshot (snapshot: ReticulumTransport.MeshSnapshot) (decisionDeadlineMs: int) : BusRegime.Regime =
-        BusRegime.regimeOf (meterOfSnapshot snapshot) decisionDeadlineMs
+        BusRegime.regimeOfTerrestrial (meterOfSnapshot snapshot) decisionDeadlineMs
 
     /// End-to-end: society pricing armed by the real mesh. Same discounted IV as
     /// `AntiSybil.priceAgainstSociety`; the verdict's regime comes from live telemetry.

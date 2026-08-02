@@ -12,6 +12,15 @@ namespace Zeta.Bayesian
 /// MINIMUM observed crossing rules — evidence must survive the fastest thing the wire ever
 /// did), so `AntiSybil` society pricing can carry regime-aware verdicts, not just discounts.
 /// Pure fold over integer-ms samples; DST-clean, no ambient clock (§13).
+///
+/// **Caveat (b) fix — asymmetric-path budget `δMaxMs` (Option 3, 2026-08-02).**
+/// `min(RTT)/2` is unsound for asymmetric planetary orbits (Earth→Mars ≠ Mars→Earth by
+/// orbital phase). The conservative fix widens the cone by a deployment-supplied asymmetry
+/// budget `δMaxMs`: `OutOfCone` is only declared when `min(RTT)/2 > deadlineMs + δMaxMs`.
+/// At `δMaxMs = 0` the behavior is identical to the old code (terrestrial-safe default).
+/// For a planetary deployment, supply the worst-case one-way asymmetry for the link
+/// (e.g., ~190 ms for Earth–Mars at opposition). Conservative direction: suppresses some
+/// true `OutOfCone` evidence rather than manufacturing false convictions.
 [<RequireQualifiedAccess>]
 module BusRegime =
 
@@ -41,16 +50,37 @@ module BusRegime =
 
     /// Fastest observed one-way crossing (ms) — min(RTT)/2 under the stated symmetric-path
     /// assumption. None when unmeasured. Minimum, not mean: conservative direction.
+    ///
+    /// **Note:** This raw estimate is used internally. For regime decisions on asymmetric
+    /// links, use `regimeOf` with a non-zero `deltaMaxMs` (the caveat (b) budget).
     let bestOneWayMs (meter: Meter) : int option =
         match meter.RttSamplesMs with
         | [] -> None
         | xs -> Some(List.min xs / 2)
 
-    /// The regime verdict against the decision deadline τ (ms).
-    let regimeOf (meter: Meter) (deadlineMs: int) : Regime =
+    /// The regime verdict against the decision deadline τ (ms), with an asymmetry budget
+    /// `deltaMaxMs` (default 0 — terrestrial-safe, backward-compatible).
+    ///
+    /// **Caveat (b) fix (Option 3 — widen-cone-by-δ_max):**
+    /// `OutOfCone` is only declared when `bestOneWayMs > deadlineMs + deltaMaxMs`.
+    /// This accounts for the possibility that the return path was faster than the outbound
+    /// by up to `deltaMaxMs` ms (worst-case one-way asymmetry for the deployment context).
+    /// Conservative direction: at `deltaMaxMs = 0` the behavior is identical to the old code.
+    ///
+    /// **Terrestrial default:** `deltaMaxMs = 0` — symmetric-path assumption holds, no change.
+    /// **Earth–Mars (opposition):** `deltaMaxMs ≈ 190` (distance Mars travels in ~22-min RTT).
+    let regimeOf (meter: Meter) (deadlineMs: int) (deltaMaxMs: int) : Regime =
         match bestOneWayMs meter with
         | None -> Unmeasured
-        | Some best -> if best <= deadlineMs then InCone else OutOfCone
+        | Some best ->
+            // Widen the cone by deltaMaxMs: require best > deadline + deltaMaxMs to convict OutOfCone.
+            // At deltaMaxMs = 0 this is identical to the old `best <= deadlineMs → InCone`.
+            if best <= deadlineMs + (max 0 deltaMaxMs) then InCone else OutOfCone
+
+    /// Convenience overload: `regimeOf` with `deltaMaxMs = 0` (terrestrial default, backward-compat).
+    /// Use this at all existing call sites — it preserves the old signature and semantics.
+    let regimeOfTerrestrial (meter: Meter) (deadlineMs: int) : Regime =
+        regimeOf meter deadlineMs 0
 
     /// The honest ceiling in correlation terms: |ρ| above which the correlation exceeds what
     /// two intact selves honestly sharing state can produce — the AntiSybil reading's threshold.

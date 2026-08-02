@@ -108,7 +108,7 @@ module GossipTelemetry =
     let regimeOfPair (salon: Salon) (a: string) (b: string) (deadlineMs: int) : BusRegime.Regime =
         match meterOfPair salon a b with
         | None -> BusRegime.Unmeasured
-        | Some meter -> BusRegime.regimeOf meter deadlineMs
+        | Some meter -> BusRegime.regimeOfTerrestrial meter deadlineMs
 
     /// Combine the local snapshot's view with the salon's for a society verdict about a
     /// sender↔reference pair: local telemetry AND everything gossiped about that pair. Any fast
@@ -124,7 +124,7 @@ module GossipTelemetry =
             | None -> localMeter
             | Some gossiped ->
                 gossiped.RttSamplesMs |> List.fold BusRegime.foldSample localMeter
-        BusRegime.regimeOf combined deadlineMs
+        BusRegime.regimeOfTerrestrial combined deadlineMs
 
     /// PRUNE — bounded salon memory, monotone-safe. Only the minimum RTT per pair ever affects
     /// `regimeOfPair` (min rules), so keeping the K smallest-RTT entries per pair preserves the

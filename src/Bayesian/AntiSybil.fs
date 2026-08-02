@@ -140,5 +140,5 @@ module AntiSybil =
 
         let priced = priceAgainstSociety prior newBelief senderHistory societyHistories
         let rho = maxSocietyCorrelation senderHistory societyHistories
-        let regime = BusRegime.regimeOf meter decisionDeadlineMs
+        let regime = BusRegime.regimeOfTerrestrial meter decisionDeadlineMs
         priced, BusRegime.judge rho regime
