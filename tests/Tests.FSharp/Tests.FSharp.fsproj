@@ -71,6 +71,7 @@
     <Compile Include="SocietyUsefulWork.Tests.fs" />
     <Compile Include="CondorcetBoundary.Tests.fs" />
     <Compile Include="BusDelaySim.Tests.fs" />
+    <Compile Include="BusDelaySim.Orbital.Tests.fs" />
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="TriBoolean/CrossVerifyTests.fs" />
