@@ -89,3 +89,21 @@ module DecorrelationMetrology =
             for j in i + 1 .. arr.Length - 1 do
                 if concurrent parents arr.[i] arr.[j] then
                     yield (arr.[i], arr.[j]) ]
+
+    // ── git-read adapter (PURE parse; the impure git shell stays a thin documented edge) ──────────
+    /// Parse the output of **`git rev-list --parents <range>`** into the commit DAG.
+    /// Each non-empty line is `"<commit> <parent1> <parent2> …"`: the first token is the commit, the
+    /// rest are its parents — 0 for a root, 1 for a normal commit, ≥2 for a merge. Whitespace-split
+    /// (ordinal, no culture — `culture-invariant-by-default`), blank lines dropped. **Pure + total →
+    /// golden-vector-lockable** (same text ⇒ same DAG); it composes directly with `spacelikeCommitPairs`.
+    ///
+    /// The impure edge is a one-liner the caller runs and feeds here (kept OUT of pure Core, per
+    /// noninterference — I/O only through the caller): e.g. `git rev-list --parents <a>..<b>` → this →
+    /// `spacelikeCommitPairs`. Duplicate commit lines collapse to the last (rev-list emits each once).
+    let parseRevListParents (revListOutput: string) : Map<string, string list> =
+        revListOutput.Split([| '\n'; '\r' |], System.StringSplitOptions.RemoveEmptyEntries)
+        |> Array.choose (fun line ->
+            match line.Split([| ' '; '\t' |], System.StringSplitOptions.RemoveEmptyEntries) |> Array.toList with
+            | [] -> None
+            | commit :: parents -> Some(commit, parents))
+        |> Map.ofArray

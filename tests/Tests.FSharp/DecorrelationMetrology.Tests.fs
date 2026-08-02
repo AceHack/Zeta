@@ -77,3 +77,42 @@ let ``order and concurrency are exclusive and exhaustive for distinct commits`` 
                 let ordered = DM.dominates dag a b || DM.dominates dag b a
                 let conc = DM.concurrent dag a b
                 Assert.True(ordered <> conc) // XOR: exactly one
+
+// ── git-read parser (parseRevListParents) ────────────────────────────────────────────────────────
+
+// `git rev-list --parents` output for the fork DAG (children-first, as git emits it): first token is
+// the commit, the rest are parents (root A has none; merge G has two).
+let private revList =
+    "G E F\n\
+     F D\n\
+     E C\n\
+     D B\n\
+     C B\n\
+     B A\n\
+     A\n"
+
+[<Fact>]
+let ``parseRevListParents reconstructs the DAG (roots, normals, merges)`` () =
+    Assert.Equal<Map<string, string list>>(dag, DM.parseRevListParents revList)
+
+[<Fact>]
+let ``parseRevListParents - root has no parents, merge has two`` () =
+    let m = DM.parseRevListParents revList
+    Assert.Equal<string list>([], m.["A"]) // root
+    Assert.Equal<string list>([ "B" ], m.["C"]) // normal
+    Assert.Equal<string list>([ "E"; "F" ], m.["G"]) // merge
+
+[<Fact>]
+let ``parseRevListParents tolerates blank lines and extra whitespace`` () =
+    let noisy = "\n  G   E F \n\nF\tD\n\n"
+    let m = DM.parseRevListParents noisy
+    Assert.Equal<string list>([ "E"; "F" ], m.["G"])
+    Assert.Equal<string list>([ "D" ], m.["F"])
+    Assert.Equal(2, m.Count)
+
+// The whole input pipeline, end to end (register-2, byte-locked): rev-list text → DAG → spacelike set.
+[<Fact>]
+let ``golden pipeline - rev-list text to spacelike pairs`` () =
+    let m = DM.parseRevListParents revList
+    let expected = [ ("C", "D"); ("C", "F"); ("D", "E"); ("E", "F") ]
+    Assert.Equal<(string * string) list>(expected, DM.spacelikeCommitPairs m allCommits)
