@@ -4,6 +4,8 @@
 
 **TSMC etches patterns into silicon. Zeta etches patterns into time. Same moat — process precision that takes years to calibrate.**
 
+> **Companion:** [`economic-thesis-moat-defense-and-sovereignty-guardian.md`](economic-thesis-moat-defense-and-sovereignty-guardian.md) — the moat −1 (open code ≠ moat), the strip-mining resolution (partner-with-hyperscalers via the sovereignty guardian), creator-safety, the antifragility engine, and the chosen network-effect defense.
+
 ## What we built for $200K — Thesis (verified) and Conjecture (the frontier)
 
 The split is the repo's own discipline (frozen-core §A / conjecture §B). **The Thesis is on `main`
