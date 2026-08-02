@@ -68,6 +68,7 @@ generation) + never-collapse (the reach can't strand the foothold).
 ## 4. Free-HOLD, quasi-time-crystals — and the boundary that keeps it out of perpetual motion
 
 "Doing nothing costs nothing in a good game." The free layer has **real** anchors, not metaphor:
+
 - **Dijkstra self-stabilization (1974)** — a system returns to a legitimate state and, once there,
   is *quiescent*: no messages, no work, until perturbed. The silent fixed point is free.
 - **Idempotency (§6)** — re-applying a converged state is a no-op; persistence costs nothing *in
@@ -129,6 +130,7 @@ locked.**
 Full orbit-mapping works **because** CHIP-8 is 4K. It does **not** scale — a system with 2^(big)
 states can't have its orbits enumerated, and that impossibility is *the entire reason the soft regime
 exists.* Two tiers, never conflated:
+
 - **CHIP-8 = finite sandbox**: map orbits exactly (ground truth). "Superdeterminism accuracy" applies.
 - **Soft regime = the same orbit-hunt in un-enumerable systems**: find the attractor *without* mapping
   everything. You get **dependable-enough solid found under uncertainty**, NOT a full map. "Superde-
@@ -236,6 +238,7 @@ defense against the same failure — 4 leaking into 2.
   the un-enumerable hunt.
 
 ## Pointers
+
 - `src/Core.TLA/specs/RecoveryHomeostat.tla` (the homeostat invariant) · `src/Core/SoftActionController.fs`
   (the deadband controller) · `src/Core/SoftEvolution.fs` · `src/Core/Survival.fs`.
 - SoftValue/DynamicValue duality (soft→solid resolve) · `IDENTITY-AS-HELD-SPECTRUM-*.md` (precession =

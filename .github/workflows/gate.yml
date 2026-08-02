@@ -272,10 +272,9 @@ jobs:
     #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
     # These run only on push-to-main / schedule / workflow_dispatch
     # (not on PR — same cadence as macos-26). They carry
-    # `continue-on-error: true` because no PowerShell install script
-    # exists yet (`tools/setup/install.ps1` TBD); failures are
-    # visible-but-not-blocking until the peer-agent polishes the
-    # path.
+    # `continue-on-error: true` while the native PowerShell installer
+    # and ARM64 package availability mature; failures remain visible
+    # without blocking the per-merge gate.
     #
     # fail-fast: false so one leg's failure doesn't cancel the
     # others — we want the full signal across the matrix.
@@ -287,14 +286,13 @@ jobs:
     # - ubuntu-24.04 + ubuntu-24.04-arm: production build path; runs
     #   on every PR + push-to-main.
     # The matrix is built dynamically by `matrix-setup` so PR runs
-    # only get the Linux legs while push-to-main / schedule /
-    # workflow_dispatch run all three.
+    # only get the Unix legs while push-to-main / schedule /
+    # workflow_dispatch run all five.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     needs: [matrix-setup, path-filter]
-    # Windows legs are experimental until tools/setup/install.ps1
-    # exists; mark them non-blocking so initial failures don't gate
-    # per-merge runs. Linux + macOS legs are blocking.
+    # Windows legs remain experimental; mark them non-blocking while
+    # native installer and ARM64 package coverage mature. Unix legs block.
     continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}
     strategy:
       fail-fast: false
@@ -380,16 +378,24 @@ jobs:
           # x64.*).
           key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
 
-      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
-        # Single source of truth for toolchain state. Installs:
+      - name: Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)
+        # Single source of truth for Unix toolchain state. Installs:
         # .NET SDK (per global.json, via Microsoft's dotnet-install.sh
         # — round-32 refactor out of mise), python (mise-pinned),
         # elan (Lean manager), dotnet global tools, TLC + Alloy
         # verifier jars. shellenv.sh emits BASH_ENV into $GITHUB_ENV
         # so every subsequent bash `run:` step auto-sources the
         # managed shellenv file (SQLSharp-proven pattern).
-        if: needs.path-filter.outputs.code == 'true'
+        if: needs.path-filter.outputs.code == 'true' && startsWith(matrix.os, 'windows-') == false
         run: ./tools/setup/install.sh
+
+      - name: Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)
+        # PowerShell does not execute the Git Bash dispatcher reliably when a workflow `run:` step
+        # names install.sh directly. Call the native entrypoint so it can publish mise runtime bins
+        # to GITHUB_PATH for the later bun/dotnet steps. CI must not register a desktop loop task.
+        if: needs.path-filter.outputs.code == 'true' && startsWith(matrix.os, 'windows-')
+        shell: pwsh
+        run: ./tools/setup/install.ps1 -SkipLoopRegister
 
       - name: Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057, #9774 regression)
         # Fast pre-build backstop: a Microsoft.CodeAnalysis.* pin newer than the SDK's own

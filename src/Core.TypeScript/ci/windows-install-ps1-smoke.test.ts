@@ -1,6 +1,7 @@
 import { test, expect } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parse } from "yaml";
 import {
   AGENT_CLI_MANIFEST_RELATIVE_PATH,
   taskHasDurationAndNextRun,
@@ -48,6 +49,30 @@ test("Windows installer publishes mise runtime paths for later GitHub Actions st
   expect(installer).toContain("Publish-ZetaRuntimePaths $runtimeBinPaths");
   expect(installer).toContain("$env:GITHUB_PATH");
   expect(installer).toContain("[System.IO.File]::AppendAllText");
+});
+
+test("build-and-test matrix routes each OS family through its native installer", () => {
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
+  const workflow = parse(readFileSync(join(repoRoot, ".github", "workflows", "gate.yml"), "utf8")) as {
+    jobs?: Record<string, { steps?: Array<Record<string, unknown>> }>;
+  };
+  const steps = workflow.jobs?.["build-and-test"]?.steps ?? [];
+  const unix = steps.find(
+    (step) => step.name === "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+  );
+  const windows = steps.find(
+    (step) => step.name === "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+  );
+
+  expect(unix).toMatchObject({
+    if: "needs.path-filter.outputs.code == 'true' && startsWith(matrix.os, 'windows-') == false",
+    run: "./tools/setup/install.sh",
+  });
+  expect(windows).toMatchObject({
+    if: "needs.path-filter.outputs.code == 'true' && startsWith(matrix.os, 'windows-')",
+    shell: "pwsh",
+    run: "./tools/setup/install.ps1 -SkipLoopRegister",
+  });
 });
 
 test("agent CLI manifest parser keeps package id plus expected binary metadata", () => {
