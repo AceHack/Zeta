@@ -609,6 +609,76 @@ module manifests
 
 ---
 
+## Governance / adjudication
+
+### A proof / evidence threshold for breaking earned frost
+
+- **Status:** Rejected
+- **Decision:** 2026-08-02
+- **Proposal:** Encode the bar at which earned frost may be
+  broken — a `PROOF_THRESHOLD` constant, an evidence-score
+  gate, a quorum-of-attestations rule, a court-order intake
+  path, or any other in-code test that decides when a
+  dweller's permanently-frosted region may be revealed.
+  Motivated by the real collision between the two commitments
+  Zeta calls inviolable: earned frost that can never be
+  revoked (`.claude/rules/privacy-budget-is-hard-money-earned-by-others.md`)
+  and the protect-the-children hard line.
+- **Why not:** **There is no threshold because there is no
+  mechanism.** Zeta is trying to make breaking frost
+  *impossible*, not merely expensive. Frost is undone exactly
+  one way: **the key holder gives you the key.** That is the
+  whole surface. Aaron, 2026-08-02: *"if this is in code then
+  we become the court system, that's not what i'm building"*
+  — and *"there are no thresholds for breaking frost other
+  than the key holder giving you the key."* Three
+  consequences:
+  1. **A threshold would be a mechanism.** Writing the bar
+     into code does not describe an existing escape hatch —
+     it *builds* one, and then argues about its height. It
+     also makes the substrate the judge, precisely the role
+     manifesto §11 (Default Oracle / Multi-Oracle Principle)
+     forbids it: no single mandatory morality, and a
+     threshold constant is one, chosen by whoever last edited
+     it.
+  2. **There is nothing to build, and that is the point.**
+     No operator, no escrow, no recovery key, no
+     lawful-access intake. The substrate cannot reveal a
+     frosted region — as capability, not as policy. Any of
+     those paths would be the **centralised** design, which
+     is the standing architectural boundary for this project.
+     Consent-first (§6) in its strongest form: movement
+     toward more privacy is free, movement toward less
+     requires the owner, and no third party can supply that
+     consent on their behalf.
+  3. **Courts act on people, not on the substrate.** A
+     jurisdiction may compel a *human* who holds a key; that
+     has always been true of anyone holding a secret, and it
+     is outside Zeta's control rather than a designed
+     exception. It is not a break path in the system — the
+     system still cannot produce what it does not have. Keep
+     the two promises separate in all documentation: the
+     technical guarantee is *we hold no key* (true
+     everywhere, permanently); whether a person can be
+     compelled varies by jurisdiction, and a decentralised
+     network's dwellers are in many at once. Merging them
+     into one reassuring sentence is an over-claim.
+  This entry exists because the omission looks like an
+  unfinished feature. A contributor reading the frost rule
+  will notice there is no defined bar and try, helpfully, to
+  supply one. There is no bar *by design*, and adding one
+  would be the failure — not the fix.
+- **Revisit when:** Never on the mechanism — a substrate that
+  can adjudicate its own privacy guarantees is a different
+  project. Genuinely open and NOT settled by this entry: a
+  minor is also a dweller, and a child holding inviolable
+  frost *against a guardian* is where Zeta's two hard lines
+  actually touch rather than merely being pointed at each
+  other. Undecided, out of scope here, and a maintainer call
+  when it is taken up.
+
+---
+
 ## How to add an entry
 
 When a reviewer / agent / contributor keeps suggesting the same
