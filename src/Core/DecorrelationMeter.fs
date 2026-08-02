@@ -35,30 +35,58 @@ namespace Zeta.Core
 /// **Anchors:** Bell 1964; CHSH 1969; Tsirelson 1980; Hoeffding 1963 / Pironio et al. 2010 (finite-
 /// statistics device-independent); `AntiSybil.chshS` + `chshMargin` (reused, not duplicated);
 /// `DecorrelationMetrology` (the sensor layer this fuses).
+///
+/// ═══ ⚠ SOUNDNESS / SCOPE (Soraya adversarial review 2026-08-02; verified) ═══
+/// **CHSH is the WRONG instrument for a *general* decorrelation test, and its inference is INVERTED
+/// for the primary threat.** Bell's theorem: a **passive shared common cause** — a shared seed, the
+/// core sybil ("one process, two faces," recover-all-from-one) — IS a local-hidden-variable model, so
+/// it sits at **|S| ≤ 2**. Common cause lives *under* the bound. **|S| > 2 rules common cause OUT** — it
+/// requires entanglement (n/a to a commit DAG), a **live channel**, or **superdeterminism**. So:
+/// - `AboveClassicalBound` convicts a **live channel / superdeterminism**, NOT a plain common cause.
+/// - `WithinClassicalBound` / `WithinBoundFraction` is **NOT an acquittal** — S ≤ 2 does *not* prove
+///   independence (a passive shared-seed sybil sits here). One-way inference only, per `AntiSybil`'s own
+///   rule "low |S| never acquits" — this module must not be read as a decorrelation/sovereignty
+///   certificate (doing so is the **false-green** on the identity layer).
+/// **Scope (keep both — Aaron 2026-08-02):** CHSH here is KEPT, demoted to its valid limit — a
+/// **live-channel / superdeterminism detector** (and single-source-reuse sybil, via `AntiSybil`). The
+/// **general decorrelation instrument** is **MI / permutation-test-vs-independent-null + Reichenbach
+/// conditional-independence** (condition on the common-ancestor set the sensor already computes via
+/// `DecorrelationMetrology.ancestors`) — reconnecting to the repo's existing CMI work
+/// (`docs/research/2026-06-19-anti-mirror-rigorous-measurable-decorrelation-cmi-*`). That instrument is
+/// TO BE ADDED (pending Lumen's 2nd opinion + design). Also: the Hoeffding `chshMargin` assumes i.i.d.
+/// trials — **unsound on autocorrelated commit streams** (understates fluctuation → false convictions).
+/// The **sensor is correct and kept**; only this fusion instrument is mis-routed.
+/// ═════════════════════════════════════════════════════════════════════════════
 [<RequireQualifiedAccess>]
 module DecorrelationMeter =
 
     /// The fact about one spacelike pair's measured |Ŝ| vs the calibrated classical bound `2 + ε(δ,n)`.
+    /// One-way inference only (see the module ⚠ SOUNDNESS block).
     type PairVerdict =
-        /// |Ŝ| ≤ 2 + ε : consistent with an independent / decorrelated pair (the null).
+        /// |Ŝ| ≤ 2 + ε : **no live-channel / superdeterminism detected.** Does NOT prove independence —
+        /// a passive shared common cause (shared seed) also sits here. Never read as "decorrelated."
         | WithinClassicalBound
-        /// |Ŝ| > 2 + ε : convicts a common cause / live channel — NOT decorrelated (one-way inference).
+        /// |Ŝ| > 2 + ε : convicts a **live channel / superdeterminism** (NOT a plain common cause,
+        /// which is ≤ 2). One-way: this convicts; `WithinClassicalBound` never acquits.
         | AboveClassicalBound
 
     /// The fused reading over a commit set. **Register-2 counts**; the interpretation is the caller's.
     type Reading =
         { /// Spacelike pairs actually fused (both ends had a non-empty probe stream).
           SpacelikePairs: int
-          /// Pairs convicting a common cause (|Ŝ| > 2 + ε).
+          /// Pairs convicting a **live channel / superdeterminism** (|Ŝ| > 2 + ε) — NOT a plain common cause.
           AboveBound: int
-          /// Pairs consistent with the decorrelated null (|Ŝ| ≤ 2 + ε).
+          /// Pairs with **no channel/superdeterminism detected** (|Ŝ| ≤ 2 + ε) — does NOT prove independence.
           WithinBound: int
           /// The most-conservative calibrated bound used across fused pairs (max 2 + ε), for audit.
           Bound: float }
 
-        /// Fraction of fused pairs consistent with decorrelation (register-2 statistic). Reading this
-        /// as "sovereignty" is the caller's register-3 oracle, NOT asserted here. `nan` if no pairs.
-        member r.DecorrelatedFraction : float =
+        /// Fraction of fused pairs **within** the classical bound — i.e. **no channel/superdeterminism
+        /// detected**. **⚠ NOT a decorrelation measure** (renamed from `DecorrelatedFraction`, which was
+        /// the false-green): S ≤ 2 does not prove independence — a passive shared-seed sybil sits within
+        /// bound. See the module ⚠ SOUNDNESS block; the real decorrelation instrument is MI/Reichenbach.
+        /// `nan` if no pairs.
+        member r.WithinBoundFraction : float =
             if r.SpacelikePairs = 0 then
                 nan
             else

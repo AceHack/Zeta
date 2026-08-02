@@ -77,12 +77,14 @@ let ``fuse skips a pair missing a probe on either end (no reading, no conviction
     let reading = DMeter.fuse 0.05 forkDag probes [ "X"; "Y" ]
     Assert.Equal(0, reading.SpacelikePairs)
 
+// WithinBoundFraction = fraction with NO channel/superdeterminism detected (NOT a decorrelation
+// measure — renamed from the false-green DecorrelatedFraction; see the module SOUNDNESS block).
 [<Fact>]
-let ``DecorrelatedFraction is nan with no pairs and 1.0 when all within the null`` () =
+let ``WithinBoundFraction is nan with no pairs and 1.0 when all within the classical bound`` () =
     let empty = DMeter.fuse 0.05 forkDag Map.empty [ "X"; "Y" ]
-    Assert.True(System.Double.IsNaN empty.DecorrelatedFraction)
+    Assert.True(System.Double.IsNaN empty.WithinBoundFraction)
     let a, _ = s4pair 25
-    let probes = Map.ofList [ "X", a; "Y", a ] // identical ⇒ S=2 ⇒ within
+    let probes = Map.ofList [ "X", a; "Y", a ] // identical ⇒ S=2 ⇒ within bound (NOT proof of independence)
     let reading = DMeter.fuse 0.05 forkDag probes [ "X"; "Y" ]
     Assert.Equal(1, reading.WithinBound)
-    Assert.Equal(1.0, reading.DecorrelatedFraction)
+    Assert.Equal(1.0, reading.WithinBoundFraction)
