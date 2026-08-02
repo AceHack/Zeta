@@ -61,6 +61,29 @@ function Get-ToolOutput {
   if ($LASTEXITCODE -ne 0) { throw "$What failed (exit $LASTEXITCODE)" }
   return $lines
 }
+function Test-IsWindowsArm64 {
+  $architectures = @($env:PROCESSOR_ARCHITECTURE, $env:PROCESSOR_ARCHITEW6432)
+  return [bool]($architectures | Where-Object { $_ -eq 'ARM64' } | Select-Object -First 1)
+}
+function Get-MiseConfiguredToolSpecs {
+  param([string[]]$ExcludedTools = @())
+
+  $json = (Get-ToolOutput { mise ls --current --json } 'mise ls --current --json') -join [Environment]::NewLine
+  $inventory = $json | ConvertFrom-Json
+  $specs = New-Object System.Collections.Generic.List[string]
+
+  foreach ($property in $inventory.PSObject.Properties) {
+    if ($ExcludedTools -contains $property.Name) { continue }
+    $active = @($property.Value | Where-Object { $_.active -and $_.requested_version } | Select-Object -First 1)
+    if ($active.Count -ne 1) {
+      throw "mise did not report one active requested version for $($property.Name)"
+    }
+    [void]$specs.Add("$($property.Name)@$($active[0].requested_version)")
+  }
+
+  if ($specs.Count -eq 0) { throw 'mise returned no configured tools to install' }
+  return $specs.ToArray()
+}
 function Publish-ZetaRuntimePaths {
   param([Parameter(Mandatory)][string[]]$Paths)
 
@@ -284,8 +307,28 @@ try {
   # Parity with tools/setup/common/mise.sh: old NixOS mise cannot parse
   # python.github_attestations in .mise.toml (v2026.3.18+ only); env works everywhere.
   if (-not $env:MISE_PYTHON_GITHUB_ATTESTATIONS) { $env:MISE_PYTHON_GITHUB_ATTESTATIONS = '0' }
-  Invoke-Tool { mise install --yes } 'mise install --yes'
-  $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet } 'mise bin-paths --quiet')
+  $miseInstallSpecs = @()
+  if (Test-IsWindowsArm64) {
+    # These tools are optional for the Windows build/test lane and currently have no usable
+    # Windows ARM64 install path: mise has no Java 26 metadata, semgrep's cryptography wheel falls
+    # back to a source build without OpenSSL, and 1Password publishes no archive at the URL its
+    # mise backend selects. Keep the exception narrow and visible; every other version still comes
+    # from the active .mise.toml/.mise.full.toml graph rather than being duplicated here.
+    $unsupported = @{
+      'java' = 'mise has no Java 26 metadata for Windows ARM64'
+      'pipx:semgrep' = 'cryptography has no compatible wheel and its source build requires OpenSSL'
+      '1password-cli' = 'the upstream Windows ARM64 archive is unavailable'
+    }
+    foreach ($tool in @($unsupported.Keys | Sort-Object)) {
+      Write-Host "warn: Windows ARM64 omits optional mise tool '$tool': $($unsupported[$tool])"
+    }
+    $miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools @($unsupported.Keys))
+    Invoke-Tool { mise install --yes @miseInstallSpecs } 'mise install --yes (Windows ARM64 supported tool graph)'
+    $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet @miseInstallSpecs } 'mise bin-paths --quiet (Windows ARM64 supported tool graph)')
+  } else {
+    Invoke-Tool { mise install --yes } 'mise install --yes'
+    $runtimeBinPaths = @(Get-ToolOutput { mise bin-paths --quiet } 'mise bin-paths --quiet')
+  }
   Publish-ZetaRuntimePaths $runtimeBinPaths
   Write-Host "ok mise runtimes on PATH: $($runtimeBinPaths.Count) active bin path(s)"
 } finally { Pop-Location }

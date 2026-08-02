@@ -51,6 +51,20 @@ test("Windows installer publishes mise runtime paths for later GitHub Actions st
   expect(installer).toContain("[System.IO.File]::AppendAllText");
 });
 
+test("Windows ARM64 installs the configured mise graph minus only unavailable optional tools", () => {
+  const repoRoot = join(import.meta.dir, "..", "..", "..");
+  const installer = readFileSync(join(repoRoot, "tools", "setup", "install.ps1"), "utf8");
+  const unsupportedBlock = installer.match(/\$unsupported = @\{(?<body>[\s\S]*?)\n    \}/)?.groups?.body ?? "";
+  const excludedTools = [...unsupportedBlock.matchAll(/^      '([^']+)' =/gm)].map((match) => match[1]);
+
+  expect(excludedTools.sort()).toEqual(["1password-cli", "java", "pipx:semgrep"]);
+  expect(installer).toContain("mise ls --current --json");
+  expect(installer).toContain("$miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools");
+  expect(installer).toContain("mise install --yes @miseInstallSpecs");
+  expect(installer).toContain("mise bin-paths --quiet @miseInstallSpecs");
+  expect(installer).toContain("warn: Windows ARM64 omits optional mise tool");
+});
+
 test("build-and-test matrix routes each OS family through its native installer", () => {
   const repoRoot = join(import.meta.dir, "..", "..", "..");
   const workflow = parse(readFileSync(join(repoRoot, ".github", "workflows", "gate.yml"), "utf8")) as {
