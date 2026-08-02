@@ -288,6 +288,7 @@
     <Compile Include="Conjugate.fs" />
     <Compile Include="BitGan.fs" />
     <Compile Include="AntiSybil.fs" />
+    <Compile Include="DecorrelationMeter.fs" />
     <Compile Include="SybilBft.fs" />
     <Compile Include="SybilBftProtocol.fs" />
     <Compile Include="SybilBftLiveness.fs" />
