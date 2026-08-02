@@ -74,11 +74,14 @@ function Get-MiseConfiguredToolSpecs {
 
   foreach ($property in $inventory.PSObject.Properties) {
     if ($ExcludedTools -contains $property.Name) { continue }
-    $active = @($property.Value | Where-Object { $_.active -and $_.requested_version } | Select-Object -First 1)
-    if ($active.Count -ne 1) {
-      throw "mise did not report one active requested version for $($property.Name)"
+    # `mise ls --current` already scopes the inventory to configured entries. On a clean host,
+    # mise reports those entries as active=false until they are installed, so active is not an
+    # admissibility signal here; requested_version is the declarative source of truth.
+    $configured = @($property.Value | Where-Object { $_.requested_version } | Select-Object -First 1)
+    if ($configured.Count -ne 1) {
+      throw "mise did not report one configured requested version for $($property.Name)"
     }
-    [void]$specs.Add("$($property.Name)@$($active[0].requested_version)")
+    [void]$specs.Add("$($property.Name)@$($configured[0].requested_version)")
   }
 
   if ($specs.Count -eq 0) { throw 'mise returned no configured tools to install' }

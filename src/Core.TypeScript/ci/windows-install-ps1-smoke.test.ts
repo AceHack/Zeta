@@ -59,6 +59,7 @@ test("Windows ARM64 installs the configured mise graph minus only unavailable op
 
   expect(excludedTools.sort()).toEqual(["1password-cli", "java", "pipx:semgrep"]);
   expect(installer).toContain("mise ls --current --json");
+  expect(installer).not.toContain("$_.active -and $_.requested_version");
   expect(installer).toContain("$miseInstallSpecs = @(Get-MiseConfiguredToolSpecs -ExcludedTools");
   expect(installer).toContain("mise install --yes @miseInstallSpecs");
   expect(installer).toContain("mise bin-paths --quiet @miseInstallSpecs");
