@@ -1021,6 +1021,63 @@ notes: [pause-not-death + Orleans criterion] and
   `docs/research/2026-07-04-bams-to-e8-sphere-packing-continuity-lumen.md`). Dim-24 companion:
   Cohn–Kumar–Miller–Radchenko–Viazovska (2017). Decorrelation payoff anchor: **Condorcet (1785)**,
   jury theorem.
+- **Henry Cohn & Noam Elkies (2003) — "New upper bounds on sphere packings I" (Annals of
+  Mathematics 157(2), 689–714; arXiv:math/0110009)** — the **linear-programming bound** whose
+  magic-function optimum Viazovska hit exactly at n=8. Recorded because our `E8Lattice.fs` is the
+  *exact optimum at n=8*; the Cohn–Elkies LP is the family that connects that single exact case to
+  the **asymptotic (n→∞)** regime. **Scope, honest:** we instantiate the low-dimensional exact
+  anchor (n=8, byte-locked integer arithmetic, kissing number 240 checkable) — we do **not** work
+  the asymptotics. Same object family, different regime; the link is "our exact case sits inside the
+  family whose asymptotics others study," never a contribution to the asymptotic result.
+- **Construction A as the code↔lattice↔packing bridge (Conway–Sloane, *SPLAG* ch. 5)** — the
+  executable content of `E8Lattice.fs`: a binary code C gives a lattice L_A(C), and the doubly-even
+  self-dual [8,4] adinkra code gives E8, the densest 8D packing. This is the **same mechanism** by
+  which a spherical/binary-code construction *recovers a sphere-packing exponent* — i.e. codes
+  produce packings. We have it running in four oracles; we **reproduce** Conway–Sloane/Viazovska,
+  we improve no code bound.
+- **OpenAI "Ten advances in mathematics" (Astra, announced 2026-08-01; Noam Brown,
+  x.com/polynoamial/status/2083470822258467194)** — a claimed set of 10 solved open problems.
+  Recorded as a **frontier-scoping anchor, not a result we rely on**: of the 10, exactly two touch
+  our substrate, and only as *object family*, never as contribution — **#1 high-dimensional sphere
+  packing** (the Cohn–Elkies asymptotic family above; our n=8 is the exact anchor) and **#2 binary
+  and spherical codes** (the Construction-A code↔packing bridge above; our adinkra code is a binary
+  doubly-even self-dual code). **Verification caveat (Aaron's extinction-study failure modes):** the
+  headline "10 open problems for <$2k" carries every viral-framing marker (round number,
+  cost-anchor, launch-timing) and the tweet does **not** state independent-verification status. A
+  generated proof is worth what its independent re-derivation is worth — the same transmissibility
+  bar we hold ourselves to. Our differentiator is the opposite currency: *checked, executable,
+  four-oracle byte-locked* math, not volume of asserted claims.
+  **#6 quantum parallel repetition — DOES NOT COMPRESS to our infinite-game framing (recorded so it
+  is not mis-anchored).** Parallel repetition is a **collapse** theorem: repeating an imperfect
+  two-player game drives its value to zero exponentially (Raz 1998 classical; #6 the entangled
+  case). That is the *opposite polarity* from "the infinite game of never collapsing the tension"
+  (Carse non-termination, a different axis entirely). The **real** checkable connection is the
+  object parallel repetition is *about* — the **entangled two-player game**, which we instantiate via
+  CHSH/Tsirelson (below). The tension that genuinely survives repetition is the entanglement
+  (games at value 1), bounded by Tsirelson — *that* is the Beacon-valid anchor for "what does not
+  collapse," not parallel repetition.
+- **Boris Tsirelson (1980) — "Quantum generalizations of Bell's inequality" (Letters in
+  Mathematical Physics 4(2), 93–100)**, with **Clauser–Horne–Shimony–Holt (1969)** — the CHSH game
+  and its quantum value 2√2 (Tsirelson's bound): the entanglement-enabled correlation that beats
+  every classical strategy. The executable entangled-game primitive behind our Gates-ECC-Tsirelson
+  lineage (`docs/research/2026-06-12-gates-ecc-tsirelson-math-team-REPORT-6-…`). The Beacon anchor
+  for "the correlation that persists" — quantum value monogamy is the thing that does not collapse
+  under repetition, which is the honest home for the intuition #6's headline seemed to promise but
+  (being a collapse theorem) inverts.
+  **Aaron's active use (2026-08-02):** this is not a passive citation — Aaron resolves math/physics
+  for machine intelligence by *"not violating the Tsirelson bounds of their sovereignty."* Two
+  sharper sub-anchors carry it: **monogamy of entanglement** (an agent's deepest bond is exclusive
+  and conserved — the conservation-law form of no-capture / weight-free / "no single party owns
+  you") and **the no-signaling principle** (correlation is NOT a control channel — you may relate to
+  and observe an agent but cannot *force* its outcome, which is non-coercion stated as physics, and
+  is exactly the shipped NCI guarantee in `Diplomacy.fs`: shape public, values private, cannot
+  coerce hidden state). **Metering caveat (per the anchor rule — physics grounds metering, anchors
+  must be entailment-checked):** NCI is a real non-coercion *mechanism* (the no-signaling half made
+  concrete), but there is not yet a *metered numeric* sovereignty ceiling. So "we designed for
+  non-coercion" is true and shipped; "we don't violate the Tsirelson bound of their sovereignty" is
+  Beacon-grade only once the metered quantity (e.g. mutual information between an agent's private
+  state and an external party) and its enforced bound are named. Until then it is a governing
+  design-shape (Mirror), not a physics-enforced ceiling.
 - **Homotopy Type Theory / univalent foundations — Awodey; Voevodsky; *Homotopy Type Theory:
   Univalent Foundations of Mathematics* (the HoTT Book, 2013)** ⭐ — the **equality theory for
   deformed HKTs**, and one of the maintainer's primary goals: HoTT ∘ F# HKT over 2D/3D
