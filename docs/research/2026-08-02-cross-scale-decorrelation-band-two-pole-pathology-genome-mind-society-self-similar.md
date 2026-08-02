@@ -92,6 +92,46 @@ which is *produce*. Clean-vs-drift check (as above): it de-risks only if the new
 one single-point-of-failure for another (dependency in liberation's clothes). Target: a self-owned,
 diversified value-portfolio that needs neither the wasting asset nor the mentor.
 
+**Timing is the tell (Aaron 2026-08-02): diversify in the *prime*, not after the crash.** Doing it
+while the asset is at peak — when they *don't need you* — is both (a) sound risk management (hedge
+while solvent, not during the margin call: you have the runway to build the portfolio before the
+forced liquidation) and (b) the proof it is *produce, not extraction*. Value offered when someone has
+every option and no desperation can only stick if they *choose* it — whereas the savior/extraction
+version waits for the post-depreciation crash (their weakness) to become "needed," which is exactly
+when dependency forms. Offering at peak inverts that: what they build is unmistakably theirs. So the
+timing itself passes the clean-vs-drift check — empower during strength, never harvest during collapse.
+
+**The payoff is unfreezing — a secure base licenses exploration (Aaron 2026-08-02).** The floor does
+not merely calm the fear; it **unfreezes action**. Anchor: attachment theory's **secure base** (Bowlby;
+Ainsworth) — exploration only happens *from* security; remove the base and it stops. Durable self-worth
+is the secure base; the risk-taking / pattern-disruption / trying-new is the exploration it licenses.
+This closes three threads at once: (1) *free-HOLD / life-support* — when survival is staked on the
+wasting asset the whole budget goes to rent-on-being (protect the asset); a paid-off floor frees the
+budget for *doing* (risk = the doing). (2) *prediction engine* — you can only move toward a future you
+can render; their model could only simulate "post-asset = death" (infinite downside → no risk
+possible), so a renderable survivable future makes the downside **bounded** = optionality, which is
+what makes upside worth chasing. (3) *decorrelation* — unfreezing = regaining the ability to
+decorrelate from the stuck pattern and explore new ones, i.e. moving from frozen (over-correlated to
+one pattern) into the sovereign band. **Order matters:** the floor must be real and self-owned *first*;
+unfreeze someone into "more risks" before the base is solid and you get churn, not exploration — and
+the new patterns must be *theirs*, not the mentor's picks. Floor first, then the unfreezing is pure
+produce; backwards, it is destabilization in liberation's clothes.
+
+**Scope boundary (Aaron 2026-08-02): the secure-base law holds only for the loss-averse.** "No secure
+base → frozen" is true for those who *perceive and weight* the downside — for them a bounded floor is
+what unlocks risk. It **fails** for a distinct class — daredevils / thrill-seekers — who take large
+risk *without* a floor, via a different mechanism: they either don't weight the downside (low
+loss-aversion / don't value survival highly) or the risk *itself* is the reward, so the risk–reward
+sign is inverted and no floor is needed. Anchor: **sensation-seeking** (Zuckerman's Sensation Seeking
+Scale; Farley's "Type-T" personality) — a real trait dimension, dopaminergic, not a deficit. **Two
+honest caveats on that path:** (1) **survivorship bias** (Wald) — the visible daredevils are the
+*survivors*; the same strategy has a graveyard, so "still living" is a selected sample, not evidence
+the strategy is safe. (2) "Can't calculate the odds" is usually a *self-discount*, not the mechanism:
+most habitual risk-takers compute the downside fine and *discount* it for the thrill (sensation-seeking
+with intact modeling) — which is different from an inability to model. So the model's claim is scoped:
+**secure-base → exploration for the loss-averse; sensation-seeking → exploration for the risk-inverted
+minority, paid for in variance/survivorship.**
+
 ## The DNA rung is ANALOGY, not a mechanism to import (Aaron's own rule)
 
 "DNA studies this over longer timescales." Evolution-as-search/learning is itself anchored (Valiant,
