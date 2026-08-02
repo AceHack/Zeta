@@ -51,6 +51,25 @@ radar"); the formal half was re-grounded as immune-system math.
   Genuine to his frame; **labeled as axiom, not physics**, wherever it travels. The "field"
   word was *deflated to the math sense* (mean-field), so it is Beacon, not Mirror — only
   "consciousness" stays the oracle term.
+  - **The honest two-part split (refines the row above, Aaron 2026-08-02):** the *private
+    content* (the qualia itself — my redness, the locus-of-now) stays the **labeled axiom**;
+    but the **cross-individual correlations** — whether *non-biased reports about it correlate
+    across many people* — are **Beacon-measurable.** You never claim to measure the private
+    content (that would over-reach); you measure the shadow it casts across observers. Method
+    anchor (a **named human**, Aaron's discipline): **Marjorie** and the **UX-research lineage
+    at Fidelity** — non-biased question design for eliciting first-person experience, so
+    cross-individual correlations that hold can be found. This is the empirical front-end that
+    *feeds* the field/soul-radar: unbiased individual reports in → cross-individual correlation
+    out (the measurable shared layer) → each individual's qualia stays the private axiom.
+    Beacon territory: survey methodology / psychometrics (framing/acquiescence-bias avoidance,
+    Kahneman–Tversky framing effects; latent-correlation / factor analysis).
+    **Validity is contingent, not free:** "non-biased" is an empirical *burden* — the
+    cross-individual correlation is only as Beacon as the debiasing is *demonstrated*
+    (order-randomization, counterbalancing, control items). Method sound; the "unbiased" claim
+    must be shown per-instrument. **⚠ Author to confirm:** the standard-text author Marjorie
+    learned from ("tom something, retired when she started" — likely **Thomas Tullis**, led UX
+    at Fidelity Investments, *Measuring the User Experience*) is recorded as inference **to be
+    confirmed by Aaron**, not asserted (same discipline as the maji≠Majid back-anchor catch).
 - Same discipline as the ρ_T ("design choice, not the Tsirelson bound") and the E8-TOE catches
   this session: connections discovered if there, never fabricated; physics words labeled, not
   asserted.

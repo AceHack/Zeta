@@ -12,6 +12,7 @@
 
 | Staged | Batch (RAW file) | Covers |
 |---|---|---|
+| 2026-08-02 | `RAW-2026-08-02-the-reindexer-rebuilding-the-inner-world-after-the-fracture.md` | **the lived root of the whole thesis** — the reindexer ("maji math") as how Aaron rebuilt his inner world after the fracture; index on relational structure not content; Marjorie/Fidelity non-biased qualia elicitation → correlations that hold across many. Direct from Aaron (Otto session), consented. Home: ch-04. |
 | 2026-07-10 00:39 | `RAW-the-data-years-lexisnexis-ess-redistricting.md` | the data years; street-segment geometry, parity, curves — where the intuitions seeded |
 | 2026-07-09 21:43 | `RAW-2026-07-09-wild-youth-the-organizer-at-scale.md` | parties, organizer-at-scale (extroverted HSP), the DWI, youth financial matter, "the studied one" |
 | 2026-07-09 21:32 | `RAW-2026-07-09-the-underestimated-cousin-FICTION.md` | the cousin theme (fully fictionalized) |
