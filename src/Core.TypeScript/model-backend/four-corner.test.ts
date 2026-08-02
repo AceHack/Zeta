@@ -1,7 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import {
+  type Corner,
+  type CornerSet,
   type FourCorner,
   type Input,
+  EXTRACTION_CORNERS,
+  FULL_FOUR_CORNERS,
+  dualCorner,
+  dualCorners,
+  isWellFormed,
   extractionInput,
   liftExtraction,
   noFeedbackSink,
@@ -81,5 +88,92 @@ describe("four-corner interface", () => {
     const emitted = await collect(out.stream);
     expect(emitted).toEqual([0]); // interrupted after the first token — never reached 1..4
     expect(stopped).toBe(true); // the feedback corner actually steered the running output
+  });
+});
+
+/**
+ * DUALITY — the law that makes "four corners" checkable rather than aspirational.
+ *
+ * Before this, the module NAMED four corners and nothing enforced that a transport filled them
+ * coherently: a three-corner transport type-checked and was silently broken, because a wire with one
+ * live end cannot carry a round trip. The gap was not that duality went unenforced — there was no
+ * `dual` operator to enforce anything with.
+ *
+ * Honda's session types supply the law (the two endpoints hold DUAL types; duality is an involution).
+ * Aaron reached the same shape from physics, 2026-08-01: "this is duals like electron and positron on
+ * the CPT reversal, it's like dual in reverse." Both say: flip every direction, keep the structure,
+ * and flipping twice is identity. Same fixpoint discipline as `gen(gen) == gen`.
+ */
+const ALL_CORNERS: readonly Corner[] = ["normal-out", "normal-in", "feedback-out", "feedback-in"];
+
+describe("duality is an involution — the CPT law, made checkable", () => {
+  test("dual(dual(corner)) = corner, for every corner", () => {
+    // The involution itself. If this failed, "dual" would be a relabelling rather than a symmetry,
+    // and nothing built on it would mean anything.
+    for (const corner of ALL_CORNERS) {
+      expect(dualCorner(dualCorner(corner))).toBe(corner);
+    }
+  });
+
+  test("dual is a genuine flip — no corner is its own dual", () => {
+    // The negative control. An identity function would satisfy the involution law vacuously; this is
+    // what distinguishes a symmetry from doing nothing at all.
+    for (const corner of ALL_CORNERS) {
+      expect(dualCorner(corner)).not.toBe(corner);
+    }
+  });
+
+  test("dual pairs a NORMAL corner with a normal corner, feedback with feedback", () => {
+    // Duality reverses direction; it does not cross wires. A dual that mapped normal-out to
+    // feedback-in would type-check and be nonsense.
+    expect(dualCorner("normal-out")).toBe("normal-in");
+    expect(dualCorner("feedback-out")).toBe("feedback-in");
+  });
+
+  test("dualCorners(dualCorners(set)) = set — the involution lifts to whole endpoints", () => {
+    for (const set of [EXTRACTION_CORNERS, FULL_FOUR_CORNERS, new Set<Corner>(["feedback-in"])]) {
+      expect([...dualCorners(dualCorners(set))].sort()).toEqual([...set].sort());
+    }
+  });
+});
+
+describe("well-formedness — an absent wire is honest, a HALF-wire is not", () => {
+  test("the full four corners are well-formed", () => {
+    expect(isWellFormed(FULL_FOUR_CORNERS)).toBe(true);
+  });
+
+  test("chat-completions (both feedback corners dark) is WELL-FORMED", () => {
+    // The load-bearing legality claim. Chat-completions is a legal PROJECTION, not a broken transport:
+    // it omits the feedback wire entirely rather than half of it. If this test failed, the module's
+    // central claim — that extraction is a genuine sub-object — would be false.
+    expect(isWellFormed(EXTRACTION_CORNERS)).toBe(true);
+  });
+
+  test("THE CATCH: a three-corner transport is ill-formed", () => {
+    // This is the defect that type-checked before today. Three corners means one wire has a single
+    // live end — a round trip that cannot complete — and nothing in the type system objected.
+    for (const missing of ALL_CORNERS) {
+      const threeCorners: CornerSet = new Set(ALL_CORNERS.filter((c) => c !== missing));
+      expect(isWellFormed(threeCorners)).toBe(false);
+    }
+  });
+
+  test("a lone feedback corner is ill-formed in EITHER direction", () => {
+    // Symmetry of the rejection: it is not that outbound feedback is special. Half a wire is half a
+    // wire whichever end is lit.
+    expect(isWellFormed(new Set<Corner>(["feedback-out"]))).toBe(false);
+    expect(isWellFormed(new Set<Corner>(["feedback-in"]))).toBe(false);
+  });
+
+  test("the empty set is well-formed — no wires is not the same as a broken wire", () => {
+    expect(isWellFormed(new Set<Corner>())).toBe(true);
+  });
+
+  test("well-formedness is preserved by duality", () => {
+    // The two properties compose: looking at a coherent endpoint from the other side gives a coherent
+    // endpoint. If this failed, "both ends are both" would be false and one side would be privileged.
+    for (const set of [EXTRACTION_CORNERS, FULL_FOUR_CORNERS, new Set<Corner>()]) {
+      expect(isWellFormed(dualCorners(set))).toBe(isWellFormed(set));
+    }
   });
 });

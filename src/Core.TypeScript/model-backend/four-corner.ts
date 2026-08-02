@@ -90,3 +90,60 @@ export function liftExtraction<TIn, TOut>(completer: (payload: TIn) => AsyncIter
 export function projectExtraction<TIn, TOut>(fc: FourCorner<TIn, TOut, never>): (payload: TIn) => AsyncIterable<TOut> {
   return (payload: TIn) => fc(extractionInput(payload)).stream;
 }
+
+// ═══ DUALITY — the law that makes "four corners" checkable rather than aspirational ═════════════
+//
+// The interface above NAMES four corners but nothing enforces that a transport fills them coherently.
+// A transport wiring three corners type-checks today and is silently broken: a wire with one live end
+// cannot carry a round trip. Found 2026-08-01 while anchoring the session-type lineage — the gap is not
+// that duality is unenforced, it is that there was no `dual` operator to enforce anything with.
+//
+// The fix is Honda's, from session types: the two endpoints of a channel hold DUAL types, and duality is
+// an INVOLUTION — `dual(dual(x)) = x`. Aaron 2026-08-01 reached the same shape from physics: "this is
+// duals like electron and positron on the CPT reversal, it's like dual in reverse." Both are the same
+// statement — flip every direction, keep the structure, and flipping twice is identity. (Feynman–
+// Stueckelberg: an antiparticle is a particle traversed the other way; the dual endpoint is the same
+// protocol traversed the other way.) Same fixpoint discipline as `gen(gen) == gen`.
+//
+// WHAT THE LAW CATCHES, precisely: corners come in DUAL PAIRS, and a pair is a wire. `normal-out` pairs
+// with `normal-in`; `feedback-out` pairs with `feedback-in`. A corner set is well-formed iff every live
+// corner's dual is also live. So:
+//   - both feedback corners dark  ⇒ the feedback WIRE is absent ⇒ WELL-FORMED (this is chat-completions,
+//     a legal projection — an absent wire is honest, a half-wire is not)
+//   - exactly one feedback corner ⇒ HALF-WIRE ⇒ ill-formed, and now detectable
+// This is shape-level, not runtime: it constrains what a transport may claim to implement.
+
+/// The four corners, named. Two normal (payload) + two feedback (control), one of each per direction.
+export type Corner = "normal-out" | "normal-in" | "feedback-out" | "feedback-in";
+
+/// Which corners a transport actually fills. `chat-completions` fills the two normal corners only.
+export type CornerSet = ReadonlySet<Corner>;
+
+/// The involution on corners: flip the direction, keep the wire. This is the C of the CPT reading —
+/// send becomes receive — and `dualCorner ∘ dualCorner = id` is the T (traverse the other way, twice).
+export function dualCorner(corner: Corner): Corner {
+  switch (corner) {
+    case "normal-out": return "normal-in";
+    case "normal-in": return "normal-out";
+    case "feedback-out": return "feedback-in";
+    case "feedback-in": return "feedback-out";
+  }
+}
+
+/// The dual endpoint's corner set — what the OTHER side of this channel fills. Flipping every corner is
+/// what "both ends are both" means: there is no client/server axis to swap, only directions to reverse.
+/// (Stainback & Higgins, US 10,834,144 B2: initiation direction is not capability direction.)
+export function dualCorners(corners: CornerSet): CornerSet {
+  return new Set([...corners].map(dualCorner));
+}
+
+/// A corner set is WELL-FORMED iff every live corner's dual is live — i.e. it is made of whole wires.
+/// An absent wire is honest (chat-completions); a half-wire is a transport claiming a round trip it
+/// cannot complete, and this is the predicate that rejects it.
+export function isWellFormed(corners: CornerSet): boolean {
+  return [...corners].every((c) => corners.has(dualCorner(c)));
+}
+
+/// The two corner sets that name themselves in this codebase.
+export const EXTRACTION_CORNERS: CornerSet = new Set<Corner>(["normal-out", "normal-in"]);
+export const FULL_FOUR_CORNERS: CornerSet = new Set<Corner>(["normal-out", "normal-in", "feedback-out", "feedback-in"]);
