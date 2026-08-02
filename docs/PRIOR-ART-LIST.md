@@ -342,6 +342,33 @@ citation.
 - **OpenAI Agents SDK + *A Practical Guide to Building
   Agents*** — cross-vendor comparison for agent loop design.
 
+### Streaming chat-completions — the interface we generalized (added 2026-08-01 per Aaron: "we also should credit openais streaming chat completions interface this is what we modeled on and tested with")
+
+- **OpenAI — the Chat Completions API and its SSE streaming form** ⭐ — the shape
+  `src/Core.TypeScript/model-backend/` was built against, and the thing `four-corner.ts`
+  generalizes. Credited here because the four-corner interface is *defined by its relation
+  to it*: "chat-completions has ONLY the normal wire (normal-out + normal-in); the feedback
+  wire is absent, so it is the projection of this interface where BOTH feedback sinks are
+  the no-op sink." A generalization must name what it generalizes, or the coinage is a debt
+  (`anchor-to-human-prior-art`).
+  **What it contributed, precisely:** a *de facto standard* request/response shape
+  (`messages[]` with roles, `choices[]`, `delta` chunks over SSE, `tool_calls`) stable enough
+  that a whole ecosystem of "OpenAI-compatible" endpoints emulates it — which is exactly why
+  `openAiCompatBackend` can treat Manus, local servers, and OpenAI itself as one port with a
+  swapped config, and why `backend.ts:17` calls it "the well-defined STANDARD".
+  **Lived provenance, not just citation:** the first harness backends landed 2026-07-03
+  (#9377 → #9387) and were tested live against Aaron's own OpenAI account — as was the
+  earlier C# work in `AlephZ-ai/blazor-samples`. The interface was *used* before it was
+  generalized, which is the honest order.
+  **What it is NOT:** it is extraction-shaped (Aaron 2026-07-04 — "a HUMAN perspective: I
+  prompt, it completes, I took something"). That is a limitation of the shape, not a defect
+  of the design, and naming it is not a criticism of the prior art. Lineage: OpenAI
+  Completions (2020) → Chat Completions (2023) → SSE streaming deltas → tool/function calling
+  → the Responses API. Adjacent standards worth crediting alongside: **Server-Sent Events**
+  (WHATWG/W3C `EventSource`) as the streaming transport, and **Anthropic's Messages API**
+  as the independent second instance that shows the shape is a convergent standard rather
+  than one vendor's idiom.
+
 ### Multi-agent scientific discovery (added 2026-05-28 per Aaron YouTube ferry PR #5762)
 
 - **Google DeepMind co-scientist** ⭐ (Nature 2026) — multi-agent
