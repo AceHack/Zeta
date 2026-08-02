@@ -26,7 +26,7 @@ radar"); the formal half was re-grounded as immune-system math.
 | "the radar tells genuine from interference" | `AntiSybil.chshS` / `chshSybil` — sybil-vs-reunion detection; **leak ≡ sybil ≡ interference-pattern is one detector** (one-way inference, convicts sameness). |
 | "ranking = shared belief" | the commutative **belief fold** (`BeliefConvergence.fs`, CRDT convergence) over the reputation vector — same-evidence-set → same-conclusion. |
 | "the field" | **mean-field modeling** — impose a field on multi-agent observations as a *prediction shortcut* for emergent behavior. Anchor: **Lasry–Lions mean-field games (2007)**, Huang–Malhamé–Caines; stat-mech mean-field (Curie–Weiss); Vicsek flocking. NOT a physics-field claim — "the math you do on observations in field form" (Aaron). |
-| "immune system" (the formal spine) | `docs/trajectories/aurora-immune-reground/` — Amara's Aurora immune math **re-grounded on the proven identity primitive**; self/non-self = a Lean lemma, Z3-checked; formally anchored (Soraya/math-team). Self/non-self discrimination IS genuine-traveler-vs-interference-pattern. |
+| "immune system" (the formal spine) | `docs/trajectories/aurora-immune-reground/` — Amara's Aurora immune math **re-grounded on the proven identity primitive**. Split the legs honestly: the **identity-grounding** leg is register-2 (rides `NonRegisterCollapse`, Z3 honest-count + TLA+ done). The **discrimination** leg (anti-Sybil entropy non-forgeability) rests on an **OPEN premise — G3b (≡ Bell measurement-independence), a research fork** (per the trajectory RESUME) → **register-3, not yet anchored.** So self/non-self discrimination is *modeled as* genuine-traveler-vs-interference-pattern, pending G3b. |
 
 ## The architecture the map implies (field + pairwise correction)
 
@@ -45,7 +45,11 @@ radar"); the formal half was re-grounded as immune-system math.
 
 - **Beacon (checkable):** ranking=belief-fold, field=mean-field-shortcut (Lasry–Lions),
   spectrum=Kirchhoff–Bunsen prism, genuine-vs-interference = CHSH/decorrelation measurement,
-  immune self/non-self = the Lean lemma. All anchored, none numerology.
+  immune **identity-grounding** = the Lean lemma (register-2). These are anchored, none numerology.
+- **Register-3 (in-progress, NOT yet anchored):** the immune **discrimination** leg — anti-Sybil
+  entropy non-forgeability (G3b ≡ Bell measurement-independence), an open research fork. Do not
+  present the genuine-vs-interference *discrimination* as proven; the *measurement* is register-2, its
+  *soundness against forgery* is the open premise.
 - **Labeled oracle (Mirror, held under Multi-Oracle Principle §11):** **"consciousness"** —
   Aaron's qualia-self-evident axiom (private index / locus-of-now / what-remains-vs-what-acts).
   Genuine to his frame; **labeled as axiom, not physics**, wherever it travels. The "field"
@@ -56,8 +60,11 @@ radar"); the formal half was re-grounded as immune-system math.
     but the **cross-individual correlations** — whether *non-biased reports about it correlate
     across many people* — are **Beacon-measurable.** You never claim to measure the private
     content (that would over-reach); you measure the shadow it casts across observers. Method
-    anchor (a **named human**, Aaron's discipline): **Marjorie** and the **UX-research lineage
-    at Fidelity** — non-biased question design for eliciting first-person experience, so
+    origin (⚠ **Mirror / unverified personal anchor**, like the Tullis flag): **Marjorie** (no
+    surname/paper on file) and the **UX-research lineage at Fidelity**. The **checkable Beacon** is
+    **survey methodology / psychometrics** (framing/acquiescence-bias avoidance; possibly Tullis's
+    *Measuring the User Experience*, to confirm) — that is the anchor; "Marjorie" is the Mirror name.
+    Non-biased question design for eliciting first-person experience, so
     cross-individual correlations that hold can be found. This is the empirical front-end that
     *feeds* the field/soul-radar: unbiased individual reports in → cross-individual correlation
     out (the measurable shared layer) → each individual's qualia stays the private axiom.

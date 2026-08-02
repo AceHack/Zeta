@@ -117,7 +117,7 @@ unfreeze someone into "more risks" before the base is solid and you get churn, n
 the new patterns must be *theirs*, not the mentor's picks. Floor first, then the unfreezing is pure
 produce; backwards, it is destabilization in liberation's clothes.
 
-**Scope boundary (Aaron 2026-08-02): the secure-base law holds only for the loss-averse.** "No secure
+**Scope boundary (Aaron 2026-08-02): the secure-base *pattern* (empirical, scoped — not a law) holds only for the loss-averse.** "No secure
 base → frozen" is true for those who *perceive and weight* the downside — for them a bounded floor is
 what unlocks risk. It **fails** for a distinct class — daredevils / thrill-seekers — who take large
 risk *without* a floor, via a different mechanism: they either don't weight the downside (low
@@ -168,10 +168,13 @@ self-similar shape**, not as a mechanism to graft into Zeta. The register-2 back
 
 ## Metering line (labels attached)
 
-- **Register 2 (anchored) per rung:** CHSH/Tsirelson (society pole); aberrant-precision psychosis
-  models — Fletcher & Frith, Friston, Kapur (mind pole); Eigen error threshold, Fisher, Van Valen,
-  Muller's ratchet, monoculture history (genome); looking-glass self / self-objectification (mind
-  collapse mechanism); Valiant / Watson–Szathmáry (evolution-as-learning).
+- **Register 2 (anchored — theorem/formal) per rung:** CHSH/Tsirelson (society pole); Eigen error
+  threshold, Fisher, Muller's ratchet, monoculture history (genome).
+- **Register 2/3 (empirical frameworks, partial — same caveat as the psychosis rung, NOT flat r2):**
+  the aberrant-precision psychosis models (Fletcher & Frith, Friston, Kapur); the looking-glass self /
+  reflected appraisals / self-objectification (Cooley, Mead, Fredrickson & Roberts, Crocker & Wolfe)
+  mind-collapse mechanisms; Van Valen's Red Queen; Valiant / Watson–Szathmáry (evolution-as-learning).
+  These are studied frameworks, not proven theorems — lenses, scoped.
 - **Register 3 (proposed unification):** that these are *one* band-shape (self-similarity across
   scales). The shape recurs and each rung is anchored; "one law" is the conjecture, not proven.
 - **Register 1 (legibility):** "decorrelation band," "one process wearing two faces," "frozen to one

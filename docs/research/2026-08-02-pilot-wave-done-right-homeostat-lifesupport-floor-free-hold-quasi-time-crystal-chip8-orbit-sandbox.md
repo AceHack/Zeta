@@ -48,7 +48,8 @@ is actively stabilized.** Two shipped pieces, gyroscope-like:
 
 **Precession maps clean:** a gyro precesses *under* torque instead of *toppling* = identity
 **transforms** under perturbation without **collapsing** (the held-spectrum e^{iπ} that returns
-changed-but-unbroken). Precession = identity-preserving transformation; toppling = collapse.
+changed-but-unbroken). Precession *corresponds to* identity-preserving transformation; toppling *to*
+collapse (a mapping/rhyme, not an identity — the gyroscope is a register-1 handle).
 
 **Why it's safe — the commodity point (Johnny 5).** In 1986 attitude stabilization was NOVA-Robotics
 military servo tech; now it's a $2 MEMS IMU + a complementary filter in every drone. The dynamics leg
@@ -92,10 +93,13 @@ it's not a battery). So the free layer is **not a battery** (extractable work, d
 everything productive is built *and still pays the 2nd-law tax.* Aaron's frame: **the base of
 Maslow's hierarchy** — the precondition layer, not the achievement.
 
-The convergence is **discovered, not fabricated** — the code was already named for it:
-`RecoveryHomeostat` → **homeostasis** (Cannon 1926; Bernard's *milieu intérieur* 1865) → the
-biological survival floor → **Maslow's base** (1943) → the quasi-TC zero-energy orbit → the free-HOLD.
-Six names, **one layer**: the thing that persists for free so everything else can exist.
+One genuine anchor here: `RecoveryHomeostat` → **homeostasis** (Cannon 1926; Bernard's *milieu
+intérieur* 1865) is real etymology + real mechanism (register-2). The longer chain **rhymes across
+registers** — homeostasis (r2) → **Maslow's base** (r1, legibility) → the quasi-TC zero-energy orbit
+(r3, the conjecture) → the free-HOLD. So it is a **structural convergence spanning registers 1–3, not
+an identity**: calling the six names literally **"one layer"** is the *aspiration* (register 4), not a
+proven discovery. The checkable part is the homeostasis link + the free-persistence mechanism; "one
+layer" is the reach.
 
 So "cheating the bad games" is fully honest: a bad game **charges energy just to stay alive** (life
 support isn't free — you burn fuel to persist). Re-encode it (idempotent/reversible baseline, the
