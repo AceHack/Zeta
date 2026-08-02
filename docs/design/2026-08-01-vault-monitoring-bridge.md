@@ -90,7 +90,7 @@ Vaults without operational data render as `"sealed"` with zero confidence — ho
 | Training | `codegen-lab` | Codegen Lab | Events with mode=codegen or action.kind=work |
 | Economy | `reputation-engine` | Reputation Engine | Full event set (per-agent tick counting) |
 
-Each room is an uncertainty engine: confidence is (value, ε), never collapsed. Rooms with no 24h activity render as `"idle"` with high epsilon — the system is uncertain, not broken.
+Each room is an uncertainty engine: confidence is (value, ε), never collapsed. Rooms with no 24h activity render as `"cold"` with high epsilon — the system is uncertain, not broken.
 
 ---
 
@@ -141,7 +141,7 @@ The **page** (Iris's domain) applies the state machine at render time:
 
 Color mapping is Iris's domain (the design system CSS DU). The adapter emits only `last_seen` — the page owns the visual.
 
-This ensures: if the adapter stops running, dwellers degrade to "attention" then "cold" automatically — the browser's clock is the oracle, not a stale file claiming liveness.
+This ensures: if the adapter stops running, dwellers degrade to "stale" then "cold" automatically — the browser's clock is the oracle, not a stale file claiming liveness.
 
 Dweller location = their current hat duty's room. Otto wearing the Healer Hat appears in the Heal Bay.
 
