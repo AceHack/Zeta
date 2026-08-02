@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test";
+import { describe, test, expect } from "bun:test";
 import { T, F, N } from "../tri-boolean";
 import { DEFAULT_SHAPE } from "./types";
 import { decode, measure, cooperate, isHeld, fromValue, fromTrits } from "./tri-boolean-float";
@@ -74,4 +74,77 @@ test("encode canonicalizes to the smallest mode (decode is exact regardless)", (
     expect(enc.float.decoder).toEqual([F, F, F]); // mode 0
     expect(decode(enc.float)).toEqual({ ok: true, value: 2 });
   }
+});
+
+/**
+ * RESOLUTION IS MINTABLE — a characterization guard, requested by Soraya 2026-08-01.
+ *
+ * CONTEXT. Aaron proposed the self-describing carrier as the escape from the whitewash
+ * impossibility: a fresh identity is HELD (undecodable), so "held cannot delegate" denies
+ * newcomers without placing them at the bottom of a scalar. Half of that argument succeeds — the
+ * type makes `{value: 0, epsilon: 0}` unrepresentable, which is strictly stronger than the
+ * two-field convention it replaces, and that bug shipped hours before.
+ *
+ * The other half fails on this module, for two independent reasons Soraya established and I
+ * verified:
+ *
+ *   1. RESOLUTION IS NOT GRADED. `decode` is all-or-nothing — `ok(number)` or one of two
+ *      superposed states — so a carrier one trit short of full resolution is indistinguishable
+ *      in the codomain from one with nothing resolved. There is no width to accumulate.
+ *   2. RESOLUTION IS NOT UNFORGEABLE. That is what the tests below pin: `fromValue(v)` emits a
+ *      FULLY RESOLVED carrier for every representable v, and `fromTrits` takes the trits directly.
+ *
+ * THESE TESTS PASS TODAY, AND THEIR PASSING IS THE EXPOSURE. That is the unusual thing about
+ * them and the reason they are named this way. Nothing here is broken: a numeric constructor
+ * that produces a resolved number is correct, and this module is a NUMBER, not a credential.
+ * The exposure exists only in the *proposed* use — the moment a `TriFloat` carries reputation
+ * or delegation capacity, `fromValue` becomes the mint, and an agent can hand itself a resolved
+ * carrier.
+ *
+ * SO: these are characterization tests. They pin current behaviour so that a change is
+ * deliberate rather than accidental, and they carry the inversion condition in the open —
+ *
+ *   >>> IF A TriFloat EVER CARRIES REPUTATION, DELEGATION CAPACITY, OR ANY EARNED QUANTITY,
+ *   >>> THESE ASSERTIONS MUST BE INVERTED: no agent-reachable constructor may produce
+ *   >>> `isHeld === false`, and resolution must become graded so it can accumulate.
+ *
+ * Friedman–Resnick is the reason: something must be non-transferable across an identity reset.
+ * Accumulated resolution cannot be that thing while the substrate hands out resolved numbers on
+ * request — the carrier is the right vessel for a tenure/cost quantity, not a substitute for one.
+ */
+describe("resolution is mintable — pinned so the exposure cannot be forgotten", () => {
+  test("fromValue mints a FULLY RESOLVED carrier for every representable value", () => {
+    // The mint. Correct for a number; disqualifying for a credential.
+    for (const v of [0, 1, 2.5, 15.9375, 255]) {
+      const encoded = fromValue(v);
+      if (!encoded.ok) continue; // unrepresentable under DEFAULT_SHAPE — not the point here
+      expect(isHeld(encoded.float)).toBe(false);
+      expect(decode(encoded.float).ok).toBe(true);
+    }
+  });
+
+  test("decode is ALL-OR-NOTHING: 7-of-8 held is indistinguishable from 1-of-8 held", () => {
+    // The absence of a graded quantity, stated as an observation rather than a complaint.
+    // Whitewash-proofness needs resolution to ACCUMULATE; this shows there is nothing to
+    // accumulate — one held trit collapses the carrier to the same codomain inhabitant as many.
+    const nearlyResolved = fromTrits([F, F, F, N], [F, F, F], [F, F, F, T]);
+    const barelyResolved = fromTrits([N, N, N, N], [F, F, F], [N, N, N, N]);
+    const a = decode(nearlyResolved);
+    const b = decode(barelyResolved);
+    expect(a.ok).toBe(false);
+    expect(b.ok).toBe(false);
+    if (!a.ok && !b.ok) {
+      expect(a.feedback.reason).toBe(b.feedback.reason);
+    }
+  });
+
+  test("a held carrier cannot be read as a value — the ok:false branch has no value field", () => {
+    // The half of Aaron's argument that DOES succeed, pinned so it is not lost when the rest is
+    // revisited. `{value: 0, epsilon: 0, silent: true}` has no representation here: you cannot
+    // express "a value, held with certainty", which is the class of bug this replaces.
+    const held = fromTrits([F, F, F, N], [F, F, F], [F, F, F, T]);
+    const result = decode(held);
+    expect(result.ok).toBe(false);
+    expect("value" in result).toBe(false);
+  });
 });
