@@ -3,7 +3,11 @@
 // Aaron 2026-07-04: "GUID-keyed — I think we should use ZetaIds, they're our universal pointers; we can make
 // a category just for this. In our 128-bit ids it's a little program — every ZetaId — the system will know
 // how to decode on the other side." So this is the merge of the two prior bricks: the four-corner framing
-// (duplex-transport.ts) + the maintainer's own MultiplexedWebSockets (many logical channels over one physical
+// (duplex-transport.ts) + the maintainer's own MultiplexedWebSockets — patented as Stainback & Higgins,
+// "Hub and Agent Communication Through a Firewall", US 10,834,144 B2 (Itron, priority 2016; see
+// docs/PRIOR-ART-LIST.md). THAT patent is hub-and-agent, i.e. CENTRALIZED; this is the decentralized
+// version — no hub, no central addressing authority, ZetaId-routed peer-to-peer. Keep it that way.
+// (many logical channels over one physical
 // socket), but keyed by a **ZetaId** instead of a GUID. A GUID is an opaque random token; a ZetaId is a
 // SELF-DESCRIBING 128-bit pointer whose `Category` nibble (= `Category.Channel`, added 2026-07-04) tells the
 // far side "this is a channel" — the id carries its own decode. Each logical channel is a virtual

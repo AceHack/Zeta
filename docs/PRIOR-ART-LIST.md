@@ -342,6 +342,62 @@ citation.
 - **OpenAI Agents SDK + *A Practical Guide to Building
   Agents*** — cross-vendor comparison for agent loop design.
 
+### Firewall-traversing duplex + channel multiplexing — the maintainer's own patented prior art (added 2026-08-01)
+
+- **Stainback & Higgins, *Hub and Agent Communication Through a Firewall*** ⭐ —
+  US 2018/0109563 A1 → **US 10,834,144 B2** (granted 2020-11-10; priority 2016-10-13;
+  assignee **Itron, Inc.**). The named human anchor for `multiplexed-duplex-transport.ts`,
+  which until now credited only "the maintainer's own MultiplexedWebSockets" without the
+  citation. Aaron is the first-named inventor.
+  **What it establishes, precisely:**
+  - **Initiation direction ≠ capability direction.** The agent dials *out* (client-shaped,
+    firewall-friendly, port 443 with the handshake inside TLS so stateful inspection cannot
+    see it) and then *serves* commands (server-shaped). This is why the four-corner model has
+    no client/server axis to swap: **both ends are both**, and mirroring who dialed changes
+    nothing either side can do. Parity is a *symmetry of the design*, not an operation on it.
+  - **Command-ID multiplexing over one pipe** (¶0058): "whenever a command is started, it may
+    be assigned a GUID … this is a type of multiplexing … even if only one pipe is used, many
+    commands can be in transit at the same time without scrambling." That is exactly
+    `multiplexed-duplex-transport.ts`. **Zeta's upgrade: ZetaId instead of GUID** — a GUID is
+    an opaque random token; a ZetaId is self-describing, its `Category` nibble telling the far
+    side "this is a channel", so the id carries its own decode. Same multiplex, self-describing
+    key.
+  - **The feedback loop, nine years early** (¶0072, the "real-time pattern"): "blurs a
+    distinction between a request and a response … allows for many advanced techniques, such
+    as a feedback loop." That is the four-corner feedback wire, named in the patent before
+    `four-corner.ts` typed it.
+  - **Capability lives at the edge, never at the centre** (¶0017, ¶0041): commands are
+    *referenced* by name+parameters from the hub but *defined and executed* only at the agent —
+    "only commands that already exist at the agent can ever be called", so a compromised hub
+    cannot escalate. The same discipline `four-corner.ts` preserves by being pure interface
+    with no ambient authority.
+
+  **THE BOUNDARY, AND WHY IT IS LOAD-BEARING RATHER THAN LEGAL BOILERPLATE.** The patent is
+  **hub-and-agent**: a *central* hub, multi-tenant, with routing tables synchronised by Paxos
+  and the hub as the addressing authority. **Zeta is the decentralized version and must stay
+  that way** — N four-corner channels over one socket, ZetaId-routed peer-to-peer, no hub, no
+  central addressing authority, `localDuplexPair` as the deterministic (DST-replayable) case.
+  Aaron 2026-08-01: *"the distinction between centralized vs decentralized is key — this is
+  what lets me do this open source and have decentral credibility, cause I built the
+  centralized version and have the patent."*
+
+  Two consequences worth stating so neither drifts:
+  1. **Design constraint.** Any proposal that reintroduces a hub, a central registry, a
+     single addressing authority, or a leader-elected routing table is *outside* Zeta's
+     architecture — regardless of how convenient it is. The manifesto already forbids it
+     (§1 scale-free: no central point of control/coordination/failure); this entry names the
+     specific temptation, because the centralized design is the one the maintainer knows best
+     and is therefore the easiest to reach for.
+  2. **Credibility.** The decentralized claim is credible *because* the same person built and
+     patented the centralized one. That is earned standing, not a disclaimer — and it is the
+     reason the boundary is worth stating loudly rather than quietly.
+
+  Adjacent standards this builds on and should be credited alongside: **WebSocket** (RFC 6455,
+  Fette & Melnikov) as the full-duplex transport the patent extends; **SignalR** (named in the
+  patent) as the multiplexing precedent in the .NET ecosystem; and **Paxos** (Lamport) which
+  the patent invokes for hub consensus — precisely the component the decentralized version
+  does not need.
+
 ### Streaming chat-completions — the interface we generalized (added 2026-08-01 per Aaron: "we also should credit openais streaming chat completions interface this is what we modeled on and tested with")
 
 - **OpenAI — the Chat Completions API and its SSE streaming form** ⭐ — the shape
