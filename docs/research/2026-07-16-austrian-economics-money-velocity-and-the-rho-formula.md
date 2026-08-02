@@ -27,7 +27,10 @@ Eugen von Böhm-Bawerk's theory of capital (1889) rests on a single empirical ob
 
 In the ρ formula, the time preference is L. A holder with high time preference (wants goods now) has a low L — they spend quickly. A holder with low time preference (willing to wait) has a high L — they hold. The ρ formula shows that the price signal produced by a population of holders is only independent (ρ → 0) when the aggregate L is large — when the population has low time preference.
 
-This is Böhm-Bawerk's claim, formalized: **sound money requires low time preference**. The ρ formula gives the exact relationship: ρ = 1/(1+L). The Tsirelson threshold (ρ* = 1/(3√2) ≈ 0.2357) is the boundary between the SharedState regime (price signal partially correlated) and the Classical/Independent regime (price signal genuinely independent). The corresponding L* = 3√2 - 1 ≈ 3.24 years is the minimum holding period for sound money.
+This is Böhm-Bawerk's claim, formalized: **sound money requires low time preference**. The ρ formula gives the exact relationship: ρ = 1/(1+L). The Tsirelson threshold (ρ* = 1/(3√2) ≈ 0.2357) is the boundary between the SharedState regime (price signal partially correlated) and the Classical/Independent regime (price signal genuinely independent).
+
+> **⚠ Provenance caveat (Soraya audit 2026-08-01) — keep this attached wherever the number appears.** `1/(3√2)` is **NOT** the Tsirelson bound. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* (`src/Core/Tsirelson.fs`). `1/(3√2)` is a **design choice**: the image of `S = 2√2` under the *freely chosen* linear map `ρ = S/12` (pinning `ρ* = 1/3 ↔ S = 4`), which makes the Condorcet ρ-regimes and the Bell S-regimes *homoiconically identical*. Chosen for homoiconicity, not derived — see `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md` and the code peel at `src/Bayesian/YinYangEnsemble.fs`. Legitimate as a design threshold; a physical bound it is not.
+ The corresponding L* = 3√2 - 1 ≈ 3.24 years is the minimum holding period for sound money.
 
 ---
 
@@ -124,7 +127,7 @@ The ρ = 1/(1+L) formula unifies four previously separate domains:
 1. **Sensor fusion (Kalman filter):** ρ is the correlation between sensors. Low ρ = independent sensors = trustworthy posterior.
 2. **Austrian economics (Böhm-Bawerk):** L is the time preference. Low ρ = low time preference = sound money.
 3. **Information theory (Shannon):** ρ is the redundancy of the channel. Low ρ = high information content = genuine price signal.
-4. **Quantum mechanics (Tsirelson):** ρ* = 1/(3√2) is the boundary between SharedState and Classical regimes. Below ρ* = sound money. Above ρ* = inflationary.
+4. **Condorcet ensemble regime (NOT quantum mechanics):** ρ* = 1/(3√2) is the chosen boundary between SharedState and Classical regimes. Below ρ* = sound money. Above ρ* = inflationary. ⚠ This is the `ρ = S/12` *design-choice* threshold, **not** the quantum Tsirelson bound (see the provenance caveat above) — the analogy to CHSH regimes is homoiconic, not a physics derivation.
 
 The multi-oracle proof applied to money shows that the Austrian position is not a value judgment — it is a mathematical requirement for the price signal to be substrate-independent. The Keynesian position (high velocity, high ρ) produces a price signal that is provably correlated — it carries no information about the world. The Austrian position (low velocity, low ρ) produces a price signal that is provably independent — it carries genuine information.
 

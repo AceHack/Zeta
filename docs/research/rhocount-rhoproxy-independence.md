@@ -63,6 +63,8 @@ cells have processed different numbers (bus delay present). It is insensitive to
 
 ## Design Consequence
 
+> **⚠ Provenance caveat (Soraya audit 2026-08-01) — keep this attached wherever the number appears.** `1/(3√2)` is **NOT** the Tsirelson bound. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* (`src/Core/Tsirelson.fs`). `1/(3√2)` is a **design choice**: the image of `S = 2√2` under the *freely chosen* linear map `ρ = S/12` (pinning `ρ* = 1/3 ↔ S = 4`), which makes the Condorcet ρ-regimes and the Bell S-regimes *homoiconically identical*. Chosen for homoiconicity, not derived — see `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md` and the code peel at `src/Bayesian/YinYangEnsemble.fs`. Legitimate as a design threshold; a physical bound it is not.
+
 The Tsirelson reseed threshold (ρ_T = 1/(3√2) ≈ 0.2357) applies to **rhoCount**, not
 rhoProxy, for Reticulum-style networks. The reseed trigger is:
 

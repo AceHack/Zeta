@@ -86,7 +86,10 @@ The formal model:
 
 ## What This Means for the Reseed Threshold
 
-The Tsirelson threshold (ρ_T = 1/(3√2) ≈ 0.2357) applied to `rhoCount` is the correct operating point for a Reticulum-style network. It says: reseed when the cells are too synchronized in their observation counts — when the bus delay has dropped low enough that the temporal decorrelation is collapsing.
+The Tsirelson threshold (ρ_T = 1/(3√2) ≈ 0.2357) applied to `rhoCount` is the correct operating point for a Reticulum-style network.
+
+> **⚠ Provenance caveat (Soraya audit 2026-08-01) — keep this attached wherever the number appears.** `1/(3√2)` is **NOT** the Tsirelson bound. Tsirelson's bound is `S ≤ 2√2 ≈ 2.828` on the CHSH *correlator* (`src/Core/Tsirelson.fs`). `1/(3√2)` is a **design choice**: the image of `S = 2√2` under the *freely chosen* linear map `ρ = S/12` (pinning `ρ* = 1/3 ↔ S = 4`), which makes the Condorcet ρ-regimes and the Bell S-regimes *homoiconically identical*. Chosen for homoiconicity, not derived — see `docs/research/2026-07-04-rho-t-derivation-attempt-it-is-a-design-choice-chosen-for-homoiconicity.md` and the code peel at `src/Bayesian/YinYangEnsemble.fs`. Legitimate as a design threshold; a physical bound it is not.
+ It says: reseed when the cells are too synchronized in their observation counts — when the bus delay has dropped low enough that the temporal decorrelation is collapsing.
 
 The threshold is not about preventing the cells from agreeing. It is about preventing them from being at the *same stage* of the journey at the same time. The ensemble needs cells at different stages to produce a useful vote. The reseed replaces the most-synchronized cell (the one with the most observations — the most "caught up") with a fresh cell at stage zero, restoring the temporal spread.
 
