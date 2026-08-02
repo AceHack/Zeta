@@ -382,6 +382,8 @@ jobs:
         env:
           AGENT: ${{ matrix.agent }}
         run: |
+          set -o pipefail
+
           # Only otto generates (avoid 3 parallel writes to the same file)
           if [ "$AGENT" != "otto" ]; then
             echo "[bridge] Skipping — only otto generates vault-state"
@@ -389,12 +391,18 @@ jobs:
           fi
 
           echo "[bridge] Generating vault-roster.json + vault-state.json..."
+          set +e
           bun src/Core.TypeScript/observe/vault-state-bridge-cli.ts \
             --events-dir docs/observe-events \
             --tick-history data/tick-history.json \
             --drift-ledger data/drift-mtth.json \
-            --output-dir data \
-            2>&1 | tail -5 || echo "::warning::[bridge] vault-state generation failed (non-fatal)"
+            --output-dir data 2>&1
+          BRIDGE_RC=$?
+          set -e
+
+          if [ "$BRIDGE_RC" -ne 0 ]; then
+            echo "::warning::[bridge] vault-state generation failed rc=$BRIDGE_RC (non-fatal)"
+          fi
 
           # Stage if produced — non-fatal means the push still carries the heartbeat event
           if [ -f data/vault-state.json ]; then

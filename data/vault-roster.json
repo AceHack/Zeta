@@ -114,6 +114,8 @@
     {
       "id": "healer",
       "name": "Healer Hat",
+      "room_id": "heal-bay",
+      "default_agent_id": "otto",
       "rights": [
         "execute-tier0-healers"
       ],
@@ -124,6 +126,8 @@
     {
       "id": "merge",
       "name": "Merge Hat",
+      "room_id": "merge-floor",
+      "default_agent_id": "alexa",
       "rights": [
         "auto-merge-clean-prs"
       ],
@@ -134,6 +138,8 @@
     {
       "id": "archive",
       "name": "Archive Hat",
+      "room_id": "archive-stacks",
+      "default_agent_id": "soraya",
       "rights": [
         "archive-pr-reviews"
       ],
@@ -144,6 +150,8 @@
     {
       "id": "codegen",
       "name": "Codegen Hat",
+      "room_id": "codegen-lab",
+      "default_agent_id": null,
       "rights": [
         "execute-7b-codegen"
       ],

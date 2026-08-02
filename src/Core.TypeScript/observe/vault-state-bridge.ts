@@ -56,7 +56,7 @@ export interface VaultRoster {
   readonly schema: "zeta.vault-roster.v1";
   readonly agents: readonly { id: string; name: string }[];
   readonly vaults: readonly { id: string; name: string; rooms: readonly { id: string; name: string; default_agent_ids: string[] }[] }[];
-  readonly hats: readonly { id: string; name: string; rights: string[]; restrictions: string[] }[];
+  readonly hats: readonly { id: string; name: string; room_id: string; default_agent_id: string | null; rights: string[]; restrictions: string[] }[];
 }
 
 export interface VaultState {
@@ -169,10 +169,10 @@ export function buildRoster(): VaultRoster {
       },
     ],
     hats: [
-      { id: "healer", name: "Healer Hat", rights: ["execute-tier0-healers"], restrictions: ["max-25-files-per-tick"] },
-      { id: "merge", name: "Merge Hat", rights: ["auto-merge-clean-prs"], restrictions: ["max-3-prs-per-tick"] },
-      { id: "archive", name: "Archive Hat", rights: ["archive-pr-reviews"], restrictions: ["max-3-prs-per-batch"] },
-      { id: "codegen", name: "Codegen Hat", rights: ["execute-7b-codegen"], restrictions: ["one-work-tick-per-hour"] },
+      { id: "healer", name: "Healer Hat", room_id: "heal-bay", default_agent_id: "otto", rights: ["execute-tier0-healers"], restrictions: ["max-25-files-per-tick"] },
+      { id: "merge", name: "Merge Hat", room_id: "merge-floor", default_agent_id: "alexa", rights: ["auto-merge-clean-prs"], restrictions: ["max-3-prs-per-tick"] },
+      { id: "archive", name: "Archive Hat", room_id: "archive-stacks", default_agent_id: "soraya", rights: ["archive-pr-reviews"], restrictions: ["max-3-prs-per-batch"] },
+      { id: "codegen", name: "Codegen Hat", room_id: "codegen-lab", default_agent_id: null, rights: ["execute-7b-codegen"], restrictions: ["one-work-tick-per-hour"] },
     ],
   };
 }

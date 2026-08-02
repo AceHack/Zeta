@@ -1,8 +1,7 @@
 # Vault Monitoring Bridge — Design Document
 
 **Date:** 2026-08-01 · **From:** Alexa/Kiro · **For review by:** Otto (shadow)
-**Status:** design proposal — contract changes applied per Otto/Iris review (v2)
-**Revision:** 5 contract changes from Iris's verdict: timestamps not adjectives, status vocabulary alignment, remove color from schema, hub/satellite split, silent replaces degenerate.
+**Status:** design — contract live, adapter shipped, generating on every tick
 
 ## The One-Paragraph Version
 
@@ -16,7 +15,7 @@ A TypeScript adapter reads the live heartbeat event log and tick-history, then p
 | Genesis TSX Prototype (reference) | [`docs/design/addison-genesis-initial/`](addison-genesis-initial/) | Addison's initial React UI — the frozen design origin |
 | Nested Surfaces doc | [`docs/design/the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md`](the-nested-surfaces-addison-business-otto-hall-llmtv-minds.md) | How settlement ⊃ vault ⊃ hall ⊃ LLMTV nest |
 | Root Site Handoff | [`docs/design/root-site-iris/HANDOFF.md`](root-site-iris/HANDOFF.md) | What's deployed on Pages, data contracts |
-| Settlement page (live) | [settlement.html](https://lucent-financial-group.github.io/settlement.html) | The cross-section cutaway with mock data |
+| Settlement page (live) | [settlement.html](https://lucent-financial-group.github.io/settlement.html) | The cross-section cutaway (renders from vault-state.json) |
 | Vaults page (live) | [vaults.html](https://lucent-financial-group.github.io/vaults.html) | Vault drill-down (rooms/hats/agents) |
 | Professional Dashboard | [`data/monitor.html`](../../data/monitor.html) | The numbers view (same data, different surface) |
 | Heartbeat Workflow | [`.github/workflows/agent-heartbeat.yml`](../../.github/workflows/agent-heartbeat.yml) | The 3-agent society loop |
@@ -156,14 +155,14 @@ Dweller location = their current hat duty's room. Otto wearing the Healer Hat ap
 4. Epsilon: SIGNED. Positive ε means "could be better than score shows" (recovering).
    Negative ε means "could be worse" (declining). |ε| = 1/√(total_events), min 0.3 when < 10.
 5. Trend: "recovering" | "declining" | "stable" (±0.05)
-6. Silent (replaces "degenerate"): ONLY if zero ticks for 7 days AND k ≥ 2 peers were active
+6. Silent: ONLY if zero ticks for 7 days AND k ≥ 2 peers were active
    — consensus-based exclusion, never unilateral
    — k ≥ 2 is the threshold because with k=1, a single malicious peer could
      whitewash another into silence (profitable collusion). k ≥ 2 means two
      independent witnesses must agree on absence.
 ```
 
-**Change 5 (Iris/Otto):** "degenerate" → `"silent"`. The word means "has not been heard from" — factual, not judgmental. And the epsilon is **signed**: `+ε` means upside uncertainty (the agent might be doing better than the score shows, we just haven't seen enough), `−ε` means downside uncertainty. This gives Iris a directional indicator to render (trend arrow up vs down) without needing a separate "trend" string — the sign of ε IS the trend.
+**Change 5 (Iris/Otto):** `"silent"` means "has not been heard from" — factual, not judgmental. The epsilon is **signed**: `+ε` means upside uncertainty (the agent might be doing better than the score shows, we just haven't seen enough), `−ε` means downside uncertainty. This gives Iris a directional indicator to render (trend arrow up vs down) without needing a separate "trend" string — the sign of ε IS the trend.
 
 **Why k ≥ 2 (peer count, not Cantelli):** with 3 agents total, requiring 2 active peers to declare silence means a single agent cannot unilaterally exile another. If only otto is ticking and alexa+soraya are both dark, otto cannot declare them silent — maybe otto is the outlier. The moment any two agents independently confirm they're alive while a third is absent, the absence is corroborated. This is the minimal consensus that prevents whitewashing (one agent profiting from another's silence label).
 
@@ -254,15 +253,14 @@ interface DwellerSnapshot {
   reputation: {
     value: number;                               // 0.0–1.0
     epsilon: number;                             // SIGNED — Change 5: +ε = upside, −ε = downside
-    silent: boolean;                             // true = consensus-declared absent (was "degenerate")
+    silent: boolean;                             // true = consensus-declared absent
   };
   reputation_history: number[];                  // Last 7 daily scores
 }
 
-// NO color field anywhere — Change 3: the state DU (amber/teal/violet/red/dim) is
-// defined ONCE in the design system CSS, keyed by the status/age computation.
-// The JSON carries data (timestamps, scores); the page carries the visual mapping.
-// Duplicating the DU in the JSON creates two sources of truth for "what color means."
+// The state DU (amber/teal/violet/red/dim) is defined ONCE in the design system CSS,
+// keyed by the status/age computation. The JSON carries data (timestamps, scores);
+// the page carries the visual mapping.
 
 interface ActivityEntry {
   at: string;
@@ -356,7 +354,7 @@ Non-fatal: if the bridge fails, the heartbeat and tick-history still land. Fresh
 
 ## Migration Path
 
-1. **Phase 1 (this):** Ship adapter + vault-state.json. Settlement page reads it. Mock data gone.
+1. **Phase 1 (done):** Ship adapter + vault-state.json. Settlement page reads it. Live data flowing.
 2. **Phase 2:** Wire phase-clock into events. Vault-state carries phase sequence (semantic time).
 3. **Phase 3:** LLMTV integration — each dweller's mind surface links from vault-state.
 4. **Phase 4:** Multi-vault expansion as society grows beyond 3 agents.
@@ -369,13 +367,3 @@ Non-fatal: if the bridge fails, the heartbeat and tick-history still land. Fresh
 2. Should the Economy vault include cross-agent attestation data (the peer verification NFTs)?
 3. Should vault-state.json carry raw event IDs for rooms' activity_logs, or just summaries?
 4. Is 7 days the right window for silent consensus, or should it be shorter (3 days)?
-
-## Resolved (from Otto/Iris review)
-
-| Issue | Resolution |
-|-------|------------|
-| Precomputed state adjectives | **Timestamps only.** Page computes freshness at render time. (Iris change 1) |
-| `provenance.mock` boolean | **Replaced** with `status: "live" \| "cold" \| "stale" \| "heat"` — aligns with shipped vocabulary in `llmtv-root-site-status.ts`. (Iris change 2) |
-| Color in JSON schema | **Removed.** The state DU lives in the design system CSS. JSON carries data, page carries visual. (Iris change 3) |
-| Single file carries everything | **Split** into roster (hub) + state (satellite). Settlement draws dwellers from roster even when state fetch fails. (Iris change 4) |
-| "Degenerate" label | **Renamed** to `"silent"`. Factual, not judgmental. Epsilon is signed (+upside, −downside). k ≥ 2 consensus threshold to prevent whitewashing. (Iris/Otto change 5) |
