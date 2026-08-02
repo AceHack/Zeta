@@ -414,3 +414,67 @@ describe("per-vault status obeys the same honesty rule as the page", () => {
     }
   });
 });
+
+/**
+ * THE SILENT-EPSILON INVERSION.
+ *
+ * Found independently by Soraya (formal review) and Iris (render review) on 2026-08-01, and
+ * missed by the 25 tests already in this file — those asserted `silent === true` and never
+ * looked at the epsilon beside it.
+ *
+ * The adapter emitted `{ value: 0, epsilon: 0, silent: true }`. Epsilon zero is a claim of
+ * PERFECT CERTAINTY, asserted at the point of MAXIMUM absence of evidence: an agent from
+ * which nothing has been heard for seven days. Iris's render-side reading of the same line:
+ * a full-track empty bar with no admitted uncertainty is the strongest statement the bar can
+ * make, and it is exactly backwards.
+ *
+ * Two different quantities were being conflated:
+ *   - `silent` is a CORROBORATED FACT about absence — zero ticks, k >= 2 peers active. High
+ *     confidence in that is correct; it is a quorum observation.
+ *   - `epsilon` is uncertainty about the agent's VALUE, and seven days of silence is no
+ *     evidence at all about capability. It is the most uncertain object in the system.
+ *
+ * This also directly contradicts the stated design (Aaron 2026-08-01): "you start at 100%
+ * trust with 0.1% certainty ... everyone is graced trust." Zero epsilon is 100% certainty,
+ * asserted about the one dweller we know least about.
+ */
+describe("silence is a corroborated FACT, not a confident measurement", () => {
+  const WEEK_OLD = NOW - 9 * DAY;
+
+  test("a silent dweller carries HIGH uncertainty, never zero", () => {
+    const state = buildVaultState(
+      input({
+        tickHistory: historyAged(5 * MIN),
+        events: [
+          event("otto", "commit", NOW - 1 * HOUR),
+          event("alexa", "commit", NOW - 2 * HOUR),
+          event("soraya", "commit", WEEK_OLD),
+        ],
+      }),
+    );
+    const soraya = dwellerReputation(state, "soraya");
+    expect(soraya?.silent).toBe(true);
+    // The load-bearing assertion. Zero here is a claim of perfect knowledge about an agent
+    // we have not heard from at all.
+    expect(Math.abs(soraya?.epsilon ?? 0)).toBeGreaterThan(0);
+  });
+
+  test("a silent dweller is MORE uncertain than an observed one", () => {
+    // Ordering, not just non-zero: absence of evidence must not read as tighter than
+    // evidence. If a silent agent's band were narrower than an active agent's, the surface
+    // would present ignorance as precision.
+    const state = buildVaultState(
+      input({
+        tickHistory: historyAged(5 * MIN),
+        events: [
+          ...Array.from({ length: 30 }, (_v, i) => event("otto", "commit", NOW - (i + 1) * MIN)),
+          event("alexa", "commit", NOW - 2 * HOUR),
+          event("soraya", "commit", WEEK_OLD),
+        ],
+      }),
+    );
+    const silent = Math.abs(dwellerReputation(state, "soraya")?.epsilon ?? 0);
+    const observed = Math.abs(dwellerReputation(state, "otto")?.epsilon ?? 1);
+    expect(silent).toBeGreaterThan(observed);
+  });
+});

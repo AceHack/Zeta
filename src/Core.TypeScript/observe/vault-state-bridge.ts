@@ -305,7 +305,24 @@ function computeReputation(
     const activePeers = AGENTS.filter((a) => a !== agent && (eventsByAgent.get(a) || [])
       .some((e) => new Date(e.at).getTime() > sevenDaysAgo)).length;
     if (activePeers >= 2) {
-      return { value: 0, epsilon: 0, silent: true, history: [0, 0, 0, 0, 0, 0, 0] };
+      // Epsilon is MAXIMAL here, not zero.
+      //
+      // `silent` and `epsilon` are different quantities and were being conflated. `silent`
+      // is a corroborated FACT about absence — zero ticks with k >= 2 peers active — and
+      // high confidence in that fact is correct, because it is a quorum observation.
+      // `epsilon` is uncertainty about the agent's VALUE, and seven days of silence is no
+      // evidence whatsoever about capability. A silent dweller is the most uncertain object
+      // in the system, not the least.
+      //
+      // The old `epsilon: 0` asserted perfect certainty at the point of maximum absence of
+      // evidence, and contradicted the stated design (Aaron 2026-08-01: "you start at 100%
+      // trust with 0.1% certainty"). Found independently by Soraya (formal) and Iris
+      // (render: "a full-track empty bar with no admitted uncertainty is the strongest
+      // statement the bar can make, and it is exactly backwards").
+      //
+      // Sign is negative — downside uncertainty — because the absence points that way, while
+      // the magnitude records that we do not actually know.
+      return { value: 0, epsilon: -1, silent: true, history: [0, 0, 0, 0, 0, 0, 0] };
     }
     // Not enough peers to declare silent — just very uncertain
     return { value: 0.1, epsilon: 0.5, silent: false, history: [0, 0, 0, 0, 0, 0, 0] };
