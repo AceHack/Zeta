@@ -1,0 +1,79 @@
+module Zeta.Tests.DecorrelationMetrologyTests
+
+open global.Xunit
+open Zeta.Core
+
+module DM = Zeta.Core.DecorrelationMetrology
+
+// ═══════════════════════════════════════════════════════════════════
+// DecorrelationMetrology — the SENSOR layer of the decorrelation meter (metrology ≠ meter).
+// Metrology = sensors (which spacelike commit pairs to read); the meter = fusion (→ S + margin),
+// a SEPARATE layer not tested here. These tests prove only the register-2 graph fact: which pairs
+// are spacelike (concurrent) in a commit DAG — pure, deterministic, byte-lockable.
+//
+// The golden fork/diamond DAG:
+//        A
+//        |
+//        B
+//       / \
+//      C   D        <- C,D spacelike (the fork tips)
+//      |   |
+//      E   F        <- E,F spacelike; also C,F and D,E cross-spacelike
+//       \ /
+//        G          <- merge: ordered with ALL its ancestors
+// ═══════════════════════════════════════════════════════════════════
+
+let private dag : Map<string, string list> =
+    Map.ofList
+        [ "A", []
+          "B", [ "A" ]
+          "C", [ "B" ]
+          "D", [ "B" ]
+          "E", [ "C" ]
+          "F", [ "D" ]
+          "G", [ "E"; "F" ] ]
+
+let private allCommits = [ "A"; "B"; "C"; "D"; "E"; "F"; "G" ]
+
+// The load-bearing byte-lock: the exact spacelike-pair set of the fork DAG, in canonical order.
+[<Fact>]
+let ``golden vector - spacelike pairs of the fork DAG`` () =
+    let expected = [ ("C", "D"); ("C", "F"); ("D", "E"); ("E", "F") ]
+    Assert.Equal<(string * string) list>(expected, DM.spacelikeCommitPairs dag allCommits)
+
+[<Fact>]
+let ``ancestors are the strict causal past`` () =
+    Assert.Equal<Set<string>>(Set.ofList [ "C"; "B"; "A" ], DM.ancestors dag "E")
+    Assert.Equal<Set<string>>(Set.empty, DM.ancestors dag "A")
+    Assert.Equal<Set<string>>(Set.ofList [ "E"; "F"; "C"; "D"; "B"; "A" ], DM.ancestors dag "G")
+
+// A linear chain is fully time-ordered: zero spacelike pairs.
+[<Fact>]
+let ``a linear chain has no spacelike pairs`` () =
+    let chain = Map.ofList [ "A", []; "B", [ "A" ]; "C", [ "B" ]; "D", [ "C" ] ]
+    Assert.Empty(DM.spacelikeCommitPairs chain [ "A"; "B"; "C"; "D" ])
+
+[<Fact>]
+let ``fork tips are spacelike; a merge is ordered with all its ancestors`` () =
+    Assert.True(DM.concurrent dag "C" "D") // the fork tips
+    Assert.False(DM.concurrent dag "A" "G") // A is an ancestor of G
+    Assert.False(DM.concurrent dag "E" "G") // E is an ancestor of the merge G
+
+// concurrency is symmetric and irreflexive (relation hygiene).
+[<Fact>]
+let ``concurrent is symmetric and irreflexive`` () =
+    for a in allCommits do
+        Assert.False(DM.concurrent dag a a)
+        for b in allCommits do
+            Assert.Equal(DM.concurrent dag a b, DM.concurrent dag b a)
+
+// For DISTINCT commits in a DAG, exactly one of {ordered, concurrent} holds (dichotomy):
+// ordered = one is an ancestor of the other; concurrent = neither. Never both, never neither.
+[<Fact>]
+let ``order and concurrency are exclusive and exhaustive for distinct commits`` () =
+    for a in allCommits do
+        for b in allCommits do
+            if a <> b then
+                let ordered = DM.dominates dag a b || DM.dominates dag b a
+                let conc = DM.concurrent dag a b
+                Assert.True(ordered <> conc) // XOR: exactly one

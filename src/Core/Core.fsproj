@@ -108,6 +108,7 @@
     <Compile Include="UniversalNumber.fs" />
     <Compile Include="Resolution.fs" />
     <Compile Include="TravelerFrame.fs" />
+    <Compile Include="DecorrelationMetrology.fs" />
     <Compile Include="FrameDelta.fs" />
     <Compile Include="UncertainClock.fs" />
     <Compile Include="Curve.fs" />
