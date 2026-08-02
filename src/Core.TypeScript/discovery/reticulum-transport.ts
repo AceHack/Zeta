@@ -82,7 +82,13 @@ const SCHEMA = "zeta.reticulum.v1";
 /// Fold one announce into the path table: keep the LOWEST hop count (best path), and always
 /// refresh `lastSeenMs` on a re-hear so a live-but-not-closer path does not expire. Idempotent
 /// and order-independent — redelivered/out-of-order announces converge to the same table.
+/// Self-certifying address invariant: rejects announces where dest !== destinationHash(zid).
 export function observeAnnounce(table: PathTable, a: Announce, nowMs: number): PathTable {
+  // Self-certifying address verification guard: reject spoofed / hijacked destination hashes!
+  if (a.dest.length === 32 && destinationHash(a.zid) !== a.dest) {
+    return table;
+  }
+
   const cur = table.get(a.dest);
   if (cur && a.hops >= cur.hops) {
     // not a better path — just refresh liveness (never lose a still-live route)
