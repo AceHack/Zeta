@@ -24,8 +24,12 @@
  *   bridgeMarkMet / bridgeMarkMissed. Pass the CalibrationLedger if you
  *   have one; omit it if you don't.
  *
+ *   For bulk tick-resolution, replace calls to resolveAtTick with
+ *   resolveAtTickBridge. It calls resolveAtTick internally and co-settles
+ *   all newly-resolved CalibrationLedger predictions in one pass.
+ *
  * Composes with:
- *   - src/Core.TypeScript/observe/self-claims.ts (ClaimsLedger, markClaimMet, markClaimMissed)
+ *   - src/Core.TypeScript/observe/self-claims.ts (ClaimsLedger, markClaimMet, markClaimMissed, resolveAtTick)
  *   - src/Core.TypeScript/planning/calibration-ledger.ts (CalibrationLedger, settlePrediction, recordPrediction)
  *   - src/Core.TypeScript/planning/ephemeral-task-hierarchy.ts (unboltTaskHierarchy, UnboltResult)
  */
@@ -35,6 +39,7 @@ import {
   markClaimMet,
   markClaimMissed,
   recordClaim,
+  resolveAtTick,
   type SelfClaim,
 } from "../observe/self-claims.js";
 import {
@@ -194,6 +199,83 @@ export function bridgeMarkMissed(
     /* predictionId = */ itemId,
     /* settledAt = */ missedAtMs,
   );
+
+  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger };
+}
+
+// ═══ Bridge: Bulk-resolve at tick ════════════════════════════════════════════
+
+/**
+ * Bulk-settle all pending claims and CalibrationLedger predictions in one pass.
+ *
+ * Mirrors `resolveAtTick` in self-claims.ts but co-updates the CalibrationLedger
+ * atomically:
+ *   - For each claim resolved as MET: settles the CalibrationLedger prediction
+ *     at `currentTickMs` (the actual completion time — a hit if within the interval).
+ *   - For each claim resolved as MISSED: settles the CalibrationLedger prediction
+ *     at `currentTickMs` (after the deadline — a late-miss with interval penalty).
+ *   - Claims that remain pending are not touched in the CalibrationLedger.
+ *
+ * The `zid` and `hatId` parameters are required to locate the CalibrationLedger
+ * record. If either is absent, the CalibrationLedger is not updated (backward-compat).
+ *
+ * Anti-self-certifying: if this function is disabled (CalibrationLedger not passed),
+ * the CalibrationLedger posterior does NOT update. A test that passes with the
+ * CalibrationLedger absent is testing the wrong thing — the anti-self-certifying
+ * test in calibration-bridge.test.ts verifies that the posterior shifts after
+ * a bulk-miss via this function.
+ *
+ * @param claimsLedger     The existing ClaimsLedger.
+ * @param currentTick      The current tick (used by resolveAtTick for deadline comparison).
+ * @param completedItems   Items that have been completed at this tick.
+ * @param calibrationLedger  Optional CalibrationLedger to co-update.
+ * @param zid              The agent's zeta-id (required if calibrationLedger is provided).
+ * @param hatId            The hat/task id (required if calibrationLedger is provided).
+ * @param currentTickMs    The wall-clock ms for this tick (defaults to Date.now()).
+ *                         Used as the settledAt timestamp for CalibrationLedger.
+ */
+export function resolveAtTickBridge(
+  claimsLedger: ClaimsLedger,
+  currentTick: number,
+  completedItems: ReadonlySet<string>,
+  calibrationLedger?: CalibrationLedger,
+  zid?: string,
+  hatId?: string,
+  currentTickMs: number = Date.now(),
+): BridgeResult {
+  // Identify which pending claims will be resolved before calling resolveAtTick.
+  // We need to know which ones become MET vs MISSED to settle the CalibrationLedger.
+  const pendingBefore = claimsLedger.resolved.filter((r) => r.outcome.status === "pending");
+
+  // Run the self-claims resolution.
+  const newClaimsLedger = resolveAtTick(claimsLedger, currentTick, completedItems);
+
+  if (!calibrationLedger || !zid || !hatId) {
+    return { claimsLedger: newClaimsLedger, calibrationLedger };
+  }
+
+  // Settle the CalibrationLedger for each claim that was just resolved.
+  let newCalibrationLedger = calibrationLedger;
+  for (const pending of pendingBefore) {
+    const resolved = newClaimsLedger.resolved.find(
+      (r) => r.claim.itemId === pending.claim.itemId && r.claim.agentId === pending.claim.agentId,
+    );
+    if (!resolved || resolved.outcome.status === "pending") {
+      continue; // still pending — not resolved this tick
+    }
+    // Settle the prediction at currentTickMs regardless of met/missed.
+    // For a MET claim: currentTickMs is the actual completion time.
+    //   If it falls within [predictedAt, predictedDeadline] → hit.
+    // For a MISSED claim: currentTickMs is after the deadline.
+    //   The interval score will include the late-miss penalty.
+    newCalibrationLedger = settlePrediction(
+      newCalibrationLedger,
+      zid,
+      hatId,
+      /* predictionId = */ pending.claim.itemId,
+      /* settledAt = */ currentTickMs,
+    );
+  }
 
   return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger };
 }

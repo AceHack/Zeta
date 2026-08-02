@@ -175,3 +175,120 @@ describe("bridge with CalibrationLedger", () => {
     expect(o8b!.hit).toBe(false);
   });
 });
+
+// ─── resolveAtTickBridge ──────────────────────────────────────────────────────
+import { resolveAtTickBridge } from "./calibration-bridge.js";
+import { updatePosterior as _updatePosterior } from "./calibration-ledger.js";
+
+describe("resolveAtTickBridge", () => {
+  const ZID2 = "zid-agent-B";
+  const HAT2 = "hat-task-2";
+
+  it("without CalibrationLedger: behaves identically to resolveAtTick (backward-compat)", () => {
+    const claim = makeClaim("item-r1", NOW + ONE_DAY);
+    const { claimsLedger: l1 } = bridgeRecordClaim(EMPTY_LEDGER, claim);
+    const result = resolveAtTickBridge(l1, NOW + ONE_DAY, new Set());
+    expect(result.claimsLedger.resolved[0]?.outcome.status).toBe("missed");
+    expect(result.calibrationLedger).toBeUndefined();
+  });
+
+  it("without CalibrationLedger: completed item → met (backward-compat)", () => {
+    const claim = makeClaim("item-r2", NOW + ONE_DAY);
+    const { claimsLedger: l1 } = bridgeRecordClaim(EMPTY_LEDGER, claim);
+    const result = resolveAtTickBridge(l1, NOW + ONE_DAY / 2, new Set(["item-r2"]));
+    expect(result.claimsLedger.resolved[0]?.outcome.status).toBe("met");
+    expect(result.calibrationLedger).toBeUndefined();
+  });
+
+  it("with CalibrationLedger: MET claim → prediction settled as hit", () => {
+    const claim = makeClaim("item-r3", NOW + ONE_DAY);
+    const cal = createCalibrationLedger();
+    const { claimsLedger: l1, calibrationLedger: c1 } = bridgeRecordClaim(
+      EMPTY_LEDGER, claim, cal, ZID2, HAT2, NOW,
+    );
+    const completedAtMs = NOW + ONE_DAY / 2;
+    const result = resolveAtTickBridge(
+      l1!, NOW + ONE_DAY / 2, new Set(["item-r3"]),
+      c1, ZID2, HAT2, completedAtMs,
+    );
+    expect(result.claimsLedger.resolved[0]?.outcome.status).toBe("met");
+    const rec = getRecord(result.calibrationLedger!, ZID2, HAT2);
+    expect(rec).toBeDefined();
+    expect(rec!.outcomes[0]?.settledAt).toBe(completedAtMs);
+    expect(rec!.outcomes[0]?.hit).toBe(true);
+  });
+
+  it("with CalibrationLedger: MISSED claim → prediction settled as miss (late penalty)", () => {
+    const claim = makeClaim("item-r4", NOW + ONE_DAY);
+    const cal = createCalibrationLedger();
+    const { claimsLedger: l1, calibrationLedger: c1 } = bridgeRecordClaim(
+      EMPTY_LEDGER, claim, cal, ZID2, HAT2, NOW,
+    );
+    const missedAtMs = NOW + 2 * ONE_DAY;
+    const result = resolveAtTickBridge(
+      l1!, NOW + ONE_DAY, new Set(),
+      c1, ZID2, HAT2, missedAtMs,
+    );
+    expect(result.claimsLedger.resolved[0]?.outcome.status).toBe("missed");
+    const rec = getRecord(result.calibrationLedger!, ZID2, HAT2);
+    expect(rec!.outcomes[0]?.hit).toBe(false);
+    expect(rec!.outcomes[0]?.intervalScore).toBeGreaterThan(0);
+  });
+
+  it("with CalibrationLedger: still-pending claims are NOT settled", () => {
+    const claimA = makeClaim("item-r5a", NOW + ONE_DAY);
+    const claimB = makeClaim("item-r5b", NOW + 3 * ONE_DAY);
+    const cal = createCalibrationLedger();
+    const { claimsLedger: l1, calibrationLedger: c1 } = bridgeRecordClaim(
+      EMPTY_LEDGER, claimA, cal, ZID2, HAT2, NOW,
+    );
+    const { claimsLedger: l2, calibrationLedger: c2 } = bridgeRecordClaim(
+      l1!, claimB, c1, ZID2, HAT2, NOW,
+    );
+    const result = resolveAtTickBridge(
+      l2!, NOW + ONE_DAY, new Set(),
+      c2, ZID2, HAT2, NOW + ONE_DAY,
+    );
+    expect(result.claimsLedger.resolved[0]?.outcome.status).toBe("missed");
+    expect(result.claimsLedger.resolved[1]?.outcome.status).toBe("pending");
+    const rec = getRecord(result.calibrationLedger!, ZID2, HAT2);
+    const o5a = rec!.outcomes.find((o) => o.predictionId === "item-r5a");
+    const o5b = rec!.outcomes.find((o) => o.predictionId === "item-r5b");
+    expect(o5a!.settledAt).not.toBeNull();
+    expect(o5b!.settledAt).toBeNull();
+  });
+
+  it("anti-self-certifying: posterior shifts after bulk-miss via resolveAtTickBridge", () => {
+    const cal = createCalibrationLedger();
+    const posteriorBefore = _updatePosterior(cal, ZID2, HAT2);
+    let ledger = EMPTY_LEDGER;
+    let calLedger: typeof cal | undefined = cal;
+    for (let i = 0; i < 3; i++) {
+      const claim = makeClaim(`item-bulk-${i}`, NOW + ONE_DAY);
+      const r = bridgeRecordClaim(ledger, claim, calLedger, ZID2, HAT2, NOW);
+      ledger = r.claimsLedger;
+      calLedger = r.calibrationLedger;
+    }
+    const result = resolveAtTickBridge(
+      ledger, NOW + ONE_DAY, new Set(),
+      calLedger, ZID2, HAT2, NOW + 2 * ONE_DAY,
+    );
+    const posteriorAfter = _updatePosterior(result.calibrationLedger!, ZID2, HAT2);
+    expect(posteriorAfter.mu).toBeLessThan(posteriorBefore.mu);
+    expect(posteriorAfter.settledCount).toBe(3);
+  });
+
+  it("deterministic: same inputs always produce same result (DST §7)", () => {
+    const claim = makeClaim("item-det", NOW + ONE_DAY);
+    const cal = createCalibrationLedger();
+    const { claimsLedger: l1, calibrationLedger: c1 } = bridgeRecordClaim(
+      EMPTY_LEDGER, claim, cal, ZID2, HAT2, NOW,
+    );
+    const r1 = resolveAtTickBridge(l1!, NOW + ONE_DAY, new Set(), c1, ZID2, HAT2, NOW + ONE_DAY);
+    const r2 = resolveAtTickBridge(l1!, NOW + ONE_DAY, new Set(), c1, ZID2, HAT2, NOW + ONE_DAY);
+    const rec1 = getRecord(r1.calibrationLedger!, ZID2, HAT2);
+    const rec2 = getRecord(r2.calibrationLedger!, ZID2, HAT2);
+    expect(rec1!.outcomes[0]?.intervalScore).toBe(rec2!.outcomes[0]?.intervalScore);
+    expect(rec1!.outcomes[0]?.hit).toBe(rec2!.outcomes[0]?.hit);
+  });
+});
