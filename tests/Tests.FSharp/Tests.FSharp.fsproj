@@ -390,6 +390,7 @@
     <Compile Include="TravelerFrame.Tests.fs" />
     <Compile Include="DecorrelationMetrology.Tests.fs" />
     <Compile Include="DecorrelationMeter.Tests.fs" />
+    <Compile Include="DecorrelationExcess.Tests.fs" />
     <Compile Include="TravelerFrame.Legs.Tests.fs" />
     <Compile Include="TravelerFrame.CrossVerify.Tests.fs" />
     <Compile Include="ActionGrid.Tests.fs" />
