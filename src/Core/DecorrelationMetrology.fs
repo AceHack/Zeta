@@ -82,12 +82,21 @@ module DecorrelationMetrology =
     /// in ascending `(a, b)` order for byte-lock stability. Ordering uses F# structural comparison,
     /// which for string commit-ids is **ordinal** (satisfies `culture-invariant-by-default`); the
     /// deterministic order makes the result a stable golden vector for the meter to fuse.
+    ///
+    /// **Complexity:** each commit's strict ancestor set is computed **once** (memoized), not per pair
+    /// — so this is `O(N·(N+E))` to build the ancestor sets + `O(N²)` set-membership checks over the
+    /// pairs, replacing the naive `O(N³)` (an `ancestors` walk per pair). Result is byte-identical to
+    /// the naive form (the golden vectors are the guard); the real-history run motivated the change.
     let spacelikeCommitPairs (parents: Map<'C, 'C list>) (commits: 'C list) : ('C * 'C) list =
-        let sorted = commits |> List.distinct |> List.sort
-        let arr = List.toArray sorted
+        let arr = commits |> List.distinct |> List.sort |> List.toArray
+        // Memoize each commit's strict ancestor set ONCE (was recomputed per pair).
+        let anc = arr |> Array.map (ancestors parents)
+        // `arr.[i] dominates arr.[j]` ⇔ arr.[i] is a strict ancestor of arr.[j] ⇔ arr.[i] ∈ anc.[j].
+        let dominates' i j = Set.contains arr.[i] anc.[j]
         [ for i in 0 .. arr.Length - 1 do
             for j in i + 1 .. arr.Length - 1 do
-                if concurrent parents arr.[i] arr.[j] then
+                // i < j on a sorted-distinct array ⇒ arr.[i] <> arr.[j]; concurrent = neither dominates.
+                if not (dominates' i j) && not (dominates' j i) then
                     yield (arr.[i], arr.[j]) ]
 
     // ── git-read adapter (PURE parse; the impure git shell stays a thin documented edge) ──────────
