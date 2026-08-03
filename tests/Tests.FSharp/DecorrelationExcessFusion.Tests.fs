@@ -160,7 +160,7 @@ let ``fuseMIBlock - matches fuseMI on the order-invariant parts and is order-ind
     let dag = Map.ofList [ "R", []; "A", [ "R" ]; "B", [ "R" ]; "C", [ "R" ]; "D", [ "R" ] ]
     let cats = [ "A"; "B"; "C"; "D" ] |> List.map (fun c -> c, c) |> Map.ofList
     let m = DEF.fuseMI 7UL 0.05 200 id dag cats [ "A"; "B"; "C"; "D" ]
-    let b1 = DEF.fuseMIBlock 7UL 0.05 200 1 id dag cats [ "A"; "B"; "C"; "D" ]
+    let b1 = DEF.fuseMIBlock 7UL 0.05 200 1 0 id dag cats [ "A"; "B"; "C"; "D" ]
     // same strata keys + pair counts + RealMI (all order-invariant)
     Assert.Equal<(int * int) list>(
         m.Strata |> List.map (fun s -> s.Stratum, s.Pairs),
@@ -168,11 +168,27 @@ let ``fuseMIBlock - matches fuseMI on the order-invariant parts and is order-ind
     )
     Assert.Equal<float list>(m.Strata |> List.map (fun s -> s.RealMI), b1.Strata |> List.map (fun s -> s.RealMI))
     // order-independent in the commits list
-    Assert.Equal(b1, DEF.fuseMIBlock 7UL 0.05 200 1 id dag cats [ "D"; "C"; "B"; "A" ])
+    Assert.Equal(b1, DEF.fuseMIBlock 7UL 0.05 200 1 0 id dag cats [ "D"; "C"; "B"; "A" ])
 
 [<Fact>]
 let ``fuseMIBlock - uniform category yields no excess (honest no-false-green)`` () =
     let children = [ "c0"; "c1"; "c2"; "c3"; "c4"; "c5" ]
     let dag = ("R", []) :: (children |> List.map (fun c -> c, [ "R" ])) |> Map.ofList
     let cats = children |> List.map (fun c -> c, "same") |> Map.ofList
-    Assert.Equal(0, (DEF.fuseMIBlock 2024UL 0.05 200 3 id dag cats children).ExcessStrata)
+    Assert.Equal(0, (DEF.fuseMIBlock 2024UL 0.05 200 3 0 id dag cats children).ExcessStrata)
+
+// minSharedAncestors excludes causally-disjoint pairs (no common ancestor). Two SEPARATE roots, each with
+// two children: the cross-root pairs share ZERO ancestors; the same-root pairs share their root (count 1).
+[<Fact>]
+let ``fuseMIBlock - minSharedAncestors=1 drops the zero-shared-ancestor (cross-history) pairs`` () =
+    // R1 -> A,B ; R2 -> C,D (two disjoint histories). Spacelike pairs: within-root share 1 ancestor;
+    // cross-root (A,C),(A,D),(B,C),(B,D) share 0.
+    let dag = Map.ofList [ "R1", []; "A", [ "R1" ]; "B", [ "R1" ]; "R2", []; "C", [ "R2" ]; "D", [ "R2" ] ]
+    let cats = [ "A"; "B"; "C"; "D"; "R1"; "R2" ] |> List.map (fun c -> c, c) |> Map.ofList
+    let commits = [ "A"; "B"; "C"; "D"; "R1"; "R2" ]
+    let all = DEF.fuseMIBlock 1UL 0.05 100 4 0 id dag cats commits // meter everything (incl. shared=0)
+    let conditioned = DEF.fuseMIBlock 1UL 0.05 100 4 1 id dag cats commits // exclude shared=0
+    let pairsOf (r: DEF.MIReading) = r.Strata |> List.sumBy (fun s -> s.Pairs)
+    Assert.True(pairsOf all > pairsOf conditioned) // the zero-shared-ancestor pairs are removed
+    // no metered pair in the conditioned run has a zero-shared-ancestor stratum key (band 0 under id)
+    Assert.DoesNotContain(0, conditioned.Strata |> List.map (fun s -> s.Stratum))

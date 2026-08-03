@@ -191,15 +191,23 @@ module DecorrelationExcessFusion =
     /// temporal ordinal, `DecorrelationMetrology.generation`) and the null uses `permutationNullMIBlock`
     /// with `blockSize`, so autocorrelation at lag `< blockSize` is preserved in the null. This raises the
     /// threshold on autocorrelated streams and removes the over-conviction the plain `fuseMI` suffers on
-    /// real commit history (causally-disjoint pairs no longer "convict" because the null is no longer too
-    /// tight). `blockSize = 1` recovers `fuseMI` exactly. The generation ordering is a LOCAL null
-    /// calibration only — `RealMI` is order-invariant, so the shared conclusion never sees it
+    /// real commit history. `blockSize = 1` recovers `fuseMI`'s null shape. The generation ordering is a
+    /// LOCAL null calibration only — `RealMI` is order-invariant, so the shared conclusion never sees it
     /// (`local-time-never-enters-the-shared-fold`). Deterministic (DST), order-independent in `commits`.
+    ///
+    /// **`minSharedAncestors`** excludes pairs whose **raw** shared-ancestor count is below it (the
+    /// causally-disjoint / cross-history pairs). Zero-shared-ancestor pairs have **no common cause to
+    /// condition on** — Reichenbach conditioning is undefined there — and generation is not a shared
+    /// temporal axis across disjoint histories, so their block null is meaningless and they over-convict.
+    /// Pass `1` to meter only causally-related concurrent pairs (the principled default); `0` meters all.
+    /// The floor is on the RAW count, not the banded `stratumKey` value (with `c/2` banding, banded-key-0
+    /// would wrongly also hold count-1 pairs).
     let fuseMIBlock
         (seed: uint64)
         (delta: float)
         (k: int)
         (blockSize: int)
+        (minSharedAncestors: int)
         (stratumKey: int -> int)
         (parents: Map<'C, 'C list>)
         (categories: Map<'C, 'k>)
@@ -219,21 +227,24 @@ module DecorrelationExcessFusion =
             DecorrelationMetrology.spacelikeCommitPairs parents commits
             |> List.choose (fun (a, b) ->
                 match Map.tryFind a categories, Map.tryFind b categories with
-                | Some ca, Some cb -> Some(a, b, ca, cb)
+                | Some ca, Some cb ->
+                    let shared = Set.intersect (anc a) (anc b) |> Set.count
+                    // Exclude causally-disjoint pairs (no common cause to condition on).
+                    if shared >= minSharedAncestors then Some(a, b, ca, cb, shared) else None
                 | _ -> None)
 
         let strata =
             pairs
-            |> List.groupBy (fun (a, b, _, _) -> stratumKey (Set.intersect (anc a) (anc b) |> Set.count))
+            |> List.groupBy (fun (_, _, _, _, shared) -> stratumKey shared)
             |> List.sortBy fst
 
         let readings =
             strata
             |> List.map (fun (key, ps) ->
                 // Order by causal-temporal position so block adjacency = short-range autocorrelation.
-                let ordered = ps |> List.sortBy (fun (a, b, _, _) -> genOf b, genOf a, b, a)
-                let aObs = ordered |> List.map (fun (_, _, ca, _) -> ca)
-                let bObs = ordered |> List.map (fun (_, _, _, cb) -> cb)
+                let ordered = ps |> List.sortBy (fun (a, b, _, _, _) -> genOf b, genOf a, b, a)
+                let aObs = ordered |> List.map (fun (_, _, ca, _, _) -> ca)
+                let bObs = ordered |> List.map (fun (_, _, _, cb, _) -> cb)
                 let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs) // order-invariant
                 let nullMIs = DecorrelationExcess.permutationNullMIBlock (seed + uint64 key) k blockSize aObs bObs
                 let threshold = DecorrelationExcess.nullThreshold delta nullMIs
