@@ -185,3 +185,63 @@ module DecorrelationExcessFusion =
 
         { Strata = readings
           ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }
+
+    /// **`fuseMI` with a BLOCK-permutation null** — the exchangeability-respecting variant. Identical to
+    /// `fuseMI` except each stratum's pairs are ordered by the B-commit's **generation** (a pure causal-
+    /// temporal ordinal, `DecorrelationMetrology.generation`) and the null uses `permutationNullMIBlock`
+    /// with `blockSize`, so autocorrelation at lag `< blockSize` is preserved in the null. This raises the
+    /// threshold on autocorrelated streams and removes the over-conviction the plain `fuseMI` suffers on
+    /// real commit history (causally-disjoint pairs no longer "convict" because the null is no longer too
+    /// tight). `blockSize = 1` recovers `fuseMI` exactly. The generation ordering is a LOCAL null
+    /// calibration only — `RealMI` is order-invariant, so the shared conclusion never sees it
+    /// (`local-time-never-enters-the-shared-fold`). Deterministic (DST), order-independent in `commits`.
+    let fuseMIBlock
+        (seed: uint64)
+        (delta: float)
+        (k: int)
+        (blockSize: int)
+        (stratumKey: int -> int)
+        (parents: Map<'C, 'C list>)
+        (categories: Map<'C, 'k>)
+        (commits: 'C list)
+        : MIReading =
+        let ancOf =
+            commits
+            |> List.distinct
+            |> List.map (fun c -> c, DecorrelationMetrology.ancestors parents c)
+            |> Map.ofList
+
+        let anc c = Map.tryFind c ancOf |> Option.defaultValue Set.empty
+        let gens = DecorrelationMetrology.generation parents
+        let genOf c = Map.tryFind c gens |> Option.defaultValue 0
+
+        let pairs =
+            DecorrelationMetrology.spacelikeCommitPairs parents commits
+            |> List.choose (fun (a, b) ->
+                match Map.tryFind a categories, Map.tryFind b categories with
+                | Some ca, Some cb -> Some(a, b, ca, cb)
+                | _ -> None)
+
+        let strata =
+            pairs
+            |> List.groupBy (fun (a, b, _, _) -> stratumKey (Set.intersect (anc a) (anc b) |> Set.count))
+            |> List.sortBy fst
+
+        let readings =
+            strata
+            |> List.map (fun (key, ps) ->
+                // Order by causal-temporal position so block adjacency = short-range autocorrelation.
+                let ordered = ps |> List.sortBy (fun (a, b, _, _) -> genOf b, genOf a, b, a)
+                let aObs = ordered |> List.map (fun (_, _, ca, _) -> ca)
+                let bObs = ordered |> List.map (fun (_, _, _, cb) -> cb)
+                let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs) // order-invariant
+                let nullMIs = DecorrelationExcess.permutationNullMIBlock (seed + uint64 key) k blockSize aObs bObs
+                let threshold = DecorrelationExcess.nullThreshold delta nullMIs
+                { Stratum = key
+                  Pairs = List.length ps
+                  RealMI = realMI
+                  NullThreshold = threshold
+                  Verdict = DecorrelationExcess.classifyPair threshold realMI })
+
+        { Strata = readings
+          ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }

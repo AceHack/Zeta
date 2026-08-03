@@ -150,3 +150,29 @@ let ``fuseMI finds no excess when every commit shares one category (MI is zero, 
     let cats = children |> List.map (fun c -> c, "same") |> Map.ofList
     let reading = DEF.fuseMI 2024UL 0.05 200 id dag cats children
     Assert.Equal(0, reading.ExcessStrata)
+
+// ── fuseMIBlock: the exchangeability-respecting (block-permutation) variant ────────────────────────────
+
+// RealMI and stratum structure are order-invariant, so they match fuseMI; only the NULL differs (block
+// vs plain). And fuseMIBlock is itself order-independent in the commits list (generation-ordered internally).
+[<Fact>]
+let ``fuseMIBlock - matches fuseMI on the order-invariant parts and is order-independent`` () =
+    let dag = Map.ofList [ "R", []; "A", [ "R" ]; "B", [ "R" ]; "C", [ "R" ]; "D", [ "R" ] ]
+    let cats = [ "A"; "B"; "C"; "D" ] |> List.map (fun c -> c, c) |> Map.ofList
+    let m = DEF.fuseMI 7UL 0.05 200 id dag cats [ "A"; "B"; "C"; "D" ]
+    let b1 = DEF.fuseMIBlock 7UL 0.05 200 1 id dag cats [ "A"; "B"; "C"; "D" ]
+    // same strata keys + pair counts + RealMI (all order-invariant)
+    Assert.Equal<(int * int) list>(
+        m.Strata |> List.map (fun s -> s.Stratum, s.Pairs),
+        b1.Strata |> List.map (fun s -> s.Stratum, s.Pairs)
+    )
+    Assert.Equal<float list>(m.Strata |> List.map (fun s -> s.RealMI), b1.Strata |> List.map (fun s -> s.RealMI))
+    // order-independent in the commits list
+    Assert.Equal(b1, DEF.fuseMIBlock 7UL 0.05 200 1 id dag cats [ "D"; "C"; "B"; "A" ])
+
+[<Fact>]
+let ``fuseMIBlock - uniform category yields no excess (honest no-false-green)`` () =
+    let children = [ "c0"; "c1"; "c2"; "c3"; "c4"; "c5" ]
+    let dag = ("R", []) :: (children |> List.map (fun c -> c, [ "R" ])) |> Map.ofList
+    let cats = children |> List.map (fun c -> c, "same") |> Map.ofList
+    Assert.Equal(0, (DEF.fuseMIBlock 2024UL 0.05 200 3 id dag cats children).ExcessStrata)

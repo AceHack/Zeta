@@ -157,3 +157,47 @@ let ``SOUNDNESS (MI) - coupled convicts, independent does not (finite-sample bia
     let aI = [ for i in 0..39 -> if i % 2 = 0 then "x" else "y" ]
     let bI = [ for i in 0..39 -> if i % 4 < 2 then "p" else "q" ]
     Assert.Equal(DExc.WithinNull, DExc.classifyPair (DExc.nullThreshold 0.05 (DExc.permutationNullMI 7UL 200 aI bI)) (DExc.pairingMI (List.zip aI bI)))
+
+// ── the BLOCK-permutation null (exchangeability-respecting) ───────────────────────────────────────────
+
+[<Fact>]
+let ``blockShuffle - blockSize<=1 is the plain shuffle; blockSize>=n is the identity`` () =
+    let arr = [| 0..19 |]
+    Assert.Equal<int[]>(DExc.shuffle 5UL arr, DExc.blockShuffle 5UL 1 arr) // blocks of one == full shuffle
+    Assert.Equal<int[]>(arr, DExc.blockShuffle 5UL 20 arr) // one block == identity
+
+[<Fact>]
+let ``blockShuffle - preserves within-block contiguity (the blocks move intact) and is a permutation`` () =
+    let arr = [| 0..11 |]
+    let shuffled = DExc.blockShuffle 3UL 4 arr
+    Assert.Equal<int[]>(Array.sort shuffled, arr) // genuine permutation (multiset preserved)
+    // every length-4 chunk of the output is one of the ORIGINAL blocks (intact, in order)
+    let origBlocks = arr |> Array.chunkBySize 4 |> Set.ofArray
+    let outBlocks = shuffled |> Array.chunkBySize 4 |> Set.ofArray
+    Assert.Equal<Set<int[]>>(origBlocks, outBlocks)
+
+[<Fact>]
+let ``blockShuffle - deterministic in the seed`` () =
+    let arr = [| 0..30 |]
+    Assert.Equal<int[]>(DExc.blockShuffle 9UL 5 arr, DExc.blockShuffle 9UL 5 arr)
+
+[<Fact>]
+let ``permutationNullBlock - blockSize 1 exactly recovers permutationNull`` () =
+    let a = [ set [ "x" ]; set [ "y" ]; set [ "z" ]; set [ "w" ] ]
+    let b = a
+    Assert.Equal<float list>(
+        DExc.permutationNull 4UL 20 DExc.jaccard a b,
+        DExc.permutationNullBlock 4UL 20 1 DExc.jaccard a b
+    )
+
+// THE POINT: on an AUTOCORRELATED stream (categories in runs), the block null preserves the run
+// structure ⇒ its threshold is HIGHER (more conservative) than the plain shuffle's, which destroys the
+// runs and understates the fluctuation. This is the fix for the over-conviction on real commit history.
+[<Fact>]
+let ``permutationNullMIBlock - is MORE conservative than the plain null on an autocorrelated stream`` () =
+    // 40 samples in aligned runs of 4 (x,x,x,x, y,y,y,y, …); a and b identical ⇒ strong autocorrelation.
+    let a = [ for i in 0..39 -> if (i / 4) % 2 = 0 then "x" else "y" ]
+    let b = a
+    let plain = DExc.nullThreshold 0.05 (DExc.permutationNullMI 11UL 300 a b)
+    let block = DExc.nullThreshold 0.05 (DExc.permutationNullMIBlock 11UL 300 4 a b)
+    Assert.True(block > plain, sprintf "block null (%.4f) should exceed the plain null (%.4f) on autocorrelated data" block plain)

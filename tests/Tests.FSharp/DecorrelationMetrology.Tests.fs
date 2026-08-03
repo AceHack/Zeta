@@ -116,3 +116,15 @@ let ``golden pipeline - rev-list text to spacelike pairs`` () =
     let m = DM.parseRevListParents revList
     let expected = [ ("C", "D"); ("C", "F"); ("D", "E"); ("E", "F") ]
     Assert.Equal<(string * string) list>(expected, DM.spacelikeCommitPairs m allCommits)
+
+// ── generation number (the pure causal-temporal ordinal for block-permutation ordering) ──────────────
+[<Fact>]
+let ``generation - chain increments, fork siblings tie, merge takes 1 + max of parents`` () =
+    // R -> A -> B (chain); R -> M (fork sib of A); D merges A and M ⇒ gen(D)=1+max(1,1)=2.
+    let dag = Map.ofList [ "R", []; "A", [ "R" ]; "B", [ "A" ]; "M", [ "R" ]; "D", [ "A"; "M" ] ]
+    let g = DM.generation dag
+    Assert.Equal(0, g.["R"])
+    Assert.Equal(1, g.["A"])
+    Assert.Equal(2, g.["B"])
+    Assert.Equal(1, g.["M"])
+    Assert.Equal(2, g.["D"]) // 1 + max(gen A=1, gen M=1)

@@ -78,6 +78,37 @@ module DecorrelationMetrology =
         && not (dominates parents a b)
         && not (dominates parents b a)
 
+    /// **Generation number** of every commit: `gen(root) = 0`, `gen(c) = 1 + max(gen(parents))`. A pure,
+    /// wall-clock-free **causal-temporal ordinal** (longest path from a root) — commits at adjacent
+    /// generations are causally/temporally near. Used to ORDER a stream so a block-permutation null
+    /// preserves the right short-range autocorrelation (a LOCAL null calibration, never an input to any
+    /// shared conclusion — `local-time-never-enters-the-shared-fold`). Memoized; a parent outside the map
+    /// counts as a root (0). Assumes the DAG is acyclic (a cycle is broken at 0, defensively).
+    let generation (parents: Map<'C, 'C list>) : Map<'C, int> =
+        let memo = System.Collections.Generic.Dictionary<'C, int>()
+
+        let rec gen visiting c =
+            match memo.TryGetValue c with
+            | true, v -> v
+            | _ ->
+                if Set.contains c visiting then
+                    0 // cycle guard (malformed DAG) — break at 0
+                else
+                    let ps = Map.tryFind c parents |> Option.defaultValue []
+                    let g =
+                        match ps with
+                        | [] -> 0
+                        | _ -> 1 + (ps |> List.map (gen (Set.add c visiting)) |> List.max)
+                    memo.[c] <- g
+                    g
+
+        parents
+        |> Map.toList
+        |> List.collect (fun (c, ps) -> c :: ps)
+        |> List.distinct
+        |> List.map (fun c -> c, gen Set.empty c)
+        |> Map.ofList
+
     /// **Sensor selection:** every unordered spacelike pair among `commits`, each pair once, emitted
     /// in ascending `(a, b)` order for byte-lock stability. Ordering uses F# structural comparison,
     /// which for string commit-ids is **ordinal** (satisfies `culture-invariant-by-default`); the

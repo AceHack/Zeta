@@ -178,3 +178,62 @@ module DecorrelationExcess =
             [ for p in 0 .. k - 1 do
                   let bShuf = shuffle (seed + uint64 p * 0x100000001B3UL) b
                   yield Decorrelation.mutualInformation [ for i in 0 .. n - 1 -> a.[i], bShuf.[i] ] ]
+
+    // ── the BLOCK-permutation null: an exchangeability-respecting null for AUTOCORRELATED streams ──────
+    //
+    // The plain `shuffle` assumes the samples are **exchangeable**. A real commit stream is not: it
+    // clusters — a writer touches one subsystem across a *span* of consecutive commits. A full shuffle
+    // destroys that short-range structure, so the null **understates** the true fluctuation and the test
+    // **over-convicts** (the live artifact: even causally-disjoint cross-history pairs "convict" excess-MI
+    // because the null is too tight). This is Soraya's autocorrelation caveat, generalized past the CHSH
+    // Hoeffding margin to the whole permutation family. The fix is a **block permutation** (Künsch 1989
+    // moving blocks; Politis–Romano 1994 block bootstrap): permute the ORDER of contiguous blocks, keeping
+    // each block internally intact, so autocorrelation at lag < blockSize is PRESERVED in the null while
+    // the A↔B coupling is still broken at the block scale. For the blocks to carry the right
+    // autocorrelation the stream must be ordered by a temporal/causal axis (e.g. commit generation) — a
+    // LOCAL calibration of the null, never an input to the shared conclusion (`local-time-never-enters-the-shared-fold`).
+
+    /// **Block permutation** of `arr`: split into consecutive blocks of `blockSize` (last may be short),
+    /// permute the block ORDER with a seeded shuffle (each block kept internally intact), concatenate.
+    /// `blockSize ≤ 1` ⇒ plain `shuffle` (blocks of one — full exchangeable shuffle); `blockSize ≥ n` ⇒
+    /// one block ⇒ identity. Preserves within-block adjacency; a genuine permutation (multiset preserved).
+    let blockShuffle (seed: uint64) (blockSize: int) (arr: 'a[]) : 'a[] =
+        if blockSize <= 1 then
+            shuffle seed arr
+        else
+            let n = arr.Length
+            let blocks = [| for start in 0 .. blockSize .. n - 1 -> arr.[start .. min (start + blockSize - 1) (n - 1)] |]
+            Array.concat (shuffle seed blocks)
+
+    /// Block-permutation version of `permutationNull` (per-pair pooled statistic). Identical except the
+    /// null uses `blockShuffle blockSize` — preserving lag-`< blockSize` autocorrelation. `blockSize = 1`
+    /// recovers `permutationNull` exactly.
+    let permutationNullBlock
+        (seed: uint64)
+        (k: int)
+        (blockSize: int)
+        (stat: 'o -> 'o -> float)
+        (aObs: 'o list)
+        (bObs: 'o list)
+        : float list =
+        let a = List.toArray aObs
+        let b = List.toArray bObs
+        let n = min a.Length b.Length
+        [ for p in 0 .. k - 1 do
+              let bShuf = blockShuffle (seed + uint64 p * 0x100000001B3UL) blockSize b
+              for i in 0 .. n - 1 do
+                  yield stat a.[i] bShuf.[i] ]
+
+    /// Block-permutation version of `permutationNullMI` (one null MI per block-shuffle). `blockSize = 1`
+    /// recovers `permutationNullMI`. On an autocorrelated stream the block null's threshold is **higher**
+    /// (more conservative) than the plain null's — that is the whole point (it stops over-conviction).
+    let permutationNullMIBlock (seed: uint64) (k: int) (blockSize: int) (aObs: 'k list) (bObs: 'k list) : float list =
+        let a = List.toArray aObs
+        let b = List.toArray bObs
+        let n = min a.Length b.Length
+        if n = 0 then
+            []
+        else
+            [ for p in 0 .. k - 1 do
+                  let bShuf = blockShuffle (seed + uint64 p * 0x100000001B3UL) blockSize b
+                  yield Decorrelation.mutualInformation [ for i in 0 .. n - 1 -> a.[i], bShuf.[i] ] ]
