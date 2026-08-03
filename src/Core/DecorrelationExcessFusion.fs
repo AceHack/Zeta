@@ -112,3 +112,76 @@ module DecorrelationExcessFusion =
           Excess = verdicts |> List.filter ((=) DecorrelationExcess.ExcessCorrelation) |> List.length
           WithinNull = verdicts |> List.filter ((=) DecorrelationExcess.WithinNull) |> List.length
           Strata = List.length strata }
+
+    // ── the FINER lens: per-stratum excess mutual information ────────────────────────────────────────
+    /// One stratum's excess-MI test: the real pairing's `I(A; B)` vs its permutation-null threshold.
+    type MIStratum =
+        { /// The banded Reichenbach key (shared-ancestor magnitude) this stratum conditions on.
+          Stratum: int
+          /// Spacelike pairs in the stratum (the MI sample size).
+          Pairs: int
+          /// `I(A; B)` (nats) of the REAL categorical pairing.
+          RealMI: float
+          /// The `(1 − δ)` quantile of the permutation-null MI — the bar the real MI must clear.
+          NullThreshold: float
+          /// `ExcessCorrelation` iff `RealMI > NullThreshold`; else `WithinNull` (never acquits).
+          Verdict: DecorrelationExcess.PairVerdict }
+
+    /// The fused excess-MI reading. Granularity is **per-stratum** (MI is a population statistic — one
+    /// value per pairing, so a stratum, not a pair, is the unit of conviction — coarser than `fuse`'s
+    /// per-pair verdicts, but sensitive to identity-coupling `fuse`'s Jaccard cannot see).
+    type MIReading =
+        { Strata: MIStratum list
+          /// Strata convicting excess mutual information.
+          ExcessStrata: int }
+
+    /// **Fuse with the mutual-information statistic** — the finer lens (see `DecorrelationExcess` MI
+    /// section). Identical DAG/Reichenbach machinery as `fuse`, but the observable is a **coarse
+    /// categorical** `Map<'C, 'k>` (e.g. each commit's primary subsystem — full touch-sets saturate MI),
+    /// and each stratum gets ONE excess-MI verdict from `I(A; B)` vs the permutation-null MI. Deterministic
+    /// (DST, `seed` only), order-independent, one-way (`ExcessCorrelation` convicts; `WithinNull` never acquits).
+    let fuseMI
+        (seed: uint64)
+        (delta: float)
+        (k: int)
+        (stratumKey: int -> int)
+        (parents: Map<'C, 'C list>)
+        (categories: Map<'C, 'k>)
+        (commits: 'C list)
+        : MIReading =
+        let ancOf =
+            commits
+            |> List.distinct
+            |> List.map (fun c -> c, DecorrelationMetrology.ancestors parents c)
+            |> Map.ofList
+
+        let anc c = Map.tryFind c ancOf |> Option.defaultValue Set.empty
+
+        let pairs =
+            DecorrelationMetrology.spacelikeCommitPairs parents commits
+            |> List.choose (fun (a, b) ->
+                match Map.tryFind a categories, Map.tryFind b categories with
+                | Some ca, Some cb -> Some(a, b, ca, cb)
+                | _ -> None)
+
+        let strata =
+            pairs
+            |> List.groupBy (fun (a, b, _, _) -> stratumKey (Set.intersect (anc a) (anc b) |> Set.count))
+            |> List.sortBy fst
+
+        let readings =
+            strata
+            |> List.map (fun (key, ps) ->
+                let aObs = ps |> List.map (fun (_, _, ca, _) -> ca)
+                let bObs = ps |> List.map (fun (_, _, _, cb) -> cb)
+                let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs)
+                let nullMIs = DecorrelationExcess.permutationNullMI (seed + uint64 key) k aObs bObs
+                let threshold = DecorrelationExcess.nullThreshold delta nullMIs
+                { Stratum = key
+                  Pairs = List.length ps
+                  RealMI = realMI
+                  NullThreshold = threshold
+                  Verdict = DecorrelationExcess.classifyPair threshold realMI })
+
+        { Strata = readings
+          ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }

@@ -119,3 +119,41 @@ let ``SOUNDNESS - an independent population is NOT convicted (no false green on 
         List.zip a b
         |> List.filter (fun (x, y) -> DExc.classifyPair threshold (DExc.jaccard x y) = DExc.ExcessCorrelation)
     Assert.Empty(convicted)
+
+// ── the FINER statistic: population mutual information ─────────────────────────────────────────────────
+
+[<Fact>]
+let ``pairingMI - a perfectly coupled categorical pairing carries MI ~ ln 2; an independent one ~ 0`` () =
+    // Coupled: a alternates x/y, b is a deterministic function of a (x->p, y->q) ⇒ I(A;B) = H(A) = ln 2.
+    let coupled = [ for i in 0..39 -> (if i % 2 = 0 then "x", "p" else "y", "q") ]
+    Assert.Equal(log 2.0, DExc.pairingMI coupled, 6)
+    // Independent: a has period 2, b has period 4 ⇒ over lcm the joint factorises ⇒ I(A;B) = 0.
+    let indep = [ for i in 0..39 -> ((if i % 2 = 0 then "x" else "y"), (if i % 4 < 2 then "p" else "q")) ]
+    Assert.Equal(0.0, DExc.pairingMI indep, 6)
+
+[<Fact>]
+let ``permutationNullMI - yields k values and is deterministic in the seed`` () =
+    let a = [ for i in 0..19 -> if i % 2 = 0 then "x" else "y" ]
+    let b = [ for i in 0..19 -> if i % 2 = 0 then "p" else "q" ]
+    let n1 = DExc.permutationNullMI 3UL 50 a b
+    Assert.Equal(50, List.length n1)
+    Assert.Equal<float list>(n1, DExc.permutationNullMI 3UL 50 a b)
+
+[<Fact>]
+let ``permutationNullMI - empty on an empty side (nan threshold ⇒ nothing convicts)`` () =
+    Assert.Empty(DExc.permutationNullMI 3UL 50 [] ([] : string list))
+    Assert.True(System.Double.IsNaN(DExc.nullThreshold 0.05 (DExc.permutationNullMI 3UL 50 [] ([] : string list))))
+
+// SOUNDNESS (MI): a coupled pairing's real MI exceeds the permutation-null threshold ⇒ CONVICT; an
+// independent pairing's real MI sits within the null ⇒ WITHIN NULL. The finer statistic's one-way test.
+[<Fact>]
+let ``SOUNDNESS (MI) - coupled convicts, independent does not (finite-sample bias absorbed by the null)`` () =
+    // Coupled: b determined by a ⇒ high real MI; the shuffle destroys the coupling ⇒ low null MI.
+    let aC = [ for i in 0..39 -> if i % 2 = 0 then "x" else "y" ]
+    let bC = [ for i in 0..39 -> if i % 2 = 0 then "p" else "q" ]
+    let nullC = DExc.permutationNullMI 7UL 200 aC bC
+    Assert.Equal(DExc.ExcessCorrelation, DExc.classifyPair (DExc.nullThreshold 0.05 nullC) (DExc.pairingMI (List.zip aC bC)))
+    // Independent: real MI ~ 0 is itself a draw from the null ⇒ cannot clear the (1−δ) null quantile.
+    let aI = [ for i in 0..39 -> if i % 2 = 0 then "x" else "y" ]
+    let bI = [ for i in 0..39 -> if i % 4 < 2 then "p" else "q" ]
+    Assert.Equal(DExc.WithinNull, DExc.classifyPair (DExc.nullThreshold 0.05 (DExc.permutationNullMI 7UL 200 aI bI)) (DExc.pairingMI (List.zip aI bI)))

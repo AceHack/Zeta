@@ -110,3 +110,43 @@ let ``fuse finds no excess when every commit is identical (uniform baseline, not
     let obs = children |> List.map (fun c -> c, set [ "same" ]) |> Map.ofList // all identical
     let reading = DEF.fuse 2024UL 0.05 200 id dag obs children
     Assert.Equal(0, reading.Excess) // 1.0 is the baseline, not excess above it
+
+// ── fuseMI: the finer lens (per-stratum excess mutual information) — wiring ────────────────────────────
+
+// Two ancestor bands (as in the fuse stratification test) ⇒ two MIStratum readings, one per band, each
+// reporting its pair count. (Statistical power of the MI test itself lives in the DecorrelationExcess
+// core tests, where the pairing is controlled directly.)
+[<Fact>]
+let ``fuseMI conditions on shared-ancestor strata - one MIStratum per band, pair counts intact`` () =
+    let dag = Map.ofList [ "R", []; "A", [ "R" ]; "B", [ "R" ]; "M", [ "R" ]; "C", [ "M" ]; "D", [ "M" ] ]
+    let cats = [ "A"; "B"; "C"; "D"; "M" ] |> List.map (fun c -> c, c) |> Map.ofList // primary-subsystem stand-in
+    let reading = DEF.fuseMI 1UL 0.05 200 id dag cats [ "A"; "B"; "C"; "D"; "M" ]
+    Assert.Equal(2, List.length reading.Strata) // count-1 band and count-2 band
+    // total metered pairs across MI strata match the per-pair fuse's SpacelikePairs on the same inputs.
+    let obs = cats |> Map.map (fun _ v -> set [ v ])
+    let jac = DEF.fuse 1UL 0.05 200 id dag obs [ "A"; "B"; "C"; "D"; "M" ]
+    Assert.Equal(jac.SpacelikePairs, reading.Strata |> List.sumBy (fun s -> s.Pairs))
+
+[<Fact>]
+let ``fuseMI skips a pair missing a category on either end`` () =
+    let cats = Map.ofList [ "A", "cat" ] // B has no category
+    let reading = DEF.fuseMI 1UL 0.05 200 id forkDag cats [ "A"; "B" ]
+    Assert.Equal(0, reading.Strata |> List.sumBy (fun s -> s.Pairs))
+
+[<Fact>]
+let ``fuseMI is order-independent in the commits list`` () =
+    let dag = Map.ofList [ "R", []; "A", [ "R" ]; "B", [ "R" ]; "C", [ "R" ]; "D", [ "R" ] ]
+    let cats = [ "A"; "B"; "C"; "D" ] |> List.map (fun c -> c, c) |> Map.ofList
+    let r1 = DEF.fuseMI 7UL 0.05 200 id dag cats [ "A"; "B"; "C"; "D" ]
+    let r2 = DEF.fuseMI 7UL 0.05 200 id dag cats [ "D"; "C"; "B"; "A" ]
+    Assert.Equal(r1, r2)
+
+// Degenerate: every concurrent commit has the SAME category ⇒ the pairing carries zero mutual information
+// (B tells you nothing about A beyond the constant) ⇒ no excess-MI stratum (honest no-false-green).
+[<Fact>]
+let ``fuseMI finds no excess when every commit shares one category (MI is zero, not coupling)`` () =
+    let children = [ "c0"; "c1"; "c2"; "c3"; "c4"; "c5" ]
+    let dag = ("R", []) :: (children |> List.map (fun c -> c, [ "R" ])) |> Map.ofList
+    let cats = children |> List.map (fun c -> c, "same") |> Map.ofList
+    let reading = DEF.fuseMI 2024UL 0.05 200 id dag cats children
+    Assert.Equal(0, reading.ExcessStrata)

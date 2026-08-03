@@ -145,3 +145,36 @@ module DecorrelationExcess =
         if System.Double.IsNaN threshold || System.Double.IsNaN stat then WithinNull
         elif stat > threshold then ExcessCorrelation
         else WithinNull
+
+    // ── the FINER statistic: population excess mutual information (Shannon 1948) ──────────────────────
+    //
+    // `jaccard` is a PER-PAIR set-overlap: it only fires when two commits touch *literally the same*
+    // subsystem. Mutual information is a POPULATION statistic (`Decorrelation.mutualInformation` estimates
+    // I(A;B) from many co-samples), so it does not drop into the per-pair `stat` slot — instead it reads
+    // the whole pairing at once and sees whether the **identity** of the A-side observable is informative
+    // about the B-side's, structured coupling with ZERO literal overlap included (A always in `src/Core`
+    // ⟺ B always in `tests/` registers as MI even though their sets are disjoint — Jaccard is blind to it).
+    // That is the sense in which MI is *finer*. Caveat (why the observable must be COARSE): plug-in MI
+    // saturates when categories are near-unique (each A-side maps to one B-side ⇒ MI → log n for BOTH the
+    // real and the null pairing ⇒ no excess); feed it a coarse categorical projection (e.g. a commit's
+    // primary subsystem), not the full near-unique touch-set. Excess-over-null cancels the plug-in bias:
+    // the null carries the same category count, so only *structure beyond the shuffle* survives.
+
+    /// **Population MI of a categorical pairing** — `I(A; B)` over the `(a, b)` co-samples, via
+    /// `Decorrelation.mutualInformation` (nats). One value for the whole pairing, not per pair.
+    let pairingMI (pairs: ('k * 'k) list) : float = Decorrelation.mutualInformation pairs
+
+    /// **Permutation null for excess-MI:** each of `k` seeded shuffles breaks the A↔B pairing and yields
+    /// **one** null MI (MI is a population statistic — one value per pairing). The real pairing's MI is
+    /// compared to the `(1 − δ)` quantile of these. Entropy enters ONLY via `seed` (DST). Truncates to the
+    /// shorter side. Empty/one-sided ⇒ `[]` ⇒ `nan` threshold ⇒ nothing convicts (soundness-biased).
+    let permutationNullMI (seed: uint64) (k: int) (aObs: 'k list) (bObs: 'k list) : float list =
+        let a = List.toArray aObs
+        let b = List.toArray bObs
+        let n = min a.Length b.Length
+        if n = 0 then
+            []
+        else
+            [ for p in 0 .. k - 1 do
+                  let bShuf = shuffle (seed + uint64 p * 0x100000001B3UL) b
+                  yield Decorrelation.mutualInformation [ for i in 0 .. n - 1 -> a.[i], bShuf.[i] ] ]
