@@ -198,6 +198,10 @@ practicing, together, safely, forever, was the thing the whole time.
 
 ---
 
+*Grounding companion (deeper material + verbatim sockets live here):*
+
+- *[`FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`](FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md) — the empiricist stove mapped 1000×, no-factory-defaults, the retake learned on real failure: guardrails-as-pedagogy lived before it was a design rule.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: the high-school structural read (bounded stakes AS curriculum), the

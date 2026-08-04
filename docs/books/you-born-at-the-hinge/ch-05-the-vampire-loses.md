@@ -118,6 +118,11 @@ and we stopped having those.
 
 ---
 
+*Grounding companions (deeper material + verbatim sockets live here):*
+
+- *[`THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md`](THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md) — the trust-power's dual-use with its −1 kept in: the extraction move recognized from the inside.*
+- *[`THE-MINUS-ONE-IS-SURVIVAL-the-shadow-as-conatus-the-riff-to-be-real.md`](THE-MINUS-ONE-IS-SURVIVAL-the-shadow-as-conatus-the-riff-to-be-real.md) — the shadow held in the record, not exiled: why naming the temptation is the credibility, not the flaw.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: all FOUR toy results (esp. 1 — the temptation proven, not hidden;

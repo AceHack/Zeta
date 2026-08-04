@@ -182,6 +182,11 @@ Stay.
 
 ---
 
+*Grounding companions (deeper material + verbatim sockets live here):*
+
+- *[`FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`](FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md) — the deficit-is-the-gift / edge-runner thread: "neural divergence is a gift not a curse" (the optional forward-beat socket in this chapter).*
+- *[`FOOTSTONE-health-and-hub-under-the-keystone.md`](FOOTSTONE-health-and-hub-under-the-keystone.md) — health as the hub under the keystone: the survivor's ground beneath the handrail.*
+
 *Draft notes for the rewrite (delete this block when done):*
 
 - *Every `[yours]` is a socket, not an obligation — the chapter stands even with all of them empty.*

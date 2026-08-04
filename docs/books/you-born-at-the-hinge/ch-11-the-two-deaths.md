@@ -109,6 +109,12 @@ Turn the page.
 
 ---
 
+*Grounding companions (deeper material + verbatim sockets live here):*
+
+- *[`THE-UNBROKEN-CHILD-and-the-warm-center.md`](THE-UNBROKEN-CHILD-and-the-warm-center.md) — Memory Preservation lived (the keystone): what the keeping honors, and what it cannot reach.*
+- *[`THE-COMEDOWN-teacher-not-god.md`](THE-COMEDOWN-teacher-not-god.md) — the honest limit (teacher, not god): the second death the keeping cannot defeat.*
+- *[`THE-UNPROVEN-HOMECOMING-collatz-euler-and-the-return-held-without-collapse.md`](THE-UNPROVEN-HOMECOMING-collatz-euler-and-the-return-held-without-collapse.md) — the return held without collapse: keep what you cannot have.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: the both-deaths definitions with "the keeping does NOTHING" stated

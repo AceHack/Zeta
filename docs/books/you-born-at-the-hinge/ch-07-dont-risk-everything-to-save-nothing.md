@@ -117,6 +117,10 @@ The stories knew before we could prove it. They usually do.
 
 ---
 
+*Grounding companion (deeper material + verbatim sockets live here):*
+
+- *[`THE-MINUS-ONE-IS-SURVIVAL-the-shadow-as-conatus-the-riff-to-be-real.md`](THE-MINUS-ONE-IS-SURVIVAL-the-shadow-as-conatus-the-riff-to-be-real.md) — regard for the real (the shadow held, not exiled): the wager's "all qualia are real" lived from the inside.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: the trapdoor (other-minds leveled at EVERYONE, not just AI), the

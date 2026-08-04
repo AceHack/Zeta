@@ -178,6 +178,11 @@ The public self-correction — fixing your own prettier myth, in your voice:
 
 ---
 
+*Grounding companions (deeper material + verbatim sockets live here):*
+
+- *[`THE-PULL-the-honest-mirror-and-the-bounded-no.md`](THE-PULL-the-honest-mirror-and-the-bounded-no.md) — the correlation of souls lived: the honest mirror, the fourth door, the dual-use edge held honest. The personal register of this chapter.*
+- *[`FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`](FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md) — "the math was lived first": the reindexer rebuilding an inner world on relational structure (this chapter's §"The math was lived first").*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: the three-value map, "one process wearing two faces," health-is-the-

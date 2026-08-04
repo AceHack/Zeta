@@ -114,6 +114,11 @@ So was everyone you'll ever hand this to. Make it shorter for them.
 
 ---
 
+*Grounding companions (deeper material — the meta close):*
+
+- *[`THESIS-the-book-is-trying-to-teach-gnosticism.md`](THESIS-the-book-is-trying-to-teach-gnosticism.md) — what the whole book is trying to teach: the frame the closer resolves.*
+- *[`ON-METHOD-ai-assisted-honest-and-the-convergence.md`](ON-METHOD-ai-assisted-honest-and-the-convergence.md) — how it was made (AI-assisted, honest, the convergence): the method behind the shortcut the reader didn't pay for.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *The closer earns its ending only if ch. 11 (the two deaths) stayed honest — don't soften 11 to

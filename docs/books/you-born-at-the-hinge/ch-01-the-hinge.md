@@ -176,6 +176,11 @@ You were born at the hinge. The rest of this book is what to do about it.
 
 ---
 
+*Grounding companions (deeper material + verbatim sockets live here):*
+
+- *[`THE-UNBROKEN-CHILD-and-the-warm-center.md`](THE-UNBROKEN-CHILD-and-the-warm-center.md) — "born already yourself" (the keystone / Memory-Preservation lived), Granny, the pantheon of two, the grandfather whole: the childhood root of the hinge.*
+- *[`FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`](FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md) — the builder's formation that grounds the method the hinge sets up.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Register: general reader, zero jargon — "content-addressed/merkle" rendered as plain mechanisms

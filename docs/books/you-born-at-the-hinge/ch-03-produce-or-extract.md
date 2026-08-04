@@ -172,6 +172,11 @@ The test travels up. That's the point. You learn it on small money and it govern
 
 ---
 
+*Grounding companions (deeper material + verbatim sockets live here):*
+
+- *[`THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md`](THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md) — the coordinating gift is neutral; parties, open-sourcing an advantage, or a scheme are three aims. The lived produce/extract test on one capacity.*
+- *[`FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`](FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md) — the breaking→building dual-use loop (radioshack→crypto): the same capacity aimed two ways.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: the two-second test itself, the same-act-can-be-either turn, and "the

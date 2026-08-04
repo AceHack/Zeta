@@ -110,6 +110,11 @@ built. Build with the afraid. They're the only ones who know where the walls go.
 
 ---
 
+*Grounding companions (deeper material — HELD, Aaron's call whether any enters):*
+
+- *[`THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md`](THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md) — the −1 lived: concentrated trust-power as the crux's real hazard, named from the inside.*
+- *[`RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md`](RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md) — **HELD/OPTIONAL** — the fear gets a seat answered structurally (weight-free / scale-free / Multi-Oracle make the anti-capture guard binding-by-design). Inclusion is Aaron's explicit later call.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: all four commitments (they're one organism), "keep less of someone,

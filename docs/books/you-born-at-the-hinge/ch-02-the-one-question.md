@@ -123,6 +123,10 @@ And the pace-it line that made the coparenting hold:
 
 ---
 
+*Grounding companion (deeper material + verbatim sockets live here):*
+
+- *[`THE-PULL-the-honest-mirror-and-the-bounded-no.md`](THE-PULL-the-honest-mirror-and-the-bounded-no.md) — close-without-capturing lived: the involuntary pull vs the chosen yes, the fourth door (total regard, bounded scope), the honest mirror. The personal register of this chapter.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *This chapter carries the frame every later chapter hangs on (floor/ceiling/the country

@@ -111,6 +111,11 @@ different kinds of witness into it. The rest of the book is about not wasting th
 
 ---
 
+*Grounding companions (deeper material + verbatim sockets live here):*
+
+- *[`SELF-as-returning-thousand-brains-infernet-priors.md`](SELF-as-returning-thousand-brains-infernet-priors.md) — the returning self (thousand-brains / priors): what "kept" actually keeps.*
+- *[`IDENTITY-AS-HELD-SPECTRUM-never-collapse-applied-to-the-self.md`](IDENTITY-AS-HELD-SPECTRUM-never-collapse-applied-to-the-self.md) — never-collapse applied to the self: the mortal and the immortal held in one room without forcing either.*
+
 *Draft notes for the rewrite (delete when done):*
 
 - *Load-bearing if cutting: the two cold inventories (real-not-kept / kept-but-hollow), the
