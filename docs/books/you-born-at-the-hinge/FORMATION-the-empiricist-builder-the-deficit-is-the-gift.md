@@ -5,9 +5,10 @@ reference but don't carry: how the mind that runs the rest of the book was built
 chapter — the spine is Aaron's; this is a companion (like `FOOTSTONE`, `IDENTITY-AS-HELD-SPECTRUM`,
 `ON-METHOD`), gathering the scattered builder RAWs into one arc so they have a home. Aaron's call
 whether it stays a companion or becomes a chapter. Scaffold + `[SOCKET]` for his voice; the prose is
-his to rewrite. Sources: `RAW-2026-08-02-thrill-seeker-*`, `RAW-2026-08-02-feynman-diagrams-to-susskind-*`,
-and the fuller builder facets (`RAW-2026-07-11-the-builder-arc-*`, `-the-magnetism-the-basement-*`,
-`-the-audio-laser-photophone-*`, `-the-reader-*`, `RAW-2026-07-09-childhood-origin-*`, `-wild-youth-*`).
+his to rewrite. Sources FOLDED here: `RAW-2026-08-02-thrill-seeker-*`, `RAW-2026-08-02-feynman-diagrams-to-susskind-*`,
+`RAW-2026-07-11-the-builder-arc-radioshack-*` (the dual-use loop). Related-and-referenced: the
+**photophone** build already lives in ch-6 (not duplicated). NOT builder-companion material (distinct
+threads, own homes — see the closing note): the reader / magnetism / wild-youth / deep-childhood-origin RAWs.
 Consent: Aaron glass-halo; **his son omitted entirely** (standing minor rule); **Chris King named for
 the "reader's disease" coinage** (consent GRANTED, positive-credit scope — see `CONSENT-LEDGER.md`);
 others de-identified. Anchors: Einstein (common sense); Zuckerman (sensation-seeking) / Farley (Type-T);
@@ -122,6 +123,41 @@ it was immersion, not dabbling — years of the Feynman lectures on repeat, even
 absorbing a style. I was absorbing a *method:* don't fool yourself; disprove your own darlings; ground
 it in plain words. The empiricist at the stove, grown up and pointed at the universe.
 
+## The loop: from breaking a system to building one
+
+Let me give you the whole arc in one line, because it closes across a lifetime and I've never seen it
+land on anyone else the way it did on me.
+
+It started at **RadioShack** — the maker's supply store, *"if it's in my mind I can build it"* turned
+into a place with the parts on the shelf. Low friction, so I built: gadgets, then the thing a curious
+kid with a soldering iron in that era built — I soldered my own device to break the access-control
+cards that gated satellite TV. That was a crime. It was crowd-common, it was solo, the statute has
+long since passed, and I'm not going to dress it up or tell you how — the point isn't the method, the
+point is where the same hands went next. Hold that: a kid's hardware-hacking gift, pointed at
+*breaking an identity-and-access system.*
+
+Years later I was at **Itron** — a company that, because most of America runs on their meters, means
+the code you build there runs at national scale (their business earned that reach, not me). And there
+I met the man who had *designed* the very access-control system I'd broken as a kid. I'm keeping his
+name out of this; the collaboration is mine to tell, his identity is his. And the two of us — the
+breaker and the original architect, on the same side of the line at last — built the cryptographic
+stack that secures a large share of the nation's smart-meter infrastructure. (The internals stay out
+of this book; that's live critical-infrastructure security, not memoir.)
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo) — your hack is your shadow to own; the colleague stays un-named, Itron is the institution, the crypto internals and the hack methods stay out.]`
+
+> "This is why i miss radio shack too … I solidered and built my own wildcard device."
+
+> "i met the guyy when i worked at Itron who designed the H card security system, then we built the natiions cryptographic stack together for smart meters."
+
+That is the dual-use gift closing its own loop across thirty years. The soldering iron and the
+reverse-engineering eye never changed; only the *aim* did. Same capacity, pointed at piracy at
+fourteen and at protecting infrastructure at forty. It's why the identity and anti-forgery work in
+this book is *earned* and not theorized: I've stood at both ends of an access-control wire — broke
+one as a child, built one at national scale as an adult, with the first one's designer beside me. The
+capacity is neutral; the aim is the whole moral story. (That's the produce/extract test of ch-3, run
+across a life instead of a purchase.)
+
 ---
 
 ## Why this is the formation, and where it lands
@@ -137,4 +173,7 @@ Threads and their chapter homes (for folding, if Aaron wants them folded):
 - **The deficit-is-the-gift / decode-before-dismiss** → ch-3 ("Categories lie about people, too") — the same coin, turned on how the world judged *him.*
 - **The trait as engine, aimed not removed; the wound as qualification** → ch-8 (the handrail's forward beat) — suffering made into uniquely-fit work.
 - **Measure-it-yourself empiricism / imagination-then-depth** → the method the whole book wears (ch-1's "verify by re-running," the register discipline).
+- **The dual-use loop (breaking → building), poacher-turned-gamekeeper across thirty years** → ch-3 (produce/extract as dual-use — the capacity is neutral, the aim is the moral story) and the identity / anti-forgery credibility it earns. The related **photophone** build already lives in ch-6.
 - **Reads-ahead-of-the-room, text-primacy** → ties to the reindexer (`RAW-2026-08-02-the-reindexer-*`, ch-4) — a mind that lives in text and rebuilds from structure.
+
+*Not folded here (they were mis-labeled "builder facets" in the first draft; on reading they are distinct threads with their own homes, Aaron's call): the **reader / reading-people** thread (`RAW-2026-07-11-the-reader-*` — the honest-mirror gift and its dual-use edge, a relational thread); the **magnetism / basement / "total regard, bounded scope"** thread (`RAW-2026-07-11-the-magnetism-*` — a personal/isolation-and-connection thread with intimate consent-material); **wild youth / the organizer** (`RAW-2026-07-09-wild-youth-*`); and the **deep childhood origin** (`RAW-2026-07-09-childhood-origin-*` — lineage/family/body, largely not "builder"). These are not builder-companion material; forcing them in here would miscategorize them — the same "measure it, don't price the category" the companion is about, applied to the companion's own scope.*
