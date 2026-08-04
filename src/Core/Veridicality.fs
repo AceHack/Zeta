@@ -210,6 +210,24 @@ module Veridicality =
     /// 50 independent pieces. The gate rejects pseudo-consensus;
     /// genuine multi-root agreement passes.
     ///
+    /// **⚠ Necessary-not-sufficient — independence is ASSERTED (via
+    /// label distinctness), NOT verified.** The gate counts distinct
+    /// root-authority LABELS, and a distinct label is not a proof of an
+    /// independent source: (1) `RootAuthority` is self-asserted metadata,
+    /// so a Sybil defeats this gate by presenting ONE real source under ≥2
+    /// labels — the very pseudo-consensus the intent above names; (2) two
+    /// genuinely-distinct roots can still be CORRELATED (a shared upstream),
+    /// which a label count cannot see. So this is a cheap FIRST filter that is
+    /// **one-way**: failing (`< 2` labels) convicts single-source pseudo-
+    /// consensus, but passing does NOT certify independence. The real "are
+    /// these two roots the same source?" test is the anti-sybil oracle
+    /// (`AntiSybil.chshSybilCalibrated` — same question, same one-way
+    /// direction); compose with it upstream when the trust upgrade is
+    /// adversarial. `validateProvenance` does NOT close this — it only checks
+    /// fields are non-empty + signed, not that roots are independent.
+    /// (Same discipline as `AntiSybil.chshMargin` / `CountMin`: a guarantee is
+    /// only as strong as the independence the inputs actually have.)
+    ///
     /// The input list is assumed to already be ABOUT the same
     /// assertion (callers group-by canonical claim key before
     /// invoking). The gate does NOT canonicalize; that's the
