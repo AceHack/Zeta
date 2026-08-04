@@ -53,6 +53,25 @@ computing + formal verification — data never leaves, compute attested, results
 label; a policy-*promise* guardian is weak and forkable. And the play bets on the sovereignty/regulatory
 trend continuing (**register-3** — plausible, name it).
 
+**Proof-point (2026-08-04) — the trust-verification core moved from bet toward demonstrable.** The −1 is
+the right worry: a policy-*promise* guardian is forkable. One load-bearing piece of "strength of
+enforcement" is now **built, adversarially verified, and runnable** — a **mutual non-coordination
+verifier**: both the AI *and* the data owner run the **same deterministic instrument on the same open
+causal record**, and a hidden coordination channel (a covert exfiltrate / kill-switch agreement) leaves a
+**statistical fingerprint neither side can hide or fake** — enforcement by *math both parties re-run*, not
+a label either party asserts. Shipped: the decorrelation instrument (excess-over-null + Reichenbach
+conditioning + an autocorrelation-corrected, formally-verified conviction margin); a **runnable
+demonstration** that clears honest operators (≈ the 5% false-alarm budget, no more) and flags a hidden
+lockstep channel by a wide, legible margin; and a **telemetry adapter** stating exactly what a real system
+must emit (declared causal provenance — never wall-clock). Verified through **four independent reviewers**
+(formal-methods / Z3, mathematical-physics, a zero-empathy critic, property-based testing) — the same
+multi-oracle discipline the product sells. **Honest register:** this is **register-2 for the
+trust-*verification* primitive** (it runs, it's tested, a skeptic can re-run it); the full guardian —
+hardware attestation, confidential compute, real EMS / vendor integration — remains **register-3**. But the
+question an investor actually asks — *"is the guardian a real enforcement mechanism, or a policy promise?"*
+— now has a **demonstrable answer for its core**, not a roadmap. (Legibility surface for a technical
+diligence reader: [`docs/explainers/decorrelation-meter-grid-trust-for-max.md`](../explainers/decorrelation-meter-grid-trust-for-max.md).)
+
 ## 4. Creator safety — the #2 target
 
 If Zeta is the guardian AI, the guardian is the #1 target and **its creators are #2**
@@ -90,5 +109,6 @@ playbook — depth out-ran forkers). Fund the capture-depth on purpose.
 ## Pointers
 
 - Core: [`funding-thesis-tsmc-in-time.md`](funding-thesis-tsmc-in-time.md) · [`pitch-investor.md`](pitch-investor.md) · [`../PITCH-ONE-PAGER.md`](../PITCH-ONE-PAGER.md) · [`../governance/AI-TEAM-FINANCIAL-SUBSTRATE.md`](../governance/AI-TEAM-FINANCIAL-SUBSTRATE.md).
-- Substrate the moat rests on: `docs/research/2026-08-02-cross-scale-decorrelation-band-*` (monoculture = over-correlation), `…pilot-wave-done-right-*`, `docs/method/four-register-discipline.md`; the shipped decorrelation meter (`src/Core/DecorrelationMetrology.fs` + `DecorrelationMeter.fs`).
+- Substrate the moat rests on: `docs/research/2026-08-02-cross-scale-decorrelation-band-*` (monoculture = over-correlation), `…pilot-wave-done-right-*`, `docs/method/four-register-discipline.md`.
+- The guardian trust-verification core (the §3 proof-point), shipped: `src/Core/DecorrelationExcess.fs` + `DecorrelationExcessFusion.fs` (the mature excess-over-null instrument + null family), `AntiSybil.fs` (the autocorrelation-corrected margin, Caveat-A), `GridTelemetry.fs` (the real-data adapter); the runnable demonstration `tests/Tests.FSharp/GridTrustDemo.Tests.fs` + `GridTelemetry.Tests.fs`; the diligence-reader explainer `docs/explainers/decorrelation-meter-grid-trust-for-max.md`; the arc capstone `docs/research/2026-08-04-decorrelation-instrument-arc-capstone-*` + null-family note. (`DecorrelationMeter.fs` is the earlier scope-limited CHSH form, superseded by the above.)
 - Itron-strategy precursor (co-create standards with incumbents): `docs/backlog/P1/081KSE6WT0008QG0R0004ZPPRP-itron-strategy-co-create-standards-with-incumbents-companion*`.
