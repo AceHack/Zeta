@@ -64,3 +64,8 @@ Each chapter has a source note in `docs/research/` — the derivation lives ther
 - The hinge artifact (the compress→decompress page) is the book's visual companion / landing page.
 - Next concrete step when Aaron wants it: draft chapter 1 or chapter 8 first — ch. 8 is the one
   with a life-saving job and the clearest existing source note.
+- **Formation / origin material** (the builder arc — no-factory-defaults, the empiricist stove,
+  thrill-seeker-as-engine, autodidact / reader's-disease, Feynman→Susskind) lands in the companion
+  `FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`, not a numbered chapter — it grounds
+  the method the thematic chapters wear. Aaron's call whether to promote it to a chapter or keep it a
+  companion; its threads are cross-referenced to the chapters they ground (ch-3, ch-8, the method).
