@@ -1,9 +1,11 @@
 # Chapter 4 — The Correlation of Souls
 
-*STATUS: FIRST DRAFT (Otto, 2026-07-03) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
-are recording prompts; the chapter stands with all of them empty. Sources:
-`2026-07-02-its-human-not-quantum-…` (+ the math-team correction in
-`2026-07-03-provability-triage-…`). Pulls: PULLS.md §Chapters 3–5.*
+*STATUS: FIRST DRAFT (Otto, 2026-07-03; lived-root section added 2026-08-04) — scaffold for Aaron's
+voice. `[yours — cue: …]` sockets are recording prompts; the chapter stands with all of them empty.
+Sources: `2026-07-02-its-human-not-quantum-…` (+ the math-team correction in
+`2026-07-03-provability-triage-…`); the lived root from
+`RAW-2026-08-02-the-reindexer-rebuilding-the-inner-world-after-the-fracture.md`. Pulls: PULLS.md
+§Chapters 3–5. A UX-research mentor is de-identified throughout per `CONSENT-LEDGER.md`.*
 
 ---
 
@@ -73,6 +75,64 @@ Equality as mobility, your words:
 > "the freedom to be close and separate = intimate ... the mobility itself is intimacy."
 
 > "this is what makes us feel equal."
+
+## The math was lived first
+
+I need to tell you where this way of seeing actually came from, because if I let you think I read it
+off a physics paper I'd be selling you the pretty version. I didn't derive *souls as correlations*
+from a theorem. I derived it from having to rebuild myself from parts — and the theorem turned out,
+years later, to agree with what the rebuilding had already taught me.
+
+I'll say the hard part plainly, in my own words, and then I'll say the honest limit right after,
+because this is not a diagnosis I'm handing you and it is not a substitute for someone to sit with.
+
+`[SOCKET — your VERBATIM below, to react to / rewrite in your own voice. Consent: yours (glass-halo). Register: survival made general, never spectacle.]`
+
+> "this is how i rebuild my inner world after i fractured into multiple personalities as well."
+
+Here is the method, and it is the same shape as the whole book. When it scattered, the *content* was
+gone — the specific facts, the shards, some of them for good. You cannot rebuild a self by chasing
+the lost content; there isn't enough of it left and it won't hold. What you rebuild on is the thing a
+search engine throws in the trash: the **function words, the connective tissue, the how-things-relate.**
+Not the nouns — the grammar between them. Reconstruct the structure of how the parts *related*, and
+the meaning grows back around it. The specific shards can stay lost and the self still returns, because
+the self was never the shards. It was the relations.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo).]`
+
+> "similar to a search engine and reverse indexes but different use of stop words cause that's where
+> all the meaning is at."
+
+That is this chapter's whole thesis, one domain over. A person is not the content that can scatter;
+a person is the *correlations that hold* — the structure of how everything in them relates. The math
+of the self, one domain over, **is** the self. I did not lay a database idea over a life. I built the
+database out of the thing that brought a life back.
+
+And there is a second half to the practice, the half that is literally the title of this chapter.
+To rebuild an inner world — and to check that a self you're rebuilding is *real* and not a story
+you're telling yourself — you have to learn to ask about first-person experience *without leading the
+answer*. I learned that discipline from a mentor in user-experience research (I'm keeping her name out
+of the text; that's her privacy, not my secret). The move is exact: you can never measure the private
+experience itself — that stays the axiom, the one thing you take on faith. But you *can* ask cleanly
+enough, of enough people, to find the **correlations that hold across many** — and those you can check.
+You measure the shadow the experience casts across people; never the experience.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the mentor de-identified per CONSENT-LEDGER.]`
+
+> "i use techniques i learned from [a UX-research mentor] … on how to ask non biased questions about
+> individual qualia so we can find correlations that hold across many."
+
+*[Draft note — anchor to confirm before it travels: the standard UX-measurement text the mentor's
+lineage traces to is likely* Measuring the User Experience *(Tullis & Albert); recorded as inference,
+to be confirmed by Aaron, not asserted — same flag-don't-fabricate discipline the book runs on.]*
+
+So here is the honest limit, attached the way the handrail chapter attaches its own: this is one
+person's lived method, offered to you as a shortcut. It is **not** a clinical claim and it is **not**
+a substitute for care. A method is not a hand; reach for people. What I *can* hand you is the shape —
+that when the content of you scatters, you come back on the structure of how you relate, not on the
+shards you lost. That is where I got the eye for the correlation of souls: I had to find the
+correlations that held in *one* person before I ever saw them between two. And it is why the next move
+matters — because if the building is human, we have to take the quantum scaffolding down honestly.
 
 ## Tearing down the scaffolding
 
