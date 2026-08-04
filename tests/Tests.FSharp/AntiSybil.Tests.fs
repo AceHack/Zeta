@@ -291,27 +291,62 @@ let ``effectiveSampleSize: n at rho<=0, strictly below n for rho>0, monotone dec
 // THE soundness property: the corrected margin is NEVER smaller than the i.i.d. margin, and STRICTLY
 // larger on a positively-autocorrelated outcome-product stream (n_eff < n). This is the Caveat-(a) fix.
 [<Fact>]
-let ``chshMarginAutocorr: >= the iid margin always, and STRICTLY larger on autocorrelated products`` () =
+let ``chshMarginAutocorr: >= iid always; STRICTLY larger on lag-1 AND lag-2 autocorrelation (HAC)`` () =
     let n = 64
-    // Runs product: a all +1, b in runs of 8 (+1.. then -1..) ⇒ product = b ⇒ positively autocorrelated.
     let a = [ for _ in 1..n -> { Setting = 0; Outcome = 1 } ]
+    // Runs of 8 ⇒ lag-1 positive ⇒ strictly larger.
     let bRuns = [ for i in 0 .. n - 1 -> { Setting = 0; Outcome = (if (i / 8) % 2 = 0 then 1 else -1) } ]
-    Assert.True(chshMarginAutocorr 0.05 a bRuns > chshMargin 0.05 n) // autocorrelated ⇒ strictly larger
-    // Alternating product (rho1 < 0 ⇒ clamped to 0 ⇒ n_eff = n) ⇒ EQUALS the i.i.d. margin.
+    Assert.True(chshMarginAutocorr 0.05 a bRuns > chshMargin 0.05 n)
+    // Alternating ⇒ lag-1 NEGATIVE but lag-2 = +1. The old lag-1-only model saw n_eff = n (equal margin);
+    // the HAC estimator catches the lag-2 structure ⇒ STRICTLY larger. This is Soraya's 3b fix in action.
     let bAlt = [ for i in 0 .. n - 1 -> { Setting = 0; Outcome = (if i % 2 = 0 then 1 else -1) } ]
-    Assert.Equal(chshMargin 0.05 n, chshMarginAutocorr 0.05 a bAlt, 9)
+    Assert.True(chshMarginAutocorr 0.05 a bAlt > chshMargin 0.05 n)
+    // A decorrelated pseudo-random product ⇒ never smaller than the i.i.d. margin (obligation b).
+    let bRand = [ for i in 0 .. n - 1 -> { Setting = 0; Outcome = (if (bits 5 n).[i] = 1 then 1 else -1) } ]
+    Assert.True(chshMarginAutocorr 0.05 a bRand >= chshMargin 0.05 n)
 
 [<Fact>]
-let ``isApproxStationary: stable series passes, a mean-shift fails`` () =
-    Assert.True(isApproxStationary 0.1 [ 1.0; -1.0; 1.0; -1.0 ]) // both halves mean 0
-    Assert.False(isApproxStationary 0.5 [ 1.0; 1.0; 1.0; 1.0; -1.0; -1.0; -1.0; -1.0 ]) // mean 1 → -1
+let ``lagKAutocorr: alternating has rho1 < 0 but rho2 = +1 (the lag-2 structure lag-1 misses)`` () =
+    let alt = [ for i in 0..19 -> if i % 2 = 0 then 1.0 else -1.0 ]
+    Assert.True(lagKAutocorr alt 1 < 0.0) // adjacent products anti-correlate
+    // biased estimator divides by full n ⇒ ρ₂ = (n−2)/n = 0.9 here (→ 1 as n grows); strongly positive.
+    Assert.True(lagKAutocorr alt 2 > 0.8)
+    Assert.True(lagKAutocorr alt 2 > lagKAutocorr alt 1) // lag-2 ≫ lag-1: the structure lag-1 misses
 
-// The oracle is STRICTLY more conservative: it can only keep MORE identities distinct (drop false
-// collapses), never fewer, than the i.i.d.-calibrated oracle — for any batch, any delta.
+// Soraya's lag-2 hole, fixed: HAC shrinks n_eff on a stream with weak rho1 but strong rho2, where the
+// AR(1) lag-1 estimator barely moves.
 [<Fact>]
-let ``chshSybilAutocorrCalibrated: never collapses MORE than the iid-calibrated oracle`` () =
-    let mk seed n = [ for i in 0 .. n - 1 -> { Setting = (bits seed n).[i]; Outcome = (if (bits (seed + 7) n).[i] = 1 then 1 else -1) } ]
-    let streams = [ mk 1 128; mk 2 128; mk 3 128; mk 1 128 ] // last is a replay of the first
-    let iid = chshSybilCalibrated 0.05 streams
-    let corrected = chshSybilAutocorrCalibrated 0.05 0.5 streams
-    Assert.True(corrected.DistinctCount >= iid.DistinctCount) // more conservative ⇒ >= distinct sources
+let ``effectiveSampleSizeHAC: catches lag-2 dependence the AR(1) lag-1 estimator misses`` () =
+    // +1 on evens (persistent), pseudo-random on odds ⇒ weak rho1, strong rho2.
+    let series = [ for i in 0..199 -> if i % 2 = 0 then 1.0 else (if (bits 3 200).[i] = 1 then 1.0 else -1.0) ]
+    let arNeff = effectiveSampleSize 200 (lag1Autocorr series) // lag-1 only ⇒ barely shrinks
+    let hacNeff = effectiveSampleSizeHAC series (neweyWestBandwidth 200) // sums lags ⇒ shrinks meaningfully
+    Assert.True(hacNeff <= 200.0) // obligation (a) still holds under HAC
+    Assert.True(arNeff > 180.0) // lag-1 barely moved (the hole)
+    Assert.True(hacNeff < arNeff) // HAC sees the lag-2 dependence AR(1)-lag1 missed
+
+[<Fact>]
+let ``isApproxStationary(+MultiBlock): the multi-block gate catches a step-function the two-halves check passes`` () =
+    Assert.True(isApproxStationary 0.1 [ 1.0; -1.0; 1.0; -1.0 ]) // stable
+    Assert.False(isApproxStationary 0.5 [ 1.0; 1.0; 1.0; 1.0; -1.0; -1.0; -1.0; -1.0 ]) // level shift caught
+    // Soraya's defeat witness: two-halves means both 0 ⇒ FALSE-passes; 4-block means +1,-1,+1,-1 ⇒ caught.
+    let witness =
+        [ for _ in 1..10 -> 1.0 ] @ [ for _ in 1..10 -> -1.0 ] @ [ for _ in 1..10 -> 1.0 ] @ [ for _ in 1..10 -> -1.0 ]
+    Assert.True(isApproxStationary 0.1 witness) // two-halves is fooled
+    Assert.False(isApproxStationaryMultiBlock 0.1 4 witness) // multi-block is not
+
+// Machine-check of obligation (c): the autocorr oracle's same-source equivalence is a REFINEMENT (subset)
+// of the i.i.d. oracle's ⇒ DistinctCount_autocorr >= DistinctCount_iid, over many generated batches
+// (including replays and autocorrelated streams). Strictly-more-conservative, never a new false collapse.
+[<Fact>]
+let ``chshSybilAutocorrCalibrated: conviction set SUBSET of the iid oracle over many batches`` () =
+    let mk s n = [ for i in 0 .. n - 1 -> { Setting = (bits s n).[i]; Outcome = (if (bits (s + 7) n).[i] = 1 then 1 else -1) } ]
+    let runs s n = [ for i in 0 .. n - 1 -> { Setting = (bits s n).[i]; Outcome = (if (i / 8) % 2 = 0 then 1 else -1) } ]
+    for seed in 1..40 do
+        let streams = [ mk seed 96; mk (seed + 1) 96; mk seed 96; runs (seed + 2) 96; runs (seed + 2) 96 ]
+        let iid = chshSybilCalibrated 0.05 streams
+        let corrected = chshSybilAutocorrCalibrated 0.05 0.5 streams
+        Assert.True(
+            corrected.DistinctCount >= iid.DistinctCount,
+            sprintf "seed %d: autocorr distinct %d < iid distinct %d" seed corrected.DistinctCount iid.DistinctCount
+        )

@@ -232,6 +232,23 @@ module AntiSybil =
                 let num = [ for t in 0 .. n - 2 -> (x.[t] - mean) * (x.[t + 1] - mean) ] |> List.sum
                 num / denom
 
+    /// **Lag-`k` autocorrelation** `ρ_k` (Pearson between `xₜ` and `xₜ₊ₖ`). `0.0` for `k < 1`, `k ≥ n`,
+    /// or a constant series. Generalises `lag1Autocorr` (= `lagKAutocorr series 1`) — the HAC estimator
+    /// sums over lags to catch dependence that lag-1 alone misses (Soraya's lag-2 hole, 2026-08-04).
+    let lagKAutocorr (series: float list) (k: int) : float =
+        let x = List.toArray series
+        let n = x.Length
+        if k < 1 || k >= n then
+            0.0
+        else
+            let mean = Array.average x
+            let denom = x |> Array.sumBy (fun v -> (v - mean) * (v - mean))
+            if denom <= 1e-12 then
+                0.0
+            else
+                let num = [ for t in 0 .. n - 1 - k -> (x.[t] - mean) * (x.[t + k] - mean) ] |> List.sum
+                num / denom
+
     /// The round-ordered **±1 outcome-product series** that feeds the CHSH buckets:
     /// `prodₜ = sign(aₜ.Outcome) · sign(bₜ.Outcome)` (truncated to the shorter stream). Its
     /// autocorrelation is what drives `n_eff`.
@@ -254,15 +271,44 @@ module AntiSybil =
         let r = min RhoMax (max 0.0 rho1)
         float n * (1.0 - r) / (1.0 + r)
 
-    /// The **autocorrelation-corrected CHSH margin**: substitute `n_eff` (from the pair's own
-    /// outcome-product autocorrelation) for `n` in the Hoeffding ε. On an i.i.d. stream (`ρ₁ ≤ 0`) it
-    /// **equals** `chshMargin delta n`; on a positively-autocorrelated stream it is strictly **larger**
-    /// (`n_eff < n`) — the sound correction for Caveat (a). Takes the actual streams (not just `n`)
-    /// because `ρ₁` depends on the outcomes. `n_eff < 1` ⇒ `infinity` (no effective power ⇒ never convict).
+    /// **Newey–West bandwidth** `L = ⌊n^(1/3)⌋` (≥ 1) — the lag horizon summed in the long-run variance.
+    let neweyWestBandwidth (n: int) : int =
+        if n < 2 then 1 else max 1 (int (floor (float n ** (1.0 / 3.0))))
+
+    /// **Effective sample size under a Bartlett-windowed long-run variance** (Newey–West 1987) — the HAC
+    /// generalisation of the AR(1) `effectiveSampleSize`. It sums dependence across lags, so a stream with
+    /// weak `ρ₁` but strong higher-lag structure still shrinks `n_eff` (**fixes Soraya's lag-2 hole**):
+    ///   `n_eff = n / (1 + 2·Σ_{k=1}^{L} (1 − k/(L+1))·ρ_k⁺)`,  `ρ_k⁺ = max(0, ρ_k)`, `L = bandwidth`.
+    /// The clamped `ρ_k⁺ ≥ 0` and Bartlett weights keep the factor `≥ 1` ⇒ **`n_eff ≤ n` always, equality
+    /// iff every `ρ_k⁺ = 0`** — the monotonicity obligation, generalised past lag 1 (so Soraya's (a)/(b)/(c)
+    /// proofs still hold: they need only `n_eff ≤ n`). AR(1) is the special case `ρ_k = ρ₁^k`.
+    /// Anchors: Newey–West 1987 (HAC long-run variance); Bartlett 1946 (the psd kernel that guarantees
+    /// the factor is well-behaved); Kontorovich–Ramanan 2008 (concentration under mixing).
+    let effectiveSampleSizeHAC (series: float list) (bandwidth: int) : float =
+        let n = List.length series
+        if n < 2 then
+            float n
+        else
+            let l = max 1 bandwidth
+            let factor =
+                1.0
+                + 2.0
+                  * ([ for k in 1 .. min l (n - 1) ->
+                           let w = 1.0 - float k / float (l + 1)
+                           w * max 0.0 (lagKAutocorr series k) ]
+                     |> List.sum)
+            float n / factor
+
+    /// The **autocorrelation-corrected CHSH margin**: substitute `n_eff` (a Bartlett-windowed HAC estimate
+    /// over the pair's own outcome-product series, `effectiveSampleSizeHAC`) for `n` in the Hoeffding ε.
+    /// On a stream with no positive autocorrelation at any lag it **equals** `chshMargin delta n`; on any
+    /// positively-autocorrelated stream (at any lag ≤ bandwidth) it is strictly **larger** (`n_eff < n`) —
+    /// the sound correction for Caveat (a), now robust past lag 1. Takes the actual streams (not just `n`)
+    /// because the `ρ_k` depend on the outcomes. `n_eff < 1` ⇒ `infinity` (no effective power ⇒ never convict).
     let chshMarginAutocorr (delta: float) (a: ChshRound list) (b: ChshRound list) : float =
         let series = outcomeProductSeries a b
         let n = List.length series
-        let nEff = effectiveSampleSize n (lag1Autocorr series)
+        let nEff = effectiveSampleSizeHAC series (neweyWestBandwidth n)
         if nEff < 1.0 || delta <= 0.0 || delta >= 1.0 then infinity
         else sqrt (32.0 * log (1.0 / delta) / nEff)
 
@@ -280,6 +326,32 @@ module AntiSybil =
             let m1 = x.[0 .. h - 1] |> Array.average
             let m2 = x.[h..] |> Array.average
             abs (m1 - m2) <= tol
+
+    /// **Multi-block stationarity gate** — strengthens `isApproxStationary`. Splits into `blocks`
+    /// contiguous blocks and requires **both** the spread of block MEANS and the spread of block
+    /// (population) VARIANCES to be `≤ tol`. The two-halves check saw only a first-moment difference of two
+    /// coarse blocks, so a within-half regime change or symmetric drift whose half-means cancel slipped
+    /// through (Soraya's defeat witness `[+1×10, −1×10, +1×10, −1×10]`, both half-means 0 yet a step
+    /// function). More blocks + a variance check catch it. A series shorter than `blocks` counts as
+    /// stationary (too little to compare). `blocks` is floored at 2.
+    let isApproxStationaryMultiBlock (tol: float) (blocks: int) (series: float list) : bool =
+        let x = List.toArray series
+        let n = x.Length
+        let b = max 2 blocks
+        if n < b then
+            true
+        else
+            let sz = n / b
+            let stats =
+                [ for i in 0 .. b - 1 ->
+                      let lo = i * sz
+                      let hi = if i = b - 1 then n - 1 else lo + sz - 1
+                      let seg = x.[lo..hi]
+                      let m = Array.average seg
+                      let v = seg |> Array.averageBy (fun z -> (z - m) * (z - m))
+                      m, v ]
+            let spread xs = List.max xs - List.min xs
+            spread (stats |> List.map fst) <= tol && spread (stats |> List.map snd) <= tol
 
     /// The CALIBRATED CHSH identity oracle: conviction at `2 + ε(n, δ)` with the
     /// pair's own run length, so an honestly-local pair at the bound is falsely
@@ -332,8 +404,9 @@ module AntiSybil =
         for i in 0 .. k - 1 do
             for j in i + 1 .. k - 1 do
                 let series = outcomeProductSeries arr.[i] arr.[j]
-                // Stationarity gate first: a non-stationary window is Unmeasured, never convicting.
-                if isApproxStationary stationarityTol series
+                // Stationarity gate first (multi-block: catches within-half drift the two-halves check
+                // missed): a non-stationary window is Unmeasured, never convicting.
+                if isApproxStationaryMultiBlock stationarityTol 4 series
                    && abs (chshS arr.[i] arr.[j]) > 2.0 + chshMarginAutocorr delta arr.[i] arr.[j] then
                     union i j
 
