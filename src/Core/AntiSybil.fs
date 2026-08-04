@@ -198,9 +198,88 @@ module AntiSybil =
     /// P(Ŝ − E[Ŝ] ≥ ε) ≤ exp(−n·ε²/32) ⇒ ε(n, δ) = sqrt(32·ln(1/δ)/n).
     /// Scope: per-round-independent local strategies (shared λ i.i.d. across
     /// rounds); Hoeffding 1963, finite-statistics DI lineage Pironio et al. 2010.
+    /// **⚠ Caveat (a):** this i.i.d. margin OVER-convicts on autocorrelated
+    /// streams (real commit/message bursts) — use `chshMarginAutocorr` /
+    /// `chshSybilAutocorrCalibrated` there. See the block comment below.
     let chshMargin (delta: float) (rounds: int) : float =
         if rounds <= 0 || delta <= 0.0 || delta >= 1.0 then infinity
         else sqrt (32.0 * log (1.0 / delta) / float rounds)
+
+    // ═══ Caveat (a): the i.i.d. margin over-convicts on AUTOCORRELATED streams ═══════════════════════
+    // `chshMargin` assumes per-round-independent λ (its own scope note). Real commit / message streams
+    // autocorrelate (author bursts, topic runs), so the EFFECTIVE sample size n_eff < n and the true
+    // margin is LARGER than the i.i.d. one — the shipped margin is optimistic and over-convicts (falsely
+    // collapses honest-but-autocorrelated identities into one source). Model chosen (the math-team call
+    // per the Caveat-A handoff): the AR(1) effective-sample correction (Soraya's candidate #1), soundness-
+    // biased. Concentration CORRECTNESS (the monotonicity obligations) is Soraya's to prove formally;
+    // these are the model + estimator. Anchors: Newey–West 1987 (long-run variance under dependence);
+    // Kontorovich–Ramanan 2008 (concentration for mixing sequences).
+    // Doc: docs/research/2026-08-02-caveat-a-chsh-margin-autocorrelation-math-team-handoff-*.
+
+    /// **Lag-1 autocorrelation** `ρ₁` of a series (Pearson between `xₜ` and `xₜ₊₁`). `0.0` for a
+    /// constant or too-short (`< 2`) series — no dependence to correct for.
+    let lag1Autocorr (series: float list) : float =
+        let x = List.toArray series
+        let n = x.Length
+        if n < 2 then
+            0.0
+        else
+            let mean = Array.average x
+            let denom = x |> Array.sumBy (fun v -> (v - mean) * (v - mean))
+            if denom <= 1e-12 then
+                0.0 // constant series ⇒ no autocorrelation to speak of
+            else
+                let num = [ for t in 0 .. n - 2 -> (x.[t] - mean) * (x.[t + 1] - mean) ] |> List.sum
+                num / denom
+
+    /// The round-ordered **±1 outcome-product series** that feeds the CHSH buckets:
+    /// `prodₜ = sign(aₜ.Outcome) · sign(bₜ.Outcome)` (truncated to the shorter stream). Its
+    /// autocorrelation is what drives `n_eff`.
+    let outcomeProductSeries (a: ChshRound list) (b: ChshRound list) : float list =
+        let n = min (List.length a) (List.length b)
+        List.zip (List.truncate n a) (List.truncate n b)
+        |> List.map (fun (ra, rb) -> float (sign ra.Outcome * sign rb.Outcome))
+
+    /// Largest `ρ₁⁺` we act on (cap below 1 so `n_eff` never collapses to exactly 0 / the margin never
+    /// hard-overflows before the `< 1` guard).
+    [<Literal>]
+    let private RhoMax = 0.999
+
+    /// **Effective sample size** under lag-1 (AR(1)-style) dependence:
+    /// `n_eff = n · (1 − ρ₁⁺) / (1 + ρ₁⁺)`, with `ρ₁⁺ = clamp ρ₁ to [0, RhoMax]`. **Positive**
+    /// autocorrelation shrinks `n_eff` (⇒ a larger, sound margin); **negative** autocorrelation is
+    /// treated as `0` (no optimistic bonus — soundness-biased). **`n_eff ≤ n` always, equality iff
+    /// `ρ₁ ≤ 0`** — the monotonicity obligation Soraya proves.
+    let effectiveSampleSize (n: int) (rho1: float) : float =
+        let r = min RhoMax (max 0.0 rho1)
+        float n * (1.0 - r) / (1.0 + r)
+
+    /// The **autocorrelation-corrected CHSH margin**: substitute `n_eff` (from the pair's own
+    /// outcome-product autocorrelation) for `n` in the Hoeffding ε. On an i.i.d. stream (`ρ₁ ≤ 0`) it
+    /// **equals** `chshMargin delta n`; on a positively-autocorrelated stream it is strictly **larger**
+    /// (`n_eff < n`) — the sound correction for Caveat (a). Takes the actual streams (not just `n`)
+    /// because `ρ₁` depends on the outcomes. `n_eff < 1` ⇒ `infinity` (no effective power ⇒ never convict).
+    let chshMarginAutocorr (delta: float) (a: ChshRound list) (b: ChshRound list) : float =
+        let series = outcomeProductSeries a b
+        let n = List.length series
+        let nEff = effectiveSampleSize n (lag1Autocorr series)
+        if nEff < 1.0 || delta <= 0.0 || delta >= 1.0 then infinity
+        else sqrt (32.0 * log (1.0 / delta) / nEff)
+
+    /// **Approximate-stationarity gate** (Soraya's candidate #2): the outcome-product series' first-half
+    /// and second-half means differ by `≤ tol`. Crude but honest — a NON-stationary window must
+    /// **downgrade to non-convicting** (never upgrade to evidence), because `n_eff` assumes a stable
+    /// dependence structure. Series shorter than 2 count as stationary (nothing to compare).
+    let isApproxStationary (tol: float) (series: float list) : bool =
+        let x = List.toArray series
+        let n = x.Length
+        if n < 2 then
+            true
+        else
+            let h = n / 2
+            let m1 = x.[0 .. h - 1] |> Array.average
+            let m2 = x.[h..] |> Array.average
+            abs (m1 - m2) <= tol
 
     /// The CALIBRATED CHSH identity oracle: conviction at `2 + ε(n, δ)` with the
     /// pair's own run length, so an honestly-local pair at the bound is falsely
@@ -218,6 +297,44 @@ module AntiSybil =
             for j in i + 1 .. k - 1 do
                 let n = min (List.length arr.[i]) (List.length arr.[j])
                 if abs (chshS arr.[i] arr.[j]) > 2.0 + chshMargin delta n then
+                    union i j
+
+        let roots = [ 0 .. k - 1 ] |> List.map find
+        let canon =
+            roots
+            |> List.distinct
+            |> List.mapi (fun id r -> r, id)
+            |> Map.ofList
+        let sourceOf = roots |> List.mapi (fun i r -> i, canon.[r]) |> Map.ofList
+        let distinct = canon.Count
+
+        { ClaimedCount = k
+          DistinctCount = distinct
+          SourceOf = sourceOf
+          AllDistinct = distinct = k }
+
+    /// The **autocorrelation-calibrated** CHSH sybil oracle — the sound default for streams that may
+    /// autocorrelate (Caveat (a)). Two changes vs `chshSybilCalibrated`: (1) conviction at
+    /// `2 + chshMarginAutocorr` (each pair's own `n_eff`), and (2) a pair whose outcome-product series is
+    /// NOT approximately stationary **downgrades to non-convicting** (never evidence). Because
+    /// `marginAutocorr ≥ marginᵢᵢᵈ` and the stationarity gate only ever *removes* convictions, this is
+    /// **strictly more conservative** than `chshSybilCalibrated` — it can only drop FALSE collapses of
+    /// honest-but-autocorrelated identities, never add new ones. Same one-way inference (convicts sameness,
+    /// never acquits) and determinism (DST §7). `stationarityTol` in `[0, 2]` (product means live in
+    /// `[-1, 1]`); a smaller tol downgrades more aggressively.
+    let chshSybilAutocorrCalibrated (delta: float) (stationarityTol: float) (streams: ChshRound list list) : SybilVerdict =
+        let k = List.length streams
+        let arr = List.toArray streams
+        let parent = Array.init k id
+        let rec find i = if parent.[i] = i then i else (let r = find parent.[i] in parent.[i] <- r; r)
+        let union i j = let ri, rj = find i, find j in if ri <> rj then parent.[ri] <- rj
+
+        for i in 0 .. k - 1 do
+            for j in i + 1 .. k - 1 do
+                let series = outcomeProductSeries arr.[i] arr.[j]
+                // Stationarity gate first: a non-stationary window is Unmeasured, never convicting.
+                if isApproxStationary stationarityTol series
+                   && abs (chshS arr.[i] arr.[j]) > 2.0 + chshMarginAutocorr delta arr.[i] arr.[j] then
                     union i j
 
         let roots = [ 0 .. k - 1 ] |> List.map find

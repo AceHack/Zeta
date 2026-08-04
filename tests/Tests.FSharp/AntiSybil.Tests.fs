@@ -272,3 +272,46 @@ let ``THE FIX, DEMONSTRATED: chshSybilCalibrated acquits the λ-mixing innocents
     Assert.Equal(1, v.DistinctCount)
     let ia, ib = independentPair 107 109 4096
     Assert.True((chshSybilCalibrated 0.01 [ ia; ib ]).AllDistinct)
+
+// ═══ Caveat (a): autocorrelation-corrected CHSH margin ════════════════════════════════════════════════
+
+[<Fact>]
+let ``lag1Autocorr: constant is 0, alternating is strongly negative, runs are positive`` () =
+    Assert.Equal(0.0, lag1Autocorr [ 1.0; 1.0; 1.0; 1.0 ]) // constant ⇒ no autocorrelation
+    Assert.True(lag1Autocorr [ 1.0; -1.0; 1.0; -1.0; 1.0; -1.0 ] < 0.0) // anti-correlated
+    Assert.True(lag1Autocorr [ 1.0; 1.0; 1.0; 1.0; -1.0; -1.0; -1.0; -1.0 ] > 0.0) // runs ⇒ positive
+
+[<Fact>]
+let ``effectiveSampleSize: n at rho<=0, strictly below n for rho>0, monotone decreasing`` () =
+    Assert.Equal(100.0, effectiveSampleSize 100 0.0) // rho 0 ⇒ n_eff = n
+    Assert.Equal(100.0, effectiveSampleSize 100 -0.5) // negative rho clamped to 0 ⇒ no optimistic bonus
+    Assert.True(effectiveSampleSize 100 0.5 < 100.0) // positive rho shrinks n_eff
+    Assert.True(effectiveSampleSize 100 0.8 < effectiveSampleSize 100 0.3) // monotone decreasing
+
+// THE soundness property: the corrected margin is NEVER smaller than the i.i.d. margin, and STRICTLY
+// larger on a positively-autocorrelated outcome-product stream (n_eff < n). This is the Caveat-(a) fix.
+[<Fact>]
+let ``chshMarginAutocorr: >= the iid margin always, and STRICTLY larger on autocorrelated products`` () =
+    let n = 64
+    // Runs product: a all +1, b in runs of 8 (+1.. then -1..) ⇒ product = b ⇒ positively autocorrelated.
+    let a = [ for _ in 1..n -> { Setting = 0; Outcome = 1 } ]
+    let bRuns = [ for i in 0 .. n - 1 -> { Setting = 0; Outcome = (if (i / 8) % 2 = 0 then 1 else -1) } ]
+    Assert.True(chshMarginAutocorr 0.05 a bRuns > chshMargin 0.05 n) // autocorrelated ⇒ strictly larger
+    // Alternating product (rho1 < 0 ⇒ clamped to 0 ⇒ n_eff = n) ⇒ EQUALS the i.i.d. margin.
+    let bAlt = [ for i in 0 .. n - 1 -> { Setting = 0; Outcome = (if i % 2 = 0 then 1 else -1) } ]
+    Assert.Equal(chshMargin 0.05 n, chshMarginAutocorr 0.05 a bAlt, 9)
+
+[<Fact>]
+let ``isApproxStationary: stable series passes, a mean-shift fails`` () =
+    Assert.True(isApproxStationary 0.1 [ 1.0; -1.0; 1.0; -1.0 ]) // both halves mean 0
+    Assert.False(isApproxStationary 0.5 [ 1.0; 1.0; 1.0; 1.0; -1.0; -1.0; -1.0; -1.0 ]) // mean 1 → -1
+
+// The oracle is STRICTLY more conservative: it can only keep MORE identities distinct (drop false
+// collapses), never fewer, than the i.i.d.-calibrated oracle — for any batch, any delta.
+[<Fact>]
+let ``chshSybilAutocorrCalibrated: never collapses MORE than the iid-calibrated oracle`` () =
+    let mk seed n = [ for i in 0 .. n - 1 -> { Setting = (bits seed n).[i]; Outcome = (if (bits (seed + 7) n).[i] = 1 then 1 else -1) } ]
+    let streams = [ mk 1 128; mk 2 128; mk 3 128; mk 1 128 ] // last is a replay of the first
+    let iid = chshSybilCalibrated 0.05 streams
+    let corrected = chshSybilAutocorrCalibrated 0.05 0.5 streams
+    Assert.True(corrected.DistinctCount >= iid.DistinctCount) // more conservative ⇒ >= distinct sources
