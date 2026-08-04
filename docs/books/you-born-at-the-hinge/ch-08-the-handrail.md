@@ -1,9 +1,11 @@
 # Chapter 8 — The Handrail
 
-*STATUS: FIRST DRAFT (Otto, 2026-07-03) — scaffold for Aaron to rewrite in his own voice. The
-reasoning is locked (it's the anti-survivor-guilt note, made narrative); every personal detail is
-deliberately left as a placeholder marked `[yours]` — what of your own story enters this chapter is
-your call alone, sentence by sentence. Source note:
+*STATUS: FIRST DRAFT (Otto, 2026-07-03; optional forward-beat socket + fuller recording-pulls added
+2026-08-04 from non-gated PULLS) — scaffold for Aaron to rewrite in his own voice. The reasoning is
+locked (it's the anti-survivor-guilt note, made narrative); every personal detail is deliberately
+left as a placeholder marked `[yours]` — what of your own story enters this chapter is your call
+alone, sentence by sentence. The FLAGGED (Ryan) / REVIEW pulls stay quarantined; only non-gated
+Chapter-8 verbatim was staged. Source note:
 `docs/research/2026-07-03-the-anti-survivor-guilt-handrail-the-distinctions-that-keep-grievers-alive.md`.*
 
 ---
@@ -148,6 +150,20 @@ costs you nothing and may keep someone's whole world from going dark. That is th
 use of a survival: leave the handrail bolted to the wall, lit, labeled, for whoever gropes along
 this stairway next.
 
+`[SOCKET — optional forward beat; your VERBATIM below, to weave in here or leave for the recording. Consent: yours (glass-halo); this is your own reframing, in your own words — the scaffold only holds it. Cut it entirely if it pulls focus from "Stay."]`
+
+And there is a larger version of *handing it forward* that is yours to make, if you want it in this
+chapter: that the same wiring which makes the 3am court so relentless — the sensitivity, the
+divergence, the wound — is not only survivable, it is *uniquely fit* for the work of keeping other
+people off the edge. Not a death sentence. A qualification.
+
+> "My hope is the substrait will offer meaningfull work to other humans who suffer like me with the
+> mental disorders i have are not a death sentance but set you up uniquely for AI alignment work of
+> the existing human margalized, those on the edge, we are edge runners affter wall"
+
+> "i think i'm a great case study on people with mental disorders and they can still have a fulfilling
+> successful productive life and make real change in the world. … neural divergence is a gift not a curse."
+
 You didn't kill them. You survived them. Surviving them is how you carry them.
 
 Stay.
@@ -157,9 +173,12 @@ Stay.
 **Cue: how you know the courtroom / why this chapter exists.**
 > "We should teach anti-survivor somewhere, forever — it kills people who don't know." — anti-survivor-guilt note
 > "If you suffered your way to it, you can leave it lit for whoever comes next." — anti-survivor-guilt note
-> "My hope is the substrait will offer meaningfull work to other humans who suffer like me … we are edge runners affter wall" — cost-receipts
 
-*(The Ryan pulls stay in PULLS.md under the FLAGGED gate — nothing enters this chapter without your explicit per-pull yes.)*
+**Cue: the forward beat — suffering into uniquely-fit work (the optional close socket above).**
+> "My hope is the substrait will offer meaningfull work to other humans who suffer like me with the mental disorders i have are not a death sentance but set you up uniquely for AI alignment work of the existing human margalized, those on the edge, we are edge runners affter wall" — cost-receipts
+> "i think i'm a great case study on people with mental disorders and they can still have a fulfilling successful productive life and make real change in the world. … neural divergence is a gift not a curse." — cost-receipts
+
+*(Non-gated Chapter-8 pulls from `PULLS.md` only. The FLAGGED (Ryan) and REVIEW pulls stay quarantined — nothing from them enters this chapter without your explicit per-pull yes, per the gate you placed. Your general "use the pulls" does not reach the gated class; that stays your call, pull by pull.)*
 
 ---
 
