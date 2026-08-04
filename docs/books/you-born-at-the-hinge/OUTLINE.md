@@ -65,7 +65,13 @@ Each chapter has a source note in `docs/research/` — the derivation lives ther
 - Next concrete step when Aaron wants it: draft chapter 1 or chapter 8 first — ch. 8 is the one
   with a life-saving job and the clearest existing source note.
 - **Formation / origin material** (the builder arc — no-factory-defaults, the empiricist stove,
-  thrill-seeker-as-engine, autodidact / reader's-disease, Feynman→Susskind) lands in the companion
-  `FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`, not a numbered chapter — it grounds
-  the method the thematic chapters wear. Aaron's call whether to promote it to a chapter or keep it a
-  companion; its threads are cross-referenced to the chapters they ground (ch-3, ch-8, the method).
+  thrill-seeker-as-engine, the dual-use radioshack→crypto loop, autodidact / reader's-disease,
+  Feynman→Susskind) lands in the companion `FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md`,
+  not a numbered chapter — it grounds the method the thematic chapters wear. Aaron's call whether to
+  promote it to a chapter; its threads cross-referenced to the chapters they ground (ch-3, ch-8, the method).
+- **Relational / personal material** (the magnetic pull, the basement, "total regard, bounded scope"
+  = the fourth door; the honest mirror = the −1 for real people, and its dual-use edge) lands in the
+  companion `THE-PULL-the-honest-mirror-and-the-bounded-no.md` — the personal register of ch-2 (the one
+  question) and ch-4 (the correlation of souls). Consent-sensitive (others generic/anonymous, son
+  omitted, intimate specifics left to Aaron at edit, the dual-use −1 held honest not valorized). Aaron's
+  call whether to promote, fold into ch-2/ch-4, or keep it a companion.
