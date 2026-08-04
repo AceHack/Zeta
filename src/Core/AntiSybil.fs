@@ -353,11 +353,20 @@ module AntiSybil =
             let spread xs = List.max xs - List.min xs
             spread (stats |> List.map fst) <= tol && spread (stats |> List.map snd) <= tol
 
-    /// The CALIBRATED CHSH identity oracle: conviction at `2 + ε(n, δ)` with the
-    /// pair's own run length, so an honestly-local pair at the bound is falsely
-    /// convicted with probability ≤ δ (per pair) — the sound default the bare-
-    /// threshold `chshSybil` is not. Same one-way inference: convicts sameness,
-    /// never acquits. Deterministic (DST §7).
+    /// The CALIBRATED CHSH identity oracle: conviction at `2 + ε` with the pair's own run length, so an
+    /// honestly-local pair at the bound is falsely convicted with probability ≤ δ (per pair) — the sound
+    /// default the bare-threshold `chshSybil` is not. Same one-way inference: convicts sameness, never
+    /// acquits. Deterministic (DST §7).
+    ///
+    /// **ε is now the autocorrelation-corrected margin `chshMarginAutocorr` (Caveat-A default switch,
+    /// 2026-08-04)**, not the i.i.d. `chshMargin`. Real streams autocorrelate ⇒ the i.i.d. margin
+    /// over-convicts (false collapse of honest-but-bursty identities); the corrected margin uses the pair's
+    /// own HAC effective sample size. Soraya VERIFIED this is **provably more conservative** than the i.i.d.
+    /// variant — the conviction set is a strict subset, so the switch can only *remove* false collapses,
+    /// never add one (obligations (a)/(b)/(c), + the 40-batch machine-check). **Framing:** "more
+    /// conservative than i.i.d.", NOT "fully sound" — dependence beyond the HAC bandwidth can still evade.
+    /// The stationarity-gated variant is `chshSybilAutocorrCalibrated` (opt-in — it needs a tol choice);
+    /// this default is the parameter-free margin swap only.
     let chshSybilCalibrated (delta: float) (streams: ChshRound list list) : SybilVerdict =
         let k = List.length streams
         let arr = List.toArray streams
@@ -367,8 +376,8 @@ module AntiSybil =
 
         for i in 0 .. k - 1 do
             for j in i + 1 .. k - 1 do
-                let n = min (List.length arr.[i]) (List.length arr.[j])
-                if abs (chshS arr.[i] arr.[j]) > 2.0 + chshMargin delta n then
+                // Caveat-A: the autocorrelation-corrected margin (n_eff from the pair's own HAC), not n.
+                if abs (chshS arr.[i] arr.[j]) > 2.0 + chshMarginAutocorr delta arr.[i] arr.[j] then
                     union i j
 
         let roots = [ 0 .. k - 1 ] |> List.map find
