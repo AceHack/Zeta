@@ -32,6 +32,7 @@ If you know **Nix / reproducible builds**, you already know the shape: ship the 
 - A **6-language cross-verification treaty** — the same primitives produce byte-identical results across F#, C#, TypeScript, Rust, Python, Go, with a **Q# reference oracle** for the quantum/observable layer.
 - A **deterministic, reversible substrate** (deterministic simulation testing; event-sourced Z-set logs) — the part that makes "trust without reading" true.
 - Code generation that emits to all targets **plus a CHIP-8 cart** (a tiny, sandboxed, runnable, *visual* unit) from one source.
+- A **mutual-verification trust instrument** — two parties (say a human operator and an AI) re-run the *same deterministic detector* on a shared record, so a hidden coordination channel leaves a fingerprint neither can hide: *"verify by re-running" applied to trust itself.* Formally verified (Z3 + property tests, four independent reviewers) with a runnable demo — the sovereignty-guardian core (on modeled data today; real-grid integration is roadmap).
 
 **Roadmap:** the `.zeta` → IR compiler end-to-end; the visual/geometric authoring surface; Craft School (the education product, below); reversible-hardware (FPGA) experiments.
 
