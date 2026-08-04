@@ -53,9 +53,13 @@ namespace Zeta.Core
 /// conditional-independence** (condition on the common-ancestor set the sensor already computes via
 /// `DecorrelationMetrology.ancestors`) — reconnecting to the repo's existing CMI work
 /// (`docs/research/2026-06-19-anti-mirror-rigorous-measurable-decorrelation-cmi-*`). That instrument is
-/// TO BE ADDED (pending Lumen's 2nd opinion + design). Also: the Hoeffding `chshMargin` assumes i.i.d.
-/// trials — **unsound on autocorrelated commit streams** (understates fluctuation → false convictions).
-/// The **sensor is correct and kept**; only this fusion instrument is mis-routed.
+/// TO BE ADDED (built since as `DecorrelationExcess` / `DecorrelationExcessFusion`; Lumen's 2nd opinion
+/// landed). Autocorrelation caveat (Soraya's Caveat-A) — **RESOLVED 2026-08-04**: `classifyPair` / `fuse`
+/// now use `AntiSybil.chshMarginAutocorr` (the HAC effective-sample margin), aligned with the
+/// `chshSybilCalibrated` default switch, so an autocorrelated probe stream no longer under-states the
+/// fluctuation. The **sensor is correct and kept**; the CHSH fusion here stays scope-limited (a
+/// live-channel / superdeterminism detector — see the SOUNDNESS block above), the excess-over-null
+/// instrument is the general decorrelation tool.
 /// ═════════════════════════════════════════════════════════════════════════════
 [<RequireQualifiedAccess>]
 module DecorrelationMeter =
@@ -93,12 +97,15 @@ module DecorrelationMeter =
                 float r.WithinBound / float r.SpacelikePairs
 
     /// Classify one spacelike pair's CHSH Ŝ against the finite-sample-calibrated classical bound.
-    /// `delta` = per-pair false-conviction budget. Reuses `AntiSybil.chshS` + `chshMargin`; never a
-    /// bare `2.0` (a small-n pair at the bound would be falsely convicted — Soraya's finite-sample
-    /// finding). Bound uses the pair's own run length (`min` of the two stream lengths).
+    /// `delta` = per-pair false-conviction budget. Reuses `AntiSybil.chshS` + **`chshMarginAutocorr`**
+    /// (the autocorrelation-corrected margin — Caveat-A alignment 2026-08-04, matching the
+    /// `chshSybilCalibrated` default switch): the pair's own HAC effective sample size, never a bare `2.0`
+    /// and never the i.i.d. `chshMargin` (both would falsely convict — a small-n pair at the bound, or an
+    /// autocorrelated probe stream, per Soraya's finite-sample + Caveat-A findings). A periodic / bursty
+    /// probe stream therefore needs MORE rounds to convict than the i.i.d. bound demanded, which is the
+    /// correct, more-conservative behavior.
     let classifyPair (delta: float) (a: AntiSybil.ChshRound list) (b: AntiSybil.ChshRound list) : PairVerdict =
-        let n = min (List.length a) (List.length b)
-        let bound = 2.0 + AntiSybil.chshMargin delta n
+        let bound = 2.0 + AntiSybil.chshMarginAutocorr delta a b
         if abs (AntiSybil.chshS a b) > bound then
             AboveClassicalBound
         else
@@ -133,5 +140,5 @@ module DecorrelationMeter =
             | [] -> nan
             | _ ->
                 considered
-                |> List.map (fun (sa, sb) -> 2.0 + AntiSybil.chshMargin delta (min (List.length sa) (List.length sb)))
+                |> List.map (fun (sa, sb) -> 2.0 + AntiSybil.chshMarginAutocorr delta sa sb)
                 |> List.max }
