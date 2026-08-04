@@ -1,0 +1,10 @@
+{
+  "tick": 22,
+  "at": "2026-08-04T21:41:57.206Z",
+  "findings": [
+    {
+      "path": "docs/books/you-born-at-the-hinge/FORMATION-the-empiricist-builder-the-deficit-is-the-gift.md",
+      "rule": "MD032"
+    }
+  ]
+}
