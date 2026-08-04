@@ -7,9 +7,30 @@ open System.Runtime.CompilerServices
 
 
 /// Count-Min Sketch — approximate frequency estimator. `Count(x)` returns
-/// an overestimate of `support_weight(x)` in a Z-set stream, with
-/// provable error bound `ε = e / w` with probability `1 - δ = 1 - e^-d`,
-/// where `w, d` are the sketch width and depth.
+/// an overestimate of `support_weight(x)` in a Z-set stream, with the
+/// Cormode–Muthukrishnan error bound `ε = e / w` at probability `1 - δ =
+/// 1 - e^-d`, where `w, d` are the sketch width and depth.
+///
+/// **⚠ Honest scope of the "bound" (the guarantee is CONDITIONAL, not free):**
+/// that ε/δ bound is a THEOREM only under a **2-universal (pairwise-independent)
+/// hash family** per row (gives `ε = e/w` via Markov) AND **independent rows**
+/// (gives the `δ = e^-d` amplification — the d rows must fail independently).
+/// This implementation derives every row from ONE `XxHash3` base hash + a
+/// `SplitMix`-mixed per-row seed (see `colAt`). Strong avalanche makes the
+/// collisions *near-uniform in practice*, so the bound holds **heuristically on
+/// non-adversarial data** — but it is **NOT provable** (XxHash3 + SplitMix are
+/// not a proven 2-universal family; there is no theorem, only good mixing —
+/// hence the honest "independent-*looking*" hedge below), and it is **not
+/// adversary-safe**: an attacker who knows `seed` (the derivation is public and
+/// unkeyed) can craft inputs that collide across ALL d rows, defeating the
+/// `δ = e^-d` amplification and forcing arbitrary overestimates. For a provable
+/// bound use a Carter–Wegman 2-universal family (e.g. Dietzfelbinger
+/// multiply-shift); for adversarial use, key the hash with a secret seed. No
+/// current caller is adversarial (frequency telemetry), so this is a stated
+/// assumption, not a live vulnerability — but do not read "bound" as "provable"
+/// or "adversary-safe." (Same discipline as `AntiSybil.chshMargin`'s i.i.d.
+/// caveat: a finite-sample/independence guarantee is only as strong as the
+/// independence the construction actually delivers.)
 ///
 /// **Why this is a genuinely novel addition to DBSP:** the sketch is
 /// *linear* — `cms(a + b) = cms(a) + cms(b)` — so it commutes with D
@@ -180,7 +201,11 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
 module CountMinSketch =
 
     /// Build a sketch sized for additive error ε with confidence 1-δ.
-    /// Classical Cormode bound: `w ≥ e/ε`, `d ≥ ln(1/δ)`.
+    /// Classical Cormode bound: `w ≥ e/ε`, `d ≥ ln(1/δ)`. **The `1-δ` confidence
+    /// this sizing promises holds only under the hash-independence assumption in
+    /// the type docstring** — heuristic here (XxHash3 + SplitMix), not provable
+    /// and not adversary-safe. Size for the error you want; read the confidence
+    /// as heuristic-on-non-adversarial-data, not a certificate.
     let forEpsDelta (epsilon: double) (delta: double) (seed: int64) : CountMinSketch =
         if epsilon <= 0.0 || epsilon >= 1.0 then
             invalidArg (nameof epsilon) "must be in (0, 1)"
