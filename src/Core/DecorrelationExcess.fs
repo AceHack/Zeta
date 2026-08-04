@@ -237,3 +237,45 @@ module DecorrelationExcess =
             [ for p in 0 .. k - 1 do
                   let bShuf = blockShuffle (seed + uint64 p * 0x100000001B3UL) blockSize b
                   yield Decorrelation.mutualInformation [ for i in 0 .. n - 1 -> a.[i], bShuf.[i] ] ]
+
+    // ── the WITHIN-ERA (windowed) null: strip era-level marginal coupling, keep within-era coupling ────
+    //
+    // `blockShuffle` keeps blocks intact and permutes their ORDER — preserving *fine* autocorrelation.
+    // `windowShuffle` is its COMPLEMENT: it keeps era-windows **in place** and permutes their **contents**,
+    // preserving *coarse* (era-level) marginal structure. The fleet's subsystem focus shifts across eras
+    // (a docs-heavy window, a Core-heavy window). When two commits look coupled ONLY because they sit in
+    // the same era with the same dominant subsystem, that is a benign era-level common cause, not fine
+    // coordination — but a null that shuffles ACROSS eras destroys the era marginal and reads it as excess.
+    // The within-era null re-pairs only WITHIN a window, so its marginals match the data's era-conditional
+    // marginals; it convicts only coupling that survives *beyond* the era. This is the refinement that lets
+    // FINER strata be trusted (Reichenbach-conditioning on the era in addition to the shared ancestors).
+    // Ordering by generation makes the windows eras — a LOCAL null calibration (`local-time-never-enters-the-shared-fold`).
+
+    /// **Within-window (era-restricted) permutation** of `arr`: split into consecutive windows of
+    /// `windowSize`, shuffle ONLY within each window (windows stay in place, each seeded distinctly),
+    /// concatenate. Complement of `blockShuffle`. `windowSize ≤ 1` ⇒ identity (a window of one can't
+    /// permute); `windowSize ≥ n` ⇒ one window ⇒ plain `shuffle`. A genuine permutation (multiset preserved).
+    let windowShuffle (seed: uint64) (windowSize: int) (arr: 'a[]) : 'a[] =
+        if windowSize <= 1 then
+            Array.copy arr
+        else
+            let n = arr.Length
+            [| for start in 0 .. windowSize .. n - 1 ->
+                   arr.[start .. min (start + windowSize - 1) (n - 1)] |]
+            |> Array.mapi (fun i w -> shuffle (seed + uint64 i * 0x9E3779B97F4A7C15UL) w)
+            |> Array.concat
+
+    /// Within-era version of `permutationNullMI` (one null MI per window-shuffle). `windowSize ≥ n`
+    /// recovers `permutationNullMI` (one era). On data coupled ONLY by era-level marginals the within-era
+    /// null's threshold rises to meet the real MI — it refuses to convict era-marginal coupling, leaving
+    /// only coupling that survives *within* an era.
+    let permutationNullMIWindow (seed: uint64) (k: int) (windowSize: int) (aObs: 'k list) (bObs: 'k list) : float list =
+        let a = List.toArray aObs
+        let b = List.toArray bObs
+        let n = min a.Length b.Length
+        if n = 0 then
+            []
+        else
+            [ for p in 0 .. k - 1 do
+                  let bShuf = windowShuffle (seed + uint64 p * 0x100000001B3UL) windowSize b
+                  yield Decorrelation.mutualInformation [ for i in 0 .. n - 1 -> a.[i], bShuf.[i] ] ]

@@ -201,3 +201,41 @@ let ``permutationNullMIBlock - is MORE conservative than the plain null on an au
     let plain = DExc.nullThreshold 0.05 (DExc.permutationNullMI 11UL 300 a b)
     let block = DExc.nullThreshold 0.05 (DExc.permutationNullMIBlock 11UL 300 4 a b)
     Assert.True(block > plain, sprintf "block null (%.4f) should exceed the plain null (%.4f) on autocorrelated data" block plain)
+
+// ── the WITHIN-ERA (windowed) null ────────────────────────────────────────────────────────────────────
+
+[<Fact>]
+let ``windowShuffle - windowSize<=1 is identity; windowSize>=n is the plain shuffle`` () =
+    let arr = [| 0..19 |]
+    Assert.Equal<int[]>(arr, DExc.windowShuffle 5UL 1 arr) // window of one can't permute
+    Assert.Equal<int[]>(DExc.shuffle 5UL arr, DExc.windowShuffle 5UL 20 arr) // one window == plain shuffle
+
+[<Fact>]
+let ``windowShuffle - keeps each window's MEMBERSHIP in place (only contents permute) and is a permutation`` () =
+    let arr = [| 0..11 |]
+    let shuffled = DExc.windowShuffle 3UL 4 arr
+    Assert.Equal<int[]>(Array.sort shuffled, arr) // genuine permutation
+    // each length-4 window stays in place set-wise: output[0..3]={0..3}, [4..7]={4..7}, [8..11]={8..11}
+    Assert.Equal<Set<int>>(Set.ofArray shuffled.[0..3], Set.ofList [ 0..3 ])
+    Assert.Equal<Set<int>>(Set.ofArray shuffled.[4..7], Set.ofList [ 4..7 ])
+    Assert.Equal<Set<int>>(Set.ofArray shuffled.[8..11], Set.ofList [ 8..11 ])
+
+[<Fact>]
+let ``windowShuffle - deterministic in the seed`` () =
+    let arr = [| 0..30 |]
+    Assert.Equal<int[]>(DExc.windowShuffle 9UL 6 arr, DExc.windowShuffle 9UL 6 arr)
+
+// THE POINT: coupling that is ONLY era-level marginal (both sides constant WITHIN an era, differing
+// ACROSS eras) is a benign era common cause. The plain null shuffles across eras ⇒ destroys the marginal
+// ⇒ CONVICTS (false). The within-era null re-pairs only inside a window ⇒ its marginals match ⇒ it does
+// NOT convict — it strips the era coupling, as intended.
+[<Fact>]
+let ``permutationNullMIWindow - refuses era-marginal-only coupling that the plain null convicts`` () =
+    // era 1 = first 20 all "x", era 2 = next 20 all "y"; a and b identical ⇒ coupling is purely era-level.
+    let a = [ for i in 0..39 -> if i < 20 then "x" else "y" ]
+    let b = a
+    let realMI = DExc.pairingMI (List.zip a b)
+    let plainThr = DExc.nullThreshold 0.05 (DExc.permutationNullMI 3UL 200 a b)
+    let windowThr = DExc.nullThreshold 0.05 (DExc.permutationNullMIWindow 3UL 200 20 a b) // window = era
+    Assert.Equal(DExc.ExcessCorrelation, DExc.classifyPair plainThr realMI) // plain: false conviction
+    Assert.Equal(DExc.WithinNull, DExc.classifyPair windowThr realMI) // within-era: correctly no excess

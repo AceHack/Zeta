@@ -256,3 +256,66 @@ module DecorrelationExcessFusion =
 
         { Strata = readings
           ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }
+
+    /// **`fuseMIBlock`'s within-era sibling** — uses the WINDOWED (era-restricted) null instead of the
+    /// block null. Same generation-ordering, Reichenbach stratification, and `minSharedAncestors` exclusion;
+    /// the only change is `permutationNullMIWindow windowSize`, which re-pairs **only within era-windows**
+    /// so the null's marginals match the data's era-conditional marginals. This strips **era-level marginal
+    /// coupling** (two commits looking coupled only because they share a same-dominant-subsystem era) and
+    /// convicts only coupling that survives *within* an era — a second Reichenbach conditioning (on the era),
+    /// which is what lets finer strata be trusted. `windowSize ≥ stratum size` ⇒ one era ⇒ recovers `fuseMI`'s
+    /// null shape. Deterministic (DST); the generation ordering is a LOCAL null calibration only
+    /// (`RealMI` is order-invariant — `local-time-never-enters-the-shared-fold`).
+    let fuseMIWindow
+        (seed: uint64)
+        (delta: float)
+        (k: int)
+        (windowSize: int)
+        (minSharedAncestors: int)
+        (stratumKey: int -> int)
+        (parents: Map<'C, 'C list>)
+        (categories: Map<'C, 'k>)
+        (commits: 'C list)
+        : MIReading =
+        let ancOf =
+            commits
+            |> List.distinct
+            |> List.map (fun c -> c, DecorrelationMetrology.ancestors parents c)
+            |> Map.ofList
+
+        let anc c = Map.tryFind c ancOf |> Option.defaultValue Set.empty
+        let gens = DecorrelationMetrology.generation parents
+        let genOf c = Map.tryFind c gens |> Option.defaultValue 0
+
+        let pairs =
+            DecorrelationMetrology.spacelikeCommitPairs parents commits
+            |> List.choose (fun (a, b) ->
+                match Map.tryFind a categories, Map.tryFind b categories with
+                | Some ca, Some cb ->
+                    let shared = Set.intersect (anc a) (anc b) |> Set.count
+                    if shared >= minSharedAncestors then Some(a, b, ca, cb, shared) else None
+                | _ -> None)
+
+        let strata =
+            pairs
+            |> List.groupBy (fun (_, _, _, _, shared) -> stratumKey shared)
+            |> List.sortBy fst
+
+        let readings =
+            strata
+            |> List.map (fun (key, ps) ->
+                // Order by generation so each window is a contiguous ERA of the stratum.
+                let ordered = ps |> List.sortBy (fun (a, b, _, _, _) -> genOf b, genOf a, b, a)
+                let aObs = ordered |> List.map (fun (_, _, ca, _, _) -> ca)
+                let bObs = ordered |> List.map (fun (_, _, _, cb, _) -> cb)
+                let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs) // order-invariant
+                let nullMIs = DecorrelationExcess.permutationNullMIWindow (seed + uint64 key) k windowSize aObs bObs
+                let threshold = DecorrelationExcess.nullThreshold delta nullMIs
+                { Stratum = key
+                  Pairs = List.length ps
+                  RealMI = realMI
+                  NullThreshold = threshold
+                  Verdict = DecorrelationExcess.classifyPair threshold realMI })
+
+        { Strata = readings
+          ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }
