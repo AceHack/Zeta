@@ -397,6 +397,7 @@
     <Compile Include="Decorrelation.fs" />
     <Compile Include="DecorrelationExcess.fs" />
     <Compile Include="DecorrelationExcessFusion.fs" />
+    <Compile Include="GridTelemetry.fs" />
     <Compile Include="SocietalDora.fs" />
     <Compile Include="SocietalDoraSvg.fs" />
     <Compile Include="AlarmAlgebra.fs" />

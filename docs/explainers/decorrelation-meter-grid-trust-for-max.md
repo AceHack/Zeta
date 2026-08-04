@@ -123,9 +123,18 @@ An explanation you can trust has to tell you where it *can't* yet deliver. Three
    verified (the monotonicity obligations proved in Z3, the whole-oracle subset property in property-based
    tests), and the shipped default was switched to it. Framed honestly: the corrected margin is *provably
    more conservative* than the naïve one, not *"fully sound"* — dependence beyond its bandwidth can still evade.
-3. **Which real-world signal maps to which "probe" is a modeling choice, not magic.** The meter is correct
-   *given* an honest mapping from grid telemetry to its inputs; it does not invent that mapping for you.
-   Getting that mapping right for a specific grid is engineering work still ahead. **[want]**.
+3. **The telemetry-to-input mapping — the adapter now exists; the honest requirement is now explicit.**
+   The meter is correct *given* an honest mapping from grid telemetry to its inputs, and it does not invent
+   that mapping. That adapter is now **built** (`GridTelemetry`): a grid emits a stream of actions, each
+   carrying `(ActionId, Basis, Touched)`, and the adapter turns it into the `(causal DAG, observables)` the
+   instrument consumes — end-to-end-tested (telemetry → adapter → instrument still catches the hidden
+   channel). **[proven-in-part]**. The requirement it makes *explicit* is the real content: `Basis` must be
+   **declared logical causality** (what each action was *based on* — sequence-of-events provenance the EMS
+   emits), **never a wall-clock timestamp** — because local time can't define the shared causal order
+   without making honest nodes diverge. A grid that emits only timestamps *cannot* be metered soundly, and
+   the adapter's `causalCoverage` gauge says so out loud (a no-provenance stream scores 0.0). The remaining
+   **[want]** is now narrow and per-vendor: binding a *specific* EMS wire format (DNP3 / IEC 61850 SOE /
+   ICCP) to this schema — a deserialization detail, not a soundness question.
 
 ## 5. Why both sides will *want* to run it (not just tolerate it)
 
