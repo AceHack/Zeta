@@ -75,9 +75,17 @@ Each chapter has a source note in `docs/research/` — the derivation lives ther
   question) and ch-4 (the correlation of souls). Consent-sensitive (others generic/anonymous, son
   omitted, intimate specifics left to Aaron at edit, the dual-use −1 held honest not valorized). Aaron's
   call whether to promote, fold into ch-2/ch-4, or keep it a companion.
-- **Childhood origin — the clean layer** (the unbroken child = "born already yourself," the book's
-  keystone / Memory-Preservation lived; the sensitive body; Granny = Nellie Faulkner, named to honor)
-  lands in the companion `THE-UNBROKEN-CHILD-and-the-warm-center.md` — grounds ch-1 (the hinge) / ch-11.
-  The rest of the childhood origin stays **HELD, not landed** — the **mother** (gated pending therapy),
-  the **father-harm** (razored), the domestic lightning scene, and the first-crossing / grandfather-racism
-  (quarantine-adjacent) — Aaron's per-element call. The gates outrank a general "land the thread."
+- **Childhood origin** lands in the companion `THE-UNBROKEN-CHILD-and-the-warm-center.md` (grounds ch-1
+  the hinge / ch-11): the unbroken child ("born already yourself" — the keystone / Memory-Preservation
+  lived), the sensitive body, Granny (Nellie Faulkner, named to honor), **the pantheon of two** (mother +
+  father — consent GRANTED 2026-08-04, pre-read-before-publish, rendered whole, names out by default), and
+  **the grandfather + first crossing** (Milton Stainback — Aaron's direction, deceased, public views,
+  rendered whole/described-not-condemned). Still **HELD** within it: the war-wallets grandchild
+  (de-identified) + wallets (`Tri.N`, depth Aaron's call); and the **separate Ryan round-trip crossing**
+  (own gate). Each gate kept exactly where drawn.
+- **Wild youth — the organizer at scale** (the extroverted-HSP network-connector gift and its dual-use:
+  parties → open-source-the-advantage → the youth scheme; the DWI; "the studied one") lands in
+  `THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md` — the lived root of the network / American-Dream-2.0
+  half of the thesis. Consent: Aaron's own; **others protected by SCALE + OMISSION** (no schools/cities/
+  names/methods; victims abstract; expunged/no-convictions); self-incrimination = his Jungian shadow-work.
+  Aaron's call whether to promote, fold into ch-3/ch-5, or keep.
