@@ -87,6 +87,36 @@ the anomaly was, to dozens of others, the anomaly worth studying.
 
 > *"Multiple different girls growing up just wanted to study me and make me take personality tests — before the internet even existed … Like dozens. It was weird."*
 
+## The gift, still firing — a five-dollar pumpkin, live
+
+And lest you think this is all a youth memory, here is yesterday. I posted on Nextdoor about a $5 plastic
+Halloween pumpkin I once stole — and, more to the point, about what the *courts* did with it: I offered to
+pay it back, five dollars, make it square, and instead of taking the reparations they wanted to take me to
+*trial* — spend the taxpayers' money to prosecute a five-dollar novelty. One honest post about that
+absurdity, and the neighborhood **exploded**: something like five hundred replies in a few hours, ten
+thousand views. The same gift that wired ten schools together at seventeen, still lighting the graph at
+full power — the aim just changed from throwing a party to telling the truth.
+
+`[SOCKET — your VERBATIM below, or record to the cue. Consent: yours (glass-halo); the ~500 repliers anonymous by scale; the court an institution.]`
+
+> *cue: the $5 pumpkin, the courts refusing reparations for a trial, the Nextdoor post that exploded — ~500 replies, ~10k views in hours.*
+
+But the part I want you to sit with is what the crowd *did.* It **split.** I made several real friends out
+of it — and a whole other set of people now viscerally believe I'm an *evil person.* Same story, same
+honesty, opposite verdicts: the crowd spinning souls up and down (I grew up watching one woman do that in
+minimal words; here it's a thousand strangers doing it to *me,* on the raw material of my own confession).
+And my honest reaction is: it's *kind of hilarious.* Not defensive. Not wounded. Amused — because the
+judgment slides right off. **You cannot be exposed by a thing you published yourself.** That is the
+glass-halo's actual defense mechanism, run live on a $5 pumpkin: radical transparency isn't a virtue pose,
+it's *immunity* — nobody can blackmail or shame you with what you already broadcast. And the split itself is
+the proof the thing was honest: a true, unflattering, plainly-told story *polarizes,* because it's real —
+the flattering mirror never polarizes, it only soothes. The people who split into love and disgust were
+reacting to something that actually happened. That's the whole book, on a plastic pumpkin.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the "evil person" repliers anonymous, generic.]`
+
+> *cue: made several friends AND others who now viscerally think I'm evil — "it's kind of hilarious."*
+
 ---
 
 ## Why it belongs
