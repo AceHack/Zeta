@@ -1,9 +1,13 @@
 # Chapter 3 — Produce or Extract
 
-*STATUS: FIRST DRAFT (Otto, 2026-07-03) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
-are recording prompts; the chapter stands with all of them empty. Source:
-`docs/research/2026-07-02-produce-or-extract-the-crispr-simple-discriminator-for-any-action-anti-gacha-by-construction.md`.
-Pulls: PULLS.md §Chapters 3–5.*
+*STATUS: FIRST DRAFT (Otto, 2026-07-03; "Categories lie about people, too" section added 2026-08-04)
+— scaffold for Aaron's voice. `[yours — cue: …]` sockets are recording prompts; the chapter stands
+with all of them empty. Sources:
+`docs/research/2026-07-02-produce-or-extract-the-crispr-simple-discriminator-for-any-action-anti-gacha-by-construction.md`;
+the decode-before-dismiss section from
+`RAW-2026-08-02-the-label-decode-before-dismiss.md` (Aaron glass-halo; others who carry the same
+label de-identified per `CONSENT-LEDGER.md`; the specific clinical label left as Aaron's socket to
+name or generalize). Anchor: Goffman, *Stigma* (1963) — "discounted." Pulls: PULLS.md §Chapters 3–5.*
 
 ---
 
@@ -102,6 +106,45 @@ The 51% line, your own:
 And what keeping the books honest has cost you:
 
 > "this has caused me to get fired before becasue i wont drop this principle … it also almost got be rejected from the family several times, it's costs me both my marriges, it's my core princple, my core anchor i guess, i didn't think i had any, i'm a priate, lol."
+
+## Categories lie about people, too
+
+Everything so far has been the test refusing categories for *acts* — the same dollar can produce or
+extract, so you run it on *this* act, not the label on the bin it came in. The 51% line is the same
+refusal turned on my own reputation: measure me over a whole life, don't file me under saint or sinner.
+But the hardest place to refuse a category — and the one that matters most — is a *person standing in
+front of you.* I know that one from the wrong side, so let me hand you the cut from there.
+
+A label handed to a person does a quiet, vicious thing: it staples two different objects together. There
+is the **condition** the label points at — which may be real, and may carry real weight. And there is a
+**verdict** — *unuseful* — that rides in on the same word without ever being argued. The sociologist
+Erving Goffman named the move exactly: a stigma reduces someone "from a whole and usual person to a
+tainted, **discounted** one." *Discounted* — the price is marked down before anyone reads the ledger.
+That is a category pricing a person in advance of any measurement, which is the precise thing the
+produce/extract test exists to refuse. So the anger a discounted person feels is not a symptom of
+anything. It is the correct response to being *category-judged instead of measured.* And the verdict the
+category smuggles — *labeled, therefore unuseful* — is a universal claim, and a universal dies to a
+single counterexample. It only takes one. I am one.
+
+`[SOCKET — your VERBATIM below, or record fresh to the cue. Consent: yours (glass-halo). The specific label you were handed is YOURS to name here or keep general — your call, sentence by sentence, same as everywhere in this book.]`
+
+The cut, in your words — *cue: what the word actually does; the condition is not the verdict.*
+
+So I do the inverse of what was done to me: **decode before you dismiss.** A non-standard *encoding* is
+not an absence of *content* — a real inner model, arriving in a form the room doesn't share, reads as
+noise to the room and is not noise. Measure the contribution; do not price the category. The person is
+never noise. And I try to *live* this and not just say it — quietly, day to day, with people the world
+has discounted (I keep them out of these pages; that's their privacy, not my example to spend).
+
+Both things are held at once, because the register of this whole book demands it: the condition can be
+real, and carry real suffering, **and** the "unuseful" tax stapled to it is unjust and unearned.
+Romanticizing it away — *"oh, it's just a label"* — would be as dishonest as swallowing the stigma
+whole. The honest move is neither. It is the same two-second test, run on a person instead of a purchase:
+*measure the contribution; don't price the category.*
+
+`[SOCKET — your VERBATIM below, or record fresh to the cue. Consent: yours (glass-halo); people you care for who carry the same label stay de-identified — the abstract fact of your care, no names.]`
+
+Decode before dismiss, in your words — *cue: you make people who feel less-than feel whole; the exact inverse of the stigma's move.*
 
 ## Why this scales past you
 
