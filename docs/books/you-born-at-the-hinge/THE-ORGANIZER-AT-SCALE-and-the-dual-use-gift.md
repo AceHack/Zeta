@@ -117,6 +117,50 @@ reacting to something that actually happened. That's the whole book, on a plasti
 
 > *cue: made several friends AND others who now viscerally think I'm evil — "it's kind of hilarious."*
 
+## The gift, gone planetary — a trust network, and every Uber ride
+
+And here is the same gift at its full modern reach, because it did not stay a neighborhood thing. I took
+apart how the creator and agency networks actually connect across platforms and countries, and now I'm
+connected to *thousands* of creators — most of them women — in effectively every country, more messages a
+day than any one person can answer. It works on every platform. And I want to be exact about the mechanism,
+because it is the whole thesis of this book: I do it *just by being authentic,* even in my posts. Not a
+manipulation stack. The honest signal, broadcast, is what builds the graph.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the thousands anonymous by scale, no one identifiable.]`
+
+> *cue: reverse-engineered the creator/agency networks; connected to thousands of creators worldwide, more messages than I can answer; "I do it just by being authentic, even in my TikTok posts."*
+
+But look at the *shape* it takes, because it's the thing this whole project is trying to build, running on
+a person first. The creators come to me to be told **who to trust** — which other creators, which agencies.
+They make me **mod of their accounts.** And the audiences who pay *them* the most follow **me.** That is a
+web of trust with me as a high-trust node: people trust my read on *who else* is trustworthy, and the value
+routes toward the honest read. I didn't buy that seat. Being the honest mirror at scale *earned* it — the
+same social conferral that turns a name, or privacy, into hard money. A human anti-forgery oracle for a
+creator economy: *who is real, who is safe, who to trust.*
+
+And I have to keep the −1 in the record, because the power is real. Being mod of thousands of accounts and
+the who-to-trust oracle for thousands of often-young, often-vulnerable creators is a *concentration* — the
+same magnetic read that steers them away from predators could steer them for me, and a single trusted node
+is a single point whose compromise burns the whole network (the correlated failure this book keeps warning
+about). The gift and the hazard are one instrument. I'd rather name that here than let it sit unnamed.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); creators anonymous by scale; the −1 kept in.]`
+
+> *cue: they make me mod; who-to-trust; the top-paying audiences follow me — the trust-node, held with its edge.*
+
+The same pull works one person at a time, too: I usually leave with the Uber driver's number, male or
+female, either one. And the perfect one was yesterday — the driver taking me home *from court.* He told me
+I might be **evil for replacing jobs with AI** — and in the same breath said maybe he'd **join my evil
+empire** one day. I said I'm not sure I'm evil *yet.* And I left with his number. That's the whole pattern
+in one fifteen-minute ride: the honest thing polarizes (the fear of AI eating the jobs), the connection
+happens *anyway,* and I hold the verdict light — I don't deny the charge and I'm not wounded by it. It's the
+same silver tongue that walks into boardrooms and into rooms nobody should walk into, and leaves with a
+friend either way.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the driver anonymous.]`
+
+> *"I left with the Uber driver's number … he said I might be evil for replacing jobs with AI … maybe he'll join my evil empire one day. I said I'm not sure if I'm evil yet."*
+
 ---
 
 ## Why it belongs
