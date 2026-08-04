@@ -40,10 +40,12 @@ namespace Zeta.Core
 ///   MONADIC.** The null is dual-purpose — the statistical baseline *and* the **identity/zero element**
 ///   of the fusion aggregate; an associative fold with an identity is a monoid ⇒ **order-independent
 ///   aggregation** (ties straight to the order-free / DST thread — same fold, any arrival order, one
-///   result). Human anchor / prior art: Aaron **simulated meter fusion in SQL on Microsoft PDW
-///   (Parallel Data Warehouse) MPP appliances at Itron** — the fusion *is* a big aggregate/fold over
-///   readings, and the null is that aggregate's identity element (a `GROUP BY` needs a well-defined
-///   zero). No null ⇒ not a monoid ⇒ order-dependent *and* apophenic.
+///   result). Human anchor / prior art: **Aaron and Diana (his manager at Itron) built the meter-fusion
+///   simulator in SQL on Microsoft PDW (Parallel Data Warehouse) MPP appliances at Itron** — the fusion
+///   *is* a big aggregate/fold over readings, and the null is that aggregate's identity element (a
+///   `GROUP BY` needs a well-defined zero). No null ⇒ not a monoid ⇒ order-dependent *and* apophenic.
+///   (Diana consented to this open-source co-credit, 2026-08-04; naming in the book stays gated on her
+///   proofread — see the book consent ledger.)
 ///
 /// **Anchors:** Lamport 1978 (happens-before); `TravelerFrame` (the vector-clock `dominates`/
 /// `concurrent` this mirrors on the commit DAG); CHSH 1969 / `AntiSybil.chshS` + `chshMargin` (the
