@@ -239,3 +239,51 @@ let ``permutationNullMIWindow - refuses era-marginal-only coupling that the plai
     let windowThr = DExc.nullThreshold 0.05 (DExc.permutationNullMIWindow 3UL 200 20 a b) // window = era
     Assert.Equal(DExc.ExcessCorrelation, DExc.classifyPair plainThr realMI) // plain: false conviction
     Assert.Equal(DExc.WithinNull, DExc.classifyPair windowThr realMI) // within-era: correctly no excess
+
+// ── the COMBINED within-era block null ────────────────────────────────────────────────────────────────
+
+[<Fact>]
+let ``windowBlockShuffle - blockSize 1 is the window null; windowSize>=n is the block null`` () =
+    let arr = [| 0..23 |]
+    Assert.Equal<int[]>(DExc.windowShuffle 5UL 6 arr, DExc.windowBlockShuffle 5UL 6 1 arr) // block of one within window
+    Assert.Equal<int[]>(DExc.blockShuffle 5UL 4 arr, DExc.windowBlockShuffle 5UL 24 4 arr) // one window == block null
+
+[<Fact>]
+let ``windowBlockShuffle - keeps window membership AND within-window block contiguity; is a permutation`` () =
+    let arr = [| 0..23 |] // windows of 12, blocks of 4
+    let shuffled = DExc.windowBlockShuffle 3UL 12 4 arr
+    Assert.Equal<int[]>(Array.sort shuffled, arr) // genuine permutation
+    // window membership preserved: first 12 stay {0..11}, last 12 stay {12..23}
+    Assert.Equal<Set<int>>(Set.ofArray shuffled.[0..11], Set.ofList [ 0..11 ])
+    Assert.Equal<Set<int>>(Set.ofArray shuffled.[12..23], Set.ofList [ 12..23 ])
+    // block contiguity preserved: every length-4 chunk is one of the ORIGINAL blocks (intact)
+    let origBlocks = arr |> Array.chunkBySize 4 |> Set.ofArray
+    Assert.Equal<Set<int[]>>(origBlocks, shuffled |> Array.chunkBySize 4 |> Set.ofArray)
+
+[<Fact>]
+let ``windowBlockShuffle - deterministic in the seed`` () =
+    let arr = [| 0..31 |]
+    Assert.Equal<int[]>(DExc.windowBlockShuffle 9UL 8 2 arr, DExc.windowBlockShuffle 9UL 8 2 arr)
+
+// THE POINT: on data with BOTH era structure AND fine autocorrelation, the combined null preserves both,
+// so its threshold is >= BOTH the block null's and the window null's — the most conservative of the family.
+[<Fact>]
+let ``permutationNullMIWindowBlock - threshold dominates both the block and window nulls`` () =
+    // era 1 (0..19) categories x/z in runs of 4; era 2 (20..39) categories y/w in runs of 4. a=b.
+    // Fine autocorrelation (runs of 4) AND era marginal shift (x,z → y,w) both present.
+    let cat i =
+        let era = i / 20
+        let run = (i % 20) / 4 % 2
+        match era, run with
+        | 0, 0 -> "x"
+        | 0, _ -> "z"
+        | _, 0 -> "y"
+        | _, _ -> "w"
+    let a = [ for i in 0..39 -> cat i ]
+    let b = a
+    let thr f = DExc.nullThreshold 0.05 f
+    let blockT = thr (DExc.permutationNullMIBlock 11UL 300 4 a b)
+    let windowT = thr (DExc.permutationNullMIWindow 11UL 300 20 a b)
+    let combinedT = thr (DExc.permutationNullMIWindowBlock 11UL 300 20 4 a b)
+    Assert.True(combinedT >= blockT, sprintf "combined %.4f should dominate block %.4f" combinedT blockT)
+    Assert.True(combinedT >= windowT, sprintf "combined %.4f should dominate window %.4f" combinedT windowT)

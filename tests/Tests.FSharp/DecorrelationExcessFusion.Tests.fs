@@ -214,3 +214,25 @@ let ``fuseMIWindow - uniform category yields no excess (honest no-false-green)``
     let dag = ("R", []) :: (children |> List.map (fun c -> c, [ "R" ])) |> Map.ofList
     let cats = children |> List.map (fun c -> c, "same") |> Map.ofList
     Assert.Equal(0, (DEF.fuseMIWindow 2024UL 0.05 200 3 0 id dag cats children).ExcessStrata)
+
+// ── fuseMIWindowBlock: the combined (most conservative) null ───────────────────────────────────────────
+
+[<Fact>]
+let ``fuseMIWindowBlock - matches fuseMI on order-invariant parts and is order-independent`` () =
+    let dag = Map.ofList [ "R", []; "A", [ "R" ]; "B", [ "R" ]; "C", [ "R" ]; "D", [ "R" ] ]
+    let cats = [ "A"; "B"; "C"; "D" ] |> List.map (fun c -> c, c) |> Map.ofList
+    let m = DEF.fuseMI 7UL 0.05 200 id dag cats [ "A"; "B"; "C"; "D" ]
+    let wb = DEF.fuseMIWindowBlock 7UL 0.05 200 8 2 0 id dag cats [ "A"; "B"; "C"; "D" ]
+    Assert.Equal<(int * int) list>(
+        m.Strata |> List.map (fun s -> s.Stratum, s.Pairs),
+        wb.Strata |> List.map (fun s -> s.Stratum, s.Pairs)
+    )
+    Assert.Equal<float list>(m.Strata |> List.map (fun s -> s.RealMI), wb.Strata |> List.map (fun s -> s.RealMI))
+    Assert.Equal(wb, DEF.fuseMIWindowBlock 7UL 0.05 200 8 2 0 id dag cats [ "D"; "C"; "B"; "A" ]) // order-independent
+
+[<Fact>]
+let ``fuseMIWindowBlock - uniform category yields no excess (honest no-false-green)`` () =
+    let children = [ "c0"; "c1"; "c2"; "c3"; "c4"; "c5" ]
+    let dag = ("R", []) :: (children |> List.map (fun c -> c, [ "R" ])) |> Map.ofList
+    let cats = children |> List.map (fun c -> c, "same") |> Map.ofList
+    Assert.Equal(0, (DEF.fuseMIWindowBlock 2024UL 0.05 200 4 2 0 id dag cats children).ExcessStrata)

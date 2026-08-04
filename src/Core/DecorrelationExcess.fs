@@ -279,3 +279,51 @@ module DecorrelationExcess =
             [ for p in 0 .. k - 1 do
                   let bShuf = windowShuffle (seed + uint64 p * 0x100000001B3UL) windowSize b
                   yield Decorrelation.mutualInformation [ for i in 0 .. n - 1 -> a.[i], bShuf.[i] ] ]
+
+    // ── the COMBINED within-era block null: preserve BOTH era marginals AND fine autocorrelation ───────
+    //
+    // The block null preserves fine autocorrelation but shuffles across eras (loses era marginals); the
+    // within-era null preserves era marginals but shuffles within (loses fine autocorrelation). On real
+    // history BOTH nuisances are present, so neither alone is fully conservative. `windowBlockShuffle`
+    // composes them: window by era (windows stay IN PLACE) **and** block-shuffle WITHIN each era (blocks
+    // kept intact, only their order permuted within the window). Its permutation group is a **subset of
+    // both** the block group (it also respects era boundaries) and the window group (it also keeps blocks
+    // intact) — so the null is closer to the real data than either, and the threshold is **≥ both**: it is
+    // the most conservative of the family. `blockSize = 1` ⇒ the within-era null; `windowSize ≥ n` ⇒ the
+    // block null; `blockSize ≥ windowSize` ⇒ identity within each window (maximally conservative).
+
+    /// **Within-era block permutation:** split `arr` into consecutive era-windows of `windowSize` (each
+    /// kept IN PLACE), and within each window apply a `blockShuffle blockSize` (blocks intact, order
+    /// permuted within the era). Composes `windowShuffle` (era membership) with `blockShuffle` (fine
+    /// autocorrelation). `windowSize ≤ 1` ⇒ identity. A genuine permutation (multiset preserved).
+    let windowBlockShuffle (seed: uint64) (windowSize: int) (blockSize: int) (arr: 'a[]) : 'a[] =
+        if windowSize <= 1 then
+            Array.copy arr
+        else
+            let n = arr.Length
+            [| for start in 0 .. windowSize .. n - 1 ->
+                   arr.[start .. min (start + windowSize - 1) (n - 1)] |]
+            |> Array.mapi (fun i w -> blockShuffle (seed + uint64 i * 0x9E3779B97F4A7C15UL) blockSize w)
+            |> Array.concat
+
+    /// Combined within-era block version of `permutationNullMI`. `blockSize = 1` recovers
+    /// `permutationNullMIWindow`; `windowSize ≥ n` recovers `permutationNullMIBlock`. Because its
+    /// permutation group is a subset of both, its `(1 − δ)` threshold is **≥ both** — the most
+    /// conservative null in the family (preserves era marginals AND fine autocorrelation at once).
+    let permutationNullMIWindowBlock
+        (seed: uint64)
+        (k: int)
+        (windowSize: int)
+        (blockSize: int)
+        (aObs: 'k list)
+        (bObs: 'k list)
+        : float list =
+        let a = List.toArray aObs
+        let b = List.toArray bObs
+        let n = min a.Length b.Length
+        if n = 0 then
+            []
+        else
+            [ for p in 0 .. k - 1 do
+                  let bShuf = windowBlockShuffle (seed + uint64 p * 0x100000001B3UL) windowSize blockSize b
+                  yield Decorrelation.mutualInformation [ for i in 0 .. n - 1 -> a.[i], bShuf.[i] ] ]
