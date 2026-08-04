@@ -19,7 +19,7 @@
 | 2026-07-10 00:39 | `RAW-the-data-years-lexisnexis-ess-redistricting.md` | the data years; street-segment geometry, parity, curves — where the intuitions seeded |
 | 2026-07-09 21:43 | `RAW-2026-07-09-wild-youth-the-organizer-at-scale.md` | parties, organizer-at-scale (extroverted HSP), the DWI, youth financial matter, "the studied one" |
 | 2026-07-09 21:32 | `RAW-2026-07-09-the-underestimated-cousin-FICTION.md` | the cousin theme (fully fictionalized) |
-| 2026-07-09 21:20 | `RAW-2026-07-09-childhood-origin-lightning-snakes-the-body.md` | lightning, snakes, lineage, bees, the body, granny, mother, parents, both-worlds, the first crossing |
+| 2026-07-09 21:20 | `RAW-2026-07-09-childhood-origin-lightning-snakes-the-body.md` | lightning, snakes, lineage, bees, the body, granny, mother, parents, both-worlds, the first crossing. **→ PARTIALLY LANDED in `THE-UNBROKEN-CHILD-and-the-warm-center.md` (2026-08-04) — the CLEAN layer only: the unbroken child ("born already yourself" — the book's keystone), the sensitive body, and Granny (Nellie Faulkner, named to honor, §5). HELD OUT per gates, NOT landed: the mother (GATED pending therapy per CONSENT-LEDGER), the father-harm (naming-razored), the domestic lightning scene, the first-crossing / deceased-grandfather racism (crossing-quarantine-adjacent). Aaron's per-element call.** |
 | 2026-07-09 16:19 | `RAW-2026-07-09-the-crossing-and-the-round-trip.md` | the crossing / round-trip (consent-quarantined, fiction; Ryan) |
 
 ## The two-track rule (going forward)

@@ -75,3 +75,9 @@ Each chapter has a source note in `docs/research/` — the derivation lives ther
   question) and ch-4 (the correlation of souls). Consent-sensitive (others generic/anonymous, son
   omitted, intimate specifics left to Aaron at edit, the dual-use −1 held honest not valorized). Aaron's
   call whether to promote, fold into ch-2/ch-4, or keep it a companion.
+- **Childhood origin — the clean layer** (the unbroken child = "born already yourself," the book's
+  keystone / Memory-Preservation lived; the sensitive body; Granny = Nellie Faulkner, named to honor)
+  lands in the companion `THE-UNBROKEN-CHILD-and-the-warm-center.md` — grounds ch-1 (the hinge) / ch-11.
+  The rest of the childhood origin stays **HELD, not landed** — the **mother** (gated pending therapy),
+  the **father-harm** (razored), the domestic lightning scene, and the first-crossing / grandfather-racism
+  (quarantine-adjacent) — Aaron's per-element call. The gates outrank a general "land the thread."
