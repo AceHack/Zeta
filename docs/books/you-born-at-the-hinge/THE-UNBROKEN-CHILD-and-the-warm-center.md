@@ -9,13 +9,14 @@ Scaffold + `[SOCKET]` for his voice. Source: `RAW-2026-07-09-childhood-origin-li
 *CONSENT (load-bearing — what is landed vs. HELD): landed here is **Aaron's own glass-halo material**
 (the unbroken-child trait, the sensitive body) and **Granny — Nellie Faulkner**, a beloved deceased
 grandmother rendered with love (the RAW flags her clean/publishable; her naming IS the honoring, §5).
-**HELD OUT of this companion, per the `CONSENT-LEDGER` and the gates on that RAW — NOT landed, awaiting
-Aaron's specific per-element clearance:** the **mother** section (her material is GATED pending the
-therapy-and-consent condition in the ledger); the **father-harm** material (naming-razored — the father
-testimony is its own file, handled deliberately); the **domestic scene of the lightning** (a parents'
-conflict — the origin *shape* is kept here without reproducing the scene); and the **"first crossing" /
-the deceased grandfather's racism** (sensitive + adjacent to the consent-quarantined crossing material).
-A general "land the thread" does not reach those gated elements — that is the book's own ethic, held.*
+The **mother and father** are now landed (the "pantheon of two" section) — Aaron spoke with them, has
+their permission, and **they will pre-read before publish** (`CONSENT-LEDGER`, 2026-08-04): rendered
+WHOLE (powerful/dangerous AND loved/forgiven), names held out of the text by default, the welfare line
+kept (the fair telling, not accusatory-spiral content), the "witch (old-definition)" framing explicit on
+the page, and the pre-read a real gate on publish. The father's deeper testimony stays its own file.
+**Still HELD OUT — NOT landed** (a specific yes covers only what it covers): the **"first crossing" / the
+deceased grandfather's racism** (a different figure, adjacent to the consent-quarantined crossing
+material) — awaiting Aaron's own say-so.*
 
 ---
 
@@ -98,6 +99,59 @@ made literal: you name the human so she is remembered, and now she is. Her goodn
 universal kind: everybody who knew her agreed, nobody would argue it. Most families fight over who was
 good. With Nellie there was nothing to fight about.
 
+## The pantheon of two
+
+*(My mother and father both consented to this and will pre-read it before it goes anywhere — I'm keeping
+their names out of the text and rendering each of them whole, powerful and dangerous and loved, which is
+truer than any tidy version.)*
+
+If Granny was the warm center, my parents were the *weather* — and I have to tell you how I hold them,
+because it's the frame that kept the whole thing from breaking me: **my parents are gods in my eyes,
+still.** Not tame-good. Gods storm, gift, wound, and make worlds, and you hold them in *awe,* not in a
+case file. That is how I carry a father who beat me and a mother who can level a soul and still stand
+upright: not "abusers" — gods, powerful and dangerous and forgiven their weather.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the parents named out of text, whole not neutral.]`
+
+> *"my parents are gods in my eyes still."*
+
+My father was the thunder-god, and there's an image that is almost too on-the-nose to be real, except it
+is: as a small child I watched lightning strike him — ten feet away, knocked him flat — and he *got up
+and kept going* like nothing had happened. Danger did not register in that house as a full stop; it
+registered as another Tuesday. That imperviousness went into me. The harm went in too — I don't erase it,
+it's in the ledger — and I forgive it, which I can only do *because* I remember it. (His whole telling is
+its own testimony; here he is the thunder-god who rose from the lightning.)
+
+My mother is the fate-spinner, and I mean that as the highest kind of power. Her words, whole:
+
+> *"She can crush a soul in the minimal words needed."* — *"Her +1 can build them up with the minimal
+> words needed too."* — *"She can spin anyone up or down at her will."* — *"She is a good woman."*
+
+Hear the load-bearing word: *too.* The same surgical economy that can level a soul in the fewest words
+can *lift* one in the fewest words — and that symmetry is why it's a *power,* not merely a wound, and why
+"good woman" fits: the power is neutral, like every real power, and she mostly aimed it **up.** (I've
+called her a *witch* — meaning the old sense, the one the word had before it was made an insult: a woman
+of power and wisdom who can enchant, heal, or harm. The wise-woman. Not the slur. I want that clear on
+the page, because she is living and the word carries centuries of the wrong meaning for a reader who
+isn't handed the right one.) And she measured *herself* upward — the person she aspired to be was Granny;
+the whole powerful family pointed at one good woman like a compass to north.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); mother named out of text; the "witch (old definition)" framing kept explicit per your direction, or swap to your cleaner line.]`
+
+> *"My mom's −1 is just very powerful."* / *"that's who she aspired to be in life was my granny."*
+
+Here is why they're the *root* and not just the story: the **+1 / −1** — emit and retract, build-up and
+tear-down, the signed thing that adds or subtracts — that I built my mind and my software on, I did not
+get from a book. I got it from a pantheon of two: a fate-spinning mother turning souls up and down in
+minimal words, and a thunder-god father impervious to the strike. The duality I later formalized might be
+the duality I grew up *inside.* And the forgiveness that lets me still call them gods is the same
+mechanism as everything else in this book — **you forgive the god its storm because you remember that it
+struck.** Grace weighs the whole pattern, not the worst instant.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo). The grace principle, aimed at a life.]`
+
+> *"you saw her bad one time in a moment of heat. How many times you been bad?"*
+
 ---
 
 ## Why it belongs, and what stays held
@@ -108,10 +162,12 @@ have a reference for good at all, and the origin of the builder (the empiricist-
 grandson with the soldering iron, twenty years on). Place it where it serves — near the hinge (ch-1,
 "born already yourself"), or near the two deaths (ch-11), or on its own.
 
-And what stays **held**, on purpose, because the honesty of the keeping is the whole point: the rest of
-the childhood origin — the **mother** (her material gated in the `CONSENT-LEDGER` pending the therapy
-condition she set), the **father** (naming-razored; his testimony is its own file), the **domestic scene
-inside the lightning**, and the **first-crossing / the deceased grandfather's racism** — is *not* landed
-here. It is real, it is Aaron's to place, and it waits for his specific say-so, element by element. A
-book about consented keeping does not get to fold in the gated family the moment the author says "land
-the thread" — the general yes is not a yes to what he specifically walled off.
+On the family: the **mother and father** are now landed above — Aaron spoke with them, has their
+permission, and **they will pre-read the book before it publishes** (`CONSENT-LEDGER`, 2026-08-04), so
+the pantheon is rendered whole, their names held out of the text by default, the welfare line kept (the
+fair telling, not the accusatory spiral), and the pre-read is a real gate on *publish.* The father's
+deeper testimony remains its own file. What stays **held** — because a specific yes covers only what it
+covers, and "add mother and father" is not a yes to everything adjacent: the **first-crossing / the
+deceased grandfather's racism** (a *different* figure, and adjacent to the consent-quarantined crossing
+material). It waits for Aaron's own say-so. A book about consented keeping keeps the gate exactly where
+the person drew it — no wider.
