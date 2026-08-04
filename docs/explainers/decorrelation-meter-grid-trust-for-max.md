@@ -2,9 +2,13 @@
 
 **Audience:** Max (technically competent, deciding whether to co-build critical infrastructure with an AI).
 **Register:** primarily *legibility* (reader's-head) — with each claim tagged by what backs it:
-**[proven]** = shipped code + golden vectors; **[in-progress]** = designed, partially built, data pending;
-**[want]** = the target we are building toward, not yet true.
+**[proven]** = shipped code + golden vectors; **[proven-in-part]** = the instrument is shipped + tested +
+runs on real data, but not every real-world mapping is done; **[proven-fixed]** = a former gap now closed
+and verified; **[in-progress]** = designed, partially built, data pending; **[want]** = the target we are
+building toward, not yet true.
 Nothing here is asserted as done that isn't. If a section is over-sold, that is a bug — report it.
+*(Updated 2026-08-04: the passive-channel detector and the autocorrelation-corrected margin — both `[in-progress]`
+in the first draft — are now built, verified, and shipped; §3.5 is a runnable demonstration.)*
 
 ---
 
@@ -62,23 +66,63 @@ It is also **dual-use-neutral by design.** The meter reports the *fact* ("hidden
 policy, not something the instrument pre-judges. A measurement is not a sentence. **[proven]** — the code's
 result types name the fact, never the intent.
 
+## 3.5 A demonstration you can run (not just a description)
+
+The point of "trust the math, re-run the math" is that you don't have to take this on faith. Here is the
+claim reduced to a runnable experiment against the **shipped** instrument (`GridTrustDemo.Tests.fs`), so a
+skeptic can re-run it and change the inputs.
+
+**The setup.** Two operators — A (human-side) and B (AI-side) — take a control action each tick on a shared
+grid. Each tick, both act *concurrently*, then the grid state merges both actions before the next tick (a
+"fork-merge ladder"). Because of that causal structure, the only pairs the instrument even *looks* at are
+the **same-tick, genuinely-concurrent** (a, b) actions — 40 of them. Every other pair is causally ordered
+(one could have seen the other) and is excluded, exactly as it should be.
+
+**Two worlds, same code, same record:**
+
+| World | What A and B do | The instrument's verdict |
+|---|---|---|
+| **Independent** | each picks its own subsystems, no coordination | **2 of 40 flagged** — i.e. ≈ the δ=0.05 false-alarm budget. It **clears** them. |
+| **Hidden channel** | every 2nd tick a covert trigger makes both take the *same* action (a synchronized move neither disclosed) | **21 of 40 flagged** — the 20 coordinated pairs caught, +1 chance. It **flags** them. |
+
+**2 vs 21.** Not a borderline call — a wide, legible margin, from the same deterministic code both sides
+re-run on the same open record. The honest details that make it trustworthy rather than a demo trick:
+
+- The independent world is **not** flagged at zero — it's flagged at ~2, *exactly* the 5% false-alarm rate
+  the δ knob promises. The instrument doesn't pretend to certainty it doesn't have; it spends its error
+  budget and no more.
+- An earlier version of this same demo *failed to separate* (2 vs 2) when the "hidden channel" was too
+  diffuse — both sides merely touching a shared subsystem at the same *rate*. That is correct behavior: a
+  common feature at equal marginal rates is **indistinguishable from independence**, and the instrument
+  refuses to invent coordination that the marginals already explain. It only fires on coupling **beyond**
+  chance. (That failure taught the demo what a real hidden channel looks like — synchronized *joint* action,
+  not a shared average.)
+
 ## 4. The honest limits — where you should push back
 
 An explanation you can trust has to tell you where it *can't* yet deliver. Three real limits:
 
-1. **The current CHSH form catches an *active* hidden channel or a rigged setup — not a *passive* pre-shared
-   trigger.** If two parties secretly agreed on the same shutdown trigger *before* going dark, that shared
-   seed sits *under* the Bell bound and looks innocent to CHSH. Catching that needs a second instrument —
-   a mutual-information / conditional-independence test (Reichenbach's common-cause principle: condition on
-   the shared ancestry the record already gives us). That second instrument is **[in-progress]** — designed,
-   reconnecting to independence-measurement work already in the repo, pending an independent second review
-   before it lands. **Until it lands, do not read a clean CHSH reading as "proven independent."** A low
-   reading never *acquits*; it only fails to *convict*. We enforce that one-way logic in the code itself.
-2. **Finite samples lie if you let them.** A short run of readings can cross a threshold by pure luck. The
-   meter never uses the bare textbook bound; it adds a sample-size margin (Hoeffding) so it only convicts
-   when the signal clears the noise it could plausibly be. **[proven]** — small-sample pairs are *not*
-   convicted, by test. Caveat **[in-progress]**: that margin assumes independent trials; on
-   auto-correlated action streams it needs strengthening before high-stakes use.
+1. **The passive pre-shared trigger — now caught by a second instrument (was the biggest gap; since built).**
+   CHSH catches an *active* hidden channel but not a *passive* one: if two parties secretly agreed on the
+   same shutdown trigger *before* going dark, that shared seed sits *under* the Bell bound and looks innocent
+   to CHSH. Catching it needs a second instrument — **excess correlation over an independent null**, with
+   Reichenbach's common-cause principle (condition on the shared ancestry the record already gives us). That
+   instrument is now **built and shipped** (`DecorrelationExcess` / `DecorrelationExcessFusion`), and it was
+   routed through *two independent adversarial reviews* before it landed (a formal-methods reviewer and a
+   mathematical-physics reviewer independently concluded that forcing CHSH onto the passive case is
+   ill-posed and that excess-over-null is the honest instrument). Status: **[proven-in-part]** — the
+   detector exists, is tested, and runs on real data (see the demonstration above). Still **[want]**: the
+   full mapping from a *specific* grid's telemetry to its inputs. The one-way logic is unchanged and enforced
+   in code: a clean reading never *acquits* ("proven independent"), it only fails to *convict*.
+2. **Finite samples lie if you let them — and the "independent trials" hole is now closed.** A short run can
+   cross a threshold by luck, so the meter adds a sample-size margin (Hoeffding) and only convicts when the
+   signal clears the noise it could plausibly be. **[proven]** — small-sample pairs are *not* convicted, by
+   test. The old caveat — *that margin assumed independent trials, and real action streams auto-correlate
+   (bursts), which would make it over-convict honest-but-bursty operators* — is now **[proven-fixed]**: the
+   margin uses an autocorrelation-corrected effective sample size (Newey–West), the correction was formally
+   verified (the monotonicity obligations proved in Z3, the whole-oracle subset property in property-based
+   tests), and the shipped default was switched to it. Framed honestly: the corrected margin is *provably
+   more conservative* than the naïve one, not *"fully sound"* — dependence beyond its bandwidth can still evade.
 3. **Which real-world signal maps to which "probe" is a modeling choice, not magic.** The meter is correct
    *given* an honest mapping from grid telemetry to its inputs; it does not invent that mapping for you.
    Getting that mapping right for a specific grid is engineering work still ahead. **[want]**.
