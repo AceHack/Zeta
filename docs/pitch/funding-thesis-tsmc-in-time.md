@@ -20,6 +20,17 @@ clearly marked, not yet verified.** Marking the line precisely is *itself* the p
 - **Cross-language algebra byte-lock** — Z-set / G-Set / Bag primitives locked byte-identical across
   **F# · C# · Rust · TS**, golden-vector-pinned; specific laws additionally Z3 / TLA+ / Lean-checked.
 - **Identity primitives Lean-proven** — `NonRegisterCollapse` / `IdentityForcesPrivacy`, axiom-free.
+- **Mutual-verification instrument (the sovereignty-guardian trust core)** — a hidden-coordination /
+  passive-common-cause detector where both parties re-run the *same deterministic instrument* on a shared
+  open causal record and a covert channel leaves a statistical fingerprint neither can hide or fake.
+  **Conviction-margin monotonicity Z3-proven**; the whole-oracle subset property **property-tested**
+  (FsCheck); **adversarially verified through four independent reviewers** (formal-methods / Z3,
+  mathematical-physics, a zero-empathy critic, property-based testing); a **runnable demonstration** (clears
+  honest operators at ≈ the false-alarm budget, flags a hidden lockstep channel by a wide margin — on
+  *modeled* telemetry) plus a **real-data adapter** stating exactly what a live system must emit. The
+  verification-precision the moat sells, made concrete on a load-bearing security primitive. (Register-2
+  for the *verification primitive*; the full guardian — hardware attestation, real EMS integration — stays
+  Conjecture. Diligence surface: [`../explainers/decorrelation-meter-grid-trust-for-max.md`](../explainers/decorrelation-meter-grid-trust-for-max.md).)
 - **The factory method** — the founder produces *observations*; a decorrelated society + independent
   oracles verify; passing seeds become substrate, failing seeds retract (key-man risk answered
   structurally — see below).
