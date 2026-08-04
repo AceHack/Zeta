@@ -182,6 +182,7 @@
     <Compile Include="Conjugate.Tests.fs" />
     <Compile Include="BitGan.Tests.fs" />
     <Compile Include="AntiSybil.Tests.fs" />
+    <Compile Include="AntiSybilCaveatA.Property.Tests.fs" />
     <Compile Include="LeibnizAntiSybil.Tests.fs" />
     <Compile Include="SybilBft.Tests.fs" />
     <Compile Include="SybilBftProtocol.Tests.fs" />
