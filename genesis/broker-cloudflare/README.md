@@ -18,7 +18,7 @@ browser.
 
 > **Identity only.** Like the .NET broker, this returns *who you are*, not a
 > GitHub API token. Using GitHub as a **data store** ("GitHub-as-a-database")
-> is a separate, deliberate extension — see **[Data token (next step)](#data-token-next-step)**.
+> is a separate, deliberate extension — see **[Data token (next step)](#data-token--github-as-a-database-optional)**.
 
 ## What you need
 
@@ -108,21 +108,52 @@ curl https://genesis-auth.<sub>.workers.dev/healthz
   identity and then discarded; only a short-lived signed identity JWT is returned.
 - Errors return generic messages; tokens/secrets are never logged or echoed.
 
-## Data token (next step)
+## Data token — GitHub-as-a-database (optional)
 
-This broker is **identity-only**. To let the browser read/write the user's own
-GitHub repo (the "GitHub-as-a-database" feature), one of two extensions is
-needed — a **deliberate** security decision, because it changes where the GitHub
-token lives:
+The endpoints above are **identity-only**. To also let the browser read/write
+the user's **own** vault repo (the "GitHub-as-a-database" feature), this Worker
+implements a **data token** flow — **Path A**: a short-lived GitHub token is
+cached in the browser and the Worker is hit only at authorization and ~8h
+refresh. It is **opt-in**: leave the data secrets unset and only identity runs.
 
-1. **Token-to-browser** (sparing backend use): the broker requests repo scope
-   and returns a **short-lived GitHub token** to the browser, which calls
-   `api.github.com` directly. Backend hit only at login + refresh. The token is
-   in the browser (XSS-exposed, bounded by least-privilege scope + short expiry).
-2. **Broker-proxied data** (most secure): the token **never** leaves the Worker;
-   the browser asks the Worker, which performs the GitHub read/write. No token in
-   the browser, but the Worker is invoked on every data operation.
+**How it stays safe:**
 
-This folder ships path **(0): identity only**. The data extension lands behind
-the frontend `VaultStorage` interface once the path above is chosen — see
-[`../_src/src/vault/README.md`](../_src/src/vault/README.md).
+- The data token is a **GitHub App user-to-server token** — short-lived (~8h),
+  least-privilege (`Contents: write` on the single vault repo), held **in memory
+  only** in the browser (see [`../_src/src/vault/dataToken.js`](../_src/src/vault/dataToken.js)).
+- The long-lived **refresh token never reaches the browser**: it lives in
+  **Workers KV** (binding `SESSIONS`), keyed by an **opaque session handle** the
+  browser holds. `/auth/data/refresh` mints a fresh access token and **rotates**
+  the (single-use) refresh token in KV.
+
+**Extra endpoints:** `GET /auth/github/data/login`, `GET /auth/github/data/callback`,
+`POST /auth/data/refresh`.
+
+**Setup (in addition to the identity steps):**
+
+1. Register a **GitHub App** (not an OAuth App): repository permission
+   **Contents: Read and write** (+ Metadata), **user-to-server token expiration
+   ON**, callback URL `https://genesis-auth.<sub>.workers.dev/auth/github/data/callback`.
+   Copy its **Client ID** + generate a **Client secret**. Each user **installs**
+   the App on their vault repo (a one-time click).
+2. Create the KV namespace and paste its id into `wrangler.toml`:
+   ```bash
+   wrangler kv namespace create SESSIONS
+   ```
+   Then uncomment the `[[kv_namespaces]]` block.
+3. Set the data secrets:
+   ```bash
+   wrangler secret put GITHUB_DATA_CLIENT_ID
+   wrangler secret put GITHUB_DATA_CLIENT_SECRET
+   ```
+4. `wrangler deploy`. Verify: `curl .../healthz` reports `"data":true`.
+
+Offline-tested (`node test/data-flow.test.mjs`): login redirect + state cookie,
+callback stores refresh in KV (never in the redirect) + hands back an opaque
+handle, refresh reuse / rotation / 401 / 400, CSRF bad-state, CORS preflight,
+and 404-when-unconfigured — **19/19**.
+
+> **Encryption key custody is a separate decision** (custodial-via-Worker vs
+> zero-knowledge passphrase) — see [`../_src/src/vault/README.md`](../_src/src/vault/README.md).
+> The data token controls repo *write access*; the vault's *encryption* is
+> orthogonal and the frontend ships both key providers.
