@@ -1,0 +1,14 @@
+{
+  "id": "080cfe9ec4215011a0130008743da320",
+  "at": "2026-08-05T21:33:30.026Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZ9XH11908QG0R001RMFX7M",
+    "type": "task",
+    "title": "F# EP engine: moment-matching projections + exp-family conjugate updates over the DBSP semiring (Infer.NET rewrite slice)",
+    "slug": "f-ep-engine-moment-matching-projections-exp-family-conjugate",
+    "priority": "P1",
+    "filename": "081KZ9XH11908QG0R001RMFX7M-f-ep-engine-moment-matching-projections-exp-family-conjugate.md"
+  }
+}
