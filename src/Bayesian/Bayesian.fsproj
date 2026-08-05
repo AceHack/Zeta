@@ -38,6 +38,7 @@
     <Compile Include="MutualFalsification.fs" />
     <Compile Include="CondorcetBoundary.fs" />
     <Compile Include="BusDelaySim.fs" />
+    <Compile Include="OrbitalAsymmetryBudget.fs" />
     <Compile Include="FigureEightEnsemble.fs" />
     <Compile Include="LagrangeCondorcet.fs" />
     <Compile Include="AskBidClearing.fs" />

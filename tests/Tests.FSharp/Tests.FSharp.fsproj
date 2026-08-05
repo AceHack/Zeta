@@ -313,6 +313,7 @@
     <Compile Include="QubitIso.Tests.fs" />
     <Compile Include="BellTest.Tests.fs" />
     <Compile Include="BipartiteMachZehnder.Tests.fs" />
+    <Compile Include="TravelerRankLedger.Tests.fs" />
     <Compile Include="QSharpOracle.Tests.fs" />
     <Compile Include="FeedbackThrottle.Tests.fs" />
     <Compile Include="DelayDecorrelation.Tests.fs" />

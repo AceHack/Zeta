@@ -96,11 +96,17 @@ module ShapeAcceptance =
             // comparison rounds to nearest (truncation accepted S up to 2828.99 — past Tsirelson);
             // the phasor value is analytic, so round-equality at 2828 is exact-by-construction.
             let sPhasor = TimeGen.chsh g 256
+            // classifyS wired here (BipartiteMachZehnder, 2026-08-04):
+            // - SupraQuantum (|S| > 2√2) is physically impossible for real QM and signals
+            //   superdeterminism or a clone attempt — HARD REJECT regardless of declared value.
+            // - Quantum (2 < |S| ≤ 2√2) is the valid range for a genuine fourcorner shape.
+            // - Classical (|S| ≤ 2) means the phasor is not entangled — shape is wrong.
+            let phasorRegime = BipartiteMachZehnder.classifyS sPhasor
             let ok =
-                int (System.Math.Round(sPhasor * 1000.0)) = declared
-                && sPhasor <= 2.0 * sqrt 2.0 + 1e-9
+                phasorRegime = BipartiteMachZehnder.ChshRegime.Quantum
+                && int (System.Math.Round(sPhasor * 1000.0)) = declared
                 && TimeGen.chsh cl 256 <= 2.0 + 0.05
-            ok, sprintf "phasor S = declared %d milli (rounded, capped at Tsirelson); classical folds at 2 (sampling tolerance 0.05)" declared
+            ok, sprintf "phasor S = declared %d milli (regime=%A, must be Quantum); classical folds at 2 (sampling tolerance 0.05)" declared phasorRegime
         | "shape-buckyball" ->
             // Addison's solid checked by arithmetic, not trust: Euler characteristic, the
             // face/edge double-count, 3-regularity, and the meta room's door count (rooms + itself).
@@ -316,15 +322,26 @@ module ShapeAcceptance =
             let sPair = AntiSybil.chshS a b
             let sIndep = AntiSybil.chshS a c
             let wantDistinct = MediaLines.constIntOr "distinct" 2 d
+            // EVE clone-gate (BipartiteMachZehnder, 2026-08-04):
+            // A SupraQuantum S (|S| > 2√2) is physically impossible for real QM. If a shape
+            // renegotiation arrives with a SupraQuantum S, it is a clone attempt or a
+            // superdeterministic forgery — HARD REJECT regardless of all other fields.
+            // This connects classifyS to the DurableDiplomacy shape-renegotiation gate:
+            // an out-of-cone SupraQuantum S cannot renegotiate a claim shape.
+            let pairRegime = BipartiteMachZehnder.classifyS sPair
+            let isCloneAttempt = pairRegime = BipartiteMachZehnder.ChshRegime.SupraQuantum
             let ok =
-                verdict.DistinctCount = wantDistinct
+                not isCloneAttempt
+                && verdict.DistinctCount = wantDistinct
                 && sPair = 4.0
                 && abs sIndep <= threshold
                 && AntiSybil.coordinationBandwidth sPair = 1.0
             ok,
             sprintf
-                "CHSH oracle live: conducted pair S = %d/1000 (convicted, bandwidth %d/1000); independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
+                "CHSH oracle live: conducted pair S = %d/1000 (regime=%A%s, bandwidth %d/1000); independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
                 (int (sPair * 1000.0))
+                pairRegime
+                (if isCloneAttempt then " — EVE CLONE GATE: SupraQuantum S is physically impossible, HARD REJECT" else ", convicted")
                 (int (AntiSybil.coordinationBandwidth sPair * 1000.0))
                 (int (abs sIndep * 1000.0))
                 (int (threshold * 1000.0))
