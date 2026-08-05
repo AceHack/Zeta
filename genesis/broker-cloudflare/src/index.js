@@ -47,7 +47,7 @@ export default {
 
     try {
       if (pathname === "/healthz") {
-        return json({ status: "ok", providers: enabledProviders(env) });
+        return json({ status: "ok", providers: enabledProviders(env), data: Boolean(env.GITHUB_DATA_CLIENT_ID && env.GITHUB_DATA_CLIENT_SECRET && env.SESSIONS) });
       }
 
       // GET /auth/me — verify an identity JWT (CORS-enabled).
@@ -70,6 +70,18 @@ export default {
 
       const callback = pathname.match(/^\/auth\/([^/]+)\/callback$/);
       if (callback) return handleCallback(decodeURIComponent(callback[1]), request, url, env);
+
+      // --- Data-token flow (GitHub-as-a-database; see README "Data token") ---
+      if (pathname === "/auth/data/refresh") {
+        if (request.method === "OPTIONS") {
+          return new Response(null, { status: 204, headers: corsHeadersData() });
+        }
+        return handleDataRefresh(request, env);
+      }
+      const dataLogin = pathname.match(/^\/auth\/([^/]+)\/data\/login$/);
+      if (dataLogin) return handleDataLogin(decodeURIComponent(dataLogin[1]), url, env);
+      const dataCallback = pathname.match(/^\/auth\/([^/]+)\/data\/callback$/);
+      if (dataCallback) return handleDataCallback(decodeURIComponent(dataCallback[1]), request, url, env);
 
       return json({ error: "not found" }, 404);
     } catch (err) {
@@ -199,6 +211,222 @@ async function handleCallback(provider, request, url, env) {
   headers.append("Set-Cookie", `gx_state_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
   headers.append("Set-Cookie", `gx_redir_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
   return new Response(null, { status: 302, headers });
+}
+
+// ---------------------------------------------------------------------------
+// Data-token flow: GitHub App user-to-server tokens for GitHub-as-a-database.
+//
+// Unlike identity (OAuth App, read:user, token discarded), the DATA token lets
+// the browser read/write the user's OWN vault repo. It is a GitHub App
+// user-to-server token: short-lived (~8h), least-privilege (Contents:write on
+// the single vault repo), with a long-lived refresh token that NEVER reaches
+// the browser. The refresh token is stored server-side in Workers KV (binding
+// `SESSIONS`), keyed by an opaque handle the browser holds; the browser only
+// ever sees the short-lived access token (in memory) + the opaque handle.
+// So the Worker is hit only at authorization and at ~8h refresh.
+// ---------------------------------------------------------------------------
+const DATA_REFRESH_TTL_SECONDS = 15552000; // ~180d (GitHub refresh-token lifetime)
+const DATA_STATE_COOKIE_MAX_AGE = 600;
+
+function dataProviderConfig(provider, env) {
+  // GitHub App only (GitLab data support can be added later).
+  if (provider !== "github") return null;
+  if (!env.GITHUB_DATA_CLIENT_ID || !env.GITHUB_DATA_CLIENT_SECRET) return null;
+  return {
+    clientId: env.GITHUB_DATA_CLIENT_ID,
+    clientSecret: env.GITHUB_DATA_CLIENT_SECRET,
+    authorizeUrl: "https://github.com/login/oauth/authorize",
+    tokenUrl: "https://github.com/login/oauth/access_token",
+    userInfoUrl: "https://api.github.com/user",
+    repo: optVar(env, "GITHUB_DATA_REPO", "genesis-vault"),
+  };
+}
+
+function requireKv(env) {
+  if (!env.SESSIONS || typeof env.SESSIONS.get !== "function") {
+    throw new Error("missing KV binding SESSIONS");
+  }
+  return env.SESSIONS;
+}
+const dataSessionKey = (handle) => `dsess:${handle}`;
+
+function corsHeadersData() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "content-type, authorization",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
+function jsonCors(obj, status = 200) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: { "content-type": "application/json", ...corsHeadersData() },
+  });
+}
+
+// Step 1: begin data authorization (GitHub App user consent).
+function handleDataLogin(provider, url, env) {
+  const p = dataProviderConfig(provider, env);
+  if (!p) return json({ error: `data provider '${provider}' not configured` }, 404);
+
+  const finalRedirect = resolveRedirect(url.searchParams.get("redirect"), allowedOrigins(env));
+  if (!finalRedirect) return json({ error: "redirect not in ALLOWED_FRONTEND_ORIGINS" }, 400);
+
+  const state = b64url(crypto.getRandomValues(new Uint8Array(32)));
+  const selfBase = requireVar(env, "SELF_BASE_URL").replace(/\/+$/, "");
+  const authorize = appendQuery(p.authorizeUrl, {
+    client_id: p.clientId,
+    redirect_uri: `${selfBase}/auth/${encodeURIComponent(provider)}/data/callback`,
+    state,
+    response_type: "code",
+  });
+
+  const cookieOpts = `Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DATA_STATE_COOKIE_MAX_AGE}`;
+  const headers = new Headers({ Location: authorize });
+  headers.append("Set-Cookie", `gx_dstate_${provider}=${state}; ${cookieOpts}`);
+  headers.append("Set-Cookie", `gx_dredir_${provider}=${encodeURIComponent(finalRedirect)}; ${cookieOpts}`);
+  return new Response(null, { status: 302, headers });
+}
+
+// Step 2: data callback — exchange code, store refresh token in KV, hand back
+// an opaque session handle in the URL fragment.
+async function handleDataCallback(provider, request, url, env) {
+  const p = dataProviderConfig(provider, env);
+  if (!p) return json({ error: `data provider '${provider}' not configured` }, 404);
+
+  const clear = () => {
+    const h = new Headers({ "content-type": "application/json" });
+    h.append("Set-Cookie", `gx_dstate_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+    h.append("Set-Cookie", `gx_dredir_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+    return h;
+  };
+  const fail = (obj, status) => new Response(JSON.stringify(obj), { status, headers: clear() });
+
+  const error = url.searchParams.get("error");
+  if (error) return fail({ error: `provider returned: ${error}` }, 400);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  if (!code || !state) return fail({ error: "missing code/state" }, 400);
+
+  const cookies = parseCookies(request.headers.get("Cookie") || "");
+  const expectedState = cookies[`gx_dstate_${provider}`];
+  const redirRaw = cookies[`gx_dredir_${provider}`];
+  const finalRedirect = redirRaw ? decodeURIComponent(redirRaw) : null;
+  if (!expectedState || !timingSafeEqual(expectedState, state)) return fail({ error: "invalid state" }, 400);
+  const safeRedirect = finalRedirect ? resolveRedirect(finalRedirect, allowedOrigins(env)) : null;
+  if (!safeRedirect) return fail({ error: "invalid redirect" }, 400);
+
+  const selfBase = requireVar(env, "SELF_BASE_URL").replace(/\/+$/, "");
+  const tokenResp = await fetch(p.tokenUrl, {
+    method: "POST",
+    headers: { Accept: "application/json", "content-type": "application/x-www-form-urlencoded", "User-Agent": "genesis-broker/1.0" },
+    body: new URLSearchParams({
+      client_id: p.clientId,
+      client_secret: p.clientSecret,
+      code,
+      grant_type: "authorization_code",
+      redirect_uri: `${selfBase}/auth/${encodeURIComponent(provider)}/data/callback`,
+    }),
+  });
+  if (!tokenResp.ok) return fail({ error: "token exchange failed" }, 400);
+  const tok = await tokenResp.json().catch(() => null);
+  if (!tok || !tok.access_token || !tok.refresh_token) return fail({ error: "no tokens in response" }, 400);
+
+  // Identify the vault owner (the token is used here; only its owner login is kept).
+  const userResp = await fetch(p.userInfoUrl, {
+    headers: { Authorization: `Bearer ${tok.access_token}`, Accept: "application/json", "User-Agent": "genesis-broker/1.0" },
+  });
+  if (!userResp.ok) return fail({ error: "userinfo failed" }, 400);
+  const user = await userResp.json().catch(() => ({}));
+  const owner = user.login || "";
+  if (!owner) return fail({ error: "no owner" }, 400);
+
+  // Store the refresh token (+ the just-minted access token) in KV, keyed by an
+  // opaque handle. The refresh token NEVER goes to the browser.
+  const kv = requireKv(env);
+  const handle = b64url(crypto.getRandomValues(new Uint8Array(32)));
+  const nowSec = Math.floor(Date.now() / 1000);
+  const record = {
+    provider,
+    owner,
+    repo: p.repo,
+    refresh_token: tok.refresh_token,
+    access_token: tok.access_token,
+    access_expires_at: nowSec + (Number(tok.expires_in) || 28800),
+  };
+  await kv.put(dataSessionKey(handle), JSON.stringify(record), { expirationTtl: DATA_REFRESH_TTL_SECONDS });
+
+  const sep = safeRedirect.includes("#") ? "&" : "#";
+  const headers = new Headers({ Location: `${safeRedirect}${sep}data_session=${encodeURIComponent(handle)}` });
+  headers.append("Set-Cookie", `gx_dstate_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+  headers.append("Set-Cookie", `gx_dredir_${provider}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`);
+  return new Response(null, { status: 302, headers });
+}
+
+// Step 3: refresh — the browser POSTs its opaque handle; return a fresh
+// short-lived access token. Reuses the stored token if still valid, else does
+// the refresh-token exchange and rotates the (single-use) refresh token in KV.
+async function handleDataRefresh(request, env) {
+  if (request.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeadersData() });
+  }
+  let kv;
+  try {
+    kv = requireKv(env);
+  } catch {
+    return jsonCors({ error: "server misconfigured" }, 500);
+  }
+  const body = await request.json().catch(() => null);
+  const handle = body && typeof body.session === "string" ? body.session : null;
+  if (!handle) return jsonCors({ error: "missing session" }, 400);
+
+  const raw = await kv.get(dataSessionKey(handle));
+  if (!raw) return jsonCors({ error: "unknown session" }, 401);
+  let rec;
+  try {
+    rec = JSON.parse(raw);
+  } catch {
+    return jsonCors({ error: "corrupt session" }, 401);
+  }
+
+  const nowSec = Math.floor(Date.now() / 1000);
+  // Reuse the stored access token if still fresh (avoids burning a refresh).
+  if (rec.access_token && nowSec < rec.access_expires_at - 120) {
+    return jsonCors({ token: rec.access_token, expires_in: rec.access_expires_at - nowSec, owner: rec.owner, repo: rec.repo }, 200);
+  }
+
+  const p = dataProviderConfig(rec.provider, env);
+  if (!p) return jsonCors({ error: "provider not configured" }, 500);
+  const resp = await fetch(p.tokenUrl, {
+    method: "POST",
+    headers: { Accept: "application/json", "content-type": "application/x-www-form-urlencoded", "User-Agent": "genesis-broker/1.0" },
+    body: new URLSearchParams({
+      client_id: p.clientId,
+      client_secret: p.clientSecret,
+      grant_type: "refresh_token",
+      refresh_token: rec.refresh_token,
+    }),
+  });
+  if (!resp.ok) {
+    await kv.delete(dataSessionKey(handle));
+    return jsonCors({ error: "refresh rejected" }, 401);
+  }
+  const tok = await resp.json().catch(() => null);
+  if (!tok || !tok.access_token || !tok.refresh_token) {
+    await kv.delete(dataSessionKey(handle));
+    return jsonCors({ error: "refresh failed" }, 401);
+  }
+
+  const updated = {
+    provider: rec.provider,
+    owner: rec.owner,
+    repo: rec.repo,
+    refresh_token: tok.refresh_token, // rotate (single-use)
+    access_token: tok.access_token,
+    access_expires_at: nowSec + (Number(tok.expires_in) || 28800),
+  };
+  await kv.put(dataSessionKey(handle), JSON.stringify(updated), { expirationTtl: DATA_REFRESH_TTL_SECONDS });
+  return jsonCors({ token: tok.access_token, expires_in: Number(tok.expires_in) || 28800, owner: rec.owner, repo: rec.repo }, 200);
 }
 
 // ---------------------------------------------------------------------------
