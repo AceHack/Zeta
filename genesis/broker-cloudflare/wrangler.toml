@@ -7,6 +7,13 @@
 #   wrangler secret put GITLAB_CLIENT_ID      # optional
 #   wrangler secret put GITLAB_CLIENT_SECRET  # optional
 #
+# For the OPTIONAL GitHub-as-a-database data token (a GitHub App, separate from
+# the identity OAuth App above), also set:
+#   wrangler secret put GITHUB_DATA_CLIENT_ID
+#   wrangler secret put GITHUB_DATA_CLIENT_SECRET
+# and create the KV namespace it needs:
+#   wrangler kv namespace create SESSIONS   # paste the printed id below
+#
 # The two non-secret vars below MUST be edited before first deploy.
 
 name = "genesis-auth"
@@ -31,3 +38,15 @@ ALLOWED_FRONTEND_ORIGINS = "https://your-username.github.io/Zeta/genesis/"
 JWT_ISSUER = "genesis-auth"
 JWT_TTL_MINUTES = "30"
 # GITLAB_BASE_URL = "https://gitlab.com"   # only for self-managed GitLab
+
+# --- Optional: GitHub-as-a-database data token (GitHub App) -----------------
+# The vault repo (in each user's own account) the data token is scoped to.
+GITHUB_DATA_REPO = "genesis-vault"
+
+# Workers KV holds the long-lived data REFRESH tokens server-side (keyed by an
+# opaque handle), so they never reach the browser. Create it with
+# `wrangler kv namespace create SESSIONS` and paste the printed id here.
+# Leave this block commented out if you are not using the data token.
+# [[kv_namespaces]]
+# binding = "SESSIONS"
+# id = "<your-kv-namespace-id>"
