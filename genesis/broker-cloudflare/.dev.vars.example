@@ -1,0 +1,9 @@
+# Copy to `.dev.vars` for local `wrangler dev`. NEVER commit `.dev.vars`.
+# In production these are set with `wrangler secret put <NAME>` (encrypted),
+# never as plaintext vars.
+GITHUB_CLIENT_ID="Iv1.xxxxxxxxxxxx"
+GITHUB_CLIENT_SECRET="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+JWT_SECRET="generate-32+-random-bytes-here-base64-or-hex"
+# Optional (GitLab):
+# GITLAB_CLIENT_ID="..."
+# GITLAB_CLIENT_SECRET="..."

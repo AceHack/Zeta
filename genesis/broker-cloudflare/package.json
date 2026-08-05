@@ -1,0 +1,13 @@
+{
+  "name": "genesis-broker-cloudflare",
+  "private": true,
+  "description": "Free, zero-host Cloudflare Worker OAuth identity broker for Project Genesis (drop-in replacement for the .NET auth-backend).",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3"
+  }
+}
