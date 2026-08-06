@@ -5,20 +5,21 @@ GitHub Pages SPA read and write a user's data with **no backend of our own**,
 by using a GitHub repo as the datastore and encrypting every value in the
 browser before it is stored.
 
-Three small, composable seams:
+Four small, composable seams:
 
 | File | Seam | Responsibility |
 |------|------|----------------|
 | `crypto.js` | `VaultCrypto` + key providers | AES-GCM-256 authenticated encryption; the key enters only through an injected provider |
 | `storage.js` | `VaultStorage` (`GitHubVaultStorage`) | backend-agnostic get/put/list/remove; GitHub Contents API is the first backend |
 | `dataToken.js` | `DataTokenProvider` | obtains/refreshes the short-lived GitHub data token (in memory only) |
+| `index.js` | `openVault()` | picks the key mode (zk default / custodial opt-in), owns `meta.json` and unlocking |
 
 ```
 app  ──>  VaultStorage  ──(encrypt)──>  VaultCrypto  ──>  ciphertext
                 │                            ▲
                 │ getToken()                 │ getKey()
                 ▼                            │
-        DataTokenProvider            KeyProvider (custodial | passphrase)
+        DataTokenProvider            KeyProvider (passphrase | custodial)
                 │
                 ▼
         api.github.com (Contents API)  ◀─ holds only ciphertext envelopes
@@ -37,8 +38,8 @@ or private if they pay GitHub). The datastore only ever sees ciphertext.
 
 ## What deep research validated (with sources)
 
-A Beacon-grade validation pass (2026-06-21) checked the design against primary
-sources. Verdicts:
+A Beacon-grade validation pass checked the design against primary sources.
+Verdicts:
 
 1. **Data token = GitHub App *user-to-server* token — ✅.** It is the only
    primitive that is both **least-privilege** and **expiring**: scope it to
@@ -80,8 +81,7 @@ sources. Verdicts:
    (<https://developer.1password.com/docs/service-accounts/security/>). So
    **custodial key delivery must go through the Worker** (1Password token as a
    Worker secret; Worker fetches the team key and returns it to the
-   authenticated browser). This expands the Worker's role beyond pure OAuth —
-   **the one decision the human must make** (see below).
+   authenticated browser). This is what shaped the trust model below.
 
 5. **GitHub as a datastore — ✅ for a low-write personal vault.** Limits: 5,000
    req/hr primary, **500 content-writes/hr** secondary (the real ceiling), 100 MB
@@ -91,30 +91,58 @@ sources. Verdicts:
    compromise exposes all past ciphertext (no forward secrecy).
    <https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api>
 
-## The open decision (trust model — human's call)
+## The trust model — RESOLVED: both, zero-knowledge default
 
-Because of finding #4, the **custodial "for now"** path forces the Worker to
-become a key-delivery mediator. Two coherent choices:
+Finding #4 means custodial key delivery must pass through the Worker. Rather
+than force one trade on everyone, the vault ships **both**, with the safe one as
+the default:
 
-- **(A) Custodial via Worker.** 1Password Service-Account token is a Worker
-  secret; the Worker delivers the team key to authenticated browsers. Simplest
-  UX, recoverable vaults — but the Worker becomes security-critical key
-  infrastructure and a Worker compromise leaks the team key.
-- **(B) Zero-knowledge now.** Skip custody; derive the key in-browser from a
-  user passphrase (Argon2id/PBKDF2). Worker stays OAuth-only; no third party
-  ever holds the key — at the cost of passphrase UX and *unrecoverable vault on
-  lost passphrase*.
+- **Zero-knowledge (DEFAULT).** `PassphraseKeyProvider` derives the key in the
+  browser (PBKDF2-SHA-256, 210k iterations, per-vault random salt). The broker
+  stays OAuth-only and is *never* asked for a key — there is a test asserting a
+  zk vault makes zero custody calls. Cost: a lost passphrase is an
+  unrecoverable vault.
+- **Custodial (OPT-IN).** `CustodialKeyProvider` + `brokerKeyFetcher()` fetch the
+  team key from the broker's `GET /vault/key`, which requires a valid identity
+  JWT *and* an explicit login allowlist. Recoverable and simpler for teams; the
+  cost is that the Worker becomes security-critical key infrastructure.
 
-`crypto.js` already ships **both** providers (`CustodialKeyProvider`,
-`PassphraseKeyProvider`), so the code is ready for either; only the wiring +
-broker role differ. This choice is deliberately left to the maintainer.
+A vault records its mode in plaintext `meta.json` at creation. **The recorded
+mode always wins on reopen** — an existing vault cannot be silently switched or
+downgraded by a caller passing a different `mode`.
+
+```js
+import { GitHubVaultStorage, DataTokenProvider, openVault, brokerKeyFetcher } from "./vault/index.js";
+
+const tokens  = new DataTokenProvider({ authBase });
+const storage = new GitHubVaultStorage({ ...tokens.repoCoords, getToken: () => tokens.getToken() });
+
+// Default: zero-knowledge.
+const vault = await openVault({ storage, passphrase });
+
+// Opt-in: custodial (team-recoverable).
+const vault2 = await openVault({
+  storage,
+  mode: "custodial",
+  fetchCustodialKey: brokerKeyFetcher({ authBase, getIdentityToken }),
+});
+
+await vault.put("notes/a.json", { body: "encrypted before it leaves the browser" });
+```
+
+`meta.json` is deliberately **plaintext** — the KDF salt and parameters must be
+readable *before* a key exists. It carries no key material, only a `verifier`
+envelope so a wrong passphrase fails fast with `VaultLockedError` instead of
+surfacing as a confusing decrypt error on first read.
 
 ## Status
 
-- ✅ `crypto.js`, `storage.js`, `dataToken.js` implemented; 15/15 offline tests
-  pass (real WebCrypto, faked `fetch`).
-- ⏳ Broker data endpoints (`/auth/{provider}/data/login`, `/data/callback`,
-  `/auth/data/refresh` + KV) — pending the trust-model decision and a registered
-  GitHub App.
-- ⏳ Frontend wiring into `Genesis.jsx` (vault-backed rooms) — after the broker
-  endpoints land.
+- ✅ `crypto.js`, `storage.js`, `dataToken.js`, `index.js` implemented.
+- ✅ Broker data endpoints (`/auth/github/data/login`, `/data/callback`,
+  `/auth/data/refresh` + Workers KV) — **19/19** offline tests.
+- ✅ Custodial key endpoint (`GET /vault/key`, identity-gated + allowlisted,
+  opt-in) — **15/15** offline tests.
+- ✅ Vault modes (zk default / custodial opt-in) — **21/21** offline tests
+  (`node src/vault/vault.test.mjs`).
+- ⏳ Frontend wiring into `Genesis.jsx` (vault-backed rooms) + an unlock UI.
+- ⏳ Register the GitHub App and deploy a Worker to exercise the live round-trip.
