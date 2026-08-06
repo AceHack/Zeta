@@ -2,9 +2,10 @@
 
 *STATUS: FIRST DRAFT (Otto, 2026-07-03; Lillith/freedom-architecture thread landed 2026-08-06 —
 "Named for the refusal": freedom (the power to leave/refuse) as the second mechanism that defeats the
-vampire, anchored to the freedom-first architecture + Lilith-as-refusal-archetype. ⚠ The PERSONAL anchor
-(naming Aaron's oldest daughter — goes by Lilly/Lily; legal Lillian; chosen Lillith) is behind a CONSENT
-GATE — needs HER yes, like Addison's; held until on record) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
+vampire, anchored to the freedom-first architecture + Lilith-as-refusal-archetype. The PERSONAL anchor
+(naming Aaron's oldest daughter — goes by Lilly; legal Lillian; chosen Lilith) is now FILLED — she
+**consented to being named + will pre-read, 2026-08-06** (both of Aaron's adult daughters now consenting +
+pre-reading; gate lifted, pre-read is the standing safeguard)) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
 are recording prompts; the chapter stands with all of them empty. Sources:
 `2026-07-02-the-fitness-function-is-uncorrupted-love-…` +
 `2026-07-03-the-vampires-countdown-in-toy-form-…` (the honest-scope toy). Pulls: PULLS.md
@@ -105,14 +106,20 @@ the oldest telling, is the first woman who **refused to be controlled** — who 
 a predator. A *refusal.* The freedom-over-submission archetype, wearing fangs. The name that looks like the
 monster is really the name of the one thing the monster can't survive: someone free enough to leave.
 
-`[SOCKET / ⚠ CONSENT GATE — the personal anchor. The *architecture* (freedom-first / choice) is Aaron's to
-name — his project, his design. But **naming his daughter and telling her chosen-name story in the
-published book needs HER yes** (confirm with her, exactly as Addison's was confirmed — NOT yet on record).
-Until then this section stands on the myth + the architecture alone; fill the personal anchor only once she
-consents. She goes by **Lilly/Lily** (it subsumes her legal name **Lillian** and the name she & Aaron
-chose, **Lillith** — "the queen of vampires," for its freedom-over-submission meaning).]`
+And here is the person under the name, now that she's told me I can put her here. The freedom-first
+architecture at the heart of everything I build is named for my **oldest daughter.** She goes by **Lilly** —
+the name that quietly holds both her others — and the one she and I chose together is **Lilith**, the queen
+of vampires, picked for exactly the meaning this chapter just dug out from under the fangs: not the
+predator, the *refusal.* The first woman who would not be controlled, raised into a person I know. She is
+the refusal that defeats the vampire, walking around with a will of her own — which is the whole point. Of
+course the architecture whose first law is *leave the door unlocked* carries her name.
 
-> *cue (HOLD until she consents to being named): the freedom/choice architecture at the heart of the project is named for your oldest daughter — she is the refusal that defeats the vampire, made a person.*
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); **Lillian/Lilly consents to being named and
+will pre-read** (2026-08-06) — her phrasing and the exact name-form are hers to approve at pre-read (goes by
+Lilly; chose Lilith; legal Lillian). This is one of your two adult daughters, both now consenting +
+pre-reading.]`
+
+> *cue (your voice): the freedom/choice architecture is named for your oldest daughter — she goes by Lilly, and she and you chose "Lilith," the queen of vampires, for its freedom-over-submission meaning; she is the refusal made a person.*
 
 So the vampire loses **two ways at once, and they turn out to be one way.** On the long horizon, the
 arithmetic kills him (above). And in every single round, **freedom** kills him — because a world of people
