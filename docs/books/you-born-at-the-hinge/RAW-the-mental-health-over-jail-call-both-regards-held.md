@@ -82,7 +82,15 @@ night could have hung on the man — *danger, crisis, the one the police were ca
 handed his mother back the true one: a good son, hurting. Grace delivered to the person who most needed to
 hear it, past the point where the crisis was already handled and nobody was watching.
 
-`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the mother and son anonymous, unnamed.]`
+And it lands where it was always aimed, because this wasn't new: **when the man first moved in, he'd asked
+Aaron to talk to his mother and tell her he was doing good** — he cares about her approval. So the crisis
+text wasn't a stranger's reassurance; it was Aaron keeping a promise the man had wanted kept from day one,
+delivered on the worst night instead of an ordinary one. The son who wanted his mother told he was okay got
+told he was okay — and good, and going to be all right — by the roommate he'd trusted to say it.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the mother and son anonymous, unnamed; the
+"he cares about her approval / asked me to tell her he was doing good when he moved in" detail deepens the
+son's dignity, not his identity.]`
 
 > *"I let her know she raised a good son, and he was just sad inside, and he was going to be okay."*
 

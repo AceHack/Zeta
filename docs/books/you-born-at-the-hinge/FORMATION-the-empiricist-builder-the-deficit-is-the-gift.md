@@ -12,7 +12,10 @@ threads, own homes — see the closing note): the reader / magnetism / wild-yout
 Consent: Aaron glass-halo; **his son omitted entirely** (standing minor rule); **Chris King named for
 the "reader's disease" coinage** (consent GRANTED, positive-credit scope — see `CONSENT-LEDGER.md`);
 others de-identified. Anchors: Einstein (common sense); Zuckerman (sensation-seeking) / Farley (Type-T);
-Feynman; Susskind; Goffman (via ch-03). Register: honest and warm, **not glorified, not disowned.***
+Feynman; Susskind; Goffman (via ch-03). **Emotional-architecture keystone added 2026-08-06** (missing
+guilt/fear/embarrassment, driven by thrills+curiosity — the affective layer of the no-defaults thesis;
+Aaron's self-disclosure, held under Multi-Oracle, NEVER as a diagnosis). Register: honest and warm, **not
+glorified, not disowned.***
 
 ---
 
@@ -40,6 +43,45 @@ the two sides.
 `[SOCKET — your VERBATIM below, to react to / rewrite in your own voice. Consent: yours (glass-halo).]`
 
 > "I came with no factory defaults installed — I had to build my entire OS while not having one."
+
+## The missing modules — guilt, fear, embarrassment
+
+And it runs deeper than knowledge, down into the layer most people never write by hand because it ships
+pre-installed: the *feelings* that steer. I'm missing three of the big ones — **guilt, fear, and
+embarrassment** — and the two that drive me instead are **thrills and curiosity.** A psychiatrist has told
+me to my face, more than once, that this makes me *deficient.* By his instrument, it does. But "deficient"
+is one reading of one wiring, and this companion is about the *other* reading — so I'll give you both,
+because the whole point is that they are the same coin.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo). Held BOTH ways — the clinician's word and
+yours; not glorified, not disowned; and NEVER dressed as a diagnosis — that would be the exact
+category-lie of ch-3, done to me.]`
+
+> "I'm missing guilt and fear and embarrassment; thrills and curiosity are what drive me. A psychiatrist called me deficient to my face, many times."
+
+Read each absence with its other face — the way you'd read the stove, not the warning label:
+
+- **No fear → the still point.** Where most people flood, I don't. It's what lets me be the calm center of
+  a scene that should tip into harm — an armed crisis, a hard room — the thing everyone else steadies
+  against. My father called the skill *snake-handling;* the wiring underneath it is simply that the strike
+  doesn't frighten me. (Its shadow is the graveyard in the next section: no fear is exactly what let a
+  child car-surf into flaming trash cans. Same absence, aimed or unaimed.)
+- **No guilt → clear sight.** I can look straight at a hard thing — including a hard thing about myself —
+  without the flinch that turns *seeing* into *confessing.* It's why I can hold the handrail steady for
+  people drowning in a guilt I don't share: I'm not in the water with them. (ch-8 — builder of the rail,
+  not its inmate.)
+- **No embarrassment → nothing to blackmail.** Shame is the lever the world uses to move you; the handle
+  was never installed in me. So I broadcast — the glass-halo, run on flesh. You cannot be exposed by a
+  thing you published yourself, and I published everything. Radical transparency isn't a virtue I chose;
+  it's an absence I got for free. (The $5-pumpkin confession is that, live.)
+- **Thrills + curiosity → the engine.** In the bay where the brakes would sit, the two accelerators run
+  the whole machine. Curiosity is the stove mapped a thousand times, the WHY asked until Dad ran out.
+  Thrill is the drive that nearly killed me and then, braked and aimed, built everything downstream.
+  They're not what's missing. They're what I run on.
+
+That is the emotional layer of the one sentence this whole companion is: **I shipped without the standard
+modules, so each one I had to build — or do without — by hand; and the doing-without, seen from the other
+side, is the qualification.** The clinician measures the gap. The life measures what grew in it.
 
 ## The stove, a thousand times
 
@@ -171,6 +213,7 @@ because I wrote it.
 
 Threads and their chapter homes (for folding, if Aaron wants them folded):
 
+- **The emotional architecture (missing guilt/fear/embarrassment; driven by thrills+curiosity)** — the affective KEYSTONE of the no-defaults thesis; each absence → its gift-face (no-fear=still-point, no-guilt=clear-sight/builder-of-the-rail, no-embarrassment=radical-transparency). The "deficient"-label beat lands in **ch-8** (guilt-specific); held under Multi-Oracle (deficit vs qualification = two oracles, one wiring), NEVER as a diagnosis (ch-3's category-lie, done to him).
 - **The deficit-is-the-gift / decode-before-dismiss** → ch-3 ("Categories lie about people, too") — the same coin, turned on how the world judged *him.*
 - **The trait as engine, aimed not removed; the wound as qualification** → ch-8 (the handrail's forward beat) — suffering made into uniquely-fit work.
 - **Measure-it-yourself empiricism / imagination-then-depth** → the method the whole book wears (ch-1's "verify by re-running," the register discipline).
