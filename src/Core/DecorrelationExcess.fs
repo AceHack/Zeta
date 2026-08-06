@@ -118,7 +118,9 @@ module DecorrelationExcess =
         | [] -> nan
         | _ ->
             let s = List.sort xs |> List.toArray
-            let idx = q * float (s.Length - 1)
+            // Clamp the interpolation index into [0, Length-1] so an out-of-range `q` (from a caller-supplied
+            // `delta ∉ (0,1)`) degrades to the min/max order statistic instead of throwing IndexOutOfRange.
+            let idx = q * float (s.Length - 1) |> max 0.0 |> min (float (s.Length - 1))
             let lo = int (floor idx)
             let hi = int (ceil idx)
             if lo = hi then s.[lo] else s.[lo] + (idx - float lo) * (s.[hi] - s.[lo])
@@ -137,7 +139,8 @@ module DecorrelationExcess =
     /// `δ` is the per-pair false-conviction budget (mirrors `AntiSybil.chshMargin`'s `delta`). `nan` null
     /// (empty) ⇒ `nan` threshold ⇒ nothing convicts (soundness-biased: no null ⇒ no conviction).
     let nullThreshold (delta: float) (nullStats: float list) : float =
-        quantile (1.0 - delta) nullStats
+        // Parity with `AntiSybil.chshMargin`: an invalid budget yields no threshold ⇒ nothing convicts.
+        if delta <= 0.0 || delta >= 1.0 then nan else quantile (1.0 - delta) nullStats
 
     /// Classify one pair's measured statistic against a precomputed null threshold. `nan` threshold
     /// (no null) ⇒ `WithinNull` (never convict without a baseline). A `nan` statistic likewise never convicts.
@@ -145,6 +148,36 @@ module DecorrelationExcess =
         if System.Double.IsNaN threshold || System.Double.IsNaN stat then WithinNull
         elif stat > threshold then ExcessCorrelation
         else WithinNull
+
+    /// **The exact Monte-Carlo permutation p-value** (Phipson–Smyth 2010; North et al. 2002). The observed
+    /// statistic is itself one of the exchangeable arrangements under H₀, so it MUST be counted in the
+    /// reference set: `p = (1 + #{null_i ≥ observed}) / (k + 1)` (here `k = List.length nullStats`). This is
+    /// the calibration the bare `(1 − δ)` quantile (`nullThreshold` + `classifyPair`) lacks — that path
+    /// excludes the observed value and drops the `+1`, so on a SMALL null it convicts far above δ (at null
+    /// size 1 it convicts ≈ ½ regardless of δ; workitem 081KZ7H82J708QG0R002C1EBH1). `nan` on an empty null
+    /// or a `nan` observed. Range `(0, 1]` — the floor `1/(k+1)` is why a test needs `k ≳ 1/δ` to convict.
+    let permutationPValue (nullStats: float list) (observed: float) : float =
+        match nullStats with
+        | [] -> nan
+        | _ ->
+            if System.Double.IsNaN observed then
+                nan
+            else
+                let atLeast = nullStats |> List.filter (fun v -> v >= observed) |> List.length
+                float (1 + atLeast) / float (List.length nullStats + 1)
+
+    /// **Calibrated one-way conviction** — convict iff the exact permutation p-value `≤ δ`. The sound
+    /// replacement for `classifyPair (nullThreshold δ …)`: it honours the δ budget AND self-enforces the
+    /// permutation-count floor in the SAFE direction — when `(k + 1) < 1/δ` the smallest reachable p-value
+    /// `1/(k+1)` already exceeds δ, so **nothing convicts** (soundness-biased toward `WithinNull`, matching
+    /// the module's "never a false green"). `δ ∉ (0,1)`, an empty null, or a `nan` observed ⇒ `WithinNull`.
+    let classifyByPValue (delta: float) (nullStats: float list) (observed: float) : PairVerdict =
+        if delta <= 0.0 || delta >= 1.0 || System.Double.IsNaN observed then
+            WithinNull
+        else
+            match nullStats with
+            | [] -> WithinNull
+            | _ -> if permutationPValue nullStats observed <= delta then ExcessCorrelation else WithinNull
 
     // ── the FINER statistic: population excess mutual information (Shannon 1948) ──────────────────────
     //

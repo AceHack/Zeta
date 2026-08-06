@@ -104,9 +104,8 @@ module DecorrelationExcessFusion =
                 let aObs = ps |> List.map (fun (_, _, oa, _) -> oa)
                 let bObs = ps |> List.map (fun (_, _, _, ob) -> ob)
                 let nullStats = DecorrelationExcess.permutationNull (seed + uint64 key) k DecorrelationExcess.jaccard aObs bObs
-                let threshold = DecorrelationExcess.nullThreshold delta nullStats
                 ps
-                |> List.map (fun (_, _, oa, ob) -> DecorrelationExcess.classifyPair threshold (DecorrelationExcess.jaccard oa ob)))
+                |> List.map (fun (_, _, oa, ob) -> DecorrelationExcess.classifyByPValue delta nullStats (DecorrelationExcess.jaccard oa ob)))
 
         { SpacelikePairs = List.length pairs
           Excess = verdicts |> List.filter ((=) DecorrelationExcess.ExcessCorrelation) |> List.length
@@ -122,9 +121,14 @@ module DecorrelationExcessFusion =
           Pairs: int
           /// `I(A; B)` (nats) of the REAL categorical pairing.
           RealMI: float
-          /// The `(1 − δ)` quantile of the permutation-null MI — the bar the real MI must clear.
+          /// **Audit only** — the `(1 − δ)` quantile of the permutation-null MI. Retained for inspection;
+          /// the verdict is NO LONGER a bare `RealMI > NullThreshold` comparison (uncalibrated at small `k`
+          /// — workitem 081KZ7H82J708QG0R002C1EBH1) but the exact p-value test below.
           NullThreshold: float
-          /// `ExcessCorrelation` iff `RealMI > NullThreshold`; else `WithinNull` (never acquits).
+          /// The exact Monte-Carlo permutation p-value `(1 + #{null ≥ RealMI}) / (k + 1)` — the calibrated
+          /// conviction statistic. `nan` if the null was empty.
+          PValue: float
+          /// `ExcessCorrelation` iff `PValue ≤ δ`; else `WithinNull` (never acquits).
           Verdict: DecorrelationExcess.PairVerdict }
 
     /// The fused excess-MI reading. Granularity is **per-stratum** (MI is a population statistic — one
@@ -176,12 +180,12 @@ module DecorrelationExcessFusion =
                 let bObs = ps |> List.map (fun (_, _, _, cb) -> cb)
                 let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs)
                 let nullMIs = DecorrelationExcess.permutationNullMI (seed + uint64 key) k aObs bObs
-                let threshold = DecorrelationExcess.nullThreshold delta nullMIs
                 { Stratum = key
                   Pairs = List.length ps
                   RealMI = realMI
-                  NullThreshold = threshold
-                  Verdict = DecorrelationExcess.classifyPair threshold realMI })
+                  NullThreshold = DecorrelationExcess.nullThreshold delta nullMIs
+                  PValue = DecorrelationExcess.permutationPValue nullMIs realMI
+                  Verdict = DecorrelationExcess.classifyByPValue delta nullMIs realMI })
 
         { Strata = readings
           ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }
@@ -247,12 +251,12 @@ module DecorrelationExcessFusion =
                 let bObs = ordered |> List.map (fun (_, _, _, cb, _) -> cb)
                 let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs) // order-invariant
                 let nullMIs = DecorrelationExcess.permutationNullMIBlock (seed + uint64 key) k blockSize aObs bObs
-                let threshold = DecorrelationExcess.nullThreshold delta nullMIs
                 { Stratum = key
                   Pairs = List.length ps
                   RealMI = realMI
-                  NullThreshold = threshold
-                  Verdict = DecorrelationExcess.classifyPair threshold realMI })
+                  NullThreshold = DecorrelationExcess.nullThreshold delta nullMIs
+                  PValue = DecorrelationExcess.permutationPValue nullMIs realMI
+                  Verdict = DecorrelationExcess.classifyByPValue delta nullMIs realMI })
 
         { Strata = readings
           ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }
@@ -310,12 +314,12 @@ module DecorrelationExcessFusion =
                 let bObs = ordered |> List.map (fun (_, _, _, cb, _) -> cb)
                 let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs) // order-invariant
                 let nullMIs = DecorrelationExcess.permutationNullMIWindow (seed + uint64 key) k windowSize aObs bObs
-                let threshold = DecorrelationExcess.nullThreshold delta nullMIs
                 { Stratum = key
                   Pairs = List.length ps
                   RealMI = realMI
-                  NullThreshold = threshold
-                  Verdict = DecorrelationExcess.classifyPair threshold realMI })
+                  NullThreshold = DecorrelationExcess.nullThreshold delta nullMIs
+                  PValue = DecorrelationExcess.permutationPValue nullMIs realMI
+                  Verdict = DecorrelationExcess.classifyByPValue delta nullMIs realMI })
 
         { Strata = readings
           ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }
@@ -372,12 +376,12 @@ module DecorrelationExcessFusion =
                 let bObs = ordered |> List.map (fun (_, _, _, cb, _) -> cb)
                 let realMI = DecorrelationExcess.pairingMI (List.zip aObs bObs) // order-invariant
                 let nullMIs = DecorrelationExcess.permutationNullMIWindowBlock (seed + uint64 key) k windowSize blockSize aObs bObs
-                let threshold = DecorrelationExcess.nullThreshold delta nullMIs
                 { Stratum = key
                   Pairs = List.length ps
                   RealMI = realMI
-                  NullThreshold = threshold
-                  Verdict = DecorrelationExcess.classifyPair threshold realMI })
+                  NullThreshold = DecorrelationExcess.nullThreshold delta nullMIs
+                  PValue = DecorrelationExcess.permutationPValue nullMIs realMI
+                  Verdict = DecorrelationExcess.classifyByPValue delta nullMIs realMI })
 
         { Strata = readings
           ExcessStrata = readings |> List.filter (fun r -> r.Verdict = DecorrelationExcess.ExcessCorrelation) |> List.length }

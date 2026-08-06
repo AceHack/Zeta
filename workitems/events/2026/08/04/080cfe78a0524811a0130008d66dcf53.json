@@ -1,0 +1,14 @@
+{
+  "id": "080cfe78a0524811a0130008d66dcf53",
+  "at": "2026-08-04T23:20:24.905Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZ7H82J708QG0R002C1EBH1",
+    "type": "bug",
+    "title": "DecorrelationExcess permutation test lacks (1+b)/(k+1) Monte-Carlo correction — false-conviction rate exceeds delta at small k",
+    "slug": "decorrelationexcess-permutation-test-lacks-1-b-k-1-monte-car",
+    "priority": "P2",
+    "filename": "081KZ7H82J708QG0R002C1EBH1-decorrelationexcess-permutation-test-lacks-1-b-k-1-monte-car.md"
+  }
+}

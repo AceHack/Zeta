@@ -287,3 +287,80 @@ let ``permutationNullMIWindowBlock - threshold dominates both the block and wind
     let combinedT = thr (DExc.permutationNullMIWindowBlock 11UL 300 20 4 a b)
     Assert.True(combinedT >= blockT, sprintf "combined %.4f should dominate block %.4f" combinedT blockT)
     Assert.True(combinedT >= windowT, sprintf "combined %.4f should dominate window %.4f" combinedT windowT)
+
+// ── the CALIBRATED p-value path (workitem 081KZ7H82J708QG0R002C1EBH1) ──────────────────────────────────
+// The bare `(1−δ)` quantile (`nullThreshold` + `classifyPair`) excludes the observed value and drops the
+// `+1`, so on a SMALL null it convicts far above δ. `permutationPValue` / `classifyByPValue` is the exact
+// Monte-Carlo test `(1 + #{null ≥ obs}) / (k + 1) ≤ δ` (Phipson–Smyth 2010) — δ-calibrated for any k, and
+// self-enforcing the `k ≳ 1/δ` permutation-count floor in the SAFE (WithinNull) direction.
+
+[<Fact>]
+let ``permutationPValue - counts the observed in the reference set (1+b)/(k+1); nan on empty`` () =
+    Assert.True(System.Double.IsNaN(DExc.permutationPValue [] 0.5))
+    // observed 0.5 vs null [0.1;0.2;0.9;0.4]: #{≥0.5} = 1 (only 0.9) ⇒ (1+1)/(4+1) = 0.4
+    Assert.Equal(0.4, DExc.permutationPValue [ 0.1; 0.2; 0.9; 0.4 ] 0.5, 12)
+    // observed at least as large as all k ⇒ b=0 ⇒ p = 1/(k+1) (the reachable floor)
+    Assert.Equal(1.0 / 5.0, DExc.permutationPValue [ 0.1; 0.2; 0.3; 0.4 ] 0.99, 12)
+    // observed below all ⇒ b=k ⇒ p = 1.0
+    Assert.Equal(1.0, DExc.permutationPValue [ 0.1; 0.2; 0.3; 0.4 ] 0.0, 12)
+
+[<Fact>]
+let ``classifyByPValue - a single-permutation null can NEVER convict (self-enforced k-floor — the fix)`` () =
+    // k=1 ⇒ smallest reachable p = 1/(1+1) = 0.5 > any sane δ ⇒ WithinNull however extreme the observed.
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue 0.05 [ 0.0 ] 999.0)
+    // k=19, δ=0.05 ⇒ floor 1/20 = 0.05 ≤ δ ⇒ an observed above all 19 nulls just clears it.
+    Assert.Equal(DExc.ExcessCorrelation, DExc.classifyByPValue 0.05 [ for _ in 1..19 -> 0.0 ] 1.0)
+    // one fewer permutation (k=18 ⇒ floor 1/19 ≈ 0.0526 > 0.05) ⇒ cannot convict at δ=0.05.
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue 0.05 [ for _ in 1..18 -> 0.0 ] 1.0)
+
+[<Fact>]
+let ``classifyByPValue - invalid delta, empty null, or nan observed never convicts (soundness-biased)`` () =
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue 0.0 [ 0.0 ] 1.0)
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue 1.0 [ 0.0 ] 1.0)
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue -0.1 [ 0.0 ] 1.0)
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue 0.05 [] 1.0)
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue 0.05 [ 0.0 ] nan)
+
+[<Fact>]
+let ``quantile - out-of-range q clamps to the extreme order statistic instead of throwing`` () =
+    let xs = [ 0.0 .. 10.0 ]
+    Assert.Equal(10.0, DExc.quantile 1.5 xs, 12) // q>1 ⇒ max
+    Assert.Equal(0.0, DExc.quantile -0.5 xs, 12) // q<0 ⇒ min
+
+[<Fact>]
+let ``nullThreshold - invalid delta yields nan (nothing convicts), parity with AntiSybil.chshMargin`` () =
+    Assert.True(System.Double.IsNaN(DExc.nullThreshold 0.0 [ 1.0; 2.0 ]))
+    Assert.True(System.Double.IsNaN(DExc.nullThreshold 1.0 [ 1.0; 2.0 ]))
+    Assert.True(System.Double.IsNaN(DExc.nullThreshold -0.2 [ 1.0; 2.0 ]))
+
+// THE FALSIFIER: under independence the observed statistic is exchangeable with the null draws, so the
+// EXACT permutation test keeps P(convict) ≤ δ for ANY k (Phipson–Smyth). The old bare-quantile path has
+// no such guarantee and visibly over-convicts at small k. Deterministic (per-trial seed), ~400 trials.
+[<Fact>]
+let ``FALSIFIER - classifyByPValue holds false-conviction ≤ δ at every k; the old quantile path does not`` () =
+    let delta = 0.05
+    let trials = 400
+    let L = 40
+    // Balanced two-category A; each trial's B is an INDEPENDENT re-pairing (a seeded shuffle of the same
+    // multiset) ⇒ realMI is a genuine draw from the independence distribution, exchangeable with the null.
+    let aBase = [ for i in 0 .. L - 1 -> if i % 2 = 0 then "x" else "y" ]
+    let bBase = [ for i in 0 .. L - 1 -> if i % 2 = 0 then "p" else "q" ]
+    let rateAt (k: int) (convict: float list -> float -> bool) =
+        let hits =
+            [ for t in 0 .. trials - 1 do
+                  let tSeed = uint64 (t + 1) * 0x9E3779B97F4A7C15UL
+                  let bReal = DExc.shuffle tSeed (List.toArray bBase) |> Array.toList
+                  let realMI = DExc.pairingMI (List.zip aBase bReal)
+                  // the null uses a DIFFERENT seed so it never reuses the observed pairing
+                  let nullMIs = DExc.permutationNullMI (tSeed ^^^ 0xD1B54A32D192ED03UL) k aBase bReal
+                  yield (if convict nullMIs realMI then 1 else 0) ]
+            |> List.sum
+        float hits / float trials
+    // calibrated path: at every k the rate stays at or under δ (+ Monte-Carlo slack over 400 trials)
+    let pv nullMIs realMI = DExc.classifyByPValue delta nullMIs realMI = DExc.ExcessCorrelation
+    for k in [ 1; 5; 19; 50 ] do
+        let r = rateAt k pv
+        Assert.True(r <= delta + 0.03, sprintf "classifyByPValue false-conviction %.3f exceeded δ=%.2f at k=%d" r delta k)
+    // the old uncalibrated quantile path at k=1 blows well past δ (documents the bug the fix closes)
+    let quant nullMIs realMI = DExc.classifyPair (DExc.nullThreshold delta nullMIs) realMI = DExc.ExcessCorrelation
+    Assert.True(rateAt 1 quant > 0.15, sprintf "the old quantile path should visibly over-convict at k=1; got %.3f" (rateAt 1 quant))
