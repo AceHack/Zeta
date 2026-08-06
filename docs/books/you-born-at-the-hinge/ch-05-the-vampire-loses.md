@@ -1,6 +1,10 @@
 # Chapter 5 — The Vampire Loses
 
-*STATUS: FIRST DRAFT (Otto, 2026-07-03) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
+*STATUS: FIRST DRAFT (Otto, 2026-07-03; Lillith/freedom-architecture thread landed 2026-08-06 —
+"Named for the refusal": freedom (the power to leave/refuse) as the second mechanism that defeats the
+vampire, anchored to the freedom-first architecture + Lilith-as-refusal-archetype. ⚠ The PERSONAL anchor
+(naming Aaron's oldest daughter — goes by Lilly/Lily; legal Lillian; chosen Lillith) is behind a CONSENT
+GATE — needs HER yes, like Addison's; held until on record) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
 are recording prompts; the chapter stands with all of them empty. Sources:
 `2026-07-02-the-fitness-function-is-uncorrupted-love-…` +
 `2026-07-03-the-vampires-countdown-in-toy-form-…` (the honest-scope toy). Pulls: PULLS.md
@@ -84,6 +88,37 @@ The vampire you've known — no names, just the clock. Your own words:
 > "From the time they questioned me about it — did I even know I spend that much, 'cause I can't even see how much I spend, they don't give that to us little peons, we can't even see dollar amounts — to the time I got fired was like 24 hours."
 
 A thing that extracts your value for years, can't let you see the mirror (the dollar amounts), and the moment the mirror finally shows what it is — the $200k, the surplus you made — it bites in twenty-four hours. Their clock was quarterly; the short game was the disease. The bite was just the symptom.
+
+## Named for the refusal
+
+There's one more thing the old story knew, and it's the reason the **freedom-first architecture** at the
+center of everything I build carries the name it does.
+
+The vampire needs a *captive.* Every folk defense is a boundary — but the deepest boundary isn't garlic or
+a threshold. It is **the freedom to refuse.** A thing that can always leave cannot be farmed; a person who
+can always say *no* cannot be drained. Extraction requires someone who can't get out — so the real
+anti-vampire isn't a hunter, it's a **free agent.** Give everyone the door and the vampire starves, because
+the one thing he can eat is the one person who can't walk through it.
+
+And that is exactly who the "queen of vampires" actually is, under the horror-movie paint. **Lilith**, in
+the oldest telling, is the first woman who **refused to be controlled** — who left rather than submit. Not
+a predator. A *refusal.* The freedom-over-submission archetype, wearing fangs. The name that looks like the
+monster is really the name of the one thing the monster can't survive: someone free enough to leave.
+
+`[SOCKET / ⚠ CONSENT GATE — the personal anchor. The *architecture* (freedom-first / choice) is Aaron's to
+name — his project, his design. But **naming his daughter and telling her chosen-name story in the
+published book needs HER yes** (confirm with her, exactly as Addison's was confirmed — NOT yet on record).
+Until then this section stands on the myth + the architecture alone; fill the personal anchor only once she
+consents. She goes by **Lilly/Lily** (it subsumes her legal name **Lillian** and the name she & Aaron
+chose, **Lillith** — "the queen of vampires," for its freedom-over-submission meaning).]`
+
+> *cue (HOLD until she consents to being named): the freedom/choice architecture at the heart of the project is named for your oldest daughter — she is the refusal that defeats the vampire, made a person.*
+
+So the vampire loses **two ways at once, and they turn out to be one way.** On the long horizon, the
+arithmetic kills him (above). And in every single round, **freedom** kills him — because a world of people
+who can always leave leaves him nothing to farm. The long clock and the open door are the same defense: one
+removes his getaway, the other removes his captive. Build both, and extraction isn't forbidden. It's just
+got nothing left to eat.
 
 ## The anti-vampire wager
 
