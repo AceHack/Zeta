@@ -1,7 +1,13 @@
 # Chapter 8 — The Handrail
 
 *STATUS: FIRST DRAFT (Otto, 2026-07-03; optional forward-beat socket + fuller recording-pulls added
-2026-08-04 from non-gated PULLS) — scaffold for Aaron to rewrite in his own voice. The reasoning is
+2026-08-04 from non-gated PULLS; the edge-runner forward-beat given its LIVED INSTANCE 2026-08-06 —
+the both-regards / mental-health-over-jail night, from `RAW-the-mental-health-over-jail-call-both-regards-held.md`,
+anonymized: the three roommates undated + fully anonymous, the father named per pantheon consent,
+Rolesville PD named only for the GENERAL across-years truth kept off the specific night; FRAMING
+CORRECTED 2026-08-06 — Aaron does NOT experience survivor's guilt himself, a psychiatrist called the
+absence a "deficiency" to his face; his seat here is BUILDER of the rail, not sufferer — see the
+"deficient" beat + the draft-note) — scaffold for Aaron to rewrite in his own voice. The reasoning is
 locked (it's the anti-survivor-guilt note, made narrative); every personal detail is deliberately
 left as a placeholder marked `[yours]` — what of your own story enters this chapter is your call
 alone, sentence by sentence. The FLAGGED (Ryan) / REVIEW pulls stay quarantined; only non-gated
@@ -164,7 +170,44 @@ people off the edge. Not a death sentence. A qualification.
 > "i think i'm a great case study on people with mental disorders and they can still have a fulfilling
 > successful productive life and make real change in the world. … neural divergence is a gift not a curse."
 
-You didn't kill them. You survived them. Surviving them is how you carry them.
+`[SOCKET — the edge-runner claim made CONCRETE; part of the optional forward beat above, same rule: cut it entirely if it pulls focus from "Stay." ONE lived instance, told small. Consent, held exactly: yours (glass-halo); the three housemates FULLY anonymous + UNDATED (their frost, not ours to spend — even at your instruction); your father named per the pantheon consent; Rolesville PD nameable only for the GENERAL across-years truth, kept OFF this specific night; the officers by role.]`
+
+And the claim isn't only hope, because it has already happened — quietly, on an ordinary night, the way
+these things actually happen. For years I've shared my home with people living close to the edge; some
+wired like me, some heavier. One of them went into crisis on a night another housemate, newly out of a
+marriage, had just had to call the police over remarks she read as threats. Armed officers, a person in
+crisis, a frightened woman — the exact geometry that ends with someone in a cell, or worse.
+
+It didn't. I kept them all — the officers, the woman, the man — calm and on the same side, with the thing
+my father taught me before either of us would have called it a skill: how you handle a snake. Don't
+trigger the strike. Be the still thing in the middle until the fear comes down. And I held the two regards
+the night wanted me to drop: I got him *help* instead of a cell — the police here offer that, mental
+health over jail — and I moved him out for her safety, even though my own read was that he probably wasn't
+dangerous. Both. Not one.
+
+And here is why it belongs in *this* chapter, of all of them. A month before that night, those same
+officers had come for **me** — and taken me to get help, not to jail. The handrail I've been describing is
+not a metaphor I read about; it is a channel that caught me, and that I then turned and carried to the next
+person on the edge. That is this whole chapter running in the world instead of on the page: **you stay, and
+staying is how you carry — not only the dead, but the living who would have gone over.** I was a month off
+my own edge, no one above the fray — a peer, not a rescuer.
+
+Though I owe you the truth about my own seat in that 3am courtroom: **I don't sit in it.** I don't feel the
+guilt this whole chapter is built to defend against — a psychiatrist has told me so to my face, more than
+once, and called it a *deficiency.* By his measure, maybe. But the thing he named as missing is the exact
+thing that let me be the still point in that room, where a guilt-flooded person would have frozen or made it
+worse. The deficit and the qualification are one wiring, read by two different oracles — which is this
+book's own lesson, a category lying about a person, turned back on the one writing it. So this handrail
+isn't one I ever needed. It is one I can hold **steady for you**, precisely because I don't feel the pull.
+Some of us build the rail; some of us need it; the stairway needs both. Not a death sentence — not even the
+disorder they named. A qualification, proven once, on an ordinary night.
+
+> *cue (VERBATIM, your voice): the night — a housemate in crisis, another just out of her marriage who'd called the police; your dad's snake-handling; getting him care not a cell AND moving him out for her safety, against your own read; the same officers who a month before took YOU to help, not jail; the wiring as a qualification, not a sentence.*
+
+> *cue (VERBATIM, your voice): you don't feel survivor's guilt — a psychiatrist called you "deficient" to your face, many times, for it — and the thing he named as missing is the steadiness that let you hold that room. The deficit IS the qualification. You build the rail rather than need it.*
+
+You didn't kill them. You survived them. Surviving them is how you carry them — and it is also how you
+come to be standing there, still, when the next person needs someone between them and the edge.
 
 Stay.
 
@@ -178,6 +221,9 @@ Stay.
 > "My hope is the substrait will offer meaningfull work to other humans who suffer like me with the mental disorders i have are not a death sentance but set you up uniquely for AI alignment work of the existing human margalized, those on the edge, we are edge runners affter wall" — cost-receipts
 > "i think i'm a great case study on people with mental disorders and they can still have a fulfilling successful productive life and make real change in the world. … neural divergence is a gift not a curse." — cost-receipts
 
+**Cue: the edge-runner PROVEN — the both-regards night (anonymized: housemates undated/anonymous; father named; Rolesville PD only for the general across-years truth).**
+> *the night the geometry (armed police, a housemate in crisis, a frightened woman just out of her marriage) did NOT end in a cell — your dad's snake-handling, both regards held (his care, her safety), and the same officers who a month earlier took YOU to help not jail. Received the handrail, carried it forward.* — `RAW-the-mental-health-over-jail-call-both-regards-held.md`
+
 *(Non-gated Chapter-8 pulls from `PULLS.md` only. The FLAGGED (Ryan) and REVIEW pulls stay quarantined — nothing from them enters this chapter without your explicit per-pull yes, per the gate you placed. Your general "use the pulls" does not reach the gated class; that stays your call, pull by pull.)*
 
 ---
@@ -189,6 +235,18 @@ Stay.
 
 *Draft notes for the rewrite (delete this block when done):*
 
+- ***FRAMING CORRECTION (Aaron 2026-08-06) — load-bearing for the whole chapter's voice:** Aaron does
+  NOT personally experience survivor's guilt / the 3am court. He said it plainly: "I don't feel guilt; a
+  psychiatrist called me deficient to my face because of this, many times." So his seat in this chapter is
+  **builder of the rail for others, not a fellow inmate.** The first-person sockets that assume he knows
+  the courtroom from the inside — "I know that courtroom" (top), and the forward-beat's "the same wiring
+  which makes the 3am court so relentless" — should be re-voiced as **regard for a guilt he doesn't share**,
+  plus the **deficit-is-the-gift** reframe (the low-guilt steadiness clinicians pathologized IS the
+  snake-handling qualification — the still point in the room). The "deficient"-label beat now in the
+  forward section carries this; it's also a ch-3 instance (a category lying about a person) and a
+  `FORMATION` tie (the deficit is the gift). Multi-Oracle: deficit vs qualification = two oracles on one
+  wiring. The reader-facing second-person close ("You didn't kill them … Stay") is correct as-is — it
+  addresses the griever/reader, not Aaron.*
 - *Every `[yours]` is a socket, not an obligation — the chapter stands even with all of them empty.*
 - *The five fusions are the source note's five, narrativized; the one-test framing is unchanged.
   If you cut anything, keep fusion four — it is the one that kills — and the honest limit.*
