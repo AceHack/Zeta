@@ -61,6 +61,23 @@ export class GitHubVaultStorage {
     this._fetch = fetchImpl || ((...a) => fetch(...a));
   }
 
+  /**
+   * A sibling storage over the SAME repo/branch/prefix with a different crypto
+   * layer (or none). Used to read the plaintext `meta.json` before a key exists,
+   * then to build the encrypted view once the vault is unlocked.
+   */
+  withCrypto(crypto) {
+    return new GitHubVaultStorage({
+      owner: this.owner,
+      repo: this.repo,
+      branch: this.branch,
+      prefix: this.prefix,
+      getToken: this._getToken,
+      crypto: crypto || undefined,
+      fetchImpl: this._fetch,
+    });
+  }
+
   _contentsUrl(path) {
     return `${GITHUB_API}/repos/${enc(this.owner)}/${enc(this.repo)}/contents/${encPath(
       this._full(path)
