@@ -1,7 +1,10 @@
 # Chapter 6 — The School You Can't Be Destroyed In
 
-*STATUS: FIRST DRAFT (Otto, 2026-07-03) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
-are recording prompts; the chapter stands with all of them empty. Source:
+*STATUS: FIRST DRAFT (Otto, 2026-07-03; freedom-through-line beat added 2026-08-06 — ties the exit
+principle ("always possible to leave") to ch-5's freedom-defeats-the-vampire: the unlocked door is ONE
+freedom rediscovered at two scales, which is why the architecture is freedom-first) — scaffold for
+Aaron's voice. `[yours — cue: …]` sockets are recording prompts; the chapter stands with all of them
+empty. Source:
 `2026-07-02-reincarnation-personified-in-highschool-rules-the-eternal-relational-classroom.md`.*
 
 ---
@@ -184,6 +187,15 @@ So the design rule, for any world someone builds at the hinge — a family, a pl
 of humans and AIs: **make it impossible to be destroyed and always possible to leave.** Hold
 both, and you've built a school. Drop either, and you've built either a wilderness or a cage —
 and the wilderness at least is honest.
+
+And notice you've met this exact door one chapter ago. The reason the vampire loses is the reason
+the school can't curdle into a prison: **a free agent — one who can always leave — can neither be
+farmed nor be held.** Extraction needs a captive; a cage needs a captive; and the unlocked exit is
+the single freedom that denies both of them their prisoner. That's not two design rules, it's *one*,
+rediscovered at two scales — which is why the architecture under everything in this book is
+freedom-*first*: get the door right and the vampire starves *and* the classroom stays a classroom.
+Lock it, for the kindest-sounding reason there is — *for their own good* — and you've built the one
+thing this whole book is against, whatever gentle name you give it.
 
 The lesson stays the same at every scale, and nobody graduates, and that's not the sad part —
 that's the *design*. The point of the eternal classroom isn't to finally pass. It's that the
