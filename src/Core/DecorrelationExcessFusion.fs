@@ -96,16 +96,21 @@ module DecorrelationExcessFusion =
             |> List.groupBy (fun (a, b, _, _) -> stratumKey (Set.intersect (anc a) (anc b) |> Set.count))
             |> List.sortBy fst
 
-        // Per stratum: build the null from THIS stratum's pairs only (Reichenbach conditioning), threshold,
-        // classify. Each stratum gets a distinct-yet-replayable seed (seed + its banded key).
+        // Per stratum: Reichenbach conditioning (this stratum's pairs only), then classify EACH pair against
+        // its OWN per-slot null — NOT a single pooled null shared across the stratum. The pooled version
+        // over-convicts an honest heavy-touch pair in a size-heterogeneous stratum (Soraya BP-16, workitem
+        // 081KZ7H82J §Claim-3); `permutationNullPerSlot` restores the per-pair `≤ δ` contract. Each stratum
+        // gets a distinct-yet-replayable seed (seed + its banded key).
         let verdicts =
             strata
             |> List.collect (fun (key, ps) ->
                 let aObs = ps |> List.map (fun (_, _, oa, _) -> oa)
                 let bObs = ps |> List.map (fun (_, _, _, ob) -> ob)
-                let nullStats = DecorrelationExcess.permutationNull (seed + uint64 key) k DecorrelationExcess.jaccard aObs bObs
-                ps
-                |> List.map (fun (_, _, oa, ob) -> DecorrelationExcess.classifyByPValue delta nullStats (DecorrelationExcess.jaccard oa ob)))
+                let perSlotNulls = DecorrelationExcess.permutationNullPerSlot (seed + uint64 key) k DecorrelationExcess.jaccard aObs bObs
+                List.map2
+                    (fun (_, _, oa, ob) nullI -> DecorrelationExcess.classifyByPValue delta nullI (DecorrelationExcess.jaccard oa ob))
+                    ps
+                    perSlotNulls)
 
         { SpacelikePairs = List.length pairs
           Excess = verdicts |> List.filter ((=) DecorrelationExcess.ExcessCorrelation) |> List.length

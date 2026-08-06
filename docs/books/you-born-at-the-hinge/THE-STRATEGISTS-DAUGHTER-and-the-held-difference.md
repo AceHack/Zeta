@@ -5,6 +5,7 @@ Addison, the ethos he passed to her, and the hardest night the two of them came 
 **fondly, together**. Not a numbered chapter — the spine is Aaron's; this is a companion (like `THE-PULL`,
 `FORMATION`, `THE-UNBROKEN-CHILD`), gathering the Addison thread so it has a home. Aaron's call whether it
 stays a companion, folds into ch-4 (the correlation of souls) / ch-8 (the handrail), or promotes. Scaffold
+
 + `[SOCKET]` for his voice.*
 
 *CONSENT (load-bearing — Aaron 2026-08-06: "these are fond memories for all our family, save them in

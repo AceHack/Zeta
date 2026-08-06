@@ -364,3 +364,38 @@ let ``FALSIFIER - classifyByPValue holds false-conviction ≤ δ at every k; the
     // the old uncalibrated quantile path at k=1 blows well past δ (documents the bug the fix closes)
     let quant nullMIs realMI = DExc.classifyPair (DExc.nullThreshold delta nullMIs) realMI = DExc.ExcessCorrelation
     Assert.True(rateAt 1 quant > 0.15, sprintf "the old quantile path should visibly over-convict at k=1; got %.3f" (rateAt 1 quant))
+
+// ── the HETEROGENEOUS-STRATUM per-slot fix (workitem 081KZ7H82J §Claim-3, Soraya BP-16) ────────────────
+// The POOLED per-pair null (permutationNull, shared across a stratum) over-convicts an honest heavy-touch
+// pair whose statistic is high-but-CONSTANT across every partner (zero excess over its own null), because
+// it looks extreme against a pool dominated by many light pairs' zeros. The PER-SLOT null (each pair vs its
+// OWN re-pairings) fixes it. This is Soraya's exact numeric witness.
+[<Fact>]
+let ``FALSIFIER (heterogeneous stratum) - per-slot null does NOT convict an honest heavy-touch pair the pooled null did`` () =
+    let delta = 0.05
+    let k = 100
+    // heavy pair: a_1 touches {f1..f4}; ALL B-sides are singletons in {f1..f4} ⇒ jaccard(a_1, every b) = 1/4
+    // (CONSTANT — provably zero excess over its own null). 29 light pairs: a_j = {g_j} outside {f1..f4} ⇒
+    // jaccard 0 with every b.
+    let files = [ "f1"; "f2"; "f3"; "f4" ]
+    let heavyA = set files
+    let bObs = [ for i in 0..29 -> set [ files.[i % 4] ] ] // 30 B-sides, all singletons in {f1..f4}
+    let aObs = heavyA :: [ for j in 1..29 -> set [ sprintf "g%d" j ] ] // idx 0 = heavy, 1..29 = light
+    let observedHeavy = DExc.jaccard aObs.[0] bObs.[0] // = 1/4
+    Assert.Equal(0.25, observedHeavy, 12)
+
+    // POOLED null (the flaw): one null over all 30 pairs ⇒ mostly 0, a 1/30 fraction of 1/4 ⇒ heavy 1/4
+    // looks extreme ⇒ CONVICTS an honest pair (the P2 defect).
+    let pooled = DExc.permutationNull 2026UL k DExc.jaccard aObs bObs
+    Assert.Equal(DExc.ExcessCorrelation, DExc.classifyByPValue delta pooled observedHeavy)
+
+    // PER-SLOT null (the fix): the heavy pair's own null is jaccard(a_1, random b) = 1/4 for EVERY b ⇒ all
+    // 1/4 ⇒ observed 1/4 has p = (1+k)/(k+1) = 1.0 ⇒ WithinNull (the correct answer).
+    let perSlot = DExc.permutationNullPerSlot 2026UL k DExc.jaccard aObs bObs
+    Assert.Equal(DExc.WithinNull, DExc.classifyByPValue delta (List.head perSlot) observedHeavy)
+
+    // and every light pair is correctly WithinNull under per-slot too (real 0 vs its own all-0 null).
+    let lightVerdicts =
+        List.zip (List.tail aObs) (List.tail bObs)
+        |> List.mapi (fun idx (oa, ob) -> DExc.classifyByPValue delta perSlot.[idx + 1] (DExc.jaccard oa ob))
+    Assert.All(lightVerdicts, fun v -> Assert.Equal(DExc.WithinNull, v))

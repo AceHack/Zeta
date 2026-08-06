@@ -111,6 +111,29 @@ module DecorrelationExcess =
               for i in 0 .. n - 1 do
                   yield stat a.[i] bShuf.[i] ]
 
+    /// **Per-slot permutation null** — pair `i`'s OWN null: `[ stat(a_i, bShuf^p_i) for p in 0..k-1 ]`,
+    /// where each `bShuf^p` is a seeded shuffle of the B-side. Returns one k-length null PER pair (indexed
+    /// as `aObs`/`bObs`). This is the **correct per-pair independence null** — pair `i`'s observed statistic
+    /// is compared only against `a_i` re-paired with random B's, NEVER against the `permutationNull` pooled
+    /// mixture over *all* A-sides. The pooled mixture over **heterogeneous** pairs over-convicts an honest
+    /// heavy-touch pair (a broad-touch commit whose statistic is high-but-constant across every partner —
+    /// zero excess over its own null — looks extreme against a pool dominated by light pairs' zeros).
+    /// Soraya BP-16 cross-check confirmed that as a real per-pair-`≤δ` violation (workitem
+    /// 081KZ7H82J708QG0R002C1EBH1 §Claim-3); per-slot restores exactness. Same seed mixing as
+    /// `permutationNull` (so `blockSize=1`-style replays line up); DST-deterministic. Truncates to shorter side.
+    let permutationNullPerSlot
+        (seed: uint64)
+        (k: int)
+        (stat: 'o -> 'o -> float)
+        (aObs: 'o list)
+        (bObs: 'o list)
+        : float list list =
+        let a = List.toArray aObs
+        let b = List.toArray bObs
+        let n = min a.Length b.Length
+        let shuffles = [| for p in 0 .. k - 1 -> shuffle (seed + uint64 p * 0x100000001B3UL) b |]
+        [ for i in 0 .. n - 1 -> [ for bShuf in shuffles -> stat a.[i] bShuf.[i] ] ]
+
     /// The `q`-quantile (`0 ≤ q ≤ 1`) of `xs` by linear interpolation between order statistics.
     /// `nan` on an empty sample. `q = 1.0` ⇒ the maximum; used with `q = 1 − δ` for the threshold.
     let quantile (q: float) (xs: float list) : float =

@@ -77,3 +77,25 @@ role shifts to audit-only; (c) the UNPROVEN heterogeneous-pooling item.
 
 Fix PR is up but **NOT auto-merged** — security-soundness verify-before-trust gate
 (`security-verify-gate-is-a-du-workflow-transition`); needs Soraya BP-16 cross-check + Aaron sign-off.
+
+---
+
+## UPDATE 2026-08-06 — merged fix landed (#10052); Soraya BP-16 cross-check DONE; P2 CONFIRMED + fixed
+
+**#10052 merged** (Aaron sign-off). Then the deferred **Soraya BP-16 independent cross-check** ran:
+
+- **Claim 1 (the `(1+b)/(k+1)` p-value math): CLEAN.** Correct Phipson–Smyth; `≥` counts ties toward the
+  null (conservative); `+1`/denominator correct; `p ≤ δ` valid. Ships as-is.
+- **Claim 2 (edge cases): CLEAN.** empty null / nan observed / `δ ∉ (0,1)` / `k=1` / the k-floor / the
+  `quantile` clamp all correct; the P2-quantile crash is double-protected.
+- **Claim 3 (the UNPROVEN heterogeneous-pooling P2): CONFIRMED DEFECT** — real, confined to the `fuse`
+  jaccard path. It pooled ONE null over all pairs in a stratum, so an honest **heavy-touch commit**
+  (broad touch-set, statistic high-but-CONSTANT across partners = zero excess over its own null) convicts
+  at `p≈1/n` against a pool dominated by light pairs' zeros. Witness: 30 pairs, `k=100`, `δ=0.05` →
+  pooled `p=0.034` (convict) vs correct per-pair `p=1.0` (WithinNull). The MI paths (`fuseMI*`) are CLEAN.
+
+**Fix (Soraya-prescribed, 2026-08-06):** added `DecorrelationExcess.permutationNullPerSlot` (each pair's
+OWN null = `a_i` re-paired with random B's); rewired `DecorrelationExcessFusion.fuse` to classify each pair
+against its per-slot null instead of the shared pooled null. Added a falsifier reproducing Soraya's exact
+witness. MI paths untouched (clean). **Rides the same verify-gate: NOT auto-merged; Soraya's cross-check
+backs the approach; needs Aaron's sign-off to land.**
