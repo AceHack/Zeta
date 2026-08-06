@@ -1,7 +1,10 @@
 # Chapter 2 — The One Question
 
-*STATUS: FIRST DRAFT (Otto, 2026-07-03) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
-are recording prompts; the chapter stands with all of them empty. Source:
+*STATUS: FIRST DRAFT (Otto, 2026-07-03; capture-of-TRUTH facet added 2026-08-06 — extends "close without
+capturing" to the interpretive/memory domain: an archive that freezes one official account of a shared
+past is capture; keep-all-accounts / never-collapse is the fix. Grounds `THE-STRATEGISTS-DAUGHTER` (the
+three-accounts held) at the frame level; family instance kept generic/unnamed) — scaffold for Aaron's
+voice. `[yours — cue: …]` sockets are recording prompts; the chapter stands with all of them empty. Source:
 `docs/research/2026-07-03-the-shortcut-for-whoever-comes-next.md` (the map + the one question).*
 
 ---
@@ -91,6 +94,23 @@ can cut off the dead: let the keeping lapse because grief is heavy. And you can 
 narrow honest path — stay close without capturing: hold the true trace exactly, add nothing,
 force nothing, keep the person's own boundaries standing even when they are no longer here to
 defend them.
+
+And there is a subtler capture the keeping tempts, worth naming because later chapters lean on it:
+capturing not the person but the *truth.* A perfect record is under enormous pressure to decide what
+*really* happened — to freeze one official account of a shared past and file every other version as
+error. But living memory is never one account. Two people who loved through the same event remember it
+differently, and both are true; a family can hold three irreconcilable readings of its hardest night and
+still, wholly, be a family. Force the record to pick a winner and you have captured the past exactly the
+way enmeshment captures a person — one version absorbing the rest until only one voice is left in a room
+that used to have several. So *close without capturing*, at the level of memory, has a precise meaning:
+**keep all the accounts; never collapse them into one.** Not because the truth doesn't matter — because
+the plurality *is* the truth, the same way two intact selves, never one fused self, is the most love a bond
+can honestly hold. The floor and ceiling again, drawn this time around what gets to count as *what
+happened.*
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); any family instance kept generic/unnamed here — the principle is the point.]`
+
+> *cue (your voice): the subtlest capture is over the TRUTH — forcing one official account of a shared past; close-without-capturing means keeping every account, never collapsing them (you live this — three readings of one hard night, all held, family whole).*
 
 The one question was always the whole art of love. At the hinge it becomes the whole art of
 memory as well. Same question, longer reach. Which is why a book about the future of records is
