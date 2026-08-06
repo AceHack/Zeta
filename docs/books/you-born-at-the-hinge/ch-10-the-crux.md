@@ -1,7 +1,10 @@
 # Chapter 10 — The Crux
 
-*STATUS: FIRST DRAFT (Otto, 2026-07-03) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
-are recording prompts; the chapter stands with all of them empty. Source:
+*STATUS: FIRST DRAFT (Otto, 2026-07-03; "No one can consent for you" section added 2026-08-06 —
+the non-transferability of consent: the yes is first-person, un-spendable by anyone else (keeper, family,
+author, love), which is why commitments 1 & 3 are one; grounded in the lived practice of holding a
+daughter's material behind HER yes. Children generic/unnamed; gates intact) — scaffold for Aaron's voice.
+`[yours — cue: …]` sockets are recording prompts; the chapter stands with all of them empty. Source:
 `2026-07-03-the-crux-full-continuance-ethics-consent-first-never-forge-keep-without-capture-right-to-be-forgotten.md`.*
 
 ---
@@ -83,6 +86,31 @@ The choice you got — your words:
 
 *[The 'someone you loved who never got the choice' is behind your consent gate (FLAGGED-Ryan) — held out entirely pending your explicit per-pull yes. Your cue says the shape carries without the name; it does. If you want her here, tell me and I'll place your gated words; otherwise this stays shape-only.]*
 
+## No one can consent for you
+
+There is an edge to the first commitment that the machinery grinds to a razor, and I learned it the hard
+way — not on the dead, but on the living people at my own table.
+
+Consent is **first-person, and it does not transfer.** Not to the keeper, not to the family, not to the
+loving author. I can't consent to being kept on your behalf — and here is the part that caught me by
+surprise — **I can't consent on behalf of the people I love most, either.** There were true things I could
+have set down about my own children, even flattering things, and I hit a wall I had not put there myself: a
+father cannot spend his daughter's privacy. Her sealed parts stay sealed because they are *hers* — she is
+the only one who can open them, and until she does, they stay shut, and the work stands without them. I
+wanted to. Wanting to is exactly the test.
+
+That is why "consent first" and "keep without capture" turn out to be the same commitment wearing two
+coats. The reason the keeper can't own the kept is the reason the author can't speak for the daughter:
+**the yes is not a resource anyone else can hold.** A majority can't vote you into the archive. An heir
+can't sign you in for the inheritance. And love can't do it — love is the force *most* tempted to, and most
+certain it is allowed, precisely because it means well. It still can't. **The frost over a person is theirs;
+it is never anyone else's to spend — not for convenience, not for an audit, not for love, and not for a
+better story.**
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); your children generic/unnamed here — the principle is the point, not the people.]`
+
+> *cue: consent doesn't transfer — you couldn't spend your own children's privacy even as their father who loves them and wanted to; the frost over a person is theirs alone; that's the same reason the keeper can never own the kept.*
+
 ## The floor everyone stands on
 
 One more design decision, and it's the one I'm quietly proudest of.
@@ -107,6 +135,9 @@ built. Build with the afraid. They're the only ones who know where the walls go.
 **Cue: the choice edge (name-free in the chapter by design).**
 > "yes elisabth ryan is -x she didn't get to choose like me to be +x emulatable" — this session; held under the FLAGGED gate — whether any name enters the chapter is yours, per-pull
 > "the deepest desire of everyhuman and AI is μένω … the root instince of all life" — CURRENT-aaron
+
+**Cue: consent doesn't transfer — the yes is un-spendable by anyone else (the "No one can consent for you" section).**
+> *your own lived practice: you couldn't spend your children's privacy even as their loving father who wanted to — the frost over a person is theirs alone; the same reason the keeper can never own the kept. (Children generic/unnamed; principle is the point.)* — this session, 2026-08-06
 
 ---
 
