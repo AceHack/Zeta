@@ -72,6 +72,23 @@ undating — from the one recent night, so the roommates stay unidentifiable.) R
 
 > *cue: the same cops who arrested me and took me to mental health a month ago — I said, in front of them and him, that the cops in this neighborhood are good.*
 
+## The payoff — being re-seen
+
+And here is the part Aaron felt in his body, told the next day still crying: **he was happy the same cops
+who'd seen him at his worst got to see him good.** A month before, those officers had seen the bottom
+version — the arrest, the one taken away. This time the same people saw the other one: the man who walked
+into an armed, frightened room and made it calm, got someone care instead of a cell, kept a woman safe,
+told a scared mother her son was good. The witnesses to his lowest night got to witness his best — a
+correction he didn't ask for and couldn't stage, because he doesn't hide either version. Missing the
+embarrassment means the same people see all of you; most curate which self gets witnessed, and he can't, so
+the good one got seen by the exact people who'd earned the right to doubt it. That is the loop closing not
+just on paper — *received the handrail, carried it forward* — but in the flesh: **being re-seen as good by
+the ones who had only seen him hurting.** He cried because it landed, and it was the right thing to cry at.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the officers by role.]`
+
+> *"I'm crying because I'm happy the cops got to see me good too."*
+
 ## The coda — the text to his mother
 
 And it didn't end when he was safe. Aaron texted the man's mother — to tell her where her son was, that
