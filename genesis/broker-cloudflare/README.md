@@ -18,7 +18,7 @@ browser.
 
 > **Identity only.** Like the .NET broker, this returns *who you are*, not a
 > GitHub API token. Using GitHub as a **data store** ("GitHub-as-a-database")
-> is a separate, deliberate extension — see **[Data token (next step)](#data-token--github-as-a-database-optional)**.
+> is a separate, deliberate extension — see **[Data token](#data-token--github-as-a-database-optional)**.
 
 ## What you need
 
@@ -87,7 +87,7 @@ Done. The "Sign in with GitHub" button now works, hosted on **your** free Worker
 
 ```bash
 curl https://genesis-auth.<sub>.workers.dev/healthz
-# {"status":"ok","providers":["github"]}
+# {"status":"ok","providers":["github"],"data":false,"custodialKey":false}
 ```
 
 ## Security notes
@@ -153,7 +153,39 @@ callback stores refresh in KV (never in the redirect) + hands back an opaque
 handle, refresh reuse / rotation / 401 / 400, CSRF bad-state, CORS preflight,
 and 404-when-unconfigured — **19/19**.
 
-> **Encryption key custody is a separate decision** (custodial-via-Worker vs
-> zero-knowledge passphrase) — see [`../_src/src/vault/README.md`](../_src/src/vault/README.md).
 > The data token controls repo *write access*; the vault's *encryption* is
-> orthogonal and the frontend ships both key providers.
+> orthogonal — see below.
+
+## Vault encryption key — zero-knowledge by default
+
+Vault **encryption** is separate from the data token. **Zero-knowledge is the
+default**: the key is derived in the browser from the user's passphrase, this
+Worker never sees it, and `/vault/key` is never called. Nothing to configure.
+
+**Custodial mode is opt-in** for teams that want *recoverable* vaults. It adds
+`GET /vault/key`, which returns the team key to a caller that (a) presents a
+valid identity JWT and (b) is named in `VAULT_KEY_ALLOWED_LOGINS`. Both a key
+source and the allowlist must be set — otherwise the endpoint stays **404**, so
+a signed-in stranger can never pull the key.
+
+```bash
+wrangler secret put VAULT_TEAM_KEY_B64   # openssl rand -base64 32
+# then set VAULT_KEY_ALLOWED_LOGINS in wrangler.toml
+```
+
+Keep **1Password** as the human system of record for that key (paste it in once
+with `wrangler secret put`) — or, if you already run **1Password Connect**, set
+`OP_CONNECT_HOST` / `OP_CONNECT_TOKEN` / `OP_ITEM_URL` instead and the Worker
+fetches it per request. A browser can never read 1Password directly: every
+1Password path needs a long-lived server-side credential, which is exactly why
+custody has to sit in the Worker.
+
+> **The trade, stated plainly:** custodial mode makes this Worker
+> security-critical — a Worker compromise leaks the team key, and past
+> ciphertext is permanent in git history. Zero-knowledge has no such exposure,
+> but a lost passphrase means an unrecoverable vault.
+
+Offline-tested (`node test/vault-key.test.mjs`): 401 on missing/bad/expired/
+`alg=none` tokens, **403 for a signed-in non-allowlisted user**, 404 when
+unconfigured, 502 (never served) on a wrong-length key, 405/preflight, and
+`no-store` caching — **15/15**.
