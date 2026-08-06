@@ -450,8 +450,19 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     # always() ensures a failed heartbeat can't skip the drain.
-    # The schedule condition gates it to hourly or manual dispatch.
-    if: always() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && endsWith(github.event.schedule, '0 * * * *')))
+    #
+    # The hourly cadence is enforced INSIDE the check step against the last landed flush,
+    # NOT against the cron string. The previous gate was
+    #     endsWith(github.event.schedule, '0 * * * *')
+    # but this workflow declares exactly one schedule, '*/15 * * * *', so that predicate was
+    # unsatisfiable: flush-to-main never ran on schedule between 2026-08-01 and 2026-08-05.
+    # Agents kept ticking the whole time; their events simply never reached main, so the
+    # Pages dashboard read ticks_24h=0 / agents_active=0 while the society was in fact alive.
+    #
+    # Adding a second '0 * * * *' cron would also have worked, but GitHub raises one run per
+    # matching cron expression, so the top of every hour would fire TWO runs — each re-pulling
+    # ~5GB of Ollama models per agent. Gating on elapsed time keeps one run per tick.
+    if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     needs: [heartbeat]
     strategy:
       fail-fast: false
@@ -469,13 +480,44 @@ jobs:
         id: check
         env:
           AGENT: ${{ matrix.agent }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           git fetch origin "heartbeat/$AGENT" 2>/dev/null || { echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0; }
           AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
           echo "ahead=$AHEAD" >> "$GITHUB_OUTPUT"
           if [ "$AHEAD" = "0" ]; then
+            echo "[flush-gate] $AGENT: nothing ahead of main"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Hourly cadence, measured against the last flush that actually LANDED rather than
+          # against the schedule that was supposed to produce it. Self-correcting: GitHub delays
+          # scheduled runs by minutes-to-tens-of-minutes on busy repos, so a fixed minute-window
+          # check ("is it :00?") silently drops whole hours. "Has an hour passed since the last
+          # landed flush?" cannot drift — a late run still flushes, it just flushes late.
+          MIN_INTERVAL_SECONDS=3000  # 50 min — tolerates an early tick without skipping the hour
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "[flush-gate] $AGENT: manual dispatch — bypassing the hourly gate"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git fetch origin main --quiet
+          LAST_FLUSH=$(git log -1 --format=%ct --grep="^flush(heartbeat): $AGENT " origin/main || echo "")
+          if [ -z "$LAST_FLUSH" ]; then
+            echo "[flush-gate] $AGENT: no prior flush on main — flushing"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ELAPSED=$(( $(date +%s) - LAST_FLUSH ))
+          if [ "$ELAPSED" -lt "$MIN_INTERVAL_SECONDS" ]; then
+            echo "[flush-gate] $AGENT: last flush ${ELAPSED}s ago (< ${MIN_INTERVAL_SECONDS}s) — holding"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
+            echo "[flush-gate] $AGENT: last flush ${ELAPSED}s ago — flushing $AHEAD commits"
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
