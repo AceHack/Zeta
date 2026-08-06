@@ -50,3 +50,24 @@ GITHUB_DATA_REPO = "genesis-vault"
 # [[kv_namespaces]]
 # binding = "SESSIONS"
 # id = "<your-kv-namespace-id>"
+
+# --- Optional: CUSTODIAL vault key (opt-in; zero-knowledge is the default) ---
+# Zero-knowledge vaults derive their key from the user's passphrase in the
+# browser and NEVER call the Worker for a key. Only set the two below if you
+# want recoverable, team-custodied vaults — it makes this Worker
+# security-critical key infrastructure.
+#
+#   wrangler secret put VAULT_TEAM_KEY_B64   # 32 random bytes, base64
+#                                            # (`openssl rand -base64 32`);
+#                                            # keep 1Password as the system of record
+# Comma-separated GitHub logins allowed to fetch it. REQUIRED — without it the
+# /vault/key endpoint stays disabled (404), so no signed-in stranger can pull
+# the team key.
+# VAULT_KEY_ALLOWED_LOGINS = "your-login,teammate-login"
+# VAULT_KEY_ID = "team-1"
+#
+# Alternative source, for teams already running 1Password Connect:
+#   wrangler secret put OP_CONNECT_TOKEN
+# OP_CONNECT_HOST = "https://connect.example.com"
+# OP_ITEM_URL = "/v1/vaults/<vault-uuid>/items/<item-uuid>"
+# OP_FIELD_LABEL = "vault-key"
