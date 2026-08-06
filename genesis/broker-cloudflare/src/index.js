@@ -47,7 +47,7 @@ export default {
 
     try {
       if (pathname === "/healthz") {
-        return json({ status: "ok", providers: enabledProviders(env), data: Boolean(env.GITHUB_DATA_CLIENT_ID && env.GITHUB_DATA_CLIENT_SECRET && env.SESSIONS) });
+        return json({ status: "ok", providers: enabledProviders(env), data: Boolean(env.GITHUB_DATA_CLIENT_ID && env.GITHUB_DATA_CLIENT_SECRET && env.SESSIONS), custodialKey: Boolean(env.VAULT_KEY_ALLOWED_LOGINS && (env.VAULT_TEAM_KEY_B64 || env.OP_CONNECT_TOKEN)) });
       }
 
       // GET /auth/me — verify an identity JWT (CORS-enabled).
@@ -78,6 +78,15 @@ export default {
         }
         return handleDataRefresh(request, env);
       }
+      // Custodial vault key (OPT-IN; zero-knowledge is the default and never
+      // touches this endpoint). Identity-gated + allowlisted.
+      if (pathname === "/vault/key") {
+        if (request.method === "OPTIONS") {
+          return new Response(null, { status: 204, headers: corsHeaders() });
+        }
+        return handleVaultKey(request, env);
+      }
+
       const dataLogin = pathname.match(/^\/auth\/([^/]+)\/data\/login$/);
       if (dataLogin) return handleDataLogin(decodeURIComponent(dataLogin[1]), url, env);
       const dataCallback = pathname.match(/^\/auth\/([^/]+)\/data\/callback$/);
@@ -427,6 +436,96 @@ async function handleDataRefresh(request, env) {
   };
   await kv.put(dataSessionKey(handle), JSON.stringify(updated), { expirationTtl: DATA_REFRESH_TTL_SECONDS });
   return jsonCors({ token: tok.access_token, expires_in: Number(tok.expires_in) || 28800, owner: rec.owner, repo: rec.repo }, 200);
+}
+
+// ---------------------------------------------------------------------------
+// Custodial vault key (OPT-IN).
+//
+// The DEFAULT vault mode is zero-knowledge: the key is derived in the browser
+// from the user's passphrase and this endpoint is never called. Teams that want
+// recoverable vaults may opt in, at the cost of the Worker becoming
+// security-critical key infrastructure.
+//
+// Key source, in order:
+//   1. VAULT_TEAM_KEY_B64  — the 32-byte AES key as a Wrangler-encrypted secret.
+//      1Password stays the human system of record; you paste the key in once
+//      with `wrangler secret put`. No extra infrastructure to host.
+//   2. 1Password Connect    — OP_CONNECT_HOST + OP_CONNECT_TOKEN + OP_ITEM_URL,
+//      for teams already running a Connect server.
+// Unset both and the endpoint 404s (custodial simply unavailable).
+//
+// Access control: a valid identity JWT is REQUIRED, and the caller's login must
+// appear in VAULT_KEY_ALLOWED_LOGINS. Without that allowlist the endpoint is
+// disabled — otherwise ANY GitHub user who signed in could fetch the team key.
+// ---------------------------------------------------------------------------
+async function handleVaultKey(request, env) {
+  if (request.method !== "GET") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders() });
+  }
+
+  const auth = request.headers.get("Authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice("Bearer ".length) : null;
+  const claims = token ? await verifyHs256(token, env.JWT_SECRET) : null;
+  if (!claims) return new Response("Unauthorized", { status: 401, headers: corsHeaders() });
+
+  const allowed = String(optVar(env, "VAULT_KEY_ALLOWED_LOGINS", ""))
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  if (!allowed.length) return json({ error: "custodial key not configured" }, 404);
+  const login = String(claims.login || "").toLowerCase();
+  if (!login || !allowed.includes(login)) {
+    return new Response("Forbidden", { status: 403, headers: corsHeaders() });
+  }
+
+  let keyB64;
+  try {
+    keyB64 = await resolveTeamKey(env);
+  } catch {
+    return json({ error: "custodial key unavailable" }, 502);
+  }
+  if (!keyB64) return json({ error: "custodial key not configured" }, 404);
+
+  return new Response(JSON.stringify({ keyB64, keyId: optVar(env, "VAULT_KEY_ID", "team-1") }), {
+    status: 200,
+    headers: {
+      "content-type": "application/json",
+      "Cache-Control": "no-store", // never cached by a proxy or the browser
+      ...corsHeaders(),
+    },
+  });
+}
+
+/** Returns the base64 32-byte team key, or null when custodial is unconfigured. */
+async function resolveTeamKey(env) {
+  if (env.VAULT_TEAM_KEY_B64) {
+    const k = String(env.VAULT_TEAM_KEY_B64).trim();
+    if (b64ByteLength(k) !== 32) throw new Error("VAULT_TEAM_KEY_B64 must decode to 32 bytes");
+    return k;
+  }
+  if (env.OP_CONNECT_HOST && env.OP_CONNECT_TOKEN && env.OP_ITEM_URL) {
+    const host = String(env.OP_CONNECT_HOST).replace(/\/+$/, "");
+    const res = await fetch(`${host}${env.OP_ITEM_URL}`, {
+      headers: { Authorization: `Bearer ${env.OP_CONNECT_TOKEN}`, Accept: "application/json" },
+    });
+    if (!res.ok) throw new Error("1Password Connect fetch failed");
+    const item = await res.json();
+    const field = (item.fields || []).find(
+      (f) => f.label === optVar(env, "OP_FIELD_LABEL", "vault-key") || f.id === "password"
+    );
+    const val = field && field.value ? String(field.value).trim() : "";
+    if (!val || b64ByteLength(val) !== 32) throw new Error("1Password item is not a 32-byte base64 key");
+    return val;
+  }
+  return null;
+}
+
+function b64ByteLength(b64) {
+  try {
+    return atob(b64.replace(/-/g, "+").replace(/_/g, "/")).length;
+  } catch {
+    return -1;
+  }
 }
 
 // ---------------------------------------------------------------------------
