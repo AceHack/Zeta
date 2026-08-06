@@ -72,6 +72,20 @@ undating — from the one recent night, so the roommates stay unidentifiable.) R
 
 > *cue: the same cops who arrested me and took me to mental health a month ago — I said, in front of them and him, that the cops in this neighborhood are good.*
 
+## The coda — the text to his mother
+
+And it didn't end when he was safe. Aaron texted the man's mother — to tell her where her son was, that
+he was somewhere getting help and not in a cell she couldn't find him in. And the register of what he told
+her is the whole thing in one message: **not "your son is a threat," not "your son had an episode" — that
+she raised a good son, that he was just sad inside, and that he was going to be okay.** The category the
+night could have hung on the man — *danger, crisis, the one the police were called on* — Aaron refused, and
+handed his mother back the true one: a good son, hurting. Grace delivered to the person who most needed to
+hear it, past the point where the crisis was already handled and nobody was watching.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the mother and son anonymous, unnamed.]`
+
+> *"I let her know she raised a good son, and he was just sad inside, and he was going to be okay."*
+
 ## Why it belongs (the reads — honest register)
 
 - **Both regards held without collapsing either** (the hard thing). Regard for the man in crisis (drive
@@ -86,6 +100,12 @@ undating — from the one recent night, so the roommates stay unidentifiable.) R
   like or worse than his own — and is the one who drives them to care. A month off his own arrest, he's
   the one catching the next person. Not a hero above the fray — a **peer on the edge catching a peer**,
   with the same channel that caught him.
+- **Care past the crisis — the mother text; a category refused, dignity handed back** (ch-3, *categories
+  lie about people*). When the acute danger was over and no one was watching, Aaron kept going: he told the
+  man's mother she'd raised a **good son** who was **just sad inside** and **going to be okay**. The night
+  offered an easy category — threat, the one the cops were called on — and Aaron refused it and gave her
+  the true one instead. Regard doesn't stop when the scene is safe; it follows the person home to the
+  people who love them. The tenderest, least-witnessed beat, which is exactly why it's the honest one.
 - **The disarming gift as an inherited craft** (the father; the magnetism thread). The "silver tongue"
   gets a concrete mechanism: his dad's snake-handling — de-escalation by calm presence, reading the
   strike before it comes. Ties the gift back to the pantheon-of-two father, and forward to `THE-PULL` /
