@@ -38,25 +38,15 @@ function phi(x: number): number {
 
 /**
  * Standard normal CDF Φ(x) via Abramowitz & Stegun 7.1.26 polynomial approximation.
- * Max error < 1.5e-7 over all x.
+ * Max error < 1.5e-7 over all x. Odd function: Φ(-x) = 1 - Φ(x).
+ *
+ * The argument is scaled BEFORE erf: Φ(x) = ½(1 + erf(x/√2)), never ½(1 + erf(x)/√2).
+ * An earlier draft of this port scaled the erf *result* and was superseded by a second
+ * function rather than corrected in place, which left the wrong version dead in the file
+ * under the more inviting name. Mirrors `bigPhi` in src/Core/TravelerRankLedger.fs —
+ * keep the two in step.
  */
 function bigPhi(x: number): number {
-  const p = 0.3275911;
-  const a1 = 0.254829592,
-    a2 = -0.284496736,
-    a3 = 1.421413741,
-    a4 = -1.453152027,
-    a5 = 1.061405429;
-  const absX = Math.abs(x);
-  const t = 1.0 / (1.0 + p * absX);
-  const poly = (a1 + (a2 + (a3 + (a4 + a5 * t) * t) * t) * t) * t;
-  const erf = 1.0 - poly * Math.exp(-absX * absX);
-  const erfSigned = x >= 0 ? erf : -erf;
-  return 0.5 * (1.0 + erfSigned / Math.sqrt(2));
-}
-
-// Re-implement with correct argument: erf(x/√2) not erf(x)/√2
-function bigPhiCorrect(x: number): number {
   // A&S 7.1.26: erf(z) ≈ 1 - poly(t)*exp(-z²), t = 1/(1+p*|z|)
   function erfApprox(z: number): number {
     const p = 0.3275911;
@@ -75,7 +65,7 @@ function bigPhiCorrect(x: number): number {
 
 /** Mill's ratio v(t) = φ(t) / Φ(t) — the ADF correction factor. */
 function millsV(t: number): number {
-  const denom = bigPhiCorrect(t);
+  const denom = bigPhi(t);
   return phi(t) / Math.max(denom, EP_EPS);
 }
 
@@ -107,7 +97,7 @@ export const freshBelief: SkillBelief = {
  * - After consistent misses: approaches 0.0.
  */
 export function trustBand(b: SkillBelief): number {
-  return bigPhiCorrect(b.mu / Math.sqrt(b.sigma2 + BETA * BETA));
+  return bigPhi(b.mu / Math.sqrt(b.sigma2 + BETA * BETA));
 }
 
 // ── ADF update ─────────────────────────────────────────────────────────────────────────────────────

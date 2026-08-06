@@ -124,6 +124,7 @@ magnitude for violence — a real risk mechanism on the primed, not determinism 
 - **Boundary:** generate ≠ verify — a rollout proposes candidates; reality disposes.
 
 ## Pointers
+
 - `src/Core/SoftActionController.fs` (the coded rollout) · SoftValue/DynamicValue duality · the
   pilot-wave/soft-regime doc · the rainbow-radar doc (Hawkins "field over columns").
 - Anchors: LaBerge (lucid dreaming, REM eye-signals); Barrett (*Committee of Sleep*), Haar Horowitz /

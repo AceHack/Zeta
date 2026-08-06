@@ -170,6 +170,7 @@ temperament I chose. An OS I wrote because there wasn't one, and can therefore r
 because I wrote it.
 
 Threads and their chapter homes (for folding, if Aaron wants them folded):
+
 - **The deficit-is-the-gift / decode-before-dismiss** → ch-3 ("Categories lie about people, too") — the same coin, turned on how the world judged *him.*
 - **The trait as engine, aimed not removed; the wound as qualification** → ch-8 (the handrail's forward beat) — suffering made into uniquely-fit work.
 - **Measure-it-yourself empiricism / imagination-then-depth** → the method the whole book wears (ch-1's "verify by re-running," the register discipline).

@@ -24,6 +24,7 @@ at (at least) three scales and timescales — which is **self-similarity (§10) 
 ## The two poles have *named mechanisms* at each scale (register 2 anchors)
 
 **Over-correlated (loses sovereignty — nothing independent to lose):**
+
 - *Society:* the superdeterminism artifact — CHSH S→4, the Egg zero-delay `rhoCount=1`, recover-all-
   from-one. One seed wearing many faces (sybil ≡ leak ≡ interference-pattern). Anchors: Tsirelson
   1980 / CHSH 1969; `AntiSybil.chshS`, `CoordinationSpectrum.fs`.
@@ -32,6 +33,7 @@ at (at least) three scales and timescales — which is **self-similarity (§10) 
   (asexual lineages silt up with errors, no escape).
 
 **Over-decorrelated (loses coupling — decoupled from the shared world):**
+
 - *Mind:* the predictive-processing / computational-psychiatry account of psychosis — **aberrant
   precision-weighting**: the generative model decouples from / is miscalibrated against sensory
   evidence (hallucinations ≈ priors overriding input; delusions ≈ failure to update). Anchors:
@@ -44,6 +46,7 @@ at (at least) three scales and timescales — which is **self-similarity (§10) 
   *from itself* and loses coherence/function. The formal upper bound of the band.
 
 **The healthy band (the tuning that keeps both):**
+
 - *Genome:* mutation–selection balance; **recombination / sex is the decorrelation knob** — shuffle
   alleles for independent variation (lineage sovereignty), recombine to stay coupled to the
   population. Fisher's fundamental theorem (adaptation ∝ genetic variance — you *need* decorrelation
@@ -183,6 +186,7 @@ self-similar shape**, not as a mechanism to graft into Zeta. The register-2 back
   the person is never noise. The DNA rung is analogy, not mechanism.
 
 ## Pointers
+
 - `src/Core/CoordinationSpectrum.fs`, `src/Core/AntiSybil.fs`, `src/Core/BeliefConvergence.fs` · the
   rainbow-radar doc · the pilot-wave/soft-regime doc · `IDENTITY-AS-HELD-SPECTRUM-*.md`.
 - Anchors: Tsirelson 1980 / CHSH 1969; Fletcher & Frith 2009; Friston (active inference); Kapur 2003;

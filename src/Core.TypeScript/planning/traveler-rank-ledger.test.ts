@@ -12,7 +12,6 @@ import {
   isPositiveSkill,
   MU_0,
   SIGMA_0,
-  BETA,
 } from "./traveler-rank-ledger";
 
 // ── TRL-TS-1: freshBelief structure ───────────────────────────────────────────────────────────────

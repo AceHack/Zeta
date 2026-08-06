@@ -57,6 +57,7 @@ carries real concurrency (~50%) to measure. Open (register-3): a principled per-
 fusion can produce a real S; and a **causally-closed window** to remove the truncation bound.
 
 ## Pointers
+
 - `src/Core/DecorrelationMetrology.fs` (sensor) · `src/Core/DecorrelationMeter.fs` (fusion — awaits a probe).
 - `docs/research/2026-08-02-cross-scale-decorrelation-band-*` (the model) · `…pilot-wave-done-right-*` (soft regime).
 - two-fours memory (CHSH over spacelike git pairs; vector-clock not wall-clock) — this run is its first empirical touch.

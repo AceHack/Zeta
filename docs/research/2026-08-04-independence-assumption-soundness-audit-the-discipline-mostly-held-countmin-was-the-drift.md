@@ -48,6 +48,7 @@ functioned as a **ratchet on Beacon-honesty**, not merely a bug net — and the 
 negatives it produced.
 
 Two design patterns are worth promoting from this (both already present in the honest examples):
+
 1. **Soundness-bias the failure mode** (IBLT's `Partial` / never-wrong; the anti-sybil family's one-way
    "convicts, never acquits"). A violated assumption should cost recall/coverage, never correctness.
 2. **Hedge the guarantee to the independence you actually have** — "heuristic / target / typical /

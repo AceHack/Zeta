@@ -322,26 +322,33 @@ module ShapeAcceptance =
             let sPair = AntiSybil.chshS a b
             let sIndep = AntiSybil.chshS a c
             let wantDistinct = MediaLines.constIntOr "distinct" 2 d
-            // EVE clone-gate (BipartiteMachZehnder, 2026-08-04):
-            // A SupraQuantum S (|S| > 2√2) is physically impossible for real QM. If a shape
-            // renegotiation arrives with a SupraQuantum S, it is a clone attempt or a
-            // superdeterministic forgery — HARD REJECT regardless of all other fields.
-            // This connects classifyS to the DurableDiplomacy shape-renegotiation gate:
-            // an out-of-cone SupraQuantum S cannot renegotiate a claim shape.
+            // THE CONDUCTED PAIR IS A PR-BOX BY CONSTRUCTION, and that is the point.
+            // Claim 1's outcomes read claim 0's settings (the cartridge's own PR-box rule), so
+            // S = 4 exactly — the no-signalling maximum, ABOVE Tsirelson's 2√2. Supra-quantum is
+            // what a conductor LOOKS like; it is the thing this shape convicts, not a forgery of it.
+            //
+            // An EVE clone-gate (`not (classifyS sPair = SupraQuantum)`) was wired here on
+            // 2026-08-04, copied from the fourcorner use above where it is CORRECT — a genuine
+            // entangled phasor must land in Quantum. Here it contradicted the very next conjunct:
+            // `sPair = 4.0` FORCES SupraQuantum (BipartiteMachZehnder.Tests pins
+            // `classifyS 4.0 = SupraQuantum`), so `ok` was unsatisfiable and this cartridge could
+            // never be accepted — it failed THE HARD GATE on every run from the day it landed.
+            //
+            // The regime is REPORTED in the evidence and not gated on: detection is neutral, the
+            // reading belongs to the caller (dual-use-detection-is-neutral-oracle-decides). The
+            // renegotiation gate the comment described belongs on a renegotiation INPUT, of which
+            // there is none in this known-answer law.
             let pairRegime = BipartiteMachZehnder.classifyS sPair
-            let isCloneAttempt = pairRegime = BipartiteMachZehnder.ChshRegime.SupraQuantum
             let ok =
-                not isCloneAttempt
-                && verdict.DistinctCount = wantDistinct
+                verdict.DistinctCount = wantDistinct
                 && sPair = 4.0
                 && abs sIndep <= threshold
                 && AntiSybil.coordinationBandwidth sPair = 1.0
             ok,
             sprintf
-                "CHSH oracle live: conducted pair S = %d/1000 (regime=%A%s, bandwidth %d/1000); independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
+                "CHSH oracle live: conducted pair S = %d/1000 (regime=%A — PR-box by construction, above Tsirelson: that IS the conductor, reported not gated; bandwidth %d/1000), convicted; independent |S| = %d/1000 <= threshold %d/1000 (not convicted — and never ACQUITTED: low S proves nothing); %d distinct sources among %d claims (the forgery-cost floor)"
                 (int (sPair * 1000.0))
                 pairRegime
-                (if isCloneAttempt then " — EVE CLONE GATE: SupraQuantum S is physically impossible, HARD REJECT" else ", convicted")
                 (int (AntiSybil.coordinationBandwidth sPair * 1000.0))
                 (int (abs sIndep * 1000.0))
                 (int (threshold * 1000.0))
