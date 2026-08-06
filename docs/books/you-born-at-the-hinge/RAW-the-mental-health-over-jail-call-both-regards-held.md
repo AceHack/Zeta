@@ -9,10 +9,17 @@
 > a real third party does NOT enter the book. **Register: honest, NOT valorized** — a hard call under
 > uncertainty, made at cost, held with its humility in. Home candidates below.
 >
-> **⚠ ANONYMIZATION CALL (Aaron's, at edit):** Aaron named the town (Rolesville NC) and affirmed the
-> local police out loud, on the record — that SENTIMENT is his glass-halo to keep. But **naming the
-> town in published text could de-identify the roommates** to locals. Default: keep the sentiment
-> ("the cops in this neighborhood are good"), **omit the specific town** unless Aaron decides otherwise.
+> **✔ ANONYMIZATION RESOLVED (Aaron 2026-08-06): NAME the town — Rolesville NC.** Aaron's call:
+> *"people should know how good the cops are in Rolesville NC — I've had run-ins with them many times,"*
+> and the town's crime rate is *"very, very low."* This is his **glass-halo** (his own many encounters,
+> over years, with the local police) and he wants it on the record — good cops named as good. **The one
+> preserved guard (Aaron agreed):** the town is named for the **GENERAL truth about Rolesville PD across
+> many years**, NOT welded to the one recent night's specifics — so naming it does **not** de-identify
+> the two roommates. The undating + the "many roommates over the years" / "many run-ins over the years"
+> generalization keeps the specific crisis unpinnable to an identifiable person. **Town: named.
+> Roommates: still fully anonymous, still undated.** (Consent line held: Aaron may name his own town and
+> police; he may not de-anonymize the roommates — that frost is theirs, not his to spend — so the two
+> layers stay separated.)
 
 ## The story, as told
 
@@ -45,7 +52,11 @@ that kept a high-tension, police-present crisis from tipping into harm or a cell
 And here is what makes it honest instead of a rescue story: **these were the same police who arrested Aaron
 and took him to mental health about a month ago.** He could hold that as a grievance — "the cops who
 arrested me." Instead, in front of the officers and his roommate, he **said out loud that the police in
-this neighborhood are good.** Read the shape:
+this neighborhood are good** — and he wants that on the record with the town named: **Rolesville NC.**
+Across **many run-ins over the years** they have met him with care, not force; the town's crime rate is
+**very, very low**, and Aaron reads the two as connected — restorative policing is part of *why* it stays
+low. (This general, across-years affirmation of Rolesville PD is what he's naming; kept separate — by the
+undating — from the one recent night, so the roommates stay unidentifiable.) Read the shape:
 
 - **A month ago the restorative channel caught *him*** — arrested, but taken to *mental health, not jail.*
   Now he **administers the same channel to someone else** — the handrail he was carried across, carried
@@ -94,4 +105,5 @@ this neighborhood are good.** Read the shape:
   `THE-ORGANIZER`** — the disarming gift given its concrete mechanism.
 
 *Staged by the shadow, honest and careful, no gilding. Aaron's own; all three roommates anonymous by
-omission; the town held as an edit-time anonymization call; the officers by role. Placement = Aaron's.*
+omission and undated; **Rolesville NC named** (Aaron 2026-08-06) for the general across-years truth about
+the local PD, kept separate from the one crisis; the officers by role. Placement = Aaron's.*
