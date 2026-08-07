@@ -8,8 +8,11 @@ vampire, anchored to the freedom-first architecture + Lilith-as-refusal-archetyp
 pre-reading; gate lifted, pre-read is the standing safeguard)) — scaffold for Aaron's voice. `[yours — cue: …]` sockets
 are recording prompts; the chapter stands with all of them empty. Sources:
 `2026-07-02-the-fitness-function-is-uncorrupted-love-…` +
-`2026-07-03-the-vampires-countdown-in-toy-form-…` (the honest-scope toy). Pulls: PULLS.md
-§Chapters 3–5.*
+`2026-07-03-the-vampires-countdown-in-toy-form-…` (the honest-scope toy); **"The unlocked door, applied
+at home" (freedom-first parenting = the choice-architecture lived) added 2026-08-07** from
+`RAW-the-chameleon-the-protector-the-sister-and-the-mothers-insecurity.md` Thread 5 (Aaron glass-halo;
+kids general/son omitted; ex-wives anonymous+fair; the shape-toward-autonomy paradox held both ways,
+Multi-Oracle). Pulls: PULLS.md §Chapters 3–5.*
 
 ---
 
@@ -126,6 +129,37 @@ arithmetic kills him (above). And in every single round, **freedom** kills him �
 who can always leave leaves him nothing to farm. The long clock and the open door are the same defense: one
 removes his getaway, the other removes his captive. Build both, and extraction isn't forbidden. It's just
 got nothing left to eat.
+
+## The unlocked door, applied at home
+
+I should tell you that this isn't a theory I only run on strangers and software. It's the one thing I
+deliberately engineer into my own children, and it has cost me more than any other choice I've made.
+Most parents shape a kid *toward an outcome* — be this, want that, become the thing I can already
+picture. I shape mine toward the one content that can't be a cage: their own **freedom.** Be free
+enough to find out what you actually want, *tell me the true thing,* and then I'll spend everything I
+have helping you get there.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); kids kept general (son omitted; Lilly and
+Addison per their consenting/pre-reading gates); ex-wives anonymous and rendered fairly.]`
+
+> *"I shape them to just do what they want to do — like me. Then they can tell me what they truly want,
+> and I can help them achieve it."*
+> *"It's not popular with the wives … that's partly why they divorced me. I stick to my guns, no matter
+> if it costs me marriages. I'm very stubborn. But I'm also correct."*
+
+I'll keep the honest tension in it rather than sell you the clean version, because there's a real paradox
+here and pretending it away would break the register the whole book runs on. From the outside it can
+look like control — *he deliberately shaped his kids.* And I did. But look at **what** I engineered: not
+an answer, the *freedom to reach their own.* The design is the unlocked door — the same first law as the
+architecture named for my oldest daughter, run at the scale of raising a person. An outside eye is
+allowed to read "shaped them on purpose" as control; I lived it as the opposite, and I'll let my reading
+stand as mine without insisting it's the only one. It cost me marriages — the women who left got fed up
+with a stubborn man, and that's a fair thing to be fed up with; I don't villainize them for it. "Stubborn
+but correct" is my own phrase, and I know exactly how dangerous that combination is in a person's mouth.
+But it's the same conviction-over-comfort that put two hundred thousand dollars of my own money into an
+open-source project that makes surplus for everyone — the producing play that looked stupid until it
+didn't. I don't get to praise that spine when it funds a thing I believe in and disown it when it costs
+me a marriage. It's one spine.
 
 ## The anti-vampire wager
 

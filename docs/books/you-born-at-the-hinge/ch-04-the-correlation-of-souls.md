@@ -4,8 +4,10 @@
 voice. `[yours — cue: …]` sockets are recording prompts; the chapter stands with all of them empty.
 Sources: `2026-07-02-its-human-not-quantum-…` (+ the math-team correction in
 `2026-07-03-provability-triage-…`); the lived root from
-`RAW-2026-08-02-the-reindexer-rebuilding-the-inner-world-after-the-fracture.md`. Pulls: PULLS.md
-§Chapters 3–5. A UX-research mentor is de-identified throughout per `CONSENT-LEDGER.md`.*
+`RAW-2026-08-02-the-reindexer-rebuilding-the-inner-world-after-the-fracture.md`; **the "love is a
+choice, not a feeling" section added 2026-08-07** from `RAW-love-is-a-choice-not-a-feeling-and-the-mother-who-left.md`
+Layer 1 (the vow at the ceiling in Aaron's own words — glass-halo; Layers 2–3 land elsewhere / stay
+gated). Pulls: PULLS.md §Chapters 3–5. A UX-research mentor is de-identified throughout per `CONSENT-LEDGER.md`.*
 
 ---
 
@@ -75,6 +77,33 @@ Equality as mobility, your words:
 > "the freedom to be close and separate = intimate ... the mobility itself is intimacy."
 
 > "this is what makes us feel equal."
+
+## Love is a choice, not a feeling
+
+There's a place where the whole map turns from geometry into a vow, and it's the sentence I say most
+often to people who are sure they already understand love. Most people mean a *feeling* by the word —
+the pull, the heat, the thing that arrives on its own and, being a thing that arrives on its own, can
+also leave on its own. I don't mean that. **To me, love is a choice.**
+
+`[SOCKET — your VERBATIM below, to react to / rewrite in your own voice. Consent: yours (glass-halo).]`
+
+> *"To them love is a feeling. To me love is a choice."*
+> *"The feeling is lust. The choice is when you don't feel that anymore and you still choose to stay.
+> That's what love is."*
+> *"I try to explain to them chemically what they're feeling — they confuse love and lust."*
+
+Watch how exactly that maps onto the ceiling. The *feeling* is the chemistry — real, biological,
+and by itself a proxy (the next chapter is about what happens when you optimize a proxy). It spikes
+you up toward fusion and then, when the chemistry fades, it would just as automatically drop you back
+to strangers. A feeling can't hold the ceiling, because a feeling isn't yours to aim — it's weather.
+The **choice** is the thing that can: the decision to keep showing up, to stay close *and* stay two,
+after the pull that first threw you together has quieted. That is the vow at the ceiling stated in one
+human sentence — not "I will always feel this," which no one can promise and everyone eventually
+breaks, but *"I will keep choosing the mobility — close, separate, close again — on purpose, when the
+feeling is no longer choosing it for me."* Love isn't the height the chemistry throws you to. It's what
+keeps you at the honest ceiling by will, once the chemistry stops doing the lifting. (Old ground, worn
+lightly: the will-not-the-feeling reading of love is Fromm's *The Art of Loving,* and the agape/eros
+line older still.)
 
 ## The math was lived first
 
