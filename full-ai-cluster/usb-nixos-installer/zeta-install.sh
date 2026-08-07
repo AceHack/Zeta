@@ -1568,22 +1568,30 @@ if [ -d "$ZETA_HOME" ]; then
   if [ -d "$ZETA_HOME/Zeta" ]; then
     echo "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)..."
     ZETA_TARGET_PATH="/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/bin:/usr/bin:/bin"
+    # NON-FATAL BY DESIGN — but this script runs under `set -euo pipefail` (line 29), so
+    # an UNGUARDED failing pipeline trips errexit and ABORTS zeta-install.sh right here,
+    # before the rc-capture / WARN / PARTIAL-PROVISION marker below can run. That is
+    # exactly what turned this intended-non-fatal step into a first-boot HARD FAIL
+    # (`[zeta-first-boot] Install failed`) and reded build-iso from 2026-08-01: #9937
+    # removed the old `| tail -10 || echo WARN` whose `||` had been suppressing errexit
+    # for this pipeline. Scope errexit OFF around the pipeline only (the same
+    # subshell-local pattern used for node-registration above), capture the REAL
+    # install.sh rc via PIPESTATUS[0], then restore errexit. `tail -40` (was -10) keeps
+    # enough of the mise/toolchain error to diagnose WHY install.sh fails (the separate
+    # latent bug 081KZETP6AT08QG0R003MG1VYN).
+    set +e
     sudo -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" \
       BUN_INSTALL="$ZETA_HOME/.bun" \
       PATH="$ZETA_TARGET_PATH" \
       ZETA_INSTALL_NIXOS_MODE=installed \
       ZETA_INSTALL_FULL=1 \
-      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 | tail -10
-      # CAPTURE THE REAL EXIT CODE. This previously read `... | tail -10 || echo WARN`,
-      # where the pipe makes the pipeline's status `tail`'s — always 0 — so the `||` never
-      # fired and an install.sh failure printed NOTHING AT ALL. The node finished
-      # provisioning, reported success, and could ship without k3d/kubectl/helm.
-      #
-      # Staying non-fatal is right: a node that boots without agent CLIs is still
-      # recoverable, and hard-failing a first-boot install is worse. But "do not fail" and
-      # "do not notice" are different instructions, and only the first was intended.
+      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 | tail -40
       install_rc=${PIPESTATUS[0]}
+      set -e
+      # Non-fatal is right: a node that boots without agent CLIs is still recoverable, and
+      # hard-failing a first-boot install is worse. But "do not fail" and "do not notice"
+      # are different instructions — #9937's rc-capture + marker (below) keep the "notice".
       if [ "$install_rc" -ne 0 ]; then
         echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
         # Durable marker, not just a line that scrolls past on a first-boot console. The
