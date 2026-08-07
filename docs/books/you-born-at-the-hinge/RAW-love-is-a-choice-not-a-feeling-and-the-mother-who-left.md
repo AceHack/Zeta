@@ -61,6 +61,7 @@ spine and it renders the mother **strong and good** (her own granted frame: whol
 > then left."*
 
 Two reads worth keeping:
+
 - **The mother's *calculated* leaving is not coldness — it's the choice done RIGHT.** She didn't flee in the
   moment's heat; she told him that day she was done, then spent ~a month securing the exit and left safely.
   Love-as-choice *executed with competence* — the strong/good register her row asks for, deepened (she's not
@@ -75,6 +76,7 @@ The ferry's trigger for the beating, and the mother's stated worry, **both invol
 child** (she was ~9, Aaron ~13). Per the **sister policy Aaron set 2026-08-06** — *memories framed strong/good;
 the ONE permitted vulnerable book detail is her passing (heroin overdose); all other vulnerable material is
 private, his mother's to hold* — **these details are HELD OUT of the book:**
+
 - the specific trigger (a childhood incident in which the sister was hurt) — **not for the book** (it exposes
   her as a child-victim; not strong/good; beyond the one permitted detail);
 - the mother's worry that young-Aaron might hurt the sister — **not for the book** (a vulnerable detail about
@@ -91,6 +93,7 @@ Aaron ties it to himself, plainly: *"she was worried I'd hurt my sister growing 
 just like the psychiatrist told me — deficient and curious, I want to see what happens … No, I got a handle on
 it. It was when I was younger. Literally I touched the stove a thousand times to map out exactly the feeling,
 how it worked."*
+
 - **This is his own material (glass-halo)** and it belongs with the FORMATION missing-modules keystone: the
   same **curiosity that mapped the stove ×1000** is the trait named here — the empiricist drive that, unbounded
   in a child, is dangerous, and that he says he **got a handle on**. Cost and gift, one coin (the FORMATION
@@ -100,6 +103,7 @@ how it worked."*
   behind the sister gate above even though the *self*-account is glass-halo.
 
 **Consent + gates (restated — this detail is new and heavy):**
+
 - **Aaron's own abuse + own self-account = glass-halo** (what was done to him, and his honest read of himself,
   are his to tell).
 - **Mother — GRANTED + pre-read** (rendered whole; protector AND strategic; strong/good). **Pre-reads before publish.**

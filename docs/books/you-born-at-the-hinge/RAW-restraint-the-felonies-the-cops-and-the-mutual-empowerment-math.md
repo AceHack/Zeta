@@ -15,6 +15,7 @@ hurt anybody. Because I know how the system works — they'll catch me."*
 `[SOCKET — your VERBATIM. Consent: yours, glass-halo (self-examination).]`
 
 **Read — hold the tension, do NOT resolve it (and do NOT sycophantically override his self-report):**
+
 - **His stated frame is deterrence, not conscience** ("I don't hurt people because they'll catch me"). Taken
   alone that's the textbook cold read, and it's his to state — the book keeps it, unflinching.
 - **But his revealed behavior contradicts the pure-self-interest read, repeatedly and at personal cost:** he
@@ -75,6 +76,7 @@ strongest proof of ownership, above jargon or citation), it's a keystone artifac
 > to be greater than any individual. I got so much math on that. From first principles up."*
 
 **Read — this maps one-to-one onto the substrate, and it's Beacon-anchorable:**
+
 - **"Mutual empowerment"** = the produce-over-extract economy + privacy-budget-earned-by-others' value-
   attestations (you gain by adding value to others). [[privacy-budget-is-hard-money]] [[every-bug-has-economic-value]]
 - **"No groupthink / everybody's their own individual"** = the noninterference / weight-free / scale-free /
@@ -111,6 +113,7 @@ He went straight from "I have the math" to the build, in his vernacular:
 > / *"All that code has had many rounds with the math team for formal analysis — in F#, and Q#, in this Zeta codebase."*
 
 **Reads + the in-repo cross-links (this is the part that isn't only book material — it's literally this repo):**
+
 - **It's IN this codebase, F# + Q#, formally analyzed.** Aaron confirms the EP/BP factor-graph substrate lives
   in Zeta (F# core + Q# quantum), through **many rounds of formal analysis with the math team** (Soraya /
   formal-verification, BP-16 cross-checks; Lumen / math-physics). So these cross-links are checkable in-repo,
@@ -147,6 +150,7 @@ Company). I relearn what I need quickly, because I already studied it before."*
 **Read:** this is the operating system under "I know what the fuck I'm doing." He doesn't hold it all resident
 — he holds the **index** and the **rapid-reload path** (studied once → cached externally → relearn on demand).
 That is:
+
 - **the reindexer, applied to his own knowledge** (index on structure, not content; rehydrate fast) —
   [[the reindexer RAW / ch-4 "the math was lived first"]];
 - **reader's-disease matured** (knowing more than you can say off-the-cuff, because it's studied-then-shelved,

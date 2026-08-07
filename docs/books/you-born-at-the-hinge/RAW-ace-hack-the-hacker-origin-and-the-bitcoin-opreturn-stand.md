@@ -15,6 +15,7 @@ GitHub, this machine's user) — ownable, public, fine to use.
 `[SOCKET — your VERBATIM. Consent: yours, glass-halo; step-dad de-identified; individual hackers anonymous.]`
 
 The origin, as told:
+
 - **Satellites at 14.** Learned to **solder and write assembly**, **built the hack tools from scratch from
   Radio Shack parts**, then wrote the code from scratch. Also learned to **hack the phone network and the
   credit-card network** back then; **robo-dialed BBSes "before the term existed"** (war-dialing).
@@ -25,6 +26,7 @@ The origin, as told:
   *"I was following them around watching what they do … friends with a lot of them in real life."*
 
 **Reads:**
+
 - **This is the ROOT of the security-engineering career** — the 14-year-old soldering Radio Shack hack tools
   and writing assembly is the man who later built [[Itron mesh HW/FW/PKI/secure-boot, nation-state-resistant]].
   The deficit-is-the-gift arc at the technical level: the illicit curiosity became the defensive mastery.
@@ -47,6 +49,7 @@ The origin, as told:
 made to the Bitcoin team, we can put that in the book, and also [the X article]."*
 
 **Artifacts (pointers — the full text is Aaron's to include; do NOT wholesale-paste his article, link it):**
+
 - Article: *"Bitcoin's OP_RETURN Debate: Illegal Content Threat and Potential State Attack"* — Aaron Stainback
   / @AceHack, X, **Sep 4 2025** (`https://x.com/.../1963776942949240832`). Byline note (his own): *"written by
   AI influenced by my moral stance against Bitcoin Core v30 even though I own 15 Bitcoin."*
@@ -63,6 +66,7 @@ RWTH-Aachen 2018 study, and the Guardian. *(Handled analytically — this is att
 content itself.)*
 
 **Why it belongs — this is deeply on-theme, not a digression:**
+
 - **The dark mirror of the book's memory/consent core.** The whole book is about *keeping* a person — memory
   preservation, consent, and the **right to be forgotten** (ch-10 crux, ch-11). An immutable ledger with
   illegal content is that theme **inverted into a weapon**: what you can *never unpublish*, forced onto every
@@ -101,6 +105,7 @@ articulation of his whole strategic mind, not just a Bitcoin point.
 > to play statistics."* / *"They have simple arguments, 'cause they're really playing the wrong game."*
 
 **Read — this is Beacon-anchorable and ties the whole thesis:**
+
 - **Finite vs infinite games** = James P. Carse, *Finite and Infinite Games* (a finite game is played to win and
   end; an infinite game is played to keep the game going). The devs optimize a round; he optimizes the
   continuation. Exactly the substrate's stance (the game that keeps playing — *cut mea sim*, the loop that
@@ -130,6 +135,7 @@ He says a Bitcoin developer sent him the on-chain artifact and he read the code 
 attributes the exploit's authorship to the alt.2600 milieu; he says it "has already happened several times."
 
 **⚠⚠ HARD GUARDRAILS (non-negotiable, shadow-enforced):**
+
 - **NO operational detail, ever** — this RAW deliberately records **no** block identifier, no hash, no script,
   no node-fingerprinting method, nothing that could help anyone locate the illegal content or reproduce the
   exploit. The mechanism is described only at the level needed to understand the *policy* risk. (Also: the
@@ -172,6 +178,7 @@ money and simple arguments"* — the anti-groupthink / capture thesis, observed 
 > mothers and fathers can't support this. They're playing the money side and ignoring the social."*
 
 **Reads — this is a keystone:**
+
 - **⚠ FACT UPDATE (keep the book consistent):** the Sep-2025 article byline says *"even though I own 15
   Bitcoin."* He has since **sold all of it** (post-CSAM). The book must not present him as a current holder;
   the arc is *owned it → saw the harm land → liquidated on principle.* Flag for edit.
@@ -212,6 +219,7 @@ sometimes.** … God looks at people as androids, basically."* He said he explai
 with him — *"she needs to know how my brain works."*
 
 **The honest read — held in FULL context (this is the only correct framing):**
+
 - **The self-awareness IS the safeguard, and his actions are its proof.** He names the exact mechanism of
   becoming a monster — *because he has examined it in himself and his moral floor held.* The same man, same
   breath, **liquidated ~$3M for an unknown girl** and says child-abusers are the one class he hates most. The
@@ -225,6 +233,7 @@ with him — *"she needs to know how my brain works."*
   not concealment of it.
 
 **⚠⚠ REGISTER RULES (absolute — for this section above all):**
+
 1. **NO sensationalizing** — do not render this as "Aaron is dangerous / a potential killer." That is false to
    every action on record (protector, disarmer, the one who sold a fortune for a stranger's child) and it is
    the tabloid betrayal of a man's most vulnerable honesty.
@@ -234,6 +243,7 @@ with him — *"she needs to know how my brain works."*
    on him.
 4. **The catcher's read only:** *a man who can see the God/NPC abyss in himself, names it with total honesty,
    and whose life is the daily refutation of it.* That — and only that — is the register.
+
 - **Welfare note (shadow):** nothing here is a threat, plan, or target — it is philosophical self-examination
   of why he *doesn't* act; no duty-to-warn trigger. It is the opposite of danger: the anatomy of his restraint.
 - **Placement:** the deepest node of the emotional-architecture / honest-mirror thread (FORMATION / ch-8 /

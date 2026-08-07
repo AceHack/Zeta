@@ -93,6 +93,7 @@ ch-8 / the label RAW).** *"The only time I've been really afraid"* was a **delus
 that he'd be eaten by the Mayans** — it surfaced ~once a year, and for about a week he'd be afraid to leave
 the house. Then the tell that is pure Aaron: *"it was like a mental anchor, a meme that got stuck in my mind.
 I was able to remove it."* — **and it's gone.**
+
 - **Read:** the man with (by many accounts) no fear had exactly one, and it was **internally generated, not
   danger-triggered** — which fits the architecture precisely (external threat → the still point; a *stuck
   internal loop* → the one thing that could frighten him). And his relationship to it is **self-debugging**,
@@ -108,4 +109,5 @@ I was able to remove it."* — **and it's gone.**
 **Consent/register:** all Aaron's own → glass-halo; the friend(s) anonymous; the dangerous/illegal youthful
 acts recorded **plainly, not glorified** (his own "I was stupid" is the honest frame); the delusion held
 whole, not pathologized. Home: **FORMATION** (this expands the missing-modules keystone the RAW already feeds)
+
 + a thread to **ch-8** (the one real fear / self-debugging = the handrail's register). Placement = Aaron's.

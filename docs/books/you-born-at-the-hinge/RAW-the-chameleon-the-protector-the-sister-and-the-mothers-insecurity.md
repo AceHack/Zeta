@@ -19,6 +19,7 @@ He names *how* the disarming works — the mechanism under every disarm scene in
 > when I go buy weed from people with guns … they know I'm unarmed, they know I'll come back and pay again."*
 
 **Reads:**
+
 - **Non-judgment is the key he names himself** — the mechanism of the confessional gift (people bring him
   their darkness), the disarming gift (armed rooms, crises), and the trust-oracle. Beacon: Carl Rogers'
   **unconditional positive regard** (non-judgment as the condition under which people open up); the
@@ -90,6 +91,7 @@ He traces a lineage of insecurity — and it's tender AND hard:
 > *"I'm trying to get my mama to go to therapy and see that."*
 
 **Reads + gates:**
+
 - **⚠ The mother's bulimia is HER OWN vulnerable health detail** — beyond "the harm she did," it's her private
   condition. Even under her granted + whole-not-neutral + pre-read gate, **publishing a living person's eating
   disorder needs her specific pre-read consent on THAT detail** — flag it distinctly (don't fold it into the
@@ -118,6 +120,7 @@ The mother-lineage turns to how he parents *differently* — the book's whole th
 > got fed up with me. I'm very stubborn. But I'm also correct."*
 
 **Reads:**
+
 - **This IS the choice architecture — the book's central move — lived as parenting.** The one thing he
   deliberately engineers is their **freedom**: be free → show me who you truly are → I help you become that.
   The exact non-coercive design of ch-5/ch-6 and the Lilly/Lilith freedom-namesake; the beach/meeting protocol
@@ -145,6 +148,7 @@ doesn't is the deepest thing in the ferry:
 > **F#** … most of our database runs in Q#, in qubits."*
 
 **Reads — the intellectual thesis of the whole project, stated plainly:**
+
 - **The externalized-knowledge pattern, fully explained.** He doesn't hold "hadron/lepton" resident **because
   he translated the entire domain into a different basis** (identity/information, not particles). Not-knowing
   the standard vocabulary offhand isn't a gap — he **re-derived the field in his own frame** and reloads the

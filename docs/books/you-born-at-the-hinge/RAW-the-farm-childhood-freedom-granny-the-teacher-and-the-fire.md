@@ -82,6 +82,7 @@ fraud at her place of business."* He got caught; it was later erased from his re
 > crimes. I still don't. I feel bad about embarrassing my granny."*
 
 **Handling (still disciplined, now with the link permitted):**
+
 - **The Granny link is IN, in the remorse frame** — it honors her (it locates his moral center precisely: the
   one thing that pierced him was hurting *her*). Authorized exception to her honoring gate; it strengthens the
   honor rather than weakening it.
@@ -105,6 +106,7 @@ finds, including the counter-evidence.
 > sociopathic, I think is the term."*
 
 **Reads (held with care):**
+
 - **The one crack locates the moral center.** He claims no guilt about the crimes, names embarrassing Granny as
   the one thing that pierces — then even walks *that* back. The honest rendering **keeps the ambivalence**:
   whatever guilt-shaped thing exists in him is shaped like *"I hurt the person who loved my mind."* Not
@@ -132,6 +134,7 @@ was for my step-dad. It was my first technical failure — I still remember it v
 `[SOCKET — your VERBATIM. Consent: yours, glass-halo; step-dad + the company de-identified by default (see below).]`
 
 **Reads — this is a keystone, not an aside:**
+
 - **The two failures he counts tell you what he actually values.** Not the seven totaled cars, not the cliffs,
   not even the crimes — the two failures he *counts* are **hurting someone who loved him** (Granny) and **a
   technical problem he couldn't crack** (Magic). Moral and intellectual, never physical. That pairing is a
@@ -150,6 +153,7 @@ splicing company") — a real business + the step-dad's employer would identify 
 call needing the step-dad's ok. The DB product name "Magic" (a generic multidimensional-DB product) is fine to
 keep — it's the technical anchor. Home: **FORMATION** (first technical failure → the multidimensional-cube
 thinker) + the data-years arc.
+
 ## Home candidates (Aaron's call)
 
 - Thread 1 (freedom) → **ch-5 / ch-6** + `THE-UNBROKEN-CHILD` (born already yourself).
