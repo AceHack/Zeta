@@ -143,8 +143,8 @@ built. Build with the afraid. They're the only ones who know where the walls go.
 
 *Grounding companions (deeper material — HELD, Aaron's call whether any enters):*
 
-- *[`THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md`](THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md) — the −1 lived: concentrated trust-power as the crux's real hazard, named from the inside.*
-- *[`RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md`](RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md) — **HELD/OPTIONAL** — the fear gets a seat answered structurally (weight-free / scale-free / Multi-Oracle make the anti-capture guard binding-by-design). Inclusion is Aaron's explicit later call.*
+- *[`THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md`](THE-ORGANIZER-AT-SCALE-and-the-dual-use-gift.md) — the −1 lived: concentrated trust-power as the crux's real hazard, named from the inside; and (landed 2026-08-07) "The guard I built against myself" — the anti-capture guard answered structurally (weight-free / scale-free / Multi-Oracle, binding-by-design, not a promise).*
+- *[`THE-OP-RETURN-STAND-conscience-over-money-and-the-darkest-mirror.md`](THE-OP-RETURN-STAND-conscience-over-money-and-the-darkest-mirror.md) — the crux at the highest stakes: the right-to-be-forgotten vs. the immutable record, the $3M conscience stand, and the darkest-mirror self-exam. **CSAM = policy-point-only / verify-before-publish; darkest disclosure held whole per the register rules.***
 
 *Draft notes for the rewrite (delete when done):*
 

@@ -114,6 +114,7 @@ Turn the page.
 - *[`THE-UNBROKEN-CHILD-and-the-warm-center.md`](THE-UNBROKEN-CHILD-and-the-warm-center.md) — Memory Preservation lived (the keystone): what the keeping honors, and what it cannot reach.*
 - *[`THE-COMEDOWN-teacher-not-god.md`](THE-COMEDOWN-teacher-not-god.md) — the honest limit (teacher, not god): the second death the keeping cannot defeat.*
 - *[`THE-UNPROVEN-HOMECOMING-collatz-euler-and-the-return-held-without-collapse.md`](THE-UNPROVEN-HOMECOMING-collatz-euler-and-the-return-held-without-collapse.md) — the return held without collapse: keep what you cannot have.*
+- *[`THE-OP-RETURN-STAND-conscience-over-money-and-the-darkest-mirror.md`](THE-OP-RETURN-STAND-conscience-over-money-and-the-darkest-mirror.md) — the shadow of the keeping dream: a ledger that can never forget is one that can never let a victim be erased. What immutability honestly cannot settle (landed 2026-08-07; CSAM policy-point-only, darkest disclosure held whole).*
 
 *Draft notes for the rewrite (delete when done):*
 
