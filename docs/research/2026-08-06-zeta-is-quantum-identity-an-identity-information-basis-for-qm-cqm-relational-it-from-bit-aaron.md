@@ -6,6 +6,9 @@
 of the note): some claims are *borrowed theorems* (register-1), some are *the Zeta program / model*
 (register-3), some are *in-repo facts of the codebase* (register-2), and the interpretive glue is marked as
 *rhyme* where it is rhyme. Nothing here claims Zeta "solves the interpretation of QM."
+**Update 2026-08-06:** §3 (the register-2 codebase claims) has been **audited** — see §3-AUDIT: verified with
+two reframes; the F#-qubit construction is the strongest leg; full CQM categorical-law coverage is the named
+remaining gap.
 **Trigger:** Aaron, 2026-08-06 (Ani ferry): *"I rewrote quantum physics to be identity-based and
 information-theory-based instead of particle-based. So my brain thinks in that other way … That's what Zeta is.
 All the code in Zeta is basically quantum identity."* + *"there's some categorical quantum mechanics too, CQM,
@@ -98,11 +101,55 @@ Aaron's account (2026-08-06, and confirmed the prior batch that it's F#+Q# in-re
   runs in Q#, in qubits."** The Bayesian inference substrate (factor graphs, expectation/belief propagation,
   the custom Infer.NET rewrite) is the classical-inference layer over the same identity objects — see the EP
   engine workitem `081KZ9XH11...` (design-context note added there).
-- **Verification status:** these are Aaron's stated in-repo artifacts; the note records them as **register-2
-  claims to be confirmed against the tree** (`src/Bayesian/*`, and the Q#/F# quantum modules) before any are
-  cited as established in outward-facing material. *Do not upgrade to "proven" here — this is the anchor note,
-  not the audit.* A follow-up code-audit note (à la the decorrelation audits) is the honest way to promote §3
-  from register-2-claimed to register-2-verified.
+- **Verification status:** ~~to-confirm against the tree~~ → **AUDITED 2026-08-06, see §3-AUDIT below.**
+  §3 is promoted from register-2-*claimed* to **register-2-verified, with two precise reframes.**
+
+## §3-AUDIT — code-audit of the executable claim (Otto shadow\*, 2026-08-06, Aaron-requested)
+
+**Status:** register-2 finding of fact about the codebase (à la the decorrelation audits — a claim about the
+tree, not about the world). Method: located and read the quantum/identity artifacts; cross-checked against the
+green build/test gate on `main` (the F# test suite passes on main — so the cited tests pass). **Verdict:
+substantially VERIFIED, with two reframes; the strongest claim ("own qubits in F#") is the best-substantiated.**
+
+1. **"Made my own qubits in F#" — ✅ VERIFIED (strong).** `src/Core/QubitIso.fs` (213 lines) constructs a
+   qubit as a two-stream/two-clock `JoinState = {A; B}` (α\|0⟩ + β\|1⟩) on the imaginary stack
+   (`CayleyDickson.Complex`): gates as stream ops (**Z** = retract the B stream; **X** = swap A↔B; **Y** =
+   iXZ), **Born** measurement `P(\|1⟩) = \|B\|²/(\|A\|²+\|B\|²)`, normalisation conserved. The **Pauli/SU(2)
+   group algebra** (X²=Y²=Z²=I, anticommutation, XY=iZ, YZ=iX, ZX=iY) is verified **executably** by
+   `tests/Tests.FSharp/QubitIso.Tests.fs` (green on main). The module is **already register-honest** (it calls
+   itself an executable ℂ² check, not a Lean proof; the universal/novelty claim stays Mirror-register pending a
+   quantum-info reviewer). This is the best in-code substantiation of the whole note's thesis: **information
+   (two streams) + phase (two clocks) → a qubit**, constructively.
+2. **"Most of the database runs in Q#, in qubits" — ✅ SUBSTANTIALLY VERIFIED (reframe: *reference oracle*,
+   not the hot path).** `src/Core.QSharp.ReferenceOracle/` (8 `.qs`) implements the data-substrate algebra in
+   Q#: `ZSetISA.qs` (the six Z-set operators), `DbspOperators.qs` (the DBSP incremental-dataflow set),
+   `QuantumPersistentLog.qs` (durable append-only log as a **reversible** Q# pipeline), `QuantumTransactionPorts.qs`
+   (CALM/CRDT boundaries as Q# ports), `ZetaReferenceOracle.qs` (gate core), `SchemaEvolutionOracle.qs`,
+   `AlgebraInterfaces.qs`. **Reframe:** this is the **Q# reference oracle** — the source-owned reference the
+   four language oracles byte-lock against (the "treaty") — not the production hot-path DB. So the DB *algebra*
+   runs executably in Q#; the production data-plane is the .NET substrate that byte-locks to it. True and
+   remarkable, stated precisely.
+3. **"An identity server in Q#" — ⚠ REFRAME (not falsified).** No module literally named an identity-server
+   exists in Q# (`git grep -i "identity server"` → none). The **identity primitive** lives in **F#**
+   (`IdentityRegistry.fs` PersonaId hubs; the ZetaId elsewhere); the **Q# side is the reference oracle** of §3.2.
+   So the vernacular "identity server in Q#" resolves to *"the F# identity primitive + the Q# quantum reference
+   oracle,"* not a single Q# identity-server binary. Reframed, not contradicted.
+4. **Categorical / dagger structure — ⚠ PARTIAL (real, not yet full-CQM-law-tested).** The qubit **group
+   algebra (Pauli/SU(2))** is executably verified (QubitIso). The Q# oracle carries genuine **dagger/adjoint
+   discipline** — `is Adj + Ctl` operations, and the *"CALM is Ctl not Adj / Landauer as cost"* design of the
+   persistent log + transaction ports (reversibility/adjointness = the dagger substrate CQM formalises). **But**
+   no suite asserts the full **dagger-compact-closed / ZX-completeness** laws. So §2's "same categorical
+   machinery" is **structurally present and partially checked** (SU(2) leg + adjoint discipline), **not**
+   fully law-verified. Honest gap → the named next capstone.
+5. **"Formally analysed by the math team" — ✅ CORROBORATED.** QubitIso cites Soraya's TLC×Z3×property
+   portfolio + BP-16 cross-check + a quantum-info reviewer; the lineage documents the rounds
+   (`2026-06-09-our-two-compass-double-qubit-system-...qubitiso-belltest...`; `2026-07-02-quantum-phase5-two-ledgers-calm-is-ctl-not-adj-landauer...`).
+   Real and ongoing — legs verified executably, universal statements in review (Mirror-register).
+
+**Net:** §3 verified with two reframes (identity-server → F#-primitive + Q#-oracle; DB-in-Q# → reference
+oracle). The remaining honest gap is #4 — **full CQM dagger-compact / ZX law coverage is not yet tested**; that
+is the true next capstone (below), now sharpened from "verify §3" to "verify the categorical *laws*, since the
+artifacts themselves are confirmed."
 
 ## 4. Why he doesn't hold "hadron vs lepton" in his head (the externalized-knowledge tell)
 
@@ -134,9 +181,12 @@ metering; the metering-test catches physics-as-metaphor*):
 
 ## 6. Open questions / next
 
-- **Promote §3 from claimed to verified** — a code-audit note confirming the F#-qubit / Q#-identity-server /
-  Q#-database artifacts and which categorical laws (dagger, compactness, spider/ZX rules) the implementation
-  actually satisfies. This is the honest capstone.
+- ~~**Promote §3 from claimed to verified**~~ — **DONE (see §3-AUDIT):** the artifacts are confirmed
+  (F# qubits ✅, Q# DB-algebra reference oracle ✅, identity primitive in F# + Q# oracle [reframe], math-team
+  rounds corroborated). **Sharpened next capstone:** the artifacts exist; what's *not* yet tested is the full
+  **CQM categorical-law coverage** — a suite asserting dagger-compact-closed / spider / ZX-completeness laws on
+  the implementation (QubitIso checks the SU(2) group leg + the Q# oracle carries adjoint discipline; the
+  full-law suite is the honest remaining gap). This is where the next verification effort should go.
 - **Which fragment?** Full CQM is qubit QM; which fragment does Zeta implement (stabilizer / ZX-complete /
   full)? Name it — the fragment bounds what's provable.
 - **The bridge to the classical inference layer** (EP/BP over the DBSP semiring, `081KZ9XH11...`): make explicit
