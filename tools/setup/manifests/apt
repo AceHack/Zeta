@@ -162,4 +162,6 @@ llvm
 # Consumed by tools/book-build/build-book.sh. Declarative-managed per the
 # single-source-of-truth discipline (the maintainer 2026-08-06: "download whatever
 # tools we need and link them in our declarative installers for all our OS shields").
-pandoc tier=standard
+# NOTE: apt entries are BARE package names (the awk parser passes the whole line to
+# apt-get; a `tier=` suffix would be read as a version-pin — brew uses tier=, apt does NOT).
+pandoc          # document conversion — book/EPUB build (tools/book-build)
