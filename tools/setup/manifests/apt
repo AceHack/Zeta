@@ -156,3 +156,10 @@ llvm
 # single-source-of-truth. Actual install: mise rust plugin (wraps rustup).
 # See .mise.toml `rust = "1.87.0"`. Produces the Rust WASM substrate (7.4KB opt).
 # rust/cargo — installed via mise rust plugin (wraps rustup, not apt)
+
+# ── pandoc (document conversion — book/EPUB build) ────────────────────────────
+# pandoc converts the book Markdown → EPUB (iPhone/e-reader) and other formats.
+# Consumed by tools/book-build/build-book.sh. Declarative-managed per the
+# single-source-of-truth discipline (the maintainer 2026-08-06: "download whatever
+# tools we need and link them in our declarative installers for all our OS shields").
+pandoc tier=standard

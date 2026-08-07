@@ -155,3 +155,10 @@ llvm tier=standard
 # NOTE: brew has a `rust` formula but it does NOT include rustup or target mgmt.
 # Use the official rustup.rs installer (already in mise via `rust = "1.87.0"`).
 # rust — installed via mise rust plugin (wraps rustup, not brew)
+
+# ── pandoc (document conversion — book/EPUB build) ────────────────────────────
+# pandoc converts the book Markdown → EPUB (iPhone/e-reader) and other formats.
+# Consumed by tools/book-build/build-book.sh. Declarative-managed per the
+# single-source-of-truth discipline (the maintainer 2026-08-06: "download whatever
+# tools we need and link them in our declarative installers for all our OS shields").
+pandoc tier=standard

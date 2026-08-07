@@ -2,6 +2,9 @@ bin/
 !.codex/bin/
 !.codex/bin/**
 obj/
+# book build outputs (EPUB/assembled md) — reproducible via tools/book-build/build-book.sh;
+# never commit the binary EPUB (no-binary discipline) or the assembled draft.
+dist/
 *.user
 *.suo
 .vs/
