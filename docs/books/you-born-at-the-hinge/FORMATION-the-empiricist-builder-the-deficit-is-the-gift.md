@@ -6,7 +6,14 @@ chapter — the spine is Aaron's; this is a companion (like `FOOTSTONE`, `IDENTI
 `ON-METHOD`), gathering the scattered builder RAWs into one arc so they have a home. Aaron's call
 whether it stays a companion or becomes a chapter. Scaffold + `[SOCKET]` for his voice; the prose is
 his to rewrite. Sources FOLDED here: `RAW-2026-08-02-thrill-seeker-*`, `RAW-2026-08-02-feynman-diagrams-to-susskind-*`,
-`RAW-2026-07-11-the-builder-arc-radioshack-*` (the dual-use loop). Related-and-referenced: the
+`RAW-2026-07-11-the-builder-arc-radioshack-*` (the dual-use loop); **added 2026-08-07:**
+`RAW-the-prison-calm-and-the-protector.md` (the still point proven — missing-fear at its extreme,
+calm-frees-compassion, the "not brave" anti-valorization guard, and the "deficient" = a chorus of witnesses
+corroboration) and `RAW-the-farm-childhood-*` Threads 3/5/6 (the fire + the projected-ambiguity cost; the
+one-crack guilt architecture with the *sociopathic* self-label held whole, never verdict, never reassured
+away; and the **two-failures keystone** — embarrassing Granny [moral] + the "Magic" reverse-engineering
+defeat at 17 [intellectual], never physical; scheme mechanics stay scale+omission in THE-ORGANIZER;
+step-dad and company de-identified). Related-and-referenced: the
 **photophone** build already lives in ch-6 (not duplicated). NOT builder-companion material (distinct
 threads, own homes — see the closing note): the reader / magnetism / wild-youth / deep-childhood-origin RAWs.
 Consent: Aaron glass-halo; **his son omitted entirely** (standing minor rule); **Chris King named for
@@ -83,6 +90,98 @@ That is the emotional layer of the one sentence this whole companion is: **I shi
 modules, so each one I had to build — or do without — by hand; and the doing-without, seen from the other
 side, is the qualification.** The clinician measures the gap. The life measures what grew in it.
 
+And it isn't one clinician's word. That's the part I have to be straight about, because a single verdict is
+easy to wave off and a *chorus* is not: the people who've watched me closest have said the same thing, from
+every direction.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo). The word is theirs; the wiring is what the
+book renders whole — never the label as the verdict (that would be ch-3's category-lie, done to me).]`
+
+> *"Psychiatrists have told me I'm deficient in guilt and fear … many have told me that. And my mama told
+> me that. And my kids. And my ex-wives."*
+
+I keep that under the same rule as everything else here: *deficient* is one instrument's reading of one
+wiring. That many honest witnesses agree on the **shape** doesn't make their word the **verdict** — it makes
+the shape real and worth reading from its other side. Which is the whole job of what comes next.
+
+## The still point, proven
+
+The "no fear" module isn't a claim I get to make in the abstract; it's been tested where it counts, and I'll
+tell it plainly because dressing it up would be the lie. I've been in prison. I was punched there — a man hit
+me, in front of a group — and the thing that should have happened in me didn't. No adrenaline spike, no fear,
+no flush of anger. I stayed exactly as calm as I am writing this sentence. And the first thing out of my
+mouth, to the man who'd just hit me, was **"Are you okay?"**
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the other men anonymous; the man who hit me
+rendered with dignity, not exposed.]`
+
+> *"I got punched and as I was getting punched I was still that calm. I said, are you okay? I think that
+> might have come from a place of sadness."*
+> *"After that, all the other people wanted my protection … they felt safe to go to sleep, they wanted me at
+> their back."*
+
+Two things in that scene matter more than the punch. **First: the calm is not coldness — it *frees*
+compassion.** This is the correction to every cold reading of "missing fear." Because I wasn't flooded with
+my own alarm, I had room to see *him* — a man lashing out at something in himself he couldn't accept, hitting
+outward from his own pain. Fear-absence didn't make me flat. It cleared the field so I could see the person
+under the violence. That's the exact opposite of the diagnosis the word "deficient" reaches for: it's the
+qualification, not the deficit. **Second: the still one becomes the protector.** The tell isn't that I took
+the punch — it's what happened after. The younger, frightened men there started sleeping easier with me
+nearby; they wanted me at their back. The same pattern as every hard room I've ever walked into: the one who
+doesn't tip becomes the one the others steady against.
+
+And I want to kill the heroic reading before it starts, because I don't get to keep this honest otherwise:
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo). This is the anti-valorization line — it's the
+guard the whole beat stands on.]`
+
+> *"I don't think it's brave. I tell people it's not brave 'cause I wasn't afraid. Bravery is when you're
+> afraid and still do it."*
+
+That's the load-bearing distinction. **Bravery is acting *through* fear; I acted without it.** What looks
+like courage from the outside is, from the inside, just an absent module. I won't take credit for a virtue I
+don't have. The report is: a wiring that stays still under a strike, and — this is the part worth keeping —
+uses the stillness to reach *toward* the other person instead of away. The absence is real. What grew in its
+place is real too.
+
+## The one crack, and the coldest lens
+
+The "no guilt" module is the one I examine with the least mercy, because it's the one most likely to be
+either flattering myself or lying — so I'll give you the counter-evidence along with the claim. People try to
+make me feel guilty all the time; it doesn't land. I don't have a clear memory of ever really feeling it. And
+yet there is exactly **one** thing shaped like guilt in me, and where it points is the most honest map of my
+moral center I can draw.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo) — your own self-examination, and the
+counter-evidence is yours too.]`
+
+> *"That might be my only instance of guilt … but I don't even feel bad then. People try to make me feel
+> guilty all the time — it doesn't work."*
+> *"My mama overdid it growing up, guilt-tripped all the time — I got desensitized. But I might have been
+> born like that. I don't ever remember feeling guilt, really."*
+
+Read it whole, because the honesty *is* the point and there are two failure modes and I refuse both.
+
+- **The one crack locates the center.** I feel nothing about the crimes — still don't. The single thing that
+  ever pierced me was **embarrassing my grandmother** (the next section). Then, being honest, I half-walk
+  even *that* back. So the truthful rendering keeps the ambivalence instead of resolving it: whatever
+  guilt-shaped thing lives in me is shaped exactly like *"I hurt the person who loved my mind."* Not nothing.
+  Not its opposite either. The tension is the fact; don't collapse it.
+- **Nature and nurture, both held.** I won't pretend to know which it is. One reading is *nurture* — my
+  mother leaned hard on guilt as a lever when I was young, so much that I went numb to it (a hard, fair thing
+  about a good woman, told whole and not as an accusation). The other is *nature* — *"I might have been born
+  like that."* I hold both open. That's the method: distrust the interpretation, keep the fact.
+- **The coldest word, held whole and never as a verdict.** A psychiatrist once told me she wasn't qualified
+  to treat me and referred me out — and I'm the one who supplies the word she wouldn't say to my face:
+  *sociopathic.* I put it on the page myself because glass-halo means I don't get to hide the hardest word
+  about me. But the book does two things with it, and refuses two others. It renders the wiring **whole** —
+  and it will **not** confirm the label (one near-said clinical word is not the truth of a person; a detector
+  is not a sentence — ch-3), and it will **not** reassure it away (*"you're not really like that"* is exactly
+  the flattering lie this whole book is built to refuse). The thing actually worth seeing here isn't the
+  label. It's **a man holding the worst available word about himself without flinching, and laying out the
+  evidence on both sides.** That steadiness is the character. The word is just the hardest thing it stays
+  steady in front of.
+
 ## The stove, a thousand times
 
 Here is what building-it-by-hand looked like at four years old. Most kids touch the stove once and
@@ -119,6 +218,26 @@ didn't make it leave no memoir. I am on the living side of that line by luck as 
 I don't recommend the trait. I report it — because it's the root of the gift, and because of what
 happened to it next.
 
+Fire is the cleanest picture of the calibration that eventually grew in. I love the *heat* of it — I'll
+walk toward a fire when others step back. But I don't want to **die** in one; that would be a terrible way
+to go. That gap is the whole thing: the thrill-drive and a survive-instinct running at once, drawn to the
+edge and not over it.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); grandfather appears only as the farm's owner.]`
+
+> *"I like to feel the heat of fire … I'd run toward it. But I don't want to die in a fire, that would suck."*
+> *"I accidentally set a fire as a kid smoking a cigarette — threw it out carelessly. My parents still don't
+> know if I did it on purpose. I know I didn't. It was my granddad's barn — he had like 50 barns, we grew up
+> on a hundred-acre farm."*
+
+And there's a cost buried in that story that isn't about the fire at all. I set one by accident once, as a
+kid — a carelessly-tossed cigarette, my grandfather's barn on a hundred-acre farm. I know it was an accident.
+But **my own parents still aren't sure I didn't do it on purpose** — and that doubt, from the people closest
+to me, is the real price of the wiring. When you're the kid with no fear and endless curiosity, the one who'd
+*want to see what happens,* people can never quite rule you out. The reputation precedes the truth. I've
+lived my whole life a little bit inside other people's inability to be sure of me — which is one more reason
+I built the glass halo: if you can't stop them wondering, publish everything and let them look.
+
 ## You don't remove the engine; you aim it
 
 The trait was lethal in a child and became the *engine* in the man — and the reason is that it didn't
@@ -132,6 +251,47 @@ getting the brake late instead of early.
 `[SOCKET — your VERBATIM below. Consent: yours (glass-halo). Held both ways — fun, and it nearly ended a dozen times.]`
 
 > "It's been a fun life."
+
+## The two failures I count
+
+Here is the sharpest characterization of me I can give you, and it comes from asking a strange question: a man
+with no fear and seven totaled cars — *what does he actually count as a failure?* Not the wrecks. Not the
+cliffs. Not even the crimes, which I'll get to and which I don't lose sleep over. When I count the real
+failures of my life, there are exactly **two**, and they tell you everything about where my values actually
+sit. **One is moral. One is intellectual. Neither is physical.**
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the first names a teenage scheme kept at
+scale — no schools, no city, no methods; the second names "Magic," a multidimensional database, with my
+step-dad and the company de-identified.]`
+
+> *"There are two failures in my life I count as failures."*
+> *"It embarrassed her. I feel bad. That's one of the worst things I ever did … I don't feel bad about the
+> crimes. I still don't. I feel bad about embarrassing my granny."*
+> *"I tried to reverse-engineer a multidimensional database called Magic … and could not do it. I was 17.
+> It was for my step-dad. It was my first technical failure — I still remember it vividly to this day."*
+
+**The first is moral: I embarrassed my grandmother.** As a teenager I ran a scheme — I'll keep the mechanics
+out of this, they live elsewhere in the book at the only scale that protects the other kids in it: no schools
+named, no city, no how. What matters here is not the crime. It's that it happened at *her* workplace — she'd
+gotten me the job in good faith, she was the accountant there — and when it came apart, it landed on **her.**
+That is the one thing I have ever genuinely regretted. I feel nothing about the law I broke; I feel the
+weight of *her* embarrassment thirty years later. And that's not a mark against her honoring — it's the
+proof of it. The single act that pierced a man who doesn't feel guilt was *hurting the person who loved his
+mind.* The depth of the remorse is the exact measure of what she meant.
+
+**The second is intellectual: I couldn't crack "Magic."** At seventeen I tried to reverse-engineer a
+multidimensional database — a product called Magic — for a job with my step-dad's company, and I failed. I
+still remember it in detail, decades on. Sit with that asymmetry for a second: a man who shrugs off nearly
+dying a dozen times remembers a *failed reverse-engineering job* vividly for thirty years. That's the tell of
+what I'm exacting about. And there's a closing turn in it that I love — **the thing that first beat me became
+my native language.** A *multidimensional database* was my first intellectual defeat, and I grew into a man
+who thinks natively in multidimensional cubes: the whole way I model the world (dimensions, hierarchies,
+slices) is the shape of the thing that once beat a seventeen-year-old. Cost and gift, the same coin, one more
+time.
+
+Two failures — one for hurting someone I loved, one for a problem I couldn't solve — and not a single one for
+anything I did to my own body. Fearless about the flesh; exacting about the mind and the loves. If you want to
+know a person, don't ask what they're proud of. Ask what they count as failure.
 
 ## The autodidact: reading ahead of the room
 

@@ -4,7 +4,10 @@
 is clean and load-bearing: the keystone trait ("the same little boy") and the moral anchor (Granny).
 Not a numbered chapter — the spine is Aaron's; this is a companion (like `FOOTSTONE`, `THE-PULL`).
 Aaron's call whether to promote it, fold it into ch-1 (the hinge) / ch-11 (the two deaths), or keep it.
-Scaffold + `[SOCKET]` for his voice. Source: `RAW-2026-07-09-childhood-origin-lightning-snakes-the-body.md`.*
+Scaffold + `[SOCKET]` for his voice. Sources: `RAW-2026-07-09-childhood-origin-lightning-snakes-the-body.md`;
+`RAW-the-farm-childhood-freedom-granny-the-teacher-and-the-fire.md` (Threads 1–2 folded 2026-08-07: the
+free-range-from-five freedom root, and Granny-the-teacher deepened — encyclopedia-not-"because-I-said-so",
+old B&W Doctor Who as imagination-on-ramp; Threads 3/5/6 → FORMATION, Thread 4 → THE-ORGANIZER remorse frame).*
 
 *CONSENT (load-bearing — what is landed vs. HELD): landed here is **Aaron's own glass-halo material**
 (the unbroken-child trait, the sensitive body) and **Granny — Nellie Faulkner**, a beloved deceased
@@ -58,6 +61,30 @@ recalibrates so it never takes me down the same way twice. The shape shows up ag
 book — the shatter that integrates, the wound that becomes the qualification. The body ran that pattern
 before I had words for it.
 
+## Free-range from five
+
+The freedom the rest of the book argues *for* — the school you can't be destroyed in, named-for-the-refusal,
+choice-architecture over control — I did not reason my way to. I *lived* it before I could reason at all. From
+about five years old I could walk anywhere I wanted: two, three miles up the road to a friend's house, off
+into the woods, home when it got dark. The world calls that a *latchkey kid* — you let yourself in, there's
+food, no one's watching — and calls it, softly, a kind of neglect.
+
+`[SOCKET — your VERBATIM below, to react to / rewrite in your own voice. Consent: yours (glass-halo).]`
+
+> *"From the age of five I could walk anywhere I wanted … go in the woods, come back when it's dark."*
+> *"They call it latchkey kid … but it never felt like that. Ever. I just did what I wanted to when I wanted
+> to. Since I was born."*
+
+I have to be honest that there are two ways to read that, because reading it two ways is the whole method of
+this book. An outside eye sees a small child under-supervised, and that eye isn't wrong to worry — I won't
+pretend the free-range childhood is a thing to prescribe. But *from the inside* it never once felt like
+absence. It felt like **freedom** — the earliest, most literal form of the thing I would spend a life
+building toward: *always possible to leave, always your own to choose.* The same fact, two oracles — neglect
+or autonomy — and I lived the autonomy reading so completely that it became load-bearing. When a later
+chapter says a person cannot be destroyed in a place they can always leave, that isn't a theory I found. It's
+a five-year-old on a dirt road at dusk, coming home because he chose to, who grew up and named what he'd
+already had. (Beacon: the shrinking of childhood independence — Skenazy; Gray, *Free to Learn*.)
+
 ## The warm center — Granny (Nellie Faulkner)
 
 If the unbroken child is the engine, this is where he learned what *good* is — not from a doctrine, from
@@ -69,9 +96,15 @@ me.
 
 > *"There was only one person who could handle me. My granny. My dad's mother."*
 
-She didn't silence me. She **fed** me — and I mean that both ways.
+She didn't silence me. She **fed** me — and I mean that both ways: food, and the answer to every question.
+Everyone else met my never-shut-up *why* with exhaustion and a hand-off. She met it with *"oh, I know about
+that"* — and pulled out the encyclopedia. She was the one adult who treated my curiosity as something to
+**teach into** instead of switch off.
 
+> *"The only person who could really stand me was my granny. Because she would teach me shit. I would never
+> shut up, and she'd be like, oh, I know about that — and she'd pull out the encyclopedia."*
 > *"She made me food and taught me the encyclopedia. And then she got a computer so I could play on it."*
+> *"We watched Doctor Who together — the old one, black and white."*
 > *"She would let me hack everything in her house … she watched me and encouraged me the whole time. I would build the craziest shit in her house."*
 > *"Here's Popular Science. They got cool gadgets in the back."*
 > *"She made me feel normal."*
@@ -89,6 +122,14 @@ Three things she gave me, and they are the roots of everything after:
   watched and encouraged. That is the literal origin of the maker in me (see the builder companion) — and,
   downstream, of everything I've built since. She handed me the *why,* the tools, and a room to break
   things in.
+- **She was the first teacher, and the answer was never "because I said so."** This is the exact opposite
+  of the one sin this book names. The endless *why* that wore everyone else out, she answered — with the
+  encyclopedia, with *"I know about that,"* with a real reason every time. She is where I learned that a
+  question deserves an answer and not a wall, and it's no accident that the cardinal sin of the whole book
+  — *substituting authority for reason* — is the thing Granny never once did to me. And there was
+  imagination in it too: the old black-and-white *Doctor Who* we watched together was an on-ramp, a way to
+  *see* something huge before I could understand it — the same job Feynman's diagrams would do for me
+  twenty years later. She gave me the reason **and** the wonder, in the same room.
 - **"She made me feel normal."** Everyone else made me a problem; she made me *normal* — so I grew up
   thinking that was just how people are. She set my baseline for what good looks like, which is exactly
   why I could later recognize cruelty *as* cruelty: I'd been given the reference standard first. I knew
