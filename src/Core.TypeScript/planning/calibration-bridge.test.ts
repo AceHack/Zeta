@@ -183,10 +183,7 @@ import {
   emptyLedger as emptyRankLedger,
   trustBandOf,
 } from "./traveler-rank-ledger.js";
-import { EMPTY_LEDGER as emptyClaims, recordClaim } from "../observe/self-claims.js";
-import { createCalibrationLedger as emptyCalibration } from "./calibration-ledger.js";
-// ClaimsLedger type alias for new tests
-type ClaimsLedger = ReturnType<typeof emptyClaims>;
+import { recordClaim, type ClaimsLedger } from "../observe/self-claims.js";
 
 describe("resolveAtTickBridge", () => {
   const ZID2 = "zid-agent-B";
@@ -314,8 +311,9 @@ describe("resolveAtTickBridge + TravelerRankLedger", () => {
     ledger = recordClaim(ledger, {
       itemId: "task-A",
       agentId: ZID,
+      title: "task A",
       deadline: BASE_TICK + 100,
-      createdAt: BASE_TICK,
+      claimedAt: BASE_TICK,
     });
     return ledger;
   }
@@ -363,7 +361,13 @@ describe("resolveAtTickBridge + TravelerRankLedger", () => {
       let calLedger = createCalibrationLedger();
       let rankLedger = emptyRankLedger;
       for (let i = 0; i < hits + misses; i++) {
-        cl = recordClaim(cl, { itemId: `t${i}`, agentId: ZID, deadline: BASE_TICK + 100, createdAt: BASE_TICK });
+        cl = recordClaim(cl, {
+          itemId: `t${i}`,
+          agentId: ZID,
+          title: `task ${i}`,
+          deadline: BASE_TICK + 100,
+          claimedAt: BASE_TICK,
+        });
         const completedItems = i < hits ? new Set([`t${i}`]) : new Set<string>();
         const result = resolveAtTickBridge(
           cl, BASE_TICK + (i < hits ? 50 : 200), completedItems,

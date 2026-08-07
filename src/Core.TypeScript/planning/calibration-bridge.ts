@@ -290,7 +290,7 @@ export function resolveAtTickBridge(
   // Co-update the EP ranking ledger if provided.
   // Each settled claim is a hit (MET) or miss (MISSED) observation for the (zid, domain) pair.
   let newRankLedger = rankLedger;
-  if (rankLedger !== undefined && zid !== undefined) {
+  if (newRankLedger !== undefined) {
     const domain = rankDomain ?? hatId;
     for (const pending of pendingBefore) {
       const resolved = newClaimsLedger.resolved.find(
@@ -300,7 +300,7 @@ export function resolveAtTickBridge(
         continue;
       }
       const hit = resolved.outcome.status === "met";
-      newRankLedger = rankRecordOutcome(zid, domain!, hit, newRankLedger);
+      newRankLedger = rankRecordOutcome(zid, domain, hit, newRankLedger);
     }
   }
   return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger, rankLedger: newRankLedger };
