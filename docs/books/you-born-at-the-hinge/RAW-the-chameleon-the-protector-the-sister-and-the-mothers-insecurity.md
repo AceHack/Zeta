@@ -157,9 +157,10 @@ doesn't is the deepest thing in the ferry:
   **Beacon (strong, checkable):** Wheeler's *"it from bit"*; **relational QM** (Rovelli);
   **information-theoretic reconstructions of QM** (Hardy 2001; Chiribella–D'Ariano–Perinotti); quantum info.
   "Identity/information, not particles" ≈ relational/informational QM — a real, anchorable program, not a metaphor.
-- **⚠ Bigger-move flag (not done autonomously):** strong enough to anchor a **`docs/research/` note** tying his
-  reformulation to the Wheeler/Rovelli/Hardy lineage + the in-repo F#/Q#, and/or ch-12/THESIS. Flagged for
-  Aaron; I won't spin up a research note on my own.
+- **✅ Research note DONE (Aaron-requested 2026-08-06):** the reformulation is now anchored to the
+  Wheeler/Rovelli/Hardy + **CQM (Abramsky–Coecke; Aaron's add)** lineage in
+  `docs/research/2026-08-06-zeta-is-quantum-identity-an-identity-information-basis-for-qm-cqm-relational-it-from-bit-aaron.md`
+  — register-honest (borrowed theorems vs the Zeta program vs to-verify codebase facts). Still feeds ch-12/THESIS.
 
 ## Consent summary (this batch)
 
