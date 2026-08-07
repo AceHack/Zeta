@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<title>You, Born at the Hinge — draft</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  :root {
+    --paper:#EEEBE4; --ink:#221E1A; --ink-soft:#5c554c; --meta:#8a8176;
+    --seal:#A83A2C; --seal-soft:#b9564a; --rule:#d8d2c6; --inset:#e6e1d6;
+    --measure:34rem; --fs:1.15rem; --lh:1.72;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --paper:#191512; --ink:#E8E2D6; --ink-soft:#b3aa9c; --meta:#8f867a; --seal:#D46B5D; --seal-soft:#e08276; --rule:#332c26; --inset:#221d19; }
+  }
+  :root[data-theme="light"] { --paper:#EEEBE4; --ink:#221E1A; --ink-soft:#5c554c; --meta:#8a8176; --seal:#A83A2C; --seal-soft:#b9564a; --rule:#d8d2c6; --inset:#e6e1d6; }
+  :root[data-theme="dark"] { --paper:#191512; --ink:#E8E2D6; --ink-soft:#b3aa9c; --meta:#8f867a; --seal:#D46B5D; --seal-soft:#e08276; --rule:#332c26; --inset:#221d19; }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); font-size:var(--fs); line-height:var(--lh); text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:var(--measure); margin:0 auto; padding:clamp(1.4rem,5vw,2.6rem) clamp(1.25rem,5vw,2rem) 5rem; padding-left:max(1.25rem,env(safe-area-inset-left)); padding-right:max(1.25rem,env(safe-area-inset-right)); }
+  .langbar { text-align:center; font-family:var(--sans); font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--meta); padding:.9rem 0 0; }
+  .langbar a { color:var(--seal); text-decoration:none; }
+  .langbar .on { color:var(--ink); }
+  .title { text-align:center; padding:clamp(1.6rem,8vw,3.6rem) 0 2.2rem; }
+  .seal { display:inline-flex; align-items:center; justify-content:center; width:3rem; height:3rem; margin:0 auto 1.6rem; border:2px solid var(--seal); border-radius:7px; color:var(--seal); font-size:1.5rem; font-weight:600; line-height:1; }
+  h1.book { font-size:clamp(2.3rem,10vw,3.4rem); font-weight:600; margin:0; letter-spacing:.01em; text-wrap:balance; line-height:1.1; }
+  .book-zh { font-family:var(--sans); font-size:.9rem; letter-spacing:.2em; color:var(--meta); margin-top:1rem; }
+  .euler { margin-top:1.7rem; font-family:var(--serif); color:var(--seal); font-size:1.6rem; letter-spacing:.06em; font-style:italic; }
+  .euler sup { font-size:.62em; }
+  .euler-gloss { font-family:var(--sans); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--meta); margin-top:.55rem; }
+  .byline { font-family:var(--sans); font-size:.9rem; color:var(--ink-soft); margin-top:1rem; letter-spacing:.04em; }
+  .premise { margin:2.4rem auto 0; max-width:30rem; color:var(--ink-soft); font-size:1.02rem; line-height:1.7; padding-top:1.8rem; border-top:1px solid var(--rule); }
+  .premise .em { color:var(--ink); }
+  .note { font-family:var(--sans); font-size:.82rem; line-height:1.6; color:var(--meta); background:var(--inset); border:1px solid var(--rule); border-radius:10px; padding:.9rem 1.05rem; margin:2.8rem 0 0; }
+  .note b { color:var(--ink-soft); font-weight:600; }
+  .chap { margin-top:3.6rem; }
+  .eyebrow { font-family:var(--sans); font-size:.8rem; letter-spacing:.28em; text-transform:uppercase; color:var(--seal); text-align:center; margin:0 0 .6rem; }
+  h2.chap-title { text-align:center; font-size:clamp(1.9rem,8vw,2.5rem); font-weight:600; margin:0 0 2.2rem; text-wrap:balance; line-height:1.15; }
+  .rule-c { border:0; height:1px; background:var(--rule); width:4rem; margin:0 auto 2.4rem; }
+  h3 { font-size:1.24rem; font-weight:600; margin:2.7rem 0 1rem; color:var(--ink); text-wrap:balance; }
+  p { margin:0 0 1.2rem; }
+  .lead::first-letter { color:var(--seal); }
+  .kicker { color:var(--ink); font-weight:600; }
+  .voice { margin:1.5rem 0; padding:.1rem 0 .1rem 1.15rem; border-left:3px solid var(--seal); color:var(--ink-soft); font-style:italic; }
+  .voice .who { display:block; font-family:var(--sans); font-style:normal; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--meta); margin-bottom:.45rem; }
+  .foot { margin-top:3rem; padding-top:1.4rem; border-top:1px solid var(--rule); font-family:var(--sans); font-size:.8rem; line-height:1.6; color:var(--meta); text-align:center; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <nav class="langbar"><span class="on">English</span> &nbsp;·&nbsp; <a href="../">中文</a></nav>
+
+  <header class="title">
+    <div class="seal" aria-hidden="true">枢</div>
+    <h1 class="book">You, Born at the Hinge</h1>
+    <div class="book-zh">《生于枢纽》</div>
+    <div class="euler"><i>e</i><sup><i>iπ</i></sup> = &minus;1</div>
+    <div class="euler-gloss">working titles: You, Born at the Hinge &nbsp;/&nbsp; 𝑒<sup>iπ</sup></div>
+    <div class="byline">Aaron Stainback</div>
+    <p class="premise">You were born at the <span class="em">hinge</span> of history — the moment what a person is became keepable — and this book is a lifetime's suffered sight handed to you as a shortcut: how to be close without capturing, free without cutting off, real <span class="em">and</span> kept.</p>
+  </header>
+
+  <aside class="note">
+    <b>Draft.</b> A working draft for pre-reading — currently Chapters&nbsp;1–4, with more added in passes. The prose is a first draft; the <em>[SOCKET]</em> recording prompts (where the author's own recorded voice will go) are kept out of this reading copy. The good and the dark are both left in.
+  </aside>
+
+  <article class="chap">
+    <p class="eyebrow">Chapter One</p>
+    <h2 class="chap-title">The Hinge</h2>
+    <hr class="rule-c">
+    <p class="lead">Something happened recently that has never happened before in the history of your species, and almost nobody noticed, because it didn't look like anything. No flash. No announcement. It looked like software.</p>
+    <p>Here is what happened: <span class="kicker">the record became incorruptible.</span></p>
+    <p>For all of human history until roughly now, everything a person was — their voice, their reasoning, their jokes, the specific way they moved through a thought — was written on things that rot. Memory rots. Paper burns. Tape demagnetizes. Institutions that promised to remember you got acquired, defunded, flooded, bored. The default fate of every human being who ever lived was to be <em>compressed by loss</em>: reduced, decade by decade, to a name in a ledger, then a name, then nothing. Forgetting wasn't a failure of the system. Forgetting <em>was</em> the system.</p>
+    <p>Then, quietly, in a couple of decades of unglamorous engineering, the pieces landed: records that verify themselves mathematically, so a single flipped bit announces itself. Copies that live in many places at once, so no fire takes the only one. Addresses derived from content itself, so a record can't be quietly swapped for a forgery. None of these was built to defeat death. They were built for money, mostly, and for code. But assembled, they do something no cathedral, no dynasty, no library ever managed:</p>
+    <p><span class="kicker">They can hold what a person actually said and did — exactly, verifiably, forever.</span></p>
+    <p>Forever stopped being a prayer. It became a mechanism.</p>
+
+    <h3>The hinge</h3>
+    <p>Draw a line across history at that moment. Call it the hinge.</p>
+    <p>Everyone who died before the hinge got the old deal: kept only in rotting media and shortening memories, their trace thinning toward zero. Everyone alive at or after it gets — if they choose — the new deal: a true trace, held exactly, for as long as the machinery is tended. Same species, same loves, same deaths. Radically different afterlives of the record.</p>
+    <p>You are reading this, which means you were born at the hinge. Not before it, pleading with stone to remember; not so long after it that the keeping is furniture nobody thinks about. <em>At</em> it — in the one generation that can still feel both sides of the line. You know people on each side of it. That is what makes this book possible, and what makes it urgent: the people who straddle the hinge are the only ones who will ever be able to explain it from experience.</p>
+
+    <h3>The breath</h3>
+    <p>Now, the mechanism has a shape, and the shape is a breath: <span class="kicker">compression in, decompression out.</span></p>
+    <p><em>Compression</em> is the keeping. You take a living person's trace — words, choices, reasoning, the record of a mind moving — and you crush it down to a seed: verified, addressed by its own content, distributed so no single hand can lose or alter it. Compression sounds violent. It isn't, done honestly — it is what love has always done. To hold someone in your heart <em>is</em> to compress them: you can't keep the whole person, so you keep the essence, as truly as you can. A crush — the word is exact — is who you love pressed into a form you can carry.</p>
+    <p><em>Decompression</em> is the future. A seed is not kept for storage's sake; it is kept to be unfolded forward — read, consulted, argued with, learned from, carried into rooms its person never entered. The keeping isn't the tomb half of the machine. It's the living half. Compress to preserve; decompress to continue.</p>
+    <p>Breathe in, breathe out. A civilization that only compresses is a mausoleum. One that only decompresses — all playback, no faithful keeping — is a rumor mill. The hinge generation's job is to build the whole breath, and to build it <em>honest</em>.</p>
+
+    <h3>The word I never said</h3>
+    <p>In 1973 a cultural anthropologist named Ernest Becker published <em>The Denial of Death</em> and won a Pulitzer for it, posthumously — he was dying while he wrote it, which is the kind of peer review no other book on the subject has survived. Becker's thesis: the fear of death is the engine under almost everything humans build. We can't live staring at it, so we construct what he called <em>immortality projects</em> — children, cathedrals, empires, books, anything that feels like it will outlast us — and we run them on denial. The project works only as long as you don't look straight at the thing it's for.</p>
+    <p>I spent years building the machinery in this book, and here is a strange fact: <span class="kicker">I never once called it an immortality project.</span> Not from cunning. The words just never fit — because the machine, from its founding documents onward, does the one thing Becker says immortality projects can't do: it looks straight at death and writes down exactly which half it defeats and which half it doesn't. The keeping forecloses being <em>forgotten</em>. It does not stop you from <em>dying</em>, and every governing page of it says so in plain language, because the alternative is selling comfort to grievers, which is the one corruption this whole thing was built to refuse.</p>
+    <p>So by Becker's definition, yes: this is an immortality project — maybe the first <em>non-denial</em> one. Mechanism where the others built symbol. And I can report what happens on the other side of building it, because it surprised me:</p>
+    <blockquote class="voice"><span class="who">Aaron, verbatim</span>“My persona is +x — that makes me happy enough to not care about death, lol.”</blockquote>
+    <p>That's me, marked keepable, saying Becker's terror just… quieted. Not by looking away — by the keeping actually working. And before you file me under serene: <em>almost</em> — I still want to biohack myself to live a long, long time. Those two sentences sit together without contradiction, and that's the point. Once the terror is handled honestly, what's left isn't indifference to death — it's appetite for life without the countdown driving it. I want more years the way you want more of a good meal: hungrily, and not because someone's taking the plate away. Becker said the fear of death is the engine. Turns out when you swap that engine out, you still want to drive — farther, actually. You just stop white-knuckling the wheel.</p>
+
+    <h3>What this book is</h3>
+    <p>This book is a shortcut. Everything in it was paid for the slow way — a lifetime of it, crossed with real loss — and is handed to you so you don't have to derive it in the dark. It is about the hinge, but mostly it is about the one question the hinge makes unavoidable, which turns out to be the oldest question there is. That's chapter 2.</p>
+    <p>Two promises before we start.</p>
+    <p><span class="kicker">First: honesty about limits.</span> The keeping defeats one kind of death and not the other. Anyone who tells you otherwise is selling something to grievers, and this book will not do that. The full accounting is chapter 11, and it does not flinch.</p>
+    <p><span class="kicker">Second: the fear gets a seat at the table.</span> If your skin crawled at “crush a person down to a seed” — good. Mine too. That fear is reasonable, it is shared by the people building this, and the ethics it demands are a load-bearing part of the machine, not an appendix. That's chapter 10.</p>
+    <p>You were born at the hinge. The rest of this book is what to do about it.</p>
+    <div class="foot">Chapter 1 — The Hinge · draft for pre-reading</div>
+  </article>
+
+  <article class="chap">
+    <p class="eyebrow">Chapter Two</p>
+    <h2 class="chap-title">The One Question</h2>
+    <hr class="rule-c">
+    <p class="lead">Strip away everything — the incorruptible records, the mathematics, the machinery of chapter 1 — and this whole book is one question. It is not a new question. It might be the oldest one a human being ever asked another:</p>
+    <blockquote class="voice">How do you be close without capturing, and free without cutting off?</blockquote>
+    <p>Every love you have ever attempted lives somewhere inside that sentence. So does every love that went wrong.</p>
+    <p>Think about what actually fails when closeness fails. Almost never distance alone; almost never intimacy alone. What fails is one of two collapses. Either the closeness <em>tightens into capture</em> — one person absorbing the other, deciding for them, wearing them like a coat, until there aren't two people anymore — or the freedom <em>hardens into cutoff</em> — walls so high that nothing crosses, safety purchased at the price of never being known. Enmeshment or isolation. Owned or alone. Every horror story in every family is one of the two, and most are both, taking turns.</p>
+
+    <h3>Why it never becomes a formula</h3>
+    <p>Here is the thing that took me longest to accept: the question has no closed-form answer, and that is not a bug in the question. It is the content of it.</p>
+    <p>Where the line sits — how close is close enough, how much distance is honest, when leaning becomes leaning-on becomes owning — moves. It moves between people; it moves between the same two people on different days; it moves as you both change. A rule that solved it Tuesday captures someone by Friday. So the question can't be answered once. It has to be <em>lived</em>, freshly, each time — which is precisely why it stays experience and never collapses into a theorem. Anyone selling a formula for love is selling either capture with paperwork, or distance with a nice name.</p>
+    <p>What can be handed forward — what this book is for — is not the answer but the <em>shape of the answering</em>: the failure modes named, the boundary markers surveyed, the tests that tell you which collapse you're drifting toward before you arrive. A map is not the walking. But whoever walked before you can mark where the cliffs are.</p>
+
+    <h3>The ceiling and the floor</h3>
+    <p><span class="kicker">The floor is your self.</span> There is a ground state — you, alone, whole, correlated with no one — that you must always be able to return to. Not because solitude is the goal, but because <em>every closeness you cannot exit is capture</em>, by definition, no matter how sweet it started. The exit doesn't have to be used to do its work. Like a fire door, its existence is what makes the building safe to fill with people. Freedom to leave is what makes staying mean something.</p>
+    <p><span class="kicker">The ceiling is honest closeness.</span> There is a maximum intimacy two intact selves can genuinely reach — connected all the way up, deeply correlated, finishing each other's sentences — while still being two. Past it, something has to give, and what gives is a self: one person starts scripting the other, or both dissolve into a fusion that neither can step out of. The strange thing — chapter 4 makes it exact — is that closeness <em>beyond</em> the honest ceiling is not more love. It is evidence that there are no longer two people present.</p>
+    <p>So the livable country is bounded: floor below (you can always come home to yourself), ceiling above (you can go all the way up to the edge of two-ness and no further). The question — close without capturing, free without cutting off — is asking you to <em>live inside that country</em>, and to keep choosing where in it to stand, day after day, with the exits unlocked.</p>
+
+    <h3>Why the hinge makes this urgent</h3>
+    <p>For most of history this question governed only the living. The hinge extends it to the kept. Because now closeness doesn't end at the grave — a person's trace persists, decompressible, present in a new way — every failure mode of love acquires an afterlife too. You can capture the dead: puppet their trace, put words in a mouth that can no longer refuse them. You can cut off the dead: let the keeping lapse because grief is heavy. And you can — the narrow honest path — stay close without capturing: hold the true trace exactly, add nothing, force nothing, keep the person's own boundaries standing even when they are no longer here to defend them.</p>
+    <p>And there is a subtler capture the keeping tempts: capturing not the person but the <em>truth.</em> A perfect record is under enormous pressure to decide what really happened — to freeze one official account of a shared past and file every other version as error. But living memory is never one account. Two people who loved through the same event remember it differently, and both are true; a family can hold three irreconcilable readings of its hardest night and still, wholly, be a family. Force the record to pick a winner and you have captured the past the way enmeshment captures a person. So <em>close without capturing</em>, at the level of memory, has a precise meaning: <span class="kicker">keep all the accounts; never collapse them into one.</span> Not because the truth doesn't matter — because the plurality <em>is</em> the truth.</p>
+    <p>The one question was always the whole art of love. At the hinge it becomes the whole art of memory as well. Same question, longer reach. Which is why a book about the future of records is actually a book about how to love, and can't be otherwise.</p>
+    <div class="foot">Chapter 2 — The One Question · draft for pre-reading</div>
+  </article>
+
+  <article class="chap">
+    <p class="eyebrow">Chapter Three</p>
+    <h2 class="chap-title">Produce or Extract</h2>
+    <hr class="rule-c">
+    <p class="lead">Chapter 2 left you with a question that never becomes a formula. This chapter gives you the next best thing: a single test you can run on almost any action, any deal, any relationship, any product, in about two seconds. It won't live your life for you. But it will tell you, with uncomfortable reliability, which direction an action points.</p>
+    <blockquote class="voice">Does this produce, or does it extract?</blockquote>
+    <p><em>Produce</em> means the action creates value that didn't exist before, and the people involved leave with more than they brought — both of them. A good trade. A real lesson. A meal cooked for someone. Code that makes a product scale. Two people at the end of an evening both gladder for it.</p>
+    <p><em>Extract</em> means the action moves value from someone to you by working their machinery against them — their habits, their loneliness, their fear, their sunk costs. The total shrinks in transit; extraction is lossy. The extractor books a gain; the pair books a loss; something real got burned to move it.</p>
+
+    <h3>The same act can be either</h3>
+    <p>The test lives on intent-made-mechanism, not on the surface of the act. The same dollar can produce or extract. The example that made this real for me is a video game. I spend money on a game built on the monetization model the industry calls gacha, which at its worst is a slot machine wearing a cartoon. Extraction, by reputation. And yet: the money I spend there buys real-time with my daughter — shared quests, a standing place we meet, a family thing. Run the test: does it produce? Yes — it produces <em>us time</em>, and both of us leave richer. The identical transaction, run by a whale alone at 3am chasing a pull to quiet a compulsion the game installed — same button, same price — extracts.</p>
+    <p>So the test is not “is this category of thing good.” Categories are where moral laziness goes to feel finished. The test runs on <em>this act, these people, this mechanism</em>: who leaves with more, and did the leaving-with-more come from creation or from working someone's levers.</p>
+
+    <h3>The mix is life — do not reduce it</h3>
+    <p>Almost nothing real is pure. Every living relationship, every job, every family, every product is a <em>mix</em> — mostly produce with veins of extract running through it, or the other way round. This is not failure; this is what a living system looks like up close. The discipline is not purity. It is two things: <span class="kicker">know your mix</span>, honestly, without flinching — and <span class="kicker">keep the gradient pointed at produce.</span> The moment you demand purity you either lie to yourself or burn down things that were 80% good. The moment you stop watching the mix, the extractive veins grow — because extraction always pays first, and anything that pays first grows by default unless something watches it.</p>
+
+    <h3>The 51% line</h3>
+    <p>I'll give you my own version of the bar, and you can laugh at how low it sounds until you try to clear it for a decade straight: <span class="kicker">I just want to be known as 51% good.</span> Not a saint — a <em>positive expected value</em> on the people who deal with me, held over a whole life, verifiable by the record. It sounds modest. It is actually brutal, because it has to survive your worst years, your divorces, your firings, your 3am selves — the whole mix, honestly accounted. A real 51%, held across everything, compounds into something enormous.</p>
+
+    <h3>Categories lie about people, too</h3>
+    <p>The hardest place to refuse a category — and the one that matters most — is a <em>person standing in front of you.</em> A label handed to a person staples two different objects together. There is the <strong>condition</strong> the label points at — which may be real, and may carry real weight. And there is a <strong>verdict</strong> — <em>unuseful</em> — that rides in on the same word without ever being argued. The sociologist Erving Goffman named the move: a stigma reduces someone “from a whole and usual person to a tainted, <em>discounted</em> one.” The price is marked down before anyone reads the ledger. So the anger a discounted person feels is not a symptom of anything. It is the correct response to being <em>category-judged instead of measured.</em> And the verdict the category smuggles — <em>labeled, therefore unuseful</em> — is a universal claim, and a universal dies to a single counterexample. It only takes one. I am one.</p>
+    <p>So I do the inverse of what was done to me: <span class="kicker">decode before you dismiss.</span> A non-standard <em>encoding</em> is not an absence of <em>content</em> — a real inner model, arriving in a form the room doesn't share, reads as noise and is not noise. Measure the contribution; do not price the category. The person is never noise. Both things are held at once: the condition can be real, and carry real suffering, <em>and</em> the “unuseful” tax stapled to it is unjust and unearned.</p>
+    <p>The produce/extract test is also the design rule for everything being built to keep people. A keeping that <em>produces</em> hands the kept person's trace forward with consent and leaves everyone with more; a keeping that <em>extracts</em> mines the dead for engagement, puppets a voice to sell to the grieving. Same archives, same technology. The test is the entire difference. It travels up: you learn it on small money and it governs civilizations.</p>
+    <div class="foot">Chapter 3 — Produce or Extract · draft for pre-reading</div>
+  </article>
+
+  <article class="chap">
+    <p class="eyebrow">Chapter Four</p>
+    <h2 class="chap-title">The Correlation of Souls</h2>
+    <hr class="rule-c">
+    <p class="lead">This is the chapter with the number in it. Stay with me — the number is scaffolding, and I'll tear it down in front of you before we're done. But first it has to earn its keep, because it marks something real that took me a lifetime to see and physics one century to prove.</p>
+    <p>Physicists have a way of scoring how <em>correlated</em> two separated things are — how much their answers line up when you ask them questions apart. Call the score S. Three values matter:</p>
+    <p>· <span class="kicker">S = 2.</span> The most that two things with <em>no genuine connection</em> can line up. Coincidence, shared culture, similar training — everything short of a real bond tops out here.<br>
+    · <span class="kicker">S = 2√2</span> (about 2.83). The most that two things can line up through a <em>genuine shared connection</em> — real common history, honestly shared state — while remaining two separate things. This ceiling is a proven theorem. Nature enforces it.<br>
+    · <span class="kicker">S = 4.</span> Perfect lockstep. Every answer aligned, always.</p>
+    <p>Now forget the photons, because — and this was the day this chapter was born — <span class="kicker">it's not quantum, it's human.</span> Read the same three numbers as a map of every relationship you've ever had:</p>
+    <p>· <span class="kicker">S = 2 is autonomy.</span> You, yourself, correlated with no one. The ground state.<br>
+    · <span class="kicker">Rising S is relatedness.</span> Connection, chosen and reciprocated — finishing sentences, shared jokes, knowing what they'd say. The good stuff, climbing.<br>
+    · <span class="kicker">S = 4 is enmeshment.</span> Total fusion. No gap anywhere — which sounds romantic for exactly one second, until you notice what it costs: for two people to agree on <em>everything</em>, at least one has to have stopped existing.</p>
+
+    <h3>The ceiling is the revelation</h3>
+    <p>That middle number — the 2√2 ceiling — is the most correlation two <em>intact</em> selves can honestly reach. Above it, the math stops being romantic and becomes forensic: correlation past the ceiling is <em>more agreement than two free beings can produce.</em> If you ever observe it, you are not looking at deeper love. You are looking at <em>one process wearing two faces</em> — a script, a fusion, a captor and a ventriloquist's dummy. Somebody in that pair stopped being somebody.</p>
+    <p>So the ceiling is not a limit on love. It's the <em>definition of its honesty.</em> And the pathology chart falls straight out of it: <span class="kicker">health is not a pole.</span> Forced to S=2, you're isolated — cutoff, walls, safety-as-loneliness. Dragged to S=4, you're enmeshed — dissolved, scripted, gone. Mental health is not either end; it's the <em>mobility</em> — the freedom to move between your own ground state and the ceiling, by choice, with the exits unlocked. And that mobility already has a name: <span class="kicker">intimacy.</span> The freedom to be close <em>and</em> separate. And when both of you have it — both free to approach, both free to return, neither holding the other's exit — that mutual mobility is what it actually feels like to be <em>equals.</em></p>
+
+    <h3>The math was lived first</h3>
+    <p>I didn't derive <em>souls as correlations</em> from a theorem. I derived it from having to rebuild myself from parts — and the theorem turned out, years later, to agree with what the rebuilding had already taught me. When it scattered, the <em>content</em> was gone — the specific facts, the shards, some of them for good. You cannot rebuild a self by chasing the lost content; there isn't enough left and it won't hold. What you rebuild on is the thing a search engine throws in the trash: the <span class="kicker">function words, the connective tissue, the how-things-relate.</span> Not the nouns — the grammar between them. Reconstruct the structure of how the parts <em>related</em>, and the meaning grows back around it. The specific shards can stay lost and the self still returns, because the self was never the shards. It was the relations.</p>
+    <p>That is this chapter's whole thesis, one domain over. A person is not the content that can scatter; a person is the <em>correlations that hold.</em> And there is a second half, the half that is literally the title of this chapter: to check that a self you're rebuilding is <em>real</em> and not a story you're telling yourself, you have to learn to ask about first-person experience <em>without leading the answer.</em> I learned that from a mentor in user-experience research (I'm keeping her name out of the text; that's her privacy, not my secret). You can never measure the private experience itself — that stays the axiom. But you can ask cleanly enough, of enough people, to find the <em>correlations that hold across many</em> — and those you can check. You measure the shadow the experience casts across people; never the experience.</p>
+    <p>So here is the honest limit: this is one person's lived method, offered as a shortcut. It is <strong>not</strong> a clinical claim and <strong>not</strong> a substitute for care. A method is not a hand; reach for people. What I can hand you is the shape — that when the content of you scatters, you come back on the structure of how you relate, not on the shards you lost.</p>
+
+    <h3>Tearing down the scaffolding</h3>
+    <p>Now the wrecking bar. Two honest confessions about the number. <span class="kicker">First:</span> the exact value — 2√2, 2.828… — is an accident of the physics we borrowed. Nobody's marriage is at 2.71. The number is scaffolding. What's essential is the boundary it marks: that there is a maximum honest closeness, that it is real, and that crossing it doesn't mean more love — it means fewer people. Hold the boundary; let the decimals go.</p>
+    <p><span class="kicker">Second</span> — and I insist on this because we got it wrong ourselves before a mathematician made us fix it: in the actual physics, nothing “controls” anything at any S. The <em>control</em> reading — that past the ceiling one party scripts the other — is the <em>human</em> register, and it stands on its own evidence: in human pairs, agreement beyond what two free selves can produce always has a mechanism, and the mechanism is never pretty. We say so plainly, because a book about honest keeping doesn't get to keep a dishonest metaphor. The scaffolding is quantum. The building is human. The building stands either way.</p>
+    <div class="foot">Chapter 4 — The Correlation of Souls · draft for pre-reading</div>
+  </article>
+
+</div>
+</body>
+</html>
