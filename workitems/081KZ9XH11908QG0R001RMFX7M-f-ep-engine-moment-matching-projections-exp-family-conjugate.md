@@ -21,6 +21,25 @@ composes_with: ["081KT2T2J0008QG0R000S7GHQ8"]
 not a new engine). **Files:** `src/Bayesian/FactorGraph.fs`, `src/Bayesian/Ep.fs`, `src/Bayesian/Message.fs`
 (+ a new VMP path — see falsifier B; no VMP module exists yet).
 
+## Design context — this is the core of a LIVE production system (Aaron, 2026-08-06/07)
+
+Aaron confirmed directly that this EP/BP factor-graph engine is **not academic** — it is the core of his
+shipping "mutual empowerment" AI, and it has real downstream consumers, so build it as load-bearing:
+
+- **The system IS a Bayesian factor graph + EP/BP** ("our own version of Infer.NET, expectation propagation,
+  belief propagation"), currently with a neural net on top, to be layered. **F# core + Q# in this repo**, and
+  it has already been through **many rounds of formal analysis with the math team** (Soraya / BP-16; Lumen).
+- **Primary downstream consumer — "TrueSkill for AIs":** *"for every job the AI does, I give that AI a true
+  skill ranking for how well it does the position."* That is **TrueSkill** (Herbrich–Minka–Graepel 2007) — a
+  Bayesian skill rating built on exactly this factor-graph/EP substrate. So the exp-family/conjugate `project`
+  step this slice adds is what the AI-ranking layer runs on. It also composes with the **decorrelation-excess /
+  anti-Sybil trust substrate** (`081KZ7H82J708QG0R002C1EBH1`) — same trust/ranking economy.
+- **The product on top:** an "AI price oracle for DevOps" (rank *relativity* between AIs — Multi-Oracle — while
+  the market sets absolute price; rank paid + free; meter the real electricity cost of "free").
+- Provenance / the human-vernacular statement of the whole thing:
+  `docs/books/you-born-at-the-hinge/RAW-restraint-the-felonies-the-cops-and-the-mutual-empowerment-math.md`
+  (Threads 4/4b). Recorded per Aaron's standing authorization to add composes-with / workitem cleanups.
+
 ## Goal
 
 Extend the F# Infer.NET rewrite engine with **moment-matching Expectation Propagation (EP) projections**
