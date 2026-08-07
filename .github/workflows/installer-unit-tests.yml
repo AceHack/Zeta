@@ -1,0 +1,84 @@
+# Installer unit tests — the USB/zflash provisioning suite gate.
+#
+# WHY THIS EXISTS:
+# `build-and-test` (the required floor) runs `dotnet test` (.NET) but NOT
+# `bun test` — so the TypeScript installer suite (271 tests across 11 files:
+# credential-binding, wifi-esp-to-nm, zeta-creds-*, zeta-hardware-detect,
+# key-refusal-falsifier) was running nowhere in CI. These are the
+# USB/zflash first-install + self-heal provisioning tests (trajectory
+# docs/trajectories/usb-zflash-installer/); a regression in them is a
+# regression in getting a node onto metal. This focused, path-filtered
+# workflow closes that gap.
+#
+# ARCHITECTURE (post-2026-08-01 "THE FLIP", gate.yml gate-required note):
+# blocking-floor additions are a treaty-amendment consent path, so this is
+# deliberately a SEPARATE targeted workflow — same pattern as
+# k8s-argocd-health-test.yml / keyring-dst1000.yml — NOT an entry in the
+# gate-required needs: list. It runs on every PR/push that touches installer
+# code and gives its own red X; it does not block unrelated lanes.
+#
+# SECURITY: only the SHA-pinned checkout action is used (per
+# docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md); no attacker-controlled PR
+# title/body/branch text is interpolated into any `run:` block.
+
+name: installer-unit-tests
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "src/Core.TypeScript/installer/**"
+      - ".github/workflows/installer-unit-tests.yml"
+      - ".mise.toml"
+      - "package.json"
+      - "bun.lock"
+      - "tsconfig.json"
+  push:
+    branches: [main]
+    paths:
+      - "src/Core.TypeScript/installer/**"
+      - ".github/workflows/installer-unit-tests.yml"
+      - ".mise.toml"
+      - "package.json"
+      - "bun.lock"
+      - "tsconfig.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  installer-tests:
+    name: installer unit tests (bun)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run installer unit tests
+        run: bun test src/Core.TypeScript/installer/
