@@ -1,0 +1,14 @@
+{
+  "id": "080cfeed58cad011a0130008f854ecf8",
+  "at": "2026-08-07T19:20:05.722Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZETP6AT08QG0R003MG1VYN",
+    "type": "bug",
+    "title": "x86_64 build-ai-cluster-iso: QEMU scenario-1 first-boot install fails at mise toolchain step (regression since ~2026-08-02)",
+    "slug": "x86-64-build-ai-cluster-iso-qemu-scenario-1-first-boot-insta",
+    "priority": "P2",
+    "filename": "081KZETP6AT08QG0R003MG1VYN-x86-64-build-ai-cluster-iso-qemu-scenario-1-first-boot-insta.md"
+  }
+}
