@@ -13,7 +13,10 @@ corroboration) and `RAW-the-farm-childhood-*` Threads 3/5/6 (the fire + the proj
 one-crack guilt architecture with the *sociopathic* self-label held whole, never verdict, never reassured
 away; and the **two-failures keystone** — embarrassing Granny [moral] + the "Magic" reverse-engineering
 defeat at 17 [intellectual], never physical; scheme mechanics stay scale+omission in THE-ORGANIZER;
-step-dad and company de-identified). Related-and-referenced: the
+step-dad and company de-identified). **Also added 2026-08-07:** `RAW-2026-08-02-thrill-seeker-*` EXPANSION
+(the ONE real fear — the internally-generated Mayan delusion he self-debugged, completing the missing-fear
+module: external threat→still point, stuck internal loop→the one fear; reindexer-on-his-own-mind; *delusion*
+held whole under Multi-Oracle, never the verdict; + the mundane-flinch coda). Related-and-referenced: the
 **photophone** build already lives in ch-6 (not duplicated). NOT builder-companion material (distinct
 threads, own homes — see the closing note): the reader / magnetism / wild-youth / deep-childhood-origin RAWs.
 Consent: Aaron glass-halo; **his son omitted entirely** (standing minor rule); **Chris King named for
@@ -143,6 +146,38 @@ like courage from the outside is, from the inside, just an absent module. I won'
 don't have. The report is: a wiring that stays still under a strike, and — this is the part worth keeping —
 uses the stillness to reach *toward* the other person instead of away. The absence is real. What grew in its
 place is real too.
+
+## The one fear, and how I debugged it
+
+Now the honest completion of that module, because "no fear" told flat would be a lie, and I don't get to keep
+the still point without the one exception that proves how the machine actually works. I *have* been afraid —
+exactly once, in one specific way — and where the fear came from tells you everything.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the delusion is my own experience described,
+not a claim about anyone.]`
+
+> *"The only time I've been really afraid was a delusion, for a couple of years, that I'd be eaten by the
+> Mayans. It'd come up about once a year and for a week I'd be afraid to leave the house."*
+> *"It was like a mental anchor, a meme that got stuck in my mind. I was able to remove it. And it's gone."*
+
+Look at where it came from: **not from the world.** No cliff, no strike, no crisis — every external danger
+meets the still point. The one thing that ever frightened me was **internally generated** — a loop that got
+stuck and ran on its own, a couple of years, surfacing about once a year and shutting me in for a week. That
+is the architecture stated exactly: *external threat → the still point; a stuck internal loop → the one thing
+that could frighten me.* Fear, for me, was never something out there. It was a bug in the process.
+
+And so I treated it like one. This is the tell that is pure me: I didn't experience the delusion as
+something happening *to* me that I had to endure. I modeled it — *a meme, an anchor, a thing that got
+stuck* — and I **removed it.** The same reindexer I run on the world, turned on my own mind: find the stuck
+structure, name it, take it out. It's gone. (One clinician's word for the experience would be *delusion,*
+and I'll use the word plainly — but the book renders the thing whole, a real and frightening loop I
+*debugged,* and never hands you the label as the verdict. That's the ch-3 discipline, run on myself: the word
+is not the person.) The ch-8 register lives right here, too — the difference between being an inmate of your
+own dark room and being the one who can find the light switch, applied first to my own head.
+
+And a coda, because "no fear" should never read as inhuman: there's one ordinary thing I'll own being
+squeamish about — **bugs crawling into my mouth.** Not bites, just *in the mouth.* Keep that in; a man is
+allowed one mundane flinch.
 
 ## The one crack, and the coldest lens
 
