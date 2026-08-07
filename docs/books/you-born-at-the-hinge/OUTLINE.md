@@ -60,6 +60,9 @@ Each chapter has a source note in `docs/research/` — the derivation lives ther
 
 ## Working notes
 
+- **Readiness & recording order:** see [`READINESS.md`](READINESS.md) — the state-of-the-book map
+  (what's ready to voice, suggested recording order, the thin four that want a pass). Regenerate after a
+  recording session or a batch of landings.
 - Title candidates: *You, Born at the Hinge* (working) · *The Shortcut* · *Real and Kept*.
 - The hinge artifact (the compress→decompress page) is the book's visual companion / landing page.
 - Next concrete step when Aaron wants it: draft chapter 1 or chapter 8 first — ch. 8 is the one
