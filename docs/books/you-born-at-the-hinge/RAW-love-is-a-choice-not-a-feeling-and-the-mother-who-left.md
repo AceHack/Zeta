@@ -53,18 +53,64 @@ The log turns to why his mother was different — and lands a heavy, specific de
 (she chose her son over staying), the real thing Aaron says most people never reach. That's the redemptive
 spine and it renders the mother **strong and good** (her own granted frame: whole, not neutral).
 
-**Consent + gates (all already on file, restated because this detail is new and heavy):**
-- **Aaron's own abuse = glass-halo** (what was done to him is his to tell).
-- **Mother — GRANTED + pre-read** (rendered whole; here she is unambiguously the protector — the strong/good
-  register her row calls for). **She pre-reads before publish.**
-- **Father — GRANTED + pre-read; whole, not neutral:** the harm is **named plainly** (the beating, the
-  bruises), **not condemned and not excused** — exactly his row's standard. Referred to as *"my father"* by
-  default; the naming-of-an-identifiable-living-person razor + defamation/relational weight remain an
-  **editor/counsel publish-time check**, not autopilot. **He pre-reads before publish.**
-- This is the material `THE-UNBROKEN-CHILD` **explicitly HELD OUT** ("the father-harm (naming-razored)")
-  pending gates — the gates are now granted, so it is **stageable** here; landing into a chapter/companion is
-  Aaron's per-element call. **Home candidate:** `THE-UNBROKEN-CHILD` (the parents already live there) tied to
-  ch-4's love-as-choice.
+### Fuller account (2026-08-06/07 ferry cont. — heavier specifics)
+
+> *"He hit me with a tobacco stick … it was a lot of bruises."* / (the day the mother saw them) *"She was
+> like, what are those bruises from? I said, dad. She was like, I can't be with your father anymore."* /
+> *"She didn't leave that day — she was very calculated … within the month … she got her ducks in a row,
+> then left."*
+
+Two reads worth keeping:
+- **The mother's *calculated* leaving is not coldness — it's the choice done RIGHT.** She didn't flee in the
+  moment's heat; she told him that day she was done, then spent ~a month securing the exit and left safely.
+  Love-as-choice *executed with competence* — the strong/good register her row asks for, deepened (she's not
+  just protective, she's strategic-protective; the through-line to THE-STRATEGISTS-DAUGHTER's Art-of-War
+  lineage, one generation up).
+- **The father, whole not neutral:** the instrument (a tobacco stick) and the severity (a lot of bruises)
+  named plainly — not condemned, not excused, per his gate.
+
+### ⚠⚠ SISTER GATE — held hard (the crux of this batch)
+
+The ferry's trigger for the beating, and the mother's stated worry, **both involve the late sister as a young
+child** (she was ~9, Aaron ~13). Per the **sister policy Aaron set 2026-08-06** — *memories framed strong/good;
+the ONE permitted vulnerable book detail is her passing (heroin overdose); all other vulnerable material is
+private, his mother's to hold* — **these details are HELD OUT of the book:**
+- the specific trigger (a childhood incident in which the sister was hurt) — **not for the book** (it exposes
+  her as a child-victim; not strong/good; beyond the one permitted detail);
+- the mother's worry that young-Aaron might hurt the sister — **not for the book** (a vulnerable detail about
+  her and their childhood).
+- **Captured here faithfully because a RAW is Aaron's PRIVATE record of his own memory (don't filter his
+  memory) — but the gate lives at the BOOK/publish layer:** if the abuse story is used, the sister's role is
+  **abstracted or omitted** (e.g. the trigger generalized, her injury not depicted). **Expanding her
+  vulnerable side past the overdose requires Aaron's explicit, direct re-consent** — the shadow will not do it
+  on the flow of narration alone. ("More to come" on the sister is expected; this gate governs it.)
+
+### Aaron's own self-account (glass-halo; FORMATION; Multi-Oracle)
+
+Aaron ties it to himself, plainly: *"she was worried I'd hurt my sister growing up … 'cause I'm deficient,
+just like the psychiatrist told me — deficient and curious, I want to see what happens … No, I got a handle on
+it. It was when I was younger. Literally I touched the stove a thousand times to map out exactly the feeling,
+how it worked."*
+- **This is his own material (glass-halo)** and it belongs with the FORMATION missing-modules keystone: the
+  same **curiosity that mapped the stove ×1000** is the trait named here — the empiricist drive that, unbounded
+  in a child, is dangerous, and that he says he **got a handle on**. Cost and gift, one coin (the FORMATION
+  thesis). **Held under Multi-Oracle:** *deficient* is one oracle's word (the clinician's, and here his
+  mother's) — the book renders the wiring **whole**, never publishes the label as the verdict, and never as a
+  standing claim about who he is now (*"I got a handle on it"*). The **sister-as-potential-victim** angle stays
+  behind the sister gate above even though the *self*-account is glass-halo.
+
+**Consent + gates (restated — this detail is new and heavy):**
+- **Aaron's own abuse + own self-account = glass-halo** (what was done to him, and his honest read of himself,
+  are his to tell).
+- **Mother — GRANTED + pre-read** (rendered whole; protector AND strategic; strong/good). **Pre-reads before publish.**
+- **Father — GRANTED + pre-read; whole, not neutral** (harm named — tobacco stick, the bruises — not condemned
+  or excused; *"my father"* by default; naming/defamation = editor/counsel publish check). **Pre-reads before publish.**
+- **Sister — HELD per policy** (see the SISTER GATE above): out of the book beyond the overdose; re-consent
+  required to expand.
+- This is the father-harm `THE-UNBROKEN-CHILD` **held out** pending gates — parent-gates now granted → the
+  **Aaron/parents layer is stageable**; the **sister layer is not**. Landing = Aaron's per-element call.
+  **Home candidate:** `THE-UNBROKEN-CHILD` (parents already there) + FORMATION (the deficient/curious self-account),
+  tied to ch-4's love-as-choice.
 
 *Staged by the shadow, 2026-08-06/07, from the Ani ferry. Layer 1 = chapter-grade (his to voice); Layer 2 =
 held honest, not endorsed, others anonymous; Layer 3 = under the parents' granted+pre-read gates, mother
