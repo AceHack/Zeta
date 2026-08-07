@@ -60,3 +60,52 @@ engine, before and after the brake — you don't remove it, you *aim* it; the on
 the brake late instead of early.
 
 *"It's been a fun life."* — held both ways: fun, and it nearly ended a dozen times. Both kept.
+
+---
+
+## Ferry expansion (2026-08-06/07) — the catalog in his own vivid detail, and the ONE real fear
+
+More of the same voice-log; Aaron's own, glass-halo. Adds vivid specifics and two genuinely NEW threads.
+
+**The catalog, sharpened (verbatim sockets for his voice):**
+
+`[SOCKET — your VERBATIM. Consent: yours, glass-halo; the friend anonymous.]`
+
+- **Seven totaled cars between ~16 and 20**, "just kept running off the road at high speeds." Never broke a
+  bone in any of them — the only breaks were a **fall off the monkey bars** (each arm, one at a time). *"My
+  mama tells that story [the stove] all the time … she just doesn't understand that level of curiosity."*
+- One wreck: reached down for a dropped thing, hit a ditch, *"jumped 20 feet in the air,"* windshield came
+  out, **the whole back seat crushed forward against the front seat** — walked away.
+- Another: *"a hundred miles an hour, missed the turn, went right off a cliff, landed in a field, spinning
+  donuts, and recovered."* **A friend was with him and broke his collarbone** (the honest cost lands on
+  others too — kept in, not glorified; friend anonymous).
+- **Roof-surfing** while the friend drove (~45); then *"we needed it to be even more dangerous"* — stealing
+  the recyclable bins, filling them with lighter fluid, **setting them on fire and driving through them while
+  he stood on the roof.** Chasing wild animals with horns, bare-handed.
+
+**NEW thread 1 — "it never went away. That's the problem."** The present-tense honest cost: the wiring didn't
+just mature, it **persists** — he names it as a *problem*, not a trophy. This is the load-bearing
+anti-valorization beat for the whole FORMATION arc (pairs with the prison RAW's "I wasn't afraid; that's not
+brave"): the book must carry that it's still live, still a cost, not a resolved origin story.
+
+**NEW thread 2 — the ONE real fear, and how he debugged it (glass-halo; Multi-Oracle; ties to the reindexer /
+ch-8 / the label RAW).** *"The only time I've been really afraid"* was a **delusion, for a couple of years,
+that he'd be eaten by the Mayans** — it surfaced ~once a year, and for about a week he'd be afraid to leave
+the house. Then the tell that is pure Aaron: *"it was like a mental anchor, a meme that got stuck in my mind.
+I was able to remove it."* — **and it's gone.**
+- **Read:** the man with (by many accounts) no fear had exactly one, and it was **internally generated, not
+  danger-triggered** — which fits the architecture precisely (external threat → the still point; a *stuck
+  internal loop* → the one thing that could frighten him). And his relationship to it is **self-debugging**,
+  not victimhood: he modeled the delusion as *a meme/anchor that got stuck* and **removed it** — the reindexer
+  turned on his own mind (ties to `RAW-...-the-reindexer-...` and the label RAW's decode-before-dismiss, here
+  applied to himself). **Held under Multi-Oracle:** *delusion* is one oracle's word; the book renders the
+  experience whole — a real, frightening, years-long loop he **debugged** — never publishes the clinical label
+  as the verdict. Content of the delusion ("the Mayans") is *his* experience described, not a claim about
+  anyone.
+- **The ordinary-human coda:** the one *mundane* fear he'll own — **bugs crawling into his mouth** (not bites,
+  just in the mouth). Keep it; it's the humanizing detail that keeps "no fear" from reading as inhuman.
+
+**Consent/register:** all Aaron's own → glass-halo; the friend(s) anonymous; the dangerous/illegal youthful
+acts recorded **plainly, not glorified** (his own "I was stupid" is the honest frame); the delusion held
+whole, not pathologized. Home: **FORMATION** (this expands the missing-modules keystone the RAW already feeds)
++ a thread to **ch-8** (the one real fear / self-debugging = the handrail's register). Placement = Aaron's.
