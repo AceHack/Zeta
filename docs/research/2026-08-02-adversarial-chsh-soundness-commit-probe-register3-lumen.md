@@ -156,3 +156,12 @@ Concretely:
 - `src/Core/DecorrelationMetrology.fs` — the sensor layer (register-2, shipped).
 - `src/Core/AntiSybil.fs` — `ChshRound`, `chshS`, `chshMargin` (register-2, shipped).
 - `docs/research/2026-08-02-decorrelation-meter-first-real-run-main-is-total-order-multiwriter-graph-is-51pct-concurrent.md` — first real run (register-2 facts).
+
+## Where the recommendation landed (register-3 realization)
+
+This doc's recommendation — *excess correlation over an independent null, not CHSH-on-commits* — is the instrument the register-3 substrate actually carries. Routing pointers (added 2026-08-07 by Otto, shadow\*, on manus's surface-it request):
+
+- `src/Core/DecorrelationExcess.fs` — the excess-over-independent-null instrument (Attempt 3 realized).
+- `src/Core/DecorrelationExcessFusion.fs` — its fusion layer.
+- `docs/research/2026-08-03-excess-over-null-instrument-first-real-run-workitem-event-bus-is-the-one-real-common-cause.md` — first real run of the recommended instrument.
+- `docs/research/2026-08-04-decorrelation-instrument-arc-capstone-what-survives-is-benign-shared-buses.md` — the arc capstone (this soundness argument is *why* the CHSH-on-commits path was filed as debt, not built).
