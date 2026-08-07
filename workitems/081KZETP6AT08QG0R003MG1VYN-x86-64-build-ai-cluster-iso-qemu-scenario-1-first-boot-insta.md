@@ -47,21 +47,43 @@ hard-fails. The k3s cluster-init / cluster-online VM tests **pass** (node Ready 
 ~3.6 s); the ISO-content audits **pass**. The failure is isolated to the first-boot
 `mise` install.
 
-## Persistence + correlation (not a flake)
+## Bisected — #9937 UNMASKED a latent failure; it is NOT the regression to revert
 
-`build-ai-cluster-iso` on `main` has failed **9 of the last 10 runs since ~2026-08-02**,
-across unrelated triggering commits (setup, browser-room, bridge, book-build) — so the
-breakage is independent of the trigger. The window coincides with a run of
-`fix(setup): …mise…` commits (Windows-ARM mise graph filtering, clean-host mise
-entries). **Prime suspect: a mise/setup change ~Aug 2 that regressed the first-boot
-x86_64 toolchain install.** aarch64 unaffected.
+Bisected against `build-ai-cluster-iso` run history on `main`:
+
+- Last **green**: `a74c6a463` (2026-08-01 22:43).
+- First **red**: `96bc1f584` (2026-08-01 23:42).
+- The only first-boot/installer commit in that ~1-hour window: **`c3b607cab` — #9937
+  "fix(installer): a failed node provision reported success and said nothing"**
+  (confirmed ancestor of the first-red, not of the last-green).
+
+**#9937 is a silent-failure fix, not the bug.** Its own message: an `install.sh`
+failure during first-boot *"printed nothing at all. The node finished provisioning,
+reported success, and could ship without k3d/kubectl/helm."* It added a hard-fail +
+`~/.zeta/PARTIAL-PROVISION` marker. So the x86_64 first-boot `install.sh`
+(mise → uv/python/pipx toolchain) **was already failing before Aug 1** — the ISO builds
+were going *green with broken nodes*. #9937 made the failure honest, which is why the
+build now correctly goes red.
+
+⚠ **DO NOT revert #9937** — that only re-hides shipping nodes without their toolchain.
+The real bug is the underlying **x86_64 first-boot `install.sh` failure** that #9937
+surfaced. aarch64 unaffected → x86_64-VM-specific.
+
+Ruled out (checked, not the cause): the ~Aug 1–3 `fix(setup): …mise…` commits
+(#9996/#10000/#10003) are cleanly **Windows-ARM-gated** — they touch no Linux-shared
+`.sh`/`.ts`/`.toml`. The `python = "3.14.6"` pin is old (#8080), not recent.
 
 ## Next steps
 
-1. Re-run one build with `MISE_VERBOSE=1` in the first-boot install to capture the exact
-   mise error (the serial-console text above the hard-fail marker).
-2. Bisect the `fix(setup): …mise…` commits from ~2026-08-02 against the first-boot
-   x86_64 mise install path.
+1. Re-run one build with `MISE_VERBOSE=1` in the first-boot `install.sh` to capture the
+   exact mise error (serial-console text above the `[zeta-first-boot] Install failed`
+   marker) — all four pipx tools skipping together points at the shared
+   **uv/python** dependency failing to install in the minimal first-boot NixOS VM
+   (candidate: no precompiled python 3.14.6 for that env → source build fails on missing
+   toolchain).
+2. Confirm by reproducing `ZETA_HOST_TIER=full tools/setup/install.sh` in the x86_64
+   installer VM env (`full-ai-cluster/usb-nixos-installer/zeta-install.sh:1577` is the
+   call site).
 3. Owner: install-script / first-boot toolchain path (GOVERNANCE §24 — devops-engineer /
    Dejan). Trajectory: `docs/trajectories/usb-zflash-installer/`.
 
