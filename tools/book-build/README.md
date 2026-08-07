@@ -7,10 +7,13 @@ Reproducible pipeline that assembles the shareable book draft and builds an **EP
 ## Usage
 
 ```bash
-tools/book-build/build-book.sh                       # English, chapters + outline → dist/book/*.epub
-tools/book-build/build-book.sh --with-companions     # ⚠ also the companion essays (see CONSENT SCOPE)
-tools/book-build/build-book.sh --src <dir> --lang zh-Hans   # build from a translated source dir
+bun tools/book-build/build-book.ts                       # English, chapters + outline → dist/book/*.epub
+bun tools/book-build/build-book.ts --with-companions     # ⚠ also the companion essays (see CONSENT SCOPE)
+bun tools/book-build/build-book.ts --src <dir> --lang zh-Hans   # build from a translated source dir
 ```
+
+(TypeScript/Bun per the bash-retirement discipline — this is a build convenience, not a
+bootstrap/installer shell surface.)
 
 Outputs land in `dist/book/` (gitignored — never commit the EPUB or the assembled draft).
 

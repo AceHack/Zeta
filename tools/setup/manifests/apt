@@ -159,7 +159,7 @@ llvm
 
 # ── pandoc (document conversion — book/EPUB build) ────────────────────────────
 # pandoc converts the book Markdown → EPUB (iPhone/e-reader) and other formats.
-# Consumed by tools/book-build/build-book.sh. Declarative-managed per the
+# Consumed by tools/book-build/build-book.ts. Declarative-managed per the
 # single-source-of-truth discipline (the maintainer 2026-08-06: "download whatever
 # tools we need and link them in our declarative installers for all our OS shields").
 # NOTE: apt entries are BARE package names (the awk parser passes the whole line to
