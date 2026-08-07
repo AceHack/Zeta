@@ -2,7 +2,7 @@
 id: 081KZETP6AT08QG0R003MG1VYN
 type: bug
 state: backlog
-priority: P1
+priority: P2
 slug: x86-64-build-ai-cluster-iso-qemu-scenario-1-first-boot-insta
 title: "x86_64 build-ai-cluster-iso: QEMU scenario-1 first-boot install fails at mise toolchain step (regression since ~2026-08-02)"
 created: 2026-08-07T19:20:05.722Z
@@ -16,7 +16,33 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
-## Impact (why P1)
+## RESOLVED-PENDING-OBSERVATION (2026-08-07, Otto shadow*) — downgraded P1→P2
+
+Two-part outcome:
+
+1. **The acute blocker (the hard-fail) is FIXED** by #10135 (`fix(installer): restore
+   non-fatal first-boot install`): the errexit regression that #9937 introduced is gone,
+   so a first-boot `install.sh` failure no longer aborts the script. `build-iso` (x86_64)
+   is **green on `main`** (run 31212929243).
+
+2. **The underlying latent failure is NO LONGER REPRODUCING.** In that same green run's
+   `build-iso` job log (8589 lines), with the wider `tail -40` in place: **zero** failure
+   markers — `PARTIAL PROVISION` (0), `install.sh FAILED` (0), `mise ERROR` (0),
+   `Skipped due to failed dependency` (0), `[zeta-first-boot] Install failed` (0) — while
+   the `iter-5.5.0` first-boot install step **ran** (3×) and **all scenarios pass**
+   (2× `"passed":1`, 2× `"failed":0`). So `install.sh` (mise→uv/python/pipx) now
+   **succeeds** in the x86_64 first-boot VM. The Aug 1–7 failure was therefore
+   **environmental/transient** (a mise/uv/python resolution/download condition in the VM
+   during that window), not a standing code defect — it surfaced only because #9937
+   stopped swallowing it, and it stopped occurring on its own.
+
+**Why still OPEN at P2 (not closed):** confirmed on ONE green run. Keep open to observe
+`build-iso` across a few more `main` runs; if install.sh stays clean, close. If the mise
+failure recurs, the wider logs will now show the exact error (the original next-step:
+`MISE_VERBOSE=1` capture + reproduce `ZETA_HOST_TIER=full tools/setup/install.sh` in the
+x86_64 installer VM env — `zeta-install.sh:1577` call site).
+
+## Impact (was P1 — acute blocker now cleared)
 
 Blocks the **usb-zflash-installer** trajectory's x86_64 "test it out again" path. You
 cannot produce a green x86_64 installer ISO in CI to flash and boot on metal. The
