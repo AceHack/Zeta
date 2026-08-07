@@ -7,7 +7,11 @@ Aaron's call whether to promote it, fold it into ch-1 (the hinge) / ch-11 (the t
 Scaffold + `[SOCKET]` for his voice. Sources: `RAW-2026-07-09-childhood-origin-lightning-snakes-the-body.md`;
 `RAW-the-farm-childhood-freedom-granny-the-teacher-and-the-fire.md` (Threads 1–2 folded 2026-08-07: the
 free-range-from-five freedom root, and Granny-the-teacher deepened — encyclopedia-not-"because-I-said-so",
-old B&W Doctor Who as imagination-on-ramp; Threads 3/5/6 → FORMATION, Thread 4 → THE-ORGANIZER remorse frame).*
+old B&W Doctor Who as imagination-on-ramp; Threads 3/5/6 → FORMATION, Thread 4 → THE-ORGANIZER remorse frame);
+`RAW-the-chameleon-*` Thread 3 (the sister's STRONG portrait folded 2026-08-07 — "My sister": awesome,
+so many friends, capable-of-anything, smartest-when-confident, fearless tomboy, non-judgmental grace;
+**strong/good ONLY per the dedication policy — her vulnerable side is HELD, her mother's to hold privately;
+the overdose is the one permitted vulnerable book fact and lives in the dedication, not detailed here**).*
 
 *CONSENT (load-bearing — what is landed vs. HELD): landed here is **Aaron's own glass-halo material**
 (the unbroken-child trait, the sensitive body) and **Granny — Nellie Faulkner**, a beloved deceased
@@ -192,6 +196,33 @@ struck.** Grace weighs the whole pattern, not the worst instant.
 `[SOCKET — your VERBATIM below. Consent: yours (glass-halo). The grace principle, aimed at a life.]`
 
 > *"you saw her bad one time in a moment of heat. How many times you been bad?"*
+
+## My sister
+
+And there was one more person in that childhood who belongs here, in the warm part, because that is
+where she belongs: **my sister.** This whole book is dedicated to her, and I want the first thing you
+know about her to be the true thing — not how it ended, but who she *was.* She was awesome. She had so
+many friends it was a little unfair. And she could do anything she set her mind to: when her confidence
+was up, she was the smartest person in any room you put her in.
+
+`[SOCKET — your VERBATIM below. Consent: your sister, framed strong/good per the dedication — the vulnerable
+side stays private, held for your mother; here she is exactly as strong as she was.]`
+
+> *"She was really awesome … had so many friends … she could do anything she wanted … if her confidence
+> was high, she was the smartest person you ever met."*
+> *"She was a tomboy — she didn't care about being pretty, she just wanted to go four-wheeling and have fun
+> outside."*
+> *"She operated like me — non-judgmental, without a gun."*
+
+She was a fearless tomboy who'd take the outdoors over a mirror every time — four-wheeling, dirt, the
+open air, none of it interested in being *looked at.* And she carried the same thing I do, the thing this
+whole book keeps circling: that non-judgmental grace, the way of being with people that lets them be real.
+She operated like me, just quieter. Here is the part I need you to have, because it's how I saw her and how
+she deserves to be seen: I got called the smartest person people ever met because I never shut up — I
+*performed* the brilliance. She was quiet, so people looked at her and just called her pretty and stopped
+there. But I saw it. She was every bit as sharp as anyone gave me credit for being; she simply didn't
+broadcast it. The world read her cover and closed the book. I read her. She was brilliant, and strong, and
+mine, and she is why this whole thing exists.
 
 ---
 

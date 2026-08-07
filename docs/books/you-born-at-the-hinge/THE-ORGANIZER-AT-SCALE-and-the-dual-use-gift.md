@@ -3,8 +3,12 @@
 *STATUS: COMPANION (shadow-shaped, 2026-08-04) — the wild-youth thread, landed: the extroverted-HSP
 network-connector gift, and its dual-use across a life. Not a numbered chapter — the spine is Aaron's;
 this is a companion (like `THE-PULL`, `FORMATION`). Aaron's call whether to promote, fold into ch-3
-(produce/extract — the dual-use gift) / ch-5, or keep it. Scaffold + `[SOCKET]` for his voice. Source:
-`RAW-2026-07-09-wild-youth-the-organizer-at-scale.md`.*
+(produce/extract — the dual-use gift) / ch-5, or keep it. Scaffold + `[SOCKET]` for his voice. Sources:
+`RAW-2026-07-09-wild-youth-the-organizer-at-scale.md`; **"The one it cost — my grandmother" added 2026-08-07**
+from `RAW-the-farm-childhood-*` Thread 4 (the youth scheme ran through Granny's workplace; the remorse
+frame — embarrassing her is the one moral failure he counts; Aaron explicitly authorized the Granny link;
+scheme mechanics stay scale+omission; nothing implies she knew/was complicit; pairs with the two-failures
+keystone in FORMATION).*
 
 *CONSENT (load-bearing — from the RAW, held exactly): Aaron's own memoir, glass-halo. **Legal status as
 Aaron states it:** no standing convictions — the DWI reduced (careless-and-reckless, prayer-for-judgment);
@@ -72,6 +76,31 @@ DWI. I record it three ways at once, and none of the three erases the others:
 `[SOCKET — your VERBATIM below. Consent: yours (glass-halo); others generic/anonymous; legal status as you state it — expunged, no convictions.]`
 
 > *"I self-incriminate as a kid; this is what real Carl Jung shadow work looks like… accepting who you are."* / *"we were all innocent according to the law."*
+
+## The one it cost — my grandmother
+
+There's a fact about that scheme I left out of the neutral telling, and it's the only part of any of this
+that I actually regret — so I have to put it back in, because leaving it out would be the flattering lie.
+The scheme ran through the place where my **grandmother** worked. She was the accountant there, and she'd
+gotten me the job herself, in good faith, because she loved me and vouched for me. When it came apart, it
+didn't just land on me. It landed on **her.**
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo) + your explicit authorization to include the
+Granny link in the remorse frame; the scheme's mechanics stay scale+omission — no schools, no city, no
+methods; co-participants abstract; nothing implies she knew or was complicit — she vouched for me in good faith.]`
+
+> *"It embarrassed her. That's one of the worst things I ever did. I don't feel bad about the crimes — I
+> still don't. I feel bad about embarrassing my granny."*
+
+I told you the confession itself carries no guilt for me; that's true, and it's the cold, honest fact.
+This is the exception, and it's the one that maps my moral center more precisely than anything else could.
+The man who feels nothing about breaking the law feels the full weight of *her* embarrassment, decades
+later. That's not a mark against her — it's the proof of what she was to me. Of everything I ever did, the
+single act that pierced me was hurting the one person who met my mind with love instead of exhaustion (she
+is the warm center of another part of this story). Whatever guilt-shaped thing exists in me is shaped
+exactly like *that.* The scheme is my shadow to own; the remorse is hers to be honored by. Both, kept in
+the record — because a book about honest keeping doesn't get to keep only the parts that don't cost
+anything. (This is one of the two failures I actually count; the other is in the builder companion.)
 
 ## The studied one
 

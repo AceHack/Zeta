@@ -7,7 +7,10 @@ with all of them empty. Sources:
 the decode-before-dismiss section from
 `RAW-2026-08-02-the-label-decode-before-dismiss.md` (Aaron glass-halo; others who carry the same
 label de-identified per `CONSENT-LEDGER.md`; the specific clinical label left as Aaron's socket to
-name or generalize). Anchor: Goffman, *Stigma* (1963) — "discounted." Pulls: PULLS.md §Chapters 3–5.*
+name or generalize); **"Decode before dismiss, the earliest time it worked" added 2026-08-07** from
+`RAW-the-friend-who-stopped-being-racist-the-childhood-disarming-gift.md` (the friend + his father
+FULLY anonymous — redemptive arc, protect him; Confederate-flag milieu as honest color, not endorsement).
+Anchors: Goffman, *Stigma* (1963) — "discounted"; Allport (contact hypothesis); Girard (scapegoat). Pulls: PULLS.md §Chapters 3–5.*
 
 ---
 
@@ -145,6 +148,36 @@ whole. The honest move is neither. It is the same two-second test, run on a pers
 `[SOCKET — your VERBATIM below, or record fresh to the cue. Consent: yours (glass-halo); people you care for who carry the same label stay de-identified — the abstract fact of your care, no names.]`
 
 Decode before dismiss, in your words — *cue: you make people who feel less-than feel whole; the exact inverse of the stigma's move.*
+
+## Decode before dismiss, the earliest time it worked
+
+I want to hand you the first time I remember running this on a person, because I was about thirteen and
+it changed someone for good. A friend of mine said the worst word there is — the n-word — right in front
+of me. The easy move, the one that feels like virtue, is to condemn him and walk. I did the other thing.
+**I asked him why.**
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the friend and his father FULLY anonymous —
+he changed, and exposing him would be unjust; the milieu kept as honest color, not endorsement.]`
+
+> *"A friend said the n-word in front of me and I asked why … his dad had told him he was 'no better than
+> a n-word.' He felt worthless, so he wanted at least some other man to be worth less than him. I told him
+> that was stupid — black people are cool. He stopped being racist that day, and has many black friends now."*
+
+Watch what "asking why" surfaced, because it's the whole chapter. His racism wasn't hatred that came from
+nowhere. It was **manufactured, and handed down** — a father who told his own son he was worthless, and a
+boy who then needed *someone* beneath him to stand on. The word was a man trying to climb out of a hole
+another man dug for him, by digging one under someone else. Condemning him would have won me an argument
+and left the machine running. Asking why let me reach the actual part — the inherited worthlessness — and
+answer *that:* the ladder is a lie, nobody's under you, *black people are cool.* The chain broke in one
+conversation, and it stayed broken.
+
+That is produce over extract, run on a person. Winning the argument extracts — you book the point, he
+books the shame, and nothing is created. Changing the person **produces** — he leaves with something he
+didn't have, and so does everyone he'll meet for the rest of his life. I'll keep the picture honest and
+un-sanitized: this was *Cotton Eye Joe* and donuts in a pickup with a Confederate flag on it and a horn
+that played Dixie — the water we both swam in. The point isn't that the water was clean. It's that a kid
+climbed out of it, because someone asked him why instead of writing him off. Decode before you dismiss.
+The person is never noise — not even the one saying the ugliest thing you've ever heard.
 
 ## Why this scales past you
 
