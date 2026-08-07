@@ -4,6 +4,13 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Self-heal: heartbeat/metrics commits are pushed by the Actions token, which by
+  # GitHub's anti-recursion rule do NOT trigger this workflow — yet they still disturb
+  # the Pages deployment and 404 the /preview/ book subtree. A schedule tick redeploys
+  # the current main artifact so the book link recovers on its own (build_type=workflow;
+  # the legacy branch-builder is disabled). See the book-preview step below.
+  schedule:
+    - cron: "*/15 * * * *"
 
 permissions:
   contents: read
