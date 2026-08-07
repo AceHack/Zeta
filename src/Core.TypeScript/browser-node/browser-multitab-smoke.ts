@@ -5,7 +5,7 @@ import type { DarkHallBrowserDurableFeedback } from "../darkhall-ui/darkhall-bro
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v5" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v6" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -43,6 +43,18 @@ interface BrowserSmokeGlobal {
   readonly document: BrowserDocumentLike;
 }
 
+interface BrowserServiceWorkerBootstrapGlobal {
+  readonly __zetaServiceWorkerInstall?: {
+    readonly state: "loading" | "ready" | "failed";
+    readonly detail: string | null;
+  };
+  readonly navigator: {
+    readonly serviceWorker: {
+      readonly controller?: unknown;
+    };
+  };
+}
+
 export interface BrowserMultitabPageObservation {
   readonly source: BrowserMultitabFixtureReadout;
   readonly iris: IrisMeshReadout;
@@ -58,6 +70,10 @@ export interface BrowserMultitabPageObservation {
 
 export interface BrowserMultitabSmokeTranscript {
   readonly schema: typeof BROWSER_MULTITAB_SMOKE_SCHEMA;
+  readonly transport: {
+    readonly kind: "service-worker";
+    readonly controlledBeforeRooms: true;
+  };
   readonly beforeStop: {
     readonly pageA: BrowserMultitabPageObservation;
     readonly pageB: BrowserMultitabPageObservation;
@@ -157,17 +173,28 @@ function htmlDocument(): string {
   <zeta-mesh-pip id="iris-mesh"></zeta-mesh-pip>
   <main id="darkhall-room"></main>
   <script src="/zeta-mesh.js"></script>
+  <script type="module" src="/browser-fixture.js"></script>
+</body>
+</html>`;
+}
+
+function installerDocument(): string {
+  return `<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Zeta service-worker installer</title></head>
+<body>
   <script>
+    globalThis.__zetaServiceWorkerInstall = { state: "loading", detail: null };
     navigator.serviceWorker.register("/browser-service-worker.js", { type: "module" })
       .then(() => navigator.serviceWorker.ready)
       .then(() => navigator.serviceWorker.controller
         ? undefined
         : new Promise(resolve => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true })))
       .then(() => {
-        const fixture = document.createElement("script");
-        fixture.type = "module";
-        fixture.src = "/browser-fixture.js";
-        document.body.append(fixture);
+        globalThis.__zetaServiceWorkerInstall = { state: "ready", detail: null };
+      })
+      .catch(error => {
+        globalThis.__zetaServiceWorkerInstall = { state: "failed", detail: String(error) };
       });
   </script>
 </body>
@@ -212,9 +239,32 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
 }
 
 async function waitForReady(page: Page): Promise<void> {
-  await page.waitForFunction("() => Boolean(globalThis.__zetaBrowserSmoke && globalThis.ZetaMesh)", undefined, {
-    timeout: timeoutMs,
+  await page.waitForFunction(
+    "() => Boolean(globalThis.__zetaBrowserSmoke && globalThis.ZetaMesh && navigator.serviceWorker.controller)",
+    undefined,
+    { timeout: timeoutMs },
+  );
+}
+
+async function installServiceWorker(page: Page, url: string): Promise<true> {
+  await page.goto(url);
+  await page.waitForFunction(
+    "() => globalThis.__zetaServiceWorkerInstall?.state === 'ready' || globalThis.__zetaServiceWorkerInstall?.state === 'failed'",
+    undefined,
+    { timeout: timeoutMs },
+  );
+  const result = await page.evaluate(() => {
+    const root = globalThis as unknown as BrowserServiceWorkerBootstrapGlobal;
+    return {
+      state: root.__zetaServiceWorkerInstall?.state ?? "failed",
+      detail: root.__zetaServiceWorkerInstall?.detail ?? "The installer produced no result.",
+      controlled: Boolean(root.navigator.serviceWorker.controller),
+    };
   });
+  if (result.state !== "ready" || !result.controlled) {
+    throw new Error(result.detail ?? "The installer page was not controlled by its service worker.");
+  }
+  return true;
 }
 
 async function waitForTwoPages(page: Page): Promise<void> {
@@ -403,12 +453,14 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
   try {
     const irisMesh = await Bun.file(irisMeshPath).text();
     const html = htmlDocument();
+    const installer = installerDocument();
     server = Bun.serve({
       hostname: "127.0.0.1",
       port: 0,
       fetch(request) {
         const pathname = new URL(request.url).pathname;
         if (pathname === "/") return response(html, "text/html; charset=utf-8");
+        if (pathname === "/install") return response(installer, "text/html; charset=utf-8");
         if (pathname === "/zeta-mesh.js") return response(irisMesh, "text/javascript; charset=utf-8");
         if (pathname === "/browser-fixture.js") return response(fixture.pageSource, "text/javascript; charset=utf-8");
         if (pathname === "/browser-service-worker.js")
@@ -426,14 +478,19 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       );
     }
 
-    stage = "open initial pages";
+    stage = "install service worker";
     const context = await browser.newContext();
+    const installerPage = await context.newPage();
+    const baseUrl = `http://127.0.0.1:${String(server.port)}/`;
+    const controlledBeforeRooms = await installServiceWorker(installerPage, `${baseUrl}install`);
+    await installerPage.close();
+
+    stage = "open initial pages";
     const pageA = await context.newPage();
     const pageB = await context.newPage();
     await pageA.addInitScript(initIrisId("iris-a"));
     await pageB.addInitScript(initIrisId("iris-b"));
 
-    const baseUrl = `http://127.0.0.1:${String(server.port)}/`;
     await Promise.all([
       pageA.goto(`${baseUrl}?tab=tab-a&sequence=100`),
       pageB.goto(`${baseUrl}?tab=tab-b&sequence=200`),
@@ -562,6 +619,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     stage = "validate final cold restart";
     const transcript: BrowserMultitabSmokeTranscript = {
       schema: BROWSER_MULTITAB_SMOKE_SCHEMA,
+      transport: { kind: "service-worker", controlledBeforeRooms },
       beforeStop: { pageA: pageAFirst, pageB: pageBFirst },
       crossTabCheckpoint: {
         savedRevision: crossTabSave.value.revision,
