@@ -6,6 +6,7 @@ import {
 } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import type { BrowserCheckpointRecord } from "./browser-indexeddb-checkpoint";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
+import { createNativeServiceWorkerTabChannel } from "./browser-service-worker-channel";
 import type { RoomRunTranscript } from "../darkhall-ui/darkhall-room";
 
 export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v3" as const;
@@ -138,19 +139,32 @@ function read(runtime: DarkHallBrowserDurableRuntime): BrowserMultitabFixtureRea
 
 const mount = elementById("darkhall-room");
 const nodeId = queryParameter("node") ?? "llmtv-browser-smoke";
-const started = await startNativeDurableDarkHallBrowser({
-  databaseName: "zeta-browser-smoke",
-  storeName: "node-checkpoints",
-  mount,
-  channelName: queryParameter("channel") ?? "zeta-darkhall-browser-smoke",
-  initialTranscript,
-  nodeId,
-  tabId: queryParameter("tab") ?? "tab-unknown",
-  initialSequence: Number(queryParameter("sequence") ?? "0"),
-  maxTrackedTabs: 8,
-  maxFeedback: 8,
-  capabilities: ["css", "javascript", "broadcast-channel", "indexed-db"],
-});
+const serviceWorkerChannel = createNativeServiceWorkerTabChannel(globalThis);
+const started = serviceWorkerChannel.ok
+  ? await startNativeDurableDarkHallBrowser({
+      databaseName: "zeta-browser-smoke",
+      storeName: "node-checkpoints",
+      mount,
+      channelName: queryParameter("channel") ?? "zeta-darkhall-browser-smoke",
+      channel: serviceWorkerChannel.value,
+      initialTranscript,
+      nodeId,
+      tabId: queryParameter("tab") ?? "tab-unknown",
+      initialSequence: Number(queryParameter("sequence") ?? "0"),
+      maxTrackedTabs: 8,
+      maxFeedback: 8,
+      capabilities: ["css", "javascript", "service-worker", "indexed-db"],
+    })
+  : ({
+      ok: false,
+      feedback: {
+        severity: serviceWorkerChannel.feedback.severity,
+        code: "channel-start-failed",
+        source: "browser-runtime",
+        detail: `${serviceWorkerChannel.feedback.code}: ${serviceWorkerChannel.feedback.detail}`,
+        cleanup: [],
+      },
+    } as const);
 
 let api: BrowserMultitabFixtureApi;
 if (!started.ok) {

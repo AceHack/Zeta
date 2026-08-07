@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import type { BrowserLifecycleEventType } from "../browser-node/browser-lifecycle-host";
-import type { BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
+import type { BrowserTabChannel, BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import {
   DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA,
   startNativeDarkHallBrowser,
@@ -173,6 +173,29 @@ describe("native Dark Hall browser bootstrap", () => {
     expect(runtime.host.stop().ok).toBe(true);
     expect(channel?.closed).toBe(true);
     expect(root.listenerCount()).toBe(0);
+  });
+
+  test("accepts an injected tab channel without requiring BroadcastChannel", () => {
+    const root = new NativeBrowserRoot();
+    root.BroadcastChannel = undefined as unknown as typeof globalThis.BroadcastChannel;
+    const messages: BrowserTabChannelMessage[] = [];
+    let closed = false;
+    const channel: BrowserTabChannel = {
+      publish: (message) => {
+        messages.push(message);
+        return { ok: true, value: null };
+      },
+      subscribe: () => ({ ok: true, value: { unsubscribe: () => ({ ok: true, value: null }) } }),
+      close: () => {
+        closed = true;
+        return { ok: true, value: null };
+      },
+    };
+
+    const runtime = unwrap(startNativeDarkHallBrowser({ ...options(root), channel }));
+    expect(messages.map((message) => message.kind)).toEqual(["probe", "presence"]);
+    expect(runtime.host.stop().ok).toBe(true);
+    expect(closed).toBe(true);
   });
 
   test("connects two native tabs and keeps the survivor live after its peer closes", async () => {

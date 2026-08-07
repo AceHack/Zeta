@@ -9,6 +9,7 @@ import {
   type BrowserReadoutSinkResult,
 } from "../browser-node/browser-lifecycle-host";
 import type { BrowserTabState } from "../browser-node/browser-node";
+import type { BrowserTabChannel } from "../browser-node/browser-tab-coordinator";
 import { createDarkHallBrowserTabSink, createNativeDarkHallRoomMount } from "./darkhall-browser-tab-sink";
 import type { RoomRunTranscript } from "./darkhall-room";
 
@@ -33,6 +34,7 @@ export type DarkHallBrowserBootstrapResult<T> =
 
 export interface DarkHallBrowserBootstrapOptions extends Omit<BrowserLifecycleHostOptions, "initialState"> {
   readonly channelName: string;
+  readonly channel?: BrowserTabChannel;
   readonly transcript: RoomRunTranscript;
   readonly mount: unknown;
   readonly root?: unknown;
@@ -68,7 +70,14 @@ function initialState(visibility: BrowserDocumentVisibility): BrowserTabState {
 export function startNativeDarkHallBrowser(
   options: DarkHallBrowserBootstrapOptions,
 ): DarkHallBrowserBootstrapResult<DarkHallBrowserRuntime> {
-  const { root: suppliedRoot, mount: mountValue, channelName, transcript, ...hostOptions } = options;
+  const {
+    root: suppliedRoot,
+    mount: mountValue,
+    channelName,
+    channel: suppliedChannel,
+    transcript,
+    ...hostOptions
+  } = options;
   const root = suppliedRoot === undefined ? globalThis : suppliedRoot;
 
   const lifecycle = createNativeBrowserLifecyclePort(root);
@@ -101,14 +110,14 @@ export function startNativeDarkHallBrowser(
   const mount = createNativeDarkHallRoomMount(mountValue);
   if (!mount.ok) return failed("mount-start-failed", mount.detail);
 
-  const channel = createNativeBroadcastTabChannel(root, channelName);
-  if (!channel.ok) {
+  const channel =
+    suppliedChannel === undefined ? createNativeBroadcastTabChannel(root, channelName) : succeeded(suppliedChannel);
+  if (!channel.ok)
     return failed(
       "channel-start-failed",
       `${channel.feedback.code}: ${channel.feedback.detail}`,
       channel.feedback.severity,
     );
-  }
 
   const sink = createDarkHallBrowserTabSink(transcript, mount.value);
   const host = startBrowserLifecycleHost(

@@ -34,6 +34,7 @@ export {
 
 export {
   BROWSER_TAB_COORDINATOR_SCHEMA,
+  decodeBrowserTabChannelMessage,
   startBrowserTabCoordinator,
   type BrowserCheckpointInvalidation,
   type BrowserCheckpointInvalidationMessage,
@@ -51,6 +52,11 @@ export {
 } from "./browser-tab-coordinator";
 
 export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";
+
+export {
+  createNativeServiceWorkerTabChannel,
+  relayBrowserServiceWorkerTabMessage,
+} from "./browser-service-worker-channel";
 
 export {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,

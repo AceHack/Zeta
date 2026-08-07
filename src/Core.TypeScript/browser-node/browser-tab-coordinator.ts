@@ -58,6 +58,18 @@ export interface BrowserTabCoordinatorFeedback {
     | "broadcast-channel-subscribe-failed"
     | "broadcast-channel-unsubscribe-failed"
     | "broadcast-channel-close-failed"
+    | "service-worker-unavailable"
+    | "service-worker-blocked"
+    | "service-worker-invalid"
+    | "service-worker-controller-missing"
+    | "service-worker-channel-closed"
+    | "service-worker-publish-failed"
+    | "service-worker-subscribe-failed"
+    | "service-worker-unsubscribe-failed"
+    | "service-worker-relay-source-missing"
+    | "service-worker-relay-clients-failed"
+    | "service-worker-relay-capacity-exhausted"
+    | "service-worker-relay-client-post-failed"
     | "tab-message-invalid"
     | "tab-capacity-exhausted"
     | "tab-id-collision"
@@ -148,7 +160,7 @@ function isSequence(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
-function decodeChannelMessage(value: unknown): BrowserTabOperationResult<BrowserTabChannelMessage> {
+export function decodeBrowserTabChannelMessage(value: unknown): BrowserTabOperationResult<BrowserTabChannelMessage> {
   if (
     !isRecord(value) ||
     value.schema !== BROWSER_TAB_COORDINATOR_SCHEMA ||
@@ -350,7 +362,7 @@ export function startBrowserTabCoordinator(
   };
 
   const receive = (value: unknown): void => {
-    const decoded = decodeChannelMessage(value);
+    const decoded = decodeBrowserTabChannelMessage(value);
     if (!decoded.ok) {
       notify(project([decoded.feedback]));
       return;

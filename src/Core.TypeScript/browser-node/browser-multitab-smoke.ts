@@ -5,7 +5,7 @@ import type { DarkHallBrowserDurableFeedback } from "../darkhall-ui/darkhall-bro
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v4" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v5" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -106,8 +106,11 @@ export type BrowserMultitabSmokeResult =
   | { readonly ok: true; readonly value: BrowserMultitabSmokeTranscript }
   | { readonly ok: false; readonly feedback: BrowserMultitabSmokeFeedback };
 
+type BrowserMultitabSmokeFailure = Extract<BrowserMultitabSmokeResult, { readonly ok: false }>;
+
 const timeoutMs = 10_000;
 const fixturePath = resolve(import.meta.dir, "browser-multitab-fixture.ts");
+const serviceWorkerFixturePath = resolve(import.meta.dir, "browser-service-worker-fixture.ts");
 const irisMeshPath = resolve(
   import.meta.dir,
   "..",
@@ -120,7 +123,7 @@ const irisMeshPath = resolve(
   "zeta-mesh.js",
 );
 
-function failed(code: BrowserMultitabSmokeFeedback["code"], detail: string): BrowserMultitabSmokeResult {
+function failed(code: BrowserMultitabSmokeFeedback["code"], detail: string): BrowserMultitabSmokeFailure {
   return { ok: false, feedback: { severity: "heat", code, detail } };
 }
 
@@ -128,14 +131,22 @@ function errorDetail(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-async function buildFixture(): Promise<{ readonly ok: true; readonly source: string } | BrowserMultitabSmokeResult> {
-  const built = await Bun.build({ entrypoints: [fixturePath], target: "browser", format: "esm" });
-  const output = built.outputs.at(0);
-  if (!built.success || output === undefined) {
-    const detail = built.logs.map((entry) => entry.message).join(" | ") || "The browser fixture produced no output.";
+async function buildFixture(): Promise<
+  { readonly ok: true; readonly pageSource: string; readonly workerSource: string } | BrowserMultitabSmokeFailure
+> {
+  const [pageBuilt, workerBuilt] = await Promise.all([
+    Bun.build({ entrypoints: [fixturePath], target: "browser", format: "esm" }),
+    Bun.build({ entrypoints: [serviceWorkerFixturePath], target: "browser", format: "esm" }),
+  ]);
+  const pageOutput = pageBuilt.outputs.at(0);
+  const workerOutput = workerBuilt.outputs.at(0);
+  if (!pageBuilt.success || !workerBuilt.success || pageOutput === undefined || workerOutput === undefined) {
+    const detail =
+      [...pageBuilt.logs, ...workerBuilt.logs].map((entry) => entry.message).join(" | ") ||
+      "The browser fixture produced no output.";
     return failed("bundle-failed", detail);
   }
-  return { ok: true, source: await output.text() };
+  return { ok: true, pageSource: await pageOutput.text(), workerSource: await workerOutput.text() };
 }
 
 function htmlDocument(): string {
@@ -146,7 +157,19 @@ function htmlDocument(): string {
   <zeta-mesh-pip id="iris-mesh"></zeta-mesh-pip>
   <main id="darkhall-room"></main>
   <script src="/zeta-mesh.js"></script>
-  <script type="module" src="/browser-fixture.js"></script>
+  <script>
+    navigator.serviceWorker.register("/browser-service-worker.js", { type: "module" })
+      .then(() => navigator.serviceWorker.ready)
+      .then(() => navigator.serviceWorker.controller
+        ? undefined
+        : new Promise(resolve => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true })))
+      .then(() => {
+        const fixture = document.createElement("script");
+        fixture.type = "module";
+        fixture.src = "/browser-fixture.js";
+        document.body.append(fixture);
+      });
+  </script>
 </body>
 </html>`;
 }
@@ -372,10 +395,11 @@ function initIrisId(id: string): string {
 
 export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeResult> {
   const fixture = await buildFixture();
-  if (!("source" in fixture)) return fixture;
+  if (!fixture.ok) return fixture;
 
   let browser: Browser | null = null;
   let server: ReturnType<typeof Bun.serve> | null = null;
+  let stage = "startup";
   try {
     const irisMesh = await Bun.file(irisMeshPath).text();
     const html = htmlDocument();
@@ -386,7 +410,9 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
         const pathname = new URL(request.url).pathname;
         if (pathname === "/") return response(html, "text/html; charset=utf-8");
         if (pathname === "/zeta-mesh.js") return response(irisMesh, "text/javascript; charset=utf-8");
-        if (pathname === "/browser-fixture.js") return response(fixture.source, "text/javascript; charset=utf-8");
+        if (pathname === "/browser-fixture.js") return response(fixture.pageSource, "text/javascript; charset=utf-8");
+        if (pathname === "/browser-service-worker.js")
+          return response(fixture.workerSource, "text/javascript; charset=utf-8");
         return new Response("Not found", { status: 404 });
       },
     });
@@ -400,6 +426,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
       );
     }
 
+    stage = "open initial pages";
     const context = await browser.newContext();
     const pageA = await context.newPage();
     const pageB = await context.newPage();
@@ -418,7 +445,9 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     ]);
     await Promise.all([waitForTwoPages(pageA), waitForTwoPages(pageB)]);
 
+    stage = "observe initial pages";
     const [pageAFirst, pageBFirst] = await Promise.all([observe(pageA), observe(pageB)]);
+    stage = "cross-tab checkpoint save";
     const crossTabSave = await pageA.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
       return root.__zetaBrowserSmoke.checkpoint(250);
@@ -426,6 +455,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     if (!crossTabSave.ok) return failed("smoke-failed", crossTabSave.feedback.detail);
     await waitForCheckpoint(pageB, 250);
     const pageBAfterCrossTabSave = await observe(pageB);
+    stage = "cross-tab checkpoint removal";
     const crossTabRemoval = await pageB.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
       return root.__zetaBrowserSmoke.removeCheckpoint(250);
@@ -434,6 +464,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     await waitForCheckpoint(pageA, null);
     const pageAAfterCrossTabRemoval = await observe(pageA);
 
+    stage = "stop second page";
     const stopped = await pageB.evaluate(() => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
       const result = root.__zetaBrowserSmoke.stop();
@@ -444,6 +475,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
 
     await waitForSurvivor(pageA);
     const pageAAfterStop = await observe(pageA);
+    stage = "persist restart checkpoint";
     const checkpoint = await pageA.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
       const saved = await root.__zetaBrowserSmoke.checkpoint(300);
@@ -482,6 +514,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     });
     if (!stoppedA.ok) return failed("smoke-failed", `Page A stop failed: ${stoppedA.feedback.detail}`);
 
+    stage = "restart from durable checkpoint";
     await Promise.all([pageA.close(), pageB.close()]);
     const pageC = await context.newPage();
     await pageC.addInitScript(initIrisId("iris-c"));
@@ -490,6 +523,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     await pageC.evaluate("globalThis.ZetaMesh.announce()");
     await waitForSinglePage(pageC, "tab-c");
     const pageCAfterRestart = await observe(pageC);
+    stage = "retract durable checkpoint";
     const retraction = await pageC.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
       const stale = await root.__zetaBrowserSmoke.removeCheckpoint(299);
@@ -525,6 +559,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     await pageD.evaluate("globalThis.ZetaMesh.announce()");
     await waitForSinglePage(pageD, "tab-d");
 
+    stage = "validate final cold restart";
     const transcript: BrowserMultitabSmokeTranscript = {
       schema: BROWSER_MULTITAB_SMOKE_SCHEMA,
       beforeStop: { pageA: pageAFirst, pageB: pageBFirst },
@@ -552,7 +587,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     await pageD.close();
     return { ok: true, value: transcript };
   } catch (error) {
-    return failed("smoke-failed", errorDetail(error));
+    return failed("smoke-failed", `${stage}: ${errorDetail(error)}`);
   } finally {
     if (browser !== null) await browser.close().catch(() => undefined);
     if (server !== null) await server.stop(true);
