@@ -16,7 +16,13 @@ defeat at 17 [intellectual], never physical; scheme mechanics stay scale+omissio
 step-dad and company de-identified). **Also added 2026-08-07:** `RAW-2026-08-02-thrill-seeker-*` EXPANSION
 (the ONE real fear — the internally-generated Mayan delusion he self-debugged, completing the missing-fear
 module: external threat→still point, stuck internal loop→the one fear; reindexer-on-his-own-mind; *delusion*
-held whole under Multi-Oracle, never the verdict; + the mundane-flinch coda). Related-and-referenced: the
+held whole under Multi-Oracle, never the verdict; + the mundane-flinch coda). **Also added 2026-08-07
+(Aaron: "include the held material"):** the **restraint self-model** (deterrence-not-conscience held in
+honest tension with his protective-at-cost acts; distrust-interpretation-keep-fact) from `RAW-restraint-*`
+T1, appended to "The one crack"; and **"The handle, and the hacker lineage"** from
+`RAW-ace-hack-the-hacker-origin-*` cluster 1 (the public handle "Ace Hack"; satellites-at-14 / solder /
+assembly / war-dialing BBSes; the BBS→IRC-crew-"Magic"→alt.2600→Anonymous genealogy — the evolution of the
+hackers; step-dad warm/telecom-generalized; individuals anonymous), opening "The loop". Related-and-referenced: the
 **photophone** build already lives in ch-6 (not duplicated). NOT builder-companion material (distinct
 threads, own homes — see the closing note): the reader / magnetism / wild-youth / deep-childhood-origin RAWs.
 Consent: Aaron glass-halo; **his son omitted entirely** (standing minor rule); **Chris King named for
@@ -217,6 +223,19 @@ Read it whole, because the honesty *is* the point and there are two failure mode
   evidence on both sides.** That steadiness is the character. The word is just the hardest thing it stays
   steady in front of.
 
+There's a follow-on I have to keep honest, because the flattering version is right there and I won't take
+it. When people press on that word, my own answer is cold: *I won't hurt anybody — because I know how the
+system works, and they'd catch me.* That's **deterrence, not conscience,** and I say it that way on purpose;
+dressing my restraint up as virtue would be exactly the lie this book refuses. But I also have to set the
+counter-evidence right next to it, because it's real and it doesn't fit the cold read: I took a stranger in
+crisis to help instead of letting him be jailed. I turned a racist kid around at thirteen. I walk into hard
+rooms to protect *other* people, at cost to myself, when no system was watching and several of those calls
+cost me. A pure "I only behave because I'd get caught" doesn't do any of that. So I hold both and I don't
+resolve them: my *explanation* of my restraint is deterrence, and my *behavior* keeps overshooting the
+explanation in the direction of protecting people. Distrust the interpretation; keep the fact. The fact is
+the restraint is real. What it's actually made of, I leave genuinely open — and refusing to flatter myself
+into the nicer answer is, I think, the most honest thing in this whole companion.
+
 ## The stove, a thousand times
 
 Here is what building-it-by-hand looked like at four years old. Most kids touch the stove once and
@@ -359,6 +378,39 @@ two jobs: Feynman is the imagination that lets you in; Susskind is the depth tha
 it was immersion, not dabbling — years of the Feynman lectures on repeat, even asleep. I wasn't
 absorbing a style. I was absorbing a *method:* don't fool yourself; disprove your own darlings; ground
 it in plain words. The empiricist at the stove, grown up and pointed at the universe.
+
+## The handle, and the hacker lineage
+
+Before the loop, the name — because I've carried it more than twenty years and it's no secret: **Ace Hack.**
+It's the handle I hacked under as a kid and the one I still write under; the whole arc below happened to a
+boy who'd already named himself for it. It started early and physical: satellites at fourteen, a soldering
+iron, teaching myself assembly, building tools out of Radio Shack parts to get into systems that weren't
+supposed to open. I war-dialed bulletin boards before "war-dialing" was a word anyone had. And I wasn't the
+first strange kid on that road — there was a library nerd, years ahead of me, who had quietly wired one
+library to every other library in reach *before the internet existed,* and that image (a person building the
+network by hand, for the love of it) never left me.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the handle "Ace Hack" is public/yours; others
+generic; youthful illegal acts named plainly, methods out, statutes long passed.]`
+
+> *cue: "Ace Hack," 20+ years; satellites at 14; solder + assembly; Radio Shack parts; war-dialing BBSes
+> before the term; the library nerd who wired the libraries together pre-internet.*
+
+And here is the part people find genuinely interesting, because it's a piece of real history most folks only
+see from the outside: the *lineage,* the evolution of the hackers, walked one link at a time. An early IRC
+crew called **Magic** is where I actually learned assembly. Magic fed into **alt.2600** — the old Usenet
+hacker commons — and alt.2600 was the water that **Anonymous** later rose out of, which I was adjacent to,
+with friends in it in real life. BBS → IRC → Usenet → the leaderless swarm: that's not a metaphor, it's the
+actual genealogy I grew up inside, and it's the same thing I build now — networks that spread across
+boundaries with no center. The telecom world I first got access *through* came by way of my step-dad, who's a
+good man and a good boss (I keep the identifying specifics general — "telecom," not the exact company he
+built). Same kid, same curiosity, walking the wire from the underground to the national grid.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the lineage is public history; individuals
+anonymous; step-dad warm (his own light confirm-before-publish), telecom specifics generalized.]`
+
+> *cue: the crew "Magic" taught you assembly → alt.2600 → Anonymous (adjacent, friends IRL) — the evolution
+> of the hackers; step-dad's telecom world seeded the access.*
 
 ## The loop: from breaking a system to building one
 

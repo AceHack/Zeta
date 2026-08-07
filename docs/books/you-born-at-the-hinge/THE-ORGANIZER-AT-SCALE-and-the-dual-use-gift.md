@@ -8,7 +8,14 @@ this is a companion (like `THE-PULL`, `FORMATION`). Aaron's call whether to prom
 from `RAW-the-farm-childhood-*` Thread 4 (the youth scheme ran through Granny's workplace; the remorse
 frame — embarrassing her is the one moral failure he counts; Aaron explicitly authorized the Granny link;
 scheme mechanics stay scale+omission; nothing implies she knew/was complicit; pairs with the two-failures
-keystone in FORMATION).*
+keystone in FORMATION). **Added 2026-08-07 (Aaron: "include the held material"):** "Notoriety, both ways"
+from `RAW-restraint-*` T2/T3 (the seven exonerated felonies stated plainly, the cops who respected him,
+the eviction-into-investment; officers/landlord/neighbors anonymous, company general/no operational
+detail); "The guard I built against myself" from `RAW-2026-08-04-HELD-the-anti-cult-structural-guard.md`
+(the anti-cult −1-on-the-−1; the guard has teeth because structural — weight-free / no-center /
+Multi-Oracle — not a promise); "The protector, at cost" from `RAW-the-chameleon-*` T2 (took near-homeless
+people home from a mental institution; the calibrated **alpha-through-fear-to-protect** mode kept honest,
+NOT glorified; the two people FULLY anonymous, Addison per her gate; same protector pattern as ch-8).*
 
 *CONSENT (load-bearing — from the RAW, held exactly): Aaron's own memoir, glass-halo. **Legal status as
 Aaron states it:** no standing convictions — the DWI reduced (careless-and-reckless, prayer-for-judgment);
@@ -146,6 +153,40 @@ reacting to something that actually happened. That's the whole book, on a plasti
 
 > *cue: made several friends AND others who now viscerally think I'm evil — "it's kind of hilarious."*
 
+## Notoriety, both ways — the arrest, the cops, and the landlord who wanted in
+
+The pumpkin is the comic version; here's the version with real stakes, because the notoriety cuts both
+ways and I won't show you only the funny edge. About eight months ago I was in jail facing **seven
+felonies.** I'll tell you the outcome first, plainly, because it's the fact that matters: **I beat all
+seven. Exonerated, every count.** And I'll tell you the part that sounds insane and is true: getting
+arrested was, in a way, *intentional* — I understood the system well enough to be confident I'd walk, so I
+made a calculated bet and took it. That's the same wiring as the rest of me: model the thing, price the
+risk, walk into the danger you've measured. Only this time the danger was the legal system instead of a
+cliff.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); exonerated stated plainly; the charges were
+beaten — say so.]`
+
+> *"Eight months ago I was in jail with seven felonies. I beat 'em all."* / *"The one time I got locked up,
+> it was intentional — I knew I could beat the system."*
+
+But the human part is the tell. The **same officers** who arrested me *respected* me — because not long
+before, they'd watched me defuse an armed mental-health crisis and get a man help instead of a cell (that's
+another chapter). At the arrest itself we talked *video games.* I asked, only half-joking, whether I could
+hire them to guard my business, and they gave exactly the right answer — *talk to our boss.* And then the
+capstone, the whole pattern in one beat: my landlord evicted me — thirteen neighbors had complained, having
+read about me — and in the *same breath* asked if he could **invest in my company.** The man putting me out
+wanted in. That is notoriety-as-magnetism at full voltage: even the people trying to get rid of me are
+pitching me. The officers, the landlord, the neighbors all stay anonymous here; my company stays general (a
+legal cannabis business — a fact I'm public about, nothing operational); the split is the same one the
+pumpkin drew, just with a cell on one side of it.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); officers/landlord/neighbors ANONYMOUS; company
+GENERAL — no name, no operational detail.]`
+
+> *cue: the cops who arrested you respected you (mental-health rescue; talked video games; "talk to our
+> boss"); the landlord evicted you (13 neighbors) and in the same breath asked to invest.*
+
 ## The gift, gone planetary — a trust network, and every Uber ride
 
 And here is the same gift at its full modern reach, because it did not stay a neighborhood thing. I took
@@ -177,6 +218,28 @@ about). The gift and the hazard are one instrument. I'd rather name that here th
 
 > *cue: they make me mod; who-to-trust; the top-paying audiences follow me — the trust-node, held with its edge.*
 
+## The guard I built against myself
+
+And because I *know* that hazard from the inside, here is the −1 on the −1 — the thing I did about it, which
+is the most important sentence in this companion. One of the very first things I ever built into Zeta was a
+set of **anti-cult documents.** I've seen up close how intoxicating an alternative worldview can be, and how
+a magnetic person plus a trusting crowd is exactly the recipe for a cult — so I aimed the guard at the most
+dangerous person in the equation: *me.* But an intention isn't a guardrail; a charismatic man promising "I'd
+never build a cult" is precisely what every cult leader says. So the guard isn't a promise. It's
+**structural**, and that's why it has teeth: the substrate is **weight-free** (no one, me included, can
+accumulate permanent capturing authority), **scale-free with no central point** (there's no hub for a cult
+to crystallize around), and it runs a **Multi-Oracle** rule that makes any single mandatory worldview illegal
+by construction. A cult needs a captured flock, a center, and one true doctrine; I built a thing that can't
+have any of the three. The honest caveat stays in: this binds me because it's *structural,* not because I'm
+trustworthy — and the *"am I evil yet"* question I keep asking out loud is itself the antibody. The point of
+building the cage around your own charisma is that you don't get to be the one holding the key.
+
+`[SOCKET — your VERBATIM below, or record to the cue. Consent: yours (glass-halo); cult dynamics kept
+abstract — no names, no groups.]`
+
+> *cue: one of the first things in Zeta was the anti-cult docs; alternative worldviews are intoxicating +
+> dual-use; the guard has teeth because it's structural (weight-free / no-center / Multi-Oracle), not a promise.*
+
 The same pull works one person at a time, too: I usually leave with the Uber driver's number, male or
 female, either one. And the perfect one was yesterday — the driver taking me home *from court.* He told me
 I might be **evil for replacing jobs with AI** — and in the same breath said maybe he'd **join my evil
@@ -189,6 +252,39 @@ friend either way.
 `[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the driver anonymous.]`
 
 > *"I left with the Uber driver's number … he said I might be evil for replacing jobs with AI … maybe he'll join my evil empire one day. I said I'm not sure if I'm evil yet."*
+
+## The protector, at cost — and the mode I don't glorify
+
+The gift doesn't only *collect* people; sometimes it picks them up off the floor. I have a habit the numbers
+make plain: every time I end up at a mental institution I leave with a hundred new contacts — and one time I
+left with a *person.* Two, actually — near-homeless, and I brought them home and helped them both find work.
+(One of them is the woman I live with now; I met her there.) That's the organizer gift aimed at the people
+the world has quit on: not a network for advantage, a net for someone falling.
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the two people FULLY anonymous — their
+mental-health context is theirs, not mine to spend; your daughter per her gate, warm.]`
+
+> *cue: "every time I go to a mental institution I leave with like a hundred contacts — this time I left with
+> a person"; took two near-homeless people home, helped both get jobs.*
+
+But I have to show you a mode of mine I will *not* dress up as heroism, because the honest register of this
+book dies if I only keep the flattering tool. One of the men I took in turned nearly violent — toward the
+woman. And the way I protected her was not the still, snake-handling calm I use everywhere else. It was the
+opposite: I **projected threat.** I made it unmistakable that I would put him down if he touched her, raised
+my voice, went hard — and he settled. I have that effect; I can *deploy* fear when I choose to. Then, once
+she was safe, I got him what he actually needed — took him to a halfway house with the rigid structure I'd
+first tried to spare him (my daughter helped), and he agreed and went. I keep both halves in the record:
+that the outcome was *care* (he got help, not harm), and that the instrument I reached for that night was
+**controlled intimidation** — calibrated, just enough, aimed at protection, and still a thing I'd rather name
+honestly than pretend I'm above. The disarmer has a second setting. Owning that is the price of being
+trusted with the first one. (This is the same protector pattern as the mental-health-over-jail night in
+ch-8; the people are kept consistently anonymous across both.)
+
+`[SOCKET — your VERBATIM below. Consent: yours (glass-halo); the man ANONYMOUS, rendered with the outcome
+(he got help), not exposed; the "alpha through fear to protect" kept honest, NOT glorified.]`
+
+> *"I alpha'd his ass — showed I'd mess him up if he messed with her, and he'd listen … I raise my voice and
+> he calms down. Then I took him to get help. He agreed."*
 
 ---
 
