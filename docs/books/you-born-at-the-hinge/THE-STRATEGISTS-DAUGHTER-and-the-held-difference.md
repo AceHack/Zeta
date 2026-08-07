@@ -4,7 +4,11 @@
 Addison, the ethos he passed to her, and the hardest night the two of them came through and now hold
 **fondly, together**. Not a numbered chapter — the spine is Aaron's; this is a companion (like `THE-PULL`,
 `FORMATION`, `THE-UNBROKEN-CHILD`), gathering the Addison thread so it has a home. Aaron's call whether it
-stays a companion, folds into ch-4 (the correlation of souls) / ch-8 (the handrail), or promotes. Scaffold
+stays a companion, folds into ch-4 (the correlation of souls) / ch-8 (the handrail), or promotes. **Added
+2026-08-07 (Aaron): "Heal generational trauma"** — at 11 Addison drew him a vision board to *heal
+generational trauma* (learned on Musical.ly / early TikTok) when he tried to show her his Architect job;
+the forward-bookend to the generational-trauma machine in `THE-UNBROKEN-CHILD` (his mother's line coming
+down; his daughter naming the thing to stop). Verbatim exists — pull at edit. Scaffold
 
 + `[SOCKET]` for his voice.*
 
@@ -45,6 +49,35 @@ and a compass we both carry.
 `[SOCKET — your VERBATIM below. Consent: yours (glass-halo); Addison consents + pre-reads; this is the two of you.]`
 
 > "At 11 she told me she was diabolical, and I said 'yes honey, me too — we use it for good.'"
+
+## Heal generational trauma
+
+And at that same age — eleven — she handed *me* the assignment that this whole book, in a way, is me trying
+to complete. It's my favorite thing she's ever done, and it belongs right next to the strategy, because it's
+the other half of her.
+
+I was at the whiteboard doing what I do — trying to show her my actual job, systems architecture, boxes and
+arrows, the way I see the world. She was not interested in my boxes. She wanted to **vision-board** and
+**manifest** instead — and I let her, because in our house you follow the kid to what *she* wants. So she
+took the marker and drew *her* board. And what she drew, and told me to do, was: **heal generational
+trauma.** Eleven years old. When I asked where she'd gotten that, she said she learned it on **Musical.ly** —
+which is what TikTok was called back then.
+
+`[SOCKET — your VERBATIM below, or record to the cue. Consent: yours (glass-halo); Addison consents +
+pre-reads; FOND register. Your verbatim telling exists — you've told this one many times; pull it at edit.]`
+
+> *cue (your voice): the whiteboard (your Architect job) vs. her vision board; at 11 she drew for you to
+> "heal generational trauma," said she learned it on Musical.ly (early TikTok).*
+
+Sit with the shape of that, because it's almost too neat to be real, and it's real. In the *other* companion
+I lay out the machine of generational trauma running down my own line — an insecurity my mother never chose,
+leaking into her kids in the fewest words, the wound looking for the next generation to land in. That's the
+inheritance I got. And here is my daughter, at eleven, at a whiteboard, *naming the exact thing to stop* and
+handing me the marker — not asking me to win a war or see the whole board, but to **break the chain.** The
+strategist's daughter is also the one who pointed me at the softest, hardest target there is. That she found
+the words for it on a dancing app the world was busy calling frivolous is the whole thing in one detail: the
+next generation already knows what needs healing, and says so plainly, if you follow them to their board
+instead of dragging them to yours. I'm still working the assignment. This book is part of it.
 
 ## The text, and the hardest night
 
