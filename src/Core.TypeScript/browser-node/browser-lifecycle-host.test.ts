@@ -235,6 +235,29 @@ describe("browser lifecycle host", () => {
     });
   });
 
+  test("publishes checkpoint invalidation evidence without changing local liveness", () => {
+    const lifecycle = new FakeLifecycle();
+    const channel = new FakeChannel();
+    const host = start(lifecycle, channel, { write: () => ({ ok: true, value: null }) });
+
+    expect(host.publishCheckpointInvalidation("saved", 21)).toMatchObject({
+      ok: true,
+      value: { coordinator: { liveness: { checkpoint: "durable" } } },
+    });
+    expect(channel.published.at(-1)).toEqual({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "llmtv-room-a",
+      kind: "checkpoint-invalidated",
+      invalidation: { sourceTabId: "tab-a", operation: "saved", revision: 21 },
+    });
+
+    expect(host.stop().ok).toBe(true);
+    expect(host.publishCheckpointInvalidation("removed", 21)).toMatchObject({
+      ok: false,
+      feedback: { code: "host-stopped" },
+    });
+  });
+
   test("backpressures rather than wrapping an exhausted sequence", () => {
     const lifecycle = new FakeLifecycle();
     const channel = new FakeChannel();

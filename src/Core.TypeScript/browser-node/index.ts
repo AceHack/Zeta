@@ -35,6 +35,9 @@ export {
 export {
   BROWSER_TAB_COORDINATOR_SCHEMA,
   startBrowserTabCoordinator,
+  type BrowserCheckpointInvalidation,
+  type BrowserCheckpointInvalidationMessage,
+  type BrowserCheckpointInvalidationOperation,
   type BrowserTabChannel,
   type BrowserTabChannelMessage,
   type BrowserTabChannelSubscription,

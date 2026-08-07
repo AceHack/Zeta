@@ -5,7 +5,7 @@ import type { DarkHallBrowserDurableFeedback } from "../darkhall-ui/darkhall-bro
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v3" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v4" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -61,6 +61,12 @@ export interface BrowserMultitabSmokeTranscript {
   readonly beforeStop: {
     readonly pageA: BrowserMultitabPageObservation;
     readonly pageB: BrowserMultitabPageObservation;
+  };
+  readonly crossTabCheckpoint: {
+    readonly savedRevision: number;
+    readonly pageBAfterSave: BrowserMultitabPageObservation;
+    readonly removed: boolean;
+    readonly pageAAfterRemoval: BrowserMultitabPageObservation;
   };
   readonly stoppedPageB: BrowserLifecycleHostReadout;
   readonly afterStop: {
@@ -217,6 +223,19 @@ async function waitForSurvivor(page: Page): Promise<void> {
   );
 }
 
+async function waitForCheckpoint(page: Page, revision: number | null): Promise<void> {
+  await page.waitForFunction(
+    `() => {
+      const source = globalThis.__zetaBrowserSmoke?.read();
+      return source?.ok === true &&
+        source.value.checkpoint.currentRevision === ${revision === null ? "null" : String(revision)} &&
+        source.value.host.coordinator.liveness.checkpoint === ${JSON.stringify(revision === null ? "none" : "durable")};
+    }`,
+    undefined,
+    { timeout: timeoutMs },
+  );
+}
+
 async function waitForSinglePage(page: Page, tabId: string): Promise<void> {
   await page.waitForFunction(
     `() => {
@@ -255,6 +274,32 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
     failures.push("page B did not render source tab A");
   if (!transcript.beforeStop.pageA.rendered.irisLabel.includes("2 tabs"))
     failures.push("page A did not render the Iris two-tab label");
+  if (transcript.crossTabCheckpoint.savedRevision !== 250)
+    failures.push("page A did not persist cross-tab checkpoint revision 250");
+  if (transcript.crossTabCheckpoint.pageBAfterSave.source.ok) {
+    const peerCheckpoint = transcript.crossTabCheckpoint.pageBAfterSave.source.value;
+    if (
+      peerCheckpoint.checkpoint.currentRevision !== 250 ||
+      peerCheckpoint.checkpoint.room?.latestTick !== 250 ||
+      peerCheckpoint.host.coordinator.liveness.checkpoint !== "durable"
+    ) {
+      failures.push("page B did not reread revision 250 after the cross-tab invalidation");
+    }
+  } else {
+    failures.push("page B failed while applying the cross-tab checkpoint invalidation");
+  }
+  if (!transcript.crossTabCheckpoint.removed) failures.push("page B did not retract cross-tab checkpoint 250");
+  if (transcript.crossTabCheckpoint.pageAAfterRemoval.source.ok) {
+    const peerRetraction = transcript.crossTabCheckpoint.pageAAfterRemoval.source.value;
+    if (
+      peerRetraction.checkpoint.currentRevision !== null ||
+      peerRetraction.host.coordinator.liveness.checkpoint !== "none"
+    ) {
+      failures.push("page A did not reread storage after the cross-tab retraction");
+    }
+  } else {
+    failures.push("page A failed while applying the cross-tab checkpoint retraction");
+  }
   if (!transcript.stoppedPageB.stopped || transcript.stoppedPageB.state !== "dark")
     failures.push("page B source host did not stop dark");
   if (afterA?.coordinator.liveness.continuity !== "single-tab" || afterA.coordinator.liveness.zetaAlive !== true) {
@@ -374,6 +419,21 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     await Promise.all([waitForTwoPages(pageA), waitForTwoPages(pageB)]);
 
     const [pageAFirst, pageBFirst] = await Promise.all([observe(pageA), observe(pageB)]);
+    const crossTabSave = await pageA.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.checkpoint(250);
+    });
+    if (!crossTabSave.ok) return failed("smoke-failed", crossTabSave.feedback.detail);
+    await waitForCheckpoint(pageB, 250);
+    const pageBAfterCrossTabSave = await observe(pageB);
+    const crossTabRemoval = await pageB.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.removeCheckpoint(250);
+    });
+    if (!crossTabRemoval.ok) return failed("smoke-failed", crossTabRemoval.feedback.detail);
+    await waitForCheckpoint(pageA, null);
+    const pageAAfterCrossTabRemoval = await observe(pageA);
+
     const stopped = await pageB.evaluate(() => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
       const result = root.__zetaBrowserSmoke.stop();
@@ -468,6 +528,12 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     const transcript: BrowserMultitabSmokeTranscript = {
       schema: BROWSER_MULTITAB_SMOKE_SCHEMA,
       beforeStop: { pageA: pageAFirst, pageB: pageBFirst },
+      crossTabCheckpoint: {
+        savedRevision: crossTabSave.value.revision,
+        pageBAfterSave: pageBAfterCrossTabSave,
+        removed: crossTabRemoval.value,
+        pageAAfterRemoval: pageAAfterCrossTabRemoval,
+      },
       stoppedPageB: stopped.value,
       afterStop: { pageA: pageAAfterStop },
       checkpoint: { ...checkpoint.value, room: checkpointRoom },

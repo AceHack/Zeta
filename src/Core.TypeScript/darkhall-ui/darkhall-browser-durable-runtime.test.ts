@@ -9,6 +9,7 @@ import { encodeBrowserRoomCheckpoint } from "../browser-node/browser-room-checkp
 import { BROWSER_NODE_SCHEMA } from "../browser-node/browser-node";
 import {
   BROWSER_TAB_COORDINATOR_SCHEMA,
+  type BrowserCheckpointInvalidation,
   type BrowserTabCoordinatorReadout,
 } from "../browser-node/browser-tab-coordinator";
 import {
@@ -90,6 +91,7 @@ class MemoryCheckpointPort implements BrowserCheckpointPort {
   record: BrowserCheckpointRecord | null;
   closeCalls = 0;
   rejectLoad = false;
+  loadOverride: ((nodeId: string) => Promise<BrowserCheckpointResult<BrowserCheckpointRecord | null>>) | null = null;
 
   constructor(record: BrowserCheckpointRecord | null = null) {
     this.record = record === null ? null : copyRecord(record);
@@ -97,6 +99,7 @@ class MemoryCheckpointPort implements BrowserCheckpointPort {
 
   load(nodeId: string): Promise<BrowserCheckpointResult<BrowserCheckpointRecord | null>> {
     if (this.rejectLoad) return Promise.reject(new Error("injected load rejection"));
+    if (this.loadOverride !== null) return this.loadOverride(nodeId);
     if (this.record !== null && this.record.nodeId !== nodeId) return Promise.resolve(succeeded(null));
     return Promise.resolve(succeeded(this.record === null ? null : copyRecord(this.record)));
   }
@@ -147,11 +150,13 @@ function createStarter(
   readonly starts: DarkHallBrowserBootstrapOptions[];
   readonly updates: RoomRunTranscript[];
   readonly checkpointUpdates: string[];
+  readonly checkpointInvalidations: BrowserCheckpointInvalidation[];
   readonly runtime: DarkHallBrowserRuntime;
 } {
   const starts: DarkHallBrowserBootstrapOptions[] = [];
   const updates: RoomRunTranscript[] = [];
   const checkpointUpdates: string[] = [];
+  const checkpointInvalidations: BrowserCheckpointInvalidation[] = [];
   let stopped = false;
   let checkpoint: "none" | "volatile" | "durable" = "none";
   const host: BrowserLifecycleHost = {
@@ -177,6 +182,10 @@ function createStarter(
       checkpoint = nextCheckpoint;
       return { ok: true, value: host.read() };
     },
+    publishCheckpointInvalidation: (operation, revision) => {
+      checkpointInvalidations.push({ sourceTabId: "tab-a", operation, revision });
+      return { ok: true, value: host.read() };
+    },
     stop: () => {
       stopped = true;
       return { ok: true, value: hostReadout(true) };
@@ -195,6 +204,7 @@ function createStarter(
     starts,
     updates,
     checkpointUpdates,
+    checkpointInvalidations,
     runtime,
     start: (startOptions) => {
       starts.push(startOptions);
@@ -241,6 +251,7 @@ describe("durable Dark Hall browser runtime", () => {
     expect(saved.ok).toBe(true);
     expect(starter.updates).toEqual([advanced]);
     expect(starter.checkpointUpdates).toEqual(["durable"]);
+    expect(starter.checkpointInvalidations).toEqual([{ sourceTabId: "tab-a", operation: "saved", revision: 2 }]);
     expect(started.value.read()).toMatchObject({
       recoveredRevision: null,
       currentRevision: 2,
@@ -253,6 +264,10 @@ describe("durable Dark Hall browser runtime", () => {
     expect(await started.value.retract(2)).toEqual({ ok: true, value: true });
     expect(starter.updates).toEqual([advanced, initialTranscript]);
     expect(starter.checkpointUpdates).toEqual(["durable", "none"]);
+    expect(starter.checkpointInvalidations).toEqual([
+      { sourceTabId: "tab-a", operation: "saved", revision: 2 },
+      { sourceTabId: "tab-a", operation: "removed", revision: 2 },
+    ]);
     expect(started.value.read()).toMatchObject({
       currentRevision: null,
       host: { coordinator: { liveness: { checkpoint: "none" } } },
@@ -290,6 +305,104 @@ describe("durable Dark Hall browser runtime", () => {
       recoveredRevision: 7,
       currentRevision: 7,
       room: { roomName: "recovered-room", continuationToken: "resume:8" },
+    });
+  });
+
+  test("rereads authoritative storage when a peer invalidates the local projection", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(options(), port, starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    const peerTranscript: RoomRunTranscript = {
+      ...initialTranscript,
+      roomName: "peer-room",
+      ticks: [...initialTranscript.ticks, { tick: 9, phase: "continue", event: "peer-save", outcome: "continued" }],
+    };
+    port.record = checkpointRecord(9, peerTranscript);
+    starter.starts[0]?.onCheckpointInvalidated?.({ sourceTabId: "tab-b", operation: "saved", revision: 9 });
+    const synchronizedSave = await started.value.drainCheckpointInvalidations();
+
+    expect(synchronizedSave).toMatchObject({
+      ok: true,
+      value: {
+        currentRevision: 9,
+        checkpointSync: {
+          state: "applied",
+          invalidation: { sourceTabId: "tab-b", operation: "saved", revision: 9 },
+          appliedRevision: 9,
+        },
+        host: { coordinator: { liveness: { checkpoint: "durable" } } },
+        room: { roomName: "peer-room", latestTick: 9 },
+      },
+    });
+    expect(starter.updates).toEqual([peerTranscript]);
+
+    const newerTranscript = { ...peerTranscript, roomName: "newer-than-notice" };
+    port.record = checkpointRecord(10, newerTranscript);
+    starter.starts[0]?.onCheckpointInvalidated?.({ sourceTabId: "tab-b", operation: "removed", revision: 9 });
+    const synchronizedStaleRemoval = await started.value.drainCheckpointInvalidations();
+
+    expect(synchronizedStaleRemoval).toMatchObject({
+      ok: true,
+      value: {
+        currentRevision: 10,
+        checkpointSync: {
+          state: "applied",
+          invalidation: { sourceTabId: "tab-b", operation: "removed", revision: 9 },
+          appliedRevision: 10,
+        },
+        host: { coordinator: { liveness: { checkpoint: "durable" } } },
+        room: { roomName: "newer-than-notice" },
+      },
+    });
+
+    port.record = null;
+    starter.starts[0]?.onCheckpointInvalidated?.({ sourceTabId: "tab-b", operation: "removed", revision: 10 });
+    expect(await started.value.drainCheckpointInvalidations()).toMatchObject({
+      ok: true,
+      value: {
+        currentRevision: null,
+        checkpointSync: { state: "applied", appliedRevision: null },
+        host: { coordinator: { liveness: { checkpoint: "none" } } },
+        room: { roomName: "browser-room" },
+      },
+    });
+  });
+
+  test("does not let an older peer reread overwrite a newer local commit", async () => {
+    const port = new MemoryCheckpointPort();
+    const starter = createStarter();
+    const started = await startDurableDarkHallBrowser(options(), port, starter.start);
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+
+    const stalePeerTranscript = { ...initialTranscript, roomName: "stale-peer" };
+    const deferredPeerLoad: {
+      resolve: ((result: BrowserCheckpointResult<BrowserCheckpointRecord | null>) => void) | null;
+    } = { resolve: null };
+    port.loadOverride = () =>
+      new Promise((resolve) => {
+        deferredPeerLoad.resolve = resolve;
+      });
+    starter.starts[0]?.onCheckpointInvalidated?.({ sourceTabId: "tab-b", operation: "saved", revision: 10 });
+    await Promise.resolve();
+
+    port.loadOverride = null;
+    const localTranscript = { ...initialTranscript, roomName: "newer-local" };
+    const localSave = await started.value.checkpoint(11, localTranscript);
+    expect(localSave.ok).toBe(true);
+    if (deferredPeerLoad.resolve === null) throw new Error("The deferred peer load did not start.");
+    deferredPeerLoad.resolve(succeeded(checkpointRecord(10, stalePeerTranscript)));
+
+    expect(await started.value.drainCheckpointInvalidations()).toMatchObject({
+      ok: true,
+      value: {
+        currentRevision: 11,
+        checkpointSync: { state: "applied", appliedRevision: 11 },
+        room: { roomName: "newer-local" },
+      },
     });
   });
 

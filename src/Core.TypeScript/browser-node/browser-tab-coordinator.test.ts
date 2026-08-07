@@ -4,6 +4,7 @@ import {
   startBrowserTabCoordinator,
   type BrowserTabChannel,
   type BrowserTabChannelMessage,
+  type BrowserCheckpointInvalidation,
   type BrowserTabCoordinator,
   type BrowserTabCoordinatorOptions,
   type BrowserTabCoordinatorReadout,
@@ -78,6 +79,7 @@ class FakeChannel implements BrowserTabChannel {
 function options(
   tabId: string,
   onReadout?: (readout: BrowserTabCoordinatorReadout) => void,
+  onCheckpointInvalidated?: (invalidation: BrowserCheckpointInvalidation) => void,
 ): BrowserTabCoordinatorOptions {
   return {
     nodeId: "llmtv-room-a",
@@ -88,6 +90,7 @@ function options(
     capabilities: ["css", "javascript", "broadcast-channel"],
     checkpoint: "volatile",
     ...(onReadout === undefined ? {} : { onReadout }),
+    ...(onCheckpointInvalidated === undefined ? {} : { onCheckpointInvalidated }),
   };
 }
 
@@ -231,6 +234,36 @@ describe("browser tab coordinator", () => {
       ok: false,
       feedback: { code: "coordinator-stopped" },
     });
+  });
+
+  test("broadcasts only checkpoint invalidation evidence to peer observers", () => {
+    const bus = new FakeBus();
+    const localInvalidations: BrowserCheckpointInvalidation[] = [];
+    const peerInvalidations: BrowserCheckpointInvalidation[] = [];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", undefined, (value) => localInvalidations.push(value)),
+        bus.connect(),
+      ),
+    );
+    const tabB = started(
+      startBrowserTabCoordinator(
+        options("tab-b", undefined, (value) => peerInvalidations.push(value)),
+        bus.connect(),
+      ),
+    );
+
+    expect(tabA.publishCheckpointInvalidation("saved", 12).ok).toBe(true);
+    expect(localInvalidations).toEqual([]);
+    expect(peerInvalidations).toEqual([{ sourceTabId: "tab-a", operation: "saved", revision: 12 }]);
+    expect(tabB.read().liveness.checkpoint).toBe("volatile");
+
+    expect(tabA.publishCheckpointInvalidation("invalid" as never, 13)).toMatchObject({
+      ok: false,
+      feedback: { code: "coordinator-configuration-invalid" },
+    });
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabB.stop(2).ok).toBe(true);
   });
 
   test("reports malformed messages and local tab-id collisions as heat", () => {

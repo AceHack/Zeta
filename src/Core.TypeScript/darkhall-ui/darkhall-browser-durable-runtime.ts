@@ -15,6 +15,7 @@ import {
 } from "../browser-node/browser-room-checkpoint";
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
+import type { BrowserCheckpointInvalidation } from "../browser-node/browser-tab-coordinator";
 import {
   startNativeDarkHallBrowser,
   type DarkHallBrowserBootstrapFeedback,
@@ -53,7 +54,7 @@ type DarkHallBrowserDurableFailure = Extract<DarkHallBrowserDurableResult<never>
 
 export interface DarkHallBrowserDurableOptions extends Omit<
   DarkHallBrowserBootstrapOptions,
-  "checkpoint" | "transcript"
+  "checkpoint" | "onCheckpointInvalidated" | "transcript"
 > {
   readonly initialTranscript: RoomRunTranscript;
 }
@@ -71,6 +72,12 @@ export interface DarkHallBrowserDurableReadout {
   readonly recoveredRevision: number | null;
   readonly currentRevision: number | null;
   readonly payloadBytes: number | null;
+  readonly checkpointSync: {
+    readonly state: "idle" | "loading" | "applied" | "failed";
+    readonly invalidation: BrowserCheckpointInvalidation | null;
+    readonly appliedRevision: number | null;
+    readonly feedback: DarkHallBrowserDurableFeedback | null;
+  };
   readonly room: {
     readonly roomName: string;
     readonly seed: string;
@@ -87,6 +94,7 @@ export interface DarkHallBrowserDurableRuntime {
     transcript: RoomRunTranscript,
   ): Promise<DarkHallBrowserDurableResult<BrowserCheckpointRecord>>;
   retract(throughRevision: number): Promise<DarkHallBrowserDurableResult<boolean>>;
+  drainCheckpointInvalidations(): Promise<DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>>;
   stop(): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
 }
 
@@ -233,6 +241,7 @@ function bootstrapOptions(
   options: DarkHallBrowserDurableOptions,
   checkpoint: "none" | "durable",
   transcript: DurableRoomRunTranscript,
+  onCheckpointInvalidated: (invalidation: BrowserCheckpointInvalidation) => void,
 ): DarkHallBrowserBootstrapOptions {
   return {
     root: options.root,
@@ -246,6 +255,7 @@ function bootstrapOptions(
     capabilities: options.capabilities,
     checkpoint,
     transcript,
+    onCheckpointInvalidated,
   };
 }
 
@@ -267,10 +277,25 @@ export async function startDurableDarkHallBrowser(
   const selectedTranscript = transcriptForCheckpoint(recovered.value, initial.value);
   if (!selectedTranscript.ok) return closeAfterFailure(checkpointPort, selectedTranscript);
 
+  let receiveCheckpointInvalidation: ((invalidation: BrowserCheckpointInvalidation) => void) | null = null;
+  let startupInvalidation: BrowserCheckpointInvalidation | null = null;
+  const onCheckpointInvalidated = (invalidation: BrowserCheckpointInvalidation): void => {
+    if (receiveCheckpointInvalidation === null) {
+      startupInvalidation = invalidation;
+      return;
+    }
+    receiveCheckpointInvalidation(invalidation);
+  };
+
   let started: DarkHallBrowserBootstrapResult<DarkHallBrowserRuntime>;
   try {
     started = startBrowser(
-      bootstrapOptions(options, recovered.value === null ? "none" : "durable", selectedTranscript.value),
+      bootstrapOptions(
+        options,
+        recovered.value === null ? "none" : "durable",
+        selectedTranscript.value,
+        onCheckpointInvalidated,
+      ),
     );
   } catch {
     return closeAfterFailure(checkpointPort, thrown("browser-runtime", "browser-runtime-operation-threw", "starting"));
@@ -284,6 +309,14 @@ export async function startDurableDarkHallBrowser(
   let currentRecord = recovered.value;
   let currentTranscript = selectedTranscript.value;
   let finalized = false;
+  let localCheckpointGeneration = 0;
+  let checkpointSync: DarkHallBrowserDurableReadout["checkpointSync"] = {
+    state: "idle",
+    invalidation: null,
+    appliedRevision: currentRecord?.revision ?? null,
+    feedback: null,
+  };
+  let checkpointSyncTail: Promise<DarkHallBrowserDurableResult<null>> = Promise.resolve(succeeded(null));
 
   const read = (): DarkHallBrowserDurableReadout => ({
     schema: DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA,
@@ -291,6 +324,7 @@ export async function startDurableDarkHallBrowser(
     recoveredRevision,
     currentRevision: currentRecord?.revision ?? null,
     payloadBytes: currentRecord?.payload.byteLength ?? null,
+    checkpointSync,
     room: roomSummary(currentTranscript),
   });
 
@@ -322,6 +356,102 @@ export async function startDurableDarkHallBrowser(
       return thrown("browser-runtime", "browser-runtime-operation-threw", "updating checkpoint liveness");
     }
   };
+
+  const publishCheckpointInvalidation = (
+    invalidation: Omit<BrowserCheckpointInvalidation, "sourceTabId">,
+  ): DarkHallBrowserDurableResult<null> => {
+    try {
+      const published = browserRuntime.host.publishCheckpointInvalidation(
+        invalidation.operation,
+        invalidation.revision,
+      );
+      return published.ok ? succeeded(null) : failed("browser-runtime", published.feedback);
+    } catch {
+      return thrown("browser-runtime", "browser-runtime-operation-threw", "publishing checkpoint invalidation");
+    }
+  };
+
+  const applyLoadedCheckpoint = (
+    record: BrowserCheckpointRecord | null,
+    invalidation: BrowserCheckpointInvalidation,
+  ): DarkHallBrowserDurableResult<null> => {
+    const selected = transcriptForCheckpoint(record, initial.value);
+    if (!selected.ok) return selected;
+    if (finalized) {
+      return failed("checkpoint-store", {
+        severity: "heat",
+        code: "checkpoint-store-closed",
+        detail: "The durable browser room runtime stopped before checkpoint synchronization completed.",
+      });
+    }
+
+    currentRecord = record;
+    currentTranscript = selected.value;
+    const checkpointReadout = updateCheckpointReadout(record === null ? "none" : "durable");
+    const rendered = updateRenderedTranscript(currentTranscript);
+    if (!checkpointReadout.ok) return checkpointReadout;
+    if (!rendered.ok) return rendered;
+
+    checkpointSync = {
+      state: "applied",
+      invalidation,
+      appliedRevision: record?.revision ?? null,
+      feedback: null,
+    };
+    return succeeded(null);
+  };
+
+  const reconcileCheckpointInvalidation = async (
+    invalidation: BrowserCheckpointInvalidation,
+  ): Promise<DarkHallBrowserDurableResult<null>> => {
+    checkpointSync = {
+      state: "loading",
+      invalidation,
+      appliedRevision: currentRecord?.revision ?? null,
+      feedback: null,
+    };
+    const generationBeforeLoad = localCheckpointGeneration;
+    const loaded = await loadCheckpoint(checkpointPort, options.nodeId);
+    if (loaded.ok && generationBeforeLoad !== localCheckpointGeneration) {
+      checkpointSync = {
+        state: "applied",
+        invalidation,
+        appliedRevision: currentRecord?.revision ?? null,
+        feedback: null,
+      };
+      return succeeded(null);
+    }
+    const reconciled = loaded.ok ? applyLoadedCheckpoint(loaded.value, invalidation) : loaded;
+    if (!reconciled.ok) {
+      checkpointSync = {
+        state: "failed",
+        invalidation,
+        appliedRevision: currentRecord?.revision ?? null,
+        feedback: reconciled.feedback,
+      };
+    }
+    return reconciled;
+  };
+
+  receiveCheckpointInvalidation = (invalidation) => {
+    checkpointSyncTail = checkpointSyncTail
+      .then(() => reconcileCheckpointInvalidation(invalidation))
+      .catch(() => {
+        const failure = thrown(
+          "checkpoint-store",
+          "checkpoint-operation-threw",
+          "synchronizing a checkpoint invalidation",
+        );
+        checkpointSync = {
+          state: "failed",
+          invalidation,
+          appliedRevision: currentRecord?.revision ?? null,
+          feedback: failure.feedback,
+        };
+        return failure;
+      });
+  };
+  if (startupInvalidation !== null) receiveCheckpointInvalidation(startupInvalidation);
 
   return succeeded({
     read,
@@ -359,14 +489,17 @@ export async function startDurableDarkHallBrowser(
       const verified = verifyRecord(saved.value, options.nodeId, revision, encoded.value);
       if (!verified.ok) return verified;
 
+      localCheckpointGeneration += 1;
       currentRecord = verified.value;
       const decoded = decodeBrowserRoomCheckpoint(verified.value.payload);
       if (!decoded.ok) return failed("room-checkpoint", decoded.feedback);
       currentTranscript = decoded.value;
+      const published = publishCheckpointInvalidation({ operation: "saved", revision });
       const checkpointReadout = updateCheckpointReadout("durable");
       const rendered = updateRenderedTranscript(currentTranscript);
       if (!checkpointReadout.ok) return checkpointReadout;
-      return rendered.ok ? succeeded(verified.value) : rendered;
+      if (!rendered.ok) return rendered;
+      return published.ok ? succeeded(verified.value) : published;
     },
     retract: async (throughRevision) => {
       if (finalized) {
@@ -392,12 +525,19 @@ export async function startDurableDarkHallBrowser(
       if (!removed.ok) return failed("checkpoint-store", removed.feedback);
       if (!removed.value) return succeeded(false);
 
+      localCheckpointGeneration += 1;
       currentRecord = null;
       currentTranscript = initial.value;
+      const published = publishCheckpointInvalidation({ operation: "removed", revision: throughRevision });
       const checkpointReadout = updateCheckpointReadout("none");
       const rendered = updateRenderedTranscript(currentTranscript);
       if (!checkpointReadout.ok) return checkpointReadout;
-      return rendered.ok ? succeeded(true) : rendered;
+      if (!rendered.ok) return rendered;
+      return published.ok ? succeeded(true) : published;
+    },
+    drainCheckpointInvalidations: async () => {
+      const synchronized = await checkpointSyncTail;
+      return synchronized.ok ? succeeded(read()) : synchronized;
     },
     stop: () => {
       if (finalized) return succeeded(read());

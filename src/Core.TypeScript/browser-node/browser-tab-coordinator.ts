@@ -10,7 +10,7 @@ import {
   type BrowserTabState,
 } from "./browser-node";
 
-export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v1" as const;
+export const BROWSER_TAB_COORDINATOR_SCHEMA = "zeta.browser-tab-coordinator.v2" as const;
 
 export interface BrowserTabPresenceMessage {
   readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
@@ -27,7 +27,25 @@ export interface BrowserTabProbeMessage {
   readonly sequence: number;
 }
 
-export type BrowserTabChannelMessage = BrowserTabPresenceMessage | BrowserTabProbeMessage;
+export type BrowserCheckpointInvalidationOperation = "saved" | "removed";
+
+export interface BrowserCheckpointInvalidation {
+  readonly sourceTabId: string;
+  readonly operation: BrowserCheckpointInvalidationOperation;
+  readonly revision: number;
+}
+
+export interface BrowserCheckpointInvalidationMessage {
+  readonly schema: typeof BROWSER_TAB_COORDINATOR_SCHEMA;
+  readonly nodeId: string;
+  readonly kind: "checkpoint-invalidated";
+  readonly invalidation: BrowserCheckpointInvalidation;
+}
+
+export type BrowserTabChannelMessage =
+  | BrowserTabPresenceMessage
+  | BrowserTabProbeMessage
+  | BrowserCheckpointInvalidationMessage;
 
 export interface BrowserTabCoordinatorFeedback {
   readonly severity: "backpressure" | "heat";
@@ -45,6 +63,7 @@ export interface BrowserTabCoordinatorFeedback {
     | "tab-id-collision"
     | "tab-sequence-stale"
     | "readout-observer-failed"
+    | "checkpoint-invalidation-observer-failed"
     | "coordinator-configuration-invalid"
     | "coordinator-stopped";
   readonly detail: string;
@@ -74,6 +93,7 @@ export interface BrowserTabCoordinatorOptions {
   readonly capabilities: readonly BrowserNodeCapability[];
   readonly checkpoint: BrowserCheckpoint;
   readonly onReadout?: (readout: BrowserTabCoordinatorReadout) => void;
+  readonly onCheckpointInvalidated?: (invalidation: BrowserCheckpointInvalidation) => void;
 }
 
 export interface BrowserTabCoordinatorReadout {
@@ -92,11 +112,17 @@ export interface BrowserTabCoordinator {
   probe(sequence: number): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
   /** Refresh this tab's projection after the checkpoint adapter commits. */
   updateCheckpoint(checkpoint: BrowserCheckpoint): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
+  /** Notify peers that storage changed; receivers must reread their own checkpoint port. */
+  publishCheckpointInvalidation(
+    operation: BrowserCheckpointInvalidationOperation,
+    revision: number,
+  ): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
   stop(sequence: number): BrowserTabOperationResult<BrowserTabCoordinatorReadout>;
 }
 
 const TAB_STATES: ReadonlySet<string> = new Set(["foreground", "background", "suspended", "dark"]);
 const CHECKPOINTS: ReadonlySet<string> = new Set(["none", "volatile", "durable"]);
+const CHECKPOINT_OPERATIONS: ReadonlySet<string> = new Set(["saved", "removed"]);
 
 function succeeded<T>(value: T): BrowserTabOperationResult<T> {
   return { ok: true, value };
@@ -127,7 +153,7 @@ function decodeChannelMessage(value: unknown): BrowserTabOperationResult<Browser
     !isRecord(value) ||
     value.schema !== BROWSER_TAB_COORDINATOR_SCHEMA ||
     !isIdentifier(value.nodeId) ||
-    (value.kind !== "presence" && value.kind !== "probe")
+    (value.kind !== "presence" && value.kind !== "probe" && value.kind !== "checkpoint-invalidated")
   ) {
     return failed("tab-message-invalid", "A browser tab channel message did not match the coordinator schema.");
   }
@@ -142,6 +168,29 @@ function decodeChannelMessage(value: unknown): BrowserTabOperationResult<Browser
       kind: "probe",
       requesterTabId: value.requesterTabId,
       sequence: value.sequence,
+    });
+  }
+
+  if (value.kind === "checkpoint-invalidated") {
+    const invalidation = value.invalidation;
+    if (
+      !isRecord(invalidation) ||
+      !isIdentifier(invalidation.sourceTabId) ||
+      typeof invalidation.operation !== "string" ||
+      !CHECKPOINT_OPERATIONS.has(invalidation.operation) ||
+      !isSequence(invalidation.revision)
+    ) {
+      return failed("tab-message-invalid", "A checkpoint invalidation carried invalid source or revision evidence.");
+    }
+    return succeeded({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: value.nodeId,
+      kind: "checkpoint-invalidated",
+      invalidation: {
+        sourceTabId: invalidation.sourceTabId,
+        operation: invalidation.operation as BrowserCheckpointInvalidationOperation,
+        revision: invalidation.revision,
+      },
     });
   }
 
@@ -179,6 +228,20 @@ function probeMessage(nodeId: string, requesterTabId: string, sequence: number):
     kind: "probe",
     requesterTabId,
     sequence,
+  };
+}
+
+function checkpointInvalidationMessage(
+  nodeId: string,
+  sourceTabId: string,
+  operation: BrowserCheckpointInvalidationOperation,
+  revision: number,
+): BrowserCheckpointInvalidationMessage {
+  return {
+    schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+    nodeId,
+    kind: "checkpoint-invalidated",
+    invalidation: { sourceTabId, operation, revision },
   };
 }
 
@@ -220,6 +283,7 @@ export function startBrowserTabCoordinator(
   let checkpoint = options.checkpoint;
   let stopped = false;
   let observerFailure: BrowserTabCoordinatorFeedback | null = null;
+  let checkpointObserverFailure: BrowserTabCoordinatorFeedback | null = null;
 
   const project = (eventFeedback: readonly BrowserTabCoordinatorFeedback[] = []): BrowserTabCoordinatorReadout => {
     const node = planBrowserNode({
@@ -236,7 +300,12 @@ export function startBrowserTabCoordinator(
       localTabId: options.tabId,
       tabs,
       liveness: node.liveness,
-      feedback: [...node.feedback, ...(observerFailure === null ? [] : [observerFailure]), ...eventFeedback],
+      feedback: [
+        ...node.feedback,
+        ...(observerFailure === null ? [] : [observerFailure]),
+        ...(checkpointObserverFailure === null ? [] : [checkpointObserverFailure]),
+        ...eventFeedback,
+      ],
     };
   };
 
@@ -291,6 +360,29 @@ export function startBrowserTabCoordinator(
 
     if (message.kind === "probe") {
       respondToProbe(message);
+      return;
+    }
+
+    if (message.kind === "checkpoint-invalidated") {
+      if (message.invalidation.sourceTabId === options.tabId) {
+        const collision = failed(
+          "tab-id-collision",
+          `Another channel participant published checkpoint evidence for locally owned tab ${options.tabId}.`,
+        );
+        if (!collision.ok) notify(project([collision.feedback]));
+        return;
+      }
+      if (options.onCheckpointInvalidated === undefined) return;
+      try {
+        options.onCheckpointInvalidated(message.invalidation);
+      } catch {
+        checkpointObserverFailure = {
+          severity: "heat",
+          code: "checkpoint-invalidation-observer-failed",
+          detail: "The injected checkpoint invalidation observer threw; channel delivery continued.",
+        };
+        notify(project());
+      }
       return;
     }
 
@@ -408,6 +500,19 @@ export function startBrowserTabCoordinator(
       const readout = project();
       notify(readout);
       return succeeded(readout);
+    },
+    publishCheckpointInvalidation: (operation, revision) => {
+      const running = ensureRunning();
+      if (!running.ok) return running;
+      if (!CHECKPOINT_OPERATIONS.has(operation) || !isSequence(revision)) {
+        return failed(
+          "coordinator-configuration-invalid",
+          "A checkpoint invalidation requires a supported operation and non-negative safe revision.",
+        );
+      }
+      const published = publish(checkpointInvalidationMessage(options.nodeId, options.tabId, operation, revision));
+      if (!published.ok) return published;
+      return succeeded(project());
     },
     stop: (sequence) => {
       const running = ensureRunning();
