@@ -110,6 +110,26 @@ module GossipTelemetry =
         | None -> BusRegime.Unmeasured
         | Some meter -> BusRegime.regimeOfTerrestrial meter deadlineMs
 
+    /// Regime of a pair from the salon's knowledge, with orbital asymmetry correction (caveat b).
+    /// `orbitalLink` supplies the δ_max budget from `OrbitalAsymmetryBudget`; pass `None` for
+    /// terrestrial links (identical to `regimeOfPair`). Unheard pairs are `Unmeasured` — honest.
+    let regimeOfPairOrbital
+        (salon: Salon)
+        (a: string)
+        (b: string)
+        (deadlineMs: int)
+        (orbitalLink: ReticulumBusMeter.OrbitalLink option) : BusRegime.Regime =
+        match meterOfPair salon a b with
+        | None -> BusRegime.Unmeasured
+        | Some meter ->
+            match orbitalLink with
+            | None -> BusRegime.regimeOfTerrestrial meter deadlineMs
+            | Some link ->
+                let jd = OrbitalAsymmetryBudget.unixMsToJd
+                            (System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
+                let delta = OrbitalAsymmetryBudget.deltaMaxMs link.LocalBody link.RemoteBody jd
+                BusRegime.regimeOf meter deadlineMs (int delta)
+
     /// Combine the local snapshot's view with the salon's for a society verdict about a
     /// sender↔reference pair: local telemetry AND everything gossiped about that pair. Any fast
     /// crossing from either source forces in-cone (monotone toward in-cone; sound).
@@ -125,6 +145,28 @@ module GossipTelemetry =
             | Some gossiped ->
                 gossiped.RttSamplesMs |> List.fold BusRegime.foldSample localMeter
         BusRegime.regimeOfTerrestrial combined deadlineMs
+
+    /// Combine the local snapshot's view with the salon's, with orbital asymmetry correction.
+    /// `orbitalLink` supplies the δ_max budget; pass `None` for terrestrial links.
+    let regimeWithGossipOrbital
+        (localMeter: BusRegime.Meter)
+        (salon: Salon)
+        (a: string)
+        (b: string)
+        (deadlineMs: int)
+        (orbitalLink: ReticulumBusMeter.OrbitalLink option) : BusRegime.Regime =
+        let combined =
+            match meterOfPair salon a b with
+            | None -> localMeter
+            | Some gossiped ->
+                gossiped.RttSamplesMs |> List.fold BusRegime.foldSample localMeter
+        match orbitalLink with
+        | None -> BusRegime.regimeOfTerrestrial combined deadlineMs
+        | Some link ->
+            let jd = OrbitalAsymmetryBudget.unixMsToJd
+                        (System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
+            let delta = OrbitalAsymmetryBudget.deltaMaxMs link.LocalBody link.RemoteBody jd
+            BusRegime.regimeOf combined deadlineMs (int delta)
 
     /// PRUNE — bounded salon memory, monotone-safe. Only the minimum RTT per pair ever affects
     /// `regimeOfPair` (min rules), so keeping the K smallest-RTT entries per pair preserves the

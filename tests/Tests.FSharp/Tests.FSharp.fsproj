@@ -395,6 +395,7 @@
     <Compile Include="DecorrelationMeter.Tests.fs" />
     <Compile Include="DecorrelationExcess.Tests.fs" />
     <Compile Include="DecorrelationExcessFusion.Tests.fs" />
+    <Compile Include="CommitPairCorrelator.Tests.fs" />
     <Compile Include="GridTrustDemo.Tests.fs" />
     <Compile Include="GridTelemetry.Tests.fs" />
     <Compile Include="TravelerFrame.Legs.Tests.fs" />
