@@ -179,6 +179,14 @@ describe("bridge with CalibrationLedger", () => {
 // ─── resolveAtTickBridge ──────────────────────────────────────────────────────
 import { resolveAtTickBridge } from "./calibration-bridge.js";
 import { updatePosterior as _updatePosterior } from "./calibration-ledger.js";
+import {
+  emptyLedger as emptyRankLedger,
+  trustBandOf,
+} from "./traveler-rank-ledger.js";
+import { EMPTY_LEDGER as emptyClaims, recordClaim } from "../observe/self-claims.js";
+import { createCalibrationLedger as emptyCalibration } from "./calibration-ledger.js";
+// ClaimsLedger type alias for new tests
+type ClaimsLedger = ReturnType<typeof emptyClaims>;
 
 describe("resolveAtTickBridge", () => {
   const ZID2 = "zid-agent-B";
@@ -290,5 +298,123 @@ describe("resolveAtTickBridge", () => {
     const rec2 = getRecord(r2.calibrationLedger!, ZID2, HAT2);
     expect(rec1!.outcomes[0]?.intervalScore).toBe(rec2!.outcomes[0]?.intervalScore);
     expect(rec1!.outcomes[0]?.hit).toBe(rec2!.outcomes[0]?.hit);
+  });
+});
+
+// ═══ resolveAtTickBridge + TravelerRankLedger co-update ═══════════════════════
+
+describe("resolveAtTickBridge + TravelerRankLedger", () => {
+  const BASE_TICK = 1000;
+  const BASE_MS = 1_700_000_000_000;
+  const ZID = "traveler-rank-test";
+  const HAT_ID = "hat-coding";
+
+  function makeClaimsLedger(): ClaimsLedger {
+    let ledger = { ...EMPTY_LEDGER };
+    ledger = recordClaim(ledger, {
+      itemId: "task-A",
+      agentId: ZID,
+      deadline: BASE_TICK + 100,
+      createdAt: BASE_TICK,
+    });
+    return ledger;
+  }
+
+  it("TRL-BRIDGE-1: rankLedger is undefined when not passed", () => {
+    const cl = makeClaimsLedger();
+    const result = resolveAtTickBridge(cl, BASE_TICK + 200, new Set(["task-A"]));
+    expect(result.rankLedger).toBeUndefined();
+  });
+
+  it("TRL-BRIDGE-2: rankLedger is updated on a MET claim", () => {
+    const cl = makeClaimsLedger();
+    const calLedger = createCalibrationLedger();
+    const rankLedger = emptyRankLedger;
+    const result = resolveAtTickBridge(
+      cl, BASE_TICK + 50, new Set(["task-A"]),
+      calLedger, ZID, HAT_ID, BASE_MS,
+      rankLedger, HAT_ID,
+    );
+    expect(result.rankLedger).toBeDefined();
+    const tb = trustBandOf(ZID, HAT_ID, result.rankLedger!);
+    // After 1 hit, trustBand should be above 0.5 (positive skill update)
+    expect(tb).toBeGreaterThan(0.5);
+  });
+
+  it("TRL-BRIDGE-3: rankLedger is updated on a MISSED claim", () => {
+    const cl = makeClaimsLedger();
+    const calLedger = createCalibrationLedger();
+    const rankLedger = emptyRankLedger;
+    // Resolve at a tick AFTER the deadline — claim is missed
+    const result = resolveAtTickBridge(
+      cl, BASE_TICK + 200, new Set<string>(),
+      calLedger, ZID, HAT_ID, BASE_MS,
+      rankLedger, HAT_ID,
+    );
+    expect(result.rankLedger).toBeDefined();
+    const tb = trustBandOf(ZID, HAT_ID, result.rankLedger!);
+    // After 1 miss, trustBand should be below 0.5 (negative skill update)
+    expect(tb).toBeLessThan(0.5);
+  });
+
+  it("TRL-BRIDGE-4: trustBand is monotone — 5 hits > 1 hit > fresh > 1 miss > 5 misses", () => {
+    function runN(hits: number, misses: number): number {
+      let cl = { ...EMPTY_LEDGER };
+      let calLedger = createCalibrationLedger();
+      let rankLedger = emptyRankLedger;
+      for (let i = 0; i < hits + misses; i++) {
+        cl = recordClaim(cl, { itemId: `t${i}`, agentId: ZID, deadline: BASE_TICK + 100, createdAt: BASE_TICK });
+        const completedItems = i < hits ? new Set([`t${i}`]) : new Set<string>();
+        const result = resolveAtTickBridge(
+          cl, BASE_TICK + (i < hits ? 50 : 200), completedItems,
+          calLedger, ZID, HAT_ID, BASE_MS,
+          rankLedger, HAT_ID,
+        );
+        cl = result.claimsLedger;
+        calLedger = result.calibrationLedger!;
+        rankLedger = result.rankLedger!;
+      }
+      return trustBandOf(ZID, HAT_ID, rankLedger);
+    }
+    const tb5hits = runN(5, 0);
+    const tb1hit = runN(1, 0);
+    const tbFresh = trustBandOf(ZID, HAT_ID, emptyRankLedger);
+    const tb1miss = runN(0, 1);
+    const tb5misses = runN(0, 5);
+    expect(tb5hits).toBeGreaterThan(tb1hit);
+    expect(tb1hit).toBeGreaterThan(tbFresh);
+    expect(tbFresh).toBeGreaterThan(tb1miss);
+    expect(tb1miss).toBeGreaterThan(tb5misses);
+  });
+
+  it("TRL-BRIDGE-5: rankLedger uses rankDomain when provided", () => {
+    const cl = makeClaimsLedger();
+    const calLedger = createCalibrationLedger();
+    const rankLedger = emptyRankLedger;
+    const result = resolveAtTickBridge(
+      cl, BASE_TICK + 50, new Set(["task-A"]),
+      calLedger, ZID, HAT_ID, BASE_MS,
+      rankLedger, "custom-domain",
+    );
+    // trustBand in custom-domain should be updated
+    const tbCustom = trustBandOf(ZID, "custom-domain", result.rankLedger!);
+    // trustBand in HAT_ID should be fresh (not updated)
+    const tbHat = trustBandOf(ZID, HAT_ID, result.rankLedger!);
+    expect(tbCustom).toBeGreaterThan(0.5);
+    expect(tbHat).toBeCloseTo(0.5, 5); // fresh prior
+  });
+
+  it("TRL-BRIDGE-6: rankLedger defaults to hatId domain when rankDomain not provided", () => {
+    const cl = makeClaimsLedger();
+    const calLedger = createCalibrationLedger();
+    const rankLedger = emptyRankLedger;
+    const result = resolveAtTickBridge(
+      cl, BASE_TICK + 50, new Set(["task-A"]),
+      calLedger, ZID, HAT_ID, BASE_MS,
+      rankLedger,
+      // rankDomain not provided — should default to HAT_ID
+    );
+    const tbHat = trustBandOf(ZID, HAT_ID, result.rankLedger!);
+    expect(tbHat).toBeGreaterThan(0.5);
   });
 });

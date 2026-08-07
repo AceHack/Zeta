@@ -47,6 +47,10 @@ import {
   recordPrediction,
   settlePrediction,
 } from "./calibration-ledger.js";
+import {
+  type TravelerRankLedger,
+  recordOutcome as rankRecordOutcome,
+} from "./traveler-rank-ledger.js";
 
 // ═══ Bridge Result ═══════════════════════════════════════════════════════════
 
@@ -57,6 +61,8 @@ import {
 export interface BridgeResult {
   readonly claimsLedger: ClaimsLedger;
   readonly calibrationLedger: CalibrationLedger | undefined;
+  /** Optional EP ranking ledger, updated alongside CalibrationLedger if provided. */
+  readonly rankLedger: TravelerRankLedger | undefined;
 }
 
 // ═══ Bridge: Record a new claim ══════════════════════════════════════════════
@@ -89,7 +95,7 @@ export function bridgeRecordClaim(
   const newClaimsLedger = recordClaim(claimsLedger, claim);
 
   if (!calibrationLedger || !zid || !hatId) {
-    return { claimsLedger: newClaimsLedger, calibrationLedger };
+    return { claimsLedger: newClaimsLedger, calibrationLedger, rankLedger: undefined };
   }
 
   // Map claim deadline (tick) to a wall-clock ms estimate.
@@ -108,7 +114,7 @@ export function bridgeRecordClaim(
     /* predictedAt = */ claimedAtMs,
   );
 
-  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger };
+  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger, rankLedger: undefined };
 }
 
 // ═══ Bridge: Mark a claim met ════════════════════════════════════════════════
@@ -141,7 +147,7 @@ export function bridgeMarkMet(
   const newClaimsLedger = markClaimMet(claimsLedger, itemId, agentId, completedAt);
 
   if (!calibrationLedger || !zid || !hatId) {
-    return { claimsLedger: newClaimsLedger, calibrationLedger };
+    return { claimsLedger: newClaimsLedger, calibrationLedger, rankLedger: undefined };
   }
 
   const newCalibrationLedger = settlePrediction(
@@ -152,7 +158,7 @@ export function bridgeMarkMet(
     /* settledAt = */ completedAtMs,
   );
 
-  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger };
+  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger, rankLedger: undefined };
 }
 
 // ═══ Bridge: Mark a claim missed ═════════════════════════════════════════════
@@ -187,7 +193,7 @@ export function bridgeMarkMissed(
   const newClaimsLedger = markClaimMissed(claimsLedger, itemId, agentId, reason);
 
   if (!calibrationLedger || !zid || !hatId) {
-    return { claimsLedger: newClaimsLedger, calibrationLedger };
+    return { claimsLedger: newClaimsLedger, calibrationLedger, rankLedger: undefined };
   }
 
   // Settle the prediction at missedAtMs — which is after the deadline,
@@ -200,7 +206,7 @@ export function bridgeMarkMissed(
     /* settledAt = */ missedAtMs,
   );
 
-  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger };
+  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger, rankLedger: undefined };
 }
 
 // ═══ Bridge: Bulk-resolve at tick ════════════════════════════════════════════
@@ -242,6 +248,10 @@ export function resolveAtTickBridge(
   zid?: string,
   hatId?: string,
   currentTickMs: number = Date.now(),
+  /** Optional EP ranking ledger to co-update alongside CalibrationLedger. */
+  rankLedger?: TravelerRankLedger,
+  /** Hat domain for EP ranking (defaults to hatId if not provided). */
+  rankDomain?: string,
 ): BridgeResult {
   // Identify which pending claims will be resolved before calling resolveAtTick.
   // We need to know which ones become MET vs MISSED to settle the CalibrationLedger.
@@ -251,7 +261,7 @@ export function resolveAtTickBridge(
   const newClaimsLedger = resolveAtTick(claimsLedger, currentTick, completedItems);
 
   if (!calibrationLedger || !zid || !hatId) {
-    return { claimsLedger: newClaimsLedger, calibrationLedger };
+    return { claimsLedger: newClaimsLedger, calibrationLedger, rankLedger };
   }
 
   // Settle the CalibrationLedger for each claim that was just resolved.
@@ -277,5 +287,21 @@ export function resolveAtTickBridge(
     );
   }
 
-  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger };
+  // Co-update the EP ranking ledger if provided.
+  // Each settled claim is a hit (MET) or miss (MISSED) observation for the (zid, domain) pair.
+  let newRankLedger = rankLedger;
+  if (rankLedger !== undefined && zid !== undefined) {
+    const domain = rankDomain ?? hatId;
+    for (const pending of pendingBefore) {
+      const resolved = newClaimsLedger.resolved.find(
+        (r) => r.claim.itemId === pending.claim.itemId && r.claim.agentId === pending.claim.agentId,
+      );
+      if (!resolved || resolved.outcome.status === "pending") {
+        continue;
+      }
+      const hit = resolved.outcome.status === "met";
+      newRankLedger = rankRecordOutcome(zid, domain!, hit, newRankLedger);
+    }
+  }
+  return { claimsLedger: newClaimsLedger, calibrationLedger: newCalibrationLedger, rankLedger: newRankLedger };
 }

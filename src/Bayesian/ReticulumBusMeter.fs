@@ -35,8 +35,40 @@ module ReticulumBusMeter =
         |> List.fold foldLink BusRegime.empty
 
     /// The regime of this node's mesh view against a decision deadline (ms).
+    /// Uses `regimeOfTerrestrial` (δ_max = 0 — safe for all terrestrial links).
     let regimeOfSnapshot (snapshot: ReticulumTransport.MeshSnapshot) (decisionDeadlineMs: int) : BusRegime.Regime =
         BusRegime.regimeOfTerrestrial (meterOfSnapshot snapshot) decisionDeadlineMs
+
+    // ── Orbital-aware regime (caveat (b) fix, 2026-08-04) ─────────────────────────────────────────
+    /// An orbital link descriptor: the two body names and the Julian Date of the observation.
+    /// Feed this to `regimeOfSnapshotOrbital` to get a caveat-(b)-correct regime that accounts
+    /// for the asymmetry in one-way light-travel time on inter-planetary links.
+    type OrbitalLink =
+        { /// Body name for the local node (e.g. "earth").
+          LocalBody: string
+          /// Body name for the remote node (e.g. "mars").
+          RemoteBody: string
+          /// Julian Date of the observation (use `OrbitalAsymmetryBudget.unixMsToJd`).
+          ObservationJd: float }
+
+    /// The regime of this node's mesh view against a decision deadline (ms), with the
+    /// conservative asymmetry budget δ_max computed from Kepler orbital mechanics.
+    ///
+    /// Use this instead of `regimeOfSnapshot` for inter-planetary links where
+    /// min(RTT)/2 is unsound (caveat (b), 2026-08-02).
+    ///
+    /// For terrestrial links, pass `link = None` — falls back to δ_max = 0.
+    let regimeOfSnapshotOrbital
+        (snapshot: ReticulumTransport.MeshSnapshot)
+        (decisionDeadlineMs: int)
+        (link: OrbitalLink option) : BusRegime.Regime =
+        let deltaMaxMs =
+            match link with
+            | None -> 0
+            | Some l ->
+                OrbitalAsymmetryBudget.deltaMaxMs l.LocalBody l.RemoteBody l.ObservationJd
+                |> int
+        BusRegime.regimeOf (meterOfSnapshot snapshot) decisionDeadlineMs deltaMaxMs
 
     /// End-to-end: society pricing armed by the real mesh. Same discounted IV as
     /// `AntiSybil.priceAgainstSociety`; the verdict's regime comes from live telemetry.
@@ -52,3 +84,24 @@ module ReticulumBusMeter =
         AntiSybil.priceAgainstSocietyMetered
             prior newBelief senderHistory societyHistories
             (meterOfSnapshot snapshot) decisionDeadlineMs
+
+    /// Orbital-aware society pricing: uses the Kepler δ_max budget to widen the cone
+    /// before pricing. For terrestrial links, pass `link = None`.
+    let priceAgainstSocietyOnMeshOrbital
+        (prior: Gaussian)
+        (newBelief: Gaussian)
+        (senderHistory: Gaussian list)
+        (societyHistories: AntiSybil.StreamHistory list)
+        (snapshot: ReticulumTransport.MeshSnapshot)
+        (decisionDeadlineMs: int)
+        (link: OrbitalLink option) : float<InformationValue.iv> * BusRegime.Verdict =
+        let deltaMaxMs =
+            match link with
+            | None -> 0
+            | Some l ->
+                OrbitalAsymmetryBudget.deltaMaxMs l.LocalBody l.RemoteBody l.ObservationJd
+                |> int
+        AntiSybil.priceAgainstSocietyMetered
+            prior newBelief senderHistory societyHistories
+            (meterOfSnapshot snapshot)
+            (decisionDeadlineMs + deltaMaxMs)
