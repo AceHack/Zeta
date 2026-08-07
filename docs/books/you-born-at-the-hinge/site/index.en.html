@@ -43,8 +43,10 @@
   h2.chap-title { text-align:center; font-size:clamp(1.9rem,8vw,2.5rem); font-weight:600; margin:0 0 2.2rem; text-wrap:balance; line-height:1.15; }
   .rule-c { border:0; height:1px; background:var(--rule); width:4rem; margin:0 auto 2.4rem; }
   h3 { font-size:1.24rem; font-weight:600; margin:2.7rem 0 1rem; color:var(--ink); text-wrap:balance; }
-  p { margin:0 0 1.2rem; }
-  .lead::first-letter { color:var(--seal); }
+  p { margin:0; text-indent:1.35em; text-align:justify; hyphens:auto; -webkit-hyphens:auto; orphans:2; widows:2; }
+  .lead, h3 + p, .rule-c + p, .voice + p, .note + p { text-indent:0; }
+  .premise { text-indent:0; text-align:left; }
+  .lead::first-letter { float:left; font-size:3.35em; line-height:.86; margin:.02em .12em 0 0; color:var(--seal); font-weight:600; }
   .kicker { color:var(--ink); font-weight:600; }
   .voice { margin:1.5rem 0; padding:.1rem 0 .1rem 1.15rem; border-left:3px solid var(--seal); color:var(--ink-soft); font-style:italic; }
   .voice .who { display:block; font-family:var(--sans); font-style:normal; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--meta); margin-bottom:.45rem; }
@@ -68,7 +70,7 @@
   </header>
 
   <aside class="note">
-    <b>Draft.</b> A working draft for pre-reading — currently Chapters&nbsp;1–4, with more added in passes. The prose is a first draft; the <em>[SOCKET]</em> recording prompts (where the author's own recorded voice will go) are kept out of this reading copy. The good and the dark are both left in.
+    <b>Draft.</b> A working draft for pre-reading — the complete book, Chapters&nbsp;1–12, plus a selection of stories. The prose is a first draft; the <em>[SOCKET]</em> recording prompts (where the author's own recorded voice will go) are kept out of this reading copy. The good and the dark are both left in.
   </aside>
 
   <article class="chap">
