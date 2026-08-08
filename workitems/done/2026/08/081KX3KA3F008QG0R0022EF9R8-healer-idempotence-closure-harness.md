@@ -1,11 +1,12 @@
 ---
 id: 081KX3KA3F008QG0R0022EF9R8
 type: task
-state: in-progress
+state: done
 priority: P1
 slug: healer-idempotence-closure-harness
 title: "Healer idempotence + closure harness — healers get golden vectors too"
 created: 2026-07-09T14:08:50.000Z
+completed: 2026-08-08T19:55:07.169Z
 depends_on: []
 composes_with: []
 ---
