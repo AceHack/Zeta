@@ -61,6 +61,7 @@ function parseBlock(lines: string[], startLine: number, indent: number): ParseRe
   let i = startLine;
   while (i < lines.length) {
     const line = lines[i];
+    if (line === undefined) break; // noUncheckedIndexedAccess: i < lines.length guarantees defined
     const trimmed = line.trimStart();
     if (trimmed === "") { i++; continue; }
     const lineIndent = line.length - line.trimStart().length;
@@ -82,10 +83,12 @@ function parseBlock(lines: string[], startLine: number, indent: number): ParseRe
       const nextNonEmpty = lines.slice(i).findIndex(l => l.trim() !== "");
       if (nextNonEmpty === -1) { obj[key] = null; continue; }
       const nextLine = i + nextNonEmpty;
-      const nextIndent = lines[nextLine].length - lines[nextLine].trimStart().length;
+      const nextLineText = lines[nextLine];
+      if (nextLineText === undefined) { obj[key] = null; continue; }
+      const nextIndent = nextLineText.length - nextLineText.trimStart().length;
       if (nextIndent <= indent) { obj[key] = null; continue; }
       // Check if it's a list
-      if (lines[nextLine].trimStart().startsWith("- ")) {
+      if (nextLineText.trimStart().startsWith("- ")) {
         const listResult = parseList(lines, nextLine, nextIndent);
         obj[key] = listResult.value;
         i = listResult.nextLine;
@@ -108,6 +111,7 @@ function parseList(lines: string[], startLine: number, indent: number): ParseRes
   let i = startLine;
   while (i < lines.length) {
     const line = lines[i];
+    if (line === undefined) break; // noUncheckedIndexedAccess: i < lines.length guarantees defined
     const trimmed = line.trimStart();
     if (trimmed === "") { i++; continue; }
     const lineIndent = line.length - line.trimStart().length;
@@ -120,7 +124,9 @@ function parseList(lines: string[], startLine: number, indent: number): ParseRes
       const nextNonEmpty = lines.slice(i).findIndex(l => l.trim() !== "");
       if (nextNonEmpty === -1) { arr.push(null); continue; }
       const nextLine = i + nextNonEmpty;
-      const nextIndent = lines[nextLine].length - lines[nextLine].trimStart().length;
+      const nextLineText = lines[nextLine];
+      if (nextLineText === undefined) { arr.push(null); continue; }
+      const nextIndent = nextLineText.length - nextLineText.trimStart().length;
       const blockResult = parseBlock(lines, nextLine, nextIndent);
       arr.push(blockResult.value);
       i = blockResult.nextLine;
