@@ -1,0 +1,14 @@
+{
+  "id": "080cff195a4c8011a0130008cdcb1b27",
+  "at": "2026-08-08T20:58:12.752Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZHJPJCF08QG0R0024BFHKS",
+    "type": "bug",
+    "title": "wifi-ESP acceptance phase-1 consistently fails: iter-5-wifi credential-injection markers missing (dispatch-only build-iso redder)",
+    "slug": "wifi-esp-acceptance-phase-1-consistently-fails-iter-5-wifi-c",
+    "priority": "P2",
+    "filename": "081KZHJPJCF08QG0R0024BFHKS-wifi-esp-acceptance-phase-1-consistently-fails-iter-5-wifi-c.md"
+  }
+}

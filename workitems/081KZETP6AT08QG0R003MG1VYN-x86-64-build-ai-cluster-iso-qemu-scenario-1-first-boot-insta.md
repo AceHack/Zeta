@@ -16,6 +16,50 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
+## DISENTANGLED (2026-08-08, Otto shadow*) — the dispatch failures are TWO distinct issues
+
+After 3 more `workflow_dispatch` build-iso runs, the picture separates cleanly. My earlier
+RE-CHECK conflated two independent failures:
+
+**(A) install.sh first-boot intermittent — RARE, instrumentation armed.**
+`install.sh` failed rc=1 in exactly ONE of 4 dispatch runs (31270499976); succeeded in the
+other three (31212929243, 31275358202, 31276420713). So it is genuinely intermittent and
+RARER than 50/50 — likely a transient network/toolchain-fetch blip in the first-boot VM. The
+`MISE_VERBOSE` + full-log error capture (#10155) is now permanently on `main`; the NEXT real
+occurrence (natural or dispatched) will capture the exact rc=1 cause. **No more targeted
+dispatches needed to chase it** — it will self-capture.
+
+**(B) wifi-ESP acceptance phase-1 — CONSISTENT failure, the real dispatch-build-iso redder.**
+The `081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance` scenario (**workflow_dispatch ONLY** — does
+NOT run on push/PR) failed in BOTH dispatch runs with data, **including run 31276420713 where
+install.sh SUCCEEDED and scenario-2 passed**. Failure is consistent:
+```
+Reason: wifi ESP phase-1 contract failed — wifi ESP install markers missing:
+  [iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP;
+  [iter-5-wifi] wrote NetworkManager profile to installed system;
+  [iter-5-wifi] association deferred (physical-gated; no radio claim)
+```
+So the wifi-ESP-credentials-injection markers are NOT being emitted — a real (apparently
+consistent) failure in the iter-5 wifi-ESP feature, **independent of install.sh**. My earlier
+RE-CHECK wrongly attributed this to install.sh (in 31270499976 install.sh *also* failed, which
+masked it). It is why `build-ai-cluster-iso` goes red on **dispatch** while staying green on
+push/PR (push doesn't run the dispatch-only wifi-ESP scenario).
+
+**Correction to the RE-CHECK below:** the "job failed via wifi-ESP because install.sh failed →
+node never provisioned → phase-1 timeout" causal chain was WRONG. The wifi-ESP scenario fails
+on its own contract (missing `zeta-wifi-credentials.json`-found marker), not on a provisioning
+timeout, and does so even when install.sh succeeds.
+
+## Next steps (revised)
+- **(A)** nothing to chase — instrumentation armed; self-captures on next occurrence.
+- **(B)** filed separately against the iter-5 wifi-ESP feature (backlog
+  081KSGS9H0008QG0R003V23XNZ): diagnose why the `[iter-5-wifi] found zeta-wifi-credentials.json
+  on boot USB ESP` marker is absent — either the QEMU harness isn't baking the creds JSON onto
+  the boot-image ESP, or the installer isn't reading/emitting it. Evidence run: 31276420713
+  (install.sh + scenario-2 green, wifi-ESP contract red). Owner: USB/zflash trajectory.
+
+---
+
 ## RE-CHECK (2026-08-08, Otto shadow*) — bug is INTERMITTENT, NOT resolved; reopened observation
 
 Triggered a fresh `workflow_dispatch` build-iso on `main` (run **31270499976**) to get a
