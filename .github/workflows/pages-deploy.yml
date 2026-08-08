@@ -35,12 +35,13 @@ jobs:
         run: bun run pages:build
       - name: Add book preview (unlisted — noindex in <head>, not linked from the site, know-the-URL)
         run: |
-          mkdir -p dist/preview/ybth-7q2m/en dist/preview/ybth-7q2m/id dist/preview/ybth-7q2m/vi dist/preview/ybth-7q2m/ko
+          mkdir -p dist/preview/ybth-7q2m/en dist/preview/ybth-7q2m/id dist/preview/ybth-7q2m/vi dist/preview/ybth-7q2m/ko dist/preview/ybth-7q2m/th
           cp docs/books/you-born-at-the-hinge/site/index.zh.html dist/preview/ybth-7q2m/index.html
           cp docs/books/you-born-at-the-hinge/site/index.en.html dist/preview/ybth-7q2m/en/index.html
           cp docs/books/you-born-at-the-hinge/site/index.id.html dist/preview/ybth-7q2m/id/index.html
           cp docs/books/you-born-at-the-hinge/site/index.vi.html dist/preview/ybth-7q2m/vi/index.html
           cp docs/books/you-born-at-the-hinge/site/index.ko.html dist/preview/ybth-7q2m/ko/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.th.html dist/preview/ybth-7q2m/th/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
