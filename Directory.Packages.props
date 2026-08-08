@@ -42,7 +42,7 @@
          hand-rolled wire codec is byte-identical (the hexagonal swap conformance). NOT a production
          dependency of Core. Exact-pinned per the supply-chain doctrine. -->
     <PackageVersion Include="Google.Protobuf" Version="3.35.1" />
-    <PackageVersion Include="System.Reactive" Version="6.1.0" />
+    <PackageVersion Include="System.Reactive" Version="7.0.0" />
     <PackageVersion Include="System.Numerics.Tensors" Version="10.0.10" />
     <PackageVersion Include="FsPickler" Version="5.3.2" />
     <PackageVersion Include="MessagePack" Version="3.1.7" />
