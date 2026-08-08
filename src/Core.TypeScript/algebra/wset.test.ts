@@ -3,9 +3,12 @@ import {
   LogProbRing,
   TropicalRing,
   IntegerRing,
+  BooleanRing,
   consolidateWSet,
   applyWSet,
   tensorWSet,
+  copyWSet,
+  discardWSet,
   type WSet,
 } from "./wset.ts";
 
@@ -81,5 +84,37 @@ describe("WSet — Ring-Generic Weighted Set & Generalized Distributive Law", ()
     expect(tensorResult.length).toBe(2);
     expect(tensorResult[0]!.weight).toBe(10); // 2 * 5
     expect(tensorResult[1]!.weight).toBe(15); // 3 * 5
+  });
+
+  it("consolidates relational weights over BooleanRing (GSet / Rel)", () => {
+    const boolSet: WSet<string, boolean> = [
+      { key: "edge-1", weight: true },
+      { key: "edge-1", weight: false },
+      { key: "edge-2", weight: false },
+    ];
+
+    const consolidated = consolidateWSet(
+      BooleanRing,
+      (w) => w === false,
+      (k) => k,
+      boolSet,
+    );
+
+    expect(consolidated.length).toBe(1);
+    expect(consolidated[0]!.key).toBe("edge-1");
+    expect(consolidated[0]!.weight).toBe(true);
+  });
+
+  it("verifies copyWSet and discardWSet comonoid morphisms (Delta: A -> A x A, !: A -> Unit)", () => {
+    const startSet: WSet<string, number> = [{ key: "state-X", weight: 42 }];
+
+    const copied = copyWSet(startSet);
+    expect(copied.length).toBe(1);
+    expect(copied[0]!.key).toEqual(["state-X", "state-X"]);
+    expect(copied[0]!.weight).toBe(42);
+
+    const discarded = discardWSet(startSet);
+    expect(discarded.length).toBe(1);
+    expect(discarded[0]!.weight).toBe(42);
   });
 });

@@ -157,3 +157,38 @@ export function tensorWSet<A, B, W>(
   }
   return result;
 }
+
+/**
+ * Relational Boolean Semiring (GSet / Rel):
+ *   zero = false, one = true
+ *   add(a, b) = a || b
+ *   mul(a, b) = a && b
+ */
+export const BooleanRing: StarRing<boolean> = {
+  zero: false,
+  one: true,
+  add: (a: boolean, b: boolean) => a || b,
+  mul: (a: boolean, b: boolean) => a && b,
+};
+
+/**
+ * Copy Comonoid Morphism Delta: A -> A (x) A
+ * Duplicates each key (ka -> [ka, ka]) while preserving weight.
+ */
+export function copyWSet<K, W>(set: WSet<K, W>): WSet<[K, K], W> {
+  return set.map((e) => ({
+    key: [e.key, e.key],
+    weight: e.weight,
+  }));
+}
+
+/**
+ * Discard Comonoid Morphism !: A -> Unit
+ * Maps each key to unit () while preserving weight.
+ */
+export function discardWSet<K, W>(set: WSet<K, W>): WSet<void, W> {
+  return set.map((e) => ({
+    key: undefined as unknown as void,
+    weight: e.weight,
+  }));
+}
