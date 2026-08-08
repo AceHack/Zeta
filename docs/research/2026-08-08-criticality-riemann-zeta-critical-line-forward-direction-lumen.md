@@ -174,6 +174,7 @@ The falsifier is: **if the measured third moment ∑ᵢ μᵢ³ does not scale a
 4. **Falsifier fires** if |β − 2·D_f| > 0.1 (a tolerance that could realistically be exceeded — the prior discharge used 25%, which is too loose).
 
 This falsifier can fire because:
+
 - The harmonic measure is computed from real random walks, not synthesised probabilities.
 - The scaling exponent β is measured independently of D_f.
 - The tolerance 0.1 is tight enough to be meaningful (DLA multifractal corrections are typically ~5–10% [3]).

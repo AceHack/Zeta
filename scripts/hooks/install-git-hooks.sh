@@ -32,3 +32,12 @@ mkdir -p "$hooks_dir"
 chmod +x "$HOOK_SRC"
 ln -sfn "$HOOK_SRC" "$hooks_dir/commit-msg"
 echo "install-git-hooks: linked $hooks_dir/commit-msg -> $HOOK_SRC"
+
+# pre-push floor hook (081KZHGP46G — the uncompensatable floor on the
+# sovereign lane; Lior's ratification note on the drift-and-heal ADR).
+PREPUSH_SRC="$REPO_ROOT/scripts/hooks/pre-push"
+if [ -f "$PREPUSH_SRC" ]; then
+  chmod +x "$PREPUSH_SRC"
+  ln -sfn "$PREPUSH_SRC" "$hooks_dir/pre-push"
+  echo "install-git-hooks: linked $hooks_dir/pre-push -> $PREPUSH_SRC"
+fi

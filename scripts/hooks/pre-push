@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+# pre-push — the uncompensatable floor, enforced on the SOVEREIGN LANE
+# (workitem 081KZHGP46G08QG0R002SR9A4T; Lior's ratification note on the
+# drift-and-heal ADR, Accepted 2026-08-08: "a floor the fast lane can skip
+# is a comment, not a contract").
+#
+# The gate enforces the floor on the corporate (PR) lane; this hook is the
+# same floor at the moment of direct push. It checks ONLY what the push
+# introduces (added lines / touched files in the outgoing range) — never
+# pre-existing whole-repo state, per the ADR's own scoping discipline: a
+# floor check that blocks on somebody else's drift is the priority
+# inversion this whole design deletes.
+#
+# Floor classes covered here (registry/uncompensatable-floor.yaml):
+#   secret-exposure          — secret-shaped ADDED lines block, no override
+#                              (published is published; erasure class).
+#   workflow-supply-chain    — the two .semgrep-floor.yml regexes ported to
+#                              portable ERE (mutable action tags; untrusted
+#                              github.head_ref/event.* inline in run:).
+#   treaty-byte-lock-vectors — touching golden-vector / cross-verification
+#                              contracts requires an EXPLICIT ack
+#                              (ZETA_FLOOR_VECTORS_ACK=1) after running the
+#                              oracles locally: deliberate change allowed,
+#                              silent breakage impossible.
+#   signed-history-rewrite   — non-fast-forward push to main blocks.
+# Remaining classes (consent-invariants-hc9, scoped-build-test-break) are
+# CI-side detectors by nature; the gate carries them.
+#
+# `git push --no-verify` bypasses any pre-push hook — git offers no way to
+# forbid it client-side. That bypass is therefore the documented emergency
+# hatch, and USING IT ON A FLOOR CLASS is a treaty matter, not a shortcut.
+#
+# Installed by scripts/hooks/install-git-hooks.sh (via tools/setup/install.sh).
+# Do not edit .git/hooks/pre-push directly.
+set -euo pipefail
+
+ZERO=0000000000000000000000000000000000000000
+fail=0
+
+say() { echo "pre-push[floor]: $*" >&2; }
+
+added_lines() { # $1=range [$2...=path filters]
+  local range="$1"; shift || true
+  git diff --unified=0 "$range" -- "$@" 2>/dev/null | grep -E '^\+' | grep -vE '^\+\+\+' || true
+}
+
+check_range() { # $1=local_sha $2=range_expr $3=remote_ref
+  local local_sha="$1" range="$2" remote_ref="$3"
+
+  # ── secret-exposure (added lines, any file; no override) ──────────────
+  local secrets
+  secrets=$(added_lines "$range" | grep -nE \
+    -e '-----BEGIN( [A-Z0-9]+)* PRIVATE KEY-----' \
+    -e 'gh[pousr]_[A-Za-z0-9]{36,}' \
+    -e 'github_pat_[A-Za-z0-9_]{22,}' \
+    -e 'AKIA[0-9A-Z]{16}' \
+    -e 'xox[baprs]-[A-Za-z0-9-]{10,}' \
+    || true)
+  if [ -n "$secrets" ]; then
+    say "BLOCKED (secret-exposure): secret-shaped content in the outgoing diff:"
+    echo "$secrets" | head -5 >&2
+    say "A published secret cannot be unpublished. Remove/rotate it and rewrite the commit."
+    fail=1
+  fi
+
+  # ── workflow-supply-chain (added workflow lines; .semgrep-floor.yml port) ──
+  local wf_added
+  wf_added=$(added_lines "$range" ".github/workflows/*.yml" ".github/workflows/*.yaml")
+  if [ -n "$wf_added" ]; then
+    local mutable
+    mutable=$(echo "$wf_added" \
+      | grep -E 'uses:[[:space:]]+[^[:space:]@#]+@(v?[0-9]+(\.[0-9]+)*|main|master|develop|latest|HEAD)[[:space:]]*(#.*)?$' \
+      | grep -vE 'uses:[[:space:]]+\./' || true)
+    if [ -n "$mutable" ]; then
+      say "BLOCKED (workflow-supply-chain): mutable third-party action tag added:"
+      echo "$mutable" | head -3 >&2
+      say "Pin by full 40-char commit SHA (tj-actions cascade, CVE-2025-30066)."
+      fail=1
+    fi
+    local untrusted
+    untrusted=$(echo "$wf_added" \
+      | grep -E 'run:.*\$\{\{[[:space:]]*github\.(head_ref|event\.(issue\.(title|body)|pull_request\.(title|body|head_ref|head\.ref|head\.label)|comment\.body|review\.body|head_commit\.message|commits))' \
+      || true)
+    if [ -n "$untrusted" ]; then
+      say "BLOCKED (workflow-supply-chain): untrusted event data inline in run: —"
+      echo "$untrusted" | head -3 >&2
+      say "Route through env: with quoting; the injected script runs on the NEXT tick."
+      fail=1
+    fi
+  fi
+
+  # ── treaty-byte-lock-vectors (touched contracts need an explicit ack) ──
+  local vectors
+  vectors=$(git diff --name-only "$range" 2>/dev/null \
+    | grep -E '(golden-vectors[^/]*\.json$|^tests/cross-verification/)' || true)
+  if [ -n "$vectors" ] && [ "${ZETA_FLOOR_VECTORS_ACK:-0}" != "1" ]; then
+    say "BLOCKED (treaty-byte-lock-vectors): this push touches cross-oracle contracts:"
+    echo "$vectors" | head -5 >&2
+    say "Other lanes build on these THIS tick. Run the oracles (cross-verify) locally,"
+    say "then re-push with ZETA_FLOOR_VECTORS_ACK=1 to state the change is deliberate."
+    fail=1
+  fi
+
+  # ── signed-history-rewrite (non-fast-forward to main) ─────────────────
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    local remote_main
+    remote_main=$(git rev-parse origin/main 2>/dev/null || echo "")
+    if [ -n "$remote_main" ] && ! git merge-base --is-ancestor "$remote_main" "$local_sha" 2>/dev/null; then
+      say "BLOCKED (signed-history-rewrite): non-fast-forward push to main."
+      say "History rewrite on main needs fresh human authorization (gated class)."
+      fail=1
+    fi
+  fi
+}
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "${local_ref:-}" ] && continue
+  [ "$local_sha" = "$ZERO" ] && continue # ref deletion — nothing outgoing
+
+  if [ "$remote_sha" != "$ZERO" ] && git cat-file -e "$remote_sha" 2>/dev/null; then
+    range="$remote_sha..$local_sha"
+  else
+    # New remote ref: scope to commits not already on any origin ref; fall
+    # back to merge-base with origin/main, then (last resort) the tip alone.
+    base=$(git merge-base "$local_sha" origin/main 2>/dev/null || echo "")
+    if [ -n "$base" ]; then range="$base..$local_sha"; else range="$local_sha~1..$local_sha"; fi
+  fi
+  check_range "$local_sha" "$range" "$remote_ref"
+done
+
+if [ "$fail" -ne 0 ]; then
+  say "floor violation(s) above — push refused. (The floor is small on purpose:"
+  say "everything else is drift and converges. registry/uncompensatable-floor.yaml)"
+  exit 1
+fi
+exit 0

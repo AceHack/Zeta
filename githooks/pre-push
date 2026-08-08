@@ -3,6 +3,20 @@
 # Ensure common bun paths are in PATH
 export PATH="$HOME/.bun/bin:/usr/local/bin:$PATH"
 
+# ── UNCOMPENSATABLE FLOOR first (081KZHGP46G; drift-and-heal ADR item 5) ──
+# The floor check consumes the same pre-push stdin protocol, so capture it
+# once and feed both consumers. ZETA_SKIP_PREFLIGHT does NOT skip the floor
+# (the floor is not a preflight nicety; only --no-verify bypasses it, and
+# using that on a floor class is a treaty matter).
+PREPUSH_STDIN="$(cat)"
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+FLOOR_HOOK="$REPO_ROOT/scripts/hooks/pre-push"
+if [ -f "$FLOOR_HOOK" ]; then
+  if ! printf '%s\n' "$PREPUSH_STDIN" | bash "$FLOOR_HOOK" "$@"; then
+    exit 1
+  fi
+fi
+
 # Escape hatch to skip preflight check
 if [ "$ZETA_SKIP_PREFLIGHT" = "1" ] || [ "$ZETA_SKIP_PREFLIGHT" = "true" ]; then
   echo "ZETA_SKIP_PREFLIGHT is set, skipping preflight self-checks."

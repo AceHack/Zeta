@@ -51,6 +51,7 @@ on its own contract (missing `zeta-wifi-credentials.json`-found marker), not on 
 timeout, and does so even when install.sh succeeds.
 
 ## Next steps (revised)
+
 - **(A)** nothing to chase — instrumentation armed; self-captures on next occurrence.
 - **(B)** filed separately against the iter-5 wifi-ESP feature (backlog
   081KSGS9H0008QG0R003V23XNZ): diagnose why the `[iter-5-wifi] found zeta-wifi-credentials.json

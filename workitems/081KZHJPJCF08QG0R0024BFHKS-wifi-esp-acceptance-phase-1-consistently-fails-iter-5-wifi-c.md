@@ -50,6 +50,7 @@ intermittent. Push/PR build-iso stays green because this scenario is dispatch-on
 
 The first missing marker is "found zeta-wifi-credentials.json on boot USB ESP", so the two
 candidate root causes are:
+
 1. The QEMU harness (`QEMU_WIFI_ESP_PHASE1=1` path in
    `src/Core.TypeScript/ci/qemu-full-install-test.ts` / `prepare-boot-image.ts`) is not baking
    `zeta-wifi-credentials.json` onto the boot-image ESP that the VM boots from; or
@@ -68,6 +69,7 @@ metal-gated in the USB trajectory. But it means the wifi-ESP zero-typing bringup
 its own acceptance. Owner: USB/zflash trajectory (`docs/trajectories/usb-zflash-installer/`).
 
 ## Cross-refs
+
 - Feature backlog: `081KSGS9H0008QG0R003V23XNZ` (iter-5 WiFi-credentials injection via USB ESP).
 - Sibling / disentangled-from: `081KZETP6AT08QG0R003MG1VYN` (install.sh first-boot intermittent).
 - Evidence run: 31276420713 (job `build-iso`, wifi-ESP scenario).

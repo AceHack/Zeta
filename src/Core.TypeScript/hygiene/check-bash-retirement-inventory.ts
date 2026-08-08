@@ -81,6 +81,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "githooks/pre-push",
   "scripts/hooks/commit-msg",
   "scripts/hooks/install-git-hooks.sh",
+  "scripts/hooks/pre-push",
   "tools/installer/zeta-self-register.sh",
   "tools/setup/common/agda-cubical.sh",
   "tools/setup/common/curl-fetch.sh",
@@ -125,6 +126,10 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   "githooks/pre-push": "git hooks",
   "scripts/hooks/commit-msg": "git hooks",
   "scripts/hooks/install-git-hooks.sh": "git hooks",
+  // 081KZHGP46G uncompensatable floor on the sovereign lane (Lior's
+  // ratification note): pre-push is a Git hook invocation boundary —
+  // same retained-shell edge as commit-msg.
+  "scripts/hooks/pre-push": "git hooks",
   // 081KSKBP80008QG0R000GPC0TB.2 post-boot self-registration: a first-boot systemd oneshot (invoked
   // by nixos/modules/zeta-self-register.nix) that probes /proc + runs gh/git at
   // the OS boot edge — retained shell "where the script runs at the OS edge".
