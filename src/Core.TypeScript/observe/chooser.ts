@@ -29,8 +29,7 @@
 
 import type { NextAction, World } from "./observe";
 import { observe, buildMenu } from "./observe";
-import { observeWithParticipant, localLlmParticipant, type Participant } from "./participant";
-import type { ModelBackend } from "../accelerator/local-llm";
+import { observeWithParticipant, type Participant } from "./participant";
 
 // ─── Chooser interface ──────────────────────────────────────────────
 
@@ -56,8 +55,6 @@ export interface ChooserConfig {
   readonly composer?: ComposerBackend;
   /** Optional deliberator participant. If absent, fall back to oracle pick. */
   readonly deliberator?: Participant;
-  /** @deprecated Use `deliberator` with a localLlmParticipant instead. */
-  readonly deliberatorBackend?: ModelBackend;
 }
 
 // ─── Oracle tier ────────────────────────────────────────────────────
@@ -167,8 +164,7 @@ export async function choose(world: World, config: ChooserConfig = {}): Promise<
   }
 
   // L3: Deliberator (slow, if participant provided)
-  const deliberatorParticipant = config.deliberator
-    ?? (config.deliberatorBackend ? localLlmParticipant() : undefined);
+  const deliberatorParticipant = config.deliberator;
   if (deliberatorParticipant) {
     return deliberatorChoose(world, deliberatorParticipant);
   }

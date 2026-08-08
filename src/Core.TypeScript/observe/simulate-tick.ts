@@ -31,7 +31,6 @@
 import { observe, renderAction, type BacklogItem, type World, type NextAction } from "./observe";
 import { execute, type EventSink, type AppendOutcome, type OperatorPort } from "./execute";
 import { fakeExecutor, type DoItemOptions, type RunOutcome } from "./do-item";
-import type { ModelBackend } from "../accelerator/local-llm";
 import { observeWithParticipant, localLlmParticipant, type Participant } from "./participant";
 
 // ─── Synthetic scenarios (DI-injectable worlds) ──────────────────────────────
@@ -124,8 +123,6 @@ export interface TickOptions {
   readonly useLlm?: boolean;
   /** Participant override (for testing with custom choosers). */
   readonly participant?: Participant;
-  /** @deprecated Model backend override — use `participant` instead. */
-  readonly backend?: ModelBackend;
   /** EventSink override (default: in-memory fake). */
   readonly sink?: EventSink;
   /** Whether to print output. */
