@@ -225,6 +225,9 @@ jobs:
           kubectl get nodes -o wide || true
           kubectl -n argocd get applications.argoproj.io -o wide || true
           kubectl get pods -A -o wide || true
+          kubectl -n arc-systems describe pods -l app.kubernetes.io/name=gha-rs-controller || true
+          kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --tail=200 || true
+          kubectl -n arc-systems logs -l app.kubernetes.io/name=gha-rs-controller --all-containers=true --prefix=true --previous=true --tail=200 || true
           kubectl get events -A --sort-by=.lastTimestamp | tail -200 || true
 
       - name: Tear down kind cluster

@@ -28,6 +28,7 @@ const APPS = join(REPO_ROOT, "full-ai-cluster", "k8s", "applications");
 const CONTROLLER = join(APPS, "arc-controller", "Application.yaml");
 const RUNNER_SET = join(APPS, "arc-runner-set", "Application.yaml");
 const MODEL_PVC = join(APPS, "arc-runner-set", "model-cache-pvc.yaml");
+const HEALTH_WORKFLOW = join(REPO_ROOT, ".github", "workflows", "k8s-argocd-health-test.yml");
 
 function load(path: string): Record<string, unknown> {
   return parse(readFileSync(path, "utf8")) as Record<string, unknown>;
@@ -48,6 +49,11 @@ function source(doc: Record<string, unknown>): Record<string, unknown> {
   return (doc.spec as { source?: Record<string, unknown> }).source ?? {};
 }
 
+function syncOptions(doc: Record<string, unknown>): string[] {
+  const spec = doc.spec as { syncPolicy?: { syncOptions?: unknown[] } };
+  return (spec.syncPolicy?.syncOptions ?? []).map(String);
+}
+
 describe("both ARC manifests exist and parse", () => {
   test("the files the root App-of-Apps will pick up are present", () => {
     // The root includes '{*/Application.yaml,Application.yaml}'. A supporting manifest that
@@ -64,6 +70,25 @@ describe("both ARC manifests exist and parse", () => {
       expect(doc.apiVersion).toBe("argoproj.io/v1alpha1");
       expect((doc.metadata as { namespace: string }).namespace).toBe("argocd");
     }
+  });
+});
+
+describe("included-cluster ARC failure diagnostics", () => {
+  test("retain pod state plus current and previous controller logs", () => {
+    const workflow = load(HEALTH_WORKFLOW);
+    const jobs = workflow.jobs as Record<
+      string,
+      { steps?: { name?: string; run?: string }[] }
+    >;
+    const diagnostics = jobs["live-kind-included"]?.steps?.find(
+      (step) => step.name === "Print cluster diagnostics",
+    );
+    const run = diagnostics?.run ?? "";
+    const controllerSelector = "app.kubernetes.io/name=gha-rs-controller";
+
+    expect(run).toContain(`describe pods -l ${controllerSelector}`);
+    expect(run).toContain(`logs -l ${controllerSelector}`);
+    expect(run).toContain("--previous=true");
   });
 });
 
@@ -129,6 +154,15 @@ describe("chart versions are pinned", () => {
         "ghcr.io/actions/actions-runner-controller-charts",
       );
     }
+  });
+});
+
+describe("controller CRDs use server-side apply", () => {
+  test("large schemas never enter the last-applied annotation", () => {
+    const options = syncOptions(load(CONTROLLER));
+
+    expect(options).toContain("CreateNamespace=true");
+    expect(options).toContain("ServerSideApply=true");
   });
 });
 

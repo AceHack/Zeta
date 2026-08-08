@@ -53,4 +53,7 @@ spec:
     namespace: arc-systems
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true ]
+    # ARC owns four schema-heavy CRDs. Client-side apply serializes each complete
+    # schema into the last-applied annotation and exceeds Kubernetes' 256 KiB
+    # annotation limit, leaving the controller crash-looping without its kinds.
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
