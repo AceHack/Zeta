@@ -167,14 +167,6 @@ module BipartiteMachZehnder =
     let classifyMeasuredBand (delta: float) (MeasuredS(s, rounds)) : AntiSybil.ChshBand =
         AntiSybil.classifyBand delta rounds s
 
-    /// The legacy classifyS — DEPRECATED. Use classifyAnalyticS for noiseless values or
-    /// classifyMeasuredS for sampled values. Kept for backward compatibility during migration.
-    [<System.Obsolete("Use classifyAnalyticS (for noiseless) or classifyMeasuredS (for sampled)")>]
-    let classifyS (s: float) : ChshRegime =
-        let absS = abs s
-        if absS <= 2.0 then Classical
-        elif absS <= 2.0 * sqrt 2.0 + 1e-10 then Quantum
-        else SupraQuantum
     /// The Tsirelson-optimal S value computed analytically from the WSet<ℂ> circuit.
     /// Equals 2√2 ≈ 2.8284 — the maximum achievable by real quantum mechanics.
     let tsirelsonS : float = bipartiteChshS tsirelsonAngles

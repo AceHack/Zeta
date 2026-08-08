@@ -19,6 +19,7 @@ export interface ObserveEvent {
   readonly mode?: string;
   readonly entropy_state?: number;
   readonly entropy_heat?: number;
+  readonly phase?: { readonly phase: number; readonly derived: number }; // semantic time (multi-planet)
 }
 
 export interface TickFrame {
@@ -66,6 +67,7 @@ export interface VaultState {
   readonly generated_at_ms: number;
   readonly tick_frame_t: string;
   readonly total_events_read: number;
+  readonly max_phase: number | null;  // highest phase seen across all events (null = no phase stamps yet)
   readonly vaults: readonly VaultSnapshot[];
 }
 
@@ -191,6 +193,7 @@ export function buildVaultState(input: BridgeInput): VaultState {
       generated_at_ms: nowMs,
       tick_frame_t: latestFrame?.t ?? new Date(nowMs).toISOString(),
       total_events_read: events.length,
+      max_phase: null,
       vaults: buildRoster().vaults.map((v) => ({
         id: v.id,
         status: "cold" as const,
@@ -265,6 +268,9 @@ export function buildVaultState(input: BridgeInput): VaultState {
     generated_at_ms: nowMs,
     tick_frame_t: latestFrame.t,
     total_events_read: events.length,
+    max_phase: events.reduce((max, e) => e.phase?.phase != null && e.phase.phase > max ? e.phase.phase : max, -1) >= 0
+      ? events.reduce((max, e) => e.phase?.phase != null && e.phase.phase > max ? e.phase.phase : max, -1)
+      : null,
     vaults,
   };
 }

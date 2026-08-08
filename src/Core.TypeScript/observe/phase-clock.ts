@@ -86,10 +86,10 @@ export const COMMON_SEED = 4;
  * In DST (deterministic simulation): the clock only advances when the test
  * harness calls `tick()` — time's motive is controlled by the test.
  */
-export function createPhaseClock(initialSeed: number = COMMON_SEED): PhaseClock {
-  let phase = 0;
-  let seed = initialSeed;
-  let lastAdvanceReason: PhaseState["lastAdvanceReason"] = "init";
+export function createPhaseClock(initialSeed: number = COMMON_SEED, resumeFrom?: { phase: number; seed: number }): PhaseClock {
+  let phase = resumeFrom?.phase ?? 0;
+  let seed = resumeFrom?.seed ?? initialSeed;
+  let lastAdvanceReason: PhaseState["lastAdvanceReason"] = resumeFrom ? "init" : "init";
   let wallClockAt = new Date().toISOString();
 
   // Simple deterministic PRNG (xorshift32) for seed derivation
@@ -181,4 +181,45 @@ export function concurrent(a: PhaseStamp, b: PhaseStamp): boolean {
  */
 export function mergePhase(a: PhaseStamp, b: PhaseStamp): PhaseStamp {
   return a.phase >= b.phase ? a : b;
+}
+
+// ═══ Persistence — resume from last known phase ══════════════════════════════
+
+/**
+ * Scan an event directory for the highest phase stamp seen by this agent.
+ * Returns { phase, seed } to pass to createPhaseClock's resumeFrom, or undefined
+ * if no events carry a phase stamp (first boot / legacy events).
+ *
+ * This is how a traveler picks up where they left off after a pause:
+ * - Read the G-set event log (sorted by ZetaId = time-ordered)
+ * - Find the highest phase from events by this agent
+ * - Resume the clock from that point
+ *
+ * For multi-planet: if you also observe peers' events, call clock.observe(peerPhase)
+ * for each — the HLC merge brings you up to speed with the latest causal frontier.
+ *
+ * Connection to ECC/Adinkra: missed phases are erasures in the Reed-Solomon codeword.
+ * As long as you resume from a known phase, the code distance covers the gap —
+ * you don't need every intermediate tick, just the latest anchor to continue.
+ */
+export function resumePhaseFromEvents(
+  events: readonly { phase?: { phase: number; derived: number } }[],
+  agentId?: string,
+  allEvents?: readonly { by: string; phase?: { phase: number; derived: number } }[],
+): { phase: number; seed: number } | undefined {
+  // Find the highest phase from this agent's events
+  let maxPhase = -1;
+  let maxSeed = COMMON_SEED;
+
+  const source = allEvents ?? (events as readonly { by?: string; phase?: { phase: number; derived: number } }[]);
+  for (const e of source) {
+    if (agentId && "by" in e && (e as { by: string }).by !== agentId) continue;
+    if (e.phase && e.phase.phase > maxPhase) {
+      maxPhase = e.phase.phase;
+      maxSeed = e.phase.derived;
+    }
+  }
+
+  if (maxPhase < 0) return undefined; // No phase stamps found — fresh start
+  return { phase: maxPhase, seed: maxSeed };
 }
