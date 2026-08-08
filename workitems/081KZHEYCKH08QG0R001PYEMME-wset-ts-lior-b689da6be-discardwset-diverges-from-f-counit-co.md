@@ -1,7 +1,7 @@
 ---
 id: 081KZHEYCKH08QG0R001PYEMME
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: wset-ts-lior-b689da6be-discardwset-diverges-from-f-counit-co
 title: "wset.ts (Lior b689da6be): discardWSet diverges from F# counit + comonoid laws untested (TS port faithfulness)"
@@ -69,8 +69,22 @@ discriminator + mass-doubling witness) — **none ported.** The laws DO hold for
 - Canonical F# source: `src/Core/WSet.fs` (`copy`:76, `discard`:82).
 - F# law pack (to port): `tests/Tests.FSharp/Formal/WSet.Comonoid.Laws.Tests.fs`.
 
+## RESOLVED by Lior (2026-08-08, commit 03d5efc63) — both P1s fixed
+
+Lior addressed both findings and pushed to origin/main. Verified by Otto:
+
+- **P1a (discardWSet counit) — FIXED.** New signature `discardWSet<K,W>(ring, set): W` folds
+  to the scalar `Σw` via `set.reduce((acc,e) => ring.add(acc, e.weight), ring.zero)` — matches
+  the F# counit (`WSet.fs:82`) exactly. All call sites updated to pass the ring; no external
+  breakage (the function was new in b689da6be, no production callers).
+- **P1b (laws untested) — FIXED.** Ported the F# comonoid law pack to `wset.test.ts`:
+  LAW 1 coassociativity, LAW 2 counitality, LAW 3 cocommutativity, LAW 4 counit scalar sum,
+  **plus the Fritz-axis discriminator** (+: deterministic arr is copy/discard-natural;
+  −: branching map fails both — cross-terms + mass-doubling). Exactly the missing coverage.
+- Verified: `bun test wset.test.ts` 11/11 pass on main; `preflight:quick` 9/9.
+
+P3 minors (the `void`/`undefined` unit-key smell; TS `StarRing` lacking `Conj` for the ℂ lane)
+were NOT in scope for this fix and remain as low-priority notes; not tracked further here.
+
 ## State
-OPEN — review finding surfaced to Aaron/Lior. Both P1s are "correct-under-convention but
-diverges-from-F#-and-unverified," not a live break (42/42 existing tests pass; they just don't
-test the laws). Lior/Aaron own whether/how to fix; Otto can port the law pack + align
-discardWSet on request.
+CLOSED — resolved by Lior in 03d5efc63; move to done. Thorough fix, credited to Lior.
