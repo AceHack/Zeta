@@ -1579,14 +1579,25 @@ if [ -d "$ZETA_HOME" ]; then
     # install.sh rc via PIPESTATUS[0], then restore errexit. `tail -40` (was -10) keeps
     # enough of the mise/toolchain error to diagnose WHY install.sh fails (the separate
     # latent bug 081KZETP6AT08QG0R003MG1VYN).
+    # 081KZETP6AT diagnosis instrumentation: the first-boot install.sh failure is INTERMITTENT
+    # (fails rc=1 some runs, succeeds others) and the last capture had NO `mise ERROR` line, so the
+    # cause is not necessarily mise and can sit ABOVE tail's window. Two additive changes (no
+    # success-path behavior change): (1) MISE_VERBOSE=1 so a mise-side failure is fully explained;
+    # (2) tee the FULL output to a durable log and, on failure, grep the actual error lines to the
+    # console (which reaches the CI serial log) so the rc=1 cause is captured regardless of source
+    # or position. Remove the extra grep once the root cause is fixed.
     set +e
+    sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
+    install_log="$ZETA_HOME/.zeta/install-sh-firstboot.log"
     sudo -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" \
       BUN_INSTALL="$ZETA_HOME/.bun" \
       PATH="$ZETA_TARGET_PATH" \
       ZETA_INSTALL_NIXOS_MODE=installed \
       ZETA_INSTALL_FULL=1 \
-      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 | tail -40
+      MISE_VERBOSE=1 \
+      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 \
+      | sudo -u "#$ZETA_UID" tee "$install_log" | tail -40
       install_rc=${PIPESTATUS[0]}
       set -e
       # Non-fatal is right: a node that boots without agent CLIs is still recoverable, and
@@ -1594,6 +1605,11 @@ if [ -d "$ZETA_HOME" ]; then
       # are different instructions — #9937's rc-capture + marker (below) keep the "notice".
       if [ "$install_rc" -ne 0 ]; then
         echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
+        # 081KZETP6AT: surface the actual error lines from the FULL log (verbose output can bury the
+        # failure above tail's window). Regardless of whether the cause is mise, bun, nix, or a script.
+        echo "[iter-5.5.0]   --- install.sh error lines (081KZETP6AT diag) ---"
+        grep -iE 'error|fatal|fail|cannot|not found|no such|denied|refused|traceback|exit code|command not' "$install_log" 2>/dev/null | tail -40 || true
+        echo "[iter-5.5.0]   --- end install.sh error lines (full log at ~/.zeta/install-sh-firstboot.log) ---"
         # Durable marker, not just a line that scrolls past on a first-boot console. The
         # full tier carries k3d/kubectl/helm (.mise.full.toml, base tier has none), so
         # without it this node cannot host the ARC runners — and that must be discoverable
