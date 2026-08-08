@@ -433,6 +433,153 @@ module AntiSybil =
           SourceOf = sourceOf
           AllDistinct = distinct = k }
 
+    // ═══ ChshBand + LoopholeFlags — Analytics-wrapper substrate (Soraya's design, 2026-08-08) ═══════════
+    // Spec: docs/research/2026-08-08-soraya-chshband-loopholeflags-type-design-spec.md
+    // Unblocks Alexa Task A (Analytics wrappers) — workitem 081KZHC652A08QG0R003YX1G29.
+    //
+    // COMPILE-ORDER NOTE (Otto, correcting Soraya's reference impl): AntiSybil.fs compiles BEFORE
+    // BellTest.fs in Core.fsproj, so we CANNOT reference `BellTest.ClassicalBound` / `TsirelsonBound` /
+    // `AlgebraicMax` here — the constants are INLINED (2.0, 2√2, 4.0, 1e-12 slack), exactly as `chshS`
+    // already inlines `chshOf`'s combination for the same reason. Agreement with BellTest's values is
+    // locked by a cross-check test (BellTest compiles later and re-exports the same constants).
+
+    /// A classification of an observed CHSH statistic `Ŝ` into the four bounded regimes, calibrated to
+    /// the reading's own sample size. Names the STATISTICAL FACT (which regime, at this n, δ) — NOT a
+    /// verdict. "Quantum band" is NOT "shared source"; a reading is only as trustworthy as its
+    /// `LoopholeFlags` are closed (see `readout`). Dual-use-neutral
+    /// (`dual-use-detection-is-neutral-oracle-decides`).
+    ///
+    /// Cases are declared ASCENDING so F#'s structural comparison gives the total order
+    /// `Classical < SoundMargin < Quantum < SuperQuantum` for free. Conviction is `>= Quantum`;
+    /// `Classical` / `SoundMargin` never convict.
+    type ChshBand =
+        /// `|Ŝ| <= 2`. Consistent with a local hidden-variable / shared-past-randomness model. Never convicts.
+        | Classical
+        /// `2 < |Ŝ| <= 2 + ε(n, δ)`. Above the classical bound but INSIDE the finite-sample margin:
+        /// statistically indistinguishable from an honestly-local pair sitting at the bound
+        /// (Soraya 2026-07-02). MUST NOT convict — the band a bare-2.0 threshold falsely collapses.
+        | SoundMargin
+        /// `2 + ε(n, δ) < |Ŝ| <= 2√2` (Tsirelson, within numerical slack). Beyond the calibrated bound and
+        /// within what real QM allows. Convicts a common cause ONLY to the extent loopholes are closed.
+        | Quantum
+        /// `|Ŝ| > 2√2 + slack`. Beyond Tsirelson: unreachable by real QM. The superdeterminism /
+        /// seed-control / PR-box tell (algebraic max S=4), not a stronger "quantum" reading.
+        | SuperQuantum
+
+    /// Explicit ordinal (`Classical=0 .. SuperQuantum=3`) for callers that want the order without relying
+    /// on structural comparison.
+    let bandRank (band: ChshBand) : int =
+        match band with
+        | Classical -> 0
+        | SoundMargin -> 1
+        | Quantum -> 2
+        | SuperQuantum -> 3
+
+    /// Classify `s` (raw signed `Ŝ` from `chshS`) against the bounds, calibrated to this reading's run
+    /// length. Arg order mirrors `chshMargin (delta) (rounds)` so it partial-applies; `s` is last so it
+    /// pipes. `rounds` = the pair's min stream length (the same `n` the calibrated oracle uses).
+    ///
+    /// Boundary policy is SOUNDNESS-BIASED: escalation to a stronger band requires STRICT exceedance, so
+    /// every tie falls to the WEAKER band. The Tsirelson edge carries the same `1e-12` slack as
+    /// `BellTest.exceedsTsirelson` so valid maximal-violation data does not jitter into `SuperQuantum`.
+    ///
+    /// Degenerate `n`: `chshMargin` returns `+infinity` for `rounds <= 0` (or bad δ), so `2 + ε = +infinity`
+    /// and every `|s| > 2` lands in `SoundMargin` — with no samples, nothing above 2 is ever convicted.
+    let classifyBand (delta: float) (rounds: int) (s: float) : ChshBand =
+        let a = abs s
+        let classicalBound = 2.0
+        let tsirelson = 2.0 * sqrt 2.0 + 1e-12
+        let eps = chshMargin delta rounds // +infinity when rounds <= 0 or delta out of (0,1)
+        if a <= classicalBound then Classical // ties -> weaker
+        elif a <= classicalBound + eps then SoundMargin
+        elif a <= tsirelson then Quantum
+        else SuperQuantum
+
+    /// Does this band, on its own arithmetic, meet the calibrated conviction gate (`band >= Quantum`)?
+    /// NOTE: this is the ARITHMETIC gate only — NOT a verdict; conviction additionally requires the
+    /// conviction-relevant loopholes closed (see `readout`).
+    let bandConvictsArithmetically (band: ChshBand) : bool = band >= Quantum
+
+    /// Which CHSH loopholes are OPEN (uncontrolled) for a given reading. Each bool is a NEUTRAL FACT about
+    /// the setup, never a verdict: `true` = this loophole is open, so a Bell violation here has a
+    /// loophole-local classical explanation and CANNOT on its own convict a common cause. The caller's
+    /// oracle decides what an open loophole MEANS (reunion vs sybil vs "instrument mis-scoped") — this
+    /// record only reports the fact. Dual-use-neutral by construction: there is deliberately no
+    /// `IsGenuine` / `IsForgery` field.
+    type LoopholeFlags =
+        { /// Detection / fair-sampling: outcomes may be post-selected (missing rounds not
+          /// missing-at-random). Open ⇒ a detection-efficiency model can fake violation.
+          Detection: bool
+          /// Locality / no-signaling: the two streams were NOT space-like separated and setting-choice
+          /// could reach the other side within the round. Open ⇒ an in-tick channel, not entanglement,
+          /// can produce `|S| > 2`.
+          Locality: bool
+          /// Measurement-independence / freedom-of-choice: settings may be correlated with the hidden
+          /// variable / process state (settings not drawn from an independent source). Open ⇒
+          /// superdeterministic / conducted correlation, up to the algebraic max S=4.
+          MeasurementIndependence: bool
+          /// Coincidence-time: pairing of rounds across streams may itself be outcome-dependent. Open ⇒
+          /// windowing can manufacture correlation.
+          Coincidence: bool }
+
+    /// No loophole open — a fully loophole-free reading. The only configuration under which a
+    /// `Quantum` / `SuperQuantum` band may be read as conviction.
+    let loopholesAllClosed: LoopholeFlags =
+        { Detection = false
+          Locality = false
+          MeasurementIndependence = false
+          Coincidence = false }
+
+    /// The loophole profile of a CHSH statistic computed over TWO COMMIT STREAMS FROM THE SAME PROCESS.
+    /// Load-bearing default (soundness-doc conclusion,
+    /// docs/research/2026-08-02-adversarial-chsh-soundness-commit-probe-register3-lumen.md): Locality and
+    /// MeasurementIndependence are OPEN (settings and outcomes share one process, no space-like
+    /// separation, no independent settings source), and Detection is OPEN (no fair-sampling guarantee on
+    /// commit-derived outcomes). Any `S` read over same-process commit pairs MUST carry this profile —
+    /// which is why a naive "quantum band ⇒ shared source" read over commits is unsound.
+    let commitPairLoopholes: LoopholeFlags =
+        { Detection = true
+          Locality = true
+          MeasurementIndependence = true
+          Coincidence = true }
+
+    /// Any loophole open?
+    let anyOpen (flags: LoopholeFlags) : bool =
+        flags.Detection
+        || flags.Locality
+        || flags.MeasurementIndependence
+        || flags.Coincidence
+
+    /// Are the conviction-relevant loopholes (Detection, Locality, MeasurementIndependence) all closed?
+    /// Coincidence is a windowing concern that weakens trust but is not on the conviction gate.
+    let convictionLoopholesClosed (flags: LoopholeFlags) : bool =
+        not flags.Detection
+        && not flags.Locality
+        && not flags.MeasurementIndependence
+
+    /// The only thing a `(ChshBand, LoopholeFlags)` pair licenses. Neutral facts, one-way (convicts a
+    /// common cause, never acquits distinctness).
+    type ChshReadout =
+        /// `|S|` within the calibrated classical region (`Classical` | `SoundMargin`). No conviction, at
+        /// any loophole setting. NEVER read as "identities proven distinct" — the CHSH oracle is one-way;
+        /// low `S` never proves distinctness.
+        | NoViolation of ChshBand
+        /// `band >= Quantum` AND all conviction-relevant loopholes closed: the FACT "common cause (shared
+        /// seed or in-tick channel)" is convicted. One-way. Reunion-vs-sybil meaning is caller policy.
+        | CommonCauseConvicted of ChshBand
+        /// `band >= Quantum` but a conviction-relevant loophole is OPEN: the `S` value alone cannot
+        /// convict. The honest instrument for this case is excess-over-null (`DecorrelationExcess` /
+        /// `Decorrelation` / `DelayDecorrelation`), NOT this `S`. ALWAYS the case for same-process commit
+        /// pairs (`commitPairLoopholes`).
+        | ViolationButLoopholesOpen of ChshBand * LoopholeFlags
+
+    /// Compose a band and its loophole profile into the one sound verdict they license (neutral fact,
+    /// one-way). See `ChshReadout`.
+    let readout (band: ChshBand) (flags: LoopholeFlags) : ChshReadout =
+        if not (bandConvictsArithmetically band) then NoViolation band
+        elif convictionLoopholesClosed flags then CommonCauseConvicted band
+        else ViolationButLoopholesOpen(band, flags)
+
     [<Literal>]
     let SeamName = "sim"
 
