@@ -138,6 +138,13 @@ describe("native Dark Hall browser bootstrap", () => {
 
     expect(runtime.schema).toBe(DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA);
     expect(runtime.channelName).toBe("zeta-darkhall-tabs");
+    expect(runtime.transport).toMatchObject({
+      selected: "broadcast-channel",
+      attempts: [
+        { kind: "service-worker", status: "refused" },
+        { kind: "broadcast-channel", status: "selected" },
+      ],
+    });
     expect(runtime.host.read()).toMatchObject({ state: "background", stopped: false, admission: "open" });
     expect(mount.innerHTML).toContain('data-browser-node="llmtv-room-a"');
     expect(mount.innerHTML).toContain('data-browser-local-tab="tab-a"');
@@ -158,6 +165,7 @@ describe("native Dark Hall browser bootstrap", () => {
     expect(mount.innerHTML).toContain('data-room="advanced-room"');
     expect(mount.innerHTML).toContain('data-browser-local-state="background"');
     expect(mount.innerHTML).toContain('data-browser-checkpoint="durable"');
+    expect(mount.innerHTML).toContain('data-browser-transport="broadcast-channel"');
 
     expect(runtime.host.updateCheckpoint("none")).toMatchObject({
       ok: true,
@@ -178,6 +186,7 @@ describe("native Dark Hall browser bootstrap", () => {
   test("accepts an injected tab channel without requiring BroadcastChannel", () => {
     const root = new NativeBrowserRoot();
     root.BroadcastChannel = undefined as unknown as typeof globalThis.BroadcastChannel;
+    const mount = { innerHTML: "" };
     const messages: BrowserTabChannelMessage[] = [];
     let closed = false;
     const channel: BrowserTabChannel = {
@@ -192,7 +201,9 @@ describe("native Dark Hall browser bootstrap", () => {
       },
     };
 
-    const runtime = unwrap(startNativeDarkHallBrowser({ ...options(root), channel }));
+    const runtime = unwrap(startNativeDarkHallBrowser({ ...options(root, mount), channel }));
+    expect(runtime.transport.selected).toBe("injected");
+    expect(mount.innerHTML).toContain('data-browser-transport="injected"');
     expect(messages.map((message) => message.kind)).toEqual(["probe", "presence"]);
     expect(runtime.host.stop().ok).toBe(true);
     expect(closed).toBe(true);
@@ -343,7 +354,8 @@ describe("native Dark Hall browser bootstrap", () => {
       feedback: {
         severity: "heat",
         code: "channel-start-failed",
-        detail: "broadcast-channel-invalid: A broadcast channel name must be a non-empty string.",
+        detail:
+          "browser-tab-transport-unavailable: service-worker: service-worker-unavailable; broadcast-channel: broadcast-channel-invalid",
         cleanup: [],
       },
     });

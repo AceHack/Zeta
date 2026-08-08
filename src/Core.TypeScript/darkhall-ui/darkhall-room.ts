@@ -13,6 +13,7 @@ import {
   type TemperatureTreatyBundle,
 } from "./heat";
 import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
+import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp, PhaseClockReadout } from "./darkhall-tv";
 
 export {
@@ -144,6 +145,7 @@ export interface RoomRunTranscript {
   readonly phaseClock?: PhaseClockReadout;
   readonly continuationReadout?: TranscriptContinuationReadout;
   readonly browserTabReadout?: BrowserTabCoordinatorReadout;
+  readonly browserTransportReadout?: BrowserTabTransportReadout;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -318,7 +320,10 @@ function renderContinuationReadout(readout: TranscriptContinuationReadout | unde
   ].join("");
 }
 
-function renderBrowserTabReadout(readout: BrowserTabCoordinatorReadout | undefined): string {
+function renderBrowserTabReadout(
+  readout: BrowserTabCoordinatorReadout | undefined,
+  transport: BrowserTabTransportReadout | undefined,
+): string {
   if (readout === undefined) return "";
 
   const localState = readout.tabs.find((tab) => tab.tabId === readout.localTabId)?.state ?? "untracked";
@@ -345,6 +350,8 @@ function renderBrowserTabReadout(readout: BrowserTabCoordinatorReadout | undefin
     attr("data-browser-checkpoint", readout.liveness.checkpoint),
     attr("data-browser-alive", readout.liveness.zetaAlive),
     attr("data-browser-feedback", readout.feedback.length),
+    attr("data-browser-transport-readout", transport?.schema),
+    attr("data-browser-transport", transport?.selected),
     attr("style", style),
     ">",
     '<header class="zeta-browser-header">',
@@ -356,6 +363,7 @@ function renderBrowserTabReadout(readout: BrowserTabCoordinatorReadout | undefin
     `<div><dt>tabs</dt><dd>${readout.tabs.length.toString()}</dd></div>`,
     `<div><dt>live</dt><dd>${liveCount.toString()}</dd></div>`,
     `<div><dt>checkpoint</dt><dd>${escapeHtml(readout.liveness.checkpoint)}</dd></div>`,
+    `<div><dt>transport</dt><dd>${escapeHtml(transport?.selected ?? "unknown")}</dd></div>`,
     `<div><dt>pressure</dt><dd>${pressureCount.toString()}</dd></div>`,
     `<div><dt>heat</dt><dd>${heatCount.toString()}</dd></div>`,
     '<div class="zeta-browser-meter" aria-hidden="true"></div>',
@@ -574,6 +582,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const continuation = transcript.continuationReadout;
   const continuationStatusValue = continuation === undefined ? undefined : continuationStatus(continuation);
   const browser = transcript.browserTabReadout;
+  const browserTransport = transcript.browserTransportReadout;
   const browserLocalState = browser?.tabs.find((tab) => tab.tabId === browser.localTabId)?.state ?? undefined;
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
@@ -616,6 +625,8 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-browser-continuity", browser?.liveness.continuity),
     attr("data-browser-alive", browser?.liveness.zetaAlive),
     attr("data-browser-feedback", browser?.feedback.length),
+    attr("data-browser-transport-readout", browserTransport?.schema),
+    attr("data-browser-transport", browserTransport?.selected),
     ">",
     '<header class="zeta-room-header">',
     `<h1>${escapeHtml(transcript.roomName)}</h1>`,
@@ -649,7 +660,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     "</ol>",
     "</section>",
     renderContinuationReadout(continuation),
-    renderBrowserTabReadout(browser),
+    renderBrowserTabReadout(browser, browserTransport),
     ...(transcript.sLanes && transcript.sLanes.length > 0
       ? [
           '<section class="zeta-room-coordination" aria-label="Coordination board (CHSH S-lanes; above 2 convicts a common cause)">',

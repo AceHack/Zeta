@@ -194,6 +194,11 @@ function createStarter(
   const runtime: DarkHallBrowserRuntime = {
     schema: DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA,
     channelName: "durable-room",
+    transport: {
+      schema: "zeta.browser-tab-transport.v1",
+      selected: "injected",
+      attempts: [{ kind: "injected", status: "selected" }],
+    },
     host,
     updateTranscript: (transcript) => {
       updates.push(transcript);

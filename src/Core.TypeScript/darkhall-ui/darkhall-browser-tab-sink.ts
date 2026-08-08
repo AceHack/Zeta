@@ -1,4 +1,5 @@
 import { type BrowserReadoutSinkResult, type BrowserTabReadoutSink } from "../browser-node/browser-lifecycle-host";
+import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
@@ -26,13 +27,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function createDarkHallBrowserTabSink(
   initialTranscript: RoomRunTranscript,
   mount: DarkHallRoomMount,
+  transport?: BrowserTabTransportReadout,
 ): DarkHallBrowserTabSink {
   let transcript = initialTranscript;
   let latestReadout: BrowserTabCoordinatorReadout | null = null;
 
   const render = (readout: BrowserTabCoordinatorReadout): BrowserReadoutSinkResult<null> => {
     try {
-      const markup = renderDarkHallRoomHtml({ ...transcript, browserTabReadout: readout });
+      const withReadout = { ...transcript, browserTabReadout: readout };
+      const selectedTransport = transport ?? transcript.browserTransportReadout;
+      const renderTranscript =
+        selectedTransport === undefined ? withReadout : { ...withReadout, browserTransportReadout: selectedTransport };
+      const markup = renderDarkHallRoomHtml(renderTranscript);
       return mount.replace(markup);
     } catch {
       return failed("The injected Dark Hall room mount threw while replacing markup.");

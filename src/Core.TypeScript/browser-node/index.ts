@@ -54,9 +54,38 @@ export {
 export { createNativeBroadcastTabChannel } from "./browser-broadcast-channel";
 
 export {
+  BROWSER_TAB_TRANSPORT_READOUT_SCHEMA,
+  injectedBrowserTabChannelSelection,
+  selectNativeBrowserTabChannel,
+  type BrowserTabChannelSelection,
+  type BrowserTabTransportAttempt,
+  type BrowserTabTransportKind,
+  type BrowserTabTransportReadout,
+  type BrowserTabTransportSelectionFeedback,
+  type BrowserTabTransportSelectionResult,
+} from "./browser-tab-channel-selector";
+
+export {
   createNativeServiceWorkerTabChannel,
   relayBrowserServiceWorkerTabMessage,
 } from "./browser-service-worker-channel";
+
+export {
+  BROWSER_SERVICE_WORKER_REGISTRATION_SCHEMA,
+  prepareNativeServiceWorkerControl,
+  type BrowserServiceWorkerRegistrationFeedback,
+  type BrowserServiceWorkerRegistrationReadout,
+  type BrowserServiceWorkerRegistrationResult,
+  type NativeServiceWorkerRegistrationOptions,
+} from "./browser-service-worker-registration";
+
+export {
+  BROWSER_SERVICE_WORKER_RUNTIME_SCHEMA,
+  installBrowserServiceWorkerRuntime,
+  type BrowserServiceWorkerRuntime,
+  type BrowserServiceWorkerRuntimeOptions,
+  type BrowserServiceWorkerRuntimeReadout,
+} from "./browser-service-worker-runtime";
 
 export {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,

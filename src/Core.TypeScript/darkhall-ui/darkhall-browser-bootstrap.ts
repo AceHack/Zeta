@@ -1,4 +1,3 @@
-import { createNativeBroadcastTabChannel } from "../browser-node/browser-broadcast-channel";
 import {
   createBrowserSequenceCounter,
   createNativeBrowserLifecyclePort,
@@ -9,6 +8,12 @@ import {
   type BrowserReadoutSinkResult,
 } from "../browser-node/browser-lifecycle-host";
 import type { BrowserTabState } from "../browser-node/browser-node";
+import {
+  injectedBrowserTabChannelSelection,
+  selectNativeBrowserTabChannel,
+  type BrowserTabChannelSelection,
+  type BrowserTabTransportReadout,
+} from "../browser-node/browser-tab-channel-selector";
 import type { BrowserTabChannel } from "../browser-node/browser-tab-coordinator";
 import { createDarkHallBrowserTabSink, createNativeDarkHallRoomMount } from "./darkhall-browser-tab-sink";
 import type { RoomRunTranscript } from "./darkhall-room";
@@ -43,6 +48,7 @@ export interface DarkHallBrowserBootstrapOptions extends Omit<BrowserLifecycleHo
 export interface DarkHallBrowserRuntime {
   readonly schema: typeof DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA;
   readonly channelName: string;
+  readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHost;
   updateTranscript(transcript: RoomRunTranscript): BrowserReadoutSinkResult<null>;
 }
@@ -110,25 +116,28 @@ export function startNativeDarkHallBrowser(
   const mount = createNativeDarkHallRoomMount(mountValue);
   if (!mount.ok) return failed("mount-start-failed", mount.detail);
 
-  const channel =
-    suppliedChannel === undefined ? createNativeBroadcastTabChannel(root, channelName) : succeeded(suppliedChannel);
-  if (!channel.ok)
+  const selection =
+    suppliedChannel === undefined
+      ? selectNativeBrowserTabChannel(root, channelName)
+      : succeeded(injectedBrowserTabChannelSelection(suppliedChannel));
+  if (!selection.ok)
     return failed(
       "channel-start-failed",
-      `${channel.feedback.code}: ${channel.feedback.detail}`,
-      channel.feedback.severity,
+      `${selection.feedback.code}: ${selection.feedback.detail}`,
+      selection.feedback.severity,
     );
+  const channel: BrowserTabChannelSelection = selection.value;
 
-  const sink = createDarkHallBrowserTabSink(transcript, mount.value);
+  const sink = createDarkHallBrowserTabSink(transcript, mount.value, channel.readout);
   const host = startBrowserLifecycleHost(
     { ...hostOptions, initialState: initialState(visibility.value) },
-    channel.value,
+    channel.channel,
     lifecycle.value,
     sequence.value,
     sink,
   );
   if (!host.ok) {
-    const cleanup = channel.value.close();
+    const cleanup = channel.channel.close();
     return failed(
       "host-start-failed",
       `${host.feedback.code}: ${host.feedback.detail}`,
@@ -140,6 +149,7 @@ export function startNativeDarkHallBrowser(
   return succeeded({
     schema: DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA,
     channelName,
+    transport: channel.readout,
     host: host.value,
     updateTranscript: (nextTranscript) => sink.updateTranscript(nextTranscript),
   });
