@@ -375,3 +375,35 @@ rules:
       `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md` §Do / don't.
     languages: [generic]
     severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 18 — LoopholeFlags must stay dual-use-NEUTRAL. The
+  # `LoopholeFlags` record (src/Core/AntiSybil.fs) reports per-loophole
+  # FACTS (Detection / Locality / MeasurementIndependence / Coincidence);
+  # it must never carry a VERDICT field (IsGenuine / IsForgery / IsSybil /
+  # …). Whether an open loophole means reunion vs sybil is the caller's
+  # oracle's call (`dual-use-detection-is-neutral-oracle-decides`). This is
+  # the structural neutrality invariant FsCheck cannot assert (Soraya's
+  # design spec, 2026-08-08: route it to a Semgrep rule, not untested
+  # trust). Fires on a verdict-noun boolean field in AntiSybil.fs. Does NOT
+  # collide with the legitimate `SybilVerdict` DU — that is a type name, not
+  # an `IsSybil: bool` record field.
+  # ────────────────────────────────────────────────────────────────
+  - id: loopholeflags-must-stay-neutral
+    patterns:
+      - pattern-regex: '(?m)^\s*(mutable\s+)?(IsGenuine|IsForgery|IsForger|IsForged|IsFraud|IsFake|IsReunion|IsSybil|IsGuilty|Verdict)\s*:\s*bool'
+    paths:
+      include:
+        - "src/Core/AntiSybil.fs"
+    message: >-
+      A verdict-shaped boolean field was added in AntiSybil.fs. If this is on
+      `LoopholeFlags`, it breaks the type's dual-use neutrality: that record
+      must report per-loophole FACTS only (Detection / Locality /
+      MeasurementIndependence / Coincidence), never a verdict
+      (genuine/forgery/sybil). Whether an open loophole means reunion or sybil
+      is the caller's oracle's decision, not the mechanism's — see
+      `dual-use-detection-is-neutral-oracle-decides` and the design spec
+      `docs/research/2026-08-08-soraya-chshband-loopholeflags-type-design-spec.md`.
+      Report the fact; let the oracle attach the meaning.
+    languages: [generic]
+    severity: ERROR
