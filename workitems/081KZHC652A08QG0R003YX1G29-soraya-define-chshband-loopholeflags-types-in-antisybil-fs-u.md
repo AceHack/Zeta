@@ -54,6 +54,29 @@ already on record:
 - Existing CHSH types: `src/Core/AntiSybil.fs` §CHSH.
 - Soraya's design spec for these two types is being produced now (attached on return).
 
+## Soraya's design DELIVERED (2026-08-08)
+
+Full spec: [`docs/research/2026-08-08-soraya-chshband-loopholeflags-type-design-spec.md`](../docs/research/2026-08-08-soraya-chshband-loopholeflags-type-design-spec.md).
+Summary:
+
+- **`ChshBand`** — ascending DU `Classical < SoundMargin < Quantum < SuperQuantum`
+  (structural total order); `classifyBand delta rounds s` with soundness-biased ties;
+  conviction line pinned to `chshSybilCalibrated` (`2 + chshMargin d n`).
+- **`LoopholeFlags`** — neutral fact record (Detection / Locality / MeasurementIndependence
+  / Coincidence); `commitPairLoopholes` has Locality ∧ MI OPEN → makes "quantum band over
+  commits ⇒ shared source" unsound by construction.
+- **`ChshReadout`** composition — the only verdict a wrapper may draw:
+  `NoViolation | CommonCauseConvicted | ViolationButLoopholesOpen`. For same-process commit
+  pairs it is ALWAYS `ViolationButLoopholesOpen` → route to excess-over-null
+  (`DecorrelationExcess.fs`).
+- **Verification floor:** BP-16 two-tool for the P0 gate-agreement property (FsCheck +
+  Z3 lemma); Semgrep rule for `LoopholeFlags` neutrality (structural, untestable by FsCheck).
+
+Discrepancy resolved: Soraya's agent ran on a stale checkout and mis-reported
+`DecorrelationExcess.fs` + the soundness doc as absent; both exist on current `main`.
+
 ## State
-OPEN — routed to Soraya. Alexa's Task A is `blocked_by` this. Once the types land
-(small F# additions to AntiSybil.fs, verified by Soraya), Alexa's wrappers unblock.
+DESIGN DELIVERED — implementation-ready. Next: implement the 3 types + classifier in
+`AntiSybil.fs` (after `chshSybilCalibrated`), add the 4 FsCheck props + Z3 lemma + Semgrep
+rule, Soraya verifies, then Alexa's Task A wrappers unblock. Implementation owner TBD
+(Otto can implement per spec; confirm no competing in-flight work with Alexa/Soraya first).
