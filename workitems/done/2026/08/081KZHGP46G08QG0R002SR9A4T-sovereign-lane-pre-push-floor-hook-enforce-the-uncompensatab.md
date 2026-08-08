@@ -1,11 +1,12 @@
 ---
 id: 081KZHGP46G08QG0R002SR9A4T
 type: task
-state: backlog
+state: done
 priority: P1
 slug: sovereign-lane-pre-push-floor-hook-enforce-the-uncompensatab
 title: "Sovereign-lane pre-push floor hook — enforce the uncompensatable floor on the fast lane (Lior ratification note)"
 created: 2026-08-08T20:23:01.072Z
+completed: 2026-08-08T23:24:20.233Z
 depends_on: []
 composes_with: []
 ---
