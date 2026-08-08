@@ -721,6 +721,12 @@ async function main(): Promise<never> {
   if (requireWifiEsp) {
     const wifiContract = assertWifiEspPhase1Contract(phase1Serial);
     if (!wifiContract.ok) {
+      // Persist the phase-1 serial BEFORE reporting — otherwise reportResult claims
+      // "Full serial log preserved at: <path>" but the file was never written (the write
+      // only happens on the exitCode!=0 path at line ~717 and the success path at ~757),
+      // so the upload-artifact step finds nothing and this failure is undiagnosable.
+      // This is exactly why 081KZHJPJCF (wifi-ESP markers missing) could not be root-caused.
+      writeArtifactSerialLog(phase1Serial, "");
       reportResult(
         {
           exitCode: 1,
