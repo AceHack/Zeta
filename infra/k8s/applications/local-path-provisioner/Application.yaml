@@ -1,0 +1,61 @@
+# infra/k8s/applications/local-path-provisioner/Application.yaml
+#
+# local-path-provisioner — lightweight local storage class for K3S.
+# Provides fast, node-local PersistentVolumes backed by hostPath.
+# Used for:
+#   - Development and testing workloads that don't need replication
+#   - Bootstrap storage before Longhorn is healthy (e.g. ArgoCD itself)
+#   - Single-node workloads where replication overhead is unnecessary
+#
+# Note: K3S ships its own local-path-provisioner by default. This
+# Application.yaml manages it explicitly via ArgoCD so its config
+# is version-controlled and auditable. If K3S's built-in provisioner
+# is sufficient, this app can be omitted — but explicit management
+# prevents config drift.
+#
+# Storage class created: local-path (non-default; longhorn is default)
+# Data path: /var/lib/rancher/k3s/storage (configurable below)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: local-path-provisioner
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://charts.containeroo.ch
+    chart: local-path-provisioner
+    targetRevision: 0.0.28   # tracks upstream rancher/local-path-provisioner v0.0.28
+    helm:
+      releaseName: local-path-provisioner
+      valuesObject:
+        storageClass:
+          name: local-path
+          # Do NOT set as default — longhorn is the cluster default.
+          defaultClass: false
+          reclaimPolicy: Delete   # local volumes are ephemeral by design
+          volumeBindingMode: WaitForFirstConsumer
+        nodePathMap:
+          # All nodes use the same path; K3S default.
+          - node: DEFAULT
+            paths:
+              - /var/lib/rancher/k3s/storage
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: local-path-storage
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

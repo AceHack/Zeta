@@ -1,0 +1,92 @@
+# infra/k8s/applications/longhorn/Application.yaml
+#
+# Longhorn — cloud-native distributed block storage for Kubernetes.
+# Provides replicated persistent volumes across worker nodes.
+# Especially important for stateful workloads: CockroachDB, Weaviate,
+# Prometheus/Mimir long-term storage, and Ollama/VLLM model weights.
+#
+# Prerequisites:
+#   - K3S running on all nodes (server + agents)
+#   - open-iscsi installed on all nodes (declared in nixos/modules/common.nix)
+#   - nfs-common installed on all nodes (for NFS backup targets)
+#   - local-path-provisioner (or equivalent) for the manager's own PVCs
+#
+# IMPORTANT: Longhorn requires open-iscsi on every node. The NixOS module
+# at infra/nixos/modules/common.nix declares this via services.openiscsi.
+# Verify with: kubectl get nodes -o wide && kubectl describe node <name>
+#
+# Storage classes created:
+#   longhorn          — default, 2 replicas, RWO
+#   longhorn-static   — for pre-provisioned volumes
+#
+# Roadmap: bump replicas to 3 once 3rd worker node is online.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    # Longhorn installs CRDs; server-side apply prevents annotation conflicts.
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+spec:
+  project: default
+  source:
+    repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: 1.7.2    # Longhorn 1.7.x — stable LTS branch
+    helm:
+      releaseName: longhorn
+      valuesObject:
+        defaultSettings:
+          # Replica count: 2 for current 2-node cluster; bump to 3 when 3rd node arrives.
+          defaultReplicaCount: 2
+          # Replica soft anti-affinity: allow scheduling on same node if needed
+          # (important during rolling upgrades when a node is cordoned).
+          replicaSoftAntiAffinity: true
+          # Storage over-provisioning: 200% allows thin provisioning headroom.
+          storageOverProvisioningPercentage: 200
+          storageMinimalAvailablePercentage: 15
+          # Backup target: empty until S3/NFS backup is configured.
+          # Set to s3://bucket@region/ or nfs://server/path when ready.
+          backupTarget: ""
+          # Node drain policy: block-if-contains-last-replica prevents data loss
+          # during kubectl drain. Critical for GPU nodes with large model weights.
+          nodeDrainPolicy: block-if-contains-last-replica
+          # Auto-salvage: recover volumes from crashed nodes automatically.
+          autoSalvage: true
+          # Concurrent auto-engine upgrade limit (avoid thundering herd).
+          concurrentAutomaticEngineUpgradePerNodeLimit: 1
+        persistence:
+          # Make longhorn the default storage class for the cluster.
+          defaultClass: true
+          defaultClassReplicaCount: 2
+          reclaimPolicy: Retain   # Retain PVs on PVC deletion — safer for stateful apps
+        ingress:
+          # Longhorn UI — disable external ingress; access via kubectl port-forward.
+          # Enable once ingress-nginx + cert-manager are deployed.
+          enabled: false
+        longhornUI:
+          replicas: 1
+        # Resource limits for the Longhorn manager DaemonSet.
+        # Adjust based on observed usage after first week of operation.
+        longhornManager:
+          tolerations: []
+          nodeSelector: {}
+        longhornDriver:
+          tolerations: []
+          nodeSelector: {}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      # CRD installation must complete before dependent resources are applied.
+      - Replace=false
+

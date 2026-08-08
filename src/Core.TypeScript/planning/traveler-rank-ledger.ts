@@ -183,3 +183,81 @@ export function isAboveThreshold(
 export function isPositiveSkill(travelerId: string, hatDomain: string, ledger: TravelerRankLedger): boolean {
   return beliefOf(travelerId, hatDomain, ledger).mu > 0.0;
 }
+
+// ── Persistence (JSON serialization / deserialization) ────────────────────────
+
+/**
+ * JSON-serializable representation of a TravelerRankLedger.
+ * Stable schema: adding fields is forward-compatible; removing is breaking.
+ * Version field allows future migrations.
+ */
+export interface TravelerRankLedgerJson {
+  readonly version: 1;
+  readonly entries: ReadonlyArray<{
+    readonly key: string;       // "travelerId:hatDomain"
+    readonly mu: number;
+    readonly sigma2: number;
+    readonly obsCount: number;
+  }>;
+}
+
+/**
+ * Serialize a TravelerRankLedger to a JSON-compatible object.
+ * Round-trip: deserialize(serialize(ledger)) ≡ ledger (up to Map iteration order).
+ */
+export function serialize(ledger: TravelerRankLedger): TravelerRankLedgerJson {
+  const entries = [...ledger.entries()].map(([key, belief]) => ({
+    key,
+    mu: belief.mu,
+    sigma2: belief.sigma2,
+    obsCount: belief.obsCount,
+  }));
+  return { version: 1, entries };
+}
+
+/**
+ * Deserialize a TravelerRankLedgerJson back to a TravelerRankLedger.
+ * Unknown versions return an empty ledger (forward-compat: never throw).
+ * Entries with missing or invalid fields are skipped (defensive).
+ */
+export function deserialize(json: unknown): TravelerRankLedger {
+  if (
+    typeof json !== "object" ||
+    json === null ||
+    (json as TravelerRankLedgerJson).version !== 1
+  ) {
+    return emptyLedger;
+  }
+  const typed = json as TravelerRankLedgerJson;
+  const map = new Map<string, SkillBelief>();
+  for (const entry of typed.entries ?? []) {
+    if (
+      typeof entry.key !== "string" ||
+      typeof entry.mu !== "number" ||
+      typeof entry.sigma2 !== "number" ||
+      typeof entry.obsCount !== "number" ||
+      !isFinite(entry.mu) ||
+      !isFinite(entry.sigma2) ||
+      entry.sigma2 <= 0 ||
+      entry.obsCount < 0
+    ) {
+      continue; // skip invalid entries
+    }
+    map.set(entry.key, { mu: entry.mu, sigma2: entry.sigma2, obsCount: entry.obsCount });
+  }
+  return map;
+}
+
+/** Serialize to a JSON string (convenience wrapper). */
+export function toJsonString(ledger: TravelerRankLedger): string {
+  return JSON.stringify(serialize(ledger));
+}
+
+/** Deserialize from a JSON string. Returns emptyLedger on parse error or unknown version. */
+export function fromJsonString(s: string): TravelerRankLedger {
+  try {
+    return deserialize(JSON.parse(s));
+  } catch {
+    return emptyLedger;
+  }
+}
