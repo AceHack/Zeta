@@ -51,6 +51,7 @@ It runs `bun infra/k8s/tests/validate-applications.ts` — a TypeScript script (
 7. Online chart existence check (skipped with `--offline`)
 
 **Current manifests covered (37/37 pass offline):**
+
 - `argorollouts/Application.yaml`
 - `argoworkflows/Application.yaml`
 - `cockroachdb/Application.yaml`
@@ -69,6 +70,7 @@ It runs `bun infra/k8s/tests/validate-applications.ts` — a TypeScript script (
 | `online` | Push to main + weekly schedule (Monday 09:00 UTC) + `workflow_dispatch` | `bun validate-applications.ts` (checks chart repos are reachable) |
 
 Both jobs use:
+
 - `ubuntu-24.04` runner
 - `mise` cache (same cache key as `gate.yml`)
 - `bun install --frozen-lockfile`
@@ -107,6 +109,7 @@ gh api --method PUT repos/Lucent-Financial-Group/Zeta/contents/.github/workflows
 ## File content
 
 The full file content is reproduced below for reference. It is also available at:
+
 - Local path: `/home/ubuntu/lfg/Zeta/.github/workflows/helm-validate.yml`
 - In the Zeta working tree (not yet pushed to remote)
 

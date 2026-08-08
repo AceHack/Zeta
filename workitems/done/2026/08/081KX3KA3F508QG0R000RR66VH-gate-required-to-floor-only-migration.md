@@ -1,11 +1,12 @@
 ---
 id: 081KX3KA3F508QG0R000RR66VH
 type: task
-state: backlog
+state: done
 priority: P2
 slug: gate-required-to-floor-only-migration
 title: "Migrate gate (required) to floor-only — after registry + scoped runner + consent"
 created: 2026-07-09T14:08:50.000Z
+completed: 2026-08-08T20:23:05.304Z
 depends_on: ["081KX3KA3EK08QG0R0019ER8WV", "081KX3KA3ES08QG0R003TW3XDE", "081KX3KA3EW08QG0R002WFQ6BG", "081KX3KA3F008QG0R0022EF9R8"]
 composes_with: []
 ---

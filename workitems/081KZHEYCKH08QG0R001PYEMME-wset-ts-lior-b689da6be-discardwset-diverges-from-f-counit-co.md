@@ -24,6 +24,7 @@ morphisms on the WSet universal-tensor TS port). Reviewed by Otto and independen
 own the fix decision; not unilaterally patched.
 
 ### Correct-as-written (verified, NOT issues)
+
 - **`BooleanRing`** — a lawful commutative idempotent semiring (add=∨, mul=∧, zero=false,
   one=true): assoc/comm/distrib/identities/annihilation all hold; correctly omits `negate`
   (no additive inverse). ✔
@@ -57,6 +58,7 @@ discriminator + mass-doubling witness) — **none ported.** The laws DO hold for
 "ported; laws untested (see F# law pack)."
 
 ### P3 — minor
+
 - `discardWSet` uses `undefined as unknown as void`; `void` as a value-carrying key type is a
   TS anti-pattern (a consolidating caller needs `keyToString:(k:void)=>string`). Use `null` or
   a branded `Unit`.
@@ -65,6 +67,7 @@ discriminator + mass-doubling witness) — **none ported.** The laws DO hold for
   in the TS port as-is.
 
 ## Cross-refs
+
 - Reviewed commit: `b689da6be` — `src/Core.TypeScript/algebra/wset.ts` + `wset.test.ts`.
 - Canonical F# source: `src/Core/WSet.fs` (`copy`:76, `discard`:82).
 - F# law pack (to port): `tests/Tests.FSharp/Formal/WSet.Comonoid.Laws.Tests.fs`.

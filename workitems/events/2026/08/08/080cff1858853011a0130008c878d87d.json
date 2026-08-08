@@ -1,0 +1,14 @@
+{
+  "id": "080cff1858853011a0130008c878d87d",
+  "at": "2026-08-08T20:23:01.030Z",
+  "by": "otto",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZHGP45608QG0R003J0A7G5",
+    "type": "task",
+    "title": "Reconcile the semgrep blocking set with the uncompensatable-floor registry (Vera ratification note)",
+    "slug": "reconcile-the-semgrep-blocking-set-with-the-uncompensatable",
+    "priority": "P1",
+    "filename": "081KZHGP45608QG0R003J0A7G5-reconcile-the-semgrep-blocking-set-with-the-uncompensatable.md"
+  }
+}

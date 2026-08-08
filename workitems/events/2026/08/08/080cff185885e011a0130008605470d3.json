@@ -1,0 +1,14 @@
+{
+  "id": "080cff185885e011a0130008605470d3",
+  "at": "2026-08-08T20:23:01.052Z",
+  "by": "otto",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZHGP45V08QG0R001C0NFFS",
+    "type": "task",
+    "title": "Auto-revert healer for whole-repo build drift on main (Vera ratification note)",
+    "slug": "auto-revert-healer-for-whole-repo-build-drift-on-main-vera-r",
+    "priority": "P2",
+    "filename": "081KZHGP45V08QG0R001C0NFFS-auto-revert-healer-for-whole-repo-build-drift-on-main-vera-r.md"
+  }
+}

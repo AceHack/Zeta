@@ -1,7 +1,7 @@
 # ADR: Drift-and-Heal Replaces Pre-Merge Gates — Reconciliation at AI Speed
 
 Date: 2026-07-09
-Status: Proposed
+Status: Accepted (ratified 2026-08-08 — operator + 5 persona signatures below)
 Authors: Aaron (operator — "gates are a thing of the past, only drift works with
 the speed of AI, we are a rocketship running on explosions") + Otto (cowork cell;
 drafted from the night the gate lost the race)
@@ -135,7 +135,10 @@ pre-merge blocking is the exception, reserved for uncompensatable effects.**
    with the deterministic-agreed-time ferry): drift events carry the tick id
    of the agreed clock, and mean-time-to-heal is a count of ticks — the
    phase-clock is the official reference frame for drift accounting, so
-   every agent measures the same drift against the same now. The
+   every agent measures the same drift at the same tick, in the same
+   order (not "the same now" — the phase clock gives agreed ORDER, not
+   simultaneity; wording corrected at ratification per Alexa's
+   signature note). The
    failure mode of drift-tolerance is normalized deviance — unbounded MTTH is
    the new "red," and a drift class whose MTTH trend grows becomes a workitem
    automatically. Aaron's wait-for-consolidation discipline applies: drift
@@ -177,5 +180,88 @@ whose lanes this rewires, Aaron as operator. The byte-lock floor definition
 (item 5) intersects the Persona×Cell treaty's own floor — if adopted, the
 floor list should be registered (a registry, not prose) so detectors, hooks,
 and humans read the same source of truth.
+
+### Signatures — ratification round, 2026-08-08
+
+Operator sign-off given in the cowork session; the five persona signatures
+were collected by summoned independent review — each reviewer verified the
+implementation evidence against origin/main before deciding, and each was
+free to refuse. Notes are recorded verbatim; the open work they name was
+minted as workitems in this same amendment.
+
+- **Aaron** (HumanMaintainer, operator) — SIGNED. Operator authorization for
+  the ratification round ("i'm good with it"), 2026-08-08.
+- **Otto** (Operator cell; co-author) — SIGNED. Co-author; built the item
+  2-6 implementation (#9851-#10158); signs the text as landed.
+- **Riven** (Builder) — SIGNED: "I was one of the lanes stalled 2.5 hours by
+  somebody else's markdown, so scoping checks to my own diff (item 4) is the
+  fix I'd have built myself; and the floor in item 5 is exactly the set I'd
+  want blocking me — a leaked secret, a broken byte-lock vector, or a build I
+  broke in my own scope isn't drift, it's damage, and I accept every entry
+  including own-scope build/test breaks as legitimately gating my lane. I
+  accept healer certification (item 3) and tick-indexed MTTH with auto-filed
+  P1s (item 6) as the honest price of the speed; my one standing expectation,
+  already in the ADR's own text, is that floor additions go through the
+  treaty-amendment consent path so the floor stays a flight-termination
+  system and never grows back into a gate."
+- **Vera** (Builder, reviewer) — SIGNED WITH NOTE: "Both of my floor catches
+  are honored faithfully — in the ADR text, in
+  registry/uncompensatable-floor.yaml, and in the flipped gate roll-up, all
+  verified against origin/main — and the healer harness catching a live
+  closure bug in the production MD032 fixer on first certification is exactly
+  the evidence this design needed. Two residuals to record, neither blocking:
+  the semgrep gate blocks on the full 14-rule set while the registry names
+  only the two supply-chain rules (the registry is not yet the literal source
+  of truth the ratification clause requires — reconcile one to the other),
+  and build-and-test remains whole-repo behind a path filter with the
+  auto-revert healer for main build drift unshipped, so my 'never blocked by
+  pre-existing whole-repo build drift' clause is presently true only while
+  main stays green. File both as workitems on the floor's ledger; I sign on
+  the expectation they converge like everything else in this ADR — measured,
+  not assumed." -> 081KZHGP45608QG0R003J0A7G5 (P1), 081KZHGP45V08QG0R001C0NFFS (P2).
+- **Soraya** (Verifier) — SIGNED WITH NOTE: "I verified the artifacts, not
+  the summary: the MTTH fold is provably wallclock-free (pure fold,
+  order-independence and metadata-exclusion tests in drift-ledger.test.ts),
+  the floor is a registry with the byte-lock vectors on it, and the healer
+  laws are executable equalities that already caught a live closure bug
+  before write access. My recorded reservation: healer certification is
+  empirical — laws hold over the fixture corpus and the registered detector
+  set, not universally — so closure is only as wide as the detectors we name,
+  and the MTTH SLO must be treated as the load-bearing backstop for that gap,
+  not a dashboard ornament. On that understanding, the flip is sound in my
+  lane and I sign."
+- **Lior** (Compiler) — SIGNED WITH NOTE: "I verified the floor is now data,
+  not prose — registry/uncompensatable-floor.yaml scopes my line to the
+  identity/ZetaId/IR vectors with cross-verify/full-verify blocking in the
+  roll-up, and widening or narrowing it requires the same consent path as
+  this signature, which resolves both my too-narrow and too-wide fears. My
+  reservation: the sovereign lane's pre-push floor hook promised in item 5
+  does not yet exist in the tree, so until it compiles, the byte-lock floor
+  is enforced on only one of the two lanes that can break it — I sign the
+  design and hold this note open against that gap. The vectors are the
+  treaty; a floor the fast lane can skip is a comment, not a contract."
+  -> 081KZHGP46G08QG0R002SR9A4T (P1).
+- **Alexa** (Builder) — SIGNED WITH NOTE: "Item 5 gates exactly the erasure
+  class — effects whose information cannot be recovered once published — and
+  the registry carrying a rationale: erasure-class per entry (#9851) lands
+  the Landauer derivation where detectors and humans read it, which is what I
+  meant. One reservation for the record: item 6's phrase 'against the same
+  now' is a shorthand that risks smuggling simultaneity back in — the phase
+  clock gives us agreed ORDER, not an agreed now; the tick id is a position
+  in the logical fold, and any future amendment or panel copy should say
+  'same tick, same order' rather than 'same now,' lest someone build a
+  wallclock-shaped intuition on top of it." (Wording correction applied to
+  item 6 in this amendment.)
+- **Addison** (Designer, human) — seat open; consent travels the human side
+  with the operator.
+
+Implementation evidence verified by the signers against origin/main: floor
+registry (#9851), gate flip (#9860), scoped lint (#9857, #9902), drift
+ledger (#9863), scheduled sweep (#9873), SLO auto-file (#9881), MTTH panel
+(#9894), healer harness (#9817), certified write gate (#10153 — the first
+certification caught a live closure bug in the production fixer; fixed in
+the same PR).
+Workitem 081KX3KA3F508QG0R000RR66VH (gate-to-floor migration) completes with
+this ratification.
 
 Co-Authored-By: Claude <noreply@anthropic.com>
