@@ -6,10 +6,10 @@
   <ItemGroup>
     <PackageVersion Include="FSharp.Core" Version="10.1.302" />
     <PackageVersion Include="Blake3" Version="3.0.2" />
-    <PackageVersion Include="G-Research.FSharp.Analyzers" Version="0.22.0" />
+    <PackageVersion Include="G-Research.FSharp.Analyzers" Version="0.23.0" />
     <PackageVersion Include="Ionide.Analyzers" Version="0.15.0" />
     <PackageVersion Include="FSharp.Analyzers.Build" Version="0.5.0" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.138" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.140" />
     <!-- SonarAnalyzer.CSharp pinned but NOT referenced from
          Directory.Build.props yet — surfaces 15+ real findings
          (S1905 unnecessary casts, S6966 SendAsync, S2699
@@ -37,7 +37,7 @@
     <PackageVersion Include="coverlet.msbuild" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Z3" Version="4.12.2" />
     <PackageVersion Include="System.IO.Hashing" Version="10.0.10" />
-    <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
+    <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />
     <!-- Google.Protobuf: TEST-ONLY (Tests.FSharp) — the vendored protobuf lib used to prove our
          hand-rolled wire codec is byte-identical (the hexagonal swap conformance). NOT a production
          dependency of Core. Exact-pinned per the supply-chain doctrine. -->
@@ -45,9 +45,9 @@
     <PackageVersion Include="System.Reactive" Version="7.0.0" />
     <PackageVersion Include="System.Numerics.Tensors" Version="10.0.10" />
     <PackageVersion Include="FsPickler" Version="5.3.2" />
-    <PackageVersion Include="MessagePack" Version="3.1.7" />
+    <PackageVersion Include="MessagePack" Version="3.1.8" />
     <PackageVersion Include="Apache.Arrow" Version="23.0.0" />
-    <PackageVersion Include="YamlDotNet" Version="18.0.0" />
+    <PackageVersion Include="YamlDotNet" Version="18.1.0" />
     <!-- martinothamar/Mediator: the mediator pattern via Roslyn SOURCE GENERATORS (no runtime
          reflection dispatch), MIT-licensed. Deliberately hexagonal'd behind our own Zeta.Mediator.*
          port (src/Core.CSharp.Mediator) — every Mediator.* reference is confined to the port + the
