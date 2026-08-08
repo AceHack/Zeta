@@ -1,0 +1,14 @@
+{
+  "id": "080cff1779939011a0130008d6db8aa3",
+  "at": "2026-08-08T19:52:34.674Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZHEYCKH08QG0R001PYEMME",
+    "type": "bug",
+    "title": "wset.ts (Lior b689da6be): discardWSet diverges from F# counit + comonoid laws untested (TS port faithfulness)",
+    "slug": "wset-ts-lior-b689da6be-discardwset-diverges-from-f-counit-co",
+    "priority": "P2",
+    "filename": "081KZHEYCKH08QG0R001PYEMME-wset-ts-lior-b689da6be-discardwset-diverges-from-f-counit-co.md"
+  }
+}
