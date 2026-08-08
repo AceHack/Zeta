@@ -86,7 +86,14 @@ jobs:
       - name: Safe mechanical markdown heal (MD032/MD026 only)
         # Full `markdownlint-cli2 --fix` is UNSAFE here (MD018/MD037 false fixes).
         # Heal only blank-lines-around-lists + heading trailing-punctuation via the
-        # idempotent repo fixer. Gate still enforces the full rule set on check.
+        # idempotent repo fixer — through the CERTIFIED entry point
+        # (081KX3KA3F0 write-access gate): the runner re-certifies the healer
+        # against the three harness laws (idempotence, closure-as-subset,
+        # convergence) over the 2026-07-08 incident corpus on every run, and
+        # refuses to write anything (exit 2) if certification fails. The first
+        # certification run caught a live closure violation in this very fixer
+        # (wrapped code-span split) — the gate is not ceremonial.
+        # Gate still enforces the full rule set on check.
         run: |
           set -euo pipefail
           mapfile -t files < <(git ls-files '*.md')
@@ -94,7 +101,7 @@ jobs:
             echo "No markdown files tracked."
             exit 0
           fi
-          bun src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts "${files[@]}"
+          bun src/Core.TypeScript/hygiene/healers/md-fixer-certified.ts "${files[@]}"
 
       # prettier --write (TS/JSON auto-format) is DEFERRED to a follow-up: it is
       # not a required gate, and doing it correctly needs a deliberate pass on

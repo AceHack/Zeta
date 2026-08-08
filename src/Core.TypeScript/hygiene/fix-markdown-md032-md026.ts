@@ -280,6 +280,31 @@ function classifyLines(lines: readonly string[]): boolean[] {
     if (line === undefined) continue;
     processFenceLine(line, i, inside, state);
   }
+
+  // Pass 3: inline code-span continuations. A code span may WRAP across a
+  // newline (CommonMark renders the newline as a space) — but a BLANK line
+  // terminates it. Any line that begins while a span is still open is a
+  // continuation of the paragraph above, even if it starts with `- ` or
+  // `# `: inserting a blank before it (MD032) or stripping "heading"
+  // punctuation from it (MD026) would SPLIT the span — the 2026-07-08
+  // auto-heal incident class, caught live by the healer-harness closure law
+  // (081KX3KA3F0) when this fixer was first certified. Per-line backtick
+  // parity is a CONSERVATIVE approximation of CommonMark's run-matching: a
+  // false "open" only suppresses a heal on that line (closure over
+  // completeness — a healer must not mint drift, missing a heal is lawful).
+  let spanOpen = false;
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
+    if (line === undefined) continue;
+    if (inside[i] || line.trim() === "") {
+      // Fences / frontmatter / blank lines all terminate inline spans.
+      spanOpen = false;
+      continue;
+    }
+    if (spanOpen) inside[i] = true;
+    const ticks = (line.match(/`/g) ?? []).length;
+    if (ticks % 2 === 1) spanOpen = !spanOpen;
+  }
   return inside;
 }
 
@@ -363,6 +388,13 @@ function fixMd026(text: string): string {
     .join("\n");
 }
 
+/** The pure composed production transform (MD032 then MD026), exported so
+ * the healer harness certifies the EXACT function the write path applies
+ * (081KX3KA3F0: certified path == applied path, no adapter drift). */
+export function fixMarkdownText(text: string): string {
+  return fixMd026(fixMd032(text));
+}
+
 // Apply both fixes to a file. Returns a discriminated-union result.
 //
 // Uses try-readFile + catch ENOENT (instead of existsSync-then-readFile)
@@ -380,7 +412,7 @@ async function fixFile(path: string, dryRun: boolean): Promise<FixResult> {
     }
     throw err;
   }
-  const fixed = fixMd026(fixMd032(original));
+  const fixed = fixMarkdownText(original);
   if (fixed === original) return { kind: "unchanged" };
   if (!dryRun) await writeFile(path, fixed);
   return { kind: "fixed", bytesDiff: fixed.length - original.length };
@@ -465,5 +497,9 @@ async function main(): Promise<number> {
 
 // Set process.exitCode (instead of process.exit) so pending stdout/
 // stderr writes flush before the process terminates. Mirrors the
-// tally.ts pattern.
-process.exitCode = await main();
+// tally.ts pattern. Guarded by import.meta.main so the module is
+// importable (the healer harness certifies fixMarkdownText) without
+// running the CLI — unguarded, an import with no argv would exit(2).
+if (import.meta.main) {
+  process.exitCode = await main();
+}
