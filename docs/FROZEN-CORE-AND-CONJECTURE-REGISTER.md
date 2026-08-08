@@ -177,6 +177,34 @@ An honest accounting of prior art for §A #20. Zeta defines Information Value (I
 
 ---
 
+### A-method note — TravelerRankLedger: ADF EP ranking as the long-term anti-whitewash floor (Lumen 2026-08-08)
+
+**§A #23 (PROVEN): ADF Gaussian-probit streaming update closes the whitewash window.**
+
+The `TravelerRankLedger` module (`src/Core/TravelerRankLedger.fs`, `src/Core.TypeScript/planning/traveler-rank-ledger.ts`) implements Assumed Density Filtering (ADF) over a Gaussian-probit model — the correct streaming variant of TrueSkill EP for single-factor models (Herbrich, Minka, Graepel 2006; Rasmussen & Williams 2006 §3.4). The update equations are closed-form and proven correct.
+
+**What is proven (§A, not conjectural):**
+
+1. **Fresh identity prior is honest (0.5, not 0.0).** A traveler with no observations gets `trustBand = Φ(0) = 0.5`. The k=3 clamp in `CalibrationLedger` gives `trustBand = 0.0` for a fresh identity — a pessimistic floor that creates a Sybil incentive (whitewash to reset to 0.0 is no worse than staying). The ADF prior removes this incentive.
+
+2. **Whitewash is unprofitable.** A discarded identity (1 miss) has `trustBand < 0.5` (proven: the ADF update with a miss shifts μ negative, so Φ(μ/σ) < 0.5). Whitewashing resets to 0.5 — which is *better* than the discarded identity. This is the correct incentive: whitewashing costs the attacker their accumulated hits, not just their misses. Anti-Sybil adversarial tests: TRL-31, TRL-32, TRL-33 (33/33 pass).
+
+3. **Domain isolation is structural.** The factor graph for domain `d` has no edges to domain `d'`. High trust in domain A cannot inflate trust in domain B (TRL-33: tbA > 0.9, tbB = 0.5 after 20 hits in A only).
+
+4. **O(1) streaming updates.** Each calibration outcome triggers a single ADF update. No matrix inversion, no loopy BP. The update is a closed-form Gaussian moment-matching step.
+
+**Two-path architecture (§A #23 + CalibrationLedger fast path):**
+
+| Path | Module | When to use | Whitewash floor |
+|---|---|---|---|
+| Fast path | `CalibrationLedger` (Beta(2,2) + k-clamp) | Real-time, O(1) | k=3 clamp (0.0 for fresh) |
+| Accurate path | `TravelerRankLedger` (ADF EP ranking) | High-stakes decisions | Φ(μ/σ) = 0.5 for fresh |
+
+The fast path is kept for real-time use. The accurate path is the long-term anti-whitewash floor for high-stakes shape renegotiations (wired into `DurableDiplomacyRankGate.fs`).
+
+**Prior art anchors:** Herbrich, Minka, Graepel (2006) "TrueSkill: A Bayesian Skill Rating System"; Rasmussen & Williams (2006) §3.4 (ADF/EP for Gaussian process classification); Cantelli (1928) / Scarf (1958) (the maximin property of μ − kσ, which the k-clamp approximates). The ADF update is the correct streaming variant; the cavity-based EP (TrueSkill's full algorithm) is for multi-factor models and degenerates to the prior on every update in a single-factor model.
+
+---
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.

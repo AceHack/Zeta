@@ -27,6 +27,179 @@
 
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
+import { readdirSync, readFileSync, existsSync } from "fs";
+
+// ── CommitPairCorrelator (TypeScript port) ────────────────────────────────────
+// The honest register-3 probe for oracle-reading pairs.
+// Uses MI excess over a Reichenbach-stratified permutation null.
+// CHSH is NOT used here — see the soundness note in CommitPairCorrelator.fs:
+// settings are artifact properties (not independent random choices),
+// outcomes are editorial summaries (not physical measurements), and
+// no-signaling fails by construction (readings can share a seed lineage).
+//
+// TypeScript inline implementation (mirrors CommitPairCorrelator.fs logic):
+// - "commits" = prior oracle readings for this agent
+// - "observable" = quantized fractalDim bucket (0.1-wide bins)
+// - "spacelike pairs" = readings from different oracle indices (different prime offsets)
+// - "excess" = MI(bucketA, bucketB) > permutation null threshold
+
+const COMMIT_PAIR_SOUNDNESS_NOTE =
+  "CHSH is ill-posed for oracle-reading pairs: settings are artifact properties " +
+  "(not independent random choices), outcomes are fractalDim summaries (not physical " +
+  "measurements), and no-signaling fails by construction (readings share a seed lineage). " +
+  "The honest instrument is MI excess over a Reichenbach-stratified permutation null. " +
+  "See src/Core/CommitPairCorrelator.fs and docs/research/2026-08-02-adversarial-chsh-soundness-commit-probe-register3-lumen.md.";
+
+/** Quantize fractalDim to 0.1-wide bins (e.g. 1.3 → 13, 1.32 → 13). */
+function dfBucket(df: number): number {
+  return Math.floor(df * 10);
+}
+
+/** Seeded splitmix64 step — deterministic permutation null (mirrors DecorrelationExcess.fs). */
+function splitmix64(s: bigint): [bigint, bigint] {
+  let z = (s + 0x9E3779B97F4A7C15n) & 0xFFFFFFFFFFFFFFFFn;
+  z = ((z ^ (z >> 30n)) * 0xBF58476D1CE4E5B9n) & 0xFFFFFFFFFFFFFFFFn;
+  z = ((z ^ (z >> 27n)) * 0x94D049BB133111EBn) & 0xFFFFFFFFFFFFFFFFn;
+  return [z ^ (z >> 31n), (s + 0x9E3779B97F4A7C15n) & 0xFFFFFFFFFFFFFFFFn];
+}
+
+/** Seeded Fisher-Yates shuffle of an array (in-place). */
+function seededShuffle<T>(arr: T[], seed: bigint): void {
+  let s = seed;
+  for (let i = arr.length - 1; i > 0; i--) {
+    let r: bigint;
+    [r, s] = splitmix64(s);
+    const j = Number(r % BigInt(i + 1));
+    [arr[i], arr[j]] = [arr[j]!, arr[i]!];
+  }
+}
+
+/** Mutual information of a pairing (list of [a, b] pairs). */
+function pairingMI(pairs: [number, number][]): number {
+  if (pairs.length === 0) return 0;
+  const n = pairs.length;
+  const jointCounts = new Map<string, number>();
+  const aCounts = new Map<number, number>();
+  const bCounts = new Map<number, number>();
+  for (const [a, b] of pairs) {
+    const key = `${a},${b}`;
+    jointCounts.set(key, (jointCounts.get(key) ?? 0) + 1);
+    aCounts.set(a, (aCounts.get(a) ?? 0) + 1);
+    bCounts.set(b, (bCounts.get(b) ?? 0) + 1);
+  }
+  let mi = 0;
+  for (const [key, count] of jointCounts) {
+    const [aStr, bStr] = key.split(",");
+    const a = parseInt(aStr!), b = parseInt(bStr!);
+    const pAB = count / n;
+    const pA = (aCounts.get(a) ?? 0) / n;
+    const pB = (bCounts.get(b) ?? 0) / n;
+    if (pA > 0 && pB > 0) mi += pAB * Math.log(pAB / (pA * pB));
+  }
+  return mi;
+}
+
+interface CommitPairProbeResult {
+  meteredPairs: number;
+  excessFraction: number | null;
+  isExcess: boolean;
+  soundnessNote: string;
+}
+
+/**
+ * Run the commit-pair correlator over prior oracle readings for this agent.
+ * "Spacelike pairs" = readings from different oracle indices (different prime offsets).
+ * Observable = quantized fractalDim bucket.
+ * Excess = MI > permutation null threshold at δ=0.05, k=100 shuffles.
+ */
+function runCommitPairProbe(
+  priorReadings: Array<{ oracleIndex: number; fractalDim: number }>,
+  seed: number
+): CommitPairProbeResult {
+  // Group by oracle index — each oracle is a "commit stream"
+  const byOracle = new Map<number, number[]>();
+  for (const r of priorReadings) {
+    const bucket = dfBucket(r.fractalDim);
+    const arr = byOracle.get(r.oracleIndex) ?? [];
+    arr.push(bucket);
+    byOracle.set(r.oracleIndex, arr);
+  }
+  const oracleIndices = [...byOracle.keys()].sort();
+  if (oracleIndices.length < 2) {
+    return { meteredPairs: 0, excessFraction: null, isExcess: false, soundnessNote: COMMIT_PAIR_SOUNDNESS_NOTE };
+  }
+
+  // Build spacelike pairs: all (i, j) pairs where i < j (different oracle indices)
+  // Pair up the last min(|A|, |B|) readings from each oracle pair
+  let totalPairs = 0;
+  let excessPairs = 0;
+  const DELTA = 0.05;
+  const K_SHUFFLES = 100;
+
+  for (let i = 0; i < oracleIndices.length; i++) {
+    for (let j = i + 1; j < oracleIndices.length; j++) {
+      const aObs = byOracle.get(oracleIndices[i]!)!;
+      const bObs = byOracle.get(oracleIndices[j]!)!;
+      const len = Math.min(aObs.length, bObs.length);
+      if (len < 2) continue; // need at least 2 pairs for a meaningful null
+
+      const pairs: [number, number][] = aObs.slice(-len).map((a, k) => [a, bObs[bObs.length - len + k]!]);
+      const realMI = pairingMI(pairs);
+
+      // Permutation null: shuffle bObs K times and compute MI each time
+      const nullMIs: number[] = [];
+      for (let k = 0; k < K_SHUFFLES; k++) {
+        const shuffled = [...bObs.slice(-len)];
+        seededShuffle(shuffled, BigInt(seed) + BigInt(i * 1000 + j * 100 + k));
+        nullMIs.push(pairingMI(aObs.slice(-len).map((a, idx) => [a, shuffled[idx]!])));
+      }
+      nullMIs.sort((a, b) => a - b);
+      const threshold = nullMIs[Math.floor((1 - DELTA) * K_SHUFFLES)]!;
+
+      totalPairs++;
+      if (realMI > threshold) excessPairs++;
+    }
+  }
+
+  return {
+    meteredPairs: totalPairs,
+    excessFraction: totalPairs > 0 ? excessPairs / totalPairs : null,
+    isExcess: excessPairs > 0,
+    soundnessNote: COMMIT_PAIR_SOUNDNESS_NOTE,
+  };
+}
+
+/** Load prior oracle readings for this agent from docs/oracle-readings/<agent>/. */
+function loadPriorReadings(
+  repoRoot: string,
+  agent: string
+): Array<{ oracleIndex: number; fractalDim: number }> {
+  const baseDir = join(repoRoot, "docs", "oracle-readings", agent);
+  if (!existsSync(baseDir)) return [];
+  const results: Array<{ oracleIndex: number; fractalDim: number }> = [];
+  try {
+    // Walk yyyy/mm/dd/file.json
+    for (const yyyy of readdirSync(baseDir)) {
+      const yyyyDir = join(baseDir, yyyy);
+      for (const mm of readdirSync(yyyyDir)) {
+        const mmDir = join(yyyyDir, mm);
+        for (const dd of readdirSync(mmDir)) {
+          const ddDir = join(mmDir, dd);
+          for (const file of readdirSync(ddDir)) {
+            if (!file.endsWith(".json")) continue;
+            try {
+              const raw = JSON.parse(readFileSync(join(ddDir, file), "utf8"));
+              if (typeof raw.oracleIndex === "number" && typeof raw.fractalDim === "number") {
+                results.push({ oracleIndex: raw.oracleIndex, fractalDim: raw.fractalDim });
+              }
+            } catch { /* skip malformed */ }
+          }
+        }
+      }
+    }
+  } catch { /* directory walk error — return what we have */ }
+  return results;
+}
 
 // ── DLA constants (mirrors IdentityDLA.fs and useDLA.ts) ─────────────────────
 
@@ -159,6 +332,12 @@ interface OracleReading {
   condorcetBonus: number;
   agentId: string;
   heartbeatId: string;
+  /** Register-3 excess-correlation probe over spacelike oracle-reading pairs.
+   *  Uses CommitPairCorrelator (MI excess over Reichenbach-stratified permutation null).
+   *  One-way: isExcess=true convicts; false never acquits.
+   *  soundnessNote explains why CHSH is not used here.
+   *  null = no prior readings available for this agent (first tick). */
+  commitPairProbe: CommitPairProbeResult | null;
 }
 
 // ── CLI ───────────────────────────────────────────────────────────────────────
@@ -213,6 +392,19 @@ async function main(): Promise<number> {
 
   const result = runDla(seed, GRID_W, GRID_H, N_WALKERS);
 
+  // Load prior readings and run the CommitPairCorrelator probe.
+  // This is the honest register-3 instrument — MI excess over a Reichenbach-stratified
+  // permutation null. CHSH is not used here (see COMMIT_PAIR_SOUNDNESS_NOTE).
+  const priorReadings = loadPriorReadings(parsed.repoRoot, parsed.agent);
+  const commitPairProbe = priorReadings.length >= 2
+    ? runCommitPairProbe(priorReadings, seed)
+    : null;
+  if (commitPairProbe) {
+    console.log(`dla-meter: commitPairProbe meteredPairs=${commitPairProbe.meteredPairs} isExcess=${commitPairProbe.isExcess} excessFraction=${commitPairProbe.excessFraction?.toFixed(3) ?? "null"}`);
+  } else {
+    console.log(`dla-meter: commitPairProbe=null (insufficient prior readings)`);
+  }
+
   // Git transport: L ≈ 120s (GitHub Actions round-trip).
   // ρ = 1/(1+120) ≈ 0.008. Condorcet bonus ≈ 0.992. Classical/Independent regime.
   const latencySeconds = 120.0;
@@ -234,6 +426,7 @@ async function main(): Promise<number> {
     condorcetBonus:      bonus,
     agentId:             parsed.agent,
     heartbeatId:         parsed.heartbeatId,
+    commitPairProbe,
   };
 
   if (parsed.dryRun) {
