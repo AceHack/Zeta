@@ -1,0 +1,14 @@
+{
+  "id": "080cff1618a25811a01300088c578e23",
+  "at": "2026-08-08T19:04:23.371Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZHC652A08QG0R003YX1G29",
+    "type": "task",
+    "title": "Soraya: define ChshBand + LoopholeFlags types in AntiSybil.fs (unblocks Alexa Task A — Analytics wrappers)",
+    "slug": "soraya-define-chshband-loopholeflags-types-in-antisybil-fs-u",
+    "priority": "P2",
+    "filename": "081KZHC652A08QG0R003YX1G29-soraya-define-chshband-loopholeflags-types-in-antisybil-fs-u.md"
+  }
+}
