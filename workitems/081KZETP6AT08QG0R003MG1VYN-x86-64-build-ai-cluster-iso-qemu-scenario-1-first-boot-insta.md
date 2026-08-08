@@ -16,7 +16,44 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
-## RESOLVED-PENDING-OBSERVATION (2026-08-07, Otto shadow*) — downgraded P1→P2
+## RE-CHECK (2026-08-08, Otto shadow*) — bug is INTERMITTENT, NOT resolved; reopened observation
+
+Triggered a fresh `workflow_dispatch` build-iso on `main` (run **31270499976**) to get a
+second data point. Result: `build-iso` (x86_64) **FAILED**, and `install.sh` in the
+first-boot **failed again (rc=1)** — vs the prior run (31212929243) where it succeeded.
+So the underlying failure is **INTERMITTENT**, not fixed. Two important refinements:
+
+- **Different failure mode this time:** `install.sh FAILED rc=1` with **`mise ERROR`=0**
+  and **no pipx-skip** lines (the original Aug 1–7 signature was mise/pipx). Exact rc=1
+  cause still NOT captured (serial tail truncated). Root-cause still needs the documented
+  `MISE_VERBOSE=1` + phase-1 serial-log capture.
+
+- **The errexit fix (#10135) is confirmed working:** install.sh failed **non-fatally**
+  (WARN emitted, script did not abort). That part is solid.
+
+- **What actually failed the job:** the `081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance`
+  scenario — which is **`workflow_dispatch only`** (does NOT run on push/PR). Its full-install
+  phase-1 waits 10 min for `ZETA CLUSTER NODE INSTALL COMPLETE`; a failed install.sh means
+  the node never finished provisioning → marker never appeared → phase-1 **timeout** → wifi
+  ESP contract failed → job failure. So this is `install.sh` failure surfacing *through* the
+  full-install acceptance path.
+
+- **Why normal CI stays green:** push/PR `build-iso` runs only audit + zflash --test +
+  qemu-boot (which don't require full install.sh success), NOT the dispatch-only full-install
+  / wifi-ESP acceptance. So `main` stays green even when install.sh intermittently fails.
+
+**Real-metal impact (honest):** on an actual x86_64 flash+boot, install.sh may
+intermittently fail → node comes up **partial** (missing k3d/kubectl/helm, marked
+`~/.zeta/PARTIAL-PROVISION`), recoverable via
+`cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh`. Boots and recovers, but not yet
+reliably one-shot — matters for the operator's x86_64 test path.
+
+**Stays P2, OPEN.** Not blocking normal CI, but a real intermittent provisioning failure.
+**Next (drive-the-fix):** add `MISE_VERBOSE=1` to the first-boot `install.sh` invocation
+(`zeta-install.sh:1577`) + capture/echo the phase-1 serial log on failure, dispatch again,
+read the exact rc=1 cause, then fix. Evidence runs: FAIL 31270499976, PASS 31212929243.
+
+## (superseded) RESOLVED-PENDING-OBSERVATION (2026-08-07, Otto shadow*) — downgraded P1→P2
 
 Two-part outcome:
 
