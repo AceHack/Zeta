@@ -1,11 +1,12 @@
 ---
 id: 081KZHGP45608QG0R003J0A7G5
 type: task
-state: backlog
+state: done
 priority: P1
 slug: reconcile-the-semgrep-blocking-set-with-the-uncompensatable
 title: "Reconcile the semgrep blocking set with the uncompensatable-floor registry (Vera ratification note)"
 created: 2026-08-08T20:23:01.030Z
+completed: 2026-08-08T20:49:17.105Z
 depends_on: []
 composes_with: []
 ---
