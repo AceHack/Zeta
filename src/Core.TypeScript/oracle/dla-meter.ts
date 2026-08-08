@@ -51,12 +51,12 @@ const COMMIT_PAIR_SOUNDNESS_NOTE =
   "See src/Core/CommitPairCorrelator.fs and docs/research/2026-08-02-adversarial-chsh-soundness-commit-probe-register3-lumen.md.";
 
 /** Quantize fractalDim to 0.1-wide bins (e.g. 1.3 → 13, 1.32 → 13). */
-function dfBucket(df: number): number {
+export function dfBucket(df: number): number {
   return Math.floor(df * 10);
 }
 
 /** Seeded splitmix64 step — deterministic permutation null (mirrors DecorrelationExcess.fs). */
-function splitmix64(s: bigint): [bigint, bigint] {
+export function splitmix64(s: bigint): [bigint, bigint] {
   let z = (s + 0x9E3779B97F4A7C15n) & 0xFFFFFFFFFFFFFFFFn;
   z = ((z ^ (z >> 30n)) * 0xBF58476D1CE4E5B9n) & 0xFFFFFFFFFFFFFFFFn;
   z = ((z ^ (z >> 27n)) * 0x94D049BB133111EBn) & 0xFFFFFFFFFFFFFFFFn;
@@ -64,7 +64,7 @@ function splitmix64(s: bigint): [bigint, bigint] {
 }
 
 /** Seeded Fisher-Yates shuffle of an array (in-place). */
-function seededShuffle<T>(arr: T[], seed: bigint): void {
+export function seededShuffle<T>(arr: T[], seed: bigint): void {
   let s = seed;
   for (let i = arr.length - 1; i > 0; i--) {
     let r: bigint;
@@ -75,7 +75,7 @@ function seededShuffle<T>(arr: T[], seed: bigint): void {
 }
 
 /** Mutual information of a pairing (list of [a, b] pairs). */
-function pairingMI(pairs: [number, number][]): number {
+export function pairingMI(pairs: [number, number][]): number {
   if (pairs.length === 0) return 0;
   const n = pairs.length;
   const jointCounts = new Map<string, number>();
@@ -105,6 +105,7 @@ interface CommitPairProbeResult {
   isExcess: boolean;
   soundnessNote: string;
 }
+export type { CommitPairProbeResult };
 
 /**
  * Run the commit-pair correlator over prior oracle readings for this agent.
@@ -112,7 +113,7 @@ interface CommitPairProbeResult {
  * Observable = quantized fractalDim bucket.
  * Excess = MI > permutation null threshold at δ=0.05, k=100 shuffles.
  */
-function runCommitPairProbe(
+export function runCommitPairProbe(
   priorReadings: Array<{ oracleIndex: number; fractalDim: number }>,
   seed: number
 ): CommitPairProbeResult {
@@ -170,7 +171,7 @@ function runCommitPairProbe(
 }
 
 /** Load prior oracle readings for this agent from docs/oracle-readings/<agent>/. */
-function loadPriorReadings(
+export function loadPriorReadings(
   repoRoot: string,
   agent: string
 ): Array<{ oracleIndex: number; fractalDim: number }> {
