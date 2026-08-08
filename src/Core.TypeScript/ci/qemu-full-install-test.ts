@@ -34,7 +34,6 @@ import {
   serialFirstBootInProgress,
 } from "../zflash/test-harness/serial-markers";
 import {
-  DEFAULT_ESP_OFFSET_BYTES,
   DEFAULT_QEMU_WIFI_PASSWORD,
   DEFAULT_QEMU_WIFI_SSID,
   prepareBootImage,
@@ -688,7 +687,6 @@ async function main(): Promise<never> {
       withCredentialBlob: false,
       testMode: true,
       hostname: "node-qemu-wifi",
-      espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
       pubkeyPath: TEST_INFRA_PUBKEY,
       wifiCredentials: {
         ssid: DEFAULT_QEMU_WIFI_SSID,

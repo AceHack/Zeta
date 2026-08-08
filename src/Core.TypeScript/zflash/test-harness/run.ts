@@ -49,7 +49,7 @@ import { basename, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
 import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
-import { prepareBootImage, DEFAULT_ESP_OFFSET_BYTES } from "./prepare-boot-image";
+import { prepareBootImage } from "./prepare-boot-image";
 import {
   createSpawnSyncQcow2RetentionExecutor,
   executeQcow2SnapshotRetentionPlan,
@@ -283,7 +283,6 @@ function runInitialFormatScenario(isoPath: string): ScenarioResult {
     withCredentialBlob: true,
     testMode: true,
     hostname: "node-qemu-test",
-    espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
     pubkeyPath: resolveTestInfraPubkeyPath(),
   });
   steps.push("zflash-file-backed --test");
@@ -542,7 +541,6 @@ function ensureZflashBootImage(
     withCredentialBlob,
     testMode: true,
     hostname: "node-qemu-test",
-    espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
     pubkeyPath: resolveTestInfraPubkeyPath(),
   });
   if ("error" in prepared) {

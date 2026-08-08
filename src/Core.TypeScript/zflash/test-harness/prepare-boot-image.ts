@@ -33,8 +33,6 @@ import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
 export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";
-/** @deprecated Prefer auto-detect via {@link resolveEspOffsetBytesForIso}; kept for tests. */
-export const DEFAULT_ESP_OFFSET_BYTES = ISOHYBRID_ESP_OFFSET_FALLBACK_BYTES;
 export const DEFAULT_QEMU_HOSTNAME = "node-qemu-test";
 
 /** Deterministic QEMU-only wifi ESP blob (never a real network secret). */
@@ -55,7 +53,6 @@ export interface PrepareBootImageInput {
   readonly withCredentialBlob: boolean;
   readonly testMode: boolean;
   readonly hostname: string;
-  readonly espOffsetBytes: number;
   readonly pubkeyPath: string;
   readonly wifiCredentials?: PrepareBootImageWifiCredentials;
 }
@@ -194,7 +191,6 @@ function parseArgs(argv: readonly string[]): PrepareBootImageInput | { readonly 
     withCredentialBlob: fresh ? false : withCredentialBlob,
     testMode: true,
     hostname,
-    espOffsetBytes: DEFAULT_ESP_OFFSET_BYTES,
     pubkeyPath: TEST_INFRA_PUBKEY,
     ...(withWifiCredentials
       ? {
