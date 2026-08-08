@@ -171,6 +171,22 @@
   powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
 
   # ---------------------------------------------------------------------------
+  # Storage prerequisites — required by Longhorn distributed block storage
+  # ---------------------------------------------------------------------------
+  # open-iscsi: iSCSI initiator daemon required by Longhorn for block device
+  # replication across nodes. Without this, Longhorn volumes will not mount.
+  # Ref: https://longhorn.io/docs/latest/deploy/install/#installation-requirements
+  services.openiscsi = {
+    enable = true;
+    name = "iqn.2024-01.io.zeta:${config.networking.hostName}";
+  };
+
+  # nfs-utils: NFS client for Longhorn backup targets and shared storage.
+  # Required for NFS-based backup destinations (s3 or nfs:// backup target).
+  services.rpcbind.enable = true;
+  boot.supportedFilesystems = [ "nfs" "nfs4" ];
+
+  # ---------------------------------------------------------------------------
   # NixOS release this baseline targets. Per-host configs inherit unless
   # they explicitly override (which they generally shouldn't).
   # ---------------------------------------------------------------------------

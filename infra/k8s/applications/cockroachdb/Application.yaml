@@ -1,0 +1,132 @@
+# infra/k8s/applications/cockroachdb/Application.yaml
+#
+# CockroachDB — distributed SQL database for the Zeta cluster.
+# Provides ACID-compliant, geo-distributed SQL storage for stateful
+# workloads: Hindsight event log, OZ state store, Hermes message queue
+# persistence, and any other service that needs durable relational storage.
+#
+# Prerequisites:
+#   - Longhorn storage class (longhorn) must be Synced+Healthy first.
+#     CockroachDB PVCs use Longhorn for replicated block storage.
+#   - cert-manager (for TLS certificates between CockroachDB nodes).
+#     Until cert-manager is deployed, set tls.enabled=false (dev only).
+#
+# Cluster topology (initial):
+#   - 3 replicas (minimum for RAFT quorum; 1 per worker node)
+#   - 8Gi storage per node (Longhorn, replicated)
+#   - 500m CPU / 1Gi RAM requests (conservative; tune after first week)
+#
+# Roadmap:
+#   - Enable TLS once cert-manager is deployed (tls.enabled=true)
+#   - Add geo-partitioning zones once 3rd node is online
+#   - Connect Hindsight, OZ, and Hermes to the CockroachDB service
+#
+# Accessing the DB:
+#   kubectl -n cockroachdb exec -it cockroachdb-0 -- ./cockroach sql --insecure
+#   (replace --insecure with --certs-dir=/cockroach/cockroach-certs once TLS is on)
+#
+# Operator vs Helm: we use the Helm chart (not the operator) because the
+# operator requires additional CRDs and RBAC that add complexity before the
+# cluster is stable. Switch to the operator once the cluster is proven.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cockroachdb
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://charts.cockroachdb.com
+    chart: cockroachdb
+    targetRevision: 13.0.1    # CockroachDB 24.1.x family — LTS
+    helm:
+      releaseName: cockroachdb
+      valuesObject:
+        # ── Cluster topology ──────────────────────────────────────────────────
+        statefulset:
+          replicas: 3
+          # Pod anti-affinity: spread replicas across nodes for HA.
+          # Required for RAFT quorum to survive a single-node failure.
+          podAntiAffinity:
+            type: hard   # hard = required; soft = preferred
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+
+        # ── Storage ───────────────────────────────────────────────────────────
+        storage:
+          persistentVolume:
+            enabled: true
+            size: 8Gi
+            storageClass: longhorn   # Longhorn replicated block storage
+
+        # ── TLS ───────────────────────────────────────────────────────────────
+        # IMPORTANT: TLS is disabled for initial bootstrap.
+        # Enable once cert-manager is deployed and the cluster is stable.
+        # When enabling: set tls.enabled=true and configure cert-manager issuer.
+        tls:
+          enabled: false   # TODO: set to true after cert-manager is deployed
+
+        # ── Init ──────────────────────────────────────────────────────────────
+        # Initialize the cluster on first boot.
+        # The init job runs once and is idempotent.
+        init:
+          provisioning:
+            enabled: true
+            # Create the default databases for Zeta services.
+            # Add more databases here as services are deployed.
+            databases:
+              - name: hindsight
+                owners:
+                  - hindsight
+              - name: hermes
+                owners:
+                  - hermes
+              - name: oz
+                owners:
+                  - oz
+            users:
+              - name: hindsight
+                password:
+                  secretKeyRef:
+                    name: cockroachdb-hindsight-secret
+                    key: password
+              - name: hermes
+                password:
+                  secretKeyRef:
+                    name: cockroachdb-hermes-secret
+                    key: password
+              - name: oz
+                password:
+                  secretKeyRef:
+                    name: cockroachdb-oz-secret
+                    key: password
+
+        # ── Service ───────────────────────────────────────────────────────────
+        service:
+          public:
+            type: ClusterIP
+          # Admin UI — access via kubectl port-forward until ingress is configured.
+          # kubectl -n cockroachdb port-forward svc/cockroachdb-public 8080
+
+        # ── Monitoring ────────────────────────────────────────────────────────
+        # Prometheus metrics — scraped by the Prometheus stack (deployed later).
+        serviceMonitor:
+          enabled: false   # set to true after Prometheus is deployed
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cockroachdb
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
