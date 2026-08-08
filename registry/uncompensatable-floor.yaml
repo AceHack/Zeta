@@ -28,7 +28,7 @@ entries:
     rationale: erasure-class
   - id: workflow-supply-chain
     description: "Mutable third-party action tags or untrusted event data inline in run: — a poisoned tag executes on the NEXT tick, ahead of any reconstruction (Vera review, #9601)"
-    detector: "semgrep gha-action-mutable-tag + gha-untrusted-in-run-line (blocking)"
+    detector: ".semgrep-floor.yml via the gate's blocking lint (semgrep) job — this file IS the floor scan; the full set runs as non-blocking drift in lint (semgrep drift)"
     rationale: erasure-class
   - id: scoped-build-test-break
     description: "Functional build/test failure in the PR's OWN scope — downstream lanes consume the break this tick; never blocks on pre-existing whole-repo drift (Vera review, #9601 P1)"

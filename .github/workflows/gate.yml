@@ -435,11 +435,17 @@ jobs:
         run: echo "build-and-test skipped on docs-only PR (081KQGDBJ0008QG0R001MK4YPC path-filter)."
 
   lint:
-    # Semgrep runs every rule in `.semgrep.yml` — 14+ custom rules
-    # codifying F# / security / supply-chain anti-patterns. Single OS
-    # since rules are OS-independent; saves minutes.
+    # FLOOR-ONLY semgrep (ratification reconciliation, Vera's signature
+    # note 2026-08-08): this BLOCKING job scans `.semgrep-floor.yml` —
+    # exactly the rules registry/uncompensatable-floor.yaml names for the
+    # `workflow-supply-chain` entry (mutable action tags, untrusted event
+    # data in run: lines). The registry is the literal source of truth for
+    # what blocks; the other 15 rules run as non-blocking drift in
+    # `lint (semgrep drift)` below (drift-and-heal ADR items 2+5, Accepted
+    # 2026-08-08). Adding a rule HERE = adding to the floor = the
+    # treaty-amendment consent path.
     #
-    # Round 30 posture fix: before this job existed, 14 rules were
+    # Round 30 posture fix history: before this job existed, 14 rules were
     # codified but 0 gated the build. See docs/security/
     # THREAT-MODEL.md "mitigation validation" section + round-30
     # elevation design (docs/research/threat-model-elevation.md).
@@ -487,13 +493,46 @@ jobs:
         # job above.
         run: ./tools/setup/install.sh
 
-      - name: Run Semgrep
-        # --error exits non-zero if any rule matches. The 14 rules in
-        # `.semgrep.yml` are ERROR or WARNING; --error flips any match
-        # into a hard-fail regardless of declared severity. Rationale:
-        # under nation-state posture per round-30 elevation, a lint
-        # rule without a gate isn't a control.
-        run: semgrep --config .semgrep.yml --error --metrics=off
+      - name: Run Semgrep (floor rules only — seconds-fast floor check)
+        # --error exits non-zero if any floor rule matches. Under
+        # nation-state posture per round-30 elevation, a supply-chain
+        # rule without a gate isn't a control — and per the ratified
+        # drift ADR, a non-floor rule WITH a gate is a lock. Both
+        # postures are honored by the split.
+        run: semgrep --config .semgrep-floor.yml --error --metrics=off
+
+  lint-semgrep-drift:
+    # The full detector set (15 non-floor rules + the 2 floor rules for
+    # one-stop reporting), NON-BLOCKING: this job is deliberately NOT in
+    # the gate roll-up's needs — a finding here is drift (red X = signal,
+    # measured by the ledger's MTTH, healed by lane owners), never a lock
+    # on unrelated lanes. Split created at ADR ratification (Vera's
+    # signature note; workitem 081KZHGP45608QG0R003J0A7G5).
+    name: lint (semgrep drift)
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        run: ./tools/setup/install.sh
+
+      - name: Run Semgrep (full detector set — findings are drift, not locks)
+        run: semgrep --config .semgrep.yml --config .semgrep-floor.yml --error --metrics=off
 
   lint-yaml-k8s:
     # YAML + Kubernetes-manifest validation over full-ai-cluster/k8s/** — the
