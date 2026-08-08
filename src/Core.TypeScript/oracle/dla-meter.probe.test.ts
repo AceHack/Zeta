@@ -19,7 +19,6 @@ import {
   pairingMI,
   runCommitPairProbe,
   loadPriorReadings,
-  type CommitPairProbeResult,
 } from "./dla-meter";
 
 // ── DMP-1: dfBucket quantizes correctly ──────────────────────────────────────

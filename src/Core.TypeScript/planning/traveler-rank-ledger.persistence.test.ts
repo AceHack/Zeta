@@ -10,7 +10,6 @@
 import { describe, it, expect } from "bun:test";
 import {
   emptyLedger,
-  freshBelief,
   recordOutcome,
   trustBandOf,
   obsCountOf,
