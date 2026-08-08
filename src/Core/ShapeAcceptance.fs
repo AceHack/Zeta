@@ -101,7 +101,7 @@ module ShapeAcceptance =
             //   superdeterminism or a clone attempt — HARD REJECT regardless of declared value.
             // - Quantum (2 < |S| ≤ 2√2) is the valid range for a genuine fourcorner shape.
             // - Classical (|S| ≤ 2) means the phasor is not entangled — shape is wrong.
-            let phasorRegime = BipartiteMachZehnder.classifyS sPhasor
+            let phasorRegime = BipartiteMachZehnder.classifyAnalyticS (BipartiteMachZehnder.AnalyticS sPhasor)
             let ok =
                 phasorRegime = BipartiteMachZehnder.ChshRegime.Quantum
                 && int (System.Math.Round(sPhasor * 1000.0)) = declared
@@ -338,7 +338,7 @@ module ShapeAcceptance =
             // reading belongs to the caller (dual-use-detection-is-neutral-oracle-decides). The
             // renegotiation gate the comment described belongs on a renegotiation INPUT, of which
             // there is none in this known-answer law.
-            let pairRegime = BipartiteMachZehnder.classifyS sPair
+            let pairRegime = BipartiteMachZehnder.classifyAnalyticS (BipartiteMachZehnder.AnalyticS sPair)
             let ok =
                 verdict.DistinctCount = wantDistinct
                 && sPair = 4.0

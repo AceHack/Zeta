@@ -76,16 +76,16 @@ let ``ORACLE 2 — tsirelsonAngles match BellTest.canonicalAngles convention`` (
     Assert.Equal(bPrime, angles.BPrime, 12)
 [<Fact>]
 let ``ORACLE 2 — ceiling oracle classifies S=2√2 as Quantum (not SupraQuantum)`` () =
-    let regime = BipartiteMachZehnder.classifyS BipartiteMachZehnder.tsirelsonS
+    let regime = BipartiteMachZehnder.classifyAnalyticS (BipartiteMachZehnder.AnalyticS BipartiteMachZehnder.tsirelsonS)
     Assert.Equal(BipartiteMachZehnder.ChshRegime.Quantum, regime)
 [<Fact>]
 let ``ORACLE 2 — ceiling oracle classifies S=1.5 as Classical`` () =
-    Assert.Equal(BipartiteMachZehnder.ChshRegime.Classical, BipartiteMachZehnder.classifyS 1.5)
-    Assert.Equal(BipartiteMachZehnder.ChshRegime.Classical, BipartiteMachZehnder.classifyS 2.0)
+    Assert.Equal(BipartiteMachZehnder.ChshRegime.Classical, BipartiteMachZehnder.classifyAnalyticS (BipartiteMachZehnder.AnalyticS 1.5))
+    Assert.Equal(BipartiteMachZehnder.ChshRegime.Classical, BipartiteMachZehnder.classifyAnalyticS (BipartiteMachZehnder.AnalyticS 2.0))
 [<Fact>]
 let ``ORACLE 2 — ceiling oracle classifies S=3.0 as SupraQuantum`` () =
-    Assert.Equal(BipartiteMachZehnder.ChshRegime.SupraQuantum, BipartiteMachZehnder.classifyS 3.0)
-    Assert.Equal(BipartiteMachZehnder.ChshRegime.SupraQuantum, BipartiteMachZehnder.classifyS 4.0)
+    Assert.Equal(BipartiteMachZehnder.ChshRegime.SupraQuantum, BipartiteMachZehnder.classifyAnalyticS (BipartiteMachZehnder.AnalyticS 3.0))
+    Assert.Equal(BipartiteMachZehnder.ChshRegime.SupraQuantum, BipartiteMachZehnder.classifyAnalyticS (BipartiteMachZehnder.AnalyticS 4.0))
 // ── ORACLE 3: Non-factorizability witness ────────────────────────────────────────────────────
 [<Fact>]
 let ``ORACLE 3 — phiPlus is non-factorizable: S > 2 (entanglement as non-factorizability in ⊗)`` () =

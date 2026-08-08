@@ -130,11 +130,46 @@ module BipartiteMachZehnder =
         | Classical
         | Quantum
         | SupraQuantum
-    /// Classify a measured CHSH S value into its regime.
-    ///
-    /// This is the **ceiling oracle** for G3: given the bipartite WSet<ℂ> ceiling
-    /// `bipartiteChshS tsirelsonAngles ≈ 2√2`, a measured agent-pair S above the ceiling
-    /// indicates classical contamination (shared seed / superdeterminism), not entanglement.
+
+    // ═══ Analytics wrapper types (Soraya's routing, Task A — 081KZHC652A08QG0R003YX1G29) ════════════
+    // The crossing footgun: classifyS takes bare `float`, so a measured S (with finite-sample
+    // uncertainty) can be passed to the noiseless ceiling classifier. AnalyticS/MeasuredS close
+    // this at the type level — Mars-Climate-Orbiter discipline (units in the type, not the comment).
+
+    /// A CHSH S value computed from the ANALYTIC ceiling (noiseless, infinite-sample).
+    /// Safe to classify with bare thresholds (no finite-sample ε axis).
+    type AnalyticS = AnalyticS of float
+
+    /// A CHSH S value MEASURED from finite samples. Carries `n` (round count) so the
+    /// margin ε = chshMargin δ n is computable — a caller CANNOT invoke the band classifier
+    /// without the sample size the margin needs.
+    type MeasuredS = MeasuredS of float * int
+
+    /// Classify an ANALYTIC (noiseless) S into its regime. This IS classifyS, retyped so that
+    /// bare measured floats cannot be passed. The bare thresholds (2.0 / 2√2 + 1e-10) are
+    /// sound here because there is no finite-sample axis.
+    let classifyAnalyticS (AnalyticS s) : ChshRegime =
+        let absS = abs s
+        if absS <= 2.0 then Classical
+        elif absS <= 2.0 * sqrt 2.0 + 1e-10 then Quantum
+        else SupraQuantum
+
+    /// Classify a MEASURED S into a ChshBand using the calibrated margin, then compose with
+    /// loophole flags to produce the one sound verdict the pair licenses.
+    /// This is the type-safe path: you cannot get a ChshBand from a MeasuredS without
+    /// providing both the confidence level (delta) and the loophole profile.
+    let classifyMeasuredS (delta: float) (MeasuredS(s, rounds)) (flags: AntiSybil.LoopholeFlags) : AntiSybil.ChshReadout =
+        let band = AntiSybil.classifyBand delta rounds s
+        AntiSybil.readout band flags
+
+    /// Classify a measured S into just the band (without the loophole composition).
+    /// Use when you need the arithmetic band classification but will handle loopholes separately.
+    let classifyMeasuredBand (delta: float) (MeasuredS(s, rounds)) : AntiSybil.ChshBand =
+        AntiSybil.classifyBand delta rounds s
+
+    /// The legacy classifyS — DEPRECATED. Use classifyAnalyticS for noiseless values or
+    /// classifyMeasuredS for sampled values. Kept for backward compatibility during migration.
+    [<System.Obsolete("Use classifyAnalyticS (for noiseless) or classifyMeasuredS (for sampled)")>]
     let classifyS (s: float) : ChshRegime =
         let absS = abs s
         if absS <= 2.0 then Classical
