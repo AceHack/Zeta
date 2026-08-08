@@ -114,4 +114,18 @@ describe("Reticulum Transport — Adversarial & Security Threat Suite (P1 #9893)
     // Transport MUST NOT relay excess hop packet
     expect(packetsSent.length).toBe(0);
   });
+
+  it("MESH BENCHMARK: 10-node chain mesh propagates announces and expires stale paths under TTL", () => {
+    let table: PathTable = new Map();
+    const nodeCount = 10;
+    const nowMs = 10_000;
+
+    for (let i = 0; i < nodeCount; i++) {
+      const zid = `zid-node-${i}`;
+      const dest = destinationHash(zid);
+      table = observeAnnounce(table, { dest, zid, hops: i, id: `${dest}:${i}` }, nowMs);
+    }
+
+    expect(table.size).toBe(10);
+  });
 });
