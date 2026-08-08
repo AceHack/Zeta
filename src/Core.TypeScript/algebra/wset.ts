@@ -183,12 +183,10 @@ export function copyWSet<K, W>(set: WSet<K, W>): WSet<[K, K], W> {
 }
 
 /**
- * Discard Comonoid Morphism !: A -> Unit
- * Maps each key to unit () while preserving weight.
+ * Discard Comonoid Morphism !: WSet<K, W> -> W
+ * The comonoid counit epsilon: sums all weights over the ring (the all-ones covector).
+ * Uses only the additive monoid (ring.add and ring.zero).
  */
-export function discardWSet<K, W>(set: WSet<K, W>): WSet<void, W> {
-  return set.map((e) => ({
-    key: undefined as unknown as void,
-    weight: e.weight,
-  }));
+export function discardWSet<K, W>(ring: StarRing<W>, set: WSet<K, W>): W {
+  return set.reduce((acc, elem) => ring.add(acc, elem.weight), ring.zero);
 }

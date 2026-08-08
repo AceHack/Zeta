@@ -205,6 +205,7 @@ The fast path is kept for real-time use. The accurate path is the long-term anti
 **Prior art anchors:** Herbrich, Minka, Graepel (2006) "TrueSkill: A Bayesian Skill Rating System"; Rasmussen & Williams (2006) §3.4 (ADF/EP for Gaussian process classification); Cantelli (1928) / Scarf (1958) (the maximin property of μ − kσ, which the k-clamp approximates). The ADF update is the correct streaming variant; the cavity-based EP (TrueSkill's full algorithm) is for multi-factor models and degenerates to the prior on every update in a single-factor model.
 
 ---
+
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
