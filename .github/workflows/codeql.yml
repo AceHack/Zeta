@@ -360,28 +360,28 @@ jobs:
       # can differ per file.
       - name: Upload no-findings SARIF (actions)
         if: steps.decide.outputs.is_fork_pr != 'true'
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81  # v4.37.3
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3  # v4.37.6
         with:
           sarif_file: sarif/empty-actions.sarif
           category: "/language:actions"
 
       - name: Upload no-findings SARIF (csharp)
         if: steps.decide.outputs.is_fork_pr != 'true'
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81  # v4.37.3
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3  # v4.37.6
         with:
           sarif_file: sarif/empty-csharp.sarif
           category: "/language:csharp"
 
       - name: Upload no-findings SARIF (python)
         if: steps.decide.outputs.is_fork_pr != 'true'
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81  # v4.37.3
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3  # v4.37.6
         with:
           sarif_file: sarif/empty-python.sarif
           category: "/language:python"
 
       - name: Upload no-findings SARIF (javascript-typescript)
         if: steps.decide.outputs.is_fork_pr != 'true'
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81  # v4.37.3
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3  # v4.37.6
         with:
           sarif_file: sarif/empty-javascript-typescript.sarif
           category: "/language:javascript-typescript"
@@ -390,7 +390,7 @@ jobs:
         # No Java/Kotlin source in this repo, but main's history
         # carries the configuration; satisfy the sticky expectation.
         if: steps.decide.outputs.is_fork_pr != 'true'
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81  # v4.37.3
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3  # v4.37.6
         with:
           sarif_file: sarif/empty-java-kotlin.sarif
           category: "/language:java-kotlin"
@@ -615,7 +615,7 @@ jobs:
 
       - name: Upload no-source SARIF
         if: steps.src.outputs.has_source != 'true' && needs.path-gate.outputs.is_fork_pr != 'true'
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81  # v4.37.3
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3  # v4.37.6
         with:
           sarif_file: sarif/no-source-${{ matrix.language }}.sarif
           category: "/language:${{ matrix.language }}"
@@ -652,7 +652,7 @@ jobs:
 
       - name: Initialize CodeQL
         if: steps.src.outputs.has_source == 'true'
-        uses: github/codeql-action/init@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
+        uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
@@ -682,6 +682,6 @@ jobs:
 
       - name: Perform CodeQL Analysis
         if: steps.src.outputs.has_source == 'true'
-        uses: github/codeql-action/analyze@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
+        uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
         with:
           category: "/language:${{ matrix.language }}"
