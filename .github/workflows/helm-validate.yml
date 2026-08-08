@@ -1,0 +1,87 @@
+name: helm-validate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "infra/k8s/applications/**"
+      - "infra/k8s/tests/validate-applications.ts"
+  push:
+    branches: [main]
+    paths:
+      - "infra/k8s/applications/**"
+      - "infra/k8s/tests/validate-applications.ts"
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      offline:
+        description: "Run in offline mode (skip chart existence check)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  offline:
+    name: validate manifests (offline)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Cache mise runtimes
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: mise-helm-validate-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+      - name: Install toolchain (mise + bun)
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+      - name: Validate Application manifests (offline)
+        run: bun infra/k8s/tests/validate-applications.ts --offline
+
+  online:
+    name: validate manifests (online — chart existence)
+    if: >
+      github.event_name == 'push' ||
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Cache mise runtimes
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: mise-helm-validate-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+      - name: Install toolchain (mise + bun)
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+      - name: Validate Application manifests (online — chart existence)
+        run: |
+          OFFLINE="${{ github.event.inputs.offline }}"
+          if [[ "$OFFLINE" == "true" ]]; then
+            bun infra/k8s/tests/validate-applications.ts --offline
+          else
+            bun infra/k8s/tests/validate-applications.ts
+          fi
