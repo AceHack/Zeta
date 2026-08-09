@@ -159,6 +159,64 @@ export function wifiEspPhase1Enabled(): boolean {
 }
 
 /**
+ * Serial markers zeta-install.sh emits around the first-boot install.sh step.
+ *
+ * These are LITERALS DUPLICATED from `zeta-install.sh` (the START echo and the
+ * post-retry WARN). Nothing in the type system ties them to their producer, so
+ * `qemu-full-install-test.test.ts` asserts that zeta-install.sh actually contains
+ * both — otherwise rewording the shell echo would silently turn the contract
+ * below into a test that can never fail, which is precisely the defect class this
+ * contract exists to close (Kira, PR #10196 review).
+ */
+export const INSTALL_SH_START_MARKER = "running tools/setup/install.sh";
+export const INSTALL_SH_FINAL_FAILURE_MARKER = "WARN: install.sh FAILED rc=";
+
+/**
+ * 081KZETP6AT — first-boot provisioning contract.
+ *
+ * `zeta-install.sh` treats a failed `tools/setup/install.sh` as non-fatal, which
+ * is correct for the ARTIFACT (a node without agent CLIs is still recoverable)
+ * but left the TEST with nothing to assert on: a fully-provisioned node and a
+ * node with no toolchain at all both reported success. This closes that hole —
+ * grace in the artifact, strict in the test.
+ *
+ * Deliberately matches only the FINAL (post-retry) failure marker, so a genuine
+ * transient blip that the retry-with-backoff recovers from stays green — the
+ * retry exists precisely so transient faults self-heal.
+ */
+export function assertFirstBootProvisioningContract(phase1Serial: string): {
+  readonly ok: true;
+} | { readonly ok: false; readonly reason: string } {
+  // Require POSITIVE evidence, do not merely look for a failure string. An
+  // assertion that only convicts and never acquits passes green on a truncated
+  // serial, a VM that died before Step 6.95a, or an install.sh that was never
+  // invoked at all — the same "absence of bad news = good news" hole this
+  // contract was added to close (Kira, PR #10196 review).
+  if (!phase1Serial.includes(INSTALL_SH_START_MARKER)) {
+    return {
+      ok: false,
+      reason:
+        `first-boot never reached the install.sh step (start marker "${INSTALL_SH_START_MARKER}" ` +
+        "absent from the phase-1 serial). Either the serial was truncated, the VM died before " +
+        "Step 6.95a, or the runtime-bootstrap block was skipped — all of which previously passed " +
+        "green because the contract only looked for a failure string.",
+    };
+  }
+  if (!phase1Serial.includes(INSTALL_SH_FINAL_FAILURE_MARKER)) return { ok: true };
+  return {
+    ok: false,
+    reason:
+      "tools/setup/install.sh failed on first boot after exhausting its retries " +
+      `(marker: "${INSTALL_SH_FINAL_FAILURE_MARKER}"). The node is only PARTIALLY ` +
+      "provisioned: mise toolchains and/or agent CLIs are absent, so anything " +
+      "downstream that needs bun/node/python (e.g. the iter-5-wifi NM-profile " +
+      "converter) cannot run. On NixOS the usual cause is a missing FHS loader — " +
+      "see full-ai-cluster/nixos/modules/foreign-binaries.nix (programs.nix-ld) " +
+      "and the 081KZETP6AT diag block in the serial log for the exact error lines.",
+  };
+}
+
+/**
  * When QEMU_WIFI_ESP_PHASE1=1, phase-1 serial must show ESP JSON found +
  * NM profile write + association deferred. Failure text never echoes the
  * QEMU test PSK.
@@ -714,6 +772,40 @@ async function main(): Promise<never> {
   if (phase1.exitCode !== 0) {
     writeArtifactSerialLog(phase1Serial, "");
     reportResult(phase1, artifactSerialLogPath);
+  }
+
+  // 081KZETP6AT — grace in the ARTIFACT, assert in the TEST.
+  //
+  // zeta-install.sh deliberately treats a failed `tools/setup/install.sh` as
+  // non-fatal (a node that boots without agent CLIs is still recoverable — that
+  // is the right call for the artifact). But nothing ever ASSERTED on it, so a
+  // fully-provisioned node and a node with no toolchain at all both reported
+  // "scenario passed". That false green is why a DETERMINISTIC failure (NixOS
+  // has no FHS loader, so mise's prebuilt binaries cannot execve) read as "a
+  // rare transient blip" for weeks and cost three PRs chasing a ghost.
+  //
+  // Checked BEFORE the wifi contract on purpose: a failed toolchain install is
+  // the ROOT cause and the missing wifi profile is its SYMPTOM (no bun ⇒ the
+  // wifi-esp-to-nm converter cannot run). Reporting the symptom first is what
+  // sent the last diagnosis down the wrong path.
+  //
+  // Note `build-iso` is not in the required gate floor (build-and-test /
+  // cross-verify / full-verify / lint(semgrep)), so this makes the job loudly
+  // red without blocking merges — notice fast, do not wedge the fleet.
+  const provisioning = assertFirstBootProvisioningContract(phase1Serial);
+  if (!provisioning.ok) {
+    writeArtifactSerialLog(phase1Serial, "");
+    reportResult(
+      {
+        exitCode: 1,
+        reason: `first-boot provisioning contract failed — ${provisioning.reason}`,
+        serialLogTail: phase1Serial.slice(-2000),
+        ...(phase1.elapsedSeconds !== undefined
+          ? { elapsedSeconds: phase1.elapsedSeconds }
+          : {}),
+      },
+      artifactSerialLogPath,
+    );
   }
 
   if (requireWifiEsp) {

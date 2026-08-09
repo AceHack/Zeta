@@ -14,6 +14,16 @@
   imports = [
     ./injected-hostname.nix
     ./login-banner.nix
+    # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs — mise's
+    # prebuilt toolchains and the vendor agent CLIs. Needed on INSTALLED nodes too,
+    # not only on the ISO: the lazy first-login `mise install` recovery in this file
+    # fails identically post-reboot without a loader.
+    # Lives under usb-nixos-installer/ so BOTH flake roots can reach it:
+    # usb-nixos-installer/flake.nix has its own root + installer-iso output, and a
+    # path escaping that root fails to evaluate there (Kira + Mateo, PR #10196).
+    # This path stays inside full-ai-cluster/ (the parent flake root), so both work
+    # off ONE definition — no duplicated library list to drift.
+    ../../usb-nixos-installer/nixos/modules/foreign-binaries.nix
     # Longhorn node prerequisites (open-iscsi + nfs). Without these every
     # `longhorn` PVC stays Pending and the whole stateful layer is dead.
     # Imported here so control-plane AND workers get them uniformly.

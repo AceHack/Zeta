@@ -10,6 +10,11 @@
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
     "${modulesPath}/installer/cd-dvd/channel.nix"
+    # 081KZETP6AT: FHS loader (nix-ld) for foreign dynamically-linked ELFs. The
+    # live ISO is where zeta-install.sh Step 6.95a runs `tools/setup/install.sh`,
+    # and mise's prebuilt toolchains (bun/node/python/rust/java/dotnet) cannot
+    # execve without an interpreter — the deterministic first-boot failure.
+    ../modules/foreign-binaries.nix
   ];
 
   networking.hostName = "zeta-installer";

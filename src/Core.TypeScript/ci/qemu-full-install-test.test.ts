@@ -1,7 +1,12 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/test-harness/prepare-boot-image";
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
+  assertFirstBootProvisioningContract,
+  INSTALL_SH_FINAL_FAILURE_MARKER,
+  INSTALL_SH_START_MARKER,
   assertGeneratedNodeHostnameContract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
@@ -261,5 +266,70 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
     const result = detectInstalledLoginPrompt("boot\nzeta-a1b2c3 login:", "zeta-a1b2c3");
     expect(result.ok).toBe(true);
     if (result.ok) expect(result.hostname).toBe("zeta-a1b2c3");
+  });
+});
+
+// ── 081KZETP6AT: first-boot provisioning contract ─────────────────────────────
+describe("assertFirstBootProvisioningContract (081KZETP6AT)", () => {
+  it("passes when install.sh never emitted a final failure", () => {
+    const serial = [
+      "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
+      "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes",
+    ].join("\n");
+    expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
+  });
+
+  it("passes when a transient failure was RECOVERED by the retry (retry must stay green)", () => {
+    // Attempt 1 failed, attempt 2 succeeded -> no final-failure marker. This is
+    // exactly the transient case the backoff exists to absorb; it must not fail.
+    const serial = [
+      "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
+      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s (081KZETP6AT transient-blip backoff)",
+      "[iter-5.5.0]   install.sh succeeded on attempt 2/3 (081KZETP6AT transient-blip recovered by retry)",
+    ].join("\n");
+    expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
+  });
+
+  it("FAILS when install.sh exhausted every retry (the false green this closes)", () => {
+    // Verbatim shape from run 31323533516, where scenario 2 reported PASS while
+    // the toolchain install had failed all three attempts.
+    const serial = [
+      "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
+      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s",
+      "[iter-5.5.0]   install.sh attempt 2/3 FAILED rc=1 — retrying in 24s",
+      "[iter-5.5.0]   WARN: install.sh FAILED rc=1 after 3 attempts — runtimes/agent CLIs may be partial",
+    ].join("\n");
+    const result = assertFirstBootProvisioningContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("PARTIALLY");
+      expect(result.reason).toContain("nix-ld");
+    }
+  });
+});
+
+// Kira (PR #10196): the two markers above are literals duplicated from
+// zeta-install.sh with nothing tying them to their producer. Reword the shell
+// echo and the contract silently becomes a test that can never fail — the exact
+// defect class the contract exists to close, reintroduced one level up. These
+// bind the constants to the actual script.
+describe("provisioning markers stay coupled to zeta-install.sh (081KZETP6AT)", () => {
+  const installScript = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+    "utf8",
+  );
+
+  it("zeta-install.sh still emits the START marker the contract requires", () => {
+    expect(installScript).toContain(INSTALL_SH_START_MARKER);
+  });
+
+  it("zeta-install.sh still emits the final-failure marker the contract matches", () => {
+    expect(installScript).toContain(INSTALL_SH_FINAL_FAILURE_MARKER);
+  });
+
+  it("a serial with NO install.sh step at all FAILS (assertion must acquit, not only convict)", () => {
+    const result = assertFirstBootProvisioningContract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("never reached the install.sh step");
   });
 });

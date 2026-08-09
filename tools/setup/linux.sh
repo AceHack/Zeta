@@ -182,10 +182,50 @@ fi
 # arches) — they form a content-pin set.
 # Skipped on real NixOS — tarball mise is not FHS-compatible; use system mise.
 # 081KSKBP80008QG0R000E3RKPK docker harness wires /lib64/ld-linux-*.so.* so tarball mise works there.
+# 081KZETP6AT: these are THREE different questions and were previously one
+# predicate. Enabling programs.nix-ld (foreign-binaries.nix) creates the loader
+# stub at /lib64/ld-linux-x86-64.so.2, which under the old single predicate would
+# have flipped `tarball_mise_allowed` to TRUE on real NixOS for the first time —
+# silently re-enabling a path that is deliberately fatal there, and shadowing the
+# pinned, autoPatchelf'd system mise with a tarball copy in ~/.local/bin.
+# So: "is there a loader" (capability) is decoupled from "should we use the
+# tarball" (policy).
+
+# Capability: can a foreign dynamically-linked ELF exec here at all?
+linux_sh_fhs_loader_present() {
+  [ -e /lib64/ld-linux-x86-64.so.2 ] || [ -e /lib/ld-linux-aarch64.so.1 ]
+}
+
+# Is a DECLARATIVE (system/nix-profile) mise present? On NixOS this is the
+# canonical one — pinned + autoPatchelf'd via overlays/mise-pin.nix.
+linux_sh_nixos_system_mise_present() {
+  local _sys_mise_dir
+  for _sys_mise_dir in \
+      /run/current-system/sw/bin \
+      "${HOME}/.nix-profile/bin" \
+      /nix/var/nix/profiles/default/bin; do
+    [ -x "${_sys_mise_dir}/mise" ] && return 0
+  done
+  return 1
+}
+
+# Policy: may we install the TARBALL mise on NixOS?
+#  - docker harness (081KSKBP80008QG0R000E3RKPK): yes — it wires a loader and
+#    ships no system mise, so the tarball is the only route.
+#  - real NixOS with a declarative mise: NO, even now that nix-ld provides a
+#    loader. The system mise is canonical; a tarball copy would shadow it.
+#  - real NixOS without a declarative mise: only if a loader exists at all.
+# Order matters: the declarative-mise check comes FIRST so the stated policy
+# ("system mise is canonical, never shadow it") actually holds everywhere,
+# including a NixOS container that ships one. Checking /.dockerenv first would
+# hand such a container the tarball and contradict the comment above (Kira, PR
+# #10196 review). The docker harness is unaffected either way — it ships no
+# system mise, and in BuildKit RUN steps /.dockerenv does not even exist, so it
+# qualifies via the loader arm it wires itself.
 linux_sh_nixos_tarball_mise_allowed() {
-  [ -f /.dockerenv ] \
-    || [ -e /lib64/ld-linux-x86-64.so.2 ] \
-    || [ -e /lib/ld-linux-aarch64.so.1 ]
+  linux_sh_nixos_system_mise_present && return 1
+  [ -f /.dockerenv ] && return 0
+  linux_sh_fhs_loader_present
 }
 
 MISE_PIN_VERSION="2026.6.12"
@@ -208,9 +248,18 @@ fi
 
 if [ "$installed_mise_version" != "$MISE_PIN_VERSION" ]; then
   if [ "$IS_NIXOS" = 1 ] && ! linux_sh_nixos_tarball_mise_allowed; then
-    echo "error: mise not found on PATH on NixOS" >&2
-    echo "  declare mise in environment.systemPackages (installer ISO + common.nix)" >&2
-    echo "  and ensure /run/current-system/sw/bin is on PATH during target bootstrap" >&2
+    if linux_sh_nixos_system_mise_present; then
+      # 081KZETP6AT: system mise exists but is not the pinned version. We refuse to
+      # shadow it with a tarball copy — the fix is to bump the nix pin, not to
+      # sidestep it (that is how the two version sources drift apart).
+      echo "error: system mise on NixOS is '${installed_mise_version:-unknown}', expected pinned '${MISE_PIN_VERSION}'" >&2
+      echo "  bump full-ai-cluster/nixos/overlays/mise-pin.nix to match MISE_PIN_VERSION" >&2
+      echo "  (refusing to install a tarball mise that would shadow the declarative one)" >&2
+    else
+      echo "error: mise not found on PATH on NixOS" >&2
+      echo "  declare mise in environment.systemPackages (installer ISO + common.nix)" >&2
+      echo "  and ensure /run/current-system/sw/bin is on PATH during target bootstrap" >&2
+    fi
     exit 1
   fi
   if [ -n "$installed_mise_version" ]; then
@@ -286,6 +335,31 @@ touch "${MISE_DATA_DIR:-$HOME/.local/share/mise}/.disable-self-update"
 echo "✓ mise: $(mise --version)"
 
 # ── 3-10. Common steps ──────────────────────────────────────────────
+# 081KZETP6AT preflight — fail FAST and legibly, instead of slowly and cryptically.
+# mise downloads PREBUILT toolchains (bun/node/python/rust/java/dotnet) that are
+# dynamically linked against the FHS loader. Without a loader they cannot execve,
+# and mise reports it as the famously misleading "cannot execute: required file
+# not found" AFTER downloading ~2 GB — three times over, under the caller's retry.
+# The condition is deterministic, so detect it up front and say what to do.
+# Guarded on IS_NIXOS, so dev laptops / CI runners / devcontainers (no /etc/NIXOS)
+# are provably unaffected; the docker harness wires a loader, so it passes too.
+# NOTE: test the LOADER FILE nix-ld points at, never merely `[ -n "$NIX_LD" ]`.
+# NIX_LD is an environment.variables export; the /lib64 stub is created by a
+# DIFFERENT mechanism (nix-ld's systemd-tmpfiles rule). They are not the same
+# fact, and NIX_LD is inherited by every subshell, `sudo -E`, container and
+# chroot — so a leaked var with no stub present would silently disarm exactly
+# the check this block exists to perform (Kira, PR #10196 review).
+if [ "$IS_NIXOS" = 1 ] \
+  && ! linux_sh_fhs_loader_present \
+  && [ ! -e "${NIX_LD:-/nonexistent}" ]; then
+  echo "error: NixOS without an FHS loader — mise's prebuilt toolchains cannot exec." >&2
+  echo "  every dynamically-linked tool (bun/node/python/rust/java/dotnet) will fail" >&2
+  echo "  with 'cannot execute: required file not found' (missing ELF interpreter)." >&2
+  echo "  fix: enable programs.nix-ld — full-ai-cluster/nixos/modules/foreign-binaries.nix" >&2
+  echo "  (imported by nixos/modules/common.nix and the installer ISO configuration)" >&2
+  exit 1
+fi
+
 # mise.sh runs `mise install` from .mise.toml, which now includes
 # dotnet (round-34 flip). No separate dotnet install step needed;
 # mise shims handle PATH. `~/.dotnet/tools` still needs PATH for
