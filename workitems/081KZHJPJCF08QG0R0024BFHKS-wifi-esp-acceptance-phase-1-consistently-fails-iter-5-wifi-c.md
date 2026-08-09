@@ -17,6 +17,25 @@ composes_with: []
      Identity is the zetaid prefix — resolve cross-refs by `081KZHJPJCF08QG0R0024BFHKS-*.md` glob. -->
 
 
+## ✅✅ REPRODUCIBLE — second consecutive green (run 31336931498, 2026-08-09)
+
+The wifi-ESP acceptance contract passed **again**, on a fresh dispatch from a later `main`:
+
+```
+success  scenario 1 — initial format
+success  scenario 2 — boot + install substrate
+success  wifi ESP acceptance (workflow_dispatch only)   <- 2nd consecutive
+```
+
+Two green runs was the bar this workitem set for itself ("a second green wifi dispatch"),
+and bug A's four-run streak is the reason that bar existed — the first green run of a long
+intermittent chain is not evidence, it is a coincidence candidate.
+
+**CI side is DONE.** The only remaining close condition is one clean boot on Aaron's
+hardware.
+
+---
+
 ## ✅ VALIDATED IN CI (run 31335210640, 2026-08-09) — hardware boot is the last gate
 
 **The wifi-ESP acceptance contract PASSES.** Step conclusion

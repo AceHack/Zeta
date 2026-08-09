@@ -17,6 +17,17 @@ composes_with: []
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
 
+## ✅✅ FOUR CONSECUTIVE GREEN RUNS (through 31336931498, 2026-08-09)
+
+Scenario 2 has now reported `phase 2 SUCCESS` on four consecutive dispatch runs
+(31331483608, 31333432504, 31335210640, 31336931498). Because the first-boot provisioning
+contract (#10196) fails the scenario whenever install.sh exhausts its retries, each of
+those is independent evidence that install.sh completed.
+
+**CI side is DONE.** Remaining close condition: one clean boot on Aaron's hardware.
+
+---
+
 ## ✅ VALIDATED IN CI (run 31335210640, 2026-08-09) — hardware boot is the last gate
 
 Confirmed across **three consecutive** dispatch runs (31331483608, 31333432504,
