@@ -15,12 +15,15 @@ import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
 import { getSetupRealizer, listSetupRealizerIds, listSetupRealizerInstallOrder, listPostMiseRealizerIds, listPreMiseRealizerIds } from "./setup-realizers/index.ts";
 
 describe("setup-realizers registry", () => {
-  test("install order lists all 16 realizers in graph order", () => {
-    expect(listSetupRealizerInstallOrder()).toHaveLength(16);
+  test("install order lists all 17 realizers in graph order", () => {
+    expect(listSetupRealizerInstallOrder()).toHaveLength(17);
     expect(listSetupRealizerInstallOrder()[0]).toBe("from-deb");
     expect(listSetupRealizerInstallOrder().at(-1)).toBe("from-git-hooks");
     expect(listPreMiseRealizerIds()).toEqual(["from-deb", "from-shim", "from-autotools-tarball"]);
-    expect(listPostMiseRealizerIds()[0]).toBe("from-uv-tool");
+    // 081KZKWB1FZ: from-bun-workspace leads the post-mise phase — mise has just
+    // provided bun, and downstream realizers may rely on the repo's node_modules.
+    expect(listPostMiseRealizerIds()[0]).toBe("from-bun-workspace");
+    expect(listPostMiseRealizerIds()[1]).toBe("from-uv-tool");
   });
 
   test("lists Bun realizer ids in stable order", () => {
@@ -29,6 +32,7 @@ describe("setup-realizers registry", () => {
       "from-autotools-tarball",
       "from-bun-global",
       "from-bun-link",
+      "from-bun-workspace",
       "from-deb",
       "from-dotnet-global",
       "from-dotnet-workload",

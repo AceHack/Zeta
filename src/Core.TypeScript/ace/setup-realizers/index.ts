@@ -2,6 +2,7 @@ import { realizeFromAgdaCubical } from "./from-agda-cubical.ts";
 import { realizeFromAutotoolsTarball } from "./from-autotools-tarball.ts";
 import { realizeFromBunGlobal, repairCodexServiceTierConfig } from "./from-bun-global.ts";
 import { realizeFromBunLink } from "./from-bun-link.ts";
+import { realizeFromBunWorkspace } from "./from-bun-workspace.ts";
 import { realizeFromDeb } from "./from-deb.ts";
 import { realizeFromDotnetGlobal } from "./from-dotnet-global.ts";
 import { realizeFromDotnetWorkload } from "./from-dotnet-workload.ts";
@@ -21,6 +22,7 @@ export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
   "from-autotools-tarball": realizeFromAutotoolsTarball,
   "from-bun-global": realizeFromBunGlobal,
   "from-bun-link": realizeFromBunLink,
+  "from-bun-workspace": realizeFromBunWorkspace,
   "from-deb": realizeFromDeb,
   "from-dotnet-global": realizeFromDotnetGlobal,
   "from-dotnet-workload": realizeFromDotnetWorkload,
@@ -44,6 +46,11 @@ export const PRE_MISE_REALIZER_IDS = [
 
 /** Matches tools/setup/linux.sh install-graph order (post-mise.sh, after PATH shims). */
 export const POST_MISE_REALIZER_IDS = [
+  // 081KZKWB1FZ: FIRST in the post-mise order — mise has just provided bun, and
+  // everything downstream may rely on the repo's own node_modules being present.
+  // Without this, install.sh completed with no devDependencies at all and local
+  // `lint (TS)` disagreed with CI (phantom TS2307s that read like real findings).
+  "from-bun-workspace",
   "from-uv-tool",
   "from-uv-venv",
   "from-elan",
@@ -66,6 +73,10 @@ export const SETUP_REALIZER_INSTALL_ORDER = [
 
 /** Mechanisms that warn and continue on failure (mirrors linux.sh opam-git || echo). */
 export const BEST_EFFORT_REALIZER_IDS = new Set<string>([
+  // Provisioning must not hard-fail over devDeps; the lint gate stays the place
+  // that enforces lockfile freshness (this realizer deliberately omits
+  // --frozen-lockfile — see from-bun-workspace.ts).
+  "from-bun-workspace",
   "from-opam-git",
   "from-agda-cubical",
   "from-git-hooks",

@@ -133,6 +133,28 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
         },
       ],
     },
+    {
+      // 081KZKWB1FZ — the repo's OWN devDependencies were the one dependency class
+      // ACE did not manage. install.sh never ran a root `bun install`, so a fully
+      // provisioned machine had every toolchain and no node_modules, and a local
+      // `lint (TS)` disagreed with CI via phantom TS2307s that read like findings.
+      // Dogfooding ACE is the fix: a dependency class belongs in the package
+      // manager of package managers, not as a shell line in a bootstrap script.
+      schema: "zeta.ace.package-manager-pointers.v1",
+      purpose: "Install the repo's own package.json dependencies (bun install at repo root)",
+      realizer: bunMechanismRealizer("from-bun-workspace"),
+      manifest: "(repo-root package.json + bun.lock — no separate manifest)",
+      dependencies: [
+        {
+          ecosystem: "bun-workspace",
+          spec: "package.json#devDependencies",
+          // bun.lock IS the pin. Applied deliberately WITHOUT --frozen-lockfile so
+          // lockfile drift cannot hard-fail provisioning for all three §24
+          // consumers; the lint gate stays the place that enforces freshness.
+          update: "pinned",
+        },
+      ],
+    },
     pointerFromMechanismManifest({
       mechanism: "from-installer",
       text: readManifest("from-installer"),

@@ -251,6 +251,19 @@
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Install the repo's own package.json dependencies (bun install at repo root)",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-bun-workspace.ts",
+    "manifest": "(repo-root package.json + bun.lock — no separate manifest)",
+    "dependencies": [
+      {
+        "ecosystem": "bun-workspace",
+        "spec": "package.json#devDependencies",
+        "update": "pinned"
+      }
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Vendor install scripts (HTTPS download-then-exec)",
     "realizer": "src/Core.TypeScript/ace/setup-realizers/from-installer.ts",
     "manifest": "tools/setup/manifests/from-installer",
