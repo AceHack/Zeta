@@ -37,7 +37,7 @@ describe("the measurement — golden numbers, banked 2026-08-09", () => {
     expect(m.versorNormedCount).toBe(32);
     // The 8 single blades + the two Clifford-aligned weight-4 codewords:
     // {1,2,5,6} = {e1,e2,e13,e23} and {0,3,4,7} = {S,e12,e3,e123} — the
-    // XOR-closed subgroup {0,3,4,7} (subalgebra of e12,e3) and its coset.
+    // {0,3,4,7} is the unique grade-complete subalgebra of Cl(3,0) — see GP-5 below.
     expect(m.versorNormedSupports).toEqual([
       "0",
       "0+3+4+7",
@@ -69,5 +69,71 @@ describe("the measurement — golden numbers, banked 2026-08-09", () => {
       [128, 16],
       [240, 32],
     ]);
+  });
+});
+
+// Grade of a blade index in Cl(3,0): popcount of the bitmask
+function gradeOf(bladeIndex: number): number {
+  return ([0, 1, 1, 2, 1, 2, 2, 3] as const)[bladeIndex] ?? 0;
+}
+
+describe("grade-profile proof — what distinguishes {0,3,4,7} (computed 2026-08-09)", () => {
+  // There are exactly three XOR-closed subgroups of size 4 in the Hamming code.
+  // XOR-closure is necessary but not sufficient for Clifford alignment.
+  // The distinguishing property is the grade profile in Cl(3,0).
+
+  const subgroups = [
+    { support: [0, 1, 4, 5], name: "{S,e1,e3,e13}" },
+    { support: [0, 2, 4, 6], name: "{S,e2,e3,e23}" },
+    { support: [0, 3, 4, 7], name: "{S,e12,e3,e123}" },
+  ];
+
+  test("GP-1: all three subgroups are XOR-closed (necessary condition)", () => {
+    for (const { support } of subgroups) {
+      for (const a of support) {
+        for (const b of support) {
+          expect(support).toContain(a ^ b);
+        }
+      }
+    }
+  });
+
+  test("GP-2: {0,1,4,5} has grade profile {0,1,1,2} — missing grade 3", () => {
+    const grades = [0, 1, 4, 5].map(gradeOf).sort((a, b) => a - b);
+    expect(grades).toEqual([0, 1, 1, 2]);
+    expect(grades).not.toContain(3);
+  });
+
+  test("GP-3: {0,2,4,6} has grade profile {0,1,1,2} — missing grade 3", () => {
+    const grades = [0, 2, 4, 6].map(gradeOf).sort((a, b) => a - b);
+    expect(grades).toEqual([0, 1, 1, 2]);
+    expect(grades).not.toContain(3);
+  });
+
+  test("GP-4: {0,3,4,7} has grade profile {0,1,2,3} — spans ALL 4 grades (unique)", () => {
+    const grades = [0, 3, 4, 7].map(gradeOf).sort((a, b) => a - b);
+    expect(grades).toEqual([0, 1, 2, 3]);
+    expect(grades).toContain(3); // contains pseudoscalar e123
+  });
+
+  test("GP-5: {0,3,4,7} is the ONLY grade-complete subgroup (spans all 4 grades)", () => {
+    const gradeComplete = subgroups.filter(({ support }) => {
+      const gradeSet = new Set(support.map(gradeOf));
+      return gradeSet.size === 4;
+    });
+    expect(gradeComplete).toHaveLength(1);
+    expect(gradeComplete[0]!.support).toEqual([0, 3, 4, 7]);
+    expect(gradeComplete[0]!.name).toBe("{S,e12,e3,e123}");
+  });
+
+  test("GP-6: negative control — {0,1,4,5} and {0,2,4,6} are grade-incomplete (not Clifford-aligned)", () => {
+    const incomplete = subgroups.filter(({ support }) => {
+      const gradeSet = new Set(support.map(gradeOf));
+      return gradeSet.size < 4;
+    });
+    expect(incomplete).toHaveLength(2);
+    for (const { support } of incomplete) {
+      expect(support.map(gradeOf)).not.toContain(3);
+    }
   });
 });

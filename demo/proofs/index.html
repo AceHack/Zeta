@@ -191,6 +191,41 @@
   </div>
 
   <h1>Proofs &amp; Shapes</h1>
+
+  <!-- Society status badge — fetches latest society-*.json from Zeta main -->
+  <div id="society-badge" style="display:inline-flex;align-items:center;gap:0.5rem;
+    background:#0f2a1a;border:1px solid #065f46;border-radius:4px;
+    padding:0.3rem 0.6rem;font-size:0.6rem;font-family:'JetBrains Mono',monospace;
+    color:#6ee7b7;margin-bottom:0.75rem;">
+    <span style="color:#10b981;">&#127807; GitHub Agent Society</span>
+    <span id="society-gen" style="color:#94a3b8;">loading&#8230;</span>
+  </div>
+  <script>
+    (function() {
+      fetch("https://api.github.com/repos/Lucent-Financial-Group/Zeta/contents/docs/observe-events?ref=main")
+        .then(function(r) { return r.json(); })
+        .then(function(files) {
+          if (!Array.isArray(files)) return;
+          var sf = files.filter(function(f) { return f.name && f.name.startsWith("society-"); })
+            .sort(function(a, b) { return b.name < a.name ? -1 : 1; });
+          if (!sf[0]) return;
+          return fetch(sf[0].download_url).then(function(r) { return r.json(); });
+        })
+        .then(function(e) {
+          if (!e || typeof e !== "object") return;
+          var gen = e.generation || 0;
+          var fit = typeof e.meanFitness === "number" ? e.meanFitness.toFixed(4) : "&#8212;";
+          var agents = Array.isArray(e.agents) ? e.agents.length : 0;
+          var el = document.getElementById("society-gen");
+          if (el) el.textContent = "gen " + gen + " · fitness " + fit + " · " + agents + " agents";
+        })
+        .catch(function() {
+          var el = document.getElementById("society-gen");
+          if (el) el.textContent = "(rate-limited — check GitHub)";
+        });
+    })();
+  </script>
+
       <p style="background:#3a1f1f;border-left:4px solid #c04040;padding:10px;margin:12px 0;"><strong>[CORRECTION 2026-08-01]</strong> The constant 1/(3&radic;2) &asymp; 0.2357 used across this page is a <em>DLA particle-sticking parameter</em> chosen for the simulation &mdash; it is <strong>not</strong> a Tsirelson bound. The CHSH Tsirelson bound is S &le; 2&radic;2 &asymp; 2.828, and within Zeta's own model the correlation at that crossing is &rho;* = &radic;2 &minus; 1 &asymp; 0.414 (<code>FeedbackThrottle.fs</code>). Claims on this page that depend on reading it as a physics bound have been retracted.</p>
   <p class="subtitle">
     Each entry below is a different mathematical object rendered in a different substrate.
