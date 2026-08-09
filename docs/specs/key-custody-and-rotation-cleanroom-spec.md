@@ -167,3 +167,91 @@ nothing.
 
 Compatibility with any specific external product or protocol. Interop standards may be
 adopted later at the boundary; they are not requirements of this core.
+
+---
+
+# AMENDMENTS — post-combine (2026-08-09)
+
+**Everything above this line is the spec as derivations A and B were built against, and is
+deliberately left unedited.** Rewriting it would destroy the record of what the two
+implementers actually read, which is the evidence the whole N-version exercise produced.
+The amendments below are **additive** and bind any *future* derivation.
+
+Each one exists because A and B read the same sentence two different ways. A divergence
+between two independent implementations is a **defect in this document**, not in either
+implementation. Full evidence: [`key-custody-n-version-combine.md`](key-custody-n-version-combine.md).
+
+### A1 (amends R9) — "agreed phase" must be *derived*, not accepted
+
+R9 said expiry is evaluated against agreed phase. It never said where phase comes from, so
+A derived it from an observed causal coordinate while B accepted an opaque scalar from the
+caller. Both are honest readings of the text.
+
+> **Phase MUST be derived from an observed causal frame.** An implementation that accepts a
+> caller-supplied scalar as "the current phase" does NOT satisfy R9: the caller is precisely
+> the party that cannot be trusted to agree with its counterparty, so trusting it assumes
+> away the guarantee. Two principals must agree because of the *structure they both observe*,
+> never because they were handed the same number.
+
+*(This is the one amendment that resolves a genuine design choice rather than a wording gap.
+It is decided on the evidence — a caller-supplied phase cannot make AC6 true — and is
+flagged as a judgement call for the maintainer to overturn if he reads it differently.)*
+
+### A2 (amends R8) — "bounded" requires a stated ceiling
+
+R8 required an expiry and a bounded default. A enforced a maximum span; B allowed
+`MAX_SAFE_INTEGER`, which carries an expiry and is indefinite in every way that matters.
+
+> **A maximum span MUST be stated as a constant, and no public constructor may yield a grant
+> exceeding it.** "Carries an expiry field" does not satisfy R8. The test is that indefinite
+> authority is *unconstructible through the public surface*, not merely undefaulted.
+
+### A3 (amends R6) — a retraction must change the fold
+
+R6 required emission and retraction events. It never said the retraction must *do* anything,
+so B emitted `key-retracted` events that its own fold ignored.
+
+> **A retraction MUST change the folded result.** Emitting a retraction event that the fold
+> does not consume does NOT satisfy R6. The test is executable: **removing every retraction
+> event from a stream must change the folded state.** If it does not, the retraction is
+> decorative.
+
+### A4 (amends the Acceptance section) — every criterion names its observable
+
+AC3 and AC4 were stated as properties with nothing to run. B satisfied AC3 with a field typed
+as the literal `true` — an assertion no test can fail — and AC4 with a validation that cannot
+return false for any input that type-checks.
+
+> **Each acceptance criterion MUST name the function whose output demonstrates it, and the
+> two inputs that make that output differ.** A criterion satisfiable by a literal, a
+> non-optional field, or a type-level constant is not a criterion. If a property cannot be
+> made falsifiable, say so and mark it unverified rather than asserting it.
+
+### A5 (amends the implementation protocol) — declare coverage per requirement
+
+A deferred R1–R4/R10/R11 and said so in a header comment. B claimed all twelve. Nothing in
+the protocol required either claim to be *earned*, and a header comment is not a checked
+artifact.
+
+> **Each derivation MUST declare, per requirement, one of `implemented` / `partial` /
+> `deferred`, and MUST NOT round `partial` up to `implemented`.** A requirement whose only
+> artifact is a type declaration is `deferred`, not `implemented`. Deferring is a correct and
+> expected outcome; misreporting coverage is the failure.
+
+### A6 (amends the clean-room preamble) — house conventions must be given to the clean side
+
+B used exceptions on a path where this repo requires `Result`. The clean side was never told,
+and could not have known — the wall blocks prior art, not the repo's own conventions.
+
+> **The clean-room brief MUST carry the host repository's binding conventions** (here:
+> Result-over-exception, ordinal collation, `ConfigureAwait(false)`, no ambient wall-clock).
+> Withholding them does not protect clean-room integrity; it only guarantees rework.
+
+---
+
+## Still unmet by ANY derivation
+
+**Acceptance criteria 3 and 4 have no real implementation.** A deferred them; B's are
+type-level assertions. Custody transfer, the custody fork, and the staking witness remain
+**unbuilt** — and one of the two derivations reports otherwise. Any future work must treat
+R1–R4 and R10 as green-field.
