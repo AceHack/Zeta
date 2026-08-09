@@ -251,8 +251,23 @@ describe("browser lifecycle host", () => {
       invalidation: { sourceTabId: "tab-a", operation: "saved", revision: 21 },
     });
 
+    expect(host.publishDatabaseInvalidation("llmtv-room-a:database", 22)).toMatchObject({
+      ok: true,
+      value: { coordinator: { liveness: { checkpoint: "durable" } } },
+    });
+    expect(channel.published.at(-1)).toEqual({
+      schema: BROWSER_TAB_COORDINATOR_SCHEMA,
+      nodeId: "llmtv-room-a",
+      kind: "database-invalidated",
+      invalidation: { sourceTabId: "tab-a", databaseNodeId: "llmtv-room-a:database", revision: 22 },
+    });
+
     expect(host.stop().ok).toBe(true);
     expect(host.publishCheckpointInvalidation("removed", 21)).toMatchObject({
+      ok: false,
+      feedback: { code: "host-stopped" },
+    });
+    expect(host.publishDatabaseInvalidation("llmtv-room-a:database", 22)).toMatchObject({
       ok: false,
       feedback: { code: "host-stopped" },
     });

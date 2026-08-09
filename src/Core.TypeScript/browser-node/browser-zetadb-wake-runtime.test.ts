@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { BROWSER_TAB_COORDINATOR_SCHEMA } from "./browser-tab-coordinator";
 import { createInMemoryZetaDbImagePort, runZetaDbNodeTick } from "../zetadb/zeta-db-node";
 import {
   handleBrowserZetaDbWakeMessage,
@@ -83,7 +84,7 @@ describe("browser ZetaDB wake runtime", () => {
       },
     );
 
-    listeners.get("message")?.({ data: { schema: "zeta.browser-tab-coordinator.v2" } });
+    listeners.get("message")?.({ data: { schema: BROWSER_TAB_COORDINATOR_SCHEMA } });
     expect(installed.ok).toBe(true);
     expect(called).toBe(false);
   });

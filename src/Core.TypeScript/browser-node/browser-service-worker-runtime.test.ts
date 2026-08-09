@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { installBrowserServiceWorkerRuntime } from "./browser-service-worker-runtime";
-import type { BrowserTabChannelMessage } from "./browser-tab-coordinator";
+import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "./browser-tab-coordinator";
 
 type NativeListener = (event: unknown) => void;
 
@@ -58,7 +58,7 @@ class WorkerRoot {
 
 function invalidation(): BrowserTabChannelMessage {
   return {
-    schema: "zeta.browser-tab-coordinator.v2",
+    schema: BROWSER_TAB_COORDINATOR_SCHEMA,
     nodeId: "darkhall",
     kind: "checkpoint-invalidated",
     invalidation: { sourceTabId: "tab-a", operation: "saved", revision: 4 },

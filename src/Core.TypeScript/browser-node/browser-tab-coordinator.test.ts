@@ -5,6 +5,7 @@ import {
   type BrowserTabChannel,
   type BrowserTabChannelMessage,
   type BrowserCheckpointInvalidation,
+  type BrowserDatabaseInvalidation,
   type BrowserTabCoordinator,
   type BrowserTabCoordinatorOptions,
   type BrowserTabCoordinatorReadout,
@@ -80,6 +81,7 @@ function options(
   tabId: string,
   onReadout?: (readout: BrowserTabCoordinatorReadout) => void,
   onCheckpointInvalidated?: (invalidation: BrowserCheckpointInvalidation) => void,
+  onDatabaseInvalidated?: (invalidation: BrowserDatabaseInvalidation) => void,
 ): BrowserTabCoordinatorOptions {
   return {
     nodeId: "llmtv-room-a",
@@ -91,6 +93,7 @@ function options(
     checkpoint: "volatile",
     ...(onReadout === undefined ? {} : { onReadout }),
     ...(onCheckpointInvalidated === undefined ? {} : { onCheckpointInvalidated }),
+    ...(onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated }),
   };
 }
 
@@ -259,6 +262,36 @@ describe("browser tab coordinator", () => {
     expect(tabB.read().liveness.checkpoint).toBe("volatile");
 
     expect(tabA.publishCheckpointInvalidation("invalid" as never, 13)).toMatchObject({
+      ok: false,
+      feedback: { code: "coordinator-configuration-invalid" },
+    });
+    expect(tabA.stop(2).ok).toBe(true);
+    expect(tabB.stop(2).ok).toBe(true);
+  });
+
+  test("broadcasts database revision evidence without carrying image bytes", () => {
+    const bus = new FakeBus();
+    const localInvalidations: BrowserDatabaseInvalidation[] = [];
+    const peerInvalidations: BrowserDatabaseInvalidation[] = [];
+    const tabA = started(
+      startBrowserTabCoordinator(
+        options("tab-a", undefined, undefined, (value) => localInvalidations.push(value)),
+        bus.connect(),
+      ),
+    );
+    const tabB = started(
+      startBrowserTabCoordinator(
+        options("tab-b", undefined, undefined, (value) => peerInvalidations.push(value)),
+        bus.connect(),
+      ),
+    );
+
+    expect(tabA.publishDatabaseInvalidation("llmtv-room-a:database", 12).ok).toBe(true);
+    expect(localInvalidations).toEqual([]);
+    expect(peerInvalidations).toEqual([
+      { sourceTabId: "tab-a", databaseNodeId: "llmtv-room-a:database", revision: 12 },
+    ]);
+    expect(tabA.publishDatabaseInvalidation("", 13)).toMatchObject({
       ok: false,
       feedback: { code: "coordinator-configuration-invalid" },
     });

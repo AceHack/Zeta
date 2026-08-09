@@ -4,7 +4,9 @@ import { execFileSync } from "child_process";
 
 const TARGET_DIR = path.join(__dirname, "..", "site");
 
-const PROMPT_TEMPLATE = (htmlContent: string) => `You are an expert, native-level writer and editor in English (Henderson, North Carolina southern drawl). 
+const PROMPT_TEMPLATE = (
+  htmlContent: string,
+) => `You are an expert, native-level writer and editor in English (Henderson, North Carolina southern drawl). 
 The following HTML block is a literal translation of a book chapter. 
 Your task is to REWRITE the text content within this HTML so that it flows completely naturally for a native English (Henderson, North Carolina southern drawl) reader, as if the book were written in English (Henderson, North Carolina southern drawl) originally.
 
@@ -26,7 +28,7 @@ ${htmlContent}
 
 function processChunk(chunkHtml: string): string {
   const prompt = PROMPT_TEMPLATE(chunkHtml);
-  
+
   console.log("Running agy...");
   const result = execFileSync("agy", ["-p", prompt, "--model", "gemini-3.1-pro", "--effort", "high"], {
     encoding: "utf-8",
@@ -43,11 +45,17 @@ function processChunk(chunkHtml: string): string {
 
 const filepath = path.join(TARGET_DIR, "index.en-nc.html");
 const content = fs.readFileSync(filepath, "utf-8");
-const pattern = /(<header class="title">.*?<\/header>|<aside class="note">.*?<\/aside>|<article class="chap">.*?<\/article>)/gs;
+const pattern =
+  /(<header class="title">.*?<\/header>|<aside class="note">.*?<\/aside>|<article class="chap">.*?<\/article>)/gs;
 const parts = content.split(pattern);
 
 console.log("Rewriting block 10...");
-parts[19] = processChunk(parts[19]);
-
-fs.writeFileSync(filepath, parts.join(""), "utf-8");
-console.log("Done");
+const block = parts[19];
+if (block === undefined) {
+  console.error("Cannot rewrite block 10: the expected HTML block is missing.");
+  process.exitCode = 1;
+} else {
+  parts[19] = processChunk(block);
+  fs.writeFileSync(filepath, parts.join(""), "utf-8");
+  console.log("Done");
+}

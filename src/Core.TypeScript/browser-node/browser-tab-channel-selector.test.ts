@@ -59,7 +59,7 @@ class NativeServiceWorkerContainer {
 
 function message(): BrowserTabChannelMessage {
   return {
-    schema: "zeta.browser-tab-coordinator.v2",
+    schema: "zeta.browser-tab-coordinator.v3",
     nodeId: "darkhall",
     kind: "probe",
     requesterTabId: "tab-a",

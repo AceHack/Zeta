@@ -5,7 +5,7 @@ import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
 import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v7" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v8" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -331,6 +331,19 @@ async function waitForCheckpoint(page: Page, revision: number | null): Promise<v
   );
 }
 
+async function waitForDatabase(page: Page, executorId: string, revision: number): Promise<void> {
+  await page.waitForFunction(
+    `() => {
+      const source = globalThis.__zetaBrowserSmoke?.read();
+      return source?.ok === true &&
+        source.value.database?.executorId === ${JSON.stringify(executorId)} &&
+        source.value.database?.revision === ${String(revision)};
+    }`,
+    undefined,
+    { timeout: timeoutMs },
+  );
+}
+
 async function waitForSinglePage(page: Page, tabId: string): Promise<void> {
   await page.waitForFunction(
     `() => {
@@ -567,6 +580,7 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     });
     if (!databaseWriter.ok) return failed("smoke-failed", databaseWriter.feedback.detail);
     const pageBAfterDatabaseWrite = await observe(pageB);
+    await waitForDatabase(pageA, "tab-a", 1);
     stage = "cross-tab checkpoint save";
     const crossTabSave = await pageA.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
@@ -594,10 +608,10 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     if (!stopped.ok) return failed("smoke-failed", `Page B stop failed: ${stopped.feedback.detail}`);
 
     await waitForSurvivor(pageA);
-    stage = "recover database row from surviving page";
+    stage = "read automatic peer database wake from surviving page";
     const databaseSurvivor = await pageA.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
-      return root.__zetaBrowserSmoke.databaseTick([]);
+      return root.__zetaBrowserSmoke.drainDatabaseInvalidations();
     });
     if (!databaseSurvivor.ok) return failed("smoke-failed", databaseSurvivor.feedback.detail);
     const pageAAfterStop = await observe(pageA);
@@ -614,6 +628,16 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
             severity: "heat" as const,
             code: "smoke-failed" as const,
             detail: "IndexedDB admitted stale checkpoint revision 299.",
+          },
+        };
+      }
+      if (!("source" in stale.feedback)) {
+        return {
+          ok: false as const,
+          feedback: {
+            severity: "heat" as const,
+            code: "smoke-failed" as const,
+            detail: `Checkpoint revision rejection returned ${stale.feedback.code}.`,
           },
         };
       }
@@ -660,6 +684,16 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
             severity: "heat" as const,
             code: "smoke-failed" as const,
             detail: "IndexedDB admitted stale checkpoint removal revision 299.",
+          },
+        };
+      }
+      if (!("source" in stale.feedback)) {
+        return {
+          ok: false as const,
+          feedback: {
+            severity: "heat" as const,
+            code: "smoke-failed" as const,
+            detail: `Checkpoint removal rejection returned ${stale.feedback.code}.`,
           },
         };
       }

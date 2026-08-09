@@ -39,6 +39,8 @@ export {
   type BrowserCheckpointInvalidation,
   type BrowserCheckpointInvalidationMessage,
   type BrowserCheckpointInvalidationOperation,
+  type BrowserDatabaseInvalidation,
+  type BrowserDatabaseInvalidationMessage,
   type BrowserTabChannel,
   type BrowserTabChannelMessage,
   type BrowserTabChannelSubscription,
@@ -128,6 +130,16 @@ export {
   type BrowserZetaDbWakeRuntime,
   type BrowserZetaDbWakeRuntimeResult,
 } from "./browser-zetadb-wake-runtime";
+
+export {
+  startBrowserZetaDbTabRuntime,
+  type BrowserZetaDbTabEdgeResult,
+  type BrowserZetaDbTabExecutor,
+  type BrowserZetaDbTabFeedback,
+  type BrowserZetaDbTabResult,
+  type BrowserZetaDbTabRuntime,
+  type BrowserZetaDbTabRuntimeOptions,
+} from "./browser-zetadb-tab-runtime";
 
 export {
   BROWSER_ROOM_CHECKPOINT_SCHEMA,

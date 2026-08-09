@@ -7,6 +7,7 @@ import {
   BROWSER_TAB_COORDINATOR_SCHEMA,
   startBrowserTabCoordinator,
   type BrowserCheckpointInvalidation,
+  type BrowserDatabaseInvalidation,
   type BrowserTabChannel,
   type BrowserTabChannelMessage,
   type BrowserTabCoordinator,
@@ -141,6 +142,8 @@ describe("native service-worker browser channel", () => {
     const channelB = unwrapChannel(createNativeServiceWorkerTabChannel(mesh.page("client-b")));
     const invalidationsA: BrowserCheckpointInvalidation[] = [];
     const invalidationsB: BrowserCheckpointInvalidation[] = [];
+    const databaseInvalidationsA: BrowserDatabaseInvalidation[] = [];
+    const databaseInvalidationsB: BrowserDatabaseInvalidation[] = [];
     const options = {
       nodeId: "llmtv-room-service-worker",
       initialState: "foreground" as const,
@@ -155,6 +158,7 @@ describe("native service-worker browser channel", () => {
           tabId: "tab-a",
           initialSequence: 1,
           onCheckpointInvalidated: (value) => invalidationsA.push(value),
+          onDatabaseInvalidated: (value) => databaseInvalidationsA.push(value),
         },
         channelA,
       ),
@@ -166,6 +170,7 @@ describe("native service-worker browser channel", () => {
           tabId: "tab-b",
           initialSequence: 2,
           onCheckpointInvalidated: (value) => invalidationsB.push(value),
+          onDatabaseInvalidated: (value) => databaseInvalidationsB.push(value),
         },
         channelB,
       ),
@@ -179,6 +184,13 @@ describe("native service-worker browser channel", () => {
     await mesh.drain();
     expect(invalidationsA).toEqual([]);
     expect(invalidationsB).toEqual([{ sourceTabId: "tab-a", operation: "saved", revision: 42 }]);
+
+    expect(coordinatorB.publishDatabaseInvalidation("llmtv-room-service-worker:database", 7).ok).toBe(true);
+    await mesh.drain();
+    expect(databaseInvalidationsA).toEqual([
+      { sourceTabId: "tab-b", databaseNodeId: "llmtv-room-service-worker:database", revision: 7 },
+    ]);
+    expect(databaseInvalidationsB).toEqual([]);
 
     expect(coordinatorB.stop(3).ok).toBe(true);
     await mesh.drain();

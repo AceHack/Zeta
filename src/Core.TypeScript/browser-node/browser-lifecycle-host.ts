@@ -2,6 +2,7 @@ import {
   startBrowserTabCoordinator,
   type BrowserTabChannel,
   type BrowserCheckpointInvalidationOperation,
+  type BrowserDatabaseInvalidation,
   type BrowserTabCoordinator,
   type BrowserTabCoordinatorFeedback,
   type BrowserTabCoordinatorOptions,
@@ -82,6 +83,10 @@ export interface BrowserLifecycleHost {
   updateCheckpoint(checkpoint: BrowserCheckpoint): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
   publishCheckpointInvalidation(
     operation: BrowserCheckpointInvalidationOperation,
+    revision: number,
+  ): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
+  publishDatabaseInvalidation(
+    databaseNodeId: BrowserDatabaseInvalidation["databaseNodeId"],
     revision: number,
   ): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
   stop(): BrowserLifecycleResult<BrowserLifecycleHostReadout>;
@@ -342,6 +347,16 @@ export function startBrowserLifecycleHost(
     publishCheckpointInvalidation: (operation, revision) => {
       if (stopped) return failed("host-stopped", "The browser lifecycle host has already stopped.");
       const published = coordinator.publishCheckpointInvalidation(operation, revision);
+      if (!published.ok) {
+        const operationFailure = coordinatorFailure(published.feedback);
+        record(operationFailure);
+        return { ok: false, feedback: operationFailure };
+      }
+      return succeeded(read());
+    },
+    publishDatabaseInvalidation: (databaseNodeId, revision) => {
+      if (stopped) return failed("host-stopped", "The browser lifecycle host has already stopped.");
+      const published = coordinator.publishDatabaseInvalidation(databaseNodeId, revision);
       if (!published.ok) {
         const operationFailure = coordinatorFailure(published.feedback);
         record(operationFailure);

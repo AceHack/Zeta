@@ -18,7 +18,10 @@ import {
 } from "../browser-node/browser-room-checkpoint";
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
-import type { BrowserCheckpointInvalidation } from "../browser-node/browser-tab-coordinator";
+import type {
+  BrowserCheckpointInvalidation,
+  BrowserDatabaseInvalidation,
+} from "../browser-node/browser-tab-coordinator";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import {
   startNativeDarkHallBrowser,
@@ -102,6 +105,10 @@ export interface DarkHallBrowserDurableRuntime {
   retract(throughRevision: number): Promise<DarkHallBrowserDurableResult<boolean>>;
   drainCheckpointInvalidations(): Promise<DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>>;
   updateDatabaseReadout(readout: DarkHallDatabaseReadout): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
+  publishDatabaseInvalidation(
+    databaseNodeId: BrowserDatabaseInvalidation["databaseNodeId"],
+    revision: number,
+  ): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
   stop(): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
 }
 
@@ -263,6 +270,7 @@ function bootstrapOptions(
     checkpoint,
     transcript,
     onCheckpointInvalidated,
+    ...(options.onDatabaseInvalidated === undefined ? {} : { onDatabaseInvalidated: options.onDatabaseInvalidated }),
   };
 }
 
@@ -575,6 +583,21 @@ export async function startDurableDarkHallBrowser(
       }
       databaseReadout = nextReadout;
       return succeeded(read());
+    },
+    publishDatabaseInvalidation: (databaseNodeId, revision) => {
+      if (finalized) {
+        return failed("browser-runtime", {
+          severity: "heat",
+          code: "host-stopped",
+          detail: "The durable browser room runtime has already stopped.",
+        });
+      }
+      try {
+        const published = browserRuntime.host.publishDatabaseInvalidation(databaseNodeId, revision);
+        return published.ok ? succeeded(read()) : failed("browser-runtime", published.feedback);
+      } catch {
+        return thrown("browser-runtime", "browser-runtime-operation-threw", "publishing database invalidation");
+      }
     },
     stop: () => {
       if (finalized) return succeeded(read());

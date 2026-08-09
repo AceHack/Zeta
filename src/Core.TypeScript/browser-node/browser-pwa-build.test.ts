@@ -26,6 +26,7 @@ describe("browser PWA production build", () => {
 
     const worker = readFileSync(join(outDir, "sw.js"), "utf8");
     expect(worker).toContain("checkpoint-invalidated");
+    expect(worker).toContain("database-invalidated");
     expect(worker).toContain("skipWaiting");
     expect(worker).toContain("clients.claim");
     expect(worker).not.toMatch(/from\s+["']\.\//);

@@ -1,7 +1,6 @@
 import {
   startNativeDurableDarkHallBrowser,
   type DarkHallBrowserDurableFeedback,
-  type DarkHallBrowserDurableResult,
   type DarkHallBrowserDurableRuntime,
 } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import { zetaDbTickToDarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
@@ -11,10 +10,16 @@ import { createNativeServiceWorkerTabChannel } from "./browser-service-worker-ch
 import type { RoomRunTranscript } from "../darkhall-ui/darkhall-room";
 import { runBrowserZetaDbWake } from "./browser-zetadb-image-port";
 import type { ZetaDbDelta, ZetaDbFeedback, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
+import {
+  startBrowserZetaDbTabRuntime,
+  type BrowserZetaDbTabFeedback,
+  type BrowserZetaDbTabRuntime,
+} from "./browser-zetadb-tab-runtime";
+import type { BrowserDatabaseInvalidation } from "./browser-tab-coordinator";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v4" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v5" as const;
 
-type BrowserMultitabFeedback = DarkHallBrowserDurableFeedback;
+type BrowserMultitabFeedback = DarkHallBrowserDurableFeedback | BrowserZetaDbTabFeedback | ZetaDbFeedback;
 
 export type BrowserMultitabFixtureReadout =
   | {
@@ -42,19 +47,24 @@ export interface BrowserMultitabCheckpointReadout {
   } | null;
 }
 
-export type BrowserMultitabFixtureStopResult = DarkHallBrowserDurableResult<BrowserLifecycleHostReadout>;
+export type BrowserMultitabFixtureStopResult =
+  | { readonly ok: true; readonly value: BrowserLifecycleHostReadout }
+  | { readonly ok: false; readonly feedback: BrowserMultitabFeedback };
 
-export type BrowserMultitabCheckpointResult<T> = DarkHallBrowserDurableResult<T>;
+export type BrowserMultitabCheckpointResult<T> =
+  | { readonly ok: true; readonly value: T }
+  | { readonly ok: false; readonly feedback: BrowserMultitabFeedback };
 
 export type BrowserMultitabDatabaseResult =
   | { readonly ok: true; readonly value: ZetaDbTickReadout }
-  | { readonly ok: false; readonly feedback: ZetaDbFeedback | DarkHallBrowserDurableFeedback };
+  | { readonly ok: false; readonly feedback: ZetaDbFeedback | BrowserMultitabFeedback };
 
 export interface BrowserMultitabFixtureApi {
   read(): BrowserMultitabFixtureReadout;
   checkpoint(revision: number): Promise<BrowserMultitabCheckpointResult<BrowserCheckpointRecord>>;
   removeCheckpoint(throughRevision: number): Promise<BrowserMultitabCheckpointResult<boolean>>;
   databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserMultitabDatabaseResult>;
+  drainDatabaseInvalidations(): Promise<BrowserMultitabDatabaseResult>;
   stop(): BrowserMultitabFixtureStopResult;
 }
 
@@ -149,6 +159,22 @@ function read(runtime: DarkHallBrowserDurableRuntime): BrowserMultitabFixtureRea
 
 const mount = elementById("darkhall-room");
 const nodeId = queryParameter("node") ?? "llmtv-browser-smoke";
+const tabId = queryParameter("tab") ?? "tab-unknown";
+const databaseNodeId = `${nodeId}:database`;
+let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
+let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
+const onDatabaseInvalidated = (invalidation: BrowserDatabaseInvalidation): void => {
+  if (receiveDatabaseInvalidation !== null) {
+    receiveDatabaseInvalidation(invalidation);
+    return;
+  }
+  if (
+    invalidation.databaseNodeId === databaseNodeId &&
+    (startupDatabaseInvalidation === null || invalidation.revision > startupDatabaseInvalidation.revision)
+  ) {
+    startupDatabaseInvalidation = invalidation;
+  }
+};
 const serviceWorkerChannel = createNativeServiceWorkerTabChannel(globalThis);
 const started = serviceWorkerChannel.ok
   ? await startNativeDurableDarkHallBrowser({
@@ -159,11 +185,12 @@ const started = serviceWorkerChannel.ok
       channel: serviceWorkerChannel.value,
       initialTranscript,
       nodeId,
-      tabId: queryParameter("tab") ?? "tab-unknown",
+      tabId,
       initialSequence: Number(queryParameter("sequence") ?? "0"),
       maxTrackedTabs: 8,
       maxFeedback: 8,
       capabilities: ["css", "javascript", "service-worker", "indexed-db"],
+      onDatabaseInvalidated,
     })
   : ({
       ok: false,
@@ -184,35 +211,68 @@ if (!started.ok) {
     checkpoint: () => Promise.resolve(failure),
     removeCheckpoint: () => Promise.resolve(failure),
     databaseTick: () => Promise.resolve(failure),
+    drainDatabaseInvalidations: () => Promise.resolve(failure),
     stop: () => failure,
   };
 } else {
   const runtime = started.value;
-  api = {
-    read: () => read(runtime),
-    checkpoint: (revision) => runtime.checkpoint(revision, transcriptAtRevision(revision)),
-    removeCheckpoint: (throughRevision) => runtime.retract(throughRevision),
-    databaseTick: async (deltas) => {
-      const tick = await runBrowserZetaDbWake(
+  const databaseRuntime = startBrowserZetaDbTabRuntime({
+    databaseNodeId,
+    executorId: tabId,
+    limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
+    execute: (request) =>
+      runBrowserZetaDbWake(
         globalThis,
         { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
-        {
-          nodeId: `${nodeId}:database`,
-          executorId: queryParameter("tab") ?? "tab-unknown",
-          executorKind: "browser-tab",
-          deltas,
-          limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
-        },
-      );
-      if (!tick.ok) return tick;
-      const rendered = runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick.value));
-      return rendered.ok ? tick : rendered;
-    },
-    stop: () => {
-      const stopped = runtime.stop();
-      return stopped.ok ? { ok: true, value: stopped.value.host } : stopped;
-    },
-  };
+        request,
+      ),
+    observe: (tick) => runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick)),
+    publishInvalidation: (nextDatabaseNodeId, revision) =>
+      runtime.publishDatabaseInvalidation(nextDatabaseNodeId, revision),
+  });
+  if (!databaseRuntime.ok) {
+    const failure: BrowserMultitabFixtureFailure = databaseRuntime;
+    runtime.stop();
+    api = {
+      read: () => failure,
+      checkpoint: () => Promise.resolve(failure),
+      removeCheckpoint: () => Promise.resolve(failure),
+      databaseTick: () => Promise.resolve(failure),
+      drainDatabaseInvalidations: () => Promise.resolve(failure),
+      stop: () => failure,
+    };
+  } else {
+    const database: BrowserZetaDbTabRuntime = databaseRuntime.value;
+    receiveDatabaseInvalidation = (invalidation) => {
+      database.receiveInvalidation(invalidation);
+    };
+    if (startupDatabaseInvalidation !== null) receiveDatabaseInvalidation(startupDatabaseInvalidation);
+    api = {
+      read: () => read(runtime),
+      checkpoint: (revision) => runtime.checkpoint(revision, transcriptAtRevision(revision)),
+      removeCheckpoint: (throughRevision) => runtime.retract(throughRevision),
+      databaseTick: (deltas) => database.tick(deltas),
+      drainDatabaseInvalidations: async () => {
+        const drained = await database.drainInvalidations();
+        if (!drained.ok) return drained;
+        return drained.value === null
+          ? {
+              ok: false,
+              feedback: {
+                severity: "heat",
+                code: "database-tab-executor-threw",
+                detail: "No peer database invalidation has produced a finite tick readout.",
+              },
+            }
+          : { ok: true, value: drained.value };
+      },
+      stop: () => {
+        database.stop();
+        const stopped = runtime.stop();
+        return stopped.ok ? { ok: true, value: stopped.value.host } : stopped;
+      },
+    };
+  }
 }
 
 Reflect.set(globalThis, "__zetaBrowserSmoke", api);
