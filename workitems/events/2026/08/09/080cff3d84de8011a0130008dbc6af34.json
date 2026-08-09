@@ -1,0 +1,14 @@
+{
+  "id": "080cff3d84de8011a0130008dbc6af34",
+  "at": "2026-08-09T18:02:18.960Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZKV16YF08QG0R003CYZX8S",
+    "type": "bug",
+    "title": "from-installer vendor CLIs are fetched and exec'd with no hash pin — verifySha256File exists but is never called",
+    "slug": "from-installer-vendor-clis-are-fetched-and-exec-d-with-no-ha",
+    "priority": "P2",
+    "filename": "081KZKV16YF08QG0R003CYZX8S-from-installer-vendor-clis-are-fetched-and-exec-d-with-no-ha.md"
+  }
+}
