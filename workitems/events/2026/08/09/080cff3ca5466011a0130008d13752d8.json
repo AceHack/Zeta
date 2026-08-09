@@ -1,0 +1,14 @@
+{
+  "id": "080cff3ca5466011a0130008d13752d8",
+  "at": "2026-08-09T17:31:47.276Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZKS9A6B08QG0R0008EG72M",
+    "type": "bug",
+    "title": "usb-nixos-installer/flake.nix omits the mise-pin overlay — local nix build produces a different ISO than CI",
+    "slug": "usb-nixos-installer-flake-nix-omits-the-mise-pin-overlay-loc",
+    "priority": "P2",
+    "filename": "081KZKS9A6B08QG0R0008EG72M-usb-nixos-installer-flake-nix-omits-the-mise-pin-overlay-loc.md"
+  }
+}
