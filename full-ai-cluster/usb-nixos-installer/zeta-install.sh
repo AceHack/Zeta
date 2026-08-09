@@ -895,9 +895,17 @@ if [ -z "$WIFI_CREDS_FILE" ] && [ -f "$PROBE_MOUNT/zeta-wifi-credentials.json" ]
 fi
 if [ -n "$WIFI_CREDS_FILE" ]; then
   echo "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP"
-  WIFI_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/wifi-esp-to-nm.ts"
+  # 081KZHJPJCF: $ZETA_HOME (and the cloned repo + mise it points at) are not set up until step
+  # 6.95a (~line 1525); this step (6.6) runs earlier, so under `set -u` a bare $ZETA_HOME here is
+  # an "unbound variable" hard-fail. Before the ESP-unmount fix this branch was dead code (wifi
+  # creds were never found), so it never tripped; now that the creds ARE found it runs. Use the
+  # `${ZETA_HOME:-}` default and only take the NM-profile helper path when ZETA_HOME is actually
+  # set — otherwise fall through to the stage-on-target-ESP fallback below (node still boots).
+  # Writing the NM profile pre-6.95a is impossible (no repo/mise); that requires the wifi step to
+  # run after 6.95a — tracked as follow-up in 081KZHJPJCF.
+  WIFI_HELPER="${ZETA_HOME:-}/Zeta/src/Core.TypeScript/installer/wifi-esp-to-nm.ts"
   WIFI_NM_DST="/mnt/etc/NetworkManager/system-connections"
-  if [ -f "$WIFI_HELPER" ]; then
+  if [ -n "${ZETA_HOME:-}" ] && [ -f "$WIFI_HELPER" ]; then
     WIFI_TMP=/tmp/zeta-esp-wifi.nmconnection
     WIFI_PROFILE_NAME=$(
       sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
