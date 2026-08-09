@@ -1,0 +1,10 @@
+{
+  "tick": 46,
+  "at": "2026-08-09T05:26:54.877Z",
+  "findings": [
+    {
+      "path": "docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md",
+      "rule": "MD056"
+    }
+  ]
+}
