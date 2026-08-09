@@ -206,6 +206,22 @@ The fast path is kept for real-time use. The accurate path is the long-term anti
 
 ---
 
+
+---
+
+**§A #24 (PROVEN): `MenoBraided.braidR` is a faithful non-Abelian Bₙ / Yang–Baxter operator.**
+
+`MenoBraided.braidR` (`src/Core/MenoBraided.fs`) realizes a faithful non-Abelian representation of the braid group Bₙ via the conjugation-rack Yang–Baxter operator R(x,y) = (x·y·x⁻¹, x) over ℤ[Fₙ]. Two tripwires proven in the module:
+
+- **P4 tripwire (R²≠id):** R²(x,y) = (x·y·x·y⁻¹·x⁻¹, x·y·x⁻¹) ≠ (x,y) in a non-Abelian free group. This confirms the braiding is non-symmetric (braided, not swap). Computed algebraically in `MenoBraided.fs` and cross-verified in `tests/Tests.FSharp/Braid.Tests.fs`.
+- **P5c tripwire (ρ-equal ⟺ Braid.equal):** The n-strand representation ρ factors through Braid's faithful group action. Distinct braid words give distinct conjugation-rack actions over the free group. This is the faithfulness condition.
+
+**Scope (Soraya 2026-08-08):** "V is a braided object; the subcategory ⟨V⟩ it generates realizes Bₙ faithfully." The broader "Majorana-shaped" claim (ZSet isomorphic to Ivanov representation) is §B — the Ivanov representation is non-faithful (finite image), while braidR is faithful, so no isomorphism exists. The ZSet two-coloring analogy is also §B — it rests on "ZSet is self-inverse" which is incorrect (ZSet is commutative-with-inverses, not order-2).
+
+**Prior art:** Joyce (1982), quandle theory; Joyal & Street (1993), braided tensor categories; Nayak et al. (2008), topological quantum computation context.
+
+**Conformance gate:** `tests/Tests.FSharp/Braid.Tests.fs` (P4 and P5c tripwires). Any change to `MenoBraided.braidR` that breaks P4 or P5c is a §A violation.
+
 ## B. THE CONJECTURE REGISTER (open — frontier, NOT floor; nothing in §A depends on these)
 
 Each row is a real, named open proof obligation. Interesting ≠ closed. Discharge → promote to §A.
