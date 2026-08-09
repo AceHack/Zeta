@@ -121,6 +121,70 @@ describe("runFileBackedZflashCli", () => {
     });
   });
 
+  test("verifies ESP writes and succeeds when all planned files are present (081KZHJPJCF)", () => {
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        hostname: "pikachu",
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+        wifiPassword: "super-secret",
+        wifiSsid: "Homelab",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        verifyEspWrites: true,
+        executor: {
+          runCommand: (command) =>
+            command.command === "mdir"
+              ? {
+                  exitCode: 0,
+                  stderr: "",
+                  stdout:
+                    "zeta-authorized-keys.pub\nzeta-hostname.txt\nzeta-wifi-credentials.json\n",
+                }
+              : { exitCode: 0, stderr: "", stdout: "" },
+          writeFile: () => {},
+        },
+      },
+    );
+
+    expect(result.ok).toBe(true);
+  });
+
+  test("fails loud when a planned ESP write is silently absent after bake (081KZHJPJCF)", () => {
+    // mcopy reports exit 0 for every write, but the ESP read-back omits the wifi file —
+    // the observed CI silent-drop. Verification must catch it and name the missing file.
+    const result = runFileBackedZflashCli(
+      {
+        espOffsetBytes: 1_048_576,
+        hostname: "pikachu",
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+        wifiPassword: "super-secret",
+        wifiSsid: "Homelab",
+      },
+      {
+        createInlineStagingDirectory: () => "/private/tmp/zflash-inline-abc123",
+        verifyEspWrites: true,
+        executor: {
+          runCommand: (command) =>
+            command.command === "mdir"
+              ? { exitCode: 0, stderr: "", stdout: "zeta-authorized-keys.pub\nzeta-hostname.txt\n" }
+              : { exitCode: 0, stderr: "", stdout: "" },
+          writeFile: () => {},
+        },
+      },
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected verification failure");
+    expect(result.error).toContain("zeta-wifi-credentials.json");
+    expect(result.error).toContain("silent drop");
+  });
+
   test("rejects malformed wifi flags without printing the password", () => {
     const result = runFileBackedZflashCli(
       {

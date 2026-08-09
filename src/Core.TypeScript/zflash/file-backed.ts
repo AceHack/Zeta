@@ -41,6 +41,14 @@ export type FileBackedZflashCliParseResult =
 export interface FileBackedZflashCliRunDeps {
   readonly createInlineStagingDirectory?: () => string;
   readonly executor?: FileBackedZflashImageExecutor;
+  /**
+   * Read the ESP back after bake (via `mdir`) and fail loud if any planned write is absent
+   * (081KZHJPJCF — mcopy can exit 0 without the file landing on some real isohybrid ESPs).
+   * Defaults to ON for a real (non-injected) executor — production + the `zeta flash` CLI —
+   * and OFF when a mock `executor` is injected (plan/execute unit tests). Set explicitly to
+   * exercise the verification with a mock.
+   */
+  readonly verifyEspWrites?: boolean;
 }
 
 export type FileBackedZflashCliRunResult =
@@ -279,11 +287,49 @@ export function runFileBackedZflashCli(
   });
   if (!executionPlan.ok) return { ok: false, error: executionPlan.error };
 
-  const executed = executeFileBackedZflashImageExecutionPlan(
-    executionPlan.value,
-    deps.executor ?? createNodeFileBackedZflashImageExecutor(),
-  );
+  const executor = deps.executor ?? createNodeFileBackedZflashImageExecutor();
+  const executed = executeFileBackedZflashImageExecutionPlan(executionPlan.value, executor);
   if (!executed.ok) return { ok: false, error: describeExecutionFeedback(executed.error) };
+
+  // Post-bake ESP verification (081KZHJPJCF): `mcopy` can return exit 0 WITHOUT the file
+  // actually landing on some real isohybrid-ISO ESP filesystems — a silent drop. Observed in
+  // CI (run 31283198561): the first ESP write (pubkey) landed, later writes (hostname, wifi)
+  // did not, and every mcopy still exited 0, so the bake reported success and shipped a
+  // silently-incomplete boot image (installer then logged "no zeta-wifi-credentials.json …
+  // skipping"). Not reproducible with a synthetic FAT locally, so rather than blind-fix the
+  // mcopy layer, read the ESP back and FAIL LOUD with the listing — the #9937 discipline
+  // ("do not fail" ≠ "do not notice"), and the listing captures the exact CI evidence to
+  // finish the root cause. Defaults ON for a real (non-injected) executor — production + the
+  // `zeta flash` CLI — and OFF when a mock executor is injected (plan/execute unit tests);
+  // override via deps.verifyEspWrites. Skipped when there are no ESP writes to verify.
+  const shouldVerify = deps.verifyEspWrites ?? (deps.executor === undefined);
+  if (shouldVerify && planned.value.espWrites.length > 0) {
+    const listing = executor.runCommand({
+      command: "mdir",
+      args: ["-i", executionPlan.value.mtoolsImageSpecifier, "::"],
+    });
+    if (listing.exitCode !== 0) {
+      return {
+        ok: false,
+        error:
+          `ESP write verification could not list the ESP after bake (mdir exit ` +
+          `${listing.exitCode ?? "unknown"}): ${listing.stderr || listing.stdout || "no output"}`,
+      };
+    }
+    const listingText = listing.stdout ?? "";
+    const missing = planned.value.espWrites
+      .map((write) => write.destination.replace(/^\/+/, ""))
+      .filter((name) => !listingText.includes(name));
+    if (missing.length > 0) {
+      return {
+        ok: false,
+        error:
+          `ESP write verification failed — ${missing.length} planned file(s) absent from the ESP ` +
+          `after bake despite mcopy reporting success (silent drop, 081KZHJPJCF): ` +
+          `${missing.join(", ")}.\nESP listing:\n${listingText}`,
+      };
+    }
+  }
 
   return {
     ok: true,
