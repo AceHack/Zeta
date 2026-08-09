@@ -2,7 +2,7 @@ import { describe, it, expect } from "bun:test";
 import {
   emptyGraph, install, remove, verify, list, graphRoot,
   applyDelta, graphMerkleRoot, STUB_REGISTRY,
-  bnnStatus, absorbAceError, aceBnn,
+  bnnStatus, absorbAceError,
 } from "./ace-cli";
 
 describe("ACE CLI — Z-set delta protocol", () => {
