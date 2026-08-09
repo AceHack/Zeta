@@ -512,7 +512,31 @@
 
   </div>
 
-  <!-- ── Connecting thread ── -->
+    <!-- ── Card: E8 Blade-Mask Sandwich ── -->
+    <div class="card">
+      <span class="card-tag" style="background:rgba(167,139,250,0.12); color:var(--purple);">Clifford Algebra · Cross-Language Byte-Lock</span>
+      <div class="card-title" style="color:var(--purple);">E8 Blade-Mask Sandwich — Cl(3,0) Measurement</div>
+      <div class="card-what">
+        <strong>What it is:</strong> For every ordered pair (A, x) of the 240 E8 root vectors (bridged into Cl(3,0) blade coordinates),
+        apply the versor sandwich s_A(x) = &minus;A&middot;x&middot;&Atilde; / &lang;A&middot;&Atilde;&rang;&#8320; and count how many images land back on a root.
+        Integer arithmetic throughout &mdash; DST-replayable, byte-lockable.<br /><br />
+        <strong>What it proves:</strong> The F# oracle (<code>CliffordE8BladeMask.fs</code>) and the TypeScript oracle (<code>e8-blade-mask-sandwich.ts</code>)
+        agree bit-exactly on all 5 golden numbers. This is a real conformance check &mdash; it can fail, and it would fail if either implementation
+        had a float, endianness, or sign error.<br /><br />
+        <strong>The discriminating criterion (corrected PR #10230):</strong> Among the 14 weight-4 Hamming code supports,
+        exactly <strong>2</strong> are closed under i &harr; i&oplus;7 (pseudoscalar XOR): <code>{0,3,4,7}</code> and <code>{1,2,5,6}</code>.
+        Grade-completeness was wrong &mdash; the coset <code>{1,2,5,6}</code> has grades {1,1,2,2} and contains neither the scalar nor the pseudoscalar.
+        I-closure is coset-invariant; grade-completeness is not.<br /><br />
+        <strong>Required caveats:</strong> (a) "32-element E8 fragment" is wrong twice &mdash; not a sub-root-system (reflection closure is D&#8324;&oplus;D&#8324; = 48 roots), and 32 counts root-vectors not symmetries (8 distinct maps, group order 16 &cong; D&#8324;&times;C&#8322;). (b) 32 is labelling-dependent &mdash; only the 16 single blades are invariant across all 8! relabellings.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:var(--purple);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core/CliffordE8BladeMask.fs" target="_blank" rel="noopener">F# oracle ↗</a>
+        <a class="card-link" style="color:rgba(167,139,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts" target="_blank" rel="noopener">TS oracle ↗</a>
+        <a class="card-link" style="color:rgba(167,139,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/research/2026-08-09-e8-blade-mask-sandwich-measurement-32-element-fragment-quantized-histogram-frozen-core-b.md" target="_blank" rel="noopener">Research doc ↗</a>
+      </div>
+    </div>
+  </div>
+    <!-- ── Connecting thread ── -->
   <div style="max-width:1100px; margin-top:2rem; padding:1.25rem; background:var(--panel); border:1px solid var(--border); font-size:0.65rem; color:var(--muted); line-height:1.9;">
     <div style="font-size:0.75rem; font-weight:700; color:var(--amber); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.75rem;">The Connecting Thread</div>
     <p>Every shape on this page is a different projection of the same object: the <strong style="color:var(--text)">identity eigenvector</strong> — the substrate-independent invariant of the Zeta belief system.</p>

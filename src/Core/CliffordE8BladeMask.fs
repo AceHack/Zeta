@@ -17,12 +17,23 @@ namespace Zeta.Core
 ///   - Integer images: 33,024; root images: 11,776; identity-fixed: 352
 ///
 /// **What distinguishes {0,3,4,7} (computed 2026-08-09):**
-/// There are three XOR-closed subgroups of size 4 in the Hamming code. XOR-closure is necessary
-/// but not sufficient. The distinguishing property is the grade profile in Cl(3,0):
-///   {0,1,4,5} = {S,e₁,e₃,e₁₃}   grades {0,1,1,2} — missing grade 3
-///   {0,2,4,6} = {S,e₂,e₃,e₂₃}   grades {0,1,1,2} — missing grade 3
-///   {0,3,4,7} = {S,e₁₂,e₃,e₁₂₃} grades {0,1,2,3} — SPANS ALL 4 GRADES (unique)
-/// {0,3,4,7} is the unique grade-complete subalgebra of Cl(3,0).
+/// **What distinguishes the two survivors — I-closure (corrected 2026-08-09, PR #10230):**
+/// The correct criterion is CLOSURE UNDER i ↦ i⊕7 (pseudoscalar XOR):
+///   XOR-closed subgroup   → 3 matches (under-determined)
+///   contains pseudoscalar → 7 matches (far too weak)
+///   CLOSED UNDER i ↦ i⊕7 → EXACTLY 2: {0,3,4,7} and {1,2,5,6}  ✔
+/// Why closure is right: {1,2,5,6} = 1 ⊕ {0,3,4,7} is the COSET, and I-closure is
+/// coset-invariant ({1,2,5,6} is also I-closed) while "contains 7" is not. One criterion,
+/// both survivors. Algebraically: in Cl(3,0) ≅ ℂ⊗ℍ, versor-normed ⟺ decomposable in ℂ⊗ℍ,
+/// and collinearity forces span(q) = span(p), hence I-closure.
+///
+/// **Two caveats required before FROZEN-CORE:**
+/// 1. "32-element E8 fragment" is wrong twice: not a sub-root-system (reflection closure is
+///    D₄⊕D₄ = 48 roots, a Borel–de Siebenthal subsystem), and 32 counts root-vectors not
+///    symmetries — the 32 induce only 8 distinct maps, generating a group of order 16 ≅ D₄×C₂.
+/// 2. 32 IS LABELLING-DEPENDENT. Across all 8! relabellings: 16 in ~47%, 32 in only ~30%.
+///    Only the 16 single blades are invariant. "32" is a fact about this pairing of two
+///    coordinate conventions, not about E8 and Cl(3,0) in the abstract.
 ///
 /// Anchors: Dechant 2016/2017 (Clifford algebra for root systems); Conway–Sloane SPLAG
 /// (Construction A); Gates et al. (adinkra ↔ doubly-even self-dual codes).
