@@ -213,12 +213,63 @@ can take it **from** you; you may spend or wager it **yourself**. Worth adding t
 explicitly, because a future reader could otherwise read "cannot be taken away" as
 forbidding stakes.
 
-**Still open (smaller):** what is the payout side? A wager with only a downside is a
-tax on honesty and nobody rational witnesses. Candidates: the witness earns budget when
-the attestation is later confirmed (symmetric wager), or witnessing is compensated by the
-transferring parties, or witnessing itself is value-added-to-others and therefore
-*already* budget-earning under the existing rule — which would be the most elegant, since
-it needs no new mechanism at all.
+**CLOSED — the payout needs no new mechanism** (Aaron: *"yes it is value add"*). A wager
+with only a downside would be a tax on honesty and nobody rational would witness. But
+**truthful witnessing IS value added to others**, which is already the sole way budget is
+credited. So the gamble is **symmetric by construction**: stake on the attestation, lose
+it if false, earn it back through the ordinary earning path when others recognise the
+value an honest attestation gave them.
+
+That is the whole mechanism, and its elegance is the argument for it: **nothing was
+invented.** Both sides of the wager — the downside and the payout — were already in
+`privacy-budget-is-hard-money-earned-by-others`; only the *spend / stake / confiscate*
+distinction had to be made explicit. A witnessing scheme that needed a new currency, a new
+escrow, or a new arbiter would have been a worse answer even if it worked.
+
+## Custody change = a DagFs fork (Aaron) — this closes the RMA gap
+
+> Aaron 2026-08-09: *"in our DagFS each **linear fork can have its own keys**."*
+
+The RMA case above (a device changing owner while remaining the same device) had **no
+operation** in our design. It does now, and it is one we already built:
+`src/Core/DagFs.fs` is a multi-parent **content-addressed** tree whose `editLocal` mode is
+a **copy-on-write fork** — only that path sees the change, while other paths sharing the
+old content keep it.
+
+So: **custody change is a fork, and the new owner's keys attach to the fork.**
+
+Three properties fall out for free, which is the sign this is the right primitive rather
+than a convenient analogy:
+
+- **§5 Memory Preservation is automatic.** A fork *shares ancestry* rather than copying or
+  destroying it. The pre-transfer history is not migrated (which could lose it) and not
+  deleted (which §5 forbids) — it is a **common ancestor** both branches still reference.
+  The device genuinely remains the same device, in the only sense that matters.
+- **The old owner keeps their branch.** Transfer stops being a destructive hand-off. The
+  prior owner's view remains valid and readable at the pre-fork content addresses, which is
+  what an RMA actually needs (the returning party retains records) and what a naive
+  "reassign the owner field" mutation destroys.
+- **Keys are per-branch, so no key ever spans two custodies.** The new owner cannot read
+  post-fork content of the old branch and vice versa, without inventing a revocation
+  protocol — the isolation is structural.
+
+### And it is the same operation as repo-fork-spawns-cluster, one scale down
+
+Section A proposed that a **git fork spawns its own cluster** (cluster id from root-commit,
+no registry). Aaron's note says a **DagFs fork spawns its own key domain**. That is the
+*same move at two magnifications* — §9 recursive / §10 self-similar, and a genuine
+prediction rather than a coincidence: if forking is how identity domains come into
+existence, the mechanism should look identical whether you fork a repo, a filesystem
+subtree, or an agent's custody. It also means we do not need three separate designs for
+"new cluster", "transferred device" and "graduated agent" — they are one operation with
+different scopes.
+
+**Open, and worth deciding deliberately:** at a fork, does the *witness* requirement apply
+(the privacy-budget stake from above)? A fork that anyone can perform unilaterally is fine
+for `editLocal` on your own data, but a **custody** fork changes who controls a key — which
+is exactly the one-sided-transfer risk the staking witness exists to prevent. So the likely
+answer is: forking is free, **claiming the fork is a custody transfer** is what needs a
+witness.
 
 ## Three-key rotation — and why the RIGHT reason matters
 
