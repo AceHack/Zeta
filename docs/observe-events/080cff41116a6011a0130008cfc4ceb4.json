@@ -1,0 +1,19 @@
+{
+  "id": "080cff41116a6011a0130008cfc4ceb4",
+  "at": "2026-08-09T20:06:21.772Z",
+  "by": "otto",
+  "action": {
+    "kind": "self_claim",
+    "item": {
+      "id": "081KTQX7W6Q08QG0R000XA3220",
+      "title": "Dangling MD pointers auto-vivify into MUMPS + gitfs — forward-reference a not-yet-existing node in markdown and the system instantiates it (almost instantly) in the MUMPS global tree + gitfs (MUMPS native subscript auto-vivification applied to MD links); governed values still minted via ZetaIdCodec; bounded by shape-A; idempotent (Aaron 2026-06-10)",
+      "ready": true,
+      "ambiguous": false
+    },
+    "deadline": 0
+  },
+  "phase": {
+    "phase": 17,
+    "derived": 665230386
+  }
+}
