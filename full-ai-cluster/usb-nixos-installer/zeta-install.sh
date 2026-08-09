@@ -1586,22 +1586,43 @@ if [ -d "$ZETA_HOME" ]; then
     set +e
     sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
     install_log="$ZETA_HOME/.zeta/install-sh-firstboot.log"
-    sudo -u "#$ZETA_UID" \
-      HOME="$ZETA_HOME" \
-      BUN_INSTALL="$ZETA_HOME/.bun" \
-      PATH="$ZETA_TARGET_PATH" \
-      ZETA_INSTALL_NIXOS_MODE=installed \
-      ZETA_INSTALL_FULL=1 \
-      MISE_VERBOSE=1 \
-      bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1 \
-      | sudo -u "#$ZETA_UID" tee "$install_log" | tail -40
+    # 081KZETP6AT: the first-boot install.sh fails rc=1 INTERMITTENTLY (~1 in 4 dispatch runs) —
+    # a transient network/toolchain-fetch blip in mise's toolchain download, not a deterministic
+    # bug (the same code succeeds on the other runs). tools/setup/install.sh is idempotent (mise
+    # trust/install and bun installs are upserts — discipline #6), so a re-run after a short
+    # backoff clears a transient blip without side effects. Retry up to 3 attempts with linear
+    # backoff; only the FINAL failure takes the non-fatal WARN + diag + PARTIAL-PROVISION path.
+    # This is deliberately scoped to the first-boot path — the shared tools/setup/install.sh (also
+    # consumed by CI runners + devcontainers, GOVERNANCE §24) is left untouched.
+    install_rc=1
+    install_max_attempts=3
+    install_attempt=1
+    while [ "$install_attempt" -le "$install_max_attempts" ]; do
+      { echo "=== 081KZETP6AT install.sh attempt ${install_attempt}/${install_max_attempts} @ $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+        sudo -u "#$ZETA_UID" \
+          HOME="$ZETA_HOME" \
+          BUN_INSTALL="$ZETA_HOME/.bun" \
+          PATH="$ZETA_TARGET_PATH" \
+          ZETA_INSTALL_NIXOS_MODE=installed \
+          ZETA_INSTALL_FULL=1 \
+          MISE_VERBOSE=1 \
+          bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1
+      } | sudo -u "#$ZETA_UID" tee -a "$install_log" | tail -40
       install_rc=${PIPESTATUS[0]}
-      set -e
+      [ "$install_rc" -eq 0 ] && break
+      if [ "$install_attempt" -lt "$install_max_attempts" ]; then
+        install_backoff=$((install_attempt * 12))
+        echo "[iter-5.5.0]   install.sh attempt ${install_attempt}/${install_max_attempts} FAILED rc=$install_rc — retrying in ${install_backoff}s (081KZETP6AT transient-blip backoff)"
+        sleep "$install_backoff"
+      fi
+      install_attempt=$((install_attempt + 1))
+    done
+    set -e
       # Non-fatal is right: a node that boots without agent CLIs is still recoverable, and
       # hard-failing a first-boot install is worse. But "do not fail" and "do not notice"
       # are different instructions — #9937's rc-capture + marker (below) keep the "notice".
       if [ "$install_rc" -ne 0 ]; then
-        echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
+        echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc after ${install_max_attempts} attempts — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
         # 081KZETP6AT: surface the actual error lines from the FULL log (verbose output can bury the
         # failure above tail's window). Regardless of whether the cause is mise, bun, nix, or a script.
         echo "[iter-5.5.0]   --- install.sh error lines (081KZETP6AT diag) ---"
@@ -1612,9 +1633,11 @@ if [ -d "$ZETA_HOME" ]; then
         # without it this node cannot host the ARC runners — and that must be discoverable
         # ON the node, not only in whichever terminal happened to be watching.
         sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
-        printf 'install.sh rc=%s at %s\nPARTIAL PROVISION: agent CLIs and/or the full mise tier (k3d/kubectl/helm) may be absent.\nretry: cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh\n' \
-          "$install_rc" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+        printf 'install.sh rc=%s after %s attempts at %s\nPARTIAL PROVISION: agent CLIs and/or the full mise tier (k3d/kubectl/helm) may be absent.\nretry: cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh\n' \
+          "$install_rc" "$install_max_attempts" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
           | sudo -u "#$ZETA_UID" tee "$ZETA_HOME/.zeta/PARTIAL-PROVISION" >/dev/null 2>&1 || true
+      elif [ "$install_attempt" -gt 1 ]; then
+        echo "[iter-5.5.0]   install.sh succeeded on attempt ${install_attempt}/${install_max_attempts} (081KZETP6AT transient-blip recovered by retry)"
       fi
   fi
 

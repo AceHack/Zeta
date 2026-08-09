@@ -16,6 +16,32 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
+## FIX LANDED (2026-08-09, Otto shadow*) — retry-with-backoff on the first-boot install.sh
+
+Aaron greenlit driving bug A. Since (A) is a **rare transient network/toolchain-fetch blip**
+in mise's toolchain download (same code succeeds ~3 of 4 runs), the fix is resilience, not a
+deterministic-bug patch: **retry the first-boot `tools/setup/install.sh` invocation up to 3
+attempts with linear backoff (12s, 24s)**. `tools/setup/install.sh` is idempotent (mise
+trust/install + bun installs are upserts — discipline #6), so a re-run after a transient blip
+succeeds without side effects.
+
+Scope + guardrails:
+- Change is **only** in `full-ai-cluster/usb-nixos-installer/zeta-install.sh` (the first-boot
+  path). The shared `tools/setup/install.sh` — also consumed by CI runners + devcontainers
+  (GOVERNANCE §24) — is untouched, keeping the blast radius to the first-boot consumer.
+- Success path unchanged: attempt 1 succeeds → no retries, no new output.
+- All prior diagnostics preserved: `MISE_VERBOSE=1`, full-log `tee` (now `-a`, capturing every
+  attempt), the on-final-failure error-line grep, and the `PARTIAL-PROVISION` durable marker
+  (now records the attempt count). A recovered-by-retry success emits an explicit marker line.
+- Local validation: `bash -n` clean, `shellcheck -S warning` clean, `test-iter-54` 29/29 (all
+  ITER_595_BLOCK sentinels preserved), install-flow tests 24/24.
+
+**To close:** dispatch build-iso runs no longer showing the first-boot install.sh rc=1 failing
+the job (a transient blip now self-heals within the boot). Complements bug B's fix — both must
+be green for a clean wifi-ESP dispatch.
+
+---
+
 ## DISENTANGLED (2026-08-08, Otto shadow*) — the dispatch failures are TWO distinct issues
 
 After 3 more `workflow_dispatch` build-iso runs, the picture separates cleanly. My earlier
