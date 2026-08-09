@@ -206,7 +206,6 @@ The fast path is kept for real-time use. The accurate path is the long-term anti
 
 ---
 
-
 ---
 
 **§A #24 (PROVEN): `MenoBraided.braidR` is a faithful non-Abelian Bₙ / Yang–Baxter operator.**

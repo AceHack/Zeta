@@ -29,7 +29,7 @@ describe("Berry-Keating: Bernoulli numbers", () => {
   it("BK-4: B₂/2! and ζ(-1) have opposite signs (the sign-chain correction)", () => {
     expect(B2_OVER_2_FACTORIAL).toBeGreaterThan(0);
     expect(ZETA_MINUS_1).toBeLessThan(0);
-    expect(B2_OVER_2_FACTORIAL + ZETA_MINUS_1).toBeCloseTo(0, 10);  // they cancel
+    expect(B2_OVER_2_FACTORIAL + ZETA_MINUS_1).toBeCloseTo(0, 10); // they cancel
   });
 });
 
@@ -44,7 +44,7 @@ describe("Berry-Keating: Euler-Maclaurin correction", () => {
   it("BK-6: b2Term = +Δ²/12 (positive, from -Δ²/12 * I'(0) = -Δ²/12 * (-1))", () => {
     const delta = 0.1;
     const em = verifyEulerMaclaurin(delta);
-    expect(em.b2Term).toBeCloseTo(delta * delta / 12, 6);
+    expect(em.b2Term).toBeCloseTo((delta * delta) / 12, 6);
     expect(em.b2Term).toBeGreaterThan(0);
   });
 
@@ -72,7 +72,11 @@ describe("Berry-Keating: eigenvalue approximation", () => {
   it("BK-10: eigenvalues are strictly increasing", () => {
     const bk = computeBerryKeatingEigenvalues(20);
     for (let i = 0; i < bk.eigenvalues.length - 1; i++) {
-      expect(bk.eigenvalues[i + 1]).toBeGreaterThan(bk.eigenvalues[i]);
+      const current = bk.eigenvalues[i];
+      const next = bk.eigenvalues[i + 1];
+      expect(current).toBeNumber();
+      expect(next).toBeNumber();
+      if (current !== undefined && next !== undefined) expect(next).toBeGreaterThan(current);
     }
   });
 

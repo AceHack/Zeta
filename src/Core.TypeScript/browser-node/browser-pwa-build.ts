@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
-import { mkdirSync } from "node:fs";
+import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { renderDarkHallBrowserNodeDocument } from "../darkhall-ui/darkhall-browser-page";
 
 export interface BrowserPwaBuildOptions {
   readonly outDir: string;
@@ -11,6 +12,10 @@ export interface BrowserPwaBuildSummary {
   readonly outDir: string;
   readonly workerPath: string;
   readonly runtimePath: string;
+  readonly pageEntryPath: string;
+  readonly pagePath: string;
+  readonly manifestPath: string;
+  readonly stylesheetPath: string;
 }
 
 export type BrowserPwaBuildResult =
@@ -18,6 +23,18 @@ export type BrowserPwaBuildResult =
   | { readonly ok: false; readonly error: string };
 
 type BundleResult = { readonly ok: true } | { readonly ok: false; readonly error: string };
+
+const browserPwaManifest = {
+  id: "./node.html",
+  name: "Zeta Dark Hall Browser Node",
+  short_name: "Zeta Room",
+  description: "A bounded Dark Hall browser node.",
+  start_url: "./node.html",
+  scope: "./",
+  display: "standalone",
+  background_color: "#11110f",
+  theme_color: "#11110f",
+} as const;
 
 function message(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -43,7 +60,7 @@ async function bundle(entrypoint: string, outDir: string, naming: string): Promi
   }
 }
 
-/** Emit the self-contained worker and importable Dark Hall PWA runtime. */
+/** Emit the worker, importable runtime, and explicit active page. */
 export async function buildBrowserPwaAssets(options: BrowserPwaBuildOptions): Promise<BrowserPwaBuildResult> {
   if (options.outDir.length === 0) return { ok: false, error: "out-dir must be a non-empty path" };
   let outDir: string;
@@ -62,12 +79,33 @@ export async function buildBrowserPwaAssets(options: BrowserPwaBuildOptions): Pr
     "darkhall-browser-pwa.js",
   );
   if (!runtime.ok) return runtime;
+  const pageEntry = await bundle(
+    join(import.meta.dir, "..", "darkhall-ui", "darkhall-browser-page-entry.ts"),
+    outDir,
+    "darkhall-browser-page.js",
+  );
+  if (!pageEntry.ok) return pageEntry;
+
+  const pagePath = join(outDir, "node.html");
+  const manifestPath = join(outDir, "manifest.webmanifest");
+  const stylesheetPath = join(outDir, "room.css");
+  try {
+    writeFileSync(pagePath, `${renderDarkHallBrowserNodeDocument()}\n`, "utf8");
+    writeFileSync(manifestPath, `${JSON.stringify(browserPwaManifest, null, 2)}\n`, "utf8");
+    copyFileSync(join(import.meta.dir, "..", "darkhall-ui", "darkhall-room.css"), stylesheetPath);
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
   return {
     ok: true,
     value: {
       outDir,
       workerPath: join(outDir, "sw.js"),
       runtimePath: join(outDir, "darkhall-browser-pwa.js"),
+      pageEntryPath: join(outDir, "darkhall-browser-page.js"),
+      pagePath,
+      manifestPath,
+      stylesheetPath,
     },
   };
 }
@@ -82,7 +120,7 @@ async function main(argv: readonly string[]): Promise<number> {
     process.stderr.write(`${result.error}\n`);
     return 1;
   }
-  process.stdout.write(`wrote ${result.value.workerPath} and ${result.value.runtimePath}\n`);
+  process.stdout.write(`wrote ${result.value.workerPath}, ${result.value.runtimePath}, and ${result.value.pagePath}\n`);
   return 0;
 }
 

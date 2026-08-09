@@ -3,7 +3,6 @@
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-// @ts-ignore -- Playwright owns its browser binary outside the TypeScript build.
 import { chromium, type Browser, type Page } from "playwright";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "./browser-service-worker-registration";
@@ -19,16 +18,20 @@ interface BrowserPwaPageReadout {
   readonly renderedTransport: string | null;
 }
 
-interface BrowserPwaPageApi {
-  read():
-    | { readonly ok: true; readonly value: BrowserPwaPageReadout }
-    | { readonly ok: false; readonly feedback: { readonly detail: string } };
-  pulse(): void;
-  stop(): unknown;
-}
-
 interface BrowserPwaPageGlobal {
-  readonly __zetaPwaSmoke?: BrowserPwaPageApi;
+  readonly __zetaDarkHallPage?:
+    | {
+        readonly ok: true;
+        readonly value: {
+          read(): {
+            readonly registration: BrowserServiceWorkerRegistrationReadout;
+            readonly transport: BrowserTabTransportReadout;
+            readonly host: BrowserLifecycleHostReadout;
+          };
+          stop(): unknown;
+        };
+      }
+    | { readonly ok: false; readonly feedback: { readonly detail: string } };
 }
 
 export interface BrowserPwaSmokeTranscript {
@@ -64,72 +67,6 @@ function detail(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-function htmlDocument(): string {
-  return `<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><title>Zeta browser PWA smoke</title></head>
-<body>
-  <main id="darkhall-room"></main>
-  <script type="module" src="/browser-pwa-fixture.js"></script>
-</body>
-</html>`;
-}
-
-function fixtureSource(): string {
-  return `import { startNativeDarkHallPwa } from "/darkhall-browser-pwa.js";
-
-const parameters = new URLSearchParams(location.search);
-const mount = document.getElementById("darkhall-room");
-const tabId = parameters.get("tab") ?? "tab-unknown";
-const started = await startNativeDarkHallPwa({
-  mount,
-  transcript: {
-    schema: "zeta.darkhall.room-ui.v1",
-    roomName: "production-pwa-smoke",
-    seed: "real-worker-real-runtime",
-    controller: [],
-    ticks: [],
-    heatRows: [],
-  },
-  channelName: "zeta-production-pwa-smoke",
-  nodeId: "llmtv-production-pwa-smoke",
-  tabId,
-  initialSequence: Number(parameters.get("sequence") ?? "0"),
-  maxTrackedTabs: 4,
-  maxFeedback: 8,
-  capabilities: ["css", "javascript", "service-worker", "broadcast-channel"],
-  checkpoint: "none",
-  serviceWorker: { scriptUrl: "/sw.js", scope: "/" },
-});
-
-if (!started.ok) {
-  globalThis.__zetaPwaSmoke = {
-    read: () => started,
-    pulse: () => undefined,
-    stop: () => started,
-  };
-} else {
-  const runtime = started.value;
-  globalThis.__zetaPwaSmoke = {
-    read: () => ({
-      ok: true,
-      value: {
-        registration: runtime.registration,
-        transport: runtime.browser.transport,
-        host: runtime.browser.host.read(),
-        renderedTransport:
-          mount?.querySelector("[data-browser-transport]")?.getAttribute("data-browser-transport") ?? null,
-      },
-    }),
-    pulse: () => {
-      dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true }));
-      dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
-    },
-    stop: () => runtime.browser.host.stop(),
-  };
-}`;
-}
-
 function response(body: string, contentType: string): Response {
   return new Response(body, {
     headers: {
@@ -143,10 +80,11 @@ function response(body: string, contentType: string): Response {
 async function waitForReady(page: Page): Promise<void> {
   await page.waitForFunction(
     `() => {
-      const readout = globalThis.__zetaPwaSmoke?.read();
-      return readout?.ok === true &&
-        readout.value.registration.status === "controlled" &&
-        readout.value.transport.selected === "service-worker";
+      const started = globalThis.__zetaDarkHallPage;
+      if (started?.ok !== true) return false;
+      const readout = started.value.read();
+      return readout.registration.status === "controlled" &&
+        readout.transport.selected === "service-worker";
     }`,
     undefined,
     { timeout: timeoutMs },
@@ -156,9 +94,9 @@ async function waitForReady(page: Page): Promise<void> {
 async function waitForTwoTabs(page: Page): Promise<void> {
   await page.waitForFunction(
     `() => {
-      const readout = globalThis.__zetaPwaSmoke?.read();
-      return readout?.ok === true &&
-        readout.value.host.coordinator.liveness.liveTabIds.join(",") === "tab-a,tab-b";
+      const started = globalThis.__zetaDarkHallPage;
+      return started?.ok === true &&
+        started.value.read().host.coordinator.liveness.liveTabIds.join(",") === "tab-a,tab-b";
     }`,
     undefined,
     { timeout: timeoutMs },
@@ -168,10 +106,10 @@ async function waitForTwoTabs(page: Page): Promise<void> {
 async function waitForSurvivor(page: Page): Promise<void> {
   await page.waitForFunction(
     `() => {
-      const readout = globalThis.__zetaPwaSmoke?.read();
-      return readout?.ok === true &&
-        readout.value.host.coordinator.liveness.liveTabIds.join(",") === "tab-a" &&
-        readout.value.host.coordinator.liveness.darkTabIds.includes("tab-b");
+      const started = globalThis.__zetaDarkHallPage;
+      return started?.ok === true &&
+        started.value.read().host.coordinator.liveness.liveTabIds.join(",") === "tab-a" &&
+        started.value.read().host.coordinator.liveness.darkTabIds.includes("tab-b");
     }`,
     undefined,
     { timeout: timeoutMs },
@@ -180,11 +118,36 @@ async function waitForSurvivor(page: Page): Promise<void> {
 
 async function observe(page: Page, pageName: string): Promise<BrowserPwaPageReadout> {
   const observation = await page.evaluate(() => {
-    const api = (globalThis as unknown as BrowserPwaPageGlobal).__zetaPwaSmoke;
+    const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+    if (started === undefined) {
+      return {
+        location: globalThis.location.href,
+        readyState: globalThis.document.readyState,
+        readout: null,
+      };
+    }
+    if (!started.ok) {
+      return {
+        location: globalThis.location.href,
+        readyState: globalThis.document.readyState,
+        readout: started,
+      };
+    }
+    const readout = started.value.read();
     return {
       location: globalThis.location.href,
       readyState: globalThis.document.readyState,
-      readout: api?.read() ?? null,
+      readout: {
+        ok: true as const,
+        value: {
+          registration: readout.registration,
+          transport: readout.transport,
+          host: readout.host,
+          renderedTransport:
+            globalThis.document.querySelector("[data-browser-transport]")?.getAttribute("data-browser-transport") ??
+            null,
+        },
+      },
     };
   });
   const readout = observation.readout;
@@ -228,19 +191,24 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
   try {
     const built = await buildBrowserPwaAssets({ outDir });
     if (!built.ok) return failed("build-failed", built.error);
-    const [workerSource, runtimeSource] = await Promise.all([
+    const [workerSource, pageEntrySource, pageHtml, manifest, stylesheet] = await Promise.all([
       Bun.file(built.value.workerPath).text(),
-      Bun.file(built.value.runtimePath).text(),
+      Bun.file(built.value.pageEntryPath).text(),
+      Bun.file(built.value.pagePath).text(),
+      Bun.file(built.value.manifestPath).text(),
+      Bun.file(built.value.stylesheetPath).text(),
     ]);
     server = Bun.serve({
       hostname: "127.0.0.1",
       port: 0,
       fetch(request) {
         const pathname = new URL(request.url).pathname;
-        if (pathname === "/") return response(htmlDocument(), "text/html; charset=utf-8");
-        if (pathname === "/browser-pwa-fixture.js") return response(fixtureSource(), "text/javascript; charset=utf-8");
-        if (pathname === "/darkhall-browser-pwa.js") return response(runtimeSource, "text/javascript; charset=utf-8");
+        if (pathname === "/" || pathname === "/node.html") return response(pageHtml, "text/html; charset=utf-8");
+        if (pathname === "/darkhall-browser-page.js")
+          return response(pageEntrySource, "text/javascript; charset=utf-8");
         if (pathname === "/sw.js") return response(workerSource, "text/javascript; charset=utf-8");
+        if (pathname === "/room.css") return response(stylesheet, "text/css; charset=utf-8");
+        if (pathname === "/manifest.webmanifest") return response(manifest, "application/manifest+json");
         return new Response("Not found", { status: 404 });
       },
     });
@@ -257,7 +225,7 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     stage = "start controlled pages";
     const context = await browser.newContext();
     const [pageA, pageB] = await Promise.all([context.newPage(), context.newPage()]);
-    const baseUrl = `http://127.0.0.1:${String(server.port)}/`;
+    const baseUrl = `http://127.0.0.1:${String(server.port)}/node.html`;
     await Promise.all([
       pageA.goto(`${baseUrl}?tab=tab-a&sequence=100`),
       pageB.goto(`${baseUrl}?tab=tab-b&sequence=200`),
@@ -266,16 +234,21 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
 
     stage = "converge pages";
     await pageA.evaluate(() => {
-      (globalThis as unknown as BrowserPwaPageGlobal).__zetaPwaSmoke?.pulse();
+      dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true }));
+      dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
     });
     await pageB.evaluate(() => {
-      (globalThis as unknown as BrowserPwaPageGlobal).__zetaPwaSmoke?.pulse();
+      dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true }));
+      dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
     });
     await Promise.all([waitForTwoTabs(pageA), waitForTwoTabs(pageB)]);
     const [beforeA, beforeB] = await Promise.all([observe(pageA, "page A"), observe(pageB, "page B")]);
 
     stage = "stop second page";
-    await pageB.evaluate(() => (globalThis as unknown as BrowserPwaPageGlobal).__zetaPwaSmoke?.stop());
+    await pageB.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok === true) started.value.stop();
+    });
     await waitForSurvivor(pageA);
     const transcript: BrowserPwaSmokeTranscript = {
       schema: BROWSER_PWA_SMOKE_SCHEMA,
@@ -284,7 +257,10 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     };
     const failures = validate(transcript);
     if (failures.length > 0) return failed("assertion-failed", failures.join("; "));
-    await pageA.evaluate(() => (globalThis as unknown as BrowserPwaPageGlobal).__zetaPwaSmoke?.stop());
+    await pageA.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok === true) started.value.stop();
+    });
     return { ok: true, value: transcript };
   } catch (error) {
     return failed("smoke-failed", `${stage}: ${detail(error)}`);

@@ -1,3 +1,28 @@
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: #11110f;
+}
+
+.zeta-room-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem;
+  background: #11110f;
+  color: #bcb6a4;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.zeta-room-nav a {
+  color: #65aee8;
+}
+
 .zeta-room {
   --room-bg: #11110f;
   --room-panel: #1c1c18;
@@ -15,6 +40,7 @@
   display: grid;
   grid-template-columns: minmax(18rem, 0.9fr) minmax(22rem, 1.1fr);
   gap: 1rem;
+  margin-inline: auto;
   max-width: 72rem;
   min-height: 100vh;
   padding: 1rem;
@@ -98,6 +124,19 @@
 .zeta-room-browser,
 .zeta-room-transcript {
   padding: 0.75rem;
+}
+
+.zeta-room-heat[data-empty="true"] {
+  display: grid;
+  place-items: center;
+}
+
+.zeta-room-cold {
+  margin: 0;
+  color: var(--room-muted);
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
 }
 
 .zeta-room-grid {

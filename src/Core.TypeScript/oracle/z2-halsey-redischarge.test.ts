@@ -29,6 +29,16 @@ describe("Z-2 re-discharge: DLA cluster generator", () => {
     expect(cluster.nWalkers).toBe(500);
   });
 
+  it("Z2-1b: boundary sites are unique occupied cells", () => {
+    const cluster = generateDlaCluster(42, 500);
+    const distinctSites = new Set(cluster.sites.map(([x, y]) => JSON.stringify([x, y])));
+
+    expect(distinctSites.size).toBe(cluster.sites.length);
+    for (const [x, y] of cluster.sites) {
+      expect(cluster.grid[y * cluster.gridSize + x]).toBe(1);
+    }
+  });
+
   it("Z2-2: cluster is deterministic (same seed → same sites)", () => {
     const c1 = generateDlaCluster(42, 200);
     const c2 = generateDlaCluster(42, 200);
