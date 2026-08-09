@@ -146,11 +146,16 @@ export function hlMapInit(lambda0: number): HLMapState {
  */
 export function hlMapAddParticle(state: HLMapState, theta: number): HLMapState {
   const newDerivMagSq = new Float64Array(HL_N_GRID);
+  // Length assertion: both arrays are always HL_N_GRID elements — constructed only
+  // by hlMapInit/hlMapInitExact which fill exactly HL_N_GRID entries. If this ever
+  // fires it is a construction bug, not a missing-element: do NOT ?? 1.0 here
+  // (that would silently include a fabricated |dw/dz|² = 1 in the amplitude integral).
+  if (state.derivMagSq.length !== HL_N_GRID) throw new Error(`hlMapAddParticle: derivMagSq.length=${state.derivMagSq.length}, expected ${HL_N_GRID}`);
   for (let i = 0; i < HL_N_GRID; i++) {
     const phi = (2 * Math.PI * i) / HL_N_GRID;
     const z: Complex = fromPolar(1, phi);
     const dfdz = joukowskiBumpDerivative(z, theta, state.lambda0);
-    newDerivMagSq[i] = (state.derivMagSq[i] ?? 1.0) * cabs2(dfdz);
+    newDerivMagSq[i] = state.derivMagSq[i]! * cabs2(dfdz);
   }
   return {
     derivMagSq: newDerivMagSq,
@@ -187,13 +192,16 @@ export function hlMapInitExact(lambda0: number): HLMapStateExact {
 export function hlMapAddParticleExact(state: HLMapStateExact, theta: number): HLMapStateExact {
   const newMapValues: Complex[] = [];
   const newDerivMagSq = new Float64Array(HL_N_GRID);
+  // Length assertions: both arrays are always HL_N_GRID elements — see hlMapInit note above.
+  if (state.mapValues.length !== HL_N_GRID) throw new Error(`hlMapAddParticleExact: mapValues.length=${state.mapValues.length}, expected ${HL_N_GRID}`);
+  if (state.derivMagSq.length !== HL_N_GRID) throw new Error(`hlMapAddParticleExact: derivMagSq.length=${state.derivMagSq.length}, expected ${HL_N_GRID}`);
   for (let i = 0; i < HL_N_GRID; i++) {
     const wPrev = state.mapValues[i]!;
     // w_n(z) = f_θ(w_{n-1}(z))
     newMapValues.push(joukowskiBump(wPrev, theta, state.lambda0));
     // |dw_n/dz|² = |df_θ/dz(w_{n-1}(z))|² · |dw_{n-1}/dz|²
     const dfdz = joukowskiBumpDerivative(wPrev, theta, state.lambda0);
-    newDerivMagSq[i] = (state.derivMagSq[i] ?? 1.0) * cabs2(dfdz);
+    newDerivMagSq[i] = state.derivMagSq[i]! * cabs2(dfdz);
   }
   return { mapValues: newMapValues, derivMagSq: newDerivMagSq, n: state.n + 1, lambda0: state.lambda0 };
 }
@@ -212,10 +220,13 @@ export function hlAmplitudeIntegral(derivMagSq: Float64Array, a: number, lambda0
   // Skip NaN, Inf, or zero entries (singularities at bump attachment points).
   // The singularity at the bump attachment is integrable (it contributes zero
   // measure to the integral), so skipping it is the correct regularisation.
+  // Length assertion: caller must pass a HL_N_GRID-length array. ?? 0 would silently
+  // include a zero entry and then skip it — harmless but misleading. Fail loudly instead.
+  if (derivMagSq.length !== HL_N_GRID) throw new Error(`hlAmplitudeIntegral: derivMagSq.length=${derivMagSq.length}, expected ${HL_N_GRID}`);
   let sum = 0;
   let count = 0;
   for (let i = 0; i < HL_N_GRID; i++) {
-    const v = derivMagSq[i] ?? 0;
+    const v = derivMagSq[i]!;
     if (!isFinite(v) || v <= 0 || !isFinite(1.0 / v)) continue;
     sum += 1.0 / v;
     count++;

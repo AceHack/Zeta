@@ -31,6 +31,10 @@ import OracleSLE from "@/components/OracleSLE";
 import OracleWebGPU from "@/components/OracleWebGPU";
 import OracleWASM from "@/components/OracleWASM";
 import OracleV8Bytecode from "@/components/OracleV8Bytecode";
+import OracleQuickJS from "@/components/OracleQuickJS";
+import OracleLua from "@/components/OracleLua";
+import OracleRGBA from "@/components/OracleRGBA";
+import OracleRaceMode from "@/components/OracleRaceMode";
 import LoewnerEntropyPanel from "@/components/LoewnerEntropyPanel";
 import Z3DischargePanel from "@/components/Z3DischargePanel";
 import KappaPhaseDiagram from "@/components/KappaPhaseDiagram";
@@ -826,6 +830,22 @@ export default function Home() {
             onResult={(df) => setV8Result(df)}
           />
         </OracleCard>
+      </div>
+      {/* ── Oracle 15: QuickJS Bytecode ── */}
+      <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>
+        <OracleQuickJS seed={typeof seed === "number" ? seed : Number(seed)} />
+      </div>
+      {/* ── Oracle 16: Lua 5.4 Bytecode ── */}
+      <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>
+        <OracleLua seed={typeof seed === "number" ? seed : Number(seed)} />
+      </div>
+      {/* ── Oracle 17: RGBA Shader GPU ── */}
+      <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>
+        <OracleRGBA seed={typeof seed === "number" ? seed : Number(seed)} />
+      </div>
+      {/* ── Multi-Oracle Race Mode ── */}
+      <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>
+        <OracleRaceMode />
       </div>
       {/* ── Z-3 Discharge Panel ── */}
       <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>
