@@ -240,9 +240,44 @@ export function externalitySafe(
   thirdPartyPosterior: CalibrationPosterior,
   externalityDelta: number,
   kTrust = 3,
+  // 081KZKYDJ9Q — the τ this predicate must compare against. It was MISSING, and its
+  // absence hardcoded τ = 0, which Soraya's review named a CONSENT INVERSION: it reads
+  // a bystander's silence as consent to the maximum harm the predicate can permit.
+  //
+  // The default is the BYSTANDER row of the boxing-ring table: no harm. A party that
+  // has not entered the ring is the audience, and the audience does not get punched.
+  // A party that HAS entered may declare a permissive (negative) τ — that is the whole
+  // point of the ring — but it must be *declared*, never inferred from silence.
+  //
+  // Ref: docs/research/2026-08-09-the-boxing-ring-consent-capacity-floor-values-arise-naturally-aaron.md
+  // Omitted ⇒ the party's OWN pre-interaction floor (computed below), which makes
+  // "no harm" true by construction rather than by choosing a magic constant.
+  tauThirdParty?: number,
 ): boolean {
+  // Only harm counts. A claimed BENEFIT to a non-consenting party is an unverified
+  // assertion made about someone who is not at the table — letting +0.3 offset −0.3
+  // would let the interacting pair self-certify a compensation the bystander never
+  // agreed to (paternalistic benefit). Keep the clamp; this comment is the "why" that
+  // Soraya's review found missing.
+  const harm = Math.min(0, externalityDelta);
+
+  // ⚠ PROXY — labelled, per the D_f 1.322 lesson (a proxy that stops being called one
+  // becomes a fabricated measurement). The property we want is
+  //     trustBound(posterior_after(third, interaction), k) >= tau
+  // but `posterior_after` DOES NOT EXIST: there is no operator mapping an interaction
+  // to a change in a bystander's calibration posterior. Until one exists we approximate
+  // it as floor + harm, which is a UNITS APPROXIMATION as well as a temporal one —
+  // `floor` is a calibration-score bound while `externalityDelta` is a reach
+  // (option-space) quantity. Adding them is the lbf-vs-N shape; it is tolerated here
+  // ONLY because the alternative is shipping no bystander check at all, and it is
+  // marked so the next reader does not mistake it for the real operator.
   const floor = trustBound(thirdPartyPosterior, kTrust);
-  const afterFloor = floor + Math.min(0, externalityDelta);
-  // Safe if the third party's floor is not pushed below 0
-  return afterFloor >= 0;
+  const floorAfterProxy = floor + harm;
+
+  // Default τ = the party's own pre-interaction floor, so the predicate reduces to
+  // `harm >= 0` — i.e. ANY harm to a bystander fails. A declared τ below that floor is
+  // how a party that entered the ring permits harm to itself; it can never be inferred.
+  const tau = tauThirdParty ?? floor;
+
+  return floorAfterProxy >= tau;
 }
