@@ -52,7 +52,7 @@ self-knowledge**; empowerment scores an **interaction between two peers**. Colla
 them turns a calibration score into a social ranking — the exact failure the existing
 docstring guards ("weighting a claim is not the same as valuing the claimant").
 
-## Values calls — ANSWERED (Aaron 2026-08-09). All four share one shape:
+## Values calls — ANSWERED (Aaron 2026-08-09). All four share one shape
 **consent + disclosure, never coercion, never accident.**
 
 1. **Aggregation: BOTH `min` and `sum`** — `min` (maximin) is the DEFAULT; `sum`
