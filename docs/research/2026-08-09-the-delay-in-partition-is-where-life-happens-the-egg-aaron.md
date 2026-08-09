@@ -213,6 +213,159 @@ does not by itself say anything about the SAFETY side — how much stale authori
 isolation permits. R8's capture concern is a separate axis, and the bound has to satisfy
 both. Naming the EA parameter does not retire the values question, it isolates it.)*
 
+## Islands of STABILITY — the synthesis that closes the honest limit
+
+**Human anchor: James Whitfield, Aaron's colleague at Itron** — the islands-of-stability
+framing is his contribution, and it resolves the gap the previous section left open. He also
+supplies the organisational instance, below: he **ran his human teams this way**.
+
+I recorded a limit: the island-model GA framing governs exploration/exploitation but says
+nothing about **stale authority**, R8's separate axis. The nuclear reading closes it, because
+in physics the islands are islands **of stability**, and stability is exactly the missing
+quantity.
+
+**The island of stability** (Seaborg; on the nuclear shell model of Goeppert Mayer & Jensen,
+Nobel 1963): superheavy nuclei near closed shells — "magic numbers" around Z ≈ 114–126,
+N ≈ 184 — are predicted to have half-lives orders of magnitude longer than their neighbours.
+The region is **predicted from structure before being reached**. Between here and there lies
+a sea of instability: nuclei that decay before they can be measured.
+
+Map it onto the substrate and every term lands:
+
+| nuclear | substrate |
+|---|---|
+| a nuclide's half-life | how long a configuration persists **without external correction** |
+| the sea of instability | configurations that need constant coordination to survive |
+| an island of stability | a configuration that holds together **while partitioned** |
+| magic numbers / shell closure | the structural reason a configuration is stable |
+| islands predicted but **not yet reached** | the frontier — what does not reduce |
+
+**Stability *is* the stale-authority axis, stated positively.** A configuration whose
+authority goes stale under isolation is short-half-life: it decays the moment coordination
+stops. A configuration that stays correct while partitioned is *on an island*. So R8's
+concern was never a separate axis at all — it is the **half-life of the configuration**, and
+the island-model GA and the nuclear islands are measuring the same thing from two ends.
+
+And the crucial half: **the valuable islands are the unreached ones.** They are inferred from
+structure, not observed — which is the same claim as `DoesNotReduce`. What reduces to a known
+form is charted; the irreducible residue is the predicted-but-unvisited island. The frontier
+is not where you are, it is where the shell structure says something stable should be.
+
+## Directed evolution — the variation is aimed, not random
+
+> Aaron: *"we are creating directed evolution, not random mutations."*
+
+This corrects the island-model framing in a way that changes its economics, so it is worth
+stating precisely rather than as emphasis.
+
+A classical GA assumes **undirected** variation: mutate at random, let selection sort it out.
+That is why GAs need enormous populations — almost every sample is wasted. Our variation
+operator is not random. Each derivation is a reasoning agent **aiming at the specification**,
+so every variant is a serious candidate produced by an attempt to satisfy the same
+constraints.
+
+Three consequences, and the first two are why generation 0 worked at all:
+
+1. **n = 2 sufficed.** Two directed derivations surfaced twelve spec defects. A random-variation
+   search over implementations would need a number of samples with no relationship to that.
+2. **A losing island is still informative.** Under random mutation, a variant that loses
+   carries no signal beyond "worse." Here, B lost on substance and *still* contributed the
+   type sketch for the deferred half and the only implementation of R11 — because it lost for
+   reasons, and the reasons are readable.
+3. **Selection can act on the reasoning, not just the artifact.** The implementer's report —
+   which ambiguities it hit, what it chose, what it refused to claim — is a fitness signal
+   that does not exist in undirected evolution. Generation 0 nearly threw it away.
+
+**Anchor:** Frances Arnold's directed evolution (Nobel 2018) is the closest name, with one
+honest difference worth keeping straight: Arnold's *mutations* are random and only the
+*selection* is directed. Ours are directed on both sides — closer to rational/structure-guided
+design than to Arnold's protocol. Claiming her method wholesale would overstate the anchor;
+what we share is the iterative round structure and the chosen selection pressure.
+
+**Synthesis:** *directed variation, aimed at structurally-predicted islands of stability,
+where stability means surviving partition without coordination.* Not a random walk — a search
+steered toward configurations the structure says should hold together alone.
+
+### Random mutation is the fallback, with a stated switch condition
+
+> Aaron: *"random mutations are for when we are out of ideas."*
+
+That places it exactly, and it makes the algorithm two-operator rather than one:
+
+| operator | when | cost | a losing variant |
+|---|---|---|---|
+| **Directed** (default) | you have a hypothesis about where the island is | few samples | **informative** — it lost for reasons you can read |
+| **Random** (fallback) | you have a residue and **no hypothesis about it** | many samples | uninformative — "worse", and nothing more |
+
+Random variation is not the engine and it is not shameful; it is the **operator of last
+resort**, and its sample-inefficiency is precisely why it goes last rather than first.
+
+The switch condition is **mechanical, not a mood** — and the registry already computes it:
+
+> Switch to random variation when `DoesNotReduce` carries **no proposed structure**. A residue
+> with a hypothesis is directed work. A residue with none is unmapped space, and unmapped
+> space is the only place random variation earns its cost.
+
+This is how superheavy synthesis actually proceeds, which is the reason the physics anchor
+keeps paying: you aim at predicted magic numbers while the shell model has predictions, and
+when the predictions run out you fire beams and see what sticks. Both operators, in that
+order, for that reason.
+
+It also names a failure mode in each direction. Reaching for random variation while a
+hypothesis remains untried is **wasting the cheap operator** — most of a GA's classical cost
+is exactly this. Staying directed after the hypotheses are exhausted is **searching a map
+that has run out**, and it feels productive right up until nothing new reduces.
+
+## The migration operator was a person — James Whitfield's teams
+
+> Aaron: *"James Whitfield ran his human teams like this, and I was the particle he let
+> communicate with all."*
+
+This is the island model implemented on humans, decades before we wrote it down, and the
+detail that matters is the **one particle**.
+
+In an island-model search the migration rate is the whole parameter (§ above). Whitfield's
+teams were the islands — isolated so they would genuinely diverge — and Aaron was the
+**migration operator**: the single carrier permitted to cross between them. Not an accident
+of seniority; it is the minimum nonzero migration rate, and it is *directed*:
+
+- **Open communication between teams → premature convergence.** Everyone converges on the
+  first plausible approach; you are paying for N teams and getting one, wearing N names. This
+  is the correlated-derivations failure at organisational scale.
+- **Zero communication → no cross-pollination.** Each island re-derives what its neighbour
+  already has, and good variants never spread.
+- **One carrier → a tunable, low, *selective* rate.** The carrier cannot transmit everything,
+  so bandwidth scarcity **forces selection at the migration step** — they must choose which
+  variant is worth moving. That is strictly more than a standard island GA does, where
+  migrants are picked at random or by local fitness.
+
+It also explains something about Aaron's own practice rather than just Whitfield's design:
+**he was trained as a migration operator.** Carrying a signature-detection technique from
+16 kHz electricity metering to audio track separation to Shazam-style identification is the
+same move — selecting the transferable variant and moving it across an isolation boundary. The
+skill this document keeps relying on is the one that role builds.
+
+### The honest tension — a single carrier is a hub
+
+A designated migration particle is a **central coordinator for variation.** Whoever is the
+particle holds enormous and largely invisible influence over which variants spread and which
+die on their island. In Whitfield's org that was a person Aaron trusted, and the arrangement
+was legible to everyone in it.
+
+In the substrate it cannot be a designated node, and the reason is this document's own
+argument: we just established that freezing under partition is unacceptable **because it
+reveals a hidden central coordinator**. A single migration channel is that same hub, moved
+from the liveness axis to the variation axis — if the carrier is down, partitioned, or
+captured, no variant crosses and every island silently stops evolving.
+
+**The structural version of the same rate:** migration by rate-limited pairwise gossip on
+reunion rather than through a designated carrier. Random contact at a bounded rate gives the
+same low migration the design depends on, with no node whose absence stops the algorithm and
+no node whose preferences steer it. What is lost is Whitfield's *selective* migration — gossip
+carries whatever the pair has, not what a judgement says is most transferable — and that loss
+is real. Recovering the selectivity without recreating the hub is an open problem worth
+naming rather than papering over.
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
