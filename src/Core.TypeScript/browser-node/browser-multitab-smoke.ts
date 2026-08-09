@@ -51,6 +51,7 @@ interface BrowserServiceWorkerBootstrapGlobal {
   readonly navigator: {
     readonly serviceWorker: {
       readonly controller?: unknown;
+      getRegistration(): Promise<{ readonly active?: unknown } | undefined>;
     };
   };
 }
@@ -249,19 +250,24 @@ async function waitForReady(page: Page): Promise<void> {
 async function installServiceWorker(page: Page, url: string): Promise<true> {
   await page.goto(url);
   await page.waitForFunction(
-    "() => globalThis.__zetaServiceWorkerInstall?.state === 'ready' || globalThis.__zetaServiceWorkerInstall?.state === 'failed'",
+    `() => globalThis.__zetaServiceWorkerInstall?.state === "failed" || Boolean(navigator.serviceWorker.controller)`,
     undefined,
     { timeout: timeoutMs },
   );
-  const result = await page.evaluate(() => {
+  const result = await page.evaluate(async () => {
     const root = globalThis as unknown as BrowserServiceWorkerBootstrapGlobal;
+    const registration = await root.navigator.serviceWorker.getRegistration();
     return {
-      state: root.__zetaServiceWorkerInstall?.state ?? "failed",
+      state: root.__zetaServiceWorkerInstall?.state ?? "reloaded",
       detail: root.__zetaServiceWorkerInstall?.detail ?? "The installer produced no result.",
       controlled: Boolean(root.navigator.serviceWorker.controller),
+      active: Boolean(registration?.active),
     };
   });
-  if (result.state !== "ready" || !result.controlled) {
+  if (result.state === "failed") {
+    throw new Error(result.detail);
+  }
+  if (!result.controlled || !result.active) {
     throw new Error(result.detail ?? "The installer page was not controlled by its service worker.");
   }
   return true;

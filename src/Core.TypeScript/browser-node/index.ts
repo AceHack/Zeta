@@ -89,13 +89,25 @@ export {
 
 export {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,
-  openNativeIndexedDbCheckpointPort,
+  browserCheckpointFailed,
+  browserCheckpointSucceeded,
+  copyBrowserCheckpointRecord,
+  decideBrowserCheckpointRemoval,
+  decideBrowserCheckpointSave,
   validateBrowserCheckpointRecord,
   type BrowserCheckpointFeedback,
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
+  type BrowserCheckpointRemovalDecision,
   type BrowserCheckpointResult,
+  type BrowserCheckpointSaveDecision,
+} from "./browser-checkpoint-port";
+
+export {
+  openNativeIndexedDbCheckpointPort,
+  type NativeIndexedDbCheckpointFeedback,
   type NativeIndexedDbCheckpointOptions,
+  type NativeIndexedDbCheckpointResult,
 } from "./browser-indexeddb-checkpoint";
 
 export {

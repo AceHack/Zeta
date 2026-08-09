@@ -1,10 +1,13 @@
 import {
   BROWSER_CHECKPOINT_RECORD_SCHEMA,
-  openNativeIndexedDbCheckpointPort,
   validateBrowserCheckpointRecord,
   type BrowserCheckpointFeedback,
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
+} from "../browser-node/browser-checkpoint-port";
+import {
+  openNativeIndexedDbCheckpointPort,
+  type NativeIndexedDbCheckpointFeedback,
   type NativeIndexedDbCheckpointOptions,
 } from "../browser-node/browser-indexeddb-checkpoint";
 import {
@@ -30,6 +33,7 @@ export const DARK_HALL_BROWSER_DURABLE_RUNTIME_SCHEMA = "zeta.darkhall.browser-d
 type DurableRuntimeSource = "browser-runtime" | "checkpoint-store" | "room-checkpoint" | "room-render";
 type UnderlyingFeedback =
   | BrowserCheckpointFeedback
+  | NativeIndexedDbCheckpointFeedback
   | BrowserRoomCheckpointFeedback
   | BrowserLifecycleHostFeedback
   | DarkHallBrowserBootstrapFeedback;

@@ -1,39 +1,28 @@
-export const BROWSER_CHECKPOINT_RECORD_SCHEMA = "zeta.browser-checkpoint-record.v1" as const;
+import {
+  browserCheckpointFailed,
+  browserCheckpointSucceeded,
+  copyBrowserCheckpointRecord,
+  decideBrowserCheckpointRemoval,
+  decideBrowserCheckpointSave,
+  validateBrowserCheckpointRecord,
+  type BrowserCheckpointPort,
+  type BrowserCheckpointRecord,
+  type BrowserCheckpointResult,
+} from "./browser-checkpoint-port";
 
-export interface BrowserCheckpointRecord {
-  readonly schema: typeof BROWSER_CHECKPOINT_RECORD_SCHEMA;
-  readonly nodeId: string;
-  readonly revision: number;
-  readonly payload: Uint8Array;
-}
-
-export interface BrowserCheckpointFeedback {
+export interface NativeIndexedDbCheckpointFeedback {
   readonly severity: "backpressure" | "heat";
   readonly code:
-    | "checkpoint-configuration-invalid"
-    | "checkpoint-record-invalid"
-    | "checkpoint-revision-conflict"
-    | "checkpoint-store-closed"
+    | "indexed-db-configuration-invalid"
     | "indexed-db-unavailable"
     | "indexed-db-blocked"
-    | "indexed-db-open-failed"
-    | "indexed-db-read-failed"
-    | "indexed-db-write-failed"
-    | "indexed-db-delete-failed"
-    | "indexed-db-close-failed";
+    | "indexed-db-open-failed";
   readonly detail: string;
 }
 
-export type BrowserCheckpointResult<T> =
+export type NativeIndexedDbCheckpointResult<T> =
   | { readonly ok: true; readonly value: T }
-  | { readonly ok: false; readonly feedback: BrowserCheckpointFeedback };
-
-export interface BrowserCheckpointPort {
-  load(nodeId: string): Promise<BrowserCheckpointResult<BrowserCheckpointRecord | null>>;
-  save(record: BrowserCheckpointRecord): Promise<BrowserCheckpointResult<BrowserCheckpointRecord>>;
-  remove(nodeId: string, throughRevision: number): Promise<BrowserCheckpointResult<boolean>>;
-  close(): BrowserCheckpointResult<null>;
-}
+  | { readonly ok: false; readonly feedback: NativeIndexedDbCheckpointFeedback };
 
 export interface NativeIndexedDbCheckpointOptions {
   readonly databaseName: string;
@@ -75,16 +64,16 @@ interface NativeDatabase {
   close(): void;
 }
 
-function succeeded<T>(value: T): BrowserCheckpointResult<T> {
-  return { ok: true, value };
+function nativeFailed(
+  code: NativeIndexedDbCheckpointFeedback["code"],
+  detail: string,
+  severity: NativeIndexedDbCheckpointFeedback["severity"] = "heat",
+): { readonly ok: false; readonly feedback: NativeIndexedDbCheckpointFeedback } {
+  return { ok: false, feedback: { severity, code, detail } };
 }
 
-function failed(
-  code: BrowserCheckpointFeedback["code"],
-  detail: string,
-  severity: BrowserCheckpointFeedback["severity"] = "heat",
-): { readonly ok: false; readonly feedback: BrowserCheckpointFeedback } {
-  return { ok: false, feedback: { severity, code, detail } };
+function nativeSucceeded<T>(value: T): NativeIndexedDbCheckpointResult<T> {
+  return { ok: true, value };
 }
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
@@ -93,10 +82,6 @@ function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
 
 function isIdentifier(value: unknown): value is string {
   return typeof value === "string" && value.length > 0;
-}
-
-function isRevision(value: unknown): value is number {
-  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
 function method(value: unknown, name: string): ((...args: readonly unknown[]) => unknown) | null {
@@ -117,41 +102,6 @@ function errorDetail(value: unknown): string {
   if (typeof message === "string") return message;
   if (typeof name === "string") return name;
   return "No IndexedDB error detail was available.";
-}
-
-function copyRecord(record: BrowserCheckpointRecord): BrowserCheckpointRecord {
-  return { ...record, payload: new Uint8Array(record.payload) };
-}
-
-function samePayload(left: Uint8Array, right: Uint8Array): boolean {
-  if (left.byteLength !== right.byteLength) return false;
-  for (let index = 0; index < left.byteLength; index += 1) {
-    if (left[index] !== right[index]) return false;
-  }
-  return true;
-}
-
-export function validateBrowserCheckpointRecord(value: unknown): BrowserCheckpointResult<BrowserCheckpointRecord> {
-  if (
-    !isRecord(value) ||
-    value.schema !== BROWSER_CHECKPOINT_RECORD_SCHEMA ||
-    !isIdentifier(value.nodeId) ||
-    !isRevision(value.revision) ||
-    !(value.payload instanceof Uint8Array)
-  ) {
-    return failed(
-      "checkpoint-record-invalid",
-      "A browser checkpoint must carry the current schema, a node identifier, a non-negative safe revision, and bytes.",
-    );
-  }
-  return succeeded(
-    copyRecord({
-      schema: BROWSER_CHECKPOINT_RECORD_SCHEMA,
-      nodeId: value.nodeId,
-      revision: value.revision,
-      payload: value.payload,
-    }),
-  );
 }
 
 function asDatabase(value: unknown): NativeDatabase | null {
@@ -201,15 +151,15 @@ function abortQuietly(transaction: NativeTransaction): void {
 export function openNativeIndexedDbCheckpointPort(
   root: unknown,
   options: NativeIndexedDbCheckpointOptions,
-): Promise<BrowserCheckpointResult<BrowserCheckpointPort>> {
+): Promise<NativeIndexedDbCheckpointResult<BrowserCheckpointPort>> {
   if (!isIdentifier(options.databaseName) || !isIdentifier(options.storeName)) {
     return Promise.resolve(
-      failed("checkpoint-configuration-invalid", "IndexedDB database and store names must be non-empty strings."),
+      nativeFailed("indexed-db-configuration-invalid", "IndexedDB database and store names must be non-empty strings."),
     );
   }
   if (root === null || (typeof root !== "object" && typeof root !== "function")) {
     return Promise.resolve(
-      failed("indexed-db-unavailable", "This runtime does not expose IndexedDB.", "backpressure"),
+      nativeFailed("indexed-db-unavailable", "This runtime does not expose IndexedDB.", "backpressure"),
     );
   }
 
@@ -217,12 +167,12 @@ export function openNativeIndexedDbCheckpointPort(
   try {
     factoryValue = Reflect.get(root, "indexedDB");
   } catch {
-    return Promise.resolve(failed("indexed-db-unavailable", "This runtime blocked access to IndexedDB."));
+    return Promise.resolve(nativeFailed("indexed-db-unavailable", "This runtime blocked access to IndexedDB."));
   }
   const open = method(factoryValue, "open");
   if (open === null) {
     return Promise.resolve(
-      failed("indexed-db-unavailable", "This runtime does not expose IndexedDB.", "backpressure"),
+      nativeFailed("indexed-db-unavailable", "This runtime does not expose IndexedDB.", "backpressure"),
     );
   }
 
@@ -231,13 +181,13 @@ export function openNativeIndexedDbCheckpointPort(
     try {
       request = Reflect.apply(open, factoryValue, [options.databaseName, 1]) as NativeOpenRequest;
     } catch (error) {
-      resolve(failed("indexed-db-open-failed", `IndexedDB open threw: ${String(error)}`));
+      resolve(nativeFailed("indexed-db-open-failed", `IndexedDB open threw: ${String(error)}`));
       return;
     }
 
     let settled = false;
-    let upgradeFailure: BrowserCheckpointFeedback | null = null;
-    const finish = (result: BrowserCheckpointResult<BrowserCheckpointPort>): void => {
+    let upgradeFailure: NativeIndexedDbCheckpointFeedback | null = null;
+    const finish = (result: NativeIndexedDbCheckpointResult<BrowserCheckpointPort>): void => {
       if (settled) return;
       settled = true;
       resolve(result);
@@ -245,7 +195,7 @@ export function openNativeIndexedDbCheckpointPort(
 
     request.onblocked = () => {
       finish(
-        failed(
+        nativeFailed(
           "indexed-db-blocked",
           "IndexedDB could not open the checkpoint database because another connection blocked its schema version.",
           "backpressure",
@@ -253,12 +203,12 @@ export function openNativeIndexedDbCheckpointPort(
       );
     };
     request.onerror = () => {
-      finish(failed("indexed-db-open-failed", `IndexedDB failed to open: ${errorDetail(request.error)}`));
+      finish(nativeFailed("indexed-db-open-failed", `IndexedDB failed to open: ${errorDetail(request.error)}`));
     };
     request.onupgradeneeded = () => {
       const database = asDatabase(request.result);
       if (database === null) {
-        upgradeFailure = failed(
+        upgradeFailure = nativeFailed(
           "indexed-db-open-failed",
           "IndexedDB returned an invalid database while creating the checkpoint store.",
         ).feedback;
@@ -269,7 +219,7 @@ export function openNativeIndexedDbCheckpointPort(
           database.createObjectStore(options.storeName, { keyPath: "nodeId" });
         }
       } catch (error) {
-        upgradeFailure = failed(
+        upgradeFailure = nativeFailed(
           "indexed-db-open-failed",
           `IndexedDB failed to create the checkpoint store: ${String(error)}`,
         ).feedback;
@@ -278,7 +228,7 @@ export function openNativeIndexedDbCheckpointPort(
     request.onsuccess = () => {
       const database = asDatabase(request.result);
       if (database === null) {
-        finish(failed("indexed-db-open-failed", "IndexedDB returned an invalid checkpoint database."));
+        finish(nativeFailed("indexed-db-open-failed", "IndexedDB returned an invalid checkpoint database."));
         return;
       }
       if (settled) {
@@ -301,11 +251,11 @@ export function openNativeIndexedDbCheckpointPort(
       try {
         if (!database.objectStoreNames.contains(options.storeName)) {
           database.close();
-          finish(failed("indexed-db-open-failed", "The checkpoint object store was not created."));
+          finish(nativeFailed("indexed-db-open-failed", "The checkpoint object store was not created."));
           return;
         }
       } catch (error) {
-        finish(failed("indexed-db-open-failed", `IndexedDB store inspection failed: ${String(error)}`));
+        finish(nativeFailed("indexed-db-open-failed", `IndexedDB store inspection failed: ${String(error)}`));
         return;
       }
 
@@ -324,31 +274,35 @@ export function openNativeIndexedDbCheckpointPort(
         } catch {
           // The version-change configuration failure remains primary.
         }
-        finish(failed("indexed-db-open-failed", `IndexedDB version-change wiring failed: ${String(error)}`));
+        finish(nativeFailed("indexed-db-open-failed", `IndexedDB version-change wiring failed: ${String(error)}`));
         return;
       }
       const begin = (
         mode: "readonly" | "readwrite",
-        code: "indexed-db-read-failed" | "indexed-db-write-failed" | "indexed-db-delete-failed",
+        code: "checkpoint-read-failed" | "checkpoint-write-failed" | "checkpoint-delete-failed",
       ): BrowserCheckpointResult<{ readonly transaction: NativeTransaction; readonly store: NativeObjectStore }> => {
-        if (closed) return failed("checkpoint-store-closed", "The IndexedDB checkpoint port is already closed.");
+        if (closed)
+          return browserCheckpointFailed("checkpoint-store-closed", "The IndexedDB checkpoint port is already closed.");
         try {
           const transaction = asTransaction(database.transaction(options.storeName, mode));
-          if (transaction === null) return failed(code, "IndexedDB returned an invalid checkpoint transaction.");
+          if (transaction === null)
+            return browserCheckpointFailed(code, "IndexedDB returned an invalid checkpoint transaction.");
           const store = asObjectStore(transaction.objectStore(options.storeName));
           return store === null
-            ? failed(code, "IndexedDB returned an invalid checkpoint object store.")
-            : succeeded({ transaction, store });
+            ? browserCheckpointFailed(code, "IndexedDB returned an invalid checkpoint object store.")
+            : browserCheckpointSucceeded({ transaction, store });
         } catch (error) {
-          return failed(code, `IndexedDB failed to start a checkpoint transaction: ${String(error)}`);
+          return browserCheckpointFailed(code, `IndexedDB failed to start a checkpoint transaction: ${String(error)}`);
         }
       };
 
       const load = (nodeId: string): Promise<BrowserCheckpointResult<BrowserCheckpointRecord | null>> => {
         if (!isIdentifier(nodeId)) {
-          return Promise.resolve(failed("checkpoint-record-invalid", "A checkpoint node identifier must be non-empty."));
+          return Promise.resolve(
+            browserCheckpointFailed("checkpoint-record-invalid", "A checkpoint node identifier must be non-empty."),
+          );
         }
-        const started = begin("readonly", "indexed-db-read-failed");
+        const started = begin("readonly", "checkpoint-read-failed");
         if (!started.ok) return Promise.resolve(started);
         const { transaction, store } = started.value;
 
@@ -364,12 +318,19 @@ export function openNativeIndexedDbCheckpointPort(
           try {
             getRequest = asRequest(store.get(nodeId));
           } catch (error) {
-            finishLoad(failed("indexed-db-read-failed", `IndexedDB checkpoint read threw: ${String(error)}`));
+            finishLoad(
+              browserCheckpointFailed("checkpoint-read-failed", `IndexedDB checkpoint read threw: ${String(error)}`),
+            );
             abortQuietly(transaction);
             return;
           }
           if (getRequest === null) {
-            finishLoad(failed("indexed-db-read-failed", "IndexedDB returned an invalid checkpoint read request."));
+            finishLoad(
+              browserCheckpointFailed(
+                "checkpoint-read-failed",
+                "IndexedDB returned an invalid checkpoint read request.",
+              ),
+            );
             abortQuietly(transaction);
             return;
           }
@@ -385,13 +346,19 @@ export function openNativeIndexedDbCheckpointPort(
           };
           getRequest.onerror = () => {
             finishLoad(
-              failed("indexed-db-read-failed", `IndexedDB checkpoint read failed: ${errorDetail(getRequest?.error)}`),
+              browserCheckpointFailed(
+                "checkpoint-read-failed",
+                `IndexedDB checkpoint read failed: ${errorDetail(getRequest?.error)}`,
+              ),
             );
           };
-          transaction.oncomplete = () => finishLoad(succeeded(loaded));
+          transaction.oncomplete = () => finishLoad(browserCheckpointSucceeded(loaded));
           transaction.onerror = () =>
             finishLoad(
-              failed("indexed-db-read-failed", `IndexedDB checkpoint transaction failed: ${errorDetail(transaction.error)}`),
+              browserCheckpointFailed(
+                "checkpoint-read-failed",
+                `IndexedDB checkpoint transaction failed: ${errorDetail(transaction.error)}`,
+              ),
             );
           transaction.onabort = transaction.onerror;
         });
@@ -400,7 +367,7 @@ export function openNativeIndexedDbCheckpointPort(
       const save = (value: BrowserCheckpointRecord): Promise<BrowserCheckpointResult<BrowserCheckpointRecord>> => {
         const candidate = validateBrowserCheckpointRecord(value);
         if (!candidate.ok) return Promise.resolve(candidate);
-        const started = begin("readwrite", "indexed-db-write-failed");
+        const started = begin("readwrite", "checkpoint-write-failed");
         if (!started.ok) return Promise.resolve(started);
         const { transaction, store } = started.value;
 
@@ -415,88 +382,93 @@ export function openNativeIndexedDbCheckpointPort(
           try {
             getRequest = asRequest(store.get(candidate.value.nodeId));
           } catch (error) {
-            finishSave(failed("indexed-db-write-failed", `IndexedDB checkpoint comparison threw: ${String(error)}`));
+            finishSave(
+              browserCheckpointFailed(
+                "checkpoint-write-failed",
+                `IndexedDB checkpoint comparison threw: ${String(error)}`,
+              ),
+            );
             abortQuietly(transaction);
             return;
           }
           if (getRequest === null) {
-            finishSave(failed("indexed-db-write-failed", "IndexedDB returned an invalid checkpoint comparison request."));
+            finishSave(
+              browserCheckpointFailed(
+                "checkpoint-write-failed",
+                "IndexedDB returned an invalid checkpoint comparison request.",
+              ),
+            );
             abortQuietly(transaction);
             return;
           }
           getRequest.onsuccess = () => {
-            let existing: BrowserCheckpointRecord | null = null;
-            if (getRequest?.result !== undefined) {
-              const decoded = validateBrowserCheckpointRecord(getRequest.result);
-              if (!decoded.ok) {
-                finishSave(decoded);
-                abortQuietly(transaction);
-                return;
-              }
-              existing = decoded.value;
+            const decision = decideBrowserCheckpointSave(
+              getRequest?.result === undefined ? null : getRequest.result,
+              candidate.value,
+            );
+            if (!decision.ok) {
+              finishSave(decision);
+              abortQuietly(transaction);
+              return;
             }
-            if (existing !== null && candidate.value.revision < existing.revision) {
+            if (decision.value.action === "idempotent") {
+              return;
+            }
+            let putRequest: NativeRequest | null = null;
+            try {
+              putRequest = asRequest(store.put(copyBrowserCheckpointRecord(decision.value.record)));
+            } catch (error) {
               finishSave(
-                failed(
-                  "checkpoint-revision-conflict",
-                  `Checkpoint revision ${String(candidate.value.revision)} is older than stored revision ${String(existing.revision)}.`,
-                  "backpressure",
+                browserCheckpointFailed(
+                  "checkpoint-write-failed",
+                  `IndexedDB checkpoint write threw: ${String(error)}`,
                 ),
               );
               abortQuietly(transaction);
               return;
             }
-            if (existing !== null && candidate.value.revision === existing.revision) {
-              if (!samePayload(candidate.value.payload, existing.payload)) {
-                finishSave(
-                  failed(
-                    "checkpoint-revision-conflict",
-                    `Checkpoint revision ${String(candidate.value.revision)} already names different bytes.`,
-                    "backpressure",
-                  ),
-                );
-                abortQuietly(transaction);
-              }
-              return;
-            }
-            let putRequest: NativeRequest | null = null;
-            try {
-              putRequest = asRequest(store.put(copyRecord(candidate.value)));
-            } catch (error) {
-              finishSave(failed("indexed-db-write-failed", `IndexedDB checkpoint write threw: ${String(error)}`));
-              abortQuietly(transaction);
-              return;
-            }
             if (putRequest === null) {
-              finishSave(failed("indexed-db-write-failed", "IndexedDB returned an invalid checkpoint write request."));
+              finishSave(
+                browserCheckpointFailed(
+                  "checkpoint-write-failed",
+                  "IndexedDB returned an invalid checkpoint write request.",
+                ),
+              );
               abortQuietly(transaction);
               return;
             }
             putRequest.onerror = () =>
               finishSave(
-                failed("indexed-db-write-failed", `IndexedDB checkpoint write failed: ${errorDetail(putRequest?.error)}`),
+                browserCheckpointFailed(
+                  "checkpoint-write-failed",
+                  `IndexedDB checkpoint write failed: ${errorDetail(putRequest?.error)}`,
+                ),
               );
           };
           getRequest.onerror = () =>
             finishSave(
-              failed("indexed-db-write-failed", `IndexedDB checkpoint comparison failed: ${errorDetail(getRequest?.error)}`),
+              browserCheckpointFailed(
+                "checkpoint-write-failed",
+                `IndexedDB checkpoint comparison failed: ${errorDetail(getRequest?.error)}`,
+              ),
             );
-          transaction.oncomplete = () => finishSave(succeeded(copyRecord(candidate.value)));
+          transaction.oncomplete = () =>
+            finishSave(browserCheckpointSucceeded(copyBrowserCheckpointRecord(candidate.value)));
           transaction.onerror = () =>
             finishSave(
-              failed("indexed-db-write-failed", `IndexedDB checkpoint transaction failed: ${errorDetail(transaction.error)}`),
+              browserCheckpointFailed(
+                "checkpoint-write-failed",
+                `IndexedDB checkpoint transaction failed: ${errorDetail(transaction.error)}`,
+              ),
             );
           transaction.onabort = transaction.onerror;
         });
       };
 
       const remove = (nodeId: string, throughRevision: number): Promise<BrowserCheckpointResult<boolean>> => {
-        if (!isIdentifier(nodeId) || !isRevision(throughRevision)) {
-          return Promise.resolve(
-            failed("checkpoint-record-invalid", "Checkpoint removal requires a node identifier and safe revision."),
-          );
-        }
-        const started = begin("readwrite", "indexed-db-delete-failed");
+        const removalInput = decideBrowserCheckpointRemoval(null, nodeId, throughRevision);
+        if (!removalInput.ok) return Promise.resolve(removalInput);
+        const started = begin("readwrite", "checkpoint-delete-failed");
         if (!started.ok) return Promise.resolve(started);
         const { transaction, store } = started.value;
 
@@ -512,79 +484,104 @@ export function openNativeIndexedDbCheckpointPort(
           try {
             getRequest = asRequest(store.get(nodeId));
           } catch (error) {
-            finishRemove(failed("indexed-db-delete-failed", `IndexedDB checkpoint lookup threw: ${String(error)}`));
+            finishRemove(
+              browserCheckpointFailed(
+                "checkpoint-delete-failed",
+                `IndexedDB checkpoint lookup threw: ${String(error)}`,
+              ),
+            );
             abortQuietly(transaction);
             return;
           }
           if (getRequest === null) {
-            finishRemove(failed("indexed-db-delete-failed", "IndexedDB returned an invalid checkpoint lookup request."));
+            finishRemove(
+              browserCheckpointFailed(
+                "checkpoint-delete-failed",
+                "IndexedDB returned an invalid checkpoint lookup request.",
+              ),
+            );
             abortQuietly(transaction);
             return;
           }
           getRequest.onsuccess = () => {
-            if (getRequest?.result === undefined) return;
-            const decoded = validateBrowserCheckpointRecord(getRequest.result);
-            if (!decoded.ok) {
-              finishRemove(decoded);
+            const decision = decideBrowserCheckpointRemoval(
+              getRequest?.result === undefined ? null : getRequest.result,
+              nodeId,
+              throughRevision,
+            );
+            if (!decision.ok) {
+              finishRemove(decision);
               abortQuietly(transaction);
               return;
             }
-            if (decoded.value.revision > throughRevision) {
+            if (decision.value.action === "missing") return;
+            let deleteRequest: NativeRequest | null = null;
+            try {
+              deleteRequest = asRequest(store.delete(nodeId));
+            } catch (error) {
               finishRemove(
-                failed(
-                  "checkpoint-revision-conflict",
-                  `Stored checkpoint revision ${String(decoded.value.revision)} is newer than removal revision ${String(throughRevision)}.`,
-                  "backpressure",
+                browserCheckpointFailed(
+                  "checkpoint-delete-failed",
+                  `IndexedDB checkpoint delete threw: ${String(error)}`,
                 ),
               );
               abortQuietly(transaction);
               return;
             }
-            let deleteRequest: NativeRequest | null = null;
-            try {
-              deleteRequest = asRequest(store.delete(nodeId));
-            } catch (error) {
-              finishRemove(failed("indexed-db-delete-failed", `IndexedDB checkpoint delete threw: ${String(error)}`));
-              abortQuietly(transaction);
-              return;
-            }
             if (deleteRequest === null) {
-              finishRemove(failed("indexed-db-delete-failed", "IndexedDB returned an invalid checkpoint delete request."));
+              finishRemove(
+                browserCheckpointFailed(
+                  "checkpoint-delete-failed",
+                  "IndexedDB returned an invalid checkpoint delete request.",
+                ),
+              );
               abortQuietly(transaction);
               return;
             }
             removed = true;
             deleteRequest.onerror = () =>
               finishRemove(
-                failed("indexed-db-delete-failed", `IndexedDB checkpoint delete failed: ${errorDetail(deleteRequest?.error)}`),
+                browserCheckpointFailed(
+                  "checkpoint-delete-failed",
+                  `IndexedDB checkpoint delete failed: ${errorDetail(deleteRequest?.error)}`,
+                ),
               );
           };
           getRequest.onerror = () =>
             finishRemove(
-              failed("indexed-db-delete-failed", `IndexedDB checkpoint lookup failed: ${errorDetail(getRequest?.error)}`),
+              browserCheckpointFailed(
+                "checkpoint-delete-failed",
+                `IndexedDB checkpoint lookup failed: ${errorDetail(getRequest?.error)}`,
+              ),
             );
-          transaction.oncomplete = () => finishRemove(succeeded(removed));
+          transaction.oncomplete = () => finishRemove(browserCheckpointSucceeded(removed));
           transaction.onerror = () =>
             finishRemove(
-              failed("indexed-db-delete-failed", `IndexedDB checkpoint transaction failed: ${errorDetail(transaction.error)}`),
+              browserCheckpointFailed(
+                "checkpoint-delete-failed",
+                `IndexedDB checkpoint transaction failed: ${errorDetail(transaction.error)}`,
+              ),
             );
           transaction.onabort = transaction.onerror;
         });
       };
 
       finish(
-        succeeded({
+        nativeSucceeded({
           load,
           save,
           remove,
           close: () => {
-            if (closed) return succeeded(null);
+            if (closed) return browserCheckpointSucceeded(null);
             try {
               database.close();
               closed = true;
-              return succeeded(null);
+              return browserCheckpointSucceeded(null);
             } catch (error) {
-              return failed("indexed-db-close-failed", `IndexedDB checkpoint close failed: ${String(error)}`);
+              return browserCheckpointFailed(
+                "checkpoint-close-failed",
+                `IndexedDB checkpoint close failed: ${String(error)}`,
+              );
             }
           },
         }),

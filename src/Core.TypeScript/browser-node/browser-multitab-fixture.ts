@@ -4,7 +4,7 @@ import {
   type DarkHallBrowserDurableResult,
   type DarkHallBrowserDurableRuntime,
 } from "../darkhall-ui/darkhall-browser-durable-runtime";
-import type { BrowserCheckpointRecord } from "./browser-indexeddb-checkpoint";
+import type { BrowserCheckpointRecord } from "./browser-checkpoint-port";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import { createNativeServiceWorkerTabChannel } from "./browser-service-worker-channel";
 import type { RoomRunTranscript } from "../darkhall-ui/darkhall-room";

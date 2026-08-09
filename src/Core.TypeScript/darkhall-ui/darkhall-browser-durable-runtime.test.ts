@@ -4,7 +4,7 @@ import {
   type BrowserCheckpointPort,
   type BrowserCheckpointRecord,
   type BrowserCheckpointResult,
-} from "../browser-node/browser-indexeddb-checkpoint";
+} from "../browser-node/browser-checkpoint-port";
 import { encodeBrowserRoomCheckpoint } from "../browser-node/browser-room-checkpoint";
 import { BROWSER_NODE_SCHEMA } from "../browser-node/browser-node";
 import {
