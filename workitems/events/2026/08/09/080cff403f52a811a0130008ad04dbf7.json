@@ -1,0 +1,14 @@
+{
+  "id": "080cff403f52a811a0130008ad04dbf7",
+  "at": "2026-08-09T19:37:40.693Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZM0FTJM08QG0R002675YBK",
+    "type": "bug",
+    "title": "zetadb fold has no cross-substrate concurrency guard — GH Actions concurrency group cannot see local/browser cells",
+    "slug": "zetadb-fold-has-no-cross-substrate-concurrency-guard-gh-acti",
+    "priority": "P2",
+    "filename": "081KZM0FTJM08QG0R002675YBK-zetadb-fold-has-no-cross-substrate-concurrency-guard-gh-acti.md"
+  }
+}
