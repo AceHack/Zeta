@@ -3,164 +3,267 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zeta Observe Loop Monitor</title>
+<title>Zeta — Observe Monitor</title>
 <style>
 :root {
   --ground: #0B0E16;
-  --panel: #141A28;
-  --line: #26304A;
+  --panel: #131A2A;
+  --panel-2: #0F1522;
+  --line: #23304B;
   --text: #E7EBF4;
-  --dim: #5E6B8A;
+  --dim: #6B7A9C;
+  --faint: #3A4664;
   --amber: #E8B566;
   --teal: #5EC8C2;
   --violet: #9A8CE6;
   --red: #E0746A;
+  --green: #7BC97E;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--ground); color: var(--text); font-family: 'Inter', system-ui, sans-serif; padding: 2rem; }
-h1 { font-size: 1.4rem; margin-bottom: 1.5rem; letter-spacing: 0.02em; }
-.chip { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-family: monospace; }
-.chip-live { background: rgba(94, 200, 194, 0.15); color: var(--teal); border: 1px solid rgba(94, 200, 194, 0.3); }
-.chip-mock { background: rgba(232, 181, 102, 0.15); color: var(--amber); border: 1px solid rgba(232, 181, 102, 0.3); }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 1rem; }
-.card-label { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
-.card-value { font-size: 1.8rem; font-weight: 600; font-family: 'Space Mono', monospace; }
-.card-value.amber { color: var(--amber); }
-.card-value.teal { color: var(--teal); }
-.card-value.violet { color: var(--violet); }
-.timeline { margin-top: 2rem; }
-.timeline h2 { font-size: 1rem; margin-bottom: 1rem; color: var(--dim); }
-.tick { display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-size: 0.8rem; font-family: monospace; }
-.tick-time { color: var(--dim); min-width: 140px; }
-.tick-action { color: var(--teal); }
+html { background: var(--ground); }
+body {
+  background:
+    radial-gradient(1200px 500px at 70% -10%, rgba(154,140,230,0.07), transparent 60%),
+    radial-gradient(900px 400px at 10% 110%, rgba(94,200,194,0.05), transparent 60%),
+    var(--ground);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+.mono { font-family: 'Space Mono', ui-monospace, 'SF Mono', Menlo, monospace; }
+
+header { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
+h1 { font-size: 1.35rem; letter-spacing: 0.02em; font-weight: 650; }
+h1 .hex { color: var(--teal); margin-right: 0.4rem; }
+.sub { color: var(--dim); font-size: 0.8rem; }
+.chip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.22rem 0.65rem; border-radius: 999px;
+  font-size: 0.72rem; font-family: ui-monospace, monospace;
+  border: 1px solid var(--line); color: var(--dim); background: var(--panel-2);
+}
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+.chip.live { color: var(--teal); border-color: rgba(94,200,194,0.35); }
+.chip.live::before { background: var(--teal); box-shadow: 0 0 8px rgba(94,200,194,0.8); }
+.chip.alert { color: var(--red); border-color: rgba(224,116,106,0.4); }
+.chip.alert::before { background: var(--red); box-shadow: 0 0 8px rgba(224,116,106,0.8); }
+
+.grid { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 1.2rem; }
+.card {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--line); border-radius: 12px; padding: 0.95rem 1.05rem;
+}
+.card-label { font-size: 0.64rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 0.35rem; }
+.card-value { font-size: 1.7rem; font-weight: 650; font-family: 'Space Mono', ui-monospace, monospace; line-height: 1.1; }
+.card-value.sm { font-size: 1.05rem; padding-top: 0.3rem; }
+.teal { color: var(--teal); } .amber { color: var(--amber); }
+.violet { color: var(--violet); } .red { color: var(--red); } .green { color: var(--green); }
+
+.row { display: grid; gap: 0.9rem; grid-template-columns: 1fr; margin-bottom: 1.2rem; }
+@media (min-width: 900px) { .row { grid-template-columns: 3fr 2fr; } }
+.panel {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--line); border-radius: 12px; padding: 1.05rem 1.15rem;
+}
+.panel h2 { font-size: 0.78rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 0.8rem; }
+.panel h2 .note { text-transform: none; letter-spacing: 0; color: var(--faint); float: right; font-size: 0.7rem; }
+canvas { width: 100%; height: 110px; display: block; }
+
+.drift-row { display: grid; grid-template-columns: 4.6rem 1fr auto; align-items: center; gap: 0.7rem; padding: 0.42rem 0; border-bottom: 1px solid rgba(35,48,75,0.55); font-size: 0.8rem; }
+.drift-row:last-child { border-bottom: none; }
+.drift-rule { font-family: ui-monospace, monospace; color: var(--violet); }
+.drift-rule.open { color: var(--red); font-weight: 700; }
+.bar-track { height: 7px; background: rgba(35,48,75,0.6); border-radius: 4px; overflow: hidden; }
+.bar { height: 100%; border-radius: 4px; background: var(--teal); }
+.bar.open { background: var(--red); }
+.drift-meta { font-family: ui-monospace, monospace; color: var(--dim); font-size: 0.72rem; white-space: nowrap; }
+.drift-meta b { color: var(--text); font-weight: 600; }
+
+.tick { display: grid; grid-template-columns: 8.6rem 1fr auto; gap: 0.7rem; padding: 0.4rem 0; border-bottom: 1px solid rgba(35,48,75,0.55); font-size: 0.78rem; font-family: ui-monospace, monospace; }
+.tick:last-child { border-bottom: none; }
+.tick-time { color: var(--faint); }
+.tick-action { color: var(--teal); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tick-agent { color: var(--amber); }
-.tick-entropy { color: var(--violet); }
-.empty { color: var(--dim); font-style: italic; margin-top: 2rem; }
-footer { margin-top: 3rem; font-size: 0.7rem; color: var(--dim); }
+
+.empty { color: var(--dim); font-style: italic; font-size: 0.85rem; padding: 0.5rem 0; }
+footer { margin-top: 2rem; font-size: 0.68rem; color: var(--faint); line-height: 1.7; }
+footer code { color: var(--dim); }
+@media (prefers-reduced-motion: no-preference) {
+  .card, .panel { transition: border-color 200ms ease; }
+  .card:hover, .panel:hover { border-color: var(--faint); }
+}
 </style>
 </head>
 <body>
-<h1>⬡ Zeta Observe Loop Monitor</h1>
-<div id="status"></div>
+<header>
+  <h1><span class="hex">⬡</span>Zeta Observe Monitor</h1>
+  <span id="status" class="chip">connecting</span>
+  <span id="buildchip" class="chip" hidden></span>
+  <span class="sub" id="asof"></span>
+</header>
+
 <div class="grid" id="cards"></div>
-<div class="timeline" id="timeline"></div>
-<div class="timeline" id="drift"></div>
+
+<div class="row">
+  <div class="panel">
+    <h2>Tick cadence <span class="note" id="sparknote"></span></h2>
+    <canvas id="spark" height="110" aria-label="events per frame over time"></canvas>
+  </div>
+  <div class="panel">
+    <h2>Drift ledger <span class="note" id="driftnote"></span></h2>
+    <div id="drift"><p class="empty">Loading drift data…</p></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Recent activity</h2>
+  <div id="timeline"><p class="empty">Loading tick history…</p></div>
+</div>
+
 <footer>
-  Data: <code>data/tick-history.json</code> (same-origin, append-only ledger) ·
-  <code>data/drift-mtth.json</code> (drift-sweep MTTH fold, tick-indexed) ·
+  Data: <code>data/tick-history.json</code> (append-only observe ledger) ·
+  <code>data/drift-mtth.json</code> (drift-sweep MTTH fold, tick-indexed — the
+  drift-and-heal ADR's measurement surface) ·
   Git is the database · Pages is the API · Tabs are the nodes
 </footer>
 
 <script>
-async function load() {
-  const statusEl = document.getElementById('status');
-  const cardsEl = document.getElementById('cards');
-  const timelineEl = document.getElementById('timeline');
-
-  let data;
-  try {
-    const resp = await fetch('tick-history.json');
-    if (!resp.ok) throw new Error(`${resp.status}`);
-    data = await resp.json();
-    statusEl.innerHTML = `<span class="chip chip-live">live · data/ same-origin</span>`;
-  } catch (e) {
-    // Fallback: try relative to repo root
-    try {
-      const resp2 = await fetch('../data/tick-history.json');
-      if (!resp2.ok) throw new Error(`${resp2.status}`);
-      data = await resp2.json();
-      statusEl.innerHTML = `<span class="chip chip-live">live · ../data/ relative</span>`;
-    } catch {
-      statusEl.innerHTML = `<span class="chip chip-mock">offline · no data yet</span>`;
-      timelineEl.innerHTML = `<p class="empty">No tick data yet. The agent-heartbeat workflow will populate data/tick-history.json once it starts running.</p>`;
-      return;
-    }
+"use strict";
+async function fetchFirst(paths) {
+  for (const p of paths) {
+    try { const r = await fetch(p); if (r.ok) return await r.json(); } catch { /* next */ }
   }
-
-  const frames = data.frames || [];
-  const latest = frames[frames.length - 1];
-
-  if (!latest) {
-    cardsEl.innerHTML = `<p class="empty">Ledger exists but has no frames yet.</p>`;
-    return;
-  }
-
-  // Freshness: age of newest frame. Degrade live → stale past 2 hours.
-  const newestAt = new Date(latest.t);
-  const ageMs = Date.now() - newestAt.getTime();
-  const ageMin = Math.round(ageMs / 60000);
-  const ageStr = ageMin < 60 ? `${ageMin}min ago` : `${Math.round(ageMin/60)}h ${ageMin%60}min ago`;
-  const STALE_THRESHOLD_MS = 2 * 60 * 60 * 1000; // 2 hours
-  if (ageMs > STALE_THRESHOLD_MS) {
-    statusEl.innerHTML = `<span class="chip chip-mock">stale · last frame ${ageStr}</span>`;
-  } else {
-    statusEl.innerHTML += ` <span class="chip chip-live">fresh · ${ageStr}</span>`;
-  }
-
-  // Render cards
-  cardsEl.innerHTML = `
-    <div class="card"><div class="card-label">Total Events</div><div class="card-value teal">${latest.total_events}</div></div>
-    <div class="card"><div class="card-label">Ticks (24h)</div><div class="card-value amber">${latest.ticks_24h}</div></div>
-    <div class="card"><div class="card-label">Active Agents</div><div class="card-value violet">${latest.agents_active}</div></div>
-    <div class="card"><div class="card-label">Last Action</div><div class="card-value teal">${latest.last_action}</div></div>
-    <div class="card"><div class="card-label">Mode</div><div class="card-value amber">${latest.last_mode}</div></div>
-    <div class="card"><div class="card-label">Entropy (state/heat)</div><div class="card-value violet">${latest.entropy_state}/${latest.entropy_heat}</div></div>
-    <div class="card"><div class="card-label">Claims Pending</div><div class="card-value">${latest.claims_pending}</div></div>
-    <div class="card"><div class="card-label">Last Agent</div><div class="card-value amber">${latest.last_agent}</div></div>
-  `;
-
-  // Render timeline (last 20 frames, newest first)
-  const recent = frames.slice(-20).reverse();
-  timelineEl.innerHTML = `<h2>Recent Ticks (${frames.length} total)</h2>` +
-    recent.map(f => `
-      <div class="tick">
-        <span class="tick-time">${new Date(f.t).toLocaleString()}</span>
-        <span class="tick-action">${f.last_action}</span>
-        <span class="tick-agent">${f.last_agent}</span>
-        <span class="tick-entropy">s:${f.entropy_state} h:${f.entropy_heat}</span>
-      </div>
-    `).join('');
+  return null;
 }
 
-// Drift ledger panel — MTTH per drift class, tick-indexed (the drift-and-heal
-// ADR's measurement surface: 1 tick = one drift-sweep of main, cron every 4h).
-// Written by .github/workflows/drift-sweep.yml via `drift-ledger report --json`.
+function drawSpark(canvas, values) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+  if (values.length < 2) return;
+  const max = Math.max(...values, 1), min = Math.min(...values, 0);
+  const x = i => (i / (values.length - 1)) * (w - 4) + 2;
+  const y = v => h - 6 - ((v - min) / (max - min || 1)) * (h - 14);
+  // area fill
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, "rgba(94,200,194,0.28)");
+  grad.addColorStop(1, "rgba(94,200,194,0)");
+  ctx.beginPath();
+  ctx.moveTo(x(0), h);
+  values.forEach((v, i) => ctx.lineTo(x(i), y(v)));
+  ctx.lineTo(x(values.length - 1), h);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+  // line
+  ctx.beginPath();
+  values.forEach((v, i) => (i === 0 ? ctx.moveTo(x(i), y(v)) : ctx.lineTo(x(i), y(v))));
+  ctx.strokeStyle = "#5EC8C2";
+  ctx.lineWidth = 1.6;
+  ctx.stroke();
+  // last point
+  ctx.beginPath();
+  ctx.arc(x(values.length - 1), y(values[values.length - 1]), 2.6, 0, Math.PI * 2);
+  ctx.fillStyle = "#5EC8C2";
+  ctx.fill();
+}
+
+function card(label, value, cls) {
+  return `<div class="card"><div class="card-label">${label}</div>` +
+    `<div class="card-value ${cls || ""}">${value}</div></div>`;
+}
+
+async function load() {
+  const statusEl = document.getElementById("status");
+  const data = await fetchFirst(["tick-history.json", "../data/tick-history.json"]);
+  if (!data || !(data.frames || []).length) {
+    statusEl.textContent = "offline — no tick data yet";
+    return;
+  }
+  statusEl.textContent = "live";
+  statusEl.className = "chip live";
+  const frames = data.frames;
+  const latest = frames[frames.length - 1];
+  document.getElementById("asof").textContent =
+    "as of " + new Date(latest.t).toLocaleString();
+
+  document.getElementById("cards").innerHTML = [
+    card("Total events", latest.total_events, "teal"),
+    card("Ticks · 24h", latest.ticks_24h, "amber"),
+    card("Active agents", latest.agents_active, "violet"),
+    card("Claims pending", latest.claims_pending, latest.claims_pending > 0 ? "amber" : "green"),
+    card("Entropy s/h", `${latest.entropy_state}/${latest.entropy_heat}`,
+      latest.entropy_heat > 0 ? "red" : "green"),
+    card("Last act", `${latest.last_agent}<br>${latest.last_action}`, "sm teal"),
+  ].join("");
+
+  // Sparkline: events landed per frame (delta of total_events), last 120 frames.
+  const recent = frames.slice(-121);
+  const deltas = [];
+  for (let i = 1; i < recent.length; i++) {
+    deltas.push(Math.max(0, recent[i].total_events - recent[i - 1].total_events));
+  }
+  document.getElementById("sparknote").textContent =
+    `events per frame · last ${deltas.length} frames`;
+  drawSpark(document.getElementById("spark"), deltas);
+
+  document.getElementById("timeline").innerHTML = frames.slice(-14).reverse().map(f => `
+    <div class="tick">
+      <span class="tick-time">${new Date(f.t).toLocaleTimeString()}</span>
+      <span class="tick-action">${f.last_action} · ${f.last_mode}</span>
+      <span class="tick-agent">${f.last_agent}</span>
+    </div>`).join("");
+}
+
 async function loadDrift() {
-  const el = document.getElementById('drift');
-  let d;
-  try {
-    let resp = await fetch('drift-mtth.json');
-    if (!resp.ok) resp = await fetch('../data/drift-mtth.json');
-    if (!resp.ok) throw new Error(`${resp.status}`);
-    d = await resp.json();
-  } catch {
-    el.innerHTML = `<h2>Drift Ledger — MTTH per class</h2>
-      <p class="empty">No drift data yet. The drift-sweep workflow writes data/drift-mtth.json each tick.</p>`;
+  const el = document.getElementById("drift");
+  const d = await fetchFirst(["drift-mtth.json", "../data/drift-mtth.json"]);
+  if (!d) {
+    el.innerHTML = `<p class="empty">No drift data yet — the drift-sweep workflow writes it each tick.</p>`;
     return;
   }
   const classes = d.classes || [];
   const openTotal = classes.reduce((a, c) => a + (c.openCount || 0), 0);
-  const header = `<h2>Drift Ledger — tick ${d.latestTick} · ${classes.length} class(es) · ${openTotal} open</h2>`;
-  if (classes.length === 0) {
-    el.innerHTML = header + `<p class="empty">Ledger is clean — no drift classes observed yet.</p>`;
+  document.getElementById("driftnote").textContent =
+    `tick ${d.latestTick} · ${openTotal} open`;
+  const build = classes.find(c => c.rule === "BD001");
+  const buildChip = document.getElementById("buildchip");
+  if (build && build.openCount > 0) {
+    buildChip.hidden = false;
+    buildChip.textContent = "main build RED (BD001)";
+    buildChip.className = "chip alert";
+  } else if (build) {
+    buildChip.hidden = false;
+    buildChip.textContent = "main build green";
+    buildChip.className = "chip live";
+  }
+  if (!classes.length) {
+    el.innerHTML = `<p class="empty">Ledger clean — no drift classes observed.</p>`;
     return;
   }
-  el.innerHTML = header + classes.map(c => `
-      <div class="tick">
-        <span class="tick-time">${c.rule}</span>
-        <span class="tick-action">MTTH ${c.mtthTicks === null ? '—' : c.mtthTicks.toFixed(1)} tick(s)</span>
-        <span class="tick-agent">${c.healedCount} heal(s)</span>
-        <span class="tick-entropy">${c.openCount} open${c.oldestOpenAgeTicks === null ? '' : ` · oldest ${c.oldestOpenAgeTicks} tick(s)`}</span>
-      </div>
-    `).join('');
+  const maxMtth = Math.max(...classes.map(c => c.mtthTicks || 0), 1);
+  el.innerHTML = classes.map(c => {
+    const open = (c.openCount || 0) > 0;
+    const width = open
+      ? Math.min(100, ((c.oldestOpenAgeTicks || 0) + 1) / (maxMtth + 1) * 100)
+      : Math.min(100, (c.mtthTicks || 0) / maxMtth * 100);
+    const meta = open
+      ? `<b>${c.openCount} open</b> · age ${c.oldestOpenAgeTicks ?? 0}t`
+      : `MTTH <b>${c.mtthTicks === null ? "—" : c.mtthTicks.toFixed(1)}t</b> · ${c.healedCount} heal${c.healedCount === 1 ? "" : "s"}`;
+    return `<div class="drift-row">
+      <span class="drift-rule ${open ? "open" : ""}">${c.rule}</span>
+      <div class="bar-track"><div class="bar ${open ? "open" : ""}" style="width:${width}%"></div></div>
+      <span class="drift-meta">${meta}</span>
+    </div>`;
+  }).join("");
 }
 
-load();
-loadDrift();
-// Refresh every 60s (the data updates on schedule)
-setInterval(load, 60000);
-setInterval(loadDrift, 60000);
+load(); loadDrift();
+setInterval(load, 60000); setInterval(loadDrift, 60000);
 </script>
 </body>
 </html>
