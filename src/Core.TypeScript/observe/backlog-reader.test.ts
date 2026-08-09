@@ -3,8 +3,8 @@
  *
  * Two layers:
  *  - `pickupToAction` mapping (pure, exact) — PickupSelection → observe DU; and
- *  - a real-backlog integration smoke for `nextActionFromBacklog` (reads the
- *    actual docs/backlog via the reused autonomous-pickup selector).
+ *  - a real-workitem integration smoke for `nextActionFromBacklog` (reads the
+ *    current `workitems/` queue via the reused autonomous-pickup selector).
  */
 
 import { describe, expect, it } from "bun:test";
@@ -68,9 +68,12 @@ describe("pickupToAction — map the reused backlog selector onto the observe DU
   });
 });
 
-describe("nextActionFromBacklog — real-backlog integration smoke", () => {
-  it("returns a valid observe action from the actual docs/backlog", () => {
+describe("nextActionFromBacklog — real-workitem integration smoke", () => {
+  it("returns a valid observe action from the current workitems queue", () => {
     const action = nextActionFromBacklog(process.cwd());
-    expect(["do_item", "decompose", "free_time"]).toContain(action.kind);
+    expect(["do_item", "decompose"]).toContain(action.kind);
+    if (action.kind === "do_item" || action.kind === "decompose") {
+      expect(action.item.id).toMatch(/^081K[0-9A-Z]{22}$/);
+    }
   });
 });

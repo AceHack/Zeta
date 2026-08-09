@@ -3,7 +3,7 @@
  * src/Core.TypeScript/observe/backlog-reader.ts — bridge the REAL backlog to the observe DU.
  *
  * observe.ts's `observe()` is the pure 4-button controller (a toy oracle over a
- * synthetic BacklogItem). The REAL backlog already has a deterministic selector:
+ * synthetic BacklogItem). The real workitem queue already has a deterministic selector:
  * `src/Core.TypeScript/backlog/autonomous-pickup.ts` `selectNextBacklogItem` (priority-ranked,
  * dependency-aware, claim-aware, decompose-vs-claim). This reader REUSES it and
  * maps its `PickupSelection` onto the observe `NextAction` DU — it does NOT
@@ -23,7 +23,7 @@
  * Three things this reader absorbs as the system scales — and it is the single
  * place the rest of observe.ts is insulated from all of them:
  *
- *  1. TYPE axis (operator decided: `tasks + bugs`). A backlog row is not its own
+ *  1. TYPE axis (operator decided: `tasks + bugs`). A workitem row is not its own
  *     thing — it's a WORK-ITEM with a TYPE. Per Azure DevOps (umbrella =
  *     `WorkItem`; `Task` + `Bug` are peer leaf TYPES; Epic/Feature are the
  *     hierarchy above): sub-types are `task` + `bug` (+ later feature/epic).
@@ -31,13 +31,8 @@
  *     to type. So: WorkItem.type ∈ {task, bug, …}; WorkItem.state ∈ {backlog,
  *     active, done, …}.
  *
- *  2. ID axis. ZetaId gets a new `WorkItem` CATEGORY (operator 2026-05-31:
- *     "zetaid gets a new workitem category too after bus") — after `Bus`,
- *     alongside `Spawn`/`Heartbeat`. `B-xxxxx` ids COLLIDE at scale (the problem
- *     128-bit ZetaIds solve everywhere else). Migration: `B-xxxxx` → 128-bit
- *     ZetaId **WorkItem-category** ids (the `type` is a sub-type field within
- *     `WorkItem`). THIS reader is where that mapping lands: today `id` carries
- *     `B-xxxxx`; post-migration it carries (or pairs with) a `WorkItem` ZetaId.
+ *  2. ID axis. Workitems use 128-bit ZetaIds, so writers mint independently
+ *     without coordinating a sequential identifier.
  *
  *  3. EXECUTION axis. A WorkItem RUNS AS a durable Task (Durable Functions / Task
  *     framework) whose lifecycle is an Rx `Observable<WorkItemEvent>` (the
@@ -48,8 +43,8 @@
  *     it to execution (runs-as-Task, observed-via-Rx) — do NOT replace it with
  *     `Task` (which would invert Azure DevOps + overload the word).
  *
- * Keeping the reader the single seam means observe.ts never sees `B-xxxxx` vs
- * ZetaId, or task vs bug vs state — only the observe DU.
+ * Keeping the reader the single seam means observe.ts sees only the action DU,
+ * not workitem type or state details.
  */
 
 import { readBacklogItems, selectNextBacklogItem, type PickupSelection } from "../backlog/autonomous-pickup";
@@ -69,7 +64,7 @@ export function pickupToAction(sel: PickupSelection): NextAction {
   }
   const picked = sel.selected;
   const item: BacklogItem = {
-    id: picked.id, // B-xxxxx today → ZetaId work-item id post-migration (the seam)
+    id: picked.id,
     title: picked.title,
     ready: true,
     ambiguous: sel.action === "decompose-first",

@@ -51,7 +51,6 @@ interface Args {
   noGitClaims: boolean;
 }
 
-const PRIORITIES: readonly Priority[] = ["P0", "P1", "P2", "P3"];
 const BLOB_LINE_THRESHOLD = 120;
 const PRIORITY_RANK: Record<Priority, number> = {
   P0: 0,
@@ -277,55 +276,43 @@ function itemNumber(id: string): number {
 }
 
 export function readBacklogItems(repoRoot: string): BacklogItem[] {
-  const backlogDir = join(repoRoot, "docs", "backlog");
+  const workitemsDir = join(repoRoot, "workitems");
   const items: BacklogItem[] = [];
 
-  for (const priority of PRIORITIES) {
-    const tierDir = join(backlogDir, priority);
-    if (!isDirectory(tierDir)) {
+  if (!isDirectory(workitemsDir)) {
+    return items;
+  }
+
+  for (const entry of readdirSync(workitemsDir, { withFileTypes: true })) {
+    if (!entry.isFile() || !/^081K[0-9A-Z]{22}.*\.md$/.test(entry.name)) {
       continue;
     }
-    for (const entry of readdirSync(tierDir, { withFileTypes: true })) {
-      if (!entry.isFile() || !entry.name.endsWith(".md")) {
-        continue;
-      }
-      // ZetaId-prefixed filenames (128-bit hex). The B-xxxx sequential naming
-      // is a dead coordinate primitive — only the frontmatter `id` field carries
-      // that legacy identifier. Filenames are ZetaId-only.
-      if (!/^[0-9A-Z]{10,}/.test(entry.name)) {
-        continue;
-      }
-      const absolutePath = join(tierDir, entry.name);
-      const content = readFileSync(absolutePath, "utf8");
-      const frontmatter = parseFrontmatter(content);
-      // ZetaId is the canonical identifier — locally mintable, no coordination.
-      const rawId = asString(frontmatter.id);
-      const zetaid = asString(frontmatter.zetaid) || (rawId && !/^B-\d/.test(rawId) ? rawId : null);
-      const legacyId = rawId && /^B-\d/.test(rawId) ? rawId : null;
-      const id = zetaid ?? legacyId;
-      const title = asString(frontmatter.title);
-      if (!id || !title) {
-        continue;
-      }
-      const declaredPriority = asString(frontmatter.priority);
-      if (!isPriority(declaredPriority)) {
-        continue;
-      }
-      items.push({
-        id,
-        legacyId: legacyId || null,
-        priority: declaredPriority,
-        status: asString(frontmatter.status) || "open",
-        title,
-        relativePath: relative(repoRoot, absolutePath).split("\\").join("/"),
-        dependsOn: asStringList(frontmatter.depends_on),
-        parent: asString(frontmatter.parent) || null,
-        created: asString(frontmatter.created) || null,
-        lastUpdated: asString(frontmatter.last_updated) || null,
-        decomposition: asString(frontmatter.decomposition) || null,
-        bodyLineCount: content.split(/\r?\n/).length,
-      });
+
+    const absolutePath = join(workitemsDir, entry.name);
+    const content = readFileSync(absolutePath, "utf8");
+    const frontmatter = parseFrontmatter(content);
+    const id = asString(frontmatter.id);
+    const title = asString(frontmatter.title);
+    const declaredPriority = asString(frontmatter.priority);
+    if (!id || !title || !isPriority(declaredPriority)) {
+      continue;
     }
+
+    const declaredState = asString(frontmatter.state) || "backlog";
+    items.push({
+      id,
+      legacyId: null,
+      priority: declaredPriority,
+      status: declaredState === "backlog" ? "open" : declaredState,
+      title,
+      relativePath: relative(repoRoot, absolutePath).split("\\").join("/"),
+      dependsOn: asStringList(frontmatter.depends_on),
+      parent: asString(frontmatter.parent) || null,
+      created: asString(frontmatter.created) || null,
+      lastUpdated: asString(frontmatter.last_updated) || null,
+      decomposition: asString(frontmatter.decomposition) || null,
+      bodyLineCount: content.split(/\r?\n/).length,
+    });
   }
 
   return items.sort(compareBacklogItems);

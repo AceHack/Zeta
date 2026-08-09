@@ -111,6 +111,25 @@ export {
 } from "./browser-indexeddb-checkpoint";
 
 export {
+  createBrowserZetaDbImagePort,
+  openBrowserZetaDbImagePort,
+  runBrowserZetaDbWake,
+} from "./browser-zetadb-image-port";
+
+export {
+  BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
+  BROWSER_ZETA_DB_WAKE_SCHEMA,
+  handleBrowserZetaDbWakeMessage,
+  installBrowserZetaDbWakeRuntime,
+  type BrowserZetaDbWakeExecutor,
+  type BrowserZetaDbWakeFeedback,
+  type BrowserZetaDbWakeMessage,
+  type BrowserZetaDbWakeResponse,
+  type BrowserZetaDbWakeRuntime,
+  type BrowserZetaDbWakeRuntimeResult,
+} from "./browser-zetadb-wake-runtime";
+
+export {
   BROWSER_ROOM_CHECKPOINT_SCHEMA,
   MAX_BROWSER_ROOM_CHECKPOINT_BYTES,
   decodeBrowserRoomCheckpoint,

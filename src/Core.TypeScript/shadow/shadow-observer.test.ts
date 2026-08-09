@@ -74,12 +74,12 @@ describe("shadow-observer — dry-run once mode", () => {
   });
 
   test("--dry-run --once exits 0", () => {
-    const r = run("--dry-run", "--once");
+    const r = run("--dry-run", "--once", "--delay", "0", "--detect-cmd", "false");
     expect(r.exitCode).toBe(0);
   });
 
   test("--dry-run --once writes started + no-suggestion events to log file", () => {
-    run("--dry-run", "--once");
+    run("--dry-run", "--once", "--delay", "0", "--detect-cmd", "false");
     const events = readLog();
     expect(events.length).toBeGreaterThanOrEqual(2);
     expect(events[0]!.type).toBe("started");
@@ -90,13 +90,13 @@ describe("shadow-observer — dry-run once mode", () => {
 
   test("--dry-run --once --delay 0 completes quickly", () => {
     const start = Date.now();
-    const r = run("--dry-run", "--once", "--delay", "0");
+    const r = run("--dry-run", "--once", "--delay", "0", "--detect-cmd", "false");
     expect(r.exitCode).toBe(0);
     expect(Date.now() - start).toBeLessThan(5000);
   });
 
   test("started event contains delay and dry-run in content", () => {
-    run("--dry-run", "--once", "--delay", "500");
+    run("--dry-run", "--once", "--delay", "500", "--detect-cmd", "false");
     const events = readLog();
     const started = events.find((e) => e.type === "started");
     expect(started).toBeDefined();
@@ -105,7 +105,7 @@ describe("shadow-observer — dry-run once mode", () => {
   });
 
   test("stdout emits JSON log lines", () => {
-    const r = run("--dry-run", "--once");
+    const r = run("--dry-run", "--once", "--delay", "0", "--detect-cmd", "false");
     expect(r.exitCode).toBe(0);
     const lines = r.stdout.split("\n").filter(Boolean);
     expect(lines.length).toBeGreaterThanOrEqual(2);
@@ -718,7 +718,17 @@ describe("shadow-observer — zeta-shadow.ts smoke tests (slice 4)", () => {
   test("zeta-shadow.ts --once --dry-run exits 0", () => {
     const r = spawnSync(
       "bun",
-      [ZETA_SHADOW, "--once", "--dry-run", "--log-file", join(SMOKE_DIR, "shadow.log")],
+      [
+        ZETA_SHADOW,
+        "--once",
+        "--dry-run",
+        "--delay",
+        "0",
+        "--detect-cmd",
+        "false",
+        "--log-file",
+        join(SMOKE_DIR, "shadow.log"),
+      ],
       { encoding: "utf-8" },
     );
     expect(r.status).toBe(0);

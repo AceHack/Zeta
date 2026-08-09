@@ -25,7 +25,7 @@ Found by **Dejan** (devops-engineer) while analysing 081KZETP6AT, 2026-08-09; ve
   **every** configuration including the installer ISO. **This is what CI builds**
   (`.github/workflows/build-ai-cluster-iso.yml` → `full-ai-cluster/flake.nix#installer-iso`).
 - `full-ai-cluster/usb-nixos-installer/flake.nix` builds `nixosConfigurations.installer` from the
-  **same** `./nixos/installer/configuration.nix` (l.28) but applies **no overlay** — verified: no
+  **same** `full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix` (l.28) but applies **no overlay** — verified: no
   `overlays` / `mise-pin` reference anywhere in that flake.
 
 So `nix build` run *inside* `usb-nixos-installer/` produces an ISO carrying an **unpinned**
@@ -47,7 +47,7 @@ wrong on its own.
 
 ## Fix (sketch)
 
-Apply the same overlay in `usb-nixos-installer/flake.nix`, **or** collapse the duplicate flake so
+Apply the same overlay in `full-ai-cluster/usb-nixos-installer/flake.nix`, **or** collapse the duplicate flake so
 there is exactly one definition of the installer ISO (preferred — DV2.0: one hub, not two).
 Either way, add a check that the two flakes' installer configurations agree, so this cannot
 silently re-diverge.

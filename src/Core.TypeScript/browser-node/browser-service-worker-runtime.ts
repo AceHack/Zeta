@@ -1,4 +1,5 @@
 import { relayBrowserServiceWorkerTabMessage } from "./browser-service-worker-channel";
+import { BROWSER_ZETA_DB_WAKE_SCHEMA } from "./browser-zetadb-wake-runtime";
 import type { BrowserTabCoordinatorFeedback, BrowserTabOperationResult } from "./browser-tab-coordinator";
 
 export const BROWSER_SERVICE_WORKER_RUNTIME_SCHEMA = "zeta.browser-service-worker-runtime.v1" as const;
@@ -21,14 +22,14 @@ export interface BrowserServiceWorkerRuntime {
 }
 
 interface WorkerClientsLike {
-  claim(): Promise<unknown> | unknown;
+  claim(): unknown;
 }
 
 interface WorkerRootLike {
   readonly clients: WorkerClientsLike;
   addEventListener(type: string, listener: (event: unknown) => void): void;
   removeEventListener(type: string, listener: (event: unknown) => void): void;
-  skipWaiting(): Promise<unknown> | unknown;
+  skipWaiting(): unknown;
 }
 
 function succeeded<T>(value: T): BrowserTabOperationResult<T> {
@@ -149,6 +150,7 @@ export function installBrowserServiceWorkerRuntime(
     );
   };
   const messaged = (event: unknown): void => {
+    if (isRecord(event) && isRecord(event.data) && event.data.schema === BROWSER_ZETA_DB_WAKE_SCHEMA) return;
     const relayed = relayBrowserServiceWorkerTabMessage(rootValue, event, options.maxClients).then((result) => {
       if (!result.ok) record(result.feedback);
     });

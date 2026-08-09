@@ -25,15 +25,16 @@ class WorkerRoot {
     claim: (): void => {
       this.claimCount += 1;
     },
-    matchAll: async (): Promise<readonly { readonly id: string; postMessage(message: unknown): void }[]> => [
-      { id: "client-a", postMessage: (): void => undefined },
-      {
-        id: "client-b",
-        postMessage: (message: unknown): void => {
-          this.deliveries.push(message);
+    matchAll: (): Promise<readonly { readonly id: string; postMessage(message: unknown): void }[]> =>
+      Promise.resolve([
+        { id: "client-a", postMessage: (): void => undefined },
+        {
+          id: "client-b",
+          postMessage: (message: unknown): void => {
+            this.deliveries.push(message);
+          },
         },
-      },
-    ],
+      ]),
   };
 
   skipWaiting(): void {
@@ -116,6 +117,20 @@ describe("browser service-worker runtime", () => {
         },
       ],
     });
+  });
+
+  test("leaves database wake messages to the database handler", async () => {
+    const root = new WorkerRoot();
+    const installed = installBrowserServiceWorkerRuntime(root, { maxClients: 4, maxFeedback: 4 });
+    expect(installed.ok).toBe(true);
+    if (!installed.ok) return;
+
+    const message = messageEvent({ schema: "zeta.browser-db-wake.v1", request: {} });
+    root.emit("message", message);
+    await message.drain();
+
+    expect(root.deliveries).toEqual([]);
+    expect(installed.value.read().feedback).toEqual([]);
   });
 
   test("rejects invalid capacities and worker globals as typed feedback", () => {

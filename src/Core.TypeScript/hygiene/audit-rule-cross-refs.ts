@@ -45,6 +45,9 @@ import { join } from "node:path";
 
 const RULES_DIR = ".claude/rules";
 const BACKLOG_DIR = "docs/backlog";
+const WORKITEMS_DIR = "workitems";
+const ZETA_ID_AT_START = /^(081K[0-9A-Z]{22})/;
+const ZETA_ID_FIELD = /^id:\s*(081K[0-9A-Z]{22})\b/m;
 
 type AuditExitCode = 0 | 64;
 
@@ -213,6 +216,41 @@ function globResolves(pattern: string): boolean {
 
 let cachedBacklogIds: Set<string> | null = null;
 
+function collectWorkitemIds(directory: string, ids: Set<string>, recursive: boolean): void {
+  if (!existsSync(directory)) return;
+
+  let entries;
+  try {
+    entries = readdirSync(directory, { withFileTypes: true });
+  } catch {
+    return;
+  }
+
+  for (const entry of entries) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) {
+      if (recursive) collectWorkitemIds(path, ids, true);
+      continue;
+    }
+    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+
+    const stemMatch = entry.name.match(ZETA_ID_AT_START);
+    if (stemMatch?.[1]) {
+      ids.add(stemMatch[1]);
+      continue;
+    }
+
+    // Legacy rows may carry the canonical ID only in frontmatter. Reading is
+    // the fallback, not the hot path: canonical workitem filenames own the ID.
+    try {
+      const idMatch = readFileSync(path, "utf8").match(ZETA_ID_FIELD);
+      if (idMatch?.[1]) ids.add(idMatch[1]);
+    } catch {
+      // An unreadable row cannot resolve a reference.
+    }
+  }
+}
+
 function refExists(ref: Ref): boolean {
   if (ref.kind === "path") {
     // Template-placeholder patterns: rule-acknowledged-transient per
@@ -270,36 +308,11 @@ function refExists(ref: Ref): boolean {
     return false;
   }
   if (ref.kind === "backlog-id") {
-    if (!existsSync(BACKLOG_DIR)) return false;
     if (cachedBacklogIds === null) {
       cachedBacklogIds = new Set<string>();
+      collectWorkitemIds(WORKITEMS_DIR, cachedBacklogIds, true);
       for (const p of ["P0", "P1", "P2", "P3"]) {
-        const dir = join(BACKLOG_DIR, p);
-        if (!existsSync(dir)) continue;
-        let files: string[];
-        try {
-          files = readdirSync(dir);
-        } catch {
-          continue;
-        }
-        for (const f of files) {
-          if (!f.endsWith(".md")) continue;
-          const path = join(dir, f);
-          try {
-            const content = readFileSync(path, "utf8");
-            const idMatch = content.match(/^id:\s*(081K[0-9A-Z]{22})\b/m);
-            if (idMatch?.[1]) {
-              cachedBacklogIds.add(idMatch[1]);
-              continue;
-            }
-            const stemMatch = f.match(/^(081K[0-9A-Z]{22})/);
-            if (stemMatch?.[1]) {
-              cachedBacklogIds.add(stemMatch[1]);
-            }
-          } catch {
-            // ignore read errors
-          }
-        }
+        collectWorkitemIds(join(BACKLOG_DIR, p), cachedBacklogIds, false);
       }
     }
     return cachedBacklogIds.has(ref.raw);

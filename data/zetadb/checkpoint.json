@@ -1,0 +1,6 @@
+{
+  "schema": "zeta.db.file-checkpoint.v1",
+  "nodeId": "zeta/global/browser",
+  "revision": 1,
+  "payloadBase64": "eyJzY2hlbWEiOiJ6ZXRhLmRiLmltYWdlLnYxIiwibm9kZUlkIjoiemV0YS9nbG9iYWwvYnJvd3NlciIsInJldmlzaW9uIjoxLCJlbnRyaWVzIjpbeyJldmVudElkIjoiZ2VuZXNpcy9icm93c2VyLW5vZGUtdjEiLCJyb3dLZXkiOiJzeXN0ZW0vYnJvd3Nlci1ub2RlIiwicGF5bG9hZCI6ImV2ZW50LWRyaXZlbiIsIndlaWdodCI6MX1dLCJyb3dzIjpbeyJyb3dLZXkiOiJzeXN0ZW0vYnJvd3Nlci1ub2RlIiwicGF5bG9hZCI6ImV2ZW50LWRyaXZlbiIsIndlaWdodCI6MX1dfQ=="
+}

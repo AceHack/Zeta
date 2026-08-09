@@ -1,0 +1,206 @@
+import { describe, expect, test } from "bun:test";
+import {
+  createInMemoryZetaDbImagePort,
+  runZetaDbNodeTick,
+  type ZetaDbDelta,
+  type ZetaDbExecutorKind,
+  type ZetaDbImagePort,
+} from "./zeta-db-node";
+
+const limits = { maxDeltas: 16, maxEntries: 32, maxCheckpointBytes: 32 * 1024 };
+
+const firstDelta: ZetaDbDelta = { eventId: "event-1", rowKey: "row/a", payload: "A", weight: 1 };
+
+const deltas: readonly ZetaDbDelta[] = [
+  firstDelta,
+  { eventId: "event-2", rowKey: "row/a", payload: "A", weight: 2 },
+  { eventId: "event-3", rowKey: "row/b", payload: "B", weight: 1 },
+  { eventId: "event-4", rowKey: "row/b", payload: "B", weight: -1 },
+];
+
+function run(port: ZetaDbImagePort, executorKind: ZetaDbExecutorKind, input = deltas) {
+  return runZetaDbNodeTick(port, {
+    nodeId: "global-browser-db",
+    executorId: `executor/${executorKind}`,
+    executorKind,
+    deltas: input,
+    limits,
+  });
+}
+
+describe("event-driven ZetaDB node", () => {
+  test("consolidates signed rows and retains the complete event ledger", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const result = await run(port, "browser-tab");
+
+    expect(result).toEqual({
+      ok: true,
+      value: {
+        schema: "zeta.db.tick.v1",
+        nodeId: "global-browser-db",
+        executorId: "executor/browser-tab",
+        executorKind: "browser-tab",
+        revision: 1,
+        admission: "complete",
+        accepted: 4,
+        duplicates: 0,
+        nextDeltaIndex: 4,
+        rows: [{ rowKey: "row/a", payload: "A", weight: 3 }],
+        feedback: [],
+      },
+    });
+
+    const stored = await port.load("global-browser-db");
+    expect(stored.ok && stored.value?.payload.byteLength).toBeGreaterThan(0);
+  });
+
+  test("produces the same database state for every temporary executor kind", async () => {
+    const kinds: readonly ZetaDbExecutorKind[] = [
+      "browser-tab",
+      "dedicated-worker",
+      "shared-worker",
+      "service-worker-event",
+      "local-process",
+      "cloud-process",
+      "github-actions",
+    ];
+    const states = [];
+    for (const kind of kinds) {
+      const result = await run(createInMemoryZetaDbImagePort(), kind);
+      expect(result.ok).toBe(true);
+      if (result.ok) states.push({ revision: result.value.revision, rows: result.value.rows });
+    }
+    expect(new Set(states.map((state) => JSON.stringify(state))).size).toBe(1);
+  });
+
+  test("resumes after each bounded wake-up without requiring a resident process", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const first = await runZetaDbNodeTick(port, {
+      nodeId: "global-browser-db",
+      executorId: "tab/one",
+      executorKind: "browser-tab",
+      deltas,
+      limits: { ...limits, maxDeltas: 2 },
+    });
+
+    expect(first.ok && first.value.admission).toBe("backpressured");
+    expect(first.ok && first.value.nextDeltaIndex).toBe(2);
+    const second = await runZetaDbNodeTick(port, {
+      nodeId: "global-browser-db",
+      executorId: "actions/run-2",
+      executorKind: "github-actions",
+      deltas: deltas.slice(2),
+      limits,
+    });
+    expect(second.ok && second.value.rows).toEqual([{ rowKey: "row/a", payload: "A", weight: 3 }]);
+    expect(second.ok && second.value.revision).toBe(2);
+  });
+
+  test("deduplicates retries by event identifier", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const first = await run(port, "browser-tab");
+    const retry = await run(port, "shared-worker");
+
+    expect(first.ok).toBe(true);
+    expect(retry.ok && retry.value).toMatchObject({ revision: 1, accepted: 0, duplicates: 4 });
+  });
+
+  test("backpressures at the no-forget boundary and returns the exact continuation", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const result = await runZetaDbNodeTick(port, {
+      nodeId: "global-browser-db",
+      executorId: "tab/bounded",
+      executorKind: "browser-tab",
+      deltas,
+      limits: { ...limits, maxEntries: 2 },
+    });
+
+    expect(result.ok && result.value).toMatchObject({
+      revision: 1,
+      admission: "backpressured",
+      accepted: 2,
+      nextDeltaIndex: 2,
+      feedback: [{ severity: "backpressure", code: "database-capacity-exhausted" }],
+    });
+  });
+
+  test("rejects conflicting reuse of an event identifier", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    await run(port, "browser-tab", [firstDelta]);
+    const conflict = await run(port, "browser-tab", [{ ...firstDelta, weight: -1 }]);
+
+    expect(conflict).toEqual({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "database-event-conflict",
+        detail: "Event identifier event-1 already names a different delta.",
+      },
+    });
+  });
+
+  test("admits exactly at the canonical byte boundary and backpressures one byte below it", async () => {
+    const secondDelta: ZetaDbDelta = { eventId: "event-5", rowKey: "row/c", payload: "C", weight: 1 };
+    const measuredPort = createInMemoryZetaDbImagePort();
+    await run(measuredPort, "browser-tab", [firstDelta]);
+    await run(measuredPort, "browser-tab", [secondDelta]);
+    const measured = await measuredPort.load("global-browser-db");
+    expect(measured.ok && measured.value).not.toBeNull();
+    if (!measured.ok || measured.value === null) return;
+
+    const exactPort = createInMemoryZetaDbImagePort();
+    await run(exactPort, "browser-tab", [firstDelta]);
+    const exact = await runZetaDbNodeTick(exactPort, {
+      nodeId: "global-browser-db",
+      executorId: "tab/exact",
+      executorKind: "browser-tab",
+      deltas: [secondDelta],
+      limits: { ...limits, maxCheckpointBytes: measured.value.payload.byteLength },
+    });
+    expect(exact.ok && exact.value).toMatchObject({ admission: "complete", accepted: 1, revision: 2 });
+
+    const boundedPort = createInMemoryZetaDbImagePort();
+    await run(boundedPort, "browser-tab", [firstDelta]);
+    const bounded = await runZetaDbNodeTick(boundedPort, {
+      nodeId: "global-browser-db",
+      executorId: "tab/bounded-bytes",
+      executorKind: "browser-tab",
+      deltas: [secondDelta],
+      limits: { ...limits, maxCheckpointBytes: measured.value.payload.byteLength - 1 },
+    });
+    expect(bounded.ok && bounded.value).toMatchObject({
+      admission: "backpressured",
+      accepted: 0,
+      nextDeltaIndex: 0,
+      revision: 1,
+    });
+  });
+
+  test("serializes simultaneous tab revisions without last-writer-wins data loss", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const request = (tab: string, delta: ZetaDbDelta) =>
+      runZetaDbNodeTick(port, {
+        nodeId: "global-browser-db",
+        executorId: tab,
+        executorKind: "browser-tab",
+        deltas: [delta],
+        limits,
+      });
+    const results = await Promise.all([
+      request("tab/a", firstDelta),
+      request("tab/b", { eventId: "event-b", rowKey: "row/b", payload: "B", weight: 1 }),
+    ]);
+
+    expect(results.filter((result) => result.ok)).toHaveLength(1);
+    expect(results.filter((result) => !result.ok)).toEqual([
+      {
+        ok: false,
+        feedback: {
+          severity: "backpressure",
+          code: "database-revision-conflict",
+          detail: "Database revision 1 cannot follow stored revision 1.",
+        },
+      },
+    ]);
+  });
+});

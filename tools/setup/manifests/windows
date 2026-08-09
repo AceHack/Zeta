@@ -67,6 +67,10 @@ r         winget=RProject.R    choco=R.Project
 tectonic    optional
 gnupg     winget=GnuPG.GnuPG    choco=gnupg    # GPG — commit/artifact signing
 
+# Document converter used by the source-owned document toolchain. Symmetric with
+# apt/brew pandoc; WinGet publishes it under the upstream publisher namespace.
+pandoc    winget=JohnMacFarlane.Pandoc    choco=pandoc
+
 # Mesh networking client (symmetry with manifests/brew tailscale, PR #7477's network-dep
 # precedent). headscale-cli is the SERVER-side CLI (Linux/macOS ops) — allowlisted exception
 # in manifest-symmetry.test.ts, not installed on Windows dev boxes.

@@ -60,7 +60,8 @@ already implemented. The work is:
 
 1. Wire `verifySha256File` into `from-installer.ts` with **per-entry pins** in the manifest
    (same content-pin discipline `MISE_SHA256_*` already uses in `tools/setup/linux.sh`).
-2. Add the `from-installer` class as a row in the `SUPPLY-CHAIN-SAFE-PATTERNS.md` ingress
+2. Add the `from-installer` class as a row in the
+   `docs/security/SUPPLY-CHAIN-SAFE-PATTERNS.md` ingress
    table — it currently covers `{brew, apt, dotnet-tools, uv-tools, verifiers}` only, so this
    ingress class is **undocumented**.
 3. Bumping a vendor CLI then becomes "update URL + hash together", like the mise pin set.
@@ -75,13 +76,15 @@ this pin. Route the concern to the design, not to the loader.
 
 ## Sibling findings from the same review (separate rows if taken)
 
-- `nixos/modules/zeta-ai-agent.nix` has **zero** systemd sandboxing (no `NoNewPrivileges`,
+- `full-ai-cluster/nixos/modules/zeta-ai-agent.nix` has **zero** systemd sandboxing (no
+  `NoNewPrivileges`,
   `RestrictSUIDSGID`, `ProtectSystem`, `PrivateTmp`, …) on the units that execute these
   binaries. Near-zero functional cost for user-level CLIs; also structurally closes Mateo's
   `AT_SECURE` watch item (nix-ld does not honour `AT_SECURE`; currently unreachable because
-  no foreign setuid binary exists — detector: `find / -xdev -perm -4000 -type f ! -path
-  '/nix/store/*'` must stay empty).
-- `MISE_PYTHON_GITHUB_ATTESTATIONS=0` (`common.nix`) — already tracked in `SECURITY-BACKLOG.md`,
+  no foreign setuid binary exists). The detector
+  `find / -xdev -perm -4000 -type f ! -path '/nix/store/*'` must stay empty.
+- `MISE_PYTHON_GITHUB_ATTESTATIONS=0` (`common.nix`) — already tracked in
+  `docs/security/SECURITY-BACKLOG.md`,
   but nix-ld makes those unverified artifacts executable, i.e. "deferred and inert" →
   "deferred and live".
 - Reconsider `nix.settings.trusted-users` including `@wheel` given `zeta` runs unpinned

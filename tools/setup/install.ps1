@@ -341,6 +341,17 @@ try {
   Write-Host "ok mise runtimes on PATH: $($runtimeBinPaths.Count) active bin path(s)"
 } finally { Pop-Location }
 
+# 4b. Root JavaScript/TypeScript dependencies. Keep local setup aligned with CI and fail
+# loudly when package.json and bun.lock disagree instead of allowing Bun to rewrite the lock.
+Push-Location $RepoRoot
+try {
+  if (-not (Test-Path 'package.json') -or -not (Test-Path 'bun.lock')) {
+    throw 'package.json and bun.lock are required for the root Bun install'
+  }
+  Invoke-Tool { mise exec -- bun install --frozen-lockfile } 'bun install --frozen-lockfile'
+  Write-Host 'ok root JavaScript/TypeScript dependencies installed'
+} finally { Pop-Location }
+
 # 5. agent + peer-AI CLIs via bun --global (bun provided by mise) -- identical manifest to Unix.
 $agentCliManifest = Join-Path $RepoRoot 'tools\setup\manifests\from-bun-global'
 if (Test-Path $agentCliManifest) {

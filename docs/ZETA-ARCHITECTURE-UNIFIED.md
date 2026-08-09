@@ -88,6 +88,7 @@ The Zeta society IS a reservoir computer in the Echo State Network sense (Jaeger
 These three structures are the **mathematical substrate** of the system:
 
 **Adinkra [8,4,4] ECC** (`adinkra-ecc-prototype.ts`):
+
 - The [8,4,4] extended Hamming code is doubly-even and self-dual.
 - It encodes the 7-channel genome (RGB + CMYK) + 1 parity bit into an 8-bit codeword.
 - Error-correcting: recovers from 1-bit errors in gossip transmission.
@@ -95,12 +96,14 @@ These three structures are the **mathematical substrate** of the system:
 - The `genomeToAdinkraByte` function in `society-evolution.ts` implements this encoding.
 
 **Hexagonal quantum arithmetic** (`quantum-arith.ts`):
+
 - Blaschke maps for the HL conformal amplitude (Z-2 falsifier).
 - Born probabilities for ThousandBrains column voting weights.
 - The tsirelsonS constant (2√2) as the CHSH bound for the society's decorrelation meter.
 - Byte-locked: same seed → same output across all substrates (the hexagonal port pattern).
 
 **Clifford algebra** (via BipartiteMachZehnder.fs):
+
 - G1 bipartite lift: phiPlus, tsirelsonAngles, correlator, classifyS, isNonFactorizable.
 - The CHSH S ≤ 2 bound is the honest decorrelation meter for commit pairs.
 - The Tsirelson bound (2√2) is the maximum quantum correlation — the ceiling of what the system can achieve.
@@ -134,7 +137,7 @@ The BNN stack handles audio natively because audio is just another observation s
 | Audio frame | Observation x fed to StudentTBnn |
 | Predicted amplitude | BNN posterior mean μ |
 | Observation noise | σ² (StudentTBnn obsVariance) |
-| Click / pop / noise | Outlier: |z| large → w → 0 (downweighted) |
+| Click / pop / noise | Outlier: \|z\| large → w → 0 (downweighted) |
 | Interruption | Sudden large residual z → w ≈ 0 (frame ignored) |
 | Resumption | Next frame: w returns to 1 (normal update) |
 | Bidirectional | Two StudentTBnn instances (one per direction) |

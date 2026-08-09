@@ -146,6 +146,31 @@ test("Windows agent CLI install consumes the shared from-bun-global manifest", (
   expect(installPs1).not.toContain("@google/gemini-cli");
 });
 
+test("ACE Unix and Windows setup realize the root devDependency graph", () => {
+  const setupRealizers = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ace", "setup-realizers", "index.ts"),
+    "utf8",
+  );
+  const bunWorkspaceRealizer = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ace", "setup-realizers", "from-bun-workspace.ts"),
+    "utf8",
+  );
+  const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
+  const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")) as {
+    readonly dependencies?: Readonly<Record<string, string>>;
+    readonly devDependencies?: Readonly<Record<string, string>>;
+  };
+  const bunLock = readFileSync(join(repoRoot, "bun.lock"), "utf8");
+  const playwrightVersion = packageJson.devDependencies?.playwright;
+
+  expect(setupRealizers).toContain('"from-bun-workspace"');
+  expect(bunWorkspaceRealizer).toContain('["bun", "install"]');
+  expect(installPs1).toContain("mise exec -- bun install --frozen-lockfile");
+  expect(playwrightVersion).toBeDefined();
+  expect(packageJson.dependencies?.playwright).toBeUndefined();
+  expect(bunLock).toContain(`"playwright": "${playwrightVersion}"`);
+});
+
 test("Codex CLI setup migrates the deprecated service_tier default value", () => {
   const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
   const agentClisTs = readFileSync(

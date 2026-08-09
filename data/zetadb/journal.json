@@ -1,0 +1,12 @@
+{
+  "schema": "zeta.db.scheduled-journal.v1",
+  "nodeId": "zeta/global/browser",
+  "deltas": [
+    {
+      "eventId": "genesis/browser-node-v1",
+      "rowKey": "system/browser-node",
+      "payload": "event-driven",
+      "weight": 1
+    }
+  ]
+}
