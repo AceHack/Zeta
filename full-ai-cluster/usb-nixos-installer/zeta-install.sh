@@ -1662,6 +1662,7 @@ if [ -d "$ZETA_HOME" ]; then
     WIFI_TMP=/tmp/zeta-esp-wifi.nmconnection
     WIFI_PROFILE_NAME=$(
       sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+        MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
         bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun '$WIFI_HELPER' --input '$WIFI_STAGED' --output '$WIFI_TMP'" \
         2>/tmp/zeta-esp-wifi.err
     ) || WIFI_PROFILE_NAME=""
