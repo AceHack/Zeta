@@ -142,3 +142,75 @@ describe("Z-2 re-discharge: falsifier", () => {
     expect(["SUPPORTED", "FALSIFIED", "INCONCLUSIVE"]).toContain(r.conjecture);
   });
 });
+
+// ── HL amplitude tests (Halsey 2026, arXiv:2607.02216) ───────────────────────
+import {
+  HL_A_PARAM,
+  HL_LAMBDA0,
+  HL_AMPLITUDE_TOLERANCE,
+  computeHLAmplitude,
+} from "./z2-halsey-redischarge";
+
+describe("Z-2 HL amplitude test (Halsey 2026, arXiv:2607.02216)", () => {
+  it("Z2-HL-1: HL constants match Davidovitch et al. (1999) recommendation", () => {
+    expect(HL_A_PARAM).toBeCloseTo(2 / 3, 6);
+    expect(HL_LAMBDA0).toBe(0.004);
+    expect(HL_AMPLITUDE_TOLERANCE).toBe(0.05);
+  });
+
+  it("Z2-HL-2: expectedAmplitude = aλ₀/D ≈ 0.00156 for D ≈ 1.71", () => {
+    const cluster = generateDlaCluster(42, 400);
+    const hm = computeHarmonicMeasure(cluster, 150, 43);
+    const hla = computeHLAmplitude(hm, cluster);
+    // aλ₀/D = (2/3 * 0.004) / 1.71 ≈ 0.00156
+    expect(hla.expectedAmplitude).toBeGreaterThan(0.001);
+    expect(hla.expectedAmplitude).toBeLessThan(0.003);
+  });
+
+  it("Z2-HL-3: nu is positive (second moment is positive)", () => {
+    const cluster = generateDlaCluster(42, 400);
+    const hm = computeHarmonicMeasure(cluster, 150, 43);
+    const hla = computeHLAmplitude(hm, cluster);
+    expect(hla.nu).toBeGreaterThan(0);
+  });
+
+  it("Z2-HL-4: HL amplitude result is deterministic", () => {
+    const cluster = generateDlaCluster(42, 400);
+    const hm = computeHarmonicMeasure(cluster, 150, 43);
+    const hla1 = computeHLAmplitude(hm, cluster);
+    const hla2 = computeHLAmplitude(hm, cluster);
+    expect(hla1.nu).toBe(hla2.nu);
+    expect(hla1.nuNormalized).toBe(hla2.nuNormalized);
+    expect(hla1.relativeGap).toBe(hla2.relativeGap);
+  });
+
+  it("Z2-HL-5: note contains DISCRETE APPROXIMATION disclaimer", () => {
+    const cluster = generateDlaCluster(42, 400);
+    const hm = computeHarmonicMeasure(cluster, 150, 43);
+    const hla = computeHLAmplitude(hm, cluster);
+    expect(hla.note).toContain("DISCRETE APPROXIMATION");
+    expect(hla.note).toContain("conformal map");
+  });
+
+  it("Z2-HL-6: DischargeResult includes hlAmplitude field", () => {
+    const r = runZ2Discharge(42, 300, 100);
+    expect(r.hlAmplitude).toBeDefined();
+    expect(r.hlAmplitude.nu).toBeGreaterThan(0);
+    expect(r.hlAmplitude.expectedAmplitude).toBeGreaterThan(0);
+    expect(typeof r.hlAmplitude.falsifierFires).toBe("boolean");
+  });
+
+  it("Z2-HL-7: nSites matches number of boundary sites in cluster", () => {
+    const cluster = generateDlaCluster(42, 400);
+    const hm = computeHarmonicMeasure(cluster, 150, 43);
+    const hla = computeHLAmplitude(hm, cluster);
+    expect(hla.nSites).toBe(cluster.sites.length);
+  });
+
+  it("Z2-HL-8: relativeGap is non-negative", () => {
+    const cluster = generateDlaCluster(42, 400);
+    const hm = computeHarmonicMeasure(cluster, 150, 43);
+    const hla = computeHLAmplitude(hm, cluster);
+    expect(hla.relativeGap).toBeGreaterThanOrEqual(0);
+  });
+});
