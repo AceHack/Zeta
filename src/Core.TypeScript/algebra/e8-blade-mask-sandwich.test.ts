@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { allCodewords, e8Roots, gp, measure, reverse } from "./e8-blade-mask-sandwich";
+import { e8Roots, gp, measure, reverse } from "./e8-blade-mask-sandwich";
 
 // FROZEN-CORE §B measurement — golden numbers. These constants ARE the banked
 // result (2026-08-09): re-running the measurement must reproduce them bit-for-
@@ -37,7 +37,7 @@ describe("the measurement — golden numbers, banked 2026-08-09", () => {
     expect(m.versorNormedCount).toBe(32);
     // The 8 single blades + the two Clifford-aligned weight-4 codewords:
     // {1,2,5,6} = {e1,e2,e13,e23} and {0,3,4,7} = {S,e12,e3,e123} — the
-    // {0,3,4,7} is the unique grade-complete subalgebra of Cl(3,0) — see GP-5 below.
+    // XOR-closed subgroup {0,3,4,7} (subalgebra of e12,e3) and its coset.
     expect(m.versorNormedSupports).toEqual([
       "0",
       "0+3+4+7",
@@ -70,123 +70,43 @@ describe("the measurement — golden numbers, banked 2026-08-09", () => {
       [240, 32],
     ]);
   });
-
-  // ── Otto + Lumen review 2026-08-09: pin the CORRECT characterization ────────
-  // Two earlier explanations of "why these two supports" were wrong. These tests
-  // discriminate all three criteria head-to-head so neither can come back.
-  const weight4Supports = () =>
-    allCodewords()
-      .filter((c) => c.reduce((a: number, b: number) => a + b, 0) === 4)
-      .map((c) => c.map((b: number, i: number) => (b ? i : -1)).filter((i: number) => i >= 0));
-
-  const SURVIVING = ["0,3,4,7", "1,2,5,6"];
-
-  test("pseudoscalar CLOSURE (i -> i^7) selects EXACTLY the two surviving supports", () => {
-    const iClosed = weight4Supports().filter((s) => {
-      const S = new Set(s);
-      return s.every((v) => S.has(v ^ 7));
-    });
-    expect(iClosed.map((s) => s.join(",")).sort()).toEqual([...SURVIVING].sort());
-  });
-
-  test("XOR-closed subgroup is UNDER-determined — 3 matches, not 2", () => {
-    // The first stated explanation. Necessary, not sufficient.
-    const subs = weight4Supports().filter((s) => {
-      const S = new Set(s);
-      if (!S.has(0)) return false;
-      return s.every((a) => s.every((b) => S.has(a ^ b)));
-    });
-    expect(subs.length).toBe(3);
-  });
-
-  test("grade-completeness explains only HALF — {1,2,5,6} is not grade-complete", () => {
-    // The second stated explanation ("unique grade-complete subalgebra").
-    // It cannot be the criterion: the OTHER survivor has grades {1,1,2,2} and
-    // contains neither the scalar (0) nor the pseudoscalar (7).
-    const grade = (i: number) => ((i >> 0) & 1) + ((i >> 1) & 1) + ((i >> 2) & 1);
-    const profile = (s: number[]) => s.map(grade).sort().join(",");
-    expect(profile([0, 3, 4, 7])).toBe("0,1,2,3");
-    expect(profile([1, 2, 5, 6])).toBe("1,1,2,2");
-    expect([1, 2, 5, 6].includes(0)).toBe(false);
-    expect([1, 2, 5, 6].includes(7)).toBe(false);
-    // And "contains the pseudoscalar" alone is far too weak.
-    expect(weight4Supports().filter((s) => s.includes(7)).length).toBe(7);
-  });
-
-  test("closure is coset-invariant — which is WHY it explains both survivors", () => {
-    // {1,2,5,6} = 1 XOR {0,3,4,7}. Closure under i -> i^7 survives coset
-    // translation; "contains 7" does not. One criterion, both survivors.
-    const coset = [0, 3, 4, 7].map((v) => v ^ 1).sort((a, b) => a - b);
-    expect(coset).toEqual([1, 2, 5, 6]);
-    const S = new Set(coset);
-    expect(coset.every((v) => S.has(v ^ 7))).toBe(true);
-    expect(coset.includes(7)).toBe(false);
-  });
-
 });
 
-// Grade of a blade index in Cl(3,0): popcount of the bitmask
-function gradeOf(bladeIndex: number): number {
-  return ([0, 1, 1, 2, 1, 2, 2, 3] as const)[bladeIndex] ?? 0;
-}
+describe("Part II — the fragment group and the quantization strata (2026-08-09)", () => {
+  test("the 32 generate a group of order 16 ≅ D8 × C2 (invariant profile)", async () => {
+    const { fragmentGroup } = await import("./e8-blade-mask-sandwich");
+    const g = fragmentGroup();
+    expect(g.generatorCount).toBe(32); // A and −A induce the same sandwich
+    expect(g.order).toBe(16);
+    expect(g.orderHistogram).toEqual([
+      [1, 1],
+      [2, 11], // 11 involutions — unique to D8 × C2 among order-16 groups
+      [4, 4],
+    ]);
+    expect(g.centerSize).toBe(4);
+    expect(g.commutatorCount).toBe(2); // |G'| = 2 — nilpotency class 2
+  });
 
-describe("grade-profile proof — what distinguishes {0,3,4,7} (computed 2026-08-09)", () => {
-  // There are exactly three XOR-closed subgroups of size 4 in the Hamming code.
-  // XOR-closure is necessary but not sufficient for Clifford alignment.
-  // The distinguishing property is the grade profile in Cl(3,0).
-
-  const subgroups = [
-    { support: [0, 1, 4, 5], name: "{S,e1,e3,e13}" },
-    { support: [0, 2, 4, 6], name: "{S,e2,e3,e23}" },
-    { support: [0, 3, 4, 7], name: "{S,e12,e3,e123}" },
-  ];
-
-  test("GP-1: all three subgroups are XOR-closed (necessary condition)", () => {
-    for (const { support } of subgroups) {
-      for (const a of support) {
-        for (const b of support) {
-          expect(support).toContain(a ^ b);
-        }
-      }
+  test("quantization strata follow subalgebra signature", async () => {
+    const { strataBySupport } = await import("./e8-blade-mask-sandwich");
+    const strata = new Map(strataBySupport());
+    // Cl(1,1)-signature subgroup <e12,e3> = {0,3,4,7} and its coset {1,2,5,6}:
+    // half the sign patterns are versors preserving 240, the other half 128.
+    expect(strata.get("0+3+4+7 [versor]")).toEqual([[240, 8]]);
+    expect(strata.get("0+3+4+7")).toEqual([[128, 8]]);
+    expect(strata.get("1+2+5+6 [versor]")).toEqual([[240, 8]]);
+    expect(strata.get("1+2+5+6")).toEqual([[128, 8]]);
+    // Cl(2,0)-signature subgroups <e1,e3> = {0,1,4,5}, <e2,e3> = {0,2,4,6}
+    // and their cosets {2,3,6,7}, {1,3,5,7}: half 64, half 0, no versors.
+    for (const label of ["0+1+4+5", "0+2+4+6", "1+3+5+7", "2+3+6+7"]) {
+      expect(strata.get(label)).toEqual([[0, 8], [64, 8]]);
     }
-  });
-
-  test("GP-2: {0,1,4,5} has grade profile {0,1,1,2} — missing grade 3", () => {
-    const grades = [0, 1, 4, 5].map(gradeOf).sort((a, b) => a - b);
-    expect(grades).toEqual([0, 1, 1, 2]);
-    expect(grades).not.toContain(3);
-  });
-
-  test("GP-3: {0,2,4,6} has grade profile {0,1,1,2} — missing grade 3", () => {
-    const grades = [0, 2, 4, 6].map(gradeOf).sort((a, b) => a - b);
-    expect(grades).toEqual([0, 1, 1, 2]);
-    expect(grades).not.toContain(3);
-  });
-
-  test("GP-4: {0,3,4,7} has grade profile {0,1,2,3} — spans ALL 4 grades (unique)", () => {
-    const grades = [0, 3, 4, 7].map(gradeOf).sort((a, b) => a - b);
-    expect(grades).toEqual([0, 1, 2, 3]);
-    expect(grades).toContain(3); // contains pseudoscalar e123
-  });
-
-  test("GP-5: {0,3,4,7} is the ONLY grade-complete subgroup (spans all 4 grades)", () => {
-    const gradeComplete = subgroups.filter(({ support }) => {
-      const gradeSet = new Set(support.map(gradeOf));
-      return gradeSet.size === 4;
-    });
-    expect(gradeComplete).toHaveLength(1);
-    expect(gradeComplete[0]!.support).toEqual([0, 3, 4, 7]);
-    expect(gradeComplete[0]!.name).toBe("{S,e12,e3,e123}");
-  });
-
-  test("GP-6: negative control — {0,1,4,5} and {0,2,4,6} are grade-incomplete (not Clifford-aligned)", () => {
-    const incomplete = subgroups.filter(({ support }) => {
-      const gradeSet = new Set(support.map(gradeOf));
-      return gradeSet.size < 4;
-    });
-    expect(incomplete).toHaveLength(2);
-    for (const { support } of incomplete) {
-      expect(support.map(gradeOf)).not.toContain(3);
+    // The eight non-subgroup-coset codewords preserve nothing.
+    for (const label of [
+      "0+1+2+7", "0+1+3+6", "0+2+3+5", "0+5+6+7",
+      "1+2+3+4", "1+4+6+7", "2+4+5+7", "3+4+5+6",
+    ]) {
+      expect(strata.get(label)).toEqual([[0, 16]]);
     }
   });
 });
