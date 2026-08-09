@@ -40,7 +40,12 @@
  */
 
 import { updateStudentT, createStudentTState, type StudentTState, type StudentTUpdateResult } from "./student-t-bnn";
-import { toEpObservation, EnvelopeIdempotencyGuard, type ErrorEnvelope, type ErrorDimension } from "../protocol/error-envelope";
+import {
+  toEpObservation,
+  EnvelopeIdempotencyGuard,
+  type ErrorEnvelope,
+  type ErrorDimension,
+} from "../protocol/error-envelope";
 
 // ── Per-dimension BNN state ────────────────────────────────────────────────────
 
@@ -58,6 +63,7 @@ import { toEpObservation, EnvelopeIdempotencyGuard, type ErrorEnvelope, type Err
  */
 export interface DimensionalBnn {
   readonly states: ReadonlyMap<ErrorDimension, StudentTState>;
+  readonly robustnessWeights: ReadonlyMap<ErrorDimension, number>;
   readonly guard: EnvelopeIdempotencyGuard;
 }
 
@@ -67,14 +73,23 @@ export interface DimensionalBnn {
  */
 export function createDimensionalBnn(nu = 3, obsVariance = 1.0): DimensionalBnn {
   const dimensions: ErrorDimension[] = [
-    "schema", "type", "range", "constraint", "auth",
-    "transport", "toolchain", "calibration", "unknown",
+    "schema",
+    "type",
+    "range",
+    "constraint",
+    "auth",
+    "transport",
+    "toolchain",
+    "calibration",
+    "unknown",
   ];
   const states = new Map<ErrorDimension, StudentTState>();
+  const robustnessWeights = new Map<ErrorDimension, number>();
   for (const dim of dimensions) {
-    states.set(dim, createStudentTState({ nu, obsVariance }));
+    states.set(dim, createStudentTState(0, 1, nu, obsVariance));
+    robustnessWeights.set(dim, 1);
   }
-  return { states, guard: new EnvelopeIdempotencyGuard() };
+  return { states, robustnessWeights, guard: new EnvelopeIdempotencyGuard() };
 }
 
 /**
@@ -91,7 +106,11 @@ export function createDimensionalBnn(nu = 3, obsVariance = 1.0): DimensionalBnn 
 export function absorbError(
   bnn: DimensionalBnn,
   envelope: ErrorEnvelope,
-): { readonly result: StudentTUpdateResult; readonly dimension: ErrorDimension; readonly isRetraction: boolean } | null {
+): {
+  readonly result: StudentTUpdateResult;
+  readonly dimension: ErrorDimension;
+  readonly isRetraction: boolean;
+} | null {
   // Idempotency: drop duplicates (same error delivered twice = one update)
   if (!bnn.guard.absorb(envelope)) return null;
 
@@ -105,6 +124,7 @@ export function absorbError(
 
   // Update the state in-place (the Map is mutable even though the interface is readonly)
   (bnn.states as Map<ErrorDimension, StudentTState>).set(obs.dimension, result.state);
+  (bnn.robustnessWeights as Map<ErrorDimension, number>).set(obs.dimension, result.robustnessWeight);
 
   return { result, dimension: obs.dimension, isRetraction: obs.isRetraction };
 }
@@ -122,7 +142,7 @@ export function dimensionPosterior(
   return {
     mu: state.posterior.mu,
     sigma2: state.posterior.sigma2,
-    robustnessWeight: state.factorMessage.mu, // proxy: factor message mean tracks the weight
+    robustnessWeight: bnn.robustnessWeights.get(dimension) ?? 1,
   };
 }
 
@@ -141,4 +161,3 @@ export function errorRichness(envelope: ErrorEnvelope): number {
   // Named dimension but no retraction: medium richness
   return 0.7;
 }
-

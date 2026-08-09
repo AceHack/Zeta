@@ -156,6 +156,10 @@ test("ACE Unix and Windows setup realize the root devDependency graph", () => {
     "utf8",
   );
   const installPs1 = readFileSync(join(setupDir, "install.ps1"), "utf8");
+  const windowsInstallerDockerfile = readFileSync(
+    join(repoRoot, "src", "Core.TypeScript", "ci", "dockerfiles", "windows-install-ps1-test", "Dockerfile"),
+    "utf8",
+  );
   const packageJson = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")) as {
     readonly dependencies?: Readonly<Record<string, string>>;
     readonly devDependencies?: Readonly<Record<string, string>>;
@@ -166,6 +170,8 @@ test("ACE Unix and Windows setup realize the root devDependency graph", () => {
   expect(setupRealizers).toContain('"from-bun-workspace"');
   expect(bunWorkspaceRealizer).toContain('["bun", "install"]');
   expect(installPs1).toContain("mise exec -- bun install --frozen-lockfile");
+  expect(windowsInstallerDockerfile).toContain("COPY package.json C:/workspace/package.json");
+  expect(windowsInstallerDockerfile).toContain("COPY bun.lock C:/workspace/bun.lock");
   expect(playwrightVersion).toBeDefined();
   expect(packageJson.dependencies?.playwright).toBeUndefined();
   expect(bunLock).toContain(`"playwright": "${playwrightVersion}"`);

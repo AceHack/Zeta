@@ -94,12 +94,11 @@ jobs:
 
 ```
 
-
 Also add `ZETA_REALTIME_URL` to the `env:` block in `.github/workflows/agent-heartbeat.yml`
 at the "Run observe tick" step:
 
 ```yaml
-          ZETA_REALTIME_URL: ${{ secrets.ZETA_REALTIME_URL }}
+ZETA_REALTIME_URL: ${{ secrets.ZETA_REALTIME_URL }}
 ```
 
 (Set `ZETA_REALTIME_URL` in repo secrets to point at your realtime server.

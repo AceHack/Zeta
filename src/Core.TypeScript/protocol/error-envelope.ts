@@ -63,15 +63,15 @@
  * guess and retry (erasure path).
  */
 export type ErrorDimension =
-  | "schema"          // wrong shape / missing field / extra field
-  | "type"            // right field, wrong type
-  | "range"           // right type, out of allowed range
-  | "constraint"      // right range, violates a named constraint
-  | "auth"            // identity / permission / trust
-  | "transport"       // network / protocol / framing
-  | "toolchain"       // build / install / environment (e.g. TS2307 declared-but-not-installed)
-  | "calibration"     // prediction vs outcome mismatch
-  | "unknown";        // bare failure — receiver must guess (expensive)
+  | "schema" // wrong shape / missing field / extra field
+  | "type" // right field, wrong type
+  | "range" // right type, out of allowed range
+  | "constraint" // right range, violates a named constraint
+  | "auth" // identity / permission / trust
+  | "transport" // network / protocol / framing
+  | "toolchain" // build / install / environment (e.g. TS2307 declared-but-not-installed)
+  | "calibration" // prediction vs outcome mismatch
+  | "unknown"; // bare failure — receiver must guess (expensive)
 
 /**
  * Severity of the error — the observation magnitude for the EP update.
@@ -167,10 +167,7 @@ export function envelopeId(correlationId: string, dimension: ErrorDimension, wha
  * A teaching error names the dimension, so the receiver can emit a targeted
  * −1 retraction and carry the rest of its state forward (retraction path, cheap).
  */
-export function teachingError(
-  correlationId: string,
-  mirror: ErrorMirror,
-): ErrorEnvelope {
+export function teachingError(correlationId: string, mirror: ErrorMirror, emittedAt: string): ErrorEnvelope {
   const id = envelopeId(correlationId, mirror.dimension, mirror.what, mirror.why);
   const beacon = buildBeacon(mirror);
   return {
@@ -178,7 +175,7 @@ export function teachingError(
     correlationId,
     beacon,
     mirror,
-    emittedAt: new Date().toISOString(),
+    emittedAt,
   };
 }
 
@@ -193,6 +190,7 @@ export function bareError(
   correlationId: string,
   what: string,
   why: string,
+  emittedAt: string,
   severity: ErrorSeverity = "error",
 ): ErrorEnvelope {
   const mirror: ErrorMirror = {
@@ -202,7 +200,7 @@ export function bareError(
     dimension: "unknown",
     severity,
   };
-  return teachingError(correlationId, mirror);
+  return teachingError(correlationId, mirror, emittedAt);
 }
 
 /**
@@ -261,7 +259,11 @@ export function toEpObservation(envelope: ErrorEnvelope): {
  */
 export class EnvelopeIdempotencyGuard {
   private readonly seen: string[] = [];
-  constructor(private readonly maxSize = 1024) {}
+  private readonly maxSize: number;
+
+  constructor(maxSize = 1024) {
+    this.maxSize = maxSize;
+  }
 
   /**
    * Returns true if this envelope has not been seen before (absorb it).
@@ -275,5 +277,7 @@ export class EnvelopeIdempotencyGuard {
   }
 
   /** Number of unique envelopes absorbed. */
-  get count(): number { return this.seen.length; }
+  get count(): number {
+    return this.seen.length;
+  }
 }

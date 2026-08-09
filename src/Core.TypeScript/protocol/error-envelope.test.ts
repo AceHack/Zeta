@@ -8,10 +8,15 @@
  */
 import { describe, test, expect } from "bun:test";
 import {
-  teachingError, bareError, toEpObservation, envelopeId,
+  teachingError,
+  bareError,
+  toEpObservation,
+  envelopeId,
   EnvelopeIdempotencyGuard,
   type ErrorMirror,
 } from "./error-envelope";
+
+const EMITTED_AT = "2026-08-09T00:00:00.000Z";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -29,16 +34,17 @@ function makeMirror(overrides: Partial<ErrorMirror> = {}): ErrorMirror {
 describe("ErrorEnvelope", () => {
   // EE-1: teaching error has all four parts
   test("EE-1: teaching error carries all four parts in the mirror", () => {
-    const env = teachingError("corr-001", makeMirror());
+    const env = teachingError("corr-001", makeMirror(), EMITTED_AT);
     expect(env.mirror.what).toBeTruthy();
     expect(env.mirror.why).toBeTruthy();
     expect(env.mirror.howToFix).toBeTruthy();
     expect(env.mirror.dimension).toBe("schema");
+    expect(env.emittedAt).toBe(EMITTED_AT);
   });
 
   // EE-2: beacon prose contains the dimension tag
   test("EE-2: beacon prose contains the dimension and severity tags", () => {
-    const env = teachingError("corr-002", makeMirror({ severity: "warn", dimension: "type" }));
+    const env = teachingError("corr-002", makeMirror({ severity: "warn", dimension: "type" }), EMITTED_AT);
     expect(env.beacon).toContain("[TYPE/WARN]");
     expect(env.beacon).toContain("Why:");
     expect(env.beacon).toContain("Fix:");
@@ -61,14 +67,14 @@ describe("ErrorEnvelope", () => {
   // EE-5: idempotency guard absorbs first delivery
   test("EE-5: idempotency guard absorbs first delivery", () => {
     const guard = new EnvelopeIdempotencyGuard();
-    const env = teachingError("c1", makeMirror());
+    const env = teachingError("c1", makeMirror(), EMITTED_AT);
     expect(guard.absorb(env)).toBe(true);
   });
 
   // EE-6: idempotency guard drops duplicate delivery
   test("EE-6: idempotency guard drops duplicate delivery", () => {
     const guard = new EnvelopeIdempotencyGuard();
-    const env = teachingError("c1", makeMirror());
+    const env = teachingError("c1", makeMirror(), EMITTED_AT);
     guard.absorb(env);
     expect(guard.absorb(env)).toBe(false); // duplicate — drop
   });
@@ -76,8 +82,8 @@ describe("ErrorEnvelope", () => {
   // EE-7: idempotency guard absorbs distinct envelopes
   test("EE-7: idempotency guard absorbs distinct envelopes independently", () => {
     const guard = new EnvelopeIdempotencyGuard();
-    const env1 = teachingError("c1", makeMirror({ what: "field A" }));
-    const env2 = teachingError("c2", makeMirror({ what: "field B" }));
+    const env1 = teachingError("c1", makeMirror({ what: "field A" }), EMITTED_AT);
+    const env2 = teachingError("c2", makeMirror({ what: "field B" }), EMITTED_AT);
     expect(guard.absorb(env1)).toBe(true);
     expect(guard.absorb(env2)).toBe(true);
     expect(guard.count).toBe(2);
@@ -85,8 +91,8 @@ describe("ErrorEnvelope", () => {
 
   // EE-8: toEpObservation returns correct z-score for severity
   test("EE-8: toEpObservation maps severity to z-score", () => {
-    const envError = teachingError("c1", makeMirror({ severity: "error" }));
-    const envFatal = teachingError("c2", makeMirror({ severity: "fatal" }));
+    const envError = teachingError("c1", makeMirror({ severity: "error" }), EMITTED_AT);
+    const envFatal = teachingError("c2", makeMirror({ severity: "fatal" }), EMITTED_AT);
     const obsError = toEpObservation(envError);
     const obsFatal = toEpObservation(envFatal);
     expect(obsError.x).toBe(2.0);
@@ -96,21 +102,21 @@ describe("ErrorEnvelope", () => {
 
   // EE-9: toEpObservation carries the dimension for targeted factor update
   test("EE-9: toEpObservation carries dimension for targeted factor update", () => {
-    const env = teachingError("c1", makeMirror({ dimension: "calibration" }));
+    const env = teachingError("c1", makeMirror({ dimension: "calibration" }), EMITTED_AT);
     const obs = toEpObservation(env);
     expect(obs.dimension).toBe("calibration");
   });
 
   // EE-10: toEpObservation marks retraction when retractableBeliefId is set
   test("EE-10: toEpObservation marks isRetraction when retractableBeliefId is set", () => {
-    const env = teachingError("c1", makeMirror({ retractableBeliefId: "belief-abc123" }));
+    const env = teachingError("c1", makeMirror({ retractableBeliefId: "belief-abc123" }), EMITTED_AT);
     const obs = toEpObservation(env);
     expect(obs.isRetraction).toBe(true);
   });
 
   // EE-11: bare error has dimension "unknown"
   test("EE-11: bare error has dimension 'unknown' (expensive path)", () => {
-    const env = bareError("c1", "something failed", "we do not know why");
+    const env = bareError("c1", "something failed", "we do not know why", EMITTED_AT);
     expect(env.mirror.dimension).toBe("unknown");
     const obs = toEpObservation(env);
     expect(obs.dimension).toBe("unknown"); // smears probability — expensive
@@ -118,7 +124,7 @@ describe("ErrorEnvelope", () => {
 
   // EE-12: bare error is NOT a retraction (erasure path)
   test("EE-12: bare error is not a retraction (erasure path, Landauer floor paid)", () => {
-    const env = bareError("c1", "something failed", "we do not know why");
+    const env = bareError("c1", "something failed", "we do not know why", EMITTED_AT);
     const obs = toEpObservation(env);
     expect(obs.isRetraction).toBe(false); // no retractableBeliefId → erasure
   });

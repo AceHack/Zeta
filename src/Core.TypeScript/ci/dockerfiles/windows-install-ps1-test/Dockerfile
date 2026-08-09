@@ -51,6 +51,7 @@ COPY src/Core.TypeScript/ci/windows-install-ps1-smoke.ts C:/workspace/src/Core.T
 COPY src/Core.TypeScript/persistence/windows C:/workspace/src/Core.TypeScript/persistence/windows
 COPY .mise.toml C:/workspace/.mise.toml
 COPY package.json C:/workspace/package.json
+COPY bun.lock C:/workspace/bun.lock
 
 # mise's GitHub-API token (the shield's rate-limit fix; sibling to the 4 Unix shields in #6273).
 # install.ps1 runs `mise install`, which calls the GitHub API to resolve .mise.toml runtime versions

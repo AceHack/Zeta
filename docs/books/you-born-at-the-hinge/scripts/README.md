@@ -10,9 +10,10 @@ Whenever you update `index.en.html` and are ready to propagate the changes, run:
 bun run translate_book.ts
 ```
 
-You must have the `agy` CLI installed and authenticated (it uses `gemini-3.1-pro` under the hood). 
+You must have the `agy` CLI installed and authenticated (it uses `gemini-3.1-pro` under the hood).
 
 The script works by:
+
 1. Backing up and overwriting all target language HTML files with the fresh `index.en.html`.
 2. Automatically fixing the language directionality (`dir="rtl"`) and the navigation bar for each specific target language.
 3. Automatically parsing all `<article class="chap">`, `<header>`, and `<aside>` text blocks.

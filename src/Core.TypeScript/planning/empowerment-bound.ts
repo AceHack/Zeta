@@ -62,7 +62,7 @@
  * - Cantelli/Scarf (the trustBound shortfall guarantee)
  */
 
-import { type CalibrationPosterior, trustBound, exploreBound } from "./calibration-ledger";
+import { type CalibrationPosterior, trustBound } from "./calibration-ledger";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -135,12 +135,7 @@ export interface OracleSet {
  *
  * @returns true if the blend equals a single-agent bound (vacuity confirmed).
  */
-export function linearBlendIsVacuous(
-  posterior: CalibrationPosterior,
-  w: number,
-  k1: number,
-  k2: number,
-): boolean {
+export function linearBlendIsVacuous(posterior: CalibrationPosterior, w: number, k1: number, k2: number): boolean {
   // The lemma is about the UNCLAMPED algebraic identity.
   // exploreBound and trustBound clamp to [0,1], which obscures the identity
   // when the unclamped value falls outside [0,1].

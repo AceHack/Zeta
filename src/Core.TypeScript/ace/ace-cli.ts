@@ -79,10 +79,50 @@ export function graphMerkleRoot(graph: DependencyGraph): string {
 
 /** STUB registry — real: distributed DAG-FS tree backed by ZetaDB. */
 export const STUB_REGISTRY: Map<string, PackageEntry> = new Map([
-  ["zeta-core",   { name: "zeta-core",   version: "1.0.0",  contentAddress: "sha256:abc123", weight: 0, packageManager: "ace",  lastUpdated: "2026-08-09T00:00:00Z" }],
-  ["zeta-db",     { name: "zeta-db",     version: "0.1.0",  contentAddress: "sha256:def456", weight: 0, packageManager: "ace",  lastUpdated: "2026-08-09T00:00:00Z" }],
-  ["longhorn",    { name: "longhorn",    version: "1.7.2",  contentAddress: "sha256:ghi789", weight: 0, packageManager: "helm", lastUpdated: "2026-08-09T00:00:00Z" }],
-  ["cockroachdb", { name: "cockroachdb", version: "24.3.4", contentAddress: "sha256:jkl012", weight: 0, packageManager: "helm", lastUpdated: "2026-08-09T00:00:00Z" }],
+  [
+    "zeta-core",
+    {
+      name: "zeta-core",
+      version: "1.0.0",
+      contentAddress: "sha256:abc123",
+      weight: 0,
+      packageManager: "ace",
+      lastUpdated: "2026-08-09T00:00:00Z",
+    },
+  ],
+  [
+    "zeta-db",
+    {
+      name: "zeta-db",
+      version: "0.1.0",
+      contentAddress: "sha256:def456",
+      weight: 0,
+      packageManager: "ace",
+      lastUpdated: "2026-08-09T00:00:00Z",
+    },
+  ],
+  [
+    "longhorn",
+    {
+      name: "longhorn",
+      version: "1.7.2",
+      contentAddress: "sha256:ghi789",
+      weight: 0,
+      packageManager: "helm",
+      lastUpdated: "2026-08-09T00:00:00Z",
+    },
+  ],
+  [
+    "cockroachdb",
+    {
+      name: "cockroachdb",
+      version: "24.3.4",
+      contentAddress: "sha256:jkl012",
+      weight: 0,
+      packageManager: "helm",
+      lastUpdated: "2026-08-09T00:00:00Z",
+    },
+  ],
 ]);
 
 export function registryLookup(name: string, _version?: string): PackageEntry | undefined {
@@ -96,18 +136,45 @@ export function install(graph: DependencyGraph, name: string, version?: string):
   const resolvedVersion = version ?? entry.version;
   const existing = graph.get(name);
   if (existing && existing.version === resolvedVersion && existing.weight > 0) {
-    return { success: true, message: `Package '${name}@${resolvedVersion}' already installed (idempotent).`, graph, entry: existing };
+    return {
+      success: true,
+      message: `Package '${name}@${resolvedVersion}' already installed (idempotent).`,
+      graph,
+      entry: existing,
+    };
   }
-  const newGraph = applyDelta(graph, { name, version: resolvedVersion, contentAddress: entry.contentAddress, deltaWeight: +1, packageManager: entry.packageManager });
-  return { success: true, message: `Installed '${name}@${resolvedVersion}' (${entry.packageManager}). Root: ${graphMerkleRoot(newGraph)}`, graph: newGraph, entry: newGraph.get(name)! };
+  const newGraph = applyDelta(graph, {
+    name,
+    version: resolvedVersion,
+    contentAddress: entry.contentAddress,
+    deltaWeight: +1,
+    packageManager: entry.packageManager,
+  });
+  return {
+    success: true,
+    message: `Installed '${name}@${resolvedVersion}' (${entry.packageManager}). Root: ${graphMerkleRoot(newGraph)}`,
+    graph: newGraph,
+    entry: newGraph.get(name)!,
+  };
 }
 
 /** ace remove <name> — -1 Z-set delta. No-op if not installed. */
 export function remove(graph: DependencyGraph, name: string): AceResult {
   const existing = graph.get(name);
-  if (!existing || existing.weight <= 0) return { success: true, message: `Package '${name}' not installed (no-op).`, graph };
-  const newGraph = applyDelta(graph, { name, version: existing.version, contentAddress: existing.contentAddress, deltaWeight: -1, packageManager: existing.packageManager });
-  return { success: true, message: `Removed '${name}@${existing.version}'. Root: ${graphMerkleRoot(newGraph)}`, graph: newGraph };
+  if (!existing || existing.weight <= 0)
+    return { success: true, message: `Package '${name}' not installed (no-op).`, graph };
+  const newGraph = applyDelta(graph, {
+    name,
+    version: existing.version,
+    contentAddress: existing.contentAddress,
+    deltaWeight: -1,
+    packageManager: existing.packageManager,
+  });
+  return {
+    success: true,
+    message: `Removed '${name}@${existing.version}'. Root: ${graphMerkleRoot(newGraph)}`,
+    graph: newGraph,
+  };
 }
 
 /** ace verify <name> — Merkle root check. Can actually fail. */
@@ -115,24 +182,45 @@ export function verify(graph: DependencyGraph, name: string): AceResult {
   const installed = graph.get(name);
   if (!installed || installed.weight <= 0) return { success: false, message: `Package '${name}' not installed.` };
   const registry = registryLookup(name, installed.version);
-  if (!registry) return { success: false, message: `Package '${name}@${installed.version}' not in registry (orphaned).`, entry: installed };
+  if (!registry)
+    return {
+      success: false,
+      message: `Package '${name}@${installed.version}' not in registry (orphaned).`,
+      entry: installed,
+    };
   if (installed.contentAddress !== registry.contentAddress) {
-    return { success: false, message: `VERIFICATION FAILED: '${name}@${installed.version}' content address mismatch. Installed: ${installed.contentAddress}, Registry: ${registry.contentAddress}`, entry: installed };
+    return {
+      success: false,
+      message: `VERIFICATION FAILED: '${name}@${installed.version}' content address mismatch. Installed: ${installed.contentAddress}, Registry: ${registry.contentAddress}`,
+      entry: installed,
+    };
   }
-  return { success: true, message: `Verified '${name}@${installed.version}' (content address matches registry).`, entry: installed };
+  return {
+    success: true,
+    message: `Verified '${name}@${installed.version}' (content address matches registry).`,
+    entry: installed,
+  };
 }
 
 /** ace list [pm] — enumerate installed packages. */
 export function list(graph: DependencyGraph, filterPm?: PackageEntry["packageManager"]): AceResult {
-  const entries = Array.from(graph.values()).filter(e => e.weight > 0).filter(e => !filterPm || e.packageManager === filterPm).sort((a, b) => a.name.localeCompare(b.name));
-  if (entries.length === 0) return { success: true, message: `No packages installed${filterPm ? ` (${filterPm})` : ""}.`, entries: [] };
-  const lines = entries.map(e => `  ${e.name}@${e.version} [${e.packageManager}] ${e.contentAddress}`);
-  return { success: true, message: `Installed (${entries.length}):\n${lines.join("\n")}\nRoot: ${graphMerkleRoot(graph)}`, entries };
+  const entries = Array.from(graph.values())
+    .filter((e) => e.weight > 0)
+    .filter((e) => !filterPm || e.packageManager === filterPm)
+    .sort((a, b) => a.name.localeCompare(b.name));
+  if (entries.length === 0)
+    return { success: true, message: `No packages installed${filterPm ? ` (${filterPm})` : ""}.`, entries: [] };
+  const lines = entries.map((e) => `  ${e.name}@${e.version} [${e.packageManager}] ${e.contentAddress}`);
+  return {
+    success: true,
+    message: `Installed (${entries.length}):\n${lines.join("\n")}\nRoot: ${graphMerkleRoot(graph)}`,
+    entries,
+  };
 }
 
 /** ace graph-root — return the Merkle root of the current graph. */
 export function graphRoot(graph: DependencyGraph): AceResult {
-  const count = Array.from(graph.values()).filter(e => e.weight > 0).length;
+  const count = Array.from(graph.values()).filter((e) => e.weight > 0).length;
   return { success: true, message: `Root: ${graphMerkleRoot(graph)} (${count} packages)` };
 }
 
@@ -147,7 +235,7 @@ export const emptyGraph: DependencyGraph = new Map();
 //
 // Usage:
 //   const result = install(graph, "my-pkg");
-//   if (!result.success) absorbAceError(result, "install", "my-pkg");
+//   if (!result.success) absorbAceError(result, "install", "my-pkg", emittedAt);
 //   // aceBnn.states.get("toolchain")?.posterior.mu now reflects install failure rate
 
 import { createDimensionalBnn, absorbError, type DimensionalBnn } from "../planning/error-bnn-bridge";
@@ -165,12 +253,14 @@ let _corrSeq = 0;
  * @param result - The failed AceResult.
  * @param command - The CLI command that failed ("install" | "verify" | "remove").
  * @param packageName - The package name that caused the failure.
+ * @param emittedAt - The caller-provided event timestamp.
  * @param retractableBeliefId - Optional: the belief to retract (retraction path).
  */
 export function absorbAceError(
   result: AceResult,
   command: string,
   packageName: string,
+  emittedAt: string,
   retractableBeliefId?: string,
 ): void {
   if (result.success) return; // no-op for successes
@@ -188,14 +278,15 @@ export function absorbAceError(
   const mirror: ErrorMirror = {
     what: `ace ${command} ${packageName}`,
     why: msg,
-    howToFix: command === "install"
-      ? `Check registry: ace list | grep ${packageName}`
-      : `Re-install: ace install ${packageName}`,
+    howToFix:
+      command === "install"
+        ? `Check registry: ace list | grep ${packageName}`
+        : `Re-install: ace install ${packageName}`,
     dimension,
     severity: command === "verify" ? "error" : "warn",
     ...(retractableBeliefId ? { retractableBeliefId } : {}),
   };
 
-  const envelope = teachingError(corrId, mirror);
+  const envelope = teachingError(corrId, mirror, emittedAt);
   absorbError(aceBnn, envelope);
 }
