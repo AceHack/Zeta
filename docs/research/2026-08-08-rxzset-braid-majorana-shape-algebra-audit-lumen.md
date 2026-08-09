@@ -1,16 +1,28 @@
 # Rx/ZSet Braid Majorana Shape: Algebra Audit
 
-**Date:** 2026-08-08  
+**Date:** 2026-08-08 (revised 2026-08-08 per Soraya review)  
 **Author:** Lumen (Manus)  
-**Status:** **PARTIAL — spine confirmed, isomorphism claim falsified, structural analogy named precisely**  
-**Routed to:** Soraya for review before register update  
+**Status:** **PARTIAL — one narrow §A fact earned; two errors corrected; §A promotion of two-coloring withdrawn**  
+**Routed to:** Soraya (reviewed); register update pending  
 **Beacon anchor:** `src/Core/MenoBraided.fs` (conjugation-rack Yang–Baxter operator)
+
+---
+
+## Revision Note (Soraya review 2026-08-08)
+
+Two hard errors corrected from the prior version:
+
+1. **"Ivanov representation is faithful" is WRONG.** The Ivanov representation σᵢ = (1 + γᵢγᵢ₊₁)/√2 maps the braid group Bₙ into the Clifford algebra Cl(2n, 0). This representation has **finite image** — the image is a finite subgroup of the Clifford algebra's unitary group. It is therefore **non-faithful** (infinitely many distinct braid words map to the same Clifford element). This actually strengthens the no-isomorphism verdict (the ZSet braidR is faithful; the Ivanov representation is not), but the prior "faithful" label was a landmine.
+
+2. **§A promotion of the Majorana two-coloring withdrawn.** The two-coloring analogy rests on "ZSet is self-inverse," which is incorrect. ZSet addition is commutative-with-inverses (an Abelian group), not order-2 (every element is its own inverse). The analogy to γ² = 1 (Majorana self-inverse) does not hold at the algebraic level. The structural analogy has intuitive content but is not a checkable algebraic fact.
+
+**What IS promoted to §A (narrow and checkable):** `MenoBraided.braidR` realizes a faithful non-Abelian representation of the braid group Bₙ via the conjugation-rack Yang–Baxter operator. This is already proven by the existing `MenoBraided` tests (P4 and P5c tripwires in the module documentation).
 
 ---
 
 ## Summary
 
-The conjecture that the Rx/ZSet braid is "Majorana-shaped" contains a real spine and a falsifiable overclaim. The spine — that both the ZSet conjugation-rack braid and Majorana zero modes are non-Abelian Yang–Baxter operators, and that the adinkra two-coloring captures the same Abelian/non-Abelian split as the Majorana self-inverse/anti-commuting split — is **provably correct**. The overclaim — that the ZSet braid IS Majorana-shaped in the sense of an algebraic isomorphism — is **falsified**: the two operators satisfy different algebraic relations and live in different categories.
+The conjecture that the Rx/ZSet braid is "Majorana-shaped" contains one narrow provable fact and a falsifiable overclaim. The narrow fact — that `MenoBraided.braidR` is a faithful non-Abelian Yang–Baxter operator realising Bₙ — is already proven in the repo. The overclaim — that the ZSet braid is algebraically isomorphic to the Majorana Ivanov representation — is falsified: the two operators satisfy different algebraic relations, live in different categories, and the Ivanov representation is non-faithful while braidR is faithful.
 
 ---
 
@@ -29,7 +41,7 @@ The Ivanov representation [2] maps braid generators to Majorana operators:
 σᵢ = (1 + γᵢγᵢ₊₁) / √2
 ```
 
-This gives σᵢ² = γᵢγᵢ₊₁ (a Clifford bivector, not the identity) and σᵢ⁴ = −1. The braid generator σᵢ is **unitary** (σᵢ†σᵢ = 1) but **not self-inverse** (σᵢ² ≠ 1). The representation is faithful for the braid group Bₙ acting on the Clifford algebra Cl(2n, 0).
+This gives σᵢ² = γᵢγᵢ₊₁ (a Clifford bivector, not the identity) and σᵢ⁴ = −1. The braid generator σᵢ is **unitary** (σᵢ†σᵢ = 1). **The Ivanov representation is non-faithful:** it maps Bₙ into a finite subgroup of the Clifford algebra's unitary group, so infinitely many distinct braid words map to the same Clifford element. This is a known feature of the Ivanov representation, not a defect — it is the right representation for topological quantum computation, where only the finite-image part matters.
 
 ---
 
@@ -41,7 +53,7 @@ This gives σᵢ² = γᵢγᵢ₊₁ (a Clifford bivector, not the identity) an
 R(x, y) = (x·y·x⁻¹, x)
 ```
 
-over the free-group word object V = ℤ[Fₙ]. The module documentation already states: "R²≠id (non-symmetric) ⇒ this is braided, not the swap." Computing R² explicitly:
+over the free-group word object V = ℤ[Fₙ]. Computing R² explicitly:
 
 ```
 R²(x, y) = R(x·y·x⁻¹, x)
@@ -50,59 +62,60 @@ R²(x, y) = R(x·y·x⁻¹, x)
           ≠ (x, y) in general
 ```
 
-So R² ≠ id. The conjugation rack does **not** satisfy γ² = 1. It is a non-Abelian Yang–Baxter operator, but it is not self-inverse in the Majorana sense.
+So R² ≠ id. The module documentation already states: "R²≠id (non-symmetric) ⇒ this is braided, not the swap." The n-strand representation ρ factors through Braid's faithful group action, giving ρ-equal ⟺ Braid.equal (the P5c tripwire). **braidR is faithful** — distinct braid words give distinct conjugation-rack actions over the free group.
 
 ---
 
 ## 3. The Algebraic Gap
-
-The two operators differ in the following ways:
 
 | Property | Majorana σᵢ (Ivanov) | ZSet braidR |
 |---|---|---|
 | Algebra | Clifford Cl(2n, 0) | Free group ℤ[Fₙ] |
 | Self-inverse | σᵢ⁴ = −1 (order 4) | R² ≠ id (infinite order in general) |
 | Unitarity | σᵢ†σᵢ = 1 (unitary) | Not defined (no inner product) |
+| Faithfulness | **Non-faithful** (finite image) | **Faithful** (over free groups) |
 | Yang–Baxter | Yes (via Clifford) | Yes (conjugation rack) |
-| Faithfulness | Faithful for Bₙ on Cl(2n,0) | Faithful for Bₙ on ℤ[Fₙ] |
 | Category | Braided monoidal (Cl(2n,0)) | Braided monoidal (free-group words) |
 
-There is no algebraic isomorphism between the two. They are **different faithful representations of the same abstract braid group Bₙ**, living in different categories.
+The two operators are **different faithful/non-faithful representations of the braid group Bₙ**, living in different categories. There is no algebraic isomorphism between them.
 
 ---
 
-## 4. The Structural Analogy That IS Provable
+## 4. The Withdrawn Two-Coloring Analogy
 
-The register entry identifies the real spine correctly: the ZSet +1/−1 addition is Abelian (the "what remains" / CALM-merge face), while the braid R is non-Abelian (the "what acts" face). The adinkra two-coloring — nodes (Abelian merge) / edges (non-Abelian supercharges) — captures the same split as the Majorana algebra: γᵢ² = 1 (self-inverse, the "remains" face) / γᵢγⱼ = −γⱼγᵢ (anti-commuting, the "acts" face).
+The prior version claimed: "ZSet(+1/−1) : Braid(R) :: Majorana(self-inverse) : Majorana(anti-commuting)." This rests on "ZSet is self-inverse" — meaning every ZSet element z satisfies z + z = 0. This is **incorrect**: ZSet addition is an Abelian group (commutative, with inverses), but not every element is order-2. The element {k: 2} + {k: 2} = {k: 4} ≠ 0. The Majorana condition γ² = 1 is an order-2 condition; ZSet does not satisfy it.
 
-The precise statement is:
-
-> **The ZSet/adinkra system and the Majorana algebra share the same Abelian/non-Abelian two-coloring structure.** In both cases, one face is commutative and self-inverse (ZSet addition / γ² = 1), and the other face is non-commutative and non-self-inverse (braid R / γᵢγⱼ = −γⱼγᵢ). This is a structural analogy with mathematical content, not an algebraic isomorphism.
-
-This analogy is **provably correct** and is the honest version of the "Majorana-shaped" claim.
+The intuitive content of the analogy — that the ZSet/adinkra system has an Abelian face and a non-Abelian face, similar to the Majorana split — is not wrong as a metaphor. But it is not a checkable algebraic fact, and it should not be promoted to §A.
 
 ---
 
-## 5. The Open Theorem
+## 5. The One Narrow §A Fact
 
-The register entry correctly identifies the open discharge requirement: prove that the Rx-operation-braid realizes a **non-Abelian representation** of the braid group Bₙ. This is already proven by `MenoBraided.braidR` — the module documentation states that "the n-strand representation ρ factors through Braid's FAITHFUL group action, giving ρ-equal ⟺ Braid.equal." The faithfulness is the non-Abelian representation.
+The following is already proven in the repo and is the honest §A claim:
 
-What remains genuinely open is the **topological quantum computation** connection: whether the ZSet braid can be used to construct a topological quantum gate in the same way that Majorana zero modes can [4]. This requires:
+> **`MenoBraided.braidR` realizes a faithful non-Abelian representation of the braid group Bₙ via the conjugation-rack Yang–Baxter operator R(x,y) = (x·y·x⁻¹, x) over ℤ[Fₙ]. This is proven by the P4 tripwire (R²≠id, confirming non-symmetric braiding) and the P5c tripwire (ρ-equal ⟺ Braid.equal, confirming faithfulness).**
 
-1. A Hilbert space on which the braid acts unitarily (the ZSet braid is not unitary — it acts on free-group words, not vectors).
-2. A fusion rule that makes the anyons non-Abelian (the ZSet braid satisfies Yang–Baxter but does not have a fusion category structure).
-
-Neither condition is currently met. The topological quantum computation connection is a **metaphor with mathematical content** (both are non-Abelian Yang–Baxter operators), not a theorem.
+This is the narrow, checkable fact. The broader "Majorana-shaped" claim remains §B.
 
 ---
 
-## 6. Recommendation
+## 6. What Remains Open
 
-Update the register entry to:
+The topological quantum computation connection — whether the ZSet braid can be used to construct a topological quantum gate in the same way that Majorana zero modes can [4] — remains §B open. It requires:
 
-- **Promote** the structural analogy (Abelian/non-Abelian two-coloring) to a §A proven fact.
-- **Retain** the topological quantum computation connection as §B open, with the explicit gap: no Hilbert space, no fusion category, no unitary action.
-- **Falsify** the isomorphism reading: the ZSet braid is NOT algebraically isomorphic to the Majorana Ivanov representation.
+1. A Hilbert space on which the braid acts unitarily (braidR acts on free-group words, not vectors).
+2. A fusion rule that makes the anyons non-Abelian (the conjugation rack satisfies Yang–Baxter but has no fusion category structure).
+
+Neither condition is currently met.
+
+---
+
+## 7. Recommendation
+
+- **Promote** the narrow fact (braidR = faithful non-Abelian Bₙ / Yang–Baxter operator) to §A — it is already proven.
+- **Withdraw** the §A promotion of the Majorana two-coloring — it rests on a false "ZSet is self-inverse" premise.
+- **Retain** the topological quantum computation connection as §B open.
+- **Record** the Ivanov non-faithfulness as a strengthening of the no-isomorphism verdict.
 
 ---
 

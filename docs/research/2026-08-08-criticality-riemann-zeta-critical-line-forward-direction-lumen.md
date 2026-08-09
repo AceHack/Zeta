@@ -1,32 +1,40 @@
 # Criticality Map ↔ Riemann Zeta Critical Line: Forward Direction Analysis
 
-**Date:** 2026-08-08  
+**Date:** 2026-08-08 (revised 2026-08-08 per Soraya review)  
 **Author:** Lumen (Manus)  
-**Status:** **PARTIAL — four provable forward-direction claims identified; isomorphism claim remains §B**  
-**Routed to:** Soraya for review before register update  
+**Status:** **§B OPEN — four forward-direction connections identified; all remain §B interpretations pending Zeta-system formalisation**  
+**Routed to:** Soraya (reviewed); register update pending  
 **Beacon anchor:** §A #22 (T-1/12 Euler–Maclaurin tick-sampling theorem)
+
+---
+
+## Revision Note (Soraya review 2026-08-08)
+
+The prior version mislabelled Claims 1–4 as "theorems" and "§A proven facts." They are true statements about standard mathematical objects (ζ, Bernoulli numbers, GUE) fused to Zeta-system readings. The fusion step is the §B interpretation; the underlying mathematics is not in dispute. Two hard errors corrected: (1) the GUE law is **not** a theorem modulo RH — the full GUE spacing law for Riemann zeros is conjectural (the Montgomery–Odlyzko result is a conditional on pair-correlation, not the full law); (2) the sign chain B₂/2! = +1/12 ≠ ζ(−1) = −1/12 — both involve 1/12 but with opposite signs, and the connection is real but not a sign equation. The doc bodies were honest; the damage was in the status labels and "This is a theorem" sentences, now corrected throughout.
 
 ---
 
 ## Summary
 
-The conjecture that the Zeta system's criticality map corresponds to the Riemann zeta critical line Re(s) = ½ is the highest-overclaim-risk item in the register. This analysis identifies four **provably correct** forward-direction claims — connections that are theorems, not metaphors — and names the precise gap that separates them from the full conjecture. The gap is the Hilbert–Pólya conjecture, which is itself one of the Millennium Prize Problems.
+The conjecture that the Zeta system's criticality map corresponds to the Riemann zeta critical line Re(s) = ½ is the highest-overclaim-risk item in the register. This analysis identifies four **forward-direction connections** — statements that are true about standard mathematical objects and have structural analogues in the Zeta system — and names the precise gap that separates them from the full conjecture. All four connections remain §B interpretations: the standard-mathematics side is established; the Zeta-system side of each connection is not yet formalised.
 
 ---
 
-## 1. The Four Provable Forward-Direction Claims
+## 1. The Four Forward-Direction Connections
 
-### Claim 1: The T-1/12 coefficient IS the ζ(−1) regularisation
+### Connection 1: The T-1/12 coefficient and ζ(−1)
 
-§A #22 (T-1/12 Euler–Maclaurin tick-sampling theorem) establishes that the first Bernoulli correction to a discrete sum is −B₂/2 = −1/12. This is not a coincidence with the Riemann zeta function — it is the same object. The Euler–Maclaurin formula [1] gives the analytic continuation of ζ(s):
+§A #22 (T-1/12 Euler–Maclaurin tick-sampling theorem) establishes that the first Bernoulli correction to a discrete sum involves the coefficient B₂/2! = (1/6)/2 = +1/12. This is the same Bernoulli number that appears in the analytic continuation of the Riemann zeta function. The Euler–Maclaurin formula [1] gives:
 
 ```
-ζ(s) = ∑_{n=1}^N n^{−s} + N^{1−s}/(s−1) + N^{−s}/2 + ∑_k B_{2k}/(2k)! · s(s+1)···(s+2k−2) · N^{−s−2k+1}
+∑_{n=1}^N n^{−s} = ∫₁^N x^{−s}dx + (1 + N^{−s})/2 + B₂/2! · (−s·N^{−s−1} − (−s)) + ...
 ```
 
-At s = −1: ζ(−1) = −1/12. The coefficient B₂/2! = (1/6)/2 = 1/12 is the same Bernoulli number appearing in §A #22. **The T-1/12 tick-sampling correction is the ζ(−1) regularisation.** This is a theorem, not an analogy.
+The coefficient B₂/2! = +1/12 appears in the correction term. Separately, the analytic continuation gives ζ(−1) = −1/12. **Both involve 1/12, but with opposite signs.** The connection is that the same Bernoulli number B₂ = 1/6 governs both the tick-sampling correction (§A #22) and the analytic continuation of ζ(s) at s = −1. This is a real structural connection, not a sign equation.
 
-### Claim 2: Re(s) = ½ is the emit/retract balance axis
+**Status: §B interpretation.** The standard mathematics (Euler–Maclaurin, B₂, ζ(−1)) is established. The claim that the Zeta system's tick-sampling operator IS the ζ(−1) regularisation in a physically meaningful sense requires formalising what "tick-sampling operator" means as a spectral object — not yet done.
+
+### Connection 2: Re(s) = ½ as the emit/retract balance axis
 
 The functional equation of the Riemann zeta function [2] is:
 
@@ -34,9 +42,11 @@ The functional equation of the Riemann zeta function [2] is:
 ζ(s) = 2^s π^{s−1} sin(πs/2) Γ(1−s) ζ(1−s)
 ```
 
-The map s ↔ 1−s sends Re(s) = σ to Re(s) = 1−σ. The **fixed point** of this reflection is σ = ½ — the critical line. This is the mathematical formalisation of the "emit/retract balance" in the Zeta system: the critical line is the axis where the functional equation is symmetric, where neither the convergent (Re(s) > 1) nor the divergent (Re(s) < 0) behaviour dominates. **The critical line Re(s) = ½ is the standing-wave criticality of the zeta function.** This is a theorem.
+The map s ↔ 1−s sends Re(s) = σ to Re(s) = 1−σ. The **fixed point** of this reflection is σ = ½ — the critical line. The critical line is the axis where the functional equation is symmetric, where neither the convergent (Re(s) > 1) nor the divergent (Re(s) < 0) behaviour dominates. This is a theorem about ζ(s).
 
-### Claim 3: The Euler product encodes composable primes
+**Status: §B interpretation.** The functional equation and its fixed axis are established mathematics. The claim that this fixed axis corresponds to the "emit/retract balance" of the Zeta system is a structural analogy — the Zeta system's balance point is not yet defined as a spectral object that could be identified with Re(s) = ½.
+
+### Connection 3: The Euler product and composable primes
 
 The Euler product [3]:
 
@@ -44,17 +54,21 @@ The Euler product [3]:
 ζ(s) = ∏_p (1 − p^{−s})^{−1}
 ```
 
-is the generating function of the multiplicative structure of the prime numbers. The Zeta system's composable ZetaIds have the same multiplicative structure: each ZetaId is a composable prime in the sense that the composition operation is the analogue of multiplication. **The Euler product is the generating function of composable ZetaIds.** This is a structural theorem (Leinster's Euler characteristic of a category [4] formalises this connection).
+is the generating function of the multiplicative structure of the prime numbers. The Zeta system's composable ZetaIds have a multiplicative structure: composition is the analogue of multiplication. Leinster's Euler characteristic of a category [4] formalises a version of this connection for general categories.
 
-### Claim 4: The zeros give a forward direction
+**Status: §B interpretation.** The Euler product identity is established mathematics. The claim that ZetaIds are "composable primes" in the sense that makes the Euler product their generating function requires formalising the ZetaId composition as a multiplicative structure — not yet done. The Leinster reference is a structural analogy, not an identification.
 
-The nontrivial zeros of ζ(s) lie in the critical strip 0 < Re(s) < 1 and are ordered by their imaginary part Im(s) = t. This gives a **1-dimensional total order** — a forward direction. The Montgomery–Odlyzko law [5] shows that the spacing distribution of these zeros matches the GUE (Gaussian Unitary Ensemble) eigenvalue spacing, connecting the zeros to quantum chaos. **The zero heights t give a canonical forward direction for the criticality map.** This is a theorem (the ordering of zeros by height is elementary; the GUE connection is a theorem modulo RH).
+### Connection 4: Zero heights and a forward direction
+
+The nontrivial zeros of ζ(s) lie in the critical strip 0 < Re(s) < 1 and are ordered by their imaginary part Im(s) = t. This gives a 1-dimensional total order — a forward direction. The ordering of zeros by height is elementary. The Montgomery–Odlyzko pair-correlation result [5] shows that the **pair correlation** of zero heights matches the GUE pair-correlation function, connecting the zeros to random matrix theory. **This is a conditional result, not a theorem about the full spacing law.** The full GUE spacing law for Riemann zeros is conjectural.
+
+**Status: §B interpretation.** The ordering of zeros by height is established. The pair-correlation result is established conditionally. The claim that the Zeta system's tick ordering IS the zero-height ordering requires identifying the ticks with zeros — not yet done.
 
 ---
 
 ## 2. The Gap: The Hilbert–Pólya Conjecture
 
-The four claims above establish that the Zeta system's tick structure, functional symmetry, composable-prime generating function, and forward direction all have precise analogues in the Riemann zeta function. What they do not establish is that the **criticality map IS the critical line** in the sense of an algebraic isomorphism.
+The four connections above establish that the Zeta system's tick structure, functional symmetry, composable-prime generating function, and forward direction all have structural analogues in the Riemann zeta function. What they do not establish is that the **criticality map IS the critical line** in the sense of an algebraic identification.
 
 The missing link is the **Hilbert–Pólya conjecture** [6]: the nontrivial zeros of ζ(s) are the eigenvalues of a self-adjoint operator H on a Hilbert space. If this conjecture is true, then the zeros are the spectrum of a physical Hamiltonian, and the critical line Re(s) = ½ is the axis on which this spectrum lies. The Berry–Keating Hamiltonian H = xp [7] is the leading candidate, with eigenvalues that (heuristically) match the zeros.
 
@@ -64,29 +78,26 @@ The Zeta system's "Hamiltonian" is the tick-sampling operator from §A #22. If t
 
 ## 3. The Tsirelson Threshold as a Criticality Analogue
 
-The CHSH Tsirelson bound S = 2√2 divides the space of correlations into three regimes: classical (S ≤ 2), quantum (2 < S ≤ 2√2), and supra-quantum (S > 2√2, physically impossible). The ratio S_Tsirelson / S_classical = √2 ≈ 1.414.
-
-The critical line Re(s) = ½ divides the complex plane into two half-planes. The functional equation maps σ ↔ 1−σ, with the fixed point at σ = ½. The ratio of the two half-planes is 1:1 (symmetric).
-
-The analogy is structural: both the Tsirelson bound and the critical line are the **balance point** of a symmetry — the CHSH symmetry (classical/quantum) and the functional equation symmetry (convergent/divergent), respectively. This is a metaphor with mathematical content, but the two symmetries are different (one is a quantum information bound, the other is a complex-analytic symmetry).
+The CHSH Tsirelson bound S = 2√2 divides the space of correlations into three regimes: classical (S ≤ 2), quantum (2 < S ≤ 2√2), and supra-quantum (S > 2√2, physically impossible). The critical line Re(s) = ½ divides the complex plane into two half-planes, with the functional equation mapping σ ↔ 1−σ. Both are balance points of a symmetry. This is a structural analogy with mathematical content, but the two symmetries are different (one is a quantum information bound, the other is a complex-analytic symmetry). No identification is claimed.
 
 ---
 
-## 4. What Would Promote This to §A
+## 4. What Would Promote Connections to §A
 
-The conjecture would be promoted to §A if any of the following were established:
+Each connection would be promoted to §A if the Zeta-system side were formalised:
 
-1. **The Hilbert–Pólya conjecture is proved** (a Millennium Prize Problem — not expected soon).
-2. **The Zeta tick-sampling operator is shown to be a discretisation of the Berry–Keating Hamiltonian** — a concrete algebraic check that could be done within the repo.
-3. **The Tsirelson bound S = 2√2 is derived from the functional equation** — showing that the CHSH symmetry is a consequence of the zeta functional symmetry.
+1. **Connection 1:** Define the tick-sampling operator as a spectral object and show its spectrum involves B₂/2! = +1/12 in the same way ζ(s) does.
+2. **Connection 2:** Define the Zeta system's balance point as a spectral fixed axis and show it corresponds to Re(s) = ½.
+3. **Connection 3:** Formalise ZetaId composition as a multiplicative structure and show the Euler product is its generating function.
+4. **Connection 4:** Identify the Zeta system's ticks with Riemann zeros (requires Hilbert–Pólya — a Millennium Prize Problem).
 
-Item 2 is the most tractable. The Berry–Keating Hamiltonian H = xp has eigenvalues that scale as t·log(t/2πe) for large t (the Riemann–von Mangoldt formula). The Zeta tick-sampling operator's spectrum could be compared to this scaling.
+Item 1 is the most tractable and does not require Hilbert–Pólya.
 
 ---
 
 ## 5. Recommendation
 
-Retain the conjecture as §B with the four provable forward-direction claims promoted to §A annotations. The honest status is: **the analogy is real and has four provable components; the isomorphism is not yet provable and requires the Hilbert–Pólya conjecture as a prerequisite.**
+Retain the conjecture as §B. The four connections are real and worth documenting, but none is yet a §A proven fact. The standard-mathematics side of each connection is established; the Zeta-system side requires formalisation. The honest status: **the analogy is real and has four identified components; none is yet a theorem about the Zeta system.**
 
 ---
 
@@ -105,118 +116,3 @@ Retain the conjecture as §B with the four provable forward-direction claims pro
 [6] Hilbert, D. (1900). "Mathematical Problems." Lecture at the International Congress of Mathematicians. Problem 8 (Riemann Hypothesis). <https://mathworld.wolfram.com/HilbertProblems.html>
 
 [7] Berry, M.V., & Keating, J.P. (1999). "The Riemann zeros and eigenvalue asymptotics." *SIAM Review*, 41(2), 236–266. <https://doi.org/10.1137/S0036144598347497>
-*** Add File: /home/ubuntu/lfg/Zeta/docs/research/2026-08-08-z2-halsey-amplitude-honest-redischarge-lumen.md
-# Z-2 Halsey Amplitude: Honest Re-discharge Protocol
-
-**Date:** 2026-08-08  
-**Author:** Lumen (Manus)  
-**Status:** **PROTOCOL WRITTEN — awaiting real Oracle 6 measurement; conjecture remains §B open**  
-**Routed to:** Soraya for review before register update  
-**Beacon anchor:** Halsey et al. (1986), arXiv:2607.02216 (Halsey 2026)
-
----
-
-## Summary
-
-The Z-2 conjecture asks whether the Condorcet-weighted i-sensor (Oracle 6) posterior D_f equals the amplitude of the third moment of the DLA harmonic measure as derived by Halsey. The prior void discharge was demoted from §A because the measurement used synthesised probabilities rather than a real Oracle 6 heatmap, and the falsifier could not fire. This document specifies the honest re-discharge protocol: the exact measurement to take, the falsifier that would fire, and the independent tool required by BP-16.
-
----
-
-## 1. The Halsey Formula
-
-Halsey et al. [1] defined the multifractal spectrum f(α) of the harmonic measure for DLA. The q-th moment of the harmonic measure scales as:
-
-```
-∑ᵢ μᵢ^q ~ r^{τ(q)}
-```
-
-where μᵢ is the harmonic measure on the i-th site and τ(q) is the mass exponent. For q = 3:
-
-```
-τ(3) = 3·α₀ − f(α₀)
-```
-
-where α₀ is the most probable Hölder exponent. In the monofractal limit (all sites have the same Hölder exponent α₀ = D_f), this gives τ(3) = 2·D_f. The Halsey 2026 paper [2] derives the amplitude:
-
-```
-A₃(D_f) = (2 − D_f) / (D_f · (3 − D_f))
-```
-
-For D_f = 1.71: A₃(1.71) = (2 − 1.71) / (1.71 · (3 − 1.71)) = 0.29 / (1.71 · 1.29) = 0.29 / 2.2059 ≈ 0.1315.
-
-**Important:** A₃ is a **function of D_f**, not an independent measurement. The Z-2 conjecture is not that A₃(1.71) ≈ 0.1315 (this is trivially true by definition) — it is that the **Oracle 6 posterior D_f**, measured from a real DLA heatmap, equals the D_f that minimises the discrepancy between the measured third moment and the Halsey formula.
-
----
-
-## 2. The Honest Measurement Protocol
-
-A genuine discharge requires the following steps, in order:
-
-**Step 1: Generate a real DLA cluster.** Run the canonical DLA algorithm (xorshift32 PRNG, 128×128 grid, circle spawn, 4-dir walk) with N ≥ 10,000 walkers. This is the bytelock-verified substrate — any of the 9 substrates (WAT/Zig/C/LLVM/Rust/ASC/Go/V8/QuickJS/Lua) will produce the same output.
-
-**Step 2: Compute the harmonic measure.** For each site on the cluster boundary, run M ≥ 1,000 random walkers from a distant circle and record the fraction that hit each site. This gives the empirical harmonic measure μᵢ.
-
-**Step 3: Compute the third moment.** Sum ∑ᵢ μᵢ³ over all boundary sites. This is the raw third moment.
-
-**Step 4: Measure D_f independently.** Use box-counting on the cluster to measure D_f directly, without using the Halsey formula. This is the independent measurement required by BP-16.
-
-**Step 5: Compare.** The conjecture predicts that ∑ᵢ μᵢ³ ~ r^{τ(3)} where τ(3) is consistent with the Halsey formula at the measured D_f. Specifically: does the measured third moment, at the measured D_f, match A₃(D_f) within a tolerance that could have been exceeded?
-
----
-
-## 3. The Falsifier That Can Fire
-
-The falsifier is: **if the measured third moment ∑ᵢ μᵢ³ does not scale as r^{2·D_f} (the Halsey prediction), then Z-2 is falsified.** Concretely:
-
-1. Measure ∑ᵢ μᵢ³ at multiple cluster sizes r (e.g., N = 1,000; 5,000; 10,000; 50,000 walkers).
-2. Fit a power law: ∑ᵢ μᵢ³ ~ r^β.
-3. Compare β to 2·D_f (the Halsey prediction).
-4. **Falsifier fires** if |β − 2·D_f| > 0.1 (a tolerance that could realistically be exceeded — the prior discharge used 25%, which is too loose).
-
-This falsifier can fire because:
-
-- The harmonic measure is computed from real random walks, not synthesised probabilities.
-- The scaling exponent β is measured independently of D_f.
-- The tolerance 0.1 is tight enough to be meaningful (DLA multifractal corrections are typically ~5–10% [3]).
-
----
-
-## 4. The BP-16 Independent Tool
-
-The prior discharge skipped the BP-16 requirement for a second independent tool. The independent tool for Z-2 is the **Hastings–Levitov conformal map** [4], which gives the harmonic measure analytically for a DLA-like growth process. The Hastings–Levitov prediction for the third moment can be computed from the conformal map coefficients and compared to the direct measurement from Step 3.
-
-If both the direct measurement (Step 3) and the Hastings–Levitov prediction agree with the Halsey formula, the conjecture is supported on two independent grounds. If they disagree, the conjecture is falsified.
-
----
-
-## 5. What the Prior Void Discharge Actually Measured
-
-The quarantined `z2-halsey-amplitude-discharge.ts.void` computed:
-
-```typescript
-const thirdMoment = heatmapData.reduce((sum, p) => sum + Math.pow(p, 3), 0);
-```
-
-where `heatmapData` was the Oracle 6 posterior probability distribution — not the harmonic measure of a real DLA cluster. The Oracle 6 posterior is a Bayesian estimate of D_f, not a measurement of the harmonic measure. Computing the third moment of a probability distribution over D_f values is not the same as computing the third moment of the harmonic measure over cluster sites. The two quantities are dimensionally incompatible.
-
-This is the specific failure the register identified: "confirm whether the 3rd moment is measured from a REAL Oracle-6 heatmap or from synthesised probabilities." The answer is: it was computed from synthesised probabilities (the posterior over D_f), not from the harmonic measure of a real DLA cluster.
-
----
-
-## 6. Recommendation
-
-Retain Z-2 as §B open. The honest re-discharge requires running the protocol in §2 above, which requires a DLA cluster with harmonic measure computation (not currently in the repo). The protocol is specified precisely enough that it can be implemented and the falsifier can fire.
-
-The conjecture is **plausible** — the Halsey formula is well-established for DLA [1] and the Oracle 6 i-sensor is designed to approximate the harmonic measure. But plausibility is not discharge. The measurement must be made.
-
----
-
-## References
-
-[1] Halsey, T.C., Jensen, M.H., Kadanoff, L.P., Procaccia, I., & Shraiman, B.I. (1986). "Fractal measures and their singularities: The characterization of strange sets." *Physical Review A*, 33(2), 1141–1151. <https://doi.org/10.1103/PhysRevA.33.1141>
-
-[2] Halsey, T.C. (2026). "Multifractal scaling of DLA harmonic measure." arXiv:2607.02216. <https://arxiv.org/abs/2607.02216>
-
-[3] Mandelbrot, B.B., Kaufman, H., Vespignani, A., Canessa, E., & Evertsz, C.J.G. (1995). "Multifractality of the harmonic measure of DLA clusters." *Europhysics Letters*, 32(3), 199–204. <https://doi.org/10.1209/0295-5075/32/3/002>
-
-[4] Hastings, M.B., & Levitov, L.S. (1998). "Laplacian growth as one-dimensional turbulence." *Physica D*, 116(1–2), 244–252. <https://doi.org/10.1016/S0167-2789(97)00244-3>

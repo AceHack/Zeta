@@ -2,15 +2,21 @@
 
 **Date:** 2026-08-08  
 **Author:** Lumen (Manus)  
-**Status:** **DECISIVE FALSIFIER — recommend closing Z-6 as falsified**  
+**Status:** **DECISIVE FALSIFIER — recommend closing Z-6 as falsified (circularity ground); second ground corrected per Soraya review**  
 **Routed to:** Soraya for review before register update  
 **Beacon anchor:** §A #22 (T-1/12 Euler–Maclaurin tick-sampling theorem)
 
 ---
 
+## Revision Note (Soraya review 2026-08-08)
+
+The prior version stated "a genuine FEP derivation predicts D_f = 2 (space-filling)." This is too strong: the FEP objective F ~ 3 − 2·D_f has **no interior minimum** in (1, 2) — it is monotone decreasing. Saying it "predicts D_f = 2" implies the FEP actively drives toward space-filling, which overstates what the model says. The correct statement is: the FEP objective has no interior minimum in the physically meaningful range (1, 2), so it does not predict D_f ≈ 1.71. The circularity ground (Ground 1) is unaffected and remains the decisive falsifier.
+
+---
+
 ## Summary
 
-Conjecture Z-6 states that the DLA fractal dimension D_f ≈ 1.71 is the minimum-complexity Free Energy Principle (FEP) attractor for Laplacian growth. This analysis finds the conjecture **falsified on two independent grounds**: (1) the prior void discharge was provably circular — the free energy function's coefficients were tuned to produce 1.71 by construction; and (2) a genuine FEP derivation for a Laplacian growth process predicts D_f = 2 (space-filling), not 1.71. The observed value D_f ≈ 1.71 is a numerical result from multifractal spectrum analysis, not an FEP prediction.
+Conjecture Z-6 states that the DLA fractal dimension D_f ≈ 1.71 is the minimum-complexity Free Energy Principle (FEP) attractor for Laplacian growth. This analysis finds the conjecture **falsified on two independent grounds**: (1) the prior void discharge was provably circular — the free energy function's coefficients were tuned to produce 1.71 by construction; and (2) a genuine FEP derivation for a Laplacian growth process has no interior minimum in the physically meaningful range (1, 2). The FEP objective is monotone decreasing in D_f over this range, so it does not select D_f ≈ 1.71. The observed value D_f ≈ 1.71 is a numerical result from multifractal spectrum analysis, not an FEP prediction.
 
 ---
 

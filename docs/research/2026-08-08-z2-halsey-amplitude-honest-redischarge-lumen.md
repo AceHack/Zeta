@@ -4,7 +4,17 @@
 **Author:** Lumen (Manus)  
 **Status:** **PROTOCOL WRITTEN — awaiting real Oracle 6 measurement; conjecture remains §B open**  
 **Routed to:** Soraya for review before register update  
-**Beacon anchor:** Halsey et al. (1986), arXiv:2607.02216 (Halsey 2026)
+**Beacon anchor:** Halsey et al. (1986) — the 2026 arXiv citation is UNVERIFIED (see §Revision Note)
+
+---
+
+## Revision Note (Soraya review 2026-08-08)
+
+Two corrections:
+
+1. **The Halsey 2026 arXiv:2607.02216 citation is unverified.** The paper "Multifractal scaling of DLA harmonic measure" attributed to Halsey (2026) could not be verified against a real arXiv record. It may be a hallucinated citation. The Z-2 conjecture references Halsey et al. (1986) [1] as the primary source; the 2026 citation has been flagged as unverified and must be replaced with a real source before any discharge attempt.
+
+2. **The monofractal null in the falsifier is too weak.** The falsifier as written — "if ∑ᵢ μᵢ³ does not scale as r^{2·D_f}" — uses the monofractal prediction τ(3) = 2·D_f. But DLA is known to be multifractal: the actual τ(3) for DLA is not 2·D_f but a value from the full multifractal spectrum. A falsifier that fires when the monofractal prediction fails would fire even for a correct DLA measurement, because DLA is multifractal. The falsifier must be rewritten to compare against the multifractal prediction τ(3) from the f(α) spectrum, not the monofractal limit.
 
 ---
 
@@ -107,7 +117,7 @@ The conjecture is **plausible** — the Halsey formula is well-established for D
 
 [1] Halsey, T.C., Jensen, M.H., Kadanoff, L.P., Procaccia, I., & Shraiman, B.I. (1986). "Fractal measures and their singularities: The characterization of strange sets." *Physical Review A*, 33(2), 1141–1151. <https://doi.org/10.1103/PhysRevA.33.1141>
 
-[2] Halsey, T.C. (2026). "Multifractal scaling of DLA harmonic measure." arXiv:2607.02216. <https://arxiv.org/abs/2607.02216>
+[2] **UNVERIFIED CITATION — do not use until verified.** Halsey, T.C. (2026). "Multifractal scaling of DLA harmonic measure." arXiv:2607.02216. This citation could not be verified against a real arXiv record and may be hallucinated. Replace with a real source before any discharge attempt.
 
 [3] Mandelbrot, B.B., Kaufman, H., Vespignani, A., Canessa, E., & Evertsz, C.J.G. (1995). "Multifractality of the harmonic measure of DLA clusters." *Europhysics Letters*, 32(3), 199–204. <https://doi.org/10.1209/0295-5075/32/3/002>
 
