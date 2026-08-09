@@ -33,6 +33,8 @@ const durableFields = new Set([
 
 const nonDurableFields = new Set([
   "browserTabReadout",
+  "browserTransportReadout",
+  "databaseReadout",
   "heatReadout",
   "temperatureReadout",
   "blackBodyReadout",
@@ -41,7 +43,13 @@ const nonDurableFields = new Set([
 
 export type DurableRoomRunTranscript = Omit<
   RoomRunTranscript,
-  "browserTabReadout" | "heatReadout" | "temperatureReadout" | "blackBodyReadout" | "temperatureTreaty"
+  | "browserTabReadout"
+  | "browserTransportReadout"
+  | "databaseReadout"
+  | "heatReadout"
+  | "temperatureReadout"
+  | "blackBodyReadout"
+  | "temperatureTreaty"
 >;
 
 export interface BrowserRoomCheckpointFeedback {

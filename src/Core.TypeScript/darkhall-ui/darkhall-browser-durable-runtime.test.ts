@@ -29,6 +29,7 @@ import {
   type DarkHallBrowserDurableOptions,
   type DarkHallBrowserStarter,
 } from "./darkhall-browser-durable-runtime";
+import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import type { RoomRunTranscript } from "./darkhall-room";
 
 const initialTranscript: RoomRunTranscript = {
@@ -38,6 +39,21 @@ const initialTranscript: RoomRunTranscript = {
   controller: [],
   ticks: [{ tick: 1, phase: "observe", event: "started", outcome: "ok" }],
   heatRows: [],
+};
+
+const databaseReadout: DarkHallDatabaseReadout = {
+  schema: DARK_HALL_DATABASE_READOUT_SCHEMA,
+  sourceSchema: "zeta.db.tick.v1",
+  nodeId: "node-a-db",
+  executorId: "tab-a",
+  executorKind: "browser-tab",
+  revision: 1,
+  admission: "complete",
+  accepted: 1,
+  duplicates: 0,
+  nextDeltaIndex: 1,
+  rows: [{ rowKey: "game/score", payload: "1", weight: 1 }],
+  feedback: [],
 };
 
 const coordinatorReadout: BrowserTabCoordinatorReadout = {
@@ -149,12 +165,14 @@ function createStarter(
   readonly start: DarkHallBrowserStarter;
   readonly starts: DarkHallBrowserBootstrapOptions[];
   readonly updates: RoomRunTranscript[];
+  readonly databaseUpdates: DarkHallDatabaseReadout[];
   readonly checkpointUpdates: string[];
   readonly checkpointInvalidations: BrowserCheckpointInvalidation[];
   readonly runtime: DarkHallBrowserRuntime;
 } {
   const starts: DarkHallBrowserBootstrapOptions[] = [];
   const updates: RoomRunTranscript[] = [];
+  const databaseUpdates: DarkHallDatabaseReadout[] = [];
   const checkpointUpdates: string[] = [];
   const checkpointInvalidations: BrowserCheckpointInvalidation[] = [];
   let stopped = false;
@@ -204,10 +222,15 @@ function createStarter(
       updates.push(transcript);
       return updateFailure ? { ok: false, detail: "injected render failure" } : { ok: true, value: null };
     },
+    updateDatabaseReadout: (readout) => {
+      databaseUpdates.push(readout);
+      return updateFailure ? { ok: false, detail: "injected render failure" } : { ok: true, value: null };
+    },
   };
   return {
     starts,
     updates,
+    databaseUpdates,
     checkpointUpdates,
     checkpointInvalidations,
     runtime,
@@ -245,7 +268,14 @@ describe("durable Dark Hall browser runtime", () => {
       recoveredRevision: null,
       currentRevision: null,
       room: { roomName: "browser-room", latestTick: 1 },
+      database: null,
     });
+
+    expect(started.value.updateDatabaseReadout(databaseReadout)).toMatchObject({
+      ok: true,
+      value: { database: databaseReadout },
+    });
+    expect(starter.databaseUpdates).toEqual([databaseReadout]);
 
     const advanced: RoomRunTranscript = {
       ...initialTranscript,

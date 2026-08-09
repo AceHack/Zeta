@@ -19,6 +19,7 @@ import {
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
 import type { BrowserCheckpointInvalidation } from "../browser-node/browser-tab-coordinator";
+import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import {
   startNativeDarkHallBrowser,
   type DarkHallBrowserBootstrapFeedback,
@@ -88,6 +89,7 @@ export interface DarkHallBrowserDurableReadout {
     readonly latestTick: number | null;
     readonly continuationToken: string | null;
   };
+  readonly database: DarkHallDatabaseReadout | null;
 }
 
 export interface DarkHallBrowserDurableRuntime {
@@ -99,6 +101,7 @@ export interface DarkHallBrowserDurableRuntime {
   ): Promise<DarkHallBrowserDurableResult<BrowserCheckpointRecord>>;
   retract(throughRevision: number): Promise<DarkHallBrowserDurableResult<boolean>>;
   drainCheckpointInvalidations(): Promise<DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>>;
+  updateDatabaseReadout(readout: DarkHallDatabaseReadout): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
   stop(): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
 }
 
@@ -320,6 +323,7 @@ export async function startDurableDarkHallBrowser(
     appliedRevision: currentRecord?.revision ?? null,
     feedback: null,
   };
+  let databaseReadout: DarkHallDatabaseReadout | null = null;
   let checkpointSyncTail: Promise<DarkHallBrowserDurableResult<null>> = Promise.resolve(succeeded(null));
 
   const read = (): DarkHallBrowserDurableReadout => ({
@@ -330,6 +334,7 @@ export async function startDurableDarkHallBrowser(
     payloadBytes: currentRecord?.payload.byteLength ?? null,
     checkpointSync,
     room: roomSummary(currentTranscript),
+    database: databaseReadout,
   });
 
   const updateRenderedTranscript = (nextTranscript: DurableRoomRunTranscript): DarkHallBrowserDurableResult<null> => {
@@ -542,6 +547,34 @@ export async function startDurableDarkHallBrowser(
     drainCheckpointInvalidations: async () => {
       const synchronized = await checkpointSyncTail;
       return synchronized.ok ? succeeded(read()) : synchronized;
+    },
+    updateDatabaseReadout: (nextReadout) => {
+      if (finalized) {
+        return failed("browser-runtime", {
+          severity: "heat",
+          code: "host-stopped",
+          detail: "The durable browser room runtime has already stopped.",
+        });
+      }
+      try {
+        const rendered = browserRuntime.updateDatabaseReadout(nextReadout);
+        if (!rendered.ok) {
+          return {
+            ok: false,
+            feedback: {
+              severity: "heat",
+              code: "room-render-failed",
+              source: "room-render",
+              detail: rendered.detail,
+              cleanup: [],
+            },
+          };
+        }
+      } catch {
+        return thrown("browser-runtime", "browser-runtime-operation-threw", "rendering a database readout");
+      }
+      databaseReadout = nextReadout;
+      return succeeded(read());
     },
     stop: () => {
       if (finalized) return succeeded(read());

@@ -4,12 +4,15 @@ import {
   type DarkHallBrowserDurableResult,
   type DarkHallBrowserDurableRuntime,
 } from "../darkhall-ui/darkhall-browser-durable-runtime";
+import { zetaDbTickToDarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
 import type { BrowserCheckpointRecord } from "./browser-checkpoint-port";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import { createNativeServiceWorkerTabChannel } from "./browser-service-worker-channel";
 import type { RoomRunTranscript } from "../darkhall-ui/darkhall-room";
+import { runBrowserZetaDbWake } from "./browser-zetadb-image-port";
+import type { ZetaDbDelta, ZetaDbFeedback, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 
-export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v3" as const;
+export const BROWSER_MULTITAB_FIXTURE_SCHEMA = "zeta.browser-multitab-fixture.v4" as const;
 
 type BrowserMultitabFeedback = DarkHallBrowserDurableFeedback;
 
@@ -20,6 +23,7 @@ export type BrowserMultitabFixtureReadout =
         readonly schema: typeof BROWSER_MULTITAB_FIXTURE_SCHEMA;
         readonly host: BrowserLifecycleHostReadout;
         readonly checkpoint: BrowserMultitabCheckpointReadout;
+        readonly database: ReturnType<DarkHallBrowserDurableRuntime["read"]>["database"];
       };
     }
   | { readonly ok: false; readonly feedback: BrowserMultitabFeedback };
@@ -42,10 +46,15 @@ export type BrowserMultitabFixtureStopResult = DarkHallBrowserDurableResult<Brow
 
 export type BrowserMultitabCheckpointResult<T> = DarkHallBrowserDurableResult<T>;
 
+export type BrowserMultitabDatabaseResult =
+  | { readonly ok: true; readonly value: ZetaDbTickReadout }
+  | { readonly ok: false; readonly feedback: ZetaDbFeedback | DarkHallBrowserDurableFeedback };
+
 export interface BrowserMultitabFixtureApi {
   read(): BrowserMultitabFixtureReadout;
   checkpoint(revision: number): Promise<BrowserMultitabCheckpointResult<BrowserCheckpointRecord>>;
   removeCheckpoint(throughRevision: number): Promise<BrowserMultitabCheckpointResult<boolean>>;
+  databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserMultitabDatabaseResult>;
   stop(): BrowserMultitabFixtureStopResult;
 }
 
@@ -133,6 +142,7 @@ function read(runtime: DarkHallBrowserDurableRuntime): BrowserMultitabFixtureRea
         payloadBytes: current.payloadBytes,
         room: current.currentRevision === null ? null : current.room,
       },
+      database: current.database,
     },
   };
 }
@@ -173,6 +183,7 @@ if (!started.ok) {
     read: () => failure,
     checkpoint: () => Promise.resolve(failure),
     removeCheckpoint: () => Promise.resolve(failure),
+    databaseTick: () => Promise.resolve(failure),
     stop: () => failure,
   };
 } else {
@@ -181,6 +192,22 @@ if (!started.ok) {
     read: () => read(runtime),
     checkpoint: (revision) => runtime.checkpoint(revision, transcriptAtRevision(revision)),
     removeCheckpoint: (throughRevision) => runtime.retract(throughRevision),
+    databaseTick: async (deltas) => {
+      const tick = await runBrowserZetaDbWake(
+        globalThis,
+        { databaseName: "zeta-browser-smoke-node", storeName: "database-images" },
+        {
+          nodeId: `${nodeId}:database`,
+          executorId: queryParameter("tab") ?? "tab-unknown",
+          executorKind: "browser-tab",
+          deltas,
+          limits: { maxDeltas: 16, maxEntries: 64, maxCheckpointBytes: 64 * 1024 },
+        },
+      );
+      if (!tick.ok) return tick;
+      const rendered = runtime.updateDatabaseReadout(zetaDbTickToDarkHallDatabaseReadout(tick.value));
+      return rendered.ok ? tick : rendered;
+    },
     stop: () => {
       const stopped = runtime.stop();
       return stopped.ok ? { ok: true, value: stopped.value.host } : stopped;

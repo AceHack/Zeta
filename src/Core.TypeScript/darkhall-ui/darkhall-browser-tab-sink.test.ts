@@ -9,6 +9,7 @@ import {
   createNativeDarkHallRoomMount,
   type DarkHallRoomMount,
 } from "./darkhall-browser-tab-sink";
+import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import type { RoomRunTranscript } from "./darkhall-room";
 
 const transcript: RoomRunTranscript = {
@@ -41,6 +42,21 @@ const readout: BrowserTabCoordinatorReadout = {
     suspendedTabIds: [],
     darkTabIds: [],
   },
+  feedback: [],
+};
+
+const databaseReadout: DarkHallDatabaseReadout = {
+  schema: DARK_HALL_DATABASE_READOUT_SCHEMA,
+  sourceSchema: "zeta.db.tick.v1",
+  nodeId: "room-db",
+  executorId: "tab-b",
+  executorKind: "browser-tab",
+  revision: 3,
+  admission: "complete",
+  accepted: 1,
+  duplicates: 0,
+  nextDeltaIndex: 1,
+  rows: [{ rowKey: "game/score", payload: "9000", weight: 1 }],
   feedback: [],
 };
 
@@ -88,6 +104,23 @@ describe("Dark Hall browser tab sink", () => {
     expect(writes).toHaveLength(2);
     expect(writes[1]).toContain('data-room="advanced-room"');
     expect(writes[1]).toContain('data-browser-local-tab="tab-a"');
+  });
+
+  test("overlays database state without mutating the durable room transcript", () => {
+    const writes: string[] = [];
+    const sink = createDarkHallBrowserTabSink(transcript, {
+      replace: (markup) => {
+        writes.push(markup);
+        return { ok: true, value: null };
+      },
+    });
+
+    expect(sink.updateDatabaseReadout(databaseReadout)).toEqual({ ok: true, value: null });
+    expect(writes).toHaveLength(0);
+    expect(sink.write(readout)).toEqual({ ok: true, value: null });
+    expect(writes[0]).toContain('data-database-executor="tab-b"');
+    expect(writes[0]).toContain('data-row-key="game/score"');
+    expect(transcript.databaseReadout).toBeUndefined();
   });
 
   test("adapts an innerHTML mount through a typed native edge", () => {

@@ -1,11 +1,11 @@
 import { resolve } from "node:path";
-// @ts-ignore -- playwright is dynamically installed for browser smoke runner
 import { chromium, type Browser, type Page } from "playwright";
 import type { DarkHallBrowserDurableFeedback } from "../darkhall-ui/darkhall-browser-durable-runtime";
 import type { BrowserLifecycleHostReadout } from "./browser-lifecycle-host";
 import type { BrowserMultitabFixtureApi, BrowserMultitabFixtureReadout } from "./browser-multitab-fixture";
+import type { ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 
-export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v6" as const;
+export const BROWSER_MULTITAB_SMOKE_SCHEMA = "zeta.browser-multitab-smoke.v7" as const;
 
 interface IrisPeerReadout {
   readonly id: string;
@@ -30,6 +30,7 @@ interface IrisMeshApi {
 interface BrowserElementLike {
   readonly textContent: string | null;
   getAttribute(name: string): string | null;
+  querySelector(selector: string): BrowserElementLike | null;
 }
 
 interface BrowserDocumentLike {
@@ -44,14 +45,12 @@ interface BrowserSmokeGlobal {
 }
 
 interface BrowserServiceWorkerBootstrapGlobal {
-  readonly __zetaServiceWorkerInstall?: {
-    readonly state: "loading" | "ready" | "failed";
-    readonly detail: string | null;
-  };
   readonly navigator: {
     readonly serviceWorker: {
       readonly controller?: unknown;
-      getRegistration(): Promise<{ readonly active?: unknown } | undefined>;
+      readonly ready: Promise<{ readonly active?: unknown }>;
+      register(url: string, options: { readonly type: "module" }): Promise<unknown>;
+      addEventListener(type: "controllerchange", listener: () => void, options: { readonly once: true }): void;
     };
   };
 }
@@ -66,6 +65,13 @@ export interface BrowserMultitabPageObservation {
     }[];
     readonly sourceLocalState: string;
     readonly irisLabel: string;
+    readonly databaseExecutor: string;
+    readonly databaseRevision: string;
+    readonly databaseRows: readonly {
+      readonly rowKey: string;
+      readonly weight: string;
+      readonly payload: string;
+    }[];
   };
 }
 
@@ -86,6 +92,11 @@ export interface BrowserMultitabSmokeTranscript {
     readonly pageAAfterRemoval: BrowserMultitabPageObservation;
   };
   readonly stoppedPageB: BrowserLifecycleHostReadout;
+  readonly databaseHandoff: {
+    readonly writer: ZetaDbTickReadout;
+    readonly pageBAfterWrite: BrowserMultitabPageObservation;
+    readonly survivor: ZetaDbTickReadout;
+  };
   readonly afterStop: {
     readonly pageA: BrowserMultitabPageObservation;
   };
@@ -183,22 +194,7 @@ function installerDocument(): string {
   return `<!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><title>Zeta service-worker installer</title></head>
-<body>
-  <script>
-    globalThis.__zetaServiceWorkerInstall = { state: "loading", detail: null };
-    navigator.serviceWorker.register("/browser-service-worker.js", { type: "module" })
-      .then(() => navigator.serviceWorker.ready)
-      .then(() => navigator.serviceWorker.controller
-        ? undefined
-        : new Promise(resolve => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true })))
-      .then(() => {
-        globalThis.__zetaServiceWorkerInstall = { state: "ready", detail: null };
-      })
-      .catch(error => {
-        globalThis.__zetaServiceWorkerInstall = { state: "failed", detail: String(error) };
-      });
-  </script>
-</body>
+<body></body>
 </html>`;
 }
 
@@ -216,6 +212,8 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
     const root = globalThis as unknown as BrowserSmokeGlobal;
     const sourceElements = Array.from(root.document.querySelectorAll("[data-tab]"));
     const sourceRoot = root.document.querySelector("[data-browser-local-state]");
+    const databaseRoot = root.document.querySelector("[data-database-readout]");
+    const databaseRows = Array.from(root.document.querySelectorAll(".zeta-database-row"));
     const irisLabel = root.document.querySelector("#iris-mesh button");
     const iris = root.ZetaMesh.snapshot();
     return {
@@ -234,6 +232,13 @@ async function observe(page: Page): Promise<BrowserMultitabPageObservation> {
         })),
         sourceLocalState: sourceRoot?.getAttribute("data-browser-local-state") ?? "",
         irisLabel: irisLabel?.textContent?.trim() ?? "",
+        databaseExecutor: databaseRoot?.getAttribute("data-database-executor") ?? "",
+        databaseRevision: databaseRoot?.getAttribute("data-database-revision") ?? "",
+        databaseRows: databaseRows.map((row) => ({
+          rowKey: row.getAttribute("data-row-key") ?? "",
+          weight: row.getAttribute("data-row-weight") ?? "",
+          payload: row.querySelector(".zeta-database-row-payload")?.textContent?.trim() ?? "",
+        })),
       },
     };
   });
@@ -249,26 +254,37 @@ async function waitForReady(page: Page): Promise<void> {
 
 async function installServiceWorker(page: Page, url: string): Promise<true> {
   await page.goto(url);
-  await page.waitForFunction(
-    `() => globalThis.__zetaServiceWorkerInstall?.state === "failed" || Boolean(navigator.serviceWorker.controller)`,
-    undefined,
-    { timeout: timeoutMs },
-  );
-  const result = await page.evaluate(async () => {
+  const result = await page.evaluate(async (controlTimeoutMs) => {
     const root = globalThis as unknown as BrowserServiceWorkerBootstrapGlobal;
-    const registration = await root.navigator.serviceWorker.getRegistration();
-    return {
-      state: root.__zetaServiceWorkerInstall?.state ?? "reloaded",
-      detail: root.__zetaServiceWorkerInstall?.detail ?? "The installer produced no result.",
-      controlled: Boolean(root.navigator.serviceWorker.controller),
-      active: Boolean(registration?.active),
-    };
-  });
-  if (result.state === "failed") {
-    throw new Error(result.detail);
-  }
-  if (!result.controlled || !result.active) {
-    throw new Error(result.detail ?? "The installer page was not controlled by its service worker.");
+    try {
+      await root.navigator.serviceWorker.register("/browser-service-worker.js", { type: "module" });
+      const registration = await root.navigator.serviceWorker.ready;
+      if (!root.navigator.serviceWorker.controller) {
+        await new Promise<void>((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error("Timed out waiting for service-worker control."));
+          }, controlTimeoutMs);
+          root.navigator.serviceWorker.addEventListener(
+            "controllerchange",
+            () => {
+              clearTimeout(timeout);
+              resolve();
+            },
+            { once: true },
+          );
+        });
+      }
+      return {
+        ok: true as const,
+        controlled: Boolean(root.navigator.serviceWorker.controller),
+        active: Boolean(registration.active),
+      };
+    } catch (error) {
+      return { ok: false as const, detail: String(error), controlled: false, active: false };
+    }
+  }, timeoutMs);
+  if (!result.ok || !result.controlled || !result.active) {
+    throw new Error(result.ok ? "The installer page was not controlled by its service worker." : result.detail);
   }
   return true;
 }
@@ -353,6 +369,21 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
     failures.push("page B did not render source tab A");
   if (!transcript.beforeStop.pageA.rendered.irisLabel.includes("2 tabs"))
     failures.push("page A did not render the Iris two-tab label");
+  if (
+    transcript.databaseHandoff.writer.executorId !== "tab-b" ||
+    transcript.databaseHandoff.writer.revision !== 1 ||
+    transcript.databaseHandoff.writer.rows.find((row) => row.rowKey === "game/score")?.payload !== "9000"
+  ) {
+    failures.push("page B did not commit the expected database row as the first executor");
+  }
+  if (
+    transcript.databaseHandoff.pageBAfterWrite.source.ok !== true ||
+    transcript.databaseHandoff.pageBAfterWrite.source.value.database?.executorId !== "tab-b" ||
+    transcript.databaseHandoff.pageBAfterWrite.rendered.databaseExecutor !== "tab-b" ||
+    transcript.databaseHandoff.pageBAfterWrite.rendered.databaseRows[0]?.rowKey !== "game/score"
+  ) {
+    failures.push("page B did not render its committed database readout");
+  }
   if (transcript.crossTabCheckpoint.savedRevision !== 250)
     failures.push("page A did not persist cross-tab checkpoint revision 250");
   if (transcript.crossTabCheckpoint.pageBAfterSave.source.ok) {
@@ -381,6 +412,14 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   }
   if (!transcript.stoppedPageB.stopped || transcript.stoppedPageB.state !== "dark")
     failures.push("page B source host did not stop dark");
+  if (
+    transcript.databaseHandoff.survivor.executorId !== "tab-a" ||
+    transcript.databaseHandoff.survivor.revision !== 1 ||
+    transcript.databaseHandoff.survivor.accepted !== 0 ||
+    transcript.databaseHandoff.survivor.rows.find((row) => row.rowKey === "game/score")?.payload !== "9000"
+  ) {
+    failures.push("page A did not recover the database row after executor handoff");
+  }
   if (afterA?.coordinator.liveness.continuity !== "single-tab" || afterA.coordinator.liveness.zetaAlive !== true) {
     failures.push("source page A did not remain live as a single tab");
   }
@@ -391,6 +430,15 @@ function validateTranscript(transcript: BrowserMultitabSmokeTranscript): readonl
   if (transcript.afterStop.pageA.iris.tabs !== 1) failures.push("Iris page A did not remove stopped page B");
   if (!transcript.afterStop.pageA.rendered.irisLabel.includes("1 tab"))
     failures.push("page A did not render the Iris one-tab label");
+  if (
+    !transcript.afterStop.pageA.source.ok ||
+    transcript.afterStop.pageA.source.value.database?.executorId !== "tab-a" ||
+    transcript.afterStop.pageA.rendered.databaseExecutor !== "tab-a" ||
+    transcript.afterStop.pageA.rendered.databaseRevision !== "1" ||
+    transcript.afterStop.pageA.rendered.databaseRows[0]?.payload !== "9000"
+  ) {
+    failures.push("page A did not render itself as the surviving database executor");
+  }
   if (transcript.checkpoint.savedRevision !== 300) failures.push("page A did not persist checkpoint revision 300");
   if (transcript.checkpoint.payloadBytes <= 0) failures.push("page A persisted an empty room checkpoint payload");
   if (
@@ -510,6 +558,15 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
 
     stage = "observe initial pages";
     const [pageAFirst, pageBFirst] = await Promise.all([observe(pageA), observe(pageB)]);
+    stage = "write database row from second page";
+    const databaseWriter = await pageB.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.databaseTick([
+        { eventId: "score-9000", rowKey: "game/score", payload: "9000", weight: 1 },
+      ]);
+    });
+    if (!databaseWriter.ok) return failed("smoke-failed", databaseWriter.feedback.detail);
+    const pageBAfterDatabaseWrite = await observe(pageB);
     stage = "cross-tab checkpoint save";
     const crossTabSave = await pageA.evaluate(async () => {
       const root = globalThis as unknown as BrowserSmokeGlobal;
@@ -537,6 +594,12 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
     if (!stopped.ok) return failed("smoke-failed", `Page B stop failed: ${stopped.feedback.detail}`);
 
     await waitForSurvivor(pageA);
+    stage = "recover database row from surviving page";
+    const databaseSurvivor = await pageA.evaluate(async () => {
+      const root = globalThis as unknown as BrowserSmokeGlobal;
+      return root.__zetaBrowserSmoke.databaseTick([]);
+    });
+    if (!databaseSurvivor.ok) return failed("smoke-failed", databaseSurvivor.feedback.detail);
     const pageAAfterStop = await observe(pageA);
     stage = "persist restart checkpoint";
     const checkpoint = await pageA.evaluate(async () => {
@@ -634,6 +697,11 @@ export async function runBrowserMultitabSmoke(): Promise<BrowserMultitabSmokeRes
         pageAAfterRemoval: pageAAfterCrossTabRemoval,
       },
       stoppedPageB: stopped.value,
+      databaseHandoff: {
+        writer: databaseWriter.value,
+        pageBAfterWrite: pageBAfterDatabaseWrite,
+        survivor: databaseSurvivor.value,
+      },
       afterStop: { pageA: pageAAfterStop },
       checkpoint: { ...checkpoint.value, room: checkpointRoom },
       stoppedPageA: stoppedA.value,

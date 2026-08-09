@@ -83,10 +83,12 @@ describe("browser room checkpoint codec", () => {
     expect([...left.value]).toEqual([...right.value]);
   });
 
-  test("refuses transient tab state instead of silently persisting or dropping it", () => {
+  test("refuses transient browser state instead of silently persisting or dropping it", () => {
     const result = encodeBrowserRoomCheckpoint({
       ...transcript,
       browserTabReadout: {} as never,
+      browserTransportReadout: {} as never,
+      databaseReadout: {} as never,
     });
 
     expect(result).toEqual({
@@ -94,7 +96,8 @@ describe("browser room checkpoint codec", () => {
       feedback: {
         severity: "backpressure",
         code: "room-checkpoint-non-durable-state",
-        detail: "Room checkpoint input contains non-durable fields: browserTabReadout. Recompute them after recovery.",
+        detail:
+          "Room checkpoint input contains non-durable fields: browserTabReadout, browserTransportReadout, databaseReadout. Recompute them after recovery.",
       },
     });
   });

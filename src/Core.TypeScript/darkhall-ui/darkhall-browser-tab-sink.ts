@@ -1,6 +1,7 @@
 import { type BrowserReadoutSinkResult, type BrowserTabReadoutSink } from "../browser-node/browser-lifecycle-host";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
+import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
 export interface DarkHallRoomMount {
@@ -9,6 +10,7 @@ export interface DarkHallRoomMount {
 
 export interface DarkHallBrowserTabSink extends BrowserTabReadoutSink {
   updateTranscript(transcript: RoomRunTranscript): BrowserReadoutSinkResult<null>;
+  updateDatabaseReadout(readout: DarkHallDatabaseReadout): BrowserReadoutSinkResult<null>;
 }
 
 function succeeded<T>(value: T): BrowserReadoutSinkResult<T> {
@@ -31,10 +33,14 @@ export function createDarkHallBrowserTabSink(
 ): DarkHallBrowserTabSink {
   let transcript = initialTranscript;
   let latestReadout: BrowserTabCoordinatorReadout | null = null;
+  let latestDatabaseReadout: DarkHallDatabaseReadout | null = null;
 
   const render = (readout: BrowserTabCoordinatorReadout): BrowserReadoutSinkResult<null> => {
     try {
-      const withReadout = { ...transcript, browserTabReadout: readout };
+      const withReadout =
+        latestDatabaseReadout === null
+          ? { ...transcript, browserTabReadout: readout }
+          : { ...transcript, browserTabReadout: readout, databaseReadout: latestDatabaseReadout };
       const selectedTransport = transport ?? transcript.browserTransportReadout;
       const renderTranscript =
         selectedTransport === undefined ? withReadout : { ...withReadout, browserTransportReadout: selectedTransport };
@@ -52,6 +58,10 @@ export function createDarkHallBrowserTabSink(
     },
     updateTranscript: (nextTranscript) => {
       transcript = nextTranscript;
+      return latestReadout === null ? succeeded(null) : render(latestReadout);
+    },
+    updateDatabaseReadout: (nextReadout) => {
+      latestDatabaseReadout = nextReadout;
       return latestReadout === null ? succeeded(null) : render(latestReadout);
     },
   };

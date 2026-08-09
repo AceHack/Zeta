@@ -15,6 +15,7 @@ import {
 import type { BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { DwellerMind, LlmtvTranscript, MindPrediction, MindTemp, PhaseClockReadout } from "./darkhall-tv";
+import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 export {
   BLACK_BODY_READOUT_SCHEMA,
@@ -146,6 +147,7 @@ export interface RoomRunTranscript {
   readonly continuationReadout?: TranscriptContinuationReadout;
   readonly browserTabReadout?: BrowserTabCoordinatorReadout;
   readonly browserTransportReadout?: BrowserTabTransportReadout;
+  readonly databaseReadout?: DarkHallDatabaseReadout;
   readonly sLanes?: readonly SLane[];
   readonly generatedBy?: string;
 }
@@ -386,6 +388,80 @@ function renderBrowserTabReadout(
   ].join("");
 }
 
+function renderDatabaseReadout(readout: DarkHallDatabaseReadout | undefined): string {
+  if (readout === undefined) return "";
+
+  const pressureCount = readout.feedback.filter((feedback) => feedback.severity === "backpressure").length;
+  const heatCount = readout.feedback.length - pressureCount;
+  const style = [
+    `--database-row-count:${readout.rows.length.toString()}`,
+    `--database-feedback-count:${readout.feedback.length.toString()}`,
+  ].join(";");
+
+  return [
+    `<section class="zeta-room-database"`,
+    attr("aria-label", "Database readout"),
+    attr("data-database-readout", readout.schema),
+    attr("data-database-source", readout.sourceSchema),
+    attr("data-database-node", readout.nodeId),
+    attr("data-database-executor", readout.executorId),
+    attr("data-database-executor-kind", readout.executorKind),
+    attr("data-database-revision", readout.revision),
+    attr("data-database-admission", readout.admission),
+    attr("data-database-rows", readout.rows.length),
+    attr("data-database-feedback", readout.feedback.length),
+    attr("style", style),
+    ">",
+    '<header class="zeta-database-header">',
+    "<h2>Database</h2>",
+    `<p>revision ${readout.revision.toString()} · ${escapeHtml(readout.admission)}</p>`,
+    "</header>",
+    '<dl class="zeta-database-summary">',
+    `<div><dt>node</dt><dd>${escapeHtml(readout.nodeId)}</dd></div>`,
+    `<div><dt>executor</dt><dd>${escapeHtml(readout.executorId)}</dd></div>`,
+    `<div><dt>runtime</dt><dd>${escapeHtml(readout.executorKind)}</dd></div>`,
+    `<div><dt>accepted</dt><dd>${readout.accepted.toString()}</dd></div>`,
+    `<div><dt>duplicates</dt><dd>${readout.duplicates.toString()}</dd></div>`,
+    `<div><dt>next</dt><dd>${readout.nextDeltaIndex.toString()}</dd></div>`,
+    `<div><dt>pressure</dt><dd>${pressureCount.toString()}</dd></div>`,
+    `<div><dt>heat</dt><dd>${heatCount.toString()}</dd></div>`,
+    "</dl>",
+    `<ol class="zeta-database-rows" data-empty="${String(readout.rows.length === 0)}">`,
+    ...readout.rows.map((row) =>
+      [
+        '<li class="zeta-database-row"',
+        attr("data-row-key", row.rowKey),
+        attr("data-row-weight", row.weight),
+        ">",
+        `<code class="zeta-database-row-key">${escapeHtml(row.rowKey)}</code>`,
+        `<span class="zeta-database-row-payload">${escapeHtml(row.payload)}</span>`,
+        `<span class="zeta-database-row-weight">${row.weight > 0 ? "+" : ""}${row.weight.toString()}</span>`,
+        "</li>",
+      ].join(""),
+    ),
+    "</ol>",
+    ...(readout.rows.length === 0 ? ['<p class="zeta-database-empty">no materialized rows</p>'] : []),
+    ...(readout.feedback.length === 0
+      ? []
+      : [
+          '<ol class="zeta-database-feedback">',
+          ...readout.feedback.map((feedback) =>
+            [
+              '<li class="zeta-database-feedback-row"',
+              attr("data-severity", feedback.severity),
+              attr("data-code", feedback.code),
+              ">",
+              `<code>${escapeHtml(feedback.code)}</code>`,
+              `<span>${escapeHtml(feedback.detail)}</span>`,
+              "</li>",
+            ].join(""),
+          ),
+          "</ol>",
+        ]),
+    "</section>",
+  ].join("");
+}
+
 function treatyFromReadouts(
   temperature: TemperatureReadout,
   blackBody: BlackBodyReadout | undefined,
@@ -583,6 +659,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
   const continuationStatusValue = continuation === undefined ? undefined : continuationStatus(continuation);
   const browser = transcript.browserTabReadout;
   const browserTransport = transcript.browserTransportReadout;
+  const database = transcript.databaseReadout;
   const browserLocalState = browser?.tabs.find((tab) => tab.tabId === browser.localTabId)?.state ?? undefined;
   const generatedBy = transcript.generatedBy ?? "source-owned transcript";
 
@@ -627,6 +704,14 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     attr("data-browser-feedback", browser?.feedback.length),
     attr("data-browser-transport-readout", browserTransport?.schema),
     attr("data-browser-transport", browserTransport?.selected),
+    attr("data-database-readout", database?.schema),
+    attr("data-database-node", database?.nodeId),
+    attr("data-database-executor", database?.executorId),
+    attr("data-database-executor-kind", database?.executorKind),
+    attr("data-database-revision", database?.revision),
+    attr("data-database-admission", database?.admission),
+    attr("data-database-rows", database?.rows.length),
+    attr("data-database-feedback", database?.feedback.length),
     ">",
     '<header class="zeta-room-header">',
     `<h1>${escapeHtml(transcript.roomName)}</h1>`,
@@ -647,6 +732,12 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
           `<div><dt>tabs</dt><dd>${browser.tabs.length.toString()}</dd></div>`,
           `<div><dt>live tabs</dt><dd>${browser.liveness.liveTabIds.length.toString()}</dd></div>`,
         ]),
+    ...(database === undefined
+      ? []
+      : [
+          `<div><dt>db revision</dt><dd>${database.revision.toString()}</dd></div>`,
+          `<div><dt>db rows</dt><dd>${database.rows.length.toString()}</dd></div>`,
+        ]),
     "</dl>",
     "</header>",
     '<section class="zeta-room-controller" aria-label="Dark Hall controller readout">',
@@ -662,6 +753,7 @@ export function renderDarkHallRoomHtml(transcript: RoomRunTranscript): string {
     "</section>",
     renderContinuationReadout(continuation),
     renderBrowserTabReadout(browser, browserTransport),
+    renderDatabaseReadout(database),
     ...(transcript.sLanes && transcript.sLanes.length > 0
       ? [
           '<section class="zeta-room-coordination" aria-label="Coordination board (CHSH S-lanes; above 2 convicts a common cause)">',

@@ -16,6 +16,7 @@ import {
 } from "../browser-node/browser-tab-channel-selector";
 import type { BrowserTabChannel } from "../browser-node/browser-tab-coordinator";
 import { createDarkHallBrowserTabSink, createNativeDarkHallRoomMount } from "./darkhall-browser-tab-sink";
+import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import type { RoomRunTranscript } from "./darkhall-room";
 
 export const DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA = "zeta.darkhall.browser-bootstrap.v1" as const;
@@ -51,6 +52,7 @@ export interface DarkHallBrowserRuntime {
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHost;
   updateTranscript(transcript: RoomRunTranscript): BrowserReadoutSinkResult<null>;
+  updateDatabaseReadout(readout: DarkHallDatabaseReadout): BrowserReadoutSinkResult<null>;
 }
 
 function succeeded<T>(value: T): DarkHallBrowserBootstrapResult<T> {
@@ -152,5 +154,6 @@ export function startNativeDarkHallBrowser(
     transport: channel.readout,
     host: host.value,
     updateTranscript: (nextTranscript) => sink.updateTranscript(nextTranscript),
+    updateDatabaseReadout: (readout) => sink.updateDatabaseReadout(readout),
   });
 }

@@ -40,6 +40,7 @@ import {
   type RoomRunTranscript,
 } from "./darkhall-room";
 import { renderLlmtvDocument } from "./darkhall-tv";
+import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 
 const css = readFileSync(join(import.meta.dir, "darkhall-room.css"), "utf-8");
 const heatTreaty = JSON.parse(
@@ -171,6 +172,30 @@ const browserTabReadout: BrowserTabCoordinatorReadout = {
   ],
 };
 
+const databaseReadout: DarkHallDatabaseReadout = {
+  schema: DARK_HALL_DATABASE_READOUT_SCHEMA,
+  sourceSchema: "zeta.db.tick.v1",
+  nodeId: "llmtv-room-db",
+  executorId: "tab-<b>",
+  executorKind: "browser-tab",
+  revision: 12,
+  admission: "backpressured",
+  accepted: 2,
+  duplicates: 1,
+  nextDeltaIndex: 3,
+  rows: [
+    { rowKey: "game/<score>", payload: "9000 & rising", weight: 1 },
+    { rowKey: "game/lives", payload: "2", weight: -1 },
+  ],
+  feedback: [
+    {
+      severity: "backpressure",
+      code: "database-capacity-exhausted",
+      detail: "The finite tick budget was spent.",
+    },
+  ],
+};
+
 const transcript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "darkhall",
@@ -296,6 +321,24 @@ describe("Dark Hall CSS room UI", () => {
 
     expect(html).not.toContain("zeta-room-browser");
     expect(html).not.toContain("data-browser-tab-readout");
+  });
+
+  it("projects database rows and executor handoff into CSS-addressable room state", () => {
+    const html = renderDarkHallRoomHtml({ ...transcript, databaseReadout });
+
+    expect(html).toContain(`data-database-readout="${DARK_HALL_DATABASE_READOUT_SCHEMA}"`);
+    expect(html).toContain('data-database-node="llmtv-room-db"');
+    expect(html).toContain('data-database-executor="tab-&lt;b&gt;"');
+    expect(html).toContain('data-database-executor-kind="browser-tab"');
+    expect(html).toContain('data-database-revision="12"');
+    expect(html).toContain('data-database-admission="backpressured"');
+    expect(html).toContain('data-database-rows="2"');
+    expect(html).toContain('data-row-key="game/&lt;score&gt;" data-row-weight="1"');
+    expect(html).toContain("9000 &amp; rising");
+    expect(html).toContain('data-row-key="game/lives" data-row-weight="-1"');
+    expect(html).not.toContain("game/<score>");
+    expect(css).toContain('.zeta-room-database[data-database-admission="backpressured"]');
+    expect(css).not.toContain("animation:");
   });
 
   it("normalizes sparse controller cells without letting callers resize the grid", () => {
