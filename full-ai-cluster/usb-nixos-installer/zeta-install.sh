@@ -1676,7 +1676,26 @@ if [ -d "$ZETA_HOME" ]; then
       echo "[iter-5-wifi] wrote NetworkManager profile to installed system ($WIFI_PROFILE_NAME)"
       echo "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
     else
-      echo "[iter-5-wifi] invalid zeta-wifi-credentials.json; skipping profile write"
+      # 081KZETP6AT diagnosability: "the converter produced nothing" has TWO very
+      # different causes, and reporting both as "invalid ... json" actively misleads.
+      # (1) the runtime is missing — install.sh did not complete, so there is no `bun`
+      #     to run the converter with (the creds file may be perfectly fine); vs
+      #     (2) the creds JSON really is malformed.
+      # Case (1) cost a whole diagnosis cycle chasing a creds bug that was really the
+      # first-boot install failure. Distinguish them, and stop swallowing the helper's
+      # stderr (it was captured to the .err file and deleted UNREAD).
+      if ! sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+             bash -c "export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; command -v bun >/dev/null 2>&1"; then
+        echo "[iter-5-wifi] converter unavailable (bun/runtime missing — install.sh incomplete); skipping profile write"
+        echo "[iter-5-wifi]   creds file itself was NOT validated; see ~/.zeta/PARTIAL-PROVISION + 081KZETP6AT"
+      else
+        echo "[iter-5-wifi] invalid zeta-wifi-credentials.json; skipping profile write"
+      fi
+      if [ -s /tmp/zeta-esp-wifi.err ]; then
+        echo "[iter-5-wifi]   --- converter stderr ---"
+        sed -e 's/^/[iter-5-wifi]   /' /tmp/zeta-esp-wifi.err 2>/dev/null | tail -10
+        echo "[iter-5-wifi]   --- end converter stderr ---"
+      fi
       rm -f "$WIFI_TMP" /tmp/zeta-esp-wifi.err
     fi
   fi

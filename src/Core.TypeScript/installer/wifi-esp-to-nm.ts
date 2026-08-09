@@ -25,6 +25,14 @@ export const WIFI_ESP_INSTALL_SERIAL = {
   associationDeferred: "[iter-5-wifi] association deferred (physical-gated; no radio claim)",
   skip: "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection",
   invalid: "[iter-5-wifi] invalid zeta-wifi-credentials.json; skipping profile write",
+  /**
+   * Distinct from `invalid`: the creds file may be perfectly valid, but the
+   * converter could not RUN (no `bun` on PATH because the first-boot
+   * install.sh did not complete — see 081KZETP6AT). Conflating the two sent a
+   * diagnosis down the wrong path once already; keep them separate markers.
+   */
+  helperUnavailable:
+    "[iter-5-wifi] converter unavailable (bun/runtime missing — install.sh incomplete); skipping profile write",
 } as const;
 
 function isNonEmptyString(value: unknown): value is string {

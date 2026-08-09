@@ -16,7 +16,36 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZHJPJCF08QG0R0024BFHKS-*.md` glob. -->
 
-## COMPLETE FIX LANDED (2026-08-09, Otto shadow*) — pending CI + hardware validation
+## VALIDATION RESULT (2026-08-09, Otto shadow*) — NOT closed; blocked on bug A, correcting my own claim below
+
+**Correcting the "COMPLETE FIX LANDED" claim I wrote earlier the same day: it was premature.**
+Validation run **31323533516** (which carries every fix below, plus bug A's retry #10190) shows:
+
+- The **read-side fix WORKS** — `[iter-5.2] found injected hostname` and `[iter-5-wifi] found
+  zeta-wifi-credentials.json on boot USB ESP` both land. That part of the diagnosis held.
+- **The contract still FAILS.** The last two markers (`wrote NetworkManager profile`,
+  `association deferred`) never emit, because step 6.95c prints
+  `[iter-5-wifi] invalid zeta-wifi-credentials.json; skipping profile write`.
+- **That is NOT a creds bug — it is downstream of bug A** (`081KZETP6AT`). In that run
+  `install.sh` failed all 3 retry attempts on a *deterministic* NixOS/mise dynamic-linker
+  failure, so `bun` was never installed, so the `wifi-esp-to-nm.ts` converter could not RUN —
+  and the code reported that as "invalid creds". **One root cause, not two.**
+
+So this workitem is **blocked on 081KZETP6AT**, not independently completable: the wifi-ESP
+acceptance contract cannot pass until the first-boot toolchain install succeeds. (Handed to
+Dejan for the nix-ld vs nix-native-toolchain decision, 2026-08-09.)
+
+**Diagnosability fix shipped from this finding:** the installer now distinguishes *converter
+could not execute* (`converter unavailable (bun/runtime missing — install.sh incomplete)`) from
+*creds JSON is malformed*, and prints the converter's stderr instead of deleting it unread —
+the conflation cost a full diagnosis cycle.
+
+**To close:** bug A fixed first, THEN a wifi-ESP dispatch with all three markers + contract ok,
+then one clean hardware boot.
+
+---
+
+## (superseded — premature) COMPLETE FIX LANDED (2026-08-09, Otto shadow*) — pending CI + hardware validation
 
 The full chain is fixed; awaiting a few green CI dispatches + Aaron's hardware test before closing.
 Note the ROOT CAUSE section below (inline-`content` writes) was a WRONG intermediate hypothesis —
