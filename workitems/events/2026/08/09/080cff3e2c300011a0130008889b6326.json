@@ -1,0 +1,14 @@
+{
+  "id": "080cff3e2c300011a0130008889b6326",
+  "at": "2026-08-09T18:25:09.632Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZKWB1FZ08QG0R000A2TK98",
+    "type": "bug",
+    "title": "install.sh never runs a root bun install — devs cannot reproduce lint (TS) locally, causing false 'CI is red' conclusions",
+    "slug": "install-sh-never-runs-a-root-bun-install-devs-cannot-reprodu",
+    "priority": "P2",
+    "filename": "081KZKWB1FZ08QG0R000A2TK98-install-sh-never-runs-a-root-bun-install-devs-cannot-reprodu.md"
+  }
+}
