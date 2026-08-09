@@ -264,6 +264,40 @@ subtree, or an agent's custody. It also means we do not need three separate desi
 "new cluster", "transferred device" and "graduated agent" — they are one operation with
 different scopes.
 
+### The general principle: HOMOICONICITY AT THE IDENTITY LEVEL (Aaron)
+
+> Aaron 2026-08-09: *"yes exactly — **homoiconicity at the identity level for most
+> organizing words**."*
+
+That is the right name, and it generalizes the observation above from a coincidence into a
+design law. Homoiconicity is *one representation serving what would otherwise be different
+kinds* — in Lisp, code and data; here, **the organizing words**: cluster, node, device,
+agent, custody, key domain. If they share a representation, then an operation defined on
+one **is** the operation on all of them, and `fork` is that operation.
+
+Zeta already has homoiconicity at two other levels, which is why this is consistent rather
+than aspirational:
+
+| Level | One representation for… | Where |
+|---|---|---|
+| **Data** | every value, whatever its type | `DynamicValue` |
+| **Compiler** | programs *and* the specializer's own rules | mix-as-data (`MixIr`) — a residual is a value, which is what lets a GC collect it and a Z-set delta address it |
+| **Identity** (this) | cluster, device, agent, custody, key domain | `fork` over content-addressed structure |
+
+**What it buys, concretely:** we do not design "new cluster", "transferred device" and
+"graduated agent" separately and then discover they disagree. One operation, verified once,
+applies at every magnification — and any invariant proved of `fork` (memory preservation,
+key isolation, witness requirement) holds for all of them automatically. That is the same
+economy the generator gives at the algebra level: *only the irreducible is primitive;
+generate the rest.*
+
+**The honest limit — "most organizing words", not all.** The claim should not be inflated
+into "everything is a fork." The test for whether a word belongs in this set is whether
+forking it is *meaningful*: a cluster, a custody and a key domain all have the property
+that a divergent copy is a legitimately distinct thing with shared ancestry. A word for
+which forking is nonsense is outside the set, and forcing it in would be exactly the
+over-generalization the razor exists to prevent.
+
 **Open, and worth deciding deliberately:** at a fork, does the *witness* requirement apply
 (the privacy-budget stake from above)? A fork that anyone can perform unilaterally is fine
 for `editLocal` on your own data, but a **custody** fork changes who controls a key — which
