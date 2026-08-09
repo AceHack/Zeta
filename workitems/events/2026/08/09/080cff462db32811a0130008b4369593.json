@@ -1,0 +1,14 @@
+{
+  "id": "080cff462db32811a0130008b4369593",
+  "at": "2026-08-09T23:04:59.237Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZMCBDK208QG0R000YE008C",
+    "type": "bug",
+    "title": "Derivation B key-custody gaps — AC#3 vacuous, retraction ignored by fold, grant span unbounded",
+    "slug": "derivation-b-key-custody-gaps-ac-3-vacuous-retraction-ignore",
+    "priority": "P2",
+    "filename": "081KZMCBDK208QG0R000YE008C-derivation-b-key-custody-gaps-ac-3-vacuous-retraction-ignore.md"
+  }
+}
