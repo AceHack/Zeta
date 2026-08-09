@@ -1,7 +1,8 @@
 import { describe, it, expect } from "bun:test";
 import {
   emptyGraph, install, remove, verify, list, graphRoot,
-  applyDelta, graphMerkleRoot, STUB_REGISTRY
+  applyDelta, graphMerkleRoot, STUB_REGISTRY,
+  bnnStatus, absorbAceError, aceBnn,
 } from "./ace-cli";
 
 describe("ACE CLI — Z-set delta protocol", () => {
@@ -125,6 +126,43 @@ describe("ACE CLI — Z-set delta protocol", () => {
     expect(STUB_REGISTRY.has("zeta-core")).toBe(true);
     expect(STUB_REGISTRY.has("zeta-db")).toBe(true);
     expect(STUB_REGISTRY.has("longhorn")).toBe(true);
-    expect(STUB_REGISTRY.has("cockroachdb")).toBe(true);
+  expect(STUB_REGISTRY.has("cockroachdb")).toBe(true);
+  });
+
+  // ── bnn-status tests ─────────────────────────────────────────────────────────
+
+  it("ACE-19: bnnStatus returns success with 9 dimension rows", () => {
+    const r = bnnStatus();
+    expect(r.success).toBe(true);
+    expect(r.message).toContain("ACE BNN Status (9 dimensions)");
+    for (const dim of ["schema", "type", "range", "constraint", "auth", "transport", "toolchain", "calibration", "unknown"]) {
+      expect(r.message).toContain(dim);
+    }
+  });
+
+  it("ACE-20: bnnStatus shows prior for dimensions with no errors absorbed", () => {
+    const r = bnnStatus();
+    expect(r.message).toContain("prior — no errors observed");
+  });
+
+  it("ACE-21: absorbAceError updates the BNN for a failed install", () => {
+    const failResult = install(emptyGraph, "nonexistent-pkg");
+    expect(failResult.success).toBe(false);
+    // Absorb the error — should not throw
+    absorbAceError(failResult, "install", "nonexistent-pkg", new Date().toISOString());
+    // The BNN should still be queryable after the update
+    const r = bnnStatus();
+    expect(r.success).toBe(true);
+    expect(r.message).toContain("toolchain");
+  });
+
+  it("ACE-22: absorbAceError is a no-op for successful results", () => {
+    const successResult = install(emptyGraph, "zeta-core");
+    expect(successResult.success).toBe(true);
+    // Should not throw and should not change the BNN
+    const before = bnnStatus().message;
+    absorbAceError(successResult, "install", "zeta-core", new Date().toISOString());
+    const after = bnnStatus().message;
+    expect(before).toBe(after);
   });
 });

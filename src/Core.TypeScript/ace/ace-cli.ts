@@ -290,3 +290,40 @@ export function absorbAceError(
   const envelope = teachingError(corrId, mirror, emittedAt);
   absorbError(aceBnn, envelope);
 }
+
+/**
+ * ace bnn-status — print the current posterior (μ, σ) per error dimension.
+ *
+ * Shows which error dimensions the CLI has learned are most error-prone.
+ * A high μ means many errors of that type have been absorbed.
+ * A low robustness weight means the teacher was hostile or badly calibrated.
+ *
+ * Example output:
+ *   ACE BNN Status (9 dimensions):
+ *     schema      μ=0.0000 σ=1.0000 (prior — no errors observed)
+ *     constraint  μ=0.3500 σ=0.8000 w=0.8500
+ *     toolchain   μ=0.1200 σ=0.9500 w=0.9200
+ */
+export function bnnStatus(): AceResult {
+  const dimensions = [
+    "schema", "type", "range", "constraint",
+    "auth", "transport", "toolchain", "calibration", "unknown",
+  ] as const;
+  const lines: string[] = [`ACE BNN Status (${dimensions.length} dimensions):`];
+  for (const dim of dimensions) {
+    const state = aceBnn.states.get(dim);
+    const w = aceBnn.robustnessWeights.get(dim) ?? 1;
+    if (!state) {
+      lines.push(`  ${dim.padEnd(12)} (not initialised)`);
+      continue;
+    }
+    const mu = state.posterior.mu;
+    const sigma = Math.sqrt(state.posterior.sigma2);
+    const isAtPrior = Math.abs(mu) < 1e-9 && Math.abs(sigma - 1) < 1e-9;
+    const note = isAtPrior
+      ? "(prior — no errors observed)"
+      : `w=${w.toFixed(4)}`;
+    lines.push(`  ${dim.padEnd(12)} μ=${mu.toFixed(4)} σ=${sigma.toFixed(4)} ${note}`);
+  }
+  return { success: true, message: lines.join("\n") };
+}
