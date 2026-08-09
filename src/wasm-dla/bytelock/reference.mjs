@@ -135,10 +135,23 @@ export function runDLA(seed) {
  * vectors lock the trajectory (+ clusterSize + maxRBits), not D_f, and D_f is
  * derived from the trajectory they already lock.
  *
+ * **D is a function of (N, grid size, scale set) — a bare number is not meaningful.**
+ * This module's default (128 grid, scales 2/4/8/16) gives ≈ 1.30 at N=800, while
+ * `src/Core.TypeScript/oracle/dla-convergence.test.ts` (256 grid, scales
+ * 2/4/8/16/32) gives ≈ 1.41 at the same N. Measured decomposition of that gap:
+ * the scale set accounts for only ≈ 0.04 (seed 42: 1.249 narrow → 1.212 wide), so
+ * the gap is dominated by the **grid size** — a 256 grid confines the cluster less,
+ * so at the same N it is a geometrically different cluster, not merely the same
+ * cluster measured differently. Both numbers are correct for their setup.
+ * `box-counting-conformance.test.ts` proves the two independent implementations
+ * agree exactly (1e-10) once (grid, scales) are matched — so the difference is
+ * setup, never a divergence in the algorithm. Always report D with its parameters.
+ *
  * @param {Uint32Array|number[]} trajectory  runDLA(seed).trajectory
+ * @param {{scales?: number[]}} [opts]  measurement window; default scales 2/4/8/16
  * @returns {number} estimated fractal dimension (least-squares slope)
  */
-export function boxCountingDimension(trajectory) {
+export function boxCountingDimension(trajectory, opts = {}) {
   // Reconstruct the occupied-cell set: the center seed + every stuck walker.
   const occupied = new Set();
   occupied.add(CENTER * GRID_SIZE + CENTER);
@@ -149,7 +162,7 @@ export function boxCountingDimension(trajectory) {
     occupied.add(y * GRID_SIZE + x);
   }
 
-  const scales = [2, 4, 8, 16];
+  const scales = opts.scales ?? [2, 4, 8, 16];
   const pts = []; // [ ln(1/ε), ln N(ε) ]
   for (const eps of scales) {
     const boxes = new Set();
