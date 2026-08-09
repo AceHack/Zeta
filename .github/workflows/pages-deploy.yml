@@ -35,7 +35,7 @@ jobs:
         run: bun run pages:build
       - name: Add book preview (unlisted — noindex in <head>, not linked from the site, know-the-URL)
         run: |
-          mkdir -p dist/preview/ybth-7q2m/en dist/preview/ybth-7q2m/id dist/preview/ybth-7q2m/vi dist/preview/ybth-7q2m/ko dist/preview/ybth-7q2m/th dist/preview/ybth-7q2m/ru dist/preview/ybth-7q2m/ar dist/preview/ybth-7q2m/fa
+          mkdir -p dist/preview/ybth-7q2m/en dist/preview/ybth-7q2m/id dist/preview/ybth-7q2m/vi dist/preview/ybth-7q2m/ko dist/preview/ybth-7q2m/th dist/preview/ybth-7q2m/ru dist/preview/ybth-7q2m/ar dist/preview/ybth-7q2m/fa dist/preview/ybth-7q2m/en-nc
           cp docs/books/you-born-at-the-hinge/site/index.zh.html dist/preview/ybth-7q2m/index.html
           cp docs/books/you-born-at-the-hinge/site/index.en.html dist/preview/ybth-7q2m/en/index.html
           cp docs/books/you-born-at-the-hinge/site/index.id.html dist/preview/ybth-7q2m/id/index.html
@@ -45,6 +45,7 @@ jobs:
           cp docs/books/you-born-at-the-hinge/site/index.ru.html dist/preview/ybth-7q2m/ru/index.html
           cp docs/books/you-born-at-the-hinge/site/index.ar.html dist/preview/ybth-7q2m/ar/index.html
           cp docs/books/you-born-at-the-hinge/site/index.fa.html dist/preview/ybth-7q2m/fa/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.en-nc.html dist/preview/ybth-7q2m/en-nc/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:

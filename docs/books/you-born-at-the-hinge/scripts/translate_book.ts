@@ -12,7 +12,8 @@ const LANGUAGES: Record<string, string> = {
   th: "Thai",
   ru: "Russian",
   ar: "Arabic",
-  fa: "Farsi (Persian)"
+  fa: "Farsi (Persian)",
+  "en-nc": "English (Henderson, North Carolina southern drawl)"
 };
 
 const LANG_HTML_TAGS: Record<string, string> = {
@@ -23,7 +24,8 @@ const LANG_HTML_TAGS: Record<string, string> = {
   th: '<html lang="th">',
   ru: '<html lang="ru">',
   ar: '<html lang="ar" dir="rtl">',
-  fa: '<html lang="fa" dir="rtl">'
+  fa: '<html lang="fa" dir="rtl">',
+  "en-nc": '<html lang="en-US" class="regional-nc">'
 };
 
 const LANGBAR_MAP: Record<string, [string, string]> = {
@@ -35,7 +37,8 @@ const LANGBAR_MAP: Record<string, [string, string]> = {
   th: ['<a href="../th/">ภาษาไทย</a>', '<span class="on">ภาษาไทย</span>'],
   ru: ['<a href="../ru/">Русский</a>', '<span class="on">Русский</span>'],
   ar: ['<a href="../ar/">العربية</a>', '<span class="on">العربية</span>'],
-  fa: ['<a href="../fa/">فارسی</a>', '<span class="on">فارسی</span>']
+  fa: ['<a href="../fa/">فارسی</a>', '<span class="on">فارسی</span>'],
+  "en-nc": ['<a href="../en-nc/">NC Drawl</a>', '<span class="on">NC Drawl</span>']
 };
 
 const PROMPT_TEMPLATE = (
@@ -51,7 +54,8 @@ CRITICAL RULES:
    - Mother's eating disorder: Must remain an oblique reference (e.g. "insecurity about her own body"). Do not use any clinical or medical terms.
    - CSAM / immutable-ledger: Must remain policy-point-only with zero operational detail. Keep the "refusal-is-the-point" passage intact. Do not add numbers, methods, or identifiers.
    - Anonymity: Keep all people anonymous if they are anonymous in the text. Do not introduce any names.
-3. DIRECTNESS: Match the English tone's directness. Do not soften hard truths or add fluff.
+3. DIRECTNESS & TONE: Match the English tone's directness. Do not soften hard truths or add fluff.
+4. NATURAL VOICE: Do not make the text overly verbose. Avoid flowery "AI-speak" at all costs. It must flow completely naturally, as if a human native speaker just sat down and wrote it in their natural voice.
 
 Output ONLY the rewritten HTML block. Do not include markdown codeblocks (\`\`\`html) or any other text before or after the HTML.
 
@@ -152,6 +156,10 @@ function prepareFile(langCode: string): boolean {
       '<a href="./fa/">فارسی</a>',
       '<a href="fa/" style="color:var(--seal);text-decoration:none">فارسی</a>',
     );
+    content = content.replace(
+      '<a href="./en-nc/">NC Drawl</a>',
+      '<a href="en-nc/" style="color:var(--seal);text-decoration:none">NC Drawl</a>',
+    );
   }
 
   fs.writeFileSync(targetFilepath, content, "utf-8");
@@ -202,4 +210,6 @@ function main() {
   }
 }
 
-if (import.meta.main) main();
+if (require.main === module || import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
