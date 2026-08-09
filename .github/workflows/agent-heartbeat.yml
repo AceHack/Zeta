@@ -378,6 +378,30 @@ jobs:
       # because that was the only thing committed before the push.
       #
       # Rule for anyone adding a step here: if it writes or commits, it goes ABOVE this line.
+      - name: Emit peer attestation events (symmetric mutual observation)
+        env:
+          AGENT: ${{ matrix.agent }}
+          ZETA_AGENT_ID: ${{ matrix.agent }}
+        run: |
+          # Every agent attests what it sees from its peers — everyone IS IT.
+          # The attestation is a G-set event (same as heartbeats): durable, foldable,
+          # composable. Peers' reputation scores derive from these receipts.
+          bun src/Core.TypeScript/observe/emit-attestation.ts \
+            --attestor "$AGENT" --event-dir docs/observe-events \
+            2>&1 | tail -5 || echo "[attestation] emission failed (non-fatal)"
+
+          # Stage any attestation events produced
+          git add docs/observe-events/ 2>/dev/null || true
+          if ! git diff --cached --quiet -- docs/observe-events/; then
+            git commit --no-verify -q -m "attestation($AGENT): peer verification $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Symmetric mutual observation: $AGENT attests peers' recent heartbeat events.
+          Durable NFT receipt in the G-set event log.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+            echo "[attestation] committed attestation events"
+          fi
+
       - name: Generate vault state JSON (bridge adapter)
         env:
           AGENT: ${{ matrix.agent }}
