@@ -16,6 +16,46 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
+## ROOT CAUSE CAPTURED (2026-08-09, Otto shadow*) — deterministic NixOS/mise linker failure, NOT a transient blip
+
+The armed `MISE_VERBOSE` diag (#10155) finally captured the exact rc=1 cause, on run
+**31323533516** (which HAS the retry fix below). It is **identical on all 3 retry attempts** —
+i.e. **deterministic, not transient** — so the retry-with-backoff correctly exhausted and
+reported honestly rather than masking it. Captured signature:
+
+```
+.cache/mise/rust/rustup-init: cannot execute: required file not found
+./configure: line 9: exec: python: not found
+core:bun@1.3:  ~/.local/share/mise/installs/bun/1.3.14/bin/bun -v: No such file or directory
+core:node@24:  sh exited with non-zero status: exit code 127
+Failed to install tools: bun, dotnet, java, node, python, rust, npm:markdownlint-cli2, pipx:*
+```
+
+`"cannot execute: required file not found"` on an ELF binary is the kernel reporting a **missing
+dynamic linker** — the classic NixOS symptom: **mise downloads prebuilt binaries (bun/node/rust/
+python) dynamically linked against the FHS loader `/lib64/ld-linux-x86-64.so.2`, which NixOS does
+not provide at that path.** They cannot execute — every time. This is the true "mise toolchain
+step" failure the title referred to; earlier runs looked "intermittent" only because other
+scenarios (1/2) masked it (they do not run the full `ZETA_HOST_TIER=full` mise tier).
+
+**Implications:**
+- The retry (below) is correct for genuine transient blips and stays honest here, but **cannot
+  fix a deterministic linker failure.** Real fix = **`nix-ld`** (provides a loader for foreign
+  dynamically-linked binaries on NixOS) OR **nix-native toolchains** instead of mise-downloaded
+  prebuilts. Toolchain-strategy decision — Dejan (devops, GOVERNANCE §24) + USB-trajectory owner.
+- **wifi-ESP "invalid zeta-wifi-credentials.json" (081KZHJPJCF) is DOWNSTREAM of this, not a
+  separate bug**: install.sh fails → `bun` never installs → the `wifi-esp-to-nm.ts` helper can't
+  run → the NM-profile write is skipped → "invalid creds". **One root cause, not two.** (The
+  "invalid" label conflates "helper couldn't run" with "bad JSON" — worth a 1-line diagnosability
+  fix regardless.)
+- Evidence: run 31323533516 serial artifact `qemu-wifi-esp-serial.log` (attempt lines ~1994/2035/
+  2076; diag error block between the `081KZETP6AT diag` markers).
+
+**Next (pending Aaron's call):** `nix-ld` route in the NixOS installer config, vs. hand the
+root-cause writeup to Dejan for a nix-native-toolchain decision.
+
+---
+
 ## FIX LANDED (2026-08-09, Otto shadow*) — retry-with-backoff on the first-boot install.sh
 
 Aaron greenlit driving bug A. Since (A) is a **rare transient network/toolchain-fetch blip**
