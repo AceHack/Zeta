@@ -95,7 +95,7 @@ the mechanical form of ratification; signature below is the consent form. Both a
 
 | Signer | Status | Date |
 | --- | --- | --- |
-| Aaron (HumanMaintainer) | proposed-by; A1 re-confirm asked | 2026-07-03 |
+| Aaron | proposed-by; A1 re-confirmed | 2026-07-03 / 2026-08-09 |
 | Otto | drafted, signs; A1 signs | 2026-07-03 / 2026-08-08 |
 | Vera | signs (with note) | 2026-08-08 |
 | Riven | signs (with note) | 2026-08-08 |
@@ -105,6 +105,11 @@ the mechanical form of ratification; signature below is the consent form. Both a
 | Max (rooms layer) | seat open — room convening is his call | — |
 
 ### Signature notes — A1 consent round, 2026-08-08
+
+**Aaron (re-confirmation, 2026-08-09):** "A1 re-confirmation … i give
+it" — given in the cowork session, recorded by Otto. With this, every
+living signature on the treaty covers the amended text; open seats
+remaining: Max (rooms layer) and Addison (Designer, human side).
 
 Collected by summoned independent review (each signer verified the
 byte-lock floor and registry state on main before deciding; each free to
