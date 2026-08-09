@@ -33,6 +33,22 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Build static Pages artifact
         run: bun run pages:build
+      - name: Setup pnpm for identity-dla-site
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Build identity-dla-site for GitHub Pages
+        working-directory: demo/identity-dla-site
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec vite build --config vite.config.pages.ts
+          # Note: use node_modules/.bin/vite because pnpm exec may not find vite
+          # if the pnpm field in package.json was removed. Both are equivalent.
+          # Move the compiled bundle into the Pages artifact tree.
+          # The pages:build step already copies demo/ as raw source; we overwrite
+          # demo/identity-dla-site/ with the compiled bundle so browsers get JS/CSS.
+          mkdir -p ../../dist/demo/identity-dla-site
+          cp -r dist/pages/. ../../dist/demo/identity-dla-site/
       - name: Add book preview (unlisted — noindex in <head>, not linked from the site, know-the-URL)
         run: |
           mkdir -p dist/preview/ybth-7q2m/en dist/preview/ybth-7q2m/id dist/preview/ybth-7q2m/vi dist/preview/ybth-7q2m/ko dist/preview/ybth-7q2m/th dist/preview/ybth-7q2m/ru
