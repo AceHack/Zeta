@@ -22,6 +22,20 @@ the evidence base for **Conjecture Z-7** in the frozen core register.
 The 1,600× size difference between WAT and Go with identical D_f is the
 core claim. Compiler is irrelevant to the fractal dimension.
 
+> **Honest note on the `1.322` figure (2026-08-09).** The `1.322` in the table
+> above is each substrate's `get_df()` **mass-radius proxy** — a hardcoded
+> constant (`dla.wat` l.191: `… * 1.322 as a proxy`), not a measured dimension.
+> A *real* box-counting (Minkowski–Bouligand) estimator now lives host-side in
+> `bytelock/reference.mjs` (`boxCountingDimension`), computed from the
+> byte-locked trajectory — so it is identical across all substrates by
+> construction. At this repo's cluster size (`N_WALKERS = 800`) it measures
+> **≈ 1.30**, *not* the frequently-quoted 2-D DLA value **≈ 1.71** (Halsey 2000;
+> arXiv:2607.02216) — that is the **large-N asymptote**, and 800 walkers is too
+> small to reach it. So `binary_size ⊥ D_f` still holds (every substrate reports
+> the same D_f, whatever the cluster size); only the *number* is honest now.
+> Reaching ≈ 1.71 for real requires a much larger cluster, which would change the
+> trajectory and thus the byte-lock golden vectors — a separate decision.
+
 ## Directory Structure
 
 ```

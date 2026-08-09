@@ -118,6 +118,57 @@ export function runDLA(seed) {
   return { trajectory, clusterSize, maxRBits };
 }
 
+// ── Box-counting fractal dimension (Minkowski–Bouligand) ──────────────────────
+/**
+ * Real box-counting (Minkowski–Bouligand) fractal dimension of the DLA cluster,
+ * computed HOST-SIDE from the byte-locked trajectory. Because every substrate
+ * produces a byte-identical trajectory (that is exactly what the byte-lock
+ * verifies), this yields the SAME dimension for all substrates for free — the
+ * honest fractal dimension, replacing the ad-hoc `get_df()` mass-radius proxy
+ * (which returns a hardcoded ~1.322; see `../wat/dla.wat` l.191). For 2-D DLA the
+ * asymptotic value is ≈ 1.71 (Halsey 2000; arXiv:2607.02216) and it approaches
+ * that as the cluster (N_WALKERS) grows.
+ *
+ * Scales 2/4/8/16 px, least-squares slope of ln N(ε) vs ln(1/ε) — the same
+ * estimator the web app's OracleV8Bytecode oracle uses, so repo substrate, web
+ * app, and docs all report the same dimension. Touches no golden vector: the
+ * vectors lock the trajectory (+ clusterSize + maxRBits), not D_f, and D_f is
+ * derived from the trajectory they already lock.
+ *
+ * @param {Uint32Array|number[]} trajectory  runDLA(seed).trajectory
+ * @returns {number} estimated fractal dimension (least-squares slope)
+ */
+export function boxCountingDimension(trajectory) {
+  // Reconstruct the occupied-cell set: the center seed + every stuck walker.
+  const occupied = new Set();
+  occupied.add(CENTER * GRID_SIZE + CENTER);
+  for (const v of trajectory) {
+    if (v === 0xffffffff) continue; // escaped walker — never stuck
+    const x = (v >>> 16) & 0xffff;
+    const y = v & 0xffff;
+    occupied.add(y * GRID_SIZE + x);
+  }
+
+  const scales = [2, 4, 8, 16];
+  const pts = []; // [ ln(1/ε), ln N(ε) ]
+  for (const eps of scales) {
+    const boxes = new Set();
+    for (const cell of occupied) {
+      const x = cell % GRID_SIZE;
+      const y = (cell - x) / GRID_SIZE;
+      // floor(coord/ε) < 128/2 = 64 < GRID_SIZE, so the box key is collision-free.
+      boxes.add(Math.floor(y / eps) * GRID_SIZE + Math.floor(x / eps));
+    }
+    pts.push([Math.log(1 / eps), Math.log(boxes.size)]);
+  }
+
+  // Least-squares slope of ln N vs ln(1/ε) = the box-counting dimension.
+  const n = pts.length;
+  let sx = 0, sy = 0, sxx = 0, sxy = 0;
+  for (const [x, y] of pts) { sx += x; sy += y; sxx += x * x; sxy += x * y; }
+  return (n * sxy - sx * sy) / (n * sxx - sx * sx);
+}
+
 // ── Golden vector serialisation ───────────────────────────────────────────────
 export function toGoldenVector(seed, result) {
   return {
