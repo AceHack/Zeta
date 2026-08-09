@@ -16,6 +16,36 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
+## BUG A FIXED — install.sh now SUCCEEDS on first boot (run 31331483608)
+
+Scenario 2 reports **`phase 2 SUCCESS — login prompt "node-8c2d89 login:" observed +
+first-session + post-boot self-register markers`**. Because the first-boot provisioning
+contract (#10196) fails the scenario whenever install.sh exhausts its retries, scenario 2
+passing IS the proof that install.sh completed. Two fixes got there:
+
+1. `programs.nix-ld` (#10196) — removed the missing-ELF-interpreter failure.
+2. `node.compile = false` (#10212) — stopped mise source-building node, which needed
+   `python` in a build subshell that first boot does not provide.
+
+**Remaining (bug B, 081KZHJPJCF):** the wifi-ESP contract still fails, but at the LAST
+step and for a fully-named reason — the converter diagnostic added in #10193 printed the
+stderr that used to be captured and deleted unread:
+
+```
+mise ERROR No version is set for shim: bun
+Set a global default version with one of the following:  mise use -g bun@1.3.14
+```
+
+Step 6.95c invoked the converter with **no working directory inside the repo**, so mise
+had no project context (`.mise.toml`) from which to resolve the bun version — the shim
+therefore refused. The working sibling one step later (`zeta-creds-picker`, l.1780) does
+`cd '$ZETA_HOME/Zeta' && bun …`; the wifi converter did not. Fixed by matching it.
+
+That is the diagnosability work paying for itself twice over: the error named its own fix
+verbatim, and the fix had an in-repo precedent 100 lines away.
+
+---
+
 ## nix-ld CONFIRMED WORKING (2026-08-09, run 31329548492) — new, narrower blocker
 
 The nix-ld fix (#10196) **worked**. Evidence, from the same diag block that captured
