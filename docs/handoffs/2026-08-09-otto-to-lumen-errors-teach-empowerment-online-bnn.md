@@ -265,10 +265,77 @@ program". It also composes with the errors thread — a wrong action returns a t
 error over a **finite** action space, which is the easiest possible learning signal
 (the corrective distinction is always one of 16, never open-ended).
 
-**Honest scope, already carved in the source** (do not overstate it): *"'universal' is
-concrete for CHIP-8 — all CHIP-8 controls live in these 16."* The lattice is an
-abstract grid, not hardware key positions. Whether it generalises beyond CHIP-8 to
-arbitrary tool-calling is an open claim, not a settled one.
+### How it generalises: signature loading, not a bigger alphabet (Aaron, correcting Otto)
+
+My first draft of this section carried the caveat *"'universal' is concrete for CHIP-8;
+generalising is an open claim."* **That understated the design, and Aaron corrected it:**
+
+> *"We are designing an **Xbox-like interface** in mind to make it universal. The square
+> lets you navigate search space in a predictable fashion by **loading different
+> external signatures of the search space you are in**. We've generalized it in our
+> zeta scheduler for .NET too, and our ferry throttler that can predict itself."*
+>
+> *"We just have not pulled it all together."*
+
+The universality mechanism is **not** an alphabet large enough to cover everything —
+it is a **fixed controller shape with swappable semantics**, exactly like a game
+controller. Same 16 positions; the *signature* of the search space you are currently in
+determines what they mean. An Xbox controller is universal across games not because 16
+buttons encode every possible action, but because every game **loads its own mapping**
+onto an invariant shape.
+
+That is a much stronger claim than "it works for CHIP-8", and it is the right one to
+build to: **the alphabet is invariant, the signature is loaded per search space.**
+
+**Already generalised beyond CHIP-8 (verified in-tree):**
+
+- `src/Core/FerryThrottler.fs` — the DoP-knobbed channel ferry ("that can predict
+  itself"), plus `SoftThrottle.fs` / `FeedbackThrottle.fs` and the TS
+  `src/Core.TypeScript/ferry-throttler/`.
+- `src/Core/PredictionScheduler.fs` — *"scheduler adapter for the source-owned
+  prediction kernel"*; alongside `SoftScheduler`, `CellScheduler`,
+  `VirtualTimeScheduler`, `DarkHallScheduler`, `SoftChip8Scheduler`.
+
+**The honest gap is INTEGRATION, not design** (Aaron: *"we just have not pulled it all
+together"*). The controller grammar, the superposition input, the throttler, the
+schedulers and the `model-backend` harness all exist and were each built to the same
+shape — they are not yet one loop. So the R4 work is **assembly**, not invention: that
+is a materially easier and better-specified job than the one my earlier caveat implied,
+and it is worth saying so plainly rather than leaving a false "open research question"
+in front of it.
+
+Do keep the source's own scope note where it applies literally (`ActionGrammar.fs`:
+*"'universal' is concrete for CHIP-8 — all CHIP-8 controls live in these 16"*) — that
+sentence is true about the CHIP-8 *mapping*, not about the controller abstraction.
+
+### The signature detector already exists — and it has a strong human anchor
+
+> Aaron: *"our signature detector has many names in the soft regime, like soft values
+> over dynamic values — I think it's called rainbow spectrum or something; we have a
+> few different signature algorithms. **I used to work at Itron and built
+> disaggregation over electric signal at 16 kHz.**"*
+
+Verified in-tree — do not build a new one:
+
+- `src/Core/CoordinationSpectrum.fs` — *"the S-spectrum as a **soft-rainbow
+  fingerprint**"*. The CHSH probe battery is a **prism**: one source wearing many faces
+  disperses into a characteristic pairwise-S spectrum, recognisable across attempts
+  even under fresh names.
+- `src/Core/Optics.fs` — `FingerprintPrism.Rainbow`.
+
+**The anchor to cite (Beacon):** the existing citation is Pappu 2002, *Physical One-Way
+Functions* (PUFs — identity read from laser speckle). The **missing sibling anchor is
+NILM** — non-intrusive load monitoring, recovering which appliances run from one
+aggregate electrical signal by their signatures (**G. W. Hart, Proc. IEEE 80(12),
+1992**). Aaron built this at Itron at **16 kHz**, i.e. high-rate transient/harmonic
+signatures, well past the ~1 Hz most NILM literature assumes.
+
+That is first-hand production expertise, so **ask him rather than deriving from first
+principles.** And the NILM framing carries transferable structure worth mining for the
+signature-loading design: signatures are **additive** in the aggregate (superposition
+of loads), detection is **inference under overlap**, and the hard cases are
+*simultaneous* and *near-identical* loads — which is exactly the problem of
+distinguishing agents/sources sharing one channel.
 
 ---
 
