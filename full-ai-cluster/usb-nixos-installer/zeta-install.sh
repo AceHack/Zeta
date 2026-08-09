@@ -435,6 +435,9 @@ echo "[iter-4.2] probing boot USB for operator SSH pubkey ..."
 PUBKEY_DST="/mnt/etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.txt"
 PROBE_MOUNT="/tmp/zeta-boot-esp"
 sudo mkdir -p "$PROBE_MOUNT"
+# 081KZHJPJCF: remember which partition the boot USB ESP was found on, so iter-5.2 (hostname)
+# and iter-5-wifi can RE-mount the same ESP after iter-4.2 unmounts it.
+BOOT_ESP_PART=""
 
 PUBKEY_FILE=""
 INJECT_OK=0
@@ -476,6 +479,7 @@ if [ -z "$PUBKEY_FILE" ]; then
       if sudo mount -t vfat -o ro "$part" "$PROBE_MOUNT" 2>/dev/null; then
         if [ -f "$PROBE_MOUNT/zeta-authorized-keys.pub" ]; then
           PUBKEY_FILE="$PROBE_MOUNT/zeta-authorized-keys.pub"
+          BOOT_ESP_PART="$part"
           break 2
         fi
         sudo umount "$PROBE_MOUNT" 2>/dev/null || true
@@ -590,13 +594,7 @@ if [ -n "$PUBKEY_FILE" ]; then
     echo "[081KSNY2Z0008QG0R0008PN7RQ-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal"
   fi
 
-  # 081KZHJPJCF: do NOT unmount the boot USB ESP here. Later steps read the SAME ESP at
-  # $PROBE_MOUNT — iter-5.2 (hostname, zeta-hostname.txt) and iter-5-wifi
-  # (zeta-wifi-credentials.json). Unmounting here left those probes checking an empty
-  # $PROBE_MOUNT, so hostname + wifi injection silently no-op'd even though the files ARE on
-  # the ESP (the pubkey, read while still mounted, was the only one found). The ESP is
-  # read-only and on the boot USB (never the install target), so holding the mount across the
-  # target-disk steps is safe; it is unmounted once after the iter-5-wifi probe below.
+  sudo umount "$PROBE_MOUNT" 2>/dev/null || true
   if [ "$PUBKEY_LINE_COUNT" -gt 0 ]; then
     INJECT_OK=1
   else
@@ -802,6 +800,15 @@ echo
 # Backward-compatible with single-node zero-typing path.
 echo
 echo "[iter-5.2] ── probing boot USB for injected hostname ──"
+# 081KZHJPJCF: iter-4.2 unmounted the boot USB ESP after the pubkey/cred-blob copy. Re-mount
+# the SAME ESP partition (read-only) so this hostname probe AND the iter-5-wifi probe below can
+# read zeta-hostname.txt / zeta-wifi-credentials.json from $PROBE_MOUNT. Without this, both
+# probes checked an empty $PROBE_MOUNT and silently no-op'd (only the pubkey, read while iter-4.2
+# still had it mounted, was found). No-op if the ESP was never found (BOOT_ESP_PART empty) or is
+# already mounted. Unmounted once after the iter-5-wifi probe.
+if [ -n "$BOOT_ESP_PART" ] && [ -b "$BOOT_ESP_PART" ]; then
+  sudo mount -t vfat -o ro "$BOOT_ESP_PART" "$PROBE_MOUNT" 2>/dev/null || true
+fi
 HOSTNAME_DST="/mnt/etc/zeta/cluster-node-id"
 HOSTNAME_FILE=""
 # Reuse the SEARCH_DIRS pattern from the iter-4.2 pubkey probe;
@@ -922,9 +929,9 @@ if [ -n "$WIFI_CREDS_FILE" ]; then
 else
   echo "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection"
 fi
-# 081KZHJPJCF: the boot USB ESP was kept mounted from the iter-4.2 pubkey probe through the
-# iter-5.2 hostname + iter-5-wifi probes (they all read $PROBE_MOUNT). Unmount it now that the
-# last ESP consumer is done. Harmless no-op if it was never mounted (no pubkey path).
+# 081KZHJPJCF: unmount the boot USB ESP that was RE-mounted for the iter-5.2 hostname +
+# iter-5-wifi probes (see the re-mount before iter-5.2). Harmless no-op if it was never
+# re-mounted (no pubkey / empty BOOT_ESP_PART).
 sudo umount "$PROBE_MOUNT" 2>/dev/null || true
 echo
 
