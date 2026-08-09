@@ -190,8 +190,9 @@ export function crossover(
   ];
   const child = channels.map((v, i) => i < cp ? v : channels2[i]);
   return {
-    rgb: { r: child[0], g: child[1], b: child[2] },
-    cmyk: { c: child[3], m: child[4], y: child[5], k: child[6] },
+    // child has exactly 7 elements (same length as channels), non-null assertion is safe
+    rgb: { r: child[0]!, g: child[1]!, b: child[2]! },
+    cmyk: { c: child[3]!, m: child[4]!, y: child[5]!, k: child[6]! },
     generation: Math.max(parent1.generation, parent2.generation) + 1,
     parentIds: [parent1Id, parent2Id],
   };

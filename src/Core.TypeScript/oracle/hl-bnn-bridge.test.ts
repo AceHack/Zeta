@@ -4,7 +4,7 @@ import {
   fastObservation, exactObservation,
   hasConverged, credibleInterval, isConsistentWithHalsey2026,
   HALSEY_2026_D, HALSEY_2026_D_ERROR,
-  type DBnnState, type HLObservation
+  type HLObservation
 } from "./hl-bnn-bridge";
 
 const A = 2 / 3;
@@ -120,4 +120,3 @@ describe("HL-BNN Bridge", () => {
     expect(HALSEY_2026_D_ERROR).toBeCloseTo(0.001, 3);
   });
 });
-

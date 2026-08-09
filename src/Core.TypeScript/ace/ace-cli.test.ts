@@ -82,10 +82,10 @@ describe("ACE CLI — Z-set delta protocol", () => {
     const g = install(install(emptyGraph, "zeta-core").graph!, "longhorn").graph!;
     const helmOnly = list(g, "helm");
     expect(helmOnly.entries).toHaveLength(1);
-    expect(helmOnly.entries![0].name).toBe("longhorn");
+    expect(helmOnly.entries![0]!.name).toBe("longhorn");
     const aceOnly = list(g, "ace");
     expect(aceOnly.entries).toHaveLength(1);
-    expect(aceOnly.entries![0].name).toBe("zeta-core");
+    expect(aceOnly.entries![0]!.name).toBe("zeta-core");
   });
 
   it("ACE-13: Merkle root is deterministic", () => {
@@ -128,4 +128,3 @@ describe("ACE CLI — Z-set delta protocol", () => {
     expect(STUB_REGISTRY.has("cockroachdb")).toBe(true);
   });
 });
-

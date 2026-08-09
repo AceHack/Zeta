@@ -46,11 +46,6 @@ const cdiv = (a: Complex, b: Complex): Complex => {
   return { re: (a.re * b.re + a.im * b.im) / d, im: (a.im * b.re - a.re * b.im) / d };
 };
 const cabs2 = (a: Complex): number => a.re * a.re + a.im * a.im;
-const cabs  = (a: Complex): number => Math.sqrt(cabs2(a));
-const cexp  = (a: Complex): Complex => {
-  const r = Math.exp(a.re);
-  return { re: r * Math.cos(a.im), im: r * Math.sin(a.im) };
-};
 const fromPolar = (r: number, theta: number): Complex => ({ re: r * Math.cos(theta), im: r * Math.sin(theta) });
 
 // ── Joukowski bump map ─────────────────────────────────────────────────────────
@@ -155,7 +150,7 @@ export function hlMapAddParticle(state: HLMapState, theta: number): HLMapState {
     const phi = (2 * Math.PI * i) / HL_N_GRID;
     const z: Complex = fromPolar(1, phi);
     const dfdz = joukowskiBumpDerivative(z, theta, state.lambda0);
-    newDerivMagSq[i] = state.derivMagSq[i] * cabs2(dfdz);
+    newDerivMagSq[i] = (state.derivMagSq[i] ?? 1.0) * cabs2(dfdz);
   }
   return {
     derivMagSq: newDerivMagSq,
@@ -193,12 +188,12 @@ export function hlMapAddParticleExact(state: HLMapStateExact, theta: number): HL
   const newMapValues: Complex[] = [];
   const newDerivMagSq = new Float64Array(HL_N_GRID);
   for (let i = 0; i < HL_N_GRID; i++) {
-    const wPrev = state.mapValues[i];
+    const wPrev = state.mapValues[i]!;
     // w_n(z) = f_θ(w_{n-1}(z))
     newMapValues.push(joukowskiBump(wPrev, theta, state.lambda0));
     // |dw_n/dz|² = |df_θ/dz(w_{n-1}(z))|² · |dw_{n-1}/dz|²
     const dfdz = joukowskiBumpDerivative(wPrev, theta, state.lambda0);
-    newDerivMagSq[i] = state.derivMagSq[i] * cabs2(dfdz);
+    newDerivMagSq[i] = (state.derivMagSq[i] ?? 1.0) * cabs2(dfdz);
   }
   return { mapValues: newMapValues, derivMagSq: newDerivMagSq, n: state.n + 1, lambda0: state.lambda0 };
 }
@@ -220,7 +215,7 @@ export function hlAmplitudeIntegral(derivMagSq: Float64Array, a: number, lambda0
   let sum = 0;
   let count = 0;
   for (let i = 0; i < HL_N_GRID; i++) {
-    const v = derivMagSq[i];
+    const v = derivMagSq[i] ?? 0;
     if (!isFinite(v) || v <= 0 || !isFinite(1.0 / v)) continue;
     sum += 1.0 / v;
     count++;

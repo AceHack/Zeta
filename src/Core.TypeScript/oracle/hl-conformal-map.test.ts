@@ -7,7 +7,6 @@ import {
   type Complex
 } from "./hl-conformal-map";
 
-const EPS = 1e-10;
 const LAMBDA0 = 0.004;
 const A_PARAM = 2 / 3;
 
@@ -43,7 +42,7 @@ describe("HL Conformal Map", () => {
     // At least some grid points should differ from 1.0
     let changed = 0;
     for (let i = 0; i < HL_N_GRID; i++) {
-      if (Math.abs(s1.derivMagSq[i] - 1.0) > 1e-8) changed++;
+      if (Math.abs((s1.derivMagSq[i] ?? 1.0) - 1.0) > 1e-8) changed++;
     }
     expect(changed).toBeGreaterThan(0);
   });
@@ -88,8 +87,8 @@ describe("HL Conformal Map", () => {
     let maxDiff = 0;
     let compared = 0;
     for (let i = 1; i < HL_N_GRID; i++) {
-      const f = sFast.derivMagSq[i];
-      const e = sExact.derivMagSq[i];
+      const f = sFast.derivMagSq[i] ?? NaN;
+      const e = sExact.derivMagSq[i] ?? NaN;
       if (!isFinite(f) || !isFinite(e)) continue;
       maxDiff = Math.max(maxDiff, Math.abs(f - e));
       compared++;
