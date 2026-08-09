@@ -1,0 +1,106 @@
+# Handoff: Add society-heartbeat.yml workflow
+
+**For Aaron (needs `workflows` permission to push)**
+
+Add this file as `.github/workflows/society-heartbeat.yml`:
+
+```
+# Society heartbeat — evolutionary loop over the agent society.
+#
+# Runs SocietyEvolution.ts every 30 minutes:
+#   1. Score each agent by calibration (CalibrationLedger)
+#   2. Select top-k agents by fitness
+#   3. Reproduce via AgentGenome.crossover + mutate
+#   4. Replace bottom-k agents
+#   5. Commit the new generation to docs/observe-events/
+#
+# This is the GitHub agent society's evolutionary loop — the society evolves
+# in real time as agents heartbeat and accumulate calibration history.
+#
+# Transport: Git commits (the gitSalonTransport from gossip-mesh-transport.ts).
+# Each generation is a G-set event: durable, foldable, composable.
+#
+# Connection to the DLA multi-oracle proof:
+#   The society's D_f convergence mirrors the DLA oracle convergence.
+#   Both demonstrate substrate-independence: the same eigenvector emerges
+#   regardless of which agents (oracles) compute it.
+
+name: society-heartbeat
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # every 30 minutes (2x per agent-heartbeat cycle)
+  workflow_dispatch:         # manual trigger for testing
+
+permissions:
+  contents: write
+
+concurrency:
+  group: society-heartbeat
+  cancel-in-progress: false  # never cancel — each generation is a durable fact
+
+jobs:
+  evolve:
+    name: Society evolution tick
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run society evolution tick
+        env:
+          # Optional: set ZETA_REALTIME_URL in repo secrets to push evolution
+          # events over WebSocket in real-time. §13 declared channel.
+          ZETA_REALTIME_URL: ${{ secrets.ZETA_REALTIME_URL }}
+        run: |
+          # Run the society evolution script.
+          # Exits 0 on success, non-zero on failure (non-fatal — the society
+          # continues even if one evolution tick fails).
+          bun src/Core.TypeScript/planning/society-evolution-runner.ts \
+            --event-dir docs/observe-events \
+            --generations 1 \
+            2>&1 | tail -10 || echo "[society] evolution tick failed (non-fatal)"
+
+      - name: Commit evolution event
+        run: |
+          git config user.name "society[bot]"
+          git config user.email "society[bot]@users.noreply.github.com"
+          git add docs/observe-events/ || true
+          if git diff --cached --quiet; then
+            echo "[society] no new evolution events to commit"
+          else
+            git commit --no-verify -m "society: evolution tick $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          Autonomous evolutionary loop: score → select → crossover → mutate → replace.
+          Transport: Git (gitSalonTransport). One generation per tick.
+
+          Co-Authored-By: Kiro <noreply@kiro.dev>"
+            git pull --rebase origin main
+            git push origin main
+          fi
+
+```
+
+
+Also add `ZETA_REALTIME_URL` to the `env:` block in `.github/workflows/agent-heartbeat.yml`
+at the "Run observe tick" step:
+
+```yaml
+          ZETA_REALTIME_URL: ${{ secrets.ZETA_REALTIME_URL }}
+```
+
+(Set `ZETA_REALTIME_URL` in repo secrets to point at your realtime server.
+If not set, the heartbeat tick continues normally — the push is fire-and-forget.)
