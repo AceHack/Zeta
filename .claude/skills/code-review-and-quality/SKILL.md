@@ -22,4 +22,5 @@ Beacon; blueprint = satellite / Mirror). The directory is an independent shippin
 - [`reducer`](blueprints/reducer.md) — Complexity reduction — Brooks essential/accidental, Kolmogorov/Shannon metrics, Rodney's Razor, code complexity audit.
 - [`race-hunter`](blueprints/race-hunter.md) — F# concurrency bug hunter — CompareExchange misses, torn reads, lock-across-await, concurrent ResizeArray, P0/P1/P2.
 - [`spec-zealot`](blueprints/spec-zealot.md) — Spec-to-code alignment review — zero-empathy; finds drift, spec bugs, gaps, overlay violations, best-practice lint.
+- [`n-version-derivation`](blueprints/n-version-derivation.md) — "N-version derivation — build it twice independently; a divergence is a SPEC defect; coverage declared per requirement, never rounded up."
 - [`project-structure-reviewer`](blueprints/project-structure-reviewer.md) — Repo layout audit — folder tree shape, file placement, naming conventions, misplaced artifacts, debt as disorganization.

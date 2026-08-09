@@ -396,6 +396,7 @@
     <Compile Include="SolidGround.fs" />
     <Compile Include="Hat.fs" />
     <Compile Include="KeyCustody.fs" />
+    <Compile Include="DerivationProtocol.fs" />
     <Compile Include="Persona.fs" />
     <Compile Include="IdentityRegistry.fs" />
     <Compile Include="ActorRef.fs" />
