@@ -68,18 +68,21 @@ A genuine discharge requires the following steps, in order:
 
 ## 3. The Falsifier That Can Fire
 
-The falsifier is: **if the measured third moment ∑ᵢ μᵢ³ does not scale as r^{2·D_f} (the Halsey prediction), then Z-2 is falsified.** Concretely:
+The falsifier compares the measured third-moment scaling exponent to the **multifractal prediction** τ(3) from the f(α) spectrum, not the monofractal limit 2·D_f. Using the monofractal prediction as the null would cause the falsifier to fire even for a correct DLA measurement, because DLA is multifractal — the actual τ(3) deviates from 2·D_f by the multifractal corrections.
+
+The corrected falsifier:
 
 1. Measure ∑ᵢ μᵢ³ at multiple cluster sizes r (e.g., N = 1,000; 5,000; 10,000; 50,000 walkers).
 2. Fit a power law: ∑ᵢ μᵢ³ ~ r^β.
-3. Compare β to 2·D_f (the Halsey prediction).
-4. **Falsifier fires** if |β − 2·D_f| > 0.1 (a tolerance that could realistically be exceeded — the prior discharge used 25%, which is too loose).
+3. Compute the multifractal prediction τ(3) from the measured f(α) spectrum (not from D_f alone).
+4. **Falsifier fires** if |β − τ(3)| > 0.1 where τ(3) is the multifractal prediction.
 
 This falsifier can fire because:
 
 - The harmonic measure is computed from real random walks, not synthesised probabilities.
-- The scaling exponent β is measured independently of D_f.
-- The tolerance 0.1 is tight enough to be meaningful (DLA multifractal corrections are typically ~5–10% [3]).
+- The scaling exponent β is measured independently of τ(3).
+- The multifractal τ(3) is measured from the same cluster, not assumed from theory.
+- The tolerance 0.1 is tight enough to be meaningful.
 
 ---
 

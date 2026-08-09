@@ -63,7 +63,7 @@ The variational free energy is therefore:
 F ~ (2 − D_f) − (D_f − 1) = 3 − 2·D_f
 ```
 
-Taking the derivative: dF/dD_f = −2. **There is no minimum.** The FEP objective is monotone decreasing in D_f, predicting D_f = 2 (space-filling, maximum accuracy) as the attractor. This is the opposite of the observed DLA behaviour.
+Taking the derivative: dF/dD_f = −2. **There is no minimum.** The FEP objective is monotone decreasing in D_f, having no interior minimum in (1, 2). The unconstrained optimum is D_f → 2, but this is the absence of a minimum, not a prediction of an attractor. This is the opposite of what Z-6 requires.
 
 The result is physically sensible: a space-filling cluster would maximise the log-likelihood of growth sites under the harmonic measure, but DLA does not space-fill because the Laplace equation creates screening — tips grow faster than fjords. The FEP, applied naively to the fractal dimension alone, cannot capture this screening effect.
 
@@ -83,7 +83,7 @@ No known analytical derivation produces D_f = 1.71 for DLA from first principles
 
 ## 4. The Falsifier That Fires
 
-The decisive falsifier is arithmetic, not empirical: **any FEP objective function whose minimum is at D_f = 1.71 must contain 1.71 (or an equivalent constant) in its coefficients.** A genuine FEP derivation must derive the coefficients from the physics of Laplacian growth — the Laplace equation, the harmonic measure, and the growth rule — without encoding the answer. The void discharge failed this test. The genuine derivation above shows the result is D_f = 2, not 1.71.
+The decisive falsifier is arithmetic, not empirical: **any FEP objective function whose minimum is at D_f = 1.71 must contain 1.71 (or an equivalent constant) in its coefficients.** A genuine FEP derivation must derive the coefficients from the physics of Laplacian growth — the Laplace equation, the harmonic measure, and the growth rule — without encoding the answer. The void discharge failed this test. The genuine derivation above shows the FEP objective has no interior minimum in (1, 2) — the unconstrained optimum is D_f → 2, but this is the absence of a minimum, not a prediction of an attractor.
 
 A second falsifier: if a future candidate FEP derivation produces D_f = 1.71, it must also correctly predict D_f for other Laplacian growth variants (dielectric breakdown model with different η, DLA in d = 3, etc.) without re-tuning coefficients. The void discharge used a single free parameter (the accuracy coefficient 2.42) tuned to one data point.
 
