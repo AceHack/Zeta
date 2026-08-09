@@ -16,7 +16,47 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZHJPJCF08QG0R0024BFHKS-*.md` glob. -->
 
-## ROOT CAUSE CONFIRMED (2026-08-08, Otto shadow*) — inline-`content` ESP writes silently don't land
+## COMPLETE FIX LANDED (2026-08-09, Otto shadow*) — pending CI + hardware validation
+
+The full chain is fixed; awaiting a few green CI dispatches + Aaron's hardware test before closing.
+Note the ROOT CAUSE section below (inline-`content` writes) was a WRONG intermediate hypothesis —
+the #10180 verification DISPROVED it (the bake writes all files correctly). The real cause was
+**read-side**: the installer unmounted the boot USB ESP before the iter-5 probes. Superseded by
+this section; kept below for the diagnosis trail.
+
+The fixes, in order:
+
+1. **#10172** — persist the phase-1 serial on wifi-contract failure (it wasn't written, so the
+   failure was a black box). Diagnosability unblocked.
+2. **#10180** — post-bake ESP-write verification (`mdir` read-back, fail loud). It PASSED →
+   proved the bake writes all files → redirected the diagnosis to the read side. Stays as a guardrail.
+3. **#10184** — the real root cause: iter-4.2 mounts the ESP, finds the pubkey, unmounts it; the
+   iter-5.2 (hostname) + iter-5-wifi probes then read an empty `$PROBE_MOUNT`. Fix: **re-mount**
+   the ESP for the iter-5 probes. Files now found (`[iter-5.2] found injected hostname`,
+   `[iter-5-wifi] found zeta-wifi-credentials.json`). Also fixed the test-iter-54 regression #10183
+   introduced.
+4. **#10185** — guarded the `ZETA_HOME: unbound variable` crash the re-mount exposed in the
+   previously-dead wifi branch (degrades to fallback instead of a first-boot hard-fail).
+5. **#10186 (the complete fix)** — the NM-profile write needs the repo + mise that only exist after
+   the step-6.95a bootstrap, but the wifi step ran at 6.6. Split it: **6.6 stages** the creds to
+   `/mnt/boot`; **new step 6.95c (iter-5.5.1)** — after the bootstrap — runs the helper and writes
+   the NetworkManager profile, emitting `wrote NetworkManager profile` + `association deferred`. All
+   three acceptance-contract markers now land in the phase-1 serial.
+
+**Two permanent guardrails from this arc:** serial-persistence on wifi-contract failure (#10172),
+and post-bake ESP-write verification (#10180).
+
+**Validation status:** local checks pass (bash -n, test-iter-54 29/29, marker ordering). This is
+first-boot code that is NOT testable locally, so the real proof is **CI `build-ai-cluster-iso`
+dispatch (wifi-ESP scenario) + Aaron's hardware** (owner). A given run may still trip the SEPARATE
+install.sh intermittent (081KZETP6AT, instrumentation armed) — that is bug A, not this.
+
+**To close:** a few green wifi-ESP dispatches (all three markers + contract ok) + one clean
+hardware boot. Then move to `done`.
+
+---
+
+## (superseded — diagnosis trail) ROOT CAUSE hypothesis (2026-08-08) — inline-`content` ESP writes silently don't land
 
 Two-step breakthrough: (1) fixed the diagnosability blocker (#10172 — the wifi-contract-failure
 path didn't persist the serial artifact, so the failure was a black box). (2) With the serial now
