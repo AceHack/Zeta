@@ -1,0 +1,27 @@
+{
+  "id": "society-msm7luj6",
+  "at": "2026-08-09T19:42:28.050Z",
+  "by": "society",
+  "kind": "evolution",
+  "generation": 1,
+  "agents": [
+    {
+      "id": "alexa",
+      "fitness": 0.37862676745794643,
+      "generation": 0
+    },
+    {
+      "id": "otto",
+      "fitness": 0.3742181830984439,
+      "generation": 0
+    },
+    {
+      "id": "gen1-0",
+      "fitness": 0,
+      "generation": 2
+    }
+  ],
+  "meanFitness": 0.2509483168521301,
+  "fitnessSpread": 0.37862676745794643,
+  "geneticDiversity": 9.335028369268713
+}

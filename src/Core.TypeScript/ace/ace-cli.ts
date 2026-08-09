@@ -138,3 +138,64 @@ export function graphRoot(graph: DependencyGraph): AceResult {
 
 /** An empty dependency graph — the starting point for a new environment. */
 export const emptyGraph: DependencyGraph = new Map();
+
+// ── Error-BNN bridge (R4) ──────────────────────────────────────────────────────
+// Each ACE CLI failure is a teaching error absorbed by the per-CLI DimensionalBnn.
+// The BNN learns which error dimensions (schema, toolchain, constraint, etc.)
+// are most common — and the robustness weight automatically downweights repeated
+// failures from the same source (hostile/misconfigured registry).
+//
+// Usage:
+//   const result = install(graph, "my-pkg");
+//   if (!result.success) absorbAceError(result, "install", "my-pkg");
+//   // aceBnn.states.get("toolchain")?.posterior.mu now reflects install failure rate
+
+import { createDimensionalBnn, absorbError, type DimensionalBnn } from "../planning/error-bnn-bridge";
+import { teachingError, type ErrorMirror } from "../protocol/error-envelope";
+
+/** The per-CLI DimensionalBnn — one StudentTState per error dimension. */
+export const aceBnn: DimensionalBnn = createDimensionalBnn();
+
+/** Correlation id counter — monotonically increasing per process. */
+let _corrSeq = 0;
+
+/**
+ * Absorb an ACE CLI failure as a teaching error into the per-CLI BNN.
+ *
+ * @param result - The failed AceResult.
+ * @param command - The CLI command that failed ("install" | "verify" | "remove").
+ * @param packageName - The package name that caused the failure.
+ * @param retractableBeliefId - Optional: the belief to retract (retraction path).
+ */
+export function absorbAceError(
+  result: AceResult,
+  command: string,
+  packageName: string,
+  retractableBeliefId?: string,
+): void {
+  if (result.success) return; // no-op for successes
+
+  const corrId = `ace-${command}-${packageName}-${++_corrSeq}`;
+
+  // Classify the error dimension from the failure message
+  const msg = result.message;
+  let dimension: ErrorMirror["dimension"] = "toolchain";
+  if (msg.includes("not installed")) dimension = "constraint";
+  else if (msg.includes("VERIFICATION FAILED") || msg.includes("content address mismatch")) dimension = "constraint";
+  else if (msg.includes("not in registry") || msg.includes("orphaned")) dimension = "schema";
+  else if (msg.includes("version")) dimension = "type";
+
+  const mirror: ErrorMirror = {
+    what: `ace ${command} ${packageName}`,
+    why: msg,
+    howToFix: command === "install"
+      ? `Check registry: ace list | grep ${packageName}`
+      : `Re-install: ace install ${packageName}`,
+    dimension,
+    severity: command === "verify" ? "error" : "warn",
+    ...(retractableBeliefId ? { retractableBeliefId } : {}),
+  };
+
+  const envelope = teachingError(corrId, mirror);
+  absorbError(aceBnn, envelope);
+}
