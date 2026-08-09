@@ -86,6 +86,47 @@ the real dependency. `○ not started` = no surface in-tree.
 5. **Row 10 — displace Cockroach for one real workload.** Dogfooding means being the real
    dependency; a checkpoint file is not yet that.
 
+## External-dependency baseline (measured 2026-08-09)
+
+Aaron: *"reducing external dependencies to the minimal."* That needs a number to move,
+so here is the starting surface — counted, not estimated:
+
+| Ecosystem | Entries | Managed by | Reducible? |
+|---|---|---|---|
+| apt (Linux system) | 29 | ACE `from-deb`/apt manifest | mostly OS-level; low |
+| brew (macOS system) | 21 | ACE brew manifest | mostly OS-level; low |
+| npm/bun (`package.json`) | 32 (19 dev + 13 runtime) | ACE `from-bun-workspace` (new) | **medium** — runtime deps are the real target |
+| dotnet global tools | 7 | ACE `from-dotnet-global` | low |
+| **vendor `curl \| sh` installers** | **6** | ACE `from-installer` | **HIGHEST PRIORITY** — see below |
+| bun-global CLIs | 2 | ACE `from-bun-global` | low |
+| from-url / from-shim | 3 | ACE | low |
+| mise toolchains | ~16 | `.mise.toml` | low — these ARE the compilers |
+
+**≈ 115 external dependencies total.** Every one of them is at least *declared* through
+ACE, which is why row 8 of the ledger counts as dogfooded — but declared is not the same
+as reduced.
+
+### The 6 that matter most
+
+`tools/setup/manifests/from-installer` — grok, cursor-agent, hermes, forge, agy — are
+fetched-and-executed with **no hash pin** (`081KZKV16YF`), on the **unattended first-boot
+path**, as a user who is `wheel` ⇒ a Nix trusted user ⇒ root-equivalent, on a box where
+credentials have already been decrypted. They are simultaneously:
+
+- the **highest-risk** external dependency (Mateo's review), and
+- the **most legitimately reducible** — they are agent CLIs, i.e. exactly the thing the
+  society is meant to replace with its own agents on free models (ledger row 1, already
+  dogfooded).
+
+So "reduce external dependencies to the minimal" and "close the supply-chain gap" point at
+the *same six entries*. That is the cheapest place to start, and it is the only row where
+reduction and security agree.
+
+**Honest caveat:** pinning them is not free — vendor installers move on their own cadence,
+so a pin turns an upstream release into an install failure until someone bumps it. That
+trade (breakage vs. unpinned root-equivalent execution) is an operator call, which is why
+`081KZKV16YF` is filed rather than fixed.
+
 ## Discipline for this trajectory (learned the hard way, 2026-08-09)
 
 - **Verify the artifact, not the ceremony.** A green run, a MERGED badge and a passing test
