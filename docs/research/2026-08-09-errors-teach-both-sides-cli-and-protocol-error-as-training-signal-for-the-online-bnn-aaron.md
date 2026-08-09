@@ -219,12 +219,68 @@ evidence. The defence is endogenous — no separate anti-abuse mechanism require
    `kT ln 2` floor. What remains open is narrower: what exchange rate converts an
    avoided retry into avoided joules, so the budget is enforceable rather than
    merely observable?
-4. **Adversarial teaching.** Largely settled by trust-weighting (above): a bad teacher
-   moves your posterior less and loses `trustBand` on the evidence. What stays open is
-   the *outbound* direction — an error maximally informative to an honest peer is also
-   maximally informative to an attacker probing the interface, and the sender cannot
-   condition on trust it has not yet earned about a stranger. Where does teaching stop
-   for an unknown peer? (Dual-use again: the mechanism is neutral, the oracle decides.)
+4. ~~**Adversarial teaching.**~~ **ANSWERED (Aaron, same session)** — see
+   "Teaching is unconditional; belief is earned" below. Both directions are now
+   closed; what remains is implementation, not policy.
+
+## Teaching is unconditional; belief is earned
+
+The outbound half of the adversarial-teaching question — *"an error maximally
+informative to an honest peer is equally informative to someone probing the
+interface; where does teaching stop for an unknown peer?"* — is answered by Aaron
+directly:
+
+> *"So we assume honesty, but weight belief on deliverables on previous self-claims
+> observed by others in society or yourself."*
+
+The resolution is that the question was mis-framed. It assumed the lever was *how
+much to tell a stranger*. It isn't. There are two separate quantities, and only one
+of them is conditioned on trust:
+
+| | Conditioned on trust? | Why |
+|---|---|---|
+| **What you TELL a peer** (teaching) | **No — teach fully** | Default moral regard (§11): assume honesty absent a chosen oracle. Withholding from an unidentified peer defects against every honest stranger to inconvenience one prober. |
+| **What a peer's CLAIMS BUY** (belief) | **Yes — weighted** | Credence is earned from a delivery record: previous self-claims scored against outcomes. |
+
+So the asymmetry never sits in the outbound message. **An adversary who probes the
+interface learns the interface — which was never the secret — but their assertions
+still buy nothing until a record exists.** Nothing has to be withheld to make this
+safe, which is why it composes with default-regard instead of fighting it.
+
+### The evidence has two sources, one structure
+
+"observed by others in society **or yourself**" names both admissible sources:
+
+- **Firsthand** — you watched this peer claim and deliver (or not).
+- **Socially attested** — others observed it and said so.
+
+That is the same construction as the privacy budget
+([`privacy-budget-is-hard-money-earned-by-others`](../../.claude/rules/privacy-budget-is-hard-money-earned-by-others.md)):
+socially conferred, never self-minted. A peer cannot bootstrap its own credence by
+asserting loudly — the currency is *delivered* self-claims, and delivery is observed
+by someone other than the claimant.
+
+### Belief-weighting is calibration, not competence
+
+The ledger this rides on is explicit about the distinction
+(`src/Core.TypeScript/planning/calibration-ledger.ts`):
+
+> *"CALIBRATION ≠ COMPETENCE — this measures self-knowledge: whether an agent's model
+> of its own performance matches reality. An agent can be poorly calibrated and
+> excellent, or well-calibrated and mediocre. **Weighting a claim is not the same as
+> valuing the claimant.**"*
+
+That last clause is what keeps the mechanism from becoming a status hierarchy. The
+quantity being weighted is *"do this peer's claims about itself track outcomes"* —
+so an agent that says **"I am not sure"** and turns out to be unsure is
+**well**-calibrated and gains weight. The system therefore rewards honest uncertainty
+rather than punishing it, which is the only way "preserve uncertainty" and
+"weight belief" can both hold at once.
+
+Sybil-resistance is inherited rather than added: a fresh identity starts at the
+honest prior (`0.5`, never a pessimistic `0.0`), gets no bonus for being new, and
+whitewashing after a miss cannot outperform an honest agent with the same miss rate
+(TRL-31/TRL-32).
 
 ## Anchors (Beacon)
 
