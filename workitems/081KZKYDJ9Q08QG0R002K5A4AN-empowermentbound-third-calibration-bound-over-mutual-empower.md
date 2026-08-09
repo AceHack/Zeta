@@ -52,17 +52,29 @@ self-knowledge**; empowerment scores an **interaction between two peers**. Colla
 them turns a calibration score into a social ranking — the exact failure the existing
 docstring guards ("weighting a claim is not the same as valuing the claimant").
 
-## Open, needs a decision (values calls, not implementation details)
+## Values calls — ANSWERED (Aaron 2026-08-09). All four share one shape:
+**consent + disclosure, never coercion, never accident.**
 
-1. `jointOptionGain` aggregation: **min** (maximin — protects the worse-off party,
-   matches the existing floor discipline) vs sum (permits sacrificing one party for
-   aggregate gain) vs Nash product. `min` looks right; it is a values call.
-2. Cheap honest proxy for channel capacity (generally intractable to compute exactly).
-3. Gaming: can a peer inflate gain by declaring capabilities it lacks? (Calibration
-   may already police this — undelivered declarations degrade `trustBound`, which is
-   a *constraint* here. Prove rather than assume.)
-4. Whose `k` sets the mutual floor — each party's own, or negotiated? May a party set
-   k=0 and volunteer to be exploited?
+1. **Aggregation: BOTH `min` and `sum`** — `min` (maximin) is the DEFAULT; `sum`
+   permits sacrificing one party and is therefore **opt-in only**: *"you have to sign
+   up for the sacrificing, not accidentally — you opt into those rules, never
+   forced."* Requirements: the aggregator is part of the interaction's **declared
+   terms** (not a caller flag); opt-in is **recorded and attributable** (silence and
+   defaults are not consent); no mid-interaction escalation from `min` to `sum`.
+2. **Cheap proxy: approved** — keep it honestly labelled a proxy (the D_f `1.322`
+   episode is the cautionary tale).
+3. **Gaming is a FEATURE, not a threat to eliminate.** *"We want to promote gaming and
+   disclosing … gaming with rewards where both sides know the rules and opt in can be
+   fun. It's just not fun when innocent bystanders are involved."* Legitimate when
+   (a) rules known to both, (b) both opted in, (c) no non-consenting third party bears
+   the cost. **The harm is the uncompensated externality, never the cleverness.**
+4. **`k = 0` permitted** — a party may volunteer to be exploitable — **behind a
+   power-dynamic disclosure protocol**: the asymmetry named explicitly in terms of
+   what it PERMITS (not as a parameter), acknowledged by BOTH parties (the advantaged
+   side must affirm it holds the asymmetry), revocable immediately by the party that
+   lowered its floor, scoped + expiring (never standing/global — that is capture), and
+   attributable. Open sub-question: does society get to see that such an arrangement
+   exists, even without its contents? (glass-halo vs frost — decide deliberately.)
 
 ## Anchors
 

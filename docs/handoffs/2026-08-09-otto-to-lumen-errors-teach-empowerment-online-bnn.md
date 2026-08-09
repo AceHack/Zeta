@@ -143,7 +143,11 @@ option space; the whole thing is indexed by an **oracle set the member chooses**
 inferred by observing a peer's private state — otherwise it is surveillance, and it
 collides with §6 consent-first and inviolable earned frost.
 
-**Four values calls need Aaron before coding** (do not guess):
+**The four values calls are now ANSWERED** (see the design doc's "values calls"
+section — all four resolve to *consent + disclosure, never coercion, never accident*:
+`min` default with opt-in `sum`; proxy approved; gaming is a feature bounded by
+third-party externality; `k = 0` permitted behind a power-dynamic disclosure
+protocol). Earlier draft text below is kept only for the questions' framing:
 
 1. `jointOptionGain` aggregation — **min** (maximin, protects the worse-off party,
    matches the floor discipline) vs sum (permits sacrificing one party) vs Nash
@@ -233,8 +237,12 @@ BP-16 (a claim asserted by one tool is not verified).
    *constraint* in the empowerment objective. That is a plausible mutual-policing
    argument and it is **unproven**. If it holds it removes the need for a separate
    anti-gaming mechanism; if it fails, the bound is exploitable by declaration alone.
-   Property to check: *no declaration strategy raises a peer's admissible
-   `jointOptionGain` without a matching delivery record.*
+   **UPDATED 2026-08-09 — Aaron answered this values call and it CHANGES the property.**
+   Gaming between consenting, informed parties is *legitimate play* and may even be
+   rewarded; the harm is the **non-consenting bystander**. So do NOT prove blanket
+   gaming-resistance. Prove the externality bound: *no interaction between consenting
+   parties may push a non-consenting third party's `trustBound` (or option space)
+   below its floor.*
 2. **The linear-blend degeneracy** (`w(μ+k₁σ) + (1−w)(μ−k₂σ) = μ + k′σ`) is stated
    algebraically in the design doc. Cheap to lock as a machine-checked lemma so a
    future implementer cannot re-introduce a scalar blend and believe it is the third

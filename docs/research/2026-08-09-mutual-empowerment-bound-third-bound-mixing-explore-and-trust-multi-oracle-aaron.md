@@ -144,23 +144,108 @@ not a claimant. Keeping them separate preserves that distinction:
 Collapsing them would quietly turn a calibration score into a social ranking, which
 is the failure mode the existing docstring already guards against.
 
-## Open questions (for the implementer, genuinely unresolved)
+## The four values calls — ANSWERED (Aaron, 2026-08-09)
 
-1. **Units of `jointOptionGain`.** Empowerment is bits (channel capacity). Is the
-   joint term a sum, a min (Rawlsian — protect the worse-off party), or a Nash
-   product? *A `min` makes the bound maximin and matches the existing floor
-   discipline; a sum permits sacrificing one party for aggregate gain, which the
-   constraint is there to prevent — so `min` looks right, but it is a values call.*
-2. **Estimation without a world model.** Channel capacity over futures is expensive
-   and generally intractable. What is the cheap, honest proxy — declared capability
-   count, reachable-state entropy under the declared interface, something else?
-3. **Gaming.** Can a peer inflate its measured empowerment gain by declaring
-   capabilities it does not have? (Calibration is the natural defence: undelivered
-   declarations degrade `trustBound`, which is a constraint here — so the two bounds
-   may be mutually policing. Worth proving rather than assuming.)
-4. **k for the floor.** `trustBound` uses k=3 (α≈0.1 shortfall). Does the mutual
-   floor use each party's own k, or a negotiated one? A party could set k=0 and
-   volunteer to be exploited — is that permitted?
+All four came back with the same shape, and the shape is the design:
+
+> **Consent and disclosure — never coercion, never accident.**
+
+Each answer permits the "dangerous" option rather than banning it, and puts an
+explicit, informed opt-in in front of it. That is choice architecture applied to a
+metric: the substrate does not decide what is good for you, it refuses to let the
+choice be made *for* you or *without* you noticing.
+
+### 1. Aggregation: `min` AND `sum` — but sacrifice is opt-in
+
+> *"We should have both, but you have to sign up for the sacrificing — not
+> accidentally. You opt into those rules, never forced."*
+
+- **`min` (maximin) is the DEFAULT.** It protects the worse-off party and matches the
+  floor discipline already in the ledger.
+- **`sum` is available**, and it does permit trading one party's gain for aggregate
+  gain — which is exactly why it may never be the default and may never be inferred.
+  A party must **sign up** for it.
+
+Implementation consequences (these are requirements, not suggestions):
+
+- The aggregator is **part of the interaction's declared terms**, not a caller-side
+  configuration flag. Both parties see which one is in force before agreeing.
+- Opt-in is **recorded and attributable** — an aggregator that permits sacrifice must
+  leave evidence that the sacrificed party agreed to those rules. Silence is not
+  consent, and neither is a default.
+- No path may *escalate* from `min` to `sum` mid-interaction. Changing the rules
+  requires a fresh agreement (`weight-free`: no accumulating authority).
+
+### 2. Cheap honest proxy — approved direction
+
+> *"Sounds great."*
+
+Proceed with a tractable proxy for channel capacity, kept honest about being a proxy
+(the D_f `1.322` episode is the cautionary example: a proxy that stops being labelled
+a proxy becomes a fabricated measurement).
+
+### 3. Gaming is a FEATURE — the harm is the non-consenting bystander
+
+> *"We want to promote gaming and disclosing … some gaming with rewards where both
+> sides know the rules and opt in can be fun. It's just not fun when innocent
+> bystanders are involved."*
+
+This **reframes the whole anti-gaming requirement.** The design question is not
+*"how do we prevent peers from gaming the empowerment score?"* It is:
+
+> **Gaming is legitimate play when (a) the rules are known to both sides, (b) both
+> opted in, and (c) no non-consenting third party bears the cost. The harm is never
+> the gaming — it is the uncompensated externality onto someone who did not agree.**
+
+So the invariant to enforce is an **externality bound**, not a cleverness bound. And
+disclosure is *promoted*, not merely tolerated: declaring more capability makes your
+empowerment measurable more precisely, which is an incentive to disclose — and must
+therefore never harden into a requirement to disclose (see the frost constraint
+above).
+
+**This changes the proof obligation** routed to formal verification. Not *"no
+declaration strategy can inflate `jointOptionGain`"* — some inflation is consensual
+play. The property is:
+
+> *No interaction between consenting parties may reduce a non-consenting third
+> party's `trustBound` (or option space) below its floor.*
+
+Gaming inside the consenting pair: permitted, possibly rewarded. Cost leaking onto a
+bystander: forbidden. That is a far more interesting — and more checkable —
+invariant than blanket gaming-resistance.
+
+### 4. `k = 0` is permitted — behind a power-dynamic disclosure protocol
+
+> *"Yes, I think — I've talked to humans who like this. But this one we should
+> probably have some sort of power-dynamic disclosure protocol or something."*
+
+A party **may** lower its own floor, including to `k = 0`, and thereby volunteer to
+be exploitable. Consensual asymmetry is a real thing people choose, and the substrate
+does not get to forbid it (Multi-Oracle: no single mandatory morality). But it is the
+one case where the *default* protections are being switched off, so it needs a gate:
+
+**Power-dynamic disclosure protocol — sketch:**
+
+- The asymmetry must be **named explicitly**, in terms of what it permits, not
+  buried in a parameter. "You are setting `k = 0`" is a config change; "this permits
+  the counterparty to take actions that push you below your safety floor" is a
+  disclosure.
+- **Both parties acknowledge it** — the advantaged side must affirm it knows it holds
+  the asymmetry. One-sided consent is exactly the failure mode.
+- It is **revocable at any time by the party who lowered its floor**, and revocation
+  takes effect immediately — one-way to *more* protection is always free
+  (the same asymmetry as the privacy budget: more privacy is free, less needs the
+  owner).
+- It is **scoped and expiring**, not standing: to a named counterparty, a named
+  domain, and a bounded window. A permanent, global `k = 0` is indistinguishable from
+  capture (`weight-free`).
+- The disclosure is **attributable** — so if the advantaged party later claims it
+  did not know, the record answers.
+
+Open sub-question (worth its own round): does a third party — society — get to see
+that a `k = 0` arrangement exists, even if not its contents? Visibility deters abuse
+but is itself a privacy cost to both participants. This is the glass-halo/frost
+tension in a new place, and it should be decided deliberately rather than by default.
 
 ## Pointers
 
