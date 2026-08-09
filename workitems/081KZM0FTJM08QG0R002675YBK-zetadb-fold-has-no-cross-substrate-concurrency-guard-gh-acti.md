@@ -16,6 +16,56 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZM0FTJM08QG0R002675YBK-*.md` glob. -->
 
+## SHARPENED + PARTIALLY FIXED (2026-08-09, Otto shadow*)
+
+Investigating this found the original filing was **partly wrong and partly understated**.
+
+**Wrong:** I wrote that content-addressing "plausibly gives idempotence by construction —
+plausibly is not proven." It IS proven: `scheduled-node.test.ts` already had
+*"persists one checkpoint and becomes an idempotent no-op on replay"*. And the zetadb
+workflow already had the correct convergence SHAPE — after `git pull --rebase` it
+**re-derives** the checkpoint (re-runs the fold) instead of replaying a stale precomputed
+diff. Credit where due; I filed against a healthier system than I thought.
+
+**Also wrong about society-heartbeat:** it appends **uniquely-named** files
+(`society-<id>.json`), which is a G-set append — naturally commutative and conflict-free
+under rebase. Not a second instance of this race.
+
+**FIXED:** the genuine gap was that a lost push race **failed the run instead of
+re-converging**. `git push` is a compare-and-swap; the loser was rejected and `set -e`
+killed the job. Tolerable when Actions was the only writer (the Actions-scoped
+`concurrency:` group serialised us with ourselves) — not tolerable for runners + local +
+browser cells at once. Added a bounded retry that re-runs
+rebase → **re-fold** → amend → push, so each attempt re-derives from whatever `main` now
+holds. Convergence, not a lock (a lock would be central coordination, §1, and would not
+survive a browser tab going offline).
+
+**NEW FINDING — the checkpoint is NOT BYTE-CANONICAL (the deeper cause).** Proven by
+test: folding `{a,b}` versus `{b,a}` yields **identical semantic state** (entries and
+rows agree once sorted) but **different bytes**, because `entries` persists in ARRIVAL
+ORDER.
+
+```
+SEMANTIC entries equal (sorted): true
+SEMANTIC rows equal (sorted):    true
+BYTE-identical:                  false
+entry order A: event/a,event/b   B: event/b,event/a
+```
+
+With one writer this is invisible. With concurrent substrates, two nodes **in the same
+state** emit different checkpoint files — so git sees a real diff, last-writer-wins
+clobbers, and content-addressing cannot dedup them. The retry loop converges the *race*;
+it cannot fix a representation that is not a pure function of the delta SET.
+
+**Fix (NOT taken — owner's call):** canonically order `entries` before serialisation.
+That changes the on-disk checkpoint representation and may interact with existing
+checkpoints and byte-lock vectors, so it belongs to the zetadb owner rather than a
+drive-by. Two tests are landed: one asserting the semantic convergence that DOES hold,
+and one PINNING the byte-divergence so the gap stays visible and its fix is detectable —
+deliberately not asserting that the divergence is correct.
+
+---
+
 ## The gap
 
 `.github/workflows/zetadb-scheduled-node.yml` guards concurrent folds with:

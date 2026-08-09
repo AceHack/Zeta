@@ -70,8 +70,38 @@ jobs:
             echo "Co-Authored-By: Codex <noreply@openai.com>"
           } | git commit --file=-
 
-          git pull --rebase origin main
-          bun run run:zetadb-node
-          git add data/zetadb/checkpoint.json
-          git -c core.editor=true commit --amend --no-edit
-          git push origin HEAD:main
+          # 081KZM0FTJM — CONVERGE on a lost push race, do not fail.
+          #
+          # The fold is already convergent in shape: after rebasing we RE-DERIVE the
+          # checkpoint (re-run the fold) instead of replaying a stale precomputed diff,
+          # so two folds of the same journal agree. What was missing is what happens
+          # when another writer lands BETWEEN our rebase and our push: `git push` is a
+          # compare-and-swap, the loser is rejected, and with `set -e` the run simply
+          # died. That was tolerable while GitHub Actions was the only writer — the
+          # Actions-scoped `concurrency:` group serialised us with ourselves — but the
+          # dogfooding target is runners AND local hardware AND browser cells at once,
+          # and that group cannot see any of them.
+          #
+          # The fix is convergence, NOT a distributed lock: a lock would be a central
+          # point of coordination (§1 scale-free) and would not survive a browser tab
+          # going offline. Retry the rebase→re-fold→amend→push cycle; each attempt
+          # re-derives from whatever main now holds, so the result converges regardless
+          # of arrival order (#6 idempotency + commutativity).
+          push_ok=0
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            bun run run:zetadb-node
+            git add data/zetadb/checkpoint.json
+            git -c core.editor=true commit --amend --no-edit
+            if git push origin HEAD:main; then
+              push_ok=1
+              [ "$attempt" -gt 1 ] && echo "[zetadb] converged on attempt $attempt/5 (lost $((attempt-1)) push race(s))"
+              break
+            fi
+            echo "[zetadb] push race lost on attempt $attempt/5 — another writer landed; re-deriving from new main"
+            sleep $((attempt * 3))
+          done
+          if [ "$push_ok" -ne 1 ]; then
+            echo "::error::[zetadb] failed to converge after 5 attempts — sustained contention on data/zetadb/checkpoint.json (081KZM0FTJM)" >&2
+            exit 1
+          fi
