@@ -181,7 +181,7 @@ Each one exists because A and B read the same sentence two different ways. A div
 between two independent implementations is a **defect in this document**, not in either
 implementation. Full evidence: [`key-custody-n-version-combine.md`](key-custody-n-version-combine.md).
 
-### A1 (amends R9) — "agreed phase" must be *derived*, not accepted
+## A1 (amends R9) — "agreed phase" must be *derived*, not accepted
 
 R9 said expiry is evaluated against agreed phase. It never said where phase comes from, so
 A derived it from an observed causal coordinate while B accepted an opaque scalar from the
@@ -197,7 +197,7 @@ caller. Both are honest readings of the text.
 It is decided on the evidence — a caller-supplied phase cannot make AC6 true — and is
 flagged as a judgement call for the maintainer to overturn if he reads it differently.)*
 
-### A2 (amends R8) — "bounded" requires a stated ceiling
+## A2 (amends R8) — "bounded" requires a stated ceiling
 
 R8 required an expiry and a bounded default. A enforced a maximum span; B allowed
 `MAX_SAFE_INTEGER`, which carries an expiry and is indefinite in every way that matters.
@@ -206,7 +206,7 @@ R8 required an expiry and a bounded default. A enforced a maximum span; B allowe
 > exceeding it.** "Carries an expiry field" does not satisfy R8. The test is that indefinite
 > authority is *unconstructible through the public surface*, not merely undefaulted.
 
-### A3 (amends R6) — a retraction must change the fold
+## A3 (amends R6) — a retraction must change the fold
 
 R6 required emission and retraction events. It never said the retraction must *do* anything,
 so B emitted `key-retracted` events that its own fold ignored.
@@ -216,7 +216,7 @@ so B emitted `key-retracted` events that its own fold ignored.
 > event from a stream must change the folded state.** If it does not, the retraction is
 > decorative.
 
-### A4 (amends the Acceptance section) — every criterion names its observable
+## A4 (amends the Acceptance section) — every criterion names its observable
 
 AC3 and AC4 were stated as properties with nothing to run. B satisfied AC3 with a field typed
 as the literal `true` — an assertion no test can fail — and AC4 with a validation that cannot
@@ -227,7 +227,7 @@ return false for any input that type-checks.
 > non-optional field, or a type-level constant is not a criterion. If a property cannot be
 > made falsifiable, say so and mark it unverified rather than asserting it.
 
-### A5 (amends the implementation protocol) — declare coverage per requirement
+## A5 (amends the implementation protocol) — declare coverage per requirement
 
 A deferred R1–R4/R10/R11 and said so in a header comment. B claimed all twelve. Nothing in
 the protocol required either claim to be *earned*, and a header comment is not a checked
@@ -238,7 +238,7 @@ artifact.
 > artifact is a type declaration is `deferred`, not `implemented`. Deferring is a correct and
 > expected outcome; misreporting coverage is the failure.
 
-### A6 (amends the clean-room preamble) — house conventions must be given to the clean side
+## A6 (amends the clean-room preamble) — house conventions must be given to the clean side
 
 B used exceptions on a path where this repo requires `Result`. The clean side was never told,
 and could not have known — the wall blocks prior art, not the repo's own conventions.

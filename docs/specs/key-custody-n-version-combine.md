@@ -149,7 +149,7 @@ The implementing agent for A delivered its report **after** the combine above wa
 merged. It contradicts this document in two places and supersedes it in a third. Recorded
 here rather than by editing the text above, so the error stays visible.
 
-### C1 — I over-credited A on R6
+## C1 — I over-credited A on R6
 
 §1 marks A's R6 ✅. **A itself reports R6 as `partial`:** the append-only fold and idempotency
 are verified and `PreviousRetracted` changing the fold is tested, but **`GrantRetracted` is
@@ -159,7 +159,7 @@ never round up) working as intended, applied by A to itself.
 
 Corrected row: **R6 — A: partial. B: not satisfied.**
 
-### C2 — amendment A1 is incomplete, and A found the reason
+## C2 — amendment A1 is incomplete, and A found the reason
 
 A1 (merged) requires phase to be **derived from an observed causal frame**. A identified a
 consequence I missed entirely:
@@ -175,7 +175,7 @@ agreed rate, or an explicit staleness bound. A did the honest thing and implemen
 function while naming the residual in its module header: **expiry is monotone and eventual,
 not simultaneous.**
 
-### C3 — A found 12 spec defects to my 6, and two of mine were weaker
+## C3 — A found 12 spec defects to my 6, and two of mine were weaker
 
 A's list supersedes §5. Beyond the tension above, the ones I did not find:
 
@@ -200,7 +200,7 @@ A's list supersedes §5. Beyond the tension above, the ones I did not find:
   inside the first acceptance window (A chose a fixed three-slot ladder, dropping the older
   key; the alternative is a queue). A is right that the spec must make these, not the coder.
 
-### C4 — mutation testing, and the finding worth carrying past this spec
+## C4 — mutation testing, and the finding worth carrying past this spec
 
 Two mutants **survived** A's first idempotency test: removing the open-once guard and removing
 the rotation dedup guard both stayed green. The reason generalises well beyond key custody:
@@ -215,7 +215,7 @@ A also flags **three mutants that produced no usable signal** (failed to compile
 `TreatWarningsAsErrors`, or emitted no result line) as **not confirmed by execution** rather
 than counting them as caught. That is the same non-rounding-up discipline again.
 
-### What this says about the exercise
+## What this says about the exercise
 
 The N-version protocol found the spec defects. **The implementer's own report found more of
 them than the combine did** — because it had the experience of hitting each ambiguity while
