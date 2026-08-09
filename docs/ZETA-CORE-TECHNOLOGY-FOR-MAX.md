@@ -324,3 +324,35 @@ ACE is the outermost layer of the system, but it uses every layer below it:
 The negotiation protocol is the renegotiation protocol from `docs/ALIGNMENT.md` applied at the package level. The calibration system is the same `TravelerRankLedger` applied to package publishers. The identity verification is the same CHSH gate applied to package signers.
 
 **Key backlog items:** `081KSGS9H0008QG0R0031PBNGA` (ACE as meta-PM, n-dimensional dependency space), `081KR2E4K0008QG0R002YE3MMD` (ACE CLI), `081KQZVQW0008QG0R000ZHEN62` (ACE DLC content packs), `081KSGS9H0008QG0R0018ES3R4` (diamond-resolution namespace), `081KSGS9H0008QG0R002PT5C7J` (time-modeled Helm dependencies)
+
+---
+
+## The Full Replacement Roadmap
+
+The eleven layers described above are not a final architecture — they are the foundation for a three-phase replacement of the entire software stack below the application layer. The plan, stated plainly:
+
+**Phase 1 — Replace the database (ZetaDB).** CockroachDB is the current durable backing store for the cluster. The plan is to replace it with ZetaDB: the content-addressed DAG filesystem (Layer 8) plus Z-set algebra (Layer 9) plus schema evolution (Layer 10), running on CockroachDB as a bridge today, then running standalone once ZetaDB's own consensus and replication layers are complete. ZetaDB is already a full relational model — the Z-set algebra is DBSP-incremental, the Merkle root is the content address, and the schema evolution is zero-downtime. The only missing pieces are the distributed consensus protocol (Raft or a custom Z-set-native variant) and the query planner. Both are natural extensions of the existing CRDT and delta-CRDT work (`src/Core/Crdt.fs`, `src/Core/DeltaCrdt.fs`).
+
+**Phase 2 — Replace the filesystem (ZetaFS).** Once ZetaDB is standalone, the next layer is the filesystem. The `DagFs.Tree<'V>` is already a content-addressed filesystem: paths are keys, content is stored by hash, merges are conflict-free. The missing pieces are the POSIX interface (read/write/stat/readdir syscalls mapped to DAG operations), the FUSE driver (for running on existing Linux kernels during the transition), and the block-device layer (for running on bare metal). The ZetaFS WebDAV host (`DagFs.paths` is already referenced in the docstring as "the directory-listing view — the forward map's keys, needed to enumerate the tree as a mountable filesystem") is the first step.
+
+**Phase 3 — Replace the operating system (Zeta micro/unikernel).** Once ZetaFS is the filesystem, the final layer is the OS itself. The plan is a micro/unikernel: a minimal kernel that provides only the primitives ZetaDB and ZetaFS need — memory management (Shiva-GC is already the memory model), process isolation (the NCI boundary from the EVE protocol is already the isolation model), and network I/O (the Reticulum bus is already the network model). Everything else — scheduling, device drivers, file I/O — is implemented in the Zeta layer above the kernel, not in the kernel itself.
+
+The three phases are not sequential gates — they can proceed in parallel. ZetaFS does not require ZetaDB to be complete; it only requires the DAG-FS layer, which is already shipped. The unikernel does not require ZetaFS to be complete; it only requires the Shiva-GC and NCI boundary, which are already shipped. The phases are ordered by dependency depth, not by calendar time.
+
+### Why This Path Is Coherent
+
+The replacement path is coherent because every layer of the Zeta stack is already designed around the same three primitives: **content addressing** (every value is stored by the hash of its content), **Z-set algebra** (every mutation is a signed-weight delta), and **DynamicValue** (every artifact is a value, not code, and therefore collectable and regenerable). A filesystem built on these three primitives is not a new design — it is the same design as ZetaDB, applied one layer lower. A kernel built on these three primitives is not a new design — it is the same design as ZetaFS, applied one layer lower.
+
+The deepest connection: the `gen(gen)==gen` fixed point (Layer 7) is the property that makes the whole stack replaceable without downtime. Every layer can be replaced while running because every residual is reconstructible from the generator. Replace the database: the generator re-mints the data. Replace the filesystem: the generator re-mints the files. Replace the OS: the generator re-mints the kernel. The system is self-healing by construction.
+
+### Current Status and Next Steps
+
+| Phase | Status | Next step |
+|---|---|---|
+| ZetaDB (replace CockroachDB) | DAG-FS + Z-sets + schema evolution shipped; CockroachDB bridge in progress | Distributed consensus protocol (Raft over Z-set deltas) |
+| ZetaFS (replace OS filesystem) | `DagFs.Tree<'V>` shipped; WebDAV host referenced in docstring | FUSE driver (POSIX interface over DAG operations) |
+| Zeta micro/unikernel | Shiva-GC + NCI boundary shipped; unikernel not yet started | Memory model formalisation (Shiva-GC as the kernel allocator) |
+| MultilayerBnn (replace inference stack) | Primitives shipped; N-layer composition not yet shipped | `MultilayerBnn.fs` — stack N `MinimalBnn` cells with shared EP backward pass |
+| ACE CLI (replace package managers) | Package format spec shipped; CLI not yet started | `ace install / verify / list` TypeScript commands |
+
+Max is aware of this path and is excited about it. The document you are reading is the technical foundation for all five workstreams.
