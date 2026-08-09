@@ -50,6 +50,7 @@ A test gap: no end-to-end assertion that a `content` ESP write actually appears 
 this is a silent-drop, exactly the class #9937 was about, one layer down.
 
 ## Next steps (revised — now actionable)
+
 1. Fix the inline-staged-content mcopy in the real executor (`planFileBackedZflashImageExecution` +
    `executeFileBackedZflashImageExecutionPlan`, `src/Core.TypeScript/zflash/file-backed.ts` +
    `lib.ts`). Needs a local bake repro (qemu-img + mcopy + an ISO) to pin the exact mcopy/staging
