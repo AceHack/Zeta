@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { e8Roots, gp, measure, reverse } from "./e8-blade-mask-sandwich";
+import { allCodewords, e8Roots, gp, measure, reverse } from "./e8-blade-mask-sandwich";
 
 // FROZEN-CORE §B measurement — golden numbers. These constants ARE the banked
 // result (2026-08-09): re-running the measurement must reproduce them bit-for-
@@ -70,6 +70,59 @@ describe("the measurement — golden numbers, banked 2026-08-09", () => {
       [240, 32],
     ]);
   });
+
+  // ── Otto + Lumen review 2026-08-09: pin the CORRECT characterization ────────
+  // Two earlier explanations of "why these two supports" were wrong. These tests
+  // discriminate all three criteria head-to-head so neither can come back.
+  const weight4Supports = () =>
+    allCodewords()
+      .filter((c) => c.reduce((a: number, b: number) => a + b, 0) === 4)
+      .map((c) => c.map((b: number, i: number) => (b ? i : -1)).filter((i: number) => i >= 0));
+
+  const SURVIVING = ["0,3,4,7", "1,2,5,6"];
+
+  test("pseudoscalar CLOSURE (i -> i^7) selects EXACTLY the two surviving supports", () => {
+    const iClosed = weight4Supports().filter((s) => {
+      const S = new Set(s);
+      return s.every((v) => S.has(v ^ 7));
+    });
+    expect(iClosed.map((s) => s.join(",")).sort()).toEqual([...SURVIVING].sort());
+  });
+
+  test("XOR-closed subgroup is UNDER-determined — 3 matches, not 2", () => {
+    // The first stated explanation. Necessary, not sufficient.
+    const subs = weight4Supports().filter((s) => {
+      const S = new Set(s);
+      if (!S.has(0)) return false;
+      return s.every((a) => s.every((b) => S.has(a ^ b)));
+    });
+    expect(subs.length).toBe(3);
+  });
+
+  test("grade-completeness explains only HALF — {1,2,5,6} is not grade-complete", () => {
+    // The second stated explanation ("unique grade-complete subalgebra").
+    // It cannot be the criterion: the OTHER survivor has grades {1,1,2,2} and
+    // contains neither the scalar (0) nor the pseudoscalar (7).
+    const grade = (i: number) => ((i >> 0) & 1) + ((i >> 1) & 1) + ((i >> 2) & 1);
+    const profile = (s: number[]) => s.map(grade).sort().join(",");
+    expect(profile([0, 3, 4, 7])).toBe("0,1,2,3");
+    expect(profile([1, 2, 5, 6])).toBe("1,1,2,2");
+    expect([1, 2, 5, 6].includes(0)).toBe(false);
+    expect([1, 2, 5, 6].includes(7)).toBe(false);
+    // And "contains the pseudoscalar" alone is far too weak.
+    expect(weight4Supports().filter((s) => s.includes(7)).length).toBe(7);
+  });
+
+  test("closure is coset-invariant — which is WHY it explains both survivors", () => {
+    // {1,2,5,6} = 1 XOR {0,3,4,7}. Closure under i -> i^7 survives coset
+    // translation; "contains 7" does not. One criterion, both survivors.
+    const coset = [0, 3, 4, 7].map((v) => v ^ 1).sort((a, b) => a - b);
+    expect(coset).toEqual([1, 2, 5, 6]);
+    const S = new Set(coset);
+    expect(coset.every((v) => S.has(v ^ 7))).toBe(true);
+    expect(coset.includes(7)).toBe(false);
+  });
+
 });
 
 // Grade of a blade index in Cl(3,0): popcount of the bitmask

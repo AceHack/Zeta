@@ -20,21 +20,52 @@
 //     structure: {1,2,5,6} = {e₁,e₂,e₁₃,e₂₃} and its complement
 //     {0,3,4,7} = {S,e₁₂,e₃,e₁₂₃}.
 //
-//     What distinguishes {0,3,4,7}: there are THREE XOR-closed subgroups
-//     of size 4 in the Hamming code ({0,1,4,5}, {0,2,4,6}, {0,3,4,7}),
-//     so XOR-closure is necessary but not sufficient. The distinguishing
-//     property is the GRADE PROFILE in Cl(3,0):
-//       {0,1,4,5} = {S,e₁,e₃,e₁₃}   grades {0,1,1,2} — missing grade 3
-//       {0,2,4,6} = {S,e₂,e₃,e₂₃}   grades {0,1,1,2} — missing grade 3
-//       {0,3,4,7} = {S,e₁₂,e₃,e₁₂₃} grades {0,1,2,3} — SPANS ALL 4 GRADES
-//     {0,3,4,7} is the unique grade-complete subalgebra of Cl(3,0) among
-//     the three candidates. This is a direct computation (2026-08-09).
+//     WHAT ACTUALLY DISTINGUISHES THEM — pseudoscalar CLOSURE, not
+//     XOR-closure and not grade-completeness. Head-to-head over the 14
+//     weight-4 codewords (computed; see the regression test):
+//       XOR-closed subgroup        -> 3 matches  ({0,1,4,5},{0,2,4,6},{0,3,4,7})
+//       contains pseudoscalar e₁₂₃ -> 7 matches
+//       CLOSED UNDER i ↦ i⊕7       -> EXACTLY 2  ({0,3,4,7} and {1,2,5,6})  ✔
+//
+//     Two earlier explanations were tried and are WRONG; the test below
+//     pins them so neither can come back:
+//       * "XOR-closed subalgebra + its coset" — under-determined (3 pairs).
+//       * "the unique GRADE-COMPLETE subalgebra {0,1,2,3}" — explains only
+//         HALF the answer. The other survivor {1,2,5,6} has grades
+//         {1,1,2,2} and contains neither the scalar nor the pseudoscalar,
+//         so grade-completeness cannot be the criterion.
+//
+//     Why closure is the right notion: {1,2,5,6} = 1 ⊕ {0,3,4,7} is the
+//     COSET, and closure under i ↦ i⊕7 is COSET-INVARIANT (if S is closed
+//     then so is x ⊕ S) whereas "contains 7" is not. One criterion, both
+//     survivors — which is exactly what an explanation has to do.
+//
+//     The algebraic content (Lumen, math review 2026-08-09): with
+//     Cl(3,0) ≅ ℂ ⊗ℝ ℍ and I = e₁₂₃ central, A = q + I·p is versor-normed
+//     iff q and p are ℝ-collinear — i.e. A is a DECOMPOSABLE element of
+//     ℂ⊗ℍ. Collinearity forces span(q) = span(p), so the support must be
+//     closed under multiplication by I. Support-level talk is a lossy
+//     projection regardless: only 8 of the 16 sign patterns on each of
+//     these supports is versor-normed (16 single blades + 8 + 8 = 32).
 // So route-B's "the Cl(3,0) sandwich implements NO W(E8) reflection"
 // upgrades from a grading argument to a measured statement: it implements
 // EXACTLY a 32-element Clifford-aligned subset of E8 roots that individually
-// preserve all 240 roots under the sandwich, and nothing more. (Note: 32 is
-// not a standard sub-root-system size; this is a measured subset, not a
-// closed sub-root-system.)
+// preserve all 240 roots under the sandwich, and nothing more.
+//
+// TWO CAVEATS THAT MUST TRAVEL WITH THE NUMBER 32 (Lumen, math review):
+//  1. 32 counts ROOT-VECTORS, not symmetries. They induce only 8 DISTINCT
+//     maps, generating a group of order 16 (≅ D₄ × C₂) inside W(E8) —
+//     index 43,545,600. Their reflection closure is 48 roots = D₄ ⊕ D₄, a
+//     Borel–de Siebenthal maximal-rank subsystem; the 32 are 32 of those 48
+//     and are NOT themselves a closed sub-root-system.
+//  2. 32 IS LABELLING-DEPENDENT. Sweeping all 8! relabellings of code
+//     coordinates onto blade indices, the versor-normed count is 16 in
+//     ~47% of labellings and 32 in only ~30%. ONLY THE 16 SINGLE BLADES ARE
+//     LABELLING-INVARIANT. So "32" is a fact about this pairing of two
+//     independent coordinate conventions (AdinkraCode's generator ×
+//     Cl3's blade indexing), NOT about E8 and Cl(3,0) as such. Do not put
+//     32 into FROZEN-CORE without this caveat attached.
+//     (Sweep measured by Lumen; not independently re-run here.)
 //
 // Constructions replicated byte-faithfully from the F# oracles:
 //   - AdinkraCode.fs: [8,4] extended Hamming generator, systematic [I₄|A].

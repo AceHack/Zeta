@@ -49,24 +49,48 @@ Over all 240 × 240 = 57,600 ordered pairs (A, x):
    {1,2,5,6} = {e₁, e₂, e₁₃, e₂₃} and its complement
    {0,3,4,7} = {S, e₁₂, e₃, e₁₂₃}.
 
-   **What distinguishes {0,3,4,7} from the other XOR-closed subgroups.**
-   There are exactly three XOR-closed subgroups of size 4 in the Hamming
-   code: {0,1,4,5}, {0,2,4,6}, and {0,3,4,7}. Being XOR-closed is
-   *necessary* but not *sufficient* — all three qualify, only one survives.
-   The distinguishing property is the **grade profile** in Cl(3,0):
+   **What distinguishes the two surviving supports — pseudoscalar CLOSURE.**
+   Two earlier explanations were tried; both are recorded here because each
+   is instructive about *why* it fails. Head-to-head over the 14 weight-4
+   codewords (computed; pinned by regression tests):
 
-   | Support | Blades | Grades | Grade-complete? |
-   |---|---|---|---|
-   | {0,1,4,5} | {S, e₁, e₃, e₁₃} | {0,1,1,2} | No — missing grade 3 |
-   | {0,2,4,6} | {S, e₂, e₃, e₂₃} | {0,1,1,2} | No — missing grade 3 |
-   | **{0,3,4,7}** | **{S, e₁₂, e₃, e₁₂₃}** | **{0,1,2,3}** | **Yes — spans all 4 grades** |
+   | Criterion | Matches | Exactly the 2 survivors? |
+   |---|---|---|
+   | XOR-closed subgroup | 3 — {0,1,4,5}, {0,2,4,6}, {0,3,4,7} | No — under-determined |
+   | Contains the pseudoscalar e₁₂₃ | 7 | No — far too weak |
+   | **Closed under `i ↦ i⊕7`** (multiplication by I) | **2 — {0,3,4,7}, {1,2,5,6}** | **Yes** ✔ |
 
-   {0,3,4,7} is the unique XOR-closed subgroup that contains one element
-   of every grade (scalar, vector, bivector, pseudoscalar). It is the only
-   **grade-complete subalgebra** of Cl(3,0) among the three candidates.
-   This is a direct computation, not a hunch. Its coset {1,2,5,6} inherits
-   the alignment. Of the 14 weight-4 codewords, precisely this
-   grade-complete pair is Clifford-aligned.
+   *Why "XOR-closed subalgebra + coset" fails:* three pairs qualify, one
+   survives. Necessary, not sufficient.
+
+   *Why "the unique grade-complete subalgebra" fails:* it explains only
+   **half the answer**. {0,3,4,7} does have grades {0,1,2,3}, but the other
+   survivor **{1,2,5,6} has grades {1,1,2,2} and contains neither the scalar
+   nor the pseudoscalar** — so grade-completeness cannot be the criterion
+   that selects the pair. ({0,1,4,5} and {0,2,4,6} are equally genuine
+   4-dimensional subalgebras, each ≅ Cl(2,0); they fail for a different
+   reason — their even and odd halves span *orthogonal* 2-planes of ℍ, so no
+   sign pattern can make q ∥ p. Subalgebra-hood is a red herring.)
+
+   *Why closure is the right notion:* {1,2,5,6} = 1 ⊕ {0,3,4,7} is the
+   **coset**, and closure under `i ↦ i⊕7` is **coset-invariant** (if S is
+   closed, so is x ⊕ S) whereas "contains 7" is not. One criterion, both
+   survivors — which is what an explanation has to do.
+
+   **The algebraic content** (Lumen, math review 2026-08-09). With
+   `Cl(3,0) ≅ ℂ ⊗ℝ ℍ` and `I = e₁₂₃` central (`I² = −1`), write `A = q + I·p`
+   with `q, p ∈ Cl⁺(3,0) ≅ ℍ`. Then `A·Ã = (|q|²+|p|²) + I·(p q̄ − q p̄)`, so
+
+   > **A is versor-normed ⟺ `p q̄ ∈ ℝ` ⟺ q and p are ℝ-collinear ⟺ A is a
+   > DECOMPOSABLE element of ℂ⊗ℍ (a ℂ-multiple of a real quaternion).**
+
+   Collinearity forces `span(q) = span(p)`, which is exactly why the support
+   must be closed under multiplication by I.
+
+   **Support-level talk is a lossy projection.** Only **8 of the 16 sign
+   patterns** on each surviving support is versor-normed (16 single blades +
+   8 + 8 = 32), so no support-level narrative could ever have been the whole
+   characterization.
 
 2. **Each of the 32 preserves ALL 240 roots** — 7,680/7,680 pairs. A
    perfect root-symmetry fragment lives inside the bridge.
@@ -139,3 +163,73 @@ Groups* — W(E8). In-repo: `CliffordE8Bridge.fs` (the honest scope this
 measures), `CliffordE8Roots.fs` (the Cl(8,0) positive result), workitem
 `081KYXCM1WK` (Soraya's Lean certification lane — unaffected; this
 document measures the *other* bridge).
+
+## ⚠ Two caveats that MUST travel with the number 32
+
+Added after math review (Lumen, 2026-08-09). Neither weakens the core result —
+the sandwich is emphatically **not** a W(E8) reflection action, and the residue
+is a specific structure rather than noise — but both correct how "32" may be
+stated.
+
+### 1. "32-element E8 fragment" is wrong twice
+
+- **It is not a sub-root-system.** The 32 fail closure under their own
+  reflections. Their reflection closure is **48 roots = D₄ ⊕ D₄** — a genuine
+  Borel–de Siebenthal maximal-rank subsystem of E8 — of which the 32 are 32 of
+  48. (32 is not a sub-root-system size at all: A₁⁸=16, D₄=24, E₆=72, E₇=126,
+  D₈=112.)
+- **32 counts root-vectors, not symmetries.** The 32 induce only **8 distinct
+  maps**, which generate a group of order **16 ≅ D₄ × C₂** inside W(E8) —
+  index **43,545,600**. The 8 maps form the coset `−D₄`.
+
+  Defensible phrasing: *"the sandwich realizes a `D₄ × C₂` subgroup of order 16
+  inside W(E8) (index 43,545,600), carried by 32 of the 240 bridged roots via an
+  8-element coset of conjugations."* Stronger than "32-element fragment", and it
+  keeps the route-B disclaimer intact — 16 of 696,729,600 is still essentially
+  nothing of the Weyl group.
+
+### 2. **32 is LABELLING-DEPENDENT** — do not enter it into FROZEN-CORE bare
+
+Sweeping all `8!` relabellings of code coordinates onto blade indices:
+
+| versor-normed count | 16 | **32** | 48 | 64 | 96 |
+|---|---|---|---|---|---|
+| % of 40,320 labellings | 46.7 | **30.0** | 6.7 | 13.3 | 3.3 |
+
+**Only the 16 single blades are labelling-invariant.** The extra 16 exist because
+`AdinkraCode.fs`'s generator happens to place one complementary codeword pair on
+the `i ↦ i⊕7` orbits of `Cl3.fs`'s blade indexing. So "32" is a fact about **this
+pairing of two independent coordinate conventions**, not about E8 and Cl(3,0) as
+such.
+
+*(Sweep measured by Lumen during review; not independently re-run by Otto — flagged
+so the provenance is legible.)*
+
+**Convention-free by contrast** (these are safe to bank): the `ℂ⊗ℍ`
+decomposability characterization, the identity `|det A|² + |v(A)|² = ⟨A,A⟩² = 16`,
+the three-tier det/rank stratification, the rank-1 2-plane image, and
+"≥ 16 versor-normed under any labelling".
+
+### On the quantization {0, 64, 128, 240}
+
+Now **derived**, not merely observed. Two exact invariants do the work: with the
+ℂ-valued determinant `det(A) = |q|²−|p|² + 2I⟨q,p⟩`,
+
+- **Identity A:** `|det(A)|² + |v(A)|² = ⟨A,A⟩² = 16`
+- **Identity B:** `det(−A x Ã/4) = |det A|² · det(x) / 16`
+
+The root set realizes only `|det|² ∈ {0, 8, 16}`, giving three tiers: `|det|²=16`
+(32 roots, versor-normed ⇒ inner automorphism ⇒ **240** preserved); `|det|²=8`
+(128 roots ⇒ Identity B halves `|det|`, and {0,8,16} is not closed under halving
+⇒ **0**); `|det|²=0` (80 zero divisors, rank 1 ⇒ image is a single ℂ-line ⇒ 0, 64
+or 128 as `4 × fiber size`).
+
+So **64 and 128 are fixed-point counts of a rank-1 ℂ-linear map — not orbit or
+stabiliser sizes.** Note this also refutes an earlier conjecture in this doc that
+the tiers stratify by *the subalgebra the support generates*: they stratify by
+**det/rank**, and both the 64-tier and the 128-tier share supports with the 0-tier.
+
+**Anchors:** Conway–Sloane *SPLAG* (Construction A; D₄⊕D₄ in E8); Borel–de
+Siebenthal 1949 (maximal-rank subsystems); Porteous / Lounesto (`Cl(3,0) ≅ ℂ⊗ℍ ≅
+M₂(ℂ)`, versor vs versor-normed); Dechant 2016 (the true reflection action needs
+`Cl(8,0)`); Gates et al. (adinkra ↔ doubly-even codes).
