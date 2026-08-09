@@ -30,6 +30,8 @@ import { loadWorld } from "./load-world";
 import { renderAction } from "./observe";
 import { execute, type OperatorPort } from "./execute";
 import { folderSink } from "./event-sink-folder";
+import { createRealtimeClient } from "./realtime-client";
+import type { RealtimeEvent } from "./realtime-server";
 import { resolveForgeHost } from "../forge-host/registry";
 import { readPRStateAsync } from "./world-infra";
 import "../forge-host/github/index"; // registers the GitHub adapter
@@ -295,6 +297,41 @@ async function main(): Promise<number> {
   }
 
   console.log(`[execute] OK — eventId=${result.eventId}, mode=${result.world.mode ?? "unset"}`);
+
+  // 5. Push the event over WebSocket if ZETA_REALTIME_URL is set.
+  //    Makes heartbeats visible in real-time on the settlement page instead of
+  //    waiting for the 15-minute flush. Fire-and-forget: a push failure does NOT
+  //    fail the tick (the event is already durably appended to the folder sink).
+  //    Declared, metered channel (§13): opt-in via env var, never ambient.
+  const realtimeUrl = process.env.ZETA_REALTIME_URL;
+  if (realtimeUrl) {
+    const realtimeEvent: RealtimeEvent = {
+      id: result.eventId,
+      at: new Date().toISOString(),
+      by: args.by,
+      action: { kind: action.kind },
+      phase: phase.phase,
+      entropy: { state: phase.derived, heat: 0 },
+    };
+    const rtClient = createRealtimeClient({
+      url: realtimeUrl,
+      timeoutMs: 3000,
+      autoReconnect: false,
+    });
+    try {
+      const pushResult = await rtClient.push(realtimeEvent);
+      if (pushResult.ok) {
+        console.log(`[realtime] pushed eventId=${pushResult.eventId} to ${realtimeUrl}`);
+      } else {
+        console.warn(`[realtime] push failed (non-fatal): ${pushResult.reason}`);
+      }
+    } catch (err) {
+      console.warn(`[realtime] push error (non-fatal): ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      rtClient.close();
+    }
+  }
+
   return 0;
 }
 
