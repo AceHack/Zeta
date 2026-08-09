@@ -223,6 +223,55 @@ Also: `bun test` green over a fallback that no test exercises proves nothing (se
 
 ---
 
+## 6b. ANSWERED — what free LLMs actually consume: the 4×4 (16) action grammar
+
+Aaron, 2026-08-09, answering the "what do free LLMs consume?" question routed to you:
+
+> *"We already have the start of our own harness, and tool-calling our own CLIs a bit —
+> it might be toy-like. We also have a universal 4×4 (16) square grammar and controller
+> interface that we run in a loop for a choose-your-own-adventure-like interface, so
+> even non-intelligent and very low-intelligence models can make progress."*
+
+**This already exists in-tree; do not design a new interface.**
+
+- `src/Core/ActionGrammar.fs` — *"the universal action algebra/grammar of the 4×4
+  controller"*. The **16-key hex keypad is a 4×4 grid** = the finite action alphabet.
+  Held-key sets form a **Boolean lattice** (the powerset of 16): `bottom` ⊥, `top` ⊤,
+  `join`, `meet`, `complement`, `leq`. So actions are not a flat enum — they *compose*
+  algebraically.
+- `src/Core/SoftController.fs` — `inputSuperposition` returns `(bool[] * float) list`:
+  a **weighted distribution over actions**, each branch explored in its own timeslice.
+- `src/Core.TypeScript/model-backend/` — `zeta-agent-loop.ts`, `tool-calls.ts`,
+  `zeta-store.ts`: the harness + tool-calling Aaron describes as "toy-like".
+
+### The connection worth building on
+
+**A BNN's natural output IS the controller's natural input.** The BNN produces a
+posterior over actions; `inputSuperposition` is already `(action, weight) list`. There
+is no impedance mismatch to engineer — the shapes already match. The source even
+anticipates it: `SoftController` carries *"Collapse to the best branch (Aaron
+2026-06-08): if we're running Bayesian you can learn what…"*.
+
+So the pipeline is: **BNN posterior over the 16 → weighted branches → collapse →
+learn the branch.** That is the R4 loop, concretely, with both ends already written.
+
+### Why 16 is the point (not an arbitrary size)
+
+A finite 16-symbol alphabet means **capability is not a precondition for participation**.
+A model that cannot write code can still pick 1 of 16 and make progress — the
+choose-your-own-adventure framing. That matters for a society of *free* models: the
+floor for joining is "can select from a small set", not "can generate a correct
+program". It also composes with the errors thread — a wrong action returns a teaching
+error over a **finite** action space, which is the easiest possible learning signal
+(the corrective distinction is always one of 16, never open-ended).
+
+**Honest scope, already carved in the source** (do not overstate it): *"'universal' is
+concrete for CHIP-8 — all CHIP-8 controls live in these 16."* The lattice is an
+abstract grid, not hardware key positions. Whether it generalises beyond CHIP-8 to
+arbitrary tool-calling is an open claim, not a settled one.
+
+---
+
 ## 7. NOT Lumen's — route to Soraya (formal verification) / math team
 
 Several open items are **proof obligations or values-math**, not implementation.
