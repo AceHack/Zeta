@@ -203,3 +203,97 @@ export function futamura1stProjection<TState, TAction>(
     return { nextState, logProb };
   };
 }
+
+// ── VMP Student-t factor node ──────────────────────────────────────────────────
+//
+// Adds a Student-t likelihood factor to the ShivaWeakFactorCache.
+// VMP (Variational Message Passing) is used because:
+//   1. VMP factors are log-likelihood functions — exactly what FactorGenerator returns.
+//   2. VMP updates are local (each factor updates its own variational parameters).
+//   3. VMP converges for Student-t when the variational distribution is Gaussian.
+//
+// The VMP Student-t log-likelihood:
+//   log p(x | μ, σ², ν) ≈ -½ · w · (x - μ)² / σ²
+//   where w = (ν + 1) / (ν + (x - μ)² / σ²)  [robustness weight]
+//
+// This is the same robustness weight as the EP update in StudentTBnn.ts.
+// The two methods agree on the weight; VMP is used here because it fits
+// the on-demand FactorGenerator pattern of ShivaWeakFactorCache.
+//
+// Connection to bidirectional audio with interruption:
+//   - x = audio amplitude measurement
+//   - μ = predicted amplitude from BNN posterior
+//   - ν = 3 (heavier tail than Gaussian, lighter than Cauchy — good for audio)
+//   - w → 0 for outlier frames (clicks, pops, interruptions)
+//   - The factor graph "ignores" the interruption frame automatically
+//
+// Connection to reservoir computing:
+//   - Each factor is a reservoir node with a local state (the VMP variational posterior).
+//   - The Shiva GC evicts stale factors (reservoir nodes not accessed recently).
+//   - This implements natural forgetting without explicit memory management.
+
+/** VMP Student-t factor configuration. */
+export interface StudentTFactorConfig {
+  /** Degrees of freedom ν. ν=1: Cauchy (maximum robustness). ν→∞: Gaussian. Default: 3. */
+  readonly nu: number;
+  /** Observation noise variance σ². Default: 1.0. */
+  readonly obsVariance: number;
+  /** Prior mean μ. Default: 0.0. */
+  readonly priorMu: number;
+}
+
+export const DEFAULT_STUDENT_T_FACTOR: StudentTFactorConfig = {
+  nu: 3,
+  obsVariance: 1.0,
+  priorMu: 0.0,
+};
+
+/**
+ * VMP robustness weight for a Student-t observation.
+ * w = (ν + 1) / (ν + z²) where z² = (x - μ)² / σ².
+ * w ∈ (0, 1]: w=1 for z=0 (on-mean), w→0 for |z|→∞ (outlier).
+ */
+export function vmpRobustnessWeight(x: number, cfg: StudentTFactorConfig = DEFAULT_STUDENT_T_FACTOR): number {
+  const z2 = (x - cfg.priorMu) ** 2 / cfg.obsVariance;
+  return (cfg.nu + 1) / (cfg.nu + z2);
+}
+
+/**
+ * VMP Student-t log-likelihood — the FactorGenerator for ShivaWeakFactorCache.
+ * Returns log p(x | μ, σ², ν) ≈ -½ · w · (x - μ)² / σ²  (up to additive constant).
+ */
+export function studentTLogLikelihood(x: number, cfg: StudentTFactorConfig = DEFAULT_STUDENT_T_FACTOR): number {
+  const w = vmpRobustnessWeight(x, cfg);
+  return -0.5 * w * (x - cfg.priorMu) ** 2 / cfg.obsVariance;
+}
+
+/**
+ * Create a FactorGenerator for a Student-t factor node.
+ * The stateKey encodes the observed value as a decimal string.
+ */
+export function studentTFactorGenerator(cfg: StudentTFactorConfig = DEFAULT_STUDENT_T_FACTOR): FactorGenerator {
+  return (stateKey: string) => {
+    const x = parseFloat(stateKey);
+    if (!isFinite(x)) return 0; // malformed key → neutral factor
+    return studentTLogLikelihood(x, cfg);
+  };
+}
+
+/**
+ * Register a Student-t factor in a ShivaWeakFactorCache and return an evaluator.
+ * The factor is pinned (strong reference) so it survives GC sweeps.
+ *
+ * @param cache - The ShivaWeakFactorCache to register in.
+ * @param factorId - Unique identifier for this factor (e.g. "audio-amplitude").
+ * @param cfg - Student-t factor configuration.
+ */
+export function registerStudentTFactor(
+  cache: ShivaWeakFactorCache,
+  factorId: string,
+  cfg: StudentTFactorConfig = DEFAULT_STUDENT_T_FACTOR,
+): (x: number) => number {
+  const generator = studentTFactorGenerator(cfg);
+  const holder = {};
+  cache.pinRoot(`${factorId}:__pin__`, holder);
+  return (x: number) => cache.getOrCompute(factorId, x.toString(), generator);
+}
