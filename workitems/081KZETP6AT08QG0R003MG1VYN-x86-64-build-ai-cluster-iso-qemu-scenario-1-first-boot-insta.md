@@ -16,6 +16,40 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
+## nix-ld CONFIRMED WORKING (2026-08-09, run 31329548492) — new, narrower blocker
+
+The nix-ld fix (#10196) **worked**. Evidence, from the same diag block that captured
+the original failure:
+
+- **Before:** `rustup-init: cannot execute: required file not found` and SIX toolchains
+  failing (bun, dotnet, java, node, python, rust) — the missing-ELF-interpreter signature.
+- **After:** bun, dotnet, java, python and rust all install from **precompiled binaries**.
+  The linker error is GONE. Only `core:node@24` fails, and not with a loader error.
+
+**The assertion also did its job:** scenario 2 now FAILS loudly with the
+first-boot-provisioning message, where the identical situation previously reported
+PASS. The false green is closed — without it we would have "fixed" bug A on a bad
+signal.
+
+**The new blocker (narrower, not a linker issue):** mise fetched the node **SOURCE**
+tarball (`node-v24.19.0.tar.gz`, not `-linux-x64.tar.xz`) and ran `./configure`, which
+needs `python` on PATH in the build subshell. It is not there during first-boot
+provisioning → `exec: python: not found` → exit 127 → install.sh rc=1 on all three
+attempts.
+
+**Fix applied:** `node.compile = false` in `.mise.toml` `[settings]`, mirroring the
+existing `python.compile = false`. Node was the ONLY tool choosing source; every other
+tool took a prebuilt successfully in that same run, which is the proof the platform
+executes prebuilts now. Declarative, so it applies to all three §24 consumers rather
+than only the installer. Verified the real mise binary reads the setting.
+
+**Also seen (non-fatal, not chased):** `error: $HOME differs from euid-obtained home
+directory: you may be using sudo` — rustup's warning about the
+`sudo -u "#$ZETA_UID" HOME=/mnt/home/zeta` invocation shape. Rust installed anyway, so
+this is noise, not a blocker; worth tidying separately.
+
+---
+
 ## ROOT CAUSE CAPTURED (2026-08-09, Otto shadow*) — deterministic NixOS/mise linker failure, NOT a transient blip
 
 The armed `MISE_VERBOSE` diag (#10155) finally captured the exact rc=1 cause, on run

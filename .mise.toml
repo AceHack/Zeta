@@ -138,6 +138,18 @@ node = "24"
 # install on dev laptops + CI). Compile-from-source is opt-in via
 # `python.compile = true` when a platform build is required.
 python.compile = false
+# Same discipline for node (081KZETP6AT, 2026-08-09). Without this, mise fetched the
+# node SOURCE tarball (`node-v24.19.0.tar.gz`, not `-linux-x64.tar.xz`) and ran
+# `./configure`, which needs `python` on PATH in the build subshell — it is not there
+# during first-boot provisioning, so the build died with `exec: python: not found`
+# (exit 127) and took the whole first-boot install.sh down with it.
+#
+# Compiling was never wanted here: node is the ONLY tool that chose source. In the
+# same run bun, dotnet, java, python and rust all installed from PRECOMPILED binaries
+# successfully — proof the platform executes prebuilts fine now that programs.nix-ld
+# provides the FHS loader (foreign-binaries.nix). So take the prebuilt, and skip a
+# multi-minute source build on every cluster-node bringup.
+node.compile = false
 # `python-build-standalone` (upstream for mise's python plugin)
 # gates downloads on GitHub artifact attestations. On CI the
 # unauthenticated GitHub API rate-limits the shared runner IP;
