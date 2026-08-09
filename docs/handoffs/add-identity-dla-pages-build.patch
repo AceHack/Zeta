@@ -1,0 +1,20 @@
+--- a/.github/workflows/pages-deploy.yml
++++ b/.github/workflows/pages-deploy.yml
+@@ -33,6 +33,22 @@ jobs:
+       - name: Build static Pages artifact
+         run: bun run pages:build
++      - name: Setup pnpm for identity-dla-site
++        uses: pnpm/action-setup@v4
++        with:
++          version: 10
++      - name: Build identity-dla-site for GitHub Pages
++        working-directory: demo/identity-dla-site
++        run: |
++          pnpm install
++          node_modules/.bin/vite build --config vite.config.pages.ts
++          # Move the compiled bundle into the Pages artifact tree.
++          # The pages:build step already copies demo/ as raw source; we overwrite
++          # demo/identity-dla-site/ with the compiled bundle so browsers get JS/CSS.
++          mkdir -p ../../dist/demo/identity-dla-site
++          cp -r dist/pages/. ../../dist/demo/identity-dla-site/
+       - name: Add book preview (unlisted — noindex in <head>, not linked from the site, know-the-URL)
