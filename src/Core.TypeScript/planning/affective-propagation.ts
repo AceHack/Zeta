@@ -1,71 +1,59 @@
 /**
- * affective-propagation.ts — Valence-arousal emotional state propagation.
+ * affective-propagation.ts — Friedkin-Johnsen affective belief propagation.
  *
- * Based on: "How Affect Propagates among LLM Agents: Emergent Emotional
- * Contagion in Crowd Simulation" (2026) and "Modeling emotional dynamics in
- * social networks" (2025).
+ * ## Model: Friedkin-Johnsen (1990)
  *
- * ## The model
+ * v_i(t+1) = λ_i · Σ_j W_ij · trust_j · v_j(t)  +  (1 − λ_i) · v_i(0)
  *
- * Each agent has an affective state (v, a) ∈ [-1,1]² where:
- *   v = valence (negative ↔ positive)
- *   a = arousal (calm ↔ excited)
+ * where:
+ *   λ_i ∈ [0,1] = openness (susceptibility to influence, 1 − stubbornness)
+ *   W_ij = edge weight from j to i (unnormalised — NOT row-normalised)
+ *   trust_j = trustWeight of source agent j
+ *   v_i(0) = initial valence (stubbornness anchor)
  *
- * Emotional contagion propagates via belief propagation on a social graph:
- *   v_i(t+1) = (1-α)·v_i(t) + α·Σ_j w_ij·v_j(t) + ε_v
- *   a_i(t+1) = (1-α)·a_i(t) + α·Σ_j w_ij·a_j(t) + ε_a
+ * ## Why Friedkin-Johnsen over DeGroot
  *
- * where α ∈ [0,1] is the contagion rate and w_ij is the social weight.
+ * DeGroot (1974) naive consensus uses row-normalisation: the influence of
+ * each source is divided by the total trust mass. This makes trust cancel
+ * when there is only one source — an untrusted stranger moves your mood
+ * exactly as much as a trusted friend (trust affects only the relative mix,
+ * not the absolute susceptibility). This is the wrong semantics for emotional
+ * contagion.
  *
- * ## Connection to the Zeta system
+ * Friedkin-Johnsen fixes this: trust has absolute effect. A lone untrusted
+ * source (low trust_j) pulls weakly; a lone trusted source pulls strongly.
+ * The stubbornness anchor (1 − λ_i) · v_i(0) prevents runaway convergence.
  *
- * The affective state (v, a) is a 2D extension of the CalibrationLedger's
- * trustBand. A high-trust agent (trustBand > 0.7) with positive valence
- * and high arousal is an "excited expert" — their emotional state propagates
- * more strongly through the network.
+ * ## Beacon anchor
  *
- * The contagion matrix w_ij can be derived from the TravelerRankLedger:
- *   w_ij = trustBand(j) · domainOverlap(i, j)
+ * Friedkin, N.E. & Johnsen, E.C. (1990). "Social influence and opinions."
+ * Journal of Mathematical Sociology, 15(3-4), 193-206.
  *
- * This creates a trust-weighted emotional propagation network.
+ * ## Connection to TravelerRankLedger
  *
- * ## Honest scope boundary
- *
- * The contagion matrix is assumed stationary (constant w_ij). For rapidly
- * shifting social contexts, the matrix should be updated dynamically.
- * The noise terms ε_v, ε_a are Gaussian — for heavy-tailed emotional
- * shocks, use the Student-t variant (student-t-bnn.ts).
+ * trustWeight = trustBandOf(rankLedger, zid, hatId) — the EP ranking's
+ * trust band is the natural input for the Friedkin-Johnsen trust weight.
  */
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-/** Valence-arousal affective state. */
 export interface AffectiveState {
-  /** Valence ∈ [-1, 1]: negative (distress) ↔ positive (joy). */
-  readonly valence: number;
-  /** Arousal ∈ [-1, 1]: calm (relaxed) ↔ excited (activated). */
-  readonly arousal: number;
+  valence: number;  // [-1, 1]: negative to positive
+  arousal: number;  // [-1, 1]: calm to excited
 }
 
-/** An agent in the affective network. */
 export interface AffectiveAgent {
-  readonly id: string;
-  readonly state: AffectiveState;
-  /** Trust weight ∈ [0,1] — from TravelerRankLedger.trustBandOf. */
-  readonly trustWeight: number;
+  id: string;
+  state: AffectiveState;
+  initialState: AffectiveState;  // stubbornness anchor (v_i(0))
+  trustWeight: number;           // [0, 1]: how much others trust this agent
+  openness: number;              // λ_i ∈ [0,1]: susceptibility to influence
 }
 
-/** The social graph: adjacency weights w_ij. */
-export type SocialGraph = Map<string, Map<string, number>>;
-
-/** The full affective network state. */
 export interface AffectiveNetwork {
-  readonly agents: Map<string, AffectiveAgent>;
-  readonly graph: SocialGraph;
-  /** Contagion rate α ∈ [0,1]. */
-  readonly alpha: number;
-  /** Tick count. */
-  readonly tick: number;
+  agents: Map<string, AffectiveAgent>;
+  graph: Map<string, Map<string, number>>;  // graph[from][to] = edge weight
+  tick: number;
 }
 
 // ── Constructors ───────────────────────────────────────────────────────────────
@@ -74,71 +62,88 @@ export function neutralState(): AffectiveState {
   return { valence: 0.0, arousal: 0.0 };
 }
 
-export function createNetwork(alpha = 0.3): AffectiveNetwork {
-  return { agents: new Map(), graph: new Map(), alpha, tick: 0 };
+/** Create an empty affective network. */
+export function createNetwork(): AffectiveNetwork {
+  return { agents: new Map(), graph: new Map(), tick: 0 };
 }
 
+/**
+ * Add an agent to the network.
+ * @param openness λ_i ∈ [0,1] — susceptibility to influence (default 0.5)
+ * @param trustWeight how much others trust this agent (default 0.5)
+ */
 export function addAgent(
   net: AffectiveNetwork,
   id: string,
   state: AffectiveState = neutralState(),
-  trustWeight = 0.5
+  trustWeight = 0.5,
+  openness = 0.5,
 ): AffectiveNetwork {
+  const agent: AffectiveAgent = {
+    id,
+    state,
+    initialState: { ...state },  // stubbornness anchor
+    trustWeight,
+    openness,
+  };
   const agents = new Map(net.agents);
-  agents.set(id, { id, state, trustWeight });
+  agents.set(id, agent);
   return { ...net, agents };
 }
 
+/** Add a directed edge from → to with weight. */
 export function addEdge(
   net: AffectiveNetwork,
   from: string,
   to: string,
-  weight: number
+  weight = 1.0,
 ): AffectiveNetwork {
   const graph = new Map(net.graph);
   if (!graph.has(from)) graph.set(from, new Map());
-  graph.get(from)!.set(to, weight);
+  const outEdges = new Map(graph.get(from)!);
+  outEdges.set(to, weight);
+  graph.set(from, outEdges);
   return { ...net, graph };
 }
 
-// ── Propagation step ───────────────────────────────────────────────────────────
+// ── Friedkin-Johnsen propagation ───────────────────────────────────────────────
 
 /**
- * One tick of affective propagation.
- * v_i(t+1) = clamp((1-α)·v_i(t) + α·Σ_j w_ij·trustWeight_j·v_j(t))
- * a_i(t+1) = clamp((1-α)·a_i(t) + α·Σ_j w_ij·trustWeight_j·a_j(t))
+ * One tick of Friedkin-Johnsen affective propagation.
+ *
+ * v_i(t+1) = clamp(λ_i · Σ_j W_ij · trust_j · v_j(t)  +  (1−λ_i) · v_i(0))
+ *
+ * Key difference from DeGroot: NO row-normalisation.
+ * Trust has absolute effect — a lone untrusted source pulls weakly.
  */
 export function propagate(net: AffectiveNetwork): AffectiveNetwork {
-  const { agents, graph, alpha } = net;
+  const { agents, graph } = net;
   const newAgents = new Map<string, AffectiveAgent>();
 
   for (const [id, agent] of agents) {
-    // Find all INCOMING neighbors: j where graph[j][id] exists
+    // Accumulate incoming influence (unnormalised — Friedkin-Johnsen)
     let dv = 0.0;
     let da = 0.0;
-    let totalW = 0.0;
 
     for (const [fromId, outEdges] of graph) {
       const w = outEdges.get(id);
       if (w !== undefined) {
         const n = agents.get(fromId);
         if (n) {
-          const tw = w * n.trustWeight;
-          dv += tw * n.state.valence;
-          da += tw * n.state.arousal;
-          totalW += tw;
+          // Absolute trust effect: W_ij · trust_j · v_j
+          dv += w * n.trustWeight * n.state.valence;
+          da += w * n.trustWeight * n.state.arousal;
         }
       }
     }
 
-    const normV = totalW > 0 ? dv / totalW : 0;
-    const normA = totalW > 0 ? da / totalW : 0;
-
+    // Friedkin-Johnsen update: λ_i · influence + (1 − λ_i) · v_i(0)
+    const lam = agent.openness;
     const newV = Math.max(-1, Math.min(1,
-      (1 - alpha) * agent.state.valence + alpha * normV
+      lam * dv + (1 - lam) * agent.initialState.valence
     ));
     const newA = Math.max(-1, Math.min(1,
-      (1 - alpha) * agent.state.arousal + alpha * normA
+      lam * da + (1 - lam) * agent.initialState.arousal
     ));
 
     newAgents.set(id, { ...agent, state: { valence: newV, arousal: newA } });
@@ -147,18 +152,14 @@ export function propagate(net: AffectiveNetwork): AffectiveNetwork {
   return { ...net, agents: newAgents, tick: net.tick + 1 };
 }
 
-/**
- * Run N ticks of propagation.
- */
+/** Run N ticks of propagation. */
 export function propagateN(net: AffectiveNetwork, n: number): AffectiveNetwork {
   let current = net;
   for (let i = 0; i < n; i++) current = propagate(current);
   return current;
 }
 
-/**
- * The network mean affective state.
- */
+/** The network mean affective state. */
 export function meanState(net: AffectiveNetwork): AffectiveState {
   if (net.agents.size === 0) return neutralState();
   let sumV = 0, sumA = 0;
