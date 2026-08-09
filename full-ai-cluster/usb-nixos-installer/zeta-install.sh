@@ -895,45 +895,17 @@ if [ -z "$WIFI_CREDS_FILE" ] && [ -f "$PROBE_MOUNT/zeta-wifi-credentials.json" ]
 fi
 if [ -n "$WIFI_CREDS_FILE" ]; then
   echo "[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP"
-  # 081KZHJPJCF: $ZETA_HOME (and the cloned repo + mise it points at) are not set up until step
-  # 6.95a (~line 1525); this step (6.6) runs earlier, so under `set -u` a bare $ZETA_HOME here is
-  # an "unbound variable" hard-fail. Before the ESP-unmount fix this branch was dead code (wifi
-  # creds were never found), so it never tripped; now that the creds ARE found it runs. Use the
-  # `${ZETA_HOME:-}` default and only take the NM-profile helper path when ZETA_HOME is actually
-  # set — otherwise fall through to the stage-on-target-ESP fallback below (node still boots).
-  # Writing the NM profile pre-6.95a is impossible (no repo/mise); that requires the wifi step to
-  # run after 6.95a — tracked as follow-up in 081KZHJPJCF.
-  WIFI_HELPER="${ZETA_HOME:-}/Zeta/src/Core.TypeScript/installer/wifi-esp-to-nm.ts"
-  WIFI_NM_DST="/mnt/etc/NetworkManager/system-connections"
-  if [ -n "${ZETA_HOME:-}" ] && [ -f "$WIFI_HELPER" ]; then
-    WIFI_TMP=/tmp/zeta-esp-wifi.nmconnection
-    WIFI_PROFILE_NAME=$(
-      sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
-        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; bun '$WIFI_HELPER' --input '$WIFI_CREDS_FILE' --output '$WIFI_TMP'" \
-        2>/tmp/zeta-esp-wifi.err
-    ) || WIFI_PROFILE_NAME=""
-    WIFI_PROFILE_NAME=$(echo "$WIFI_PROFILE_NAME" | tr -d '[:space:]')
-    if [ -n "$WIFI_PROFILE_NAME" ] && [ -f "$WIFI_TMP" ]; then
-      sudo mkdir -p "$WIFI_NM_DST"
-      sudo chmod 0700 "$WIFI_NM_DST"
-      sudo cp "$WIFI_TMP" "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
-      sudo chown root:root "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
-      sudo chmod 0600 "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
-      rm -f "$WIFI_TMP" /tmp/zeta-esp-wifi.err
-      echo "[iter-5-wifi] wrote NetworkManager profile to installed system ($WIFI_PROFILE_NAME)"
-      echo "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
-    else
-      echo "[iter-5-wifi] invalid zeta-wifi-credentials.json; skipping profile write"
-      rm -f "$WIFI_TMP" /tmp/zeta-esp-wifi.err
-    fi
-  else
-    # Fallback: stage raw JSON on target ESP for a later consume path.
-    sudo mkdir -p /mnt/boot
-    sudo cp "$WIFI_CREDS_FILE" /mnt/boot/zeta-wifi-credentials.json
-    sudo chmod 0600 /mnt/boot/zeta-wifi-credentials.json
-    echo "[iter-5-wifi] staged zeta-wifi-credentials.json on target ESP (helper unavailable)"
-    echo "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
-  fi
+  # 081KZHJPJCF: the NetworkManager profile write needs the cloned repo + mise, which only exist
+  # after the step-6.95a runtime bootstrap (~line 1593). This step (6.6) runs earlier, so here we
+  # only STAGE the creds onto the target ESP (/mnt/boot — persistent on the installed system).
+  # The actual NM profile is written by the iter-5.5.1 step AFTER 6.95a (search 'iter-5.5.1').
+  # Splitting it this way is what lets the helper (wifi-esp-to-nm.ts) actually run — pre-6.95a
+  # there is no bun/mise/repo to run it (the old inline attempt here could only ever fall through,
+  # and referencing $ZETA_HOME before it was set was itself a set -u hard-fail).
+  sudo mkdir -p /mnt/boot
+  sudo cp "$WIFI_CREDS_FILE" /mnt/boot/zeta-wifi-credentials.json
+  sudo chmod 0600 /mnt/boot/zeta-wifi-credentials.json
+  echo "[iter-5-wifi] staged zeta-wifi-credentials.json on target ESP; NetworkManager profile write deferred to runtime bootstrap (iter-5.5.1)"
 else
   echo "[iter-5-wifi] no zeta-wifi-credentials.json on boot USB ESP; skipping wifi injection"
 fi
@@ -1651,6 +1623,40 @@ if [ -d "$ZETA_HOME" ]; then
   # have the expected target home layout even if install.sh warned.
   sudo mkdir -p "$ZETA_HOME/.bun/bin"
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
+
+  # ── Step 6.95c: iter-5.5.1 wifi NetworkManager profile write (081KZHJPJCF) ──────────────────
+  # iter-5.2/6.6 staged /mnt/boot/zeta-wifi-credentials.json but could NOT write the NM profile
+  # there (no repo/mise pre-6.95a). Now the runtime bootstrap has run ($ZETA_HOME/Zeta cloned,
+  # mise/bun available), so consume the staged creds and write the profile via the helper. This
+  # emits the acceptance-contract markers "wrote NetworkManager profile" + "association deferred";
+  # the "found zeta-wifi-credentials.json on boot USB ESP" marker was already emitted at 6.6.
+  # ZETA_HOME/ZETA_UID are set (~1525) and this runs inside the `[ -d "$ZETA_HOME" ]` block, so no
+  # unbound-variable risk. Graceful no-op if creds weren't staged or the helper isn't present.
+  WIFI_STAGED="/mnt/boot/zeta-wifi-credentials.json"
+  WIFI_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/installer/wifi-esp-to-nm.ts"
+  WIFI_NM_DST="/mnt/etc/NetworkManager/system-connections"
+  if [ -f "$WIFI_STAGED" ] && [ -f "$WIFI_HELPER" ]; then
+    WIFI_TMP=/tmp/zeta-esp-wifi.nmconnection
+    WIFI_PROFILE_NAME=$(
+      sudo --preserve-env=PATH -u "#$ZETA_UID" HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
+        bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; bun '$WIFI_HELPER' --input '$WIFI_STAGED' --output '$WIFI_TMP'" \
+        2>/tmp/zeta-esp-wifi.err
+    ) || WIFI_PROFILE_NAME=""
+    WIFI_PROFILE_NAME=$(echo "$WIFI_PROFILE_NAME" | tr -d '[:space:]')
+    if [ -n "$WIFI_PROFILE_NAME" ] && [ -f "$WIFI_TMP" ]; then
+      sudo mkdir -p "$WIFI_NM_DST"
+      sudo chmod 0700 "$WIFI_NM_DST"
+      sudo cp "$WIFI_TMP" "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
+      sudo chown root:root "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
+      sudo chmod 0600 "$WIFI_NM_DST/$WIFI_PROFILE_NAME"
+      rm -f "$WIFI_TMP" /tmp/zeta-esp-wifi.err
+      echo "[iter-5-wifi] wrote NetworkManager profile to installed system ($WIFI_PROFILE_NAME)"
+      echo "[iter-5-wifi] association deferred (physical-gated; no radio claim)"
+    else
+      echo "[iter-5-wifi] invalid zeta-wifi-credentials.json; skipping profile write"
+      rm -f "$WIFI_TMP" /tmp/zeta-esp-wifi.err
+    fi
+  fi
 
   # 6.95-picker — 081KSKBP80008QG0R003AX2A69.3a cred-picker (operator interactive at setup time)
   # Operator 2026-05-27 framing: "human interactive at setup time" + "ask what declared
