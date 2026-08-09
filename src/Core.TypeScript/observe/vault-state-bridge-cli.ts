@@ -55,7 +55,7 @@ function readEvents(dir: string): ObserveEvent[] {
     try {
       const raw = readFileSync(join(dir, file), "utf-8");
       const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed.id === "string" && typeof parsed.at === "string" && typeof parsed.by === "string") {
+      if (parsed && typeof parsed.id === "string" && typeof parsed.at === "string" && typeof parsed.by === "string" && parsed.action && typeof parsed.action.kind === "string") {
         events.push(parsed as ObserveEvent);
       }
     } catch {

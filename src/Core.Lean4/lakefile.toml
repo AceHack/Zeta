@@ -16,3 +16,6 @@ rev = "v4.30.0-rc1"
 
 [[lean_lib]]
 name = "Lean4"
+
+[[lean_lib]]
+name = "ImaginaryStack"

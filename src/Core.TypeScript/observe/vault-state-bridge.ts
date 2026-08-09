@@ -281,7 +281,7 @@ function computeStatus(frameAgeMs: number, events: readonly ObserveEvent[], nowM
   // Check for heat: any event in last 2h with "fail" in action kind
   const twoHoursAgo = nowMs - TWO_HOURS_MS;
   const hasFailures = events.some((e) =>
-    new Date(e.at).getTime() > twoHoursAgo &&
+    e.action && new Date(e.at).getTime() > twoHoursAgo &&
     (e.action.kind.includes("fail") || e.action.kind.includes("error"))
   );
   if (hasFailures) return "heat";
@@ -347,7 +347,20 @@ function computeReputation(
 
   const recentRatio = Math.min(recent.length / recentExpected, 1.0);
   const olderRatio = Math.min(older.length / olderExpected, 1.0);
-  const score = Math.max((2 * recentRatio + olderRatio) / 3, 0.1);
+
+  // Attestation bonus: ticks that were peer-attested are worth more.
+  // Count attestation events where this agent is the attested party.
+  const attestationsReceived = trailing.filter((e) =>
+    e.action.kind === "attest_peer" && e.action.reason?.includes(agent)
+  ).length;
+  // Also count attestations FROM this agent about others (shows participation)
+  const attestationsGiven = trailing.filter((e) =>
+    e.by === agent && e.action.kind === "attest_peer"
+  ).length;
+  // Attestation bonus: up to 10% boost for being attested, 5% for attesting others
+  const attestationBonus = Math.min(attestationsReceived * 0.02, 0.1) + Math.min(attestationsGiven * 0.01, 0.05);
+
+  const score = Math.max((2 * recentRatio + olderRatio) / 3 + attestationBonus, 0.1);
 
   // Epsilon: signed. Positive = upside uncertainty (recovering), negative = downside
   const totalEvents = trailing.length;
