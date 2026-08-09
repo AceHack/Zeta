@@ -11,17 +11,17 @@
 
 Zeta is a distributed agent network built on a single architectural principle: **the same algorithm, over a swappable algebraic structure, produces every computation the system needs** — from quantum amplitude readout to Bayesian inference to garbage collection to identity verification. The system is not a collection of loosely coupled services; it is one computation expressed at different levels of abstraction.
 
-The project is being built by Addison (19) and Aaron (46), running on a cluster of computers and GPUs declared in NixOS flakes and deployed via K3s Kubernetes and ArgoCD. The codebase is at `Lucent-Financial-Group/Zeta` on GitHub. This document covers the seven core technology layers that have been built, proven, and committed to main as of August 2026.
+The project is being built by Addison (19) and Aaron (46), running on a cluster of computers and GPUs declared in NixOS flakes and deployed via K3s Kubernetes and ArgoCD. The codebase is at `Lucent-Financial-Group/Zeta` on GitHub. This document covers eleven core technology layers. Layers 1–10 are **built and conformance-checked** on `main` as of August 2026; **Layer 11 (ACE) is design-stage / backlog** and is marked as such where it appears.
 
 ---
 
 ## Layer 1: The Identity Space Proof — Multi-Oracle DLA
 
-The starting point is a concrete, falsifiable claim: **the fractal dimension D_f ≈ 1.322 of a Diffusion-Limited Aggregation cluster is substrate-independent**. The same seed, the same algorithm, the same D_f — regardless of whether the computation runs in WebAssembly, JavaScript, Lua bytecode, V8, or QuickJS.
+The starting point is a concrete, falsifiable claim: **a Diffusion-Limited Aggregation cluster's trajectory is byte-identical across every compiled substrate** — the same seed and algorithm produce the same bytes out, whether the computation runs in WebAssembly, JavaScript (V8), or Lua bytecode. (A proxy figure `D_f ≈ 1.322` appears in the toy estimator, but that is an artifact of a hardcoded constant in `dla.wat` — `csize / (maxr·maxr) · 1.322 as a proxy` — **not a measured fractal dimension**; the asymptotic 2-D DLA dimension is ≈ 1.71, see the Halsey companion doc. The load-bearing, verified claim in this layer is the **byte-identical trajectory**, not the number.)
 
-The proof is not a theorem; it is a **conformance check**. The byte-lock (`src/wasm-dla/bytelock/`) runs the canonical DLA algorithm (xorshift32 PRNG, 128×128 grid, circle spawn, 4-direction walk) across nine compiled substrates simultaneously and verifies that all nine produce byte-identical trajectory output at the same seed. Any divergence is a real finding — float determinism, PRNG width, endianness. The nine substrates are: WAT (bare WebAssembly text), Zig, C (Emscripten), LLVM IR, Rust, AssemblyScript, Go (WASM), V8 bytecode, QuickJS bytecode, and Lua 5.4 bytecode. All nine pass a 1,000-seed corpus (9,000/9,000 checks).
+The proof is not a theorem; it is a **conformance check**. The byte-lock (`src/wasm-dla/bytelock/`) runs the canonical DLA algorithm (xorshift32 PRNG, 128×128 grid, circle spawn, 4-direction walk) across nine compiled substrates simultaneously and verifies that all nine produce byte-identical trajectory output at the same seed. Any divergence is a real finding — float determinism, PRNG width, endianness. The nine substrates are: WAT (bare WebAssembly text), LLVM/C, Emscripten, Rust, AssemblyScript, and Zig (all compiled to WASM), JavaScript (V8/Node), Lua 5.4, and Go (WASM bridge). All nine pass a 1,000-seed corpus (9,000/9,000 checks). (QuickJS appears only as a source-level note, not an active substrate in the CI run.)
 
-The identity-dla web application (`idspace-dla-6faa9bmi.manus.space`) renders the same DLA cluster across sixteen independent oracle panels — Canvas, CSS box-shadow, Chip-8 (64×32), SVG, Q# quantum walk, Infer.NET i-sensor, C. elegans worm simulation, SLE_κ Loewner equation, WebGPU compute shader, and seven WASM compiler substrates. The fractal dimension leaderboard shows all sixteen converging to D_f ≈ 1.322.
+The identity-dla web application (`idspace-dla-6faa9bmi.manus.space`) renders the same DLA cluster across sixteen independent oracle panels — Canvas, CSS box-shadow, Chip-8 (64×32), SVG, Q# quantum walk, Infer.NET i-sensor, C. elegans worm simulation, SLE_κ Loewner equation, WebGPU compute shader, and seven WASM compiler substrates. The fractal-dimension leaderboard shows all sixteen converging on the same value (the same proxy figure ≈ 1.322 noted above) — a **cross-oracle consistency check**, not an independent measurement of the true ≈ 1.71 dimension.
 
 The deeper claim, stated honestly: if the oracles agree **without sharing a seed**, that is evidence the shape is substrate-independent. The current proof uses a shared seed, which makes it a determinism check, not an independence check. The live-seed mode (each oracle gets its seed from `Date.now()` independently) is the real proof — they will still converge to the same D_f because the DLA rule is the invariant, not the seed.
 
@@ -35,7 +35,7 @@ The CHSH inequality provides a physical boundary between classical correlation (
 
 `src/Core/BipartiteMachZehnder.fs` implements the G1 bipartite lift of the single-qubit Mach-Zehnder interferometer to a two-agent CHSH setup using `WSet<int*int, Complex>`. The Bell state |Φ⁺⟩ = (|00⟩ + |11⟩)/√2 is represented as a four-key weighted set. The correlator E(a,b) = cos(a−b) is computed via Born probability readout. At the Tsirelson-optimal angles (A=0, A'=π/2, B=π/4, B'=3π/4), the CHSH value S = 2√2 ≈ 2.828 is recovered exactly.
 
-This gate is wired into `src/Core/ShapeAcceptance.fs` as the **EVE clone-gate**: a shape renegotiation from an agent claiming SupraQuantum S (|S| > 2√2) is a hard reject — physically impossible for real quantum mechanics. The gate uses `BipartiteMachZehnder.classifyS` as the canonical classifier, replacing the earlier integer constant `2828`.
+The canonical classifier is `BipartiteMachZehnder.classifyAnalyticS` (the analytic-ceiling path; the `AnalyticS`/`MeasuredS` newtype wrappers keep noiseless-vs-sampled `S` from being silently mixed). It is wired into `src/Core/ShapeAcceptance.fs`'s **fourcorner shape-acceptance** path as a hard reject of a SupraQuantum claim (|S| > 2√2 — physically impossible for real QM), replacing the earlier integer constant `2828`. NOTE: in the **anti-sybil** path the same gate was found *unsatisfiable* (a forced `S = 4.0` always classifies SupraQuantum, so the guard could never pass) and was removed — that path now **reports** the regime as a neutral fact and leaves the reading (reunion vs. clone) to the caller's oracle (`dual-use-detection-is-neutral-oracle-decides`); it does not gate.
 
 **Key files:** `src/Core/BipartiteMachZehnder.fs`, `src/Core/ShapeAcceptance.fs`, `src/Core/Tsirelson.fs`, `src/Core/AntiSybil.fs`
 
@@ -49,7 +49,7 @@ The system has two paths, intentionally:
 
 **Fast path — `CalibrationLedger` (`src/Core.TypeScript/planning/calibration-ledger.ts`):** Beta(2,2) prior + k-clamp (k=3 default). O(1) streaming update. `trustBound` is clamped to [0,1]. The whitewash floor is the clamp at k=3 — a fresh identity gets `trustBound = 0.0`, which is honest (no evidence yet) but also means whitewashing is not profitable (the fresh identity does not get a trust bonus). The whitewash window at one miss is documented honestly as an intrinsic floor, not a bug.
 
-**Accurate path — `TravelerRankLedger` (`src/Core/TravelerRankLedger.fs`, `src/Core.TypeScript/planning/traveler-rank-ledger.ts`):** ADF (Assumed Density Filtering) Gaussian-probit streaming update — the correct streaming variant of TrueSkill EP for single-factor models. A fresh identity gets `trustBand = 0.5` (the honest prior). One miss gives `trustBand ≈ 0.35` — above zero, below the prior. Whitewashing is provably unprofitable: a Sybil attacker who creates a fresh identity after every miss cannot accumulate more trust than an honest agent with the same miss rate (TRL-31, TRL-32 tests).
+**Accurate path — `TravelerRankLedger` (`src/Core/TravelerRankLedger.fs`, `src/Core.TypeScript/planning/traveler-rank-ledger.ts`):** ADF (Assumed Density Filtering) Gaussian-probit streaming update — the correct streaming variant of TrueSkill EP for single-factor models. A fresh identity gets `trustBand = 0.5` (the honest prior). A miss pulls `trustBand` below the 0.5 prior but keeps it above 0.0 — above zero, below the prior. Whitewashing is **verified unprofitable by the TRL-31/TRL-32 tests**: a Sybil attacker who creates a fresh identity after every miss cannot accumulate more trust than an honest agent with the same miss rate. (This is a property *checked by tests over the tested cases*, not a closed-form proof — a second independent check (BP-16) would be needed to call it proven.)
 
 The two paths are wired together in `src/Core.TypeScript/planning/calibration-bridge.ts`. `resolveAtTickBridge` bulk-settles all pending predictions in one pass, co-updating both ledgers atomically. The `DurableDiplomacyRankGate` (`src/Core/DurableDiplomacyRankGate.fs`) adds a `trustBand` pre-check to shape renegotiations: a traveler with low `trustBand` in a domain cannot renegotiate their claim shape in that domain.
 
@@ -75,11 +75,13 @@ The fix (Option 3, widen-cone-by-δ_max) is in `BusRegime.regimeOf(meter, deadli
 
 The algebraic foundation is `WSet<'K,'W>` in `src/Core/WSet.fs`: a weighted set where the weight type `'W` lives in any `IStarRing<'W>`. The ring is a type parameter. Swap the ring and the same message-passing machinery computes different math:
 
-| Ring | What it computes | Used for |
+| Ring | What it computes | Example domain (illustrative) |
 |---|---|---|
-| `Real.algebra` | Standard Bayesian inference (float) | TravelerRankLedger, CalibrationLedger, DLA oracle |
-| `ImaginaryStack.complex` | Quantum amplitude (Born probabilities) | BipartiteMachZehnder, CHSH gate |
+| `Real.algebra` | Standard Bayesian inference (float) | Factor-graph / BNN inference (`FactorGraph`, `MinimalBnn`) |
+| `ImaginaryStack.complex` | Quantum amplitude (Born probabilities) | `BipartiteMachZehnder`, CHSH gate |
 | `ProbabilitySemiring` | Exact rational probability | Byte-lock conformance check |
+
+(The right column names an *illustrative* domain for each ring, not necessarily a literal `WSet` call-site: the concrete verified `WSet` instantiation is `BipartiteMachZehnder`'s `WSet<int*int, Complex>`; the trust/calibration ledgers are Real-valued Bayesian but run their own Gaussian/Beta streaming code, not the `WSet` path.)
 
 The three wiring primitives form a comonoid (laws verified in `WSet.Comonoid.Laws.Tests.fs`): `WSet.copy` (fan-out Δ, line 76), `WSet.tensor` (Kronecker ⊗, line 88), `WSet.discard` (marginalise ε, line 82). These are exactly the wiring primitives a neural network needs. A single factor-graph cell (`src/Bayesian/MinimalBnn.fs`) equipped with these three operations is a composable layer.
 
@@ -99,7 +101,7 @@ The standard Futamura projections describe what a partial evaluator (mix) can do
 
 `src/Core/SpecializationCache.fs` wraps the specializer in a `WeakReference<'TInput -> 'TOutput>`: the specialized function is weakly held, regenerated on GC collection. The cache tracks `Hits`, `Misses`, and `Errors` (errors are never cached — always retried).
 
-**Honest scope boundary:** `SpecializationCache` implements the first Futamura projection. The second (`mix(mix, interpreter)` → compiler) and third (`mix(mix, mix)` → cogen) are future work.
+**Honest scope boundary:** `SpecializationCache` implements the first Futamura projection. The second (`mix(mix, interpreter)` → compiler) and third (`mix(mix, mix)` → cogen) are **realized in-domain and machine-checked**, not future work: `src/Core/Cogen.fs` is the 3rd projection (cogen) for the LR-parsing domain — its self-application fixpoint is proven to exact `DynamicValue` equality, and the regenerated parser actually parses — and `src/Core/MixCogen.fs` carries the 2nd & 3rd projections as reified `DynamicValue` config. What remains future work is a *fully-general* `mix` (partial evaluation over arbitrary programs); the in-domain realizations are done and checked.
 
 **Key files:** `src/Core/MixIr.fs`, `src/Core/SpecializationCache.fs`, `src/Core.Abstractions/SpecializationCache.cs`
 
@@ -115,14 +117,14 @@ The standard Futamura projections describe what a partial evaluator (mix) can do
 
 `src/Core/Ephemeron.fs` implements Hayes (1997) ephemeron semantics — the same structure as .NET's `ConditionalWeakTable<TKey,TValue>`. An ephemeron entry `(key, value)` survives iff the key is strongly reachable. The reachability fixpoint in `Ephemeron.reachable` handles chains: if key K₁ is strongly reachable, its ephemeron value V₁ becomes a new root, which may make K₂ reachable, and so on. Ephemeron cycles with no external root collect entirely — the property plain `WeakReference` lacks.
 
-The critical difference from .NET: a plain .NET weak cache drops the value and you must have another way to recreate it. In Zeta, `gen(gen) == gen` — the generator IS the error-correcting code. Every residual is reconstructible from the generator. Eviction is always safe.
+The critical difference from .NET: a plain .NET weak cache drops the value and you must have another way to recreate it. In Zeta the **design invariant** `gen(gen) == gen` — the generator IS the error-correcting code — makes every residual reconstructible from the generator, so eviction is safe. (This holds *given a deterministic specializer*: reconstructibility is a property of the generator being pure and byte-lockable, not a runtime guarantee the cache enforces on its own.)
 
 | Concept | .NET primitive | Zeta equivalent | Key difference |
 |---|---|---|---|
 | Weak hold | `WeakReference<T>` | `SpecializationCache<'TInput,'TOutput>` | Errors never cached; Hits/Misses/Errors tracked |
 | Value lives as long as key | `ConditionalWeakTable<TKey,TValue>` | `Ephemeron.entry` + `Ephemeron.reachable` | Reachability fixpoint handles chains and cycles |
 | Collect unreachable | `GC.Collect()` | `ShivaGc.mark` + `ShivaGc.sweep` | Deterministic, byte-lockable, over `DynamicValue` |
-| Regenerate on eviction | No built-in | `gen(gen) == gen` guarantee | Zeta guarantees reconstructibility |
+| Regenerate on eviction | No built-in | `gen(gen) == gen` design invariant | Reconstructible from a deterministic generator |
 
 **Key files:** `src/Core/ShivaGc.fs`, `src/Core/Ephemeron.fs`
 
@@ -130,7 +132,7 @@ The critical difference from .NET: a plain .NET weak cache drops the value and y
 
 ## How the Layers Connect
 
-The seven layers are not independent modules — they are one computation expressed at different levels of abstraction.
+The eleven layers are not independent modules — they are one computation expressed at different levels of abstraction.
 
 The **identity space proof** (Layer 1) establishes the invariant: the DLA shape is substrate-independent. The **CHSH gate** (Layer 2) uses the same `WSet<ℂ>` machinery to verify that two agents are genuinely entangled (not clones). The **calibration system** (Layer 3) tracks whether agents' self-claims are accurate, using the same EP update equations as the BNN (Layer 5). The **bus regime** (Layer 4) provides the physical causality boundary that makes the CHSH decorrelation meter meaningful. The **BNN** (Layer 5) is the computation engine that all inference tasks share. The **Futamura compiler** (Layer 6) specialises the BNN for each ISA, producing a residual that is a `DynamicValue`. The **Shiva-GC** (Layer 7) collects residuals when they are no longer needed and regenerates them on demand.
 
@@ -214,13 +216,18 @@ The Z-set algebra has three key properties that make it the right data structure
 
 **Incremental by construction.** Adding a record is a Z-set delta `+1`; removing a record is a Z-set delta `−1`. The full state is the integral of all deltas. This is DBSP's `D` (differentiate) and `I` (integrate) operators. Incremental view maintenance (IVM) is correct by construction: an incremental add equals a full recompute.
 
-**Conflict-free merge.** Two Z-sets are merged by summing weights per key. This is commutative, associative, and idempotent (summing the same delta twice is not idempotent, but summing the same Z-set twice is — because the weights cancel). The merge is the same operation as the CRDT merge in `src/Core/Crdt.fs` and `src/Core/DeltaCrdt.fs`.
+**Convergent merge — an abelian group, deliberately *not* a semilattice.** Two Z-sets are merged by summing weights per key. That sum is **commutative and associative** (so any arrival order converges — reordering is free) and **invertible** (the `−1` retraction is the additive inverse). It is **not idempotent**: `a + a` doubles every weight (see `ZSet.cs`, `ZSet.fs` — the code says so explicitly). This is a deliberate mathematical fork, not an omission — a merge that is both idempotent *and* invertible forces the trivial group (`a = a + a ⇒ a = 0` for all `a`), so a structure gets **counting-with-retraction** *or* **idempotent re-merge**, never both. Z-sets take counting, because DBSP incremental view maintenance needs to count. What this means for message delivery — the practical part:
+
+- **Out-of-order delivery is free** — commutativity means the fold converges regardless of arrival order.
+- **Duplicate delivery is handled by an idempotency key**, not by the merge. Dedup-by-natural-key (discipline #6) turns at-least-once transport into effectively-once *application*; re-summing an un-keyed delta would double-count.
+- **Missed deltas are recovered by event-sourced replay + content-addressed snapshots + the ECC/adinkra layer**, not by re-merging partial state (which would double-count). The Merkle root below is the cheap "did we miss anything?" check.
+- **Where state only grows and counting isn't needed, use the idempotent CRDT / G-set join instead** (`src/Core/Crdt.fs`, `src/Core/DeltaCrdt.fs`, or a Boolean/OR-semiring WSet) — *that* path is idempotent and coordination-free by construction. Same WSet machinery; the ring is chosen per what the state needs (count vs. presence).
 
 **Content-addressed by Merkle root.** `ZSetMerkle` computes a canonical Merkle root over any Z-set. The root is a pure function of the net state — the same state always produces the same root. This makes Z-sets byte-lockable: two nodes that agree on the Merkle root agree on the full Z-set state.
 
 The `CostarZSet` (`src/Core/CostarZSet.fs`) demonstrates the pattern concretely: the co-star links of the IMDB dataset become a `ZSet<Link>` where the weight is the shared-title count. Adding a title is a `+` delta; removing one is the Z-set antiparticle (`−1` weights). The link rating is just the accumulated weight — no separate aggregation step.
 
-The Q# reference oracle (`src/Core.QSharp.ReferenceOracle/ZSetISA.qs`) defines the ZSet instruction set at the quantum level: `EMIT(k)` is an Ry rotation (weight +1, unitary), `RETRACT(k)` is the adjoint (weight −1), `BRANCH(k)` is the Hadamard (superposition), and `JOIN(a,b)` is CNOT (entanglement / Z-set product). The quantum ISA and the classical Z-set algebra are the same operations at different levels of abstraction.
+The Q# reference oracle (`src/Core.QSharp.ReferenceOracle/ZSetISA.qs`) defines the ZSet instruction set at the quantum level: `EMIT(k)` is an Ry rotation (weight +1, unitary), `RETRACT(k)` is the adjoint (weight −1), `BRANCH(k)` is the Hadamard (superposition), and `JOIN(a,b)` is CNOT (entanglement / Z-set product). The quantum ISA and the classical Z-set algebra are **modeled as the same operations** at different levels of abstraction — the `−1` retraction is the algebraic adjoint of the `EMIT` rotation. This is an exact structural analogy, not a claim that a classical integer decrement literally executes a unitary on hardware.
 
 **Key files:** `src/Core.CSharp/ZSet.cs`, `src/Core.CSharp/GSet.cs`, `src/Core.CSharp/ZSetMerkle.cs`, `src/Core/CostarZSet.fs`, `src/Core/Crdt.fs`, `src/Core/DeltaCrdt.fs`, `src/Core.QSharp.ReferenceOracle/ZSetISA.qs`
 
@@ -253,7 +260,7 @@ The `SchemaSourceGenerator` (`src/Core.CSharp.TypeProvider/SchemaSourceGenerator
 
 ## The Complete Picture
 
-The ten layers form a single coherent system. The Z-set algebra (Layer 9) is the data primitive. The DAG filesystem (Layer 8) is the storage primitive. The YinYangCell (Layer 10) is the execution primitive. The BNN (Layer 5) is the inference primitive. The Futamura compiler (Layer 6) specialises inference for each ISA. The Shiva-GC (Layer 7) manages memory. The calibration system (Layer 3) tracks agent reliability. The CHSH gate (Layer 2) verifies agent identity. The bus regime (Layer 4) provides causality boundaries. The identity space proof (Layer 1) is the observable that proves the whole system is substrate-independent.
+The eleven layers form a single coherent system. The Z-set algebra (Layer 9) is the data primitive. The DAG filesystem (Layer 8) is the storage primitive. The YinYangCell (Layer 10) is the execution primitive. The BNN (Layer 5) is the inference primitive. The Futamura compiler (Layer 6) specialises inference for each ISA. The Shiva-GC (Layer 7) manages memory. The calibration system (Layer 3) tracks agent reliability. The CHSH gate (Layer 2) verifies agent identity. The bus regime (Layer 4) provides causality boundaries. The identity space proof (Layer 1) is the observable that proves the whole system is substrate-independent.
 
 Every layer uses Z-sets. Every Z-set has a Merkle root. Every Merkle root is a content address. Every content address is a `DynamicValue`. Every `DynamicValue` can be collected by Shiva and regenerated by Brahma. The system is closed.
 
@@ -262,6 +269,8 @@ The distributed property is structural, not configured: because every node holds
 ---
 
 ## Layer 11: ACE — The Package Manager of Package Managers
+
+> **⚠ DESIGN-STAGE / BACKLOG — read this layer as the *target*, not shipped code.** Unlike Layers 1–10 (built and conformance-checked on `main`), ACE today is only a canonical seed project (`src/Core.FSharp.AceCanonical`). The N-dimensional resolver, holographic projection, and AI-rate upstream negotiation described below are the **design intent**; the present-tense phrasing that follows describes what ACE is meant to *do*, not what runs today. It builds on shipped primitives (the Layer 10 `SchemaEvolutionDelta`, the Layer 9 Z-set delta), which is why it belongs in this document — but it is not yet implemented.
 
 The final distribution layer is **ACE**, Zeta's meta-package manager. ACE is not a replacement for existing package managers (npm, Helm, NixFlakes, Cargo, Maven) — it is the layer above them that unifies them into a single N-dimensional dependency graph and adds the one capability none of them have: **AI-rate continuous upstream negotiation**.
 

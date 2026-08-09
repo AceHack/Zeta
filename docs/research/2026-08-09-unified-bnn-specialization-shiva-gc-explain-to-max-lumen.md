@@ -66,7 +66,7 @@ The `SpecializationCache<'TInput,'TOutput>` in `src/Core/SpecializationCache.fs`
 
 `src/Core/Ephemeron.fs` implements Hayes (1997) ephemeron semantics — the same structure as .NET's `ConditionalWeakTable<TKey,TValue>`. An ephemeron entry `(key, value)` survives iff the key is strongly reachable; the value is made reachable only through the key. The reachability fixpoint in `Ephemeron.reachable` handles chains: if key K₁ is strongly reachable, its ephemeron value V₁ becomes a new root, which may make key K₂ reachable, which makes V₂ a root, and so on. Ephemeron cycles with no external root collect entirely — the property plain `WeakReference` lacks.
 
-The difference from .NET's `ConditionalWeakTable` is the **reconstructibility guarantee**. A plain .NET weak cache drops the value and you must have another way to recreate it. In Zeta, `gen(gen) == gen` — the generator IS the error-correcting code. Every residual is reconstructible from the generator. So eviction is always safe: Shiva reclaims any specialized residual, and Brahma re-mints it on demand. Forgetting is free.
+The difference from .NET's `ConditionalWeakTable` is the **reconstructibility design invariant**. A plain .NET weak cache drops the value and you must have another way to recreate it. In Zeta the invariant `gen(gen) == gen` — the generator IS the error-correcting code — makes every residual reconstructible from the generator, so eviction is safe: Shiva reclaims any specialized residual, and Brahma re-mints it on demand. Forgetting is free. (This holds *given a deterministic, byte-lockable generator* — reconstructibility is a property of the generator being pure, not a runtime guarantee the cache enforces on its own.)
 
 ---
 
@@ -95,7 +95,7 @@ The keystone rule, stated precisely: **collapse the dated fact** (bank the resid
 | Weak hold without keeping alive | `WeakReference<T>` | `SpecializationCache<'TInput,'TOutput>` | Zeta adds `Hits`/`Misses`/`Errors` tracking; errors never cached |
 | Value lives as long as key | `ConditionalWeakTable<TKey,TValue>` | `Ephemeron.entry` + `Ephemeron.reachable` | Zeta adds the reachability fixpoint for chains; handles cycles |
 | Collect unreachable objects | `GC.Collect()` | `ShivaGc.mark` + `ShivaGc.sweep` | Zeta GC is deterministic, byte-lockable, over `DynamicValue` not CLR objects |
-| Regenerate on eviction | No built-in | `gen(gen) == gen` guarantee | Zeta guarantees reconstructibility; .NET does not |
+| Regenerate on eviction | No built-in | `gen(gen) == gen` design invariant | Reconstructible from a deterministic generator; .NET has no such property |
 
 ---
 
