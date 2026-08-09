@@ -12,6 +12,7 @@ const LANGUAGES: Record<string, string> = {
   th: "Thai",
   ru: "Russian",
   ar: "Arabic",
+  fa: "Farsi (Persian)"
 };
 
 const LANG_HTML_TAGS: Record<string, string> = {
@@ -22,6 +23,7 @@ const LANG_HTML_TAGS: Record<string, string> = {
   th: '<html lang="th">',
   ru: '<html lang="ru">',
   ar: '<html lang="ar" dir="rtl">',
+  fa: '<html lang="fa" dir="rtl">'
 };
 
 const LANGBAR_MAP: Record<string, [string, string]> = {
@@ -33,6 +35,7 @@ const LANGBAR_MAP: Record<string, [string, string]> = {
   th: ['<a href="../th/">ภาษาไทย</a>', '<span class="on">ภาษาไทย</span>'],
   ru: ['<a href="../ru/">Русский</a>', '<span class="on">Русский</span>'],
   ar: ['<a href="../ar/">العربية</a>', '<span class="on">العربية</span>'],
+  fa: ['<a href="../fa/">فارسی</a>', '<span class="on">فارسی</span>']
 };
 
 const PROMPT_TEMPLATE = (
@@ -144,6 +147,10 @@ function prepareFile(langCode: string): boolean {
     content = content.replace(
       '<a href="./ar/">العربية</a>',
       '<a href="ar/" style="color:var(--seal);text-decoration:none">العربية</a>',
+    );
+    content = content.replace(
+      '<a href="./fa/">فارسی</a>',
+      '<a href="fa/" style="color:var(--seal);text-decoration:none">فارسی</a>',
     );
   }
 
