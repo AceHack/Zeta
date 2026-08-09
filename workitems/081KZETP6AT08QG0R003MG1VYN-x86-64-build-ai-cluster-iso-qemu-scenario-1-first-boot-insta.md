@@ -16,6 +16,23 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZETP6AT08QG0R003MG1VYN-*.md` glob. -->
 
+
+## ✅ VALIDATED IN CI (run 31335210640, 2026-08-09) — hardware boot is the last gate
+
+Confirmed across **three consecutive** dispatch runs (31331483608, 31333432504,
+31335210640): scenario 2 reports `phase 2 SUCCESS — login prompt "node-… login:"
+observed + first-session + post-boot self-register markers`. Since the first-boot
+provisioning contract (#10196) FAILS the scenario whenever install.sh exhausts its
+retries, scenario 2 passing is the proof install.sh completed.
+
+Fix chain: `programs.nix-ld` (#10196) removed the missing-ELF-interpreter failure →
+`node.compile = false` (#10212) stopped mise source-building node (which needed
+`python` in a build subshell first boot does not provide).
+
+**Remaining to close:** one clean boot on Aaron's hardware. CI is green and reproducible.
+
+---
+
 ## BUG A FIXED — install.sh now SUCCEEDS on first boot (run 31331483608)
 
 Scenario 2 reports **`phase 2 SUCCESS — login prompt "node-8c2d89 login:" observed +

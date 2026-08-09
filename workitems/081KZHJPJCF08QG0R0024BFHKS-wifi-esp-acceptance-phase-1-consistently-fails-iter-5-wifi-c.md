@@ -16,6 +16,40 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KZHJPJCF08QG0R0024BFHKS-*.md` glob. -->
 
+
+## ✅ VALIDATED IN CI (run 31335210640, 2026-08-09) — hardware boot is the last gate
+
+**The wifi-ESP acceptance contract PASSES.** Step conclusion
+`081KSGS9H0008QG0R003V23XNZ wifi ESP acceptance: success`, and all three contract
+markers verified in the serial artifact — status checked at the MARKER level, not just
+the step conclusion:
+
+```
+[iter-5-wifi] found zeta-wifi-credentials.json on boot USB ESP
+[iter-5-wifi] wrote NetworkManager profile to installed system (zeta-esp-zeta-qemu-homelab.nmconnection)
+[iter-5-wifi] association deferred (physical-gated; no radio claim)
+```
+
+**Six distinct causes, in order** — the chain is worth keeping because every cause after
+the second was named by the diagnostic that stopped swallowing the converter's stderr:
+
+1. read-side: the installer unmounted the ESP before the iter-5 probes (#10184)
+2. `ZETA_HOME: unbound variable` in the newly-reachable wifi branch (#10185)
+3. NM profile write attempted before the repo/mise existed → split to step 6.95c (#10186)
+4. NixOS provides no FHS loader → mise's prebuilts could not execve → `nix-ld` (#10196)
+5. node source-building needed `python` in the build subshell → `node.compile=false` (#10212)
+6. converter had no repo CWD → mise had no project context (#10223); then the config was
+   untrusted → `MISE_TRUSTED_CONFIG_PATHS` (#10226)
+
+**Before #10193's stderr capture, ALL SIX printed the same misleading line**
+(`invalid zeta-wifi-credentials.json`) — which is exactly what sent the original
+diagnosis chasing a creds bug that never existed.
+
+**Remaining to close:** a second green wifi dispatch (in flight) + one clean hardware
+boot. Bug A needed three runs before it was trusted; the same bar applies here.
+
+---
+
 ## VALIDATION RESULT (2026-08-09, Otto shadow*) — NOT closed; blocked on bug A, correcting my own claim below
 
 **Correcting the "COMPLETE FIX LANDED" claim I wrote earlier the same day: it was premature.**
