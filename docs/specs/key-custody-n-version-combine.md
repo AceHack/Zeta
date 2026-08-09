@@ -211,9 +211,10 @@ the rotation dedup guard both stayed green. The reason generalises well beyond k
 
 Any idempotency test in this repo written as replay-the-whole-stream is weaker than it looks.
 
-A also flags **three mutants that produced no usable signal** (failed to compile under
+A also flags **four mutants that produced no usable signal** (failed to compile under
 `TreatWarningsAsErrors`, or emitted no result line) as **not confirmed by execution** rather
-than counting them as caught. That is the same non-rounding-up discipline again.
+than counting them as caught. *(Its first report said three; its closing report said four,
+adding the first `authorize` variant. Four is the figure to use.)* That is the same non-rounding-up discipline again.
 
 ## What this says about the exercise
 
