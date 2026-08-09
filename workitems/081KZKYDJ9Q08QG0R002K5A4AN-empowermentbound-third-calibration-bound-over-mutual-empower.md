@@ -52,6 +52,46 @@ self-knowledge**; empowerment scores an **interaction between two peers**. Colla
 them turns a calibration score into a social ranking — the exact failure the existing
 docstring guards ("weighting a claim is not the same as valuing the claimant").
 
+## THE τ SEMANTICS ARE SETTLED — the boxing ring (Aaron 2026-08-09)
+
+Soraya's review found `externalitySafe()` dropped the `τ` parameter and hardcoded `τ = 0`,
+and called that a **consent inversion**. Aaron's framing gives the correct semantics
+(full ferry: `docs/research/2026-08-09-the-boxing-ring-consent-capacity-floor-values-arise-naturally-aaron.md`):
+
+> *"I'm trying to not impose values but let them arise naturally. The harm floor is no
+> harm to children — they can't consent to harm until they are an adult. If you consent
+> to harm, you could consent to a space where harm outweighs non-harm — but the rules
+> should be clear and the danger warned. Like a boxing ring."*
+
+| Party | Floor | Why |
+|---|---|---|
+| **Cannot consent** (no capacity) | **No harm — absolute, not a parameter** | Not overridable by any `τ`, by the party, or by anyone claiming to act for them |
+| **Has capacity, has not consented** (bystander) | **No harm — the DEFAULT `τ`** | Silence is not consent; they are the audience, not in the ring |
+| **Has capacity, consented, warned, rules clear** | **`τ` as declared — possibly deeply negative** | They entered the ring: `sum`, `k = 0`, harm-outweighs-non-harm all live *here* and only here |
+
+Implementation consequences:
+
+1. **Restore `τ` as a declared per-party value with the BYSTANDER default (no harm).**
+2. **Add a capacity predicate that no `τ` can override** — the one place the substrate
+   refuses. A party without capacity cannot be given a permissive `τ` by anyone.
+3. **`sum` is the inside of the ring**: reachable only via the recorded, attributable
+   opt-in *plus* a warning phrased as **what can happen to you**, not as a parameter
+   name. Same mechanism as the `k = 0` power-dynamic disclosure protocol.
+
+**This reclassifies Soraya's cross-aggregator finding.** A `sum` interaction outranking a
+harmless `min` one purely because `sum` yields a bigger number is **a punch thrown outside
+the ring** — an *entry-control* failure, not a scoring bug. The fix is not to rescale the
+comparison; a sacrificing interaction must not be **selectable at all** against parties
+who have not entered.
+
+**Open (do not guess):** who decides capacity for an *agent*, and how is it attested?
+Too permissive ("any agent can consent") makes the floor decorative — an attacker spawns
+consenting victims. Too restrictive rebuilds incumbency and contradicts "capability is
+not a precondition for participation". Possibly socially attested rather than
+self-asserted, like the privacy budget — but that is a hypothesis.
+
+---
+
 ## Values calls — ANSWERED (Aaron 2026-08-09). All four share one shape
 **consent + disclosure, never coercion, never accident.**
 
