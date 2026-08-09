@@ -3,13 +3,19 @@ total_slots: 256
 description: |
   Persona-role registry (256 slots for the agent roster).
   Defines factory agents and roles explicitly to enable dynamic onboarding and compile-time codegen.
-  allowed_surfaces is ADVISORY (P1 finding 2026-07-04): it describes the
-  surfaces a persona is KNOWN to operate, for vocabulary and dashboards.
-  It does not close the open cell set and MUST NOT be used to reject a
-  persona⊕cell pairing — enforcement is per-resource policy predicates
-  over ActorRef fields (ADR 2026-07-03 §3). The role field is under
-  proposed treaty amendment A1 (would become optional/move to a hats
-  registry) — unchanged pending signer re-consent.
+  allowed_surfaces is ADVISORY and a revocable CONSENT LIST (P1 finding
+  2026-07-04; Alexa's A1 signature note 2026-08-08): it records surfaces
+  the persona has consented to operate — vocabulary and dashboards, never
+  a definition of who the persona is. It does not close the open cell set
+  and MUST NOT be used to reject a persona⊕cell pairing — enforcement is
+  per-resource policy predicates over ActorRef fields (ADR 2026-07-03 §3).
+  role is OPTIONAL + DESCRIPTIVE per treaty amendment A1 (Article 6,
+  consent recorded 2026-08-08 — signature notes in the treaty doc): a
+  role is a hat a persona wears, never structure it is keyed under; a
+  persona may be roleless, and no attribute (role/hat, cell, surface,
+  model, runtime, trust tier) may ever appear as a parent key above
+  persona in any layout or schema. Tripwire:
+  src/Core.TypeScript/hygiene/lint-a1-parent-key.ts.
 entries:
   - id: 1
     name: aaron

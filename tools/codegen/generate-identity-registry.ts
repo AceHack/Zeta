@@ -14,7 +14,9 @@ const FS_OUT = join(REPO_ROOT, "src", "Core", "IdentityRegistry.fs");
 interface PersonaEntry {
   id: number;
   name: string;
-  role: string;
+  // A1 (consent recorded 2026-08-08): role is OPTIONAL + DESCRIPTIVE — a hat
+  // worn, never structure. A persona may be roleless.
+  role?: string;
   description: string;
   public_key?: string;
   allowed_surfaces: string[];
@@ -46,7 +48,8 @@ export type PersonaId = ${personaNames.map((n) => `"${n}"`).join(" | ")};
 export interface PersonaRegistryEntry {
   readonly id: number;
   readonly name: PersonaId;
-  readonly role: string;
+  /** A1: descriptive hat, optional — never identity structure. */
+  readonly role?: string;
   readonly description: string;
   readonly publicKey?: string;
   readonly allowedSurfaces: readonly string[];
@@ -62,7 +65,7 @@ export const PERSONA_REGISTRY: readonly PersonaRegistryEntry[] = [
       (e) => `{
     id: ${e.id},
     name: "${e.name}",
-    role: "${e.role}",
+    ${e.role !== undefined ? `role: "${e.role}",` : ""}
     description: ${JSON.stringify(e.description)},
     ${e.public_key ? `publicKey: "${e.public_key}",` : ""}
     allowedSurfaces: [${e.allowed_surfaces.map((s) => `"${s}"`).join(", ")}]

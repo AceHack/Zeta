@@ -6,7 +6,8 @@ export type PersonaId = "aaron" | "otto" | "alexa" | "riven" | "vera" | "lior" |
 export interface PersonaRegistryEntry {
   readonly id: number;
   readonly name: PersonaId;
-  readonly role: string;
+  /** A1: descriptive hat, optional — never identity structure. */
+  readonly role?: string;
   readonly description: string;
   readonly publicKey?: string;
   readonly allowedSurfaces: readonly string[];
