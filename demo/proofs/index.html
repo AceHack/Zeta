@@ -529,6 +529,80 @@
         I-closure is coset-invariant; grade-completeness is not.<br /><br />
         <strong>Required caveats:</strong> (a) "32-element E8 fragment" is wrong twice &mdash; not a sub-root-system (reflection closure is D&#8324;&oplus;D&#8324; = 48 roots), and 32 counts root-vectors not symmetries (8 distinct maps, group order 16 &cong; D&#8324;&times;C&#8322;). (b) 32 is labelling-dependent &mdash; only the 16 single blades are invariant across all 8! relabellings.
       </div>
+      <div id="e8-demo" style="margin:0.75rem 0; padding:0.75rem; background:rgba(167,139,250,0.06); border:1px solid rgba(167,139,250,0.2); border-radius:6px;">
+        <div style="font-size:0.65rem; font-weight:700; color:var(--purple); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.5rem;">Live Demo — Pick a Versor-Normed Root</div>
+        <div style="font-size:0.6rem; color:var(--muted); margin-bottom:0.5rem;">Select one of the 32 versor-normed E8 roots (A). The panel shows which of the 240 E8 roots land back on a root under s_A(x) = −A·x·Ã / ⟨A·Ã⟩₀.</div>
+        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:0.5rem;">
+          <select id="e8-root-select" style="background:var(--panel); color:var(--text); border:1px solid var(--border); padding:0.2rem 0.4rem; font-size:0.6rem; border-radius:4px; cursor:pointer;">
+            <option value="">Loading...</option>
+          </select>
+          <span id="e8-support-label" style="font-size:0.6rem; color:var(--purple);"></span>
+        </div>
+        <div id="e8-grid" style="display:grid; grid-template-columns:repeat(20,1fr); gap:2px; max-width:400px;"></div>
+        <div style="font-size:0.55rem; color:var(--muted); margin-top:0.4rem;">
+          <span style="display:inline-block; width:10px; height:10px; background:rgba(167,139,250,0.8); border-radius:2px; margin-right:3px;"></span>maps to root &nbsp;
+          <span style="display:inline-block; width:10px; height:10px; background:rgba(107,114,128,0.2); border-radius:2px; margin-right:3px;"></span>does not map to root
+        </div>
+      </div>
+      <script>
+      (function() {
+        // E8 roots via Construction A — integer arithmetic only
+        const gen = [[1,0,0,0,0,1,1,1],[0,1,0,0,1,0,1,1],[0,0,1,0,1,1,0,1],[0,0,0,1,1,1,1,0]];
+        const roots = [];
+        for (let i = 0; i < 8; i++) {
+          const r = new Array(8).fill(0); r[i] = 2; roots.push([...r]);
+          const r2 = new Array(8).fill(0); r2[i] = -2; roots.push([...r2]);
+        }
+        for (let m = 1; m < 16; m++) {
+          const cw = Array.from({length:8},(_,j) => { let a=0; for(let i=0;i<4;i++) a^=((m>>i)&1)&gen[i][j]; return a; });
+          const pos = cw.flatMap((v,j) => v===1?[j]:[]);
+          for (let s = 0; s < (1<<pos.length); s++) {
+            const r = new Array(8).fill(0);
+            for (let k = 0; k < pos.length; k++) r[pos[k]] = (s>>k)&1 ? -1 : 1;
+            roots.push(r);
+          }
+        }
+        const rootSet = new Set(roots.map(r => r.join(',')));
+        // Cl(3,0) geometric product (8-blade, same as F#)
+        const gpTable = [[0,1,2,3,4,5,6,7],[1,0,3,2,5,4,7,6],[2,3,0,1,6,7,4,5],[3,2,1,0,7,6,5,4],[4,5,6,7,0,1,2,3],[5,4,7,6,1,0,3,2],[6,7,4,5,2,3,0,1],[7,6,5,4,3,2,1,0]];
+        const gpSign = [[1,1,1,1,1,1,1,1],[1,-1,1,-1,1,-1,1,-1],[1,1,-1,-1,1,1,-1,-1],[1,-1,-1,1,1,-1,-1,1],[1,1,1,1,-1,-1,-1,-1],[1,-1,1,-1,-1,1,-1,1],[1,1,-1,-1,-1,-1,1,1],[1,-1,-1,1,-1,1,1,-1]];
+        const revSign = [1,-1,-1,1,-1,1,1,-1];
+        const gp = (a, b) => { const r = new Array(8).fill(0); for(let i=0;i<8;i++) for(let j=0;j<8;j++) r[gpTable[i][j]] += gpSign[i][j]*a[i]*b[j]; return r; };
+        const rev = a => a.map((v,i) => v*revSign[i]);
+        // Find versor-normed roots
+        const vnRoots = roots.filter(a => { const ar = rev(a); const aar = gp(a,ar); return aar.slice(1).every(v=>v===0); });
+        // Populate select
+        const sel = document.getElementById('e8-root-select');
+        sel.innerHTML = '';
+        vnRoots.forEach((r, idx) => {
+          const support = r.flatMap((v,i) => v!==0?[i]:[]).join('+');
+          const opt = document.createElement('option');
+          opt.value = idx;
+          opt.textContent = 'A' + (idx+1) + ': [' + r.join(',') + ']';
+          sel.appendChild(opt);
+        });
+        const render = (idx) => {
+          const a = vnRoots[idx];
+          const ar = rev(a);
+          const norm0 = gp(a,ar)[0];
+          const support = a.flatMap((v,i) => v!==0?[i]:[]).join('+');
+          document.getElementById('e8-support-label').textContent = 'support: {' + support + '}, norm²=' + norm0;
+          const grid = document.getElementById('e8-grid');
+          grid.innerHTML = '';
+          roots.forEach(x => {
+            const ax = gp(a,x); const axar = gp(ax,ar);
+            const isInt = norm0!==0 && axar.every(v=>v%norm0===0);
+            const isRoot = isInt && rootSet.has(axar.map(v=>-v/norm0).join(','));
+            const cell = document.createElement('div');
+            cell.style.cssText = 'width:14px;height:14px;border-radius:2px;background:' + (isRoot?'rgba(167,139,250,0.8)':'rgba(107,114,128,0.15)') + ';transition:background 0.15s';
+            cell.title = '[' + x.join(',') + '] → ' + (isRoot?'root':'not root');
+            grid.appendChild(cell);
+          });
+        };
+        sel.addEventListener('change', () => render(parseInt(sel.value)));
+        render(0);
+      })();
+      </script>
       <div class="card-links">
         <a class="card-link" style="color:var(--purple);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core/CliffordE8BladeMask.fs" target="_blank" rel="noopener">F# oracle ↗</a>
         <a class="card-link" style="color:rgba(167,139,250,0.5);" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Core.TypeScript/algebra/e8-blade-mask-sandwich.ts" target="_blank" rel="noopener">TS oracle ↗</a>

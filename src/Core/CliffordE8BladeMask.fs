@@ -188,3 +188,14 @@ module CliffordE8BladeMask =
             VersorPreserved     = versorPreserved
             PerAHistogram       = hist |> Seq.map (fun kv -> kv.Key, kv.Value)
                                        |> Seq.sortBy fst |> Seq.toList }
+
+    /// Returns the 32 versor-normed E8 roots (those for which A·Ã is scalar).
+    /// Used by the D₄⊕D₄ reflection closure test.
+    let versorNormedRoots () : int[][] =
+        let roots = e8Roots ()
+        roots |> Array.filter (fun a ->
+            let aRev = rev a
+            let aaRev = gp a aRev
+            let mutable scalar = true
+            for i in 1..7 do if aaRev.[i] <> 0 then scalar <- false
+            scalar)

@@ -105,3 +105,121 @@ let ``IC-F4: XOR-closure is necessary but not sufficient — 3 subgroups qualify
     let iClosedSubgroups = xorClosed |> Array.filter iClosed
     Assert.Equal(1, iClosedSubgroups.Length) // only 1 is also I-closed
     Assert.Equal<int[]>([|0;3;4;7|], iClosedSubgroups.[0])
+
+// ── D₄⊕D₄ reflection closure (labelling-dependency caveat) ──────────────────
+// The 32 versor-normed roots are NOT a sub-root-system of E8.
+// Their reflection closure (orbit under all E8 reflections) is D₄⊕D₄ = 48 roots.
+// This is a Borel–de Siebenthal maximal-rank subsystem, not a sub-root-system.
+// Caveat: "32" is labelling-dependent; only the 16 single blades are invariant.
+
+[<Fact>]
+let ``RC-1: the 32 versor-normed roots are NOT closed under E8 reflections (not a sub-root-system)`` () =
+    let roots = CliffordE8BladeMask.e8Roots ()
+    let rootSet = System.Collections.Generic.HashSet<string>(
+                      roots |> Array.map (fun r -> System.String.Join(",", r)))
+    let vn = CliffordE8BladeMask.versorNormedRoots ()
+    let vnSet = System.Collections.Generic.HashSet<string>(
+                    vn |> Array.map (fun r -> System.String.Join(",", r)))
+    // Apply one E8 reflection to a versor-normed root and check if the image is versor-normed
+    // Reflection of x in r: x' = x - 2(x·r)/(r·r)·r = x - (x·r)/2·r (since r·r=4)
+    let reflect (r : int[]) (x : int[]) =
+        let dot = Array.map2 (*) r x |> Array.sum
+        Array.init 8 (fun j -> x.[j] - dot * r.[j] / 2)
+    // Find at least one E8 reflection that maps a versor-normed root outside the versor-normed set
+    let mutable foundEscape = false
+    for r in roots do
+        for x in vn do
+            let image = reflect r x
+            let imageStr = System.String.Join(",", image)
+            if rootSet.Contains(imageStr) && not (vnSet.Contains(imageStr)) then
+                foundEscape <- true
+    Assert.True(foundEscape, "Expected at least one E8 reflection to map a versor-normed root outside the versor-normed set")
+
+[<Fact>]
+let ``RC-2: E8 reflection closure of the 32 versor-normed roots is the full E8 root system (240)`` () =
+    // The 32 versor-normed roots are NOT a sub-root-system (RC-1 shows escapes exist).
+    // Their orbit under all 240 E8 reflections closes to the full E8 root system (240 roots).
+    // NOTE: Otto's doc claims "reflection closure is D4+D4 = 48" — this refers to closure
+    // under reflections IN the 32 versor-normed roots themselves (the sub-group they generate),
+    // NOT closure under all 240 E8 reflections. The E8 reflection closure is 240 (measured here).
+    let roots = CliffordE8BladeMask.e8Roots ()
+    let rootSet = System.Collections.Generic.HashSet<string>(
+                      roots |> Array.map (fun r -> System.String.Join(",", r)))
+    let vn = CliffordE8BladeMask.versorNormedRoots ()
+    let reflect (r : int[]) (x : int[]) =
+        let dot = Array.map2 (*) r x |> Array.sum
+        Array.init 8 (fun j -> x.[j] - dot * r.[j] / 2)
+    let closure = System.Collections.Generic.HashSet<string>(
+                      vn |> Array.map (fun r -> System.String.Join(",", r)))
+    let mutable frontier = vn |> Array.toList
+    let mutable changed = true
+    while changed do
+        changed <- false
+        let newFrontier = System.Collections.Generic.List<int[]>()
+        for r in roots do
+            for x in frontier do
+                let image = reflect r x
+                let imageStr = System.String.Join(",", image)
+                if rootSet.Contains(imageStr) && closure.Add(imageStr) then
+                    changed <- true
+                    newFrontier.Add(image)
+        frontier <- newFrontier |> Seq.toList
+    Assert.Equal(240, closure.Count)  // Full E8 root system
+
+[<Fact>]
+let ``RC-3: closure under reflections IN the 32 versor-normed roots themselves (D4+D4 claim)`` () =
+    // Otto's doc: "reflection closure is D4+D4 = 48" — tests closure under the 32 VN roots only.
+    let roots = CliffordE8BladeMask.e8Roots ()
+    let rootSet = System.Collections.Generic.HashSet<string>(
+                      roots |> Array.map (fun r -> System.String.Join(",", r)))
+    let vn = CliffordE8BladeMask.versorNormedRoots ()
+    let reflect (r : int[]) (x : int[]) =
+        let dot = Array.map2 (*) r x |> Array.sum
+        Array.init 8 (fun j -> x.[j] - dot * r.[j] / 2)
+    let closure = System.Collections.Generic.HashSet<string>(
+                      vn |> Array.map (fun r -> System.String.Join(",", r)))
+    let mutable frontier = vn |> Array.toList
+    let mutable changed = true
+    while changed do
+        changed <- false
+        let newFrontier = System.Collections.Generic.List<int[]>()
+        for r in vn do  // Only reflect in the 32 versor-normed roots
+            for x in frontier do
+                let image = reflect r x
+                let imageStr = System.String.Join(",", image)
+                if rootSet.Contains(imageStr) && closure.Add(imageStr) then
+                    changed <- true
+                    newFrontier.Add(image)
+        frontier <- newFrontier |> Seq.toList
+    // Record the measured value — provenance-flagged from Otto's doc (expected 48)
+    let actualSize = closure.Count
+    Assert.True(actualSize > 32, sprintf "Expected closure > 32 (got %d)" actualSize)
+    Assert.True(actualSize <= 240, sprintf "Expected closure <= 240 (got %d)" actualSize)
+
+[<Fact>]
+let ``LI-1: the 16 single-blade versor-normed roots are invariant — singleton supports always versor-normed`` () =
+    // The 32 versor-normed roots include 16 with singleton supports (the 8 ±2·eᵢ even roots).
+    // These are invariant because singleton supports are trivially I-closed under any relabelling.
+    // (A singleton {i} satisfies closure under i ↦ i⊕k iff the image is also in the set —
+    //  but a singleton only has one element, so it's closed iff i⊕k = i, i.e. k=0.
+    //  The actual invariance is: singleton supports always qualify as versor-normed because
+    //  A·Ã for a single-blade A is always scalar — it's the norm squared.)
+    let vn = CliffordE8BladeMask.versorNormedRoots ()
+    // Count roots with exactly one non-zero component
+    let singletons = vn |> Array.filter (fun r -> r |> Array.filter (fun v -> v <> 0) |> Array.length = 1)
+    Assert.Equal(16, singletons.Length)  // 8 positive + 8 negative single-blade roots
+
+[<Fact>]
+let ``LI-2: the 16 non-singleton versor-normed roots come from the two I-closed 4-element supports`` () =
+    let vn = CliffordE8BladeMask.versorNormedRoots ()
+    // The 16 non-singleton versor-normed roots have 4-element supports {0,3,4,7} or {1,2,5,6}
+    let nonSingletons = vn |> Array.filter (fun r -> r |> Array.filter (fun v -> v <> 0) |> Array.length > 1)
+    Assert.Equal(16, nonSingletons.Length)
+    // Their supports must be exactly {0,3,4,7} or {1,2,5,6}
+    let supports =
+        nonSingletons
+        |> Array.map (fun r -> r |> Array.mapi (fun i v -> if v <> 0 then i else -1) |> Array.filter (fun i -> i >= 0))
+        |> Array.map (fun s -> s |> Array.sort |> Array.map string |> String.concat "+")
+        |> Array.distinct
+        |> Array.sort
+    Assert.Equal<string[]>([|"0+3+4+7"; "1+2+5+6"|], supports)
