@@ -64,6 +64,39 @@ jobs:
           echo "markdownlint exit: $? ($(wc -l < /tmp/findings.txt) output line(s))"
           exit 0
 
+      - name: Detect build drift on main (BD001 — detector half of 081KZHGP45V)
+        # Queries the latest COMPLETED gate push-run on main; any failed
+        # build-and-test leg becomes a BD001 finding anchored to Zeta.sln
+        # (tracked, so it passes the --tracked guard). BD001 carries the
+        # tightest SLO budget in registry/drift-slo.yaml: a red main build
+        # gets ONE tick of tolerance, then the SLO auto-files a P1 — this is
+        # Vera's ratification clause ('true only while main stays green')
+        # made mechanically watched. The auto-REVERT actuator (the healer
+        # half of 081KZHGP45V) is deliberately not here: reverting main is
+        # the most dangerous healer class and lands only through the
+        # certification harness with fleet eyes.
+        # Safe-pattern: first-party trusted context only, passed via env.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          run_id=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/actions/workflows/gate.yml/runs?branch=main&event=push&status=completed&per_page=1" \
+            | jq -r '.workflow_runs[0].id // empty')
+          if [ -z "$run_id" ]; then
+            echo "no completed gate push-run found — no BD001 signal this tick"
+          else
+            failed=$(curl -fsS -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs/$run_id/jobs?per_page=100" \
+              | jq -r '[.jobs[] | select((.name|startswith("build-and-test")) and .conclusion=="failure") | .name] | join("; ")')
+            if [ -n "$failed" ]; then
+              echo "Zeta.sln:1 BD001/main-build-red gate run $run_id: $failed" >> /tmp/findings.txt
+              echo "BD001: main build drift detected ($failed, run $run_id)"
+            else
+              echo "main build green (gate run $run_id)"
+            fi
+          fi
+
       - name: Install dependencies (yaml parser for the SLO registry)
         run: bun install --frozen-lockfile
 

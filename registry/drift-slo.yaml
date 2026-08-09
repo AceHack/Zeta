@@ -23,4 +23,10 @@ defaults:
 # Per-rule overrides (tighter or looser than the default), e.g.:
 #   MD022:
 #     max_open_age_ticks: 12
-per_rule: {}
+per_rule:
+  # BD001 = whole-repo build drift on main (the drift-sweep detector step;
+  # detector half of 081KZHGP45V, from Vera's drift-ADR ratification note).
+  # Tightest budget on the ledger: a red build-and-test leg on main's own
+  # gate run gets ONE tick of tolerance, then work is mechanically filed.
+  BD001:
+    max_open_age_ticks: 1
