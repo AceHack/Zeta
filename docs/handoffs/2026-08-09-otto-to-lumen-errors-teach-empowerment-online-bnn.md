@@ -337,6 +337,68 @@ of loads), detection is **inference under overlap**, and the hard cases are
 *simultaneous* and *near-identical* loads — which is exactly the problem of
 distinguishing agents/sources sharing one channel.
 
+**Four domains, and they split into TWO halves — this distinction matters.** Aaron also
+engineers live sound for local bands and splits a single track into multitrack stems
+(*"very similar techniques"*), and names **MusicBrainz Picard** and **Shazam** as *"very
+similar signature math"*. He is right in both cases, but they are not the same job:
+
+| Half | Question | Anchors | Zeta use |
+|---|---|---|---|
+| **Separation** | *"which sources compose this mixture?"* | NILM (Hart 1992); ICA (Comon 1994; Bell & Sejnowski 1995); NMF spectrogram factorisation (Lee & Seung 1999; Smaragdis) | pull apart agents sharing one channel |
+| **Fingerprint identification** | *"which known thing is this, from a partial/noisy observation?"* | Shazam (Wang 2003 — constellation of spectrogram peaks + combinatorial hashing, robust under noise); Chromaprint/AcoustID behind Picard | recognise a **repeat source under a fresh name** |
+
+`CoordinationSpectrum` needs **both**, and its own docstring says so: the prism
+disperses a mixture (separation), producing *"a fingerprint … a repeat source is known
+by its refraction **even under fresh names**"* (identification). The Sybil case is
+precisely the hard cell of both halves at once — simultaneous near-identical loads,
+doubled instruments with the same timbre, **one source wearing many faces**.
+
+Practical consequence: the identification half has a strong, cheap, battle-tested
+design (Shazam-style: hash robust local features, match against a store, tolerate
+noise and partial observation) and is likely the faster win. The separation half is the
+harder research problem. Do not conflate them into one "signature detector" — and when
+judging what is separable **in principle** versus what merely looks separable, ask
+Aaron: he has hands-on experience with the hardest version in two unrelated domains.
+
+### The operating point is NEAR-ZERO FALSE POSITIVES — because the output is an accusation
+
+> Aaron: *"exactly — at Itron they used it to **detect crimes** too, so false positives
+> needed to be near 0."*
+
+This is the most important constraint in this section and the easiest to lose while
+optimising a detector. At Itron the same disaggregation signal that finds a legitimate
+high-draw appliance also finds **energy theft** — so a false positive is not a metric
+regression, it is **an innocent person accused of a crime**. The operating point is
+deliberately lopsided: **high precision, low recall — prefer missing real offenders to
+accusing innocent ones.**
+
+Zeta inherits this exactly, because Sybil detection has the same shape: a false
+positive is **an honest agent accused of being a forger**. Three consequences, two of
+them already carved:
+
+1. **Report the fact, never the verdict.**
+   [`dual-use-detection-is-neutral-oracle-decides`](../../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md)
+   already requires this — `SameSourceAsKnown` is the neutral fact; **REUNION** (an
+   honest identity reconnected to its returning self) and **SYBIL** (a forger minting
+   names) are *caller policy*. Aaron's crime-detection experience is the strongest
+   argument for that rule anywhere in the repo: at Itron the identical signature meant
+   "theft" or "new hot tub" depending on context the detector does not have. A detector
+   that hardcoded the accusation would have been wrong **at the cost of a prosecution**.
+2. **Tune to precision, and state which way you erred.** The false-positive rate is a
+   first-class acceptance number, not a footnote, and the threshold is justified by the
+   *cost of being wrong* — never by F1, which averages away exactly the asymmetry that
+   matters here.
+3. **A false positive IS bystander harm.** It falls under the externality bound Aaron
+   settled today: a wrongly-accused agent is a **non-consenting third party** pushed
+   below its floor by an interaction it never opted into. So anti-Sybil detection is not
+   merely adjacent to the empowerment work — it is **governed by it**, and Soraya's
+   externality proof obligation should treat detector output as one of the ways a
+   bystander's `trustBound` gets pushed down.
+
+Practically: build the identification half first (the cheap win), but **ship it
+reporting facts with calibrated confidence, never verdicts** — and make its
+false-positive rate the acceptance criterion rather than its hit rate.
+
 ---
 
 ## 7. NOT Lumen's — route to Soraya (formal verification) / math team
