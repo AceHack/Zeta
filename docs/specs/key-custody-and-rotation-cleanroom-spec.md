@@ -14,6 +14,38 @@ other system's structure.
 
 ---
 
+## Implementation protocol — N-VERSION: two independent derivations, then combine
+
+This spec is deliberately implemented **more than once, independently**, and the results
+combined. Aaron 2026-08-09: *"do double work and combine the best of both."*
+
+**The rule that makes it worth doing:** each implementer works from **this spec only** and
+**must not read another implementer's branch, diff, or notes** before finishing their own.
+Two implementations that saw each other are not two derivations — they are one derivation
+and a review, and they will share each other's blind spots.
+
+| Phase | Who | Sees |
+|---|---|---|
+| **Derivation A** | clean-side implementer #1 | this spec + Zeta's own code |
+| **Derivation B** | clean-side implementer #2 (**different agent**) | this spec + Zeta's own code — **NOT A's work** |
+| **Combine** | a third pass | **both**, plus this spec |
+
+**Why this is worth the double cost here, specifically:**
+
+- **It is a spec test, not just a code test.** Where A and B diverge, the spec was
+  ambiguous. Divergence is the *output* — it localises the requirements that need
+  sharpening, which no single implementation can reveal.
+- **It strengthens the clean-room position.** Two independent derivations from a
+  requirements document is exactly the evidence that the result was derived from
+  requirements rather than from anything else.
+- **Blind spots are unlikely to coincide.** The failure mode this catches is the one a
+  single careful implementer cannot catch by being more careful.
+
+**Combining rule:** prefer the version that is *simpler to falsify*, not the one that is
+more complete. Where both are correct, take the one whose tests would fail loudest if the
+behaviour regressed. Record what was taken from each and — more importantly — **what the
+divergences revealed about this spec**, and fix the spec.
+
 ## R1 — Ownership is a first-class type
 
 Ownership of a key MUST be represented as its own modelled entity, not as a mutable field

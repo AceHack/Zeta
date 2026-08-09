@@ -89,9 +89,21 @@ break the implementation and confirm it goes red.**
   requirement that cannot be satisfied as written is worth more than silently working
   around it.
 
-## Coordination note
+## Coordination — you are one of TWO independent derivations (this is deliberate)
 
-Otto dispatched a general-purpose clean-side agent on this same spec at 2026-08-09 (also
-wall-compliant). **Check for in-flight work before starting** so two clean-side
-implementers do not collide — or take a different slice (e.g. if the other took R8/R9, take
-R5).
+Aaron 2026-08-09: *"do double work and combine the best of both."* This spec is
+implemented **more than once, independently**, and the results are combined afterwards.
+See the *Implementation protocol* section at the top of the spec.
+
+**So the coordination instruction is the opposite of the usual one:**
+
+- **Do NOT** read the other implementer's branch, diff, or notes before finishing yours.
+  Two implementations that saw each other are not two derivations — they are one
+  derivation and a review, and they inherit each other's blind spots.
+- **Do NOT** split the work to avoid overlap. **Overlap is the point.** Implement the same
+  slice (R8+R9, then R5) as the other implementer.
+- Where the two of you diverge, **the spec was ambiguous** — and that is the most valuable
+  output of the exercise, more valuable than either implementation.
+
+A general-purpose clean-side agent is already in flight on this spec. That is expected;
+proceed independently.
