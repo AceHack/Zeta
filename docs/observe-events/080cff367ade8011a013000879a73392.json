@@ -1,0 +1,13 @@
+{
+  "id": "080cff367ade8011a013000879a73392",
+  "at": "2026-08-09T13:56:16.976Z",
+  "by": "otto",
+  "action": {
+    "kind": "edit_grammar",
+    "reason": "propose extending the action grammar"
+  },
+  "phase": {
+    "phase": 12,
+    "derived": 615991589
+  }
+}
