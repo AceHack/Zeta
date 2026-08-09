@@ -39,6 +39,7 @@ step" failure the title referred to; earlier runs looked "intermittent" only bec
 scenarios (1/2) masked it (they do not run the full `ZETA_HOST_TIER=full` mise tier).
 
 **Implications:**
+
 - The retry (below) is correct for genuine transient blips and stays honest here, but **cannot
   fix a deterministic linker failure.** Real fix = **`nix-ld`** (provides a loader for foreign
   dynamically-linked binaries on NixOS) OR **nix-native toolchains** instead of mise-downloaded
@@ -66,6 +67,7 @@ trust/install + bun installs are upserts — discipline #6), so a re-run after a
 succeeds without side effects.
 
 Scope + guardrails:
+
 - Change is **only** in `full-ai-cluster/usb-nixos-installer/zeta-install.sh` (the first-boot
   path). The shared `tools/setup/install.sh` — also consumed by CI runners + devcontainers
   (GOVERNANCE §24) — is untouched, keeping the blast radius to the first-boot consumer.

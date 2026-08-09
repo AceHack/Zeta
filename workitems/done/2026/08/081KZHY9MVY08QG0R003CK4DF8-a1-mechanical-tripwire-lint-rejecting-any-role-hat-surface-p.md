@@ -1,11 +1,12 @@
 ---
 id: 081KZHY9MVY08QG0R003CK4DF8
 type: task
-state: backlog
+state: done
 priority: P1
 slug: a1-mechanical-tripwire-lint-rejecting-any-role-hat-surface-p
 title: "A1 mechanical tripwire: lint rejecting any role/hat/surface parent key above persona (Vera A1 note)"
 created: 2026-08-09T00:20:52.222Z
+completed: 2026-08-09T18:13:15.021Z
 depends_on: []
 composes_with: []
 ---

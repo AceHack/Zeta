@@ -114,6 +114,7 @@ All values are IEEE 754 double precision (64-bit), round-to-nearest-even. No FMA
 ### 4.1 Canonical implementation (our code, byte-locked)
 
 The canonical implementation lives in:
+
 - `src/Core/QuantumArith.fs` — F# implementation
 - `src/Core.TypeScript/quantum/quantum-arith.ts` — TypeScript implementation
 - `src/Core.QSharp.ReferenceOracle/QuantumArith.qs` — Q# implementation
@@ -123,17 +124,20 @@ All three must produce the golden vectors above. The byte-lock CI gate runs all 
 ### 4.2 External adapter (wraps 3rd party, not byte-locked)
 
 External adapters are allowed to diverge from the golden vectors. They are used for:
+
 - **Validation:** cross-checking our canonical implementation against an independent reference
 - **Hardware execution:** running on real quantum hardware (which is inherently noisy)
 - **Prototyping:** rapid exploration before implementing in the canonical layer
 
 Current external adapter stubs:
+
 - `src/Core/OpenQASMAdapter.fs` — wraps OpenQASM 3.0 circuit output (stub)
 - `src/Core.TypeScript/quantum/qrisp-adapter.ts` — wraps Qrisp QuantumFloat (stub)
 
 ### 4.3 Replacement protocol
 
 When we want to replace an external library:
+
 1. Implement the canonical operation in `QuantumArith.fs` / `quantum-arith.ts` / `QuantumArith.qs`
 2. Add the golden vector for the new operation
 3. Run the byte-lock CI gate — it must pass
@@ -178,6 +182,7 @@ The QuantumArith library replaces all inline implementations with a single canon
 ## 7. Honest Scope Boundary
 
 The canonical implementation covers classical simulation of quantum arithmetic. It does not cover:
+
 - **Quantum error correction** — the golden vectors assume perfect arithmetic
 - **Hardware noise models** — the OpenQASM adapter handles this
 - **Variational quantum algorithms** — no gradient computation
