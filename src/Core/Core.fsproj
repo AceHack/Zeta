@@ -369,6 +369,7 @@
     <Compile Include="SoftEmu.fs" />
     <Compile Include="AmplitudeEmu.fs" />
     <Compile Include="HlAmplitudeEmu.fs" />
+    <Compile Include="QuantumArith.fs" />
     <Compile Include="QuantumObservableTreaty.fs" />
     <Compile Include="BipartiteMachZehnder.fs" />
     <Compile Include="TravelerRankLedger.fs" />
