@@ -187,3 +187,74 @@ The following items are open — not yet proven, not yet falsified:
 - Minka, T. P. (2001). "Expectation Propagation for approximate Bayesian inference." *Proceedings of UAI 2001*.
 - Murphy, A. H. (1973). "A new vector partition of the probability score." *Journal of Applied Meteorology*, 12(4), 595–600.
 - Witten, T. A. and Sander, L. M. (1981). "Diffusion-limited aggregation, a kinetic critical phenomenon." *Physical Review Letters*, 47(19), 1400–1403.
+
+---
+
+## Layer 8: ZetaDB — Content-Addressed DAG Filesystem
+
+The persistence layer is not a traditional relational database. It is a **content-addressed DAG filesystem** (`src/Core/DagFs.fs`) where every value is stored by the hash of its content, and every path is a pointer to a hash. The key properties:
+
+A `ContentStore<'V>` is an `ImmutableDictionary<MerkleHash, 'V>` — a hash-to-value map. Storing a value returns its hash; retrieving a value requires its hash. Two stores can be merged unconditionally: identical content has identical hashes, so there are no conflicts at the content layer. The only conflicts are at the path layer (same path, different content), resolved by a caller-supplied `resolve` function.
+
+A `DagFs.Tree<'V>` is a `ContentStore<'V>` plus a `links: ImmutableDictionary<string, MerkleHash>` — a path-to-hash map. The tree is a DAG: multiple paths can point to the same content node (hard-link semantics). `DagFs.merge` merges two trees: the content layer is an unconditional union (dedup by hash), the path layer resolves conflicts by the `resolve` function.
+
+The `ZSetMerkle` (`src/Core.CSharp/ZSetMerkle.cs`) computes a canonical Merkle root over a Z-set: leaves are `(key, weight)` pairs encoded as `[4-byte LE keyLen][keyBytes][8-byte LE weight]`, combined bottom-up with a standard Merkle fold. This makes the content-addressed root a pure function of the net Z-set state — the same Z-set always produces the same root, regardless of the order in which entries were added or removed.
+
+**No central point of failure.** Every node in the cluster holds a replica of the DAG. Merges are conflict-free at the content layer (identical content = identical hash = automatic dedup). The path layer uses the `resolve` function to handle concurrent writes to the same path — the default is last-writer-wins, but any merge policy can be plugged in. There is no primary node, no single coordinator, no single point of failure.
+
+**Key files:** `src/Core/DagFs.fs`, `src/Core.CSharp/ZSetMerkle.cs`, `src/Core.CSharp/ZSet.cs`, `src/Core.CSharp/GSet.cs`
+
+---
+
+## Layer 9: ZSet/GSet — The Algebraic Data Layer
+
+The data layer is built on **Z-sets** (signed-weight multisets) and **G-sets** (grow-only sets), which are the algebraic foundation of DBSP (Database Stream Processing). A Z-set is a map from keys to signed integer weights: weight +1 means "this key exists," weight −1 means "this key was retracted," and weight 0 means "net zero" (add then remove = identity). This is the same algebraic structure as the emit/retract duality in Shiva-GC (Layer 7) — they are the same abstraction at different levels.
+
+The Z-set algebra has three key properties that make it the right data structure for a distributed database:
+
+**Incremental by construction.** Adding a record is a Z-set delta `+1`; removing a record is a Z-set delta `−1`. The full state is the integral of all deltas. This is DBSP's `D` (differentiate) and `I` (integrate) operators. Incremental view maintenance (IVM) is correct by construction: an incremental add equals a full recompute.
+
+**Conflict-free merge.** Two Z-sets are merged by summing weights per key. This is commutative, associative, and idempotent (summing the same delta twice is not idempotent, but summing the same Z-set twice is — because the weights cancel). The merge is the same operation as the CRDT merge in `src/Core/Crdt.fs` and `src/Core/DeltaCrdt.fs`.
+
+**Content-addressed by Merkle root.** `ZSetMerkle` computes a canonical Merkle root over any Z-set. The root is a pure function of the net state — the same state always produces the same root. This makes Z-sets byte-lockable: two nodes that agree on the Merkle root agree on the full Z-set state.
+
+The `CostarZSet` (`src/Core/CostarZSet.fs`) demonstrates the pattern concretely: the co-star links of the IMDB dataset become a `ZSet<Link>` where the weight is the shared-title count. Adding a title is a `+` delta; removing one is the Z-set antiparticle (`−1` weights). The link rating is just the accumulated weight — no separate aggregation step.
+
+The Q# reference oracle (`src/Core.QSharp.ReferenceOracle/ZSetISA.qs`) defines the ZSet instruction set at the quantum level: `EMIT(k)` is an Ry rotation (weight +1, unitary), `RETRACT(k)` is the adjoint (weight −1), `BRANCH(k)` is the Hadamard (superposition), and `JOIN(a,b)` is CNOT (entanglement / Z-set product). The quantum ISA and the classical Z-set algebra are the same operations at different levels of abstraction.
+
+**Key files:** `src/Core.CSharp/ZSet.cs`, `src/Core.CSharp/GSet.cs`, `src/Core.CSharp/ZSetMerkle.cs`, `src/Core/CostarZSet.fs`, `src/Core/Crdt.fs`, `src/Core/DeltaCrdt.fs`, `src/Core.QSharp.ReferenceOracle/ZSetISA.qs`
+
+---
+
+## Layer 10: YinYangCell, Multi-Dispatch IR, and Zero-Downtime Schema Evolution
+
+**The YinYangCell — execution as a yin/yang duality.** Every `DynamicValue` in the system has two faces, formalised in `src/Bayesian/YinYangCell.fs`:
+
+- **Yin** = the Adinkra codeword (the T0 seed, the static identity anchor). This is the `gen(gen) = gen` fixed point: the cell seeded by its own yin produces the same cell. The yin is the public identity — the E8 root, the public key, the content address.
+- **Yang** = the `ThousandBrains.Column` belief state (the live engine). This is the private belief state — the Gaussian posterior, the hidden shape. The EVE protocol reads the hidden shape through the public interface; the NCI boundary prevents coercive reads.
+
+The yin is invariant across all ticks. The yang evolves with each observation. The cell is self-modelling: `seed(cell.yin) = cell`. This is minimal reflection at the Bayesian layer — the smallest structure that can represent itself.
+
+**The multi-dispatch intermediate representation.** The `MixIr` (`src/Core/MixIr.fs`) is the ISA-agnostic intermediate representation for the Z-set instruction set. Load descriptors (`chip8Load`, `mos6502Load`) are `DynamicValue.Object` records — data, not code. The materialization strategy (how to emit a load for a given ISA) is itself a `DynamicValue`. This means the IR can be inspected, transformed, and regenerated at runtime without recompilation.
+
+The `ZSetISA.qs` defines the quantum variant of the same ISA: EMIT, RETRACT, BRANCH, JOIN, JoinWeighted. The classical and quantum ISAs share the same opcode names and semantics — the difference is the ring over which the operations are evaluated (real weights for classical, complex amplitudes for quantum). This is the same `IStarRing<'W>` parameter from Layer 5, applied at the instruction-set level.
+
+**Zero-downtime schema evolution.** The `SchemaEvolution` (`src/Core.CSharp.SchemaEvolution/SchemaEvolution.cs`) implements schema changes as Z-set deltas: a `SchemaEvolutionDelta` is a `(retract: SchemaField[], insert: SchemaField[])` pair. Adding a field is a `+1` delta; removing a field is a `−1` delta. The schema is a `ZSet<SchemaField>` — the same algebra as the data layer.
+
+The key property: **additive expansion is forward and backward compatible**. Adding a new field with a default value is a `+1` delta that existing readers ignore (they don't know about the new field) and new readers can use. Removing a field is a `−1` delta that is non-destructive — the field's data is still in the content store, accessible by its hash. Schema changes are replayed as a sequence of deltas, and the final state is the integral of all deltas.
+
+**Stored procedures evolve with the schema.** Because the stored procedures are `DynamicValue` (mix-as-data, from Layer 6), they can be updated as Z-set deltas alongside the schema. A stored procedure update is a `retract(old_procedure) + insert(new_procedure)` delta pair. The new procedure is available immediately; the old procedure is retracted. There is no downtime because the update is atomic at the Z-set level — the Merkle root changes in one step, and all nodes that have merged the delta see the new procedure.
+
+The `SchemaSourceGenerator` (`src/Core.CSharp.TypeProvider/SchemaSourceGenerator.cs`) generates type-safe C# code from schema definitions at compile time. The `RustSchemaCodegen` (`src/Core.CSharp/RustSchemaCodegen.cs`) generates Rust structs from the same schema definitions. Both code generators are driven by the same `SchemaField` Z-set — the schema is the single source of truth for all language bindings.
+
+**Key files:** `src/Bayesian/YinYangCell.fs`, `src/Core/MixIr.fs`, `src/Core.QSharp.ReferenceOracle/ZSetISA.qs`, `src/Core.CSharp.SchemaEvolution/SchemaEvolution.cs`, `src/Core.CSharp.TypeProvider/SchemaSourceGenerator.cs`, `src/Core.CSharp/RustSchemaCodegen.cs`
+
+---
+
+## The Complete Picture
+
+The ten layers form a single coherent system. The Z-set algebra (Layer 9) is the data primitive. The DAG filesystem (Layer 8) is the storage primitive. The YinYangCell (Layer 10) is the execution primitive. The BNN (Layer 5) is the inference primitive. The Futamura compiler (Layer 6) specialises inference for each ISA. The Shiva-GC (Layer 7) manages memory. The calibration system (Layer 3) tracks agent reliability. The CHSH gate (Layer 2) verifies agent identity. The bus regime (Layer 4) provides causality boundaries. The identity space proof (Layer 1) is the observable that proves the whole system is substrate-independent.
+
+Every layer uses Z-sets. Every Z-set has a Merkle root. Every Merkle root is a content address. Every content address is a `DynamicValue`. Every `DynamicValue` can be collected by Shiva and regenerated by Brahma. The system is closed.
+
+The distributed property is structural, not configured: because every node holds a replica of the DAG and merges are conflict-free at the content layer, there is no central point of failure by construction. Adding a node is a merge. Removing a node is a merge. Updating a schema is a merge. Updating a stored procedure is a merge. Everything is a merge.
