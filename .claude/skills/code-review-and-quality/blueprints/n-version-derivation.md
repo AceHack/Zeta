@@ -97,6 +97,31 @@ returns true for everything except an argued `ImplementationDefect`.
 Any idempotency test written as replay-the-whole-stream is weaker
 than it looks.
 
+## Generation 0 was the genesis run — what it got wrong
+
+The key-custody run (2026-08-09) is **generation zero**: the algorithm executed once, by
+hand, well enough to prove it pays. Its defects are the input to generation 1, and they are
+recorded here rather than smoothed over — a genesis example that reads as a success story
+teaches nothing.
+
+| # | What went wrong in generation 0 | Generation 1 |
+|---|---|---|
+| 1 | **The islands shared one clone.** Both derivations ran against the same working tree and collided: a checkout wiped uncommitted work, and a mid-mutation snapshot was nearly committed as the derivation. They were time-shared, not isolated. | Each derivation gets `isolation: worktree`. Islands must be islands. |
+| 2 | **The wall leaked directionally.** B merged to `main` while A was still deriving, so A's remaining work sat one `git pull` away from contamination. Independence survived by luck and timing. | No derivation merges until every derivation has committed. The barrier is part of the protocol, not etiquette. |
+| 3 | **The report was nearly lost.** A deadlocked waiting on a dead background sweep; its report — which found *more* spec defects than the combine did — existed only in the agent's head until it was nudged. | The report is written **incrementally**, as each requirement is resolved, to a durable path. Never collected only at the end. |
+| 4 | **Coverage claims were unchecked.** B declared R1–R12 and nothing required that claim to be earned. Caught by a human reading two headers side by side. | The harness *requires* the per-requirement `implemented / partial / deferred / blocked` declaration, and refuses a derivation that omits it. |
+| 5 | **Only one island faced selection pressure.** A ran a mutation sweep; B ran none. The islands were not evaluated by the same function. | Same verification regime on every derivation, or the comparison is not one. |
+| 6 | **Selection was a human reading diffs.** `combine` now exists as a function, but generation 0's combine was hand-written prose. | Run `combine`; hand-write only the argument *about* its output. |
+| 7 | **No stated fitness.** "A wins on substance" was a judgement. Defensible, but not a measurement. | State fitness before the run. Candidate: **spec defects surfaced** + **coverage honestly earned** − **coverage claimed and not earned**. Note that fitness rewards the derivation that *found the spec's holes*, not the one that wrote more code. |
+
+### The one thing generation 0 got right, and must not be optimised away
+
+It ran **two implementers who could not see each other**, and the entire yield came from that.
+Every improvement above makes isolation *cheaper or more rigorous*; none of them should make
+it *shorter*. Premature migration is the failure mode of the island model, and a generation 1
+that speeds the loop up by shortening isolation has optimised away the only thing that
+worked.
+
 ## Pointers
 
 - `docs/specs/key-custody-n-version-combine.md` — the worked run:
