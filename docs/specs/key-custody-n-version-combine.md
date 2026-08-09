@@ -140,3 +140,85 @@ That is the same argument as the four-oracle byte-lock, and the same argument fo
 colonies must genuinely diverge: **agreement between correlated implementations is not
 evidence.** The cost was one extra implementation; the yield was five spec defects and one
 acceptance criterion that everybody believed was met and nobody had built.
+
+---
+
+# CORRECTION — derivation A's own report (filed after this combine was merged)
+
+The implementing agent for A delivered its report **after** the combine above was written and
+merged. It contradicts this document in two places and supersedes it in a third. Recorded
+here rather than by editing the text above, so the error stays visible.
+
+### C1 — I over-credited A on R6
+
+§1 marks A's R6 ✅. **A itself reports R6 as `partial`:** the append-only fold and idempotency
+are verified and `PreviousRetracted` changing the fold is tested, but **`GrantRetracted` is
+not tested.** A's self-assessment is stricter than my review of it, which is the correct
+direction for the error to run — and it is exactly the A5 discipline (declare `partial`,
+never round up) working as intended, applied by A to itself.
+
+Corrected row: **R6 — A: partial. B: not satisfied.**
+
+### C2 — amendment A1 is incomplete, and A found the reason
+
+A1 (merged) requires phase to be **derived from an observed causal frame**. A identified a
+consequence I missed entirely:
+
+> **R8 and R9 are in tension under partition.** If phase advances *only* by observing others —
+> the only way it is genuinely *agreed* — then a partitioned principal's phase **freezes, and
+> the grant never expires there.** That is precisely the case R8 exists to cover. If instead
+> phase advances autonomously, it is no longer agreed.
+
+So A1 as merged closes an ambiguity and **opens a liveness hole**. It is not wrong, but it is
+not sufficient: the spec needs a third clause — a locally-advanceable phase source at an
+agreed rate, or an explicit staleness bound. A did the honest thing and implemented the pure
+function while naming the residual in its module header: **expiry is monotone and eventual,
+not simultaneous.**
+
+### C3 — A found 12 spec defects to my 6, and two of mine were weaker
+
+A's list supersedes §5. Beyond the tension above, the ones I did not find:
+
+- **R9 has no normative sentence at all** — a heading and a `*Rationale:*` paragraph, no MUST
+  body. Every other requirement has one. (I amended R9's *meaning* without noticing it had no
+  requirement text to amend.)
+- **Acceptance 6 is unfalsifiable as written** — if R9 is obeyed there is no clock to skew, so
+  no conforming implementation can fail it. My A4 asked criteria to name an observable; this
+  is the sharper form: the criterion is vacuous *by construction*, not merely unobservable.
+- **Acceptance 5 is under-specified** — because expiry is deliberately *not* an event, the
+  authorization state is a function of `(stream, phase)`, not of the stream alone. "Same final
+  state" needs "…**at the same phase**".
+- **R4 cannot land on `DagFs` as written** — `DagFs` has no version or parent-edge concept;
+  `editLocal` is per-path copy-on-write, not a fork with a recorded shared ancestor. **R4 is
+  therefore a dependency, not a deferral** — someone must build a versioned-root layer first.
+- **No numbers anywhere** in R5/R8 — no default span, ceiling, acceptance bound, or unit. This
+  qualifies my §3 praise of A's `MaxSpan = 65536L`: A reports its own 256 / 65536 / 64 as
+  **placeholders needing a real derivation**, not as a justified bound. A's enforcement
+  mechanism is still the right shape; the constant is not yet earned.
+- **R5 leaves two security-relevant choices to the implementer** — whether `next`-signed
+  material verifies (A chose reject), and what happens to `previous` on a second rotation
+  inside the first acceptance window (A chose a fixed three-slot ladder, dropping the older
+  key; the alternative is a queue). A is right that the spec must make these, not the coder.
+
+### C4 — mutation testing, and the finding worth carrying past this spec
+
+Two mutants **survived** A's first idempotency test: removing the open-once guard and removing
+the rotation dedup guard both stayed green. The reason generalises well beyond key custody:
+
+> Replaying a whole stream **in order** happens to reconstruct the same state, so
+> `fold(s @ s) = fold(s)` **cannot** catch a missing dedup guard. The shape that catches it is
+> redelivering an **old** event *after later events have landed.*
+
+Any idempotency test in this repo written as replay-the-whole-stream is weaker than it looks.
+
+A also flags **three mutants that produced no usable signal** (failed to compile under
+`TreatWarningsAsErrors`, or emitted no result line) as **not confirmed by execution** rather
+than counting them as caught. That is the same non-rounding-up discipline again.
+
+### What this says about the exercise
+
+The N-version protocol found the spec defects. **The implementer's own report found more of
+them than the combine did** — because it had the experience of hitting each ambiguity while
+building, which reading the artifact afterwards cannot reproduce. A combine over finished code
+is necessary and not sufficient: **the derivation report is a first-class output**, and this
+one was nearly lost when the agent deadlocked.
