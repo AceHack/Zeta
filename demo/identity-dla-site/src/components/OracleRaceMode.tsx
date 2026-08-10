@@ -266,6 +266,10 @@ export default function OracleRaceMode() {
   const [fmzResult, setFmzResult] = useState<{
     sPath: number; sFreq: number; verdict: string; meanPlv: number;
   } | null>(null);
+  // Prior convergence: mean µ across priorHints dimensions over last 10 evolution events
+  const [priorConvHistory, setPriorConvHistory] = useState<Array<{ generation: number; meanMu: number }>>([]);
+  // Merged BNN posteriors from GitHub society priorHints (EP bidirectional update)
+  const [mergedPosteriors, setMergedPosteriors] = useState<Array<{ dimension: string; mu: number; sigma2: number }>>([]);
   const [showFmz, setShowFmz] = useState(false);
 
   // On mount: decode #race=... hash if present and populate seed log
@@ -372,6 +376,49 @@ export default function OracleRaceMode() {
         const latest = parsed[parsed.length - 1];
         if (latest) setGithubSociety(latest);
         setSocietyHistory(parsed.map(e => ({ generation: e.generation, meanFitness: e.meanFitness })));
+        // ── Prior convergence chart (next step 1) ──────────────────────────────
+        // Extract priorHints from each raw event and compute mean µ across all dimensions.
+        const rawEvents = events as unknown[];
+        const priorConv = rawEvents
+          .filter((e): e is Record<string, unknown> => !!e && typeof e === "object")
+          .map(e => {
+            const gen = typeof e["generation"] === "number" ? e["generation"] : 0;
+            const hints = Array.isArray(e["priorHints"]) ? e["priorHints"] : [];
+            const mus = (hints as unknown[])
+              .filter((h): h is Record<string, unknown> => !!h && typeof h === "object")
+              .map(h => typeof h["mu"] === "number" ? h["mu"] : 0);
+            const meanMu = mus.length > 0 ? mus.reduce((a, b) => a + b, 0) / mus.length : 0;
+            return { generation: gen, meanMu };
+          })
+          .filter(pt => pt.meanMu > 0)
+          .sort((a, b) => a.generation - b.generation);
+        if (priorConv.length > 0) setPriorConvHistory(priorConv);
+        // ── mergePriorHints into local BNN (next step 2) ───────────────────────
+        // Collect all priorHints from all fetched events and merge using EP natural parameters:
+        //   τ_joint = τ_local + τ_prior,  ρ_joint = ρ_local + ρ_prior
+        const allHints = rawEvents
+          .filter((e): e is Record<string, unknown> => !!e && typeof e === "object")
+          .flatMap(e => Array.isArray(e["priorHints"]) ? (e["priorHints"] as unknown[]) : [])
+          .filter((h): h is Record<string, unknown> => !!h && typeof h === "object");
+        if (allHints.length > 0) {
+          const dimMap = new Map<string, { sumTau: number; sumRho: number }>();
+          for (const h of allHints) {
+            const dim = typeof h["dimension"] === "string" ? h["dimension"] : "unknown";
+            const mu = typeof h["mu"] === "number" ? h["mu"] : 0;
+            const sigma2 = typeof h["sigma2"] === "number" && h["sigma2"] > 0 ? h["sigma2"] : 1;
+            const rw = typeof h["robustnessWeight"] === "number" ? h["robustnessWeight"] : 1;
+            const rho = (1 / sigma2) * rw;
+            const tau = mu * rho;
+            const existing = dimMap.get(dim) ?? { sumTau: 0, sumRho: 0 };
+            dimMap.set(dim, { sumTau: existing.sumTau + tau, sumRho: existing.sumRho + rho });
+          }
+          const merged = Array.from(dimMap.entries()).map(([dimension, { sumTau, sumRho }]) => ({
+            dimension,
+            mu: sumRho > 0 ? sumTau / sumRho : 0,
+            sigma2: sumRho > 0 ? 1 / sumRho : 1,
+          }));
+          setMergedPosteriors(merged);
+        }
       })
       .catch(() => { /* non-fatal — GitHub API may be rate-limited */ });
   }, [results]);
@@ -751,6 +798,50 @@ export default function OracleRaceMode() {
               <text x="2" y="27" fill="#065f46" fontSize="5">gen {societyHistory[0]?.generation ?? 0}</text>
               <text x="198" y="27" fill="#065f46" fontSize="5" textAnchor="end">gen {societyHistory[societyHistory.length-1]?.generation ?? 0}</text>
             </svg>
+          )}
+          {/* Prior convergence chart — mean µ across priorHints dimensions (next step 1) */}
+          {priorConvHistory.length > 1 && (
+            <div style={{ marginTop: "0.2rem" }}>
+              <div style={{ fontSize: "0.5rem", color: "#065f46", marginBottom: "0.1rem" }}>
+                Prior convergence — mean µ across BNN dimensions (EP bidirectional update)
+              </div>
+              <svg width="100%" height={28} viewBox="0 0 200 28" style={{ display: "block", background: "#061510", borderRadius: 2 }}>
+                {priorConvHistory.map((pt, i) => {
+                  if (i === 0) return null;
+                  const prev = priorConvHistory[i - 1]!;
+                  return <line key={i}
+                    x1={((i-1)/Math.max(1,priorConvHistory.length-1))*196+2} y1={26-prev.meanMu*22}
+                    x2={(i/Math.max(1,priorConvHistory.length-1))*196+2} y2={26-pt.meanMu*22}
+                    stroke="#34d399" strokeWidth="1.5" strokeDasharray="3 1" />;
+                })}
+                {priorConvHistory.map((pt, i) => (
+                  <circle key={"p"+i} cx={(i/Math.max(1,priorConvHistory.length-1))*196+2} cy={26-pt.meanMu*22} r="2" fill="#34d399" />
+                ))}
+                <text x="2" y="8" fill="#065f46" fontSize="5">mean µ</text>
+                <text x="2" y="27" fill="#065f46" fontSize="5">gen {priorConvHistory[0]?.generation ?? 0}</text>
+                <text x="198" y="27" fill="#065f46" fontSize="5" textAnchor="end">gen {priorConvHistory[priorConvHistory.length-1]?.generation ?? 0}</text>
+              </svg>
+            </div>
+          )}
+          {/* Merged BNN posteriors from GitHub society priorHints (next step 2) */}
+          {mergedPosteriors.length > 0 && (
+            <div style={{ marginTop: "0.2rem" }}>
+              <div style={{ fontSize: "0.5rem", color: "#065f46", marginBottom: "0.1rem" }}>
+                Merged BNN posteriors — EP from {priorConvHistory.length} society events
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.15rem" }}>
+                {mergedPosteriors.map(p => (
+                  <span key={p.dimension} style={{
+                    fontSize: "0.45rem", padding: "0.05rem 0.2rem",
+                    background: p.mu > 0.5 ? "rgba(239,68,68,0.15)" : "rgba(16,185,129,0.1)",
+                    border: `1px solid ${p.mu > 0.5 ? "#ef4444" : "#10b981"}`,
+                    borderRadius: 2, color: p.mu > 0.5 ? "#fca5a5" : "#6ee7b7",
+                  }}>
+                    {p.dimension}: µ={p.mu.toFixed(3)}
+                  </span>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       )}
@@ -1152,13 +1243,23 @@ export default function OracleRaceMode() {
                   <div style={{
                     height: "100%",
                     width: `${Math.min(100, (erasureHeat.unaccounted / Math.max(1, erasureHeat.total)) * 100)}%`,
-                    background: erasureHeat.unaccounted === 0 ? "#22c55e" : erasureHeat.unaccounted / erasureHeat.total > 0.5 ? "#ef4444" : "#f59e0b",
+                    background: erasureHeat.unaccounted === 0 ? "#22c55e"
+                      : erasureHeat.unaccounted / erasureHeat.total > 0.66 ? "#dc2626"
+                      : erasureHeat.unaccounted / erasureHeat.total > 0.33 ? "#f59e0b"
+                      : "#fb923c",
                     borderRadius: 4,
                     transition: "width 0.3s ease",
                   }} />
                 </div>
                 <span style={{ fontSize: "0.55rem", color: erasureHeat.unaccounted === 0 ? "#22c55e" : "#ef4444" }}>
-                  {erasureHeat.unaccounted === 0 ? "✓ cold" : `${erasureHeat.unaccounted} leak${erasureHeat.unaccounted > 1 ? "s" : ""}`}
+                  {/* Vera's TemperatureBand: cold (0) / warm (≤33%) / hot (≤66%) / critical (>66%) */}
+                  {erasureHeat.unaccounted === 0
+                    ? "✓ cold"
+                    : erasureHeat.unaccounted / erasureHeat.total > 0.66
+                    ? `🔴 critical (${erasureHeat.unaccounted})`
+                    : erasureHeat.unaccounted / erasureHeat.total > 0.33
+                    ? `🟠 hot (${erasureHeat.unaccounted})`
+                    : `🟡 warm (${erasureHeat.unaccounted})`}
                 </span>
                 {erasureHeat.accounted > 0 && (
                   <span style={{ fontSize: "0.5rem", color: "#64748b" }}>({erasureHeat.accounted} accounted)</span>
