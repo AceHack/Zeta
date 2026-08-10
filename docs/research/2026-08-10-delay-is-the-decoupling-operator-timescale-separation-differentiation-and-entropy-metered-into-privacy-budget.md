@@ -57,6 +57,74 @@ partition."* The biological analogue is allopatric speciation — isolation, the
 that produces no differentiation (replicas that stay identical across a long partition — which
 would mean the delay was not doing the work claimed).
 
+### 1a. THE REFUTATION FIRED — recorded, because naming one is the point
+
+Within hours, both reviewers independently produced the second case. **Under a commutative,
+order-independent fold, sustained delay produces transient divergence that heals *exactly*,
+and no differentiation at all** — by theorem, not by measurement. Two decoupled systems with
+identical initial conditions and identical inputs stay identical forever. Decoupling is
+**permissive, not generative**: it removes a constraint on differentiation; it does not create
+differentiation.
+
+What §1 was missing is named in §3 of this same file — a **per-replica entropy source**. Aaron
+supplied it in the next message unprompted, and §13 already requires that source to enter
+through a declared, metered channel. Corrected claim:
+
+> Delay does not produce differentiation. It **permits** the differentiation a per-replica
+> entropy source is already producing, by removing the coupling that was suppressing it.
+
+### 1b. The parameter is `r·τ`, not `τ` — this file failed its own metering test
+
+Delay has dimension `[T]`; a bare `τ` cannot be small. So §1's "tunable ε" was not yet
+dimensionless — the exact failure this method exists to catch. The correct group is **local
+rate × delay**, already known under three names that are one group:
+
+| name | form | reading |
+|---|---|---|
+| Little's law (1961) | `L = r·τ` | in-flight updates a peer applied that I have not seen |
+| Damköhler number | `Da = λ_local·τ` | local dynamics rate over transport rate |
+| Wright's `Nm` (1931) | migrants per generation | the population-genetics instance; `F_ST ≈ 1/(1+4Nm)` |
+
+**Design consequence:** if `r → 0`, *any* `τ` is harmless — a quiescent system tolerates
+unbounded delay. The knob is `r·τ`, never `τ` alone.
+
+Two replicas gossiping at rate `g = 1/τ` with local generator `F`, in sum/difference
+coordinates:
+
+```
+ṡ = F·s            the shared conclusion NEVER sees g
+ḋ = (F − 2g)·d     differentiation persists iff  λ_F·τ > 2
+```
+
+Turing-instability shaped — local growth outruns diffusive mixing — and falsifiable at two
+delays under DST.
+
+### 1c. The obstruction has one name across every framing: the homoclinic tangle
+
+Aaron 2026-08-10: *"the homoclinic tangle is the operative term that seems to survive all my
+encounters and fantasies."* It survives because it is the **dynamical name for the failure to
+split**, and the failure to split is what this entire file keeps arriving at from different
+directions:
+
+| framing | name for the obstruction |
+|---|---|
+| algebra | the extension class in `Ext¹` — the quotient is a factor, not a summand |
+| dynamics | the **homoclinic tangle** — stable and unstable manifolds intersect transversally and interpenetrate; no global separation exists |
+| singular perturbation | loss of **normal hyperbolicity** (Fenichel) — the slow manifold is where splitting works, tangency is where it stops |
+| asymptotics | **exponentially small splitting of separatrices**, `O(e^{−c/ε})` — the residual that survives every order of normal-form reduction |
+| biology | Dobzhansky–Muller — the incompatibility is in the *pairing*, present in neither lineage alone |
+
+The fourth row is the sharpest, and it is why the term is load-bearing rather than evocative:
+**the beyond-all-orders residual and the tangle are the same object.** Normal-form theory
+removes the coupling order by order in `ε`; the series diverges, and optimal truncation leaves
+`e^{−c/ε}` — which *is* the separatrix-splitting distance that makes the tangle. So "a
+decoupling limit never exactly decouples" and "the manifolds tangle" are one statement.
+
+That is the reason it survives reframing: it is not a metaphor being carried between domains,
+it is the same invariant with five vocabularies. Anchors: Poincaré (the original tangle);
+Smale (horseshoe); Melnikov (the splitting measure); Fenichel (normal hyperbolicity);
+Neishtadt / Nekhoroshev (exponentially small remainders).
+
 ## 2. The condition that makes delay productive rather than destructive
 
 The physics carries a warning that transfers directly, and it is the reason this section exists
@@ -82,10 +150,73 @@ order-sensitive one makes every millisecond of delay a divergence you cannot rep
 condition is insufficient), or an order-sensitive fold that re-merges correctly anyway (the
 condition is unnecessary). Either outcome is more informative than confirmation.
 
-**Status: UNVERIFIED.** Routed to `formal-verification-expert` for tool selection — the question
-asked was which of TLA+ / Alloy / property-based over `observeAll` / a Lean algebraic proof
-actually settles "the fold is commutative and delay-insensitive", with the standing instruction
-to weigh them rather than default to the temporal hammer.
+### 2a. STATUS: REFUTED — commutativity is neither necessary nor sufficient
+
+Both reviewers, independently. Commutativity buys **confluence** (everyone agrees *what* the
+merged value is); it does not buy **recovery** (extracting a replica's contribution back out).
+Those are the factor/summand distinction again, arriving from the network side.
+
+**Operator level, the missing property is idempotence.** Delay's characteristic failure is not
+reordering — it is **retransmission**, and commutativity says nothing about applying the same
+evidence twice.
+
+| property | buys | `observe` |
+|---|---|---|
+| commutative | reorder-safety | ✔ |
+| associative | regroup-safety | ✔ |
+| **idempotent** | **redelivery-safety** | **✘** |
+
+**This is live in our code.** `src/Core/BeliefConvergence.fs` — `observe` is pointwise `int64`
+multiplication, a commutative *monoid*, not a join-semilattice. `observeAll [e; e] b = e²·b`.
+Over Reticulum, where redelivery is ordinary rather than exceptional, the fold double-counts.
+Pinned as an explicit negative in `tests/Tests.FSharp/BeliefConvergence.Tests.fs` (commit
+`a166d3b0a`), along with the removal of a test whose name claimed re-observation coverage while
+its body exercised only the identity likelihood.
+
+**Whole-computation level, the exact condition is monotonicity, not commutativity.** CALM
+(Hellerstein; Ameloot–Neven–Van den Bussche): *a computation is coordination-free iff it is
+monotone.* A commutative, associative, idempotent merge followed by a threshold, a negation, or
+a `count-distinct` is **not** delay-free. Commutativity is a property of one operator;
+monotonicity is a property of the pipeline.
+
+> **Corrected condition.** Delay is a free decoupling operator exactly to the degree the
+> *computation* is **monotone**. A join-semilattice merge (commutative + associative +
+> idempotent) is the operator-level sufficient condition; CALM-monotonicity is the exact one.
+
+### 2b. And you cannot have both properties in one operator — a one-line theorem
+
+**An idempotent group is trivial:** `a + a = a ⇒ a = e`. So no non-trivial structure is
+simultaneously a join-semilattice and a group. Therefore:
+
+- *"delay is free"* needs **idempotence** → semilattice, no inverses, destroys the path.
+- *"divergence stays auditable and retractable"* needs **inverses** → Z-set group, not idempotent.
+
+These are **provably incompatible in a single operator.** You must carry two structures — a
+group-structured delta log (retraction, preserves the divergence path, i.e. preserves the
+extension class) and a semilattice-structured merge state (idempotent, free under delay,
+quotients the path) — with a homomorphism from log to state. That is already the
+git-as-event-store architecture, but it is now **theorem-forced rather than stylistic**, which
+tells you exactly which property is lost if anyone ever tries to unify them.
+
+### 2c. The deeper conflict, and the escape that was already built
+
+Durable differentiation and the repo's convergence guarantee are **mutually exclusive on the
+same fold**. Order-independence means delay yields transient divergence that heals exactly — no
+differentiation, by theorem. Getting differentiation requires breaking commutativity, which
+kills convergence.
+
+The resolution is [`local-time-never-enters-the-shared-fold`](../../.claude/rules/local-time-never-enters-the-shared-fold.md)
+itself, which turns out to be exactly the required **two-layer split**: differentiate the
+local / proper-time layer, keep the shared fold commutative. §1b's `ṡ = F·s` line is the proof —
+the sum mode never sees the gossip rate. The rule was written as hygiene; it is the structure
+that makes speciation compatible with convergence.
+
+Bounded honestly: a delayed system is a delay-differential equation whose state is the history
+function on `[t−τ, t]` — genuinely infinite-dimensional for every `τ > 0`, collapsing to `ℝⁿ`
+only at `τ = 0` (Hale 1977). So a synchrony assumption deletes real state by fiat, and that
+matters for **liveness, stability and timing**. It does **not** matter for **safety or the
+converged value** on a commutative fold, where the fixed point is identical. Do not let the
+claim be used in the second register.
 
 ## 3. Entropy, metered, becomes privacy budget
 
@@ -125,8 +256,46 @@ decorrelation requirement).
 the attester — a zero-knowledge attestation would falsify the "spends to earn" claim outright,
 and it is the first thing to look for rather than the last.
 
-**Status: UNVERIFIED.** Routed with the question of whether "budget increases only via
-externally-confirmed measurement, never self-minted" is a formalizable non-inflation invariant.
+### 3a. STATUS on (a): the volume half holds and is already proved; the accuracy half is NOT WELL-POSED
+
+**The volume half needs no new work — it is the data-processing inequality**, and
+`src/Core.Lean4/Lean4/DecorrelationDpi.lean` already carries it sorry-free in operational form
+(post-processing cannot manufacture distinguishing power). Connect the budget to it; do not
+restate it. Caveat the file states itself: only the finite/combinatorial core is proved, not the
+measure-theoretic Shannon form — if the budget leans on the latter, that is a real gap.
+
+**The accuracy half does not survive.** *Accuracy is not a property of a measurement; it is a
+relation between a measurement and a referent you do not hold.* You cannot confirm accuracy
+without ground truth, and a party holding ground truth has no use for your measurement. Worse,
+agreement between decorrelated parties **is not accuracy** — two decorrelated parties can agree
+and both be wrong. That is quotient 1 of the method file turned back on this file.
+
+**What makes it well-posed, and it is a prior-art gap rather than a tooling gap:** the property
+wanted is **incentive-compatibility**, not accuracy — so you never verify accuracy directly.
+
+- **Strictly proper scoring rules** (Brier 1950; Good 1952; Gneiting–Raftery 2007) — honest
+  reporting is the score-maximising strategy.
+- **Peer prediction / Bayesian truth serum** (Prelec 2004; Miller–Resnick–Zeckhauser 2005) — the
+  mechanism for exactly the no-ground-truth case, which is our setting. These were absent from
+  the framing and they are the actual anchor.
+
+The scoring rule is a **design decision, not a verification one** — it precedes any tool.
+
+### 3b. STATUS on (b): the tension is real and is a named formal object
+
+"Sharing an accurate measurement spends privacy to earn it" is **differential-privacy budget
+composition** (Dwork–McSherry–Nissim–Smith 2006): `ε` accumulates over disclosures. So the
+formal shape is a **two-sided ledger** — a disclosure debits `ε` and credits `b` — and the
+invariant to establish is that a net-positive regime exists: parameters where
+`b(disclosure) > ε(disclosure)` for a non-degenerate class of disclosures.
+
+**This may well be false, which is why it is worth stating.** It is `∃/∀` over two rate
+functions in real arithmetic — SMT-shaped — and a solver can return *no such regime* rather
+than running forever. That is the cheapest decisive experiment in this file.
+
+Note the sibling result: §3's mechanism and §1a's requirement are the same object seen twice.
+The per-replica entropy source that makes differentiation possible is the metered crossing that
+credits budget. Differentiation and standing are paid for out of the same ledger.
 
 ## 4. What the three observations are, together
 

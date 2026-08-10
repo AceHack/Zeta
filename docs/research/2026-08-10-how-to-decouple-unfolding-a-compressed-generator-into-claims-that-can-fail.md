@@ -13,11 +13,17 @@ occasional.
 
 ## 0. The carved sentence
 
-> **A generator cannot fail; a quotient can.** You decouple a compressed statement into
+> **A generator cannot fail; a quotient can.** You **unfold** a compressed statement into
 > checkable ones by **declaring relations** — binding the places where the generator is
 > silent. Each binding costs generality and buys discriminating power. The generator stays
 > the index; the quotients are the units of work, and every one of them names its own
-> refutation.
+> refutation. What you get is a **factor**, not a summand: each quotient is autonomously
+> testable, and the generator is *not* the sum of them.
+
+> **Terminology note.** This file's title says "decouple" and the word is kept in the
+> filename so existing pointers survive. It is the wrong word, and §6 retracts it: decoupling
+> carries a small parameter and a residual, and quotienting carries neither. Read "unfold"
+> throughout.
 
 ## 1. Why the compressed form cannot fail, and why that is correct
 
@@ -50,7 +56,21 @@ classification, invariants, and things it forbids — which is precisely what ma
 checkable. E8 is falsifiable in a way "the free object" is not: it has 240 roots, one norm
 class, rank 8, and any of those failing refutes the identification.
 
-**Decoupling is that arrow, applied to a claim instead of an algebra.**
+**Unfolding is that arrow, applied to a claim instead of an algebra.**
+
+**Caveat added on review:** the `adinkra → Clifford → E8` diagram is inherited from the rule
+cited above, and its *arrow types* do not survive audit — the arrows are a representation, an
+isometric relabeling, and a preimage-inclusion, not successive quotients. It is kept here as
+the motivating picture, not as a worked instance. (Two genuine free-object quotients sit
+nearby and are worth having: `Cl(V,q) = T(V)/⟨v⊗v − q(v)⟩` — Chevalley — and `E8` as a free
+Lie algebra modulo the Serre relations. They are quotients of *different* free objects, not
+of each other, which is exactly the conflation the diagram invites.)
+
+And note what a chain of *pure* quotients would buy: nothing. `(A/I₁)/I₂ ≅ A/(I₁+I₂)`, so
+successive quotients collapse to one, the way stacked linear layers collapse to a single
+linear map. **Heterogeneous arrow types are what make a composition non-trivial** — the
+observation is Aaron's, and it means the audit above describes depth rather than merely
+finding an error.
 
 ## 3. The procedure
 
@@ -108,20 +128,70 @@ side and go quiet on the other. **So a step (2b) is worth adding: ask what the g
 silence is *hiding* rather than merely leaving open.** A dropped dual is not a free
 parameter — it is a second generator you have not written down.
 
-## 6. Why "decouple" is the right word
+## 6. "Decouple" is the WRONG word — and what is true instead
 
-In physics, decoupling is when a mode stops interacting and can be studied on its own —
-Turok's result holds in the limit where the Weyl coupling vanishes and the graviton
-decouples, leaving a scalar that is analysable *because* it has been separated out.
+**Revised 2026-08-10, same day, after review.** This section previously argued that
+"decouple" was the right word, and grounded it in a higher-derivative-gravity limit. Two
+independently-dispatched reviewers (mathematical-physics; formal-verification) refuted it
+separately, and both flagged that **by this file's own step-4 litmus §6 was a decoration**:
+it named no observation that would retire it. It is corrected here rather than quietly
+softened, because a method file that exempts its own naming section from its own razor is
+worth less than no method file.
 
-Same move here. A compressed claim is all modes coupled: it says something about counting,
-locality, architecture and mechanism at once, and therefore nothing testable about any of
-them. Declaring a relation **decouples one mode** so it can be tested alone.
+**The retracted claim, stated so the retraction is checkable:** that declaring a relation
+"decouples one mode" the way a vanishing coupling decouples a graviton. The citation
+supporting it (a Turok/Bateman result, paraphrased as "the limit where the Weyl coupling
+vanishes and the graviton decouples") could not be verified by either reviewer — no year, no
+venue, and the paraphrase does not obviously match the standard quadratic-gravity statement.
+Per the checked-anchor discipline it is **withdrawn, not downgraded**.
 
-And it carries the same honesty condition Turok states about his own limit: **a decoupled
-mode is not the whole theory.** Quotient 6 does not settle the generator; it settles
-quotient 6. Treating a proved specialisation as a proof of the generator is the same error
-as treating the generator as a result, arriving from the other direction.
+### Why it was wrong, and the error is instructive
+
+Quotienting and decoupling are different operations, and they differ in the two ways this
+repo already knows how to test for.
+
+**(a) The metering test.** Physical decoupling always names a dimensionless small parameter
+and a residual bounded in it (`E/M`, `v/c`, `Nm`). An algebraic quotient has **no
+parameter** — its residual is zero *by definition*, not by vanishing. So there is nothing to
+meter, and a claim equating an operation that carries a small parameter with one that does
+not fails dimensional hygiene before it fails algebra. *If your "decoupling" has no small
+parameter, it is a quotient wearing a physics word.*
+
+**(b) A factor is not a summand.** Quotienting by an invariant subobject `W` does give
+`V/W` **autonomous** dynamics — a *factor*, and this is real, unconditional, and exactly
+what licenses testing a quotient claim on its own. What it does not give is **reassembly**:
+`V ≇ W ⊕ V/W` in general. Splitting requires the extension class in `Ext¹(V/W, W)` to
+vanish, whose sufficient condition is semisimplicity — **whose physical name is unitarity**.
+
+The counterexample is small enough to carry: **`ℤ/4` and `ℤ/2 ⊕ ℤ/2` have the same
+subobject `ℤ/2` and the same quotient `ℤ/2`, and are not isomorphic.** So "prove every
+quotient, thereby know the generator" is refuted by a group of order four.
+
+**And the withdrawn anchor was drawn from the regime where the claim fails hardest.**
+Higher-derivative ghost sectors are *non-unitary* — the Pais–Uhlenbeck oscillator at
+degenerate frequency is literally a Jordan block, an invariant subspace with no complement.
+The one physics case cited to justify the identification is a case where the
+identification's hypothesis is violated.
+
+### The true statement, which is smaller and needs no physics
+
+> **Unfolding gives you a factor, not a summand.** Declaring a relation makes the quotient
+> claim autonomous and therefore testable on its own — that is the whole warrant for the
+> method in §§1–5. But the generator is **not** the sum of its quotients, and the extension
+> class is precisely what you did not measure.
+
+This *upgrades* §5's "dropped dual" from an intuition to a located object: the information
+lost on decoupling into quotients is the extension data. And it converts the old §6 caveat —
+"a decoupled mode is not the whole theory" — from modesty into arithmetic.
+
+**The refutation this section now carries (step 4, applied to itself):** exhibit a setting
+where proving every quotient of a generator does determine the generator up to isomorphism.
+That would mean the extension class is recoverable from the factors, and the claim above is
+false as stated.
+
+**The method survives intact.** §§1–5 never depended on the physics; state the generator,
+find the silence, bind it, name the refutation. It is sound, and it was weakened rather than
+supported by borrowed vocabulary. Keep the procedure; drop the word.
 
 ## 7. Pointers
 
@@ -130,3 +200,5 @@ as treating the generator as a result, arriving from the other direction.
 - [`…amortization-is-deliberate-correlation…`](2026-08-10-amortization-is-deliberate-correlation-cost-cluster-decomposition-and-the-potential-as-condensate.md) — the dropped dual in §5
 - [`…the-threshold-rhyme…`](2026-08-10-the-threshold-rhyme-pay-per-step-with-a-deadline-vs-pay-once-and-foreclose-aaron.md) · [`…tsirelson…`](2026-08-10-tsirelson-why-2root2-and-not-4-generated-bounds-and-constraints-that-move-without-destruction.md) — files that already carry their falsifiers, as instances of step 4
 - `docs/trajectories/soulbound-fraction-the-non-transferable-ratio/RESUME.md` — a quotient in progress: the band could be empty
+- [`…delay-is-the-decoupling-operator…`](2026-08-10-delay-is-the-decoupling-operator-timescale-separation-differentiation-and-entropy-metered-into-privacy-budget.md) — where the small parameter §6 says a quotient lacks actually lives (`r·τ`), and the review findings that produced §6's retraction
+- `src/Core/BeliefConvergence.fs` — the live consequence: the fold is a commutative monoid, not a semilattice, so redelivery double-counts (pinned in `tests/Tests.FSharp/BeliefConvergence.Tests.fs`)
