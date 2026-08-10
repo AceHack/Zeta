@@ -477,6 +477,8 @@
     <Compile Include="ZetaToolStore.fs" />
     <Compile Include="AdinkraClock.fs" />
     <Compile Include="IdentityDLA.fs" />
+    <Compile Include="ThresholdSignatureVerification.fs" />
+    <Compile Include="ThresholdSignatureSchemes.fs" />
 
   </ItemGroup>
 
