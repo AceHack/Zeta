@@ -6,7 +6,6 @@ import {
   serializeBnn,
   deserializeBnn,
   tangleBreakObservation,
-  type PersistedBnnState,
 } from "./bnn-persistence";
 
 // ── Minimal DimensionalBnn stub for testing ────────────────────────────────────

@@ -128,9 +128,8 @@ export function deserializeBnn(
   state: PersistedBnnState,
 ): { bnn: DimensionalBnn; tangleWarning: boolean } {
   // Import DimensionalBnn constructor
-  const { createDimensionalBnn, createStudentTState } = require("../planning/error-bnn-bridge") as {
+  const { createDimensionalBnn } = require("../planning/error-bnn-bridge") as {
     createDimensionalBnn: (nu?: number, obsVariance?: number) => DimensionalBnn;
-    createStudentTState?: never;
   };
   const bnn = createDimensionalBnn();
   // Restore each dimension's EP state

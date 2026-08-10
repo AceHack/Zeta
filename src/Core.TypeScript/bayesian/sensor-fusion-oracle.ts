@@ -144,7 +144,13 @@ export function ivFuse(bnn: OracleResult, worm: OracleResult): { df: number; sig
 export function detectTangle(
   plv: number,
   rhoProxy: number,
-): { tangled: boolean; reason?: string; tangleBreak?: ReturnType<typeof tangleBreakObservation> } {
+):
+  | { readonly tangled: false }
+  | {
+      readonly tangled: true;
+      readonly reason: string;
+      readonly tangleBreak: ReturnType<typeof tangleBreakObservation>;
+    } {
   if (plv > 0.9) {
     return {
       tangled: true,
@@ -184,17 +190,17 @@ export function fuseSensors(
   rhoProxy = 0,
 ): FusionResult {
   const plv = computePlv(bnnSeries, wormSeries);
-  const { tangled, reason, tangleBreak } = detectTangle(plv, rhoProxy);
+  const tangle = detectTangle(plv, rhoProxy);
 
-  if (tangled) {
+  if (tangle.tangled) {
     // Fusion blocked — return BNN as fallback (more robust than worm alone)
     return {
       df: bnn.df,
       sigma2: bnn.sigma2,
       plv,
       blocked: true,
-      blockReason: reason,
-      tangleBreak,
+      blockReason: tangle.reason,
+      tangleBreak: tangle.tangleBreak,
       bnn,
       worm,
     };

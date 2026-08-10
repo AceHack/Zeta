@@ -69,16 +69,16 @@ describe("sensor-fusion-oracle", () => {
 
   // SF-7: Tangle detected when PLV > 0.9
   test("SF-7: tangle detected when PLV > 0.9", () => {
-    const { tangled, reason } = detectTangle(0.95, 0.5);
-    expect(tangled).toBe(true);
-    expect(reason).toContain("phase-locked");
+    const result = detectTangle(0.95, 0.5);
+    expect(result.tangled).toBe(true);
+    if (result.tangled) expect(result.reason).toContain("phase-locked");
   });
 
   // SF-8: Tangle detected when rhoProxy > 0.8
   test("SF-8: tangle detected when rhoProxy > 0.8", () => {
-    const { tangled, tangleBreak } = detectTangle(0.5, 0.85);
-    expect(tangled).toBe(true);
-    expect(tangleBreak?.adinkraCw).toEqual([0, 3, 4, 7]);
+    const result = detectTangle(0.5, 0.85);
+    expect(result.tangled).toBe(true);
+    if (result.tangled) expect(result.tangleBreak.adinkraCw).toEqual([0, 3, 4, 7]);
   });
 
   // SF-9 (negative): No tangle when PLV < 0.9 and rhoProxy < 0.8

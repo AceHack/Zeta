@@ -340,7 +340,7 @@ export function lossyUdpMeshTransport(
   const channel = new LossyUdpChannel(
     {
       broadcast: (text) => base.publish(text),
-      onMessage: (h) => base.onFrame(h),
+      onMessage: (h) => base.onFrame((text, from) => h(text, from ?? "unknown")),
     },
     `mesh:${cfg.group}:${cfg.port}`,
   );
