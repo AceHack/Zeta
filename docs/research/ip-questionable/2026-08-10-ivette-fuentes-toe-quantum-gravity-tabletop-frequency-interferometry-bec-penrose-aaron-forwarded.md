@@ -91,6 +91,7 @@ this file rather than exempted from it:
 |---|---|---|
 | **centre-of-trap proper time ↔ `local-time-never-enters-the-shared-fold`** | **structural, and the strongest item here** | see below — same defect, same mechanism, independently arrived at |
 | **frequency interferometry ↔ lensography / optical encoding** | Aaron's mapping, **Mirror** | the shape matches (read structure out of a *modulation* rather than a *displacement*); the mechanism is not shared and no metering test has been run |
+| **frequency-vs-spatial as a resource-scaling statement about *our own* interferometer** | **structural — audited against the code, §"The audit"** | distinct from the row above: not a mapping onto lensography but a checked claim about what `MachZehnderWSet` measures and what it cannot |
 | Galileo's telescope ↔ multi-oracle / N-version discipline | **analogy with one metered consequence** | "refusing to look" is exactly the failure the N=3 protocol prices; but the analogy does no work the protocol does not already do |
 | epicycles ↔ `only-the-irreducible-is-primitive` | **analogy** | same razor, independently stated; not evidence for either |
 | ~10⁹ atoms, 10⁻¹⁸, 48, … | **no count claims made** | recorded as the source's numbers, identifying nothing |
@@ -126,6 +127,70 @@ measuring time made it, and describe themselves as not worried about it.
 **What this does NOT license.** It is a structural match on the failure mode, not a claim that
 Zeta's fold and an entangled optical clock are the same object, and not a physics claim of any
 kind. Zeta has no stake in whether Penrose is right.
+
+## The audit — we have spatial, we do not have frequency
+
+Aaron 2026-08-10, on reading the frequency-interferometry section: *"even if she is wrong we
+are designing a system that is similar regardless of physics"* / *"we need to upgrade our
+interferometer to be frequency and spatial, i'm not sure which one we have already"* / *"we
+have a mach zehnder interferometer in code at least a toy version, we are trying to use it to
+measure agent independence."*
+
+**Answer: spatial (path) only. There is no frequency-domain interferometer in the tree.**
+
+The audit is exhaustive rather than sampled — a tree-wide search for `interferomet` across all
+source extensions returns exactly four files, and all four were read:
+
+| file | what it is | which axis |
+|---|---|---|
+| `src/Core/WSet.fs` → `MachZehnderWSet` | `H · R1(φ) · H` on `\|0⟩`; `closed` recombines, `openArm` does not | **path** — the key set indexes arms |
+| `src/Core/BipartiteMachZehnder.fs` | the two-party lift over key-*pairs*; CHSH `S` readout | **path**, ×2 parties |
+| `src/Core/QuantumObservableTreaty.fs` | the shared `ChshAngles` convention | — |
+| `tests/Tests.FSharp/WSet.MachZehnder.Tests.fs` | the suite | — |
+
+`phasePlate` applies `e^{iφ}` to arm 1 and identity to arm 0. Every degree of freedom in both
+modules is a **path index**; nothing interferes across frequency or temporal modes.
+
+### Why the gap has a real consequence (a resource claim, not a physics claim)
+
+This is the part that survives even if Fuentes' physics does not, which is exactly Aaron's
+framing. Her inversion is about **which resource buys resolution**:
+
+- **Spatial** interferometry is *baseline*-limited — sensitivity scales with time-of-flight
+  squared, so more resolution demands a bigger apparatus (LIGO's kilometre arms, 300 m
+  baselines, drop towers, an airborne interferometer).
+- **Frequency** interferometry is *coherence-time*-limited — the apparatus can be a 100 µm
+  cloud, and the burden moves to preparing states that live long enough.
+
+Transposed to the agent-independence monitor: the CHSH readout is baseline-limited in the same
+shape. Resolving a weaker correlation costs **more pairs, more settings, more fleet**. A
+frequency-domain version would buy resolution from **observing the same pair longer,
+coherently** — reading the correlation out of the modulation rather than the path split. Small
+apparatus, long observation. That trade is about resource scaling and holds independently of
+whether spacetime is quantum.
+
+### Half of the frequency side already exists, unconnected
+
+`TemporalCoordinationDetection.phaseLockingValue` measures phase coherence between two nodes'
+event streams over time, fed by `PhaseExtraction`'s `epochPhase` / `interEventPhase`. That is
+**a temporal-coherence independence measure that has never been wired to the interferometer** —
+a different instrument, in a different part of the tree, answering a neighbouring question. So
+the frequency lift is not greenfield: it is plausibly the object that unifies PLV with the
+MZ/CHSH monitor under one readout, with the analytic CHSH ceiling as the oracle for both.
+
+### The boundary any frequency version inherits, plus one it adds
+
+`BipartiteMachZehnder` already states its own honest scope: WSet-ℂ gives the *ideal amplitude
+prediction* — the ceiling oracle — not a claim that agents are qubits. A frequency version
+inherits that, and **adds one specific hazard**: coherence time is precisely where a classical
+common cause most easily imitates coherence. `local-time-never-enters-the-shared-fold` is
+directly load-bearing there — if the coherence window is cut by any node's *local* clock, two
+nodes measure different windows and the resulting correlation is an artifact of the windowing
+rather than a property of the agents. That is the same defect as the centre-of-trap patch
+above, which is why the two halves of this document meet.
+
+**Routing:** Aaron is routing the frequency half to **Lumen**. This section is the handoff
+substrate; nothing here is implemented.
 
 ## Anchors (Beacon)
 
