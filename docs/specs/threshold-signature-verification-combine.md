@@ -175,7 +175,6 @@ Cost: one additional implementation, plus real machine contention — three conc
 builds pushed load average past 28 and were the dominant wall-clock cost. **Generation-2
 should stagger builds**, since worktree isolation isolates the filesystem and not the CPU.
 
-
 ---
 
 # CORRECTION — B reported after this combine was merged
