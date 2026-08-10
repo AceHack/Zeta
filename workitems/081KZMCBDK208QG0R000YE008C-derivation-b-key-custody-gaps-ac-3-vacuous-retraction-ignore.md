@@ -24,7 +24,8 @@ composes_with: []
 rather than by reading. Filed rather than fixed: patching B would make the reviewer a third
 derivation touching the second, destroying the independence the N-version protocol buys.
 
-Probe preserved at `derivA-snapshot/probeB.ts` (session scratchpad); it re-runs standalone.
+The execution probe was a session scratchpad and is not preserved in this repository; the
+reproducible findings are retained below without claiming a durable source path.
 
 | Gap | Requirement | Confirmed behaviour |
 |---|---|---|
