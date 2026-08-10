@@ -150,6 +150,16 @@ jobs:
             git add -u -- '*.md'
           fi
 
+      - name: Certified memory reindex (gyroscope axis 3 — MEMORY.md cannot stale)
+        # The second named subject of the healer workitem. Certification is
+        # the write gate (gen(gen)==gen staleness detector + independent
+        # trailing-space/code-span teeth); refuses to write on failure. The
+        # 2026-07-08 closure incident — heals staling this very index — is
+        # now impossible by construction: regeneration runs every tick.
+        run: |
+          bun src/Core.TypeScript/hygiene/healers/memory-reindex-certified.ts
+          git add memory/MEMORY.md
+
       - name: SLO check — auto-file P1 workitems for breaching drift classes
         env:
           ZETA_WORKITEM_ACTOR: drift-sweep
