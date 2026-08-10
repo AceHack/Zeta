@@ -1,0 +1,32 @@
+{
+  "id": "society-msnfzrw9",
+  "at": "2026-08-10T16:25:00.921Z",
+  "by": "society",
+  "kind": "evolution",
+  "generation": 1,
+  "agents": [
+    {
+      "id": "soraya",
+      "fitness": 0.35115486740753565,
+      "generation": 0
+    },
+    {
+      "id": "otto",
+      "fitness": 0.35115486740753565,
+      "generation": 0
+    },
+    {
+      "id": "gen1-0",
+      "fitness": 0,
+      "generation": 2
+    },
+    {
+      "id": "gen1-1",
+      "fitness": 0,
+      "generation": 2
+    }
+  ],
+  "meanFitness": 0.17557743370376783,
+  "fitnessSpread": 0.35115486740753565,
+  "geneticDiversity": 9.788061364759258
+}
