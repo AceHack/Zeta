@@ -9,9 +9,12 @@ import type { BrowserServiceWorkerRegistrationReadout } from "./browser-service-
 import type { BrowserTabTransportReadout } from "./browser-tab-channel-selector";
 import { buildBrowserPwaAssets } from "./browser-pwa-build";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
-import type { ZetaDbDelta, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
+import type {
+  DarkHallBrowserDatabaseCommand,
+  DarkHallBrowserDatabaseControllerReadout,
+} from "../darkhall-ui/darkhall-browser-database-controller";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v2" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v3" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
@@ -38,10 +41,10 @@ interface BrowserPwaPageGlobal {
             readonly host: BrowserLifecycleHostReadout;
             readonly database: DarkHallDatabaseReadout;
           };
-          databaseTick(
-            deltas: readonly ZetaDbDelta[],
+          dispatchController(
+            command: DarkHallBrowserDatabaseCommand,
           ): Promise<
-            | { readonly ok: true; readonly value: ZetaDbTickReadout }
+            | { readonly ok: true; readonly value: DarkHallBrowserDatabaseControllerReadout }
             | { readonly ok: false; readonly feedback: { readonly detail: string } }
           >;
           stop(): unknown;
@@ -60,7 +63,7 @@ export interface BrowserPwaSmokeTranscript {
     readonly pageA: BrowserPwaPageReadout;
   };
   readonly database: {
-    readonly writerTick: ZetaDbTickReadout;
+    readonly writerCommand: DarkHallBrowserDatabaseControllerReadout;
     readonly peerAfterWrite: BrowserPwaPageReadout;
     readonly freshPage: BrowserPwaPageReadout;
   };
@@ -227,8 +230,13 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
   if (!transcript.afterStop.pageA.host.coordinator.liveness.darkTabIds.includes("tab-b")) {
     failures.push("page A did not retain page B's stopped state");
   }
-  if (transcript.database.writerTick.revision !== 1 || transcript.database.writerTick.accepted !== 1) {
-    failures.push("page B did not commit exactly one database delta");
+  if (
+    transcript.database.writerCommand.kind !== "emit" ||
+    transcript.database.writerCommand.signedWeight !== 1 ||
+    transcript.database.writerCommand.database.revision !== 1 ||
+    transcript.database.writerCommand.database.accepted !== 1
+  ) {
+    failures.push("page B did not route one emit through the controller boundary");
   }
   for (const [pageName, page, executorId] of [
     ["peer page A", transcript.database.peerAfterWrite, "tab-a"],
@@ -316,9 +324,12 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     const writerResult = await pageB.evaluate(async () => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
-      return started.value.databaseTick([
-        { eventId: "pwa-score-9000", rowKey: "game/score", payload: "9000", weight: 1 },
-      ]);
+      return started.value.dispatchController({
+        kind: "emit",
+        eventId: "pwa-score-9000",
+        rowKey: "game/score",
+        payload: "9000",
+      });
     });
     if (!writerResult.ok) throw new Error(writerResult.feedback.detail);
     await waitForDatabase(pageA, 1, "9000");
@@ -351,7 +362,7 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       beforeStop: { pageA: beforeA, pageB: beforeB },
       afterStop: { pageA: survivor },
       database: {
-        writerTick: writerResult.value,
+        writerCommand: writerResult.value,
         peerAfterWrite,
         freshPage,
       },

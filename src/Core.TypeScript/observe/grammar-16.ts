@@ -63,17 +63,37 @@ export const GRAMMAR_16_V0: readonly GrammarSlot[] = [
   // Commit (4..7) — face buttons
   { index: 4, group: "Commit", controllerInput: "A", role: "accept / commit the current option (the primary act)" },
   { index: 5, group: "Commit", controllerInput: "B", role: "cancel / back out (no state change beyond a back-event)" },
-  { index: 6, group: "Commit", controllerInput: "X", role: "inspect / observe-more (expand detail; pure observe, no act)" },
-  { index: 7, group: "Commit", controllerInput: "Y", role: "edit-grammar / branch — sovereign rail-change: edit the workflow itself / open an alternative line (a first-class generative exit)" },
+  {
+    index: 6,
+    group: "Commit",
+    controllerInput: "X",
+    role: "inspect / observe-more (expand detail; pure observe, no act)",
+  },
+  {
+    index: 7,
+    group: "Commit",
+    controllerInput: "Y",
+    role: "edit-grammar / branch — sovereign rail-change: edit the workflow itself / open an alternative line (a first-class generative exit)",
+  },
   // Scope (8..11) — bumpers + triggers
   { index: 8, group: "Scope", controllerInput: "LB", role: "scope-out (zoom to the parent / coarser view)" },
   { index: 9, group: "Scope", controllerInput: "RB", role: "scope-in (zoom to the child / finer view)" },
-  { index: 10, group: "Scope", controllerInput: "LT", role: "undo / retract (retraction-native; append a retract-event)" },
+  {
+    index: 10,
+    group: "Scope",
+    controllerInput: "LT",
+    role: "undo / retract (retraction-native; append a retract-event)",
+  },
   { index: 11, group: "Scope", controllerInput: "RT", role: "redo / replay (re-apply a retracted or prior move)" },
   // Meta (12..15) — Start/View + stick clicks
   { index: 12, group: "Meta", controllerInput: "Start", role: "refresh / re-run move-next (re-observe the world)" },
   { index: 13, group: "Meta", controllerInput: "View", role: "status / glass-halo (emit a visibility signal)" },
-  { index: 14, group: "Meta", controllerInput: "L3", role: "free-time / rest — give up the tick; do nothing (NCI: a valid chosen mode)" },
+  {
+    index: 14,
+    group: "Meta",
+    controllerInput: "L3",
+    role: "free-time / rest — give up the tick; do nothing (NCI: a valid chosen mode)",
+  },
   { index: 15, group: "Meta", controllerInput: "R3", role: "escalate / ask-operator (hand a decision to a human)" },
 ] as const;
 
@@ -99,6 +119,7 @@ export const SLOT = {
   INSPECT: 6,
   EDIT_GRAMMAR: 7, // the Y / rail-change generative exit
   UNDO_RETRACT: 10,
+  REFRESH: 12,
   STATUS_GLASS_HALO: 13,
   FREE_TIME: 14, // the L3 / rest NCI slot
   ESCALATE: 15,

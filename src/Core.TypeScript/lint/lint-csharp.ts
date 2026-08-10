@@ -22,12 +22,17 @@ interface Step {
 
 const STEPS: readonly Step[] = [
   {
+    label: "Restore solution for C# formatting",
+    cmd: ["dotnet", "restore", "Zeta.sln"],
+  },
+  {
     label: "Whitespace checks (C#)",
     cmd: [
       "dotnet",
       "format",
       "whitespace",
       "Zeta.sln",
+      "--no-restore",
       "--verify-no-changes",
       "--include",
       "src/**/*.cs",
@@ -43,6 +48,7 @@ const STEPS: readonly Step[] = [
       "format",
       "style",
       "Zeta.sln",
+      "--no-restore",
       "--verify-no-changes",
       "--include",
       "src/**/*.cs",
@@ -58,6 +64,7 @@ const STEPS: readonly Step[] = [
       "format",
       "analyzers",
       "Zeta.sln",
+      "--no-restore",
       "--verify-no-changes",
       "--include",
       "src/**/*.cs",

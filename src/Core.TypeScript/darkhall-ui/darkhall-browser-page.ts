@@ -7,19 +7,26 @@ import { runBrowserZetaDbWake } from "../browser-node/browser-zetadb-image-port"
 import {
   startBrowserZetaDbTabRuntime,
   type BrowserZetaDbTabExecutor,
-  type BrowserZetaDbTabResult,
   type BrowserZetaDbTabRuntime,
 } from "../browser-node/browser-zetadb-tab-runtime";
-import type { ZetaDbDelta, ZetaDbTickLimits, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
+import type { ZetaDbTickLimits } from "../zetadb/zeta-db-node";
 import {
   startNativeDarkHallPwa,
   type DarkHallBrowserPwaOptions,
   type DarkHallBrowserPwaRuntime,
 } from "./darkhall-browser-pwa";
 import { zetaDbTickToDarkHallDatabaseReadout, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
+import {
+  DARK_HALL_BROWSER_DATABASE_ACTIONS,
+  startDarkHallBrowserDatabaseController,
+  type DarkHallBrowserDatabaseCommand,
+  type DarkHallBrowserDatabaseControllerReadout,
+  type DarkHallBrowserDatabaseControllerResult,
+  type DarkHallBrowserDatabaseControllerRuntime,
+} from "./darkhall-browser-database-controller";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v2" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v3" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -39,6 +46,7 @@ export interface DarkHallBrowserPageFeedback {
     | "page-database-start-failed"
     | "page-database-hydration-failed"
     | "page-database-stop-failed"
+    | "page-controller-stop-failed"
     | "page-stop-failed";
   readonly detail: string;
 }
@@ -57,11 +65,14 @@ export interface DarkHallBrowserPageReadout {
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
+  readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
 }
 
 export interface DarkHallBrowserPageRuntime {
   read(): DarkHallBrowserPageReadout;
-  databaseTick(deltas: readonly ZetaDbDelta[]): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout>>;
+  dispatchController(
+    command: DarkHallBrowserDatabaseCommand,
+  ): Promise<DarkHallBrowserDatabaseControllerResult<DarkHallBrowserDatabaseControllerReadout>>;
   stop(): DarkHallBrowserPageResult<DarkHallBrowserPageReadout>;
 }
 
@@ -97,17 +108,15 @@ interface NativePageContext {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v1",
+  seed: "browser-page-v3",
   generatedBy: "darkhall-browser-page",
-  controller: [
-    { cell: 0, label: "observe", actionId: "darkhall.observe", actionClass: "read", selected: true },
-    { cell: 1, label: "choose", actionId: "darkhall.choose", actionClass: "decide" },
-    { cell: 2, label: "execute", actionId: "darkhall.execute", actionClass: "act" },
-    { cell: 3, label: "measure", actionId: "darkhall.measure", actionClass: "commit" },
-    { cell: 8, label: "emit", actionId: "darkhall.emit", actionClass: "plus" },
-    { cell: 9, label: "retract", actionId: "darkhall.retract", actionClass: "minus" },
-    { cell: 12, label: "checkpoint", actionId: "darkhall.checkpoint", actionClass: "harden" },
-  ],
+  controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
+    cell: action.cell,
+    label: action.label,
+    actionId: action.actionId,
+    actionClass: action.actionClass,
+    selected: action.kind === "inspect",
+  })),
   ticks: [
     {
       tick: 0,
@@ -334,6 +343,8 @@ export async function startNativeDarkHallBrowserPage(
   if (!sequence.ok) return sequence;
   const databaseNodeId = identifier(options.databaseNodeId ?? null, `${nodeId.value}:database`);
   if (!databaseNodeId.ok) return databaseNodeId;
+  const pageTranscript = options.transcript ?? DARK_HALL_BROWSER_PAGE_TRANSCRIPT;
+  const databaseLimits = options.databaseLimits ?? defaultDatabaseLimits;
 
   let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
   let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
@@ -359,7 +370,7 @@ export async function startNativeDarkHallBrowserPage(
   try {
     pwaResult = await startNativeDarkHallPwa(
       pwaOptions(
-        options,
+        { ...options, transcript: pageTranscript },
         root,
         context,
         runtimeProbe,
@@ -384,10 +395,11 @@ export async function startNativeDarkHallBrowserPage(
 
   const pwa: DarkHallBrowserPwaRuntime = pwaResult.value;
   let latestDatabase: DarkHallDatabaseReadout | null = null;
+  let latestController: DarkHallBrowserDatabaseControllerReadout | null = null;
   const databaseStarted = startBrowserZetaDbTabRuntime({
     databaseNodeId: databaseNodeId.value,
     executorId: tabId.value,
-    limits: options.databaseLimits ?? defaultDatabaseLimits,
+    limits: databaseLimits,
     execute:
       options.databaseExecutor ??
       ((request) =>
@@ -467,6 +479,44 @@ export async function startNativeDarkHallBrowserPage(
     );
   }
   const hydratedDatabase = latestDatabase;
+  const controllerStarted = startDarkHallBrowserDatabaseController({
+    maxCommandBytes: databaseLimits.maxCheckpointBytes,
+    tick: (deltas) => database.tick(deltas),
+    observe: (readout) => {
+      latestController = readout;
+      const rendered = pwa.browser.updateTranscript({
+        ...pageTranscript,
+        controller: pageTranscript.controller.map((cell) => ({ ...cell, selected: cell.cell === readout.cell })),
+      });
+      if (!rendered.ok) {
+        return {
+          ok: false,
+          feedback: { severity: "heat", code: "controller-readout-render-failed", detail: rendered.detail },
+        };
+      }
+      return context.mount.setAttribute("data-controller-cell", readout.cell.toString())
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: {
+              severity: "heat",
+              code: "controller-readout-attribute-failed",
+              detail: "The browser refused the selected controller-cell readout.",
+            },
+          };
+    },
+  });
+  if (!controllerStarted.ok) {
+    return databaseFailure(
+      context,
+      pwa,
+      database,
+      "page-database-start-failed",
+      `${controllerStarted.feedback.code}: ${controllerStarted.feedback.detail}`,
+      controllerStarted.feedback.severity,
+    );
+  }
+  const controller: DarkHallBrowserDatabaseControllerRuntime = controllerStarted.value;
 
   let status: DarkHallBrowserPageStatus = "live";
   if (
@@ -475,6 +525,7 @@ export async function startNativeDarkHallBrowserPage(
     !context.mount.setAttribute("data-browser-transport", pwa.browser.transport.selected) ||
     !context.mount.setAttribute("data-browser-tab", tabId.value)
   ) {
+    controller.stop();
     database.stop();
     pwa.browser.host.stop();
     return failed("page-status-update-failed", "The browser refused the active page live readout.");
@@ -490,12 +541,25 @@ export async function startNativeDarkHallBrowserPage(
     transport: pwa.browser.transport,
     host: pwa.browser.host.read(),
     database: latestDatabase ?? hydratedDatabase,
+    controller: latestController,
   });
 
   return succeeded({
     read,
-    databaseTick: (deltas) => database.tick(deltas),
+    dispatchController: (command) => controller.dispatch(command),
     stop: () => {
+      const controllerStopped = controller.stop();
+      if (!controllerStopped.ok) {
+        context.mount.setStatus(
+          pageStatusFromSeverity(controllerStopped.feedback.severity),
+          controllerStopped.feedback.code,
+        );
+        return failed(
+          "page-controller-stop-failed",
+          `${controllerStopped.feedback.code}: ${controllerStopped.feedback.detail}`,
+          controllerStopped.feedback.severity,
+        );
+      }
       const databaseStopped = database.stop();
       if (!databaseStopped.ok) {
         context.mount.setStatus(

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
+import { SLOT } from "../observe/grammar-16";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
 import {
   DARK_HALL_BROWSER_PAGE_SCHEMA,
@@ -142,6 +143,7 @@ describe("Dark Hall active browser page", () => {
         accepted: 0,
         rows: [{ rowKey: "game/score", payload: "9000", weight: 1 }],
       },
+      controller: null,
     });
     expect(requests).toHaveLength(1);
     expect(requests[0]).toMatchObject({
@@ -166,9 +168,27 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.innerHTML).toContain("game/score");
 
     expect(
-      await started.value.databaseTick([{ eventId: "score-9001", rowKey: "game/score", payload: "9001", weight: 1 }]),
-    ).toMatchObject({ ok: true, value: { revision: 8, accepted: 1 } });
+      await started.value.dispatchController({
+        kind: "emit",
+        eventId: "score-9001",
+        rowKey: "game/score",
+        payload: "9001",
+      }),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        kind: "emit",
+        cell: SLOT.ACCEPT,
+        actionId: "darkhall.database.emit",
+        signedWeight: 1,
+        database: { revision: 8, accepted: 1 },
+      },
+    });
     expect(started.value.read().database).toMatchObject({ revision: 8, accepted: 1 });
+    expect(started.value.read().controller).toMatchObject({ kind: "emit", cell: SLOT.ACCEPT, signedWeight: 1 });
+    expect(root.mount.attributes.get("data-controller-cell")).toBe(SLOT.ACCEPT.toString());
+    expect(root.mount.innerHTML).toContain(`data-cell="${SLOT.ACCEPT.toString()}"`);
+    expect(root.mount.innerHTML).toContain('data-selected="true"');
     expect(root.serviceWorker.messages).toContainEqual({
       schema: BROWSER_TAB_COORDINATOR_SCHEMA,
       nodeId: "zeta-darkhall-browser-node",
@@ -304,5 +324,18 @@ describe("Dark Hall active browser page", () => {
     expect(document).toContain('href="./">&larr; static room</a>');
     expect(document).not.toMatch(/<script(?! type="module" src="\.\/darkhall-browser-page\.js")/u);
     expect(document).not.toMatch(/setInterval|requestAnimationFrame|performance\.now|Date\./u);
+  });
+
+  test("renders database actions in the canonical universal controller slots", () => {
+    const document = renderDarkHallBrowserNodeDocument();
+
+    expect(document).toContain(`data-cell="${SLOT.ACCEPT.toString()}"`);
+    expect(document).toContain("darkhall.database.emit");
+    expect(document).toContain(`data-cell="${SLOT.INSPECT.toString()}"`);
+    expect(document).toContain("darkhall.database.inspect");
+    expect(document).toContain(`data-cell="${SLOT.UNDO_RETRACT.toString()}"`);
+    expect(document).toContain("darkhall.database.retract");
+    expect(document).toContain(`data-cell="${SLOT.REFRESH.toString()}"`);
+    expect(document).toContain("darkhall.database.refresh");
   });
 });
