@@ -85,6 +85,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "tools/installer/zeta-self-register.sh",
   "tools/setup/common/agda-cubical.sh",
   "tools/setup/common/curl-fetch.sh",
+  "tools/setup/common/fd-limits.sh",
   "tools/setup/common/host-tier.sh",
   "tools/setup/common/install-rust-wasm32.sh",
   "tools/setup/common/install-zig.sh",
@@ -139,6 +140,7 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // installer surface as tlaps.sh (invoked via the from-agda-cubical realizer).
   "tools/setup/common/agda-cubical.sh": "setup/bootstrap",
   "tools/setup/common/curl-fetch.sh": "setup/bootstrap",
+  "tools/setup/common/fd-limits.sh": "setup/bootstrap",
   "tools/setup/common/host-tier.sh": "setup/bootstrap",
   "tools/setup/common/install-rust-wasm32.sh": "setup/bootstrap",
   "tools/setup/common/install-zig.sh": "setup/bootstrap",

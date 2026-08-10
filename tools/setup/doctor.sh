@@ -185,6 +185,7 @@ echo
 # table, not `ulimit -n` (which was already 1048576 and irrelevant to that failure).
 if [ -r "$(dirname "$0")/common/fd-limits.sh" ]; then
   # shellcheck source=common/fd-limits.sh
+  # shellcheck disable=SC1091  # CI runs shellcheck without -x, so the source cannot be followed
   . "$(dirname "$0")/common/fd-limits.sh"
   _fd_cur=$(zeta_fd_system_max)
   if [ -z "$_fd_cur" ]; then
