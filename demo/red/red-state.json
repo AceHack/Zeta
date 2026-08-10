@@ -1,12 +1,10 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-10T17:21:25.916Z",
-  "commit": "b485ee1b",
+  "generatedAtIso": "2026-08-10T19:25:49.825Z",
+  "commit": "9040e04d",
   "totals": {
-    "findings": 1,
-    "bySeverity": {
-      "failing": 1
-    }
+    "findings": 0,
+    "bySeverity": {}
   },
   "territories": [
     {
@@ -36,20 +34,8 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "1 of the last 40 runs on main failed.",
-          "findings": [
-            {
-              "id": "ci:31411814025",
-              "title": "gate",
-              "severity": "failing",
-              "locus": "42a751014 — 2026-08-10 17:00",
-              "evidence": [
-                "feat: retro-phosphor worm oracle (glow dots, scanlines, coupling slid…",
-                "run id 31411814025"
-              ],
-              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
-            }
-          ]
+          "summary": "All of the last 40 runs on main concluded green.",
+          "findings": []
         }
       ]
     }
