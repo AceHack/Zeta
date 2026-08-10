@@ -366,6 +366,95 @@ carries whatever the pair has, not what a judgement says is most transferable �
 is real. Recovering the selectivity without recreating the hub is an open problem worth
 naming rather than papering over.
 
+### The hub was patented — and Itron owns it
+
+> Aaron: *"yep, I wrote the patent on myself."* / *"peer-to-peer is the decentralized
+> upgrade."*
+
+**US20180109563A1 → granted US10834144B2, "Hub and Agent Communication Through a Firewall"**
+— inventors Aaron Stainback and Christopher Higgins, **assignee Itron Inc**, priority
+2016-10-13, granted 2020-11-10, live to 2038.
+
+So the migration-operator-as-hub is not a metaphor this document reached for. Aaron played the
+role at Whitfield's org and then **formalised it as a claimed mechanism**, and the title says
+*hub*. The tension recorded above — that a designated carrier is a central coordinator — is a
+granted patent with his name on it.
+
+The mechanism: an on-premises agent **dials outbound** to a cloud hub over WSS/443, so no
+inbound port opens and no firewall rule changes; the hub then sends **command names and
+parameters**, and *only pre-configured commands exist at the agent* — the hub cannot transmit
+a new one.
+
+**What survives decentralisation.** The security core is not the hub. Outbound-initiated
+contact works peer-to-peer unchanged. And the closed command set — **the far side may name a
+command, never define one** — is a least-privilege property that matters *more* peer-to-peer
+than hub-and-spoke, because a gossip peer deserves exactly as little trust as a hub does.
+Compromising your counterparty must not buy arbitrary execution on you.
+
+**What does not.** The hub as sole mediator: the single-migration-particle shape, which fails
+exactly when the carrier is partitioned or captured.
+
+**The licensing fact, which is not philosophical.** Itron is the assignee. **Inventorship
+conveys no license, and coworker sign-off is not assignee authority.** Citing the patent is
+free — it is a published public document — but practicing its claims is not ours to choose.
+So the decentralised design is not merely the manifesto-preferred one; it is the clean path,
+and a genuinely peer-to-peer architecture with no mediating node does not read on a hub claim.
+*(Not legal advice; claim construction is for counsel.)*
+
+That closes the loop this section opened. The open problem was recovering **selective**
+migration without recreating the hub. The patent shows the hub version is real, works, and is
+owned — so the P2P upgrade is the only direction available, and the selectivity has to be
+recovered structurally rather than by appointing a particle.
+
+## Where the whole thread lands: a distributed identity and permission provider
+
+> Aaron: *"this is our distributed identity and permission provider for distributed trust —
+> defeats this."*
+
+The day started with the ask: *each node must be its own identity provider, with an
+RBAC-shaped policy module — users, claims, hats that grant claims, and bindings of bounded
+duration.* It ends here, and the pieces assembled themselves out of separate threads:
+
+| piece | where it came from | what it does |
+|---|---|---|
+| **per-principal issuance** | R11 — every principal issues and verifies | no single issuer exists to attack |
+| **bounded, self-expiring grants** | R8 + R9, and derivation A's `PhaseWindow` | authority decays without anyone sending a message |
+| **local phase advancement** | the freeze correction | grants expire *on schedule* under partition |
+| **per-principal trust** | §11 Multi-Oracle | each node decides whom it trusts; no mandatory root |
+| **emergent hubs** | scale-free / preferential attachment | reach, earned by use, with no appointment |
+| **k-redundant deference** | §11 made measurable | no function's deference collapses to one node |
+
+### Why it defeats the targeted-hub attack
+
+The fragility result says: take out the highest-degree node and connectivity collapses. In a
+**centralised identity provider** that is fatal, because the highest-degree node *is* the
+issuer — compromise it and you can mint any credential for anyone.
+
+Here the highest-degree node is a **relay, not an issuer**, and the distinction is the whole
+defence. It is the patent's closed-command-set property generalised: *the far side may **name**
+a command, never **define** one* becomes ***a hub may relay an attestation, never issue one.***
+
+So compromising the biggest hub buys an adversary observation and delay. It does **not** buy:
+
+- **forgery** — issuance is per-principal; the hub holds no signing authority for anyone else
+- **escalation** — a hat's claims are bound to its grant window; a relay cannot widen them
+- **persistence** — grants expire against locally-advancing phase, so a captured hub cannot
+  hold authority open by simply refusing to deliver a revocation. **There is nothing to
+  withhold**: expiry needs no message (R8), which is precisely why R8 mattered.
+
+That last one is the sharpest, and it is why the freeze correction was load-bearing rather
+than pedantic. A design where phase freezes under partition would let a captured hub **extend
+every grant in the system indefinitely just by partitioning its victims** — silence would
+become permission. Local advancement makes silence expire instead.
+
+### The honest remainder
+
+Availability is still attackable: kill enough hubs and messages stop flowing, which stops
+*reunion* and therefore stops the evolutionary algorithm's selection step. Nodes keep
+operating correctly and their grants keep expiring correctly — **safety holds, liveness
+degrades.** That is the right trade to have made, and it is a trade, not a proof of
+invulnerability.
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
