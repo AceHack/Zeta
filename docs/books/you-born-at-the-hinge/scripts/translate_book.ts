@@ -2,6 +2,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 const TARGET_DIR = path.join(__dirname, "..", "site");
+const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434/api/generate";
+const MODEL_NAME = process.env.MODEL_NAME || "qwen2.5:7b";
 
 const LANGUAGES: Record<string, string> = {
   zh: "Chinese (中文)",
@@ -68,11 +70,11 @@ async function processChunk(langName: string, chunkHtml: string): Promise<string
 
   const prompt = PROMPT_TEMPLATE(langName, chunkHtml);
   try {
-    const response = await fetch("http://localhost:11434/api/generate", {
+    const response = await fetch(OLLAMA_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "qwen2.5:7b",
+        model: MODEL_NAME,
         prompt: prompt,
         stream: false
       })
