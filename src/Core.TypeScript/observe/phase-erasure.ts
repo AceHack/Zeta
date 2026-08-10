@@ -135,6 +135,94 @@ export function verifyPhase(claimed: PhaseState, maxSpan: number = MAX_RECOVERY_
   return clock.state.seed === claimed.seed;
 }
 
+// ═══ Anchor-Relative Verification: the long-term fix ════════════════════════════
+
+/**
+ * Why this exists, and why `verifyPhase` above could never be wired in.
+ *
+ * `verifyPhase` asks: *does this state derive from GENESIS?* — `seed == f^phase(COMMON_SEED)`.
+ * That question is unanswerable for a **resumed** clock, because resume is
+ * chain-continuation from the last persisted seed: an agent that stopped at phase 40 and
+ * restarted has a perfectly honest seed that genesis-derivation does not reproduce
+ * (nothing in the system ever asserted it would). So the only verifier we had could not
+ * be applied to the state we actually persist, which is why it ended up with zero
+ * production callers — not an oversight, a mismatch between the question and the data.
+ *
+ * The fix is to ask a question the data can answer: *does this state derive from THAT
+ * one?* Verification becomes **relative to an anchor** the verifier already trusts —
+ * typically its own immediately-preceding stamp. Genesis verification is then just the
+ * special case where the anchor is `(0, COMMON_SEED)`.
+ *
+ * This is the same move as the erasure recovery beside it (`recoverForward` already
+ * computes forward *from an anchor*), so the module now verifies over exactly the
+ * structure it recovers over.
+ *
+ * **Scope, declared rather than implied.** This authenticates a chain *segment* against
+ * an anchor you already trust. It does NOT authenticate a peer: you have no trusted
+ * anchor for someone else's chain, so a peer's phase remains **advisory** — usable for
+ * HLC-style ordering, never as evidence of anything. Making peer phases authenticatable
+ * needs signatures over the stamp (`MultiSignatureVerification` is the in-repo primitive),
+ * which is a protocol change and is deliberately not smuggled in here.
+ */
+export interface ChainVerdict {
+  readonly ok: boolean;
+  /** Absent when `ok`. Present and specific when not — this is the drift signal. */
+  readonly reason?: "non-monotonic" | "span-exceeded" | "malformed" | "seed-mismatch";
+  /** How many phases the claim sits ahead of the anchor. */
+  readonly span: number;
+}
+
+/**
+ * Verify that `claimed` is the honest continuation of `anchor`, `span` ticks later.
+ *
+ * Total: returns a verdict rather than throwing, because callers on the resume path need
+ * to *report* a broken chain, not crash on one. Refusing to resume would brick an agent
+ * over a condition it cannot fix locally; the policy for what to do on failure belongs to
+ * the caller and is deliberately left there.
+ */
+export function verifyFromAnchor(
+  anchor: PhaseState,
+  claimed: PhaseState,
+  maxSpan: number = MAX_RECOVERY_SPAN,
+): ChainVerdict {
+  const span = claimed.phase - anchor.phase;
+  if (
+    !Number.isSafeInteger(anchor.phase) ||
+    !Number.isSafeInteger(claimed.phase) ||
+    anchor.phase < 0 ||
+    claimed.phase < 0
+  ) {
+    return { ok: false, reason: "malformed", span };
+  }
+  // A claim at or before its own anchor is not a continuation. Catching this separately
+  // matters: it is the signature of a replayed or rewound stamp, not of corruption.
+  if (span <= 0) return { ok: false, reason: "non-monotonic", span };
+  if (span > maxSpan) return { ok: false, reason: "span-exceeded", span };
+
+  const clock = createPhaseClock(anchor.seed);
+  for (let i = 0; i < span; i++) clock.tick("heartbeat");
+  return clock.state.seed === claimed.seed
+    ? { ok: true, span }
+    : { ok: false, reason: "seed-mismatch", span };
+}
+
+/**
+ * Verify a whole persisted sequence pairwise. Returns the index of the first stamp that
+ * does not continue its predecessor, or `-1` when the chain is sound.
+ *
+ * Reporting the INDEX rather than a boolean is the point: on a broken chain you want to
+ * know *where* it broke, because that locates the tampered or corrupted event.
+ */
+export function firstBrokenLink(
+  chain: readonly PhaseState[],
+  maxSpan: number = MAX_RECOVERY_SPAN,
+): number {
+  for (let i = 1; i < chain.length; i++) {
+    if (!verifyFromAnchor(chain[i - 1]!, chain[i]!, maxSpan).ok) return i;
+  }
+  return -1;
+}
+
 // ═══ Erasure Tolerance Metric ═══════════════════════════════════════════════════
 
 /**

@@ -30,6 +30,7 @@ import { loadWorld } from "./load-world";
 import { renderAction } from "./observe";
 import { execute, type OperatorPort } from "./execute";
 import { folderSink } from "./event-sink-folder";
+import { firstBrokenLink } from "./phase-erasure";
 import { createRealtimeClient } from "./realtime-client";
 import type { RealtimeEvent } from "./realtime-server";
 import { resolveForgeHost } from "../forge-host/registry";
@@ -188,18 +189,46 @@ async function main(): Promise<number> {
       const files = readdirSync(args.eventDir).filter((f: string) => f.endsWith(".json")).sort();
       // Read the last ~20 events (most recent) to find our highest phase
       const recent = files.slice(-20);
-      let maxPhase = -1;
-      let maxSeed = 4; // COMMON_SEED
+      // Collect OUR OWN stamps so the resume point can be verified as a chain, not
+      // merely trusted because it was on disk. Before 2026-08-10 this path took
+      // `raw.phase.derived` straight off the filesystem and seeded the clock with it,
+      // with no verification anywhere in production (Kira, P1).
+      const own: { phase: number; seed: number }[] = [];
       for (const f of recent) {
         try {
           const raw = JSON.parse(readFileSync(join(args.eventDir, f), "utf-8"));
-          if (raw.by === args.by && raw.phase?.phase > maxPhase) {
-            maxPhase = raw.phase.phase;
-            maxSeed = raw.phase.derived;
-          }
+          if (raw.by !== args.by) continue;
+          const phase = raw.phase?.phase;
+          const seed = raw.phase?.derived;
+          if (Number.isSafeInteger(phase) && Number.isSafeInteger(seed)) own.push({ phase, seed });
         } catch { /* skip malformed */ }
       }
-      return maxPhase >= 0 ? { phase: maxPhase, seed: maxSeed } : undefined;
+      if (own.length === 0) return undefined;
+      own.sort((a, b) => a.phase - b.phase);
+
+      // Verify the chain we are about to trust. `verifyFromAnchor` is anchor-relative,
+      // so it works on RESUMED state — which genesis-derivation could not, and which is
+      // why the old verifier had no production callers.
+      const stamps = own.map((s) => ({
+        ...s,
+        lastAdvanceReason: "init" as const,
+        wallClockAt: "",
+      }));
+      const broken = firstBrokenLink(stamps);
+      if (broken >= 0) {
+        // REPORT, do not refuse. A broken self-chain means local corruption or tampering
+        // — something this process cannot repair, and refusing to start would brick the
+        // agent over it. Policy for a broken chain belongs to the operator; this makes
+        // the condition visible instead of silently absorbing it.
+        console.warn(
+          `[phase] CHAIN BROKEN at index ${broken} (phase ${stamps[broken]!.phase}): ` +
+            `stamp does not continue its predecessor. Resuming anyway; this is a drift signal.`,
+        );
+      } else if (stamps.length > 1) {
+        console.log(`[phase] chain verified across ${stamps.length} own stamps`);
+      }
+      const last = own[own.length - 1]!;
+      return { phase: last.phase, seed: last.seed };
     } catch { return undefined; }
   })();
   const phaseClock: PhaseClock = createPhaseClock(undefined, resumePoint);
