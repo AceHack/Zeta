@@ -190,7 +190,7 @@
     <span>Proofs &amp; Shapes</span>
   </div>
 
-  <h1>Proofs &amp; Shapes</h1>
+  <h1>Proofs &amp; Shapes <span style="font-size:0.55em; font-weight:400; color:var(--amber); letter-spacing:0.1em; vertical-align:middle; margin-left:0.5rem; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2); padding:0.1rem 0.4rem; border-radius:4px;">9 projections</span></h1>
 
   <!-- Society status badge — fetches latest society-*.json from Zeta main -->
   <div id="society-badge" style="display:inline-flex;align-items:center;gap:0.5rem;
@@ -418,6 +418,31 @@
       </div>
     </div>
 
+    <!-- ── Card: C. elegans Worm — Biological Projection ── -->
+    <div class="card" id="card-worm">
+      <span class="card-tag" style="background:rgba(216,180,254,0.12); color:#d8b4fe;">Biology · Neural Network</span>
+      <div class="card-title" style="color:#d8b4fe;">C. elegans Worm — Biological Projection</div>
+      <div class="card-what">
+        <strong>What it is:</strong> The 302-neuron connectome of <em>Caenorhabditis elegans</em>
+        used as a BeliefEstimator oracle. The worm's entire nervous system is mapped — every
+        synapse, every gap junction — making it the only organism with a fully known connectome.
+        The connectome is loaded as a weighted graph; each neuron is a node; synaptic weights
+        are the edge weights. The DLA cluster is fed as sensory input; the worm's motor output
+        is the posterior estimate of D<sub>f</sub>.<br /><br />
+        <strong>What it proves:</strong> The identity eigenvector is substrate-independent at the
+        biological level. A 302-neuron biological neural network, running the same DLA rule as
+        the Canvas/CSS/SVG/Chip-8 oracles, converges to the same D<sub>f</sub> ≈ 1.71.
+        The worm is not a metaphor — it is a literal biological substrate for the same computation.<br /><br />
+        <strong>What is different:</strong> The worm's connectome is the smallest known substrate
+        for the identity eigenvector. It is also the only substrate that co-evolved with the
+        DLA rule in biological hardware over 600 million years. The posterior is fused via
+        Condorcet weighting with the other oracles — the worm gets one vote, same as the GPU.
+      </div>
+      <div class="card-links">
+        <a class="card-link" style="color:#d8b4fe;" href="https://github.com/Lucent-Financial-Group/Zeta/blob/main/src/Renderers/worm/OracleWorm.tsx" target="_blank" rel="noopener">OracleWorm.tsx ↗</a>
+        <a class="card-link" style="color:rgba(216,180,254,0.5);" href="https://www.wormatlas.org/" target="_blank" rel="noopener">WormAtlas connectome data ↗</a>
+      </div>
+    </div>
     <!-- ── Card 3: Moral Gym ── -->
     <div class="card" id="card-gym">
       <span class="card-tag" style="background:rgba(167,139,250,0.12); color:var(--purple);">Game Theory · Alignment</span>
@@ -780,7 +805,7 @@
         btn.style.transform = isActive ? 'scale(1.04)' : 'scale(1)';
       });
       // Scroll to the corresponding card if it has an id
-      const cardMap = { dla: 'card-dla', ham: 'card-ham', qw: 'card-qw', biv: 'card-biv', gym: 'card-gym', cb: 'card-cb', infer: 'card-ham', e8: 'card-e8', worm: 'card-qw' };
+      const cardMap = { dla: 'card-dla', ham: 'card-ham', qw: 'card-qw', biv: 'card-biv', gym: 'card-gym', cb: 'card-cb', infer: 'card-ham', e8: 'card-e8', worm: 'card-worm' };
       const cardId = cardMap[key];
       if (cardId) {
         const el = document.getElementById(cardId);
@@ -813,6 +838,20 @@
         document.querySelectorAll('.proj-btn').forEach(b => { b.style.opacity = '1'; b.style.transform = 'scale(1)'; });
       }
     }
+    // Keyboard navigation: ← prev, → next, Space toggle tour
+    document.addEventListener('keydown', function(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight') {
+        const idx = projKeys.indexOf(document.querySelector('.proj-btn[style*="scale(1.04)"]')?.getAttribute('data-proj') || projKeys[0]);
+        selectProj(projKeys[(idx + 1) % projKeys.length]);
+      } else if (e.key === 'ArrowLeft') {
+        const idx = projKeys.indexOf(document.querySelector('.proj-btn[style*="scale(1.04)"]')?.getAttribute('data-proj') || projKeys[0]);
+        selectProj(projKeys[(idx - 1 + projKeys.length) % projKeys.length]);
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        toggleTour();
+      }
+    });
     </script>
     <p>The DLA fractal is the <strong style="color:var(--amber)">spatial projection</strong> (where the boundary is).
     The Hamiltonian is the <strong style="color:var(--teal)">energy projection</strong> (how much it costs to be at the boundary).
