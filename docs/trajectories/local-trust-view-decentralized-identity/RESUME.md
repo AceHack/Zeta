@@ -3,7 +3,7 @@
 Status: **active trajectory**; OPERATOR-INITIATED (Aaron 2026-08-10)
 Last refreshed: 2026-08-10
 Current blocker: none — the first slice is specified and unblocked
-Next concrete action: build `LocalTrustView` (§4 slice 1), keyed on an **open** identifier, with the two-nodes-disagree-and-both-are-correct property as the headline test
+Next concrete action: build `LocalTrustView` (§4 slice 1), keyed on an **open** identifier, with the two-nodes-disagree-and-both-are-correct property as the headline test; then `diffTrustView` (slice 1b) so the disagreement becomes the product
 Evidence links: `src/Core/AntiSybil.fs` · `src/Core/CoordinationSpectrum.fs` · `src/Core/SybilBft*.fs` · `src/Core/IdentityDLA.fs` · `src/Core/PrivacyPreservingIdentity.fs` · `src/Core/IdentityCapacity.fs` · `src/Core.TypeScript/observe/phase-erasure.ts` (`verifyFromAnchor`, `firstBrokenLink`, landed `755640fb0`) · `src/Core/Consent/KskAuthorization.fs` (per-traveler roster precedent) · `src/Core/MultiSignatureVerification.fs`
 
 ---
@@ -91,6 +91,44 @@ Required properties, each a test:
    never `Friend`/`Enemy`. Recency of the deepest shared anchor is the strength measure.
 4. **Open-keyed** — a subject with no `PersonaId` is handled identically to one with.
 5. **No global assembly** — the type makes it impossible to ask for "everyone's" view.
+
+### Slice 1b — `diffTrustView`: the disagreement IS the product
+
+Aaron 2026-08-10: *"we should learn from every unique history."*
+
+This looks like it fights §0 and does not. **Noninterference was never "no influence" — it
+is "no UNDECLARED influence."** A peer's history entering as an *argument you chose to
+fetch and can inspect* is evidence; the same history arriving because the architecture
+consults a registry on your behalf is interference. The function stays pure; the arguments
+get richer.
+
+**And the uniqueness is the entire reason there is anything to learn.** If every node held
+the same history, N nodes would give one observation, not N — the
+correlation-destroys-evidence result from
+[the amortization doc](../../research/2026-08-10-amortization-is-deliberate-correlation-cost-cluster-decomposition-and-the-potential-as-condensate.md),
+arriving from the other side. So the system wants **shared substrate** (cheap — sharing is
+where savings come from) and **independent histories** (informative — independence is
+where evidence comes from). Same structure, opposite sign, exactly as in §5 of that doc.
+
+**The primitive:** `diffTrustView(mine, theirs, subject)` → *which anchors one side holds
+that the other does not*. **Not a merged score.**
+
+Averaging destroys the information; the divergence *localises* what one node knows that
+the other does not. This is Knight & Leveson (1986) applied to trust: independently
+developed versions fail in correlated ways, so voting buys little and the value is in
+**reading the divergence**. It is what made the N=3 clean-room run worth its cost, and it
+is why reconciliation is the wrong instinct here.
+
+Properties:
+
+1. **Pairwise and initiated** — computed by a party who already holds one side. Never a
+   broadcast, never an assembly; slice 2's constraint survives intact.
+2. **Still pure** — `theirs` is an argument, not a fetch performed inside the function.
+3. **Disagreement is an OUTPUT, not an error** — the return type has no "conflict" case,
+   because there is no conflict. Two correct views differing is the normal case.
+4. **Asymmetric by construction** — `diff(a,b)` and `diff(b,a)` answer different
+   questions ("what do they know that I do not" vs the reverse), and collapsing them to a
+   symmetric distance would discard the direction that tells you what to go learn.
 
 ### Slice 2 — the fingerprint constraint
 
