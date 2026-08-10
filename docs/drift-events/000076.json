@@ -1,0 +1,10 @@
+{
+  "tick": 76,
+  "at": "2026-08-10T23:56:56.458Z",
+  "findings": [
+    {
+      "path": "docs/architecture/temporal-persona-triple.md",
+      "rule": "MD022"
+    }
+  ]
+}
