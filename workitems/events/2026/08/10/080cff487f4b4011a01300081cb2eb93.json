@@ -1,0 +1,14 @@
+{
+  "id": "080cff487f4b4011a01300081cb2eb93",
+  "at": "2026-08-10T00:26:01.960Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081KZMGZTB508QG0R003F8AXYQ",
+    "type": "bug",
+    "title": "KSK N-of-M gate accepts signers not on the roster and verifies no signatures",
+    "slug": "ksk-n-of-m-gate-accepts-signers-not-on-the-roster-and-verifi",
+    "priority": "P2",
+    "filename": "081KZMGZTB508QG0R003F8AXYQ-ksk-n-of-m-gate-accepts-signers-not-on-the-roster-and-verifi.md"
+  }
+}
