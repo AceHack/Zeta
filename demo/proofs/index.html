@@ -238,7 +238,7 @@
   <div class="grid">
 
     <!-- ── Card 1: Multi-Oracle DLA ── -->
-    <div class="card">
+    <div class="card" id="card-dla">
       <span class="card-tag" style="background:rgba(245,158,11,0.12); color:var(--amber);">Identity Space · Fractal</span>
       <div class="card-title" style="color:var(--amber);">Multi-Oracle DLA — Identity Space Boundary</div>
       <div class="card-what">
@@ -364,7 +364,7 @@
     </div>
 
     <!-- ── Card 1b: New Math/Physics Connections ── -->
-    <div class="card">
+    <div class="card" id="card-ham">
       <span class="card-tag" style="background:rgba(45,212,191,0.12); color:var(--teal);">Physics · Open Conjectures</span>
       <div class="card-title" style="color:var(--teal);">2026 Math/Physics Connections — 5 Open Conjectures</div>
       <div class="card-what">
@@ -397,7 +397,7 @@
     </div>
 
     <!-- ── Card 2: Chip-9 Cart Viewer ── -->
-    <div class="card">
+    <div class="card" id="card-qw">
       <span class="card-tag" style="background:rgba(96,165,250,0.12); color:var(--blue);">Virtual Machine · Constraint</span>
       <div class="card-title" style="color:var(--blue);">Chip-9 Cart Viewer</div>
       <div class="card-what">
@@ -419,7 +419,7 @@
     </div>
 
     <!-- ── Card 3: Moral Gym ── -->
-    <div class="card">
+    <div class="card" id="card-gym">
       <span class="card-tag" style="background:rgba(167,139,250,0.12); color:var(--purple);">Game Theory · Alignment</span>
       <div class="card-title" style="color:var(--purple);">Moral Gym — PvP is PvE in Disguise</div>
       <div class="card-what">
@@ -442,7 +442,7 @@
     </div>
 
     <!-- ── Card 4: Bivector / UX of Math ── -->
-    <div class="card">
+    <div class="card" id="card-biv">
       <span class="card-tag" style="background:rgba(52,211,153,0.12); color:var(--green);">Geometric Algebra · Evidence</span>
       <div class="card-title" style="color:var(--green);">Bivector Fingerprint — UX of Math</div>
       <div class="card-what">
@@ -465,7 +465,7 @@
     </div>
 
     <!-- ── Card 5: Circuit Breaker ── -->
-    <div class="card">
+    <div class="card" id="card-cb">
       <span class="card-tag" style="background:rgba(248,113,113,0.12); color:var(--red);">Reliability · Agent Safety</span>
       <div class="card-title" style="color:var(--red);">Circuit Breaker — Agent Reliability Substrate</div>
       <div class="card-what">
@@ -488,7 +488,7 @@
     </div>
 
     <!-- ── Card 6: Hamiltonian ── -->
-    <div class="card">
+    <div class="card" id="card-ham2">
       <span class="card-tag" style="background:rgba(45,212,191,0.12); color:var(--teal);">Physics · Energy Landscape</span>
       <div class="card-title" style="color:var(--teal);">Hamiltonian — Energy Landscape of the Identity Space</div>
       <div class="card-what">
@@ -513,7 +513,7 @@
   </div>
 
     <!-- ── Card: E8 Blade-Mask Sandwich ── -->
-    <div class="card">
+    <div class="card" id="card-e8">
       <span class="card-tag" style="background:rgba(167,139,250,0.12); color:var(--purple);">Clifford Algebra · Cross-Language Byte-Lock</span>
       <div class="card-title" style="color:var(--purple);">E8 Blade-Mask Sandwich — Cl(3,0) Measurement</div>
       <div class="card-what">
@@ -756,6 +756,10 @@
       <button class="proj-btn" data-proj="e8" data-color="var(--purple)" style="background:rgba(167,139,250,0.1); color:var(--purple); border:1px solid rgba(167,139,250,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('e8')">⬡ E8 Clifford — algebraic</button>
     </div>
     <div id="proj-desc" style="font-size:0.62rem; color:var(--text); padding:0.4rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:4px; margin-bottom:0.5rem; min-height:1.5rem; transition:all 0.2s;"></div>
+    <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
+      <button id="tour-btn" onclick="toggleTour()" style="background:rgba(245,158,11,0.12); color:var(--amber); border:1px solid rgba(245,158,11,0.25); padding:0.2rem 0.6rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s; letter-spacing:0.06em; text-transform:uppercase;">▶ Tour all projections</button>
+      <span id="tour-label" style="font-size:0.58rem; color:var(--muted);"></span>
+    </div>
     <script>
     const projDescs = {
       dla: '<strong style="color:var(--amber)">Spatial projection</strong> — where the boundary is. DLA grows by random walk attachment; the fractal dimension D_f ≈ 1.71 is the invariant. Seven independent substrates (Canvas, CSS, SVG, Chip-8, Q#, WASM, GPU) all converge to the same D_f from different seeds.',
@@ -776,11 +780,37 @@
         btn.style.transform = isActive ? 'scale(1.04)' : 'scale(1)';
       });
       // Scroll to the corresponding card if it has an id
-      const cardMap = { dla: 'card-dla', e8: 'card-e8' };
+      const cardMap = { dla: 'card-dla', ham: 'card-ham', qw: 'card-qw', biv: 'card-biv', gym: 'card-gym', cb: 'card-cb', infer: 'card-ham', e8: 'card-e8', worm: 'card-qw' };
       const cardId = cardMap[key];
       if (cardId) {
         const el = document.getElementById(cardId);
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+    const projKeys = ['dla', 'ham', 'qw', 'biv', 'gym', 'cb', 'worm', 'infer', 'e8'];
+    let tourActive = false, tourTimer = null, tourStep = 0;
+    function toggleTour() {
+      tourActive = !tourActive;
+      const btn = document.getElementById('tour-btn');
+      const lbl = document.getElementById('tour-label');
+      if (tourActive) {
+        btn.textContent = '⏹ Stop tour';
+        btn.style.background = 'rgba(245,158,11,0.25)';
+        const tick = () => {
+          if (!tourActive) return;
+          const key = projKeys[tourStep % projKeys.length];
+          selectProj(key);
+          lbl.textContent = (tourStep % projKeys.length + 1) + ' / ' + projKeys.length + ' — ' + key;
+          tourStep++;
+          tourTimer = setTimeout(tick, 3000);
+        };
+        tick();
+      } else {
+        btn.textContent = '▶ Tour all projections';
+        btn.style.background = 'rgba(245,158,11,0.12)';
+        lbl.textContent = '';
+        if (tourTimer) clearTimeout(tourTimer);
+        document.querySelectorAll('.proj-btn').forEach(b => { b.style.opacity = '1'; b.style.transform = 'scale(1)'; });
       }
     }
     </script>
