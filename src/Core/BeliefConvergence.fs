@@ -25,6 +25,11 @@ module BeliefConvergence =
 
     /// **Bayesian observe** (fixed likelihood): pointwise-multiply the per-candidate likelihood into the
     /// belief. Unnormalized; the relative distribution is what the convergence claim is about.
+    ///
+    /// **NOT IDEMPOTENT — stated here because the omission reads as a guarantee.** Pointwise
+    /// multiplication is commutative and associative, so this is a commutative MONOID, not a
+    /// join-semilattice: `observe l (observe l b) <> observe l b` for any `l` outside {0,1}. Folding the
+    /// same evidence twice moves the belief. See `observeAll` for the obligation that follows.
     let observe (likelihood: int64[]) (belief: int64[]) : int64[] =
         Array.map2 (*) likelihood belief
 
@@ -38,6 +43,23 @@ module BeliefConvergence =
     /// a local-time filter here makes different nodes fold different sets ⇒ they DIVERGE. Local clocks gate
     /// local actions (timeouts, retransmit, UI); the shared fold sees phase-ordered evidence only. §13
     /// noninterference, on time.
+    ///
+    /// **SECOND INVARIANT — the evidence must be DEDUPLICATED before it gets here** (discipline #6,
+    /// idempotency). The invariant above governs which evidence enters the set and in what order. It says
+    /// nothing about the same evidence entering TWICE, and `observe` is not idempotent, so redelivery
+    /// double-counts: `observeAll [e1; e2; e1] b` differs from `observeAll [e1; e2] b` by exactly one extra
+    /// factor of `e1`. Order-independence (proved in the tests) makes this look safe and does not make it
+    /// safe — the defect is in MULTIPLICITY, not order.
+    ///
+    /// This is load-bearing over a store-and-forward, opportunistically-retransmitting transport
+    /// (Reticulum), where redelivery is the ordinary case rather than the exception. The dedup key must be
+    /// supplied by the caller; the operator's algebra does not provide one, and no fold over a
+    /// non-idempotent operator can. (An idempotent group is trivial — `a + a = a ⇒ a = e` — so a single
+    /// operator cannot be both redelivery-safe and retraction-capable. Auditable divergence lives in the
+    /// Z-set delta log; redelivery-safety lives in the merge. Two structures, forced by a one-line theorem,
+    /// not by taste.)
+    ///
+    /// Found 2026-08-10 by two independently-dispatched reviewers; tests pin the negative.
     let observeAll (evidence: int64[] list) (belief: int64[]) : int64[] =
         List.fold (fun b l -> observe l b) belief evidence
 

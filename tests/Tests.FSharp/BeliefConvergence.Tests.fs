@@ -69,10 +69,60 @@ let ``sharpen (state-dependent) does NOT commute with observe`` () =
     Assert.NotEqual<int64[]>(observeThenSharpen, sharpenThenObserve)
 
 [<Property(Arbitrary = [| typeof<BCArb> |])>]
-let ``observe alone is stable: re-observing a definite likelihood is monotone (no order surprise)`` (b: int64[]) =
-    // sanity: observing the all-ones likelihood is the identity (no evidence changes nothing)
+let ``the all-ones likelihood is the monoid IDENTITY (this is the only likelihood re-observation is free for)`` (b: int64[]) =
+    // Renamed 2026-08-10. The previous name — "re-observing a definite likelihood is stable" —
+    // claimed a property about RE-OBSERVATION that this body does not examine: it exercises only
+    // `ones`, the one likelihood for which re-observing is free because 1*1 = 1. A missing test is a
+    // known gap; a test whose name is broader than its body reads as coverage that does not exist.
+    // The genuine re-observation behaviour is pinned below, and it is a NEGATIVE.
     let ones = Array.create dim 1L
     BC.observe ones b = b
+
+// ── the second boundary: observe is NOT idempotent, so DELAY IS NOT FREE ────────────────────────
+//
+// Commutativity + associativity buy reorder-safety and regroup-safety. They do NOT buy
+// REDELIVERY-safety, which needs idempotence — and pointwise multiplication is not idempotent
+// (x*x <> x for x outside {0,1}). The fold is a commutative MONOID, not a semilattice.
+//
+// Why this matters and is not pedantry: over a store-and-forward, opportunistically-retransmitting
+// transport (Reticulum), redelivery is the ordinary case rather than the exception. The
+// `local-time-never-enters-the-shared-fold` invariant on `observeAll` guards which evidence enters
+// the set and in what order; it does NOT guard the same evidence entering TWICE. That obligation is
+// discipline #6 (idempotency) and it must be met by an external dedup/idempotency key, because the
+// operator's algebra does not supply it.
+//
+// Found 2026-08-10 by two independently-dispatched reviewers reading the source, and confirmed here.
+
+[<Fact>]
+let ``observe is NOT idempotent — the same evidence folded twice moves the belief`` () =
+    let b = [| 1L; 1L; 1L; 1L |]
+    let l = [| 3L; 1L; 1L; 1L |]
+    let once = BC.observe l b
+    let twice = BC.observe l (BC.observe l b)
+    // once = [3;1;1;1]; twice = [9;1;1;1]. Redelivery is not a no-op.
+    Assert.NotEqual<int64[]>(once, twice)
+
+[<Property(Arbitrary = [| typeof<BCArb> |])>]
+let ``idempotence fails for any likelihood outside {0,1} — stated as a property, not one example`` (b: int64[]) =
+    // Guards against the counterexample above being repaired into vacuity by a future change: if
+    // `observe` ever BECOMES idempotent this fails, which is the signal we want, not a silent pass.
+    let l = Array.create dim 2L
+    let definite = Array.create dim 1L // a belief with no zero weights, so squaring is visible
+    ignore b
+    BC.observe l (BC.observe l definite) <> BC.observe l definite
+
+[<Fact>]
+let ``observeAll DOUBLE-COUNTS a redelivered message — the set must be deduplicated upstream`` () =
+    // The concrete failure a retransmitting transport produces. `observeAll` is order-independent
+    // (proved above) and still wrong here, because the defect is in MULTIPLICITY, not order.
+    let b = [| 1L; 1L; 1L; 1L |]
+    let e1 = [| 2L; 1L; 1L; 1L |]
+    let e2 = [| 1L; 3L; 1L; 1L |]
+    let delivered = BC.observeAll [ e1; e2 ] b
+    let redelivered = BC.observeAll [ e1; e2; e1 ] b // e1 arrives twice
+    Assert.NotEqual<int64[]>(delivered, redelivered)
+    // And the divergence is not noise — it is exactly one extra factor of e1.
+    Assert.Equal<int64[]>(BC.observe e1 delivered, redelivered)
 
 // ── MacWilliams / SoftValue bridge (§B open conjecture — numerical test) ──────────────────────────
 // The bridge conjecture: the SoftValue/NCI commutative accumulation operator (pointwise-multiply
