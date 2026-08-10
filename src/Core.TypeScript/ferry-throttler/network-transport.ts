@@ -109,7 +109,7 @@ export function buildBatchTeachingEnvelope(opts: {
   const cells = opts.failedItemIds.map(itemId =>
     makeBatchItemCell({
       itemId,
-      ...(opts.retractableBeliefId !== undefined ? { retractableBeliefId: opts.retractableBeliefId } : {}),
+      ...(opts.retractableBeliefId === undefined ? {} : { retractableBeliefId: opts.retractableBeliefId }),
       generatorFn: opts.generatorFn,
       dimension: opts.dimension,
       severity: opts.severity ?? "error",

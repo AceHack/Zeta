@@ -43,6 +43,10 @@ export interface BrowserZetaDbTabRuntimeOptions {
 
 export interface BrowserZetaDbTabRuntime {
   tick(deltas: readonly ZetaDbDelta[]): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout>>;
+  compareAndSwap(
+    expectedRevision: number,
+    deltas: readonly ZetaDbDelta[],
+  ): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout>>;
   receiveInvalidation(invalidation: BrowserDatabaseInvalidation): BrowserZetaDbTabResult<null>;
   drainInvalidations(): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>>;
   stop(): BrowserZetaDbTabResult<null>;
@@ -109,6 +113,7 @@ export function startBrowserZetaDbTabRuntime(
     deltas: readonly ZetaDbDelta[],
     publishAcceptedWrites: boolean,
     requestedRevision: number | null,
+    expectedRevision: number | null,
   ): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>> => {
     if (stopped) return failed("database-tab-stopped", "The browser database tab runtime has already stopped.");
     if (requestedRevision !== null && latestRevision !== null && requestedRevision <= latestRevision) {
@@ -117,13 +122,16 @@ export function startBrowserZetaDbTabRuntime(
 
     let executed: ZetaDbResult<ZetaDbTickReadout>;
     try {
-      executed = await options.execute({
+      const request: ZetaDbTickRequest = {
         nodeId: options.databaseNodeId,
         executorId: options.executorId,
         executorKind: "browser-tab",
         deltas,
         limits: options.limits,
-      });
+        ...(expectedRevision === null ? {} : { expectedRevision }),
+        ...(expectedRevision === null ? {} : { requireComplete: true }),
+      };
+      executed = await options.execute(request);
     } catch {
       return failed(
         "database-tab-executor-threw",
@@ -165,9 +173,10 @@ export function startBrowserZetaDbTabRuntime(
     deltas: readonly ZetaDbDelta[],
     publishAcceptedWrites: boolean,
     requestedRevision: number | null,
+    expectedRevision: number | null,
   ): Promise<BrowserZetaDbTabResult<ZetaDbTickReadout | null>> => {
     const scheduled = tail
-      .then(() => executeTick(deltas, publishAcceptedWrites, requestedRevision))
+      .then(() => executeTick(deltas, publishAcceptedWrites, requestedRevision, expectedRevision))
       .catch(() => failed("database-tab-executor-threw", "The browser database tick queue rejected unexpectedly."));
     tail = scheduled;
     return scheduled;
@@ -175,7 +184,20 @@ export function startBrowserZetaDbTabRuntime(
 
   return succeeded({
     tick: async (deltas) => {
-      const result = await schedule(deltas, true, null);
+      const result = await schedule(deltas, true, null, null);
+      if (!result.ok) return result;
+      return result.value === null
+        ? failed("database-tab-executor-threw", "The browser database executor returned no tick readout.")
+        : succeeded(result.value);
+    },
+    compareAndSwap: async (expectedRevision, deltas) => {
+      if (!isRevision(expectedRevision)) {
+        return failed(
+          "database-tab-configuration-invalid",
+          "A compare-and-swap tick requires a non-negative safe-integer expected revision.",
+        );
+      }
+      const result = await schedule(deltas, true, null, expectedRevision);
       if (!result.ok) return result;
       return result.value === null
         ? failed("database-tab-executor-threw", "The browser database executor returned no tick readout.")
@@ -194,7 +216,7 @@ export function startBrowserZetaDbTabRuntime(
         );
       }
       if (invalidation.databaseNodeId !== options.databaseNodeId) return succeeded(null);
-      void schedule([], false, invalidation.revision);
+      void schedule([], false, invalidation.revision, null);
       return succeeded(null);
     },
     drainInvalidations: () => tail,

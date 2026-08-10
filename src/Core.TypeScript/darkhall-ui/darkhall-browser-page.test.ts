@@ -303,6 +303,7 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.attributes.get("data-controller-input-status")).toBe("live");
     expect(root.mount.attributes.get("data-controller-input-source")).toBe("none");
     expect(root.mount.attributes.get("data-database-selection-status")).toBe("live");
+    expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.replace"[^>]* disabled>/u);
 
     root.mount.emit("click", {
       button: 0,
@@ -354,6 +355,7 @@ describe("Dark Hall active browser page", () => {
     expect(root.editor.payload.value).toBe("9000");
     expect(root.editor.magnitude.value).toBe("1");
     expect(root.mount.attributes.get("data-database-selection-row")).toBe("game/score");
+    expect(root.mount.innerHTML).not.toMatch(/data-action-id="darkhall\.database\.replace"[^>]* disabled>/u);
     expect(requests).toHaveLength(3);
 
     root.mount.emit("click", {
@@ -425,6 +427,7 @@ describe("Dark Hall active browser page", () => {
     expect(root.editor.attributes.get("data-row-command-status")).toBe("stopped");
     expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.emit"[^>]* disabled>/u);
     expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.retract"[^>]* disabled>/u);
+    expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.replace"[^>]* disabled>/u);
     expect(root.mount.listeners.get("click")?.size ?? 0).toBe(0);
     expect(root.documentListeners.get("keydown")?.size ?? 0).toBe(0);
     expect(root.editor.listeners.get("input")?.size ?? 0).toBe(0);
@@ -583,6 +586,8 @@ describe("Dark Hall active browser page", () => {
     expect(document).toContain("darkhall.database.inspect");
     expect(document).toContain(`data-cell="${SLOT.UNDO_RETRACT.toString()}"`);
     expect(document).toContain("darkhall.database.retract");
+    expect(document).toContain(`data-cell="${SLOT.EDIT_GRAMMAR.toString()}"`);
+    expect(document).toContain("darkhall.database.replace");
     expect(document).toContain(`data-cell="${SLOT.REFRESH.toString()}"`);
     expect(document).toContain("darkhall.database.refresh");
     expect(document).toContain('class="zeta-room-cell-input"');

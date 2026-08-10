@@ -118,6 +118,21 @@ export {
   runBrowserZetaDbWake,
 } from "./browser-zetadb-image-port";
 
+export { createZetaDbStoragePort, type ZetaDbStoragePortOptions } from "./zeta-db-storage-port";
+
+export {
+  createInMemoryStorageCell,
+  hashPayload,
+  InMemoryStoragePort,
+  makeStorageRecord,
+  merkleToHex,
+  ZetaStorageCell,
+  type StorageRecord,
+  type StorageResult,
+  type ZetaStorageCellOptions,
+  type ZetaStoragePort,
+} from "./zeta-storage-cell";
+
 export {
   BROWSER_ZETA_DB_WAKE_RESPONSE_SCHEMA,
   BROWSER_ZETA_DB_WAKE_SCHEMA,

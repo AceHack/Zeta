@@ -1,11 +1,35 @@
 import type { ZetaDbExecutorKind, ZetaDbFeedback, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
 
 export const DARK_HALL_DATABASE_READOUT_SCHEMA = "zeta.darkhall.database-readout.v1" as const;
+export const DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA = "zeta.darkhall.database-row-selection-token.v1" as const;
 
 export interface DarkHallDatabaseRow {
   readonly rowKey: string;
   readonly payload: string;
   readonly weight: number;
+}
+
+/** Versioned row evidence used by compare-and-swap edits. */
+export interface DarkHallDatabaseRowSelectionToken {
+  readonly schema: typeof DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA;
+  readonly nodeId: string;
+  readonly revision: number;
+  readonly row: DarkHallDatabaseRow;
+}
+
+export function selectDarkHallDatabaseRow(
+  readout: DarkHallDatabaseReadout,
+  rowKey: string,
+): DarkHallDatabaseRowSelectionToken | null {
+  const row = readout.rows.find((candidate) => candidate.rowKey === rowKey);
+  return row === undefined
+    ? null
+    : {
+        schema: DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA,
+        nodeId: readout.nodeId,
+        revision: readout.revision,
+        row: { ...row },
+      };
 }
 
 export interface DarkHallDatabaseFeedback {

@@ -111,7 +111,24 @@ describe("Dark Hall browser controller input", () => {
                 payload: "9000",
               },
             }
-          : { ok: true, value: { kind: action.kind } },
+          : action.kind === "replace"
+            ? {
+                ok: true,
+                value: {
+                  kind: "replace",
+                  expected: {
+                    schema: "zeta.darkhall.database-row-selection-token.v1",
+                    nodeId: "room-db",
+                    revision: 1,
+                    row: { rowKey: "game/score", payload: "9000", weight: 1 },
+                  },
+                  retractEventId: "replace-retract",
+                  emitEventId: "replace-emit",
+                  rowKey: "game/score",
+                  payload: "9001",
+                },
+              }
+            : { ok: true, value: { kind: action.kind } },
       dispatch: (command) => {
         commands.push(command);
         return Promise.resolve({ ok: true, value: controllerReadout(command) });
@@ -237,9 +254,7 @@ describe("Dark Hall browser controller input", () => {
       ok: false,
       feedback: { code: "controller-input-command-mismatch" },
     });
-    expect(
-      await started.value.dispatchCell(SLOT.INSPECT, "gamepad" as "keyboard"),
-    ).toMatchObject({
+    expect(await started.value.dispatchCell(SLOT.INSPECT, "gamepad" as "keyboard")).toMatchObject({
       ok: false,
       feedback: { code: "controller-input-source-invalid" },
     });

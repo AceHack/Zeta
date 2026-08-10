@@ -61,10 +61,6 @@ export interface StorageRecord {
   readonly payload: string;
   /** The Merkle hash of the payload. */
   readonly merkleHash: MerkleHash;
-  /** Timestamp of the write (ISO-8601). */
-  readonly at: string;
-  /** Node ID of the writer. */
-  readonly by: string;
 }
 
 export type StorageResult<T> =
@@ -125,10 +121,10 @@ export function merkleToHex(hash: MerkleHash): string {
 }
 
 /** Create a StorageRecord from a payload. */
-export function makeStorageRecord(payload: string, by: string): StorageRecord {
+export function makeStorageRecord(payload: string): StorageRecord {
   const merkleHash = hashPayload(payload);
   const key = merkleToHex(merkleHash);
-  return { key, payload, merkleHash, at: new Date().toISOString(), by };
+  return { key, payload, merkleHash };
 }
 
 // ── In-memory storage backend (for testing and browser fallback) ───────────────
@@ -195,7 +191,7 @@ export class ZetaStorageCell {
    * Returns the content-addressed key (Merkle hash hex).
    */
   async write(payload: string): Promise<StorageResult<string>> {
-    const record = makeStorageRecord(payload, this._nodeId);
+    const record = makeStorageRecord(payload);
 
     // Write to primary
     const primaryResult = await this._primary.write(record);
@@ -213,7 +209,6 @@ export class ZetaStorageCell {
         kind: "storage:write",
         key: record.key,
         payload,
-        at: record.at,
         by: this._nodeId,
       });
       await this._transport.send(event).catch(() => {

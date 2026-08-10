@@ -62,7 +62,9 @@
  * - yin-yang-composition-probe.ts (YinYang composition probe)
  */
 
-import type { ErrorDimension } from "../protocol/error-envelope";
+import type { SalonTransport } from "./gossip-salon";
+import { envelopeId, type ErrorDimension, type ErrorEnvelope } from "../protocol/error-envelope";
+import { mergePriorHint, type PriorHint } from "../protocol/batch-teaching-envelope";
 import {
   makeQuasiState,
   updateQuasiState,
@@ -76,41 +78,17 @@ import {
 import {
   createDimensionalBnn,
   absorbError,
+  ALL_DIMENSIONS,
   dimensionPosterior,
   type DimensionalBnn,
 } from "../planning/error-bnn-bridge";
-import { envelopeId } from "../protocol/error-envelope";
-import type { ErrorEnvelope } from "../protocol/error-envelope";
-import type { PriorHint } from "../protocol/batch-teaching-envelope";
-import { mergePriorHint } from "../protocol/batch-teaching-envelope";
-
-// All known error dimensions for BNN status reporting.
-// Must be a subset of ErrorDimension — "version" is not a valid ErrorDimension.
-const ALL_DIMENSIONS = [
-  "schema", "type", "range", "constraint", "auth",
-  "transport", "toolchain", "calibration", "unknown",
-] as const satisfies readonly ErrorDimension[];
-
-/**
- * ZetaTransport — the minimal transport surface the YinYang cell needs.
- *
- * Distinct from SalonTransport (publish/onFrame) — the ZetaTransportCell
- * uses broadcast/onMessage semantics (async send, typed message handler).
- * The gossip protocol is the Eve protocol in disguise: it travels weight-free
- * frames with no causal dependency on the sender's state.
- */
-export interface ZetaTransport {
-  broadcast(msg: string): Promise<void>;
-  onMessage(h: (msg: string) => void): void;
-}
-
 // ── Transport descriptor ───────────────────────────────────────────────────────
 
 export type TransportKind = "udp" | "reticulum" | "websocket" | "git" | "broadcast";
 
 export interface TransportDescriptor {
   readonly kind: TransportKind;
-  readonly transport: ZetaTransport;
+  readonly transport: SalonTransport;
   /** Priority (0 = highest). Updated by BNN posterior. */
   priority: number;
   /** Quasi-crystal state for this transport. */
@@ -152,8 +130,9 @@ export class ZetaTransportCell {
   private readonly _transports: TransportDescriptor[];
   private readonly _bnn: DimensionalBnn;
   private readonly _nodeId: string;
-  // Use explicit | undefined rather than ? to satisfy exactOptionalPropertyTypes
-  private readonly _onTeachingAck: ((kind: TransportKind, dimension: ErrorDimension, generatorFn: string) => void) | undefined;
+  private readonly _onTeachingAck:
+    | ((kind: TransportKind, dimension: ErrorDimension, generatorFn: string) => void)
+    | undefined;
 
   constructor(opts: ZetaTransportCellOptions) {
     this._transports = [...opts.transports];
@@ -176,7 +155,14 @@ export class ZetaTransportCell {
         // This closes the bidirectional EP loop: receiver can merge our posterior
         const priorHints: PriorHint[] = ALL_DIMENSIONS.map((d): PriorHint => {
           const p = dimensionPosterior(this._bnn, d);
-          return { dimension: d, mu: p.mu, sigma2: p.sigma2 * p.sigma2, robustnessWeight: p.robustnessWeight, obsCount: 0, senderZid: this._nodeId };
+          return {
+            dimension: d,
+            mu: p.mu,
+            sigma2: p.sigma2,
+            robustnessWeight: p.robustnessWeight,
+            obsCount: 0,
+            senderZid: this._nodeId,
+          };
         });
         // Embed prior hints as a JSON annotation in the event (non-breaking: receivers that
         // don't understand it will ignore the __priorHints field)
@@ -186,7 +172,7 @@ export class ZetaTransportCell {
           parsed.__priorHints = priorHints;
           eventWithHints = JSON.stringify(parsed);
         } catch { /* not JSON — send as-is */ }
-        await desc.transport.broadcast(eventWithHints);
+        await desc.transport.publish(eventWithHints);
         // Successful send → update quasi-crystal state (not rejected)
         desc.quasiState = updateQuasiState(desc.quasiState, false);
         desc.feedback = updateLaneFeedback(desc.feedback, { kind: "received", frameId: event.slice(0, 16) });
@@ -209,7 +195,9 @@ export class ZetaTransportCell {
               howToFix: teachingAck.generatorFn,
               dimension: teachingAck.dimension,
               severity: "error",
-              retractableBeliefId: teachingAck.retractableBeliefId,
+              ...(teachingAck.retractableBeliefId === undefined
+                ? {}
+                : { retractableBeliefId: teachingAck.retractableBeliefId }),
             },
             emittedAt: new Date().toISOString(),
           };
@@ -236,7 +224,7 @@ export class ZetaTransportCell {
   /** Register a message handler on all transports. */
   onMessage(handler: (msg: string, from: TransportKind) => void): void {
     for (const desc of this._transports) {
-      desc.transport.onMessage((msg: string) => handler(msg, desc.kind));
+      desc.transport.onFrame((msg) => handler(msg, desc.kind));
     }
   }
 
@@ -249,7 +237,7 @@ export class ZetaTransportCell {
     for (const hint of hints) {
       const local = dimensionPosterior(this._bnn, hint.dimension);
       const merged = mergePriorHint(
-        { mu: local.mu, sigma2: local.sigma2 * local.sigma2 },
+        { mu: local.mu, sigma2: local.sigma2 },
         hint,
         trustWeight,
       );
@@ -299,10 +287,10 @@ export class ZetaTransportCell {
 
 // ── Factory helpers ────────────────────────────────────────────────────────────
 
-/** Create a TransportDescriptor from a ZetaTransport. */
+/** Create a TransportDescriptor from a SalonTransport. */
 export function makeTransportDescriptor(
   kind: TransportKind,
-  transport: ZetaTransport,
+  transport: SalonTransport,
   priority = 0,
 ): TransportDescriptor {
   return {
@@ -315,10 +303,10 @@ export function makeTransportDescriptor(
   };
 }
 
-/** Create a ZetaTransportCell from a map of transport kinds to ZetaTransports. */
+/** Create a ZetaTransportCell from a map of transport kinds to SalonTransports. */
 export function createZetaTransportCell(
   nodeId: string,
-  transports: Partial<Record<TransportKind, ZetaTransport>>,
+  transports: Partial<Record<TransportKind, SalonTransport>>,
   opts?: Partial<Omit<ZetaTransportCellOptions, "nodeId" | "transports">>,
 ): ZetaTransportCell {
   const descs: TransportDescriptor[] = [];

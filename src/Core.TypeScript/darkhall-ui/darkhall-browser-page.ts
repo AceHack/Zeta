@@ -15,7 +15,11 @@ import {
   type DarkHallBrowserPwaOptions,
   type DarkHallBrowserPwaRuntime,
 } from "./darkhall-browser-pwa";
-import { zetaDbTickToDarkHallDatabaseReadout, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
+import {
+  selectDarkHallDatabaseRow,
+  zetaDbTickToDarkHallDatabaseReadout,
+  type DarkHallDatabaseReadout,
+} from "./darkhall-database-readout";
 import {
   DARK_HALL_BROWSER_DATABASE_ACTIONS,
   startDarkHallBrowserDatabaseController,
@@ -47,7 +51,7 @@ import {
 } from "./darkhall-browser-database-row-selection";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v6" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v7" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -151,7 +155,7 @@ interface NativePageContext {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v6",
+  seed: "browser-page-v7",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -416,12 +420,18 @@ export async function startNativeDarkHallBrowserPage(
   const suppliedTranscript = options.transcript ?? DARK_HALL_BROWSER_PAGE_TRANSCRIPT;
   const databaseLimits = options.databaseLimits ?? defaultDatabaseLimits;
   let editorReady = options.controllerCommandResolver !== undefined;
+  let replaceReady = options.controllerCommandResolver !== undefined;
   let selectedControllerCell: number | null = null;
   const controllerTranscript = (): RoomRunTranscript => ({
     ...suppliedTranscript,
     controller: suppliedTranscript.controller.map((cell) => {
       const writeAction = cell.actionId === "darkhall.database.emit" || cell.actionId === "darkhall.database.retract";
-      const enabled = writeAction ? cell.enabled !== false && editorReady : cell.enabled;
+      const replaceAction = cell.actionId === "darkhall.database.replace";
+      const enabled = writeAction
+        ? cell.enabled !== false && editorReady
+        : replaceAction
+          ? cell.enabled !== false && replaceReady
+          : cell.enabled;
       const selected = selectedControllerCell === null ? cell.selected : cell.cell === selectedControllerCell;
       return {
         ...cell,
@@ -569,8 +579,10 @@ export async function startNativeDarkHallBrowserPage(
   }
   const hydratedDatabase = initialDatabase;
   const controllerStarted = startDarkHallBrowserDatabaseController({
+    databaseNodeId: databaseNodeId.value,
     maxCommandBytes: databaseLimits.maxCheckpointBytes,
     tick: (deltas) => database.tick(deltas),
+    compareAndSwap: (expectedRevision, deltas) => database.compareAndSwap(expectedRevision, deltas),
     observe: (readout) => {
       latestController = readout;
       selectedControllerCell = readout.cell;
@@ -613,8 +625,11 @@ export async function startNativeDarkHallBrowserPage(
         options.controllerCommandResolver === undefined
           ? readout.status === "live" && readout.validity === "ready"
           : true;
-      if (nextReady === editorReady) return { ok: true };
+      const nextReplaceReady =
+        options.controllerCommandResolver === undefined ? nextReady && readout.loadedRevision !== null : true;
+      if (nextReady === editorReady && nextReplaceReady === replaceReady) return { ok: true };
       editorReady = nextReady;
+      replaceReady = nextReplaceReady;
       const rendered = pwa.browser.updateTranscript(controllerTranscript());
       return rendered.ok
         ? { ok: true }
@@ -653,11 +668,8 @@ export async function startNativeDarkHallBrowserPage(
   };
   const selectionStarted = startDarkHallBrowserDatabaseRowSelection({
     pointerTarget: context.mount.value,
-    resolveRow: (rowKey) => {
-      const row = (latestDatabase ?? hydratedDatabase).rows.find((candidate) => candidate.rowKey === rowKey);
-      return row === undefined ? null : { ...row };
-    },
-    loadRow: (row) => editor.load(row),
+    resolveSelection: (rowKey) => selectDarkHallDatabaseRow(latestDatabase ?? hydratedDatabase, rowKey),
+    loadSelection: (selection) => editor.load(selection),
     observe: (readout) => {
       const interaction = readout.last;
       const attributes: readonly (readonly [string, string])[] = [

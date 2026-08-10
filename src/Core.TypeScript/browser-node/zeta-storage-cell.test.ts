@@ -37,10 +37,9 @@ describe("zeta-storage-cell", () => {
 
   // ZSC-4: makeStorageRecord produces correct key
   test("ZSC-4: makeStorageRecord key matches hashPayload", () => {
-    const record = makeStorageRecord("test payload", "node-1");
+    const record = makeStorageRecord("test payload");
     const expectedKey = merkleToHex(hashPayload("test payload"));
     expect(record.key).toBe(expectedKey);
-    expect(record.by).toBe("node-1");
     expect(record.payload).toBe("test payload");
   });
 
@@ -104,7 +103,7 @@ describe("zeta-storage-cell", () => {
     const fallback = new InMemoryStoragePort();
     const cell = new ZetaStorageCell({ nodeId: "node-1", primary, fallback });
     // Write only to fallback
-    const record = makeStorageRecord("fallback only", "node-1");
+    const record = makeStorageRecord("fallback only");
     await fallback.write(record);
     // Read from cell (should fall back to secondary)
     const readResult = await cell.read(record.key);

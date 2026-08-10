@@ -119,7 +119,7 @@ async function main(): Promise<number> {
     return {
       dimension: d,
       mu: p.mu,
-      sigma2: p.sigma2 * p.sigma2,
+      sigma2: p.sigma2,
       robustnessWeight: p.robustnessWeight,
       obsCount: 0,
       senderZid: "society-runner",

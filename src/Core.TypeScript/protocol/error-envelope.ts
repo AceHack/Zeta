@@ -62,16 +62,19 @@
  * a status report. A bare failure has dimension "unknown"; the receiver must
  * guess and retry (erasure path).
  */
-export type ErrorDimension =
-  | "schema" // wrong shape / missing field / extra field
-  | "type" // right field, wrong type
-  | "range" // right type, out of allowed range
-  | "constraint" // right range, violates a named constraint
-  | "auth" // identity / permission / trust
-  | "transport" // network / protocol / framing
-  | "toolchain" // build / install / environment (e.g. TS2307 declared-but-not-installed)
-  | "calibration" // prediction vs outcome mismatch
-  | "unknown"; // bare failure — receiver must guess (expensive)
+export const ERROR_DIMENSIONS = [
+  "schema",
+  "type",
+  "range",
+  "constraint",
+  "auth",
+  "transport",
+  "toolchain",
+  "calibration",
+  "unknown",
+] as const;
+
+export type ErrorDimension = (typeof ERROR_DIMENSIONS)[number];
 
 /**
  * Severity of the error — the observation magnitude for the EP update.

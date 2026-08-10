@@ -5,6 +5,10 @@ import {
   type DarkHallBrowserDatabaseRowSelectionReadout,
 } from "./darkhall-browser-database-row-selection";
 import type { DarkHallDatabaseRow } from "./darkhall-database-readout";
+import {
+  DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA,
+  type DarkHallDatabaseRowSelectionToken,
+} from "./darkhall-database-readout";
 
 type NativeListener = (event: unknown) => void;
 
@@ -43,18 +47,24 @@ class NativeRowControl {
 }
 
 const scoreRow: DarkHallDatabaseRow = { rowKey: "game/score", payload: "9000", weight: 2 };
+const scoreSelection: DarkHallDatabaseRowSelectionToken = {
+  schema: DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA,
+  nodeId: "database-a",
+  revision: 7,
+  row: scoreRow,
+};
 
 describe("Dark Hall browser database row selection", () => {
   test("resolves pointer and keyboard activation through typed row state", () => {
     const pointerTarget = new NativePointerTarget();
-    const loaded: DarkHallDatabaseRow[] = [];
+    const loaded: DarkHallDatabaseRowSelectionToken[] = [];
     const readouts: DarkHallBrowserDatabaseRowSelectionReadout[] = [];
     let prevented = 0;
     const started = startDarkHallBrowserDatabaseRowSelection({
       pointerTarget,
-      resolveRow: (rowKey) => (rowKey === scoreRow.rowKey ? scoreRow : null),
-      loadRow: (row) => {
-        loaded.push(row);
+      resolveSelection: (rowKey) => (rowKey === scoreRow.rowKey ? scoreSelection : null),
+      loadSelection: (selection) => {
+        loaded.push(selection);
         return { ok: true };
       },
       observe: (readout) => {
@@ -83,8 +93,9 @@ describe("Dark Hall browser database row selection", () => {
         prevented += 1;
       },
     });
-    expect(loaded).toEqual([scoreRow]);
-    expect(loaded[0]).not.toBe(scoreRow);
+    expect(loaded).toEqual([scoreSelection]);
+    expect(loaded[0]).not.toBe(scoreSelection);
+    expect(loaded[0]?.row).not.toBe(scoreRow);
     expect(prevented).toBe(1);
     expect(started.value.read()).toMatchObject({
       selected: 1,
@@ -111,8 +122,8 @@ describe("Dark Hall browser database row selection", () => {
     const pointerTarget = new NativePointerTarget();
     const started = startDarkHallBrowserDatabaseRowSelection({
       pointerTarget,
-      resolveRow: (rowKey) => (rowKey === scoreRow.rowKey ? scoreRow : null),
-      loadRow: () => ({
+      resolveSelection: (rowKey) => (rowKey === scoreRow.rowKey ? scoreSelection : null),
+      loadSelection: () => ({
         ok: false,
         feedback: {
           severity: "backpressure",
@@ -150,8 +161,8 @@ describe("Dark Hall browser database row selection", () => {
     expect(
       startDarkHallBrowserDatabaseRowSelection({
         pointerTarget: {},
-        resolveRow: () => null,
-        loadRow: () => ({ ok: true }),
+        resolveSelection: () => null,
+        loadSelection: () => ({ ok: true }),
         observe: () => ({ ok: true }),
       }),
     ).toMatchObject({
@@ -161,10 +172,10 @@ describe("Dark Hall browser database row selection", () => {
 
     const resolverFailure = startDarkHallBrowserDatabaseRowSelection({
       pointerTarget: new NativePointerTarget(),
-      resolveRow: () => {
+      resolveSelection: () => {
         throw new Error("resolver failure");
       },
-      loadRow: () => ({ ok: true }),
+      loadSelection: () => ({ ok: true }),
       observe: () => ({ ok: true }),
     });
     expect(resolverFailure.ok).toBe(true);
@@ -178,8 +189,8 @@ describe("Dark Hall browser database row selection", () => {
     expect(
       startDarkHallBrowserDatabaseRowSelection({
         pointerTarget: new NativePointerTarget(),
-        resolveRow: () => scoreRow,
-        loadRow: () => ({ ok: true }),
+        resolveSelection: () => scoreSelection,
+        loadSelection: () => ({ ok: true }),
         observe: () => ({
           ok: false,
           feedback: { severity: "heat", code: "test-observer-refused", detail: "refused" },

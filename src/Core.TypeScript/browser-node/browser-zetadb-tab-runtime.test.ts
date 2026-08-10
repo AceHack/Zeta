@@ -91,6 +91,23 @@ describe("browser ZetaDB tab runtime", () => {
     expect(published).toEqual([]);
   });
 
+  test("forwards an expected revision through the serialized compare-and-swap path", async () => {
+    const requests: ZetaDbTickRequest[] = [];
+    const { runtime } = start((request) => {
+      requests.push(request);
+      return Promise.resolve({ ok: true, value: readout(request, 5) });
+    });
+    const delta = { eventId: "replace/1", rowKey: "game/score", payload: "10000", weight: 1 } as const;
+
+    expect(await runtime.compareAndSwap(4, [delta])).toMatchObject({ ok: true, value: { revision: 5 } });
+    expect(requests[0]).toMatchObject({ expectedRevision: 4, requireComplete: true, deltas: [delta] });
+    expect(await runtime.compareAndSwap(-1, [delta])).toMatchObject({
+      ok: false,
+      feedback: { code: "database-tab-configuration-invalid" },
+    });
+    expect(requests).toHaveLength(1);
+  });
+
   test("returns typed heat for invalid configuration, thrown executors, and work after stop", async () => {
     expect(
       startBrowserZetaDbTabRuntime({

@@ -3,19 +3,19 @@
  */
 import { describe, test, expect } from "bun:test";
 import { createZetaTransportCell, makeTransportDescriptor } from "./zeta-transport-cell";
-import type { ZetaTransport } from "./zeta-transport-cell";
+import type { SalonTransport } from "./gossip-salon";
 
 // ── Mock transport ─────────────────────────────────────────────────────────────
 
-function makeMockTransport(shouldFail = false, failReason = "transport timeout"): ZetaTransport & { sent: string[] } {
+function makeMockTransport(shouldFail = false, failReason = "transport timeout"): SalonTransport & { sent: string[] } {
   const sent: string[] = [];
   return {
     sent,
-    async broadcast(msg: string) {
+    async publish(msg: string) {
       if (shouldFail) throw new Error(failReason);
       sent.push(msg);
     },
-    onMessage(_handler: (msg: string) => void) {},
+    onFrame(_handler: (msg: string) => void) {},
   };
 }
 
@@ -158,7 +158,7 @@ describe("zeta-transport-cell", () => {
   // ZTC-13: PriorHint auto-attach — successful send embeds BNN posteriors in event payload
   test("ZTC-13: PriorHint auto-attach — successful send embeds BNN posteriors", async () => {
     const sent: string[] = [];
-    const mockT = { broadcast: async (e: string) => { sent.push(e); }, onMessage: () => {} };
+    const mockT = { publish: async (event: string) => { sent.push(event); }, onFrame: () => {} };
     const cell = createZetaTransportCell("test-node", { websocket: mockT });
     await cell.send(JSON.stringify({ type: "heartbeat", ts: 1 }));
     expect(sent.length).toBe(1);

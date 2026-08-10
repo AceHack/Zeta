@@ -1,9 +1,14 @@
 import { type BrowserZetaDbTabFeedback, type BrowserZetaDbTabResult } from "../browser-node/browser-zetadb-tab-runtime";
 import { SLOT } from "../observe/grammar-16";
 import type { ZetaDbDelta, ZetaDbFeedback, ZetaDbTickReadout } from "../zetadb/zeta-db-node";
-import { zetaDbTickToDarkHallDatabaseReadout, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
+import {
+  DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA,
+  zetaDbTickToDarkHallDatabaseReadout,
+  type DarkHallDatabaseReadout,
+  type DarkHallDatabaseRowSelectionToken,
+} from "./darkhall-database-readout";
 
-export const DARK_HALL_BROWSER_DATABASE_CONTROLLER_SCHEMA = "zeta.darkhall.browser-database-controller.v1" as const;
+export const DARK_HALL_BROWSER_DATABASE_CONTROLLER_SCHEMA = "zeta.darkhall.browser-database-controller.v2" as const;
 
 export type DarkHallBrowserDatabaseCommand =
   | { readonly kind: "inspect" }
@@ -18,6 +23,15 @@ export type DarkHallBrowserDatabaseCommand =
   | {
       readonly kind: "retract";
       readonly eventId: string;
+      readonly rowKey: string;
+      readonly payload: string;
+      readonly magnitude?: number;
+    }
+  | {
+      readonly kind: "replace";
+      readonly expected: DarkHallDatabaseRowSelectionToken;
+      readonly retractEventId: string;
+      readonly emitEventId: string;
       readonly rowKey: string;
       readonly payload: string;
       readonly magnitude?: number;
@@ -48,6 +62,13 @@ const DATABASE_ACTION_BY_KIND: Readonly<Record<DarkHallBrowserDatabaseCommand["k
       label: "retract",
       actionClass: "minus",
     },
+    replace: {
+      kind: "replace",
+      cell: SLOT.EDIT_GRAMMAR,
+      actionId: "darkhall.database.replace",
+      label: "replace",
+      actionClass: "branch",
+    },
     refresh: {
       kind: "refresh",
       cell: SLOT.REFRESH,
@@ -61,6 +82,7 @@ export const DARK_HALL_BROWSER_DATABASE_ACTIONS: readonly DarkHallBrowserDatabas
   DATABASE_ACTION_BY_KIND.emit,
   DATABASE_ACTION_BY_KIND.inspect,
   DATABASE_ACTION_BY_KIND.retract,
+  DATABASE_ACTION_BY_KIND.replace,
   DATABASE_ACTION_BY_KIND.refresh,
 ];
 
@@ -105,8 +127,13 @@ export type DarkHallBrowserDatabaseControllerEdgeResult =
     };
 
 export interface DarkHallBrowserDatabaseControllerOptions {
+  readonly databaseNodeId: string;
   readonly maxCommandBytes: number;
   readonly tick: (deltas: readonly ZetaDbDelta[]) => Promise<BrowserZetaDbTabResult<ZetaDbTickReadout>>;
+  readonly compareAndSwap: (
+    expectedRevision: number,
+    deltas: readonly ZetaDbDelta[],
+  ) => Promise<BrowserZetaDbTabResult<ZetaDbTickReadout>>;
   readonly observe: (readout: DarkHallBrowserDatabaseControllerReadout) => DarkHallBrowserDatabaseControllerEdgeResult;
 }
 
@@ -149,17 +176,98 @@ function descriptor(kind: DarkHallBrowserDatabaseCommand["kind"]): DarkHallBrows
   return DATABASE_ACTION_BY_KIND[kind];
 }
 
-function commandDelta(
-  command: unknown,
+interface DarkHallBrowserDatabaseCommandPlan {
+  readonly deltas: readonly ZetaDbDelta[];
+  readonly expectedRevision: number | null;
+}
+
+function positiveMagnitude(value: unknown): number | null {
+  const magnitude = value === undefined ? 1 : value;
+  return typeof magnitude === "number" && Number.isSafeInteger(magnitude) && magnitude > 0 ? magnitude : null;
+}
+
+function encodedPlan(
+  deltas: readonly ZetaDbDelta[],
+  expectedRevision: number | null,
   maxCommandBytes: number,
-): DarkHallBrowserDatabaseControllerResult<readonly ZetaDbDelta[]> {
+): DarkHallBrowserDatabaseControllerResult<DarkHallBrowserDatabaseCommandPlan> {
+  let encodedBytes: number;
+  try {
+    encodedBytes = new TextEncoder().encode(JSON.stringify(deltas)).byteLength;
+  } catch {
+    return failed("database-controller-command-invalid", "The database command could not be encoded.");
+  }
+  if (encodedBytes > maxCommandBytes) {
+    return failed(
+      "database-controller-command-too-large",
+      `The database command requires ${encodedBytes.toString()} bytes; the controller budget is ${maxCommandBytes.toString()} bytes.`,
+      "backpressure",
+    );
+  }
+  return succeeded({ deltas, expectedRevision });
+}
+
+function commandPlan(
+  command: unknown,
+  databaseNodeId: string,
+  maxCommandBytes: number,
+): DarkHallBrowserDatabaseControllerResult<DarkHallBrowserDatabaseCommandPlan> {
   if (!isRecord(command) || typeof command.kind !== "string") {
     return failed(
       "database-controller-command-invalid",
       "A database controller command must be an object with a kind.",
     );
   }
-  if (command.kind === "inspect" || command.kind === "refresh") return succeeded([]);
+  if (command.kind === "inspect" || command.kind === "refresh")
+    return succeeded({ deltas: [], expectedRevision: null });
+  if (command.kind === "replace") {
+    const expected = command.expected;
+    const magnitude = positiveMagnitude(command.magnitude);
+    if (
+      !isRecord(expected) ||
+      expected.schema !== DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA ||
+      expected.nodeId !== databaseNodeId ||
+      typeof expected.revision !== "number" ||
+      !Number.isSafeInteger(expected.revision) ||
+      expected.revision < 0 ||
+      !isRecord(expected.row) ||
+      !isIdentifier(expected.row.rowKey) ||
+      typeof expected.row.payload !== "string" ||
+      typeof expected.row.weight !== "number" ||
+      !Number.isSafeInteger(expected.row.weight) ||
+      expected.row.weight === 0 ||
+      !isIdentifier(command.retractEventId) ||
+      !isIdentifier(command.emitEventId) ||
+      command.retractEventId === command.emitEventId ||
+      !isIdentifier(command.rowKey) ||
+      typeof command.payload !== "string" ||
+      magnitude === null
+    ) {
+      return failed(
+        "database-controller-command-invalid",
+        "A replace command requires versioned row evidence, two distinct event identifiers, and a valid replacement row.",
+      );
+    }
+    const sign = expected.row.weight < 0 ? -1 : 1;
+    return encodedPlan(
+      [
+        {
+          eventId: command.retractEventId,
+          rowKey: expected.row.rowKey,
+          payload: expected.row.payload,
+          weight: -expected.row.weight,
+        },
+        {
+          eventId: command.emitEventId,
+          rowKey: command.rowKey,
+          payload: command.payload,
+          weight: sign * magnitude,
+        },
+      ],
+      expected.revision,
+      maxCommandBytes,
+    );
+  }
   if (
     (command.kind !== "emit" && command.kind !== "retract") ||
     !isIdentifier(command.eventId) ||
@@ -172,9 +280,8 @@ function commandDelta(
     );
   }
 
-  const magnitudeValue = command.magnitude;
-  const magnitude = magnitudeValue === undefined ? 1 : magnitudeValue;
-  if (typeof magnitude !== "number" || !Number.isSafeInteger(magnitude) || magnitude <= 0) {
+  const magnitude = positiveMagnitude(command.magnitude);
+  if (magnitude === null) {
     return failed(
       "database-controller-command-invalid",
       "A database command magnitude must be a positive safe integer.",
@@ -186,27 +293,18 @@ function commandDelta(
     payload: command.payload,
     weight: command.kind === "emit" ? magnitude : -magnitude,
   };
-  let encodedBytes: number;
-  try {
-    encodedBytes = new TextEncoder().encode(JSON.stringify(delta)).byteLength;
-  } catch {
-    return failed("database-controller-command-invalid", "The database command could not be encoded.");
-  }
-  if (encodedBytes > maxCommandBytes) {
-    return failed(
-      "database-controller-command-too-large",
-      `The database command requires ${encodedBytes.toString()} bytes; the controller budget is ${maxCommandBytes.toString()} bytes.`,
-      "backpressure",
-    );
-  }
-  return succeeded([delta]);
+  return encodedPlan([delta], null, maxCommandBytes);
 }
 
 /** Own the semantic-command to signed-delta boundary for one active browser page. */
 export function startDarkHallBrowserDatabaseController(
   options: DarkHallBrowserDatabaseControllerOptions,
 ): DarkHallBrowserDatabaseControllerResult<DarkHallBrowserDatabaseControllerRuntime> {
-  if (!Number.isSafeInteger(options.maxCommandBytes) || options.maxCommandBytes <= 0) {
+  if (
+    !isIdentifier(options.databaseNodeId) ||
+    !Number.isSafeInteger(options.maxCommandBytes) ||
+    options.maxCommandBytes <= 0
+  ) {
     return failed(
       "database-controller-configuration-invalid",
       "A browser database controller requires a positive safe-integer command byte budget.",
@@ -217,12 +315,15 @@ export function startDarkHallBrowserDatabaseController(
   return succeeded({
     dispatch: async (command) => {
       if (stopped) return failed("database-controller-stopped", "The browser database controller has stopped.");
-      const deltas = commandDelta(command, options.maxCommandBytes);
-      if (!deltas.ok) return deltas;
+      const plan = commandPlan(command, options.databaseNodeId, options.maxCommandBytes);
+      if (!plan.ok) return plan;
 
       let tick: BrowserZetaDbTabResult<ZetaDbTickReadout>;
       try {
-        tick = await options.tick(deltas.value);
+        tick =
+          plan.value.expectedRevision === null
+            ? await options.tick(plan.value.deltas)
+            : await options.compareAndSwap(plan.value.expectedRevision, plan.value.deltas);
       } catch {
         return failed(
           "database-controller-executor-threw",
@@ -237,8 +338,8 @@ export function startDarkHallBrowserDatabaseController(
         kind: command.kind,
         cell: action.cell,
         actionId: action.actionId,
-        deltaCount: deltas.value.length,
-        signedWeight: deltas.value.reduce((sum, delta) => sum + delta.weight, 0),
+        deltaCount: plan.value.deltas.length,
+        signedWeight: plan.value.deltas.reduce((sum, delta) => sum + delta.weight, 0),
         database: zetaDbTickToDarkHallDatabaseReadout(tick.value),
       };
       try {

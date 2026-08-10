@@ -200,7 +200,7 @@ export function decodeRumor(text: string): Rumor | null {
 
 /// Minimal transport surface the gossiper needs (matches the discovery/broadcast transports).
 export interface SalonTransport {
-  publish(text: string): void;
+  publish(text: string): void | Promise<void>;
   onFrame(handler: (text: string, from?: string) => void): void;
 }
 

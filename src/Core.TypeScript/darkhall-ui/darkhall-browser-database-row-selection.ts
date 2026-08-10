@@ -1,5 +1,5 @@
 import type { DarkHallBrowserControllerInputSource } from "./darkhall-browser-controller-input";
-import type { DarkHallDatabaseRow } from "./darkhall-database-readout";
+import type { DarkHallDatabaseRowSelectionToken } from "./darkhall-database-readout";
 
 export const DARK_HALL_BROWSER_DATABASE_ROW_SELECTION_SCHEMA =
   "zeta.darkhall.browser-database-row-selection.v1" as const;
@@ -58,8 +58,10 @@ export interface DarkHallBrowserDatabaseRowSelectionReadout {
 
 export interface DarkHallBrowserDatabaseRowSelectionOptions {
   readonly pointerTarget: unknown;
-  readonly resolveRow: (rowKey: string) => DarkHallDatabaseRow | null;
-  readonly loadRow: (row: DarkHallDatabaseRow) => DarkHallBrowserDatabaseRowSelectionEdgeResult;
+  readonly resolveSelection: (rowKey: string) => DarkHallDatabaseRowSelectionToken | null;
+  readonly loadSelection: (
+    selection: DarkHallDatabaseRowSelectionToken,
+  ) => DarkHallBrowserDatabaseRowSelectionEdgeResult;
   readonly observe: (
     readout: DarkHallBrowserDatabaseRowSelectionReadout,
   ) => DarkHallBrowserDatabaseRowSelectionEdgeResult;
@@ -245,9 +247,9 @@ export function startDarkHallBrowserDatabaseRowSelection(
       );
     }
 
-    let row: DarkHallDatabaseRow | null;
+    let selection: DarkHallDatabaseRowSelectionToken | null;
     try {
-      row = options.resolveRow(rowKey);
+      selection = options.resolveSelection(rowKey);
     } catch {
       return recordFailure(
         source,
@@ -258,7 +260,7 @@ export function startDarkHallBrowserDatabaseRowSelection(
         ).feedback,
       );
     }
-    if (row === null) {
+    if (selection === null || selection.row.rowKey !== rowKey) {
       return recordFailure(
         source,
         rowKey,
@@ -272,7 +274,7 @@ export function startDarkHallBrowserDatabaseRowSelection(
 
     let loaded: DarkHallBrowserDatabaseRowSelectionEdgeResult;
     try {
-      loaded = options.loadRow({ ...row });
+      loaded = options.loadSelection({ ...selection, row: { ...selection.row } });
     } catch {
       return recordFailure(
         source,

@@ -73,6 +73,10 @@ export interface ZetaDbTickRequest {
   readonly nodeId: string;
   readonly executorId: string;
   readonly executorKind: ZetaDbExecutorKind;
+  /** Reject the whole tick unless the durable image is still at this revision. */
+  readonly expectedRevision?: number;
+  /** Reject the whole tick when its complete delta batch cannot be admitted. */
+  readonly requireComplete?: boolean;
   readonly deltas: readonly ZetaDbDelta[];
   readonly limits: ZetaDbTickLimits;
 }
@@ -307,6 +311,8 @@ function validateRequest(request: ZetaDbTickRequest): ZetaDbResult<readonly Zeta
     !isIdentifier(request.nodeId) ||
     !isIdentifier(request.executorId) ||
     !EXECUTOR_KINDS.has(request.executorKind) ||
+    (request.expectedRevision !== undefined && !isRevision(request.expectedRevision)) ||
+    (request.requireComplete !== undefined && typeof request.requireComplete !== "boolean") ||
     !Number.isSafeInteger(request.limits.maxDeltas) ||
     request.limits.maxDeltas < 1 ||
     !Number.isSafeInteger(request.limits.maxEntries) ||
@@ -529,8 +535,18 @@ export async function runZetaDbNodeTick(
   if (!validated.ok) return validated;
   const image = await loadZetaDbImage(port, request.nodeId);
   if (!image.ok) return image;
+  if (request.expectedRevision !== undefined && image.value.revision !== request.expectedRevision) {
+    return failed(
+      "database-revision-conflict",
+      `Database revision ${String(image.value.revision)} does not match expected revision ${String(request.expectedRevision)}.`,
+      "backpressure",
+    );
+  }
   const admission = admitZetaDbDeltas(image.value, validated.value, request.limits);
   if (!admission.ok) return admission;
+  if (request.requireComplete === true && admission.value.capacityDetail !== null) {
+    return failed("database-capacity-exhausted", admission.value.capacityDetail, "backpressure");
+  }
 
   let revision = image.value.revision;
   if (admission.value.accepted > 0) {

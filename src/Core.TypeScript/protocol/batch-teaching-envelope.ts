@@ -284,7 +284,7 @@ export function makeBatchItemCell(spec: {
 }): BatchItemCell {
   return {
     itemId: spec.itemId,
-    ...(spec.retractableBeliefId !== undefined ? { retractableBeliefId: spec.retractableBeliefId } : {}),
+    ...(spec.retractableBeliefId === undefined ? {} : { retractableBeliefId: spec.retractableBeliefId }),
     generatorFn: spec.generatorFn,
     dimension: spec.dimension,
     severity: spec.severity,
@@ -292,7 +292,7 @@ export function makeBatchItemCell(spec: {
     what: spec.what,
     itemStatus: spec.itemStatus ?? 422,
     isTeaching: spec.retractableBeliefId !== undefined,
-    ...(spec.accountedReason !== undefined ? { accountedReason: spec.accountedReason } : {}),
+    ...(spec.accountedReason === undefined ? {} : { accountedReason: spec.accountedReason }),
   };
 }
 

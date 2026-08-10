@@ -41,11 +41,14 @@
 
 import { updateStudentT, createStudentTState, type StudentTState, type StudentTUpdateResult } from "./student-t-bnn";
 import {
+  ERROR_DIMENSIONS,
   toEpObservation,
   EnvelopeIdempotencyGuard,
   type ErrorEnvelope,
   type ErrorDimension,
 } from "../protocol/error-envelope";
+
+export const ALL_DIMENSIONS: readonly ErrorDimension[] = ERROR_DIMENSIONS;
 
 // ── Per-dimension BNN state ────────────────────────────────────────────────────
 
@@ -72,20 +75,9 @@ export interface DimensionalBnn {
  * All states start at the prior (mu=0, sigma²=1, nu=3).
  */
 export function createDimensionalBnn(nu = 3, obsVariance = 1.0): DimensionalBnn {
-  const dimensions: ErrorDimension[] = [
-    "schema",
-    "type",
-    "range",
-    "constraint",
-    "auth",
-    "transport",
-    "toolchain",
-    "calibration",
-    "unknown",
-  ];
   const states = new Map<ErrorDimension, StudentTState>();
   const robustnessWeights = new Map<ErrorDimension, number>();
-  for (const dim of dimensions) {
+  for (const dim of ALL_DIMENSIONS) {
     states.set(dim, createStudentTState(0, 1, nu, obsVariance));
     robustnessWeights.set(dim, 1);
   }

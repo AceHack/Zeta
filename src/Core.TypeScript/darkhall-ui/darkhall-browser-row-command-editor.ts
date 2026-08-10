@@ -3,9 +3,9 @@ import type {
   DarkHallBrowserDatabaseCommand,
 } from "./darkhall-browser-database-controller";
 import type { DarkHallBrowserControllerInputSource } from "./darkhall-browser-controller-input";
-import type { DarkHallDatabaseRow } from "./darkhall-database-readout";
+import type { DarkHallDatabaseRowSelectionToken } from "./darkhall-database-readout";
 
-export const DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA = "zeta.darkhall.browser-row-command-editor.v2" as const;
+export const DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA = "zeta.darkhall.browser-row-command-editor.v3" as const;
 export const DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_MOUNT_ID = "darkhall-row-command-editor" as const;
 
 const rowKeySelector = "[data-row-command-key]";
@@ -28,6 +28,7 @@ export interface DarkHallBrowserRowCommandEditorFeedback {
     | "row-command-key-invalid"
     | "row-command-payload-too-large"
     | "row-command-magnitude-invalid"
+    | "row-command-replace-selection-required"
     | "row-command-editor-stopped";
   readonly detail: string;
 }
@@ -38,7 +39,7 @@ export type DarkHallBrowserRowCommandEditorResult<T> =
 
 export interface DarkHallBrowserRowCommandEditorInteraction {
   readonly source: DarkHallBrowserControllerInputSource;
-  readonly kind: "emit" | "retract";
+  readonly kind: "emit" | "retract" | "replace";
   readonly eventId: string | null;
   readonly outcome: "resolved" | "refused" | "backpressured";
   readonly feedbackCode: DarkHallBrowserRowCommandEditorFeedback["code"] | null;
@@ -57,6 +58,7 @@ export interface DarkHallBrowserRowCommandEditorReadout {
   readonly nextEventSequence: number;
   readonly loaded: number;
   readonly loadedRowKey: string | null;
+  readonly loadedRevision: number | null;
   readonly feedbackCode: DarkHallBrowserRowCommandEditorFeedback["code"] | null;
   readonly last: DarkHallBrowserRowCommandEditorInteraction | null;
 }
@@ -81,7 +83,9 @@ export interface DarkHallBrowserRowCommandEditorOptions {
 
 export interface DarkHallBrowserRowCommandEditorRuntime {
   read(): DarkHallBrowserRowCommandEditorReadout;
-  load(row: DarkHallDatabaseRow): DarkHallBrowserRowCommandEditorResult<DarkHallBrowserRowCommandEditorReadout>;
+  load(
+    selection: DarkHallDatabaseRowSelectionToken,
+  ): DarkHallBrowserRowCommandEditorResult<DarkHallBrowserRowCommandEditorReadout>;
   resolve(
     action: DarkHallBrowserDatabaseAction,
     source: DarkHallBrowserControllerInputSource,
@@ -259,6 +263,7 @@ function renderReadoutAttributes(
     ["data-row-command-backpressured", readout.backpressured.toString()],
     ["data-row-command-loaded", readout.loaded.toString()],
     ["data-row-command-loaded-key", readout.loadedRowKey ?? "none"],
+    ["data-row-command-loaded-revision", readout.loadedRevision?.toString() ?? "none"],
     ["data-row-command-feedback", readout.feedbackCode ?? "none"],
   ];
   try {
@@ -335,6 +340,7 @@ export function startDarkHallBrowserRowCommandEditor(
   let nextEventSequence = 0;
   let loaded = 0;
   let loadedRowKey: string | null = null;
+  let loadedSelection: DarkHallDatabaseRowSelectionToken | null = null;
   let last: DarkHallBrowserRowCommandEditorInteraction | null = null;
 
   const snapshot = (): EditorSnapshot => {
@@ -379,6 +385,7 @@ export function startDarkHallBrowserRowCommandEditor(
       nextEventSequence,
       loaded,
       loadedRowKey,
+      loadedRevision: loadedSelection?.revision ?? null,
       feedbackCode: current.validation.ok ? null : current.validation.feedback.code,
       last,
     };
@@ -429,14 +436,45 @@ export function startDarkHallBrowserRowCommandEditor(
       return published.ok ? current.validation : published;
     }
     const eventId = `${options.eventIdPrefix}/row-command/${nextEventSequence.toString()}`;
-    const command: DarkHallBrowserDatabaseCommand = {
-      kind: action.kind,
-      eventId,
-      rowKey: current.rowKey,
-      payload: current.payload,
-      magnitude: current.magnitude ?? 1,
-    };
-    nextEventSequence += 1;
+    let command: DarkHallBrowserDatabaseCommand;
+    if (action.kind === "replace") {
+      if (loadedSelection === null) {
+        refused += 1;
+        last = {
+          source,
+          kind: action.kind,
+          eventId: null,
+          outcome: "refused",
+          feedbackCode: "row-command-replace-selection-required",
+        };
+        const missing = failed(
+          "row-command-replace-selection-required",
+          "Replace requires a versioned row selection.",
+          "cold",
+        );
+        const published = publish();
+        return published.ok ? missing : published;
+      }
+      command = {
+        kind: "replace",
+        expected: { ...loadedSelection, row: { ...loadedSelection.row } },
+        retractEventId: eventId,
+        emitEventId: `${options.eventIdPrefix}/row-command/${(nextEventSequence + 1).toString()}`,
+        rowKey: current.rowKey,
+        payload: current.payload,
+        magnitude: current.magnitude ?? 1,
+      };
+      nextEventSequence += 2;
+    } else {
+      command = {
+        kind: action.kind,
+        eventId,
+        rowKey: current.rowKey,
+        payload: current.payload,
+        magnitude: current.magnitude ?? 1,
+      };
+      nextEventSequence += 1;
+    }
     resolved += 1;
     last = { source, kind: action.kind, eventId, outcome: "resolved", feedbackCode: null };
     const published = publish();
@@ -444,9 +482,10 @@ export function startDarkHallBrowserRowCommandEditor(
   };
 
   const load = (
-    row: DarkHallDatabaseRow,
+    selection: DarkHallDatabaseRowSelectionToken,
   ): DarkHallBrowserRowCommandEditorResult<DarkHallBrowserRowCommandEditorReadout> => {
     if (stopped) return failed("row-command-editor-stopped", "The row command editor has stopped.", "cold");
+    const row = selection.row;
     const magnitude = Number.isSafeInteger(row.weight) && row.weight !== 0 ? Math.abs(row.weight) : null;
     const payloadBytes = new TextEncoder().encode(row.payload).byteLength;
     const rowValidation = validation(row.rowKey, payloadBytes, magnitude, options.maxPayloadBytes);
@@ -467,6 +506,7 @@ export function startDarkHallBrowserRowCommandEditor(
     }
     loaded += 1;
     loadedRowKey = row.rowKey;
+    loadedSelection = { ...selection, row: { ...row } };
     return publish();
   };
 

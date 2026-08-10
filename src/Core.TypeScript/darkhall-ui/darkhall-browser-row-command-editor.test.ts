@@ -2,6 +2,11 @@ import { describe, expect, test } from "bun:test";
 import { SLOT } from "../observe/grammar-16";
 import { DARK_HALL_BROWSER_DATABASE_ACTIONS } from "./darkhall-browser-database-controller";
 import {
+  DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA,
+  type DarkHallDatabaseRow,
+  type DarkHallDatabaseRowSelectionToken,
+} from "./darkhall-database-readout";
+import {
   DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_MOUNT_ID,
   DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA,
   renderDarkHallBrowserRowCommandEditorHtml,
@@ -55,10 +60,19 @@ class NativeEditorMount {
   }
 }
 
-function action(kind: "emit" | "inspect" | "retract" | "refresh") {
+function action(kind: "emit" | "inspect" | "retract" | "replace" | "refresh") {
   const selected = DARK_HALL_BROWSER_DATABASE_ACTIONS.find((candidate) => candidate.kind === kind);
   if (selected === undefined) throw new Error(`Missing ${kind} action.`);
   return selected;
+}
+
+function selection(row: DarkHallDatabaseRow, revision = 7): DarkHallDatabaseRowSelectionToken {
+  return {
+    schema: DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA,
+    nodeId: "database-a",
+    revision,
+    row,
+  };
 }
 
 describe("Dark Hall browser row command editor", () => {
@@ -216,7 +230,7 @@ describe("Dark Hall browser row command editor", () => {
 
     expect(started.ok).toBe(true);
     if (!started.ok) return;
-    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: -3 })).toMatchObject({
+    expect(started.value.load(selection({ rowKey: "game/score", payload: "9000", weight: -3 }))).toMatchObject({
       ok: true,
       value: {
         validity: "ready",
@@ -224,6 +238,7 @@ describe("Dark Hall browser row command editor", () => {
         magnitude: 3,
         loaded: 1,
         loadedRowKey: "game/score",
+        loadedRevision: 7,
         nextEventSequence: 0,
         resolved: 0,
       },
@@ -234,21 +249,64 @@ describe("Dark Hall browser row command editor", () => {
     expect(mount.attributes.get("data-row-command-loaded")).toBe("1");
     expect(mount.attributes.get("data-row-command-loaded-key")).toBe("game/score");
 
-    expect(started.value.load({ rowKey: "game/score", payload: "12345", weight: 1 })).toMatchObject({
+    expect(started.value.load(selection({ rowKey: "game/score", payload: "12345", weight: 1 }))).toMatchObject({
       ok: false,
       feedback: { severity: "backpressure", code: "row-command-payload-too-large" },
     });
-    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: 0 })).toMatchObject({
+    expect(started.value.load(selection({ rowKey: "game/score", payload: "9000", weight: 0 }))).toMatchObject({
       ok: false,
       feedback: { severity: "cold", code: "row-command-magnitude-invalid" },
     });
     expect(started.value.read()).toMatchObject({ loaded: 1, nextEventSequence: 0 });
 
     expect(started.value.stop().ok).toBe(true);
-    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: 1 })).toMatchObject({
+    expect(started.value.load(selection({ rowKey: "game/score", payload: "9000", weight: 1 }))).toMatchObject({
       ok: false,
       feedback: { severity: "cold", code: "row-command-editor-stopped" },
     });
+  });
+
+  test("requires a versioned selection and spends two event IDs for replace", () => {
+    const mount = new NativeEditorMount();
+    mount.rowKey.value = "game/score";
+    mount.payload.value = "9001";
+    mount.magnitude.value = "2";
+    const started = startDarkHallBrowserRowCommandEditor({
+      mount,
+      eventIdPrefix: "tab-a",
+      maxPayloadBytes: 1024,
+      observe: () => ({ ok: true }),
+    });
+
+    expect(started.ok).toBe(true);
+    if (!started.ok) return;
+    expect(started.value.resolve(action("replace"), "pointer")).toMatchObject({
+      ok: false,
+      feedback: { severity: "cold", code: "row-command-replace-selection-required" },
+    });
+    expect(started.value.read()).toMatchObject({ nextEventSequence: 0, resolved: 0, refused: 1 });
+
+    expect(started.value.load(selection({ rowKey: "game/score", payload: "9000", weight: -3 }, 7)).ok).toBe(true);
+    mount.payload.value = "9001";
+    mount.magnitude.value = "2";
+    expect(started.value.resolve(action("replace"), "keyboard")).toEqual({
+      ok: true,
+      value: {
+        kind: "replace",
+        expected: {
+          schema: DARK_HALL_DATABASE_ROW_SELECTION_TOKEN_SCHEMA,
+          nodeId: "database-a",
+          revision: 7,
+          row: { rowKey: "game/score", payload: "9000", weight: -3 },
+        },
+        retractEventId: "tab-a/row-command/0",
+        emitEventId: "tab-a/row-command/1",
+        rowKey: "game/score",
+        payload: "9001",
+        magnitude: 2,
+      },
+    });
+    expect(started.value.read()).toMatchObject({ nextEventSequence: 2, resolved: 1, loadedRevision: 7 });
   });
 
   test("rolls back a partial field load when the browser refuses a write", () => {
@@ -263,7 +321,7 @@ describe("Dark Hall browser row command editor", () => {
     expect(started.ok).toBe(true);
     if (!started.ok) return;
     Object.defineProperty(mount.payload, "value", { configurable: true, value: "original", writable: false });
-    expect(started.value.load({ rowKey: "game/score", payload: "9000", weight: 1 })).toMatchObject({
+    expect(started.value.load(selection({ rowKey: "game/score", payload: "9000", weight: 1 }))).toMatchObject({
       ok: false,
       feedback: { severity: "heat", code: "row-command-editor-field-write-failed" },
     });
@@ -322,6 +380,7 @@ describe("Dark Hall browser row command editor", () => {
   test("keeps canonical controller slot identities outside the editor", () => {
     expect(action("emit").cell).toBe(SLOT.ACCEPT);
     expect(action("retract").cell).toBe(SLOT.UNDO_RETRACT);
+    expect(action("replace").cell).toBe(SLOT.EDIT_GRAMMAR);
     expect(action("inspect").cell).toBe(SLOT.INSPECT);
     expect(action("refresh").cell).toBe(SLOT.REFRESH);
   });

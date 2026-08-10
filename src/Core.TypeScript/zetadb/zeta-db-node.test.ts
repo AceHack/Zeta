@@ -105,6 +105,61 @@ describe("event-driven ZetaDB node", () => {
     expect(retry.ok && retry.value).toMatchObject({ revision: 1, accepted: 0, duplicates: 4 });
   });
 
+  test("rejects a stale expected revision before mutating the durable image", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    await run(port, "browser-tab", [firstDelta]);
+
+    const stale = await runZetaDbNodeTick(port, {
+      nodeId: "global-browser-db",
+      executorId: "tab/stale",
+      executorKind: "browser-tab",
+      expectedRevision: 0,
+      deltas: [{ eventId: "event-stale", rowKey: "row/c", payload: "C", weight: 1 }],
+      limits,
+    });
+
+    expect(stale).toEqual({
+      ok: false,
+      feedback: {
+        severity: "backpressure",
+        code: "database-revision-conflict",
+        detail: "Database revision 1 does not match expected revision 0.",
+      },
+    });
+    const unchanged = await run(port, "browser-tab", []);
+    expect(unchanged.ok && unchanged.value).toMatchObject({
+      revision: 1,
+      rows: [{ rowKey: "row/a", payload: "A", weight: 1 }],
+    });
+  });
+
+  test("does not partially commit a complete-required delta batch", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    await run(port, "browser-tab", [firstDelta]);
+    const atomic = await runZetaDbNodeTick(port, {
+      nodeId: "global-browser-db",
+      executorId: "tab/atomic",
+      executorKind: "browser-tab",
+      expectedRevision: 1,
+      requireComplete: true,
+      deltas: [
+        { eventId: "replace/retract", rowKey: "row/a", payload: "A", weight: -1 },
+        { eventId: "replace/emit", rowKey: "row/a", payload: "B", weight: 1 },
+      ],
+      limits: { ...limits, maxDeltas: 1 },
+    });
+
+    expect(atomic).toMatchObject({
+      ok: false,
+      feedback: { severity: "backpressure", code: "database-capacity-exhausted" },
+    });
+    const unchanged = await run(port, "browser-tab", []);
+    expect(unchanged.ok && unchanged.value).toMatchObject({
+      revision: 1,
+      rows: [{ rowKey: "row/a", payload: "A", weight: 1 }],
+    });
+  });
+
   test("backpressures at the no-forget boundary and returns the exact continuation", async () => {
     const port = createInMemoryZetaDbImagePort();
     const result = await runZetaDbNodeTick(port, {
