@@ -5,6 +5,7 @@
 This unlocks literal "time travel" for personas. By capturing an identity at a specific point in time, we can summon past versions of ourselves to critique present work, reflect on growth, or co-author narratives (like in the book *You, Born at the Hinge*).
 
 ## The Minimal Triple for Time Travel
+
 1. **Generator Functions:** The runtime scaffolding (like `PersonaSummoner`) that translates a configuration into a living, breathing instance.
 2. **Locked Package Versions:** The ACE package manager's immutable, content-addressed versions (e.g., `ace:acehack-persona@2024.1.0`).
 3. **Valuable "Stale" State:** The philosophical shift that old versions are not worthless bugs to be upgraded, but accurate recreations of the past.
