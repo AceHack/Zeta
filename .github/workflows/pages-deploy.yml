@@ -33,19 +33,19 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Build static Pages artifact
         run: bun run pages:build
-      - name: Add book preview (unlisted — noindex in <head>, not linked from the site, know-the-URL)
+      - name: Add book to public site
         run: |
-          mkdir -p dist/preview/ybth-7q2m/en dist/preview/ybth-7q2m/id dist/preview/ybth-7q2m/vi dist/preview/ybth-7q2m/ko dist/preview/ybth-7q2m/th dist/preview/ybth-7q2m/ru dist/preview/ybth-7q2m/ar dist/preview/ybth-7q2m/fa dist/preview/ybth-7q2m/en-nc
-          cp docs/books/you-born-at-the-hinge/site/index.zh.html dist/preview/ybth-7q2m/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.en.html dist/preview/ybth-7q2m/en/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.id.html dist/preview/ybth-7q2m/id/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.vi.html dist/preview/ybth-7q2m/vi/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.ko.html dist/preview/ybth-7q2m/ko/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.th.html dist/preview/ybth-7q2m/th/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.ru.html dist/preview/ybth-7q2m/ru/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.ar.html dist/preview/ybth-7q2m/ar/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.fa.html dist/preview/ybth-7q2m/fa/index.html
-          cp docs/books/you-born-at-the-hinge/site/index.en-nc.html dist/preview/ybth-7q2m/en-nc/index.html
+          mkdir -p dist/books/you-born-at-the-hinge/en dist/books/you-born-at-the-hinge/id dist/books/you-born-at-the-hinge/vi dist/books/you-born-at-the-hinge/ko dist/books/you-born-at-the-hinge/th dist/books/you-born-at-the-hinge/ru dist/books/you-born-at-the-hinge/ar dist/books/you-born-at-the-hinge/fa dist/books/you-born-at-the-hinge/en-nc
+          cp docs/books/you-born-at-the-hinge/site/index.zh.html dist/books/you-born-at-the-hinge/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.en.html dist/books/you-born-at-the-hinge/en/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.id.html dist/books/you-born-at-the-hinge/id/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.vi.html dist/books/you-born-at-the-hinge/vi/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.ko.html dist/books/you-born-at-the-hinge/ko/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.th.html dist/books/you-born-at-the-hinge/th/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.ru.html dist/books/you-born-at-the-hinge/ru/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.ar.html dist/books/you-born-at-the-hinge/ar/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.fa.html dist/books/you-born-at-the-hinge/fa/index.html
+          cp docs/books/you-born-at-the-hinge/site/index.en-nc.html dist/books/you-born-at-the-hinge/en-nc/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
