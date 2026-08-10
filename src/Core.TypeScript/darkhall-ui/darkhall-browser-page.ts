@@ -32,9 +32,16 @@ import {
   type DarkHallBrowserControllerInputRuntime,
   type DarkHallBrowserControllerInputSource,
 } from "./darkhall-browser-controller-input";
+import {
+  DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_MOUNT_ID,
+  renderDarkHallBrowserRowCommandEditorHtml,
+  startDarkHallBrowserRowCommandEditor,
+  type DarkHallBrowserRowCommandEditorReadout,
+  type DarkHallBrowserRowCommandEditorRuntime,
+} from "./darkhall-browser-row-command-editor";
 import { renderDarkHallRoomHtml, type RoomRunTranscript } from "./darkhall-room";
 
-export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v4" as const;
+export const DARK_HALL_BROWSER_PAGE_SCHEMA = "zeta.darkhall.browser-page.v5" as const;
 export const DARK_HALL_BROWSER_PAGE_GLOBAL = "__zetaDarkHallPage" as const;
 export const DARK_HALL_BROWSER_PAGE_MOUNT_ID = "darkhall-room" as const;
 
@@ -54,6 +61,8 @@ export interface DarkHallBrowserPageFeedback {
     | "page-database-start-failed"
     | "page-database-hydration-failed"
     | "page-database-stop-failed"
+    | "page-editor-start-failed"
+    | "page-editor-stop-failed"
     | "page-input-start-failed"
     | "page-input-stop-failed"
     | "page-controller-stop-failed"
@@ -76,6 +85,7 @@ export interface DarkHallBrowserPageReadout {
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
   readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
+  readonly editor: DarkHallBrowserRowCommandEditorReadout;
   readonly input: DarkHallBrowserControllerInputReadout;
 }
 
@@ -107,6 +117,8 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly databaseLimits?: ZetaDbTickLimits;
   readonly databaseExecutor?: BrowserZetaDbTabExecutor;
   readonly maxControllerInputInFlight?: number;
+  readonly rowCommandEditorMountId?: string;
+  readonly maxRowCommandPayloadBytes?: number;
   readonly controllerCommandResolver?: DarkHallBrowserControllerCommandResolver;
 }
 
@@ -126,7 +138,7 @@ interface NativePageContext {
 export const DARK_HALL_BROWSER_PAGE_TRANSCRIPT: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
   roomName: "dark hall browser node",
-  seed: "browser-page-v4",
+  seed: "browser-page-v5",
   generatedBy: "darkhall-browser-page",
   controller: DARK_HALL_BROWSER_DATABASE_ACTIONS.map((action) => ({
     cell: action.cell,
@@ -281,6 +293,21 @@ function initialSequence(value: string | null): DarkHallBrowserPageResult<number
     : failed("page-configuration-invalid", "The browser page sequence must be a non-negative safe integer.");
 }
 
+function pageElement(documentValue: unknown, elementId: string): DarkHallBrowserPageResult<unknown> {
+  const getElementById = method(documentValue, "getElementById");
+  if (getElementById === null) {
+    return failed("page-document-unavailable", "The active browser page does not expose document.getElementById.");
+  }
+  try {
+    const value = Reflect.apply(getElementById, documentValue, [elementId]);
+    return value === null || value === undefined
+      ? failed("page-editor-start-failed", `The active browser page is missing row command editor #${elementId}.`)
+      : succeeded(value);
+  } catch {
+    return failed("page-editor-start-failed", "The browser threw while locating the row command editor.");
+  }
+}
+
 function pageStatusFromSeverity(severity: DarkHallBrowserPageFeedback["severity"]): "backpressured" | "heat" {
   return severity === "backpressure" ? "backpressured" : "heat";
 }
@@ -366,19 +393,30 @@ export async function startNativeDarkHallBrowserPage(
   if (!sequence.ok) return sequence;
   const databaseNodeId = identifier(options.databaseNodeId ?? null, `${nodeId.value}:database`);
   if (!databaseNodeId.ok) return databaseNodeId;
+  const editorMountId = identifier(
+    options.rowCommandEditorMountId ?? null,
+    DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_MOUNT_ID,
+  );
+  if (!editorMountId.ok) return editorMountId;
+  const editorMount = pageElement(context.document, editorMountId.value);
+  if (!editorMount.ok) return editorMount;
   const suppliedTranscript = options.transcript ?? DARK_HALL_BROWSER_PAGE_TRANSCRIPT;
-  const pageTranscript =
-    options.controllerCommandResolver === undefined
-      ? {
-          ...suppliedTranscript,
-          controller: suppliedTranscript.controller.map((cell) =>
-            cell.actionId === "darkhall.database.emit" || cell.actionId === "darkhall.database.retract"
-              ? { ...cell, enabled: false }
-              : { ...cell },
-          ),
-        }
-      : suppliedTranscript;
   const databaseLimits = options.databaseLimits ?? defaultDatabaseLimits;
+  let editorReady = options.controllerCommandResolver !== undefined;
+  let selectedControllerCell: number | null = null;
+  const controllerTranscript = (): RoomRunTranscript => ({
+    ...suppliedTranscript,
+    controller: suppliedTranscript.controller.map((cell) => {
+      const writeAction = cell.actionId === "darkhall.database.emit" || cell.actionId === "darkhall.database.retract";
+      const enabled = writeAction ? cell.enabled !== false && editorReady : cell.enabled;
+      const selected = selectedControllerCell === null ? cell.selected : cell.cell === selectedControllerCell;
+      return {
+        ...cell,
+        ...(enabled === undefined ? {} : { enabled }),
+        ...(selected === undefined ? {} : { selected }),
+      };
+    }),
+  });
 
   let receiveDatabaseInvalidation: ((invalidation: BrowserDatabaseInvalidation) => void) | null = null;
   let startupDatabaseInvalidation: BrowserDatabaseInvalidation | null = null;
@@ -404,7 +442,7 @@ export async function startNativeDarkHallBrowserPage(
   try {
     pwaResult = await startNativeDarkHallPwa(
       pwaOptions(
-        { ...options, transcript: pageTranscript },
+        { ...options, transcript: controllerTranscript() },
         root,
         context,
         runtimeProbe,
@@ -518,10 +556,8 @@ export async function startNativeDarkHallBrowserPage(
     tick: (deltas) => database.tick(deltas),
     observe: (readout) => {
       latestController = readout;
-      const rendered = pwa.browser.updateTranscript({
-        ...pageTranscript,
-        controller: pageTranscript.controller.map((cell) => ({ ...cell, selected: cell.cell === readout.cell })),
-      });
+      selectedControllerCell = readout.cell;
+      const rendered = pwa.browser.updateTranscript(controllerTranscript());
       if (!rendered.ok) {
         return {
           ok: false,
@@ -551,13 +587,58 @@ export async function startNativeDarkHallBrowserPage(
     );
   }
   const controller: DarkHallBrowserDatabaseControllerRuntime = controllerStarted.value;
+  const editorStarted = startDarkHallBrowserRowCommandEditor({
+    mount: editorMount.value,
+    eventIdPrefix: tabId.value,
+    maxPayloadBytes: options.maxRowCommandPayloadBytes ?? databaseLimits.maxCheckpointBytes,
+    observe: (readout) => {
+      const nextReady =
+        options.controllerCommandResolver === undefined
+          ? readout.status === "live" && readout.validity === "ready"
+          : true;
+      if (nextReady === editorReady) return { ok: true };
+      editorReady = nextReady;
+      const rendered = pwa.browser.updateTranscript(controllerTranscript());
+      return rendered.ok
+        ? { ok: true }
+        : {
+            ok: false,
+            feedback: { severity: "heat", code: "row-command-editor-render-failed", detail: rendered.detail },
+          };
+    },
+  });
+  if (!editorStarted.ok) {
+    controller.stop();
+    database.stop();
+    pwa.browser.host.stop();
+    context.mount.setStatus(inputPageStatus(editorStarted.feedback.severity), editorStarted.feedback.code);
+    return failed(
+      "page-editor-start-failed",
+      `${editorStarted.feedback.code}: ${editorStarted.feedback.detail}`,
+      editorStarted.feedback.severity === "heat" ? "heat" : "backpressure",
+    );
+  }
+  const editor: DarkHallBrowserRowCommandEditorRuntime = editorStarted.value;
+  const editorResolver: DarkHallBrowserControllerCommandResolver = (action, source) => {
+    const resolved = editor.resolve(action, source);
+    if (resolved.ok) return resolved;
+    return {
+      ok: false,
+      feedback: {
+        severity: resolved.feedback.severity,
+        code:
+          resolved.feedback.code === "row-command-editor-stopped"
+            ? "controller-input-stopped"
+            : "controller-input-command-unavailable",
+        detail: `${resolved.feedback.code}: ${resolved.feedback.detail}`,
+      },
+    };
+  };
   const inputStarted = startDarkHallBrowserControllerInput({
     pointerTarget: context.mount.value,
     keyboardTarget: context.document,
     maxInFlight: options.maxControllerInputInFlight ?? 1,
-    ...(options.controllerCommandResolver === undefined
-      ? {}
-      : { resolveCommand: options.controllerCommandResolver }),
+    resolveCommand: options.controllerCommandResolver ?? editorResolver,
     dispatch: (command) => controller.dispatch(command),
     observe: (readout) => {
       const interaction = readout.last;
@@ -582,6 +663,7 @@ export async function startNativeDarkHallBrowserPage(
     },
   });
   if (!inputStarted.ok) {
+    editor.stop();
     controller.stop();
     database.stop();
     pwa.browser.host.stop();
@@ -602,6 +684,7 @@ export async function startNativeDarkHallBrowserPage(
     !context.mount.setAttribute("data-browser-tab", tabId.value)
   ) {
     input.stop();
+    editor.stop();
     controller.stop();
     database.stop();
     pwa.browser.host.stop();
@@ -619,6 +702,7 @@ export async function startNativeDarkHallBrowserPage(
     host: pwa.browser.host.read(),
     database: latestDatabase ?? hydratedDatabase,
     controller: latestController,
+    editor: editor.read(),
     input: input.read(),
   });
 
@@ -634,6 +718,15 @@ export async function startNativeDarkHallBrowserPage(
           "page-input-stop-failed",
           `${inputStopped.feedback.code}: ${inputStopped.feedback.detail}`,
           inputStopped.feedback.severity === "heat" ? "heat" : "backpressure",
+        );
+      }
+      const editorStopped = editor.stop();
+      if (!editorStopped.ok) {
+        context.mount.setStatus(inputPageStatus(editorStopped.feedback.severity), editorStopped.feedback.code);
+        return failed(
+          "page-editor-stop-failed",
+          `${editorStopped.feedback.code}: ${editorStopped.feedback.detail}`,
+          editorStopped.feedback.severity === "heat" ? "heat" : "backpressure",
         );
       }
       const controllerStopped = controller.stop();
@@ -692,6 +785,7 @@ export function renderDarkHallBrowserNodeDocument(): string {
     "</head>",
     '<body data-browser-page="active">',
     '<nav class="zeta-room-nav"><a href="./">&larr; static room</a><span>active browser node</span></nav>',
+    renderDarkHallBrowserRowCommandEditorHtml(),
     `<main id="${DARK_HALL_BROWSER_PAGE_MOUNT_ID}" data-pwa-status="starting" aria-live="polite">`,
     renderDarkHallRoomHtml(DARK_HALL_BROWSER_PAGE_TRANSCRIPT),
     "</main>",

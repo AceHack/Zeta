@@ -8,6 +8,7 @@ import {
   startNativeDarkHallBrowserPage,
 } from "./darkhall-browser-page";
 import { DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA } from "./darkhall-browser-controller-input";
+import { DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA } from "./darkhall-browser-row-command-editor";
 
 type NativeListener = (event?: unknown) => void;
 
@@ -36,6 +37,50 @@ class NativeMount {
 
   emit(type: string, event: unknown): void {
     for (const listener of this.listeners.get(type) ?? []) listener(event);
+  }
+}
+
+class NativeEditorField {
+  value: string;
+  textContent = "";
+
+  constructor(value: string) {
+    this.value = value;
+  }
+}
+
+class NativeEditorMount {
+  readonly rowKey = new NativeEditorField("");
+  readonly payload = new NativeEditorField("");
+  readonly magnitude = new NativeEditorField("1");
+  readonly status = new NativeEditorField("");
+  readonly attributes = new Map<string, string>();
+  readonly listeners = new Map<string, Set<NativeListener>>();
+
+  querySelector(selector: string): NativeEditorField | null {
+    if (selector === "[data-row-command-key]") return this.rowKey;
+    if (selector === "[data-row-command-payload]") return this.payload;
+    if (selector === "[data-row-command-magnitude]") return this.magnitude;
+    if (selector === "[data-row-command-status]") return this.status;
+    return null;
+  }
+
+  setAttribute(name: string, value: string): void {
+    this.attributes.set(name, value);
+  }
+
+  addEventListener(type: string, listener: NativeListener): void {
+    const entries = this.listeners.get(type) ?? new Set();
+    entries.add(listener);
+    this.listeners.set(type, entries);
+  }
+
+  removeEventListener(type: string, listener: NativeListener): void {
+    this.listeners.get(type)?.delete(listener);
+  }
+
+  emit(type: string): void {
+    for (const listener of this.listeners.get(type) ?? []) listener({ type });
   }
 }
 
@@ -88,6 +133,8 @@ class NativeServiceWorkerContainer {
 
 class NativeBrowserRoot {
   readonly mount = new NativeMount();
+  readonly editor = new NativeEditorMount();
+  editorAvailable = true;
   readonly serviceWorker = new NativeServiceWorkerContainer();
   readonly navigator = { serviceWorker: this.serviceWorker };
   readonly location = { search: "?tab=tab-a&sequence=12" };
@@ -96,7 +143,11 @@ class NativeBrowserRoot {
   readonly pageListeners = new Map<string, Set<NativeListener>>();
   readonly document = {
     visibilityState: "visible",
-    getElementById: (id: string): NativeMount | null => (id === "darkhall-room" ? this.mount : null),
+    getElementById: (id: string): NativeMount | NativeEditorMount | null => {
+      if (id === "darkhall-room") return this.mount;
+      if (id === "darkhall-row-command-editor") return this.editorAvailable ? this.editor : null;
+      return null;
+    },
     addEventListener: (type: string, listener: NativeListener): void => {
       this.add(this.documentListeners, type, listener);
     },
@@ -188,6 +239,17 @@ describe("Dark Hall active browser page", () => {
         rows: [{ rowKey: "game/score", payload: "9000", weight: 1 }],
       },
       controller: null,
+      editor: {
+        schema: DARK_HALL_BROWSER_ROW_COMMAND_EDITOR_SCHEMA,
+        status: "live",
+        validity: "incomplete",
+        resolved: 0,
+        refused: 0,
+        backpressured: 0,
+        nextEventSequence: 0,
+        feedbackCode: "row-command-key-required",
+        last: null,
+      },
       input: {
         schema: DARK_HALL_BROWSER_CONTROLLER_INPUT_SCHEMA,
         status: "live",
@@ -244,28 +306,51 @@ describe("Dark Hall active browser page", () => {
     expect(root.mount.attributes.get("data-controller-input-outcome")).toBe("accepted");
     expect(requests).toHaveLength(3);
 
-    expect(
-      await started.value.dispatchController({
-        kind: "emit",
-        eventId: "score-9001",
-        rowKey: "game/score",
-        payload: "9001",
-      }),
-    ).toMatchObject({
-      ok: true,
-      value: {
-        kind: "emit",
-        cell: SLOT.ACCEPT,
-        actionId: "darkhall.database.emit",
-        signedWeight: 1,
-        database: { revision: 8, accepted: 1 },
-      },
+    root.editor.rowKey.value = "game/score";
+    root.editor.payload.value = "9001";
+    root.editor.magnitude.value = "2";
+    root.editor.emit("input");
+    expect(started.value.read().editor).toMatchObject({
+      validity: "ready",
+      rowKey: "game/score",
+      payloadBytes: 4,
+      magnitude: 2,
     });
+    expect(root.editor.attributes.get("data-row-command-validity")).toBe("ready");
+    expect(root.mount.innerHTML).toContain('data-action-id="darkhall.database.emit"');
+    expect(root.mount.innerHTML).not.toContain('data-action-id="darkhall.database.emit" disabled');
+
+    root.mount.emit("click", {
+      button: 0,
+      detail: 1,
+      target: new NativeControllerCell(SLOT.ACCEPT),
+      preventDefault: () => undefined,
+    });
+    await waitFor(() => started.value.read().input.accepted === 3);
+    expect(requests[3]?.deltas).toEqual([
+      { eventId: "tab-a/row-command/0", rowKey: "game/score", payload: "9001", weight: 2 },
+    ]);
     expect(started.value.read().database).toMatchObject({ revision: 8, accepted: 1 });
-    expect(started.value.read().controller).toMatchObject({ kind: "emit", cell: SLOT.ACCEPT, signedWeight: 1 });
+    expect(started.value.read().controller).toMatchObject({ kind: "emit", cell: SLOT.ACCEPT, signedWeight: 2 });
     expect(root.mount.attributes.get("data-controller-cell")).toBe(SLOT.ACCEPT.toString());
     expect(root.mount.innerHTML).toContain(`data-cell="${SLOT.ACCEPT.toString()}"`);
     expect(root.mount.innerHTML).toContain('data-selected="true"');
+
+    root.mount.emit("click", {
+      button: 0,
+      detail: 1,
+      target: new NativeControllerCell(SLOT.UNDO_RETRACT),
+      preventDefault: () => undefined,
+    });
+    await waitFor(() => started.value.read().input.accepted === 4);
+    expect(requests[4]?.deltas).toEqual([
+      { eventId: "tab-a/row-command/1", rowKey: "game/score", payload: "9001", weight: -2 },
+    ]);
+    expect(started.value.read()).toMatchObject({
+      editor: { resolved: 2, nextEventSequence: 2, last: { kind: "retract", outcome: "resolved" } },
+      controller: { kind: "retract", cell: SLOT.UNDO_RETRACT, signedWeight: -2 },
+      input: { accepted: 4, last: { cell: SLOT.UNDO_RETRACT, outcome: "accepted" } },
+    });
     expect(root.serviceWorker.messages).toContainEqual({
       schema: BROWSER_TAB_COORDINATOR_SCHEMA,
       nodeId: "zeta-darkhall-browser-node",
@@ -280,8 +365,12 @@ describe("Dark Hall active browser page", () => {
     expect(started.value.stop()).toMatchObject({ ok: true, value: { status: "stopped" } });
     expect(root.mount.attributes.get("data-pwa-status")).toBe("stopped");
     expect(root.mount.attributes.get("data-controller-input-status")).toBe("stopped");
+    expect(root.editor.attributes.get("data-row-command-status")).toBe("stopped");
+    expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.emit"[^>]* disabled>/u);
+    expect(root.mount.innerHTML).toMatch(/data-action-id="darkhall\.database\.retract"[^>]* disabled>/u);
     expect(root.mount.listeners.get("click")?.size ?? 0).toBe(0);
     expect(root.documentListeners.get("keydown")?.size ?? 0).toBe(0);
+    expect(root.editor.listeners.get("input")?.size ?? 0).toBe(0);
   });
 
   test("mints a per-tab identity when the active URL does not provide one", async () => {
@@ -393,10 +482,30 @@ describe("Dark Hall active browser page", () => {
     expect(root.serviceWorker.registrations).toHaveLength(0);
   });
 
+  test("refuses a missing row command editor before touching the worker edge", async () => {
+    const root = new NativeBrowserRoot();
+    root.editorAvailable = false;
+
+    const result = await startNativeDarkHallBrowserPage({ root });
+    expect(result).toEqual({
+      ok: false,
+      feedback: {
+        severity: "heat",
+        code: "page-editor-start-failed",
+        detail: "The active browser page is missing row command editor #darkhall-row-command-editor.",
+      },
+    });
+    expect(root.serviceWorker.registrations).toHaveLength(0);
+  });
+
   test("renders a manifest-owned active document with only an external module", () => {
     const document = renderDarkHallBrowserNodeDocument();
 
     expect(document).toContain('<link rel="manifest" href="./manifest.webmanifest">');
+    expect(document).toContain('<section id="darkhall-row-command-editor" class="zeta-row-command-editor"');
+    expect(document).toContain("data-row-command-key");
+    expect(document).toContain("data-row-command-payload");
+    expect(document).toContain("data-row-command-magnitude");
     expect(document).toContain('<main id="darkhall-room" data-pwa-status="starting"');
     expect(document).toContain('class="zeta-room-heat" data-empty="true"');
     expect(document).toContain('<p class="zeta-room-cold">cold</p>');

@@ -23,6 +23,111 @@ body {
   color: #65aee8;
 }
 
+.zeta-row-command-editor {
+  --editor-bg: #1c1c18;
+  --editor-field: #11110f;
+  --editor-line: #3a3830;
+  --editor-text: #f0ede2;
+  --editor-muted: #bcb6a4;
+  --editor-ready: #5dbf9a;
+  --editor-pressure: #ffb14a;
+  --editor-invalid: #ff6b6b;
+
+  box-sizing: border-box;
+  display: grid;
+  gap: 0.75rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--editor-line);
+  border-radius: 8px;
+  background: var(--editor-bg);
+  color: var(--editor-text);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.zeta-row-command-header {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.zeta-row-command-header h2,
+.zeta-row-command-status {
+  margin: 0;
+}
+
+.zeta-row-command-header h2 {
+  font-size: 1rem;
+}
+
+.zeta-row-command-status {
+  color: var(--editor-muted);
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.zeta-row-command-editor[data-row-command-validity="ready"] {
+  border-color: color-mix(in srgb, var(--editor-ready), var(--editor-line) 45%);
+}
+
+.zeta-row-command-editor[data-row-command-validity="backpressured"] {
+  border-color: color-mix(in srgb, var(--editor-pressure), var(--editor-line) 45%);
+}
+
+.zeta-row-command-editor[data-row-command-validity="invalid"] {
+  border-color: color-mix(in srgb, var(--editor-invalid), var(--editor-line) 45%);
+}
+
+.zeta-row-command-fields {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) minmax(16rem, 2fr) minmax(7rem, 0.5fr);
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.zeta-row-command-field {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+  color: var(--editor-muted);
+  font-size: 0.75rem;
+}
+
+.zeta-row-command-field input,
+.zeta-row-command-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.4rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--editor-line);
+  border-radius: 4px;
+  background: var(--editor-field);
+  color: var(--editor-text);
+  font:
+    0.85rem/1.3 ui-monospace,
+    monospace;
+}
+
+.zeta-row-command-field textarea {
+  resize: vertical;
+}
+
+.zeta-row-command-field input:focus-visible,
+.zeta-row-command-field textarea:focus-visible {
+  border-color: var(--editor-ready);
+  outline: 2px solid var(--editor-ready);
+  outline-offset: 1px;
+}
+
 .zeta-room {
   --room-bg: #11110f;
   --room-panel: #1c1c18;
@@ -645,6 +750,10 @@ body {
 }
 
 @media (width <= 760px) {
+  .zeta-row-command-fields {
+    grid-template-columns: 1fr;
+  }
+
   .zeta-room,
   .zeta-room-header {
     grid-template-columns: 1fr;

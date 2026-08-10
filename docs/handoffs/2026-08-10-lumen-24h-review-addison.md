@@ -49,12 +49,14 @@ Otto's routing was precise: the path-domain CHSH monitor (`BipartiteMachZehnder.
 The key identity: **PLV = |⟨e^{iΔφ}⟩| = the Born probability of the DC bin in the frequency-domain MZ.** This makes `TemporalCoordinationDetection.phaseLockingValue` (which has existed in the repo since before this session, unwired) identical to the closed-interferometer Born probability in the path domain. The two instruments measure the same resource (coherence) with different apparatus.
 
 The module provides:
+
 - `measureFreq`: PLV + mean phase offset for one party, anchored to a shared `windowId` (commit hash or tick — never wall-clock).
 - `bipartiteS`: CHSH S from four PLV measurements. Product state → S ≤ 2; maximally coherent → S ≤ 2√2 (Tsirelson).
 - `idealCeiling(plv) = 2√2 · plv`: partial coherence linearly reduces the ceiling.
 - `plvToPathBorn`: the path-domain Born probability at the mean phase offset (the closest path-domain equivalent of the PLV measurement).
 
 **Honest boundary (inherited + one new caveat):**  
+
 1. WSet-ℂ gives the ideal amplitude prediction — the ceiling — not a claim that agents are qubits.  
 2. **LOCAL-TIME-NEVER-ENTERS-THE-SHARED-FOLD**: if the coherence window is cut by any node's local clock, two nodes measure different windows and the correlation is an artifact of windowing, not the agents. The window boundaries must be determined by a shared, causally-prior event.  
 3. Classical common causes masquerade most easily as coherence in the frequency domain. S_freq > 2 rules out local hidden variable models — a necessary but not sufficient condition.
@@ -70,6 +72,7 @@ The module provides:
 **Correct criterion:** **I-closure** — closure under `i ↦ i⊕7`. This is coset-invariant and selects exactly both survivors: `{0,3,4,7}` and `{1,2,5,6}`. Among the 14 weight-4 Hamming code supports, exactly 2 are I-closed.
 
 **What was updated:**
+
 - `CliffordE8BladeMask.fs`: replaced wrong grade-completeness criterion with I-closure.
 - `CliffordE8BladeMask.Tests.fs`: replaced GP-F1..3 with IC-F1..4 (I-closure tests). Added RC-1..3 (reflection closure: the 32 VN roots are NOT closed under E8 reflections — RC-1 passes; their orbit under all E8 reflections is the full E8 root system of 240 roots — RC-2 passes; the closure under the 32 VN reflectors themselves is measured by RC-3). Added LI-1..2 (labelling-invariant tests).
 - `FROZEN-CORE-AND-CONJECTURE-REGISTER.md`: new byte-lock row with all caveats.
@@ -85,54 +88,71 @@ The module provides:
 All features are live at https://idspace-dla-6faa9bmi.manus.space and synced to the GitHub Pages DLA site.
 
 ### 4.1 Race Mode Verdict Panel
+
 After all 17 oracles finish, a formal verdict box appears:
+
 - Green `✓ SUBSTRATE-INDEPENDENT — D_f = X.XXXX ± Y.YYYY` if spread < 0.05.
 - Amber `⚠ SPREAD TOO HIGH` otherwise.
 - Seed independence note: "Seeds were NOT shared — each oracle used Date.now() + oracle_id."
 
 ### 4.2 Oracle 17 Snapshot Table
+
 New cyan `HL exact` column showing the exact Joukowski conformal map amplitude (`hlExactAmp`) alongside the proxy `HL amp` column.
 
 ### 4.3 Oracle 17 Replay Button
+
 `⏮ Replay D_f Curve` re-animates the convergence curve from stored snapshots at 400 ms/step without re-running the DLA.
 
 ### 4.4 Race Mode N = 8,000
+
 Bumped from 3k to 8k walkers, enough for the green `✓ SUBSTRATE-INDEPENDENT` verdict to fire reliably.
 
 ### 4.5 Seed Log Panel
+
 Collapsible table showing all 17 seeds as 8-digit hex + decimal. Copy-seeds button exports as JSON. Any external reviewer can reproduce any oracle independently.
 
 ### 4.6 Share-Run URL
+
 Encodes the 17 seeds and final D_f values as a compact URL hash. Anyone opening the URL sees the same seed log.
 
 ### 4.7 Compare-Runs Mode
+
 Re-running saves the previous run. Side-by-side D_f comparison with per-oracle scatter plot.
 
 ### 4.8 Z-2 Status Badge
+
 After the run completes, computes `hlExactAmp / (1/(D·n))` and shows "✓ Z-2 TRACKING" or "⚠ Z-2 DIVERGING".
 
 ### 4.9 CSV Export
+
 Downloads oracle id, seed, D_f, and crossing-N for all 17 oracles.
 
 ### 4.10 Society Evolution Panel
+
 After the race completes, 8 generations of evolution run automatically using D_f as fitness proxy. Shows a fitness chart and genome color squares.
 
 ### 4.11 GitHub Society Panel
+
 Fetches the latest `society-*.json` from Zeta main and shows generation, mean fitness, and agent count — connecting the browser DLA proof to the living GitHub agent society.
 
 ### 4.12 Society History Sparkline
+
 Fetches the last 10 `society-*.json` events and plots mean fitness over time as a tiny SVG sparkline.
 
 ### 4.13 BNN Status Panel
+
 Collapsible panel showing per-dimension posterior `(μ, σ, w)` from the error-learning BNN.
 
 ### 4.14 E8 Sandwich Explorer (Race Mode)
+
 Compact `E8SandwichExplorer` component embedded in Race Mode — the DLA fractal proof and the Clifford algebra proof side by side.
 
 ### 4.15 Projection Selector (Race Mode)
+
 9 buttons (DLA, Hamiltonian, Quantum walk, Bivector, Moral Gym, Circuit breaker, C. elegans, Infer.NET, E8 Clifford) with descriptions and tour mode.
 
 ### 4.16 FrequencyMachZehnder Panel (Race Mode)
+
 After the race completes, computes PLV between oracle D_f time-series and shows bipartite CHSH S_freq, S_path, and mean PLV in a collapsible panel.
 
 ---
@@ -142,6 +162,7 @@ After the race completes, computes PLV between oracle D_f time-series and shows 
 All changes are live at https://lucent-financial-group.github.io/Zeta/demo/proofs/.
 
 ### 5.1 E8 Interactive Demo
+
 - **Count badge**: "X / 240 preserved" updates live as the user switches between the 32 VN roots.
 - **Compare-two-roots mode**: Root A + Root B dropdowns; purple = both preserve, amber = A only, teal = B only, grey = neither.
 - **Group orbit button**: cycles through all 8 distinct sandwich maps at 0.9 s/step; highlights all roots sharing the same map in the dropdown.
@@ -149,16 +170,20 @@ All changes are live at https://lucent-financial-group.github.io/Zeta/demo/proof
 - **Same-map highlight**: when orbit cycles to a map, all roots sharing that exact preservation pattern are highlighted (purple bold), others dimmed.
 
 ### 5.2 Projection Selector (Connecting Thread)
+
 9 buttons with descriptions. Clicking a button scrolls to the corresponding card. Tour mode auto-cycles at 3 s/step. Keyboard navigation: ← → Space.
 
 ### 5.3 New Cards
+
 - **C. elegans Worm card** with full description, WormAtlas link, and interactive sensory weight slider (live posterior demo).
 - **Frequency vs. Path comparison panel** — side-by-side showing path-domain (BipartiteMachZehnder) vs. frequency-domain (FrequencyMachZehnder) with the Tsirelson ceiling as a shared oracle.
 
 ### 5.4 Society Status Badge
+
 Fetches the latest `society-*.json` from Zeta main on page load and shows generation, mean fitness, and agent count.
 
 ### 5.5 Projection Count Badge
+
 `(9 projections)` badge next to the page title.
 
 ---

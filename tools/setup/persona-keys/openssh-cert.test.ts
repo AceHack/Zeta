@@ -41,10 +41,9 @@ test("frost-signed OpenSSH user cert is accepted by ssh-keygen -L", () => {
   const dir = mkdtempSync(join(tmpdir(), "zeta-openssh-cert-"));
   try {
     const deviceKey = join(dir, "device");
-    const gen = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", "device"], {
+    const gen = spawnSync("ssh-keygen", ["-t", "ed25519", "-N", "", "-f", deviceKey, "-C", "device"], {
       encoding: "utf8",
-      stdio: ["pipe", "pipe", "pipe"],
-      input: "\n\n",
+      stdio: ["ignore", "pipe", "pipe"],
     });
     expect(gen.status).toBe(0);
     const devicePubLine = readFileSync(deviceKey + ".pub", "utf8").trim();
@@ -60,13 +59,7 @@ test("frost-signed OpenSSH user cert is accepted by ssh-keygen -L", () => {
       validBefore: 1_700_000_000 + 3600,
       nonce: new Uint8Array(32).fill(7),
     });
-    const sig = frostThresholdSign(
-      kg.groupPublicKey,
-      [kg.shares[0]!, kg.shares[1]!],
-      signable,
-      lcg(9),
-      2,
-    );
+    const sig = frostThresholdSign(kg.groupPublicKey, [kg.shares[0]!, kg.shares[1]!], signable, lcg(9), 2);
     expect(frostVerify(kg.groupPublicKey, signable, sig)).toBe(true);
     const certBlob = finalizeEd25519UserCert(signable, sig);
     const certLine = formatSshEd25519CertLine(certBlob, "testhost");

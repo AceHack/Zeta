@@ -354,10 +354,7 @@ export async function ensureCa(
     action = "exists";
   } else {
     // BIOMETRIC GATE — fail-closed. A real keygen creates private material; require approval.
-    biometric = await requireBiometric(
-      opts.biometricAuth,
-      `Approve: generate SSH CA keypair for ${opts.ca}`,
-    );
+    biometric = await requireBiometric(opts.biometricAuth, `Approve: generate SSH CA keypair for ${opts.ca}`);
     if (!biometric.ok) {
       return {
         dryRun: false,
@@ -455,11 +452,7 @@ export async function signMachineCert(
   // (user × machine) binding is this LIST, never a composite id. Fail-closed on a degenerate
   // request (neither given, or an empty `users`) — we never sign a cert with NO principal.
   const users: readonly string[] =
-    opts.users !== undefined && opts.users.length > 0
-      ? opts.users
-      : opts.user !== undefined
-        ? [opts.user]
-        : [];
+    opts.users !== undefined && opts.users.length > 0 ? opts.users : opts.user !== undefined ? [opts.user] : [];
   if (users.length === 0) {
     throw new Error("signMachineCert: provide a non-empty `users` list or a single `user`.");
   }
@@ -535,11 +528,10 @@ export function realEffects(): CaEffects {
       try {
         // ssh-keygen generates the CA key itself — no secret on argv. -N "" = no passphrase
         // (the operator may add one); the private file stays LOCAL under umask 077.
-        const r = spawnSync(
-          "ssh-keygen",
-          ["-t", "ed25519", "-f", caKeyPath, "-C", comment],
-          { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], input: "\n\n" },
-        );
+        const r = spawnSync("ssh-keygen", ["-t", "ed25519", "-N", "", "-f", caKeyPath, "-C", comment], {
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "pipe"],
+        });
         if (r.status !== 0) {
           throw new Error(`ssh-keygen (CA) failed (status ${r.status ?? "signal"}): ${r.stderr ?? ""}`);
         }

@@ -89,7 +89,11 @@ export function userKeyringPublicPath(repoRoot: string, user: string): string {
 
 /** Hostnames become filenames — keep them filesystem-safe + ordinal-stable (culture-invariant). */
 export function sanitizeHostname(hostname: string): string {
-  const cleaned = hostname.trim().toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "");
+  const cleaned = hostname
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
   return cleaned.length > 0 ? cleaned : "unknown-host";
 }
 
@@ -232,10 +236,7 @@ export async function ensureMachineKey(
     action = "exists";
   } else {
     // BIOMETRIC GATE — fail-closed. A real keygen creates private material; require approval.
-    biometric = await requireBiometric(
-      opts.biometricAuth,
-      `Approve: generate machine key for ${hostname}`,
-    );
+    biometric = await requireBiometric(opts.biometricAuth, `Approve: generate machine key for ${hostname}`);
     if (!biometric.ok) {
       return {
         dryRun: false,
@@ -257,10 +258,30 @@ export async function ensureMachineKey(
   if (wantPublish) {
     fx.mkdirp(dirOf(devicePublicPath));
     fx.writeText(devicePublicPath, publicKey.endsWith("\n") ? publicKey : publicKey + "\n");
-    return { dryRun: false, hostname, keyLabel, devicePrivatePath, devicePublicPath, action, publicKey, published: true, ...bio };
+    return {
+      dryRun: false,
+      hostname,
+      keyLabel,
+      devicePrivatePath,
+      devicePublicPath,
+      action,
+      publicKey,
+      published: true,
+      ...bio,
+    };
   }
 
-  return { dryRun: false, hostname, keyLabel, devicePrivatePath, devicePublicPath, action, publicKey, published: false, ...bio };
+  return {
+    dryRun: false,
+    hostname,
+    keyLabel,
+    devicePrivatePath,
+    devicePublicPath,
+    action,
+    publicKey,
+    published: false,
+    ...bio,
+  };
 }
 
 function dirOf(p: string): string {
@@ -283,11 +304,10 @@ export function realEffects(): MachineEffects {
       try {
         // ssh-keygen generates the key itself — no secret on argv. -N "" = no passphrase
         // (standard for an unattended device key); the private file stays local (umask 077).
-        const r = spawnSync(
-          "ssh-keygen",
-          ["-t", "ed25519", "-f", keyPath, "-C", comment],
-          { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], input: "\n\n" },
-        );
+        const r = spawnSync("ssh-keygen", ["-t", "ed25519", "-N", "", "-f", keyPath, "-C", comment], {
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "pipe"],
+        });
         if (r.status !== 0) {
           throw new Error(`ssh-keygen failed (status ${r.status ?? "signal"}): ${r.stderr ?? ""}`);
         }

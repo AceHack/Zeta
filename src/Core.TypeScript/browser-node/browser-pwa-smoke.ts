@@ -9,19 +9,18 @@ import type { BrowserServiceWorkerRegistrationReadout } from "./browser-service-
 import type { BrowserTabTransportReadout } from "./browser-tab-channel-selector";
 import { buildBrowserPwaAssets } from "./browser-pwa-build";
 import type { DarkHallDatabaseReadout } from "../darkhall-ui/darkhall-database-readout";
-import type {
-  DarkHallBrowserDatabaseCommand,
-  DarkHallBrowserDatabaseControllerReadout,
-} from "../darkhall-ui/darkhall-browser-database-controller";
+import type { DarkHallBrowserDatabaseControllerReadout } from "../darkhall-ui/darkhall-browser-database-controller";
 import type { DarkHallBrowserControllerInputReadout } from "../darkhall-ui/darkhall-browser-controller-input";
+import type { DarkHallBrowserRowCommandEditorReadout } from "../darkhall-ui/darkhall-browser-row-command-editor";
 
-export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v4" as const;
+export const BROWSER_PWA_SMOKE_SCHEMA = "zeta.browser-pwa-smoke.v5" as const;
 
 interface BrowserPwaPageReadout {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHostReadout;
   readonly database: DarkHallDatabaseReadout;
+  readonly editor: DarkHallBrowserRowCommandEditorReadout;
   readonly input: DarkHallBrowserControllerInputReadout;
   readonly renderedTransport: string | null;
   readonly renderedDatabaseRevision: string | null;
@@ -42,14 +41,10 @@ interface BrowserPwaPageGlobal {
             readonly transport: BrowserTabTransportReadout;
             readonly host: BrowserLifecycleHostReadout;
             readonly database: DarkHallDatabaseReadout;
+            readonly controller: DarkHallBrowserDatabaseControllerReadout | null;
+            readonly editor: DarkHallBrowserRowCommandEditorReadout;
             readonly input: DarkHallBrowserControllerInputReadout;
           };
-          dispatchController(
-            command: DarkHallBrowserDatabaseCommand,
-          ): Promise<
-            | { readonly ok: true; readonly value: DarkHallBrowserDatabaseControllerReadout }
-            | { readonly ok: false; readonly feedback: { readonly detail: string } }
-          >;
           stop(): unknown;
         };
       }
@@ -67,6 +62,8 @@ export interface BrowserPwaSmokeTranscript {
   };
   readonly database: {
     readonly writerCommand: DarkHallBrowserDatabaseControllerReadout;
+    readonly retractionCommand: DarkHallBrowserDatabaseControllerReadout;
+    readonly writerEditor: DarkHallBrowserRowCommandEditorReadout;
     readonly peerAfterWrite: BrowserPwaPageReadout;
     readonly freshPage: BrowserPwaPageReadout;
   };
@@ -137,6 +134,19 @@ async function waitForDatabase(page: Page, revision: number, payload: string): P
   );
 }
 
+async function waitForDatabaseWithoutScore(page: Page, revision: number): Promise<void> {
+  await page.waitForFunction(
+    `expectedRevision => {
+      const started = globalThis.__zetaDarkHallPage;
+      if (started?.ok !== true) return false;
+      const database = started.value.read().database;
+      return database.revision === expectedRevision && !database.rows.some((row) => row.rowKey === "game/score");
+    }`,
+    revision,
+    { timeout: timeoutMs },
+  );
+}
+
 async function waitForTwoTabs(page: Page): Promise<void> {
   await page.waitForFunction(
     `() => {
@@ -175,6 +185,31 @@ async function waitForControllerInput(page: Page, source: "keyboard" | "pointer"
   );
 }
 
+async function waitForRowCommand(
+  page: Page,
+  kind: "emit" | "retract",
+  revision: number,
+  resolved: number,
+): Promise<void> {
+  await page.waitForFunction(
+    ([expectedKind, expectedRevision, expectedResolved]) => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) return false;
+      const readout = started.value.read();
+      const controller = readout.controller;
+      return (
+        controller !== null &&
+        controller.kind === expectedKind &&
+        controller.database.revision === expectedRevision &&
+        readout.editor.resolved === expectedResolved &&
+        readout.input.inFlight === 0
+      );
+    },
+    [kind, revision, resolved],
+    { timeout: timeoutMs },
+  );
+}
+
 async function observe(page: Page, pageName: string): Promise<BrowserPwaPageReadout> {
   const observation = await page.evaluate(() => {
     const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
@@ -203,6 +238,7 @@ async function observe(page: Page, pageName: string): Promise<BrowserPwaPageRead
           transport: readout.transport,
           host: readout.host,
           database: readout.database,
+          editor: readout.editor,
           input: readout.input,
           renderedTransport:
             globalThis.document.querySelector("[data-browser-transport]")?.getAttribute("data-browser-transport") ??
@@ -241,12 +277,17 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
       failures.push(`${pageName} did not start from the empty database image`);
     }
     if (page.renderedDatabaseRevision !== "0") failures.push(`${pageName} did not render startup hydration`);
+    if (page.editor.status !== "live" || page.editor.validity !== "incomplete") {
+      failures.push(`${pageName} did not expose a cold live row command editor`);
+    }
     if (page.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a,tab-b") {
       failures.push(`${pageName} did not observe both tabs`);
     }
   }
   if (transcript.afterStop.pageA.host.coordinator.liveness.liveTabIds.join(",") !== "tab-a") {
-    failures.push("page A did not remain live after page B stopped");
+    failures.push(
+      `page A did not remain live after page B stopped: ${transcript.afterStop.pageA.host.coordinator.liveness.liveTabIds.join(",")}`,
+    );
   }
   if (
     transcript.controllerInput.pointer.last?.source !== "pointer" ||
@@ -269,28 +310,54 @@ function validate(transcript: BrowserPwaSmokeTranscript): readonly string[] {
     );
   }
   if (!transcript.afterStop.pageA.host.coordinator.liveness.darkTabIds.includes("tab-b")) {
-    failures.push("page A did not retain page B's stopped state");
+    failures.push(
+      `page A did not retain page B's stopped state: ${transcript.afterStop.pageA.host.coordinator.liveness.darkTabIds.join(",")}`,
+    );
   }
   if (
     transcript.database.writerCommand.kind !== "emit" ||
     transcript.database.writerCommand.signedWeight !== 1 ||
-    transcript.database.writerCommand.database.revision !== 1 ||
+    transcript.database.writerCommand.database.revision !== 3 ||
     transcript.database.writerCommand.database.accepted !== 1
   ) {
-    failures.push("page B did not route one emit through the controller boundary");
+    failures.push(
+      `page B did not route its final editor emit through the controller boundary: ${JSON.stringify(transcript.database.writerCommand)}`,
+    );
+  }
+  if (
+    transcript.database.retractionCommand.kind !== "retract" ||
+    transcript.database.retractionCommand.signedWeight !== -1 ||
+    transcript.database.retractionCommand.database.revision !== 2 ||
+    transcript.database.retractionCommand.database.rows.some((row) => row.rowKey === "game/score")
+  ) {
+    failures.push(
+      `page B did not route editor retraction through the controller boundary: ${JSON.stringify(transcript.database.retractionCommand)}`,
+    );
+  }
+  if (
+    transcript.database.writerEditor.validity !== "ready" ||
+    transcript.database.writerEditor.resolved !== 3 ||
+    transcript.database.writerEditor.nextEventSequence !== 3 ||
+    transcript.database.writerEditor.last?.eventId !== "tab-b/row-command/2"
+  ) {
+    failures.push("page B did not retain deterministic row-command editor sequencing");
   }
   for (const [pageName, page, executorId] of [
     ["peer page A", transcript.database.peerAfterWrite, "tab-a"],
     ["fresh page C", transcript.database.freshPage, "tab-c"],
   ] as const) {
-    if (page.database.revision !== 1 || page.database.executorId !== executorId) {
-      failures.push(`${pageName} did not read revision 1 through its own browser-tab executor`);
+    if (page.database.revision !== 3 || page.database.executorId !== executorId) {
+      failures.push(
+        `${pageName} did not read revision 3 through its own browser-tab executor: ${JSON.stringify(page.database)}`,
+      );
     }
     if (!page.database.rows.some((row) => row.rowKey === "game/score" && row.payload === "9000" && row.weight === 1)) {
-      failures.push(`${pageName} did not reconstruct the persisted score row`);
+      failures.push(`${pageName} did not reconstruct the persisted score row: ${JSON.stringify(page.database.rows)}`);
     }
-    if (page.renderedDatabaseRevision !== "1" || page.renderedDatabaseRows[0]?.payload !== "9000") {
-      failures.push(`${pageName} did not render the reconstructed database row`);
+    if (page.renderedDatabaseRevision !== "3" || page.renderedDatabaseRows[0]?.payload !== "9000") {
+      failures.push(
+        `${pageName} did not render the reconstructed database row: revision=${String(page.renderedDatabaseRevision)} rows=${JSON.stringify(page.renderedDatabaseRows)}`,
+      );
     }
   }
   if (transcript.database.freshPage.host.coordinator.liveness.liveTabIds.join(",") !== "tab-c") {
@@ -369,26 +436,58 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     const pointerInput = beforeB.input;
     const keyboardInput = beforeA.input;
 
-    stage = "write and propagate database row";
-    const writerResult = await pageB.evaluate(async () => {
+    stage = "edit, emit, retract, and re-emit database row";
+    await pageB.fill("[data-row-command-key]", "game/score");
+    await pageB.fill("[data-row-command-payload]", "9000");
+    await pageB.fill("[data-row-command-magnitude]", "1");
+    await pageB.waitForFunction(
+      `() => globalThis.__zetaDarkHallPage?.ok === true &&
+        globalThis.__zetaDarkHallPage.value.read().editor.validity === "ready"`,
+      undefined,
+      { timeout: timeoutMs },
+    );
+
+    await pageB.click('[data-action-id="darkhall.database.emit"]');
+    await waitForDatabase(pageB, 1, "9000");
+    await waitForRowCommand(pageB, "emit", 1, 1);
+    await pageB.click('[data-action-id="darkhall.database.retract"]');
+    await waitForDatabaseWithoutScore(pageB, 2);
+    await waitForRowCommand(pageB, "retract", 2, 2);
+    const retractionCommand = await pageB.evaluate(() => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
       if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
-      return started.value.dispatchController({
-        kind: "emit",
-        eventId: "pwa-score-9000",
-        rowKey: "game/score",
-        payload: "9000",
-      });
+      const controller = started.value.read().controller;
+      if (controller === null) throw new Error("Page B did not expose its retraction readout.");
+      return controller;
     });
-    if (!writerResult.ok) throw new Error(writerResult.feedback.detail);
-    await waitForDatabase(pageA, 1, "9000");
+
+    await pageB.click('[data-action-id="darkhall.database.emit"]');
+    await waitForDatabase(pageB, 3, "9000");
+    await waitForRowCommand(pageB, "emit", 3, 3);
+    const writerState = await pageB.evaluate(() => {
+      const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
+      if (started?.ok !== true) throw new Error("Page B did not expose its active runtime.");
+      const readout = started.value.read();
+      if (readout.controller === null) throw new Error("Page B did not expose its final emit readout.");
+      return { controller: readout.controller, editor: readout.editor };
+    });
+    await waitForDatabase(pageA, 3, "9000");
     const peerAfterWrite = await observe(pageA, "page A after peer database write");
 
     stage = "stop second page";
-    await pageB.evaluate(() => {
+    const pageBShutdown = await pageB.evaluate(() => {
       const started = (globalThis as unknown as BrowserPwaPageGlobal).__zetaDarkHallPage;
-      if (started?.ok === true) started.value.stop();
+      return started?.ok === true ? { before: started.value.read(), stopped: started.value.stop() } : null;
     });
+    if (
+      pageBShutdown === null ||
+      typeof pageBShutdown.stopped !== "object" ||
+      pageBShutdown.stopped === null ||
+      !("ok" in pageBShutdown.stopped) ||
+      !pageBShutdown.stopped.ok
+    ) {
+      throw new Error(`Page B refused typed shutdown: ${JSON.stringify(pageBShutdown)}`);
+    }
     await waitForSurvivor(pageA);
     const survivor = await observe(pageA, "page A after stop");
 
@@ -403,7 +502,7 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
     const pageC = await context.newPage();
     await pageC.goto(`${baseUrl}?tab=tab-c&sequence=300`);
     await waitForReady(pageC);
-    await waitForDatabase(pageC, 1, "9000");
+    await waitForDatabase(pageC, 3, "9000");
     const freshPage = await observe(pageC, "fresh page C");
 
     const transcript: BrowserPwaSmokeTranscript = {
@@ -411,7 +510,9 @@ export async function runBrowserPwaSmoke(): Promise<BrowserPwaSmokeResult> {
       beforeStop: { pageA: beforeA, pageB: beforeB },
       afterStop: { pageA: survivor },
       database: {
-        writerCommand: writerResult.value,
+        writerCommand: writerState.controller,
+        retractionCommand,
+        writerEditor: writerState.editor,
         peerAfterWrite,
         freshPage,
       },

@@ -25,9 +25,7 @@ const HOST = "frost-host";
 function fakeBiometric(ok: boolean, calls?: string[]): BiometricAuth {
   return async (prompt: string): Promise<BiometricResult> => {
     if (calls) calls.push(prompt);
-    return ok
-      ? { ok: true, platform: "macos-touchid" }
-      : { ok: false, platform: "macos-touchid", reason: "declined" };
+    return ok ? { ok: true, platform: "macos-touchid" } : { ok: false, platform: "macos-touchid", reason: "declined" };
   };
 }
 
@@ -104,10 +102,9 @@ test("frost-ca confirm: writes shares + optional public key; attest verifies", a
     expect(existsSync(frostCaPublicKeyPath(sb.repoRoot, CA))).toBe(true);
 
     const deviceKey = join(sb.home, "device");
-    const keygen = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", HOST], {
+    const keygen = spawnSync("ssh-keygen", ["-t", "ed25519", "-N", "", "-f", deviceKey, "-C", HOST], {
       encoding: "utf8",
-      stdio: ["pipe", "pipe", "pipe"],
-      input: "\n\n",
+      stdio: ["ignore", "pipe", "pipe"],
     });
     expect(keygen.status).toBe(0);
     const devicePubPath = join(sb.repoRoot, "machines", `${HOST}.pub`);
@@ -142,9 +139,7 @@ test("frost-ca confirm: writes shares + optional public key; attest verifies", a
     expect(body.principals).toEqual(["alice"]);
     const { signatureHex, ...unsigned } = body;
     const msg = attestationMessage(unsigned);
-    expect(
-      frostVerify(hexToBytes(body.groupPublicKeyHex), msg, hexToBytes(signatureHex)),
-    ).toBe(true);
+    expect(frostVerify(hexToBytes(body.groupPublicKeyHex), msg, hexToBytes(signatureHex))).toBe(true);
   } finally {
     sb.cleanup();
   }

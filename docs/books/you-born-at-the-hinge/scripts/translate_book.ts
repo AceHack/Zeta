@@ -13,7 +13,7 @@ const LANGUAGES: Record<string, string> = {
   ru: "Russian",
   ar: "Arabic",
   fa: "Farsi (Persian)",
-  "en-nc": "English (Henderson, North Carolina southern drawl)"
+  "en-nc": "English (Henderson, North Carolina southern drawl)",
 };
 
 const LANG_HTML_TAGS: Record<string, string> = {
@@ -25,7 +25,7 @@ const LANG_HTML_TAGS: Record<string, string> = {
   ru: '<html lang="ru">',
   ar: '<html lang="ar" dir="rtl">',
   fa: '<html lang="fa" dir="rtl">',
-  "en-nc": '<html lang="en-US" class="regional-nc">'
+  "en-nc": '<html lang="en-US" class="regional-nc">',
 };
 
 const LANGBAR_MAP: Record<string, [string, string]> = {
@@ -38,7 +38,7 @@ const LANGBAR_MAP: Record<string, [string, string]> = {
   ru: ['<a href="../ru/">Русский</a>', '<span class="on">Русский</span>'],
   ar: ['<a href="../ar/">العربية</a>', '<span class="on">العربية</span>'],
   fa: ['<a href="../fa/">فارسی</a>', '<span class="on">فارسی</span>'],
-  "en-nc": ['<a href="../en-nc/">NC Drawl</a>', '<span class="on">NC Drawl</span>']
+  "en-nc": ['<a href="../en-nc/">NC Drawl</a>', '<span class="on">NC Drawl</span>'],
 };
 
 const PROMPT_TEMPLATE = (
@@ -68,13 +68,18 @@ async function processChunk(langName: string, chunkHtml: string): Promise<string
   if (!chunkHtml.trim()) return chunkHtml;
 
   const prompt = PROMPT_TEMPLATE(langName, chunkHtml);
-  const ai = new GoogleGenAI(); // Requires GEMINI_API_KEY environment variable
+  const ai = new GoogleGenAI({}); // Reads GEMINI_API_KEY from the Node environment.
 
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3.1-pro",
-      contents: prompt
+      contents: prompt,
     });
+
+    if (response.text === undefined) {
+      console.error("The translation response did not contain text.");
+      return chunkHtml;
+    }
 
     let output = response.text.trim();
     if (output.startsWith("```html")) output = output.slice(7);

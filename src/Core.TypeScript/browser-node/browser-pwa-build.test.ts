@@ -42,6 +42,7 @@ describe("browser PWA production build", () => {
     expect(pageEntry).toContain("startBrowserZetaDbTabRuntime");
     expect(pageEntry).toContain("startDarkHallBrowserDatabaseController");
     expect(pageEntry).toContain("startDarkHallBrowserControllerInput");
+    expect(pageEntry).toContain("startDarkHallBrowserRowCommandEditor");
     expect(pageEntry).toContain("runBrowserZetaDbWake");
     expect(pageEntry).toContain("__zetaDarkHallPage");
     expect(pageEntry).not.toMatch(/from\s+["']\.\//);
@@ -50,6 +51,8 @@ describe("browser PWA production build", () => {
     expect(page).toContain('<link rel="manifest" href="./manifest.webmanifest">');
     expect(page).toContain('<script type="module" src="./darkhall-browser-page.js"></script>');
     expect(page).toContain('data-pwa-status="starting"');
+    expect(page).toContain('id="darkhall-row-command-editor"');
+    expect(page).toContain("data-row-command-key");
     expect(page).not.toMatch(/<script(?! type="module" src="\.\/darkhall-browser-page\.js")/u);
 
     const manifest = JSON.parse(readFileSync(join(outDir, "manifest.webmanifest"), "utf8")) as {
@@ -62,7 +65,9 @@ describe("browser PWA production build", () => {
     expect(manifest.start_url).toBe("./node.html");
     expect(manifest.scope).toBe("./");
     expect(manifest.display).toBe("standalone");
-    expect(readFileSync(join(outDir, "room.css"), "utf8")).toContain(".zeta-room-nav");
+    const stylesheet = readFileSync(join(outDir, "room.css"), "utf8");
+    expect(stylesheet).toContain(".zeta-room-nav");
+    expect(stylesheet).toContain(".zeta-row-command-editor");
 
     const passivePage = readFileSync(join(import.meta.dir, "..", "..", "..", "hall", "room", "index.html"), "utf8");
     expect(passivePage).toContain('href="./node.html"');

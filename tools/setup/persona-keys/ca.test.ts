@@ -43,9 +43,7 @@ const PRIV_MARKER = "PRIVATE" + " " + "KEY";
 function fakeBiometric(ok: boolean, calls?: string[]): BiometricAuth {
   return async (prompt: string): Promise<BiometricResult> => {
     if (calls) calls.push(prompt);
-    return ok
-      ? { ok: true, platform: "macos-touchid" }
-      : { ok: false, platform: "macos-touchid", reason: "declined" };
+    return ok ? { ok: true, platform: "macos-touchid" } : { ok: false, platform: "macos-touchid", reason: "declined" };
   };
 }
 // A passing approval, the default for the happy-path tests below.
@@ -139,7 +137,12 @@ test("ca: idempotent — a second run is a no-op ('exists'), does not regenerate
     const first = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, biometricAuth: APPROVE });
     expect(first.action).toBe("generated");
     expect(genCount.n).toBe(1);
-    const second = await ensureCa(fx, { ca: CA, repoRoot: tmp, home: tmp, biometricAuth: fakeBiometric(true, secondPrompts) });
+    const second = await ensureCa(fx, {
+      ca: CA,
+      repoRoot: tmp,
+      home: tmp,
+      biometricAuth: fakeBiometric(true, secondPrompts),
+    });
     expect(second.action).toBe("exists"); // idempotent: apply-N == apply-once effect
     expect(genCount.n).toBe(1); // NOT regenerated
     expect(secondPrompts).toHaveLength(0); // the idempotent no-op does NOT prompt (no keygen)
@@ -271,7 +274,13 @@ test("cert: fail-closed when device key absent -> no-device-key (signs nothing)"
     writeFileSync(caPriv, "FAKE-CA-PRIVATE\n", { mode: 0o600 });
     // No device pubkey written.
     const devicePub = join(tmp, "machines", "absent.pub");
-    const r = await signMachineCert(fx, { user: USER, machineId: "absent", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
+    const r = await signMachineCert(fx, {
+      user: USER,
+      machineId: "absent",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: APPROVE,
+    });
     expect(r.action).toBe("no-device-key");
     expect(signCount.n).toBe(0);
   } finally {
@@ -340,7 +349,13 @@ test("cert: signs (fake) into a -cert.pub; cert text is public, has no private m
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
     writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
 
-    const r = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
+    const r = await signMachineCert(fx, {
+      user: USER,
+      machineId: "mymac",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: APPROVE,
+    });
     expect(r.action).toBe("signed");
     expect(r.certPath).toBe(certPath(devicePub));
     expect(existsSync(r.certPath)).toBe(true);
@@ -365,7 +380,13 @@ test("PRIVATE-LEAK GUARD: no module output (paths/keys/cert) ever contains a pri
     const devicePub = join(tmp, "machines", "mymac.pub");
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
     writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE mymac (zeta-machine)\n");
-    const cert = await signMachineCert(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
+    const cert = await signMachineCert(fx, {
+      user: USER,
+      machineId: "mymac",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: APPROVE,
+    });
     // Stringify EVERY field the module returns — none may carry a private marker.
     const blob = JSON.stringify(ca) + JSON.stringify(cert);
     expect(blob).not.toMatch(new RegExp(PRIV_MARKER));
@@ -408,10 +429,9 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
     // 2. Generate a THROWAWAY device key in temp (a bare ssh-keygen, never committed). PURE
     // label — the MACHINE only, NO `user@` in the device key comment (pure-key model).
     const deviceKey = join(tmp, "device_ed25519");
-    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", "mymac (zeta-machine)"], {
+    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-N", "", "-f", deviceKey, "-C", "mymac (zeta-machine)"], {
       encoding: "utf8",
-      stdio: ["pipe", "pipe", "pipe"],
-      input: "\n\n",
+      stdio: ["ignore", "pipe", "pipe"],
     });
     expect(kg.status).toBe(0);
     const devicePub = deviceKey + ".pub";
@@ -420,7 +440,13 @@ test("REAL ssh-keygen: throwaway CA signs a throwaway device key; cert verifies 
     expect(readFileSync(devicePub, "utf8")).not.toContain("tester@");
 
     // 3. Sign the device PUBLIC key into a cert with the throwaway CA (biometric-approved).
-    const certRes = await sign(fx, { user: USER, machineId: "mymac", devicePubPath: devicePub, home: tmp, biometricAuth: approve });
+    const certRes = await sign(fx, {
+      user: USER,
+      machineId: "mymac",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: approve,
+    });
     expect(certRes.action).toBe("signed");
     expect(existsSync(certRes.certPath)).toBe(true);
 
@@ -481,7 +507,13 @@ test("single-user list still works: users:[aaron] == the single-owner path", asy
     mkdirSync(devicePub.slice(0, devicePub.lastIndexOf("/")), { recursive: true });
     writeFileSync(devicePub, "ssh-ed25519 AAAADEVICE solo (zeta-machine)\n");
 
-    const viaList = await signMachineCert(fx, { users: ["aaron"], machineId: "solo", devicePubPath: devicePub, home: tmp, biometricAuth: APPROVE });
+    const viaList = await signMachineCert(fx, {
+      users: ["aaron"],
+      machineId: "solo",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: APPROVE,
+    });
     expect(viaList.action).toBe("signed");
     expect(viaList.principals).toEqual(["aaron"]);
     expect(viaList.principal).toBe("aaron"); // a one-element list joins to a bare username (no comma)
@@ -489,7 +521,13 @@ test("single-user list still works: users:[aaron] == the single-owner path", asy
     // The legacy `user` shorthand resolves to the same one-element list.
     const devicePub2 = join(tmp, "machines", "solo2.pub");
     writeFileSync(devicePub2, "ssh-ed25519 AAAADEVICE solo2 (zeta-machine)\n");
-    const viaUser = await signMachineCert(fx, { user: "aaron", machineId: "solo2", devicePubPath: devicePub2, home: tmp, biometricAuth: APPROVE });
+    const viaUser = await signMachineCert(fx, {
+      user: "aaron",
+      machineId: "solo2",
+      devicePubPath: devicePub2,
+      home: tmp,
+      biometricAuth: APPROVE,
+    });
     expect(viaUser.principals).toEqual(["aaron"]);
     expect(viaUser.principal).toBe("aaron");
   } finally {
@@ -512,16 +550,21 @@ test("REAL ssh-keygen: a multi-principal cert shows BOTH users + a machine-only 
     expect(caRes.action).toBe("generated");
 
     const deviceKey = join(tmp, "device_ed25519");
-    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-f", deviceKey, "-C", "shared (zeta-machine)"], {
+    const kg = spawnSync("ssh-keygen", ["-t", "ed25519", "-N", "", "-f", deviceKey, "-C", "shared (zeta-machine)"], {
       encoding: "utf8",
-      stdio: ["pipe", "pipe", "pipe"],
-      input: "\n\n",
+      stdio: ["ignore", "pipe", "pipe"],
     });
     expect(kg.status).toBe(0);
     const devicePub = deviceKey + ".pub";
 
     // Sign with TWO principals (a co-owned machine): aaron + addison.
-    const certRes = await sign(fx, { users: ["aaron", "addison"], machineId: "shared", devicePubPath: devicePub, home: tmp, biometricAuth: approve });
+    const certRes = await sign(fx, {
+      users: ["aaron", "addison"],
+      machineId: "shared",
+      devicePubPath: devicePub,
+      home: tmp,
+      biometricAuth: approve,
+    });
     expect(certRes.action).toBe("signed");
 
     const show = spawnSync("ssh-keygen", ["-L", "-f", certRes.certPath], { encoding: "utf8" });
