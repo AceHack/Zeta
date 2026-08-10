@@ -1,7 +1,12 @@
 name = "lean4"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Lean4"]
+# ImaginaryStack joined defaultTargets 2026-08-10. It was declared as a lean_lib
+# below but had no root module and was not a default target, so `lake build` never
+# reached it and `import ImaginaryStack.*` could not resolve. PhaseClockErasure.lean
+# therefore sat outside every check — and turned out to hold a hard compile error
+# AND a `sorry` on a false theorem, neither of which anything could see.
+defaultTargets = ["Lean4", "ImaginaryStack"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`

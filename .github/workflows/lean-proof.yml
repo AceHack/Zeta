@@ -143,6 +143,28 @@ jobs:
         working-directory: src/Core.Lean4
         run: lake env lean ImaginaryStack/ErasureDistance.lean
 
+      - name: Type-check ImaginaryStack/PhaseClockErasure.lean
+        # Added 2026-08-10. This file was in NEITHER list, and `ImaginaryStack` had no
+        # root module and was not a default target — so it was unbuildable, unimportable,
+        # and invisible to every check. It held a hard compile error AND a `sorry` on a
+        # FALSE theorem (`xorshift_mod17_in_rsCode`, since withdrawn: the 16 values
+        # interpolate to degree 15, not < 12). Both surviving theorems verified sorry-free.
+        working-directory: src/Core.Lean4
+        run: lake env lean ImaginaryStack/PhaseClockErasure.lean
+
+      - name: Type-check Lean4/SchemaEvolution.lean
+        # Added 2026-08-10 (previously unaudited). `disjoint_deltas_commute` carries a
+        # DECLARED research-target `sorry`; type-checking keeps the statements well-typed
+        # and the audit below gates the two closed theorems.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/SchemaEvolution.lean
+
+      - name: Type-check Lean4/FinDataProcessing.lean
+        # Added 2026-08-10 (previously unaudited). Two declarations carry `sorryAx` by the
+        # file's own honest accounting; the audit below gates the 13 that do not.
+        working-directory: src/Core.Lean4
+        run: lake env lean Lean4/FinDataProcessing.lean
+
       - name: Type-check Privacy/IdentityForcesPrivacy.lean
         # The privacy-from-identity necessity theorem (Leibniz identity-of-indiscernibles): under public
         # convergence, persistent distinction must live in private state. Pure Lean (no Mathlib).
@@ -260,6 +282,23 @@ jobs:
           printf '#print axioms Zeta.LandauerFloor.measure_preserves_total\n#print axioms Zeta.LandauerFloor.measure_heat_grows\n#print axioms Zeta.LandauerFloor.measure_heat_monotone\n#print axioms Zeta.LandauerFloor.branches_zero_heat\n#print axioms Zeta.LandauerFloor.adj_only_zero_heat\n#print axioms Zeta.LandauerFloor.larger_window_less_excess\n#print axioms Zeta.LandauerFloor.quasistatic_limit\n#print axioms Zeta.LandauerFloor.n_appends_from_n_branches\n' \
             | cat Lean4/LandauerFloor.lean - > /tmp/landauer_axiom_audit.lean
 
+          # ── Added 2026-08-10: three files that were in NEITHER list ──────────────
+          # Each audits ONLY declarations measured sorry-free on 2026-08-10, so these
+          # are genuine regression gates rather than permanently-red steps. Files that
+          # legitimately carry an OPEN obligation keep it; the closed theorems around
+          # it are still protected, which is the whole point of auditing per-declaration
+          # instead of per-file.
+          printf '#print axioms degreeLT_mem_rsCode\n#print axioms phase_clock_recoverable_under_erasure\n' \
+            | cat ImaginaryStack/PhaseClockErasure.lean - > /tmp/pce_axiom_audit.lean
+          # `disjoint_deltas_commute` is a DECLARED research-target sorry and is excluded.
+          printf '#print axioms empty_delta_identity\n#print axioms consolidate_idempotent\n' \
+            | cat Lean4/SchemaEvolution.lean - > /tmp/schema_axiom_audit.lean
+          # The 13 the file itself certifies sorry-free. Excluded by the file's own
+          # accounting: logRatio_eq_mutualInfo_diff (the open obligation) and
+          # dataProcessing (derived from it).
+          printf 'open Zeta.FinDataProcessing\n#print axioms relEntropy_nonneg\n#print axioms gibbs_le\n#print axioms relEntropy_self\n#print axioms FinJointLogForm.mutualInfo_eq_logsum\n#print axioms MarkovChain.chan_le_one\n#print axioms MarkovChain.jointXZ_pY_eq\n#print axioms MarkovChain.jointXZ_pX_eq\n#print axioms MarkovChain.sum_out_z\n#print axioms MarkovChain.sum_out_y\n#print axioms MarkovChain.sum_qf_y\n#print axioms MarkovChain.sum_pf3_one\n#print axioms MarkovChain.sum_qf3_one\n#print axioms MarkovChain.pf3_zero_or_qf3_pos\n' \
+            | cat Lean4/FinDataProcessing.lean - > /tmp/findata_axiom_audit.lean
+
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
@@ -310,6 +349,35 @@ jobs:
           fi
           if lake env lean /tmp/landauer_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::LandauerFloor depends on sorryAx — the Landauer two-ledger / predictive-advantage proof regressed to sorry/admit"
+            exit 1
+          fi
+          # ── Anti-vacuity guard (added 2026-08-10) ────────────────────────────────
+          # Every audit below decides PASS by the ABSENCE of `sorryAx` in the output.
+          # If a `#print axioms` names a declaration that does not resolve — renamed,
+          # moved, or mis-qualified — Lean reports "Unknown constant", prints no axiom
+          # line, and the grep finds no `sorryAx`. The step then PASSES while checking
+          # nothing. A check that cannot fail is not a check.
+          #
+          # This was not hypothetical: the FinDataProcessing names above were initially
+          # written unqualified and all 13 silently resolved to nothing. Caught by
+          # counting the printed declarations instead of trusting the exit code.
+          for f in /tmp/*_axiom_audit.lean; do
+            if lake env lean "$f" 2>&1 | grep -q 'Unknown constant'; then
+              echo "::error::$f names a declaration that does not resolve — the audit would pass vacuously"
+              exit 1
+            fi
+          done
+
+          if lake env lean /tmp/pce_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::PhaseClockErasure depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/schema_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::SchemaEvolution's CLOSED theorems depend on sorryAx — a proof regressed (the declared research-target sorry is excluded from this audit)"
+            exit 1
+          fi
+          if lake env lean /tmp/findata_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::FinDataProcessing's 13 sorry-free declarations depend on sorryAx — the open obligation has leaked into the closed tower"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."

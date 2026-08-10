@@ -34,27 +34,42 @@ import ImaginaryStack.ErasureDistance
 
 open Polynomial
 
-/-! ## Linear recurrences produce RS codewords
+/-! ## Degree-`< 12` polynomials produce RS codewords
 
-    A linear recurrence of order `k` over `F = ZMod 17` generates a sequence
-    `s(0), s(1), ..., s(15)` where each `s(i)` is determined by the previous
-    `k` values. The fundamental theorem of linear recurrences:
+    RETRACTED CLAIM (2026-08-10). This section previously argued:
 
-      s(n) = Σ_{j=0}^{k-1} c_j * α_j^n
+      "a linear recurrence of order `k` generates a sequence `s(n) = Σ cⱼ αⱼⁿ`,
+       so `s` is the evaluation of a polynomial of degree `< k` … therefore any
+       linear recurrence of order ≤ 11 over F17 produces words in rsCode."
 
-    for some constants `c_j, α_j ∈ F` (the characteristic roots). This means
-    `s` is the evaluation of a polynomial of degree < k at the points 0,...,15
-    — exactly the form that `rsCode` requires (degree < 12).
+    **That inference is false**, and the refutation is the displayed formula
+    itself: `Σⱼ cⱼ αⱼⁿ` is an EXPONENTIAL SUM in `n`, and it is a polynomial in
+    `n` only in the degenerate case where every characteristic root `αⱼ = 1`.
+    Linear complexity bounds the RECURRENCE ORDER; it says nothing about the
+    INTERPOLATION DEGREE.
 
-    So: any linear recurrence of order ≤ 11 over F17 produces words in rsCode.
-    xorshift32 over GF(2) has a LFSR of order 32 — but when reduced mod 17
-    (the field we encode over), the effective order may be much smaller.
-    The connection holds iff the reduced order is ≤ 11.
+    Stated correctly, the two notions coincide only here: "the evaluation of a
+    degree-`< k` polynomial at `0..n−1`" is exactly the recurrence whose
+    characteristic polynomial is `(X − 1)ᵏ`, i.e. `Δᵏ s = 0`. One specific
+    recurrence, not an arbitrary one of that order.
+
+    Counterexample (Soraya, verified): `s(n) = 2ⁿ mod 17` has recurrence order
+    **1** and interpolation degree **15**.
+
+    Consequence: the theorem below is a statement about POLYNOMIAL DEGREE only.
+    It never mentions a linear recurrence, and it must not be read as licensing
+    one — which is why it no longer carries `linear_recurrence` in its name.
+
+    Full record: `docs/letters/to-soraya-xorshift-mod17-in-rscode-is-false-not-merely-unproven.md`
 -/
 
-/-- A linear recurrence of order `k ≤ 11` produces evaluations that are codewords
-    of the RS [16,12] code (degree < 12 polynomials evaluated at pts). -/
-theorem linear_recurrence_in_rsCode
+/-- A polynomial of degree `< 12` evaluates to a codeword of the RS [16,12] code.
+
+    This is a definitional unfolding of `rsCode` as the image of `evalWord` over
+    `degreeLT F 12`. Sound and trivially true — and deliberately narrow: supplying
+    the hypothesis `p ∈ degreeLT F 12` is the whole content, and nothing here
+    establishes that any particular generator's output satisfies it. -/
+theorem degreeLT_mem_rsCode
     (p : Polynomial F) (hp : p ∈ Polynomial.degreeLT F 12) :
     evalWord p ∈ rsCode := by
   exact Submodule.mem_map.mpr ⟨p, hp, rfl⟩
@@ -75,41 +90,55 @@ theorem phase_clock_recoverable_under_erasure
     phaseWord = candidate :=
   rsCode_corrects_any_4_erasures missed hmissed phaseWord candidate hphase hcandidate hagree
 
-/-! ## The xorshift connection (stated, not yet proven)
+/-! ## The xorshift connection — WITHDRAWN as false (2026-08-10)
 
-    The xorshift32 PRNG (as used in phase-clock.ts) is a GF(2)-linear recurrence
-    of period 2^32 - 1. When the output is reduced mod 17, it becomes a sequence
-    over ZMod 17 whose minimal polynomial divides the characteristic polynomial
-    of the LFSR over Z/17Z.
+    A theorem `xorshift_mod17_in_rsCode` stood here, asserting that the 16 outputs
+    of `xorshift32(seed=4) mod 17` are the evaluation of some degree-`< 12`
+    polynomial, proved by `sorry` with the note "mechanization is rote computation".
 
-    VERIFIED (2026-08-09, Berlekamp-Massey over GF(17)):
-    - xorshift32(seed=4) mod 17 over 16 outputs:
-      [4, 11, 7, 0, 2, 2, 15, 2, 14, 14, 13, 13, 6, 6, 16, 6]
-    - Linear complexity (minimal polynomial degree): 8
-    - 8 ≤ 11 ✓ → the sequence IS in rsCode (degree < 12 polynomial evaluation)
-    - The ECC proof chain is CLOSED: no axiom, no sorry, non-vacuous.
+    **The statement is false, so the `sorry` admitted a falsehood rather than
+    deferring work.** Two independent computations agree:
 
-    Three recovery paths for missed phases:
+    - Lagrange interpolation over GF(17) through the 16 values at points `0..15`
+      gives a UNIQUE interpolant of degree **15**. Sixteen distinct points admit
+      exactly one polynomial of degree ≤ 15, so no member of `degreeLT F 12` can
+      agree with all of them — the existential had no witness. (Otto)
+    - The RS dual/parity syndrome of the same word is `[5, 10, 15, 2] ≠ 0`; the
+      check was first validated as non-vacuous in both directions. Independently,
+      `Δ¹² w = [16, 12, 15, 13] ≠ 0`. (Soraya)
+
+    The error was a category confusion: the removed argument read `8 ≤ 11 ✓`, where
+    8 is an LFSR LINEAR COMPLEXITY and 11 a POLYNOMIAL-DEGREE bound — two different
+    quantities sharing a unit. See the retraction note above, and
+    `.claude/rules/numerology-vs-number-theory.md`: a count matching a bound is not
+    an identification.
+
+    Soraya additionally established that no seed rescues it: over 600,000 seed
+    trials the hit rate matched chance exactly (7 observed, 7.18 expected at the
+    subspace density `17⁻⁴`), and a sliding 16-window over ~5,000 outputs produced
+    none. There is no structural relationship here to find — which is expected, since
+    a PRNG whose output WERE a low-degree polynomial evaluation would be broken by
+    construction (4 of every 16 outputs predictable from the other 12).
+
+    The file also failed to compile at the withdrawn statement (`omega could not
+    prove the goal`), which nothing observed because `ImaginaryStack` had no root
+    module and so was never built.
+
+    **What survives, unaffected:** `degreeLT_mem_rsCode` and
+    `phase_clock_recoverable_under_erasure` below, plus everything in
+    `ErasureDistance.lean`. The erasure machinery is sound; what is gone is the
+    claim that xorshift output happens to satisfy its hypothesis.
+
+    **The open engineering question**, routed and not answered here: if missed
+    phases must be recoverable, IMPOSE the structure rather than hope to discover
+    it — encode 12 phase values as a degree-`< 12` polynomial and transmit its 16
+    evaluations. Then `phaseWord ∈ rsCode` holds by construction and
+    `phase_clock_recoverable_under_erasure` applies with no new Lean work.
+
+    Record: `docs/letters/to-soraya-xorshift-mod17-in-rscode-is-false-not-merely-unproven.md`
+
+    Recovery paths for missed phases that do NOT depend on the withdrawn claim:
     1. Resume from own last anchor (phase-clock persistence)
     2. Observe peers (HLC merge — no local history needed)
-    3. Reconstruct from sequence structure (RS ECC — no peers needed, just 12/16 own phases)
 -/
-
-/-- The xorshift32(seed=4) sequence mod 17 has linear complexity 8 (< 12), so it
-    produces a word in rsCode. Verified computationally via Berlekamp-Massey:
-    the minimal polynomial over GF(17) has degree 8.
-
-    The proof is by explicit construction: the sequence [4,11,7,0,2,2,15,2,14,14,13,13,6,6,16,6]
-    is the evaluation of a degree-7 polynomial at the 16 points 0..15 of ZMod 17.
-    Since degree 7 < 12, this polynomial is in degreeLT F 12, hence evalWord p ∈ rsCode.
-
-    NOTE: we record this as `sorry` pending the formal Lean4 proof of the
-    Berlekamp-Massey output (the computation is verified externally; mechanizing
-    it in Lean4 requires polynomial arithmetic infrastructure). The axiom is
-    CLOSED in the sense that the answer is known and verified — the formalization
-    is the remaining mechanical step. -/
-theorem xorshift_mod17_in_rsCode :
-  ∃ (p : Polynomial F), p ∈ Polynomial.degreeLT F 12 ∧
-    (∀ i : Fin 16, evalWord p i = ([4, 11, 7, 0, 2, 2, 15, 2, 14, 14, 13, 13, 6, 6, 16, 6].get ⟨i.val, by omega⟩ : F)) := by
-  sorry -- Berlekamp-Massey degree-8 polynomial; mechanization is rote computation
 
