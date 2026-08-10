@@ -606,6 +606,78 @@ actuator-touching technology** is a live legal question for a kinetic safeguard 
 dual-national principal, and it is counsel's to answer, not a design decision. Both facts
 belong on the record; neither settles the other.
 
+## The immune system already exists, is named, and is PROVEN — the NCI
+
+> Aaron: *"we have an immune system based in standard math that protects against invalid
+> kinetic use too."* / *"it's in repo and old."* / *"one of our first formal verifications."*
+
+Checked, and it is better than what I wrote above. **The Non-Coercion Invariant (NCI)**, in
+`src/Core.TLA/specs/`:
+
+```tla
+NCI == \A t \in Travelers : lastWriter[t] = t
+THEOREM Safety == Spec => []NCI          \* NciSafetyProofs.tla — TLAPS, unbounded, QED
+```
+
+**For every traveler, the last writer of their belief is themselves.** Coercion, formally, is
+someone else becoming the last writer of your state — and `[]NCI` says that never happens in
+any reachable state. Not model-checked at small N: **machine-proven unbounded** (rung 3 of the
+societal-emergence ladder), with the model-checked spec kept beside it.
+
+The minimal NCI is **three forbidden coercions** (Aaron 2026-06-05):
+
+| # | forbidden coercion | where it is proven |
+|---|---|---|
+| 1 | **false urgency** | `NciNonUrgency.tla` — temporal half |
+| 2 | **forced cache miss** | `NciNonUrgency.tla` — temporal half |
+| 3 | **forced private-variable exposure** | `NciSafety` + `NciSafetyProofs` — **unbounded** |
+
+### This supersedes my cache-miss framing above
+
+Earlier in this document I treated escalation-via-cache-miss as an open tension between
+cold-start compression and virus resistance. **The sharper statement was already formalised,**
+and it is not about what is resident — it is about **who decides when you refresh**:
+
+> *"We never use the uncertainties of the thing we are observing to decide if we refresh world
+> state — only our INTERNAL state. Then they can never cause a cache miss, and false urgency is
+> just an extra signal that says refresh now."* — Aaron 2026-06-05, the structural invariant
+
+The refresh trigger is a function of the agent's **own internal state** (`pending`, `cur`) and
+never reads the observed entity's signals — non-correlation, de Finetti, applied to
+observation. The spec makes the knob explicit and shows it cuts both ways: with
+`TrustUrgency = FALSE`, `NoCoercion` holds across **freely injected, unbudgeted** urgency;
+flip it to `TRUE` and the observed's urgency forces a stale decision and `NoCoercion` fails.
+The attack is not hypothesised — it is *in the model*, with the exact switch that enables it.
+
+So the two halves stand as:
+
+- **NCI (proven, primary):** an adversary cannot *trigger* your cache miss, because your
+  refresh decision never reads their signals. False urgency degrades to "an extra hint you may
+  ignore."
+- **My observation (weaker, complementary):** of what you *do* hold resident, a carved-sentence
+  pointer converts an eviction from amnesia into a detectable fault. This does not defend
+  against an adversary-timed refresh — the NCI does that — it only limits the damage of
+  eviction you chose yourself.
+
+I had the weaker half and presented it as the frontier. The frontier was mapped in June, and
+the map is machine-checked.
+
+### And it reaches the kinetic layer
+
+This is what Aaron means by an immune system against *invalid kinetic use*: an actuator driven
+by a traveler whose belief was last written by **someone else** is, by definition, coerced —
+and `[]NCI` forbids that state from being reachable at all. The safeguard is not a runtime
+check that could be raced or partitioned away; it is an invariant of the state machine.
+
+Which also settles the caveat I attached to my "safety must not require delivery" inference:
+that inference is about *liveness under partition* and remains mine and unchecked. **The
+non-coercion property is neither — it is proven, and it does not depend on any message
+arriving**, because `lastWriter[t] = t` is a property of who wrote, not of what was delivered.
+
+**Anchor:** Leslie Lamport twice over — TLA+/TLAPS for the proof, and (§ above) logical clocks
+for the phase model. **Danger theory / zero-trust** framing in the Amara 11th-ferry immune
+system doc is the biological half of the same idea.
+
 ## What this predicts / what to do with it
 
 1. **The missing R8/R9 clause should be written as a stated bound, not a mechanism** — and
