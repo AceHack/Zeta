@@ -143,3 +143,123 @@ output differ.** A criterion satisfiable by a literal is not a criterion.
 Key distribution, roster gossip, revocation transport, and choosing which post-quantum scheme
 Zeta adopts. Those are separate. **Do not implement a bespoke cryptographic primitive** — use
 the platform's, or a test double, behind the R6 port.
+
+---
+
+# AMENDMENTS — post-combine (2026-08-09)
+
+**Everything above this line is the spec as derivations A, B and C were built against, and is
+left unedited.** Rewriting it would destroy the record of what the three implementers actually
+read — which is the evidence the run produced. These amendments are **additive** and bind any
+future derivation. Evidence:
+[`threshold-signature-verification-combine.md`](threshold-signature-verification-combine.md).
+
+Each amendment exists because independent implementers read one sentence two ways. **A
+divergence between independent derivations is a defect in this document**, and the count of
+derivations that found it is the warrant.
+
+## B1 (title + preamble) — this is MULTI-signature, not THRESHOLD signature
+
+*Found by A. The most dangerous defect in the run.*
+
+"Threshold signature" is the term of art for the **Desmedt–Frankel / Shamir** construction: an
+*aggregated single signature* verified against *one group key*. This document's R3/R4/AC3 —
+count signers, de-duplicate submissions, report unknown ones — are only meaningful for **k-of-n
+multi-signature**, where each party signs separately.
+
+> **This specification describes k-of-n MULTI-SIGNATURE verification.** A reader who implements
+> threshold signatures from the title builds the wrong primitive. All three derivations built
+> multi-signature because the requirements forced it — the document was internally coherent and
+> externally misnamed.
+
+## B2 (amends R5) — the canonical signed bytes are FIXED, and domain separation is REQUIRED
+
+*Found independently by all three. The deepest defect.*
+
+R5 said a signature is "over the request's scope and payload" and fixed no encoding. The three
+derivations chose three different encodings — differing in domain tag, endianness, and whether
+the payload length is prefixed — so **no two can verify each other's signatures, and every
+derivation's own tests pass regardless.**
+
+> The signed message MUST be exactly:
+> `domain ‖ u32be(len(scope_utf8)) ‖ scope_utf8 ‖ u32be(len(payload)) ‖ payload`
+> with `domain = "zeta.multisig.v1"` as UTF-8 bytes, and **all** length prefixes 4-byte
+> **big-endian** (endian-explicit so bytes are identical on every machine, per R9).
+>
+> **Domain separation is REQUIRED, not optional.** Length-prefixing alone gives injectivity —
+> which is all the original rationale argued for, which is why one derivation correctly omitted
+> the tag — but injectivity does **not** prevent **cross-protocol reuse**: a signature valid in
+> another Zeta context being replayed into this one. State that reason, so no compliant
+> implementation can omit it again.
+
+## B3 (amends R7 + R9) — the epoch is verifier-supplied, and the window is ADVISORY
+
+*The epoch problem was found by C and independently by B, which also named the attack.*
+
+R5 binds a signature to scope and payload; R7 wants a bounded window; the house rules forbid a
+wall clock. The epoch is therefore **caller-supplied and unsigned** — a **downgrade attack**: an
+adversary replays a retired-scheme signature by asserting an in-window epoch.
+
+> The epoch MUST be supplied by the **verifier**, never taken from the request, and MUST appear
+> in R9's input list. `verify` is a function of **(roster, request, algorithm set, epoch)**.
+>
+> Even so, the migration window is **advisory, not enforcing**: it bounds what a verifier
+> chooses to accept, and it cannot bind a signer, because nothing in the signed material commits
+> to a time. **Do not describe it as preventing use of a retired scheme.** Making it enforcing
+> requires the epoch inside the signed material, which contradicts R5 — that is a design change,
+> not a clarification.
+
+## B4 (amends R7) — a migration window MAY be unbounded
+
+*Found by B, flagged as its least-confident call. It was right to doubt the spec, not itself.*
+
+R7 implied every overlap is transitional. **Permanent hybrid classical+PQ deployment is real
+practice**, so a verifier accepting two schemes indefinitely is a legitimate configuration, not
+a misconfiguration. An unbounded window MUST be expressible and MUST NOT be a config error.
+
+## B5 (amends R7) — windows live on the VERIFIER, never on a shared registry
+
+*Found by B.*
+
+> A migration window is per-verifier policy. Putting it on a shared scheme registry **recreates
+> the cutover coordinator R7 exists to deny** — the same hub failure this substrate refuses
+> everywhere else.
+
+## B6 (amends R4) — a duplicate MUST NOT suppress a genuine signature
+
+*Found by B. A denial-of-participation attack no other derivation saw.*
+
+R4 said duplicates count once and said nothing about *which* copy counts. Under **first-wins**,
+an attacker injects a junk submission under a target's identity and the target's genuine
+signature never counts.
+
+> Any **valid** submission from a rostered signer MUST count, regardless of position or how many
+> invalid submissions share that identity.
+
+## B7 (amends R6) — the port contract FORBIDS impure adapters
+
+*All three derivations declared R9 `partial`; B named the reason.*
+
+R9 requires purity of `verify`, but R6's port permitted an adapter that reads a clock or does
+I/O — so R9 was unachievable through a conforming implementation.
+
+> An `ISignatureScheme` implementation MUST be pure: no clock, no I/O, no global mutable state,
+> and it MUST NOT throw (a fault is a returned value). R9's guarantee extends **through** the
+> port, not merely up to it.
+
+## B8 (amends R8) — reject every configuration that can never authorize
+
+Rejecting only `threshold > roster size` is insufficient: a rostered signer with no key under
+any accepted scheme passes every stated check and can never contribute.
+
+## B9 (amends the Acceptance section)
+
+- **AC3** MUST specify **threshold ≥ 2** — duplicate collapse is vacuous at threshold 1.
+- **AC5** MUST read *"the same request **shape** and call site verify under two schemes"* —
+  identical bytes verifying under two genuinely different schemes is impossible unless one wraps
+  the other, which would void R6.
+- **AC6** MUST pin the window as **half-open `[start, end)`**, matching `PhaseWindow` in
+  `KeyCustody`. Inclusive vs half-open diverges at exactly one epoch, silently, mid-cutover —
+  and no derivation's own tests can catch it.
+- **AC7** MUST define "instance orderings" — it admits at least three readings, and only
+  submission order was tested by anyone.
