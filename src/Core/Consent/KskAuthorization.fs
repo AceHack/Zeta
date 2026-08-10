@@ -1,86 +1,133 @@
 module Zeta.Core.Consent.KskAuthorization
 
-open System
+open Zeta.Core
+open Zeta.Core.MultiSignatureVerification
 
-/// Signer identity for N-of-M multi-sig KSK override.
-type Signer = {
-    Id: string
-    PublicKey: byte[]
-}
-
-/// The **evaluating traveler's own** trusted roster for KSK override authorization.
+/// # KSK override authorization — the emergency bypass of the consent gate
 ///
-/// There is deliberately NO global roster: each traveler holds its own `Signers` set and decides
-/// for itself whom it trusts (`R11` — per-principal trust, no mandatory central authority). A
-/// consequence worth stating, because it looks like a bug and is not: **two travelers may reach
-/// different verdicts on the identical request**, and both are correct. A single mandatory roster
+/// This is the highest-authority path in the system: it authorizes overriding a consent gate on a
+/// kinetic safeguard. It is therefore the path an attacker most wants, and the one that must be
+/// hardest to satisfy.
+///
+/// **What changed, and why it matters.** This module previously counted distinct rostered signers
+/// and **verified no signatures at all** — the note in the source said verification was "deferred to
+/// a follow-up slice". So the gate answered *"were enough distinct names supplied?"* rather than
+/// *"did enough authorized parties consent?"*, and **any caller able to fabricate bytes passed**.
+/// It now delegates every decision to `MultiSignatureVerification`, which was derived three times
+/// independently under a clean-room wall and synthesised against the amended spec.
+///
+/// The types here remain KSK-shaped — a roster, a threshold, a scope — because that is the domain
+/// vocabulary the callers speak. The *judgement* is no longer made here.
+///
+/// **Per-traveler rosters (`R2`/`R11`).** There is deliberately no global roster: each traveler
+/// holds its own `Signers` set and decides for itself whom it trusts. Two travelers may reach
+/// different verdicts on the identical request, and **both are correct**. A single mandatory roster
 /// would be a hub — the same capture this substrate refuses everywhere else.
-type KskConfig = {
-    Signers: Signer list
-    Threshold: int
-    Scope: string
-}
 
-/// Authorization request for KSK override (emergency bypass of consent gate).
-type KskAuthorizationRequest = {
-    Scope: string
-    Signatures: (string * byte[]) list  // signerId * signature
-}
+/// One signer this traveler trusts, and the key material it trusts them under. A signer may hold
+/// keys under several schemes (during a migration); each is a separate entry.
+type Signer =
+    { Id: string
+      /// Which signature scheme this key is an input to.
+      Scheme: string
+      PublicKey: byte[] }
 
-/// Result of KSK threshold check.
+/// The **evaluating traveler's own** trusted roster and policy.
+type KskConfig =
+    { Signers: Signer list
+      Threshold: int
+      Scope: string
+      /// Schemes this traveler accepts, and whether each is current or retiring. Migration windows
+      /// live HERE, on the verifier — never on a shared registry, which would recreate the cutover
+      /// coordinator a decentralised system exists to deny.
+      AcceptedSchemes: SchemePolicy list }
+
+/// A request to exercise the override.
+type KskAuthorizationRequest =
+    { Scope: string
+      /// What specifically is being authorized. Signed alongside the scope, so a signature for one
+      /// override cannot be replayed onto another.
+      Payload: byte[]
+      /// `signerId * scheme * signature`.
+      Signatures: (string * string * byte[]) list }
+
+/// Result of the KSK check.
 type KskCheckResult =
     | Authorized of signerCount: int * threshold: int
     | InsufficientSigners of provided: int * required: int
     | ScopeMismatch of requested: string * configured: string
     | DuplicateSigners of duplicates: string list
-    /// Signers that are not on the configured roster. Counting an unknown identity toward the
-    /// threshold would let N fabricated names authorize the highest-authority path in the system.
+    /// Signers absent from this traveler's roster. Counting an unknown identity toward the threshold
+    /// would let fabricated names authorize the highest-authority path in the system.
     | UnknownSigners of unknown: string list
+    /// Signers whose submitted bytes are **not a valid signature** by their rostered key over this
+    /// scope and payload. Previously unreachable, because nothing was verified.
+    | InvalidSignatures of invalid: string list
 
-/// Validates N-of-M threshold for a KSK override **from the perspective of one traveler**, against
-/// that traveler's own roster. Disagreement between travelers is a legitimate outcome, not a fault.
-/// Returns Result< KskCheckResult, string > for error surfacing.
-let checkKskAuthorization (config: KskConfig) (req: KskAuthorizationRequest) : Result<KskCheckResult, string> =
+/// Validates a KSK override **from one traveler's perspective**, against that traveler's own roster.
+///
+/// `epoch` is supplied by the **verifier** and never read from the request: taking it from the
+/// request would be a downgrade attack, since the adversary would choose the value that admits their
+/// own retired-scheme signature.
+let checkKskAuthorization
+    (schemes: ISignatureScheme list)
+    (config: KskConfig)
+    (req: KskAuthorizationRequest)
+    (epoch: int64)
+    : Result<KskCheckResult, string> =
     if req.Scope <> config.Scope then
-        Ok (ScopeMismatch (req.Scope, config.Scope))
+        Ok(ScopeMismatch(req.Scope, config.Scope))
     else
-        let submitted = req.Signatures |> List.map fst
-        let uniqueSigners = submitted |> List.distinct
+        let roster =
+            config.Signers
+            |> List.groupBy (fun s -> SignerId s.Id)
+            |> List.map (fun (id, entries) ->
+                id, entries |> List.map (fun e -> { Scheme = SchemeId e.Scheme; Material = e.PublicKey }))
+            |> Map.ofList
 
-        // Duplicates are reported before anything else counts them: submitting one signer N times
-        // must never look like N signers.
-        let duplicates =
-            uniqueSigners |> List.filter (fun s -> submitted |> List.filter ((=) s) |> List.length > 1)
+        let policy =
+            { Roster = roster
+              Threshold = config.Threshold
+              AcceptedSchemes = config.AcceptedSchemes }
 
-        // Roster membership. `config.Signers` is the authority on WHO may sign; using it only for
-        // its length would let entirely unknown identities reach `Authorized` (081KZMGZTB508QG0R003F8AXYQ).
-        let roster = config.Signers |> List.map (fun s -> s.Id) |> Set.ofList
-        let unknown = uniqueSigners |> List.filter (fun s -> not (roster.Contains s))
+        let request =
+            { Scope = req.Scope
+              Payload = req.Payload
+              Submissions =
+                req.Signatures
+                |> List.map (fun (id, scheme, signature) ->
+                    { Signer = SignerId id
+                      Scheme = SchemeId scheme
+                      Signature = signature }) }
 
-        if not duplicates.IsEmpty then
-            Ok (DuplicateSigners duplicates)
-        elif not unknown.IsEmpty then
-            Ok (UnknownSigners unknown)
-        else
-            // Only roster members count toward the threshold.
-            let provided = uniqueSigners.Length
-            let required = config.Threshold
-            if provided < required then
-                Ok (InsufficientSigners (provided, required))
+        match verify schemes policy request epoch with
+        | Error configError -> Error(sprintf "KSK policy is not a valid configuration: %A" configError)
+        | Ok verdict ->
+            let name (SignerId s) = s
+            // Classify the rejections so the caller keeps the KSK-shaped vocabulary. Order matters:
+            // an unknown signer is a stronger signal than an invalid signature, and a duplicate is
+            // reported even when the signer would otherwise have counted.
+            let rejectedWith predicate =
+                verdict.Rejections
+                |> List.filter (fun (_, reasons) -> reasons |> List.exists predicate)
+                |> List.map (fst >> name)
+
+            let unknown =
+                rejectedWith (function
+                    | NotOnRoster -> true
+                    | _ -> false)
+
+            let invalid =
+                rejectedWith (function
+                    | SignatureDidNotVerify
+                    | InputRejectedByScheme _ -> true
+                    | _ -> false)
+
+            if not unknown.IsEmpty then Ok(UnknownSigners unknown)
+            elif not verdict.DuplicateSigners.IsEmpty then
+                Ok(DuplicateSigners(verdict.DuplicateSigners |> List.map name))
+            elif not invalid.IsEmpty then Ok(InvalidSignatures invalid)
+            elif verdict.Authorized then
+                Ok(Authorized(verdict.CountedTotal, verdict.Threshold))
             else
-                Ok (Authorized (provided, required))
-
-// ALGORITHM AGILITY (Aaron 2026-08-09): the signature scheme belongs behind a PORT, not baked in
-// — "hexagonal / pluggable and rollable keys in case we make a bad assumption." A PQ choice made
-// today (ML-DSA / FIPS 204, SLH-DSA / FIPS 205, or the unimplemented `PqLattice`) is a bet on a
-// hardness assumption holding for decades, and that bet should be revisable without a migration
-// event. Note the mechanism already exists: `KeyCustody`'s three-slot ladder makes **algorithm
-// migration just a key rotation whose `next` slot carries a different scheme** — the bounded
-// `previous` acceptance window is exactly the hybrid/transition period a PQ migration needs, and
-// it works without a coordinator to sequence the cutover.
-//
-// STILL DEFERRED: full signature verification. This function now answers "did enough DISTINCT,
-// ROSTERED parties submit?" — it does NOT verify that the submitted bytes are valid signatures by
-// those parties over this scope. Until that lands, this gate is not sound against a caller that
-// can fabricate signature bytes. Tracked with the algorithm choice (ML-DSA / SLH-DSA vs the
-// unimplemented `PqLattice`) in 081KZMGZTB508QG0R003F8AXYQ.
+                Ok(InsufficientSigners(verdict.CountedTotal, verdict.Threshold))
