@@ -1,8 +1,9 @@
 import * as fs from "fs";
 import * as path from "path";
+import { PersonaSummoner } from "../../../../src/Core.TypeScript/peer-call/summon.ts";
 
 const TARGET_DIR = path.join(__dirname, "..", "site");
-const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434/api/generate";
+const PERSONA_NAME = process.env.PERSONA || "lior";
 const MODEL_NAME = process.env.MODEL_NAME || "qwen2.5:7b";
 
 const LANGUAGES: Record<string, string> = {
@@ -70,22 +71,14 @@ async function processChunk(langName: string, chunkHtml: string): Promise<string
 
   const prompt = PROMPT_TEMPLATE(langName, chunkHtml);
   try {
-    const response = await fetch(OLLAMA_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: MODEL_NAME,
-        prompt: prompt,
-        stream: false
-      })
-    });
+    const summoner = new PersonaSummoner();
+    const result = await summoner.summon(PERSONA_NAME, prompt, { model: MODEL_NAME, allowEmpty: true });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!result.success) {
+      throw new Error(`Summon error! status: ${result.exitCode}\nStderr: ${result.stderr}`);
     }
 
-    const data = await response.json();
-    let output = data.response.trim();
+    let output = result.stdout.trim();
     if (output.startsWith("```html")) output = output.slice(7);
     if (output.startsWith("```")) output = output.slice(3);
     if (output.endsWith("```")) output = output.slice(0, -3);

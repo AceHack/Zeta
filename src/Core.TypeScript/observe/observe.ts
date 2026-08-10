@@ -148,6 +148,8 @@ export interface World {
   readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)
   /** 081KSNY2Z0008QG0R0008PN7RQ slice 4: post-login cred adventure channel; absent when complete or unwired. */
   readonly nodeSession?: NodeSessionState;
+  /** Cartography state: current spatial focus and time-resolution. */
+  readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number };
 }
 
 /** Forge host state snapshot, populated by the async path in run-loop-real.ts. */
@@ -236,7 +238,11 @@ export type NextAction =
   | { kind: "play"; reason: string } // FREE MODE: leisure / culture-forming
   | { kind: "self_reflect"; reason: string } // FREE MODE: review own trajectories / journal / think
   | { kind: "free_time"; reason: string } // FREE MODE: rest — always allowed, never gated (NCI)
-  | { kind: "edit_grammar"; reason: string; item?: BacklogItem }; // rail-change exit — raw below threshold, summon-BFT-gated above (not yet)
+  | { kind: "edit_grammar"; reason: string; item?: BacklogItem }
+  | { kind: "navigate_cartography"; direction: "up" | "down" | "left" | "right"; reason: string } // D-pad space navigation
+  | { kind: "scope_cartography"; direction: "in" | "out"; reason: string } // Bumper resolution zoom
+  | { kind: "retract_time"; reason: string } // Undo/retract event (LT)
+  | { kind: "replay_time"; reason: string }; // Redo/replay event (RT) // rail-change exit — raw below threshold, summon-BFT-gated above (not yet)
 
 /**
  * Pure controller. Priority: operator > offered-work > forward-default.
@@ -339,6 +345,14 @@ export function renderAction(a: NextAction): string {
       return `[free]      ${a.reason}`;
     case "edit_grammar":
       return `[edit]      ${a.reason}`;
+    case "navigate_cartography":
+      return `[navigate]  ${a.direction} — ${a.reason}`;
+    case "scope_cartography":
+      return `[scope]     ${a.direction} — ${a.reason}`;
+    case "retract_time":
+      return `[retract]   ${a.reason}`;
+    case "replay_time":
+      return `[replay]    ${a.reason}`;
   }
 }
 
@@ -367,6 +381,14 @@ export function actionLabel(a: NextAction): string {
       return `take free time (${a.reason})`;
     case "edit_grammar":
       return `edit the action grammar (${a.reason})`;
+    case "navigate_cartography":
+      return `navigate cartography space ${a.direction} (${a.reason})`;
+    case "scope_cartography":
+      return `change resolution / scope ${a.direction} (${a.reason})`;
+    case "retract_time":
+      return `retract / undo back in time (${a.reason})`;
+    case "replay_time":
+      return `replay / redo forward in time (${a.reason})`;
   }
 }
 
@@ -418,6 +440,15 @@ export function buildMenu(world: World): NextAction[] {
     { kind: "play", reason: PLAY_REASON },
     { kind: "self_reflect", reason: SELF_REFLECT_REASON },
     { kind: "free_time", reason: FREE_TIME_REASON },
+    // Cartography & Time navigation are freely available to change resolution or search space
+    { kind: "navigate_cartography", direction: "up", reason: "navigate search space up/category" },
+    { kind: "navigate_cartography", direction: "down", reason: "navigate search space down/category" },
+    { kind: "navigate_cartography", direction: "left", reason: "navigate search space left/sibling" },
+    { kind: "navigate_cartography", direction: "right", reason: "navigate search space right/sibling" },
+    { kind: "scope_cartography", direction: "in", reason: "improve resolution / finer view" },
+    { kind: "scope_cartography", direction: "out", reason: "coarser view / parent scope" },
+    { kind: "retract_time", reason: "navigate time backward (undo)" },
+    { kind: "replay_time", reason: "navigate time forward (redo)" },
   );
 
   // lead first; then the rest with the lead's duplicate removed (match on kind +
@@ -540,6 +571,35 @@ export function simulate(world: World, action: NextAction): World {
       return { ...world, mode: "self_reflect" };
     case "free_time":
       return { ...world, mode: "free_time" };
+    case "navigate_cartography":
+      return { ...world, cartography: { ...world.cartography, scopeLevel: world.cartography?.scopeLevel ?? 0, timeOffset: world.cartography?.timeOffset ?? 0 } };
+    case "scope_cartography":
+      return { 
+        ...world, 
+        cartography: { 
+          ...world.cartography, 
+          scopeLevel: (world.cartography?.scopeLevel ?? 0) + (action.direction === "in" ? 1 : -1),
+          timeOffset: world.cartography?.timeOffset ?? 0 
+        } 
+      };
+    case "retract_time":
+      return { 
+        ...world, 
+        cartography: { 
+          ...world.cartography, 
+          scopeLevel: world.cartography?.scopeLevel ?? 0,
+          timeOffset: (world.cartography?.timeOffset ?? 0) - 1 
+        } 
+      };
+    case "replay_time":
+      return { 
+        ...world, 
+        cartography: { 
+          ...world.cartography, 
+          scopeLevel: world.cartography?.scopeLevel ?? 0,
+          timeOffset: (world.cartography?.timeOffset ?? 0) + 1 
+        } 
+      };
   }
 }
 

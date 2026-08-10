@@ -27,10 +27,10 @@ export interface HarnessConfig {
   /** If true, the tick runs in an IDE terminal (not launchd). No agent gate by default. */
   readonly ideNative?: boolean;
   /**
-   * Harness type: "cli" (default, shells out to command) or "local-llm"
-   * (calls ollama/local model directly, no external CLI required).
+   * Harness type: "cli" (default, shells out to command), "local-llm"
+   * (calls ollama/local model directly), "openai-stream", or "mux-duplex".
    */
-  readonly type?: "cli" | "local-llm";
+  readonly type?: "cli" | "local-llm" | "openai-stream" | "mux-duplex";
   /** The harness's default model (used when persona's preferred is incompatible). */
   readonly defaultModel?: string;
   /** Models this harness supports (if set, persona model must be in this list or falls back to defaultModel). */

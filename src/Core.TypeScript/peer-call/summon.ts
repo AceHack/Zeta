@@ -14,13 +14,18 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { getPersona } from "../service/persona-registry";
+import { getPersona, registerPersona, localLlmPersona } from "../service/persona-registry";
 import {
   DEFAULT_SUBSTANTIVE_TRIGGERS,
   formatBypassMessage,
   formatRejectionMessage,
   peerFirewallCheck,
 } from "./_firewall";
+import { fetchTransport } from "../model-backend/fetch-transport";
+import { openAiCompatBackend } from "../model-backend/backend";
+import { multiplexedDuplexTransport } from "../model-backend/multiplexed-duplex-transport";
+import { platformWebSocket, webSocketEndpoint } from "../model-backend/web-socket-endpoint";
+import { askPersona, awaitHello, openPersona, type PersonaFrame, type PersonaCtl } from "../model-backend/persona-transport";
 
 const FILE_HEAD_BYTES = 20000;
 const CTX_HEAD_BYTES = 20000;
@@ -94,7 +99,49 @@ export class PersonaSummoner implements ISummon {
     }
 
     // 2. Generic fallback launcher (e.g. for Soraya, Lior, or others)
-    const personaConfig = getPersona(persona);
+    let personaConfig = getPersona(persona);
+
+    // ACE dynamic bootstrap
+    if (!personaConfig && persona.startsWith("ace:")) {
+      const pkg = persona.slice(4);
+      process.stderr.write(`[summon] ACE bootstrapping persona: ${pkg}\n`);
+      const aceCli = join(currentDir, "..", "ace", "ace-cli.ts");
+      const installRes = spawnSync("npx", ["tsx", aceCli, "install", pkg, "--allow-no-signature"], { encoding: "utf8" });
+      if (installRes.status !== 0) {
+        throw new Error(`ACE bootstrap failed for ${pkg}:\n${installRes.stderr || installRes.stdout}`);
+      }
+      
+      // Load manifest.json from the store
+      const pkgName = pkg.split("@")[0]!;
+      const home = process.env.HOME || "";
+      const manifestPath = join(home, ".ace", "store", "packages", pkgName, "manifest.json");
+      if (existsSync(manifestPath)) {
+        try {
+          const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+          const contentStr = manifest[`${pkgName}/content.json`] || manifest["lumen-persona/content.json"];
+          if (contentStr) {
+            const content = JSON.parse(contentStr);
+            // Register it dynamically as local-llm unless another harness is specified in content
+            const config = localLlmPersona(content.persona || pkgName);
+            registerPersona(config);
+            personaConfig = getPersona(config.name);
+          } else {
+             // Just register it naively if content.json is missing
+             const config = localLlmPersona(pkgName);
+             registerPersona(config);
+             personaConfig = getPersona(config.name);
+          }
+        } catch (err) {
+          process.stderr.write(`[summon] warning: failed to parse bootstrapped persona: ${err}\n`);
+        }
+      } else {
+        // Just register it naively
+        const config = localLlmPersona(pkgName);
+        registerPersona(config);
+        personaConfig = getPersona(config.name);
+      }
+    }
+
     if (!personaConfig) {
       throw new Error(`Unknown persona: ${persona}`);
     }
@@ -116,8 +163,8 @@ export class PersonaSummoner implements ISummon {
       process.stderr.write(formatBypassMessage(persona));
     }
 
-    const preamble = this.buildPreamble(persona);
-    const contextContent = this.loadContext(persona);
+    const preamble = this.buildPreamble(personaConfig.name);
+    const contextContent = this.loadContext(personaConfig.name);
 
     let fullPrompt = `${preamble}\n\n---\n\n${prompt}`;
     if (contextContent) {
@@ -160,19 +207,28 @@ export class PersonaSummoner implements ISummon {
 
     // Resolve output path
     const ts = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-    const outputFile = options.outputFile ?? `/tmp/peer-call-output/${ts}-${persona}.md`;
+    const outputFile = options.outputFile ?? `/tmp/peer-call-output/${ts}-${personaConfig.name}.md`;
     ensureParentDir(outputFile);
 
-    // ─── Local-LLM path: call ollama directly (no external CLI) ──────
+    // ─── Local-LLM path ──────
     if (personaConfig.harness.type === "local-llm") {
       return this.summonViaLocalLlm(personaConfig, fullPrompt, outputFile);
+    }
+
+    // ─── OpenAI-Stream path ──────
+    if (personaConfig.harness.type === "openai-stream") {
+       return this.summonViaOpenAiStream(personaConfig, fullPrompt, outputFile, options.stream);
+    }
+    
+    // ─── Mux-Duplex path ──────
+    if (personaConfig.harness.type === "mux-duplex") {
+       return this.summonViaMuxDuplex(personaConfig, fullPrompt, outputFile, options.stream);
     }
 
     // ─── Check if CLI is available — fall back to local-LLM if not ───
     const cliAvailable = this.isCommandAvailable(personaConfig.harness.command);
     if (!cliAvailable) {
       // Graceful degradation: use local LLM with persona context loaded.
-      // The summon works (degraded quality) rather than failing hard.
       const fallbackConfig: typeof personaConfig = {
         ...personaConfig,
         harness: {
@@ -180,18 +236,18 @@ export class PersonaSummoner implements ISummon {
           type: "local-llm",
           model: "qwen2.5:0.5b",
           host: "http://127.0.0.1:11434",
-          systemPrompt: this.buildPreamble(persona),
+          systemPrompt: preamble,
         },
       };
       process.stderr.write(
-        `[summon] ${persona}'s CLI '${personaConfig.harness.command}' not on PATH — falling back to local-LLM\n`
+        `[summon] ${personaConfig.name}'s CLI '${personaConfig.harness.command}' not on PATH — falling back to local-LLM\n`
       );
       return this.summonViaLocalLlm(fallbackConfig, fullPrompt, outputFile);
     }
 
     const { harness } = personaConfig;
-    // Resolve model: persona preferred → harness default → empty
-    const resolvedModel = personaConfig.preferredModel ?? harness.defaultModel ?? "";
+    // Resolve model: options.model → persona preferred → harness default → empty
+    const resolvedModel = options.model ?? personaConfig.preferredModel ?? harness.defaultModel ?? "";
     // Replace templates in args
     const execArgs = harness.args.map(arg =>
       arg.replace("{{PROMPT}}", fullPrompt).replace("{{MODEL}}", resolvedModel)
@@ -210,7 +266,7 @@ export class PersonaSummoner implements ISummon {
         exitCode: 1,
         outputFile,
         stdout: "",
-        stderr: `error: command "${harness.command}" for persona "${persona}" not found on PATH\n`,
+        stderr: `error: command "${harness.command}" for persona "${personaConfig.name}" not found on PATH\n`,
       };
     }
 
@@ -224,7 +280,7 @@ export class PersonaSummoner implements ISummon {
       exitCode = 1;
       const errCode = (runResult.error as NodeJS.ErrnoException).code ?? "";
       if (errCode === "ENOENT") {
-        stderr = `error: command "${harness.command}" for persona "${persona}" not found on PATH\n`;
+        stderr = `error: command "${harness.command}" for persona "${personaConfig.name}" not found on PATH\n`;
       } else {
         stderr = `error: failed to spawn "${harness.command}": ${runResult.error.message}\n`;
       }
@@ -333,6 +389,125 @@ export class PersonaSummoner implements ISummon {
       };
     }
   }
+
+  /**
+   * OpenAI Compat Stream Transport via ModelBackend
+   */
+  private async summonViaOpenAiStream(
+    config: import("../service/persona-registry").PersonaConfig,
+    fullPrompt: string,
+    outputFile: string,
+    streamOpt = false
+  ): Promise<SummonResult> {
+    const { harness } = config;
+    const model = config.preferredModel || harness.defaultModel || "gpt-4o";
+    const transport = fetchTransport();
+    // Assuming backend config is properly resolved via environment variables 
+    // or passed via options for openai compat endpoints.
+    // We will use a dummy config for now, assuming OPENAI_API_KEY is available.
+    const backendConfig = { 
+        id: "openai", 
+        url: harness.host || process.env.OPENAI_API_BASE || "https://api.openai.com/v1", 
+        apiKey: process.env.OPENAI_API_KEY || "" 
+    };
+    const backend = openAiCompatBackend(backendConfig, transport);
+    
+    try {
+       const systemPrompt = harness.systemPrompt ?? `You are ${config.name}.`;
+       const messages = [
+           { role: "system" as const, content: systemPrompt },
+           { role: "user" as const, content: fullPrompt }
+       ];
+       
+       let stdout = "";
+       if (streamOpt && backend.postStream) {
+           const stream = backend.postStream(messages, { model });
+           for await (const chunk of stream) {
+               stdout += chunk;
+               process.stdout.write(chunk.content);
+           }
+       } else {
+           const res = await backend.post(messages, { model });
+           stdout = res.text;
+       }
+       
+       try { writeFileSync(outputFile, stdout); } catch {}
+       return { success: true, exitCode: 0, outputFile, stdout, stderr: "" };
+    } catch (err) {
+       return {
+           success: false, exitCode: 2, outputFile, stdout: "",
+           stderr: `openai-stream error: ${err instanceof Error ? err.message : String(err)}\n`
+       };
+    }
+  }
+
+  /**
+   * Mux-Duplex channel via MultiplexedDuplexTransport.
+   */
+  private async summonViaMuxDuplex(
+    config: import("../service/persona-registry").PersonaConfig,
+    fullPrompt: string,
+    outputFile: string,
+    streamOpt = false
+  ): Promise<SummonResult> {
+    const { harness } = config;
+    const url = harness.host || "ws://localhost:9090";
+    
+    try {
+      const ws = new WebSocket(url);
+      
+      // Wait for open
+      await new Promise<void>((resolve, reject) => {
+        ws.addEventListener("open", () => resolve());
+        ws.addEventListener("error", () => reject(new Error("WebSocket connection error")));
+      });
+
+      const ds = platformWebSocket(ws);
+      const ep = webSocketEndpoint<PersonaFrame, PersonaCtl>(ds);
+      const client = multiplexedDuplexTransport<PersonaFrame, PersonaCtl>(ep);
+      const channel = client.open();
+
+      await openPersona(channel);
+      const hello = await awaitHello(channel);
+      if (!hello.ok) {
+        throw new Error("Handshake failed: " + hello.error);
+      }
+
+      // Execute request
+      const reply = await askPersona(channel, fullPrompt);
+
+      if (reply.kind === "error") {
+        throw new Error(reply.error);
+      }
+
+      const stdout = reply.content;
+      if (outputFile) {
+        import("fs").then(fs => fs.writeFileSync(outputFile, stdout, "utf8")).catch(()=>{});
+      } else if (!streamOpt) {
+        // If streaming wasn't requested or natively supported by the channel type, just dump it.
+        process.stdout.write(stdout + "\n");
+      }
+
+      ws.close();
+
+      return {
+        success: true,
+        exitCode: 0,
+        outputFile,
+        stdout,
+        stderr: ""
+      };
+    } catch (err) {
+      return {
+        success: false,
+        exitCode: 2,
+        outputFile,
+        stdout: "",
+        stderr: `mux-duplex error: ${err instanceof Error ? err.message : String(err)}\n`
+      };
+    }
+  }
+
 
   private buildPreamble(persona: string): string {
     const roleMap: Record<string, string> = {
@@ -495,7 +670,9 @@ export async function main(argv: readonly string[]): Promise<number> {
       review,
     });
 
-    process.stdout.write(result.stdout);
+    if (!stream) {
+      process.stdout.write(result.stdout);
+    }
     process.stderr.write(result.stderr);
     if (result.outputFile) {
       process.stdout.write(`OUTPUT-FILE: ${result.outputFile}\n`);
@@ -508,7 +685,9 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 }
 
-if (import.meta.main) {
+const isMain = typeof import.meta.main !== "undefined" ? import.meta.main : (process.argv[1] === fileURLToPath(import.meta.url));
+
+if (isMain) {
   void main(process.argv.slice(2)).then(
     (code) => process.exit(code),
     (err) => {
