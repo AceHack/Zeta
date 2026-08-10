@@ -159,7 +159,7 @@ written without sight of either other suite.
 **Amend the spec first (§5).** A fourth derivation against the unamended text reproduces every
 divergence above.
 
-## 7. Did N=3 pay for itself over N=2?
+## 7. Did N=3 pay for itself over N=2
 
 **Yes, and the evidence is specific rather than a feeling.**
 
