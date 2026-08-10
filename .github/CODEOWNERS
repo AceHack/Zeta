@@ -1,0 +1,54 @@
+# CODEOWNERS — second-party review on the paths that define what is POSSIBLE
+#
+# Aaron 2026-08-10: "do both, codeowners first" — the fast half of k-of-n on
+# discriminated-union / workflow changes. The Zeta-native half (signed change
+# attestations verified by `MultiSignatureVerification`, trusting no third party) follows;
+# this is the bounded overlap, not the destination.
+#
+# ## Why these paths and not more
+#
+# The argument is not "important files need review". It is narrower: a discriminated union
+# or a workflow defines **the set of actions that exist**. Injecting a new action is the
+# attack; widening the action space is the same attack one level up. Everything listed below
+# either enumerates what may happen or decides who may make it happen.
+#
+# Deliberately NOT listed: ordinary implementation, docs, research, workitems. Requiring a
+# second party on those would grind the autonomous loop to a halt for no security gain, and
+# a control that makes normal work painful is a control people route around.
+#
+# ## What this actually buys, and its limit
+#
+# Every agent in this repo commits as `AceHack`. GitHub forbids approving your own pull
+# request, so an agent-authored change to a path below cannot be self-approved — it needs
+# `maximdolphin` or `Addisons820`. That is a real second party, not a formality.
+#
+# **The limit, stated plainly:** this trusts GitHub as the authority on who consented. GitHub
+# can be compelled, can be wrong, and is a hub — precisely the shape the substrate refuses
+# everywhere else. That is why it is the first half and not the whole answer.
+#
+# ## This file requires a second party to change
+#
+# `/.github/CODEOWNERS` is listed below and owns itself. A control that can be edited away by
+# the party it constrains is not a control.
+#
+# NOTE: CODEOWNERS alone does nothing. It takes effect only when branch protection on `main`
+# has **"Require review from Code Owners"** enabled (currently
+# `required_approving_review_count: none`). That is a repository-settings change and belongs
+# to a human.
+
+# ── The control itself ────────────────────────────────────────────────────────
+/.github/CODEOWNERS                        @maximdolphin @Addisons820
+
+# ── CI gates: changing a gate changes what may reach main ─────────────────────
+/.github/workflows/                        @maximdolphin @Addisons820
+
+# ── Action-space definitions: the DUs that enumerate what can happen ──────────
+/src/Core/DerivationProtocol.fs            @maximdolphin @Addisons820
+/src/Core/MultiSignatureVerification.fs    @maximdolphin @Addisons820
+
+# ── Authorization: the consent gate and its emergency bypass ──────────────────
+/src/Core/Consent/                         @maximdolphin @Addisons820
+
+# ── The rules that govern how every agent works ───────────────────────────────
+/.claude/rules/                            @maximdolphin @Addisons820
+/docs/governance/                          @maximdolphin @Addisons820
