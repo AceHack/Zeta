@@ -48,8 +48,8 @@ export type EpisodeEvent =
       readonly authorPersona: string;
     }
   | { readonly kind: "sweep_healed"; readonly tick: number } // BD001 openCount → 0
-  | { readonly kind: "gate_result"; readonly tick: number; readonly pass: boolean }
-  | { readonly kind: "merge_result"; readonly tick: number; readonly merged: boolean }
+  | { readonly kind: "push_result"; readonly tick: number; readonly pushed: boolean }
+  | { readonly kind: "post_push_gate"; readonly tick: number; readonly pass: boolean } // main's gate run after the push
   | { readonly kind: "human_cleared"; readonly tick: number }; // manual episode reset
 
 // ── Commands (what the machine asks the edge to do — data, never IO) ────────
@@ -57,26 +57,23 @@ export type EpisodeEvent =
 export type EpisodeCommand =
   | { readonly kind: "none"; readonly reason: string }
   | {
-      readonly kind: "open_revert_pr";
+      readonly kind: "push_retraction"; // sovereign: construct revert at main's tip, push it
       readonly breakSha: string;
-      readonly armed: boolean; // false when touchesVectorContracts (Lior-2)
       readonly notifyAuthor: {
         readonly persona: string;
         readonly relandRecipe: string; // verbatim one-command re-land (Riven-2)
       };
     }
-  | { readonly kind: "disarm_and_close_pr"; readonly reason: string } // Vera-2
-  | { readonly kind: "file_findings_and_stop"; readonly reason: string }; // RFC-4
+  | { readonly kind: "file_findings_and_stop"; readonly reason: string }; // floor / RFC-4
 
 // ── States ──────────────────────────────────────────────────────────────────
 
 export type EpisodeState =
   | { readonly kind: "idle" }
   | {
-      readonly kind: "attempted";
+      readonly kind: "attempted"; // retraction pushed (or push in flight)
       readonly attemptKey: string; // episodeId ⊕ breakSha (Vera-3)
       readonly breakSha: string;
-      readonly armed: boolean;
     }
   | { readonly kind: "landed"; readonly breakSha: string }
   | { readonly kind: "closed_healed"; readonly reason: string }
@@ -115,13 +112,17 @@ export function step(episodeId: string, state: EpisodeState, event: EpisodeEvent
         return { state: { kind: "refused", reason }, command: { kind: "file_findings_and_stop", reason } };
       }
       const breakSha = event.candidateShas[0]!;
-      const armed = !event.touchesVectorContracts; // Lior-2
+      if (event.touchesVectorContracts) {
+        // Sovereign mode has nothing between "push" and "human": a bot
+        // cannot self-grant the vector ack, so this is a floor refusal.
+        const reason = "retraction touches byte-lock vector contracts — human hands only (Lior)";
+        return { state: { kind: "refused", reason }, command: { kind: "file_findings_and_stop", reason } };
+      }
       return {
-        state: { kind: "attempted", attemptKey: attemptKey(episodeId, breakSha), breakSha, armed },
+        state: { kind: "attempted", attemptKey: attemptKey(episodeId, breakSha), breakSha },
         command: {
-          kind: "open_revert_pr",
+          kind: "push_retraction",
           breakSha,
-          armed,
           notifyAuthor: {
             persona: event.authorPersona,
             relandRecipe: `git cherry-pick ${breakSha}  # episode ${episodeId}; re-land after heal`,
@@ -137,32 +138,43 @@ export function step(episodeId: string, state: EpisodeState, event: EpisodeEvent
           return none("already attempted this episode — at-most-once (Vera-3)");
         }
         case "sweep_healed": {
-          const reason = "episode healed before revert landed — disarm, no double-patch (Vera-2)";
-          return { state: { kind: "closed_healed", reason }, command: { kind: "disarm_and_close_pr", reason } };
+          // Healed while the push was still in flight (or before it went
+          // out): stand down — Vera-2's law, sovereign form. The edge treats
+          // this as "do not push / abandon the in-flight push if possible".
+          const reason = "episode healed before the retraction landed — stand down, no double-patch (Vera-2)";
+          return { state: { kind: "closed_healed", reason }, command: { kind: "none", reason } };
         }
-        case "gate_result": {
-          if (event.pass) return none("gate passed — auto-merge (or human, if unarmed) proceeds at the edge");
-          const reason = "revert failed the floor gate — closure violated, humans own the P1";
-          return { state: { kind: "refused", reason }, command: { kind: "file_findings_and_stop", reason } };
-        }
-        case "merge_result": {
-          if (event.merged) {
-            return { state: { kind: "landed", breakSha: state.breakSha }, command: { kind: "none", reason: "revert landed" } };
+        case "push_result": {
+          if (event.pushed) {
+            return { state: { kind: "landed", breakSha: state.breakSha }, command: { kind: "none", reason: "retraction pushed" } };
           }
-          const reason = "merge did not complete — refuse to humans rather than retry";
+          const reason = "push did not complete — refuse to humans rather than retry";
           return { state: { kind: "refused", reason }, command: { kind: "file_findings_and_stop", reason } };
         }
+        case "post_push_gate":
+          return none("post-push gate applies to the landed state, not the attempt");
         case "human_cleared":
           return { state: IDLE, command: { kind: "none", reason: "human cleared the episode" } };
         default:
           return none("unreachable");
       }
     }
-    case "landed":
+    case "landed": {
+      if (event.kind === "post_push_gate" && !event.pass) {
+        // The retraction itself broke the build: BD001 will re-open, and the
+        // at-most-once key stops any second attempt — the machine refuses to
+        // humans instead of oscillating (the ADR's flapping-healer lesson).
+        const reason = "post-push gate red — the retraction broke the build; humans own it";
+        return { state: { kind: "refused", reason }, command: { kind: "file_findings_and_stop", reason } };
+      }
+      return event.kind === "human_cleared"
+        ? { state: IDLE, command: { kind: "none", reason: "human cleared the episode" } }
+        : none("landed is terminal for this episode");
+    }
     case "closed_healed":
       return event.kind === "human_cleared"
         ? { state: IDLE, command: { kind: "none", reason: "human cleared the episode" } }
-        : none(`${state.kind} is terminal for this episode`);
+        : none("closed_healed is terminal for this episode");
     case "refused":
       // Refusal is sticky until a human clears it — a failed attempt refuses
       // forever; the machine never self-rehabilitates.

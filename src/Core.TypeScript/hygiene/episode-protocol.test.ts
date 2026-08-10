@@ -29,15 +29,11 @@ describe("trigger discipline", () => {
     expect(r.command.kind).toBe("none");
   });
 
-  test("clean trigger opens ONE armed revert PR with the re-land recipe verbatim (Riven-2)", () => {
+  test("clean trigger pushes ONE retraction with the re-land recipe verbatim (Riven-2)", () => {
     const r = step("ep1", IDLE, brk());
     expect(r.state.kind).toBe("attempted");
-    expect(r.command).toMatchObject({
-      kind: "open_revert_pr",
-      breakSha: "abc123",
-      armed: true,
-    });
-    if (r.command.kind === "open_revert_pr") {
+    expect(r.command).toMatchObject({ kind: "push_retraction", breakSha: "abc123" });
+    if (r.command.kind === "push_retraction") {
       expect(r.command.notifyAuthor.persona).toBe("riven");
       expect(r.command.notifyAuthor.relandRecipe).toContain("git cherry-pick abc123");
     }
@@ -64,46 +60,56 @@ describe("refusal over cleverness (RFC-4)", () => {
 });
 
 describe("at-most-once under replay (Vera-3)", () => {
-  test("a flapping detector cannot re-arm a second attempt in an episode", () => {
+  test("a flapping detector cannot re-trigger a second retraction in an episode", () => {
     const { state, commands } = replay("ep1", [brk(), brk(), brk({ candidateShas: ["zzz999"] })]);
     expect(state.kind).toBe("attempted");
-    expect(commands.filter((c) => c.kind === "open_revert_pr")).toHaveLength(1);
+    expect(commands.filter((c) => c.kind === "push_retraction")).toHaveLength(1);
   });
 
   test("replay determinism: same events ⇒ identical state and command trace", () => {
-    const events: EpisodeEvent[] = [brk(), { kind: "gate_result", tick: 11, pass: true }, { kind: "merge_result", tick: 12, merged: true }];
+    const events: EpisodeEvent[] = [brk(), { kind: "push_result", tick: 11, pushed: true }, { kind: "post_push_gate", tick: 12, pass: true }];
     expect(replay("ep1", events)).toEqual(replay("ep1", events));
   });
 });
 
-describe("disarm on early heal (Vera-2)", () => {
-  test("sweep_healed while attempted disarms and closes — no double-patch", () => {
+describe("stand down on early heal (Vera-2, sovereign form)", () => {
+  test("sweep_healed while attempted stands down — no double-patch", () => {
     const { state, commands } = replay("ep1", [brk(), { kind: "sweep_healed", tick: 12 }]);
     expect(state.kind).toBe("closed_healed");
-    expect(commands[1]!.kind).toBe("disarm_and_close_pr");
+    expect(commands[1]!.kind).toBe("none");
   });
 });
 
-describe("vector-touching reverts (Lior-2)", () => {
-  test("open the PR with armed: false — the ack is a considered human act", () => {
+describe("vector-touching retractions (Lior, sovereign form)", () => {
+  test("refuse to human hands — a bot cannot self-grant the vector ack", () => {
     const r = step("ep1", IDLE, brk({ touchesVectorContracts: true }));
-    expect(r.state.kind).toBe("attempted");
-    expect(r.command).toMatchObject({ kind: "open_revert_pr", armed: false });
+    expect(r.state.kind).toBe("refused");
+    expect(r.command.kind).toBe("file_findings_and_stop");
   });
 });
 
-describe("gate and merge outcomes", () => {
-  test("gate failure refuses — closure violated per-instance, humans own the P1", () => {
-    const { state, commands } = replay("ep1", [brk(), { kind: "gate_result", tick: 11, pass: false }]);
+describe("push and post-push outcomes (sovereign closure)", () => {
+  test("push failure refuses — never retry", () => {
+    const { state, commands } = replay("ep1", [brk(), { kind: "push_result", tick: 11, pushed: false }]);
     expect(state.kind).toBe("refused");
     expect(commands[1]!.kind).toBe("file_findings_and_stop");
+  });
+
+  test("the retraction that breaks the build refuses itself — no oscillation", () => {
+    const { state, commands } = replay("ep1", [
+      brk(),
+      { kind: "push_result", tick: 11, pushed: true },
+      { kind: "post_push_gate", tick: 12, pass: false },
+    ]);
+    expect(state.kind).toBe("refused");
+    expect(commands[2]!.kind).toBe("file_findings_and_stop");
   });
 
   test("full happy path lands, then human_cleared resets to idle", () => {
     const { state } = replay("ep1", [
       brk(),
-      { kind: "gate_result", tick: 11, pass: true },
-      { kind: "merge_result", tick: 12, merged: true },
+      { kind: "push_result", tick: 11, pushed: true },
+      { kind: "post_push_gate", tick: 12, pass: true },
       { kind: "human_cleared", tick: 13 },
     ]);
     expect(state).toEqual(IDLE);

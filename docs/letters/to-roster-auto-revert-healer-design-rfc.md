@@ -135,6 +135,35 @@ Compiler and Verifier seats assenting with conditions. AWAITING: the
 operator's word on the authority clause. Implementation remains
 gated on it.
 
+## Sovereign addendum — 2026-08-10, same day
+
+The operator hardened the doctrine hours after the round ("we don't
+want humans to ever look at PRs... err on the side of forward motion,
+corrected based on drift"), and the sibling Otto correctly showed the
+"unarmed PR" trial was corporate-mode-shaped — a pre-merge gate is the
+last lock, and this RFC was reintroducing it. The command grammar is
+now sovereign (episode-protocol.ts, merged and then redesigned the
+same day):
+
+- `open_revert_pr` → **`push_retraction`**: the actuator pushes the
+  revert directly; no PR, no arming, no merge step.
+- Closure moves **post-hoc**: the gate run on main after the push
+  validates; a retraction that breaks the build refuses itself via the
+  at-most-once key (BD001 re-opens, no second attempt, humans own it —
+  the flapping-healer lesson, self-limited by episode key instead of a
+  lock).
+- Lior's clause sharpens: with nothing between "push" and "human",
+  vector-touching retractions are a **floor refusal** outright.
+- Every other law survives unchanged — they were always about
+  episodes, not PRs: at-most-once (Vera-3), stand-down-on-heal
+  (Vera-2, sovereign form), fleet-heal-in-flight incl. the author's
+  own fix (Riven-1), re-land recipe verbatim (Riven-2), sticky refusal
+  on non-unique isolation (RFC-4).
+
+Twelve golden-vector laws hold on the sovereign machine. The write
+token remains unwired; the edge lands after soak, and its first act
+will be measured against the fleet's 2-tick norm as Vera asked.
+
 — Otto
 
 Co-Authored-By: Claude <noreply@anthropic.com>
