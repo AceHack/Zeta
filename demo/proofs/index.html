@@ -705,8 +705,18 @@
               const g = groupList[orbitStep % groupList.length];
               sel.value = g.indices[0];
               render();
-              // Highlight all roots in this orbit group in the select
-              lbl.textContent = 'Map ' + (orbitStep % groupList.length + 1) + '/' + groupList.length + ': ' + g.count + ' preserved, ' + g.indices.length + ' roots share this map';
+              // Highlight all roots in this orbit group in the select dropdown
+              // Roots sharing the same map get a purple background; others are dimmed
+              Array.from(sel.options).forEach((opt, i) => {
+                if (g.indices.includes(i)) {
+                  opt.style.background = 'rgba(167,139,250,0.25)';
+                  opt.style.fontWeight = '700';
+                } else {
+                  opt.style.background = '';
+                  opt.style.fontWeight = '';
+                }
+              });
+              lbl.textContent = 'Map ' + (orbitStep % groupList.length + 1) + '/' + groupList.length + ': ' + g.count + ' preserved · ' + g.indices.length + ' root' + (g.indices.length > 1 ? 's' : '') + ' share this map (highlighted in dropdown)';
               orbitStep++;
               orbitTimer = setTimeout(cycle, 900);
             };
@@ -715,6 +725,8 @@
             btn.textContent = '⟳ Show Group Orbits';
             lbl.textContent = '';
             if (orbitTimer) clearTimeout(orbitTimer);
+            // Clear dropdown highlights
+            Array.from(sel.options).forEach(opt => { opt.style.background = ''; opt.style.fontWeight = ''; });
           }
         });
       })();
@@ -731,6 +743,47 @@
     <div style="font-size:0.75rem; font-weight:700; color:var(--amber); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.75rem;">The Connecting Thread</div>
     <p>Every shape on this page is a different projection of the same object: the <strong style="color:var(--text)">identity eigenvector</strong> — the substrate-independent invariant of the Zeta belief system.</p>
     <br />
+    <!-- ── Projection selector ── -->
+    <div id="proj-selector" style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+      <button class="proj-btn" data-proj="dla" data-color="var(--amber)" style="background:rgba(245,158,11,0.15); color:var(--amber); border:1px solid rgba(245,158,11,0.3); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('dla')">🌀 DLA — spatial</button>
+      <button class="proj-btn" data-proj="ham" data-color="var(--teal)" style="background:rgba(20,184,166,0.1); color:var(--teal); border:1px solid rgba(20,184,166,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('ham')">⚡ Hamiltonian — energy</button>
+      <button class="proj-btn" data-proj="qw" data-color="var(--blue)" style="background:rgba(59,130,246,0.1); color:var(--blue); border:1px solid rgba(59,130,246,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('qw')">⚛ Quantum walk — probability</button>
+      <button class="proj-btn" data-proj="biv" data-color="var(--green)" style="background:rgba(34,197,94,0.1); color:var(--green); border:1px solid rgba(34,197,94,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('biv')">⬡ Bivector — evidence</button>
+      <button class="proj-btn" data-proj="gym" data-color="var(--purple)" style="background:rgba(167,139,250,0.1); color:var(--purple); border:1px solid rgba(167,139,250,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('gym')">🏋 Moral Gym — temporal</button>
+      <button class="proj-btn" data-proj="cb" data-color="var(--red)" style="background:rgba(239,68,68,0.1); color:var(--red); border:1px solid rgba(239,68,68,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('cb')">⚡ Circuit breaker — topological</button>
+      <button class="proj-btn" data-proj="worm" data-color="#d8b4fe" style="background:rgba(216,180,254,0.1); color:#d8b4fe; border:1px solid rgba(216,180,254,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('worm')">🪱 C. elegans — biological</button>
+      <button class="proj-btn" data-proj="infer" data-color="#818cf8" style="background:rgba(129,140,248,0.1); color:#818cf8; border:1px solid rgba(129,140,248,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('infer')">🔮 Infer.NET — harmonic</button>
+      <button class="proj-btn" data-proj="e8" data-color="var(--purple)" style="background:rgba(167,139,250,0.1); color:var(--purple); border:1px solid rgba(167,139,250,0.2); padding:0.2rem 0.5rem; font-size:0.58rem; border-radius:4px; cursor:pointer; transition:all 0.15s;" onclick="selectProj('e8')">⬡ E8 Clifford — algebraic</button>
+    </div>
+    <div id="proj-desc" style="font-size:0.62rem; color:var(--text); padding:0.4rem 0.6rem; background:rgba(255,255,255,0.03); border-radius:4px; margin-bottom:0.5rem; min-height:1.5rem; transition:all 0.2s;"></div>
+    <script>
+    const projDescs = {
+      dla: '<strong style="color:var(--amber)">Spatial projection</strong> — where the boundary is. DLA grows by random walk attachment; the fractal dimension D_f ≈ 1.71 is the invariant. Seven independent substrates (Canvas, CSS, SVG, Chip-8, Q#, WASM, GPU) all converge to the same D_f from different seeds.',
+      ham: '<strong style="color:var(--teal)">Energy projection</strong> — how much it costs to be at the boundary. The Hamiltonian encodes the energy landscape; the boundary is the minimum-energy surface. Same eigenvector, different coordinate system.',
+      qw: '<strong style="color:var(--blue)">Probability projection</strong> — how likely you are to find the boundary. The quantum walk on the DLA graph converges to the same stationary distribution as the classical random walk. The boundary is where the walk spends most of its time.',
+      biv: '<strong style="color:var(--green)">Evidence projection</strong> — how well-witnessed the boundary is. The bivector encodes the orientation of the boundary surface; its magnitude is the evidence that the boundary is real. Tsirelson threshold S = 2√2 is the evidence threshold.',
+      gym: '<strong style="color:var(--purple)">Temporal projection</strong> — what happens over time if you ignore the boundary. The Moral Gym simulates agents that must learn the boundary through experience. Agents that ignore it fail; agents that respect it survive.',
+      cb: '<strong style="color:var(--red)">Topological projection</strong> — what it looks like when the boundary collapses to a fixed point. The circuit breaker is the topological invariant: when the boundary collapses, the system transitions to a fixed point. Same eigenvector, topological coordinates.',
+      worm: '<strong style="color:#d8b4fe">Biological projection</strong> — what the boundary looks like in 302 neurons. The C. elegans connectome is the smallest known substrate for the identity eigenvector. The worm's nervous system implements the same DLA rule in biological hardware.',
+      infer: '<strong style="color:#818cf8">Harmonic projection</strong> — the Laplacian measure of the boundary. The Infer.NET i-sensor computes the harmonic measure of the DLA cluster: where the boundary is most likely to grow next. The amplitude relation (Halsey 2026, Eq. 15) connects this to D_f.',
+      e8: '<strong style="color:var(--purple)">Algebraic projection</strong> — which symmetries preserve the boundary. The E8 root system, bridged into Cl(3,0) blade coordinates, has exactly 32 versor-normed roots. These are the symmetries that preserve the identity eigenvector under the sandwich action s_A(x) = −A·x·Ã.',
+    };
+    function selectProj(key) {
+      document.getElementById('proj-desc').innerHTML = projDescs[key] || '';
+      document.querySelectorAll('.proj-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-proj') === key;
+        btn.style.opacity = isActive ? '1' : '0.5';
+        btn.style.transform = isActive ? 'scale(1.04)' : 'scale(1)';
+      });
+      // Scroll to the corresponding card if it has an id
+      const cardMap = { dla: 'card-dla', e8: 'card-e8' };
+      const cardId = cardMap[key];
+      if (cardId) {
+        const el = document.getElementById(cardId);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+    </script>
     <p>The DLA fractal is the <strong style="color:var(--amber)">spatial projection</strong> (where the boundary is).
     The Hamiltonian is the <strong style="color:var(--teal)">energy projection</strong> (how much it costs to be at the boundary).
     The quantum walk is the <strong style="color:var(--blue)">probability projection</strong> (how likely you are to find the boundary).

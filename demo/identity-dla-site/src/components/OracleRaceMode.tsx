@@ -502,6 +502,130 @@ export default function OracleRaceMode() {
           That shape is D_f ≈ 1.71. It's the fingerprint of diffusion itself.
         </div>
       </div>
+
+      {/* Compact E8 Sandwich Explorer */}
+      <E8SandwichExplorer />
+    </div>
+  );
+}
+
+// ── Compact E8 Sandwich Explorer ─────────────────────────────────────────────
+// Same eigenvector, Clifford algebra projection.
+// Embedded in Race Mode to show the DLA fractal proof and the E8 algebraic proof
+// side by side — "same shape, different projection" connecting thread.
+
+const E8_GEN = [[1,0,0,0,0,1,1,1],[0,1,0,0,1,0,1,1],[0,0,1,0,1,1,0,1],[0,0,0,1,1,1,1,0]];
+const E8_GP_TABLE = [[0,1,2,3,4,5,6,7],[1,0,3,2,5,4,7,6],[2,3,0,1,6,7,4,5],[3,2,1,0,7,6,5,4],[4,5,6,7,0,1,2,3],[5,4,7,6,1,0,3,2],[6,7,4,5,2,3,0,1],[7,6,5,4,3,2,1,0]];
+const E8_GP_SIGN = [[1,1,1,1,1,1,1,1],[1,-1,1,-1,1,-1,1,-1],[1,1,-1,-1,1,1,-1,-1],[1,-1,-1,1,1,-1,-1,1],[1,1,1,1,-1,-1,-1,-1],[1,-1,1,-1,-1,1,-1,1],[1,1,-1,-1,-1,-1,1,1],[1,-1,-1,1,-1,1,1,-1]];
+const E8_REV_SIGN = [1,-1,-1,1,-1,1,1,-1];
+
+function e8Gp(a: number[], b: number[]): number[] {
+  const r = new Array(8).fill(0);
+  for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++)
+    r[E8_GP_TABLE[i]![j]!] += E8_GP_SIGN[i]![j]! * a[i]! * b[j]!;
+  return r;
+}
+function e8Rev(a: number[]): number[] { return a.map((v, i) => v * E8_REV_SIGN[i]!); }
+
+function buildE8Roots(): number[][] {
+  const roots: number[][] = [];
+  for (let i = 0; i < 8; i++) {
+    const r = new Array(8).fill(0); r[i] = 2; roots.push([...r]);
+    const r2 = new Array(8).fill(0); r2[i] = -2; roots.push([...r2]);
+  }
+  for (let m = 1; m < 16; m++) {
+    const cw = Array.from({length:8}, (_, j) => {
+      let acc = 0; for (let i = 0; i < 4; i++) acc ^= ((m >> i) & 1) & E8_GEN[i]![j]!; return acc;
+    });
+    const pos = cw.flatMap((v, j) => v === 1 ? [j] : []);
+    for (let s = 0; s < (1 << pos.length); s++) {
+      const r = new Array(8).fill(0);
+      for (let k = 0; k < pos.length; k++) r[pos[k]!] = (s >> k) & 1 ? -1 : 1;
+      roots.push(r);
+    }
+  }
+  return roots;
+}
+
+function E8SandwichExplorer() {
+  const [vnIdx, setVnIdx] = useState(0);
+  const [showE8, setShowE8] = useState(false);
+  const [roots] = useState(() => buildE8Roots());
+  const [rootSet] = useState(() => new Set(buildE8Roots().map(r => r.join(","))));
+  const [vnRoots] = useState(() => {
+    const all = buildE8Roots();
+    return all.filter(a => { const ar = e8Rev(a); const aar = e8Gp(a, ar); return aar.slice(1).every(v => v === 0); });
+  });
+
+  const computePreserved = (a: number[]): boolean[] => {
+    const ar = e8Rev(a); const norm0 = e8Gp(a, ar)[0]!;
+    return roots.map(x => {
+      const ax = e8Gp(a, x); const axar = e8Gp(ax, ar);
+      const isInt = norm0 !== 0 && axar.every(v => v % norm0 === 0);
+      return isInt && rootSet.has(axar.map(v => -v / norm0).join(","));
+    });
+  };
+
+  const a = vnRoots[vnIdx] ?? vnRoots[0]!;
+  const ar = e8Rev(a); const norm0 = e8Gp(a, ar)[0]!;
+  const preserved = computePreserved(a);
+  const count = preserved.filter(Boolean).length;
+  const support = a.flatMap((v, i) => v !== 0 ? [i] : []).join("+");
+
+  if (!showE8) {
+    return (
+      <div style={{ marginTop: "0.75rem" }}>
+        <button
+          onClick={() => setShowE8(true)}
+          style={{ background: "rgba(167,139,250,0.1)", color: "#a855f7", border: "1px solid rgba(167,139,250,0.25)", padding: "0.25rem 0.75rem", fontSize: "0.6rem", borderRadius: 4, cursor: "pointer", letterSpacing: "0.06em", textTransform: "uppercase" }}
+        >
+          ⬡ Show E8 Sandwich Explorer — same eigenvector, Clifford algebra projection
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: "0.75rem", padding: "0.75rem", background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.2)", borderRadius: 6, fontFamily: "monospace" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+        <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#a855f7", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          ⬡ E8 Sandwich Explorer — Cl(3,0) Projection
+        </div>
+        <button onClick={() => setShowE8(false)} style={{ background: "none", border: "none", color: "#64748b", cursor: "pointer", fontSize: "0.7rem" }}>✕</button>
+      </div>
+      <div style={{ fontSize: "0.6rem", color: "#64748b", marginBottom: "0.5rem", lineHeight: 1.4 }}>
+        The DLA fractal (above) and the E8 sandwich (below) are two projections of the same identity eigenvector.
+        DLA = spatial projection (where the boundary is). E8 = algebraic projection (which symmetries preserve it).
+      </div>
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap", marginBottom: "0.4rem" }}>
+        <label style={{ fontSize: "0.6rem", color: "#94a3b8" }}>Root A:</label>
+        <select
+          value={vnIdx}
+          onChange={e => setVnIdx(parseInt(e.target.value))}
+          style={{ background: "#1e293b", color: "#e2e8f0", border: "1px solid #334155", padding: "0.15rem 0.3rem", fontSize: "0.6rem", borderRadius: 4, cursor: "pointer" }}
+        >
+          {vnRoots.map((r, i) => (
+            <option key={i} value={i}>A{i+1}: [{r.join(",")}]</option>
+          ))}
+        </select>
+        <span style={{ fontSize: "0.6rem", fontWeight: 700, color: "#a855f7" }}>{count} / 240 preserved</span>
+        <span style={{ fontSize: "0.6rem", color: "rgba(167,139,250,0.5)" }}>support: {"{"+support+"}"}, norm²={norm0}</span>
+      </div>
+      {/* 20×12 grid of 240 E8 roots */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(20, 14px)", gap: 2, maxWidth: 300 }}>
+        {preserved.map((p, i) => (
+          <div
+            key={i}
+            title={`[${roots[i]?.join(",")}] → ${p ? "root ✓" : "not root ✗"}`}
+            style={{ width: 14, height: 14, borderRadius: 2, background: p ? "rgba(167,139,250,0.8)" : "rgba(107,114,128,0.15)", transition: "background 0.15s" }}
+          />
+        ))}
+      </div>
+      <div style={{ fontSize: "0.55rem", color: "#64748b", marginTop: "0.4rem" }}>
+        <span style={{ display: "inline-block", width: 10, height: 10, background: "rgba(167,139,250,0.8)", borderRadius: 2, marginRight: 3 }} />maps to root &nbsp;
+        <span style={{ display: "inline-block", width: 10, height: 10, background: "rgba(107,114,128,0.2)", borderRadius: 2, marginRight: 3 }} />does not map to root
+        &nbsp;·&nbsp; 32 versor-normed roots · histogram: 0×160, 64×32, 128×16, 240×32
+      </div>
     </div>
   );
 }
