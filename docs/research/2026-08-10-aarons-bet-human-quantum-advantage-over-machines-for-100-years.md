@@ -141,6 +141,7 @@ independence. They are separate questions and the file keeps them separate delib
 ## 5. Falsifiers — both directions, stated now
 
 **Bet LOSES if:**
+
 - a machine matches the specific human cognitive capability the bet rests on, before 2126;
 - microtubule quantum processing is convincingly ruled out (a decisive decoherence
   measurement in vivo would do it);
@@ -148,6 +149,7 @@ independence. They are separate questions and the file keeps them separate delib
   engineering — which would satisfy "equivalent access" directly.
 
 **Bet WINS if:**
+
 - a specific cognitive capability is demonstrated to require a quantum resource, *and*
   machines still lack an equivalent by 2126.
 
