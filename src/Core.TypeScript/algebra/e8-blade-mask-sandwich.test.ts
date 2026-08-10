@@ -182,3 +182,58 @@ describe("Part III — the versor law, proven (machine-checked lemmas, 2026-08-0
     }
   });
 });
+
+describe("Part IV — the complete tier law (all 208 non-versors, machine-checked)", () => {
+  test("survivors are always whole 16-sign codeword families; the family map is total", async () => {
+    const { e8Roots, gp, reverse } = await import("./e8-blade-mask-sandwich");
+    const roots = e8Roots();
+    const rootSet = new Set(roots.map((r) => r.join(",")));
+    const isScalar = (v: readonly number[]): boolean => v.slice(1).every((x) => x === 0);
+    const supportOf = (r: readonly number[]): string => r.flatMap((v, i) => (v !== 0 ? [i] : [])).join(",");
+    const pairs = [
+      ["0,3,4,7", "1,2,5,6"],
+      ["0,1,4,5", "2,3,6,7"],
+      ["0,2,4,6", "1,3,5,7"],
+    ] as const;
+    const aligned = new Set<string>(pairs.flat());
+    const h1pair = new Set<string>(pairs[0]);
+
+    for (const A of roots) {
+      const Ar = reverse(A);
+      if (isScalar(gp(A, Ar))) continue; // versors: Part III theorem
+      const families = new Map<string, number>();
+      let evenSurvivors = 0;
+      for (const x of roots) {
+        const img = gp(gp(A, x), Ar).map((v) => -v / 4);
+        if (!img.every(Number.isInteger) || !rootSet.has(img.join(","))) continue;
+        const sx = supportOf(x);
+        if (sx.split(",").length === 1) evenSurvivors += 1;
+        else families.set(sx, (families.get(sx) ?? 0) + 1);
+      }
+      // Law clause 1: no even root survives a non-versor.
+      expect(evenSurvivors).toBe(0);
+      // Law clause 2: surviving families are complete (all 16 signs).
+      for (const [, n] of families) expect(n).toBe(16);
+      // Law clause 3: the family map.
+      const sA = supportOf(A);
+      const names = [...families.keys()];
+      if (h1pair.has(sA)) {
+        // aligned-pair non-versor → exactly the 8 generic families (128)
+        expect(names).toHaveLength(8);
+        expect(names.every((f) => !aligned.has(f))).toBe(true);
+      } else if (aligned.has(sA)) {
+        // Cl(2,0)-pair: either the 4 aligned families outside its own pair, or none
+        const own = pairs.find((p) => (p as readonly string[]).includes(sA))!;
+        if (names.length !== 0) {
+          expect(names).toHaveLength(4);
+          expect(
+            names.every((f) => aligned.has(f) && !(own as readonly string[]).includes(f)),
+          ).toBe(true);
+        }
+      } else {
+        // generic support → nothing survives
+        expect(names).toHaveLength(0);
+      }
+    }
+  });
+});

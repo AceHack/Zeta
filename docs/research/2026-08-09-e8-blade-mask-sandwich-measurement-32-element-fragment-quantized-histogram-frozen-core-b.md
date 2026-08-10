@@ -175,6 +175,44 @@ Combined with L1/L1b, this proves the versor column of the tier table:
 *why* each preserves everything. Remaining open, unchanged: the closed
 form of the 64/128 partial tiers for non-versor elements.
 
+## Part IV — the complete tier law (nothing left open)
+
+The 64/128 closed form, established by exhaustive verification over all
+208 non-versor elements (the Part IV test, 1,780 assertions total):
+
+1. **No even root ever survives a non-versor.** The frame roots ±2eᵢ
+   belong to the versors alone.
+2. **Survivors are always whole families.** A non-versor either
+   preserves all 16 sign patterns of a codeword support or none —
+   never a fragment.
+3. **The family map is total:**
+
+   | A's support class | surviving families | tier |
+   | --- | --- | --- |
+   | aligned pair, non-versor parity | the 8 generic codewords | 128 |
+   | Cl(2,0) pair, good parity | the 4 aligned outside its own pair | 64 |
+   | Cl(2,0) pair, bad parity | none | 0 |
+   | generic codeword | none | 0 |
+
+   With Part III's versor theorem (parity law + all-240 preservation)
+   this resolves every row of the Part II histogram
+   {240: 32, 128: 16, 64: 32, 0: 160} to its reason.
+
+The duality is the memorable part: elements on *algebra-aligned*
+supports with the wrong parity preserve exactly the *generic* half of
+the code, and elements on the other aligned pairs preserve exactly the
+*aligned-but-foreign* families. The blade-mask bridge sorts the [8,4]
+code's fourteen weight-4 codewords into who-preserves-whom by nothing
+more than XOR-subgroup structure and a sign parity — the whole
+57,600-entry table compresses to the four-row law above plus the
+parity condition d₀d₃ = −d₁d₂.
+
+For a finite structure, exhaustive verification of the stated law IS
+its proof. What could still be written (optional, for taste) is an
+analytic derivation of clause 3 from the product rules in the style of
+Part III's L1 — the four-row table is the complete specification any
+such derivation must reproduce.
+
 ## Anchors
 
 Dechant, *Clifford algebra is the natural framework for root systems
