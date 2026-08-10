@@ -348,6 +348,7 @@
     <Compile Include="GridBinding.Tests.fs" />
     <Compile Include="Hat.Tests.fs" />
     <Compile Include="KeyCustody.Tests.fs" />
+    <Compile Include="KskAuthorization.Tests.fs" />
     <Compile Include="DerivationProtocol.Tests.fs" />
     <Compile Include="Persona.Tests.fs" />
     <Compile Include="Diversity.Tests.fs" />
