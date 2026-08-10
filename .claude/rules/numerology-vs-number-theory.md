@@ -34,6 +34,34 @@ So: **the mechanism is neutral; the claim register decides** (same shape as
 Say **"consistent with X"** while you have a count, **"is X"** only once you have the
 invariants. Both are honest; conflating them is the only error.
 
+## Coincidence is a MEMORY INDEX — which is why the register must be stored with it
+
+Aaron 2026-08-09: *"noticing a coincidence is how I store long-term memories — I suspect many
+do it this way. It can make you over-correct as a human."*
+
+This explains why the generator half is not a concession but the main event. **Coincidence is
+an indexing mechanism**: you store by resonance ("this new thing matches that old thing"),
+which makes recall associative and cross-domain. It is the same faculty as carrying a
+technique from 16 kHz metering to audio separation to Shazam, or from one team's design to
+another's — **the migration operator and the coincidence index are one skill.**
+
+And it carries a specific failure mode, which Aaron names on himself:
+
+> **The index stores the resonance, not the evidence.** So at retrieval a spurious match feels
+> exactly as strong as a real one — and acting on that strength is how you **over-correct**.
+
+Note this is not a human-only bug: retrieval by embedding similarity is the same mechanism
+with the same defect, so it applies symmetrically to the agents here.
+
+**The mitigation is memory hygiene, not suppression.** Do not stop storing coincidences — they
+are the good index. **Store the register with them:**
+
+- record it as *"coincidence: 48 matches D₄⊕D₄"*, not as *"it is D₄⊕D₄"*
+- when the structure later arrives, **promote the entry** and say what promoted it
+- when it does not, the entry stays a coincidence forever and never silently becomes a belief
+
+An unlabelled coincidence in long-term memory is a belief you never decided to hold.
+
 ## The test
 
 Before claiming a measured number identifies a known object, ask: **what else has this

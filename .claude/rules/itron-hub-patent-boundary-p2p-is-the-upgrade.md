@@ -94,10 +94,32 @@ pretend the hub is not there.
 
 Aaron 2026-08-09: *"hubs ≈ oracles, and we have multi-oracle for this reason."*
 
-A hub and an oracle are the same structure seen through different needs: **a concentration of
-deference.** An oracle is what you defer to for a *judgement*; a hub is what you defer to for
-*reach*. The targeted-attack fragility above assumes **one dominant hub per function** — and
-that assumption is exactly what the **Multi-Oracle Principle (§11)** forbids.
+A hub and an oracle share a *shape* — **a concentration of deference** — but they are not the
+same thing, and the difference is the whole rule:
+
+> **Hubs are enforced. Oracles are chosen.** (Aaron 2026-08-09)
+
+An oracle is deference you **elected**; a hub is deference **imposed on you**. Same
+concentration, opposite consent. The targeted-attack fragility above assumes **one dominant
+hub per function** — and that assumption is what the **Multi-Oracle Principle (§11)** forbids.
+
+**So the discriminator is EXIT, not degree.** Concentration was never the defect:
+
+- Can you defer elsewhere? Then it is an **oracle**, however much degree it has accumulated.
+  A hugely popular oracle everyone freely chose is not a capture.
+- Must you route through it? Then it is a **hub**, however it got there — including if it
+  emerged. **Emergence does not launder enforcement.**
+
+This also corrects the earlier framing in this rule: I wrote that emergent hubs are fine
+because they re-form after removal. That is true but secondary. The primary reason is that an
+emergent hub is normally **routable-around**, which makes deferring to it a *choice* — so what
+we have been calling an emergent hub is really **an oracle that many parties independently
+chose.** Where an emergent hub becomes unavoidable in practice (no viable alternative path),
+it has become a hub in the strict sense and the fact that nobody appointed it is no comfort.
+
+**Anchor:** Hirschman, *Exit, Voice, and Loyalty* (1970) — exit is what disciplines a
+concentration. Where exit is real, deference is chosen and voice is optional; where exit is
+absent, voice is all you have and the concentration holds you.
 
 So §11 was never only about morality. Read generally — *no single mandatory locus of
 deference* — it is the anti-fragility property for topology too, stated at the values layer
