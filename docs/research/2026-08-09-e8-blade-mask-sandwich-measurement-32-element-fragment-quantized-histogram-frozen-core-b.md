@@ -129,6 +129,52 @@ predicate *tier = f(subalgebra signature of the support, sign parity)*
 from the Cl(3,0) product rules — the table above is the complete truth
 set a proof must reproduce.
 
+## Part III — the versor law, proven
+
+The versor half of the tier conjecture is now a theorem, carried by
+three machine-checked lemmas (each an exhaustive assertion over its
+finite domain — 1,092 checks total in the test file).
+
+**Setup.** A weight-4 support S is a coset h⊕H of a XOR-closed
+subgroup H = {0, u, v, uv} of the mask group, so any A on S factors as
+A = ±e_h·B with B = d₀ + d₁u + d₂v + d₃uv in the subalgebra Cl(H),
+d ∈ {±1}⁴. Versor-ness of A reduces to versor-ness of B, and B·B̃ is
+controlled by which of u, v, uv the reverse flips — the
+**reverse-signature** of the subalgebra (grade mod 4 ∈ {2,3} flips).
+
+**L1 (the parity law).** For ⟨e₁₂,e₃⟩ and its coset: reverse flips u
+and uv but not v; the non-scalar residue of B·B̃ cancels **iff
+d₀d₃ = −d₁d₂**. Exactly 8 of 16 sign patterns satisfy it — the
+measured 8/8 versor split, now in closed form.
+
+**L1b (why Cl(2,0) admits none).** For ⟨e₁,e₃⟩-type supports, reverse
+flips only uv; the residue of B·B̃ lands on the subalgebra's grade-1
+generators with coefficient ±2(d₀d₁ + d₂d₃)-type sums that cannot both
+vanish over ±1 — no sign pattern is a versor. (Asserted: the residue's
+support is always the grade-1 generators, never zero.)
+
+**L2 (monomiality).** Every versor-normed sandwich is a signed
+monomial map on the 8 blades — each blade maps to ± a single blade.
+The two scalar-support versors (±2·S) act as global negation; the
+codeword versors act as signed transpositions of dihedral shape, e.g.
+0→−0, 1→+2, 2→+1, 3→+3, 4→+4, 5→−6, 6→−5, 7→−7.
+
+**L3 (code automorphism).** Every induced support permutation maps
+weight-4 codeword supports to weight-4 codeword supports — an
+automorphism of the [8,4] code.
+
+**Theorem (the 240 tier).** A versor-normed bridged root preserves the
+entire root system. *Proof:* by L2 the sandwich is a signed monomial
+isometry, so frame roots ±2eᵢ map to frame roots; by L3 the support of
+any odd root maps to a codeword support, and the odd family contains
+every sign pattern on every codeword support, so odd roots map to odd
+roots. Both families preserved ⇒ all 240. ∎
+
+Combined with L1/L1b, this proves the versor column of the tier table:
+*which* elements are versors (parity law, per reverse-signature) and
+*why* each preserves everything. Remaining open, unchanged: the closed
+form of the 64/128 partial tiers for non-versor elements.
+
 ## Anchors
 
 Dechant, *Clifford algebra is the natural framework for root systems

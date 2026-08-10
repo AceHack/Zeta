@@ -110,3 +110,75 @@ describe("Part II — the fragment group and the quantization strata (2026-08-09
     }
   });
 });
+
+describe("Part III — the versor law, proven (machine-checked lemmas, 2026-08-09)", () => {
+  const blade = (m: number): number[] => {
+    const v = new Array<number>(8).fill(0);
+    v[m] = 1;
+    return v;
+  };
+  const isScalar = (v: readonly number[]): boolean => v.slice(1).every((x) => x === 0);
+
+  test("L1: on the aligned supports, versor ⟺ d0·d3 = −d1·d2 (the parity law)", async () => {
+    const { gp, reverse } = await import("./e8-blade-mask-sandwich");
+    for (const support of [[0, 3, 4, 7], [1, 2, 5, 6]] as const) {
+      for (let s = 0; s < 16; s += 1) {
+        const A = new Array<number>(8).fill(0);
+        support.forEach((m, k) => { A[m] = (s >> k) & 1 ? -1 : 1; });
+        const d = support.map((m) => A[m]!);
+        const parity = d[0]! * d[3]! === -(d[1]! * d[2]!);
+        expect(isScalar(gp(A, reverse(A)))).toBe(parity);
+      }
+    }
+  });
+
+  test("L1b: Cl(2,0)-signature supports admit NO versors — grade-1 residue never cancels", async () => {
+    const { gp, reverse } = await import("./e8-blade-mask-sandwich");
+    for (const support of [[0, 1, 4, 5], [0, 2, 4, 6]] as const) {
+      for (let s = 0; s < 16; s += 1) {
+        const A = new Array<number>(8).fill(0);
+        support.forEach((m, k) => { A[m] = (s >> k) & 1 ? -1 : 1; });
+        const prod = gp(A, reverse(A));
+        expect(isScalar(prod)).toBe(false);
+        // the residue sits on the subalgebra's grade-1 generators
+        const residueMasks = prod.flatMap((v, i) => (i > 0 && v !== 0 ? [i] : []));
+        expect(residueMasks.every((m) => (support as readonly number[]).includes(m) && m !== 0)).toBe(true);
+      }
+    }
+  });
+
+  test("L2: every versor-normed sandwich is a signed monomial map on the 8 blades", async () => {
+    const { e8Roots, gp, reverse } = await import("./e8-blade-mask-sandwich");
+    for (const A of e8Roots()) {
+      const Ar = reverse(A);
+      if (!isScalar(gp(A, Ar))) continue;
+      for (let m = 0; m < 8; m += 1) {
+        const img = gp(gp(A, blade(m)), Ar).map((v) => -v / 4);
+        const nz = img.flatMap((v, i) => (v !== 0 ? [[i, v] as const] : []));
+        expect(nz).toHaveLength(1);
+        expect(Math.abs(nz[0]![1])).toBe(1);
+      }
+    }
+  });
+
+  test("L3: every induced support permutation is an automorphism of the [8,4] code", async () => {
+    const { allCodewords, e8Roots, gp, reverse } = await import("./e8-blade-mask-sandwich");
+    const cwSupports = new Set(
+      allCodewords()
+        .filter((c) => c.reduce((a, b) => a + b, 0) === 4)
+        .map((c) => c.flatMap((v, j) => (v ? [j] : [])).join(",")),
+    );
+    for (const A of e8Roots()) {
+      const Ar = reverse(A);
+      if (!isScalar(gp(A, Ar))) continue;
+      const perm: number[] = [];
+      for (let m = 0; m < 8; m += 1) {
+        perm.push(gp(gp(A, blade(m)), Ar).findIndex((v) => v !== 0));
+      }
+      for (const cs of cwSupports) {
+        const mapped = cs.split(",").map(Number).map((m) => perm[m]!).sort((a, b) => a - b).join(",");
+        expect(cwSupports.has(mapped)).toBe(true);
+      }
+    }
+  });
+});
