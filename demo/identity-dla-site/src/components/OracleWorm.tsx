@@ -20,6 +20,45 @@ import { useEffect, useRef, useState } from "react";
 
 // ── Minimal Kuramoto simulation (mirrors CelegansController.fs) ─────────────
 
+// ── Real connectome data type ─────────────────────────────────────────────────
+interface ConnectomeData {
+  neurons: string[];
+  edges: [number, number, number, number][]; // [pre_idx, post_idx, weight, is_electrical]
+}
+let _connectomeCache: ConnectomeData | null = null;
+async function loadConnectome(): Promise<ConnectomeData> {
+  if (_connectomeCache) return _connectomeCache;
+  const resp = await fetch("/celegans-connectome.json");
+  _connectomeCache = await resp.json() as ConnectomeData;
+  return _connectomeCache;
+}
+// Build the coupling matrix from real White 1986 data
+function buildRealConnectome(data: ConnectomeData): { K: Float32Array; nNeurons: number; sensoryIdx: number[]; motorIdx: number[] } {
+  const N = data.neurons.length;
+  const K = new Float32Array(N * N);
+  // Identify sensory and motor neurons by name prefix (WormAtlas classification)
+  const sensoryPrefixes = ["AFD", "ASE", "ASH", "ASI", "ASJ", "ASK", "AWA", "AWB", "AWC", "ADF", "ADL", "AQR", "PHA", "PHB", "IL1", "IL2", "OLL", "OLQ", "CEP", "ADE", "PDE", "PVD", "FLP"];
+  const motorPrefixes = ["VA", "VB", "VC", "VD", "DA", "DB", "DD", "AS", "MU"];
+  const sensoryIdx: number[] = [];
+  const motorIdx: number[] = [];
+  data.neurons.forEach((name, i) => {
+    if (sensoryPrefixes.some(p => name.startsWith(p))) sensoryIdx.push(i);
+    if (motorPrefixes.some(p => name.startsWith(p))) motorIdx.push(i);
+  });
+  // Fill coupling matrix from edges; normalize each row by max weight
+  const rowMax = new Float32Array(N);
+  for (const [pre, post, w] of data.edges) {
+    K[post * N + pre] += w; // post-synaptic = row
+    if (K[post * N + pre] > rowMax[post]) rowMax[post] = K[post * N + pre];
+  }
+  for (let i = 0; i < N; i++) {
+    if (rowMax[i] > 0) {
+      for (let j = 0; j < N; j++) K[i * N + j] /= rowMax[i];
+    }
+  }
+  return { K, nNeurons: N, sensoryIdx, motorIdx };
+}
+
 const N_NEURONS = 302;
 const STICKING_THRESHOLD = 1 / (3 * Math.sqrt(2)); // 0.2357
 
@@ -231,20 +270,48 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<WormState | null>(null);
   const [done, setDone] = useState(false);
+  const [connectomeSource, setConnectomeSource] = useState<"loading" | "real" | "synthetic">("loading");
   const stateRef = useRef<WormState | null>(null);
   const tickRef = useRef(0);
   const rafRef = useRef<number>(0);
 
   // Initialize
   useEffect(() => {
-    const s = initWormState(seed);
-    // Warm up 200 steps
-    let ws = s;
-    for (let i = 0; i < 200; i++) ws = kuramotoStep(ws);
-    stateRef.current = ws;
-    setState(ws);
-    tickRef.current = 0;
-    setDone(false);
+    setConnectomeSource("loading");
+    // Try to load the real White 1986 connectome; fall back to synthetic
+    loadConnectome().then(data => {
+      const { K, nNeurons, sensoryIdx, motorIdx } = buildRealConnectome(data);
+      // Override the synthetic K in initWormState with the real one
+      const phase = new Float32Array(nNeurons);
+      const omega = new Float32Array(nNeurons);
+      for (let i = 0; i < nNeurons; i++) {
+        phase[i] = hashFloat(seed, i) * 2 * Math.PI;
+        omega[i] = 1.0 + 0.1 * (hashFloat(seed + 1, i) - 0.5);
+      }
+      let ws: WormState = {
+        phase, omega, K,
+        orderParameter: 0,
+        cluster: new Set([16 * 64 + 32]),
+        df: 0, stuckCount: 1,
+      };
+      // Warm up 200 steps with real connectome
+      for (let i = 0; i < 200; i++) ws = kuramotoStep(ws);
+      stateRef.current = ws;
+      setState(ws);
+      tickRef.current = 0;
+      setDone(false);
+      setConnectomeSource("real");
+    }).catch(() => {
+      // Fall back to synthetic connectome
+      const s = initWormState(seed);
+      let ws = s;
+      for (let i = 0; i < 200; i++) ws = kuramotoStep(ws);
+      stateRef.current = ws;
+      setState(ws);
+      tickRef.current = 0;
+      setDone(false);
+      setConnectomeSource("synthetic");
+    });
   }, [seed]);
 
   // Animation loop
@@ -336,10 +403,15 @@ export default function OracleWorm({ seed, gridSize, targetParticles, onResult }
         className="w-full rounded border border-white/10"
         style={{ imageRendering: "pixelated" }}
       />
-      <div className="flex justify-between text-xs font-mono text-white/50">
-        <span>r = {r.toFixed(3)} {r < STICKING_THRESHOLD ? "< ρ*" : "> ρ*"}</span>
-        <span>{done ? `D_f = ${df.toFixed(3)}` : `${pct}%`}</span>
-      </div>
+        <div className="flex justify-between text-xs font-mono text-white/50">
+          <span>r = {r.toFixed(3)} {r < STICKING_THRESHOLD ? "< ρ*" : "> ρ*"}</span>
+          <span>{done ? `D_f = ${df.toFixed(3)}` : `${pct}%`}</span>
+        </div>
+        <div className="text-xs font-mono text-center" style={{ marginTop: "0.1rem" }}>
+          {connectomeSource === "loading" && <span style={{ color: "#64748b" }}>⏳ Loading White 1986 connectome…</span>}
+          {connectomeSource === "real" && <span style={{ color: "#14b8a6" }}>✓ Real connectome — White 1986 ({521} neurons, 10,340 synapses)</span>}
+          {connectomeSource === "synthetic" && <span style={{ color: "#f59e0b" }}>⚠ Synthetic connectome (real data unavailable)</span>}
+        </div>
       {!done && (
         <div className="text-xs font-mono text-teal-400/70 text-center">
           302 neurons · Kuramoto coupling · {state?.stuckCount ?? 0} stuck

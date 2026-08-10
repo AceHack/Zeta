@@ -405,7 +405,7 @@ export default function OracleRaceMode() {
       {results.length > 0 && (
         <div style={{ marginBottom: "0.75rem" }}>
           <div style={{ fontSize: "0.7rem", color: "#94a3b8", marginBottom: "0.25rem" }}>
-            D_f convergence — all 17 oracles, independent seeds
+            D_f convergence + rolling PLV — all 17 oracles, independent seeds
           </div>
           <svg width="100%" height={140} viewBox="0 0 400 140" style={{ background: "#1e293b", borderRadius: 4 }}>
             {/* Asymptote */}
@@ -429,6 +429,43 @@ export default function OracleRaceMode() {
                 <circle cx={(N_RACE/N_RACE)*396+2} cy={140-((r.df-1.0)/1.0)*130} r="3" fill={ORACLE_COLORS[r.id-1]} />
               </g>
             ))}
+            {/* Rolling PLV second y-axis (right side, teal, scaled 0→1 mapped to 0→140) */}
+            {(() => {
+              const doneResults = results.filter(r => r.done && r.snapshots.length > 1);
+              if (doneResults.length < 2) return null;
+              // Compute rolling PLV at each snapshot step using all done oracles' D_f values
+              // PLV = |⟨e^{i·df·π}⟩| across oracles at each snapshot index
+              const maxSnaps = Math.max(...doneResults.map(r => r.snapshots.length));
+              const plvPoints: { x: number; y: number }[] = [];
+              for (let si = 0; si < maxSnaps; si++) {
+                const dfs = doneResults
+                  .map(r => r.snapshots[si]?.df ?? r.snapshots[r.snapshots.length-1]?.df ?? 1.0);
+                // PLV = |mean(e^{i·df·π})|
+                let sumCos = 0, sumSin = 0;
+                for (const df of dfs) { sumCos += Math.cos(df * Math.PI); sumSin += Math.sin(df * Math.PI); }
+                const plv = Math.sqrt((sumCos/dfs.length)**2 + (sumSin/dfs.length)**2);
+                const snap = doneResults[0]?.snapshots[si];
+                if (!snap) continue;
+                const x = (snap.n / N_RACE) * 396 + 2;
+                const y = 140 - plv * 130; // PLV 0→1 maps to y 140→10
+                plvPoints.push({ x, y });
+              }
+              if (plvPoints.length < 2) return null;
+              return (
+                <g>
+                  {plvPoints.map((pt, i) => {
+                    if (i === 0) return null;
+                    const prev = plvPoints[i-1]!;
+                    return <line key={i} x1={prev.x} y1={prev.y} x2={pt.x} y2={pt.y}
+                      stroke="#14b8a6" strokeWidth="1.5" opacity="0.8" strokeDasharray="3,1" />;
+                  })}
+                  {/* PLV label on right axis */}
+                  <text x="370" y="10" fill="#14b8a6" fontSize="6">PLV=1</text>
+                  <text x="370" y="138" fill="#14b8a6" fontSize="6">PLV=0</text>
+                  <text x="350" y="75" fill="#14b8a6" fontSize="6" transform="rotate(-90,350,75)">rolling PLV</text>
+                </g>
+              );
+            })()}
             {/* Y-axis */}
             <text x="2" y="138" fill="#334155" fontSize="6">1.0</text>
             <text x="2" y="10" fill="#334155" fontSize="6">2.0</text>
