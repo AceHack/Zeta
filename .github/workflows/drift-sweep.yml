@@ -123,6 +123,22 @@ jobs:
             --dir docs/drift-events --tracked /tmp/tracked.txt < /tmp/findings.txt
           bun src/Core.TypeScript/hygiene/drift-ledger.ts report --dir docs/drift-events
 
+      - name: Certified markdown heal (gyroscope — measure, then stabilize)
+        # The sweep stops being a stethoscope: after findings are captured
+        # (measure-first, so the ledger records the drift), the CERTIFIED
+        # markdown fixer heals it in the same tick's push. The entry point
+        # re-certifies the healer's three laws on every invocation and exits
+        # 2 touching nothing on failure (#10153) — certification IS the
+        # write gate. Next tick measures the heal: every markdown class
+        # converges at MTTH ~ 1 tick, continuously. Additive pattern: each
+        # new certified healer = one more stabilized axis.
+        run: |
+          mapfile -t files < <(git ls-files '*.md')
+          if [ "${#files[@]}" -gt 0 ]; then
+            bun src/Core.TypeScript/hygiene/healers/md-fixer-certified.ts "${files[@]}"
+            git add -u -- '*.md'
+          fi
+
       - name: SLO check — auto-file P1 workitems for breaching drift classes
         env:
           ZETA_WORKITEM_ACTOR: drift-sweep
@@ -143,7 +159,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Nothing staged — no tick recorded."
           else
-            git commit -m "drift: record sweep tick [skip ci]"
+            git commit -m "drift: record sweep tick + certified heals [skip ci]"
             git pull --rebase origin main
             git push
           fi
