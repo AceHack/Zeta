@@ -62,10 +62,31 @@ jobs:
           bun src/Core.TypeScript/hygiene/audit-proof-closure-claims.ts | tee audit.txt
           echo "status=$?" >> "$GITHUB_OUTPUT"
 
+      - name: Audit Lean CI coverage (what the axiom audit is NOT looking at)
+        id: coverage
+        continue-on-error: true # coverage telemetry never blocks the fleet
+        run: bun src/Core.TypeScript/hygiene/audit-lean-ci-coverage.ts | tee coverage.txt
+
       - name: Publish drift to the run summary
         if: always()
         run: |
           {
+            echo "## Lean CI coverage"
+            echo
+            if [ "${{ steps.coverage.outcome }}" = "success" ]; then
+              echo "Every \`sorry\`-carrying Lean file is axiom-audited."
+            else
+              echo "**Coverage gap.** A file carries \`sorry\` that no axiom audit examines."
+              echo
+              echo "\`lake env lean\` only WARNS on \`sorry\` (exit 0), so an unlisted file is"
+              echo "invisible to every check we run. Closing a gap may legitimately turn the"
+              echo "Lean job red — that is a human call, not a side effect of this job."
+            fi
+            echo
+            echo '```'
+            cat coverage.txt 2>/dev/null || echo "(no output captured)"
+            echo '```'
+            echo
             echo "## Proof-closure drift"
             echo
             if [ "${{ steps.audit.outcome }}" = "success" ]; then
