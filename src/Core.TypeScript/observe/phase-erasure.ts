@@ -44,7 +44,34 @@ import { createPhaseClock, COMMON_SEED, type PhaseState } from "./phase-clock";
  * This works because xorshift is deterministic: from any (phase, seed) pair,
  * the entire future is computable. One observation = infinite forward recovery.
  */
-export function recoverForward(anchor: PhaseState, targetPhase: number): PhaseState[] {
+/**
+ * Ceiling on a single recovery span.
+ *
+ * `targetPhase` reaches these functions from attacker-controlled input (a peer's event
+ * file). Unbounded, `recoverForward` allocates one object per phase in the gap and
+ * `verifyPhase` ticks once per phase — so a claimed phase of 1e12 is remote heap and CPU
+ * exhaustion with a single small message (Kira, 2026-08-10, P1).
+ *
+ * Refusing beyond the ceiling is correct rather than merely safe: a gap this large is
+ * not a recoverable erasure, it is a different problem, and silently grinding through it
+ * would answer a question nobody should be asking.
+ */
+export const MAX_RECOVERY_SPAN = 100_000;
+
+export function recoverForward(
+  anchor: PhaseState,
+  targetPhase: number,
+  maxSpan: number = MAX_RECOVERY_SPAN,
+): PhaseState[] {
+  if (!Number.isSafeInteger(targetPhase) || !Number.isSafeInteger(anchor.phase)) {
+    throw new RangeError("recoverForward: phases must be safe integers");
+  }
+  if (targetPhase - anchor.phase > maxSpan) {
+    throw new RangeError(
+      `recoverForward: span ${targetPhase - anchor.phase} exceeds MAX_RECOVERY_SPAN (${maxSpan}); ` +
+        "a gap this large is not a recoverable erasure",
+    );
+  }
   // Start a clock seeded with the anchor's seed — this produces the correct
   // subsequent seeds. We label phases starting from anchor.phase + 1.
   const clock = createPhaseClock(anchor.seed);
@@ -74,8 +101,33 @@ export function recoverGap(earlier: PhaseState, later: PhaseState): PhaseState[]
  *
  * This is the backward verification: you don't need to have observed every
  * intermediate phase — just verify the endpoint against the known start.
+ *
+ * ## TWO DECLARED LIMITS — read before relying on this (2026-08-10)
+ *
+ * **1. It has NO production callers.** Every call site repo-wide is a test. In
+ * particular the resume path in `run-loop-real.ts` reads a persisted `phase.derived`
+ * off disk and seeds the clock with it *without* verifying. So this function does not
+ * currently protect anything; treating its existence as evidence that phase seeds are
+ * authenticated in production is exactly wrong (Kira, 2026-08-10, P1).
+ *
+ * **2. Its precondition does not hold for resumed clocks.** It checks
+ * `seed == f^phase(COMMON_SEED)`, which is only true for a clock that ticked from the
+ * common seed unbroken. Resume is *chain-continuation* from the last persisted seed, so
+ * a legitimately resumed clock can fail this check. Wiring it into the resume path
+ * as-is would reject honest state — which is why that wiring is a design decision, not
+ * a bug fix, and is deliberately NOT done here.
+ *
+ * The bound below is applied regardless, because an uncapped loop over
+ * attacker-supplied `claimed.phase` is remote CPU exhaustion whether or not anything
+ * calls it today.
  */
-export function verifyPhase(claimed: PhaseState): boolean {
+export function verifyPhase(claimed: PhaseState, maxSpan: number = MAX_RECOVERY_SPAN): boolean {
+  if (!Number.isSafeInteger(claimed.phase) || claimed.phase < 0) return false;
+  if (claimed.phase > maxSpan) {
+    throw new RangeError(
+      `verifyPhase: claimed phase ${claimed.phase} exceeds MAX_RECOVERY_SPAN (${maxSpan})`,
+    );
+  }
   const clock = createPhaseClock(COMMON_SEED);
   for (let i = 0; i < claimed.phase; i++) {
     clock.tick("heartbeat");

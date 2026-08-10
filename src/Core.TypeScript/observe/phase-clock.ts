@@ -86,7 +86,28 @@ export const COMMON_SEED = 4;
  * In DST (deterministic simulation): the clock only advances when the test
  * harness calls `tick()` — time's motive is controlled by the test.
  */
-export function createPhaseClock(initialSeed: number = COMMON_SEED, resumeFrom?: { phase: number; seed: number }): PhaseClock {
+/**
+ * How far ahead of our own phase a single peer observation may carry us.
+ *
+ * `observe()` takes a number parsed from a PEER'S event file — unauthenticated,
+ * unvalidated input from another writer. Without a ceiling, one event carrying
+ * `phase: 1e15` permanently poisons this clock AND is then persisted into our own
+ * events, propagating to everyone who reads them. That is the actual attack surface on
+ * the phase clock, and it needs no weakness in the PRNG (Kira, 2026-08-10, P1).
+ *
+ * The bound is the standard HLC move: accept a peer only within a plausible drift
+ * window, and REFUSE beyond it rather than clamping silently. A peer genuinely this far
+ * ahead means a real partition, which deserves a signal rather than quiet adoption of
+ * whatever number arrived.
+ */
+export const MAX_PEER_ADVANCE = 10_000;
+
+export function createPhaseClock(
+  initialSeed: number = COMMON_SEED,
+  resumeFrom?: { phase: number; seed: number },
+  limits?: { maxPeerAdvance?: number },
+): PhaseClock {
+  const maxPeerAdvance = limits?.maxPeerAdvance ?? MAX_PEER_ADVANCE;
   let phase = resumeFrom?.phase ?? 0;
   let seed = resumeFrom?.seed ?? initialSeed;
   let lastAdvanceReason: PhaseState["lastAdvanceReason"] = resumeFrom ? "init" : "init";
@@ -118,6 +139,19 @@ export function createPhaseClock(initialSeed: number = COMMON_SEED, resumeFrom?:
     },
 
     observe(peerPhase: number): PhaseState {
+      // `peerPhase` is UNAUTHENTICATED INPUT parsed from another writer's event file.
+      // Validate its shape before it can touch our state: a non-integer, negative, NaN,
+      // or Infinity value must never become our phase, and must never be persisted into
+      // our own events where it would propagate to every reader.
+      if (!Number.isSafeInteger(peerPhase) || peerPhase < 0) {
+        return { phase, seed, lastAdvanceReason, wallClockAt };
+      }
+      // Bounded adoption (HLC drift window). A peer beyond the window is REFUSED, not
+      // clamped: silently adopting a truncated value would fabricate a phase nobody
+      // observed, and a peer genuinely this far ahead means a partition worth a signal.
+      if (peerPhase > phase + maxPeerAdvance) {
+        return { phase, seed, lastAdvanceReason, wallClockAt };
+      }
       if (peerPhase >= phase) {
         // Peer is ahead or equal — jump to their phase + 1
         // This is the HLC "max + 1" rule: ensures causal ordering
