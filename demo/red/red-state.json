@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "generatedAtIso": "2026-08-10T16:54:01.001Z",
+  "commit": "bac3e13ee",
+  "totals": {
+    "findings": 6,
+    "bySeverity": {
+      "drift": 1,
+      "gap": 3,
+      "failing": 2
+    }
+  },
+  "territories": [
+    {
+      "id": "proofs",
+      "name": "Proofs",
+      "blurb": "Formal artifacts and the honesty of what they claim. Red here means a stated guarantee is not the guarantee that holds.",
+      "regions": [
+        {
+          "id": "closure-claims",
+          "name": "Closure claims",
+          "summary": "1 file(s) assert completeness while carrying a marker.",
+          "findings": [
+            {
+              "id": "closure:src/Core.Lean4/ImaginaryStack/PhaseClockErasure.lean",
+              "title": "A file claims closure it does not have",
+              "severity": "drift",
+              "locus": "src/Core.Lean4/ImaginaryStack/PhaseClockErasure.lean:90",
+              "evidence": [
+                "claim (line 90): - The ECC proof chain is CLOSED: no axiom, no sorry, non-vacuous.",
+                "marker (line 114): sorry — declared in place"
+              ],
+              "why": "`sorry` makes Lean ACCEPT the file, so a green build is evidence of compilation, not of closure. Nothing else in the toolchain compares the prose claim against the tactic block.",
+              "clears": "Discharge the marker, or retract the claim. Either is honest; the contradiction is not."
+            }
+          ]
+        },
+        {
+          "id": "audit-coverage",
+          "name": "Audit coverage",
+          "summary": "3 of 3 marker-carrying file(s) are unaudited.",
+          "findings": [
+            {
+              "id": "coverage:src/Core.Lean4/ImaginaryStack/PhaseClockErasure.lean",
+              "title": "Incompleteness marker that no axiom audit examines",
+              "severity": "gap",
+              "locus": "src/Core.Lean4/ImaginaryStack/PhaseClockErasure.lean:114",
+              "evidence": [
+                "sorry/admit at line(s): 114",
+                "NOT type-checked by CI",
+                "not in any `#print axioms` audit step"
+              ],
+              "why": "lean-proof.yml audits a hand-maintained list. A file on neither list is invisible — not type-checked, not audited, not gated — and nothing notices the absence.",
+              "clears": "Add the file to the audit list. Note this may legitimately turn the Lean job red, which is a human call."
+            },
+            {
+              "id": "coverage:src/Core.Lean4/Lean4/FinDataProcessing.lean",
+              "title": "Incompleteness marker that no axiom audit examines",
+              "severity": "gap",
+              "locus": "src/Core.Lean4/Lean4/FinDataProcessing.lean:510",
+              "evidence": [
+                "sorry/admit at line(s): 510",
+                "NOT type-checked by CI",
+                "not in any `#print axioms` audit step"
+              ],
+              "why": "lean-proof.yml audits a hand-maintained list. A file on neither list is invisible — not type-checked, not audited, not gated — and nothing notices the absence.",
+              "clears": "Add the file to the audit list. Note this may legitimately turn the Lean job red, which is a human call."
+            },
+            {
+              "id": "coverage:src/Core.Lean4/Lean4/SchemaEvolution.lean",
+              "title": "Incompleteness marker that no axiom audit examines",
+              "severity": "gap",
+              "locus": "src/Core.Lean4/Lean4/SchemaEvolution.lean:84",
+              "evidence": [
+                "sorry/admit at line(s): 84",
+                "NOT type-checked by CI",
+                "not in any `#print axioms` audit step"
+              ],
+              "why": "lean-proof.yml audits a hand-maintained list. A file on neither list is invisible — not type-checked, not audited, not gated — and nothing notices the absence.",
+              "clears": "Add the file to the audit list. Note this may legitimately turn the Lean job red, which is a human call."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ci",
+      "name": "CI",
+      "blurb": "What the fleet's own gates report on main. Red here is a build the fleet can see and heal.",
+      "regions": [
+        {
+          "id": "main-failures",
+          "name": "main — recent runs",
+          "summary": "2 of the last 40 runs on main failed.",
+          "findings": [
+            {
+              "id": "ci:31409870040",
+              "title": "gate",
+              "severity": "failing",
+              "locus": "bac3e13ee — 2026-08-10 16:36",
+              "evidence": [
+                "feat(hygiene): Lean CI coverage telemetry — what the axiom audit is N…",
+                "run id 31409870040"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:31408517201",
+              "title": "gate",
+              "severity": "failing",
+              "locus": "4522be9ff — 2026-08-10 16:21",
+              "evidence": [
+                "docs(letters): route to Soraya — xorshift_mod17_in_rsCode is false, n…",
+                "run id 31408517201"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -44,6 +44,49 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Regenerates demo/red/red-state.json and commits it — GIT IS THE BACKEND for the
+  # Red State dashboard at /demo/red/. The dashboard is a static page and a pure
+  # function of that committed file, so no server or browser-side API key is
+  # involved, and every change in the red state lands as a readable diff whose git
+  # history is the event log.
+  #
+  # Separate job because it needs `contents: write` while the audit job stays
+  # read-only. It is also allowed to fail without consequence: a stale dashboard is
+  # a smaller problem than a workflow that blocks.
+  red-state:
+    name: Refresh Red State dashboard data
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Collect red state
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bun src/Core.TypeScript/hygiene/collect-red-state.ts --ci
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- demo/red/red-state.json; then
+            echo "red-state unchanged; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add demo/red/red-state.json
+          git commit -m "chore(red-state): refresh dashboard data [skip ci]"
+          # Rebase rather than merge: the fleet pushes to main constantly, and a
+          # merge commit here would be noise in a lane that only ever appends one
+          # regenerated file.
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
+
   audit:
     name: Proof-closure claim audit
     runs-on: ubuntu-24.04
