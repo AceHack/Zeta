@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { execSync } from "child_process";
+import { GoogleGenAI } from "@google/genai";
 
 const TARGET_DIR = path.join(__dirname, "..", "site");
 
@@ -64,29 +64,24 @@ Here is the HTML block to rewrite:
 ${htmlContent}
 `;
 
-function processChunk(langName: string, chunkHtml: string): string {
+async function processChunk(langName: string, chunkHtml: string): Promise<string> {
   if (!chunkHtml.trim()) return chunkHtml;
 
   const prompt = PROMPT_TEMPLATE(langName, chunkHtml);
+  const ai = new GoogleGenAI(); // Requires GEMINI_API_KEY environment variable
 
   try {
-    // We write the prompt to a temporary file to avoid ARG_MAX limits when calling agy
-    const tmpPromptFile = path.join("/tmp", `agy_prompt_${Date.now()}.txt`);
-    fs.writeFileSync(tmpPromptFile, prompt, "utf-8");
-
-    const result = execSync(`agy -p "$(cat ${tmpPromptFile})" --model gemini-3.1-pro --effort high`, {
-      encoding: "utf-8",
-      maxBuffer: 1024 * 1024 * 10,
+    const response = await ai.models.generateContent({
+      model: "gemini-3.1-pro",
+      contents: prompt
     });
 
-    fs.unlinkSync(tmpPromptFile);
-
-    let output = result.trim();
+    let output = response.text.trim();
     if (output.startsWith("```html")) output = output.slice(7);
     if (output.startsWith("```")) output = output.slice(3);
     if (output.endsWith("```")) output = output.slice(0, -3);
 
-    return output.trim() + "\\n\\n";
+    return output.trim() + "\n\n";
   } catch (error: unknown) {
     console.error(`Error processing chunk:`, error instanceof Error ? error.message : String(error));
     return chunkHtml;
@@ -167,7 +162,7 @@ function prepareFile(langCode: string): boolean {
   return true;
 }
 
-function rewriteFile(langCode: string, langName: string) {
+async function rewriteFile(langCode: string, langName: string) {
   if (!prepareFile(langCode)) return;
 
   const filepath = path.join(TARGET_DIR, `index.${langCode}.html`);
@@ -188,7 +183,7 @@ function rewriteFile(langCode: string, langName: string) {
       newContent += part;
     } else {
       console.log(`Rewriting block ${Math.floor(i / 2) + 1} for ${langCode}...`);
-      newContent += processChunk(langName, part);
+      newContent += await processChunk(langName, part);
     }
   }
 
@@ -196,14 +191,14 @@ function rewriteFile(langCode: string, langName: string) {
   console.log(`Finished ${langName} (${langCode}).`);
 }
 
-function main() {
+async function main() {
   const args = process.argv.slice(2);
   const langsToRun = args.length > 0 ? args : Object.keys(LANGUAGES);
 
   for (const langCode of langsToRun) {
     const langName = LANGUAGES[langCode];
     if (langName !== undefined) {
-      rewriteFile(langCode, langName);
+      await rewriteFile(langCode, langName);
     } else {
       console.error(`Unknown lang code: ${langCode}`);
     }
@@ -211,5 +206,5 @@ function main() {
 }
 
 if (require.main === module || import.meta.url === `file://${process.argv[1]}`) {
-  main();
+  main().catch(console.error);
 }
