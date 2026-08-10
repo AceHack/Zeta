@@ -72,6 +72,43 @@ linear map. **Heterogeneous arrow types are what make a composition non-trivial*
 observation is Aaron's, and it means the audit above describes depth rather than merely
 finding an error.
 
+One correction to that reading, and one thing it wins outright.
+
+**Correction:** collapse is about *depth*, not *content*. A single quotient can be maximally
+rigid — `e₈` as a free Lie algebra modulo the Serre relations is one step and forbids
+everything. So the chain could not have asserted anything requiring *three stages*; it could
+still have asserted plenty in one.
+
+**And this diagram does not typecheck at all — the failure is in the objects, not the arrows.**
+The Clifford algebra adinkras represent is `Cl(N=4)` (the extraspecial-2-group algebra of the
+dashing, acting on 4 bosonic + 4 fermionic nodes). The Clifford algebra in `CliffordE8Bridge`
+is `Cl(3,0)`, whose 8 is `dim Cl(3,0) = 2³` — a **blade count, not rank E8**. Codomain of the
+first arrow ≠ domain of the second. Relabelling arrow types does not make a non-composable pair
+composable; what it does is make the non-composability *visible*, which is the real value.
+Independently confirms the standing "a Y, not a chain" verdict by a second route.
+
+### 2a. Where the small parameter lives — the answer to §6's metering test
+
+This is the sharpest result of the review, and it is Aaron's point made exact: *the parameter
+lives in the arrows between layers, never in any one layer.*
+
+- **Within one type** — a single quotient by an ideal `I`. Ideal-lattice data: **discrete**,
+  no parameter, nothing to meter.
+- **Across types** — a mono followed by an epi with fixed ends *is* an extension
+  `0 → W → V → V/W → 0`, and the set of those is `Ext¹(V/W, W)` — a **module**, hence a genuine
+  parameter space. Over a field it is a vector space: a continuous `λ`, with `λ → 0` the split
+  (decoupled) extension.
+
+One level up, families of quotients `A/I_t` are **deformations**, classified by Hochschild
+`HH²` (Gerstenhaber 1964) — and `Cl(V, tq)` deforming `Λ(V)` is exactly that.
+
+> **Quotients are ideal-lattice data — discrete, unmetered. Decouplings are cohomological data
+> (`Ext¹`, `HH²`) — continuous, metered.**
+
+That is the most compressed correct statement of this whole thread, and it explains the §6
+retraction rather than merely asserting it: the slogan equated an object with no parameter
+space to one whose entire content *is* a parameter space.
+
 ## 3. The procedure
 
 **(1) State the generator, and label it as one.** Write the compressed sentence and record

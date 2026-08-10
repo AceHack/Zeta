@@ -111,6 +111,54 @@ let ``idempotence fails for any likelihood outside {0,1} — stated as a propert
     ignore b
     BC.observe l (BC.observe l definite) <> BC.observe l definite
 
+// ── the third boundary: ZERO is absorbing, so the fold is not cancellative ──────────────────────
+//
+// `observe` is a commutative monoid under pointwise multiplication, and that monoid has ABSORBING
+// elements: a likelihood weight of 0 annihilates its candidate, and 0 has no inverse. So a
+// candidate zeroed by one observation cannot be restored by any later evidence — the fold is not
+// cancellative, and the loss is PERMANENT rather than merely order-dependent.
+//
+// Why that is the interesting case for delay: everywhere else, delay is inert on this fold —
+// divergence heals exactly, because commutativity makes the merge path-independent. The absorbing
+// zero is the ONE place where a delayed replica can differentiate PERMANENTLY, and it does so by
+// destroying information rather than by carrying any. That is bug-shaped, not feature-shaped: it
+// is the absorbing/irreversible state, not the differentiation the trajectory is after.
+//
+// REACHABILITY, stated because a mechanism is not a severity (checked 2026-08-10):
+//   * `BeliefConvergence` has NO non-test callers in `src/` — the only reference is a docstring
+//     cross-reference in `SymmetricEndurance.fs`. Nothing in production folds beliefs today, so
+//     this is not currently exploitable. Recorded so the claim is not inflated.
+//   * Zero likelihoods ARE already generated: `genVec` is `Gen.choose (0, 10)`, which includes 0.
+//     The existing commutativity / associativity / order-independence properties pass anyway,
+//     because zero is absorbing SYMMETRICALLY — order-independence survives information loss.
+//     That is the point worth keeping: those green properties are not evidence of recoverability.
+//
+// The repo's own fix is already named — additive log-space with retraction is a GROUP (invertible),
+// where the corresponding failure cannot occur. Pinned here so the property is in place before any
+// caller arrives, rather than discovered by one.
+
+[<Fact>]
+let ``ZERO is absorbing — a zeroed candidate is unrecoverable by any later evidence`` () =
+    let b = [| 5L; 5L; 5L; 5L |]
+    let zeroing = [| 0L; 1L; 1L; 1L |]
+    let zeroed = BC.observe zeroing b
+    Assert.Equal(0L, zeroed.[0])
+    // No likelihood restores it — try a deliberately large one, and the whole generated range.
+    let rescued = BC.observe [| 1_000_000L; 1L; 1L; 1L |] zeroed
+    Assert.Equal(0L, rescued.[0])
+    for w in 0L .. 10L do
+        Assert.Equal(0L, (BC.observe [| w; 1L; 1L; 1L |] zeroed).[0])
+
+[<Property(Arbitrary = [| typeof<BCArb> |])>]
+let ``the fold is NOT cancellative — absorbing zero destroys the left-cancellation law`` (b: int64[]) =
+    // Cancellativity would say: observe l x = observe l y  =>  x = y. A zero weight in `l` breaks
+    // it, because every belief maps to 0 in that coordinate regardless of what it was.
+    let l = [| 0L; 1L; 1L; 1L |]
+    let x = Array.copy b
+    let y = Array.copy b
+    y.[0] <- b.[0] + 1L // x and y differ ONLY in the coordinate the zero annihilates
+    BC.observe l x = BC.observe l y && x <> y
+
 [<Fact>]
 let ``observeAll DOUBLE-COUNTS a redelivered message — the set must be deduplicated upstream`` () =
     // The concrete failure a retransmitting transport produces. `observeAll` is order-independent
