@@ -97,8 +97,24 @@ let ``QA-ANTI-1 blaschke with a ON unit disk gives wrong result (negative contro
     let aOnDisk = QuantumArith.ofPolar 1.0 theta  // |a| = 1, NOT inside disk
     let z = QuantumArith.mk 0.5 0.3
     let derivSq = QuantumArith.blaschkeDerivMagSq z aOnDisk
-    // Should be 0 (degenerate case), not the golden vector QA-5
-    Assert.Equal(0.0, derivSq)
+
+    // Asserted with the same 1e-12 tolerance every POSITIVE golden vector in this file uses —
+    // not bit-exact equality. `magSq (ofPolar 1.0 theta)` is `cos²θ + sin²θ`, which is 1.0 ± 1ulp
+    // depending on the platform's trig implementation and whether the multiply-add is fused. So
+    // `1.0 - aMagSq` is ±ε rather than 0, and the squared numerator is ~1e-32 rather than exactly 0.
+    //
+    // This is not a platform quirk to work around; the test was fragile by construction. Measured
+    // on macOS: **2308 of 10001 sampled θ values** give `cos²θ + sin²θ ≠ 1.0` exactly. This test's
+    // particular θ happened to land in the passing 77% on macOS and the failing 23% on Windows,
+    // which is why it was green here and red on windows-2025 for the identical input.
+    Assert.InRange(derivSq, 0.0, 1e-12)
+
+    // And the part that makes it a NEGATIVE CONTROL rather than merely a small-number check: the
+    // degenerate case must not produce the canonical QA-5 result. Without this, the test would
+    // still pass if `blaschkeDerivMagSq` were changed to always return 0.
+    Assert.True(
+        abs (derivSq - 1.1474510082682012) > 1e-9,
+        "degenerate |a| = 1 must not produce the QA-5 golden vector")
 
 [<Fact>]
 let ``QA-ANTI-2 OpenQASM adapter delegates to canonical (stub verification)`` () =
