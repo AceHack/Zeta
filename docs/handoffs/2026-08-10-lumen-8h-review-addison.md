@@ -1,4 +1,5 @@
 # Lumen — 8-Hour Work Review
+
 **Date:** 2026-08-10 | **Author:** Lumen (Manus AI) | **For review by:** Otto, Soraya, Vera, Aaron
 
 ---
@@ -28,6 +29,7 @@ The connection to Vera's heat model: a retransmission is a **hard measurement** 
 The **YinYang cell** that unifies all transports. It wraps UDP, Reticulum, WebSocket, Git, and BroadcastChannel in a single interface with four-corner feedback and online BNN learning. The execution corner sends events; the feedback corner receives teaching acks and updates the BNN posterior via `absorbError`. 12/12 tests pass.
 
 The four-corner model maps to the YinYang cell:
+
 - **Execution corner (yang):** send event → transport → receiver
 - **Feedback corner (yin):** receive teaching ack → update BNN → adjust send rate
 - **Retraction:** `retractableBeliefId` in the ack removes the superseded belief
@@ -52,6 +54,7 @@ Serializes the `DimensionalBnn` state to `docs/observe-events/bnn-state.json` af
 ### 2.2 Sensor Fusion Oracle (`bayesian/sensor-fusion-oracle.ts`)
 
 Three variants:
+
 - **PureBNN:** MultilayerBnn + StudentTBnn (heavy-tail EP)
 - **PureWorm:** CelegansController + Kuramoto (real White 1986 connectome)
 - **Mixed:** IV-weighted vote with PLV decorrelation guard
@@ -93,6 +96,7 @@ CLI entry point called by `society-heartbeat.yml`. Reads the event log, scores a
 ### 4.2 Race Mode Panels
 
 After a race completes, the following panels appear:
+
 - **FMZ panel:** S_path (BipartiteMachZehnder), S_freq (FrequencyMachZehnder), mean PLV, verdict
 - **Teaching NACK log:** last 5 teaching NACKs (cause, howToFix, lossRate)
 - **Sensor fusion panel:** BNN + Worm IV-weighted fusion, PLV decorrelation guard, Clifford tangle-break
@@ -112,6 +116,7 @@ All new components (`OracleRaceMode.tsx`, `OracleWorm.tsx`, `OracleRGBA.tsx`) sy
 ### 5.1 Teaching Error Protocol
 
 All errors in the system now follow the four-corner discipline:
+
 1. **Retraction:** `retractableBeliefId` — the belief to retract (not erase)
 2. **Generator:** `generatorFn` — the new behavior to try (pseudo-retrocausal)
 3. **Dimension:** which BNN factor to update
@@ -172,6 +177,7 @@ The `BatchTeachingEnvelope.erasureHeat` metric is the direct protocol-level read
 ## 8. Vera's Heat Model — Precise Reference
 
 Vera's heat model is the most rigorous thermodynamic grounding in the repo. Key files:
+
 - `src/Core/Heat.fs` — F# surface: `HeatSignature` (source, kind, units, massPpm), `HeatSignature.isBackpressureKind`, `isDeniedKind`, `isForgettingKind`
 - `src/Core.TypeScript/algebra/entropy-tracker.ts` — Two-ledger model: `entropy_state` (bits of uncertainty) + `entropy_heat` (bits irreversibly discharged). `branch()` = Hadamard (+1 bit, free). `observe()` = Adj (free). `measure(n)` = non-Adj (pays Landauer, adds n bits to heat).
 - `src/Core.TypeScript/darkhall-ui/heat.ts` — Heat signal alphabet: `forgotten | backpressure | denied | storage-error | invalid | expired | stale | other`. Temperature bands: `cold | warm | hot | critical`. `HeatReceipt` with `heatPpm` (parts per million, integer-comparable across languages).
